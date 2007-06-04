@@ -5,6 +5,7 @@
  */
 
 #import <AppKit/NSView.h>
+#import <Foundation/NSGeometry.h>
 
 @class NSButton, NSCell, NSString;
 
@@ -19,30 +20,30 @@
     BOOL resizeByIncrement;
     BOOL unused;
     unsigned char tabViewCount;
-    struct _NSSize resizeParameter;
+    NSSize resizeParameter;
     int shadowState;
 }
 
 + (void)initialize;
 + (void)initTitleCell:(id)fp8 styleMask:(unsigned int)fp12;
-+ (struct _NSRect)frameRectForContentRect:(struct _NSRect)fp8 styleMask:(unsigned int)fp24;
-+ (struct _NSRect)contentRectForFrameRect:(struct _NSRect)fp8 styleMask:(unsigned int)fp24;
++ (NSRect)frameRectForContentRect:(NSRect)fp8 styleMask:(unsigned int)fp24;
++ (NSRect)contentRectForFrameRect:(NSRect)fp8 styleMask:(unsigned int)fp24;
 + (struct _NSSize)minFrameSizeForMinContentSize:(struct _NSSize)fp8 styleMask:(unsigned int)fp16;
 + (struct _NSSize)minContentSizeForMinFrameSize:(struct _NSSize)fp8 styleMask:(unsigned int)fp16;
 + (float)minFrameWidthWithTitle:(id)fp8 styleMask:(unsigned int)fp12;
 + (unsigned int)_validateStyleMask:(unsigned int)fp8;
-- (id)initWithFrame:(struct _NSRect)fp8 styleMask:(unsigned int)fp24 owner:(id)fp28;
-- (id)initWithFrame:(struct _NSRect)fp8;
+- (id)initWithFrame:(NSRect)fp8 styleMask:(unsigned int)fp24 owner:(id)fp28;
+- (id)initWithFrame:(NSRect)fp8;
 - (void)dealloc;
 - (void)finalize;
 - (void)shapeWindow;
 - (void)tileAndSetWindowShape:(BOOL)fp8;
 - (void)tile;
-- (void)drawRect:(struct _NSRect)fp8;
-- (void)_drawFrameRects:(struct _NSRect)fp8;
-- (void)drawFrame:(struct _NSRect)fp8;
-- (void)drawThemeContentFill:(struct _NSRect)fp8 inView:(id)fp24;
-- (void)drawWindowBackgroundRect:(struct _NSRect)fp8;
+- (void)drawRect:(NSRect)fp8;
+- (void)_drawFrameRects:(NSRect)fp8;
+- (void)drawFrame:(NSRect)fp8;
+- (void)drawThemeContentFill:(NSRect)fp8 inView:(id)fp24;
+- (void)drawWindowBackgroundRect:(NSRect)fp8;
 - (void)drawWindowBackgroundRegion:(void *)fp8;
 - (float)contentAlpha;
 - (void)_windowChangedKeyState;
@@ -84,8 +85,8 @@
 - (void)_setFrameNeedsDisplay:(BOOL)fp8;
 - (BOOL)frameNeedsDisplay;
 - (id)titleFont;
-- (struct _NSRect)_maxTitlebarTitleRect;
-- (struct _NSRect)titlebarRect;
+- (NSRect)_maxTitlebarTitleRect;
+- (NSRect)titlebarRect;
 - (void)_setUtilityWindow:(BOOL)fp8;
 - (void)_setNonactivatingPanel:(BOOL)fp8;
 - (void)setIsClosable:(BOOL)fp8;
@@ -97,11 +98,11 @@
 - (void)_clearDragMargins;
 - (void)_resetDragMargins;
 - (void)setTitle:(id)fp8 andDefeatWrap:(BOOL)fp12;
-- (struct _NSRect)frameRectForContentRect:(struct _NSRect)fp8 styleMask:(unsigned int)fp24;
-- (struct _NSRect)contentRectForFrameRect:(struct _NSRect)fp8 styleMask:(unsigned int)fp24;
+- (NSRect)frameRectForContentRect:(NSRect)fp8 styleMask:(unsigned int)fp24;
+- (NSRect)contentRectForFrameRect:(NSRect)fp8 styleMask:(unsigned int)fp24;
 - (struct _NSSize)minFrameSizeForMinContentSize:(struct _NSSize)fp8 styleMask:(unsigned int)fp16;
-- (struct _NSRect)dragRectForFrameRect:(struct _NSRect)fp8;
-- (struct _NSRect)contentRect;
+- (NSRect)dragRectForFrameRect:(NSRect)fp8;
+- (NSRect)contentRect;
 - (struct _NSSize)minFrameSize;
 
 @end

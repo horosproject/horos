@@ -12,7 +12,7 @@
 {
     int resizeFlags;
     NSDocumentDragButton *fileButton;
-    struct _NSSize titleCellSize;
+    NSSize titleCellSize;
 }
 
 + (void)initialize;
@@ -21,8 +21,8 @@
 + (float)_maxXWindowBorderWidth:(unsigned int)fp8;
 + (float)_minYWindowBorderHeight:(unsigned int)fp8;
 + (BOOL)_resizeFromEdge;
-+ (struct _NSRect)frameRectForContentRect:(struct _NSRect)fp8 styleMask:(unsigned int)fp24;
-+ (struct _NSRect)contentRectForFrameRect:(struct _NSRect)fp8 styleMask:(unsigned int)fp24;
++ (NSRect)frameRectForContentRect:(NSRect)fp8 styleMask:(unsigned int)fp24;
++ (NSRect)contentRectForFrameRect:(NSRect)fp8 styleMask:(unsigned int)fp24;
 + (struct _NSSize)minFrameSizeForMinContentSize:(struct _NSSize)fp8 styleMask:(unsigned int)fp16;
 + (struct _NSSize)minContentSizeForMinFrameSize:(struct _NSSize)fp8 styleMask:(unsigned int)fp16;
 + (float)minFrameWidthWithTitle:(id)fp8 styleMask:(unsigned int)fp12;
@@ -37,7 +37,7 @@
 + (float)_contentToFrameMaxXWidth:(unsigned int)fp8;
 + (float)_contentToFrameMinYHeight:(unsigned int)fp8;
 + (float)_contentToFrameMaxYHeight:(unsigned int)fp8;
-- (id)initWithFrame:(struct _NSRect)fp8 styleMask:(unsigned int)fp24 owner:(id)fp28;
+- (id)initWithFrame:(NSRect)fp8 styleMask:(unsigned int)fp24 owner:(id)fp28;
 - (void)dealloc;
 - (void)setIsClosable:(BOOL)fp8;
 - (void)setIsResizable:(BOOL)fp8;
@@ -45,8 +45,8 @@
 - (void)_setUtilityWindow:(BOOL)fp8;
 - (BOOL)isOpaque;
 - (BOOL)worksWhenModal;
-- (void)propagateFrameDirtyRects:(struct _NSRect)fp8;
-- (void)_showDrawRect:(struct _NSRect)fp8;
+- (void)propagateFrameDirtyRects:(NSRect)fp8;
+- (void)_showDrawRect:(NSRect)fp8;
 - (id)frameHighlightColor;
 - (id)frameShadowColor;
 - (void)setFrameOrigin:(struct _NSPoint)fp8;
@@ -56,7 +56,7 @@
 - (void)setTitle:(id)fp8;
 - (BOOL)_shouldRepresentFilename;
 - (void)setRepresentedFilename:(id)fp8;
-- (void)_drawTitleStringIn:(struct _NSRect)fp8 withColor:(id)fp24;
+- (void)_drawTitleStringIn:(NSRect)fp8 withColor:(id)fp24;
 - (id)titleFont;
 - (id)titleButtonOfClass:(Class)fp8;
 - (id)initTitleButton:(id)fp8;
@@ -75,8 +75,8 @@
 - (void)rightMouseUp:(id)fp8;
 - (int)resizeEdgeForEvent:(id)fp8;
 - (struct _NSSize)_resizeDeltaFromPoint:(struct _NSPoint)fp8 toEvent:(id)fp16;
-- (struct _NSRect)_validFrameForResizeFrame:(struct _NSRect)fp8 fromResizeEdge:(int)fp24;
-- (struct _NSRect)frame:(struct _NSRect)fp8 resizedFromEdge:(int)fp24 withDelta:(struct _NSSize)fp28;
+- (NSRect)_validFrameForResizeFrame:(NSRect)fp8 fromResizeEdge:(int)fp24;
+- (NSRect)frame:(NSRect)fp8 resizedFromEdge:(int)fp24 withDelta:(struct _NSSize)fp28;
 - (BOOL)constrainResizeEdge:(int *)fp8 withDelta:(struct _NSSize)fp12 elapsedTime:(float)fp20;
 - (void)resizeWithEvent:(id)fp8;
 - (int)resizeFlags;
@@ -97,11 +97,11 @@
 - (float)_titleCellHeight;
 - (struct _NSSize)_titleCellSize;
 - (float)_titlebarHeight;
-- (struct _NSRect)titlebarRect;
-- (struct _NSRect)_maxTitlebarTitleRect;
-- (struct _NSRect)_titlebarTitleRect;
+- (NSRect)titlebarRect;
+- (NSRect)_maxTitlebarTitleRect;
+- (NSRect)_titlebarTitleRect;
 - (float)_windowTitlebarTitleMinHeight;
-- (struct _NSRect)dragRectForFrameRect:(struct _NSRect)fp8;
+- (NSRect)dragRectForFrameRect:(NSRect)fp8;
 - (struct _NSSize)sizeOfTitlebarButtons;
 - (struct _NSSize)_sizeOfTitlebarFileButton;
 - (float)_windowTitlebarButtonSpacingWidth;
@@ -111,8 +111,8 @@
 - (float)windowTitlebarLinesSpacingWidth;
 - (float)windowTitlebarTitleLinesSpacingWidth;
 - (float)_minLinesWidthWithSpace;
-- (struct _NSRect)_minXTitlebarLinesRectWithTitleCellRect:(struct _NSRect)fp8;
-- (struct _NSRect)_maxXTitlebarLinesRectWithTitleCellRect:(struct _NSRect)fp8;
+- (NSRect)_minXTitlebarLinesRectWithTitleCellRect:(NSRect)fp8;
+- (NSRect)_maxXTitlebarLinesRectWithTitleCellRect:(NSRect)fp8;
 - (float)_minXTitlebarDecorationMinWidth;
 - (float)_maxXTitlebarDecorationMinWidth;
 - (struct _NSPoint)_closeButtonOrigin;
@@ -126,26 +126,26 @@
 - (float)_contentToFrameMaxXWidth;
 - (float)_contentToFrameMinYHeight;
 - (float)_contentToFrameMaxYHeight;
-- (struct _NSRect)contentRect;
+- (NSRect)contentRect;
 - (float)_windowResizeCornerThickness;
-- (struct _NSRect)_minYResizeRect;
-- (struct _NSRect)_minYminXResizeRect;
-- (struct _NSRect)_minYmaxXResizeRect;
-- (struct _NSRect)_minXResizeRect;
-- (struct _NSRect)_minXminYResizeRect;
-- (struct _NSRect)_minXmaxYResizeRect;
-- (struct _NSRect)_maxYResizeRect;
-- (struct _NSRect)_maxYminXResizeRect;
-- (struct _NSRect)_maxYmaxXResizeRect;
-- (struct _NSRect)_maxXResizeRect;
-- (struct _NSRect)_maxXminYResizeRect;
-- (struct _NSRect)_maxXmaxYResizeRect;
-- (struct _NSRect)_minXTitlebarResizeRect;
-- (struct _NSRect)_maxXTitlebarResizeRect;
-- (struct _NSRect)_minXBorderRect;
-- (struct _NSRect)_maxXBorderRect;
-- (struct _NSRect)_maxYBorderRect;
-- (struct _NSRect)_minYBorderRect;
+- (NSRect)_minYResizeRect;
+- (NSRect)_minYminXResizeRect;
+- (NSRect)_minYmaxXResizeRect;
+- (NSRect)_minXResizeRect;
+- (NSRect)_minXminYResizeRect;
+- (NSRect)_minXmaxYResizeRect;
+- (NSRect)_maxYResizeRect;
+- (NSRect)_maxYminXResizeRect;
+- (NSRect)_maxYmaxXResizeRect;
+- (NSRect)_maxXResizeRect;
+- (NSRect)_maxXminYResizeRect;
+- (NSRect)_maxXmaxYResizeRect;
+- (NSRect)_minXTitlebarResizeRect;
+- (NSRect)_maxXTitlebarResizeRect;
+- (NSRect)_minXBorderRect;
+- (NSRect)_maxXBorderRect;
+- (NSRect)_maxYBorderRect;
+- (NSRect)_minYBorderRect;
 
 @end
 

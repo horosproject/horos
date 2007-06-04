@@ -5435,12 +5435,12 @@ public:
 	switch(stackOrientation)
 	{
 		case 0:
-			if( point1[0] - point2[0] > 0) direction = YES;
+			if( point1[0] - point2[0] < 0) direction = YES;
 			else direction = NO;
 		break;
 		
 		case 1:
-			if( point1[1] - point2[1] > 0) direction = YES;
+			if( point1[1] - point2[1] < 0) direction = YES;
 			else direction = NO;
 		break;
 		

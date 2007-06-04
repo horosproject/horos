@@ -80,7 +80,7 @@
 
 - (NSRect)_titlebarTitleRect
 {
-	NSRect rect = [super _titlebarTitleRect];
+	NSRect rect = (NSRect) [super _titlebarTitleRect];
 	rect.origin.y++;
 	
 	return rect;

@@ -1508,8 +1508,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[labelFont release];
 	[yearOld release];
 	
-//	[self clearGLContext];
-	
 	[cursor release];
 	[stringTextureCache release];
 	
@@ -1528,6 +1526,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[repulsorColorTimer release];
 		repulsorColorTimer = nil;
 	}
+	
+	//[self clearGLContext];	// <- This is the bug, Joris.... Have a nice week in Cupertino !
 	
     [super dealloc];
 }
@@ -4600,12 +4600,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     NSLog(@"DCMView alloc");
 
     // Init pixel format attribs
-    NSOpenGLPixelFormatAttribute attrs[] =
+//    NSOpenGLPixelFormatAttribute attrs[] =
+//    {
+//            NSOpenGLPFADoubleBuffer,
+//			NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32,
+//			0
+//	};
+
+	NSOpenGLPixelFormatAttribute attrs[] =
     {
 			NSOpenGLPFAAccelerated,
 			NSOpenGLPFANoRecovery,
             NSOpenGLPFADoubleBuffer,
-//			NSOpenGLPFAOffScreen,
 			NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32,
 			0
 	};

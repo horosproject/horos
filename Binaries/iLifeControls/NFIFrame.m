@@ -14,7 +14,7 @@
 
 @implementation NFIFrame
 
-- (id)initWithFrame:(struct _NSRect)frame styleMask:(unsigned int)style owner:(id)o
+- (id)initWithFrame:(NSRect)frame styleMask:(unsigned int)style owner:(id)o
 {
 	self = [super initWithFrame:frame styleMask:style owner:o];
 	mTitleBarHeight = 25.0f;
@@ -153,7 +153,7 @@
 	[bottomRight compositeToPoint:NSMakePoint(rect.origin.x + rect.size.width-[bottomRight size].width, rect.origin.y) operation: NSCompositeSourceOver];
 }
 
-- (void)drawRect:(struct _NSRect)_rect
+- (void)drawRect:(NSRect)_rect
 {
 	NSRect rect = [self bounds];
 	[[NSColor clearColor] set];
@@ -183,7 +183,7 @@
 	[self _drawBottomBar: bottomBarRect];
 }
 
-- (void)_drawGrowBoxWithClip:(struct _NSRect)rect
+- (void)_drawGrowBoxWithClip:(NSRect)rect
 {
 	rect.origin.x += 3;
 	rect.origin.y += 2;

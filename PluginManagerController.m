@@ -190,7 +190,11 @@
 
 #pragma mark pop up menu
 
+#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
+#else
 int sortPluginArrayByName(id plugin1, id plugin2, void *context)
+#endif
 {
     NSString *name1 = [plugin1 objectForKey:@"name"];
     NSString *name2 = [plugin2 objectForKey:@"name"];
@@ -390,10 +394,12 @@ int sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 - (void)loadSubmitPluginPage;
 {
+	#if !__LP64__
 	if([NSMailDelivery hasDeliveryClassBeenConfigured])
 		[self setURL:PLUGIN_SUBMISSION_URL];
 	else
 		[self setURL:PLUGIN_SUBMISSION_NO_MAIL_APP_URL];
+	#endif
 	[self setDownloadURL:@""];
 }
 
@@ -414,7 +420,9 @@ int sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	NSString *emailAddress = @"joris.heuberger@sim.hcuge.ch,rossetantoine@bluewin.ch";
 	NSString *emailSubject = @"OsiriX: New Plugin Submission"; // don't localize this. This is the subject of the email WE will receive.
 	
+	#if !__LP64__
 	[NSMailDelivery deliverMessage:emailMessage subject:emailSubject to:emailAddress];
+	#endif
 }
 
 #pragma mark WebPolicyDelegate Protocol methods
