@@ -9244,6 +9244,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	NSTableColumn		*tableColumn = nil;
 	NSPopUpButtonCell	*buttonCell = nil;
 	
+	[albumDrawer setPreferredEdge: NSMinXEdge];
 	[albumDrawer open]; 
 	
 	// thumbnails : no background color
@@ -12738,6 +12739,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 //    [[self window] makeKeyAndOrderFront:nil];
 }
 
+- (void) drawerToggle:(id) sender
+{
+	[albumDrawer toggle: sender];
+}
+
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted {
     // Required delegate method:  Given an item identifier, this method returns an item 
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
@@ -12867,8 +12873,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Albums & Sources",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Toggle Albums & Sources drawer",nil)];
 		[toolbarItem setImage: [NSImage imageNamed:  ToggleDrawerToolbarItemIdentifier]];
-		[toolbarItem setTarget: albumDrawer];
-		[toolbarItem setAction: @selector(toggle:)];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector(drawerToggle:)];
     } 
 	else if ([itemIdent isEqualToString: SearchToolbarItemIdentifier])
 	{
