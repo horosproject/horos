@@ -12,19 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-/***************************************** Modifications *********************************************
-
-Version 2.3
-
-	20051221	LP	Added outline for graphicAnnotationSequence. this allow creation of a DICOM Presentation state IOD for export
-	
-Version 2.5
-
-	20060809	DDP	Renamed clearComplePathCache to clearCompletePathCache
-	
-*******************************************************************************************************/
-
-
 #import "DicomImage.h"
 #import "browserController.h"
 #import "BonjourBrowser.h"
@@ -33,9 +20,112 @@ Version 2.5
 #import "DCMPix.h"
 #import "VRController.h"
 
-extern NSString * documentsDirectory();
+inline int charToInt( unsigned char c)
+{
+	switch( c)
+	{
+		case 0:			return 0;		break;
+		case '0':		return 1;		break;
+		case '1':		return 2;		break;
+		case '2':		return 3;		break;
+		case '3':		return 4;		break;
+		case '4':		return 5;		break;
+		case '5':		return 6;		break;
+		case '6':		return 7;		break;
+		case '7':		return 8;		break;
+		case '8':		return 9;		break;
+		case '9':		return 10;		break;
+		case '.':		return 11;		break;
+	}
+	
+	return 1;
+}
+
+inline unsigned char intToChar( int c)
+{
+	switch( c)
+	{
+		case 0:		return 0;		break;
+		case 1:		return '0';		break;
+		case 2:		return '1';		break;
+		case 3:		return '2';		break;
+		case 4:		return '3';		break;
+		case 5:		return '4';		break;
+		case 6:		return '5';		break;
+		case 7:		return '6';		break;
+		case 8:		return '7';		break;
+		case 9:		return '8';		break;
+		case 10:	return '9';		break;
+		case 11:	return '.';		break;
+	}
+	
+	return '0';
+}
+
+
+void* sopInstanceUIDEncode( NSString *sopuid)
+{
+	unsigned int	i, x;
+	unsigned char	*r = malloc( 128);
+	
+	for( i = 0, x = 0; i < [sopuid length];)
+	{
+		unsigned char c1, c2;
+		
+		c1 = [sopuid characterAtIndex: i];
+		i++;
+		if( i == [sopuid length]) c2 = 0;
+		else c2 = [sopuid characterAtIndex: i];
+		i++;
+		
+		r[ x] = (charToInt( c1) << 4) + charToInt( c2);
+		x++;
+	}
+	
+	r[ x] = 0;
+	
+	return r;
+}
+
+NSString* sopInstanceUIDDecode( unsigned char *r)
+{
+	unsigned int	i, x, length = strlen( (char *)r );  // Assumes length will always be < 256!
+	char			str[ 256];
+	
+	for( i = 0, x = 0; i < length; i++)
+	{
+		unsigned char c1, c2;
+		
+		c1 = r[ i] >> 4;
+		c2 = r[ i] & 15;
+		
+		str[ x] = intToChar( c1);
+		x++;
+		str[ x] = intToChar( c2);
+		x++;
+	}
+	
+	str[ x ] = '\0';
+	
+	return [NSString stringWithCString:str encoding: NSASCIIStringEncoding];
+}
 
 @implementation DicomImage
+
+//- (NSString*) sopInstanceUID
+//{
+//	char*	t = sopInstanceUIDDecode( (unsigned char*) [[self primitiveValueForKey:@"compressedSopInstanceUID"] bytes]);
+//	NSString* uid = [NSString stringWithUTF8String: t];
+//	free( t);
+//	
+//	return uid;
+//}
+//
+//- (void) setSopInstanceUID: (NSString*) s
+//{
+//	char *ss = sopInstanceUIDEncode( s);
+//	[self setValue: [NSData dataWithBytes: ss length: strlen( ss)] forKey:@"compressedSopInstanceUID"];
+//}
 
 - (NSString*) fileType
 {
