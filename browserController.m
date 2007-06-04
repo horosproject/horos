@@ -9230,7 +9230,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	{
 		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting 32-bit version", nil)];
 	}
-	
+
 	if( autoroutingQueueArray == 0L) autoroutingQueueArray = [[NSMutableArray array] retain];
 	if( autoroutingQueue == 0L) autoroutingQueue = [[NSLock alloc] init];
 	if( autoroutingInProgress == 0L) autoroutingInProgress = [[NSLock alloc] init];
@@ -9243,7 +9243,9 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	NSTableColumn		*tableColumn = nil;
 	NSPopUpButtonCell	*buttonCell = nil;
-
+	
+	[albumDrawer open]; 
+	
 	// thumbnails : no background color
 	[thumbnailsScrollView setDrawsBackground:NO];
 	[[thumbnailsScrollView contentView] setDrawsBackground:NO];
@@ -9437,9 +9439,9 @@ static NSArray*	openSubSeriesArray = 0L;
 	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"])
 	{
 		if( [[[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] intValue] == NSDrawerOpenState)
-		{
 			[albumDrawer open]; 
-		}
+		else
+			[albumDrawer close];
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseSortDescriptor"])
