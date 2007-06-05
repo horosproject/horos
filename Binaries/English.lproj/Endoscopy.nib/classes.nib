@@ -60,6 +60,11 @@
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
+            CLASS = OSIWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
             ACTIONS = {
                 blendingPropagate = id; 
                 blendingPropagateOriginal = id; 
@@ -89,31 +94,56 @@
             ACTIONS = {
                 ApplyCLUT = id; 
                 ApplyOpacity = id; 
+                ApplyWLWW = id; 
                 LODsliderAction = id; 
                 MoviePlayStop = id; 
+                applyConvolution = id; 
+                applyShading = id; 
                 blendingSlider = id; 
+                close3DSettingsSavePanel = id; 
                 clutAction = id; 
+                displayPresetsForSelectedGroup = id; 
                 editShadingValues = id; 
+                enable3DSettingsSaveButton = id; 
                 endCLUT = id; 
                 endNameWLWW = id; 
                 endOpacity = id; 
                 endShadingEditing = id; 
+                export2iPhoto = id; 
+                exportJPEG = id; 
+                exportTIFF = id; 
+                findShadingPreset = id; 
+                flyThruControllerInit = id; 
+                load3DSettings = id; 
+                loadAdvancedCLUTOpacity = id; 
                 moviePosSliderAction = id; 
                 movieRateSliderAction = id; 
+                nextPresetPage = id; 
+                previousPresetPage = id; 
                 resetShading = id; 
+                roiGetManager = id; 
+                save3DSettings = id; 
+                sendMail = id; 
                 setDefaultTool = id; 
                 setEngine = id; 
                 setMode = id; 
+                setOrientation = id; 
+                show3DSettingsNewGroupTextField = id; 
+                showCLUTOpacityPanel = id; 
+                showPresetInfoPanel = id; 
+                undo = id; 
             }; 
             CLASS = VRController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                BackgroundColorView = NSView; 
                 BlendingView = NSView; 
                 LODSlider = NSSlider; 
                 LODView = NSView; 
                 OpacityName = NSTextField; 
                 OpacityPopup = NSPopUpButton; 
                 OpacityView = OpacityTransferView; 
+                OrientationsView = NSView; 
                 WLWWView = NSView; 
                 addCLUTWindow = NSWindow; 
                 addOpacityWindow = NSWindow; 
@@ -121,10 +151,23 @@
                 blendingPercentage = NSTextField; 
                 blendingSlider = NSSlider; 
                 clutName = NSTextField; 
+                clutOpacityDrawer = NSDrawer; 
+                clutOpacityView = CLUTOpacityView; 
                 clutPopup = NSPopUpButton; 
                 clutView = ColorTransferView; 
+                convolutionMenu = NSPopUpButton; 
+                convolutionView = NSView; 
                 enginePopup = NSPopUpButton; 
                 engineView = NSView; 
+                infoBackgroundColorTextField = NSTextField; 
+                infoBackgroundColorView = ColorView; 
+                infoCLUTTextField = NSTextField; 
+                infoConvolutionFilterTextField = NSTextField; 
+                infoNameTextField = NSTextField; 
+                infoOpacityTextField = NSTextField; 
+                infoProjectionTextField = NSTextField; 
+                infoShadingsTextField = NSTextField; 
+                infoWLWWTextField = NSTextField; 
                 modeMatrix = NSMatrix; 
                 modeView = NSView; 
                 moviePlayStop = NSButton; 
@@ -133,13 +176,54 @@
                 movieTextSlide = NSTextField; 
                 movieView = NSView; 
                 newName = NSTextField; 
+                nextPresetPageButton = NSButton; 
+                numberOfPresetInGroupTextField = NSTextField; 
+                perspectiveMatrix = NSMatrix; 
                 perspectiveView = NSView; 
+                presetName1 = NSTextField; 
+                presetName2 = NSTextField; 
+                presetName3 = NSTextField; 
+                presetName4 = NSTextField; 
+                presetName5 = NSTextField; 
+                presetName6 = NSTextField; 
+                presetName7 = NSTextField; 
+                presetName8 = NSTextField; 
+                presetName9 = NSTextField; 
+                presetPreview1 = VRPresetPreview; 
+                presetPreview2 = VRPresetPreview; 
+                presetPreview3 = VRPresetPreview; 
+                presetPreview4 = VRPresetPreview; 
+                presetPreview5 = VRPresetPreview; 
+                presetPreview6 = VRPresetPreview; 
+                presetPreview7 = VRPresetPreview; 
+                presetPreview8 = VRPresetPreview; 
+                presetPreview9 = VRPresetPreview; 
+                presetsApplyButton = NSButton; 
+                presetsGroupPopUpButton = NSPopUpButton; 
+                presetsInfoPanel = NSWindow; 
+                presetsPanel = NSWindow; 
+                previousPresetPageButton = NSButton; 
+                save3DSettingsWindow = NSWindow; 
                 scissorStateView = NSView; 
+                settingsBackgroundColorTextField = NSTextField; 
+                settingsCLUTTextField = NSTextField; 
+                settingsConvolutionFilterTextField = NSTextField; 
+                settingsGroupPopUpButton = NSPopUpButton; 
+                settingsNameTextField = NSTextField; 
+                settingsNewGroupNameLabelTextField = NSTextField; 
+                settingsNewGroupNameTextField = NSTextField; 
+                settingsOpacityTextField = NSTextField; 
+                settingsProjectionTextField = NSTextField; 
+                settingsSaveButton = NSButton; 
+                settingsShadingsTextField = NSTextField; 
+                settingsWLWWTextField = NSTextField; 
                 shadingCheck = NSButton; 
                 shadingEditWindow = NSWindow; 
                 shadingForm = NSForm; 
+                shadingPanel = NSPanel; 
                 shadingValues = NSTextField; 
                 shadingView = NSView; 
+                shadingsPresetsController = ShadingArrayController; 
                 toolsMatrix = NSMatrix; 
                 toolsView = NSView; 
                 view = VRView; 
@@ -208,17 +292,43 @@
         }, 
         {CLASS = VTKView; LANGUAGE = ObjC; SUPERCLASS = vtkCocoaGLView; }, 
         {
-            ACTIONS = {SetWLWW = id; endSetWLWW = id; updateSetWLWW = id; }; 
+            ACTIONS = {
+                AddCLUT = id; 
+                ApplyCLUT = id; 
+                ApplyOpacity = id; 
+                SetWLWW = id; 
+                clutAction = id; 
+                endCLUT = id; 
+                endNameWLWW = id; 
+                endOpacity = id; 
+                endSetWLWW = id; 
+                fullScreenMenu = id; 
+                print = id; 
+                updateSetWLWW = id; 
+            }; 
             CLASS = Window3DController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                OpacityName = NSTextField; 
+                OpacityPopup = NSPopUpButton; 
+                OpacityView = OpacityTransferView; 
+                addCLUTWindow = NSWindow; 
+                addOpacityWindow = NSWindow; 
+                addWLWWWindow = NSWindow; 
+                clutName = NSTextField; 
+                clutPopup = NSPopUpButton; 
+                clutView = ColorTransferView; 
                 fromset = NSTextField; 
+                newName = NSTextField; 
                 setWLWWWindow = NSWindow; 
                 toset = NSTextField; 
+                wl = NSTextField; 
                 wlset = NSTextField; 
+                wlwwPopup = NSPopUpButton; 
+                ww = NSTextField; 
                 wwset = NSTextField; 
             }; 
-            SUPERCLASS = NSWindowController; 
+            SUPERCLASS = OSIWindowController; 
         }, 
         {CLASS = vtkCocoaGLView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
     ); 

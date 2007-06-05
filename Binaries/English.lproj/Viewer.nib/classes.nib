@@ -112,6 +112,7 @@
                 endoscopyViewer = id; 
                 export2PACS = id; 
                 export2iPhoto = id; 
+                exportDICOMAllViewers = id; 
                 exportDICOMSlider = id; 
                 exportJPEG = id; 
                 exportQuicktime = id; 
@@ -238,6 +239,7 @@
                 customVectors = NSMatrix; 
                 customXSpacing = NSTextField; 
                 customYSpacing = NSTextField; 
+                dcmAllViewers = NSButton; 
                 dcmBox = NSBox; 
                 dcmExportWindow = NSWindow; 
                 dcmFormat = NSMatrix; 
@@ -293,6 +295,7 @@
                 printToText = NSTextField; 
                 printWindow = NSWindow; 
                 propagateSettingsView = NSView; 
+                quicktimeAllViewers = NSButton; 
                 quicktimeBox = NSBox; 
                 quicktimeFrom = NSSlider; 
                 quicktimeFromText = NSTextField; 

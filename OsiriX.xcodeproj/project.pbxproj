@@ -794,6 +794,14 @@
 		AB0323BE0AEF389B0059AEDE /* page.tif in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAD000AB30E7600068D70 /* page.tif */; };
 		AB0323BF0AEF389B0059AEDE /* pdf.tif in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAD010AB30E7600068D70 /* pdf.tif */; };
 		AB0323C00AEF389F0059AEDE /* pdf.tif in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAD010AB30E7600068D70 /* pdf.tif */; };
+		AB06C98B0C1586220016BA60 /* VRPresetPreview.h in Headers */ = {isa = PBXBuildFile; fileRef = A90A04950BF09BA000D00273 /* VRPresetPreview.h */; };
+		AB06C98C0C1586220016BA60 /* VRPresetPreview.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90A04960BF09BA000D00273 /* VRPresetPreview.mm */; };
+		AB06C98D0C1586220016BA60 /* SelectionView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9154D8A0BF34D4E00BAF408 /* SelectionView.h */; };
+		AB06C98E0C1586220016BA60 /* SelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9154D8B0BF34D4E00BAF408 /* SelectionView.m */; };
+		AB06C98F0C1586230016BA60 /* VRPresetPreview.h in Headers */ = {isa = PBXBuildFile; fileRef = A90A04950BF09BA000D00273 /* VRPresetPreview.h */; };
+		AB06C9900C1586230016BA60 /* VRPresetPreview.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90A04960BF09BA000D00273 /* VRPresetPreview.mm */; };
+		AB06C9910C1586230016BA60 /* SelectionView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9154D8A0BF34D4E00BAF408 /* SelectionView.h */; };
+		AB06C9920C1586230016BA60 /* SelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9154D8B0BF34D4E00BAF408 /* SelectionView.m */; };
 		AB0CA46105BE159500F52729 /* ColorTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0CA45F05BE159500F52729 /* ColorTransferView.h */; };
 		AB0CA46205BE159500F52729 /* ColorTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0CA46005BE159500F52729 /* ColorTransferView.m */; };
 		AB0F20AC06460F7F0075465D /* Burner.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB0F20AB06460F7F0075465D /* Burner.tif */; };
@@ -23320,6 +23328,8 @@
 				AB87FA830C06BEB200CD2976 /* znzlib.h in Headers */,
 				BF30B3AE0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */,
 				CE1029980C08246000D6E912 /* VolumeReslice.h in Headers */,
+				AB06C98F0C1586230016BA60 /* VRPresetPreview.h in Headers */,
+				AB06C9910C1586230016BA60 /* SelectionView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25258,6 +25268,8 @@
 				AB87FA880C06BEB200CD2976 /* znzlib.h in Headers */,
 				BF30B3AC0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */,
 				CE10299C0C08246100D6E912 /* VolumeReslice.h in Headers */,
+				AB06C98B0C1586220016BA60 /* VRPresetPreview.h in Headers */,
+				AB06C98D0C1586220016BA60 /* SelectionView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28756,6 +28768,8 @@
 				AB87FA820C06BEB200CD2976 /* znzlib.c in Sources */,
 				BF30B3AA0C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */,
 				CE1029990C08246100D6E912 /* VolumeReslice.mm in Sources */,
+				AB06C9900C1586230016BA60 /* VRPresetPreview.mm in Sources */,
+				AB06C9920C1586230016BA60 /* SelectionView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30103,6 +30117,8 @@
 				AB87FA870C06BEB200CD2976 /* znzlib.c in Sources */,
 				BF30B3A80C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */,
 				CE10299D0C08246100D6E912 /* VolumeReslice.mm in Sources */,
+				AB06C98C0C1586220016BA60 /* VRPresetPreview.mm in Sources */,
+				AB06C98E0C1586220016BA60 /* SelectionView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

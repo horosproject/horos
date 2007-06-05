@@ -86,6 +86,7 @@ enum
 	IBOutlet NSSlider		*quicktimeInterval, *quicktimeFrom, *quicktimeTo;
 	IBOutlet NSTextField	*quicktimeIntervalText, *quicktimeFromText, *quicktimeToText;
 	IBOutlet NSBox			*quicktimeBox;
+	IBOutlet NSButton		*quicktimeAllViewers;
 	
 	DCMView					*imageView;
 	
@@ -202,6 +203,7 @@ enum
 	IBOutlet NSSlider		*dcmInterval, *dcmFrom, *dcmTo;
 	IBOutlet NSTextField	*dcmIntervalText, *dcmFromText, *dcmToText;
 	IBOutlet NSBox			*dcmBox;
+	IBOutlet NSButton		*dcmAllViewers;
 	IBOutlet NSTextField	*dcmSeriesName;
 	
 	IBOutlet NSWindow       *imageExportWindow;
@@ -286,7 +288,7 @@ enum
 	KeyObjectPopupController *keyObjectPopupController;
 	BOOL					displayOnlyKeyImages;
 	
-	int						qt_to, qt_from, qt_interval, qt_dimension, current_qt_interval;
+	int						qt_to, qt_from, qt_interval, qt_dimension, current_qt_interval, qt_allViewers;
 	
 	IBOutlet NSView			*reportTemplatesView;
 	IBOutlet NSImageView	*reportTemplatesImageView;
@@ -313,6 +315,8 @@ enum
 	
 	NSRect					savedWindowsFrame;
 }
+
++ (NSArray*) getDisplayed2DViewers;
 
 // Create a new 2D Viewer
 + (ViewerController *) newWindow:(NSMutableArray*)pixList :(NSMutableArray*)fileList :(NSData*) volumeData;
@@ -524,7 +528,8 @@ enum
 -(IBAction) PagePadCreate:(id) sender;
 - (void) exportQuicktime:(id) sender;
 - (IBAction) exportQuicktimeSlider:(id) sender;
-- (IBAction) exportDICOMSlider:(id) sender;;
+- (IBAction) exportDICOMSlider:(id) sender;
+- (IBAction) exportDICOMAllViewers:(id) sender;
 - (IBAction) setComments:(id) sender;
 - (IBAction) setStatus:(id) sender;
 - (IBAction) endSetComments:(id) sender;
@@ -674,5 +679,6 @@ enum
 
 
 - (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name;
+- (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers;
 
 @end

@@ -305,6 +305,9 @@ typedef char* vtkMyCallbackVR;
 	NSData						*appliedCurves;
 	BOOL						appliedResolution;
 	BOOL						gDataValuesChanged;
+
+	float						verticalAngleForVR;
+	float						rotateDirectionForVR;
 }
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;

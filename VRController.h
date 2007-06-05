@@ -56,7 +56,6 @@
 	IBOutlet NSPopUpButton  *enginePopup;
 		
 	IBOutlet NSWindow       *shadingEditWindow;
-	IBOutlet NSForm			*shadingForm;
 
 	IBOutlet NSButton		*shadingCheck;
 	IBOutlet NSTextField    *shadingValues;

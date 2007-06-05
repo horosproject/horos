@@ -7426,6 +7426,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(NSImage*) nsimage:(BOOL) originalSize
 {
+	return [self nsimage: originalSize allViewers: NO];
+}
+
+-(NSImage*) nsimage:(BOOL) originalSize allViewers:(BOOL) allViewers
+{
 	NSBitmapImageRep	*rep;
 	long				width, height, i, spp, bpp;
 	NSString			*colorSpace;
@@ -7436,8 +7441,58 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		stringID = [@"copy" retain];	// to remove the red square around the image
 		[self display];
 	}
+	
+	if( allViewers)
+	{
+		NSArray			*viewers = [ViewerController getDisplayed2DViewers];
+		unsigned char	*tempData = 0L;
+		NSRect			unionRect;
 		
-	data = [self getRawPixels :&width :&height :&spp :&bpp :!originalSize : YES :NO :YES];
+		for( i = 0; i < [viewers count]; i++)
+		{
+			NSRect	bounds = [[[viewers objectAtIndex: i] imageView] bounds];
+			NSPoint originPoint = [[[viewers objectAtIndex: i] imageView] convertPoint: bounds.origin toView: 0L];
+			bounds.origin = [[[viewers objectAtIndex: i] window] convertBaseToScreen: originPoint];
+			
+			unionRect = NSUnionRect( bounds, unionRect);
+		}
+		
+		width = unionRect.size.width;
+		if(width % 4 != 0) width += 4;
+		width /= 4;
+		width *= 4;
+		height = unionRect.size.height;
+		spp = 3;
+		bpp = 8;
+		
+		data = calloc( 1, width * height * spp * bpp/8);
+		for( i = 0; i < [viewers count]; i++)
+		{
+			long	iwidth, iheight, ispp, ibpp;
+			
+			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixels:&iwidth :&iheight :&ispp :&ibpp :YES :NO];
+			
+			NSRect	bounds = [[[viewers objectAtIndex: i] imageView] bounds];
+			
+			bounds.origin.x -= unionRect.origin.x;
+			bounds.origin.y -= unionRect.origin.y;
+			
+			NSPoint originPoint = [[[viewers objectAtIndex: i] imageView] convertPoint: bounds.origin toView: 0L];
+			bounds.origin = [[[viewers objectAtIndex: i] window] convertBaseToScreen: originPoint];
+			
+			unsigned char	*o = data + spp*width* (int) (height - bounds.origin.y - iheight) + (int) bounds.origin.x*spp;
+			
+			int y;
+			for( y = 0 ; y < iheight; y++)
+			{
+				memcpy( o + y*spp*width, tempData + y*ispp*iwidth, ispp*iwidth);
+			}
+			
+			free( tempData);
+		}
+		
+	}
+	else data = [self getRawPixels :&width :&height :&spp :&bpp :!originalSize : YES :NO :YES];
 	
 	if( [stringID isEqualToString:@"copy"])
 	{

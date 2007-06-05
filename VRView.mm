@@ -691,12 +691,64 @@ public:
 	
 	if( [max intValue] > 36)
 	{
-		if( [cur intValue] % numberOfFrames == 0 && [cur intValue] != 0)
+		
+		if( [cur intValue] != 0)
 		{
-			aCamera->Azimuth( 360 / numberOfFrames);
-			[self Vertical: - 360 / numberOfFrames];
+			if(verticalAngleForVR!=0 &&verticalAngleForVR!=-90 )
+			{
+				[self Vertical: -verticalAngleForVR]; // rotate to standard direction ( top of object facing right up)
+			}
+			if( [cur intValue] % numberOfFrames == 0 )//if need increase the vertical rotation angle
+			{
+				// Evaluating beyond 90 or -90 causes problems! Don't know why, seems it is vtk's limit.
+				if(verticalAngleForVR==-90) 
+				{
+					aCamera->Roll(-rotateDirectionForVR * 360 / numberOfFrames);
+					// Evaluation(90)
+					[self Vertical: -45];
+					[self Vertical: -45];
+					verticalAngleForVR -= 360 / numberOfFrames;
+					verticalAngleForVR+=180;
+					aCamera->Azimuth(-rotateDirectionForVR * 360 / numberOfFrames);
+					
+					
+				}
+				else
+				{
+					verticalAngleForVR -= 360 / numberOfFrames;
+					if(verticalAngleForVR<-90)//to avoid evaluating beyond 90 or -90, rotate the camera 180 vertically
+					{
+						// Evaluation(180)
+						[self Vertical: 60];
+						[self Vertical: 60];
+						[self Vertical: 60];
+						verticalAngleForVR+=180;
+						rotateDirectionForVR = -rotateDirectionForVR;
+					}
+					else if(verticalAngleForVR==-90)
+					{
+						aCamera->Azimuth( rotateDirectionForVR * 360 / numberOfFrames);
+						[self Vertical: -45];
+						[self Vertical: -45];
+						rotateDirectionForVR = -rotateDirectionForVR;
+												
+					}
+				}
+				
+	
+			}
+			if(verticalAngleForVR!=-90)
+			{
+				aCamera->Azimuth( rotateDirectionForVR * 360 / numberOfFrames);// rotate camera horizontally when the top facing right up
+				if(verticalAngleForVR!=0)
+					aCamera->Elevation(verticalAngleForVR);//rotate camera vertically
+			}
+			else
+			{
+				if( [cur intValue] % numberOfFrames != 0 )
+					aCamera->Roll(-rotateDirectionForVR * 360 / numberOfFrames);//if on the top or bottom use roll instead of azimuth
+			}
 		}
-		else if([cur intValue] != 0) aCamera->Azimuth( 360 / numberOfFrames);
 	}
 	else
 	{
@@ -1041,6 +1093,11 @@ public:
 
 - (void) exportDICOMFile:(id) sender
 {
+	if( exportDCMWindow == 0L)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Not available", nil), NSLocalizedString(@"This function is not available for this window.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+	}
+	
 	[self setCurrentdcmExport: dcmExportMode];
 	if( [[[self window] windowController] movieFrames] > 1) [[dcmExportMode cellWithTag:2] setEnabled: YES];
 	else [[dcmExportMode cellWithTag:2] setEnabled: NO];
@@ -1082,6 +1139,9 @@ public:
 		QuicktimeExport		*mov;
 		
 		[self setViewSizeToMatrix3DExport];
+		
+		verticalAngleForVR = 0;
+		rotateDirectionForVR= 1;
 		
 		if( numberOfFrames == 10 || numberOfFrames == 20 || numberOfFrames == 40)
 			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames*numberOfFrames];
@@ -1270,6 +1330,11 @@ public:
 
 -(IBAction) exportQuicktime3DVR:(id) sender
 {
+	if( export3DVRWindow == 0L)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Not available", nil), NSLocalizedString(@"This function is not available for this window.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+	}
+	
 	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1 ) { [[VRquality cellWithTag: 1] setEnabled: NO]; if( [[VRquality selectedCell] tag] == 1) [VRquality selectCellWithTag: 0];}
 	else [[VRquality cellWithTag: 1] setEnabled: YES];
 	
@@ -1279,6 +1344,11 @@ public:
 - (IBAction) exportQuicktime:(id) sender
 {
 	long i;
+	
+	if( export3DWindow == 0L)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Not available", nil), NSLocalizedString(@"This function is not available for this window.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+	}
 	
 	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1 ) { [[quality cellWithTag: 1] setEnabled: NO]; if( [[quality selectedCell] tag] == 1) [quality selectCellWithTag: 0];}
 	else [[quality cellWithTag: 1] setEnabled: YES];

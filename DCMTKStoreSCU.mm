@@ -1560,7 +1560,8 @@ NS_ENDHANDLER
 		
 		if( _numberSent !=  _numberOfFiles)
 		{
-			[userInfo setObject:@"Incomplete" forKey:@"Message"];
+			if( _shouldAbort) [userInfo setObject:@"Aborted" forKey:@"Message"];
+			else [userInfo setObject:@"Incomplete" forKey:@"Message"];
 			_numberErrors = _numberOfFiles - _numberSent;
 			[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
 			

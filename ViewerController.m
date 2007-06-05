@@ -183,6 +183,24 @@ int sortROIByName(id roi1, id roi2, void *context)
 
 #define UNDOQUEUESIZE 40
 
++ (NSArray*) getDisplayed2DViewers
+{
+	NSArray				*winList = [NSApp windows];
+	NSMutableArray		*viewersList = [NSMutableArray array];
+	
+	int i;
+	
+	for( i = 0; i < [winList count]; i++)
+	{
+		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+		{
+			[viewersList addObject: [[winList objectAtIndex:i] windowController]];
+		}
+	}
+
+	return viewersList;
+}
+
 - (void) executeUndo:(NSMutableArray*) u
 {
 	if( [u count])
@@ -11302,18 +11320,19 @@ int i,j,l;
 				[[self imageView] display];
 			break;
 		}
-				
-		im = [[self imageView] nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
+		
+		im = [[self imageView] nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"] allViewers: qt_allViewers];
 	}
 	
 	return im;
 }
 
--(void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval
+-(void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :(BOOL) allViewers
 {
 	QuicktimeExport *mov;
 	
 	qt_dimension = dimension;
+	qt_allViewers = allViewers;
 	
 	switch( qt_dimension)
 	{
@@ -11406,7 +11425,7 @@ int i,j,l;
 			interval = 1;
 		}
 				
-		[self exportQuicktimeIn: [[quicktimeMode selectedCell] tag] :from :to :interval];
+		[self exportQuicktimeIn: [[quicktimeMode selectedCell] tag] :from :to :interval :[quicktimeAllViewers state]];
 	}
 	
 	[self adjustSlider];
@@ -11427,6 +11446,11 @@ int i,j,l;
 
 - (void) exportQuicktime:(id) sender
 {
+	[quicktimeAllViewers setState: NSOffState];
+	
+	if( [[ViewerController getDisplayed2DViewers] count] > 1) [quicktimeAllViewers setEnabled: YES];
+	else [quicktimeAllViewers setEnabled: NO];
+
 	if( [sender tag] == 1) EXPORT2IPHOTO = YES;
 	else EXPORT2IPHOTO = NO;
 	
@@ -11473,18 +11497,76 @@ int i,j,l;
 
 - (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name;
 {
-	DCMPix			*curPix = [imageView curDCM];
+	[self exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name allViewers: NO];
+}
 
+- (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers
+{
+	DCMPix			*curPix = [imageView curDCM];
+	NSArray			*viewers = [ViewerController getDisplayed2DViewers];
+	
 	long	annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"],
 			clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
-	long	width, height, spp, bpp, err;
+			
+	long	width, height, spp, bpp, err, i;
 	float	cwl, cww;
 	float	o[ 9];
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
 	
-	unsigned char *data = [imageView getRawPixels:&width :&height :&spp :&bpp :screenCapture :NO];
+	unsigned char *data = 0L;
+	
+	if( allViewers)
+	{
+		unsigned char *tempData = 0L;
+		NSRect	unionRect;
+		
+		for( i = 0; i < [viewers count]; i++)
+		{
+			NSRect	bounds = [[[viewers objectAtIndex: i] imageView] bounds];
+			NSPoint origin = [[[viewers objectAtIndex: i] imageView] convertPoint: bounds.origin toView: 0L];
+			bounds.origin = [[[viewers objectAtIndex: i] window] convertBaseToScreen: origin];
+			
+			unionRect = NSUnionRect( bounds, unionRect);
+		}
+		
+		width = unionRect.size.width;
+		if(width % 4 != 0) width += 4;
+		width /= 4;
+		width *= 4;
+		height = unionRect.size.height;
+		spp = 3;
+		bpp = 8;
+		
+		data = calloc( 1, width * height * spp * bpp/8);
+		for( i = 0; i < [viewers count]; i++)
+		{
+			long	iwidth, iheight, ispp, ibpp;
+			
+			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixels:&iwidth :&iheight :&ispp :&ibpp :screenCapture :NO];
+			
+			NSRect	bounds = [[[viewers objectAtIndex: i] imageView] bounds];
+			
+			bounds.origin.x -= unionRect.origin.x;
+			bounds.origin.y -= unionRect.origin.y;
+			
+			NSPoint origin = [[[viewers objectAtIndex: i] imageView] convertPoint: bounds.origin toView: 0L];
+			bounds.origin = [[[viewers objectAtIndex: i] window] convertBaseToScreen: origin];
+			
+			unsigned char	*o = data + spp*width* (int) (height - bounds.origin.y - iheight) + (int) bounds.origin.x*spp;
+			
+			int y;
+			for( y = 0 ; y < iheight; y++)
+			{
+				memcpy( o + y*spp*width, tempData + y*ispp*iwidth, ispp*iwidth);
+			}
+			
+			free( tempData);
+		}
+		
+	}
+	else data = [imageView getRawPixels:&width :&height :&spp :&bpp :screenCapture :NO];
 	
 	if( data)
 	{
@@ -11494,7 +11576,6 @@ int i,j,l;
 		
 		if( [[exportDCM seriesDescription] isEqualToString: [dcmSeriesName stringValue]] == NO)
 		{
-			//[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 			[exportDCM setSeriesDescription: name];
 			[exportDCM setSeriesNumber: 8200 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute]];
 		}
@@ -11534,6 +11615,9 @@ int i,j,l;
 
 	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
 	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: @"CLUTBARS"];
+	
+	for( i = 0; i < [viewers count]; i++)
+		[[[viewers objectAtIndex: i] imageView] setNeedsDisplay: YES];
 }
 
 
@@ -11567,7 +11651,7 @@ int i,j,l;
     {
 		if( [[dcmSelection selectedCell] tag] == 0)
 		{
-			[self exportDICOMFileInt:[[dcmFormat selectedCell] tag]];
+			[self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
 		}
 		else
 		{
@@ -11625,7 +11709,7 @@ int i,j,l;
 					[imageView display];
 					[self adjustSlider];
 					
-					[self exportDICOMFileInt:[[dcmFormat selectedCell] tag]];
+					[self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
 				}
 				
 				[splash incrementBy: 1];
@@ -11697,6 +11781,16 @@ int i,j,l;
 	if( sender == printSelection)[self setPagesToPrint: self];
 }
 
+- (IBAction) exportDICOMAllViewers:(id) sender
+{
+	if( [dcmAllViewers state] == NSOnState)
+	{
+		[dcmFormat selectCellWithTag: 1];	// Always screen capture
+		[dcmFormat setEnabled: NO];
+	}
+	else [dcmFormat setEnabled: YES];
+}
+
 - (IBAction) exportDICOMSlider:(id) sender
 {
 	if( [[dcmSelection selectedCell] tag] == 1)
@@ -11715,6 +11809,12 @@ int i,j,l;
 
 - (void) exportDICOMFile:(id) sender
 {
+	[dcmFormat setEnabled: YES];
+	[dcmAllViewers setState: NSOffState];
+	
+	if( [[ViewerController getDisplayed2DViewers] count] > 1) [dcmAllViewers setEnabled: YES];
+	else [dcmAllViewers setEnabled: NO];
+
 	if( [sliderFusion isEnabled])
 		[dcmInterval setIntValue: [sliderFusion intValue]];
 	
