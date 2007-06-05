@@ -11594,7 +11594,7 @@ int i,j,l;
 						NSRect	rect = [[viewsRect objectAtIndex: x] rectValue];
 						if( NSIntersectsRect( curRect, rect))
 						{
-							curRect.origin.x ++;
+							curRect.origin.x += 2;
 							intersect = YES;
 						}
 					}
@@ -11620,7 +11620,7 @@ int i,j,l;
 						NSRect	rect = [[viewsRect objectAtIndex: x] rectValue];
 						if( NSIntersectsRect( curRect, rect))
 						{
-							curRect.origin.y++;
+							curRect.origin.y+= 2;
 							intersect = YES;
 						}
 					}

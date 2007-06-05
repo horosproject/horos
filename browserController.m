@@ -4979,10 +4979,18 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 - (NSArray *)outlineView:(NSOutlineView *)outlineView namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedItems:(NSArray *)items
 {
-	NSMutableArray	*dicomFiles2Export = [NSMutableArray array];
-	NSArray			*filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+	if( [[[dropDestination path] lastPathComponent] isEqualToString:@".Trash"])
+	{
+		[[BrowserController currentBrowser] delItem:  0L];
+		return 0L;
+	}
+	else
+	{
+		NSMutableArray	*dicomFiles2Export = [NSMutableArray array];
+		NSArray			*filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
 	
-	return [self exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
+		return [self exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
+	}
 }
 
 - (BOOL)outlineView:(NSOutlineView *)olv writeItems:(NSArray*)pbItems toPasteboard:(NSPasteboard*)pboard
@@ -6091,6 +6099,11 @@ static BOOL withReset = NO;
 	else NSLog(@"couldn't open pdf");
 	
 	[pool release];	
+}
+
+- (NSMatrix*) oMatrix
+{
+	return oMatrix;
 }
 
 -(void) matrixDisplayIcons:(id) sender

@@ -135,10 +135,18 @@ static NSString *albumDragType = @"Osirix Album drag";
 
 - (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination
 {
-	NSMutableArray	*dicomFiles2Export = [NSMutableArray array];
-	NSArray			*filesToExport = [[BrowserController currentBrowser] filesForDatabaseMatrixSelection: dicomFiles2Export];
-	
-	return [[BrowserController currentBrowser] exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
+	if( [[[dropDestination path] lastPathComponent] isEqualToString:@".Trash"])
+	{
+		[[BrowserController currentBrowser] delItem: [[[[BrowserController currentBrowser] oMatrix] menu] itemAtIndex: 0]];
+		return 0L;
+	}
+	else
+	{
+		NSMutableArray	*dicomFiles2Export = [NSMutableArray array];
+		NSArray			*filesToExport = [[BrowserController currentBrowser] filesForDatabaseMatrixSelection: dicomFiles2Export];
+		
+		return [[BrowserController currentBrowser] exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
+	}
 }
 
 - (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal

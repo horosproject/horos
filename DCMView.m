@@ -7432,7 +7432,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 -(NSImage*) nsimage:(BOOL) originalSize allViewers:(BOOL) allViewers
 {
 	NSBitmapImageRep	*rep;
-	long				width, height, i, spp, bpp;
+	long				width, height, i, spp, bpp, x;
 	NSString			*colorSpace;
 	unsigned char		*data;
 		
@@ -7444,17 +7444,125 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	if( allViewers)
 	{
-		NSArray			*viewers = [ViewerController getDisplayed2DViewers];
 		unsigned char	*tempData = 0L;
 		NSRect			unionRect;
+		NSArray			*viewers = [ViewerController getDisplayed2DViewers];
 		
+		//order windows from left-top to right-bottom
+		NSMutableArray	*cWindows = [NSMutableArray arrayWithArray: viewers];
+		NSMutableArray	*cResult = [NSMutableArray array];
+		int wCount = [cWindows count];
+		for( i = 0; i < wCount; i++)
+		{		
+			int index = 0;
+			float minY = [[[cWindows objectAtIndex: 0] window] frame].origin.y;
+			
+			for( x = 0; x < [cWindows count]; x++)
+			{
+				if( [[[cWindows objectAtIndex: x] window] frame].origin.y > minY)
+				{
+					minY  = [[[cWindows objectAtIndex: x] window] frame].origin.y;
+					index = x;
+				}
+			}
+			
+			float minX = [[[cWindows objectAtIndex: index] window] frame].origin.x;
+			
+			for( x = 0; x < [cWindows count]; x++)
+			{
+				if( [[[cWindows objectAtIndex: x] window] frame].origin.x < minX && [[[cWindows objectAtIndex: x] window] frame].origin.y >= minY)
+				{
+					minX = [[[cWindows objectAtIndex: x] window] frame].origin.x;
+					index = x;
+				}
+			}
+			
+			[cResult addObject: [cWindows objectAtIndex: index]];
+			[cWindows removeObjectAtIndex: index];
+		}
+		
+		viewers = cResult;
+		
+		NSMutableArray	*viewsRect = [NSMutableArray array];
+		
+		// Compute the enclosing rect
 		for( i = 0; i < [viewers count]; i++)
 		{
 			NSRect	bounds = [[[viewers objectAtIndex: i] imageView] bounds];
-			NSPoint originPoint = [[[viewers objectAtIndex: i] imageView] convertPoint: bounds.origin toView: 0L];
-			bounds.origin = [[[viewers objectAtIndex: i] window] convertBaseToScreen: originPoint];
+			NSPoint or = [[[viewers objectAtIndex: i] imageView] convertPoint: bounds.origin toView: 0L];
+			bounds.origin = [[[viewers objectAtIndex: i] window] convertBaseToScreen: or];
 			
-			unionRect = NSUnionRect( bounds, unionRect);
+			[viewsRect addObject: [NSValue valueWithRect: bounds]];
+			
+			if( i == 0)  unionRect = bounds;
+			else unionRect = NSUnionRect( bounds, unionRect);
+		}
+		
+		for( i = 0; i < [viewers count]; i++)
+		{
+			NSRect curRect = [[viewsRect objectAtIndex: i] rectValue];
+			BOOL intersect;
+			
+			// X move
+			do
+			{
+				intersect = NO;
+				
+				for( x = 0 ; x < [viewers count]; x++)
+				{
+					if( x != i)
+					{
+						NSRect	rect = [[viewsRect objectAtIndex: x] rectValue];
+						if( NSIntersectsRect( curRect, rect))
+						{
+							curRect.origin.x += 2;
+							intersect = YES;
+						}
+					}
+				}
+				
+				if( intersect == NO)
+				{
+					curRect.origin.x --;
+					if( curRect.origin.x <= unionRect.origin.x) intersect = YES;
+				}
+			}
+			while( intersect == NO);
+			
+			// Y move
+			do
+			{
+				intersect = NO;
+				
+				for( x = 0 ; x < [viewers count]; x++)
+				{
+					if( x != i)
+					{
+						NSRect	rect = [[viewsRect objectAtIndex: x] rectValue];
+						if( NSIntersectsRect( curRect, rect))
+						{
+							curRect.origin.y+= 2;
+							intersect = YES;
+						}
+					}
+				}
+				
+				if( intersect == NO)
+				{
+					curRect.origin.y --;
+					if( curRect.origin.y <= unionRect.origin.y) intersect = YES;
+				}
+			}
+			while( intersect == NO);
+			
+			[viewsRect replaceObjectAtIndex: i withObject: [NSValue valueWithRect: curRect]];
+		}
+		
+		// Re-Compute the enclosing rect
+		unionRect = [[viewsRect objectAtIndex: 0] rectValue];
+		for( i = 0; i < [viewers count]; i++)
+		{
+			unionRect = NSUnionRect( [[viewsRect objectAtIndex: i] rectValue], unionRect);
 		}
 		
 		width = unionRect.size.width;
@@ -7472,13 +7580,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixels:&iwidth :&iheight :&ispp :&ibpp :YES :NO];
 			
-			NSRect	bounds = [[[viewers objectAtIndex: i] imageView] bounds];
+			NSRect	bounds = [[viewsRect objectAtIndex: i] rectValue];	//[[[viewers objectAtIndex: i] imageView] bounds];
 			
 			bounds.origin.x -= unionRect.origin.x;
 			bounds.origin.y -= unionRect.origin.y;
 			
-			NSPoint originPoint = [[[viewers objectAtIndex: i] imageView] convertPoint: bounds.origin toView: 0L];
-			bounds.origin = [[[viewers objectAtIndex: i] window] convertBaseToScreen: originPoint];
+//			NSPoint origin = [[[viewers objectAtIndex: i] imageView] convertPoint: bounds.origin toView: 0L];
+//			bounds.origin = [[[viewers objectAtIndex: i] window] convertBaseToScreen: origin];
 			
 			unsigned char	*o = data + spp*width* (int) (height - bounds.origin.y - iheight) + (int) bounds.origin.x*spp;
 			
@@ -7490,7 +7598,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			free( tempData);
 		}
-		
 	}
 	else data = [self getRawPixels :&width :&height :&spp :&bpp :!originalSize : YES :NO :YES];
 	
