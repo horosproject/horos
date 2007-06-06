@@ -346,8 +346,6 @@
 		// allocate an NSMutableDictionary to hold our preference data
 		xml = [[NSMutableDictionary alloc] init];
 		
-		
-		
 		if ( allWithSameName ) {
 			NSArray *roiSeriesList = [curController roiList];
 			NSMutableArray *roiArray = [NSMutableArray arrayWithCapacity: 0];
@@ -374,7 +372,7 @@
 						int k;
 						for( k = 0 ; k < [points count]; k++)
 							[temp addObject: NSStringFromPoint( [[points objectAtIndex: k] point]) ];
-
+						
 						[roiData setObject:temp forKey:@"ROIPoints"];
 						
 						[roiArray addObject: roiData];
