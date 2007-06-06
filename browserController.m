@@ -9258,7 +9258,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	NSPopUpButtonCell	*buttonCell = nil;
 	
 	[albumDrawer setPreferredEdge: NSMinXEdge];
-	[albumDrawer open]; 
+	[albumDrawer openOnEdge: NSMinXEdge]; 
 	
 	// thumbnails : no background color
 	[thumbnailsScrollView setDrawsBackground:NO];
@@ -12754,7 +12754,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) drawerToggle:(id) sender
 {
-	[albumDrawer toggle: sender];
+    NSDrawerState state = [albumDrawer state];
+    if (NSDrawerOpeningState == state || NSDrawerOpenState == state)
+        [albumDrawer close];
+	else
+        [albumDrawer openOnEdge:NSMinXEdge];
 }
 
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted {

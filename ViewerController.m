@@ -11571,6 +11571,8 @@ int i,j,l;
 			NSPoint origin = [[[viewers objectAtIndex: i] imageView] convertPoint: bounds.origin toView: 0L];
 			bounds.origin = [[[viewers objectAtIndex: i] window] convertBaseToScreen: origin];
 			
+			bounds = NSIntegralRect( bounds);
+			
 			[viewsRect addObject: [NSValue valueWithRect: bounds]];
 			
 			if( i == 0)  unionRect = bounds;
@@ -11608,6 +11610,14 @@ int i,j,l;
 			}
 			while( intersect == NO);
 			
+			[viewsRect replaceObjectAtIndex: i withObject: [NSValue valueWithRect: curRect]];
+		}
+		
+		for( i = 0; i < [viewers count]; i++)
+		{
+			NSRect curRect = [[viewsRect objectAtIndex: i] rectValue];
+			BOOL intersect;
+			
 			// Y move
 			do
 			{
@@ -11620,7 +11630,7 @@ int i,j,l;
 						NSRect	rect = [[viewsRect objectAtIndex: x] rectValue];
 						if( NSIntersectsRect( curRect, rect))
 						{
-							curRect.origin.y+= 2;
+							curRect.origin.y-= 2;
 							intersect = YES;
 						}
 					}
@@ -11628,8 +11638,8 @@ int i,j,l;
 				
 				if( intersect == NO)
 				{
-					curRect.origin.y --;
-					if( curRect.origin.y <= unionRect.origin.y) intersect = YES;
+					curRect.origin.y ++;
+					if( curRect.origin.y + curRect.size.height > unionRect.origin.y + unionRect.size.height) intersect = YES;
 				}
 			}
 			while( intersect == NO);
