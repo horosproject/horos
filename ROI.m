@@ -2192,6 +2192,8 @@ GLenum glReportError (void)
 - (NSString*) name {return name;}
 - (void) setName:(NSString*) a
 {
+	if( a == 0L) a = @"";
+	
 	if( name != a)
 	{
 		[name release]; name = [a retain];

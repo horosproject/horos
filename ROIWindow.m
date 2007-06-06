@@ -331,8 +331,6 @@
 	[comments setTextColor:0L];
 }
 
-
-
 - (IBAction) exportData:(id) sender
 {
 	NSSavePanel     *panel = [NSSavePanel savePanel];
@@ -348,7 +346,7 @@
 		// allocate an NSMutableDictionary to hold our preference data
 		xml = [[NSMutableDictionary alloc] init];
 		
-		[xml setObject:[curROI name] forKey:@"Name"];
+		
 		
 		if ( allWithSameName ) {
 			NSArray *roiSeriesList = [curController roiList];
@@ -366,6 +364,7 @@
 						NSMutableDictionary *roiData = [[NSMutableDictionary alloc] init];
 						
 						[roiData setObject:[NSNumber numberWithInt: i + 1] forKey: @"Slice"];
+						[roiData setObject:[roi name] forKey:@"Name"];
 						[roiData setObject:[roi comments] forKey:@"Comments"];
 						
 						// Points composing the ROI
@@ -379,7 +378,6 @@
 						[roiData setObject:temp forKey:@"ROIPoints"];
 						
 						[roiArray addObject: roiData];
-						
 					}
 				}
 			}

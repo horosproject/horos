@@ -849,9 +849,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		NSDictionary*	xml = [NSDictionary dictionaryWithContentsOfFile: [[oPanel filenames] objectAtIndex:i]];
 		NSArray*		roiArray = [xml objectForKey: @"ROI array"];
 		
-		if ( roiArray ) {
+		if ( roiArray )
+		{
 			int j;
-			for ( j = 0; j < [roiArray count]; j++ ) {
+			for ( j = 0; j < [roiArray count]; j++ )
+			{
 				NSDictionary *roiDict = [roiArray objectAtIndex: j];
 				
 				int sliceIndex = [[roiDict objectForKey: @"Slice"] intValue] - 1;
@@ -861,11 +863,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 				if ( roiList == nil || dcm == nil ) continue;  // No such slice.  Can't add ROI.
 				
-				ROI *roi = [[ROI alloc] initWithType: tCPolygon :[dcm pixelSpacingX] :[dcm pixelSpacingY] :NSMakePoint( [dcm originX], [dcm originY])];
-				[roi setName: [xml objectForKey: @"Name"]];
+				NSArray *pointsStringArray = [roiDict objectForKey: @"ROIPoints"];
+				
+				int type = tCPolygon;
+				if( [pointsStringArray count] == 2) type = tMesure;
+				if( [pointsStringArray count] == 1)  type = t2DPoint;
+				
+				ROI *roi = [[ROI alloc] initWithType: type :[dcm pixelSpacingX] :[dcm pixelSpacingY] :NSMakePoint( [dcm originX], [dcm originY])];
+				[roi setName: [roiDict objectForKey: @"Name"]];
 				[roi setComments: [roiDict objectForKey: @"Comments"]];
 				
-				NSArray *pointsStringArray = [roiDict objectForKey: @"ROIPoints"];
 				NSMutableArray *pointsArray = [NSMutableArray arrayWithCapacity: 0];
 				
 				int k;
@@ -878,18 +885,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				[roi setRoiFont: labelFontListGL :labelFontListGLSize :self];
 				
 				[roiList addObject: roi];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: roi userInfo: nil];
 				
 				[roi release];
-								
 			}
 		}
-		
-		else {  // Single ROI - assume current slice
-			ROI *roi = [[ROI alloc] initWithType: tCPolygon :[curDCM pixelSpacingX] :[curDCM pixelSpacingY] :NSMakePoint( [curDCM originX], [curDCM originY])];
+		else
+		{
+			// Single ROI - assume current slice
+			
+			NSArray *pointsStringArray = [xml objectForKey: @"ROIPoints"];
+			
+			int type = tCPolygon;
+			if( [pointsStringArray count] == 2) type = tMesure;
+			if( [pointsStringArray count] == 1)  type = t2DPoint;
+			
+			ROI *roi = [[ROI alloc] initWithType: type :[curDCM pixelSpacingX] :[curDCM pixelSpacingY] :NSMakePoint( [curDCM originX], [curDCM originY])];
 			[roi setName: [xml objectForKey: @"Name"]];
 			[roi setComments: [xml objectForKey: @"Comments"]];
 			
-			NSArray *pointsStringArray = [xml objectForKey: @"ROIPoints"];
 			NSMutableArray *pointsArray = [NSMutableArray arrayWithCapacity: 0];
 			
 			if( [pointsStringArray count] > 0)
