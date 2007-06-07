@@ -54,5 +54,7 @@
 - (void)setConnections:(NSMutableSet *)connections;
 - (void)addConnection:(OSIPoint3D *)connection;
 - (void)removeConnection:(OSIPoint3D *)connection;
+- (BOOL)isEndNode;
+- (BOOL)isBranchNode;
 
 @end

@@ -113,6 +113,18 @@
 - (void)removeConnection:(OSIPoint3D *)connection{
 	[_connections removeObject:connection];
 }
+
+- (BOOL)isEndNode{
+	if ([_connections count] < 2)
+		return YES;
+	return NO;
+}
+
+- (BOOL)isBranchNode {
+		if ([_connections count] > 2)
+		return YES;
+	return NO;
+}
 	
 
 

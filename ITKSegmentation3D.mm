@@ -1127,9 +1127,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	 Decrease maxDistance unit we had enough points 
 	*/
 	NSMutableSet *nodeSet = [NSMutableSet set];
-	int maxCount = 50;
+	int maxCount = 1000;
 	int count = 0;
-	float scalingFactor = 1.0;
+	float scalingFactor = 2.0;
 	//NSLog(@"Distance Point Count: %d", [pointSet count]);
 	while (count < maxCount && maxDistance > minSize) {
 		//NSLog(@"max distance: %f", maxDistance);
