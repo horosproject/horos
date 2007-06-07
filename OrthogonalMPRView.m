@@ -327,17 +327,33 @@
 			shift =  (float)thickSlabX / 2.0 * scaleValue;
 			glColor3f (0.0f, 0.0f, 1.0f);
 			glVertex2f(xCrossCenter-shift,-4000);
+			glVertex2f(xCrossCenter-shift,yCrossCenter -50.0*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
+			
+			glVertex2f(xCrossCenter-shift,yCrossCenter +50.0*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
 			glVertex2f(xCrossCenter-shift,4000);
+			
 			glVertex2f(xCrossCenter+shift,-4000);
+			glVertex2f(xCrossCenter+shift,yCrossCenter -50.0*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
+			
+			glVertex2f(xCrossCenter+shift,yCrossCenter +50.0*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
 			glVertex2f(xCrossCenter+shift,4000);
 		}
+		
 		if (thickSlabY>0)
 		{
 			shift =  (float)thickSlabY / 2.0 * scaleValue;
 			glColor3f (0.0f, 0.0f, 1.0f);
 			glVertex2f(-4000,yCrossCenter-shift);
+			glVertex2f(xCrossCenter-50.0,yCrossCenter-shift);
+			
+			glVertex2f(xCrossCenter+50.0,yCrossCenter-shift);
 			glVertex2f(4000,yCrossCenter-shift);
+			
+			
 			glVertex2f(-4000,yCrossCenter+shift);
+			glVertex2f(xCrossCenter-50.0,yCrossCenter+shift);
+			
+			glVertex2f(xCrossCenter+50.0,yCrossCenter+shift);
 			glVertex2f(4000,yCrossCenter+shift);
 		}
 		
