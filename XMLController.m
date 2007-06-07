@@ -360,6 +360,10 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 			[rootElement release];*/
 			xmlDocument = XML_from_FVTiff(srcFile);
 		}
+		else if([DicomFile isNIfTIFile:srcFile])
+		{
+			xmlDocument = [[DicomFile getNIfTIXML:srcFile] retain];
+		}
 		else
 		{
 			NSXMLElement *rootElement = [[NSXMLElement alloc] initWithName:@"Unsupported Meta-Data"];
