@@ -4046,7 +4046,12 @@ static BOOL				DICOMDIRCDMODE = NO;
 				
 					// Get the middle image of the series
 					if( [seriesArray count] > 0)
-						[imagesPathArray addObject: [seriesArray objectAtIndex: [seriesArray count]/2]];
+					{
+						if( [seriesArray count] > 1)
+							[imagesPathArray addObject: [seriesArray objectAtIndex: -1 + [seriesArray count]/2]];
+						else
+							[imagesPathArray addObject: [seriesArray objectAtIndex: [seriesArray count]/2]];
+					}
 				}
 				break;
 				case oFirstForFirst:
