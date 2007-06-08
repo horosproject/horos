@@ -2069,19 +2069,19 @@ public:
 	
 	NSPoint mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
 	
-//	if( [self get3DPixelUnder2DPositionX:mouseLocStart.x Y:mouseLocStart.y pixel:pix position:pos value:&value])
-//	{
-//		long sliceNo;
-//		if( [[[controller viewer2D] imageView] flippedData]) sliceNo = pix[ 2];
-//		else sliceNo = [pixList count] -1 -pix[ 2];
-//	
-//		NSString	*pixLoc = [[NSString stringWithFormat: @"X:%d Y:%d Z:%d (px)", pix[ 0], pix[ 1], sliceNo] stringByPaddingToLength: 23 withString: @" " startingAtIndex: 0];
-//		NSString	*mmLoc = [[NSString stringWithFormat: @"X:%.2f Y:%.2f Z:%.2f (mm)", pos[ 0], pos[ 1], pos[ 2]] stringByPaddingToLength: 38 withString: @" " startingAtIndex: 0];
-//		NSString	*val = [[NSString stringWithFormat: @"%.2f", value] stringByPaddingToLength: 9 withString: @" " startingAtIndex:  0];
-//		
-//		[pixelInformation setStringValue: [NSString stringWithFormat: @"View Size: %d x %d   Pixel: %@    %@ %@", (int) [self frame].size.width, (int)[self frame].size.height, val, pixLoc, mmLoc]];
-//	}
-//	else [pixelInformation setStringValue: [NSString stringWithFormat: @"View Size: %d x %d", (int) [self frame].size.width, (int) [self frame].size.height]];
+	if( [self get3DPixelUnder2DPositionX:mouseLocStart.x Y:mouseLocStart.y pixel:pix position:pos value:&value])
+	{
+		long sliceNo;
+		if( [[[controller viewer2D] imageView] flippedData]) sliceNo = pix[ 2];
+		else sliceNo = [pixList count] -1 -pix[ 2];
+	
+		NSString	*pixLoc = [[NSString stringWithFormat: @"X:%d Y:%d Z:%d (px)", pix[ 0], pix[ 1], sliceNo] stringByPaddingToLength: 23 withString: @" " startingAtIndex: 0];
+		NSString	*mmLoc = [[NSString stringWithFormat: @"X:%.2f Y:%.2f Z:%.2f (mm)", pos[ 0], pos[ 1], pos[ 2]] stringByPaddingToLength: 38 withString: @" " startingAtIndex: 0];
+		NSString	*val = [[NSString stringWithFormat: @"%.2f", value] stringByPaddingToLength: 9 withString: @" " startingAtIndex:  0];
+		
+		[pixelInformation setStringValue: [NSString stringWithFormat: @"View Size: %d x %d   Pixel: %@    %@ %@", (int) [self frame].size.width, (int)[self frame].size.height, val, pixLoc, mmLoc]];
+	}
+	else [pixelInformation setStringValue: [NSString stringWithFormat: @"View Size: %d x %d", (int) [self frame].size.width, (int) [self frame].size.height]];
 }
 
 -(void) squareView:(id) sender

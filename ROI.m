@@ -2502,7 +2502,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 	BOOL drawTextBox = NO;
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected)
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 	{
 		drawTextBox = YES;
 	}
