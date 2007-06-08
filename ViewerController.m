@@ -7543,9 +7543,48 @@ NSMutableArray		*array;
 				[llScoutViewer showWindow:self];
 			}
 		}
+		
+		case 10:	// Copy ROIs
+		{
+			WaitRendering *splash = [[WaitRendering alloc] init:@"Copy ROIs between series..."];
+			[splash showWindow:self];
+			
+			int i, x, curIndex = [[bc imageView] curImage];
+			NSArray	*bcRoiList = 0L;
+			
+			for( x = 0; x < [[bc pixList] count]; x++)
+			{
+				[[bc imageView] setIndex: x];
+				[[bc imageView] sendSyncMessage:1];
+				[bc adjustSlider];
+				
+				if( bcRoiList != [[bc roiList] objectAtIndex: [[bc imageView] curImage]])
+				{
+					bcRoiList = [[bc roiList] objectAtIndex: [[bc imageView] curImage]];
+					
+					for( i = 0; i < [[[bc roiList] objectAtIndex: x] count]; i++)
+					{
+						ROI *curROI = [[[bc roiList] objectAtIndex: x] objectAtIndex:i];
+						
+						curROI = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: curROI]];
+						
+						[curROI setOriginAndSpacing:[[imageView curDCM] pixelSpacingX] :[[imageView curDCM] pixelSpacingY] :NSMakePoint( [[imageView curDCM] originX], [[imageView curDCM] originY])];
+						[imageView roiSet: curROI];
+						
+						[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: curROI];
+					}
+				}
+			}
+			
+			[[bc imageView] setIndex: curIndex];
+			[[bc imageView] sendSyncMessage:1];
+			[bc adjustSlider];
+			
+			[splash close];
+			[splash release];
+		}
+		break;
 	}
-	
-
 }
 
 -(NSSlider*) blendingSlider { return blendingSlider;}

@@ -222,8 +222,6 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[[[wlwwPopup menu] itemAtIndex:0] setTitle:curWLWWMenu];
 }
 
-
-
 -(void) LODsliderAction:(id) sender
 {
     [view setLOD:[sender floatValue]];
@@ -2884,6 +2882,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 				[convolutionFiltersString appendString:[filters objectAtIndex:i]];
 				[convolutionFiltersString appendString:@", "];
 			}
+			
 			[convolutionFiltersString appendString:[filters objectAtIndex:[filters count]-1]];
 			[convolutionFiltersString appendString:@"."];
 		}
@@ -3146,7 +3145,9 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 	{
 		WaitRendering *www = [[WaitRendering alloc] init:NSLocalizedString(@"Applying 3D Preset...", nil)];
 		[www start];
-
+		
+		if( [selectedPresetPreview index] < 0) NSLog( @" ******** if( [selectedPresetPreview index] < 0)");
+		 
 		NSDictionary *preset = [[self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]] objectAtIndex:[selectedPresetPreview index]];
 
 		// CLUT
@@ -3551,6 +3552,8 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 
 - (void)updatePresetInfoPanel;
 {	
+	if( [selectedPresetPreview index] < 0) NSLog( @" ******** [selectedPresetPreview index] < 0");
+
 	NSDictionary *presetDictionary = [[self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]] objectAtIndex:[selectedPresetPreview index]];
 	
 	[infoNameTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Name: %@", nil), [presetDictionary objectForKey:@"name"]]];
