@@ -7828,6 +7828,7 @@ BOOL            readable = YES;
 				// For questions or suggestions regarding NIfTI integration in OsiriX, please contact zmahdavi@bwh.harvard.edu
 				long			totSize;
 				struct nifti_1_header  *NIfTI;
+				nifti_image *nifti_imagedata;
 				NSData			*fileData;
 				BOOL			swapByteOrder = NO;
 				
@@ -7851,9 +7852,9 @@ BOOL            readable = YES;
 					pixelSpacingX = NIfTI->pixdim[ 1];
 					pixelSpacingY = NIfTI->pixdim[ 2];
 					sliceThickness = sliceInterval = NIfTI->pixdim[ 3];
-					
+										
 					totSize = realheight * realwidth * 2;
-					NSLog(@"totSize:  %d", totSize);
+					//NSLog(@"totSize:  %d", totSize);
 					oImage = malloc( totSize);
 					
 					// Transformation matrix
@@ -7861,6 +7862,7 @@ BOOL            readable = YES;
 					short sform_code = NIfTI->sform_code;
 					
 					// Read img file or read nii file after vox_offset
+					nifti_imagedata = nifti_image_read([srcFile cString], 1);
 					if( (NIfTI->magic[0] == 'n')    &&
 						(NIfTI->magic[1] == 'i')	&&
 						(NIfTI->magic[2] == '1')    &&
@@ -7870,12 +7872,10 @@ BOOL            readable = YES;
 					}
 					else
 					{
-						nifti_image * nifti_imagedata = nifti_image_read([srcFile cString], 1);
 						fileData = [[NSData alloc] initWithBytesNoCopy:nifti_imagedata->data length:(nifti_imagedata->nvox * nifti_imagedata->nbyper)];
 					}
 					
 					short datatype = NIfTI->datatype;
-					if( swapByteOrder) datatype = Endian16_Swap( datatype);
 					
 					switch( datatype)
 					{
@@ -7893,7 +7893,7 @@ BOOL            readable = YES;
 							{
 								*ptr++ = *bufPtr++;
 							}
-							NSLog(@"Loop is done for frame number %i \n", (int) frameNo);
+							//NSLog(@"Loop is done for frame number %i \n", (int) frameNo);
 						}
 						break;
 						
@@ -7998,59 +7998,175 @@ BOOL            readable = YES;
 						
 						free(oImage);
 						oImage = 0L;
+					}
+					
+					// Set up origins for nifti file.
+					int icod, jcod, kcod;
+					if(qform_code > 0)
+					{
+						nifti_mat44_to_orientation(nifti_imagedata->qto_xyz, &icod, &jcod, &kcod);
+					}
+					else if(sform_code > 0)
+					{
+						nifti_mat44_to_orientation(nifti_imagedata->sto_xyz, &icod, &jcod, &kcod);
+					}	
+					
+					if(jcod == NIFTI_L2R || jcod == NIFTI_R2L)
+					{
+						// This is coronal by default.
+						originX = 0;
+						originY = frameNo * pixelSpacingX;
+						originZ = 0;
+					}
+					else if(jcod == NIFTI_A2P || jcod == NIFTI_P2A)
+					{
+						// This is axial by default.
+						originX = 0;
+						originY = 0;
+						originZ = frameNo * pixelSpacingX;
+					}
+					else if(jcod == NIFTI_S2I || jcod == NIFTI_I2S)
+					{
+						// This is sagittal by default.
+						originX = frameNo * pixelSpacingX;
+						originY = 0;
+						originZ = 0;
+					}
+										
+					
+					
+					// Adjust orientation of nifti file
+					BOOL moveOn = NO;
+					while(!moveOn)
+					{
+						BOOL flipI = NO;
+						BOOL flipJ = NO;
+						int shiftNum = 0;
 						
-						// Perform necessary transformations on image
-						// NOTE:  This section may be thrown out, since it is not very versatile.  
-						// I suggest using an external converter (such as mri_convert) to handle the NIfTI transformations
-						/*
-						bool flipVertical = NO;
-						bool flipHorizontal = NO;
-						
-						if(qform_code == 0 && sform_code > 0)
+						if(qform_code > 0)
 						{
-							// Method 3... Using srow vectors
-							//
-							//	x = srow_x[0] * i + srow_x[1] * j + srow_x[2] * k + srow_x[3]
-							//	y = srow_y[0] * i + srow_y[1] * j + srow_y[2] * k + srow_y[3]
-							//	z = srow_z[0] * i + srow_z[1] * j + srow_z[2] * k + srow_z[3]
-							
-							
-							// First make sure endians are set correctly for srow array
-							float srowx3 = NIfTI->srow_x[3];
-							float srowy3 = NIfTI->srow_y[3];
-							
-							if( swapByteOrder) 
+							nifti_mat44_to_orientation(nifti_imagedata->qto_xyz, &icod, &jcod, &kcod);
+						}
+						else if(sform_code > 0)
+						{
+							nifti_mat44_to_orientation(nifti_imagedata->sto_xyz, &icod, &jcod, &kcod);
+						}	
+						
+						
+						if(icod != NIFTI_L2R && icod != NIFTI_R2L)
+						{
+							// a shift is needed
+							if(icod == NIFTI_A2P || icod == NIFTI_P2A)
 							{
-								SwitchFloat( &srowx3);
-								SwitchFloat( &srowy3);
-							}
-							
-							if(srowx3 < 0)
+								shiftNum = 2;
+							}							
+							else if(icod == NIFTI_S2I || icod == NIFTI_I2S)
 							{
-								flipHorizontal = YES;
-							}
-							if(srowy3 < 0)
-							{
-								flipVertical = YES;
+								shiftNum = 1;
 							}
 						}
-						else if(qform_code == 0 && sform_code == 0)
-						{
-							// Method 1... ANALYZE 7.5 way
-							// This is already being handled in the code, so no need to do anything here.
-						}						
 						
-						if(flipVertical)
+						
+						if(shiftNum > 0)
 						{
-							// Flip image vertically
-							[[self seriesObj]  setValue:[NSNumber numberWithBool:YES] forKey:@"yFlipped"];
-						}
-						if(flipHorizontal)
+							// Shift number of times specified.
+							while(shiftNum > 0)
+							{
+								// Shift.
+								float	orient[ 9];
+								int t6, t7, t8;
+								[self orientation: orient];								
+								
+								t6 = orient[ 6];
+								t7 = orient[ 7];
+								t8 = orient[ 8];
+								
+								orient[ 3] = orient[ 0];
+								orient[ 4] = orient[ 1];
+								orient[ 5] = orient[ 2];		
+								
+								orient[ 0] = t6;
+								orient[ 1] = t7;
+								orient[ 2] = t8;	
+								
+								[self setOrientation: orient];
+
+								shiftNum--;
+								
+								// Restart just in case there's a problem.
+								moveOn = NO;
+								continue;
+							}
+						} 
+						
+						if(icod == NIFTI_L2R)
 						{
-							// Flip image horizontally
-							[[self seriesObj]  setValue:[NSNumber numberWithBool:YES] forKey:@"xFlipped"];	
+							// Need to flip horizontally.
+							flipI = YES;
 						}
-						*/
+						else if(icod == NIFTI_P2A)
+						{
+							// Need to flip horizontally.
+							flipI = YES;
+						}
+						else if(icod == NIFTI_S2I)
+						{
+							// Need to flip vertically
+							flipI = YES;
+						}
+						
+						if(jcod == NIFTI_P2A)
+						{
+							// Need to flip vertically.
+							flipJ = YES;
+						}
+						else if(jcod == NIFTI_L2R)
+						{
+							// Need to flip vertically.
+							flipJ = YES;
+						}
+						else if(jcod == NIFTI_S2I)
+						{
+							// Need to flip vertically
+							flipJ = YES;
+						}
+
+						if(flipI)
+						{
+							// Flip orientation horizontally
+							float	orient[ 9];
+							[self orientation: orient];
+							orient[ 0] *= -1;
+							orient[ 1] *= -1;
+							orient[ 2] *= -1;
+							[self setOrientation: orient];
+							sliceInterval = 0;
+							
+							float	o[3];
+							o[ 0] = originX;			o[ 1] = originY;			o[ 2] = originZ;
+							o[ 0] -= width * pixelSpacingX;
+							[self setOrigin: o];
+						}
+						
+						if(flipJ)
+						{
+							// Flip orientation vertically
+							float	orient[ 9];
+							[self orientation: orient];
+							orient[ 3] *= -1;
+							orient[ 4] *= -1;
+							orient[ 5] *= -1;
+							[self setOrientation: orient];
+							sliceInterval = 0;
+							
+							float	o[3];
+							o[ 0] = originX;			o[ 1] = originY;			o[ 2] = originZ;
+							o[ 1] -=  height * pixelSpacingY;
+							[self setOrigin: o];
+						
+						}
+						
+						moveOn = YES;
 					}
 				}
 				else if( [extension isEqualToString:@"hdr"] == YES) // 'old' ANALYZE

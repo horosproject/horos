@@ -1560,15 +1560,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	if([self isNIfTIFile: file])
 	{
 		NIfTI = nifti_image_read( [file UTF8String], 0);
-		
-		/*
-		// Some quick stuff to just write in a simple extension
-		// THIS IS DEBUG CODE!!! DELETE IT LATER!!!
-		nifti_add_extension(NIfTI, "Test", 16, 0);
-		NIfTI->fname = "/Users/zack/Desktop/extension_test.nii";
-		NIfTI->iname = "/Users/zack/Desktop/extension_test.nii";
-		nifti_image_write(NIfTI);
-		*/
 		 
 		returnString = [[NSString alloc] initWithCString: nifti_image_to_ascii( NIfTI)];
 		NSLog(@"NIFTI INFO:  %@", returnString);
