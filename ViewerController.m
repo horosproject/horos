@@ -9679,6 +9679,7 @@ int i,j,l;
 				// Add the new ROI
 				[imageView roiSet: newROI];
 				[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: newROI];
+				[newROI setROIMode: ROI_selected];
 			}
 		}
 		break;
@@ -9692,6 +9693,7 @@ int i,j,l;
 				// Add the new ROI
 				[imageView roiSet: newROI];
 				[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: newROI];
+				[newROI setROIMode: ROI_selected];
 			}
 		}
 		break;
@@ -9699,7 +9701,7 @@ int i,j,l;
 	
 	// Remove the old ROI
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:selectedROI userInfo: 0L];
-	[roiList[curMovieIndex] removeObject: selectedROI];
+	[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] removeObject: selectedROI];
 	
 	[imageView setIndex: [imageView curImage]];
 }
