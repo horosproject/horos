@@ -1867,6 +1867,19 @@ BOOL gUSEPAPYRUSDCMPIX;
 		{
 			map[ i] = tempImage[ i];
 		}
+		
+		// Keep a free box around the image
+		for( i = 0 ; i < width; i++)
+		{
+			map[ i] = 0;
+			map[height*(width-2) +i] = 0;
+		}
+		for( i = 0 ; i < height; i++)
+		{
+			map[ i*width] = 0;
+			map[ i*width + width-1] = 0;
+		}
+		
 		free( tempImage);
 		free( ptsInt);
 	}
