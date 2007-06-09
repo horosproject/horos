@@ -218,6 +218,7 @@
                 clearOffset = id; 
                 closeSelectedBrushROI = id; 
                 coView = id; 
+                convertBrushPolygon = id; 
                 copySettingsToOthers = id; 
                 createKeyObjectNote = id; 
                 createLayerROIFromSelectedROI = id; 

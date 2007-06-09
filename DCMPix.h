@@ -223,6 +223,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientation :(long) stackNo;
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside;
 
+- (unsigned char*) getMapFromPolygonROI:(ROI*) roi;
+
 // Is this Point (pt) in this ROI ?
 - (BOOL) isInROI:(ROI*) roi :(NSPoint) pt;
 

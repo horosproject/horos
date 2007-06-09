@@ -377,7 +377,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 				
 	filter->SetColorRegions( 1);
 	filter->SetExtractionModeToLargestRegion();
-				
+	
 	filter->SetInput( isoContour->GetOutput());
 	vtkPolyData *output = filter->GetOutput();
 	output->Update();
@@ -442,18 +442,13 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 {
    [self extractContour:map width:width height:height numPoints: 100];
 }
+
 -(void) dealloc
 {
 	[itkImage dealloc];
 	
 	[super dealloc];
 }
-
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
 
 - (id) initWith :(NSMutableArray*) pix :(float*) volumeData :(long) slice {
 	return [self initWithPix :(NSMutableArray*) pix volume:(float*) volumeData  slice:(long) slice resampleData:NO];
@@ -1183,7 +1178,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					//else 
 					
 				}
-				if (isNewNode) {
+				if (isNewNode)
+				{
 					NSLog(@"add Node: %f %f %f", positionIndex, positionRow, positionSlice);
 					[nodeSet addObject: point];
 					NSMutableArray  *roiImageList;
@@ -1195,6 +1191,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					roiImageList = [roiSeriesList objectAtIndex: positionSlice * 2];
 					[roiImageList addObject: newROI];	
 					[newROI mouseRoiDown:NSMakePoint((float)positionIndex * 2,(float)positionRow * 2) :positionSlice * 2 :1.0];
+					[newROI release];
 				}
 				
 				[deleteSet addObject:point];

@@ -779,13 +779,11 @@ void ras_FillPolygon(	NSPointInt *p,
 						long stackNo,
 						BOOL restore)
 {
-	struct edge *edgeTable[MAXVERTICAL];
+	struct edge *edgeTable[ MAXVERTICAL];
     struct	edge *active;
     long	curY, i;
 	BOOL	clip = NO;
 	NSPointInt	*pTemp;
-	
-
 	
     FillEdges(p, no, edgeTable);
 	
@@ -1806,6 +1804,74 @@ BOOL gUSEPAPYRUSDCMPIX;
 		
 		NSLog( @"free Restore cache");
 	}
+}
+
+- (unsigned char*) getMapFromPolygonROI:(ROI*) roi
+{
+	unsigned char*	map = malloc( height * width);
+	float*			tempImage = calloc( 1, height * width * sizeof(float));
+	int				i, no;
+	
+	if( [roi type] == tCPolygon || [roi type] == tOPolygon || [roi type] == tPencil)
+	{	
+		NSArray *ptsTemp = [roi points];
+				
+		struct NSPointInt *ptsInt = (struct NSPointInt*) malloc( [ptsTemp count] * sizeof( struct NSPointInt));
+		no = [ptsTemp count];
+		for( i = 0; i < no; i++)
+		{
+			ptsInt[ i].x = [[ptsTemp objectAtIndex: i] point].x;
+			ptsInt[ i].y = [[ptsTemp objectAtIndex: i] point].y;
+		}
+		
+		// Need to clip?
+		NSPointInt *pTemp;
+		int yIm, xIm;
+		
+		yIm = height;
+		xIm = width;
+		
+		BOOL clip = NO;
+		
+		for( i = 0; i < no && clip == NO; i++)
+		{
+			if( ptsInt[ i].x < 0) clip = YES;
+			if( ptsInt[ i].y < 0) clip = YES;
+			if( ptsInt[ i].x >= width) clip = YES;
+			if( ptsInt[ i].y >= height) clip = YES;
+		}
+		
+		if( clip)
+		{
+			long newNo;
+			
+			pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
+			CLIP_Polygon( ptsInt, no, pTemp, &newNo, width, height);
+			
+			free( ptsInt);
+			ptsInt = pTemp;
+			
+			no = newNo;
+		}
+		
+		if( ptsInt != 0L && no > 1)
+		{
+			BOOL restore = NO, addition = NO, outside = NO;
+			
+			ras_FillPolygon( ptsInt, no, tempImage, width, height, [pixArray count], -99999, 99999, outside, 255, addition, isRGB, NO, 0L, 0L, 0L, 0L, 0L, 0, 2, 0, restore);
+		}
+		
+		// Convert float to char
+		i = width * height;
+		while( i-- > 0)
+		{
+			map[ i] = tempImage[ i];
+		}
+		free( tempImage);
+		free( ptsInt);
+	}
+	
+	return map;
 }
 
 - (void) fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition;

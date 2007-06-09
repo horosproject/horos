@@ -65,6 +65,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "ThickSlabController.h"
 #import "Mailer.h"
 #import "ITKSegmentation3DController.h"
+#import "ITKSegmentation3D.h"
 #import "MSRGWindowController.h"
 #import "iPhoto.h"
 #import "CurvedMPR.h"
@@ -1542,7 +1543,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		[[self window] setFrame:rect display:YES];
 		[[self window] orderFront:self];
-		[[self imageView] scaleToFit];
+		[imageView scaleToFit];
 	}
 	else
 	{
@@ -7737,8 +7738,6 @@ extern NSString * documentsDirectory();
 	return theNewROI;
 }
 
-
-
 - (NSMutableArray*) generateROINamesArray
 {
 	[ROINamesArray release];	
@@ -7883,7 +7882,7 @@ int i,j,l;
 	rgbList[5]=aColor;
 	
 	NSMutableArray* nbRegion=[NSMutableArray arrayWithCapacity:0];
-	DCMPix	*curPix = [[self pixList] objectAtIndex: [[self imageView] curImage]];
+	DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
 	long height=[curPix pheight];
 	long width=[curPix pwidth];
 		for(j=0;j<height;j++)
@@ -7915,7 +7914,7 @@ int i,j,l;
 {
 	int i,j,l;
 	ROI		*theNewROI;
-	DCMPix	*curPix = [[self pixList] objectAtIndex: [[self imageView] curImage]];
+	DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
 	long height=[curPix pheight];
     long width=[curPix pwidth];
 	int upLeftX,upLeftY,dRightX,dRightY;
@@ -7969,9 +7968,9 @@ int i,j,l;
 					free(textureBuffer);
 					[theNewROI setColor:aColor];
 					//	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
-					[[[self roiList] objectAtIndex:[[self imageView] curImage]] addObject:theNewROI];		
+					[[[self roiList] objectAtIndex:[imageView curImage]] addObject:theNewROI];		
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];
-					
+					[theNewROI release];
 				}
 	
 }
@@ -8070,7 +8069,7 @@ int i,j,l;
 	 NSLog(@"color r=%d, g=%d, b=%d", aColor.red, aColor.green, aColor.blue);
 	 */
 	NSMutableArray* nbRegion=[NSMutableArray arrayWithCapacity:0];
-	DCMPix	*curPix = [[self pixList] objectAtIndex: [[self imageView] curImage]];
+	DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
 	long height=[curPix pheight];
 	long width=[curPix pwidth];
 	long depth=[[self pixList] count];	
@@ -8110,7 +8109,7 @@ int i,j,l;
 {
 	int i,j,k,l;
 	ROI		*theNewROI;
-	DCMPix	*curPix = [[self pixList] objectAtIndex: [[self imageView] curImage]];
+	DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
 	long height=[curPix pheight];
     long width=[curPix pwidth];
 	long depth=[[self pixList] count];
@@ -8168,7 +8167,7 @@ int i,j,l;
 					//	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
 					[[[self roiList] objectAtIndex:k] addObject:theNewROI];		
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];
-					
+					[theNewROI release];
 				}
 	}
 }
@@ -8176,7 +8175,7 @@ int i,j,l;
 //- (ROI*)addLayerRoiToCurrentSliceWithImage:(NSImage*)image imageWhenSelected:(NSImage*)imageWhenSelected referenceFilePath:(NSString*)path layerPixelSpacingX:(float)layerPixelSpacingX layerPixelSpacingY:(float)layerPixelSpacingY;
 - (ROI*)addLayerRoiToCurrentSliceWithImage:(NSImage*)image referenceFilePath:(NSString*)path layerPixelSpacingX:(float)layerPixelSpacingX layerPixelSpacingY:(float)layerPixelSpacingY;
 {
-	DCMPix *curPix = [[self pixList] objectAtIndex:[[self imageView] curImage]];
+	DCMPix *curPix = [[self pixList] objectAtIndex:[imageView curImage]];
 
 	ROI *theNewROI = [[[ROI alloc] initWithType:tLayerROI :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint([curPix originX], [curPix originY])] autorelease];
 	[theNewROI setLayerPixelSpacingX:layerPixelSpacingX];
@@ -8185,9 +8184,11 @@ int i,j,l;
 	[theNewROI setLayerImage:image];
 //	[theNewROI setLayerImageWhenSelected:imageWhenSelected];
 
-	[[[self roiList] objectAtIndex:[[self imageView] curImage]] addObject:theNewROI];		
+	[[[self roiList] objectAtIndex:[imageView curImage]] addObject:theNewROI];		
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo:0L];
 	[self selectROI:theNewROI deselectingOther:YES];
+	[theNewROI release];
+	
 	return theNewROI;
 }
 
@@ -8285,7 +8286,6 @@ int i,j,l;
 	NSLog(@"pixelSpacing: %f, %f", [[imageView curDCM] pixelSpacingX], [[imageView curDCM] pixelSpacingY]);
 	
 	NSLog(@"addLayerRoiToCurrentSliceWithImage");	
-	//ROI* theNewROI = [self addLayerRoiToCurrentSliceWithImage:image imageWhenSelected:image referenceFilePath:@"none" layerPixelSpacingX:[[imageView curDCM] pixelSpacingX] layerPixelSpacingY:[[imageView curDCM] pixelSpacingY]];
 	ROI* theNewROI = [self addLayerRoiToCurrentSliceWithImage:image referenceFilePath:@"none" layerPixelSpacingX:[[imageView curDCM] pixelSpacingX] layerPixelSpacingY:[[imageView curDCM] pixelSpacingY]];
 	
 	NSLog(@"setName");
@@ -9299,7 +9299,7 @@ int i,j,l;
 	[srController beginSheet];
 }
 
-- (ROI*)selectedROI
+- (ROI*) selectedROI
 {
 	ROI *selectedRoi = 0L;
 	int i;
@@ -9604,6 +9604,104 @@ int i,j,l;
 		NSRunCriticalAlertPanel(NSLocalizedString(@"Brush ROI Error", nil), NSLocalizedString(@"Select a Brush ROI before to run the filter.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
 		return;
 	}
+}
+
+- (ROI*) convertPolygonROItoBrush:(ROI*) selectedROI
+{
+	unsigned char* texture = [[imageView curDCM] getMapFromPolygonROI: selectedROI];
+	ROI *theNewROI = 0L;
+	
+	if( texture)
+	{
+		theNewROI = [[ROI alloc]		initWithTexture: texture
+										textWidth: [[imageView curDCM] pwidth]
+										textHeight: [[imageView curDCM] pheight]
+										textName: @""
+										positionX: 0
+										positionY: 0
+										spacingX: [[imageView curDCM] pixelSpacingX]
+										spacingY: [[imageView curDCM] pixelSpacingY]
+										imageOrigin: NSMakePoint([[imageView curDCM] originX], [[imageView curDCM] originY])];
+		if( [theNewROI reduceTextureIfPossible] == NO)	// NO means that the ROI is NOT empty
+		{
+			
+		}
+		else
+		{
+			[theNewROI release];
+			theNewROI = 0L;
+		}
+		
+		free( texture);
+	}
+	
+	return theNewROI;
+}
+
+- (ROI*) convertBrushROItoPolygon:(ROI*) selectedROI numPoints: (int) numPoints
+{
+	ROI*	newROI = 0L;
+	
+	if( [selectedROI type] == tPlain)
+	{
+		// Convert it to Brush
+		newROI = [self newROI: tCPolygon]; 
+		
+		NSArray	*points = [ITKSegmentation3D extractContour: [selectedROI textureBuffer] width: [selectedROI textureWidth] height: [selectedROI textureHeight] numPoints: numPoints];
+		
+		int i;
+		for( i = 0 ; i < [points count] ; i++)
+		{
+			[[points objectAtIndex: i] move: [selectedROI textureUpLeftCornerX] :[selectedROI textureUpLeftCornerY]];
+		}
+		
+		[newROI setPoints: points];
+	}
+	
+	return newROI;
+}
+
+- (IBAction) convertBrushPolygon: (id) sender
+{
+	[self addToUndoQueue: @"roi"];
+	[imageView stopROIEditingForce: YES];
+	
+	ROI *selectedROI = [self selectedROI];
+	
+	switch( [sender tag])
+	{
+		case 1:
+		{
+			ROI	*newROI = [self convertBrushROItoPolygon: selectedROI numPoints:100];
+			
+			if( newROI)
+			{
+				// Add the new ROI
+				[imageView roiSet: newROI];
+				[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: newROI];
+			}
+		}
+		break;
+		
+		case 0:
+		{
+			ROI	*newROI = [self convertPolygonROItoBrush: selectedROI];
+			
+			if( newROI)
+			{
+				// Add the new ROI
+				[imageView roiSet: newROI];
+				[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: newROI];
+			}
+		}
+		break;
+	}
+	
+	// Remove the old ROI
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:selectedROI userInfo: 0L];
+	[roiList[curMovieIndex] removeObject: selectedROI];
+	
+	[imageView setIndex: [imageView curImage]];
 }
 
 #pragma mark SUV
@@ -10603,7 +10701,7 @@ int i,j,l;
 		ViewerController	*vC = [viewersList objectAtIndex: i];
 	}
 	/*
-	 DCMPix	*curPix = [[self pixList] objectAtIndex: [[self imageView] curImage]];
+	 DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
 	 long height=[curPix pheight];
 	 long width=[curPix pwidth];
 	 long depth=[[self pixList] count];
@@ -10805,8 +10903,8 @@ int i,j,l;
 
 - (void) setImageIndex:(long) i
 {
-	if( [[self imageView] flippedData]) [[self imageView] setIndex: [self getNumberOfImages] -1 -i];
-	else [[self imageView] setIndex: i];
+	if( [imageView flippedData]) [imageView setIndex: [self getNumberOfImages] -1 -i];
+	else [imageView setIndex: i];
 
 	[imageView sendSyncMessage:1];
 	
@@ -11173,7 +11271,7 @@ int i,j,l;
 			{
 				NSManagedObject	*image;
 				
-				if( [[self imageView] flippedData]) image = [[self fileList] objectAtIndex: [[self fileList] count] -1 -i];
+				if( [imageView flippedData]) image = [[self fileList] objectAtIndex: [[self fileList] count] -1 -i];
 				else image = [[self fileList] objectAtIndex: i];
 				
 				if (![[image valueForKey: @"isKeyImage"] boolValue]) saveImage = NO;
@@ -11323,7 +11421,7 @@ int i,j,l;
 	{
 		NSManagedObject	*image;
 		
-		if( [[self imageView] flippedData]) image = [[self fileList] objectAtIndex: [[self fileList] count] -1 -curSample];
+		if( [imageView flippedData]) image = [[self fileList] objectAtIndex: [[self fileList] count] -1 -curSample];
 		else image = [[self fileList] objectAtIndex: curSample];
 		export = [[image valueForKey:@"isKeyImage"] boolValue];
 	}
@@ -11341,26 +11439,26 @@ int i,j,l;
 		{
 			case 1:
 			case 3:
-				if( [[self imageView] flippedData]) [[self imageView] setIndex: [self getNumberOfImages] - 1 -curSample];
-				else [[self imageView] setIndex:curSample];
-				[[self imageView] sendSyncMessage:1];
-				[[self imageView] display];
+				if( [imageView flippedData]) [imageView setIndex: [self getNumberOfImages] - 1 -curSample];
+				else [imageView setIndex:curSample];
+				[imageView sendSyncMessage:1];
+				[imageView display];
 			break;
 
 			case 0:
 				[[self blendingSlider] setIntValue: -256 + ((curSample * 512) / ([max intValue]-1))];
 				[self blendingSlider:[self blendingSlider]];
-				[[self imageView] display];
+				[imageView display];
 			break;
 
 			case 2:
 				[[self moviePosSlider] setIntValue: curSample];
 				[self moviePosSliderAction:[self moviePosSlider]];
-				[[self imageView] display];
+				[imageView display];
 			break;
 		}
 		
-		im = [[self imageView] nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"] allViewers: qt_allViewers];
+		im = [imageView nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"] allViewers: qt_allViewers];
 	}
 	
 	return im;
@@ -11855,7 +11953,7 @@ int i,j,l;
 				{
 					NSManagedObject	*image;
 					
-					if( [[self imageView] flippedData]) image = [[self fileList] objectAtIndex: [[self fileList] count] -1 -i];
+					if( [imageView flippedData]) image = [[self fileList] objectAtIndex: [[self fileList] count] -1 -i];
 					else image = [[self fileList] objectAtIndex: i];
 					
 					export = [[image valueForKey:@"isKeyImage"] boolValue];
