@@ -601,6 +601,8 @@ enum
 - (void) SetSyncButtonBehavior:(id) sender;
 
 - (ROI*)selectedROI;
+- (NSMutableArray*) selectedROIs;
+
 - (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
 - (void)selectROI:(ROI*)roi deselectingOther:(BOOL)deselectOther;
 - (void)deselectAllROIs;
@@ -619,6 +621,9 @@ enum
 //- (IBAction) dilateSelectedBrushROI: (id) sender;
 //- (IBAction) closeSelectedBrushROIWithRadius: (id) sender;
 //- (IBAction) closeSelectedBrushROI: (id) sender;
+- (ROI*) roiMorphingBetween:(ROI*) a and:(ROI*) b ratio:(float) ratio;
+- (ROI*) convertPolygonROItoBrush:(ROI*) selectedROI;
+- (ROI*) convertBrushROItoPolygon:(ROI*) selectedROI numPoints: (int) numPoints;
 
 #pragma mark-
 #pragma mark Registration

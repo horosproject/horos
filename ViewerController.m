@@ -3909,6 +3909,30 @@ static ViewerController *draggedController = 0L;
 //added by Jacques Fauquex 2006-09-30
 - (IBAction) shutterOnOff:(id) sender
 {
+//	{
+//	int i;
+//	NSArray	*rois = [self selectedROIs];
+//	
+//	for( i = 0; i < 200; i++)
+//	{
+//		ROI	*c = [self roiMorphingBetween: [rois objectAtIndex: 0] and: [rois objectAtIndex: 1] ratio: (float) (i+1) / 201.];
+//		
+//		if( c)
+//		{
+//			[imageView roiSet: c];
+//			[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: c];
+//		}
+//		
+//		[imageView display];
+//		
+//		Delay(3, 0L);
+//		
+//		[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] removeObject: c];
+//	}
+//	[imageView display];
+//	return;
+//	}
+	
 	if ([[sender title] isEqualToString:@"Shutter"] == YES) [shutterOnOff setState: (![shutterOnOff state])];//from menu
 	long i;
 	
@@ -9275,6 +9299,86 @@ int i,j,l;
 	return rois;
 }
 
+#define NOOFPOINTS 100
+
+- (ROI*) isoContourROI: (ROI*) a
+{
+	if( [a type] == tCPolygon || [a type] == tOPolygon || [a type] == tPencil)
+	{
+		a = [self convertPolygonROItoBrush: a];
+		a = [self convertBrushROItoPolygon: a numPoints: NOOFPOINTS];
+		return a;
+	}
+	else if( [a type] == tPlain)
+	{
+		a = [self convertBrushROItoPolygon: a numPoints: NOOFPOINTS];
+		return a;
+	}
+	else return 0L;
+}
+
++ (NSPoint) pointBetweenPoint:(NSPoint) a and:(NSPoint) b ratio: (float) r
+{
+	NSPoint	pt = NSMakePoint( a.x, a.y);
+	float	theta, pyth;
+	
+	theta = atan( (b.y -  a.y) / (b.x - a.x));
+	
+	pyth =	(b.y - a.y) * (b.y - a.y) +
+			(b.x - a.x) * (b.x - a.x);
+	
+	pyth = sqrt( pyth);
+	
+	if( (b.x - a.x) < 0)
+	{
+		pt.x -= (r * pyth) * cos( theta);
+		pt.y -= (r * pyth) * sin( theta);
+	}
+	else
+	{
+		pt.x += (r * pyth) * cos( theta);
+		pt.y += (r * pyth) * sin( theta);
+	}
+	
+	return pt;
+}
+
+- (ROI*) roiMorphingBetween:(ROI*) a and:(ROI*) b ratio:(float) ratio
+{
+	// Convert both ROIs into polygons, after a marching square isocontour
+	
+	a = [self isoContourROI: a];
+	b = [self isoContourROI: b];
+	
+	if( a == 0L) return 0L;
+	if( b == 0L) return 0L;
+	
+	if( [[a points] count] != NOOFPOINTS || [[b points] count] != NOOFPOINTS)
+	{
+		NSLog( @"NoOfPoints !");
+		return 0L;
+	}
+	
+	NSArray *aPts = [a points];
+	NSArray *bPts = [b points];
+	ROI* newROI = [self newROI: tCPolygon];
+	NSMutableArray *pts = [newROI points];
+	int i;
+	
+	NSLog( @"ratio: %f", ratio);
+	
+	for( i = 0; i < [aPts count]; i++)
+	{
+		MyPoint	*aP = [aPts objectAtIndex: i];
+		MyPoint	*bP = [bPts objectAtIndex: i];
+		
+		NSPoint newPt = [ViewerController pointBetweenPoint: [aP point] and: [bP point] ratio: ratio];
+		
+		[pts addObject: [MyPoint point: newPt]];
+	}
+	
+	return newROI;
+}
 
 - (MyPoint*) newPoint: (float) x :(float) y
 {
@@ -9303,6 +9407,7 @@ int i,j,l;
 {
 	ROI *selectedRoi = 0L;
 	int i;
+	
 	for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
 	{
 		long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
@@ -9313,6 +9418,24 @@ int i,j,l;
 		}
 	}
 	return selectedRoi;
+}
+
+- (NSMutableArray*) selectedROIs
+{
+	NSMutableArray *selectedRois = [NSMutableArray array];
+	int i;
+	
+	for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
+	{
+		long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
+			
+		if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+		{
+			[selectedRois addObject: [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i]];
+		}
+	}
+	
+	return selectedRois;
 }
 
 - (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
@@ -9644,17 +9767,35 @@ int i,j,l;
 	if( [selectedROI type] == tPlain)
 	{
 		// Convert it to Brush
-		newROI = [self newROI: tCPolygon]; 
+		newROI = [self newROI: tCPolygon];
 		
 		NSArray	*points = [ITKSegmentation3D extractContour: [selectedROI textureBuffer] width: [selectedROI textureWidth] height: [selectedROI textureHeight] numPoints: numPoints];
 		
-		int i;
+		int		i;
+		NSMutableArray	*pts = [NSMutableArray array];
+		
 		for( i = 0 ; i < [points count] ; i++)
 		{
 			[[points objectAtIndex: i] move: [selectedROI textureUpLeftCornerX] :[selectedROI textureUpLeftCornerY]];
 		}
 		
-		[newROI setPoints: points];
+		for( i = 0 ; i < numPoints ; i++)
+		{
+			float x = (float) (i * [points count]) / (float) numPoints;
+			int xint = (int) x;
+			
+			MyPoint *a = [points objectAtIndex: xint];
+			
+			MyPoint *b;
+			if( xint+1 == [points count])  b = [points objectAtIndex: 0];
+			else b = [points objectAtIndex: xint+1];
+			
+			NSPoint c = [ViewerController pointBetweenPoint: [a point] and: [b point] ratio: x - (float) xint];
+			
+			[pts addObject: [MyPoint point: c]];
+		}
+		
+		[newROI setPoints: pts];
 	}
 	
 	return newROI;

@@ -57,6 +57,7 @@ GLenum glReportError (void)
 }
 
 @implementation ROI
+
 +(void) setDefaultName:(NSString*) n
 {
 	[defaultName release];
