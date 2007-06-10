@@ -1820,8 +1820,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 		no = [ptsTemp count];
 		for( i = 0; i < no; i++)
 		{
-			ptsInt[ i].x = [[ptsTemp objectAtIndex: i] point].x;
-			ptsInt[ i].y = [[ptsTemp objectAtIndex: i] point].y;
+			ptsInt[ i].x = [[ptsTemp objectAtIndex: i] point].x + 0.5;
+			ptsInt[ i].y = [[ptsTemp objectAtIndex: i] point].y + 0.5;
 		}
 		
 		// Need to clip?

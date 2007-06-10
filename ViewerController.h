@@ -559,6 +559,7 @@ enum
 - (IBAction) roiRename:(id) sender;
 - (void) SyncSeries:(id) sender;
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts error:(NSString**) error;
+- (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs error:(NSString**) error;
 - (NSArray*) roisWithName: (NSString*) name;
 - (NSArray*) roiNames;
 - (void) deleteSeriesROIwithName: (NSString*) name;

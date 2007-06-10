@@ -9624,7 +9624,6 @@ int i,j,l;
 										imageOrigin: NSMakePoint([[imageView curDCM] originX], [[imageView curDCM] originY])];
 		if( [theNewROI reduceTextureIfPossible] == NO)	// NO means that the ROI is NOT empty
 		{
-			
 		}
 		else
 		{
@@ -9668,7 +9667,12 @@ int i,j,l;
 	
 	ROI *selectedROI = [self selectedROI];
 	
-	switch( [sender tag])
+	int tag;
+	
+	if( [selectedROI type] == tPlain) tag = 1;
+	else tag = 0;
+	
+	switch( tag)
 	{
 		case 1:
 		{
@@ -12970,6 +12974,11 @@ int i,j,l;
 }
 
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts error:(NSString**) error
+{
+	return [self computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs: NO error:(NSString**) error];
+}
+
+- (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs error:(NSString**) error
 {
 	long				i, x, y, globalCount, imageCount;
 	float				volume = 0, prevArea, preLocation, interval;
