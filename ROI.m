@@ -72,6 +72,116 @@ GLenum glReportError (void)
 	return defaultName;
 }
 
++ (NSPoint) pointBetweenPoint:(NSPoint) a and:(NSPoint) b ratio: (float) r
+{
+	NSPoint	pt = NSMakePoint( a.x, a.y);
+	float	theta, pyth;
+	
+	theta = atan( (b.y -  a.y) / (b.x - a.x));
+	
+	pyth =	(b.y - a.y) * (b.y - a.y) +
+			(b.x - a.x) * (b.x - a.x);
+	
+	pyth = sqrt( pyth);
+	
+	if( (b.x - a.x) < 0)
+	{
+		pt.x -= (r * pyth) * cos( theta);
+		pt.y -= (r * pyth) * sin( theta);
+	}
+	else
+	{
+		pt.x += (r * pyth) * cos( theta);
+		pt.y += (r * pyth) * sin( theta);
+	}
+	
+	return pt;
+}
+
++ (float) lengthBetween:(NSPoint) mesureA and :(NSPoint) mesureB
+{
+	short yT, xT;
+	float mesureLength;
+	
+	if( mesureA.x > mesureB.x) { yT = mesureA.y;  xT = mesureA.x;}
+	else {yT = mesureB.y;   xT = mesureB.x;}
+	
+	{
+		double coteA, coteB;
+		
+		coteA = fabs(mesureA.x - mesureB.x);
+		coteB = fabs(mesureA.y - mesureB.y);
+		
+		if( coteA == 0) mesureLength = coteB;
+		else if( coteB == 0) mesureLength = coteA;
+		else mesureLength = coteB / (sin (atan( coteB / coteA)));
+	}
+	
+	return mesureLength;
+}
+
++(NSPoint) positionAtDistance: (float) distance inPolygon:(NSArray*) points
+{
+	int i = 0;
+	float previousPosition, position = 0, ratio;
+	NSPoint p;
+	
+	if( distance == 0) return [[points objectAtIndex:0] point];
+	
+	while( position < distance && i < [points count] -1)
+	{
+		position += [ROI lengthBetween:[[points objectAtIndex:i] point] and:[[points objectAtIndex:i+1] point]];
+		i++;
+	}
+	
+	if( position < distance)
+	{
+		previousPosition = position;
+		position += [ROI lengthBetween:[[points objectAtIndex:i] point] and:[[points objectAtIndex:0] point]];
+		i++;
+	}
+	
+	if( i == [points count])
+	{
+		ratio = (position - distance) / [ROI lengthBetween: [[points objectAtIndex:i-1] point]  and:[[points objectAtIndex: 0] point]];
+		p = [ROI pointBetweenPoint:[[points objectAtIndex:i-1] point] and:[[points objectAtIndex:0] point] ratio: 1.0 - ratio];
+	}
+	else
+	{
+		ratio = (position - distance) / [ROI lengthBetween: [[points objectAtIndex:i-1] point]  and:[[points objectAtIndex:i] point]];
+		p = [ROI pointBetweenPoint:[[points objectAtIndex:i-1] point] and:[[points objectAtIndex:i] point] ratio: 1.0 - ratio];
+	}
+	
+	return p;
+}
+
++(NSMutableArray*) resamplePoints: (NSArray*) points number:(int) no
+{
+	int i;
+	float length = 0;
+	
+	for( i = 0; i < [points count]-1; i++ )
+	{
+		length += [ROI lengthBetween:[[points objectAtIndex:i] point] and:[[points objectAtIndex:i+1] point]];
+	}
+	length += [ROI lengthBetween:[[points objectAtIndex:i] point] and:[[points objectAtIndex:0] point]];
+	
+	NSLog( @"length: %f", length);
+	NSLog( @"points counts: %d", [points count]);
+	
+	NSMutableArray* newPts = [NSMutableArray array];
+	for( i = 0; i < no; i++)
+	{
+		float s = (i * length) / no;
+		
+		NSPoint p = [ROI positionAtDistance: s inPolygon: points];
+		
+		[newPts addObject: [MyPoint point: p]];
+	}
+	
+	return newPts;
+}
+
 -(void) setDefaultName:(NSString*) n
 {
 	[ROI setDefaultName: n];
@@ -802,7 +912,6 @@ GLenum glReportError (void)
     return (float)sqrt( Vector.x * Vector.x + Vector.y * Vector.y);
 }
 
-
 -(float) Length:(NSPoint) mesureA :(NSPoint) mesureB
 {
 	short yT, xT;
@@ -1051,6 +1160,7 @@ GLenum glReportError (void)
 	
 	if ( type == tROI || type == tOval ) return;  // Doesn't make sense to set points for these types.
 	
+	[points removeAllObjects];
 	for ( i = 0; i < [pts count]; i++ )
 		[points addObject: [pts objectAtIndex: i]];
 	

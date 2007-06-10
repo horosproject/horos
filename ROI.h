@@ -184,6 +184,9 @@ enum
 // Return the DCMView associated to this ROI
 - (DCMView*) curView;
 
++ (NSPoint) pointBetweenPoint:(NSPoint) a and:(NSPoint) b ratio: (float) r;
++ (NSMutableArray*) resamplePoints: (NSArray*) points number:(int) no;
+
 // Set/retrieve default ROI name (if not set, then default name is the currentTool)
 + (void) setDefaultName:(NSString*) n;
 + (NSString*) defaultName;

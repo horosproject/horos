@@ -3909,6 +3909,14 @@ static ViewerController *draggedController = 0L;
 //added by Jacques Fauquex 2006-09-30
 - (IBAction) shutterOnOff:(id) sender
 {
+//	ROI	*r = [self selectedROI];
+//
+//	[r setPoints: [ROI resamplePoints: [r points] number: 100]];
+//	[imageView display];
+//	return;
+	
+// ***************
+
 //	{
 //	int i;
 //	NSArray	*rois = [self selectedROIs];
@@ -9317,32 +9325,6 @@ int i,j,l;
 	else return 0L;
 }
 
-+ (NSPoint) pointBetweenPoint:(NSPoint) a and:(NSPoint) b ratio: (float) r
-{
-	NSPoint	pt = NSMakePoint( a.x, a.y);
-	float	theta, pyth;
-	
-	theta = atan( (b.y -  a.y) / (b.x - a.x));
-	
-	pyth =	(b.y - a.y) * (b.y - a.y) +
-			(b.x - a.x) * (b.x - a.x);
-	
-	pyth = sqrt( pyth);
-	
-	if( (b.x - a.x) < 0)
-	{
-		pt.x -= (r * pyth) * cos( theta);
-		pt.y -= (r * pyth) * sin( theta);
-	}
-	else
-	{
-		pt.x += (r * pyth) * cos( theta);
-		pt.y += (r * pyth) * sin( theta);
-	}
-	
-	return pt;
-}
-
 - (ROI*) roiMorphingBetween:(ROI*) a and:(ROI*) b ratio:(float) ratio
 {
 	// Convert both ROIs into polygons, after a marching square isocontour
@@ -9372,7 +9354,7 @@ int i,j,l;
 		MyPoint	*aP = [aPts objectAtIndex: i];
 		MyPoint	*bP = [bPts objectAtIndex: i];
 		
-		NSPoint newPt = [ViewerController pointBetweenPoint: [aP point] and: [bP point] ratio: ratio];
+		NSPoint newPt = [ROI pointBetweenPoint: [aP point] and: [bP point] ratio: ratio];
 		
 		[pts addObject: [MyPoint point: newPt]];
 	}
@@ -9790,7 +9772,7 @@ int i,j,l;
 			if( xint+1 == [points count])  b = [points objectAtIndex: 0];
 			else b = [points objectAtIndex: xint+1];
 			
-			NSPoint c = [ViewerController pointBetweenPoint: [a point] and: [b point] ratio: x - (float) xint];
+			NSPoint c = [ROI pointBetweenPoint: [a point] and: [b point] ratio: x - (float) xint];
 			
 			[pts addObject: [MyPoint point: c]];
 		}
