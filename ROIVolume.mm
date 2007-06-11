@@ -184,7 +184,7 @@
 			delaunayTriangulator->SetInput(pointsDataSet);
 			
 			delaunayTriangulator->SetTolerance(0.001);
-			delaunayTriangulator->SetAlpha( 20); /// pimp my Alpha!!!
+			delaunayTriangulator->SetAlpha( 0); /// pimp my Alpha!!!
 			delaunayTriangulator->BoundingTriangulationOff();
 			
 			vtkDataSetMapper *map = vtkDataSetMapper::New();

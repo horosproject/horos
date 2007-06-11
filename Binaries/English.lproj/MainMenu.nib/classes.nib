@@ -258,6 +258,7 @@
                 revertSeries = id; 
                 roiDefaults = id; 
                 roiDeleteAll = id; 
+                roiDeleteGeneratedROIs = id; 
                 roiGetInfo = id; 
                 roiGetManager = id; 
                 roiHistogram = id; 

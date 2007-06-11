@@ -599,7 +599,7 @@ enum
 - (IBAction) horzFlipDataSet:(id) sender;
 - (void) rotateDataSet:(int) constant;
 - (void) SetSyncButtonBehavior:(id) sender;
-
+- (IBAction) roiDeleteGeneratedROIs:(id) sender;
 - (ROI*)selectedROI;
 - (NSMutableArray*) selectedROIs;
 

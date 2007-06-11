@@ -3917,29 +3917,29 @@ static ViewerController *draggedController = 0L;
 	
 // ***************
 
-//	{
-//	int i;
-//	NSArray	*rois = [self selectedROIs];
-//	
-//	for( i = 0; i < 200; i++)
-//	{
-//		ROI	*c = [self roiMorphingBetween: [rois objectAtIndex: 0] and: [rois objectAtIndex: 1] ratio: (float) (i+1) / 201.];
-//		
-//		if( c)
-//		{
-//			[imageView roiSet: c];
-//			[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: c];
-//		}
-//		
-//		[imageView display];
-//		
-//		Delay(1, 0L);
-//		
-//		[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] removeObject: c];
-//	}
-//	[imageView display];
-//	return;
-//	}
+	{
+	int i;
+	NSArray	*rois = [self selectedROIs];
+	
+	for( i = 0; i < 200; i++)
+	{
+		ROI	*c = [self roiMorphingBetween: [rois objectAtIndex: 0] and: [rois objectAtIndex: 1] ratio: (float) (i+1) / 201.];
+		
+		if( c)
+		{
+			[imageView roiSet: c];
+			[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: c];
+		}
+		
+		[imageView display];
+		
+		Delay(1, 0L);
+		
+		[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] removeObject: c];
+	}
+	[imageView display];
+	return;
+	}
 	
 	if ([[sender title] isEqualToString:@"Shutter"] == YES) [shutterOnOff setState: (![shutterOnOff state])];//from menu
 	long i;
@@ -8414,6 +8414,26 @@ int i,j,l;
 	[name release];
 }
 
+- (IBAction) roiDeleteGeneratedROIs:(id) sender
+{
+	int x, i;
+	
+	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
+	{
+		DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
+		
+		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+		{
+			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
+			if( [[curROI comments] isEqualToString: @"morphing generated"])
+			{
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: 0L];
+				[[roiList[ curMovieIndex] objectAtIndex: x] removeObject: curROI];
+			}
+		}
+	}
+}
+
 - (IBAction) roiVolume:(id) sender
 {
 	long				i, x, y, globalCount, imageCount;
@@ -8437,7 +8457,7 @@ int i,j,l;
 	
 	if( selectedRoi == 0L)
 	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), NSLocalizedString(@"Select an ROI to compute volume of all ROIs with the same name.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
+		NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), NSLocalizedString(@"Select a ROI to compute volume of all ROIs with the same name.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
 		return;
 	}
 	
@@ -8474,7 +8494,13 @@ int i,j,l;
 	
 	NSString	*error;
 	
-	volume = [self computeVolume: selectedRoi points:&pts error: &error];
+	// First generate the missing ROIs
+	volume = [self computeVolume: selectedRoi points:&pts generateMissingROIs: YES error: &error];
+	NSLog( @"volume: %f", volume);
+	
+	// Recompute the volume
+	volume = [self computeVolume: selectedRoi points:&pts generateMissingROIs: YES error: &error];
+	NSLog( @"volume with generated ROIs: %f", volume);
 	
 	if( error)
 	{
@@ -8482,9 +8508,12 @@ int i,j,l;
 		return;
 	}
 	
-	ROIVolumeController	*viewer = [[ROIVolumeController alloc] initWithPoints:pts :volume :self];
-	[viewer showWindow:self];
-	[[viewer window] center];
+	if( [sender tag] == 0)
+	{
+		ROIVolumeController	*viewer = [[ROIVolumeController alloc] initWithPoints:pts :volume :self];
+		[viewer showWindow: self];
+		[[viewer window] center];
+	}
 }
 
 -(IBAction) roiSetPixelsSetup:(id) sender
@@ -8715,8 +8744,6 @@ int i,j,l;
 					}
 				}
 			}
-			
-			
 		}
 	}
 	
@@ -9307,19 +9334,16 @@ int i,j,l;
 	return rois;
 }
 
-#define NOOFPOINTS 100
-
-- (ROI*) isoContourROI: (ROI*) a
+- (ROI*) isoContourROI: (ROI*) a numberOfPoints: (int) nof
 {
 	if( [a type] == tCPolygon || [a type] == tOPolygon || [a type] == tPencil)
 	{
-		[a setPoints: [ROI resamplePoints: [a points] number: NOOFPOINTS]];
-		
+		[a setPoints: [ROI resamplePoints: [a points] number: nof]];
 		return a;
 	}
 	else if( [a type] == tPlain)
 	{
-		a = [self convertBrushROItoPolygon: a numPoints: NOOFPOINTS];
+		a = [self convertBrushROItoPolygon: a numPoints: nof];
 		return a;
 	}
 	else return 0L;
@@ -9329,15 +9353,22 @@ int i,j,l;
 {
 	// Convert both ROIs into polygons, after a marching square isocontour
 	
-	a = [self isoContourROI: a];
-	b = [self isoContourROI: b];
+	int maxPoints = [[a points] count];
+	if( maxPoints < [[b points] count]) maxPoints = [[b points] count];
+	maxPoints += maxPoints / 5;
+	
+	a = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: a]];
+	b = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: b]];
+	
+	a = [self isoContourROI: a numberOfPoints: maxPoints];
+	b = [self isoContourROI: b numberOfPoints: maxPoints];
 	
 	if( a == 0L) return 0L;
 	if( b == 0L) return 0L;
 	
-	if( [[a points] count] != NOOFPOINTS || [[b points] count] != NOOFPOINTS)
+	if( [[a points] count] != maxPoints || [[b points] count] != maxPoints)
 	{
-		NSLog( @"NoOfPoints !");
+		NSLog( @"***** NoOfPoints !");
 		return 0L;
 	}
 	
@@ -13096,14 +13127,15 @@ int i,j,l;
 
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts error:(NSString**) error
 {
-	return [self computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs: NO error:(NSString**) error];
+	return [self computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs: YES error:(NSString**) error];
 }
 
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs error:(NSString**) error
 {
-	long				i, x, y, globalCount, imageCount;
+	long				i, x, y, globalCount, imageCount, lastImageIndex;
 	float				volume = 0, prevArea, preLocation, interval;
 	long				err = 0;
+	ROI					*lastROI = 0L;
 	
 	if( pts) *pts = [NSMutableArray arrayWithCapacity:0];
 
@@ -13111,6 +13143,7 @@ int i,j,l;
 	prevArea = 0;
 	preLocation = 0;
 	volume = 0;
+	lastImageIndex = -1;
 	if( error) *error = 0L;
 	
 	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
@@ -13155,6 +13188,28 @@ int i,j,l;
 						[*pts addObject: pt3D];
 					}
 				}
+				
+				if( generateMissingROIs)
+				{
+					if( lastROI && (lastImageIndex+1) < x)
+					{
+						for( y = lastImageIndex+1; y < x; y++)
+						{
+							ROI	*c = [self roiMorphingBetween: lastROI  and: curROI ratio: (float) (y - lastImageIndex) / (float) (x - lastImageIndex)];
+							
+							if( c)
+							{
+								[c setComments: @"morphing generated"];
+								[c setName: [selectedRoi name]];
+								[imageView roiSet: c];
+								[[roiList[curMovieIndex] objectAtIndex: y] addObject: c];
+							}
+						}
+					}
+				}
+				
+				lastImageIndex = x;
+				lastROI = curROI;
 			}
 		}
 		
@@ -13169,11 +13224,6 @@ int i,j,l;
 	{
 		if( error) *error = [NSString stringWithFormat: NSLocalizedString(@"If found only ONE ROI : not enable to compute a volume!", nil), x+1];
 		return 0;
-	}
-	
-	if( generateMissingROIs)
-	{
-		
 	}
 	
 	if( volume < 0) volume = -volume;

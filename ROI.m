@@ -195,25 +195,40 @@ GLenum glReportError (void)
 			minyIndex = i;
 		}
 	}
+	BOOL reverse = NO;
+	
+	int distance = 0;
+	
+	distance = minxIndex - minyIndex;
+	
+	if( fabs( distance) > [newPts count]/2)
+	{
+		if( distance >= 0) reverse = YES;
+		else reverse = NO;
+	}
+	else
+	{
+		if( distance >= 0) reverse = NO;
+		else reverse = YES;
+	}
 	
 	NSMutableArray* orderedPts = [NSMutableArray array];
-	
-	if( fabs( minyIndex - minxIndex) > fabs( minyIndex + ([newPts count] - minxIndex)))
+	if( reverse == NO )
 	{
 		for( i = 0 ; i < [newPts count] ; i++)
 		{
-			[orderedPts addObject: [newPts objectAtIndex: minyIndex]];
-			minyIndex++;
-			if( minyIndex == [newPts count]) minyIndex = 0;
+			[orderedPts addObject: [newPts objectAtIndex: minxIndex]];
+			minxIndex++;
+			if( minxIndex == [newPts count]) minxIndex = 0;
 		}
 	}
 	else
 	{
 		for( i = 0 ; i < [newPts count] ; i++)
 		{
-			[orderedPts addObject: [newPts objectAtIndex: minyIndex]];
-			minyIndex--;
-			if( minyIndex < 0) minyIndex = [newPts count] -1;
+			[orderedPts addObject: [newPts objectAtIndex: minxIndex]];
+			minxIndex--;
+			if( minxIndex < 0) minxIndex = [newPts count] -1;
 		}
 	}
 	
@@ -1556,6 +1571,9 @@ GLenum glReportError (void)
 	{
 		mode = ROI_drawing;
 	}
+	
+	if( [[self comments] isEqualToString: @"morphing generated"])
+		[self setComments:@""];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 	
