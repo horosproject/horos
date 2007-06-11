@@ -87,6 +87,7 @@
                 calciumScoring = id; 
                 centerline = id; 
                 changeMatrixSize = id; 
+                closeModal = id; 
                 clutAction = id; 
                 computeSum = id; 
                 contextualMenuEvent = id; 
@@ -139,6 +140,7 @@
                 resetImage = id; 
                 revertSeries = id; 
                 roiDeleteAll = id; 
+                roiDeleteGeneratedROIs = id; 
                 roiDeleteWithName = id; 
                 roiPropagate = id; 
                 roiPropagateSetup = id; 
@@ -210,7 +212,6 @@
                 blendingTypeBlue = NSButton; 
                 blendingTypeGreen = NSButton; 
                 blendingTypeMultiply = NSButton; 
-                blendingTypeRGB = NSButton; 
                 blendingTypeRed = NSButton; 
                 blendingTypeSubtract = NSButton; 
                 blendingTypeWindow = NSWindow; 
@@ -308,6 +309,8 @@
                 reportTemplatesImageView = NSImageView; 
                 reportTemplatesListPopUpButton = NSPopUpButton; 
                 reportTemplatesView = NSView; 
+                roiApplyMatrix = NSMatrix; 
+                roiApplyWindow = NSWindow; 
                 roiPropaCopy = NSMatrix; 
                 roiPropaDest = NSTextField; 
                 roiPropaDim = NSMatrix; 

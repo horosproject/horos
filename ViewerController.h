@@ -183,12 +183,15 @@ enum
 	
 	IBOutlet NSWindow       *blendingTypeWindow;
 	IBOutlet NSButton		*blendingTypeMultiply, *blendingTypeSubtract;
-	IBOutlet NSButton		*blendingTypeRed, *blendingTypeGreen, *blendingTypeBlue, *blendingTypeRGB;
+	IBOutlet NSButton		*blendingTypeRed, *blendingTypeGreen, *blendingTypeBlue;
 	IBOutlet NSPopUpButton  *blendingPlugins;
 	
 	IBOutlet NSWindow       *roiPropaWindow;
 	IBOutlet NSMatrix		*roiPropaMode, *roiPropaDim, *roiPropaCopy;
 	IBOutlet NSTextField	*roiPropaDest;
+	
+	IBOutlet NSWindow		*roiApplyWindow;
+	IBOutlet NSMatrix		*roiApplyMatrix;
 	
 	IBOutlet NSWindow       *addConvWindow;
 	IBOutlet NSMatrix		*convMatrix, *sizeMatrix;
@@ -378,6 +381,7 @@ enum
 - (void) addToUndoQueue:(NSString*) string;
 - (id) prepareObjectForUndo:(NSString*) string;
 
+- (IBAction) closeModal:(id) sender;
 - (void)bringToFrontROI:(ROI*)roi;
 - (void) activateFusion:(id) sender;
 - (void) copySettingsToOthers: (id)sender;

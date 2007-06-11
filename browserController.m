@@ -6745,6 +6745,7 @@ static BOOL withReset = NO;
             modalDelegate: nil
             didEndSelector: nil
             contextInfo: nil];
+			
     [NSApp runModalForWindow:sheet];
 
     // Sheet is up here.

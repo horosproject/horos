@@ -2351,8 +2351,12 @@ GLenum glReportError (void)
 	
 	[self valid];
 	
-	if( action) [[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
-	
+	if( action)
+	{
+		if( [[self comments] isEqualToString: @"morphing generated"])
+			[self setComments:@""];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+	}
 	return action;
 }
 

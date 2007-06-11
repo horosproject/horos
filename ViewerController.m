@@ -2743,7 +2743,6 @@ static ViewerController *draggedController = 0L;
 			[blendingTypeRed	setEnabled: NO];
 			[blendingTypeGreen  setEnabled: NO];
 			[blendingTypeBlue   setEnabled: NO];
-			[blendingTypeRGB   setEnabled: NO];
 		}
 		
 	if( [[[blendedwin pixList] objectAtIndex: 0] isRGB])
@@ -2754,7 +2753,6 @@ static ViewerController *draggedController = 0L;
 	}
 	else
 	{
-		[blendingTypeRGB   setEnabled: NO];
 	}
 	
 	// Prepare fusion plug-ins menu
@@ -3917,29 +3915,29 @@ static ViewerController *draggedController = 0L;
 	
 // ***************
 
-	{
-	int i;
-	NSArray	*rois = [self selectedROIs];
-	
-	for( i = 0; i < 200; i++)
-	{
-		ROI	*c = [self roiMorphingBetween: [rois objectAtIndex: 0] and: [rois objectAtIndex: 1] ratio: (float) (i+1) / 201.];
-		
-		if( c)
-		{
-			[imageView roiSet: c];
-			[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: c];
-		}
-		
-		[imageView display];
-		
-		Delay(1, 0L);
-		
-		[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] removeObject: c];
-	}
-	[imageView display];
-	return;
-	}
+//	{
+//	int i;
+//	NSArray	*rois = [self selectedROIs];
+//	
+//	for( i = 0; i < 200; i++)
+//	{
+//		ROI	*c = [self roiMorphingBetween: [rois objectAtIndex: 0] and: [rois objectAtIndex: 1] ratio: (float) (i+1) / 201.];
+//		
+//		if( c)
+//		{
+//			[imageView roiSet: c];
+//			[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: c];
+//		}
+//		
+//		[imageView display];
+//		
+//		Delay(1, 0L);
+//		
+//		[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] removeObject: c];
+//	}
+//	[imageView display];
+//	return;
+//	}
 	
 	if ([[sender title] isEqualToString:@"Shutter"] == YES) [shutterOnOff setState: (![shutterOnOff state])];//from menu
 	long i;
@@ -8835,6 +8833,121 @@ int i,j,l;
 	[NSApp beginSheet: roiRenameWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
+- (IBAction) closeModal:(id) sender
+{
+	if( [sender tag])
+	{
+		[NSApp stopModal];
+	}
+	else
+	{
+		[NSApp abortModal];
+	}
+}
+
+- (NSArray*) roiApplyWindow:(id) sender
+{
+	[NSApp beginSheet: roiApplyWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+	
+	int result = [NSApp runModalForWindow: roiApplyWindow];
+	
+	[NSApp endSheet:roiApplyWindow returnCode: 0];
+	 
+	[roiApplyWindow orderOut:sender];
+    
+	NSMutableArray	*applyToROIs = [NSMutableArray array];
+	
+	if( result == NSRunStoppedResponse)
+	{
+		long i, x, y;
+		
+		switch( [[roiApplyMatrix selectedCell] tag])
+		{
+			case 0:	// All ROIs of the image
+				y = curMovieIndex;
+				x = [imageView curImage];
+				for( i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
+				{
+					ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
+					
+					[applyToROIs addObject: curROI];
+				}
+			break;
+			
+			case 1:	// All ROIs of the series
+				for( y = 0; y < maxMovieIndex; y++)
+				{
+					for( x = 0; x < [pixList[y] count]; x++)
+					{
+						for( i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
+						{
+							ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
+							
+							[applyToROIs addObject: curROI];
+						}
+					}
+				}
+			break;
+			
+			case 2:	// All selected ROIs
+				y = curMovieIndex;
+				x = [imageView curImage];
+				for( i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
+				{
+					ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
+					
+					long mode = [curROI ROImode];
+			
+					if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+					{
+						[applyToROIs addObject: curROI];
+					}
+				}
+			break;
+			
+			case 3:	// All ROIs with same name as selected
+			{
+				y = curMovieIndex;
+				x = [imageView curImage];
+				NSString* name = 0L;
+				
+				for( i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
+				{
+					ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
+					
+					long mode = [curROI ROImode];
+			
+					if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+					{
+						name = [curROI name];
+						break;
+					}
+				}
+				
+				if( name)
+				{
+					for( y = 0; y < maxMovieIndex; y++)
+					{
+						for( x = 0; x < [pixList[y] count]; x++)
+						{
+							for( i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
+							{
+								ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
+								
+								if( [[curROI name] isEqualToString: name])
+									[applyToROIs addObject: curROI];
+							}
+						}
+					}
+				}
+			}
+			break;
+		}
+	}
+	
+	return applyToROIs;
+}
+
 - (IBAction) roiDeleteWithName:(NSString*) name
 {
 	long i, x, y;
@@ -9357,6 +9470,8 @@ int i,j,l;
 	if( maxPoints < [[b points] count]) maxPoints = [[b points] count];
 	maxPoints += maxPoints / 5;
 	
+	ROI* inputROI = a;
+	
 	a = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: a]];
 	b = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: b]];
 	
@@ -9387,6 +9502,16 @@ int i,j,l;
 		
 		[pts addObject: [MyPoint point: newPt]];
 	}
+	
+	if( [inputROI type] == tPlain)
+	{
+		newROI = [self convertPolygonROItoBrush: newROI];
+	}
+	
+	[newROI setColor: [inputROI rgbcolor]];
+	[newROI setOpacity: [inputROI opacity]];
+	[newROI setThickness: [inputROI thickness]];
+	[newROI setName: [inputROI name]];
 	
 	return newROI;
 }
@@ -9812,52 +9937,81 @@ int i,j,l;
 	return newROI;
 }
 
+-(int) imageIndexOfROI:(ROI*) c
+{
+	int x, i;
+	
+	for( x = 0; x < [pixList[ curMovieIndex] count]; x++)
+	{
+		for( i = 0; i < [[roiList[ curMovieIndex] objectAtIndex: x] count]; i++)
+		{
+			ROI *curROI = [[roiList[ curMovieIndex] objectAtIndex: x] objectAtIndex:i];
+			
+			if( curROI == c) return x;
+		}
+	}
+	
+	return -1;
+}
+
 - (IBAction) convertBrushPolygon: (id) sender
 {
 	[self addToUndoQueue: @"roi"];
 	[imageView stopROIEditingForce: YES];
 	
-	ROI *selectedROI = [self selectedROI];
+	NSArray *selectedROIs = [self roiApplyWindow: self];
 	
-	int tag;
+	int tag, i;
 	
-	if( [selectedROI type] == tPlain) tag = 1;
-	else tag = 0;
-	
-	switch( tag)
+	for( i = 0; i < [selectedROIs count]; i++)
 	{
-		case 1:
-		{
-			ROI	*newROI = [self convertBrushROItoPolygon: selectedROI numPoints:100];
-			
-			if( newROI)
-			{
-				// Add the new ROI
-				[imageView roiSet: newROI];
-				[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: newROI];
-				[newROI setROIMode: ROI_selected];
-			}
-		}
-		break;
+		ROI* selectedROI = [selectedROIs objectAtIndex: i];
 		
-		case 0:
+		int index = [self imageIndexOfROI: selectedROI];
+		
+		if( index >= 0)
 		{
-			ROI	*newROI = [self convertPolygonROItoBrush: selectedROI];
+			if( [selectedROI type] == tPlain) tag = 1;
+			else tag = 0;
 			
-			if( newROI)
+			switch( tag)
 			{
-				// Add the new ROI
-				[imageView roiSet: newROI];
-				[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: newROI];
-				[newROI setROIMode: ROI_selected];
+				case 1:
+				{
+					ROI	*newROI = [self convertBrushROItoPolygon: selectedROI numPoints:100];
+					
+					if( newROI)
+					{
+						// Add the new ROI
+						[[selectedROI curView] roiSet: newROI];
+						[[roiList[curMovieIndex] objectAtIndex: index] addObject: newROI];
+						[newROI setROIMode: ROI_selected];
+						[newROI setName: [selectedROI name]];
+					}
+				}
+				break;
+				
+				case 0:
+				{
+					ROI	*newROI = [self convertPolygonROItoBrush: selectedROI];
+					
+					if( newROI)
+					{
+						// Add the new ROI
+						[[selectedROI curView] roiSet: newROI];
+						[[roiList[curMovieIndex] objectAtIndex: index] addObject: newROI];
+						[newROI setROIMode: ROI_selected];
+						[newROI setName: [selectedROI name]];
+					}
+				}
+				break;
 			}
+			
+			// Remove the old ROI
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:selectedROI userInfo: 0L];
+			[[roiList[curMovieIndex] objectAtIndex: index] removeObject: selectedROI];
 		}
-		break;
 	}
-	
-	// Remove the old ROI
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:selectedROI userInfo: 0L];
-	[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] removeObject: selectedROI];
 	
 	[imageView setIndex: [imageView curImage]];
 }
