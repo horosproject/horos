@@ -8090,14 +8090,7 @@ BOOL            readable = YES;
 						nifti_mat44_to_orientation(nifti_imagedata->sto_xyz, &icod, &jcod, &kcod);
 					}	
 					
-					if(jcod == NIFTI_L2R || jcod == NIFTI_R2L)
-					{
-						// This is coronal by default.
-						originX = 0;
-						originY = frameNo * pixelSpacingX;
-						originZ = 0;
-					}
-					else if(jcod == NIFTI_A2P || jcod == NIFTI_P2A)
+					if(jcod == NIFTI_A2P || jcod == NIFTI_P2A)
 					{
 						// This is axial by default.
 						originX = 0;
@@ -8106,146 +8099,164 @@ BOOL            readable = YES;
 					}
 					else if(jcod == NIFTI_S2I || jcod == NIFTI_I2S)
 					{
-						// This is sagittal by default.
-						originX = frameNo * pixelSpacingX;
-						originY = 0;
-						originZ = 0;
+						if(icod == NIFTI_A2P || icod == NIFTI_P2A)
+						{
+							// This is sagittal by default.
+							originX = frameNo * pixelSpacingX;
+							originY = 0;
+							originZ = 0;
+						}
+						else if(icod == NIFTI_R2L || icod == NIFTI_L2R)
+						{
+							// This is coronal by default.
+							originX = 0;
+							originY = frameNo * pixelSpacingX;
+							originZ = 0;
+						}						
 					}
 										
 					
 					
 					// Adjust orientation of nifti file
-					BOOL moveOn = NO;
-					while(!moveOn)
+					BOOL flipI = NO;
+					BOOL flipJ = NO;
+					int shiftNum = 0;
+					
+					if(qform_code > 0)
 					{
-						BOOL flipI = NO;
-						BOOL flipJ = NO;
-						int shiftNum = 0;
-						
-						if(qform_code > 0)
+						nifti_mat44_to_orientation(nifti_imagedata->qto_xyz, &icod, &jcod, &kcod);
+					}
+					else if(sform_code > 0)
+					{
+						nifti_mat44_to_orientation(nifti_imagedata->sto_xyz, &icod, &jcod, &kcod);
+					}	
+					
+					
+					if(icod != NIFTI_L2R && icod != NIFTI_R2L)
+					{
+						// a shift is needed
+						if(icod == NIFTI_A2P || icod == NIFTI_P2A)
 						{
-							nifti_mat44_to_orientation(nifti_imagedata->qto_xyz, &icod, &jcod, &kcod);
+							shiftNum = 2;
+						}							
+						else if(icod == NIFTI_S2I || icod == NIFTI_I2S)
+						{
+							shiftNum = 1;
 						}
-						else if(sform_code > 0)
+					}
+					else
+					{
+						// verify that jcod is AP or PA
+						if(jcod != NIFTI_A2P && jcod != NIFTI_P2A)
 						{
-							nifti_mat44_to_orientation(nifti_imagedata->sto_xyz, &icod, &jcod, &kcod);
-						}	
-						
-						
-						if(icod != NIFTI_L2R && icod != NIFTI_R2L)
-						{
-							// a shift is needed
-							if(icod == NIFTI_A2P || icod == NIFTI_P2A)
-							{
-								shiftNum = 2;
-							}							
-							else if(icod == NIFTI_S2I || icod == NIFTI_I2S)
-							{
-								shiftNum = 1;
-							}
-						}
-						
-						
-						if(shiftNum > 0)
-						{
-							// Shift number of times specified.
-							while(shiftNum > 0)
-							{
-								// Shift.
-								float	orient[ 9];
-								int t6, t7, t8;
-								[self orientation: orient];								
-								
-								t6 = orient[ 6];
-								t7 = orient[ 7];
-								t8 = orient[ 8];
-								
-								orient[ 3] = orient[ 0];
-								orient[ 4] = orient[ 1];
-								orient[ 5] = orient[ 2];		
-								
-								orient[ 0] = t6;
-								orient[ 1] = t7;
-								orient[ 2] = t8;	
-								
-								[self setOrientation: orient];
-
-								shiftNum--;
-								
-								// Restart just in case there's a problem.
-								moveOn = NO;
-								continue;
-							}
-						} 
-						
-						if(icod == NIFTI_L2R)
-						{
-							// Need to flip horizontally.
-							flipI = YES;
-						}
-						else if(icod == NIFTI_P2A)
-						{
-							// Need to flip horizontally.
-							flipI = YES;
-						}
-						else if(icod == NIFTI_S2I)
-						{
-							// Need to flip vertically
-							flipI = YES;
-						}
-						
-						if(jcod == NIFTI_P2A)
-						{
-							// Need to flip vertically.
-							flipJ = YES;
-						}
-						else if(jcod == NIFTI_L2R)
-						{
-							// Need to flip vertically.
-							flipJ = YES;
-						}
-						else if(jcod == NIFTI_S2I)
-						{
-							// Need to flip vertically
-							flipJ = YES;
-						}
-
-						if(flipI)
-						{
-							// Flip orientation horizontally
-							float	orient[ 9];
-							[self orientation: orient];
-							orient[ 0] *= -1;
-							orient[ 1] *= -1;
-							orient[ 2] *= -1;
-							[self setOrientation: orient];
-							sliceInterval = 0;
+							NSLog(@"HERE!!!");
+							// this means that jcod is S2I or I2S.
+							// So set orient[3,4,5] to orient[6,7,8]
+							float	orient[ 9]; 
+							[self orientation: orient];								
 							
-							float	o[3];
-							o[ 0] = originX;			o[ 1] = originY;			o[ 2] = originZ;
-							o[ 0] -= width * pixelSpacingX;
-							[self setOrigin: o];
-						}
-						
-						if(flipJ)
-						{
-							// Flip orientation vertically
-							float	orient[ 9];
-							[self orientation: orient];
-							orient[ 3] *= -1;
-							orient[ 4] *= -1;
-							orient[ 5] *= -1;
-							[self setOrientation: orient];
-							sliceInterval = 0;
+							orient[ 3] = orient[ 6];
+							orient[ 4] = orient[ 7];
+							orient[ 5] = orient[ 8];
 							
-							float	o[3];
-							o[ 0] = originX;			o[ 1] = originY;			o[ 2] = originZ;
-							o[ 1] -=  height * pixelSpacingY;
-							[self setOrigin: o];
-						
+							[self setOrientation: orient];						
 						}
+					}
+					
+					
+					if(shiftNum > 0)
+					{
+						// Shift number of times specified.
+						while(shiftNum > 0)
+						{
+							// Shift.
+							float	orient[ 9];
+							int t6, t7, t8;
+							[self orientation: orient];								
+							
+							t6 = orient[ 6];
+							t7 = orient[ 7];
+							t8 = orient[ 8];
+							
+							orient[ 3] = orient[ 0];
+							orient[ 4] = orient[ 1];
+							orient[ 5] = orient[ 2];		
+							
+							orient[ 0] = t6;
+							orient[ 1] = t7;
+							orient[ 2] = t8;	
+							
+							[self setOrientation: orient];
+
+							shiftNum--;
+						}
+					} 
+					
+					if(icod == NIFTI_L2R)
+					{
+						// Need to flip horizontally.
+						flipI = YES;
+					}
+					else if(icod == NIFTI_P2A)
+					{
+						// Need to flip horizontally.
+						flipI = YES;
+					}
+					else if(icod == NIFTI_S2I)
+					{
+						// Need to flip vertically
+						flipI = YES;
+					}
+					
+					if(jcod == NIFTI_P2A)
+					{
+						// Need to flip vertically.
+						flipJ = YES;
+					}
+					else if(jcod == NIFTI_L2R)
+					{
+						// Need to flip vertically.
+						flipJ = YES;
+					}
+					else if(jcod == NIFTI_S2I)
+					{
+						// Need to flip vertically
+						flipJ = YES;
+					}
+
+					if(flipI)
+					{
+						// Flip orientation horizontally
+						float	orient[ 9];
+						[self orientation: orient];
+						orient[ 0] *= -1;
+						orient[ 1] *= -1;
+						orient[ 2] *= -1;
+						[self setOrientation: orient];
+						sliceInterval = 0;
 						
-						moveOn = YES;
+						float	o[3];
+						o[ 0] = originX;			o[ 1] = originY;			o[ 2] = originZ;
+						o[ 0] -= width * pixelSpacingX;
+						[self setOrigin: o];
+					}
+					
+					if(flipJ)
+					{
+						// Flip orientation vertically
+						float	orient[ 9];
+						[self orientation: orient];
+						orient[ 3] *= -1;
+						orient[ 4] *= -1;
+						orient[ 5] *= -1;
+						[self setOrientation: orient];
+						sliceInterval = 0;
+						
+						float	o[3];
+						o[ 0] = originX;			o[ 1] = originY;			o[ 2] = originZ;
+						o[ 1] -=  height * pixelSpacingY;
+						[self setOrigin: o];
+					
 					}
 				}
 				else if( [extension isEqualToString:@"hdr"] == YES) // 'old' ANALYZE
