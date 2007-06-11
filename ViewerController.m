@@ -8416,6 +8416,8 @@ int i,j,l;
 {
 	int x, i;
 	
+	[self addToUndoQueue: @"roi"];
+	
 	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
 		DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
@@ -8491,6 +8493,8 @@ int i,j,l;
 	}
 	
 	NSString	*error;
+	
+	[self addToUndoQueue: @"roi"];
 	
 	// First generate the missing ROIs
 	volume = [self computeVolume: selectedRoi points:&pts generateMissingROIs: YES error: &error];
