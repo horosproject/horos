@@ -3933,7 +3933,7 @@ static ViewerController *draggedController = 0L;
 //		
 //		[imageView display];
 //		
-//		Delay(3, 0L);
+//		Delay(1, 0L);
 //		
 //		[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] removeObject: c];
 //	}
@@ -9313,8 +9313,8 @@ int i,j,l;
 {
 	if( [a type] == tCPolygon || [a type] == tOPolygon || [a type] == tPencil)
 	{
-		a = [self convertPolygonROItoBrush: a];
-		a = [self convertBrushROItoPolygon: a numPoints: NOOFPOINTS];
+		[a setPoints: [ROI resamplePoints: [a points] number: NOOFPOINTS]];
+		
 		return a;
 	}
 	else if( [a type] == tPlain)
@@ -9346,8 +9346,6 @@ int i,j,l;
 	ROI* newROI = [self newROI: tCPolygon];
 	NSMutableArray *pts = [newROI points];
 	int i;
-	
-	NSLog( @"ratio: %f", ratio);
 	
 	for( i = 0; i < [aPts count]; i++)
 	{
@@ -13171,6 +13169,11 @@ int i,j,l;
 	{
 		if( error) *error = [NSString stringWithFormat: NSLocalizedString(@"If found only ONE ROI : not enable to compute a volume!", nil), x+1];
 		return 0;
+	}
+	
+	if( generateMissingROIs)
+	{
+		
 	}
 	
 	if( volume < 0) volume = -volume;

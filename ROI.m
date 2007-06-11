@@ -166,9 +166,6 @@ GLenum glReportError (void)
 	}
 	length += [ROI lengthBetween:[[points objectAtIndex:i] point] and:[[points objectAtIndex:0] point]];
 	
-	NSLog( @"length: %f", length);
-	NSLog( @"points counts: %d", [points count]);
-	
 	NSMutableArray* newPts = [NSMutableArray array];
 	for( i = 0; i < no; i++)
 	{
@@ -179,7 +176,48 @@ GLenum glReportError (void)
 		[newPts addObject: [MyPoint point: p]];
 	}
 	
-	return newPts;
+	float minx = [[newPts objectAtIndex: 0] x];
+	float miny = [[newPts objectAtIndex: 0] y];
+	int minyIndex = 0, minxIndex = 0;
+	
+	//find min x - reorder the points
+	for( i = 0 ; i < [newPts count] ; i++)
+	{
+		if( minx > [[newPts objectAtIndex: i] x])
+		{
+			minx = [[newPts objectAtIndex: i] x];
+			minxIndex = i;
+		}
+		
+		if( miny > [[newPts objectAtIndex: i] y])
+		{
+			miny = [[newPts objectAtIndex: i] y];
+			minyIndex = i;
+		}
+	}
+	
+	NSMutableArray* orderedPts = [NSMutableArray array];
+	
+	if( fabs( minyIndex - minxIndex) > fabs( minyIndex + ([newPts count] - minxIndex)))
+	{
+		for( i = 0 ; i < [newPts count] ; i++)
+		{
+			[orderedPts addObject: [newPts objectAtIndex: minyIndex]];
+			minyIndex++;
+			if( minyIndex == [newPts count]) minyIndex = 0;
+		}
+	}
+	else
+	{
+		for( i = 0 ; i < [newPts count] ; i++)
+		{
+			[orderedPts addObject: [newPts objectAtIndex: minyIndex]];
+			minyIndex--;
+			if( minyIndex < 0) minyIndex = [newPts count] -1;
+		}
+	}
+	
+	return orderedPts;
 }
 
 -(void) setDefaultName:(NSString*) n
