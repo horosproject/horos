@@ -9533,6 +9533,7 @@ int i,j,l;
 		{
 			selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: 0];
 			[selectedRoi setROIMode: ROI_selected];
+			[imageView display];
 		}
 	}
 	
