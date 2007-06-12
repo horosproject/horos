@@ -87,6 +87,7 @@
 #include "vtkSmoothPolyDataFilter.h"
 #include "vtkImageFlip.h"
 #include "vtkTextActor.h"
+#include "vtkPolyDataNormals.h"
 #undef id
 
 class vtkMyCallback;

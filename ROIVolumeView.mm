@@ -86,15 +86,31 @@
 	//vtkSurfaceReconstructionFilter
 	//vtkContourFilter
 	
-	// vtkDelaunay3D
+//	vtkSurfaceReconstructionFilter *surf = vtkSurfaceReconstructionFilter::New();
+//	surf->SetInput( profile);
+//	
+//	vtkContourFilter *cf = vtkContourFilter::New();
+//    cf->SetInput(surf->GetOutput());
+//    cf->SetValue(0, 0.0);
 	
+//	vtkPolyDataNormals *polyDataNormals = vtkPolyDataNormals::New();
+//		polyDataNormals->SetInput( del->GetOutput());
+//		polyDataNormals->ConsistencyOn();
+//		polyDataNormals->AutoOrientNormalsOn();
+		
 	vtkDelaunay3D *del = vtkDelaunay3D::New();
 		del->SetInput( profile);
+//		del->SetInput( polyDataNormals->GetOutput());
 		del->SetTolerance( 0.001);
 		del->SetAlpha( 20);
 		del->BoundingTriangulationOff();
 	profile->Delete();
-	
+
+//	vtkPolyDataNormals *polyDataNormals = vtkPolyDataNormals::New();
+//		polyDataNormals->SetInput( del->GetOutput());
+//		polyDataNormals->ConsistencyOn();
+//		polyDataNormals->AutoOrientNormalsOn();
+
 	vtkDataSetMapper *map = vtkDataSetMapper::New();
 		map->SetInput( (vtkDataSet*) del->GetOutput());
 	del->Delete();
@@ -158,6 +174,8 @@
 	
 	aRenderer->AddActor( ballActor);
 	
+//	triangulation->GetProperty()->FrontfaceCullingOn();
+//	triangulation->GetProperty()->BackfaceCullingOn();
 	aRenderer->AddActor( triangulation);
 	
     aCamera = vtkCamera::New();
