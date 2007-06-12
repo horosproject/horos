@@ -88,6 +88,7 @@
 #include "vtkImageFlip.h"
 #include "vtkTextActor.h"
 #include "vtkPolyDataNormals.h"
+#include "vtkFrustumCoverageCuller.h"
 #undef id
 
 class vtkMyCallback;

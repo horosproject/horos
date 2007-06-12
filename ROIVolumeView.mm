@@ -177,7 +177,12 @@
 //	triangulation->GetProperty()->FrontfaceCullingOn();
 //	triangulation->GetProperty()->BackfaceCullingOn();
 	aRenderer->AddActor( triangulation);
-	
+
+//	vtkFrustumCoverageCuller* culler = vtkFrustumCoverageCuller::New();
+//		culler->SetSortingStyleToFrontToBack();
+//
+//	aRenderer->AddCuller(culler);
+
     aCamera = vtkCamera::New();
 	aCamera->Zoom(1.5);
 
