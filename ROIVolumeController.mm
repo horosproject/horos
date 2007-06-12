@@ -57,6 +57,8 @@
 			   name: @"CloseViewerNotification"
 			 object: nil];
 	
+	[self changeParameters: self];
+	
     return self;
 }
 
@@ -86,6 +88,8 @@
 			   selector: @selector(CloseViewerNotification:)
 				   name: @"CloseViewerNotification"
 				 object: nil];
+	
+	[self changeParameters: self];
 	
     return self;
 }
