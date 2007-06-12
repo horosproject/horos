@@ -114,6 +114,6 @@ class vtkMyCallback;
 
 - (short) setPixSource:(NSMutableArray*)pts;
 - (void) setROIActorVolume:(NSValue*)roiActorPointer;
-- (void) setOpacity: (float) opacity showPoints: (BOOL) sp showSurface: (BOOL) sS;
+- (void) setOpacity: (float) opacity showPoints: (BOOL) sp showSurface: (BOOL) sS showWireframe:(BOOL) w;
 
 @end

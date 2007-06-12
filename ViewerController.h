@@ -564,6 +564,7 @@ enum
 - (void) SyncSeries:(id) sender;
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts error:(NSString**) error;
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs error:(NSString**) error;
+- (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs generatedROIs:(NSMutableArray*) generatedROIs computeData:(NSMutableDictionary*) data error:(NSString**) error;
 - (NSArray*) roisWithName: (NSString*) name;
 - (NSArray*) roiNames;
 - (void) deleteSeriesROIwithName: (NSString*) name;
@@ -579,6 +580,7 @@ enum
 - (id) findiChatButton;
 - (void) convertPETtoSUV;
 - (IBAction) fullScreenMenu:(id) sender;
+-(int) imageIndexOfROI:(ROI*) c;
 - (void)exportTextFieldDidChange:(NSNotification *)note;
 - (short) orientationVector;
 - (short) orthogonalOrientation;

@@ -201,13 +201,16 @@
 	aCamera->Delete();
 }
 
-- (void) setOpacity: (float) opacity showPoints: (BOOL) sp showSurface: (BOOL) sS
+- (void) setOpacity: (float) opacity showPoints: (BOOL) sp showSurface: (BOOL) sS showWireframe:(BOOL) w
 {
 	if( sp == NO) aRenderer->RemoveActor( ballActor);
 	else aRenderer->AddActor( ballActor);
 
 	if( sS == NO) aRenderer->RemoveActor( triangulation);
 	else aRenderer->AddActor( triangulation);
+
+	if( w) triangulation->GetProperty()->SetRepresentationToWireframe();
+	else triangulation->GetProperty()->SetRepresentationToSurface();
 
 	triangulation->GetProperty()->SetOpacity( opacity);
 	

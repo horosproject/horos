@@ -82,6 +82,7 @@
                 opacity = NSSlider; 
                 showPoints = NSButton; 
                 showSurfaces = NSButton; 
+                showWireframe = NSButton; 
                 view = ROIVolumeView; 
                 volumeField = NSTextField; 
             }; 

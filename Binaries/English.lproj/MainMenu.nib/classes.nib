@@ -270,6 +270,7 @@
                 roiPropagateSlab = id; 
                 roiRename = id; 
                 roiSaveSelected = id; 
+                roiSelectDeselectAll = id; 
                 roiSetPixels = id; 
                 roiSetPixelsSetup = id; 
                 roiVolume = id; 

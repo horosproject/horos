@@ -8407,6 +8407,34 @@ int i,j,l;
 	[name release];
 }
 
+- (IBAction) roiSelectDeselectAll:(id) sender
+{
+	int x, i;
+	
+	[self addToUndoQueue: @"roi"];
+	
+	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
+	{
+		DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
+		
+		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+		{
+			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
+			
+			if( [sender tag])
+			{
+				[curROI setROIMode: ROI_selected];
+			}
+			else
+			{
+				[curROI setROIMode: ROI_sleep];
+			}
+		}
+	}
+	
+	[imageView setNeedsDisplay: YES];
+}
+
 - (IBAction) roiDeleteGeneratedROIs:(id) sender
 {
 	int x, i;
@@ -8482,25 +8510,64 @@ int i,j,l;
 	
 	[self addToUndoQueue: @"roi"];
 	
+	WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Preparing data...", nil)];
+	[splash showWindow:self];
+	
 	// First generate the missing ROIs
-	volume = [self computeVolume: selectedRoi points:&pts generateMissingROIs: YES error: &error];
-	NSLog( @"volume: %f", volume);
+	NSMutableArray *generatedROIs = [NSMutableArray array];
+	[self computeVolume: selectedRoi points:&pts generateMissingROIs: YES generatedROIs: generatedROIs computeData:0L error: &error];
 	
 	// Recompute the volume
-	volume = [self computeVolume: selectedRoi points:&pts generateMissingROIs: YES error: &error];
-	NSLog( @"volume with generated ROIs: %f", volume);
+	NSMutableDictionary	*data = 0L;
+	if( [sender tag] == 0) data = [NSMutableDictionary dictionary];
+	
+	volume = [self computeVolume: selectedRoi points:&pts generateMissingROIs: YES generatedROIs: 0L computeData:data error: &error];
+		
+	// Show Volume Window
+	if( [sender tag] == 0 && error == 0L)
+	{
+		ROIVolumeController	*viewer = [[ROIVolumeController alloc] initWithPoints:pts :volume :self];
+		[viewer showWindow: self];
+		
+		NSMutableString	*s = [NSMutableString string];
+		
+		if( volume < 0.01)
+			[s appendString: [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f mm3", nil), volume*1000.]];
+		else
+			[s appendString: [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f cm3", nil), volume]];
+		
+		[s appendString: [NSString stringWithFormat:NSLocalizedString(@"\rMean : %2.4f SDev: %2.4f Total : %2.4f", nil), [[data valueForKey:@"mean"] floatValue], [[data valueForKey:@"dev"] floatValue], [[data valueForKey:@"total"] floatValue]]];
+		[s appendString: [NSString stringWithFormat:NSLocalizedString(@"\rMin : %2.4f Max : %2.4f ", nil), [[data valueForKey:@"min"] floatValue], [[data valueForKey:@"max"] floatValue]]];
+		
+		[viewer setDataString: s];
+		
+		[[viewer window] center];
+		
+		NSLog( [data description]);
+		
+		//Delete the generated ROIs
+		
+		for( i = 0 ; i < [generatedROIs count] ; i++)
+		{
+			ROI	*c = [generatedROIs objectAtIndex: i];
+			
+			int index = [self imageIndexOfROI: c];
+			
+			if( index >= 0)
+			{
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: c userInfo: 0L];
+				[[roiList[curMovieIndex] objectAtIndex: index] removeObject: c];
+			}
+		}
+	}
+
+	[splash close];
+	[splash release];
 	
 	if( error)
 	{
 		NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), error , NSLocalizedString(@"OK", nil), nil, nil);
 		return;
-	}
-	
-	if( [sender tag] == 0)
-	{
-		ROIVolumeController	*viewer = [[ROIVolumeController alloc] initWithPoints:pts :volume :self];
-		[viewer showWindow: self];
-		[[viewer window] center];
 	}
 }
 
@@ -9429,6 +9496,7 @@ int i,j,l;
 	else if( [a type] == tPlain)
 	{
 		a = [self convertBrushROItoPolygon: a numPoints: nof];
+		[a setPoints: [ROI resamplePoints: [a points] number: nof]];
 		return a;
 	}
 	else return 0L;
@@ -13265,16 +13333,23 @@ int i,j,l;
 
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts error:(NSString**) error
 {
-	return [self computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs: NO error:(NSString**) error];
+	return [self computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs: NO generatedROIs: 0L computeData: 0L error:(NSString**) error];
 }
 
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs error:(NSString**) error
+{
+	return [self computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs generatedROIs: 0L computeData: 0L error:(NSString**) error];
+}
+
+- (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs generatedROIs:(NSMutableArray*) generatedROIs computeData:(NSMutableDictionary*) data error:(NSString**) error
 {
 	long				i, x, y, globalCount, imageCount, lastImageIndex;
 	float				volume = 0, prevArea, preLocation, interval;
 	long				err = 0;
 	ROI					*lastROI = 0L;
-	
+	BOOL				missingSlice = NO;
+	NSMutableArray		*theSlices = [NSMutableArray array];
+		
 	if( pts) *pts = [NSMutableArray arrayWithCapacity:0];
 
 	globalCount = 0;
@@ -13341,10 +13416,16 @@ int i,j,l;
 								[c setName: [selectedRoi name]];
 								[imageView roiSet: c];
 								[[roiList[curMovieIndex] objectAtIndex: y] addObject: c];
+								
+								[theSlices addObject: [NSDictionary dictionaryWithObjectsAndKeys: c, @"roi", [pixList[curMovieIndex] objectAtIndex: y], @"dcmPix", 0L]];
+								[generatedROIs addObject: c];
 							}
 						}
 					}
 				}
+				else missingSlice = YES;
+				
+				[theSlices addObject: [NSDictionary dictionaryWithObjectsAndKeys: curROI, @"roi", curPix, @"dcmPix", 0L]];
 				
 				lastImageIndex = x;
 				lastROI = curROI;
@@ -13355,6 +13436,102 @@ int i,j,l;
 		{
 			if( error) *error = [NSString stringWithFormat: NSLocalizedString(@"Only ONE ROI per image, please! (im: %d)", nil), x+1];
 			return 0;
+		}
+	}
+	
+	if( data)
+	{
+		if( missingSlice) NSLog( @"**** Warning cannot compute data on a ROI with missing slices. Turn generateMissingROIs to TRUE to solve this.");
+		else
+		{
+			double gmean = 0, gtotal = 0, gmin = 0, gmax = 0, gdev = 0;
+			
+//			for( i = 0 ; i < [theSlices count]; i++)
+//			{
+//				DCMPix	*curPix = [[theSlices objectAtIndex: i] objectForKey:@"dcmPix"];
+//				ROI		*curROI = [[theSlices objectAtIndex: i] objectForKey:@"roi"];
+//				
+//				float mean = 0, total = 0, dev = 0, min = 0, max = 0;
+//				[curPix computeROIInt: curROI :&mean :&total :&dev :&min :&max];
+//				
+//				gmean  = ((gmean * gtotal) + (mean*total)) / (gtotal+total);
+//				gdev  = ((gdev * gtotal) + (dev*total)) / (gtotal+total);
+//				
+//				gtotal += total;
+//
+//				if( i == 0)
+//				{
+//					gmin = min;
+//					gmax = max;
+//				}
+//				else
+//				{
+//					if( min < gmin) gmin = min;
+//					if( max > gmax) gmax = max;
+//				}
+//			}
+//			
+//			NSLog( @"%f\r%f\r%f\r%f\r%f", gtotal, gmean, gdev, gmin, gmax);
+			
+			long			memSize = 0;
+			float			*totalPtr = 0L;
+			
+			for( i = 0 ; i < [theSlices count]; i++)
+			{
+				DCMPix	*curPix = [[theSlices objectAtIndex: i] objectForKey:@"dcmPix"];
+				ROI		*curROI = [[theSlices objectAtIndex: i] objectForKey:@"roi"];
+				
+				long numberOfValues;
+				
+				float *tempPtr = [curPix getROIValue: &numberOfValues :curROI :0L];
+				
+				float *newPtr = malloc( (memSize + numberOfValues)*sizeof( float));
+				
+				if( totalPtr)
+					memcpy( newPtr, totalPtr, memSize * sizeof(float));
+				
+				free( totalPtr);
+				totalPtr = newPtr;
+				
+				memcpy( newPtr + memSize, tempPtr, numberOfValues * sizeof(float));
+				
+				memSize += numberOfValues;
+				
+				free( tempPtr);
+			}
+			
+			gtotal = 0;
+			for( i = 0; i < memSize; i++)
+			{
+				gtotal += totalPtr[ i];
+			}
+			
+			gmean = gtotal / memSize;
+			
+			gdev = 0;
+			gmin = totalPtr[ 0];
+			gmin = totalPtr[ 0];
+			for( i = 0; i < memSize; i++)
+			{
+				float	val = totalPtr[ i];
+				
+				float temp = gmean - val;
+				temp *= temp;
+				gdev += temp;
+				
+				if( val < gmin) gmin = val;
+				if( val > gmax) gmax = val;
+			}
+			gdev = gdev / (double) (memSize-1);
+			gdev = sqrt( gdev);
+			
+			free( totalPtr);
+			
+			[data setObject: [NSNumber numberWithDouble: gmin] forKey:@"min"];
+			[data setObject: [NSNumber numberWithDouble: gmax] forKey:@"max"];
+			[data setObject: [NSNumber numberWithDouble: gmean] forKey:@"mean"];
+			[data setObject: [NSNumber numberWithDouble: gtotal] forKey:@"total"];
+			[data setObject: [NSNumber numberWithDouble: gdev] forKey:@"dev"];
 		}
 	}
 	

@@ -21,7 +21,7 @@
 
 - (IBAction) changeParameters:(id) sender
 {
-	[view setOpacity: [opacity floatValue] showPoints: [showPoints state] showSurface: [showSurfaces state]];
+	[view setOpacity: [opacity floatValue] showPoints: [showPoints state] showSurface: [showSurfaces state] showWireframe: [showWireframe state]];
 }
 
 - (void) CloseViewerNotification: (NSNotification*) note
@@ -31,6 +31,11 @@
 		[[self window] setDelegate:nil];
 		[self release];
 	}
+}
+
+- (void) setDataString:(NSString*) s
+{
+	[volumeField setStringValue: s];
 }
 
 -(id) initWithPoints:(NSMutableArray*) pts :(float) volume :(ViewerController*) iviewer
