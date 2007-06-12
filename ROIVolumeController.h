@@ -30,7 +30,6 @@
 	IBOutlet NSButton				*showSurfaces, *showPoints, *showWireframe;
 	IBOutlet NSSlider				*opacity;
 	
-	ROIVolume						*roiVolume;
 	ViewerController				*viewer;
 }
 

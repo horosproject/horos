@@ -8515,21 +8515,23 @@ int i,j,l;
 	
 	// First generate the missing ROIs
 	NSMutableArray *generatedROIs = [NSMutableArray array];
-	[self computeVolume: selectedRoi points:&pts generateMissingROIs: YES generatedROIs: generatedROIs computeData:0L error: &error];
-	
-	// Recompute the volume
 	NSMutableDictionary	*data = 0L;
+	
 	if( [sender tag] == 0) data = [NSMutableDictionary dictionary];
 	
-	volume = [self computeVolume: selectedRoi points:&pts generateMissingROIs: YES generatedROIs: 0L computeData:data error: &error];
+	volume = [self computeVolume: selectedRoi points:&pts generateMissingROIs: YES generatedROIs: generatedROIs computeData:data error: &error];
 		
 	// Show Volume Window
 	if( [sender tag] == 0 && error == 0L)
 	{
 		ROIVolumeController	*viewer = [[ROIVolumeController alloc] initWithPoints:pts :volume :self];
+		
 		[viewer showWindow: self];
 		
 		NSMutableString	*s = [NSMutableString string];
+		
+		if( [selectedRoi name] && [[selectedRoi name] isEqualToString:@""] == NO)
+			[s appendString: [NSString stringWithFormat:NSLocalizedString(@"%@\r", nil), [selectedRoi name]]];
 		
 		if( volume < 0.01)
 			[s appendString: [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f mm3", nil), volume*1000.]];
@@ -13344,20 +13346,68 @@ int i,j,l;
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs generatedROIs:(NSMutableArray*) generatedROIs computeData:(NSMutableDictionary*) data error:(NSString**) error
 {
 	long				i, x, y, globalCount, imageCount, lastImageIndex;
-	float				volume = 0, prevArea, preLocation, interval;
+	float				volume, prevArea, preLocation, interval;
 	long				err = 0;
-	ROI					*lastROI = 0L;
+	ROI					*lastROI;
 	BOOL				missingSlice = NO;
 	NSMutableArray		*theSlices = [NSMutableArray array];
 		
 	if( pts) *pts = [NSMutableArray arrayWithCapacity:0];
-
-	globalCount = 0;
-	prevArea = 0;
-	preLocation = 0;
-	volume = 0;
+	
+	lastROI = 0L;
 	lastImageIndex = -1;
 	if( error) *error = 0L;
+	
+	if( generateMissingROIs)
+	{
+		for( x = 0; x < [pixList[curMovieIndex] count]; x++)
+		{
+			DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
+			imageCount = 0;
+			
+			for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+			{
+				ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
+				if( [[curROI name] isEqualToString: [selectedRoi name]])
+				{
+					imageCount++;
+					
+					DCMPix *curPix = [pixList[ curMovieIndex] objectAtIndex: x];
+					
+					if( generateMissingROIs)
+					{
+						if( lastROI && (lastImageIndex+1) < x)
+						{
+							for( y = lastImageIndex+1; y < x; y++)
+							{
+								ROI	*c = [self roiMorphingBetween: lastROI  and: curROI ratio: (float) (y - lastImageIndex) / (float) (x - lastImageIndex)];
+								
+								if( c)
+								{
+									[c setComments: @"morphing generated"];
+									[c setName: [selectedRoi name]];
+									[imageView roiSet: c];
+									[[roiList[curMovieIndex] objectAtIndex: y] addObject: c];
+									
+									[generatedROIs addObject: c];
+								}
+							}
+						}
+					}
+					
+					lastImageIndex = x;
+					lastROI = curROI;
+				}
+			}
+		}
+	}
+	
+	lastROI = 0L;
+	prevArea = 0;
+	globalCount = 0;
+	lastImageIndex = -1;
+	preLocation = 0;
+	volume = 0;
 	
 	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
@@ -13402,28 +13452,8 @@ int i,j,l;
 					}
 				}
 				
-				if( generateMissingROIs)
-				{
-					if( lastROI && (lastImageIndex+1) < x)
-					{
-						for( y = lastImageIndex+1; y < x; y++)
-						{
-							ROI	*c = [self roiMorphingBetween: lastROI  and: curROI ratio: (float) (y - lastImageIndex) / (float) (x - lastImageIndex)];
-							
-							if( c)
-							{
-								[c setComments: @"morphing generated"];
-								[c setName: [selectedRoi name]];
-								[imageView roiSet: c];
-								[[roiList[curMovieIndex] objectAtIndex: y] addObject: c];
-								
-								[theSlices addObject: [NSDictionary dictionaryWithObjectsAndKeys: c, @"roi", [pixList[curMovieIndex] objectAtIndex: y], @"dcmPix", 0L]];
-								[generatedROIs addObject: c];
-							}
-						}
-					}
-				}
-				else missingSlice = YES;
+				if( lastROI && (lastImageIndex+1) < x)
+					missingSlice = YES;
 				
 				[theSlices addObject: [NSDictionary dictionaryWithObjectsAndKeys: curROI, @"roi", curPix, @"dcmPix", 0L]];
 				
@@ -13473,13 +13503,16 @@ int i,j,l;
 //			
 //			NSLog( @"%f\r%f\r%f\r%f\r%f", gtotal, gmean, gdev, gmin, gmax);
 			
-			long			memSize = 0;
-			float			*totalPtr = 0L;
-			
+			long				memSize = 0;
+			float				*totalPtr = 0L;
+			NSMutableArray		*rois = [NSMutableArray array];
+	
 			for( i = 0 ; i < [theSlices count]; i++)
 			{
 				DCMPix	*curPix = [[theSlices objectAtIndex: i] objectForKey:@"dcmPix"];
 				ROI		*curROI = [[theSlices objectAtIndex: i] objectForKey:@"roi"];
+				
+				[rois addObject: curROI];
 				
 				long numberOfValues;
 				
@@ -13532,6 +13565,7 @@ int i,j,l;
 			[data setObject: [NSNumber numberWithDouble: gmean] forKey:@"mean"];
 			[data setObject: [NSNumber numberWithDouble: gtotal] forKey:@"total"];
 			[data setObject: [NSNumber numberWithDouble: gdev] forKey:@"dev"];
+			[data setObject: rois forKey:@"rois"];
 		}
 	}
 	
