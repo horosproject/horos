@@ -101,7 +101,10 @@ class vtkMyCallback;
 {
     vtkRenderer					*aRenderer;
     vtkCamera					*aCamera;
-
+	
+	vtkActor					*ballActor;
+	vtkActor					*triangulation;
+	
     vtkActor					*outlineRect;
     vtkPolyDataMapper			*mapOutline;
     vtkOutlineFilter			*outlineData;
@@ -111,4 +114,6 @@ class vtkMyCallback;
 
 - (short) setPixSource:(NSMutableArray*)pts;
 - (void) setROIActorVolume:(NSValue*)roiActorPointer;
+- (void) setOpacity: (float) opacity showPoints: (BOOL) sp showSurface: (BOOL) sS;
+
 @end

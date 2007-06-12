@@ -290,7 +290,6 @@ GLenum glReportError (void)
 - (void) setOpacity:(float)newOpacity
 {
 	opacity = newOpacity;
-	NSLog(@"setOpacity: %f", opacity);
 	
 	if( type == tPlain)
 	{

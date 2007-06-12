@@ -27,9 +27,14 @@
     IBOutlet ROIVolumeView			*view;
 	IBOutlet NSTextField			*volumeField;
 	
+	IBOutlet NSButton				*showSurfaces, *showPoints;
+	IBOutlet NSSlider				*opacity;
+	
 	ROIVolume						*roiVolume;
 	ViewerController				*viewer;
 }
 
--(id) initWithPoints:(NSMutableArray*) pts :(float) volume :(ViewerController*) iviewer;
+- (id) initWithPoints:(NSMutableArray*) pts :(float) volume :(ViewerController*) iviewer;
+- (IBAction) changeParameters:(id) sender;
+
 @end

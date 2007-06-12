@@ -75,9 +75,16 @@
             SUPERCLASS = NSView; 
         }, 
         {
+            ACTIONS = {changeParameters = id; }; 
             CLASS = ROIVolumeController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {view = ROIVolumeView; volumeField = NSTextField; }; 
+            OUTLETS = {
+                opacity = NSSlider; 
+                showPoints = NSButton; 
+                showSurfaces = NSButton; 
+                view = ROIVolumeView; 
+                volumeField = NSTextField; 
+            }; 
             SUPERCLASS = Window3DController; 
         }, 
         {CLASS = ROIVolumeView; LANGUAGE = ObjC; SUPERCLASS = VTKView; }, 

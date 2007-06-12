@@ -51,13 +51,11 @@
 		
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 	
+	triangulation->Delete();
+	ballActor->Delete();
+	
     [super dealloc];
 }
-
-/* Nothing to do
-- (void)finalize {
-}
-*/
 
 - (short) setPixSource:(NSMutableArray*)pts
 {
@@ -123,7 +121,7 @@
 //	cf->Delete();
 
 
-	vtkActor *triangulation = vtkActor::New();
+	triangulation = vtkActor::New();
 		triangulation->SetMapper( map);
 		triangulation->GetProperty()->SetColor(1, 0, 0);
 		triangulation->GetProperty()->SetSpecular( 0.3);
@@ -149,7 +147,7 @@
 		mapBalls->SetInput( balls->GetOutput());
 	balls->Delete();
 	
-	vtkActor *ballActor = vtkActor::New();
+	ballActor = vtkActor::New();
 		ballActor->SetMapper( mapBalls);
 		ballActor->GetProperty()->SetSpecular( 0.5);
 		ballActor->GetProperty()->SetSpecularPower( 20);
@@ -159,14 +157,12 @@
 	mapBalls->Delete();
 	
 	aRenderer->AddActor( ballActor);
-	ballActor->Delete();
 	
 	aRenderer->AddActor( triangulation);
-	triangulation->Delete();
 	
     aCamera = vtkCamera::New();
 	aCamera->Zoom(1.5);
-	
+
 	aRenderer->SetActiveCamera(aCamera);
 	
 	aCamera->SetFocalPoint (0, 0, 0);
@@ -174,6 +170,9 @@
 	aCamera->ComputeViewPlaneNormal();
 	aCamera->SetViewUp(0, -1, 0);
 	aCamera->OrthogonalizeViewUp();
+	aCamera->SetParallelProjection( false);
+	aCamera->SetViewAngle( 30);
+
 	aRenderer->ResetCamera();
 	
 	aCamera->Delete();
@@ -202,4 +201,16 @@
 	aCamera->Delete();
 }
 
+- (void) setOpacity: (float) opacity showPoints: (BOOL) sp showSurface: (BOOL) sS
+{
+	if( sp == NO) aRenderer->RemoveActor( ballActor);
+	else aRenderer->AddActor( ballActor);
+
+	if( sS == NO) aRenderer->RemoveActor( triangulation);
+	else aRenderer->AddActor( triangulation);
+
+	triangulation->GetProperty()->SetOpacity( opacity);
+	
+	[self setNeedsDisplay: YES];
+}
 @end

@@ -3907,11 +3907,6 @@ static ViewerController *draggedController = 0L;
 //added by Jacques Fauquex 2006-09-30
 - (IBAction) shutterOnOff:(id) sender
 {
-//	ROI	*r = [self selectedROI];
-//
-//	[r setPoints: [ROI resamplePoints: [r points] number: 100]];
-//	[imageView display];
-//	return;
 	
 // ***************
 
@@ -8444,16 +8439,7 @@ int i,j,l;
 	
 	[self computeInterval];
 	
-	// Find the first selected
-	for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
-	{
-		long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
-			
-		if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
-		{
-			selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
-		}
-	}
+	selectedRoi = [self selectedROI];
 	
 	if( selectedRoi == 0L)
 	{
@@ -8523,16 +8509,7 @@ int i,j,l;
 	ROI		*selectedRoi = 0L;
 	long	i;
 	
-	// Find the first selected
-	for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
-	{
-		long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
-			
-		if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
-		{
-			selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
-		}
-	}
+	selectedRoi = [self selectedROI];
 	
 	if( selectedRoi == 0L)
 	{
@@ -9024,16 +9001,7 @@ int i,j,l;
 	{
 		[self addToUndoQueue: @"roi"];
 	
-		// Find the first selected
-		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
-		{
-			long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
-			
-			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
-			{
-				selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
-			}
-		}
+		selectedRoi = [self selectedROI];
 		
 		if( selectedRoi == 0L)
 		{
@@ -9557,6 +9525,17 @@ int i,j,l;
 			selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
 		}
 	}
+	
+	if( selectedRoi == 0L)
+	{
+		// If there is only one roi on the image, choose it !
+		if( [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count] == 1)
+		{
+			selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: 0];
+			[selectedRoi setROIMode: ROI_selected];
+		}
+	}
+	
 	return selectedRoi;
 }
 
@@ -13285,7 +13264,7 @@ int i,j,l;
 
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts error:(NSString**) error
 {
-	return [self computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs: YES error:(NSString**) error];
+	return [self computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs: NO error:(NSString**) error];
 }
 
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs error:(NSString**) error

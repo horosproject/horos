@@ -19,6 +19,11 @@
 
 @implementation ROIVolumeController
 
+- (IBAction) changeParameters:(id) sender
+{
+	[view setOpacity: [opacity floatValue] showPoints: [showPoints state] showSurface: [showSurfaces state]];
+}
+
 - (void) CloseViewerNotification: (NSNotification*) note
 {
 	if([note object] == viewer)
@@ -46,12 +51,11 @@
 	else
 		[volumeField setStringValue: [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f cm3.", nil), volume]];
 	
-	NSNotificationCenter *nc;
-		nc = [NSNotificationCenter defaultCenter];
-		[nc addObserver: self
-			   selector: @selector(CloseViewerNotification:)
-				   name: @"CloseViewerNotification"
-				 object: nil];
+	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+	[nc addObserver: self
+		   selector: @selector(CloseViewerNotification:)
+			   name: @"CloseViewerNotification"
+			 object: nil];
 	
     return self;
 }
@@ -85,11 +89,6 @@
 	
     return self;
 }
-
-/* Nothing to do
-- (void)finalize {
-}
-*/
 
 -(void) dealloc
 {
