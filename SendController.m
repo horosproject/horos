@@ -156,12 +156,6 @@ static volatile int sendControllerObjects = 0;
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
 - (void)releaseSelfWhenDone:(id)sender{
 	[_lock lock];
 	[_lock unlock];
@@ -221,16 +215,6 @@ static volatile int sendControllerObjects = 0;
 	[addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[self server] objectForKey:@"Address"], [[self server] objectForKey:@"Port"]]];
 }
 
-//- (int)serverToolIndex{
-//	return _serverToolIndex;
-//}
-
-//-(void)setServerToolIndex:(int)index{
-//
-//	_serverToolIndex = index;
-//	[[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"lastSenderEngine"];
-//}
-
 - (int)keyImageIndex{
 	return _keyImageIndex;
 }
@@ -239,16 +223,6 @@ static volatile int sendControllerObjects = 0;
 	_keyImageIndex = index;
 	[[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"lastSendWhat"];
 }
-
-//- (int) osirixTS{
-//	return _osirixTS;
-//}
-
-//- (void) setOsirixTS:(int)index{
-//	_osirixTS = index;
-//	[[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"syntaxListOsiriX"];
-//}
-
 
 - (int) offisTS{
 	return _offisTS;
@@ -262,7 +236,6 @@ static volatile int sendControllerObjects = 0;
 #pragma mark sheet functions
 
 - (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo{
-	//
 }
 
 - (IBAction) endSelectServer:(id) sender
@@ -313,6 +286,7 @@ static volatile int sendControllerObjects = 0;
 				[_waitSendWindow setCancel:YES];
 				[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: objectsToSend];
 			}
+			else [_lock unlock];	// Will release the object
 		}		
 	}
 	else // Cancel

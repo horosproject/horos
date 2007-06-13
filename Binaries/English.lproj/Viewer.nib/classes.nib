@@ -147,6 +147,7 @@
                 roiPropagateSetup = id; 
                 roiRename = id; 
                 roiSetPixels = id; 
+                roiSetPixelsCheckButton = id; 
                 roiSetPixelsSetup = id; 
                 setAxialOrientation = id; 
                 setButtonTool = id; 

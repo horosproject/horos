@@ -1899,6 +1899,12 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
     [self CheckLoad];
 	
+	if( stackNo < 0 && restore)
+	{
+		NSLog( @"error !!!! stackNo < 0 && restore");
+		restore = NO;
+	}
+
 	if( roi)
 	{
 		if( [roi type] == tPlain)
@@ -1918,13 +1924,22 @@ BOOL gUSEPAPYRUSDCMPIX;
 					if( isRGB)
 					{
 						unsigned char *rgbPtr = (unsigned char*) (fImage + textureUpLeftCornerX + y*width);
+						unsigned char *fTempRestore = 0L;
+						if( restore) fTempRestore = (unsigned char*) &[restoreImageCache[ stackNo] fImage][textureUpLeftCornerX + y*width];
+						
 						for( x = textureUpLeftCornerX; x < textureUpLeftCornerX + textWidth; x++)
 						{
 							if( *buf++)
 							{
 								if( x >= 0 && x < width && y >= 0 && y < height)
 								{
-									if( addition)
+									if( restore)
+									{
+										rgbPtr[ 1] = fTempRestore[ 1];
+										rgbPtr[ 2] = fTempRestore[ 2];
+										rgbPtr[ 3] = fTempRestore[ 3];
+									}
+									else if( addition)
 									{
 										if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] += newVal;
 										if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] += newVal;
@@ -1944,13 +1959,20 @@ BOOL gUSEPAPYRUSDCMPIX;
 					else
 					{
 						float *fTempImage = fImage + textureUpLeftCornerX + y*width;
+						float *fTempRestore = 0L;
+						if( restore) fTempRestore = &[restoreImageCache[ stackNo] fImage][textureUpLeftCornerX + y*width];
+						
 						for( x = textureUpLeftCornerX; x < textureUpLeftCornerX + textWidth; x++)
 						{
 							if( *buf++)
 							{
 								if( x >= 0 && x < width && y >= 0 && y < height)
 								{
-									if( addition)
+									if( restore)
+									{
+										*fTempImage = *fTempRestore;
+									}
+									else if( addition)
 									{
 										if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage += newVal;
 									}
@@ -1961,6 +1983,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 								}
 							}
 							fTempImage++;
+							fTempRestore++;
 						}
 					}
 				}
@@ -2238,12 +2261,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 				}
 			}
 		}
-	}
-	
-	if( stackNo < 0 && restore)
-	{
-		NSLog( @"error !!!! stackNo < 0 && restore");
-		restore = NO;
 	}
 	
 	if( ptsInt != 0L && no > 1)

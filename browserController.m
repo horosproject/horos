@@ -3681,6 +3681,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 	{
 		int rowIndex = [bonjourServicesList selectedRow];
 		
+		if( rowIndex <= 0) NSLog( @"******** rowIndex <= 0");
+		
 		NSDictionary *dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
 		
 		if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"]) description = [description stringByAppendingFormat:NSLocalizedString(@"Bonjour Database: %@ / ", nil), [[dict valueForKey:@"service"] name]];
@@ -7296,7 +7298,6 @@ static BOOL needToRezoom;
 		
 		NSDictionary *dict = 0L;
 		if( rowIndex > 0) dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
-		
 		
 		if (rowIndex == 0)
 		{

@@ -497,6 +497,7 @@ enum
 - (void) MovieStop:(id) sender;
 - (void) checkEverythingLoaded;
 - (BOOL) isEverythingLoaded;
+- (IBAction) roiSetPixelsCheckButton:(id) sender;
 - (IBAction) roiSetPixelsSetup:(id) sender;
 - (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL)propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue;
 - (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL) propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue :(BOOL) revert;

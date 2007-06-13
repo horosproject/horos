@@ -8624,6 +8624,38 @@ int i,j,l;
 	}
 }
 
+- (IBAction) roiSetPixelsCheckButton:(id) sender
+{
+	BOOL restoreAvailable = YES;
+	
+	if( [setROI4DSeries state] && maxMovieIndex > 1)
+	{
+		restoreAvailable = NO;
+	}
+	
+	if( [checkMaxValue state] || [checkMinValue state])
+	{
+		restoreAvailable = NO;
+	}
+	
+	if( [[InOutROI selectedCell] tag])
+	{
+		restoreAvailable = NO;
+	}
+	
+	if( [[AllROIsRadio selectedCell] tag] == 2)	// All pixels
+	{
+		restoreAvailable = NO;
+	}
+	
+	if( restoreAvailable == NO)
+	{
+		[newValueMatrix setEnabled: NO];
+		[newValueMatrix selectCellWithTag: 0];
+	}
+	else [newValueMatrix setEnabled: YES];
+}
+
 - (IBAction) roiSetPixels:(id) sender
 {
 	// end sheet

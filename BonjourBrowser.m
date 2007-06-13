@@ -893,15 +893,18 @@ static char *GetPrivateIP()
 			{
 				[[NSFileManager defaultManager] removeFileAtPath: [self databaseFilePathForService:[[currentNetService valueForKey: @"service"] name]] handler:self];
 			}
-			
-			if( [[services objectAtIndex: [interfaceOsiriX currentBonjourService]] valueForKey: @"service"] == aNetService)
+			if( [interfaceOsiriX currentBonjourService] > 0)
 			{
-				[interfaceOsiriX resetToLocalDatabase];
+				if( [[services objectAtIndex: [interfaceOsiriX currentBonjourService]] valueForKey: @"service"] == aNetService)
+				{
+					[interfaceOsiriX resetToLocalDatabase];
+				}
 			}
 			
 			// deleting service from list
 			int index = [services indexOfObject: currentNetService];
-            [services removeObjectAtIndex: index];
+			if( index != NSNotFound)
+				[services removeObjectAtIndex: index];
 			
             break;
         }
