@@ -931,12 +931,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) undo:(id) sender
 {
-	if( [self is2DViewer]) [[self windowController] undo: sender];
+	[[self windowController] undo: sender];
 }
 
 - (void) redo:(id) sender
 {
-	if( [self is2DViewer]) [[self windowController] redo: sender];
+	[[self windowController] redo: sender];
 }
 
 - (void)paste:(id)sender
@@ -946,7 +946,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	if( archived_data)
 	{
-		if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
+		[[self windowController] addToUndoQueue:@"roi"];
 		
 		long	i;
 		NSMutableArray*	roiArray = [NSUnarchiver unarchiveObjectWithData: archived_data];
@@ -1025,7 +1025,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	BOOL	done = NO;
 	NSTimeInterval groupID;
 
-	if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
+	[[self windowController] addToUndoQueue:@"roi"];
 	
 	for( i = 0; i < [curRoiList count]; i++)
 	{
@@ -1704,7 +1704,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( c == 127) // Delete
 		{
-			if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
+			[[self windowController] addToUndoQueue:@"roi"];
 			
 			// NE PAS OUBLIER DE CHANGER EGALEMENT LE CUT !
 			long	i;
@@ -2667,7 +2667,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		{
 			[self deleteMouseDownTimer];
 			
-			if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
+			[[self windowController] addToUndoQueue:@"roi"];
 			
 			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
 			tempPt.y = size.size.height - tempPt.y ;
@@ -2814,10 +2814,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		{
 			[self deleteMouseDownTimer];
 			
-			if( [self is2DViewer])
-			{
-				[[self windowController] addToUndoQueue:@"roi"];
-			}
+			[[self windowController] addToUndoQueue:@"roi"];
 			
 			BOOL	DoNothing = NO;
 			long	selected = -1, i, x;

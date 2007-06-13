@@ -34,8 +34,11 @@ enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtr
 
 - (NSMutableArray*) pixList;
 - (void)windowWillClose:(NSNotification *)notification;
-
+- (void) addToUndoQueue:(NSString*) what;
 - (int)blendingType;
+
+- (IBAction) redo:(id) sender;
+- (IBAction) undo:(id) sender;
 
 #pragma mark-
 #pragma mark current Core Data Objects

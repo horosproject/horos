@@ -45,7 +45,6 @@
 	
 	if (fileformat.getDataset()->findAndGetUint8Array(DCM_OsirixROI, buffer, &length, OFFalse).good())
 	{
-		NSLog(@"Unarchive from SR");
 		archiveData = [NSData dataWithBytes:buffer length:(unsigned)length];
 	}
 	

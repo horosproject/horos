@@ -168,7 +168,7 @@ enum
     
 	IBOutlet NSWindow       *roiSetPixWindow;
 	IBOutlet NSTextField    *maxValueText, *minValueText, *newValueText;
-	IBOutlet NSMatrix		*InOutROI, *AllROIsRadio;
+	IBOutlet NSMatrix		*InOutROI, *AllROIsRadio, *newValueMatrix;
 	IBOutlet NSButton		*checkMaxValue, *checkMinValue, *setROI4DSeries;
 
 	IBOutlet NSWindow       *curvedMPRWindow;
@@ -380,6 +380,8 @@ enum
 
 - (void) addToUndoQueue:(NSString*) string;
 - (id) prepareObjectForUndo:(NSString*) string;
+- (IBAction) redo:(id) sender;
+- (IBAction) undo:(id) sender;
 
 - (IBAction) closeModal:(id) sender;
 - (void)bringToFrontROI:(ROI*)roi;

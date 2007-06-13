@@ -38,11 +38,20 @@
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
+- (void) addToUndoQueue:(NSString*) what
+{
+	NSLog( @"OSIWindowController addToUndoQueue");
 }
-*/
+
+- (IBAction) redo:(id) sender
+{
+	NSLog( @"OSIWindowController redo");
+}
+
+- (IBAction) undo:(id) sender
+{
+	NSLog( @"OSIWindowController undo");
+}
 
 - (NSMutableArray*) pixList{
 	// let subclasses handle it for now

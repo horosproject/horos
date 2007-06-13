@@ -2240,6 +2240,12 @@ BOOL gUSEPAPYRUSDCMPIX;
 		}
 	}
 	
+	if( stackNo < 0 && restore)
+	{
+		NSLog( @"error !!!! stackNo < 0 && restore");
+		restore = NO;
+	}
+	
 	if( ptsInt != 0L && no > 1)
 	{
 		ras_FillPolygon( ptsInt, no, fImage, width, height, [pixArray count], minValue, maxValue, outside, newVal, addition, isRGB, NO, 0L, 0L, 0L, 0L, 0L, 0, orientationStack, stackNo, restore);

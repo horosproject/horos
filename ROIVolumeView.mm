@@ -75,7 +75,22 @@
 	vtkPolyData *profile = vtkPolyData::New();
     profile->SetPoints( points);
 	points->Delete();
+
+//	vtkDecimatePro *isoDeci = vtkDecimatePro::New();
+//	isoDeci->SetInput( profile);
+////	isoDeci->SetTargetReduction( decimateVal);
+//	isoDeci->SetPreserveTopology( TRUE);
 	
+//		isoDeci->SetFeatureAngle(60);
+//		isoDeci->SplittingOff();
+//		isoDeci->AccumulateErrorOn();
+//		isoDeci->SetMaximumError(0.3);
+	
+//	vtkSmoothPolyDataFilter *isoSmoother = vtkSmoothPolyDataFilter::New();
+//	isoSmoother->SetInput( profile);
+//	isoSmoother->SetNumberOfIterations( smoothVal);
+//		isoSmoother->SetRelaxationFactor(0.05);
+
 	// Delaunay3D is used to triangulate the points. The Tolerance is the distance
 	// that nearly coincident points are merged together. (Delaunay does better if
 	// points are well spaced.) The alpha value is the radius of circumcircles,
@@ -100,19 +115,34 @@
 		
 	vtkDelaunay3D *del = vtkDelaunay3D::New();
 		del->SetInput( profile);
-//		del->SetInput( polyDataNormals->GetOutput());
 		del->SetTolerance( 0.001);
 		del->SetAlpha( 20);
+//		del->SetOffset( 50);
 		del->BoundingTriangulationOff();
 	profile->Delete();
 
-//	vtkPolyDataNormals *polyDataNormals = vtkPolyDataNormals::New();
-//		polyDataNormals->SetInput( del->GetOutput());
-//		polyDataNormals->ConsistencyOn();
-//		polyDataNormals->AutoOrientNormalsOn();
-
+//	vtkGeometryFilter *pGeomFilter = vtkGeometryFilter::New();
+//	pGeomFilter->SetInput( (vtkDataSet*) del->GetOutput());
+//
+//	//do a bit of decimation
+//	vtkDecimatePro *pDeci = vtkDecimatePro::New();
+//	pDeci->SetInput(pGeomFilter->GetOutput());
+//	pDeci->SetTargetReduction(0.0);
+//
+//	//ok, now lets try some filtering
+//	vtkSmoothPolyDataFilter * pSmooth = vtkSmoothPolyDataFilter::New();
+//	pSmooth->SetInput(pDeci->GetOutput());
+//	pSmooth->SetNumberOfIterations( 20);
+////	pSmooth->SetRelaxationFactor(fRelax);
+//	pSmooth->SetFeatureEdgeSmoothing(TRUE);
+//	pSmooth->SetFeatureAngle( 90);
+//	pSmooth->SetEdgeAngle( 90);
+//	pSmooth->SetBoundarySmoothing(TRUE);
+//	pSmooth->Update();
+ 
 	vtkDataSetMapper *map = vtkDataSetMapper::New();
 		map->SetInput( (vtkDataSet*) del->GetOutput());
+		map->ScalarVisibilityOff();
 	del->Delete();
 	
 	//  vtkSurfaceReconstructionFilter
@@ -182,6 +212,25 @@
 //		culler->SetSortingStyleToFrontToBack();
 //
 //	aRenderer->AddCuller(culler);
+
+//        vtkLight *light1 = vtkLight::New();
+//        light1->SetPosition(1,0,1);
+//
+//        vtkLight *light2 = vtkLight::New();
+//        light2->SetPosition(0,1,1);
+//
+//        vtkLight *light3 = vtkLight::New();
+//        light3->SetPosition(-1,0,1);
+//
+//        vtkLight *light4 = vtkLight::New();
+//        light4->SetPosition(0,-1,1);
+//
+//        aRenderer->AddLight(light1);
+//        aRenderer->AddLight(light2);
+//        aRenderer->AddLight(light3);
+//        aRenderer->AddLight(light4);
+
+
 
     aCamera = vtkCamera::New();
 	aCamera->Zoom(1.5);

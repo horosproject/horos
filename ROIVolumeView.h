@@ -89,6 +89,7 @@
 #include "vtkTextActor.h"
 #include "vtkPolyDataNormals.h"
 #include "vtkFrustumCoverageCuller.h"
+#include "vtkGeometryFilter.h"
 #undef id
 
 class vtkMyCallback;

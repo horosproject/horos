@@ -136,6 +136,7 @@
                 print = id; 
                 printSlider = id; 
                 reSyncOrigin = id; 
+                redo = id; 
                 resampleDataBy2 = id; 
                 resetImage = id; 
                 revertSeries = id; 
@@ -172,6 +173,7 @@
                 subCtrlSliders = id; 
                 subSharpen = id; 
                 subSumSlider = id; 
+                undo = id; 
                 ungroupSelectedROIs = id; 
                 updateImage = id; 
                 updateSUVValues = id; 
@@ -272,6 +274,7 @@
                 movieTextSlide = NSTextField; 
                 movieView = NSView; 
                 newName = NSTextField; 
+                newValueMatrix = NSMatrix; 
                 newValueText = NSTextField; 
                 orientationMatrix = NSMatrix; 
                 orientationView = NSView; 

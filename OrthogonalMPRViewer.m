@@ -196,6 +196,33 @@ NSString * documentsDirectory();
 	return viewer;
 }
 
+- (void) addToUndoQueue:(NSString*) what
+{
+	[viewer addToUndoQueue: what];
+}
+
+- (IBAction) redo:(id) sender
+{
+	[viewer redo: sender];
+	
+	[[controller originalView] setIndex: [[controller originalView] curImage]];
+	[[controller originalView] setNeedsDisplay:YES];
+	[controller loadROIonReslicedViews: [[controller originalView] crossPositionX] : [[controller originalView] crossPositionY]];
+	[[controller xReslicedView] setNeedsDisplay:YES];
+	[[controller yReslicedView] setNeedsDisplay:YES];
+}
+
+- (IBAction) undo:(id) sender
+{
+	[viewer undo: sender];
+	
+	[[controller originalView] setIndex: [[controller originalView] curImage]];
+	[[controller originalView] setNeedsDisplay:YES];
+	[controller loadROIonReslicedViews: [[controller originalView] crossPositionX] : [[controller originalView] crossPositionY]];
+	[[controller xReslicedView] setNeedsDisplay:YES];
+	[[controller yReslicedView] setNeedsDisplay:YES];
+}
+
 - (void) ApplyCLUTString:(NSString*) str
 {
 	[controller ApplyCLUTString: str];

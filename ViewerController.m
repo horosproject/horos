@@ -8658,10 +8658,10 @@ int i,j,l;
 	BOOL propagateIn4D = [setROI4DSeries state] == NSOnState;
 	
 	float newValue = [newValueText floatValue];
-//	BOOL revertToSaved = [setToMatrix selectedTag];
+	BOOL revertToSaved = [newValueMatrix selectedTag];
 	
 	// proceed
-	[self roiSetPixels:selectedROI :allRois :propagateIn4D :outside :minValue :maxValue :newValue :NO];
+	[self roiSetPixels:selectedROI :allRois :propagateIn4D :outside :minValue :maxValue :newValue :revertToSaved];
 	
 	// Recompute!!!! Apply WL/WW
 	float   iwl, iww;
@@ -8743,7 +8743,7 @@ int i,j,l;
 				if( allRois == 2)
 				{
 					DCMPix *curPix = [pixList[ y] objectAtIndex: x];
-					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: curPix, @"curPix", @"setPixel", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsrevert, @"revert", 0L]];
+					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: curPix, @"curPix", @"setPixel", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsrevert, @"revert", [NSNumber numberWithInt: x], @"stackNo", 0L]];
 					
 					done = YES;
 				}
@@ -8758,7 +8758,7 @@ int i,j,l;
 								for( z = 0; z < maxMovieIndex; z++)
 								{
 									DCMPix *curPix = [pixList[ z] objectAtIndex: x];
-									[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [[roiList[y] objectAtIndex: x] objectAtIndex: i], @"roi", curPix, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsrevert, @"revert", 0L]];
+									[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [[roiList[y] objectAtIndex: x] objectAtIndex: i], @"roi", curPix, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsrevert, @"revert", [NSNumber numberWithInt: x], @"stackNo", 0L]];
 									
 									done = YES;
 								}
@@ -8766,7 +8766,7 @@ int i,j,l;
 							else
 							{
 								DCMPix *curPix = [pixList[ y] objectAtIndex: x];
-								[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [[roiList[y] objectAtIndex: x] objectAtIndex: i], @"roi", curPix, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsrevert, @"revert", 0L]];
+								[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [[roiList[y] objectAtIndex: x] objectAtIndex: i], @"roi", curPix, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsrevert, @"revert", [NSNumber numberWithInt: x], @"stackNo", 0L]];
 								
 								done = YES;
 							}
@@ -8781,26 +8781,27 @@ int i,j,l;
 						for( z = 0; z < maxMovieIndex; z++)
 						{
 							DCMPix *curPix = [pixList[ z] objectAtIndex: x];
-							[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: curPix, @"curPix", @"setPixel", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsrevert, @"revert", 0L]];
+							[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: curPix, @"curPix", @"setPixel", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsrevert, @"revert", [NSNumber numberWithInt: x], @"stackNo", 0L]];
 
 						}
 					}
 					else
 					{
 						DCMPix *curPix = [pixList[ y] objectAtIndex: x];
-						[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: curPix, @"curPix", @"setPixel", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsrevert, @"revert", 0L]];
+						[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: curPix, @"curPix", @"setPixel", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsrevert, @"revert", [NSNumber numberWithInt: x], @"stackNo", 0L]];
 					}
 				}
 			}
 		}
 	}
 	
-//	if( propagateIn4D == NO || maxMovieIndex == 1)
-//		[[pixList[ curMovieIndex] objectAtIndex: 0] prepareRestore];
-//	
+	if( revert)
+		[[pixList[ curMovieIndex] objectAtIndex: 0] prepareRestore];
+	
 	[self roiSetStartScheduler: roiToProceed];
 	
-//	[[pixList[ curMovieIndex] objectAtIndex: 0] freeRestore];
+	if( revert)
+		[[pixList[ curMovieIndex] objectAtIndex: 0] freeRestore];
 	
 	[splash close];
 	[splash release];
@@ -9790,7 +9791,7 @@ int i,j,l;
 												maxValue:		[[object objectForKey:@"maxValue"] floatValue]
 												outside:		[[object objectForKey:@"outside"] boolValue]
 												orientationStack:2
-												stackNo:		-1
+												stackNo:		[[object objectForKey:@"stackNo"] intValue]
 												restore:		[[object objectForKey:@"revert"] boolValue]
 												addition:		[[object objectForKey:@"addition"] boolValue]];
 		}
@@ -9803,7 +9804,7 @@ int i,j,l;
 												maxValue:			[[object objectForKey:@"maxValue"] floatValue]
 												outside:			[[object objectForKey:@"outside"] boolValue]
 												orientationStack:	2
-												stackNo:			-1
+												stackNo:			[[object objectForKey:@"stackNo"] intValue]
 												restore:			[[object objectForKey:@"revert"] boolValue]
 												addition:			[[object objectForKey:@"addition"] boolValue]];
 		}
@@ -10041,6 +10042,7 @@ int i,j,l;
 						[[roiList[curMovieIndex] objectAtIndex: index] addObject: newROI];
 						[newROI setROIMode: ROI_selected];
 						[newROI setName: [selectedROI name]];
+						[newROI setComments: [selectedROI comments]];
 					}
 				}
 				break;
@@ -10056,6 +10058,7 @@ int i,j,l;
 						[[roiList[curMovieIndex] objectAtIndex: index] addObject: newROI];
 						[newROI setROIMode: ROI_selected];
 						[newROI setName: [selectedROI name]];
+						[newROI setComments: [selectedROI comments]];
 					}
 				}
 				break;
