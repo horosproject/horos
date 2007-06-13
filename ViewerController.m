@@ -8446,9 +8446,48 @@ int i,j,l;
 		NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), NSLocalizedString(@"Select a ROI.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
 		return;
 	}
+	
+	NSString *error = 0L;
+	[self computeVolume: selectedRoi points: 0L generateMissingROIs: YES generatedROIs: 0L computeData: 0L error: &error];
+	
+	if( error)
+	{
+		NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), error , NSLocalizedString(@"OK", nil), nil, nil);
+	}
+	else
+	{
+		if( [sender tag])	// Restore
+		{
+			[self roiSetPixels: selectedRoi :0 :NO :NO :-99999 :99999 :0 :YES];
+		}
+		else				// Erase
+		{
+			[self roiSetPixels: selectedRoi :0 :NO :NO :-99999 :99999 :[[pixList[ curMovieIndex] objectAtIndex: 0] minValueOfSeries] :NO];
+		}
+		
+		// Recompute!!!! Apply WL/WW
+		float   iwl, iww;
+			
+		[imageView getWLWW:&iwl :&iww];
+		[imageView setWLWW:iwl :iww];
+		
+		int y, x, i;
+		// Recompute all ROIs
+		for( y = 0; y < maxMovieIndex; y++)
+		{
+			for( x = 0; x < [pixList[y] count]; x++)
+			{
+				for( i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++) [[[roiList[y] objectAtIndex: x] objectAtIndex: i] recompute];
+				
+				[[pixList[y] objectAtIndex: x] changeWLWW:iwl :iww];	//recompute WLWW
+			}
+		}
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: 0L];
+	}
 }
 
-- (IBAction) roiDeleteGeneratedROIs:(id) sender
+- (IBAction) roiDeleteGeneratedROIsForName:(NSString*) name
 {
 	int x, i;
 	
@@ -8463,11 +8502,19 @@ int i,j,l;
 			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
 			if( [[curROI comments] isEqualToString: @"morphing generated"])
 			{
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: 0L];
-				[[roiList[ curMovieIndex] objectAtIndex: x] removeObject: curROI];
+				if( [[curROI name] isEqualToString: name] || name == 0L)
+				{
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: 0L];
+					[[roiList[ curMovieIndex] objectAtIndex: x] removeObject: curROI];
+				}
 			}
 		}
 	}
+}
+
+- (IBAction) roiDeleteGeneratedROIs:(id) sender
+{
+	[self roiDeleteGeneratedROIsForName: 0L];
 }
 
 - (IBAction) roiVolume:(id) sender
@@ -13408,6 +13455,8 @@ int i,j,l;
 	
 	if( generateMissingROIs)
 	{
+		[self roiDeleteGeneratedROIsForName: [selectedRoi name]];
+		
 		for( x = 0; x < [pixList[curMovieIndex] count]; x++)
 		{
 			DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
