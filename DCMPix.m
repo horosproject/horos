@@ -7936,6 +7936,7 @@ BOOL            readable = YES;
 				
 				NIfTI = (nifti_1_header *) nifti_read_header([srcFile cString], nil, 0);
 				
+				// Verify that this file should be treated as a NIfTI file.  If magic is not set to anything, we must assume it is analyze.
 				if( (NIfTI->magic[0] == 'n')                           &&
 					(NIfTI->magic[1] == 'i' || NIfTI->magic[1] == '+')   &&
 					(NIfTI->magic[2] == '1')                           &&
@@ -7970,13 +7971,16 @@ BOOL            readable = YES;
 						(NIfTI->magic[2] == '1')    &&
 						(NIfTI->magic[3] == '\0') )
 					{
+						// This is a "two file" nifti file.  Image file is separated from header.
 						fileData = [[NSData alloc] initWithContentsOfFile: [[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
 					}
 					else
 					{
+						// Header and image file are together.  
 						fileData = [[NSData alloc] initWithBytesNoCopy:nifti_imagedata->data length:(nifti_imagedata->nvox * nifti_imagedata->nbyper)];
 					}
 					
+					// This "datatype" portion is taken from the analyze code.  
 					short datatype = NIfTI->datatype;
 					
 					switch( datatype)
@@ -8103,6 +8107,9 @@ BOOL            readable = YES;
 					}
 					
 					// Set up origins for nifti file.
+					//   - This portion tells OsiriX which view is active for the image.  This allows OsiriX to determine whether the 
+					//	   image is axial, sagittal, or coronal.  
+					// Grab orientations for i, j, and k axes based on either qform or sform matrices.
 					int icod, jcod, kcod;
 					if(qform_code > 0)
 					{
@@ -8115,7 +8122,7 @@ BOOL            readable = YES;
 					
 					if(jcod == NIFTI_A2P || jcod == NIFTI_P2A)
 					{
-						// This is axial by default.
+						// This is axial by default, so set originZ.
 						originX = 0;
 						originY = 0;
 						originZ = frameNo * pixelSpacingX;
@@ -8124,14 +8131,14 @@ BOOL            readable = YES;
 					{
 						if(icod == NIFTI_A2P || icod == NIFTI_P2A)
 						{
-							// This is sagittal by default.
+							// This is sagittal by default, so set originX.
 							originX = frameNo * pixelSpacingX;
 							originY = 0;
 							originZ = 0;
 						}
 						else if(icod == NIFTI_R2L || icod == NIFTI_L2R)
 						{
-							// This is coronal by default.
+							// This is coronal by default, so set originY.
 							originX = 0;
 							originY = frameNo * pixelSpacingX;
 							originZ = 0;
@@ -8145,6 +8152,7 @@ BOOL            readable = YES;
 					BOOL flipJ = NO;
 					int shiftNum = 0;
 					
+					// Grab orientations for i, j, and k axes based on either qform or sform matrices.
 					if(qform_code > 0)
 					{
 						nifti_mat44_to_orientation(nifti_imagedata->qto_xyz, &icod, &jcod, &kcod);
@@ -8157,7 +8165,8 @@ BOOL            readable = YES;
 					
 					if(icod != NIFTI_L2R && icod != NIFTI_R2L)
 					{
-						// a shift is needed
+						// Must shift the orientation matrix so that icod, jcod, and kcod are 
+						// aligned with the orientation matrix.
 						if(icod == NIFTI_A2P || icod == NIFTI_P2A)
 						{
 							shiftNum = 2;
@@ -8172,7 +8181,6 @@ BOOL            readable = YES;
 						// verify that jcod is AP or PA
 						if(jcod != NIFTI_A2P && jcod != NIFTI_P2A)
 						{
-							NSLog(@"HERE!!!");
 							// this means that jcod is S2I or I2S.
 							// So set orient[3,4,5] to orient[6,7,8]
 							float	orient[ 9]; 
@@ -8190,6 +8198,8 @@ BOOL            readable = YES;
 					if(shiftNum > 0)
 					{
 						// Shift number of times specified.
+						// orient[3,4,5] takes on orient[0,1,2], which takes on orient[6,7,8]
+						// orient[6,7,8] is recalculated after setOrientation is called.
 						while(shiftNum > 0)
 						{
 							// Shift.
