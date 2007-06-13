@@ -8650,10 +8650,10 @@ int i,j,l;
 	
 	if( restoreAvailable == NO)
 	{
-		[newValueMatrix setEnabled: NO];
+		[[newValueMatrix cellWithTag: 1] setEnabled: NO];
 		[newValueMatrix selectCellWithTag: 0];
 	}
-	else [newValueMatrix setEnabled: YES];
+	else [[newValueMatrix cellWithTag: 1] setEnabled: YES];
 }
 
 - (IBAction) roiSetPixels:(id) sender
