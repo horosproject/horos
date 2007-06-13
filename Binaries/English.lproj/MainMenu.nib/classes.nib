@@ -274,6 +274,7 @@
                 roiSetPixels = id; 
                 roiSetPixelsSetup = id; 
                 roiVolume = id; 
+                roiVolumeEraseRestore = id; 
                 rotate0 = id; 
                 rotate180 = id; 
                 rotate90 = id; 

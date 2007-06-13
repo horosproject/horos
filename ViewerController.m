@@ -8435,6 +8435,19 @@ int i,j,l;
 	[imageView setNeedsDisplay: YES];
 }
 
+- (IBAction) roiVolumeEraseRestore:(id) sender
+{
+	[self computeInterval];
+	
+	ROI *selectedRoi = [self selectedROI];
+	
+	if( selectedRoi == 0L)
+	{
+		NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), NSLocalizedString(@"Select a ROI.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
+		return;
+	}
+}
+
 - (IBAction) roiDeleteGeneratedROIs:(id) sender
 {
 	int x, i;
