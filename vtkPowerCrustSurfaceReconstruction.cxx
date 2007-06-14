@@ -26,7 +26,7 @@ vtkStandardNewMacro(vtkPowerCrustSurfaceReconstruction);
 vtkPowerCrustSurfaceReconstruction::vtkPowerCrustSurfaceReconstruction()
 {
     this->medial_surface = vtkPolyData::New();
-	m_estimate_r = 0.6;	// EPRO-added to change the default value
+	m_estimate_r = 0.9;	// EPRO-added to change the default value
 }
 
 vtkPowerCrustSurfaceReconstruction::~vtkPowerCrustSurfaceReconstruction()
@@ -168,7 +168,7 @@ extern int  pdim;  /* point dimension */
 #define PNTSTSH 1
 
 
-#define MAXBLOCKS 10000
+#define MAXBLOCKS 50000
 
 typedef point site;
 typedef Coord* normalp;

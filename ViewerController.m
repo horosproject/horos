@@ -13585,11 +13585,11 @@ int i,j,l;
 	{
 		NSLog( @"number of points: %d", [*pts count]);
 		
-		#define MAXPOINTS 5000
+		#define MAXPOINTS 4000
 		
 		if( [*pts count] > MAXPOINTS*2)
 		{
-			NSMutableArray *newpts = [NSMutableArray arrayWithCapacity: MAXPOINTS];
+			NSMutableArray *newpts = [NSMutableArray arrayWithCapacity: MAXPOINTS*2];
 			
 			int i, add = [*pts count] / MAXPOINTS;
 			

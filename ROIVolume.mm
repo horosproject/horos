@@ -106,7 +106,7 @@
 	
 	int i, j;
 
-	NSMutableArray *pts = [[NSMutableArray alloc] initWithCapacity:0];
+	NSMutableArray *pts = [NSMutableArray array];
 
 	for(i = 0; i < [roiList count]; i++)
 	{
@@ -133,9 +133,27 @@
 		}		
 	}
 	
-	//NSLog(@"[roiList count] : %d", [roiList count]);
-	//NSLog(@"[pts count] : %d", [pts count]);
-	
+	#define MAXPOINTS 5000
+		
+	if( [pts count] > MAXPOINTS*2)
+	{
+		NSMutableArray *newpts = [NSMutableArray arrayWithCapacity: MAXPOINTS*2];
+		
+		int i, add = [pts count] / MAXPOINTS;
+		
+		if( add > 1)
+		{
+			for( i = 0; i < [pts count]; i += add)
+			{
+				[newpts addObject: [pts objectAtIndex: i]];
+			}
+			
+			NSLog( @"too much points, reducing from: %d, to: %d", [pts count], [newpts count]);
+			
+			pts = newpts;
+		}
+	}
+
 	if([pts count] > 0)
 	{
 		vtkPoints *points = vtkPoints::New();
@@ -234,8 +252,6 @@
 		roiVolumeActor->GetProperty()->SetDiffuse(0.8);
 		roiVolumeActor->GetProperty()->SetOpacity(opacity);
 	}
-	
-	[pts release];
 	
 	[splash close];
 	[splash release];
