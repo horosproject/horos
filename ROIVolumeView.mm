@@ -20,6 +20,11 @@
 #include "math.h"
 #import "QuicktimeExport.h"
 
+#include "vtkTIFFReader.h"
+#include "vtkTexture.h"
+#include "vtkTextureMapToSphere.h"
+#include "vtkTransformTextureCoords.h"
+
 #include "vtkPowerCrustSurfaceReconstruction.h"
 
 #define D2R 0.01745329251994329576923690768    // degrees to radians
@@ -149,8 +154,21 @@
 //	pSmooth->SetBoundarySmoothing(TRUE);
 //	pSmooth->Update();
 
+
+
+
+
+vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
+  tmapper -> SetInput (polyDataNormals -> GetOutput());
+  tmapper -> PreventSeamOn();
+
+vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
+  xform->SetInput(tmapper->GetOutput());
+  xform->SetScale(4,4,4);
+
+
 	vtkDataSetMapper *map = vtkDataSetMapper::New();
-		map->SetInput( polyDataNormals->GetOutput());
+		map->SetInput( xform->GetOutput());
 		map->ScalarVisibilityOff();
 	polyDataNormals->Delete();
 	
@@ -178,13 +196,24 @@
 
 	triangulation = vtkActor::New();
 		triangulation->SetMapper( map);
-		triangulation->GetProperty()->SetColor(1, 0, 0);
-		triangulation->GetProperty()->SetSpecular( 0.3);
-		triangulation->GetProperty()->SetSpecularPower( 20);
-		triangulation->GetProperty()->SetAmbient( 0.2);
-		triangulation->GetProperty()->SetDiffuse( 0.8);
-		triangulation->GetProperty()->SetOpacity(0.5);
+//		triangulation->GetProperty()->SetColor(1, 0, 0);
+//		triangulation->GetProperty()->SetSpecular( 0.3);
+//		triangulation->GetProperty()->SetSpecularPower( 20);
+//		triangulation->GetProperty()->SetAmbient( 0.2);
+//		triangulation->GetProperty()->SetDiffuse( 0.8);
+//		triangulation->GetProperty()->SetOpacity(0.5);
 	map->Delete();
+	
+	// Texture
+	
+//	vtkTIFFReader *bmpread = vtkTIFFReader::New();
+//       bmpread->SetFileName("/Users/rossetantoine/Desktop/texture.tif");
+//
+//    vtkTexture	*texture = vtkTexture::New();
+//       texture->SetInput(bmpread->GetOutput());
+//       texture->InterpolateOn();
+//	
+//	triangulation->SetTexture(texture);
 	
 	// The balls
 	

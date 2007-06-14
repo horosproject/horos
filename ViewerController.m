@@ -8607,8 +8607,6 @@ int i,j,l;
 		
 		[[viewer window] center];
 		
-		NSLog( [data description]);
-		
 		//Delete the generated ROIs
 		
 		for( i = 0 ; i < [generatedROIs count] ; i++)
