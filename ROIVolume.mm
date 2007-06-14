@@ -133,7 +133,7 @@
 		}		
 	}
 	
-	#define MAXPOINTS 5000
+	#define MAXPOINTS 4000
 		
 	if( [pts count] > MAXPOINTS*2)
 	{
