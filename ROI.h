@@ -114,6 +114,9 @@ enum
 	BOOL			displayTextualData;
 }
 
++(void) loadDefaultSettings;
++(void) saveDefaultSettings;
+
 // Create a new ROI, needs the current pixel resolution and image origin
 - (id) initWithType: (long) itype :(float) ipixelSpacing :(NSPoint) iimageOrigin;
 - (id) initWithType: (long) itype :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin;

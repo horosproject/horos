@@ -4122,6 +4122,8 @@ static ViewerController *draggedController = 0L;
 {
 	self = [super initWithWindowNibName:@"Viewer"];
 	
+	[ROI loadDefaultSettings];
+	
 	resampleRatio = 1.0;
 	
 	[imageView setDrawing: NO];
@@ -13561,7 +13563,14 @@ int i,j,l;
 		
 		if( imageCount > 1)
 		{
-			if( error) *error = [NSString stringWithFormat: NSLocalizedString(@"Only ONE ROI per image, please! (im: %d)", nil), x+1];
+			if( [imageView flippedData])
+			{
+				if( error) *error = [NSString stringWithFormat: NSLocalizedString(@"Only ONE ROI per image, please! (im: %d)", nil), pixList[curMovieIndex] -x];
+			}
+			else
+			{
+				if( error) *error = [NSString stringWithFormat: NSLocalizedString(@"Only ONE ROI per image, please! (im: %d)", nil), x+1];
+			}
 			return 0;
 		}
 	}

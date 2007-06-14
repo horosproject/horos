@@ -852,6 +852,10 @@ NSRect screenFrame()
 	
 	NS_DURING
 	
+	if( [[previousDefaults valueForKey: @"ROITEXTNAMEONLY"] intValue]				!=		[defaults integerForKey: @"ROITEXTNAMEONLY"])
+		refreshViewer = YES;
+	if( [[previousDefaults valueForKey: @"ROITEXTIFSELECTED"] intValue]				!=		[defaults integerForKey: @"ROITEXTIFSELECTED"])
+		refreshViewer = YES;
 	if ([[previousDefaults valueForKey: @"PET Blending CLUT"]		isEqualToString:	[defaults stringForKey: @"PET Blending CLUT"]] == NO) 
 		recomputePETBlending = YES;
 	if( [[previousDefaults valueForKey: @"COPYSETTINGS"] intValue]				!=		[defaults integerForKey: @"COPYSETTINGS"])
@@ -937,6 +941,7 @@ NSRect screenFrame()
 	[DicomFile resetDefaults];
 	[DCMPix checkUserDefaults: YES];
 	[DCMView setDefaults];
+	[ROI loadDefaultSettings];
 	
 	NS_HANDLER
 		NSLog(@"Exception updating prefs: %@", [localException description]);
@@ -954,7 +959,7 @@ NSRect screenFrame()
 		updateTimer = 0L;
 	}
 	
-	updateTimer = [[NSTimer scheduledTimerWithTimeInterval: 1 target: self selector:@selector(runPreferencesUpdateCheck:) userInfo:0L repeats: NO] retain];
+	updateTimer = [[NSTimer scheduledTimerWithTimeInterval: 0.5 target: self selector:@selector(runPreferencesUpdateCheck:) userInfo:0L repeats: NO] retain];
 }
 
 -(void) UpdateWLWWMenu: (NSNotification*) note
@@ -1391,6 +1396,8 @@ NSRect screenFrame()
 
 - (void) applicationWillTerminate: (NSNotification*) aNotification
 {
+	[ROI saveDefaultSettings];
+	
 	[BonjourDICOMService stop];
 	[BonjourDICOMService release];
 	BonjourDICOMService = 0L;
