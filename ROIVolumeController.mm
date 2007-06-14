@@ -36,11 +36,12 @@
 	[volumeField setStringValue: s];
 }
 
--(id) initWithPoints:(NSMutableArray*) pts :(float) volume :(ViewerController*) iviewer
+-(id) initWithPoints:(NSMutableArray*) pts :(float) volume :(ViewerController*) iviewer roi:(ROI*) iroi
 {
     unsigned long   i;
 	
-	viewer = iviewer;
+	viewer = [iviewer retain];
+	roi = [iroi retain];
 	
     self = [super initWithWindowNibName:@"ROIVolume"];
     
@@ -68,6 +69,9 @@
 {
     NSLog(@"Dealloc ROIVolumeController");
 	
+	[viewer release];
+	[roi release];
+	
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc removeObserver: self];
 	
@@ -79,4 +83,15 @@
     [[self window] setDelegate:nil];
     [self release];
 }
+
+- (ViewerController*) viewer
+{
+	return viewer;
+}
+
+- (ROI*) roi
+{
+	return roi;
+}
+
 @end

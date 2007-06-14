@@ -7,8 +7,7 @@
 //
 
 #import "ROIVolume.h"
-#include "vtkPowerCrustSurfaceReconstruction.h"
-#include "vtkPolyDataNormals.h"
+
 #import "WaitRendering.h"
 
 @implementation ROIVolume
@@ -169,39 +168,39 @@
 		points->Delete();
 		
 		//if ([roiList count]==1)
-		if (NO) // deactivated
-		// SURFACE
-		{		
-			NSLog(@"vtkPolygon");
-			vtkPolygon *polygon = vtkPolygon::New();
-			polygon->GetPoints()->SetData(points->GetData());
-
-			NSLog(@"polygon->GetPoints()->GetNumberOfPoints() : %d", polygon->GetPoints()->GetNumberOfPoints());
-
-			NSLog(@"vtkCellArray");
-			vtkCellArray *polygons = vtkCellArray::New();
-			polygons->InsertNextCell(polygon);
-			
-			NSLog(@"vtkPolyData");
-			vtkPolyData *surface = vtkPolyData::New();
-			surface->SetPoints(points);
-			surface->SetPolys(polygons);
-
-			NSLog(@"surface->GetNumberOfPolys() : %d", surface->GetNumberOfPolys());		
-			
-			NSLog(@"vtkDataSetMapper");
-			vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
-			mapper->SetInput(surface);
-			mapper->ScalarVisibilityOff();
-			
-			NSLog(@"roiVolumeActor->SetMapper(mapper);");
-			roiVolumeActor->SetMapper(mapper);
-			polygon->Delete();
-			polygons->Delete();
-			surface->Delete();
-			mapper->Delete();
-		}
-		else
+//		if (NO) // deactivated
+//		// SURFACE
+//		{		
+//			NSLog(@"vtkPolygon");
+//			vtkPolygon *polygon = vtkPolygon::New();
+//			polygon->GetPoints()->SetData(points->GetData());
+//
+//			NSLog(@"polygon->GetPoints()->GetNumberOfPoints() : %d", polygon->GetPoints()->GetNumberOfPoints());
+//
+//			NSLog(@"vtkCellArray");
+//			vtkCellArray *polygons = vtkCellArray::New();
+//			polygons->InsertNextCell(polygon);
+//			
+//			NSLog(@"vtkPolyData");
+//			vtkPolyData *surface = vtkPolyData::New();
+//			surface->SetPoints(points);
+//			surface->SetPolys(polygons);
+//
+//			NSLog(@"surface->GetNumberOfPolys() : %d", surface->GetNumberOfPolys());		
+//			
+//			NSLog(@"vtkDataSetMapper");
+//			vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
+//			mapper->SetInput(surface);
+//			mapper->ScalarVisibilityOff();
+//			
+//			NSLog(@"roiVolumeActor->SetMapper(mapper);");
+//			roiVolumeActor->SetMapper(mapper);
+//			polygon->Delete();
+//			polygons->Delete();
+//			surface->Delete();
+//			mapper->Delete();
+//		}
+//		else
 		// VOLUME
 		{
 //			vtkDelaunay3D *delaunayTriangulator = vtkDelaunay3D::New();
@@ -228,9 +227,19 @@
 				polyDataNormals->AutoOrientNormalsOn();
 			power->Delete();
 			
+			vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
+				tmapper -> SetInput (polyDataNormals -> GetOutput());
+				tmapper -> PreventSeamOn();
+				polyDataNormals->Delete();
+
+			vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
+				xform->SetInput(tmapper->GetOutput());
+				xform->SetScale(4,4,4);
+				tmapper->Delete();
+				
 			vtkDataSetMapper *map = vtkDataSetMapper::New();
-			map->SetInput( polyDataNormals->GetOutput());
-			polyDataNormals->Delete();
+			map->SetInput( tmapper->GetOutput());
+			map->ScalarVisibilityOff();
 			
 			map->Update();
 			
@@ -239,6 +248,23 @@
 			roiVolumeActor->GetProperty()->BackfaceCullingOn();
 
 			map->Delete();
+			
+			//Texture
+			NSString	*location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
+			
+			if( location == 0L || [location isEqualToString:@""])
+				location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
+			
+			vtkTIFFReader *bmpread = vtkTIFFReader::New();
+			   bmpread->SetFileName( [location UTF8String]);
+
+			vtkTexture	*textureImage = vtkTexture::New();
+			   textureImage->SetInput( bmpread->GetOutput());
+			   textureImage->InterpolateOn();
+			bmpread->Delete();
+
+			roiVolumeActor->SetTexture( textureImage);
+			textureImage->Delete();
 		}
 		
 		pointsDataSet->Delete();

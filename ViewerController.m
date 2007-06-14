@@ -8586,7 +8586,7 @@ int i,j,l;
 	// Show Volume Window
 	if( [sender tag] == 0 && error == 0L)
 	{
-		ROIVolumeController	*viewer = [[ROIVolumeController alloc] initWithPoints:pts :volume :self];
+		ROIVolumeController	*viewer = [[ROIVolumeController alloc] initWithPoints:pts :volume :self roi: selectedRoi];
 		
 		[viewer showWindow: self];
 		

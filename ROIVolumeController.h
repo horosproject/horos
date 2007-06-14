@@ -27,14 +27,17 @@
     IBOutlet ROIVolumeView			*view;
 	IBOutlet NSTextField			*volumeField;
 	
-	IBOutlet NSButton				*showSurfaces, *showPoints, *showWireframe;
+	IBOutlet NSButton				*showSurfaces, *showPoints, *showWireframe, *textured, *color;
+	IBOutlet NSColorWell			*colorWell;
 	IBOutlet NSSlider				*opacity;
 	
 	ViewerController				*viewer;
+	ROI								*roi;
 }
 
-- (id) initWithPoints:(NSMutableArray*) pts :(float) volume :(ViewerController*) iviewer;
+- (id) initWithPoints:(NSMutableArray*) pts :(float) volume :(ViewerController*) iviewer roi:(ROI*) iroi;
 - (IBAction) changeParameters:(id) sender;
 - (void) setDataString:(NSString*) s;
-
+- (ViewerController*) viewer;
+- (ROI*) roi;
 @end

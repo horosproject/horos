@@ -90,6 +90,11 @@
 #include "vtkPolyDataNormals.h"
 #include "vtkFrustumCoverageCuller.h"
 #include "vtkGeometryFilter.h"
+#include "vtkTIFFReader.h"
+#include "vtkTexture.h"
+#include "vtkTextureMapToSphere.h"
+#include "vtkTransformTextureCoords.h"
+#include "vtkPowerCrustSurfaceReconstruction.h"
 #undef id
 
 class vtkMyCallback;

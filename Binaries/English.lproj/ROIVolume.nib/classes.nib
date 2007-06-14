@@ -79,10 +79,13 @@
             CLASS = ROIVolumeController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                color = NSButton; 
+                colorWell = NSColorWell; 
                 opacity = NSSlider; 
                 showPoints = NSButton; 
                 showSurfaces = NSButton; 
                 showWireframe = NSButton; 
+                textured = NSButton; 
                 view = ROIVolumeView; 
                 volumeField = NSTextField; 
             }; 

@@ -15,22 +15,187 @@
 #import "ROIVolumeView.h"
 #import "DCMPix.h"
 #import "DCMView.h"
+#import "DICOMExport.h"
+#import "ROIVolumeController.h"
+
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/CGLCurrent.h>
 #include "math.h"
 #import "QuicktimeExport.h"
 
-#include "vtkTIFFReader.h"
-#include "vtkTexture.h"
-#include "vtkTextureMapToSphere.h"
-#include "vtkTransformTextureCoords.h"
-
-#include "vtkPowerCrustSurfaceReconstruction.h"
-
 #define D2R 0.01745329251994329576923690768    // degrees to radians
 #define R2D 57.2957795130823208767981548141    // radians to degrees
 
 @implementation ROIVolumeView
+
+-(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
+{
+	unsigned char	*buf = 0L;
+	long			i;
+	
+	NSRect size = [self bounds];
+	
+	*width = (long) size.size.width;
+	*width/=4;
+	*width*=4;
+	*height = (long) size.size.height;
+	*spp = 3;
+	*bpp = 8;
+	
+	buf = (unsigned char*) malloc( *width * *height * *spp * *bpp/8);
+	if( buf)
+	{
+		[self getVTKRenderWindow]->MakeCurrent();
+		
+		glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
+		
+		long rowBytes = *width**spp**bpp/8;
+		
+		unsigned char	*tempBuf = (unsigned char*) malloc( rowBytes);
+		
+		for( i = 0; i < *height/2; i++)
+		{
+			memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
+			memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
+			memcpy( buf + i*rowBytes, tempBuf, rowBytes);
+		}
+		
+		//Add the small OsiriX logo at the bottom right of the image
+		NSImage				*logo = [NSImage imageNamed:@"SmallLogo.tif"];
+		NSBitmapImageRep	*TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
+		
+		for( i = 0; i < [TIFFRep pixelsHigh]; i++)
+		{
+			unsigned char	*srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
+			unsigned char	*dstPtr = (buf + (*height - [TIFFRep pixelsHigh] + i)*rowBytes + ((*width-10)*3 - [TIFFRep bytesPerRow]));
+			
+			long x = [TIFFRep bytesPerRow]/3;
+			while( x-->0)
+			{
+				if( srcPtr[ 0] != 0 || srcPtr[ 1] != 0 || srcPtr[ 2] != 0)
+				{
+					dstPtr[ 0] = srcPtr[ 0];
+					dstPtr[ 1] = srcPtr[ 1];
+					dstPtr[ 2] = srcPtr[ 2];
+				}
+				
+				dstPtr += 3;
+				srcPtr += 3;
+			}
+		}
+		
+		[TIFFRep release];
+	}
+	
+	[NSOpenGLContext clearCurrentContext];
+	
+	return buf;
+}
+
+-(NSImage*) nsimage:(BOOL) originalSize
+{
+	NSBitmapImageRep	*rep;
+	long				width, height, i, x, spp, bpp;
+	NSString			*colorSpace;
+	unsigned char		*dataPtr;
+	
+	dataPtr = [self getRawPixels :&width :&height :&spp :&bpp :!originalSize : YES];
+
+	if( spp == 3) colorSpace = NSCalibratedRGBColorSpace;
+	else colorSpace = NSCalibratedWhiteColorSpace;
+
+	rep = [[[NSBitmapImageRep alloc]
+			 initWithBitmapDataPlanes:0L
+						   pixelsWide:width
+						   pixelsHigh:height
+						bitsPerSample:bpp
+					  samplesPerPixel:spp
+							 hasAlpha:NO
+							 isPlanar:NO
+					   colorSpaceName:colorSpace
+						  bytesPerRow:width*bpp*spp/8
+						 bitsPerPixel:bpp*spp] autorelease];
+
+	memcpy( [rep bitmapData], dataPtr, height*width*bpp*spp/8);
+		
+	 NSImage *image = [[NSImage alloc] init];
+	 [image addRepresentation:rep];
+	 
+	free( dataPtr);
+	
+	return image;
+}
+
+- (void) exportJPEG:(id) sender
+{
+    NSSavePanel     *panel = [NSSavePanel savePanel];
+
+	[panel setCanSelectHiddenExtension:YES];
+	[panel setRequiredFileType:@"jpg"];
+	
+	if( [panel runModalForDirectory:0L file:@"Volume Image"] == NSFileHandlingPanelOKButton)
+	{
+		NSImage *im = [self nsimage:NO];
+		
+		NSArray *representations;
+		NSData *bitmapData;
+		
+		representations = [im representations];
+		
+		bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+		
+		[bitmapData writeToFile:[panel filename] atomically:YES];
+		
+		[im release];
+		
+		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
+	}
+}
+
+-(IBAction) copy:(id) sender
+{
+    NSPasteboard *pb = [NSPasteboard generalPasteboard];
+
+    NSImage *im;
+    
+    [pb declareTypes:[NSArray arrayWithObject:NSTIFFPboardType] owner:self];
+    
+    im = [self nsimage:NO];
+    
+    [pb setData: [im TIFFRepresentation] forType:NSTIFFPboardType];
+    
+    [im release];
+}
+
+- (void) exportDICOMFile:(id) sender
+{
+	long	width, height, spp, bpp, err;
+	float	cwl, cww;
+	float	o[ 9];
+	
+	DICOMExport *exportDCM = [[DICOMExport alloc] init];
+	
+	unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :NO];
+	
+	if( dataPtr)
+	{
+		ROIVolumeController *co = [[self window] windowController];
+		NSArray	*pixList = [[co viewer] pixList];
+		
+		[exportDCM setSourceFile: [[pixList objectAtIndex: 0] srcFile]];
+		[exportDCM setSeriesDescription:[[co roi] name]];
+		[exportDCM setSeriesNumber:5500];
+		[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+		
+		err = [exportDCM writeDCMFile: 0L];
+		if( err)  NSRunCriticalAlertPanel( NSLocalizedString(@"Error", 0L),  NSLocalizedString( @"Error during the creation of the DICOM File!", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+		
+		free( dataPtr);
+	}
+
+	[exportDCM release];
+}
 
 - (void) CloseViewerNotification: (NSNotification*) note
 {
@@ -97,23 +262,10 @@
 //	isoSmoother->SetInput( profile);
 //	isoSmoother->SetNumberOfIterations( smoothVal);
 //		isoSmoother->SetRelaxationFactor(0.05);
-
-	// Delaunay3D is used to triangulate the points. The Tolerance is the distance
-	// that nearly coincident points are merged together. (Delaunay does better if
-	// points are well spaced.) The alpha value is the radius of circumcircles,
-	// circumspheres. Any mesh entity whose circumcircle is smaller than this
-	// value is output.
 	
 	//vtkGaussian
 	//vtkSurfaceReconstructionFilter
 	//vtkContourFilter
-	
-//	vtkSurfaceReconstructionFilter *surf = vtkSurfaceReconstructionFilter::New();
-//	surf->SetInput( profile);
-//	
-//	vtkContourFilter *cf = vtkContourFilter::New();
-//    cf->SetInput(surf->GetOutput());
-//    cf->SetValue(0, 0.0);
 	
 //	vtkPolyDataNormals *polyDataNormals = vtkPolyDataNormals::New();
 //		polyDataNormals->SetInput( del->GetOutput());
@@ -154,46 +306,21 @@
 //	pSmooth->SetBoundarySmoothing(TRUE);
 //	pSmooth->Update();
 
+	vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
+		tmapper -> SetInput (polyDataNormals -> GetOutput());
+		tmapper -> PreventSeamOn();
+		polyDataNormals->Delete();
 
-
-
-
-vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
-  tmapper -> SetInput (polyDataNormals -> GetOutput());
-  tmapper -> PreventSeamOn();
-
-vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
-  xform->SetInput(tmapper->GetOutput());
-  xform->SetScale(4,4,4);
-
+	vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
+		xform->SetInput(tmapper->GetOutput());
+		xform->SetScale(4,4,4);
+		tmapper->Delete();
 
 	vtkDataSetMapper *map = vtkDataSetMapper::New();
 		map->SetInput( xform->GetOutput());
 		map->ScalarVisibilityOff();
-	polyDataNormals->Delete();
+	xform->Delete();
 	
-	//  vtkSurfaceReconstructionFilter
-
-//	vtkSurfaceReconstructionFilter *surf = vtkSurfaceReconstructionFilter::New();
-//	surf->SetInput( profile);
-//
-//	vtkContourFilter *cf = vtkContourFilter::New();
-//	cf->SetInput( surf->GetOutput());
-//	cf->SetValue( 0, 0.0);
-//	surf->Delete();
-//
-//	vtkReverseSense *reverse = vtkReverseSense::New();
-//	reverse->SetInput( cf->GetOutput());
-//	reverse->ReverseCellsOn();
-//	reverse->ReverseNormalsOn();
-//
-//	vtkPolyDataMapper *popMapper = vtkPolyDataMapper::New();
-//	popMapper->SetInput(cf->GetOutput());
-//	popMapper->ScalarVisibilityOff();
-//
-//	cf->Delete();
-
-
 	triangulation = vtkActor::New();
 		triangulation->SetMapper( map);
 //		triangulation->GetProperty()->SetColor(1, 0, 0);
@@ -206,17 +333,23 @@ vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
 	
 	// Texture
 	
-//	vtkTIFFReader *bmpread = vtkTIFFReader::New();
-//       bmpread->SetFileName("/Users/rossetantoine/Desktop/texture.tif");
-//
-//    vtkTexture	*texture = vtkTexture::New();
-//       texture->SetInput(bmpread->GetOutput());
-//       texture->InterpolateOn();
-//	
-//	triangulation->SetTexture(texture);
+	NSString	*location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
+	
+	if( location == 0L || [location isEqualToString:@""])
+		location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
+	
+	vtkTIFFReader *bmpread = vtkTIFFReader::New();
+       bmpread->SetFileName( [location UTF8String]);
+
+    vtkTexture	*texture = vtkTexture::New();
+       texture->SetInput( bmpread->GetOutput());
+       texture->InterpolateOn();
+	bmpread->Delete();
+	
+	triangulation->SetTexture(texture);
+	texture->Delete();
 	
 	// The balls
-	
 	vtkSphereSource *ball = vtkSphereSource::New();
 		ball->SetRadius(0.3);
 		ball->SetThetaResolution( 12);
