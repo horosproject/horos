@@ -203,7 +203,7 @@
 			
 			vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
 				power->SetInput( pointsDataSet);
-
+			
 			vtkPolyDataNormals *polyDataNormals = vtkPolyDataNormals::New();
 				polyDataNormals->SetInput( power->GetOutput());
 				polyDataNormals->ConsistencyOn();
@@ -213,6 +213,8 @@
 			vtkDataSetMapper *map = vtkDataSetMapper::New();
 			map->SetInput( polyDataNormals->GetOutput());
 			polyDataNormals->Delete();
+			
+			map->Update();
 			
 			roiVolumeActor->SetMapper(map);
 			roiVolumeActor->GetProperty()->FrontfaceCullingOn();

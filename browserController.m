@@ -8603,7 +8603,7 @@ static BOOL needToRezoom;
 					[subOpenMatrix4D renewRows: 1 columns: [[splittedSeries objectAtIndex: 0] count]];
 					[subOpenMatrix4D sizeToCells];
 					[subOpenMatrix4D setTarget:self];
-					[subOpenMatrix4D setAction: @selector( selectAll4DSeries:)];
+					[subOpenMatrix4D setAction: @selector( selectSubSeriesAndOpen:)];
 					
 					[[supOpenButtons cellWithTag: 3] setEnabled: YES];
 					

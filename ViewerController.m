@@ -13455,6 +13455,8 @@ int i,j,l;
 	lastImageIndex = -1;
 	if( error) *error = 0L;
 	
+	NSLog( @"computeVolume started");
+	
 	if( generateMissingROIs)
 	{
 		[self roiDeleteGeneratedROIsForName: [selectedRoi name]];
@@ -13499,6 +13501,8 @@ int i,j,l;
 				}
 			}
 		}
+		
+		NSLog( @"generated ROI done");
 	}
 	
 	lastROI = 0L;
@@ -13572,6 +13576,35 @@ int i,j,l;
 				if( error) *error = [NSString stringWithFormat: NSLocalizedString(@"Only ONE ROI per image, please! (im: %d)", nil), x+1];
 			}
 			return 0;
+		}
+	}
+	
+	NSLog( @"volume computation done");
+	
+	if( pts)
+	{
+		NSLog( @"number of points: %d", [*pts count]);
+		
+		#define MAXPOINTS 5000
+		
+		if( [*pts count] > MAXPOINTS*2)
+		{
+			NSMutableArray *newpts = [NSMutableArray arrayWithCapacity: MAXPOINTS];
+			
+			int i, add = [*pts count] / MAXPOINTS;
+			
+			if( add > 1)
+			{
+				for( i = 0; i < [*pts count]; i += add)
+				{
+					[newpts addObject: [*pts objectAtIndex: i]];
+				}
+				
+				NSLog( @"too much points, reducing from: %d, to: %d", [*pts count], [newpts count]);
+				
+				[*pts removeAllObjects];
+				[*pts addObjectsFromArray: newpts];
+			}
 		}
 	}
 	
@@ -13674,6 +13707,8 @@ int i,j,l;
 			[data setObject: rois forKey:@"rois"];
 		}
 	}
+	
+	NSLog( @"data computation done");
 	
 	if( globalCount == 1)
 	{
