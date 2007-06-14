@@ -229,7 +229,7 @@
 	aCamera->SetViewUp(0, -1, 0);
 	aCamera->OrthogonalizeViewUp();
 	aCamera->SetParallelProjection( false);
-	aCamera->SetViewAngle( 30);
+	aCamera->SetViewAngle( 60);
 
 	aRenderer->ResetCamera();
 	
