@@ -56,7 +56,21 @@ GLenum glReportError (void)
 	return err;
 }
 
+static float ROIRegionOpacity, ROITextThickness, ROIThickness, ROIOpacity, ROIColorR, ROIColorG, ROIColorB, ROITextColorR, ROITextColorG, ROITextColorB;
+static float ROIRegionThickness, ROIRegionColorR, ROIRegionColorG, ROIRegionColorB, ROIRegionOpacity;
+static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY, ROITEXTNAMEONLY;
+
 @implementation ROI
+
++(void) saveDefaultSettings
+{
+	[[NSUserDefaults standardUserDefaults] setFloat: ROIRegionOpacity forKey: @"ROIRegionOpacity"];
+}
+
++(void) loadDefaultSettings
+{
+
+}
 
 +(void) setDefaultName:(NSString*) n
 {
@@ -293,12 +307,11 @@ GLenum glReportError (void)
 	
 	if( type == tPlain)
 	{
-		[[NSUserDefaults standardUserDefaults] setFloat:opacity forKey:@"ROIRegionOpacity"];
+		ROIRegionOpacity = opacity;
 	}
 	else if(type==tLayerROI)
 	{
 		needsLoadTexture = YES;
-		//needsLoadTexture2 = YES;
 	}
 }
 -(DCMView*) curView
@@ -751,13 +764,13 @@ GLenum glReportError (void)
 		
 		previousPoint.x = previousPoint.y = -1000;
 		
-		if( type == tText) thickness = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextThickness"];
-		else thickness = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIThickness"];
+		if( type == tText) thickness = ROITextThickness;
+		else thickness = ROIThickness;
 		
-		opacity = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIOpacity"];
-		color.red = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIColorR"];
-		color.green = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIColorG"];
-		color.blue = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIColorB"];
+		opacity = ROIOpacity;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIOpacity"];
+		color.red = ROIColorR;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIColorR"];
+		color.green = ROIColorG;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIColorG"];
+		color.blue = ROIColorB;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIColorB"];
 		
 		mousePosMeasure = -1;
 		
@@ -789,9 +802,9 @@ GLenum glReportError (void)
 			
 			[self setName:name];	// Recompute the texture
 			
-			color.red = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextColorR"];
-			color.green = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextColorG"];
-			color.blue = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextColorB"];
+			color.red = ROITextColorR;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextColorR"];
+			color.green = ROITextColorG;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextColorG"];
+			color.blue = ROITextColorB;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextColorB"];
 		}
 		else if (type == tPlain)
 		{
@@ -805,11 +818,11 @@ GLenum glReportError (void)
 	//		tempTextureBuffer		=NULL;
 			textureFirstPoint		=0;
 			
-			thickness = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionThickness"];
-			color.red = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorR"];
-			color.green = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorG"];
-			color.blue = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorB"];
-			opacity = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionOpacity"];
+			thickness = ROIRegionThickness;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionThickness"];
+			color.red = ROIRegionColorR;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorR"];
+			color.green = ROIRegionColorG;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorG"];
+			color.blue = ROIRegionColorB;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorB"];
+			opacity = ROIRegionOpacity;		//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionOpacity"];
 			
 			name = [[NSString alloc] initWithString:@"Region"];
 		}
@@ -2057,7 +2070,7 @@ GLenum glReportError (void)
 			case ROI_selectedModify:
 			case ROI_drawing:
 				
-				thickness = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionThickness"];
+				thickness = ROIRegionThickness;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionThickness"];
 			
 				if (textureUpLeftCornerX > pt.x-thickness)
 				{
@@ -2403,15 +2416,15 @@ GLenum glReportError (void)
 	color = a;
 	if( type == tText)
 	{
-		[[NSUserDefaults standardUserDefaults] setFloat:color.red forKey:@"ROITextColorR"];
-		[[NSUserDefaults standardUserDefaults] setFloat:color.green forKey:@"ROITextColorG"];
-		[[NSUserDefaults standardUserDefaults] setFloat:color.blue forKey:@"ROITextColorB"];
+		ROITextColorR = color.red;	//[[NSUserDefaults standardUserDefaults] setFloat:color.red forKey:@"ROITextColorR"];
+		ROITextColorG = color.green;	//[[NSUserDefaults standardUserDefaults] setFloat:color.green forKey:@"ROITextColorG"];
+		ROITextColorB = color.blue;	//[[NSUserDefaults standardUserDefaults] setFloat:color.blue forKey:@"ROITextColorB"];
 	}
 	else if( type == tPlain)
 	{
-		[[NSUserDefaults standardUserDefaults] setFloat:color.red forKey:@"ROIRegionColorR"];
-		[[NSUserDefaults standardUserDefaults] setFloat:color.green forKey:@"ROIRegionColorG"];
-		[[NSUserDefaults standardUserDefaults] setFloat:color.blue forKey:@"ROIRegionColorB"];
+		ROIRegionColorR = color.red;	//[[NSUserDefaults standardUserDefaults] setFloat:color.red forKey:@"ROIRegionColorR"];
+		ROIRegionColorG = color.green;	//[[NSUserDefaults standardUserDefaults] setFloat:color.green forKey:@"ROIRegionColorG"];
+		ROIRegionColorB = color.blue;	//[[NSUserDefaults standardUserDefaults] setFloat:color.blue forKey:@"ROIRegionColorB"];
 	}
 	else if( type == tLayerROI)
 	{
@@ -2423,9 +2436,9 @@ GLenum glReportError (void)
 	}
 	else
 	{
-		[[NSUserDefaults standardUserDefaults] setFloat:color.red forKey:@"ROIColorR"];
-		[[NSUserDefaults standardUserDefaults] setFloat:color.green forKey:@"ROIColorG"];
-		[[NSUserDefaults standardUserDefaults] setFloat:color.blue forKey:@"ROIColorB"];
+		ROIColorR = color.red;		//[[NSUserDefaults standardUserDefaults] setFloat:color.red forKey:@"ROIColorR"];
+		ROIColorG = color.green;		//[[NSUserDefaults standardUserDefaults] setFloat:color.green forKey:@"ROIColorG"];
+		ROIColorB = color.blue;		//[[NSUserDefaults standardUserDefaults] setFloat:color.blue forKey:@"ROIColorB"];
 	}
 }
 
@@ -2436,11 +2449,11 @@ GLenum glReportError (void)
 	
 	if( type == tPlain)
 	{
-		[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROIRegionThickness"];
+		ROIRegionThickness = thickness;	//[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROIRegionThickness"];
 	}
 	else if( type == tText)
 	{
-		[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROITextThickness"];
+		ROITextThickness = thickness;	//[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROITextThickness"];
 		
 		[stanStringAttrib release];
 		
@@ -2454,7 +2467,7 @@ GLenum glReportError (void)
 	}
 	else
 	{
-		[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROIThickness"];
+		ROIThickness = thickness;	//[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROIThickness"];
 	}
 }
 
@@ -2672,7 +2685,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 	BOOL drawTextBox = NO;
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+	if( ROITEXTIFSELECTED == NO || mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 	{
 		drawTextBox = YES;
 	}
@@ -3069,7 +3082,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 				
-				if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTNAMEONLY"] == NO ) {
+				if ( ROITEXTNAMEONLY == NO ) {
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 					
 					float area = [self plainArea];
@@ -3135,7 +3148,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO )
+				if( ROITEXTNAMEONLY == NO )
 				{
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 //					if( [curView blendingView])		Sadly this doesn't work AT ALL ! Antoine
@@ -3341,7 +3354,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				long	line = 0;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
-				if( type == tMesure &&[[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTNAMEONLY"] == NO) {
+				if( type == tMesure && ROITEXTNAMEONLY == NO) {
 					if( pixelSpacingX != 0 && pixelSpacingY != 0) {
 						if ([self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]] < .1)
 							sprintf (line2, "L: %0.1f %cm", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]] * 10000.0, 0xb5);
@@ -3391,7 +3404,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 					else line1[ 0] = 0;
 					
-					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO )
+					if( ROITEXTNAMEONLY == NO )
 					{
 						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 						
@@ -3454,7 +3467,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
+				if( ROITEXTNAMEONLY == NO ) {
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 					
 					if( pixelSpacingX != 0 && pixelSpacingY != 0)
@@ -3515,7 +3528,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
+				if( ROITEXTNAMEONLY == NO ) {
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 					
 					if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
@@ -3787,7 +3800,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 					
-					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
+					if( ROITEXTNAMEONLY == NO ) {
 						
 						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 						
@@ -3874,7 +3887,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 					
-					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
+					if( ROITEXTNAMEONLY == NO ) {
 						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
@@ -3914,7 +3927,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 					
-					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
+					if( ROITEXTNAMEONLY == NO ) {
 						
 						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 						
