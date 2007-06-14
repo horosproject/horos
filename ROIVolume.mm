@@ -7,6 +7,9 @@
 //
 
 #import "ROIVolume.h"
+#include "vtkPowerCrustSurfaceReconstruction.h"
+#include "vtkPolyDataNormals.h"
+#import "WaitRendering.h"
 
 @implementation ROIVolume
 
@@ -96,6 +99,9 @@
 
 - (void) prepareVTKActor
 {
+	WaitRendering *splash = [[WaitRendering alloc] init:@"Preparing 3D Object..."];
+	[splash showWindow:self]; 
+
 	roiVolumeActor = vtkActor::New();
 	
 	int i, j;
@@ -180,21 +186,44 @@
 		else
 		// VOLUME
 		{
-			vtkDelaunay3D *delaunayTriangulator = vtkDelaunay3D::New();
-			delaunayTriangulator->SetInput(pointsDataSet);
+//			vtkDelaunay3D *delaunayTriangulator = vtkDelaunay3D::New();
+//			delaunayTriangulator->SetInput(pointsDataSet);
+//			
+//			delaunayTriangulator->SetTolerance( 0.001);
+//			delaunayTriangulator->SetAlpha( 20); /// pimp my Alpha!!!
+//			delaunayTriangulator->BoundingTriangulationOff();
+//			
+//			vtkDataSetMapper *map = vtkDataSetMapper::New();
+//			map->SetInput((vtkDataSet*) delaunayTriangulator->GetOutput());
+//			delaunayTriangulator->Delete();
+//			
+//			roiVolumeActor->SetMapper(map);
+//			map->Delete();
 			
-			delaunayTriangulator->SetTolerance( 0.001);
-			delaunayTriangulator->SetAlpha( 20); /// pimp my Alpha!!!
-			delaunayTriangulator->BoundingTriangulationOff();
+			
+			vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
+				power->SetInput( pointsDataSet);
+
+			vtkPolyDataNormals *polyDataNormals = vtkPolyDataNormals::New();
+				polyDataNormals->SetInput( power->GetOutput());
+				polyDataNormals->ConsistencyOn();
+				polyDataNormals->AutoOrientNormalsOn();
+			power->Delete();
 			
 			vtkDataSetMapper *map = vtkDataSetMapper::New();
-			map->SetInput((vtkDataSet*) delaunayTriangulator->GetOutput());
-			delaunayTriangulator->Delete();
+			map->SetInput( polyDataNormals->GetOutput());
+			polyDataNormals->Delete();
 			
 			roiVolumeActor->SetMapper(map);
+			roiVolumeActor->GetProperty()->FrontfaceCullingOn();
+			roiVolumeActor->GetProperty()->BackfaceCullingOn();
+
 			map->Delete();
 		}
+		
 		pointsDataSet->Delete();
+		
+//		roiVolumeActor->GetProperty()->SetRepresentationToWireframe();
 		
 		roiVolumeActor->GetProperty()->SetColor(red, green, blue);
 		roiVolumeActor->GetProperty()->SetSpecular(0.3);
@@ -205,6 +234,9 @@
 	}
 	
 	[pts release];
+	
+	[splash close];
+	[splash release];
 }
 
 - (BOOL) isVolume

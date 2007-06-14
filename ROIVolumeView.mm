@@ -20,6 +20,8 @@
 #include "math.h"
 #import "QuicktimeExport.h"
 
+#include "vtkPowerCrustSurfaceReconstruction.h"
+
 #define D2R 0.01745329251994329576923690768    // degrees to radians
 #define R2D 57.2957795130823208767981548141    // radians to degrees
 
@@ -113,37 +115,44 @@
 //		polyDataNormals->ConsistencyOn();
 //		polyDataNormals->AutoOrientNormalsOn();
 		
-	vtkDelaunay3D *del = vtkDelaunay3D::New();
-		del->SetInput( profile);
-		del->SetTolerance( 0.001);
-		del->SetAlpha( 20);
-//		del->SetOffset( 50);
-		del->BoundingTriangulationOff();
+//	vtkDelaunay3D *del = vtkDelaunay3D::New();
+//		del->SetInput( profile);
+//		del->SetTolerance( 0.001);
+//		del->SetAlpha( 20);
+////		del->SetOffset( 50);
+//		del->BoundingTriangulationOff();
+////	profile->Delete();
+	
+	vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
+		power->SetInput( profile);
 	profile->Delete();
 
-//	vtkGeometryFilter *pGeomFilter = vtkGeometryFilter::New();
-//	pGeomFilter->SetInput( (vtkDataSet*) del->GetOutput());
-//
-//	//do a bit of decimation
+	vtkPolyDataNormals *polyDataNormals = vtkPolyDataNormals::New();
+		polyDataNormals->SetInput( power->GetOutput());
+		polyDataNormals->ConsistencyOn();
+		polyDataNormals->AutoOrientNormalsOn();
+	power->Delete();
+	
+	//do a bit of decimation
 //	vtkDecimatePro *pDeci = vtkDecimatePro::New();
-//	pDeci->SetInput(pGeomFilter->GetOutput());
+//	pDeci->SetInput(power->GetOutput());
 //	pDeci->SetTargetReduction(0.0);
-//
-//	//ok, now lets try some filtering
+
+	//ok, now lets try some filtering
 //	vtkSmoothPolyDataFilter * pSmooth = vtkSmoothPolyDataFilter::New();
-//	pSmooth->SetInput(pDeci->GetOutput());
-//	pSmooth->SetNumberOfIterations( 20);
+//	pSmooth->SetInput(polyDataNormals->GetOutput());
+//	pSmooth->SetNumberOfIterations( 100);
 ////	pSmooth->SetRelaxationFactor(fRelax);
 //	pSmooth->SetFeatureEdgeSmoothing(TRUE);
 //	pSmooth->SetFeatureAngle( 90);
 //	pSmooth->SetEdgeAngle( 90);
 //	pSmooth->SetBoundarySmoothing(TRUE);
 //	pSmooth->Update();
- 
+
 	vtkDataSetMapper *map = vtkDataSetMapper::New();
-		map->SetInput( (vtkDataSet*) del->GetOutput());
+		map->SetInput( polyDataNormals->GetOutput());
 		map->ScalarVisibilityOff();
-	del->Delete();
+	polyDataNormals->Delete();
 	
 	//  vtkSurfaceReconstructionFilter
 
@@ -185,7 +194,7 @@
 		ball->SetPhiResolution( 12);
 	
 	vtkGlyph3D *balls = vtkGlyph3D::New();
-		balls->SetInput( (vtkDataObject*) del->GetOutput());
+		balls->SetInput( profile);
 		balls->SetSource( ball->GetOutput());
 	ball->Delete();
 	
@@ -204,34 +213,11 @@
 	
 	aRenderer->AddActor( ballActor);
 	
-//	triangulation->GetProperty()->FrontfaceCullingOn();
-//	triangulation->GetProperty()->BackfaceCullingOn();
+	triangulation->GetProperty()->FrontfaceCullingOn();
+	triangulation->GetProperty()->BackfaceCullingOn();
+	
 	aRenderer->AddActor( triangulation);
-
-//	vtkFrustumCoverageCuller* culler = vtkFrustumCoverageCuller::New();
-//		culler->SetSortingStyleToFrontToBack();
-//
-//	aRenderer->AddCuller(culler);
-
-//        vtkLight *light1 = vtkLight::New();
-//        light1->SetPosition(1,0,1);
-//
-//        vtkLight *light2 = vtkLight::New();
-//        light2->SetPosition(0,1,1);
-//
-//        vtkLight *light3 = vtkLight::New();
-//        light3->SetPosition(-1,0,1);
-//
-//        vtkLight *light4 = vtkLight::New();
-//        light4->SetPosition(0,-1,1);
-//
-//        aRenderer->AddLight(light1);
-//        aRenderer->AddLight(light2);
-//        aRenderer->AddLight(light3);
-//        aRenderer->AddLight(light4);
-
-
-
+	
     aCamera = vtkCamera::New();
 	aCamera->Zoom(1.5);
 

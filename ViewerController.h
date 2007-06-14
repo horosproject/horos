@@ -415,6 +415,7 @@ enum
 - (void) setImageIndex:(long) i;
 - (IBAction) ConvertToRGBMenu:(id) sender;
 - (IBAction) ConvertToBWMenu:(id) sender;
+- (void) place3DViewerWindow:(NSWindowController*) viewer;
 - (IBAction) export2PACS:(id) sender;
 - (void) print:(id) sender;
 - (IBAction) roiDeleteWithName:(NSString*) name;

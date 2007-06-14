@@ -848,6 +848,8 @@ static NSString *hostName = @"";
 	// ** Supplementary Burn Path	
 	[defaultValues setObject: @"" forKey: @"Supplementary Burn Path"];
 	
+	[defaultValues setObject:@"0" forKey:@"ThreeDViewerOnAnotherScreen"];
+	
 	// ** DATABASEINDEX
 	[defaultValues setObject:@"0" forKey:@"DATABASEINDEX"];
 	

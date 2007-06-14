@@ -14225,7 +14225,7 @@ int i,j,l;
 					[imageView getWLWW:&iwl :&iww];
 					[viewer setWLWW:iwl :iww];
 					[viewer load3DState];
-					[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
+					[self place3DViewerWindow: viewer];
 //					[[viewer window] performZoom:self];
 					[viewer showWindow:self];
 					[[viewer window] makeKeyAndOrderFront:self];
@@ -14344,6 +14344,27 @@ int i,j,l;
 	return viewer;
 }
 
+- (void) place3DViewerWindow:(NSWindowController*) viewer
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ThreeDViewerOnAnotherScreen"])
+	{
+		NSArray		*allScreens = [NSScreen screens];
+		
+		int i;
+		for( i = 0; i < [allScreens count]; i++)
+		{
+			if( [[[self window] screen] frame].origin.x != [[allScreens objectAtIndex: i] frame].origin.x || [[[self window] screen] frame].origin.y != [[allScreens objectAtIndex: i] frame].origin.y)
+			{
+				[[viewer window] setFrame: [[allScreens objectAtIndex: i] visibleFrame] display:NO];
+				return;
+			}
+		}
+	}
+	else
+	{
+		[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
+	}
+}
 
 -(IBAction) VRViewer:(id) sender
 {
@@ -14439,7 +14460,7 @@ int i,j,l;
 			[imageView getWLWW:&iwl :&iww];
 			[viewer setWLWW:iwl :iww];
 			[viewer load3DState];
-			[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
+			[self place3DViewerWindow: viewer];
 //			[[viewer window] performZoom:self];
 			[viewer showWindow:self];			
 			[[viewer window] makeKeyAndOrderFront:self];
@@ -14484,7 +14505,7 @@ int i,j,l;
 		else
 		{
 			viewer = [self openSRViewer];
-			[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
+			[self place3DViewerWindow: viewer];
 //			[[viewer window] performZoom:self];
 			[viewer showWindow:self];
 			[[viewer window] makeKeyAndOrderFront:self];
@@ -14725,7 +14746,7 @@ long i;
 			[imageView getWLWW:&iwl :&iww];
 			[viewer setWLWW:iwl :iww];
 			[viewer load3DState];
-			[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
+			[self place3DViewerWindow: viewer];
 //			[[viewer window] performZoom:self];
 			[viewer showWindow:self];
 			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
@@ -14776,7 +14797,7 @@ long i;
 		return viewer;
 	if (blendingController) {	
 		viewer = [[OrthogonalMPRPETCTViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self : blendingController];
-		[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
+		[self place3DViewerWindow: viewer];
 //		[[viewer window] performZoom:self];
 		[[viewer CTController] ApplyCLUTString:curCLUTMenu];
 		[[viewer PETController] ApplyCLUTString:[blendingController curCLUTMenu]];
@@ -14897,7 +14918,7 @@ long i;
 			*/
 				viewer = [self openOrthogonalMPRViewer];
 				
-				[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
+				[self place3DViewerWindow: viewer];
 				//[[viewer window] performZoom:self];
 				[viewer showWindow:self];
 				
