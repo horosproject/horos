@@ -16,9 +16,9 @@
 {	
 	roiVolumes = [[NSMutableArray alloc] initWithCapacity:0];
 	[roiVolumes setArray:[v roiVolumes]];
-
+	
 	self = [super initWithWindowNibName:@"ROIVolumeManager"];
-
+	
 	viewer = v;
 		
 //	[self setRoiVolumes:[v roiVolumes]];
@@ -100,6 +100,11 @@
 	else if( [[aTableColumn identifier] isEqualToString:@"opacity"])
 	{
 		[[[roiVolumesController arrangedObjects] objectAtIndex:rowIndex] setOpacity:[anObject floatValue]];
+		[[viewer view] display];
+	}
+	else if( [[aTableColumn identifier] isEqualToString:@"texture"])
+	{
+		[[[roiVolumesController arrangedObjects] objectAtIndex:rowIndex] setTexture:[anObject boolValue]];
 		[[viewer view] display];
 	}
 //	else if( [aTableColumn isEqualTo:columnColor])
@@ -185,11 +190,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 	[super dealloc];
 }
-
-/* Nothing to do
-- (void)finalize {
-}
-*/
 
 - (void) setRoiVolumes: (NSMutableArray*) volumes
 {

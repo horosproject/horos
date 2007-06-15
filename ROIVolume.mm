@@ -26,10 +26,11 @@
 		blue = 1.0;
 		opacity = 1.0;
 		factor = 1.0;
+		textured = YES;
 		color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:opacity];
 		visible = NO;
 
-		NSArray *keys   = [NSArray arrayWithObjects:@"name", @"volume", @"red", @"green", @"blue", @"opacity", @"color", @"visible", nil];
+		NSArray *keys   = [NSArray arrayWithObjects:@"name", @"volume", @"red", @"green", @"blue", @"opacity", @"color", @"visible", @"texture", nil];
 		NSArray *values = [NSArray arrayWithObjects:	name,
 														[NSNumber numberWithFloat:volume],
 														[NSNumber numberWithFloat:red],
@@ -37,7 +38,8 @@
 														[NSNumber numberWithFloat:blue],
 														[NSNumber numberWithFloat:opacity],
 														color,
-														[NSNumber numberWithBool:visible], nil];
+														[NSNumber numberWithBool:visible],
+														[NSNumber numberWithBool:textured], nil];
 		properties = [[NSMutableDictionary alloc] initWithObjects: values forKeys: keys];
 	}
 	return self;
@@ -50,18 +52,12 @@
 	
 	if(roiVolumeActor != 0L)
 		roiVolumeActor->Delete();
-		
+	
+	if( textureImage)
+		textureImage->Delete();
+
 	[super dealloc];
 }
-
-
-- (void)finalize {
-	if(roiVolumeActor != 0L)
-		roiVolumeActor->Delete();
-		
-	[super finalize];
-}
-
 
 - (void) setROIList: (NSArray*) newRoiList
 {
@@ -230,12 +226,12 @@
 			vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
 				tmapper -> SetInput (polyDataNormals -> GetOutput());
 				tmapper -> PreventSeamOn();
-				polyDataNormals->Delete();
+			polyDataNormals->Delete();
 
 			vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
 				xform->SetInput(tmapper->GetOutput());
 				xform->SetScale(4,4,4);
-				tmapper->Delete();
+			tmapper->Delete();
 				
 			vtkDataSetMapper *map = vtkDataSetMapper::New();
 			map->SetInput( tmapper->GetOutput());
@@ -258,13 +254,12 @@
 			vtkTIFFReader *bmpread = vtkTIFFReader::New();
 			   bmpread->SetFileName( [location UTF8String]);
 
-			vtkTexture	*textureImage = vtkTexture::New();
+			textureImage = vtkTexture::New();
 			   textureImage->SetInput( bmpread->GetOutput());
 			   textureImage->InterpolateOn();
 			bmpread->Delete();
 
 			roiVolumeActor->SetTexture( textureImage);
-			textureImage->Delete();
 		}
 		
 		pointsDataSet->Delete();
@@ -365,6 +360,23 @@
 	color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:opacity];
 	if( roiVolumeActor) roiVolumeActor->GetProperty()->SetOpacity(opacity);
 	[properties setValue:[NSNumber numberWithFloat:opacity] forKey:@"opacity"];
+}
+
+- (BOOL) texture
+{
+	return textured;
+}
+
+- (void) setTexture: (BOOL) o
+{
+	textured = o;
+	
+	if( roiVolumeActor)
+	{
+		if( o) roiVolumeActor->SetTexture( textureImage);
+		else roiVolumeActor->SetTexture( 0L);
+	}
+	[properties setValue:[NSNumber numberWithBool: textured] forKey:@"texture"];
 }
 
 - (float) factor

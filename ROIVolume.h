@@ -95,13 +95,17 @@
 @interface ROIVolume : NSObject {
 	NSMutableArray		*roiList;
 	vtkActor			*roiVolumeActor;
+	vtkTexture			*textureImage;
 	float				volume, red, green, blue, opacity, factor;
 	NSColor				*color;
-	BOOL				visible;
+	BOOL				visible, textured;
 	NSString			*name;
 	
 	NSMutableDictionary		*properties;
 }
+
+- (void) setTexture: (BOOL) o;
+- (BOOL) texture;
 
 - (void) setROIList: (NSArray*) newRoiList;
 - (void) prepareVTKActor;

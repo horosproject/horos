@@ -112,6 +112,7 @@ class vtkMyCallback;
 	
 	vtkActor					*ballActor;
 	vtkActor					*triangulation;
+	vtkTexture					*texture;
 	
     vtkActor					*outlineRect;
     vtkPolyDataMapper			*mapOutline;
@@ -122,6 +123,6 @@ class vtkMyCallback;
 
 - (short) setPixSource:(NSMutableArray*)pts;
 - (void) setROIActorVolume:(NSValue*)roiActorPointer;
-- (void) setOpacity: (float) opacity showPoints: (BOOL) sp showSurface: (BOOL) sS showWireframe:(BOOL) w;
+- (void) setOpacity: (float) opacity showPoints: (BOOL) sp showSurface: (BOOL) sS showWireframe:(BOOL) w texture:(BOOL) tex useColor:(BOOL) usecol color:(NSColor*) col;
 
 @end

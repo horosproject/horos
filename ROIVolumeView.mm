@@ -225,6 +225,7 @@
 	
 	triangulation->Delete();
 	ballActor->Delete();
+	texture->Delete();
 	
     [super dealloc];
 }
@@ -309,12 +310,12 @@
 	vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
 		tmapper -> SetInput (polyDataNormals -> GetOutput());
 		tmapper -> PreventSeamOn();
-		polyDataNormals->Delete();
+	polyDataNormals->Delete();
 
 	vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
 		xform->SetInput(tmapper->GetOutput());
 		xform->SetScale(4,4,4);
-		tmapper->Delete();
+	tmapper->Delete();
 
 	vtkDataSetMapper *map = vtkDataSetMapper::New();
 		map->SetInput( xform->GetOutput());
@@ -332,22 +333,21 @@
 	map->Delete();
 	
 	// Texture
-	
+
 	NSString	*location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
-	
+
 	if( location == 0L || [location isEqualToString:@""])
 		location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
 	
 	vtkTIFFReader *bmpread = vtkTIFFReader::New();
        bmpread->SetFileName( [location UTF8String]);
 
-    vtkTexture	*texture = vtkTexture::New();
-       texture->SetInput( bmpread->GetOutput());
-       texture->InterpolateOn();
+		texture = vtkTexture::New();
+		texture->SetInput( bmpread->GetOutput());
+		texture->InterpolateOn();
 	bmpread->Delete();
 	
 	triangulation->SetTexture(texture);
-	texture->Delete();
 	
 	// The balls
 	vtkSphereSource *ball = vtkSphereSource::New();
@@ -421,7 +421,7 @@
 	aCamera->Delete();
 }
 
-- (void) setOpacity: (float) opacity showPoints: (BOOL) sp showSurface: (BOOL) sS showWireframe:(BOOL) w
+- (void) setOpacity: (float) opacity showPoints: (BOOL) sp showSurface: (BOOL) sS showWireframe:(BOOL) w texture:(BOOL) tex useColor:(BOOL) usecol color:(NSColor*) col
 {
 	if( sp == NO) aRenderer->RemoveActor( ballActor);
 	else aRenderer->AddActor( ballActor);
@@ -433,6 +433,14 @@
 	else triangulation->GetProperty()->SetRepresentationToSurface();
 
 	triangulation->GetProperty()->SetOpacity( opacity);
+	
+	NSColor*	rgbCol = [col colorUsingColorSpaceName: NSDeviceRGBColorSpace];
+	
+	if( usecol) triangulation->GetProperty()->SetColor( [rgbCol redComponent], [rgbCol greenComponent], [rgbCol blueComponent]);
+	else triangulation->GetProperty()->SetColor( 1, 1, 1);
+	
+	if( tex) triangulation->SetTexture(texture);
+	else triangulation->SetTexture( 0L);
 	
 	[self setNeedsDisplay: YES];
 }
