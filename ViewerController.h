@@ -570,6 +570,7 @@ enum
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs error:(NSString**) error;
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs generatedROIs:(NSMutableArray*) generatedROIs computeData:(NSMutableDictionary*) data error:(NSString**) error;
 - (NSArray*) roisWithName: (NSString*) name;
+- (NSArray*) roisWithComment: (NSString*) comment;
 - (NSArray*) roiNames;
 - (void) deleteSeriesROIwithName: (NSString*) name;
 - (void) renameSeriesROIwithName: (NSString*) name newName:(NSString*) newName;

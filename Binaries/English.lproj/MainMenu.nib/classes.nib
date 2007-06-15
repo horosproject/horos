@@ -259,6 +259,7 @@
                 roiApplyWindow = id; 
                 roiDefaults = id; 
                 roiDeleteAll = id; 
+                roiDeleteAllROIsWithSameName = id; 
                 roiDeleteGeneratedROIs = id; 
                 roiGetInfo = id; 
                 roiGetManager = id; 
