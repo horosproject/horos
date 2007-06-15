@@ -14392,6 +14392,8 @@ int i,j,l;
 				return;
 			}
 		}
+		
+		[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
 	}
 	else
 	{
@@ -14492,9 +14494,8 @@ int i,j,l;
 			float   iwl, iww;
 			[imageView getWLWW:&iwl :&iww];
 			[viewer setWLWW:iwl :iww];
-			[viewer load3DState];
 			[self place3DViewerWindow: viewer];
-//			[[viewer window] performZoom:self];
+			[viewer load3DState];
 			[viewer showWindow:self];			
 			[[viewer window] makeKeyAndOrderFront:self];
 			[[viewer window] display];

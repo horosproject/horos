@@ -915,6 +915,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 	if(!dict && [_renderingMode isEqualToString:@"VR"])
 	{
+		firstTimeDisplayed = YES;
 		[self centerPresetsPanel];
 		[self showPresetsPanel];
 	}
@@ -3261,6 +3262,10 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 		[www close];
 		[www release];		
 	}
+	
+	if( firstTimeDisplayed)
+		[self close3DSettingsSavePanel: self];
+	firstTimeDisplayed = NO;
 }
 
 - (IBAction)displayPresetsForSelectedGroup:(id)sender;
@@ -3534,6 +3539,7 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 - (void)centerPresetsPanel;
 {
 	NSRect viewer3DFrame = [[[self window] screen] frame];
+	
 	NSRect presetsPanelFrame = [presetsPanel frame];
 	
 	NSPoint centerPoint;

@@ -140,6 +140,7 @@
 	
 	NSPoint					presetsPanelUserDefinedOrigin;
 	BOOL					needToMovePresetsPanelToUserDefinedPosition;
+	BOOL					firstTimeDisplayed;
 	
 }
 
