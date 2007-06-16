@@ -29,6 +29,7 @@
 				NSMutableArray				*sourcesArray;
 	IBOutlet	sourcesTableView			*sourcesTable;
 	IBOutlet	NSTextField					*selectedResultSource;
+	IBOutlet	NSTextField					*numberOfStudies;
 	
 	IBOutlet	NSMatrix					*dateFilterMatrix;
 	IBOutlet	NSMatrix					*modalityFilterMatrix;

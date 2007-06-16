@@ -528,6 +528,9 @@ static char *GetPrivateIP()
 	{
 		[sender selectText: self];
 	}
+	
+	if( [resultArray count] <= 1) [numberOfStudies setStringValue: [NSString stringWithFormat:@"%d study found.", [resultArray count]]];
+	else [numberOfStudies setStringValue: [NSString stringWithFormat:@"%d studies found.", [resultArray count]]];
 }
 
 // This function calls many GUI function, it has to be called from the main thread
@@ -816,6 +819,8 @@ static char *GetPrivateIP()
 
 -(void) awakeFromNib
 {
+	[numberOfStudies setStringValue: @""];
+	
 	[[self window] setFrameAutosaveName:@"QueryRetrieveWindow"];
 	
 	{

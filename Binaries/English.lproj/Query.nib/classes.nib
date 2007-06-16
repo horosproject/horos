@@ -145,6 +145,7 @@
                 dateFilterMatrix = NSMatrix; 
                 fromDate = NSDatePicker; 
                 modalityFilterMatrix = NSMatrix; 
+                numberOfStudies = NSTextField; 
                 outlineView = NSOutlineView; 
                 progressIndicator = NSProgressIndicator; 
                 searchBirth = NSDatePicker; 
