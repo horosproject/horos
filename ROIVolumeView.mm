@@ -28,6 +28,30 @@
 
 @implementation ROIVolumeView
 
+-(void) coView:(id) sender
+{
+	float distance = aCamera->GetDistance();
+	float pp = aCamera->GetParallelScale();
+
+	aCamera->SetFocalPoint (0, 0, 0);
+	aCamera->SetPosition (0, -1, 0);
+	aCamera->ComputeViewPlaneNormal();
+	aCamera->SetViewUp(0, 0, 1);
+	aCamera->OrthogonalizeViewUp();
+	aRenderer->ResetCamera();
+
+	// Apply the same zoom
+	
+	double vn[ 3], center[ 3];
+	aCamera->GetFocalPoint(center);
+	aCamera->GetViewPlaneNormal(vn);
+	aCamera->SetPosition(center[0]+distance*vn[0], center[1]+distance*vn[1], center[2]+distance*vn[2]);
+	aCamera->SetParallelScale( pp);
+	aRenderer->ResetCameraClippingRange();
+	
+	[self setNeedsDisplay:YES];
+}
+
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
 {
 	unsigned char	*buf = 0L;
@@ -437,6 +461,8 @@
 	aRenderer->ResetCamera();
 	
 	aCamera->Delete();
+	
+	[self coView: self];
 	
 	return error;
 }
