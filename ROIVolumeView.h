@@ -30,6 +30,8 @@
 #include "vtkActor.h"
 #include "vtkPolyData.h"
 #include "vtkRenderer.h"
+#include "vtkOrientationMarkerWidget.h"
+#include "vtkAnnotatedCubeActor.h"
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
 #include "vtkVolume16Reader.h"
@@ -117,6 +119,7 @@ class vtkMyCallback;
     vtkActor					*outlineRect;
     vtkPolyDataMapper			*mapOutline;
     vtkOutlineFilter			*outlineData;
+	vtkOrientationMarkerWidget	*orientationWidget;
 	
 	vtkImageImport				*reader;
 }

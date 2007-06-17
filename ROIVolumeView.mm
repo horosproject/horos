@@ -226,6 +226,7 @@
 	triangulation->Delete();
 	ballActor->Delete();
 	texture->Delete();
+	orientationWidget->Delete();
 	
     [super dealloc];
 }
@@ -379,6 +380,46 @@
 	triangulation->GetProperty()->BackfaceCullingOn();
 	
 	aRenderer->AddActor( triangulation);
+	
+	// ***********************
+	
+	vtkAnnotatedCubeActor* cube = vtkAnnotatedCubeActor::New();
+	cube->SetXPlusFaceText ( "L" );
+	cube->SetXMinusFaceText( "R" );
+	cube->SetYPlusFaceText ( "P" );
+	cube->SetYMinusFaceText( "A" );
+	cube->SetZPlusFaceText ( "S" );
+	cube->SetZMinusFaceText( "I" );
+	cube->SetFaceTextScale( 0.67 );
+
+	vtkProperty* property = cube->GetXPlusFaceProperty();
+	property->SetColor(0, 0, 1);
+	property = cube->GetXMinusFaceProperty();
+	property->SetColor(0, 0, 1);
+	property = cube->GetYPlusFaceProperty();
+	property->SetColor(0, 1, 0);
+	property = cube->GetYMinusFaceProperty();
+	property->SetColor(0, 1, 0);
+	property = cube->GetZPlusFaceProperty();
+	property->SetColor(1, 0, 0);
+	property = cube->GetZMinusFaceProperty();
+	property->SetColor(1, 0, 0);
+
+	cube->TextEdgesOff();
+	cube->CubeOn();
+	cube->FaceTextOn();
+
+	orientationWidget = vtkOrientationMarkerWidget::New();
+	orientationWidget->SetOrientationMarker( cube );
+	orientationWidget->SetInteractor( [self getInteractor] );
+	orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
+	orientationWidget->SetEnabled( 1 );
+	orientationWidget->InteractiveOff();
+	cube->Delete();
+
+	orientationWidget->On();
+	
+	// ***********************
 	
     aCamera = vtkCamera::New();
 	aCamera->Zoom(1.5);
