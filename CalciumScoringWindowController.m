@@ -394,9 +394,6 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	int p;	
 	[_viewer roiDeleteWithName:@"Segmentation Preview"];
 	
-	
-	
-	
 	if ( _startingPoint.x == 0 && _startingPoint.y == 0)
 	{
 		return;

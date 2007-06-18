@@ -16,6 +16,8 @@ extern NSString				*documentsDirectory();
 
 #import "Reports.h"
 #import "DicomFile.h"
+#import "OsiriX/DCM.h"
+#import "BrowserController.h"
 
 // if you want check point log info, define CHECK to the next line, uncommented:
 #define CHECK NSLog(@"result code = %d", ok);
@@ -215,6 +217,45 @@ static id aedesc_to_id(AEDesc *desc)
 				[rtf replaceCharactersInRange:range withString:[[NSDate date] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary]];
 			}
 			
+			// DICOM Fields
+			NSArray	*seriesArray = [[BrowserController currentBrowser] childrenArray: study];
+			NSArray	*imagePathsArray = [[BrowserController currentBrowser] imagesPathArray: [seriesArray objectAtIndex: 0]];
+			BOOL moreFields = NO;
+			do
+			{
+				NSRange firstChar = [rtfString rangeOfString: @"ÇDICOM_FIELD:"];
+				if( firstChar.location != NSNotFound)
+				{
+					NSRange secondChar = [rtfString rangeOfString: @"È"];
+					
+					if( secondChar.location != NSNotFound)
+					{
+						NSString	*dicomField = [rtfString substringWithRange: NSMakeRange( firstChar.location+firstChar.length, secondChar.location - (firstChar.location+firstChar.length))];
+						
+						
+						NSLog( dicomField);
+						
+						DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [imagePathsArray objectAtIndex: 0] decodingPixelData:NO];
+						if (dcmObject)
+						{
+							if( [dcmObject attributeValueWithName: dicomField])
+							{
+								[rtf replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+1)  withString: [dcmObject attributeValueWithName: dicomField]];
+							}
+							else
+							{
+								NSLog( @"**** Dicom field not found: %@ in %@", dicomField, [imagePathsArray objectAtIndex: 0]);
+								[rtf replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+1)  withString:@""];
+							}
+						}
+						moreFields = YES;
+					}
+					else moreFields = NO;
+				}
+				else moreFields = NO;
+			}
+			while( moreFields);
+			
 			[[rtf RTFFromRange:NSMakeRange(0, [rtf length]) documentAttributes:attr] writeToFile:destinationFile atomically:YES];
 			
 			[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"TextEdit"];
@@ -346,6 +387,45 @@ CHECK;
 	
 	// "today"
 	[aString replaceOccurrencesOfString:@"&#xAB;today&#xBB;" withString:[[NSDate date] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary] options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
+	
+	NSArray	*seriesArray = [[BrowserController currentBrowser] childrenArray: aStudy];
+	NSArray	*imagePathsArray = [[BrowserController currentBrowser] imagesPathArray: [seriesArray objectAtIndex: 0]];
+	
+	// DICOM Fields
+	BOOL moreFields = NO;
+	do
+	{
+		NSRange firstChar = [aString rangeOfString: @"&#xAB;DICOM_FIELD:"];
+		if( firstChar.location != NSNotFound)
+		{
+			NSRange secondChar = [aString rangeOfString: @"&#xBB;"];
+			
+			if( secondChar.location != NSNotFound)
+			{
+				NSString	*dicomField = [aString substringWithRange: NSMakeRange( firstChar.location+firstChar.length, secondChar.location - (firstChar.location+firstChar.length))];
+				
+				NSLog( dicomField);
+				
+				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [imagePathsArray objectAtIndex: 0] decodingPixelData:NO];
+				if (dcmObject)
+				{
+					if( [dcmObject attributeValueWithName: dicomField])
+					{
+						[aString replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+secondChar.length)  withString: [dcmObject attributeValueWithName: dicomField]];
+					}
+					else
+					{
+						NSLog( @"**** Dicom field not found: %@ in %@", dicomField, [imagePathsArray objectAtIndex: 0]);
+						[aString replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+1)  withString:@""];
+					}
+				}
+				moreFields = YES;
+			}
+			else moreFields = NO;
+		}
+		else moreFields = NO;
+	}
+	while( moreFields);
 }
 
 #pragma mark -

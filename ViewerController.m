@@ -8512,7 +8512,7 @@ int i,j,l;
 		}
 }
 
-- (int) roiDeleteAllROIsWithSameName:(id) sender
+- (IBAction) roiDeleteAllROIsWithSameName:(id) sender
 {
 	ROI	*selectedROI = [self selectedROI];
 	
