@@ -6941,10 +6941,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					//float xOffset = 10;
 					//float yOffset = 12;
 					glBegin(GL_LINES);
-					if ([curDCM pixelSpacingX] != 0 && [curDCM pixelSpacingX] * 1000.0 < 1)
+					if( [curDCM pixelSpacingX] != 0 && [curDCM pixelSpacingX] * 1000.0 < 1)
 					{ 
-						
-
 						glVertex2f(scaleValue  * (-0.02/[curDCM pixelSpacingX]), size.size.height/2 - yOffset); 
 						glVertex2f(scaleValue  * (0.02/[curDCM pixelSpacingX]), size.size.height/2 - yOffset);
 
@@ -6964,7 +6962,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							glVertex2f(-size.size.width/2 + xOffset,  i* scaleValue * 0.001/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
 						}
 					}
-					else
+					else if( [curDCM pixelSpacingX] != 0 && [curDCM pixelSpacingY] != 0)
 					{
 						glVertex2f(scaleValue  * (-50/[curDCM pixelSpacingX]), size.size.height/2 - yOffset); 
 						glVertex2f(scaleValue  * (50/[curDCM pixelSpacingX]), size.size.height/2 - yOffset);
