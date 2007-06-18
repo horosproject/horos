@@ -174,6 +174,11 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 				}
 				
 				[self modifyDicom: params];
+				
+				int i;			
+				for( i = 0; i < [files count]; i++)
+					[[NSFileManager defaultManager] removeFileAtPath:[[files objectAtIndex: i] stringByAppendingString:@".bak"] handler:0L];
+				
 				[self updateDB: files];
 				
 				[wait close];
@@ -181,8 +186,6 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 				wait = 0L;
 				
 				[self reload: self];
-				
-				int i;
 				
 				NSString	*searchGpEl = [NSString stringWithFormat:@"%@,%@", [NSString stringWithFormat:@"%04x", group], [NSString stringWithFormat:@"%04x", element]];
 				
@@ -643,6 +646,11 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 			}
 			
 			[self modifyDicom: params];
+			
+			int i;
+			for( i = 0; i < [files count]; i++)
+				[[NSFileManager defaultManager] removeFileAtPath:[[files objectAtIndex: i] stringByAppendingString:@".bak"] handler:0L];
+			
 			[self updateDB: files];
 			
 			[wait close];
@@ -751,6 +759,10 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 					}
 					
 					[self modifyDicom: params];
+					int i;
+					for( i = 0; i < [files count]; i++)
+						[[NSFileManager defaultManager] removeFileAtPath:[[files objectAtIndex: i] stringByAppendingString:@".bak"] handler:0L];
+					
 					[self updateDB: files];
 					
 					[wait close];

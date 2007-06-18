@@ -51,11 +51,6 @@
 	if (error_count > 0)
 	    CERR << "There were " << error_count << " error(s)" << endl;
 	
-	for( i = 0; i < argc; i++)
-	{
-		[[NSFileManager defaultManager] removeFileAtPath:[[params objectAtIndex: i] stringByAppendingString:@".bak"] handler:0L];
-	}
-	
     return error_count;
 }
 

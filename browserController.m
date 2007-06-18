@@ -806,7 +806,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 									newObject = YES;
 									[image clearCompletePathCache];
 									
-									if( [[image valueForKey:@"inDatabaseFolder"] boolValue])
+									if( [[image valueForKey:@"inDatabaseFolder"] boolValue] && [[DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder] isEqualToString: newFile] == NO)
 									{
 										if( [[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder]])
 											[[NSFileManager defaultManager] removeFileAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder] handler:nil];
