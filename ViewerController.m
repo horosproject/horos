@@ -8489,12 +8489,8 @@ int i,j,l;
 	}
 }
 
-- (IBAction) roiDeleteAllROIsWithSameName:(id) sender
+- (IBAction) roiIntDeleteAllROIsWithSameName :(NSString*) name
 {
-	ROI	*selectedROI = [self selectedROI];
-	
-	if( selectedROI)
-	{
 		int x, i;
 		
 		[self addToUndoQueue: @"roi"];
@@ -8506,7 +8502,7 @@ int i,j,l;
 			for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 			{
 				ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
-				if( [[curROI name] isEqualToString: [selectedROI name]])
+				if( [[curROI name] isEqualToString: name])
 				{
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: 0L];
 					[[roiList[ curMovieIndex] objectAtIndex: x] removeObject: curROI];
@@ -8514,8 +8510,22 @@ int i,j,l;
 				}
 			}
 		}
+}
+
+- (int) roiDeleteAllROIsWithSameName:(id) sender
+{
+	ROI	*selectedROI = [self selectedROI];
+	
+	if( selectedROI)
+	{
+		[self roiIntDeleteAllROIsWithSameName: [selectedROI name]];
 	}
 	else NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Error", nil), NSLocalizedString(@"Select a ROI to delete all ROIs with the same name.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
+}
+
+- (IBAction) roiDeleteWithName:(NSString*) name
+{
+	[self roiIntDeleteAllROIsWithSameName: name];
 }
 
 - (int) roiIntDeleteGeneratedROIsForName:(NSString*) name
@@ -9135,11 +9145,6 @@ int i,j,l;
 	}
 	
 	return applyToROIs;
-}
-
-- (IBAction) roiDeleteWithName:(NSString*) name
-{
-	[self roiDeleteAllROIsWithSameName: name];
 }
 
 - (IBAction) roiDeleteAll:(id) sender
