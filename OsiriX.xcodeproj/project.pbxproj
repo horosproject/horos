@@ -1830,6 +1830,9 @@
 		ABB36D830AF2548C00DBEEA2 /* available.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB36D7F0AF2548C00DBEEA2 /* available.tif */; };
 		ABB36D840AF2548C00DBEEA2 /* away.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB36D7E0AF2548C00DBEEA2 /* away.tif */; };
 		ABB36D850AF2548C00DBEEA2 /* available.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB36D7F0AF2548C00DBEEA2 /* available.tif */; };
+		ABB4D16C0C26686E0020A617 /* libitkv3p_netlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB4D16B0C26686E0020A617 /* libitkv3p_netlib.a */; };
+		ABB4D16F0C2668730020A617 /* libitkv3p_netlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB4D16B0C26686E0020A617 /* libitkv3p_netlib.a */; };
+		ABB4D1700C2668740020A617 /* libitkv3p_netlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB4D16B0C26686E0020A617 /* libitkv3p_netlib.a */; };
 		ABB7A43406343BCA00AD1777 /* dicomDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABB7A43306343BC900AD1777 /* dicomDictionary.plist */; };
 		ABB7A43506343BCA00AD1777 /* dicomDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABB7A43306343BC900AD1777 /* dicomDictionary.plist */; };
 		ABBA8D9D065AB90200A1F89C /* VR Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBA8D9A065AB90200A1F89C /* VR Bones.plist */; };
@@ -5644,7 +5647,6 @@
 		CE11140A08EDD61B005B15E1 /* libITKMetaIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113EE08EDD61B005B15E1 /* libITKMetaIO.a */; };
 		CE11140B08EDD61B005B15E1 /* libITKCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113EF08EDD61B005B15E1 /* libITKCommon.a */; };
 		CE11140D08EDD61B005B15E1 /* libITKniftiio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113F108EDD61B005B15E1 /* libITKniftiio.a */; };
-		CE11140E08EDD61B005B15E1 /* libitknetlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113F208EDD61B005B15E1 /* libitknetlib.a */; };
 		CE11140F08EDD61B005B15E1 /* libITKIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113D708EDD61B005B15E1 /* libITKIO.a */; };
 		CE11141008EDD61B005B15E1 /* libITKFEM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113D808EDD61B005B15E1 /* libITKFEM.a */; };
 		CE11141108EDD61B005B15E1 /* libITKznz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113D908EDD61B005B15E1 /* libITKznz.a */; };
@@ -5668,7 +5670,6 @@
 		CE11142708EDD61B005B15E1 /* libITKCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113EF08EDD61B005B15E1 /* libITKCommon.a */; };
 		CE11142808EDD61B005B15E1 /* libitkgdcm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113F008EDD61B005B15E1 /* libitkgdcm.a */; };
 		CE11142908EDD61B005B15E1 /* libITKniftiio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113F108EDD61B005B15E1 /* libITKniftiio.a */; };
-		CE11142A08EDD61B005B15E1 /* libitknetlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113F208EDD61B005B15E1 /* libitknetlib.a */; };
 		CE11142B08EDD61B005B15E1 /* libITKIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113D708EDD61B005B15E1 /* libITKIO.a */; };
 		CE11142C08EDD61B005B15E1 /* libITKFEM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113D808EDD61B005B15E1 /* libITKFEM.a */; };
 		CE11142D08EDD61B005B15E1 /* libITKznz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113D908EDD61B005B15E1 /* libITKznz.a */; };
@@ -5692,7 +5693,6 @@
 		CE11144308EDD61B005B15E1 /* libITKCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113EF08EDD61B005B15E1 /* libITKCommon.a */; };
 		CE11144408EDD61B005B15E1 /* libitkgdcm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113F008EDD61B005B15E1 /* libitkgdcm.a */; };
 		CE11144508EDD61B005B15E1 /* libITKniftiio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113F108EDD61B005B15E1 /* libITKniftiio.a */; };
-		CE11144608EDD61B005B15E1 /* libitknetlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113F208EDD61B005B15E1 /* libitknetlib.a */; };
 		CE1335E906B02DC000B7FC03 /* iChat.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE1335E806B02DC000B7FC03 /* iChat.icns */; };
 		CE1335EA06B02DC000B7FC03 /* iChat.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE1335E806B02DC000B7FC03 /* iChat.icns */; };
 		CE1366B50B41D0F200944876 /* mpeg2.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE1366B40B41D0F200944876 /* mpeg2.tiff */; };
@@ -11542,7 +11542,7 @@
 		AB6FF5950A47D08000C501F0 /* DefaultsOsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultsOsiriX.h; sourceTree = "<group>"; };
 		AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultsOsiriX.m; sourceTree = "<group>"; };
 		AB724F1E0ADE6D9C00A212A0 /* Decompress.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = Decompress.mm; sourceTree = "<group>"; };
-		AB724FF60ADE6ECB00A212A0 /* Decompress */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Decompress; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB724FF60ADE6ECB00A212A0 /* SafeDBRebuild */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SafeDBRebuild; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB7250370ADE6F5D00A212A0 /* Decompress */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = Decompress; path = build/Development/Decompress; sourceTree = "<group>"; };
 		AB726C85063F3AD500787EF6 /* QTExportVR.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = QTExportVR.icns; sourceTree = "<group>"; };
 		AB73E13606497EDA00545980 /* PreviewView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PreviewView.h; sourceTree = "<group>"; };
@@ -11611,6 +11611,7 @@
 		ABB36D7F0AF2548C00DBEEA2 /* available.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = available.tif; sourceTree = "<group>"; };
 		ABB3DB0B05868E34006494CB /* VTKView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTKView.h; sourceTree = "<group>"; };
 		ABB3DB0C05868E34006494CB /* VTKView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VTKView.mm; sourceTree = "<group>"; };
+		ABB4D16B0C26686E0020A617 /* libitkv3p_netlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkv3p_netlib.a; path = ITK180/bin/libitkv3p_netlib.a; sourceTree = "<group>"; };
 		ABB7A43306343BC900AD1777 /* dicomDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = dicomDictionary.plist; sourceTree = "<group>"; };
 		ABBA8D9A065AB90200A1F89C /* VR Bones.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "VR Bones.plist"; sourceTree = "<group>"; };
 		ABBA8D9B065AB90200A1F89C /* VR Red Vessels.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "VR Red Vessels.plist"; sourceTree = "<group>"; };
@@ -13131,7 +13132,6 @@
 		CE1113EF08EDD61B005B15E1 /* libITKCommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKCommon.a; path = ITK180/bin/libITKCommon.a; sourceTree = "<group>"; };
 		CE1113F008EDD61B005B15E1 /* libitkgdcm.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkgdcm.a; path = ITK180/bin/libitkgdcm.a; sourceTree = "<group>"; };
 		CE1113F108EDD61B005B15E1 /* libITKniftiio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKniftiio.a; path = ITK180/bin/libITKniftiio.a; sourceTree = "<group>"; };
-		CE1113F208EDD61B005B15E1 /* libitknetlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitknetlib.a; path = ITK180/bin/libitknetlib.a; sourceTree = "<group>"; };
 		CE1335E806B02DC000B7FC03 /* iChat.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iChat.icns; sourceTree = "<group>"; };
 		CE1366B40B41D0F200944876 /* mpeg2.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = mpeg2.tiff; sourceTree = "<group>"; };
 		CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "VR Muscles-Bones.plist"; sourceTree = "<group>"; };
@@ -14593,7 +14593,6 @@
 				CE11140A08EDD61B005B15E1 /* libITKMetaIO.a in Frameworks */,
 				CE11140B08EDD61B005B15E1 /* libITKCommon.a in Frameworks */,
 				CE11140D08EDD61B005B15E1 /* libITKniftiio.a in Frameworks */,
-				CE11140E08EDD61B005B15E1 /* libitknetlib.a in Frameworks */,
 				CEFE605A0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */,
 				CEEC8F900979B73B0060CE79 /* libvtksys.a in Frameworks */,
 				CEEC8F910979B73C0060CE79 /* libvtkpng.a in Frameworks */,
@@ -14626,6 +14625,7 @@
 				CE0F4E310AF38775005959D2 /* libdcmprintscu.dylib in Frameworks */,
 				CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
 				ABDF6E2E0BE0904D00793094 /* Growl.framework in Frameworks */,
+				ABB4D16C0C26686E0020A617 /* libitkv3p_netlib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14693,7 +14693,6 @@
 				CE11144308EDD61B005B15E1 /* libITKCommon.a in Frameworks */,
 				CE11144408EDD61B005B15E1 /* libitkgdcm.a in Frameworks */,
 				CE11144508EDD61B005B15E1 /* libITKniftiio.a in Frameworks */,
-				CE11144608EDD61B005B15E1 /* libitknetlib.a in Frameworks */,
 				CE3422CC0946237A00CCEA2A /* libvtksys.a in Frameworks */,
 				CEFE605C0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */,
 				BFBF3AA909B681F500545F5E /* libcrypto.dylib in Frameworks */,
@@ -14707,6 +14706,7 @@
 				ABD9084A0AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */,
 				CE6693C90AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
 				ABDF6E2F0BE0904D00793094 /* Growl.framework in Frameworks */,
+				ABB4D16F0C2668730020A617 /* libitkv3p_netlib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14821,7 +14821,6 @@
 				CE11142708EDD61B005B15E1 /* libITKCommon.a in Frameworks */,
 				CE11142808EDD61B005B15E1 /* libitkgdcm.a in Frameworks */,
 				CE11142908EDD61B005B15E1 /* libITKniftiio.a in Frameworks */,
-				CE11142A08EDD61B005B15E1 /* libitknetlib.a in Frameworks */,
 				CE3422CD0946237A00CCEA2A /* libvtksys.a in Frameworks */,
 				CEA656CC094EF64300D4E5E5 /* vli3.framework in Frameworks */,
 				CEFE605B0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */,
@@ -14836,6 +14835,7 @@
 				ABD9084C0AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */,
 				CE6693C80AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
 				ABDF6E300BE0904D00793094 /* Growl.framework in Frameworks */,
+				ABB4D1700C2668740020A617 /* libitkv3p_netlib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14964,7 +14964,7 @@
 				CECB058B07539E3A00576814 /* OsiriXVP.app */,
 				4A16D0960965E15300F82EC4 /* Unit Testing (Cocoa).octest */,
 				ABEA7F080A21BCC90094CAEF /* SafeDBRebuild */,
-				AB724FF60ADE6ECB00A212A0 /* Decompress */,
+				AB724FF60ADE6ECB00A212A0 /* SafeDBRebuild */,
 				CE7A0EED0AED55AD00540017 /* Quicktime */,
 				CEDF6DD00B46FE99008B45B8 /* DICOMPrint */,
 			);
@@ -17898,7 +17898,7 @@
 				CE1113EE08EDD61B005B15E1 /* libITKMetaIO.a */,
 				CE1113EF08EDD61B005B15E1 /* libITKCommon.a */,
 				CE1113F108EDD61B005B15E1 /* libITKniftiio.a */,
-				CE1113F208EDD61B005B15E1 /* libitknetlib.a */,
+				ABB4D16B0C26686E0020A617 /* libitkv3p_netlib.a */,
 			);
 			name = ITKLibs;
 			sourceTree = "<group>";
@@ -25388,7 +25388,7 @@
 			);
 			name = Decompress;
 			productName = SafeDBRebuild;
-			productReference = AB724FF60ADE6ECB00A212A0 /* Decompress */;
+			productReference = AB724FF60ADE6ECB00A212A0 /* SafeDBRebuild */;
 			productType = "com.apple.product-type.tool";
 		};
 		ABEA7F070A21BCC90094CAEF /* SafeDBRebuild */ = {
