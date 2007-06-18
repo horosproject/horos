@@ -37,4 +37,5 @@
 - (void)endoscopySegmentationForViewer:(ViewerController*) srcViewer seeds:(NSArray *)seeds;
 + (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height;
 + (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height numPoints:(long) numPoints;
++ (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height numPoints:(long) numPoints largestRegion:(BOOL) largestRegion;
 @end

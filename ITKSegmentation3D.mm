@@ -350,6 +350,11 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 
 + (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height numPoints:(long) numPoints
 {
+	return [ITKSegmentation3D extractContour:(unsigned char*) map width:(long) width height:(long) height numPoints:(long) numPoints largestRegion: YES];
+}
+
++ (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height numPoints:(long) numPoints largestRegion:(BOOL) largestRegion
+{
 	itk::MultiThreader::SetGlobalDefaultNumberOfThreads( MPProcessors());
 	
 	NSMutableArray	*tempArray = [NSMutableArray arrayWithCapacity:0];
@@ -371,12 +376,14 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 				
 	vtkPolyDataConnectivityFilter	*filter = vtkPolyDataConnectivityFilter::New();
 	filter->SetColorRegions( 1);
-	filter->SetExtractionModeToLargestRegion();
+	if( largestRegion) filter->SetExtractionModeToLargestRegion();
+	else filter->SetExtractionModeToAllRegions();
 	filter->SetInput( isoContour->GetOutput());
 
 	vtkPolyDataConnectivityFilter	*filter2 = vtkPolyDataConnectivityFilter::New();
 	filter2->SetColorRegions( 1);
-	filter2->SetExtractionModeToLargestRegion();
+	if( largestRegion) filter2->SetExtractionModeToLargestRegion();
+	else filter2->SetExtractionModeToAllRegions();
 	filter2->SetInput( filter->GetOutput());
 
 	vtkPolyData *output = filter2->GetOutput();

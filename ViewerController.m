@@ -13587,7 +13587,21 @@ int i,j,l;
 				
 				if( pts)
 				{
-					NSMutableArray	*points = [curROI points];
+					NSMutableArray	*points = 0L;
+					
+					if( [curROI type] == tPlain)
+					{
+						points = [ITKSegmentation3D extractContour:[curROI textureBuffer] width:[curROI textureWidth] height:[curROI textureHeight] numPoints: 200 largestRegion: NO];
+						
+						float mx = [curROI textureUpLeftCornerX], my = [curROI textureUpLeftCornerY];
+						
+						for( i = 0; i < [points count]; i++)
+						{
+							MyPoint	*pt = [points objectAtIndex: i];
+							[pt move: mx :my];
+						}
+					}
+					else points = [curROI points];
 					
 					for( y = 0; y < [points count]; y++)
 					{
@@ -13630,7 +13644,7 @@ int i,j,l;
 	{
 		NSLog( @"number of points: %d", [*pts count]);
 		
-		#define MAXPOINTS 4000
+		#define MAXPOINTS 7000
 		
 		if( [*pts count] > MAXPOINTS*2)
 		{

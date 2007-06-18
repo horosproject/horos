@@ -1237,7 +1237,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	
 	if( type == tPlain)
 	{
-		NSMutableArray  *tempArray = [ITKSegmentation3D extractContour:textureBuffer width:textureWidth  height:textureHeight];
+		NSMutableArray  *tempArray = [ITKSegmentation3D extractContour:textureBuffer width:textureWidth height:textureHeight];
 		
 		for( i = 0; i < [tempArray count]; i++)
 		{

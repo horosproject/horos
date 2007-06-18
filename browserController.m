@@ -2728,6 +2728,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[NSApp endSheet: rebuildWindow];
 	[rebuildWindow orderOut: self];
 	
+	[self waitForRunningProcesses];
+	
 	if( [sender tag])
 	{
 //		switch( [rebuildMode selectedTag])
@@ -2762,6 +2764,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 	long        i;
 	
 	if( isCurrentDatabaseBonjour) return;
+	
+	[self waitForRunningProcesses];
 	
 	BOOL REBUILDEXTERNALPROCESS = YES;
 
