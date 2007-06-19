@@ -8,6 +8,9 @@
 
 #import "ROIVolume.h"
 
+
+#import "ITKSegmentation3D.h"
+
 #import "WaitRendering.h"
 
 @implementation ROIVolume
@@ -111,7 +114,22 @@
 		//NSLog(@"[curDCM sliceLocation] : %d", [curDCM sliceLocation]);
 
 		// points
-		NSMutableArray	*points = [curROI points];
+		NSMutableArray	*points = 0L;
+					
+		if( [curROI type] == tPlain)
+		{
+			points = [ITKSegmentation3D extractContour:[curROI textureBuffer] width:[curROI textureWidth] height:[curROI textureHeight] numPoints: 200 largestRegion: NO];
+			
+			float mx = [curROI textureUpLeftCornerX], my = [curROI textureUpLeftCornerY];
+			
+			for( i = 0; i < [points count]; i++)
+			{
+				MyPoint	*pt = [points objectAtIndex: i];
+				[pt move: mx :my];
+			}
+		}
+		else points = [curROI points];
+		
 		for( j = 0; j < [points count]; j++)
 		{
 			float location[3];

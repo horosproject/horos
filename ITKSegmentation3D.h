@@ -15,6 +15,10 @@
 #import <Cocoa/Cocoa.h>
 
 #ifdef __cplusplus
+#define id Id
+	#include "itkImage.h"
+	#include "itkImportImageFilter.h"
+#undef id
 #import "ITK.h"
 #else
 @class ITK;
