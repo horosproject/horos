@@ -501,6 +501,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	NOINTERPOLATION = [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"];
 	FULL32BITPIPELINE = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
+	FULL32BITPIPELINE = NO;
 }
 
 + (NSSize)sizeOfString:(NSString *)string forFont:(NSFont *)font
@@ -5385,7 +5386,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
 		TEXTRECTMODE = GL_TEXTURE_2D;
 	}
-	
 }
 
 -(void) setCrossCoordinatesPer:(float) val
