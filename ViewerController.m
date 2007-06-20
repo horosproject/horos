@@ -8214,7 +8214,6 @@ int i,j,l;
 	[[[self roiList] objectAtIndex:[imageView curImage]] addObject:theNewROI];		
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo:0L];
 	[self selectROI:theNewROI deselectingOther:YES];
-	[theNewROI release];
 	
 	return theNewROI;
 }
@@ -9857,7 +9856,7 @@ int i,j,l;
 	[self ungroupSelectedROIs];
 }
 
-- (void)bringToFrontROI:(ROI*)roi;
+- (void)bringToFrontROI:(ROI*) roi;
 {
 	if([roi groupID]==0.0) // not grouped
 	{
