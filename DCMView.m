@@ -4982,6 +4982,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) doSyncronize:(NSNotification*)note
 {
+	syncOnLocationImpossible = NO;
+	
 	if (![[[note object] superview] isEqual:[self superview]] && [self is2DViewer])
 	{
 	BOOL	stringOK = NO;
@@ -5143,7 +5145,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							{
 								curImage = index;
 								
-								//NSLog(@"Loc");
+								if( [dcmPixList count] > 1)
+								{
+									float sliceDistance = fabs( [[dcmPixList objectAtIndex: 1] sliceLocation] - [[dcmPixList objectAtIndex: 0] sliceLocation]);
+									
+									if( fabs( smallestdiff) > sliceDistance * 2)
+										syncOnLocationImpossible = YES;
+								}
 								
 								if( curImage >= [dcmFilesList count]) curImage = [dcmFilesList count]-1;
 								if( curImage < 0) curImage = 0;
@@ -6368,7 +6376,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( dcmPixList && curImage > -1)
 		{
-			if( blendingView != 0L)
+			if( blendingView != 0L && syncOnLocationImpossible == NO)
 			{
 				glBlendFunc(GL_ONE, GL_ONE);
 				glEnable( GL_BLEND);
@@ -6377,7 +6385,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			[self drawRectIn:size :pTextureName :offset :textureX :textureY];
 			
-			if( blendingView)
+			if( blendingView != 0L && syncOnLocationImpossible == NO)
 			{
 				if( [curDCM pixelSpacingX] != 0 && [curDCM pixelSpacingY] != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
 				{
