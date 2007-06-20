@@ -319,7 +319,7 @@ enum
 	NSRect					savedWindowsFrame;
 }
 
-+ (NSArray*) getDisplayed2DViewers;
++ (NSMutableArray*) getDisplayed2DViewers;
 
 // Create a new 2D Viewer
 + (ViewerController *) newWindow:(NSMutableArray*)pixList :(NSMutableArray*)fileList :(NSData*) volumeData;
@@ -492,6 +492,7 @@ enum
 - (ViewerController*) blendingController;
 - (void)blendWithViewer:(ViewerController *)bc blendingType:(int)blendingType;
 - (NSString*) modality;
+- (NSString*) studyInstanceUID;
 - (void) addMovieSerie:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v;
 - (void) startLoadImageThread;
 - (void) moviePosSliderAction:(id) sender;
@@ -515,7 +516,7 @@ enum
 - (IBAction) VRVPROViewer:(id) sender;
 - (IBAction) VRViewer:(id) sender;
 - (IBAction) MPR2DViewer:(id) sender;
-
+- (IBAction) blendWindows:(id) sender;
 - (IBAction) orthogonalMPRViewer:(id) sender;
 
 - (IBAction) endoscopyViewer:(id) sender;

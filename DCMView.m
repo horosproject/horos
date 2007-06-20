@@ -6764,7 +6764,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					NSSortDescriptor * roiSorting = [[[NSSortDescriptor alloc] initWithKey:@"uniqueID" ascending:NO] autorelease];
 					
-					
 					rectArray = [[NSMutableArray alloc] initWithCapacity: [curRoiList count]];
 					int i;
 					for( i = [curRoiList count]-1; i >= 0; i--)

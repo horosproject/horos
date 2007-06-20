@@ -212,6 +212,7 @@
                 applyConvolutionOnSource = id; 
                 axView = id; 
                 barMenu = id; 
+                blendWindows = id; 
                 calciumScoring = id; 
                 calibrate = id; 
                 centerline = id; 

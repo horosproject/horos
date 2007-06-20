@@ -184,7 +184,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 
 #define UNDOQUEUESIZE 40
 
-+ (NSArray*) getDisplayed2DViewers
++ (NSMutableArray*) getDisplayed2DViewers
 {
 	NSArray				*winList = [NSApp windows];
 	NSMutableArray		*viewersList = [NSMutableArray array];
@@ -4100,7 +4100,7 @@ static ViewerController *draggedController = 0L;
 		// Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
 		[toolbar setAllowsUserCustomization: YES];
 		[toolbar setAutosavesConfiguration: YES];
-	//    [toolbar setDisplayMode: NSToolbarDisplayModeIconOnly];
+//		[toolbar setDisplayMode: NSToolbarDisplayModeIconOnly];
 		
 		// We are the delegate
 		[toolbar setDelegate: self];
@@ -4160,6 +4160,9 @@ static ViewerController *draggedController = 0L;
 	[imageView setDrawing: YES];
 	
 	[self SetSyncButtonBehavior: self];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOMATIC FUSE"])
+		[self blendWindows: 0L];
 		
 	return self;
 }
@@ -7343,6 +7346,40 @@ NSMutableArray		*array;
 	[imageView sendSyncMessage:1];
 }
 #pragma mark blending
+
+-(IBAction) blendWindows:(id) sender
+{
+	NSMutableArray *viewers = [ViewerController getDisplayed2DViewers];
+	int		i, x;
+	BOOL	fused = NO;
+	
+	for( i = 0; i < [viewers count]; i++)
+	{
+		if( [[[viewers objectAtIndex: i] modality] isEqualToString:@"CT"])
+		{
+			for( x = 0; x < [viewers count]; x++)
+			{
+				if( [[[viewers objectAtIndex: x] modality] isEqualToString:@"PT"] && [[[viewers objectAtIndex: x] studyInstanceUID] isEqualToString: [[viewers objectAtIndex: i] studyInstanceUID]])
+				{
+					ViewerController* a = [viewers objectAtIndex: i];
+					ViewerController* b = [viewers objectAtIndex: x];
+					
+					[viewers removeObject: a];		i--;
+					
+					[a ActivateBlending: b];
+					
+					fused = YES;
+				}
+			}
+		}
+	}
+	
+	if( fused == NO && sender != 0L)
+	{
+		NSRunCriticalAlertPanel(NSLocalizedString(@"PET-CT Fusion", nil), NSLocalizedString(@"This function requires a PET series and a CT series in the same study.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
+	}
+}
+
 -(void) ActivateBlending:(ViewerController*) bC
 {
 	if( bC == self) return;
