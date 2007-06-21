@@ -146,7 +146,10 @@ typedef char* vtkMyCallbackVR;
 @interface VRView : VTKView <Schedulable>
 {
 	NSTimer						*autoRotate, *startAutoRotate;
-	BOOL						rotate;
+	BOOL						rotate, flyto;
+	int							incFlyTo;
+	
+	float						flyToDestination[ 3];
 
 	int							projectionMode;
     NSMutableArray				*blendingPixList;
@@ -345,6 +348,7 @@ typedef char* vtkMyCallbackVR;
 -(id)initWithFrame:(NSRect)frame;
 -(short)setPixSource:(NSMutableArray*)pix :(float*) volumeData;
 -(void)dealloc;
+- (void) processFlyTo;
 -(void) setWLWW:(float) wl :(float) ww;
 -(void) getWLWW:(float*) wl :(float*) ww;
 -(void) setBlendingPixSource:(ViewerController*) bC;

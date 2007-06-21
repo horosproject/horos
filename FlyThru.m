@@ -65,12 +65,6 @@
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	// nothing to do
-}
-*/
-
 -(void) addCamera: (Camera*) aCamera
 {
 	[stepCameras addObject:aCamera];

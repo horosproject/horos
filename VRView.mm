@@ -29,6 +29,7 @@
 #import "DICOMExport.h"
 #import "DefaultsOsiriX.h" // for HotKeys
 
+#include "vtkMath.h"
 #include "vtkAbstractPropPicker.h"
 #include "vtkInteractorStyle.h"
 #include "vtkWorldPointPicker.h"
@@ -1473,6 +1474,11 @@ public:
 		[self Azimuth: 4.];
 		[self mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 		[self setNeedsDisplay: YES];
+	}
+	
+	if( flyto)
+	{
+		[self processFlyTo];
 	}
 }
 
@@ -3201,13 +3207,78 @@ public:
 	ROI3DData-> SetLines( rect);		rect->Delete();
 }
 
+- (void) flyTo:(float) x :(float) y :(float) z
+{
+	double flyFrom[3], flyTo[3];
+	double d[3], focalPt[3];
+	int i, j;
+
+	flyTo[0]=x; flyTo[1]=y; flyTo[2]=z;
+	
+	aRenderer->GetActiveCamera()->GetFocalPoint(flyFrom);
+	
+	for (i=0; i<3; i++)
+	{
+		d[i] = flyTo[i] - flyFrom[i];
+	}
+	double delta = [firstObject pixelSpacingX]*factor/30.;
+	
+	if( incFlyTo < 30) incFlyTo++;
+	
+	for (j=0; j<3; j++)
+	{
+		focalPt[j] = flyFrom[j] + d[j]*delta*incFlyTo;
+	}
+	
+	aRenderer->GetActiveCamera()->SetFocalPoint(focalPt);
+	
+	double distance = aCamera->GetDistance();
+	aCamera->SetDistance( 10.*[firstObject pixelSpacingX]*factor);
+	aRenderer->GetActiveCamera()->Dolly( 0.20 + 1.0);
+	aCamera->SetDistance( distance);
+	aRenderer->GetActiveCamera()->OrthogonalizeViewUp();
+	aRenderer->ResetCameraClippingRange();
+}
+
+- (void) processFlyTo
+{
+	[self flyTo: flyToDestination[0]*factor :flyToDestination[1]*factor :flyToDestination[2]*factor];
+	
+	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
+	[self display];
+	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+}
+
+- (void) keyUp:(NSEvent *)event
+{
+	unichar c = [[event characters] characterAtIndex:0];
+	
+	if( c ==  'f')
+	{
+		flyto = NO;
+		[self setNeedsDisplay: YES];
+	}
+}
+
 - (void) keyDown:(NSEvent *)event
 {
     unichar c = [[event characters] characterAtIndex:0];
     
-	if( c == NSTabCharacter)
+	if( c ==  'f')
 	{
-		NSLog( @"tab key");
+		if( aCamera->GetParallelProjection() == NO && flyto == NO)
+		{
+			NSPoint mousePoint = [self convertPoint: [[self window] mouseLocationOutsideOfEventStream] fromView: 0L];
+			long	pix[ 3];
+			float	value;
+			
+			if( [self get3DPixelUnder2DPositionX:mousePoint.x Y:mousePoint.y pixel:pix position:flyToDestination value:&value])
+			{
+				flyto = YES;
+				incFlyTo = 1;
+			}
+			else flyto = NO;
+		}
 	}
 	
 	if( c == ' ')
