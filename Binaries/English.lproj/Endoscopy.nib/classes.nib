@@ -2,6 +2,36 @@
     IBClasses = (
         {
             ACTIONS = {
+                chooseNameAndSave = id; 
+                computeHistogram = id; 
+                copy = id; 
+                cut = id; 
+                delete = id; 
+                newCurve = id; 
+                niceDisplay = id; 
+                paste = id; 
+                redo = id; 
+                removeAllCurves = id; 
+                save = id; 
+                scroll = id; 
+                sendToBack = id; 
+                setHistogramOpacity = id; 
+                setLineWidth = id; 
+                setPointDiameter = id; 
+                setZoomFator = id; 
+                undo = id; 
+            }; 
+            CLASS = CLUTOpacityView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                chooseNameAndSaveWindow = NSWindow; 
+                clutSavedName = NSTextField; 
+                vrView = VRView; 
+            }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {
+            ACTIONS = {
                 alwaysSyncMenu = id; 
                 changeFont = id; 
                 flipHorizontal = id; 

@@ -105,7 +105,6 @@
 	NSString				*_renderingMode;
 	
 	// CLUT & Opacity panel
-	//IBOutlet NSPanel		*clutOpacityPanel;
 	IBOutlet NSDrawer		*clutOpacityDrawer;
 	IBOutlet CLUTOpacityView *clutOpacityView;
 	
