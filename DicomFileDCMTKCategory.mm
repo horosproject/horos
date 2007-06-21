@@ -68,8 +68,8 @@ extern NSLock	*PapyrusLock;
 	
 	DcmFileFormat fileformat;
 	[PapyrusLock lock];
+//	OFCondition status = fileformat.loadFile([filePath UTF8String],  EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
 	OFCondition status = fileformat.loadFile([filePath UTF8String],  EXS_Unknown, EGL_noChange, DCM_MaxReadLength, ERM_autoDetect);
-//	OFCondition status = fileformat.loadFile([filePath UTF8String],  EXS_Unknown, EGL_noChange, 10, ERM_autoDetect);
 	[PapyrusLock unlock];
 	if (status.good())
 	{

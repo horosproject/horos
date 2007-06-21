@@ -9978,11 +9978,21 @@ static NSArray*	openSubSeriesArray = 0L;
 						
 						if( [[NSFileManager defaultManager] fileExistsAtPath:aPath])
 						{
-							long	i;
+							int	i;
+							int mode = [[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"];
 							
-							[self addDICOMDIR: aPath :filesArray];
+							@try
+							{
+								[self addDICOMDIR: aPath :filesArray];
+							}
 							
-							switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"])
+							@catch (NSException * e)
+							{
+								NSLog( [e description]);
+							}
+							
+							
+							switch ( mode)
 							{
 								case 0: // ALL FILES
 								
