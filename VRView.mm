@@ -3207,6 +3207,8 @@ public:
 	ROI3DData-> SetLines( rect);		rect->Delete();
 }
 
+#define FLYTO 30
+
 - (void) flyTo:(float) x :(float) y :(float) z
 {
 	double flyFrom[3], flyTo[3];
@@ -3221,9 +3223,10 @@ public:
 	{
 		d[i] = flyTo[i] - flyFrom[i];
 	}
-	double delta = [firstObject pixelSpacingX]*factor/30.;
 	
-	if( incFlyTo < 30) incFlyTo++;
+	
+	double delta = [firstObject pixelSpacingX]*factor/FLYTO;
+	if( incFlyTo < FLYTO) incFlyTo++;
 	
 	for (j=0; j<3; j++)
 	{
@@ -3234,7 +3237,7 @@ public:
 	
 	double distance = aCamera->GetDistance();
 	aCamera->SetDistance( 10.*[firstObject pixelSpacingX]*factor);
-	aRenderer->GetActiveCamera()->Dolly( 0.20 + 1.0);
+	aRenderer->GetActiveCamera()->Dolly( 0.15 + 1.0);
 	aCamera->SetDistance( distance);
 	aRenderer->GetActiveCamera()->OrthogonalizeViewUp();
 	aRenderer->ResetCameraClippingRange();
@@ -3242,11 +3245,18 @@ public:
 
 - (void) processFlyTo
 {
+//		NSPoint mousePoint = [self convertPoint: [[self window] mouseLocationOutsideOfEventStream] fromView: 0L];
+//		long	pix[ 3];
+//		float	value;
+//		[self get3DPixelUnder2DPositionX:mousePoint.x Y:mousePoint.y pixel:pix position:flyToDestination value:&value];
+	
 	[self flyTo: flyToDestination[0]*factor :flyToDestination[1]*factor :flyToDestination[2]*factor];
 	
 	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 	[self display];
 	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 }
 
 - (void) keyUp:(NSEvent *)event
@@ -3280,13 +3290,11 @@ public:
 			else flyto = NO;
 		}
 	}
-	
-	if( c == ' ')
+	else if( c == ' ')
 	{
 		if( [[[self window] windowController] isKindOfClass:[VRController class]]) rotate = !rotate;
 	}
-	
-	if( c == 't')
+	else if( c == 't')
 	{
 		NSDate	*now = [NSDate date];
 	
@@ -3303,14 +3311,12 @@ public:
 		
 		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Performance Test", 0L) description: [NSString stringWithFormat: NSLocalizedString(@"360 degree rotation - 100 images\rResult in [s] : %f", 0L), -[now timeIntervalSinceNow]] name:@"result"];
 	}
-	
-	if( c == 27)
+	else if( c == 27)
 	{
 //		[[[self window] windowController] offFullScreen];
 		[controller offFullScreen];
 	}
-	
-	if( (c == 27) && currentTool == t3DCut)
+	else if( (c == 27) && currentTool == t3DCut)
 	{
 		vtkPoints		*roiPts = ROI3DData->GetPoints();
 		
@@ -3325,8 +3331,7 @@ public:
 			[self setNeedsDisplay:YES];
 		}
 	}
-	
-	if( c == NSDeleteCharacter && currentTool == tMesure)
+	else if( c == NSDeleteCharacter && currentTool == tMesure)
 	{
 		vtkPoints		*pts = ROI3DData->GetPoints();
 		
@@ -3340,8 +3345,7 @@ public:
 			[self setNeedsDisplay:YES];
 		}
 	}
-	
-	if( (c == NSCarriageReturnCharacter || c == NSEnterCharacter || c == NSDeleteCharacter || c == NSTabCharacter) && currentTool == t3DCut)
+	else if( (c == NSCarriageReturnCharacter || c == NSEnterCharacter || c == NSDeleteCharacter || c == NSTabCharacter) && currentTool == t3DCut)
 	{
 		vtkPoints		*roiPts = ROI3DData->GetPoints();
 		
@@ -3372,16 +3376,14 @@ public:
 			[waiting release];
 		}
 	}
-	
-	if((c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter) && currentTool == t3Dpoint)
+	else if((c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter) && currentTool == t3Dpoint)
 	{
 		if([self isAny3DPointSelected])
 		{
 			[self removeSelected3DPoint];
 		}
 	}
-	
-	if( [self actionForHotKey:[event characters]] == NO) [super keyDown:event];
+	else if( [self actionForHotKey:[event characters]] == NO) [super keyDown:event];
 }
 
 -(void) schedulerDidFinishSchedule: (Scheduler *)scheduler
