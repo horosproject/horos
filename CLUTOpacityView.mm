@@ -109,6 +109,7 @@
 {
 	HUmin = min;
 	HUmax = max;
+	NSLog(@"setHUmin: %f - HUmax: %f", HUmin, HUmax);
 }
 
 - (void)computeHistogram;
@@ -118,6 +119,8 @@
 	buffer.height = 1;
 	buffer.width = voxelCount;
 	buffer.rowBytes = voxelCount * sizeof(float);
+	
+	NSLog(@"HUmin: %f - HUmax: %f", HUmin, HUmax);
 	
 	histogramSize = (int)((HUmax-HUmin)/2);
 	if(histogram) free(histogram);

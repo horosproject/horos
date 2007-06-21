@@ -2673,8 +2673,9 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 		[clutOpacityDrawer openOnEdge:NSMinYEdge];
 	else
 		[clutOpacityDrawer close];
-//	[clutOpacityView cleanup];	
+//	[clutOpacityView cleanup];
 	[clutOpacityView setVolumePointer:[[pixList[0] objectAtIndex: 0] fImage] width:[[pixList[0] objectAtIndex: 0] pwidth] height:[[pixList[0] objectAtIndex: 0] pheight] numberOfSlices:[pixList[0] count]];
+	[self computeMinMax];
 	[clutOpacityView setHUmin:minimumValue HUmax:maximumValue];
 	[clutOpacityView computeHistogram];
 //	[clutOpacityPanel setAlphaValue:0.0];

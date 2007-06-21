@@ -122,8 +122,6 @@
         }, 
         {
             ACTIONS = {
-                ApplyCLUT = id; 
-                ApplyOpacity = id; 
                 ApplyWLWW = id; 
                 LODsliderAction = id; 
                 MoviePlayStop = id; 
@@ -131,14 +129,9 @@
                 applyShading = id; 
                 blendingSlider = id; 
                 close3DSettingsSavePanel = id; 
-                clutAction = id; 
                 displayPresetsForSelectedGroup = id; 
                 editShadingValues = id; 
                 enable3DSettingsSaveButton = id; 
-                endCLUT = id; 
-                endNameWLWW = id; 
-                endOpacity = id; 
-                endShadingEditing = id; 
                 export2iPhoto = id; 
                 exportJPEG = id; 
                 exportTIFF = id; 
@@ -150,7 +143,6 @@
                 movieRateSliderAction = id; 
                 nextPresetPage = id; 
                 previousPresetPage = id; 
-                resetShading = id; 
                 roiGetManager = id; 
                 save3DSettings = id; 
                 sendMail = id; 
@@ -170,21 +162,12 @@
                 BlendingView = NSView; 
                 LODSlider = NSSlider; 
                 LODView = NSView; 
-                OpacityName = NSTextField; 
-                OpacityPopup = NSPopUpButton; 
-                OpacityView = OpacityTransferView; 
                 OrientationsView = NSView; 
                 WLWWView = NSView; 
-                addCLUTWindow = NSWindow; 
-                addOpacityWindow = NSWindow; 
-                addWLWWWindow = NSWindow; 
                 blendingPercentage = NSTextField; 
                 blendingSlider = NSSlider; 
-                clutName = NSTextField; 
                 clutOpacityDrawer = NSDrawer; 
                 clutOpacityView = CLUTOpacityView; 
-                clutPopup = NSPopUpButton; 
-                clutView = ColorTransferView; 
                 convolutionMenu = NSPopUpButton; 
                 convolutionView = NSView; 
                 enginePopup = NSPopUpButton; 
@@ -205,7 +188,6 @@
                 movieRateSlider = NSSlider; 
                 movieTextSlide = NSTextField; 
                 movieView = NSView; 
-                newName = NSTextField; 
                 nextPresetPageButton = NSButton; 
                 numberOfPresetInGroupTextField = NSTextField; 
                 perspectiveMatrix = NSMatrix; 
@@ -249,7 +231,6 @@
                 settingsWLWWTextField = NSTextField; 
                 shadingCheck = NSButton; 
                 shadingEditWindow = NSWindow; 
-                shadingForm = NSForm; 
                 shadingPanel = NSPanel; 
                 shadingValues = NSTextField; 
                 shadingView = NSView; 
@@ -257,9 +238,6 @@
                 toolsMatrix = NSMatrix; 
                 toolsView = NSView; 
                 view = VRView; 
-                wl = NSTextField; 
-                wlwwPopup = NSPopUpButton; 
-                ww = NSTextField; 
             }; 
             SUPERCLASS = Window3DController; 
         }, 
@@ -268,7 +246,11 @@
                 IBPropagate3DPointsSettings = id; 
                 IBSetSelected3DPointColor = id; 
                 IBSetSelected3DPointRadius = id; 
+                axView = id; 
                 bestRendering = id; 
+                changeColor = id; 
+                changeColorWith = id; 
+                coView = id; 
                 endDCMExportSettings = id; 
                 endQuicktimeSettings = id; 
                 endQuicktimeVRSettings = id; 
@@ -277,14 +259,16 @@
                 exportJPEG = id; 
                 exportQuicktime = id; 
                 exportTIFF = id; 
+                resetAutorotate = id; 
                 resetImage = id; 
-                resizeWindow = id; 
                 saView = id; 
+                saViewOpposite = id; 
                 save3DPointsDefaultProperties = id; 
                 scissorStateButtons = id; 
                 sendMail = id; 
                 setCurrentdcmExport = id; 
                 setRenderMode = id; 
+                squareView = id; 
                 switchOrientationWidget = id; 
                 switchProjection = id; 
                 switchShading = id; 
@@ -295,6 +279,8 @@
             OUTLETS = {
                 VRFrames = NSMatrix; 
                 VRquality = NSMatrix; 
+                backgroundColor = NSColorWell; 
+                clutOpacityView = CLUTOpacityView; 
                 controller = VRController; 
                 dcmBox = NSBox; 
                 dcmExportMode = NSMatrix; 
@@ -308,6 +294,7 @@
                 exportDCMWindow = NSWindow; 
                 framesSlider = NSSlider; 
                 orientation = NSMatrix; 
+                pixelInformation = NSTextField; 
                 point3DColorWell = NSColorWell; 
                 point3DInfoPanel = NSPanel; 
                 point3DPropagateToAll = NSButton; 
@@ -317,6 +304,7 @@
                 quality = NSMatrix; 
                 rotation = NSMatrix; 
                 scissorStateMatrix = NSMatrix; 
+                shadingController = NSObjectController; 
             }; 
             SUPERCLASS = VTKView; 
         }, 
