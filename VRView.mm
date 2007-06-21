@@ -12,23 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
-/***************************************** Modifications *********************************************
-
-Version 2.3
-
-	20060110	DDP	Reducing the variable duplication of userDefault objects (work in progress).
-
-
-
-
-
-
-*/
-
-
 #import "VRView.h"
 #import "DCMCursor.h"
 #import "AppController.h"
@@ -3222,6 +3205,11 @@ public:
 {
     unichar c = [[event characters] characterAtIndex:0];
     
+	if( c == NSTabCharacter)
+	{
+		NSLog( @"tab key");
+	}
+	
 	if( c == ' ')
 	{
 		if( [[[self window] windowController] isKindOfClass:[VRController class]]) rotate = !rotate;

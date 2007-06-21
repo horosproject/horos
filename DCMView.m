@@ -1375,8 +1375,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		curWW = [curDCM ww];
 		curWL = [curDCM wl];
 		
-		
-		
 		rotation = 0;
 		
 		//get Presentation State info from series Object

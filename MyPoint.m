@@ -27,6 +27,11 @@
 	return [[[self alloc] initWithPoint: a] autorelease];
 }
 
+- (NSString*) description
+{
+	return [NSString stringWithFormat: @"%f %f", pt.x, pt.y];
+}
+
 - (id) initWithCoder:(NSCoder*) coder
 {
 	if( self = [super init])

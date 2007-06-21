@@ -122,6 +122,13 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	NSPoint	pt = NSMakePoint( a.x, a.y);
 	float	theta, pyth;
 	
+	if( b.x == a.x &&  b.y == a.y) return pt;
+	
+	if( (b.x - a.x) == 0)
+	{
+		pt.y += r * (b.y-a.y);
+	}
+	
 	theta = atan( (b.y -  a.y) / (b.x - a.x));
 	
 	pyth =	(b.y - a.y) * (b.y - a.y) +

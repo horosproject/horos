@@ -38,15 +38,6 @@
 	[super dealloc];
 }
 
-
-- (void)finalize {
-	xPiecewise->Delete();
-	yPiecewise->Delete();
-	zPiecewise->Delete();	
-	[super finalize];
-}
-
-
 - (void) addPoint: (float) t : (Point3D*) p
 {
 	float x, y, z;

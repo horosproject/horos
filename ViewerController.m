@@ -15089,7 +15089,7 @@ long i;
 	
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
-			
+	
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
@@ -15115,6 +15115,7 @@ long i;
 			//[self setFusionMode: 0];
 			
 			viewer = [self openEndoscopyViewer];
+			[self place3DViewerWindow: viewer];
 			[viewer showWindow:self];
 			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 		}
