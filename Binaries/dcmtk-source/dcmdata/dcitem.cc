@@ -837,7 +837,7 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
         subElem->transferInit();
         /* we need to read the content of the attribute, no matter if */
         /* inserting the attribute succeeds or fails */
-        l_error = subElem->read(inStream, (readAsUN ? EXS_LittleEndianImplicit : xfer), glenc, maxReadLength);
+		l_error = subElem->read(inStream, (readAsUN ? EXS_LittleEndianImplicit : xfer), glenc, maxReadLength);
         // try to insert element into item. Note that
         // "elementList->insert(subElem, ELP_next)" would be faster,
         // but this is better since this insert-function creates a
