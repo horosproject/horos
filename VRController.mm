@@ -3373,7 +3373,7 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 		NSMutableString *path = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
 		[path appendString:CLUTDATABASE];
 		[path appendString:aClutName];
-		
+
 		NSMutableArray *curves, *pointColors;
 		
 		if([[NSFileManager defaultManager] fileExistsAtPath:path])
@@ -3398,6 +3398,20 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 			{
 				curves = [CLUTOpacityView convertCurvesFromPlist:[preset objectForKey:@"16bitClutCurves"]];
 				pointColors = [CLUTOpacityView convertPointColorsFromPlist:[preset objectForKey:@"16bitClutColors"]];
+			}
+			else
+			{
+				// look in the resources bundle path
+				[path setString:[[NSBundle mainBundle] resourcePath]];
+				[path appendString:CLUTDATABASE];
+				[path appendString:aClutName];
+				[path appendString:@".plist"];
+				if([[NSFileManager defaultManager] fileExistsAtPath:path])
+				{
+					NSDictionary *clut = [NSDictionary dictionaryWithContentsOfFile:path];
+					curves = [CLUTOpacityView convertCurvesFromPlist:[clut objectForKey:@"curves"]];
+					pointColors = [CLUTOpacityView convertPointColorsFromPlist:[clut objectForKey:@"colors"]];
+				}
 			}
 		}
 
