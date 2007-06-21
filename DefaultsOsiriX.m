@@ -865,6 +865,8 @@ static NSString *hostName = @"";
 	// ** LOGCLEANINGDAYS
 	[defaultValues setObject:@"7" forKey:@"LOGCLEANINGDAYS"];
 	
+	[defaultValues setObject:@"1" forKey:@"AUTOMATIC FUSE"];
+	
 	// ** DATABASELOCATION
 	[defaultValues setObject:@"0" forKey:@"DEFAULT_DATABASELOCATION"];
 	[defaultValues setObject:@"" forKey:@"DEFAULT_DATABASELOCATIONURL"];
