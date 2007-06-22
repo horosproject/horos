@@ -26,12 +26,6 @@
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
 - (void)windowDidLoad
 {
 	[[self window] center];
@@ -48,9 +42,9 @@
 	{
 		NSTimeInterval fullWork, intervalElapsed = -[startTime timeIntervalSinceNow];
 		
-		if( intervalElapsed > 2)
+		if( intervalElapsed > 1)
 		{
-			if( thisTime - lastTimeFrame > 2.0 && thisTime - firstTime > 10.0)
+			if( thisTime - lastTimeFrame > 1.0 && thisTime - firstTime > 10.0)
 			{
 				lastTimeFrame = thisTime;
 				

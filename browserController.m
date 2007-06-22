@@ -504,6 +504,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 	BOOL					newStudy = NO, newObject = NO;
 	NSMutableArray			*vlToRebuild = [NSMutableArray arrayWithCapacity: 0];
 	NSMutableArray			*vlToReload = [NSMutableArray arrayWithCapacity: 0];
+	BOOL					isCDMedia = NO;
+	
+	if( [newFilesArray count] == 0) return [NSMutableArray arrayWithCapacity: 0];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]) onlyDICOM = YES;
 	
@@ -523,12 +526,19 @@ static BOOL				DICOMDIRCDMODE = NO;
 	{
 		NSLog( @"safe Process DB process");
 	}
-		
-	if( [newFilesArray count] > 50 && mainThread == [NSThread currentThread])
+	
+	if( mainThread == [NSThread currentThread])
 	{
-		splash = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString(@"Adding %@ files...", nil), [numFmt stringForObjectValue:[NSNumber numberWithInt:[newFilesArray count]]]]];
-		[splash showWindow:self];
-		[[splash progress] setMaxValue:[newFilesArray count]/30];
+		isCDMedia = [BrowserController isItCD: [[newFilesArray objectAtIndex: 0] pathComponents]];
+		
+		if( [newFilesArray count] > 50 || isCDMedia == YES)
+		{
+			splash = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString(@"Adding %@ files...", nil), [numFmt stringForObjectValue:[NSNumber numberWithInt:[newFilesArray count]]]]];
+			[splash showWindow:self];
+			
+			if( isCDMedia) [[splash progress] setMaxValue:[newFilesArray count]];
+			else [[splash progress] setMaxValue:[newFilesArray count]/30];
+		}
 	}
 	
 	ii = 0;
@@ -630,7 +640,15 @@ static BOOL				DICOMDIRCDMODE = NO;
 				
 				if( splash)
 				{
-					if( (ii++) % 30 == 0) [splash incrementBy:1];
+					if( isCDMedia)
+					{
+						ii++;
+						[splash incrementBy:1];
+					}
+					else
+					{
+						if( (ii++) % 30 == 0) [splash incrementBy:1];
+					}
 					
 					if( ii % 50000 == 0)
 					{
@@ -2635,7 +2653,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			NSLog( [filesInput objectAtIndex:0]);
 			
-			if( [self isItCD:pathFilesComponent] == NO) return filesInput;
+			if( [BrowserController isItCD:pathFilesComponent] == NO) return filesInput;
 		}
 		break;
 		
@@ -10100,10 +10118,10 @@ static NSArray*	openSubSeriesArray = 0L;
 	#endif
 }
 
--(BOOL) isItCD:(NSArray*) pathFilesComponent
++(BOOL) isItCD:(NSArray*) pathFilesComponent
 {
 	#if !__LP64__
-	if( [[[pathFilesComponent objectAtIndex: 1] uppercaseString] isEqualToString:@"VOLUMES"])
+	if( [pathFilesComponent count] > 2 && [[[pathFilesComponent objectAtIndex: 1] uppercaseString] isEqualToString:@"VOLUMES"])
 	{
 		kern_return_t		kernResult; 
 		OSErr				result = noErr;
@@ -11979,7 +11997,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];
 	NSLog(sNewDrive);
 	
-	if( [self isItCD:[sNewDrive pathComponents]] == YES)
+	if( [BrowserController isItCD:[sNewDrive pathComponents]] == YES)
 	{
 		[self ReadDicomCDRom:self];
 	}

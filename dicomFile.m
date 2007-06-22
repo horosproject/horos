@@ -53,7 +53,7 @@ extern NSMutableDictionary *fileFormatPlugins;
 extern NSLock	*PapyrusLock;
 
 static BOOL DEFAULTSSET = NO;
-static int TOOLKITPARSER;
+static int TOOLKITPARSER, PREFERPAPYRYSFORCD;
 static BOOL COMMENTSAUTOFILL;
 static BOOL splitMultiEchoMR;
 static BOOL useSeriesDescription;
@@ -212,6 +212,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			DEFAULTSSET = YES;
 			
+			PREFERPAPYRYSFORCD = [sd integerForKey: @"PREFERPAPYRYSFORCD"];
 			TOOLKITPARSER = [sd integerForKey: @"TOOLKITPARSER"];
 			COMMENTSAUTOFILL = [sd boolForKey: @"COMMENTSAUTOFILL"];
 			SEPARATECARDIAC4D = [sd boolForKey: @"SEPARATECARDIAC4D"];
@@ -237,6 +238,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			DEFAULTSSET = YES;
 			
+			PREFERPAPYRYSFORCD = [[dict objectForKey: @"PREFERPAPYRYSFORCD"] intValue];
 			TOOLKITPARSER = [[dict objectForKey: @"TOOLKITPARSER"] intValue];
 			COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];
 			SEPARATECARDIAC4D = [[dict objectForKey: @"SEPARATECARDIAC4D"] intValue];
@@ -2386,8 +2388,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 -(short) getDicomFile
 {
+	if( TOOLKITPARSER == 1 || PREFERPAPYRYSFORCD) return [self getDicomFilePapyrus: NO];
 	if( TOOLKITPARSER == 0) return [self decodeDICOMFileWithDCMFramework];
-	if( TOOLKITPARSER == 1) return [self getDicomFilePapyrus: NO];
 	if( TOOLKITPARSER == 2) return [self getDicomFileDCMTK];
 }
 

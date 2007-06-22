@@ -750,6 +750,7 @@ static NSString *hostName = @"";
 	
 	// ** TOOLKITPARSER
 	[defaultValues setObject: @"2" forKey: @"TOOLKITPARSER"];	// 0:DCM Framework 1:Papyrus 2:DCMTK
+	[defaultValues setObject: @"1" forKey: @"PREFERPAPYRYSFORCD"];
 	
 	// ** SINGLEPROCESS
 	[defaultValues setObject: @"0" forKey: @"SINGLEPROCESS"];
