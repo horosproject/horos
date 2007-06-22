@@ -1552,11 +1552,14 @@ static BOOL initialized = NO;
 				NSEnumerator *enumerator = [shadingArray objectEnumerator];
 				NSDictionary *shading;
 				BOOL exists = NO;
+				
+				exists = NO;
 				while (shading = [enumerator nextObject]) {
 					if ([[shading objectForKey:@"name"] isEqualToString:@"Endoscopy"])
 						exists = YES;					
 				}
-				if (exists == NO) {
+				if (exists == NO)
+				{
 					shading = [NSMutableDictionary dictionary];
 					[shading setValue: @"Endoscopy" forKey: @"name"];
 					[shading setValue: @"0.12" forKey: @"ambient"];
@@ -1564,9 +1567,43 @@ static BOOL initialized = NO;
 					[shading setValue: @"0.73" forKey: @"specular"];
 					[shading setValue: @"50" forKey: @"specularPower"];
 					[shadingArray addObject:shading];
-					[[NSUserDefaults standardUserDefaults] setObject:shadingArray forKey:@"shadingsPresets"];
 				}
+				
+				exists = NO;
+				while (shading = [enumerator nextObject]) {
+					if ([[shading objectForKey:@"name"] isEqualToString:@"Glossy Bone"])
+						exists = YES;					
+				}
+				if (exists == NO)
+				{
+					shading = [NSMutableDictionary dictionary];
+					[shading setValue: @"Glossy Bone" forKey: @"name"];
+					[shading setValue: @"0.15" forKey: @"ambient"];
+					[shading setValue: @"0.24" forKey: @"diffuse"];
+					[shading setValue: @"1.17" forKey: @"specular"];
+					[shading setValue: @"6.98" forKey: @"specularPower"];
+					[shadingArray addObject:shading];
+				}
+				
+				exists = NO;
+				while (shading = [enumerator nextObject]) {
+					if ([[shading objectForKey:@"name"] isEqualToString:@"Glossy Vascular"])
+						exists = YES;					
+				}
+				if (exists == NO)
+				{
+					shading = [NSMutableDictionary dictionary];
+					[shading setValue: @"Glossy Vascular" forKey: @"name"];
+					[shading setValue: @"0.15" forKey: @"ambient"];
+					[shading setValue: @"0.28" forKey: @"diffuse"];
+					[shading setValue: @"1.42" forKey: @"specular"];
+					[shading setValue: @"50" forKey: @"specularPower"];
+					[shadingArray addObject:shading];
+				}
+				
+				[[NSUserDefaults standardUserDefaults] setObject:shadingArray :@"shadingsPresets"];
 				[shadingArray release];
+				
 				// Endoscopy LUT
 				NSMutableDictionary *cluts = [[[NSUserDefaults standardUserDefaults] objectForKey:@"CLUT"] mutableCopy];
 				NSDictionary *clut = [cluts objectForKey:@"Endoscopy"];
