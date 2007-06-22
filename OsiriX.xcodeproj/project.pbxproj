@@ -2019,6 +2019,9 @@
 		ABD1A8710619E68B00C5B670 /* ROIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD1A86F0619E68B00C5B670 /* ROIWindow.m */; };
 		ABD1A8720619E68B00C5B670 /* ROIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD1A86E0619E68B00C5B670 /* ROIWindow.h */; };
 		ABD1A8730619E68B00C5B670 /* ROIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD1A86F0619E68B00C5B670 /* ROIWindow.m */; };
+		ABD47BC50C2BD04C009FD48C /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = ABD47BB50C2BD04C009FD48C /* 3DPRESETS */; };
+		ABD47BC60C2BD04C009FD48C /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = ABD47BB50C2BD04C009FD48C /* 3DPRESETS */; };
+		ABD47BC70C2BD04C009FD48C /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = ABD47BB50C2BD04C009FD48C /* 3DPRESETS */; };
 		ABD4D2370A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABD4D2360A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom */; };
 		ABD4D2380A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABD4D2360A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom */; };
 		ABD4D2390A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABD4D2360A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom */; };
@@ -11703,6 +11706,7 @@
 		ABCB2D4F0655B19A006C5630 /* SearchWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SearchWindowController.h; sourceTree = "<group>"; };
 		ABD1A86E0619E68B00C5B670 /* ROIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROIWindow.h; sourceTree = "<group>"; };
 		ABD1A86F0619E68B00C5B670 /* ROIWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ROIWindow.m; sourceTree = "<group>"; };
+		ABD47BB50C2BD04C009FD48C /* 3DPRESETS */ = {isa = PBXFileReference; lastKnownFileType = folder; name = 3DPRESETS; path = Binaries/3DPRESETS; sourceTree = "<group>"; };
 		ABD4D2360A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom */ = {isa = PBXFileReference; lastKnownFileType = file; name = OsiriXDB_Previous_DataModel2.0.mom; path = Binaries/DB_Previous_Models/OsiriXDB_Previous_DataModel2.0.mom; sourceTree = "<group>"; };
 		ABD559F50AEE146900108895 /* SagSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SagSmall.tif; sourceTree = "<group>"; };
 		ABD559F60AEE146900108895 /* CorSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CorSmall.tif; sourceTree = "<group>"; };
@@ -15014,6 +15018,7 @@
 				AB7250370ADE6F5D00A212A0 /* Decompress */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
 				ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */,
+				ABD47BB50C2BD04C009FD48C /* 3DPRESETS */,
 				A92155E50ADCF319008D881E /* OsiriX Report.template */,
 				A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */,
 				A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */,
@@ -26056,6 +26061,7 @@
 				CE0817BA0C0FEEAE00BBD907 /* iPodEjectOn.tif in Resources */,
 				CE27BA100C113BBA00BDC9B3 /* 3DPresetsPanel.tiff in Resources */,
 				CE897DD50C21D951005C669E /* texture.tif in Resources */,
+				ABD47BC50C2BD04C009FD48C /* 3DPRESETS in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26454,6 +26460,7 @@
 				CE0817BE0C0FEEAE00BBD907 /* iPodEjectOn.tif in Resources */,
 				CE27BA0F0C113BBA00BDC9B3 /* 3DPresetsPanel.tiff in Resources */,
 				CE897DD40C21D951005C669E /* texture.tif in Resources */,
+				ABD47BC70C2BD04C009FD48C /* 3DPRESETS in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26852,6 +26859,7 @@
 				CE0817BC0C0FEEAE00BBD907 /* iPodEjectOn.tif in Resources */,
 				CE27BA110C113BBA00BDC9B3 /* 3DPresetsPanel.tiff in Resources */,
 				CE897DD60C21D951005C669E /* texture.tif in Resources */,
+				ABD47BC60C2BD04C009FD48C /* 3DPRESETS in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
