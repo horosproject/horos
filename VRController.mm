@@ -3374,7 +3374,7 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 		[path appendString:CLUTDATABASE];
 		[path appendString:aClutName];
 
-		NSMutableArray *curves, *pointColors;
+		NSMutableArray *curves = 0L, *pointColors = 0L;
 		
 		if([[NSFileManager defaultManager] fileExistsAtPath:path])
 		{
@@ -3416,8 +3416,8 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 		}
 
 		NSMutableDictionary *clut2 = [NSMutableDictionary dictionaryWithCapacity:2];
-		[clut2 setObject:curves forKey:@"curves"];
-		[clut2 setObject:pointColors forKey:@"colors"];
+		if(curves) [clut2 setObject:curves forKey:@"curves"];
+		if(pointColors) [clut2 setObject:pointColors forKey:@"colors"];
 		
 		[preview setAdvancedCLUT:clut2 lowResolution:NO];
 
