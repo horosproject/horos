@@ -1312,6 +1312,9 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	
 	[self ApplyOpacityString:curOpacityMenu];
 	
+	if( [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: str] == 0L)
+		str = @"No CLUT";
+	
 	if( curCLUTMenu != str)
 	{
 		[curCLUTMenu release];
@@ -1370,6 +1373,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 			
 			[[[clutPopup menu] itemAtIndex:0] setTitle: curCLUTMenu];
 		}
+		
 	}
 }
 
@@ -3670,6 +3674,19 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 			needToMovePresetsPanelToUserDefinedPosition = NO;
 		}
 	}
+}
+
+- (void)setVtkCameraForAllPresetPreview:(void*)aCamera except:(VRView*)except;
+{
+	if(presetPreview1!=except)[presetPreview1 setVtkCamera:(vtkCamera*)aCamera];
+	if(presetPreview2!=except)[presetPreview2 setVtkCamera:(vtkCamera*)aCamera];
+	if(presetPreview3!=except)[presetPreview3 setVtkCamera:(vtkCamera*)aCamera];
+	if(presetPreview4!=except)[presetPreview4 setVtkCamera:(vtkCamera*)aCamera];
+	if(presetPreview5!=except)[presetPreview5 setVtkCamera:(vtkCamera*)aCamera];
+	if(presetPreview6!=except)[presetPreview6 setVtkCamera:(vtkCamera*)aCamera];
+	if(presetPreview7!=except)[presetPreview7 setVtkCamera:(vtkCamera*)aCamera];
+	if(presetPreview8!=except)[presetPreview8 setVtkCamera:(vtkCamera*)aCamera];
+	if(presetPreview9!=except)[presetPreview9 setVtkCamera:(vtkCamera*)aCamera];
 }
 
 @end

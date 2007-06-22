@@ -5180,17 +5180,30 @@ public:
 
 - (void) setVtkCamera:(vtkCamera*)aVtkCamera;
 {
-	double pos[3], focal[3], vUp[3];
+	double pos[3], focal[3], vUp[3], parallelScale;
 	aVtkCamera->GetPosition(pos);
 	aVtkCamera->GetFocalPoint(focal);
-//	aVtkCamera->OrthogonalizeViewUp();
 	aVtkCamera->GetViewUp(vUp);
+	parallelScale = aVtkCamera->GetParallelScale();
+	
+	double currentPos[3], currentFocal[3], currentVUp[3], currentParallelScale;
+	aCamera->GetPosition(currentPos);
+	aCamera->GetFocalPoint(currentFocal);
+	aCamera->GetViewUp(currentVUp);
+	currentParallelScale = aCamera->GetParallelScale();
+	
+	if(currentPos[0]==pos[0] && currentPos[1]==pos[1] && currentPos[2]==pos[2]
+		&& currentFocal[0]==focal[0] && currentFocal[1]==focal[1] && currentFocal[2]==focal[2]
+		&& currentVUp[0]==vUp[0] && currentVUp[1]==vUp[1] && currentVUp[2]==vUp[2]
+		&& currentParallelScale==parallelScale)
+		return;
+
 	double clippingRange[2];
 	aVtkCamera->GetClippingRange(clippingRange);
-	double viewAngle, eyeAngle, parallelScale;
+	double viewAngle, eyeAngle;
 	viewAngle = aVtkCamera->GetViewAngle();
 	eyeAngle = aVtkCamera->GetEyeAngle();
-	parallelScale = aVtkCamera->GetParallelScale();
+	
 	
 	aCamera->SetPosition(pos);
 	aCamera->SetFocalPoint(focal);
@@ -5202,6 +5215,7 @@ public:
 	
 	aCamera->SetParallelProjection(aVtkCamera->GetParallelProjection());
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+	[self setNeedsDisplay:YES];
 }
 
 - (Camera*) camera
