@@ -2358,7 +2358,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			if( [[path lastPathComponent] isEqualToString: @"Database.sql"])	// We will add the folder, since it is the default sql file for a DB folder
 			{
-				dbArray = [dbArray arrayByAddingObject: [NSDictionary dictionaryWithObjectsAndKeys: DBFolderLocation, @"Path", [[DBFolderLocation lastPathComponent] stringByAppendingString:@" DB"], @"Description", 0L]];			
+				NSString	*name = [[NSFileManager defaultManager] displayNameAtPath: DBFolderLocation];
+			
+				dbArray = [dbArray arrayByAddingObject: [NSDictionary dictionaryWithObjectsAndKeys: DBFolderLocation, @"Path", [name stringByAppendingString:@" DB"], @"Description", 0L]];			
 			}
 			else
 			{
@@ -11659,8 +11661,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				NSMutableDictionary	*dict = [NSMutableDictionary dictionary];
 				
+				NSString	*name = 0L;
+				
+				if( isItAnIpod) name = volumeName;
+				else name = [[[NSFileManager defaultManager] displayNameAtPath: volumeName] stringByAppendingString:@" DB"];
+				
 				[dict setValue:path forKey:@"Path"];
-				[dict setValue:volumeName forKey:@"Description"];
+				[dict setValue:name forKey:@"Description"];
 				[dict setValue:@"localPath" forKey:@"type"];
 				
 				[[bonjourBrowser services] addObject: dict];
