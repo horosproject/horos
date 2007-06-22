@@ -11533,7 +11533,7 @@
 		AB59B18405697FD700B77AFC /* DCMView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMView.h; sourceTree = "<group>"; };
 		AB5E1A300595697700C48BEB /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
 		AB5E1AFA05956BB600C48BEB /* Accelerate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Accelerate.h; path = /System/Library/Frameworks/Accelerate.framework/Versions/A/Headers/Accelerate.h; sourceTree = "<absolute>"; };
-		AB5E36D90C2BFE830015632C /* 3DPRESETS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = 3DPRESETS; sourceTree = "<group>"; };
+		AB5E36D90C2BFE830015632C /* 3DPRESETS */ = {isa = PBXFileReference; lastKnownFileType = folder; name = 3DPRESETS; path = Binaries/3DPRESETS; sourceTree = "<group>"; };
 		AB695A1D063D8261002BDF78 /* Analyze.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analyze.h; sourceTree = "<group>"; };
 		AB6AC6420624AC5200AFC7AF /* VRView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRView.h; sourceTree = "<group>"; };
 		AB6AC6430624AC5200AFC7AF /* VRView.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = VRView.mm; sourceTree = "<group>"; };
