@@ -253,6 +253,6 @@
 - (IBAction)showPresetInfoPanel:(id)sender;
 - (void)windowWillCloseNotification:(NSNotification*)notification;
 
-- (void)setVtkCameraForAllPresetPreview:(void*)aCamera except:(VRView*)except;
+- (void)setVtkCameraForAllPresetPreview:(void*)aCamera;
 
 @end

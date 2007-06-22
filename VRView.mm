@@ -343,6 +343,19 @@ public:
 	}
 }
 
+- (BOOL) croppingBox:(double*) a
+{
+	BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
+	
+	return validBox;
+}
+
+- (void) setCroppingBox:(double*) a
+{
+	if( a)
+		[VRView setCroppingBox: a :volume];
+}
+
 - (void) print:(id) sender
 {
 	bestRenderingMode = YES;

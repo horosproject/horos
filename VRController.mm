@@ -3096,7 +3096,7 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 		}
 	}
 	
-	presetPageMax = ([settingsList count]-1) / [presetPreviewArray count];
+	presetPageMax = ([settingsList count]) / [presetPreviewArray count];
 	[self enablePresetPageButtons];
 	
 	return [settingsList sortedArrayUsingFunction:sort3DSettingsDict context:NULL];
@@ -3298,7 +3298,12 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 			[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:[NSString stringWithFormat:@"%d. %@", n+1,[[settingsList objectAtIndex:n] objectForKey:@"name"]]];
 			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:NO];
 			
-			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setVtkCamera:[view vtkCamera]];
+			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setVtkCamera: [view vtkCamera]];
+			
+			double a[ 6];
+			if( [view croppingBox: a])
+				[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setCroppingBox: a];
+			
 			[self load3DSettingsDictionary:[settingsList objectAtIndex:n] forPreview:[presetPreviewArray objectAtIndex:i]];
 			
 			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIndex:n];
@@ -3356,6 +3361,7 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 			
 			[preview setCLUT:red :green: blue];
 		}
+		else [preview setCLUT: 0L :0L :0L];
 		
 		// opacity
 		NSDictionary *aOpacity = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] objectForKey:[preset objectForKey:@"opacity"]];
@@ -3676,17 +3682,17 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 	}
 }
 
-- (void)setVtkCameraForAllPresetPreview:(void*)aCamera except:(VRView*)except;
+- (void)setVtkCameraForAllPresetPreview:(void*)aCamera;
 {
-	if(presetPreview1!=except)[presetPreview1 setVtkCamera:(vtkCamera*)aCamera];
-	if(presetPreview2!=except)[presetPreview2 setVtkCamera:(vtkCamera*)aCamera];
-	if(presetPreview3!=except)[presetPreview3 setVtkCamera:(vtkCamera*)aCamera];
-	if(presetPreview4!=except)[presetPreview4 setVtkCamera:(vtkCamera*)aCamera];
-	if(presetPreview5!=except)[presetPreview5 setVtkCamera:(vtkCamera*)aCamera];
-	if(presetPreview6!=except)[presetPreview6 setVtkCamera:(vtkCamera*)aCamera];
-	if(presetPreview7!=except)[presetPreview7 setVtkCamera:(vtkCamera*)aCamera];
-	if(presetPreview8!=except)[presetPreview8 setVtkCamera:(vtkCamera*)aCamera];
-	if(presetPreview9!=except)[presetPreview9 setVtkCamera:(vtkCamera*)aCamera];
+	[presetPreview1 setVtkCamera:(vtkCamera*)aCamera];
+	[presetPreview2 setVtkCamera:(vtkCamera*)aCamera];
+	[presetPreview3 setVtkCamera:(vtkCamera*)aCamera];
+	[presetPreview4 setVtkCamera:(vtkCamera*)aCamera];
+	[presetPreview5 setVtkCamera:(vtkCamera*)aCamera];
+	[presetPreview6 setVtkCamera:(vtkCamera*)aCamera];
+	[presetPreview7 setVtkCamera:(vtkCamera*)aCamera];
+	[presetPreview8 setVtkCamera:(vtkCamera*)aCamera];
+	[presetPreview9 setVtkCamera:(vtkCamera*)aCamera];
 }
 
 @end

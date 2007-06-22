@@ -315,6 +315,8 @@ typedef char* vtkMyCallbackVR;
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
 + (void) setCroppingBox:(double*) a :(vtkVolume *) volume;
+- (void) setCroppingBox:(double*) a;
+- (BOOL) croppingBox:(double*) a;
 
 - (void) renderImageWithBestQuality: (BOOL) best waitDialog: (BOOL) wait;
 - (void) endRenderImageWithBestQuality;

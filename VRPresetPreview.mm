@@ -641,7 +641,8 @@
 	if(isEmpty) return;
 	[self setSelected];
 	[super mouseUp:theEvent];
-	[presetController setVtkCameraForAllPresetPreview:[self vtkCamera] except:self];
+	
+	[presetController setVtkCameraForAllPresetPreview:[self vtkCamera]];
 }
 
 - (void) rightMouseUp:(NSEvent *)event
@@ -649,7 +650,8 @@
 	if(isEmpty) return;
 	[self setSelected];
 	[super rightMouseUp: event];
-	[presetController setVtkCameraForAllPresetPreview:[self vtkCamera] except:self];
+	
+	[presetController setVtkCameraForAllPresetPreview:[self vtkCamera]];
 }
 
 -(void) setCursorForView: (long) tool
