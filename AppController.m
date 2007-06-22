@@ -1549,11 +1549,12 @@ static BOOL initialized = NO;
 				//Add Endoscopy LUT, WL/WW, shading to existing prefs
 				// Shading Preset
 				NSMutableArray *shadingArray = [[[NSUserDefaults standardUserDefaults] objectForKey:@"shadingsPresets"] mutableCopy];
-				NSEnumerator *enumerator = [shadingArray objectEnumerator];
+				NSEnumerator *enumerator;
 				NSDictionary *shading;
 				BOOL exists = NO;
 				
 				exists = NO;
+				enumerator = [shadingArray objectEnumerator];
 				while (shading = [enumerator nextObject]) {
 					if ([[shading objectForKey:@"name"] isEqualToString:@"Endoscopy"])
 						exists = YES;					
@@ -1570,6 +1571,7 @@ static BOOL initialized = NO;
 				}
 				
 				exists = NO;
+				enumerator = [shadingArray objectEnumerator];
 				while (shading = [enumerator nextObject]) {
 					if ([[shading objectForKey:@"name"] isEqualToString:@"Glossy Bone"])
 						exists = YES;					
@@ -1586,6 +1588,7 @@ static BOOL initialized = NO;
 				}
 				
 				exists = NO;
+				enumerator = [shadingArray objectEnumerator];
 				while (shading = [enumerator nextObject]) {
 					if ([[shading objectForKey:@"name"] isEqualToString:@"Glossy Vascular"])
 						exists = YES;					

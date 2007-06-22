@@ -583,6 +583,8 @@
 		[self changeColorWith:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
 	}
 
+	if(volumeMapper) volumeMapper->SetMinimumImageSampleDistance(LOD);
+
 //	if(isEmpty)
 //	{
 //		// trick to "hide" content of the vr view

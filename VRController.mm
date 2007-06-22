@@ -3092,7 +3092,7 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 		}
 	}
 	
-	presetPageMax = [settingsList count]/[presetPreviewArray count];
+	presetPageMax = ([settingsList count]-1) / [presetPreviewArray count];
 	[self enablePresetPageButtons];
 	
 	return [settingsList sortedArrayUsingFunction:sort3DSettingsDict context:NULL];
