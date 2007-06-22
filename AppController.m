@@ -1601,7 +1601,7 @@ static BOOL initialized = NO;
 					[shadingArray addObject:shading];
 				}
 				
-				[[NSUserDefaults standardUserDefaults] setObject:shadingArray :@"shadingsPresets"];
+				[[NSUserDefaults standardUserDefaults] setObject:shadingArray forKey:@"shadingsPresets"];
 				[shadingArray release];
 				
 				// Endoscopy LUT
