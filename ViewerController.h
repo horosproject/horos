@@ -382,7 +382,7 @@ enum
 - (id) prepareObjectForUndo:(NSString*) string;
 - (IBAction) redo:(id) sender;
 - (IBAction) undo:(id) sender;
-
+- (void) updateRepresentedFileName;
 - (IBAction) closeModal:(id) sender;
 - (void)bringToFrontROI:(ROI*)roi;
 - (void) activateFusion:(id) sender;

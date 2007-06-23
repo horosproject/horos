@@ -2705,12 +2705,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[self buildMatrixPreview: YES];
 }
 
+- (void) updateRepresentedFileName
+{
+	NSString	*path = [browserWindow getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] : 0];
+	[[self window] setRepresentedFilename: path];
+}
+
 - (void) viewXML:(id) sender
 {
 	[self checkEverythingLoaded];
 	
-	NSString	*path = [browserWindow getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] : 0]; 
-
+	NSString	*path = [browserWindow getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] : 0];
 	[[self window] setRepresentedFilename: path];
 	
     XMLController * xmlController = [[XMLController alloc] initWithImage: [fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] windowName:[NSString stringWithFormat:@"Meta-Data: %@", [[self window] title]] viewer: self];
@@ -2847,7 +2852,7 @@ static ViewerController *draggedController = 0L;
 							
 							for( x = 0; x < [pList count]; x++)
 							{
-								if([[[pList objectAtIndex: x] sourceFile] isEqualToString:draggedFile])
+								if([[[pList objectAtIndex: x] sourceFile] isEqualToString: draggedFile])
 								{
 									if( found == NO)
 									{

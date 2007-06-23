@@ -9396,6 +9396,12 @@
 		CE7DED2908F06B2300763A70 /* OsiriXDB_Previous_DataModel1.1.mom in Resources */ = {isa = PBXBuildFile; fileRef = CE7DED2608F06B2300763A70 /* OsiriXDB_Previous_DataModel1.1.mom */; };
 		CE7E5D4506AC8DDC0058C3AA /* Anonymizer.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */; };
 		CE7E5D4606AC8DDC0058C3AA /* Anonymizer.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */; };
+		CE822F8A0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */; };
+		CE822F8B0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */; };
+		CE822F8C0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */; };
+		CE822F8D0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */; };
+		CE822F8E0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */; };
+		CE822F8F0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */; };
 		CE84A51808621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE84A51708621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel */; };
 		CE84A51908621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE84A51708621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel */; };
 		CE84A51A08621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE84A51708621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel */; };
@@ -14376,6 +14382,8 @@
 		CE7A0F1A0AED55E700540017 /* Quicktime.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = Quicktime.mm; sourceTree = "<group>"; };
 		CE7DED2608F06B2300763A70 /* OsiriXDB_Previous_DataModel1.1.mom */ = {isa = PBXFileReference; lastKnownFileType = file; name = OsiriXDB_Previous_DataModel1.1.mom; path = Binaries/DB_Previous_Models/OsiriXDB_Previous_DataModel1.1.mom; sourceTree = "<group>"; };
 		CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Anonymizer.icns; sourceTree = "<group>"; };
+		CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewerControllerWindow.h; sourceTree = "<group>"; };
+		CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewerControllerWindow.m; sourceTree = "<group>"; };
 		CE84A51708621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = wrapper.xcdatamodel; path = OsiriXDB_DataModel.xcdatamodel; sourceTree = "<group>"; };
 		CE88575A08AF938800B72DA7 /* ROIVolumeView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeView.h; sourceTree = "<group>"; };
 		CE88575B08AF938800B72DA7 /* ROIVolumeController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeController.h; sourceTree = "<group>"; };
@@ -15944,6 +15952,8 @@
 				BF09B13E0B2E681D00AA97E2 /* OSIWindowController.m */,
 				A94469DF0BA7FFE7008643E5 /* BLAuthentication.h */,
 				A94469E00BA7FFE7008643E5 /* BLAuthentication.m */,
+				CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */,
+				CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */,
 			);
 			name = Utilities;
 			sourceTree = SOURCE_ROOT;
@@ -21416,6 +21426,7 @@
 				BF30B3AD0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */,
 				CE10299A0C08246100D6E912 /* VolumeReslice.h in Headers */,
 				BF0CBBF00C18B41E00DAF4B5 /* NodeGraph.h in Headers */,
+				CE822F8E0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23352,6 +23363,7 @@
 				AB06C98F0C1586230016BA60 /* VRPresetPreview.h in Headers */,
 				AB06C9910C1586230016BA60 /* SelectionView.h in Headers */,
 				BF0CBBF20C18B41E00DAF4B5 /* NodeGraph.h in Headers */,
+				CE822F8C0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25293,6 +25305,7 @@
 				AB06C98B0C1586220016BA60 /* VRPresetPreview.h in Headers */,
 				AB06C98D0C1586220016BA60 /* SelectionView.h in Headers */,
 				BF0CBBF40C18B41E00DAF4B5 /* NodeGraph.h in Headers */,
+				CE822F8A0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28018,6 +28031,7 @@
 				BF30B3A90C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */,
 				CE10299B0C08246100D6E912 /* VolumeReslice.mm in Sources */,
 				BF0CBBF10C18B41E00DAF4B5 /* NodeGraph.m in Sources */,
+				CE822F8F0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28801,6 +28815,7 @@
 				AB06C9900C1586230016BA60 /* VRPresetPreview.mm in Sources */,
 				AB06C9920C1586230016BA60 /* SelectionView.m in Sources */,
 				BF0CBBF30C18B41E00DAF4B5 /* NodeGraph.m in Sources */,
+				CE822F8D0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30151,6 +30166,7 @@
 				AB06C98C0C1586220016BA60 /* VRPresetPreview.mm in Sources */,
 				AB06C98E0C1586220016BA60 /* SelectionView.m in Sources */,
 				BF0CBBF50C18B41E00DAF4B5 /* NodeGraph.m in Sources */,
+				CE822F8B0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

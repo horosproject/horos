@@ -367,7 +367,8 @@
                 wwset = NSTextField; 
             }; 
             SUPERCLASS = OSIWindowController; 
-        }
+        }, 
+        {CLASS = ViewerControllerWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }
     ); 
     IBVersion = 1; 
 }
