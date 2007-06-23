@@ -2306,7 +2306,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if( NoOfFrames > 1) // SERIE ID MUST BE UNIQUE!!!!!
 		{
-			NSString *newSerieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [filePath lastPathComponent]];
+			NSString *newSerieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [[dicomElements objectForKey:@"studyDate"] description]];
 			[serieID release];
 			serieID = newSerieID;
 		}
@@ -2721,7 +2721,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if( NoOfFrames > 1) // SERIE ID MUST BE UNIQUE!!!!!
 		{
-			NSString *newSerieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [filePath lastPathComponent]];
+			NSString *newSerieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [[dicomElements objectForKey:@"studyDate"] description]];
 			[serieID release];
 			serieID = newSerieID;
 		}
