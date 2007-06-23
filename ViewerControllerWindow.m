@@ -14,6 +14,7 @@
 - (NSString *) representedFilename
 {
 	[[self windowController] updateRepresentedFileName];
+
 	return [super representedFilename];
 }
 @end

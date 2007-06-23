@@ -11,6 +11,7 @@
 
 @interface ViewerControllerWindow : NSWindow {
 
+
 }
 
 @end

@@ -34,6 +34,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "AYDicomPrintWindowController.h"
 #endif
 
+#import "ViewerControllerWindow.h"
 #import "MyOutlineView.h"
 #import "PluginFilter.h"
 #import "DCMPix.h"
@@ -2842,18 +2843,18 @@ static ViewerController *draggedController = 0L;
 				NSArray				*winList = [NSApp windows];
 				BOOL				found = NO;
 				
-				for( i = 0; i < [winList count]; i++)
+				for( i = 0; i < [winList count] && found == NO; i++)
 				{
 					if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
 					{
-						for( z = 0; z < [[[winList objectAtIndex:i] windowController] maxMovieIndex]; z++)
-						{
-							NSMutableArray  *pList = [[[winList objectAtIndex:i] windowController] pixList: z];
-							
-							for( x = 0; x < [pList count]; x++)
-							{
-								if([[[pList objectAtIndex: x] sourceFile] isEqualToString: draggedFile])
-								{
+//						for( z = 0; z < [[[winList objectAtIndex:i] windowController] maxMovieIndex]; z++)
+//						{
+//							NSMutableArray  *pList = [[[winList objectAtIndex:i] windowController] pixList: z];
+//							
+//							for( x = 0; x < [pList count]; x++)
+//							{
+//								if([[[pList objectAtIndex: x] sourceFile] isEqualToString: draggedFile])
+//								{
 									if( found == NO)
 									{
 										if( [[winList objectAtIndex:i] windowController] == draggedController && draggedController != self)
@@ -2864,13 +2865,13 @@ static ViewerController *draggedController = 0L;
 										else if( draggedController == self)
 										{
 											NSLog(@"Myself => Cancel fusion if previous one!");
-											
+											found = YES;
 											[self ActivateBlending: 0L];
 										}
 									}
-								}
-							}
-						}
+//								}
+//							}
+//						}
 					}
 				}
 			}
