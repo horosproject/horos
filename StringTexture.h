@@ -26,6 +26,9 @@
 	GLuint texName;
 	NSSize texSize;
 	
+	BOOL xFlipped;
+	BOOL yFlipped;
+	
 	NSAttributedString * string;
 	NSColor * textColor; // default is opaque white
 	NSColor * boxColor; // default transparent or none
@@ -53,6 +56,7 @@
 - (GLuint) texName; // 0 if no texture allocated
 - (NSSize) texSize; // actually size of texture generated in texels, (0, 0) if no texture allocated
 
+- (void) setFlippedX: (BOOL) x Y:(BOOL) y;
 - (NSColor *) textColor; // get the pre-multiplied default text color (includes alpha) string attributes could override this
 - (NSColor *) boxColor; // get the pre-multiplied box color (includes alpha) alpha of 0.0 means no background box
 - (NSColor *) borderColor; // get the pre-multiplied border color (includes alpha) alpha of 0.0 means no border

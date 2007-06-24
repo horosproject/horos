@@ -178,24 +178,79 @@
 	[image release];
 }
 
+- (void) setFlippedX: (BOOL) x Y:(BOOL) y
+{
+	xFlipped = x;
+	yFlipped = y;
+}
+
 - (void) drawWithBounds:(NSRect)bounds
 {
 	if (!texName)
 		[self genTexture];
 	if (texName) {
 		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
+		
 		glBegin (GL_QUADS);
+		
+		if( yFlipped == NO && xFlipped == NO)
+		{
 			glTexCoord2f (0.0f, 0.0f); // draw upper left in world coordinates
 			glVertex2f (bounds.origin.x, bounds.origin.y);
 	
 			glTexCoord2f (0.0f, texSize.height); // draw lower left in world coordinates
 			glVertex2f (bounds.origin.x, bounds.origin.y + bounds.size.height);
-	
+
 			glTexCoord2f (texSize.width, texSize.height); // draw upper right in world coordinates
 			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
 	
 			glTexCoord2f (texSize.width, 0.0f); // draw lower right in world coordinates
 			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y);
+
+		}
+		else if( yFlipped == YES && xFlipped == YES)
+		{
+			glTexCoord2f (0.0f, 0.0f); // draw upper left in world coordinates
+			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
+	
+			glTexCoord2f (0.0f, texSize.height); // draw lower left in world coordinates
+			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y);
+
+			glTexCoord2f (texSize.width, texSize.height); // draw upper right in world coordinates
+			glVertex2f (bounds.origin.x, bounds.origin.y);
+	
+			glTexCoord2f (texSize.width, 0.0f); // draw lower right in world coordinates
+			glVertex2f (bounds.origin.x, bounds.origin.y + bounds.size.height);
+		}
+		else if( yFlipped == YES && xFlipped == NO)
+		{
+			glTexCoord2f (0.0f, 0.0f); // draw upper left in world coordinates
+			glVertex2f (bounds.origin.x, bounds.origin.y + bounds.size.height);
+	
+			glTexCoord2f (0.0f, texSize.height); // draw lower left in world coordinates
+			glVertex2f (bounds.origin.x, bounds.origin.y);
+
+			glTexCoord2f (texSize.width, texSize.height); // draw upper right in world coordinates
+			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y);
+	
+			glTexCoord2f (texSize.width, 0.0f); // draw lower right in world coordinates
+			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
+		}
+		else if( yFlipped == NO && xFlipped == YES)
+		{
+			glTexCoord2f (0.0f, 0.0f); // draw upper left in world coordinates
+			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y);
+	
+			glTexCoord2f (0.0f, texSize.height); // draw lower left in world coordinates
+			glVertex2f (bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
+
+			glTexCoord2f (texSize.width, texSize.height); // draw upper right in world coordinates
+			glVertex2f (bounds.origin.x, bounds.origin.y + bounds.size.height);
+	
+			glTexCoord2f (texSize.width, 0.0f); // draw lower right in world coordinates
+			glVertex2f (bounds.origin.x, bounds.origin.y);
+		}
+		
 		glEnd ();
 	}
 }
