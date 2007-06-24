@@ -270,11 +270,15 @@ OFCondition DSRImageReferenceValue::renderHTML(ostream &docStream,
 	
 	//create image reference
 	docStream << endl << "<p>" << endl;
+	
+	#ifdef OSIRIX_VIEWER
 	docStream << "<img src=";
 	//add sop Instance
 	docStream << "\"" <<  pathToJPEG(SOPInstanceUID.c_str()) << "\"";
 	//add width
 	docStream << "width=\"256\">";
+	#endif
+	
 	 docStream << "</p>";
 	
     const char *modality = dcmSOPClassUIDToModality(SOPClassUID.c_str());

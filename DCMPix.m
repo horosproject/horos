@@ -3188,6 +3188,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 	char			*data = 0L;
 	SElement		*theGroupP;
 	
+	#ifdef OSIRIX_VIEWER
+	
 	NSString *outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/%@", filenameWithDate( file)];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:outputfile] == NO) convertedDICOM = [convertDICOM( file) retain];
 	else convertedDICOM = [outputfile retain];
@@ -3221,6 +3223,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 	else convertedDICOM = 0L;
 	
 	[PapyrusLock unlock];
+	
+	#endif
 	
 	return data;
 }
@@ -4245,7 +4249,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 }
 	
 - (void)createROIsFromRTSTRUCTThread: (NSDictionary*)dict {
-	
+
+#ifdef OSIRIX_VIEWER
+
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];  // Cuz this is run as a detached thread.
 	
 	DCMObject *dcmObject = [dict objectForKey: @"dcmObject"];
@@ -4552,7 +4558,7 @@ END_CREATE_ROIS:
 	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
 	
 	[pool release];
-	
+#endif
 } // end createROIsFromRTSTRUCT
 
 - (void) setVOILUT:(int) first number :(unsigned int) number depth :(unsigned int) depth table :(unsigned int *)table image:(unsigned short*) src isSigned:(BOOL) isSigned
@@ -7706,33 +7712,33 @@ BOOL            readable = YES;
 	[pool release];
 }
 
-- (void) getFrameFromMovie:(NSString*) extension
-{
-	
-	if( [extension isEqualToString:@"mov"] == YES ||
-		[extension isEqualToString:@"mpg"] == YES ||
-		[extension isEqualToString:@"mpeg"] == YES ||
-		[extension isEqualToString:@"avi"] == YES)
-		{
-			if( quicktimeThreadLock == 0L) quicktimeThreadLock = [[NSLock alloc] init];
-			
-			[quicktimeThreadLock lock];
-			
-			if( quicktimeRunning == NO)
-				[NSThread detachNewThreadSelector:@selector( startQuicktimeThread) toTarget:self withObject: 0L];
-			DOClient	*client = [[DOClient alloc] init];
-			
-			[client connect];
-			
-			NSMutableArray *arrayTest = [client log: @"hhhh"];
-			
-			NSLog( [arrayTest description]);
-			
-			[client release];
-			
-			[quicktimeThreadLock unlock];
-		}
-}
+//- (void) getFrameFromMovie:(NSString*) extension
+//{
+//	
+//	if( [extension isEqualToString:@"mov"] == YES ||
+//		[extension isEqualToString:@"mpg"] == YES ||
+//		[extension isEqualToString:@"mpeg"] == YES ||
+//		[extension isEqualToString:@"avi"] == YES)
+//		{
+//			if( quicktimeThreadLock == 0L) quicktimeThreadLock = [[NSLock alloc] init];
+//			
+//			[quicktimeThreadLock lock];
+//			
+//			if( quicktimeRunning == NO)
+//				[NSThread detachNewThreadSelector:@selector( startQuicktimeThread) toTarget:self withObject: 0L];
+//			DOClient	*client = [[DOClient alloc] init];
+//			
+//			[client connect];
+//			
+//			NSMutableArray *arrayTest = [client log: @"hhhh"];
+//			
+//			NSLog( [arrayTest description]);
+//			
+//			[client release];
+//			
+//			[quicktimeThreadLock unlock];
+//		}
+//}
 
 - (void) CheckLoadIn
 {
@@ -7752,6 +7758,7 @@ BOOL            readable = YES;
 		
 		if( isBonjour)
 		{
+			#ifdef OSIRIX_VIEWER
 			// LOAD THE FILE FROM BONJOUR SHARED DATABASE
 			
 			if( imageObj == 0L) NSLog( @"We need imageObj for Bonjour loading");
@@ -7765,6 +7772,7 @@ BOOL            readable = YES;
 			{
 				return;
 			}
+			#endif
 		}
 		
 		if( [self isDICOMFile: srcFile])
