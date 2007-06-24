@@ -12621,6 +12621,9 @@ int i,j,l;
 	[dcmFormat setEnabled: YES];
 	[dcmAllViewers setState: NSOffState];
 	
+	if( blendingController)
+		[dcmFormat selectCellWithTag: 1];
+	
 	if( [[ViewerController getDisplayed2DViewers] count] > 1) [dcmAllViewers setEnabled: YES];
 	else [dcmAllViewers setEnabled: NO];
 
