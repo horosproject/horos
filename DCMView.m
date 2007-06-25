@@ -7171,7 +7171,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 				unsigned char*	rgbabuf = malloc( *width * *height * 4 * *bpp/8);
 
-				glReadPixels(0, 0, *width, *height, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, rgbabuf);
+				glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, rgbabuf);
 				i = *width * *height;
 				unsigned char	*t_argb = rgbabuf;
 				unsigned char	*t_rgb = buf;
