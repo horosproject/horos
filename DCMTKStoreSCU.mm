@@ -1049,7 +1049,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 
 	//default should be False
 	opt_proposeOnlyRequiredPresentationContexts = OFFalse;
-	//opt_combineProposedTransferSyntaxes = OFTrue;
+//	opt_combineProposedTransferSyntaxes = OFTrue;
 	
 #ifdef WITH_ZLIB
 	if (opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit)

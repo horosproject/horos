@@ -7148,7 +7148,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //			*spp = 4;
 			*bpp = 8;
 			
-			buf = malloc( *width * *height * *spp * *bpp/8);
+			buf = malloc( 1 + *width * *height * *spp * *bpp/8);
 			if( buf)
 			{
 				if(removeGraphical)
@@ -7164,31 +7164,26 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				else if( [curRoiList count]) [self display];
 				
 				[[self openGLContext] makeCurrentContext];
-				glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 				
-//				unsigned char*	rgbabuf = malloc( *width * *height * 4 * *bpp/8);
-//				
-//				#if __BIG_ENDIAN__
-//				glReadPixels(0, 0, *width, *height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, rgbabuf);	// <- This is faster, doesn't require conversion -> DMA transfer. We do the conversion with vImage
-//				#else
-//				glReadPixels(0, 0, *width, *height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, rgbabuf);
-//				#endif
-//				
-//				vImage_Buffer src, dst;
-//				src.height = *height;
-//				src.width = *width;
-//				src.rowBytes = *width * 4;
-//				src.data = rgbabuf;
-//				
-//				dst.height =  *height;
-//				dst.width = *width;
-//				dst.rowBytes = *width * 3;
-//				dst.data = buf;
-//				
-//				
-//				vImageConvert_ARGB8888toRGB888( &src, &dst, 0);
-//				
-//				free( rgbabuf);
+				#if __BIG_ENDIAN__
+				glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
+				#else
+				
+				unsigned char*	rgbabuf = malloc( *width * *height * 4 * *bpp/8);
+
+				glReadPixels(0, 0, *width, *height, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, rgbabuf);
+				i = *width * *height;
+				unsigned char	*t_argb = rgbabuf;
+				unsigned char	*t_rgb = buf;
+				while( i-->0)
+				{
+					*((int*) t_rgb) = *((int*) t_argb);
+					t_argb+=4;
+					t_rgb+=3;
+				}
+				free( rgbabuf);
+				
+				#endif
 				
 				long rowBytes = *width**spp**bpp/8;
 				
