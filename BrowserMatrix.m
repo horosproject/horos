@@ -204,6 +204,8 @@ static NSString *albumDragType = @"Osirix Album drag";
 {
 	[self selectCell: theEvent];
 	
+	[[BrowserController currentBrowser] matrixPressed: self];
+	
 	[super rightMouseDown: theEvent];
  }
 
