@@ -1203,13 +1203,36 @@ NSRect rect = drawingRect;
 	
 	NSPoint mousePositionInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	
-	if( !NSPointInRect([NSEvent mouseLocation], [[self window] frame]) || [self clickInSideBarAtPosition:mousePositionInView])
+	if( !NSPointInRect([NSEvent mouseLocation], [[self window] frame]))
 	{
 		[[NSCursor arrowCursor] set];
 		mousePositionX = - 9999.0;
 		[self updateView];
 		return;
 	}
+	else if ([self clickInSideBarAtPosition:mousePositionInView])
+	{
+		NSString *mouseLabel;
+		if([self clickInAddCurveButtonAtPosition:mousePositionInView])
+		{
+			mouseLabel = NSLocalizedString(@"Add", @"");
+		}
+		else if([self clickInRemoveSelectedCurveButtonAtPosition:mousePositionInView])
+		{
+			mouseLabel = NSLocalizedString(@"Remove", @"");
+		}
+		else if([self clickInSaveButtonAtPosition:mousePositionInView])
+		{
+			mouseLabel = NSLocalizedString(@"Save", @"");
+		}
+		else mouseLabel = @"";
+		
+		[self setCursorLabelWithText:mouseLabel];
+		mousePositionX = - 9999.0;
+		[self updateView];
+		return;
+	}
+	
 	
 	NSAffineTransform* transformView2Coordinate = [self transform];
 	[transformView2Coordinate invert];
@@ -2022,6 +2045,12 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 - (void)setCursorLabelWithText:(NSString*)text;
 {
+	if([text isEqualToString:@""])
+	{
+		[[NSCursor arrowCursor] set];
+		return;
+	}
+	
 	NSPoint hotSpot = [[NSCursor arrowCursor] hotSpot];
 	NSImage *cursorImage = [[[NSCursor arrowCursor] image] copy];
 
