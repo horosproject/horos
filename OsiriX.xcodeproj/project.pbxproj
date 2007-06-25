@@ -1824,6 +1824,12 @@
 		AB9E05490B30107A00661F7E /* key.png in Resources */ = {isa = PBXBuildFile; fileRef = AB9E05460B30107A00661F7E /* key.png */; };
 		ABB218B905CF1E9300D8B619 /* WaitRendering.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB218B705CF1E9300D8B619 /* WaitRendering.h */; };
 		ABB218BA05CF1E9300D8B619 /* WaitRendering.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB218B805CF1E9300D8B619 /* WaitRendering.m */; };
+		ABB230BB0C2F95DD00B38596 /* JPEGExif.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB230B90C2F95DD00B38596 /* JPEGExif.h */; };
+		ABB230BC0C2F95DD00B38596 /* JPEGExif.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB230BA0C2F95DD00B38596 /* JPEGExif.m */; };
+		ABB230BD0C2F95DD00B38596 /* JPEGExif.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB230B90C2F95DD00B38596 /* JPEGExif.h */; };
+		ABB230BE0C2F95DD00B38596 /* JPEGExif.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB230BA0C2F95DD00B38596 /* JPEGExif.m */; };
+		ABB230BF0C2F95DD00B38596 /* JPEGExif.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB230B90C2F95DD00B38596 /* JPEGExif.h */; };
+		ABB230C00C2F95DD00B38596 /* JPEGExif.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB230BA0C2F95DD00B38596 /* JPEGExif.m */; };
 		ABB36C140AF23CB900DBEEA2 /* AYDicomPrint.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABB36C120AF23CB900DBEEA2 /* AYDicomPrint.nib */; };
 		ABB36C150AF23CB900DBEEA2 /* AYDicomPrint.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABB36C120AF23CB900DBEEA2 /* AYDicomPrint.nib */; };
 		ABB36C160AF23CB900DBEEA2 /* AYDicomPrint.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABB36C120AF23CB900DBEEA2 /* AYDicomPrint.nib */; };
@@ -11616,6 +11622,8 @@
 		ABAA284C058A4F7F00F0601D /* NSFullScreenWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSFullScreenWindow.m; sourceTree = "<group>"; };
 		ABB218B705CF1E9300D8B619 /* WaitRendering.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = WaitRendering.h; sourceTree = "<group>"; };
 		ABB218B805CF1E9300D8B619 /* WaitRendering.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = WaitRendering.m; sourceTree = "<group>"; };
+		ABB230B90C2F95DD00B38596 /* JPEGExif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPEGExif.h; sourceTree = "<group>"; };
+		ABB230BA0C2F95DD00B38596 /* JPEGExif.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPEGExif.m; sourceTree = "<group>"; };
 		ABB36C130AF23CB900DBEEA2 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/AYDicomPrint.nib; sourceTree = "<group>"; };
 		ABB36D7E0AF2548C00DBEEA2 /* away.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = away.tif; sourceTree = "<group>"; };
 		ABB36D7F0AF2548C00DBEEA2 /* available.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = available.tif; sourceTree = "<group>"; };
@@ -15953,6 +15961,8 @@
 				A94469DF0BA7FFE7008643E5 /* BLAuthentication.h */,
 				A94469E00BA7FFE7008643E5 /* BLAuthentication.m */,
 				CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */,
+				ABB230B90C2F95DD00B38596 /* JPEGExif.h */,
+				ABB230BA0C2F95DD00B38596 /* JPEGExif.m */,
 				CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */,
 			);
 			name = Utilities;
@@ -21427,6 +21437,7 @@
 				CE10299A0C08246100D6E912 /* VolumeReslice.h in Headers */,
 				BF0CBBF00C18B41E00DAF4B5 /* NodeGraph.h in Headers */,
 				CE822F8E0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */,
+				ABB230BD0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23364,6 +23375,7 @@
 				AB06C9910C1586230016BA60 /* SelectionView.h in Headers */,
 				BF0CBBF20C18B41E00DAF4B5 /* NodeGraph.h in Headers */,
 				CE822F8C0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */,
+				ABB230BF0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25306,6 +25318,7 @@
 				AB06C98D0C1586220016BA60 /* SelectionView.h in Headers */,
 				BF0CBBF40C18B41E00DAF4B5 /* NodeGraph.h in Headers */,
 				CE822F8A0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */,
+				ABB230BB0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28032,6 +28045,7 @@
 				CE10299B0C08246100D6E912 /* VolumeReslice.mm in Sources */,
 				BF0CBBF10C18B41E00DAF4B5 /* NodeGraph.m in Sources */,
 				CE822F8F0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */,
+				ABB230BE0C2F95DD00B38596 /* JPEGExif.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28816,6 +28830,7 @@
 				AB06C9920C1586230016BA60 /* SelectionView.m in Sources */,
 				BF0CBBF30C18B41E00DAF4B5 /* NodeGraph.m in Sources */,
 				CE822F8D0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */,
+				ABB230C00C2F95DD00B38596 /* JPEGExif.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30167,6 +30182,7 @@
 				AB06C98E0C1586220016BA60 /* SelectionView.m in Sources */,
 				BF0CBBF50C18B41E00DAF4B5 /* NodeGraph.m in Sources */,
 				CE822F8B0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */,
+				ABB230BC0C2F95DD00B38596 /* JPEGExif.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
