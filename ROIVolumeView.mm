@@ -66,12 +66,25 @@
 	*spp = 3;
 	*bpp = 8;
 	
-	buf = (unsigned char*) malloc( *width * *height * *spp * *bpp/8);
+	buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
 	if( buf)
 	{
 		[self getVTKRenderWindow]->MakeCurrent();
 		
-		glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
+		#if __BIG_ENDIAN__
+			glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
+		#else
+			glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);
+			i = *width * *height;
+			unsigned char	*t_argb = buf;
+			unsigned char	*t_rgb = buf;
+			while( i-->0)
+			{
+				*((int*) t_rgb) = *((int*) t_argb);
+				t_argb+=4;
+				t_rgb+=3;
+			}
+		#endif
 		
 		long rowBytes = *width**spp**bpp/8;
 		

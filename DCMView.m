@@ -7148,7 +7148,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //			*spp = 4;
 			*bpp = 8;
 			
-			buf = malloc( 1 + *width * *height * *spp * *bpp/8);
+			buf = malloc( 1 + *width * *height * 4 * *bpp/8);
 			if( buf)
 			{
 				if(removeGraphical)
@@ -7166,23 +7166,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				[[self openGLContext] makeCurrentContext];
 				
 				#if __BIG_ENDIAN__
-				glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
+					glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 				#else
-				
-				unsigned char*	rgbabuf = malloc( *width * *height * 4 * *bpp/8);
-
-				glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, rgbabuf);
-				i = *width * *height;
-				unsigned char	*t_argb = rgbabuf;
-				unsigned char	*t_rgb = buf;
-				while( i-->0)
-				{
-					*((int*) t_rgb) = *((int*) t_argb);
-					t_argb+=4;
-					t_rgb+=3;
-				}
-				free( rgbabuf);
-				
+					glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
+					i = *width * *height;
+					unsigned char	*t_argb = buf;
+					unsigned char	*t_rgb = buf;
+					while( i-->0)
+					{
+						*((int*) t_rgb) = *((int*) t_argb);
+						t_argb+=4;
+						t_rgb+=3;
+					}
 				#endif
 				
 				long rowBytes = *width**spp**bpp/8;

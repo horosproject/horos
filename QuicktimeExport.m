@@ -402,7 +402,7 @@ NSString * documentsDirectory();
 		
 		[wait setCancel:YES];
 		[[wait progress] setMaxValue:maxImage];
-		
+		//ImageCompression.h QTAddImageCodecType
 		NSDictionary *myDict = [NSDictionary dictionaryWithObject: @"jpeg" forKey: QTAddImageCodecType];
 		
 		for (curSample = 0; curSample < maxImage; curSample++) 
