@@ -12492,6 +12492,7 @@ int i,j,l;
 			Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Creating a DICOM series", nil)];
 			[splash showWindow:self];
 			[[splash progress] setMaxValue: (to - from) / interval];
+			[splash setCancel: YES];
 			
 			curImage = [imageView curImage];
 			
@@ -12528,6 +12529,11 @@ int i,j,l;
 				}
 				
 				[splash incrementBy: 1];
+				
+				if( [splash aborted])
+				{
+					i = to;
+				}
 				
 				[pool release];
 			}

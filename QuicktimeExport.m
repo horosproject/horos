@@ -431,6 +431,8 @@ NSString * documentsDirectory();
 			
 			if( [wait aborted])
 			{
+				[[NSFileManager defaultManager] removeFileAtPath:fileName handler:0L];
+				
 				curSample = maxImage;
 				aborted = YES;
 			}
