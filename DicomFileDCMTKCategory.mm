@@ -514,9 +514,9 @@ extern NSLock	*PapyrusLock;
 			
 		if( patientID == 0L) patientID = [[NSString alloc] initWithString:@""];
 		
-		if( NoOfFrames > 1) // SERIE ID MUST BE UNIQUE!!!!!
+		if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
 		{
-			NSString *newSerieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [[dicomElements objectForKey:@"studyDate"] description]];
+			NSString *newSerieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [dicomElements objectForKey:@"SOPUID"]];
 			[serieID release];
 			serieID = newSerieID;
 		}

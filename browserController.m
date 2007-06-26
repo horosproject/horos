@@ -10115,6 +10115,29 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	if( found == NO)
 	{
+		if( [[DRDevice devices] count])
+		{
+			DRDevice	*device = [[DRDevice devices] objectAtIndex: 0];
+			
+			// Is the bay close? open it for the user
+			if( [[[device status] valueForKey: DRDeviceIsTrayOpenKey] boolValue] == YES)
+			{
+				[device closeTray];
+				[appController growlTitle: NSLocalizedString( @"CD/DVD", 0L) description: NSLocalizedString(@"Please wait. CD/DVD is loading...", 0L) name:@"newfiles"];
+				return;
+			}
+			else
+			{
+				if( [[[device status] valueForKey: DRDeviceIsBusyKey] boolValue] == NO &&[[[device status] valueForKey: DRDeviceMediaStateKey] isEqualToString:DRDeviceMediaStateNone])
+					[device openTray];
+				else
+				{
+					[appController growlTitle: NSLocalizedString( @"CD/DVD", 0L) description: NSLocalizedString(@"Please wait. CD/DVD is loading...", 0L) name:@"newfiles"];
+					return;
+				}
+			}
+		}
+		
 		NSRunCriticalAlertPanel(NSLocalizedString(@"No CD or DVD has been found...",@"No CD or DVD has been found..."),NSLocalizedString(@"Please insert a DICOM CD or DVD.",@"Please insert a DICOM CD or DVD."), NSLocalizedString(@"OK",nil), nil, nil);
 	}
 	#endif
