@@ -85,7 +85,7 @@ extern NSMutableDictionary				*plugins;
 static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable = 0L;
 
 static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, IndependentCRWLWW, COPYSETTINGSINSERIES, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
-static		long						CLUTBARS, ANNOTATIONS;
+static		int							CLUTBARS, ANNOTATIONS;
 static		BOOL						gClickCountSet = NO;
 static		float						margin = 2;
 
@@ -508,6 +508,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	COPYSETTINGSINSERIES = [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGSINSERIES"];
 	CLUTBARS = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	ANNOTATIONS = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
+}
+
++(void) setCLUTBARS:(int) c ANNOTATIONS:(int) a
+{
+	CLUTBARS = c;
+	ANNOTATIONS = a;
 }
 
 + (NSSize)sizeOfString:(NSString *)string forFont:(NSFont *)font

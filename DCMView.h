@@ -228,7 +228,8 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 	
 	BOOL			syncOnLocationImpossible;
 }
-+(void) setDefaults;
++ (void) setDefaults;
++ (void) setCLUTBARS:(int) c ANNOTATIONS:(int) a;
 + (void)setPluginOverridesMouse: (BOOL)override;
 + (void) computePETBlendingCLUT;
 + (NSString*) findWLWWPreset: (float) wl :(float) ww :(DCMPix*) pix;

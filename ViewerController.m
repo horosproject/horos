@@ -12203,13 +12203,12 @@ int i,j,l;
 	float	cwl, cww;
 	float	o[ 9];
 	
-	if( screenCapture)
+	if( screenCapture || allViewers)
 	{
 		annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 		clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 		
-		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
-		[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
+		[DCMView setCLUTBARS: barHide ANNOTATIONS: annotGraphics];
 	}
 	
 	unsigned char *data = 0L;
@@ -12427,10 +12426,9 @@ int i,j,l;
 		free( data);
 	}
 	
-	if( screenCapture)
+	if( screenCapture || allViewers)
 	{
-		[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
-		[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: @"CLUTBARS"];
+		[DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotCopy];
 	}
 	
 	for( i = 0; i < [viewers count]; i++)
