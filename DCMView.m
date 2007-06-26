@@ -84,7 +84,8 @@ extern NSMutableDictionary				*plugins;
 
 static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable = 0L;
 
-static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
+static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, IndependentCRWLWW, COPYSETTINGSINSERIES, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
+static		long						CLUTBARS, ANNOTATIONS;
 static		BOOL						gClickCountSet = NO;
 static		float						margin = 2;
 
@@ -502,6 +503,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	NOINTERPOLATION = [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"];
 	FULL32BITPIPELINE = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
 	FULL32BITPIPELINE = NO;
+	
+	IndependentCRWLWW = [[NSUserDefaults standardUserDefaults] boolForKey:@"IndependentCRWLWW"];
+	COPYSETTINGSINSERIES = [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGSINSERIES"];
+	CLUTBARS = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
+	ANNOTATIONS = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 }
 
 + (NSSize)sizeOfString:(NSString *)string forFont:(NSFont *)font
@@ -1615,7 +1621,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( [self is2DViewer] == YES)
 		{
-			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"] boolValue]) || [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGSINSERIES"] == NO)
+			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
 			{
 				[curDCM checkImageAvailble :[curDCM ww] :[curDCM wl]];
 				
@@ -4278,7 +4284,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	DCMPix	*otherPix = [note object];
 	
-	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"] boolValue]) || [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGSINSERIES"] == NO) return;
+	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO) return;
 	
 	if( [dcmPixList containsObject: otherPix])
 	{
@@ -6340,8 +6346,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
 {
-	long		clutBars	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
-	long		annotations	= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
+	long		clutBars	= CLUTBARS;	//[[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
+	long		annotations	= ANNOTATIONS;	//[[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 	
 	if( noScale)
 	{
@@ -8534,7 +8540,7 @@ BOOL	lowRes = NO;
 		else if (curImage < 0)
 			curImage = -1;
 		
-		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"]) || [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGSINSERIES"] == NO)
+		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
 		{
 			
 		}

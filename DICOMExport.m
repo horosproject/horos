@@ -229,7 +229,7 @@ extern BrowserController	*browserWindow;
 	{
 		BOOL			isDir = YES;
 		long			index = 0;
-		NSString		*OUTpath = [documentsDirectory() stringByAppendingPathComponent:@"/INCOMING"];
+		NSString		*OUTpath = [[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:@"/INCOMING"];
 		
 		if (![[NSFileManager defaultManager] fileExistsAtPath:OUTpath isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:OUTpath attributes:nil];
 		

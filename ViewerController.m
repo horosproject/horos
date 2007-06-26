@@ -157,6 +157,7 @@ static NSString*	PrintToolbarItemIdentifier			= @"Print.icns";
 
 static NSArray*		DefaultROINames;
 
+static  BOOL AUTOHIDEMATRIX								= NO;
 static	BOOL EXPORT2IPHOTO								= NO;
 static	ViewerController *blendedwin					= 0L;
 static	float	deg2rad									= 3.14159265358979/180.0; 
@@ -1748,14 +1749,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	[imageView stopROIEditingForce: YES];
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"]) [self autoHideMatrix];
+	if (AUTOHIDEMATRIX) [self autoHideMatrix];
 }
 
 -(void) windowDidResignKey:(NSNotification *)aNotification
 {
 	[imageView stopROIEditingForce: YES];
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"]) [self autoHideMatrix];
+	if (AUTOHIDEMATRIX) [self autoHideMatrix];
 }
 
 - (void)windowDidChangeScreen:(NSNotification *)aNotification
@@ -1795,7 +1796,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	long i;
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"]) [self autoHideMatrix];
+	if (AUTOHIDEMATRIX) [self autoHideMatrix];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
@@ -2455,7 +2456,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[splitView saveDefault:@"SPLITVIEWER"];
 		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"] == NO)
+		if (AUTOHIDEMATRIX == NO)
 		{
 			// Apply show / hide matrix to all viewers
 			if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) == NO)
@@ -3024,7 +3025,7 @@ static ViewerController *draggedController = 0L;
 {
 	if( windowWillClose) return;
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"])
+	if (AUTOHIDEMATRIX)
 	{
 		[self autoHideMatrix];
 	}
@@ -12196,16 +12197,20 @@ int i,j,l;
 {
 	DCMPix			*curPix = [imageView curDCM];
 	NSArray			*viewers = [ViewerController getDisplayed2DViewers];
+	long			annotCopy,clutBarsCopy;
 	
-	long	annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"],
-			clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
-			
 	long	width, height, spp, bpp, err, i, x;
 	float	cwl, cww;
 	float	o[ 9];
 	
-	[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
-	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
+	if( screenCapture)
+	{
+		annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
+		clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
+		
+		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
+		[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
+	}
 	
 	unsigned char *data = 0L;
 	
@@ -12421,9 +12426,12 @@ int i,j,l;
 		
 		free( data);
 	}
-
-	[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
-	[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: @"CLUTBARS"];
+	
+	if( screenCapture)
+	{
+		[[NSUserDefaults standardUserDefaults] setInteger: annotCopy forKey: @"ANNOTATIONS"];
+		[[NSUserDefaults standardUserDefaults] setInteger: clutBarsCopy forKey: @"CLUTBARS"];
+	}
 	
 	for( i = 0; i < [viewers count]; i++)
 		[[[viewers objectAtIndex: i] imageView] setNeedsDisplay: YES];
@@ -13887,6 +13895,7 @@ int i,j,l;
 	thickSlab = 0L;
 	ROINamesArray = 0L;
 	ThreadLoadImage = NO;
+	AUTOHIDEMATRIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"];
 	
 	subCtrlOffset.y = subCtrlOffset.x = 0;
 	

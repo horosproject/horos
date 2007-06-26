@@ -3138,6 +3138,8 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 
 - (IBAction)load3DSettings:(id)sender;
 {
+	[[NSUserDefaults standardUserDefaults] setObject:[presetsGroupPopUpButton titleOfSelectedItem] forKey:@"LAST_3D_PRESET"];
+	
 	if([[sender className] isEqualToString:@"NSMenuItem"] || [[sender className] isEqualToString:@"NSToolbarItem"])
 	{
 		[self showPresetsPanel];
@@ -3558,6 +3560,9 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 {
 	presetPageNumber = 0;
 	[self updatePresetsGroupPopUpButton];
+	
+	[self selectGroupWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"LAST_3D_PRESET"]];
+	
 	[presetsPanel orderFront:self];
 }
 

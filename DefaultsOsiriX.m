@@ -667,6 +667,8 @@ static NSString *hostName = @"";
 	// ** USEALWAYSTOOLBARPANEL
 	[defaultValues setObject:@"0" forKey: @"USEALWAYSTOOLBARPANEL"];
 	
+	[defaultValues setObject:@"Softw Tissue CT" forKey: @"LAST_3D_PRESET"];
+	
 	// ** HIDEPATIENTNAME
 	[defaultValues setObject:@"0" forKey:@"HIDEPATIENTNAME"];
 	[defaultValues setObject:@"0" forKey:@"onlyDICOM"];
