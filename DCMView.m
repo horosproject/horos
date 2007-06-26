@@ -7181,10 +7181,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 				#else
 					glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
-					i = *width * *height;
-					unsigned char	*t_argb = buf;
-					unsigned char	*t_rgb = buf;
-					while( i-->0)
+					register int ii = *width * *height;
+					register unsigned char	*t_argb = buf;
+					register unsigned char	*t_rgb = buf;
+					while( ii-->0)
 					{
 						*((int*) t_rgb) = *((int*) t_argb);
 						t_argb+=4;
