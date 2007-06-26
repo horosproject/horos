@@ -599,18 +599,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				[curPix orientation: orientation];
 				
-				if( sign)
+				if( sign > 0)
 				{
-					origin[ 0] = [lastPix originX] + (i * [firstPix pixelSpacingY]) * orientation[ 6] * sign;
-					origin[ 1] = [lastPix originY] + (i * [firstPix pixelSpacingY]) * orientation[ 7] * sign;
-					origin[ 2] = [lastPix originZ] + (i * [firstPix pixelSpacingY]) * orientation[ 8] * sign;
+					origin[ 0] = [lastPix originX] + (((float) i + 1.0) * [firstPix pixelSpacingY]) * orientation[ 6] * sign;
+					origin[ 1] = [lastPix originY] + (((float) i + 1.0) * [firstPix pixelSpacingY]) * orientation[ 7] * sign;
+					origin[ 2] = [lastPix originZ] + (((float) i + 1.0) * [firstPix pixelSpacingY]) * orientation[ 8] * sign;
 				}
-				else
-				{
-					origin[ 0] = [firstPix originX] + (i * [firstPix pixelSpacingY]) * orientation[ 6] * sign;
-					origin[ 1] = [firstPix originY] + (i * [firstPix pixelSpacingY]) * orientation[ 7] * sign;
-					origin[ 2] = [firstPix originZ] + (i * [firstPix pixelSpacingY]) * orientation[ 8] * sign;
-				}
+//				else
+//				{
+//					origin[ 0] = [firstPix originX] + (((float) i+ 0.0) * [firstPix pixelSpacingY]) * orientation[ 6] * -sign;
+//					origin[ 1] = [firstPix originY] + (((float) i+ 0.0) * [firstPix pixelSpacingY]) * orientation[ 7] * -sign;
+//					origin[ 2] = [firstPix originZ] + (((float) i+ 0.0) * [firstPix pixelSpacingY]) * orientation[ 8] * -sign;
+//				}
 				
 				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
 				{
@@ -721,16 +721,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[curPix orientation: orientation];
 				if( sign > 0)
 				{
-					origin[ 0] = [lastPix originX] + (i * [firstPix pixelSpacingX]) * orientation[ 6] * -sign;
-					origin[ 1] = [lastPix originY] + (i * [firstPix pixelSpacingX]) * orientation[ 7] * -sign;
-					origin[ 2] = [lastPix originZ] + (i * [firstPix pixelSpacingX]) * orientation[ 8] * -sign;
+					origin[ 0] = [lastPix originX] + ((float) i * [firstPix pixelSpacingX]) * orientation[ 6] * -sign;
+					origin[ 1] = [lastPix originY] + ((float) i * [firstPix pixelSpacingX]) * orientation[ 7] * -sign;
+					origin[ 2] = [lastPix originZ] + ((float) i * [firstPix pixelSpacingX]) * orientation[ 8] * -sign;
 				}
-				else
-				{
-					origin[ 0] = [firstPix originX] + (i * [firstPix pixelSpacingX]) * orientation[ 6] * sign;
-					origin[ 1] = [firstPix originY] + (i * [firstPix pixelSpacingX]) * orientation[ 7] * sign;
-					origin[ 2] = [firstPix originZ] + (i * [firstPix pixelSpacingX]) * orientation[ 8] * sign;
-				}
+//				else
+//				{
+//					origin[ 0] = [firstPix originX] + ((i+0.0) * [firstPix pixelSpacingX]) * orientation[ 6] * sign;
+//					origin[ 1] = [firstPix originY] + ((i+0.0) * [firstPix pixelSpacingX]) * orientation[ 7] * sign;
+//					origin[ 2] = [firstPix originZ] + ((i+0.0) * [firstPix pixelSpacingX]) * orientation[ 8] * sign;
+//				}
 				
 				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
 				{
@@ -1112,6 +1112,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		BOOL succeed = YES;
 		
+		NSLog( @"Orientation : current: %d new: %d", currentOrientationTool, newOrientationTool);
+		
 		switch( currentOrientationTool)
 		{
 			case 0:
@@ -1226,8 +1228,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[popFusion selectItemWithTag:previousFusion];
 		}
 		
-		NSLog( @"originalOrientation: %d", originalOrientation);
-				
 		[imageView setScaleValue: previousZooming * [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX]];
 		
 		[imageView setDrawing: YES];
