@@ -403,7 +403,7 @@ NSString * documentsDirectory();
 		[wait setCancel:YES];
 		[[wait progress] setMaxValue:maxImage];
 		//ImageCompression.h QTAddImageCodecType
-		NSDictionary *myDict = [NSDictionary dictionaryWithObject: @"jpeg" forKey: QTAddImageCodecType];	//qdrw , tiff, jpeg
+		NSDictionary *myDict = [NSDictionary dictionaryWithObjectsAndKeys: @"jpeg", QTAddImageCodecType, [NSNumber numberWithInt: codecHighQuality], QTAddImageCodecQuality, nil];	//qdrw , tiff, jpeg
 		
 		for (curSample = 0; curSample < maxImage; curSample++) 
 		{
@@ -431,8 +431,6 @@ NSString * documentsDirectory();
 			
 			if( [wait aborted])
 			{
-				[[NSFileManager defaultManager] removeFileAtPath:fileName handler:0L];
-				
 				curSample = maxImage;
 				aborted = YES;
 			}
@@ -464,8 +462,10 @@ NSString * documentsDirectory();
 					[ws openFile:fileName];
 				}
 			}
-			[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
 		}
+		
+		[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
+		
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXNewMovieSaved" object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"path", nil]];
 		return fileName;
 	}

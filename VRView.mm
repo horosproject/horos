@@ -981,6 +981,7 @@ public:
 			Wait *progress = [[Wait alloc] initWithString:@"Creating a DICOM series"];
 			[progress showWindow:self];
 			[[progress progress] setMaxValue: numberOfFrames];
+			[progress setCancel:YES];
 			
 			[dcmSequence setSeriesNumber:5500 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 			[dcmSequence setSeriesDescription: [dcmSeriesName stringValue]];
@@ -1036,6 +1037,11 @@ public:
 					break;
 				}
 				[progress incrementBy: 1];
+				
+				if( [progress aborted])
+				{
+					i = numberOfFrames;
+				}
 				
 				[pool release];
 			}
@@ -1165,8 +1171,6 @@ public:
 			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 			
 			[[NSFileManager defaultManager] movePath: newpath  toPath: path handler: nil];
-			
-			
 			
 			[[NSWorkspace sharedWorkspace] openFile:path];
 		}
