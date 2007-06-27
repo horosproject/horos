@@ -1122,7 +1122,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
         movieTimer = nil;
 	}
 
-	[presetsPanel close];	
+	if([presetsPanel isVisible]) [presetsPanel close];	
 	[presetsInfoPanel close];
 	
     [[self window] setDelegate:nil];
@@ -3146,11 +3146,18 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 	}
 	else if([sender isEqualTo:presetsApplyButton])
 	{
+		if([presetsPanel isVisible]) [presetsPanel close];
+		
 		[self load3DSettings];
-		[presetsPanel close];
 	}
 	else if([sender isEqualTo:self])
 	{
+		if( firstTimeDisplayed)
+		{
+			[presetsPanel close];
+		}
+		firstTimeDisplayed = NO;
+
 		WaitRendering *www = [[WaitRendering alloc] init:NSLocalizedString(@"Applying 3D Preset...", nil)];
 		[www start];
 		
@@ -3201,6 +3208,13 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 				[[[clutPopup menu] itemAtIndex:0] setTitle:clut];
 				[OpacityPopup setEnabled:NO];
 			}
+			
+			if([clutOpacityDrawer state] == NSDrawerClosedState)
+			{
+				[self showCLUTOpacityPanel: self];
+			}
+			
+			[clutOpacityView updateView];
 		}
 		
 		// shadings
@@ -3268,10 +3282,6 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 		[www end];
 		[www close];
 		[www release];
-		
-		if( firstTimeDisplayed)
-			[presetsPanel close];
-		firstTimeDisplayed = NO;
 	}
 }
 
@@ -3523,6 +3533,9 @@ int sort3DSettingsDict(id preset1, id preset2, void *context)
 - (void)selectGroupWithName:(NSString*)name;
 {
 	presetPageNumber = 0;
+	
+	if( [presetsGroupPopUpButton indexOfItemWithTitle: name] < 0) return;
+	
 	[settingsGroupPopUpButton selectItemWithTitle:name];
 	[presetsGroupPopUpButton selectItemWithTitle:name];
 	[self displayPresetsForSelectedGroup:presetsGroupPopUpButton];
