@@ -12430,9 +12430,6 @@ int i,j,l;
 	{
 		[DCMView setCLUTBARS: clutBarsCopy ANNOTATIONS: annotCopy];
 	}
-	
-	for( i = 0; i < [viewers count]; i++)
-		[[[viewers objectAtIndex: i] imageView] setNeedsDisplay: YES];
 }
 
 
@@ -12522,7 +12519,6 @@ int i,j,l;
 					else [imageView setIndex:i];
 					
 					[imageView sendSyncMessage:1];
-					[imageView display];
 					[self adjustSlider];
 					
 					[self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
@@ -12541,6 +12537,11 @@ int i,j,l;
 			[splash close];
 			[splash release];
 		}
+		
+		NSArray *viewers = [ViewerController getDisplayed2DViewers];
+		
+		for( i = 0; i < [viewers count]; i++)
+			[[[viewers objectAtIndex: i] imageView] setNeedsDisplay: YES];
 	}
 	
 	[self adjustSlider];
