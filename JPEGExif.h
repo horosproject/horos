@@ -13,4 +13,6 @@
 
 }
 
++ (void) addExif:(NSURL*) url;
+
 @end

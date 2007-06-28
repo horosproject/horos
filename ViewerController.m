@@ -89,7 +89,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 
 #import "KeyObjectController.h"
 #import "KeyObjectPopupController.h"
-
+#import "JPEGExif.h"
 #import "SRAnnotationController.h"
 #import "Reports.h"
 #import "ViewerControllerDCMTKCategory.h"
@@ -13081,6 +13081,8 @@ int i,j,l;
 					{
 						bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 						[bitmapData writeToFile:[panel filename] atomically:YES];
+						
+//						[JPEGExif addExif: [NSURL fileURLWithPath: [panel filename]]]; 
 					}
 					else
 						[[im TIFFRepresentation] writeToFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"tif"]] atomically:NO];

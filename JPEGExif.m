@@ -8,30 +8,47 @@
 
 #import "JPEGExif.h"
 
-
 @implementation JPEGExif
 
 + (void) addExif:(NSURL*) url
 {
-//	CGImageSourceRef source = CGImageSourceCreateWithURL((CFURLRef)url, NULL);
-//    if (source)
-//    {
-//        // get image properties (height, width, depth, metadata etc.) for display
-//        NSDictionary* props = (NSDictionary*) CGImageSourceCopyPropertiesAtIndex(source, 0, NULL);
-//		
-//		// Create an image destination writing to `url'
-//		CGImageDestinationRef dest = CGImageDestinationCreateWithURL((CFURLRef)url, (CFStringRef)@"public.jpeg", 1, nil);
-//		if ( dest)
-//		{
-//			// Set the image in the image destination to be `image' with
-//			// optional properties specified in saved properties dict.
-//			CGImageDestinationAddImage(dest, image, (CFDictionaryRef) props);
+	CGImageSourceRef source = CGImageSourceCreateWithURL((CFURLRef)url, NULL);
+    if (source)
+    {
+        // get image properties (height, width, depth, metadata etc.) for display
+        NSDictionary* props = (NSDictionary*) CGImageSourceCopyPropertiesAtIndex(source, 0, NULL);
+		
+		NSLog( [props description]);
+		
+		NSURL *newUrl = [NSURL fileURLWithPath: [[url path] stringByAppendingString:@"test.jpeg"]];
+		
+		// Create an image destination writing to `url'
+		CGImageDestinationRef dest = CGImageDestinationCreateWithURL((CFURLRef) newUrl, (CFStringRef)@"public.jpeg", 1, nil);
+		if ( dest)
+		{
+			// Set the image in the image destination to be `image' with
+			// optional properties specified in saved properties dict.
+			
+			// ********** CGImageProperties.h
+			//kCGImagePropertyExifDictionary
+			//kCGImagePropertyTIFFDateTime
+			//kCGImagePropertyExifDateTimeOriginal
+			
+			NSMutableDictionary *newProps = [NSMutableDictionary dictionaryWithDictionary: props];
+			
+//			NSMutableDictionary *
 //			
-//			BOOL status = CGImageDestinationFinalize(dest);
-//			
-//			CGImageRelease(image);
-//		}
-//	}
+//			[newProps setValue:@"hello" forKey:@"testalpha"];
+			
+			CGImageDestinationAddImageFromSource(dest, source, 0, (CFDictionaryRef) newProps);
+			
+			BOOL status = CGImageDestinationFinalize(dest);
+			
+			CFRelease( dest);
+		}
+		
+		CFRelease( source);
+	}
 }
 
 @end
