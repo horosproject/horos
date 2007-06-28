@@ -488,9 +488,43 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	
 	if( [[search stringValue] isEqualToString:@""] == NO)
 	{
-		NSRange range = [[item XMLString] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
+		NSRange range;
 		
-		if( range.location != NSNotFound) found = YES;
+		if( found == NO)
+		{
+			@try
+			{
+				range = [[item valueForKey:@"name"] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
+				if( range.location != NSNotFound) found = YES;
+			}
+			@catch (NSException *e)
+			{
+			}
+		}
+		
+		if( found == NO)
+		{
+			@try
+			{
+				range = [[item valueForKey:@"attributeTag"] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
+				if( range.location != NSNotFound) found = YES;
+			}
+			@catch (NSException *e)
+			{
+			}
+		}
+		
+		if( found == NO)
+		{
+			@try
+			{
+				range = [[item valueForKey:@"stringValue"] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
+				if( range.location != NSNotFound) found = YES;
+			}
+			@catch (NSException *e)
+			{
+			}
+		}
 		
 		if( found)
 		{

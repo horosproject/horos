@@ -11,10 +11,8 @@
 
 @implementation ViewerControllerWindow
 
-- (NSString *) representedFilename
-{
-	[[self windowController] updateRepresentedFileName];
-
-	return [super representedFilename];
-}
+//- (NSString *) representedFilename
+//{
+//	return [super representedFilename];
+//}
 @end
