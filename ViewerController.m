@@ -13116,7 +13116,20 @@ int i,j,l;
 						[JPEGExif addExif: [NSURL fileURLWithPath: [panel filename]] properties: exifDict format:@"jpeg"]; 
 					}
 					else
-						[[im TIFFRepresentation] writeToFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"tif"]] atomically:NO];
+					{
+						NSString *tiffFile = [[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"tif"]];
+						[[im TIFFRepresentation] writeToFile: tiffFile atomically:NO];
+						
+						NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
+						
+						NSDictionary *exifDict = [NSDictionary dictionaryWithObjectsAndKeys:
+															@"Exported from OsiriX", kCGImagePropertyExifUserComment,
+															[[curImage valueForKeyPath: @"series.study.date"] descriptionWithCalendarFormat:@"%Y:%m:%d %H:%M:%S" timeZone:0L locale: 0L] , kCGImagePropertyExifDateTimeOriginal,
+															0L];
+
+						
+						[JPEGExif addExif: [NSURL fileURLWithPath: [panel filename]] properties: exifDict format:@"tiff"]; 
+					}
 				}
 				
 				[im release];
