@@ -13032,10 +13032,22 @@ int i,j,l;
 							{
 								bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 
-								[bitmapData writeToFile:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
+								NSString *jpegFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"];
+								
+								[bitmapData writeToFile: jpegFile atomically:YES];
+								
+								NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
+								
+								NSDictionary *exifDict = [NSDictionary dictionaryWithObjectsAndKeys:
+																	@"Exported from OsiriX", kCGImagePropertyExifUserComment,
+																	[[curImage valueForKeyPath: @"series.study.date"] descriptionWithCalendarFormat:@"%Y:%m:%d %H:%M:%S" timeZone:0L locale: 0L] , kCGImagePropertyExifDateTimeOriginal,
+																	0L];
+
+								
+								[JPEGExif addExif: [NSURL fileURLWithPath: jpegFile] properties: exifDict format:@"jpeg"];
 								
 								iPhoto	*ifoto = [[iPhoto alloc] init];
-								[ifoto importIniPhoto: [NSArray arrayWithObject:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]]];
+								[ifoto importIniPhoto: [NSArray arrayWithObject:jpegFile]];
 								[ifoto release];
 							}
 							else
@@ -13068,11 +13080,22 @@ int i,j,l;
 				if( [[imageFormat selectedCell] tag] == 2)
 				{
 					bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+					
+					NSString *jpegFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"];
+					
+					[bitmapData writeToFile: jpegFile atomically:YES];
+					
+					NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
+								
+					NSDictionary *exifDict = [NSDictionary dictionaryWithObjectsAndKeys:
+													@"Exported from OsiriX", kCGImagePropertyExifUserComment,
+													[[curImage valueForKeyPath: @"series.study.date"] descriptionWithCalendarFormat:@"%Y:%m:%d %H:%M:%S" timeZone:0L locale: 0L] , kCGImagePropertyExifDateTimeOriginal,
+													0L];
 
-					[bitmapData writeToFile:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
+					[JPEGExif addExif: [NSURL fileURLWithPath: jpegFile] properties: exifDict format:@"jpeg"];
 					
 					iPhoto	*ifoto = [[iPhoto alloc] init];
-					[ifoto importIniPhoto: [NSArray arrayWithObject:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]]];
+					[ifoto importIniPhoto: [NSArray arrayWithObject: jpegFile]];
 					[ifoto release];
 				}
 				else
@@ -13082,7 +13105,15 @@ int i,j,l;
 						bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 						[bitmapData writeToFile:[panel filename] atomically:YES];
 						
-//						[JPEGExif addExif: [NSURL fileURLWithPath: [panel filename]]]; 
+						NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
+						
+						NSDictionary *exifDict = [NSDictionary dictionaryWithObjectsAndKeys:
+															@"Exported from OsiriX", kCGImagePropertyExifUserComment,
+															[[curImage valueForKeyPath: @"series.study.date"] descriptionWithCalendarFormat:@"%Y:%m:%d %H:%M:%S" timeZone:0L locale: 0L] , kCGImagePropertyExifDateTimeOriginal,
+															0L];
+
+						
+						[JPEGExif addExif: [NSURL fileURLWithPath: [panel filename]] properties: exifDict format:@"jpeg"]; 
 					}
 					else
 						[[im TIFFRepresentation] writeToFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"tif"]] atomically:NO];

@@ -10,36 +10,24 @@
 
 @implementation JPEGExif
 
-+ (void) addExif:(NSURL*) url
++ (void) addExif:(NSURL*) url properties:(NSDictionary*) exifDict format: (NSString*) format
 {
 	CGImageSourceRef source = CGImageSourceCreateWithURL((CFURLRef)url, NULL);
     if (source)
     {
-        // get image properties (height, width, depth, metadata etc.) for display
         NSDictionary* props = (NSDictionary*) CGImageSourceCopyPropertiesAtIndex(source, 0, NULL);
 		
-		NSLog( [props description]);
+		NSString *type = 0L;
 		
-		NSURL *newUrl = [NSURL fileURLWithPath: [[url path] stringByAppendingString:@"test.jpeg"]];
+		if( [format isEqualToString:@"tiff"]) type = @"public.tiff";
+		if( [format isEqualToString:@"jpeg"]) type = @"public.jpeg";
 		
-		// Create an image destination writing to `url'
-		CGImageDestinationRef dest = CGImageDestinationCreateWithURL((CFURLRef) newUrl, (CFStringRef)@"public.jpeg", 1, nil);
+		CGImageDestinationRef dest = CGImageDestinationCreateWithURL((CFURLRef) url, (CFStringRef) type, 1, nil);
 		if ( dest)
 		{
-			// Set the image in the image destination to be `image' with
-			// optional properties specified in saved properties dict.
-			
-			// ********** CGImageProperties.h
-			//kCGImagePropertyExifDictionary
-			//kCGImagePropertyTIFFDateTime
-			//kCGImagePropertyExifDateTimeOriginal
-			
-			NSMutableDictionary *newProps = [NSMutableDictionary dictionaryWithDictionary: props];
-			
-//			NSMutableDictionary *
-//			
-//			[newProps setValue:@"hello" forKey:@"testalpha"];
-			
+			NSMutableDictionary *newProps = [NSMutableDictionary dictionary];
+
+			[newProps setObject: exifDict forKey: (NSString*) kCGImagePropertyExifDictionary];
 			CGImageDestinationAddImageFromSource(dest, source, 0, (CFDictionaryRef) newProps);
 			
 			BOOL status = CGImageDestinationFinalize(dest);

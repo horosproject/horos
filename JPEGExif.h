@@ -13,6 +13,6 @@
 
 }
 
-+ (void) addExif:(NSURL*) url;
++ (void) addExif:(NSURL*) url properties:(NSDictionary*) exifDict format: (NSString*) format;
 
 @end
