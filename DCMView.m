@@ -4730,16 +4730,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     return self;
 }
 
+- (void) prepareToRelease
+{
+	[mouseModifiers invalidate];
+	[mouseModifiers release];
+	mouseModifiers = 0L;
+	
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
+}
+
 - (void)windowWillClose:(NSNotification *)notification
 {
 	if( [notification object] == [self window])
 	{
-	//	NSLog( @"windowWillClose - NSView level");
-		[mouseModifiers invalidate];
-		[mouseModifiers release];
-		mouseModifiers = 0L;
-		
-		[[NSNotificationCenter defaultCenter] removeObserver: self];
+		[self prepareToRelease];
 	}
 }
 

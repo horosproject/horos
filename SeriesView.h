@@ -30,7 +30,6 @@
 	NSMutableArray  *dcmPixList;
     NSArray			*dcmFilesList;
 	NSMutableArray  *dcmRoiList, *curRoiList;
-    DCMPix			*curDCM;
 	char            listType;    
     short           curImage, startImage;
 	

@@ -71,22 +71,15 @@
 
 
 - (void)dealloc{
-	//NSLog(@"seriesView dealloc");
+	NSLog(@"seriesView dealloc");
 	[imageViews release];
 	[dcmPixList release];
 	[dcmFilesList release];
 	[dcmRoiList release];
 	[curRoiList release];
-    //[curDCM release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
 }
-
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
 
 - (void)drawRect:(NSRect)rect {
     NSDrawWhiteBezel(rect, rect);
@@ -148,12 +141,15 @@
 	// remove views
 	if (newSize < currentSize) {
 		[[self window] makeFirstResponder:[imageViews objectAtIndex:0]];
-		for (i = currentSize - 1; i >= newSize ; i--) {
+		for (i = currentSize - 1; i >= newSize ; i--)
+		{
 			DCMView *view = [imageViews lastObject];			
 			[view removeFromSuperview];
 			[view setRows:rows columns:columns];
-			[imageViews removeLastObject];	
+			[view prepareToRelease];
+			[imageViews removeLastObject];
 		}
+		NSLog( [imageViews description]);
 	}
 	//add views
 	else if (newSize > currentSize){
@@ -162,6 +158,7 @@
 			[self addSubview:dcmView];
 			[dcmView setTag:i];	
 			[dcmView setDCM: dcmPixList :dcmFilesList :dcmRoiList :0 :listType :YES];	
+			
 			//[dcmView setBlending:
 			//[dcmView  setImageParamatersFromView:[imageViews objectAtIndex:0]];	
 		}	
@@ -179,12 +176,14 @@
 	[self setNeedsDisplay:YES];
 }
 
-- (void)updateImageTiling:(NSNotification *)note{
-	if ([[self window] isMainWindow]) {
+- (void)updateImageTiling:(NSNotification *)note
+{
+	if ([[self window] isMainWindow])
+	{
 		int rows = [[[note userInfo] objectForKey:@"Rows"] intValue];
 		int columns = [[[note userInfo] objectForKey:@"Columns"] intValue];
 		[self setImageViewMatrixForRows:rows columns:columns];
-	}	
+	}
  }
  
  -(void) defaultToolModified: (NSNotification*) note{
