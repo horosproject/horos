@@ -4377,12 +4377,6 @@ static ViewerController *draggedController = 0L;
 	float		previousOrientation[ 9];
 	float		previousLocation = 0;
 
-	if( previousColumns != 1 || previousRows != 1)
-	{
-		[[self window] makeFirstResponder:[[seriesView imageViews] objectAtIndex:0]];
-		[[[seriesView imageViews] objectAtIndex:0] mouseDown: 0L];
-	}
-
 	[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
 	previousLocation = [[imageView curDCM] sliceLocation];
 	
