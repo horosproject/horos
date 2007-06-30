@@ -3914,7 +3914,6 @@ static ViewerController *draggedController = 0L;
 //added by Jacques Fauquex 2006-09-30
 - (IBAction) shutterOnOff:(id) sender
 {
-	
 // ***************
 
 //	{
@@ -4377,7 +4376,13 @@ static ViewerController *draggedController = 0L;
 	NSString	*previousStudyInstanceUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] retain];
 	float		previousOrientation[ 9];
 	float		previousLocation = 0;
-	
+
+	if( previousColumns != 1 || previousRows != 1)
+	{
+		[[self window] makeFirstResponder:[[seriesView imageViews] objectAtIndex:0]];
+		[[[seriesView imageViews] objectAtIndex:0] mouseDown: 0L];
+	}
+
 	[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
 	previousLocation = [[imageView curDCM] sliceLocation];
 	

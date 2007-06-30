@@ -149,7 +149,6 @@
 			[view prepareToRelease];
 			[imageViews removeLastObject];
 		}
-		NSLog( [imageViews description]);
 	}
 	//add views
 	else if (newSize > currentSize){
