@@ -4459,14 +4459,27 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 	if( r)
 	{
+		BOOL BWCLUT = YES;
+		
 		for( i = 0; i < 256; i++)
 		{
 			redTable[i] = r[i];
 			greenTable[i] = g[i];
 			blueTable[i] = b[i];
+			
+			if( redTable[i] != i || greenTable[i] != i || blueTable[i] != i) BWCLUT = NO;
 		}
 		
-		colorTransfer = YES;
+		if( BWCLUT)
+		{
+			colorTransfer = NO;
+			if( colorBuf) free(colorBuf);
+			colorBuf = 0L;
+		}
+		else
+		{
+			colorTransfer = YES;
+		}
 	}
 	else
 	{
@@ -4481,8 +4494,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			blueTable[i] = i;
 		}
 	}
-	
-//JF not necesary	[curDCM changeWLWW :curWL: curWW];
 }
 
 -(short) curImage
