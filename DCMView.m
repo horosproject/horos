@@ -8380,7 +8380,10 @@ BOOL	lowRes = NO;
 	}
 }
 
-- (BOOL)becomeFirstResponder{	
+- (BOOL)becomeFirstResponder
+{
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
 
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewImageViewResponder" object: self userInfo: 0L];
 	if (curImage < 0)
@@ -8389,6 +8392,9 @@ BOOL	lowRes = NO;
 	
 	isKeyView = YES;
 	[self setNeedsDisplay:YES];
+
+	
+	if( [self is2DViewer]) [[self windowController] adjustSlider];
 	
 	return YES;
 }
