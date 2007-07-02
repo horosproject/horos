@@ -119,6 +119,8 @@ NSString * documentsDirectory();
 				nil];
 			[array addObject:dictionary];
 			[nameStr release];
+			
+			NSLog( dictionary);
 		}
 		
 		DisposeHandle(name);
@@ -151,6 +153,8 @@ NSString * documentsDirectory();
 				nil];
 			[array addObject:dictionary];
 			[nameStr release];
+			
+			NSLog( dictionary);
 		}
 		
 		DisposeHandle(name);
@@ -183,6 +187,8 @@ NSString * documentsDirectory();
 				nil];
 			[array addObject:dictionary];
 			[nameStr release];
+			
+			NSLog( dictionary);
 		}
 		
 		DisposeHandle(name);
@@ -216,6 +222,8 @@ NSString * documentsDirectory();
 				nil];
 			[array addObject:dictionary];
 			[nameStr release];
+			
+			NSLog( dictionary);
 		}
 		
 		DisposeHandle(name);
@@ -280,7 +288,31 @@ NSString * documentsDirectory();
 #else
 - (NSArray *)availableComponents
 {
-	return [NSArray array];
+	NSMutableArray *array = [NSMutableArray array];
+	NSDictionary *dictionary = 0L;
+	
+	dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+		[NSString stringWithString: @"Quicktime Movie"], @"name",
+		[NSNumber numberWithLong: kQTFileTypeMovie], @"subtype",
+		[NSNumber numberWithLong: kAppleManufacturer], @"manufacturer",
+		nil];
+	[array addObject:dictionary];
+
+//	dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+//		[NSString stringWithString: @"MPEG4 Movie"], @"name",
+//		[NSNumber numberWithLong: kQTFileTypeMP4], @"subtype",
+//		[NSNumber numberWithLong: kAppleManufacturer], @"manufacturer",
+//		nil];
+//	[array addObject:dictionary];
+//
+//	dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+//		[NSString stringWithString: @"AVI Movie"], @"name",
+//		[NSNumber numberWithLong: kQTFileTypeAVI], @"subtype",
+//		[NSNumber numberWithLong: kAppleManufacturer], @"manufacturer",
+//		nil];
+//	[array addObject:dictionary];
+	
+	return array;
 }
 
 - (NSData *)getExportSettings:(QTMovie*) aMovie component:(NSDictionary*) component
@@ -326,14 +358,16 @@ NSString * documentsDirectory();
 {
 	if( [exportTypes count])
 	{
-		unsigned long subtype = [[[exportTypes objectAtIndex: [type indexOfSelectedItem]] valueForKey:@"subtype"] unsignedLongValue];
+		int indexOfSelectedItem = [type indexOfSelectedItem];
+	
+		unsigned long subtype = [[[exportTypes objectAtIndex: indexOfSelectedItem] valueForKey:@"subtype"] unsignedLongValue];
 		
 		if( subtype == kQTFileTypeMovie)  [panel setRequiredFileType:@"mov"];
 		if( subtype == kQTFileTypeAVI)	[panel setRequiredFileType:@"avi"];
 		if( subtype == kQTFileTypeMP4)	[panel setRequiredFileType:@"mpg4"];
 		if( subtype == 'ASF_')	[panel setRequiredFileType:@"wmv"];
 		
-		[[NSUserDefaults standardUserDefaults] setInteger:[type indexOfSelectedItem] forKey:@"selectedMenuQuicktimeExport"];
+		[[NSUserDefaults standardUserDefaults] setInteger:indexOfSelectedItem forKey:@"selectedMenuQuicktimeExport"];
 	}
 }
 
@@ -367,6 +401,8 @@ NSString * documentsDirectory();
 			[type addItemsWithTitles: [exportTypes valueForKey: @"name"]];
 		
 		[type selectItemAtIndex: [[NSUserDefaults standardUserDefaults] integerForKey:@"selectedMenuQuicktimeExport"]];
+		if( [type indexOfSelectedItem] == -1) [type selectItemAtIndex: 0];
+		
 		[self changeExportType: self];
 		
 		result = [panel runModalForDirectory:0L file:name];
@@ -438,6 +474,9 @@ NSString * documentsDirectory();
 		}
 		[wait close];
 		[wait release];
+		
+		// Go back to initial frame
+		[object performSelector: selector withObject: [NSNumber numberWithLong: 0] withObject:[NSNumber numberWithLong: numberOfFrames]];
 		
 		if( produceFiles == NO && aborted == NO)
 		{
