@@ -32,19 +32,8 @@
 {
 	NSLog(@"ITK Image dealloc");
 	
-	importFilter->Delete();
-	
-	//[pixList release];
-	
 	[super dealloc];
 }
-
-
-- (void)finalize {
-	importFilter->Delete();
-	[super finalize];
-}
-
 
 - (ImportFilterType::Pointer) itkImporter
 {
@@ -180,7 +169,7 @@
 	importFilter->SetSpacing( spacing ); 
 	const bool importImageFilterWillOwnTheBuffer = filterWillOwnBuffer;
 	importFilter->SetImportPointer( data, size[0] * size[1] * size[2], importImageFilterWillOwnTheBuffer);
-	NSLog(@"ITK Image allocated");
+	NSLog(@"ITK Image allocated, own data: %d", importImageFilterWillOwnTheBuffer);
 }
 
 @end

@@ -1475,9 +1475,11 @@ static BOOL initialized = NO;
 		if ( self == [AppController class] && initialized == NO)
 		{
 			#if __LP64__
-			
-			if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2007 month:6 day:15 hour:1 minute:1 second:1 timeZone:0L]] > 0)
+			if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2007 month:11 day:15 hour:1 minute:1 second:1 timeZone:0L]] > 0)
+			{
 				NSRunCriticalAlertPanel(NSLocalizedString(@"OsiriX 64-bit", 0L), NSLocalizedString(@"Please update your application. Available on the web site.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+				exit( 0);
+			}
 			else
 				NSRunCriticalAlertPanel(NSLocalizedString(@"OsiriX 64-bit", 0L), NSLocalizedString(@"This is a preview version of OsiriX 64-bit. It is FULLY UNTESTED and you SHOULD NOT use it for any scientific or clinical activities.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
 			#endif
