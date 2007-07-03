@@ -229,6 +229,9 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 	BOOL			syncOnLocationImpossible;
 	
 	char			*resampledBaseAddr;
+	char			*resampledTempAddr;
+	
+	int				resampledBaseAddrSize;
 }
 + (void) setDefaults;
 + (void) setCLUTBARS:(int) c ANNOTATIONS:(int) a;

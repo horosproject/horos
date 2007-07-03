@@ -1565,7 +1565,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	
 	if( resampledBaseAddr) free( resampledBaseAddr);
-	
+	if( resampledTempAddr) free( resampledTempAddr);
 //	[self clearGLContext];
 	
     [super dealloc];
@@ -8165,25 +8165,38 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			textureHeight = [curDCM pheight] * resampledScale;
 			rowBytes = textureWidth;
 
-			if( resampledBaseAddr) free( resampledBaseAddr);
-			resampledBaseAddr = malloc( rowBytes * textureHeight);
+			vImage_Buffer src, dst;
+			
+			src.width = [curDCM pwidth];
+			src.height = [curDCM pheight];
+			src.rowBytes = [curDCM rowBytes];
+			src.data = [curDCM baseAddr];
+
+			dst.width = textureWidth;
+			dst.height = textureHeight;
+			dst.rowBytes = rowBytes;
+
+			if( resampledBaseAddrSize < rowBytes * textureHeight)
+			{
+				if( resampledBaseAddr) free( resampledBaseAddr);
+				resampledBaseAddr = malloc( rowBytes * textureHeight);
+				resampledBaseAddrSize = rowBytes * textureHeight;
+				
+				if( resampledTempAddr) free( resampledTempAddr);
+				
+				int requiredSize = vImageScale_Planar8( &src, &dst, 0L, kvImageGetTempBufferSize);
+				
+				if( requiredSize < resampledBaseAddrSize)
+					resampledTempAddr = malloc(  resampledBaseAddrSize);
+				else resampledTempAddr = 0L;
+			}
+			
 			if( resampledBaseAddr)
 			{
 				baseAddr = resampledBaseAddr;
-			
-				vImage_Buffer src, dst;
-				
-				src.width = [curDCM pwidth];
-				src.height = [curDCM pheight];
-				src.rowBytes = [curDCM rowBytes];
-				src.data = [curDCM baseAddr];
-
-				dst.width = textureWidth;
-				dst.height = textureHeight;
-				dst.rowBytes = rowBytes;
 				dst.data = baseAddr;
 				
-				vImageScale_Planar8( &src, &dst, 0L, kvImageHighQualityResampling);
+				vImageScale_Planar8( &src, &dst, resampledTempAddr, kvImageHighQualityResampling);
 			}
 			else
 			{
