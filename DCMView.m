@@ -518,7 +518,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	for( i = 0; i < [viewers count]; i++)
 	{
-		[[[viewers objectAtIndex:i] window] display];
+		[[viewers objectAtIndex:i] refresh];
 	}
 }
 
