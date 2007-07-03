@@ -389,6 +389,7 @@ enum
 - (void) copySettingsToOthers: (id)sender;
 - (void) setPostprocessed:(BOOL) v;
 - (BOOL) postprocessed;
+- (void) refresh;
 - (IBAction) setPagesToPrint:(id) sender;
 - (IBAction) endPrint:(id) sender;
 - (IBAction) startMSRG:(id) sender;

@@ -99,7 +99,6 @@
 	[iPhotoAlbumName setStringValue: [defaults stringForKey: @"ALBUMNAME"]];
 	[toolbarPanelMatrix selectCellWithTag:[defaults boolForKey: @"USEALWAYSTOOLBARPANEL"]];
 	[autoHideMatrix setState: [defaults boolForKey: @"AUTOHIDEMATRIX"]];
-	[noInterpolationCheck setState: [defaults boolForKey: @"NOINTERPOLATION"]];
 	[tilingCheck setState: [defaults boolForKey: @"AUTOTILING"]];
 	
 	[windowSizeMatrix selectCellWithTag: [defaults integerForKey: @"WINDOWSIZEVIEWER"]];
@@ -116,11 +115,6 @@
 - (IBAction) setAutoTiling: (id) sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey: @"AUTOTILING"];
-}
-
-- (IBAction) setNoInterpolation: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey: @"NOINTERPOLATION"];
 }
 
 - (IBAction) setWindowSizeViewer: (id) sender

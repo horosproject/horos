@@ -21,7 +21,6 @@
 											*autoHideMatrix,
 											*openViewerCheck,
 											*reverseScrollWheelCheck,
-											*noInterpolationCheck,
 											*tilingCheck;
 	
 	IBOutlet NSMatrix						*sizeMatrix,
@@ -43,7 +42,6 @@
 - (IBAction) setMultipleScreens: (id) sender;
 - (IBAction) setAlbumName: (id) sender;
 - (IBAction) setAutoHideMatrixState: (id) sender;
-- (IBAction) setNoInterpolation: (id) sender;
 - (IBAction) setWindowSizeViewer: (id) sender;
 - (IBAction) setAutoTiling: (id) sender;
 @end

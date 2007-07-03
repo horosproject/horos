@@ -853,6 +853,9 @@ static NSString *hostName = @"";
 	
 	[defaultValues setObject:@"0" forKey:@"ThreeDViewerOnAnotherScreen"];
 	
+	[defaultValues setObject:@"512" forKey:@"SOFTWAREINTERPOLATION_MAX"];
+	[defaultValues setObject:@"1" forKey:@"SOFTWAREINTERPOLATION"];
+	
 	// ** DATABASEINDEX
 	[defaultValues setObject:@"0" forKey:@"DATABASEINDEX"];
 	

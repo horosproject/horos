@@ -84,8 +84,8 @@ extern NSMutableDictionary				*plugins;
 
 static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable = 0L;
 
-static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, IndependentCRWLWW, COPYSETTINGSINSERIES, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
-static		int							CLUTBARS, ANNOTATIONS;
+static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, COPYSETTINGSINSERIES, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
+static		int							CLUTBARS, ANNOTATIONS, SOFTWAREINTERPOLATION_MAX;
 static		BOOL						gClickCountSet = NO;
 static		float						margin = 2;
 
@@ -504,10 +504,22 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	FULL32BITPIPELINE = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
 	FULL32BITPIPELINE = NO;
 	
+	SOFTWAREINTERPOLATION = [[NSUserDefaults standardUserDefaults] boolForKey:@"SOFTWAREINTERPOLATION"];
+	SOFTWAREINTERPOLATION_MAX = [[NSUserDefaults standardUserDefaults] integerForKey:@"SOFTWAREINTERPOLATION_MAX"];
+	
 	IndependentCRWLWW = [[NSUserDefaults standardUserDefaults] boolForKey:@"IndependentCRWLWW"];
 	COPYSETTINGSINSERIES = [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGSINSERIES"];
 	CLUTBARS = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	ANNOTATIONS = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
+	
+	NSArray		*viewers = [ViewerController getDisplayed2DViewers];
+	int			i;
+	
+	
+	for( i = 0; i < [viewers count]; i++)
+	{
+		[[[viewers objectAtIndex:i] window] display];
+	}
 }
 
 +(void) setCLUTBARS:(int) c ANNOTATIONS:(int) a
@@ -1552,7 +1564,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		repulsorColorTimer = nil;
 	}
 	
-	//[self clearGLContext];	// <- This is the bug, Joris.... Have a nice week in Cupertino !
+	if( resampledBaseAddr) free( resampledBaseAddr);
+	
+//	[self clearGLContext];
 	
     [super dealloc];
 }
@@ -5686,7 +5700,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					// use remaining to determine next texture size
 					currTextureHeight = GetNextTextureSize (textureHeight - offsetY, maxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // effective texture height for drawing
 					glBindTexture(TEXTRECTMODE, texture[k++]); // work through textures in same order as stored, setting each texture name as current in turn
-					DrawGLImageTile (GL_TRIANGLE_STRIP, [curDCM pwidth], [curDCM pheight], (scaleValue),		//
+					DrawGLImageTile (GL_TRIANGLE_STRIP, [curDCM pwidth], [curDCM pheight], scaleValue,		//
 										currTextureWidth, currTextureHeight, // draw this single texture on two tris 
 										offsetX,  offsetY, 
 										currTextureWidth + offsetX, 
@@ -7697,6 +7711,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( x < 0.01) scaleValue = 0.01;
 	if( x > 100) scaleValue = 100;
 	
+	if( [self softwareInterpolation])
+		[self loadTextures];
+	
 	[self setNeedsDisplay:YES];
 }
 
@@ -7711,6 +7728,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	//	if( scaleValue > 0.01 && scaleValue < 100) scaleValue = scaleValue;
 	//	else scaleValue = 0.01;
 		
+	if( [self softwareInterpolation])
+		[self loadTextures];
+
 		[self setNeedsDisplay:YES];
 	}
 }
@@ -7968,6 +7988,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
+- (BOOL) softwareInterpolation
+{
+	if(	scaleValue > 3 && NOINTERPOLATION == NO &&
+		SOFTWAREINTERPOLATION == YES && [curDCM pwidth] <= SOFTWAREINTERPOLATION_MAX &&
+		[curDCM isRGB] == NO && [curDCM thickSlabVRActivated] == NO &&
+		colorTransfer == NO)
+	{
+		return YES;
+	}
+	return NO;
+}
+
 - (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT 
 {
 	if(  rT == 0L)
@@ -8115,7 +8147,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 	char*			baseAddr = 0L;
 	int				rowBytes = 0;
-
+	
+	textureHeight = [curDCM pheight];
+	
 	if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES)
 	{
 		textureWidth = [curDCM rowBytes]/4;
@@ -8124,7 +8158,41 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
     else
 	{
-		if( FULL32BITPIPELINE)
+		if( [self softwareInterpolation] && blending == NO)
+		{
+			float resampledScale = 3;
+			textureWidth = [curDCM pwidth] * resampledScale;
+			textureHeight = [curDCM pheight] * resampledScale;
+			rowBytes = textureWidth;
+
+			if( resampledBaseAddr) free( resampledBaseAddr);
+			resampledBaseAddr = malloc( rowBytes * textureHeight);
+			if( resampledBaseAddr)
+			{
+				baseAddr = resampledBaseAddr;
+			
+				vImage_Buffer src, dst;
+				
+				src.width = [curDCM pwidth];
+				src.height = [curDCM pheight];
+				src.rowBytes = [curDCM rowBytes];
+				src.data = [curDCM baseAddr];
+
+				dst.width = textureWidth;
+				dst.height = textureHeight;
+				dst.rowBytes = rowBytes;
+				dst.data = baseAddr;
+				
+				vImageScale_Planar8( &src, &dst, 0L, kvImageHighQualityResampling);
+			}
+			else
+			{
+				textureWidth = [curDCM rowBytes];
+				rowBytes = [curDCM rowBytes];
+				baseAddr = [curDCM baseAddr];
+			}
+		}
+		else if( FULL32BITPIPELINE)
 		{
 			textureWidth = [curDCM pwidth];
 			rowBytes = [curDCM rowBytes]*4;
@@ -8137,8 +8205,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			baseAddr = [curDCM baseAddr];
 		}
 	}
-	
-	textureHeight = [curDCM pheight];
 	
     glPixelStorei (GL_UNPACK_ROW_LENGTH, textureWidth); // set image width in groups (pixels), accounts for border this ensures proper image alignment row to row
     // get number of textures x and y

@@ -291,6 +291,13 @@ int sortROIByName(id roi1, id roi2, void *context)
 #pragma mark-
 #pragma mark 1. window and workplace
 
+- (void) refresh
+{
+	float   iwl, iww;
+	[imageView getWLWW:&iwl :&iww];
+	[imageView setWLWW:iwl :iww];
+}
+
 - (void) setPostprocessed:(BOOL) v
 {
 	postprocessed = v;
