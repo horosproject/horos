@@ -4245,6 +4245,14 @@ BOOL gUSEPAPYRUSDCMPIX;
 		
 	
 	[NSThread detachNewThreadSelector: @selector(createROIsFromRTSTRUCTThread:) toTarget: self withObject: dict];
+
+	NSDictionary *noteDict = [NSDictionary dictionaryWithObjectsAndKeys: 
+		[NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
+		[NSNumber numberWithFloat: 0.0f], @"RTSTRUCTProgressPercent",
+		nil];
+	
+	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
 	
 }
 	
@@ -4257,14 +4265,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 	DCMObject *dcmObject = [dict objectForKey: @"dcmObject"];
 	NSMutableSet *rtstructUIDs = [dict objectForKey: @"rtstructUIDs"];
 	
-	NSDictionary *noteDict = [NSDictionary dictionaryWithObjectsAndKeys: 
-		[NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
-		[NSNumber numberWithFloat: 0.0f], @"RTSTRUCTProgressPercent",
-		nil];
-
-	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
-
 	NSString *dirPath = [documentsDirectory() stringByAppendingPathComponent:@"/ROIs/"];
 
 	// Get all referenced images up front.
@@ -4284,11 +4284,12 @@ BOOL gUSEPAPYRUSDCMPIX;
 	NSEnumerator *refFrameEnum = [[refFrameSequence sequence] objectEnumerator];
 	DCMObject *refFrameSeqItem;
 
-	noteDict = [NSDictionary dictionaryWithObjectsAndKeys: 
+	NSDictionary *noteDict = [NSDictionary dictionaryWithObjectsAndKeys: 
 		[NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
 		[NSNumber numberWithFloat: 1.0f], @"RTSTRUCTProgressPercent",
 		nil];
 	
+	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
 	
 	while ( refFrameSeqItem = [refFrameEnum nextObject] ) {
