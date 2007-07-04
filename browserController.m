@@ -1001,13 +1001,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 				
 		if( addFailed == NO)
 		{
-			NSMutableArray		*viewersList = [NSMutableArray arrayWithCapacity:0];
+			NSMutableArray		*viewersList = [ViewerController getDisplayed2DViewers];
 			NSArray				*winList = [NSApp windows];
-			
-			for( x = 0; x < [winList count]; x++)
-			{
-				if( [[[winList objectAtIndex: x] windowController] isKindOfClass:[ViewerController class]]) [viewersList addObject: [[winList objectAtIndex: x] windowController]];
-			}
 			
 			for( i = 0; i < [addedSeries count]; i++)
 			{
@@ -4348,7 +4343,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	NSManagedObjectContext	*context = [self managedObjectContext];
 	NSManagedObjectModel    *model = [self managedObjectModel];
 	NSArray					*winList = [NSApp windows];
-	NSMutableArray			*viewersList = [NSMutableArray arrayWithCapacity:0], *studiesArray = [NSMutableArray arrayWithCapacity:0] , *seriesArray = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray			*viewersList = [ViewerController getDisplayed2DViewers], *studiesArray = [NSMutableArray arrayWithCapacity:0] , *seriesArray = [NSMutableArray arrayWithCapacity:0];
 	NSError					*error = 0L;
 	BOOL					matrixThumbnails = NO;
 	int						animState = [animationCheck state];
@@ -4381,12 +4376,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 	{
 		[self deleteEmptyFoldersForDatabaseOutlineSelection];
 		[self filesForDatabaseOutlineSelection: objectsToDelete onlyImages: NO];
-	}
-	
-	// Viewers List
-	for( i = 0; i < [winList count]; i++)
-	{
-		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]]) [viewersList addObject: [[winList objectAtIndex:i] windowController]];
 	}
 	
 	if( [albumTable selectedRow] > 0 && matrixThumbnails == NO)
@@ -12059,13 +12048,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if( [seriesArray count] > 0)
 		{
 			NSMutableArray			*studiesArray = [NSMutableArray arrayWithCapacity:0];
-			NSMutableArray			*viewersList = [NSMutableArray arrayWithCapacity:0];
+			NSMutableArray			*viewersList = [ViewerController getDisplayed2DViewers];
 			
-			for( i = 0; i < [[NSApp windows] count]; i++)
-			{
-				if( [[[[NSApp windows] objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]]) [viewersList addObject: [[[NSApp windows] objectAtIndex:i] windowController]];
-			}
-		
 			// Find unavailable files
 			for( i = 0; i < [seriesArray count]; i++)
 			{
@@ -12188,12 +12172,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 		if( [seriesArray count] > 0)
 		{
-			NSMutableArray			*viewersList = [NSMutableArray arrayWithCapacity:0];
-			
-			for( i = 0; i < [[NSApp windows] count]; i++)
-			{
-				if( [[[[NSApp windows] objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]]) [viewersList addObject: [[[NSApp windows] objectAtIndex:i] windowController]];
-			}
+			NSMutableArray			*viewersList = [ViewerController getDisplayed2DViewers];
 			
 			[[splash progress] setMaxValue:[seriesArray count]/50];
 			

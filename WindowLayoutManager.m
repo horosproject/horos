@@ -164,13 +164,16 @@ WindowLayoutManager *sharedLayoutManager;
 
 - (void) checkAllWindowsAreVisible:(id) sender
 {
-	NSEnumerator		*enumerator = [_windowControllers objectEnumerator];
-	OSIWindowController			*windowController;
+	NSEnumerator			*enumerator = [_windowControllers objectEnumerator];
+	id						windowController;
 	
 	while (windowController = [enumerator nextObject])
 	{
-		if( [ windowController isKindOfClass:[ViewerController class]])
+		if( [windowController isKindOfClass:[ViewerController class]])
+		{
+			if( [windowController windowWillClose] == NO)
 				[[windowController window] orderFront:self];
+		}
 	}
 }
 

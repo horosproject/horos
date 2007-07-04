@@ -2308,7 +2308,10 @@ static BOOL initialized = NO;
 	for( i = 0; i < [winList count]; i++)
 	{
 		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+		{
+			if( [[[winList objectAtIndex:i] windowController] windowWillClose] == NO)
 				[[winList objectAtIndex:i] orderFront:self];
+		}
 	}
 }
 
@@ -2380,7 +2383,8 @@ static BOOL initialized = NO;
 	{
 		if(	[[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
 		{
-			[viewersList addObject: [[winList objectAtIndex:i] windowController]];
+			if( [[[winList objectAtIndex:i] windowController] windowWillClose] == NO)
+				[viewersList addObject: [[winList objectAtIndex:i] windowController]];
 				
 			if( [[viewersList lastObject] FullScreenON] ) return;
 		}

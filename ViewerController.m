@@ -197,7 +197,8 @@ int sortROIByName(id roi1, id roi2, void *context)
 	{
 		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
 		{
-			[viewersList addObject: [[winList objectAtIndex:i] windowController]];
+			if( [[[winList objectAtIndex:i] windowController] windowWillClose] == NO)
+				[viewersList addObject: [[winList objectAtIndex:i] windowController]];
 		}
 	}
 
@@ -10693,17 +10694,12 @@ int i,j,l;
 - (void) SetSyncButtonBehavior:(id) sender
 {
 	BOOL				allFromSameStudy = YES, previousSyncButtonBehaviorIsBetweenStudies = SyncButtonBehaviorIsBetweenStudies;
-	NSMutableArray		*viewersList = [NSMutableArray array];
+	NSMutableArray		*viewersList = [ViewerController getDisplayed2DViewers];
 	int					i;
 	NSArray				*winList = [NSApp windows];
 	
-	for( i = 0; i < [winList count]; i++)
-	{
-		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
-		{
-			if( self != [[winList objectAtIndex:i] windowController]) [viewersList addObject: [[winList objectAtIndex:i] windowController]];
-		}
-	}
+	[viewersList removeObject: self];
+	
 	
 	if( [viewersList count])
 	{
@@ -10800,16 +10796,8 @@ int i,j,l;
 	if( [[[[fileList[0] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == YES) return;
 	
 	// *** 2D Viewers ***
-	viewersList = [[NSMutableArray alloc] initWithCapacity:0];
-	
-	for( i = 0; i < [winList count]; i++)
-	{
-		//if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"Viewer"])
-		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
-		{
-			if( self != [[winList objectAtIndex:i] windowController]) [viewersList addObject: [[winList objectAtIndex:i] windowController]];
-		}
-	}
+	viewersList = [ViewerController getDisplayed2DViewers];
+	[viewersList removeObject: self];
 	
 	for( i = 0; i < [viewersList count]; i++)
 	{
@@ -10919,8 +10907,6 @@ int i,j,l;
 			[[vC imageView] setNeedsDisplay:YES];
 		}
 	}
-	
-	[viewersList release];
 	
 //	// *** 3D MPR Viewers ***
 //	viewersList = [[NSMutableArray alloc] initWithCapacity:0];
@@ -11251,16 +11237,9 @@ int i,j,l;
 	// I - RŽcupŽration des AUTRES ViewerController, nombre de critres
 	
 	NSArray				*winList = [NSApp windows];
-	NSMutableArray		*viewersList;
-	viewersList = [[NSMutableArray alloc] initWithCapacity:0];
+	NSMutableArray		*viewersList = [ViewerController getDisplayed2DViewers];;
 	
-	for( i = 0; i < [winList count]; i++)
-	{
-		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
-		{
-			if( self != [[winList objectAtIndex:i] windowController]) [viewersList addObject: [[winList objectAtIndex:i] windowController]];
-		}
-	}
+	[viewersList removeObject: self];
 	
 	for( i = 0; i < [viewersList count]; i++)
 	{
@@ -11304,8 +11283,6 @@ int i,j,l;
 	MSRGSegmentation *msrgSeg=[[MSRGSegmentation alloc] initWithViewerList:viewersList currentViewer:self];
 	[msrgSeg startMSRGSegmentation];
 	*/
-	[viewersList release];
-	
 }
 
 

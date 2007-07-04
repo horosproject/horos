@@ -103,20 +103,7 @@
 
 - (NSArray*) viewerControllersList
 {
-	long				i;
-	NSMutableArray		*viewersList = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
-	NSArray				*winList = [NSApp windows];
-	
-	for( i = 0; i < [winList count]; i++)
-	{
-		//if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"Viewer"])
-		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
-		{
-			[viewersList addObject: [[winList objectAtIndex:i] windowController]];
-		}
-	}
-	
-	return viewersList;
+	return [ViewerController getDisplayed2DViewers];
 }
 
 - (long) filterImage:(NSString*) menuName

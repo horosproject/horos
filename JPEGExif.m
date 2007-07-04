@@ -10,7 +10,7 @@
 
 @implementation JPEGExif
 
-+ (void) addExif:(NSURL*) url properties:(NSDictionary*) exifDict format: (NSString*) format
++ (void) addExif:(NSURL*) url properties:(NSDictionary*) exifDict format: (NSString*) format;
 {
 	CGImageSourceRef source = CGImageSourceCreateWithURL((CFURLRef)url, NULL);
     if (source)
