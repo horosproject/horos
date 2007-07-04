@@ -40,7 +40,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
 {
-	if( [[aTableColumn identifier] isEqual:@"name"] == YES)
+	if( [[aTableColumn identifier] isEqual:@"Address"] == YES)
 	{
 		NSParameterAssert(rowIndex >= 0 && rowIndex < [[self arrangedObjects] count]);
 		

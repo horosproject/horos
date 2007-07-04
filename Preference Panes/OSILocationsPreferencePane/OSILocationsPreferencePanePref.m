@@ -315,6 +315,7 @@
 	[progress stopAnimation: self];
 	
 	[[dicomNodes tableView] selectRow: selectedRow byExtendingSelection: NO];
+	[[dicomNodes tableView] display];
 }
 
 
