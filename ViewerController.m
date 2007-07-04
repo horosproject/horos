@@ -4678,6 +4678,8 @@ static ViewerController *draggedController = 0L;
 	
 	[imageView setDrawing: YES];
 	
+	[self setPostprocessed: NO];
+	
 	[self SetSyncButtonBehavior: self];
 }
 
@@ -8767,6 +8769,8 @@ int i,j,l;
 	if( maxMovieIndex != 1) [setROI4DSeries setEnabled: YES];
 	else [setROI4DSeries setEnabled: NO];
 	
+	[self roiSetPixelsCheckButton: self];
+	
 	[NSApp beginSheet: roiSetPixWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
@@ -8794,6 +8798,11 @@ int i,j,l;
 	BOOL restoreAvailable = YES;
 	
 	if( [setROI4DSeries state] && maxMovieIndex > 1)
+	{
+		restoreAvailable = NO;
+	}
+	
+	if( postprocessed)
 	{
 		restoreAvailable = NO;
 	}
@@ -11854,6 +11863,7 @@ int i,j,l;
 			[pool release];
 		}
 		
+		// Go back to initial frame
 		[imageView setIndex: currentImageIndex];
 		[imageView sendSyncMessage:1];
 		[self adjustSlider];
@@ -12130,10 +12140,22 @@ int i,j,l;
 	[self adjustSlider];
 }
 
+- (void) exportQuicktimeSetNumber:(id) sender
+{
+	int no;
+	
+	no = fabs( [quicktimeFrom intValue] - [quicktimeTo intValue]);
+	no ++;
+	no /= [quicktimeInterval intValue];
+
+	[quicktimeNumber setStringValue: [NSString stringWithFormat:@"%d images", no]];
+}
+
 - (IBAction) exportQuicktimeSlider:(id) sender
 {
 	[quicktimeFromText takeIntValueFrom: quicktimeFrom];
 	[quicktimeToText takeIntValueFrom: quicktimeTo];
+	[quicktimeIntervalText takeIntValueFrom: quicktimeInterval];
 	
 	if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] - [sender intValue]];
 	else [imageView setIndex:  [sender intValue]-1];
@@ -12141,6 +12163,8 @@ int i,j,l;
 	[imageView sendSyncMessage:1];
 	
 	[self adjustSlider];
+	
+	[self exportQuicktimeSetNumber: self];
 }
 
 - (void) exportQuicktime:(id) sender
@@ -12185,6 +12209,8 @@ int i,j,l;
 	else [[quicktimeMode cellWithTag: 2] setEnabled:NO];
 	
 	if( [[quicktimeMode selectedCell] isEnabled] == NO) [quicktimeMode selectCellWithTag: 1];
+	
+	[self exportQuicktimeSetNumber: self];
 	
 	[NSApp beginSheet: quicktimeWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
@@ -12540,6 +12566,11 @@ int i,j,l;
 				[pool release];
 			}
 			
+			// Go back to initial frame
+			[imageView setIndex: curImage];
+			[imageView sendSyncMessage:1];
+			[self adjustSlider];
+			
 			[splash close];
 			[splash release];
 		}
@@ -12606,7 +12637,7 @@ int i,j,l;
 	if( [[sender selectedCell] tag] == 2) [self checkView: printBox :YES];
 	else [self checkView: printBox :NO];
 	
-	if( sender == printSelection)[self setPagesToPrint: self];
+	if( sender == printSelection) [self setPagesToPrint: self];
 }
 
 - (IBAction) exportDICOMAllViewers:(id) sender
@@ -12619,12 +12650,24 @@ int i,j,l;
 	else [dcmFormat setEnabled: YES];
 }
 
+- (void) exportDICOMSetNumber:(id) sender
+{
+	int no;
+	
+	no = fabs( [dcmFrom intValue] - [dcmTo intValue]);
+	no ++;
+	no /= [dcmInterval intValue];
+
+	[dcmNumber setStringValue: [NSString stringWithFormat:@"%d images", no]];
+}
+
 - (IBAction) exportDICOMSlider:(id) sender
 {
 	if( [[dcmSelection selectedCell] tag] == 1)
 	{
 		[dcmFromText takeIntValueFrom: dcmFrom];
 		[dcmToText takeIntValueFrom: dcmTo];
+		[dcmIntervalText takeIntValueFrom: dcmInterval];
 		
 		if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] - [sender intValue]];
 		else [imageView setIndex:  [sender intValue]-1];
@@ -12632,6 +12675,8 @@ int i,j,l;
 		[imageView sendSyncMessage:1];
 		
 		[self adjustSlider];
+		
+		[self exportDICOMSetNumber: self];
 	}
 }
 
@@ -12664,6 +12709,7 @@ int i,j,l;
 	[dcmIntervalText setIntValue: [dcmInterval intValue]];
 	
 	[self setCurrentdcmExport: dcmSelection];
+	[self exportDICOMSetNumber: self];
 	
     [NSApp beginSheet: dcmExportWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }

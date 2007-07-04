@@ -120,7 +120,7 @@ NSString * documentsDirectory();
 			[array addObject:dictionary];
 			[nameStr release];
 			
-			NSLog( dictionary);
+			NSLog( [dictionary description]);
 		}
 		
 		DisposeHandle(name);
@@ -154,7 +154,7 @@ NSString * documentsDirectory();
 			[array addObject:dictionary];
 			[nameStr release];
 			
-			NSLog( dictionary);
+			NSLog( [dictionary description]);
 		}
 		
 		DisposeHandle(name);
@@ -188,7 +188,7 @@ NSString * documentsDirectory();
 			[array addObject:dictionary];
 			[nameStr release];
 			
-			NSLog( dictionary);
+			NSLog( [dictionary description]);
 		}
 		
 		DisposeHandle(name);
@@ -223,7 +223,7 @@ NSString * documentsDirectory();
 			[array addObject:dictionary];
 			[nameStr release];
 			
-			NSLog( dictionary);
+			NSLog( [dictionary description]);
 		}
 		
 		DisposeHandle(name);

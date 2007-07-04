@@ -84,7 +84,7 @@ enum
     IBOutlet NSWindow       *quicktimeWindow;
 	IBOutlet NSMatrix		*quicktimeMode;
 	IBOutlet NSSlider		*quicktimeInterval, *quicktimeFrom, *quicktimeTo;
-	IBOutlet NSTextField	*quicktimeIntervalText, *quicktimeFromText, *quicktimeToText;
+	IBOutlet NSTextField	*quicktimeIntervalText, *quicktimeFromText, *quicktimeToText, *quicktimeNumber;
 	IBOutlet NSBox			*quicktimeBox;
 	IBOutlet NSButton		*quicktimeAllViewers;
 	
@@ -204,7 +204,7 @@ enum
 	IBOutlet NSWindow       *dcmExportWindow;
 	IBOutlet NSMatrix		*dcmSelection, *dcmFormat;
 	IBOutlet NSSlider		*dcmInterval, *dcmFrom, *dcmTo;
-	IBOutlet NSTextField	*dcmIntervalText, *dcmFromText, *dcmToText;
+	IBOutlet NSTextField	*dcmIntervalText, *dcmFromText, *dcmToText, *dcmNumber;
 	IBOutlet NSBox			*dcmBox;
 	IBOutlet NSButton		*dcmAllViewers;
 	IBOutlet NSTextField	*dcmSeriesName;

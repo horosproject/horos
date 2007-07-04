@@ -81,6 +81,7 @@
                 VRViewer = id; 
                 activateFusion = id; 
                 applyConvolutionOnSource = id; 
+                blendWindows = id; 
                 blendingMode = id; 
                 blendingSlider = id; 
                 brushTool = id; 
@@ -141,8 +142,11 @@
                 resetImage = id; 
                 revertSeries = id; 
                 roiDeleteAll = id; 
+                roiDeleteAllROIsWithSameName = id; 
                 roiDeleteGeneratedROIs = id; 
+                roiDeleteGeneratedROIsForName = id; 
                 roiDeleteWithName = id; 
+                roiIntDeleteAllROIsWithSameName = id; 
                 roiPropagate = id; 
                 roiPropagateSetup = id; 
                 roiRename = id; 
@@ -251,6 +255,7 @@
                 dcmFromText = NSTextField; 
                 dcmInterval = NSSlider; 
                 dcmIntervalText = NSTextField; 
+                dcmNumber = NSTextField; 
                 dcmSelection = NSMatrix; 
                 dcmSeriesName = NSTextField; 
                 dcmTo = NSSlider; 
@@ -307,6 +312,7 @@
                 quicktimeInterval = NSSlider; 
                 quicktimeIntervalText = NSTextField; 
                 quicktimeMode = NSMatrix; 
+                quicktimeNumber = NSTextField; 
                 quicktimeTo = NSSlider; 
                 quicktimeToText = NSTextField; 
                 quicktimeWindow = NSWindow; 
