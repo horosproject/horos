@@ -6,6 +6,11 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 
 @implementation DNDArrayController
 
+- (NSTableView*) tableView
+{
+	return tableView;
+}
+
 - (void)addObject:(id)object
 {
 	[super addObject: object];

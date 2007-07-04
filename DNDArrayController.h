@@ -25,4 +25,5 @@
 - (NSIndexSet *)indexSetFromRows:(NSArray *)rows;
 - (int)rowsAboveRow:(int)row inIndexSet:(NSIndexSet *)indexSet;
 - (void) deleteSelectedRow:(id)sender;
+- (NSTableView*) tableView;
 @end
