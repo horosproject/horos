@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "ServerTableView.h"
+#import "DNDArrayController.h"
 #import "OSILocationsPreferencePanePref.h"
 
 @implementation ServerTableView
@@ -25,5 +26,15 @@
 	else
 		 [super keyDown:event];
 }
+
+- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)flag
+{
+	if (!flag) {
+		// link for external dragged URLs
+		return NSDragOperationLink;
+	}
+	return [super draggingSourceOperationMaskForLocal:flag];
+}
+
 
 @end

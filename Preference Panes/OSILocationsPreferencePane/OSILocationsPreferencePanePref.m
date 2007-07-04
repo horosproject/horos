@@ -38,26 +38,26 @@
 
 - (void) checkUniqueAETitle
 {
-	int i, x;
-	
-	for( x = 0; x < [serverList count]; x++)
-	{
-		NSString *currentAETitle = [[serverList objectAtIndex: x] valueForKey: @"AETitle"];
-		
-		for( i = 0; i < [serverList count]; i++)
-		{
-			if( i != x)
-			{
-				if( [currentAETitle isEqualToString: [[serverList objectAtIndex: i] valueForKey: @"AETitle"]])
-				{
-					NSRunInformationalAlertPanel(NSLocalizedString(@"Same AETitle", 0L), [NSString stringWithFormat: NSLocalizedString(@"This AETitle is not unique: %@. AETitles should be unique, otherwise Q&R (C-Move SCP/SCU) can fail.", 0L), currentAETitle], NSLocalizedString(@"OK",nil), nil, nil);
-					
-					i = [serverList count];
-					x = [serverList count];
-				}
-			}
-		}
-	}
+//	int i, x;
+//	
+//	for( x = 0; x < [serverList count]; x++)
+//	{
+//		NSString *currentAETitle = [[serverList objectAtIndex: x] valueForKey: @"AETitle"];
+//		
+//		for( i = 0; i < [serverList count]; i++)
+//		{
+//			if( i != x)
+//			{
+//				if( [currentAETitle isEqualToString: [[serverList objectAtIndex: i] valueForKey: @"AETitle"]])
+//				{
+//					NSRunInformationalAlertPanel(NSLocalizedString(@"Same AETitle", 0L), [NSString stringWithFormat: NSLocalizedString(@"This AETitle is not unique: %@. AETitles should be unique, otherwise Q&R (C-Move SCP/SCU) can fail.", 0L), currentAETitle], NSLocalizedString(@"OK",nil), nil, nil);
+//					
+//					i = [serverList count];
+//					x = [serverList count];
+//				}
+//			}
+//		}
+//	}
 }
 
 - (int) echoAddress: (NSString*) address port:(int) port AET:(NSString*) aet
@@ -120,29 +120,31 @@
 
 	
 	//setup GUI
-	serverList = [[[defaults arrayForKey:@"SERVERS"] mutableCopy] retain];
+//	serverList = [[[defaults arrayForKey:@"SERVERS"] mutableCopy] retain];
+//	
+//	int i;
+//	for( i = 0; i < [serverList count]; i++)
+//	{
+//		if( [[serverList objectAtIndex: i] valueForKey:@"QR"] == 0L)
+//		{
+//			NSMutableDictionary	*thisServer = [NSMutableDictionary dictionaryWithDictionary: [serverList objectAtIndex: i]];
+//			
+//			[thisServer setValue:[NSNumber numberWithBool:YES] forKey:@"QR"];
+//			
+//			[serverList replaceObjectAtIndex:i withObject:thisServer];
+//		}
+//	}
+//	[self resetTest];
 	
-	int i;
-	for( i = 0; i < [serverList count]; i++)
-	{
-		if( [[serverList objectAtIndex: i] valueForKey:@"QR"] == 0L)
-		{
-			NSMutableDictionary	*thisServer = [NSMutableDictionary dictionaryWithDictionary: [serverList objectAtIndex: i]];
-			
-			[thisServer setValue:[NSNumber numberWithBool:YES] forKey:@"QR"];
-			
-			[serverList replaceObjectAtIndex:i withObject:thisServer];
-		}
-	}
-	[self resetTest];
+//	if (serverList) {
+//		[serverTable reloadData];
+//	}
 	
-	if (serverList) {
-		[serverTable reloadData];
-	}
-	osirixServerList = [[[defaults arrayForKey:@"OSIRIXSERVERS"] mutableCopy] retain];
-	if (osirixServerList) {
-		[osirixServerTable reloadData];
-	}
+//	osirixServerList = [[[defaults arrayForKey:@"OSIRIXSERVERS"] mutableCopy] retain];
+//	if (osirixServerList) {
+//		[osirixServerTable reloadData];
+//	}
+
 	stringEncoding = [[defaults stringForKey:@"STRINGENCODING"] retain];
 	int tag = 0;
 	 if( [stringEncoding isEqualToString: @"ISO_IR 192"])	//UTF8
@@ -194,9 +196,6 @@
 - (void)dealloc{
 	NSLog(@"dealloc OSILocationsPreferencePanePref");
 	
-	
-	[serverList release];
-	[osirixServerList release];
 	[stringEncoding release];
 	[super dealloc];
 }
@@ -211,17 +210,17 @@
     [aServer setObject:@"PACSARCH PACS Server" forKey:@"Description"];
 	[aServer setObject:[NSNumber numberWithInt:0] forKey:@"Transfer Syntax"];
     
-    [serverList addObject:aServer];
+	[dicomNodes addObject:aServer];
     
     [aServer release];
     
-    [serverTable reloadData];
+//    [serverTable reloadData];
 	
 //Set to edit new entry
-	[serverTable selectRow:[serverList count] - 1 byExtendingSelection:NO];
-	[serverTable editColumn:0 row:[serverList count] - 1  withEvent:nil select:YES];
-	
-	[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
+//	[serverTable selectRow:[serverList count] - 1 byExtendingSelection:NO];
+//	[serverTable editColumn:0 row:[serverList count] - 1  withEvent:nil select:YES];
+//	
+//	[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 	
 	[self resetTest];
@@ -233,17 +232,17 @@
     [aServer setObject:@"osirix.hcuge.ch" forKey:@"Address"];
     [aServer setObject:@"OsiriX PACS Server" forKey:@"Description"];
     
-    [osirixServerList addObject:aServer];
-    
+    [osiriXServers addObject: aServer];
+	
     [aServer release];
     
-    [osirixServerTable reloadData];
+//    [osirixServerTable reloadData];
 	
 //Set to edit new entry
-	[osirixServerTable selectRow:[osirixServerList count] - 1 byExtendingSelection:NO];
-	[osirixServerTable editColumn:0 row:[osirixServerList count] - 1  withEvent:nil select:YES];
+//	[osirixServerTable selectRow:[osirixServerList count] - 1 byExtendingSelection:NO];
+//	[osirixServerTable editColumn:0 row:[osirixServerList count] - 1  withEvent:nil select:YES];
 	
-	[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
+//	[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
 	
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 	
@@ -252,90 +251,90 @@
 
 //****** TABLEVIEW
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView
-{
-	if( [aTableView tag] == 0)	return [serverList count];
-	if( [aTableView tag] == 1)	return [osirixServerList count];
-	
-	return 0;
-}
-
-- (void)tableView:(NSTableView *)tableView didClickTableColumn:(NSTableColumn *)tableColumn
-{
-	if( [tableView tag] == 0)
-	{
-		[serverList sortUsingDescriptors: [serverTable sortDescriptors]];
-		[serverTable reloadData];
-	}
-	
-	if( [tableView tag] == 1)
-	{
-		[osirixServerList sortUsingDescriptors: [osirixServerTable sortDescriptors]];
-		[osirixServerTable reloadData];
-	}
-}
-- (void)tableView:(NSTableView *)aTableView
-    setObjectValue:anObject
-    forTableColumn:(NSTableColumn *)aTableColumn
-    row:(int)rowIndex
-{
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
-	{ 
-		NSMutableDictionary *theRecord;	   
-
-		if( [aTableView tag] == 0)
-		{
-			NSParameterAssert(rowIndex >= 0 && rowIndex < [serverList count]);
-			
-			theRecord = [[serverList objectAtIndex:rowIndex] mutableCopy];
-			
-			if( [[aTableColumn identifier] isEqualToString:@"AETitle"])
-			{
-				NSString	*aet = anObject;
-	
-				if( [aet length] >= 16) aet = [aet substringToIndex: 16];
-	
-				[theRecord setObject:aet forKey:[aTableColumn identifier]];
-			}
-			else [theRecord setObject:anObject forKey:[aTableColumn identifier]];
-			
-			[serverList replaceObjectAtIndex:rowIndex withObject: theRecord];
-			
-			[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
-			
-			[self checkUniqueAETitle];
-		}
-		
-		if( [aTableView tag] == 1)
-		{
-			NSParameterAssert(rowIndex >= 0 && rowIndex < [osirixServerList count]);
-			
-			theRecord = [[osirixServerList objectAtIndex:rowIndex] mutableCopy];
-			
-			[theRecord setObject:anObject forKey:[aTableColumn identifier]];
-			
-			[osirixServerList replaceObjectAtIndex:rowIndex withObject: theRecord];
-			
-			[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
-		}
-		
-		[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
-	}
-}
+//- (int)numberOfRowsInTableView:(NSTableView *)aTableView
+//{
+//	if( [aTableView tag] == 0)	return [serverList count];
+//	if( [aTableView tag] == 1)	return [osirixServerList count];
+//	
+//	return 0;
+//}
+//
+//- (void)tableView:(NSTableView *)tableView didClickTableColumn:(NSTableColumn *)tableColumn
+//{
+//	if( [tableView tag] == 0)
+//	{
+//		[serverList sortUsingDescriptors: [serverTable sortDescriptors]];
+//		[serverTable reloadData];
+//	}
+//	
+//	if( [tableView tag] == 1)
+//	{
+//		[osirixServerList sortUsingDescriptors: [osirixServerTable sortDescriptors]];
+//		[osirixServerTable reloadData];
+//	}
+//}
+//- (void)tableView:(NSTableView *)aTableView
+//    setObjectValue:anObject
+//    forTableColumn:(NSTableColumn *)aTableColumn
+//    row:(int)rowIndex
+//{
+//	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+//	{ 
+//		NSMutableDictionary *theRecord;	   
+//
+//		if( [aTableView tag] == 0)
+//		{
+//			NSParameterAssert(rowIndex >= 0 && rowIndex < [serverList count]);
+//			
+//			theRecord = [[serverList objectAtIndex:rowIndex] mutableCopy];
+//			
+//			if( [[aTableColumn identifier] isEqualToString:@"AETitle"])
+//			{
+//				NSString	*aet = anObject;
+//	
+//				if( [aet length] >= 16) aet = [aet substringToIndex: 16];
+//	
+//				[theRecord setObject:aet forKey:[aTableColumn identifier]];
+//			}
+//			else [theRecord setObject:anObject forKey:[aTableColumn identifier]];
+//			
+//			[serverList replaceObjectAtIndex:rowIndex withObject: theRecord];
+//			
+//			[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
+//			
+//			[self checkUniqueAETitle];
+//		}
+//		
+//		if( [aTableView tag] == 1)
+//		{
+//			NSParameterAssert(rowIndex >= 0 && rowIndex < [osirixServerList count]);
+//			
+//			theRecord = [[osirixServerList objectAtIndex:rowIndex] mutableCopy];
+//			
+//			[theRecord setObject:anObject forKey:[aTableColumn identifier]];
+//			
+//			[osirixServerList replaceObjectAtIndex:rowIndex withObject: theRecord];
+//			
+//			[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
+//		}
+//		
+//		[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+//	}
+//}
 
 - (void) resetTest
 {
-	int i;
-	
-	for( i = 0 ; i < [serverList count]; i++)
-	{
-		NSMutableDictionary *aServer = [[serverList objectAtIndex: i] mutableCopy];
-		
-		[aServer removeObjectForKey:@"test"];
-		[serverList replaceObjectAtIndex: i withObject: aServer];
-	}
-	
-	[serverTable reloadData];
+//	int i;
+//	
+//	for( i = 0 ; i < [serverList count]; i++)
+//	{
+//		NSMutableDictionary *aServer = [[serverList objectAtIndex: i] mutableCopy];
+//		
+//		[aServer removeObjectForKey:@"test"];
+//		[serverList replaceObjectAtIndex: i withObject: aServer];
+//	}
+//	
+////	[serverTable reloadData];
 }
 
 - (IBAction) saveAs:(id) sender;
@@ -346,7 +345,7 @@
 	
 	if ([sPanel runModalForDirectory:0L file:NSLocalizedString(@"OsiriX Locations.plist", nil)] == NSFileHandlingPanelOKButton)
 	{
-		[serverList writeToFile:[sPanel filename] atomically: YES];
+		[[dicomNodes arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
 	}
 }
 
@@ -366,19 +365,19 @@
 			{
 				
 			}
-			else [serverList removeAllObjects];
+			else [dicomNodes removeObjects: [dicomNodes arrangedObjects]];
 			
-			[serverList addObjectsFromArray: r];
+			[dicomNodes addObjects: r];
 			
 			int i, x;
 			
-			for( i = 0; i < [serverList count]; i++)
+			for( i = 0; i < [[dicomNodes arrangedObjects] count]; i++)
 			{
-				NSDictionary	*server = [serverList objectAtIndex: i];
+				NSDictionary	*server = [[dicomNodes arrangedObjects] objectAtIndex: i];
 				
-				for( x = 0; x < [serverList count]; x++)
+				for( x = 0; x < [[dicomNodes arrangedObjects] count]; x++)
 				{
-					NSDictionary	*c = [serverList objectAtIndex: x];
+					NSDictionary	*c = [[dicomNodes arrangedObjects] objectAtIndex: x];
 					
 					if( c != server)
 					{
@@ -386,17 +385,14 @@
 							[[server valueForKey:@"Address"] isEqualToString: [c valueForKey:@"Address"]] &&
 							[[server valueForKey:@"Port"] isEqualToString: [c valueForKey:@"Port"]])
 							{
-								[serverList removeObjectAtIndex: i];
+								[dicomNodes removeObjectAtArrangedObjectIndex: i];
 								i--;
-								x = [serverList count];
+								x = [[dicomNodes arrangedObjects] count];
 							}
 					}
 				}
 			}
 			
-			[serverTable reloadData];
-			
-			[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
 			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 		}
 	}
@@ -404,156 +400,156 @@
 
 - (IBAction) test:(id) sender
 {
-	int i;
-	int status;
-	int selectedRow = [serverTable selectedRow];
-	
-	[progress startAnimation: self];
-	
-	for( i = 0 ; i < [serverList count]; i++)
-	{
-		NSMutableDictionary *aServer = [[serverList objectAtIndex: i] mutableCopy];
-		
-		[serverTable selectRow: i byExtendingSelection: NO];
-		[serverTable display];
-		
-		int numberPacketsReceived = 0;
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[aServer objectForKey:@"Address"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
-		{
-			if( [self echoAddress:[aServer objectForKey:@"Address"] port:[[aServer objectForKey:@"Port"] intValue] AET:[aServer objectForKey:@"AETitle"]] == 0) status = 0;
-			else status = -1;
-		}
-		else status = -2;
-		
-		[aServer setObject:[NSNumber numberWithInt: status] forKey:@"test"];
-		[serverList replaceObjectAtIndex:i withObject: aServer];
-	}
-	
-	[serverTable reloadData];
-	
-	[progress stopAnimation: self];
-	
-	[serverTable selectRow: selectedRow byExtendingSelection: NO];
+//	int i;
+//	int status;
+//	int selectedRow = [serverTable selectedRow];
+//	
+//	[progress startAnimation: self];
+//	
+//	for( i = 0 ; i < [serverList count]; i++)
+//	{
+//		NSMutableDictionary *aServer = [[serverList objectAtIndex: i] mutableCopy];
+//		
+//		[serverTable selectRow: i byExtendingSelection: NO];
+//		[serverTable display];
+//		
+//		int numberPacketsReceived = 0;
+//		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[aServer objectForKey:@"Address"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
+//		{
+//			if( [self echoAddress:[aServer objectForKey:@"Address"] port:[[aServer objectForKey:@"Port"] intValue] AET:[aServer objectForKey:@"AETitle"]] == 0) status = 0;
+//			else status = -1;
+//		}
+//		else status = -2;
+//		
+//		[aServer setObject:[NSNumber numberWithInt: status] forKey:@"test"];
+//		[serverList replaceObjectAtIndex:i withObject: aServer];
+//	}
+//	
+//	[serverTable reloadData];
+//	
+//	[progress stopAnimation: self];
+//	
+//	[serverTable selectRow: selectedRow byExtendingSelection: NO];
 }
 
-- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
-{
-	if( [aTableView tag] == 0)
-	{
-		NSParameterAssert(rowIndex >= 0 && rowIndex < [serverList count]);
-		
-		NSMutableDictionary *theRecord = [serverList objectAtIndex:rowIndex];
-		
-		if( [[aTableColumn identifier] isEqual:@"Address"] == YES)
-		{
-			switch( [[theRecord objectForKey:@"test"] intValue])
-			{
-				case -1:
-					[aCell setTextColor: [NSColor orangeColor]];
-				break;
-				
-				case -2:
-					[aCell setTextColor: [NSColor redColor]];
-				break;
-				
-				case 0:
-					[aCell setTextColor: [NSColor blackColor]];
-				break;
-			}
-		}
-	}
-}
-
-- (id)tableView:(NSTableView *)aTableView
-    objectValueForTableColumn:(NSTableColumn *)aTableColumn
-    row:(int)rowIndex
-{
-	NSMutableDictionary *theRecord;
-	
-	if( [aTableView tag] == 0)
-	{
-		NSParameterAssert(rowIndex >= 0 && rowIndex < [serverList count]);
-		
-		theRecord = [serverList objectAtIndex:rowIndex];
-		
-		if( [[aTableColumn identifier] isEqual:@"Port"] == YES)
-		{
-			long    value;
-			BOOL	update = NO;
-			
-			value = [[theRecord objectForKey:[aTableColumn identifier]] intValue];
-			
-			if( value < 1) {	value = 1;	update = YES;}
-			if( value > 131072) {	value = 131072;	update = YES;}
-			
-			if( update)
-			{
-				theRecord = [[serverList objectAtIndex:rowIndex] mutableCopy];
-				[theRecord setObject:[[NSNumber numberWithLong:value] stringValue] forKey:[aTableColumn identifier]];
-				[serverList replaceObjectAtIndex:rowIndex withObject: theRecord];
-				
-				[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
-				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
-			}
-		}
-		
-		return [theRecord objectForKey:[aTableColumn identifier]];
-	}
-
-	if( [aTableView tag] == 1)
-	{
-		NSParameterAssert(rowIndex >= 0 && rowIndex < [osirixServerList count]);
-		
-		theRecord = [osirixServerList objectAtIndex:rowIndex];
-		
-		return [theRecord objectForKey:[aTableColumn identifier]];
-	}
-
-	return 0L;
-}
-
-- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
-{
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) return YES;
-	else return NO;
-}
-
-- (void) deleteSelectedRow:(id)sender
-{
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
-	{
-		if( NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Server", 0L), NSLocalizedString(@"Are you sure you want to delete the selected item?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertDefaultReturn)
-		{
-			if( [sender tag] == 0)
-			{
-				[serverList removeObjectAtIndex:[serverTable selectedRow]];
-				[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
-				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
-				
-				[serverTable reloadData];
-			}
-			
-			if( [sender tag] == 1)
-			{
-				[osirixServerList removeObjectAtIndex:[osirixServerTable selectedRow]];
-				[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
-				
-				[osirixServerTable reloadData];
-				
-				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
-			}
-			
-			if( [sender tag] == 2)
-			{
-				NSLog( [[localPaths selectedObjects] description]);
-				[localPaths removeObjects: [localPaths selectedObjects]];
-				
-				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
-			}
-		}
-	}
-	[[[self mainView] window] makeKeyAndOrderFront: self];
-}
+//- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+//{
+//	if( [aTableView tag] == 0)
+//	{
+//		NSParameterAssert(rowIndex >= 0 && rowIndex < [serverList count]);
+//		
+//		NSMutableDictionary *theRecord = [serverList objectAtIndex:rowIndex];
+//		
+//		if( [[aTableColumn identifier] isEqual:@"Address"] == YES)
+//		{
+//			switch( [[theRecord objectForKey:@"test"] intValue])
+//			{
+//				case -1:
+//					[aCell setTextColor: [NSColor orangeColor]];
+//				break;
+//				
+//				case -2:
+//					[aCell setTextColor: [NSColor redColor]];
+//				break;
+//				
+//				case 0:
+//					[aCell setTextColor: [NSColor blackColor]];
+//				break;
+//			}
+//		}
+//	}
+//}
+//
+//- (id)tableView:(NSTableView *)aTableView
+//    objectValueForTableColumn:(NSTableColumn *)aTableColumn
+//    row:(int)rowIndex
+//{
+//	NSMutableDictionary *theRecord;
+//	
+//	if( [aTableView tag] == 0)
+//	{
+//		NSParameterAssert(rowIndex >= 0 && rowIndex < [serverList count]);
+//		
+//		theRecord = [serverList objectAtIndex:rowIndex];
+//		
+//		if( [[aTableColumn identifier] isEqual:@"Port"] == YES)
+//		{
+//			long    value;
+//			BOOL	update = NO;
+//			
+//			value = [[theRecord objectForKey:[aTableColumn identifier]] intValue];
+//			
+//			if( value < 1) {	value = 1;	update = YES;}
+//			if( value > 131072) {	value = 131072;	update = YES;}
+//			
+//			if( update)
+//			{
+//				theRecord = [[serverList objectAtIndex:rowIndex] mutableCopy];
+//				[theRecord setObject:[[NSNumber numberWithLong:value] stringValue] forKey:[aTableColumn identifier]];
+//				[serverList replaceObjectAtIndex:rowIndex withObject: theRecord];
+//				
+//				[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
+//				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+//			}
+//		}
+//		
+//		return [theRecord objectForKey:[aTableColumn identifier]];
+//	}
+//
+//	if( [aTableView tag] == 1)
+//	{
+//		NSParameterAssert(rowIndex >= 0 && rowIndex < [osirixServerList count]);
+//		
+//		theRecord = [osirixServerList objectAtIndex:rowIndex];
+//		
+//		return [theRecord objectForKey:[aTableColumn identifier]];
+//	}
+//
+//	return 0L;
+//}
+//
+//- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+//{
+//	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) return YES;
+//	else return NO;
+//}
+//
+//- (void) deleteSelectedRow:(id)sender
+//{
+//	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+//	{
+//		if( NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Server", 0L), NSLocalizedString(@"Are you sure you want to delete the selected item?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertDefaultReturn)
+//		{
+//			if( [sender tag] == 0)
+//			{
+//				[serverList removeObjectAtIndex:[serverTable selectedRow]];
+//				[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
+//				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+//				
+//				[serverTable reloadData];
+//			}
+//			
+//			if( [sender tag] == 1)
+//			{
+//				[osirixServerList removeObjectAtIndex:[osirixServerTable selectedRow]];
+//				[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
+//				
+//				[osirixServerTable reloadData];
+//				
+//				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+//			}
+//			
+//			if( [sender tag] == 2)
+//			{
+//				NSLog( [[localPaths selectedObjects] description]);
+//				[localPaths removeObjects: [localPaths selectedObjects]];
+//				
+//				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+//			}
+//		}
+//	}
+//	[[[self mainView] window] makeKeyAndOrderFront: self];
+//}
 
 - (IBAction) setStringEncoding:(id)sender{
 	NSString *encoding;

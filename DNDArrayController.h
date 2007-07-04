@@ -1,10 +1,11 @@
 
 #import <Cocoa/Cocoa.h>
-
+#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface DNDArrayController : NSArrayController
 {
-    IBOutlet NSTableView *tableView;
+    IBOutlet NSTableView			*tableView;
+	IBOutlet SFAuthorizationView	*_authView;
 }
 
 // table view drag and drop support
@@ -23,5 +24,5 @@
 
 - (NSIndexSet *)indexSetFromRows:(NSArray *)rows;
 - (int)rowsAboveRow:(int)row inIndexSet:(NSIndexSet *)indexSet;
-
+- (void) deleteSelectedRow:(id)sender;
 @end

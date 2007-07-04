@@ -1,6 +1,13 @@
 {
     IBClasses = (
         {
+            ACTIONS = {deleteSelectedRow = id; }; 
+            CLASS = DNDArrayController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {"_authView" = SFAuthorizationView; tableView = NSTableView; }; 
+            SUPERCLASS = NSArrayController; 
+        }, 
+        {
             ACTIONS = {"" = id; }; 
             CLASS = FirstResponder; 
             LANGUAGE = ObjC; 
@@ -21,7 +28,6 @@
         {
             ACTIONS = {
                 addPath = id; 
-                deleteSelectedRow = id; 
                 loadFrom = id; 
                 newServer = id; 
                 osirixNewServer = id; 
@@ -38,11 +44,11 @@
                 addServerDICOM = NSButton; 
                 addServerSharing = NSButton; 
                 characterSetPopup = NSPopUpButton; 
-                localPaths = NSArrayController; 
-                osirixServerTable = NSTableView; 
+                dicomNodes = DNDArrayController; 
+                localPaths = DNDArrayController; 
+                osiriXServers = DNDArrayController; 
                 progress = NSProgressIndicator; 
                 searchDICOMBonjourNodes = NSButton; 
-                serverTable = NSTableView; 
                 verifyPing = NSButton; 
             }; 
             SUPERCLASS = NSPreferencePane; 

@@ -6,6 +6,32 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 
 @implementation DNDArrayController
 
+- (void)addObject:(id)object
+{
+	[super addObject: object];
+	[tableView selectRow: [[self arrangedObjects] count]-1 byExtendingSelection: NO];
+}
+
+- (void) setAuthView:( SFAuthorizationView*) v;
+{
+	_authView = v;
+}
+
+- (void) deleteSelectedRow:(id)sender
+{
+	if( _authView == 0L || [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+	{
+		if( NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Server", 0L), NSLocalizedString(@"Are you sure you want to delete the selected item?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertDefaultReturn)
+		{
+			[self removeObjectAtArrangedObjectIndex: [tableView selectedRow]];
+		}
+	}
+}
+
+- (int)numberOfRowsInTableView:(NSTableView *)aTableView
+{
+	return [[self arrangedObjects] count];
+}
 
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
 {
@@ -46,6 +72,14 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 		writeRows:(NSArray*)rows
 	 toPasteboard:(NSPasteboard*)pboard
 {
+	if( _authView != 0L)
+	{
+		if( [_authView authorizationState] != SFAuthorizationViewUnlockedState)
+		{
+			return NO;
+		}
+	}
+
 	// declare our own pasteboard types
     NSArray *typesArray = [NSArray arrayWithObjects:MovedRowsType, nil];
 	
@@ -77,7 +111,15 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 				 proposedRow:(int)row
 	   proposedDropOperation:(NSTableViewDropOperation)op
 {
-    
+
+	if( _authView != 0L)
+	{
+		if( [_authView authorizationState] != SFAuthorizationViewUnlockedState)
+		{
+			return NSDragOperationNone;
+		}
+	}
+	
     NSDragOperation dragOp = NSDragOperationCopy;
     
     // if drag source is self, it's a move
@@ -91,13 +133,29 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
     return dragOp;
 }
 
-
+- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+{
+	if( _authView)
+	{
+		if( [_authView authorizationState] != SFAuthorizationViewUnlockedState) return NO;
+	}
+	
+	return YES;
+}
 
 - (BOOL)tableView:(NSTableView*)tv
 	   acceptDrop:(id <NSDraggingInfo>)info
 			  row:(int)row
 	dropOperation:(NSTableViewDropOperation)op
 {
+	if( _authView != 0L)
+	{
+		if( [_authView authorizationState] != SFAuthorizationViewUnlockedState)
+		{
+			return NO;
+		}
+	}
+	
     if (row < 0) {
 		row = 0;
 	}

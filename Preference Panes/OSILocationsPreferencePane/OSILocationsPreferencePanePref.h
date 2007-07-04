@@ -14,25 +14,23 @@
 
 #import <PreferencePanes/PreferencePanes.h>
 #import <SecurityInterface/SFAuthorizationView.h>
-
+#import "DNDArrayController.h"
 
 @interface OSILocationsPreferencePanePref : NSPreferencePane 
 {
 	IBOutlet NSPopUpButton			*characterSetPopup;
-	IBOutlet NSTableView			*serverTable, *osirixServerTable;
 	IBOutlet NSButton				*addServerDICOM, *addServerSharing, *searchDICOMBonjourNodes, *verifyPing, *addLocalPath;
-	NSMutableArray					*serverList, *osirixServerList;
 	NSString						*stringEncoding;
 	IBOutlet NSProgressIndicator	*progress;
-	IBOutlet NSArrayController		*localPaths;
 	
-	IBOutlet SFAuthorizationView *_authView;
+	IBOutlet DNDArrayController		*localPaths, *osiriXServers, *dicomNodes;
+	
+	IBOutlet SFAuthorizationView	*_authView;
 }
 
 - (void) mainViewDidLoad;
 - (IBAction) newServer:(id)sender;
 - (IBAction) osirixNewServer:(id)sender;
-- (void) deleteSelectedRow:(id)sender;
 - (IBAction) setStringEncoding:(id)sender;
 - (IBAction)setTransferSyntax:(id)sender;
 - (IBAction) test:(id) sender;

@@ -21,6 +21,8 @@
 		CE1DD8E00B4FF18700B4AC4B /* SimplePing.c in Sources */ = {isa = PBXBuildFile; fileRef = CE1DD8DE0B4FF18700B4AC4B /* SimplePing.c */; };
 		CE1EF6DE0AF0072000A728F2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE1EF6DC0AF0072000A728F2 /* Localizable.strings */; };
 		CE94D6FA0A17CC420010E3E8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE94D6F90A17CC420010E3E8 /* Security.framework */; };
+		CEE6C1FA0C3BCECE00C4AB99 /* DNDArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE6C1F80C3BCECE00C4AB99 /* DNDArrayController.m */; };
+		CEE6C1FB0C3BCECE00C4AB99 /* DNDArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE6C1F90C3BCECE00C4AB99 /* DNDArrayController.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +39,8 @@
 		CE1DD8DE0B4FF18700B4AC4B /* SimplePing.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = SimplePing.c; path = ../../SimplePing.c; sourceTree = SOURCE_ROOT; };
 		CE1EF6DD0AF0072000A728F2 /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE94D6F90A17CC420010E3E8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		CEE6C1F80C3BCECE00C4AB99 /* DNDArrayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DNDArrayController.m; path = ../../DNDArrayController.m; sourceTree = SOURCE_ROOT; };
+		CEE6C1F90C3BCECE00C4AB99 /* DNDArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DNDArrayController.h; path = ../../DNDArrayController.h; sourceTree = SOURCE_ROOT; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSILocationsPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSILocationsPreferencePanePref.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* OSILocationsPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSILocationsPreferencePanePref.m; sourceTree = "<group>"; };
@@ -94,6 +98,8 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				CEE6C1F80C3BCECE00C4AB99 /* DNDArrayController.m */,
+				CEE6C1F90C3BCECE00C4AB99 /* DNDArrayController.h */,
 				CE1DD8DD0B4FF18700B4AC4B /* SimplePing.h */,
 				CE1DD8DE0B4FF18700B4AC4B /* SimplePing.c */,
 				7EC5847507298EDC00429FC7 /* ServerTableView.h */,
@@ -150,6 +156,7 @@
 				8D202CEB0486D31800D8A456 /* OSILocationsPreferencePanePref.h in Headers */,
 				7EC5847707298EDC00429FC7 /* ServerTableView.h in Headers */,
 				CE1DD8DF0B4FF18700B4AC4B /* SimplePing.h in Headers */,
+				CEE6C1FB0C3BCECE00C4AB99 /* DNDArrayController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,6 +230,7 @@
 				8D202CF10486D31800D8A456 /* OSILocationsPreferencePanePref.m in Sources */,
 				7EC5847807298EDC00429FC7 /* ServerTableView.m in Sources */,
 				CE1DD8E00B4FF18700B4AC4B /* SimplePing.c in Sources */,
+				CEE6C1FA0C3BCECE00C4AB99 /* DNDArrayController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
