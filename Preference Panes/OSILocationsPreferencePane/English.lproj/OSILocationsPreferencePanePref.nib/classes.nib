@@ -45,6 +45,7 @@
                 addServerSharing = NSButton; 
                 characterSetPopup = NSPopUpButton; 
                 dicomNodes = DNDArrayController; 
+                loadNodes = NSButton; 
                 localPaths = DNDArrayController; 
                 osiriXServers = DNDArrayController; 
                 progress = NSProgressIndicator; 

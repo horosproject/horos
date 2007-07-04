@@ -19,7 +19,7 @@
 @interface OSILocationsPreferencePanePref : NSPreferencePane 
 {
 	IBOutlet NSPopUpButton			*characterSetPopup;
-	IBOutlet NSButton				*addServerDICOM, *addServerSharing, *searchDICOMBonjourNodes, *verifyPing, *addLocalPath;
+	IBOutlet NSButton				*addServerDICOM, *addServerSharing, *searchDICOMBonjourNodes, *verifyPing, *addLocalPath, *loadNodes;
 	NSString						*stringEncoding;
 	IBOutlet NSProgressIndicator	*progress;
 	

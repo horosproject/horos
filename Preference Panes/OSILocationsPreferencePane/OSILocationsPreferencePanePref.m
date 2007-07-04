@@ -44,6 +44,12 @@
 	
 	for( x = 0; x < [serverList count]; x++)
 	{
+		int value = [[[serverList objectAtIndex: x] valueForKey:@"Port"] intValue];
+		if( value < 1) value = 1;
+		if( value > 131072) value = 131072;
+		[[serverList objectAtIndex: x] setValue: [NSNumber numberWithInt: value] forKey: @"Port"];		
+		[[serverList objectAtIndex: x] setValue: [[[serverList objectAtIndex: x] valueForKey:@"AETitle"] uppercaseString] forKey:@"AETitle"];
+		
 		NSString *currentAETitle = [[serverList objectAtIndex: x] valueForKey: @"AETitle"];
 		
 		for( i = 0; i < [serverList count]; i++)
@@ -59,13 +65,6 @@
 				}
 			}
 		}
-		
-		int value = [[[serverList objectAtIndex: x] valueForKey:@"Port"] intValue];
-		if( value < 1) value = 1;
-		if( value > 131072) value = 131072;
-		[[serverList objectAtIndex: x] setValue: [NSNumber numberWithInt: value] forKey: @"Port"];
-		
-		[[serverList objectAtIndex: x] setValue: [[[serverList objectAtIndex: x] valueForKey:@"AETitle"] uppercaseString] forKey:@"AETitle"];
 	}
 }
 
@@ -97,6 +96,7 @@
 	[verifyPing setEnabled: val];
 	[searchDICOMBonjourNodes setEnabled: val];
 	[addLocalPath setEnabled: val];
+	[loadNodes setEnabled: val];
 }
 
 - (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
@@ -168,6 +168,8 @@
 	[characterSetPopup selectItemAtIndex:tag];
 	
 	[self checkUniqueAETitle];
+	
+	[self resetTest];
 }
 
 - (void) willUnselect
@@ -229,6 +231,8 @@
 
 	[sPanel setRequiredFileType:@"plist"];
 	
+	[self resetTest];
+	
 	if ([sPanel runModalForDirectory:0L file:NSLocalizedString(@"OsiriX Locations.plist", nil)] == NSFileHandlingPanelOKButton)
 	{
 		[[dicomNodes arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
@@ -238,7 +242,9 @@
 - (IBAction) loadFrom:(id) sender;
 {
 	NSOpenPanel		*sPanel		= [NSOpenPanel openPanel];
-
+	
+	[self resetTest];
+	
 	[sPanel setRequiredFileType:@"plist"];
 	
 	if ([sPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"plist"]] == NSFileHandlingPanelOKButton)
@@ -269,7 +275,7 @@
 					{
 						if( [[server valueForKey:@"AETitle"] isEqualToString: [c valueForKey:@"AETitle"]] &&
 							[[server valueForKey:@"Address"] isEqualToString: [c valueForKey:@"Address"]] &&
-							[[server valueForKey:@"Port"] isEqualToString: [c valueForKey:@"Port"]])
+							[[server valueForKey:@"Port"] intValue] == [[c valueForKey:@"Port"] intValue])
 							{
 								[dicomNodes removeObjectAtArrangedObjectIndex: i];
 								i--;
@@ -282,6 +288,8 @@
 			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 		}
 	}
+	
+	[self resetTest];
 }
 
 - (IBAction) test:(id) sender
