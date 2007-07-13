@@ -86,7 +86,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "HornRegistration.h"
 #import "ITKTransform.h"
 #import "LLScoutViewer.h"
-
+#import "DicomStudy.h"
 #import "KeyObjectController.h"
 #import "KeyObjectPopupController.h"
 #import "JPEGExif.h"
@@ -1750,6 +1750,32 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			[self matrixPreviewSelectCurrentSeries];
 		}
+		
+		if ([[NSApp currentEvent] modifierFlags] & NSShiftKeyMask)
+		{
+			// Apply the same size to all displayed windows
+			
+			NSArray	*viewers = [ViewerController getDisplayed2DViewers];
+			int i;
+			
+			for( i = 0; i < [viewers count] ; i++)
+			{
+				if( [viewers objectAtIndex: i] != self)
+				{
+					NSWindow *theWindow = [[viewers objectAtIndex: i] window];
+					
+					NSRect dstFrame = [theWindow frame];
+					
+					dstFrame.size = [[self window] frame].size;
+					
+					dstFrame.origin.y -= dstFrame.size.height - [theWindow frame].size.height;
+					
+					dontEnterMagneticFunctions = YES;
+					[theWindow setFrame: dstFrame display:YES];
+					dontEnterMagneticFunctions = NO;
+				}
+			}
+		}
 	}
 }
 
@@ -2489,6 +2515,21 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return proposedPosition;
 }
 
+- (void) matrixPreviewSwitchHidden:(id) sender
+{
+	DicomStudy *curStudy = [[sender selectedCell] representedObject];
+	
+	[curStudy setHidden: ![curStudy isHidden]];
+	
+	NSArray	*viewers = [ViewerController getDisplayed2DViewers];
+	int i;
+	
+	for( i = 0 ; i < [viewers count] ; i++)
+	{
+		[[viewers objectAtIndex: i] buildMatrixPreview: YES];
+	}
+}
+
 - (void) buildMatrixPreview: (BOOL) showSelected
 {
 	NSManagedObjectModel	*model = [browserWindow managedObjectModel];
@@ -2540,7 +2581,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 		for( x = 0; x < [studiesArray count]; x++)
 		{
 			[seriesArray addObject: [browserWindow childrenArray: [studiesArray objectAtIndex: x]]];
-			i += [[seriesArray objectAtIndex: x] count];
+			
+			if( [[studiesArray objectAtIndex: x] isHidden] == NO)
+				i += [[seriesArray objectAtIndex: x] count];
 		}
 		
 		if( [previewMatrix numberOfRows] != i+[studiesArray count])
@@ -2551,7 +2594,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		for( x = 0; x < [studiesArray count]; x++)
 		{
-			NSManagedObject		*curStudy = [studiesArray objectAtIndex: x];
+			DicomStudy			*curStudy = [studiesArray objectAtIndex: x];
 			NSArray				*series = [seriesArray objectAtIndex: x];
 			NSArray				*images = [browserWindow imagesArray: curStudy preferredObject: oAny];
 			
@@ -2564,10 +2607,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 			[cell setBezelStyle: NSShadowlessSquareBezelStyle];
 			[cell setFont:[NSFont boldSystemFontOfSize:9]];
-			[cell setButtonType:NSPushOnPushOffButton];
-			[cell setEnabled:NO];
+			[cell setButtonType:NSMomentaryPushInButton];
+			[cell setEnabled:YES];
 			[cell setImage: 0L];
-			[cell setRepresentedObject: 0L];
+			[cell setRepresentedObject: curStudy];
+			[cell setAction: @selector(matrixPreviewSwitchHidden:)];
+			[cell setTarget: self];
+			[cell setBordered: YES];
 			
 			NSString	*name = [curStudy valueForKey:@"studyName"];
 			if( [name length] > 15) name = [name substringToIndex: 15];
@@ -2579,100 +2625,106 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			if( comment == 0L) comment = @"";
 			
-			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@\r%@\r%@", name, [[curStudy valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], [series count], @"series", stateText, comment]];
+			NSString *action;
+			if( [curStudy isHidden]) action = @"Show Series";
+			else action = @"Hide Series";
+			
+			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@\r%@\r%@\r\r%@", name, [[curStudy valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], [series count], @"series", stateText, comment, action]];
 			[cell setBackgroundColor: [NSColor whiteColor]];
-//			[cell setBordered: NO];
 			
 			index++;
 			
-			for( i = 0; i < [series count]; i++)
+			if( [curStudy isHidden] == NO)
 			{
-				NSManagedObject	*curSeries = [series objectAtIndex:i];
-				
-				int keyImagesNumber = 0, z;
-//				NSArray	*keyImagesArray = [[[curSeries valueForKey:@"images"] allObjects] valueForKey:@"isKeyImage"];		<- This is too slow......
-//				for( z = 0; z < [keyImagesArray count]; z++)
-//				{
-//					if( [[keyImagesArray objectAtIndex: z] boolValue]) keyImagesNumber++;
-//				}
-				
-				NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
-				
-				[cell setBezelStyle: NSShadowlessSquareBezelStyle];
-				[cell setRepresentedObject: curSeries];
-				if( keyImagesNumber) [cell setFont:[NSFont boldSystemFontOfSize:9]];
-				else [cell setFont:[NSFont systemFontOfSize:9]];
-				[cell setImagePosition: NSImageBelow];
-				[cell setAction: @selector(matrixPreviewPressed:)];
-				[cell setTarget: self];
-				[cell setButtonType:NSMomentaryPushInButton];
-				[cell setEnabled:YES];
-				
-				NSString	*name = [curSeries valueForKey:@"name"];
-				if( [name length] > 15) name = [name substringToIndex: 15];
-				
-				NSString	*type = @"Image";
-				long count = [[curSeries valueForKey:@"noFiles"] intValue];
-				if( count == 1)
+				for( i = 0; i < [series count]; i++)
 				{
-					long frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
-					if( frames > 1)
-					{
-						count = frames;
-						type = @"Frames";
-					}
-				}
-				else type=[type stringByAppendingString: @"s"];
-				
-				if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [[curSeries valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], keyImagesNumber, count, type]];
-				else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [[curSeries valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], count, type]];
-				
-				[previewMatrix setToolTip:[NSString stringWithFormat:@"Series ID:%@\rClick + Option:\rOpen in new window", [curSeries valueForKey:@"id"]] forCell:cell];
-				if( [curImage valueForKey:@"series"] == curSeries)
-				{
-					[cell setBackgroundColor: [NSColor selectedControlColor]];
-					[cell setBordered: NO];
-//					[previewMatrix selectCellAtRow:index column:0];
-				}
-//				else if( [[[blendedwin fileList] objectAtIndex: 0] valueForKey:@"series"] == curSeries)
-//				{
-//					[cell setBackgroundColor: [NSColor colorWithDeviceRed:1.0 green:0.8 blue:0.2 alpha:1.0]];
-//					[cell setBordered: NO];
-//				}
-				else [cell setBordered: YES];
-				
-				if( visible)
-				{
-					NSImage	*img = 0L;
+					NSManagedObject	*curSeries = [series objectAtIndex:i];
 					
-					img = [[[NSImage alloc] initWithData: [curSeries valueForKey:@"thumbnail"]] autorelease];
+					int keyImagesNumber = 0, z;
+	//				NSArray	*keyImagesArray = [[[curSeries valueForKey:@"images"] allObjects] valueForKey:@"isKeyImage"];		<- This is too slow......
+	//				for( z = 0; z < [keyImagesArray count]; z++)
+	//				{
+	//					if( [[keyImagesArray objectAtIndex: z] boolValue]) keyImagesNumber++;
+	//				}
 					
-					if( img == 0L)
+					NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
+					
+					[cell setBezelStyle: NSShadowlessSquareBezelStyle];
+					[cell setRepresentedObject: curSeries];
+					if( keyImagesNumber) [cell setFont:[NSFont boldSystemFontOfSize:9]];
+					else [cell setFont:[NSFont systemFontOfSize:9]];
+					[cell setImagePosition: NSImageBelow];
+					[cell setAction: @selector(matrixPreviewPressed:)];
+					[cell setTarget: self];
+					[cell setButtonType:NSMomentaryPushInButton];
+					[cell setEnabled:YES];
+					
+					NSString	*name = [curSeries valueForKey:@"name"];
+					if( [name length] > 15) name = [name substringToIndex: 15];
+					
+					NSString	*type = @"Image";
+					long count = [[curSeries valueForKey:@"noFiles"] intValue];
+					if( count == 1)
 					{
-						DCMPix*     dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: i] valueForKey:@"completePath"] :0 :0 :0L :0 :[[[images objectAtIndex: i] valueForKeyPath:@"series.id"] intValue] isBonjour:[browserWindow isCurrentDatabaseBonjour] imageObj:[images objectAtIndex: i]];
-						
-						if( dcmPix)
+						long frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+						if( frames > 1)
 						{
-							NSImage *img = [dcmPix computeWImage:YES :0 :0];
+							count = frames;
+							type = @"Frames";
+						}
+					}
+					else type=[type stringByAppendingString: @"s"];
+					
+					if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [[curSeries valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], keyImagesNumber, count, type]];
+					else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [[curSeries valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], count, type]];
+					
+					[previewMatrix setToolTip:[NSString stringWithFormat:@"Series ID:%@\rClick + Option:\rOpen in new window", [curSeries valueForKey:@"id"]] forCell:cell];
+					if( [curImage valueForKey:@"series"] == curSeries)
+					{
+						[cell setBackgroundColor: [NSColor selectedControlColor]];
+						[cell setBordered: NO];
+	//					[previewMatrix selectCellAtRow:index column:0];
+					}
+	//				else if( [[[blendedwin fileList] objectAtIndex: 0] valueForKey:@"series"] == curSeries)
+	//				{
+	//					[cell setBackgroundColor: [NSColor colorWithDeviceRed:1.0 green:0.8 blue:0.2 alpha:1.0]];
+	//					[cell setBordered: NO];
+	//				}
+					else [cell setBordered: YES];
+					
+					if( visible)
+					{
+						NSImage	*img = 0L;
+						
+						img = [[[NSImage alloc] initWithData: [curSeries valueForKey:@"thumbnail"]] autorelease];
+						
+						if( img == 0L)
+						{
+							DCMPix*     dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: i] valueForKey:@"completePath"] :0 :0 :0L :0 :[[[images objectAtIndex: i] valueForKeyPath:@"series.id"] intValue] isBonjour:[browserWindow isCurrentDatabaseBonjour] imageObj:[images objectAtIndex: i]];
 							
-							if( img)
+							if( dcmPix)
 							{
-								[cell setImage: img];
+								NSImage *img = [dcmPix computeWImage:YES :0 :0];
 								
-								if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
-									[curSeries setValue: [BrowserController produceJPEGThumbnail: img] forKey:@"thumbnail"];
+								if( img)
+								{
+									[cell setImage: img];
+									
+									if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
+										[curSeries setValue: [BrowserController produceJPEGThumbnail: img] forKey:@"thumbnail"];
+								}
+								else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
+								
+								[dcmPix release];
 							}
 							else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
 							
-							[dcmPix release];
 						}
-						else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
-						
+						else [cell setImage: img];
 					}
-					else [cell setImage: img];
+					
+					index++;
 				}
-				
-				index++;
 			}
 		}
 	}
@@ -11127,24 +11179,29 @@ int i,j,l;
 						
 						// Convert the point in 3D orientation of the model
 						
-//						float modelLocationConverted[ 3];
-//						
-//						modelLocationConverted[ 0] = modelLocation[ 0] * vectorModel[ 0] + modelLocation[ 1] * vectorModel[ 1] + modelLocation[ 2] * vectorModel[ 2];
-//						modelLocationConverted[ 1] = modelLocation[ 0] * vectorModel[ 3] + modelLocation[ 1] * vectorModel[ 4] + modelLocation[ 2] * vectorModel[ 5];
-//						modelLocationConverted[ 2] = modelLocation[ 0] * vectorModel[ 6] + modelLocation[ 1] * vectorModel[ 7] + modelLocation[ 2] * vectorModel[ 8];
+						float modelLocationConverted[ 3];
+						
+						modelLocationConverted[ 0] = modelLocation[ 0];
+						modelLocationConverted[ 1] = modelLocation[ 1];
+						modelLocationConverted[ 2] = modelLocation[ 2];
+						
+						
+						modelLocationConverted[ 0] = modelLocation[ 0] * vectorModel[ 0] + modelLocation[ 1] * vectorModel[ 1] + modelLocation[ 2] * vectorModel[ 2];
+						modelLocationConverted[ 1] = modelLocation[ 0] * vectorModel[ 3] + modelLocation[ 1] * vectorModel[ 4] + modelLocation[ 2] * vectorModel[ 5];
+						modelLocationConverted[ 2] = modelLocation[ 0] * vectorModel[ 6] + modelLocation[ 1] * vectorModel[ 7] + modelLocation[ 2] * vectorModel[ 8];
 
 						float sensorLocationConverted[ 3];
 						
-//						sensorLocationConverted[ 0] = sensorLocation[ 0];
-//						sensorLocationConverted[ 1] = sensorLocation[ 1];
-//						sensorLocationConverted[ 2] = sensorLocation[ 2];
+						sensorLocationConverted[ 0] = sensorLocation[ 0];
+						sensorLocationConverted[ 1] = sensorLocation[ 1];
+						sensorLocationConverted[ 2] = sensorLocation[ 2];
 						
 						sensorLocationConverted[ 0] = sensorLocation[ 0] * vectorSensor[ 0] + sensorLocation[ 1] * vectorSensor[ 1] + sensorLocation[ 2] * vectorSensor[ 2];
 						sensorLocationConverted[ 1] = sensorLocation[ 0] * vectorSensor[ 3] + sensorLocation[ 1] * vectorSensor[ 4] + sensorLocation[ 2] * vectorSensor[ 5];
 						sensorLocationConverted[ 2] = sensorLocation[ 0] * vectorSensor[ 6] + sensorLocation[ 1] * vectorSensor[ 7] + sensorLocation[ 2] * vectorSensor[ 8];
 						
 						// add the points to the registration method
-						[hr addModelPointX: modelLocation[0] Y: modelLocation[1] Z: modelLocation[2]];
+						[hr addModelPointX: modelLocationConverted[0] Y: modelLocationConverted[1] Z: modelLocationConverted[2]];
 						[hr addSensorPointX: sensorLocationConverted[0] Y: sensorLocationConverted[1] Z: sensorLocationConverted[2]];
 					}
 				}
@@ -11156,30 +11213,37 @@ int i,j,l;
 			// compute the registration
 			[hr compute];
 			
+			double matrix[ 16];
+			
+			[hr computeVTK :matrix];
+			
+			double translation[ 3];
+			
+			translation[ 0] = matrix[ 9];
+			translation[ 1] = matrix[ 10];
+			translation[ 2] = matrix[ 11];
+			
+			matrix[ 9] = translation[ 0] * vectorSensor[ 0] + translation[ 1] * vectorSensor[ 1] + translation[ 2] * vectorSensor[ 2];
+			matrix[ 10] = translation[ 0] * vectorSensor[ 3] + translation[ 1] * vectorSensor[ 4] + translation[ 2] * vectorSensor[ 5];
+			matrix[ 11] = translation[ 0] * vectorSensor[ 6] + translation[ 1] * vectorSensor[ 7] + translation[ 2] * vectorSensor[ 8];
+
+
 			ITKTransform * transform = [[ITKTransform alloc] initWithViewer:movingViewer];
 			
-			double	*rotation, rotationConverted[ 9];
-			double	*translation, translationConverted[ 3];
-			
-			rotation = [hr rotation];
-			translation = [hr translation];
-			
-			for( i = 0; i < 9 ; i++) rotationConverted[ i] = rotation[ i];
-			for( i = 0; i < 3 ; i++) translationConverted[ i] = translation[ i];
-			
-//			rotationConverted[ 0] = 1;
-//			rotationConverted[ 1] = 0;
-//			rotationConverted[ 2] = 0;
+//			double	*rotation, rotationConverted[ 9];
+//			double	*translation, translationConverted[ 3];
 //			
-//			rotationConverted[ 3] = 0;
-//			rotationConverted[ 4] = 1;
-//			rotationConverted[ 5] = 0;
-//
-//			rotationConverted[6] = rotationConverted[1]*rotationConverted[5] - rotationConverted[2]*rotationConverted[4];
-//			rotationConverted[7] = rotationConverted[2]*rotationConverted[3] - rotationConverted[0]*rotationConverted[5];
-//			rotationConverted[8] = rotationConverted[0]*rotationConverted[4] - rotationConverted[1]*rotationConverted[3];
+//			rotation = [hr rotation];
+//			translation = [hr translation];
+//			
+//			for( i = 0; i < 9 ; i++) rotationConverted[ i] = rotation[ i];
+//			for( i = 0; i < 3 ; i++) translationConverted[ i] = translation[ i];
+
 			
-			[transform computeAffineTransformWithRotation: rotationConverted translation: translationConverted resampleOnViewer: self];
+			[transform computeAffineTransformWithParameters: matrix resampleOnViewer: self];
+			
+			
+//			[transform computeAffineTransformWithRotation: rotationConverted translation: translationConverted resampleOnViewer: self];
 			[transform release];
 		}
 		[hr release];

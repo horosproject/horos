@@ -1630,6 +1630,8 @@ public:
 		[mouseModifiers release];
 		mouseModifiers = 0L;
 		
+		[self deleteMouseDownTimer];
+		
 		[[NSNotificationCenter defaultCenter] removeObserver: self];
 	}
 }

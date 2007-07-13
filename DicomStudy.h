@@ -20,6 +20,7 @@
 
 @interface DicomStudy : NSManagedObject
 {
+	BOOL isHidden;
 }
 
 - (NSNumber *) noFiles;
@@ -34,6 +35,7 @@
 - (NSArray *)waveFormSeries;
 - (NSArray *)roiSRSeries;
 - (NSDictionary *)dictionary;
-
+- (BOOL) isHidden;
+- (void) setHidden: (BOOL) h;
 
 @end

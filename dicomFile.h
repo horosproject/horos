@@ -51,7 +51,7 @@
 + (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed;
 + (BOOL) isXMLDescriptedFile:(NSString *) file;
 + (BOOL) isXMLDescriptorFile:(NSString *) file;
-
++ (void) setFilesAreFromCDMedia: (BOOL) f;
 + (void) setDefaults;
 + (void) resetDefaults;
 + (NSString*) NSreplaceBadCharacter: (NSString*) str;

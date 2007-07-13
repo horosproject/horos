@@ -37,12 +37,6 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
 - (void) computeAffineTransformWithRotation: (double*)aRotation translation: (double*)aTranslation resampleOnViewer:(ViewerController*)referenceViewer
 {
 	double *parameters = (double*) malloc(12*sizeof(double));
@@ -75,7 +69,26 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	AffineTransformType::Pointer transform = AffineTransformType::New();
 	
 	ParametersType parameters(transform->GetNumberOfParameters());
+
+
+
+
+	double translation[ 3];
 	
+	translation[ 0] = theParameters[ 9];
+	translation[ 1] = theParameters[ 10];
+	translation[ 2] = theParameters[ 11];
+	
+	theParameters[ 9] = translation[ 0] * theParameters[ 0] + translation[ 1] * theParameters[ 1] + translation[ 2] * theParameters[ 2];
+	theParameters[ 10] = translation[ 0] * theParameters[ 3] + translation[ 1] * theParameters[ 4] + translation[ 2] * theParameters[ 5];
+	theParameters[ 11] = translation[ 0] * theParameters[ 6] + translation[ 1] * theParameters[ 7] + translation[ 2] * theParameters[ 8];
+
+
+
+
+
+
+
 	int i;
 	for(i=0; i<transform->GetNumberOfParameters(); i++)
 	{
@@ -89,29 +102,35 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 
 	resample->SetTransform(transform);
 	resample->SetInput([itkImage itkImporter]->GetOutput());
-	resample->SetDefaultPixelValue(-1024.0);	
+	resample->SetDefaultPixelValue(-1024.0);
+	
+	DCMPix *firstObject = [[referenceViewer pixList] objectAtIndex: 0];	//[[referenceViewer pixList] count]-1];
 	
 	double outputSpacing[3];
-	outputSpacing[0] = [[referenceViewer imageView] pixelSpacingX];
-	outputSpacing[1] = [[referenceViewer imageView] pixelSpacingY];
-	outputSpacing[2] = [referenceViewer computeInterval];
+	outputSpacing[0] = [firstObject pixelSpacingX];
+	outputSpacing[1] = [firstObject pixelSpacingY];
+	outputSpacing[2] = [firstObject sliceInterval];
 	resample->SetOutputSpacing(outputSpacing);
 	
 	double outputOrigin[3], outputOriginConverted[3];	
-	outputOrigin[0] = [[[referenceViewer pixList] objectAtIndex: 0] originX];// - [[[originalViewer pixList] objectAtIndex: 0] originX];
-	outputOrigin[1] = [[[referenceViewer pixList] objectAtIndex: 0] originY];// - [[[originalViewer pixList] objectAtIndex: 0] originY];
-	outputOrigin[2] = [[[referenceViewer pixList] objectAtIndex: 0] originZ];// - [[[originalViewer pixList] objectAtIndex: 0] originZ];
+	outputOrigin[0] =  [firstObject originX];	// - [[[originalViewer pixList] objectAtIndex: 0] originX];
+	outputOrigin[1] =  [firstObject originY];	// - [[[originalViewer pixList] objectAtIndex: 0] originY];
+	outputOrigin[2] =  [firstObject originZ];	// - [[[originalViewer pixList] objectAtIndex: 0] originZ];
 
 	outputOriginConverted[ 0] = outputOrigin[ 0] * theParameters[ 0] + outputOrigin[ 1] * theParameters[ 1] + outputOrigin[ 2] * theParameters[ 2];
 	outputOriginConverted[ 1] = outputOrigin[ 0] * theParameters[ 3] + outputOrigin[ 1] * theParameters[ 4] + outputOrigin[ 2] * theParameters[ 5];
 	outputOriginConverted[ 2] = outputOrigin[ 0] * theParameters[ 6] + outputOrigin[ 1] * theParameters[ 7] + outputOrigin[ 2] * theParameters[ 8];
-
+	
+	NSLog( @"%f %f %f", outputOrigin[ 0], outputOrigin[ 1], outputOrigin[ 2]);
+	NSLog( @"%f %f %f", outputOriginConverted[ 0], outputOriginConverted[ 1], outputOriginConverted[ 2]);
+	
 	resample->SetOutputOrigin( outputOriginConverted);
 	
 	ImageType::SizeType size;
-	size[0] = [[[referenceViewer pixList] objectAtIndex: 0] pwidth];
-	size[1] = [[[referenceViewer pixList] objectAtIndex: 0] pheight];
+	size[0] = [firstObject pwidth];
+	size[1] = [firstObject pheight];
 	size[2] = [[referenceViewer pixList] count];
+	
 	resample->SetSize(size);
 
 	int u, v;
@@ -135,6 +154,14 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	resample->Update();
 	
 	float* resultBuff = resample->GetOutput()->GetBufferPointer();
+	
+	itk::Point<double, 3> tmp;
+
+	double *newOrigin;
+	
+	tmp = resample->GetOutput()->GetOrigin();
+	
+	NSLog( @"%f %f %f", tmp[ 0], tmp[ 1], tmp[ 2]);
 	
 	NSLog(@"transform done");
 		

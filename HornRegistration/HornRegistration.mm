@@ -8,6 +8,10 @@
 
 #import "HornRegistration.h"
 
+#include "vtkLandmarkTransform.h"
+#include "vtkPoints.h"
+#include "vtkMatrix4x4.h"
+
 #include <stdio.h>
 #include "etkRegistration.hpp"
 
@@ -155,6 +159,70 @@
 	else
 	{
 		return -1;
+	}
+}
+
+- (void) computeVTK:(double*) matrixResult
+{
+	short numberOfPoint = [self numberOfPoint];
+	
+	if (numberOfPoint>0)
+	{
+		vtkLandmarkTransform	*trans = vtkLandmarkTransform::New();
+		
+		vtkPoints	*modelPts = vtkPoints::New();
+		vtkPoints	*sensorPts = vtkPoints::New();
+		
+		modelPts->SetNumberOfPoints( numberOfPoint);
+		sensorPts->SetNumberOfPoints( numberOfPoint);
+		
+		double pt3D[ 3];
+		int u;
+		
+		for (u = 0; u < numberOfPoint; u++)
+		{
+			[[modelPoints objectAtIndex:u] getValue: pt3D];
+			modelPts->SetPoint( u, pt3D);
+			
+			[[sensorPoints objectAtIndex:u] getValue: pt3D];
+			sensorPts->SetPoint( u, pt3D);
+		}
+		
+		trans->SetSourceLandmarks( modelPts);
+		trans->SetTargetLandmarks( sensorPts);
+		trans->Update();
+		
+		vtkMatrix4x4 *matrix = trans->GetMatrix();
+		
+		int x, y;
+		
+		u = 0;
+		
+		for( x = 0 ; x < 3; x++)
+		{
+			for( y = 0; y < 3; y++)
+			{
+				matrixResult[ u] = matrix->Element[ x][ y];
+				
+				u++;
+			}
+			
+			NSLog( @"%f %f %f", matrixResult[ u-3], matrixResult[ u-2], matrixResult[ u-1]);
+		}
+		
+		matrixResult[ u] = matrix->Element[ 0][ 3];
+		u++;
+		matrixResult[ u] = matrix->Element[ 1][ 3];
+		u++;
+		matrixResult[ u] = matrix->Element[ 2][ 3];
+		u++;
+		
+		matrix->PrintSelf( cout,0);
+		
+		modelPts->Delete();
+		sensorPts->Delete();
+		
+		trans->Delete();
 	}
 }
 

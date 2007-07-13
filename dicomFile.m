@@ -53,17 +53,18 @@ extern NSMutableDictionary *fileFormatPlugins;
 extern NSLock	*PapyrusLock;
 
 static BOOL DEFAULTSSET = NO;
-static int TOOLKITPARSER, PREFERPAPYRUSFORCD;
-static BOOL COMMENTSAUTOFILL;
-static BOOL splitMultiEchoMR;
-static BOOL useSeriesDescription;
-static BOOL NOLOCALIZER;
-static BOOL combineProjectionSeries;
-static int combineProjectionSeriesMode;
-static BOOL	CHECKFORLAVIM;
-static int COMMENTSGROUP;
-static int COMMENTSELEMENT;
-static BOOL SEPARATECARDIAC4D;
+static int TOOLKITPARSER = NO, PREFERPAPYRUSFORCD = NO;
+static BOOL COMMENTSAUTOFILL = NO;
+static BOOL splitMultiEchoMR = NO;
+static BOOL useSeriesDescription = NO;
+static BOOL NOLOCALIZER = NO;
+static BOOL combineProjectionSeries = NO;
+static int combineProjectionSeriesMode = NO;
+static BOOL	CHECKFORLAVIM = NO;
+static int COMMENTSGROUP = NO;
+static int COMMENTSELEMENT = NO;
+static BOOL SEPARATECARDIAC4D = NO;
+static BOOL filesAreFromCDMedia = NO;
 
 char* replaceBadCharacter (char* str, NSStringEncoding encoding) 
 {
@@ -128,6 +129,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 //@end
 
 @implementation DicomFile
++ (void) setFilesAreFromCDMedia: (BOOL) f;
+{
+	filesAreFromCDMedia = f;
+}
 
 -(long) NoOfSeries {return NoOfSeries;}
 -(long) getWidth {return width;}
@@ -2390,7 +2395,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	BOOL isCD = NO;
 	
 	if( PREFERPAPYRUSFORCD)
-//		isCD = [DicomFile isItCD: [filePath pathComponents]];
+		isCD = filesAreFromCDMedia;
 
 	if( TOOLKITPARSER == 1 || isCD == YES) return [self getDicomFilePapyrus: NO];
 	if( TOOLKITPARSER == 0) return [self decodeDICOMFileWithDCMFramework];

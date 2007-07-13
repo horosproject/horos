@@ -21,6 +21,7 @@
 - (void) addSensorPoint: (double*) point;
 - (short) numberOfPoint;
 - (void) compute;
+- (void) computeVTK:(double*) matrixResult;
 
 - (double*) rotation;
 - (double*) translation;

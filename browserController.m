@@ -532,6 +532,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 	{
 		isCDMedia = [BrowserController isItCD: [[newFilesArray objectAtIndex: 0] pathComponents]];
 		
+		[DicomFile setFilesAreFromCDMedia: isCDMedia];
+		
 		if( [newFilesArray count] > 50 || isCDMedia == YES)
 		{
 			splash = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString(@"Adding %@ files...", nil), [numFmt stringForObjectValue:[NSNumber numberWithInt:[newFilesArray count]]]]];
@@ -1070,6 +1072,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 			databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 		}
 	}
+	
+	[DicomFile setFilesAreFromCDMedia: NO];
 	
 	if( addFailed)
 	{

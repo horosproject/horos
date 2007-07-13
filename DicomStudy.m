@@ -28,6 +28,16 @@ Version 2.3
 
 @implementation DicomStudy
 
+- (BOOL) isHidden;
+{
+	return isHidden;
+}
+
+- (void) setHidden: (BOOL) h;
+{
+	isHidden = h;
+}
+
 - (NSString*) type
 {
 	return @"Study";
