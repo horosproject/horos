@@ -99,4 +99,6 @@
 - (NSMutableArray*) pointsROIAtX: (long) x;
 - (NSMutableArray*) pointsROIAtY: (long) y;
 
+- (NSMenu *)contextualMenu;
+
 @end

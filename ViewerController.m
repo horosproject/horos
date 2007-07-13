@@ -1258,16 +1258,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (NSString *) contextualDictionaryPath {return contextualDictionaryPath;}
 
--(void)createDCMViewMenu{
+- (NSMenu *)contextualMenu{
+
 // if contextualMenuPath says @"default", recreate the default menu once and again
 // if contextualMenuPath contains a path, create the new contextual menu
 // if contextualMenuPath says @"custom", don't do anything
-//	NSLog([self contextualDictionaryPath]);
 
+	NSMenu *contextual;
 		if([contextualDictionaryPath isEqualToString:@"default"]) // JF20070102
 		{
 			/******************* Tools menu ***************************/
-			NSMenu *contextual =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
+			contextual =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
 			NSMenu *submenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)];
 			NSMenuItem *item;
 			NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil), NSLocalizedString(@"Move", nil), NSLocalizedString(@"Magnify", nil), 
@@ -1389,23 +1390,25 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[contextual addItem:item];
 			[item release];
 
-			
-			//Add menu to view
-			[imageView setMenu:contextual];
-			[contextual release];
-			
 			[submenu release];
 	}
 	else //use the menuDictionary of the path JF20070102
 	{
 		   NSArray *pathComponents = [[self contextualDictionaryPath] pathComponents];
 		   NSString *plistTitle = [[pathComponents objectAtIndex:([pathComponents count]-1)] stringByDeletingPathExtension];
-		   NSMenu *contextual = [[NSMenu alloc] initWithTitle:plistTitle
+		   contextual = [[NSMenu alloc] initWithTitle:plistTitle
 											   withDictionary:[NSDictionary dictionaryWithContentsOfFile:[self contextualDictionaryPath]]
 										  forWindowController:self ];
-		   [imageView setMenu:contextual];
+		   
 	}
+	
+	
+	return [contextual autorelease];
+}
 
+
+-(void)createDCMViewMenu{
+	[imageView setMenu:[self contextualMenu]];
 }
 
 
