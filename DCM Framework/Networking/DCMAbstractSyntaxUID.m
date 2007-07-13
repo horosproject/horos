@@ -495,6 +495,10 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	return KeyObjectSelectionDocumentStorage;
 }
 
++ (BOOL) isKeyObjectDocument:(NSString *)sopClassUID  {
+	return (sopClassUID != nil && [sopClassUID isEqualToString:KeyObjectSelectionDocumentStorage]);
+}
+
 	/**
 	 * @param	sopClassUID	UID of the SOP Class, as a String without trailing zero padding
 	 * @return			true if the UID argument matches one of the known standard generic or specific Structured Report Storage SOP Classes (not including Key Object)

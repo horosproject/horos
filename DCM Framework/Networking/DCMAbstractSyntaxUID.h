@@ -83,6 +83,7 @@ htt://www.pixelmed.com
 + (NSString *)comprehensiveSRStorage;
 + (NSString *)mammographyCADSRStorage;
 + (NSString *)keyObjectSelectionDocumentStorage;
++ (BOOL) isKeyObjectDocument:(NSString *)sopClassUID;
 + (BOOL) isStructuredReport:(NSString *)sopClassUID;
 
 + (NSString *)grayscaleSoftcopyPresentationStateStorage;
