@@ -506,6 +506,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	NSMutableArray			*vlToReload = [NSMutableArray arrayWithCapacity: 0];
 	BOOL					isCDMedia = NO;
 	
+
 	if( [newFilesArray count] == 0) return [NSMutableArray arrayWithCapacity: 0];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]) onlyDICOM = YES;
@@ -632,8 +633,13 @@ static BOOL				DICOMDIRCDMODE = NO;
 				}
 				
 				// For now, we cannot add non-image DICOM files
-				if( [curDict objectForKey:@"SOPClassUID"] != nil && [DCMAbstractSyntaxUID isImageStorage: [curDict objectForKey: @"SOPClassUID"]] == NO && [DCMAbstractSyntaxUID isRadiotherapy: [curDict objectForKey: @"SOPClassUID"]] == NO)
+				if( [curDict objectForKey:@"SOPClassUID"] != nil 
+				&& [DCMAbstractSyntaxUID isImageStorage: [curDict objectForKey: @"SOPClassUID"]] == NO 
+				&& [DCMAbstractSyntaxUID isRadiotherapy: [curDict objectForKey: @"SOPClassUID"]] == NO
+				&& [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]] == NO
+				&& [DCMAbstractSyntaxUID isKeyObjectDocument: [curDict objectForKey: @"SOPClassUID"]] == NO)
 				{
+					NSLog(@"unsupported DICOM SOP CLASS");
 					[curDict release];
 					curDict = 0L;
 				}
