@@ -8769,14 +8769,15 @@ BOOL            readable = YES;
 
 }
 
--(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d {
+-(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d
+{
 	d[0] = originX + y*orientation[3]*pixelSpacingY + x*orientation[0]*pixelSpacingX;
 	d[1] = originY + y*orientation[4]*pixelSpacingY + x*orientation[1]*pixelSpacingX;
 	d[2] = originZ + y*orientation[5]*pixelSpacingY + x*orientation[2]*pixelSpacingX;
 }
 
-- (void) convertDICOMCoords: (float*) dc toSliceCoords: (float*) sc {
-	
+- (void) convertDICOMCoords: (float*) dc toSliceCoords: (float*) sc
+{	
 	float temp[ 3 ];
 	
 	temp[ 0 ] = dc[ 0 ] - originX;

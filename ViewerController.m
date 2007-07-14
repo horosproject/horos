@@ -608,35 +608,22 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				[curPix orientation: orientation];
 				
-				if( sign > 0)
-				{
-					origin[ 0] = [lastPix originX] + (((float) i + 1.0) * [firstPix pixelSpacingY]) * orientation[ 6] * sign;
-					origin[ 1] = [lastPix originY] + (((float) i + 1.0) * [firstPix pixelSpacingY]) * orientation[ 7] * sign;
-					origin[ 2] = [lastPix originZ] + (((float) i + 1.0) * [firstPix pixelSpacingY]) * orientation[ 8] * sign;
-				}
-//				else
-//				{
-//					origin[ 0] = [firstPix originX] + (((float) i+ 0.0) * [firstPix pixelSpacingY]) * orientation[ 6] * -sign;
-//					origin[ 1] = [firstPix originY] + (((float) i+ 0.0) * [firstPix pixelSpacingY]) * orientation[ 7] * -sign;
-//					origin[ 2] = [firstPix originZ] + (((float) i+ 0.0) * [firstPix pixelSpacingY]) * orientation[ 8] * -sign;
-//				}
+				[lastPix convertPixX:0 pixY: i toDICOMCoords: origin];
+				
+				[curPix setOrigin: origin];
 				
 				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-				{
 					[[newPixList lastObject] setSliceLocation: origin[ 0]];
-				}
+				
 				if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-				{
 					[[newPixList lastObject] setSliceLocation: origin[ 1]];
-				}
+				
 				if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-				{
 					[[newPixList lastObject] setSliceLocation: origin[ 2]];
-				}
 				
 				[[newPixList lastObject] setSliceThickness: [firstPix pixelSpacingY]];
 				[[newPixList lastObject] setSliceInterval: 0];
-				[curPix setOrigin: origin];
+				
 			}
 			else											// Y - RESLICE
 			{
@@ -728,31 +715,21 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[curPix setPixelRatio:  newYSpace / newXSpace];
 				
 				[curPix orientation: orientation];
-				if( sign > 0)
-				{
-					origin[ 0] = [lastPix originX] + ((float) i * [firstPix pixelSpacingX]) * orientation[ 6] * -sign;
-					origin[ 1] = [lastPix originY] + ((float) i * [firstPix pixelSpacingX]) * orientation[ 7] * -sign;
-					origin[ 2] = [lastPix originZ] + ((float) i * [firstPix pixelSpacingX]) * orientation[ 8] * -sign;
-				}
-//				else
-//				{
-//					origin[ 0] = [firstPix originX] + ((i+0.0) * [firstPix pixelSpacingX]) * orientation[ 6] * sign;
-//					origin[ 1] = [firstPix originY] + ((i+0.0) * [firstPix pixelSpacingX]) * orientation[ 7] * sign;
-//					origin[ 2] = [firstPix originZ] + ((i+0.0) * [firstPix pixelSpacingX]) * orientation[ 8] * sign;
-//				}
+				
+				[lastPix convertPixX:i pixY:0 toDICOMCoords: origin];
+				
+//				origin[ 0] = [lastPix originX] + ((float) i * [firstPix pixelSpacingX]) * orientation[ 6] * -sign;
+//				origin[ 1] = [lastPix originY] + ((float) i * [firstPix pixelSpacingX]) * orientation[ 7] * -sign;
+//				origin[ 2] = [lastPix originZ] + ((float) i * [firstPix pixelSpacingX]) * orientation[ 8] * -sign;
 				
 				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-				{
 					[[newPixList lastObject] setSliceLocation: origin[ 0]];
-				}
+				
 				if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-				{
 					[[newPixList lastObject] setSliceLocation: origin[ 1]];
-				}
+				
 				if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-				{
 					[[newPixList lastObject] setSliceLocation: origin[ 2]];
-				}
 				
 				[[newPixList lastObject] setSliceThickness: [firstPix pixelSpacingX]];
 				[[newPixList lastObject] setSliceInterval: 0];
@@ -797,6 +774,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return succeed;
 }
 
++ (int) orientation:(float*) vectors
+{
+	int o = 0;
+	
+	if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))	o = 0;
+	if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))	o = 1;
+	if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))	o = 2;
+	
+	return o;
+}
+
 - (IBAction) vertFlipDataSet:(id) sender
 {
 	int y, x;
@@ -830,7 +818,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		for( x = 0; x < [pixList[ y] count]; x++)
 		{
-			float	o[ 9];
+			float	o[ 9], origin[ 3];
 			DCMPix	*dcm = [pixList[ y] objectAtIndex: x];
 			
 			[dcm orientation: o];
@@ -841,19 +829,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			[dcm setOrientation: o];
 			[dcm setSliceInterval: 0];
-		}
-		
-		for( x = 0; x < [pixList[ y] count]; x++)
-		{
-			DCMPix	*dcm = [pixList[ y] objectAtIndex: x];
 			
-			float	o[3], o2[ 3];
-			
-			o[ 0] = [dcm originX];			o[ 1] = [dcm originY];			o[ 2] = [dcm originZ];
-			
-			o[ 1] -= [dcm pheight] * [dcm pixelSpacingY];
-			
-			[dcm setOrigin: o];
+			[dcm convertPixX: 0 pixY: -[dcm pheight]+1 toDICOMCoords: origin];
+			[dcm setOrigin: origin];
+			[dcm setSliceLocation: origin[ [ViewerController orientation: o]]];
 		}
 	}
 	
@@ -897,19 +876,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			[dcm setOrientation: o];
 			[dcm setSliceInterval: 0];
-		}
-		
-		for( x = 0; x < [pixList[ y] count]; x++)
-		{
-			DCMPix	*dcm = [pixList[ y] objectAtIndex: x];
 			
-			float	o[3], o2[ 3];
+			float	origin[3];
 			
-			o[ 0] = [dcm originX];			o[ 1] = [dcm originY];			o[ 2] = [dcm originZ];
+//			o[ 0] = [dcm originX];			o[ 1] = [dcm originY];			o[ 2] = [dcm originZ];
+//			o[ 0] -= [dcm pwidth] * [dcm pixelSpacingX];
 			
-			o[ 0] -= [dcm pwidth] * [dcm pixelSpacingX];
-			
-			[dcm setOrigin: o];
+			[dcm convertPixX: -[dcm pwidth]+1 pixY: 0 toDICOMCoords: origin];
+			[dcm setOrigin: origin];
+			[dcm setSliceLocation: origin[ [ViewerController orientation: o]]];
 		}
 	}
 	
@@ -1019,9 +994,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			switch( constant)
 			{
-				case kRotate90DegreesClockwise:		yy = 0;						xx = -[dcm pwidth];		break;
-				case kRotate180DegreesClockwise:	yy = [dcm pheight];			xx = -[dcm pwidth];		break;
-				case kRotate270DegreesClockwise:	yy = 0;						xx = [dcm pwidth];		break;
+				case kRotate90DegreesClockwise:		yy = 0;						xx = -[dcm pwidth]+1;		break;
+				case kRotate180DegreesClockwise:	yy = [dcm pheight]-1;		xx = -[dcm pwidth]+1;		break;
+				case kRotate270DegreesClockwise:	yy = 0;						xx = [dcm pwidth]-1;		break;
 			}
 			
 			float	originX, originY, originZ;
@@ -6111,6 +6086,18 @@ static ViewerController *draggedController = 0L;
 				currentOrientationTool = 0;
 			}
 			
+			float interval3d;
+			
+			{
+				double xd = [[pixList[ curMovieIndex] objectAtIndex:0] originX] - [[pixList[ curMovieIndex] objectAtIndex:1] originX];
+				double yd = [[pixList[ curMovieIndex] objectAtIndex:0] originY] - [[pixList[ curMovieIndex] objectAtIndex:1] originY];
+				double zd = [[pixList[ curMovieIndex] objectAtIndex:0] originZ] - [[pixList[ curMovieIndex] objectAtIndex:1] originZ];
+				
+				interval3d = sqrt(xd*xd + yd*yd + zd*zd);
+			}
+			
+			NSLog( @"Interval: %f %f", interval, interval3d);
+			
 			if( interval == 0)
 			{
 				interval = [[pixList[ curMovieIndex] objectAtIndex:0] spacingBetweenSlices];
@@ -6136,7 +6123,7 @@ static ViewerController *draggedController = 0L;
 				{
 					NSLog(@"Flip Data Now");
 					
-					interval = -interval;
+					interval = fabs( interval3d);	//interval3d;	//-interval;
 					
 					for( x = 0; x < maxMovieIndex; x++)
 					{
@@ -6191,6 +6178,9 @@ static ViewerController *draggedController = 0L;
 			}
 			else
 			{
+				if( interval < 0) interval = -interval3d;
+				else interval = interval3d;
+				
 				for( x = 0; x < maxMovieIndex; x++)
 				{
 					for( i = 0; i < [pixList[ x] count]; i++)
