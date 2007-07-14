@@ -211,6 +211,8 @@
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	[ROI saveDefaultSettings];
+	
 	[curROI setComments: [comments string]];
 	[curROI setName: [name stringValue]];
 	

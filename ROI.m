@@ -45,19 +45,8 @@ static		int						gUID = 0;
 
 extern long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer);
 
-// if error dump gl errors to debugger string, return error
-GLenum glReportError (void)
-{
-	GLenum err = glGetError();
-	if (GL_NO_ERROR != err)
-	{
-		NSLog(@"ERR");
-	}
-	return err;
-}
-
 static float ROIRegionOpacity, ROITextThickness, ROIThickness, ROIOpacity, ROIColorR, ROIColorG, ROIColorB, ROITextColorR, ROITextColorG, ROITextColorB;
-static float ROIRegionThickness, ROIRegionColorR, ROIRegionColorG, ROIRegionColorB, ROIRegionOpacity;
+static float ROIRegionThickness, ROIRegionColorR, ROIRegionColorG, ROIRegionColorB;
 static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 
 @implementation ROI
@@ -77,7 +66,6 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	[[NSUserDefaults standardUserDefaults] setFloat: ROIRegionColorR forKey: @"ROIRegionColorR"];
 	[[NSUserDefaults standardUserDefaults] setFloat: ROIRegionColorG forKey: @"ROIRegionColorG"];
 	[[NSUserDefaults standardUserDefaults] setFloat: ROIRegionColorB forKey: @"ROIRegionColorB"];
-	[[NSUserDefaults standardUserDefaults] setFloat: ROIRegionOpacity forKey: @"ROIRegionOpacity"];
 	[[NSUserDefaults standardUserDefaults] setFloat: ROIRegionThickness forKey: @"ROIRegionThickness"];
 }
 
@@ -96,7 +84,6 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	ROIRegionColorR = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorR"];
 	ROIRegionColorG = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorG"];
 	ROIRegionColorB = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorB"];
-	ROIRegionOpacity = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionOpacity"];
 	ROIRegionThickness = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionThickness"];
 	
 	ROITEXTIFSELECTED = [[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTIFSELECTED"];
@@ -341,13 +328,13 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 }
 - (void) setOpacity:(float)newOpacity
 {
-	opacity = newOpacity;
+	ROIOpacity = opacity = newOpacity;
 	
 	if( type == tPlain)
 	{
 		ROIRegionOpacity = opacity;
 	}
-	else if(type==tLayerROI)
+	else if(type == tLayerROI)
 	{
 		needsLoadTexture = YES;
 	}
