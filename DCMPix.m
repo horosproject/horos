@@ -8757,16 +8757,23 @@ BOOL            readable = YES;
 	orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
 	orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
 	
-//	NSLog(@"Before: %f %f %f", orientation[6], orientation[7], orientation[8]);
-//	
-//	float length = sqrt(orientation[6]*orientation[6] + orientation[7]*orientation[7] + orientation[8]*orientation[8]);
-//
-//   orientation[6] = orientation[ 6] / length;
-//   orientation[7] = orientation[ 7] / length;
-//   orientation[8] = orientation[ 8] / length;
-//   
-//   NSLog(@"After: %f %f %f", orientation[6], orientation[7], orientation[8]);
+	double length = sqrt(orientation[6]*orientation[6] + orientation[7]*orientation[7] + orientation[8]*orientation[8]);
 
+	orientation[6] = orientation[ 6] / length;
+	orientation[7] = orientation[ 7] / length;
+	orientation[8] = orientation[ 8] / length;
+
+	length = sqrt(orientation[0]*orientation[0] + orientation[1]*orientation[1] + orientation[2]*orientation[2]);
+
+	orientation[0] = orientation[ 0] / length;
+	orientation[1] = orientation[ 1] / length;
+	orientation[2] = orientation[ 2] / length;
+
+	length = sqrt(orientation[3]*orientation[3] + orientation[4]*orientation[4] + orientation[5]*orientation[5]);
+
+	orientation[3] = orientation[ 3] / length;
+	orientation[4] = orientation[ 4] / length;
+	orientation[5] = orientation[ 5] / length;
 }
 
 -(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d

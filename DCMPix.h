@@ -21,7 +21,7 @@
 #define USEVIMAGE
 
 typedef struct {
-   float x,y,z;
+   double x,y,z;
 } XYZ;
 
 extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);

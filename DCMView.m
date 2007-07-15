@@ -103,26 +103,43 @@ NSString *pasteBoardOsiriXPlugin = @"OsiriXPluginDataType";
 						dest[1]=v1[1]-v2[1]; \
 						dest[2]=v1[2]-v2[2]; 
 
+void Normalise(XYZ *p)
+{
+   double length;
+
+   length = sqrt(p->x * p->x + p->y * p->y + p->z * p->z);
+   if (length != 0) {
+      p->x /= length;
+      p->y /= length;
+      p->z /= length;
+   } else {
+      p->x = 0;
+      p->y = 0;
+      p->z = 0;
+   } 
+}
+
 XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 {
    XYZ q = {0.0,0.0,0.0};
-   float costheta,sintheta;
+   double costheta,sintheta;
 
-//   Normalise(&r);
+   Normalise(&r);
+	
    costheta = cos(theta);
    sintheta = sin(theta);
 
-   q.x += (costheta + (1 - costheta) * r.x * r.x) * p.x;
-   q.x += ((1 - costheta) * r.x * r.y - r.z * sintheta) * p.y;
-   q.x += ((1 - costheta) * r.x * r.z + r.y * sintheta) * p.z;
+   q.x += (costheta + (1.0 - costheta) * r.x * r.x) * p.x;
+   q.x += ((1.0 - costheta) * r.x * r.y - r.z * sintheta) * p.y;
+   q.x += ((1.0 - costheta) * r.x * r.z + r.y * sintheta) * p.z;
 
-   q.y += ((1 - costheta) * r.x * r.y + r.z * sintheta) * p.x;
-   q.y += (costheta + (1 - costheta) * r.y * r.y) * p.y;
-   q.y += ((1 - costheta) * r.y * r.z - r.x * sintheta) * p.z;
+   q.y += ((1.0 - costheta) * r.x * r.y + r.z * sintheta) * p.x;
+   q.y += (costheta + (1.0 - costheta) * r.y * r.y) * p.y;
+   q.y += ((1.0 - costheta) * r.y * r.z - r.x * sintheta) * p.z;
 
-   q.z += ((1 - costheta) * r.x * r.z - r.y * sintheta) * p.x;
-   q.z += ((1 - costheta) * r.y * r.z + r.x * sintheta) * p.y;
-   q.z += (costheta + (1 - costheta) * r.z * r.z) * p.z;
+   q.z += ((1.0 - costheta) * r.x * r.z - r.y * sintheta) * p.x;
+   q.z += ((1.0 - costheta) * r.y * r.z + r.x * sintheta) * p.y;
+   q.z += (costheta + (1.0 - costheta) * r.z * r.z) * p.z;
 
    return(q);
 }

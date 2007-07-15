@@ -831,7 +831,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[dcm setSliceInterval: 0];
 			
 			[dcm convertPixX: 0 pixY: -[dcm pheight]+1 toDICOMCoords: origin];
+			
+//			origin[ 0] = [dcm originX];			origin[ 1] = [dcm originY];			origin[ 2] = [dcm originZ];
+//			origin[ 1] -= ([dcm pheight]-1) * [dcm pixelSpacingY];
+			
 			[dcm setOrigin: origin];
+			
 			[dcm setSliceLocation: origin[ [ViewerController orientation: o]]];
 		}
 	}
@@ -1004,6 +1009,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			originX = [dcm originX];
 			originY = [dcm originY];
 			originZ = [dcm originZ];
+			
+			[dcm orientation: o];
 			
 			d[0] = originX + yy*o[3]*[dcm pixelSpacingY] + xx*o[0]*[dcm pixelSpacingX];
 			d[1] = originY + yy*o[4]*[dcm pixelSpacingY] + xx*o[1]*[dcm pixelSpacingX];
@@ -3953,7 +3960,9 @@ static ViewerController *draggedController = 0L;
 - (IBAction) shutterOnOff:(id) sender
 {
 // ***************
-
+	[self rotateDataSet: kRotate90DegreesClockwise];
+	return;
+	
 //	{
 //	int i;
 //	NSArray	*rois = [self selectedROIs];
