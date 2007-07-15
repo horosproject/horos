@@ -2702,33 +2702,37 @@ BOOL gUSEPAPYRUSDCMPIX;
     return fImage;
 }
 
--(void) setPixelSpacingX :(float) s
+-(void) setPixelSpacingX :(double) s
 {
 	[self CheckLoad];
 	pixelSpacingX = s;
 }
 
--(void) setPixelSpacingY :(float) s
+-(void) setPixelSpacingY :(double) s
 {
 	[self CheckLoad];
 	pixelSpacingY = s;
 }
 
--(float) originX { [self CheckLoad]; return originX;}
--(float) originY { [self CheckLoad]; return originY;}
--(float) originZ { [self CheckLoad]; return originZ;}
+-(double) originX { [self CheckLoad]; return originX;}
+-(double) originY { [self CheckLoad]; return originY;}
+-(double) originZ { [self CheckLoad]; return originZ;}
 -(void) setOrigin :(float*) o
 {
 	originX = o[ 0];	originY = o[ 1];	originZ = o[ 2];
 }
--(float) pixelSpacingY { [self CheckLoad]; return pixelSpacingY;}
--(float) pixelSpacingX { [self CheckLoad]; return pixelSpacingX;}
--(float) pixelRatio { [self CheckLoad]; return pixelRatio;}
+-(void) setOriginDouble :(double*) o
+{
+	originX = o[ 0];	originY = o[ 1];	originZ = o[ 2];
+}
+-(double) pixelSpacingY { [self CheckLoad]; return pixelSpacingY;}
+-(double) pixelSpacingX { [self CheckLoad]; return pixelSpacingX;}
+-(double) pixelRatio { [self CheckLoad]; return pixelRatio;}
 -(void) setPixelRatio:(float) r { pixelRatio = r;}
--(float) sliceLocation { [self CheckLoad]; return sliceLocation;}
+-(double) sliceLocation { [self CheckLoad]; return sliceLocation;}
 -(void) setSliceLocation:(float) l { [self CheckLoad]; sliceLocation = l;}
--(float) sliceThickness { [self CheckLoad]; return sliceThickness;}
--(float) spacingBetweenSlices { [self CheckLoad]; return spacingBetweenSlices;}
+-(double) sliceThickness { [self CheckLoad]; return sliceThickness;}
+-(double) spacingBetweenSlices { [self CheckLoad]; return spacingBetweenSlices;}
 -(void) setSliceThickness:(float) l { [self CheckLoad]; sliceThickness = l;}
 -(float) slope {[self CheckLoad]; return slope;}
 -(float) offset{[self CheckLoad]; return offset;}
@@ -3236,7 +3240,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	sliceInterval = s;
 }
 
--(float) sliceInterval {    [self CheckLoad];   return sliceInterval;}
+-(double) sliceInterval {    [self CheckLoad];   return sliceInterval;}
 
 #include "BioradHeader.h"
 
@@ -8333,13 +8337,18 @@ BOOL            readable = YES;
 							width /= 2;
 							width *= 2;
 							
-							pixelSpacingX = Analyze->dime.pixdim[ 1];
-							if( swapByteOrder) SwitchFloat( &pixelSpacingX);
-							pixelSpacingY = Analyze->dime.pixdim[ 2];
-							if( swapByteOrder) SwitchFloat( &pixelSpacingY);
-							sliceThickness = sliceInterval = Analyze->dime.pixdim[ 3];
-							if( swapByteOrder) SwitchFloat( &sliceThickness);
-							if( swapByteOrder) SwitchFloat( &sliceInterval);
+							float pX = Analyze->dime.pixdim[ 1];
+							if( swapByteOrder) SwitchFloat( &pX);
+							pixelSpacingX = pX;
+							
+							pX = Analyze->dime.pixdim[ 2];
+							if( swapByteOrder) SwitchFloat( &pX);
+							pixelSpacingY = pX;
+							
+							pX = Analyze->dime.pixdim[ 3];
+							if( swapByteOrder) SwitchFloat( &pX);
+							sliceThickness = pX;
+							sliceInterval = pX;
 							
 							totSize = realheight * realwidth * 2;
 							oImage = malloc( totSize);
@@ -8739,14 +8748,19 @@ BOOL            readable = YES;
 
 # pragma mark-
 
--(void) orientation:(float*) c
+-(void) orientationDouble:(double*) c
 {
-	long i;
-	
+	int i;
 	for( i = 0 ; i < 9; i ++) c[ i] = orientation[ i];
 }
 
--(void) setOrientation:(float*) c
+-(void) orientation:(float*) c
+{
+	int i;
+	for( i = 0 ; i < 9; i ++) c[ i] = orientation[ i];
+}
+
+-(void) setOrientationDouble:(double*) c
 {
 	long i;
 	
@@ -8776,7 +8790,24 @@ BOOL            readable = YES;
 	orientation[5] = orientation[ 5] / length;
 }
 
+-(void) setOrientation:(float*) c
+{
+	double d[ 6];
+	int i;
+	
+	for( i = 0 ; i < 6; i ++) d[ i] = c[ i];
+	
+	[self setOrientationDouble: d];
+}
+
 -(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d
+{
+	d[0] = originX + y*orientation[3]*pixelSpacingY + x*orientation[0]*pixelSpacingX;
+	d[1] = originY + y*orientation[4]*pixelSpacingY + x*orientation[1]*pixelSpacingX;
+	d[2] = originZ + y*orientation[5]*pixelSpacingY + x*orientation[2]*pixelSpacingX;
+}
+
+-(void) convertPixDoubleX: (double) x pixY: (double) y toDICOMCoords: (double*) d
 {
 	d[0] = originX + y*orientation[3]*pixelSpacingY + x*orientation[0]*pixelSpacingX;
 	d[1] = originY + y*orientation[4]*pixelSpacingY + x*orientation[1]*pixelSpacingX;
@@ -8794,7 +8825,19 @@ BOOL            readable = YES;
 	sc[ 0 ] = temp[ 0 ] * orientation[ 0 ] + temp[ 1 ] * orientation[ 1 ] + temp[ 2 ] * orientation[ 2 ];
 	sc[ 1 ] = temp[ 0 ] * orientation[ 3 ] + temp[ 1 ] * orientation[ 4 ] + temp[ 2 ] * orientation[ 5 ];
 	sc[ 2 ] = temp[ 0 ] * orientation[ 6 ] + temp[ 1 ] * orientation[ 7 ] + temp[ 2 ] * orientation[ 8 ];
+}
+
+- (void) convertDICOMCoordsDouble: (double*) dc toSliceCoords: (double*) sc
+{	
+	double temp[ 3 ];
 	
+	temp[ 0 ] = dc[ 0 ] - originX;
+	temp[ 1 ] = dc[ 1 ] - originY;
+	temp[ 2 ] = dc[ 2 ] - originZ;
+
+	sc[ 0 ] = temp[ 0 ] * orientation[ 0 ] + temp[ 1 ] * orientation[ 1 ] + temp[ 2 ] * orientation[ 2 ];
+	sc[ 1 ] = temp[ 0 ] * orientation[ 3 ] + temp[ 1 ] * orientation[ 4 ] + temp[ 2 ] * orientation[ 5 ];
+	sc[ 2 ] = temp[ 0 ] * orientation[ 6 ] + temp[ 1 ] * orientation[ 7 ] + temp[ 2 ] * orientation[ 8 ];
 }
 
 +(int) nearestSliceInPixelList: (NSArray*)pixList withDICOMCoords: (float*)dicomCoords sliceCoords: (float*)nearestSliceCoords {

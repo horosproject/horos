@@ -5731,17 +5731,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     glDisable (TEXTRECTMODE); // done with texturing
 }
 
--(float) pixelSpacing
+-(double) pixelSpacing
 {
 	return [curDCM pixelSpacingX];
 }
 
-- (float) pixelSpacingX
+- (double) pixelSpacingX
 {
 	return [curDCM pixelSpacingX];
 }
 
-- (float) pixelSpacingY
+- (double) pixelSpacingY
 {
 	return [curDCM pixelSpacingY];
 }

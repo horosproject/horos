@@ -48,8 +48,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 //DICOM TAGS
 
 //	orientation
-	float				originX, originY, originZ;
-	float				orientation[ 9];
+	double				originX, originY, originZ;
+	double				orientation[ 9];
 
 //	pixel representation
 	BOOL				fIsSigned;
@@ -64,7 +64,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
 //	planar configuration
 	long				fPlanarConf;
-    float               pixelSpacingX, pixelSpacingY, pixelRatio;
+    double               pixelSpacingX, pixelSpacingY, pixelRatio;
 
 //	photointerpretation
 	BOOL				isRGB;
@@ -142,8 +142,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	float				cineRate;
 
 //slice
-    float               sliceInterval, sliceLocation, sliceThickness;
-	float				spacingBetweenSlices;								//SpacingBetweenSlices (0018,0088)
+    double				sliceInterval, sliceLocation, sliceThickness;
+	double				spacingBetweenSlices;								//SpacingBetweenSlices (0018,0088)
 	
 //stack
 	short				stack;
@@ -236,38 +236,46 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
 // X/Y ratio - non-square pixels
 -(void) setPixelRatio:(float)r;
--(float) pixelRatio;
+-(double) pixelRatio;
 
 // pixel size
--(float) pixelSpacingX;
--(float) pixelSpacingY;
--(void) setPixelSpacingX :(float) s;
--(void) setPixelSpacingY :(float) s;
+-(double) pixelSpacingX;
+-(double) pixelSpacingY;
+-(void) setPixelSpacingX :(double) s;
+-(void) setPixelSpacingY :(double) s;
 
 // Slice orientation
 -(void) orientation:(float*) c;
 -(void) setOrientation:(float*) c;
 
+-(void) orientationDouble:(double*) c;
+-(void) setOrientationDouble:(double*) c;
+
 // Slice location
--(float) originX;
--(float) originY;
--(float) originZ;
+-(double) originX;
+-(double) originY;
+-(double) originZ;
 -(void) setOrigin :(float*) o;
+-(void) setOriginDouble :(double*) o;
 
 // Utility methods to convert user supplied pixel coords to DICOM patient coords float d[3] (in mm)
 // using current slice location and orientation and vice versa
 -(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d;
+-(void) convertPixDoubleX: (double) x pixY: (double) y toDICOMCoords: (double*) d;
+
 -(void) convertDICOMCoords: (float*) dc toSliceCoords: (float*) sc;
+-(void) convertDICOMCoordsDouble: (double*) dc toSliceCoords: (double*) sc;
+
 +(int) nearestSliceInPixelList: (NSArray*)pixlist withDICOMCoords: (float*)dc sliceCoords: (float*) sc;  // Return index & sliceCoords
 
 // Thickness/Axial Location
--(float) sliceLocation;
+-(double) sliceLocation;
 -(void) setSliceLocation:(float) l;
--(float) sliceThickness;
+-(double) sliceThickness;
 -(void) setSliceThickness:(float) l;
--(float) sliceInterval;
+-(double) sliceInterval;
 -(void) setSliceInterval :(float) s;
--(float) spacingBetweenSlices;
+-(double) spacingBetweenSlices;
 
 // ID / FrameNo
 -(long) ID;
