@@ -6207,7 +6207,7 @@ static ViewerController *draggedController = 0L;
 		long i, x, y;
 		float v[ 9], o[ 3];
 		
-		for( i = 0; i < 6; i++) v[ i] = [[customVectors cellWithTag: i] floatValue];
+		for( i = 0; i < 9; i++) v[ i] = [[customVectors cellWithTag: i] floatValue];
 		for( i = 0; i < 3; i++) o[ i] = [[customOrigin cellWithTag: i] floatValue];
 		
 		for( i = 0 ; i < maxMovieIndex; i++)
@@ -6254,17 +6254,33 @@ static ViewerController *draggedController = 0L;
     [NSApp endSheet:ThickIntervalWindow returnCode:[sender tag]];
 }
 
+- (IBAction) updateZVector:(id) sender
+{
+	float v[ 9];
+	int i;
+	
+	for( i = 0; i < 9; i++) v[ i] = [[customVectors cellWithTag: i] floatValue];
+	
+	// Compute normal vector
+	v[6] = v[1]*v[5] - v[2]*v[4];
+	v[7] = v[2]*v[3] - v[0]*v[5];
+	v[8] = v[0]*v[4] - v[1]*v[3];
+	
+	for( i = 6; i < 9; i++)  [[customVectors cellWithTag: i] setFloatValue: v[ i]];
+}
+
 - (IBAction) setAxialOrientation:(id) sender
 {
 	[customInterval selectText: self];
 	
 	float v[ 9], o[ 3];
-	long i;
+	int i;
 
 	v[ 0] = 1;		v[ 1] = 0;		v[ 2] = 0;
 	v[ 3] = 0;		v[ 4] = 1;		v[ 5] = 0;
+	v[ 6] = 0;		v[ 7] = 0;		v[ 8] = 1;
 	
-	for( i = 0; i < 6; i++) [[customVectors cellWithTag: i] setFloatValue: v[ i]];
+	for( i = 0; i < 9; i++) [[customVectors cellWithTag: i] setFloatValue: v[ i]];
 }
 
 - (void) SetThicknessInterval:(id) sender
@@ -6282,9 +6298,10 @@ static ViewerController *draggedController = 0L;
 	{
 		v[ 0] = 1;		v[ 1] = 0;		v[ 2] = 0;
 		v[ 3] = 0;		v[ 4] = 1;		v[ 5] = 0;
+		v[ 6] = 0;		v[ 7] = 0;		v[ 8] = 1;
 	}
 	
-	for( i = 0; i < 6; i++) [[customVectors cellWithTag: i] setFloatValue: v[ i]];
+	for( i = 0; i < 9; i++) [[customVectors cellWithTag: i] setFloatValue: v[ i]];
 	
 	o[ 0] = [[pixList[ curMovieIndex] objectAtIndex:0] originX];
 	o[ 1] = [[pixList[ curMovieIndex] objectAtIndex:0] originY];
@@ -12158,9 +12175,18 @@ int i,j,l;
 
 - (IBAction) exportQuicktimeSlider:(id) sender
 {
-	[quicktimeFromText takeIntValueFrom: quicktimeFrom];
-	[quicktimeToText takeIntValueFrom: quicktimeTo];
-	[quicktimeIntervalText takeIntValueFrom: quicktimeInterval];
+	if( [sender isKindOfClass: [NSSlider class]])
+	{
+		[quicktimeFromText takeIntValueFrom: quicktimeFrom];
+		[quicktimeToText takeIntValueFrom: quicktimeTo];
+		[quicktimeIntervalText takeIntValueFrom: quicktimeInterval];
+	}
+	else
+	{
+		[quicktimeFrom takeIntValueFrom: quicktimeFromText];
+		[quicktimeTo takeIntValueFrom: quicktimeToText];
+		[quicktimeInterval takeIntValueFrom: quicktimeIntervalText];
+	}
 	
 	if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] - [sender intValue]];
 	else [imageView setIndex:  [sender intValue]-1];
@@ -12670,9 +12696,18 @@ int i,j,l;
 {
 	if( [[dcmSelection selectedCell] tag] == 1)
 	{
-		[dcmFromText takeIntValueFrom: dcmFrom];
-		[dcmToText takeIntValueFrom: dcmTo];
-		[dcmIntervalText takeIntValueFrom: dcmInterval];
+		if( [sender isKindOfClass: [NSSlider class]])
+		{
+			[dcmFromText takeIntValueFrom: dcmFrom];
+			[dcmToText takeIntValueFrom: dcmTo];
+			[dcmIntervalText takeIntValueFrom: dcmInterval];
+		}
+		else
+		{
+			[dcmFrom takeIntValueFrom: dcmFromText];
+			[dcmTo takeIntValueFrom: dcmToText];
+			[dcmInterval takeIntValueFrom: dcmIntervalText];
+		}
 		
 		if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] - [sender intValue]];
 		else [imageView setIndex:  [sender intValue]-1];

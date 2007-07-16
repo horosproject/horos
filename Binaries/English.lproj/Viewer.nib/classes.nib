@@ -183,6 +183,7 @@
                 updateImage = id; 
                 updateSUVValues = id; 
                 updateSetWLWW = id; 
+                updateZVector = id; 
                 vertFlipDataSet = id; 
             }; 
             CLASS = ViewerController; 

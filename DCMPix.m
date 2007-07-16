@@ -8765,12 +8765,7 @@ BOOL            readable = YES;
 	long i;
 	
 	for( i = 0 ; i < 6; i ++) orientation[ i] = c[ i];
-	
-	// Compute normal vector
-	orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
-	orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
-	orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
-	
+		
 	double length = sqrt(orientation[6]*orientation[6] + orientation[7]*orientation[7] + orientation[8]*orientation[8]);
 
 	orientation[6] = orientation[ 6] / length;
@@ -8788,6 +8783,11 @@ BOOL            readable = YES;
 	orientation[3] = orientation[ 3] / length;
 	orientation[4] = orientation[ 4] / length;
 	orientation[5] = orientation[ 5] / length;
+
+	// Compute normal vector
+	orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
+	orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
+	orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
 }
 
 -(void) setOrientation:(float*) c
