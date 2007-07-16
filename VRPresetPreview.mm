@@ -365,37 +365,39 @@
 //								factor*[firstObject originX] * matrice->Element[0][2] + factor*[firstObject originY] * matrice->Element[1][2] + factor*[firstObject originZ]*matrice->Element[2][2]);
 	outlineRect->PickableOff();
 
-	vtkAnnotatedCubeActor* cube = vtkAnnotatedCubeActor::New();
-	cube->SetXPlusFaceText ( "L" );
-	cube->SetXMinusFaceText( "R" );
-	cube->SetYPlusFaceText ( "P" );
-	cube->SetYMinusFaceText( "A" );
-	cube->SetZPlusFaceText ( "S" );
-	cube->SetZMinusFaceText( "I" );
-	cube->SetFaceTextScale( 0.67 );
-
-	vtkProperty* property = cube->GetXPlusFaceProperty();
-	property->SetColor(0, 0, 1);
-	property = cube->GetXMinusFaceProperty();
-	property->SetColor(0, 0, 1);
-	property = cube->GetYPlusFaceProperty();
-	property->SetColor(0, 1, 0);
-	property = cube->GetYMinusFaceProperty();
-	property->SetColor(0, 1, 0);
-	property = cube->GetZPlusFaceProperty();
-	property->SetColor(1, 0, 0);
-	property = cube->GetZMinusFaceProperty();
-	property->SetColor(1, 0, 0);
-
-	vtkProperty* propertyEdges = cube->GetTextEdgesProperty();
-	propertyEdges->SetColor(0.5, 0.5, 0.5);
-	cube->CubeOn();
-	cube->FaceTextOn();
+//	[self initAnnotatedCubeActor];
 	
-	orientationWidget = vtkOrientationMarkerWidget::New();
-	orientationWidget->SetOrientationMarker( cube );
-
-	cube->Delete();
+//	vtkAnnotatedCubeActor* cube = vtkAnnotatedCubeActor::New();
+//	cube->SetXPlusFaceText ( "L" );
+//	cube->SetXMinusFaceText( "R" );
+//	cube->SetYPlusFaceText ( "P" );
+//	cube->SetYMinusFaceText( "A" );
+//	cube->SetZPlusFaceText ( "S" );
+//	cube->SetZMinusFaceText( "I" );
+//	cube->SetFaceTextScale( 0.67 );
+//
+//	vtkProperty* property = cube->GetXPlusFaceProperty();
+//	property->SetColor(0, 0, 1);
+//	property = cube->GetXMinusFaceProperty();
+//	property->SetColor(0, 0, 1);
+//	property = cube->GetYPlusFaceProperty();
+//	property->SetColor(0, 1, 0);
+//	property = cube->GetYMinusFaceProperty();
+//	property->SetColor(0, 1, 0);
+//	property = cube->GetZPlusFaceProperty();
+//	property->SetColor(1, 0, 0);
+//	property = cube->GetZMinusFaceProperty();
+//	property->SetColor(1, 0, 0);
+//
+//	vtkProperty* propertyEdges = cube->GetTextEdgesProperty();
+//	propertyEdges->SetColor(0.5, 0.5, 0.5);
+//	cube->CubeOn();
+//	cube->FaceTextOn();
+//	
+//	orientationWidget = vtkOrientationMarkerWidget::New();
+//	orientationWidget->SetOrientationMarker( cube );
+//
+//	cube->Delete();
 
 	croppingBox = vtkBoxWidget::New();
 //	

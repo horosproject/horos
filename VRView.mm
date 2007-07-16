@@ -1789,7 +1789,8 @@ public:
 	volumeProperty->Delete();
 	compositeFunction->Delete();
 	
-	orientationWidget->Delete();
+	if( orientationWidget)
+		orientationWidget->Delete();
 	
 	if( volumeMapper) volumeMapper->Delete();
 	if( textureMapper) textureMapper->Delete();
@@ -1844,56 +1845,6 @@ public:
 	
     [super dealloc];
 }
-
-
-- (void)finalize {
-	[deleteRegion lock];
-	[deleteRegion unlock];
-	
-	cbStart->Delete();
-	opacityTransferFunction->Delete();
-	volumeProperty->Delete();
-	compositeFunction->Delete();
-	
-	orientationWidget->Delete();
-	
-	if( volumeMapper) volumeMapper->Delete();
-	if( textureMapper) textureMapper->Delete();
-//	if( shearWarpMapper) shearWarpMapper->Delete();
-	
-	red->Delete();
-	green->Delete();
-	blue->Delete();
-	
-	volume->Delete();
-	outlineData->Delete();
-	mapOutline->Delete();
-	outlineRect->Delete();
-	croppingBox->Delete();
-	textWLWW->Delete();
-	textX->Delete();
-	int i;
-	for( i = 0; i < 4; i++) oText[ i]->Delete();
-	colorTransferFunction->Delete();
-	reader->Delete();
-    aCamera->Delete();
-//	aRenderer->Delete();
-	
-	ROI3DData->Delete();
-	ROI3D->Delete();
-	ROI3DActor->Delete();
-	
-	Line2D->Delete();
-	Line2DActor->Delete();
-	Line2DText->Delete();
-	
-	if( dataFRGB) free( dataFRGB);	
-	if( data8) free( data8);
-	
-	[super finalize];
-
-}
-
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
@@ -4398,6 +4349,45 @@ public:
 	}
 }
 
+- (void) initAnnotatedCubeActor
+{
+	vtkAnnotatedCubeActor* cube = vtkAnnotatedCubeActor::New();
+	cube->SetXPlusFaceText ( "L" );
+	cube->SetXMinusFaceText( "R" );
+	cube->SetYPlusFaceText ( "P" );
+	cube->SetYMinusFaceText( "A" );
+	cube->SetZPlusFaceText ( "S" );
+	cube->SetZMinusFaceText( "I" );
+	cube->SetFaceTextScale( 0.67 );
+
+	vtkProperty* property = cube->GetXPlusFaceProperty();
+	property->SetColor(0, 0, 1);
+	property = cube->GetXMinusFaceProperty();
+	property->SetColor(0, 0, 1);
+	property = cube->GetYPlusFaceProperty();
+	property->SetColor(0, 1, 0);
+	property = cube->GetYMinusFaceProperty();
+	property->SetColor(0, 1, 0);
+	property = cube->GetZPlusFaceProperty();
+	property->SetColor(1, 0, 0);
+	property = cube->GetZMinusFaceProperty();
+	property->SetColor(1, 0, 0);
+
+	vtkProperty* propertyEdges = cube->GetTextEdgesProperty();
+	propertyEdges->SetColor(0.5, 0.5, 0.5);
+	cube->CubeOn();
+	cube->FaceTextOn();
+	
+	orientationWidget = vtkOrientationMarkerWidget::New();
+	orientationWidget->SetOrientationMarker( cube );
+
+	orientationWidget->SetInteractor( [self getInteractor] );
+	orientationWidget->SetEnabled( 1 );
+	orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
+
+	cube->Delete();
+}
+
 -(short) setPixSource:(NSMutableArray*)pix :(float*) volumeData
 {
 	short   error = 0;
@@ -4739,38 +4729,8 @@ public:
 								factor*[firstObject originX] * matrice->Element[0][2] + factor*[firstObject originY] * matrice->Element[1][2] + factor*[firstObject originZ]*matrice->Element[2][2]);
 	outlineRect->PickableOff();
 
-	vtkAnnotatedCubeActor* cube = vtkAnnotatedCubeActor::New();
-	cube->SetXPlusFaceText ( "L" );
-	cube->SetXMinusFaceText( "R" );
-	cube->SetYPlusFaceText ( "P" );
-	cube->SetYMinusFaceText( "A" );
-	cube->SetZPlusFaceText ( "S" );
-	cube->SetZMinusFaceText( "I" );
-	cube->SetFaceTextScale( 0.67 );
-
-	vtkProperty* property = cube->GetXPlusFaceProperty();
-	property->SetColor(0, 0, 1);
-	property = cube->GetXMinusFaceProperty();
-	property->SetColor(0, 0, 1);
-	property = cube->GetYPlusFaceProperty();
-	property->SetColor(0, 1, 0);
-	property = cube->GetYMinusFaceProperty();
-	property->SetColor(0, 1, 0);
-	property = cube->GetZPlusFaceProperty();
-	property->SetColor(1, 0, 0);
-	property = cube->GetZMinusFaceProperty();
-	property->SetColor(1, 0, 0);
-
-	vtkProperty* propertyEdges = cube->GetTextEdgesProperty();
-	propertyEdges->SetColor(0.5, 0.5, 0.5);
-	cube->CubeOn();
-	cube->FaceTextOn();
+	[self initAnnotatedCubeActor];
 	
-	orientationWidget = vtkOrientationMarkerWidget::New();
-	orientationWidget->SetOrientationMarker( cube );
-
-	cube->Delete();
-
 	croppingBox = vtkBoxWidget::New();
 	
 	croppingBox->GetHandleProperty()->SetColor(0, 1, 0);
@@ -4902,11 +4862,10 @@ public:
 	aRenderer->AddActor2D( Line2DActor);
 	
 //	#if !__LP64__
-	orientationWidget->SetInteractor( [self getInteractor] );
-	orientationWidget->SetEnabled( 1 );
-	orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
 //	orientationWidget->InteractiveOff();
 //	#endif
+	
+//	[self initAnnotatedCubeActor];
 	
 	[self saView:self];
 	
@@ -5098,15 +5057,18 @@ public:
 {
 	long i;
 	
-	if( orientationWidget->GetEnabled())
+	if( orientationWidget)
 	{
-		orientationWidget->Off();
-		for( i = 0; i < 4; i++) aRenderer->RemoveActor2D( oText[ i]);
-	}
-	else
-	{
-		orientationWidget->On();
-		for( i = 0; i < 4; i++) aRenderer->AddActor2D( oText[ i]);
+		if( orientationWidget->GetEnabled())
+		{
+			orientationWidget->Off();
+			for( i = 0; i < 4; i++) aRenderer->RemoveActor2D( oText[ i]);
+		}
+		else
+		{
+			orientationWidget->On();
+			for( i = 0; i < 4; i++) aRenderer->AddActor2D( oText[ i]);
+		}
 	}
 	
 	[self setNeedsDisplay:YES];
