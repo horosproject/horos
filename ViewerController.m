@@ -1016,7 +1016,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( newOrientationTool != currentOrientationTool)
 	{
 		float previousZooming = [imageView scaleValue] / [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX];
-
+		
 		if( displayOnlyKeyImages)
 		{
 			[keyImagePopUpButton selectItemAtIndex: 0];
@@ -1185,6 +1185,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[self propagateSettings];
 		
 		[self updateImage: self];
+		
+		[imageView sendSyncMessage:1];
+		[self adjustSlider];
 	}
 }
 
