@@ -228,10 +228,10 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 	
 	BOOL			syncOnLocationImpossible;
 	
-	char			*resampledBaseAddr;
+	char			*resampledBaseAddr, *blendingResampledBaseAddr;
 	char			*resampledTempAddr;
 	
-	int				resampledBaseAddrSize;
+	int				resampledBaseAddrSize, blendingResampledBaseAddrSize;
 }
 + (void) setDefaults;
 + (void) setCLUTBARS:(int) c ANNOTATIONS:(int) a;
@@ -269,7 +269,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 -(void) subtract:(DCMView*) bV;
 -(void) multiply:(DCMView*) bV;
 -(void) setBlendingMode:(long) f;
-- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT textureWidth: (long*) tW textureHeight:(long*) tH;
+- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT textureWidth: (long*) tW textureHeight:(long*) tH resampledBaseAddr:(char**) rAddr resampledBaseAddrSize:(int*) rBAddrSize;
 - (BOOL)xFlipped;
 - (void)setXFlipped: (BOOL)v;
 - (BOOL)yFlipped;

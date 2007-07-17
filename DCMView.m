@@ -59,6 +59,9 @@ Version 2.3
 
 #include "NSFont_OpenGL/NSFont_OpenGL.h"
 
+// kvImageHighQualityResampling
+#define QUALITY kvImageNoFlags
+
 @class OrthogonalMPRPETCTView;
 
 #define BS 10.
@@ -1583,6 +1586,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	if( resampledBaseAddr) free( resampledBaseAddr);
 	if( resampledTempAddr) free( resampledTempAddr);
+	if( blendingResampledBaseAddr) free( blendingResampledBaseAddr);
+
 //	[self clearGLContext];
 	
     [super dealloc];
@@ -7469,14 +7474,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				argbdstVimage.data = malloc( argbdstVimage.rowBytes * argbdstVimage.height);
 				
 				vImageConvert_RGB888toARGB8888( &srcVimage, 0L, 0, &argbsrcVimage, 0, 0);
-				vImageScale_ARGB8888( &argbsrcVimage, &argbdstVimage, 0L, kvImageHighQualityResampling);
+				vImageScale_ARGB8888( &argbsrcVimage, &argbdstVimage, 0L, QUALITY);
 				vImageConvert_ARGB8888toRGB888( &argbdstVimage, &dstVimage, 0);
 				
 				free( argbsrcVimage.data);
 				free( argbdstVimage.data);
 			}
 			else
-				vImageScale_Planar8( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+				vImageScale_Planar8( &srcVimage, &dstVimage, 0L, QUALITY);
 				
 			free( buf);
 			
@@ -8007,17 +8012,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (BOOL) softwareInterpolation
 {
-	if(	scaleValue > 3 && NOINTERPOLATION == NO &&
+	
+	if(	scaleValue > 4 && NOINTERPOLATION == NO && [self is2DViewer] &&
 		SOFTWAREINTERPOLATION == YES && [curDCM pwidth] <= SOFTWAREINTERPOLATION_MAX &&
-		[curDCM isRGB] == NO && [curDCM thickSlabVRActivated] == NO &&
-		colorTransfer == NO)
+		[curDCM isRGB] == NO && [curDCM thickSlabVRActivated] == NO)
 	{
 		return YES;
 	}
 	return NO;
 }
 
-- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT textureWidth: (long*) tW textureHeight:(long*) tH
+- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT textureWidth: (long*) tW textureHeight:(long*) tH resampledBaseAddr:(char**) rAddr resampledBaseAddrSize:(int*) rBAddrSize
 {
 	if(  rT == 0L)
 	{
@@ -8159,8 +8164,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		else vImageTableLookUp_ARGB8888( &dest8, &dest8, (Pixel_8*) &alphaTable, (Pixel_8*) rT, (Pixel_8*) gT, (Pixel_8*) bT, 0);
 	}
-	
-    glEnable(TEXTRECTMODE);
+
+
+   glEnable(TEXTRECTMODE);
 
 	char*			baseAddr = 0L;
 	int				rowBytes = 0;
@@ -8175,51 +8181,85 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
     else
 	{
-		if( [self softwareInterpolation] && blending == NO)
+ 		if( [self softwareInterpolation])
 		{
 			float resampledScale = 3;
 			*tW = [curDCM pwidth] * resampledScale;
 			*tH = [curDCM pheight] * resampledScale;
-			rowBytes = *tW;
+			
 
 			vImage_Buffer src, dst;
 			
 			src.width = [curDCM pwidth];
 			src.height = [curDCM pheight];
-			src.rowBytes = [curDCM rowBytes];
-			src.data = [curDCM baseAddr];
-
-			dst.width = *tW;
-			dst.height = *tH;
-			dst.rowBytes = rowBytes;
-
-			if( resampledBaseAddrSize < rowBytes * *tH)
-			{
-				if( resampledBaseAddr) free( resampledBaseAddr);
-				resampledBaseAddr = malloc( rowBytes * *tH);
-				resampledBaseAddrSize = rowBytes * *tH;
-				
-				if( resampledTempAddr) free( resampledTempAddr);
-				
-				int requiredSize = vImageScale_Planar8( &src, &dst, 0L, kvImageGetTempBufferSize);
-				
-				if( requiredSize < resampledBaseAddrSize)
-					resampledTempAddr = malloc(  resampledBaseAddrSize);
-				else resampledTempAddr = 0L;
-			}
 			
-			if( resampledBaseAddr)
+			
+			if( (colorTransfer == YES) || (blending == YES))
 			{
-				baseAddr = resampledBaseAddr;
-				dst.data = baseAddr;
+				rowBytes = *tW * 4;
 				
-				vImageScale_Planar8( &src, &dst, resampledTempAddr, kvImageHighQualityResampling);
+				src.data = *colorBufPtr;
+				src.rowBytes = [curDCM rowBytes]*4;
+				dst.rowBytes = rowBytes;
 			}
 			else
 			{
-				*tW = [curDCM rowBytes];
-				rowBytes = [curDCM rowBytes];
-				baseAddr = [curDCM baseAddr];
+				rowBytes = *tW;
+				
+				src.data = [curDCM baseAddr];
+				src.rowBytes = [curDCM rowBytes];
+				dst.rowBytes = rowBytes;
+			}
+			
+			dst.width = *tW;
+			dst.height = *tH;
+			
+
+			if( *rBAddrSize < rowBytes * *tH)
+			{
+				if( *rAddr) free( *rAddr);
+				*rAddr = malloc( rowBytes * *tH);
+				*rBAddrSize = rowBytes * *tH;
+				
+				if( resampledTempAddr) free( resampledTempAddr);
+				
+				int requiredSize;
+				
+				if( (colorTransfer == YES) || (blending == YES))
+					requiredSize = vImageScale_ARGB8888( &src, &dst, 0L, kvImageGetTempBufferSize);
+				else
+					requiredSize = vImageScale_Planar8( &src, &dst, 0L, kvImageGetTempBufferSize);
+				
+				if( requiredSize < *rBAddrSize)
+					resampledTempAddr = malloc(  *rBAddrSize);
+				else resampledTempAddr = 0L;
+			}
+			
+			if( *rAddr)
+			{
+				baseAddr = *rAddr;
+				dst.data = baseAddr;
+				
+				if( (colorTransfer == YES) || (blending == YES))
+					vImageScale_ARGB8888( &src, &dst, resampledTempAddr, QUALITY);
+				else
+					vImageScale_Planar8( &src, &dst, resampledTempAddr, QUALITY);
+			}
+			else
+			{
+				NSLog( @"not enough memory");
+				if( (colorTransfer == YES) || (blending == YES))
+				{
+					*tW = [curDCM rowBytes];
+					rowBytes = [curDCM rowBytes];
+					baseAddr = *colorBufPtr;
+				}
+				else
+				{
+					*tW = [curDCM rowBytes];
+					rowBytes = [curDCM rowBytes];
+					baseAddr = [curDCM baseAddr];
+				}
 			}
 		}
 		else if( FULL32BITPIPELINE)
@@ -8230,11 +8270,22 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		else
 		{
-			*tW = [curDCM rowBytes];
-			rowBytes = [curDCM rowBytes];
-			baseAddr = [curDCM baseAddr];
+			if( (colorTransfer == YES) || (blending == YES))
+			{
+				*tW = [curDCM rowBytes];
+				rowBytes = [curDCM rowBytes];
+				baseAddr = *colorBufPtr;
+			}
+			else
+			{
+				*tW = [curDCM rowBytes];
+				rowBytes = [curDCM rowBytes];
+				baseAddr = [curDCM baseAddr];
+			}
 		}
 	}
+	
+
 	
     glPixelStorei (GL_UNPACK_ROW_LENGTH, *tW); // set image width in groups (pixels), accounts for border this ensures proper image alignment row to row
     // get number of textures x and y
@@ -8267,7 +8318,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 									offsetX * 4;							//depth
 					}
 					else if( (colorTransfer == YES) || (blending == YES))
-						pBuffer =  *colorBufPtr +			//baseAddr
+						pBuffer =   baseAddr +			//baseAddr
 									offsetY * rowBytes * 4 +      //depth
 									offsetX * 4;							//depth
 									
@@ -8465,14 +8516,14 @@ BOOL	lowRes = NO;
 {
     [[self openGLContext] makeCurrentContext];
 	
-	pTextureName = [self loadTextureIn:pTextureName blending:NO colorBuf:&colorBuf textureX:&textureX textureY:&textureY redTable: redTable greenTable:greenTable blueTable:blueTable textureWidth:&textureWidth textureHeight:&textureHeight];
+	pTextureName = [self loadTextureIn:pTextureName blending:NO colorBuf:&colorBuf textureX:&textureX textureY:&textureY redTable: redTable greenTable:greenTable blueTable:blueTable textureWidth:&textureWidth textureHeight:&textureHeight resampledBaseAddr:&resampledBaseAddr resampledBaseAddrSize:&resampledBaseAddrSize];
 	
 	if( blendingView)
 	{
 		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable: PETredTable greenTable:PETgreenTable blueTable:PETblueTable textureWidth:&blendingTextureWidth textureHeight:&blendingTextureHeight];
+			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable: PETredTable greenTable:PETgreenTable blueTable:PETblueTable textureWidth:&blendingTextureWidth textureHeight:&blendingTextureHeight resampledBaseAddr:&blendingResampledBaseAddr resampledBaseAddrSize:&blendingResampledBaseAddrSize];
 		else
-			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable:0L greenTable:0L blueTable:0L textureWidth:&blendingTextureWidth textureHeight:&blendingTextureHeight];
+			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable:0L greenTable:0L blueTable:0L textureWidth:&blendingTextureWidth textureHeight:&blendingTextureHeight resampledBaseAddr:&blendingResampledBaseAddr resampledBaseAddrSize:&blendingResampledBaseAddrSize];
 	}
 }
 
