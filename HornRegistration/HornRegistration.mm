@@ -110,17 +110,10 @@
 }
 
 
-- (void)finalize {
-	if(adRot) free(adRot);
-	if(adTrans) free(adTrans);
-	[super finalize];
-}
-
-
 - (void) addModelPointX: (double) x Y: (double) y Z: (double) z 
 {
 	//double *modelPoint;
-	double *modelPoint = (double*) malloc(3*sizeof(double));
+	double modelPoint[ 3];
 	modelPoint[0]=x;
 	modelPoint[1]=y;
 	modelPoint[2]=z;
@@ -130,7 +123,7 @@
 - (void) addSensorPointX: (double) x Y: (double) y Z: (double) z 
 {
 	//double *sensorPoint;
-	double *sensorPoint = (double*) malloc(3*sizeof(double));
+	double sensorPoint[ 3];
 	sensorPoint[0]=x;
 	sensorPoint[1]=y;
 	sensorPoint[2]=z;

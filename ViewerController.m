@@ -11228,6 +11228,9 @@ int i,j,l;
 	
 	BOOL foundAMatchingName;
 	
+	double originA[ 3], originB[ 3];
+	BOOL first = YES;
+	
 	if (sameNumberOfPoints && enoughPoints)
 	{
 		HornRegistration *hr = [[HornRegistration alloc] init];
@@ -11268,6 +11271,15 @@ int i,j,l;
 					if(!triplets)
 					{
 						float modelLocation[3], sensorLocation[3];
+						
+//						[[curModelPoint2D pix]	convertPixX:	[[[curModelPoint2D points] objectAtIndex:0] x]
+//												pixY:			[[[curModelPoint2D points] objectAtIndex:0] y]
+//												toOrientedCoord:	modelLocation];
+//						
+//						[[curSensorPoint2D pix]	convertPixX:	[[[curSensorPoint2D points] objectAtIndex:0] x]
+//												pixY:			[[[curSensorPoint2D points] objectAtIndex:0] y]
+//												toOrientedCoord:	sensorLocation];
+
 						[[curModelPoint2D pix]	convertPixX:	[[[curModelPoint2D points] objectAtIndex:0] x]
 												pixY:			[[[curModelPoint2D points] objectAtIndex:0] y]
 												toDICOMCoords:	modelLocation];
@@ -11299,9 +11311,26 @@ int i,j,l;
 						sensorLocationConverted[ 1] = sensorLocation[ 0] * vectorSensor[ 3] + sensorLocation[ 1] * vectorSensor[ 4] + sensorLocation[ 2] * vectorSensor[ 5];
 						sensorLocationConverted[ 2] = sensorLocation[ 0] * vectorSensor[ 6] + sensorLocation[ 1] * vectorSensor[ 7] + sensorLocation[ 2] * vectorSensor[ 8];
 						
+						NSLog( @"----------");
+						NSLog( @"%2.2f %2.2f %2.2f", sensorLocationConverted[ 0], sensorLocationConverted[ 1], sensorLocationConverted[ 2]);
+						NSLog( @"%2.2f %2.2f %2.2f", modelLocationConverted[ 0], modelLocationConverted[ 1], modelLocationConverted[ 2]);
+						NSLog( @"----------");
+						
 						// add the points to the registration method
 						[hr addModelPointX: modelLocationConverted[0] Y: modelLocationConverted[1] Z: modelLocationConverted[2]];
 						[hr addSensorPointX: sensorLocationConverted[0] Y: sensorLocationConverted[1] Z: sensorLocationConverted[2]];
+						
+						if( first)
+						{
+							first = NO;
+							originA[ 0] = modelLocationConverted[ 0];
+							originA[ 1] = modelLocationConverted[ 1];
+							originA[ 2] = modelLocationConverted[ 2];
+							
+							originB[ 0] = sensorLocationConverted[ 0];
+							originB[ 1] = sensorLocationConverted[ 1];
+							originB[ 2] = sensorLocationConverted[ 2];
+						}
 					}
 				}
 			}
@@ -11322,22 +11351,44 @@ int i,j,l;
 			translation[ 1] = matrix[ 10];
 			translation[ 2] = matrix[ 11];
 			
+			
+//			translation[ 0] = 0;
+//			translation[ 1] = 0;
+//			translation[ 2] = 0;
+			
 			matrix[ 9] = translation[ 0] * vectorSensor[ 0] + translation[ 1] * vectorSensor[ 1] + translation[ 2] * vectorSensor[ 2];
 			matrix[ 10] = translation[ 0] * vectorSensor[ 3] + translation[ 1] * vectorSensor[ 4] + translation[ 2] * vectorSensor[ 5];
 			matrix[ 11] = translation[ 0] * vectorSensor[ 6] + translation[ 1] * vectorSensor[ 7] + translation[ 2] * vectorSensor[ 8];
-
-
-			ITKTransform * transform = [[ITKTransform alloc] initWithViewer:movingViewer];
 			
-//			double	*rotation, rotationConverted[ 9];
-//			double	*translation, translationConverted[ 3];
-//			
-//			rotation = [hr rotation];
-//			translation = [hr translation];
-//			
-//			for( i = 0; i < 9 ; i++) rotationConverted[ i] = rotation[ i];
-//			for( i = 0; i < 3 ; i++) translationConverted[ i] = translation[ i];
+			
+			double originAConv[ 3], originBConv[ 3];
+			
+			originAConv[ 0] = originA[ 0];
+			originAConv[ 1] = originA[ 1];
+			originAConv[ 2] = originA[ 2];
+						
+			originAConv[ 0] = originA[ 0] * matrix[ 0] + originA[ 1] * matrix[ 1] + originA[ 2] * matrix[ 2];
+			originAConv[ 1] = originA[ 0] * matrix[ 3] + originA[ 1] * matrix[ 4] + originA[ 2] * matrix[ 5];
+			originAConv[ 2] = originA[ 0] * matrix[ 6] + originA[ 1] * matrix[ 7] + originA[ 2] * matrix[ 8];
 
+			originBConv[ 0] = originB[ 0];
+			originBConv[ 1] = originB[ 1];
+			originBConv[ 2] = originB[ 2];
+						
+			originBConv[ 0] = originB[ 0] * matrix[ 0] + originB[ 1] * matrix[ 1] + originB[ 2] * matrix[ 2];
+			originBConv[ 1] = originB[ 0] * matrix[ 3] + originB[ 1] * matrix[ 4] + originB[ 2] * matrix[ 5];
+			originBConv[ 2] = originB[ 0] * matrix[ 6] + originB[ 1] * matrix[ 7] + originB[ 2] * matrix[ 8];
+
+			
+			NSLog( @"origin A: %2.2f %2.2f %2.2f", originA[ 0], originA[ 1], originA[ 2]);
+			NSLog( @"origin B: %2.2f %2.2f %2.2f", originB[ 0], originB[ 1], originB[ 2]);
+			NSLog( @"A - B: %2.2f %2.2f %2.2f", originB[ 0]-originA[ 0], originB[ 1]-originA[ 1], originB[ 2]-originA[ 2]);
+
+			NSLog( @"origin A conv: %2.2f %2.2f %2.2f", originAConv[ 0], originAConv[ 1], originAConv[ 2]);
+			NSLog( @"origin B conv: %2.2f %2.2f %2.2f", originBConv[ 0], originBConv[ 1], originBConv[ 2]);
+			NSLog( @"A - B conv: %2.2f %2.2f %2.2f", originBConv[ 0]-originAConv[ 0], originBConv[ 1]-originAConv[ 1], originBConv[ 2]-originAConv[ 2]);
+			
+			ITKTransform * transform = [[ITKTransform alloc] initWithViewer:movingViewer];
 			
 			[transform computeAffineTransformWithParameters: matrix resampleOnViewer: self];
 			
