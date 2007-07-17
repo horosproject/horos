@@ -198,7 +198,11 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 			// to keep settings propagated for MRI we need the old values for echotime & repetitiontime
 			[curPix setEchotime: [originalPix echotime]];
 			[curPix setRepetitiontime: [originalPix repetitiontime]];
-
+			
+			[curPix setSavedWL: [originalPix savedWL]];
+			[curPix setSavedWW: [originalPix savedWW]];
+			[curPix changeWLWW: [originalPix wl] : [originalPix ww]];
+			
 			// SUV
 			[curPix setDisplaySUVValue: [originalPix displaySUVValue]];
 			[curPix setSUVConverted: [originalPix SUVConverted]];
@@ -216,7 +220,14 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		}
 		
 		new2DViewer = [originalViewer newWindow:newPixList :newFileList :volumeData];
+		
+		[new2DViewer setWL: [originalPix wl] WW: [originalPix ww]];
+		[new2DViewer propagateSettings];
 	}
+	else
+		NSRunCriticalAlertPanel(NSLocalizedString(@"Memory", nil),
+								NSLocalizedString(@"Not enough memory to complete the operation.", nil),
+								NSLocalizedString(@"OK", nil), nil, nil);
 	
 	return new2DViewer;
 }

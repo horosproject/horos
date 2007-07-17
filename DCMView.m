@@ -5009,10 +5009,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	else [[NSUserDefaults standardUserDefaults] setInteger: NSOffState forKey:@"SAMESTUDY"];
 }
 
+-(void) setSyncOnLocationImpossible:(BOOL) v
+{
+	syncOnLocationImpossible = v;
+}
+
 -(void) doSyncronize:(NSNotification*)note
 {
-	syncOnLocationImpossible = NO;
-	
 	if (![[[note object] superview] isEqual:[self superview]] && [self is2DViewer])
 	{
 	BOOL	stringOK = NO;
@@ -5040,7 +5043,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     if( [note object] != self && isKeyView == YES && matrix == 0 && stringID == 0L && [[note object] stringID] == 0L && curImage > -1 )   //|| [[[note object] stringID] isEqualToString:@"Original"] == YES))   // Dont change the browser preview....
     {
         NSDictionary *instructions = [note userInfo];
-
+		
         long		diff = [[instructions valueForKey: @"Direction"] longValue];
         long		pos = [[instructions valueForKey: @"Pos"] longValue];
 		float		loc = [[instructions valueForKey: @"Location"] floatValue];
@@ -5052,6 +5055,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		long		stack = [oPix stack];
 		float		destPoint3D[ 3];
 		BOOL		point3D = NO;
+
+		if( otherView == blendingView || self == [otherView blendingView])
+		{
+			syncOnLocationImpossible = NO;
+			[otherView setSyncOnLocationImpossible: NO];
+		}
 		
 		if( [instructions valueForKey: @"offsetsync"] == 0L) { NSLog(@"err offsetsync");	return;}
 		
@@ -5179,7 +5188,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 									float sliceDistance = fabs( [[dcmPixList objectAtIndex: 1] sliceLocation] - [[dcmPixList objectAtIndex: 0] sliceLocation]);
 									
 									if( fabs( smallestdiff) > sliceDistance * 2)
-										syncOnLocationImpossible = YES;
+									{
+										if( otherView == blendingView || self == [otherView blendingView])
+										{
+											syncOnLocationImpossible = YES;
+											[otherView setSyncOnLocationImpossible: YES];
+										}
+									}
 								}
 								
 								if( curImage >= [dcmFilesList count]) curImage = [dcmFilesList count]-1;

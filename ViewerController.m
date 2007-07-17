@@ -2740,9 +2740,9 @@ static ViewerController *draggedController = 0L;
 
 - (void) completeDragOperation:(ViewerController*) v
 {
-	// if we are already blending the other way we crash
-	if ([[v blendingController] isEqual:self])
-		return;
+//	// if we are already blending the other way we crash
+//	if ([[v blendingController] isEqual:self])
+//		return;
 		
 	int iz, xz;
 	
@@ -7444,6 +7444,11 @@ NSMutableArray		*array;
 	
 	if( blendingController)
 	{
+		if( [blendingController blendingController] == self)	// NO cross blending !
+		{
+			[blendingController ActivateBlending: 0L];
+		}
+	
 		if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[blendingController fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
 		{
 			// By default, re-activate 'propagate settings'
@@ -7470,7 +7475,7 @@ NSMutableArray		*array;
 		
 		if( result[0] + result[1] + result[2] > 0.01)  // Planes are not paralel!
 		{
-					// FROM SAME STUDY
+			// FROM SAME STUDY
 			
 			if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[blendingController fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
 			{
@@ -7501,6 +7506,7 @@ NSMutableArray		*array;
 				else proceed = YES;
 			}
 		}
+		else proceed = YES;
 		
 		if( proceed)
 		{		
@@ -7534,9 +7540,12 @@ NSMutableArray		*array;
 		[blendingSlider setEnabled:NO];
 		[blendingPercentage setStringValue:@"-"];
 		[seriesView ActivateBlending: 0L blendingFactor:[blendingSlider floatValue]];
+		[imageView display];
 	}
 	
 	[self buildMatrixPreview: NO];
+	
+	[imageView sendSyncMessage:1];
 }
 
 -(ViewerController*) blendedWindow
