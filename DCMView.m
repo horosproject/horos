@@ -5681,7 +5681,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY
+- (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY :(long) tW :(long) tH
 {
 	if( mainThread != [NSThread currentThread])
 	{
@@ -5710,12 +5710,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	for (x = 0; x < tX; x++) // for all horizontal textures
 	{
 			// use remaining to determine next texture size
-			currTextureWidth = GetNextTextureSize (textureWidth - offsetX, maxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // current effective texture width for drawing
+			currTextureWidth = GetNextTextureSize (tW - offsetX, maxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // current effective texture width for drawing
 			offsetY = 0; // start at top
 			for (y = 0; y < tY; y++) // for a complete column
 			{
 					// use remaining to determine next texture size
-					currTextureHeight = GetNextTextureSize (textureHeight - offsetY, maxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // effective texture height for drawing
+					currTextureHeight = GetNextTextureSize (tH - offsetY, maxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // effective texture height for drawing
 					glBindTexture(TEXTRECTMODE, texture[k++]); // work through textures in same order as stored, setting each texture name as current in turn
 					DrawGLImageTile (GL_TRIANGLE_STRIP, [curDCM pwidth], [curDCM pheight], scaleValue,		//
 										currTextureWidth, currTextureHeight, // draw this single texture on two tris 
@@ -6437,7 +6437,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 			else glDisable( GL_BLEND);
 			
-			[self drawRectIn:size :pTextureName :offset :textureX :textureY];
+			[self drawRectIn:size :pTextureName :offset :textureX :textureY :textureWidth :textureHeight];
 			
 			if( blendingView != 0L && syncOnLocationImpossible == NO)
 			{
@@ -6479,7 +6479,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 				
 				if( blendingTextureName)
-					[blendingView drawRectIn:size :blendingTextureName :offset :blendingTextureX :blendingTextureY];
+					[blendingView drawRectIn:size :blendingTextureName :offset :blendingTextureX :blendingTextureY :blendingTextureWidth :blendingTextureHeight];
 				else
 					NSLog( @"blendingTextureName == 0L");
 				
@@ -8017,7 +8017,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	return NO;
 }
 
-- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT 
+- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT textureWidth: (long*) tW textureHeight:(long*) tH
 {
 	if(  rT == 0L)
 	{
@@ -8165,11 +8165,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	char*			baseAddr = 0L;
 	int				rowBytes = 0;
 	
-	textureHeight = [curDCM pheight];
+	*tH = [curDCM pheight];
 	
 	if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES)
 	{
-		textureWidth = [curDCM rowBytes]/4;
+		*tW = [curDCM rowBytes]/4;
 		rowBytes = [curDCM rowBytes];
 		baseAddr = [curDCM baseAddr];
 	}
@@ -8178,9 +8178,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [self softwareInterpolation] && blending == NO)
 		{
 			float resampledScale = 3;
-			textureWidth = [curDCM pwidth] * resampledScale;
-			textureHeight = [curDCM pheight] * resampledScale;
-			rowBytes = textureWidth;
+			*tW = [curDCM pwidth] * resampledScale;
+			*tH = [curDCM pheight] * resampledScale;
+			rowBytes = *tW;
 
 			vImage_Buffer src, dst;
 			
@@ -8189,15 +8189,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			src.rowBytes = [curDCM rowBytes];
 			src.data = [curDCM baseAddr];
 
-			dst.width = textureWidth;
-			dst.height = textureHeight;
+			dst.width = *tW;
+			dst.height = *tH;
 			dst.rowBytes = rowBytes;
 
-			if( resampledBaseAddrSize < rowBytes * textureHeight)
+			if( resampledBaseAddrSize < rowBytes * *tH)
 			{
 				if( resampledBaseAddr) free( resampledBaseAddr);
-				resampledBaseAddr = malloc( rowBytes * textureHeight);
-				resampledBaseAddrSize = rowBytes * textureHeight;
+				resampledBaseAddr = malloc( rowBytes * *tH);
+				resampledBaseAddrSize = rowBytes * *tH;
 				
 				if( resampledTempAddr) free( resampledTempAddr);
 				
@@ -8217,43 +8217,43 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 			else
 			{
-				textureWidth = [curDCM rowBytes];
+				*tW = [curDCM rowBytes];
 				rowBytes = [curDCM rowBytes];
 				baseAddr = [curDCM baseAddr];
 			}
 		}
 		else if( FULL32BITPIPELINE)
 		{
-			textureWidth = [curDCM pwidth];
+			*tW = [curDCM pwidth];
 			rowBytes = [curDCM rowBytes]*4;
 			baseAddr = (char*) [curDCM fImage];
 		}
 		else
 		{
-			textureWidth = [curDCM rowBytes];
+			*tW = [curDCM rowBytes];
 			rowBytes = [curDCM rowBytes];
 			baseAddr = [curDCM baseAddr];
 		}
 	}
 	
-    glPixelStorei (GL_UNPACK_ROW_LENGTH, textureWidth); // set image width in groups (pixels), accounts for border this ensures proper image alignment row to row
+    glPixelStorei (GL_UNPACK_ROW_LENGTH, *tW); // set image width in groups (pixels), accounts for border this ensures proper image alignment row to row
     // get number of textures x and y
     // extract the number of horiz. textures needed to tile image
-    *tX = GetTextureNumFromTextureDim (textureWidth, maxTextureSize, false, f_ext_texture_rectangle); //OVERLAP
+    *tX = GetTextureNumFromTextureDim (*tW, maxTextureSize, false, f_ext_texture_rectangle); //OVERLAP
     // extract the number of horiz. textures needed to tile image
-    *tY = GetTextureNumFromTextureDim (textureHeight, maxTextureSize, false, f_ext_texture_rectangle); //OVERLAP
+    *tY = GetTextureNumFromTextureDim (*tH, maxTextureSize, false, f_ext_texture_rectangle); //OVERLAP
 	
 	texture = (GLuint *) malloc ((long) sizeof (GLuint) * *tX * *tY);
 	
-//	NSLog( @"%d %d - No Of Textures: %d", textureWidth, textureHeight, *tX * *tY);
+//	NSLog( @"%d %d - No Of Textures: %d", *tW, *tH, *tX * *tY);
 	if( *tX * *tY > 1) NSLog(@"NoOfTextures: %d", *tX * *tY);
-	glTextureRangeAPPLE(TEXTRECTMODE, textureWidth * textureHeight * 4, baseAddr);
+	glTextureRangeAPPLE(TEXTRECTMODE, *tW * *tH * 4, baseAddr);
 	glGenTextures (*tX * *tY, texture); // generate textures names need to support tiling
     {
             long x, y, k = 0, offsetY, offsetX = 0, currWidth, currHeight; // texture iterators, texture name iterator, image offsets for tiling, current texture width and height
             for (x = 0; x < *tX; x++) // for all horizontal textures
             {
-				currWidth = GetNextTextureSize (textureWidth - offsetX, maxTextureSize, f_ext_texture_rectangle); // use remaining to determine next texture size 
+				currWidth = GetNextTextureSize (*tW - offsetX, maxTextureSize, f_ext_texture_rectangle); // use remaining to determine next texture size 
 				
 				offsetY = 0; // reset vertical offest for every column
 				for (y = 0; y < *tY; y++) // for all vertical textures
@@ -8286,7 +8286,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 										offsetX;
 						}
 					}
-					currHeight = GetNextTextureSize (textureHeight - offsetY, maxTextureSize, f_ext_texture_rectangle); // use remaining to determine next texture size
+					currHeight = GetNextTextureSize (*tH - offsetY, maxTextureSize, f_ext_texture_rectangle); // use remaining to determine next texture size
 					glBindTexture (TEXTRECTMODE, texture[k++]);
 					
 					glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f);
@@ -8296,7 +8296,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					if (f_arb_texture_rectangle && f_ext_texture_rectangle)
 					{
-						if( textureWidth > 2048 && textureHeight > 2048 || [self class] == [OrthogonalMPRPETCTView class] || [self class] == [OrthogonalMPRView class])
+						if( *tW > 2048 && *tH > 2048 || [self class] == [OrthogonalMPRPETCTView class] || [self class] == [OrthogonalMPRView class])
 						{
 							glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW for small matrix in RGB images... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to 1
 						}
@@ -8465,14 +8465,14 @@ BOOL	lowRes = NO;
 {
     [[self openGLContext] makeCurrentContext];
 	
-	pTextureName = [self loadTextureIn:pTextureName blending:NO colorBuf:&colorBuf textureX:&textureX textureY:&textureY redTable: redTable greenTable:greenTable blueTable:blueTable];
+	pTextureName = [self loadTextureIn:pTextureName blending:NO colorBuf:&colorBuf textureX:&textureX textureY:&textureY redTable: redTable greenTable:greenTable blueTable:blueTable textureWidth:&textureWidth textureHeight:&textureHeight];
 	
 	if( blendingView)
 	{
 		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable: PETredTable greenTable:PETgreenTable blueTable:PETblueTable];
+			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable: PETredTable greenTable:PETgreenTable blueTable:PETblueTable textureWidth:&blendingTextureWidth textureHeight:&blendingTextureHeight];
 		else
-			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable:0L greenTable:0L blueTable:0L];
+			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable:0L greenTable:0L blueTable:0L textureWidth:&blendingTextureWidth textureHeight:&blendingTextureHeight];
 	}
 }
 

@@ -179,12 +179,12 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 	float			blendingPixelMouseValue;
 	long			blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB;
 	
-    long			textureX, blendingTextureX; // number of horizontal textures
-    long			textureY, blendingTextureY; // number of vertical textures
-    GLuint			* pTextureName; // array for texture names (# = textureX * textureY)
-	GLuint			* blendingTextureName; // array for texture names (# = textureX * textureY)
-    long			textureWidth; // total width of texels with cover image (including any border on image, but not internal texture overlaps)
-    long			textureHeight; // total height of texels with cover image (including any border on image, but not internal texture overlaps)
+    long			textureX, blendingTextureX;
+    long			textureY, blendingTextureY;
+    GLuint			* pTextureName;
+	GLuint			* blendingTextureName;
+    long			textureWidth, blendingTextureWidth;
+    long			textureHeight, blendingTextureHeight;
     
 	BOOL			f_ext_texture_rectangle; // is texture rectangle extension supported
 	BOOL			f_arb_texture_rectangle; // is texture rectangle extension supported
@@ -269,7 +269,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 -(void) subtract:(DCMView*) bV;
 -(void) multiply:(DCMView*) bV;
 -(void) setBlendingMode:(long) f;
-- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT;
+- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT textureWidth: (long*) tW textureHeight:(long*) tH;
 - (BOOL)xFlipped;
 - (void)setXFlipped: (BOOL)v;
 - (BOOL)yFlipped;
@@ -353,7 +353,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 - (BOOL)checkHasChanged;
 - (BOOL)_checkHasChanged:(BOOL)flag;
 - (GLuint)fontListGL;
-- (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY;
+- (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY :(long) tW :(long) tH;
 - (void) DrawNSStringGL: (NSString*) cstrOut :(GLuint) fontL :(long) x :(long) y;
 - (void) DrawNSStringGL: (NSString*) str :(GLuint) fontL :(long) x :(long) y rightAlignment: (BOOL) right useStringTexture: (BOOL) stringTex;
 - (void) DrawCStringGL: ( char *) cstrOut :(GLuint) fontL :(long) x :(long) y;
