@@ -15,6 +15,7 @@
 
 #import "ITKTransform.h"
 #import "DCMPix.h"
+#import "WaitRendering.h"
 
 typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 
@@ -37,31 +38,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	[super dealloc];
 }
 
-- (void) computeAffineTransformWithRotation: (double*)aRotation translation: (double*)aTranslation resampleOnViewer:(ViewerController*)referenceViewer
-{
-	double *parameters = (double*) malloc(12*sizeof(double));
-	
-	// rotation matrix
-	parameters[0]=aRotation[0]; parameters[1]=aRotation[1]; parameters[2]=aRotation[2];
-	parameters[3]=aRotation[3]; parameters[4]=aRotation[4]; parameters[5]=aRotation[5];
-	parameters[6]=aRotation[6]; parameters[7]=aRotation[7]; parameters[8]=aRotation[8];
-	
-	// translation vector
-	parameters[9]=aTranslation[0]; parameters[10]=aTranslation[1]; parameters[11]=aTranslation[2];
-
-//	// rotation matrix
-//	parameters[0]=1.0; parameters[1]=0.0; parameters[2]=0.0;
-//	parameters[3]=0.0; parameters[4]=1.0; parameters[5]=0.0;
-//	parameters[6]=0.0; parameters[7]=0.0; parameters[8]=1.0;
-//	
-//	// translation vector
-//	parameters[9]=0.0; parameters[10]=0.0; parameters[11]=0.0;
-	
-	[self computeAffineTransformWithParameters: parameters resampleOnViewer:referenceViewer];
-	free(parameters);
-}
-
-- (void) computeAffineTransformWithParameters: (double*)theParameters resampleOnViewer:(ViewerController*)referenceViewer
+- (ViewerController*) computeAffineTransformWithParameters: (double*)theParameters resampleOnViewer:(ViewerController*)referenceViewer
 {
 	typedef itk::AffineTransform< double, 3 > AffineTransformType;
 	typedef AffineTransformType::ParametersType ParametersType;
@@ -162,28 +139,27 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	}
 	printf ("\n\n");
 	
+	WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Resampling...", nil)];
+	[splash showWindow:self];
+	
 	NSLog(@"start transform");
+	
 	resample->Update();
 	
 	float* resultBuff = resample->GetOutput()->GetBufferPointer();
 	
-	itk::Point<double, 3> tmp;
-
-	double *newOrigin;
-	
-	tmp = resample->GetOutput()->GetOrigin();
-	
-	NSLog( @"%f %f %f", tmp[ 0], tmp[ 1], tmp[ 2]);
-	
 	NSLog(@"transform done");
+	
+	[splash close];
+	[splash release];
 		
-	[self createNewViewerWithBuffer:resultBuff resampleOnViewer:referenceViewer];
+	return [self createNewViewerWithBuffer:resultBuff resampleOnViewer:referenceViewer];
 }
 
-- (void) createNewViewerWithBuffer:(float*)aBuffer resampleOnViewer:(ViewerController*)referenceViewer
+- (ViewerController*) createNewViewerWithBuffer:(float*)aBuffer resampleOnViewer:(ViewerController*)referenceViewer
 {
 	long				i;
-	ViewerController	*new2DViewer;
+	ViewerController	*new2DViewer = 0L;
 	float				*fVolumePtr;
 	
 	// First calculate the amount of memory needed for the new serie
@@ -220,20 +196,20 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 			[curPix setfImage: (float*) (fVolumePtr + [curPix pheight] * [curPix pwidth] * i)];
 			
 			// to keep settings propagated for MRI we need the old values for echotime & repetitiontime
-//			[curPix setEchotime: [originalPix echotime]];
-//			[curPix setRepetitiontime: [originalPix repetitiontime]];
-//
-//			// SUV
-//			[curPix setDisplaySUVValue: [originalPix displaySUVValue]];
-//			[curPix setSUVConverted: [originalPix SUVConverted]];
-//			[curPix setRadiopharmaceuticalStartTime: [originalPix radiopharmaceuticalStartTime]];
-//			[curPix setPatientsWeight: [originalPix patientsWeight]];
-//			[curPix setRadionuclideTotalDose: [originalPix radionuclideTotalDose]];
-//			[curPix setRadionuclideTotalDoseCorrected: [originalPix radionuclideTotalDoseCorrected]];
-//			[curPix setAcquisitionTime: [originalPix acquisitionTime]];
-//			[curPix setDecayCorrection: [originalPix decayCorrection]];
-//			[curPix setDecayFactor: [originalPix decayFactor]];
-//			[curPix setUnits: [originalPix units]];
+			[curPix setEchotime: [originalPix echotime]];
+			[curPix setRepetitiontime: [originalPix repetitiontime]];
+
+			// SUV
+			[curPix setDisplaySUVValue: [originalPix displaySUVValue]];
+			[curPix setSUVConverted: [originalPix SUVConverted]];
+			[curPix setRadiopharmaceuticalStartTime: [originalPix radiopharmaceuticalStartTime]];
+			[curPix setPatientsWeight: [originalPix patientsWeight]];
+			[curPix setRadionuclideTotalDose: [originalPix radionuclideTotalDose]];
+			[curPix setRadionuclideTotalDoseCorrected: [originalPix radionuclideTotalDoseCorrected]];
+			[curPix setAcquisitionTime: [originalPix acquisitionTime]];
+			[curPix setDecayCorrection: [originalPix decayCorrection]];
+			[curPix setDecayFactor: [originalPix decayFactor]];
+			[curPix setUnits: [originalPix units]];
 			
 			[newPixList addObject: curPix];
 			[newFileList addObject:[[originalViewer fileList] objectAtIndex:0]];
@@ -241,6 +217,8 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		
 		new2DViewer = [originalViewer newWindow:newPixList :newFileList :volumeData];
 	}
+	
+	return new2DViewer;
 }
 
 @end

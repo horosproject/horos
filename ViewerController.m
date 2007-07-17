@@ -7450,38 +7450,92 @@ NSMutableArray		*array;
 			
 			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"COPYSETTINGS"];
 		}
-	
-		[imageView setBlending: [blendingController imageView]];
-		[blendingSlider setEnabled:YES];
-		[blendingPercentage setStringValue:[NSString stringWithFormat:@"%0.0f%%", (float) ([blendingSlider floatValue] + 256.) / 5.12]];
 		
-		if( [[blendingController curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] && [[[blendingController pixList] objectAtIndex: 0] isRGB] == NO)
+		float orientA[9], orientB[9];
+		float result[3];
+	
+		BOOL proceed = NO;
+		
+		[[[self imageView] curDCM] orientation:orientA];
+		[[[blendingController imageView] curDCM] orientation:orientB];
+		
+		if( orientB[ 6] == 0 && orientB[ 7] == 0 && orientB[ 8] == 0) proceed = YES;
+		if( orientA[ 6] == 0 && orientA[ 7] == 0 && orientA[ 8] == 0) proceed = YES;
+		
+		// normal vector of planes
+		
+		result[0] = fabs( orientB[ 6] - orientA[ 6]);
+		result[1] = fabs( orientB[ 7] - orientA[ 7]);
+		result[2] = fabs( orientB[ 8] - orientA[ 8]);
+		
+		if( result[0] + result[1] + result[2] > 0.01)  // Planes are not paralel!
 		{
-			if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"clutNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
+					// FROM SAME STUDY
+			
+			if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[blendingController fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
 			{
-				if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-					[self ApplyCLUTString: @"B/W Inverse"];
-				else
-					[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+				int result = NSRunCriticalAlertPanel(NSLocalizedString(@"2D Planes",nil),NSLocalizedString(@"These 2D planes are not parallel. If you continue the result will be distorted. You can instead 'Resample' the series to have the same origin/orientation.",nil), NSLocalizedString(@"Resample & Fusion",nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Fusion",nil));
+				
+				switch( result)
+				{
+					case NSAlertAlternateReturn:
+						proceed = NO;
+					break;
+					
+					case NSAlertDefaultReturn:		// Resample
+						blendingController = [self resampleSeries: blendingController];
+						if( blendingController) proceed = YES;
+					break;
+					
+					case NSAlertOtherReturn:
+						proceed = YES;
+					break;
+				}
+			}
+			else	// FROM DIFFERENT STUDY
+			{
+				if( NSRunCriticalAlertPanel(NSLocalizedString(@"2D Planes",nil),NSLocalizedString(@"These 2D planes are not parallel. If you continue the result will be distorted. You can instead perform a 'Point-based registration' to have correct alignment/orientation.",nil), NSLocalizedString(@"Continue",nil), NSLocalizedString(@"Cancel",nil), nil) != NSAlertDefaultReturn)
+				{
+					proceed = NO;
+				}
+				else proceed = YES;
 			}
 		}
 		
-		[imageView setBlendingFactor: [blendingSlider floatValue]];
-		
-		[blendingPopupMenu selectItemWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
-		[imageView setBlendingMode: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
-		[seriesView setBlendingMode: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
+		if( proceed)
+		{		
+			[imageView setBlending: [blendingController imageView]];
+			[blendingSlider setEnabled:YES];
+			[blendingPercentage setStringValue:[NSString stringWithFormat:@"%0.0f%%", (float) ([blendingSlider floatValue] + 256.) / 5.12]];
+			
+			if( [[blendingController curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] && [[[blendingController pixList] objectAtIndex: 0] isRGB] == NO)
+			{
+				if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"clutNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
+				{
+					if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+						[self ApplyCLUTString: @"B/W Inverse"];
+					else
+						[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+				}
+			}
+			
+			[imageView setBlendingFactor: [blendingSlider floatValue]];
+			
+			[blendingPopupMenu selectItemWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
+			[imageView setBlendingMode: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
+			[seriesView setBlendingMode: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
+			
+			[seriesView ActivateBlending:blendingController blendingFactor:[blendingSlider floatValue]];
+		}
 	}
 	else
 	{
 		[imageView setBlending: 0L];
 		[blendingSlider setEnabled:NO];
 		[blendingPercentage setStringValue:@"-"];
+		[seriesView ActivateBlending: 0L blendingFactor:[blendingSlider floatValue]];
 	}
 	
-	if (bC != self)
-		[seriesView ActivateBlending:bC blendingFactor:[blendingSlider floatValue]];
-		
 	[self buildMatrixPreview: NO];
 }
 
@@ -7640,6 +7694,10 @@ NSMutableArray		*array;
 		
 		case 7:		// 2D Registration
 			[self computeRegistrationWithMovingViewer: bc];
+		break;
+		
+		case 11:
+			[self resampleSeries: bc];
 		break;
 		
 		case 8:		// 3D Registration
@@ -11056,32 +11114,83 @@ int i,j,l;
 	return points2D;
 }
 
+- (ViewerController*) resampleSeries:(ViewerController*) movingViewer
+{
+	ViewerController	*newViewer = 0L;
+
+	if( [[self studyInstanceUID] isEqualToString: [movingViewer studyInstanceUID]])
+	{
+		float vectorModel[ 9], vectorSensor[ 9];
+			
+		[[[movingViewer pixList] objectAtIndex:0] orientation: vectorSensor];
+		[[[self pixList] objectAtIndex:0] orientation: vectorModel];
+			
+		double translation[ 3], matrix[ 12], length;
+		
+		// No translation -> same origin, same study
+		matrix[ 9] = 0;
+		matrix[ 10] = 0;
+		matrix[ 11] = 0;
+		
+		// --
+		
+		matrix[ 0] = vectorSensor[ 0] * vectorModel[ 0] + vectorSensor[ 1] * vectorModel[ 1] + vectorSensor[ 2] * vectorModel[ 2];
+		matrix[ 1] = vectorSensor[ 0] * vectorModel[ 3] + vectorSensor[ 1] * vectorModel[ 4] + vectorSensor[ 2] * vectorModel[ 5];
+		matrix[ 2] = vectorSensor[ 0] * vectorModel[ 6] + vectorSensor[ 1] * vectorModel[ 7] + vectorSensor[ 2] * vectorModel[ 8];
+
+		length = sqrt(matrix[0]*matrix[0] + matrix[1]*matrix[1] + matrix[2]*matrix[2]);
+
+		matrix[0] = matrix[ 0] / length;
+		matrix[1] = matrix[ 1] / length;
+		matrix[2] = matrix[ 2] / length;
+
+		// --
+
+		matrix[ 3] = vectorSensor[ 3] * vectorModel[ 0] + vectorSensor[ 4] * vectorModel[ 1] + vectorSensor[ 5] * vectorModel[ 2];
+		matrix[ 4] = vectorSensor[ 3] * vectorModel[ 3] + vectorSensor[ 4] * vectorModel[ 4] + vectorSensor[ 5] * vectorModel[ 5];
+		matrix[ 5] = vectorSensor[ 3] * vectorModel[ 6] + vectorSensor[ 4] * vectorModel[ 7] + vectorSensor[ 5] * vectorModel[ 8];
+
+		length = sqrt(matrix[3]*matrix[3] + matrix[4]*matrix[4] + matrix[5]*matrix[5]);
+
+		matrix[3] = matrix[ 3] / length;
+		matrix[4] = matrix[ 4] / length;
+		matrix[5] = matrix[ 5] / length;
+		
+		// --
+		
+		matrix[6] = matrix[1]*matrix[5] - matrix[2]*matrix[4];
+		matrix[7] = matrix[2]*matrix[3] - matrix[0]*matrix[5];
+		matrix[8] = matrix[0]*matrix[4] - matrix[1]*matrix[3];
+		
+		length = sqrt(matrix[6]*matrix[6] + matrix[7]*matrix[7] + matrix[8]*matrix[8]);
+
+		matrix[6] = matrix[ 6] / length;
+		matrix[7] = matrix[ 7] / length;
+		matrix[8] = matrix[ 8] / length;
+		
+		// --
+		
+		ITKTransform * transform = [[ITKTransform alloc] initWithViewer:movingViewer];
+		
+		newViewer = [transform computeAffineTransformWithParameters: matrix resampleOnViewer: self];
+		
+		[imageView sendSyncMessage:1];
+		[self adjustSlider];
+		
+		[transform release];
+	}
+	else
+	{
+		NSRunCriticalAlertPanel(NSLocalizedString(@"Resampling Error", nil),
+								NSLocalizedString(@"Resampling is only available for series in the SAME study.", nil),
+								NSLocalizedString(@"OK", nil), nil, nil);
+	}
+	
+	return newViewer;
+}
+
 - (void) computeRegistrationWithMovingViewer:(ViewerController*) movingViewer
 {	
-//	NSLog(@" ***** test 1 : test Horn Registration API ***** ");
-//	[HornRegistration test]; //test if the connection to the Horn Registration API is OK
-//	NSLog(@" ***** test 2 : test cocoa wrapper ***** ");
-//	double *m1, *m2, *m3, *m4;
-//	m1 = (double*) malloc(3*sizeof(double)); m2 = (double*) malloc(3*sizeof(double)); m3 = (double*) malloc(3*sizeof(double)); m4 = (double*) malloc(3*sizeof(double));
-//	m1[0] = 0.0; m1[1] = 0.0; m1[2] = 0.0;
-//	m2[0] = 10.0; m2[1] = 0.0; m2[2] = 0.0;
-//	m3[0] = 10.0; m3[1] = 10.0; m3[2] = 0.0;
-//	m4[0] = 0.0; m4[1] = 10.0; m4[2] = 0.0;
-//	double *s1, *s2, *s3, *s4;
-//	s1 = (double*) malloc(3*sizeof(double)); s2 = (double*) malloc(3*sizeof(double)); s3 = (double*) malloc(3*sizeof(double)); s4 = (double*) malloc(3*sizeof(double));
-//	s1[0] = 5.0; s1[1] = 0.0; s1[2] = 0.0;
-//	s2[0] = 5.0; s2[1] = 10.0; s2[2] = 0.0;
-//	s3[0] = 5.0; s3[1] = 10.0; s3[2] = 11.0;
-//	s4[0] = 5.0; s4[1] = 0.0; s4[2] = 10.0;
-//	
-//	HornRegistration *hr = [[HornRegistration alloc] init];
-//	
-//	[hr addModelPoint: m1]; [hr addModelPoint: m2]; [hr addModelPoint: m3]; [hr addModelPoint: m4];
-//	[hr addSensorPoint: s1]; [hr addSensorPoint: s2]; [hr addSensorPoint: s3]; [hr addSensorPoint: s4];
-//
-//	[hr compute];
-//	[hr release];
-//
 //	NSLog(@" ***** Points 2D ***** ");
 	// find all the Point ROIs on this viewer (fixed)
 	NSMutableArray * modelPointROIs = [self point2DList];
@@ -11223,8 +11332,6 @@ int i,j,l;
 			
 			[transform computeAffineTransformWithParameters: matrix resampleOnViewer: self];
 			
-			
-//			[transform computeAffineTransformWithRotation: rotationConverted translation: translationConverted resampleOnViewer: self];
 			[transform release];
 		}
 		[hr release];

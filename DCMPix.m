@@ -8780,13 +8780,7 @@ BOOL            readable = YES;
 	
 	for( i = 0 ; i < 6; i ++) orientation[ i] = c[ i];
 		
-	double length = sqrt(orientation[6]*orientation[6] + orientation[7]*orientation[7] + orientation[8]*orientation[8]);
-
-	orientation[6] = orientation[ 6] / length;
-	orientation[7] = orientation[ 7] / length;
-	orientation[8] = orientation[ 8] / length;
-
-	length = sqrt(orientation[0]*orientation[0] + orientation[1]*orientation[1] + orientation[2]*orientation[2]);
+	double length = sqrt(orientation[0]*orientation[0] + orientation[1]*orientation[1] + orientation[2]*orientation[2]);
 
 	orientation[0] = orientation[ 0] / length;
 	orientation[1] = orientation[ 1] / length;

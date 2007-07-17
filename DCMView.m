@@ -4445,39 +4445,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) setBlending:(DCMView*) bV
 {
-	float orientA[9], orientB[9];
-	float result[3];
-	
 	if( blendingView == bV) return;
 	
-	if( bV)
-	{
-		if( [bV curDCM])
-		{
-			[curDCM orientation:orientA];
-			[[bV curDCM] orientation:orientB];
-			
-			if( orientB[ 6] == 0 && orientB[ 7] == 0 && orientB[ 8] == 0) { blendingView = bV;	return;}
-			if( orientA[ 6] == 0 && orientA[ 7] == 0 && orientA[ 8] == 0) { blendingView = bV;	return;}
-			
-			// normal vector of planes
-			
-			result[0] = fabs( orientB[ 6] - orientA[ 6]);
-			result[1] = fabs( orientB[ 7] - orientA[ 7]);
-			result[2] = fabs( orientB[ 8] - orientA[ 8]);
-			
-			if( result[0] + result[1] + result[2] > 0.01)  // Planes are not paralel!
-			{
-				if( NSRunCriticalAlertPanel(NSLocalizedString(@"2D Planes",nil),NSLocalizedString(@"These 2D planes are not parallel. The result in 2D will be distorted.",nil), NSLocalizedString(@"Continue",nil), NSLocalizedString(@"Cancel",nil),nil) != NSAlertDefaultReturn)
-				{
-					blendingView = 0L;
-				}
-				else blendingView = bV;
-			}
-			else blendingView = bV;
-		}
-	}
-	else blendingView = 0L;
+	blendingView = bV;
 }
 
 -(void) getCLUT:( unsigned char**) r : (unsigned char**) g : (unsigned char**) b
@@ -8183,11 +8153,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
  		if( [self softwareInterpolation])
 		{
-			float resampledScale = 3;
+			float resampledScale = 2;
 			*tW = [curDCM pwidth] * resampledScale;
 			*tH = [curDCM pheight] * resampledScale;
 			
-
 			vImage_Buffer src, dst;
 			
 			src.width = [curDCM pwidth];
@@ -8252,7 +8221,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				{
 					*tW = [curDCM rowBytes];
 					rowBytes = [curDCM rowBytes];
-					baseAddr = *colorBufPtr;
+					baseAddr = (char*) *colorBufPtr;
 				}
 				else
 				{
@@ -8274,7 +8243,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			{
 				*tW = [curDCM rowBytes];
 				rowBytes = [curDCM rowBytes];
-				baseAddr = *colorBufPtr;
+				baseAddr = (char*) *colorBufPtr;
 			}
 			else
 			{
@@ -8313,14 +8282,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES)
 					{
-						pBuffer =   (unsigned char*) baseAddr +			//baseAddr
-									offsetY * rowBytes +      //depth
-									offsetX * 4;							//depth
+						pBuffer =   (unsigned char*) baseAddr +			
+									offsetY * rowBytes +				
+									offsetX * 4;						
 					}
 					else if( (colorTransfer == YES) || (blending == YES))
-						pBuffer =   baseAddr +			//baseAddr
-									offsetY * rowBytes * 4 +      //depth
-									offsetX * 4;							//depth
+						pBuffer =   (unsigned char*) baseAddr +		
+									offsetY * rowBytes * 4 +     
+									offsetX * 4;						
 									
 					else
 					{

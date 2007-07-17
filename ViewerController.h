@@ -648,6 +648,7 @@ enum
 
 - (NSMutableArray*) point2DList;
 - (void) computeRegistrationWithMovingViewer:(ViewerController*) movingViewer;
+- (ViewerController*) resampleSeries:(ViewerController*) movingViewer;
 
 #pragma mark-
 #pragma mark Key Objects
