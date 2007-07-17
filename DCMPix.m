@@ -3180,8 +3180,22 @@ BOOL gUSEPAPYRUSDCMPIX;
 - (NSString*) laterality {return laterality;}
 - (NSString*) echotime {return echotime;}
 - (NSString*) flipAngle {return flipAngle;}
-- (void) setRepetitiontime:(NSString*)rep {repetitiontime = rep;}
-- (void) setEchotime:(NSString*)echo {echotime = echo;}
+- (void) setRepetitiontime:(NSString*)rep
+{
+	if( rep != repetitiontime)
+	{
+		[repetitiontime release];
+		repetitiontime = [rep retain];
+	}
+}
+- (void) setEchotime:(NSString*)echo
+{
+	if( echo != echotime)
+	{
+		[echotime release];
+		echotime = [echo retain];
+	}
+}
 - (NSString*) protocolName {return protocolName;}
 - (NSString*) viewPosition {return viewPosition;}
 - (NSString*) patientPosition {return patientPosition;}
