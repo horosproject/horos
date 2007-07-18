@@ -83,7 +83,6 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "ITKBrushROIFilter.h"
 #import "DCMAbstractSyntaxUID.h"
 #import "printView.h"
-#import "HornRegistration.h"
 #import "ITKTransform.h"
 #import "LLScoutViewer.h"
 #import "DicomStudy.h"
@@ -96,6 +95,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "MenuDictionary.h"
 #import "CalciumScoringWindowController.h"
 #import "EndoscopySegmentationController.h"
+#import "HornRegistration.h"
 
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
 	#import <InstantMessage/IMService.h>
