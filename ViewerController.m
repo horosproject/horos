@@ -10911,6 +10911,11 @@ int i,j,l;
 			[vC setMovieIndex: curMovieIndex];
 		}
 		
+		BOOL registeredViewers = NO;
+		
+		if( [self registeredViewer] == vC || [vC registeredViewer] == self)
+			registeredViewers = YES;
+		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
 		{
 //			if( [[vC curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES && [[self curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES )
@@ -10981,7 +10986,7 @@ int i,j,l;
 			{
 			//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
 				{
-					if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[vC fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
+					if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[vC fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewers == YES)
 					{
 						NSPoint pan, delta;
 						
@@ -11099,6 +11104,16 @@ int i,j,l;
 
 }
 #pragma mark Registration
+
+- (ViewerController*) registeredViewer
+{
+	return registeredViewer;
+}
+
+- (void) setRegisteredViewer: (ViewerController*) viewer
+{
+	registeredViewer = viewer;
+}
 
 - (NSMutableArray*) point2DList
 {
@@ -11284,8 +11299,6 @@ int i,j,l;
 						modelLocationConverted[ 0] = modelLocation[ 0];
 						modelLocationConverted[ 1] = modelLocation[ 1];
 						modelLocationConverted[ 2] = modelLocation[ 2];
-						
-						
 						modelLocationConverted[ 0] = modelLocation[ 0] * vectorModel[ 0] + modelLocation[ 1] * vectorModel[ 1] + modelLocation[ 2] * vectorModel[ 2];
 						modelLocationConverted[ 1] = modelLocation[ 0] * vectorModel[ 3] + modelLocation[ 1] * vectorModel[ 4] + modelLocation[ 2] * vectorModel[ 5];
 						modelLocationConverted[ 2] = modelLocation[ 0] * vectorModel[ 6] + modelLocation[ 1] * vectorModel[ 7] + modelLocation[ 2] * vectorModel[ 8];
@@ -11295,11 +11308,9 @@ int i,j,l;
 						sensorLocationConverted[ 0] = sensorLocation[ 0];
 						sensorLocationConverted[ 1] = sensorLocation[ 1];
 						sensorLocationConverted[ 2] = sensorLocation[ 2];
-						
 						sensorLocationConverted[ 0] = sensorLocation[ 0] * vectorSensor[ 0] + sensorLocation[ 1] * vectorSensor[ 1] + sensorLocation[ 2] * vectorSensor[ 2];
 						sensorLocationConverted[ 1] = sensorLocation[ 0] * vectorSensor[ 3] + sensorLocation[ 1] * vectorSensor[ 4] + sensorLocation[ 2] * vectorSensor[ 5];
 						sensorLocationConverted[ 2] = sensorLocation[ 0] * vectorSensor[ 6] + sensorLocation[ 1] * vectorSensor[ 7] + sensorLocation[ 2] * vectorSensor[ 8];
-						
 						
 						// add the points to the registration method
 						[hr addModelPointX: modelLocationConverted[0] Y: modelLocationConverted[1] Z: modelLocationConverted[2]];
@@ -11311,15 +11322,16 @@ int i,j,l;
 		
 		if(pointsNamesMatch2by2 && !triplets)
 		{
-			[hr compute];
-			
 			double matrix[ 16];
 			
 			[hr computeVTK :matrix];
 			
 			ITKTransform * transform = [[ITKTransform alloc] initWithViewer:movingViewer];
 			
-			[transform computeAffineTransformWithParameters: matrix resampleOnViewer: self];
+			ViewerController *newViewer = [transform computeAffineTransformWithParameters: matrix resampleOnViewer: self];
+			
+			[imageView sendSyncMessage:1];
+			[self adjustSlider];
 			
 			[transform release];
 		}
@@ -12221,7 +12233,13 @@ int i,j,l;
 	}
 	else
 	{
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [[NSWorkspace sharedWorkspace] openFile: path];
+		if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
+			NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+				
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+		{
+			[[NSWorkspace sharedWorkspace] openFile: path];
+		}
 	}
 }
 
@@ -13137,6 +13155,10 @@ int i,j,l;
 	if (!([[sender title] isEqualToString: @"SCAN"]))
 	{
 		//open pathToPAGES
+		
+		if( [[NSFileManager defaultManager] fileExistsAtPath: [pathToPAGES stringByAppendingPathExtension:@"pages"]] == NO)
+			NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		
 		[[NSWorkspace sharedWorkspace] openFile:[pathToPAGES stringByAppendingPathExtension:@"pages"]];
 	}
 }
@@ -13253,7 +13275,15 @@ int i,j,l;
 						}
 					}
 					
-					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.jpg", 1]]];
+					NSString	*filePath = [[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.jpg", 1]];
+					
+					if( [[NSFileManager defaultManager] fileExistsAtPath: filePath] == NO)
+						NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+					
+					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+					{
+						[ws openFile: filePath];
+					}
 				}
 			}
 			else
@@ -13322,7 +13352,13 @@ int i,j,l;
 				
 				[im release];
 				
-				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
+				if( [[NSFileManager defaultManager] fileExistsAtPath: [panel filename]] == NO)
+						NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+					
+				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+				{
+					[ws openFile:[panel filename]];
+				}
 			}
 		}
 	}

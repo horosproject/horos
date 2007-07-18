@@ -317,6 +317,8 @@ enum
 	float					resampleRatio;
 	
 	NSRect					savedWindowsFrame;
+	
+	ViewerController		*registeredViewer;
 }
 
 + (NSMutableArray*) getDisplayed2DViewers;
@@ -620,7 +622,8 @@ enum
 - (IBAction) roiDeleteGeneratedROIs:(id) sender;
 - (ROI*)selectedROI;
 - (NSMutableArray*) selectedROIs;
-
+- (ViewerController*) registeredViewer;
+- (void) setRegisteredViewer: (ViewerController*) viewer;
 - (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
 - (void)selectROI:(ROI*)roi deselectingOther:(BOOL)deselectOther;
 - (void)deselectAllROIs;

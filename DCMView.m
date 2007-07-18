@@ -5075,11 +5075,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			point3D = YES;
 		}
 		
-		if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] == NO || syncSeriesIndex != -1)  // We received a message from the keyWindow -> display the slice cut to our window!
+		BOOL registeredViewer = NO;
+		
+		if( [[self windowController] registeredViewer] == [otherView windowController] || [[otherView windowController] registeredViewer] == [self windowController])
+			registeredViewer = YES;
+		
+		if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer || [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] == NO || syncSeriesIndex != -1)  // We received a message from the keyWindow -> display the slice cut to our window!
 		{
-			if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]])
+			if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer)
 			{
-				if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]])
+				if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer)
 				{
 					[self computeSlice: oPix :oPix2];
 				}
@@ -5159,15 +5164,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 								
 								fdiff = slicePosition - loc;
 								
-								if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] == NO || syncSeriesIndex != -1)
-								{						
-									if( [otherView syncSeriesIndex] != -1)
-									{
-										slicePosition -= [[dcmPixList objectAtIndex: syncSeriesIndex] sliceLocation];
-										
-										fdiff = slicePosition - (loc - [[[otherView dcmPixList] objectAtIndex: [otherView syncSeriesIndex]] sliceLocation]);
+								if( registeredViewer == NO)
+								{
+									if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] == NO || syncSeriesIndex != -1)
+									{						
+										if( [otherView syncSeriesIndex] != -1)
+										{
+											slicePosition -= [[dcmPixList objectAtIndex: syncSeriesIndex] sliceLocation];
+											
+											fdiff = slicePosition - (loc - [[[otherView dcmPixList] objectAtIndex: [otherView syncSeriesIndex]] sliceLocation]);
+										}
+										else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] ) noSlicePosition = YES;
 									}
-									else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] ) noSlicePosition = YES;
 								}
 								
 								if( fdiff < 0) fdiff = -fdiff;

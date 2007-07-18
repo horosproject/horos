@@ -4393,15 +4393,15 @@ static BOOL				DICOMDIRCDMODE = NO;
 		NSManagedObject	*album = [[self albumArray] objectAtIndex: [albumTable selectedRow]];
 		
 		if( [[album valueForKey:@"smartAlbum"] boolValue] == NO)
-			result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove exams", 0L), NSLocalizedString(@"Do you want to only remove the selected exams from the current album or delete them from the database?", 0L), NSLocalizedString(@"Delete",nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Remove from current album",nil));
+			result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove images", 0L), NSLocalizedString(@"Do you want to only remove the selected images from the current album or delete them from the database?", 0L), NSLocalizedString(@"Delete",nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Remove from current album",nil));
 		else
 		{
-			result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete exams", 0L), NSLocalizedString(@"Are you sure you want to delete the selected exams?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+			result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", 0L), NSLocalizedString(@"Are you sure you want to delete the selected images?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 		}
 	}
 	else
 	{
-		result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete exams", 0L), NSLocalizedString(@"Are you sure you want to delete the selected exams?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+		result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", 0L), NSLocalizedString(@"Are you sure you want to delete the selected images?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 	}
 	
 	if( result == NSAlertOtherReturn)	// REMOVE FROM CURRENT ALBUMS, BUT DONT DELETE IT FROM THE DATABASE
@@ -4482,7 +4482,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			if( [nonLocalImagesPath  count] > 0)
 			{
-				result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove exams", 0L), NSLocalizedString(@"Some of the selected exams are not stored in the Database folder. Do you want to only remove the links of these exams from the database or also delete the original files?", 0L), NSLocalizedString(@"Remove the links",nil),  NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Delete the files",nil));
+				result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove images", 0L), NSLocalizedString(@"Some of the selected images are not stored in the Database folder. Do you want to only remove the links of these images from the database or also delete the original files?", 0L), NSLocalizedString(@"Remove the links",nil),  NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Delete the files",nil));
 			}
 			else result = NSAlertDefaultReturn;
 			
@@ -12918,7 +12918,7 @@ static volatile int numberOfThreadsForJPEG = 0;
         
 		[toolbarItem setLabel: NSLocalizedString(@"Delete",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Delete",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Delete selected exams from the database",nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Delete selected images from the database",nil)];
 		[toolbarItem setImage: [NSImage imageNamed: TrashToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(delItem:)];

@@ -47,16 +47,6 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	
 	ParametersType parameters(transform->GetNumberOfParameters());
 	
-	double translation[ 3];
-	
-	translation[ 0] = theParameters[ 9];
-	translation[ 1] = theParameters[ 10];
-	translation[ 2] = theParameters[ 11];
-	
-//	theParameters[ 9] = translation[ 0] * theParameters[ 0] + translation[ 1] * theParameters[ 1] + translation[ 2] * theParameters[ 2];
-//	theParameters[ 10] = translation[ 0] * theParameters[ 3] + translation[ 1] * theParameters[ 4] + translation[ 2] * theParameters[ 5];
-//	theParameters[ 11] = translation[ 0] * theParameters[ 6] + translation[ 1] * theParameters[ 7] + translation[ 2] * theParameters[ 8];
-
 	double	vectorReference[ 9];
 	double	vectorOriginal[ 9];
 
@@ -109,9 +99,6 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	outputOriginConverted[ 1] = outputOrigin[ 0] * vectorReference[ 3] + outputOrigin[ 1] * vectorReference[ 4] + outputOrigin[ 2] * vectorReference[ 5];
 	outputOriginConverted[ 2] = outputOrigin[ 0] * vectorReference[ 6] + outputOrigin[ 1] * vectorReference[ 7] + outputOrigin[ 2] * vectorReference[ 8];
 	
-	NSLog( @"%f %f %f", outputOrigin[ 0], outputOrigin[ 1], outputOrigin[ 2]);
-	NSLog( @"%f %f %f", outputOriginConverted[ 0], outputOriginConverted[ 1], outputOriginConverted[ 2]);
-	
 	resample->SetOutputOrigin( outputOriginConverted);
 	
 	ImageType::SizeType size;
@@ -162,11 +149,10 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	float				*fVolumePtr;
 	
 	// First calculate the amount of memory needed for the new serie
+	
 	NSArray	*pixList = [referenceViewer pixList];
 	DCMPix	*curPix;
 	long	mem = 0;
-	
-	NSLog(@"[pixList count] : %d", [pixList count]);
 	
 	for( i = 0; i < [pixList count]; i++)
 	{
@@ -220,8 +206,10 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		
 		new2DViewer = [originalViewer newWindow:newPixList :newFileList :volumeData];
 		
+		[[new2DViewer window] makeKeyAndOrderFront: self];
 		[new2DViewer setWL: [originalPix wl] WW: [originalPix ww]];
 		[new2DViewer propagateSettings];
+		[new2DViewer setRegisteredViewer: referenceViewer];
 	}
 	else
 		NSRunCriticalAlertPanel(NSLocalizedString(@"Memory", nil),
