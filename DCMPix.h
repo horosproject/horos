@@ -262,7 +262,6 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 // using current slice location and orientation and vice versa
 -(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d;
 -(void) convertPixDoubleX: (double) x pixY: (double) y toDICOMCoords: (double*) d;
--(void) convertPixX: (float) x pixY: (float) y toOrientedCoord: (float*) d;
 
 -(void) convertDICOMCoords: (float*) dc toSliceCoords: (float*) sc;
 -(void) convertDICOMCoordsDouble: (double*) dc toSliceCoords: (double*) sc;

@@ -8808,17 +8808,6 @@ BOOL            readable = YES;
 	[self setOrientationDouble: d];
 }
 
--(void) convertPixX: (float) x pixY: (float) y toOrientedCoord: (float*) d
-{
-//	d[0] = originX + x*pixelSpacingX;
-//	d[1] = originY + y*pixelSpacingY;
-//	d[2] = originZ;
-
-	d[0] = 0 + x*pixelSpacingX;
-	d[1] = 0 + y*pixelSpacingY;
-	d[2] = 0 + sliceLocation;
-}
-
 -(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d
 {
 	d[0] = originX + y*orientation[3]*pixelSpacingY + x*orientation[0]*pixelSpacingX;

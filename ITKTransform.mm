@@ -57,7 +57,6 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 //	theParameters[ 10] = translation[ 0] * theParameters[ 3] + translation[ 1] * theParameters[ 4] + translation[ 2] * theParameters[ 5];
 //	theParameters[ 11] = translation[ 0] * theParameters[ 6] + translation[ 1] * theParameters[ 7] + translation[ 2] * theParameters[ 8];
 
-
 	double	vectorReference[ 9];
 	double	vectorOriginal[ 9];
 
