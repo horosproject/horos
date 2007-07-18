@@ -7588,6 +7588,8 @@ static BOOL needToRezoom;
 							
 							// First we copy the files to the DATABASE folder
 							splash = [[Wait alloc] initWithString:NSLocalizedString(@"Copying to OsiriX database...", nil)];
+							
+							[splash setCancel:YES];
 							[splash showWindow:self];
 							[[splash progress] setMaxValue:[packArray count]];
 							
@@ -7603,6 +7605,9 @@ static BOOL needToRezoom;
 								
 								if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
 									[dstFiles addObject: dstPath];
+									
+								if( [splash aborted]) 
+									i = [packArray count];
 							}
 							[splash close];
 							[splash release];
@@ -10889,6 +10894,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 	NSMutableDictionary *htmlExportDictionary = [NSMutableDictionary dictionary];
 	
+	[splash setCancel:YES];
 	[splash showWindow:self];
 	[[splash progress] setMaxValue:[dicomFiles2Export count]];
 
@@ -11002,6 +11008,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			
 			[splash incrementBy:1];
+			
+			if( [splash aborted]) 
+				i = [dicomFiles2Export count];
 		}
 	
 		if( [imagesArray count] > 1)
@@ -11095,7 +11104,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSString			*dest, *path = [[sPanel filenames] objectAtIndex:0];
 		Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", 0L)];
 		BOOL				addDICOMDIR = [addDICOMDIRButton state];
-				
+		
+		[splash setCancel:YES];
 		[splash showWindow:self];
 		[[splash progress] setMaxValue:[filesToExport count]];
 
@@ -11182,6 +11192,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			
 			[splash incrementBy:1];
+			
+			if( [splash aborted]) 
+				i = [filesToExport count];
+				
 			[pool release];
 		}
 		
@@ -11219,6 +11233,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray		*result = [NSMutableArray array];
 	NSMutableArray		*files2Compress = [NSMutableArray array];
 	
+	[splash setCancel:YES];
 	[splash showWindow:self];
 	[[splash progress] setMaxValue:[filesToExport count]];
 	
@@ -11369,6 +11384,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 			
 		[splash incrementBy:1];
+		
+		if( [splash aborted]) 
+			i = [filesToExport count];
+		
 		[pool release];
 	}
 	
