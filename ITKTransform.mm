@@ -80,7 +80,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 
 	resample->SetTransform(transform);
 	resample->SetInput([itkImage itkImporter]->GetOutput());
-	resample->SetDefaultPixelValue(-1024.0);
+	resample->SetDefaultPixelValue( [[[originalViewer pixList] objectAtIndex: 0] minValueOfSeries]);
 	
 	
 	double outputSpacing[3];
