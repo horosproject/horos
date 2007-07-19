@@ -33,7 +33,7 @@
 
 #include "itkSignedDanielssonDistanceMapImageFilter.h"
 #include "itkApproximateSignedDistanceMapImageFilter.h"
-//#include "itkSignedMaurerDistanceMapImageFilter.h"
+#include "itkSignedMaurerDistanceMapImageFilter.h"
 
 
 

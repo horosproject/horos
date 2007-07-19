@@ -3158,6 +3158,24 @@
 		BF7DEBB109D1FC6C00A332B8 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6409B6828300545F5E /* jcapistd.c */; };
 		BF7DEBB209D1FC6D00A332B8 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6309B6828300545F5E /* jcapimin.c */; };
 		BF7DEBB309D1FC6E00A332B8 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E /* jaricom.c */; };
+		BF81E6F90C4FFF05009CF679 /* OrthogonalMPRAxialView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF81E6F70C4FFF05009CF679 /* OrthogonalMPRAxialView.h */; };
+		BF81E6FA0C4FFF05009CF679 /* OrthogonalMPRAxialView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF81E6F80C4FFF05009CF679 /* OrthogonalMPRAxialView.m */; };
+		BF81E6FB0C4FFF05009CF679 /* OrthogonalMPRAxialView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF81E6F70C4FFF05009CF679 /* OrthogonalMPRAxialView.h */; };
+		BF81E6FC0C4FFF05009CF679 /* OrthogonalMPRAxialView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF81E6F80C4FFF05009CF679 /* OrthogonalMPRAxialView.m */; };
+		BF81E6FD0C4FFF05009CF679 /* OrthogonalMPRAxialView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF81E6F70C4FFF05009CF679 /* OrthogonalMPRAxialView.h */; };
+		BF81E6FE0C4FFF05009CF679 /* OrthogonalMPRAxialView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF81E6F80C4FFF05009CF679 /* OrthogonalMPRAxialView.m */; };
+		BF81E7030C4FFF1B009CF679 /* OrthogonalMPRCoronalView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF81E7010C4FFF1B009CF679 /* OrthogonalMPRCoronalView.h */; };
+		BF81E7040C4FFF1B009CF679 /* OrthogonalMPRCoronalView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF81E7020C4FFF1B009CF679 /* OrthogonalMPRCoronalView.m */; };
+		BF81E7050C4FFF1B009CF679 /* OrthogonalMPRCoronalView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF81E7010C4FFF1B009CF679 /* OrthogonalMPRCoronalView.h */; };
+		BF81E7060C4FFF1B009CF679 /* OrthogonalMPRCoronalView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF81E7020C4FFF1B009CF679 /* OrthogonalMPRCoronalView.m */; };
+		BF81E7070C4FFF1B009CF679 /* OrthogonalMPRCoronalView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF81E7010C4FFF1B009CF679 /* OrthogonalMPRCoronalView.h */; };
+		BF81E7080C4FFF1B009CF679 /* OrthogonalMPRCoronalView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF81E7020C4FFF1B009CF679 /* OrthogonalMPRCoronalView.m */; };
+		BF81E70D0C4FFF30009CF679 /* OrthogonalMPRSagittalView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF81E70B0C4FFF30009CF679 /* OrthogonalMPRSagittalView.h */; };
+		BF81E70E0C4FFF30009CF679 /* OrthogonalMPRSagittalView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF81E70C0C4FFF30009CF679 /* OrthogonalMPRSagittalView.m */; };
+		BF81E70F0C4FFF30009CF679 /* OrthogonalMPRSagittalView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF81E70B0C4FFF30009CF679 /* OrthogonalMPRSagittalView.h */; };
+		BF81E7100C4FFF30009CF679 /* OrthogonalMPRSagittalView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF81E70C0C4FFF30009CF679 /* OrthogonalMPRSagittalView.m */; };
+		BF81E7110C4FFF30009CF679 /* OrthogonalMPRSagittalView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF81E70B0C4FFF30009CF679 /* OrthogonalMPRSagittalView.h */; };
+		BF81E7120C4FFF30009CF679 /* OrthogonalMPRSagittalView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF81E70C0C4FFF30009CF679 /* OrthogonalMPRSagittalView.m */; };
 		BF83CD8C09E741BC002041F3 /* ReportPluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BF83CD8A09E741BC002041F3 /* ReportPluginFilter.h */; };
 		BF83CD8D09E741BC002041F3 /* ReportPluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF83CD8B09E741BC002041F3 /* ReportPluginFilter.m */; };
 		BF83CD8E09E741BC002041F3 /* ReportPluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BF83CD8A09E741BC002041F3 /* ReportPluginFilter.h */; };
@@ -11855,6 +11873,12 @@
 		BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMToNSString.m; sourceTree = "<group>"; };
 		BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKStoreSCU.h; sourceTree = "<group>"; };
 		BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKStoreSCU.mm; sourceTree = "<group>"; };
+		BF81E6F70C4FFF05009CF679 /* OrthogonalMPRAxialView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrthogonalMPRAxialView.h; sourceTree = "<group>"; };
+		BF81E6F80C4FFF05009CF679 /* OrthogonalMPRAxialView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrthogonalMPRAxialView.m; sourceTree = "<group>"; };
+		BF81E7010C4FFF1B009CF679 /* OrthogonalMPRCoronalView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrthogonalMPRCoronalView.h; sourceTree = "<group>"; };
+		BF81E7020C4FFF1B009CF679 /* OrthogonalMPRCoronalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrthogonalMPRCoronalView.m; sourceTree = "<group>"; };
+		BF81E70B0C4FFF30009CF679 /* OrthogonalMPRSagittalView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrthogonalMPRSagittalView.h; sourceTree = "<group>"; };
+		BF81E70C0C4FFF30009CF679 /* OrthogonalMPRSagittalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrthogonalMPRSagittalView.m; sourceTree = "<group>"; };
 		BF83CD8A09E741BC002041F3 /* ReportPluginFilter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ReportPluginFilter.h; sourceTree = "<group>"; };
 		BF83CD8B09E741BC002041F3 /* ReportPluginFilter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ReportPluginFilter.m; sourceTree = "<group>"; };
 		BF8449020A65F407000E9830 /* smallKey.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smallKey.tif; sourceTree = "<group>"; };
@@ -15515,6 +15539,12 @@
 				A9F6E4D008FEAFB20060285A /* OrthogonalMPRController.m */,
 				A9F6E4D508FEAFC90060285A /* OrthogonalMPRViewer.h */,
 				A9F6E4DA08FEAFE50060285A /* OrthogonalMPRViewer.m */,
+				BF81E6F70C4FFF05009CF679 /* OrthogonalMPRAxialView.h */,
+				BF81E6F80C4FFF05009CF679 /* OrthogonalMPRAxialView.m */,
+				BF81E7010C4FFF1B009CF679 /* OrthogonalMPRCoronalView.h */,
+				BF81E7020C4FFF1B009CF679 /* OrthogonalMPRCoronalView.m */,
+				BF81E70B0C4FFF30009CF679 /* OrthogonalMPRSagittalView.h */,
+				BF81E70C0C4FFF30009CF679 /* OrthogonalMPRSagittalView.m */,
 			);
 			name = OrthogonalReslice;
 			sourceTree = "<group>";
@@ -21328,6 +21358,9 @@
 				CE822F8E0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */,
 				ABB230BD0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 				AB64A2DB0C4E0F61000E0981 /* HornRegistration.h in Headers */,
+				BF81E6F90C4FFF05009CF679 /* OrthogonalMPRAxialView.h in Headers */,
+				BF81E7030C4FFF1B009CF679 /* OrthogonalMPRCoronalView.h in Headers */,
+				BF81E70D0C4FFF30009CF679 /* OrthogonalMPRSagittalView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23259,6 +23292,9 @@
 				CE822F8C0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */,
 				ABB230BF0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 				AB64A2DD0C4E0F61000E0981 /* HornRegistration.h in Headers */,
+				BF81E6FB0C4FFF05009CF679 /* OrthogonalMPRAxialView.h in Headers */,
+				BF81E7050C4FFF1B009CF679 /* OrthogonalMPRCoronalView.h in Headers */,
+				BF81E70F0C4FFF30009CF679 /* OrthogonalMPRSagittalView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25195,6 +25231,9 @@
 				CE822F8A0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */,
 				ABB230BB0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 				AB64A2D90C4E0F61000E0981 /* HornRegistration.h in Headers */,
+				BF81E6FD0C4FFF05009CF679 /* OrthogonalMPRAxialView.h in Headers */,
+				BF81E7070C4FFF1B009CF679 /* OrthogonalMPRCoronalView.h in Headers */,
+				BF81E7110C4FFF30009CF679 /* OrthogonalMPRSagittalView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27915,6 +27954,9 @@
 				CE822F8F0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */,
 				ABB230BE0C2F95DD00B38596 /* JPEGExif.m in Sources */,
 				AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */,
+				BF81E6FA0C4FFF05009CF679 /* OrthogonalMPRAxialView.m in Sources */,
+				BF81E7040C4FFF1B009CF679 /* OrthogonalMPRCoronalView.m in Sources */,
+				BF81E70E0C4FFF30009CF679 /* OrthogonalMPRSagittalView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28694,6 +28736,9 @@
 				CE822F8D0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */,
 				ABB230C00C2F95DD00B38596 /* JPEGExif.m in Sources */,
 				AB64A2DC0C4E0F61000E0981 /* HornRegistration.mm in Sources */,
+				BF81E6FC0C4FFF05009CF679 /* OrthogonalMPRAxialView.m in Sources */,
+				BF81E7060C4FFF1B009CF679 /* OrthogonalMPRCoronalView.m in Sources */,
+				BF81E7100C4FFF30009CF679 /* OrthogonalMPRSagittalView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30040,6 +30085,9 @@
 				CE822F8B0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */,
 				ABB230BC0C2F95DD00B38596 /* JPEGExif.m in Sources */,
 				AB64A2D80C4E0F61000E0981 /* HornRegistration.mm in Sources */,
+				BF81E6FE0C4FFF05009CF679 /* OrthogonalMPRAxialView.m in Sources */,
+				BF81E7080C4FFF1B009CF679 /* OrthogonalMPRCoronalView.m in Sources */,
+				BF81E7120C4FFF30009CF679 /* OrthogonalMPRSagittalView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

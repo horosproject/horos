@@ -15,7 +15,7 @@
 #import <Cocoa/Cocoa.h>
 #import "ViewerController.h"
 #import "OrthogonalReslice.h"
-#import "OrthogonalMPRView.h"
+@class OrthogonalMPRView;
 
 @interface OrthogonalMPRController : NSObject { //NSWindowController {
 	NSMutableArray				*originalDCMPixList, *xReslicedDCMPixList, *yReslicedDCMPixList, *originalDCMFilesList, *originalROIList;
@@ -100,5 +100,8 @@
 - (NSMutableArray*) pointsROIAtY: (long) y;
 
 - (NSMenu *)contextualMenu;
+
+- (IBAction) flipVertical: (id)sender;
+- (IBAction) flipHorizontal: (id)sender;
 
 @end

@@ -913,7 +913,6 @@
 		{
 			/******************* Tools menu ***************************/
 			contextual =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
-			//NSMenu *submenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)];
 			NSMenuItem *item;
 			//Menu titles
 			NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil),
@@ -970,7 +969,6 @@
 				[contextual addItem:item];
 				[item release];
 			}
-			//[[contextual itemAtIndex:5] setSubmenu:submenu];
 			
 			[contextual addItem:[NSMenuItem separatorItem]];
 			
@@ -1001,7 +999,6 @@
 				int tag = i++;
 				item = [[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""];
 				[item setTag:tag];
-				//[item setTarget:imageView];
 				[submenu addItem:item];
 				[item release];
 			}
@@ -1017,18 +1014,7 @@
 			[contextual addItem:item];
 			[item release];
 			
-			//item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Key image", nil) action: @selector(setKeyImage:) keyEquivalent:@""];
-			//[contextual addItem:item];
-			//[item release];
 			
-			// Tiling
-			NSMenu *tilingMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Image Tiling", nil)] submenu];
-			menu = [tilingMenu copy];
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Image Tiling", nil) action: nil keyEquivalent:@""];
-			[item setSubmenu:menu];
-			[contextual addItem:item];
-			[item release];
-			[menu release];
 
 			/********** Orientation submenu ************/ 
 			
@@ -1051,14 +1037,10 @@
 			[item release];
 			[menu release];
 			
-			//[contextual addItem:[NSMenuItem separatorItem]];
-			//item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open database", nil) action: @selector(databaseWindow:)  keyEquivalent:@""];
-			//[item setTarget:self];
-			//[contextual addItem:item];
-			//[item release];
 
 			[submenu release];
 	}
+	
 	/*
 	else //use the menuDictionary of the path JF20070102
 	{
@@ -1072,6 +1054,22 @@
 	*/
 	
 	return [contextual autorelease];
+}
+
+- (IBAction) flipVertical: (id)sender{
+	NSLog(@"flip Vertical MPR Controller");
+	BOOL flipped = [sender yFlipped];
+	[originalView setYFlipped:flipped];
+	[xReslicedView setYFlipped:flipped];
+	[yReslicedView setYFlipped:flipped];
+}
+
+- (IBAction) flipHorizontal: (id)sender{
+   if (![sender isEqual:yReslicedView]) {
+		BOOL flipped = [sender xFlipped];
+		[originalView setXFlipped:flipped];
+		[xReslicedView setXFlipped:flipped];
+   }
 }
 
 
