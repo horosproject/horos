@@ -206,6 +206,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 	
 	BOOL           _dragInProgress; // Are we drag and dropping
 	NSTimer			*_mouseDownTimer; //Timer to check if mouseDown is Persisiting;
+	NSTimer			*_rightMouseDownTimer; //Checking For Right hold
 	NSImage			*destinationImage; //image will be dropping
 	
 	BOOL			_hasChanged;

@@ -913,41 +913,64 @@
 		{
 			/******************* Tools menu ***************************/
 			contextual =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
-			NSMenu *submenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)];
+			//NSMenu *submenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)];
 			NSMenuItem *item;
-			NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil), NSLocalizedString(@"Move", nil), NSLocalizedString(@"Magnify", nil), 
-														NSLocalizedString(@"Rotate", nil), NSLocalizedString(@"Scroll", nil), NSLocalizedString(@"ROI", nil), nil];
-			NSArray *images = [NSArray arrayWithObjects: @"WLWW", @"Move", @"Zoom",  @"Rotate",  @"Stack", @"Length", nil];	// DO NOT LOCALIZE THIS LINE ! -> filenames !
+			//Menu titles
+			NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil),
+														NSLocalizedString(@"Move", nil), 
+														NSLocalizedString(@"Magnify", nil), 
+														NSLocalizedString(@"Rotate", nil), 
+														NSLocalizedString(@"Scroll", nil), 
+														NSLocalizedString(@"Length", nil), 
+														NSLocalizedString(@"Oval", nil),
+														NSLocalizedString(@"Angle", nil),
+														NSLocalizedString(@"Point", nil),
+														NSLocalizedString(@"Cross", nil), nil];
+			//Image Names
+			NSArray *images = [NSArray arrayWithObjects: @"WLWW", 
+															@"Move", 
+															@"Zoom", 			 
+															@"Rotate",  
+															@"Stack", 
+															@"Length",
+															@"Oval",
+															@"Angle",
+															@"Point",
+															@"Cross",
+															 nil];	// DO NOT LOCALIZE THIS LINE ! -> filenames !
+			
+			NSArray *tagIndexes = [NSArray arrayWithObjects:[NSNumber numberWithInt:0],
+															[NSNumber numberWithInt:1],
+															[NSNumber numberWithInt:2],
+															[NSNumber numberWithInt:3],
+															[NSNumber numberWithInt:4],
+															[NSNumber numberWithInt:5],
+															[NSNumber numberWithInt:9],
+															[NSNumber numberWithInt:12],
+															[NSNumber numberWithInt:19],
+															[NSNumber numberWithInt:8],
+															nil];
+															
 			NSEnumerator *enumerator = [titles objectEnumerator];
 			NSEnumerator *enumerator2 = [images objectEnumerator];
-			//NSEnumerator *enumerator3 = [[popupRoi itemArray] objectEnumerator];
+			NSEnumerator *enumerator3 = [tagIndexes objectEnumerator];
 			NSString *title;
 			NSString *image;
+			NSNumber *tag;
 			NSMenuItem *subItem;
 			int i = 0;
-			/*
-			[enumerator3 nextObject];	// First item is pop main menu
-			while (subItem = [enumerator3 nextObject])
-			{
-				int tag = [subItem tag];
-				item = [[NSMenuItem alloc] initWithTitle: [subItem title] action: @selector(setROITool:) keyEquivalent:@""];
-				[item setTag:tag];
-				[item setImage: [self imageForROI: tag]];
-				[item setTarget:self];
-				[submenu addItem:item];
-				[item release];
-			}
-			*/
+			
 			while (title = [enumerator nextObject]) {
 				image = [enumerator2 nextObject];
-				item = [[NSMenuItem alloc] initWithTitle: title action: @selector(setDefaultTool:) keyEquivalent:@""];
-				[item setTag:i++];
-				[item setTarget:self];
+				tag = [enumerator3 nextObject];
+				item = [[NSMenuItem alloc] initWithTitle: title action: @selector(changeTool:) keyEquivalent:@""];
+				[item setTag:[tag intValue]];
+				//[item setTarget:self];
 				[item setImage:[NSImage imageNamed:image]];
 				[contextual addItem:item];
 				[item release];
 			}
-			[[contextual itemAtIndex:5] setSubmenu:submenu];
+			//[[contextual itemAtIndex:5] setSubmenu:submenu];
 			
 			[contextual addItem:[NSMenuItem separatorItem]];
 			
@@ -967,8 +990,8 @@
 			
 			/************* window resize Menu ****************/
 			
-			[submenu release];
-			submenu =  [[NSMenu alloc] initWithTitle:@"Resize window"];
+			
+			NSMenu *submenu =  [[NSMenu alloc] initWithTitle:@"Resize window"];
 			
 			NSArray *resizeWindowArray = [NSArray arrayWithObjects:@"25%", @"50%", @"100%", @"200%", @"300%", @"iPod Video", nil];
 			NSEnumerator *resizeEnumerator = [resizeWindowArray objectEnumerator];
@@ -994,9 +1017,9 @@
 			[contextual addItem:item];
 			[item release];
 			
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Key image", nil) action: @selector(setKeyImage:) keyEquivalent:@""];
-			[contextual addItem:item];
-			[item release];
+			//item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Key image", nil) action: @selector(setKeyImage:) keyEquivalent:@""];
+			//[contextual addItem:item];
+			//[item release];
 			
 			// Tiling
 			NSMenu *tilingMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Image Tiling", nil)] submenu];
@@ -1028,11 +1051,11 @@
 			[item release];
 			[menu release];
 			
-			[contextual addItem:[NSMenuItem separatorItem]];
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open database", nil) action: @selector(databaseWindow:)  keyEquivalent:@""];
-			[item setTarget:self];
-			[contextual addItem:item];
-			[item release];
+			//[contextual addItem:[NSMenuItem separatorItem]];
+			//item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open database", nil) action: @selector(databaseWindow:)  keyEquivalent:@""];
+			//[item setTarget:self];
+			//[contextual addItem:item];
+			//[item release];
 
 			[submenu release];
 	}

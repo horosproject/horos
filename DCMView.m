@@ -3342,6 +3342,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 }
 
 - (void) rightMouseDown:(NSEvent *)event {
+	/*
+	if (_rightMouseDownTimer) {
+		[self deleteMouseDownTimer];
+	}
+	
+	_rightMouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(nil) userInfo: event  repeats:NO] retain];
+	*/
 	
 	if ( pluginOverridesMouse ) {
 		NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -3365,7 +3372,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //    }
 }
 
-//added by lpysher 4/22/04. Mimics single click to open contextual menu.
+
 - (void) rightMouseUp:(NSEvent *)event {
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -3377,7 +3384,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	else {
 		 if ([event clickCount] == 1)
 				[NSMenu popUpContextMenu:[self menu] withEvent:event forView:self];
-		//[super rightMouseUp:event];
 	}
 	
 	[nc postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
