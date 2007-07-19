@@ -1057,7 +1057,6 @@
 }
 
 - (IBAction) flipVertical: (id)sender{
-	NSLog(@"flip Vertical MPR Controller");
 	BOOL flipped = [sender yFlipped];
 	[originalView setYFlipped:flipped];
 	[xReslicedView setYFlipped:flipped];

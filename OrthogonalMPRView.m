@@ -981,7 +981,6 @@
 }
 
 - (IBAction) flipVertical: (id)sender{
-	NSLog(@"View Flip Vertical");
 	[super flipVertical: (id)sender];
 	[controller flipVertical: self];
 }
