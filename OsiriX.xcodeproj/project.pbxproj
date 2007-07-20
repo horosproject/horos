@@ -10464,9 +10464,7 @@
 		CEE2146906B95E0100368199 /* OsiriX.scriptTerminology in Resources */ = {isa = PBXBuildFile; fileRef = CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */; };
 		CEE42FF6071E7F8D0048DE05 /* ITKSegmentation3D.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE4A922B06DBF255006DAAF7 /* ITKSegmentation3D.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CEE42FF7071E7F8F0048DE05 /* ITKSegmentation3DController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE26441F06DCF096007F5B71 /* ITKSegmentation3DController.m */; };
-		CEE47B5C0838D138009FCE86 /* vtkVolumeProMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CEE47B5B0838D138009FCE86 /* vtkVolumeProMapper.cxx */; };
 		CEE47B5D0838D138009FCE86 /* vtkVolumeProMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CEE47B5B0838D138009FCE86 /* vtkVolumeProMapper.cxx */; };
-		CEE47B5E0838D138009FCE86 /* vtkVolumeProMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CEE47B5B0838D138009FCE86 /* vtkVolumeProMapper.cxx */; };
 		CEE619EF0912C73000C31D78 /* OrientationWidget.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEE619EE0912C73000C31D78 /* OrientationWidget.tiff */; };
 		CEE619F00912C73000C31D78 /* OrientationWidget.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEE619EE0912C73000C31D78 /* OrientationWidget.tiff */; };
 		CEE619F10912C73000C31D78 /* OrientationWidget.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEE619EE0912C73000C31D78 /* OrientationWidget.tiff */; };
@@ -27237,7 +27235,6 @@
 				CEF9E7D70811B67D00412C8A /* Scheduler.m in Sources */,
 				CEF9E7E70811B6AD00412C8A /* StaticScheduler.m in Sources */,
 				CECEF72F081BB265002ECC99 /* DICOMExport.m in Sources */,
-				CEE47B5C0838D138009FCE86 /* vtkVolumeProMapper.cxx in Sources */,
 				CE0CB171084A623C00C6385F /* DCMPix.m in Sources */,
 				183C864B08563F3A000E6A68 /* Camera.m in Sources */,
 				183C864D08563F3A000E6A68 /* FlyThru.m in Sources */,
@@ -28021,7 +28018,6 @@
 				CEF9E7D90811B67D00412C8A /* Scheduler.m in Sources */,
 				CEF9E7E90811B6AD00412C8A /* StaticScheduler.m in Sources */,
 				CECEF733081BB265002ECC99 /* DICOMExport.m in Sources */,
-				CEE47B5E0838D138009FCE86 /* vtkVolumeProMapper.cxx in Sources */,
 				CE0CB175084A623C00C6385F /* DCMPix.m in Sources */,
 				183C867308563F3A000E6A68 /* Camera.m in Sources */,
 				183C867508563F3A000E6A68 /* FlyThru.m in Sources */,

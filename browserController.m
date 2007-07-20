@@ -3251,6 +3251,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 					
 					Wait *wait = [[Wait alloc] initWithString: NSLocalizedString(@"Database Auto-Cleaning...", nil)];
 					[wait showWindow:self];
+					[wait setCancel: YES];
 					[[wait progress] setMaxValue:[toBeRemoved count]];
 					
 					if( [defaults boolForKey: @"AUTOCLEANINGDELETEORIGINAL"])
@@ -3296,6 +3297,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 						[context deleteObject: [toBeRemoved objectAtIndex: i]];
 						
 						[wait incrementBy:1];
+						if( [wait aborted])
+							i = [toBeRemoved count];
 					}
 					
 					[self saveDatabase: currentDatabasePath];
