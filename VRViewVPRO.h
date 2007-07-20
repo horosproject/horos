@@ -20,8 +20,15 @@
 #import "DCMPix.h"
 
 #ifdef __cplusplus
-#include "vli.h"
+
+#include "vli3.h"
+
 #define id Id
+
+#include "vtkVolumeProMapper.h"
+#include "vtkVolumeProVP1000Mapper.h"
+#include "vtkOpenGLVolumeProVP1000Mapper.h"
+
 #include "vtkCommand.h"
 #include "vtkProperty.h"
 #include "vtkActor.h"
@@ -86,9 +93,6 @@
 #include "vtkAnnotatedCubeActor.h"
 #include "vtkOrientationMarkerWidget.h"
 #include "vtkVolumeTextureMapper2D.h"
-#include "vtkOpenGLVolumeProVP1000Mapper.h"
-#include "vtkVolumeProMapper.h"
-#include "vtkVolumeProVP1000Mapper.h"
 #include "vtkCellArray.h"
 #include "vtkProperty2D.h"
 #undef id

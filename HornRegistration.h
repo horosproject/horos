@@ -14,13 +14,11 @@
 	double *adRot, *adTrans;
 }
 
-+ (void) test;
 - (void) addModelPointX: (double) x Y: (double) y Z: (double) z;
 - (void) addSensorPointX: (double) x Y: (double) y Z: (double) z;
 - (void) addModelPoint: (double*) point;
 - (void) addSensorPoint: (double*) point;
 - (short) numberOfPoint;
-- (void) compute;
 - (void) computeVTK:(double*) matrixResult;
 
 - (double*) rotation;
