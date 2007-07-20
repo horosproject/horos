@@ -24,7 +24,7 @@
 #undef id
 
 #import "vtkCocoaWindow.h"
-#import "vtkCocoaWindowModifications.h"
+//#import "vtkCocoaWindowModifications.h"
 #import "VTKView.h"
 
 
