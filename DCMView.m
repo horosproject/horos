@@ -5199,7 +5199,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 								
 								if( [dcmPixList count] > 1)
 								{
-									float sliceDistance = fabs( [[dcmPixList objectAtIndex: 1] sliceLocation] - [[dcmPixList objectAtIndex: 0] sliceLocation]);
+									float sliceDistance;
+									
+									if( everythingLoaded) sliceDistance = fabs( [[dcmPixList objectAtIndex: 1] sliceLocation] - [[dcmPixList objectAtIndex: 0] sliceLocation]);
+									else sliceDistance = fabs( [[[dcmFilesList objectAtIndex: 1] valueForKey:@"sliceLocation"] floatValue] - [[[dcmFilesList objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue]);
 									
 									if( fabs( smallestdiff) > sliceDistance * 2)
 									{
@@ -8182,7 +8185,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
  		if( [self softwareInterpolation])
 		{
-			float resampledScale = 2;
+			float resampledScale;
+			if( [curDCM pwidth] <= 256) resampledScale = 3;
+			else resampledScale = 2;
+			
 			*tW = [curDCM pwidth] * resampledScale;
 			*tH = [curDCM pheight] * resampledScale;
 			

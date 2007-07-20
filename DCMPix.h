@@ -173,6 +173,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	
 	NSPoint				independentOffset;
 	float				independentRotation, independentZoom;
+	
+	NSData				*transferFunction;
 }
 
 + (void) checkUserDefaults: (BOOL) update;
@@ -243,6 +245,10 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 -(double) pixelSpacingY;
 -(void) setPixelSpacingX :(double) s;
 -(void) setPixelSpacingY :(double) s;
+
+// 8-bit TransferFunction
+- (NSData*) transferFunction;
+- (void) setTransferFunction:(NSData*) tf;
 
 // Slice orientation
 -(void) orientation:(float*) c;

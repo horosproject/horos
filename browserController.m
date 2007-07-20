@@ -4642,8 +4642,18 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		long index = [columnIdentifiers indexOfObject: [col identifier]];
 		
-		if( index != NSNotFound) [item setState: NSOnState];
-		else [item setState: NSOffState];
+		if( [[col identifier] isEqualToString:@"name"])
+		{
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
+				[item setState: NSOffState];
+			else
+				[item setState: NSOnState];
+		}
+		else
+		{
+			if( index != NSNotFound) [item setState: NSOnState];
+			else [item setState: NSOffState];
+		}
 	}
 	
 	[[databaseOutline headerView] setMenu: columnsMenu];

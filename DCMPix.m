@@ -9762,6 +9762,17 @@ BOOL            readable = YES;
 	return result;
 }
 
+- (NSData*) transferFunction
+{
+	return transferFunction;
+}
+
+- (void) setTransferFunction:(NSData*) tf
+{
+	if( transferFunction != tf) [transferFunction release];
+	transferFunction = [tf retain];
+}
+
 - (void) changeWLWW:(float)newWL :(float)newWW
 {
 	if( baseAddr == 0L)
@@ -9882,7 +9893,14 @@ BOOL            readable = YES;
 				{
 					if( convolution) srcf.data = [self applyConvolutionOnImage: srcf.data RGB: NO];
 					
-					vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
+					if( 1)	// LINEAR
+					{
+						vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
+					}
+					else
+					{
+					//	opacityPtr2 = opacityTable[ val2];
+					}
 				}
 				
 				if( srcf.data != fImage) free( srcf.data);
@@ -10238,6 +10256,7 @@ BOOL            readable = YES;
 {
 	if( shutterPolygonal) free( shutterPolygonal);
 	
+	[transferFunction release];
 	[positionerPrimaryAngle release];
 	[positionerSecondaryAngle release];
 	[processorsLock release];
