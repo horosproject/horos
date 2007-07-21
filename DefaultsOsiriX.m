@@ -634,6 +634,10 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"0" forKey:@"PETMinimumValue"];
 	[defaultValues setObject:@"1" forKey:@"PETWindowingMode"];
 	
+	[defaultValues setObject:@"1" forKey:@"PETOpacityTable"];
+	[defaultValues setObject:NSLocalizedString( @"Linear Table", 0L) forKey: @"PET Default Opacity Table"];
+	[defaultValues setObject:@"0" forKey: @"OpacityTableNM"];
+
 	[defaultValues setObject:@"B/W Inverse" forKey:@"PET Clut Mode"];
 	[defaultValues setObject:@"PET" forKey: @"PET Default CLUT"];
 	[defaultValues setObject:@"PET" forKey: @"PET Blending CLUT"];

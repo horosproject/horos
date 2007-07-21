@@ -4680,6 +4680,8 @@ static ViewerController *draggedController = 0L;
 	
 	windowWillClose = NO;
 	
+	[self ApplyOpacityString: NSLocalizedString( @"Linear Table", 0L)];
+	
 	[imageView setDrawing: YES];
 	
 	[self setPostprocessed: NO];

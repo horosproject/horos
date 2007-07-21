@@ -25,6 +25,7 @@
                 CLUTBlendingMenu = NSPopUpButton; 
                 CLUTMode = NSMatrix; 
                 DefaultCLUTMenu = NSPopUpButton; 
+                OpacityTableMenu = NSPopUpButton; 
                 WindowingModeMatrix = NSMatrix; 
                 "_authView" = SFAuthorizationView; 
                 convertPETtoSUVCheck = NSButton; 

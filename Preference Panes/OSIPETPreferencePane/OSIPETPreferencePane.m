@@ -59,6 +59,7 @@
 {
 	[[NSUserDefaults standardUserDefaults] setObject:[DefaultCLUTMenu title] forKey: @"PET Default CLUT"];
 	[[NSUserDefaults standardUserDefaults] setObject:[CLUTBlendingMenu title] forKey: @"PET Blending CLUT"];
+	[[NSUserDefaults standardUserDefaults] setObject:[OpacityTableMenu title] forKey: @"PET Default Opacity Table"];
 	[[NSUserDefaults standardUserDefaults] setInteger:[minimumValueText intValue] forKey: @"PETMinimumValue"];
 }
 
@@ -81,13 +82,10 @@
 
 - (void) buildCLUTMenu :(NSPopUpButton*) clutPopup
 {
-	//*** Build the CLUT menu
     short							i;
     NSArray							*keys;
     NSArray							*sortedKeys;
 
-    // Presets VIEWER Menu
-	
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
@@ -97,6 +95,26 @@
     for( i = 0; i < [sortedKeys count]; i++)
     {
         [[clutPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:0L keyEquivalent:@""];
+    }
+}
+
+- (void) buildOpacityTableMenu :(NSPopUpButton*) oPopup
+{
+    short							i;
+    NSArray							*keys;
+    NSArray							*sortedKeys;
+
+	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] allKeys];
+    sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+	
+    i = [[oPopup menu] numberOfItems];
+    while(i-- > 0) [[oPopup menu] removeItemAtIndex:0];
+	
+	[[oPopup menu] addItemWithTitle: NSLocalizedString( @"Linear Table", 0L) action:0L keyEquivalent:@""];
+	
+    for( i = 0; i < [sortedKeys count]; i++)
+    {
+        [[oPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:0L keyEquivalent:@""];
     }
 }
 
@@ -134,6 +152,9 @@
 	
 	[self buildCLUTMenu: CLUTBlendingMenu];
 	[CLUTBlendingMenu setTitle: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Blending CLUT"]];
+	
+	[self buildOpacityTableMenu: OpacityTableMenu];
+	[OpacityTableMenu setTitle: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default Opacity Table"]];
 }
 
 - (IBAction) setPETCLUTfor3DMIP: (id) sender

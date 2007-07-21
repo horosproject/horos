@@ -19,7 +19,7 @@
 {
 	IBOutlet NSButton						*convertPETtoSUVCheck;
 											
-	IBOutlet NSPopUpButton					*CLUTBlendingMenu, *DefaultCLUTMenu;
+	IBOutlet NSPopUpButton					*CLUTBlendingMenu, *DefaultCLUTMenu, *OpacityTableMenu;
 	
 	IBOutlet NSMatrix						*CLUTMode, *WindowingModeMatrix;
 	IBOutlet NSTextField					*minimumValueText;
