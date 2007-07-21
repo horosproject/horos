@@ -30,8 +30,9 @@
 	unsigned char   red[256], green[256], blue[256];
 }
 
--(NSMutableArray*) getPoints;
--(void) setCurrentCLUT :( unsigned char*) r : (unsigned char*) g : (unsigned char*) b;
+- (NSMutableArray*) getPoints;
+- (void) setCurrentCLUT :( unsigned char*) r : (unsigned char*) g : (unsigned char*) b;
 - (IBAction) renderButton:(id) sender;
++ (NSData*) tableWith256Entries: (NSArray*) pointsArray;
 
 @end

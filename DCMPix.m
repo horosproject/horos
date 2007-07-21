@@ -9771,6 +9771,10 @@ BOOL            readable = YES;
 {
 	if( transferFunction != tf) [transferFunction release];
 	transferFunction = [tf retain];
+	
+	transferFunctionPtr = (float*) [transferFunction bytes];
+	
+	updateToBeApplied = YES;
 }
 
 - (void) changeWLWW:(float)newWL :(float)newWW
@@ -9893,13 +9897,32 @@ BOOL            readable = YES;
 				{
 					if( convolution) srcf.data = [self applyConvolutionOnImage: srcf.data RGB: NO];
 					
-					if( 1)	// LINEAR
+					if( transferFunctionPtr == 0L)	// LINEAR
 					{
 						vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
 					}
 					else
 					{
-					//	opacityPtr2 = opacityTable[ val2];
+						register int			ii = height*width;
+						register unsigned char	*dst8Ptr = baseAddr;
+						register float			*src32Ptr = srcf.data;
+						register float			from = wl -ww/2.;
+						register float			to = wl +ww/2.;
+						
+						while( ii-- > 0)
+						{
+							int value = 256 * (*src32Ptr - from)/ww;
+
+							if( value < 0) value = 0;
+							if( value >= 255) value = 255;
+
+							value = 255.*transferFunctionPtr[ value];
+							
+							*dst8Ptr = value;
+							
+							dst8Ptr++;
+							src32Ptr++;
+						}
 					}
 				}
 				

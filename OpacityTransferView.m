@@ -140,6 +140,42 @@
 	return points;
 }
 
++ (NSData*) tableWith256Entries: (NSArray*) pointsArray
+{
+	int		i, x, cur, last = 0;
+	float	entries256[ 256];
+	NSPoint prevPoint;
+	
+	for( i = 0; i < [pointsArray count]; i++)
+	{
+		NSPoint curPoint = NSPointFromString( [pointsArray objectAtIndex: i]);
+		
+		curPoint.x -= 1000;
+		
+		cur = curPoint.x;
+		
+		for( x = 0; x < cur-last; x++)
+		{
+			entries256[ last + x] = (prevPoint.y + ((curPoint.y - prevPoint.y) * x / (cur-last)));
+		}
+		
+		prevPoint = curPoint;
+		last = cur;
+	}
+	
+	for( x = 0; x < 256-last; x++)
+	{
+		entries256[ last + x] = 1.0;
+	}
+	
+//	for( i = 0 ; i < 256; i++)
+//	{
+//		NSLog( @"%d : %f", i, entries256[ i]);
+//	}
+	
+	return [NSData dataWithBytes: entries256 length: 256 * sizeof(float)];
+}
+
 - (IBAction) renderButton:(id) sender
 {
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"OpacityChanged" object: self userInfo: 0L];

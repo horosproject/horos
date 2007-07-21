@@ -4178,7 +4178,9 @@ static ViewerController *draggedController = 0L;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOMATIC FUSE"])
 		[self blendWindows: 0L];
-		
+	
+	[OpacityPopup setEnabled:YES];
+	
 	return self;
 }
 
@@ -7118,7 +7120,7 @@ NSMutableArray		*array;
 {
 	NSDictionary		*aOpacity;
 	NSArray				*array;
-	long				i;
+	int					i;
 	
 	if( [str isEqualToString:NSLocalizedString(@"Linear Table", nil)])
 	{
@@ -7133,7 +7135,13 @@ NSMutableArray		*array;
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 		
+		for( i = 0; i < [pixList[ curMovieIndex] count]; i++)
+		{
+			[[pixList[ curMovieIndex] objectAtIndex: i] setTransferFunction: 0L];
+		}
+		
 		[self updateImage:self];
+
 	}
 	else
 	{
@@ -7151,11 +7159,19 @@ NSMutableArray		*array;
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
-			
-			[self updateImage:self];
 		}
+		
+		NSData	*table = [OpacityTransferView tableWith256Entries: [aOpacity objectForKey:@"Points"]];
+		for( i = 0; i < [pixList[ curMovieIndex] count]; i++)
+		{
+			[[pixList[ curMovieIndex] objectAtIndex: i] setTransferFunction: table];
+		}
+		
+		[self updateImage:self];
 	}
-
+	
+	
+	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
 }
@@ -7290,7 +7306,7 @@ NSMutableArray		*array;
 	{
 		BOOL	flip;
 		
-		[OpacityPopup setEnabled:YES];
+//		[OpacityPopup setEnabled:YES];
 		
 		if( thickSlab == 0L)
 		{
@@ -7318,7 +7334,7 @@ NSMutableArray		*array;
 			}
 		}
 	}
-	else [OpacityPopup setEnabled:NO];
+//	else [OpacityPopup setEnabled:NO];
 	
 	[imageView setFusion:m :[sliderFusion intValue]];
 	

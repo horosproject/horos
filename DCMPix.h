@@ -175,6 +175,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	float				independentRotation, independentZoom;
 	
 	NSData				*transferFunction;
+	float				*transferFunctionPtr;
 }
 
 + (void) checkUserDefaults: (BOOL) update;
