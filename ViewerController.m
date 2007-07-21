@@ -4550,8 +4550,20 @@ static ViewerController *draggedController = 0L;
 				[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
 		}
 		else [self ApplyCLUTString:NSLocalizedString(@"No CLUT", nil)];
+		
+		if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"OpacityTableNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
+		{
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"PETOpacityTable"])
+				[self ApplyOpacityString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default Opacity Table"]];
+			else [self ApplyOpacityString: NSLocalizedString( @"Linear Table", 0L)];
+		}
+		else [self ApplyOpacityString: NSLocalizedString( @"Linear Table", 0L)];
 	}
-	else [self ApplyCLUTString:NSLocalizedString(@"No CLUT", nil)];
+	else
+	{
+		[self ApplyCLUTString:NSLocalizedString(@"No CLUT", nil)];
+		[self ApplyOpacityString: NSLocalizedString( @"Linear Table", 0L)];
+	}
 	
 	NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.stateText"];
 	
@@ -4675,8 +4687,6 @@ static ViewerController *draggedController = 0L;
 	[imageView becomeMainWindow];	// This will send the image sync order !
 	
 	windowWillClose = NO;
-	
-	[self ApplyOpacityString: NSLocalizedString( @"Linear Table", 0L)];
 	
 	[imageView setDrawing: YES];
 	
@@ -7139,7 +7149,6 @@ NSMutableArray		*array;
 		}
 		
 		[self updateImage:self];
-
 	}
 	else
 	{
@@ -7157,18 +7166,21 @@ NSMutableArray		*array;
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
-		}
 		
-		NSData	*table = [OpacityTransferView tableWith4096Entries: [aOpacity objectForKey:@"Points"]];
-		for( i = 0; i < [pixList[ curMovieIndex] count]; i++)
-		{
-			[[pixList[ curMovieIndex] objectAtIndex: i] setTransferFunction: table];
-		}
 		
+			NSData	*table = [OpacityTransferView tableWith4096Entries: [aOpacity objectForKey:@"Points"]];
+			for( i = 0; i < [pixList[ curMovieIndex] count]; i++)
+			{
+				[[pixList[ curMovieIndex] objectAtIndex: i] setTransferFunction: table];
+			}
+		}
 		[self updateImage:self];
 	}
 	
+	NSArray *viewers = [ViewerController getDisplayed2DViewers];
 	
+	for( i = 0; i < [viewers count]; i++)
+		[[viewers objectAtIndex: i] updateImage: self];
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
@@ -14355,6 +14367,12 @@ int i,j,l;
 				[self ApplyCLUTString: @"B/W Inverse"];
 			else
 				[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+		}
+		
+		if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"OpacityTableNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
+		{
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"PETOpacityTable"])
+				[self ApplyOpacityString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default Opacity Table"]];
 		}
 	}
 		
