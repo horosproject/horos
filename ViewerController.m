@@ -2754,16 +2754,12 @@ static ViewerController *draggedController = 0L;
 			[blendingTypeMultiply setEnabled: NO];
 			[blendingTypeSubtract setEnabled: NO];
 			
-			[blendingTypeRed	setEnabled: NO];
-			[blendingTypeGreen  setEnabled: NO];
-			[blendingTypeBlue   setEnabled: NO];
+			[blendingTypeRGB	setEnabled: NO];
 		}
 		
 	if( [[[blendedwin pixList] objectAtIndex: 0] isRGB])
 	{
-		[blendingTypeRed	setEnabled: NO];
-		[blendingTypeGreen  setEnabled: NO];
-		[blendingTypeBlue   setEnabled: NO];
+		[blendingTypeRGB	setEnabled: NO];
 	}
 	else
 	{
