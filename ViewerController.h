@@ -183,7 +183,7 @@ enum
 	
 	IBOutlet NSWindow       *blendingTypeWindow;
 	IBOutlet NSButton		*blendingTypeMultiply, *blendingTypeSubtract;
-	IBOutlet NSButton		*blendingTypeRed, *blendingTypeGreen, *blendingTypeBlue;
+	IBOutlet NSSegmentedControl		*blendingTypeRGB;
 	IBOutlet NSPopUpButton  *blendingPlugins;
 	
 	IBOutlet NSWindow       *roiPropaWindow;
@@ -391,6 +391,7 @@ enum
 - (void) copySettingsToOthers: (id)sender;
 - (void) setPostprocessed:(BOOL) v;
 - (BOOL) postprocessed;
+- (void) ApplyOpacityString:(NSString*) str;
 - (void) refresh;
 - (IBAction) setPagesToPrint:(id) sender;
 - (IBAction) endPrint:(id) sender;

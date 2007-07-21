@@ -49,6 +49,7 @@
         }, 
         {CLASS = NSDatePicker; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {CLASS = NSLevelIndicator; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
+        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {
             CLASS = OSIWindowController; 
             LANGUAGE = ObjC; 
@@ -217,10 +218,8 @@
                 blendingPlugins = NSPopUpButton; 
                 blendingPopupMenu = NSPopUpButton; 
                 blendingSlider = NSSlider; 
-                blendingTypeBlue = NSButton; 
-                blendingTypeGreen = NSButton; 
                 blendingTypeMultiply = NSButton; 
-                blendingTypeRed = NSButton; 
+                blendingTypeRGB = NSSegmentedControl; 
                 blendingTypeSubtract = NSButton; 
                 blendingTypeWindow = NSWindow; 
                 brushROIFilterOptionsAllWithSameName = NSButton; 

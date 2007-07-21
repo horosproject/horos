@@ -7583,7 +7583,12 @@ NSMutableArray		*array;
 	if (blendingType == -1)
 		[self executeFilter:sender];
 	else
-		[self blendWithViewer:blendedwin blendingType:(int)blendingType];
+	{
+		if( [sender isKindOfClass:[NSSegmentedControl class]])	//Add RGB
+			blendingType = 4+[sender selectedSegment];
+		
+		[self blendWithViewer:blendedwin blendingType: blendingType];
+	}
 	blendedwin = 0L;
 }
 	
