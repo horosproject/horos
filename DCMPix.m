@@ -9911,10 +9911,10 @@ BOOL            readable = YES;
 						
 						while( ii-- > 0)
 						{
-							int value = 256 * (*src32Ptr - from)/ww;
+							int value = 4096 * (*src32Ptr - from)/ww;
 
 							if( value < 0) value = 0;
-							if( value >= 255) value = 255;
+							if( value >= 4095) value = 4095;
 
 							value = 255.*transferFunctionPtr[ value];
 							

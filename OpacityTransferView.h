@@ -34,5 +34,5 @@
 - (void) setCurrentCLUT :( unsigned char*) r : (unsigned char*) g : (unsigned char*) b;
 - (IBAction) renderButton:(id) sender;
 + (NSData*) tableWith256Entries: (NSArray*) pointsArray;
-
++ (NSData*) tableWith4096Entries: (NSArray*) pointsArray;
 @end

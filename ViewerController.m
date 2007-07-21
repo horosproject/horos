@@ -7161,7 +7161,7 @@ NSMutableArray		*array;
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
 		}
 		
-		NSData	*table = [OpacityTransferView tableWith256Entries: [aOpacity objectForKey:@"Points"]];
+		NSData	*table = [OpacityTransferView tableWith4096Entries: [aOpacity objectForKey:@"Points"]];
 		for( i = 0; i < [pixList[ curMovieIndex] count]; i++)
 		{
 			[[pixList[ curMovieIndex] objectAtIndex: i] setTransferFunction: table];

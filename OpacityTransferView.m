@@ -140,6 +140,39 @@
 	return points;
 }
 
++ (NSData*) tableWith4096Entries: (NSArray*) pointsArray
+{
+	int		i, x, cur, last = 0;
+	float	entries256[ 4096];
+	NSPoint prevPoint;
+	
+	for( i = 0; i < [pointsArray count]; i++)
+	{
+		NSPoint curPoint = NSPointFromString( [pointsArray objectAtIndex: i]);
+		
+		curPoint.x -= 1000;
+		
+		cur = curPoint.x;
+		
+		cur  *= 16;
+		
+		for( x = 0; x < cur-last; x++)
+		{
+			entries256[ last + x] = (prevPoint.y + ((curPoint.y - prevPoint.y) * x / (cur-last)));
+		}
+		
+		prevPoint = curPoint;
+		last = cur;
+	}
+	
+	for( x = 0; x < 4096-last; x++)
+	{
+		entries256[ last + x] = 1.0;
+	}
+	
+	return [NSData dataWithBytes: entries256 length: 4096 * sizeof(float)];
+}
+
 + (NSData*) tableWith256Entries: (NSArray*) pointsArray
 {
 	int		i, x, cur, last = 0;
