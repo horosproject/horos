@@ -57,7 +57,7 @@ extern "C"
 	IBOutlet NSMenu					*dbMenu;
 	IBOutlet NSWindow				*dbWindow;
 	
-	IBOutlet NSDictionary			*previousDefaults;
+	NSDictionary					*previousDefaults;
 	
 	BOOL							showRestartNeeded;
 		

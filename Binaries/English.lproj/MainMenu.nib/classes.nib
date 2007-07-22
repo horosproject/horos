@@ -4,13 +4,12 @@
             ACTIONS = {
                 about = id; 
                 cancelModal = id; 
+                checkAllWindowsAreVisible = id; 
                 checkForUpdates = id; 
                 closeAllViewers = id; 
                 help = id; 
                 okModal = id; 
-                openOsirixBugReporter = id; 
                 openOsirixDiscussion = id; 
-                openOsirixFeatureRequest = id; 
                 openOsirixWebPage = id; 
                 openOsirixWikiWebPage = id; 
                 saveLayout = id; 
@@ -27,11 +26,9 @@
                 browserController = BrowserController; 
                 dbMenu = NSMenu; 
                 dbWindow = NSWindow; 
-                displayDICOMOverlaysMenuItem = NSMenuItem; 
                 filtersMenu = NSMenu; 
                 othersMenu = NSMenu; 
                 roisMenu = NSMenu; 
-                syncSeriesMenuItem = NSMenuItem; 
             }; 
             SUPERCLASS = NSObject; 
         }, 
