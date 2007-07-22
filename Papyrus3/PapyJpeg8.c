@@ -299,3 +299,72 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
 
 } /* endof ExtractJPEGlossy */
 
+void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome)
+{
+	struct jpeg_compress_struct	theCInfo;
+	struct jpeg_error_mgr 	theJerr;
+
+	JSAMPROW			theRowPointer [1];
+	int					theRowStride;
+	unsigned int		j;
+	PapyULong			theDataCount;
+	PapyUChar			*theJPEGBuffP;
+	PapyUShort			*theImBuffP;
+	FILE				*outfile;
+
+	/* Step 1: allocate and initialize JPEG compression object */
+
+	theCInfo.err = jpeg_std_error (&theJerr);
+	jpeg_create_compress (&theCInfo); 
+
+	/* Step 2: specify data destination (eg, a file) */
+	if ((outfile = fopen( filename, "wb")) == NULL)
+	{
+		printf("error");
+	}
+	jpeg_stdio_dest ((j_compress_ptr) &theCInfo, outfile); 
+
+	/* Step 3: set parameters for compression */
+	theCInfo.image_width  = inImageWidth;
+	theCInfo.image_height = inImageHeight;
+
+	if ( monochrome)
+	{
+		theCInfo.input_components = 1;
+		theCInfo.in_color_space   = JCS_GRAYSCALE;
+	}
+	else
+	{
+		theCInfo.input_components = 3;
+		theCInfo.in_color_space = JCS_RGB;
+	}
+
+	jpeg_set_defaults ((j_compress_ptr) &theCInfo);
+	jpeg_set_quality (&theCInfo, inQuality, TRUE); /* limit to baseline-JPEG values */
+
+	/* Step 4: Start compressor */
+
+	jpeg_start_compress (&theCInfo, TRUE); 
+
+	theRowStride = inImageWidth * theCInfo.input_components;
+	j = 0;
+	while (j < theCInfo.image_height) 
+	{
+	  theRowPointer [0] = (unsigned char *) (& inImageBuffP [j * theRowStride]);
+
+	/*(void) jpeg_write_scanlines(&theCInfo, theRowPointer, 1); */
+	j += (int) jpeg_write_scanlines (&theCInfo, theRowPointer, 1);
+	} /* while */
+
+	/* Step 6: Finish compression */
+
+	jpeg_finish_compress (&theCInfo);
+
+	/* We can use jpeg_abort to release memory and reset global_state */
+	jpeg_abort( (j_common_ptr) &theCInfo);
+
+	/* Step 7: release JPEG compression object */
+	jpeg_destroy_compress (&theCInfo);
+
+	return;
+}

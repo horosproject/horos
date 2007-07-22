@@ -131,6 +131,7 @@ static mach_port_t	gMasterPort;
 static NSString *albumDragType = @"Osirix Album drag";
 static Wait *waitSendWindow = 0L;
 
+extern void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome);
 extern BOOL hasMacOSXTiger();
 extern NSString					*documentsDirectory();
 
@@ -6207,9 +6208,21 @@ static BOOL withReset = NO;
 	NSData *imageData = [image  TIFFRepresentation];
 	
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
-	NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.3] forKey:NSImageCompressionFactor];
 	
-	NSData	*result = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];	//NSJPEGFileType	NSJPEG2000FileType <- MAJOR memory leak with NSJPEG2000FileType when reading !!! Kakadu library...
+	char *test = calloc( [imageRep pixelsHigh] * [imageRep pixelsWide] , 1);
+	
+	NSLog( @"bits per pixel: %d", [imageRep bitsPerPixel]);
+//	if( [imageRep bitsPerPixel] == 8)
+//		compressJPEG ( 20, "test.jpg", [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1);
+//	else if( [imageRep bitsPerPixel] == 8)
+//		compressJPEG ( 20, "test.jpg", [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 0);
+//	else
+//	{
+		NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.3] forKey:NSImageCompressionFactor];
+	
+		NSData	*result = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];
+		//NSJPEGFileType	NSJPEG2000FileType <- MAJOR memory leak with NSJPEG2000FileType when reading !!! Kakadu library...
+//	}
 	
 	NSLog( @"thumbnail size: %d", [result length]);
 	

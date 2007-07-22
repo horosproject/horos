@@ -392,7 +392,6 @@ WriteFile (j_compress_ptr inCinfo, PapyULong inDataCount, PAPY_FILE inFp,
 
 } /* endof WriteFile */
 
-
 /********************************************************************************/
 /*                                                                              */
 /*	JPEGLossyEncodeImage :                                                  */
