@@ -6212,17 +6212,27 @@ static BOOL withReset = NO;
 	char *test = calloc( [imageRep pixelsHigh] * [imageRep pixelsWide] , 1);
 	
 	NSLog( @"bits per pixel: %d", [imageRep bitsPerPixel]);
-//	if( [imageRep bitsPerPixel] == 8)
-//		compressJPEG ( 20, "test.jpg", [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1);
-//	else if( [imageRep bitsPerPixel] == 8)
-//		compressJPEG ( 20, "test.jpg", [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 0);
-//	else
-//	{
+	#define TEMPJPG "/tmp/osirix_thumbnail.jpg"
+	
+	NSData	*result = 0L;
+	
+	if( [imageRep bitsPerPixel] == 8)
+	{
+		compressJPEG ( 20, TEMPJPG, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1);
+		result = [NSData dataWithContentsOfFile:@TEMPJPG];
+	}
+	else if( [imageRep bitsPerPixel] == 8)
+	{
+		compressJPEG ( 20, TEMPJPG, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 0);
+		result = [NSData dataWithContentsOfFile:@TEMPJPG];
+	}
+	else
+	{
 		NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.3] forKey:NSImageCompressionFactor];
 	
-		NSData	*result = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];
+		result = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];
 		//NSJPEGFileType	NSJPEG2000FileType <- MAJOR memory leak with NSJPEG2000FileType when reading !!! Kakadu library...
-//	}
+	}
 	
 	NSLog( @"thumbnail size: %d", [result length]);
 	
