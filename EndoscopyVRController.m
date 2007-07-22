@@ -287,7 +287,7 @@ extern NSString * documentsDirectory();
 	else [self ApplyCLUTString:@"Endoscopy"];
 	
 	if( [dict objectForKey:@"OpacityName"]) [self ApplyOpacityString:[dict objectForKey:@"OpacityName"]];
-	else [self ApplyOpacityString:NSLocalizedString(@"Logarithmic Table", nil)];
+	else [self ApplyOpacityString: @"Logarithmic Table"];
 	
 	NSString *shadingName = [dict objectForKey:@"shading"];
 	if (!shadingName)
