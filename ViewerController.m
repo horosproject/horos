@@ -6362,7 +6362,7 @@ static ViewerController *draggedController = 0L;
 		
 		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 		{
-			NSBeginAlertSheet( NSLocalizedString(@"Remove a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [name retain], [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'?", name]);
+			NSBeginAlertSheet( NSLocalizedString(@"Remove a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [name retain], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete preset : '%@'?", 0L), name]);
 			
 			return;
 		}
@@ -6681,7 +6681,7 @@ static float oldsetww, oldsetwl;
 {
     if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
     {
-        NSBeginAlertSheet( NSLocalizedString(@"Remove a Convolution Filter", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteConv:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat:@"Are you sure you want to delete this convolution filter : '%@'", [sender title]]);
+        NSBeginAlertSheet( NSLocalizedString(@"Remove a Convolution Filter", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteConv:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this convolution filter : '%@'", 0L), [sender title]]);
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
 	}
     else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
@@ -7016,7 +7016,7 @@ short				matrix[25];
 {
     if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
     {
-        NSBeginAlertSheet( NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteCLUT:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat:@"Are you sure you want to delete this CLUT : '%@'", [sender title]]);
+        NSBeginAlertSheet( NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteCLUT:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this CLUT : '%@'", 0L), [sender title]]);
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 	}
     else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
@@ -7194,7 +7194,7 @@ NSMutableArray		*array;
 {
     if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
     {
-        NSBeginAlertSheet( NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteOpacity:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat:@"Are you sure you want to delete this Opacity Table : '%@'", [sender title]]);
+        NSBeginAlertSheet( NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteOpacity:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this Opacity Table : '%@'", 0L), [sender title]]);
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 	}
 	else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)

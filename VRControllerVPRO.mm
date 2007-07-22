@@ -821,7 +821,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 {
     if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
     {
-        NSBeginAlertSheet( NSLocalizedString(@"Delete a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [[sender title] retain], [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'?", [sender title]]);
+        NSBeginAlertSheet( NSLocalizedString(@"Delete a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [[sender title] retain], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete preset : '%@'?", 0L), [sender title]]);
     }
     else
     {
