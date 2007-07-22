@@ -10107,6 +10107,8 @@ static NSArray*	openSubSeriesArray = 0L;
 						
 					}
 					
+					[self autoCleanDatabaseFreeSpace: self];
+					
 					NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray async: YES];
 					
 					if( newfilesArray == filesArray)
@@ -10125,6 +10127,8 @@ static NSArray*	openSubSeriesArray = 0L;
 							[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 						}
 					}
+					
+					[self autoCleanDatabaseFreeSpace: self];
 				}
             }
         }
