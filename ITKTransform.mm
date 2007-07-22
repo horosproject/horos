@@ -147,6 +147,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	long				i;
 	ViewerController	*new2DViewer = 0L;
 	float				*fVolumePtr;
+	float				wl, ww;
 	
 	// First calculate the amount of memory needed for the new serie
 	
@@ -174,6 +175,8 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		NSMutableArray *newFileList = [NSMutableArray arrayWithCapacity:0];
 		
 		DCMPix	*originalPix = [[originalViewer pixList] objectAtIndex: 0];
+		wl = [originalPix wl];
+		ww = [originalPix ww];
 		
 		for( i = 0; i < [pixList count]; i++)
 		{
@@ -186,7 +189,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 			
 			[curPix setSavedWL: [originalPix savedWL]];
 			[curPix setSavedWW: [originalPix savedWW]];
-			[curPix changeWLWW: [originalPix wl] : [originalPix ww]];
+			[curPix changeWLWW: wl : ww];
 			
 			// SUV
 			[curPix setDisplaySUVValue: [originalPix displaySUVValue]];
@@ -207,7 +210,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		new2DViewer = [originalViewer newWindow:newPixList :newFileList :volumeData];
 		
 		[[new2DViewer window] makeKeyAndOrderFront: self];
-		[new2DViewer setWL: [originalPix wl] WW: [originalPix ww]];
+		[new2DViewer setWL: wl WW: ww];
 		[new2DViewer propagateSettings];
 		[new2DViewer setRegisteredViewer: referenceViewer];
 	}

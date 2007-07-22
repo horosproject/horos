@@ -217,6 +217,7 @@
                 blendingPercentage = NSTextField; 
                 blendingPlugins = NSPopUpButton; 
                 blendingPopupMenu = NSPopUpButton; 
+                blendingResample = NSButton; 
                 blendingSlider = NSSlider; 
                 blendingTypeMultiply = NSButton; 
                 blendingTypeRGB = NSSegmentedControl; 

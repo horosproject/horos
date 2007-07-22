@@ -9912,10 +9912,10 @@ BOOL            readable = YES;
 						while( ii-- > 0)
 						{
 							int value = 4096 * (*src32Ptr - from)/ww;
-
+							
 							if( value < 0) value = 0;
-							if( value >= 4095) value = 4095;
-
+							else if( value >= 4095) value = 4095;
+							
 							value = 255.*transferFunctionPtr[ value];
 							
 							*dst8Ptr = value;
@@ -9950,12 +9950,29 @@ BOOL            readable = YES;
 			
 			// APPLY WINDOW LEVEL TO RGB IMAGE
 			
-			for(i = 0; i < 256; i++)
+			if( transferFunctionPtr == 0L)	// LINEAR
 			{
-				val = (((i-min) * 255L) / diff);
-				if( val < 0) val = 0;
-				if( val > 255) val = 255;
-				convTable[i] = val;
+				for(i = 0; i < 256; i++)
+				{
+					val = (((i-min) * 255L) / diff);
+					if( val < 0) val = 0;
+					else if( val > 255) val = 255;
+					convTable[i] = val;
+				}
+			}
+			else
+			{
+				for(i = 0; i < 256; i++)
+				{
+					val = (((i-min) * 255L) / diff);
+					if( val < 0) val = 0;
+					else if( val > 255) val = 255;
+					
+					val = 255.*transferFunctionPtr[ val*16];	// 4096 value table
+					if( val < 0) val = 0;
+					else if( val > 255) val = 255;
+					convTable[i] = val;
+				}
 			}
 			
 			src.height = height;

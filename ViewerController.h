@@ -185,6 +185,7 @@ enum
 	IBOutlet NSButton		*blendingTypeMultiply, *blendingTypeSubtract;
 	IBOutlet NSSegmentedControl		*blendingTypeRGB;
 	IBOutlet NSPopUpButton  *blendingPlugins;
+	IBOutlet NSButton		*blendingResample;
 	
 	IBOutlet NSWindow       *roiPropaWindow;
 	IBOutlet NSMatrix		*roiPropaMode, *roiPropaDim, *roiPropaCopy;

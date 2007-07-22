@@ -2743,7 +2743,7 @@ static ViewerController *draggedController = 0L;
 //	// if we are already blending the other way we crash
 //	if ([[v blendingController] isEqual:self])
 //		return;
-		
+	
 	int iz, xz;
 	
 	blendedwin = v;
@@ -2763,7 +2763,11 @@ static ViewerController *draggedController = 0L;
 	}
 	else
 	{
+	
 	}
+	
+	if( [[self studyInstanceUID] isEqualToString: [blendedwin studyInstanceUID]] == NO)
+		[blendingResample setEnabled: NO];
 	
 	// Prepare fusion plug-ins menu
 	for( iz = 0; iz < [fusionPluginsMenu numberOfItems]; iz++)
@@ -11037,7 +11041,7 @@ int i,j,l;
 			}
 		}
 		
-		if( self == [vC blendingController])
+		if( [vC blendingController])
 		{
 			[[vC imageView] loadTextures];
 			[[vC imageView] setNeedsDisplay:YES];
@@ -11103,7 +11107,7 @@ int i,j,l;
 	{
 		MPR2DController	*vC = [viewersList objectAtIndex: i];
 		
-		if( self == [vC blendingController])
+		if( [vC blendingController])
 		{
 			[vC updateBlendingImage];
 		}
@@ -11125,7 +11129,7 @@ int i,j,l;
 	{
 		VRController	*vC = [viewersList objectAtIndex: i];
 		
-		if( self == [vC blendingController])
+		if( [vC blendingController])
 		{
 			[vC updateBlendingImage];
 		}
