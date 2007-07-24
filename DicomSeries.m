@@ -38,6 +38,8 @@
 - (void) dealloc
 {
 	[dicomTime release];
+	
+	[super dealloc];
 }
 
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key
