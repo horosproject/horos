@@ -1243,6 +1243,9 @@
 		AB46648D09A331DF005A2766 /* Report.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB46648C09A331DF005A2766 /* Report.icns */; };
 		AB46648E09A331DF005A2766 /* Report.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB46648C09A331DF005A2766 /* Report.icns */; };
 		AB46648F09A331DF005A2766 /* Report.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB46648C09A331DF005A2766 /* Report.icns */; };
+		AB49CD840C55CED300CBFE94 /* DicomSeries.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9DD283086B35050058DD2A /* DicomSeries.m */; };
+		AB49CD850C55CED400CBFE94 /* DicomStudy.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9DD280086B35050058DD2A /* DicomStudy.m */; };
+		AB49CD860C55CED500CBFE94 /* DicomImage.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE1922C08636FA100DED1F0 /* DicomImage.m */; };
 		AB52E5FA0A19D93500726305 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB52E5C70A19D93500726305 /* Security.framework */; };
 		AB52E5FB0A19D93500726305 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB52E5C70A19D93500726305 /* Security.framework */; };
 		AB52E5FC0A19D93500726305 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB52E5C70A19D93500726305 /* Security.framework */; };
@@ -1950,6 +1953,9 @@
 		ABBDE6710A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABBDE6700A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom */; };
 		ABBDE6720A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABBDE6700A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom */; };
 		ABBDE6730A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABBDE6700A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom */; };
+		ABBF9A390C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABBF9A380C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom */; };
+		ABBF9A3A0C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABBF9A380C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom */; };
+		ABBF9A3B0C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABBF9A380C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom */; };
 		ABBFDA40063480490011BD0A /* Deployment-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBFDA3F063480490011BD0A /* Deployment-Info.plist */; };
 		ABBFDA41063480490011BD0A /* Deployment-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBFDA3F063480490011BD0A /* Deployment-Info.plist */; };
 		ABC3939F09F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABC3938C09F51D6B000A6508 /* OSI3DPreferencePane.prefPane */; };
@@ -11649,6 +11655,7 @@
 		ABBDAEB906407CF90016210A /* VRMakeObject.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = VRMakeObject.c; sourceTree = "<group>"; };
 		ABBDAEBC06407D080016210A /* VRMakeObject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRMakeObject.h; sourceTree = "<group>"; };
 		ABBDE6700A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom */ = {isa = PBXFileReference; lastKnownFileType = file; name = OsiriXDB_Previous_DataModel1.5.mom; path = Binaries/DB_Previous_Models/OsiriXDB_Previous_DataModel1.5.mom; sourceTree = "<group>"; };
+		ABBF9A380C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom */ = {isa = PBXFileReference; lastKnownFileType = file; name = OsiriXDB_Previous_DataModel2.1.mom; path = Binaries/DB_Previous_Models/OsiriXDB_Previous_DataModel2.1.mom; sourceTree = "<group>"; };
 		ABBFDA3F063480490011BD0A /* Deployment-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "Deployment-Info.plist"; sourceTree = "<group>"; };
 		ABC3938C09F51D6B000A6508 /* OSI3DPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSI3DPreferencePane.prefPane; path = "Preference Panes/OSI3DPreferencePane/build/Development/OSI3DPreferencePane.prefPane"; sourceTree = "<group>"; };
 		ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSI3DPreferencePane.xcodeproj; path = "Preference Panes/OSI3DPreferencePane/OSI3DPreferencePane.xcodeproj"; sourceTree = "<group>"; };
@@ -19085,6 +19092,7 @@
 				CE7DED2608F06B2300763A70 /* OsiriXDB_Previous_DataModel1.1.mom */,
 				ABBDE6700A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom */,
 				ABD4D2360A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom */,
+				ABBF9A380C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom */,
 			);
 			name = "Previous DB Models";
 			sourceTree = "<group>";
@@ -25961,6 +25969,7 @@
 				CE27BA100C113BBA00BDC9B3 /* 3DPresetsPanel.tiff in Resources */,
 				CE897DD50C21D951005C669E /* texture.tif in Resources */,
 				AB5E393E0C2C16F40015632C /* 3DPRESETS in Resources */,
+				ABBF9A3A0C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26360,6 +26369,7 @@
 				CE27BA0F0C113BBA00BDC9B3 /* 3DPresetsPanel.tiff in Resources */,
 				CE897DD40C21D951005C669E /* texture.tif in Resources */,
 				AB5E39400C2C16F40015632C /* 3DPRESETS in Resources */,
+				ABBF9A3B0C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26759,6 +26769,7 @@
 				CE27BA110C113BBA00BDC9B3 /* 3DPresetsPanel.tiff in Resources */,
 				CE897DD60C21D951005C669E /* texture.tif in Resources */,
 				AB5E393F0C2C16F40015632C /* 3DPRESETS in Resources */,
+				ABBF9A390C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29244,6 +29255,9 @@
 				CEAF1FD20A757EC800A0D729 /* jutils.c in Sources */,
 				ABF72C150C06D071005A8ED0 /* nifti1_io.c in Sources */,
 				ABF72C160C06D072005A8ED0 /* znzlib.c in Sources */,
+				AB49CD840C55CED300CBFE94 /* DicomSeries.m in Sources */,
+				AB49CD850C55CED400CBFE94 /* DicomStudy.m in Sources */,
+				AB49CD860C55CED500CBFE94 /* DicomImage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

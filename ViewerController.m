@@ -4757,6 +4757,7 @@ static ViewerController *draggedController = 0L;
 - (void) startLoadImageThread
 {	
 	stopThreadLoadImage = NO;
+//	[self loadImageData: self];
 	[NSThread detachNewThreadSelector: @selector(loadImageData:) toTarget: self withObject: nil];
 	[self setWindowTitle:self];
 }
@@ -7866,7 +7867,7 @@ extern NSString * documentsDirectory();
 				NSMutableString		*mutStr = [NSMutableString stringWithString: [[fileList[mIndex] objectAtIndex:i] valueForKey:@"uniqueFilename"]];
 				[mutStr replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [mutStr length])];
 				NSString			*str = [path stringByAppendingPathComponent: [NSString stringWithFormat: @"%@-%d",mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]]];
-											
+				
 				NSData *data = [self roiFromDICOM:[str stringByAppendingPathExtension:@"dcm"]];	
 				//If data, we successfully unarchived from SR style ROI
 				if (data)

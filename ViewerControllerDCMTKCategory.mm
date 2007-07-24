@@ -81,7 +81,8 @@
 	[sr release];
 }
 
-- (void)checkDBForSRROI:(NSDictionary *)userInfo{
+- (void)checkDBForSRROI:(NSDictionary *)userInfo
+{
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	id series = [userInfo objectForKey:@"series"];
 	SRAnnotation *sr = [userInfo objectForKey:@"sr"];

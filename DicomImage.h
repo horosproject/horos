@@ -20,6 +20,17 @@
 @interface DicomImage : NSManagedObject
 {
 	NSString	*completePathCache;
+	
+	NSString	*sopInstanceUID;
+	NSNumber	*inDatabaseFolder;
+	NSNumber	*height, *width;
+	NSNumber	*numberOfFrames;
+	NSNumber	*numberOfSeries;
+	NSNumber	*mountedVolume;
+	NSNumber	*isKeyImage, *dicomTime;
+	NSString	*extension;
+	NSString	*modality;
+	NSString	*fileType;
 }
 
 - (NSString*) uniqueFilename;

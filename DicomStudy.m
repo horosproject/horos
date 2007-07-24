@@ -25,8 +25,18 @@ Version 2.3
 
 #import "DicomStudy.h"
 #import <OsiriX/DCMAbstractSyntaxUID.h>
+#import <OsiriX/DCM.h>
 
 @implementation DicomStudy
+
+- (void) dealloc
+{
+	[dicomTime release];
+}
+
+- (void)setValue:(id)value forUndefinedKey:(NSString *)key
+{
+}
 
 - (BOOL) isHidden;
 {
@@ -48,11 +58,26 @@ Version 2.3
 	NSManagedObject	*obj = [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
 	
 	BOOL local = [[obj valueForKey:@"inDatabaseFolder"] boolValue];
-	BOOL iPod = [[obj valueForKey:@"iPod"] boolValue];
 	
 	if( local) return @"L";
-	else if( iPod) return @"i";
 	else return @"";
+}
+
+- (void) setDate:(NSDate*) date
+{
+	[dicomTime release];
+	dicomTime = 0L;
+	
+	[self setPrimitiveValue: date forKey:@"date"];
+}
+
+- (NSNumber*) dicomTime
+{
+	if( dicomTime) return dicomTime;
+	
+	dicomTime = [[[DCMCalendarDate dicomTimeWithDate:[self valueForKey: @"date"]] timeAsNumber] retain];
+	
+	return dicomTime;
 }
 
 

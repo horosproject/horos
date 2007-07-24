@@ -18,7 +18,9 @@
 #import <Cocoa/Cocoa.h>
 #import "DicomSeries.h"
 
-@interface DicomSeries : NSManagedObject {
+@interface DicomSeries : NSManagedObject
+{
+	NSNumber	*dicomTime;
 }
 
 - (NSSet *)paths;

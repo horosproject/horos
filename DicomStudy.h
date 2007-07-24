@@ -20,7 +20,8 @@
 
 @interface DicomStudy : NSManagedObject
 {
-	BOOL isHidden;
+	BOOL		isHidden;
+	NSNumber	*dicomTime;
 }
 
 - (NSNumber *) noFiles;

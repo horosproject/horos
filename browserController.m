@@ -108,7 +108,7 @@ Version 2.5
 #import "BrowserControllerDCMTKCategory.h"
 #import "BrowserMatrix.h"
 
-#define DATABASEVERSION @"2.1"
+#define DATABASEVERSION @"2.2"
 #define DATABASEPATH @"/DATABASE/"
 #define DECOMPRESSIONPATH @"/DECOMPRESSION/"
 #define INCOMINGPATH @"/INCOMING/"
@@ -707,10 +707,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 								[study setValue:[curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
 								[study setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
 								[study setValue:[curDict objectForKey: @"accessionNumber"] forKey:@"accessionNumber"];
-							
-								DCMCalendarDate *time = [DCMCalendarDate dicomTimeWithDate:[curDict objectForKey: @"studyDate"]];
-								[study setValue:[time timeAsNumber] forKey:@"dicomTime"];
-							
+								
 								[study setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
 								[study setValue:[curDict objectForKey: @"patientBirthDate"] forKey:@"dateOfBirth"];
 								[study setValue:[curDict objectForKey: @"patientSex"] forKey:@"patientSex"];
@@ -782,9 +779,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 									[seriesTable setValue:[curDict objectForKey: [@"seriesNumber" stringByAppendingString:SeriesNum]] forKey:@"id"];
 									[seriesTable setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
 									[seriesTable setValue:[curDict objectForKey: @"protocolName"] forKey:@"seriesDescription"];
-									
-									DCMCalendarDate *time = [DCMCalendarDate dicomTimeWithDate:[curDict objectForKey: @"studyDate"]];
-									[seriesTable setValue:[time timeAsNumber] forKey:@"dicomTime"];
 									
 									// Relations
 									[seriesTable setValue:study forKey:@"study"];
@@ -864,8 +858,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 								[image setValue:[NSNumber numberWithBool:local] forKey:@"inDatabaseFolder"];
 								
 								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
-								DCMCalendarDate *time = [DCMCalendarDate dicomTimeWithDate:[curDict objectForKey: @"studyDate"]];
-								[image setValue:[time timeAsNumber] forKey:@"dicomTime"];
 								
 								[image setValue:[curDict objectForKey: [@"SOPUID" stringByAppendingString:SeriesNum]] forKey:@"sopInstanceUID"];
 								[image setValue:[curDict objectForKey: @"sliceLocation"] forKey:@"sliceLocation"];
@@ -1963,12 +1955,15 @@ static BOOL				DICOMDIRCDMODE = NO;
 		[currentContext setPersistentStoreCoordinator: currentSC];
 		[previousContext setPersistentStoreCoordinator: previousSC];
 		
+		[[NSFileManager defaultManager] removeFileAtPath: [documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql"] handler: 0L];
+		[[NSFileManager defaultManager] removeFileAtPath: [documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql-journal"] handler: 0L];
+		
 		[previousSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: currentDatabasePath] options:nil error:&error];
 		[currentSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: [documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql"]] options:nil error:&error];
 		
 		NSArray	*previousEntities = [previousModel entities];
 		NSEntityDescription		*currentStudyTable, *currentSeriesTable, *currentImageTable, *currentAlbumTable;
-		NSArray					*properties;
+		NSArray					*albumProperties, *studyProperties, *seriesProperties, *imageProperties;
 		
 		[currentContext setStalenessInterval: 1];
 		[previousContext setStalenessInterval: 1];
@@ -1980,17 +1975,16 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		error = 0L;
 		NSArray *albums = [previousContext executeFetchRequest:dbRequest error:&error];
+		albumProperties = [[[[previousModel entitiesByName] objectForKey:@"Album"] attributesByName] allKeys];
 		for( z = 0; z < [albums count]; z++)
 		{
 			NSManagedObject			*previousAlbum = [albums objectAtIndex: z];
 			
 			currentAlbumTable = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: currentContext];
 			
-			properties = [[[[previousModel entitiesByName] objectForKey:@"Album"] attributesByName] allKeys];
-			for( x = 0; x < [properties count]; x++)
+			for( x = 0; x < [albumProperties count]; x++)
 			{
-				NSString	*name = [properties objectAtIndex: x];
-			//	NSLog( @"Album: %@ : %@", name, [previousAlbum valueForKey: name]);
+				NSString	*name = [albumProperties objectAtIndex: x];
 				[currentAlbumTable setValue: [previousAlbum valueForKey: name] forKey: name];
 			}
 		}
@@ -2015,18 +2009,22 @@ static BOOL				DICOMDIRCDMODE = NO;
 		error = 0L;
 		NSArray *studies = [previousContext executeFetchRequest:dbRequest error:&error];
 		[[splash progress] setMaxValue:[studies count]];
+		
+		studyProperties = [[[[previousModel entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
+		seriesProperties = [[[[previousModel entitiesByName] objectForKey:@"Series"] attributesByName] allKeys];
+		imageProperties = [[[[previousModel entitiesByName] objectForKey:@"Image"] attributesByName] allKeys];
+		
 		for( z = 0; z < [studies count]; z++)
 		{
 			NSManagedObject			*previousStudy = [studies objectAtIndex: z];
 			
 			currentStudyTable = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext: currentContext];
 			
-			properties = [[[[previousModel entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
-			for( x = 0; x < [properties count]; x++)
+			for( x = 0; x < [studyProperties count]; x++)
 			{
-				NSString	*name = [properties objectAtIndex: x];
-			//	NSLog( @"Study: %@ : %@", name, [previousStudy valueForKey: name]);
-				[currentStudyTable setValue: [previousStudy valueForKey: name] forKey: name];
+				NSString	*name = [studyProperties objectAtIndex: x];
+				
+				[currentStudyTable setValue: [previousStudy primitiveValueForKey: name] forKey: name];
 			}
 			
 			// SERIES
@@ -2039,12 +2037,12 @@ static BOOL				DICOMDIRCDMODE = NO;
 				
 				currentSeriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext: currentContext];
 				
-				properties = [[[[previousModel entitiesByName] objectForKey:@"Series"] attributesByName] allKeys];
-				for( zz = 0; zz < [properties count]; zz++)
+				for( zz = 0; zz < [seriesProperties count]; zz++)
 				{
-					NSString	*name = [properties objectAtIndex: zz];
+					NSString	*name = [seriesProperties objectAtIndex: zz];
 				//	NSLog( @"Series: %@ : %@", name, [previousSeries valueForKey: name]);
-					[currentSeriesTable setValue: [previousSeries valueForKey: name] forKey: name];
+				
+					[currentSeriesTable setValue: [previousSeries primitiveValueForKey: name] forKey: name];
 				}
 				[currentSeriesTable setValue: currentStudyTable forKey: @"study"];
 				
@@ -2055,13 +2053,11 @@ static BOOL				DICOMDIRCDMODE = NO;
 					NSManagedObject			*previousImage = [images objectAtIndex: zz];
 					
 					currentImageTable = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext: currentContext];
-				
-					properties = [[[[previousModel entitiesByName] objectForKey:@"Image"] attributesByName] allKeys];
-					for( yy = 0; yy < [properties count]; yy++)
+					
+					for( yy = 0; yy < [imageProperties count]; yy++)
 					{
-						NSString	*name = [properties objectAtIndex: yy];
-					//	NSLog( @"Image: %@ : %@", name, [previousImage valueForKey: name]);
-						[currentImageTable setValue: [previousImage valueForKey: name] forKey: name];
+						NSString	*name = [imageProperties objectAtIndex: yy];
+						[currentImageTable setValue: [previousImage primitiveValueForKey: name] forKey: name];
 					}
 					[currentImageTable setValue: currentSeriesTable forKey: @"series"];
 				}
@@ -6218,12 +6214,12 @@ static BOOL withReset = NO;
 	
 	if( [imageRep bitsPerPixel] == 8)
 	{
-		compressJPEG ( 20, TEMPJPG, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1);
+		compressJPEG ( 30, TEMPJPG, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1);
 		result = [NSData dataWithContentsOfFile:@TEMPJPG];
 	}
 	else if( [imageRep bitsPerPixel] == 8)
 	{
-		compressJPEG ( 20, TEMPJPG, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 0);
+		compressJPEG ( 30, TEMPJPG, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 0);
 		result = [NSData dataWithContentsOfFile:@TEMPJPG];
 	}
 	else
@@ -7958,22 +7954,16 @@ static BOOL needToRezoom;
 
 - (void) openViewerFromImages:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer:(ViewerController*) viewer keyImagesOnly:(BOOL) keyImages
 {
-	
-	// memBlockSize was previously declared as a dynamic array, but this was causing problems with the call stack
-	// thus, I've declared it on the heap instead.  - RBR 2007-05-20
-	unsigned long		*memBlockSize = malloc( [toOpenArray count] * sizeof *memBlockSize );
+	unsigned long		*memBlockSize = malloc( [toOpenArray count] * sizeof (unsigned long));
 	
 	NS_DURING
-		// masu 2006-07-19
-		// size of array should be size of toOpenArray - was:
 		unsigned long		memBlock, mem;
 		long				x, i;
-	//	long				z;
 		NSArray				*loadList = 0L;
 		BOOL				multiFrame = NO;
 		float				*fVolumePtr = 0L;
 		NSData				*volumeData = 0L;
-		NSMutableArray		*viewerPix[ 50];
+		NSMutableArray		*viewerPix[ 200];
 		ViewerController	*movieController = 0L;
 		
 // NS_DURING (1) keyImages
@@ -8017,7 +8007,7 @@ static BOOL needToRezoom;
 			BOOL memTestFailed = NO;
 			mem = 0;
 			memBlock = 0;
-			unsigned char* testPtr[ 800];
+			unsigned char** testPtr = malloc( [toOpenArray count] * sizeof( unsigned char*));
 			
 			for( x = 0; x < [toOpenArray count]; x++)
 			{
@@ -8058,6 +8048,8 @@ static BOOL needToRezoom;
 			{
 				if( testPtr[ x]) free( testPtr[ x]);
 			}
+			
+			free( testPtr);
 			
 			// TEST MEMORY : IF NOT ENOUGH -> REDUCE SAMPLING
 			
@@ -8137,10 +8129,7 @@ static BOOL needToRezoom;
 			}
 			else
 			{
-				// masu 2006-07-19
-				// this array might be to small- was:
-				//char*		memBlockTestPtr[ 200];
-				char*		memBlockTestPtr[[toOpenArray count]];
+				char**		memBlockTestPtr = malloc( [toOpenArray count] * sizeof( char*));
 				
 				NSLog(@"4D Viewer TOTAL: %d Mb", (mem * sizeof(float)) / (1024 * 1024));
 				for( x = 0; x < [toOpenArray count]; x++)
@@ -8161,6 +8150,7 @@ static BOOL needToRezoom;
 					NSRunCriticalAlertPanel( NSLocalizedString(@"Not enough memory",@"Not enough memory"),  NSLocalizedString(@"Your computer doesn't have enough RAM to load this series",@"Your computer doesn't have enough RAM to load this series"), NSLocalizedString(@"OK",nil), nil, nil);
 				}
 				
+				free( memBlockTestPtr);
 				fVolumePtr = 0L;
 			}
 		}

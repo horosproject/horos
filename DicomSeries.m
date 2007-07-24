@@ -31,8 +31,36 @@
 
 #import "DicomSeries.h"
 #import <OsiriX/DCMAbstractSyntaxUID.h>
+#import <OsiriX/DCM.h>
 
 @implementation DicomSeries
+
+- (void) dealloc
+{
+	[dicomTime release];
+}
+
+- (void)setValue:(id)value forUndefinedKey:(NSString *)key
+{
+}
+
+- (void) setDate:(NSDate*) date
+{
+	[dicomTime release];
+	dicomTime = 0L;
+	
+	[self setPrimitiveValue: date forKey:@"date"];
+}
+
+- (NSNumber*) dicomTime
+{
+	if( dicomTime) return dicomTime;
+	
+	dicomTime = [[[DCMCalendarDate dicomTimeWithDate:[self valueForKey: @"date"]] timeAsNumber] retain];
+	
+	return dicomTime;
+}
+
 
 - (NSString*) type
 {
@@ -44,10 +72,8 @@
 	NSManagedObject	*obj = [[self valueForKey:@"images"] anyObject];
 	
 	BOOL local = [[obj valueForKey:@"inDatabaseFolder"] boolValue];
-	BOOL iPod = [[obj valueForKey:@"iPod"] boolValue];
 	
 	if( local) return @"L";
-	else if( iPod) return @"i";
 	else return @"";
 }
 

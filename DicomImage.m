@@ -13,12 +13,15 @@
 =========================================================================*/
 
 #import "DicomImage.h"
-#import "browserController.h"
-#import "BonjourBrowser.h"
 #import <OsiriX/DCM.h>
 #import "DCMView.h"
+
+#ifdef OSIRIX_VIEWER
 #import "DCMPix.h"
 #import "VRController.h"
+#import "browserController.h"
+#import "BonjourBrowser.h"
+#endif
 
 inline int charToInt( unsigned char c)
 {
@@ -66,7 +69,7 @@ inline unsigned char intToChar( int c)
 void* sopInstanceUIDEncode( NSString *sopuid)
 {
 	unsigned int	i, x;
-	unsigned char	*r = malloc( 128);
+	unsigned char	*r = malloc( 1024);
 	
 	for( i = 0, x = 0; i < [sopuid length];)
 	{
@@ -89,8 +92,8 @@ void* sopInstanceUIDEncode( NSString *sopuid)
 
 NSString* sopInstanceUIDDecode( unsigned char *r)
 {
-	unsigned int	i, x, length = strlen( (char *)r );  // Assumes length will always be < 256!
-	char			str[ 256];
+	unsigned int	i, x, length = strlen( (char *) r);
+	char			str[ 1024];
 	
 	for( i = 0, x = 0; i < length; i++)
 	{
@@ -112,36 +115,360 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 
 @implementation DicomImage
 
-//- (NSString*) sopInstanceUID
-//{
-//	char*	t = sopInstanceUIDDecode( (unsigned char*) [[self primitiveValueForKey:@"compressedSopInstanceUID"] bytes]);
-//	NSString* uid = [NSString stringWithUTF8String: t];
-//	free( t);
-//	
-//	return uid;
-//}
-//
-//- (void) setSopInstanceUID: (NSString*) s
-//{
-//	char *ss = sopInstanceUIDEncode( s);
-//	[self setValue: [NSData dataWithBytes: ss length: strlen( ss)] forKey:@"compressedSopInstanceUID"];
-//}
+- (NSString*) sopInstanceUID
+{
+	if( sopInstanceUID) return sopInstanceUID;
+	
+	unsigned char* src =  (unsigned char*) [[self primitiveValueForKey:@"compressedSopInstanceUID"] bytes];
+	
+	if( src)
+	{
+		NSString* uid =  sopInstanceUIDDecode( src);
+		
+		[sopInstanceUID release];
+		sopInstanceUID = [uid retain];
+	}
+	else
+	{
+		[sopInstanceUID release];
+		sopInstanceUID = 0L;
+	}
+	
+	return sopInstanceUID;
+}
+
+- (void) setSopInstanceUID: (NSString*) s
+{
+	[sopInstanceUID release];
+	sopInstanceUID = 0L;
+
+	if( s)
+	{
+		char *ss = sopInstanceUIDEncode( s);
+		[self setValue: [NSData dataWithBytes: ss length: strlen( ss)] forKey:@"compressedSopInstanceUID"];
+		free( ss);
+	}
+	else [self setValue: 0L forKey:@"compressedSopInstanceUID"];
+}
+
+#pragma mark-
+
+- (NSNumber*) inDatabaseFolder
+{
+	if( inDatabaseFolder) return inDatabaseFolder;
+	
+	NSNumber	*f = [self primitiveValueForKey:@"storedInDatabaseFolder"];
+	
+	if( f == 0L) f = [NSNumber numberWithBool: YES];
+	
+	[inDatabaseFolder release];
+	inDatabaseFolder = [f retain];
+
+	return inDatabaseFolder;
+}
+
+- (void) setInDatabaseFolder:(NSNumber*) f
+{
+	[inDatabaseFolder release];
+	inDatabaseFolder = 0L;
+	
+	if( [f boolValue] == YES)	
+		[self setPrimitiveValue: 0L forKey:@"storedInDatabaseFolder"];
+	else
+		[self setPrimitiveValue: f forKey:@"storedInDatabaseFolder"];
+}
+
+#pragma mark-
+
+- (NSNumber*) height
+{
+	if( height) return height;
+	
+	NSNumber	*f = [self primitiveValueForKey:@"storedHeight"];
+	
+	if( f == 0L) f = [NSNumber numberWithInt: 512];
+	
+	[height release];
+	height = [f retain];
+
+	return height;
+}
+
+- (void) setHeight:(NSNumber*) f
+{
+	[height release];
+	height = 0L;
+	
+	if( [f intValue] == 512)	
+		[self setPrimitiveValue: 0L forKey:@"storedHeight"];
+	else
+		[self setPrimitiveValue: f forKey:@"storedHeight"];
+}
+
+#pragma mark-
+
+- (NSNumber*) width
+{
+	if( width) return width;
+	
+	NSNumber	*f = [self primitiveValueForKey:@"storedWidth"];
+	
+	if( f == 0L) f = [NSNumber numberWithInt: 512];
+	
+	[width release];
+	width = [f retain];
+
+	return width;
+}
+
+- (void) setWidth:(NSNumber*) f
+{
+	[width release];
+	width = 0L;
+	
+	if( [f intValue] == 512)	
+		[self setPrimitiveValue: 0L forKey:@"storedWidth"];
+	else
+		[self setPrimitiveValue: f forKey:@"storedWidth"];
+}
+
+#pragma mark-
+
+- (NSNumber*) numberOfFrames
+{
+	if( numberOfFrames) return numberOfFrames;
+	
+	NSNumber	*f = [self primitiveValueForKey:@"storedNumberOfFrames"];
+	
+	if( f == 0L) f = [NSNumber numberWithInt: 1];
+
+	[numberOfFrames release];
+	numberOfFrames = [f retain];
+
+	return numberOfFrames;
+}
+
+- (void) setNumberOfFrames:(NSNumber*) f
+{
+	[numberOfFrames release];
+	numberOfFrames = 0L;
+	
+	if( [f intValue] == 1)	
+		[self setPrimitiveValue: 0L forKey:@"storedNumberOfFrames"];
+	else
+		[self setPrimitiveValue: f forKey:@"storedNumberOfFrames"];
+}
+
+#pragma mark-
+
+- (NSNumber*) numberOfSeries
+{
+	if( numberOfSeries) return numberOfSeries;
+	
+	NSNumber	*f = [self primitiveValueForKey:@"storedNumberOfSeries"];
+	
+	if( f == 0L) f = [NSNumber numberWithInt: 1];
+
+	[numberOfSeries release];
+	numberOfSeries = [f retain];
+
+	return numberOfSeries;
+}
+
+- (void) setNumberOfSeries:(NSNumber*) f
+{
+	[numberOfSeries release];
+	numberOfSeries = 0L;
+	
+	if( [f intValue] == 1)	
+		[self setPrimitiveValue: 0L forKey:@"storedNumberOfSeries"];
+	else
+		[self setPrimitiveValue: f forKey:@"storedNumberOfSeries"];
+}
+
+#pragma mark-
+
+- (NSNumber*) mountedVolume
+{
+	if( mountedVolume) return mountedVolume;
+	
+	NSNumber	*f = [self primitiveValueForKey:@"storedMountedVolume"];
+	
+	if( f == 0L)  f = [NSNumber numberWithBool: NO];
+
+	[mountedVolume release];
+	mountedVolume = [f retain];
+
+	return mountedVolume;
+}
+
+- (void) setMountedVolume:(NSNumber*) f
+{
+	[mountedVolume release];
+	mountedVolume = 0L;
+	
+	if( [f boolValue] == NO)
+		[self setPrimitiveValue: 0L forKey:@"storedMountedVolume"];
+	else
+		[self setPrimitiveValue: f forKey:@"storedMountedVolume"];
+}
+
+#pragma mark-
+
+- (NSNumber*) isKeyImage
+{
+	if( isKeyImage) return isKeyImage;
+	
+	NSNumber	*f = [self primitiveValueForKey:@"storedIsKeyImage"];
+	
+	if( f == 0L)  f = [NSNumber numberWithBool: NO];
+
+	[isKeyImage release];
+	isKeyImage = [f retain];
+
+	return isKeyImage;
+}
+
+- (void) setIsKeyImage:(NSNumber*) f
+{
+	[isKeyImage release];
+	isKeyImage = 0L;
+	
+	if( [f boolValue] == NO)
+		[self setPrimitiveValue: 0L forKey:@"storedIsKeyImage"];
+	else
+		[self setPrimitiveValue: f forKey:@"storedIsKeyImage"];
+}
+
+#pragma mark-
+
+- (NSString*) extension
+{
+	if( extension) return extension;
+	
+	NSString	*f = [self primitiveValueForKey:@"storedExtension"];
+	
+	if( f == 0 || [f isEqualToString:@""]) f = [NSString stringWithString: @"dcm"];
+
+	[extension release];
+	extension = [f retain];
+
+	return extension;
+}
+
+- (void) setExtension:(NSString*) f
+{
+	[extension release];
+	extension = 0L;
+	
+	if( [f isEqualToString:@"dcm"])
+		[self setPrimitiveValue: 0L forKey:@"storedExtension"];
+	else
+		[self setPrimitiveValue: f forKey:@"storedExtension"];
+}
+
+#pragma mark-
+
+- (NSString*) modality
+{
+	if( modality) return modality;
+	
+	NSString	*f = [self primitiveValueForKey:@"storedModality"];
+	
+	if( f == 0 || [f isEqualToString:@""]) f = [NSString stringWithString: @"CT"];
+
+	[modality release];
+	modality = [f retain];
+
+	return modality;
+}
+
+- (void) setModality:(NSString*) f
+{
+	[modality release];
+	modality = 0L;
+	
+	if( [f isEqualToString:@"CT"])
+		[self setPrimitiveValue: 0L forKey:@"storedModality"];
+	else
+		[self setPrimitiveValue: f forKey:@"storedModality"];
+}
+
+#pragma mark-
 
 - (NSString*) fileType
 {
-	NSString	*f = [self primitiveValueForKey:@"fileType"];
+	if( fileType) return fileType;
 	
-	if( f == 0 || [f isEqualToString:@""]) return @"DICOM";
-	else return f;
+	NSString	*f = [self primitiveValueForKey:@"storedFileType"];
+	
+	if( f == 0 || [f isEqualToString:@""]) f =  [NSString stringWithString: @"DICOM"];
+	
+	[fileType release];
+	fileType = [f retain];
+
+	return fileType;
+}
+
+- (void) setFileType:(NSString*) f
+{
+	[fileType release];
+	fileType = 0L;
+
+	if( [f isEqualToString:@"DICOM"])
+		[self setPrimitiveValue: 0L forKey:@"storedFileType"];
+	else
+		[self setPrimitiveValue: f forKey:@"storedFileType"];
+}
+
+#pragma mark-
+
+- (void)setValue:(id)value forUndefinedKey:(NSString *)key
+{
+}
+
+- (id)valueForUndefinedKey:(NSString *)key
+{
+	return 0L;
+}
+
+- (void) setDate:(NSDate*) date
+{
+	[dicomTime release];
+	dicomTime = 0L;
+	
+	[self setPrimitiveValue: date forKey:@"date"];
+}
+
+- (NSNumber*) dicomTime
+{
+	if( dicomTime) return dicomTime;
+	
+	dicomTime = [[[DCMCalendarDate dicomTimeWithDate:[self valueForKey: @"date"]] timeAsNumber] retain];
+	
+	return dicomTime;
 }
 
 - (NSString*) type
 {
-	return @"Image";
+	return  [NSString stringWithString: @"Image"];
 }
 
 - (void) dealloc
 {
+	[dicomTime release];
+	[sopInstanceUID release];
+	[inDatabaseFolder release];
+	[height release];
+	[width release];
+	[numberOfFrames release];
+	[numberOfSeries release];
+	[mountedVolume release];
+	[isKeyImage release];
+	[extension release];
+	[modality release];
+	[fileType release];
+	
 	[completePathCache release];
 	[super dealloc];
 }
@@ -174,13 +501,42 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	else return path;
 }
 
+- (NSString*) path
+{
+	NSNumber	*pathNumber = [self primitiveValueForKey: @"pathNumber"];
+	
+	if( pathNumber)
+	{
+		return [NSString stringWithFormat:@"%d.dcm", [pathNumber intValue]];
+	}
+	else return [self primitiveValueForKey: @"pathString"];
+}
+
+- (void) setPath:(NSString*) p
+{
+	if( [p characterAtIndex: 0] != '/')
+	{
+		if( [[p pathExtension] isEqualToString:@"dcm"])
+		{
+			[self setPrimitiveValue: [NSNumber numberWithInt: [p intValue]] forKey:@"pathNumber"];
+			[self setPrimitiveValue: 0L forKey:@"pathString"];
+			
+			return;
+		}
+	}
+	
+	[self setPrimitiveValue: 0L forKey:@"pathNumber"];
+	[self setPrimitiveValue: p forKey:@"pathString"];
+}
+
 -(NSString*) completePathWithDownload:(BOOL) download
 {
 	if( completePathCache) return completePathCache;
 	
+	#ifdef OSIRIX_VIEWER
 	if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
 	{
-		NSString			*path = [self primitiveValueForKey:@"path"];
+		NSString			*path = [self valueForKey:@"path"];
 		BrowserController	*cB = [BrowserController currentBrowser];
 		
 		if( [cB isCurrentDatabaseBonjour])
@@ -201,8 +557,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 			}
 		}
 	}
+	#endif
 	
-	return [self primitiveValueForKey:@"path"];
+	return [self valueForKey:@"path"];
 }
 
 -(NSString*) completePathResolved
@@ -220,6 +577,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	BOOL delete = [super validateForDelete:(NSError **)error];
 	if (delete)
 	{
+		#ifdef OSIRIX_VIEWER
 		if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
 		{
 			[[BrowserController currentBrowser] addFileToDeleteQueue: [self valueForKey:@"completePath"]];
@@ -242,6 +600,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 		{
 			[[NSFileManager defaultManager] removeFileAtPath: [VRController getUniqueFilenameScissorStateFor: self] handler: 0L];
 		}
+		#endif
 	}
 	return delete;
 }
@@ -304,6 +663,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 
 - (NSImage *)image
 {
+	#ifdef OSIRIX_VIEWER
 	DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :0L :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
 	//[pix computeWImage:NO :[[self valueForKeyPath:@"series.windowLevel"] floatValue] :[[self valueForKeyPath:@"series.windowWidth"] floatValue]];
 	[pix computeWImage:NO :0 :0];
@@ -312,9 +672,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 
 	[pix release];
 	return thumbnail;
+	#endif
 
 }
-- (NSImage *)thumbnail{
+- (NSImage *)thumbnail
+{
+	#ifdef OSIRIX_VIEWER
 	DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :0L :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
 	//[pix computeWImage:YES :[[self valueForKeyPath:@"series.windowLevel"] floatValue] :[[self valueForKeyPath:@"series.windowWidth"] floatValue]];
 	[pix computeWImage:YES :0 :0];
@@ -322,6 +685,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	NSImage *thumbnail = [[[NSImage alloc] initWithData: data] autorelease];
 	[pix release];
 	return thumbnail;
+	#endif
 }
 
 - (NSDictionary *)dictionary{
@@ -329,6 +693,10 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	return dict;
 }
 	
-
+- (NSString*) description
+{
+	NSString	*result = [super description];
+	return [result stringByAppendingFormat:@"\rdicomTime: %@\rsopInstanceUID: %@", [self dicomTime], [self sopInstanceUID]];
+}
 
 @end
