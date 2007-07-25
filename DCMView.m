@@ -7204,8 +7204,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			NSRect size = [self bounds];
 			
 			*width = size.size.width;
-			*width/=4;
-			*width*=4;
+			//*width/=4;
+			//*width*=4;
 			*height = size.size.height;
 			*spp = 3;
 //			*spp = 4;
