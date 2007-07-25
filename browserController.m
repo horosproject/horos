@@ -635,12 +635,23 @@ static BOOL				DICOMDIRCDMODE = NO;
 					}
 				}
 				
+				if( [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]])
+				{
+					// We store them in the ROIs folder
+					NSLog(@"SR DICOM SOP CLASS");
+					
+					NSLog( [curDict description]);
+					
+					[curDict release];
+					curDict = 0L;
+				}
+				
 				// For now, we cannot add non-image DICOM files
 				if( [curDict objectForKey:@"SOPClassUID"] != nil 
 				&& [DCMAbstractSyntaxUID isImageStorage: [curDict objectForKey: @"SOPClassUID"]] == NO 
-				&& [DCMAbstractSyntaxUID isRadiotherapy: [curDict objectForKey: @"SOPClassUID"]] == NO
-				&& [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]] == NO
-				&& [DCMAbstractSyntaxUID isKeyObjectDocument: [curDict objectForKey: @"SOPClassUID"]] == NO)
+				&& [DCMAbstractSyntaxUID isRadiotherapy: [curDict objectForKey: @"SOPClassUID"]] == NO)
+//				&& [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]] == NO
+//				&& [DCMAbstractSyntaxUID isKeyObjectDocument: [curDict objectForKey: @"SOPClassUID"]] == NO)
 				{
 					NSLog(@"unsupported DICOM SOP CLASS");
 					[curDict release];
@@ -11254,7 +11265,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSArray*) exportDICOMFileInt:(NSString*) location files:(NSArray*) filesToExport objects:(NSArray*) dicomFiles2Export
 {
-	int					i, t;
+	int					i, t, x;
 	NSString			*dest, *path = location;
 	Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", 0L)];
 	BOOL				addDICOMDIR = [addDICOMDIRButton state];
@@ -11272,11 +11283,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
 		NSString		*extension = [[filesToExport objectAtIndex:i] pathExtension];
+		NSString		*roiFolder = 0L;
 		
 		if( [curImage valueForKey: @"fileType"])
 		{
 			if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"]) extension = [NSString stringWithString:@"dcm"];
 		}
+		
+		NSArray	*roiFiles = [curImage valueForKey: @"SRPaths"];
 		
 		if([extension isEqualToString:@""]) extension = [NSString stringWithString:@"dcm"]; 
 		
@@ -11339,6 +11353,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 			// Find the DICOM-STUDY folder
 			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+			
+			// Find the ROIs folder
+			if( [roiFiles count])
+			{
+				roiFolder = [tempPath stringByAppendingPathComponent:@"ROIs"];
+				
+				if (![[NSFileManager defaultManager] fileExistsAtPath: roiFolder]) [[NSFileManager defaultManager] createDirectoryAtPath: roiFolder attributes:nil];
+			}
 			
 			if (!addDICOMDIR )
 			{
@@ -11412,7 +11434,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			[[NSFileManager defaultManager] copyPath:[[[filesToExport objectAtIndex:i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dest stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
 		}
-			
+		
+		if( [roiFiles count])
+		{
+			for( x = 0 ; x < [roiFiles count] ; x++)
+			{
+				[[NSFileManager defaultManager] copyPath:	[roiFiles objectAtIndex: x]
+												toPath:		[roiFolder stringByAppendingPathComponent: [[roiFiles objectAtIndex: x] lastPathComponent]]
+												handler:	nil];
+			}
+		}
+		
 		[splash incrementBy:1];
 		
 		if( [splash aborted]) 
@@ -11472,11 +11504,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmmkdir"]];
 				[theTask setCurrentDirectoryPath:tempPath];
 				[theTask setArguments:theArguments];		
-
+				
 				[theTask launch];
 				[theTask waitUntilExit];
 				[theTask release];
-				// masu 2008-08-28 relase for pool was missing
+				
 				[pool release];
 			}
 		}
@@ -11516,10 +11548,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
 		{
 			//Burn additional Files. Not just images. Add SRs
-			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages:NO];
+			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages:YES];
 			NSLog(@"Files from contextual menu: %d", [filesToExport count]);
 		}
-		else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages:NO];
+		else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages:YES];
 		
 		[wait close];
 		[wait release];

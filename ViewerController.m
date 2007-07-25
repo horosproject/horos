@@ -7856,7 +7856,8 @@ extern NSString * documentsDirectory();
 	long			i, x;
 	NSMutableArray  *array;
 	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
+		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"])
 	{
@@ -7896,9 +7897,7 @@ extern NSString * documentsDirectory();
 	long			i;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-	{
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-	}
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"])
 	{
@@ -7906,7 +7905,7 @@ extern NSString * documentsDirectory();
 		{
 			if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
 			{
-				NSManagedObject	*image = [fileList[mIndex] objectAtIndex:i];
+				DicomImage	*image = [fileList[mIndex] objectAtIndex:i];
 				
 				if( [image isFault] == NO)
 				{
@@ -7914,19 +7913,15 @@ extern NSString * documentsDirectory();
 					
 					@try
 					{
-						NSMutableString		*mutStr = [NSMutableString stringWithString: [image valueForKey:@"uniqueFilename"]];
-						[mutStr replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [mutStr length])];
-						NSString *str = [path stringByAppendingPathComponent: [NSString stringWithFormat: @"%@-%d", mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]]];
+						NSString *str = [image SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
+						
 						if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
 						{
-							// [NSArchiver archiveRootObject: [roiList[ mIndex] objectAtIndex: i] toFile : str];
-							[self archiveROIsAsDICOM:[roiList[ mIndex] objectAtIndex: i]  toPath: [str stringByAppendingPathExtension:@"dcm"] forImage:image];
-							[[NSFileManager defaultManager] removeFileAtPath: str handler: 0L];
+							[self archiveROIsAsDICOM:[roiList[ mIndex] objectAtIndex: i]  toPath: str forImage:image];
 						}
 						else
 						{
 							[[NSFileManager defaultManager] removeFileAtPath: str handler: 0L];
-							[[NSFileManager defaultManager] removeFileAtPath: [str stringByAppendingPathExtension:@"dcm"] handler: 0L];
 						}
 					}
 					

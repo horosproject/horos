@@ -20,19 +20,14 @@
 	NSString *_seriesInstanceUID;
 }
 
-- (id)initWithROIs:(NSArray *)ROIs  path:(NSString *)path;
+- (id)initWithROIs:(NSArray *)ROIs  path:(NSString *)path forImage:(NSManagedObject*) im;
 - (id)initWithContentsOfFile:(NSString *)path;
-
 - (void)addROIs:(NSArray *)someROIs;
 - (void)addROI:(ROI *)aROI;
 - (NSArray *)ROIs;
-- (void)mergeWithSR:(SRAnnotation *)sr;
-
-
 - (BOOL)writeToFileAtPath:(NSString *)path;
 - (BOOL)save;
 - (void)saveAsHTML;
-
 - (NSString *)seriesInstanceUID;
 - (void)setSeriesInstanceUID: (NSString *)seriesInstanceUID;
 - (NSString *)sopInstanceUID;

@@ -44,5 +44,8 @@
 - (NSDictionary *)dictionary;
 - (NSString*) completePathWithDownload:(BOOL) download;
 + (NSString*) completePathForLocalPath:(NSString*) path directory:(NSString*) directory;
-
+- (NSString*) SRFilenameForFrame: (int) frameNo;
+- (NSString*) SRPathForFrame: (int) frameNo;
+- (NSArray*) SRFilenames;
+- (NSArray*) SRPaths;
 @end

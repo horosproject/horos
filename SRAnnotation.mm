@@ -36,14 +36,18 @@
 	return self;
 }
 
-- (id)initWithROIs:(NSArray *)ROIs  path:(NSString *)path{
-	if (self = [super init]) {
+- (id)initWithROIs:(NSArray *)ROIs  path:(NSString *)path forImage:(NSManagedObject*) im
+{
+	if (self = [super init])
+	{
 		_seriesInstanceUID = nil;
 		document = new DSRDocument();
 		_newSR = NO;
 		OFCondition status;
+		
 		// load old ROI SR and replace as needed
-		if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {			
+		if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+		{			
 			DcmFileFormat fileformat;
 			status  = fileformat.loadFile([path UTF8String]);
 			if (status.good()) 				
@@ -52,9 +56,8 @@
 			//clear old content	Don't want to UIDs if already created
 			if (status.good()) 
 				document->getTree().clear();
-
-				
 		}
+		
 		// create new Doc 
 		if (![[NSFileManager defaultManager] fileExistsAtPath:path] || !status.good()) {
 			_newSR = YES;
@@ -63,6 +66,8 @@
 			
 		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
 		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
+		
+		image = [im retain];
 		
 		[self addROIs:ROIs];
 	}
@@ -106,17 +111,11 @@
 - (void)dealloc
 {
 	delete document;
+	[image release];
 	[_rois release];
 	[_seriesInstanceUID release];
 	[super dealloc];
 }
-
-
-- (void)finalize {
-	delete document;
-	[super finalize];
-}
-
 
 #pragma mark -
 #pragma mark ROIs
@@ -125,39 +124,34 @@
 {
 	NSEnumerator *roisEnumerator = [someROIs objectEnumerator];
 	ROI *aROI;
-	//[rois release];
+	
 	if (!_rois)
 		_rois = [[NSArray alloc] init];
-	NSArray *newROIs = [_rois arrayByAddingObjectsFromArray:someROIs];
-	[_rois release];
-	_rois = [newROIs retain];
+	
 	while (aROI = [roisEnumerator nextObject])
 	{
 		NSEnumerator *enumerator = [_rois objectEnumerator];
 		BOOL newROI = YES;
 		ROI *roi;
 		NSData *newROIData = [aROI data];
-		while ((roi = [enumerator nextObject]) && newROI){
-			if ([newROIData isEqualToData:[roi data]]) {
+		while ((roi = [enumerator nextObject]) && newROI)
+		{
+			if ([newROIData isEqualToData:[roi data]])
 				newROI = NO;
-			}
 		}
-		if (newROI) {
+		
+		if (newROI)
 			[self addROI:aROI];
-			image = [[aROI pix] imageObj];
-		}
-	}		
-}
-
-- (void)mergeWithSR:(SRAnnotation *)sr{
-	NSArray *rois = [sr ROIs];
-	[self addROIs:rois];
+	}
+	
+	NSArray *newROIs = [_rois arrayByAddingObjectsFromArray:someROIs];
+	[_rois release];
+	_rois = [newROIs retain];
 }
 
 - (void)addROI:(ROI *)aROI;
 {
-//	NSLog(@"+++ add a ROI : %@", [aROI name]);
-
+	NSLog(@"+++ add a ROI : %@", [aROI name]);
 	// add the region to the SR
 	document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_SCoord, DSRTypes::AM_belowCurrent);
 	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("111030", "DCM", "Image Region"));
@@ -190,7 +184,7 @@
 			graphicType = DSRTypes::GT_Polyline;
 		break;
 	}
-
+	
 	// set coordinates of the points
 	DSRSpatialCoordinatesValue *coordinates = new DSRSpatialCoordinatesValue(graphicType);
 
@@ -204,7 +198,6 @@
 	{
 		NSPoint aNSPoint = [aPoint point];
 		dsrPointsList->addItem(aNSPoint.x,aNSPoint.y);
-		//NSLog(@"add a point : %f, %f", aNSPoint.x,aNSPoint.y);
 	}
 	
 //	dsrPointsList.print(cout, 0, '/', '\n');
@@ -216,26 +209,30 @@
 	DCMObject *dcmObject;
 	OFString refsopClassUID;
 	OFString refsopInstanceUID;
+	
 	dcmObject = [DCMObject objectWithContentsOfFile:[[aROI pix] srcFile] decodingPixelData:NO];
-	if (![aROI referencedSOPClassUID]) {
+	if (![aROI referencedSOPClassUID])
+	{
 		NSString *uid = [dcmObject attributeValueWithName:@"SOPClassUID"];
 		refsopClassUID = OFString([uid UTF8String]);
 		[aROI setReferencedSOPClassUID:uid];
 	}
-		else refsopClassUID = OFString([[aROI referencedSOPClassUID]  UTF8String]);
+	else refsopClassUID = OFString([[aROI referencedSOPClassUID] UTF8String]);
 		
-	if (![aROI referencedSOPInstanceUID]) {
-		NSString *uid = [[[aROI pix] imageObj] valueForKey:@"sopInstanceUID"];
+	if (![aROI referencedSOPInstanceUID])
+	{
+		NSString *uid = [image valueForKey:@"sopInstanceUID"];
 		refsopInstanceUID = OFString([uid UTF8String]);
 		[aROI setReferencedSOPInstanceUID:uid];
 	}
-	else
-		refsopInstanceUID = OFString([[aROI referencedSOPInstanceUID]  UTF8String]);
+	else refsopInstanceUID = OFString([[aROI referencedSOPInstanceUID] UTF8String]);
 	
-	NSNumber *frameIndex = [NSNumber numberWithInt: [[aROI pix] frameNo]];
+	
 	document->getTree().addContentItem(DSRTypes::RT_selectedFrom, DSRTypes::VT_Image);
 	DSRImageReferenceValue imageRef(refsopClassUID, refsopInstanceUID);
+	
 	// add frame reference
+	NSNumber *frameIndex = [NSNumber numberWithInt: [[aROI pix] frameNo]];
 	imageRef.getFrameList().putString([[frameIndex stringValue] UTF8String]);
 	document->getTree().getCurrentContentItem().setImageReference(imageRef);
 	document->getTree().goUp(); // go up to the SCOORD element
@@ -260,67 +257,70 @@
 
 
 - (BOOL)writeToFileAtPath:(NSString *)path
-{	
-		//	Don't want to UIDs if already created
-		if (_newSR) {
-			id study = [image valueForKeyPath:@"series.study"];
-			//add to Study
-			document->createNewSeriesInStudy([[study valueForKey:@"studyInstanceUID"] UTF8String]);
-			// Add metadata for DICOM
-				//Study Description
-			if ([study valueForKey:@"studyName"])
-				document->setStudyDescription([[study valueForKey:@"studyName"] UTF8String]);
-			//Series Description
-			document->setSeriesDescription("OsiriX ROI SR");
-			//Patient Name
-			if ([study valueForKey:@"name"] )
-				document->setPatientsName([[study valueForKey:@"name"] UTF8String]);
-			// Patient DOB
-			if ([study valueForKey:@"dateOfBirth"])
-				document->setPatientsBirthDate([[[study valueForKey:@"dateOfBirth"] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] UTF8String]);
-			//Patient Sex
-			if ([study valueForKey:@"patientSex"])
-				document->setPatientsSex([[study valueForKey:@"patientSex"] UTF8String]);
-			//Patient ID
-			NSString *patientID = [study valueForKey:@"patientID"];
-			if (patientID)
-				document->setPatientID([patientID UTF8String]);
-			//Referring Physician
-			if ([study valueForKey:@"referringPhysician"])
-				document->setReferringPhysiciansName([[study valueForKey:@"referringPhysician"] UTF8String]);
-			//StudyID	
-			if ([study valueForKey:@"id"]) {
-				NSString *studyID = [study valueForKey:@"id"];
-				document->setStudyID([studyID UTF8String]);
-			}
-			//Accession Number
-			if ([study valueForKey:@"accessionNumber"])
-				document->setAccessionNumber([[study valueForKey:@"accessionNumber"] UTF8String]);
-			//Series Number
-			document->setSeriesNumber("5002");
-			
-			document->setManufacturer("OsiriX");
-		}
-	
-		DcmFileFormat fileformat;
-		OFCondition status;
-		status = document->write(*fileformat.getDataset());
+{
+	//	Don't want to UIDs if already created
+	if (_newSR)
+	{
+		id study = [image valueForKeyPath:@"series.study"];
+		//add to Study
+		document->createNewSeriesInStudy([[study valueForKey:@"studyInstanceUID"] UTF8String]);
 		
-		//This adds the archived ROI Array  to the SR		
-			ROI *roi = [_rois objectAtIndex:0];
-			NSData *data = nil;
-			data = [ NSArchiver archivedDataWithRootObject:_rois];
-			const Uint8 *buffer =  (const Uint8 *)[data bytes];
-			DcmDataset *dataset = fileformat.getDataset();
-			DcmTag tag(0x0071, 0x0011, DcmVR("OB"));
-			status = dataset->putAndInsertUint8Array(tag , buffer, [data length] , OFTrue);
+		// Add metadata for DICOM
+			//Study Description
+		if ([study valueForKey:@"studyName"])
+			document->setStudyDescription([[study valueForKey:@"studyName"] UTF8String]);
 			
-			//use seriesInstanceUID if we have one
-			if (_seriesInstanceUID)
-				status = dataset->putAndInsertString(DCM_SeriesInstanceUID, [_seriesInstanceUID UTF8String], OFTrue);
+		//Series Description
+		document->setSeriesDescription("OsiriX ROI SR");
+		
+		if ([study valueForKey:@"name"] )
+			document->setPatientsName([[study valueForKey:@"name"] UTF8String]);
+			
+		if ([study valueForKey:@"dateOfBirth"])
+			document->setPatientsBirthDate([[[study valueForKey:@"dateOfBirth"] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] UTF8String]);
+			
+		if ([study valueForKey:@"patientSex"])
+			document->setPatientsSex([[study valueForKey:@"patientSex"] UTF8String]);
+			
+		NSString *patientID = [study valueForKey:@"patientID"];
+		if (patientID)
+			document->setPatientID([patientID UTF8String]);
+		
+		if ([study valueForKey:@"referringPhysician"])
+			document->setReferringPhysiciansName([[study valueForKey:@"referringPhysician"] UTF8String]);
+		
+		if ([study valueForKey:@"id"]) {
+			NSString *studyID = [study valueForKey:@"id"];
+			document->setStudyID([studyID UTF8String]);
+		}
+		
+		if ([study valueForKey:@"accessionNumber"])
+			document->setAccessionNumber([[study valueForKey:@"accessionNumber"] UTF8String]);
+		//Series Number
+		document->setSeriesNumber("5002");
+		
+		document->setManufacturer("OsiriX");
+	}
 
-		//NSLog(@"error code: %s", status.text());
-		//status = document->write(*fileformat.getDataset());
+	DcmFileFormat fileformat;
+	OFCondition status;
+	status = document->write(*fileformat.getDataset());
+
+	//This adds the archived ROI Array  to the SR		
+		ROI *roi = [_rois objectAtIndex:0];
+		NSData *data = nil;
+		data = [ NSArchiver archivedDataWithRootObject:_rois];
+		const Uint8 *buffer =  (const Uint8 *)[data bytes];
+		DcmDataset *dataset = fileformat.getDataset();
+		DcmTag tag(0x0071, 0x0011, DcmVR("OB"));
+		status = dataset->putAndInsertUint8Array(tag , buffer, [data length] , OFTrue);
+		
+		//use seriesInstanceUID if we have one
+		if (_seriesInstanceUID)
+			status = dataset->putAndInsertString(DCM_SeriesInstanceUID, [_seriesInstanceUID UTF8String], OFTrue);
+
+	//NSLog(@"error code: %s", status.text());
+	//status = document->write(*fileformat.getDataset());
 
 
 

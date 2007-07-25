@@ -23,6 +23,8 @@
 #import "BonjourBrowser.h"
 #endif
 
+#define ROIDATABASE @"/ROIs/"
+
 inline int charToInt( unsigned char c)
 {
 	switch( c)
@@ -114,6 +116,54 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 }
 
 @implementation DicomImage
+
+- (NSArray*) SRPaths
+{
+	NSMutableArray	*roiFiles = [NSMutableArray array];
+	int	noOfFrames = [[self valueForKey: @"numberOfFrames"] intValue], x;
+	
+	for( x = 0; x < noOfFrames; x++)
+	{
+		NSString	*roiPath = [self SRPathForFrame: x];
+		
+		if( [[NSFileManager defaultManager] fileExistsAtPath: roiPath])
+			[roiFiles addObject: roiPath];
+	}
+	
+	return roiFiles;
+}
+
+- (NSArray*) SRFilenames
+{
+	NSMutableArray	*roiFiles = [NSMutableArray array];
+	int	noOfFrames = [[self valueForKey: @"numberOfFrames"] intValue], x;
+	
+	for( x = 0; x < noOfFrames; x++)
+	{
+		NSString	*roiPath = [self SRFilenameForFrame: x];
+		
+		if( [[NSFileManager defaultManager] fileExistsAtPath: roiPath])
+			[roiFiles addObject: roiPath];
+	}
+	
+	return roiFiles;
+}
+
+- (NSString*) SRFilenameForFrame: (int) frameNo
+{
+	return [NSString stringWithFormat: @"%@-%d.dcm", [self uniqueFilename], frameNo];
+}
+
+- (NSString*) SRPathForFrame: (int) frameNo
+{
+	#ifdef OSIRIX_VIEWER
+	NSString	*documentsDirectory = [[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:ROIDATABASE];
+	
+	return [documentsDirectory stringByAppendingPathComponent: [self SRFilenameForFrame: frameNo]];
+	#else
+	return 0L;
+	#endif
+}
 
 - (NSString*) sopInstanceUID
 {

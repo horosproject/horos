@@ -53,15 +53,9 @@
 
 
 //All the ROIs for an image are archived as an NSArray.  We will need to extract all the necessary ROI info to create the basic SR before adding archived data. 
-- (void)archiveROIsAsDICOM:(NSArray *)rois toPath:(NSString *)path  forImage:(id)image{
-	
-	
-	SRAnnotation *sr = [[SRAnnotation alloc] initWithROIs:rois path:path];
-	/* We could create an ROI coreData relationship if we wanted to as use presentationStateInstanceUID for the ROI path. 
-		And save presentationSeriesInstanceUID, but I won't right now
-		Right now we will just get the Study for the imager and then the roiSRSeries relationship
-	*/
-	
+- (void)archiveROIsAsDICOM:(NSArray *)rois toPath:(NSString *)path  forImage:(id)image
+{
+	SRAnnotation *sr = [[SRAnnotation alloc] initWithROIs:rois path:path forImage:image];
 	
 	id study = [image valueForKeyPath:@"series.study"];
 	
