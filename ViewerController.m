@@ -11912,38 +11912,46 @@ int i,j,l;
     {
 		NSMutableDictionary	*settings = [NSMutableDictionary dictionary];
 		
+		//--------------------------Layout---------------------------------
 		int columns = [[[[printLayout selectedItem] title] substringWithRange: NSMakeRange(0, 1)] intValue];
-		int rows = [[[[printLayout selectedItem] title] substringWithRange: NSMakeRange(2, 1)] intValue];
-		
+		int rows = [[[[printLayout selectedItem] title] substringWithRange: NSMakeRange(2, 1)] intValue];		
 		[settings setObject: [[printLayout selectedItem] title] forKey: @"layout"];
 		[settings setObject: [NSNumber numberWithInt: columns] forKey: @"columns"];
 		[settings setObject: [NSNumber numberWithInt: rows] forKey: @"rows"];
 		
+		//--------------------------Header---------------------------------
 		if( [[printSettings cellWithTag: 2] state]) [settings setObject: [printText stringValue] forKey: @"comments"];
+		if( [[printSettings cellWithTag: 0] state]) [settings setObject: @"YES" forKey: @"patientInfo"];
+		if( [[printSettings cellWithTag: 1] state]) [settings setObject: @"YES" forKey: @"studyInfo"];
+
+		//--------------------------Background color---------------------------------
 		if( [[printSettings cellWithTag: 3] state]) [settings setObject: @"YES" forKey: @"backgroundColor"];
-		float r, g, b;
-		
-		NSColor	*rgbColor = [[printColor color] colorUsingColorSpaceName: NSDeviceRGBColorSpace];
-		
+		float r, g, b;		
+		NSColor	*rgbColor = [[printColor color] colorUsingColorSpaceName: NSDeviceRGBColorSpace];		
 		[rgbColor getRed:&r green:&g blue:&b alpha:0L];
 		[settings setObject: [NSNumber numberWithFloat: r] forKey: @"backgroundColorR"];
 		[settings setObject: [NSNumber numberWithFloat: g] forKey: @"backgroundColorG"];
 		[settings setObject: [NSNumber numberWithFloat: b] forKey: @"backgroundColorB"];
-		if( [[printSettings cellWithTag: 0] state]) [settings setObject: @"YES" forKey: @"patientInfo"];
-		if( [[printSettings cellWithTag: 1] state]) [settings setObject: @"YES" forKey: @"studyInfo"];
-		[settings setObject: [NSNumber numberWithInt: [[printFormat selectedCell] tag]] forKey: @"format"];
-		[settings setObject: [NSNumber numberWithInt: [printInterval intValue]] forKey: @"interval"];
-		
-		[[NSUserDefaults standardUserDefaults] setObject: settings forKey: @"previousPrintSettings"];
-		
-		NSString	*tmpFolder = [NSString stringWithFormat:@"/tmp/print"];
 
+		//--------------------------Format ---------------------------------
+		[settings setObject: [NSNumber numberWithInt: [[printFormat selectedCell] tag]] forKey: @"format"];
+
+		//--------------------------Interval ---------------------------------
+		[settings setObject: [NSNumber numberWithInt: [printInterval intValue]] forKey: @"interval"];
+
+
+		[[NSUserDefaults standardUserDefaults] setObject: settings forKey: @"previousPrintSettings"];
+
+
+		
+		//--------------------------endpoints of the series to be printed---------------------------------
 		int from;
 		int to;
 		int interval;
-		
+				
 		switch( [[printSelection selectedCell] tag])
 		{
+			//current image
 			case 0:
 				if( [imageView flippedData]) from = [pixList[ curMovieIndex] count] - [imageView curImage] - 1;
 				else from = [imageView curImage];
@@ -11952,12 +11960,16 @@ int i,j,l;
 				interval = 1;
 			break;
 			
+			
+			//Only key images
 			case 1:
 				from = 0;
 				to = [pixList [curMovieIndex] count];
 				interval = 1;
 			break;
 			
+			
+			//Entire series, including
 			case 2:
 				if( [printFrom intValue] < [printTo intValue])
 				{
@@ -11976,8 +11988,9 @@ int i,j,l;
 			break;
 		}
 		
+		//--------------------------Preparation images in /tmp/print---------------------------------
 		NSMutableArray	*files = [NSMutableArray array];
-		
+		NSString	*tmpFolder = [NSString stringWithFormat:@"/tmp/print"];		
 		[[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
 		[[NSFileManager defaultManager] createDirectoryAtPath:tmpFolder attributes:nil];
 		
@@ -11994,7 +12007,7 @@ int i,j,l;
 			
 			BOOL saveImage = YES;
 			
-			if( [[printSelection selectedCell] tag] == 1)
+			if( [[printSelection selectedCell] tag] == 1) //key image
 			{
 				NSManagedObject	*image;
 				
@@ -12007,15 +12020,15 @@ int i,j,l;
 			if( saveImage)
 			{
 				[self setImageIndex: i];
-				NSImage *im = [[imageView nsimage: [[printFormat selectedCell] tag]] autorelease];
+				NSImage *im = [[imageView nsimage: [[printFormat selectedCell] tag]] autorelease]; //original
 				im = [DCMPix resizeIfNecessary: im dcmPix: [imageView curDCM]];
 				
-				NSData *imageData = [im  TIFFRepresentation];
-				NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
-				NSData *bitmapData = [imageRep representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-				
+				NSData *bitmapData = [im  TIFFRepresentation];
+				// since a zoom will be applied, conversion to jpeg here is inadequate
+				//NSData *imageData = [im  TIFFRepresentation];
+				//NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
+				//NSData *bitmapData = [imageRep representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 				[files addObject: [tmpFolder stringByAppendingFormat:@"/%d", i]];
-				
 				[bitmapData writeToFile: [files lastObject] atomically:YES];
 			}
 			

@@ -12,46 +12,79 @@
 
 @implementation printView
 
+//-----------------------------------------------------------------------
+// called from ViewerController endPrint:
+//-----------------------------------------------------------------------
+
+- (id)initWithViewer:(id) v settings:(NSDictionary*) s files:(NSArray*) f
+{
+	NSPrintInfo	*pi = [NSPrintInfo sharedPrintInfo];
+
+	NSLog(@"%@",[pi paperName]);	
+	//imageablePageBounds gives the NSRect that is authorized for printing in a specific paper size for a specific printer. It respects custom margins of custom papersize as well.
+	NSRect imageablePageBounds = [pi imageablePageBounds];
+	NSLog(@"imageablePageBounds origin.x=%f origin.y=%f size.width=%f size.height=%f",imageablePageBounds.origin.x, imageablePageBounds.origin.y, imageablePageBounds.size.width, imageablePageBounds.size.height);
+
+    self = [super initWithFrame: [pi imageablePageBounds]];
+	
+    if (self)
+	{
+		viewer = [v retain];
+		settings = [s retain];
+		filesToPrint = [f retain];
+		columns = [[settings objectForKey: @"columns"] intValue];
+		rows = [[settings objectForKey: @"rows"] intValue];
+		ipp = columns * rows;
+    }
+    return self;
+}
+
+//-----------------------------------------------------------------------
+
 - (void)drawPageBorderWithSize:(NSSize)borderSize
 {
 	[super drawPageBorderWithSize:borderSize];
-
-	NSRect frame = [self frame];
-
-	[self setFrame:NSMakeRect(0.0, 0.0, borderSize.width, borderSize.height)];
-	
 	[self lockFocus];
 	
 	NSManagedObject	*file = [[viewer fileList] objectAtIndex: 0];
 	
-	NSString *string2draw = @"";
 	
 	NSString *shortDateString = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString];
 	NSDictionary *localeDictionnary = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+	NSString *string2draw = @"";
+	headerHeight = 13; //leaves in all cases a white line at the end of the header
 	
-	// TOP HEADER
 	
+	NSRange	range;
+	[self knowsPageRange: &range];	
+	if( [settings valueForKey:@"comments"]) 
+	{
+		headerHeight += 13;
+		string2draw = [string2draw stringByAppendingFormat:@"%@   (%d/%d)\r", [settings valueForKey:@"comments"], [[NSPrintOperation currentOperation] currentPage], range.length];
+	}
+	
+			
 	if( [settings valueForKey:@"patientInfo"])
 	{
-		string2draw = [string2draw stringByAppendingFormat:@"Name: "];
+		headerHeight += 13;
+		string2draw = [string2draw stringByAppendingFormat:@"Patient: "];
 		if([file valueForKeyPath:@"series.study.name"]) string2draw = [string2draw stringByAppendingFormat:@"%@", [file valueForKeyPath:@"series.study.name"]];
-		if([file valueForKeyPath:@"series.study.patientID"]) string2draw = [string2draw stringByAppendingFormat:@" (%@)", [file valueForKeyPath:@"series.study.patientID"]];
-		if( [file valueForKeyPath:@"series.study.dateOfBirth"]) string2draw = [string2draw stringByAppendingFormat:@" - %@", [[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary]];
-		
+		if([file valueForKeyPath:@"series.study.patientID"]) string2draw = [string2draw stringByAppendingFormat:@"  [%@]", [file valueForKeyPath:@"series.study.patientID"]];
+		if( [file valueForKeyPath:@"series.study.dateOfBirth"]) string2draw = [string2draw stringByAppendingFormat:@"  %@", [[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary]];
 		string2draw = [string2draw stringByAppendingFormat:@"\r"];
-	}
+	}	
+	
 	
 	if( [settings valueForKey:@"studyInfo"])
 	{
+		headerHeight += 13;
 		string2draw = [string2draw stringByAppendingFormat:@"Study: "];
-		if([file valueForKeyPath:@"series.study.studyName"]) string2draw = [string2draw stringByAppendingFormat:@"%@", [file valueForKeyPath:@"series.study.studyName"]];
-		if([file valueForKeyPath:@"series.name"]) string2draw = [string2draw stringByAppendingFormat:@"%@", [file valueForKeyPath:@"series.name"]];
 
 		NSCalendarDate  *date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[file valueForKey:@"date"] timeIntervalSinceReferenceDate]];
 		if( date && [date yearOfCommonEra] != 3000)
 		{
 			NSString *tempString = [date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSShortDateFormatString]];
-			string2draw = [string2draw stringByAppendingFormat:@"\rDate: %@", tempString];
+			string2draw = [string2draw stringByAppendingFormat:@"%@", tempString];
 		
 			DCMPix *curDCM = [[viewer pixList] objectAtIndex: 0];
 			
@@ -59,93 +92,52 @@
 			if( date && [date yearOfCommonEra] != 3000)
 			{
 				tempString = [date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSTimeFormatString]];
-				string2draw = [string2draw stringByAppendingFormat:@" - %@", tempString];
+				string2draw = [string2draw stringByAppendingFormat:@" - %@    ", tempString];
 			}
 		}
+
+		if([file valueForKeyPath:@"series.study.studyName"] && !([[file valueForKeyPath:@"series.study.studyName"] isEqualToString:@"unnamed"])) string2draw = [string2draw stringByAppendingFormat:@"%@", [file valueForKeyPath:@"series.study.studyName"]];
+		if([file valueForKeyPath:@"series.name"] && !([[file valueForKeyPath:@"series.name"] isEqualToString:@"unnamed"])) string2draw = [string2draw stringByAppendingFormat:@"%@", [file valueForKeyPath:@"series.name"]];
+		string2draw = [string2draw stringByAppendingFormat:@"\r"];
 	}
 	
-	if( [settings valueForKey:@"comments"]) string2draw = [string2draw stringByAppendingFormat:@"\r%@", [settings valueForKey:@"comments"]];
 	
 	NSMutableDictionary *attribs = [NSMutableDictionary dictionary];  
 	[attribs setObject:[NSFont systemFontOfSize:10] forKey:NSFontAttributeName];
 	NSSize pageNumberSize = [string2draw sizeWithAttributes:attribs];
 	
-	float bottomMargin = [[[NSPrintOperation currentOperation] printInfo] bottomMargin];
+	float bottomMargin = [[[NSPrintOperation currentOperation] printInfo] bottomMargin]; //90
+	//
 	NSPoint pageNumberPoint = NSMakePoint((borderSize.width - pageNumberSize.width) / 2.0, borderSize.height - (bottomMargin + pageNumberSize.height) / 2.0);
-	[string2draw drawAtPoint: pageNumberPoint withAttributes:attribs];
-	
-	// BOTTOM HEADER
-	
-	int page = [[NSPrintOperation currentOperation] currentPage];
-	
-	NSRange	range;
-	[self knowsPageRange: &range];
-	string2draw = [NSString stringWithFormat:@"Page: %d of %d", page, range.length];
-
-	pageNumberSize = [string2draw sizeWithAttributes:attribs];
-	
-	float topMargin = [[[NSPrintOperation currentOperation] printInfo] topMargin];
-	pageNumberPoint = NSMakePoint((borderSize.width - pageNumberSize.width) / 2.0, 0 + (topMargin - pageNumberSize.height) / 2.0);
-	[string2draw drawAtPoint: pageNumberPoint withAttributes:attribs];
-	
-	[self unlockFocus];
-	
-	[self setFrame:frame];
+	NSPoint where2draw = NSMakePoint(2, borderSize.height - headerHeight);
+	[string2draw drawAtPoint: where2draw withAttributes:attribs]; //only invoke this method when an NSView object has focus
+	[self unlockFocus];	
 }
+
+//---------------------------------------------------------------------------
 
 - (BOOL)knowsPageRange:(NSRangePointer)range 
 {
-    NSRect bounds = [self bounds];
-
-	int	columns = [[settings objectForKey: @"columns"] intValue];
-	int	rows = [[settings objectForKey: @"rows"] intValue];
-	int ipp = columns * rows;
-	int pages;
-	
-	if( [filesToPrint count] % ipp == 0) pages = [filesToPrint count] / ipp;
-	else pages = 1 + [filesToPrint count] / ipp;
-	
+	//To provide a completely custom pagination scheme that does not use NSView’s built-in pagination support, 
+	//a view must override the knowsPageRange: method to return YES. It should also return by reference the page 
+	//range for the document. 
     range->location = 1;
-    range->length = pages;
+	range->length = ([filesToPrint count] + ipp - 1) / ipp;
     return YES;
 }
+
+//---------------------------------------------------------------------------
  
-// Return the drawing rectangle for a particular page number
 - (NSRect)rectForPage:(int)page
 {
-    NSRect bounds = [self bounds];
-    return bounds;
+	//Before printing each page, the pagination machinery sends the view a rectForPage: message. 
+	//Your implementation of rectForPage: should use the supplied page number and the current printing information to 
+	//calculate an appropriate drawing rectangle in the view’s coordinate system.
+    return [self bounds];
 }
-
-- (void) dealloc
-{
-	[viewer release];
-	[settings release];
-	[filesToPrint release];
 	
-	[super dealloc];
-}
-
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
-- (id)initWithViewer:(id) v settings:(NSDictionary*) s files:(NSArray*) f
-{
-	NSPrintInfo	*pi = [NSPrintInfo sharedPrintInfo];
-	NSSize size = [pi paperSize];
+//-----------------------------------------------------------------------
 	
-    self = [super initWithFrame: NSMakeRect( [pi leftMargin], [pi topMargin], size.width - [pi leftMargin] - [pi rightMargin], size.height - [pi topMargin] - [pi bottomMargin])];
-    if (self)
-	{
-		viewer = [v retain];
-		settings = [s retain];
-		filesToPrint = [f retain];
-    }
-    return self;
-}
 
 - (void)drawRect:(NSRect)rect
 {
@@ -153,11 +145,8 @@
 	
 	[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
 	
-	NSSize size = [self frame].size;
+	NSSize frameSize = [self frame].size;
 	
-	int	columns = [[settings objectForKey: @"columns"] intValue];
-	int	rows = [[settings objectForKey: @"rows"] intValue];
-	int ipp = columns * rows;
 	int page = [[NSPrintOperation currentOperation] currentPage];
 	
 	[NSColor blackColor];
@@ -167,7 +156,7 @@
 	if( [settings valueForKey: @"backgroundColor"])
 	{
 		[[NSColor colorWithDeviceRed: [[settings valueForKey: @"backgroundColorR"] floatValue] green: [[settings valueForKey: @"backgroundColorG"] floatValue] blue: [[settings valueForKey: @"backgroundColorB"] floatValue] alpha: 1.0] set];
-		NSRectFill( NSMakeRect(0, 0, [self frame].size.width, [self frame].size.height));
+		NSRectFill( NSMakeRect(0, 0, frameSize.width, frameSize.height - headerHeight));
 	}
 	
 	for( y = 0 ; y < rows ; y ++)
@@ -176,7 +165,7 @@
 		{
 			int index = (page - 1) * ipp + y*columns + x;
 			
-			NSRect rect = NSMakeRect( x * size.width / columns,  (rows-1-y) * size.height / rows , size.width / columns, size.height / rows);
+			NSRect rect = NSMakeRect( x * frameSize.width / columns,  (rows-1-y) * (frameSize.height - headerHeight) / rows , frameSize.width / columns, (frameSize.height - headerHeight) / rows);
 			
 			if( index < [filesToPrint count])
 			{
@@ -195,7 +184,9 @@
 					dstRect = NSMakeRect( rect.origin.x, rect.origin.y  + (rect.size.height - [im size].height * ratio) / 2, rect.size.width, [im size].height * ratio);
 				}
 				
-				[im drawInRect: NSInsetRect(dstRect, 2, 2)  fromRect:NSZeroRect operation:NSCompositeCopy fraction: 1.0];
+				//NSZeroRect = complete image
+				//NSInsetRect(dstRect, 1, 1) leaves one pixel border separation around the image
+				[im drawInRect: NSInsetRect(dstRect, 1, 1)  fromRect:NSZeroRect operation:NSCompositeCopy fraction: 1.0];
 				
 				[im release];
 			}
@@ -204,5 +195,22 @@
 	
 	[pool release];
 }
+
+//----------------------------------------------------------------
+
+- (void) dealloc
+{
+	[viewer release];
+	[settings release];
+	[filesToPrint release];
+	
+	[super dealloc];
+}
+
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
 
 @end

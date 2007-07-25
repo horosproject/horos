@@ -14,6 +14,11 @@
 	id						viewer;
 	NSDictionary			*settings;
 	NSArray					*filesToPrint;
+	int						columns;
+	int						rows;
+	int						ipp;
+	float					headerHeight;
+
 }
 
 - (id)initWithViewer:(id) v settings:(NSDictionary*) s files:(NSArray*) f;
