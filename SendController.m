@@ -290,7 +290,8 @@ static volatile int sendControllerObjects = 0;
 				[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: objectsToSend];
 			}
 			else [_lock unlock];	// Will release the object
-		}		
+		}
+		else [_lock unlock];	// Will release the object
 	}
 	else // Cancel
 	{
