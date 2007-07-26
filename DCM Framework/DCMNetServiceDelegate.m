@@ -128,7 +128,8 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 	[_dicomServices removeObject:sender];
 }
 
-+ (NSArray *) DICOMServersList
++ (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR
+
 {
 	NSMutableArray			*serversArray		= [NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"]];
 	NSArray					*dicomServices		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
@@ -152,6 +153,7 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 																						[aServer name], @"AETitle",
 																						[NSString stringWithFormat:@"%d", port], @"Port",
 																						[NSNumber numberWithBool:YES] , @"QR",
+																						[NSNumber numberWithBool:YES] , @"Send",
 																						[NSString stringWithFormat:@"%@ (Bonjour)", [aServer hostName]], @"Description",
 																						[NSNumber numberWithInt:0], @"Transfer Syntax",
 																						0L]];
@@ -159,7 +161,36 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 		}
 	}
 	
+	if( send)
+	{
+		for( i = 0 ; i < [serversArray count] ; i++)
+		{
+			if( [[serversArray objectAtIndex: i] valueForKey:@"Send"] != 0L && [[[serversArray objectAtIndex: i] valueForKey:@"Send"] boolValue] == NO)
+			{
+				[serversArray removeObjectAtIndex: i];
+				i--;
+			}
+		}
+	}
+	
+	if( QR)
+	{
+		for( i = 0 ; i < [serversArray count] ; i++)
+		{
+			if( [[serversArray objectAtIndex: i] valueForKey:@"QR"] != 0L && [[[serversArray objectAtIndex: i] valueForKey:@"QR"] boolValue] == NO)
+			{
+				[serversArray removeObjectAtIndex: i];
+				i--;
+			}
+		}
+	}
+	
 	return serversArray;
+}
+
++ (NSArray *) DICOMServersList
+{
+	[DCMNetServiceDelegate DICOMServersListSendOnly:NO QROnly:NO];
 }
 
 + (NSString*) gethostnameAndPort: (int*) port forService:(NSNetService*) sender

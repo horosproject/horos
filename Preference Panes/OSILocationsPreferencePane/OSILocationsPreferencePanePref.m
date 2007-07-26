@@ -170,6 +170,14 @@
 	[self checkUniqueAETitle];
 	
 	[self resetTest];
+	
+	int i;
+	for( i = 0 ; i < [[dicomNodes arrangedObjects] count]; i++)
+	{
+		NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex: i];
+		if( [aServer valueForKey:@"Send"] == 0L)
+			[aServer setValue:[NSNumber numberWithBool:YES] forKey:@"Send"];
+	}
 }
 
 - (void) willUnselect
@@ -191,6 +199,7 @@
     [aServer setObject:@"AETITLE" forKey:@"AETitle"];
     [aServer setObject:@"4096" forKey:@"Port"];
 	[aServer setObject:[NSNumber numberWithBool:YES] forKey:@"QR"];
+	[aServer setObject:[NSNumber numberWithBool:YES] forKey:@"Send"];
     [aServer setObject:@"Description" forKey:@"Description"];
 	[aServer setObject:[NSNumber numberWithInt:0] forKey:@"Transfer Syntax"];
     

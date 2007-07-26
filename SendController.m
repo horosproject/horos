@@ -72,7 +72,7 @@ static volatile int sendControllerObjects = 0;
 
 	if( [files  count])
 	{
-		if( [[DCMNetServiceDelegate DICOMServersList] count] > 0)
+		if( [[DCMNetServiceDelegate DICOMServersListSendOnly: YES QROnly: NO] count] > 0)
 		{
 			SendController *sendController = [[SendController alloc] initWithFiles:files];
 			[NSApp beginSheet: [sendController window] modalForWindow:[NSApp mainWindow] modalDelegate:sendController didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
@@ -102,7 +102,7 @@ static volatile int sendControllerObjects = 0;
 		
 		_serverIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendServer"];	
 		
-		if( _serverIndex >= [[DCMNetServiceDelegate DICOMServersList] count])
+		if( _serverIndex >= [[DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly: NO] count])
 			_serverIndex = 0;
 		
 		_keyImageIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendWhat"];
@@ -127,7 +127,7 @@ static volatile int sendControllerObjects = 0;
 	{
 		[serverList reloadData];
 	
-		int count = [[DCMNetServiceDelegate DICOMServersList] count];
+		int count = [[DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO] count];
 		if (_serverIndex < count)
 			[serverList selectItemAtIndex: _serverIndex];
 			
@@ -180,7 +180,7 @@ static volatile int sendControllerObjects = 0;
 
 - (id)serverAtIndex:(int)index
 {
-	NSArray			*serversArray		= [DCMNetServiceDelegate DICOMServersList];
+	NSArray			*serversArray		= [DCMNetServiceDelegate DICOMServersListSendOnly: YES QROnly:NO];
 	
 	if( index > -1 && index < [serversArray count]) return [serversArray objectAtIndex:index];
 	
@@ -449,7 +449,7 @@ static volatile int sendControllerObjects = 0;
 
 - (int) numberOfItemsInComboBox:(NSComboBox *)aComboBox
 {
-	NSArray			*serversArray		= [DCMNetServiceDelegate DICOMServersList];
+	NSArray			*serversArray		= [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 	
 	if ([aComboBox isEqual:serverList])
 	{	
@@ -459,7 +459,7 @@ static volatile int sendControllerObjects = 0;
 
 - (id) comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(int)index
 {
-	NSArray			*serversArray		= [DCMNetServiceDelegate DICOMServersList];
+	NSArray			*serversArray		= [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 	
 	if ([aComboBox isEqual:serverList])
 	{
