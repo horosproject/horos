@@ -67,9 +67,8 @@
 		userInfo = [NSDictionary dictionaryWithObjectsAndKeys:sr, @"sr", [roiSRSeries objectAtIndex:0], @"series", study, @"study", path, @"path", nil];
 	else
 		userInfo = [NSDictionary dictionaryWithObjectsAndKeys:sr, @"sr", study, @"study", path, @"path", nil];
-		
-	[self checkDBForSRROI:userInfo];	
-	//[self performSelectorOnMainThread:@selector(checkDBForSRROI:) withObject:userInfo waitUntilDone:YES];
+	
+	[self checkDBForSRROI: userInfo];
 	
 	[sr writeToFileAtPath:path];
 	[sr release];
@@ -77,21 +76,22 @@
 
 - (void)checkDBForSRROI:(NSDictionary *)userInfo
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	id series = [userInfo objectForKey:@"series"];
 	SRAnnotation *sr = [userInfo objectForKey:@"sr"];
 	id study = [userInfo objectForKey:@"study"];
 	NSString *path = [userInfo objectForKey:@"path"];
+	
 	BrowserController *browser = [BrowserController currentBrowser];
 	NSManagedObjectModel *managedObjectModel = [browser managedObjectModel];
 	NSManagedObjectContext *context = [browser managedObjectContext];
 	
-	if (series) {
+	if (series)
+	{
 		NSString *seriesInstanceUID = [series valueForKey:@"seriesDICOMUID"];
 		[sr setSeriesInstanceUID:seriesInstanceUID];
-		
 	}
-	else {
+	else
+	{
 		series = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:context];
 		[series setValue:study forKey:@"study"];
 		
@@ -102,22 +102,24 @@
 		[series setValue:[NSNumber numberWithInt:[[sr seriesNumber] intValue]] forKey:@"id"];
 	}
 		
-		//See if the SR is in the series. Add it if necessary
+	//See if the SR is in the series. Add it if necessary
 	NSArray *srs = [(NSSet *)[series valueForKey:@"images"] allObjects];
+	
+	NSLog( @"ROIs saved for this study: %d", [srs count]);
+	
 	NSString *sopInstanceUID = [sr sopInstanceUID];
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", sopInstanceUID];
 	NSArray *found = [srs filteredArrayUsingPredicate:predicate];
-	if ([found count] < 1) {
+	
+	if ([found count] < 1)
+	{
+		NSLog( @"New ROI");
 		id im = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
 		[im setValue:series forKey:@"series"];
 		[im setValue:sopInstanceUID forKey:@"sopInstanceUID"];
 		[im setValue:path forKey:@"path"];
 		[im setValue:@"DICOM" forKey:@"fileType"];
-		[im setValue:[NSNumber numberWithBool: YES] forKey:@"inDatabaseFolder"];	// this will allow the automatic deletion of the file when the study is removed
+		[im setValue:[NSNumber numberWithBool: NO] forKey:@"inDatabaseFolder"];
 	}
-	//Search for object with this UID
-	// empty for now
-	[pool release];
-
 }
 @end

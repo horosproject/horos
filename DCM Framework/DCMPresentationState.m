@@ -29,8 +29,6 @@
 	return [DCMAbstractSyntaxUID isPresentationState:[self attributeValueWithName:@"SOPClassUID"]];
 }
 
-
-
 - (NSArray *)graphicAnnotationSequence{
 	return [(DCMSequenceAttribute *)[self attributeWithName:@"GraphicAnnotationSequence"] sequenceItems];
 }

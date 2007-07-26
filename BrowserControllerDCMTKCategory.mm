@@ -41,8 +41,6 @@
 #include "dcdict.h"
 #include "dcdeftag.h"
 
-
-
 @implementation BrowserController (BrowserControllerDCMTKCategory)
 
 - (BOOL)compressDICOMWithJPEG:(NSString *)path

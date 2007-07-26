@@ -61,7 +61,7 @@ Version 2.5
 #import "AnonymizerWindowController.h"
 #import "DicomImage.h"
 #import "DCMPix.h"
-
+#import "SRAnnotation.h"
 #import "AppController.h"
 #import "dicomData.h"
 #import "DCMPix.h"
@@ -495,6 +495,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	long					ii, i, x;
 	unsigned long			index;
 	NSString				*INpath = [dbFolder stringByAppendingPathComponent:DATABASEFPATH];
+	NSString				*roiFolder = [dbFolder stringByAppendingPathComponent:@"/ROIs"];
 	Wait					*splash = 0L;
 	NSManagedObjectModel	*model = [self managedObjectModel];
 	NSMutableArray			*addedImagesArray = 0L;
@@ -637,13 +638,30 @@ static BOOL				DICOMDIRCDMODE = NO;
 				
 				if( [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]])
 				{
-					// We store them in the ROIs folder
-					NSLog(@"SR DICOM SOP CLASS");
-					
-					NSLog( [curDict description]);
-					
-					[curDict release];
-					curDict = 0L;
+					// Check if it is an OsiriX ROI SR
+					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString:@"OsiriX ROI SR"])
+					{
+						NSLog( @"*/*/*/ OsiriX ROI SR");
+						NSLog( [curDict description]);
+						
+						// Move it to the ROIs folder
+						NSString	*uidName = [SRAnnotation getFilenameFromSR: newFile];
+						
+						[[NSFileManager defaultManager] removeFileAtPath:[roiFolder stringByAppendingPathComponent: uidName] handler:0L];
+						if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
+						{
+							NSLog( @"OsiriX ROI SR MOVE");
+							[[NSFileManager defaultManager] movePath:newFile toPath:[roiFolder stringByAppendingPathComponent: uidName] handler: 0L];
+						}
+						else
+						{
+							NSLog( @"OsiriX ROI SR COPY");
+							[[NSFileManager defaultManager] copyPath:newFile toPath:[roiFolder stringByAppendingPathComponent: uidName] handler: 0L];
+						}
+						
+						[curDict release];
+						curDict = 0L;
+					}
 				}
 				
 				// For now, we cannot add non-image DICOM files
@@ -11273,6 +11291,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	long				serieCount		= 0;
 	NSMutableArray		*result = [NSMutableArray array];
 	NSMutableArray		*files2Compress = [NSMutableArray array];
+	BOOL				exportROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"AddROIsForExport"];
 	
 	[splash setCancel:YES];
 	[splash showWindow:self];
@@ -11290,7 +11309,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"]) extension = [NSString stringWithString:@"dcm"];
 		}
 		
-		NSArray	*roiFiles = [curImage valueForKey: @"SRPaths"];
+		NSArray	*roiFiles = 0L;
+		if( exportROIs)
+			roiFiles = [curImage valueForKey: @"SRPaths"];
 		
 		if([extension isEqualToString:@""]) extension = [NSString stringWithString:@"dcm"]; 
 		
@@ -11357,7 +11378,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			// Find the ROIs folder
 			if( [roiFiles count])
 			{
-				roiFolder = [tempPath stringByAppendingPathComponent:@"ROIs"];
+				roiFolder = [tempPath stringByAppendingPathComponent:@"ROI"];
 				
 				if (![[NSFileManager defaultManager] fileExistsAtPath: roiFolder]) [[NSFileManager defaultManager] createDirectoryAtPath: roiFolder attributes:nil];
 			}
@@ -11439,8 +11460,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			for( x = 0 ; x < [roiFiles count] ; x++)
 			{
+				NSString	*destROIPath = [roiFolder stringByAppendingPathComponent: [[roiFiles objectAtIndex: x] lastPathComponent]];
+				
+				if( addDICOMDIR)
+					destROIPath = [[destROIPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat:@"%4.4d", 1]];
+				
+				t = 2;
+				while( [[NSFileManager defaultManager] fileExistsAtPath: destROIPath])
+				{
+					destROIPath = [[destROIPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat:@"%4.4d", t]];
+					t++;
+				}
+			
 				[[NSFileManager defaultManager] copyPath:	[roiFiles objectAtIndex: x]
-												toPath:		[roiFolder stringByAppendingPathComponent: [[roiFiles objectAtIndex: x] lastPathComponent]]
+												toPath:		destROIPath
 												handler:	nil];
 			}
 		}

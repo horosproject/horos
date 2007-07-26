@@ -10,12 +10,41 @@
 #import "DCMView.h"
 #import "DCMPix.h"
 #import "browserController.h"
-#import "DCMObject.h"
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 #include "dsrtypes.h"
 
 @implementation SRAnnotation
+
++ (NSString*) getFilenameFromSR:(NSString*) path;
+{
+	NSString	*result = 0L;
+	DSRDocument	*document = new DSRDocument();
+	
+	OFCondition status;
+	
+	if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+	{			
+		DcmFileFormat fileformat;
+		status  = fileformat.loadFile([path UTF8String]);
+		if (status.good())
+		{
+			status = document->read(*fileformat.getDataset());
+			
+			int instanceNumber = [[NSString stringWithFormat:@"%s", document->getInstanceNumber()] intValue];
+			
+			DSRCodedEntryValue codedEntryValue = DSRCodedEntryValue("IHE.10", "99HUG", "Image Reference");
+			if (document->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0 )
+			{
+				DSRImageReferenceValue imageRef = document->getTree().getCurrentContentItem().getImageReference();
+				result = [NSString stringWithFormat:@"%s %d-%d.dcm", imageRef.getSOPInstanceUID().c_str(), instanceNumber, 0];
+			}
+		}
+	}
+	
+	return result;
+}
+
 
 #pragma mark -
 #pragma mark basics
@@ -59,9 +88,9 @@
 		}
 		
 		// create new Doc 
-		if (![[NSFileManager defaultManager] fileExistsAtPath:path] || !status.good()) {
+		if (![[NSFileManager defaultManager] fileExistsAtPath: path] || !status.good()) {
 			_newSR = YES;
-			document->createNewDocument(DSRTypes::DT_ComprehensiveSR);	
+			document->createNewDocument(DSRTypes::DT_BasicTextSR);	
 		}
 			
 		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -70,6 +99,64 @@
 		image = [im retain];
 		
 		[self addROIs:ROIs];
+		
+		
+		//////
+		
+//		DSRDocument *doc = new DSRDocument();
+//		
+//		OFString studyUID_ki;
+//		
+//		doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+////		doc->getStudyInstanceUID(studyUID_ki);
+////		doc->setStudyDescription("OFFIS Structured Reporting Templates");
+////		doc->setSeriesDescription("IHE Year 2 - Key Image Note");
+////		doc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
+////
+////		doc->setPatientsName("Last Name^First Name");
+////		doc->setPatientsSex("O");
+////		doc->setManufacturer("Kuratorium OFFIS e.V.");
+////		doc->setReferringPhysiciansName("Last Name^First Name");
+//
+//		doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+////		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.01", OFFIS_CODING_SCHEME_DESIGNATOR, "Document Title"));
+//
+//		doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_UIDRef, DSRTypes::AM_belowCurrent);
+////		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Observation Context Mode"));
+////		doc->getTree().getCurrentContentItem().setCodeValue(DSRCodedEntryValue("IHE.03", OFFIS_CODING_SCHEME_DESIGNATOR, "DIRECT"));
+//		
+////		doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_PName);
+////		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.04", OFFIS_CODING_SCHEME_DESIGNATOR, "Recording Observer's Name"));
+////		doc->getTree().getCurrentContentItem().setStringValue("Enter text");
+////		doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Text);
+////		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Recording Observer's Organization Name"));
+////		doc->getTree().getCurrentContentItem().setStringValue("Enter text");
+////		doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Code);
+////		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.06", OFFIS_CODING_SCHEME_DESIGNATOR, "Observation Context Mode"));
+////		doc->getTree().getCurrentContentItem().setCodeValue(DSRCodedEntryValue("IHE.07", OFFIS_CODING_SCHEME_DESIGNATOR, "PATIENT"));
+////
+////		doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+////		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.11", OFFIS_CODING_SCHEME_DESIGNATOR, "Key Image Description"));
+////		doc->getTree().getCurrentContentItem().setStringValue("Enter text");
+//
+//		doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+////		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.10", OFFIS_CODING_SCHEME_DESIGNATOR, "Image Reference"));
+//		doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue("989898", "989898"));
+//
+//		DcmFileFormat *fileformat = new DcmFileFormat();
+//		DcmDataset *dataset = NULL;
+//		if (fileformat != NULL)
+//			dataset = fileformat->getDataset();
+//		if (dataset != NULL)
+//		{
+//			doc->getCodingSchemeIdentification().addPrivateDcmtkCodingScheme();
+//			if (doc->write(*dataset).good())
+//			{
+//				OFString filename = "report_test";
+//				filename += ".dcm";
+//				fileformat->saveFile(filename.c_str(), EXS_LittleEndianExplicit);
+//			}
+//		}
 	}
 	return self;
 }
@@ -151,73 +238,74 @@
 
 - (void)addROI:(ROI *)aROI;
 {
-	NSLog(@"+++ add a ROI : %@", [aROI name]);
-	// add the region to the SR
-	document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_SCoord, DSRTypes::AM_belowCurrent);
-	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("111030", "DCM", "Image Region"));
-	
-	// set the type of the region
-	DSRTypes::E_GraphicType graphicType;
-	
-	switch([aROI type])
-	{
-		case tMesure:
-		case tArrow:
-		case tAngle:
-		case tCPolygon:
-		case tOPolygon:
-		case tPlain:
-		case tPencil:
-			graphicType = DSRTypes::GT_Multipoint;
-		break;
-		
-		case t2DPoint:
-		case tText:
-			graphicType = DSRTypes::GT_Point;
-		break;
-		
-		case tOval:
-			graphicType = DSRTypes::GT_Ellipse;
-		break;
-		
-		case tROI: // (rectangle)
-			graphicType = DSRTypes::GT_Polyline;
-		break;
-	}
-	
-	// set coordinates of the points
-	DSRSpatialCoordinatesValue *coordinates = new DSRSpatialCoordinatesValue(graphicType);
-
-	DSRGraphicDataList *dsrPointsList = &coordinates->getGraphicDataList();
-
-	NSMutableArray *roiPointsList = [aROI points];
-	NSEnumerator *roiPointsListEnumerator = [roiPointsList objectEnumerator];
-	id aPoint;
-
-	while (aPoint = [roiPointsListEnumerator nextObject])
-	{
-		NSPoint aNSPoint = [aPoint point];
-		dsrPointsList->addItem(aNSPoint.x,aNSPoint.y);
-	}
-	
-//	dsrPointsList.print(cout, 0, '/', '\n');
-//	coordinates->print(cout, 0);
-	
-	document->getTree().getCurrentContentItem().setSpatialCoordinates(*coordinates);
+//	NSLog(@"+++ add a ROI : %@", [aROI name]);
+//	// add the region to the SR
+//	document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_SCoord, DSRTypes::AM_belowCurrent);
+//	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("111030", "DCM", "Image Region"));
+//	
+//	// set the type of the region
+//	DSRTypes::E_GraphicType graphicType;
+//	
+//	switch([aROI type])
+//	{
+//		case tMesure:
+//		case tArrow:
+//		case tAngle:
+//		case tCPolygon:
+//		case tOPolygon:
+//		case tPlain:
+//		case tPencil:
+//			graphicType = DSRTypes::GT_Multipoint;
+//		break;
+//		
+//		case t2DPoint:
+//		case tText:
+//			graphicType = DSRTypes::GT_Point;
+//		break;
+//		
+//		case tOval:
+//			graphicType = DSRTypes::GT_Ellipse;
+//		break;
+//		
+//		case tROI: // (rectangle)
+//			graphicType = DSRTypes::GT_Polyline;
+//		break;
+//	}
+//	
+//	// set coordinates of the points
+//	DSRSpatialCoordinatesValue *coordinates = new DSRSpatialCoordinatesValue(graphicType);
+//
+//	DSRGraphicDataList *dsrPointsList = &coordinates->getGraphicDataList();
+//
+//	NSMutableArray *roiPointsList = [aROI points];
+//	NSEnumerator *roiPointsListEnumerator = [roiPointsList objectEnumerator];
+//	id aPoint;
+//
+//	while (aPoint = [roiPointsListEnumerator nextObject])
+//	{
+//		NSPoint aNSPoint = [aPoint point];
+//		dsrPointsList->addItem(aNSPoint.x,aNSPoint.y);
+//	}
+//	
+////	dsrPointsList.print(cout, 0, '/', '\n');
+////	coordinates->print(cout, 0);
+//	
+//	document->getTree().getCurrentContentItem().setSpatialCoordinates(*coordinates);
+//
+//	document->getTree().goUp(); // go up to the root element
 	
 	// image reference
-	DCMObject *dcmObject;
 	OFString refsopClassUID;
 	OFString refsopInstanceUID;
 	
-	dcmObject = [DCMObject objectWithContentsOfFile:[[aROI pix] srcFile] decodingPixelData:NO];
 	if (![aROI referencedSOPClassUID])
 	{
-		NSString *uid = [dcmObject attributeValueWithName:@"SOPClassUID"];
+		NSString *uid = [[[aROI pix] imageObj] valueForKeyPath:@"series.seriesSOPClassUID"];
 		refsopClassUID = OFString([uid UTF8String]);
 		[aROI setReferencedSOPClassUID:uid];
 	}
 	else refsopClassUID = OFString([[aROI referencedSOPClassUID] UTF8String]);
+	NSLog(@"refsopClassUID: %s", refsopClassUID.c_str());
 		
 	if (![aROI referencedSOPInstanceUID])
 	{
@@ -226,17 +314,21 @@
 		[aROI setReferencedSOPInstanceUID:uid];
 	}
 	else refsopInstanceUID = OFString([[aROI referencedSOPInstanceUID] UTF8String]);
+	NSLog(@"refsopInstanceUID: %s", refsopInstanceUID.c_str());
 	
+//	document->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_UIDRef, DSRTypes::AM_belowCurrent);
+//	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("VT_UIDRef", "99HUG", "Image Reference"));
 	
-	document->getTree().addContentItem(DSRTypes::RT_selectedFrom, DSRTypes::VT_Image);
-	DSRImageReferenceValue imageRef(refsopClassUID, refsopInstanceUID);
+	document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image, DSRTypes::AM_belowCurrent);
+	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.10", "99HUG", "Image Reference"));
+
+	DSRImageReferenceValue imageRef( refsopClassUID, refsopInstanceUID);
 	
 	// add frame reference
 	NSNumber *frameIndex = [NSNumber numberWithInt: [[aROI pix] frameNo]];
 	imageRef.getFrameList().putString([[frameIndex stringValue] UTF8String]);
-	document->getTree().getCurrentContentItem().setImageReference(imageRef);
-	document->getTree().goUp(); // go up to the SCOORD element
 	
+	document->getTree().getCurrentContentItem().setImageReference( imageRef);
 	document->getTree().goUp(); // go up to the root element
 }
 
@@ -264,6 +356,8 @@
 		id study = [image valueForKeyPath:@"series.study"];
 		//add to Study
 		document->createNewSeriesInStudy([[study valueForKey:@"studyInstanceUID"] UTF8String]);
+		
+		document->setInstanceNumber([[[image valueForKey:@"instanceNumber"] stringValue] UTF8String]);
 		
 		// Add metadata for DICOM
 			//Study Description
@@ -296,46 +390,38 @@
 		
 		if ([study valueForKey:@"accessionNumber"])
 			document->setAccessionNumber([[study valueForKey:@"accessionNumber"] UTF8String]);
+		
 		//Series Number
 		document->setSeriesNumber("5002");
 		
 		document->setManufacturer("OsiriX");
 	}
 
-	DcmFileFormat fileformat;
 	OFCondition status;
-	status = document->write(*fileformat.getDataset());
+	DcmFileFormat *fileformat = new DcmFileFormat();
+	DcmDataset *dataset = NULL;
+	if (fileformat != NULL)
+		dataset = fileformat->getDataset();
 
 	//This adds the archived ROI Array  to the SR		
-		ROI *roi = [_rois objectAtIndex:0];
-		NSData *data = nil;
-		data = [ NSArchiver archivedDataWithRootObject:_rois];
-		const Uint8 *buffer =  (const Uint8 *)[data bytes];
-		DcmDataset *dataset = fileformat.getDataset();
-		DcmTag tag(0x0071, 0x0011, DcmVR("OB"));
-		status = dataset->putAndInsertUint8Array(tag , buffer, [data length] , OFTrue);
-		
-		//use seriesInstanceUID if we have one
-		if (_seriesInstanceUID)
-			status = dataset->putAndInsertString(DCM_SeriesInstanceUID, [_seriesInstanceUID UTF8String], OFTrue);
+	ROI *roi = [_rois objectAtIndex:0];
+	NSData *data = nil;
+	data = [ NSArchiver archivedDataWithRootObject:_rois];
+	const Uint8 *buffer =  (const Uint8 *)[data bytes];
+	DcmTag tag(0x0071, 0x0011, DcmVR("OB"));
+	status = dataset->putAndInsertUint8Array(tag , buffer, [data length] , OFTrue);
 
-	//NSLog(@"error code: %s", status.text());
-	//status = document->write(*fileformat.getDataset());
+	//use seriesInstanceUID if we have one
+	if (_seriesInstanceUID)
+		status = dataset->putAndInsertString(DCM_SeriesInstanceUID, [_seriesInstanceUID UTF8String], OFTrue);
 
-
-
-	if (status.good())
-		status = fileformat.saveFile([path UTF8String], EXS_LittleEndianExplicit);
-	
-	if (status.good())
+	if (dataset != NULL)
 	{
-		NSLog(@"Report saved: %@", path);
-		return YES;
-	}
-	else
-	{
-		NSLog(@"Report not saved: %@", path);
-		return NO;
+		document->getCodingSchemeIdentification().addPrivateDcmtkCodingScheme();
+		if (document->write(*dataset).good())
+		{
+			fileformat->saveFile( [path UTF8String], EXS_LittleEndianExplicit);
+		}
 	}
 }
 
