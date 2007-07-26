@@ -171,6 +171,7 @@ enum
 
 // Compute the length for tMeasure ROI in cm
 - (float) MesureLength: (float*) pixels;
+- (float) Length:(NSPoint) mesureA :(NSPoint) mesureB;
 
 // Compute an angle between 2 lines
 - (float) Angle:(NSPoint) p2 :(NSPoint) p1 :(NSPoint) p3;

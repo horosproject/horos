@@ -263,16 +263,19 @@ static volatile int sendControllerObjects = 0;
 		
 		if( files2Send != 0L && [files2Send count] > 0)
 		{
-			// DONT REMOVE THESE LINES - THANX ANTOINE
-			if( [plugins valueForKey:@"ComPACS"] != 0)
+			if( !([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask && [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask))
 			{
-				long result = [[plugins objectForKey:@"ComPACS"] prepareFilter: 0L];
-				
-				result = [[plugins objectForKey:@"ComPACS"] filterImage: [NSString stringWithFormat:@"dicomSEND%@", [[objectsToSend objectAtIndex: 0] valueForKeyPath:@"series.study.patientUID"]]];
-				if( result != 0)
+				// DONT REMOVE THESE LINES - THANX ANTOINE
+				if( [plugins valueForKey:@"ComPACS"] != 0)
 				{
-					NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"Smart card authentification is required for DICOM sending.",nil),NSLocalizedString( @"OK",nil), nil, nil);
-					files2Send = 0L;
+					long result = [[plugins objectForKey:@"ComPACS"] prepareFilter: 0L];
+					
+					result = [[plugins objectForKey:@"ComPACS"] filterImage: [NSString stringWithFormat:@"dicomSEND%@", [[objectsToSend objectAtIndex: 0] valueForKeyPath:@"series.study.patientUID"]]];
+					if( result != 0)
+					{
+						NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"Smart card authentification is required for DICOM sending.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+						files2Send = 0L;
+					}
 				}
 			}
 			
@@ -313,6 +316,22 @@ static volatile int sendControllerObjects = 0;
 	int x;
 	for( x = 0; x < [samePatientArray count] ; x++) if( [[samePatientArray objectAtIndex: x] isFault]) isFault = YES;
 	
+	NSArray	*files = [samePatientArray valueForKey: @"completePathResolved"];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"])
+	{
+		NSLog( @"add ROIs for DICOM sending");
+		int i;
+		NSMutableArray	*roiFiles = [NSMutableArray array];
+		
+		for( i = 0 ; i < [samePatientArray count] ; i++)
+		{
+			[roiFiles addObjectsFromArray: [[samePatientArray objectAtIndex: i] valueForKey: @"SRPaths"]];
+		}
+		
+		files = [files arrayByAddingObjectsFromArray: roiFiles];
+	}
+	
 	if( isFault) NSLog( @"Fault on objects: not available for sending");
 	else
 	{
@@ -326,7 +345,7 @@ static volatile int sendControllerObjects = 0;
 				calledAET:calledAET 
 				hostname:hostname 
 				port:[destPort intValue] 
-				filesToSend: [samePatientArray valueForKey: @"completePathResolved"]
+				filesToSend:files
 				transferSyntax:_offisTS
 				compression: 1.0
 				extraParameters:nil];

@@ -1885,29 +1885,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			curImage = 0;
 		else if (c == NSEndFunctionKey)
 			curImage = [dcmPixList count]-1; 
-		
-		
-		// SHUTTLE PRO
-		else if(c =='z')		// X MOVE LEFT
-		{
-			Jog = YES;
-			xMove = -2;
-		}
-		else if(c == 'x')		// X MOVE RIGHT
-		{
-			Jog = YES;
-			xMove = 2;
-		}
-		else if(c =='Z')		// Y MOVE LEFT
-		{
-			Jog = YES;
-			yMove = -2;
-		}
-		else if(c == 'X')		// Y MOVE RIGHT
-		{
-			Jog = YES;
-			yMove = 2;
-		}
         else
         {
 			if( [self actionForHotKey:[event characters]] == NO) [super keyDown:event];

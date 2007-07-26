@@ -8674,25 +8674,29 @@ int i,j,l;
 
 - (IBAction) roiIntDeleteAllROIsWithSameName :(NSString*) name
 {
-		int x, i;
+	int x, i;
+	
+	[name retain];
+	
+	[self addToUndoQueue: @"roi"];
+	
+	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
+	{
+		DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
 		
-		[self addToUndoQueue: @"roi"];
-		
-		for( x = 0; x < [pixList[curMovieIndex] count]; x++)
+		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
-			DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
-			
-			for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
+			if( [[curROI name] isEqualToString: name])
 			{
-				ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
-				if( [[curROI name] isEqualToString: name])
-				{
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: 0L];
-					[[roiList[ curMovieIndex] objectAtIndex: x] removeObject: curROI];
-					i--;
-				}
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: 0L];
+				[[roiList[ curMovieIndex] objectAtIndex: x] removeObject: curROI];
+				i--;
 			}
 		}
+	}
+	
+	[name release];
 }
 
 - (IBAction) roiDeleteAllROIsWithSameName:(id) sender
@@ -8714,6 +8718,8 @@ int i,j,l;
 - (int) roiIntDeleteGeneratedROIsForName:(NSString*) name
 {
 	int x, i, no = 0;
+	
+	[name retain];
 	
 	[self addToUndoQueue: @"roi"];
 	
@@ -8741,6 +8747,8 @@ int i,j,l;
 	}
 	
 	[imageView setIndex: [imageView curImage]];
+	
+	[name release];
 	
 	return no;
 }

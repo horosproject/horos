@@ -870,6 +870,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		_shouldAbort = NO;
 		_transferSyntax = transferSyntax;
 		_compression = compression;
+		
 		_filesToSend = [filesToSend retain];
 		_numberOfFiles = [filesToSend count];
 		_numberSent = 0;
