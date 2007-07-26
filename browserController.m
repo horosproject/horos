@@ -376,7 +376,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 	NSString		*dstPath;
 	NSString		*subFolder;
 	long			subFolderInt;
-
+	
+	if (![[NSFileManager defaultManager] fileExistsAtPath:OUTpath])
+			[[NSFileManager defaultManager] createDirectoryAtPath:OUTpath attributes:nil];
+	
 	do
 	{
 		subFolderInt = 10000L * ((DATABASEINDEX / 10000L) +1);
@@ -650,12 +653,12 @@ static BOOL				DICOMDIRCDMODE = NO;
 						[[NSFileManager defaultManager] removeFileAtPath:[roiFolder stringByAppendingPathComponent: uidName] handler:0L];
 						if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
 						{
-							NSLog( @"OsiriX ROI SR MOVE");
+							NSLog( @"OsiriX ROI SR MOVE :%@ to :%@", newFile, [roiFolder stringByAppendingPathComponent: uidName]);
 							[[NSFileManager defaultManager] movePath:newFile toPath:[roiFolder stringByAppendingPathComponent: uidName] handler: 0L];
 						}
 						else
 						{
-							NSLog( @"OsiriX ROI SR COPY");
+							NSLog( @"OsiriX ROI SR COPY :%@ to :%@", newFile, [roiFolder stringByAppendingPathComponent: uidName]);
 							[[NSFileManager defaultManager] copyPath:newFile toPath:[roiFolder stringByAppendingPathComponent: uidName] handler: 0L];
 						}
 						
@@ -7620,6 +7623,12 @@ static BOOL needToRezoom;
 							[splash incrementBy:1];
 						}
 						
+						// Add the ROIs
+						for( i = 0; i < [imagesArray count]; i++)
+						{
+							[packArray addObjectsFromArray: [[imagesArray objectAtIndex: i] SRPaths]];
+						}
+						
 						[splash close];
 						[splash release];
 						
@@ -7765,6 +7774,12 @@ static BOOL needToRezoom;
 					if( [[[imagesArray objectAtIndex:i] valueForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) OnlyDICOM = NO;
 				}
 				
+				// Add the ROIs
+				for( i = 0; i < [imagesArray count]; i++)
+				{
+					[packArray addObjectsFromArray: [[imagesArray objectAtIndex: i] SRPaths]];
+				}
+				
 				NSDictionary *dcmNode = [[bonjourBrowser services] objectAtIndex: row-1];
 				
 				if( OnlyDICOM == NO) NSLog( @"Not Only DICOM !");
@@ -7803,6 +7818,12 @@ static BOOL needToRezoom;
 								NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
 							
 								[packArray addObject: sendPath];
+								
+								// Add the ROIs
+								for( i = 0; i < [imagesArray count]; i++)
+								{
+									[packArray addObjectsFromArray: [[imagesArray objectAtIndex: i] SRPaths]];
+								}
 								
 								if([[sendPath pathExtension] isEqualToString:@"zip"])
 								{
@@ -12083,8 +12104,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray	*objects = [NSMutableArray array];
 	NSMutableArray  *files;
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) files = [self filesForDatabaseMatrixSelection:objects onlyImages: NO];
-	else files = [self filesForDatabaseOutlineSelection:objects onlyImages: NO];
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) files = [self filesForDatabaseMatrixSelection:objects onlyImages: YES];
+	else files = [self filesForDatabaseOutlineSelection:objects onlyImages: YES];
 	
 	[self selectServer: objects];
 }
