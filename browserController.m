@@ -704,16 +704,15 @@ static BOOL				DICOMDIRCDMODE = NO;
 							[[NSFileManager defaultManager] removeFileAtPath:destPath handler:0L];
 							if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
 							{
-								NSLog( @"OsiriX ROI SR MOVE :%@ to :%@", newFile, destPath);
+								NSLog( @"ROI SR MOVE :%@ to :%@", newFile, destPath);
 								[[NSFileManager defaultManager] movePath:newFile toPath:destPath handler: 0L];
 							}
 							else
 							{
-								NSLog( @"OsiriX ROI SR COPY :%@ to :%@", newFile, destPath);
+								NSLog( @"ROI SR COPY :%@ to :%@", newFile, destPath);
 								[[NSFileManager defaultManager] copyPath:newFile toPath:destPath handler: 0L];
 							}
 						}
-						else NSLog( @"OsiriX ROI SR already in the right place :%@", newFile);
 						
 						newFile = destPath;
 					}

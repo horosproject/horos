@@ -7977,7 +7977,7 @@ extern NSString * documentsDirectory();
 		
 		if( [newDICOMSR count])
 			[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
-			
+		
 		[[BrowserController currentBrowser] saveDatabase: 0L];
 	}
 }

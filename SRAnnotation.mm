@@ -323,8 +323,6 @@
 	//	Don't want to UIDs if already created
 	if (_newSR)
 	{
-		NSLog( @"New SR");
-		
 		id study = [image valueForKeyPath:@"series.study"];
 		//add to Study
 		document->createNewSeriesInStudy([[study valueForKey:@"studyInstanceUID"] UTF8String]);
