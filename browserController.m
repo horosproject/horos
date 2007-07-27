@@ -6319,13 +6319,17 @@ static BOOL withReset = NO;
 	
 	if( [imageRep bitsPerPixel] == 8)
 	{
+		[PapyrusLock lock];
 		compressJPEG ( 30, TEMPJPG, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1);
 		result = [NSData dataWithContentsOfFile:@TEMPJPG];
+		[PapyrusLock unlock];
 	}
 	else if( [imageRep bitsPerPixel] == 8)
 	{
+		[PapyrusLock lock];
 		compressJPEG ( 30, TEMPJPG, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 0);
 		result = [NSData dataWithContentsOfFile:@TEMPJPG];
+		[PapyrusLock unlock];
 	}
 	else
 	{
