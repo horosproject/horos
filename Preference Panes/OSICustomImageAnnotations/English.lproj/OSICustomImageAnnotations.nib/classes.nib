@@ -1,0 +1,92 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                addAnnotation = id; 
+                addFieldToken = id; 
+                removeAnnotation = id; 
+                saveAnnotationLayout = id; 
+                setTitle = id; 
+                switchModality = id; 
+                validateTokenTextField = id; 
+            }; 
+            CLASS = CIALayoutController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                DICOMFieldsPopUpButton = NSPopUpButton; 
+                addCustomDICOMFieldButton = NSButton; 
+                addDICOMFieldButton = NSButton; 
+                addDatabaseFieldButton = NSButton; 
+                addSpecialFieldButton = NSButton; 
+                contentBox = NSBox; 
+                contentLabeltextField = NSTextField; 
+                contentTokenField = RWTokenField; 
+                databaseFieldsPopUpButton = NSPopUpButton; 
+                dicomElementTextField = NSTextField; 
+                dicomGroupTextField = NSTextField; 
+                dicomNameTokenField = NSTokenField; 
+                elementLabel = NSTextField; 
+                groupLabel = NSTextField; 
+                layoutView = CIALayoutView; 
+                modalitiesPopUpButton = NSPopUpButton; 
+                nameLabel = NSTextField; 
+                specialFieldsPopUpButton = NSPopUpButton; 
+                titleLabelTextField = NSTextField; 
+                titleTextField = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = CIALayoutView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = NSPreferencePane; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_firstKeyView" = NSView; 
+                "_initialKeyView" = NSView; 
+                "_lastKeyView" = NSView; 
+                "_window" = NSWindow; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                addAnnotation = id; 
+                addFieldToken = id; 
+                removeAnnotation = id; 
+                saveAnnotationLayout = id; 
+                setTitle = id; 
+                switchModality = id; 
+                validateTokenTextField = id; 
+            }; 
+            CLASS = OSICustomImageAnnotations; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                DICOMFieldsPopUpButton = NSPopUpButton; 
+                addCustomDICOMFieldButton = NSButton; 
+                addDICOMFieldButton = NSButton; 
+                addDatabaseFieldButton = NSButton; 
+                addSpecialFieldButton = NSButton; 
+                contentBox = NSBox; 
+                contentLabeltextField = NSTextField; 
+                contentTokenField = RWTokenField; 
+                databaseFieldsPopUpButton = NSPopUpButton; 
+                dicomElementTextField = NSTextField; 
+                dicomGroupTextField = NSTextField; 
+                dicomNameTokenField = NSTokenField; 
+                elementLabel = NSTextField; 
+                groupLabel = NSTextField; 
+                layoutView = CIALayoutView; 
+                modalitiesPopUpButton = NSPopUpButton; 
+                nameLabel = NSTextField; 
+                specialFieldsPopUpButton = NSPopUpButton; 
+                titleLabelTextField = NSTextField; 
+                titleTextField = NSTextField; 
+                window = NSWindow; 
+            }; 
+            SUPERCLASS = NSPreferencePane; 
+        }, 
+        {CLASS = RWTokenField; LANGUAGE = ObjC; SUPERCLASS = NSTokenField; }
+    ); 
+    IBVersion = 1; 
+}
