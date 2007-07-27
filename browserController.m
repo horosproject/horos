@@ -6313,22 +6313,27 @@ static BOOL withReset = NO;
 	char *test = calloc( [imageRep pixelsHigh] * [imageRep pixelsWide] , 1);
 	
 	NSLog( @"bits per pixel: %d", [imageRep bitsPerPixel]);
-	#define TEMPJPG "/tmp/osirix_thumbnail.jpg"
+	
+	NSString	*uniqueFileName = [NSString stringWithFormat:@"/tmp/osirix_thumbnail_%lf.jpg", [NSDate timeIntervalSinceReferenceDate]];
 	
 	NSData	*result = 0L;
+	
+	int i;
 	
 	if( [imageRep bitsPerPixel] == 8)
 	{
 		[PapyrusLock lock];
-		compressJPEG ( 30, TEMPJPG, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1);
-		result = [NSData dataWithContentsOfFile:@TEMPJPG];
+		compressJPEG ( 30, (char*) [uniqueFileName UTF8String], [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 1);
+		result = [NSData dataWithContentsOfFile:uniqueFileName];
+		[[NSFileManager defaultManager] removeFileAtPath:uniqueFileName  handler:0L];
 		[PapyrusLock unlock];
 	}
 	else if( [imageRep bitsPerPixel] == 8)
 	{
 		[PapyrusLock lock];
-		compressJPEG ( 30, TEMPJPG, [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 0);
-		result = [NSData dataWithContentsOfFile:@TEMPJPG];
+		compressJPEG ( 30, (char*) [uniqueFileName UTF8String], [imageRep bitmapData], [imageRep pixelsHigh], [imageRep pixelsWide], 0);
+		result = [NSData dataWithContentsOfFile: uniqueFileName];
+		[[NSFileManager defaultManager] removeFileAtPath:uniqueFileName  handler:0L];
 		[PapyrusLock unlock];
 	}
 	else

@@ -362,7 +362,9 @@ void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, i
 
 	/* We can use jpeg_abort to release memory and reset global_state */
 	jpeg_abort( (j_common_ptr) &theCInfo);
-
+	
+	fclose(outfile);
+	
 	/* Step 7: release JPEG compression object */
 	jpeg_destroy_compress (&theCInfo);
 

@@ -4182,6 +4182,7 @@ static ViewerController *draggedController = 0L;
 	[imageView setDrawing: YES];
 	
 	[self SetSyncButtonBehavior: self];
+	[self turnOffSyncSeriesBetweenStudies: self];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOMATIC FUSE"])
 		[self blendWindows: 0L];
@@ -4701,6 +4702,7 @@ static ViewerController *draggedController = 0L;
 	[self setPostprocessed: NO];
 	
 	[self SetSyncButtonBehavior: self];
+	[self turnOffSyncSeriesBetweenStudies: self];
 }
 
 - (void) showWindowTransition
@@ -10841,6 +10843,17 @@ int i,j,l;
 		else
 		{
 			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncSeriesToolbarItemIdentifier]];
+		}
+	}
+}
+
+- (void) turnOffSyncSeriesBetweenStudies:(id) sender
+{
+	if( SyncButtonBehaviorIsBetweenStudies)
+	{
+		if( SYNCSERIES)
+		{
+			[self SyncSeries: self];
 		}
 	}
 }

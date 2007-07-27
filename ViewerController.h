@@ -708,7 +708,7 @@ enum
 - (IBAction)groupSelectedROIs:(id)sender;
 - (IBAction)ungroupSelectedROIs:(id)sender;
 
-
+- (void) turnOffSyncSeriesBetweenStudies:(id) sender;
 - (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name;
 - (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers;
 
