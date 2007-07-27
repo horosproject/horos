@@ -1260,6 +1260,56 @@
 		AB64A2DD0C4E0F61000E0981 /* HornRegistration.h in Headers */ = {isa = PBXBuildFile; fileRef = AB64A2D70C4E0F61000E0981 /* HornRegistration.h */; };
 		AB695A1E063D8261002BDF78 /* Analyze.h in Headers */ = {isa = PBXBuildFile; fileRef = AB695A1D063D8261002BDF78 /* Analyze.h */; };
 		AB695A1F063D8261002BDF78 /* Analyze.h in Headers */ = {isa = PBXBuildFile; fileRef = AB695A1D063D8261002BDF78 /* Analyze.h */; };
+		AB6A77B20C5A183F00BA235F /* SRAnnotation.mm in Sources */ = {isa = PBXBuildFile; fileRef = A958370D0AAEBC2A0001D415 /* SRAnnotation.mm */; };
+		AB6A77B90C5A18A000BA235F /* dsrbascc.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DD009B6828800545F5E /* dsrbascc.cc */; };
+		AB6A77BA0C5A18A000BA235F /* dsrchecc.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DD209B6828800545F5E /* dsrchecc.cc */; };
+		AB6A77BB0C5A18A100BA235F /* dsrcitem.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DD409B6828800545F5E /* dsrcitem.cc */; };
+		AB6A77BC0C5A18A200BA235F /* dsrcodtn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DD609B6828800545F5E /* dsrcodtn.cc */; };
+		AB6A77BD0C5A18A300BA235F /* dsrcodvl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DD809B6828900545F5E /* dsrcodvl.cc */; };
+		AB6A77BE0C5A18A300BA235F /* dsrcomcc.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DDA09B6828900545F5E /* dsrcomcc.cc */; };
+		AB6A77BF0C5A18A400BA235F /* dsrcomtn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DDC09B6828900545F5E /* dsrcomtn.cc */; };
+		AB6A77C00C5A18A500BA235F /* dsrcomvl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DDE09B6828900545F5E /* dsrcomvl.cc */; };
+		AB6A77C10C5A18A600BA235F /* dsrcontn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DE009B6828900545F5E /* dsrcontn.cc */; };
+		AB6A77C20C5A18A600BA235F /* dsrcsidl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DE209B6828900545F5E /* dsrcsidl.cc */; };
+		AB6A77C30C5A18A800BA235F /* dsrtimtn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E1C09B6828A00545F5E /* dsrtimtn.cc */; };
+		AB6A77C40C5A18A900BA235F /* dsrtextn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E1A09B6828A00545F5E /* dsrtextn.cc */; };
+		AB6A77C50C5A18AA00BA235F /* dsrtcovl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E1809B6828A00545F5E /* dsrtcovl.cc */; };
+		AB6A77C60C5A18AA00BA235F /* dsrtcoto.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E1609B6828900545F5E /* dsrtcoto.cc */; };
+		AB6A77C70C5A18AB00BA235F /* dsrtcotn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E1409B6828900545F5E /* dsrtcotn.cc */; };
+		AB6A77C80C5A18AB00BA235F /* dsrtcosp.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E1209B6828900545F5E /* dsrtcosp.cc */; };
+		AB6A77C90C5A18AC00BA235F /* dsrtcodt.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E1009B6828900545F5E /* dsrtcodt.cc */; };
+		AB6A77CC0C5A18EB00BA235F /* dsrxrdcc.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E3109B6828A00545F5E /* dsrxrdcc.cc */; };
+		AB6A77CD0C5A18EC00BA235F /* dsrxmld.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E2F09B6828A00545F5E /* dsrxmld.cc */; };
+		AB6A77CE0C5A18EC00BA235F /* dsrxmlc.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E2D09B6828A00545F5E /* dsrxmlc.cc */; };
+		AB6A77CF0C5A18EE00BA235F /* dsrwavvl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E2B09B6828A00545F5E /* dsrwavvl.cc */; };
+		AB6A77D00C5A18EE00BA235F /* dsrwavtn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E2909B6828A00545F5E /* dsrwavtn.cc */; };
+		AB6A77D10C5A18EE00BA235F /* dsrwavch.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E2709B6828A00545F5E /* dsrwavch.cc */; };
+		AB6A77D20C5A18EE00BA235F /* dsruidtn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E2509B6828A00545F5E /* dsruidtn.cc */; };
+		AB6A77D30C5A18EE00BA235F /* dsrtypes.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E2309B6828A00545F5E /* dsrtypes.cc */; };
+		AB6A77D40C5A18EF00BA235F /* dsrtree.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E2109B6828A00545F5E /* dsrtree.cc */; };
+		AB6A77D50C5A18EF00BA235F /* dsrtncsr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E1F09B6828A00545F5E /* dsrtncsr.cc */; };
+		AB6A77D60C5A18F300BA235F /* dsrstrvl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E0E09B6828900545F5E /* dsrstrvl.cc */; };
+		AB6A77D70C5A18F300BA235F /* dsrsoprf.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E0C09B6828900545F5E /* dsrsoprf.cc */; };
+		AB6A77D80C5A18F400BA235F /* dsrscovl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E0A09B6828900545F5E /* dsrscovl.cc */; };
+		AB6A77D90C5A18F400BA235F /* dsrscotn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E0809B6828900545F5E /* dsrscotn.cc */; };
+		AB6A77DA0C5A18F500BA235F /* dsrscogr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E0609B6828900545F5E /* dsrscogr.cc */; };
+		AB6A77DB0C5A18F600BA235F /* dsrreftn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E0409B6828900545F5E /* dsrreftn.cc */; };
+		AB6A77DC0C5A18F600BA235F /* dsrprocc.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E0209B6828900545F5E /* dsrprocc.cc */; };
+		AB6A77DD0C5A18F600BA235F /* dsrpnmtn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E0009B6828900545F5E /* dsrpnmtn.cc */; };
+		AB6A77DE0C5A18F600BA235F /* dsrnumvl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DFE09B6828900545F5E /* dsrnumvl.cc */; };
+		AB6A77DF0C5A18F700BA235F /* dsrnumtn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DFC09B6828900545F5E /* dsrnumtn.cc */; };
+		AB6A77E00C5A18F700BA235F /* dsrkeycc.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DF809B6828900545F5E /* dsrkeycc.cc */; };
+		AB6A77E10C5A18F800BA235F /* dsriodcc.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DF609B6828900545F5E /* dsriodcc.cc */; };
+		AB6A77E20C5A18F800BA235F /* dsrimgvl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DF409B6828900545F5E /* dsrimgvl.cc */; };
+		AB6A77E30C5A18F900BA235F /* dsrimgtn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DF209B6828900545F5E /* dsrimgtn.cc */; };
+		AB6A77E40C5A18F900BA235F /* dsrimgfr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DF009B6828900545F5E /* dsrimgfr.cc */; };
+		AB6A77E50C5A18FA00BA235F /* dsrenhcc.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DEE09B6828900545F5E /* dsrenhcc.cc */; };
+		AB6A77E60C5A18FB00BA235F /* dsrdtitn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DEC09B6828900545F5E /* dsrdtitn.cc */; };
+		AB6A77E70C5A18FB00BA235F /* dsrdoctr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DEA09B6828900545F5E /* dsrdoctr.cc */; };
+		AB6A77E80C5A18FC00BA235F /* dsrdoctn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DE809B6828900545F5E /* dsrdoctn.cc */; };
+		AB6A77E90C5A18FC00BA235F /* dsrdoc.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DE609B6828900545F5E /* dsrdoc.cc */; };
+		AB6A77EA0C5A18FE00BA235F /* dsrmamcc.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DFA09B6828900545F5E /* dsrmamcc.cc */; };
+		AB6A77EB0C5A190000BA235F /* dsrdattn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DE409B6828900545F5E /* dsrdattn.cc */; };
 		AB6AC6460624AC5200AFC7AF /* VRView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB6AC6420624AC5200AFC7AF /* VRView.h */; };
 		AB6AC6470624AC5200AFC7AF /* VRView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6AC6430624AC5200AFC7AF /* VRView.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		AB6AC6480624AC5200AFC7AF /* VRController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB6AC6440624AC5200AFC7AF /* VRController.h */; };
@@ -29258,6 +29308,56 @@
 				AB49CD840C55CED300CBFE94 /* DicomSeries.m in Sources */,
 				AB49CD850C55CED400CBFE94 /* DicomStudy.m in Sources */,
 				AB49CD860C55CED500CBFE94 /* DicomImage.m in Sources */,
+				AB6A77B20C5A183F00BA235F /* SRAnnotation.mm in Sources */,
+				AB6A77B90C5A18A000BA235F /* dsrbascc.cc in Sources */,
+				AB6A77BA0C5A18A000BA235F /* dsrchecc.cc in Sources */,
+				AB6A77BB0C5A18A100BA235F /* dsrcitem.cc in Sources */,
+				AB6A77BC0C5A18A200BA235F /* dsrcodtn.cc in Sources */,
+				AB6A77BD0C5A18A300BA235F /* dsrcodvl.cc in Sources */,
+				AB6A77BE0C5A18A300BA235F /* dsrcomcc.cc in Sources */,
+				AB6A77BF0C5A18A400BA235F /* dsrcomtn.cc in Sources */,
+				AB6A77C00C5A18A500BA235F /* dsrcomvl.cc in Sources */,
+				AB6A77C10C5A18A600BA235F /* dsrcontn.cc in Sources */,
+				AB6A77C20C5A18A600BA235F /* dsrcsidl.cc in Sources */,
+				AB6A77C30C5A18A800BA235F /* dsrtimtn.cc in Sources */,
+				AB6A77C40C5A18A900BA235F /* dsrtextn.cc in Sources */,
+				AB6A77C50C5A18AA00BA235F /* dsrtcovl.cc in Sources */,
+				AB6A77C60C5A18AA00BA235F /* dsrtcoto.cc in Sources */,
+				AB6A77C70C5A18AB00BA235F /* dsrtcotn.cc in Sources */,
+				AB6A77C80C5A18AB00BA235F /* dsrtcosp.cc in Sources */,
+				AB6A77C90C5A18AC00BA235F /* dsrtcodt.cc in Sources */,
+				AB6A77CC0C5A18EB00BA235F /* dsrxrdcc.cc in Sources */,
+				AB6A77CD0C5A18EC00BA235F /* dsrxmld.cc in Sources */,
+				AB6A77CE0C5A18EC00BA235F /* dsrxmlc.cc in Sources */,
+				AB6A77CF0C5A18EE00BA235F /* dsrwavvl.cc in Sources */,
+				AB6A77D00C5A18EE00BA235F /* dsrwavtn.cc in Sources */,
+				AB6A77D10C5A18EE00BA235F /* dsrwavch.cc in Sources */,
+				AB6A77D20C5A18EE00BA235F /* dsruidtn.cc in Sources */,
+				AB6A77D30C5A18EE00BA235F /* dsrtypes.cc in Sources */,
+				AB6A77D40C5A18EF00BA235F /* dsrtree.cc in Sources */,
+				AB6A77D50C5A18EF00BA235F /* dsrtncsr.cc in Sources */,
+				AB6A77D60C5A18F300BA235F /* dsrstrvl.cc in Sources */,
+				AB6A77D70C5A18F300BA235F /* dsrsoprf.cc in Sources */,
+				AB6A77D80C5A18F400BA235F /* dsrscovl.cc in Sources */,
+				AB6A77D90C5A18F400BA235F /* dsrscotn.cc in Sources */,
+				AB6A77DA0C5A18F500BA235F /* dsrscogr.cc in Sources */,
+				AB6A77DB0C5A18F600BA235F /* dsrreftn.cc in Sources */,
+				AB6A77DC0C5A18F600BA235F /* dsrprocc.cc in Sources */,
+				AB6A77DD0C5A18F600BA235F /* dsrpnmtn.cc in Sources */,
+				AB6A77DE0C5A18F600BA235F /* dsrnumvl.cc in Sources */,
+				AB6A77DF0C5A18F700BA235F /* dsrnumtn.cc in Sources */,
+				AB6A77E00C5A18F700BA235F /* dsrkeycc.cc in Sources */,
+				AB6A77E10C5A18F800BA235F /* dsriodcc.cc in Sources */,
+				AB6A77E20C5A18F800BA235F /* dsrimgvl.cc in Sources */,
+				AB6A77E30C5A18F900BA235F /* dsrimgtn.cc in Sources */,
+				AB6A77E40C5A18F900BA235F /* dsrimgfr.cc in Sources */,
+				AB6A77E50C5A18FA00BA235F /* dsrenhcc.cc in Sources */,
+				AB6A77E60C5A18FB00BA235F /* dsrdtitn.cc in Sources */,
+				AB6A77E70C5A18FB00BA235F /* dsrdoctr.cc in Sources */,
+				AB6A77E80C5A18FC00BA235F /* dsrdoctn.cc in Sources */,
+				AB6A77E90C5A18FC00BA235F /* dsrdoc.cc in Sources */,
+				AB6A77EA0C5A18FE00BA235F /* dsrmamcc.cc in Sources */,
+				AB6A77EB0C5A190000BA235F /* dsrdattn.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

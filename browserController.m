@@ -700,9 +700,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 						NSString	*destPath = [roiFolder stringByAppendingPathComponent: uidName];
 						
 						if( [newFile isEqualToString: destPath] == NO)
-						{						
+						{
 							[[NSFileManager defaultManager] removeFileAtPath:destPath handler:0L];
-							if( [newFile length] >= [dbFolder length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [dbFolder length])] == NSOrderedSame)
+							if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
 							{
 								NSLog( @"OsiriX ROI SR MOVE :%@ to :%@", newFile, destPath);
 								[[NSFileManager defaultManager] movePath:newFile toPath:destPath handler: 0L];
@@ -2935,7 +2935,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 	dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
 	
-	
 	Wait	*REBUILDEXTERNALPROCESSProgress = 0L;
 	
 	if( REBUILDEXTERNALPROCESS)
@@ -2977,6 +2976,26 @@ static BOOL				DICOMDIRCDMODE = NO;
 		[pool release];
 	}
 	
+	// ** DICOM ROI SR FOLDER
+	dirContent = [[NSFileManager defaultManager] directoryContentsAtPath: [documentsDirectory() stringByAppendingPathComponent:@"ROIs"]];
+	for( i = 0; i < [dirContent count]; i++)
+	{
+		if( [[dirContent objectAtIndex: i] characterAtIndex: 0] != '.')
+		{
+			[filesArray addObject: [[documentsDirectory() stringByAppendingPathComponent:@"ROIs"] stringByAppendingPathComponent: [dirContent objectAtIndex: i]]];
+			NSLog( [[documentsDirectory() stringByAppendingPathComponent:@"ROIs"] stringByAppendingPathComponent: [dirContent objectAtIndex: i]]);
+		}
+	}
+	
+	if( REBUILDEXTERNALPROCESS)
+	{
+		[self callAddFilesToDatabaseSafe: filesArray];
+		
+		[filesArray release];
+		filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
+	}
+
+	// ** Finish the rebuild
 	if( REBUILDEXTERNALPROCESS == NO)
 	{
 		[[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO] valueForKey:@"completePath"];

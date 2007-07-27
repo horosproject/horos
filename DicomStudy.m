@@ -292,7 +292,13 @@ Version 2.3
 	NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:predicate1, predicate2, nil]];
 	NSArray *newArray = [array filteredArrayUsingPredicate:compoundPredicate];
 	
-	if( [newArray count] > 1) NSLog( @"****** multiple roiSRSeries??");
+	if( [newArray count] > 1)
+	{
+		NSLog( @"****** multiple roiSRSeries?? Delete the extra series...");
+		int i;
+		for( i = 1 ; i < [newArray count] ; i++)
+			[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 
+	}
 	if( [newArray count]) return [newArray objectAtIndex: 0];
 	
 	return 0L;

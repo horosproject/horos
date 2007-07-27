@@ -317,15 +317,6 @@
 
 #pragma mark -
 #pragma mark DICOM write
-			
-- (BOOL)save{
-	//NSString *dbPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"INCOMING"];
-	NSString *dbPath = [[BrowserController currentBrowser] documentsDirectory];
-	// to do : find a correct output file name
-	NSString *path = [[dbPath stringByAppendingPathComponent:@"tmp"] stringByAppendingPathExtension:@"dcm"];
-	return [self writeToFileAtPath:path];
-}
-
 
 - (BOOL)writeToFileAtPath:(NSString *)path
 {
@@ -406,12 +397,14 @@
 
 - (void)saveAsHTML;
 {
+	#ifdef OSIRIX_VIEWER
 	NSString *dbPath = [[BrowserController currentBrowser] documentsDirectory];
 	NSString *path = [[dbPath stringByAppendingPathComponent:@"tmp"] stringByAppendingPathExtension:@"html"];
 	
 	size_t renderFlags = DSRTypes::HF_renderDcmtkFootnote;		
 	ofstream stream([path UTF8String]);
 	document->renderHTML(stream, renderFlags, NULL);
+	#endif
 }
 
 - (NSString *)seriesInstanceUID{

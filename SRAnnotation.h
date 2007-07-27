@@ -31,7 +31,6 @@ typedef char DSRDocument;
 - (void)addROI:(ROI *)aROI;
 - (NSArray *)ROIs;
 - (BOOL)writeToFileAtPath:(NSString *)path;
-- (BOOL)save;
 - (void)saveAsHTML;
 - (NSString *)seriesInstanceUID;
 - (void)setSeriesInstanceUID: (NSString *)seriesInstanceUID;

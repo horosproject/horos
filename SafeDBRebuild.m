@@ -8,9 +8,10 @@
  */
 
 #import <Foundation/Foundation.h>
-#include "SafeDBRebuild.h"
-#include "DicomFile.h"
-#include "BrowserController.h"
+#import "SafeDBRebuild.h"
+#import "DicomFile.h"
+#import "BrowserController.h"
+#import "SRAnnotation.h"
 #import <OsiriX/DCMCalendarDate.h>
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 
@@ -68,6 +69,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 	BOOL					addFailed = NO;
 	NSManagedObject			*image, *seriesTable, *study, *album;
 	NSDate					*today = [NSDate date];
+	NSString				*roiFolder = [[INpath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"/ROIs"];
 	
 	[context retain];
 	[context lock];
@@ -138,8 +140,46 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 				}
 				else curDict = [curDict retain];
 				
-				if( [curDict objectForKey:@"SOPClassUID"] != nil && [DCMAbstractSyntaxUID isImageStorage: [curDict objectForKey: @"SOPClassUID"]] == NO && [DCMAbstractSyntaxUID isRadiotherapy: [curDict objectForKey: @"SOPClassUID"]] == NO)
+				if( [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]])
 				{
+					// Check if it is an OsiriX ROI SR
+					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString:@"OsiriX ROI SR"])
+					{
+						//NSLog( @"*/*/*/ OsiriX ROI SR");
+						//NSLog( [curDict description]);
+						
+						// Move it to the ROIs folder
+						NSString	*uidName = [SRAnnotation getFilenameFromSR: newFile];
+						NSString	*destPath = [roiFolder stringByAppendingPathComponent: uidName];
+						
+						if( [newFile isEqualToString: destPath] == NO)
+						{						
+							[[NSFileManager defaultManager] removeFileAtPath:destPath handler:0L];
+							if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
+							{
+								NSLog( @"OsiriX ROI SR MOVE :%@ to :%@", newFile, destPath);
+								[[NSFileManager defaultManager] movePath:newFile toPath:destPath handler: 0L];
+							}
+							else
+							{
+								NSLog( @"OsiriX ROI SR COPY :%@ to :%@", newFile, destPath);
+								[[NSFileManager defaultManager] copyPath:newFile toPath:destPath handler: 0L];
+							}
+						}
+						else NSLog( @"OsiriX ROI SR already in the right place :%@", newFile);
+						
+						newFile = destPath;
+					}
+				}
+				
+				// For now, we cannot add non-image DICOM files
+				if( [curDict objectForKey:@"SOPClassUID"] != nil 
+				&& [DCMAbstractSyntaxUID isImageStorage: [curDict objectForKey: @"SOPClassUID"]] == NO 
+				&& [DCMAbstractSyntaxUID isRadiotherapy: [curDict objectForKey: @"SOPClassUID"]] == NO
+				&& [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]] == NO
+				&& [DCMAbstractSyntaxUID isKeyObjectDocument: [curDict objectForKey: @"SOPClassUID"]] == NO)
+				{
+					NSLog(@"unsupported DICOM SOP CLASS");
 					[curDict release];
 					curDict = 0L;
 				}
