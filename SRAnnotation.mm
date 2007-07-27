@@ -389,7 +389,7 @@
 		{
 			if( _seriesInstanceUID)
 				status = dataset->putAndInsertString(DCM_SeriesInstanceUID, [_seriesInstanceUID UTF8String], OFTrue);
-			
+				
 			fileformat->saveFile( [path UTF8String], EXS_LittleEndianExplicit);
 		}
 	}

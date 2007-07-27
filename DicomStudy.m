@@ -294,7 +294,7 @@ Version 2.3
 	
 	if( [newArray count] > 1)
 	{
-		NSLog( @"****** multiple roiSRSeries?? Delete the extra series...");
+		NSLog( @"****** multiple (%d) roiSRSeries?? Delete the extra series...", [newArray count]);
 		int i;
 		for( i = 1 ; i < [newArray count] ; i++)
 			[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 

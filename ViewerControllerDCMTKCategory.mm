@@ -50,7 +50,9 @@
 	
 	NSManagedObject *roiSRSeries = [study roiSRSeries];
 	
-	[sr setSeriesInstanceUID: [roiSRSeries valueForKey:@"seriesDICOMUID"]];
+	NSString	*seriesInstanceUID = [roiSRSeries valueForKey:@"seriesDICOMUID"];
+	
+	[sr setSeriesInstanceUID: seriesInstanceUID];
 	[sr writeToFileAtPath:path];
 	
 	BOOL AddIt = NO;
@@ -71,8 +73,11 @@
 	
 	[sr release];
 	
-	if( AddIt)
-		return path;
+	if( seriesInstanceUID == 0L)	//Add it NOW to the DB! We need the seriesInstanceUID for the others
+	{
+		[[BrowserController currentBrowser] addFilesToDatabase: [NSArray arrayWithObject: path]];
+	}
+	else if( AddIt) return path;
 	
 	return 0L;
 }
