@@ -1517,7 +1517,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 }
 
 - (BOOL)windowShouldClose:(id)sender
-{
+{	
+	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) 
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];
+	
 	[imageView stopROIEditingForce: YES];
 	
 	stopThreadLoadImage = YES;
@@ -1527,7 +1530,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
-
+	
 	return YES;
 }
 
@@ -2020,7 +2023,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 }
 
 
-- (void)closeAllWindows:(NSNotification *)note{
+- (void)closeAllWindows:(NSNotification *)note
+{
 	if (![[note object] isEqual:self])
 	{
 		if( FullScreenOn == YES ) [self fullScreenMenu: self];
@@ -4263,10 +4267,7 @@ static ViewerController *draggedController = 0L;
     {
         [browserWindow showDatabase:self];
     }
-	
-	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) 
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];
-	
+		
 	numberOf2DViewer--;
 	if( numberOf2DViewer == 0)
 	{

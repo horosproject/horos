@@ -4803,28 +4803,34 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) becomeMainWindow
 {
-	[self setFusion: thickSlabMode :-1];
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewImageViewResponder" object: self userInfo: 0L];
-	
-	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
-	slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
-	sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
-	[self sendSyncMessage:0];
-	
-	[appController setXFlipped: xFlipped];
-	[appController setYFlipped: yFlipped];
-	
-	[self setNeedsDisplay:YES];
+	if( [[self window] isVisible])
+	{
+		[self setFusion: thickSlabMode :-1];
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewImageViewResponder" object: self userInfo: 0L];
+		
+		sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
+		slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
+		sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
+		[self sendSyncMessage:0];
+		
+		[appController setXFlipped: xFlipped];
+		[appController setYFlipped: yFlipped];
+		
+		[self setNeedsDisplay:YES];
+	}
 }
 
 -(void) becomeKeyWindow
 {
-	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
-	slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
-	sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
-	[self sendSyncMessage:0];
-	[self setNeedsDisplay:YES];
+	if( [[self window] isVisible])
+	{
+		sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
+		slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
+		sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
+		[self sendSyncMessage:0];
+		[self setNeedsDisplay:YES];
+	}
 }
 
 -(void) computeSlice:(DCMPix*) oPix :(DCMPix*) oPix2
