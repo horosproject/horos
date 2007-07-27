@@ -79,12 +79,6 @@ enum
 	StringTexture			*stringTex;
 	NSMutableDictionary		*stanStringAttrib;
 	
-	NSString		*_roiSeriesInstanceUID;
-	NSString		*_sopInstanceUID;
-	NSString		*_referencedSOPInstanceUID;
-	NSString		*_referencedSOPClassUID;
-	int				_frameNumber;
-	
 	ROI*			parentROI;
 	
 	NSRect			drawRect;
@@ -232,20 +226,6 @@ enum
 // parent ROI
 - (ROI*) parentROI;
 - (void) setParentROI: (ROI*) aROI;
-
-
-//DICOM info
-- (NSString	*) roiSeriesInstanceUID;
-- (NSString	*) sopInstanceUID;
-- (NSString	*) referencedSOPInstanceUID;
-- (NSString	*) referencedSOPClassUID;
-- (int) frameNumber;
-
-- (void) setRoiSeriesInstanceUID:(NSString *)uid;
-- (void) setSopInstanceUID:(NSString *)uid;
-- (void) setReferencedSOPInstanceUID:(NSString *)uid;
-- (void) setReferencedSOPClassUID:(NSString *)uid;
-- (void) setFrameNumber:(int)frame;
 
 // Calcium Scoring
 

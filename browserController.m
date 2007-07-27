@@ -107,6 +107,7 @@ Version 2.5
 #import "QTExportHTMLSummary.h"
 #import "BrowserControllerDCMTKCategory.h"
 #import "BrowserMatrix.h"
+#import "DicomStudy.h"
 
 #define DATABASEVERSION @"2.2"
 #define DATABASEPATH @"/DATABASE/"
@@ -463,6 +464,53 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	[pool release];
 }
+//
+//+ (void)addSRROIIfNecessary:(NSDictionary*) curDict path:(NSString*) path study:(DicomStudy*) study context: (NSManagedObjectContext*) context
+//{
+//	NSManagedObject		*seriesTable = [study roiSRSeries];
+//
+//	NSString			*sopInstanceUID = [curDict objectForKey: @"SOPUID"];
+//
+//	if (seriesTable)
+//	{
+//		NSLog( @"ROI Series already exists in this study");
+//	}
+//	else
+//	{
+//		NSLog( @"Create a ROI Series in this study");
+//		
+//		seriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:context];
+//		[seriesTable setValue:study forKey:@"study"];
+//		
+//		
+//		if( [curDict objectForKey: @"seriesDICOMUID"]) [seriesTable setValue:[curDict objectForKey: @"seriesDICOMUID"] forKey:@"seriesDICOMUID"];
+//		if( [curDict objectForKey: @"SOPClassUID"]) [seriesTable setValue:[curDict objectForKey: @"SOPClassUID"] forKey:@"seriesSOPClassUID"];
+//		
+//		[seriesTable setValue:[curDict objectForKey: @"seriesID"] forKey:@"seriesInstanceUID"];
+//		[seriesTable setValue:[curDict objectForKey: @"seriesDescription"] forKey:@"name"];
+//		[seriesTable setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
+//		[seriesTable setValue:[curDict objectForKey: @"seriesNumber"] forKey:@"id"];
+//		[seriesTable setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
+//		[seriesTable setValue:[curDict objectForKey: @"protocolName"] forKey:@"seriesDescription"];
+//	}
+//	
+//	//See if the SR is in the series. Add it if necessary
+//	
+//	NSArray *srs = [(NSSet *)[seriesTable valueForKey:@"images"] allObjects];
+//	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", sopInstanceUID];
+//	NSArray *found = [srs filteredArrayUsingPredicate:predicate];
+//	
+//	if ([found count] < 1)
+//	{
+//		NSLog( @"New ROI");
+//		id im = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
+//		[im setValue: seriesTable forKey:@"series"];
+//		[im setValue: sopInstanceUID forKey:@"sopInstanceUID"];
+//		[im setValue: path forKey:@"path"];
+//		[im setValue: @"DICOM" forKey:@"fileType"];
+//		[im setValue: [NSNumber numberWithBool: NO] forKey:@"inDatabaseFolder"];
+//	}
+//}
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray
 {
@@ -644,35 +692,39 @@ static BOOL				DICOMDIRCDMODE = NO;
 					// Check if it is an OsiriX ROI SR
 					if( [[curDict valueForKey:@"seriesDescription"] isEqualToString:@"OsiriX ROI SR"])
 					{
-						NSLog( @"*/*/*/ OsiriX ROI SR");
-						NSLog( [curDict description]);
+						//NSLog( @"*/*/*/ OsiriX ROI SR");
+						//NSLog( [curDict description]);
 						
 						// Move it to the ROIs folder
 						NSString	*uidName = [SRAnnotation getFilenameFromSR: newFile];
+						NSString	*destPath = [roiFolder stringByAppendingPathComponent: uidName];
 						
-						[[NSFileManager defaultManager] removeFileAtPath:[roiFolder stringByAppendingPathComponent: uidName] handler:0L];
-						if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
-						{
-							NSLog( @"OsiriX ROI SR MOVE :%@ to :%@", newFile, [roiFolder stringByAppendingPathComponent: uidName]);
-							[[NSFileManager defaultManager] movePath:newFile toPath:[roiFolder stringByAppendingPathComponent: uidName] handler: 0L];
+						if( [newFile isEqualToString: destPath] == NO)
+						{						
+							[[NSFileManager defaultManager] removeFileAtPath:destPath handler:0L];
+							if( [newFile length] >= [dbFolder length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [dbFolder length])] == NSOrderedSame)
+							{
+								NSLog( @"OsiriX ROI SR MOVE :%@ to :%@", newFile, destPath);
+								[[NSFileManager defaultManager] movePath:newFile toPath:destPath handler: 0L];
+							}
+							else
+							{
+								NSLog( @"OsiriX ROI SR COPY :%@ to :%@", newFile, destPath);
+								[[NSFileManager defaultManager] copyPath:newFile toPath:destPath handler: 0L];
+							}
 						}
-						else
-						{
-							NSLog( @"OsiriX ROI SR COPY :%@ to :%@", newFile, [roiFolder stringByAppendingPathComponent: uidName]);
-							[[NSFileManager defaultManager] copyPath:newFile toPath:[roiFolder stringByAppendingPathComponent: uidName] handler: 0L];
-						}
+						else NSLog( @"OsiriX ROI SR already in the right place :%@", newFile);
 						
-						[curDict release];
-						curDict = 0L;
+						newFile = destPath;
 					}
 				}
 				
 				// For now, we cannot add non-image DICOM files
 				if( [curDict objectForKey:@"SOPClassUID"] != nil 
 				&& [DCMAbstractSyntaxUID isImageStorage: [curDict objectForKey: @"SOPClassUID"]] == NO 
-				&& [DCMAbstractSyntaxUID isRadiotherapy: [curDict objectForKey: @"SOPClassUID"]] == NO)
-//				&& [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]] == NO
-//				&& [DCMAbstractSyntaxUID isKeyObjectDocument: [curDict objectForKey: @"SOPClassUID"]] == NO)
+				&& [DCMAbstractSyntaxUID isRadiotherapy: [curDict objectForKey: @"SOPClassUID"]] == NO
+				&& [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]] == NO
+				&& [DCMAbstractSyntaxUID isKeyObjectDocument: [curDict objectForKey: @"SOPClassUID"]] == NO)
 				{
 					NSLog(@"unsupported DICOM SOP CLASS");
 					[curDict release];
@@ -2746,6 +2798,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 				
 				if( curFile)
 				{
+					// Dont
+					
 					[curFile release];
 				
 					if([extension isEqualToString:@""])

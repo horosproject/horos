@@ -282,15 +282,20 @@ Version 2.3
 	return newArray;
 }
 
-- (NSArray *)roiSRSeries{
+- (NSManagedObject *)roiSRSeries
+{
 	NSArray *array = [self reportSeries] ;
-	if ([array count] < 1) 
-		return array;
+	if ([array count] < 1)  return 0L;
+	
 	NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"id == %d", 5002]; 
 	NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"name == %@", @"OsiriX ROI SR"]; 
 	NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:predicate1, predicate2, nil]];
 	NSArray *newArray = [array filteredArrayUsingPredicate:compoundPredicate];
-	return newArray;
+	
+	if( [newArray count] > 1) NSLog( @"****** multiple roiSRSeries??");
+	if( [newArray count]) return [newArray objectAtIndex: 0];
+	
+	return 0L;
 }
 
 - (NSDictionary *)dictionary{

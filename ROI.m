@@ -608,12 +608,6 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	
 	[layerImageJPEG release];
 //	[layerImageWhenSelectedJPEG release];
-	
-	[_roiSeriesInstanceUID release];
-	[_sopInstanceUID release];
-	[_referencedSOPInstanceUID release];
-	[_referencedSOPClassUID release];
-	[parentROI release];
 
 	if(layerReferenceFilePath) [layerReferenceFilePath release];
 	if(layerImage) [layerImage release];
@@ -4236,51 +4230,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	return centroid;
 }
 
-//DICOM presentation State UID accessors
-- (NSString *)roiSeriesInstanceUID{
-	return _roiSeriesInstanceUID;
-}
-
-- (NSString *)sopInstanceUID{
-	return _sopInstanceUID;
-}
-
-- (NSString *)referencedSOPInstanceUID{
-	return _referencedSOPInstanceUID;
-}
-
-- (NSString *)referencedSOPClassUID{
-	return _referencedSOPClassUID;
-}
-
-- (int) frameNumber{
-	return _frameNumber;
-}
-
-
-- (void)setRoiSeriesInstanceUID:(NSString *)roiSeriesInstanceUID{
-	[_roiSeriesInstanceUID release];
-	_roiSeriesInstanceUID = [roiSeriesInstanceUID retain];
-}
-
-- (void)setSopInstanceUID:(NSString *)sopInstanceUID{
-	[_sopInstanceUID release];
-	_sopInstanceUID = [sopInstanceUID retain];
-}
-
-- (void)setReferencedSOPInstanceUID:(NSString *)referencedSOPInstanceUID{
-	[_referencedSOPInstanceUID release];
-	_referencedSOPInstanceUID = [referencedSOPInstanceUID retain];
-}
-
-- (void)setReferencedSOPClassUID:(NSString *)referencedSOPClassUID{
-	[_referencedSOPClassUID release];
-	_referencedSOPClassUID = [referencedSOPClassUID retain];
-}
-
-- (void)setFrameNumber: (int)frameNumber{
-	_frameNumber = frameNumber;
-}
 
 - (void) addMarginToBuffer: (int) margin
 {

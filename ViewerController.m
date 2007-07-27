@@ -1517,10 +1517,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 }
 
 - (BOOL)windowShouldClose:(id)sender
-{	
-	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) 
+{
+	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
+	{
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];
+	}
 	
+	return YES;
+}
+
+- (void)windowWillClose:(NSNotification *)notification
+{
 	[imageView stopROIEditingForce: YES];
 	
 	stopThreadLoadImage = YES;
@@ -1530,17 +1537,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
-	
-	return YES;
-}
 
-- (void)windowWillClose:(NSNotification *)notification
-{
+	// **************************
+
 	if( FullScreenOn == YES ) [self fullScreenMenu: self];
 	
 	if( [subCtrlOnOff state]) [imageView setWLWW: 0 :0];
 	
-	[imageView stopROIEditingForce: YES];
 	[imageView setDrawing: NO];
 	
 	windowWillClose = YES;
@@ -7902,6 +7905,8 @@ extern NSString * documentsDirectory();
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"])
 	{
+		NSMutableArray	*newDICOMSR = [NSMutableArray array];
+		
 		for( i = 0; i < [fileList[ mIndex] count]; i++)
 		{
 			if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
@@ -7918,23 +7923,58 @@ extern NSString * documentsDirectory();
 						
 						if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
 						{
-							[self archiveROIsAsDICOM:[roiList[ mIndex] objectAtIndex: i]  toPath: str forImage:image];
+							NSString	*path = [self archiveROIsAsDICOM:[roiList[ mIndex] objectAtIndex: i]  toPath: str forImage:image];
+							
+							if( path)
+								[newDICOMSR addObject: path];
 						}
 						else
 						{
-							[[NSFileManager defaultManager] removeFileAtPath: str handler: 0L];
+							if( [[NSFileManager defaultManager] fileExistsAtPath: str])
+							{
+								[[NSFileManager defaultManager] removeFileAtPath: str handler: 0L];
+								
+								//Remove it from the DB, if necessary
+								NSManagedObject *roiSRSeries = [[image valueForKeyPath:@"series.study"] roiSRSeries];
+								
+								//Check to see if there is already a roi Series.
+								if( roiSRSeries)
+								{
+									//Check to see if there is already this ROI-image
+									NSArray			*srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
+									
+									int		x;
+									BOOL	found = NO;
+									
+									for( x = 0 ; x < [srs count] ; x++)
+									{
+										if( [[[srs objectAtIndex: x] valueForKey:@"completePath"] isEqualToString: str])
+										{
+											[[browserWindow managedObjectContext] deleteObject: [srs objectAtIndex: x]]; 
+											found = YES;
+											break;
+										}
+									}
+									
+									if( found == NO)
+										NSLog( @"**** strange... corresponding ROI object not found in the ROI Series");
+								}
+							}
 						}
 					}
 					
 					@catch( NSException *ne)
 					{
-						NSLog(@"saveROI failed.");
+						NSLog(@"saveROI failed: %@", [ne description]);
 					}
 					
 					[pool release];
 				}
 			}
 		}
+		
+		if( [newDICOMSR count])
+			[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
 	}
 }
 

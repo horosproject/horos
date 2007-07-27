@@ -34,7 +34,7 @@
 - (NSArray *)keyObjects;
 - (NSArray *)presentationStateSeries;
 - (NSArray *)waveFormSeries;
-- (NSArray *)roiSRSeries;
+- (NSManagedObject *)roiSRSeries;
 - (NSDictionary *)dictionary;
 - (BOOL) isHidden;
 - (void) setHidden: (BOOL) h;

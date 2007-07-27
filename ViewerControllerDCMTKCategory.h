@@ -25,8 +25,5 @@
 @interface ViewerController (ViewerControllerDCMTKCategory)
 
 - (NSData *)roiFromDICOM:(NSString *)path;
-- (void)archiveROIsAsDICOM:(NSArray *)rois toPath:(NSString *)path forImage:(id)image;
-- (void)checkDBForSRROI:(NSDictionary *)userInfo;
-
-
+- (NSString*) archiveROIsAsDICOM:(NSArray *)rois toPath:(NSString *)path  forImage:(id)image;
 @end

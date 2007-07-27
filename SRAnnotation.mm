@@ -295,29 +295,8 @@
 //	document->getTree().goUp(); // go up to the root element
 	
 	// image reference
-	OFString refsopClassUID;
-	OFString refsopInstanceUID;
-	
-	if (![aROI referencedSOPClassUID])
-	{
-		NSString *uid = [[[aROI pix] imageObj] valueForKeyPath:@"series.seriesSOPClassUID"];
-		refsopClassUID = OFString([uid UTF8String]);
-		[aROI setReferencedSOPClassUID:uid];
-	}
-	else refsopClassUID = OFString([[aROI referencedSOPClassUID] UTF8String]);
-	NSLog(@"refsopClassUID: %s", refsopClassUID.c_str());
-		
-	if (![aROI referencedSOPInstanceUID])
-	{
-		NSString *uid = [image valueForKey:@"sopInstanceUID"];
-		refsopInstanceUID = OFString([uid UTF8String]);
-		[aROI setReferencedSOPInstanceUID:uid];
-	}
-	else refsopInstanceUID = OFString([[aROI referencedSOPInstanceUID] UTF8String]);
-	NSLog(@"refsopInstanceUID: %s", refsopInstanceUID.c_str());
-	
-//	document->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_UIDRef, DSRTypes::AM_belowCurrent);
-//	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("VT_UIDRef", "99HUG", "Image Reference"));
+	OFString refsopClassUID = OFString([[image valueForKeyPath:@"series.seriesSOPClassUID"] UTF8String]);
+	OFString refsopInstanceUID = OFString([[image valueForKey:@"sopInstanceUID"] UTF8String]);
 	
 	document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image, DSRTypes::AM_belowCurrent);
 	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.10", "99HUG", "Image Reference"));
@@ -353,6 +332,8 @@
 	//	Don't want to UIDs if already created
 	if (_newSR)
 	{
+		NSLog( @"New SR");
+		
 		id study = [image valueForKeyPath:@"series.study"];
 		//add to Study
 		document->createNewSeriesInStudy([[study valueForKey:@"studyInstanceUID"] UTF8String]);
@@ -393,33 +374,31 @@
 		
 		//Series Number
 		document->setSeriesNumber("5002");
-		
 		document->setManufacturer("OsiriX");
 	}
-
+	
 	OFCondition status;
 	DcmFileFormat *fileformat = new DcmFileFormat();
 	DcmDataset *dataset = NULL;
 	if (fileformat != NULL)
 		dataset = fileformat->getDataset();
-
-	//This adds the archived ROI Array  to the SR		
-	ROI *roi = [_rois objectAtIndex:0];
-	NSData *data = nil;
-	data = [ NSArchiver archivedDataWithRootObject:_rois];
-	const Uint8 *buffer =  (const Uint8 *)[data bytes];
-	DcmTag tag(0x0071, 0x0011, DcmVR("OB"));
-	status = dataset->putAndInsertUint8Array(tag , buffer, [data length] , OFTrue);
-
-	//use seriesInstanceUID if we have one
-	if (_seriesInstanceUID)
-		status = dataset->putAndInsertString(DCM_SeriesInstanceUID, [_seriesInstanceUID UTF8String], OFTrue);
-
+	
 	if (dataset != NULL)
 	{
+		//This adds the archived ROI Array  to the SR		
+		ROI *roi = [_rois objectAtIndex:0];
+		NSData *data = nil;
+		data = [ NSArchiver archivedDataWithRootObject:_rois];
+		const Uint8 *buffer =  (const Uint8 *)[data bytes];
+		DcmTag tag(0x0071, 0x0011, DcmVR("OB"));
+		status = dataset->putAndInsertUint8Array(tag , buffer, [data length] , OFTrue);
+		
 		document->getCodingSchemeIdentification().addPrivateDcmtkCodingScheme();
 		if (document->write(*dataset).good())
 		{
+			if( _seriesInstanceUID)
+				status = dataset->putAndInsertString(DCM_SeriesInstanceUID, [_seriesInstanceUID UTF8String], OFTrue);
+			
 			fileformat->saveFile( [path UTF8String], EXS_LittleEndianExplicit);
 		}
 	}

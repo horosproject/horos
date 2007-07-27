@@ -1,9 +1,3 @@
-//
-//  ViewerControllerDCMTK Category.mm
-//  OsiriX
-//
-//  Created by Lance Pysher on 10/18/06.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -25,12 +19,9 @@
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 #include "dsrtypes.h"
-
 #include "dsrdoc.h"
 
-
 @implementation ViewerController (ViewerControllerDCMTKCategory)
-
 
 - (NSData *)roiFromDICOM:(NSString *)path
 {
@@ -51,75 +42,38 @@
 	return archiveData;
 }
 
-
 //All the ROIs for an image are archived as an NSArray.  We will need to extract all the necessary ROI info to create the basic SR before adding archived data. 
-- (void)archiveROIsAsDICOM:(NSArray *)rois toPath:(NSString *)path  forImage:(id)image
+- (NSString*) archiveROIsAsDICOM:(NSArray *)rois toPath:(NSString *)path  forImage:(id)image
 {
 	SRAnnotation *sr = [[SRAnnotation alloc] initWithROIs:rois path:path forImage:image];
-	
 	id study = [image valueForKeyPath:@"series.study"];
 	
-	NSArray *roiSRSeries = [study roiSRSeries];
-	NSDictionary *userInfo = nil;
+	NSManagedObject *roiSRSeries = [study roiSRSeries];
 	
-	//check to see if there is already a roi Series. Use SeriesInstanceUID if there is.
-	if ([roiSRSeries count] > 0) 
-		userInfo = [NSDictionary dictionaryWithObjectsAndKeys:sr, @"sr", [roiSRSeries objectAtIndex:0], @"series", study, @"study", path, @"path", nil];
-	else
-		userInfo = [NSDictionary dictionaryWithObjectsAndKeys:sr, @"sr", study, @"study", path, @"path", nil];
-	
-	[self checkDBForSRROI: userInfo];
-	
+	[sr setSeriesInstanceUID: [roiSRSeries valueForKey:@"seriesDICOMUID"]];
 	[sr writeToFileAtPath:path];
+	
+	BOOL AddIt = NO;
+	
+	//Check to see if there is already a roi Series.
+	if( roiSRSeries)
+	{
+		//Check to see if there is already this ROI-image
+		NSString		*sopInstanceUID = [sr sopInstanceUID];
+		NSArray			*srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
+		NSPredicate		*predicate = [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", sopInstanceUID];
+		NSArray			*found = [srs filteredArrayUsingPredicate:predicate];
+		
+		if ([found count] < 1)
+			AddIt = YES;
+	}
+	else AddIt = YES;
+	
 	[sr release];
-}
-
-- (void)checkDBForSRROI:(NSDictionary *)userInfo
-{
-	id series = [userInfo objectForKey:@"series"];
-	SRAnnotation *sr = [userInfo objectForKey:@"sr"];
-	id study = [userInfo objectForKey:@"study"];
-	NSString *path = [userInfo objectForKey:@"path"];
 	
-	BrowserController *browser = [BrowserController currentBrowser];
-	NSManagedObjectModel *managedObjectModel = [browser managedObjectModel];
-	NSManagedObjectContext *context = [browser managedObjectContext];
+	if( AddIt)
+		return path;
 	
-	if (series)
-	{
-		NSString *seriesInstanceUID = [series valueForKey:@"seriesDICOMUID"];
-		[sr setSeriesInstanceUID:seriesInstanceUID];
-	}
-	else
-	{
-		series = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:context];
-		[series setValue:study forKey:@"study"];
-		
-		[series setValue:[sr seriesInstanceUID] forKey:@"seriesDICOMUID"];
-		[series setValue:[sr seriesInstanceUID] forKey:@"seriesInstanceUID"];
-		[series setValue:[sr sopClassUID] forKey:@"seriesSOPClassUID"];
-		[series setValue:[sr seriesDescription] forKey:@"name"];
-		[series setValue:[NSNumber numberWithInt:[[sr seriesNumber] intValue]] forKey:@"id"];
-	}
-		
-	//See if the SR is in the series. Add it if necessary
-	NSArray *srs = [(NSSet *)[series valueForKey:@"images"] allObjects];
-	
-	NSLog( @"ROIs saved for this study: %d", [srs count]);
-	
-	NSString *sopInstanceUID = [sr sopInstanceUID];
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", sopInstanceUID];
-	NSArray *found = [srs filteredArrayUsingPredicate:predicate];
-	
-	if ([found count] < 1)
-	{
-		NSLog( @"New ROI");
-		id im = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
-		[im setValue:series forKey:@"series"];
-		[im setValue:sopInstanceUID forKey:@"sopInstanceUID"];
-		[im setValue:path forKey:@"path"];
-		[im setValue:@"DICOM" forKey:@"fileType"];
-		[im setValue:[NSNumber numberWithBool: NO] forKey:@"inDatabaseFolder"];
-	}
+	return 0L;
 }
 @end

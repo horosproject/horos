@@ -116,7 +116,6 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 }
 
 @implementation DicomImage
-
 - (NSArray*) SRPaths
 {
 	NSMutableArray	*roiFiles = [NSMutableArray array];
