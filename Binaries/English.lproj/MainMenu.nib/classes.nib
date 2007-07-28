@@ -234,6 +234,7 @@
                 exportQuicktime3DVR = id; 
                 exportRAW = id; 
                 exportTIFF = id; 
+                flipDataSeries = id; 
                 flipHorizontal = id; 
                 flipVertical = id; 
                 flyThruButton = id; 
@@ -244,7 +245,6 @@
                 load3DSettings = id; 
                 loadSerie = id; 
                 morphoSelectedBrushROI = id; 
-                myAction = id; 
                 nextPlane = id; 
                 openSelectedBrushROI = id; 
                 printDICOM = id; 
