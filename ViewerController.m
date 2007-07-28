@@ -13518,6 +13518,7 @@ int i,j,l;
 
 -(IBAction) produceIChatData:(id) sender
 {
+#if !__LP64__
 	long			i, x, z, zz, inv, swidth, sheight, offsetX, offsetY;
 	float			ratioX, ratioY;
 	unsigned char   *rgbPtr;
@@ -13783,6 +13784,7 @@ int i,j,l;
 //	}
 //
 //	[sourceImage release];
+#endif
 }
 
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
