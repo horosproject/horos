@@ -313,7 +313,7 @@ enum
 	
 	NSMutableArray			*undoQueue, *redoQueue;
 	
-	BOOL					SyncButtonBehaviorIsBetweenStudies;
+	BOOL					SyncButtonBehaviorIsBetweenStudies, titledGantry;
 	
 	float					resampleRatio;
 	
@@ -442,7 +442,7 @@ enum
 - (void) offsetMatrixSetting: (int) twentyFiveCodes;
 - (IBAction) subSumSlider:(id) sender;
 - (IBAction) subSharpen:(id) sender;
-//JF20070103
+- (void) displayWarningIfGantryTitled;
 - (void) contextualDictionaryPath:(NSString *)newContextualDictionaryPath;
 - (NSString *) contextualDictionaryPath;
 - (void) contextualMenuEvent:(id)sender;

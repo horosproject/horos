@@ -1024,6 +1024,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 		
 		[self checkEverythingLoaded];
+		[self displayWarningIfGantryTitled];
 	
 		BOOL volumicData = YES;
 		
@@ -5998,13 +5999,18 @@ static ViewerController *draggedController = 0L;
 	return orientationVector;
 }
 
+-(void) displayWarningIfGantryTitled
+{
+	if( titledGantry)
+		NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), NSLocalizedString(@"These images were acquired with a gantry tilt. This gantry tilt will produce a distortion in 3D post-processing.", nil), NSLocalizedString(@"OK", nil), 0L, 0L);
+}
+
 -(float) computeIntervalFlipNow: (NSNumber*) flipNowNumber
 {
 	double				interval = [[pixList[ curMovieIndex] objectAtIndex:0] sliceInterval];
-	
 	long				i, x;
 	BOOL				flipNow = [flipNowNumber boolValue];
-	
+		
 	if( interval < 0 && [pixList[ curMovieIndex] count] > 1)
 	{
 		if( flipNow)
@@ -6015,6 +6021,8 @@ static ViewerController *draggedController = 0L;
 	
 	if( interval == 0 && [pixList[ curMovieIndex] count] > 1)
 	{
+		titledGantry = NO;
+		
 		[orientationMatrix setEnabled: NO];
 		
 		double		vectors[ 9], vectorsB[ 9];
@@ -6079,22 +6087,21 @@ static ViewerController *draggedController = 0L;
 			}
 			
 			double interval3d;
+			double xd = [[pixList[ curMovieIndex] objectAtIndex: 1] originX] - [[pixList[ curMovieIndex] objectAtIndex: 0] originX];
+			double yd = [[pixList[ curMovieIndex] objectAtIndex: 1] originY] - [[pixList[ curMovieIndex] objectAtIndex: 0] originY];
+			double zd = [[pixList[ curMovieIndex] objectAtIndex: 1] originZ] - [[pixList[ curMovieIndex] objectAtIndex: 0] originZ];
 			
-			{
-				double xd = [[pixList[ curMovieIndex] objectAtIndex:0] originX] - [[pixList[ curMovieIndex] objectAtIndex:1] originX];
-				double yd = [[pixList[ curMovieIndex] objectAtIndex:0] originY] - [[pixList[ curMovieIndex] objectAtIndex:1] originY];
-				double zd = [[pixList[ curMovieIndex] objectAtIndex:0] originZ] - [[pixList[ curMovieIndex] objectAtIndex:1] originZ];
-				
-				interval3d = sqrt(xd*xd + yd*yd + zd*zd);
-			}
+			interval3d = sqrt(xd*xd + yd*yd + zd*zd);
+			
+			xd /= interval3d;
+			yd /= interval3d;
+			zd /= interval3d;
 			
 			NSLog( @"Interval: %f %f", interval, interval3d);
 			
 			if( interval == 0)
-			{
 				interval = [[pixList[ curMovieIndex] objectAtIndex:0] spacingBetweenSlices];
-			}
-
+			
 			NSLog( @"Orientation Vector: %d", orientationVector);
 			NSLog( @"Interval: %2.2f", interval);
 						
@@ -6180,6 +6187,26 @@ static ViewerController *draggedController = 0L;
 						[[pixList[ x] objectAtIndex: i] setSliceInterval: interval];
 					}
 				}
+			}
+			
+			xd = [[pixList[ curMovieIndex] objectAtIndex: 1] originX] - [[pixList[ curMovieIndex] objectAtIndex: 0] originX];
+			yd = [[pixList[ curMovieIndex] objectAtIndex: 1] originY] - [[pixList[ curMovieIndex] objectAtIndex: 0] originY];
+			zd = [[pixList[ curMovieIndex] objectAtIndex: 1] originZ] - [[pixList[ curMovieIndex] objectAtIndex: 0] originZ];
+			
+			interval3d = sqrt(xd*xd + yd*yd + zd*zd);
+			
+			xd /= interval3d;		yd /= interval3d;		zd /= interval3d;
+			
+			// Check if the slices represent a 3D volume?
+			
+			xd = fabs( xd - vectors[ 6]);
+			yd = fabs( yd - vectors[ 7]);
+			zd = fabs( zd - vectors[ 8]);
+			
+			if( xd + yd + zd > 0.01)
+			{
+				NSLog( @"Not a real 3D data set.");
+				titledGantry = YES;
 			}
 		}
 	}
@@ -7452,9 +7479,23 @@ NSMutableArray		*array;
 					
 					[viewers removeObject: a];		i--;
 					
-					[a ActivateBlending: b];
+					float orientA[ 9], orientB[ 9], result[ 9];
 					
-					fused = YES;
+					[[[a imageView] curDCM] orientation:orientA];
+					[[[b imageView] curDCM] orientation:orientB];
+					
+					// normal vector of planes
+					
+					result[0] = fabs( orientB[ 6] - orientA[ 6]);
+					result[1] = fabs( orientB[ 7] - orientA[ 7]);
+					result[2] = fabs( orientB[ 8] - orientA[ 8]);
+					
+					if( result[0] + result[1] + result[2] < 0.01) 
+					{
+						[a ActivateBlending: b];
+						
+						fused = YES;
+					}
 				}
 			}
 		}
@@ -14547,8 +14588,9 @@ int i,j,l;
 	}
 	else
 	{
+		[self displayWarningIfGantryTitled];
 		[self MovieStop: self];
-		
+				
 		VRController *viewer = [appController FindViewer :@"VRPanel" :pixList[0]];
 		
 		if( viewer)
@@ -14921,6 +14963,7 @@ int i,j,l;
 	}
 	else
 	{
+		[self displayWarningIfGantryTitled];
 		if( [curConvMenu isEqualToString:NSLocalizedString(@"No Filter", nil)] == NO)
 		{
 			if( NSRunInformationalAlertPanel( NSLocalizedString(@"Convolution", nil), NSLocalizedString(@"Should I apply current convolution filter on raw data? 2D/3D post-processing viewers can only display raw data.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
@@ -15032,6 +15075,7 @@ int i,j,l;
 	}
 	else
 	{
+		[self displayWarningIfGantryTitled];
 		[self MovieStop: self];
 		
 		SRController *viewer = [appController FindViewer :@"SR" :pixList[0]];
@@ -15160,6 +15204,8 @@ long i;
 	}
 	else
 	{
+		[self displayWarningIfGantryTitled];
+		
 		long	i, x, y;
 		float   volume = 0;
 		ROI		*selectedRoi = 0L;
@@ -15256,6 +15302,8 @@ long i;
 	}
 	else
 	{
+		[self displayWarningIfGantryTitled];
+		
 		[self MovieStop: self];
 		
 		MPR2DController *viewer = [appController FindViewer :@"MPR2D" :pixList[0]];
@@ -15376,6 +15424,8 @@ long i;
 	}
 	else
 	{
+		[self displayWarningIfGantryTitled];
+		
 		[self MovieStop: self];
 		
 		OrthogonalMPRViewer *viewer;
@@ -15506,6 +15556,8 @@ long i;
 	}
 	else
 	{
+		[self displayWarningIfGantryTitled];
+		
 		[self MovieStop: self];
 		
 		EndoscopyViewer *viewer;
