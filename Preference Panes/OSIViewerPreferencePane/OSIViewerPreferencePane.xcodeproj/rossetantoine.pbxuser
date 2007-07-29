@@ -31,12 +31,12 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 193305954;
-			PBXWorkspaceStateSaveDate = 193305954;
+			PBXPerProjectTemplateStateSaveDate = 207387152;
+			PBXWorkspaceStateSaveDate = 207387152;
 		};
 		perUserProjectItems = {
-			AB07CD870B83701F004651C4 /* PBXTextBookmark */ = AB07CD870B83701F004651C4 /* PBXTextBookmark */;
 			AB49BB230B859E01004EFB1E /* PBXTextBookmark */ = AB49BB230B859E01004EFB1E /* PBXTextBookmark */;
+			AB4B52B30C5C7F7C003BDBA8 /* PBXTextBookmark */ = AB4B52B30C5C7F7C003BDBA8 /* PBXTextBookmark */;
 			ABC3940A09F52058000A6508 /* PBXTextBookmark */ = ABC3940A09F52058000A6508 /* PBXTextBookmark */;
 			ABF899510AE89FFD00BBE119 /* PBXTextBookmark */ = ABF899510AE89FFD00BBE119 /* PBXTextBookmark */;
 		};
@@ -46,16 +46,6 @@
 	};
 	8D202CE80486D31800D8A456 /* OSIViewerPreferencePane */ = {
 		activeExec = 0;
-	};
-	AB07CD870B83701F004651C4 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */;
-		name = AUTOTILING;
-		rLen = 10;
-		rLoc = 3529;
-		rType = 0;
-		vrLen = 1785;
-		vrLoc = 2365;
 	};
 	AB07CD880B83701F004651C4 /* XCBreakpointsBucket */ = {
 		isa = XCBreakpointsBucket;
@@ -76,6 +66,16 @@
 		indexTemplatePath = "";
 	};
 	AB49BB230B859E01004EFB1E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */;
+		name = "OSIViewerPreferencePanePref.m: 45";
+		rLen = 0;
+		rLoc = 1215;
+		rType = 0;
+		vrLen = 1389;
+		vrLoc = 0;
+	};
+	AB4B52B30C5C7F7C003BDBA8 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */;
 		name = "OSIViewerPreferencePanePref.m: 45";
@@ -114,7 +114,7 @@
 	};
 	F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1185, 2408}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1185, 2324}}";
 			sepNavSelRange = "{1215, 0}";
 			sepNavVisRect = "{{0, 0}, {1185, 713}}";
 		};

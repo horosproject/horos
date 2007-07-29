@@ -4746,20 +4746,12 @@ static ViewerController *draggedController = 0L;
 	
 	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"WINDOWSIZEVIEWER"])
 	{
-		case 0:	[[self window] setFrame:screenRect display:YES];	break;
+		case 0:	[[self window] setFrame:screenRect display:YES];	[imageView scaleToFit];		break;
 		case 1:	[imageView resizeWindowToScale: 1.0];	break;
 		case 2:	[imageView resizeWindowToScale: 1.5];	break;
 		case 3:	[imageView resizeWindowToScale: 2.0];	break;
 	}
-	
-	[imageView scaleToFit];
-	
-	
-//	[[self window] makeKeyAndOrderFront:self];
-//	[[self window] makeMainWindow];
-//	[self showWindow:self];
 }
-
 
 - (void) startLoadImageThread
 {	
@@ -6189,24 +6181,27 @@ static ViewerController *draggedController = 0L;
 				}
 			}
 			
-			xd = [[pixList[ curMovieIndex] objectAtIndex: 1] originX] - [[pixList[ curMovieIndex] objectAtIndex: 0] originX];
-			yd = [[pixList[ curMovieIndex] objectAtIndex: 1] originY] - [[pixList[ curMovieIndex] objectAtIndex: 0] originY];
-			zd = [[pixList[ curMovieIndex] objectAtIndex: 1] originZ] - [[pixList[ curMovieIndex] objectAtIndex: 0] originZ];
-			
-			interval3d = sqrt(xd*xd + yd*yd + zd*zd);
-			
-			xd /= interval3d;		yd /= interval3d;		zd /= interval3d;
-			
-			// Check if the slices represent a 3D volume?
-			
-			xd = fabs( xd - vectors[ 6]);
-			yd = fabs( yd - vectors[ 7]);
-			zd = fabs( zd - vectors[ 8]);
-			
-			if( xd + yd + zd > 0.01)
+			if( flipNow == YES)
 			{
-				NSLog( @"Not a real 3D data set.");
-				titledGantry = YES;
+				xd = [[pixList[ curMovieIndex] objectAtIndex: 1] originX] - [[pixList[ curMovieIndex] objectAtIndex: 0] originX];
+				yd = [[pixList[ curMovieIndex] objectAtIndex: 1] originY] - [[pixList[ curMovieIndex] objectAtIndex: 0] originY];
+				zd = [[pixList[ curMovieIndex] objectAtIndex: 1] originZ] - [[pixList[ curMovieIndex] objectAtIndex: 0] originZ];
+				
+				interval3d = sqrt(xd*xd + yd*yd + zd*zd);
+				
+				xd /= interval3d;		yd /= interval3d;		zd /= interval3d;
+				
+				// Check if the slices represent a 3D volume?
+				
+				xd = fabs( xd - vectors[ 6]);
+				yd = fabs( yd - vectors[ 7]);
+				zd = fabs( zd - vectors[ 8]);
+				
+				if( xd + yd + zd > 0.01)
+				{
+					NSLog( @"Not a real 3D data set.");
+					titledGantry = YES;
+				}
 			}
 		}
 	}
@@ -7475,26 +7470,31 @@ NSMutableArray		*array;
 				if( [[[viewers objectAtIndex: x] modality] isEqualToString:@"PT"] && [[[viewers objectAtIndex: x] studyInstanceUID] isEqualToString: [[viewers objectAtIndex: i] studyInstanceUID]])
 				{
 					ViewerController* a = [viewers objectAtIndex: i];
-					ViewerController* b = [viewers objectAtIndex: x];
 					
-					[viewers removeObject: a];		i--;
-					
-					float orientA[ 9], orientB[ 9], result[ 9];
-					
-					[[[a imageView] curDCM] orientation:orientA];
-					[[[b imageView] curDCM] orientation:orientB];
-					
-					// normal vector of planes
-					
-					result[0] = fabs( orientB[ 6] - orientA[ 6]);
-					result[1] = fabs( orientB[ 7] - orientA[ 7]);
-					result[2] = fabs( orientB[ 8] - orientA[ 8]);
-					
-					if( result[0] + result[1] + result[2] < 0.01) 
+					if( [a blendingController] == 0L)
 					{
-						[a ActivateBlending: b];
+						ViewerController* b = [viewers objectAtIndex: x];
 						
-						fused = YES;
+						[viewers removeObject: a];		i--;
+						
+						float orientA[ 9], orientB[ 9], result[ 9];
+						
+						[[[a imageView] curDCM] orientation:orientA];
+						[[[b imageView] curDCM] orientation:orientB];
+						
+						// normal vector of planes
+						
+						result[0] = fabs( orientB[ 6] - orientA[ 6]);
+						result[1] = fabs( orientB[ 7] - orientA[ 7]);
+						result[2] = fabs( orientB[ 8] - orientA[ 8]);
+						
+						if( result[0] + result[1] + result[2] < 0.01) 
+						{
+							[[a imageView] sendSyncMessage:1];
+							[a ActivateBlending: b];
+							
+							fused = YES;
+						}
 					}
 				}
 			}
@@ -14036,6 +14036,9 @@ int i,j,l;
 	preLocation = 0;
 	volume = 0;
 	
+	ROI *fROI = 0L, *lROI = 0L;
+	ROI	*curROI = 0L;
+	
 	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
 		DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
@@ -14043,14 +14046,19 @@ int i,j,l;
 		
 		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
-			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
+			curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
 			if( [[curROI name] isEqualToString: [selectedRoi name]])
 			{
+				if( fROI == 0L) fROI = curROI;
+				lROI = curROI;
+				
 				globalCount++;
 				imageCount++;
 				
 				DCMPix *curPix = [pixList[ curMovieIndex] objectAtIndex: x];
 				float curArea = [curROI roiArea];
+				
+				[curROI setPix: curPix];
 				
 				if( curArea == 0)
 				{
@@ -14114,6 +14122,29 @@ int i,j,l;
 				if( error) *error = [NSString stringWithFormat: NSLocalizedString(@"Only ONE ROI per image, please! (im: %d)", nil), x+1];
 			}
 			return 0;
+		}
+	}
+	
+	if( pts)
+	{
+		if( fROI && lROI)
+		{
+			// Close the floor and the ceil of the volume
+//			float location[ 3];
+//			NSArray	*pt3D;
+//			NSPoint centroid;
+//			
+//			centroid = [fROI centroid];
+//			[[fROI pix]  convertPixX: centroid.x pixY: centroid.y toDICOMCoords: location];
+//			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], 0L];
+//			[*pts addObject: pt3D];
+//			NSLog( [[fROI pix] description]);
+//			
+//			centroid = [lROI centroid];
+//			[[lROI pix]  convertPixX: centroid.x pixY: centroid.y toDICOMCoords: location];
+//			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], 0L];
+//			[*pts addObject: pt3D];
+//			NSLog( [[lROI pix] description]);
 		}
 	}
 	

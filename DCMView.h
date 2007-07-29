@@ -231,6 +231,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 	
 	char			*resampledBaseAddr, *blendingResampledBaseAddr;
 	char			*resampledTempAddr;
+	BOOL			zoomIsSoftwareInterpolated;
 	
 	int				resampledBaseAddrSize, blendingResampledBaseAddrSize;
 }

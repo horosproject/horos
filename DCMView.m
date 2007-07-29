@@ -7720,6 +7720,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	if( [self softwareInterpolation])
 		[self loadTextures];
+	else if( zoomIsSoftwareInterpolated)
+		[self loadTextures];
 	
 	[self setNeedsDisplay:YES];
 }
@@ -7737,7 +7739,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 	if( [self softwareInterpolation])
 		[self loadTextures];
-
+	else if( zoomIsSoftwareInterpolated)
+		[self loadTextures];
+		
 		[self setNeedsDisplay:YES];
 	}
 }
@@ -7997,7 +8001,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (BOOL) softwareInterpolation
 {
-	
 	if(	scaleValue > 4 && NOINTERPOLATION == NO && [self is2DViewer] &&
 		SOFTWAREINTERPOLATION == YES && [curDCM pwidth] <= SOFTWAREINTERPOLATION_MAX &&
 		[curDCM isRGB] == NO && [curDCM thickSlabVRActivated] == NO)
@@ -8166,8 +8169,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
     else
 	{
+		zoomIsSoftwareInterpolated = NO;
+		
  		if( [self softwareInterpolation])
 		{
+			zoomIsSoftwareInterpolated = YES;
+			
 			float resampledScale;
 			if( [curDCM pwidth] <= 256) resampledScale = 3;
 			else resampledScale = 2;
@@ -9078,7 +9085,7 @@ BOOL	lowRes = NO;
 	[[self seriesObj] setValue:[NSNumber numberWithFloat:0] forKey:@"displayStyle"]; 
 	
 	[window setFrame:windowFrame display:YES];
-	[self setScaleValue: resizeScale];
+//	[self setScaleValue: resizeScale];
 	[self setNeedsDisplay:YES];
 }
 
