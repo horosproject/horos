@@ -14078,7 +14078,7 @@ int i,j,l;
 					
 					if( [curROI type] == tPlain)
 					{
-						points = [ITKSegmentation3D extractContour:[curROI textureBuffer] width:[curROI textureWidth] height:[curROI textureHeight] numPoints: 200 largestRegion: NO];
+						points = [ITKSegmentation3D extractContour:[curROI textureBuffer] width:[curROI textureWidth] height:[curROI textureHeight] numPoints: 100 largestRegion: NO];
 						
 						float mx = [curROI textureUpLeftCornerX], my = [curROI textureUpLeftCornerY];
 						
@@ -14097,6 +14097,8 @@ int i,j,l;
 						[curDCM convertPixX: [[points objectAtIndex: y] x] pixY: [[points objectAtIndex: y] y] toDICOMCoords: location];
 						
 						NSArray	*pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], 0L];
+						
+						NSLog( [pt3D description]);
 						[*pts addObject: pt3D];
 					}
 				}
@@ -14125,26 +14127,77 @@ int i,j,l;
 		}
 	}
 	
+	NSLog( @"********");
+	
 	if( pts)
 	{
 		if( fROI && lROI)
 		{
 			// Close the floor and the ceil of the volume
-//			float location[ 3];
-//			NSArray	*pt3D;
-//			NSPoint centroid;
+			
+//			float *data;
+//			float *locations;
+//			long dataSize;
 //			
-//			centroid = [fROI centroid];
-//			[[fROI pix]  convertPixX: centroid.x pixY: centroid.y toDICOMCoords: location];
-//			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], 0L];
-//			[*pts addObject: pt3D];
-//			NSLog( [[fROI pix] description]);
+//			data = [[fROI pix] getROIValue:&dataSize :fROI :&locations];
 //			
-//			centroid = [lROI centroid];
-//			[[lROI pix]  convertPixX: centroid.x pixY: centroid.y toDICOMCoords: location];
-//			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], 0L];
-//			[*pts addObject: pt3D];
-//			NSLog( [[lROI pix] description]);
+//			for( i = 0 ; i < dataSize; i +=4)
+//			{
+//				float location[ 3];
+//				NSArray	*pt3D;
+//				
+//				[[fROI pix] convertPixX: locations[i*2] pixY: locations[i*2+1] toDICOMCoords: location];
+//				
+//				pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], 0L];
+//				NSLog( [pt3D description]);
+//				[*pts addObject: pt3D];
+//			}
+//			
+//			free( data);
+//			free( locations);
+//			
+//			data = [[lROI pix] getROIValue:&dataSize :lROI :&locations];
+//			
+//			for( i = 0 ; i < dataSize; i +=4)
+//			{
+//				float location[ 3];
+//				NSArray	*pt3D;
+//				
+//				[[lROI pix] convertPixX: locations[i*2] pixY: locations[i*2+1] toDICOMCoords: location];
+//				
+//				pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], 0L];
+//				NSLog( [pt3D description]);
+//				[*pts addObject: pt3D];
+//			}
+//			
+//			free( data);
+//			free( locations);
+			
+			float location[ 3];
+			NSArray	*pt3D;
+			NSPoint centroid;
+			
+			centroid = [fROI centroid];
+			[[fROI pix]  convertPixX: centroid.x pixY: centroid.y toDICOMCoords: location];
+			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]-1], [NSNumber numberWithFloat:location[1]-1], [NSNumber numberWithFloat:location[2]-2], 0L];
+			[*pts addObject: pt3D];
+			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]-1], [NSNumber numberWithFloat:location[1]+1], [NSNumber numberWithFloat:location[2]-2], 0L];
+			[*pts addObject: pt3D];
+			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]+1], [NSNumber numberWithFloat:location[1]+1], [NSNumber numberWithFloat:location[2]-2], 0L];
+			[*pts addObject: pt3D];
+			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]+1], [NSNumber numberWithFloat:location[1]-1], [NSNumber numberWithFloat:location[2]-2], 0L];
+			[*pts addObject: pt3D];
+			
+			centroid = [lROI centroid];
+			[[lROI pix]  convertPixX: centroid.x pixY: centroid.y toDICOMCoords: location];
+			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]-1], [NSNumber numberWithFloat:location[1]-1], [NSNumber numberWithFloat:location[2]+2], 0L];
+			[*pts addObject: pt3D];
+			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]-1], [NSNumber numberWithFloat:location[1]+1], [NSNumber numberWithFloat:location[2]+2], 0L];
+			[*pts addObject: pt3D];
+			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]+1], [NSNumber numberWithFloat:location[1]+1], [NSNumber numberWithFloat:location[2]+2], 0L];
+			[*pts addObject: pt3D];
+			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]+1], [NSNumber numberWithFloat:location[1]-1], [NSNumber numberWithFloat:location[2]+2], 0L];
+			[*pts addObject: pt3D];
 		}
 	}
 	

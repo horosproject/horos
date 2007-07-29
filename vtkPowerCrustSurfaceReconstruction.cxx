@@ -2757,7 +2757,8 @@ void *compute_3d_power_vv(simplex *s, void *p) {
       
         }
         else { /* if cond=0, s is SLIVER */
-            fprintf(DFILE,"sliver!\n");
+			if(DFILE)
+				fprintf(DFILE,"sliver!\n");
             s->vv = NULL;
             s->status = SLV;
         }
@@ -2825,6 +2826,7 @@ void *compute_3d_power_edges(simplex *s, void *p) {
                     numedges=0;
                     while (nexts != s) {
                         if (nexts->status == CNV) {
+							if(DFILE)
                             fprintf(DFILE,"inf reg face\n");
                             break;
                         }
@@ -3135,6 +3137,7 @@ void construct_face(simplex *s, short k)
     numedges=0;
     while (nexts != s) {
         if (nexts->status == CNV) {
+			if(DFILE)
             fprintf(DFILE,"inf reg face\n");
             break;
         }
@@ -4365,7 +4368,7 @@ void *compute_pole2(simplex *s, void *p) {
         }
 
         if (!s->vv) {
-            if (s->status != SLV) fprintf(DFILE,"cannot happen3\n");
+            if (s->status != SLV) if(DFILE) fprintf(DFILE,"cannot happen3\n");
             continue;
         }
 
@@ -6285,7 +6288,8 @@ void update_pri(int hi, int pi)
     double pr;
 
     if ((heap_A[hi].pid != pi)||(adjlist[pi].hid != hi)) {
-        fprintf(DFILE,"Error update_pri!\n");
+        if(DFILE)
+		fprintf(DFILE,"Error update_pri!\n");
         return;
     }
     if (adjlist[pi].in==0.0) {

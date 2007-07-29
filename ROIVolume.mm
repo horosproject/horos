@@ -109,10 +109,10 @@
 	for(i = 0; i < [roiList count]; i++)
 	{
 		ROI *curROI = [roiList objectAtIndex:i];
-
+		
 		DCMPix *curDCM = [curROI pix];
 		//NSLog(@"[curDCM sliceLocation] : %d", [curDCM sliceLocation]);
-
+		
 		// points
 		NSMutableArray	*points = 0L;
 					

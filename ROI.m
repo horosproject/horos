@@ -72,9 +72,13 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 +(void) loadDefaultSettings
 {
 	ROIRegionOpacity = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionOpacity"];
+	if( ROIRegionOpacity < 0.3) ROIRegionOpacity = 0.3;
+	
 	ROITextThickness = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextThickness"];
 	ROIThickness = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIThickness"];
 	ROIOpacity = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIOpacity"];
+	if( ROIOpacity < 0.3) ROIOpacity = 0.3;
+	
 	ROIColorR = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIColorR"];
 	ROIColorG = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIColorG"];
 	ROIColorB = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIColorB"];
@@ -4217,14 +4221,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		return rect.origin;
 	}
 	
-	int num_points = [points count];
+	NSArray	*pts = [self points];
+	
+	int num_points = [pts count];
 	
 	NSPoint centroid;
 	int i;
 	
 	for ( i = 0; i < num_points; i++ ) {
-		centroid.x += [[points objectAtIndex:i] x] / num_points;
-		centroid.y += [[points objectAtIndex:i] y] / num_points;
+		centroid.x += [[pts objectAtIndex:i] x] / num_points;
+		centroid.y += [[pts objectAtIndex:i] y] / num_points;
 	}
 	
 	return centroid;

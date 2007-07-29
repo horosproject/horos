@@ -1608,8 +1608,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 							{
 								if( *locations)
 								{
-									(*locations)[ count*2] = x;
-									(*locations)[ count*2 + 1] = y;
+									(*locations)[ count*2] = xx;
+									(*locations)[ count*2 + 1] = yy;
 								}
 							}
 							count++;
