@@ -361,6 +361,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	}
 	else
 	{
+		NSLog( @"***** warning pix == [curView curDCM]");
 		return [curView curDCM];
 	}
 }

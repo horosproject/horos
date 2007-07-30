@@ -260,7 +260,7 @@
 		
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 	
-	triangulation->Delete();
+	roiVolumeActor->Delete();
 	ballActor->Delete();
 	texture->Delete();
 	orientationWidget->Delete();
@@ -286,6 +286,82 @@
 	vtkPolyData *profile = vtkPolyData::New();
     profile->SetPoints( points);
 	points->Delete();
+
+	vtkDelaunay3D *delaunayTriangulator = 0L;
+	vtkPolyDataNormals *polyDataNormals = 0L;
+	vtkDataSet*	output = 0L;
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"])
+	{
+		delaunayTriangulator = vtkDelaunay3D::New();
+		delaunayTriangulator->SetInput(profile);
+		
+		delaunayTriangulator->SetTolerance( 0.001);
+		delaunayTriangulator->SetAlpha( 20);
+		delaunayTriangulator->BoundingTriangulationOff();
+		
+		output = (vtkDataSet*) delaunayTriangulator -> GetOutput();
+	}
+	else
+	{
+		vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
+		power->SetInput( profile);
+
+		polyDataNormals = vtkPolyDataNormals::New();
+		polyDataNormals->SetInput(  power->GetOutput());
+		polyDataNormals->ConsistencyOn();
+		polyDataNormals->AutoOrientNormalsOn();
+		power->Delete();
+		
+		output = (vtkDataSet*) polyDataNormals -> GetOutput();
+	}
+	
+	vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
+		tmapper -> SetInput( output);
+		tmapper -> PreventSeamOn();
+	
+	if( polyDataNormals) polyDataNormals->Delete();
+	if( delaunayTriangulator) delaunayTriangulator->Delete();
+
+	vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
+		xform->SetInput(tmapper->GetOutput());
+		xform->SetScale(4,4,4);
+	tmapper->Delete();
+		
+	vtkDataSetMapper *map = vtkDataSetMapper::New();
+	map->SetInput( tmapper->GetOutput());
+	map->ScalarVisibilityOff();
+	
+	map->Update();
+	
+	roiVolumeActor = vtkActor::New();
+	roiVolumeActor->SetMapper(map);
+	roiVolumeActor->GetProperty()->FrontfaceCullingOn();
+	roiVolumeActor->GetProperty()->BackfaceCullingOn();
+
+	map->Delete();
+	
+	//Texture
+	NSString	*location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
+	
+	if( location == 0L || [location isEqualToString:@""])
+		location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
+	
+	vtkTIFFReader *bmpread = vtkTIFFReader::New();
+	   bmpread->SetFileName( [location UTF8String]);
+
+	texture = vtkTexture::New();
+	   texture->SetInput( bmpread->GetOutput());
+	   texture->InterpolateOn();
+	bmpread->Delete();
+
+	roiVolumeActor->SetTexture( texture);
+
+
+
+
+
+
 
 //	vtkDecimatePro *isoDeci = vtkDecimatePro::New();
 //	isoDeci->SetInput( profile);
@@ -319,15 +395,14 @@
 //		del->BoundingTriangulationOff();
 ////	profile->Delete();
 	
-	vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
-		power->SetInput( profile);
-	profile->Delete();
-
-	vtkPolyDataNormals *polyDataNormals = vtkPolyDataNormals::New();
-		polyDataNormals->SetInput( power->GetOutput());
-		polyDataNormals->ConsistencyOn();
-		polyDataNormals->AutoOrientNormalsOn();
-	power->Delete();
+//	vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
+//		power->SetInput( profile);
+//
+//	vtkPolyDataNormals *polyDataNormals = vtkPolyDataNormals::New();
+//		polyDataNormals->SetInput( power->GetOutput());
+//		polyDataNormals->ConsistencyOn();
+//		polyDataNormals->AutoOrientNormalsOn();
+//	power->Delete();
 	
 	//do a bit of decimation
 //	vtkDecimatePro *pDeci = vtkDecimatePro::New();
@@ -344,48 +419,72 @@
 //	pSmooth->SetEdgeAngle( 90);
 //	pSmooth->SetBoundarySmoothing(TRUE);
 //	pSmooth->Update();
-
-	vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
-		tmapper -> SetInput (polyDataNormals -> GetOutput());
-		tmapper -> PreventSeamOn();
-	polyDataNormals->Delete();
-
-	vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
-		xform->SetInput(tmapper->GetOutput());
-		xform->SetScale(4,4,4);
-	tmapper->Delete();
-
-	vtkDataSetMapper *map = vtkDataSetMapper::New();
-		map->SetInput( xform->GetOutput());
-		map->ScalarVisibilityOff();
-	xform->Delete();
 	
-	triangulation = vtkActor::New();
-		triangulation->SetMapper( map);
-//		triangulation->GetProperty()->SetColor(1, 0, 0);
-//		triangulation->GetProperty()->SetSpecular( 0.3);
-//		triangulation->GetProperty()->SetSpecularPower( 20);
-//		triangulation->GetProperty()->SetAmbient( 0.2);
-//		triangulation->GetProperty()->SetDiffuse( 0.8);
-//		triangulation->GetProperty()->SetOpacity(0.5);
-	map->Delete();
+//	polyDataNormals->Update();
+//	if( polyDataNormals->GetOutput()->GetNumberOfPoints() < 1)
+//	{
+//		NSLog( @"%d", polyDataNormals->GetOutput()->GetNumberOfPoints());
+//		NSLog( @"vtkPowerCrustSurfaceReconstruction failed...");
+//		
+//		vtkDelaunay3D *del = vtkDelaunay3D::New();
+//			del->SetInput( profile);
+//			del->SetTolerance( 0.001);
+//			del->SetAlpha( 20);
+////			del->SetOffset( 50);
+//			del->BoundingTriangulationOff();
+////			profile->Delete();
+//		
+//		polyDataNormals->Delete();
+//		
+//		polyDataNormals = vtkPolyDataNormals::New();
+//			polyDataNormals->SetInput( power->GetOutput());
+//			polyDataNormals->ConsistencyOn();
+//			polyDataNormals->AutoOrientNormalsOn();
+//			del->Delete();
+//	}
+	
+
+//	vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
+//		tmapper -> SetInput (polyDataNormals->GetOutput());
+//		tmapper -> PreventSeamOn();
+//	polyDataNormals->Delete();
+//
+//	vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
+//		xform->SetInput(tmapper->GetOutput());
+//		xform->SetScale(4,4,4);
+//	tmapper->Delete();
+//
+//	vtkDataSetMapper *map = vtkDataSetMapper::New();
+//		map->SetInput( xform->GetOutput());
+//		map->ScalarVisibilityOff();
+//	xform->Delete();
+//	
+//	roiVolumeActor = vtkActor::New();
+//		roiVolumeActor->SetMapper( map);
+//		roiVolumeActor->GetProperty()->SetColor(1, 0, 0);
+//		roiVolumeActor->GetProperty()->SetSpecular( 0.3);
+//		roiVolumeActor->GetProperty()->SetSpecularPower( 20);
+//		roiVolumeActor->GetProperty()->SetAmbient( 0.2);
+//		roiVolumeActor->GetProperty()->SetDiffuse( 0.8);
+//		roiVolumeActor->GetProperty()->SetOpacity(0.5);
+//	map->Delete();
 	
 	// Texture
-
-	NSString	*location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
-
-	if( location == 0L || [location isEqualToString:@""])
-		location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
-	
-	vtkTIFFReader *bmpread = vtkTIFFReader::New();
-       bmpread->SetFileName( [location UTF8String]);
-
-		texture = vtkTexture::New();
-		texture->SetInput( bmpread->GetOutput());
-		texture->InterpolateOn();
-	bmpread->Delete();
-	
-	triangulation->SetTexture(texture);
+//
+//	NSString	*location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
+//
+//	if( location == 0L || [location isEqualToString:@""])
+//		location = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"texture.tif"];
+//	
+//	vtkTIFFReader *bmpread = vtkTIFFReader::New();
+//       bmpread->SetFileName( [location UTF8String]);
+//
+//		texture = vtkTexture::New();
+//		texture->SetInput( bmpread->GetOutput());
+//		texture->InterpolateOn();
+//	bmpread->Delete();
+//	
+//	roiVolumeActor->SetTexture(texture);
 	
 	// The balls
 	vtkSphereSource *ball = vtkSphereSource::New();
@@ -411,12 +510,14 @@
 		ballActor->GetProperty()->SetOpacity( 0.8);
 	mapBalls->Delete();
 	
+	profile->Delete();
+	
 	aRenderer->AddActor( ballActor);
 	
-	triangulation->GetProperty()->FrontfaceCullingOn();
-	triangulation->GetProperty()->BackfaceCullingOn();
+	roiVolumeActor->GetProperty()->FrontfaceCullingOn();
+	roiVolumeActor->GetProperty()->BackfaceCullingOn();
 	
-	aRenderer->AddActor( triangulation);
+	aRenderer->AddActor( roiVolumeActor);
 	
 	// ***********************
 	
@@ -506,21 +607,21 @@
 	if( sp == NO) aRenderer->RemoveActor( ballActor);
 	else aRenderer->AddActor( ballActor);
 
-	if( sS == NO) aRenderer->RemoveActor( triangulation);
-	else aRenderer->AddActor( triangulation);
+	if( sS == NO) aRenderer->RemoveActor( roiVolumeActor);
+	else aRenderer->AddActor( roiVolumeActor);
 
-	if( w) triangulation->GetProperty()->SetRepresentationToWireframe();
-	else triangulation->GetProperty()->SetRepresentationToSurface();
+	if( w) roiVolumeActor->GetProperty()->SetRepresentationToWireframe();
+	else roiVolumeActor->GetProperty()->SetRepresentationToSurface();
 
-	triangulation->GetProperty()->SetOpacity( opacity);
+	roiVolumeActor->GetProperty()->SetOpacity( opacity);
 	
 	NSColor*	rgbCol = [col colorUsingColorSpaceName: NSDeviceRGBColorSpace];
 	
-	if( usecol) triangulation->GetProperty()->SetColor( [rgbCol redComponent], [rgbCol greenComponent], [rgbCol blueComponent]);
-	else triangulation->GetProperty()->SetColor( 1, 1, 1);
+	if( usecol) roiVolumeActor->GetProperty()->SetColor( [rgbCol redComponent], [rgbCol greenComponent], [rgbCol blueComponent]);
+	else roiVolumeActor->GetProperty()->SetColor( 1, 1, 1);
 	
-	if( tex) triangulation->SetTexture(texture);
-	else triangulation->SetTexture( 0L);
+	if( tex) roiVolumeActor->SetTexture(texture);
+	else roiVolumeActor->SetTexture( 0L);
 	
 	[self setNeedsDisplay: YES];
 }

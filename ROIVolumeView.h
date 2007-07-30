@@ -113,7 +113,7 @@ class vtkMyCallback;
     vtkCamera					*aCamera;
 	
 	vtkActor					*ballActor;
-	vtkActor					*triangulation;
+	vtkActor					*roiVolumeActor;
 	vtkTexture					*texture;
 	
     vtkActor					*outlineRect;

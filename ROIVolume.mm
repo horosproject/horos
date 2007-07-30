@@ -105,26 +105,24 @@
 	int i, j;
 
 	NSMutableArray *pts = [NSMutableArray array];
-
+	
 	for(i = 0; i < [roiList count]; i++)
 	{
 		ROI *curROI = [roiList objectAtIndex:i];
 		
 		DCMPix *curDCM = [curROI pix];
-		//NSLog(@"[curDCM sliceLocation] : %d", [curDCM sliceLocation]);
-		
 		// points
 		NSMutableArray	*points = 0L;
 					
 		if( [curROI type] == tPlain)
 		{
-			points = [ITKSegmentation3D extractContour:[curROI textureBuffer] width:[curROI textureWidth] height:[curROI textureHeight] numPoints: 200 largestRegion: NO];
+			points = [ITKSegmentation3D extractContour:[curROI textureBuffer] width:[curROI textureWidth] height:[curROI textureHeight] numPoints: 100 largestRegion: NO];
 			
 			float mx = [curROI textureUpLeftCornerX], my = [curROI textureUpLeftCornerY];
 			
-			for( i = 0; i < [points count]; i++)
+			for( j = 0; j < [points count]; j++)
 			{
-				MyPoint	*pt = [points objectAtIndex: i];
+				MyPoint	*pt = [points objectAtIndex: j];
 				[pt move: mx :my];
 			}
 		}
@@ -146,7 +144,7 @@
 		}		
 	}
 	
-	#define MAXPOINTS 4000
+	#define MAXPOINTS 3000
 		
 	if( [pts count] > MAXPOINTS*2)
 	{
@@ -166,7 +164,7 @@
 			pts = newpts;
 		}
 	}
-
+	
 	if([pts count] > 0)
 	{
 		vtkPoints *points = vtkPoints::New();
@@ -217,34 +215,41 @@
 //		else
 		// VOLUME
 		{
-//			vtkDelaunay3D *delaunayTriangulator = vtkDelaunay3D::New();
-//			delaunayTriangulator->SetInput(pointsDataSet);
-//			
-//			delaunayTriangulator->SetTolerance( 0.001);
-//			delaunayTriangulator->SetAlpha( 20); /// pimp my Alpha!!!
-//			delaunayTriangulator->BoundingTriangulationOff();
-//			
-//			vtkDataSetMapper *map = vtkDataSetMapper::New();
-//			map->SetInput((vtkDataSet*) delaunayTriangulator->GetOutput());
-//			delaunayTriangulator->Delete();
-//			
-//			roiVolumeActor->SetMapper(map);
-//			map->Delete();
+			vtkDelaunay3D *delaunayTriangulator = 0L;
+			vtkPolyDataNormals *polyDataNormals = 0L;
+			vtkDataSet*	output = 0L;
 			
-			
-			vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"])
+			{
+				delaunayTriangulator = vtkDelaunay3D::New();
+				delaunayTriangulator->SetInput(pointsDataSet);
+				
+				delaunayTriangulator->SetTolerance( 0.001);
+				delaunayTriangulator->SetAlpha( 20);
+				delaunayTriangulator->BoundingTriangulationOff();
+				
+				output = (vtkDataSet*) delaunayTriangulator -> GetOutput();
+			}
+			else
+			{
+				vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
 				power->SetInput( pointsDataSet);
-			
-			vtkPolyDataNormals *polyDataNormals = vtkPolyDataNormals::New();
-				polyDataNormals->SetInput( power->GetOutput());
+
+				polyDataNormals = vtkPolyDataNormals::New();
+				polyDataNormals->SetInput(  power->GetOutput());
 				polyDataNormals->ConsistencyOn();
 				polyDataNormals->AutoOrientNormalsOn();
-			power->Delete();
+				power->Delete();
+				
+				output = (vtkDataSet*) polyDataNormals -> GetOutput();
+			}
 			
 			vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
-				tmapper -> SetInput (polyDataNormals -> GetOutput());
+				tmapper -> SetInput( output);
 				tmapper -> PreventSeamOn();
-			polyDataNormals->Delete();
+			
+			if( polyDataNormals) polyDataNormals->Delete();
+			if( delaunayTriangulator) delaunayTriangulator->Delete();
 
 			vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
 				xform->SetInput(tmapper->GetOutput());

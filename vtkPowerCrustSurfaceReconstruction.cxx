@@ -26,7 +26,7 @@ vtkStandardNewMacro(vtkPowerCrustSurfaceReconstruction);
 vtkPowerCrustSurfaceReconstruction::vtkPowerCrustSurfaceReconstruction()
 {
     this->medial_surface = vtkPolyData::New();
-	m_estimate_r = 0.9;	// EPRO-added to change the default value
+	m_estimate_r = 0.5;	// EPRO-added to change the default value
 }
 
 vtkPowerCrustSurfaceReconstruction::~vtkPowerCrustSurfaceReconstruction()
@@ -5380,7 +5380,6 @@ neighbor *op_vert(simplex *a, site b) {lookup(a,b,vert,site)}
 //neighbor *op_vert(simplex *a, site b) { return vert_lookup(a,b); }
 /* the neighbor entry of a containing b */
 
-
 void connect(simplex *s) {
     /* make neighbor connections between newly created simplices incident to p */
 
@@ -5388,7 +5387,7 @@ void connect(simplex *s) {
     simplex *sb, *sf, *seen;
     int i;
     neighbor *sn;
-
+	
     if (!s) return;
     assert(!s->peak.vert
            && s->peak.simp->peak.vert==p
@@ -5418,7 +5417,6 @@ void connect(simplex *s) {
 
         connect(sf);
     }
-
 }
 
 

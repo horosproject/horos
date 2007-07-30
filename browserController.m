@@ -1070,10 +1070,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 			splash = 0L;
 		}
 		
-		[self autoCleanDatabaseFreeSpace: self];
-		
-		if( [NSDate timeIntervalSinceReferenceDate] - lastSaved > 30)
+		if( [NSDate timeIntervalSinceReferenceDate] - lastSaved > 120)
 		{
+			[self autoCleanDatabaseFreeSpace: self];
+			
 			if( [self saveDatabase:currentDatabasePath] != 0)
 			{
 				//All these files were NOT saved..... due to an error. Move them back to the INCOMING folder.

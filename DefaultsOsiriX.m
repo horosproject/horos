@@ -594,7 +594,7 @@ static NSString *hostName = @"";
 	
 	[defaultValues setObject:presets forKey:@"shadingsPresets"];
 	
-	
+	[defaultValues setObject:@"1" forKey:@"UseDelaunayFor3DRoi"];
 	
 	[defaultValues setObject:@"1" forKey:@"COPYSETTINGSINSERIES"];
 	[defaultValues setObject:@"1" forKey:@"EJECTCDDVD"];
