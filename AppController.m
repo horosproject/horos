@@ -5,7 +5,7 @@
   All rights reserved.
   Distributed under GNU - GPL
   
-  See http://homepage.mac.com/rossetantoine/osirix/copyright.html for details.
+  See http://www.osirix-viewer.com/copyright.html for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
@@ -797,7 +797,7 @@ NSRect screenFrame()
 }
 
 -(IBAction)openOsirixWebPage:(id)sender{
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/"]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
 }
 
 -(IBAction)help:(id)sender{
@@ -1525,7 +1525,7 @@ static BOOL initialized = NO;
 			//	if( [[NSCalendarDate dateWithYear:2006 month:6 day:2 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] < 0)
 			//	{
 			//		NSRunCriticalAlertPanel(@"Update needed!", @"This version of OsiriX is outdated. Please download the last version from OsiriX web site!", @"OK", nil, nil);
-			//		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/"]];
+			//		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
 			//		exit(0);
 			//	}
 					
@@ -1536,7 +1536,7 @@ static BOOL initialized = NO;
 				//		break;
 				//		
 				//		case -1:
-				//			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/"]];
+				//			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
 				//		break;
 				//	}
 				
@@ -2040,7 +2040,7 @@ static BOOL initialized = NO;
 		
 		if (NSOKButton == button)
 		{
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/"]];
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
 		}
 	}
 }
@@ -2063,11 +2063,11 @@ static BOOL initialized = NO;
 	if( url == 0L)
 	{
 		if (hasMacOSXLeopard())
-			url=[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/versionLeopard.xml"];
+			url=[NSURL URLWithString:@"http://www.osirix-viewer.com/versionLeopard.xml"];
 		else if (hasMacOSXTiger())
-			url=[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/versionTiger.xml"];
+			url=[NSURL URLWithString:@"http://www.osirix-viewer.com/versionTiger.xml"];
 		else
-			url=[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/version.xml"];
+			url=[NSURL URLWithString:@"http://www.osirix-viewer.com/version.xml"];
 	}
 	
 	if (url)

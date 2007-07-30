@@ -897,7 +897,7 @@ static NSString *hostName = @"";
 	[defaultValues setObject: @"2" forKey: @"REPORTSMODE"];
 	
 	// ** LASTURL
-	[defaultValues setObject: @"http://homepage.mac.com/rossetantoine/internet.dcm" forKey: @"LASTURL"];
+	[defaultValues setObject: @"http://www.osirix-viewer.com/internet.dcm" forKey: @"LASTURL"];
 	
 	// ** MAPPERMODEVR
 	[defaultValues setObject: @"0" forKey: @"MAPPERMODEVR"];
