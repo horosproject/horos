@@ -4802,12 +4802,6 @@ static ViewerController *draggedController = 0L;
 //	[pool release];
 //}
 
--(void) setDefaultPETWLWW:(id) sender
-{
-	[imageView updatePresentationStateFromSeries];
-	[imageView setIndex: [imageView curImage]];
-}
-
 - (void) resampleDataIfNeeded:(id) sender
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
@@ -4975,11 +4969,6 @@ static ViewerController *draggedController = 0L;
 				[self performSelectorOnMainThread:@selector( convertPETtoSUV) withObject:nil waitUntilDone: NO];
 				
 				[imageView performSelectorOnMainThread:@selector( setStartWLWW) withObject:0L waitUntilDone: NO];
-			}
-			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DEFAULTPETWLWW"] != 0)
-			{
-				[self performSelectorOnMainThread:@selector( setDefaultPETWLWW:) withObject:self waitUntilDone: NO];
 			}
 		}
 		
@@ -5911,7 +5900,7 @@ static ViewerController *draggedController = 0L;
 //	
 //	NSLog(@"flip data-B");
 	
-// The vImage version seems about 20% faster on my Core Duo processor.. maybe even faster on dual-dual-Xeon?
+// The vImage version seems about 20% faster on my Core Duo processor.. maybe even faster on dual-octo-Xeon?
 	
 	vImage_Buffer src, dest;
 	src.height = dest.height = no;

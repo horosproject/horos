@@ -1359,12 +1359,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( sizeView.size.width/[curDCM pwidth] < sizeView.size.height/[curDCM pheight]/[curDCM pixelRatio])
 		{
 			[self setScaleValue:(sizeView.size.width/[curDCM pwidth])];
-	//		scaleValue = sizeView.size.width/[curDCM pwidth];
 		}
 		else
 		{
 			[self setScaleValue:(sizeView.size.height/[curDCM pheight]/[curDCM pixelRatio])];
-	//		scaleValue = sizeView.size.height/[curDCM pheight]/[curDCM pixelRatio];
 		}
 	}
 	else
@@ -1849,9 +1847,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			else
 			{
 				[self setScaleValue:(scaleValue+1./50.)];
-//				scaleValue += 1./50.;
-//        
-//				if( scaleValue > 100) scaleValue = 100;
             
 				[self setNeedsDisplay:YES];
 			}
@@ -1862,9 +1857,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			else
 			{
 				[self setScaleValue:(scaleValue-1./50.)];
-//				scaleValue -= 1./50.;
-//                    
-//				if( scaleValue < 0.01) scaleValue = 0.01;
             
 				[self setNeedsDisplay:YES];
 			}
@@ -1899,10 +1891,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				else val = xMove;
 				
 				[self setScaleValue:(scaleValue+val/10.0)];
-//				scaleValue += val/10.0;
-//				
-//				if( scaleValue < 0.01) scaleValue = 0.01;
-//				if( scaleValue > 100) scaleValue = 100;
 			}
 			
 			if (currentTool == tTranslate)
@@ -3247,9 +3235,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				float sScaleValue = scaleValue;
 				
 				[self setScaleValue:sScaleValue + deltaX * scaleValue / 10];
-//				scaleValue = sScaleValue + deltaX * scaleValue / 10;
-//				if( scaleValue < 0.01) scaleValue = 0.01;
-//				if( scaleValue > 100) scaleValue = 100;
 				
 				origin.x = ((origin.x * scaleValue) / sScaleValue);
 				origin.y = ((origin.y * scaleValue) / sScaleValue);
@@ -3336,17 +3321,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 		
 	[self mouseDown: event];
-	
-//    if( dcmPixList)
-//    {
-//        NSPoint eventLocation = [event locationInWindow];
-//        start = [self convertPoint:eventLocation fromView:self];
-//        
-//        startScaleValue = scaleValue;
-//		originStart = origin;
-//		originOffsetStart = originOffset;
-//		originOffsetRegistrationStart = originOffsetRegistration;
-//    }
 }
 
 
@@ -4812,7 +4786,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
 		slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
 		sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
-		[self sendSyncMessage:0];
+		[self sendSyncMessage:1];
 		
 		[appController setXFlipped: xFlipped];
 		[appController setYFlipped: yFlipped];
@@ -4828,7 +4802,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
 		slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
 		sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
-		[self sendSyncMessage:0];
+		[self sendSyncMessage:1];
+		
 		[self setNeedsDisplay:YES];
 	}
 }
@@ -6391,7 +6366,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	if( noScale)
 	{
-		//scaleValue = 1;
 		[self setScaleValue:1];
 		origin.x = 0;
 		origin.y = 0;
@@ -7142,9 +7116,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			else maxChanged = 0.01;
 			
 			[self setScaleValue: (scaleValue * maxChanged)];
-			//scaleValue *= maxChanged;
-			
-			//if( scaleValue < 0.01) scaleValue = 0.01;
 			
 			origin.x *= maxChanged;
 			origin.y *= maxChanged;
@@ -7705,6 +7676,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) setScaleValueCentered:(float) x
 {
+	NSLog( @"setScaleValueCentered");
 	if( scaleValue)
 	{
 		origin.x = ((origin.x * x) / scaleValue);
@@ -7728,6 +7700,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) setScaleValue:(float) x
 {
+	NSLog( @"scaleValue");
 	if( scaleValue != x)
 	{
 		scaleValue = x;
@@ -7742,7 +7715,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	else if( zoomIsSoftwareInterpolated)
 		[self loadTextures];
 		
-		[self setNeedsDisplay:YES];
+	[self setNeedsDisplay:YES];
 	}
 }
 
@@ -8912,7 +8885,9 @@ BOOL	lowRes = NO;
 	else return 0L;
 }
 
-- (void)updatePresentationStateFromSeries{
+- (void)updatePresentationStateFromSeries
+{
+	NSLog( @"updatePresentationStateFromSeries");
 	//get Presentation State info from series Object
 	id series = [self seriesObj];
 	if( series)
@@ -8923,7 +8898,7 @@ BOOL	lowRes = NO;
 				
 		if ([series valueForKey:@"scale"] != 0L && [self is2DViewer] == YES)
 			if( [[[self seriesObj] valueForKey:@"scale"] floatValue] > 0.0)
-				scaleValue = [[series valueForKey:@"scale"] floatValue];
+				[self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
 		
 		if( [series valueForKey:@"rotationAngle"])
 			rotation = [[series valueForKey:@"rotationAngle"] floatValue];
