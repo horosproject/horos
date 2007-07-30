@@ -17,7 +17,7 @@
 	<key>groupName</key>
 	<string>Basic</string>
 	<key>name</key>
-	<string>No Shading</string>
+	<string>Mid Contrast</string>
 	<key>opacity</key>
 	<string>Linear Table</string>
 	<key>projection</key>
@@ -25,7 +25,7 @@
 	<key>shading</key>
 	<string>Default</string>
 	<key>useShading</key>
-	<false/>
+	<true/>
 	<key>wl</key>
 	<real>257.05038452148438</real>
 	<key>ww</key>

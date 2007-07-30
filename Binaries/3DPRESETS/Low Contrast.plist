@@ -17,18 +17,18 @@
 	<key>groupName</key>
 	<string>Basic</string>
 	<key>name</key>
-	<string>No Shading</string>
+	<string>Low Contrast</string>
 	<key>opacity</key>
-	<string>Linear Table</string>
+	<string>Logarithmic Inverse Table</string>
 	<key>projection</key>
 	<integer>1</integer>
 	<key>shading</key>
 	<string>Default</string>
 	<key>useShading</key>
-	<false/>
+	<true/>
 	<key>wl</key>
-	<real>257.05038452148438</real>
+	<real>304.16705322265625</real>
 	<key>ww</key>
-	<real>296.28323364257812</real>
+	<real>269.91790771484375</real>
 </dict>
 </plist>

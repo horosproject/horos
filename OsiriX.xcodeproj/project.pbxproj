@@ -793,6 +793,9 @@
 		AB1CB35F0618A37E00CD966B /* MyPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = AB1CB35B0618A37E00CD966B /* MyPoint.m */; };
 		AB218CC906750A1000DE275D /* Window3DController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3F4A1D0672674000E61A6C /* Window3DController.h */; };
 		AB218CCA06750A1100DE275D /* Window3DController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3F4A1E0672674000E61A6C /* Window3DController.m */; };
+		AB2597E80C5E3534006A1EC8 /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = AB2597CC0C5E3534006A1EC8 /* 3DPRESETS */; };
+		AB2597E90C5E3534006A1EC8 /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = AB2597CC0C5E3534006A1EC8 /* 3DPRESETS */; };
+		AB2597EA0C5E3534006A1EC8 /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = AB2597CC0C5E3534006A1EC8 /* 3DPRESETS */; };
 		AB28B48805B7998800A9906C /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97324FDCFA39411CA2CEA /* AppKit.framework */; };
 		AB28B48A05B7998A00A9906C /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB38FC99057A9B050041FEBB /* AGL.framework */; };
 		AB28B48B05B7998A00A9906C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */; };
@@ -1249,9 +1252,6 @@
 		AB52E5FA0A19D93500726305 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB52E5C70A19D93500726305 /* Security.framework */; };
 		AB52E5FB0A19D93500726305 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB52E5C70A19D93500726305 /* Security.framework */; };
 		AB52E5FC0A19D93500726305 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB52E5C70A19D93500726305 /* Security.framework */; };
-		AB5E393E0C2C16F40015632C /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = AB5E39210C2C16F40015632C /* 3DPRESETS */; };
-		AB5E393F0C2C16F40015632C /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = AB5E39210C2C16F40015632C /* 3DPRESETS */; };
-		AB5E39400C2C16F40015632C /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = AB5E39210C2C16F40015632C /* 3DPRESETS */; };
 		AB64A2D80C4E0F61000E0981 /* HornRegistration.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB64A2D60C4E0F61000E0981 /* HornRegistration.mm */; };
 		AB64A2D90C4E0F61000E0981 /* HornRegistration.h in Headers */ = {isa = PBXBuildFile; fileRef = AB64A2D70C4E0F61000E0981 /* HornRegistration.h */; };
 		AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB64A2D60C4E0F61000E0981 /* HornRegistration.mm */; };
@@ -11421,6 +11421,7 @@
 		AB17D1C80AF2137C00231B11 /* SmallPrinter.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmallPrinter.tif; sourceTree = "<group>"; };
 		AB1CB35A0618A37E00CD966B /* MyPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyPoint.h; sourceTree = "<group>"; };
 		AB1CB35B0618A37E00CD966B /* MyPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyPoint.m; sourceTree = "<group>"; };
+		AB2597CC0C5E3534006A1EC8 /* 3DPRESETS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = 3DPRESETS; sourceTree = "<group>"; };
 		AB2C24E00677861300A08910 /* PluginFilter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginFilter.m; sourceTree = "<group>"; };
 		AB2C24E10677861300A08910 /* PluginFilter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginFilter.h; sourceTree = "<group>"; };
 		AB2C25200677873200A08910 /* PluginManager.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginManager.m; sourceTree = "<group>"; };
@@ -11546,7 +11547,6 @@
 		AB59B18405697FD700B77AFC /* DCMView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMView.h; sourceTree = "<group>"; };
 		AB5E1A300595697700C48BEB /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
 		AB5E1AFA05956BB600C48BEB /* Accelerate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Accelerate.h; path = /System/Library/Frameworks/Accelerate.framework/Versions/A/Headers/Accelerate.h; sourceTree = "<absolute>"; };
-		AB5E39210C2C16F40015632C /* 3DPRESETS */ = {isa = PBXFileReference; lastKnownFileType = folder; name = 3DPRESETS; path = Binaries/3DPRESETS; sourceTree = "<group>"; };
 		AB64A2D60C4E0F61000E0981 /* HornRegistration.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = HornRegistration.mm; sourceTree = "<group>"; };
 		AB64A2D70C4E0F61000E0981 /* HornRegistration.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = HornRegistration.h; sourceTree = "<group>"; };
 		AB695A1D063D8261002BDF78 /* Analyze.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analyze.h; sourceTree = "<group>"; };
@@ -15033,8 +15033,8 @@
 				AB7250370ADE6F5D00A212A0 /* Decompress */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
 				ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */,
-				AB5E39210C2C16F40015632C /* 3DPRESETS */,
 				A92155E50ADCF319008D881E /* OsiriX Report.template */,
+				AB2597CC0C5E3534006A1EC8 /* 3DPRESETS */,
 				A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */,
 				A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */,
 				A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */,
@@ -26018,8 +26018,8 @@
 				CE0817BA0C0FEEAE00BBD907 /* iPodEjectOn.tif in Resources */,
 				CE27BA100C113BBA00BDC9B3 /* 3DPresetsPanel.tiff in Resources */,
 				CE897DD50C21D951005C669E /* texture.tif in Resources */,
-				AB5E393E0C2C16F40015632C /* 3DPRESETS in Resources */,
 				ABBF9A3A0C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
+				AB2597E90C5E3534006A1EC8 /* 3DPRESETS in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26418,8 +26418,8 @@
 				CE0817BE0C0FEEAE00BBD907 /* iPodEjectOn.tif in Resources */,
 				CE27BA0F0C113BBA00BDC9B3 /* 3DPresetsPanel.tiff in Resources */,
 				CE897DD40C21D951005C669E /* texture.tif in Resources */,
-				AB5E39400C2C16F40015632C /* 3DPRESETS in Resources */,
 				ABBF9A3B0C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
+				AB2597EA0C5E3534006A1EC8 /* 3DPRESETS in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26818,8 +26818,8 @@
 				CE0817BC0C0FEEAE00BBD907 /* iPodEjectOn.tif in Resources */,
 				CE27BA110C113BBA00BDC9B3 /* 3DPresetsPanel.tiff in Resources */,
 				CE897DD60C21D951005C669E /* texture.tif in Resources */,
-				AB5E393F0C2C16F40015632C /* 3DPRESETS in Resources */,
 				ABBF9A390C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
+				AB2597E80C5E3534006A1EC8 /* 3DPRESETS in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

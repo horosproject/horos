@@ -7941,7 +7941,7 @@ extern NSString * documentsDirectory();
 {
 	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:ROIDATABASE];
 	BOOL			isDir = YES;
-	long			i;
+	int				i, x;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
@@ -7966,7 +7966,12 @@ extern NSString * documentsDirectory();
 						
 						if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
 						{
-							NSString	*path = [self archiveROIsAsDICOM:[roiList[ mIndex] objectAtIndex: i]  toPath: str forImage:image];
+							NSArray	*roisArray = [roiList[ mIndex] objectAtIndex: i];
+							
+							for( x = 0 ; x < [roisArray count]; x++)
+								[[roisArray objectAtIndex: x] setPix: [pixList[mIndex] objectAtIndex:i]];
+								
+							NSString	*path = [self archiveROIsAsDICOM: roisArray  toPath: str forImage:image];
 							
 							if( path)
 								[newDICOMSR addObject: path];
