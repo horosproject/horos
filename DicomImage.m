@@ -43,7 +43,7 @@ inline int charToInt( unsigned char c)
 		case '.':		return 11;		break;
 	}
 	
-	return 1;
+	return c % 12;
 }
 
 inline unsigned char intToChar( int c)

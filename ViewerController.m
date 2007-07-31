@@ -7959,7 +7959,7 @@ extern NSString * documentsDirectory();
 							
 							for( x = 0 ; x < [roisArray count]; x++)
 								[[roisArray objectAtIndex: x] setPix: [pixList[mIndex] objectAtIndex:i]];
-								
+							
 							NSString	*path = [self archiveROIsAsDICOM: roisArray  toPath: str forImage:image];
 							
 							if( path)

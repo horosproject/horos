@@ -1732,6 +1732,9 @@
 		AB7D548F0AF6429900012A2F /* libxerces-c.27.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
 		AB7D5E5B0669A698000C16AE /* jasper.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7D5E5A0669A698000C16AE /* jasper.h */; };
 		AB7D5E5C0669A698000C16AE /* jasper.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7D5E5A0669A698000C16AE /* jasper.h */; };
+		AB80411A0C5F0AC7000F21D5 /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = AB8040FB0C5F0AC7000F21D5 /* 3DPRESETS */; };
+		AB80411B0C5F0AC7000F21D5 /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = AB8040FB0C5F0AC7000F21D5 /* 3DPRESETS */; };
+		AB80411C0C5F0AC7000F21D5 /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = AB8040FB0C5F0AC7000F21D5 /* 3DPRESETS */; };
 		AB80EBAB0AF1F5B600E7E934 /* AYDicomPrintWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB80EBA50AF1F5B600E7E934 /* AYDicomPrintWindowController.h */; };
 		AB80EBAC0AF1F5B600E7E934 /* AYDicomPrintWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB80EBA60AF1F5B600E7E934 /* AYDicomPrintWindowController.mm */; };
 		AB80EBAD0AF1F5B600E7E934 /* AYNSImageToDicom.h in Headers */ = {isa = PBXBuildFile; fileRef = AB80EBA70AF1F5B600E7E934 /* AYNSImageToDicom.h */; };
@@ -5779,9 +5782,6 @@
 		CE286C120964196C001A4573 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE286C100964196C001A4573 /* Localizable.strings */; };
 		CE286C130964196C001A4573 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE286C100964196C001A4573 /* Localizable.strings */; };
 		CE286C140964196C001A4573 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE286C100964196C001A4573 /* Localizable.strings */; };
-		CE2C00DD0C5E7CC6008E2C00 /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = CE2C00BD0C5E7CC6008E2C00 /* 3DPRESETS */; };
-		CE2C00DE0C5E7CC6008E2C00 /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = CE2C00BD0C5E7CC6008E2C00 /* 3DPRESETS */; };
-		CE2C00DF0C5E7CC6008E2C00 /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = CE2C00BD0C5E7CC6008E2C00 /* 3DPRESETS */; };
 		CE2FE58C0753A4A4005C4F80 /* VRVPRO.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE2FE58A0753A4A4005C4F80 /* VRVPRO.nib */; };
 		CE2FE58D0753A4A4005C4F80 /* VRVPRO.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE2FE58A0753A4A4005C4F80 /* VRVPRO.nib */; };
 		CE2FE58E0753A4A4005C4F80 /* VRVPRO.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE2FE58A0753A4A4005C4F80 /* VRVPRO.nib */; };
@@ -9572,7 +9572,7 @@
 		CEAF1D440A757C3200A0D729 /* jcphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7709B6828300545F5E /* jcphuff.c */; };
 		CEAF1D450A757C3200A0D729 /* jcpred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7809B6828300545F5E /* jcpred.c */; };
 		CEAF1D460A757C3200A0D729 /* jcprepct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7909B6828300545F5E /* jcprepct.c */; };
-		CEAF1D470A757C3200A0D729 /* jcsample.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7A09B6828300545F5E /* jcsample.c */; };
+		CEAF1D470A757C3200A0D729 /* jcsample.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7A09B6828300545F5E; };
 		CEAF1D480A757C3200A0D729 /* jcscale.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7B09B6828300545F5E /* jcscale.c */; };
 		CEAF1D490A757C3200A0D729 /* jcshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7C09B6828300545F5E /* jcshuff.c */; };
 		CEAF1D4A0A757C3200A0D729 /* jctrans.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7D09B6828300545F5E /* jctrans.c */; };
@@ -9649,7 +9649,7 @@
 		CEAF1D910A757C3200A0D729 /* jcphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7709B6828300545F5E /* jcphuff.c */; };
 		CEAF1D920A757C3200A0D729 /* jcpred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7809B6828300545F5E /* jcpred.c */; };
 		CEAF1D930A757C3200A0D729 /* jcprepct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7909B6828300545F5E /* jcprepct.c */; };
-		CEAF1D940A757C3200A0D729 /* jcsample.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7A09B6828300545F5E /* jcsample.c */; };
+		CEAF1D940A757C3200A0D729 /* jcsample.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7A09B6828300545F5E; };
 		CEAF1D950A757C3200A0D729 /* jcscale.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7B09B6828300545F5E /* jcscale.c */; };
 		CEAF1D960A757C3200A0D729 /* jcshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7C09B6828300545F5E /* jcshuff.c */; };
 		CEAF1D970A757C3200A0D729 /* jctrans.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7D09B6828300545F5E /* jctrans.c */; };
@@ -11575,6 +11575,7 @@
 		AB7D0BB30615F94D00890872 /* ROI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROI.h; sourceTree = "<group>"; };
 		AB7D0BB40615F94D00890872 /* ROI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ROI.m; sourceTree = "<group>"; };
 		AB7D5E5A0669A698000C16AE /* jasper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jasper.h; path = Binaries/Jasper/Headers/jasper.h; sourceTree = "<group>"; };
+		AB8040FB0C5F0AC7000F21D5 /* 3DPRESETS */ = {isa = PBXFileReference; lastKnownFileType = folder; name = 3DPRESETS; path = Binaries/3DPRESETS; sourceTree = "<group>"; };
 		AB80EBA40AF1F5B600E7E934 /* AYDcmPrintSCU.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AYDcmPrintSCU.h; path = AYDicomPrint/AYDcmPrintSCU.h; sourceTree = "<group>"; };
 		AB80EBA50AF1F5B600E7E934 /* AYDicomPrintWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AYDicomPrintWindowController.h; sourceTree = "<group>"; };
 		AB80EBA60AF1F5B600E7E934 /* AYDicomPrintWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = AYDicomPrintWindowController.mm; sourceTree = "<group>"; };
@@ -13169,7 +13170,6 @@
 		CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CalciumScoringWindowController.m; sourceTree = "<group>"; };
 		CE28086E0B6B76930093E9D3 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/CalciumScoring.nib; sourceTree = "<group>"; };
 		CE286C110964196C001A4573 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = Binaries/English.lproj/Localizable.strings; sourceTree = "<group>"; };
-		CE2C00BD0C5E7CC6008E2C00 /* 3DPRESETS */ = {isa = PBXFileReference; lastKnownFileType = folder; name = 3DPRESETS; path = Binaries/3DPRESETS; sourceTree = "<group>"; };
 		CE2FE58B0753A4A4005C4F80 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/VRVPRO.nib; sourceTree = SOURCE_ROOT; };
 		CE3422CA0946237A00CCEA2A /* libvtksys.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtksys.a; path = Binaries/VTKLibs/libvtksys.a; sourceTree = "<group>"; };
 		CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scripting_Additions.h; sourceTree = "<group>"; };
@@ -15033,7 +15033,7 @@
 				AB7250370ADE6F5D00A212A0 /* Decompress */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
 				ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */,
-				CE2C00BD0C5E7CC6008E2C00 /* 3DPRESETS */,
+				AB8040FB0C5F0AC7000F21D5 /* 3DPRESETS */,
 				A92155E50ADCF319008D881E /* OsiriX Report.template */,
 				A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */,
 				A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */,
@@ -26019,7 +26019,7 @@
 				CE27BA100C113BBA00BDC9B3 /* 3DPresetsPanel.tiff in Resources */,
 				CE897DD50C21D951005C669E /* texture.tif in Resources */,
 				ABBF9A3A0C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
-				CE2C00DF0C5E7CC6008E2C00 /* 3DPRESETS in Resources */,
+				AB80411B0C5F0AC7000F21D5 /* 3DPRESETS in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26419,7 +26419,7 @@
 				CE27BA0F0C113BBA00BDC9B3 /* 3DPresetsPanel.tiff in Resources */,
 				CE897DD40C21D951005C669E /* texture.tif in Resources */,
 				ABBF9A3B0C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
-				CE2C00DE0C5E7CC6008E2C00 /* 3DPRESETS in Resources */,
+				AB80411C0C5F0AC7000F21D5 /* 3DPRESETS in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26819,7 +26819,7 @@
 				CE27BA110C113BBA00BDC9B3 /* 3DPresetsPanel.tiff in Resources */,
 				CE897DD60C21D951005C669E /* texture.tif in Resources */,
 				ABBF9A390C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
-				CE2C00DD0C5E7CC6008E2C00 /* 3DPRESETS in Resources */,
+				AB80411A0C5F0AC7000F21D5 /* 3DPRESETS in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

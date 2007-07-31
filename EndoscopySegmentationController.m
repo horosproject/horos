@@ -37,10 +37,10 @@
 				   name: @"PLUGINdrawObjects"
 				 object: nil];
 				 
-		[nc addObserver: self
-				selector: @selector(removeROI:)
-				   name:  @"removeROI"
-				 object: nil];
+//		[nc addObserver: self
+//				selector: @selector(removeROI:)
+//				   name:  @"removeROI"
+//				 object: nil];
 	}
 	return self;
 }

@@ -4734,7 +4734,7 @@ END_CREATE_ROIS:
 					}
 					isRGB = NO;
 				}
-					break;
+			break;
 				
 			case 32:
 				//already argb
@@ -4755,12 +4755,10 @@ END_CREATE_ROIS:
 						*tmpPtr++ = r;
 						*tmpPtr++ = g;
 						*tmpPtr++ = b;
-						
-						
 					}			
 				}
 					NSLog(@"finished 32  bit");
-				break;
+			break;
 				
 			case 24:
 				//NSLog(@"loadDICOMDCMFramework 24 bits");
@@ -4780,11 +4778,9 @@ END_CREATE_ROIS:
 						*tmpPtr++ = r;
 						*tmpPtr++ = g;
 						*tmpPtr++ = b;
-						
-						
 					}
 				}
-					break;
+			break;
 				
 			case 48:
 				NSLog(@"48 bits");
@@ -4801,11 +4797,8 @@ END_CREATE_ROIS:
 						*tmpPtr++ = *srcPtr;	srcPtr += 2;
 						*tmpPtr++ = *srcPtr;	srcPtr += 2;
 					}
-					
-					//BlockMoveData( srcPtr, tmpPtr, width*4);
-					//tmpPtr += width*4;
 				}
-					break;
+			break;
 				
 			default:
 				NSLog(@"Error - Unknow...");
