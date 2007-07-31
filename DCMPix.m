@@ -3045,6 +3045,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 		orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
 
 		[srcFile retain];
+		
+		annotationsDictionary = [[NSMutableDictionary dictionary] retain];
     }
     return self;
 }
@@ -4647,6 +4649,7 @@ END_CREATE_ROIS:
 		return NO;
 	}
 
+	[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
 	
 	NSString            *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
 //	NSString			*MediaStorageSOPInstanceUID = [dcmObject attributeValueWithName:@"MediaStorageSOPInstanceUID"];
@@ -5704,6 +5707,8 @@ END_CREATE_ROIS:
 		slope = 1.0;
 		
 		if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+		
+		[self loadCustomImageAnnotationsPapyLink:fileNb DCMLink:nil];
 		
 		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0008);
 		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
@@ -7514,7 +7519,7 @@ END_CREATE_ROIS:
 			if( clutGreen) free( clutGreen);
 			if( clutBlue) free( clutBlue);
 		}
-		
+				
 		[PapyrusLock lock];
 		
 		// close and free the file and the associated allocated memory 
@@ -10337,6 +10342,8 @@ BOOL            readable = YES;
 
 	if( subGammaFunction) vImageDestroyGammaFunction( subGammaFunction);
 	
+	[annotationsDictionary release];
+	
     [super dealloc];
 }
 
@@ -10549,7 +10556,140 @@ BOOL            readable = YES;
 	[description appendString:[NSString stringWithFormat: @"origin X: %f Y: %f  Z: %f\n", originX, originY, originZ]];
 
 	return description;
+}
+
+#pragma mark -
+#pragma mark Image Annotations
+
+
+//PapyShort		fileNb
+- (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element papyLink:(PapyShort)fileNb;
+{
+	NSString *field = @"";
+	SElement *theGroupP;
+	PapyShort theErr = Papy3GotoGroupNb (fileNb, group);
+	if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+	{
+		SElement *inGrOrModP = theGroupP;
+		
+		int theEnumGrNb = Papy3ToEnumGroup(group);
+		int theMaxElem = gArrGroup [theEnumGrNb].size;
+		int j;
+		
+		for (j = 0; j < theMaxElem; j++, inGrOrModP++)
+		{
+			if( inGrOrModP->element == element)
+			{
+				if( inGrOrModP->nb_val > 0)
+				{
+					UValue_T *theValueP = inGrOrModP->value;
+					if( theValueP->a)
+					{
+						field = [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding];
+						break;
+					}
+				}
+			}
+		}
+		theErr = Papy3GroupFree (&theGroupP, TRUE);
+	}
+	return field;
+}
+
+- (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element DCMLink:(DCMObject*)dcmObject;
+{
+	NSString	*grel = [NSString stringWithFormat:@"%04X,%04X", group, element];
 	
+	id field;
+	
+	if (field = [dcmObject attributeValueForKey: grel])
+	{
+		if([field isKindOfClass:[NSString class]])
+			return field; //[dicomElements setObject:field forKey:@"commentsAutoFill"];		
+		else if([field isKindOfClass:[NSNumber class]])
+			return [field stringValue];//[dicomElements setObject:[field stringValue] forKey:@"commentsAutoFill"];	
+		else if([field isKindOfClass:[NSCalendarDate class]])
+			return [field description];//[dicomElements setObject:[field description] forKey:@"commentsAutoFill"];
+		else
+			return nil;
+	}
+	return nil;
+}
+
+- (void)loadCustomImageAnnotationsPapyLink:(PapyShort)fileNb DCMLink:(DCMObject*)dcmObject;
+{
+	NSDictionary *annotationsDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"];
+
+	NSString *modality = [imageObj valueForKeyPath:@"series.modality"]; // imageObj = link to database
+	NSDictionary *annotationsForModality = [annotationsDict objectForKey:modality];
+
+	if([[annotationsForModality objectForKey:@"sameAsDefault"] intValue]==1) annotationsForModality = [annotationsDict objectForKey:@"Default"];
+
+	// image sides (LowerLeft, LowerMiddle, LowerRight, MiddleLeft, MiddleRight, TopLeft, TopMiddle, TopRight) & sameAsDefault
+	NSArray *keys = [annotationsForModality allKeys];
+	
+	int k, a, f;
+
+	for (k=0; k<[keys count]; k++)
+	{
+		if(![[keys objectAtIndex:k] isEqualToString:@"sameAsDefault"])
+		{
+			NSArray *annotations = [annotationsForModality objectForKey:[keys objectAtIndex:k]];
+			NSMutableArray *annotationsOUT = [NSMutableArray array];
+			
+			for (a=0; a<[annotations count]; a++)
+			{
+				NSDictionary *annot = [annotations objectAtIndex:a];
+				NSArray *content = [annot objectForKey:@"fullContent"];
+				NSMutableArray *contentOUT = [NSMutableArray array];
+				for (f=0; f<[content count]; f++)
+				{
+					NSDictionary *field = [content objectAtIndex:f];
+					NSString *type = [field objectForKey:@"type"];
+					NSString *value;
+					if([type isEqualToString:@"DICOM"])
+					{
+//						if([dicomElements objectforKey:[field objectForKey:@"name"]])
+//							value = [dicomElements objectforKey:[field objectForKey:@"name"]];
+						if(fileNb>=0)
+							value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] papyLink:fileNb];
+						else if(dcmObject)
+							value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] DCMLink:dcmObject];
+						else
+							value = nil;
+						if(value==nil) value = @"";
+						NSLog(@"DICOM group: %@, element: %@, field: %@, value: %@", [field objectForKey:@"group"], [field objectForKey:@"element"], [field objectForKey:@"name"], value);
+					}
+					else if([type isEqualToString:@"DB"])
+					{
+						NSString *fieldName = [field objectForKey:@"field"];
+						NSString *level = [field objectForKey:@"level"];
+						if([level isEqualToString:@"image"])
+						{
+							value = [imageObj valueForKey:fieldName];
+						}
+						else if([level isEqualToString:@"series"])
+						{
+							value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.%@", fieldName]];
+						}
+						else if([level isEqualToString:@"study"])
+						{
+							value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
+						}
+//						NSLog(@"level : %@ / field : %@ / value : %@", level, fieldName, value);
+					}
+					else if([type isEqualToString:@"Special"])
+					{
+						value = [field objectForKey:@"field"];
+					}
+					[contentOUT addObject:value];
+				}
+				[annotationsOUT addObject:contentOUT];
+			}
+			[annotationsDictionary setObject:annotationsOUT forKey:[keys objectAtIndex:k]];
+		}
+	}
+	NSLog(@"annotationsDictionary : %@", annotationsDictionary);
 }
 
 @end

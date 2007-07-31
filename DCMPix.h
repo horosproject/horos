@@ -176,6 +176,9 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	
 	NSData				*transferFunction;
 	float				*transferFunctionPtr;
+	
+// custom annotations
+	NSMutableDictionary *annotationsDictionary;
 }
 
 + (void) checkUserDefaults: (BOOL) update;

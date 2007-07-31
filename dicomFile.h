@@ -41,7 +41,6 @@
 	long				NoOfSeries;
     
 	NSMutableDictionary *dicomElements;
-	
 }
 // file functions
 + (BOOL) isTiffFile:(NSString *) file;
