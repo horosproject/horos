@@ -31,6 +31,8 @@
 	NSRect						originalViewFrame, xReslicedViewFrame, yReslicedViewFrame;
 	
 	short						thickSlabMode, thickSlab;
+	
+	NSData						*transferFunction;
 }
 
 - (id) initWithPixList: (NSArray*) pixList :(NSArray*) filesList :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC:(id) newViewer;
@@ -39,6 +41,8 @@
 - (void) flipVolume;
 
 - (void) ApplyCLUTString:(NSString*) str;
+- (void) ApplyOpacityString:(NSString*) str;
+
 - (void) setWLWW:(float) iwl :(float) iww;
 - (void) setCurWLWWMenu:(NSString*) str;
 - (void) setFusion;
@@ -51,8 +55,8 @@
 -(void) setThickSlab : (short) newThickSlab;
 
 - (void) showViews:(id)sender;
+- (void) setTransferFunction:(NSData*) tf;
 
-// accessors
 - (OrthogonalReslice*) reslicer;
 -(void)setReslicer:(OrthogonalReslice*)newReslicer;
 - (OrthogonalMPRView*) originalView;

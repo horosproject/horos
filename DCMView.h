@@ -209,7 +209,8 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 	NSTimer			*_rightMouseDownTimer; //Checking For Right hold
 	NSImage			*destinationImage; //image will be dropping
 	
-	BOOL			_hasChanged;
+	BOOL			_hasChanged, needToLoadTexture;
+	
 	//Context for rendering to iChat
 	NSOpenGLContext *_alternateContext;
 	NSDictionary *_hotKeyDictionary;
@@ -312,6 +313,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 - (void) sendSyncMessage:(short) inc;
 - (void) setQuartzExtreme:(BOOL) set;
 - (void) loadTextures;
+- (void)loadTexturesCompute;
 - (void) flipVertical:(id) sender;
 - (void) flipHorizontal:(id) sender;
 - (void) setFusion:(short) mode :(short) stacks;
@@ -403,6 +405,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 - (void) stopROIEditingForce:(BOOL) force;
 - (void)subDrawRect: (NSRect)aRect;  // Subclassable, default does nothing.
 - (void) setDrawing:(BOOL) v;
+- (void) updateImage;
 
 // methodes to access global variables (for plugins)
 + (BOOL) display2DMPRLines;

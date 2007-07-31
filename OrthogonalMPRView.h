@@ -30,6 +30,8 @@
 	
 	long						thickSlabX, thickSlabY;
 	NSString					*curWLWWMenu;
+	NSString					*curCLUTMenu;
+	NSString					*curOpacityMenu;
 }
 
 - (void) setPixList: (NSMutableArray*) pix :(NSArray*) files;
@@ -59,6 +61,12 @@
 
 - (void) setCurWLWWMenu:(NSString*) str;
 - (NSString*) curWLWWMenu;
+
+- (NSString*) curCLUTMenu;
+- (void) setCurCLUTMenu: (NSString*) clut;
+
+- (NSString*) curOpacityMenu;
+- (void) setCurOpacityMenu: (NSString*) o;
 
 - (void) setCurRoiList: (NSMutableArray*) rois;
 

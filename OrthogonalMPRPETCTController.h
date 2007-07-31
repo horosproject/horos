@@ -40,4 +40,6 @@
 
 - (void) fullWindowModality: (id) sender;
 - (void) fullWindowPlan: (id) sender;
+
+-(void) ApplyOpacityString:(NSString*) str;
 @end

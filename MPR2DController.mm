@@ -875,9 +875,6 @@ extern NSString * documentsDirectory();
 	}
 }
 
-
-
-
 - (IBAction) AddOpacity:(id) sender
 {
 	NSDictionary		*aCLUT;

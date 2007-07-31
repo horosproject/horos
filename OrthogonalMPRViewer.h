@@ -50,8 +50,10 @@
 	IBOutlet NSPopUpButton				*clutPopup;
 	IBOutlet NSPopUpButton				*OpacityPopup;
 
-	NSString							*curWLWWMenu, *curCLUTMenu;//, *curOpacityMenu, *curConvMenu;
-
+	NSString							*curWLWWMenu, *curCLUTMenu, *curOpacityMenu;
+	
+	NSData								*transferFunction;	//For opacity
+	
 	// 4D
 	IBOutlet NSView						*movieView;
 	IBOutlet NSTextField				*movieTextSlide;
@@ -105,6 +107,8 @@
 - (void) blendingPropagateOriginal:(OrthogonalMPRView*) sender;
 - (void) blendingPropagateX:(OrthogonalMPRView*) sender;
 - (void) blendingPropagateY:(OrthogonalMPRView*) sender;
+
+-(void) ApplyOpacityString:(NSString*) str;
 
 //export
 -(IBAction) endExportDICOMFileSettings:(id) sender;

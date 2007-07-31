@@ -2270,7 +2270,7 @@
 		ABE470020A76411900327466 /* jdcoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8309B6828300545F5E /* jdcoefct.c */; };
 		ABE470030A76411900327466 /* jdcolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8409B6828300545F5E /* jdcolor.c */; };
 		ABE470040A76411900327466 /* jdct16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C8509B6828300545F5E /* jdct16.h */; };
-		ABE470050A76411900327466 /* jddctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8609B6828300545F5E; };
+		ABE470050A76411900327466 /* jddctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8609B6828300545F5E /* jddctmgr.c */; };
 		ABE470060A76411900327466 /* jddiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8709B6828300545F5E /* jddiffct.c */; };
 		ABE470070A76411900327466 /* jdhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8809B6828300545F5E /* jdhuff.c */; };
 		ABE470080A76411900327466 /* jdhuff16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C8909B6828300545F5E /* jdhuff16.h */; };
@@ -9584,7 +9584,7 @@
 		CEAF1D500A757C3200A0D729 /* jdcoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8309B6828300545F5E /* jdcoefct.c */; };
 		CEAF1D510A757C3200A0D729 /* jdcolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8409B6828300545F5E /* jdcolor.c */; };
 		CEAF1D520A757C3200A0D729 /* jdct16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C8509B6828300545F5E /* jdct16.h */; };
-		CEAF1D530A757C3200A0D729 /* jddctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8609B6828300545F5E; };
+		CEAF1D530A757C3200A0D729 /* jddctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8609B6828300545F5E /* jddctmgr.c */; };
 		CEAF1D540A757C3200A0D729 /* jddiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8709B6828300545F5E /* jddiffct.c */; };
 		CEAF1D550A757C3200A0D729 /* jdhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8809B6828300545F5E /* jdhuff.c */; };
 		CEAF1D560A757C3200A0D729 /* jdhuff16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C8909B6828300545F5E /* jdhuff16.h */; };
@@ -9661,7 +9661,7 @@
 		CEAF1D9D0A757C3200A0D729 /* jdcoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8309B6828300545F5E /* jdcoefct.c */; };
 		CEAF1D9E0A757C3200A0D729 /* jdcolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8409B6828300545F5E /* jdcolor.c */; };
 		CEAF1D9F0A757C3200A0D729 /* jdct16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C8509B6828300545F5E /* jdct16.h */; };
-		CEAF1DA00A757C3200A0D729 /* jddctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8609B6828300545F5E; };
+		CEAF1DA00A757C3200A0D729 /* jddctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8609B6828300545F5E /* jddctmgr.c */; };
 		CEAF1DA10A757C3200A0D729 /* jddiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8709B6828300545F5E /* jddiffct.c */; };
 		CEAF1DA20A757C3200A0D729 /* jdhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8809B6828300545F5E /* jdhuff.c */; };
 		CEAF1DA30A757C3200A0D729 /* jdhuff16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C8909B6828300545F5E /* jdhuff16.h */; };
@@ -10669,7 +10669,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = A9FF849B0C5F187800D50C95 /* OSICustomImageAnnotations.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = A90117090C563E84004928BF /* OSICustomImageAnnotations.prefPane */;
+			remoteGlobalIDString = A90117090C563E84004928BF;
 			remoteInfo = OSICustomImageAnnotations;
 		};
 		AB381B060ABE9F9A00239326 /* PBXContainerItemProxy */ = {

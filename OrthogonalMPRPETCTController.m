@@ -201,7 +201,7 @@
 		
 		[originalView setBlending:[[viewer PETController] originalView]];
 		[originalView setBlendingFactor: blendingFactor];
-		[originalView setIndexWithReset: [[[viewer CTController] originalView] curImage] :NO];
+		[originalView setIndex: [[[viewer CTController] originalView] curImage]];
 		
 		// cross position
 		[originalView setCrossPositionX:[[[viewer CTController] originalView] crossPositionX]];
@@ -209,7 +209,7 @@
 		
 		[xReslicedView setBlending:[[viewer PETController] xReslicedView]];
 		[xReslicedView setBlendingFactor: blendingFactor];
-		[xReslicedView setIndexWithReset:0 :NO];
+		[xReslicedView setIndex:0];
 
 		// cross position
 		[xReslicedView setCrossPositionX:[[[viewer CTController] xReslicedView] crossPositionX]];
@@ -217,7 +217,7 @@
 				
 		[yReslicedView setBlending:[[viewer PETController] yReslicedView]];
 		[yReslicedView setBlendingFactor: blendingFactor];
-		[yReslicedView setIndexWithReset:0 :NO];
+		[yReslicedView setIndex:0];
 
 		// cross position
 		[yReslicedView setCrossPositionX:[[[viewer CTController] yReslicedView] crossPositionX]];
@@ -370,6 +370,14 @@
 	[(OrthogonalMPRPETCTView*)originalView setCurCLUTMenu: str];
 	[(OrthogonalMPRPETCTView*)xReslicedView setCurCLUTMenu: str];
 	[(OrthogonalMPRPETCTView*)yReslicedView setCurCLUTMenu: str];
+}
+
+-(void) ApplyOpacityString:(NSString*) str
+{
+	[super ApplyOpacityString:str];
+	[(OrthogonalMPRPETCTView*)originalView setCurOpacityMenu: str];
+	[(OrthogonalMPRPETCTView*)xReslicedView setCurOpacityMenu: str];
+	[(OrthogonalMPRPETCTView*)yReslicedView setCurOpacityMenu: str];
 }
 
 @end

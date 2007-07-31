@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "OrthogonalMPRViewer.h"
+#import "OpacityTransferView.h"
 #include <OpenGL/CGLCurrent.h>
 #include <OpenGL/CGLContext.h>
 #import "Mailer.h"
@@ -121,9 +122,6 @@ NSString * documentsDirectory();
 		[moviePosSlider setEnabled:NO];
 	}
 	
-	//originalDCMPixList[curMovieIndex] = [pix retain];
-	//originalFileList[curMovieIndex] = [files retain];
-	
 	[moviePosSlider setMaxValue:maxMovieIndex-1];
 	[moviePosSlider setNumberOfTickMarks:maxMovieIndex];
 	
@@ -151,11 +149,16 @@ NSString * documentsDirectory();
 	[nc addObserver:self selector:@selector(UpdateCLUTMenu:) name:@"UpdateCLUTMenu" object:nil];
 	[nc postNotificationName:@"UpdateCLUTMenu" object:curCLUTMenu userInfo:0L];
 
-	// WL/WW Menu	
+	// WL/WW Menu
 	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
 	[nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
 	[nc postNotificationName:@"UpdateWLWWMenu" object:curWLWWMenu userInfo:0L];
-	
+
+	// Opacity Menu
+	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
+	[nc addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
+	[nc postNotificationName:@"UpdateOpacityMenu" object:curOpacityMenu userInfo:0L];
+
 	return self;
 }
 
@@ -165,6 +168,7 @@ NSString * documentsDirectory();
 	
 	[[NSUserDefaults standardUserDefaults] setInteger:[thickSlabSlider intValue] forKey:@"stackThicknessOrthoMPR"];
 	
+	[curOpacityMenu release];
 	[curWLWWMenu release];
 	[curCLUTMenu release];
 	[viewer release];
@@ -172,11 +176,6 @@ NSString * documentsDirectory();
 	[exportDCM release];
 	[super dealloc];
 }
-
-/* nothing to do
-- (void)finalize {
-}
-*/
 
 - (OrthogonalMPRController*) controller
 {
@@ -258,67 +257,17 @@ NSString * documentsDirectory();
     {
         [[clutPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector(ApplyCLUT:) keyEquivalent:@""];
     }
-    //[[clutPopup menu] addItem: [NSMenuItem separatorItem]];
-    //[[clutPopup menu] addItemWithTitle: NSLocalizedString(@"Add a CLUT", nil) action:@selector(AddCLUT:) keyEquivalent:@""];
-
+	
 	[[[clutPopup menu] itemAtIndex:0] setTitle:curCLUTMenu];
 }
 
 - (IBAction) AddCLUT:(id) sender
 {
-//	[self clutAction:self];
-//	[clutName setStringValue: NSLocalizedString(@"Unnamed", nil)];
-	
-  //  [NSApp beginSheet: addCLUTWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
 - (void) ApplyCLUT:(id) sender
 {
-//    if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
-//    {
-//        NSBeginAlertSheet( NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteCLUT:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this CLUT : '%@'", 0L), [sender title]]);
-//		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
-//	}
-//    else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
-//    {
-//		NSDictionary		*aCLUT;
-//		NSArray				*array;
-//		long				i;
-//		unsigned char		red[256], green[256], blue[256];
-//		
-//		[self ApplyCLUTString:[sender title]];
-//		
-//		aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey:curCLUTMenu];
-//		if( aCLUT)
-//		{
-//			if( [aCLUT objectForKey:@"Points"] != 0L)
-//			{
-//				[self clutAction:self];
-//				[clutName setStringValue: [sender title]];
-//				
-//				NSMutableArray	*pts = [clutView getPoints];
-//				NSMutableArray	*cols = [clutView getColors];
-//				
-//				[pts removeAllObjects];
-//				[cols removeAllObjects];
-//				
-//				[pts addObjectsFromArray: [aCLUT objectForKey:@"Points"]];
-//				[cols addObjectsFromArray: [aCLUT objectForKey:@"Colors"]];
-//				
-//				[NSApp beginSheet: addCLUTWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-//				
-//				[clutView setNeedsDisplay:YES];
-//			}
-//			else
-//			{
-//				NSRunAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(@"Only CLUT created in OsiriX 1.3.1 or higher can be edited...", nil), nil, nil, nil);
-//			}
-//		}
-//	}
-//    else
-//    {
-		[self ApplyCLUTString:[sender title]];
-//    }
+	[self ApplyCLUTString:[sender title]];
 }
 
 - (void) setWLWW:(float) iwl :(float) iww
@@ -335,20 +284,12 @@ NSString * documentsDirectory();
     NSArray     *sortedKeys;
 
     // Presets VIEWER Menu
-	
 	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] allKeys];
     sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
     i = [[wlwwPopup menu] numberOfItems];
     while(i-- > 0) [[wlwwPopup menu] removeItemAtIndex:0];
-    
-/*    item = [[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""];
-    [item setImage:[NSImage imageNamed:@"Presets"]];
-    [item setOnStateImage:nil];
-    [item setMixedStateImage:nil];
-    [[wlwwPopup menu] addItem:item];
-    [item release]; */
-    
+
     [[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:nil keyEquivalent:@""];
 	[[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Other", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
 	[[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
@@ -359,14 +300,8 @@ NSString * documentsDirectory();
     {
         [[wlwwPopup menu] addItemWithTitle:[NSString stringWithFormat:@"%d - %@", i+1, [sortedKeys objectAtIndex:i]] action:@selector (ApplyWLWW:) keyEquivalent:@""];
     }
-   // [[wlwwPopup menu] addItem: [NSMenuItem separatorItem]];
-   // [[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Add Current WL/WW", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
-	//[[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Set WL/WW Manually", nil) action:@selector (SetWLWW:) keyEquivalent:@""];
 	
 	[[[wlwwPopup menu] itemAtIndex:0] setTitle: curWLWWMenu];
-	
-//	[self createDCMViewMenu];
-	
 }
 
 - (void)applyWLWWForString:(NSString *)menuString
@@ -401,8 +336,6 @@ NSString * documentsDirectory();
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 }
 
-
-
 - (void) ApplyWLWW:(id) sender
 {
 	NSString	*menuString = [sender title];
@@ -431,6 +364,83 @@ NSString * documentsDirectory();
 		[curWLWWMenu release];
 		curWLWWMenu = [wlww retain];
 	}
+}
+
+- (void) OpacityChanged: (NSNotification*) note
+{
+	[controller refreshViews];
+}
+
+-(void) UpdateOpacityMenu: (NSNotification*) note
+{
+    //*** Build the menu
+    short       i;
+    NSArray     *keys;
+    NSArray     *sortedKeys;
+
+    // Presets VIEWER Menu
+	
+	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] allKeys];
+    sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+	
+    i = [[OpacityPopup menu] numberOfItems];
+    while(i-- > 0) [[OpacityPopup menu] removeItemAtIndex:0];
+	
+    [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
+	[[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
+    for( i = 0; i < [sortedKeys count]; i++)
+    {
+        [[OpacityPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyOpacity:) keyEquivalent:@""];
+    }
+	
+	[[[OpacityPopup menu] itemAtIndex:0] setTitle:curOpacityMenu];
+}
+
+-(void) ApplyOpacityString:(NSString*) str
+{
+	NSDictionary		*aOpacity;
+	NSArray				*array;
+	int					i;
+	
+	if( [str isEqualToString:NSLocalizedString(@"Linear Table", nil)])
+	{
+		if( curOpacityMenu != str)
+		{
+			[curOpacityMenu release];
+			curOpacityMenu = [str retain];
+		}
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+		
+		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
+		
+		[controller setTransferFunction: 0L];
+	}
+	else
+	{
+		aOpacity = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] objectForKey: str];
+		if (aOpacity)
+		{
+			array = [aOpacity objectForKey:@"Points"];
+			
+			if( curOpacityMenu != str)
+			{
+				[curOpacityMenu release];
+				curOpacityMenu = [str retain];
+			}
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+			
+			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
+			
+			[controller setTransferFunction: [OpacityTransferView tableWith4096Entries: [aOpacity objectForKey:@"Points"]]];
+		}
+	}
+	
+	[controller refreshViews];
+}
+
+- (void) ApplyOpacity: (id) sender
+{
+	[self ApplyOpacityString:[sender title]];
 }
 
 - (void) toggleDisplayResliceAxes
@@ -1637,7 +1647,6 @@ NSString * documentsDirectory();
 	//[[controller originalView] sendSyncMessage:1];
 	[controller setFusion];
 	
-	
 	[controller refreshViews];
 }
 
@@ -1676,6 +1685,9 @@ NSString * documentsDirectory();
 }
 - (NSString *)curCLUTMenu{
 	return curCLUTMenu;
+}
+- (NSString *)curOpacityMenu{
+	return curOpacityMenu;
 }
 
 - (void)setCurrentTool:(int)currentTool{

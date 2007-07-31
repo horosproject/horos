@@ -16,13 +16,8 @@
 #import "OrthogonalMPRView.h"
 
 @interface OrthogonalMPRPETCTView : OrthogonalMPRView {
-	NSString	*curCLUTMenu;
 }
 - (void) superSetBlendingFactor:(float) f;
 - (void) superFlipVertical:(id) sender;
 - (void) superFlipHorizontal:(id) sender;
-
-- (NSString*) curCLUTMenu;
-- (void) setCurCLUTMenu: (NSString*) clut;
-
 @end

@@ -1499,11 +1499,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     
 	if( dcmPixList)
 	{
-		if( reset == YES) [self setIndexWithReset: firstImage :YES];
+		if( reset == YES)
+		{
+			[self setIndexWithReset: firstImage :YES];
+			[self updatePresentationStateFromSeries];
+		}
 	}
-	
-	//get Presentation State info from series Object
-	[self updatePresentationStateFromSeries];
 	
     [self setNeedsDisplay:true];
 }
@@ -5273,6 +5274,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     [self setNeedsDisplay:YES];
 }
 
+-(void) updateImage
+{
+	float wl, ww;
+	
+	[self getWLWW: &wl :&ww];
+	[self setWLWW: wl :ww];
+}
+
 -(void) barMenu:(id) sender
 {
     NSMenu   *menu = [sender menu];
@@ -6363,6 +6372,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	long		clutBars	= CLUTBARS;	//[[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	long		annotations	= ANNOTATIONS;	//[[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
+	
+	if( needToLoadTexture)
+		[self loadTexturesCompute];
 	
 	if( noScale)
 	{
@@ -7676,49 +7688,47 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) setScaleValueCentered:(float) x
 {
-	NSLog( @"setScaleValueCentered");
-	if( scaleValue)
+	if( x != scaleValue)
 	{
-		origin.x = ((origin.x * x) / scaleValue);
-		origin.y = ((origin.y * x) / scaleValue);
-				
-		originOffset.x = ((originOffset.x * x) / scaleValue);
-		originOffset.y = ((originOffset.y * x) / scaleValue);
+		if( scaleValue)
+		{
+			origin.x = ((origin.x * x) / scaleValue);
+			origin.y = ((origin.y * x) / scaleValue);
+					
+			originOffset.x = ((originOffset.x * x) / scaleValue);
+			originOffset.y = ((originOffset.y * x) / scaleValue);
+		}
+		
+		scaleValue = x;
+		
+		if( x < 0.01) scaleValue = 0.01;
+		if( x > 100) scaleValue = 100;
+		
+		if( [self softwareInterpolation])
+			[self loadTextures];
+		else if( zoomIsSoftwareInterpolated)
+			[self loadTextures];
+		
+		[self setNeedsDisplay:YES];
 	}
-	scaleValue = x;
-	
-	if( x < 0.01) scaleValue = 0.01;
-	if( x > 100) scaleValue = 100;
-	
-	if( [self softwareInterpolation])
-		[self loadTextures];
-	else if( zoomIsSoftwareInterpolated)
-		[self loadTextures];
-	
-	[self setNeedsDisplay:YES];
 }
 
 -(void) setScaleValue:(float) x
 {
-	NSLog( @"scaleValue");
 	if( scaleValue != x)
 	{
 		scaleValue = x;
 		if( x < 0.01) scaleValue = 0.01;
 		if( x > 100) scaleValue = 100;
-
-	//	if( scaleValue > 0.01 && scaleValue < 100) scaleValue = scaleValue;
-	//	else scaleValue = 0.01;
 		
-	if( [self softwareInterpolation])
-		[self loadTextures];
-	else if( zoomIsSoftwareInterpolated)
-		[self loadTextures];
+		if( [self softwareInterpolation])
+			[self loadTextures];
+		else if( zoomIsSoftwareInterpolated)
+			[self loadTextures];
 		
-	[self setNeedsDisplay:YES];
+		[self setNeedsDisplay:YES];
 	}
 }
-
 
 -(NSArray*) dcmFilesList
 {
@@ -7974,7 +7984,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (BOOL) softwareInterpolation
 {
-	if(	scaleValue > 4 && NOINTERPOLATION == NO && [self is2DViewer] &&
+	if(	scaleValue > 4 && NOINTERPOLATION == NO && //[self is2DViewer] &&
 		SOFTWAREINTERPOLATION == YES && [curDCM pwidth] <= SOFTWAREINTERPOLATION_MAX &&
 		[curDCM isRGB] == NO && [curDCM thickSlabVRActivated] == NO)
 	{
@@ -8479,7 +8489,7 @@ BOOL	lowRes = NO;
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: sender];
 }
 
-- (void)loadTextures
+- (void)loadTexturesCompute
 {
     [[self openGLContext] makeCurrentContext];
 	
@@ -8492,6 +8502,13 @@ BOOL	lowRes = NO;
 		else
 			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable:0L greenTable:0L blueTable:0L textureWidth:&blendingTextureWidth textureHeight:&blendingTextureHeight resampledBaseAddr:&blendingResampledBaseAddr resampledBaseAddrSize:&blendingResampledBaseAddrSize];
 	}
+
+	needToLoadTexture = NO;
+}
+
+- (void) loadTextures
+{
+	needToLoadTexture = YES;
 }
 
 - (BOOL)becomeFirstResponder
@@ -8513,28 +8530,6 @@ BOOL	lowRes = NO;
 	return YES;
 }
 
-//- (BOOL)resignFirstResponder{
-//	isKeyView = NO;
-//	return [super resignFirstResponder];
-//}
-
-//- (void)changeColor:(id)sender{
-//	NSLog(@"changed color");
-//	[fontColor release];
-//	fontColor = [[(NSColorPanel *)sender color] retain];	
-//	[self setNeedsDisplay:YES];
-//	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:fontColor  forKey:@"fontColor"];
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewFontColor" object: self userInfo: 0L];
-//}
-//
-//-(void)setFontColor:(NSNotification *)note{
-//	if ([note object] != self) {
-//		[fontColor release];
-//		fontColor = [[note userInfo] objectForKey:@"fontColor"];	
-//		[self setNeedsDisplay:YES];
-//	}
-//}
-	
 // ** TILING SUPPORT
 
 - (id)initWithFrame:(NSRect)frame {
@@ -8887,7 +8882,6 @@ BOOL	lowRes = NO;
 
 - (void)updatePresentationStateFromSeries
 {
-	NSLog( @"updatePresentationStateFromSeries");
 	//get Presentation State info from series Object
 	id series = [self seriesObj];
 	if( series)

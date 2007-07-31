@@ -6522,6 +6522,11 @@ static float oldsetww, oldsetwl;
 	return curWLWWMenu;
 }
 
+- (NSString*) curOpacityMenu
+{
+	return curOpacityMenu;
+}
+
 #pragma mark convolution
 
 - (IBAction) applyConvolutionOnSource:(id) sender
@@ -15358,17 +15363,19 @@ long i;
 	}
 }
 
-- (MPR2DController *)openMPR2DViewer{
+- (MPR2DController *)openMPR2DViewer
+{
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
-	// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
-	int i;
-	[self setFusionMode: 0];
+	
 	MPR2DController *		viewer = [[MPR2DController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[0] :blendingController :self];			
+	
+	int i;
 	for( i = 1; i < maxMovieIndex; i++)
 	{
 		[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
 	}
+	
 	return viewer;
 }
 
@@ -15401,39 +15408,29 @@ long i;
 		}
 		else
 		{
-			/*
-			// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
-			[self setFusionMode: 0];
-			
-			
-			viewer = [[MPR2DController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[0] :blendingController :self];
-			
-			for( i = 1; i < maxMovieIndex; i++)
-			{
-				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
-			}
-			*/
 			viewer = [self openMPR2DViewer];
-			[viewer ApplyCLUTString:curCLUTMenu];
+			
+			[viewer ApplyCLUTString: curCLUTMenu];
+//			[viewer ApplyOpacityString: curOpacityMenu];
+			
 			float   iwl, iww;
 			[imageView getWLWW:&iwl :&iww];
 			[viewer setWLWW:iwl :iww];
 			[viewer load3DState];
 			[self place3DViewerWindow: viewer];
-//			[[viewer window] performZoom:self];
 			[viewer showWindow:self];
 			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 		}
 	}
 }
 
-- (OrthogonalMPRViewer *)openOrthogonalMPRViewer{
+- (OrthogonalMPRViewer *)openOrthogonalMPRViewer
+{
 	OrthogonalMPRViewer *viewer;
 	long i;	
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
-	// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
-	[self setFusionMode: 0];
+	
 	if( blendingController)
 	{
 		viewer = [appController FindViewer :@"PETCT" :pixList[0]];
@@ -15446,6 +15443,7 @@ long i;
 		return viewer;
 		
 	viewer = [[OrthogonalMPRViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self :nil];
+	
 	if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 	{
 		if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"clutNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
@@ -15458,6 +15456,9 @@ long i;
 		else [viewer ApplyCLUTString:curCLUTMenu];
 	}
 	else [viewer ApplyCLUTString:curCLUTMenu];
+	
+	[viewer ApplyOpacityString :curOpacityMenu];
+	
 	return viewer;
 }
 
@@ -15468,17 +15469,27 @@ long i;
 	[self clear8bitRepresentations];
 	if (viewer = [appController FindViewer :@"PETCT" :pixList[0]])
 		return viewer;
-	if (blendingController) {	
+		
+	if (blendingController)
+	{
 		viewer = [[OrthogonalMPRPETCTViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self : blendingController];
 		[self place3DViewerWindow: viewer];
-//		[[viewer window] performZoom:self];
+		
 		[[viewer CTController] ApplyCLUTString:curCLUTMenu];
 		[[viewer PETController] ApplyCLUTString:[blendingController curCLUTMenu]];
 		[[viewer PETCTController] ApplyCLUTString:curCLUTMenu];
-		// the PETCT will display the PET CLUT in CLUTpoppuMenu
+
+		[[viewer CTController] ApplyOpacityString: curOpacityMenu];
+		[[viewer PETController] ApplyOpacityString:[blendingController curOpacityMenu]];
+		[[viewer PETCTController] ApplyOpacityString: curOpacityMenu];
+		
 		[(OrthogonalMPRPETCTView*)[[viewer PETCTController] originalView] setCurCLUTMenu: [blendingController curCLUTMenu]];
 		[(OrthogonalMPRPETCTView*)[[viewer PETCTController] xReslicedView] setCurCLUTMenu: [blendingController curCLUTMenu]];
 		[(OrthogonalMPRPETCTView*)[[viewer PETCTController] yReslicedView] setCurCLUTMenu: [blendingController curCLUTMenu]];
+
+		[(OrthogonalMPRPETCTView*)[[viewer PETCTController] originalView] setCurOpacityMenu: [blendingController curOpacityMenu]];
+		[(OrthogonalMPRPETCTView*)[[viewer PETCTController] xReslicedView] setCurOpacityMenu: [blendingController curOpacityMenu]];
+		[(OrthogonalMPRPETCTView*)[[viewer PETCTController] yReslicedView] setCurOpacityMenu: [blendingController curOpacityMenu]];
 		
 		[viewer showWindow:self];
 		
@@ -15532,9 +15543,6 @@ long i;
 		}
 		else
 		{
-			// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
-			[self setFusionMode: 0];
-			
 			if( blendingController)
 			{
 			/*
@@ -15575,26 +15583,9 @@ long i;
 			}
 			else
 			{
-			/*
-				viewer = [[OrthogonalMPRViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self :nil];
-				
-				if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
-				{
-					if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"clutNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
-					{
-						if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-							[viewer ApplyCLUTString: @"B/W Inverse"];
-						else
-							[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
-					}
-					else [viewer ApplyCLUTString:curCLUTMenu];
-				}
-				else [viewer ApplyCLUTString:curCLUTMenu];
-			*/
 				viewer = [self openOrthogonalMPRViewer];
 				
 				[self place3DViewerWindow: viewer];
-				//[[viewer window] performZoom:self];
 				[viewer showWindow:self];
 				
 				float   iwl, iww;
@@ -15619,9 +15610,7 @@ long i;
 	viewer = [appController FindViewer :@"Endoscopy" :pixList[0]];
 	if (viewer)
 		return viewer;
-		
-	[self setFusionMode: 0];
-			
+	
 	viewer = [[EndoscopyViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :blendingController : self];
 	return viewer;
 }
@@ -15657,9 +15646,6 @@ long i;
 		}
 		else
 		{
-			// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
-			//[self setFusionMode: 0];
-			
 			viewer = [self openEndoscopyViewer];
 			[self place3DViewerWindow: viewer];
 			[viewer showWindow:self];

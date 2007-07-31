@@ -4537,7 +4537,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			[roi setName: roiName];
 			[roi setColor: color];
 			
-			[roi setSopInstanceUID: refImgUID];
+//			[roi setSopInstanceUID: refImgUID];
 			[roi setPoints: pointsArray];
 			
 			// Save ROI to disk by reading in existing ROI list for slice and adding this new ROI.
@@ -9762,12 +9762,15 @@ BOOL            readable = YES;
 
 - (void) setTransferFunction:(NSData*) tf
 {
-	if( transferFunction != tf) [transferFunction release];
-	transferFunction = [tf retain];
-	
-	transferFunctionPtr = (float*) [transferFunction bytes];
-	
-	updateToBeApplied = YES;
+	if( transferFunction != tf)
+	{
+		[transferFunction release];
+		transferFunction = [tf retain];
+		
+		transferFunctionPtr = (float*) [transferFunction bytes];
+		
+		updateToBeApplied = YES;
+	}
 }
 
 - (void) changeWLWW:(float)newWL :(float)newWW

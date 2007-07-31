@@ -55,7 +55,9 @@
 	IBOutlet NSPopUpButton					*OpacityPopup;
 	IBOutlet NSPopUpButton					*blendingModePopup;
 	
-	NSString								*curWLWWMenu, *curCLUTMenu;//, *curOpacityMenu, *curConvMenu;
+	NSString								*curWLWWMenu, *curCLUTMenu, *curOpacityMenu;	//*curConvMenu;
+	
+	NSData									*transferFunction;	//For opacity
 	
 	long									fistCTSlice, fistPETSlice, sliceRangeCT, sliceRangePET;
 	

@@ -490,6 +490,7 @@ enum
 - (BOOL) is2DViewer;
 - (NSString*) curCLUTMenu;
 - (NSString*) curWLWWMenu;
+- (NSString*) curOpacityMenu;
 - (BOOL) windowWillClose;
 - (void) ApplyCLUTString:(NSString*) str;
 - (NSSlider*) blendingSlider;

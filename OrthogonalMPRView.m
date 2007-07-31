@@ -37,6 +37,8 @@
 	crossPositionY = 0;
 	
 	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];
+	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
+	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
 	
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(addROI:)
@@ -60,14 +62,11 @@
 {
 	[controller release];
 	[curWLWWMenu release];
+	[curCLUTMenu release];
+	[curOpacityMenu release];
+	
 	[super dealloc];
 }
-
-/* nothing to do
-- (void)finalize {
-}
-*/
-	
 
 - (void) setPixList: (NSMutableArray*) pix :(NSArray*) files :(NSMutableArray*) rois
 {
@@ -220,8 +219,7 @@
     curWW = [curDCM ww];
     curWL = [curDCM wl];
 	
-    [self loadTextures];
-//	[self display];
+	[self loadTextures];
     [self setNeedsDisplay:YES];
 }
 
@@ -463,6 +461,19 @@
 	thickSlabY = newThickSlabY;
 }
 
+- (NSString*) curCLUTMenu
+{
+	return curCLUTMenu;
+}
+
+- (void) setCurCLUTMenu: (NSString*) clut
+{
+	if(curCLUTMenu == clut) return;
+	
+	[curCLUTMenu release];
+	curCLUTMenu = [clut retain];
+}
+
 - (void) setCurWLWWMenu:(NSString*) str
 {
 	if( str != curWLWWMenu)
@@ -475,6 +486,20 @@
 - (NSString*) curWLWWMenu
 {
 	return curWLWWMenu;
+}
+
+- (void) setCurOpacityMenu:(NSString*) o
+{
+	if( o != curOpacityMenu)
+	{
+		[curOpacityMenu release];
+		curOpacityMenu = [o retain];
+	}
+}
+
+- (NSString*) curOpacityMenu
+{
+	return curOpacityMenu;
 }
 
 // overwrite the DCMView method:

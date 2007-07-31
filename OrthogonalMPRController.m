@@ -14,6 +14,8 @@
 
 #import "OrthogonalMPRController.h"
 #import "OrthogonalMPRViewer.h"
+#import "OpacityTransferView.h"
+
 #include <OpenGL/CGLCurrent.h>
 #include <OpenGL/CGLContext.h>
 
@@ -61,7 +63,13 @@
 	if (self = [super init])
 	{		
 		// initialisations
-		originalDCMPixList = [pix retain];
+		
+		originalDCMPixList = [[NSMutableArray alloc] initWithCapacity: [pix count]];
+		
+		int i;
+		for( i = 0 ; i < [pix count] ; i++)
+			[originalDCMPixList addObject:  [[[pix objectAtIndex: i] copy] autorelease]];
+		
 		originalDCMFilesList = [[NSMutableArray alloc] initWithArray:files];
 		
 		if( [vC blendingController] == 0L)
@@ -108,6 +116,7 @@
 	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
+	[transferFunction release];
 	[originalDCMPixList release];
 	[originalDCMFilesList release];
 	
@@ -117,11 +126,6 @@
 	
 	[super dealloc];
 }
-
-/* nothing to do
-- (void)finalize {
-}
-*/
 
 #pragma mark-
 #pragma mark Orthogonal reslice methods
@@ -279,10 +283,34 @@
 	
 	[self applyOrientation];
 	
+	int i;
+	
+	for( i = 0 ; i < [yReslicedDCMPixList count]; i++)
+		[[yReslicedDCMPixList objectAtIndex: i] setTransferFunction: transferFunction];
+
+	for( i = 0 ; i < [originalDCMPixList count]; i++)
+		[[originalDCMPixList objectAtIndex: i] setTransferFunction: transferFunction];
+
+	for( i = 0 ; i < [xReslicedDCMPixList count]; i++)
+		[[xReslicedDCMPixList objectAtIndex: i] setTransferFunction: transferFunction];
+	
+	[originalView updateImage];
+	[xReslicedView updateImage];
+	[yReslicedView updateImage];
+	
 	// needs display
 	[originalView setNeedsDisplay:YES];
 	[xReslicedView setNeedsDisplay:YES];
 	[yReslicedView setNeedsDisplay:YES];
+}
+
+- (void) setTransferFunction:(NSData*) tf
+{
+	if( tf != transferFunction)
+	{
+		[transferFunction release];
+		transferFunction = [tf retain];
+	}
 }
 
 -(void) flipVolume
@@ -392,6 +420,28 @@
 	{
 		[viewer blendingPropagateY:sender];
 		[yReslicedView setNeedsDisplay:YES];
+	}
+}
+
+-(void) ApplyOpacityString:(NSString*) str
+{
+	NSDictionary		*aOpacity;
+	NSArray				*array;
+	int					i;
+	
+	if( [str isEqualToString:NSLocalizedString(@"Linear Table", nil)])
+	{
+		[self setTransferFunction: 0L];
+	}
+	else
+	{
+		aOpacity = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] objectForKey: str];
+		if (aOpacity)
+		{
+			array = [aOpacity objectForKey:@"Points"];
+			
+			[self setTransferFunction: [OpacityTransferView tableWith4096Entries: [aOpacity objectForKey:@"Points"]]];
+		}
 	}
 }
 
