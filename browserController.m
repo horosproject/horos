@@ -6836,18 +6836,26 @@ static BOOL withReset = NO;
 	
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as DICOM Files", nil)  action:@selector(exportDICOMFile:) keyEquivalent:@""];
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to DICOM Network Node", nil)  action:@selector(export2PACS:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as Quicktime Files", nil)  action:@selector(exportQuicktime:) keyEquivalent:@""];
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to Quicktime", nil)  action:@selector(exportQuicktime:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as JPEG Files", nil)  action:@selector(exportJPEG:) keyEquivalent:@""];
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to JPEG", nil)  action:@selector(exportJPEG:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
+
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to DICOM File(s)", nil)  action:@selector(exportDICOMFile:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 	
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to iDisk", nil)  action:@selector(sendiDisk:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
+
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Compress DICOM files in JPEG", nil)  action:@selector(compressSelectedFiles:) keyEquivalent:@""];
@@ -6875,15 +6883,7 @@ static BOOL withReset = NO;
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query this patient from Q&R window", nil)  action:@selector(querySelectedStudy:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
-	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Send to DICOM node", nil)  action:@selector(export2PACS:) keyEquivalent:@""];
-	[contextual addItem:item];
-	[item release];
-	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy to iDisk", nil)  action:@selector(sendiDisk:) keyEquivalent:@""];
-	[contextual addItem:item];
-	[item release];
-	
+		
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Burn", nil)  action:@selector(burnDICOM:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
@@ -9533,19 +9533,27 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	[menu addItem: [NSMenuItem separatorItem]];
 	
-	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as DICOM Files", 0L) action: @selector(exportDICOMFile:) keyEquivalent:@""];
+	sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to DICOM Network Node", nil) action: @selector(export2PACS:) keyEquivalent:@""];
+	[sendItem setTarget:self];
+	[menu addItem:sendItem];
+	[sendItem release];
+	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to Quicktime", 0L) action: @selector(exportQuicktime:) keyEquivalent:@""];
 	[exportItem setTarget:self];
 	[menu addItem:exportItem];
 	[exportItem release];
-	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as Quicktime Files", 0L) action: @selector(exportQuicktime:) keyEquivalent:@""];
+	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to JPEG", 0L) action: @selector(exportJPEG:) keyEquivalent:@""];
 	[exportItem setTarget:self];
 	[menu addItem:exportItem];
 	[exportItem release];
-	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as JPEG Files", 0L) action: @selector(exportJPEG:) keyEquivalent:@""];
+	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to DICOM File(s)", 0L) action: @selector(exportDICOMFile:) keyEquivalent:@""];
 	[exportItem setTarget:self];
 	[menu addItem:exportItem];
 	[exportItem release];
-	
+	sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to iDisk", nil) action: @selector(sendiDisk:) keyEquivalent:@""];
+	[sendItem setTarget:self];
+	[menu addItem:sendItem];
+	[sendItem release];
+
 	[menu addItem: [NSMenuItem separatorItem]];
 	
 	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Compress DICOM files in JPEG", nil)  action:@selector(compressSelectedFiles:) keyEquivalent:@""];
@@ -9573,14 +9581,6 @@ static NSArray*	openSubSeriesArray = 0L;
 	[menu addItem: [NSMenuItem separatorItem]];
 	
 	sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query this patient from Q&R window", nil) action: @selector(querySelectedStudy:) keyEquivalent:@""];
-	[sendItem setTarget:self];
-	[menu addItem:sendItem];
-	[sendItem release];
-	sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Send to DICOM node", nil) action: @selector(export2PACS:) keyEquivalent:@""];
-	[sendItem setTarget:self];
-	[menu addItem:sendItem];
-	[sendItem release];
-	sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy to iDisk", nil) action: @selector(sendiDisk:) keyEquivalent:@""];
 	[sendItem setTarget:self];
 	[menu addItem:sendItem];
 	[sendItem release];
