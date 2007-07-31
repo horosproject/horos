@@ -41,6 +41,7 @@
     if(self)
 	{
 		isSelected = NO;
+		isEnabled = YES;
 		placeHolder = nil;
 		color = [[NSColor orangeColor] retain];
 		backgroundColor = [[NSColor redColor] retain];
@@ -83,6 +84,8 @@
 	[color set];
 	if(isSelected)
 		[backgroundColor set];
+	if(!isEnabled)
+		[[NSColor grayColor] set];
 	[borderFrame fill];
 
 	[NSGraphicsContext restoreGraphicsState];
@@ -94,6 +97,8 @@
 		[borderFrame setLineWidth:2.0];
 		
 	[[NSColor redColor] set];
+	if(!isEnabled)
+		[[NSColor darkGrayColor] set];
 	[borderFrame stroke];
 	
 	// text
@@ -117,6 +122,7 @@
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
+	if(!isEnabled) return;
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"CIAAnnotationMouseDraggedNotification" object:self];
 	
 	NSPoint eventLocation = [theEvent locationInWindow];
@@ -151,6 +157,7 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
+	if(!isEnabled) return;
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"CIAAnnotationMouseDownNotification" object:self];
 	NSPoint eventLocation = [theEvent locationInWindow];
 	mouseDownLocation = [self convertPoint:eventLocation fromView:nil];
@@ -178,6 +185,7 @@
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
+	if(!isEnabled) return;
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"CIAAnnotationMouseUpNotification" object:self];
 }
 
@@ -219,19 +227,19 @@
 
 - (NSMutableArray*)content;
 {
-	NSLog(@"content");
+//	NSLog(@"content");
 	return content;
 }
 
 - (void)setContent:(NSArray*)newContent;
 {
-	NSLog(@"setContent");
+//	NSLog(@"setContent");
 	[content setArray:newContent];
 }
 
 - (int)countOfContent;
 {
-	NSLog(@"countOfContent");
+//	NSLog(@"countOfContent");
 	return [content count];
 }
 
@@ -259,5 +267,9 @@
 	[content removeObjectAtIndex:index];
 }
 
+- (void)setEnabled:(BOOL)enabled;
+{
+	isEnabled = enabled;
+}
 
 @end

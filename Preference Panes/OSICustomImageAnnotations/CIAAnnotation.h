@@ -11,7 +11,7 @@
 @class CIAPlaceHolder;
 
 @interface CIAAnnotation : NSView {
-	BOOL isSelected;
+	BOOL isSelected, isEnabled;
 	NSPoint mouseDownLocation;
 	CIAPlaceHolder *placeHolder;
 	NSColor *color, *backgroundColor;
@@ -37,5 +37,7 @@
 - (NSPoint)mouseDownLocation;
 - (void)setMouseDownLocation:(NSPoint)newLocation;
 - (void)recomputeMouseDownLocation;
+
+- (void)setEnabled:(BOOL)enabled;
 
 @end

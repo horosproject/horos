@@ -34,7 +34,7 @@
 		else
 			annotationsLayoutDictionary = [[NSMutableDictionary dictionary] retain];
 			
-		currentModality = @"All";
+		currentModality = @"Default";
 				
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(annotationMouseDragged:) name:@"CIAAnnotationMouseDraggedNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(annotationMouseDown:) name:@"CIAAnnotationMouseDownNotification" object:nil];
@@ -52,7 +52,7 @@
 NSLog(@"CIALayoutController awakeFromNib");
 	int i;
 	
-//	NSArray *modalities = [NSArray arrayWithObjects:NSLocalizedString(@"All", nil), NSLocalizedString(@"CR", nil), NSLocalizedString(@"CT", nil), NSLocalizedString(@"DX", nil), NSLocalizedString(@"ES", nil), NSLocalizedString(@"MG", nil), NSLocalizedString(@"MR", nil), NSLocalizedString(@"NM", nil), NSLocalizedString(@"OT", nil),NSLocalizedString(@"PT", nil),NSLocalizedString(@"RF", nil),NSLocalizedString(@"SC", nil),NSLocalizedString(@"US", nil),NSLocalizedString(@"XA", nil), nil];
+//	NSArray *modalities = [NSArray arrayWithObjects:NSLocalizedString(@"Default", nil), NSLocalizedString(@"CR", nil), NSLocalizedString(@"CT", nil), NSLocalizedString(@"DX", nil), NSLocalizedString(@"ES", nil), NSLocalizedString(@"MG", nil), NSLocalizedString(@"MR", nil), NSLocalizedString(@"NM", nil), NSLocalizedString(@"OT", nil),NSLocalizedString(@"PT", nil),NSLocalizedString(@"RF", nil),NSLocalizedString(@"SC", nil),NSLocalizedString(@"US", nil),NSLocalizedString(@"XA", nil), nil];
 //	
 //	[modalitiesPopUpButton removeAllItems];
 //	
@@ -228,6 +228,7 @@ NSLog(@"CIALayoutController awakeFromNib");
 		[[prefPane specialFieldsPopUpButton] setEnabled:NO];
 		[[prefPane databaseFieldsPopUpButton] selectItemAtIndex:0];
 		[[prefPane specialFieldsPopUpButton] selectItemAtIndex:0];
+		[self setCustomDICOMFieldEditingEnable:NO];
 	}
 }
 
@@ -430,7 +431,7 @@ NSLog(@"CIALayoutController awakeFromNib");
 	[[prefPane specialFieldsPopUpButton] setEnabled:NO];
 	[[prefPane databaseFieldsPopUpButton] selectItemAtIndex:0];
 	[[prefPane specialFieldsPopUpButton] selectItemAtIndex:0];
-
+	[self setCustomDICOMFieldEditingEnable:YES];
 }
 
 - (CIAAnnotation*)selectedAnnotation;
@@ -552,7 +553,7 @@ NSLog(@"CIALayoutController awakeFromNib");
 	else if([sender isEqualTo:[prefPane addDICOMFieldButton]])
 	{
 		[selectedAnnotation insertObject:@"DICOM_" inContentAtIndex:[selectedAnnotation countOfContent]];
-		[[prefPane DICOMFieldsPopUpButton] setEnabled:NO];
+		[[prefPane DICOMFieldsPopUpButton] setEnabled:YES];
 		[[prefPane DICOMFieldsPopUpButton] selectItemAtIndex:0];
 		[[prefPane databaseFieldsPopUpButton] setEnabled:NO];
 		[[prefPane specialFieldsPopUpButton] setEnabled:NO];
@@ -565,7 +566,7 @@ NSLog(@"CIALayoutController awakeFromNib");
 		[selectedAnnotation insertObject:@"DB_" inContentAtIndex:[selectedAnnotation countOfContent]];
 		[[prefPane DICOMFieldsPopUpButton] setEnabled:NO];
 		[[prefPane DICOMFieldsPopUpButton] selectItemAtIndex:0];
-		[[prefPane databaseFieldsPopUpButton] setEnabled:NO];
+		[[prefPane databaseFieldsPopUpButton] setEnabled:YES];
 		[[prefPane specialFieldsPopUpButton] setEnabled:NO];
 		[[prefPane databaseFieldsPopUpButton] selectItemAtIndex:0];
 		[[prefPane specialFieldsPopUpButton] selectItemAtIndex:0];
@@ -577,7 +578,7 @@ NSLog(@"CIALayoutController awakeFromNib");
 		[[prefPane DICOMFieldsPopUpButton] setEnabled:NO];
 		[[prefPane DICOMFieldsPopUpButton] selectItemAtIndex:0];
 		[[prefPane databaseFieldsPopUpButton] setEnabled:NO];
-		[[prefPane specialFieldsPopUpButton] setEnabled:NO];
+		[[prefPane specialFieldsPopUpButton] setEnabled:YES];
 		[[prefPane databaseFieldsPopUpButton] selectItemAtIndex:0];
 		[[prefPane specialFieldsPopUpButton] selectItemAtIndex:0];
 		aTokenIsSelected = NO;
@@ -955,86 +956,100 @@ NSLog(@"[[[[self window] contentView] subviews] count] : %d", [[[[self window] c
 	[[prefPane nameLabel] setTextColor:textColor];
 }
 
-- (IBAction)saveAnnotationLayout:(id)sender;
-{
-	//[self saveAnnotationLayoutForModality:[[modalitiesPopUpButton selectedItem] title]];
-}
-
 - (void)saveAnnotationLayoutForModality:(NSString*)modality;
 {
 	NSArray *placeHolders = [layoutView placeHolderArray];
 	NSArray *keys = [NSArray arrayWithObjects:@"LowerLeft", @"LowerMiddle", @"LowerRight", @"MiddleLeft", @"MiddleRight", @"TopLeft", @"TopMiddle", @"TopRight", nil];
 	NSMutableDictionary *layoutViewDict = [NSMutableDictionary dictionary];
-
-	CIAPlaceHolder *placeHolder;
-	NSMutableArray *annotations;
-	int i, j, k, n;
-	for (i=0; i<8; i++)
+	
+	if([[prefPane sameAsDefaultButton] state]==NSOnState)
 	{
-		placeHolder = [placeHolders objectAtIndex:i];
-		
-		annotations = [NSMutableArray array];
-		for (j=0; j<[[placeHolder annotationsArray] count]; j++)
+		[layoutViewDict setObject:@"1" forKey:@"sameAsDefault"];
+	}
+	else
+	{
+		[layoutViewDict setObject:@"0" forKey:@"sameAsDefault"];
+	
+		CIAPlaceHolder *placeHolder;
+		NSMutableArray *annotations;
+		int i, j, k, n;
+		for (i=0; i<8; i++)
 		{
-			NSMutableDictionary *annot = [NSMutableDictionary dictionary];
-			[annot setObject:[[[placeHolder annotationsArray] objectAtIndex:j] title] forKey:@"title"];
-			[annot setObject:[[[placeHolder annotationsArray] objectAtIndex:j] content] forKey:@"content"];
+			placeHolder = [placeHolders objectAtIndex:i];
 			
-			NSMutableArray *contentToSave = [NSMutableArray array];
-			
-			NSArray* contentArray = [[[placeHolder annotationsArray] objectAtIndex:j] content];
-			for (n=0; n<[contentArray count]; n++)
+			annotations = [NSMutableArray array];
+			for (j=0; j<[[placeHolder annotationsArray] count]; j++)
 			{
-				NSString *currentField = [contentArray objectAtIndex:n];
-				NSRange comparisonRange;
-				if([currentField hasPrefix:@"DICOM_"])
+				NSMutableDictionary *annot = [NSMutableDictionary dictionary];
+				[annot setObject:[[[placeHolder annotationsArray] objectAtIndex:j] title] forKey:@"title"];
+				[annot setObject:[[[placeHolder annotationsArray] objectAtIndex:j] content] forKey:@"content"];
+				
+				NSMutableArray *contentToSave = [NSMutableArray array];
+				
+				NSArray* contentArray = [[[placeHolder annotationsArray] objectAtIndex:j] content];
+				for (n=0; n<[contentArray count]; n++)
 				{
-					[annot setObject:@"DICOM" forKey:@"type"];
+					NSString *currentField = [contentArray objectAtIndex:n];
+					NSRange comparisonRange;
 					
-					comparisonRange = NSMakeRange(0, [@"DICOM_" length]);
-					NSString *currentTitle;
-					for (k=0; k<[DICOMFieldsArray count]; k++)
+					NSMutableDictionary *fieldDict = [NSMutableDictionary dictionary];
+					
+					if([currentField hasPrefix:@"DICOM_"])
 					{
-						currentTitle = [[DICOMFieldsArray objectAtIndex:i] name];
-						if([currentTitle compare:currentField options:NSCaseInsensitiveSearch range:comparisonRange]==NSOrderedSame)
+						[fieldDict setObject:@"DICOM" forKey:@"type"];
+						
+						comparisonRange = NSMakeRange(6, [currentField length]-6);
+						NSString *currentTitle;
+						for (k=0; k<[DICOMFieldsArray count]; k++)
 						{
-							NSDictionary *dicomFieldDict = [NSDictionary dictionaryWithObjectsAndKeys:@"group", [[DICOMFieldsArray objectAtIndex:i] group], @"element", [[DICOMFieldsArray objectAtIndex:i] element], @"name", [[DICOMFieldsArray objectAtIndex:i] name], @"tolenTitle", currentField, nil];
-							[contentToSave addObject:dicomFieldDict];
-							break;
+							currentTitle = [[DICOMFieldsArray objectAtIndex:k] name];
+							if([currentField compare:currentTitle options:NSCaseInsensitiveSearch range:comparisonRange]==NSOrderedSame)
+							{
+								[fieldDict setObject:[NSNumber numberWithInt:[[DICOMFieldsArray objectAtIndex:k] group]] forKey:@"group"];
+								[fieldDict setObject:[NSNumber numberWithInt:[[DICOMFieldsArray objectAtIndex:k] element]] forKey:@"element"];
+								[fieldDict setObject:[[DICOMFieldsArray objectAtIndex:k] name] forKey:@"name"];
+								[fieldDict setObject:currentField forKey:@"tokenTitle"];
+								[contentToSave addObject:fieldDict];
+								break;
+							}
 						}
 					}
+					else if([currentField hasPrefix:@"DB_"])
+					{
+						[fieldDict setObject:@"DB" forKey:@"type"];
+
+						NSRange rangeOfDot = [currentField rangeOfString:@"."];
+						[fieldDict setObject:[[currentField substringFromIndex:3] substringToIndex:rangeOfDot.location-3] forKey:@"level"];
+						[fieldDict setObject:[currentField substringFromIndex:rangeOfDot.location+1] forKey:@"field"];
+
+						[contentToSave addObject:fieldDict];
+					}
+					else if([currentField hasPrefix:@"Special_"])
+					{
+						[fieldDict setObject:@"Special" forKey:@"type"];
+						[fieldDict setObject:[currentField substringFromIndex:8] forKey:@"field"];
+						[contentToSave addObject:fieldDict];
+					}
 				}
-				else if([currentField hasPrefix:@"DB_"])
-				{
-					[annot setObject:@"DB" forKey:@"type"];
-				}
-				else if([currentField hasPrefix:@"Special_"])
-				{
-					[annot setObject:@"Special" forKey:@"type"];
-				}
+				[annot setObject:contentToSave forKey:@"fullContent"]; // fullContent contains more details than "content" -> use it for display in the DCM view
+				[annotations addObject:annot];
 			}
 			
-			[annot setObject:contentToSave forKey:@"fullContent"]; // fullContent contains more details than "content" -> use it for display in the DCM view
-			
-			[annotations addObject:annot];
+			[layoutViewDict setObject:annotations forKey:[keys objectAtIndex:i]];
 		}
-		
-		[layoutViewDict setObject:annotations forKey:[keys objectAtIndex:i]];
-	}
-	
+	}	
 	[annotationsLayoutDictionary setObject:layoutViewDict forKey:modality];
 	
 	[[NSUserDefaults standardUserDefaults] setObject:annotationsLayoutDictionary forKey:@"CUSTOM_IMAGE_ANNOTATIONS"];
-	
-	NSLog(@"annotationsLayoutDictionary : %@", annotationsLayoutDictionary);
 }
 
 - (IBAction)switchModality:(id)sender;
 {
 	[self validateTokenTextField:self];
 	selectedAnnotation = nil;
-//	[self saveAnnotationLayoutForModality:currentModality];
+	[self saveAnnotationLayoutForModality:currentModality];
 	currentModality = [[sender selectedItem] title];
+	[[prefPane sameAsDefaultButton] setHidden:[currentModality isEqualToString:@"Default"]];
 	[self loadAnnotationLayoutForModality:currentModality];
 
 	[[prefPane titleTextField] setStringValue:@""];
@@ -1077,8 +1092,15 @@ NSLog(@"[[[[self window] contentView] subviews] count] : %d", [[[[self window] c
 		[[placeHolders objectAtIndex:i] alignAnnotations];
 	}
 	
-	if(n==0 && ![modality isEqualTo:@"All"])
-		[self loadAnnotationLayoutForModality:@"All"];
+	[[prefPane sameAsDefaultButton] setState:NSOffState];
+	[layoutView setEnabled:YES];
+	
+	if(n==0 && ![modality isEqualTo:@"Default"])
+	{
+		[self loadAnnotationLayoutForModality:@"Default"];
+		[[prefPane sameAsDefaultButton] setState:NSOnState];
+		[layoutView setEnabled:NO];
+	}
 
 	[layoutView setNeedsDisplay:YES];
 }

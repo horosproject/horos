@@ -10,10 +10,13 @@
 
 @interface CIALayoutView : NSView {
 	NSArray *placeHolderArray;
+	BOOL isEnabled;
 }
 
 - (void)updatePlaceHolderOrigins;
 - (void)updatePlaceHolderOriginsInRect:(NSRect)rect;
 - (NSArray*)placeHolderArray;
+- (BOOL)isEnabled;
+- (void)setEnabled:(BOOL)enabled;
 
 @end

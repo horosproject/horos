@@ -23,6 +23,10 @@
 	IBOutlet NSWindow *window;
 	
 	IBOutlet NSPopUpButton *modalitiesPopUpButton;
+	IBOutlet NSButton *sameAsDefaultButton;
+	
+	IBOutlet NSButton *addAnnotationButton, *removeAnnotationButton;
+	
 	IBOutlet CIALayoutView *layoutView;
 	IBOutlet NSTextField *titleLabelTextField, *titleTextField, *contentLabeltextField;
 	IBOutlet RWTokenField *contentTokenField;
@@ -41,10 +45,10 @@
 - (IBAction)validateTokenTextField:(id)sender;
 - (IBAction)saveAnnotationLayout:(id)sender;
 - (IBAction)switchModality:(id)sender;
+- (IBAction)setSameAsDefault:(id)sender;
 
 - (CIALayoutController*)layoutController;
 
-- (NSWindow*)window;
 - (NSTextField*)titleTextField;
 - (RWTokenField*)contentTokenField;
 - (NSTokenField*)dicomNameTokenField;
@@ -61,6 +65,6 @@
 - (NSPopUpButton*)databaseFieldsPopUpButton;
 - (NSPopUpButton*)specialFieldsPopUpButton;
 - (NSBox*)contentBox;
-
+- (NSButton*)sameAsDefaultButton;
 
 @end

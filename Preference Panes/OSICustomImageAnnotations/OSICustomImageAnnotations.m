@@ -27,7 +27,7 @@
 {
 	NSLog(@"OSICustomImageAnnotations willSelect");
 
-	NSArray *modalities = [NSArray arrayWithObjects:NSLocalizedString(@"All", nil), NSLocalizedString(@"CR", nil), NSLocalizedString(@"CT", nil), NSLocalizedString(@"DX", nil), NSLocalizedString(@"ES", nil), NSLocalizedString(@"MG", nil), NSLocalizedString(@"MR", nil), NSLocalizedString(@"NM", nil), NSLocalizedString(@"OT", nil),NSLocalizedString(@"PT", nil),NSLocalizedString(@"RF", nil),NSLocalizedString(@"SC", nil),NSLocalizedString(@"US", nil),NSLocalizedString(@"XA", nil), nil];
+	NSArray *modalities = [NSArray arrayWithObjects:NSLocalizedString(@"Default", nil), NSLocalizedString(@"CR", nil), NSLocalizedString(@"CT", nil), NSLocalizedString(@"DX", nil), NSLocalizedString(@"ES", nil), NSLocalizedString(@"MG", nil), NSLocalizedString(@"MR", nil), NSLocalizedString(@"NM", nil), NSLocalizedString(@"OT", nil),NSLocalizedString(@"PT", nil),NSLocalizedString(@"RF", nil),NSLocalizedString(@"SC", nil),NSLocalizedString(@"US", nil),NSLocalizedString(@"XA", nil), nil];
 	
 	[modalitiesPopUpButton removeAllItems];
 
@@ -38,6 +38,7 @@
 	}
 	
 	layoutController = [[CIALayoutController alloc] initWithWindow:window];
+	[sameAsDefaultButton setHidden:YES];
 }
 
 - (void)didSelect
@@ -72,7 +73,26 @@
 
 - (IBAction)addFieldToken:(id)sender;
 {
-	[layoutController addFieldToken:sender];
+[layoutController addFieldToken:sender];
+
+NSLog(@"makeFirstResponder");
+//	NSArray *modes = [NSArray arrayWithObjects:NSDefaultRunLoopMode, NSModalPanelRunLoopMode, nil];
+//	[[window firstResponder] setEnabled: NO];
+	int m = [window makeFirstResponder: contentTokenField];
+//	[contentTokenField display];
+//	NSLog( @"%d", m);
+	
+//	[window performSelector:@selector(makeFirstResponder:)
+//								 withObject:titleTextField
+//								 afterDelay:0.1
+//								 inModes:modes];
+
+//	[window performSelector:@selector(makeFirstResponder:)
+//								 withObject:contentTokenField
+//								 afterDelay:0.1
+//								 inModes:modes];
+
+	
 }
 
 - (IBAction)validateTokenTextField:(id)sender;
@@ -88,6 +108,8 @@
 - (IBAction)switchModality:(id)sender;
 {
 	[layoutController switchModality:sender];
+	[addAnnotationButton setEnabled:[sameAsDefaultButton state]==NSOffState];
+	[removeAnnotationButton setEnabled:[sameAsDefaultButton state]==NSOffState];
 }
 
 - (CIALayoutController*)layoutController; {return layoutController;}
@@ -108,5 +130,29 @@
 - (NSPopUpButton*)databaseFieldsPopUpButton; {return databaseFieldsPopUpButton;}
 - (NSPopUpButton*)specialFieldsPopUpButton; {return specialFieldsPopUpButton;}
 - (NSBox*)contentBox; {return contentBox;}
+- (NSButton*)sameAsDefaultButton; {return sameAsDefaultButton;}
+
+- (IBAction)setSameAsDefault:(id)sender;
+{
+	BOOL state = [sameAsDefaultButton state]==NSOnState;
+	if(state) NSLog(@"NSOnState");
+	else NSLog(@"NSOFFState");
+	
+	if(state)
+	{
+		//[layoutController removeAllAnnotations];
+		[layoutController loadAnnotationLayoutForModality:@"Default"];
+	}
+	else
+	{
+		[layoutController loadAnnotationLayoutForModality:[[modalitiesPopUpButton selectedItem] title]];
+	}
+	[layoutView setEnabled:!state];
+	[sameAsDefaultButton setState:state];
+	[layoutView setNeedsDisplay:YES];
+	
+	[addAnnotationButton setEnabled:!state];
+	[removeAnnotationButton setEnabled:!state];
+}
 
 @end

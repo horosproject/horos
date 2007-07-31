@@ -190,4 +190,11 @@
 	[self setFrameSize:NSMakeSize(maxWidth,totalHeight)];
 }
 
+- (void)setEnabled:(BOOL)enabled;
+{
+	int i;
+	for (i=0; i<[annotationsArray count]; i++)
+		[[annotationsArray objectAtIndex:i] setEnabled:enabled];
+}
+
 @end

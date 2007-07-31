@@ -61,7 +61,6 @@
 - (void)prepareDatabaseFields;
 - (void)setCustomDICOMFieldEditingEnable:(BOOL)boo;
 
-- (IBAction)saveAnnotationLayout:(id)sender;
 - (void)saveAnnotationLayoutForModality:(NSString*)modality;
 
 - (IBAction)switchModality:(id)sender;

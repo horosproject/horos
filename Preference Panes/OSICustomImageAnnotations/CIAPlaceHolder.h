@@ -25,5 +25,6 @@
 - (NSMutableArray*)annotationsArray;
 - (void)alignAnnotations;
 - (void)updateFrameAroundAnnotations;
+- (void)setEnabled:(BOOL)enabled;
 
 @end

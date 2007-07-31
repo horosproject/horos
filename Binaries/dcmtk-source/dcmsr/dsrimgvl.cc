@@ -36,8 +36,10 @@
 
 #include "dsrimgvl.h"
 #include "dsrxmld.h"
-#import "PathForImage.h"
 
+#ifdef OSIRIX_VIEWER
+#import "PathForImage.h"
+#endif
 
 DSRImageReferenceValue::DSRImageReferenceValue()
   : DSRCompositeReferenceValue(),

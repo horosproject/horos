@@ -160,15 +160,6 @@ extern BrowserController	*browserWindow;
 	[super dealloc];
 }
 
-
-- (void)finalize {
-	[pane shouldUnselect];
-	[pane willUnselect];
-	[pane didUnselect];
-	[super finalize];
-}
-
-
 //Pane management
 - (void) setPane: (NSPreferencePane *) aPane
 {
@@ -282,8 +273,8 @@ extern BrowserController	*browserWindow;
 		}
 	}
 	
-	if( curPaneIndex < 0) curPaneIndex = 11;
-	if( curPaneIndex > 11) curPaneIndex = 0;
+	if( curPaneIndex < 0) curPaneIndex = 12;
+	if( curPaneIndex > 12) curPaneIndex = 0;
 	
 	[self selectPaneIndex: curPaneIndex];
 }
@@ -346,6 +337,11 @@ extern BrowserController	*browserWindow;
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIHotKeys" ofType: @"prefPane"];
 			[[self window] setTitle: NSLocalizedString( @"Hot Keys", 0L)];
 			break;
+		case 12:
+			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSICustomImageAnnotations" ofType: @"prefPane"];
+			[[self window] setTitle: NSLocalizedString( @"Annotations", 0L)];
+			break;
+
 	}
 	[[self window] setRepresentedFilename: pathToPrefPaneBundle];
 	

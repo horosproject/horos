@@ -55,6 +55,7 @@
                 addFieldToken = id; 
                 removeAnnotation = id; 
                 saveAnnotationLayout = id; 
+                setSameAsDefault = id; 
                 setTitle = id; 
                 switchModality = id; 
                 validateTokenTextField = id; 
@@ -63,6 +64,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 DICOMFieldsPopUpButton = NSPopUpButton; 
+                addAnnotationButton = NSButton; 
                 addCustomDICOMFieldButton = NSButton; 
                 addDICOMFieldButton = NSButton; 
                 addDatabaseFieldButton = NSButton; 
@@ -79,6 +81,8 @@
                 layoutView = CIALayoutView; 
                 modalitiesPopUpButton = NSPopUpButton; 
                 nameLabel = NSTextField; 
+                removeAnnotationButton = NSButton; 
+                sameAsDefaultButton = NSButton; 
                 specialFieldsPopUpButton = NSPopUpButton; 
                 titleLabelTextField = NSTextField; 
                 titleTextField = NSTextField; 

@@ -52,6 +52,7 @@
 			[aPlaceHolder release];
 		}
 		placeHolderArray = [[NSArray arrayWithArray:placeHolderMutableArray] retain];
+		isEnabled = YES;
     }
     return self;
 }
@@ -128,9 +129,21 @@
 	NSFont *font = [NSFont systemFontOfSize:20.0];
 	[attrsDictionary setObject:font forKey:NSFontAttributeName];
 	
-	NSAttributedString *contentText = [[[NSAttributedString alloc] initWithString:@"Drag Annotations in the place holders" attributes:attrsDictionary] autorelease];
-	float textWidth = [contentText size].width/2.0;//rect.size.width / 2.0;
-	float textHeight = [contentText size].height*3.0;//rect.size.height / 2.0;
+	NSAttributedString *contentText;
+	float textWidth, textHeight;
+	if(isEnabled)
+	{
+		contentText = [[[NSAttributedString alloc] initWithString:@"Drag Annotations in the place holders" attributes:attrsDictionary] autorelease];
+		textWidth = [contentText size].width/2.0;//rect.size.width / 2.0;
+		textHeight = [contentText size].height*3.0;//rect.size.height / 2.0;
+	}
+	else
+	{
+		contentText = [[[NSAttributedString alloc] initWithString:@"Same as Default Settings..." attributes:attrsDictionary] autorelease];
+		textWidth = rect.size.width / 2.0;
+		textHeight = [contentText size].height*3.0;
+	}
+
 	NSRect textRect = NSMakeRect(rect.origin.x+rect.size.width/2.0-textWidth/2.0, rect.origin.y+rect.size.height/2.0-textHeight/2.0, textWidth, textHeight);
 //	[[NSColor greenColor] set];
 //	NSRectFill(textRect);
@@ -140,6 +153,19 @@
 - (NSArray*) placeHolderArray;
 {
 	return placeHolderArray;
+}
+
+- (BOOL)isEnabled;
+{
+	return isEnabled;
+}
+
+- (void)setEnabled:(BOOL)enabled;
+{
+	isEnabled = enabled;
+	int i;
+	for (i=0; i<8; i++)
+		[[placeHolderArray objectAtIndex:i] setEnabled:enabled];
 }
 
 @end
