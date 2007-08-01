@@ -2633,7 +2633,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 					if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [[curSeries valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], keyImagesNumber, count, type]];
 					else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [[curSeries valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], count, type]];
 					
-					[previewMatrix setToolTip:[NSString stringWithFormat:@"Series ID:%@\rClick + Option:\rOpen in new window", [curSeries valueForKey:@"id"]] forCell:cell];
+					[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rClick + Option:\rOpen in new window", 0L), [curSeries valueForKey:@"id"]] forCell:cell];
 					if( [curImage valueForKey:@"series"] == curSeries)
 					{
 						[cell setBackgroundColor: [NSColor selectedControlColor]];
