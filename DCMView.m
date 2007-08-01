@@ -7686,6 +7686,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	return scaleValue;
 }
 
+- (BOOL) zoomIsSoftwareInterpolated
+{
+	return zoomIsSoftwareInterpolated;
+}
+
 -(void) setScaleValueCentered:(float) x
 {
 	if( x != scaleValue)
@@ -7704,9 +7709,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( x < 0.01) scaleValue = 0.01;
 		if( x > 100) scaleValue = 100;
 		
-		if( [self softwareInterpolation])
+		if( [self softwareInterpolation] || [blendingView softwareInterpolation])
 			[self loadTextures];
-		else if( zoomIsSoftwareInterpolated)
+		else if( zoomIsSoftwareInterpolated || [blendingView zoomIsSoftwareInterpolated])
 			[self loadTextures];
 		
 		[self setNeedsDisplay:YES];
@@ -7721,9 +7726,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( x < 0.01) scaleValue = 0.01;
 		if( x > 100) scaleValue = 100;
 		
-		if( [self softwareInterpolation])
+		if( [self softwareInterpolation] || [blendingView softwareInterpolation])
 			[self loadTextures];
-		else if( zoomIsSoftwareInterpolated)
+		else if( zoomIsSoftwareInterpolated || [blendingView zoomIsSoftwareInterpolated])
 			[self loadTextures];
 		
 		[self setNeedsDisplay:YES];
