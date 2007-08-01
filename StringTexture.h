@@ -69,6 +69,7 @@
 - (void) genTexture; // generates the texture without drawing texture to current context
 - (void) drawWithBounds:(NSRect)bounds; // will update the texture if required due to change in settings (note context should be setup to be orthographic scaled to per pixel scale)
 - (void) drawAtPoint:(NSPoint)point;
+- (void) drawAtPoint:(NSPoint)point ratio:(float) ratio;
 
 // these will force the texture to be regenerated at the next draw
 - (void) setMargins:(NSSize)size; // set offset size and size to fit with offset

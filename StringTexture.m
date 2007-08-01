@@ -255,13 +255,20 @@
 	}
 }
 
-- (void) drawAtPoint:(NSPoint)point
+- (void) drawAtPoint:(NSPoint)point ratio:(float) ratio
 {
 	if (!texName)
 		[self genTexture]; // ensure size is calculated for bounds
 	if (texName) // if successful
-		[self drawWithBounds:NSMakeRect (point.x, point.y, texSize.width, texSize.height)];
+		[self drawWithBounds:NSMakeRect (point.x, point.y, texSize.width, texSize.height*ratio)];
+
 }
+
+- (void) drawAtPoint:(NSPoint)point
+{
+	[self drawAtPoint: point ratio: 1.0];
+}
+
 
 // these will force the texture to be regenerated at the next draw
 - (void) setMargins:(NSSize)size // set offset size and size to fit with offset

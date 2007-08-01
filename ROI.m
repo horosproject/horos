@@ -1624,14 +1624,9 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 			textureFirstPoint=1;
 			textureWidth=2;
 			textureHeight=2;
-	//		oldTextureWidth = 2;
-	//		oldTextureHeight=2;
 			textureBuffer = malloc(textureWidth*textureHeight*sizeof(unsigned char));
 			memset (textureBuffer, 0, textureHeight*textureWidth);
-	//		tempTextureBuffer = malloc(textureWidth*textureHeight*sizeof(unsigned char));
-	//		memset (tempTextureBuffer, 0, textureHeight*textureWidth);
 			
-
 			mode = ROI_drawing;
 		}
 		else
@@ -1650,6 +1645,8 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 		rect.size = [stringTex frameSize];
 		rect.origin.x = pt.x;// - rect.size.width/2;
 		rect.origin.y = pt.y;// - rect.size.height/2;
+		
+		rect.size.height *= pixelSpacingX/pixelSpacingY;
 		
 		if( type == t2DPoint)
 		{
@@ -2094,7 +2091,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 			case ROI_selectedModify:
 			case ROI_drawing:
 				
-				thickness = ROIRegionThickness;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionThickness"];
+				thickness = ROIRegionThickness;
 			
 				if (textureUpLeftCornerX > pt.x-thickness)
 				{
@@ -2126,9 +2123,8 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 				// copy current Buffer to temp Buffer	
 				if (textureBuffer!=NULL)
 				{
-					
 					tempTextureBuffer = malloc( oldTextureHeight*oldTextureWidth*sizeof(unsigned char));
-	
+					
 					for( i = 0; i < oldTextureWidth*oldTextureHeight;i++) tempTextureBuffer[i]=textureBuffer[i];
 					free(textureBuffer);
 					textureBuffer = 0L;
@@ -2193,9 +2189,6 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 				oldTextureHeight = textureHeight;	
 				tempTextureBuffer = malloc(textureWidth*textureHeight*sizeof(unsigned char));
 				
-				//NSLog(@"mouseRoiDragged - textureDownRightCornerX-textureUpLeftCornerX=%0.2f",textureDownRightCornerX-textureUpLeftCornerX);
-				//NSLog(@"mouseRoiDragged - textureWidth=(ceil(textureDownRightCornerX-textureUpLeftCornerX))=%0.2f",(ceil(textureDownRightCornerX-textureUpLeftCornerX)));
-				
 				unsigned char	val;
 				
 				if (![curView eraserFlag]) val = 0xFF;
@@ -2251,8 +2244,6 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 				free( yPoints);
 				
 				previousPoint = pt;
-				
-				
 				
 				action = YES;
 				
@@ -2422,6 +2413,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 		}
 		
 		rect.size = [stringTex frameSize];
+		rect.size.height *= pixelSpacingX/pixelSpacingY;
 	}	
 }
 - (NSString*) comments {return comments;}
@@ -3219,8 +3211,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			glLineWidth(1.0);
 			
-			
-			
 			NSPoint tPt = [self lowerRightPoint];
 			tPt.x = (tPt.x - offsetx)*scaleValue  - rect.size.width/2;		tPt.y = (tPt.y - offsety)*scaleValue - rect.size.height/2;
 			
@@ -3238,10 +3228,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			[stringTex setFlippedX: [curView xFlipped] Y:[curView yFlipped]];
 			
 			glColor4f (0, 0, 0, opacity);
-			[stringTex drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1)];
+			[stringTex drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+ (1.0*pixelSpacingX / pixelSpacingY)) ratio: pixelSpacingX / pixelSpacingY];
 			
 			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-			[stringTex drawAtPoint:tPt];
+			[stringTex drawAtPoint:tPt ratio: pixelSpacingX / pixelSpacingY];
 			
 			glDisable (GL_TEXTURE_RECTANGLE_EXT);
 			
@@ -3266,7 +3256,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				b.y = ([[points objectAtIndex: 1] y]- offsety) * scaleValue;
 				
 				if( (b.y-a.y) == 0) slide = (b.x-a.x)/-0.001;
-				else slide = (b.x-a.x)/(b.y-a.y);
+				else slide = (b.x-a.x)/((b.y-a.y) * (pixelSpacingY / pixelSpacingX));
 				
 				#define ARROWSIZE 30.0
 				
@@ -3275,8 +3265,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				adj = (ARROWSIZE + thickness * 13)  * cos( angle*deg2rad);
 				op = (ARROWSIZE + thickness * 13) * sin( angle*deg2rad);
 				glBegin(GL_LINE_STRIP);
-					if(b.y-a.y > 0) glVertex2f( a.x + adj, a.y + op);
-					else glVertex2f( a.x - adj, a.y - op);
+					if(b.y-a.y > 0) glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+					else glVertex2f( a.x - adj, a.y - (op*pixelSpacingX / pixelSpacingY));
 					glVertex2f( b.x, b.y);
 				glEnd();
 				
@@ -3290,13 +3280,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					angle = 80 - angle - thickness;
 					adj = (ARROWSIZE + thickness * 15)  * cos( angle*deg2rad);
 					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
-					glVertex2f( a.x + adj, a.y + op);
+					glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
 					
 					angle = atan( slide)/deg2rad;
 					angle = 100 - angle + thickness;
 					adj = (ARROWSIZE + thickness * 15) * cos( angle*deg2rad);
 					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
-					glVertex2f( a.x + adj, a.y + op);
+					glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
 				}
 				else
 				{
@@ -3305,13 +3295,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					angle = 180 + 80 - angle - thickness;
 					adj = (ARROWSIZE + thickness * 15) * cos( angle*deg2rad);
 					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
-					glVertex2f( a.x + adj, a.y + op);
+					glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
 
 					angle = atan( slide)/deg2rad;
 					angle = 180 + 100 - angle + thickness;
 					adj = (ARROWSIZE + thickness * 15) * cos( angle*deg2rad);
 					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
-					glVertex2f( a.x + adj, a.y + op);
+					glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
 				}
 				glVertex2f( a.x , a.y );
 				glEnd();
