@@ -464,53 +464,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	[pool release];
 }
-//
-//+ (void)addSRROIIfNecessary:(NSDictionary*) curDict path:(NSString*) path study:(DicomStudy*) study context: (NSManagedObjectContext*) context
-//{
-//	NSManagedObject		*seriesTable = [study roiSRSeries];
-//
-//	NSString			*sopInstanceUID = [curDict objectForKey: @"SOPUID"];
-//
-//	if (seriesTable)
-//	{
-//		NSLog( @"ROI Series already exists in this study");
-//	}
-//	else
-//	{
-//		NSLog( @"Create a ROI Series in this study");
-//		
-//		seriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:context];
-//		[seriesTable setValue:study forKey:@"study"];
-//		
-//		
-//		if( [curDict objectForKey: @"seriesDICOMUID"]) [seriesTable setValue:[curDict objectForKey: @"seriesDICOMUID"] forKey:@"seriesDICOMUID"];
-//		if( [curDict objectForKey: @"SOPClassUID"]) [seriesTable setValue:[curDict objectForKey: @"SOPClassUID"] forKey:@"seriesSOPClassUID"];
-//		
-//		[seriesTable setValue:[curDict objectForKey: @"seriesID"] forKey:@"seriesInstanceUID"];
-//		[seriesTable setValue:[curDict objectForKey: @"seriesDescription"] forKey:@"name"];
-//		[seriesTable setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
-//		[seriesTable setValue:[curDict objectForKey: @"seriesNumber"] forKey:@"id"];
-//		[seriesTable setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
-//		[seriesTable setValue:[curDict objectForKey: @"protocolName"] forKey:@"seriesDescription"];
-//	}
-//	
-//	//See if the SR is in the series. Add it if necessary
-//	
-//	NSArray *srs = [(NSSet *)[seriesTable valueForKey:@"images"] allObjects];
-//	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", sopInstanceUID];
-//	NSArray *found = [srs filteredArrayUsingPredicate:predicate];
-//	
-//	if ([found count] < 1)
-//	{
-//		NSLog( @"New ROI");
-//		id im = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
-//		[im setValue: seriesTable forKey:@"series"];
-//		[im setValue: sopInstanceUID forKey:@"sopInstanceUID"];
-//		[im setValue: path forKey:@"path"];
-//		[im setValue: @"DICOM" forKey:@"fileType"];
-//		[im setValue: [NSNumber numberWithBool: NO] forKey:@"inDatabaseFolder"];
-//	}
-//}
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray
 {
@@ -687,6 +640,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 					}
 				}
 				
+				BOOL DICOMROI = NO;
+				
 				if( [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]])
 				{
 					// Check if it is an OsiriX ROI SR
@@ -715,6 +670,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 						}
 						
 						newFile = destPath;
+						DICOMROI = YES;
 					}
 				}
 				
@@ -938,7 +894,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 								if( local) [image setValue: [newFile lastPathComponent] forKey:@"path"];
 								else [image setValue:newFile forKey:@"path"];
 								
-								[image setValue:[NSNumber numberWithBool:local] forKey:@"inDatabaseFolder"];
+								if( DICOMROI) [image setValue: [NSNumber numberWithBool:YES] forKey:@"inDatabaseFolder"];
+								else [image setValue:[NSNumber numberWithBool:local] forKey:@"inDatabaseFolder"];
 								
 								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
 								
@@ -1527,200 +1484,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 }
 
 #pragma mark-
-#pragma mark iCal routing functions - will be re-activated with iCal API in MacOS 10.5
-//
-//- (void)runSendQueue:(id)object{
-//
-//	while (YES) {
-//		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-//		[queueLock lockWhenCondition:QueueHasData];
-//		NSArray *destination = [sendQueue objectAtIndex:0];
-//		NSString *filesToSend = nil;
-//		NSString *syntax = nil;
-//		NSDictionary *server = nil;
-//		DCMTransferSyntax *ts = nil;
-//		NSLog(@"destination count : %d", [destination count]);
-//		if ([destination count] == 3) {
-//			//old style layout.
-//			//get syntax
-//			/* 
-//			index 0: Server description
-//			index 1: TS
-//			index 2: file
-//			*/
-//			
-//			syntax = [destination objectAtIndex:1];
-//			//get Transfer Syntax and compression in indicated
-//			int compression = DCMLosslessQuality;
-//			if ([syntax isEqualToString:@"Explicit Little Endian"])
-//				ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
-//			else if ([syntax isEqualToString:@"JPEG 2000 Lossless"])
-//				ts = [DCMTransferSyntax JPEG2000LosslessTransferSyntax];
-//			else if ([syntax isEqualToString:@"JPEG 2000 Lossy 10:1"]) {
-//				ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-//				compression = DCMHighQuality;
-//			}
-//			else if ([syntax isEqualToString:@"JPEG 2000 Lossy 20:1"]) {
-//				ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-//				compression = DCMMediumQuality;
-//			}
-//			else if ([syntax isEqualToString:@"JPEG 2000 Lossy 50:1"]) {
-//				ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-//				compression =  DCMLowQuality;
-//			}
-//			else if ([syntax isEqualToString:@"JPEG Lossless"])
-//				ts = [DCMTransferSyntax JPEGLosslessTransferSyntax];
-//			else if ([syntax isEqualToString:@"JPEG High Quality (9)"]) {
-//				ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
-//				compression = DCMHighQuality;
-//			}
-//			else if ([syntax isEqualToString:@"JPEG High Quality (8)"]) {
-//				ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
-//				compression =  DCMMediumQuality;
-//			}
-//			else if ([syntax isEqualToString:@"JPEG High Quality (7)"]) {
-//				ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
-//				compression =  DCMLowQuality;
-//			}
-//		// getServer
-//			NSArray					*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-//			NSEnumerator			*enumerator			= [serversArray objectEnumerator];
-//			NSDictionary			*aServer;
-//			
-//			
-//			while (aServer = [enumerator nextObject]){
-//				if ([[aServer objectForKey:@"Description"] isEqualToString:[destination objectAtIndex:0]] )  {
-//					server = aServer;
-//					break;
-//				}
-//			}
-//			// file path
-//			filesToSend = [NSArray arrayWithObject:[destination objectAtIndex:2]];
-//			// only send if we have a server, Transfer Syntax and file
-//			if (server && ts && [[NSFileManager defaultManager] fileExistsAtPath:[destination objectAtIndex:2]]) {	
-//
-//				NSArray *objects = [NSArray arrayWithObjects:filesToSend, [NSNumber numberWithInt:compression], ts, [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], [server objectForKey:@"AETitle"], [server objectForKey:@"Address"], [server objectForKey:@"Port"],    nil];
-//				NSArray *keys = [NSArray arrayWithObjects:@"filesToSend", @"compression", @"transferSyntax", @"callingAET", @"calledAET", @"hostname", @"port", nil];
-//				NSDictionary *params = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-//				DCMStoreSCU *storeSCU = [DCMStoreSCU sendWithParameters:(NSDictionary *)params];
-//				
-//			}
-//			else {
-//				if (!server)
-//					NSLog(@"Routing:Not a valid DICOM destination");
-//				if (!ts)
-//					NSLog(@"Routing:Not a valid transfer syntax");
-//				if (![[NSFileManager defaultManager] fileExistsAtPath:[destination objectAtIndex:2]])
-//					NSLog(@"Routing:Invalid File Path");
-//			}
-//				
-//		}
-//		
-//		else if  ([destination count] == 2){
-//			// New style routing.
-//			NSArray					*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-//			NSEnumerator			*serverEnumerator	= [serversArray objectEnumerator];
-//			NSDictionary			*aServer;
-//			
-//			NSString				*description		= nil;			
-//			NSString				*routeName			= [destination objectAtIndex:0];
-//			NSArray					*routes				= [[NSUserDefaults standardUserDefaults] arrayForKey:@"RoutingRules"];
-//			NSEnumerator			*enumerator			= [routes objectEnumerator];
-//			NSDictionary			*aRoute				= nil;
-//			NSDictionary			*route				= nil;
-//			int compression = DCMLosslessQuality;
-//			
-//			/* 
-//			index 0: Server Description
-//			index 2: file
-//			*/
-//			
-//			while (aRoute = [enumerator nextObject]) {				
-//				NSString *name = [aRoute objectForKey:@"name"];
-//				if ([name isEqualToString:routeName]){
-//						route = aRoute;
-//						break;
-//				}				
-//			}
-//			
-//			//we have a route. Now get info
-//			if (route) {
-//				description = [route objectForKey:@"Description"];
-//				//get server. Also check for Bonjour DICOM. Not added yet
-//				while (aServer = [serverEnumerator nextObject]){
-//					if ([[aServer objectForKey:@"Description"] isEqualToString:description] )  {
-//						server = aServer;
-//						break;
-//					}
-//				}
-//			}
-//			
-//			filesToSend = [NSArray arrayWithObject:[destination objectAtIndex:1]];
-//			BOOL sendFile = YES;
-//			NSArray *rules = [route objectForKey:@"rules"];
-//			//need to load DICOM and see if file matches the rules
-//			if (rules) {
-//				sendFile = NO;
-//				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:[destination objectAtIndex:1] decodingPixelData:NO];
-//				NSEnumerator *ruleEnumerator = [rules objectEnumerator];
-//				NSDictionary *rule;
-//				while (rule = [ruleEnumerator nextObject]) {
-//					int attrIndex = [[rule objectForKey:@"attribute"] intValue];
-//					NSString *attrName = nil;
-//					NSString *keyValue = [rule objectForKey:@"keyValue"];
-//					switch (attrIndex) {
-//						case 0: attrName = @"Modality"; break;
-//						case 1:	attrName = @"InstitutionName"; break;
-//						case 2:	attrName = @"ReferringPhysiciansName"; break;
-//						case 3:	attrName = @"PerformingPhysiciansName"; break;
-//					}
-//					if ([[dcmObject attributeValueWithName:attrName] rangeOfString:keyValue options:NSCaseInsensitiveSearch].location != NSNotFound)
-//						sendFile = YES;
-//					else
-//						sendFile = NO;
-//				}
-//			}
-//
-//
-//			if (sendFile && server && ts && [[NSFileManager defaultManager] fileExistsAtPath:[destination objectAtIndex:1]])
-//			{	
-//				DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
-//										calledAET:[server objectForKey:@"AETitle"] 
-//										hostname:[server objectForKey:@"Address"] 
-//										port:[[server objectForKey:@"Port"] intValue] 
-//										filesToSend:(NSArray *)filesToSend
-//										transferSyntax:[[server objectForKey:@"Transfer Syntax"] intValue] 
-//										compression: 1.0
-//										extraParameters:nil];
-//				[storeSCU run:self];
-//				[storeSCU release];
-//				
-//				
-//			}
-//			//NSLog(@"New style Routing Information");
-//		}
-//		
-//		[sendQueue removeObjectAtIndex:0];
-//		[queueLock unlockWithCondition:([sendQueue count] ? QueueHasData : QueueEmpty)];
-//		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.04]];
-//		[pool release];
-//	}	
-//}
-//
-//- (void)addToQueue:(NSArray *)array{
-//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-//	[array retain];
-//	[queueLock lock];
-//	//NSLog(@"AddToQueue:%@", [array description]);
-//	[sendQueue mergeWithArray:array];
-//	[queueLock unlockWithCondition:QueueHasData];
-//	[array release];
-//	[pool release];
-//}
-
-//ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
-
-#pragma mark-
 #pragma mark Database functions
 
 - (NSTimeInterval) databaseLastModification
@@ -1919,6 +1682,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 {
 	[self waitForRunningProcesses];
 
+	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening OsiriX database...", nil)];
+	[wait showWindow:self];
+
 	if( isCurrentDatabaseBonjour == NO)
 		[self saveDatabase: currentDatabasePath];
 	
@@ -1936,6 +1702,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 		[bonjourRunLoopTimer release];
 		bonjourRunLoopTimer = 0L;
 	}
+	
+	[wait close];
+	[wait release];
 }
 
 -(void) openDatabaseInBonjour:(NSString*) path
@@ -4579,6 +4348,25 @@ static BOOL				DICOMDIRCDMODE = NO;
 				nonLocalImagesPath = [[objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
 			}
 			
+//			// Remove the ROIs
+//			NSString				*roiFolder = [documentsDirectory() stringByAppendingPathComponent:@"ROIs"];
+//
+//			for( i = 0 ; i < [nonLocalImagesPath count] ; i++)
+//			{
+//				@try
+//				{
+//					if( [roiFolder compare: [nonLocalImagesPath objectAtIndex: i] options:NSLiteralSearch range:NSMakeRange(0,[roiFolder length])] == NSOrderedSame)
+//					{
+//						[nonLocalImagesPath removeObjectAtIndex: i];
+//						i--;
+//					}
+//				}
+//				
+//				@catch (NSException * e)
+//				{
+//				}
+//			}
+//			
 			[wait close];
 			[wait release];
 			
@@ -4593,82 +4381,88 @@ static BOOL				DICOMDIRCDMODE = NO;
 			wait = [[WaitRendering alloc] init: NSLocalizedString(@"Deleting...", nil)];
 			[wait showWindow:self];
 			
-			if( result == NSAlertDefaultReturn || result == NSAlertOtherReturn)
+			if( result == NSAlertAlternateReturn)
 			{
-				NSManagedObject	*study = 0L, *series = 0L;
-				
-				NSLog(@"objects to delete : %d", [objectsToDelete count]);
-				
-				for( x = 0 ; x < [objectsToDelete count]; x++)
+				NSLog( @"Cancel");
+			}
+			else
+			{			
+				if( result == NSAlertDefaultReturn || result == NSAlertOtherReturn)
 				{
-					if( [[objectsToDelete objectAtIndex: x] valueForKey:@"series"] != series)
+					NSManagedObject	*study = 0L, *series = 0L;
+					
+					NSLog(@"objects to delete : %d", [objectsToDelete count]);
+					
+					for( x = 0 ; x < [objectsToDelete count]; x++)
 					{
-						// ********* SERIES
-						
-						series = [[objectsToDelete objectAtIndex: x] valueForKey:@"series"];
-						
-						if([seriesArray containsObject: series] == NO)
+						if( [[objectsToDelete objectAtIndex: x] valueForKey:@"series"] != series)
 						{
-							if( series) [seriesArray addObject: series];
-							[series setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-							[series setValue: 0L forKey:@"thumbnail"];
-						}
-						
-						// ********* STUDY
-						
-						if( [series valueForKey:@"study"] != study)
-						{
-							study = [series valueForKeyPath:@"study"];
+							// ********* SERIES
 							
-							if([studiesArray containsObject: study] == NO)
+							series = [[objectsToDelete objectAtIndex: x] valueForKey:@"series"];
+							
+							if([seriesArray containsObject: series] == NO)
 							{
-								if( study) [studiesArray addObject: study];
-								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+								if( series) [seriesArray addObject: series];
+								[series setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+								[series setValue: 0L forKey:@"thumbnail"];
 							}
 							
-							// Is a viewer containing this study opened? -> close it
-							for( i = 0; i < [viewersList count]; i++)
+							// ********* STUDY
+							
+							if( [series valueForKey:@"study"] != study)
 							{
-								if( study == [[[[viewersList objectAtIndex: i] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"]) [[[viewersList objectAtIndex: i] window] close];
+								study = [series valueForKeyPath:@"study"];
+								
+								if([studiesArray containsObject: study] == NO)
+								{
+									if( study) [studiesArray addObject: study];
+									[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+								}
+								
+								// Is a viewer containing this study opened? -> close it
+								for( i = 0; i < [viewersList count]; i++)
+								{
+									if( study == [[[[viewersList objectAtIndex: i] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"]) [[[viewersList objectAtIndex: i] window] close];
+								}
 							}
 						}
+						
+						[context deleteObject: [objectsToDelete objectAtIndex: x]];
 					}
 					
-					[context deleteObject: [objectsToDelete objectAtIndex: x]];
+					[databaseOutline selectRow:[selectedRows firstIndex] byExtendingSelection:NO];
 				}
 				
-				[databaseOutline selectRow:[selectedRows firstIndex] byExtendingSelection:NO];
-			}
-			
-			if( result == NSAlertOtherReturn)
-			{
-				for( i = 0; i < [nonLocalImagesPath count]; i++)
+				if( result == NSAlertOtherReturn)
 				{
-					[[NSFileManager defaultManager] removeFileAtPath:[nonLocalImagesPath objectAtIndex: i] handler:nil];
-					
-					if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
+					for( i = 0; i < [nonLocalImagesPath count]; i++)
 					{
-						[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
-					}
-					
-					if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"zip"])		// ZIP -> DELETE XML
-					{
-						[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
-					}
-					
-					NSString *currentDirectory = [[[nonLocalImagesPath objectAtIndex: i] stringByDeletingLastPathComponent] stringByAppendingString:@"/"];
-					NSArray *dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:currentDirectory];
-					
-					//Is this directory empty?? If yes, delete it!
-					
-					if( [dirContent count] == 0) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
-					if( [dirContent count] == 1)
-					{
-						if( [[[dirContent objectAtIndex: 0] uppercaseString] isEqualToString:@".DS_STORE"]) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
+						[[NSFileManager defaultManager] removeFileAtPath:[nonLocalImagesPath objectAtIndex: i] handler:nil];
+						
+						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
+						{
+							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+						}
+						
+						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"zip"])		// ZIP -> DELETE XML
+						{
+							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
+						}
+						
+						NSString *currentDirectory = [[[nonLocalImagesPath objectAtIndex: i] stringByDeletingLastPathComponent] stringByAppendingString:@"/"];
+						NSArray *dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:currentDirectory];
+						
+						//Is this directory empty?? If yes, delete it!
+						
+						if( [dirContent count] == 0) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
+						if( [dirContent count] == 1)
+						{
+							if( [[[dirContent objectAtIndex: 0] uppercaseString] isEqualToString:@".DS_STORE"]) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
+						}
 					}
 				}
 			}
-			
 			[wait close];
 			[wait release];
 		}
@@ -7800,6 +7594,8 @@ static BOOL needToRezoom;
 				
 				if( OnlyDICOM)
 				{
+					NSMutableArray	*files = [NSMutableArray arrayWithArray: [imagesArray valueForKey:@"path"]];
+					
 					succeed = [bonjourBrowser retrieveDICOMFilesWithSTORESCU: [bonjourServicesList selectedRow]-1 to: row-1 paths: [imagesArray valueForKey:@"path"]];
 					if( succeed)
 					{
@@ -13335,6 +13131,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 #pragma mark-
 #pragma mark Bonjour
+
+- (void) getDICOMROIFiles:(NSArray*) files
+{
+	[bonjourBrowser getDICOMROIFiles:[bonjourServicesList selectedRow]-1 roisPaths:files];
+}
 
 - (void) setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key
 {

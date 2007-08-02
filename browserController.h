@@ -380,6 +380,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSTableView*) albumTable;
 
 //bonjour
+- (void) getDICOMROIFiles:(NSArray*) files;
 - (void) setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key;
 - (BOOL) isCurrentDatabaseBonjour;
 - (void)setServiceName:(NSString*) title;

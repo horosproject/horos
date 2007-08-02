@@ -18,6 +18,7 @@
 #import "BrowserController.h"
 #import "AppController.h"
 #import "DicomFile.h"
+#import "DicomImage.h"
 #include "SimplePing.h"
 
 #import <sys/socket.h>
@@ -377,10 +378,6 @@ static char *GetPrivateIP()
 						if ([[NSFileManager defaultManager] fileExistsAtPath: localPath]) NSLog(@"strange...");
 						
 						[curData writeToFile: localPath atomically: YES];
-						
-//						[[NSFileManager defaultManager] removeFileAtPath: localPath handler:0L];
-//						success = [[NSFileManager defaultManager] createFileAtPath: [localPath stringByAppendingString:@"RENAME"] contents:curData attributes:nil];
-//						success = [[NSFileManager defaultManager] movePath:[localPath stringByAppendingString:@"RENAME"] toPath:localPath handler:0L];
 					}
 				}
 			}
@@ -1326,6 +1323,38 @@ static char *GetPrivateIP()
 	return YES;
 }
 
+- (void) getDICOMROIFiles:(int) index roisPaths:(NSArray*) roisPaths
+{
+	[BonjourBrowser waitForLock: lock];
+	
+	[dicomFileNames release];
+	dicomFileNames = [[NSMutableArray alloc] initWithCapacity: 0];
+	
+	[paths release];
+	paths = [[NSMutableArray alloc] initWithCapacity: 0];
+	
+	// TRY TO LOAD MULTIPLE DICOM FILES AT SAME TIME -> better network performances
+	
+	int		i;
+	NSString	*roistring = [NSString stringWithString:@"ROIs/"];
+	
+	for( i = 0; i < [roisPaths count] ; i++)
+	{
+		NSString	*local = [[documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"] stringByAppendingPathComponent: [roisPaths objectAtIndex: i]];
+		 
+		if( [[NSFileManager defaultManager] fileExistsAtPath: local] == NO)
+		{
+			[paths addObject: [roistring stringByAppendingPathComponent: [roisPaths objectAtIndex: i]]];
+			[dicomFileNames addObject: [BonjourBrowser bonjour2local: [roisPaths objectAtIndex: i]]];
+		}
+	}
+	
+	if( [dicomFileNames count] > 0)
+		[self connectToServer: index message:@"DICOM"];
+	
+	[lock unlock];
+}
+
 - (NSString*) getDICOMFile:(int) index forObject:(NSManagedObject*) image noOfImages: (int) noOfImages
 {
 	[BonjourBrowser waitForLock: lock];
@@ -1353,7 +1382,7 @@ static char *GetPrivateIP()
 	
 	do
 	{
-		NSManagedObject	*curImage = [images objectAtIndex: i];
+		DicomImage	*curImage = [images objectAtIndex: i];
 		
 		dicomFileName = [BonjourBrowser uniqueLocalPath: curImage];
 		
@@ -1377,6 +1406,20 @@ static char *GetPrivateIP()
 					[dicomFileNames addObject: [[dicomFileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"]];
 				}
 			}
+			
+//			NSManagedObject	*roiSRSeries = [[curImage valueForKeyPath:@"series.study"] valueForKey:@"roiSRSeries"];
+//			
+//			NSArray	*rois = [curImage SRPaths];
+//			
+//			int x;
+//			for( x = 0; x < [rois count] ; x++)
+//			{
+//				if( [[NSFileManager defaultManager] fileExistsAtPath: [rois objectAtIndex: x]])
+//				{
+//					[paths addObject: [rois objectAtIndex: x]];
+//					[dicomFileNames addObject: [[dicomFileName stringByDeletingLastPathComponent] stringByAppendingPathComponent: [[rois objectAtIndex: x] lastPathComponent]]];
+//				}
+//			}
 		}
 		i++;
 		

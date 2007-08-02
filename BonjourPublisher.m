@@ -74,12 +74,6 @@ static char *GetPrivateIP()
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
 - (void)toggleSharing:(BOOL)boo
 {
     uint16_t chosenPort;
@@ -707,6 +701,31 @@ while ( [data length] < pos + 4 && (readData = [incomingConnection availableData
 					NSString *path = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
 					pos += stringSize;
 					
+					if( [path cString] [ 0] != '/')
+					{
+						if( [[[path pathComponents] objectAtIndex: 0] isEqualToString:@"ROIs"])
+						{
+							//It's a ROI !
+							NSString	*local = [[interfaceOsiriX localDatabasePath] stringByDeletingLastPathComponent];
+							
+							path = [[local stringByAppendingPathComponent:@"/ROIs/"] stringByAppendingPathComponent: [path lastPathComponent]];
+						}
+						else
+						{
+							NSString	*extension = [path pathExtension];
+							
+							int val = [[path stringByDeletingPathExtension] intValue];
+							
+							val /= 10000;
+							val++;
+							val *= 10000;
+							
+							NSString	*local = [[interfaceOsiriX localDatabasePath] stringByDeletingLastPathComponent];
+							
+							path = [[[local stringByAppendingPathComponent:@"/DATABASE/"] stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", val]] stringByAppendingPathComponent: path];
+						}
+					}
+					
 					[localPaths addObject: path];
 					
 	//				if([[path pathExtension] isEqualToString:@"zip"])
@@ -756,24 +775,8 @@ while ( [data length] < pos + 4 && (readData = [incomingConnection availableData
 				int temp = NSSwapHostIntToBig( noOfFiles);
 				[representationToSend appendBytes: &temp length: 4];	
 				for( i = 0; i < noOfFiles; i++)
-				//for( i = 0; i < [localPaths count]; i++)
 				{
 					NSString	*path = [localPaths objectAtIndex: i];
-					
-					if( [path cString] [ 0] != '/')
-					{
-						NSString	*extension = [path pathExtension];
-						
-						int val = [[path stringByDeletingPathExtension] intValue];
-						
-						val /= 10000;
-						val++;
-						val *= 10000;
-						
-						NSString	*local = [[interfaceOsiriX localDatabasePath] stringByDeletingLastPathComponent];
-						
-						path = [[[local stringByAppendingPathComponent:@"/DATABASE/"] stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", val]] stringByAppendingPathComponent: path];
-					}
 					
 					if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO) NSLog( @"Bonjour Publisher - File doesn't exist at path: %@", path);
 					

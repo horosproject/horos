@@ -31,10 +31,14 @@
 	if( status != EC_Normal) return 0L;
 	
 	OFString name;
-	const Uint8 *buffer;
+	const Uint8 *buffer = 0L;
 	unsigned long length;
 	
-	if (fileformat.getDataset()->findAndGetUint8Array(DCM_OsirixROI, buffer, &length, OFFalse).good())
+	if (fileformat.getDataset()->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good())	//DCM_EncapsulatedDocument   //DCM_OsirixROI
+	{
+		archiveData = [NSData dataWithBytes:buffer length:(unsigned)length];
+	}
+	else if (fileformat.getDataset()->findAndGetUint8Array(DCM_OsirixROI, buffer, &length, OFFalse).good())	//DCM_EncapsulatedDocument   //DCM_OsirixROI
 	{
 		archiveData = [NSData dataWithBytes:buffer length:(unsigned)length];
 	}

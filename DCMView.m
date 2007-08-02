@@ -6657,8 +6657,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
 {
-	long		clutBars	= CLUTBARS;	//[[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
-	long		annotations	= ANNOTATIONS;	//[[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
+	long		clutBars	= CLUTBARS;			//[[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
+	long		annotations	= ANNOTATIONS;		//[[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 	
 	if( needToLoadTexture)
 		[self loadTexturesCompute];
@@ -8276,7 +8276,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (BOOL) softwareInterpolation
 {
-	if(	scaleValue > 4 && NOINTERPOLATION == NO && //[self is2DViewer] &&
+	if(	scaleValue > 4 && NOINTERPOLATION == NO && 
 		SOFTWAREINTERPOLATION == YES && [curDCM pwidth] <= SOFTWAREINTERPOLATION_MAX &&
 		[curDCM isRGB] == NO && [curDCM thickSlabVRActivated] == NO)
 	{

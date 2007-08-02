@@ -569,7 +569,7 @@ static char *GetPrivateIP()
 		[pb setString: [aFile valueForKey:@"name"] forType:NSStringPboardType];
 }
 
--(void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable
+-(void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable forViewing: (BOOL) forViewing
 {
 	NSMutableArray	*selectedItems = [NSMutableArray array];
 	NSIndexSet		*selectedRowIndexes = [outlineView selectedRowIndexes];
@@ -590,17 +590,32 @@ static char *GetPrivateIP()
 		   }
 		}
 		
-		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting Retrieving...", nil)];
-		[wait showWindow:self];
-		
-		checkAndViewTry = -1;
-		[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject: selectedItems];
-		
-		Delay( 30, 0L);
-		
-		[wait close];
-		[wait release];
+		if( [selectedItems count] > 0)
+		{
+			if( [sendToPopup indexOfSelectedItem] != 0 && forViewing == YES)
+			{
+				NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Query & Retrieve",nil),NSLocalizedString( @"If you want to retrieve & view these images, change the destination to this computer ('retrieve to' menu).",nil),NSLocalizedString( @"OK",nil), nil, nil);
+			}
+			else
+			{
+				WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting Retrieving...", nil)];
+				[wait showWindow:self];
+				
+				checkAndViewTry = -1;
+				[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject: selectedItems];
+				
+				Delay( 30, 0L);
+				
+				[wait close];
+				[wait release];
+			}
+		}
 	}
+}
+
+-(void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable
+{
+	return [self retrieve: sender onlyIfNotAvailable: NO forViewing: NO];
 }
 
 -(void) retrieve:(id)sender
@@ -610,7 +625,7 @@ static char *GetPrivateIP()
 
 - (IBAction) retrieveAndView: (id) sender
 {
-	[self retrieve: self onlyIfNotAvailable: YES];
+	[self retrieve: self onlyIfNotAvailable: YES forViewing: YES];
 	[self view: self];
 }
 
@@ -653,19 +668,29 @@ static char *GetPrivateIP()
 		[dictionary setObject:[object valueForKey:@"port"] forKey:@"port"];
 		[dictionary setObject:[object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
 
+		NSDictionary	*dstDict = 0L;
+		
 		if( [sendToPopup indexOfSelectedItem] != 0)
 		{
 			int index = [sendToPopup indexOfSelectedItem] -2;
 			
+			dstDict = [[DCMNetServiceDelegate DICOMServersList] objectAtIndex: index];
 			
-			
-			[dictionary setObject: [[[DCMNetServiceDelegate DICOMServersList] objectAtIndex: index] valueForKey:@"AETitle"]  forKey: @"moveDestination"];
+			[dictionary setObject: [dstDict valueForKey:@"AETitle"]  forKey: @"moveDestination"];
 		}
 		
-		int numberPacketsReceived = 0;
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
+		if( [[dstDict valueForKey:@"Port"] intValue]  == [[dictionary valueForKey:@"port"] intValue] &&
+			[[dstDict valueForKey:@"Address"] isEqualToString: [dictionary valueForKey:@"hostname"]])
+			{
+				NSLog( @"move source == move destination -> Do Nothing");
+			}
+		else
 		{
-			[object move:dictionary];
+			int numberPacketsReceived = 0;
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
+			{
+				[object move:dictionary];
+			}
 		}
 	}
 	
@@ -769,8 +794,10 @@ static char *GetPrivateIP()
 {
 	id item = [outlineView itemAtRow: [outlineView selectedRow]];
 	
-	checkAndViewTry = 20;
-	if( item) [self checkAndView: [item retain]];
+	{
+		checkAndViewTry = 20;
+		if( item) [self checkAndView: [item retain]];
+	}
 }
 
 - (void)setModalityQuery:(id)sender

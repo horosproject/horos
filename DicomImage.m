@@ -650,13 +650,13 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 			[[NSFileManager defaultManager] removeFileAtPath: [VRController getUniqueFilenameScissorStateFor: self] handler: 0L];
 		}
 		
-		// Delete the associated ROIs
-		NSArray	*ROIsPaths = [self SRPaths];
-		if( [ROIsPaths count])
-		{
-			int i;
-			for( i = 0 ; i < [ROIsPaths count]; i++) [[NSFileManager defaultManager] removeFileAtPath:[ROIsPaths objectAtIndex: i] handler:0L];
-		}
+//		// Delete the associated ROIs
+//		NSArray	*ROIsPaths = [self SRPaths];
+//		if( [ROIsPaths count])
+//		{
+//			int i;
+//			for( i = 0 ; i < [ROIsPaths count]; i++) [[NSFileManager defaultManager] removeFileAtPath:[ROIsPaths objectAtIndex: i] handler:0L];
+//		}
 		#endif
 	}
 	return delete;

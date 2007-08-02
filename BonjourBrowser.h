@@ -61,7 +61,7 @@
 - (NSMutableArray*) services;
 - (NSString *) databaseFilePathForService:(NSString*) service;
 
-
+- (void) getDICOMROIFiles:(int) index roisPaths:(NSArray*) roisPaths;
 - (NSString*) getDICOMFile:(int) index forObject:(NSManagedObject*) image noOfImages: (int) noOfImages;
 - (NSString*) getDatabaseFile:(int) index ;
 - (void) setBonjourDatabaseValue:(int) index item:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key;

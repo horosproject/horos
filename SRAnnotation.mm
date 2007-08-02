@@ -175,7 +175,7 @@
 			const Uint8 *buffer;
 			unsigned long length;
 			NSData *archiveData;
-			if (fileformat.getDataset()->findAndGetUint8Array(DCM_OsirixROI, buffer, &length, OFFalse).good())
+			if (fileformat.getDataset()->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good())	//DCM_OsirixROI
 			{
 				NSLog(@"Unarchive from SR - SRAnnotation");
 				@try
@@ -379,8 +379,8 @@
 		NSData *data = nil;
 		data = [ NSArchiver archivedDataWithRootObject:_rois];
 		const Uint8 *buffer =  (const Uint8 *)[data bytes];
-		DcmTag tag(0x0071, 0x0011, DcmVR("OB"));
-		status = dataset->putAndInsertUint8Array(tag , buffer, [data length] , OFTrue);
+//		DcmTag tag(0x0071, 0x0011, DcmVR("OB"));			//By using DCM_EncapsulatedDocument, instead of our 0x0071, 0x0011 field, we can support implicit transfers...
+		status = dataset->putAndInsertUint8Array(DCM_EncapsulatedDocument , buffer, [data length] , OFTrue);
 		
 		document->getCodingSchemeIdentification().addPrivateDcmtkCodingScheme();
 		if (document->write(*dataset).good())

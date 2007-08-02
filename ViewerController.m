@@ -96,6 +96,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "CalciumScoringWindowController.h"
 #import "EndoscopySegmentationController.h"
 #import "HornRegistration.h"
+#import "BonjourBrowser.h"
 
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
 	#import <InstantMessage/IMService.h>
@@ -7902,15 +7903,39 @@ extern NSString * documentsDirectory();
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"])
 	{
+		if( [browserWindow isCurrentDatabaseBonjour])
+		{
+			NSMutableArray	*filesArray = [NSMutableArray array];
+			
+			for( i = 0; i < [fileList[ mIndex] count]; i++)
+			{
+				if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
+				{
+					NSString	*str = [[fileList[ mIndex] objectAtIndex:i] SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
+					
+					[filesArray addObject: [str lastPathComponent]];
+				}
+			}
+			
+			[browserWindow getDICOMROIFiles: filesArray];
+		}
+		
 		for( i = 0; i < [fileList[ mIndex] count]; i++)
 		{
 			if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
 			{
-				NSMutableString		*mutStr = [NSMutableString stringWithString: [[fileList[mIndex] objectAtIndex:i] valueForKey:@"uniqueFilename"]];
-				[mutStr replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [mutStr length])];
-				NSString			*str = [path stringByAppendingPathComponent: [NSString stringWithFormat: @"%@-%d",mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]]];
+				NSString	*str;
 				
-				NSData *data = [self roiFromDICOM:[str stringByAppendingPathExtension:@"dcm"]];	
+				str = [[fileList[ mIndex] objectAtIndex:i] SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
+				
+				if( [browserWindow isCurrentDatabaseBonjour])
+				{
+					NSString	*imagePath = [BonjourBrowser uniqueLocalPath: [fileList[ mIndex] objectAtIndex:i]];
+					
+					str = [[imagePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [str lastPathComponent]];
+				}
+				
+				NSData *data = [self roiFromDICOM: str];	
 				//If data, we successfully unarchived from SR style ROI
 				if (data)
 					array = [NSUnarchiver unarchiveObjectWithData:data];
@@ -7936,6 +7961,8 @@ extern NSString * documentsDirectory();
 	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:ROIDATABASE];
 	BOOL			isDir = YES;
 	int				i, x;
+	
+	if( [browserWindow isCurrentDatabaseBonjour]) return;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];

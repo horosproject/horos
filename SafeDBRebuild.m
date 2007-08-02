@@ -140,6 +140,8 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 				}
 				else curDict = [curDict retain];
 				
+				BOOL DICOMROI = NO;
+				
 				if( [DCMAbstractSyntaxUID isStructuredReport: [curDict objectForKey: @"SOPClassUID"]])
 				{
 					// Check if it is an OsiriX ROI SR
@@ -153,22 +155,22 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 						NSString	*destPath = [roiFolder stringByAppendingPathComponent: uidName];
 						
 						if( [newFile isEqualToString: destPath] == NO)
-						{						
+						{
 							[[NSFileManager defaultManager] removeFileAtPath:destPath handler:0L];
 							if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
 							{
-								NSLog( @"OsiriX ROI SR MOVE :%@ to :%@", newFile, destPath);
+								NSLog( @"ROI SR MOVE :%@ to :%@", newFile, destPath);
 								[[NSFileManager defaultManager] movePath:newFile toPath:destPath handler: 0L];
 							}
 							else
 							{
-								NSLog( @"OsiriX ROI SR COPY :%@ to :%@", newFile, destPath);
+								NSLog( @"ROI SR COPY :%@ to :%@", newFile, destPath);
 								[[NSFileManager defaultManager] copyPath:newFile toPath:destPath handler: 0L];
 							}
 						}
-						else NSLog( @"OsiriX ROI SR already in the right place :%@", newFile);
 						
 						newFile = destPath;
+						DICOMROI = YES;
 					}
 				}
 				
@@ -326,7 +328,9 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 								else [image setValue:newFile forKey:@"path"];
 								
 								[image setValue:[NSNumber numberWithBool:iPod] forKey:@"iPod"];
-								[image setValue:[NSNumber numberWithBool:local] forKey:@"inDatabaseFolder"];
+								
+								if( DICOMROI) [image setValue: [NSNumber numberWithBool:YES] forKey:@"inDatabaseFolder"];
+								else [image setValue:[NSNumber numberWithBool:local] forKey:@"inDatabaseFolder"];
 								
 								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
 								DCMCalendarDate *time = [DCMCalendarDate dicomTimeWithDate:[curDict objectForKey: @"studyDate"]];
