@@ -27,6 +27,7 @@
 				CEACC7B70878781000CF466E /* PBXTargetDependency */,
 				CEACC7B90878781000CF466E /* PBXTargetDependency */,
 				AB381B090ABE9FA600239326 /* PBXTargetDependency */,
+				CE0630EE0C625B9C001027D9 /* PBXTargetDependency */,
 				ABD908E50AF211C500E47345 /* PBXTargetDependency */,
 				CEAB83080B20979D0019A9AE /* PBXTargetDependency */,
 				CE8DF1260B470DC50035C230 /* PBXTargetDependency */,
@@ -10751,6 +10752,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 8D202CF80486D31800D8A456;
 			remoteInfo = OSIHotKeys;
+		};
+		CE0630ED0C625B9C001027D9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A9FF849B0C5F187800D50C95 /* OSICustomImageAnnotations.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D202CE80486D31800D8A456 /* OSICustomImageAnnotations */;
+			remoteInfo = OSICustomImageAnnotations;
 		};
 		CE4E42F808758A1800D0AFDB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -30254,6 +30262,11 @@
 			isa = PBXTargetDependency;
 			name = AYDicomPrint;
 			targetProxy = ABD908E40AF211C500E47345 /* PBXContainerItemProxy */;
+		};
+		CE0630EE0C625B9C001027D9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = OSICustomImageAnnotations;
+			targetProxy = CE0630ED0C625B9C001027D9 /* PBXContainerItemProxy */;
 		};
 		CE7A0F7F0AED591800540017 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
