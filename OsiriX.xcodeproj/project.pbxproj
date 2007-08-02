@@ -472,6 +472,9 @@
 		A917CF260BF49314002F415E /* HUDLeftArrowButtonPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1A0BF49314002F415E /* HUDLeftArrowButtonPressed.tif */; };
 		A917CF270BF49314002F415E /* HUDRightArrowButtonNeutral.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1B0BF49314002F415E /* HUDRightArrowButtonNeutral.tif */; };
 		A917CF280BF49314002F415E /* HUDRightArrowButtonPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1C0BF49314002F415E /* HUDRightArrowButtonPressed.tif */; };
+		A918A4E20C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = A918A4D40C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane */; };
+		A918A4E30C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = A918A4D40C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane */; };
+		A918A4E40C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = A918A4D40C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane */; };
 		A918CC7B0C02E51B00CAC7A3 /* stringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = A918CC790C02E51B00CAC7A3 /* stringAdditions.h */; };
 		A918CC7C0C02E51B00CAC7A3 /* stringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A918CC7A0C02E51B00CAC7A3 /* stringAdditions.m */; };
 		A918CC7D0C02E51B00CAC7A3 /* stringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = A918CC790C02E51B00CAC7A3 /* stringAdditions.h */; };
@@ -11283,6 +11286,7 @@
 		A917CF1A0BF49314002F415E /* HUDLeftArrowButtonPressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDLeftArrowButtonPressed.tif; sourceTree = "<group>"; };
 		A917CF1B0BF49314002F415E /* HUDRightArrowButtonNeutral.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDRightArrowButtonNeutral.tif; sourceTree = "<group>"; };
 		A917CF1C0BF49314002F415E /* HUDRightArrowButtonPressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDRightArrowButtonPressed.tif; sourceTree = "<group>"; };
+		A918A4D40C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSICustomImageAnnotations.prefPane; path = "Preference Panes/OSICustomImageAnnotations/build/Development/OSICustomImageAnnotations.prefPane"; sourceTree = "<group>"; };
 		A918CC790C02E51B00CAC7A3 /* stringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringAdditions.h; sourceTree = "<group>"; };
 		A918CC7A0C02E51B00CAC7A3 /* stringAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = stringAdditions.m; sourceTree = "<group>"; };
 		A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeManagerController.h; sourceTree = "<group>"; };
@@ -19218,6 +19222,7 @@
 		CEBD8A4B0875B029000E42D6 /* Pane */ = {
 			isa = PBXGroup;
 			children = (
+				A918A4D40C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane */,
 				BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */,
 				ABD908C60AF2119200E47345 /* AYDicomPrint.prefPane */,
 				AB381AE90ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane */,
@@ -26048,6 +26053,7 @@
 				CE897DD50C21D951005C669E /* texture.tif in Resources */,
 				ABBF9A3A0C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
 				AB80411B0C5F0AC7000F21D5 /* 3DPRESETS in Resources */,
+				A918A4E20C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26448,6 +26454,7 @@
 				CE897DD40C21D951005C669E /* texture.tif in Resources */,
 				ABBF9A3B0C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
 				AB80411C0C5F0AC7000F21D5 /* 3DPRESETS in Resources */,
+				A918A4E40C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26848,6 +26855,7 @@
 				CE897DD60C21D951005C669E /* texture.tif in Resources */,
 				ABBF9A390C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
 				AB80411A0C5F0AC7000F21D5 /* 3DPRESETS in Resources */,
+				A918A4E30C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

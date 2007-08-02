@@ -47,6 +47,7 @@
 		backgroundColor = [[NSColor redColor] retain];
 		[self setTitle:@"Annotation"];
 		content = [[NSMutableArray array] retain];
+		isOrientationWidget = NO;
     }
     return self;
 }
@@ -84,7 +85,7 @@
 	[color set];
 	if(isSelected)
 		[backgroundColor set];
-	if(!isEnabled)
+	if(!isEnabled || isOrientationWidget)
 		[[NSColor grayColor] set];
 	[borderFrame fill];
 
@@ -97,7 +98,7 @@
 		[borderFrame setLineWidth:2.0];
 		
 	[[NSColor redColor] set];
-	if(!isEnabled)
+	if(!isEnabled || isOrientationWidget)
 		[[NSColor darkGrayColor] set];
 	[borderFrame stroke];
 	
@@ -122,7 +123,7 @@
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
-	if(!isEnabled) return;
+	if(!isEnabled || isOrientationWidget) return;
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"CIAAnnotationMouseDraggedNotification" object:self];
 	
 	NSPoint eventLocation = [theEvent locationInWindow];
@@ -157,7 +158,7 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-	if(!isEnabled) return;
+	if(!isEnabled || isOrientationWidget) return;
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"CIAAnnotationMouseDownNotification" object:self];
 	NSPoint eventLocation = [theEvent locationInWindow];
 	mouseDownLocation = [self convertPoint:eventLocation fromView:nil];
@@ -185,7 +186,7 @@
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-	if(!isEnabled) return;
+	if(!isEnabled || isOrientationWidget) return;
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"CIAAnnotationMouseUpNotification" object:self];
 }
 
@@ -270,6 +271,16 @@
 - (void)setEnabled:(BOOL)enabled;
 {
 	isEnabled = enabled;
+}
+
+- (BOOL)isOrientationWidget;
+{
+	return isOrientationWidget;
+}
+
+- (void)setIsOrientationWidget:(BOOL)boo;
+{
+	isOrientationWidget = boo;
 }
 
 @end

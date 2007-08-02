@@ -25,6 +25,8 @@
 	IBOutlet NSPopUpButton *modalitiesPopUpButton;
 	IBOutlet NSButton *sameAsDefaultButton;
 	
+	IBOutlet NSButton *orientationWidgetButton;
+	
 	IBOutlet NSButton *addAnnotationButton, *removeAnnotationButton;
 	
 	IBOutlet CIALayoutView *layoutView;
@@ -46,6 +48,7 @@
 - (IBAction)saveAnnotationLayout:(id)sender;
 - (IBAction)switchModality:(id)sender;
 - (IBAction)setSameAsDefault:(id)sender;
+- (IBAction)toggleOrientationWidget:(id)sender;
 
 - (CIALayoutController*)layoutController;
 
@@ -66,5 +69,6 @@
 - (NSPopUpButton*)specialFieldsPopUpButton;
 - (NSBox*)contentBox;
 - (NSButton*)sameAsDefaultButton;
+- (NSButton*)orientationWidgetButton;
 
 @end

@@ -59,6 +59,7 @@
 - (IBAction)validateTokenTextField:(id)sender;
 
 - (void)prepareDatabaseFields;
+- (NSMutableArray*)specialFieldsTitles;
 - (void)setCustomDICOMFieldEditingEnable:(BOOL)boo;
 
 - (void)saveAnnotationLayoutForModality:(NSString*)modality;
@@ -69,5 +70,7 @@
 
 - (void)setLayoutView:(CIALayoutView*)view;
 - (void)setPrefPane:(OSICustomImageAnnotations*)aPrefPane;
+
+- (void)setOrientationWidgetEnabled:(BOOL)enabled;
 
 @end

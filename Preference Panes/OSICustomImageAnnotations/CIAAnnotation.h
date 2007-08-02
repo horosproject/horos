@@ -17,6 +17,7 @@
 	NSColor *color, *backgroundColor;
 	NSString *title;
 	NSMutableArray *content;
+	BOOL isOrientationWidget;
 }
 
 + (NSSize)defaultSize;
@@ -39,5 +40,7 @@
 - (void)recomputeMouseDownLocation;
 
 - (void)setEnabled:(BOOL)enabled;
+- (BOOL)isOrientationWidget;
+- (void)setIsOrientationWidget:(BOOL)boo;
 
 @end

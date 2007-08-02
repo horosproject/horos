@@ -135,9 +135,7 @@ NSLog(@"makeFirstResponder");
 - (IBAction)setSameAsDefault:(id)sender;
 {
 	BOOL state = [sameAsDefaultButton state]==NSOnState;
-	if(state) NSLog(@"NSOnState");
-	else NSLog(@"NSOFFState");
-	
+
 	if(state)
 	{
 		//[layoutController removeAllAnnotations];
@@ -153,6 +151,15 @@ NSLog(@"makeFirstResponder");
 	
 	[addAnnotationButton setEnabled:!state];
 	[removeAnnotationButton setEnabled:!state];
+}
+
+- (NSButton*)orientationWidgetButton; {return orientationWidgetButton;}
+
+- (IBAction)toggleOrientationWidget:(id)sender;
+{
+	BOOL state = [orientationWidgetButton state]==NSOnState;
+
+	[layoutController setOrientationWidgetEnabled:state];
 }
 
 @end

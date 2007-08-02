@@ -5953,6 +5953,290 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
+#define CUSTOM_ANNOTATIONS
+#ifdef CUSTOM_ANNOTATIONS
+- (void) drawTextualData:(NSRect) size :(long) annotations
+{
+	//NSLog(@"CUSTOM_ANNOTATIONS");
+	
+	NSManagedObject   *file;
+	file = [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
+	
+		
+	//** TEXT INFORMATION
+	glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+	glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
+	glTranslatef (-(size.size.width) / 2.0f, -(size.size.height) / 2.0f, 0.0f); // translate center to upper left
+	
+	//draw line around edge for key Images only in 2D Viewer
+	
+	if ([[self windowController] isMemberOfClass:[ViewerController class]] && [[self windowController] isKeyImage:curImage] && stringID == 0L) {
+		glLineWidth(8.0);
+		glColor3f (1.0f, 1.0f, 0.0f);
+		glBegin(GL_LINE_LOOP);
+			glVertex2f(0.0,                                      0.0);
+			glVertex2f(0.0,                   size.size.height - 0.0);
+			glVertex2f(size.size.width - 0.0, size.size.height - 0.0);
+			glVertex2f(size.size.width - 0.0,                    0.0);
+		glEnd();
+	}
+	
+	glColor3f (0.0f, 0.0f, 0.0f);
+//	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glLineWidth(1.0);
+	
+	if (annotations == 4) [[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo" object: self];
+	else //none, base, noName, full annotation
+	{
+		NSMutableString *tempString, *tempString2, *tempString3, *tempString4;
+		long yRaster = 1, xRaster;
+		BOOL fullText = YES;
+		
+		if( stringID && [stringID isEqualToString:@"OrthogonalMPRVIEW"] == YES)
+		{
+			fullText = NO;
+			
+			if( isKeyView == NO)
+			{
+				[self drawOrientation:size];
+				return;
+			}
+		}
+		
+		NSDictionary *annotationsDictionary = [curDCM annotationsDictionary];
+
+		NSMutableDictionary *xRasterInit = [NSMutableDictionary dictionary];
+		[xRasterInit setObject:[NSNumber numberWithInt:4] forKey:@"TopLeft"];
+		[xRasterInit setObject:[NSNumber numberWithInt:4] forKey:@"MiddleLeft"];
+		[xRasterInit setObject:[NSNumber numberWithInt:4] forKey:@"LowerLeft"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width] forKey:@"TopRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width] forKey:@"MiddleRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width] forKey:@"LowerRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"TopMiddle"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"LowerMiddle"];
+
+		NSMutableDictionary *rightAlign = [NSMutableDictionary dictionary];
+		[rightAlign setObject:[NSNumber numberWithBool:NO] forKey:@"TopLeft"];
+		[rightAlign setObject:[NSNumber numberWithBool:NO] forKey:@"MiddleLeft"];
+		[rightAlign setObject:[NSNumber numberWithBool:NO] forKey:@"LowerLeft"];
+		[rightAlign setObject:[NSNumber numberWithBool:YES] forKey:@"TopRight"];
+		[rightAlign setObject:[NSNumber numberWithBool:YES] forKey:@"MiddleRight"];
+		[rightAlign setObject:[NSNumber numberWithBool:YES] forKey:@"LowerRight"];
+		[rightAlign setObject:[NSNumber numberWithBool:NO] forKey:@"TopMiddle"];
+		[rightAlign setObject:[NSNumber numberWithBool:NO] forKey:@"LowerMiddle"];
+
+		NSMutableDictionary *yRasterInit = [NSMutableDictionary dictionary];
+		[yRasterInit setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"TopLeft"];
+		[yRasterInit setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"TopMiddle"];
+		[yRasterInit setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"TopRight"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height/2] forKey:@"MiddleLeft"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height/2] forKey:@"MiddleRight"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2] forKey:@"LowerLeft"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2] forKey:@"LowerRight"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2] forKey:@"LowerMiddle"];
+		
+		NSMutableDictionary *yRasterIncrement = [NSMutableDictionary dictionary];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"TopLeft"];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"TopMiddle"];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"TopRight"];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"MiddleLeft"];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"MiddleRight"];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:-stringSize.height] forKey:@"LowerLeft"];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:-stringSize.height] forKey:@"LowerRight"];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:-stringSize.height] forKey:@"LowerMiddle"];
+		
+		NSArray *keys = [annotationsDictionary allKeys];
+		int i, j, k, increment;
+		for (k=0; k<[keys count]; k++)
+		{
+			NSArray *annotations = [annotationsDictionary objectForKey:[keys objectAtIndex:k]];
+			xRaster = [[xRasterInit objectForKey:[keys objectAtIndex:k]] intValue];
+			yRaster = [[yRasterInit objectForKey:[keys objectAtIndex:k]] intValue];
+			increment = [[yRasterIncrement objectForKey:[keys objectAtIndex:k]] intValue];
+			
+			NSEnumerator *enumerator;
+			if([[keys objectAtIndex:k] hasPrefix:@"Lower"])
+				enumerator = [annotations reverseObjectEnumerator];
+			else
+				enumerator = [annotations objectEnumerator];
+			id annot;
+			
+			BOOL useStringTexture;
+			
+			while ((annot = [enumerator nextObject]))
+			{
+				tempString = [NSMutableString stringWithString:@""];
+				tempString2 = [NSMutableString stringWithString:@""];
+				tempString3 = [NSMutableString stringWithString:@""];
+				tempString4 = [NSMutableString stringWithString:@""];
+				for (j=0; j<[annot count]; j++)
+				{
+					if([[annot objectAtIndex:j] isEqualToString:@"Image Size"])
+					{
+						[tempString appendFormat: @"Image size: %ld x %ld", (long) [curDCM pwidth], (long) [curDCM pheight]];
+						useStringTexture = YES;
+					}
+					else if([[annot objectAtIndex:j] isEqualToString:@"View Size"])
+					{
+						[tempString appendFormat: @"View size: %ld x %ld", (long) size.size.width, (long) size.size.height];
+						useStringTexture = NO;
+					}
+					else if([[annot objectAtIndex:j] isEqualToString:@"Mouse Position (px)"])
+					{
+						if(mouseXPos!=0 && mouseYPos!=0)
+						{
+							if([curDCM isRGB]) [tempString appendFormat: @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
+							else [tempString appendFormat: @"X: %d px Y: %d px Value: %2.2f", (int)mouseXPos, (int)mouseYPos, pixelMouseValue];
+														
+							if( blendingView)
+							{
+								if( [[blendingView curDCM] isRGB])
+									[tempString2 appendFormat: @"Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB];
+								else [tempString2 appendFormat: @"Fused Image : X: %d px Y: %d px Value: %2.2f", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue];
+							}
+							
+							if( [curDCM displaySUVValue])
+							{
+								if( [curDCM hasSUV] == YES && [curDCM SUVConverted] == NO)
+								{
+									[tempString3 appendFormat: @"SUV: %.2f", [self getSUV]];
+								}
+							}
+							
+							if( blendingView)
+							{
+								if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
+								{
+									[tempString4 appendFormat: @"SUV (fused image): %.2f", [self getBlendedSUV]];
+								}
+							}
+							
+							useStringTexture = NO;
+						}
+					}
+					else if([[annot objectAtIndex:j] isEqualToString:@"Zoom"] && fullText)
+					{
+						[tempString appendFormat: @"Zoom: %0.0f%%", (float) scaleValue*100.0];
+						useStringTexture = NO;
+					}
+					else if([[annot objectAtIndex:j] isEqualToString:@"Rotation Angle"] && fullText)
+					{
+						[tempString appendFormat: @" Angle: %0.0f", (float) ((long) rotation % 360)];
+						useStringTexture = NO;
+					}
+					else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText)
+					{
+						if( [curDCM stack] > 1)
+						{
+							long maxVal;
+							
+							if(flippedData) maxVal = curImage-[curDCM stack]+1;
+							else maxVal = curImage+[curDCM stack];
+							
+							if(maxVal < 0) maxVal = 0;
+							if(maxVal > [dcmPixList count]) maxVal = [dcmPixList count];
+							
+							if( flippedData) [tempString appendFormat: @"Im: %ld-%ld/%ld", (long) [dcmPixList count] - curImage, [dcmPixList count] - maxVal, (long) [dcmPixList count]];
+							else [tempString appendFormat: @"Im: %ld-%ld/%ld", (long) curImage+1, maxVal, (long) [dcmPixList count]];
+						} 
+						else if( fullText)
+						{
+							if( flippedData) [tempString appendFormat: @"Im: %ld/%ld", (long) [dcmPixList count] - curImage, (long) [dcmPixList count]];
+							else [tempString appendFormat: @"Im: %ld/%ld", (long) curImage+1, (long) [dcmPixList count]];
+						}
+
+						useStringTexture = NO;
+					}
+					else if([[annot objectAtIndex:j] isEqualToString:@"Mouse Position (mm)"])
+					{
+						if( stringID == 0L || [stringID isEqualToString:@"OrthogonalMPRVIEW"] || [stringID isEqualToString:@"FinalView"])
+						{
+							if( mouseXPos != 0 && mouseYPos != 0)
+							{
+								float location[ 3 ];
+								
+								if( [curDCM stack] > 1)
+								{
+									long maxVal;
+								
+									if( flippedData) maxVal = curImage-([curDCM stack]-1)/2;
+									else maxVal = curImage+([curDCM stack]-1)/2;
+									
+									if( maxVal < 0) maxVal = 0;
+									if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
+									
+									[[dcmPixList objectAtIndex: maxVal] convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];
+								}
+								else
+								{
+									[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];
+								}
+								
+								if(fabs(location[0]) < 1.0 && location[0] != 0.0)
+									[tempString appendFormat: @"X: %2.2f %cm Y: %2.2f %cm Z: %2.2f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5];
+								else
+									[tempString appendFormat: @"X: %2.2f mm Y: %2.2f mm Z: %2.2f mm", location[0], location[1], location[2]];
+							}
+						}
+					}
+					else if([[annot objectAtIndex:j] isEqualToString:@"Window Level / Window Width"])
+					{
+						float	lwl, lww;
+			
+						lwl = [curDCM wl];
+						lww = [curDCM ww];
+						
+					//	if( fullText)
+						{
+							if(lww < 50)
+								[tempString appendFormat: @"WL: %0.4f WW: %0.4f", lwl, lww];
+							else
+								[tempString appendFormat: @"WL: %ld WW: %ld", (long) lwl, (long) lww];
+							
+							if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"]))
+							{
+								if( [curDCM maxValueOfSeries])
+								{
+									float min = lwl - lww/2, max = lwl + lww/2;
+									
+									[tempString2 appendFormat: @"From: %d %% (%0.2f) to: %d %% (%0.2f)", (long) (min * 100. / [curDCM maxValueOfSeries]), lwl - lww/2, (long) (max * 100. / [curDCM maxValueOfSeries]), lwl + lww/2];
+								}
+							}	
+						}
+					}
+					else
+					{
+						[tempString appendFormat:@" %@", [annot objectAtIndex:j]];
+						useStringTexture = YES;
+					}					
+				}
+				if(![tempString isEqualToString:@""])
+				{
+					[self DrawNSStringGL:tempString :fontListGL :xRaster :yRaster rightAlignment:[[rightAlign objectForKey:[keys objectAtIndex:k]] boolValue] useStringTexture:useStringTexture];
+					yRaster += increment;
+				}
+				if(![tempString2 isEqualToString:@""])
+				{
+					[self DrawNSStringGL:tempString2 :fontListGL :xRaster :yRaster rightAlignment:[[rightAlign objectForKey:[keys objectAtIndex:k]] boolValue] useStringTexture:useStringTexture];
+					yRaster += increment;
+				}
+				if(![tempString3 isEqualToString:@""])
+				{
+					[self DrawNSStringGL:tempString3 :fontListGL :xRaster :yRaster rightAlignment:[[rightAlign objectForKey:[keys objectAtIndex:k]] boolValue] useStringTexture:useStringTexture];
+					yRaster += increment;
+				}
+				if(![tempString4 isEqualToString:@""])
+				{
+					[self DrawNSStringGL:tempString4 :fontListGL :xRaster :yRaster rightAlignment:[[rightAlign objectForKey:[keys objectAtIndex:k]] boolValue] useStringTexture:useStringTexture];
+					yRaster += increment;
+				}
+				
+			}// while
+		} // for k
+	}
+}
+
+#else
 - (void) drawTextualData:(NSRect) size :(long) annotations
 {
 	NSManagedObject   *file;
@@ -6001,6 +6285,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				return;
 			}
 		}
+		
+		// TOP LEFT
 		
 		if( fullText)
 		{
@@ -6335,6 +6621,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 	}
 }
+#endif
 
 #pragma mark-
 #pragma mark image transformation

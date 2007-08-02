@@ -58,6 +58,7 @@
                 setSameAsDefault = id; 
                 setTitle = id; 
                 switchModality = id; 
+                toggleOrientationWidget = id; 
                 validateTokenTextField = id; 
             }; 
             CLASS = OSICustomImageAnnotations; 
@@ -81,6 +82,7 @@
                 layoutView = CIALayoutView; 
                 modalitiesPopUpButton = NSPopUpButton; 
                 nameLabel = NSTextField; 
+                orientationWidgetButton = NSButton; 
                 removeAnnotationButton = NSButton; 
                 sameAsDefaultButton = NSButton; 
                 specialFieldsPopUpButton = NSPopUpButton; 

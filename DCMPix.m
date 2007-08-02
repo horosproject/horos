@@ -10658,7 +10658,7 @@ BOOL            readable = YES;
 						else
 							value = nil;
 						if(value==nil) value = @"";
-						NSLog(@"DICOM group: %@, element: %@, field: %@, value: %@", [field objectForKey:@"group"], [field objectForKey:@"element"], [field objectForKey:@"name"], value);
+						//NSLog(@"DICOM group: %@, element: %@, field: %@, value: %@", [field objectForKey:@"group"], [field objectForKey:@"element"], [field objectForKey:@"name"], value);
 					}
 					else if([type isEqualToString:@"DB"])
 					{
@@ -10689,7 +10689,12 @@ BOOL            readable = YES;
 			[annotationsDictionary setObject:annotationsOUT forKey:[keys objectAtIndex:k]];
 		}
 	}
-	NSLog(@"annotationsDictionary : %@", annotationsDictionary);
+//	NSLog(@"annotationsDictionary : %@", annotationsDictionary);
+}
+
+- (NSMutableDictionary*) annotationsDictionary;
+{
+	return annotationsDictionary;
 }
 
 @end

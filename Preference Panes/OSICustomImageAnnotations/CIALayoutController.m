@@ -745,17 +745,13 @@ NSLog(@"[[[[self window] contentView] subviews] count] : %d", [[[[self window] c
 {
 	NSMutableArray *specialFieldsTitles = [NSMutableArray array];
 	[specialFieldsTitles addObject:@"Image Size"];
-	[specialFieldsTitles addObject:@"Viewport Size"];
-	[specialFieldsTitles addObject:@"Winwow Level / Window Width"];
-	[specialFieldsTitles addObject:@"Image Number"];
-	[specialFieldsTitles addObject:@"Images Count"];
+	[specialFieldsTitles addObject:@"View Size"];
+	[specialFieldsTitles addObject:@"Window Level / Window Width"];
+	[specialFieldsTitles addObject:@"Image Position"];
 	[specialFieldsTitles addObject:@"Zoom"];
 	[specialFieldsTitles addObject:@"Rotation Angle"];
 	[specialFieldsTitles addObject:@"Mouse Position (px)"];
-	[specialFieldsTitles addObject:@"Mouse Position Value"];
 	[specialFieldsTitles addObject:@"Mouse Position (mm)"];
-	[specialFieldsTitles addObject:@"Orientation"];
-	[specialFieldsTitles addObject:@"OsiriX Label"];
 	return specialFieldsTitles;
 }
 
@@ -1060,6 +1056,8 @@ NSLog(@"[[[[self window] contentView] subviews] count] : %d", [[[[self window] c
 {
 	[self removeAllAnnotations];
 	
+	[[prefPane orientationWidgetButton] setState:NSOffState];
+	
 	NSDictionary *palceHoldersForModality = [annotationsLayoutDictionary objectForKey:modality];
 	NSArray *keys = [NSArray arrayWithObjects:@"LowerLeft", @"LowerMiddle", @"LowerRight", @"MiddleLeft", @"MiddleRight", @"TopLeft", @"TopMiddle", @"TopRight", nil];
 	NSArray *placeHolders = [layoutView placeHolderArray];
@@ -1078,6 +1076,15 @@ NSLog(@"[[[[self window] contentView] subviews] count] : %d", [[[[self window] c
 			anAnnotation = [[CIAAnnotation alloc] initWithFrame:NSMakeRect(10.0, 10.0, 75, 22)];
 			[anAnnotation setTitle:[[annotations objectAtIndex:j] objectForKey:@"title"]];
 			[anAnnotation setContent:[[annotations objectAtIndex:j] objectForKey:@"content"]];
+			
+			if([[anAnnotation title] isEqualToString:@"Orientation"])
+				if([[anAnnotation content] count]==1)
+					if([[[anAnnotation content] objectAtIndex:0] isEqualToString:@"Special_Orientation"])
+					{
+						[anAnnotation setIsOrientationWidget:YES];
+						[[prefPane orientationWidgetButton] setState:NSOnState];
+					}
+			
 			[anAnnotation setPlaceHolder:placeHolder];
 			[placeHolder addAnnotation:anAnnotation];
 			
@@ -1094,12 +1101,14 @@ NSLog(@"[[[[self window] contentView] subviews] count] : %d", [[[[self window] c
 	
 	[[prefPane sameAsDefaultButton] setState:NSOffState];
 	[layoutView setEnabled:YES];
+	[[prefPane orientationWidgetButton] setEnabled:YES];
 	
 	if(n==0 && ![modality isEqualTo:@"Default"])
 	{
 		[self loadAnnotationLayoutForModality:@"Default"];
 		[[prefPane sameAsDefaultButton] setState:NSOnState];
 		[layoutView setEnabled:NO];
+		[[prefPane orientationWidgetButton] setEnabled:NO];
 	}
 
 	[layoutView setNeedsDisplay:YES];
@@ -1146,6 +1155,61 @@ NSLog(@"[[[[self window] contentView] subviews] count] : %d", [[[[self window] c
 - (void)setPrefPane:(OSICustomImageAnnotations*)aPrefPane;
 {
 	prefPane = aPrefPane;
+}
+
+- (void)setOrientationWidgetEnabled:(BOOL)enabled;
+{
+	int i, j, index[] = {1, 3, 4, 6}; // index of the placeholders that can hold an orientation widget
+	NSArray *placeHolders = [layoutView placeHolderArray];
+	CIAPlaceHolder *placeHolder;
+	CIAAnnotation *anAnnotation;
+
+	if(enabled)
+	{
+		//NSArray *keys = [NSArray arrayWithObjects:@"LowerLeft", @"LowerMiddle", @"LowerRight", @"MiddleLeft", @"MiddleRight", @"TopLeft", @"TopMiddle", @"TopRight", nil];
+		
+		for (i=0; i<4; i++)
+		{
+			placeHolder = [placeHolders objectAtIndex:index[i]];
+
+			anAnnotation = [[CIAAnnotation alloc] initWithFrame:NSMakeRect(10.0, 10.0, 75, 22)];
+			[anAnnotation setTitle:@"Orientation"];
+			[anAnnotation setContent:[NSArray arrayWithObject:@"Special_Orientation"]];
+			[anAnnotation setIsOrientationWidget:YES];
+			[anAnnotation setPlaceHolder:placeHolder];
+			[placeHolder insertAnnotation:anAnnotation atIndex:0];
+				
+			[annotationsArray addObject:anAnnotation];
+			[layoutView addSubview:anAnnotation];
+
+			[anAnnotation release];
+
+			[placeHolder alignAnnotations];
+			[placeHolder updateFrameAroundAnnotations];
+			[placeHolder alignAnnotations];
+		}
+		[layoutView display];
+	}
+	else
+	{
+		for (i=0; i<4; i++)
+		{
+			placeHolder = [placeHolders objectAtIndex:index[i]];
+			for (j=0; j<[[placeHolder annotationsArray] count]; j++)
+			{
+				anAnnotation = [[placeHolder annotationsArray] objectAtIndex:j];
+				if([anAnnotation isOrientationWidget])
+				{
+					[annotationsArray removeObject:anAnnotation];
+					[anAnnotation removeFromSuperview];
+					[placeHolder removeAnnotation:anAnnotation];
+					[placeHolder updateFrameAroundAnnotations];
+					[placeHolder alignAnnotations];
+					[layoutView setNeedsDisplay:YES];
+				}
+			}
+		}
+	}
 }
 
 @end

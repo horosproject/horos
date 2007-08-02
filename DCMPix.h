@@ -453,4 +453,6 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
 - (NSString *)srcFile;
 
+- (NSMutableDictionary*) annotationsDictionary;
+
 @end
