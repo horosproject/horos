@@ -9382,6 +9382,56 @@ BOOL	lowRes = NO;
 				[self setWLWW:curWL :curWW];
 			}
 		}
+		else if( onlyImage == NO)
+		{
+			if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
+			{
+				float from, to;
+				
+				curWW = ww;
+				curWL = wl;
+				
+				switch( [[NSUserDefaults standardUserDefaults] integerForKey:@"DEFAULTPETWLWW"])
+				{
+					case 0:
+							// Do nothing
+					break;
+					
+					case 1:
+						from = [curDCM maxValueOfSeries] * [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWFROM"] / 100.;
+						to = [curDCM maxValueOfSeries] * [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWTO"] / 100.;
+						
+						curWW = to - from;
+						curWL = from + (curWW/2.);
+					break;
+					
+					case 2:
+						if( [curDCM SUVConverted])
+						{
+							from = [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWFROMSUV"];
+							to = [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWTOSUV"];
+							
+							curWW = to - from;
+							curWL = from + (curWW/2.);
+						}
+						else
+						{
+							if( [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWFROMSUV"] == 0)
+							{
+								curWL = (curWW/2.);
+							}
+							else
+							{
+								curWW = ww;
+								curWL = wl;
+							}
+						}
+					break;
+				}
+				
+				[self setWLWW:curWL :curWW];
+			}
+		}
 	}
 }
 
