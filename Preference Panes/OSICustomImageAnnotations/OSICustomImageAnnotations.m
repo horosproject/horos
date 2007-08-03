@@ -88,9 +88,9 @@
 
 - (IBAction)addFieldToken:(id)sender;
 {
+	[layoutController addFieldToken:sender];
 	NSWindow *win = [[self mainView] window];
-	[win makeFirstResponder: contentTokenField];
-	[layoutController addFieldToken:sender];	
+	[win makeFirstResponder:contentTokenField];
 }
 
 - (IBAction)validateTokenTextField:(id)sender;
