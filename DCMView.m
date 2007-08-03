@@ -1674,6 +1674,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		{
 			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
 			{
+				if( curWW != [curDCM ww] || curWL != [curDCM wl] || [curDCM updateToApply] == YES)
+				{
+					[curDCM changeWLWW :curWL :curWW];
+				}
+				else [curDCM checkImageAvailble :curWW :curWL];
+			
 				[self updatePresentationStateFromSeriesOnlyImageLevel: YES];
 				
 				done = YES;
@@ -4296,41 +4302,44 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: curDCM userInfo:0L];
 	
-	//set value for Series Object Presentation State
-	if( [curDCM SUVConverted] == NO)
+	if( [self is2DViewer])
 	{
-		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-		
-		// Image Level
-		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+		//set value for Series Object Presentation State
+		if( [curDCM SUVConverted] == NO)
 		{
-			[[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-			[[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-		}
-		else
-		{
-			[[self imageObj] setValue: 0L forKey:@"windowWidth"];
-			[[self imageObj] setValue: 0L forKey:@"windowLevel"];
-		}
-	}
-	else
-	{
-		if( [self is2DViewer] == YES)
-		{
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
 			
 			// Image Level
 			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
 			{
-				[[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-				[[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+				[[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+				[[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
 			}
 			else
 			{
 				[[self imageObj] setValue: 0L forKey:@"windowWidth"];
 				[[self imageObj] setValue: 0L forKey:@"windowLevel"];
+			}
+		}
+		else
+		{
+			if( [self is2DViewer] == YES)
+			{
+				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+				
+				// Image Level
+				if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+				{
+					[[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+					[[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+				}
+				else
+				{
+					[[self imageObj] setValue: 0L forKey:@"windowWidth"];
+					[[self imageObj] setValue: 0L forKey:@"windowLevel"];
+				}
 			}
 		}
 	}
