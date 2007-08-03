@@ -1502,7 +1502,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		[[self window] setFrame:rect display:YES];
 		[[self window] orderFront:self];
-		[imageView scaleToFit];
+//		[imageView scaleToFit];
 	}
 	else
 	{

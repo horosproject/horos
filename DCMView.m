@@ -2329,8 +2329,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				offset.y = 0;
 			}
 			
-//			NSLog( @"%f %f", offset.x, offset.y);
-			
 			// Convert screen position to pixel position in blended image
 			float xx, yy;
 			NSRect size = [self frame];
@@ -8028,7 +8026,28 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			originOffset.y = ((originOffset.y * x) / scaleValue);
 		}
 		
-		[self setScaleValue: x];
+		scaleValue = x;
+		if( scaleValue < 0.01) scaleValue = 0.01;
+		if( scaleValue > 100) scaleValue = 100;
+		
+		if( [self softwareInterpolation] || [blendingView softwareInterpolation])
+			[self loadTextures];
+		else if( zoomIsSoftwareInterpolated || [blendingView zoomIsSoftwareInterpolated])
+			[self loadTextures];
+		
+		if( [self is2DViewer])
+		{
+			// Series Level
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+			
+			// Image Level
+			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+				[[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+			else
+				[[self imageObj] setValue: 0L forKey:@"scale"];
+		}
+		
+		[self setNeedsDisplay:YES];
 	}
 }
 
@@ -9031,9 +9050,7 @@ BOOL	lowRes = NO;
 			curImage = -1;
 		else if (curImage < 0)
 			curImage = -1;
-		
-		if( curImage < 0) return;
-		
+				
 		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
 		{
 			
@@ -9049,6 +9066,8 @@ BOOL	lowRes = NO;
 		[self setXFlipped: [aView xFlipped]];
 		[self setYFlipped: [aView yFlipped]];
 		
+		if( curImage < 0) return;
+		
 		//blending
 		if (blendingView != [aView blendingView])
 			[self setBlending:[aView blendingView]];
@@ -9059,6 +9078,8 @@ BOOL	lowRes = NO;
 		//[self setIndex:curImage];
 		if( listType == 'i') [self setIndex:curImage];
 		else [self setIndexWithReset:curImage :YES];
+		
+		
 		
 		// CLUT
 		unsigned char *aR, *aG, *aB;

@@ -2429,8 +2429,6 @@ static BOOL initialized = NO;
 			}
 		}
 		
-		NSLog( @"%f %f", minY, minX);
-		
 		[cResult addObject: [cWindows objectAtIndex: index]];
 		[cWindows removeObjectAtIndex: index];
 	}
