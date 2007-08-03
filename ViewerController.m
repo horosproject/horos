@@ -4755,10 +4755,10 @@ static ViewerController *draggedController = 0L;
 	
 	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"WINDOWSIZEVIEWER"])
 	{
-		case 0:	[[self window] setFrame:screenRect display:YES];	[imageView scaleToFit];		break;
-		case 1:	[imageView resizeWindowToScale: 1.0];	break;
-		case 2:	[imageView resizeWindowToScale: 1.5];	break;
-		case 3:	[imageView resizeWindowToScale: 2.0];	break;
+		case 0:	[[self window] setFrame:screenRect display:YES];	break;
+		case 1:	[imageView resizeWindowToScale: 1.0];				break;
+		case 2:	[imageView resizeWindowToScale: 1.5];				break;
+		case 3:	[imageView resizeWindowToScale: 2.0];				break;
 	}
 }
 

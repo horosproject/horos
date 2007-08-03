@@ -1360,9 +1360,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	else
 		[self setScaleValue:(sizeView.size.height/[curDCM pheight]/[curDCM pixelRatio])];
 	
-	int i;	
-	for( i = 0; i < [dcmPixList count]; i++) [[dcmPixList objectAtIndex: i] setIndependentZoom: scaleValue];
-	
 	[self setNeedsDisplay:YES];
 }
 
@@ -1580,9 +1577,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	for( i = 0; i < [dcmPixList count] ; i++)
 	{
-		[[dcmPixList objectAtIndex: i] setIndependentRotation: rotation];
-		[[dcmPixList objectAtIndex: i] setIndependentZoom: scaleValue];
-		[[dcmPixList objectAtIndex: i] setIndependentOffset: origin];
 		[[dcmPixList objectAtIndex: i] changeWLWW :curWL :curWW];
 	}
 }
@@ -1605,13 +1599,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		
 		[[self window] setAcceptsMouseMovedEvents: YES];
-		
-		if( curDCM)
-		{
-			[curDCM setIndependentRotation: rotation];
-			[curDCM setIndependentZoom: scaleValue];
-			[curDCM setIndependentOffset: origin];
-		}
 		
         curImage = index;
         if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
@@ -8060,14 +8047,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		else if( zoomIsSoftwareInterpolated || [blendingView zoomIsSoftwareInterpolated])
 			[self loadTextures];
 		
-		// Series Level
-		[[self seriesObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-		
-		// Image Level
-		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
-			[[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-		else
-			[[self imageObj] setValue: 0L forKey:@"scale"];
+		if( [self is2DViewer])
+		{
+			// Series Level
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+			
+			// Image Level
+			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+				[[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+			else
+				[[self imageObj] setValue: 0L forKey:@"scale"];
+		}
 		
 		[self setNeedsDisplay:YES];
 	}
@@ -9268,7 +9258,6 @@ BOOL	lowRes = NO;
 				if( [series valueForKey:@"scale"]) [self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
 				else [self scaleToFit];
 			}
-			else [self scaleToFit];
 		}
 		else [self scaleToFit];
 		

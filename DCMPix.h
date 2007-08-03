@@ -171,9 +171,6 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	
 	char				blackIndex;
 	
-	NSPoint				independentOffset;
-	float				independentRotation, independentZoom;
-	
 	NSData				*transferFunction;
 	float				*transferFunctionPtr;
 	
@@ -213,12 +210,6 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (void) setMaxValueOfSeries: (float) f;
 - (float) minValueOfSeries;
 - (void) setMinValueOfSeries: (float) f;
--(NSPoint) independentOffset;
--(void) setIndependentOffset:(NSPoint) z;
--(float) independentRotation;
--(void) setIndependentRotation:(float) z;
--(float) independentZoom;
--(void) setIndependentZoom:(float) z;
 // Compute ROI data
 - (int)calciumCofactorForROI:(ROI *)roi threshold:(int)threshold;
 - (void) computeROI:(ROI*) roi :(float *)mean :(float *)total :(float *)dev :(float *)min :(float *)max;
