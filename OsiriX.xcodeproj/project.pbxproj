@@ -2036,6 +2036,9 @@
 		ABC47B5C0C031397001CEA21 /* BrowserMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC47B580C031397001CEA21 /* BrowserMatrix.m */; };
 		ABC47B5D0C031397001CEA21 /* BrowserMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC47B570C031397001CEA21 /* BrowserMatrix.h */; };
 		ABC47B5E0C031397001CEA21 /* BrowserMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC47B580C031397001CEA21 /* BrowserMatrix.m */; };
+		ABCA52260C630E0D00F031D4 /* OsiriXDB_Previous_DataModel2.2.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABCA52250C630E0D00F031D4 /* OsiriXDB_Previous_DataModel2.2.mom */; };
+		ABCA52270C630E0D00F031D4 /* OsiriXDB_Previous_DataModel2.2.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABCA52250C630E0D00F031D4 /* OsiriXDB_Previous_DataModel2.2.mom */; };
+		ABCA52280C630E0D00F031D4 /* OsiriXDB_Previous_DataModel2.2.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABCA52250C630E0D00F031D4 /* OsiriXDB_Previous_DataModel2.2.mom */; };
 		ABCA5BA40625FC1100637E73 /* OpacityTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */; };
 		ABCA5BA50625FC1100637E73 /* OpacityTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */; };
 		ABCA5BA60625FC1100637E73 /* OpacityTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */; };
@@ -10757,7 +10760,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = A9FF849B0C5F187800D50C95 /* OSICustomImageAnnotations.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 8D202CE80486D31800D8A456 /* OSICustomImageAnnotations */;
+			remoteGlobalIDString = 8D202CE80486D31800D8A456;
 			remoteInfo = OSICustomImageAnnotations;
 		};
 		CE4E42F808758A1800D0AFDB /* PBXContainerItemProxy */ = {
@@ -11737,6 +11740,7 @@
 		ABC3E5590B330A69006704E3 /* sourcesTableView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = sourcesTableView.h; sourceTree = "<group>"; };
 		ABC47B570C031397001CEA21 /* BrowserMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserMatrix.h; sourceTree = "<group>"; };
 		ABC47B580C031397001CEA21 /* BrowserMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserMatrix.m; sourceTree = "<group>"; };
+		ABCA52250C630E0D00F031D4 /* OsiriXDB_Previous_DataModel2.2.mom */ = {isa = PBXFileReference; lastKnownFileType = file; name = OsiriXDB_Previous_DataModel2.2.mom; path = Binaries/DB_Previous_Models/OsiriXDB_Previous_DataModel2.2.mom; sourceTree = "<group>"; };
 		ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OpacityTransferView.h; sourceTree = "<group>"; };
 		ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OpacityTransferView.m; sourceTree = "<group>"; };
 		ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = SafeDBRebuild; path = build/Development/SafeDBRebuild; sourceTree = "<group>"; };
@@ -19172,6 +19176,7 @@
 				ABBDE6700A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom */,
 				ABD4D2360A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom */,
 				ABBF9A380C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom */,
+				ABCA52250C630E0D00F031D4 /* OsiriXDB_Previous_DataModel2.2.mom */,
 			);
 			name = "Previous DB Models";
 			sourceTree = "<group>";
@@ -26062,6 +26067,7 @@
 				ABBF9A3A0C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
 				AB80411B0C5F0AC7000F21D5 /* 3DPRESETS in Resources */,
 				A918A4E20C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane in Resources */,
+				ABCA52270C630E0D00F031D4 /* OsiriXDB_Previous_DataModel2.2.mom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26463,6 +26469,7 @@
 				ABBF9A3B0C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
 				AB80411C0C5F0AC7000F21D5 /* 3DPRESETS in Resources */,
 				A918A4E40C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane in Resources */,
+				ABCA52280C630E0D00F031D4 /* OsiriXDB_Previous_DataModel2.2.mom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26864,6 +26871,7 @@
 				ABBF9A390C547ED600249B01 /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
 				AB80411A0C5F0AC7000F21D5 /* 3DPRESETS in Resources */,
 				A918A4E30C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane in Resources */,
+				ABCA52260C630E0D00F031D4 /* OsiriXDB_Previous_DataModel2.2.mom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

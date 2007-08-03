@@ -1093,9 +1093,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	return yFlipped;
 }
 
-- (void) setYFlipped:(BOOL) v {
+- (void) setYFlipped:(BOOL) v
+{
 	yFlipped = v;
+	
+	// Series Level
 	[[self seriesObj]  setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
+	
+	// Image Level
+	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+		[[self imageObj] setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
+	else
+		[[self imageObj] setValue: 0L forKey:@"yFlipped"];
+	
 	
 	[appController setYFlipped: yFlipped];	
     [self setNeedsDisplay:YES];
@@ -1105,10 +1115,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	return xFlipped;
 }
 
-- (void) setXFlipped:(BOOL) v {
+- (void) setXFlipped:(BOOL) v
+{
 	xFlipped = v;
 	[[self seriesObj]  setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
 
+	// Image Level
+	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+		[[self imageObj] setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
+	else
+		[[self imageObj] setValue: 0L forKey:@"xFlipped"];
+		
 	[appController setXFlipped: xFlipped];
     [self setNeedsDisplay:YES];
 }
@@ -1258,8 +1275,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			{
 				if( [event clickCount] == 2)
 				{
-					origin.x = origin.y = 0;
-					rotation = 0;
+					[self setOriginX: 0 Y: 0];
+					[self setRotation: 0];
 					[self scaleToFit];
 					
 					//set value for Series Object Presentation State
@@ -1267,7 +1284,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					{
 						[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
 						[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
-						[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
 						[[self seriesObj] setValue:[NSNumber numberWithFloat:0] forKey:@"displayStyle"]; 
 						[[self seriesObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
 					}
@@ -1275,15 +1291,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 				if( [event clickCount] == 3)
 				{
-					origin.x = origin.y = 0;
-					rotation = 0;
-					scaleValue = 1;
+					[self setOriginX: 0 Y: 0];
+					[self setRotation: 0];
+					[self setScaleValue: 1];
 					if ([self is2DViewer] == YES)
 					{
 						[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
 						[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
 						[[self seriesObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-						[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
 						[[self seriesObj] setValue:[NSNumber numberWithFloat:1] forKey:@"displayStyle"];
 					}
 				}
@@ -1297,11 +1312,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				{
 					gClickCountSet = YES;
 					
-					if ([event modifierFlags] & NSAlternateKeyMask) rotation -= 180;		// -> 180
-					else if ([event modifierFlags] & NSShiftKeyMask) rotation -= 90;	// -> 90
-					else rotation += 90;	// -> 90
+					float rot = [self rotation];
 					
-					[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+					if ([event modifierFlags] & NSAlternateKeyMask) rot -= 180;		// -> 180
+					else if ([event modifierFlags] & NSShiftKeyMask) rot -= 90;	// -> 90
+					else rot += 90;	// -> 90
+					
+					[self setRotation: rot];
 					
 					if( [self is2DViewer] == YES) [[self windowController] propagateSettings];
 					
@@ -1342,8 +1359,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     else  if( yy*scaleValue > size.size.height/2) newYY = size.size.height/2.0/scaleValue;
     else newYY = yy;
     
-    origin.x = newXX*cos(rotation*deg2rad) + newYY*sin(rotation*deg2rad);
-    origin.y = newXX*sin(rotation*deg2rad) - newYY*cos(rotation*deg2rad);
+	[self setOriginX: newXX*cos(rotation*deg2rad) + newYY*sin(rotation*deg2rad) Y: newXX*sin(rotation*deg2rad) - newYY*cos(rotation*deg2rad)];
 }
 
 -(void) setTheMatrix:(NSMatrix*) m
@@ -1376,9 +1392,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) scaleBy2AndCenterShutter
 {
-	scaleValue *= 1;//JF20070103 does make better sense not to apply zoom 200%
-	origin.x = (([curDCM pwidth] / 2) - ([curDCM DCMPixShutterRectOriginX] + ([curDCM DCMPixShutterRectWidth]/2))) * scaleValue;
-	origin.y = -(([curDCM pheight] / 2) - ([curDCM DCMPixShutterRectOriginY] + ([curDCM DCMPixShutterRectHeight]/2))) * scaleValue;
+	[self setOriginX: (([curDCM pwidth] / 2) - ([curDCM DCMPixShutterRectOriginX] + ([curDCM DCMPixShutterRectWidth]/2))) * scaleValue Y: -(([curDCM pheight] / 2) - ([curDCM DCMPixShutterRectOriginY] + ([curDCM DCMPixShutterRectHeight]/2))) * scaleValue];
 	[self setNeedsDisplay:YES];
 }
 
@@ -1391,7 +1405,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 		curROI = 0L;
 		
-		origin.x = origin.y = 0;
 		curImage = index; 
 		if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
 		
@@ -1414,18 +1427,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
 		}
 		
-		curWW = [curDCM ww];
 		curWL = [curDCM wl];
-		
-		rotation = 0;
+		curWW = [curDCM ww];
+		origin.x = origin.y = 0;
+		scaleValue = 0;
 		
 		//get Presentation State info from series Object
 		[self updatePresentationStateFromSeries];
 		
 		[curDCM checkImageAvailble :curWW :curWL];
-		
-//		NSSize  sizeView = [[self enclosingScrollView] contentSize];
-//		[self setFrameSize:sizeView];
 		
 		NSRect  sizeView = [self bounds];
 		if( sizeToFit && [[[self seriesObj] valueForKey:@"displayStyle"] intValue] == 0 || [self is2DViewer] == NO)
@@ -1627,8 +1637,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( curDCM)
 		{
 			[curDCM setIndependentRotation: rotation];
-			[curDCM setIndependentZoom:scaleValue];
-			[curDCM setIndependentOffset:origin];
+			[curDCM setIndependentZoom: scaleValue];
+			[curDCM setIndependentOffset: origin];
 		}
 		
         curImage = index;
@@ -1664,11 +1674,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		{
 			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
 			{
-				[curDCM checkImageAvailble :[curDCM ww] :[curDCM wl]];
-				
-				rotation = [curDCM independentRotation];
-				scaleValue = [curDCM independentZoom];
-				origin = [curDCM independentOffset];
+				[self updatePresentationStateFromSeriesOnlyImageLevel: YES];
 				
 				done = YES;
 			}
@@ -1908,8 +1914,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				xx = xmove*cos(rotation*deg2rad) + ymove*sin(rotation*deg2rad);
 				yy = xmove*sin(rotation*deg2rad) - ymove*cos(rotation*deg2rad);
 				
-				origin.x = origin.x + xx;
-				origin.y = origin.y + yy;
+				[self setOriginX: origin.x + xx Y: origin.y + yy];
 			}
 			
 			if (currentTool == tRotate)
@@ -1917,13 +1922,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				if( yMove) val = yMove * 3;
 				else val = xMove * 3;
 				
-				rotation += val;
+				float rot = [self rotation];
 				
+				rot += val;
 				
-				if( rotation < 0) rotation += 360;
-				if( rotation > 360) rotation -= 360;
+				if( rot < 0) rot += 360;
+				if( rot > 360) rot -= 360;
 				
-
+				[self setRotation: rot];
 			}
 			
 			if (currentTool == tNext)
@@ -1951,12 +1957,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			if( currentTool == tWL)
 			{
-				[curDCM changeWLWW : [curDCM wl] +yMove*10 :[curDCM ww] +xMove*10];
-				
-				curWW = [curDCM ww];
-				curWL = [curDCM wl];
-				
-				[self loadTextures];
+				[self setWLWW:[curDCM wl] +yMove*10 :[curDCM ww] +xMove*10 ];
 			}
 			
 			[self setNeedsDisplay:YES];
@@ -3236,9 +3237,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				float sScaleValue = scaleValue;
 				
 				[self setScaleValue:sScaleValue + deltaX * scaleValue / 10];
-				
-				origin.x = ((origin.x * scaleValue) / sScaleValue);
-				origin.y = ((origin.y * scaleValue) / sScaleValue);
+				[self setOriginX: ((origin.x * scaleValue) / sScaleValue) Y: ((origin.y * scaleValue) / sScaleValue)];
 				
 				originOffset.x = ((originOffset.x * scaleValue) / sScaleValue);
 				originOffset.y = ((originOffset.y * scaleValue) / sScaleValue);
@@ -3682,12 +3681,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 
 // Methods for Zooming with mouse Drag
-- (void)mouseDraggedZoom:(NSEvent *)event{
+- (void)mouseDraggedZoom:(NSEvent *)event
+{
 	NSPoint current = [self currentPointInView:event];
 	[self setScaleValue: (startScaleValue + (current.y - start.y) / (80.))];
-
-	origin.x = ((originStart.x * scaleValue) / startScaleValue);
-	origin.y = ((originStart.y * scaleValue) / startScaleValue);
+	
+	[self setOriginX: ((originStart.x * scaleValue) / startScaleValue) Y: ((originStart.y * scaleValue) / startScaleValue)];
 	
 	originOffset.x = ((originOffsetStart.x * scaleValue) / startScaleValue);
 	originOffset.y = ((originOffsetStart.y * scaleValue) / startScaleValue);
@@ -3705,7 +3704,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 
 // Method for translating the image while dragging
-- (void)mouseDraggedTranslate:(NSEvent *)event{
+- (void)mouseDraggedTranslate:(NSEvent *)event
+{
 	NSPoint current = [self currentPointInView:event];
 	float xmove, ymove, xx, yy;
             
@@ -3718,8 +3718,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	xx = xmove*cos((rotation)*deg2rad) + ymove*sin((rotation)*deg2rad);
 	yy = xmove*sin((rotation)*deg2rad) - ymove*cos((rotation)*deg2rad);
 	
-	origin.x = originStart.x + xx;
-	origin.y = originStart.y + yy;
+	[self setOriginX: originStart.x + xx Y: originStart.y + yy];
 	
 	//set value for Series Object Presentation State
 	if ([self is2DViewer] == YES)
@@ -3730,16 +3729,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 }
 
-
 //Method for rotating
-- (void)mouseDraggedRotate:(NSEvent *)event{
+- (void)mouseDraggedRotate:(NSEvent *)event
+{
 	NSPoint current = [self currentPointInView:event];
-	rotation = rotationStart - (current.x - start.x);
-	while( rotation < 0) rotation += 360;
-	while( rotation > 360) rotation -= 360;
 	
-	//set value for Series Object Presentation State
-	[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+	float rot;
+	
+	rot = rotationStart - (current.x - start.x);
+	while( rot < 0) rot += 360;
+	while( rot > 360) rot -= 360;
+	
+	[self setRotation: rot];
 }
 
 //Scrolling through images with Mouse
@@ -3950,41 +3951,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			{
 				[[[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"dragged"];
 			}
-
-			else [self loadTextures];
 		}
-		else [self loadTextures];
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: curDCM userInfo:0L];
-		
-		if( [curDCM SUVConverted] == NO)
-		{
-			//set value for Series Object Presentation State
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-		}
-		else
-		{
-			if( [self is2DViewer] == YES)
-			{
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
-			}
-		}
+		[self setWLWW:curWL :curWW];
 	}
-	//Blending and OrthogonalMPRVIEW
-	/*
-	else if([stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != 0L))
-	{
-		// change blending value
-		blendingFactor = blendingFactorStart + (current.x - start.x);
-			
-		if( blendingFactor < -256.0) blendingFactor = -256.0;
-		if( blendingFactor > 256.0) blendingFactor = 256.0;
-		
-		[self setBlendingFactor: blendingFactor];
-	}
-	*/
 }
 
 - (void)mouseDraggedRepulsor:(NSEvent *)event
@@ -4331,6 +4301,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
 		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
 		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+		
+		// Image Level
+		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+		{
+			[[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+			[[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+		}
+		else
+		{
+			[[self imageObj] setValue: 0L forKey:@"windowWidth"];
+			[[self imageObj] setValue: 0L forKey:@"windowLevel"];
+		}
 	}
 	else
 	{
@@ -4338,6 +4320,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		{
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+			
+			// Image Level
+			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+			{
+				[[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+				[[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+			}
+			else
+			{
+				[[self imageObj] setValue: 0L forKey:@"windowWidth"];
+				[[self imageObj] setValue: 0L forKey:@"windowLevel"];
+			}
 		}
 	}
 }
@@ -4357,6 +4351,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
 		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
 		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+		
+		// Image Level
+		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+		{
+			[[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+			[[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+		}
+		else
+		{
+			[[self imageObj] setValue: 0L forKey:@"windowWidth"];
+			[[self imageObj] setValue: 0L forKey:@"windowLevel"];
+		}
 	}
 	else
 	{
@@ -4364,6 +4370,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		{
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+			
+			// Image Level
+			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+			{
+				[[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+				[[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+			}
+			else
+			{
+				[[self imageObj] setValue: 0L forKey:@"windowWidth"];
+				[[self imageObj] setValue: 0L forKey:@"windowLevel"];
+			}
 		}
 	}
 }
@@ -6666,8 +6684,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( noScale)
 	{
 		[self setScaleValue:1];
-		origin.x = 0;
-		origin.y = 0;
+		[self setOriginX: 0 Y: 0];
 	}
 	
 	if ( [NSGraphicsContext currentContextDrawingToScreen] )
@@ -7984,9 +8001,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
 		if( scaleValue)
 		{
-			origin.x = ((origin.x * x) / scaleValue);
-			origin.y = ((origin.y * x) / scaleValue);
-					
+			[self setOriginX:((origin.x * x) / scaleValue) Y:((origin.y * x) / scaleValue) ];
+			
 			originOffset.x = ((originOffset.x * x) / scaleValue);
 			originOffset.y = ((originOffset.y * x) / scaleValue);
 		}
@@ -8007,11 +8023,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) setScaleValue:(float) x
 {
+	if( x <= 0) return;
+	
 	if( scaleValue != x)
 	{
 		scaleValue = x;
-		if( x < 0.01) scaleValue = 0.01;
-		if( x > 100) scaleValue = 100;
+		if( scaleValue < 0.01) scaleValue = 0.01;
+		if( scaleValue > 100) scaleValue = 100;
 		
 		if( [self softwareInterpolation] || [blendingView softwareInterpolation])
 			[self loadTextures];
@@ -8150,14 +8168,23 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) setRotation:(float) x
 {
-	rotation = x;
-	
-	if( rotation < 0) rotation += 360;
-	if( rotation > 360) rotation -= 360;
-	
-	[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"]];
+	if( rotation != x)
+	{
+		rotation = x;
+		
+		if( rotation < 0) rotation += 360;
+		if( rotation > 360) rotation -= 360;
+		
+		[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+		
+		// Image Level
+		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+			[[self imageObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+		else
+			[[self imageObj] setValue: 0L forKey:@"rotationAngle"];
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"]];
+	}
 }
 
 - (void) orientationCorrectedToView:(float*) correctedOrientation
@@ -8233,13 +8260,35 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) setOrigin:(NSPoint) x
 {
-	if( x.x > -100000 && x.x < 100000) x.x = x.x;
-	else x.x = 0;
+	[self setOriginX: x.x Y: x.y];
+}
 
-	if( x.y > -100000 && x.y < 100000) x.y = x.y;
-	else x.y = 0;
+-(void) setOriginX:(float) x Y:(float) y
+{
+	if( x > -100000 && x < 100000) x = x;
+	else x = 0;
+
+	if( y > -100000 && y < 100000) y = y;
+	else y = 0;
 	
-	origin = x;
+	origin.x = x;
+	origin.y = y;
+
+	// Series Level
+	[[self seriesObj]  setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
+	[[self seriesObj]  setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
+	
+	// Image Level
+	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+	{
+		[[self imageObj] setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
+		[[self imageObj] setValue:[NSNumber numberWithFloat:y] forKey:@"yOffset"];
+	}
+	else
+	{
+		[[self imageObj] setValue: 0L forKey:@"xOffset"];
+		[[self imageObj] setValue: 0L forKey:@"yOffset"];
+	}
 	
 	[self setNeedsDisplay:YES];
 }
@@ -8973,17 +9022,12 @@ BOOL	lowRes = NO;
 		}
 		else
 		{
-			//set ww/wl
-				curWW = [aView curWW];
-				curWL = [aView curWL];
-			//scale
-				[self setScaleValue: [aView scaleValue]];
-				//scaleValue = [aView scaleValue];
-			//rotation
-				rotation = [aView rotation];
-			//translate
-				origin = [aView origin];
+			[self setWLWW:[aView curWL] :[aView curWW]];
+			[self setScaleValue: [aView scaleValue]];
+			[self setRotation: [aView rotation]];
+			[self setOrigin: [aView origin]];
 		}
+		
 		[self setXFlipped: [aView xFlipped]];
 		[self setYFlipped: [aView yFlipped]];
 		
@@ -9132,11 +9176,11 @@ BOOL	lowRes = NO;
 	return fontListGL;
 }
 
-- (IBOutlet)actualSize:(id)sender{
-	origin.x = origin.y = 0;
-	rotation = 0;
-	[self setScaleValue:1];
-	//scaleValue = 1;
+- (IBOutlet)actualSize:(id)sender
+{
+	[self setOriginX: 0 Y: 0];
+	[self setRotation: 0];
+	[self setScaleValue: 1];
 }
 - (BOOL)eraserFlag
 {
@@ -9172,32 +9216,51 @@ BOOL	lowRes = NO;
 	else return 0L;
 }
 
-- (void)updatePresentationStateFromSeries
+- (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage
 {
-	//get Presentation State info from series Object
-	id series = [self seriesObj];
+	NSManagedObject *series = [self seriesObj];
+	NSManagedObject *image = [self imageObj];
 	if( series)
 	{
-		//NSLog(@"Series for DCMView: %@", [series valueForKey:@"seriesInstanceUID"]);
-		[self setXFlipped: [[series valueForKey:@"xFlipped"] boolValue]];
-		[self setYFlipped: [[series valueForKey:@"yFlipped"] boolValue]];
-				
-		if ([series valueForKey:@"scale"] != 0L && [self is2DViewer] == YES)
-			if( [[[self seriesObj] valueForKey:@"scale"] floatValue] > 0.0)
-				[self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
+		if( [image valueForKey:@"xFlipped"]) [self setXFlipped: [[image valueForKey:@"xFlipped"] boolValue]];
+		else if( !onlyImage) [self setXFlipped: [[series valueForKey:@"xFlipped"] boolValue]];
 		
-		if( [series valueForKey:@"rotationAngle"])
-			rotation = [[series valueForKey:@"rotationAngle"] floatValue];
+		if( [image valueForKey:@"yFlipped"]) [self setYFlipped: [[image valueForKey:@"yFlipped"] boolValue]];
+		else if( !onlyImage) [self setYFlipped: [[series valueForKey:@"yFlipped"] boolValue]];
+		
+		if( [self is2DViewer])
+		{
+			if( [image valueForKey:@"scale"]) [self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
+			else if( !onlyImage) [self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
+		}
+		
+		if( [image valueForKey:@"rotationAngle"]) [self setRotation: [[image valueForKey:@"rotationAngle"] floatValue]];
+		else if( !onlyImage) [self setRotation:  [[series valueForKey:@"rotationAngle"] floatValue]];
 		
 		if ([self is2DViewer] == YES)
 		{
-			if( [series valueForKey:@"xOffset"]) origin.x = [[series valueForKey:@"xOffset"] floatValue];
-			if( [series valueForKey:@"yOffset"]) origin.y = [[series valueForKey:@"yOffset"] floatValue];
+			NSPoint o = NSMakePoint(0 , 0);
+			if( [image valueForKey:@"xOffset"])  o.x = [[image valueForKey:@"xOffset"] floatValue];
+			else if( !onlyImage) o.x = [[series valueForKey:@"xOffset"] floatValue];
+			
+			if( [image valueForKey:@"yOffset"])  o.y = [[image valueForKey:@"yOffset"] floatValue];
+			else if( !onlyImage) o.y = [[series valueForKey:@"yOffset"] floatValue];
+			
+			if( o.x != 0 || o.y != 0)
+				[self setOrigin: o];
 		}
 		
-		if ([[self seriesObj] valueForKey:@"windowWidth"])
+		float ww = 0, wl = 0;
+		
+		if( [image valueForKey:@"windowWidth"]) ww = [[image valueForKey:@"windowWidth"] floatValue];
+		else if( !onlyImage && [series valueForKey:@"windowWidth"]) ww = [[series valueForKey:@"windowWidth"] floatValue];
+		
+		if( [image valueForKey:@"windowLevel"]) wl = [[image valueForKey:@"windowLevel"] floatValue];
+		else if( !onlyImage && [series valueForKey:@"windowLevel"]) wl= [[series valueForKey:@"windowLevel"] floatValue];
+		
+		if( ww != 0 || wl != 0)
 		{
-			if( [[[self seriesObj] valueForKey:@"windowWidth"] floatValue] != 0.0)
+			if( ww != 0.0)
 			{
 				if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
 				{
@@ -9208,15 +9271,15 @@ BOOL	lowRes = NO;
 						case 0:
 							if( [curDCM SUVConverted] == NO)
 							{
-								curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue];
-								curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue];
+								curWW = ww;
+								curWL = wl;
 							}
 							else
 							{
 								if( [self is2DViewer] == YES)
 								{
-									curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue] * [[self windowController] factorPET2SUV];
-									curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue] * [[self windowController] factorPET2SUV];
+									curWW = ww * [[self windowController] factorPET2SUV];
+									curWL = wl * [[self windowController] factorPET2SUV];
 								}
 							}
 						break;
@@ -9240,20 +9303,27 @@ BOOL	lowRes = NO;
 							}
 							else
 							{
-								curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue];
-								curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue];
+								curWW = ww;
+								curWL = wl;
 							}
 						break;
 					}
 				}
 				else
 				{
-					curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue];
-					curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue];
+					curWW = ww;
+					curWL = wl;
 				}
+				
+				[self setWLWW:curWL :curWW];
 			}
 		}
 	}
+}
+
+- (void) updatePresentationStateFromSeries
+{
+	[self updatePresentationStateFromSeriesOnlyImageLevel: NO];
 }
 
 - (IBAction)resetSeriesPresentationState:(id)sender{
@@ -9263,28 +9333,11 @@ BOOL	lowRes = NO;
 		[self setXFlipped: NO];
 		[self setYFlipped: NO];
 
-		rotation =  0.0;
-		[series setValue:[NSNumber numberWithFloat:0.0] forKey:@"rotationAngle"];
-		origin.x = 0.0;
-		[series setValue:[NSNumber numberWithFloat:0.0] forKey:@"xOffset"];
-		origin.y = 0.0;
-		[series setValue:[NSNumber numberWithFloat:0.0] forKey:@"yOffset"];
+		[self setRotation: 0.0];
+		[self setOriginX: 0 Y: 0];
 		
 		[self setWLWW:[[self curDCM] savedWL] :[[self curDCM] savedWW]];
-		if( [curDCM SUVConverted] == NO)
-		{
-			
-			[series setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-			[series setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-		}
-		else
-		{
-			if( [self is2DViewer] == YES)
-			{
-				[series setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-				[series setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
-			}
-		}
+
 		
 		[[self seriesObj] setValue:[NSNumber numberWithFloat:0] forKey:@"displayStyle"]; 
 		[self scaleToFit];

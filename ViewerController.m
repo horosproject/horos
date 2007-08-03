@@ -4393,10 +4393,15 @@ static ViewerController *draggedController = 0L;
 	NSString	*previousPatientUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"] retain];
 	NSString	*previousStudyInstanceUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] retain];
 	float		previousOrientation[ 9];
-	float		previousLocation = 0;
+	float		previousLocation = 0, previousScale = 0;
+//	float		previousWL, previousWW;
+//	NSPoint		previousRotation
 
 	[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
 	previousLocation = [[imageView curDCM] sliceLocation];
+	
+//	previousScale = [imageView scaleValue];
+//	[imageView getWLWW: &previousWL :&previousWW];
 	
 	[self setFusionMode: 0];
 	[imageView setIndex: 0];
@@ -4660,6 +4665,9 @@ static ViewerController *draggedController = 0L;
 				}
 			}
 		}
+		
+//		[imageView setScaleValue: previousScale];
+//		[imageView setWLWW: previousWL : previousWW];
 	}
 	//If study ID changed, cancel the fusion, if existing
 	else
@@ -15979,20 +15987,6 @@ sourceRef);
 
     return err;
 }
-
-
-/*
--(void) ShowHideBlending: (id) sender
-{
-    NSDrawerState state = [blendingDrawer state];
-    if (NSDrawerOpeningState == state || NSDrawerOpenState == state) {
-        [blendingDrawer close];
-    } else {
-        [blendingDrawer openOnEdge:NSMinXEdge];
-    }
-}*/
-
-
 
 - (IBAction) endSetComments:(id) sender
 {

@@ -109,7 +109,7 @@ Version 2.5
 #import "BrowserMatrix.h"
 #import "DicomStudy.h"
 
-#define DATABASEVERSION @"2.2"
+#define DATABASEVERSION @"2.3"
 #define DATABASEPATH @"/DATABASE/"
 #define DECOMPRESSIONPATH @"/DECOMPRESSION/"
 #define INCOMINGPATH @"/INCOMING/"
