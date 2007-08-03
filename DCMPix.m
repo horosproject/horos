@@ -10627,6 +10627,9 @@ BOOL            readable = YES;
 						else
 							value = nil;
 						if(value==nil) value = @"";
+//						if([[field objectForKey:@"name"] isEqualToString:@"PatientBirthDate"])
+//						{
+//						}
 						//NSLog(@"DICOM group: %@, element: %@, field: %@, value: %@", [field objectForKey:@"group"], [field objectForKey:@"element"], [field objectForKey:@"name"], value);
 					}
 					else if([type isEqualToString:@"DB"])
@@ -10645,12 +10648,18 @@ BOOL            readable = YES;
 						{
 							value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
 						}
+						value = [value description];
 //						NSLog(@"level : %@ / field : %@ / value : %@", level, fieldName, value);
 					}
 					else if([type isEqualToString:@"Special"])
 					{
 						value = [field objectForKey:@"field"];
 					}
+					else if([type isEqualToString:@"Manual"])
+					{
+						value = [field objectForKey:@"field"];
+					}
+					
 					[contentOUT addObject:value];
 				}
 				[annotationsOUT addObject:contentOUT];

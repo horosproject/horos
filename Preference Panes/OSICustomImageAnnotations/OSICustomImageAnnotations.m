@@ -51,19 +51,34 @@
 - (void)didUnselect
 {
 	NSLog(@"OSICustomImageAnnotations didUnselect");
-	if(layoutController)[layoutController release];
+	
+	if(layoutController)
+	{
+		[layoutController saveAnnotationLayout];
+		[layoutController release];
+	}
 	layoutController = nil;
 }
 
 - (IBAction)addAnnotation:(id)sender;
 {
 	[layoutController addAnnotation:sender];
+	
+	[addCustomDICOMFieldButton setEnabled:YES];
+	[addDICOMFieldButton setEnabled:YES];
+	[addDatabaseFieldButton setEnabled:YES];
+	[addSpecialFieldButton setEnabled:YES];
 }
 
 - (IBAction)removeAnnotation:(id)sender;
 {
 	[layoutController removeAnnotation:sender];
 	[titleTextField setStringValue:@""];
+	
+	[addCustomDICOMFieldButton setEnabled:NO];
+	[addDICOMFieldButton setEnabled:NO];
+	[addDatabaseFieldButton setEnabled:NO];
+	[addSpecialFieldButton setEnabled:NO];
 }
 
 - (IBAction)setTitle:(id)sender;
@@ -73,26 +88,9 @@
 
 - (IBAction)addFieldToken:(id)sender;
 {
-[layoutController addFieldToken:sender];
-
-NSLog(@"makeFirstResponder");
-//	NSArray *modes = [NSArray arrayWithObjects:NSDefaultRunLoopMode, NSModalPanelRunLoopMode, nil];
-//	[[window firstResponder] setEnabled: NO];
-	int m = [window makeFirstResponder: contentTokenField];
-//	[contentTokenField display];
-//	NSLog( @"%d", m);
-	
-//	[window performSelector:@selector(makeFirstResponder:)
-//								 withObject:titleTextField
-//								 afterDelay:0.1
-//								 inModes:modes];
-
-//	[window performSelector:@selector(makeFirstResponder:)
-//								 withObject:contentTokenField
-//								 afterDelay:0.1
-//								 inModes:modes];
-
-	
+	NSWindow *win = [[self mainView] window];
+	[win makeFirstResponder: contentTokenField];
+	[layoutController addFieldToken:sender];	
 }
 
 - (IBAction)validateTokenTextField:(id)sender;
@@ -110,6 +108,11 @@ NSLog(@"makeFirstResponder");
 	[layoutController switchModality:sender];
 	[addAnnotationButton setEnabled:[sameAsDefaultButton state]==NSOffState];
 	[removeAnnotationButton setEnabled:[sameAsDefaultButton state]==NSOffState];
+	
+	[addCustomDICOMFieldButton setEnabled:NO];
+	[addDICOMFieldButton setEnabled:NO];
+	[addDatabaseFieldButton setEnabled:NO];
+	[addSpecialFieldButton setEnabled:NO];
 }
 
 - (CIALayoutController*)layoutController; {return layoutController;}
@@ -151,6 +154,8 @@ NSLog(@"makeFirstResponder");
 	
 	[addAnnotationButton setEnabled:!state];
 	[removeAnnotationButton setEnabled:!state];
+	
+	[orientationWidgetButton setEnabled:!state];
 }
 
 - (NSButton*)orientationWidgetButton; {return orientationWidgetButton;}

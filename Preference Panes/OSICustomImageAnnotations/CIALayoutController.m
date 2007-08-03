@@ -166,6 +166,11 @@ NSLog(@"CIALayoutController awakeFromNib");
 	[[prefPane databaseFieldsPopUpButton] selectItemAtIndex:0];
 	[[prefPane specialFieldsPopUpButton] selectItemAtIndex:0];
 	
+	[[prefPane addCustomDICOMFieldButton] setEnabled:NO];
+	[[prefPane addDICOMFieldButton] setEnabled:NO];
+	[[prefPane addDatabaseFieldButton] setEnabled:NO];
+	[[prefPane addSpecialFieldButton] setEnabled:NO];
+	
 	[self loadAnnotationLayoutForModality:currentModality];
 }
 
@@ -432,6 +437,10 @@ NSLog(@"CIALayoutController awakeFromNib");
 	[[prefPane databaseFieldsPopUpButton] selectItemAtIndex:0];
 	[[prefPane specialFieldsPopUpButton] selectItemAtIndex:0];
 	[self setCustomDICOMFieldEditingEnable:YES];
+	[[prefPane addCustomDICOMFieldButton] setEnabled:YES];
+	[[prefPane addDICOMFieldButton] setEnabled:YES];
+	[[prefPane addDatabaseFieldButton] setEnabled:YES];
+	[[prefPane addSpecialFieldButton] setEnabled:YES];
 }
 
 - (CIAAnnotation*)selectedAnnotation;
@@ -601,7 +610,7 @@ NSLog(@"CIALayoutController awakeFromNib");
 		NSLog(@"[[[prefPane contentTokenField] currentEditor] selectedRange] : %d", [[[prefPane contentTokenField] currentEditor] selectedRange].location);
 	}
 	
-	[[prefPane contentTokenField] display];
+	[[prefPane contentTokenField] setNeedsDisplay:YES];
 }
 
 - (IBAction)validateTokenTextField:(id)sender;
@@ -953,6 +962,11 @@ NSLog(@"[[[[self window] contentView] subviews] count] : %d", [[[[self window] c
 	[[prefPane nameLabel] setTextColor:textColor];
 }
 
+- (void)saveAnnotationLayout;
+{
+	[self saveAnnotationLayoutForModality:currentModality];
+}
+
 - (void)saveAnnotationLayoutForModality:(NSString*)modality;
 {
 	NSArray *placeHolders = [layoutView placeHolderArray];
@@ -1025,6 +1039,12 @@ NSLog(@"[[[[self window] contentView] subviews] count] : %d", [[[[self window] c
 					{
 						[fieldDict setObject:@"Special" forKey:@"type"];
 						[fieldDict setObject:[currentField substringFromIndex:8] forKey:@"field"];
+						[contentToSave addObject:fieldDict];
+					}
+					else
+					{
+						[fieldDict setObject:@"Manual" forKey:@"type"];
+						[fieldDict setObject:currentField forKey:@"field"];
 						[contentToSave addObject:fieldDict];
 					}
 				}

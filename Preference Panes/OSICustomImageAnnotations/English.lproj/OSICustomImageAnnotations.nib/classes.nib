@@ -72,7 +72,7 @@
                 addSpecialFieldButton = NSButton; 
                 contentBox = NSBox; 
                 contentLabeltextField = NSTextField; 
-                contentTokenField = RWTokenField; 
+                contentTokenField = NSTokenField; 
                 databaseFieldsPopUpButton = NSPopUpButton; 
                 dicomElementTextField = NSTextField; 
                 dicomGroupTextField = NSTextField; 

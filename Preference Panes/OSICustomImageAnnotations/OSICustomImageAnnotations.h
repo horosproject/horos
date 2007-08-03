@@ -31,7 +31,7 @@
 	
 	IBOutlet CIALayoutView *layoutView;
 	IBOutlet NSTextField *titleLabelTextField, *titleTextField, *contentLabeltextField;
-	IBOutlet RWTokenField *contentTokenField;
+	IBOutlet NSTokenField *contentTokenField;
 	IBOutlet NSTokenField *dicomNameTokenField;
 	IBOutlet NSTextField *dicomGroupTextField, *dicomElementTextField;
 	IBOutlet NSTextField *groupLabel, *elementLabel, *nameLabel;
