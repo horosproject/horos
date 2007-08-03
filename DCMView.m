@@ -1353,21 +1353,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) scaleToFit
 {
-	if([self is2DViewer] == NO)
-	{
-		NSRect  sizeView = [self bounds];
-		
-		if( sizeView.size.width/[curDCM pwidth] < sizeView.size.height/[curDCM pheight]/[curDCM pixelRatio])
-		{
-			[self setScaleValue:(sizeView.size.width/[curDCM pwidth])];
-		}
-		else
-		{
-			[self setScaleValue:(sizeView.size.height/[curDCM pheight]/[curDCM pixelRatio])];
-		}
-	}
+	NSRect  sizeView = [self bounds];
+	
+	if( sizeView.size.width/[curDCM pwidth] < sizeView.size.height/[curDCM pheight]/[curDCM pixelRatio])
+		[self setScaleValue:(sizeView.size.width/[curDCM pwidth])];
 	else
-		[self setScaleValue: [[[self seriesObj] valueForKey:@"scale"] floatValue]];
+		[self setScaleValue:(sizeView.size.height/[curDCM pheight]/[curDCM pixelRatio])];
 	
 	int i;	
 	for( i = 0; i < [dcmPixList count]; i++) [[dcmPixList objectAtIndex: i] setIndependentZoom: scaleValue];
@@ -1423,7 +1414,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[curDCM checkImageAvailble :curWW :curWL];
 		
 		NSRect  sizeView = [self bounds];
-		if( sizeToFit || [self is2DViewer] == NO)
+		if( sizeToFit && [self is2DViewer] == NO)
 		{
 			[self scaleToFit];
 		}
@@ -8038,7 +8029,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) setScaleValueCentered:(float) x
 {
-	if( x <= 0) return [self scaleToFit];
+	if( x <= 0) return;
 	
 	if( x != scaleValue)
 	{
@@ -8056,7 +8047,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) setScaleValue:(float) x
 {
-	if( x <= 0) return [self scaleToFit];
+	if( x <= 0) return;
 	
 	if( scaleValue != x)
 	{
@@ -9272,7 +9263,12 @@ BOOL	lowRes = NO;
 		if( [self is2DViewer])
 		{
 			if( [image valueForKey:@"scale"]) [self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
-			else if( !onlyImage) [self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
+			else if( !onlyImage)
+			{
+				if( [series valueForKey:@"scale"]) [self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
+				else [self scaleToFit];
+			}
+			else [self scaleToFit];
 		}
 		else [self scaleToFit];
 		
