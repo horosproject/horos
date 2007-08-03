@@ -752,6 +752,7 @@ NSLog(@"[[[[self window] contentView] subviews] count] : %d", [[[[self window] c
 	[specialFieldsTitles addObject:@"Rotation Angle"];
 	[specialFieldsTitles addObject:@"Mouse Position (px)"];
 	[specialFieldsTitles addObject:@"Mouse Position (mm)"];
+	[specialFieldsTitles addObject:@"Thickness"];
 	return specialFieldsTitles;
 }
 

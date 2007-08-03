@@ -6050,7 +6050,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height/2] forKey:@"MiddleLeft"];
 		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height/2] forKey:@"MiddleRight"];
 		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2] forKey:@"LowerLeft"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2] forKey:@"LowerRight"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2-stringSize.height] forKey:@"LowerRight"];
 		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2] forKey:@"LowerMiddle"];
 		
 		NSMutableDictionary *yRasterIncrement = [NSMutableDictionary dictionary];
@@ -6062,6 +6062,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[yRasterIncrement setObject:[NSNumber numberWithInt:-stringSize.height] forKey:@"LowerLeft"];
 		[yRasterIncrement setObject:[NSNumber numberWithInt:-stringSize.height] forKey:@"LowerRight"];
 		[yRasterIncrement setObject:[NSNumber numberWithInt:-stringSize.height] forKey:@"LowerMiddle"];
+		
+		BOOL orientationDrawn = NO;
 		
 		NSArray *keys = [annotationsDictionary allKeys];
 		int i, j, k, increment;
@@ -6222,6 +6224,56 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							}	
 						}
 					}
+					else if([[annot objectAtIndex:j] isEqualToString:@"Orientation"])
+					{
+						if(!orientationDrawn)[self drawOrientation: size];
+						orientationDrawn = YES;
+					}
+					else if([[annot objectAtIndex:j] isEqualToString:@"Thickness"])
+					{
+						if( [curDCM sliceThickness] != 0 && [curDCM sliceLocation] != 0)
+						{
+							if( [curDCM stack] > 1)
+							{
+								float vv, pp;
+								
+								[self getThickSlabThickness: &vv location: &pp];
+								
+								if( vv < 1.0 && vv != 0.0)
+								{
+									if( fabs( pp) < 1.0 && pp != 0.0)
+										[tempString appendFormat: @"Thickness: %0.2f %cm Location: %0.2f %cm", fabs( vv * 1000.0), 0xB5, pp * 1000.0, 0xB5];
+									else
+										[tempString appendFormat: @"Thickness: %0.2f %cm Location: %0.2f mm", fabs( vv * 1000.0), 0xB5, pp];
+								}
+								else
+									[tempString appendFormat: @"Thickness: %0.2f mm Location: %0.2f mm", fabs( vv), pp];								
+							}
+							else if( fullText)
+							{
+								if ([curDCM sliceThickness] < 1.0 && [curDCM sliceThickness] != 0.0)
+								{
+									if( fabs( [curDCM sliceLocation]) < 1.0 && [curDCM sliceLocation] != 0.0)
+										[tempString appendFormat: @"Thickness: %0.2f %cm Location: %0.2f %cm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation] * 1000.0, 0xB5];
+									else
+										[tempString appendFormat: @"Thickness: %0.2f %cm Location: %0.2f mm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation]];
+								}
+								else
+									[tempString appendFormat: @"Thickness: %0.2f mm Location: %0.2f mm", [curDCM sliceThickness], [curDCM sliceLocation]];
+							}
+						} 
+						else if( [curDCM viewPosition] || [curDCM patientPosition])	 
+						{	 
+							 NSString        *nsstring = 0L;	 
+
+							 if([curDCM viewPosition]) [tempString appendFormat: @"Position: %@ ", [curDCM viewPosition]];	 
+							 if([curDCM patientPosition])	 
+							 {	 
+								if([curDCM viewPosition]) [tempString appendString: [curDCM patientPosition]];	 
+								else [tempString appendFormat: @"Position: %@ ", [curDCM patientPosition]];	 
+							 }	 
+						}
+					}
 					else
 					{
 						[tempString appendFormat:@" %@", [annot objectAtIndex:j]];
@@ -6251,6 +6303,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 			}// while
 		} // for k
+		yRaster = size.size.height-2;
+		xRaster = size.size.width;
+		[self DrawNSStringGL:@"Made In OsiriX" :fontListGL :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
 	}
 }
 

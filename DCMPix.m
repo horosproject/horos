@@ -8687,6 +8687,8 @@ BOOL            readable = YES;
 				
 //				[self getFrameFromMovie: extension];
 			}
+			
+			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:nil];
 		}
 		
 		if( fImage == 0L)
@@ -10623,6 +10625,7 @@ BOOL            readable = YES;
 	NSString *modality = [imageObj valueForKeyPath:@"series.modality"]; // imageObj = link to database
 	NSDictionary *annotationsForModality = [annotationsDict objectForKey:modality];
 
+	if(!annotationsForModality) annotationsForModality = [annotationsDict objectForKey:@"Default"];
 	if([[annotationsForModality objectForKey:@"sameAsDefault"] intValue]==1) annotationsForModality = [annotationsDict objectForKey:@"Default"];
 
 	// image sides (LowerLeft, LowerMiddle, LowerRight, MiddleLeft, MiddleRight, TopLeft, TopMiddle, TopRight) & sameAsDefault

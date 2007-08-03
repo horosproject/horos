@@ -497,6 +497,9 @@
 		A92155FA0ADCF319008D881E /* OsiriX Report.template in Resources */ = {isa = PBXBuildFile; fileRef = A92155E50ADCF319008D881E /* OsiriX Report.template */; };
 		A92155FB0ADCF319008D881E /* OsiriX Report.template in Resources */ = {isa = PBXBuildFile; fileRef = A92155E50ADCF319008D881E /* OsiriX Report.template */; };
 		A92155FC0ADCF319008D881E /* OsiriX Report.template in Resources */ = {isa = PBXBuildFile; fileRef = A92155E50ADCF319008D881E /* OsiriX Report.template */; };
+		A922F3BB0C631F3C0007AB98 /* CustomImageAnnotations.png in Resources */ = {isa = PBXBuildFile; fileRef = A922F3BA0C631F3C0007AB98 /* CustomImageAnnotations.png */; };
+		A922F3BC0C631F3C0007AB98 /* CustomImageAnnotations.png in Resources */ = {isa = PBXBuildFile; fileRef = A922F3BA0C631F3C0007AB98 /* CustomImageAnnotations.png */; };
+		A922F3BD0C631F3C0007AB98 /* CustomImageAnnotations.png in Resources */ = {isa = PBXBuildFile; fileRef = A922F3BA0C631F3C0007AB98 /* CustomImageAnnotations.png */; };
 		A926BFC90A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */; };
 		A926BFCA0A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */; };
 		A926BFCB0A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */; };
@@ -11305,6 +11308,7 @@
 		A91CE49D098F5464008665E3 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/ROIVolumeManager.nib; sourceTree = "<group>"; };
 		A91F01100B568EA600FCD57C /* Repulsor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Repulsor.tif; sourceTree = "<group>"; };
 		A92155E50ADCF319008D881E /* OsiriX Report.template */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "OsiriX Report.template"; path = "Binaries/OsiriX Report.template"; sourceTree = "<group>"; };
+		A922F3BA0C631F3C0007AB98 /* CustomImageAnnotations.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CustomImageAnnotations.png; sourceTree = "<group>"; };
 		A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html; path = QTExportSeriesTemplate.html; sourceTree = "<group>"; };
 		A932B957094D722D0085B58A /* EndoscopyViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopyViewer.h; sourceTree = "<group>"; };
 		A932B958094D722D0085B58A /* EndoscopyViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndoscopyViewer.m; sourceTree = "<group>"; };
@@ -16005,6 +16009,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				A922F3BA0C631F3C0007AB98 /* CustomImageAnnotations.png */,
 				CE27BA0E0C113BBA00BDC9B3 /* 3DPresetsPanel.tiff */,
 				CE0817B70C0FEEAE00BBD907 /* iPodEjectOff.tif */,
 				CE0817B80C0FEEAE00BBD907 /* iPodEjectOn.tif */,
@@ -26068,6 +26073,7 @@
 				AB80411B0C5F0AC7000F21D5 /* 3DPRESETS in Resources */,
 				A918A4E20C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane in Resources */,
 				ABCA52270C630E0D00F031D4 /* OsiriXDB_Previous_DataModel2.2.mom in Resources */,
+				A922F3BB0C631F3C0007AB98 /* CustomImageAnnotations.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26470,6 +26476,7 @@
 				AB80411C0C5F0AC7000F21D5 /* 3DPRESETS in Resources */,
 				A918A4E40C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane in Resources */,
 				ABCA52280C630E0D00F031D4 /* OsiriXDB_Previous_DataModel2.2.mom in Resources */,
+				A922F3BD0C631F3C0007AB98 /* CustomImageAnnotations.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26872,6 +26879,7 @@
 				AB80411A0C5F0AC7000F21D5 /* 3DPRESETS in Resources */,
 				A918A4E30C621BED00DD88D1 /* OSICustomImageAnnotations.prefPane in Resources */,
 				ABCA52260C630E0D00F031D4 /* OsiriXDB_Previous_DataModel2.2.mom in Resources */,
+				A922F3BC0C631F3C0007AB98 /* CustomImageAnnotations.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
