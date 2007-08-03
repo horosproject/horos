@@ -67,7 +67,7 @@
 //		[self setFrameSize:sizeView];
 		
 		NSRect  sizeView = [self bounds];
-		if( sizeToFit && [[[self seriesObj] valueForKey:@"displayStyle"] intValue] == 0 || [[[self window] windowController] is2DViewer] == NO) {
+		if( sizeToFit || [[[self window] windowController] is2DViewer] == NO) {
 			[self scaleToFit];
 		}
 		

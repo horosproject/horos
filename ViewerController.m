@@ -11073,105 +11073,108 @@ int i,j,l;
 	{
 		ViewerController	*vC = [viewersList objectAtIndex: i];
 		
-		float   iwl, iww;
-		
-		// 4D data
-		if( curMovieIndex != [vC curMovieIndex] && maxMovieIndex ==  [vC maxMovieIndex])
+		if( [[vC imageView] shouldPropagate] == YES)
 		{
-			[vC setMovieIndex: curMovieIndex];
-		}
-		
-		BOOL registeredViewers = NO;
-		
-		if( [self registeredViewer] == vC || [vC registeredViewer] == self)
-			registeredViewers = YES;
-		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
-		{
-//			if( [[vC curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES && [[self curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES )
-			if( [[vC curCLUTMenu] isEqualToString:[self curCLUTMenu]] == YES)
+			float   iwl, iww;
+			
+			// 4D data
+			if( curMovieIndex != [vC curMovieIndex] && maxMovieIndex ==  [vC maxMovieIndex])
 			{
-				BOOL	 propagate = YES;
-				
-				if( [[imageView curDCM] isRGB] != [[[vC imageView] curDCM] isRGB]) propagate = NO;
-				
-				if( [[vC modality] isEqualToString:[self modality]] == NO) propagate = NO;
-				
-				if( [[vC modality] isEqualToString: @"CR"]) propagate = NO;
-				
-				if( [[vC modality] isEqualToString:@"PT"] == YES && [[self modality] isEqualToString:@"PT"] == YES)
-				{
-					if( [[imageView curDCM] SUVConverted] != [[[vC imageView] curDCM] SUVConverted]) propagate = NO;
-				}
-				
-				if( [[vC modality] isEqualToString:@"MR"] == YES && [[self modality] isEqualToString:@"MR"] == YES)
-				{
-					if(		[[[imageView curDCM] repetitiontime] isEqualToString: [[[vC imageView] curDCM] repetitiontime]] == NO || 
-							[[[imageView curDCM] echotime] isEqualToString: [[[vC imageView] curDCM] echotime]] == NO)
-							{
-								propagate = NO;
-							}
-				}
-				
-				if( propagate)
-				{
-					[imageView getWLWW:&iwl :&iww];
-					[[vC imageView] setWLWW:iwl :iww];
-				}
+				[vC setMovieIndex: curMovieIndex];
 			}
-
 			
-			float vectorsA[9], vectorsB[9];
+			BOOL registeredViewers = NO;
 			
-			[[pixList[0] objectAtIndex:0] orientation: vectorsA];
-			[[[vC pixList] objectAtIndex:0] orientation: vectorsB];
+			if( [self registeredViewer] == vC || [vC registeredViewer] == self)
+				registeredViewers = YES;
 			
-			float fValue;
-			
-			if(  curvedController == 0L && [vC curvedController] == 0L)
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
 			{
+	//			if( [[vC curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES && [[self curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES )
+				if( [[vC curCLUTMenu] isEqualToString:[self curCLUTMenu]] == YES)
+				{
+					BOOL	 propagate = YES;
+					
+					if( [[imageView curDCM] isRGB] != [[[vC imageView] curDCM] isRGB]) propagate = NO;
+					
+					if( [[vC modality] isEqualToString:[self modality]] == NO) propagate = NO;
+					
+					if( [[vC modality] isEqualToString: @"CR"]) propagate = NO;
+					
+					if( [[vC modality] isEqualToString:@"PT"] == YES && [[self modality] isEqualToString:@"PT"] == YES)
+					{
+						if( [[imageView curDCM] SUVConverted] != [[[vC imageView] curDCM] SUVConverted]) propagate = NO;
+					}
+					
+					if( [[vC modality] isEqualToString:@"MR"] == YES && [[self modality] isEqualToString:@"MR"] == YES)
+					{
+						if(		[[[imageView curDCM] repetitiontime] isEqualToString: [[[vC imageView] curDCM] repetitiontime]] == NO || 
+								[[[imageView curDCM] echotime] isEqualToString: [[[vC imageView] curDCM] echotime]] == NO)
+								{
+									propagate = NO;
+								}
+					}
+					
+					if( propagate)
+					{
+						[imageView getWLWW:&iwl :&iww];
+						[[vC imageView] setWLWW:iwl :iww];
+					}
+				}
+
+				
+				float vectorsA[9], vectorsB[9];
+				
+				[[pixList[0] objectAtIndex:0] orientation: vectorsA];
+				[[[vC pixList] objectAtIndex:0] orientation: vectorsB];
+				
+				float fValue;
+				
+				if(  curvedController == 0L && [vC curvedController] == 0L)
+				{
+					if( (int) (vectorsA[ 6]*1000.) == (int) (vectorsB[ 6]*1000.) && (int) (vectorsA[ 7]*1000.) == (int) (vectorsB[ 7]*1000.) && (int) (vectorsA[ 8]*1000.) == (int) (vectorsB[ 8]*1000.) && curvedController == 0L)
+	//				if( curvedController == 0L)
+					{
+					//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
+						{
+							if( [imageView pixelSpacing] != 0 && [[vC imageView] pixelSpacing] != 0)
+							{
+								if( [imageView scaleValue] != 0)
+								{
+									fValue = [imageView scaleValue] / [imageView pixelSpacing];
+									[[vC imageView] setScaleValue: fValue * [[vC imageView] pixelSpacing]];
+								}
+							}
+							else
+							{
+								if( [imageView scaleValue] != 0)
+									[[vC imageView] setScaleValue: [imageView scaleValue]];
+							}
+						}
+					}
+				}
+				
 				if( (int) (vectorsA[ 6]*1000.) == (int) (vectorsB[ 6]*1000.) && (int) (vectorsA[ 7]*1000.) == (int) (vectorsB[ 7]*1000.) && (int) (vectorsA[ 8]*1000.) == (int) (vectorsB[ 8]*1000.) && curvedController == 0L)
-//				if( curvedController == 0L)
 				{
 				//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
 					{
-						if( [imageView pixelSpacing] != 0 && [[vC imageView] pixelSpacing] != 0)
+						if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[vC fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewers == YES)
 						{
-							if( [imageView scaleValue] != 0)
-							{
-								fValue = [imageView scaleValue] / [imageView pixelSpacing];
-								[[vC imageView] setScaleValue: fValue * [[vC imageView] pixelSpacing]];
-							}
+							NSPoint pan, delta;
+							
+							pan = [imageView origin];
+							
+							delta = [DCMPix originDeltaBetween:[[vC imageView] curDCM] And:[imageView curDCM]];
+							
+							delta.x *= [imageView scaleValue];
+							delta.y *= [imageView scaleValue];
+							
+							[[vC imageView] setOrigin: NSMakePoint( pan.x + delta.x, pan.y - delta.y)];
 						}
-						else
-						{
-							if( [imageView scaleValue] != 0)
-								[[vC imageView] setScaleValue: [imageView scaleValue]];
-						}
+						
+						fValue = [imageView rotation];
+						[[vC imageView] setRotation: fValue];
 					}
-				}
-			}
-			
-			if( (int) (vectorsA[ 6]*1000.) == (int) (vectorsB[ 6]*1000.) && (int) (vectorsA[ 7]*1000.) == (int) (vectorsB[ 7]*1000.) && (int) (vectorsA[ 8]*1000.) == (int) (vectorsB[ 8]*1000.) && curvedController == 0L)
-			{
-			//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
-				{
-					if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[vC fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewers == YES)
-					{
-						NSPoint pan, delta;
-						
-						pan = [imageView origin];
-						
-						delta = [DCMPix originDeltaBetween:[[vC imageView] curDCM] And:[imageView curDCM]];
-						
-						delta.x *= [imageView scaleValue];
-						delta.y *= [imageView scaleValue];
-						
-						[[vC imageView] setOrigin: NSMakePoint( pan.x + delta.x, pan.y - delta.y)];
-					}
-					
-					fValue = [imageView rotation];
-					[[vC imageView] setRotation: fValue];
 				}
 			}
 		}

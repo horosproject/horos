@@ -408,6 +408,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 - (void)subDrawRect: (NSRect)aRect;  // Subclassable, default does nothing.
 - (void) setDrawing:(BOOL) v;
 - (void) updateImage;
+- (BOOL) shouldPropagate;
 
 // methodes to access global variables (for plugins)
 + (BOOL) display2DMPRLines;

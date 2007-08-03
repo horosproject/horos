@@ -235,7 +235,8 @@
 }
 
  
- - (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset{
+ - (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset
+ {
 	if( dcmPixList) [dcmPixList release];
     dcmPixList = c;
     [dcmPixList retain];
@@ -255,15 +256,11 @@
 	int i = firstImage;
 	while (view = [enumerator nextObject])
 	{
-		//if( i > 0)
-		{
-			if (i < [dcmPixList count])
-				[view setDCM: c :d :e :i++ :type :reset];
-			else
-				[view setDCM: c :d :e :-1 :type :reset];
-		}
+		if (i < [dcmPixList count])
+			[view setDCM: c :d :e :i++ :type :reset];
+		else
+			[view setDCM: c :d :e :-1 :type :reset];
 	}
-		 
  }
  
  - (void) setBlendingFactor:(float) value{
@@ -279,14 +276,7 @@
 	while (view = [enumerator nextObject])
 		[view setBlendingMode:value];
 }
-/*
-- (void) setFusion:(short) mode :(short) stacks{
-	NSEnumerator *enumerator = [imageViews objectEnumerator];
-	DCMView *view;
-	while (view = [enumerator nextObject])
-		[view setFusion:mode :stacks];
-}
-*/
+
 -(void) ActivateBlending:(ViewerController*) bC blendingFactor:(float)blendingFactor{
 	NSEnumerator *enumerator = [imageViews objectEnumerator];
 	DCMView *view;

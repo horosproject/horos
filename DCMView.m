@@ -1278,15 +1278,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					[self setOriginX: 0 Y: 0];
 					[self setRotation: 0];
 					[self scaleToFit];
-					
-					//set value for Series Object Presentation State
-					if ([self is2DViewer] == YES)
-					{
-						[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
-						[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
-						[[self seriesObj] setValue:[NSNumber numberWithFloat:0] forKey:@"displayStyle"]; 
-						[[self seriesObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-					}
 				}
 				
 				if( [event clickCount] == 3)
@@ -1294,13 +1285,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					[self setOriginX: 0 Y: 0];
 					[self setRotation: 0];
 					[self setScaleValue: 1];
-					if ([self is2DViewer] == YES)
-					{
-						[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
-						[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
-						[[self seriesObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-						[[self seriesObj] setValue:[NSNumber numberWithFloat:1] forKey:@"displayStyle"];
-					}
 				}
 			}
 		break;
@@ -1369,7 +1353,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) scaleToFit
 {
-	if ([[[self seriesObj] valueForKey:@"displayStyle"] intValue] == 0 || [self is2DViewer] == NO) {
+	if([self is2DViewer] == NO)
+	{
 		NSRect  sizeView = [self bounds];
 		
 		if( sizeView.size.width/[curDCM pwidth] < sizeView.size.height/[curDCM pheight]/[curDCM pixelRatio])
@@ -1430,7 +1415,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		curWL = [curDCM wl];
 		curWW = [curDCM ww];
 		origin.x = origin.y = 0;
-		scaleValue = 0;
+		scaleValue = 1;
 		
 		//get Presentation State info from series Object
 		[self updatePresentationStateFromSeries];
@@ -1438,7 +1423,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[curDCM checkImageAvailble :curWW :curWL];
 		
 		NSRect  sizeView = [self bounds];
-		if( sizeToFit && [[[self seriesObj] valueForKey:@"displayStyle"] intValue] == 0 || [self is2DViewer] == NO)
+		if( sizeToFit || [self is2DViewer] == NO)
 		{
 			[self scaleToFit];
 		}
@@ -1454,11 +1439,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[self loadTextures];
 		[self setNeedsDisplay:YES];
 		
-//		if( [self is2DViewer] == YES)
-//			[[self windowController] propagateSettings];
-		
 		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
-//		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
 
 		[yearOld release];
 		
@@ -1999,6 +1980,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 //		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
     }
+}
+
+- (BOOL) shouldPropagate
+{
+	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO) return NO;
+	else return YES;
 }
 
 - (void)deleteROIGroupID:(NSTimeInterval)groupID;
@@ -3696,16 +3683,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	originOffset.x = ((originOffsetStart.x * scaleValue) / startScaleValue);
 	originOffset.y = ((originOffsetStart.y * scaleValue) / startScaleValue);
-	
-	//set value for Series Object Presentation State
-	if ([self is2DViewer] == YES)
-	{
-		[[self seriesObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-		[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
-		[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
-		[[self seriesObj] setValue:[NSNumber numberWithFloat:1] forKey:@"displayStyle"];
-	}
-
 }
 
 
@@ -8061,33 +8038,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) setScaleValueCentered:(float) x
 {
+	if( x <= 0) return [self scaleToFit];
+	
 	if( x != scaleValue)
 	{
 		if( scaleValue)
 		{
-			[self setOriginX:((origin.x * x) / scaleValue) Y:((origin.y * x) / scaleValue) ];
+			[self setOriginX:((origin.x * x) / scaleValue) Y:((origin.y * x) / scaleValue)];
 			
 			originOffset.x = ((originOffset.x * x) / scaleValue);
 			originOffset.y = ((originOffset.y * x) / scaleValue);
 		}
 		
-		scaleValue = x;
-		
-		if( x < 0.01) scaleValue = 0.01;
-		if( x > 100) scaleValue = 100;
-		
-		if( [self softwareInterpolation] || [blendingView softwareInterpolation])
-			[self loadTextures];
-		else if( zoomIsSoftwareInterpolated || [blendingView zoomIsSoftwareInterpolated])
-			[self loadTextures];
-		
-		[self setNeedsDisplay:YES];
+		[self setScaleValue: x];
 	}
 }
 
 -(void) setScaleValue:(float) x
 {
-	if( x <= 0) return;
+	if( x <= 0) return [self scaleToFit];
 	
 	if( scaleValue != x)
 	{
@@ -8099,6 +8068,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[self loadTextures];
 		else if( zoomIsSoftwareInterpolated || [blendingView zoomIsSoftwareInterpolated])
 			[self loadTextures];
+		
+		// Series Level
+		[[self seriesObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+		
+		// Image Level
+		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+			[[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+		else
+			[[self imageObj] setValue: 0L forKey:@"scale"];
 		
 		[self setNeedsDisplay:YES];
 	}
@@ -8122,7 +8100,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 - (long) indexForPix: (long) pixIndex
 {
 	if ([[[dcmFilesList objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] == 1)
-		return curImage;
+		return pixIndex;
 	else
 		return 0;
 }
@@ -8246,8 +8224,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[[self imageObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
 		else
 			[[self imageObj] setValue: 0L forKey:@"rotationAngle"];
-		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"]];
 	}
 }
 
@@ -8972,12 +8948,6 @@ BOOL	lowRes = NO;
            selector: @selector(updateImageTiling:)
                name: @"DCMImageTilingHasChanged"
              object: nil];
-			 /*
-		[nc addObserver: self
-           selector: @selector(newImageViewisKey:)
-               name: @"DCMNewImageViewResponder"
-             object: nil];
-			 */
     }
     return self;
 
@@ -9070,15 +9040,18 @@ BOOL	lowRes = NO;
 
 -(void)setImageParamatersFromView:(DCMView *)aView
 {
-	if (aView != self)
+	if (aView != self && dcmPixList != 0L)
 	{
 		int offset = [self tag] - [aView tag];
 		curImage = [aView curImage] + offset;
+		
 		//get Image
 		if (curImage >= [dcmPixList count])
 			curImage = -1;
 		else if (curImage < 0)
 			curImage = -1;
+		
+		if( curImage < 0) return;
 		
 		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
 		{
@@ -9095,8 +9068,6 @@ BOOL	lowRes = NO;
 		[self setXFlipped: [aView xFlipped]];
 		[self setYFlipped: [aView yFlipped]];
 		
-		if( curImage < 0) return;
-		
 		//blending
 		if (blendingView != [aView blendingView])
 			[self setBlending:[aView blendingView]];
@@ -9107,8 +9078,6 @@ BOOL	lowRes = NO;
 		//[self setIndex:curImage];
 		if( listType == 'i') [self setIndex:curImage];
 		else [self setIndexWithReset:curImage :YES];
-		
-		
 		
 		// CLUT
 		unsigned char *aR, *aG, *aB;
@@ -9134,9 +9103,17 @@ BOOL	lowRes = NO;
 
 	if( stringID == 0L)
 	{
-		DCMView *object = [note object];
-		if ([[[note object] superview] isEqual:[self superview]] && ![object isEqual: self]) 
-			[self setImageParamatersFromView:object];
+		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+		{
+		
+		}
+		else
+		{
+			DCMView *otherView = [note object];
+			
+			if ([[[note object] superview] isEqual:[self superview]] && ![otherView isEqual: self]) 
+				[self setImageParamatersFromView: otherView];
+		}
 	}
 }
 
@@ -9297,6 +9274,7 @@ BOOL	lowRes = NO;
 			if( [image valueForKey:@"scale"]) [self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
 			else if( !onlyImage) [self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
 		}
+		else [self scaleToFit];
 		
 		if( [image valueForKey:@"rotationAngle"]) [self setRotation: [[image valueForKey:@"rotationAngle"] floatValue]];
 		else if( !onlyImage) [self setRotation:  [[series valueForKey:@"rotationAngle"] floatValue]];
@@ -9451,9 +9429,6 @@ BOOL	lowRes = NO;
 		[self setOriginX: 0 Y: 0];
 		
 		[self setWLWW:[[self curDCM] savedWL] :[[self curDCM] savedWW]];
-
-		
-		[[self seriesObj] setValue:[NSNumber numberWithFloat:0] forKey:@"displayStyle"]; 
 		[self scaleToFit];
 	}
 	[self setNeedsDisplay:YES];
@@ -9510,7 +9485,6 @@ BOOL	lowRes = NO;
 	//keep window centered
 	windowFrame.origin.y = center.y - newHeight/2.0;
 	windowFrame.origin.x = center.x - newWidth/2.0;
-	[[self seriesObj] setValue:[NSNumber numberWithFloat:0] forKey:@"displayStyle"]; 
 	
 	[window setFrame:windowFrame display:YES];
 //	[self setScaleValue: resizeScale];
