@@ -1790,6 +1790,8 @@ static BOOL initialized = NO;
     {
         NSLog( @"***** OsiriX : session activation: START DICOM LISTENER FOR THIS SESSION");
 		
+		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow: 2]];
+		
 		[self restartSTORESCP];
     }
 }
