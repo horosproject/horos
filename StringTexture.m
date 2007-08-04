@@ -12,9 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import "StringTexture.h"
 
 @implementation StringTexture
@@ -78,12 +75,6 @@
 	[string release];
 	[super dealloc];
 }
-
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
 
 - (GLuint) texName
 {
@@ -166,7 +157,8 @@
 	[image unlockFocus];
 	texSize.width = [bitmap size].width;
 	texSize.height = [bitmap size].height;
-	if (cgl_ctx = CGLGetCurrentContext ()) { // if we successfully retrieve a current context (required)
+	if (cgl_ctx = CGLGetCurrentContext ())
+	{ // if we successfully retrieve a current context (required)
 		glGenTextures (1, &texName);
 		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
 		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
@@ -188,7 +180,14 @@
 {
 	if (!texName)
 		[self genTexture];
-	if (texName) {
+	
+	if (texName)
+	{
+		if( cgl_ctx != CGLGetCurrentContext ())
+		{
+			[self genTexture];
+		}
+		
 		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
 		
 		glBegin (GL_QUADS);

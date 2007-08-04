@@ -29,7 +29,8 @@ It is a shared class.
 
 @class OSIWindowController;
 @class LayoutWindowController;
-@interface WindowLayoutManager : NSObject {
+@interface WindowLayoutManager : NSObject
+{
 	BOOL					_xFlipped, _yFlipped;  // Dependent on current DCMView settings.
 	NSMutableDictionary		*_currentHangingProtocol;
 	//NSDictionary			*_advancedHangingProtocol;
@@ -44,6 +45,7 @@ It is a shared class.
 	LayoutWindowController	*_layoutWindowController;
 	OSIWindowController		*_currentViewer;
 	
+	int						IMAGEROWS, IMAGECOLUMNS;
 }
 
 + (id)sharedWindowLayoutManager;
@@ -58,9 +60,8 @@ It is a shared class.
 - (id) findViewerWithNibNamed:(NSString*) nib andPixList:(NSMutableArray*) pixList;
 - (NSArray*)findRelatedViewersForPixList:(NSMutableArray*) pixList;
 
-
-
-
+- (int) IMAGEROWS;
+- (int) IMAGECOLUMNS;
 
 #pragma mark-
 #pragma mark hanging protocol setters and getters

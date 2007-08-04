@@ -226,6 +226,7 @@ enum
 // parent ROI
 - (ROI*) parentROI;
 - (void) setParentROI: (ROI*) aROI;
+- (void) releaseStringTexture;
 
 // Calcium Scoring
 

@@ -4216,7 +4216,11 @@ static ViewerController *draggedController = 0L;
 		for( x = 0; x < [roiList[ i] count] ; x++)
 		{
 			for( z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
+			{
+				[[[roiList[ i] objectAtIndex: x] objectAtIndex: z] releaseStringTexture];
+				
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: 0L];
+			}
 		}
 		
 		[roiList[ i] release];
@@ -4339,44 +4343,6 @@ static ViewerController *draggedController = 0L;
 	[[IMService notificationCenter] removeObserver:self];
 //#endif
 #endif
-}
-
-
-- (void)finalize {
-	stopThreadLoadImage = YES;
-	if( [browserWindow isCurrentDatabaseBonjour])
-	{
-		while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
-	}
-	else [ThreadLoadImageLock lock];
-	[ThreadLoadImageLock unlock];
-		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) 
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];
-	
-	
-			if( USETOOLBARPANEL)
-	{
-		int i;
-		for( i = 0 ; i < [[NSScreen screens] count]; i++)
-			[toolbarPanel[ i] toolbarWillClose : toolbar];
-	}
-	
-	
-	numberOf2DViewer--;
-	if( numberOf2DViewer == 0)
-	{
-		USETOOLBARPANEL = NO;
-		int i;
-		for( i = 0; i < [[NSScreen screens] count]; i++)
-			[[toolbarPanel[ i] window] orderOut:self];
-	}
-	int i;
-	for( i = 0; i < maxMovieIndex; i++)
-	{
-		[self saveROI: i];
-	}
-	
-	[super finalize];
 }
 
 -(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) applyTransition

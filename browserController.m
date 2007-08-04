@@ -5070,9 +5070,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 		if( [self isUsingExternalViewer: item] == NO)
 		{
 			// DICOM & others
-			[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:nil description:nil];
 			[self viewerDICOMInt :NO  dcmFile: [NSArray arrayWithObject:item] viewer:0L];
-	//		[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[item valueForKeyPath:@"study.modality"] description:[item valueForKeyPath:@"study.studyName"]];
+			
 		}
 	}
 	else	// STUDY - HANGING PROTOCOLS
@@ -5105,8 +5104,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			//Use Basic Hanging Protocols
 			[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[item valueForKey:@"modality"] description:[item valueForKey:@"studyName"]];
+			
 			NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
-			//if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"series"] count])
+			
 			if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
 			{
 				[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:0L];
@@ -5794,8 +5794,6 @@ static BOOL withReset = NO;
     id  theCell = [oMatrix selectedCell];
     int column,row;
     
-	[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:nil description:nil];
-	
     if( [theCell tag] >= 0 ) {
 		[self viewerDICOM: [[oMatrix menu] itemAtIndex:0]];
     }
@@ -8098,7 +8096,11 @@ static BOOL needToRezoom;
 				{
 					volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr length:memBlockSize[ x]*sizeof( float) freeWhenDone:YES];
 					loadList = [toOpenArray objectAtIndex: x];
-					// Why viewerPix[0] (fixed value) within the loop?					
+					
+					if( [loadList count])
+						[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: [[loadList objectAtIndex: 0] valueForKeyPath:@"series.study.modality"] description:[[loadList objectAtIndex: 0] valueForKeyPath:@"series.study.studyName"]];
+					
+					// Why viewerPix[0] (fixed value) within the loop? Because it's not a 4D volume !
 					viewerPix[0] = [[NSMutableArray alloc] initWithCapacity:0];
 					NSMutableArray *correspondingObjects = [[NSMutableArray alloc] initWithCapacity:0];
 					
@@ -8821,7 +8823,6 @@ static BOOL needToRezoom;
 	{
 		if( [self isUsingExternalViewer: [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]]] == NO)
 		{
-			[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: Nil description: Nil];	
 			[self viewerDICOMInt:NO	dcmFile: [self databaseSelection] viewer:0L];
 		}
 	}
@@ -8833,8 +8834,6 @@ static BOOL needToRezoom;
 - (void) viewerDICOMMergeSelection:(id) sender{
 	long			index;
 	NSMutableArray	*images = [NSMutableArray arrayWithCapacity:0];
-	
-	[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:nil description:nil];
 	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: images];
 	else [self filesForDatabaseOutlineSelection: images];
@@ -8852,8 +8851,6 @@ static BOOL needToRezoom;
 	long			index;
 	NSMutableArray	*selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
-	[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:nil description:nil];	
-	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
 
@@ -8869,8 +8866,6 @@ static BOOL needToRezoom;
 {
 	long					index;
 	NSMutableArray			*selectedItems = [NSMutableArray arrayWithCapacity:0];
-	
-	[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:nil description:nil];
 
 	NSIndexSet				*selectedRowIndexes = [databaseOutline selectedRowIndexes];
 	for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)

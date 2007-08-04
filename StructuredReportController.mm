@@ -25,6 +25,7 @@
 #import"ViewerController.h"
 #import "AppController.h"
 #import "AllKeyImagesArrayController.h"
+#import "WindowLayoutManager.h"
 
 extern AppController *appController;
 
@@ -257,7 +258,7 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 
 - (IBAction)showKeyImages:(id)sender{
 	BrowserController *browser = [BrowserController currentBrowser];
-	[appController setCurrentHangingProtocolForModality:nil description:nil];
+	[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:nil description:nil];
 	if ([[_report keyImages] count] > 0) {
 		NSArray *images = [NSMutableArray arrayWithObject:[_report keyImages]];
 		[browser openViewerFromImages :images movie: nil viewer :nil keyImagesOnly:NO];	

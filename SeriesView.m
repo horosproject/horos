@@ -18,7 +18,7 @@
 #import "SeriesView.h"
 #import "DCMView.h"
 #import "ViewerController.h"
-
+#import "WindowLayoutManager.h"
 
 @implementation SeriesView
 
@@ -34,8 +34,9 @@
 		seriesColumns = columns;
 		tag = 0;
 		
-		imageRows = [[NSUserDefaults standardUserDefaults] integerForKey: @"IMAGEROWS"];
-		imageColumns = [[NSUserDefaults standardUserDefaults] integerForKey: @"IMAGECOLUMNS"];
+		imageRows = [[WindowLayoutManager sharedWindowLayoutManager] IMAGECOLUMNS];
+		imageColumns = [[WindowLayoutManager sharedWindowLayoutManager] IMAGEROWS];
+		
 //		NSLog(@"ImageRows %d imageColumns: %d", imageRows, imageColumns);
 	
 			if (!imageRows)

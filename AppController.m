@@ -1449,12 +1449,9 @@ NSRect screenFrame()
 	[NSApp terminate: sender];
 }
 
-- (id)init {
+- (id)init
+{
 	self = [super init];
-	//	pluginClasses = [[NSMutableArray alloc] init];
-	//	pluginInstances = [[NSMutableArray alloc] init];
-	//currentHangingProtocol = [[NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithInt:6], [NSNumber numberWithInt:6], nil] forKeys: [NSArray arrayWithObjects: @"Rows", @"Columns", nil]] retain];
-	currentHangingProtocol = nil;
 	appController = self;
 	
 	PapyrusLock = [[NSLock alloc] init];
@@ -2481,10 +2478,10 @@ static BOOL initialized = NO;
 	screenRect = [[screens objectAtIndex:0] visibleFrame];
 	BOOL landscape = (screenRect.size.width/screenRect.size.height > 1) ? YES : NO;
 	
-	int rows = [[[self currentHangingProtocol] objectForKey:@"Rows"] intValue];
-	int columns = [[[self currentHangingProtocol] objectForKey:@"Columns"] intValue];
+	int rows = [[[[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] objectForKey:@"Rows"] intValue];
+	int columns = [[[[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] objectForKey:@"Columns"] intValue];
 
-	if (![self currentHangingProtocol])
+	if (![[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol])
 	{
 		if (landscape) {
 			columns = 2 * numberOfMonitors;
@@ -2506,15 +2503,7 @@ static BOOL initialized = NO;
 			columns ++;
 	}
 	
-	
-	// set image tiling to 1 row and columns
-	if (![[NSUserDefaults standardUserDefaults] integerForKey: @"IMAGEROWS"])
-		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"IMAGEROWS"];
-		
-	if (![[NSUserDefaults standardUserDefaults] integerForKey: @"IMAGECOLUMNS"])
-		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"IMAGECOLUMNS"];
-	
-	if( keepSameStudyOnSameScreen && numberOfMonitors > 1 && [self currentHangingProtocol] == 0L)
+	if( keepSameStudyOnSameScreen && numberOfMonitors > 1 && [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] == 0L)
 	{
 		for( i = 0; i < numberOfMonitors && i < [studyList count]; i++)
 		{
@@ -2668,23 +2657,6 @@ static BOOL initialized = NO;
 - (IBAction) saveLayout:(id) sender{
 	[[WindowLayoutManager sharedWindowLayoutManager] openLayoutWindow:sender];
 }
-
-
-//Deprecated use Window Layout Manager for Hanging Protocols
-- (void) setCurrentHangingProtocolForModality: (NSString *) modality description: (NSString *) description
-{
-	[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: (NSString *) modality description: (NSString *) description];
-	
-}
-
-
-//———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-//Deprecated use Window Layout Manager for Hanging Protocols
-- (NSDictionary *) currentHangingProtocol
-{
-	return [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
-}
-
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 

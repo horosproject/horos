@@ -55,11 +55,22 @@ WindowLayoutManager *sharedLayoutManager;
 		_windowControllers = [[NSMutableArray alloc] init];
 		_hangingProtocolInUse = NO;
 		_seriesSetIndex = 0;
-
+		
+		IMAGEROWS = 1;
+		IMAGECOLUMNS = 1;
 	}
 	return self;
 }
 
+- (int) IMAGEROWS
+{
+	return IMAGEROWS;
+}
+
+- (int) IMAGECOLUMNS
+{
+	return IMAGECOLUMNS;
+}
 
 #pragma mark-
 #pragma mark WindowController registration
@@ -240,12 +251,10 @@ WindowLayoutManager *sharedLayoutManager;
 			columns ++;
 	}
 	
-	
 	// set image tiling to 1 row and columns
-	if (![[NSUserDefaults standardUserDefaults] integerForKey: @"IMAGEROWS"])
-		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"IMAGEROWS"];
-	if (![[NSUserDefaults standardUserDefaults] integerForKey: @"IMAGECOLUMNS"])
-		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"IMAGECOLUMNS"];
+	if ( IMAGEROWS == 0) IMAGEROWS = 1;
+	if ( IMAGECOLUMNS == 0) IMAGECOLUMNS = 1;
+	
 	//I will generalize the options once I get a handle on the issues. LP
 	// if monitor count is greater than or equal to viewers. One viewer per window
 	if (viewerCount <= numberOfMonitors) {
@@ -370,9 +379,8 @@ WindowLayoutManager *sharedLayoutManager;
 	// if no modality set to 1 row and 1 column
 	if (!modality )
 	{
-		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"IMAGEROWS"];
-		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"IMAGECOLUMNS"];
-
+		IMAGECOLUMNS = 1;
+		IMAGEROWS = 1;
 	}
 	else
 	{
@@ -385,18 +393,20 @@ WindowLayoutManager *sharedLayoutManager;
 			_currentHangingProtocol = nil;
 			_currentHangingProtocol = [hangingProtocolArray objectAtIndex:0];
 
-			[[NSUserDefaults standardUserDefaults] setInteger: [[_currentHangingProtocol objectForKey: @"Image Rows"] intValue] forKey: @"IMAGEROWS"];
-			[[NSUserDefaults standardUserDefaults] setInteger: [[_currentHangingProtocol objectForKey: @"Image Columns"] intValue] forKey: @"IMAGECOLUMNS"];
+			IMAGEROWS = [[_currentHangingProtocol objectForKey: @"Image Rows"] intValue];
+			IMAGECOLUMNS =  [[_currentHangingProtocol objectForKey: @"Image Columns"] intValue];
 			
 			NSMutableDictionary *protocol;
-			while (protocol = [enumerator nextObject]) {
+			while (protocol = [enumerator nextObject])
+			{
 				NSRange searchRange = [description rangeOfString:[protocol objectForKey: @"Study Description"] options: NSCaseInsensitiveSearch | NSLiteralSearch];
-				if (searchRange.location != NSNotFound) {
+				if (searchRange.location != NSNotFound)
+				{
 					_currentHangingProtocol = protocol;
-
-					[[NSUserDefaults standardUserDefaults] setInteger: [[_currentHangingProtocol objectForKey: @"Image Rows"] intValue] forKey: @"IMAGEROWS"];
-					[[NSUserDefaults standardUserDefaults] setInteger: [[_currentHangingProtocol objectForKey: @"Image Columns"] intValue] forKey: @"IMAGECOLUMNS"];
-
+					
+					IMAGEROWS = [[_currentHangingProtocol objectForKey: @"Image Rows"] intValue];
+					IMAGECOLUMNS =  [[_currentHangingProtocol objectForKey: @"Image Columns"] intValue];
+					
 					break;
 				}
 			}

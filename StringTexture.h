@@ -52,6 +52,7 @@
 - (id) initWithAttributedString:(NSAttributedString *)attributedString;
 
 - (void) dealloc;
+- (void) deleteTexture;
 
 - (GLuint) texName; // 0 if no texture allocated
 - (NSSize) texSize; // actually size of texture generated in texels, (0, 0) if no texture allocated

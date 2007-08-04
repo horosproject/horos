@@ -71,7 +71,6 @@ extern "C"
 	BOOL							xFlipped, yFlipped;  // Dependent on current DCMView settings.
 	
 	NSTimer							*updateTimer;
-	NSMutableDictionary				*currentHangingProtocol;
 	DCMNetServiceDelegate			*dicomNetServiceDelegate;
 }
 #pragma mark-
@@ -117,10 +116,6 @@ extern "C"
 #pragma mark growl
 - (void) growlTitle:(NSString*) title description:(NSString*) description name:(NSString*) name;
 - (NSDictionary *) registrationDictionaryForGrowl;
-
-#pragma mark Deprecated. Current Hanging Protocols moveds to Window layout Manager
-- (void) setCurrentHangingProtocolForModality: (NSString*) modality description: (NSString*) description;
-- (NSDictionary*) currentHangingProtocol;
 
 #pragma mark-
 #pragma mark display setters and getters

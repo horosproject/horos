@@ -920,10 +920,6 @@ static NSString *hostName = @"";
 	// ** ALBUMNAME
 	[defaultValues setObject: @"OsiriX" forKey: @"ALBUMNAME"];
 	
-	//IMAGE TILING
-	[defaultValues setObject:@"1" forKey: @"IMAGEROWS"];
-	[defaultValues setObject:@"1" forKey: @"IMAGECOLUMNS"];
-	
 	//VRDefaultViewSize
 	[defaultValues setObject:@"0" forKey: @"VRDefaultViewSize"];
 	

@@ -597,6 +597,11 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	return [NSArchiver archivedDataWithRootObject: self];
 }
 
+- (void) releaseStringTexture
+{
+	[stringTex deleteTexture];
+}
+
 - (void) dealloc
 {
 	if (textureBuffer) free(textureBuffer);
