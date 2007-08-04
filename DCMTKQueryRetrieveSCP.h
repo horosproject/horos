@@ -26,11 +26,13 @@
 	NSString *_aeTitle;
 	NSDictionary *_params;
 	BOOL _abort;
+	BOOL running;
 }
 
 - (id)initWithPort:(int)port aeTitle:(NSString *)aeTitle  extraParamaters:(NSDictionary *)params;
 - (void)run;
--(void)abort;
-//- (void)cleanup:(NSTimer *)timer;
-
+- (void)abort;
+- (int) port;
+- (NSString*) aeTitle;
+- (BOOL) running;
 @end

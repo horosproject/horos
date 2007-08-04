@@ -116,6 +116,21 @@ void errmsg(const char* msg, ...)
 
 @implementation DCMTKQueryRetrieveSCP
 
+- (BOOL) running
+{
+	return running;
+}
+
+- (int) port
+{
+	return _port;
+}
+
+- (NSString*) aeTitle
+{
+	return _aeTitle;
+}
+
 - (id)initWithPort:(int)port aeTitle:(NSString *)aeTitle  extraParamaters:(NSDictionary *)params{
 	if (self = [super init]) {
 		_port = port;
@@ -140,6 +155,7 @@ void errmsg(const char* msg, ...)
 	[_params release];
 	[super dealloc];
 }
+
 - (void)finalize {
 	if (scp != NULL) {
 		 scp->cleanChildren(OFTrue);  // clean up any child processes 		 
@@ -154,9 +170,8 @@ void errmsg(const char* msg, ...)
 //		scp->cleanChildren(OFTrue);  // clean up any child processes 	
 //}
 
-- (void)run{
-
-
+- (void)run
+{
 	OFCondition cond = EC_Normal;
     OFCmdUnsignedInt overridePort = 0;
     OFCmdUnsignedInt overrideMaxPDU = 0;
@@ -304,6 +319,7 @@ DcmQueryRetrieveConfig config;
    scp->setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier, options.debug_);
     	
 	_abort = NO;
+	running = YES;
 	
     /* loop waiting for associations */
     while (cond.good() && !_abort)
@@ -321,8 +337,11 @@ DcmQueryRetrieveConfig config;
         DimseCondition::dump(cond);
     }
 	
+	running = NO;
+	
 	return;
 }
+
 -(void)abort
 {
 	_abort = YES;

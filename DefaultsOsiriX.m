@@ -923,6 +923,8 @@ static NSString *hostName = @"";
 	//VRDefaultViewSize
 	[defaultValues setObject:@"0" forKey: @"VRDefaultViewSize"];
 	
+	[defaultValues setObject:@"1" forKey: @"RunListenerOnlyIfActiveSession"];
+	
 	[defaultValues setObject:@"0" forKey: @"Ping"];
 	
 	[defaultValues setObject:@"1" forKey: @"UseShutter"];

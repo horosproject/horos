@@ -1010,14 +1010,14 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
     int timeout;
     OFBool go_cleanup = OFFalse;
 
-    if (options_.singleProcess_) timeout = 1000;
+    if (options_.singleProcess_) timeout = 10000;
     else
     {
       if (processtable_.countChildProcesses() > 0)
       {
         timeout = 1;
       } else {
-        timeout = 1000;
+        timeout = 10000;
       }
     }
 

@@ -41,7 +41,8 @@ MODIFICATION HISTORY
 					- or detaches a new thread with StartSTORESCP method
   
 ****************************************************************/
-
+#include <CoreFoundation/CoreFoundation.h>
+#include <ApplicationServices/ApplicationServices.h>
 #import "DOClient.h"
 #import "ToolbarPanel.h"
 #import "AppController.h"
@@ -109,6 +110,25 @@ enum	{kSuccess = 0,
         kPIDBufferOverrunError = -5};
 
 #include <sys/sysctl.h>
+
+#include <netdb.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+static char *GetPrivateIP()
+{
+	struct			hostent *h;
+	char			hostname[100];
+	gethostname(hostname, 99);
+	if ((h=gethostbyname(hostname)) == NULL)
+	{
+        perror("Error: ");
+        return "(Error locating Private IP Address)";
+    }
+	
+    return (char*) inet_ntoa(*((struct in_addr *)h->h_addr));
+}
 
 int GetAllPIDsForProcessName(const char* ProcessName, 
                              pid_t ArrayOfReturnedPIDs[], 
@@ -1093,12 +1113,13 @@ NSRect screenFrame()
     quitting = YES;
 	
 	// The Built-In StoreSCP is now the default and only storescp available in OsiriX.... Antoine 4/9/06
-	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"USESTORESCP"];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"USESTORESCP"] != YES)
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"USESTORESCP"];
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
 	{
 		// Kill DCMTK listener
-		//built in dcmtk serve testing
+		// built in dcmtk serve testing
 		if (BUILTIN_DCMTK == YES)
 		{
 			[dcmtkQRSCP release];
@@ -1120,16 +1141,6 @@ NSRect screenFrame()
 			aTask = nil;
 		}
 		
-		// Kill OsiriX framework listener
-//		if( storeSCP)
-//		{
-//			NSLog(@"********* WARNING - WE SHOULD NOT BE HERE - STORE-SCP");
-//			
-//			[storeSCP stop];
-//			[storeSCP release];
-//			storeSCP = 0L;
-//		}
-		
 		//make sure that there exist a receiver folder at @"folder" path
 		NSString            *path = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
 		BOOL				isDir = YES;
@@ -1137,35 +1148,12 @@ NSRect screenFrame()
 		if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir) 
 			[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 		
-		// @"USESTORESCP" is true when DCMTK is chosen
-		// In this case it's necesary to start a new thread
-		// In case of using DCM framework, the code follows right after "else" statement
-		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USESTORESCP"])
 		{
 			[NSThread detachNewThreadSelector: @selector(startSTORESCP:) toTarget: self withObject: self];
 		}
-//		else
-//		{
-//			NSLog(@"********* WARNING - WE SHOULD NOT BE HERE - STORE-SCP");
-//			
-//			//DCM framework storescp
-//			//NSAutoreleasePool allows retaining storeSCP NetworkListener object, having it persist after the [pool release]
-//			
-//			NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
-//			
-//			int debugLevel = 0;
-//			NSMutableDictionary *params = [NSMutableDictionary dictionary];
-//			[params setObject: [NSNumber numberWithInt:debugLevel] forKey: @"debugLevel"];
-//			[params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] forKey: @"calledAET"];
-//			[params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]  forKey: @"port"];
-//			[params setObject: path  forKey: @"folder"];
-//			storeSCP = [[NetworkListener listenWithParameters:params] retain];
-//
-//			[pool release];
-//		}
 	}
-
+	
 	NS_HANDLER
 		NSLog(@"Exception restarting storeSCP");
 	NS_ENDHANDLER
@@ -1227,87 +1215,87 @@ NSRect screenFrame()
 -(void) startSTORESCP:(id) sender
 {
 	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
-	// this implies it needs it's own pool of objects
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	
-	if (BUILTIN_DCMTK) {
-	//Testing built in dcmtk server don't remove- LP
-		NSLog(@"dcmtk:");
+	if (BUILTIN_DCMTK)
+	{
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		
 		NSString *aeTitle = [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"];
 		int port = [[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue];
 		NSDictionary *params = nil;
 		
 		dcmtkQRSCP = [[DCMTKQueryRetrieveSCP alloc] initWithPort:port  aeTitle:(NSString *)aeTitle  extraParamaters:(NSDictionary *)params];
 		[dcmtkQRSCP run];
+		
+		[pool release];
+		
 		return;
 	}
 	
-	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
-	// this implies it needs it's own pool of objects
-
-	
-	quitting = NO;
-	
-	// create the subprocess
-	theTask = [[NSTask alloc] init];
-	
-	// set DICOMDICTPATH in the environment of execution and choose storescp command
-	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/storescp"]];
-	
-	// initialize arguments for CLI
-	NSMutableArray *theArguments = [NSMutableArray array];
-	[theArguments addObject: @"-aet"];
-	[theArguments addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]];
-	[theArguments addObject: @"-od"];
-	[theArguments addObject: [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH]];
-	[theArguments addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETransferSyntax"]];
-	[theArguments addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]];
-	[theArguments addObject: @"--fork"];
-
-	if( [[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] != 0L &&
-		[[[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] isEqualToString:@""] == NO ) {
-		
-		NSLog([[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"]);
-		[theArguments addObjectsFromArray:[[[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] componentsSeparatedByString:@" "]];
-	}
-		
-	[theTask setArguments: theArguments];
-
-	
-	// open a pipe for traceroute to send its output to
-	NSPipe *thePipe = [NSPipe pipe];
-	[theTask setStandardOutput:thePipe];
-	
-	// open another pipe for the errors
-	NSPipe *errorPipe = [NSPipe pipe];
-	[theTask setStandardError:errorPipe];
-	
-	//-------------------------------launches dcmtk----------------------
-	[theTask launch];
-	[theTask waitUntilExit];
-	//-------------------------------------------------------------------
-	
-	//    int status = [theTask terminationStatus];	
-	NSData  *errData = [[errorPipe fileHandleForReading] availableData];
-	NSData  *resData = [[thePipe fileHandleForReading] availableData];	
-	NSString    *errString = [[NSString alloc] initWithData:errData encoding:NSUTF8StringEncoding];
-	NSString    *resString = [[NSString alloc] initWithData:resData encoding:NSUTF8StringEncoding];
-	
-	if( quitting == NO)
-		{
-		NSLog(@"Task failed.");
-		if( [errString isEqualToString:@""] == NO)
-			{
-				[self performSelectorOnMainThread:@selector(displayListenerError:) withObject:errString waitUntilDone: YES];
-			}
-		}
-	
-	[errString release];
-	[resString release];
-	[pool release];
-	
+//	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
+//	// this implies it needs it's own pool of objects
+//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+//	
+//	quitting = NO;
+//	
+//	// create the subprocess
+//	theTask = [[NSTask alloc] init];
+//	
+//	// set DICOMDICTPATH in the environment of execution and choose storescp command
+//	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+//	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/storescp"]];
+//	
+//	// initialize arguments for CLI
+//	NSMutableArray *theArguments = [NSMutableArray array];
+//	[theArguments addObject: @"-aet"];
+//	[theArguments addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]];
+//	[theArguments addObject: @"-od"];
+//	[theArguments addObject: [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH]];
+//	[theArguments addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETransferSyntax"]];
+//	[theArguments addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]];
+//	[theArguments addObject: @"--fork"];
+//
+//	if( [[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] != 0L &&
+//		[[[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] isEqualToString:@""] == NO ) {
+//		
+//		NSLog([[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"]);
+//		[theArguments addObjectsFromArray:[[[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] componentsSeparatedByString:@" "]];
+//	}
+//		
+//	[theTask setArguments: theArguments];
+//
+//	
+//	// open a pipe for traceroute to send its output to
+//	NSPipe *thePipe = [NSPipe pipe];
+//	[theTask setStandardOutput:thePipe];
+//	
+//	// open another pipe for the errors
+//	NSPipe *errorPipe = [NSPipe pipe];
+//	[theTask setStandardError:errorPipe];
+//	
+//	//-------------------------------launches dcmtk----------------------
+//	[theTask launch];
+//	[theTask waitUntilExit];
+//	//-------------------------------------------------------------------
+//	
+//	//    int status = [theTask terminationStatus];	
+//	NSData  *errData = [[errorPipe fileHandleForReading] availableData];
+//	NSData  *resData = [[thePipe fileHandleForReading] availableData];	
+//	NSString    *errString = [[NSString alloc] initWithData:errData encoding:NSUTF8StringEncoding];
+//	NSString    *resString = [[NSString alloc] initWithData:resData encoding:NSUTF8StringEncoding];
+//	
+//	if( quitting == NO)
+//		{
+//		NSLog(@"Task failed.");
+//		if( [errString isEqualToString:@""] == NO)
+//			{
+//				[self performSelectorOnMainThread:@selector(displayListenerError:) withObject:errString waitUntilDone: YES];
+//			}
+//		}
+//	
+//	[errString release];
+//	[resString release];
+//	[pool release];
 }
 
 
@@ -1775,6 +1763,52 @@ static BOOL initialized = NO;
 
 #pragma mark-
 
+- (void) switchHandler:(NSNotification*) notification
+{
+    if ([[notification name] isEqualToString:
+                NSWorkspaceSessionDidResignActiveNotification])
+    {
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"RunListenerOnlyIfActiveSession"])
+		{
+			NSLog( @"***** OsiriX : session deactivation: STOP DICOM LISTENER FOR THIS SESSION");
+			
+			[dcmtkQRSCP abort];
+			
+			[QueryController echo: [NSString stringWithCString:GetPrivateIP()] port:[dcmtkQRSCP port] AET: [dcmtkQRSCP aeTitle]];
+			
+			while( [dcmtkQRSCP running])
+			{
+				NSLog( @"waiting for listener to stop...");
+				[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+			}
+			
+			[dcmtkQRSCP release];
+			dcmtkQRSCP = nil;
+		}
+    }
+    else
+    {
+        NSLog( @"***** OsiriX : session activation: START DICOM LISTENER FOR THIS SESSION");
+		
+		[self restartSTORESCP];
+    }
+}
+
+- (void) applicationDidFinishLaunching:(NSNotification*) aNotification
+{
+    [[[NSWorkspace sharedWorkspace] notificationCenter]
+            addObserver:self
+            selector:@selector(switchHandler:)
+            name:NSWorkspaceSessionDidBecomeActiveNotification
+            object:nil];
+ 
+    [[[NSWorkspace sharedWorkspace] notificationCenter]
+            addObserver:self
+            selector:@selector(switchHandler:)
+            name:NSWorkspaceSessionDidResignActiveNotification
+            object:nil];
+}
+
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
 	long i;
@@ -2160,13 +2194,6 @@ static BOOL initialized = NO;
 	
     [super dealloc];
 }
-
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
