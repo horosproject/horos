@@ -326,6 +326,8 @@ DcmQueryRetrieveConfig config;
     {
 		if( _abort == NO) cond = scp->waitForAssociation(options.net_);
 		if( _abort == NO) scp->cleanChildren(OFTrue);  /* clean up any child processes  This needs to be here*/
+		
+		NSLog( @"DICOM Listener run loop...");
 	}
 	
 	delete scp;
