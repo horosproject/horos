@@ -555,6 +555,22 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	return [attrString size];
 }
 
+- (void) updateTilingViews
+{
+	if( [self is2DViewer] && [[self window] isVisible])
+	{
+		if( [[self windowController] updateTilingViewsValue] == NO)
+		{
+			[[self windowController] setUpdateTilingViewsValue: YES];
+			
+			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"];
+			[[NSNotificationCenter defaultCenter]  postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
+			
+			[[self windowController] setUpdateTilingViewsValue : NO];
+		}
+	}
+}
+
 - (IBAction)print:(id)sender
 {
 	if ([self is2DViewer] == YES)
@@ -1106,6 +1122,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	else
 		[[self imageObj] setValue: 0L forKey:@"yFlipped"];
 	
+	[self updateTilingViews];
 	
 	[appController setYFlipped: yFlipped];	
     [self setNeedsDisplay:YES];
@@ -1125,19 +1142,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[[self imageObj] setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
 	else
 		[[self imageObj] setValue: 0L forKey:@"xFlipped"];
-		
+	
+	[self updateTilingViews];
+	
 	[appController setXFlipped: xFlipped];
     [self setNeedsDisplay:YES];
 }
 
 - (void)flipVertical: (id)sender {
 	[self setYFlipped: !yFlipped];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"]];
 }
 
 - (void)flipHorizontal: (id)sender {
 	[self setXFlipped: !xFlipped];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"]];
 }
 
 - (void) DrawNSStringGL: (NSString*) str :(GLuint) fontL :(long) x :(long) y rightAlignment: (BOOL) right useStringTexture: (BOOL) stringTex
@@ -1305,8 +1322,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					[self setRotation: rot];
 					
 					if( [self is2DViewer] == YES) [[self windowController] propagateSettings];
-					
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"]];
 				}
 			}
 		break;
@@ -1667,9 +1682,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self mouseMoved: event];
 	[self setNeedsDisplay:YES];
 	
-	if (isKeyView) {
-		NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"];
-		[[NSNotificationCenter defaultCenter]  postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
+	if (isKeyView)
+	{
+		[self updateTilingViews];
 	}
 
 	[yearOld release];
@@ -2032,7 +2047,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if ( pluginOverridesMouse && ( [event modifierFlags] & NSControlKeyMask ) ) {  // Simulate Right Mouse Button action
 			[nc postNotificationName: @"PLUGINrightMouseUp" object: self userInfo: userInfo];
-			[nc postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
 			return;
 		}
 		
@@ -2146,8 +2160,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[self drawRect:rect];
 		}	
     }
-
-	[nc postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
 }
 
 -(void) roiSet:(ROI*) aRoi
@@ -3260,11 +3272,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[self setNeedsDisplay:YES];
 		}
     }
-	
-	NSNotificationCenter *nc;
-    nc = [NSNotificationCenter defaultCenter];
-	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"];
-	[nc postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
 }
 
 - (void) otherMouseDown:(NSEvent *)event
@@ -3272,15 +3279,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self mouseDown: event];
 }
 
-- (void) rightMouseDown:(NSEvent *)event {
-	/*
-	if (_rightMouseDownTimer) {
-		[self deleteMouseDownTimer];
-	}
-	
-	_rightMouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(nil) userInfo: event  repeats:NO] retain];
-	*/
-	
+- (void) rightMouseDown:(NSEvent *)event
+{
 	if ( pluginOverridesMouse ) {
 		NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -3305,8 +3305,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		 if ([event clickCount] == 1)
 				[NSMenu popUpContextMenu:[self menu] withEvent:event forView:self];
 	}
-	
-	[nc postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
 }
 
 - (void)otherMouseDragged:(NSEvent *)event
@@ -3456,9 +3454,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 //		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
-		
-		NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
     }
 }
 
@@ -4295,6 +4290,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 			}
 		}
+		
+		[self updateTilingViews];
 	}
 }
 
@@ -8047,6 +8044,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				[[self imageObj] setValue: 0L forKey:@"scale"];
 		}
 		
+		[self updateTilingViews];
+		
 		[self setNeedsDisplay:YES];
 	}
 }
@@ -8077,6 +8076,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			else
 				[[self imageObj] setValue: 0L forKey:@"scale"];
 		}
+		
+		[self updateTilingViews];
 		
 		[self setNeedsDisplay:YES];
 	}
@@ -8224,6 +8225,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[[self imageObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
 		else
 			[[self imageObj] setValue: 0L forKey:@"rotationAngle"];
+			
+		[self updateTilingViews];
 	}
 }
 
@@ -8329,6 +8332,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[[self imageObj] setValue: 0L forKey:@"xOffset"];
 		[[self imageObj] setValue: 0L forKey:@"yOffset"];
 	}
+	
+	[self updateTilingViews];
 	
 	[self setNeedsDisplay:YES];
 }
@@ -8894,8 +8899,7 @@ BOOL	lowRes = NO;
 
 - (BOOL)becomeFirstResponder
 {
-	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
+	[self updateTilingViews];
 
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewImageViewResponder" object: self userInfo: 0L];
 	if (curImage < 0)
@@ -8986,10 +8990,6 @@ BOOL	lowRes = NO;
 -(void)keyUp:(NSEvent *)theEvent
 {
 	[super keyUp:theEvent];
-	NSNotificationCenter *nc;
-    nc = [NSNotificationCenter defaultCenter];
-	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"];
-	[nc postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
 }
 
 -(void) setRows:(int)rows columns:(int)columns

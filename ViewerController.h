@@ -313,7 +313,7 @@ enum
 	
 	NSMutableArray			*undoQueue, *redoQueue;
 	
-	BOOL					SyncButtonBehaviorIsBetweenStudies, titledGantry;
+	BOOL					SyncButtonBehaviorIsBetweenStudies, titledGantry, updateTilingViews;
 	
 	float					resampleRatio;
 	
@@ -419,6 +419,8 @@ enum
 - (void) setLoadingPause:(BOOL) lp;
 - (void) setImageIndex:(long) i;
 - (IBAction) ConvertToRGBMenu:(id) sender;
+- (BOOL) updateTilingViewsValue;
+- (void) setUpdateTilingViewsValue:(BOOL) v;
 - (IBAction) ConvertToBWMenu:(id) sender;
 - (void) place3DViewerWindow:(NSWindowController*) viewer;
 - (IBAction) export2PACS:(id) sender;

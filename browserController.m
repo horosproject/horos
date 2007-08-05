@@ -8782,7 +8782,7 @@ static BOOL needToRezoom;
 		[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
 	else
 		[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
-		
+	
 	[wait close];
 	[wait release];
 }
@@ -11599,7 +11599,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[filesToAnonymize release];
 }	
 
-- (IBAction)setImageTiling: (id)sender{
+- (IBAction)setImageTiling: (id)sender
+{
 	int columns = 1;
 	int rows = 1;
 	 int tag;
@@ -11621,6 +11622,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:columns], [NSNumber numberWithInt:rows], nil];
 	NSArray *keys = [NSArray arrayWithObjects:@"Columns", @"Rows", nil];
+	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
 }

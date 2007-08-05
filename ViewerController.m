@@ -4194,6 +4194,16 @@ static ViewerController *draggedController = 0L;
 	return self;
 }
 
+- (BOOL) updateTilingViewsValue
+{
+	return updateTilingViews;
+}
+
+- (void) setUpdateTilingViewsValue:(BOOL) v
+{
+	updateTilingViews = v;
+}
+
 -(void) finalizeSeriesViewing
 {
 	int x,i,z;

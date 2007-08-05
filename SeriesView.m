@@ -135,10 +135,16 @@
 
 }
 
-- (void)setImageViewMatrixForRows:(int)rows  columns:(int)columns{
+- (void)setImageViewMatrixForRows:(int)rows  columns:(int)columns
+{
 	int currentSize = imageRows * imageColumns;
 	int newSize = rows * columns;
 	int i;
+	
+	[[[self window] windowController] setUpdateTilingViewsValue: YES];
+	
+	[[self window] orderOut: self];
+	
 	// remove views
 	if (newSize < currentSize) {
 		[[self window] makeFirstResponder:[imageViews objectAtIndex:0]];
@@ -146,21 +152,18 @@
 		{
 			DCMView *view = [imageViews lastObject];			
 			[view removeFromSuperview];
-			[view setRows:rows columns:columns];
 			[view prepareToRelease];
 			[imageViews removeLastObject];
 		}
 	}
 	//add views
 	else if (newSize > currentSize){
-		for ( i = [imageViews count]; i < rows * columns; i++) {	
+		for ( i = [imageViews count]; i < rows * columns; i++)
+		{
 			DCMView *dcmView = [[[DCMView alloc] initWithFrame:[self bounds]  imageRows:rows  imageColumns:columns] autorelease];
 			[self addSubview:dcmView];
 			[dcmView setTag:i];	
-			[dcmView setDCM: dcmPixList :dcmFilesList :dcmRoiList :0 :listType :YES];	
-			
-			//[dcmView setBlending:
-			//[dcmView  setImageParamatersFromView:[imageViews objectAtIndex:0]];	
+			[dcmView setDCM: dcmPixList :dcmFilesList :dcmRoiList :0 :listType :YES];
 		}	
 	}
 	//resize views
@@ -168,11 +171,16 @@
 		for ( i = 0 ; i < [imageViews count];  i++) 
 			[[imageViews objectAtIndex:i] setRows:rows columns:columns];
 	}
+	[[self window] makeFirstResponder:[imageViews objectAtIndex:0]];
+	[[[self window] windowController] setUpdateTilingViewsValue: NO];
+	
 	[self resizeSubviewsWithOldSize:[self bounds].size];
 	[imageViews makeObjectsPerformSelector:@selector(setImageParamatersFromView:) withObject:[imageViews objectAtIndex:0]];
 	imageRows = rows;
 	imageColumns = columns;
-
+	
+	[[self window] makeKeyAndOrderFront: self];
+	
 	[self setNeedsDisplay:YES];
 }
 

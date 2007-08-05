@@ -228,7 +228,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 	BOOL			selectorROIEdition;
 	NSMutableArray	*ROISelectorSelectedROIList;
 	
-	BOOL			syncOnLocationImpossible;
+	BOOL			syncOnLocationImpossible, updateNotificationRunning;
 	
 	char			*resampledBaseAddr, *blendingResampledBaseAddr;
 	char			*resampledTempAddr;
