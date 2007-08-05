@@ -145,6 +145,8 @@
 	
 	[[self window] orderOut: self];
 	
+	float scale = [[imageViews objectAtIndex:0] scaleValue];
+	
 	// remove views
 	if (newSize < currentSize) {
 		[[self window] makeFirstResponder:[imageViews objectAtIndex:0]];
@@ -166,16 +168,19 @@
 			[dcmView setDCM: dcmPixList :dcmFilesList :dcmRoiList :0 :listType :YES];
 		}	
 	}
-	//resize views
-	else {
-		for ( i = 0 ; i < [imageViews count];  i++) 
-			[[imageViews objectAtIndex:i] setRows:rows columns:columns];
-	}
+	
+	for ( i = 0 ; i < [imageViews count];  i++) 
+		[[imageViews objectAtIndex:i] setRows:rows columns:columns];
+	
 	[[self window] makeFirstResponder:[imageViews objectAtIndex:0]];
 	[[[self window] windowController] setUpdateTilingViewsValue: NO];
 	
 	[self resizeSubviewsWithOldSize:[self bounds].size];
 	[imageViews makeObjectsPerformSelector:@selector(setImageParamatersFromView:) withObject:[imageViews objectAtIndex:0]];
+	
+	scale = (scale * (float) imageRows) / (float) rows;
+	[[imageViews objectAtIndex:0] setScaleValue: scale];
+	
 	imageRows = rows;
 	imageColumns = columns;
 	

@@ -369,10 +369,8 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 - (long) syncro;
 - (NSFont*)fontGL;
 - (void) setScaleValueCentered:(float) x;
-//notifications
 - (void) updateCurrentImage: (NSNotification*) note;
-- (void)updateImageTiling:(NSNotification *)note;
-- (void)setImageParamatersFromView:(DCMView *)aView;
+- (void) setImageParamatersFromView:(DCMView *)aView;
 - (void) setRows:(int)rows columns:(int)columns;
 - (void)setTag:( long)aTag;
 - (long)tag;

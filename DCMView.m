@@ -7429,18 +7429,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			float   maxChanged, xChanged = rect.size.width / previousViewSize.width, yChanged = rect.size.height / previousViewSize.height;
 			
-			if( xChanged < 1 || yChanged < 1)
-			{
-			//	if(  xChanged < yChanged) maxChanged = xChanged;
-			//	else
-				maxChanged = yChanged;
-			}
-			else
-			{
-			//	if(  xChanged > yChanged) maxChanged = xChanged;
-			//	else
-				maxChanged = yChanged;
-			}
+			maxChanged = yChanged;
 			
 			if( maxChanged > 0.01 && maxChanged < 1000) maxChanged = maxChanged;
 			else maxChanged = 0.01;
@@ -8948,10 +8937,6 @@ BOOL	lowRes = NO;
            selector: @selector(updateCurrentImage:)
                name: @"DCMUpdateCurrentImage"
              object: nil];
-		[nc addObserver: self
-           selector: @selector(updateImageTiling:)
-               name: @"DCMImageTilingHasChanged"
-             object: nil];
     }
     return self;
 
@@ -8974,15 +8959,18 @@ BOOL	lowRes = NO;
 		[super resizeWithOldSuperviewSize:oldBoundsSiz];
 		return;
 	}
+	
 	NSRect superFrame = [[self superview] bounds];
+	
 	float newWidth = superFrame.size.width / _imageColumns;
 	float newHeight = superFrame.size.height / _imageRows;
 	float newY = newHeight * (int)(_tag / _imageColumns);
 	float newX = newWidth * (int)(_tag % _imageColumns);
 	NSRect newFrame = NSMakeRect(newX, newY, newWidth, newHeight);
-	//NSLog(@"newFrame:x:%f y:%f  width:%f  height:%f", newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
+	
 	[self setFrame:newFrame];
-	[self reshape];
+	
+	//[self reshape];
 	//[self resetCursorRects];
 	[self setNeedsDisplay:YES];
 }
@@ -9001,6 +8989,7 @@ BOOL	lowRes = NO;
 	}
 	_imageRows = rows;
 	_imageColumns = columns;
+	
 	NSRect rect = [[self superview] bounds];
 	[self resizeWithOldSuperviewSize:rect.size];
 	[self setNeedsDisplay:YES];
@@ -9117,11 +9106,6 @@ BOOL	lowRes = NO;
 				[self setImageParamatersFromView: otherView];
 		}
 	}
-}
-
--(void)updateImageTiling:(NSNotification *)note{
-	if ([[self window] isKeyWindow]) 
-		[self setRows:[[[note userInfo] objectForKey:@"Rows"] intValue] columns:[[[note userInfo] objectForKey:@"Columns"] intValue]];
 }
 
 -(void)newImageViewisKey:(NSNotification *)note{
