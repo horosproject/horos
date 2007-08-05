@@ -5440,12 +5440,12 @@
 		BFD4BFFD06F2A96900EC9A90 /* RotateCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */; };
 		BFD4BFFE06F2A96900EC9A90 /* StackCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */; };
 		BFD4BFFF06F2A96900EC9A90 /* ZoomCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF306F2A96900EC9A90 /* ZoomCursor.tif */; };
-		BFDDDD500AE6E3FE00888882 /* ViewerControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDDD4E0AE6E3FE00888882 /* ViewerControllerDCMTKCategory.h */; };
-		BFDDDD510AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDDDD4F0AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm */; };
-		BFDDDD520AE6E3FE00888882 /* ViewerControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDDD4E0AE6E3FE00888882 /* ViewerControllerDCMTKCategory.h */; };
-		BFDDDD530AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDDDD4F0AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm */; };
-		BFDDDD540AE6E3FE00888882 /* ViewerControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDDD4E0AE6E3FE00888882 /* ViewerControllerDCMTKCategory.h */; };
-		BFDDDD550AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDDDD4F0AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm */; };
+		BFDDDD500AE6E3FE00888882 /* ROISRConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDDD4E0AE6E3FE00888882 /* ROISRConverter.h */; };
+		BFDDDD510AE6E3FE00888882 /* ROISRConverter.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDDDD4F0AE6E3FE00888882 /* ROISRConverter.mm */; };
+		BFDDDD520AE6E3FE00888882 /* ROISRConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDDD4E0AE6E3FE00888882 /* ROISRConverter.h */; };
+		BFDDDD530AE6E3FE00888882 /* ROISRConverter.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDDDD4F0AE6E3FE00888882 /* ROISRConverter.mm */; };
+		BFDDDD540AE6E3FE00888882 /* ROISRConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDDD4E0AE6E3FE00888882 /* ROISRConverter.h */; };
+		BFDDDD550AE6E3FE00888882 /* ROISRConverter.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDDDD4F0AE6E3FE00888882 /* ROISRConverter.mm */; };
 		BFDDE5C1091717F80033317B /* DCMEncapsulatedPDF.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFDDE5C2091717F80033317B /* DCMEncapsulatedPDF.m in Sources */ = {isa = PBXBuildFile; fileRef = BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */; };
 		BFDF1D5509E06985008A4EC4 /* dcmqrcbm.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */; };
@@ -13096,8 +13096,8 @@
 		BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = RotateCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = StackCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF306F2A96900EC9A90 /* ZoomCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ZoomCursor.tif; sourceTree = "<group>"; };
-		BFDDDD4E0AE6E3FE00888882 /* ViewerControllerDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewerControllerDCMTKCategory.h; sourceTree = "<group>"; };
-		BFDDDD4F0AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewerControllerDCMTKCategory.mm; sourceTree = "<group>"; };
+		BFDDDD4E0AE6E3FE00888882 /* ROISRConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROISRConverter.h; sourceTree = "<group>"; };
+		BFDDDD4F0AE6E3FE00888882 /* ROISRConverter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ROISRConverter.mm; sourceTree = "<group>"; };
 		BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMEncapsulatedPDF.h; sourceTree = "<group>"; };
 		BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMEncapsulatedPDF.m; sourceTree = "<group>"; };
 		BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcbm.mm; sourceTree = "<group>"; };
@@ -16563,8 +16563,8 @@
 				CE6692D90AF545F90073D923 /* printView.m */,
 				ABE17661056D2659009C93B5 /* ViewerController.h */,
 				ABE17662056D2659009C93B5 /* ViewerController.m */,
-				BFDDDD4E0AE6E3FE00888882 /* ViewerControllerDCMTKCategory.h */,
-				BFDDDD4F0AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm */,
+				BFDDDD4E0AE6E3FE00888882 /* ROISRConverter.h */,
+				BFDDDD4F0AE6E3FE00888882 /* ROISRConverter.mm */,
 				CE2808630B6B76730093E9D3 /* CalciumScoringWindowController.h */,
 				CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */,
 			);
@@ -21357,7 +21357,7 @@
 				BF0AAEB30A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */,
 				A95837B50AAF0DCB0001D415 /* SRAnnotation.h in Headers */,
 				A942AFEA0AB5630500CCADB1 /* SRAnnotationController.h in Headers */,
-				BFDDDD520AE6E3FE00888882 /* ViewerControllerDCMTKCategory.h in Headers */,
+				BFDDDD520AE6E3FE00888882 /* ROISRConverter.h in Headers */,
 				AB80EBAB0AF1F5B600E7E934 /* AYDicomPrintWindowController.h in Headers */,
 				AB80EBAD0AF1F5B600E7E934 /* AYNSImageToDicom.h in Headers */,
 				CE6692DA0AF545F90073D923 /* printView.h in Headers */,
@@ -23288,7 +23288,7 @@
 				BF0AAEB10A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */,
 				A95837120AAEBC2A0001D415 /* SRAnnotation.h in Headers */,
 				A942AFE80AB5630500CCADB1 /* SRAnnotationController.h in Headers */,
-				BFDDDD540AE6E3FE00888882 /* ViewerControllerDCMTKCategory.h in Headers */,
+				BFDDDD540AE6E3FE00888882 /* ROISRConverter.h in Headers */,
 				AB80EBB10AF1F5B600E7E934 /* AYDicomPrintWindowController.h in Headers */,
 				AB80EBB30AF1F5B600E7E934 /* AYNSImageToDicom.h in Headers */,
 				CE6692DE0AF545F90073D923 /* printView.h in Headers */,
@@ -25224,7 +25224,7 @@
 				BF0AAEAF0A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */,
 				A95837100AAEBC2A0001D415 /* SRAnnotation.h in Headers */,
 				A942AFEC0AB5630500CCADB1 /* SRAnnotationController.h in Headers */,
-				BFDDDD500AE6E3FE00888882 /* ViewerControllerDCMTKCategory.h in Headers */,
+				BFDDDD500AE6E3FE00888882 /* ROISRConverter.h in Headers */,
 				AB80EBB70AF1F5B600E7E934 /* AYDicomPrintWindowController.h in Headers */,
 				AB80EBB90AF1F5B600E7E934 /* AYNSImageToDicom.h in Headers */,
 				CE6692DC0AF545F90073D923 /* printView.h in Headers */,
@@ -27972,7 +27972,7 @@
 				BF0AAEB40A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
 				A95837B40AAF0DC80001D415 /* SRAnnotation.mm in Sources */,
 				A941723C0AB6934B00B9B487 /* SRAnnotationController.mm in Sources */,
-				BFDDDD530AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm in Sources */,
+				BFDDDD530AE6E3FE00888882 /* ROISRConverter.mm in Sources */,
 				AB80EBAC0AF1F5B600E7E934 /* AYDicomPrintWindowController.mm in Sources */,
 				AB80EBAE0AF1F5B600E7E934 /* AYNSImageToDicom.m in Sources */,
 				CE6692DB0AF545F90073D923 /* printView.m in Sources */,
@@ -28750,7 +28750,7 @@
 				BF0AAEB20A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
 				A95837130AAEBC2A0001D415 /* SRAnnotation.mm in Sources */,
 				AB17D6E90AB6BAC600C71ACA /* SRAnnotationController.mm in Sources */,
-				BFDDDD550AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm in Sources */,
+				BFDDDD550AE6E3FE00888882 /* ROISRConverter.mm in Sources */,
 				AB80EBB20AF1F5B600E7E934 /* AYDicomPrintWindowController.mm in Sources */,
 				AB80EBB40AF1F5B600E7E934 /* AYNSImageToDicom.m in Sources */,
 				CE6692DF0AF545F90073D923 /* printView.m in Sources */,
@@ -30149,7 +30149,7 @@
 				BF0AAEB00A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
 				A95837110AAEBC2A0001D415 /* SRAnnotation.mm in Sources */,
 				A94172B10AB6993000B9B487 /* SRAnnotationController.mm in Sources */,
-				BFDDDD510AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm in Sources */,
+				BFDDDD510AE6E3FE00888882 /* ROISRConverter.mm in Sources */,
 				AB80EBB80AF1F5B600E7E934 /* AYDicomPrintWindowController.mm in Sources */,
 				AB80EBBA0AF1F5B600E7E934 /* AYNSImageToDicom.m in Sources */,
 				CE6692DD0AF545F90073D923 /* printView.m in Sources */,

@@ -91,7 +91,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "JPEGExif.h"
 #import "SRAnnotationController.h"
 #import "Reports.h"
-#import "ViewerControllerDCMTKCategory.h"
+#import "ROISRConverter.h"
 #import "MenuDictionary.h"
 #import "CalciumScoringWindowController.h"
 #import "EndoscopySegmentationController.h"
@@ -7919,7 +7919,7 @@ extern NSString * documentsDirectory();
 					str = [[imagePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [str lastPathComponent]];
 				}
 				
-				NSData *data = [self roiFromDICOM: str];	
+				NSData *data = [ROISRConverter roiFromDICOM: str];	
 				//If data, we successfully unarchived from SR style ROI
 				if (data)
 					array = [NSUnarchiver unarchiveObjectWithData:data];
@@ -7976,7 +7976,7 @@ extern NSString * documentsDirectory();
 							for( x = 0 ; x < [roisArray count]; x++)
 								[[roisArray objectAtIndex: x] setPix: [pixList[mIndex] objectAtIndex:i]];
 							
-							NSString	*path = [self archiveROIsAsDICOM: roisArray  toPath: str forImage:image];
+							NSString	*path = [ROISRConverter archiveROIsAsDICOM: roisArray  toPath: str forImage:image];
 							
 							if( path)
 								[newDICOMSR addObject: path];

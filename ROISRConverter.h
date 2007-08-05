@@ -1,9 +1,3 @@
-//
-//  ViewerControllerDCMTK Category.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 10/18/06.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -19,11 +13,10 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-#import "ViewerController.h"
 
+@interface ROISRConverter : NSObject
 
-@interface ViewerController (ViewerControllerDCMTKCategory)
++ (NSData *) roiFromDICOM:(NSString *)path;
++ (NSString*) archiveROIsAsDICOM:(NSArray *)rois toPath:(NSString *)path  forImage:(id)image;
 
-- (NSData *)roiFromDICOM:(NSString *)path;
-- (NSString*) archiveROIsAsDICOM:(NSArray *)rois toPath:(NSString *)path  forImage:(id)image;
 @end

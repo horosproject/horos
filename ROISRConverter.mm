@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-#import "ViewerControllerDCMTKCategory.h"
+#import "ROISRConverter.h"
 #import "SRAnnotation.h"
 #import "DicomStudy.h"
 #import "browserController.h"
@@ -21,9 +21,9 @@
 #include "dsrtypes.h"
 #include "dsrdoc.h"
 
-@implementation ViewerController (ViewerControllerDCMTKCategory)
+@implementation ROISRConverter
 
-- (NSData *)roiFromDICOM:(NSString *)path
++ (NSData *)roiFromDICOM:(NSString *)path
 {
 	NSData *archiveData = nil;
 	DcmFileFormat fileformat;
@@ -47,7 +47,7 @@
 }
 
 //All the ROIs for an image are archived as an NSArray.  We will need to extract all the necessary ROI info to create the basic SR before adding archived data. 
-- (NSString*) archiveROIsAsDICOM:(NSArray *)rois toPath:(NSString *)path  forImage:(id)image
++ (NSString*) archiveROIsAsDICOM:(NSArray *)rois toPath:(NSString *)path  forImage:(id)image
 {
 	SRAnnotation *sr = [[SRAnnotation alloc] initWithROIs:rois path:path forImage:image];
 	id study = [image valueForKeyPath:@"series.study"];
