@@ -10628,9 +10628,35 @@ BOOL            readable = YES;
 						else
 							value = nil;
 						if(value==nil) value = @"";
-//						if([[field objectForKey:@"name"] isEqualToString:@"PatientBirthDate"])
-//						{
-//						}
+						
+						if([[field objectForKey:@"name"] hasPrefix:@"Date"] || [[field objectForKey:@"name"] hasSuffix:@"Date"])
+						{
+							if([value length]==8)
+							{
+								NSString *year = [value substringToIndex:4];
+								NSString *month = [value substringWithRange:NSMakeRange(4,2)];
+								NSString *day = [value substringWithRange:NSMakeRange(6,2)];
+//								NSLog(@"date : %@/%@/%@", year, month, day);
+								NSDate *date = [NSDate dateWithString:[NSString stringWithFormat:@"%@-%@-%@ 00:00:00 +0000", year, month, day]];
+//								NSLog(@"NSDate : %@", date);
+								NSString *dateFormat = [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateOfBirthFormat"];
+								NSDictionary *locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+								value = [date descriptionWithCalendarFormat:dateFormat timeZone:nil locale:locale];
+							}
+						}
+						else if([[field objectForKey:@"name"] hasPrefix:@"Time"] || [[field objectForKey:@"name"] hasSuffix:@"Time"])
+						{
+							if([value length]==6)
+							{
+								NSString *hour = [value substringToIndex:2];
+								NSString *min = [value substringWithRange:NSMakeRange(2,2)];
+								NSString *sec = [value substringWithRange:NSMakeRange(4,2)];
+//								NSLog(@"time : %@:%@:%@", hour, min, sec);
+								value = [NSString stringWithFormat:@"%@:%@:%@", hour, min, sec];
+								//NSString *dateFormat = [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat"];
+								//NSLog(@"dateFormat : %@", dateFormat);
+							}
+						}
 						//NSLog(@"DICOM group: %@, element: %@, field: %@, value: %@", [field objectForKey:@"group"], [field objectForKey:@"element"], [field objectForKey:@"name"], value);
 					}
 					else if([type isEqualToString:@"DB"])
