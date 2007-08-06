@@ -88,9 +88,12 @@
 
 - (IBAction)addFieldToken:(id)sender;
 {
+	if(sender==addCustomDICOMFieldButton || sender==addDICOMFieldButton || sender==addDatabaseFieldButton || sender==addSpecialFieldButton)
+	{
+		NSWindow *win = [[self mainView] window];
+		[win makeFirstResponder:contentTokenField];
+	}
 	[layoutController addFieldToken:sender];
-	NSWindow *win = [[self mainView] window];
-	[win makeFirstResponder:contentTokenField];
 }
 
 - (IBAction)validateTokenTextField:(id)sender;

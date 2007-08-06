@@ -10648,8 +10648,20 @@ BOOL            readable = YES;
 						{
 							value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
 						}
-						value = [value description];
-//						NSLog(@"level : %@ / field : %@ / value : %@", level, fieldName, value);
+
+						if([[value className] isEqualToString:@"NSCFDate"])
+						{
+							NSString *dateFormat;
+							if([fieldName isEqualToString:@"dateOfBirth"])
+								dateFormat = [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateOfBirthFormat"];
+							else
+								dateFormat = [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat"];
+							NSDictionary *locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+							
+							value = [value descriptionWithCalendarFormat:dateFormat timeZone:nil locale:locale];
+						}
+						else
+							value = [value description];
 					}
 					else if([type isEqualToString:@"Special"])
 					{

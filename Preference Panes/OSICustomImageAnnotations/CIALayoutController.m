@@ -453,7 +453,7 @@ NSLog(@"CIALayoutController awakeFromNib");
 	[[prefPane contentTokenField] sendAction:[[prefPane contentTokenField] action] to:[[prefPane contentTokenField] target]];
 	
 //	[self willChangeValueForKey:@"selectedAnnotation"];
-	[selectedAnnotation willChangeValueForKey:@"content"];
+//	[selectedAnnotation willChangeValueForKey:@"content"];
 //	[[selectedAnnotation content] addObject:[[sender selectedItem] title]];
 
 
