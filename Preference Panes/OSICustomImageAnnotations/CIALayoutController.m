@@ -962,6 +962,24 @@ NSLog(@"[[[[self window] contentView] subviews] count] : %d", [[[[self window] c
 	[[prefPane nameLabel] setTextColor:textColor];
 }
 
+- (BOOL)checkAnnotations;
+{
+	int a;
+	for (a=0; a<[annotationsArray count]; a++)
+	{
+		if(![[annotationsArray objectAtIndex:a] placeHolder])
+		{
+			int r = NSRunAlertPanel(NSLocalizedString(@"Saving Annotations", nil), NSLocalizedString(@"Any Annotation left outside the place holders will be lost.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil);
+			NSLog(@"r = %d", r);
+			if(r==NSAlertDefaultReturn)
+				return YES;
+			else// if(r==NSAlertAlternateReturn)
+				return NO;
+		}
+	}
+	return YES;
+}
+
 - (void)saveAnnotationLayout;
 {
 	[self saveAnnotationLayoutForModality:currentModality];
@@ -1062,6 +1080,12 @@ NSLog(@"[[[[self window] contentView] subviews] count] : %d", [[[[self window] c
 
 - (IBAction)switchModality:(id)sender;
 {
+	if(![self checkAnnotations])
+	{
+		[[prefPane modalitiesPopUpButton] setTitle:currentModality];//currentModality
+		return;
+	}
+	
 	[self validateTokenTextField:self];
 	selectedAnnotation = nil;
 	[self saveAnnotationLayoutForModality:currentModality];

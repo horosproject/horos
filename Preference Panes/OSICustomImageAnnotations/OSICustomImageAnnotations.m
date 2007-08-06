@@ -48,6 +48,14 @@
 	[layoutController awakeFromNib];
 }
 
+- (NSPreferencePaneUnselectReply)shouldUnselect;
+{
+	if(![layoutController checkAnnotations])
+		return NSUnselectCancel;
+	else
+		return NSUnselectNow;
+}
+
 - (void)didUnselect
 {
 	NSLog(@"OSICustomImageAnnotations didUnselect");
@@ -137,6 +145,7 @@
 - (NSPopUpButton*)specialFieldsPopUpButton; {return specialFieldsPopUpButton;}
 - (NSBox*)contentBox; {return contentBox;}
 - (NSButton*)sameAsDefaultButton; {return sameAsDefaultButton;}
+- (NSPopUpButton*)modalitiesPopUpButton; {return modalitiesPopUpButton;}
 
 - (IBAction)setSameAsDefault:(id)sender;
 {

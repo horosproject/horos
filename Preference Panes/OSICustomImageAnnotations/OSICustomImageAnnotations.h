@@ -70,5 +70,6 @@
 - (NSBox*)contentBox;
 - (NSButton*)sameAsDefaultButton;
 - (NSButton*)orientationWidgetButton;
+- (NSPopUpButton*)modalitiesPopUpButton;
 
 @end

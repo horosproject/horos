@@ -62,6 +62,7 @@
 - (NSMutableArray*)specialFieldsTitles;
 - (void)setCustomDICOMFieldEditingEnable:(BOOL)boo;
 
+- (BOOL)checkAnnotations;
 - (void)saveAnnotationLayout;
 - (void)saveAnnotationLayoutForModality:(NSString*)modality;
 

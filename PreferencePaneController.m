@@ -114,9 +114,18 @@ extern BrowserController	*browserWindow;
 	return self;
 }
 
+- (BOOL)windowShouldClose:(id)sender
+{
+	if(pane)
+	{
+		NSPreferencePaneUnselectReply shouldUnselect = [pane shouldUnselect];
+		if(shouldUnselect==NSUnselectCancel) return NO;
+	}
+	return YES;
+}
+
 - (void)windowWillClose:(NSNotification *)notification
 {
-	[pane shouldUnselect];
 	[pane willUnselect];
 	[[pane mainView] removeFromSuperview];
 	[pane didUnselect];
@@ -369,7 +378,10 @@ extern BrowserController	*browserWindow;
 	deltaH = newWindowFrame.size.height - frameRect.size.height;
 	newY = y - deltaH;
 	newWindowFrame.origin.y = newY;
-	[pane shouldUnselect];		
+	
+	NSPreferencePaneUnselectReply shouldUnselect = [pane shouldUnselect];
+	if(shouldUnselect==NSUnselectCancel && sender!=nil) return; // we need to test the sender, because shawAll: is needed for initialization (with sender=nil)
+	
 	[pane willUnselect];
 	[pane didUnselect];
 	[[pane mainView] removeFromSuperview];			
