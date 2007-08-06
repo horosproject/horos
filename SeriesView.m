@@ -135,6 +135,11 @@
 
 }
 
+- (void) selectFirstTilingView
+{
+	[[self window] makeFirstResponder:[imageViews objectAtIndex:0]];
+}
+
 - (void)setImageViewMatrixForRows:(int)rows  columns:(int)columns
 {
 	int currentSize = imageRows * imageColumns;
@@ -289,6 +294,13 @@
 	DCMView *view;
 	while (view = [enumerator nextObject])
 		[view setBlendingMode:value];
+}
+- (void) setFlippedData:(BOOL) value
+{
+	NSEnumerator *enumerator = [imageViews objectEnumerator];
+	DCMView *view;
+	while (view = [enumerator nextObject])
+		[view setFlippedData:value];
 }
 
 -(void) ActivateBlending:(ViewerController*) bC blendingFactor:(float)blendingFactor{

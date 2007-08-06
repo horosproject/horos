@@ -117,6 +117,11 @@
 	return [self initWithString: str :YES];
 }
 
+-(void) setHide :(BOOL) val
+{
+	[[self window] setCanHide: val];
+}
+
 -(void) setCancel :(BOOL) val
 {
 	cancel = val;

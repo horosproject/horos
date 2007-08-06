@@ -2038,23 +2038,21 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
-
 -(IBAction) fullScreenMenu:(id) sender
 {
-//	[self squareDataSet: self];
-//	return;
-
+	float scaleValue = [imageView scaleValue];
+	
+	[self setUpdateTilingViewsValue: YES];
+	
+	[self selectFirstTilingView];
+	
     if( FullScreenOn == YES ) // we need to go back to non-full screen
     {
         [StartingWindow setContentView: contentView];
-    //    [FullScreenWindow setContentView: nil];
     
         [FullScreenWindow setDelegate:nil];
         [FullScreenWindow close];
 		[FullScreenWindow release];
-        
-        
-   //     [contentView release];
         
         [StartingWindow makeKeyAndOrderFront: self];
         FullScreenOn = NO;
@@ -2082,7 +2080,6 @@ static volatile int numberOfThreadsForRelisce = 0;
         FullScreenWindow = [[NSFullScreenWindow alloc] initWithContentRect:contentRect styleMask: windowStyle backing:NSBackingStoreBuffered defer: NO];
         if(FullScreenWindow != nil)
         {
-            NSLog(@"Window was created");			
             [FullScreenWindow setTitle: @"myWindow"];			
             [FullScreenWindow setReleasedWhenClosed: NO];
             [FullScreenWindow setLevel: NSScreenSaverWindowLevel - 1];
@@ -2105,6 +2102,12 @@ static volatile int numberOfThreadsForRelisce = 0;
             FullScreenOn = YES;
         }
     }
+	
+	[self setUpdateTilingViewsValue : NO];
+	
+	[self selectFirstTilingView];
+	
+	[imageView setScaleValue: scaleValue];
 }
 
 - (BOOL) FullScreenON { return FullScreenOn;}
@@ -4355,6 +4358,11 @@ static ViewerController *draggedController = 0L;
 #endif
 }
 
+- (void) selectFirstTilingView
+{
+	[seriesView selectFirstTilingView];
+}
+
 -(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) applyTransition
 {
 	BOOL		sameSeries = NO;
@@ -4373,9 +4381,11 @@ static ViewerController *draggedController = 0L;
 //	float		previousWL, previousWW;
 //	NSPoint		previousRotation
 
+	[seriesView selectFirstTilingView];
+	
 	[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
 	previousLocation = [[imageView curDCM] sliceLocation];
-	
+		
 //	previousScale = [imageView scaleValue];
 //	[imageView getWLWW: &previousWL :&previousWW];
 	
@@ -4395,7 +4405,9 @@ static ViewerController *draggedController = 0L;
 	}	
 	windowWillClose = YES;
 	[imageView setDrawing: NO];
-	
+
+	[self setUpdateTilingViewsValue: YES];
+
 	if( [subCtrlOnOff state]) [imageView setWLWW: 0 :0];
 	[self checkView: subCtrlView :NO];
 	
@@ -4406,13 +4418,13 @@ static ViewerController *draggedController = 0L;
 		[imageView setRotation: 0];
 	}
 	
-	if( previousColumns != 1 || previousRows != 1)
-	{
-		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:1], [NSNumber numberWithInt:1], nil];
-		NSArray *keys = [NSArray arrayWithObjects:@"Columns", @"Rows", nil];
-		NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
-	}
+//	if( previousColumns != 1 || previousRows != 1)
+//	{
+//		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:1], [NSNumber numberWithInt:1], nil];
+//		NSArray *keys = [NSArray arrayWithObjects:@"Columns", @"Rows", nil];
+//		NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
+//		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
+//	}
 	
 	// Release previous data
 	[self finalizeSeriesViewing];
@@ -4451,6 +4463,7 @@ static ViewerController *draggedController = 0L;
 	curMovieIndex = 0;
 	maxMovieIndex = 1;
 	subCtrlMaskID = -2;
+	registeredViewer = 0L;
 	
 	volumeData[ 0] = v;
 	[volumeData[ 0] retain];
@@ -4572,13 +4585,13 @@ static ViewerController *draggedController = 0L;
 		
 	////////
 	
-	if( previousColumns != 1 || previousRows != 1)
-	{
-		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:previousColumns], [NSNumber numberWithInt:previousRows], nil];
-		NSArray *keys = [NSArray arrayWithObjects:@"Columns", @"Rows", nil];
-		NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
-	}
+//	if( previousColumns != 1 || previousRows != 1)
+//	{
+//		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:previousColumns], [NSNumber numberWithInt:previousRows], nil];
+//		NSArray *keys = [NSArray arrayWithObjects:@"Columns", @"Rows", nil];
+//		NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
+//		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
+//	}
 	
 	if( [previousPatientUID isEqualToString: [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"]] == NO)
 	{
@@ -4689,6 +4702,10 @@ static ViewerController *draggedController = 0L;
 	
 	[self SetSyncButtonBehavior: self];
 	[self turnOffSyncSeriesBetweenStudies: self];
+	
+	[self setUpdateTilingViewsValue: NO];
+	
+	[seriesView selectFirstTilingView];
 }
 
 - (void) showWindowTransition
@@ -5902,7 +5919,7 @@ static ViewerController *draggedController = 0L;
 	int previousFusion = [popFusion selectedTag];
 	[self setFusionMode: 0];
 	
-	[imageView setFlippedData: ![imageView flippedData]];
+	[seriesView setFlippedData: ![imageView flippedData]];
 	[imageView setIndex: [pixList[ 0] count] -1 -[imageView curImage]];
 	
 	[self adjustSlider];
@@ -5976,7 +5993,9 @@ static ViewerController *draggedController = 0L;
 	double				interval = [[pixList[ curMovieIndex] objectAtIndex:0] sliceInterval];
 	long				i, x;
 	BOOL				flipNow = [flipNowNumber boolValue];
-		
+	
+	[self selectFirstTilingView];
+	
 	if( interval < 0 && [pixList[ curMovieIndex] count] > 1)
 	{
 		if( flipNow)

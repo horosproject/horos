@@ -1446,10 +1446,21 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 		[yearOld release];
 		
+		
 		if( [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] isEqualToString: [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]])
 			yearOld = [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] retain];
 		else
 			yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
+	}
+	else
+	{
+		[curDCM release];
+		curDCM = 0L;
+		curImage = -1;
+		[curRoiList release];
+		curRoiList = 0L;
+		curROI = 0L;
+		[self loadTextures];
 	}
 }
 
@@ -1459,10 +1470,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	[curDCM release];
 	curDCM = 0L;
-	
-    [self setXFlipped: NO];
-	[self setYFlipped: NO];
-	
+		
 	if( dcmPixList != c)
 	{
 		if( dcmPixList) [dcmPixList release];
@@ -1490,11 +1498,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     }
 	
     listType = type;
-    
+	
 	if( dcmPixList)
 	{
 		if( reset == YES)
 		{
+//			[self setXFlipped: NO];
+//			[self setYFlipped: NO];
+		
 			[self setIndexWithReset: firstImage :YES];
 			[self updatePresentationStateFromSeries];
 		}
@@ -1601,20 +1612,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	long	i;
 	BOOL	keepIt;
 	
-    if( dcmPixList && index > -1)
-    {
-		[self stopROIEditing];
+	[self stopROIEditing];
 		
+	if( [self is2DViewer] == YES)
+		[[self windowController] setLoadingPause: YES];
+		
+	[[self window] setAcceptsMouseMovedEvents: YES];
+
+	if( dcmPixList && index > -1)
+	{
 		if( [[[[dcmFilesList objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"]) noScale = YES;
 		else noScale = NO;
-
-		if( [self is2DViewer] == YES)
-		{
-			[[self windowController] setLoadingPause: YES];
-		}
-		
-		[[self window] setAcceptsMouseMovedEvents: YES];
-		
+			
         curImage = index;
         if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
 		
@@ -1637,9 +1646,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[[curRoiList objectAtIndex:i ] recompute];
 			
 			if( curROI == [curRoiList objectAtIndex:i ]) keepIt = YES;
-			// Unselect previous ROIs
-			//	[[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
 		}
+		
 		if( keepIt == NO) curROI = 0L;
 		
 		BOOL done = NO;
@@ -1671,12 +1679,27 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
         [self loadTextures];
 		
-		if( [self is2DViewer] == YES)
-		{
-			[[self windowController] setLoadingPause: NO];
-		}
+		[yearOld release];
+		
+		if( [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] isEqualToString: [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]])
+			yearOld = [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] retain];
+		else
+			yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
     }
-    
+	else
+	{
+		[curDCM release];
+		curDCM = 0L;
+		curImage = -1;
+		[curRoiList release];
+		curRoiList = 0L;
+		curROI = 0L;
+		[self loadTextures];
+	}
+	
+	if( [self is2DViewer] == YES)
+		[[self windowController] setLoadingPause: NO];
+	
 	NSEvent *event = [[NSApplication sharedApplication] currentEvent];
 	
 	[self mouseMoved: event];
@@ -1686,13 +1709,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
 		[self updateTilingViews];
 	}
-
-	[yearOld release];
-	
-	if( [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] isEqualToString: [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]])
-		yearOld = [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] retain];
-	else
-		yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
 }
 
 -(BOOL) acceptsFirstMouse:(NSEvent*) theEvent
@@ -1704,7 +1720,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	else return YES;
 }
 
-- (BOOL)acceptsFirstResponder {
+- (BOOL)acceptsFirstResponder
+{
+	if( curDCM == 0L) return NO;
+	
      return YES;
 }
 
@@ -2510,6 +2529,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	if( !drawing) return;
 	if( [[self window] isVisible] == NO) return;
+	if( curDCM == 0L) return;
+	if( curImage < 0) return;
 	if( [self is2DViewer] == YES)
 	{
 		if( [[self windowController] windowWillClose]) return;
@@ -3069,6 +3090,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [[self windowController] windowWillClose]) return;
 	}
 
+	if( isKeyView == NO)
+		[[self window] makeFirstResponder: self];
+		
 	float deltaX = [theEvent deltaX];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ZoomWithHorizonScroll"] == NO) deltaX = 0;
@@ -3897,6 +3921,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		{
 			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
 		}
+		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: 0L];
 		// Probably can move this to the end of MPRPreview after calling the super 
 		if( stringID)
@@ -4240,13 +4265,24 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) setWLWW:(float) wl :(float) ww
 {
-    [curDCM changeWLWW :wl : ww];
-    
-    curWW = [curDCM ww];
-    curWL = [curDCM wl];
-    	
-    [self loadTextures];
-    [self setNeedsDisplay:YES];
+	if( wl == 0 && ww == 0)
+		NSLog( @"*** warning setWLWW:(float) wl :(float) ww with ww == 0 wl == 0");
+
+	[curDCM changeWLWW :wl : ww];
+	
+	if( curDCM)
+	{
+		curWW = [curDCM ww];
+		curWL = [curDCM wl];
+	}
+	else
+	{
+		curWW = ww;
+		curWL = wl;
+	}
+	
+	[self loadTextures];
+	[self setNeedsDisplay:YES];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: curDCM userInfo:0L];
 	
@@ -4290,8 +4326,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 			}
 		}
-		
-		[self updateTilingViews];
 	}
 }
 
@@ -4444,7 +4478,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	return suppress_labels;
 }
-
 
 - (void) prepareOpenGL
 {
@@ -4751,39 +4784,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[self setNeedsDisplay: YES];
 		}
     }
-}
-
--(void) becomeMainWindow
-{
-	if( [[self window] isVisible])
-	{
-		[self setFusion: thickSlabMode :-1];
-		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewImageViewResponder" object: self userInfo: 0L];
-		
-		sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
-		slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
-		sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
-		[self sendSyncMessage:1];
-		
-		[appController setXFlipped: xFlipped];
-		[appController setYFlipped: yFlipped];
-		
-		[self setNeedsDisplay:YES];
-	}
-}
-
--(void) becomeKeyWindow
-{
-	if( [[self window] isVisible])
-	{
-		sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
-		slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
-		sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
-		[self sendSyncMessage:1];
-		
-		[self setNeedsDisplay:YES];
-	}
 }
 
 -(void) computeSlice:(DCMPix*) oPix :(DCMPix*) oPix2
@@ -5634,6 +5634,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY :(long) tW :(long) tH
 {
+	if( texture == 0L) return;
+	
 	if( mainThread != [NSThread currentThread])
 	{
 		NSLog(@"Warning! OpenGL activity NOT in the main thread???");
@@ -7423,24 +7425,28 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     {
 		NSRect rect = [self frame];
 		
-		if( previousViewSize.width != 0)
+		if( previousViewSize.height != 0 && previousViewSize.height != rect.size.height)
 		{
 			// Adapted scale to new viewSize!
 			
-			float   maxChanged, xChanged = rect.size.width / previousViewSize.width, yChanged = rect.size.height / previousViewSize.height;
+			float	yChanged = (rect.size.height ) / previousViewSize.height;
 			
-			maxChanged = yChanged;
+			previousViewSize = rect.size;
 			
-			if( maxChanged > 0.01 && maxChanged < 1000) maxChanged = maxChanged;
-			else maxChanged = 0.01;
+			if( yChanged > 0.01 && yChanged < 1000) yChanged = yChanged;
+			else yChanged = 0.01;
 			
-			[self setScaleValue: (scaleValue * maxChanged)];
+			[[self windowController] setUpdateTilingViewsValue: YES];
 			
-			origin.x *= maxChanged;
-			origin.y *= maxChanged;
+			[self setScaleValue: (scaleValue * yChanged)];
 			
-			originOffset.x *= maxChanged;
-			originOffset.y *= maxChanged;
+			[[self windowController] setUpdateTilingViewsValue: NO];
+			
+			origin.x *= yChanged;
+			origin.y *= yChanged;
+			
+			originOffset.x *= yChanged;
+			originOffset.y *= yChanged;
 			
 			if( [self is2DViewer] == YES)
 				[[self windowController] propagateSettings];
@@ -7448,8 +7454,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 			if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
 		}
-		previousViewSize = rect.size;
-		//[self setNeedsDisplay:true];
+		else previousViewSize = rect.size;
     }
 }
 
@@ -8376,8 +8381,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		gT = greenTable;
 		bT = blueTable;
 	}
-
-	if( curDCM == 0L) NSLog( @"err curDCM == 0L");
 	
 	if( noScale == YES)
 	{
@@ -8395,6 +8398,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		free( (char*) texture);
 		texture = 0L;
 	}
+	
+	if( curDCM == 0L)	// No image
+	{
+		return texture;		// == 0L
+	}
+
 	
 	if( [curDCM isRGB] == YES)
 	{
@@ -8886,20 +8895,78 @@ BOOL	lowRes = NO;
 	needToLoadTexture = YES;
 }
 
+-(void) becomeMainWindow
+{
+	if( [[self window] isVisible])
+	{
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewImageViewResponder" object: self userInfo: 0L];
+		
+		[self updateTilingViews];
+		
+		sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
+		slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
+		sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
+		[self sendSyncMessage:1];
+		
+		[appController setXFlipped: xFlipped];
+		[appController setYFlipped: yFlipped];
+		
+		if( [self is2DViewer])
+		{
+			[[self windowController] adjustSlider];
+			[[self windowController] propagateSettings];
+		}
+		
+		[self setNeedsDisplay:YES];
+	}
+}
+
+-(void) becomeKeyWindow
+{
+	if( [[self window] isVisible])
+	{
+		sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
+		slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
+		sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
+		[self sendSyncMessage:1];
+		
+		[self setNeedsDisplay:YES];
+	}
+}
+
 - (BOOL)becomeFirstResponder
 {
 	[self updateTilingViews];
 
+	// This will update the Tile menu
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewImageViewResponder" object: self userInfo: 0L];
+	
 	if (curImage < 0)
-		if( listType == 'i') [self setIndex:0];
-	else [self setIndexWithReset:0 :YES];
+	{
+		if( flippedData)
+		{
+			if( listType == 'i') [self setIndex: [dcmPixList count] -1 ];
+			else [self setIndexWithReset:[dcmPixList count] -1  :YES];
+		}
+		else
+		{
+			if( listType == 'i') [self setIndex: 0];
+			else [self setIndexWithReset:0 :YES];
+		}
+		
+		[self updateTilingViews];
+	}
 	
 	isKeyView = YES;
 	[self setNeedsDisplay:YES];
-
 	
-	if( [self is2DViewer]) [[self windowController] adjustSlider];
+	if( [self is2DViewer])
+	{
+		[[self windowController] adjustSlider];
+		[[self windowController] propagateSettings];
+	}
+	
+	[self becomeKeyWindow];
 	
 	return YES;
 }
@@ -8970,8 +9037,6 @@ BOOL	lowRes = NO;
 	
 	[self setFrame:newFrame];
 	
-	//[self reshape];
-	//[self resetCursorRects];
 	[self setNeedsDisplay:YES];
 }
 
@@ -9032,48 +9097,69 @@ BOOL	lowRes = NO;
 	if (aView != self && dcmPixList != 0L)
 	{
 		int offset = [self tag] - [aView tag];
+		
+		if( flippedData)
+			offset = -offset;
+		
 		curImage = [aView curImage] + offset;
 		
-		//get Image
-		if (curImage >= [dcmPixList count])
-			curImage = -1;
-		else if (curImage < 0)
-			curImage = -1;
-				
-		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+		if (curImage < 0)
 		{
+			curImage = -1;
 			
+			if( flippedData == NO)
+			{
+				if( [self is2DViewer])
+					[[self windowController] performSelector:@selector(selectFirstTilingView) withObject:0L afterDelay:0];
+			}
 		}
-		else
+		else if (curImage >= [dcmPixList count])
 		{
-			[self setWLWW:[aView curWL] :[aView curWW]];
-			[self setScaleValue: [aView scaleValue]];
-			[self setRotation: [aView rotation]];
-			[self setOrigin: [aView origin]];
+			curImage = -1;
+			
+			if( flippedData)
+			{
+				if( [self is2DViewer])
+					[[self windowController] performSelector:@selector(selectFirstTilingView) withObject:0L afterDelay:0];
+			}
 		}
 		
-		[self setXFlipped: [aView xFlipped]];
-		[self setYFlipped: [aView yFlipped]];
+		if( [aView curDCM])
+		{
+			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
+			{
+				
+			}
+			else
+			{
+				if( [aView curWL] != 0 && [aView curWW] != 0)
+					[self setWLWW:[aView curWL] :[aView curWW]];
+				[self setScaleValue: [aView scaleValue]];
+				[self setRotation: [aView rotation]];
+				[self setOrigin: [aView origin]];
+			}
+			
+			[self setXFlipped: [aView xFlipped]];
+			[self setYFlipped: [aView yFlipped]];
+			
+			//blending
+			if (blendingView != [aView blendingView])
+				[self setBlending:[aView blendingView]];
+			if (blendingFactor != [aView blendingFactor])
+				[self setBlendingFactor:[aView blendingFactor]];
+			if (blendingMode != [aView blendingMode])
+				[self setBlendingMode:[aView blendingMode]];
+				
+//			if( listType == 'i') [self setIndex:curImage];
+//			else [self setIndexWithReset:curImage :YES];
+			
+			// CLUT
+			unsigned char *aR, *aG, *aB;
+			[aView getCLUT: &aR :&aG :&aB];
+			[self setCLUT:aR :aG: aB];
+		}
 		
-		if( curImage < 0) return;
-		
-		//blending
-		if (blendingView != [aView blendingView])
-			[self setBlending:[aView blendingView]];
-		if (blendingFactor != [aView blendingFactor])
-			[self setBlendingFactor:[aView blendingFactor]];
-		if (blendingMode != [aView blendingMode])
-			[self setBlendingMode:[aView blendingMode]];
-		//[self setIndex:curImage];
-		if( listType == 'i') [self setIndex:curImage];
-		else [self setIndexWithReset:curImage :YES];
-		
-		
-		
-		// CLUT
-		unsigned char *aR, *aG, *aB;
-		[aView getCLUT: &aR :&aG :&aB];
-		[self setCLUT:aR :aG: aB];
+		[self setFlippedData: [aView flippedData]];
 		
 		[self setIndex:[self curImage]];
 		
@@ -9090,21 +9176,14 @@ BOOL	lowRes = NO;
 
 //notifications
 
--(void) updateCurrentImage: (NSNotification*) note{
-
+-(void) updateCurrentImage: (NSNotification*) note
+{
 	if( stringID == 0L)
 	{
-		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
-		{
+		DCMView *otherView = [note object];
 		
-		}
-		else
-		{
-			DCMView *otherView = [note object];
-			
-			if ([[[note object] superview] isEqual:[self superview]] && ![otherView isEqual: self]) 
-				[self setImageParamatersFromView: otherView];
-		}
+		if ([[[note object] superview] isEqual:[self superview]] && ![otherView isEqual: self]) 
+			[self setImageParamatersFromView: otherView];
 	}
 }
 
@@ -9260,7 +9339,11 @@ BOOL	lowRes = NO;
 			if( [image valueForKey:@"scale"]) [self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
 			else if( !onlyImage)
 			{
-				if( [series valueForKey:@"scale"]) [self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
+				if( [series valueForKey:@"scale"])
+				{
+					if( [[series valueForKey:@"scale"] floatValue] != 0) [self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
+					else [self scaleToFit];
+				}
 				else [self scaleToFit];
 			}
 		}
