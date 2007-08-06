@@ -6740,7 +6740,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			[self drawRectIn:size :pTextureName :offset :textureX :textureY :textureWidth :textureHeight];
 			
-			if( blendingView != 0L && syncOnLocationImpossible == NO && isKeyView == YES)
+			BOOL noBlending = NO;
+			
+			if( [self is2DViewer] == YES)
+			{
+				if( isKeyView == NO) noBlending = YES;
+			}
+			
+			if( blendingView != 0L && syncOnLocationImpossible == NO && noBlending == NO)
 			{
 				if( [curDCM pixelSpacingX] != 0 && [curDCM pixelSpacingY] != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
 				{

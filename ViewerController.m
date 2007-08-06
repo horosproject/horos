@@ -2570,11 +2570,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			if( comment == 0L) comment = @"";
 			
+			NSString	*modality = [curStudy valueForKey:@"modality"];
+			
+			if( modality == 0L) modality = @"OT:";
+			
 			NSString *action;
 			if( [curStudy isHidden]) action = @"Show Series";
 			else action = @"Hide Series";
 			
-			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@\r%@\r%@\r\r%@", name, [[curStudy valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], [series count], @"series", stateText, comment, action]];
+			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@ : %d %@\r%@\r%@\r\r%@", name, [[curStudy valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], modality, [series count], @"series", stateText, comment, action]];
 			[cell setBackgroundColor: [NSColor whiteColor]];
 			
 			index++;
