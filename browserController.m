@@ -5513,10 +5513,22 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 	[pb declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:self];
 	
-	NSManagedObject   *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+	NSEnumerator		*rowEnumerator = [databaseOutline selectedRowEnumerator];
+	NSMutableString		*string = [NSMutableString string];
+	NSNumber			*row;
 	
-	if( aFile)
-		[pb setString: [aFile valueForKey:@"name"] forType:NSStringPboardType];
+	while (row = [rowEnumerator nextObject]) 
+	{
+		NSManagedObject   *aFile = [databaseOutline itemAtRow:[row intValue]];
+		
+		if( aFile)
+		{
+			if( [string length]) [string appendString: @"\r"];
+			[string appendString: [aFile valueForKey:@"name"]];
+		}	
+	}
+	
+	[pb setString: string forType:NSStringPboardType];
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -9050,6 +9062,26 @@ static NSArray*	openSubSeriesArray = 0L;
         flags |= NSControlKeyMask;
 
     return flags;
+}
+
+// For the DB: fullscreen is equivalent to 'go to the search field'
+
+-(IBAction) fullScreenMenu:(id) sender
+{
+	// Is the item available in the toolbar?
+	NSArray	*visibleItems = [toolbar visibleItems];
+	
+	int i;
+	for( i = 0 ; i < [visibleItems count] ; i++)
+	{
+		if( [[[visibleItems objectAtIndex: i] itemIdentifier] isEqualToString: SearchToolbarItemIdentifier])
+		{
+			[[self window] makeFirstResponder: searchField];
+			return;
+		}
+	}
+	
+	NSRunCriticalAlertPanel(NSLocalizedString(@"Search", nil), NSLocalizedString(@"The search field is currently not displayed in the toolbar. Customize your toolbar to add it.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 }
 
 - (id)initWithWindow:(NSWindow *)window

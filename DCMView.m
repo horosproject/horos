@@ -3300,11 +3300,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) otherMouseDown:(NSEvent *)event
 {
+	[[self window] makeFirstResponder: self];
+	
 	[self mouseDown: event];
 }
 
 - (void) rightMouseDown:(NSEvent *)event
 {
+	[[self window] makeFirstResponder: self];
+	
 	if ( pluginOverridesMouse ) {
 		NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -3325,7 +3329,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if ( pluginOverridesMouse ) {
 		[nc postNotificationName: @"PLUGINrightMouseUp" object: self userInfo: userInfo];
 	}
-	else {
+	else 
+	{
 		 if ([event clickCount] == 1)
 				[NSMenu popUpContextMenu:[self menu] withEvent:event forView:self];
 	}
@@ -4759,8 +4764,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		else pos = curImage;
 		
 		if( flippedData) inc = -inc;
-		
-		NSLog( @"%f", [[dcmPixList objectAtIndex:curImage] sliceLocation]);
 		
         NSDictionary *instructions = [[[NSDictionary alloc] initWithObjectsAndKeys:     self, @"view",
 																						[NSNumber numberWithLong:pos],@"Pos",
@@ -9164,6 +9167,7 @@ BOOL	lowRes = NO;
 		}
 		
 		[self setFlippedData: [aView flippedData]];
+		[self setMenu: [aView menu]];
 		
 		[self setIndex:[self curImage]];
 		

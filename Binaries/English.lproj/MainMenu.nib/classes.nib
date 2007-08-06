@@ -73,6 +73,7 @@
                 exportDICOMFile = id; 
                 generateReport = id; 
                 importRawData = id; 
+                makeSearchFirstResponder = id; 
                 matrixDisplayIcons = id; 
                 matrixDoublePressed = id; 
                 matrixPressed = id; 

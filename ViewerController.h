@@ -535,7 +535,6 @@ enum
 
 - (IBAction) SRViewer:(id) sender;
 - (NSMenu *)contextualMenu;
-- (void)createDCMViewMenu;
 - (void) exportJPEG:(id) sender;
 - (void)closeAllWindows:(NSNotification *)note;
 - (NSMutableArray*) generateROINamesArray;

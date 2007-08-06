@@ -314,7 +314,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction)search: (id)sender;
 - (IBAction)setSearchType: (id)sender;
 - (IBAction)setImageTiling: (id)sender;
-
 - (void) setDraggedItems:(NSArray*) pbItems;
 - (IBAction)setTimeIntervalType: (id)sender;
 - (IBAction) endCustomInterval:(id) sender;

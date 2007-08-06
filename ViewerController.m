@@ -1352,12 +1352,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return [contextual autorelease];
 }
 
-
--(void)createDCMViewMenu{
-	[imageView setMenu:[self contextualMenu]];
-}
-
-
 - (void) setWindowTitle:(id) sender
 {
 	NSString	*loading = [NSString stringWithString:@"         "];
@@ -1442,8 +1436,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[self checkView: subCtrlView :NO];
 	
 	[[self window] setInitialFirstResponder: imageView];
-	contextualDictionaryPath = [@"default" retain];//JF20070103
-	//[self createDCMViewMenu];
+	contextualDictionaryPath = [@"default" retain];
 	keyObjectPopupController = [[KeyObjectPopupController alloc]initWithViewerController:self popup:keyImagePopUpButton];
 	[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
 	seriesView = [[[studyView seriesViews] objectAtIndex:0] retain];
@@ -2164,13 +2157,6 @@ static volatile int numberOfThreadsForRelisce = 0;
     i = [[wlwwPopup menu] numberOfItems];
     while(i-- > 0) [[wlwwPopup menu] removeItemAtIndex:0];
     
-/*    item = [[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""];
-    [item setImage:[NSImage imageNamed:@"Presets"]];
-    [item setOnStateImage:nil];
-    [item setMixedStateImage:nil];
-    [[wlwwPopup menu] addItem:item];
-    [item release]; */
-    
     [[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:nil keyEquivalent:@""];
 	[[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Other", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
 	[[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
@@ -2187,10 +2173,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[[[wlwwPopup menu] itemAtIndex:0] setTitle:curWLWWMenu];
 	
-	[self createDCMViewMenu];
-	
+	[imageView setMenu:[self contextualMenu]];
 }
-
 
 - (void) AddCurrentWLWW:(id) sender
 {
@@ -4141,8 +4125,6 @@ static ViewerController *draggedController = 0L;
     }
 //    [window makeKeyAndOrderFront:nil];
 }
-
-
 
 #pragma mark-
 #pragma mark 4.1. single viewport
