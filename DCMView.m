@@ -4760,6 +4760,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( flippedData) inc = -inc;
 		
+		NSLog( @"%f", [[dcmPixList objectAtIndex:curImage] sliceLocation]);
+		
         NSDictionary *instructions = [[[NSDictionary alloc] initWithObjectsAndKeys:     self, @"view",
 																						[NSNumber numberWithLong:pos],@"Pos",
                                                                                         [NSNumber numberWithLong:inc], @"Direction",
@@ -6735,7 +6737,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			[self drawRectIn:size :pTextureName :offset :textureX :textureY :textureWidth :textureHeight];
 			
-			if( blendingView != 0L && syncOnLocationImpossible == NO)
+			if( blendingView != 0L && syncOnLocationImpossible == NO && isKeyView == YES)
 			{
 				if( [curDCM pixelSpacingX] != 0 && [curDCM pixelSpacingY] != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
 				{
@@ -8936,6 +8938,8 @@ BOOL	lowRes = NO;
 
 - (BOOL)becomeFirstResponder
 {
+	isKeyView = YES;
+	
 	[self updateTilingViews];
 
 	// This will update the Tile menu
@@ -8957,7 +8961,9 @@ BOOL	lowRes = NO;
 		[self updateTilingViews];
 	}
 	
-	isKeyView = YES;
+	[self becomeKeyWindow];
+	
+	
 	[self setNeedsDisplay:YES];
 	
 	if( [self is2DViewer])
@@ -8965,8 +8971,6 @@ BOOL	lowRes = NO;
 		[[self windowController] adjustSlider];
 		[[self windowController] propagateSettings];
 	}
-	
-	[self becomeKeyWindow];
 	
 	return YES;
 }

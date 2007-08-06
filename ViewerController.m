@@ -2264,8 +2264,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[[[OpacityPopup menu] itemAtIndex:0] setTitle:curOpacityMenu];
 }
 
-- (DCMView*) imageView { return imageView;}
-
+- (DCMView*) imageView
+{
+	return imageView;
+}
 
 -(NSString*) modality
 {
