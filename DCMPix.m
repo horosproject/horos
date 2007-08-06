@@ -10653,7 +10653,13 @@ BOOL            readable = YES;
 								NSString *sec = [value substringWithRange:NSMakeRange(4,2)];
 //								NSLog(@"time : %@:%@:%@", hour, min, sec);
 								value = [NSString stringWithFormat:@"%@:%@:%@", hour, min, sec];
-								//NSString *dateFormat = [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat"];
+								NSDate *date = [NSDate dateWithString:[NSString stringWithFormat:@"1970-01-01 %@:%@:%@ +0000", hour, min, sec]]; // fake date, we just want the time
+//								NSLog(@"date : %@", date);
+								NSString *dateFormat = [[NSUserDefaults standardUserDefaults] stringForKey:NSTimeFormatString];
+//								NSLog(@"dateFormat : %@", dateFormat);
+								NSDictionary *locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+								value = [date descriptionWithCalendarFormat:dateFormat timeZone:nil locale:locale];
+//							NSLog(@"value : %@", value);
 								//NSLog(@"dateFormat : %@", dateFormat);
 							}
 						}
