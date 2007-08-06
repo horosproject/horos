@@ -273,11 +273,11 @@ extern BrowserController	*browserWindow;
 		switch ([[sender selectedCell] tag])
 		{
 			case 0:	// Previous
-				curPaneIndex--;
+					curPaneIndex--;
 			break;
 			
 			case 1: // Next
-				curPaneIndex++;
+					curPaneIndex++;
 			break;
 		}
 	}
@@ -314,15 +314,15 @@ extern BrowserController	*browserWindow;
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIDatabasePreferencePane" ofType: @"prefPane"];
 			[[self window] setTitle: NSLocalizedString( @"Database", 0L)];
 			break;
-		case 8:
+		case 9:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIListenerPreferencePane" ofType: @"prefPane"];
 			[[self window] setTitle: NSLocalizedString( @"Listener", 0L)];
 			break;
-		case 9:
+		case 10:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSILocationsPreferencePane" ofType: @"prefPane"];
 			[[self window] setTitle: NSLocalizedString( @"Locations", 0L)];
 			break;
-		case 11:
+		case 12:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"AYDicomPrint" ofType: @"prefPane"];
 			[[self window] setTitle: NSLocalizedString( @"DICOM Print", 0L)];
 			break;
@@ -338,7 +338,7 @@ extern BrowserController	*browserWindow;
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIPETPreferencePane" ofType: @"prefPane"];
 			[[self window] setTitle: NSLocalizedString( @"PET", 0L)];
 			break;
-		case 10:
+		case 11:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIAutoroutingPreferencePane" ofType: @"prefPane"];
 			[[self window] setTitle: NSLocalizedString( @"Routing", 0L)];
 			break;
@@ -346,7 +346,7 @@ extern BrowserController	*browserWindow;
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIHotKeys" ofType: @"prefPane"];
 			[[self window] setTitle: NSLocalizedString( @"Hot Keys", 0L)];
 			break;
-		case 12:
+		case 8:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSICustomImageAnnotations" ofType: @"prefPane"];
 			[[self window] setTitle: NSLocalizedString( @"Annotations", 0L)];
 			break;
