@@ -8737,6 +8737,7 @@ BOOL            readable = YES;
 	@catch (NSException *ne)
 	{
 		NSLog( @"CheckLoad Exception");
+		NSLog( @"Exception : %@", [ne description]);
 	}
 	[checking unlock];
 }
@@ -10648,7 +10649,9 @@ BOOL            readable = YES;
 						{
 							value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
 						}
-
+						
+						if(value==nil) value = @"";
+						
 						if([[value className] isEqualToString:@"NSCFDate"])
 						{
 							NSString *dateFormat;
@@ -10666,10 +10669,12 @@ BOOL            readable = YES;
 					else if([type isEqualToString:@"Special"])
 					{
 						value = [field objectForKey:@"field"];
+						if(value==nil) value = @"";
 					}
 					else if([type isEqualToString:@"Manual"])
 					{
 						value = [field objectForKey:@"field"];
+						if(value==nil) value = @"";
 					}
 					
 					[contentOUT addObject:value];
