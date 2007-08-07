@@ -5096,7 +5096,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 - (void) databaseOpenStudy: (NSManagedObject*) item
 {
-	long				i;
+	int i, x;
 					
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
 	{
@@ -5107,7 +5107,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 		}
 	}
-	else	// STUDY - HANGING PROTOCOLS
+	else	// STUDY - Hanging Protocols - Windows State
 	{
 		// files with XML descriptor, do nothing
 		NSSet *imagesSet = [item valueForKeyPath: @"series.images.fileType"];
@@ -5116,44 +5116,118 @@ static BOOL				DICOMDIRCDMODE = NO;
 		{
 			if([[imagesArray objectAtIndex:0] isEqualToString:@"XMLDESCRIPTOR"]) return;
 		}
-	
-		// DICOM & others
-		/* Need to improve Hanging Protocols	
-			Things Advanced Hanging Protocol needs to do.
-			For Advanced Hanging Protocols Need to Search for Comparisons
-			Arrange Series in a Particular order by either series description or series number
-			Could have preset ww/wl and CLUT
-			Series Fusion at start
-			Could have a 3D ViewerController instead of a 2D ViewerController
-				If 2D viewer need to set starting orientation, wwwl, CLUT, if SR preset surfaces.
-				Preprocess Volume - extract heart, Get Center line for vessel Colon, etc
-				
-			Root object is NSArray we can search through with predicates to get a filteredArray
-		*/
 		
-		if (![[WindowLayoutManager sharedWindowLayoutManager] hangStudy:item])
+		BOOL windowsStateApplied = NO;
+		
+		if( [item valueForKey:@"windowsState"])
 		{
-			NSLog( [item description]);
+			NSData	*d = [item valueForKey:@"windowsState"];
 			
-			//Use Basic Hanging Protocols
-			[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[item valueForKey:@"modality"] description:[item valueForKey:@"studyName"]];
+			NSString	*tmp = [NSString stringWithFormat:@"/tmp/windowsState"];
+			[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
+			[d writeToFile: tmp atomically:YES];
 			
-			NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
+			NSArray	*viewers = [NSArray arrayWithContentsOfFile: tmp];
+			[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
 			
-			if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
+			NSMutableArray *seriesToOpen =  [NSMutableArray array];
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:0L userInfo: 0L];
+			
+			for( i = 0 ; i < [viewers count]; i++)
 			{
-				[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:0L];
+				NSDictionary	*dict = [viewers objectAtIndex: i];
+				
+				NSString	*studyUID = [dict valueForKey:@"studyInstanceUID"];
+				NSString	*seriesUID = [dict valueForKey:@"seriesInstanceUID"];
+	
+				// Find the corresponding study & series
+				
+				NSError					*error = 0L;
+				NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
+				NSManagedObjectContext	*context = [self managedObjectContext];
+			
+				[context retain];
+				[context lock];
+				[request setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Series"]];
+				[request setPredicate: [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyUID, seriesUID]];
+				
+				NSArray	*seriesArray = [context executeFetchRequest:request error:&error];
+				
+				if( [seriesArray count] != 1)
+				{
+					NSLog( @"****** number of series corresponding to these UID is not unique?: %d", [seriesArray count]);
+				}
+				else
+				{
+					[seriesToOpen addObject: [seriesArray objectAtIndex: 0]];
+				}
 			}
-			else {
-				unsigned count = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
-				if( count < 1) count = 1;
+			
+			if( [seriesToOpen count] > 0)
+			{
+				[self viewerDICOMInt: NO  dcmFile: seriesToOpen viewer: 0L tileWindows: NO];
 				
-				NSMutableArray *children =  [NSMutableArray array];
-				int i;
-				for (i = 0; i < count; i++)
-					[children addObject:[[self childrenArray: item] objectAtIndex:i] ];
+				NSArray	*displayedViewers = [ViewerController getDisplayed2DViewers];
 				
-				[self viewerDICOMInt :NO  dcmFile:children viewer:0L];
+				for( i = 0 ; i < [viewers count]; i++)
+				{
+					NSDictionary	*dict = [viewers objectAtIndex: i];
+					
+					NSRect r;
+					NSScanner* s = [NSScanner scannerWithString: [dict valueForKey:@"window position"]];
+					[s scanFloat: &r.origin.x];			[s scanFloat: &r.origin.y];
+					[s scanFloat: &r.size.width];		[s scanFloat: &r.size.height];
+					
+					int index = [[dict valueForKey:@"index"] intValue];
+					int rows = [[dict valueForKey:@"rows"] intValue];
+					int columns = [[dict valueForKey:@"columns"] intValue];
+					
+					NSString	*studyUID = [dict valueForKey:@"studyInstanceUID"];
+					NSString	*seriesUID = [dict valueForKey:@"seriesInstanceUID"];
+
+					for( x = 0 ; x < [displayedViewers count]; x++)
+					{
+						if( [studyUID isEqualToString: [[displayedViewers objectAtIndex: x] studyInstanceUID]]	&&
+							[seriesUID isEqualToString: [[[[displayedViewers objectAtIndex: x] imageView] seriesObj] valueForKey:@"seriesInstanceUID"]])
+						{
+							[[displayedViewers objectAtIndex: x] setWindowFrame: r];
+							[[displayedViewers objectAtIndex: x] setImageRows: rows columns: columns];
+							[[[displayedViewers objectAtIndex: x] imageView] setIndex: index];
+						}
+					}
+				}
+				
+				[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+				
+				windowsStateApplied = YES;
+			}
+		}
+		
+		if( windowsStateApplied == NO)
+		{
+			if ( ![[WindowLayoutManager sharedWindowLayoutManager] hangStudy:item])
+			{
+				//Use Basic Hanging Protocols
+				[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[item valueForKey:@"modality"] description:[item valueForKey:@"studyName"]];
+				
+				NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
+				
+				if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
+				{
+					[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:0L];
+				}
+				else {
+					unsigned count = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
+					if( count < 1) count = 1;
+					
+					NSMutableArray *children =  [NSMutableArray array];
+					int i;
+					for (i = 0; i < count; i++)
+						[children addObject:[[self childrenArray: item] objectAtIndex:i]];
+					
+					[self viewerDICOMInt :NO  dcmFile:children viewer:0L];
+				}
 			}
 		}
 	}
@@ -8310,6 +8384,11 @@ static BOOL needToRezoom;
 
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer
 {
+	return [self viewerDICOMInt:  movieViewer dcmFile: selectedLines viewer: viewer tileWindows: YES];
+}
+
+- (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer tileWindows: (BOOL) tileWindows
+{
 	NSManagedObject		*selectedLine = [selectedLines objectAtIndex: 0];
     unsigned long		z;
 	
@@ -8817,16 +8896,18 @@ static BOOL needToRezoom;
 				}
 			}
 		}
-
 		
 		if( movieError == NO && toOpenArray != 0L)
 			[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
     }
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-		[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
-	else
-		[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+	if( tileWindows)
+	{
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+			[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+		else
+			[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+	}
 	
 	[wait close];
 	[wait release];

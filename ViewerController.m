@@ -221,23 +221,35 @@ int sortROIByName(id roi1, id roi2, void *context)
 		win = [displayedViewers objectAtIndex: i];
 		
 		NSRect	r = [[win window] frame];
-		[dict setObject: [NSString stringWithFormat: @"%f %f %f %f %f %f %f %f", r.origin.x, r.origin.y, r.size.width, r.size.height]  forKey:@"window position"];
+		[dict setObject: [NSString stringWithFormat: @"%f %f %f %f", r.origin.x, r.origin.y, r.size.width, r.size.height]  forKey:@"window position"];
 		[dict setObject: [NSNumber numberWithInt: [[win imageView] rows]] forKey:@"rows"];
 		[dict setObject: [NSNumber numberWithInt: [[win imageView] columns]] forKey:@"columns"];
 		[dict setObject: [NSNumber numberWithInt: [[win imageView] curImage]] forKey:@"index"];
 		[dict setObject: [win studyInstanceUID] forKey:@"studyInstanceUID"];
 		[dict setObject: [[[win imageView] seriesObj] valueForKey:@"seriesInstanceUID"] forKey:@"seriesInstanceUID"];
+		
+		[state addObject: dict];
 	}
 	
 	NSString	*tmp = [NSString stringWithFormat:@"/tmp/windowsState"];
 	[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
 	[state writeToFile: tmp atomically: YES];
-
+	
+	NSMutableArray	*studiesArray = [NSMutableArray array];
+	
 	for( i = 0 ; i < [displayedViewers count] ; i++)
 	{
-		NSManagedObject		*study = [[[win imageView] seriesObj] valueForKey:@"study"];
+		if( [studiesArray containsObject: [[[win imageView] seriesObj] valueForKey:@"study"]] == NO)
+			[studiesArray addObject: [[[win imageView] seriesObj] valueForKey:@"study"]];
+	}
+	
+	for( i = 0 ; i < [studiesArray count] ; i++)
+	{
+		NSManagedObject		*study = [studiesArray objectAtIndex: i];
 		[study setValue: [NSData dataWithContentsOfFile: tmp] forKey:@"windowsState"];
 	}
+	
+	[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
 }
 
 - (void) executeUndo:(NSMutableArray*) u
@@ -16264,7 +16276,8 @@ sourceRef);
 	return seriesView;
 }
 
-- (void)setImageRows:(int)rows columns:(int)columns{
+- (void)setImageRows:(int)rows columns:(int)columns
+{
 	[seriesView setImageViewMatrixForRows:(int)rows  columns:columns];
 }
 

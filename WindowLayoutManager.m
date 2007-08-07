@@ -426,10 +426,11 @@ WindowLayoutManager *sharedLayoutManager;
 
 #pragma mark-
 #pragma mark Advanced Hanging
--(BOOL)hangStudy:(id)study{
+-(BOOL)hangStudy:(id)study
+{
 	// clear current Hanging Protocol;
-	//NSLog(@"hang Study");
-	if ([[[study entity] name] isEqualToString:@"Study"]) {
+	if ([[[study entity] name] isEqualToString:@"Study"])
+	{
 		[self setCurrentHangingProtocolForModality:nil description: nil];
 		[self setCurrentStudy:study];
 		
