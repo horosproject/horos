@@ -4270,8 +4270,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) setWLWW:(float) wl :(float) ww
 {
-	if( wl == 0 && ww == 0)
-		NSLog( @"*** warning setWLWW:(float) wl :(float) ww with ww == 0 wl == 0");
+//	if( wl == 0 && ww == 0)
+//		NSLog( @"*** warning setWLWW:(float) wl :(float) ww with ww == 0 wl == 0");
 
 	[curDCM changeWLWW :wl : ww];
 	
@@ -8041,7 +8041,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [self is2DViewer])
 		{
 			// Series Level
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / [self frame].size.height] forKey:@"scale"];
+			[[self seriesObj] setValue:[NSNumber numberWithInt: 1] forKey: @"displayStyle"];	//displayStyle = 1  -> scaleValue is proportional to view height
 			
 			// Image Level
 			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
@@ -8074,7 +8075,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [self is2DViewer])
 		{
 			// Series Level
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / [self frame].size.height] forKey:@"scale"];
+			[[self seriesObj] setValue:[NSNumber numberWithInt: 1] forKey: @"displayStyle"];	//displayStyle = 1  -> scaleValue is proportional to view height
 			
 			// Image Level
 			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
@@ -9356,7 +9358,14 @@ BOOL	lowRes = NO;
 			{
 				if( [series valueForKey:@"scale"])
 				{
-					if( [[series valueForKey:@"scale"] floatValue] != 0) [self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
+					if( [[series valueForKey:@"scale"] floatValue] != 0)
+					{
+						//displayStyle = 1  -> scaleValue is proportional to view height
+						if( [[series valueForKey:@"displayStyle"] intValue] == 1)
+							[self setScaleValue: [[series valueForKey:@"scale"] floatValue] * [self frame].size.height];
+						else
+							[self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
+					}
 					else [self scaleToFit];
 				}
 				else [self scaleToFit];

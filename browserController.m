@@ -3075,7 +3075,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 					
 					if(  dateProduced == YES && dateOpened == YES)
 					{
-						for( x = from; x <= to; x++) if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO) [toBeRemoved addObject: [studiesArray objectAtIndex: x]];
+						for( x = from; x <= to; x++) if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO && [[[studiesArray objectAtIndex: x] valueForKey:@"lockedStudy"] boolValue] == NO) [toBeRemoved addObject: [studiesArray objectAtIndex: x]];
 					}
 				}
 				
@@ -3223,17 +3223,17 @@ static BOOL				DICOMDIRCDMODE = NO;
 		{
 			NSLog(@"Limit Reached - Starting autoCleanDatabaseFreeSpace");
 			
-			NSError				*error = 0L;
-			long				i, x;
-			NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
-			NSPredicate			*predicate = [NSPredicate predicateWithValue:YES];
-			NSArray				*studiesArray;
-			NSManagedObjectContext *context = [self managedObjectContext];
+			NSError					*error = 0L;
+			long					i, x;
+			NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
+			NSArray					*studiesArray = 0L;
+			NSMutableArray			*unlockedStudies = 0L;
+			NSManagedObjectContext	*context = [self managedObjectContext];
 			
 			[context retain];
 			[context lock];
 			[request setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
-			[request setPredicate: predicate];
+			[request setPredicate: [NSPredicate predicateWithValue: YES]];
 			
 			do
 			{
@@ -3249,43 +3249,60 @@ static BOOL				DICOMDIRCDMODE = NO;
 				NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease];
 				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
 				
-				if( [studiesArray count] > 2)
+				unlockedStudies = [NSMutableArray arrayWithArray: studiesArray];
+				
+				for( i = 0; i < [unlockedStudies count]; i++)
 				{
-					for( i = 0; i < [studiesArray count]; i++)
+					if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"lockedStudy"] boolValue] == YES)
 					{
-						NSString	*patientID = [[studiesArray objectAtIndex: i] valueForKey:@"patientID"];
+						[unlockedStudies removeObjectAtIndex: i];
+						i--;
+					}
+				}
+				
+				if( [unlockedStudies count] > 2)
+				{
+					for( i = 0; i < [unlockedStudies count]; i++)
+					{
+						NSString	*patientID = [[unlockedStudies objectAtIndex: i] valueForKey:@"patientID"];
 						long		to, from = i;
 						
-						if( [[[studiesArray objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
+						if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
 						{
-							oldestStudy = [studiesArray objectAtIndex: i];
-							producedInterval = [[oldestStudy valueForKey:@"date"] timeIntervalSinceNow];
+							if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"] timeIntervalSinceNow] < -60*60*24)	// 24 hours
+							{
+								oldestStudy = [unlockedStudies objectAtIndex: i];
+								producedInterval = [[oldestStudy valueForKey:@"date"] timeIntervalSinceNow];
+							}
 						}
 						
-						openedDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"];
-						if( openedDate == 0L) openedDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
+						openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
+						if( openedDate == 0L) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
 						
 						if( [openedDate timeIntervalSinceNow] < openedInterval)
 						{
-							oldestOpenedStudy = [studiesArray objectAtIndex: i];
+							oldestOpenedStudy = [unlockedStudies objectAtIndex: i];
 							openedInterval = [openedDate timeIntervalSinceNow];
 						}
 						
-						while( i < [studiesArray count]-1 && [patientID isEqualToString:[[studiesArray objectAtIndex: i+1] valueForKey:@"patientID"]] == YES)
+						while( i < [unlockedStudies count]-1 && [patientID isEqualToString:[[unlockedStudies objectAtIndex: i+1] valueForKey:@"patientID"]] == YES)
 						{
 							i++;
-							if( [[[studiesArray objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
+							if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
 							{
-								oldestStudy = [studiesArray objectAtIndex: i];
-								producedInterval = [[oldestStudy valueForKey:@"date"] timeIntervalSinceNow];
+								if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"] timeIntervalSinceNow] < -60*60*24)	// 24 hours
+								{
+									oldestStudy = [unlockedStudies objectAtIndex: i];
+									producedInterval = [[oldestStudy valueForKey:@"date"] timeIntervalSinceNow];
+								}
 							}
 							
-							openedDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"];
-							if( openedDate == 0L) openedDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
+							openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
+							if( openedDate == 0L) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
 							
 							if( [openedDate timeIntervalSinceNow] < openedInterval)
 							{
-								oldestOpenedStudy = [studiesArray objectAtIndex: i];
+								oldestOpenedStudy = [unlockedStudies objectAtIndex: i];
 								openedInterval = [openedDate timeIntervalSinceNow];
 							}
 						}
@@ -3326,7 +3343,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				free /= 1024;
 				NSLog(@"HD Free Space: %d MB", (long) free);
 			}
-			while( (long) free < [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue] && [studiesArray count] > 2);
+			while( (long) free < [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue] && [unlockedStudies count] > 2);
 			
 			[self saveDatabase: currentDatabasePath];
 			
@@ -4338,182 +4355,182 @@ static BOOL				DICOMDIRCDMODE = NO;
 			[matrixLoadIconsLock unlock];
 			shouldDie = NO;
 			
-			// Try to find images that aren't stored in the local database
+			// Are some images locked?
 			
-			NSMutableArray	*nonLocalImagesPath = [NSMutableArray arrayWithCapacity: 0];
+			NSArray	*lockedImages = [objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"series.study.lockedStudy == YES"]];
 			
-			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Preparing Delete...", nil)];
-			[wait showWindow:self];
-			
-			if( matrixThumbnails)
+			if( [lockedImages count] == [objectsToDelete count])
 			{
-				nonLocalImagesPath = [[objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
+				NSRunAlertPanel( NSLocalizedString(@"Locked Studies", nil),  NSLocalizedString(@"These images are stored in locked studies. First, unlock these studies to delete them.", nil), nil, nil, nil);
 			}
 			else
 			{
-				nonLocalImagesPath = [[objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
+				if( [lockedImages count])
+				{
+					[objectsToDelete removeObjectsInArray: lockedImages];
+					
+					NSRunInformationalAlertPanel(NSLocalizedString(@"Locked Studies", 0L), NSLocalizedString(@"Some images are stored in locked studies. Only unlocked images will be deleted.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+				}
+				
+				NSLog( @"locked images: %d", [lockedImages count]);
+				
+				// Try to find images that aren't stored in the local database
+				
+				NSMutableArray	*nonLocalImagesPath = [NSMutableArray arrayWithCapacity: 0];
+				
+				WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Preparing Delete...", nil)];
+				[wait showWindow:self];
+				
+				if( matrixThumbnails)
+				{
+					nonLocalImagesPath = [[objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
+				}
+				else
+				{
+					nonLocalImagesPath = [[objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
+				}
+				
+				[wait close];
+				[wait release];
+				
+				NSLog(@"non-local images : %d", [nonLocalImagesPath count]);
+				
+				if( [nonLocalImagesPath  count] > 0)
+				{
+					result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove images", 0L), NSLocalizedString(@"Some of the selected images are not stored in the Database folder. Do you want to only remove the links of these images from the database or also delete the original files?", 0L), NSLocalizedString(@"Remove the links",nil),  NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Delete the files",nil));
+				}
+				else result = NSAlertDefaultReturn;
+				
+				wait = [[WaitRendering alloc] init: NSLocalizedString(@"Deleting...", nil)];
+				[wait showWindow:self];
+				
+				if( result == NSAlertAlternateReturn)
+				{
+					NSLog( @"Cancel");
+				}
+				else
+				{			
+					if( result == NSAlertDefaultReturn || result == NSAlertOtherReturn)
+					{
+						NSManagedObject	*study = 0L, *series = 0L;
+						
+						NSLog(@"objects to delete : %d", [objectsToDelete count]);
+						
+						for( x = 0 ; x < [objectsToDelete count]; x++)
+						{
+							if( [[objectsToDelete objectAtIndex: x] valueForKey:@"series"] != series)
+							{
+								// ********* SERIES
+								
+								series = [[objectsToDelete objectAtIndex: x] valueForKey:@"series"];
+								
+								if([seriesArray containsObject: series] == NO)
+								{
+									if( series) [seriesArray addObject: series];
+									[series setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+									[series setValue: 0L forKey:@"thumbnail"];
+								}
+								
+								// ********* STUDY
+								
+								if( [series valueForKey:@"study"] != study)
+								{
+									study = [series valueForKeyPath:@"study"];
+									
+									if([studiesArray containsObject: study] == NO)
+									{
+										if( study) [studiesArray addObject: study];
+										[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+									}
+									
+									// Is a viewer containing this study opened? -> close it
+									for( i = 0; i < [viewersList count]; i++)
+									{
+										if( study == [[[[viewersList objectAtIndex: i] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"]) [[[viewersList objectAtIndex: i] window] close];
+									}
+								}
+							}
+							
+							[context deleteObject: [objectsToDelete objectAtIndex: x]];
+						}
+						
+						[databaseOutline selectRow:[selectedRows firstIndex] byExtendingSelection:NO];
+					}
+					
+					if( result == NSAlertOtherReturn)
+					{
+						for( i = 0; i < [nonLocalImagesPath count]; i++)
+						{
+							[[NSFileManager defaultManager] removeFileAtPath:[nonLocalImagesPath objectAtIndex: i] handler:nil];
+							
+							if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
+							{
+								[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+							}
+							
+							if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"zip"])		// ZIP -> DELETE XML
+							{
+								[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
+							}
+							
+							NSString *currentDirectory = [[[nonLocalImagesPath objectAtIndex: i] stringByDeletingLastPathComponent] stringByAppendingString:@"/"];
+							NSArray *dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:currentDirectory];
+							
+							//Is this directory empty?? If yes, delete it!
+							
+							if( [dirContent count] == 0) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
+							if( [dirContent count] == 1)
+							{
+								if( [[[dirContent objectAtIndex: 0] uppercaseString] isEqualToString:@".DS_STORE"]) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
+							}
+						}
+					}
+				}
+				[wait close];
+				[wait release];
 			}
 			
-//			// Remove the ROIs
-//			NSString				*roiFolder = [documentsDirectory() stringByAppendingPathComponent:@"ROIs"];
-//
-//			for( i = 0 ; i < [nonLocalImagesPath count] ; i++)
-//			{
-//				@try
-//				{
-//					if( [roiFolder compare: [nonLocalImagesPath objectAtIndex: i] options:NSLiteralSearch range:NSMakeRange(0,[roiFolder length])] == NSOrderedSame)
-//					{
-//						[nonLocalImagesPath removeObjectAtIndex: i];
-//						i--;
-//					}
-//				}
-//				
-//				@catch (NSException * e)
-//				{
-//				}
-//			}
-//			
-			[wait close];
-			[wait release];
-			
-			NSLog(@"non-local images : %d", [nonLocalImagesPath count]);
-			
-			if( [nonLocalImagesPath  count] > 0)
-			{
-				result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove images", 0L), NSLocalizedString(@"Some of the selected images are not stored in the Database folder. Do you want to only remove the links of these images from the database or also delete the original files?", 0L), NSLocalizedString(@"Remove the links",nil),  NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Delete the files",nil));
-			}
-			else result = NSAlertDefaultReturn;
-			
-			wait = [[WaitRendering alloc] init: NSLocalizedString(@"Deleting...", nil)];
+			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
 			[wait showWindow:self];
 			
-			if( result == NSAlertAlternateReturn)
+			[self saveDatabase: currentDatabasePath];
+			@try
 			{
-				NSLog( @"Cancel");
-			}
-			else
-			{			
-				if( result == NSAlertDefaultReturn || result == NSAlertOtherReturn)
+				// Remove series without images !
+				for( i = 0; i < [seriesArray count]; i++)
 				{
-					NSManagedObject	*study = 0L, *series = 0L;
-					
-					NSLog(@"objects to delete : %d", [objectsToDelete count]);
-					
-					for( x = 0 ; x < [objectsToDelete count]; x++)
+					if( [[[seriesArray objectAtIndex: i] valueForKey:@"images"] count] == 0)
 					{
-						if( [[objectsToDelete objectAtIndex: x] valueForKey:@"series"] != series)
-						{
-							// ********* SERIES
-							
-							series = [[objectsToDelete objectAtIndex: x] valueForKey:@"series"];
-							
-							if([seriesArray containsObject: series] == NO)
-							{
-								if( series) [seriesArray addObject: series];
-								[series setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-								[series setValue: 0L forKey:@"thumbnail"];
-							}
-							
-							// ********* STUDY
-							
-							if( [series valueForKey:@"study"] != study)
-							{
-								study = [series valueForKeyPath:@"study"];
-								
-								if([studiesArray containsObject: study] == NO)
-								{
-									if( study) [studiesArray addObject: study];
-									[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-								}
-								
-								// Is a viewer containing this study opened? -> close it
-								for( i = 0; i < [viewersList count]; i++)
-								{
-									if( study == [[[[viewersList objectAtIndex: i] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"]) [[[viewersList objectAtIndex: i] window] close];
-								}
-							}
-						}
-						
-						[context deleteObject: [objectsToDelete objectAtIndex: x]];
+						[context deleteObject: [seriesArray objectAtIndex: i]];
 					}
-					
-					[databaseOutline selectRow:[selectedRows firstIndex] byExtendingSelection:NO];
 				}
 				
-				if( result == NSAlertOtherReturn)
+				[self saveDatabase: currentDatabasePath];
+				
+				// Remove studies without series !
+				for( i = 0; i < [studiesArray count]; i++)
 				{
-					for( i = 0; i < [nonLocalImagesPath count]; i++)
+					NSLog( @"Delete Study: %@ - %@", [[studiesArray objectAtIndex: i] valueForKey:@"name"], [[studiesArray objectAtIndex: i] valueForKey:@"patientID"]);
+					
+					if( [[[studiesArray objectAtIndex: i] valueForKey:@"imageSeries"] count] == 0)
 					{
-						[[NSFileManager defaultManager] removeFileAtPath:[nonLocalImagesPath objectAtIndex: i] handler:nil];
-						
-						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
-						{
-							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
-						}
-						
-						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"zip"])		// ZIP -> DELETE XML
-						{
-							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
-						}
-						
-						NSString *currentDirectory = [[[nonLocalImagesPath objectAtIndex: i] stringByDeletingLastPathComponent] stringByAppendingString:@"/"];
-						NSArray *dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:currentDirectory];
-						
-						//Is this directory empty?? If yes, delete it!
-						
-						if( [dirContent count] == 0) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
-						if( [dirContent count] == 1)
-						{
-							if( [[[dirContent objectAtIndex: 0] uppercaseString] isEqualToString:@".DS_STORE"]) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
-						}
+						[context deleteObject: [studiesArray objectAtIndex: i]];
 					}
 				}
+				[self saveDatabase: currentDatabasePath];
+				
 			}
+			@catch( NSException *ne)
+			{
+				NSLog( @"Exception during delItem");
+				NSLog( [ne description]);
+			}
+			
+			[self outlineViewRefresh];
+			
 			[wait close];
 			[wait release];
 		}
-		
-		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
-		[wait showWindow:self];
-		
-		[self saveDatabase: currentDatabasePath];
-		@try
-		{
-			// Remove series without images !
-			for( i = 0; i < [seriesArray count]; i++)
-			{
-				if( [[[seriesArray objectAtIndex: i] valueForKey:@"images"] count] == 0)
-				{
-					[context deleteObject: [seriesArray objectAtIndex: i]];
-				}
-			}
-			
-			[self saveDatabase: currentDatabasePath];
-			
-			// Remove studies without series !
-			for( i = 0; i < [studiesArray count]; i++)
-			{
-				NSLog( @"Delete Study: %@ - %@", [[studiesArray objectAtIndex: i] valueForKey:@"name"], [[studiesArray objectAtIndex: i] valueForKey:@"patientID"]);
-				
-				if( [[[studiesArray objectAtIndex: i] valueForKey:@"imageSeries"] count] == 0)
-				{
-					[context deleteObject: [studiesArray objectAtIndex: i]];
-				}
-			}
-			[self saveDatabase: currentDatabasePath];
-			
-		}
-		@catch( NSException *ne)
-		{
-			NSLog( @"Exception during delItem");
-			NSLog( [ne description]);
-		}
-		
-		[self outlineViewRefresh];
-		
-		[wait close];
-		[wait release];
-		
 	}
 	
 	[[QueryController currentQueryController] refresh: self];

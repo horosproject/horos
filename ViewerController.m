@@ -206,6 +206,40 @@ int sortROIByName(id roi1, id roi2, void *context)
 	return viewersList;
 }
 
+- (void) saveWindowsState
+{
+	NSArray				*displayedViewers = [ViewerController getDisplayed2DViewers];
+	ViewerController	*win = 0L;
+	NSMutableArray		*state = [NSMutableArray array];
+	
+	int i;
+	
+	for( i = 0 ; i < [displayedViewers count] ; i++)
+	{
+		NSMutableDictionary	*dict = [NSMutableDictionary dictionary];
+		
+		win = [displayedViewers objectAtIndex: i];
+		
+		NSRect	r = [[win window] frame];
+		[dict setObject: [NSString stringWithFormat: @"%f %f %f %f %f %f %f %f", r.origin.x, r.origin.y, r.size.width, r.size.height]  forKey:@"window position"];
+		[dict setObject: [NSNumber numberWithInt: [[win imageView] rows]] forKey:@"rows"];
+		[dict setObject: [NSNumber numberWithInt: [[win imageView] columns]] forKey:@"columns"];
+		[dict setObject: [NSNumber numberWithInt: [[win imageView] curImage]] forKey:@"index"];
+		[dict setObject: [win studyInstanceUID] forKey:@"studyInstanceUID"];
+		[dict setObject: [[[win imageView] seriesObj] valueForKey:@"seriesInstanceUID"] forKey:@"seriesInstanceUID"];
+	}
+	
+	NSString	*tmp = [NSString stringWithFormat:@"/tmp/windowsState"];
+	[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
+	[state writeToFile: tmp atomically: YES];
+
+	for( i = 0 ; i < [displayedViewers count] ; i++)
+	{
+		NSManagedObject		*study = [[[win imageView] seriesObj] valueForKey:@"study"];
+		[study setValue: [NSData dataWithContentsOfFile: tmp] forKey:@"windowsState"];
+	}
+}
+
 - (void) executeUndo:(NSMutableArray*) u
 {
 	if( [u count])
@@ -1493,9 +1527,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( NSEqualRects( curRect, rect) == NO)
 	{
+		float scaleValue = [imageView scaleValue];
+		float previousHeight = [imageView frame].size.height;
+		
 		[[self window] setFrame:rect display:YES];
 		[[self window] orderFront:self];
-//		[imageView scaleToFit];
+		
+		[imageView setScaleValue: scaleValue * [imageView frame].size.height / previousHeight];
 	}
 	else
 	{
@@ -1515,6 +1553,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
 	{
+		[self saveWindowsState];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];
 	}
 	
@@ -4207,8 +4246,11 @@ static ViewerController *draggedController = 0L;
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
 
-	NSManagedObject		*series = [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"];
-	[series setValue: [NSNumber numberWithFloat: [imageView scaleValue] / resampleRatio] forKey:@"scale"];
+	if( resampleRatio != 1)
+	{
+		NSManagedObject		*series = [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"];
+		[series setValue: [NSNumber numberWithFloat: [[series valueForKey:@"scale"] floatValue] / resampleRatio] forKey:@"scale"];
+	}
 	
 	for( i = 0; i < maxMovieIndex; i++)
 	{
@@ -16037,7 +16079,9 @@ sourceRef);
 
 - (IBAction) databaseWindow : (id) sender
 {
-	if (!([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)) {
+	if (!([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
+	{	
+		[self saveWindowsState];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];	
 		[self close];
 	}
@@ -16045,10 +16089,10 @@ sourceRef);
 		[browserWindow showDatabase:self];
 	
 }
-//Modify window zoom behavior
-- (void)setStandardRect:(NSRect)rect{
+
+- (void)setStandardRect:(NSRect)rect
+{
 	standardRect = rect;
-	
 }
 
 #pragma mark-
