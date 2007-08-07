@@ -189,7 +189,7 @@
 	[imageViews makeObjectsPerformSelector:@selector(setImageParamatersFromView:) withObject:[imageViews objectAtIndex:0]];
 	
 	scale = (scale * (float) imageRows) / (float) rows;
-	[[imageViews objectAtIndex:0] setScaleValue: scale];
+	[[imageViews objectAtIndex:0] setScaleValueCentered: scale];
 	
 	imageRows = rows;
 	imageColumns = columns;

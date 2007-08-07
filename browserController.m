@@ -5196,10 +5196,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 					NSString	*seriesUID = [dict valueForKey:@"seriesInstanceUID"];
 
 					[v setWindowFrame: r showWindow: NO];
-					
-//					if( rows != 1 || columns != 1)
-						[v setImageRows: rows columns: columns];
-					
+					[v setImageRows: rows columns: columns];
 					[v setImageIndex: index];
 					[v setWL: wl WW: ww];
 					[v setScaleValue: scale];
