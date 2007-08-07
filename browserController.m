@@ -5205,9 +5205,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 					[v setScaleValue: scale];
 					[v setRotation: rotation];
 					[v setOrigin: NSMakePoint( x, y)];
+					
+					[[v window] makeKeyAndOrderFront: self];
 				}
-				
-				[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
 				
 				windowsStateApplied = YES;
 			}

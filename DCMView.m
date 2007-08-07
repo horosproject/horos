@@ -8912,41 +8912,36 @@ BOOL	lowRes = NO;
 
 -(void) becomeMainWindow
 {
-	if( [[self window] isVisible])
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewImageViewResponder" object: self userInfo: 0L];
+	
+	[self updateTilingViews];
+	
+	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
+	slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
+	sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
+	
+	[self sendSyncMessage:1];
+	
+	[appController setXFlipped: xFlipped];
+	[appController setYFlipped: yFlipped];
+	
+	if( [self is2DViewer])
 	{
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewImageViewResponder" object: self userInfo: 0L];
-		
-		[self updateTilingViews];
-		
-		sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
-		slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
-		sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
-		[self sendSyncMessage:1];
-		
-		[appController setXFlipped: xFlipped];
-		[appController setYFlipped: yFlipped];
-		
-		if( [self is2DViewer])
-		{
-			[[self windowController] adjustSlider];
-			[[self windowController] propagateSettings];
-		}
-		
-		[self setNeedsDisplay:YES];
+		[[self windowController] adjustSlider];
+		[[self windowController] propagateSettings];
 	}
+	
+	[self setNeedsDisplay:YES];
 }
 
 -(void) becomeKeyWindow
 {
-	if( [[self window] isVisible])
-	{
-		sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
-		slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
-		sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
-		[self sendSyncMessage:1];
-		
-		[self setNeedsDisplay:YES];
-	}
+	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
+	slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
+	sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
+	[self sendSyncMessage:1];
+	
+	[self setNeedsDisplay:YES];
 }
 
 - (BOOL)becomeFirstResponder
