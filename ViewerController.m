@@ -224,7 +224,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 		[dict setObject: [NSString stringWithFormat: @"%f %f %f %f", r.origin.x, r.origin.y, r.size.width, r.size.height]  forKey:@"window position"];
 		[dict setObject: [NSNumber numberWithInt: [[win imageView] rows]] forKey:@"rows"];
 		[dict setObject: [NSNumber numberWithInt: [[win imageView] columns]] forKey:@"columns"];
-		[dict setObject: [NSNumber numberWithInt: [[win imageView] curImage]] forKey:@"index"];
+		[dict setObject: [NSNumber numberWithInt: [[[win seriesView] firstView] curImage]] forKey:@"index"];
 		[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWL]] forKey:@"wl"];
 		[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWW]] forKey:@"ww"];
 		[dict setObject: [NSNumber numberWithFloat: [[win imageView] scaleValue]] forKey:@"scale"];

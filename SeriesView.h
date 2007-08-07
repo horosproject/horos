@@ -17,6 +17,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class DCMView;
 @class DCMPix;
 @class ViewerController;
 @interface SeriesView : NSView {
@@ -45,6 +46,7 @@
 - (long)tag;
 - (void)setTag:(long)theTag;
 - (NSMutableArray *)imageViews;
+- (DCMView *)firstView;
 - (void)setImageViewMatrixForRows:(int)rows  columns:(int)columns;
 - (void)updateImageTiling:(NSNotification *)note;
 - (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset;

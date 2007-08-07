@@ -124,6 +124,10 @@
 	tag = theTag;
 }
 
+- (DCMView *)firstView{
+	return [imageViews objectAtIndex: 0];
+}
+
 - (NSMutableArray *)imageViews{
 	return imageViews;
 }

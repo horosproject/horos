@@ -5197,7 +5197,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 					[v setWindowFrame: r showWindow: NO];
 					
-					if( rows != 1 || columns != 1)
+//					if( rows != 1 || columns != 1)
 						[v setImageRows: rows columns: columns];
 					
 					[v setImageIndex: index];
@@ -5208,6 +5208,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 					
 					[[v window] makeKeyAndOrderFront: self];
 				}
+				
+				if( [displayedViewers count] > 0)
+					[[[displayedViewers objectAtIndex: 0] window] makeKeyAndOrderFront: self];
 				
 				windowsStateApplied = YES;
 			}
