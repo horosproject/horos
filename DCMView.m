@@ -7448,11 +7448,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( yChanged > 0.01 && yChanged < 1000) yChanged = yChanged;
 			else yChanged = 0.01;
 			
-			[[self windowController] setUpdateTilingViewsValue: YES];
+			if( [self is2DViewer])
+				[[self windowController] setUpdateTilingViewsValue: YES];
 			
 			[self setScaleValue: (scaleValue * yChanged)];
 			
-			[[self windowController] setUpdateTilingViewsValue: NO];
+			if( [self is2DViewer])
+				[[self windowController] setUpdateTilingViewsValue: NO];
 			
 			origin.x *= yChanged;
 			origin.y *= yChanged;
