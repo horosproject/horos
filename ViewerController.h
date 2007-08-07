@@ -589,6 +589,7 @@ enum
 - (void) renameSeriesROIwithName: (NSString*) name newName:(NSString*) newName;
 - (void)setStandardRect:(NSRect)rect;
 - (void)setWindowFrame:(NSRect)rect;
+- (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow;
 - (IBAction) Panel3D:(id) sender;
 - (void) revertSeries:(id) sender;
 - (NSImage*) imageForROI: (int) i;
@@ -678,6 +679,7 @@ enum
 - (BOOL)yFlipped;
 - (float)rotation;
 - (void)setRotation:(float)rotation;
+- (void)setOrigin:(NSPoint) o;
 - (float)scaleValue;
 - (void)setScaleValue:(float)scaleValue;
 - (void)setYFlipped:(BOOL) v;

@@ -5172,7 +5172,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 				
 				for( i = 0 ; i < [viewers count]; i++)
 				{
-					NSDictionary	*dict = [viewers objectAtIndex: i];
+					NSDictionary		*dict = [viewers objectAtIndex: i];
+					ViewerController	*v = [displayedViewers objectAtIndex: i];
 					
 					NSRect r;
 					NSScanner* s = [NSScanner scannerWithString: [dict valueForKey:@"window position"]];
@@ -5182,20 +5183,28 @@ static BOOL				DICOMDIRCDMODE = NO;
 					int index = [[dict valueForKey:@"index"] intValue];
 					int rows = [[dict valueForKey:@"rows"] intValue];
 					int columns = [[dict valueForKey:@"columns"] intValue];
+					float wl = [[dict valueForKey:@"wl"] floatValue];
+					float ww = [[dict valueForKey:@"ww"] floatValue];
+					float x = [[dict valueForKey:@"x"] floatValue];
+					float y = [[dict valueForKey:@"y"] floatValue];
+					float rotation = [[dict valueForKey:@"rotation"] floatValue];
+					float scale = [[dict valueForKey:@"scale"] floatValue];
+					BOOL xF = [[dict valueForKey:@"xFlipped"] boolValue];
+					BOOL yF = [[dict valueForKey:@"yFlipped"] boolValue];
 					
 					NSString	*studyUID = [dict valueForKey:@"studyInstanceUID"];
 					NSString	*seriesUID = [dict valueForKey:@"seriesInstanceUID"];
 
-					for( x = 0 ; x < [displayedViewers count]; x++)
-					{
-						if( [studyUID isEqualToString: [[displayedViewers objectAtIndex: x] studyInstanceUID]]	&&
-							[seriesUID isEqualToString: [[[[displayedViewers objectAtIndex: x] imageView] seriesObj] valueForKey:@"seriesInstanceUID"]])
-						{
-							[[displayedViewers objectAtIndex: x] setWindowFrame: r];
-							[[displayedViewers objectAtIndex: x] setImageRows: rows columns: columns];
-							[[[displayedViewers objectAtIndex: x] imageView] setIndex: index];
-						}
-					}
+					[v setWindowFrame: r showWindow: NO];
+					
+					if( rows != 1 || columns != 1)
+						[v setImageRows: rows columns: columns];
+					
+					[v setImageIndex: index];
+					[v setWL: wl WW: ww];
+					[v setScaleValue: scale];
+					[v setRotation: rotation];
+					[v setOrigin: NSMakePoint( x, y)];
 				}
 				
 				[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];

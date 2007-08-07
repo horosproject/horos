@@ -3300,6 +3300,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) otherMouseDown:(NSEvent *)event
 {
+	[[self window] makeKeyAndOrderFront: self];
 	[[self window] makeFirstResponder: self];
 	
 	[self mouseDown: event];
@@ -3307,6 +3308,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) rightMouseDown:(NSEvent *)event
 {
+	[[self window] makeKeyAndOrderFront: self];
 	[[self window] makeFirstResponder: self];
 	
 	if ( pluginOverridesMouse ) {

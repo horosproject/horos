@@ -225,6 +225,14 @@ int sortROIByName(id roi1, id roi2, void *context)
 		[dict setObject: [NSNumber numberWithInt: [[win imageView] rows]] forKey:@"rows"];
 		[dict setObject: [NSNumber numberWithInt: [[win imageView] columns]] forKey:@"columns"];
 		[dict setObject: [NSNumber numberWithInt: [[win imageView] curImage]] forKey:@"index"];
+		[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWL]] forKey:@"wl"];
+		[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWW]] forKey:@"ww"];
+		[dict setObject: [NSNumber numberWithFloat: [[win imageView] scaleValue]] forKey:@"scale"];
+		[dict setObject: [NSNumber numberWithFloat: [[win imageView] origin].x] forKey:@"x"];
+		[dict setObject: [NSNumber numberWithFloat: [[win imageView] origin].y] forKey:@"y"];
+		[dict setObject: [NSNumber numberWithFloat: [[win imageView] rotation]] forKey:@"rotation"];
+		[dict setObject: [NSNumber numberWithBool: [[win imageView] xFlipped]] forKey:@"xFlipped"];
+		[dict setObject: [NSNumber numberWithBool: [[win imageView] xFlipped]] forKey:@"yFlipped"];
 		[dict setObject: [win studyInstanceUID] forKey:@"studyInstanceUID"];
 		[dict setObject: [[[win imageView] seriesObj] valueForKey:@"seriesInstanceUID"] forKey:@"seriesInstanceUID"];
 		
@@ -1528,7 +1536,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		return screenRect;
 }
 
-- (void)setWindowFrame:(NSRect)rect
+- (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow
 {
 	NSRect	curRect = [[self window] frame];
 	
@@ -1543,16 +1551,21 @@ static volatile int numberOfThreadsForRelisce = 0;
 		float previousHeight = [imageView frame].size.height;
 		
 		[[self window] setFrame:rect display:YES];
-		[[self window] orderFront:self];
+		if( showWindow) [[self window] orderFront:self];
 		
 		[imageView setScaleValue: scaleValue * [imageView frame].size.height / previousHeight];
 	}
 	else
 	{
-		[[self window] orderFront:self];
+		if( showWindow) [[self window] orderFront:self];
 	}
 	
 	dontEnterMagneticFunctions = NO;
+}
+
+- (void)setWindowFrame:(NSRect)rect
+{
+	[self setWindowFrame: rect showWindow: YES];
 }
 
 
@@ -16255,6 +16268,10 @@ sourceRef);
 
 - (void)setRotation:(float)rotation{
 	[imageView setRotation:rotation];
+}
+
+- (void)setOrigin:(NSPoint) o{
+	[imageView setOrigin:o];
 }
 
 - (float)scaleValue{
