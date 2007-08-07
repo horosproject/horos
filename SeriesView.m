@@ -148,7 +148,8 @@
 	
 	[[[self window] windowController] setUpdateTilingViewsValue: YES];
 	
-	[[self window] orderOut: self];
+	BOOL wasVisible = [[self window] isVisible];
+	if( wasVisible) [[self window] orderOut: self];
 	
 	float scale = [[imageViews objectAtIndex:0] scaleValue];
 	
@@ -189,7 +190,7 @@
 	imageRows = rows;
 	imageColumns = columns;
 	
-	[[self window] makeKeyAndOrderFront: self];
+	if( wasVisible) [[self window] makeKeyAndOrderFront: self];
 	
 	[self setNeedsDisplay:YES];
 }

@@ -4984,10 +4984,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //	if( stringID == 0L && [[note object] stringID] == 0L) stringOK = YES;
 	
 	if( [[self window] isVisible] == NO)
-	{
-		NSLog(@"not visible...");
 		return;
-	}
 	
     if( [note object] != self && isKeyView == YES && matrix == 0 && stringID == 0L && [[note object] stringID] == 0L && curImage > -1 )   //|| [[[note object] stringID] isEqualToString:@"Original"] == YES))   // Dont change the browser preview....
     {
