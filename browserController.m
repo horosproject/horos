@@ -2262,6 +2262,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"recomputePatientUID"];
 		
+		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Recompute Patient UIDs", nil)];
+		[wait showWindow:self];
+		
 		@try
 		{
 			[self recomputePatientUIDs];
@@ -2270,6 +2273,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 		{
 			NSLog( @"recomputePatientUIDs exception: %@ %@", [ne name], [ne reason]);
 		}
+		
+		[wait close];
+		[wait release];
 	}
 
 
