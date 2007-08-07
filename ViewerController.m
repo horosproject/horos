@@ -7953,91 +7953,89 @@ extern NSString * documentsDirectory();
 	BOOL			isDir = YES;
 	int				i, x;
 	
-	if( [browserWindow isCurrentDatabaseBonjour]) return;
+	if( [browserWindow isCurrentDatabaseBonjour] || [[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"] == NO ) return;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"])
+	NSMutableArray	*newDICOMSR = [NSMutableArray array];
+	
+	for( i = 0; i < [fileList[ mIndex] count]; i++)
 	{
-		NSMutableArray	*newDICOMSR = [NSMutableArray array];
-		
-		for( i = 0; i < [fileList[ mIndex] count]; i++)
+		if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
 		{
-			if( [[pixList[mIndex] objectAtIndex:i] generated] == NO)
+			DicomImage	*image = [fileList[mIndex] objectAtIndex:i];
+			
+			if( [image isFault] == NO)
 			{
-				DicomImage	*image = [fileList[mIndex] objectAtIndex:i];
+				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 				
-				if( [image isFault] == NO)
+				@try
 				{
-					NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+					NSString *str = [image SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
 					
-					@try
+					if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
 					{
-						NSString *str = [image SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
+						NSArray	*roisArray = [roiList[ mIndex] objectAtIndex: i];
 						
-						if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
+						for( x = 0 ; x < [roisArray count]; x++)
+							[[roisArray objectAtIndex: x] setPix: [pixList[mIndex] objectAtIndex:i]];
+						
+						NSString	*path = [ROISRConverter archiveROIsAsDICOM: roisArray  toPath: str forImage:image];
+						
+						if( path)
+							[newDICOMSR addObject: path];
+					}
+					else
+					{
+						if( [[NSFileManager defaultManager] fileExistsAtPath: str])
 						{
-							NSArray	*roisArray = [roiList[ mIndex] objectAtIndex: i];
+							[[NSFileManager defaultManager] removeFileAtPath: str handler: 0L];
 							
-							for( x = 0 ; x < [roisArray count]; x++)
-								[[roisArray objectAtIndex: x] setPix: [pixList[mIndex] objectAtIndex:i]];
+							//Remove it from the DB, if necessary
+							NSManagedObject *roiSRSeries = [[image valueForKeyPath:@"series.study"] roiSRSeries];
 							
-							NSString	*path = [ROISRConverter archiveROIsAsDICOM: roisArray  toPath: str forImage:image];
-							
-							if( path)
-								[newDICOMSR addObject: path];
-						}
-						else
-						{
-							if( [[NSFileManager defaultManager] fileExistsAtPath: str])
+							//Check to see if there is already a roi Series.
+							if( roiSRSeries)
 							{
-								[[NSFileManager defaultManager] removeFileAtPath: str handler: 0L];
+								//Check to see if there is already this ROI-image
+								NSArray			*srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
 								
-								//Remove it from the DB, if necessary
-								NSManagedObject *roiSRSeries = [[image valueForKeyPath:@"series.study"] roiSRSeries];
+								int		x;
+								BOOL	found = NO;
 								
-								//Check to see if there is already a roi Series.
-								if( roiSRSeries)
+								for( x = 0 ; x < [srs count] ; x++)
 								{
-									//Check to see if there is already this ROI-image
-									NSArray			*srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
-									
-									int		x;
-									BOOL	found = NO;
-									
-									for( x = 0 ; x < [srs count] ; x++)
+									if( [[[srs objectAtIndex: x] valueForKey:@"completePath"] isEqualToString: str])
 									{
-										if( [[[srs objectAtIndex: x] valueForKey:@"completePath"] isEqualToString: str])
-										{
-											[[browserWindow managedObjectContext] deleteObject: [srs objectAtIndex: x]]; 
-											found = YES;
-											break;
-										}
+										[[browserWindow managedObjectContext] deleteObject: [srs objectAtIndex: x]]; 
+										found = YES;
+										break;
 									}
-									
-									if( found == NO)
-										NSLog( @"**** strange... corresponding ROI object not found in the ROI Series");
 								}
+								
+								if( found == NO)
+									NSLog( @"**** strange... corresponding ROI object not found in the ROI Series");
 							}
 						}
 					}
-					
-					@catch( NSException *ne)
-					{
-						NSLog(@"saveROI failed: %@", [ne description]);
-					}
-					
-					[pool release];
 				}
+				
+				@catch( NSException *ne)
+				{
+					NSLog(@"saveROI failed: %@", [ne description]);
+				}
+				
+				[pool release];
 			}
 		}
-		
-		if( [newDICOMSR count])
-			[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
-		
-		[[BrowserController currentBrowser] saveDatabase: 0L];
 	}
+	
+	if( [newDICOMSR count])
+		[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
+	
+	[[BrowserController currentBrowser] saveDatabase: 0L];
+	
 }
 
 - (ROI*) newROI: (long) type
