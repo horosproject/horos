@@ -15,22 +15,22 @@
 		<key>11606</key>
 		<string>645 553 150 68 0 0 1440 878 </string>
 		<key>12309</key>
-		<string>1074 947 412 211 0 0 2560 1578 </string>
+		<string>514 481 412 211 0 0 1440 878 </string>
 		<key>12675</key>
 		<string>1092 1014 375 78 0 0 2560 1578 </string>
 		<key>12680</key>
 		<string>1250 1016 60 74 0 0 2560 1578 </string>
 		<key>1580</key>
-		<string>1170 645 220 815 0 0 2560 1578 </string>
+		<string>610 53 220 815 0 0 1440 878 </string>
 		<key>29</key>
-		<string>1928 1051 561 44 0 0 2560 1578 </string>
+		<string>848 571 561 44 0 0 1440 878 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>446.1</string>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>1580</integer>
 		<integer>12309</integer>
+		<integer>885</integer>
 		<integer>29</integer>
 	</array>
 	<key>IBSystem Version</key>

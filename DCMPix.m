@@ -4306,7 +4306,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	if ( refFrameSequence == nil ) {
 		NSLog( @"ReferencedFrameofReferenceSequence not found" );
-		return;
+		return;	// <- ********** What about the NSAutoreleasePool *pool ?? who will release it??
 	}
 	
 	NSMutableArray *refSeriesUIDPredicates = [NSMutableArray arrayWithCapacity: 0];

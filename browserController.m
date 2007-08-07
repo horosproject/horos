@@ -109,7 +109,7 @@ Version 2.5
 #import "BrowserMatrix.h"
 #import "DicomStudy.h"
 
-#define DATABASEVERSION @"2.3"
+#define DATABASEVERSION @"2.4"
 #define DATABASEPATH @"/DATABASE/"
 #define DECOMPRESSIONPATH @"/DECOMPRESSION/"
 #define INCOMINGPATH @"/INCOMING/"
@@ -4731,6 +4731,11 @@ static BOOL				DICOMDIRCDMODE = NO;
 		else return [item valueForKey:@"stateText"];
 	}
 	
+	if( [[tableColumn identifier] isEqualToString:@"lockedStudy"])
+	{
+		if ([[item valueForKey:@"type"] isEqualToString:@"Study"] == NO) return 0L;
+	}
+	
 	if( [[tableColumn identifier] isEqualToString:@"name"])
 	{
 		if ([[item valueForKey:@"type"] isEqualToString:@"Study"])
@@ -4832,6 +4837,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	if ([[item valueForKey:@"type"] isEqualToString: @"Study"])
 	{
+		if( [[tableColumn identifier] isEqualToString:@"lockedStudy"]) [cell setTransparent: NO];
+		
 		if( originalOutlineViewArray)
 		{
 			if( [originalOutlineViewArray containsObject: item]) [cell setFont: [NSFont boldSystemFontOfSize:12]];
@@ -4881,12 +4888,15 @@ static BOOL				DICOMDIRCDMODE = NO;
 					else [item setValue: 0L forKey:@"reportURL"];
 				}
 			}
-			
 		}
 		
 	}
-	else [cell setFont: [NSFont boldSystemFontOfSize:10]];
-	
+	else
+	{
+		if( [[tableColumn identifier] isEqualToString:@"lockedStudy"]) [cell setTransparent: YES];
+		
+		[cell setFont: [NSFont boldSystemFontOfSize:10]];
+	}
 	[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 	
 	[context unlock];
