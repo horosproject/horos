@@ -11180,7 +11180,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void) exportJPEG:(id) sender
+- (void) exportImageAs:(NSString*) format sender:(id) sender
 {
 	NSOpenPanel			*sPanel			= [NSOpenPanel openPanel];
 	long				previousSeries = -1;
@@ -11189,7 +11189,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 	NSMutableArray *filesToExport;
 	
-	NSLog( [sender description]);
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
 	{
 		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
@@ -11200,7 +11199,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[sPanel setCanChooseDirectories:YES];
 	[sPanel setCanChooseFiles:NO];
 	[sPanel setAllowsMultipleSelection:NO];
-	[sPanel setMessage: NSLocalizedString(@"Select the location where to export the JPEG files:",0L)];
+	[sPanel setMessage: NSLocalizedString(@"Select the location where to export the image files:",0L)];
 	[sPanel setPrompt: NSLocalizedString(@"Choose",0L)];
 	[sPanel setTitle: NSLocalizedString(@"Export",0L)];
 	[sPanel setCanCreateDirectories:YES];
@@ -11220,7 +11219,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
-			NSString *extension = @"jpg";
+			NSString *extension = format;
 			
 			NSString *tempPath;
 			
@@ -11291,9 +11290,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 				else
 					[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
 				
-				NSArray *representations = [[dcmPix image] representations];
-				NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-				[bitmapData writeToFile:dest atomically:YES];
+				if( [format isEqualToString:@"jpg"])
+				{
+					NSArray *representations = [[dcmPix image] representations];
+					NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+					[bitmapData writeToFile:dest atomically:YES];
+				}
+				else
+				{
+					[[[dcmPix image] TIFFRepresentation] writeToFile:dest atomically:YES];
+				}
 				
 				[dcmPix release];
 			}
@@ -11310,6 +11316,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[splash close];
 		[splash release];
 	}
+}
+
+- (void) exportJPEG:(id) sender
+{
+	[self exportImageAs: @"jpg" sender: sender];
+}
+
+- (void) exportTIFF:(id) sender
+{
+	[self exportImageAs: @"tif" sender: sender];
 }
 
 + (void) replaceNotAdmitted:(NSMutableString*) name
