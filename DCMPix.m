@@ -4429,6 +4429,11 @@ BOOL gUSEPAPYRUSDCMPIX;
 		enumerator = [[roiContourSequence sequence] objectEnumerator];
 		
 		while ( sequenceItem = [enumerator nextObject] ) {
+			
+			float
+				pixSpacingX,
+				pixSpacingY;
+
 			NSArray *rgbArray = [sequenceItem attributeArrayWithName: @"ROIDisplayColor"];
 			
 			RGBColor color = {
@@ -4484,76 +4489,105 @@ BOOL gUSEPAPYRUSDCMPIX;
 				for ( pointIndex = 0; pointIndex < numPoints; pointIndex++ ) {
 					
 					int imgIndex;
+					float
+						nearestOrients[ 9 ],
+						temp[ 3 ],
+						nearestPosX,
+						nearestPosY,
+						nearestPosZ,
+						nearestPixelSpacingXrecip,
+						nearestPixelSpacingYrecip;
 					
-					// Loop over all slices to determine which is "closest" to the point (i.e., the image slice which "contains" the point
-					
-					float nearestDistToSlice = MAXFLOAT;
-					
-					for ( imgIndex = 0; imgIndex < [imgObjects count]; imgIndex++ ) {
-						DicomImage *img = [imgObjects objectAtIndex: imgIndex];
+					if ( pointIndex == 0 ) { // Loop over all slices to determine which is "closest" to the point (i.e., the image slice which "contains" the point).
+											 // This of course assumes that ALL the points in the contour are in the same slice.
+						                     // Not considering at this time the possibility that the contour intersects multiple slices.
 						
-						DCMObject *imgObject = [dcmImgObjects objectAtIndex: imgIndex];
+						float nearestDistToSlice = MAXFLOAT;
 						
-						if ( imgObject == nil ) {
-							NSLog( @"Error opening referenced image file" );
-							goto END_CREATE_ROIS;
-						}
-						
-						NSArray *pixelSpacings = [imgObject attributeArrayWithName: @"PixelSpacing"];
-						NSArray *position = [imgObject attributeArrayWithName: @"ImagePositionPatient"];
-						
-						posX = [[position objectAtIndex: 0] floatValue];
-						posY = [[position objectAtIndex: 1] floatValue];
-						posZ = [[position objectAtIndex: 2] floatValue];
-						
-						pixelSpacingX = [[pixelSpacings objectAtIndex: 0] floatValue];
-						pixelSpacingY = [[pixelSpacings objectAtIndex: 1] floatValue];
-						
-						// Convert ROI points from DICOM space to ROI space
-						
-						NSArray *imageOrientation = [imgObject attributeArrayWithName: @"ImageOrientationPatient"];
-						float
-							orients[ 9 ],
-							temp[ 3 ];
-						
-						for ( i = 0; i < 6; i++ ) {
-							orients[ i ] = [[imageOrientation objectAtIndex: i] floatValue];
-						}
-						
-						// Normal vector
-						orients[6] = orients[1]*orients[5] - orients[2]*orients[4];
-						orients[7] = orients[2]*orients[3] - orients[0]*orients[5];
-						orients[8] = orients[0]*orients[4] - orients[1]*orients[3];
-						
-						
-						temp[ 0 ] = [[dcmPoints objectAtIndex: 3 * pointIndex] floatValue] - posX;
-						temp[ 1 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 1] floatValue] - posY;
-						temp[ 2 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 2] floatValue] - posZ;
-						
-						float distToSlice = fabs( temp[ 0 ] * orients[ 6 ] + temp[ 1 ] * orients[ 7 ] + temp[ 2 ] * orients[ 8 ] );
-						
-						if ( distToSlice < nearestDistToSlice ) {  // New candidate for nearest slice
-							nearestDistToSlice = distToSlice;
-							nearestImg = img;
+						for ( imgIndex = 0; imgIndex < [imgObjects count]; imgIndex++ ) {
+							DicomImage *img = [imgObjects objectAtIndex: imgIndex];
 							
-							sliceCoords[ 0 ] = temp[ 0 ] * orients[ 0 ] + temp[ 1 ] * orients[ 1 ] + temp[ 2 ] * orients[ 2 ];
-							sliceCoords[ 1 ] = temp[ 0 ] * orients[ 3 ] + temp[ 1 ] * orients[ 4 ] + temp[ 2 ] * orients[ 5 ];
-							sliceCoords[ 0 ] /= pixelSpacingX;
-							sliceCoords[ 1 ] /= pixelSpacingY;
-						}
+							DCMObject *imgObject = [dcmImgObjects objectAtIndex: imgIndex];
+							
+							if ( imgObject == nil ) {
+								NSLog( @"Error opening referenced image file" );
+								goto END_CREATE_ROIS;
+							}
+							
+							NSArray *pixSpacings = [imgObject attributeArrayWithName: @"PixelSpacing"];
+							NSArray *position = [imgObject attributeArrayWithName: @"ImagePositionPatient"];
+							
+							posX = [[position objectAtIndex: 0] floatValue];
+							posY = [[position objectAtIndex: 1] floatValue];
+							posZ = [[position objectAtIndex: 2] floatValue];
+							
+							pixSpacingX = [[pixSpacings objectAtIndex: 0] floatValue];
+							pixSpacingY = [[pixSpacings objectAtIndex: 1] floatValue];
+							
+							if ( pixSpacingX == 0.0f || pixSpacingY == 0.0f ) continue;  // Bad slice?
+							
+							float pixSpacingXrecip = 1.0f / pixSpacingX;
+							float pixSpacingYrecip = 1.0f / pixSpacingY;
+							
+							// Convert ROI points from DICOM space to ROI space
+							
+							NSArray *imageOrientation = [imgObject attributeArrayWithName: @"ImageOrientationPatient"];
+
+							float orients[ 9 ];
+							
+							for ( i = 0; i < 6; i++ ) {
+								orients[ i ] = [[imageOrientation objectAtIndex: i] floatValue];
+							}
+							
+							// Normal vector
+							orients[6] = orients[1]*orients[5] - orients[2]*orients[4];
+							orients[7] = orients[2]*orients[3] - orients[0]*orients[5];
+							orients[8] = orients[0]*orients[4] - orients[1]*orients[3];
+							
+							
+							temp[ 0 ] = [[dcmPoints objectAtIndex: 3 * pointIndex] floatValue] - posX;
+							temp[ 1 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 1] floatValue] - posY;
+							temp[ 2 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 2] floatValue] - posZ;
+							
+							float distToSlice = fabs( temp[ 0 ] * orients[ 6 ] + temp[ 1 ] * orients[ 7 ] + temp[ 2 ] * orients[ 8 ] );
+							
+							if ( distToSlice < nearestDistToSlice ) {  // New candidate for nearest slice
+								nearestDistToSlice = distToSlice;
+								nearestImg = img;
+								
+								sliceCoords[ 0 ] = temp[ 0 ] * orients[ 0 ] + temp[ 1 ] * orients[ 1 ] + temp[ 2 ] * orients[ 2 ];
+								sliceCoords[ 1 ] = temp[ 0 ] * orients[ 3 ] + temp[ 1 ] * orients[ 4 ] + temp[ 2 ] * orients[ 5 ];
+								sliceCoords[ 0 ] *= pixSpacingXrecip;
+								sliceCoords[ 1 ] *= pixSpacingYrecip;
+								
+								memcpy( nearestOrients, orients, sizeof orients );
+								nearestPosX = posX; nearestPosY = posY; nearestPosZ = posZ;
+								nearestPixelSpacingXrecip = pixSpacingXrecip;
+								nearestPixelSpacingYrecip = pixSpacingYrecip;
+							}
+							
+						} // End loop over images in series (looking for nearest slice)
 						
-					} // End loop over images in series (looking for nearest slice)
+					}
+					else { // Convert rest of points in contour to sliceCoord space
+						temp[ 0 ] = [[dcmPoints objectAtIndex: 3 * pointIndex] floatValue] - nearestPosX;
+						temp[ 1 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 1] floatValue] - nearestPosY;
+						temp[ 2 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 2] floatValue] - nearestPosZ;
+
+						sliceCoords[ 0 ] = temp[ 0 ] * nearestOrients[ 0 ] + temp[ 1 ] * nearestOrients[ 1 ] + temp[ 2 ] * nearestOrients[ 2 ];
+						sliceCoords[ 1 ] = temp[ 0 ] * nearestOrients[ 3 ] + temp[ 1 ] * nearestOrients[ 4 ] + temp[ 2 ] * nearestOrients[ 5 ];
+						sliceCoords[ 0 ] *= nearestPixelSpacingXrecip;
+						sliceCoords[ 1 ] *= nearestPixelSpacingYrecip;
+						
+					}
 					
 					[pointsArray addObject: [MyPoint point:NSMakePoint( sliceCoords[ 0 ], sliceCoords[ 1 ] )]];
-					
-					// Of course with this logic, only the LAST nearest slice is considered to be the ROI slice.
-					// Future update, Need to take care of possibility ROI crosses more than one slice!
-					
+										
 			} // End loop over all points in ROI
 				
 				ROI *roi = [[[ROI alloc] initWithType: type
-													 : pixelSpacingX
-													 : pixelSpacingY
+													 : pixSpacingX
+													 : pixSpacingY
 													 : NSMakePoint( posX, posY )] autorelease];
 				
 				[roi setName: roiName];
@@ -4585,16 +4619,32 @@ BOOL gUSEPAPYRUSDCMPIX;
 		for ( i = 0; i < [imgObjects count]; i++ ) {
 			
 			if ( [roiArray[ i ] count] == 0 ) continue;  // Nothing to see, move on.
-			
+						
 			DicomImage *img = [imgObjects objectAtIndex: i];
 			
 			NSString *str = [img SRPathForFrame: 0];  // Assume only one frame for now.   Worry about multi-frame later (if that is even defined in RTSTRUCT).
+			
+			// Get any pre-existing ROIs and add them to the roiArray
+			
+			NSData *data = [ROISRConverter roiFromDICOM: str];
+			
+			if ( data ) {
+				NSMutableArray *array = [NSUnarchiver unarchiveObjectWithData: data];
+				if ( array ) [roiArray[ i ] addObjectsFromArray: array];
+			}
+			
+			// Write out the concatenated roiArray
 			
 			NSString *path = [ROISRConverter archiveROIsAsDICOM: roiArray[ i ] toPath: str forImage: img];
 			
 			if ( path ) [newDICOMSR addObject: path];
 			
 		}
+		
+		if( [newDICOMSR count] ) [[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
+		
+		[[BrowserController currentBrowser] saveDatabase: nil];
+		
 	}
 	
 END_CREATE_ROIS:
