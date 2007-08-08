@@ -163,8 +163,6 @@ static	BOOL EXPORT2IPHOTO								= NO;
 static	ViewerController *blendedwin					= 0L;
 static	float	deg2rad									= 3.14159265358979/180.0; 
 static	BOOL dontEnterMagneticFunctions = NO;
-	
-//static ViewerController *gSelf;
 
 long numberOf2DViewer = 0;
 
@@ -318,7 +316,13 @@ int sortROIByName(id roi1, id roi2, void *context)
 
 - (IBAction) loadWindowsState:(id) sender
 {
+	BOOL c = [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"];
+	
+	if( c == NO) [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"automaticWorkspaceLoad"];
+	
 	[[BrowserController currentBrowser] databaseOpenStudy: [[imageView seriesObj] valueForKey:@"study"]];
+	
+	if( c == NO) [[NSUserDefaults standardUserDefaults] setBool: c forKey:@"automaticWorkspaceLoad"];
 }
 
 - (IBAction) saveWindowsState:(id) sender
@@ -339,8 +343,16 @@ int sortROIByName(id roi1, id roi2, void *context)
 		[dict setObject: [NSNumber numberWithInt: [[win imageView] rows]] forKey:@"rows"];
 		[dict setObject: [NSNumber numberWithInt: [[win imageView] columns]] forKey:@"columns"];
 		[dict setObject: [NSNumber numberWithInt: [[[win seriesView] firstView] curImage]] forKey:@"index"];
-		[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWL]] forKey:@"wl"];
-		[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWW]] forKey:@"ww"];
+		if( [[imageView curDCM] SUVConverted] == NO)
+		{
+			[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWL]] forKey:@"wl"];
+			[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWW]] forKey:@"ww"];
+		}
+		else
+		{
+			[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWL] / factorPET2SUV] forKey:@"wl"];
+			[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWW] / factorPET2SUV] forKey:@"ww"];
+		}
 		[dict setObject: [NSNumber numberWithFloat: [[win imageView] scaleValue]] forKey:@"scale"];
 		[dict setObject: [NSNumber numberWithFloat: [[win imageView] origin].x] forKey:@"x"];
 		[dict setObject: [NSNumber numberWithFloat: [[win imageView] origin].y] forKey:@"y"];
@@ -1694,7 +1706,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
 	{
-		[self saveWindowsState: self];
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceSave"]) [self saveWindowsState: self];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];
 	}
 	
@@ -16222,7 +16234,7 @@ sourceRef);
 {
 	if (!([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
 	{	
-		[self saveWindowsState: self];
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceSave"]) [self saveWindowsState: self];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];	
 		[self close];
 	}

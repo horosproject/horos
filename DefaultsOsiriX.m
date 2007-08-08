@@ -599,6 +599,9 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"1" forKey:@"COPYSETTINGSINSERIES"];
 	[defaultValues setObject:@"1" forKey:@"EJECTCDDVD"];
 	
+	[defaultValues setObject:@"1" forKey:@"automaticWorkspaceLoad"];
+	[defaultValues setObject:@"1" forKey:@"automaticWorkspaceSave"];
+	
 	// *************
 	// AUTO-CLEANING
 	// *************

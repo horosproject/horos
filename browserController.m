@@ -5119,7 +5119,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		BOOL windowsStateApplied = NO;
 		
-		if( [item valueForKey:@"windowsState"])
+		if( [item valueForKey:@"windowsState"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"])
 		{
 			NSData	*d = [item valueForKey:@"windowsState"];
 			
@@ -5198,7 +5198,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 					[v setWindowFrame: r showWindow: NO];
 					[v setImageRows: rows columns: columns];
 					[v setImageIndex: index];
-					[v setWL: wl WW: ww];
+					if( [[[v imageView] curDCM] SUVConverted]) [v setWL: wl*[v factorPET2SUV] WW: ww*[v factorPET2SUV]];
+					else [v setWL: wl WW: ww];
 					[v setScaleValue: scale];
 					[v setRotation: rotation];
 					[v setOrigin: NSMakePoint( x, y)];

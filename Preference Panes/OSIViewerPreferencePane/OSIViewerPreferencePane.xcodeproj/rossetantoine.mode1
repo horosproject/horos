@@ -220,6 +220,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -290,7 +292,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>683 410 1440 776 0 0 2560 1578 </string>
+						<string>1094 568 1440 776 0 0 2560 1578 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -306,13 +308,15 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>&lt;No Editor&gt;</string>
+								<string></string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
 									<dict>
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
+										<key>PBXProjectModuleLabel</key>
+										<string></string>
 										<key>history</key>
 										<array>
 											<string>ABF899510AE89FFD00BBE119</string>
@@ -333,7 +337,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1232, 730}}</string>
 								<key>RubberWindowFrame</key>
-								<string>683 410 1440 776 0 0 2560 1578 </string>
+								<string>1094 568 1440 776 0 0 2560 1578 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -353,7 +357,7 @@
 								<key>Frame</key>
 								<string>{{0, 735}, {1232, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>683 410 1440 776 0 0 2560 1578 </string>
+								<string>1094 568 1440 776 0 0 2560 1578 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -377,9 +381,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>AB4B527B0C5C7A14003BDBA8</string>
+				<string>AB56063D0C69DFE200CFAC0A</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>AB4B527C0C5C7A14003BDBA8</string>
+				<string>AB56063E0C69DFE200CFAC0A</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -516,7 +520,7 @@
 		<string>/Users/rossetantoine/osirix/osirix/Preference Panes/OSIViewerPreferencePane/OSIViewerPreferencePane.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>683 410 1440 776 0 0 2560 1578 </string>
+	<string>1094 568 1440 776 0 0 2560 1578 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>

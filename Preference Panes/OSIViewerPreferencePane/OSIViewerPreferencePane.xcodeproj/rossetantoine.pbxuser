@@ -31,12 +31,10 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 207387152;
-			PBXWorkspaceStateSaveDate = 207387152;
+			PBXPerProjectTemplateStateSaveDate = 208265185;
+			PBXWorkspaceStateSaveDate = 208265185;
 		};
 		perUserProjectItems = {
-			AB49BB230B859E01004EFB1E /* PBXTextBookmark */ = AB49BB230B859E01004EFB1E /* PBXTextBookmark */;
-			AB4B52B30C5C7F7C003BDBA8 /* PBXTextBookmark */ = AB4B52B30C5C7F7C003BDBA8 /* PBXTextBookmark */;
 			ABC3940A09F52058000A6508 /* PBXTextBookmark */ = ABC3940A09F52058000A6508 /* PBXTextBookmark */;
 			ABF899510AE89FFD00BBE119 /* PBXTextBookmark */ = ABF899510AE89FFD00BBE119 /* PBXTextBookmark */;
 		};
@@ -64,26 +62,6 @@
 	AB29966B09AB2BCA00F810FC /* Code sense */ = {
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
-	};
-	AB49BB230B859E01004EFB1E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */;
-		name = "OSIViewerPreferencePanePref.m: 45";
-		rLen = 0;
-		rLoc = 1215;
-		rType = 0;
-		vrLen = 1389;
-		vrLoc = 0;
-	};
-	AB4B52B30C5C7F7C003BDBA8 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */;
-		name = "OSIViewerPreferencePanePref.m: 45";
-		rLen = 0;
-		rLoc = 1215;
-		rType = 0;
-		vrLen = 1389;
-		vrLoc = 0;
 	};
 	ABC3940A09F52058000A6508 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;

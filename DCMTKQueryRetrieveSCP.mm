@@ -321,13 +321,14 @@ DcmQueryRetrieveConfig config;
 	_abort = NO;
 	running = YES;
 	
+	// ********* WARNING -- NEVER NEVER CALL ANY COCOA (NSobject) functions after this point... fork() will be used ! fork is INCOMPATIBLE with NSObject ! See http://www.cocoadev.com/index.pl?ForkSafety
+	// Even a simple NSLog() will cause many many problems......
+	
     /* loop waiting for associations */
     while (cond.good() && !_abort)
     {
 		if( _abort == NO) cond = scp->waitForAssociation(options.net_);
 		if( _abort == NO) scp->cleanChildren(OFTrue);  /* clean up any child processes  This needs to be here*/
-		
-		NSLog( @"DICOM Listener run loop...");
 	}
 	
 	delete scp;
