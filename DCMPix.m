@@ -4472,132 +4472,108 @@ BOOL gUSEPAPYRUSDCMPIX;
 				}
 				
 				int type = tCPolygon;
-				
-				DicomImage *nearestImg = nil;
-				
+								
 				NSArray *dcmPoints = [contourItem attributeArrayWithName: @"ContourData"];
-				
-				float sliceCoords[ 2 ];
-				
-				int numPoints = [[contourItem attributeValueWithName: @"NumberofContourPoints"] intValue];
-				NSMutableArray *pointsArray = [NSMutableArray arrayWithCapacity: numPoints];
-				
-				float posX, posY, posZ;
-				
-				int pointIndex;
-				
-				for ( pointIndex = 0; pointIndex < numPoints; pointIndex++ ) {
+								
+				unsigned int imgIndex;
+				for ( imgIndex = 0; imgIndex < [imgObjects count]; imgIndex++ ) {  // Loop over all slices to determine if slice "contains" the ROI based on distance criterion of FIRST point
+																				   // This of course assumes that ALL the points in the contour are in the same slice.
+																				   // Not considering at this time the possibility that the contour intersects multiple slices.
 					
-					int imgIndex;
-					float
-						nearestOrients[ 9 ],
-						temp[ 3 ],
-						nearestPosX,
-						nearestPosY,
-						nearestPosZ,
-						nearestPixelSpacingXrecip,
-						nearestPixelSpacingYrecip;
+					DicomImage *img = [imgObjects objectAtIndex: imgIndex];
 					
-					if ( pointIndex == 0 ) { // Loop over all slices to determine which is "closest" to the point (i.e., the image slice which "contains" the point).
-											 // This of course assumes that ALL the points in the contour are in the same slice.
-						                     // Not considering at this time the possibility that the contour intersects multiple slices.
-						
-						float nearestDistToSlice = MAXFLOAT;
-						
-						for ( imgIndex = 0; imgIndex < [imgObjects count]; imgIndex++ ) {
-							DicomImage *img = [imgObjects objectAtIndex: imgIndex];
-							
-							DCMObject *imgObject = [dcmImgObjects objectAtIndex: imgIndex];
-							
-							if ( imgObject == nil ) {
-								NSLog( @"Error opening referenced image file" );
-								goto END_CREATE_ROIS;
-							}
-							
-							NSArray *pixSpacings = [imgObject attributeArrayWithName: @"PixelSpacing"];
-							NSArray *position = [imgObject attributeArrayWithName: @"ImagePositionPatient"];
-							
-							posX = [[position objectAtIndex: 0] floatValue];
-							posY = [[position objectAtIndex: 1] floatValue];
-							posZ = [[position objectAtIndex: 2] floatValue];
-							
-							pixSpacingX = [[pixSpacings objectAtIndex: 0] floatValue];
-							pixSpacingY = [[pixSpacings objectAtIndex: 1] floatValue];
-							
-							if ( pixSpacingX == 0.0f || pixSpacingY == 0.0f ) continue;  // Bad slice?
-							
-							float pixSpacingXrecip = 1.0f / pixSpacingX;
-							float pixSpacingYrecip = 1.0f / pixSpacingY;
-							
-							// Convert ROI points from DICOM space to ROI space
-							
-							NSArray *imageOrientation = [imgObject attributeArrayWithName: @"ImageOrientationPatient"];
+					DCMObject *imgObject = [dcmImgObjects objectAtIndex: imgIndex];
+					
+					if ( imgObject == nil ) {
+						NSLog( @"Error opening referenced image file" );
+						goto END_CREATE_ROIS;
+					}
+					
+					NSArray *pixSpacings = [imgObject attributeArrayWithName: @"PixelSpacing"];
+					NSArray *position = [imgObject attributeArrayWithName: @"ImagePositionPatient"];
 
-							float orients[ 9 ];
-							
-							for ( i = 0; i < 6; i++ ) {
-								orients[ i ] = [[imageOrientation objectAtIndex: i] floatValue];
-							}
-							
-							// Normal vector
-							orients[6] = orients[1]*orients[5] - orients[2]*orients[4];
-							orients[7] = orients[2]*orients[3] - orients[0]*orients[5];
-							orients[8] = orients[0]*orients[4] - orients[1]*orients[3];
-							
-							
+					float posX = [[position objectAtIndex: 0] floatValue];
+					float posY = [[position objectAtIndex: 1] floatValue];
+					float posZ = [[position objectAtIndex: 2] floatValue];
+					
+					pixSpacingX = [[pixSpacings objectAtIndex: 0] floatValue];
+					pixSpacingY = [[pixSpacings objectAtIndex: 1] floatValue];
+					
+					if ( pixSpacingX == 0.0f || pixSpacingY == 0.0f ) continue;  // Bad slice?
+					
+					float pixSpacingXrecip = 1.0f / pixSpacingX;
+					float pixSpacingYrecip = 1.0f / pixSpacingY;
+					
+					// Convert ROI points from DICOM space to ROI space
+					
+					NSArray *imageOrientation = [imgObject attributeArrayWithName: @"ImageOrientationPatient"];
+					
+					float orients[ 9 ];
+					
+					for ( i = 0; i < 6; i++ ) {
+						orients[ i ] = [[imageOrientation objectAtIndex: i] floatValue];
+					}
+					
+					// Normal vector
+					orients[6] = orients[1]*orients[5] - orients[2]*orients[4];
+					orients[7] = orients[2]*orients[3] - orients[0]*orients[5];
+					orients[8] = orients[0]*orients[4] - orients[1]*orients[3];
+					
+					float temp[ 3 ];
+					
+					temp[ 0 ] = [[dcmPoints objectAtIndex: 0] floatValue] - posX;
+					temp[ 1 ] = [[dcmPoints objectAtIndex: 1] floatValue] - posY;
+					temp[ 2 ] = [[dcmPoints objectAtIndex: 2] floatValue] - posZ;
+					
+					float distToSlice = fabs( temp[ 0 ] * orients[ 6 ] + temp[ 1 ] * orients[ 7 ] + temp[ 2 ] * orients[ 8 ] );
+					float distCriterion = [[imgObject attributeValueWithName: @"SliceThickness"] floatValue] * 0.4;
+					if ( distCriterion <= 0.0f ) distCriterion = 0.1f;  // mm
+					
+					if ( distToSlice < distCriterion ) {
+						float sliceCoords[ 2 ];
+						
+						sliceCoords[ 0 ] = temp[ 0 ] * orients[ 0 ] + temp[ 1 ] * orients[ 1 ] + temp[ 2 ] * orients[ 2 ];
+						sliceCoords[ 1 ] = temp[ 0 ] * orients[ 3 ] + temp[ 1 ] * orients[ 4 ] + temp[ 2 ] * orients[ 5 ];
+						sliceCoords[ 0 ] *= pixSpacingXrecip;
+						sliceCoords[ 1 ] *= pixSpacingYrecip;
+						
+						int numPoints = [[contourItem attributeValueWithName: @"NumberofContourPoints"] intValue];
+						NSMutableArray *pointsArray = [NSMutableArray arrayWithCapacity: numPoints];
+						
+						[pointsArray addObject: [MyPoint point:NSMakePoint( sliceCoords[ 0 ], sliceCoords[ 1 ] )]];
+						
+						// Convert rest of points in contour to sliceCoord space
+						int pointIndex;
+						
+						for ( pointIndex = 1; pointIndex < numPoints; pointIndex++ ) {
 							temp[ 0 ] = [[dcmPoints objectAtIndex: 3 * pointIndex] floatValue] - posX;
 							temp[ 1 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 1] floatValue] - posY;
 							temp[ 2 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 2] floatValue] - posZ;
 							
-							float distToSlice = fabs( temp[ 0 ] * orients[ 6 ] + temp[ 1 ] * orients[ 7 ] + temp[ 2 ] * orients[ 8 ] );
-							
-							if ( distToSlice < nearestDistToSlice ) {  // New candidate for nearest slice
-								nearestDistToSlice = distToSlice;
-								nearestImg = img;
-								
-								sliceCoords[ 0 ] = temp[ 0 ] * orients[ 0 ] + temp[ 1 ] * orients[ 1 ] + temp[ 2 ] * orients[ 2 ];
-								sliceCoords[ 1 ] = temp[ 0 ] * orients[ 3 ] + temp[ 1 ] * orients[ 4 ] + temp[ 2 ] * orients[ 5 ];
-								sliceCoords[ 0 ] *= pixSpacingXrecip;
-								sliceCoords[ 1 ] *= pixSpacingYrecip;
-								
-								memcpy( nearestOrients, orients, sizeof orients );
-								nearestPosX = posX; nearestPosY = posY; nearestPosZ = posZ;
-								nearestPixelSpacingXrecip = pixSpacingXrecip;
-								nearestPixelSpacingYrecip = pixSpacingYrecip;
-							}
-							
-						} // End loop over images in series (looking for nearest slice)
+							sliceCoords[ 0 ] = temp[ 0 ] * orients[ 0 ] + temp[ 1 ] * orients[ 1 ] + temp[ 2 ] * orients[ 2 ];
+							sliceCoords[ 1 ] = temp[ 0 ] * orients[ 3 ] + temp[ 1 ] * orients[ 4 ] + temp[ 2 ] * orients[ 5 ];
+							sliceCoords[ 0 ] *= pixSpacingXrecip;
+							sliceCoords[ 1 ] *= pixSpacingYrecip;
+							[pointsArray addObject: [MyPoint point:NSMakePoint( sliceCoords[ 0 ], sliceCoords[ 1 ] )]];
+						}
 						
-					}
-					else { // Convert rest of points in contour to sliceCoord space
-						temp[ 0 ] = [[dcmPoints objectAtIndex: 3 * pointIndex] floatValue] - nearestPosX;
-						temp[ 1 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 1] floatValue] - nearestPosY;
-						temp[ 2 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 2] floatValue] - nearestPosZ;
-
-						sliceCoords[ 0 ] = temp[ 0 ] * nearestOrients[ 0 ] + temp[ 1 ] * nearestOrients[ 1 ] + temp[ 2 ] * nearestOrients[ 2 ];
-						sliceCoords[ 1 ] = temp[ 0 ] * nearestOrients[ 3 ] + temp[ 1 ] * nearestOrients[ 4 ] + temp[ 2 ] * nearestOrients[ 5 ];
-						sliceCoords[ 0 ] *= nearestPixelSpacingXrecip;
-						sliceCoords[ 1 ] *= nearestPixelSpacingYrecip;
+						ROI *roi = [[[ROI alloc] initWithType: type
+															 : pixSpacingX
+															 : pixSpacingY
+															 : NSMakePoint( posX, posY )] autorelease];
+						
+						[roi setName: roiName];
+						[roi setColor: color];
+						
+						[roi setPoints: pointsArray];
+						
+						[roiArray[ [imgObjects indexOfObject: img] ] addObject: roi];
 						
 					}
 					
-					[pointsArray addObject: [MyPoint point:NSMakePoint( sliceCoords[ 0 ], sliceCoords[ 1 ] )]];
-										
-			} // End loop over all points in ROI
+				} // End loop over images in series (looking for containing slices)
 				
-				ROI *roi = [[[ROI alloc] initWithType: type
-													 : pixSpacingX
-													 : pixSpacingY
-													 : NSMakePoint( posX, posY )] autorelease];
-				
-				[roi setName: roiName];
-				[roi setColor: color];
-				
-				[roi setPoints: pointsArray];
-				
-				[roiArray[ [imgObjects indexOfObject: nearestImg] ] addObject: roi];
-				
-		} // Loop over ContourSequence
+			} // Loop over ContourSequence
 			
 			iStruct++;
 			
@@ -4731,6 +4707,7 @@ END_CREATE_ROIS:
 #pragma mark *RTSTRUCT	
 	//  Check for RTSTRUCT and create ROIs if needed	
 	if ( [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID RTStructureSetStorage]] ) {
+		[[self seriesObj] setValue:[NSNumber numberWithFloat: 0.0f] forKey:@"rotationAngle"];  // Hack to align grayscale image - otherwise it displays crooked for some reason.
 		[self createROIsFromRTSTRUCT: dcmObject];
 		[pool release];
 		return YES;
