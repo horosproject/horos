@@ -6767,6 +6767,10 @@ static BOOL withReset = NO;
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to JPEG", nil)  action:@selector(exportJPEG:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
+	
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to TIFF", nil)  action:@selector(exportTIFF:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
 
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to DICOM File(s)", nil)  action:@selector(exportDICOMFile:) keyEquivalent:@""];
 	[contextual addItem:item];
@@ -9488,6 +9492,10 @@ static NSArray*	openSubSeriesArray = 0L;
 	[menu addItem:exportItem];
 	[exportItem release];
 	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to JPEG", 0L) action: @selector(exportJPEG:) keyEquivalent:@""];
+	[exportItem setTarget:self];
+	[menu addItem:exportItem];
+	[exportItem release];
+	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export to TIFF", 0L) action: @selector(exportTIFF:) keyEquivalent:@""];
 	[exportItem setTarget:self];
 	[menu addItem:exportItem];
 	[exportItem release];
