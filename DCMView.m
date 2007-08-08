@@ -7499,6 +7499,52 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels
 {
+	return [self getRawPixels:width :height :spp :bpp :screenCapture :force8bits :removeGraphical :squarePixels :NO];
+}
+
+-(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels :(BOOL) allTiles
+{
+	if( allTiles && [self is2DViewer] && (_imageRows != 1 || _imageColums != 1))
+	{
+		NSArray		*views = [[[self windowController] seriesView] imageViews];
+		
+		// Create a large buffer for all views
+		// All views are identical
+		
+		unsigned char	*firstView = [[views objectAtIndex: 0] getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels];
+		unsigned char	*globalView;
+		
+		long viewSize =  *bpp * *spp * *width * *height / 8;
+		
+		globalView = malloc( viewSize * _imageColums * _imageRows);
+		
+		int x, y;
+		
+		free( firstView);
+		
+		for( x = 0; x < _imageColums; x++)
+		{
+			for( y = 0; y < _imageRows; y++)
+			{
+				unsigned char	*aView = [[views objectAtIndex: x + y*_imageColums] getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels];
+				
+//				unsigned char	*o = globalView + spp*width* (int) (height - bounds.origin.y - iheight) + (int) bounds.origin.x*spp;
+//			
+//				int y;
+//				for( y = 0 ; y < iheight; y++)
+//				{
+//					memcpy( o + y*spp*width, tempData + y*ispp*iwidth, ispp*iwidth);
+//				}
+			}
+		}
+		
+		return globalView;
+	}
+	else return [self getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels];
+}
+
+-(unsigned char*) getRawPixelsView:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels
+{
 	unsigned char	*buf = 0L;
 	long			i;
 	
