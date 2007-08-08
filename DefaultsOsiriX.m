@@ -601,6 +601,7 @@ static NSString *hostName = @"";
 	
 	[defaultValues setObject:@"1" forKey:@"automaticWorkspaceLoad"];
 	[defaultValues setObject:@"1" forKey:@"automaticWorkspaceSave"];
+	[defaultValues setObject:@"1" forKey:@"includeAllTiledViews"];
 	
 	// *************
 	// AUTO-CLEANING

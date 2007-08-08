@@ -32,6 +32,7 @@ Version 2.3
 #import "DCMCursor.h"
 #include <Accelerate/Accelerate.h>
 
+#import "SeriesView.h"
 #import "ViewerController.h"
 #import "MPRController.h"
 #import "ThickSlabController.h"
@@ -7103,7 +7104,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					}
 				}  //drawLines for ImageView Frames
 				
-				if ((_imageColumns > 1 || _imageRows > 1) && [self is2DViewer] == YES && stringID == 0L) {
+				if ((_imageColumns > 1 || _imageRows > 1) && [self is2DViewer] == YES && stringID == 0L)
+				{
 					float heighthalf = size.size.height/2 - 1;
 					float widthhalf = size.size.width/2 - 1;
 					
@@ -7499,12 +7501,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels
 {
-	return [self getRawPixels:width :height :spp :bpp :screenCapture :force8bits :removeGraphical :squarePixels :NO];
+	return [self getRawPixels:width :height :spp :bpp :screenCapture :force8bits :removeGraphical :squarePixels :[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"]];
 }
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels :(BOOL) allTiles
 {
-	if( allTiles && [self is2DViewer] && (_imageRows != 1 || _imageColums != 1))
+	if( allTiles && [self is2DViewer] && (_imageRows != 1 || _imageColumns != 1))
 	{
 		NSArray		*views = [[[self windowController] seriesView] imageViews];
 		
@@ -7515,28 +7517,35 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		unsigned char	*globalView;
 		
 		long viewSize =  *bpp * *spp * *width * *height / 8;
+		int	globalWidth = *width * _imageColumns;
+		int globalHeight = *height * _imageRows;
 		
-		globalView = malloc( viewSize * _imageColums * _imageRows);
+		globalView = malloc( viewSize * _imageColumns * _imageRows);
 		
 		int x, y;
 		
 		free( firstView);
 		
-		for( x = 0; x < _imageColums; x++)
+		for( x = 0; x < _imageColumns; x++)
 		{
 			for( y = 0; y < _imageRows; y++)
 			{
-				unsigned char	*aView = [[views objectAtIndex: x + y*_imageColums] getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels];
+				unsigned char	*aView = [[views objectAtIndex: x + y*_imageColumns] getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels];
 				
-//				unsigned char	*o = globalView + spp*width* (int) (height - bounds.origin.y - iheight) + (int) bounds.origin.x*spp;
-//			
-//				int y;
-//				for( y = 0 ; y < iheight; y++)
-//				{
-//					memcpy( o + y*spp*width, tempData + y*ispp*iwidth, ispp*iwidth);
-//				}
+				unsigned char	*o = globalView + *spp*globalWidth*y**height**bpp/8 +  x**width**spp**bpp/8;
+			
+				int yy;
+				for( yy = 0 ; yy < *height; yy++)
+				{
+					memcpy( o + yy**spp*globalWidth**bpp/8, aView + yy**spp**width**bpp/8, *spp**width**bpp/8);
+				}
+				
+				free( aView);
 			}
 		}
+		
+		*width = globalWidth;
+		*height = globalHeight;
 		
 		return globalView;
 	}
@@ -7860,11 +7869,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	NSString			*colorSpace;
 	unsigned char		*data;
 		
-	if( numberOf2DViewer > 1 && stringID == 0L && originalSize == NO)
+	if( stringID == 0L && originalSize == NO)
 	{
-		stringID = [@"copy" retain];	// to remove the red square around the image
-		[self display];
+		if( numberOf2DViewer > 1 || _imageColumns != 1 || _imageRows != 1)
+		{
+			stringID = [@"copy" retain];	// to remove the red square around the image
+			[self display];
+		}
 	}
+	
+	if( [self is2DViewer] == NO) allViewers = NO;
 	
 	if( allViewers)
 	{
@@ -7912,7 +7926,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		// Compute the enclosing rect
 		for( i = 0; i < [viewers count]; i++)
 		{
+			[[[viewers objectAtIndex: i] seriesView] selectFirstTilingView];
+			
 			NSRect	bounds = [[[viewers objectAtIndex: i] imageView] bounds];
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"])
+			{
+				bounds.size.width *= [[[viewers objectAtIndex: i] seriesView] imageColumns];
+				bounds.size.height *= [[[viewers objectAtIndex: i] seriesView] imageRows];
+			}
+			
 			NSPoint or = [[[viewers objectAtIndex: i] imageView] convertPoint: bounds.origin toView: 0L];
 			bounds.origin = [[[viewers objectAtIndex: i] window] convertBaseToScreen: or];
 			
