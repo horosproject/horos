@@ -566,6 +566,9 @@ enum
 - (IBAction) keyImageCheckBox:(id) sender;
 - (IBAction) keyImageDisplayButton:(id) sender;
 - (void) adjustKeyImage;
+- (IBAction) saveWindowsState:(id) sender;
+- (IBAction) loadWindowsState:(id) sender;
+- (IBAction) resetWindowsState:(id) sender;
 - (void) buildMatrixPreview;
 - (void) buildMatrixPreview: (BOOL) showSelected;
 - (void) matrixPreviewSelectCurrentSeries;

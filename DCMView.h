@@ -391,8 +391,6 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 - (NSManagedObject *)seriesObj;
 - (void) updatePresentationStateFromSeries;
 - (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage;
-- (IBAction)resetSeriesPresentationState:(id)sender;
-- (IBAction)resetImagePresentationState:(id)sender;
 - (void) setCursorForView: (long) tool;
 - (long) getTool: (NSEvent*) event;
 - (void)resizeWindowToScale:(float)resizeScale;

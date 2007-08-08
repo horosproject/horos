@@ -858,6 +858,24 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     }
 }
 
+- (BOOL)validateMenuItem:(NSMenuItem *)item
+{
+	BOOL valid = NO;
+	
+    if ([item action] == @selector( roiSaveSelected:))
+	{
+		int i;
+		
+		for( i = 0; i < [curRoiList count]; i++)
+		{
+			if( [[curRoiList objectAtIndex: i] ROImode] == ROI_selected) valid = YES;
+		}
+    }
+	else valid = YES;
+	
+    return valid;
+}
+
 - (IBAction) roiSaveSelected: (id) sender
 {
 	NSSavePanel     *panel = [NSSavePanel savePanel];
@@ -868,9 +886,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	for( i = 0; i < [curRoiList count]; i++)
 	{
 		if( [[curRoiList objectAtIndex: i] ROImode] == ROI_selected)
-		{
 			[selectedROIs addObject: [curRoiList objectAtIndex: i]];
-		}
 	}
 	
 	if( [selectedROIs count] > 0)
@@ -4967,93 +4983,100 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	if (![[[note object] superview] isEqual:[self superview]] && [self is2DViewer])
 	{
-	BOOL	stringOK = NO;
-	
-	long prevImage = curImage;
-	
-//	if( stringID)
-//	{
-//		if( [stringID isEqualToString:@"Original"]) stringOK = YES;
-//	}
-//	
-//	if( [[note object] stringID])
-//	{
-//		if( [[[note object] stringID] isEqualToString:@"Original"]) stringOK = YES;
-//	}
-//	
-//	if( stringID == 0L && [[note object] stringID] == 0L) stringOK = YES;
-	
-	if( [[self window] isVisible] == NO)
-		return;
-	
-    if( [note object] != self && isKeyView == YES && matrix == 0 && stringID == 0L && [[note object] stringID] == 0L && curImage > -1 )   //|| [[[note object] stringID] isEqualToString:@"Original"] == YES))   // Dont change the browser preview....
-    {
-        NSDictionary *instructions = [note userInfo];
+		BOOL	stringOK = NO;
 		
-        long		diff = [[instructions valueForKey: @"Direction"] longValue];
-        long		pos = [[instructions valueForKey: @"Pos"] longValue];
-		float		loc = [[instructions valueForKey: @"Location"] floatValue];
-		float		offsetsync = [[instructions valueForKey: @"offsetsync"] floatValue];
-		NSString	*oStudyId = [instructions valueForKey: @"studyID"];
-		DCMPix		*oPix = [instructions valueForKey: @"DCMPix"];
-		DCMPix		*oPix2 = [instructions valueForKey: @"DCMPix2"];
-		DCMView		*otherView = [instructions valueForKey: @"view"];
-		long		stack = [oPix stack];
-		float		destPoint3D[ 3];
-		BOOL		point3D = NO;
-
-		if( otherView == blendingView || self == [otherView blendingView])
+		long prevImage = curImage;
+		
+	//	if( stringID)
+	//	{
+	//		if( [stringID isEqualToString:@"Original"]) stringOK = YES;
+	//	}
+	//	
+	//	if( [[note object] stringID])
+	//	{
+	//		if( [[[note object] stringID] isEqualToString:@"Original"]) stringOK = YES;
+	//	}
+	//	
+	//	if( stringID == 0L && [[note object] stringID] == 0L) stringOK = YES;
+		
+		if( [[self window] isVisible] == NO)
+			return;
+		
+		if( [note object] != self && isKeyView == YES && matrix == 0 && stringID == 0L && [[note object] stringID] == 0L && curImage > -1 )   //|| [[[note object] stringID] isEqualToString:@"Original"] == YES))   // Dont change the browser preview....
 		{
-			syncOnLocationImpossible = NO;
-			[otherView setSyncOnLocationImpossible: NO];
-		}
-		
-		if( [instructions valueForKey: @"offsetsync"] == 0L) { NSLog(@"err offsetsync");	return;}
-		
-		if( [instructions valueForKey: @"view"] == 0L) { NSLog(@"err view");	return;}
-		
-		if( [instructions valueForKey: @"point3DX"])
-		{
-			destPoint3D[ 0] = [[instructions valueForKey: @"point3DX"] floatValue];
-			destPoint3D[ 1] = [[instructions valueForKey: @"point3DY"] floatValue];
-			destPoint3D[ 2] = [[instructions valueForKey: @"point3DZ"] floatValue];
+			NSDictionary *instructions = [note userInfo];
 			
-			point3D = YES;
-		}
-		
-		BOOL registeredViewer = NO;
-		
-		if( [[self windowController] registeredViewer] == [otherView windowController] || [[otherView windowController] registeredViewer] == [self windowController])
-			registeredViewer = YES;
-		
-		if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer || [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] == NO || syncSeriesIndex != -1)  // We received a message from the keyWindow -> display the slice cut to our window!
-		{
-			if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer)
+			long		diff = [[instructions valueForKey: @"Direction"] longValue];
+			long		pos = [[instructions valueForKey: @"Pos"] longValue];
+			float		loc = [[instructions valueForKey: @"Location"] floatValue];
+			float		offsetsync = [[instructions valueForKey: @"offsetsync"] floatValue];
+			NSString	*oStudyId = [instructions valueForKey: @"studyID"];
+			DCMPix		*oPix = [instructions valueForKey: @"DCMPix"];
+			DCMPix		*oPix2 = [instructions valueForKey: @"DCMPix2"];
+			DCMView		*otherView = [instructions valueForKey: @"view"];
+			long		stack = [oPix stack];
+			float		destPoint3D[ 3];
+			BOOL		point3D = NO;
+
+			if( otherView == blendingView || self == [otherView blendingView])
+			{
+				syncOnLocationImpossible = NO;
+				[otherView setSyncOnLocationImpossible: NO];
+			}
+			
+			if( [instructions valueForKey: @"offsetsync"] == 0L) { NSLog(@"err offsetsync");	return;}
+			
+			if( [instructions valueForKey: @"view"] == 0L) { NSLog(@"err view");	return;}
+			
+			if( [instructions valueForKey: @"point3DX"])
+			{
+				destPoint3D[ 0] = [[instructions valueForKey: @"point3DX"] floatValue];
+				destPoint3D[ 1] = [[instructions valueForKey: @"point3DY"] floatValue];
+				destPoint3D[ 2] = [[instructions valueForKey: @"point3DZ"] floatValue];
+				
+				point3D = YES;
+			}
+			
+			BOOL registeredViewer = NO;
+			
+			if( [[self windowController] registeredViewer] == [otherView windowController] || [[otherView windowController] registeredViewer] == [self windowController])
+				registeredViewer = YES;
+			
+			if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer || [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] == NO || syncSeriesIndex != -1)  // We received a message from the keyWindow -> display the slice cut to our window!
 			{
 				if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer)
 				{
-					[self computeSlice: oPix :oPix2];
-				}
-				else
-				{
-					sliceVector2[0] = sliceVector2[1] = sliceVector2[2] = 0; 
-					slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 
-				}
-				
-				// Double-Click -> find the nearest point on our plane, go to this plane and draw the intersection!
-				if( point3D)
-				{
-					float	resultPoint[ 3];
-					
-					long newIndex = [self findPlaneAndPoint: destPoint3D :resultPoint];
-					
-					if( newIndex != -1)
+					if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer)
 					{
-						curImage = newIndex;
+						[self computeSlice: oPix :oPix2];
+					}
+					else
+					{
+						sliceVector2[0] = sliceVector2[1] = sliceVector2[2] = 0; 
+						slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 
+					}
+					
+					// Double-Click -> find the nearest point on our plane, go to this plane and draw the intersection!
+					if( point3D)
+					{
+						float	resultPoint[ 3];
 						
-						slicePoint3D[ 0] = resultPoint[ 0];
-						slicePoint3D[ 1] = resultPoint[ 1];
-						slicePoint3D[ 2] = resultPoint[ 2];
+						long newIndex = [self findPlaneAndPoint: destPoint3D :resultPoint];
+						
+						if( newIndex != -1)
+						{
+							curImage = newIndex;
+							
+							slicePoint3D[ 0] = resultPoint[ 0];
+							slicePoint3D[ 1] = resultPoint[ 1];
+							slicePoint3D[ 2] = resultPoint[ 2];
+						}
+						else
+						{
+							slicePoint3D[ 0] = 0;
+							slicePoint3D[ 1] = 0;
+							slicePoint3D[ 2] = 0;
+						}
 					}
 					else
 					{
@@ -5062,162 +5085,155 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						slicePoint3D[ 2] = 0;
 					}
 				}
-				else
-				{
-					slicePoint3D[ 0] = 0;
-					slicePoint3D[ 1] = 0;
-					slicePoint3D[ 2] = 0;
-				}
-			}
-			
-			// Absolute Vodka
-			if( syncro == syncroABS && point3D == NO && syncSeriesIndex == -1)
-			{
-				if( flippedData) curImage = [dcmPixList count] -1 -pos;
-				else curImage = pos;
 				
-				//NSLog(@"Abs");
-				
-				if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] - 1;
-				if( curImage < 0) curImage = 0;
-			}
-			
-			// Based on Location
-			if( (syncro == syncroLOC && point3D == NO) || syncSeriesIndex != -1)
-			{
-				if( volumicSeries == YES && [otherView volumicSeries] == YES)
-				{
-					if( [[self windowController] orthogonalOrientation] == [[otherView windowController] orthogonalOrientation])
-					{
-						if( (sliceVector[0] == 0 && sliceVector[1] == 0 && sliceVector[2] == 0) || syncSeriesIndex != -1)  // Planes are parallel !
-						{
-							BOOL	noSlicePosition, everythingLoaded = YES;
-							float   firstSliceLocation;
-							long	index, i;
-							float   smallestdiff = -1, fdiff, slicePosition;
-							
-							everythingLoaded = [[self windowController] isEverythingLoaded];
-							
-							noSlicePosition = NO;
-							
-							if( everythingLoaded) firstSliceLocation = [[dcmPixList objectAtIndex: 0] sliceLocation];
-							else firstSliceLocation = [[[dcmFilesList objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
-							
-							for( i = 0; i < [dcmFilesList count]; i++)
-							{
-								if( everythingLoaded) slicePosition = [[dcmPixList objectAtIndex: i] sliceLocation];
-								else slicePosition = [[[dcmFilesList objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
-								
-								fdiff = slicePosition - loc;
-								
-								if( registeredViewer == NO)
-								{
-									if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] == NO || syncSeriesIndex != -1)
-									{						
-										if( [otherView syncSeriesIndex] != -1)
-										{
-											slicePosition -= [[dcmPixList objectAtIndex: syncSeriesIndex] sliceLocation];
-											
-											fdiff = slicePosition - (loc - [[[otherView dcmPixList] objectAtIndex: [otherView syncSeriesIndex]] sliceLocation]);
-										}
-										else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] ) noSlicePosition = YES;
-									}
-								}
-								
-								if( fdiff < 0) fdiff = -fdiff;
-								
-								if( fdiff < smallestdiff || smallestdiff == -1)
-								{
-									smallestdiff = fdiff;
-									index = i;
-								}
-							}
-							
-							if( noSlicePosition == NO)
-							{
-								curImage = index;
-								
-								if( [dcmPixList count] > 1)
-								{
-									float sliceDistance;
-									
-									if( everythingLoaded) sliceDistance = fabs( [[dcmPixList objectAtIndex: 1] sliceLocation] - [[dcmPixList objectAtIndex: 0] sliceLocation]);
-									else sliceDistance = fabs( [[[dcmFilesList objectAtIndex: 1] valueForKey:@"sliceLocation"] floatValue] - [[[dcmFilesList objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue]);
-									
-									if( fabs( smallestdiff) > sliceDistance * 2)
-									{
-										if( otherView == blendingView || self == [otherView blendingView])
-										{
-											syncOnLocationImpossible = YES;
-											[otherView setSyncOnLocationImpossible: YES];
-										}
-									}
-								}
-								
-								if( curImage >= [dcmFilesList count]) curImage = [dcmFilesList count]-1;
-								if( curImage < 0) curImage = 0;
-							}
-						}
-					}
-				}
-				else if( volumicSeries == NO && [otherView volumicSeries] == NO)	// For example time or functional series
+				// Absolute Vodka
+				if( syncro == syncroABS && point3D == NO && syncSeriesIndex == -1)
 				{
 					if( flippedData) curImage = [dcmPixList count] -1 -pos;
 					else curImage = pos;
 					
-					//NSLog(@"Not volumic...");
+					//NSLog(@"Abs");
 					
 					if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] - 1;
 					if( curImage < 0) curImage = 0;
 				}
-			}
-
-			// Relative
-			 if( syncro == syncroREL && point3D == NO && syncSeriesIndex == -1)
-			 {
-				if( flippedData) curImage -= diff;
-				else curImage += diff;
 				
-				//NSLog(@"Rel");
-				
-				if( curImage < 0)
+				// Based on Location
+				if( (syncro == syncroLOC && point3D == NO) || syncSeriesIndex != -1)
 				{
-					curImage += [dcmPixList count];
+					if( volumicSeries == YES && [otherView volumicSeries] == YES)
+					{
+						if( [[self windowController] orthogonalOrientation] == [[otherView windowController] orthogonalOrientation])
+						{
+							if( (sliceVector[0] == 0 && sliceVector[1] == 0 && sliceVector[2] == 0) || syncSeriesIndex != -1)  // Planes are parallel !
+							{
+								BOOL	noSlicePosition, everythingLoaded = YES;
+								float   firstSliceLocation;
+								long	index, i;
+								float   smallestdiff = -1, fdiff, slicePosition;
+								
+								everythingLoaded = [[self windowController] isEverythingLoaded];
+								
+								noSlicePosition = NO;
+								
+								if( everythingLoaded) firstSliceLocation = [[dcmPixList objectAtIndex: 0] sliceLocation];
+								else firstSliceLocation = [[[dcmFilesList objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
+								
+								for( i = 0; i < [dcmFilesList count]; i++)
+								{
+									if( everythingLoaded) slicePosition = [[dcmPixList objectAtIndex: i] sliceLocation];
+									else slicePosition = [[[dcmFilesList objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
+									
+									fdiff = slicePosition - loc;
+									
+									if( registeredViewer == NO)
+									{
+										if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] == NO || syncSeriesIndex != -1)
+										{						
+											if( [otherView syncSeriesIndex] != -1)
+											{
+												slicePosition -= [[dcmPixList objectAtIndex: syncSeriesIndex] sliceLocation];
+												
+												fdiff = slicePosition - (loc - [[[otherView dcmPixList] objectAtIndex: [otherView syncSeriesIndex]] sliceLocation]);
+											}
+											else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] ) noSlicePosition = YES;
+										}
+									}
+									
+									if( fdiff < 0) fdiff = -fdiff;
+									
+									if( fdiff < smallestdiff || smallestdiff == -1)
+									{
+										smallestdiff = fdiff;
+										index = i;
+									}
+								}
+								
+								if( noSlicePosition == NO)
+								{
+									curImage = index;
+									
+									if( [dcmPixList count] > 1)
+									{
+										float sliceDistance;
+										
+										if( everythingLoaded) sliceDistance = fabs( [[dcmPixList objectAtIndex: 1] sliceLocation] - [[dcmPixList objectAtIndex: 0] sliceLocation]);
+										else sliceDistance = fabs( [[[dcmFilesList objectAtIndex: 1] valueForKey:@"sliceLocation"] floatValue] - [[[dcmFilesList objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue]);
+										
+										if( fabs( smallestdiff) > sliceDistance * 2)
+										{
+											if( otherView == blendingView || self == [otherView blendingView])
+											{
+												syncOnLocationImpossible = YES;
+												[otherView setSyncOnLocationImpossible: YES];
+											}
+										}
+									}
+									
+									if( curImage >= [dcmFilesList count]) curImage = [dcmFilesList count]-1;
+									if( curImage < 0) curImage = 0;
+								}
+							}
+						}
+					}
+					else if( volumicSeries == NO && [otherView volumicSeries] == NO)	// For example time or functional series
+					{
+						if( flippedData) curImage = [dcmPixList count] -1 -pos;
+						else curImage = pos;
+						
+						//NSLog(@"Not volumic...");
+						
+						if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] - 1;
+						if( curImage < 0) curImage = 0;
+					}
 				}
 
-				if( curImage >= [dcmPixList count]) curImage -= [dcmPixList count];
-			 }
-			
-			// Relatif
-			if( curImage != prevImage)
+				// Relative
+				 if( syncro == syncroREL && point3D == NO && syncSeriesIndex == -1)
+				 {
+					if( flippedData) curImage -= diff;
+					else curImage += diff;
+					
+					//NSLog(@"Rel");
+					
+					if( curImage < 0)
+					{
+						curImage += [dcmPixList count];
+					}
+
+					if( curImage >= [dcmPixList count]) curImage -= [dcmPixList count];
+				 }
+				
+				// Relatif
+				if( curImage != prevImage)
+				{
+					if( listType == 'i') [self setIndex:curImage];
+					else [self setIndexWithReset:curImage :YES];
+				}
+				
+				if( [self is2DViewer] == YES)
+					[[self windowController] adjustSlider];
+				
+				if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]])
+					{
+						[self computeSlice: oPix :oPix2];
+					}
+					else
+					{
+						sliceVector2[0] = sliceVector2[1] = sliceVector2[2] = 0; 
+						slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 
+					}
+					
+				[self setNeedsDisplay:YES];
+			}
+			else
 			{
-				if( listType == 'i') [self setIndex:curImage];
-				else [self setIndexWithReset:curImage :YES];
+				sliceVector[0] = sliceVector[1] = sliceVector[2] = 0; 
+				slicePoint[0] = slicePoint[1] = slicePoint[2] = 0;
+				sliceVector2[0] = sliceVector2[1] = sliceVector2[2] = 0; 
+				slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 
 			}
-			
-			if( [self is2DViewer] == YES)
-				[[self windowController] adjustSlider];
-			
-			if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]])
-				{
-					[self computeSlice: oPix :oPix2];
-				}
-				else
-				{
-					sliceVector2[0] = sliceVector2[1] = sliceVector2[2] = 0; 
-					slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 
-				}
-				
-			[self setNeedsDisplay:YES];
 		}
-		else
-		{
-			sliceVector[0] = sliceVector[1] = sliceVector[2] = 0; 
-			slicePoint[0] = slicePoint[1] = slicePoint[2] = 0;
-			sliceVector2[0] = sliceVector2[1] = sliceVector2[2] = 0; 
-			slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 
-		}
-    }
 	}
 }
 
@@ -9509,26 +9525,6 @@ BOOL	lowRes = NO;
 - (void) updatePresentationStateFromSeries
 {
 	[self updatePresentationStateFromSeriesOnlyImageLevel: NO];
-}
-
-- (IBAction)resetSeriesPresentationState:(id)sender{
-	id series = [self seriesObj];
-	if( series)
-	{
-		[self setXFlipped: NO];
-		[self setYFlipped: NO];
-
-		[self setRotation: 0.0];
-		[self setOriginX: 0 Y: 0];
-		
-		[self setWLWW:[[self curDCM] savedWL] :[[self curDCM] savedWW]];
-		[self scaleToFit];
-	}
-	[self setNeedsDisplay:YES];
-}
-
-- (IBAction)resetImagePresentationState:(id)sender
-{
 }
 
 //resize Window to a scale of Image Size

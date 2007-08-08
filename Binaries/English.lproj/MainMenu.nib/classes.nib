@@ -245,6 +245,7 @@
                 iChatBroadcast = id; 
                 load3DSettings = id; 
                 loadSerie = id; 
+                loadWindowsState = id; 
                 morphoSelectedBrushROI = id; 
                 nextPlane = id; 
                 openSelectedBrushROI = id; 
@@ -253,6 +254,7 @@
                 resetImage = id; 
                 resetImagePresentationState = id; 
                 resetSeriesPresentationState = id; 
+                resetWindowsState = id; 
                 resizeWindow = id; 
                 revertSeries = id; 
                 roiApplyWindow = id; 
@@ -281,6 +283,7 @@
                 saView = id; 
                 saViewOpposite = id; 
                 save3DSettings = id; 
+                saveWindowsState = id; 
                 scissorStateButtons = id; 
                 segmentationTest = id; 
                 sendMail = id; 

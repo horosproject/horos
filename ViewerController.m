@@ -206,10 +206,124 @@ int sortROIByName(id roi1, id roi2, void *context)
 	return viewersList;
 }
 
-- (void) saveWindowsState
++ (NSArray*) getDisplayedStudies
 {
 	NSArray				*displayedViewers = [ViewerController getDisplayed2DViewers];
-	ViewerController	*win = 0L;
+	NSMutableArray		*studiesArray = [NSMutableArray array];
+	int					i;
+	
+	for( i = 0 ; i < [displayedViewers count] ; i++)
+	{
+		ViewerController	*win = [displayedViewers objectAtIndex: i];
+		
+		if( [studiesArray containsObject: [[[win imageView] seriesObj] valueForKey:@"study"]] == NO)
+			[studiesArray addObject: [[[win imageView] seriesObj] valueForKey:@"study"]];
+	}
+	
+	return studiesArray;
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)item
+{
+	BOOL valid = NO;
+	int i;
+	
+	if( [item action] == @selector( resetWindowsState:))
+	{
+		NSArray				*studiesArray = [ViewerController getDisplayedStudies];
+		for( i = 0 ; i < [studiesArray count] ; i++)
+		{
+			if( [[studiesArray objectAtIndex: i] valueForKey:@"windowsState"]) valid = YES;
+		}
+	}
+	else if( [item action] == @selector( loadWindowsState:))
+	{
+		if( [[[imageView seriesObj] valueForKey:@"study"] valueForKey:@"windowsState"]) valid = YES;
+	}
+	else if( [item action] == @selector( roiDeleteAllROIsWithSameName:))
+	{
+		if( [self selectedROI]) valid = YES;
+	}
+	else if( [item action] == @selector( roiGetInfo:))
+	{
+		if( [self selectedROI]) valid = YES;
+	}
+	else if( [item action] == @selector( roiHistogram:))
+	{
+		if( [self selectedROI]) valid = YES;
+	}
+	else if( [item action] == @selector( createLayerROIFromSelectedROI:))
+	{
+		if( [self selectedROI]) valid = YES;
+	}
+	else if( [item action] == @selector( roiVolume:))
+	{
+		if( [self selectedROI]) valid = YES;
+	}
+	else if( [item action] == @selector( roiVolumeEraseRestore:))
+	{
+		if( [self selectedROI]) valid = YES;
+	}
+	else if( [item action] == @selector( groupSelectedROIs:))
+	{
+		if( [self selectedROI]) valid = YES;
+	}
+	else if( [item action] == @selector( ungroupSelectedROIs:))
+	{
+		if( [self selectedROI]) valid = YES;
+	}
+	else if( [item action] == @selector( morphoSelectedBrushROI:))
+	{
+		if( [self selectedROI]) valid = YES;
+	}
+	else if( [item action] == @selector( convertBrushPolygon:))
+	{
+		if( [self selectedROI]) valid = YES;
+	}
+	else if( [item action] == @selector( roiPropagateSetup:))
+	{
+		if( [self selectedROI]) valid = YES;
+	}
+	else if( [item action] == @selector( roiPropagateSlab:))
+	{
+		if( [self selectedROI]) valid = YES;
+	}
+	else if( [item action] == @selector( applyConvolutionOnSource:))
+	{
+		if( [curConvMenu isEqualToString:NSLocalizedString(@"No Filter", nil)] == NO) valid = YES;
+	}
+	else if( [item action] == @selector( ConvertToBWMenu:))
+	{
+		if( [[pixList[ curMovieIndex] objectAtIndex: 0] isRGB] == YES) valid = YES;
+	}
+	else if( [item action] == @selector( ConvertToRGBMenu:))
+	{
+		if( [[pixList[ curMovieIndex] objectAtIndex: 0] isRGB] == NO) valid = YES;
+	}
+	else valid = YES;
+
+	return valid;
+}
+
+- (IBAction) resetWindowsState:(id)sender
+{
+	NSArray				*studiesArray = [ViewerController getDisplayedStudies];
+	int					i;
+		
+	for( i = 0 ; i < [studiesArray count] ; i++)
+	{
+		[[studiesArray objectAtIndex: i] setValue: 0L forKey:@"windowsState"];
+	}
+}
+
+- (IBAction) loadWindowsState:(id) sender
+{
+	[[BrowserController currentBrowser] databaseOpenStudy: [[imageView seriesObj] valueForKey:@"study"]];
+}
+
+- (IBAction) saveWindowsState:(id) sender
+{
+	NSArray				*displayedViewers = [ViewerController getDisplayed2DViewers];
 	NSMutableArray		*state = [NSMutableArray array];
 	
 	int i;
@@ -218,7 +332,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 	{
 		NSMutableDictionary	*dict = [NSMutableDictionary dictionary];
 		
-		win = [displayedViewers objectAtIndex: i];
+		ViewerController	*win = [displayedViewers objectAtIndex: i];
 		
 		NSRect	r = [[win window] frame];
 		[dict setObject: [NSString stringWithFormat: @"%f %f %f %f", r.origin.x, r.origin.y, r.size.width, r.size.height]  forKey:@"window position"];
@@ -247,6 +361,8 @@ int sortROIByName(id roi1, id roi2, void *context)
 	
 	for( i = 0 ; i < [displayedViewers count] ; i++)
 	{
+		ViewerController	*win = [displayedViewers objectAtIndex: i];
+		
 		if( [studiesArray containsObject: [[[win imageView] seriesObj] valueForKey:@"study"]] == NO)
 			[studiesArray addObject: [[[win imageView] seriesObj] valueForKey:@"study"]];
 	}
@@ -1578,7 +1694,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
 	{
-		[self saveWindowsState];
+		[self saveWindowsState: self];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];
 	}
 	
@@ -16106,7 +16222,7 @@ sourceRef);
 {
 	if (!([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
 	{	
-		[self saveWindowsState];
+		[self saveWindowsState: self];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];	
 		[self close];
 	}
