@@ -5168,6 +5168,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 				{
 					[seriesToOpen addObject: [seriesArray objectAtIndex: 0]];
 				}
+				
+				[context unlock];
+				[context release];
 			}
 			
 			if( [seriesToOpen count] > 0)
