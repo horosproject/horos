@@ -2045,10 +2045,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if (AUTOHIDEMATRIX) [self autoHideMatrix];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
-	
 	if( USETOOLBARPANEL)
 	{
 		for( i = 0; i < [[NSScreen screens] count]; i++)
@@ -4711,11 +4707,7 @@ static ViewerController *draggedController = 0L;
 	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	curConvMenu = [NSLocalizedString(@"No Filter", nil) retain];
 	curWLWWMenu = [NSLocalizedString(@"Default WL & WW", nil) retain];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	
-	// Load new data (JF: previously curMovieIndex=0 maxMovieIndex=1  subCtrlMaskID=-1)
 	curMovieIndex = 0;
 	maxMovieIndex = 1;
 	subCtrlMaskID = -2;
@@ -6926,7 +6918,6 @@ static float oldsetww, oldsetwl;
 			[curConvMenu release];
 			curConvMenu = [str retain];
 		}
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
 	}
 	else
 	{
@@ -14710,11 +14701,7 @@ int i,j,l;
 	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	curConvMenu = [NSLocalizedString(@"No Filter", nil) retain];
 	curWLWWMenu = [NSLocalizedString(@"Default WL & WW", nil) retain];
-
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
-
+	
 	volumeData[ 0] = v;
 	[volumeData[ 0] retain];
 	
@@ -14825,24 +14812,11 @@ int i,j,l;
 	[nc addObserver:self selector:@selector(OpacityChanged:) name:@"OpacityChanged" object:nil];
 	[nc addObserver:self selector:@selector(defaultToolModified:) name:@"defaultToolModified" object:nil];
 	[nc addObserver:self selector:@selector(defaultRightToolModified:) name:@"defaultRightToolModified" object:nil];
-	
-	[nc postNotificationName:@"UpdateWLWWMenu" object:curWLWWMenu userInfo:0L];
-	
     [nc addObserver:self selector:@selector(UpdateConvolutionMenu:) name:@"UpdateConvolutionMenu" object:nil];
 	[nc addObserver:self selector:@selector(CLUTChanged:) name:@"CLUTChanged" object:nil];
-				 
-	[nc postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
-
     [nc addObserver:self selector:@selector(UpdateCLUTMenu:) name:@"UpdateCLUTMenu" object:nil];
-	
-	[nc postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
-
 	curOpacityMenu = [@"Linear Table" retain];
-	
     [nc addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
-	
-	[nc postNotificationName:@"UpdateOpacityMenu" object:curOpacityMenu userInfo:0L];
-
     [nc addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
 	[nc addObserver:self selector:@selector(recomputeROI:) name:@"recomputeROI" object:nil];
 	[nc addObserver:self selector:@selector(closeAllWindows:) name:@"Close All Viewers" object:nil];
@@ -14853,6 +14827,10 @@ int i,j,l;
 	[nc addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"reportModeChanged" object:nil];
 	[nc addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"OsirixDeletedReport" object:nil];
 	[nc addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curCLUTMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curCLUTMenu userInfo: 0L];
 	
 	[[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, pasteBoardOsiriX, pasteBoardOsiriXPlugin, nil]];
 	
