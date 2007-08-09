@@ -5207,8 +5207,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 					[v setWindowFrame: r showWindow: NO];
 					[v setImageRows: rows columns: columns];
 					[v setImageIndex: index];
+					
 					if( [[[v imageView] curDCM] SUVConverted]) [v setWL: wl*[v factorPET2SUV] WW: ww*[v factorPET2SUV]];
 					else [v setWL: wl WW: ww];
+					
 					[v setScaleValue: scale];
 					[v setRotation: rotation];
 					[v setOrigin: NSMakePoint( x, y)];
@@ -6366,6 +6368,65 @@ static BOOL withReset = NO;
 	}
 	
 	DatabaseIsEdited = NO;
+}
+
+- (IBAction) resetWindowsState:(id)sender
+{
+	long					i, x, z, row, result;
+	NSManagedObjectContext	*context = [self managedObjectContext];
+	NSManagedObjectModel    *model = [self managedObjectModel];
+	NSError					*error = 0L;
+	
+	[context retain];
+	[context lock];
+	
+	NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
+		
+	if( [databaseOutline selectedRow] >= 0)
+	{
+		for( x = 0; x < [selectedRows count] ; x++)
+		{
+			if( x == 0) row = [selectedRows firstIndex];
+			else row = [selectedRows indexGreaterThanIndex: row];
+			
+			NSManagedObject	*object = [databaseOutline itemAtRow: row];
+			
+			if( [[object valueForKey:@"type"] isEqualToString: @"Study"])
+			{
+				[[self childrenArray: object] setValue:0L forKey:@"rotationAngle"];
+				[[self childrenArray: object] setValue:0L forKey:@"scale"];
+				[[self childrenArray: object] setValue:0L forKey:@"windowLevel"];
+				[[self childrenArray: object] setValue:0L forKey:@"windowWidth"];
+				[[self childrenArray: object] setValue:0L forKey:@"xFlipped"];
+				[[self childrenArray: object] setValue:0L forKey:@"yFlipped"];
+				[[self childrenArray: object] setValue:0L forKey:@"xOffset"];
+				[[self childrenArray: object] setValue:0L forKey:@"yOffset"];
+				[[self childrenArray: object] setValue:0L forKey:@"displayStyle"];
+				
+				[object setValue:0L forKey:@"windowsState"];
+			}
+			
+			if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
+			{
+				[object setValue:0L forKey:@"rotationAngle"];
+				[object setValue:0L forKey:@"scale"];
+				[object setValue:0L forKey:@"windowLevel"];
+				[object setValue:0L forKey:@"windowWidth"];
+				[object setValue:0L forKey:@"xFlipped"];
+				[object setValue:0L forKey:@"yFlipped"];
+				[object setValue:0L forKey:@"xOffset"];
+				[object setValue:0L forKey:@"yOffset"];
+				[object setValue:0L forKey:@"displayStyle"];
+				
+				[object setValue:0L forKeyPath:@"study.windowsState"];
+			}
+		}
+	}
+	
+	[self saveDatabase: currentDatabasePath];
+	
+	[context unlock];
+	[context release];
 }
 
 - (IBAction) rebuildThumbnails:(id) sender

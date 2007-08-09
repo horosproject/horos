@@ -713,16 +713,16 @@ static char *GetPrivateIP()
 	
 	NSArray						*studyArray, *seriesArray;
 	BOOL						success = NO;
-	
+
+	[context retain];
+	[context lock];
+
 	if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 	{
 		NSPredicate	*predicate = [NSPredicate predicateWithFormat:  @"(studyInstanceUID == %@)", [item valueForKey:@"uid"]];
 		
 		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
 		[request setPredicate: predicate];
-		
-		[context retain];
-		[context lock];
 		
 		studyArray = [context executeFetchRequest:request error:&error];
 		if( [studyArray count] > 0)
@@ -749,9 +749,6 @@ static char *GetPrivateIP()
 		
 		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
 		[request setPredicate: predicate];
-		
-		[context retain];
-		[context lock];
 		
 		seriesArray = [context executeFetchRequest:request error:&error];
 		if( [seriesArray count] > 0)

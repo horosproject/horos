@@ -302,15 +302,12 @@ int sortROIByName(id roi1, id roi2, void *context)
 	{
 		valid = YES;
 		
-		NSMenu	*imageTileMenu = [item menu];
-		
-		for (i = 0; i< [imageTileMenu numberOfItems]; i++) [[imageTileMenu itemAtIndex:i] setState:NSOffState];
-	
 		int rows = [imageView rows];
 		int columns = [imageView columns];
 		int tag =  ((rows - 1) * 4) + (columns - 1);
 		
-		[[imageTileMenu itemWithTag:tag] setState:NSOnState];
+		if( [item tag] == tag) [item setState:NSOnState];
+		else [item setState:NSOffState];
 	}
 	else if( [item action] == @selector( SyncSeries:))
 	{
@@ -321,6 +318,53 @@ int sortROIByName(id roi1, id roi2, void *context)
 	{
 		valid = YES;
 		[item setState: [keyImageCheck state]];
+	}
+	else if( [item action] == @selector( setROITool:) || [item action] == @selector( setDefaultTool:) || [item action] == @selector( setDefaultToolMenu:))
+	{
+		valid = YES;
+		
+		if( [item tag] == [imageView currentTool]) [item setState:NSOnState];
+		else [item setState:NSOffState];
+		
+		if( [item image] == 0L)
+			[item setImage: [self imageForROI: [item tag]]];
+	}
+	else if( [item action] == @selector( ApplyCLUT:))
+	{
+		valid = YES;
+		
+		if( [[item title] isEqualToString: curCLUTMenu]) [item setState:NSOnState];
+		else [item setState:NSOffState];
+	}
+	else if( [item action] == @selector( ApplyConv:))
+	{
+		valid = YES;
+		
+		if( [[item title] isEqualToString: curConvMenu]) [item setState:NSOnState];
+		else [item setState:NSOffState];
+	}
+	else if( [item action] == @selector( ApplyOpacity:))
+	{
+		valid = YES;
+		
+		if( [[item title] isEqualToString: curOpacityMenu]) [item setState:NSOnState];
+		else [item setState:NSOffState];
+	}
+	else if( [item action] == @selector( ApplyWLWW:))
+	{
+		valid = YES;
+		
+		NSString	*str = 0L;
+		
+		@try
+		{
+			str = [[item title] substringFromIndex: 4];
+		}
+		
+		@catch (NSException * e) {}
+		
+		if( [str isEqualToString: curWLWWMenu] || [[item title] isEqualToString: curWLWWMenu]) [item setState:NSOnState];
+		else [item setState:NSOffState];
 	}
 	else valid = YES;
 
@@ -367,15 +411,16 @@ int sortROIByName(id roi1, id roi2, void *context)
 		[dict setObject: [NSNumber numberWithInt: [[win imageView] rows]] forKey:@"rows"];
 		[dict setObject: [NSNumber numberWithInt: [[win imageView] columns]] forKey:@"columns"];
 		[dict setObject: [NSNumber numberWithInt: [[[win seriesView] firstView] curImage]] forKey:@"index"];
-		if( [[imageView curDCM] SUVConverted] == NO)
+		
+		if( [[[win imageView] curDCM] SUVConverted] == NO)
 		{
 			[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWL]] forKey:@"wl"];
 			[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWW]] forKey:@"ww"];
 		}
 		else
 		{
-			[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWL] / factorPET2SUV] forKey:@"wl"];
-			[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWW] / factorPET2SUV] forKey:@"ww"];
+			[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWL] / [win factorPET2SUV]] forKey:@"wl"];
+			[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWW] / [win factorPET2SUV]] forKey:@"ww"];
 		}
 		[dict setObject: [NSNumber numberWithFloat: [[win imageView] scaleValue]] forKey:@"scale"];
 		[dict setObject: [NSNumber numberWithFloat: [[win imageView] origin].x] forKey:@"x"];
@@ -1438,15 +1483,20 @@ static volatile int numberOfThreadsForRelisce = 0;
 			while (subItem = [enumerator3 nextObject])
 			{
 				int tag = [subItem tag];
-				item = [[NSMenuItem alloc] initWithTitle: [subItem title] action: @selector(setROITool:) keyEquivalent:@""];
-				[item setTag:tag];
-				[item setImage: [self imageForROI: tag]];
-				[item setTarget:self];
-				[submenu addItem:item];
-				[item release];
+				if( tag)
+				{
+					item = [[NSMenuItem alloc] initWithTitle: [subItem title] action: @selector(setROITool:) keyEquivalent:@""];
+					[item setTag:tag];
+					[item setImage: [self imageForROI: tag]];
+					[item setTarget:self];
+					[submenu addItem:item];
+					[item release];
+				}
+				else [submenu addItem: [NSMenuItem separatorItem]];
 			}
 
-			while (title = [enumerator nextObject]) {
+			while (title = [enumerator nextObject])
+			{
 				image = [enumerator2 nextObject];
 				item = [[NSMenuItem alloc] initWithTitle: title action: @selector(setDefaultTool:) keyEquivalent:@""];
 				[item setTag:i++];
@@ -7874,7 +7924,7 @@ NSMutableArray		*array;
 			{
 				[imageView setIndex:i];
 				[imageView sendSyncMessage:1];
-				[imageView display];
+				[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
 				
 				[imageView subtract: [bc imageView]];
 			}
@@ -7885,7 +7935,7 @@ NSMutableArray		*array;
 			{
 				[imageView setIndex:i];
 				[imageView sendSyncMessage:1];
-				[imageView display];
+				[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
 				
 				[imageView multiply: [bc imageView]];
 			}
@@ -8290,7 +8340,7 @@ extern NSString * documentsDirectory();
 					{
 						found = YES;
 					}
-				}			
+				}
 				if( found == NO)
 				{
 					if( first) [ROINamesArray addObject: @"-"];
@@ -8308,9 +8358,13 @@ extern NSString * documentsDirectory();
 - (NSImage*) imageForROI: (int) i
 {
 	NSString	*filename = 0L;
-			
 	switch( i)
 	{
+		case tWL:			filename = @"WLWW";				break;
+		case tZoom:			filename = @"Zoom";				break;
+		case tTranslate:	filename = @"Move";				break;
+		case tRotate:		filename = @"Rotate";			break;
+		case tNext:			filename = @"Stack";			break;
 		case tMesure:		filename = @"Length";			break;
 		case tAngle:		filename = @"Angle";			break;
 		case tROI:			filename = @"Rectangle";		break;
@@ -12520,19 +12574,19 @@ int i,j,l;
 				if( [imageView flippedData]) [imageView setIndex: [self getNumberOfImages] - 1 -curSample];
 				else [imageView setIndex:curSample];
 				[imageView sendSyncMessage:1];
-				[imageView display];
+				[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
 			break;
 
 			case 0:
 				[[self blendingSlider] setIntValue: -256 + ((curSample * 512) / ([max intValue]-1))];
 				[self blendingSlider:[self blendingSlider]];
-				[imageView display];
+				[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
 			break;
 
 			case 2:
 				[[self moviePosSlider] setIntValue: curSample];
 				[self moviePosSliderAction:[self moviePosSlider]];
-				[imageView display];
+				[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
 			break;
 		}
 		
@@ -13610,7 +13664,7 @@ int i,j,l;
 						{					
 							[imageView setIndex:i];
 							[imageView sendSyncMessage:1];
-							[imageView display];
+							[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
 							
 							NSImage *im = [imageView nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
 							

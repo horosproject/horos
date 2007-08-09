@@ -884,9 +884,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	else if( [item action] == @selector( syncronize:))
 	{
 		valid = YES;
-		NSMenu	*menu = [item menu];
-		for (i = 0; i< [menu numberOfItems]; i++) [[menu itemAtIndex:i] setState: NSOffState];
-		[[menu itemWithTag: [item tag]] setState: NSOnState];
+		if( [item tag] == syncro) [item setState: NSOnState];
+		else [item setState: NSOffState];
+	}
+	else if( [item action] == @selector( annotMenu:))
+	{
+		valid = YES;
+		if( [item tag] == [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"]) [item setState: NSOnState];
+		else [item setState: NSOffState];
+	}
+	else if( [item action] == @selector( barMenu:))
+	{
+		valid = YES;
+		if( [item tag] == [[NSUserDefaults standardUserDefaults] integerForKey:@"CLUTBARS"]) [item setState: NSOnState];
+		else [item setState: NSOffState];
 	}
 	else valid = YES;
 	
@@ -2237,9 +2248,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		case tOval:
 		case tOPolygon:
 		case tCPolygon:
-		//JJCP
 		case tDynAngle:
-		//JJCP
 		case tAxis:
 		case tAngle:
 		case tArrow:
@@ -3389,16 +3398,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 }
 
 -(NSMenu*) menuForEvent:(NSEvent *)theEvent {
-	if ( pluginOverridesMouse ) return nil;  // Turn off contextual menu.  RBR 3/26/06
+	if ( pluginOverridesMouse ) return nil;
 	NSPoint contextualMenuWhere = [theEvent locationInWindow]; 	//JF20070103 WindowAnchored ctrl-clickPoint registered 
 	contextualMenuInWindowPosX = contextualMenuWhere.x;
 	contextualMenuInWindowPosY = contextualMenuWhere.y;	
-	//NSLog(@"event.x:%f", contextualMenuWhere.x);//relative to Window	
-	//NSLog(@"event.y:%f", contextualMenuWhere.y);//relative to Window	
-	//NSLog(@"mouseXPos:%f", mouseXPos);//relative to DCMPix	
-	//NSLog(@"mouseYPos:%f", mouseYPos);//relative to DCMPix	
 	if (([theEvent modifierFlags] & NSControlKeyMask) && ([theEvent modifierFlags] & NSAlternateKeyMask)) return 0L;
-	return [self menu];  // Default
+	return [self menu]; 
 }
 
 - (float) contextualMenuInWindowPosX {return contextualMenuInWindowPosX;}
@@ -5182,6 +5187,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 												syncOnLocationImpossible = YES;
 												[otherView setSyncOnLocationImpossible: YES];
 											}
+											
+											curImage = prevImage;	// We have no overlapping slice, do nothing....
 										}
 									}
 									
@@ -5296,12 +5303,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) barMenu:(id) sender
 {
-    NSMenu   *menu = [sender menu];
-    short    i;
-    
-    i = [menu numberOfItems];
-    while(i-- > 0) [[menu itemAtIndex:i] setState:NSOffState];   
-    
 	[[NSUserDefaults standardUserDefaults] setInteger: [sender tag] forKey: @"CLUTBARS"];
 
     NSNotificationCenter *nc;
@@ -5312,13 +5313,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 -(void) annotMenu:(id) sender
 {
 	short chosenLine = [sender tag];
-
-    NSMenu   *menu = [sender menu];
-    short    i;
-    
-    i = [menu numberOfItems];
-    while(i-- > 0) [[menu itemAtIndex:i] setState:NSOffState];   
-    
+	
 	[[NSUserDefaults standardUserDefaults] setInteger: chosenLine forKey: @"ANNOTATIONS"];
     
     NSNotificationCenter *nc;
@@ -5957,7 +5952,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-#define CUSTOM_ANNOTATIONS
+//#define CUSTOM_ANNOTATIONS
 #ifdef CUSTOM_ANNOTATIONS
 - (void) drawTextualData:(NSRect) size :(long) annotations
 {
@@ -8132,7 +8127,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		{
 			// Series Level
 			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / [self frame].size.height] forKey:@"scale"];
-			[[self seriesObj] setValue:[NSNumber numberWithInt: 1] forKey: @"displayStyle"];	//displayStyle = 1  -> scaleValue is proportional to view height
+			[[self seriesObj] setValue:[NSNumber numberWithInt: 2] forKey: @"displayStyle"];	//displayStyle = 2  -> scaleValue is proportional to view height
 			
 			// Image Level
 			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
@@ -8166,7 +8161,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		{
 			// Series Level
 			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / [self frame].size.height] forKey:@"scale"];
-			[[self seriesObj] setValue:[NSNumber numberWithInt: 1] forKey: @"displayStyle"];	//displayStyle = 1  -> scaleValue is proportional to view height
+			[[self seriesObj] setValue:[NSNumber numberWithInt: 2] forKey: @"displayStyle"];	//displayStyle = 2  -> scaleValue is proportional to view height
 			
 			// Image Level
 			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
@@ -9122,10 +9117,10 @@ BOOL	lowRes = NO;
 	
 	NSRect superFrame = [[self superview] bounds];
 	
-	float newWidth = superFrame.size.width / _imageColumns;
-	float newHeight = superFrame.size.height / _imageRows;
-	float newY = newHeight * (int)(_tag / _imageColumns);
-	float newX = newWidth * (int)(_tag % _imageColumns);
+	int newWidth = superFrame.size.width / _imageColumns;
+	int newHeight = superFrame.size.height / _imageRows;
+	int newY = newHeight * (int)(_tag / _imageColumns);
+	int newX = newWidth * (int)(_tag % _imageColumns);
 	NSRect newFrame = NSMakeRect(newX, newY, newWidth, newHeight);
 	
 	[self setFrame:newFrame];
@@ -9437,8 +9432,8 @@ BOOL	lowRes = NO;
 				{
 					if( [[series valueForKey:@"scale"] floatValue] != 0)
 					{
-						//displayStyle = 1  -> scaleValue is proportional to view height
-						if( [[series valueForKey:@"displayStyle"] intValue] == 1)
+						//displayStyle = 2  -> scaleValue is proportional to view height
+						if( [[series valueForKey:@"displayStyle"] intValue] == 2)
 							[self setScaleValue: [[series valueForKey:@"scale"] floatValue] * [self frame].size.height];
 						else
 							[self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
