@@ -120,10 +120,6 @@ extern "C"
 #pragma mark-
 #pragma mark display setters and getters
 - (IBAction) saveLayout: (id)sender;
-- (BOOL) xFlipped;
-- (void) setXFlipped: (BOOL) v;
-- (BOOL) yFlipped;
-- (void) setYFlipped: (BOOL) v;
 
 #pragma mark-
 #pragma mark Geneva University Hospital (HUG) specific function

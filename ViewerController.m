@@ -298,6 +298,30 @@ int sortROIByName(id roi1, id roi2, void *context)
 	{
 		if( [[pixList[ curMovieIndex] objectAtIndex: 0] isRGB] == NO) valid = YES;
 	}
+	else if( [item action] == @selector( setImageTiling:))
+	{
+		valid = YES;
+		
+		NSMenu	*imageTileMenu = [item menu];
+		
+		for (i = 0; i< [imageTileMenu numberOfItems]; i++) [[imageTileMenu itemAtIndex:i] setState:NSOffState];
+	
+		int rows = [imageView rows];
+		int columns = [imageView columns];
+		int tag =  ((rows - 1) * 4) + (columns - 1);
+		
+		[[imageTileMenu itemWithTag:tag] setState:NSOnState];
+	}
+	else if( [item action] == @selector( SyncSeries:))
+	{
+		valid = YES;
+		[item setState: SYNCSERIES];
+	}
+	else if( [item action] == @selector( setKeyImage:))
+	{
+		valid = YES;
+		[item setState: [keyImageCheck state]];
+	}
 	else valid = YES;
 
 	return valid;
@@ -1495,7 +1519,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			NSMenu *orientationMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Orientation", nil)] submenu];
 			menu = [orientationMenu copy];
-			for( i = 0; i < [menu numberOfItems]; i++) [[menu itemAtIndex: i] setState: NSOffState];
 			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Orientation", nil) action: nil keyEquivalent:@""];
 			[item setSubmenu:menu];
 			[contextual addItem:item];
@@ -11113,11 +11136,7 @@ int i,j,l;
 {
 	if( SyncButtonBehaviorIsBetweenStudies)
 	{
-		[appController willChangeValueForKey:@"SYNCSERIES"];
-		
 		SYNCSERIES = !SYNCSERIES;
-		
-		[appController didChangeValueForKey:@"SYNCSERIES"];
 		
 		float sliceLocation =  [[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation];
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat:sliceLocation] forKey:@"sliceLocation"];
@@ -16425,6 +16444,30 @@ sourceRef);
 {
 	[seriesView setImageViewMatrixForRows:(int)rows  columns:columns];
 }
+
+- (IBAction)setImageTiling: (id)sender
+{
+	int columns = 1;
+	int rows = 1;
+	 int tag;
+     NSMenuItem *item;
+
+    if ([sender class] == [NSMenuItem class]) {
+        NSArray *menuItems = [[sender menu] itemArray];
+        NSEnumerator *enumerator = [menuItems objectEnumerator];
+        while(item = [enumerator nextObject])
+            [item setState:NSOffState];
+        tag = [(NSMenuItem *)sender tag];
+    }
+	
+	if (tag < 16) {
+		rows = (tag / 4) + 1;
+		columns =  (tag %  4) + 1;
+	}
+	
+	[self setImageRows: rows columns: columns];
+}
+
 
 - (IBAction)calciumScoring:(id)sender
 {

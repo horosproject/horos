@@ -862,16 +862,32 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
 	BOOL valid = NO;
+	int i;
 	
     if ([item action] == @selector( roiSaveSelected:))
 	{
-		int i;
-		
 		for( i = 0; i < [curRoiList count]; i++)
 		{
 			if( [[curRoiList objectAtIndex: i] ROImode] == ROI_selected) valid = YES;
 		}
     }
+	else if( [item action] == @selector( flipHorizontal:))
+	{
+		valid = YES;
+		[item setState: xFlipped];
+	}
+	else if( [item action] == @selector( flipVertical:))
+	{
+		valid = YES;
+		[item setState: yFlipped];
+	}
+	else if( [item action] == @selector( syncronize:))
+	{
+		valid = YES;
+		NSMenu	*menu = [item menu];
+		for (i = 0; i< [menu numberOfItems]; i++) [[menu itemAtIndex:i] setState: NSOffState];
+		[[menu itemWithTag: [item tag]] setState: NSOnState];
+	}
 	else valid = YES;
 	
     return valid;
@@ -1141,7 +1157,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	[self updateTilingViews];
 	
-	[appController setYFlipped: yFlipped];	
     [self setNeedsDisplay:YES];
 }
 
@@ -1162,7 +1177,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	[self updateTilingViews];
 	
-	[appController setXFlipped: xFlipped];
     [self setNeedsDisplay:YES];
 }
 
@@ -5319,17 +5333,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) setSyncro:(long) s
 {
-	[appController willChangeValueForKey:@"syncroOFF"];
-	[appController willChangeValueForKey:@"syncroABS"];
-	[appController willChangeValueForKey:@"syncroREL"];
-	[appController willChangeValueForKey:@"syncroLOC"];
-	
 	syncro = s;
-	
-	[appController didChangeValueForKey:@"syncroOFF"];
-	[appController didChangeValueForKey:@"syncroABS"];
-	[appController didChangeValueForKey:@"syncroREL"];
-	[appController didChangeValueForKey:@"syncroLOC"];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationSyncSeries" object:0L userInfo: 0L];
 }
@@ -8997,8 +9001,6 @@ BOOL	lowRes = NO;
 
 -(void) becomeMainWindow
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewImageViewResponder" object: self userInfo: 0L];
-	
 	[self updateTilingViews];
 	
 	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
@@ -9006,9 +9008,6 @@ BOOL	lowRes = NO;
 	sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
 	
 	[self sendSyncMessage:1];
-	
-	[appController setXFlipped: xFlipped];
-	[appController setYFlipped: yFlipped];
 	
 	if( [self is2DViewer])
 	{
@@ -9034,9 +9033,6 @@ BOOL	lowRes = NO;
 	isKeyView = YES;
 	
 	[self updateTilingViews];
-
-	// This will update the Tile menu
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewImageViewResponder" object: self userInfo: 0L];
 	
 	if (curImage < 0)
 	{

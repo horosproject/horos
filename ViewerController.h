@@ -702,6 +702,7 @@ enum
 
 - (SeriesView *) seriesView;
 - (void)setImageRows:(int)rows columns:(int)columns;
+- (IBAction)setImageTiling: (id)sender;
 
 #pragma mark-
 #pragma mark Calcium scoring

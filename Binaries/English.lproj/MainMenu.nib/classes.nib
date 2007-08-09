@@ -73,7 +73,6 @@
                 exportDICOMFile = id; 
                 generateReport = id; 
                 importRawData = id; 
-                makeSearchFirstResponder = id; 
                 matrixDisplayIcons = id; 
                 matrixDoublePressed = id; 
                 matrixPressed = id; 
@@ -92,7 +91,6 @@
                 selectAll4DSeries = id; 
                 selectFilesAndFoldersToAdd = id; 
                 sendiDisk = id; 
-                setImageTiling = id; 
                 setSearchType = id; 
                 setTimeIntervalType = id; 
                 showDatabase = id; 
@@ -289,6 +287,7 @@
                 sendMail = id; 
                 setBackgroundColor = id; 
                 setDefaultToolMenu = id; 
+                setImageTiling = id; 
                 setKeyImage = id; 
                 setMode = id; 
                 setOffset = id; 

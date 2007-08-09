@@ -3221,7 +3221,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		if( (int) free < [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue])
 		{
-			NSLog(@"Limit Reached - Starting autoCleanDatabaseFreeSpace");
+			NSLog(@"------------------- Limit Reached - Starting autoCleanDatabaseFreeSpace");
 			
 			[checkIncomingLock lock];
 			
@@ -3353,6 +3353,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 			[context release];
 			
 			[checkIncomingLock unlock];
+			
+			NSLog(@"------------------- Limit Reached - Finishing autoCleanDatabaseFreeSpace");
 			
 			// This will do a outlineViewRefresh
 			if( [newFilesConditionLock tryLock])
@@ -9351,7 +9353,6 @@ static NSArray*	openSubSeriesArray = 0L;
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(willVolumeUnmount:) name:NSWorkspaceWillUnmountNotification object:nil];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowHasChanged:) name:NSWindowDidBecomeMainNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCurrentImage:) name:@"DCMNewImageViewResponder" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(OsirixAddToDBNotification:) name:@"OsirixAddToDBNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"reportModeChanged" object:nil];
@@ -9857,17 +9858,6 @@ static NSArray*	openSubSeriesArray = 0L;
 			[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 		}
     }
-}
-
--(void) updateCurrentImage:(NSNotification *)note{
-	int i;
-	for (i = 0; i< [imageTileMenu numberOfItems]; i++) [[imageTileMenu itemAtIndex:i] setState:NSOffState];
-	
-	int rows = [[note object] rows];
-	int columns = [[note object] columns];
-	int tag =  ((rows - 1) * 4) + (columns - 1);
-	
-	[[imageTileMenu itemWithTag:tag] setState:NSOnState];
 }
 
 - (void)mainWindowHasChanged:(NSNotification *)note{
@@ -11782,34 +11772,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[filesToAnonymize release];
 }	
-
-- (IBAction)setImageTiling: (id)sender
-{
-	int columns = 1;
-	int rows = 1;
-	 int tag;
-     NSMenuItem *item;
-
-    if ([sender class] == [NSMenuItem class]) {
-        NSArray *menuItems = [[sender menu] itemArray];
-        NSEnumerator *enumerator = [menuItems objectEnumerator];
-        while(item = [enumerator nextObject])
-            [item setState:NSOffState];
-        tag = [(NSMenuItem *)sender tag];
-    //    [sender setState:NSOnState];
-    }
-	
-	if (tag < 16) {
-		rows = (tag / 4) + 1;
-		columns =  (tag %  4) + 1;
-	}
-	
-	NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:columns], [NSNumber numberWithInt:rows], nil];
-	NSArray *keys = [NSArray arrayWithObjects:@"Columns", @"Rows", nil];
-	
-	NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
-}
 
 -(void) AlternateButtonPressed:(NSNotification*) n
 {
