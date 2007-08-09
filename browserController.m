@@ -3223,6 +3223,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 		{
 			NSLog(@"Limit Reached - Starting autoCleanDatabaseFreeSpace");
 			
+			[checkIncomingLock lock];
+			
 			NSError					*error = 0L;
 			long					i, x;
 			NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
@@ -3349,6 +3351,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			[context unlock];
 			[context release];
+			
+			[checkIncomingLock unlock];
 			
 			// This will do a outlineViewRefresh
 			if( [newFilesConditionLock tryLock])
