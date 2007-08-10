@@ -1631,6 +1631,7 @@ public:
 		mouseModifiers = 0L;
 		
 		[self deleteMouseDownTimer];
+		[self deleteRightMouseDownTimer];
 		
 		[[NSNotificationCenter defaultCenter] removeObserver: self];
 	}
@@ -1838,6 +1839,9 @@ public:
 	[_mouseDownTimer invalidate];
 	[_mouseDownTimer release];
 	
+	[_rightMouseDownTimer invalidate];
+	[_rightMouseDownTimer release];
+	
 	[destinationImage release];
 	
 	[_hotKeyDictionary release];
@@ -1848,10 +1852,12 @@ public:
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
+	if (_rightMouseDownTimer) {
+		[self deleteRightMouseDownTimer];
+	}
+		
+	_rightMouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self  selector:@selector(showMenu:) userInfo:theEvent  repeats:NO] retain];
 	[self mouseDown:theEvent];
-			//show contextual menu  added LP 12/5/05
-//		if ([theEvent type] == NSRightMouseDown && [theEvent clickCount] > 1)
-//			[NSMenu popUpContextMenu:[self menu] withEvent:theEvent forView:self];
 }
 
 - (void) timerUpdate:(id) sender
@@ -2360,6 +2366,10 @@ public:
 	NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 	float distance ;
 	
+	if (([theEvent deltaX] != 0 || [theEvent deltaY] != 0)) {
+			[self deleteRightMouseDownTimer];
+		}
+	
 	if( projectionMode != 2)
 	{
 		int shiftDown = 0;
@@ -2424,6 +2434,7 @@ public:
 }
 
 - (void)rightMouseUp:(NSEvent *)theEvent{
+	[self deleteRightMouseDownTimer];
 	if (_tool == tZoom)
 	{
 		if( volumeMapper)
@@ -6201,6 +6212,17 @@ public:
 	[_mouseDownTimer release];
 	_mouseDownTimer = nil;
 	_dragInProgress = NO;
+}
+
+- (void)deleteRightMouseDownTimer{
+	[_rightMouseDownTimer invalidate];
+	[_rightMouseDownTimer release];
+	_rightMouseDownTimer = nil;
+}
+
+- (void) showMenu:(NSTimer*)theTimer{
+	NSEvent *event = (NSEvent *)[theTimer userInfo];
+	[NSMenu popUpContextMenu:[self menu] withEvent:event forView:self];
 }
 
 //part of Dragging Source Protocol

@@ -286,7 +286,7 @@ typedef char* vtkMyCallbackVR;
 	float						point3DDefaultRadius, point3DDefaultColorRed, point3DDefaultColorGreen, point3DDefaultColorBlue, point3DDefaultColorAlpha;
 	
 	BOOL						_dragInProgress;
-	NSTimer						*_mouseDownTimer;
+	NSTimer						*_mouseDownTimer, *_rightMouseDownTimer;
 	NSImage						*destinationImage;
 	
 	NSPoint						_mouseLocStart, _previousLoc;  // mouseDown start point
@@ -450,6 +450,10 @@ typedef char* vtkMyCallbackVR;
 //Dragging
 - (void) startDrag:(NSTimer*)theTimer;
 - (void)deleteMouseDownTimer;
+
+//Menus
+- (void)deleteRightMouseDownTimer;
+- (void) showMenu:(NSTimer*)theTimer;
 
 -(BOOL)actionForHotKey:(NSString *)hotKey;
 - (void)setAdvancedCLUT:(NSMutableDictionary*)clut lowResolution:(BOOL)lowRes;
