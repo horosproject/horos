@@ -1868,6 +1868,57 @@ public:
 	ROIUPDATE = NO;
 }
 
++ (NSMenu *)defaultMenu {
+    NSMenu *theMenu = [[[NSMenu alloc] initWithTitle:@"Contextual Menu"] autorelease];
+	NSMenuItem *item;
+    item = [theMenu insertItemWithTitle:NSLocalizedString(@"Levels", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:0];
+	[item setTag:0];
+	[item setImage:[NSImage imageNamed:@"WLWW"]];
+    item = [theMenu insertItemWithTitle:NSLocalizedString(@"Move", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:1];
+	[item setTag:1];
+	[item setImage:[NSImage imageNamed:@"Move"]];
+	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Zoom", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:2];
+	[item setTag:2];
+	[item setImage:[NSImage imageNamed:@"Zoom"]];
+	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Rotate", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:3];
+	[item setTag:3];
+	[item setImage:[NSImage imageNamed:@"Rotate"]];
+	item = [theMenu insertItemWithTitle:NSLocalizedString(@"3D Rotate", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:4];
+	[item setTag:7];
+	[item setImage:[NSImage imageNamed:@"3DRotate"]];
+	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Camera Rotate", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:5];
+	[item setTag:18];
+	[item setImage:[NSImage imageNamed:@"3DRotateCamera"]];
+	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Length", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:6];
+	[item setTag:5];
+	[item setImage:[NSImage imageNamed:@"Length"]];
+	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Point", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:7];
+	[item setTag:16];
+	[item setImage:[NSImage imageNamed:@"Point"]];
+	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Scissors", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:8];
+	[item setTag:17];
+	[item setImage:[NSImage imageNamed:@"3DCut"]];
+	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Bone Removal", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:9];
+	[item setTag:21];
+	[item setImage:[NSImage imageNamed:@"bonesRemoval"]];
+	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Orientation", nil) action:nil keyEquivalent:@"" atIndex:10];
+		NSMenu *submenu = [[[NSMenu alloc] initWithTitle:@"Orientation"] autorelease];
+		NSMenuItem *subItem;
+		subItem =[submenu insertItemWithTitle:NSLocalizedString(@"Axial", nil) action:@selector(axView:) keyEquivalent:@"" atIndex:0];
+		[subItem setImage:[NSImage imageNamed:@"AxialSmall"]];
+		
+		subItem =[submenu insertItemWithTitle:NSLocalizedString(@"Coronal", nil) action:@selector(coView:) keyEquivalent:@"" atIndex:1];
+		[subItem setImage:[NSImage imageNamed:@"CorSmall"]];
+		
+		subItem =[submenu insertItemWithTitle:NSLocalizedString(@"Right Sagittal", nil) action:@selector(saView:) keyEquivalent:@"" atIndex:2];
+		[subItem setImage:[NSImage imageNamed:@"SagSmall"]];
+		
+		subItem =[submenu insertItemWithTitle:NSLocalizedString(@"Left Sagittal", nil) action:@selector(saViewOpposite:) keyEquivalent:@"" atIndex:3];
+		[subItem setImage:[NSImage imageNamed:@"SagSmallOpposite"]];
+	[item setSubmenu:submenu];
+    return theMenu;
+}
+
 - (float) getResolution
 {
 	if( aCamera->GetParallelProjection())
