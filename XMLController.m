@@ -1120,7 +1120,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 {
 	if( [dictionaryArray count] == 0) [self prepareDictionaryArray];
 	
-	if( [uncompletedString length] == 0) return;
+	if( [uncompletedString length] == 0) return 0L;
 	
 	int i;
 	

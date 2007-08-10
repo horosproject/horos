@@ -27,6 +27,8 @@
 		databaseSeriesFieldsArray = [[NSMutableArray array] retain];
 		databaseImageFieldsArray = [[NSMutableArray array] retain];
 		selectedAnnotation = nil;
+
+		
 		annotationNumber = 1;
 		
 		if([[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"])
@@ -61,6 +63,10 @@ NSLog(@"CIALayoutController awakeFromNib");
 //		[modalitiesPopUpButton addItemWithTitle:[modalities objectAtIndex:i]];
 //	}
 
+	[[prefPane titleTextField] setEnabled: NO];
+	[[prefPane contentTokenField] setEnabled: NO];
+	[self setCustomDICOMFieldEditingEnable:NO];
+	
 	[[[prefPane contentTokenField] cell] setWraps:YES];
 	[[prefPane dicomNameTokenField] setTokenStyle:NSPlainTextTokenStyle];
 
@@ -160,7 +166,6 @@ NSLog(@"CIALayoutController awakeFromNib");
 
 	[[prefPane DICOMFieldsPopUpButton] setEnabled:NO];
 	[[prefPane DICOMFieldsPopUpButton] selectItemAtIndex:0];
-	[self setCustomDICOMFieldEditingEnable:NO];
 	[[prefPane databaseFieldsPopUpButton] setEnabled:NO];
 	[[prefPane specialFieldsPopUpButton] setEnabled:NO];
 	[[prefPane databaseFieldsPopUpButton] selectItemAtIndex:0];
@@ -172,6 +177,8 @@ NSLog(@"CIALayoutController awakeFromNib");
 	[[prefPane addSpecialFieldButton] setEnabled:NO];
 	
 	[self loadAnnotationLayoutForModality:currentModality];
+	
+	[[prefPane contentTokenField] setTokenizingCharacterSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
 - (void)dealloc
@@ -190,6 +197,8 @@ NSLog(@"CIALayoutController awakeFromNib");
 
 - (IBAction)addAnnotation:(id)sender;
 {
+	
+
 	NSPoint center = NSMakePoint(NSMidX([layoutView bounds]), NSMidY([layoutView bounds]));
 	CIAAnnotation *anAnnotation = [[CIAAnnotation alloc] initWithFrame:NSMakeRect(center.x - 75.0/2.0, center.y - 11, 75, 22)];
 
@@ -201,11 +210,12 @@ NSLog(@"CIALayoutController awakeFromNib");
 	[layoutView addSubview:anAnnotation];
 	[layoutView setNeedsDisplay:YES];
 	[anAnnotation release];
-	[self setCustomDICOMFieldEditingEnable:YES];
 }
 
 - (IBAction)removeAnnotation:(id)sender;
 {
+	
+	
 	if(selectedAnnotation)
 	{
 		CIAPlaceHolder *placeHolder = [selectedAnnotation placeHolder];
@@ -227,18 +237,23 @@ NSLog(@"CIALayoutController awakeFromNib");
 		[[prefPane titleTextField] setStringValue:@""];
 		[[prefPane contentTokenField] setStringValue:@""];
 		
+		[[prefPane titleTextField] setEnabled: NO];
+		[[prefPane contentTokenField] setEnabled: NO];
+		[self setCustomDICOMFieldEditingEnable:NO];
+		
 		[[prefPane DICOMFieldsPopUpButton] setEnabled:NO];
 		[[prefPane DICOMFieldsPopUpButton] selectItemAtIndex:0];
 		[[prefPane databaseFieldsPopUpButton] setEnabled:NO];
 		[[prefPane specialFieldsPopUpButton] setEnabled:NO];
 		[[prefPane databaseFieldsPopUpButton] selectItemAtIndex:0];
 		[[prefPane specialFieldsPopUpButton] selectItemAtIndex:0];
-		[self setCustomDICOMFieldEditingEnable:NO];
 	}
 }
 
 - (void)keyDown:(NSEvent *)theEvent
 {
+	
+	
 	unichar c = [[theEvent characters] characterAtIndex:0];
 	if(c==NSDeleteCharacter)
 	{
@@ -250,6 +265,8 @@ NSLog(@"CIALayoutController awakeFromNib");
 
 - (IBAction)setTitle:(id)sender;
 {
+	
+	
 	if(selectedAnnotation)
 	{
 		[selectedAnnotation setTitle:[sender stringValue]];
@@ -264,6 +281,8 @@ NSLog(@"CIALayoutController awakeFromNib");
 
 - (void)annotationMouseDragged:(NSNotification *)aNotification;
 {
+	
+	
 	CIAAnnotation *annotation = (CIAAnnotation*)[aNotification object];
 	if([annotation placeHolder])[[annotation placeHolder] removeAnnotation:annotation];
 
@@ -282,6 +301,8 @@ NSLog(@"CIALayoutController awakeFromNib");
 
 - (void)annotationMouseDown:(NSNotification *)aNotification;
 {
+	
+	
 	CIAAnnotation *annotation = (CIAAnnotation*)[aNotification object];
 	[self selectAnnotation:annotation];
 	[self highlightPlaceHolderForAnnotation:annotation];
@@ -289,6 +310,8 @@ NSLog(@"CIALayoutController awakeFromNib");
 
 - (void)annotationMouseUp:(NSNotification *)aNotification;
 {
+	
+	
 	CIAAnnotation *annotation = (CIAAnnotation*)[aNotification object];
 
 	BOOL annotationOutOfPlaceHolder = YES;
@@ -403,6 +426,8 @@ NSLog(@"CIALayoutController awakeFromNib");
 
 - (void)selectAnnotation:(CIAAnnotation*)anAnnotation;
 {
+	
+	
 	if(anAnnotation==selectedAnnotation) return;
 	
 //	[[[prefPane mainView] window] makeFirstResponder:[prefPane titleTextField]];
@@ -420,11 +445,13 @@ NSLog(@"CIALayoutController awakeFromNib");
 	[self willChangeValueForKey:@"selectedAnnotation"];
 	selectedAnnotation = anAnnotation;
 	[self didChangeValueForKey:@"selectedAnnotation"];
+
+	[[prefPane titleTextField] setEnabled: YES];
+	[[prefPane contentTokenField] setEnabled: YES];
+	[self setCustomDICOMFieldEditingEnable: YES];
 	
 	[[prefPane titleTextField] setStringValue:[anAnnotation title]];
-	[[prefPane titleTextField] setEnabled:YES];
 	[[prefPane contentTokenField] setObjectValue:[anAnnotation content]];
-	[[prefPane contentTokenField] setEnabled:YES];
 	
 	[layoutView addSubview:anAnnotation]; // in order to bring the Annotation to front
 	[layoutView setNeedsDisplay:YES];
@@ -436,7 +463,6 @@ NSLog(@"CIALayoutController awakeFromNib");
 	[[prefPane specialFieldsPopUpButton] setEnabled:NO];
 	[[prefPane databaseFieldsPopUpButton] selectItemAtIndex:0];
 	[[prefPane specialFieldsPopUpButton] selectItemAtIndex:0];
-	[self setCustomDICOMFieldEditingEnable:YES];
 	[[prefPane addCustomDICOMFieldButton] setEnabled:YES];
 	[[prefPane addDICOMFieldButton] setEnabled:YES];
 	[[prefPane addDatabaseFieldButton] setEnabled:YES];
@@ -450,6 +476,8 @@ NSLog(@"CIALayoutController awakeFromNib");
 
 - (IBAction)addFieldToken:(id)sender;
 {
+	
+	
 	[[prefPane contentTokenField] sendAction:[[prefPane contentTokenField] action] to:[[prefPane contentTokenField] target]];
 	
 //	[self willChangeValueForKey:@"selectedAnnotation"];
@@ -982,11 +1010,15 @@ NSLog(@"[[[[self window] contentView] subviews] count] : %d", [[[[self window] c
 
 - (void)saveAnnotationLayout;
 {
+	
+	
 	[self saveAnnotationLayoutForModality:currentModality];
 }
 
 - (void)saveAnnotationLayoutForModality:(NSString*)modality;
 {
+	
+	
 	NSArray *placeHolders = [layoutView placeHolderArray];
 	NSArray *keys = [NSArray arrayWithObjects:@"LowerLeft", @"LowerMiddle", @"LowerRight", @"MiddleLeft", @"MiddleRight", @"TopLeft", @"TopMiddle", @"TopRight", nil];
 	NSMutableDictionary *layoutViewDict = [NSMutableDictionary dictionary];
@@ -1088,6 +1120,11 @@ NSLog(@"[[[[self window] contentView] subviews] count] : %d", [[[[self window] c
 	
 	[self validateTokenTextField:self];
 	selectedAnnotation = nil;
+	
+	[[prefPane titleTextField] setEnabled: NO];
+	[[prefPane contentTokenField] setEnabled: NO];
+	[self setCustomDICOMFieldEditingEnable:NO];
+	
 	[self saveAnnotationLayoutForModality:currentModality];
 	currentModality = [[sender selectedItem] title];
 	[[prefPane sameAsDefaultButton] setHidden:[currentModality isEqualToString:@"Default"]];

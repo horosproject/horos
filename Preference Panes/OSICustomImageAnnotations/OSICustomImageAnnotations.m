@@ -8,8 +8,91 @@
 
 #import "OSICustomImageAnnotations.h"
 
+int  compareViewTags(id firstView, id secondView, void * context);
+int  compareViewTags(id firstView, id secondView, void * context)
+{
+   int firstTag;
+   int secondTag;
+   id v = context;
+	
+	if( [v boolValue])
+	{
+		secondTag = [firstView tag];
+		firstTag = [secondView tag];
+	}
+	else
+	{
+		firstTag = [firstView tag];
+		secondTag = [secondView tag];
+	}
+
+   if (firstTag == secondTag) {return NSOrderedSame;}
+   else
+   {
+       if (firstTag < secondTag) {return NSOrderedAscending;}
+       else {return NSOrderedDescending;}
+   }
+}
 
 @implementation OSICustomImageAnnotations
+
+- (void) lockView:(BOOL) v
+{
+	[gray setHidden: !v];
+	[lock setHidden: !v];
+	
+	[[self mainView] sortSubviewsUsingFunction:(int (*)(id, id, void *))compareViewTags context: [NSNumber numberWithBool: !v]];
+}
+
+- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
+{
+    editable = YES;
+	[self lockView: NO];
+}
+
+- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
+{    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
+	{
+		editable = NO;
+		[self lockView: YES];
+	}
+}
+
+#pragma mark -
+
+- (void) mainViewDidLoad
+{
+	[_authView setDelegate:self];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
+	{
+		[_authView setString:"com.rossetantoine.osirix.preferences.customImageAnnotations"];
+		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) editable = YES;
+		else editable = NO;
+	}
+	else
+	{
+		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
+		[_authView setEnabled: NO];
+		
+		editable = YES;
+	}
+	[_authView updateStatus:self];
+	
+	if( editable)
+	{
+		[self lockView: NO];
+	}
+	else
+	{
+		[self lockView: YES];
+	}
+}
+
+- (BOOL) editable
+{
+	return editable;
+}
 
 - (id)init
 {
@@ -70,6 +153,8 @@
 
 - (IBAction)addAnnotation:(id)sender;
 {
+
+	
 	[layoutController addAnnotation:sender];
 	
 	[addCustomDICOMFieldButton setEnabled:YES];
@@ -80,6 +165,8 @@
 
 - (IBAction)removeAnnotation:(id)sender;
 {
+
+	
 	[layoutController removeAnnotation:sender];
 	[titleTextField setStringValue:@""];
 	
@@ -91,11 +178,15 @@
 
 - (IBAction)setTitle:(id)sender;
 {
+
+	
 	[layoutController setTitle:sender];
 }
 
 - (IBAction)addFieldToken:(id)sender;
 {
+
+	
 	if(sender==addCustomDICOMFieldButton || sender==addDICOMFieldButton || sender==addDatabaseFieldButton || sender==addSpecialFieldButton)
 	{
 		NSWindow *win = [[self mainView] window];
@@ -111,6 +202,8 @@
 
 - (IBAction)saveAnnotationLayout:(id)sender;
 {
+
+	
 	[layoutController saveAnnotationLayoutForModality:[[modalitiesPopUpButton selectedItem] title]];
 }
 
@@ -149,6 +242,8 @@
 
 - (IBAction)setSameAsDefault:(id)sender;
 {
+
+	
 	BOOL state = [sameAsDefaultButton state]==NSOnState;
 
 	if(state)
@@ -174,6 +269,8 @@
 
 - (IBAction)toggleOrientationWidget:(id)sender;
 {
+
+	
 	BOOL state = [orientationWidgetButton state]==NSOnState;
 
 	[layoutController setOrientationWidgetEnabled:state];

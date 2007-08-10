@@ -21,7 +21,7 @@
 	
 	CIALayoutController *layoutController;
 	IBOutlet NSWindow *window;
-	
+	IBOutlet NSImageView	*gray, *lock;
 	IBOutlet NSPopUpButton *modalitiesPopUpButton;
 	IBOutlet NSButton *sameAsDefaultButton;
 	
@@ -38,7 +38,12 @@
 	IBOutlet NSButton *addCustomDICOMFieldButton, *addDICOMFieldButton, *addDatabaseFieldButton, *addSpecialFieldButton;
 	IBOutlet NSPopUpButton *DICOMFieldsPopUpButton, *databaseFieldsPopUpButton, *specialFieldsPopUpButton;
 	IBOutlet NSBox *contentBox;
+	
+	IBOutlet SFAuthorizationView			*_authView;
+	
+	BOOL editable;
 }
+- (BOOL) editable;
 
 - (IBAction)addAnnotation:(id)sender;
 - (IBAction)removeAnnotation:(id)sender;

@@ -220,8 +220,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -267,8 +265,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>9</integer>
-									<integer>5</integer>
+									<integer>2</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -292,7 +290,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>1094 568 1440 776 0 0 2560 1578 </string>
+						<string>898 455 1440 776 0 0 2560 1578 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -317,14 +315,6 @@
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
 										<string></string>
-										<key>history</key>
-										<array>
-											<string>ABF899510AE89FFD00BBE119</string>
-										</array>
-										<key>prevStack</key>
-										<array>
-											<string>ABC3940A09F52058000A6508</string>
-										</array>
 									</dict>
 									<key>SplitCount</key>
 									<string>1</string>
@@ -335,16 +325,18 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {1232, 730}}</string>
+								<string>{{0, 0}, {1232, 577}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1094 568 1440 776 0 0 2560 1578 </string>
+								<string>898 455 1440 776 0 0 2560 1578 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>730pt</string>
+							<string>577pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -355,14 +347,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 735}, {1232, 0}}</string>
+								<string>{{0, 582}, {1232, 153}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1094 568 1440 776 0 0 2560 1578 </string>
+								<string>898 455 1440 776 0 0 2560 1578 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
 							<key>Proportion</key>
-							<string>0pt</string>
+							<string>153pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
@@ -381,9 +373,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>ABCA4FBF0C6A2739005B4207</string>
+				<string>AB134F3B0C6C9BEF00DD9C7D</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>ABCA4FC00C6A2739005B4207</string>
+				<string>AB134F3C0C6C9BEF00DD9C7D</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -520,7 +512,7 @@
 		<string>/Users/rossetantoine/osirix/osirix/Preference Panes/OSIViewerPreferencePane/OSIViewerPreferencePane.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>1094 568 1440 776 0 0 2560 1578 </string>
+	<string>898 455 1440 776 0 0 2560 1578 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>

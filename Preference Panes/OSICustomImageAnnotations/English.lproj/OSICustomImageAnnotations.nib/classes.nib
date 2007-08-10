@@ -65,6 +65,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 DICOMFieldsPopUpButton = NSPopUpButton; 
+                "_authView" = SFAuthorizationView; 
                 addAnnotationButton = NSButton; 
                 addCustomDICOMFieldButton = NSButton; 
                 addDICOMFieldButton = NSButton; 
@@ -78,8 +79,10 @@
                 dicomGroupTextField = NSTextField; 
                 dicomNameTokenField = NSTokenField; 
                 elementLabel = NSTextField; 
+                gray = NSImageView; 
                 groupLabel = NSTextField; 
                 layoutView = CIALayoutView; 
+                lock = NSImageView; 
                 modalitiesPopUpButton = NSPopUpButton; 
                 nameLabel = NSTextField; 
                 orientationWidgetButton = NSButton; 
@@ -92,7 +95,8 @@
             }; 
             SUPERCLASS = NSPreferencePane; 
         }, 
-        {CLASS = RWTokenField; LANGUAGE = ObjC; SUPERCLASS = NSTokenField; }
+        {CLASS = RWTokenField; LANGUAGE = ObjC; SUPERCLASS = NSTokenField; }, 
+        {CLASS = SFAuthorizationView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
     ); 
     IBVersion = 1; 
 }
