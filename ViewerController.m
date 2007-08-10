@@ -7255,6 +7255,7 @@ short				matrix[25];
 			}
 			
 			[imageView setCLUT:red :green: blue];
+			
 			[imageView setIndex:[imageView curImage]];
 			if( str != curCLUTMenu)
 			{

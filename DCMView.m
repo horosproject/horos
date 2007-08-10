@@ -4472,7 +4472,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 - (void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
 {
 	long i;
-
+	
+	if( r == 0)	// -> BW
+	{
+		if( colorBuf == 0L) return;	// -> We are already in BW
+	}
+	else if( memcmp( redTable, r, 256) == 0 && memcmp( greenTable, g, 256) == 0 && memcmp( blueTable, b, 256) == 0) return;
+	
 	if( r)
 	{
 		BOOL BWCLUT = YES;
@@ -4510,6 +4516,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			blueTable[i] = i;
 		}
 	}
+	
+	[self updateTilingViews];
 }
 
 -(short) curImage
@@ -9237,9 +9245,6 @@ BOOL	lowRes = NO;
 				[self setBlendingFactor:[aView blendingFactor]];
 			if (blendingMode != [aView blendingMode])
 				[self setBlendingMode:[aView blendingMode]];
-				
-//			if( listType == 'i') [self setIndex:curImage];
-//			else [self setIndexWithReset:curImage :YES];
 			
 			// CLUT
 			unsigned char *aR, *aG, *aB;
