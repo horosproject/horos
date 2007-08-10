@@ -1747,10 +1747,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self mouseMoved: event];
 	[self setNeedsDisplay:YES];
 	
-	if (isKeyView)
-	{
-		[self updateTilingViews];
-	}
+	[self updateTilingViews];
 }
 
 -(BOOL) acceptsFirstMouse:(NSEvent*) theEvent
@@ -4308,9 +4305,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) setWLWW:(float) wl :(float) ww
 {
-//	if( wl == 0 && ww == 0)
-//		NSLog( @"*** warning setWLWW:(float) wl :(float) ww with ww == 0 wl == 0");
-
 	[curDCM changeWLWW :wl : ww];
 	
 	if( curDCM)
@@ -4472,51 +4466,56 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 - (void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
 {
 	long i;
+	BOOL needUpdate = YES;
 	
 	if( r == 0)	// -> BW
 	{
-		if( colorBuf == 0L) return;	// -> We are already in BW
+		if( colorBuf == 0L && colorTransfer == NO) needUpdate = NO;	// -> We are already in BW
 	}
-	else if( memcmp( redTable, r, 256) == 0 && memcmp( greenTable, g, 256) == 0 && memcmp( blueTable, b, 256) == 0) return;
+	else if( memcmp( redTable, r, 256) == 0 && memcmp( greenTable, g, 256) == 0 && memcmp( blueTable, b, 256) == 0) needUpdate = NO;
 	
-	if( r)
+	if( needUpdate)
 	{
-		BOOL BWCLUT = YES;
-		
-		for( i = 0; i < 256; i++)
+		if( r)
 		{
-			redTable[i] = r[i];
-			greenTable[i] = g[i];
-			blueTable[i] = b[i];
+			BOOL BWCLUT = YES;
 			
-			if( redTable[i] != i || greenTable[i] != i || blueTable[i] != i) BWCLUT = NO;
+			for( i = 0; i < 256; i++)
+			{
+				redTable[i] = r[i];
+				greenTable[i] = g[i];
+				blueTable[i] = b[i];
+				
+				if( redTable[i] != i || greenTable[i] != i || blueTable[i] != i) BWCLUT = NO;
+			}
+			
+			if( BWCLUT)
+			{
+				colorTransfer = NO;
+				if( colorBuf) free(colorBuf);
+				colorBuf = 0L;
+			}
+			else
+			{
+				colorTransfer = YES;
+			}
 		}
-		
-		if( BWCLUT)
+		else
 		{
 			colorTransfer = NO;
 			if( colorBuf) free(colorBuf);
 			colorBuf = 0L;
-		}
-		else
-		{
-			colorTransfer = YES;
-		}
-	}
-	else
-	{
-		colorTransfer = NO;
-		if( colorBuf) free(colorBuf);
-		colorBuf = 0L;
-		
-		for( i = 0; i < 256; i++)
-		{
-			redTable[i] = i;
-			greenTable[i] = i;
-			blueTable[i] = i;
+			
+			for( i = 0; i < 256; i++)
+			{
+				redTable[i] = i;
+				greenTable[i] = i;
+				blueTable[i] = i;
+			}
 		}
 	}
 	
+	[self loadTextures];
 	[self updateTilingViews];
 }
 
@@ -9193,6 +9192,7 @@ BOOL	lowRes = NO;
 	if (aView != self && dcmPixList != 0L)
 	{
 		int offset = [self tag] - [aView tag];
+		int prevCurImage = [self curImage];
 		
 		if( flippedData)
 			offset = -offset;
@@ -9229,7 +9229,10 @@ BOOL	lowRes = NO;
 			else
 			{
 				if( [aView curWL] != 0 && [aView curWW] != 0)
-					[self setWLWW:[aView curWL] :[aView curWW]];
+				{
+					if( curWL != [aView curWL] || curWW != [aView curWW])
+						[self setWLWW:[aView curWL] :[aView curWW]];
+				}	
 				[self setScaleValue: [aView scaleValue]];
 				[self setRotation: [aView rotation]];
 				[self setOrigin: [aView origin]];
@@ -9255,9 +9258,8 @@ BOOL	lowRes = NO;
 		[self setFlippedData: [aView flippedData]];
 		[self setMenu: [aView menu]];
 		
-		[self setIndex:[self curImage]];
-		
-		[self setNeedsDisplay:YES];
+		if( prevCurImage != [self curImage])
+			[self setIndex:[self curImage]];
 	}
 }
 
