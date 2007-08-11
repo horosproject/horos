@@ -4236,44 +4236,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 		return;
 	}
 
-	extern NSThread *mainThread;
-	
-	//ThreadID threadID;
-	
-	//OSErr err = GetCurrentThread( &threadID );
-	
-	if( mainThread != [NSThread currentThread] ) return;
-	
-	NSLog( @"loadDICOMDCMFramework for RTSTRUCT" );
+	NSLog( @"createROIsFromRTSTRUCT" );
 
-	static bool first = YES;
-	static NSMutableSet *rtstructUIDs;
-	
-	if ( first ) {
-		rtstructUIDs = [[NSMutableSet set] retain];
-		first = NO;
-	}
-	
-	NSString *rtstructUID = [dcmObject attributeValueWithName: @"SOPInstanceUID"];
-	
-	if ( [rtstructUIDs containsObject: rtstructUID] ) return;
-	
-	[rtstructUIDs addObject: rtstructUID];
-
-	int choice;       // The following Alert Panel often causes some kind of wierd race condition/lockup with images still loading in background. ??!?
-	
-	choice = NSRunAlertPanel( NSLocalizedString( @"Create ROIs?", nil ),
-								  NSLocalizedString( @"Would you like to create a set of ROIs from this RTSTRUCT?", nil ),
-								  NSLocalizedString( @"Cancel", nil ),
-								  NSLocalizedString( @"OK", nil ), nil );
-	
-	if ( choice == NSAlertDefaultReturn ) return;
-		
-	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
-		dcmObject, @"dcmObject",
-		rtstructUIDs, @"rtstructUIDs",
-		nil];
-		
+	NSDictionary *dict = [NSDictionary dictionaryWithObject: dcmObject forKey: @"dcmObject"];
 	
 	[NSThread detachNewThreadSelector: @selector(createROIsFromRTSTRUCTThread:) toTarget: self withObject: dict];
 
@@ -4294,7 +4259,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];  // Cuz this is run as a detached thread.
 	
 	DCMObject *dcmObject = [dict objectForKey: @"dcmObject"];
-	NSMutableSet *rtstructUIDs = [dict objectForKey: @"rtstructUIDs"];
 	
 	NSString *dirPath = [documentsDirectory() stringByAppendingPathComponent:@"/ROIs/"];
 	
@@ -4306,7 +4270,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	if ( refFrameSequence == nil ) {
 		NSLog( @"ReferencedFrameofReferenceSequence not found" );
-		return;	// <- ********** What about the NSAutoreleasePool *pool ?? who will release it??
+		goto END_CREATE_ROIS;
 	}
 	
 	NSMutableArray *refSeriesUIDPredicates = [NSMutableArray arrayWithCapacity: 0];
@@ -4462,8 +4426,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 					NSLog( @"contourImageSequence not found" );
 					goto END_CREATE_ROIS;
 				}
-				
-				
+								
 				NSString *contourType = [contourItem attributeValueWithName: @"ContourGeometricType"];
 				
 				if ( [contourType isEqualToString: @"CLOSED_PLANAR"] == NO && [contourType isEqualToString: @"INTERPOLATED_PLANAR"] == NO ) {
@@ -4703,15 +4666,6 @@ END_CREATE_ROIS:
 	
 	NSString            *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
 //	NSString			*MediaStorageSOPInstanceUID = [dcmObject attributeValueWithName:@"MediaStorageSOPInstanceUID"];
-
-#pragma mark *RTSTRUCT	
-	//  Check for RTSTRUCT and create ROIs if needed	
-	if ( [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID RTStructureSetStorage]] ) {
-		[[self seriesObj] setValue:[NSNumber numberWithFloat: 0.0f] forKey:@"rotationAngle"];  // Hack to align grayscale image - otherwise it displays crooked for some reason.
-		[self createROIsFromRTSTRUCT: dcmObject];
-		[pool release];
-		return YES;
-	}
 		
 	//-----------------------common----------------------------------------------------------	
 		

@@ -59,6 +59,7 @@ Version 2.5
 #import "PreviewView.h"
 #import "QueryController.h"
 #import "AnonymizerWindowController.h"
+#import "DicomSeries.h"
 #import "DicomImage.h"
 #import "DCMPix.h"
 #import "SRAnnotation.h"
@@ -131,6 +132,9 @@ BrowserController  *browserWindow = 0L;
 static mach_port_t	gMasterPort;
 static NSString *albumDragType = @"Osirix Album drag";
 static Wait *waitSendWindow = 0L;
+
+static NSMenu *contextual = nil;
+static NSMenu *contextualRT = nil;  // Alternate menu for RT objects (which usually don't have images)
 
 extern void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome);
 extern BOOL hasMacOSXTiger();
@@ -6049,6 +6053,11 @@ static BOOL withReset = NO;
 				[cell setImagePosition: NSImageBelow];
 				[cell setAction: @selector(matrixPressed:)];
 				
+				if ( [modality isEqualToString: @"RTSTRUCT"] )
+					[cell setMenu: contextualRT];
+				else
+					[cell setMenu: contextual];
+				
 				NSString	*name = [curFile valueForKey:@"name"];
 				
 				if( [name length] > 15) name = [name substringToIndex: 15];
@@ -6801,9 +6810,10 @@ static BOOL withReset = NO;
 
 - (void) createContextualMenu
 {
-	NSMenu			*contextual		=  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
 	NSMenuItem		*item, *subItem;
 	int				i = 0;
+	
+	if ( contextual == nil ) contextual	= [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
 	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open images", nil)  action:@selector(viewerDICOM:) keyEquivalent:@""];
 	[contextual addItem:item];
@@ -6891,9 +6901,35 @@ static BOOL withReset = NO;
 	[contextual addItem:item];
 	[item release];
 	
-	[oMatrix setMenu:contextual];
+	[oMatrix setMenu: contextual];
 	
-	[contextual release];
+	// Create alternate contextual menu for RT objects
+	
+	if ( contextualRT == nil ) contextualRT	= [contextual copy];
+
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Create ROIs from RTSTRUCT", nil)  action:@selector(createROIsFromRTSTRUCT:) keyEquivalent:@""];
+	[contextualRT insertItem: item atIndex: 0];
+	[item release];
+	
+	[contextualRT insertItem: [NSMenuItem separatorItem] atIndex: 1];
+	
+	// Now remove non-applicable items - usually related to images (most RT objects don't have embedded images)
+
+	int indx = [contextualRT indexOfItemWithTitle: @"Open images in 4D"];
+	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
+	indx = [contextualRT indexOfItemWithTitle: @"Open Key Images"];
+	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
+	indx = [contextualRT indexOfItemWithTitle: @"Export to Quicktime"];
+	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
+	indx = [contextualRT indexOfItemWithTitle: @"Export to JPEG"];
+	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
+	indx = [contextualRT indexOfItemWithTitle: @"Export to TIFF"];
+	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
+//	indx = [contextualRT indexOfItemWithTitle: @"Toggle images/series displaying"];
+//	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
+	indx = [contextualRT indexOfItemWithTitle: @"Open Key Images"];
+	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
+	
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -12642,12 +12678,27 @@ static volatile int numberOfThreadsForJPEG = 0;
 #pragma mark -
 #pragma mark RTSTRUCT
 
--(void) rtstructNotification: (NSNotification *)note
-{
+- (void)createROIsFromRTSTRUCT: (id)sender {
+	NSMutableArray *filesArray = [NSMutableArray array];
+	NSMutableArray *filePaths = [self filesForDatabaseMatrixSelection: filesArray];
+	
+	unsigned int i;
+	for ( i = 0; i < [filePaths count]; i++ ) {
+		NSManagedObject *item = [filesArray objectAtIndex: i];
+		NSString *modality = [item valueForKey: @"modality"];
+		if ( [modality isEqualToString: @"RTSTRUCT"] ) {
+			DCMObject *dcmObj = [DCMObject objectWithContentsOfFile: [filePaths objectAtIndex: i] decodingPixelData: NO];
+				DCMPix *pix = [previewPix objectAtIndex: 0];  // Should only be one DCMPix associated w/ an RTSTRUCT
+
+				[pix createROIsFromRTSTRUCT: dcmObj];
+		}
+	}
+}
+
+- (void)rtstructNotification: (NSNotification *)note {
 	BOOL visible = [[[note userInfo] objectForKey: @"RTSTRUCTProgressBar"] boolValue];
 	if ( visible ) [self setRtstructProgressPercent: [[[note userInfo] objectForKey: @"RTSTRUCTProgressPercent"] floatValue]];
 	[self setRtstructProgressBar: visible];
-	
 }
 	
 - (BOOL)rtstructProgressBar {

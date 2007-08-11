@@ -29,6 +29,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 @class xNSImage;
 @class ROI;
 @class ThickSlabController;
+@class DCMObject;
 
 @interface DCMPix: NSObject <NSCopying>
 {
@@ -445,5 +446,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (NSString *)srcFile;
 
 - (NSMutableDictionary*) annotationsDictionary;
+
+//RTSTRUCT
+- (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject;
 
 @end
