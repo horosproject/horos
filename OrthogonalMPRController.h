@@ -70,6 +70,7 @@
 
 // Tools Selection
 - (void) setCurrentTool:(short) newTool;
+- (int) currentTool;
 
 - (void) saveViewsFrame;
 - (void) saveScaleValue;

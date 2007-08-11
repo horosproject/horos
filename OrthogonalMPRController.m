@@ -860,6 +860,11 @@
 	[yReslicedView setCurrentTool: newTool];
 }
 
+- (int) currentTool
+{
+	return [originalView currentTool];
+}
+
 #pragma mark-
 #pragma mark ROIs
 

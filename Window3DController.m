@@ -53,6 +53,60 @@ extern NSString * documentsDirectory();
 
 @implementation Window3DController
 
+- (BOOL)validateMenuItem:(NSMenuItem *)item
+{
+	BOOL valid = NO;
+	int i;
+	
+	if( [item action] == @selector( ApplyCLUT:))
+	{
+		valid = YES;
+		
+		if( [[item title] isEqualToString: curCLUTMenu]) [item setState:NSOnState];
+		else [item setState:NSOffState];
+	}
+//	else if( [item action] == @selector( ApplyConv:))
+//	{
+//		valid = YES;
+//		
+//		if( [[item title] isEqualToString: curConvMenu]) [item setState:NSOnState];
+//		else [item setState:NSOffState];
+//	}
+	else if( [item action] == @selector( ApplyOpacity:))
+	{
+		valid = YES;
+		
+		if( [[item title] isEqualToString: curOpacityMenu]) [item setState:NSOnState];
+		else [item setState:NSOffState];
+	}
+	else if( [item action] == @selector( ApplyWLWW:))
+	{
+		valid = YES;
+		
+		NSString	*str = 0L;
+		
+		@try
+		{
+			str = [[item title] substringFromIndex: 4];
+		}
+		
+		@catch (NSException * e) {}
+		
+		if( [str isEqualToString: curWLWWMenu] || [[item title] isEqualToString: curWLWWMenu]) [item setState:NSOnState];
+		else [item setState:NSOffState];
+	}
+	else if( [item action] == 0L)
+	{
+		valid = NO;
+	}
+	else
+	{
+		valid = YES;
+	}
+	
+    return valid;
+}
+
 - (NSArray*) pixList
 {
 	return 0L;
