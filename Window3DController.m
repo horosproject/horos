@@ -95,7 +95,15 @@ extern NSString * documentsDirectory();
 		if( [str isEqualToString: curWLWWMenu] || [[item title] isEqualToString: curWLWWMenu]) [item setState:NSOnState];
 		else [item setState:NSOffState];
 	}
-	else if( [item action] == 0L)
+	else  if( [item action] == @selector(showCLUTOpacityPanel:))
+	{
+		if([[[self pixList] objectAtIndex:0] isRGB] == NO) valid = YES;
+	}
+	else if( [item action] == @selector(loadAdvancedCLUTOpacity:))
+	{
+		if([[[self pixList] objectAtIndex:0] isRGB] == NO) valid = YES;
+	}
+	else if( [item action] == @selector(noAction:))
 	{
 		valid = NO;
 	}

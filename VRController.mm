@@ -2754,11 +2754,11 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[clutArray sortUsingSelector:@selector(caseInsensitiveCompare:)];
 	
 	NSMenuItem *item;
-	item = [[clutPopup menu] insertItemWithTitle:@"8-bit CLUTs" action:nil keyEquivalent:@"" atIndex:3];
+	item = [[clutPopup menu] insertItemWithTitle:@"8-bit CLUTs" action:@selector(noAction:) keyEquivalent:@"" atIndex:3];
 
 	[[clutPopup menu] insertItem:[NSMenuItem separatorItem] atIndex:[[clutPopup menu] numberOfItems]-2];
 
-	item = [[clutPopup menu] insertItemWithTitle:@"16-bit CLUTs" action:nil keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
+	item = [[clutPopup menu] insertItemWithTitle:@"16-bit CLUTs" action:@selector(noAction:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
 
 	for (i=0; i<[clutArray count]; i++)
 	{
