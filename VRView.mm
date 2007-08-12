@@ -3473,6 +3473,11 @@ public:
 	[controller undo: sender];
 }
 
+- (int) currentTool
+{
+	return currentTool;
+}
+
 - (void) setCurrentTool:(short) i
 {
 	long previousTool = currentTool;

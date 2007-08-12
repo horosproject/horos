@@ -1135,6 +1135,24 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	return toolsMatrix;
 }
 
+
+- (BOOL)validateMenuItem:(NSMenuItem *)item
+{
+	BOOL valid = NO;
+	int i;
+	
+	if( [item action] == @selector( setDefaultTool:))
+	{
+		valid = YES;
+		
+		if( [item tag] == [view currentTool]) [item setState:NSOnState];
+		else [item setState:NSOffState];
+	}
+	else valid = YES;
+	
+	return valid;
+}
+
 -(void) setDefaultTool:(id) sender
 {
 	//Sender may be matrix or menu. LP 12/3/05
