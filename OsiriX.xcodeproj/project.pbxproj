@@ -9307,6 +9307,11 @@
 		CE52264E077C48D900EED851 /* Sync.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE522648077C48D900EED851 /* Sync.tif */; };
 		CE52264F077C48D900EED851 /* Sync.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE522648077C48D900EED851 /* Sync.tif */; };
 		CE52301507A2AAF200694ED9 /* StudyView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E55AE1306C80E460059D6EB /* StudyView.h */; };
+		CE542D290C6F8F7B0021A0E7 /* NrrdIO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */; };
+		CE542D2A0C6F8F7B0021A0E7 /* NrrdIO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */; };
+		CE542D2B0C6F8F7B0021A0E7 /* NrrdIO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */; };
+		CE542D460C6F91E20021A0E7 /* libITKNrrdIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113DB08EDD61B005B15E1 /* libITKNrrdIO.a */; };
+		CE542D4A0C6F91F70021A0E7 /* libitkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113DA08EDD61B005B15E1 /* libitkzlib.a */; };
 		CE5487410989346800CF4C60 /* BrushPalette.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5487400989346800CF4C60 /* BrushPalette.tif */; };
 		CE5487420989346800CF4C60 /* BrushPalette.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5487400989346800CF4C60 /* BrushPalette.tif */; };
 		CE5487430989346800CF4C60 /* BrushPalette.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5487400989346800CF4C60 /* BrushPalette.tif */; };
@@ -14375,6 +14380,7 @@
 		CE4E42ED08758A1700D0AFDB /* OSIGeneralPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIGeneralPreferencePane.xcodeproj; path = "Preference Panes/OSIGeneralPreferencePane/OSIGeneralPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		CE4E42F008758A1700D0AFDB /* OSIListenerPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIListenerPreferencePane.xcodeproj; path = "Preference Panes/OSIListenerPreferencePane/OSIListenerPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		CE522648077C48D900EED851 /* Sync.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Sync.tif; sourceTree = "<group>"; };
+		CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NrrdIO.h; path = ITK180/Utilities/NrrdIO/NrrdIO.h; sourceTree = "<group>"; };
 		CE5487400989346800CF4C60 /* BrushPalette.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BrushPalette.tif; sourceTree = "<group>"; };
 		CE5487790989363200CF4C60 /* Brush.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Brush.tiff; sourceTree = "<group>"; };
 		CE5D33B309E1C26400CC6884 /* add-large.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "add-large.tif"; sourceTree = "<group>"; };
@@ -14786,6 +14792,8 @@
 				AB6FF5BC0A47D24200C501F0 /* IOKit.framework in Frameworks */,
 				CE0F425A0A56A9A800D54F38 /* libz.dylib in Frameworks */,
 				ABE500370AECA4F2009BCB5B /* QTKit.framework in Frameworks */,
+				CE542D460C6F91E20021A0E7 /* libITKNrrdIO.a in Frameworks */,
+				CE542D4A0C6F91F70021A0E7 /* libitkzlib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16259,6 +16267,7 @@
 				ABC47B580C031397001CEA21 /* BrowserMatrix.m */,
 				BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */,
 				BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */,
+				CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */,
 				AB06EDF005635642006AFFB9 /* dicomFile.h */,
 				AB06EDEF05635642006AFFB9 /* dicomFile.m */,
 				AB87FA740C06BEB200CD2976 /* NIfTI_Library */,
@@ -21425,6 +21434,7 @@
 				CE822F8E0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */,
 				ABB230BD0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 				AB64A2DB0C4E0F61000E0981 /* HornRegistration.h in Headers */,
+				CE542D2B0C6F8F7B0021A0E7 /* NrrdIO.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23356,6 +23366,7 @@
 				CE822F8C0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */,
 				ABB230BF0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 				AB64A2DD0C4E0F61000E0981 /* HornRegistration.h in Headers */,
+				CE542D2A0C6F8F7B0021A0E7 /* NrrdIO.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25292,6 +25303,7 @@
 				CE822F8A0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */,
 				ABB230BB0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 				AB64A2D90C4E0F61000E0981 /* HornRegistration.h in Headers */,
+				CE542D290C6F8F7B0021A0E7 /* NrrdIO.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -31560,8 +31572,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/ITK180/bin\"";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -31596,8 +31610,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/ITK180/bin\"";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,

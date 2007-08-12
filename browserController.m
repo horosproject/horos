@@ -10862,6 +10862,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						if( isDicomFile == YES		||
 							(([DicomFile isFVTiffFile:srcPath]		||
 							[DicomFile isTiffFile:srcPath]			||
+							[DicomFile isNRRDFile:srcPath]			||
 							[DicomFile isXMLDescriptedFile:srcPath]	||
 							[DicomFile isXMLDescriptorFile:srcPath]) 
 							&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO))

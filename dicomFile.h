@@ -45,6 +45,7 @@
 // file functions
 + (BOOL) isTiffFile:(NSString *) file;
 + (BOOL) isFVTiffFile:(NSString *) file;
++ (BOOL) isNRRDFile:(NSString *) file;
 + (BOOL) isNIfTIFile:(NSString *) file;
 + (BOOL) isDICOMFile:(NSString *) file;
 + (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed;
