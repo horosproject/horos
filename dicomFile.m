@@ -144,11 +144,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	NSMutableString	*mutable = [NSMutableString stringWithString: str];
 	
-	[mutable replaceOccurrencesOfString:@"^" withString:@" " options:nil range:NSMakeRange(0, [mutable length])]; 
-	[mutable replaceOccurrencesOfString:@"/" withString:@"-" options:nil range:NSMakeRange(0, [mutable length])]; 
-	[mutable replaceOccurrencesOfString:@"\r" withString:@"" options:nil range:NSMakeRange(0, [mutable length])]; 
-	[mutable replaceOccurrencesOfString:@"\n" withString:@"" options:nil range:NSMakeRange(0, [mutable length])]; 
-	[mutable replaceOccurrencesOfString:@":" withString:@"-" options:nil range:NSMakeRange(0, [mutable length])];
+	[mutable replaceOccurrencesOfString:@"^" withString:@" " options:0 range:NSMakeRange(0, [mutable length])]; 
+	[mutable replaceOccurrencesOfString:@"/" withString:@"-" options:0 range:NSMakeRange(0, [mutable length])]; 
+	[mutable replaceOccurrencesOfString:@"\r" withString:@"" options:0 range:NSMakeRange(0, [mutable length])]; 
+	[mutable replaceOccurrencesOfString:@"\n" withString:@"" options:0 range:NSMakeRange(0, [mutable length])]; 
+	[mutable replaceOccurrencesOfString:@":" withString:@"-" options:0 range:NSMakeRange(0, [mutable length])];
 	
 	long i = [mutable length];
 	while( --i > 0)
@@ -315,7 +315,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	if( [extension isEqualToString:@"hdr"] == YES ||
 		[extension isEqualToString:@"nii"] == YES)
 	{
-		NIfTI = (nifti_1_header *) nifti_read_header([file cString], nil, 0);
+		NIfTI = (nifti_1_header *) nifti_read_header([file UTF8String], nil, 0);
 		
 		if( (NIfTI->magic[0] != 'n')                           ||
 					(NIfTI->magic[1] != 'i' && NIfTI->magic[1] != '+')   ||
@@ -1498,7 +1498,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	{
 		fileType = [[NSString stringWithString:@"NIfTI"] retain];
 		
-		NIfTI = (nifti_1_header *) nifti_read_header([filePath cString], nil, 0);
+		NIfTI = (nifti_1_header *) nifti_read_header([filePath UTF8String], nil, 0);
 		
 		if( (NIfTI->magic[0] == 'n')                           &&
 			(NIfTI->magic[1] == 'i' || NIfTI->magic[1] == '+')   &&

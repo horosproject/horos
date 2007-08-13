@@ -309,13 +309,13 @@
 			date = today;
 			break;
 		case searchWithinLast2Days: 
-			date = [today dateByAddingYears:nil months:nil days:-1 hours:nil minutes:nil seconds:nil];
+			date = [today dateByAddingYears:0 months:0 days:-1 hours:0 minutes:0 seconds:0];
 			break;
 		case searchWithinLastWeek: 
-			date = [today dateByAddingYears:nil months:nil days:-7 hours:nil minutes:nil seconds:nil];
+			date = [today dateByAddingYears:0 months:0 days:-7 hours:0 minutes:0 seconds:0];
 			break;
 		case searchWithinLast2Weeks: 
-			date = [today dateByAddingYears:nil months:nil days:-14 hours:nil minutes:nil seconds:nil];
+			date = [today dateByAddingYears:0 months:0 days:-14 hours:0 minutes:0 seconds:0];
 			break;
 		case searchWithinLastMonth: 
 			date = [today dateByAddingYears:0 months:-1 days:0 hours:0 minutes:0 seconds:0];
