@@ -71,6 +71,7 @@ Version 2.5
 #import "PluginFilter.h"
 #import "ReportPluginFilter.h"
 #import "dicomFile.h"
+#import "DicomFileDCMTKCategory.h"
 #import "NSSplitViewSave.h"
 #import "Papyrus3/Papyrus3.h"
 #import "DicomDirParser.h"

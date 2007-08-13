@@ -2705,7 +2705,7 @@
 		BF2425550A51D39500D3D76B /* DicomFileDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF24254F0A51D39500D3D76B /* DicomFileDCMTKCategory.h */; };
 		BF2425560A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */; };
 		BF26843D0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */; };
-		BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */; };
+		BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		BF26843F0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */; };
 		BF2684400A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */; };
 		BF2684410A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */; };
@@ -16270,9 +16270,9 @@
 				CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */,
 				AB06EDF005635642006AFFB9 /* dicomFile.h */,
 				AB06EDEF05635642006AFFB9 /* dicomFile.m */,
-				AB87FA740C06BEB200CD2976 /* NIfTI_Library */,
 				BF24254F0A51D39500D3D76B /* DicomFileDCMTKCategory.h */,
 				BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */,
+				AB87FA740C06BEB200CD2976 /* NIfTI_Library */,
 				CEE73FC708F44724002A395F /* FVTiff.h */,
 				CEE73FC808F44724002A395F /* FVTiff.m */,
 				AB142DFC05600D76008461A0 /* AppController.h */,

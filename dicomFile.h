@@ -17,7 +17,6 @@
 #import <Cocoa/Cocoa.h>
 
 
-
 @interface DicomFile: NSObject
 {
     NSString            *name;
@@ -45,7 +44,6 @@
 // file functions
 + (BOOL) isTiffFile:(NSString *) file;
 + (BOOL) isFVTiffFile:(NSString *) file;
-+ (BOOL) isNRRDFile:(NSString *) file;
 + (BOOL) isNIfTIFile:(NSString *) file;
 + (BOOL) isDICOMFile:(NSString *) file;
 + (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed;
