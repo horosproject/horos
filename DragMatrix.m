@@ -331,7 +331,7 @@ NSString *pasteBoardTypeCover = @"KeyImages";
 *****************************************************************************/
 - (void)mouseUp:(NSEvent *)event {
     BOOL cellWasHit;
-    int row, column;
+    NSInteger row, column;
     NSPoint point;
     
     point = [self convertPoint:[event locationInWindow] fromView:nil];
@@ -368,7 +368,7 @@ NSString *pasteBoardTypeCover = @"KeyImages";
  * If we hit a cell, then start the drag 
 *****************************************************************************/
 - (void)mouseDragged:(NSEvent *)event { 
-    int row, column; 
+    NSInteger row, column; 
     NSPoint point;
 
     point = [self convertPoint:[event locationInWindow] fromView:nil];
