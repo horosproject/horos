@@ -1,277 +1,242 @@
-{
-    IBClasses = (
-        {
-            ACTIONS = {
-                alwaysSyncMenu = id; 
-                changeFont = id; 
-                flipHorizontal = id; 
-                flipVertical = id; 
-                roiLoadFromXMLFiles = id; 
-                sliderAction = id; 
-                sliderAction2DMPR = id; 
-                sliderRGBFactor = id; 
-            }; 
-            CLASS = DCMView; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSOpenGLView; 
-        }, 
-        {CLASS = DarkWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
-        {
-            ACTIONS = {"" = id; }; 
-            CLASS = FirstResponder; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {
-            CLASS = OSIWindowController; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {
-            ACTIONS = {showViews = id; }; 
-            CLASS = OrthogonalMPRController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                originalView = OrthogonalMPRView; 
-                xReslicedView = OrthogonalMPRView; 
-                yReslicedView = OrthogonalMPRView; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = OrthogonalMPRView; LANGUAGE = ObjC; SUPERCLASS = DCMView; }, 
-        {
-            ACTIONS = {
-                MoviePlayStop = id; 
-                activateThickSlab = id; 
-                blendingPropagateOriginal = id; 
-                blendingPropagateX = id; 
-                blendingPropagateY = id; 
-                changeFromAndToBounds = id; 
-                changeTool = id; 
-                customizeViewerToolBar = id; 
-                endExportDICOMFileSettings = id; 
-                moviePosSliderAction = id; 
-                movieRateSliderAction = id; 
-                resetImage = id; 
-                roiDeleteAll = id; 
-                setCurrentPosition = id; 
-                setCurrentdcmExport = id; 
-                setThickSlab = id; 
-                setThickSlabMode = id; 
-            }; 
-            CLASS = OrthogonalMPRViewer; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                OpacityPopup = NSPopUpButton; 
-                ThickSlabView = NSView; 
-                WLWWView = NSView; 
-                clutPopup = NSPopUpButton; 
-                controller = OrthogonalMPRController; 
-                dcmBox = NSBox; 
-                dcmExportWindow = NSWindow; 
-                dcmFormat = NSMatrix; 
-                dcmFrom = NSSlider; 
-                dcmFromTextField = NSTextField; 
-                dcmInterval = NSSlider; 
-                dcmIntervalTextField = NSTextField; 
-                dcmSelection = NSMatrix; 
-                dcmSeriesName = NSTextField; 
-                dcmTo = NSSlider; 
-                dcmToTextField = NSTextField; 
-                moviePlayStop = NSButton; 
-                moviePosSlider = NSSlider; 
-                movieRateSlider = NSSlider; 
-                movieTextSlide = NSTextField; 
-                movieView = NSView; 
-                splitView = NSSplitView; 
-                thickSlabActivated = NSButton; 
-                thickSlabPopup = NSPopUpButton; 
-                thickSlabSlider = NSSlider; 
-                thickSlabTextField = NSTextField; 
-                toolsMatrix = NSMatrix; 
-                toolsView = NSView; 
-                wlwwPopup = NSPopUpButton; 
-            }; 
-            SUPERCLASS = OSIWindowController; 
-        }, 
-        {CLASS = PreviewView; LANGUAGE = ObjC; SUPERCLASS = DCMView; }, 
-        {
-            ACTIONS = {
-                AddOpacity = id; 
-                ConvertToBWMenu = id; 
-                ConvertToRGBMenu = id; 
-                CurvedMPR = id; 
-                MPR2DViewer = id; 
-                MPRViewer = id; 
-                MoviePlayStop = id; 
-                PlayStop = id; 
-                SRViewer = id; 
-                VRVPROViewer = id; 
-                VRViewer = id; 
-                blendingMode = id; 
-                blendingSlider = id; 
-                changeMatrixSize = id; 
-                clearOffset = id; 
-                clutAction = id; 
-                computeSum = id; 
-                convMatrixAction = id; 
-                copySettingsToOthers = id; 
-                endBlendingType = id; 
-                endCLUT = id; 
-                endConv = id; 
-                endCurvedMPR = id; 
-                endExportDICOMFileSettings = id; 
-                endNameWLWW = id; 
-                endOpacity = id; 
-                endQuicktime = id; 
-                endSetComments = id; 
-                endSetWLWW = id; 
-                endThicknessInterval = id; 
-                export2PACS = id; 
-                export2iPhoto = id; 
-                exportJPEG = id; 
-                exportQuicktime = id; 
-                keyImageCheckBox = id; 
-                keyImageDisplayButton = id; 
-                loadPatient = id; 
-                loadSerie = id; 
-                moviePosSliderAction = id; 
-                movieRateSliderAction = id; 
-                popFusionAction = id; 
-                resetImage = id; 
-                roiDeleteAll = id; 
-                roiPropagate = id; 
-                roiPropagateSetup = id; 
-                roiSetPixels = id; 
-                roiSetPixelsSetup = id; 
-                setComments = id; 
-                setCurvedMPRslider = id; 
-                setDefaultTool = id; 
-                setROITool = id; 
-                setStatus = id; 
-                sliderFusionAction = id; 
-                speedSliderAction = id; 
-                subtractCurrent = id; 
-                subtractStepper = id; 
-                subtractSwitch = id; 
-                updateImage = id; 
-                updateSetWLWW = id; 
-            }; 
-            CLASS = ViewerController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                AllROIsRadio = NSMatrix; 
-                BlendingView = NSView; 
-                CommentsEditField = NSTextField; 
-                CommentsField = NSButton; 
-                CommentsWindow = NSWindow; 
-                ConvView = NSView; 
-                FusionView = NSView; 
-                InOutROI = NSMatrix; 
-                OpacityName = NSTextField; 
-                OpacityPopup = NSPopUpButton; 
-                OpacityView = OpacityTransferView; 
-                RGBFactorsView = NSView; 
-                ReconstructionRoi = NSPopUpButton; 
-                ReconstructionView = NSView; 
-                StatusPopup = NSPopUpButton; 
-                StatusView = NSView; 
-                ThickIntervalWindow = NSWindow; 
-                WLWWView = NSView; 
-                XOffset = NSTextField; 
-                YOffset = NSTextField; 
-                addCLUTWindow = NSWindow; 
-                addConvWindow = NSWindow; 
-                addOpacityWindow = NSWindow; 
-                addWLWWWindow = NSWindow; 
-                blendingPercentage = NSTextField; 
-                blendingPlugins = NSPopUpButton; 
-                blendingSlider = NSSlider; 
-                blendingTypeBlue = NSButton; 
-                blendingTypeGreen = NSButton; 
-                blendingTypeMultiply = NSButton; 
-                blendingTypeRGB = NSButton; 
-                blendingTypeRed = NSButton; 
-                blendingTypeSubtract = NSButton; 
-                blendingTypeWindow = NSWindow; 
-                checkMaxValue = NSButton; 
-                checkMinValue = NSButton; 
-                clutName = NSTextField; 
-                clutPopup = NSPopUpButton; 
-                clutView = ColorTransferView; 
-                convMatrix = NSMatrix; 
-                convPopup = NSPopUpButton; 
-                curvedMPRWindow = NSWindow; 
-                curvedMPRinterval = NSSlider; 
-                curvedMPRintervalText = NSTextField; 
-                curvedMPRper = NSButton; 
-                curvedMPRsize = NSSlider; 
-                curvedMPRsizeText = NSTextField; 
-                curvedMPRslid = NSSlider; 
-                curvedMPRtext = NSTextField; 
-                customInterval = NSTextField; 
-                customOrigin = NSMatrix; 
-                customVectors = NSMatrix; 
-                customXSpacing = NSTextField; 
-                customYSpacing = NSTextField; 
-                dcmExportWindow = NSWindow; 
-                dcmFormat = NSMatrix; 
-                dcmSelection = NSMatrix; 
-                fromset = NSTextField; 
-                iPhotoView = NSView; 
-                keyImageCheck = NSButton; 
-                keyImageDisplay = NSButton; 
-                keyImages = NSView; 
-                loopButton = NSButton; 
-                matrixName = NSTextField; 
-                matrixNorm = NSTextField; 
-                maxValueText = NSTextField; 
-                minValueText = NSTextField; 
-                moviePlayStop = NSButton; 
-                moviePosSlider = NSSlider; 
-                movieRateSlider = NSSlider; 
-                movieTextSlide = NSTextField; 
-                movieView = NSView; 
-                newName = NSTextField; 
-                newValueText = NSTextField; 
-                patientView = NSView; 
-                popFusion = NSPopUpButton; 
-                popupRoi = NSPopUpButton; 
-                previewMatrix = NSMatrix; 
-                quicktimeMode = NSMatrix; 
-                quicktimeWindow = NSWindow; 
-                roiPropaCopy = NSMatrix; 
-                roiPropaDest = NSTextField; 
-                roiPropaDim = NSMatrix; 
-                roiPropaMode = NSMatrix; 
-                roiPropaWindow = NSWindow; 
-                roiSetPixWindow = NSWindow; 
-                serieView = NSView; 
-                setROI4DSeries = NSButton; 
-                setWLWWWindow = NSWindow; 
-                sizeMatrix = NSMatrix; 
-                slider = NSSlider; 
-                sliderFusion = NSSlider; 
-                speedSlider = NSSlider; 
-                speedText = NSTextField; 
-                speedView = NSView; 
-                splitView = NSSplitView; 
-                stacksFusion = NSTextField; 
-                studyView = StudyView; 
-                subtractIm = NSTextField; 
-                subtractOnOff = NSButton; 
-                subtractView = NSView; 
-                toolsMatrix = NSMatrix; 
-                toolsView = NSView; 
-                toset = NSTextField; 
-                wl = NSTextField; 
-                wlset = NSTextField; 
-                wlwwPopup = NSPopUpButton; 
-                ww = NSTextField; 
-                wwset = NSTextField; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }
-    ); 
-    IBVersion = 1; 
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>blendingPropagate</key>
+				<string>OrthogonalMPRView</string>
+				<key>blendingPropagateOriginal</key>
+				<string>OrthogonalMPRView</string>
+				<key>blendingPropagateX</key>
+				<string>OrthogonalMPRView</string>
+				<key>blendingPropagateY</key>
+				<string>OrthogonalMPRView</string>
+				<key>flipHorizontal</key>
+				<string>id</string>
+				<key>flipVertical</key>
+				<string>id</string>
+				<key>fullWindowView</key>
+				<string>id</string>
+				<key>showViews</key>
+				<string>id</string>
+				<key>toggleDisplayResliceAxes</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>OrthogonalMPRController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>originalView</key>
+				<string>OrthogonalMPRView</string>
+				<key>viewer</key>
+				<string>id</string>
+				<key>xReslicedView</key>
+				<string>OrthogonalMPRView</string>
+				<key>yReslicedView</key>
+				<string>OrthogonalMPRView</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSSplitView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>OrthogonalMPRView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>DCMView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSObject</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>alwaysSyncMenu</key>
+				<string>id</string>
+				<key>changeFont</key>
+				<string>id</string>
+				<key>flipHorizontal</key>
+				<string>id</string>
+				<key>flipVertical</key>
+				<string>id</string>
+				<key>roiLoadFromXMLFiles</key>
+				<string>id</string>
+				<key>sliderAction</key>
+				<string>id</string>
+				<key>sliderAction2DMPR</key>
+				<string>id</string>
+				<key>sliderRGBFactor</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>DCMView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSOpenGLView</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>MoviePlayStop</key>
+				<string>id</string>
+				<key>activateThickSlab</key>
+				<string>id</string>
+				<key>blendingPropagateOriginal</key>
+				<string>OrthogonalMPRView</string>
+				<key>blendingPropagateX</key>
+				<string>OrthogonalMPRView</string>
+				<key>blendingPropagateY</key>
+				<string>OrthogonalMPRView</string>
+				<key>changeFromAndToBounds</key>
+				<string>id</string>
+				<key>changeTool</key>
+				<string>id</string>
+				<key>customizeViewerToolBar</key>
+				<string>id</string>
+				<key>endExportDICOMFileSettings</key>
+				<string>id</string>
+				<key>moviePosSliderAction</key>
+				<string>id</string>
+				<key>movieRateSliderAction</key>
+				<string>id</string>
+				<key>resetImage</key>
+				<string>id</string>
+				<key>roiDeleteAll</key>
+				<string>id</string>
+				<key>setCurrentPosition</key>
+				<string>id</string>
+				<key>setCurrentdcmExport</key>
+				<string>id</string>
+				<key>setThickSlab</key>
+				<string>id</string>
+				<key>setThickSlabMode</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>OrthogonalMPRViewer</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>OpacityPopup</key>
+				<string>NSPopUpButton</string>
+				<key>ThickSlabView</key>
+				<string>NSView</string>
+				<key>WLWWView</key>
+				<string>NSView</string>
+				<key>clutPopup</key>
+				<string>NSPopUpButton</string>
+				<key>controller</key>
+				<string>OrthogonalMPRController</string>
+				<key>dcmBox</key>
+				<string>NSBox</string>
+				<key>dcmExportWindow</key>
+				<string>NSWindow</string>
+				<key>dcmFormat</key>
+				<string>NSMatrix</string>
+				<key>dcmFrom</key>
+				<string>NSSlider</string>
+				<key>dcmFromTextField</key>
+				<string>NSTextField</string>
+				<key>dcmInterval</key>
+				<string>NSSlider</string>
+				<key>dcmIntervalTextField</key>
+				<string>NSTextField</string>
+				<key>dcmSelection</key>
+				<string>NSMatrix</string>
+				<key>dcmSeriesName</key>
+				<string>NSTextField</string>
+				<key>dcmTo</key>
+				<string>NSSlider</string>
+				<key>dcmToTextField</key>
+				<string>NSTextField</string>
+				<key>moviePlayStop</key>
+				<string>NSButton</string>
+				<key>moviePosSlider</key>
+				<string>NSSlider</string>
+				<key>movieRateSlider</key>
+				<string>NSSlider</string>
+				<key>movieTextSlide</key>
+				<string>NSTextField</string>
+				<key>movieView</key>
+				<string>NSView</string>
+				<key>splitView</key>
+				<string>NSSplitView</string>
+				<key>thickSlabActivated</key>
+				<string>NSButton</string>
+				<key>thickSlabPopup</key>
+				<string>NSPopUpButton</string>
+				<key>thickSlabSlider</key>
+				<string>NSSlider</string>
+				<key>thickSlabTextField</key>
+				<string>NSTextField</string>
+				<key>toolsMatrix</key>
+				<string>NSMatrix</string>
+				<key>toolsView</key>
+				<string>NSView</string>
+				<key>wlwwPopup</key>
+				<string>NSPopUpButton</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>OSIWindowController</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key></key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>redo</key>
+				<string>id</string>
+				<key>undo</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>OSIWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>

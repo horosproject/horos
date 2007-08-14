@@ -4428,6 +4428,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[[dcmPixList objectAtIndex:i] setFusion:mode :stacks :flippedData];
 	}
 	
+	if( [self is2DViewer])
+	{
+		NSArray		*views = [[[self windowController] seriesView] imageViews];
+		
+		for ( i = 0; i < [views count]; i ++)
+			[[views objectAtIndex: i] updateImage];
+	}
+	
 	[self setIndex: curImage];
 }
 

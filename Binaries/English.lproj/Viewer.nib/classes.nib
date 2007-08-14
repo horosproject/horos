@@ -1,381 +1,777 @@
-{
-    IBClasses = (
-        {
-            ACTIONS = {renderButton = id; selectPicker = id; }; 
-            CLASS = ColorTransferView; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {pick = NSColorWell; position = NSTextField; }; 
-            SUPERCLASS = NSView; 
-        }, 
-        {CLASS = CurvedMPR; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            ACTIONS = {
-                alwaysSyncMenu = id; 
-                changeFont = id; 
-                flipHorizontal = id; 
-                flipVertical = id; 
-                resetImagePresentationState = id; 
-                resetSeriesPresentationState = id; 
-                roiLoadFromXMLFiles = id; 
-                sliderAction = id; 
-                sliderAction2DMPR = id; 
-                sliderRGBFactor = id; 
-            }; 
-            CLASS = DCMView; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSOpenGLView; 
-        }, 
-        {
-            ACTIONS = {
-                "" = id; 
-                calibrate = id; 
-                setBlendingFactor = id; 
-                sliderAction = id; 
-                sliderRGBFactor = id; 
-                subCtrlNewMask = id; 
-                subCtrlOffset = id; 
-                subCtrlOnOff = id; 
-            }; 
-            CLASS = FirstResponder; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {CLASS = FusionDrawer; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
-        {
-            CLASS = MyPopUpButton; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {matrix = NSMatrix; }; 
-            SUPERCLASS = NSButtonCell; 
-        }, 
-        {CLASS = NSDatePicker; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
-        {CLASS = NSLevelIndicator; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
-        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
-        {
-            CLASS = OSIWindowController; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {
-            ACTIONS = {renderButton = id; }; 
-            CLASS = OpacityTransferView; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {position = NSTextField; }; 
-            SUPERCLASS = NSView; 
-        }, 
-        {CLASS = StudyView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
-        {
-            ACTIONS = {
-                AddOpacity = id; 
-                ConvertToBWMenu = id; 
-                ConvertToRGBMenu = id; 
-                CurvedMPR = id; 
-                MPR2DViewer = id; 
-                MoviePlayStop = id; 
-                MovieStop = id; 
-                PagePadCreate = id; 
-                Panel3D = id; 
-                PlayStop = id; 
-                SRViewer = id; 
-                SetSyncButtonBehavior = id; 
-                SyncSeries = id; 
-                VRVPROViewer = id; 
-                VRViewer = id; 
-                activateFusion = id; 
-                applyConvolutionOnSource = id; 
-                blendWindows = id; 
-                blendingMode = id; 
-                blendingSlider = id; 
-                brushTool = id; 
-                calciumScoring = id; 
-                centerline = id; 
-                changeMatrixSize = id; 
-                closeModal = id; 
-                clutAction = id; 
-                computeSum = id; 
-                contextualMenuEvent = id; 
-                convMatrixAction = id; 
-                copySettingsToOthers = id; 
-                createKeyObjectNote = id; 
-                createLayerROIFromSelectedROI = id; 
-                endBlendingType = id; 
-                endCLUT = id; 
-                endConv = id; 
-                endCurvedMPR = id; 
-                endDisplaySUV = id; 
-                endExportDICOMFileSettings = id; 
-                endExportImage = id; 
-                endNameWLWW = id; 
-                endOpacity = id; 
-                endPrint = id; 
-                endQuicktime = id; 
-                endRoiRename = id; 
-                endSetComments = id; 
-                endSetWLWW = id; 
-                endThicknessInterval = id; 
-                endoscopyViewer = id; 
-                export2PACS = id; 
-                export2iPhoto = id; 
-                exportDICOMAllViewers = id; 
-                exportDICOMSlider = id; 
-                exportJPEG = id; 
-                exportQuicktime = id; 
-                exportQuicktimeSlider = id; 
-                flipDataSeries = id; 
-                fullScreenMenu = id; 
-                groupSelectedROIs = id; 
-                horzFlipDataSet = id; 
-                keyImageCheckBox = id; 
-                keyImageDisplayButton = id; 
-                keyObjectNotes = id; 
-                loadPatient = id; 
-                loadSerie = id; 
-                morphoSelectedBrushROI = id; 
-                morphoSelectedBrushROIWithRadius = id; 
-                moviePosSliderAction = id; 
-                movieRateSliderAction = id; 
-                orthogonalMPRViewer = id; 
-                popFusionAction = id; 
-                print = id; 
-                printSlider = id; 
-                reSyncOrigin = id; 
-                redo = id; 
-                resampleDataBy2 = id; 
-                resetImage = id; 
-                revertSeries = id; 
-                roiDeleteAll = id; 
-                roiDeleteAllROIsWithSameName = id; 
-                roiDeleteGeneratedROIs = id; 
-                roiDeleteGeneratedROIsForName = id; 
-                roiDeleteWithName = id; 
-                roiIntDeleteAllROIsWithSameName = id; 
-                roiPropagate = id; 
-                roiPropagateSetup = id; 
-                roiRename = id; 
-                roiSetPixels = id; 
-                roiSetPixelsCheckButton = id; 
-                roiSetPixelsSetup = id; 
-                setAxialOrientation = id; 
-                setButtonTool = id; 
-                setComments = id; 
-                setCurrentPosition = id; 
-                setCurrentdcmExport = id; 
-                setCurvedMPRslider = id; 
-                setDefaultTool = id; 
-                setOrientationTool = id; 
-                setPagesToPrint = id; 
-                setROITool = id; 
-                setStatus = id; 
-                setStructuringElementRadius = id; 
-                setWindowTitle = id; 
-                showCurrentThumbnail = id; 
-                shutterOnOff = id; 
-                sliderFusionAction = id; 
-                speedSliderAction = id; 
-                startMSRG = id; 
-                startMSRGWithAutomaticBounding = id; 
-                subCtrlNewMask = id; 
-                subCtrlOffset = id; 
-                subCtrlOnOff = id; 
-                subCtrlSliders = id; 
-                subSharpen = id; 
-                subSumSlider = id; 
-                undo = id; 
-                ungroupSelectedROIs = id; 
-                updateImage = id; 
-                updateSUVValues = id; 
-                updateSetWLWW = id; 
-                updateZVector = id; 
-                vertFlipDataSet = id; 
-            }; 
-            CLASS = ViewerController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                AllROIsRadio = NSMatrix; 
-                BlendingView = NSView; 
-                CommentsEditField = NSTextField; 
-                CommentsField = NSButton; 
-                CommentsWindow = NSWindow; 
-                ConvView = NSView; 
-                FusionView = NSView; 
-                InOutROI = NSMatrix; 
-                OpacityName = NSTextField; 
-                OpacityPopup = NSPopUpButton; 
-                OpacityView = OpacityTransferView; 
-                PagePad = NSView; 
-                RGBFactorsView = NSView; 
-                ReconstructionRoi = NSPopUpButton; 
-                ReconstructionView = NSView; 
-                StatusPopup = NSPopUpButton; 
-                StatusView = NSView; 
-                ThickIntervalWindow = NSWindow; 
-                WLWWView = NSView; 
-                activatedFusion = NSButton; 
-                addCLUTWindow = NSWindow; 
-                addConvWindow = NSWindow; 
-                addOpacityWindow = NSWindow; 
-                addWLWWWindow = NSWindow; 
-                blendingPercentage = NSTextField; 
-                blendingPlugins = NSPopUpButton; 
-                blendingPopupMenu = NSPopUpButton; 
-                blendingResample = NSButton; 
-                blendingSlider = NSSlider; 
-                blendingTypeMultiply = NSButton; 
-                blendingTypeRGB = NSSegmentedControl; 
-                blendingTypeSubtract = NSButton; 
-                blendingTypeWindow = NSWindow; 
-                brushROIFilterOptionsAllWithSameName = NSButton; 
-                brushROIFilterOptionsOKButton = NSButton; 
-                brushROIFilterOptionsWindow = NSWindow; 
-                buttonToolMatrix = NSMatrix; 
-                checkMaxValue = NSButton; 
-                checkMinValue = NSButton; 
-                clutName = NSTextField; 
-                clutPopup = NSPopUpButton; 
-                clutView = ColorTransferView; 
-                convMatrix = NSMatrix; 
-                convPopup = NSPopUpButton; 
-                curvedMPRWindow = NSWindow; 
-                curvedMPRaxis = NSMatrix; 
-                curvedMPRinterval = NSSlider; 
-                curvedMPRintervalText = NSTextField; 
-                curvedMPRper = NSButton; 
-                curvedMPRsize = NSSlider; 
-                curvedMPRsizeText = NSTextField; 
-                curvedMPRslid = NSSlider; 
-                curvedMPRtext = NSTextField; 
-                customInterval = NSTextField; 
-                customOrigin = NSMatrix; 
-                customVectors = NSMatrix; 
-                customXSpacing = NSTextField; 
-                customYSpacing = NSTextField; 
-                dcmAllViewers = NSButton; 
-                dcmBox = NSBox; 
-                dcmExportWindow = NSWindow; 
-                dcmFormat = NSMatrix; 
-                dcmFrom = NSSlider; 
-                dcmFromText = NSTextField; 
-                dcmInterval = NSSlider; 
-                dcmIntervalText = NSTextField; 
-                dcmNumber = NSTextField; 
-                dcmSelection = NSMatrix; 
-                dcmSeriesName = NSTextField; 
-                dcmTo = NSSlider; 
-                dcmToText = NSTextField; 
-                displaySUVWindow = NSWindow; 
-                fromset = NSTextField; 
-                iPhotoView = NSView; 
-                imageExportWindow = NSWindow; 
-                imageFormat = NSMatrix; 
-                imageSelection = NSMatrix; 
-                keyImageCheck = NSButton; 
-                keyImagePopUpButton = NSPopUpButton; 
-                keyImages = NSView; 
-                loopButton = NSButton; 
-                matrixName = NSTextField; 
-                matrixNorm = NSTextField; 
-                maxValueText = NSTextField; 
-                minValueText = NSTextField; 
-                moviePlayStop = NSButton; 
-                moviePosSlider = NSSlider; 
-                movieRateSlider = NSSlider; 
-                movieTextSlide = NSTextField; 
-                movieView = NSView; 
-                newName = NSTextField; 
-                newValueMatrix = NSMatrix; 
-                newValueText = NSTextField; 
-                orientationMatrix = NSMatrix; 
-                orientationView = NSView; 
-                patientView = NSView; 
-                popFusion = NSPopUpButton; 
-                popupRoi = NSPopUpButton; 
-                previewMatrix = NSMatrix; 
-                previewMatrixScrollView = NSScrollView; 
-                printBox = NSBox; 
-                printColor = NSColorWell; 
-                printFormat = NSMatrix; 
-                printFrom = NSSlider; 
-                printFromText = NSTextField; 
-                printInterval = NSSlider; 
-                printIntervalText = NSTextField; 
-                printLayout = NSPopUpButton; 
-                printPagesToPrint = NSTextField; 
-                printSelection = NSMatrix; 
-                printSettings = NSMatrix; 
-                printText = NSTextField; 
-                printTo = NSSlider; 
-                printToText = NSTextField; 
-                printWindow = NSWindow; 
-                propagateSettingsView = NSView; 
-                quicktimeAllViewers = NSButton; 
-                quicktimeBox = NSBox; 
-                quicktimeFrom = NSSlider; 
-                quicktimeFromText = NSTextField; 
-                quicktimeInterval = NSSlider; 
-                quicktimeIntervalText = NSTextField; 
-                quicktimeMode = NSMatrix; 
-                quicktimeNumber = NSTextField; 
-                quicktimeTo = NSSlider; 
-                quicktimeToText = NSTextField; 
-                quicktimeWindow = NSWindow; 
-                reportTemplatesImageView = NSImageView; 
-                reportTemplatesListPopUpButton = NSPopUpButton; 
-                reportTemplatesView = NSView; 
-                roiApplyMatrix = NSMatrix; 
-                roiApplyWindow = NSWindow; 
-                roiPropaCopy = NSMatrix; 
-                roiPropaDest = NSTextField; 
-                roiPropaDim = NSMatrix; 
-                roiPropaMode = NSMatrix; 
-                roiPropaWindow = NSWindow; 
-                roiRenameMatrix = NSMatrix; 
-                roiRenameName = NSTextField; 
-                roiRenameWindow = NSWindow; 
-                roiSetPixWindow = NSWindow; 
-                sc1 = NSButton; 
-                sc2 = NSButton; 
-                sc3 = NSButton; 
-                sc4 = NSButton; 
-                sc5 = NSButton; 
-                sc6 = NSButton; 
-                sc7 = NSButton; 
-                sc8 = NSButton; 
-                sc9 = NSButton; 
-                serieView = NSView; 
-                setROI4DSeries = NSButton; 
-                setWLWWWindow = NSWindow; 
-                shutterOnOff = NSButton; 
-                shutterView = NSView; 
-                sizeMatrix = NSMatrix; 
-                slider = NSSlider; 
-                sliderFusion = NSSlider; 
-                speedSlider = NSSlider; 
-                speedText = NSTextField; 
-                speedView = NSView; 
-                splitView = NSSplitView; 
-                stacksFusion = NSTextField; 
-                structuringElementRadiusSlider = NSSlider; 
-                structuringElementRadiusTextField = NSTextField; 
-                studyView = StudyView; 
-                subCtrlMaskText = NSTextField; 
-                subCtrlOnOff = NSButton; 
-                subCtrlPercent = NSSlider; 
-                subCtrlSharpenButton = NSButton; 
-                subCtrlSum = NSSlider; 
-                subCtrlView = NSView; 
-                suvConversion = NSMatrix; 
-                suvForm = NSForm; 
-                toolsMatrix = NSMatrix; 
-                toolsView = NSView; 
-                toset = NSTextField; 
-                wl = NSTextField; 
-                wlset = NSTextField; 
-                wlwwPopup = NSPopUpButton; 
-                ww = NSTextField; 
-                wwset = NSTextField; 
-            }; 
-            SUPERCLASS = OSIWindowController; 
-        }, 
-        {CLASS = ViewerControllerWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }
-    ); 
-    IBVersion = 1; 
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>CLASS</key>
+			<string>NSSplitView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSObject</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSSegmentedControl</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSControl</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>ViewerControllerWindow</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSWindow</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>renderButton</key>
+				<string>id</string>
+				<key>selectPicker</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>ColorTransferView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>pick</key>
+				<string>NSColorWell</string>
+				<key>position</key>
+				<string>NSTextField</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>StudyView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key></key>
+				<string>id</string>
+				<key>calibrate</key>
+				<string>id</string>
+				<key>setBlendingFactor</key>
+				<string>id</string>
+				<key>sliderAction</key>
+				<string>id</string>
+				<key>sliderRGBFactor</key>
+				<string>id</string>
+				<key>subCtrlNewMask</key>
+				<string>id</string>
+				<key>subCtrlOffset</key>
+				<string>id</string>
+				<key>subCtrlOnOff</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>redo</key>
+				<string>id</string>
+				<key>undo</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>OSIWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSString</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>renderButton</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>OpacityTransferView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>position</key>
+				<string>NSTextField</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>AddOpacity</key>
+				<string>id</string>
+				<key>ConvertToBWMenu</key>
+				<string>id</string>
+				<key>ConvertToRGBMenu</key>
+				<string>id</string>
+				<key>CurvedMPR</key>
+				<string>id</string>
+				<key>MPR2DViewer</key>
+				<string>id</string>
+				<key>MoviePlayStop</key>
+				<string>id</string>
+				<key>MovieStop</key>
+				<string>id</string>
+				<key>PagePadCreate</key>
+				<string>id</string>
+				<key>Panel3D</key>
+				<string>id</string>
+				<key>PlayStop</key>
+				<string>id</string>
+				<key>SRViewer</key>
+				<string>id</string>
+				<key>SetSyncButtonBehavior</key>
+				<string>id</string>
+				<key>SyncSeries</key>
+				<string>id</string>
+				<key>VRVPROViewer</key>
+				<string>id</string>
+				<key>VRViewer</key>
+				<string>id</string>
+				<key>activateFusion</key>
+				<string>id</string>
+				<key>applyConvolutionOnSource</key>
+				<string>id</string>
+				<key>blendWindows</key>
+				<string>id</string>
+				<key>blendingMode</key>
+				<string>id</string>
+				<key>blendingSlider</key>
+				<string>id</string>
+				<key>brushTool</key>
+				<string>id</string>
+				<key>calciumScoring</key>
+				<string>id</string>
+				<key>centerline</key>
+				<string>id</string>
+				<key>changeMatrixSize</key>
+				<string>id</string>
+				<key>closeModal</key>
+				<string>id</string>
+				<key>clutAction</key>
+				<string>id</string>
+				<key>computeSum</key>
+				<string>id</string>
+				<key>contextualMenuEvent</key>
+				<string>id</string>
+				<key>convMatrixAction</key>
+				<string>id</string>
+				<key>copySettingsToOthers</key>
+				<string>id</string>
+				<key>createKeyObjectNote</key>
+				<string>id</string>
+				<key>createLayerROIFromSelectedROI</key>
+				<string>id</string>
+				<key>endBlendingType</key>
+				<string>id</string>
+				<key>endCLUT</key>
+				<string>id</string>
+				<key>endConv</key>
+				<string>id</string>
+				<key>endCurvedMPR</key>
+				<string>id</string>
+				<key>endDisplaySUV</key>
+				<string>id</string>
+				<key>endExportDICOMFileSettings</key>
+				<string>id</string>
+				<key>endExportImage</key>
+				<string>id</string>
+				<key>endNameWLWW</key>
+				<string>id</string>
+				<key>endOpacity</key>
+				<string>id</string>
+				<key>endPrint</key>
+				<string>id</string>
+				<key>endQuicktime</key>
+				<string>id</string>
+				<key>endRoiRename</key>
+				<string>id</string>
+				<key>endSetComments</key>
+				<string>id</string>
+				<key>endSetWLWW</key>
+				<string>id</string>
+				<key>endThicknessInterval</key>
+				<string>id</string>
+				<key>endoscopyViewer</key>
+				<string>id</string>
+				<key>export2PACS</key>
+				<string>id</string>
+				<key>export2iPhoto</key>
+				<string>id</string>
+				<key>exportDICOMAllViewers</key>
+				<string>id</string>
+				<key>exportDICOMSlider</key>
+				<string>id</string>
+				<key>exportJPEG</key>
+				<string>id</string>
+				<key>exportQuicktime</key>
+				<string>id</string>
+				<key>exportQuicktimeSlider</key>
+				<string>id</string>
+				<key>flipDataSeries</key>
+				<string>id</string>
+				<key>fullScreenMenu</key>
+				<string>id</string>
+				<key>groupSelectedROIs</key>
+				<string>id</string>
+				<key>horzFlipDataSet</key>
+				<string>id</string>
+				<key>keyImageCheckBox</key>
+				<string>id</string>
+				<key>keyImageDisplayButton</key>
+				<string>id</string>
+				<key>keyObjectNotes</key>
+				<string>id</string>
+				<key>loadPatient</key>
+				<string>id</string>
+				<key>loadSerie</key>
+				<string>id</string>
+				<key>loadWindowsState</key>
+				<string>id</string>
+				<key>morphoSelectedBrushROI</key>
+				<string>id</string>
+				<key>morphoSelectedBrushROIWithRadius</key>
+				<string>id</string>
+				<key>moviePosSliderAction</key>
+				<string>id</string>
+				<key>movieRateSliderAction</key>
+				<string>id</string>
+				<key>orthogonalMPRViewer</key>
+				<string>id</string>
+				<key>popFusionAction</key>
+				<string>id</string>
+				<key>print</key>
+				<string>id</string>
+				<key>printSlider</key>
+				<string>id</string>
+				<key>reSyncOrigin</key>
+				<string>id</string>
+				<key>redo</key>
+				<string>id</string>
+				<key>resampleDataBy2</key>
+				<string>id</string>
+				<key>resetImage</key>
+				<string>id</string>
+				<key>resetWindowsState</key>
+				<string>id</string>
+				<key>revertSeries</key>
+				<string>id</string>
+				<key>roiDeleteAll</key>
+				<string>id</string>
+				<key>roiDeleteAllROIsWithSameName</key>
+				<string>id</string>
+				<key>roiDeleteGeneratedROIs</key>
+				<string>id</string>
+				<key>roiDeleteGeneratedROIsForName</key>
+				<string>NSString</string>
+				<key>roiDeleteWithName</key>
+				<string>NSString</string>
+				<key>roiIntDeleteAllROIsWithSameName</key>
+				<string>NSString</string>
+				<key>roiPropagate</key>
+				<string>id</string>
+				<key>roiPropagateSetup</key>
+				<string>id</string>
+				<key>roiRename</key>
+				<string>id</string>
+				<key>roiSetPixels</key>
+				<string>id</string>
+				<key>roiSetPixelsCheckButton</key>
+				<string>id</string>
+				<key>roiSetPixelsSetup</key>
+				<string>id</string>
+				<key>saveWindowsState</key>
+				<string>id</string>
+				<key>setAxialOrientation</key>
+				<string>id</string>
+				<key>setButtonTool</key>
+				<string>id</string>
+				<key>setComments</key>
+				<string>id</string>
+				<key>setCurrentPosition</key>
+				<string>id</string>
+				<key>setCurrentdcmExport</key>
+				<string>id</string>
+				<key>setCurvedMPRslider</key>
+				<string>id</string>
+				<key>setDefaultTool</key>
+				<string>id</string>
+				<key>setImageTiling</key>
+				<string>id</string>
+				<key>setOrientationTool</key>
+				<string>id</string>
+				<key>setPagesToPrint</key>
+				<string>id</string>
+				<key>setROITool</key>
+				<string>id</string>
+				<key>setStatus</key>
+				<string>id</string>
+				<key>setStructuringElementRadius</key>
+				<string>id</string>
+				<key>setWindowTitle</key>
+				<string>id</string>
+				<key>showCurrentThumbnail</key>
+				<string>id</string>
+				<key>shutterOnOff</key>
+				<string>id</string>
+				<key>sliderFusionAction</key>
+				<string>id</string>
+				<key>speedSliderAction</key>
+				<string>id</string>
+				<key>startMSRG</key>
+				<string>id</string>
+				<key>startMSRGWithAutomaticBounding</key>
+				<string>id</string>
+				<key>subCtrlNewMask</key>
+				<string>id</string>
+				<key>subCtrlOffset</key>
+				<string>id</string>
+				<key>subCtrlOnOff</key>
+				<string>id</string>
+				<key>subCtrlSliders</key>
+				<string>id</string>
+				<key>subSharpen</key>
+				<string>id</string>
+				<key>subSumSlider</key>
+				<string>id</string>
+				<key>turnOffSyncSeriesBetweenStudies</key>
+				<string>id</string>
+				<key>undo</key>
+				<string>id</string>
+				<key>ungroupSelectedROIs</key>
+				<string>id</string>
+				<key>updateImage</key>
+				<string>id</string>
+				<key>updateSUVValues</key>
+				<string>id</string>
+				<key>updateSetWLWW</key>
+				<string>id</string>
+				<key>updateZVector</key>
+				<string>id</string>
+				<key>vertFlipDataSet</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>ViewerController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>AllROIsRadio</key>
+				<string>NSMatrix</string>
+				<key>BlendingView</key>
+				<string>NSView</string>
+				<key>CommentsEditField</key>
+				<string>NSTextField</string>
+				<key>CommentsField</key>
+				<string>NSButton</string>
+				<key>CommentsWindow</key>
+				<string>NSWindow</string>
+				<key>ConvView</key>
+				<string>NSView</string>
+				<key>FusionView</key>
+				<string>NSView</string>
+				<key>InOutROI</key>
+				<string>NSMatrix</string>
+				<key>OpacityName</key>
+				<string>NSTextField</string>
+				<key>OpacityPopup</key>
+				<string>NSPopUpButton</string>
+				<key>OpacityView</key>
+				<string>OpacityTransferView</string>
+				<key>PagePad</key>
+				<string>NSView</string>
+				<key>RGBFactorsView</key>
+				<string>NSView</string>
+				<key>ReconstructionRoi</key>
+				<string>NSPopUpButton</string>
+				<key>ReconstructionView</key>
+				<string>NSView</string>
+				<key>StatusPopup</key>
+				<string>NSPopUpButton</string>
+				<key>StatusView</key>
+				<string>NSView</string>
+				<key>ThickIntervalWindow</key>
+				<string>NSWindow</string>
+				<key>WLWWView</key>
+				<string>NSView</string>
+				<key>activatedFusion</key>
+				<string>NSButton</string>
+				<key>addCLUTWindow</key>
+				<string>NSWindow</string>
+				<key>addConvWindow</key>
+				<string>NSWindow</string>
+				<key>addOpacityWindow</key>
+				<string>NSWindow</string>
+				<key>addWLWWWindow</key>
+				<string>NSWindow</string>
+				<key>blendingPercentage</key>
+				<string>NSTextField</string>
+				<key>blendingPlugins</key>
+				<string>NSPopUpButton</string>
+				<key>blendingPopupMenu</key>
+				<string>NSPopUpButton</string>
+				<key>blendingResample</key>
+				<string>NSButton</string>
+				<key>blendingSlider</key>
+				<string>NSSlider</string>
+				<key>blendingTypeMultiply</key>
+				<string>NSButton</string>
+				<key>blendingTypeRGB</key>
+				<string>NSSegmentedControl</string>
+				<key>blendingTypeSubtract</key>
+				<string>NSButton</string>
+				<key>blendingTypeWindow</key>
+				<string>NSWindow</string>
+				<key>brushROIFilterOptionsAllWithSameName</key>
+				<string>NSButton</string>
+				<key>brushROIFilterOptionsOKButton</key>
+				<string>NSButton</string>
+				<key>brushROIFilterOptionsWindow</key>
+				<string>NSWindow</string>
+				<key>buttonToolMatrix</key>
+				<string>NSMatrix</string>
+				<key>checkMaxValue</key>
+				<string>NSButton</string>
+				<key>checkMinValue</key>
+				<string>NSButton</string>
+				<key>clutName</key>
+				<string>NSTextField</string>
+				<key>clutPopup</key>
+				<string>NSPopUpButton</string>
+				<key>clutView</key>
+				<string>ColorTransferView</string>
+				<key>convMatrix</key>
+				<string>NSMatrix</string>
+				<key>convPopup</key>
+				<string>NSPopUpButton</string>
+				<key>curvedMPRWindow</key>
+				<string>NSWindow</string>
+				<key>curvedMPRaxis</key>
+				<string>NSMatrix</string>
+				<key>curvedMPRinterval</key>
+				<string>NSSlider</string>
+				<key>curvedMPRintervalText</key>
+				<string>NSTextField</string>
+				<key>curvedMPRper</key>
+				<string>NSButton</string>
+				<key>curvedMPRsize</key>
+				<string>NSSlider</string>
+				<key>curvedMPRsizeText</key>
+				<string>NSTextField</string>
+				<key>curvedMPRslid</key>
+				<string>NSSlider</string>
+				<key>curvedMPRtext</key>
+				<string>NSTextField</string>
+				<key>customInterval</key>
+				<string>NSTextField</string>
+				<key>customOrigin</key>
+				<string>NSMatrix</string>
+				<key>customVectors</key>
+				<string>NSMatrix</string>
+				<key>customXSpacing</key>
+				<string>NSTextField</string>
+				<key>customYSpacing</key>
+				<string>NSTextField</string>
+				<key>dcmAllViewers</key>
+				<string>NSButton</string>
+				<key>dcmBox</key>
+				<string>NSBox</string>
+				<key>dcmExportWindow</key>
+				<string>NSWindow</string>
+				<key>dcmFormat</key>
+				<string>NSMatrix</string>
+				<key>dcmFrom</key>
+				<string>NSSlider</string>
+				<key>dcmFromText</key>
+				<string>NSTextField</string>
+				<key>dcmInterval</key>
+				<string>NSSlider</string>
+				<key>dcmIntervalText</key>
+				<string>NSTextField</string>
+				<key>dcmNumber</key>
+				<string>NSTextField</string>
+				<key>dcmSelection</key>
+				<string>NSMatrix</string>
+				<key>dcmSeriesName</key>
+				<string>NSTextField</string>
+				<key>dcmTo</key>
+				<string>NSSlider</string>
+				<key>dcmToText</key>
+				<string>NSTextField</string>
+				<key>displaySUVWindow</key>
+				<string>NSWindow</string>
+				<key>fromset</key>
+				<string>NSTextField</string>
+				<key>iPhotoView</key>
+				<string>NSView</string>
+				<key>imageExportWindow</key>
+				<string>NSWindow</string>
+				<key>imageFormat</key>
+				<string>NSMatrix</string>
+				<key>imageSelection</key>
+				<string>NSMatrix</string>
+				<key>keyImageCheck</key>
+				<string>NSButton</string>
+				<key>keyImagePopUpButton</key>
+				<string>NSPopUpButton</string>
+				<key>keyImages</key>
+				<string>NSView</string>
+				<key>loopButton</key>
+				<string>NSButton</string>
+				<key>matrixName</key>
+				<string>NSTextField</string>
+				<key>matrixNorm</key>
+				<string>NSTextField</string>
+				<key>maxValueText</key>
+				<string>NSTextField</string>
+				<key>minValueText</key>
+				<string>NSTextField</string>
+				<key>moviePlayStop</key>
+				<string>NSButton</string>
+				<key>moviePosSlider</key>
+				<string>NSSlider</string>
+				<key>movieRateSlider</key>
+				<string>NSSlider</string>
+				<key>movieTextSlide</key>
+				<string>NSTextField</string>
+				<key>movieView</key>
+				<string>NSView</string>
+				<key>newName</key>
+				<string>NSTextField</string>
+				<key>newValueMatrix</key>
+				<string>NSMatrix</string>
+				<key>newValueText</key>
+				<string>NSTextField</string>
+				<key>orientationMatrix</key>
+				<string>NSMatrix</string>
+				<key>orientationView</key>
+				<string>NSView</string>
+				<key>patientView</key>
+				<string>NSView</string>
+				<key>popFusion</key>
+				<string>NSPopUpButton</string>
+				<key>popupRoi</key>
+				<string>NSPopUpButton</string>
+				<key>previewMatrix</key>
+				<string>NSMatrix</string>
+				<key>previewMatrixScrollView</key>
+				<string>NSScrollView</string>
+				<key>printBox</key>
+				<string>NSBox</string>
+				<key>printColor</key>
+				<string>NSColorWell</string>
+				<key>printFormat</key>
+				<string>NSMatrix</string>
+				<key>printFrom</key>
+				<string>NSSlider</string>
+				<key>printFromText</key>
+				<string>NSTextField</string>
+				<key>printInterval</key>
+				<string>NSSlider</string>
+				<key>printIntervalText</key>
+				<string>NSTextField</string>
+				<key>printLayout</key>
+				<string>NSPopUpButton</string>
+				<key>printPagesToPrint</key>
+				<string>NSTextField</string>
+				<key>printSelection</key>
+				<string>NSMatrix</string>
+				<key>printSettings</key>
+				<string>NSMatrix</string>
+				<key>printText</key>
+				<string>NSTextField</string>
+				<key>printTo</key>
+				<string>NSSlider</string>
+				<key>printToText</key>
+				<string>NSTextField</string>
+				<key>printWindow</key>
+				<string>NSWindow</string>
+				<key>propagateSettingsView</key>
+				<string>NSView</string>
+				<key>quicktimeAllViewers</key>
+				<string>NSButton</string>
+				<key>quicktimeBox</key>
+				<string>NSBox</string>
+				<key>quicktimeFrom</key>
+				<string>NSSlider</string>
+				<key>quicktimeFromText</key>
+				<string>NSTextField</string>
+				<key>quicktimeInterval</key>
+				<string>NSSlider</string>
+				<key>quicktimeIntervalText</key>
+				<string>NSTextField</string>
+				<key>quicktimeMode</key>
+				<string>NSMatrix</string>
+				<key>quicktimeNumber</key>
+				<string>NSTextField</string>
+				<key>quicktimeTo</key>
+				<string>NSSlider</string>
+				<key>quicktimeToText</key>
+				<string>NSTextField</string>
+				<key>quicktimeWindow</key>
+				<string>NSWindow</string>
+				<key>reportTemplatesImageView</key>
+				<string>NSImageView</string>
+				<key>reportTemplatesListPopUpButton</key>
+				<string>NSPopUpButton</string>
+				<key>reportTemplatesView</key>
+				<string>NSView</string>
+				<key>roiApplyMatrix</key>
+				<string>NSMatrix</string>
+				<key>roiApplyWindow</key>
+				<string>NSWindow</string>
+				<key>roiPropaCopy</key>
+				<string>NSMatrix</string>
+				<key>roiPropaDest</key>
+				<string>NSTextField</string>
+				<key>roiPropaDim</key>
+				<string>NSMatrix</string>
+				<key>roiPropaMode</key>
+				<string>NSMatrix</string>
+				<key>roiPropaWindow</key>
+				<string>NSWindow</string>
+				<key>roiRenameMatrix</key>
+				<string>NSMatrix</string>
+				<key>roiRenameName</key>
+				<string>NSTextField</string>
+				<key>roiRenameWindow</key>
+				<string>NSWindow</string>
+				<key>roiSetPixWindow</key>
+				<string>NSWindow</string>
+				<key>sc1</key>
+				<string>NSButton</string>
+				<key>sc2</key>
+				<string>NSButton</string>
+				<key>sc3</key>
+				<string>NSButton</string>
+				<key>sc4</key>
+				<string>NSButton</string>
+				<key>sc5</key>
+				<string>NSButton</string>
+				<key>sc6</key>
+				<string>NSButton</string>
+				<key>sc7</key>
+				<string>NSButton</string>
+				<key>sc8</key>
+				<string>NSButton</string>
+				<key>sc9</key>
+				<string>NSButton</string>
+				<key>serieView</key>
+				<string>NSView</string>
+				<key>setROI4DSeries</key>
+				<string>NSButton</string>
+				<key>setWLWWWindow</key>
+				<string>NSWindow</string>
+				<key>shutterOnOff</key>
+				<string>NSButton</string>
+				<key>shutterView</key>
+				<string>NSView</string>
+				<key>sizeMatrix</key>
+				<string>NSMatrix</string>
+				<key>slider</key>
+				<string>NSSlider</string>
+				<key>sliderFusion</key>
+				<string>NSSlider</string>
+				<key>speedSlider</key>
+				<string>NSSlider</string>
+				<key>speedText</key>
+				<string>NSTextField</string>
+				<key>speedView</key>
+				<string>NSView</string>
+				<key>splitView</key>
+				<string>NSSplitView</string>
+				<key>stacksFusion</key>
+				<string>NSTextField</string>
+				<key>structuringElementRadiusSlider</key>
+				<string>NSSlider</string>
+				<key>structuringElementRadiusTextField</key>
+				<string>NSTextField</string>
+				<key>studyView</key>
+				<string>StudyView</string>
+				<key>subCtrlMaskText</key>
+				<string>NSTextField</string>
+				<key>subCtrlOnOff</key>
+				<string>NSButton</string>
+				<key>subCtrlPercent</key>
+				<string>NSSlider</string>
+				<key>subCtrlSharpenButton</key>
+				<string>NSButton</string>
+				<key>subCtrlSum</key>
+				<string>NSSlider</string>
+				<key>subCtrlView</key>
+				<string>NSView</string>
+				<key>suvConversion</key>
+				<string>NSMatrix</string>
+				<key>suvForm</key>
+				<string>NSForm</string>
+				<key>toolsMatrix</key>
+				<string>NSMatrix</string>
+				<key>toolsView</key>
+				<string>NSView</string>
+				<key>toset</key>
+				<string>NSTextField</string>
+				<key>wl</key>
+				<string>NSTextField</string>
+				<key>wlset</key>
+				<string>NSTextField</string>
+				<key>wlwwPopup</key>
+				<string>NSPopUpButton</string>
+				<key>ww</key>
+				<string>NSTextField</string>
+				<key>wwset</key>
+				<string>NSTextField</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>OSIWindowController</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>

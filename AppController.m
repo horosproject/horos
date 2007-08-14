@@ -81,6 +81,8 @@ extern		short					syncro;
 extern		NSMutableArray			*preProcessPlugins;
 extern		BrowserController		*browserWindow;
 
+static		NSString				*currentHostName = 0L;
+
 			BOOL					SYNCSERIES = NO;
 
 NSMenu                  *presetsMenu,
@@ -834,6 +836,13 @@ NSRect screenFrame()
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 #pragma mark-
+
++ (NSString*) currentHostName
+{
+	if( currentHostName) return currentHostName;
+	
+	currentHostName = [[[NSHost currentHost] name] retain];
+}
 
 +(void) cleanOsiriXSubProcesses
 {

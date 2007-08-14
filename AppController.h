@@ -77,6 +77,8 @@ extern "C"
 #pragma mark initialization of the main event loop singleton
 + (id) sharedAppController;
 + (void)checkForPagesTemplate;
++ (NSString*) currentHostName;
+
 - (void) terminate :(id) sender;
 - (void) restartSTORESCP;
 - (void) startSTORESCP:(id) sender;

@@ -1,40 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>IBDocumentLocation</key>
-	<string>517 493 569 498 0 0 2560 1578 </string>
-	<key>IBEditorPositions</key>
-	<dict>
-		<key>209</key>
-		<string>749 642 182 89 0 0 1680 1028 </string>
-		<key>239</key>
-		<string>1132 1013 295 79 0 0 2560 1578 </string>
-		<key>350</key>
-		<string>771 649 137 75 0 0 1680 1028 </string>
-		<key>386</key>
-		<string>578 521 124 69 0 0 1280 832 </string>
-		<key>462</key>
-		<string>543 517 193 77 0 0 1280 832 </string>
-		<key>514</key>
-		<string>755 641 170 90 0 0 1680 1028 </string>
-		<key>552</key>
-		<string>601 516 78 79 0 0 1280 832 </string>
-		<key>575</key>
-		<string>777 646 126 80 0 0 1680 1028 </string>
-		<key>685</key>
-		<string>774 641 131 91 0 0 1680 1028 </string>
-		<key>716</key>
-		<string>648 547 143 79 0 0 1440 878 </string>
-	</dict>
 	<key>IBFramework Version</key>
-	<string>446.1</string>
+	<string>613</string>
+	<key>IBLastKnownRelativeProjectPath</key>
+	<string>../../../OsiriX.xcodeproj</string>
+	<key>IBOldestOS</key>
+	<integer>5</integer>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>608</integer>
 		<integer>239</integer>
 	</array>
 	<key>IBSystem Version</key>
-	<string>8L2127</string>
+	<string>9A499</string>
+	<key>targetFramework</key>
+	<string>IBCocoaFramework</string>
 </dict>
 </plist>

@@ -1,40 +1,94 @@
-{
-    IBClasses = (
-        {
-            ACTIONS = {"" = id; }; 
-            CLASS = FirstResponder; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {
-            ACTIONS = {
-                addDICOMField = id; 
-                collapseAllItems = id; 
-                deepCollapseAllItems = id; 
-                deepExpandAllItems = id; 
-                executeAdd = id; 
-                expandAllItems = id; 
-                setGroupElement = id; 
-                setSearchString = id; 
-                setTagName = id; 
-                switchDICOMEditing = id; 
-            }; 
-            CLASS = XMLController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                addElement = NSTextField; 
-                addGroup = NSTextField; 
-                addValue = NSTextField; 
-                addWindow = NSWindow; 
-                dicomEditingView = NSView; 
-                dicomFieldsCombo = NSComboBox; 
-                search = NSSearchField; 
-                searchView = NSView; 
-                table = NSOutlineView; 
-                tableScrollView = NSScrollView; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }
-    ); 
-    IBVersion = 1; 
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSObject</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key></key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>addDICOMField</key>
+				<string>id</string>
+				<key>collapseAllItems</key>
+				<string>id</string>
+				<key>deepCollapseAllItems</key>
+				<string>id</string>
+				<key>deepExpandAllItems</key>
+				<string>id</string>
+				<key>executeAdd</key>
+				<string>id</string>
+				<key>expandAllItems</key>
+				<string>id</string>
+				<key>reload</key>
+				<string>id</string>
+				<key>setGroupElement</key>
+				<string>id</string>
+				<key>setSearchString</key>
+				<string>id</string>
+				<key>setTagName</key>
+				<string>id</string>
+				<key>switchDICOMEditing</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>XMLController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>addElement</key>
+				<string>NSTextField</string>
+				<key>addGroup</key>
+				<string>NSTextField</string>
+				<key>addValue</key>
+				<string>NSTextField</string>
+				<key>addWindow</key>
+				<string>NSWindow</string>
+				<key>dicomEditingView</key>
+				<string>NSView</string>
+				<key>dicomFieldsCombo</key>
+				<string>NSComboBox</string>
+				<key>search</key>
+				<string>NSSearchField</string>
+				<key>searchView</key>
+				<string>NSView</string>
+				<key>table</key>
+				<string>NSOutlineView</string>
+				<key>tableScrollView</key>
+				<string>NSScrollView</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>

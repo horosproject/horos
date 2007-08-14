@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 43;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -101,7 +101,6 @@
 		3A2D126109BC9AF000CCBC80 /* MSRGWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2D125909BC9AF000CCBC80 /* MSRGWindowController.m */; };
 		3A2D126809BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */; };
 		3A2D126909BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */; };
-		4A16D0A40965E21800F82EC4 /* UnitTestingBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */; };
 		7E0339FC07415E7D0025DDB4 /* BurnViewer.nib in Resources */ = {isa = PBXBuildFile; fileRef = 7E0339FA07415E7D0025DDB4 /* BurnViewer.nib */; };
 		7E075C560951FADD004B9D6F /* Send.nib in Resources */ = {isa = PBXBuildFile; fileRef = 7E075C540951FADD004B9D6F /* Send.nib */; };
 		7E075C580951FADE004B9D6F /* Send.nib in Resources */ = {isa = PBXBuildFile; fileRef = 7E075C540951FADD004B9D6F /* Send.nib */; };
@@ -1436,7 +1435,6 @@
 		ABD7BC5E063F00A900E24B0E /* GEcolor.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC50063F00A900E24B0E /* GEcolor.plist */; };
 		ABD7BC5F063F00A900E24B0E /* GrayRainbow.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC51063F00A900E24B0E /* GrayRainbow.plist */; };
 		ABD7BC60063F00A900E24B0E /* HotIron.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC52063F00A900E24B0E /* HotIron.plist */; };
-		ABD908480AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */; };
 		ABD9084C0AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */; };
 		ABD908500AF20B8A00E47345 /* libdcmprintscu.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */; };
 		ABD908D80AF2119200E47345 /* AYDicomPrint.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABD908C60AF2119200E47345 /* AYDicomPrint.prefPane */; };
@@ -3849,6 +3847,8 @@
 		BFF9D57D09CDCA5600B3B940 /* dcmqrdbq.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */; };
 		CE0144190923A64300F46597 /* KFSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EDB2CE091A473E00EE86AF /* KFSplitView.m */; };
 		CE01441A0923A64400F46597 /* KFSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9EDB2CD091A473E00EE86AF /* KFSplitView.h */; };
+		CE0718FE0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE0718FD0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel */; };
+		CE0718FF0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE0718FD0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel */; };
 		CE07B72909641CFA00189FEC /* Endoscopy.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE07B72709641CFA00189FEC /* Endoscopy.nib */; };
 		CE07B72B09641CFA00189FEC /* Endoscopy.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE07B72709641CFA00189FEC /* Endoscopy.nib */; };
 		CE0817B90C0FEEAE00BBD907 /* iPodEjectOff.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE0817B70C0FEEAE00BBD907 /* iPodEjectOff.tif */; };
@@ -6512,8 +6512,6 @@
 		CE822F8B0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */; };
 		CE822F8E0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */; };
 		CE822F8F0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */; };
-		CE84A51808621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE84A51708621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel */; };
-		CE84A51908621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE84A51708621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel */; };
 		CE88575E08AF938800B72DA7 /* ROIVolumeView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE88575A08AF938800B72DA7 /* ROIVolumeView.h */; };
 		CE88575F08AF938800B72DA7 /* ROIVolumeController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE88575B08AF938800B72DA7 /* ROIVolumeController.h */; };
 		CE88576008AF938800B72DA7 /* ROIVolumeController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE88575C08AF938800B72DA7 /* ROIVolumeController.mm */; };
@@ -7405,13 +7403,6 @@
 			remoteGlobalIDString = 4A2F58D8078D118700C514A2;
 			remoteInfo = "Build All Prerequisites";
 		};
-		4A16D3240967436800F82EC4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AB28B42E05B7921E00A9906C;
-			remoteInfo = Development;
-		};
 		4A2ADDFC078D3C6200416F53 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -7702,7 +7693,6 @@
 		3A2D125809BC9AF000CCBC80 /* MSRGWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MSRGWindowController.h; sourceTree = "<group>"; };
 		3A2D125909BC9AF000CCBC80 /* MSRGWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MSRGWindowController.m; sourceTree = "<group>"; };
 		3A2D126709BC9B0C00CCBC80 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/MSRGPanel.nib; sourceTree = "<group>"; };
-		4A16D0960965E15300F82EC4 /* Unit Testing (Cocoa).octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Unit Testing (Cocoa).octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A16D0970965E15300F82EC4 /* Unit Testing (Cocoa)-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = "Unit Testing (Cocoa)-Info.plist"; path = "UnitTesting/Unit Testing (Cocoa)-Info.plist"; sourceTree = "<group>"; };
 		4A16D0A20965E21800F82EC4 /* UnitTestingBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnitTestingBase.h; path = UnitTesting/UnitTestingBase.h; sourceTree = "<group>"; };
 		4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnitTestingBase.m; path = UnitTesting/UnitTestingBase.m; sourceTree = "<group>"; };
@@ -9789,6 +9779,7 @@
 		BFF97D6C0BDE8BE6008333CF /* ShadingArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShadingArrayController.m; sourceTree = "<group>"; };
 		BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dcmqrdbq.h; sourceTree = "<group>"; };
 		BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrdbq.mm; sourceTree = "<group>"; };
+		CE0718FD0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = OsiriXDB_DataModel.xcdatamodel; sourceTree = "<group>"; };
 		CE07B72809641CFA00189FEC /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/Endoscopy.nib; sourceTree = "<group>"; };
 		CE0817B70C0FEEAE00BBD907 /* iPodEjectOff.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPodEjectOff.tif; sourceTree = "<group>"; };
 		CE0817B80C0FEEAE00BBD907 /* iPodEjectOn.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPodEjectOn.tif; sourceTree = "<group>"; };
@@ -11087,7 +11078,6 @@
 		CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Anonymizer.icns; sourceTree = "<group>"; };
 		CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewerControllerWindow.h; sourceTree = "<group>"; };
 		CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewerControllerWindow.m; sourceTree = "<group>"; };
-		CE84A51708621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = wrapper.xcdatamodel; path = OsiriXDB_DataModel.xcdatamodel; sourceTree = "<group>"; };
 		CE88575A08AF938800B72DA7 /* ROIVolumeView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeView.h; sourceTree = "<group>"; };
 		CE88575B08AF938800B72DA7 /* ROIVolumeController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeController.h; sourceTree = "<group>"; };
 		CE88575C08AF938800B72DA7 /* ROIVolumeController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolumeController.mm; sourceTree = "<group>"; };
@@ -11240,13 +11230,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		4A16D0930965E15300F82EC4 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7E0B3A3D067526CD00908593 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -11273,14 +11256,26 @@
 				AB28B93605B79D5E00A9906C /* QuickTime.framework in Frameworks */,
 				AB28B93705B79D5E00A9906C /* Accelerate.framework in Frameworks */,
 				ABD95D180625BAEC00C77D11 /* ScreenSaver.framework in Frameworks */,
-				7E5692FA064FCF08001A9762 /* libtiff.a in Frameworks */,
 				CEF0E4BC06AEC91F001FF9E5 /* Message.framework in Frameworks */,
 				CEF0E6DC06AEF5CB001FF9E5 /* Carbon.framework in Frameworks */,
-				CEB7179906CE7CBD00084CA5 /* libjasper2.a in Frameworks */,
-				7EC3590A06FE212600188171 /* libtiff.dylib in Frameworks */,
 				7E3E38660715FFDC0049E72E /* PreferencePanes.framework in Frameworks */,
 				7E54303D07A05E7100500ABB /* DiscRecording.framework in Frameworks */,
 				7E54303E07A05E7100500ABB /* DiscRecordingUI.framework in Frameworks */,
+				CEFE605A0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */,
+				AB52E5FC0A19D93500726305 /* Security.framework in Frameworks */,
+				BF6290B10A2B80A800BB0B62 /* AddressBook.framework in Frameworks */,
+				BF47CC240A2E3BC500700AA9 /* WebKit.framework in Frameworks */,
+				AB6B75EC0A53F60600F0CA8F /* QTKit.framework in Frameworks */,
+				ABDF6E2E0BE0904D00793094 /* Growl.framework in Frameworks */,
+				CE2C82E30C708B310093C162 /* InstantMessage.framework in Frameworks */,
+				CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */,
+				ABE4692F0A7627FD00327466 /* libvtkjpeg.a in Frameworks */,
+				CE0F4E310AF38775005959D2 /* libdcmprintscu.dylib in Frameworks */,
+				CE0F4E310AF38775005959D2 /* libdcmprintscu.dylib in Frameworks */,
+				CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
+				7E5692FA064FCF08001A9762 /* libtiff.a in Frameworks */,
+				CEB7179906CE7CBD00084CA5 /* libjasper2.a in Frameworks */,
+				7EC3590A06FE212600188171 /* libtiff.dylib in Frameworks */,
 				CE1113A108EDD5FD005B15E1 /* libvtkGraphics.a in Frameworks */,
 				CE1113A208EDD5FD005B15E1 /* libvtkHybrid.a in Frameworks */,
 				CE1113A308EDD5FD005B15E1 /* libvtkVolumeRendering.a in Frameworks */,
@@ -11289,7 +11284,6 @@
 				CE1113A708EDD5FD005B15E1 /* libvtkGenericFiltering.a in Frameworks */,
 				CE1113A808EDD5FD005B15E1 /* libvtkftgl.a in Frameworks */,
 				CE1113A908EDD5FD005B15E1 /* libvtkfreetype.a in Frameworks */,
-				CEFE605A0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */,
 				CEEC8F900979B73B0060CE79 /* libvtksys.a in Frameworks */,
 				CEEC8F910979B73C0060CE79 /* libvtkpng.a in Frameworks */,
 				CEEC8F930979B73F0060CE79 /* libvtkCommon.a in Frameworks */,
@@ -11304,17 +11298,6 @@
 				BFBF3AA209B681F500545F5E /* libssl.dylib in Frameworks */,
 				BFBF3AA309B681F500545F5E /* libxml2.dylib in Frameworks */,
 				BFBF3AA409B681F500545F5E /* libz.dylib in Frameworks */,
-				AB52E5FC0A19D93500726305 /* Security.framework in Frameworks */,
-				BF6290B10A2B80A800BB0B62 /* AddressBook.framework in Frameworks */,
-				BF47CC240A2E3BC500700AA9 /* WebKit.framework in Frameworks */,
-				AB6B75EC0A53F60600F0CA8F /* QTKit.framework in Frameworks */,
-				ABE4692F0A7627FD00327466 /* libvtkjpeg.a in Frameworks */,
-				ABD908480AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */,
-				CE0F4E310AF38775005959D2 /* libdcmprintscu.dylib in Frameworks */,
-				CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
-				ABDF6E2E0BE0904D00793094 /* Growl.framework in Frameworks */,
-				CE2C82E30C708B310093C162 /* InstantMessage.framework in Frameworks */,
-				CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */,
 				CE2C830B0C708BA30093C162 /* libITKNumerics.a in Frameworks */,
 				CE2C830C0C708BA30093C162 /* libitkvnl.a in Frameworks */,
 				CE2C830D0C708BA30093C162 /* libITKznz.a in Frameworks */,
@@ -11605,7 +11588,6 @@
 			children = (
 				ABA71D3F06726B1800335A62 /* OsiriX.app */,
 				CECB058B07539E3A00576814 /* OsiriXVP.app */,
-				4A16D0960965E15300F82EC4 /* Unit Testing (Cocoa).octest */,
 				ABEA7F080A21BCC90094CAEF /* SafeDBRebuild */,
 				AB724FF60ADE6ECB00A212A0 /* Decompress */,
 				CE7A0EED0AED55AD00540017 /* Quicktime */,
@@ -11773,7 +11755,7 @@
 		324AD88708B23B0500101139 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				CE84A51708621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel */,
+				CE0718FD0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -19879,25 +19861,6 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		4A16D0950965E15300F82EC4 /* Unit Testing (Cocoa) */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 4A16D0980965E15400F82EC4 /* Build configuration list for PBXNativeTarget "Unit Testing (Cocoa)" */;
-			buildPhases = (
-				4A16D0910965E15300F82EC4 /* Resources */,
-				4A16D0920965E15300F82EC4 /* Sources */,
-				4A16D0930965E15300F82EC4 /* Frameworks */,
-				4A16D0940965E15300F82EC4 /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				4A16D3250967436800F82EC4 /* PBXTargetDependency */,
-			);
-			name = "Unit Testing (Cocoa)";
-			productName = "Unit Testing (Cocoa)";
-			productReference = 4A16D0960965E15300F82EC4 /* Unit Testing (Cocoa).octest */;
-			productType = "com.apple.product-type.bundle";
-		};
 		7E0B3A3E067526CD00908593 /* DCM Framework */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "DCM Framework" */;
@@ -20030,7 +19993,7 @@
 				BuildIndependentTargetsInParallel = NO;
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.0";
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -20112,7 +20075,6 @@
 				7E0B3A3E067526CD00908593 /* DCM Framework */,
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
 				4A2F58D8078D118700C514A2 /* Build All Prerequisites */,
-				4A16D0950965E15300F82EC4 /* Unit Testing (Cocoa) */,
 				ABEA7F070A21BCC90094CAEF /* SafeDBRebuild */,
 				AB724F300ADE6ECB00A212A0 /* Decompress */,
 				CE7A0D7D0AED55AD00540017 /* Quicktime */,
@@ -20216,13 +20178,6 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
-		4A16D0910965E15300F82EC4 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7E0B3A3B067526CD00908593 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -21042,19 +20997,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4A16D0940965E15300F82EC4 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
 		4A2F5930078D148300C514A2 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -21085,14 +21027,6 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		4A16D0920965E15300F82EC4 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4A16D0A40965E21800F82EC4 /* UnitTestingBase.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7E0B3A3C067526CD00908593 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -21495,7 +21429,6 @@
 				183C865908563F3A000E6A68 /* Spline3D.mm in Sources */,
 				183C865B08563F3A000E6A68 /* SRFlyThruAdapter.m in Sources */,
 				183C865D08563F3A000E6A68 /* VRFlyThruAdapter.m in Sources */,
-				CE84A51808621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel in Sources */,
 				CEE1922E08636FA100DED1F0 /* DicomImage.m in Sources */,
 				CE9DD284086B35050058DD2A /* DicomStudy.m in Sources */,
 				CE9DD287086B35050058DD2A /* DicomSeries.m in Sources */,
@@ -22143,6 +22076,7 @@
 				CE822F8F0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */,
 				ABB230BE0C2F95DD00B38596 /* JPEGExif.m in Sources */,
 				AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */,
+				CE0718FE0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22879,7 +22813,6 @@
 				183C866D08563F3A000E6A68 /* Spline3D.mm in Sources */,
 				183C866F08563F3A000E6A68 /* SRFlyThruAdapter.m in Sources */,
 				183C867108563F3A000E6A68 /* VRFlyThruAdapter.m in Sources */,
-				CE84A51908621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel in Sources */,
 				CEE1923008636FA100DED1F0 /* DicomImage.m in Sources */,
 				CE9DD288086B35050058DD2A /* DicomStudy.m in Sources */,
 				CE9DD28B086B35050058DD2A /* DicomSeries.m in Sources */,
@@ -23524,6 +23457,7 @@
 				CE822F8B0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */,
 				ABB230BC0C2F95DD00B38596 /* JPEGExif.m in Sources */,
 				AB64A2D80C4E0F61000E0981 /* HornRegistration.mm in Sources */,
+				CE0718FF0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23542,11 +23476,6 @@
 			isa = PBXTargetDependency;
 			target = 4A2F58D8078D118700C514A2 /* Build All Prerequisites */;
 			targetProxy = 4A0FB7E507C7F0DE0031C757 /* PBXContainerItemProxy */;
-		};
-		4A16D3250967436800F82EC4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AB28B42E05B7921E00A9906C /* OsiriX */;
-			targetProxy = 4A16D3240967436800F82EC4 /* PBXContainerItemProxy */;
 		};
 		4A2ADDFD078D3C6200416F53 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -24049,43 +23978,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		4A16D0990965E15400F82EC4 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/OsiriX.app/Contents/MacOS/OsiriX";
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR_QUOTED)",
-				);
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
-				INFOPLIST_FILE = "UnitTesting/Unit Testing (Cocoa)-Info.plist";
-				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
-				LIBRARY_SEARCH_PATHS = (
-					"$(LIBRARY_SEARCH_PATHS)",
-					"$(SRCROOT)/Binaries/Jasper",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Cocoa,
-					"-framework",
-					SenTestingKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = "Unit Testing (Cocoa)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-				ZERO_LINK = NO;
-			};
-			name = Development;
-		};
 		7E76BEC1085757B60073649A /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -24221,8 +24113,10 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/AYDicomPrint\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -24358,7 +24252,7 @@
 					AYDicomPrint,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOTS = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = Development;
 		};
@@ -24457,7 +24351,7 @@
 					AYDicomPrint,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOTS = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = "Development 64-bits";
 		};
@@ -24509,8 +24403,10 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/AYDicomPrint\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -24518,7 +24414,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PREBINDING = YES;
 				PRODUCT_NAME = OsiriX;
 				WARNING_CFLAGS = "";
 			};
@@ -24716,43 +24612,6 @@
 			};
 			name = "Development 64-bits";
 		};
-		CE5314840C717B0400A2B75F /* Development 64-bits */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/OsiriX.app/Contents/MacOS/OsiriX";
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR_QUOTED)",
-				);
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
-				INFOPLIST_FILE = "UnitTesting/Unit Testing (Cocoa)-Info.plist";
-				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
-				LIBRARY_SEARCH_PATHS = (
-					"$(LIBRARY_SEARCH_PATHS)",
-					"$(SRCROOT)/Binaries/Jasper",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Cocoa,
-					"-framework",
-					SenTestingKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = "Unit Testing (Cocoa)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-				ZERO_LINK = NO;
-			};
-			name = "Development 64-bits";
-		};
 		CE5314850C717B0400A2B75F /* Development 64-bits */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -24922,7 +24781,7 @@
 					AYDicomPrint,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOTS = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = "Deployment Universal 32-bit";
 		};
@@ -24978,8 +24837,10 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/AYDicomPrint\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -25185,43 +25046,6 @@
 			};
 			name = "Deployment Universal 32-bit";
 		};
-		CE5314B00C717C3000A2B75F /* Deployment Universal 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/OsiriX.app/Contents/MacOS/OsiriX";
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR_QUOTED)",
-				);
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
-				INFOPLIST_FILE = "UnitTesting/Unit Testing (Cocoa)-Info.plist";
-				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
-				LIBRARY_SEARCH_PATHS = (
-					"$(LIBRARY_SEARCH_PATHS)",
-					"$(SRCROOT)/Binaries/Jasper",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Cocoa,
-					"-framework",
-					SenTestingKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = "Unit Testing (Cocoa)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-				ZERO_LINK = NO;
-			};
-			name = "Deployment Universal 32-bit";
-		};
 		CE5314B10C717C3000A2B75F /* Deployment Universal 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -25391,7 +25215,7 @@
 					AYDicomPrint,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOTS = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = "Deployment Universal 64-bit";
 		};
@@ -25405,6 +25229,7 @@
 					ppc64,
 				);
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					Binaries,
@@ -25449,8 +25274,10 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/AYDicomPrint\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -25458,7 +25285,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PREBINDING = YES;
 				PRODUCT_NAME = OsiriX;
 				WARNING_CFLAGS = "";
 			};
@@ -25631,43 +25458,6 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = "Build All Prerequisites";
 				SECTORDER_FLAGS = "";
-			};
-			name = "Deployment Universal 64-bit";
-		};
-		CE5314BB0C717C3000A2B75F /* Deployment Universal 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/OsiriX.app/Contents/MacOS/OsiriX";
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR_QUOTED)",
-				);
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
-				INFOPLIST_FILE = "UnitTesting/Unit Testing (Cocoa)-Info.plist";
-				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
-				LIBRARY_SEARCH_PATHS = (
-					"$(LIBRARY_SEARCH_PATHS)",
-					"$(SRCROOT)/Binaries/Jasper",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Cocoa,
-					"-framework",
-					SenTestingKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = "Unit Testing (Cocoa)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-				ZERO_LINK = NO;
 			};
 			name = "Deployment Universal 64-bit";
 		};
@@ -25898,17 +25688,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4A16D0980965E15400F82EC4 /* Build configuration list for PBXNativeTarget "Unit Testing (Cocoa)" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				4A16D0990965E15400F82EC4 /* Development */,
-				CE5314840C717B0400A2B75F /* Development 64-bits */,
-				CE5314B00C717C3000A2B75F /* Deployment Universal 32-bit */,
-				CE5314BB0C717C3000A2B75F /* Deployment Universal 64-bit */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
-		};
 		7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "DCM Framework" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
