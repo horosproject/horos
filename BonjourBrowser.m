@@ -732,7 +732,7 @@ static char *GetPrivateIP()
 	
 	if( selectedDict)
 	{
-		int index = [services indexOfObject: selectedDict];
+		NSInteger index = [services indexOfObject: selectedDict];
 		
 		if( index == NSNotFound)
 			[[BrowserController currentBrowser] resetToLocalDatabase];
@@ -899,7 +899,7 @@ static char *GetPrivateIP()
 			}
 			
 			// deleting service from list
-			int index = [services indexOfObject: currentNetService];
+			NSInteger index = [services indexOfObject: currentNetService];
 			if( index != NSNotFound)
 				[services removeObjectAtIndex: index];
 			
@@ -1378,7 +1378,7 @@ static char *GetPrivateIP()
 	
 	NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES] autorelease];
 	NSArray				*images = [[[[image valueForKey: @"series"] valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
-	int				size = 0, i = [images indexOfObject: image];
+	NSInteger			size = 0, i = [images indexOfObject: image];
 	
 	do
 	{

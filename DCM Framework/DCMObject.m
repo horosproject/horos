@@ -1077,7 +1077,7 @@ PixelRepresentation
 		NSEnumerator *enumerator = [values objectEnumerator];
 		id value;
 		id newValue = nil;
-		int index;
+		NSInteger index;
 		NSString *format = nil;
 		while (value = [enumerator nextObject]) {
 			index = [values indexOfObject:value];

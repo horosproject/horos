@@ -2869,8 +2869,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			[[self windowController] addToUndoQueue:@"roi"];
 			
-			BOOL	DoNothing = NO;
-			long	selected = -1, i, x;
+			BOOL		DoNothing = NO;
+			NSInteger	selected = -1, i, x;
 			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
 			tempPt.y = size.size.height - tempPt.y ;
 			tempPt = [self ConvertFromView2GL:tempPt];

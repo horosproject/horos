@@ -672,7 +672,7 @@ static char *GetPrivateIP()
 		
 		if( [sendToPopup indexOfSelectedItem] != 0)
 		{
-			int index = [sendToPopup indexOfSelectedItem] -2;
+			NSInteger index = [sendToPopup indexOfSelectedItem] -2;
 			
 			dstDict = [[DCMNetServiceDelegate DICOMServersList] objectAtIndex: index];
 			

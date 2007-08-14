@@ -1,66 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>IBDocumentLocation</key>
-	<string>205 171 630 587 0 0 1920 1178 </string>
-	<key>IBEditorPositions</key>
-	<dict>
-		<key>1018</key>
-		<string>1250 1014 59 77 0 0 2560 1578 </string>
-		<key>1029</key>
-		<string>1202 999 155 107 0 0 2560 1578 </string>
-		<key>209</key>
-		<string>749 642 182 89 0 0 1680 1028 </string>
-		<key>239</key>
-		<string>648 1084 325 78 0 0 1920 1178 </string>
-		<key>350</key>
-		<string>1211 1015 137 75 0 0 2560 1578 </string>
-		<key>386</key>
-		<string>658 552 124 69 0 0 1440 878 </string>
-		<key>462</key>
-		<string>1183 1014 193 77 0 0 2560 1578 </string>
-		<key>514</key>
-		<string>755 641 169 90 0 0 1680 1028 </string>
-		<key>552</key>
-		<string>801 647 78 78 0 0 1680 1028 </string>
-		<key>575</key>
-		<string>916 744 88 85 0 0 1920 1178 </string>
-		<key>658</key>
-		<string>770 647 140 79 0 0 1680 1028 </string>
-		<key>702</key>
-		<string>654 541 131 90 0 0 1440 878 </string>
-		<key>888</key>
-		<string>867 744 186 85 0 0 1920 1178 </string>
-		<key>953</key>
-		<string>653 543 134 86 0 0 1440 878 </string>
-	</dict>
 	<key>IBFramework Version</key>
-	<string>446.1</string>
-	<key>IBGroupedObjects</key>
-	<dict>
-		<key>0</key>
-		<array>
-			<string>1385</string>
-			<string>1364</string>
-			<string>1386</string>
-			<string>1384</string>
-			<string>1357</string>
-			<string>1355</string>
-			<string>1381</string>
-			<string>1383</string>
-			<string>1388</string>
-		</array>
-	</dict>
-	<key>IBLastGroupID</key>
-	<string>1</string>
+	<string>613</string>
+	<key>IBLastKnownRelativeProjectPath</key>
+	<string>../../../OsiriX.xcodeproj</string>
+	<key>IBOldestOS</key>
+	<integer>5</integer>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>239</integer>
-		<integer>888</integer>
-		<integer>144</integer>
+		<integer>1409</integer>
+		<integer>1532</integer>
 	</array>
 	<key>IBSystem Version</key>
-	<string>8R2218</string>
+	<string>9A499</string>
+	<key>targetFramework</key>
+	<string>IBCocoaFramework</string>
 </dict>
 </plist>

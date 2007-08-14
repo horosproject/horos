@@ -358,9 +358,9 @@ NSString * documentsDirectory();
 {
 	if( [exportTypes count])
 	{
-		int indexOfSelectedItem = [type indexOfSelectedItem];
+		NSInteger indexOfSelectedItem = [type indexOfSelectedItem];
 	
-		unsigned long subtype = [[[exportTypes objectAtIndex: indexOfSelectedItem] valueForKey:@"subtype"] unsignedLongValue];
+		unsigned int subtype = [[[exportTypes objectAtIndex: indexOfSelectedItem] valueForKey:@"subtype"] unsignedIntValue];
 		
 		if( subtype == kQTFileTypeMovie)  [panel setRequiredFileType:@"mov"];
 		if( subtype == kQTFileTypeAVI)	[panel setRequiredFileType:@"avi"];

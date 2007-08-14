@@ -133,7 +133,7 @@
 	{
 		NSString *predicateString = 0L;
 		NSString *value = 0L;
-		int searchType;
+		NSInteger searchType;
 		
 		NSString *key = [[view filterKeyPopup] titleOfSelectedItem];
 		// Modality	

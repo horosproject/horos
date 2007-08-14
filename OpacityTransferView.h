@@ -25,7 +25,7 @@
 	
 	NSMutableArray  *points;
 	
-	long			curIndex;
+	NSInteger		curIndex;
 	
 	unsigned char   red[256], green[256], blue[256];
 }

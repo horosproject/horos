@@ -141,7 +141,7 @@
 //		{
 //			if( [previousParents containsObject: [[curRoiList objectAtIndex: i] parentROI]])
 //			{
-//				int index = [previousParents indexOfObject: [[curRoiList objectAtIndex: i] parentROI]];
+//				NSInteger index = [previousParents indexOfObject: [[curRoiList objectAtIndex: i] parentROI]];
 //				
 //				[[curRoiList objectAtIndex: i] setROIMode: [[previousMode objectAtIndex: index] intValue]];
 //			}

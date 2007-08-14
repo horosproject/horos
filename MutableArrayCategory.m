@@ -67,8 +67,8 @@
     NSRange searchRange=NSMakeRange(0, [self count]);
     for (i=0; i<max; i++) {
         id object=[array objectAtIndex:i];
-        int index=[self indexOfObject:object inRange:searchRange];
-        if (index==NSNotFound) [self addObject:object];
+        NSInteger index=[self indexOfObject:object inRange:searchRange];
+        if (index == NSNotFound) [self addObject:object];
     }
 }
 

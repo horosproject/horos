@@ -188,8 +188,8 @@
 		// move cross on the other views
 		[xReslicedView setCrossPositionX:x];
 		[yReslicedView setCrossPositionX:y];
-		long sliceIndex = [[originalView pixList] indexOfObject:[originalView curDCM]] + [[originalView curDCM] stack]/2;
-		long h = (sign>0)? [[originalView dcmPixList] count]-sliceIndex-1 : sliceIndex ;
+		NSInteger sliceIndex = [[originalView pixList] indexOfObject:[originalView curDCM]] + [[originalView curDCM] stack]/2;
+		NSInteger h = (sign>0)? [[originalView dcmPixList] count]-sliceIndex-1 : sliceIndex ;
 
 		[xReslicedView setCrossPositionY:h];
 		[yReslicedView setCrossPositionY:h];

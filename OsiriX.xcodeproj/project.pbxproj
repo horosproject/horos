@@ -963,13 +963,6 @@
 		AB36749E0BE0CEB1003634E6 /* CheckboxOnD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743C0BE0CEB0003634E6 /* CheckboxOnD.tiff */; };
 		AB36749F0BE0CEB1003634E6 /* CheckboxOnN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743D0BE0CEB0003634E6 /* CheckboxOnN.tiff */; };
 		AB3674A00BE0CEB1003634E6 /* CheckboxOnP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743E0BE0CEB0003634E6 /* CheckboxOnP.tiff */; };
-		AB3674A10BE0CEB1003634E6 /* Credits.txt in Resources */ = {isa = PBXBuildFile; fileRef = AB36743F0BE0CEB0003634E6 /* Credits.txt */; };
-		AB3674A20BE0CEB1003634E6 /* CTGradient.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674400BE0CEB0003634E6 /* CTGradient.h */; };
-		AB3674A30BE0CEB1003634E6 /* CTGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674410BE0CEB0003634E6 /* CTGradient.m */; };
-		AB3674A50BE0CEB1003634E6 /* EtchedText.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674440BE0CEB0003634E6 /* EtchedText.h */; };
-		AB3674A60BE0CEB1003634E6 /* EtchedText.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674450BE0CEB0003634E6 /* EtchedText.m */; };
-		AB3674A70BE0CEB1003634E6 /* EtchedTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674460BE0CEB0003634E6 /* EtchedTextCell.h */; };
-		AB3674A80BE0CEB1003634E6 /* EtchedTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674470BE0CEB0003634E6 /* EtchedTextCell.m */; };
 		AB3674A90BE0CEB1003634E6 /* HUDButtonFillN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674480BE0CEB0003634E6 /* HUDButtonFillN.tiff */; };
 		AB3674AA0BE0CEB1003634E6 /* HUDButtonFillP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674490BE0CEB0003634E6 /* HUDButtonFillP.tiff */; };
 		AB3674AB0BE0CEB1003634E6 /* HUDButtonLeftN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36744A0BE0CEB0003634E6 /* HUDButtonLeftN.tiff */; };
@@ -994,46 +987,11 @@
 		AB3674BE0BE0CEB1003634E6 /* HUDSliderTrackFill.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745D0BE0CEB1003634E6 /* HUDSliderTrackFill.tiff */; };
 		AB3674BF0BE0CEB1003634E6 /* HUDSliderTrackLeft.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745E0BE0CEB1003634E6 /* HUDSliderTrackLeft.tiff */; };
 		AB3674C00BE0CEB1003634E6 /* HUDSliderTrackRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tiff */; };
-		AB3674C10BE0CEB1003634E6 /* iLifeControls_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AB3674600BE0CEB1003634E6 /* iLifeControls_Prefix.pch */; };
 		AB3674C30BE0CEB1003634E6 /* IWWindowCornerBL.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674620BE0CEB1003634E6 /* IWWindowCornerBL.tiff */; };
 		AB3674C40BE0CEB1003634E6 /* IWWindowCornerBR.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674630BE0CEB1003634E6 /* IWWindowCornerBR.tiff */; };
 		AB3674C50BE0CEB1003634E6 /* IWWindowCornerTL.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674640BE0CEB1003634E6 /* IWWindowCornerTL.tiff */; };
 		AB3674C60BE0CEB1003634E6 /* IWWindowCornerTR.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674650BE0CEB1003634E6 /* IWWindowCornerTR.tiff */; };
 		AB3674C70BE0CEB1003634E6 /* IWWindowResizeControl.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674660BE0CEB1003634E6 /* IWWindowResizeControl.tiff */; };
-		AB3674C80BE0CEB1003634E6 /* NFHUDButton.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674670BE0CEB1003634E6 /* NFHUDButton.h */; };
-		AB3674C90BE0CEB1003634E6 /* NFHUDButton.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674680BE0CEB1003634E6 /* NFHUDButton.m */; };
-		AB3674CA0BE0CEB1003634E6 /* NFHUDButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674690BE0CEB1003634E6 /* NFHUDButtonCell.h */; };
-		AB3674CB0BE0CEB1003634E6 /* NFHUDButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36746A0BE0CEB1003634E6 /* NFHUDButtonCell.m */; };
-		AB3674CC0BE0CEB1003634E6 /* NFHUDFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36746B0BE0CEB1003634E6 /* NFHUDFrame.h */; };
-		AB3674CD0BE0CEB1003634E6 /* NFHUDFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36746C0BE0CEB1003634E6 /* NFHUDFrame.m */; };
-		AB3674CE0BE0CEB1003634E6 /* NFHUDPopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36746D0BE0CEB1003634E6 /* NFHUDPopUpButton.h */; };
-		AB3674CF0BE0CEB1003634E6 /* NFHUDPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36746E0BE0CEB1003634E6 /* NFHUDPopUpButton.m */; };
-		AB3674D00BE0CEB1003634E6 /* NFHUDPopUpButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36746F0BE0CEB1003634E6 /* NFHUDPopUpButtonCell.h */; };
-		AB3674D10BE0CEB1003634E6 /* NFHUDPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674700BE0CEB1003634E6 /* NFHUDPopUpButtonCell.m */; };
-		AB3674D20BE0CEB1003634E6 /* NFHUDSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674710BE0CEB1003634E6 /* NFHUDSlider.h */; };
-		AB3674D30BE0CEB1003634E6 /* NFHUDSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674720BE0CEB1003634E6 /* NFHUDSlider.m */; };
-		AB3674D40BE0CEB1003634E6 /* NFHUDSliderCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674730BE0CEB1003634E6 /* NFHUDSliderCell.h */; };
-		AB3674D50BE0CEB1003634E6 /* NFHUDSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674740BE0CEB1003634E6 /* NFHUDSliderCell.m */; };
-		AB3674D60BE0CEB1003634E6 /* NFHUDWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674750BE0CEB1003634E6 /* NFHUDWindow.h */; };
-		AB3674D70BE0CEB1003634E6 /* NFHUDWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674760BE0CEB1003634E6 /* NFHUDWindow.m */; };
-		AB3674D80BE0CEB1003634E6 /* NFIButton.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674770BE0CEB1003634E6 /* NFIButton.h */; };
-		AB3674D90BE0CEB1003634E6 /* NFIButton.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674780BE0CEB1003634E6 /* NFIButton.m */; };
-		AB3674DA0BE0CEB1003634E6 /* NFIButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674790BE0CEB1003634E6 /* NFIButtonCell.h */; };
-		AB3674DB0BE0CEB1003634E6 /* NFIButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36747A0BE0CEB1003634E6 /* NFIButtonCell.m */; };
-		AB3674DC0BE0CEB1003634E6 /* NFIFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36747B0BE0CEB1003634E6 /* NFIFrame.h */; };
-		AB3674DD0BE0CEB1003634E6 /* NFIFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36747C0BE0CEB1003634E6 /* NFIFrame.m */; };
-		AB3674DE0BE0CEB1003634E6 /* NFIPopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36747D0BE0CEB1003634E6 /* NFIPopUpButton.h */; };
-		AB3674DF0BE0CEB1003634E6 /* NFIPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36747E0BE0CEB1003634E6 /* NFIPopUpButton.m */; };
-		AB3674E00BE0CEB1003634E6 /* NFIPopUpButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36747F0BE0CEB1003634E6 /* NFIPopUpButtonCell.h */; };
-		AB3674E10BE0CEB1003634E6 /* NFIPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674800BE0CEB1003634E6 /* NFIPopUpButtonCell.m */; };
-		AB3674E20BE0CEB1003634E6 /* NFIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674810BE0CEB1003634E6 /* NFIWindow.h */; };
-		AB3674E30BE0CEB1003634E6 /* NFIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674820BE0CEB1003634E6 /* NFIWindow.m */; };
-		AB3674E40BE0CEB1003634E6 /* NSFrameView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674830BE0CEB1003634E6 /* NSFrameView.h */; };
-		AB3674E50BE0CEB1003634E6 /* NSGrayFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674840BE0CEB1003634E6 /* NSGrayFrame.h */; };
-		AB3674E60BE0CEB1003634E6 /* NSImage+FrameworkImage.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674850BE0CEB1003634E6 /* NSImage+FrameworkImage.h */; };
-		AB3674E70BE0CEB1003634E6 /* NSImage+FrameworkImage.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674860BE0CEB1003634E6 /* NSImage+FrameworkImage.m */; };
-		AB3674E80BE0CEB1003634E6 /* NSThemeFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674870BE0CEB1003634E6 /* NSThemeFrame.h */; };
-		AB3674E90BE0CEB1003634E6 /* NSTitledFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674880BE0CEB1003634E6 /* NSTitledFrame.h */; };
 		AB3674EA0BE0CEB1003634E6 /* PopUpFillD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674890BE0CEB1003634E6 /* PopUpFillD.tiff */; };
 		AB3674EB0BE0CEB1003634E6 /* PopUpFillN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748A0BE0CEB1003634E6 /* PopUpFillN.tiff */; };
 		AB3674EC0BE0CEB2003634E6 /* PopUpFillP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748B0BE0CEB1003634E6 /* PopUpFillP.tiff */; };
@@ -1058,13 +1016,6 @@
 		AB3674FF0BE0CEB2003634E6 /* CheckboxOnD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743C0BE0CEB0003634E6 /* CheckboxOnD.tiff */; };
 		AB3675000BE0CEB2003634E6 /* CheckboxOnN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743D0BE0CEB0003634E6 /* CheckboxOnN.tiff */; };
 		AB3675010BE0CEB2003634E6 /* CheckboxOnP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743E0BE0CEB0003634E6 /* CheckboxOnP.tiff */; };
-		AB3675020BE0CEB2003634E6 /* Credits.txt in Resources */ = {isa = PBXBuildFile; fileRef = AB36743F0BE0CEB0003634E6 /* Credits.txt */; };
-		AB3675030BE0CEB2003634E6 /* CTGradient.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674400BE0CEB0003634E6 /* CTGradient.h */; };
-		AB3675040BE0CEB2003634E6 /* CTGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674410BE0CEB0003634E6 /* CTGradient.m */; };
-		AB3675060BE0CEB2003634E6 /* EtchedText.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674440BE0CEB0003634E6 /* EtchedText.h */; };
-		AB3675070BE0CEB2003634E6 /* EtchedText.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674450BE0CEB0003634E6 /* EtchedText.m */; };
-		AB3675080BE0CEB2003634E6 /* EtchedTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674460BE0CEB0003634E6 /* EtchedTextCell.h */; };
-		AB3675090BE0CEB2003634E6 /* EtchedTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674470BE0CEB0003634E6 /* EtchedTextCell.m */; };
 		AB36750A0BE0CEB2003634E6 /* HUDButtonFillN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674480BE0CEB0003634E6 /* HUDButtonFillN.tiff */; };
 		AB36750B0BE0CEB2003634E6 /* HUDButtonFillP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674490BE0CEB0003634E6 /* HUDButtonFillP.tiff */; };
 		AB36750C0BE0CEB2003634E6 /* HUDButtonLeftN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36744A0BE0CEB0003634E6 /* HUDButtonLeftN.tiff */; };
@@ -1089,46 +1040,11 @@
 		AB36751F0BE0CEB2003634E6 /* HUDSliderTrackFill.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745D0BE0CEB1003634E6 /* HUDSliderTrackFill.tiff */; };
 		AB3675200BE0CEB2003634E6 /* HUDSliderTrackLeft.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745E0BE0CEB1003634E6 /* HUDSliderTrackLeft.tiff */; };
 		AB3675210BE0CEB2003634E6 /* HUDSliderTrackRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tiff */; };
-		AB3675220BE0CEB2003634E6 /* iLifeControls_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AB3674600BE0CEB1003634E6 /* iLifeControls_Prefix.pch */; };
 		AB3675240BE0CEB2003634E6 /* IWWindowCornerBL.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674620BE0CEB1003634E6 /* IWWindowCornerBL.tiff */; };
 		AB3675250BE0CEB2003634E6 /* IWWindowCornerBR.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674630BE0CEB1003634E6 /* IWWindowCornerBR.tiff */; };
 		AB3675260BE0CEB2003634E6 /* IWWindowCornerTL.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674640BE0CEB1003634E6 /* IWWindowCornerTL.tiff */; };
 		AB3675270BE0CEB2003634E6 /* IWWindowCornerTR.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674650BE0CEB1003634E6 /* IWWindowCornerTR.tiff */; };
 		AB3675280BE0CEB2003634E6 /* IWWindowResizeControl.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674660BE0CEB1003634E6 /* IWWindowResizeControl.tiff */; };
-		AB3675290BE0CEB2003634E6 /* NFHUDButton.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674670BE0CEB1003634E6 /* NFHUDButton.h */; };
-		AB36752A0BE0CEB2003634E6 /* NFHUDButton.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674680BE0CEB1003634E6 /* NFHUDButton.m */; };
-		AB36752B0BE0CEB2003634E6 /* NFHUDButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674690BE0CEB1003634E6 /* NFHUDButtonCell.h */; };
-		AB36752C0BE0CEB2003634E6 /* NFHUDButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36746A0BE0CEB1003634E6 /* NFHUDButtonCell.m */; };
-		AB36752D0BE0CEB2003634E6 /* NFHUDFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36746B0BE0CEB1003634E6 /* NFHUDFrame.h */; };
-		AB36752E0BE0CEB2003634E6 /* NFHUDFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36746C0BE0CEB1003634E6 /* NFHUDFrame.m */; };
-		AB36752F0BE0CEB2003634E6 /* NFHUDPopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36746D0BE0CEB1003634E6 /* NFHUDPopUpButton.h */; };
-		AB3675300BE0CEB2003634E6 /* NFHUDPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36746E0BE0CEB1003634E6 /* NFHUDPopUpButton.m */; };
-		AB3675310BE0CEB2003634E6 /* NFHUDPopUpButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36746F0BE0CEB1003634E6 /* NFHUDPopUpButtonCell.h */; };
-		AB3675320BE0CEB2003634E6 /* NFHUDPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674700BE0CEB1003634E6 /* NFHUDPopUpButtonCell.m */; };
-		AB3675330BE0CEB2003634E6 /* NFHUDSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674710BE0CEB1003634E6 /* NFHUDSlider.h */; };
-		AB3675340BE0CEB2003634E6 /* NFHUDSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674720BE0CEB1003634E6 /* NFHUDSlider.m */; };
-		AB3675350BE0CEB2003634E6 /* NFHUDSliderCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674730BE0CEB1003634E6 /* NFHUDSliderCell.h */; };
-		AB3675360BE0CEB2003634E6 /* NFHUDSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674740BE0CEB1003634E6 /* NFHUDSliderCell.m */; };
-		AB3675370BE0CEB2003634E6 /* NFHUDWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674750BE0CEB1003634E6 /* NFHUDWindow.h */; };
-		AB3675380BE0CEB2003634E6 /* NFHUDWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674760BE0CEB1003634E6 /* NFHUDWindow.m */; };
-		AB3675390BE0CEB2003634E6 /* NFIButton.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674770BE0CEB1003634E6 /* NFIButton.h */; };
-		AB36753A0BE0CEB2003634E6 /* NFIButton.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674780BE0CEB1003634E6 /* NFIButton.m */; };
-		AB36753B0BE0CEB2003634E6 /* NFIButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674790BE0CEB1003634E6 /* NFIButtonCell.h */; };
-		AB36753C0BE0CEB2003634E6 /* NFIButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36747A0BE0CEB1003634E6 /* NFIButtonCell.m */; };
-		AB36753D0BE0CEB2003634E6 /* NFIFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36747B0BE0CEB1003634E6 /* NFIFrame.h */; };
-		AB36753E0BE0CEB2003634E6 /* NFIFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36747C0BE0CEB1003634E6 /* NFIFrame.m */; };
-		AB36753F0BE0CEB2003634E6 /* NFIPopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36747D0BE0CEB1003634E6 /* NFIPopUpButton.h */; };
-		AB3675400BE0CEB2003634E6 /* NFIPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36747E0BE0CEB1003634E6 /* NFIPopUpButton.m */; };
-		AB3675410BE0CEB2003634E6 /* NFIPopUpButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36747F0BE0CEB1003634E6 /* NFIPopUpButtonCell.h */; };
-		AB3675420BE0CEB2003634E6 /* NFIPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674800BE0CEB1003634E6 /* NFIPopUpButtonCell.m */; };
-		AB3675430BE0CEB2003634E6 /* NFIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674810BE0CEB1003634E6 /* NFIWindow.h */; };
-		AB3675440BE0CEB2003634E6 /* NFIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674820BE0CEB1003634E6 /* NFIWindow.m */; };
-		AB3675450BE0CEB2003634E6 /* NSFrameView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674830BE0CEB1003634E6 /* NSFrameView.h */; };
-		AB3675460BE0CEB2003634E6 /* NSGrayFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674840BE0CEB1003634E6 /* NSGrayFrame.h */; };
-		AB3675470BE0CEB2003634E6 /* NSImage+FrameworkImage.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674850BE0CEB1003634E6 /* NSImage+FrameworkImage.h */; };
-		AB3675480BE0CEB2003634E6 /* NSImage+FrameworkImage.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674860BE0CEB1003634E6 /* NSImage+FrameworkImage.m */; };
-		AB3675490BE0CEB2003634E6 /* NSThemeFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674870BE0CEB1003634E6 /* NSThemeFrame.h */; };
-		AB36754A0BE0CEB2003634E6 /* NSTitledFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674880BE0CEB1003634E6 /* NSTitledFrame.h */; };
 		AB36754B0BE0CEB2003634E6 /* PopUpFillD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674890BE0CEB1003634E6 /* PopUpFillD.tiff */; };
 		AB36754C0BE0CEB2003634E6 /* PopUpFillN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748A0BE0CEB1003634E6 /* PopUpFillN.tiff */; };
 		AB36754D0BE0CEB2003634E6 /* PopUpFillP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748B0BE0CEB1003634E6 /* PopUpFillP.tiff */; };
@@ -1153,13 +1069,6 @@
 		AB3675600BE0CEB2003634E6 /* CheckboxOnD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743C0BE0CEB0003634E6 /* CheckboxOnD.tiff */; };
 		AB3675610BE0CEB2003634E6 /* CheckboxOnN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743D0BE0CEB0003634E6 /* CheckboxOnN.tiff */; };
 		AB3675620BE0CEB2003634E6 /* CheckboxOnP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743E0BE0CEB0003634E6 /* CheckboxOnP.tiff */; };
-		AB3675630BE0CEB2003634E6 /* Credits.txt in Resources */ = {isa = PBXBuildFile; fileRef = AB36743F0BE0CEB0003634E6 /* Credits.txt */; };
-		AB3675640BE0CEB2003634E6 /* CTGradient.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674400BE0CEB0003634E6 /* CTGradient.h */; };
-		AB3675650BE0CEB2003634E6 /* CTGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674410BE0CEB0003634E6 /* CTGradient.m */; };
-		AB3675670BE0CEB2003634E6 /* EtchedText.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674440BE0CEB0003634E6 /* EtchedText.h */; };
-		AB3675680BE0CEB2003634E6 /* EtchedText.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674450BE0CEB0003634E6 /* EtchedText.m */; };
-		AB3675690BE0CEB2003634E6 /* EtchedTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674460BE0CEB0003634E6 /* EtchedTextCell.h */; };
-		AB36756A0BE0CEB2003634E6 /* EtchedTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674470BE0CEB0003634E6 /* EtchedTextCell.m */; };
 		AB36756B0BE0CEB2003634E6 /* HUDButtonFillN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674480BE0CEB0003634E6 /* HUDButtonFillN.tiff */; };
 		AB36756C0BE0CEB2003634E6 /* HUDButtonFillP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674490BE0CEB0003634E6 /* HUDButtonFillP.tiff */; };
 		AB36756D0BE0CEB2003634E6 /* HUDButtonLeftN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36744A0BE0CEB0003634E6 /* HUDButtonLeftN.tiff */; };
@@ -1184,46 +1093,11 @@
 		AB3675800BE0CEB2003634E6 /* HUDSliderTrackFill.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745D0BE0CEB1003634E6 /* HUDSliderTrackFill.tiff */; };
 		AB3675810BE0CEB2003634E6 /* HUDSliderTrackLeft.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745E0BE0CEB1003634E6 /* HUDSliderTrackLeft.tiff */; };
 		AB3675820BE0CEB2003634E6 /* HUDSliderTrackRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tiff */; };
-		AB3675830BE0CEB2003634E6 /* iLifeControls_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AB3674600BE0CEB1003634E6 /* iLifeControls_Prefix.pch */; };
 		AB3675850BE0CEB2003634E6 /* IWWindowCornerBL.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674620BE0CEB1003634E6 /* IWWindowCornerBL.tiff */; };
 		AB3675860BE0CEB2003634E6 /* IWWindowCornerBR.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674630BE0CEB1003634E6 /* IWWindowCornerBR.tiff */; };
 		AB3675870BE0CEB2003634E6 /* IWWindowCornerTL.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674640BE0CEB1003634E6 /* IWWindowCornerTL.tiff */; };
 		AB3675880BE0CEB2003634E6 /* IWWindowCornerTR.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674650BE0CEB1003634E6 /* IWWindowCornerTR.tiff */; };
 		AB3675890BE0CEB2003634E6 /* IWWindowResizeControl.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674660BE0CEB1003634E6 /* IWWindowResizeControl.tiff */; };
-		AB36758A0BE0CEB2003634E6 /* NFHUDButton.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674670BE0CEB1003634E6 /* NFHUDButton.h */; };
-		AB36758B0BE0CEB2003634E6 /* NFHUDButton.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674680BE0CEB1003634E6 /* NFHUDButton.m */; };
-		AB36758C0BE0CEB2003634E6 /* NFHUDButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674690BE0CEB1003634E6 /* NFHUDButtonCell.h */; };
-		AB36758D0BE0CEB2003634E6 /* NFHUDButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36746A0BE0CEB1003634E6 /* NFHUDButtonCell.m */; };
-		AB36758E0BE0CEB2003634E6 /* NFHUDFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36746B0BE0CEB1003634E6 /* NFHUDFrame.h */; };
-		AB36758F0BE0CEB2003634E6 /* NFHUDFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36746C0BE0CEB1003634E6 /* NFHUDFrame.m */; };
-		AB3675900BE0CEB2003634E6 /* NFHUDPopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36746D0BE0CEB1003634E6 /* NFHUDPopUpButton.h */; };
-		AB3675910BE0CEB2003634E6 /* NFHUDPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36746E0BE0CEB1003634E6 /* NFHUDPopUpButton.m */; };
-		AB3675920BE0CEB2003634E6 /* NFHUDPopUpButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36746F0BE0CEB1003634E6 /* NFHUDPopUpButtonCell.h */; };
-		AB3675930BE0CEB2003634E6 /* NFHUDPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674700BE0CEB1003634E6 /* NFHUDPopUpButtonCell.m */; };
-		AB3675940BE0CEB2003634E6 /* NFHUDSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674710BE0CEB1003634E6 /* NFHUDSlider.h */; };
-		AB3675950BE0CEB2003634E6 /* NFHUDSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674720BE0CEB1003634E6 /* NFHUDSlider.m */; };
-		AB3675960BE0CEB2003634E6 /* NFHUDSliderCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674730BE0CEB1003634E6 /* NFHUDSliderCell.h */; };
-		AB3675970BE0CEB2003634E6 /* NFHUDSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674740BE0CEB1003634E6 /* NFHUDSliderCell.m */; };
-		AB3675980BE0CEB2003634E6 /* NFHUDWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674750BE0CEB1003634E6 /* NFHUDWindow.h */; };
-		AB3675990BE0CEB2003634E6 /* NFHUDWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674760BE0CEB1003634E6 /* NFHUDWindow.m */; };
-		AB36759A0BE0CEB2003634E6 /* NFIButton.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674770BE0CEB1003634E6 /* NFIButton.h */; };
-		AB36759B0BE0CEB2003634E6 /* NFIButton.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674780BE0CEB1003634E6 /* NFIButton.m */; };
-		AB36759C0BE0CEB2003634E6 /* NFIButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674790BE0CEB1003634E6 /* NFIButtonCell.h */; };
-		AB36759D0BE0CEB2003634E6 /* NFIButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36747A0BE0CEB1003634E6 /* NFIButtonCell.m */; };
-		AB36759E0BE0CEB2003634E6 /* NFIFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36747B0BE0CEB1003634E6 /* NFIFrame.h */; };
-		AB36759F0BE0CEB2003634E6 /* NFIFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36747C0BE0CEB1003634E6 /* NFIFrame.m */; };
-		AB3675A00BE0CEB2003634E6 /* NFIPopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36747D0BE0CEB1003634E6 /* NFIPopUpButton.h */; };
-		AB3675A10BE0CEB2003634E6 /* NFIPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = AB36747E0BE0CEB1003634E6 /* NFIPopUpButton.m */; };
-		AB3675A20BE0CEB2003634E6 /* NFIPopUpButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = AB36747F0BE0CEB1003634E6 /* NFIPopUpButtonCell.h */; };
-		AB3675A30BE0CEB2003634E6 /* NFIPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674800BE0CEB1003634E6 /* NFIPopUpButtonCell.m */; };
-		AB3675A40BE0CEB2003634E6 /* NFIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674810BE0CEB1003634E6 /* NFIWindow.h */; };
-		AB3675A50BE0CEB2003634E6 /* NFIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674820BE0CEB1003634E6 /* NFIWindow.m */; };
-		AB3675A60BE0CEB2003634E6 /* NSFrameView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674830BE0CEB1003634E6 /* NSFrameView.h */; };
-		AB3675A70BE0CEB2003634E6 /* NSGrayFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674840BE0CEB1003634E6 /* NSGrayFrame.h */; };
-		AB3675A80BE0CEB2003634E6 /* NSImage+FrameworkImage.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674850BE0CEB1003634E6 /* NSImage+FrameworkImage.h */; };
-		AB3675A90BE0CEB2003634E6 /* NSImage+FrameworkImage.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3674860BE0CEB1003634E6 /* NSImage+FrameworkImage.m */; };
-		AB3675AA0BE0CEB2003634E6 /* NSThemeFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674870BE0CEB1003634E6 /* NSThemeFrame.h */; };
-		AB3675AB0BE0CEB2003634E6 /* NSTitledFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3674880BE0CEB1003634E6 /* NSTitledFrame.h */; };
 		AB3675AC0BE0CEB2003634E6 /* PopUpFillD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674890BE0CEB1003634E6 /* PopUpFillD.tiff */; };
 		AB3675AD0BE0CEB2003634E6 /* PopUpFillN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748A0BE0CEB1003634E6 /* PopUpFillN.tiff */; };
 		AB3675AE0BE0CEB2003634E6 /* PopUpFillP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748B0BE0CEB1003634E6 /* PopUpFillP.tiff */; };
@@ -11487,13 +11361,6 @@
 		AB36743C0BE0CEB0003634E6 /* CheckboxOnD.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CheckboxOnD.tiff; sourceTree = "<group>"; };
 		AB36743D0BE0CEB0003634E6 /* CheckboxOnN.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CheckboxOnN.tiff; sourceTree = "<group>"; };
 		AB36743E0BE0CEB0003634E6 /* CheckboxOnP.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CheckboxOnP.tiff; sourceTree = "<group>"; };
-		AB36743F0BE0CEB0003634E6 /* Credits.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Credits.txt; sourceTree = "<group>"; };
-		AB3674400BE0CEB0003634E6 /* CTGradient.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CTGradient.h; sourceTree = "<group>"; };
-		AB3674410BE0CEB0003634E6 /* CTGradient.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CTGradient.m; sourceTree = "<group>"; };
-		AB3674440BE0CEB0003634E6 /* EtchedText.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = EtchedText.h; sourceTree = "<group>"; };
-		AB3674450BE0CEB0003634E6 /* EtchedText.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = EtchedText.m; sourceTree = "<group>"; };
-		AB3674460BE0CEB0003634E6 /* EtchedTextCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = EtchedTextCell.h; sourceTree = "<group>"; };
-		AB3674470BE0CEB0003634E6 /* EtchedTextCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = EtchedTextCell.m; sourceTree = "<group>"; };
 		AB3674480BE0CEB0003634E6 /* HUDButtonFillN.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDButtonFillN.tiff; sourceTree = "<group>"; };
 		AB3674490BE0CEB0003634E6 /* HUDButtonFillP.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDButtonFillP.tiff; sourceTree = "<group>"; };
 		AB36744A0BE0CEB0003634E6 /* HUDButtonLeftN.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDButtonLeftN.tiff; sourceTree = "<group>"; };
@@ -11518,46 +11385,11 @@
 		AB36745D0BE0CEB1003634E6 /* HUDSliderTrackFill.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrackFill.tiff; sourceTree = "<group>"; };
 		AB36745E0BE0CEB1003634E6 /* HUDSliderTrackLeft.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrackLeft.tiff; sourceTree = "<group>"; };
 		AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrackRight.tiff; sourceTree = "<group>"; };
-		AB3674600BE0CEB1003634E6 /* iLifeControls_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = iLifeControls_Prefix.pch; sourceTree = "<group>"; };
 		AB3674620BE0CEB1003634E6 /* IWWindowCornerBL.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = IWWindowCornerBL.tiff; sourceTree = "<group>"; };
 		AB3674630BE0CEB1003634E6 /* IWWindowCornerBR.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = IWWindowCornerBR.tiff; sourceTree = "<group>"; };
 		AB3674640BE0CEB1003634E6 /* IWWindowCornerTL.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = IWWindowCornerTL.tiff; sourceTree = "<group>"; };
 		AB3674650BE0CEB1003634E6 /* IWWindowCornerTR.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = IWWindowCornerTR.tiff; sourceTree = "<group>"; };
 		AB3674660BE0CEB1003634E6 /* IWWindowResizeControl.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = IWWindowResizeControl.tiff; sourceTree = "<group>"; };
-		AB3674670BE0CEB1003634E6 /* NFHUDButton.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NFHUDButton.h; sourceTree = "<group>"; };
-		AB3674680BE0CEB1003634E6 /* NFHUDButton.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NFHUDButton.m; sourceTree = "<group>"; };
-		AB3674690BE0CEB1003634E6 /* NFHUDButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NFHUDButtonCell.h; sourceTree = "<group>"; };
-		AB36746A0BE0CEB1003634E6 /* NFHUDButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NFHUDButtonCell.m; sourceTree = "<group>"; };
-		AB36746B0BE0CEB1003634E6 /* NFHUDFrame.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NFHUDFrame.h; sourceTree = "<group>"; };
-		AB36746C0BE0CEB1003634E6 /* NFHUDFrame.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NFHUDFrame.m; sourceTree = "<group>"; };
-		AB36746D0BE0CEB1003634E6 /* NFHUDPopUpButton.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NFHUDPopUpButton.h; sourceTree = "<group>"; };
-		AB36746E0BE0CEB1003634E6 /* NFHUDPopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NFHUDPopUpButton.m; sourceTree = "<group>"; };
-		AB36746F0BE0CEB1003634E6 /* NFHUDPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NFHUDPopUpButtonCell.h; sourceTree = "<group>"; };
-		AB3674700BE0CEB1003634E6 /* NFHUDPopUpButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NFHUDPopUpButtonCell.m; sourceTree = "<group>"; };
-		AB3674710BE0CEB1003634E6 /* NFHUDSlider.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NFHUDSlider.h; sourceTree = "<group>"; };
-		AB3674720BE0CEB1003634E6 /* NFHUDSlider.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NFHUDSlider.m; sourceTree = "<group>"; };
-		AB3674730BE0CEB1003634E6 /* NFHUDSliderCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NFHUDSliderCell.h; sourceTree = "<group>"; };
-		AB3674740BE0CEB1003634E6 /* NFHUDSliderCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NFHUDSliderCell.m; sourceTree = "<group>"; };
-		AB3674750BE0CEB1003634E6 /* NFHUDWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NFHUDWindow.h; sourceTree = "<group>"; };
-		AB3674760BE0CEB1003634E6 /* NFHUDWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NFHUDWindow.m; sourceTree = "<group>"; };
-		AB3674770BE0CEB1003634E6 /* NFIButton.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NFIButton.h; sourceTree = "<group>"; };
-		AB3674780BE0CEB1003634E6 /* NFIButton.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NFIButton.m; sourceTree = "<group>"; };
-		AB3674790BE0CEB1003634E6 /* NFIButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NFIButtonCell.h; sourceTree = "<group>"; };
-		AB36747A0BE0CEB1003634E6 /* NFIButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NFIButtonCell.m; sourceTree = "<group>"; };
-		AB36747B0BE0CEB1003634E6 /* NFIFrame.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NFIFrame.h; sourceTree = "<group>"; };
-		AB36747C0BE0CEB1003634E6 /* NFIFrame.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NFIFrame.m; sourceTree = "<group>"; };
-		AB36747D0BE0CEB1003634E6 /* NFIPopUpButton.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NFIPopUpButton.h; sourceTree = "<group>"; };
-		AB36747E0BE0CEB1003634E6 /* NFIPopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NFIPopUpButton.m; sourceTree = "<group>"; };
-		AB36747F0BE0CEB1003634E6 /* NFIPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NFIPopUpButtonCell.h; sourceTree = "<group>"; };
-		AB3674800BE0CEB1003634E6 /* NFIPopUpButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NFIPopUpButtonCell.m; sourceTree = "<group>"; };
-		AB3674810BE0CEB1003634E6 /* NFIWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NFIWindow.h; sourceTree = "<group>"; };
-		AB3674820BE0CEB1003634E6 /* NFIWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NFIWindow.m; sourceTree = "<group>"; };
-		AB3674830BE0CEB1003634E6 /* NSFrameView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSFrameView.h; sourceTree = "<group>"; };
-		AB3674840BE0CEB1003634E6 /* NSGrayFrame.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSGrayFrame.h; sourceTree = "<group>"; };
-		AB3674850BE0CEB1003634E6 /* NSImage+FrameworkImage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSImage+FrameworkImage.h"; sourceTree = "<group>"; };
-		AB3674860BE0CEB1003634E6 /* NSImage+FrameworkImage.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSImage+FrameworkImage.m"; sourceTree = "<group>"; };
-		AB3674870BE0CEB1003634E6 /* NSThemeFrame.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSThemeFrame.h; sourceTree = "<group>"; };
-		AB3674880BE0CEB1003634E6 /* NSTitledFrame.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSTitledFrame.h; sourceTree = "<group>"; };
 		AB3674890BE0CEB1003634E6 /* PopUpFillD.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PopUpFillD.tiff; sourceTree = "<group>"; };
 		AB36748A0BE0CEB1003634E6 /* PopUpFillN.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PopUpFillN.tiff; sourceTree = "<group>"; };
 		AB36748B0BE0CEB1003634E6 /* PopUpFillP.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PopUpFillP.tiff; sourceTree = "<group>"; };
@@ -15720,13 +15552,6 @@
 				AB36743C0BE0CEB0003634E6 /* CheckboxOnD.tiff */,
 				AB36743D0BE0CEB0003634E6 /* CheckboxOnN.tiff */,
 				AB36743E0BE0CEB0003634E6 /* CheckboxOnP.tiff */,
-				AB36743F0BE0CEB0003634E6 /* Credits.txt */,
-				AB3674400BE0CEB0003634E6 /* CTGradient.h */,
-				AB3674410BE0CEB0003634E6 /* CTGradient.m */,
-				AB3674440BE0CEB0003634E6 /* EtchedText.h */,
-				AB3674450BE0CEB0003634E6 /* EtchedText.m */,
-				AB3674460BE0CEB0003634E6 /* EtchedTextCell.h */,
-				AB3674470BE0CEB0003634E6 /* EtchedTextCell.m */,
 				AB3674480BE0CEB0003634E6 /* HUDButtonFillN.tiff */,
 				AB3674490BE0CEB0003634E6 /* HUDButtonFillP.tiff */,
 				AB36744A0BE0CEB0003634E6 /* HUDButtonLeftN.tiff */,
@@ -15751,46 +15576,11 @@
 				AB36745D0BE0CEB1003634E6 /* HUDSliderTrackFill.tiff */,
 				AB36745E0BE0CEB1003634E6 /* HUDSliderTrackLeft.tiff */,
 				AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tiff */,
-				AB3674600BE0CEB1003634E6 /* iLifeControls_Prefix.pch */,
 				AB3674620BE0CEB1003634E6 /* IWWindowCornerBL.tiff */,
 				AB3674630BE0CEB1003634E6 /* IWWindowCornerBR.tiff */,
 				AB3674640BE0CEB1003634E6 /* IWWindowCornerTL.tiff */,
 				AB3674650BE0CEB1003634E6 /* IWWindowCornerTR.tiff */,
 				AB3674660BE0CEB1003634E6 /* IWWindowResizeControl.tiff */,
-				AB3674670BE0CEB1003634E6 /* NFHUDButton.h */,
-				AB3674680BE0CEB1003634E6 /* NFHUDButton.m */,
-				AB3674690BE0CEB1003634E6 /* NFHUDButtonCell.h */,
-				AB36746A0BE0CEB1003634E6 /* NFHUDButtonCell.m */,
-				AB36746B0BE0CEB1003634E6 /* NFHUDFrame.h */,
-				AB36746C0BE0CEB1003634E6 /* NFHUDFrame.m */,
-				AB36746D0BE0CEB1003634E6 /* NFHUDPopUpButton.h */,
-				AB36746E0BE0CEB1003634E6 /* NFHUDPopUpButton.m */,
-				AB36746F0BE0CEB1003634E6 /* NFHUDPopUpButtonCell.h */,
-				AB3674700BE0CEB1003634E6 /* NFHUDPopUpButtonCell.m */,
-				AB3674710BE0CEB1003634E6 /* NFHUDSlider.h */,
-				AB3674720BE0CEB1003634E6 /* NFHUDSlider.m */,
-				AB3674730BE0CEB1003634E6 /* NFHUDSliderCell.h */,
-				AB3674740BE0CEB1003634E6 /* NFHUDSliderCell.m */,
-				AB3674750BE0CEB1003634E6 /* NFHUDWindow.h */,
-				AB3674760BE0CEB1003634E6 /* NFHUDWindow.m */,
-				AB3674770BE0CEB1003634E6 /* NFIButton.h */,
-				AB3674780BE0CEB1003634E6 /* NFIButton.m */,
-				AB3674790BE0CEB1003634E6 /* NFIButtonCell.h */,
-				AB36747A0BE0CEB1003634E6 /* NFIButtonCell.m */,
-				AB36747B0BE0CEB1003634E6 /* NFIFrame.h */,
-				AB36747C0BE0CEB1003634E6 /* NFIFrame.m */,
-				AB36747D0BE0CEB1003634E6 /* NFIPopUpButton.h */,
-				AB36747E0BE0CEB1003634E6 /* NFIPopUpButton.m */,
-				AB36747F0BE0CEB1003634E6 /* NFIPopUpButtonCell.h */,
-				AB3674800BE0CEB1003634E6 /* NFIPopUpButtonCell.m */,
-				AB3674810BE0CEB1003634E6 /* NFIWindow.h */,
-				AB3674820BE0CEB1003634E6 /* NFIWindow.m */,
-				AB3674830BE0CEB1003634E6 /* NSFrameView.h */,
-				AB3674840BE0CEB1003634E6 /* NSGrayFrame.h */,
-				AB3674850BE0CEB1003634E6 /* NSImage+FrameworkImage.h */,
-				AB3674860BE0CEB1003634E6 /* NSImage+FrameworkImage.m */,
-				AB3674870BE0CEB1003634E6 /* NSThemeFrame.h */,
-				AB3674880BE0CEB1003634E6 /* NSTitledFrame.h */,
 				AB3674890BE0CEB1003634E6 /* PopUpFillD.tiff */,
 				AB36748A0BE0CEB1003634E6 /* PopUpFillN.tiff */,
 				AB36748B0BE0CEB1003634E6 /* PopUpFillP.tiff */,
@@ -21425,29 +21215,6 @@
 				BF3FA0C70BC6F3A300C254A4 /* MPRPerpendicularView.h in Headers */,
 				BF3FA0D50BC6F40F00C254A4 /* MPRFinalView.h in Headers */,
 				BFF97D710BDE8BE6008333CF /* ShadingArrayController.h in Headers */,
-				AB3674A20BE0CEB1003634E6 /* CTGradient.h in Headers */,
-				AB3674A50BE0CEB1003634E6 /* EtchedText.h in Headers */,
-				AB3674A70BE0CEB1003634E6 /* EtchedTextCell.h in Headers */,
-				AB3674C10BE0CEB1003634E6 /* iLifeControls_Prefix.pch in Headers */,
-				AB3674C80BE0CEB1003634E6 /* NFHUDButton.h in Headers */,
-				AB3674CA0BE0CEB1003634E6 /* NFHUDButtonCell.h in Headers */,
-				AB3674CC0BE0CEB1003634E6 /* NFHUDFrame.h in Headers */,
-				AB3674CE0BE0CEB1003634E6 /* NFHUDPopUpButton.h in Headers */,
-				AB3674D00BE0CEB1003634E6 /* NFHUDPopUpButtonCell.h in Headers */,
-				AB3674D20BE0CEB1003634E6 /* NFHUDSlider.h in Headers */,
-				AB3674D40BE0CEB1003634E6 /* NFHUDSliderCell.h in Headers */,
-				AB3674D60BE0CEB1003634E6 /* NFHUDWindow.h in Headers */,
-				AB3674D80BE0CEB1003634E6 /* NFIButton.h in Headers */,
-				AB3674DA0BE0CEB1003634E6 /* NFIButtonCell.h in Headers */,
-				AB3674DC0BE0CEB1003634E6 /* NFIFrame.h in Headers */,
-				AB3674DE0BE0CEB1003634E6 /* NFIPopUpButton.h in Headers */,
-				AB3674E00BE0CEB1003634E6 /* NFIPopUpButtonCell.h in Headers */,
-				AB3674E20BE0CEB1003634E6 /* NFIWindow.h in Headers */,
-				AB3674E40BE0CEB1003634E6 /* NSFrameView.h in Headers */,
-				AB3674E50BE0CEB1003634E6 /* NSGrayFrame.h in Headers */,
-				AB3674E60BE0CEB1003634E6 /* NSImage+FrameworkImage.h in Headers */,
-				AB3674E80BE0CEB1003634E6 /* NSThemeFrame.h in Headers */,
-				AB3674E90BE0CEB1003634E6 /* NSTitledFrame.h in Headers */,
 				BFE857380BE14704000A4C11 /* OSIPoint3D.h in Headers */,
 				BFBBF2120BE28E320064E449 /* EndoscopySegmentationController.h in Headers */,
 				CE96D0E30BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */,
@@ -23357,29 +23124,6 @@
 				BF3FA0C50BC6F3A300C254A4 /* MPRPerpendicularView.h in Headers */,
 				BF3FA0D30BC6F40F00C254A4 /* MPRFinalView.h in Headers */,
 				BFF97D6F0BDE8BE6008333CF /* ShadingArrayController.h in Headers */,
-				AB3675030BE0CEB2003634E6 /* CTGradient.h in Headers */,
-				AB3675060BE0CEB2003634E6 /* EtchedText.h in Headers */,
-				AB3675080BE0CEB2003634E6 /* EtchedTextCell.h in Headers */,
-				AB3675220BE0CEB2003634E6 /* iLifeControls_Prefix.pch in Headers */,
-				AB3675290BE0CEB2003634E6 /* NFHUDButton.h in Headers */,
-				AB36752B0BE0CEB2003634E6 /* NFHUDButtonCell.h in Headers */,
-				AB36752D0BE0CEB2003634E6 /* NFHUDFrame.h in Headers */,
-				AB36752F0BE0CEB2003634E6 /* NFHUDPopUpButton.h in Headers */,
-				AB3675310BE0CEB2003634E6 /* NFHUDPopUpButtonCell.h in Headers */,
-				AB3675330BE0CEB2003634E6 /* NFHUDSlider.h in Headers */,
-				AB3675350BE0CEB2003634E6 /* NFHUDSliderCell.h in Headers */,
-				AB3675370BE0CEB2003634E6 /* NFHUDWindow.h in Headers */,
-				AB3675390BE0CEB2003634E6 /* NFIButton.h in Headers */,
-				AB36753B0BE0CEB2003634E6 /* NFIButtonCell.h in Headers */,
-				AB36753D0BE0CEB2003634E6 /* NFIFrame.h in Headers */,
-				AB36753F0BE0CEB2003634E6 /* NFIPopUpButton.h in Headers */,
-				AB3675410BE0CEB2003634E6 /* NFIPopUpButtonCell.h in Headers */,
-				AB3675430BE0CEB2003634E6 /* NFIWindow.h in Headers */,
-				AB3675450BE0CEB2003634E6 /* NSFrameView.h in Headers */,
-				AB3675460BE0CEB2003634E6 /* NSGrayFrame.h in Headers */,
-				AB3675470BE0CEB2003634E6 /* NSImage+FrameworkImage.h in Headers */,
-				AB3675490BE0CEB2003634E6 /* NSThemeFrame.h in Headers */,
-				AB36754A0BE0CEB2003634E6 /* NSTitledFrame.h in Headers */,
 				BFE8573C0BE14704000A4C11 /* OSIPoint3D.h in Headers */,
 				BFBBF2140BE28E320064E449 /* EndoscopySegmentationController.h in Headers */,
 				CE96D0DF0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */,
@@ -25294,29 +25038,6 @@
 				BF3FA0CB0BC6F3A300C254A4 /* MPRPerpendicularView.h in Headers */,
 				BF3FA0D90BC6F40F00C254A4 /* MPRFinalView.h in Headers */,
 				BFF97D750BDE8BE6008333CF /* ShadingArrayController.h in Headers */,
-				AB3675640BE0CEB2003634E6 /* CTGradient.h in Headers */,
-				AB3675670BE0CEB2003634E6 /* EtchedText.h in Headers */,
-				AB3675690BE0CEB2003634E6 /* EtchedTextCell.h in Headers */,
-				AB3675830BE0CEB2003634E6 /* iLifeControls_Prefix.pch in Headers */,
-				AB36758A0BE0CEB2003634E6 /* NFHUDButton.h in Headers */,
-				AB36758C0BE0CEB2003634E6 /* NFHUDButtonCell.h in Headers */,
-				AB36758E0BE0CEB2003634E6 /* NFHUDFrame.h in Headers */,
-				AB3675900BE0CEB2003634E6 /* NFHUDPopUpButton.h in Headers */,
-				AB3675920BE0CEB2003634E6 /* NFHUDPopUpButtonCell.h in Headers */,
-				AB3675940BE0CEB2003634E6 /* NFHUDSlider.h in Headers */,
-				AB3675960BE0CEB2003634E6 /* NFHUDSliderCell.h in Headers */,
-				AB3675980BE0CEB2003634E6 /* NFHUDWindow.h in Headers */,
-				AB36759A0BE0CEB2003634E6 /* NFIButton.h in Headers */,
-				AB36759C0BE0CEB2003634E6 /* NFIButtonCell.h in Headers */,
-				AB36759E0BE0CEB2003634E6 /* NFIFrame.h in Headers */,
-				AB3675A00BE0CEB2003634E6 /* NFIPopUpButton.h in Headers */,
-				AB3675A20BE0CEB2003634E6 /* NFIPopUpButtonCell.h in Headers */,
-				AB3675A40BE0CEB2003634E6 /* NFIWindow.h in Headers */,
-				AB3675A60BE0CEB2003634E6 /* NSFrameView.h in Headers */,
-				AB3675A70BE0CEB2003634E6 /* NSGrayFrame.h in Headers */,
-				AB3675A80BE0CEB2003634E6 /* NSImage+FrameworkImage.h in Headers */,
-				AB3675AA0BE0CEB2003634E6 /* NSThemeFrame.h in Headers */,
-				AB3675AB0BE0CEB2003634E6 /* NSTitledFrame.h in Headers */,
 				BFE8573A0BE14704000A4C11 /* OSIPoint3D.h in Headers */,
 				BFBBF2100BE28E320064E449 /* EndoscopySegmentationController.h in Headers */,
 				CE96D0E10BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */,
@@ -26059,7 +25780,6 @@
 				AB36749E0BE0CEB1003634E6 /* CheckboxOnD.tiff in Resources */,
 				AB36749F0BE0CEB1003634E6 /* CheckboxOnN.tiff in Resources */,
 				AB3674A00BE0CEB1003634E6 /* CheckboxOnP.tiff in Resources */,
-				AB3674A10BE0CEB1003634E6 /* Credits.txt in Resources */,
 				AB3674A90BE0CEB1003634E6 /* HUDButtonFillN.tiff in Resources */,
 				AB3674AA0BE0CEB1003634E6 /* HUDButtonFillP.tiff in Resources */,
 				AB3674AB0BE0CEB1003634E6 /* HUDButtonLeftN.tiff in Resources */,
@@ -26462,7 +26182,6 @@
 				AB3674FF0BE0CEB2003634E6 /* CheckboxOnD.tiff in Resources */,
 				AB3675000BE0CEB2003634E6 /* CheckboxOnN.tiff in Resources */,
 				AB3675010BE0CEB2003634E6 /* CheckboxOnP.tiff in Resources */,
-				AB3675020BE0CEB2003634E6 /* Credits.txt in Resources */,
 				AB36750A0BE0CEB2003634E6 /* HUDButtonFillN.tiff in Resources */,
 				AB36750B0BE0CEB2003634E6 /* HUDButtonFillP.tiff in Resources */,
 				AB36750C0BE0CEB2003634E6 /* HUDButtonLeftN.tiff in Resources */,
@@ -26865,7 +26584,6 @@
 				AB3675600BE0CEB2003634E6 /* CheckboxOnD.tiff in Resources */,
 				AB3675610BE0CEB2003634E6 /* CheckboxOnN.tiff in Resources */,
 				AB3675620BE0CEB2003634E6 /* CheckboxOnP.tiff in Resources */,
-				AB3675630BE0CEB2003634E6 /* Credits.txt in Resources */,
 				AB36756B0BE0CEB2003634E6 /* HUDButtonFillN.tiff in Resources */,
 				AB36756C0BE0CEB2003634E6 /* HUDButtonFillP.tiff in Resources */,
 				AB36756D0BE0CEB2003634E6 /* HUDButtonLeftN.tiff in Resources */,
@@ -28048,24 +27766,6 @@
 				BF3FA0C80BC6F3A300C254A4 /* MPRPerpendicularView.m in Sources */,
 				BF3FA0D60BC6F40F00C254A4 /* MPRFinalView.m in Sources */,
 				BFF97D720BDE8BE6008333CF /* ShadingArrayController.m in Sources */,
-				AB3674A30BE0CEB1003634E6 /* CTGradient.m in Sources */,
-				AB3674A60BE0CEB1003634E6 /* EtchedText.m in Sources */,
-				AB3674A80BE0CEB1003634E6 /* EtchedTextCell.m in Sources */,
-				AB3674C90BE0CEB1003634E6 /* NFHUDButton.m in Sources */,
-				AB3674CB0BE0CEB1003634E6 /* NFHUDButtonCell.m in Sources */,
-				AB3674CD0BE0CEB1003634E6 /* NFHUDFrame.m in Sources */,
-				AB3674CF0BE0CEB1003634E6 /* NFHUDPopUpButton.m in Sources */,
-				AB3674D10BE0CEB1003634E6 /* NFHUDPopUpButtonCell.m in Sources */,
-				AB3674D30BE0CEB1003634E6 /* NFHUDSlider.m in Sources */,
-				AB3674D50BE0CEB1003634E6 /* NFHUDSliderCell.m in Sources */,
-				AB3674D70BE0CEB1003634E6 /* NFHUDWindow.m in Sources */,
-				AB3674D90BE0CEB1003634E6 /* NFIButton.m in Sources */,
-				AB3674DB0BE0CEB1003634E6 /* NFIButtonCell.m in Sources */,
-				AB3674DD0BE0CEB1003634E6 /* NFIFrame.m in Sources */,
-				AB3674DF0BE0CEB1003634E6 /* NFIPopUpButton.m in Sources */,
-				AB3674E10BE0CEB1003634E6 /* NFIPopUpButtonCell.m in Sources */,
-				AB3674E30BE0CEB1003634E6 /* NFIWindow.m in Sources */,
-				AB3674E70BE0CEB1003634E6 /* NSImage+FrameworkImage.m in Sources */,
 				BFE857390BE14704000A4C11 /* OSIPoint3D.m in Sources */,
 				BFBBF2130BE28E320064E449 /* EndoscopySegmentationController.m in Sources */,
 				CE96D0E40BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,
@@ -28826,24 +28526,6 @@
 				BF3FA0C60BC6F3A300C254A4 /* MPRPerpendicularView.m in Sources */,
 				BF3FA0D40BC6F40F00C254A4 /* MPRFinalView.m in Sources */,
 				BFF97D700BDE8BE6008333CF /* ShadingArrayController.m in Sources */,
-				AB3675040BE0CEB2003634E6 /* CTGradient.m in Sources */,
-				AB3675070BE0CEB2003634E6 /* EtchedText.m in Sources */,
-				AB3675090BE0CEB2003634E6 /* EtchedTextCell.m in Sources */,
-				AB36752A0BE0CEB2003634E6 /* NFHUDButton.m in Sources */,
-				AB36752C0BE0CEB2003634E6 /* NFHUDButtonCell.m in Sources */,
-				AB36752E0BE0CEB2003634E6 /* NFHUDFrame.m in Sources */,
-				AB3675300BE0CEB2003634E6 /* NFHUDPopUpButton.m in Sources */,
-				AB3675320BE0CEB2003634E6 /* NFHUDPopUpButtonCell.m in Sources */,
-				AB3675340BE0CEB2003634E6 /* NFHUDSlider.m in Sources */,
-				AB3675360BE0CEB2003634E6 /* NFHUDSliderCell.m in Sources */,
-				AB3675380BE0CEB2003634E6 /* NFHUDWindow.m in Sources */,
-				AB36753A0BE0CEB2003634E6 /* NFIButton.m in Sources */,
-				AB36753C0BE0CEB2003634E6 /* NFIButtonCell.m in Sources */,
-				AB36753E0BE0CEB2003634E6 /* NFIFrame.m in Sources */,
-				AB3675400BE0CEB2003634E6 /* NFIPopUpButton.m in Sources */,
-				AB3675420BE0CEB2003634E6 /* NFIPopUpButtonCell.m in Sources */,
-				AB3675440BE0CEB2003634E6 /* NFIWindow.m in Sources */,
-				AB3675480BE0CEB2003634E6 /* NSImage+FrameworkImage.m in Sources */,
 				BFE8573D0BE14704000A4C11 /* OSIPoint3D.m in Sources */,
 				BFBBF2150BE28E320064E449 /* EndoscopySegmentationController.m in Sources */,
 				CE96D0E00BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,
@@ -30225,24 +29907,6 @@
 				BF3FA0CC0BC6F3A300C254A4 /* MPRPerpendicularView.m in Sources */,
 				BF3FA0DA0BC6F40F00C254A4 /* MPRFinalView.m in Sources */,
 				BFF97D760BDE8BE6008333CF /* ShadingArrayController.m in Sources */,
-				AB3675650BE0CEB2003634E6 /* CTGradient.m in Sources */,
-				AB3675680BE0CEB2003634E6 /* EtchedText.m in Sources */,
-				AB36756A0BE0CEB2003634E6 /* EtchedTextCell.m in Sources */,
-				AB36758B0BE0CEB2003634E6 /* NFHUDButton.m in Sources */,
-				AB36758D0BE0CEB2003634E6 /* NFHUDButtonCell.m in Sources */,
-				AB36758F0BE0CEB2003634E6 /* NFHUDFrame.m in Sources */,
-				AB3675910BE0CEB2003634E6 /* NFHUDPopUpButton.m in Sources */,
-				AB3675930BE0CEB2003634E6 /* NFHUDPopUpButtonCell.m in Sources */,
-				AB3675950BE0CEB2003634E6 /* NFHUDSlider.m in Sources */,
-				AB3675970BE0CEB2003634E6 /* NFHUDSliderCell.m in Sources */,
-				AB3675990BE0CEB2003634E6 /* NFHUDWindow.m in Sources */,
-				AB36759B0BE0CEB2003634E6 /* NFIButton.m in Sources */,
-				AB36759D0BE0CEB2003634E6 /* NFIButtonCell.m in Sources */,
-				AB36759F0BE0CEB2003634E6 /* NFIFrame.m in Sources */,
-				AB3675A10BE0CEB2003634E6 /* NFIPopUpButton.m in Sources */,
-				AB3675A30BE0CEB2003634E6 /* NFIPopUpButtonCell.m in Sources */,
-				AB3675A50BE0CEB2003634E6 /* NFIWindow.m in Sources */,
-				AB3675A90BE0CEB2003634E6 /* NSImage+FrameworkImage.m in Sources */,
 				BFE8573B0BE14704000A4C11 /* OSIPoint3D.m in Sources */,
 				BFBBF2110BE28E320064E449 /* EndoscopySegmentationController.m in Sources */,
 				CE96D0E20BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,

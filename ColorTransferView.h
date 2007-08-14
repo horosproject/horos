@@ -23,7 +23,7 @@
 	NSMutableArray  *colors;
 	NSMutableArray  *points;
 	
-	long			curIndex;
+	NSInteger		curIndex;
 }
 
 -(void) selectPicker:(id) sender;

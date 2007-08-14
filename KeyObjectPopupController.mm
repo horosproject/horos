@@ -97,7 +97,7 @@
 }
 
 - (IBAction)useKeyObjectNote:(id)sender{
-	int index = [_popupButton indexOfSelectedItem] - 8;
+	NSInteger index = [_popupButton indexOfSelectedItem] - 8;
 	[_popupButton selectItemAtIndex:[_viewerController displayOnlyKeyImages]];
 	if (index > -1) {
 		NSArray *references = [[_reports objectAtIndex:index] referencedObjects];

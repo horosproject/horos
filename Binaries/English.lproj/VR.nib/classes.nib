@@ -1,363 +1,650 @@
-{
-    IBClasses = (
-        {CLASS = BlackView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
-        {
-            ACTIONS = {
-                chooseNameAndSave = id; 
-                computeHistogram = id; 
-                copy = id; 
-                cut = id; 
-                delete = id; 
-                newCurve = id; 
-                niceDisplay = id; 
-                paste = id; 
-                redo = id; 
-                removeAllCurves = id; 
-                save = id; 
-                scroll = id; 
-                sendToBack = id; 
-                setHistogramOpacity = id; 
-                setLineWidth = id; 
-                setPointDiameter = id; 
-                setZoomFator = id; 
-                undo = id; 
-            }; 
-            CLASS = CLUTOpacityView; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                chooseNameAndSaveWindow = NSWindow; 
-                clutSavedName = NSTextField; 
-                vrView = VRView; 
-            }; 
-            SUPERCLASS = NSView; 
-        }, 
-        {
-            ACTIONS = {renderButton = id; selectPicker = id; }; 
-            CLASS = ColorTransferView; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {pick = NSColorWell; position = NSTextField; }; 
-            SUPERCLASS = NSView; 
-        }, 
-        {CLASS = ColorView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
-        {CLASS = DCMView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }, 
-        {CLASS = DarkWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
-        {
-            ACTIONS = {"" = id; switchActor = id; }; 
-            CLASS = FirstResponder; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {
-            ACTIONS = {
-                ApplyCLUT = id; 
-                LODsliderAction = id; 
-                blendingSlider = id; 
-                endNameWLWW = id; 
-                setDefaultTool = id; 
-                sliderAction = id; 
-            }; 
-            CLASS = MIPController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                BlendingView = NSView; 
-                LODSlider = NSSlider; 
-                LODView = NSView; 
-                WLWWView = NSView; 
-                addCLUTWindow = NSWindow; 
-                addWLWWWindow = NSWindow; 
-                blendingPercentage = NSTextField; 
-                blendingSlider = NSSlider; 
-                clutName = NSTextField; 
-                clutPopup = NSPopUpButton; 
-                clutView = ColorTransferView; 
-                newName = NSTextField; 
-                toolsMatrix = NSMatrix; 
-                toolsView = NSView; 
-                view = MIPView; 
-                wl = NSTextField; 
-                wlwwPopup = NSPopUpButton; 
-                ww = NSTextField; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {
-            ACTIONS = {endNameWLWW = id; setDefaultTool = id; sliderAction = id; }; 
-            CLASS = MPRController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                WLWWView = NSView; 
-                Xslider = NSSlider; 
-                Yslider = NSSlider; 
-                Zslider = NSSlider; 
-                addWLWWWindow = NSWindow; 
-                axesView = NSView; 
-                newName = NSTextField; 
-                toolsView = NSView; 
-                view = MPRView; 
-                wl = NSTextField; 
-                wlwwPopup = NSPopUpButton; 
-                ww = NSTextField; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = NFHUDButton; LANGUAGE = ObjC; SUPERCLASS = NSButton; }, 
-        {CLASS = NFHUDPopUpButton; LANGUAGE = ObjC; SUPERCLASS = NSPopUpButton; }, 
-        {CLASS = NFHUDSlider; LANGUAGE = ObjC; SUPERCLASS = NSSlider; }, 
-        {CLASS = NFHUDWindow; LANGUAGE = ObjC; SUPERCLASS = NSPanel; }, 
-        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
-        {
-            CLASS = OSIWindowController; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {
-            ACTIONS = {renderButton = id; }; 
-            CLASS = OpacityTransferView; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {position = NSTextField; }; 
-            SUPERCLASS = NSView; 
-        }, 
-        {CLASS = SelectionView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
-        {
-            CLASS = ShadingArrayController; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSArrayController; 
-        }, 
-        {
-            ACTIONS = {
-                ApplyWLWW = id; 
-                LODsliderAction = id; 
-                MoviePlayStop = id; 
-                applyConvolution = id; 
-                applyShading = id; 
-                blendingSlider = id; 
-                close3DSettingsSavePanel = id; 
-                displayPresetsForSelectedGroup = id; 
-                editShadingValues = id; 
-                enable3DSettingsSaveButton = id; 
-                export2iPhoto = id; 
-                exportJPEG = id; 
-                exportTIFF = id; 
-                findShadingPreset = id; 
-                flyThruControllerInit = id; 
-                load3DSettings = id; 
-                moviePosSliderAction = id; 
-                movieRateSliderAction = id; 
-                nextPresetPage = id; 
-                previousPresetPage = id; 
-                roiGetManager = id; 
-                save3DSettings = id; 
-                sendMail = id; 
-                setDefaultTool = id; 
-                setEngine = id; 
-                setMode = id; 
-                setOrientation = id; 
-                show3DSettingsNewGroupTextField = id; 
-                showCLUTOpacityPanel = id; 
-                showPresetInfoPanel = id; 
-                undo = id; 
-            }; 
-            CLASS = VRController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                BackgroundColorView = NSView; 
-                BlendingView = NSView; 
-                LODSlider = NSSlider; 
-                LODView = NSView; 
-                OrientationsView = NSView; 
-                WLWWView = NSView; 
-                blendingPercentage = NSTextField; 
-                blendingSlider = NSSlider; 
-                clutOpacityDrawer = NSDrawer; 
-                clutOpacityView = CLUTOpacityView; 
-                convolutionMenu = NSPopUpButton; 
-                convolutionView = NSView; 
-                enginePopup = NSPopUpButton; 
-                engineView = NSView; 
-                infoBackgroundColorTextField = NSTextField; 
-                infoBackgroundColorView = ColorView; 
-                infoCLUTTextField = NSTextField; 
-                infoConvolutionFilterTextField = NSTextField; 
-                infoNameTextField = NSTextField; 
-                infoOpacityTextField = NSTextField; 
-                infoProjectionTextField = NSTextField; 
-                infoShadingsTextField = NSTextField; 
-                infoWLWWTextField = NSTextField; 
-                modeMatrix = NSMatrix; 
-                modeView = NSView; 
-                moviePlayStop = NSButton; 
-                moviePosSlider = NSSlider; 
-                movieRateSlider = NSSlider; 
-                movieTextSlide = NSTextField; 
-                movieView = NSView; 
-                nextPresetPageButton = NSButton; 
-                numberOfPresetInGroupTextField = NSTextField; 
-                perspectiveMatrix = NSMatrix; 
-                perspectiveView = NSView; 
-                presetName1 = NSTextField; 
-                presetName2 = NSTextField; 
-                presetName3 = NSTextField; 
-                presetName4 = NSTextField; 
-                presetName5 = NSTextField; 
-                presetName6 = NSTextField; 
-                presetName7 = NSTextField; 
-                presetName8 = NSTextField; 
-                presetName9 = NSTextField; 
-                presetPreview1 = VRPresetPreview; 
-                presetPreview2 = VRPresetPreview; 
-                presetPreview3 = VRPresetPreview; 
-                presetPreview4 = VRPresetPreview; 
-                presetPreview5 = VRPresetPreview; 
-                presetPreview6 = VRPresetPreview; 
-                presetPreview7 = VRPresetPreview; 
-                presetPreview8 = VRPresetPreview; 
-                presetPreview9 = VRPresetPreview; 
-                presetsApplyButton = NSButton; 
-                presetsGroupPopUpButton = NSPopUpButton; 
-                presetsInfoPanel = NSWindow; 
-                presetsPanel = NSWindow; 
-                previousPresetPageButton = NSButton; 
-                save3DSettingsWindow = NSWindow; 
-                scissorStateView = NSView; 
-                settingsBackgroundColorTextField = NSTextField; 
-                settingsCLUTTextField = NSTextField; 
-                settingsConvolutionFilterTextField = NSTextField; 
-                settingsGroupPopUpButton = NSPopUpButton; 
-                settingsNameTextField = NSTextField; 
-                settingsNewGroupNameLabelTextField = NSTextField; 
-                settingsNewGroupNameTextField = NSTextField; 
-                settingsOpacityTextField = NSTextField; 
-                settingsProjectionTextField = NSTextField; 
-                settingsSaveButton = NSButton; 
-                settingsShadingsTextField = NSTextField; 
-                settingsWLWWTextField = NSTextField; 
-                shadingCheck = NSButton; 
-                shadingEditWindow = NSWindow; 
-                shadingForm = NSForm; 
-                shadingPanel = NSPanel; 
-                shadingValues = NSTextField; 
-                shadingView = NSView; 
-                shadingsPresetsController = ShadingArrayController; 
-                toolsMatrix = NSMatrix; 
-                toolsView = NSView; 
-                view = VRView; 
-            }; 
-            SUPERCLASS = Window3DController; 
-        }, 
-        {
-            CLASS = VRPresetPreview; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {presetController = VRController; selectionView = SelectionView; }; 
-            SUPERCLASS = VRView; 
-        }, 
-        {
-            ACTIONS = {
-                IBPropagate3DPointsSettings = id; 
-                IBSetSelected3DPointColor = id; 
-                IBSetSelected3DPointRadius = id; 
-                axView = id; 
-                bestRendering = id; 
-                changeColor = id; 
-                changeColorWith = id; 
-                coView = id; 
-                endDCMExportSettings = id; 
-                endQuicktimeSettings = id; 
-                endQuicktimeVRSettings = id; 
-                export2iPhoto = id; 
-                exportDICOMFile = id; 
-                exportJPEG = id; 
-                exportQuicktime = id; 
-                exportTIFF = id; 
-                resetAutorotate = id; 
-                resetImage = id; 
-                saView = id; 
-                saViewOpposite = id; 
-                save3DPointsDefaultProperties = id; 
-                scissorStateButtons = id; 
-                sendMail = id; 
-                setCurrentdcmExport = id; 
-                setRenderMode = id; 
-                squareView = id; 
-                switchOrientationWidget = id; 
-                switchProjection = id; 
-                switchShading = id; 
-                switchToSeriesRadio = id; 
-            }; 
-            CLASS = VRView; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                VRFrames = NSMatrix; 
-                VRquality = NSMatrix; 
-                backgroundColor = NSColorWell; 
-                clutOpacityView = CLUTOpacityView; 
-                controller = VRController; 
-                dcmBox = NSBox; 
-                dcmExportMode = NSMatrix; 
-                dcmSeriesName = NSTextField; 
-                dcmframesSlider = NSSlider; 
-                dcmorientation = NSMatrix; 
-                dcmquality = NSMatrix; 
-                dcmrotation = NSMatrix; 
-                export3DVRWindow = NSWindow; 
-                export3DWindow = NSWindow; 
-                exportDCMWindow = NSWindow; 
-                framesSlider = NSSlider; 
-                orientation = NSMatrix; 
-                pixelInformation = NSTextField; 
-                point3DColorWell = NSColorWell; 
-                point3DInfoPanel = NSPanel; 
-                point3DPropagateToAll = NSButton; 
-                point3DRadiusSlider = NSSlider; 
-                point3DSetDefault = NSButton; 
-                projection = NSMatrix; 
-                quality = NSMatrix; 
-                rotation = NSMatrix; 
-                scissorStateMatrix = NSMatrix; 
-                shadingController = NSObjectController; 
-            }; 
-            SUPERCLASS = VTKView; 
-        }, 
-        {CLASS = VTKView; LANGUAGE = ObjC; SUPERCLASS = vtkCocoaGLView; }, 
-        {
-            ACTIONS = {
-                AddCLUT = id; 
-                ApplyCLUT = id; 
-                ApplyOpacity = id; 
-                SetWLWW = id; 
-                clutAction = id; 
-                endCLUT = id; 
-                endNameWLWW = id; 
-                endOpacity = id; 
-                endSetWLWW = id; 
-                fullScreenMenu = id; 
-                print = id; 
-                updateSetWLWW = id; 
-            }; 
-            CLASS = Window3DController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                OpacityName = NSTextField; 
-                OpacityPopup = NSPopUpButton; 
-                OpacityView = OpacityTransferView; 
-                addCLUTWindow = NSWindow; 
-                addOpacityWindow = NSWindow; 
-                addWLWWWindow = NSWindow; 
-                clutName = NSTextField; 
-                clutPopup = NSPopUpButton; 
-                clutView = ColorTransferView; 
-                fromset = NSTextField; 
-                newName = NSTextField; 
-                setWLWWWindow = NSWindow; 
-                toset = NSTextField; 
-                wl = NSTextField; 
-                wlset = NSTextField; 
-                wlwwPopup = NSPopUpButton; 
-                ww = NSTextField; 
-                wwset = NSTextField; 
-            }; 
-            SUPERCLASS = OSIWindowController; 
-        }, 
-        {CLASS = vtkCocoaGLView; LANGUAGE = ObjC; SUPERCLASS = NSOpenGLView; }
-    ); 
-    IBVersion = 1; 
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>CLASS</key>
+			<string>ShadingArrayController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSArrayController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSMenu</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSObject</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>renderButton</key>
+				<string>id</string>
+				<key>selectPicker</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>ColorTransferView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>pick</key>
+				<string>NSColorWell</string>
+				<key>position</key>
+				<string>NSTextField</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key></key>
+				<string>id</string>
+				<key>switchActor</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>redo</key>
+				<string>id</string>
+				<key>undo</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>OSIWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>ApplyWLWW</key>
+				<string>id</string>
+				<key>LODsliderAction</key>
+				<string>id</string>
+				<key>MoviePlayStop</key>
+				<string>id</string>
+				<key>applyConvolution</key>
+				<string>id</string>
+				<key>applyShading</key>
+				<string>id</string>
+				<key>blendingSlider</key>
+				<string>id</string>
+				<key>close3DSettingsSavePanel</key>
+				<string>id</string>
+				<key>displayPresetsForSelectedGroup</key>
+				<string>id</string>
+				<key>editShadingValues</key>
+				<string>id</string>
+				<key>enable3DSettingsSaveButton</key>
+				<string>id</string>
+				<key>export2iPhoto</key>
+				<string>id</string>
+				<key>exportJPEG</key>
+				<string>id</string>
+				<key>exportTIFF</key>
+				<string>id</string>
+				<key>findShadingPreset</key>
+				<string>id</string>
+				<key>flyThruControllerInit</key>
+				<string>id</string>
+				<key>load3DSettings</key>
+				<string>id</string>
+				<key>loadAdvancedCLUTOpacity</key>
+				<string>id</string>
+				<key>moviePosSliderAction</key>
+				<string>id</string>
+				<key>movieRateSliderAction</key>
+				<string>id</string>
+				<key>nextPresetPage</key>
+				<string>id</string>
+				<key>previousPresetPage</key>
+				<string>id</string>
+				<key>roiGetManager</key>
+				<string>id</string>
+				<key>save3DSettings</key>
+				<string>id</string>
+				<key>sendMail</key>
+				<string>id</string>
+				<key>setDefaultTool</key>
+				<string>id</string>
+				<key>setEngine</key>
+				<string>id</string>
+				<key>setMode</key>
+				<string>id</string>
+				<key>setOrientation</key>
+				<string>id</string>
+				<key>show3DSettingsNewGroupTextField</key>
+				<string>id</string>
+				<key>showCLUTOpacityPanel</key>
+				<string>id</string>
+				<key>showPresetInfoPanel</key>
+				<string>id</string>
+				<key>undo</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>VRController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>BackgroundColorView</key>
+				<string>NSView</string>
+				<key>BlendingView</key>
+				<string>NSView</string>
+				<key>LODSlider</key>
+				<string>NSSlider</string>
+				<key>LODView</key>
+				<string>NSView</string>
+				<key>OrientationsView</key>
+				<string>NSView</string>
+				<key>WLWWView</key>
+				<string>NSView</string>
+				<key>blendingPercentage</key>
+				<string>NSTextField</string>
+				<key>blendingSlider</key>
+				<string>NSSlider</string>
+				<key>clutOpacityDrawer</key>
+				<string>NSDrawer</string>
+				<key>clutOpacityView</key>
+				<string>CLUTOpacityView</string>
+				<key>convolutionMenu</key>
+				<string>NSPopUpButton</string>
+				<key>convolutionView</key>
+				<string>NSView</string>
+				<key>enginePopup</key>
+				<string>NSPopUpButton</string>
+				<key>engineView</key>
+				<string>NSView</string>
+				<key>infoBackgroundColorTextField</key>
+				<string>NSTextField</string>
+				<key>infoBackgroundColorView</key>
+				<string>ColorView</string>
+				<key>infoCLUTTextField</key>
+				<string>NSTextField</string>
+				<key>infoConvolutionFilterTextField</key>
+				<string>NSTextField</string>
+				<key>infoNameTextField</key>
+				<string>NSTextField</string>
+				<key>infoOpacityTextField</key>
+				<string>NSTextField</string>
+				<key>infoProjectionTextField</key>
+				<string>NSTextField</string>
+				<key>infoShadingsTextField</key>
+				<string>NSTextField</string>
+				<key>infoWLWWTextField</key>
+				<string>NSTextField</string>
+				<key>modeMatrix</key>
+				<string>NSMatrix</string>
+				<key>modeView</key>
+				<string>NSView</string>
+				<key>moviePlayStop</key>
+				<string>NSButton</string>
+				<key>moviePosSlider</key>
+				<string>NSSlider</string>
+				<key>movieRateSlider</key>
+				<string>NSSlider</string>
+				<key>movieTextSlide</key>
+				<string>NSTextField</string>
+				<key>movieView</key>
+				<string>NSView</string>
+				<key>nextPresetPageButton</key>
+				<string>NSButton</string>
+				<key>numberOfPresetInGroupTextField</key>
+				<string>NSTextField</string>
+				<key>perspectiveMatrix</key>
+				<string>NSMatrix</string>
+				<key>perspectiveView</key>
+				<string>NSView</string>
+				<key>presetName1</key>
+				<string>NSTextField</string>
+				<key>presetName2</key>
+				<string>NSTextField</string>
+				<key>presetName3</key>
+				<string>NSTextField</string>
+				<key>presetName4</key>
+				<string>NSTextField</string>
+				<key>presetName5</key>
+				<string>NSTextField</string>
+				<key>presetName6</key>
+				<string>NSTextField</string>
+				<key>presetName7</key>
+				<string>NSTextField</string>
+				<key>presetName8</key>
+				<string>NSTextField</string>
+				<key>presetName9</key>
+				<string>NSTextField</string>
+				<key>presetPreview1</key>
+				<string>VRPresetPreview</string>
+				<key>presetPreview2</key>
+				<string>VRPresetPreview</string>
+				<key>presetPreview3</key>
+				<string>VRPresetPreview</string>
+				<key>presetPreview4</key>
+				<string>VRPresetPreview</string>
+				<key>presetPreview5</key>
+				<string>VRPresetPreview</string>
+				<key>presetPreview6</key>
+				<string>VRPresetPreview</string>
+				<key>presetPreview7</key>
+				<string>VRPresetPreview</string>
+				<key>presetPreview8</key>
+				<string>VRPresetPreview</string>
+				<key>presetPreview9</key>
+				<string>VRPresetPreview</string>
+				<key>presetsApplyButton</key>
+				<string>NSButton</string>
+				<key>presetsGroupPopUpButton</key>
+				<string>NSPopUpButton</string>
+				<key>presetsInfoPanel</key>
+				<string>NSWindow</string>
+				<key>presetsPanel</key>
+				<string>NSWindow</string>
+				<key>previousPresetPageButton</key>
+				<string>NSButton</string>
+				<key>save3DSettingsWindow</key>
+				<string>NSWindow</string>
+				<key>scissorStateView</key>
+				<string>NSView</string>
+				<key>settingsBackgroundColorTextField</key>
+				<string>NSTextField</string>
+				<key>settingsCLUTTextField</key>
+				<string>NSTextField</string>
+				<key>settingsConvolutionFilterTextField</key>
+				<string>NSTextField</string>
+				<key>settingsGroupPopUpButton</key>
+				<string>NSPopUpButton</string>
+				<key>settingsNameTextField</key>
+				<string>NSTextField</string>
+				<key>settingsNewGroupNameLabelTextField</key>
+				<string>NSTextField</string>
+				<key>settingsNewGroupNameTextField</key>
+				<string>NSTextField</string>
+				<key>settingsOpacityTextField</key>
+				<string>NSTextField</string>
+				<key>settingsProjectionTextField</key>
+				<string>NSTextField</string>
+				<key>settingsSaveButton</key>
+				<string>NSButton</string>
+				<key>settingsShadingsTextField</key>
+				<string>NSTextField</string>
+				<key>settingsWLWWTextField</key>
+				<string>NSTextField</string>
+				<key>shadingCheck</key>
+				<string>NSButton</string>
+				<key>shadingEditWindow</key>
+				<string>NSWindow</string>
+				<key>shadingForm</key>
+				<string>NSForm</string>
+				<key>shadingPanel</key>
+				<string>NSPanel</string>
+				<key>shadingValues</key>
+				<string>NSTextField</string>
+				<key>shadingView</key>
+				<string>NSView</string>
+				<key>shadingsPresetsController</key>
+				<string>ShadingArrayController</string>
+				<key>toolsMatrix</key>
+				<string>NSMatrix</string>
+				<key>toolsView</key>
+				<string>NSView</string>
+				<key>view</key>
+				<string>VRView</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>Window3DController</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>IBPropagate3DPointsSettings</key>
+				<string>id</string>
+				<key>IBSetSelected3DPointColor</key>
+				<string>id</string>
+				<key>IBSetSelected3DPointRadius</key>
+				<string>id</string>
+				<key>axView</key>
+				<string>id</string>
+				<key>bestRendering</key>
+				<string>id</string>
+				<key>changeColor</key>
+				<string>id</string>
+				<key>changeColorWith</key>
+				<string>NSColor</string>
+				<key>coView</key>
+				<string>id</string>
+				<key>endDCMExportSettings</key>
+				<string>id</string>
+				<key>endQuicktimeSettings</key>
+				<string>id</string>
+				<key>endQuicktimeVRSettings</key>
+				<string>id</string>
+				<key>export2iPhoto</key>
+				<string>id</string>
+				<key>exportDICOMFile</key>
+				<string>id</string>
+				<key>exportJPEG</key>
+				<string>id</string>
+				<key>exportQuicktime</key>
+				<string>id</string>
+				<key>exportTIFF</key>
+				<string>id</string>
+				<key>resetAutorotate</key>
+				<string>id</string>
+				<key>resetImage</key>
+				<string>id</string>
+				<key>saView</key>
+				<string>id</string>
+				<key>saViewOpposite</key>
+				<string>id</string>
+				<key>save3DPointsDefaultProperties</key>
+				<string>id</string>
+				<key>scissorStateButtons</key>
+				<string>id</string>
+				<key>sendMail</key>
+				<string>id</string>
+				<key>setCurrentdcmExport</key>
+				<string>id</string>
+				<key>setRenderMode</key>
+				<string>id</string>
+				<key>squareView</key>
+				<string>id</string>
+				<key>switchOrientationWidget</key>
+				<string>id</string>
+				<key>switchProjection</key>
+				<string>id</string>
+				<key>switchShading</key>
+				<string>id</string>
+				<key>switchToSeriesRadio</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>VRView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>VRFrames</key>
+				<string>NSMatrix</string>
+				<key>VRquality</key>
+				<string>NSMatrix</string>
+				<key>backgroundColor</key>
+				<string>NSColorWell</string>
+				<key>clutOpacityView</key>
+				<string>CLUTOpacityView</string>
+				<key>controller</key>
+				<string>VRController</string>
+				<key>dcmBox</key>
+				<string>NSBox</string>
+				<key>dcmExportMode</key>
+				<string>NSMatrix</string>
+				<key>dcmSeriesName</key>
+				<string>NSTextField</string>
+				<key>dcmframesSlider</key>
+				<string>NSSlider</string>
+				<key>dcmorientation</key>
+				<string>NSMatrix</string>
+				<key>dcmquality</key>
+				<string>NSMatrix</string>
+				<key>dcmrotation</key>
+				<string>NSMatrix</string>
+				<key>export3DVRWindow</key>
+				<string>NSWindow</string>
+				<key>export3DWindow</key>
+				<string>NSWindow</string>
+				<key>exportDCMWindow</key>
+				<string>NSWindow</string>
+				<key>framesSlider</key>
+				<string>NSSlider</string>
+				<key>orientation</key>
+				<string>NSMatrix</string>
+				<key>pixelInformation</key>
+				<string>NSTextField</string>
+				<key>point3DColorWell</key>
+				<string>NSColorWell</string>
+				<key>point3DInfoPanel</key>
+				<string>NSPanel</string>
+				<key>point3DPropagateToAll</key>
+				<string>NSButton</string>
+				<key>point3DRadiusSlider</key>
+				<string>NSSlider</string>
+				<key>point3DSetDefault</key>
+				<string>NSButton</string>
+				<key>projection</key>
+				<string>NSMatrix</string>
+				<key>quality</key>
+				<string>NSMatrix</string>
+				<key>rotation</key>
+				<string>NSMatrix</string>
+				<key>scissorStateMatrix</key>
+				<string>NSMatrix</string>
+				<key>shadingController</key>
+				<string>NSObjectController</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>VTKView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>SelectionView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>VTKView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>vtkCocoaGLView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>ColorView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>AddCLUT</key>
+				<string>id</string>
+				<key>ApplyCLUT</key>
+				<string>id</string>
+				<key>ApplyOpacity</key>
+				<string>id</string>
+				<key>SetWLWW</key>
+				<string>id</string>
+				<key>clutAction</key>
+				<string>id</string>
+				<key>endCLUT</key>
+				<string>id</string>
+				<key>endNameWLWW</key>
+				<string>id</string>
+				<key>endOpacity</key>
+				<string>id</string>
+				<key>endSetWLWW</key>
+				<string>id</string>
+				<key>fullScreenMenu</key>
+				<string>id</string>
+				<key>print</key>
+				<string>id</string>
+				<key>updateSetWLWW</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>Window3DController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>OpacityName</key>
+				<string>NSTextField</string>
+				<key>OpacityPopup</key>
+				<string>NSPopUpButton</string>
+				<key>OpacityView</key>
+				<string>OpacityTransferView</string>
+				<key>addCLUTWindow</key>
+				<string>NSWindow</string>
+				<key>addOpacityWindow</key>
+				<string>NSWindow</string>
+				<key>addWLWWWindow</key>
+				<string>NSWindow</string>
+				<key>clutName</key>
+				<string>NSTextField</string>
+				<key>clutPopup</key>
+				<string>NSPopUpButton</string>
+				<key>clutView</key>
+				<string>ColorTransferView</string>
+				<key>fromset</key>
+				<string>NSTextField</string>
+				<key>newName</key>
+				<string>NSTextField</string>
+				<key>setWLWWWindow</key>
+				<string>NSWindow</string>
+				<key>toset</key>
+				<string>NSTextField</string>
+				<key>wl</key>
+				<string>NSTextField</string>
+				<key>wlset</key>
+				<string>NSTextField</string>
+				<key>wlwwPopup</key>
+				<string>NSPopUpButton</string>
+				<key>ww</key>
+				<string>NSTextField</string>
+				<key>wwset</key>
+				<string>NSTextField</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>OSIWindowController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>vtkCocoaGLView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>renderButton</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>OpacityTransferView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>position</key>
+				<string>NSTextField</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>VRPresetPreview</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>presetController</key>
+				<string>VRController</string>
+				<key>selectionView</key>
+				<string>SelectionView</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>VRView</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>chooseNameAndSave</key>
+				<string>id</string>
+				<key>computeHistogram</key>
+				<string>id</string>
+				<key>copy</key>
+				<string>id</string>
+				<key>cut</key>
+				<string>id</string>
+				<key>delete</key>
+				<string>id</string>
+				<key>newCurve</key>
+				<string>id</string>
+				<key>niceDisplay</key>
+				<string>id</string>
+				<key>paste</key>
+				<string>id</string>
+				<key>redo</key>
+				<string>id</string>
+				<key>removeAllCurves</key>
+				<string>id</string>
+				<key>save</key>
+				<string>id</string>
+				<key>scroll</key>
+				<string>id</string>
+				<key>sendToBack</key>
+				<string>id</string>
+				<key>setHistogramOpacity</key>
+				<string>id</string>
+				<key>setLineWidth</key>
+				<string>id</string>
+				<key>setPointDiameter</key>
+				<string>id</string>
+				<key>setZoomFator</key>
+				<string>id</string>
+				<key>undo</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>CLUTOpacityView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>chooseNameAndSaveWindow</key>
+				<string>NSWindow</string>
+				<key>clutSavedName</key>
+				<string>NSTextField</string>
+				<key>vrView</key>
+				<string>VRView</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>

@@ -2531,7 +2531,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) matrixPreviewSelectCurrentSeries
 {
 	NSManagedObject		*series = [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"];
-	long				index = [[[previewMatrix cells] valueForKey:@"representedObject"] indexOfObject: series];
+	NSInteger			index = [[[previewMatrix cells] valueForKey:@"representedObject"] indexOfObject: series];
 	
 	if( index != NSNotFound)
 	{
@@ -2947,7 +2947,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( showSelected)
 	{
-		long				index = [[[previewMatrix cells] valueForKey:@"representedObject"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
+		NSInteger index = [[[previewMatrix cells] valueForKey:@"representedObject"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
 		
 		if( index != NSNotFound)
 			[previewMatrix scrollCellToVisibleAtRow: index column:0];
@@ -2966,7 +2966,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) showCurrentThumbnail:(id) sender;
 {
-	long				index = [[[previewMatrix cells] valueForKey:@"representedObject"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
+	NSInteger index = [[[previewMatrix cells] valueForKey:@"representedObject"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
 		
 	if( index != NSNotFound)
 		[previewMatrix scrollCellToVisibleAtRow: index column:0];
@@ -9224,7 +9224,7 @@ int i,j,l;
 			{
 				ROI	*c = [generatedROIs objectAtIndex: i];
 				
-				int index = [self imageIndexOfROI: c];
+				NSInteger index = [self imageIndexOfROI: c];
 				
 				if( index >= 0)
 				{
@@ -10724,7 +10724,7 @@ int i,j,l;
 	{
 		ROI* selectedROI = [selectedROIs objectAtIndex: i];
 		
-		int index = [self imageIndexOfROI: selectedROI];
+		NSInteger index = [self imageIndexOfROI: selectedROI];
 		
 		if( index >= 0)
 		{

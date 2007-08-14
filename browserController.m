@@ -502,7 +502,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	NSManagedObject			*seriesTable, *study, *album;
 	DicomImage				*image;
 	long					ii, i, x;
-	unsigned long			index;
+	NSInteger				index;
 	NSString				*INpath = [dbFolder stringByAppendingPathComponent:DATABASEFPATH];
 	NSString				*roiFolder = [dbFolder stringByAppendingPathComponent:@"/ROIs"];
 	Wait					*splash = 0L;
@@ -4569,7 +4569,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		NSMenuItem	*item = [columnsMenu insertItemWithTitle:[[col headerCell] stringValue] action:@selector(columnsMenuAction:) keyEquivalent:@"" atIndex: [columnsMenu numberOfItems]];
 		[item setRepresentedObject: [col identifier]];
 		
-		long index = [columnIdentifiers indexOfObject: [col identifier]];
+		NSInteger index = [columnIdentifiers indexOfObject: [col identifier]];
 		
 		if( [[col identifier] isEqualToString:@"name"])
 		{
@@ -4622,7 +4622,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	while( key = [enumerator nextObject])
 	{
-		long index = [[[[databaseOutline allColumns] valueForKey:@"headerCell"] valueForKey:@"title"] indexOfObject: key];
+		NSInteger index = [[[[databaseOutline allColumns] valueForKey:@"headerCell"] valueForKey:@"title"] indexOfObject: key];
 		
 		if( index != NSNotFound)
 		{
@@ -5390,7 +5390,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 	NSManagedObject	*study = [curImage valueForKeyPath:@"series.study"];
 	
-	long index = [outlineViewArray indexOfObject: study];
+	NSInteger index = [outlineViewArray indexOfObject: study];
 	
 	if( index != NSNotFound)
 	{
@@ -5425,7 +5425,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			[matrixLoadIconsLock lock];
 			[matrixLoadIconsLock unlock];
 			
-			long seriesPosition = [seriesArray indexOfObject: [curImage valueForKey:@"series"]];
+			NSInteger seriesPosition = [seriesArray indexOfObject: [curImage valueForKey:@"series"]];
 			
 			if( seriesPosition != NSNotFound)
 			{
@@ -5472,7 +5472,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	NSManagedObject		*study = [curImage valueForKeyPath:@"series.study"];
 	
-	long index = [outlineViewArray indexOfObject: study];
+	NSInteger index = [outlineViewArray indexOfObject: study];
 	
 	if( index != NSNotFound)
 	{
@@ -5574,7 +5574,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				seriesArray = [seriesArray arrayByAddingObjectsFromArray: [self childrenArray: curStudy]];
 			}
 			
-			long index = [seriesArray indexOfObject: currentSeries];
+			NSInteger index = [seriesArray indexOfObject: currentSeries];
 			
 			if( index != NSNotFound)
 			{
@@ -6916,7 +6916,7 @@ static BOOL withReset = NO;
 	
 	// Now remove non-applicable items - usually related to images (most RT objects don't have embedded images)
 
-	int indx = [contextualRT indexOfItemWithTitle: @"Open images in 4D"];
+	NSInteger indx = [contextualRT indexOfItemWithTitle: @"Open images in 4D"];
 	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
 	indx = [contextualRT indexOfItemWithTitle: @"Open Key Images"];
 	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
@@ -11955,7 +11955,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				if( selectedDict)
 				{
-					int index = [[bonjourBrowser services] indexOfObject: selectedDict];
+					NSInteger index = [[bonjourBrowser services] indexOfObject: selectedDict];
 					
 					if( index == NSNotFound)
 						[self resetToLocalDatabase];
@@ -12385,7 +12385,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		if( selectedDict)
 		{
-			int index = [[bonjourBrowser services] indexOfObject: selectedDict];
+			NSInteger index = [[bonjourBrowser services] indexOfObject: selectedDict];
 			
 			if( index == NSNotFound)
 				[self resetToLocalDatabase];

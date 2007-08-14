@@ -98,7 +98,7 @@
 		NSString *frame  = [window stringWithSavedFrame];
 		[seriesInfo setObject:frame forKey:@"windowFrame"];
 		NSScreen *screen = [window screen];				
-		int screenNumber = [[NSScreen screens] indexOfObject:screen];
+		NSInteger screenNumber = [[NSScreen screens] indexOfObject:screen];
 		[seriesInfo setObject:[NSNumber numberWithInt:screenNumber] forKey:@"screenNumber"];
 		id series = [controller currentSeries];
 		
