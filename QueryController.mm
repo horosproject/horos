@@ -97,7 +97,7 @@ static char *GetPrivateIP()
 			[[BrowserController currentBrowser] showEntireDatabase];
 			
 			NSIndexSet* indices = [outlineView selectedRowIndexes];
-			int i;
+			NSInteger i;
 			BOOL extendingSelection = NO;
 			
 			for( i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
@@ -146,7 +146,7 @@ static char *GetPrivateIP()
 	[outlineView reloadData];
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView child:(int)index ofItem:(id)item{
+- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item{
 
 	return (item == nil) ? [resultArray objectAtIndex:index] : [[(DCMTKQueryNode *)item children] objectAtIndex:index];
 }
@@ -165,7 +165,7 @@ static char *GetPrivateIP()
 	}
 }
 
-- (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
+- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
 {
 	if( item)
 	{
@@ -573,7 +573,7 @@ static char *GetPrivateIP()
 {
 	NSMutableArray	*selectedItems = [NSMutableArray array];
 	NSIndexSet		*selectedRowIndexes = [outlineView selectedRowIndexes];
-	int				index;
+	NSInteger		index;
 	
 	if( [selectedRowIndexes count])
 	{

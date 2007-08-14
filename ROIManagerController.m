@@ -62,7 +62,7 @@ PURPOSE.
 - (void)tableView:(NSTableView *)aTableView
    setObjectValue:(id)anObject
    forTableColumn:(NSTableColumn *)aTableColumn
-			  row:(int)rowIndex
+			  row:(NSInteger)rowIndex
 {
 	int i;
 	NSMutableArray	*curRoiList = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
@@ -92,7 +92,7 @@ PURPOSE.
 - (IBAction)deleteROI:(id)sender
 {
 	int i;
-	unsigned long index;
+	NSInteger index;
 	NSMutableArray* names = [NSMutableArray arrayWithCapacity:1];
 	NSIndexSet* indexSet = [tableView selectedRowIndexes];
 	index = [indexSet lastIndex];
@@ -149,7 +149,7 @@ PURPOSE.
 	[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(roiListModification:) userInfo:0L repeats:NO];
 }
 
-- (int)numberOfRowsInTableView:(NSTableView *)tableView
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
 	NSMutableArray	*curRoiList = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
 	

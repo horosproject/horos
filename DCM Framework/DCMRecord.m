@@ -235,8 +235,9 @@
 }
 
 - (void)parseRecordSequence:(NSArray *)recordSequence recordType:(NSString *)recordType{
-	int i = 0;
-	int index, nextIndex;
+	NSInteger i = 0;
+	NSInteger index, nextIndex;
+	
 	NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
 	for (i = 0; i < [recordSequence count]; i++) {
 		DCMObject *record = [recordSequence objectAtIndex:i];

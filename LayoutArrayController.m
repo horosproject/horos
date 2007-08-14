@@ -209,7 +209,7 @@
     NSPasteboard* pboard = [info draggingPasteboard];
     NSData* rowData = [pboard dataForType:@"LayoutDraggingType"];
     NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
-    int dragRow = [rowIndexes firstIndex];
+    NSInteger dragRow = [rowIndexes firstIndex];
 	id dragObject = [[[self arrangedObjects] objectAtIndex:dragRow] retain];
 	[self removeObject:dragObject];
 	[self insertObject:dragObject  atArrangedObjectIndex:row];
@@ -218,7 +218,7 @@
     // Move the specified row to its new location...
 }
 
-- (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op 
+- (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)op 
 {
     // Add code here to validate the drop
     return NSDragOperationEvery;    

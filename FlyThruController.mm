@@ -126,19 +126,13 @@ MODIFICATION HISTORY
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	// nothing to do
-}
-*/
-
 //Getting values
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
 	return [[FT steps] count];
 }
 
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
 	if (aTableColumn==colCamNumber)
 	{

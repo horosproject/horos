@@ -3602,7 +3602,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	if( needDBRefresh) [albumNoOfStudiesCache removeAllObjects];
 	needDBRefresh = NO;
 	
-	unsigned long index = [selectedRowIndexes firstIndex];
+	NSInteger index = [selectedRowIndexes firstIndex];
 	while (index != NSNotFound)
 	{
 		[previousObjects addObject: [databaseOutline itemAtRow: index]];
@@ -4256,7 +4256,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 - (IBAction) delItem:(id) sender
 {
-	long					i, x, z, row, result;
+	NSInteger				i, x, z, row, result;
 	NSManagedObjectContext	*context = [self managedObjectContext];
 	NSManagedObjectModel    *model = [self managedObjectModel];
 	NSArray					*winList = [NSApp windows];
@@ -4646,7 +4646,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[managedObjectContext release];
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView child:(int)index ofItem:(id)item
+- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
 {
 	if( managedObjectContext == 0L) return 0L;
 	
@@ -4686,7 +4686,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	return returnVal;
 }
 
-- (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
+- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
 {
 	if( managedObjectContext == 0L) return 0L;
 	
@@ -5191,8 +5191,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 					
 					NSRect r;
 					NSScanner* s = [NSScanner scannerWithString: [dict valueForKey:@"window position"]];
-					[s scanFloat: &r.origin.x];			[s scanFloat: &r.origin.y];
-					[s scanFloat: &r.size.width];		[s scanFloat: &r.size.height];
+					
+					float a;
+					[s scanFloat: &a];	r.origin.x = a;		[s scanFloat: &a];	r.origin.y = a;
+					[s scanFloat: &a];	r.size.width = a;	[s scanFloat: &a];	r.size.height = a;
 					
 					int index = [[dict valueForKey:@"index"] intValue];
 					int rows = [[dict valueForKey:@"rows"] intValue];
@@ -6382,7 +6384,7 @@ static BOOL withReset = NO;
 
 - (IBAction) resetWindowsState:(id)sender
 {
-	long					i, x, z, row, result;
+	NSInteger				i, x, z, row, result;
 	NSManagedObjectContext	*context = [self managedObjectContext];
 	NSManagedObjectModel    *model = [self managedObjectModel];
 	NSError					*error = 0L;
@@ -6441,7 +6443,7 @@ static BOOL withReset = NO;
 
 - (IBAction) rebuildThumbnails:(id) sender
 {
-	long					i, x, z, row, result;
+	NSInteger				i, x, z, row, result;
 	NSManagedObjectContext	*context = [self managedObjectContext];
 	NSManagedObjectModel    *model = [self managedObjectModel];
 	NSError					*error = 0L;
@@ -7313,7 +7315,7 @@ static BOOL needToRezoom;
 #pragma mark Albums/send & ReceiveLog/Bonjour TableView functions
 
 //NSTableView delegate and datasource
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView
+- (NSInteger) numberOfRowsInTableView:(NSTableView *)aTableView
 {
 	if ([aTableView isEqual:albumTable])
 	{
@@ -7330,10 +7332,10 @@ static BOOL needToRezoom;
 			return 1;
 		}
 	}
-	return nil;
+	return 0;
 }
 
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
 	if ([aTableView isEqual:albumTable])
 	{
@@ -7440,7 +7442,7 @@ static BOOL needToRezoom;
 	return nil;
 }
 
-- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
 	if( [aCell isKindOfClass: [ImageAndTextCell class]])
 	{
@@ -7612,7 +7614,7 @@ static BOOL needToRezoom;
 	[pool release];
 }
 
-- (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(int)row dropOperation:(NSTableViewDropOperation)operation
+- (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
 {
 	long i;
 	
@@ -7969,7 +7971,7 @@ static BOOL needToRezoom;
 	return NO;
 }
 
-- (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)operation
+- (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation
 {
 	if ([tableView isEqual:albumTable] && !isCurrentDatabaseBonjour)
 	{
@@ -8001,7 +8003,7 @@ static BOOL needToRezoom;
 	return NSDragOperationNone;
 }
 
-- (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc row:(int)row mouseLocation:(NSPoint)mouseLocation
+- (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation
 {
 	if( [tv isEqual: bonjourServicesList])
 	{
@@ -8512,13 +8514,7 @@ static BOOL needToRezoom;
 {
 	NSManagedObject		*selectedLine = [selectedLines objectAtIndex: 0];
     unsigned long		z;
-	
-	#if !__LP64__
-	int					row, column;
-	#else
-	long				row, column;
-	#endif
-	
+	NSInteger			row, column;
 	NSMutableArray		*selectedFilesList;
 	NSArray				*loadList;
     NSArray				*cells;
@@ -9079,13 +9075,13 @@ static BOOL needToRezoom;
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 - (void) viewerDICOMMergeSelection:(id) sender{
-	long			index;
+	NSInteger		index;
 	NSMutableArray	*images = [NSMutableArray arrayWithCapacity:0];
 	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: images];
 	else [self filesForDatabaseOutlineSelection: images];
 	
-	[self openViewerFromImages :[NSArray arrayWithObject:images] movie: nil viewer :nil keyImagesOnly:NO];
+	[self openViewerFromImages :[NSArray arrayWithObject:images] movie: 0 viewer :nil keyImagesOnly:NO];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 		[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
@@ -9095,13 +9091,13 @@ static BOOL needToRezoom;
 
 - (void) viewerDICOMKeyImages:(id) sender
 {
-	long			index;
+	NSInteger index;
 	NSMutableArray	*selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
 
-	[self openViewerFromImages :[NSArray arrayWithObject:selectedItems] movie: nil viewer :nil keyImagesOnly:YES];
+	[self openViewerFromImages :[NSArray arrayWithObject:selectedItems] movie: 0 viewer :nil keyImagesOnly:YES];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 		[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
@@ -9111,7 +9107,7 @@ static BOOL needToRezoom;
 
 - (void) MovieViewerDICOM:(id) sender
 {
-	long					index;
+	NSInteger				index;
 	NSMutableArray			*selectedItems = [NSMutableArray arrayWithCapacity:0];
 
 	NSIndexSet				*selectedRowIndexes = [databaseOutline selectedRowIndexes];
@@ -9966,7 +9962,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	mainWindow = [[note object] retain];
 }
 
-- (BOOL) validateMenuItem: (id <NSMenuItem>) menuItem
+- (BOOL) validateMenuItem: (NSMenuItem*) menuItem
 {
 	if ([menuItem menu] == imageTileMenu ) {
 		if ([[mainWindow windowController] isKindOfClass:[ViewerController class]])
@@ -11435,19 +11431,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 + (void) replaceNotAdmitted:(NSMutableString*) name
 {
-	[name replaceOccurrencesOfString:@" " withString:@"" options:nil range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"." withString:@"" options:nil range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"," withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
-	[name replaceOccurrencesOfString:@"^" withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
-	[name replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"\\" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"|" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"-" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@":" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"*" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"<" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@">" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-	[name replaceOccurrencesOfString:@"?" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@" " withString:@"" options:0 range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"." withString:@"" options:0 range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"," withString:@"" options:0 range:NSMakeRange(0, [name length])]; 
+	[name replaceOccurrencesOfString:@"^" withString:@"" options:0 range:NSMakeRange(0, [name length])]; 
+	[name replaceOccurrencesOfString:@"/" withString:@"" options:0 range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"\\" withString:@"" options:0 range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"|" withString:@"" options:0 range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"-" withString:@"" options:0 range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@":" withString:@"" options:0 range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"*" withString:@"" options:0 range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"<" withString:@"" options:0 range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@">" withString:@"" options:0 range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"?" withString:@"" options:0 range:NSMakeRange(0, [name length])];
 }
 
 - (NSArray*) exportDICOMFileInt:(NSString*) location files:(NSArray*) filesToExport objects:(NSArray*) dicomFiles2Export
@@ -13870,7 +13866,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 
 - (NSArray *) databaseSelection{
-	long				index;
+	NSInteger			index;
 	NSMutableArray		*selectedItems			= [NSMutableArray arrayWithCapacity: 0];
 	NSIndexSet			*selectedRowIndexes		= [databaseOutline selectedRowIndexes];
 	

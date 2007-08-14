@@ -58,7 +58,7 @@
 - (CIALayoutController*)layoutController;
 
 - (NSTextField*)titleTextField;
-- (RWTokenField*)contentTokenField;
+- (NSTokenField*)contentTokenField;
 - (NSTokenField*)dicomNameTokenField;
 - (NSTextField*)dicomGroupTextField;
 - (NSTextField*)dicomElementTextField;

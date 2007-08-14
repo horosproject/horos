@@ -7968,7 +7968,7 @@ BOOL            readable = YES;
 				NSData			*fileData;
 				BOOL			swapByteOrder = NO;
 				
-				NIfTI = (nifti_1_header *) nifti_read_header([srcFile cString], nil, 0);
+				NIfTI = (nifti_1_header *) nifti_read_header([srcFile UTF8String], nil, 0);
 				
 				// Verify that this file should be treated as a NIfTI file.  If magic is not set to anything, we must assume it is analyze.
 				if( (NIfTI->magic[0] == 'n')                           &&
@@ -7999,7 +7999,7 @@ BOOL            readable = YES;
 					short sform_code = NIfTI->sform_code;
 					
 					// Read img file or read nii file after vox_offset
-					nifti_imagedata = nifti_image_read([srcFile cString], 1);
+					nifti_imagedata = nifti_image_read([srcFile UTF8String], 1);
 					if( (NIfTI->magic[0] == 'n')    &&
 						(NIfTI->magic[1] == 'i')	&&
 						(NIfTI->magic[2] == '1')    &&

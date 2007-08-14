@@ -418,12 +418,6 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
     [super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
 - (void)windowWillClose:(NSNotification *)notification
 {
 	[self release];
@@ -440,7 +434,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
     return YES;
 }
 
-- (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item 
+- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item 
 {
 
         if( item == nil)
@@ -470,7 +464,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	}
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView child:(int)index ofItem:(id)item
+- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
 {
         if( item == 0L)
         {
@@ -727,7 +721,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 		{
 			NSIndexSet*			selectedRowIndexes = [table selectedRowIndexes];
 			NSMutableString*	copyString = [NSMutableString string];
-			int					index;
+			NSInteger			index;
 			NSMutableArray		*groupsAndElements = [NSMutableArray array];
 			
 			for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
@@ -815,7 +809,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 {
 	NSIndexSet*			selectedRowIndexes = [table selectedRowIndexes];
 	NSMutableString*	copyString = [NSMutableString string];
-	int					index;
+	NSInteger			index;
 	
 	for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
 	{

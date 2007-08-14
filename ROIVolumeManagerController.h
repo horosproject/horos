@@ -20,7 +20,7 @@
 
 - (id) initWithViewer:(NSWindowController*) v;
 	// Table view data source methods
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView;
 - (void) setRoiVolumes: (NSMutableArray*) volumes;
 - (NSMutableArray*) roiVolumes;
 

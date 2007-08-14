@@ -96,7 +96,7 @@ NSString * documentsDirectory();
 	BOOL			firstFile = YES, addExtension = NO;
 	NSString		*file;
 	
-	buffer = (char*)  [data cString];
+	buffer = (char*)  [data UTF8String];
 	
 	i = 0;
 	length = [data length];

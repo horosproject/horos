@@ -56,7 +56,7 @@
 	return self;
 }
 
-- (void) tableView:(NSTableView *)aTableView setObjectValue:(id)anObject forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+- (void) tableView:(NSTableView *)aTableView setObjectValue:(id)anObject forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
 //NSLog(@"tableView:setObjectValue:forTableColumn:row:");
 
@@ -115,14 +115,14 @@
 	[tableView reloadData];
 }
 
-- (int) numberOfRowsInTableView:(NSTableView *)tableView
+- (NSInteger) numberOfRowsInTableView:(NSTableView *)tableView
 {
 //	NSLog(@"numberOfRowsInTableView : [[self roiVolumes] count] : %d", [[self roiVolumes] count]);
 //	NSLog(@"numberOfRowsInTableView : [roiVolumes count] : %d", [roiVolumes count]);
     return [[self roiVolumes] count];
 }
 
-//- (id) tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row
+//- (id) tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 //{
 ////NSLog(@"tableView:objectValueForTableColumn:row:");
 //	if( viewer == 0L) return 0L;

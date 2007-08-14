@@ -29,10 +29,10 @@ PURPOSE.
 - (id) initWithViewer:(ViewerController*) v;
 - (IBAction)deleteROI:(id)sender;
 	// Table view data source methods
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView;
 - (id)tableView:(NSTableView *)aTableView
     objectValueForTableColumn:(NSTableColumn *)aTableColumn
-			row:(int)rowIndex;
+			row:(NSInteger)rowIndex;
 - (void) roiListModification :(NSNotification*) note;
 - (void) fireUpdate: (NSNotification*) note;
 @end

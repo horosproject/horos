@@ -33,12 +33,12 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 	}
 }
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
 	return [[self arrangedObjects] count];
 }
 
-- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
 	if( [[aTableColumn identifier] isEqual:@"AddressAndPort"] == YES)
 	{
@@ -116,7 +116,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 
 - (NSDragOperation)tableView:(NSTableView*)tv
 				validateDrop:(id <NSDraggingInfo>)info
-				 proposedRow:(int)row
+				 proposedRow:(NSInteger)row
 	   proposedDropOperation:(NSTableViewDropOperation)op
 {
 
@@ -141,7 +141,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
     return dragOp;
 }
 
-- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
 	if( _authView)
 	{
@@ -153,7 +153,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 
 - (BOOL)tableView:(NSTableView*)tv
 	   acceptDrop:(id <NSDraggingInfo>)info
-			  row:(int)row
+			  row:(NSInteger)row
 	dropOperation:(NSTableViewDropOperation)op
 {
 	if( _authView != 0L)
@@ -196,7 +196,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 {
 	
     NSArray		*objects = [self arrangedObjects];
-	int			index = [indexSet lastIndex];
+	NSInteger	index = [indexSet lastIndex];
 	
     int			aboveInsertIndexCount = 0;
     id			object;
@@ -236,8 +236,8 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 
 - (int)rowsAboveRow:(int)row inIndexSet:(NSIndexSet *)indexSet
 {
-    unsigned currentIndex = [indexSet firstIndex];
-    int i = 0;
+    NSInteger currentIndex = [indexSet firstIndex];
+    NSInteger i = 0;
     while (currentIndex != NSNotFound) {
 		if (currentIndex < row) { i++; }
 		currentIndex = [indexSet indexGreaterThanIndex:currentIndex];

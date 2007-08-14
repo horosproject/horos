@@ -578,9 +578,9 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		[studyDate years:&years
 		 months:&months
 		 days:&days
-		 hours:nil
-		 minutes:nil
-		 seconds:nil
+		 hours:0
+		 minutes:0
+		 seconds:0
 		 sinceDate:dob] ;
 		 if (years > 0)
 			return [NSString stringWithFormat:@"%d Y", years];

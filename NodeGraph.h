@@ -24,7 +24,7 @@
 	NSMutableSet *_nodes;
 }
 
-- (void)mergeGraphs: (NodeGraph *)graph;
-- (void)pruneBranchAtNode:(id)node;
+//- (void)mergeGraphs: (NodeGraph *)graph;
+//- (void)pruneBranchAtNode:(id)node;
 
 @end

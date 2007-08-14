@@ -8,8 +8,8 @@
 
 #import "OSICustomImageAnnotations.h"
 
-int  compareViewTags(id firstView, id secondView, void * context);
-int  compareViewTags(id firstView, id secondView, void * context)
+NSComparisonResult  compareViewTags(id firstView, id secondView, void * context);
+NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 {
    int firstTag;
    int secondTag;
@@ -41,7 +41,7 @@ int  compareViewTags(id firstView, id secondView, void * context)
 	[gray setHidden: !v];
 	[lock setHidden: !v];
 	
-	[[self mainView] sortSubviewsUsingFunction:(int (*)(id, id, void *))compareViewTags context: [NSNumber numberWithBool: !v]];
+	[[self mainView] sortSubviewsUsingFunction:(NSComparisonResult (*)(id, id, void *))compareViewTags context: [NSNumber numberWithBool: !v]];
 }
 
 - (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
@@ -222,7 +222,7 @@ int  compareViewTags(id firstView, id secondView, void * context)
 - (CIALayoutController*)layoutController; {return layoutController;}
 
 - (NSTextField*)titleTextField; {return titleTextField;}
-- (RWTokenField*)contentTokenField; {return contentTokenField;}
+- (NSTokenField*)contentTokenField; {return contentTokenField;}
 - (NSTokenField*)dicomNameTokenField; {return dicomNameTokenField;}
 - (NSTextField*)dicomGroupTextField {return dicomGroupTextField;}
 - (NSTextField*)dicomElementTextField; {return dicomElementTextField;}

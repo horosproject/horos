@@ -344,7 +344,7 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 }
 
 - (void)setReportIndex:(NSIndexSet *)indexSet{
-	int index = [indexSet firstIndex];
+	NSInteger index = [indexSet firstIndex];
 	id report = [self createReportForStudy:[[_reports objectAtIndex:index] objectForKey:@"study"] path:[[_reports objectAtIndex:index] objectForKey:@"path"]];
 	[self setReport:report];
 	[_reportIndex release];

@@ -37,7 +37,7 @@
     BOOL shouldDraw;
     IBOutlet id arrayController;
 	NSArray *selection;
-    int srcRow, srcCol, dstRow, dstCol;
+    NSInteger srcRow, srcCol, dstRow, dstCol;
 } 
 //- (void) setController:(id)controller;
 // Private

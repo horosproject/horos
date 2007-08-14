@@ -66,8 +66,8 @@
 - (id) initWithFlyThruAdapter:(FlyThruAdapter*)aFlyThruAdapter;
 - (void)windowWillClose:(NSNotification *)notification;
 - (void) dealloc;
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView;
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView;
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex;
 - (int) selectedRow;
 - (void) selectRowAtIndex:(int)index;
 - (void) removeRowAtIndex:(int)index;

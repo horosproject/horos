@@ -155,7 +155,7 @@
 	
 	// initialisation
 	NSEnumerator *eCam = [tempStepCameras objectEnumerator];
-	id cam;
+	Camera *cam;
 	while (cam = [eCam nextObject])
 	{
 		[stepPosition addObject:[cam position]];

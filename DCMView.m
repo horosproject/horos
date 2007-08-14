@@ -4722,7 +4722,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
     blendingFactor = 0.5;
 	
-    long swap = 1;  // LIMIT SPEED TO VBL if swap == 1
+    GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 	[[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
     
 	[self FindMinimumOpenGLCapabilities];
@@ -5644,14 +5644,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( QuartzExtreme)		// ACTIVATE
 		{
-			long negativeOne = -1;
+			GLint negativeOne = -1;
 			[[self openGLContext] setValues:&negativeOne forParameter:NSOpenGLCPSurfaceOrder];
 			[[self window] setOpaque:NO];
 			[[self window] setAlphaValue:.999f];
 		}
 		else					// DE-ACTIVATE
 		{
-			long negativeOne = 1;
+			GLint negativeOne = 1;
 			[[self openGLContext] setValues:&negativeOne forParameter:NSOpenGLCPSurfaceOrder];
 			[[self window] setOpaque:YES];
 			[[self window] setAlphaValue:1.0f];

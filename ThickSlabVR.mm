@@ -32,15 +32,6 @@ extern short Altivec;
 	[super dealloc];
 }
 
-
-- (void)finalize {
-		opacityTransferFunction->Delete();
-	
-	if( dst8.data) free( dst8.data);
-	if( dst8Blending.data) free( dst8Blending.data);
-}
-
-
 -(id)initWithFrame:(NSRect)frame
 {
 	long i;

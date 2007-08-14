@@ -21,11 +21,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 
 - (void) selectCell:(NSEvent*) theEvent
 {
-	#if !__LP64__
-	int row, column;
-	#else
-	long row, column;
-	#endif
+	NSInteger row, column;
  
 	if( [self getRow: &row column: &column forPoint: [self convertPoint:[theEvent locationInWindow] fromView:nil]])
 	{
@@ -149,7 +145,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 	}
 }
 
-- (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal
+- (NSDragOperation) draggingSourceOperationMaskForLocal:(BOOL)isLocal
 {
 	return NSDragOperationEvery;
 }

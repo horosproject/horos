@@ -3002,12 +3002,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					line1[0] = 0; line2[0] = 0; line3[0] = 0; line4[0] = 0; line5[0] = 0;
 					NSPoint tPt = [self lowerRightPoint];
 				
-					if(![name isEqualToString:@"Unnamed"]) strcpy(line1, [name cString]);
-					if(textualBoxLine1 && ![textualBoxLine1 isEqualToString:@""]) strcpy(line1, [textualBoxLine1 cString]);
-					if(textualBoxLine2 && ![textualBoxLine2 isEqualToString:@""]) strcpy(line2, [textualBoxLine2 cString]);
-					if(textualBoxLine3 && ![textualBoxLine3 isEqualToString:@""]) strcpy(line3, [textualBoxLine3 cString]);
-					if(textualBoxLine4 && ![textualBoxLine4 isEqualToString:@""]) strcpy(line4, [textualBoxLine4 cString]);
-					if(textualBoxLine5 && ![textualBoxLine5 isEqualToString:@""]) strcpy(line5, [textualBoxLine5 cString]);
+					if(![name isEqualToString:@"Unnamed"]) strcpy(line1, [name UTF8String]);
+					if(textualBoxLine1 && ![textualBoxLine1 isEqualToString:@""]) strcpy(line1, [textualBoxLine1 UTF8String]);
+					if(textualBoxLine2 && ![textualBoxLine2 isEqualToString:@""]) strcpy(line2, [textualBoxLine2 UTF8String]);
+					if(textualBoxLine3 && ![textualBoxLine3 isEqualToString:@""]) strcpy(line3, [textualBoxLine3 UTF8String]);
+					if(textualBoxLine4 && ![textualBoxLine4 isEqualToString:@""]) strcpy(line4, [textualBoxLine4 UTF8String]);
+					if(textualBoxLine5 && ![textualBoxLine5 isEqualToString:@""]) strcpy(line5, [textualBoxLine5 UTF8String]);
 
 					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 				}
@@ -3101,7 +3101,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
-				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 				
 				if ( ROITEXTNAMEONLY == NO ) {
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
@@ -3167,7 +3167,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
-				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 				
 				if( ROITEXTNAMEONLY == NO )
 				{
@@ -3376,7 +3376,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
-				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 				if( type == tMesure && ROITEXTNAMEONLY == NO) {
 					if( pixelSpacingX != 0 && pixelSpacingY != 0) {
 						if ([self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]] < .1)
@@ -3424,7 +3424,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					NSPoint			tPt = [self lowerRightPoint];
 					long			line = 0;
 					
-					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 					else line1[ 0] = 0;
 					
 					if( ROITEXTNAMEONLY == NO )
@@ -3488,7 +3488,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				NSPoint			tPt = [self lowerRightPoint];
 				long			line = 0;
 				
-				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 				
 				if( ROITEXTNAMEONLY == NO ) {
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
@@ -3549,7 +3549,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				long	line = 0;
 				float   length;
 				
-				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 				
 				if( ROITEXTNAMEONLY == NO ) {
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
@@ -3821,7 +3821,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					long	line = 0;
 					float   length;
 					
-					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 					
 					if( ROITEXTNAMEONLY == NO ) {
 						
@@ -3908,7 +3908,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					long	line = 0;
 					float   length;
 					
-					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 					
 					if( ROITEXTNAMEONLY == NO ) {
 						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
@@ -3948,7 +3948,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					long	line = 0;
 					float   length;
 					
-					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 					
 					if( ROITEXTNAMEONLY == NO ) {
 						
@@ -3991,7 +3991,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						long	line = 0;
 						float   angle;
 						
-						if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+						if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 						
 						angle = [self Angle:[[points objectAtIndex: 0] point] :[[points objectAtIndex: 1] point] : [[points objectAtIndex: 2] point]];
 						

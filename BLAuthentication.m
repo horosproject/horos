@@ -199,14 +199,14 @@
 	int pid = 0;
 	int len = 0;
     
-    outpipe = popen([popenArgs cString],"r");
+    outpipe = popen([popenArgs UTF8String],"r");
 
 	[popenArgs release];
 
 	if(!outpipe) {
         NSLog(@"Error opening pipe: %@",forProcess);
         NSBeep();
-        return nil;
+        return 0;
     }
 	
 	do {
@@ -274,7 +274,7 @@
 		return NO;
 	
 	if( arguments == nil || [arguments count] < 1  ) {
-		err = AuthorizationExecuteWithPrivileges(authorizationRef, [pathToCommand cString], 0, NULL, NULL);
+		err = AuthorizationExecuteWithPrivileges(authorizationRef, [pathToCommand UTF8String], 0, NULL, NULL);
 	}
 	else {
 		while( i < [arguments count] && i < 19) {
@@ -284,7 +284,7 @@
 		args[i] = NULL;
 
 		err = AuthorizationExecuteWithPrivileges(authorizationRef,
-												[pathToCommand cString],
+												[pathToCommand UTF8String],
 												0, args, NULL);
 	}
 

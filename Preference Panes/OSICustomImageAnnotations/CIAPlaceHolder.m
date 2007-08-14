@@ -48,7 +48,7 @@
 	
 	NSBezierPath *borderFrame = [NSBezierPath bezierPathWithRoundedRect:rect cornerRadius:ROUNDED_CORNER_SIZE];
 
-	float array[2];
+	CGFloat array[2];
 	array[0] = 5.0; //segment painted with stroke color
 	array[1] = 2.0; //segment not painted with a color
  

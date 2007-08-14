@@ -652,7 +652,7 @@ while ( [data length] < pos + 4 && (readData = [incomingConnection availableData
 					NSString *path = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
 					pos += stringSize;
 					
-					if( [path cString] [ 0] != '/')
+					if( [path UTF8String] [ 0] != '/')
 					{
 						NSString	*extension = [path pathExtension];
 						
@@ -701,7 +701,7 @@ while ( [data length] < pos + 4 && (readData = [incomingConnection availableData
 					NSString *path = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
 					pos += stringSize;
 					
-					if( [path cString] [ 0] != '/')
+					if( [path UTF8String] [ 0] != '/')
 					{
 						if( [[[path pathComponents] objectAtIndex: 0] isEqualToString:@"ROIs"])
 						{

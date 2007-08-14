@@ -33,7 +33,7 @@
 				NSArray *prefixTitle = [[keysListed objectAtIndex:i] componentsSeparatedByString:@"@"];
 				//selector requires a valid method of Target. Else, at runtime the menu is grayed out
 				item = [[NSMenuItem alloc] initWithTitle:[prefixTitle objectAtIndex:1] action: @selector(contextualMenuEvent:) keyEquivalent:@""];
-				[item setTag:(int)[prefixTitle objectAtIndex:0]];
+				[item setTag: (NSInteger) [prefixTitle objectAtIndex:0]];
 				[item setTarget:aWindowController];
 				
 // item dictionary (regresive logics)
