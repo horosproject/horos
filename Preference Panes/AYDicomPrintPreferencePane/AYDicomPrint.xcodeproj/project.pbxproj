@@ -162,9 +162,11 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 1DBD214C08BA80EA00186707 /* Build configuration list for PBXProject "AYDicomPrint" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 089C166AFE841209C02AAC07 /* AYDicomPrint */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				8D202CE80486D31800D8A456 /* AYDicomPrint */,
 			);
@@ -226,24 +228,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		1DBD214908BA80EA00186707 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = AYDicomPrint_Prefix.pch;
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
-				PRODUCT_NAME = AYDicomPrint;
-				WRAPPER_EXTENSION = prefPane;
-				ZERO_LINK = YES;
-			};
-			name = Debug;
-		};
 		1DBD214A08BA80EA00186707 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -262,23 +246,19 @@
 			};
 			name = Release;
 		};
-		1DBD214D08BA80EA00186707 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-			};
-			name = Debug;
-		};
 		1DBD214E08BA80EA00186707 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					i386,
+					ppc,
+					x86_64,
+					ppc64,
+				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Release;
 		};
@@ -288,7 +268,6 @@
 		1DBD214808BA80EA00186707 /* Build configuration list for PBXNativeTarget "AYDicomPrint" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DBD214908BA80EA00186707 /* Debug */,
 				1DBD214A08BA80EA00186707 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -297,7 +276,6 @@
 		1DBD214C08BA80EA00186707 /* Build configuration list for PBXProject "AYDicomPrint" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DBD214D08BA80EA00186707 /* Debug */,
 				1DBD214E08BA80EA00186707 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
