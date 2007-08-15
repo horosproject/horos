@@ -3263,7 +3263,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 }
 
 //part of Dragging Source Protocol
-- (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
+- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
 	return NSDragOperationEvery;
 }
 

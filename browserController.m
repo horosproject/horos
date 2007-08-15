@@ -288,7 +288,7 @@ BOOL GetAdditionalVolumeInfo(char *bsdName)
         if (KERN_SUCCESS != kernResult) {
             printf("IOServiceGetMatchingServices returned %d\n", kernResult);
         }
-        else if (iter==Nil) {
+        else if (iter == 0) {
             printf("IOServiceGetMatchingServices returned a NULL iterator\n");
         }
         else {
@@ -298,7 +298,7 @@ BOOL GetAdditionalVolumeInfo(char *bsdName)
             // a single io_service_t.
             IOObjectRelease(iter);
             
-            if (service==Nil) {
+            if (service == 0) {
                 printf("IOIteratorNext returned NULL\n");
             }
             else {
@@ -11486,7 +11486,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			tempPath = [path stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.name"]];
 		else {
 			NSMutableString *name;
-			if ([[curImage valueForKeyPath: @"series.study.name"] length] > 8)
+			if ([(NSString*) [curImage valueForKeyPath: @"series.study.name"] length] > 8)
 				name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
 			else
 				name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
@@ -11525,7 +11525,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			else
 			{				
 				NSMutableString *name;
-				if ([[curImage valueForKeyPath: @"series.study.id"] length] > 8 )
+				if ([(NSString*)[curImage valueForKeyPath: @"series.study.id"] length] > 8 )
 					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath:@"series.study.id"] substringToIndex:7] uppercaseString]];
 				else
 					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.id"] uppercaseString]];
@@ -11677,7 +11677,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
 			NSMutableString *name;
 			
-			if ([[curImage valueForKeyPath: @"series.study.name"] length] > 8)
+			if ([(NSString*)[curImage valueForKeyPath: @"series.study.name"] length] > 8)
 				name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
 			else
 				name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];

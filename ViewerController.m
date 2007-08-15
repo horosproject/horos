@@ -12309,7 +12309,7 @@ int i,j,l;
 
 		//--------------------------Background color---------------------------------
 		if( [[printSettings cellWithTag: 3] state]) [settings setObject: @"YES" forKey: @"backgroundColor"];
-		float r, g, b;		
+		CGFloat r, g, b;		
 		NSColor	*rgbColor = [[printColor color] colorUsingColorSpaceName: NSDeviceRGBColorSpace];		
 		[rgbColor getRed:&r green:&g blue:&b alpha:0L];
 		[settings setObject: [NSNumber numberWithFloat: r] forKey: @"backgroundColorR"];

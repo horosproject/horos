@@ -19888,6 +19888,7 @@
 				AB28B42C05B7921E00A9906C /* Sources */,
 				AB28B42D05B7921E00A9906C /* Frameworks */,
 				CECA66E306CD8C1500D8750E /* CopyFiles */,
+				CEED244F0C71EEDC00E3BEC5 /* SVN Revision number */,
 			);
 			buildRules = (
 			);
@@ -21011,6 +21012,20 @@
 			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
 		};
 		A9EDB1D50ACBC39700D8B534 /* SVN Revision number */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "SVN Revision number";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/usr/bin/perl -w";
+			shellScript = "# Xcode auto-versioning script for Subversion\n# by Axel Andersson, modified by Daniel Jalkut to add\n# \"--revision HEAD\" to the svn info line, which allows\n# the latest revision to always be used.\n\nuse strict;\n\ndie \"$0: Must be run from Xcode\" unless $ENV{\"BUILT_PRODUCTS_DIR\"};\n\n# Get the current subversion revision number and use it to set the CFBundleVersion value\nmy $REV = `/usr/local/bin/svnversion -n ./`;\nmy $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Contents/Info.plist\";\n\nif(! $REV)\n{\n\t$REV = `/opt/local/bin/svnversion -n ./`;\n}\n\nif($REV)\n{\n\tmy $version = $REV;\n\n\t# (Match the last group of digits and optional letter M/S):\n\n\t# ugly yet functional (barely) regex by Daniel Jalkut:\n\t#$version =~ s/([\\d]*:)(\\d+[M|S]*).*/$2/;\n\n\t# better yet still functional regex via Kevin \"Regex Nerd\" Ballard\n\t($version =~ m/\\d+[MS]*$/) && ($version = $&);\n\n\tdie \"$0: No Subversion revision found\" unless $version;\n\n\topen(FH, \"$INFO\") or die \"$0: $INFO: $!\";\n\tmy $info = join(\"\", <FH>);\n\tclose(FH);\n\n\t$info =~ s/([\\t ]+<key>CFBundleVersion<\\/key>\\n[\\t ]+<string>).*?(<\\/string>)/$1$version$2/;\n\n\topen(FH, \">$INFO\") or die \"$0: $INFO: $!\";\n\tprint FH $info;\n\tclose(FH);\n}";
+		};
+		CEED244F0C71EEDC00E3BEC5 /* SVN Revision number */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -25243,14 +25258,10 @@
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_DEBUGGING_SYMBOLS = default;
-				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_CPU = "";
 				GCC_MODEL_PPC64 = NO;
-				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = OsiriX_Prefix.pch;

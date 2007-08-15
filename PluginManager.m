@@ -211,38 +211,40 @@ PluginManager			*pluginManager = 0L;
 - (id)init {
 	if (self = [super init])
 	{
-	// Set DefaultROINames *before* initializing plugins (which may change these)
-	
-	NSMutableArray *defaultROINames = [[NSMutableArray alloc] initWithCapacity:0];
-	
-	[defaultROINames addObject:@"ROI 1"];
-	[defaultROINames addObject:@"ROI 2"];
-	[defaultROINames addObject:@"ROI 3"];
-	[defaultROINames addObject:@"ROI 4"];
-	[defaultROINames addObject:@"ROI 5"];
-	[defaultROINames addObject:@"-"];
-	[defaultROINames addObject:@"DiasLength"];
-	[defaultROINames addObject:@"SystLength"];
-	[defaultROINames addObject:@"-"];
-	[defaultROINames addObject:@"DiasLong"];
-	[defaultROINames addObject:@"SystLong"];
-	[defaultROINames addObject:@"-"];
-	[defaultROINames addObject:@"DiasHorLong"];
-	[defaultROINames addObject:@"SystHorLong"];
-	[defaultROINames addObject:@"DiasVerLong"];
-	[defaultROINames addObject:@"SystVerLong"];
-	[defaultROINames addObject:@"-"];
-	[defaultROINames addObject:@"DiasShort"];
-	[defaultROINames addObject:@"SystShort"];
-	[defaultROINames addObject:@"-"];
-	[defaultROINames addObject:@"DiasMitral"];
-	[defaultROINames addObject:@"SystMitral"];
-	[defaultROINames addObject:@"DiasPapi"];
-	[defaultROINames addObject:@"SystPapi"];
-	
-	[ViewerController setDefaultROINames: defaultROINames];
-	
-    [self discoverPlugins];
+		// Set DefaultROINames *before* initializing plugins (which may change these)
+		
+		NSMutableArray *defaultROINames = [[NSMutableArray alloc] initWithCapacity:0];
+		
+		[defaultROINames addObject:@"ROI 1"];
+		[defaultROINames addObject:@"ROI 2"];
+		[defaultROINames addObject:@"ROI 3"];
+		[defaultROINames addObject:@"ROI 4"];
+		[defaultROINames addObject:@"ROI 5"];
+		[defaultROINames addObject:@"-"];
+		[defaultROINames addObject:@"DiasLength"];
+		[defaultROINames addObject:@"SystLength"];
+		[defaultROINames addObject:@"-"];
+		[defaultROINames addObject:@"DiasLong"];
+		[defaultROINames addObject:@"SystLong"];
+		[defaultROINames addObject:@"-"];
+		[defaultROINames addObject:@"DiasHorLong"];
+		[defaultROINames addObject:@"SystHorLong"];
+		[defaultROINames addObject:@"DiasVerLong"];
+		[defaultROINames addObject:@"SystVerLong"];
+		[defaultROINames addObject:@"-"];
+		[defaultROINames addObject:@"DiasShort"];
+		[defaultROINames addObject:@"SystShort"];
+		[defaultROINames addObject:@"-"];
+		[defaultROINames addObject:@"DiasMitral"];
+		[defaultROINames addObject:@"SystMitral"];
+		[defaultROINames addObject:@"DiasPapi"];
+		[defaultROINames addObject:@"SystPapi"];
+		
+		[ViewerController setDefaultROINames: defaultROINames];
+		
+		[self discoverPlugins];
+		
+		[[PluginFilter alloc] init];
 	}
 	return self;
 }

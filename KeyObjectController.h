@@ -28,8 +28,8 @@
 }
 
 - (id)initWithStudy:(id)study;
-- (int)title;
-- (void)setTitle:(int)title;
+- (int)intTitle;
+- (void)setIntTitle:(int)title;
 - (NSString *) keyDescription;
 - (void)setKeyDescription:(NSString *)keyDescription;
 

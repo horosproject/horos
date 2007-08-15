@@ -46,17 +46,11 @@
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
-- (int) title{
+- (int) intTitle{
 	return _title;
 }
 
-- (void)setTitle:(int)title{
+- (void)setIntTitle:(int)title{
 	_title = title;
 }
 
