@@ -39,9 +39,11 @@
 #include <Accelerate/Accelerate.h>
 #import <QTKit/QTKit.h>
 
+#ifdef STATIC_DICOM_LIB
+#define PREVIEWSIZE 512
+#else
 #define PREVIEWSIZE 70.0
-
-extern  BrowserController       *browserWindow;
+#endif
 
 BOOL	runOsiriXInProtectedMode = NO;
 BOOL	quicktimeRunning = NO;
@@ -677,7 +679,6 @@ inline void DrawRuns(	struct edge *active,
 								while( x-- >= 0)
 								{
 									unsigned char*  rgbPtr = (unsigned char*) curPix;
-									unsigned char*  rgbSrcPtr = (unsigned char*) restorePtr;
 									
 									rgbPtr[ 1] = restorePtr[ 1];
 									rgbPtr[ 2] = restorePtr[ 2];
@@ -692,7 +693,6 @@ inline void DrawRuns(	struct edge *active,
 								while( x-- >= 0)
 								{
 									unsigned char*  rgbPtr = (unsigned char*) curPix;
-									unsigned char*  rgbSrcPtr = (unsigned char*) restorePtr;
 									
 									rgbPtr[ 1] = restorePtr[ 1];
 									rgbPtr[ 2] = restorePtr[ 2];
@@ -784,7 +784,7 @@ void ras_FillPolygon(	NSPointInt *p,
 {
 	struct edge *edgeTable[ MAXVERTICAL];
     struct	edge *active;
-    long	curY, i;
+    long	curY;
 	BOOL	clip = NO;
 	NSPointInt	*pTemp;
 	
@@ -996,8 +996,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 + (BOOL) IsPoint:(NSPoint) x inPolygon:(NSPoint*) pts size:(int) no
 {
-	int i;
-	
 	if( pnpoly( pts, no, x.x, x.y))
 			return YES;
 	
@@ -1080,6 +1078,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 		gUSEPAPYRUSDCMPIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX"];
 		gUseJPEGColorSpace = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"];
 		
+		#ifdef STATIC_DICOM_LIB
+		gUSEPAPYRUSDCMPIX = YES;
+		gUseShutter = NO;
+		gDisplayDICOMOverlays = NO;
+		gUseJPEGColorSpace = YES;
+		#endif
+		
 //		NSLog( @"gUseShutter == %d", gUseShutter);
 //		NSLog( @"gDisplayDICOMOverlays == %d", gDisplayDICOMOverlays);
 //		NSLog( @"gUseVOILUT == %d", gUseVOILUT);
@@ -1143,7 +1148,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 {
 	NSRect sourceRect = NSMakeRect(0.0, 0.0, [currentImage size].width, [currentImage size].height);
 	NSRect imageRect;
-	float rescale = 1;
 	
 	if(		[currentImage size].width > 512 &&
 			[currentImage size].height > 512)
@@ -1490,7 +1494,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 - (float*) getLineROIValue :(long*) numberOfValues :(ROI*) roi
 {
     long			count, i, no, size;
-	float			x, y, *values;
+	float			*values;
 	long			*xPoints, *yPoints;
     NSPoint			upleft, downright;
 	NSPoint			*pts;
@@ -1897,9 +1901,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (void) fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition;
 {
-    long				count, i, no = 0;
+    long				i, no = 0;
 	long				x, y;
-    long				upleftx, uplefty, downrightx, downrighty, ims = width * height;
+    long				uplefty, downrighty, ims = width * height;
 	struct NSPointInt	*ptsInt = 0L;
 	NSMutableArray		*ptsTemp = 0L;
 	float				*fTempImage;
@@ -2197,7 +2201,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 				for( x = 0; x < width ; x++)
 				{
 					unsigned char*  rgbPtr = (unsigned char*) fTempImage;
-					long			pos;
 					
 					if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] = newVal;
 					if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] = newVal;
@@ -2220,7 +2223,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 				for( x = 0; x < width ; x++)
 				{
 					unsigned char*  rgbPtr = (unsigned char*) fTempImage;
-					long			pos;
 					
 					if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] = newVal;
 					if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] = newVal;
@@ -2361,7 +2363,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 	int cf2Count = 0;
 	int cf3Count = 0;
 	int cf4Count = 0;
-	float val;
 	int x;
 	int y;
 	int count = 0;
@@ -2420,7 +2421,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 - (void) computeROIInt:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max
 {
 	long			count, i, no, x, y;
-	float			val, imax, temp, imin, itotal, idev, imean;
+	float			imax, imin, itotal, idev, imean;
 	
 	count = 0;
 	itotal = 0;
@@ -2746,8 +2747,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 -(float) offset{[self CheckLoad]; return offset;}
 - (float) savedWL {[self CheckLoad]; return savedWL;}
 - (float) savedWW {[self CheckLoad]; return savedWW;}
-- (float) setSavedWL:(float) l {[self CheckLoad]; savedWL = l;}
-- (float) setSavedWW:(float) w {[self CheckLoad]; savedWW = w;}
+- (void) setSavedWL:(float) l {[self CheckLoad]; savedWL = l;}
+- (void) setSavedWW:(float) w {[self CheckLoad]; savedWW = w;}
 
 
 -(float) cineRate {[self CheckLoad]; return cineRate;}
@@ -3208,9 +3209,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (char*) UncompressDICOM : (NSString*) file :( long) imageNb
 {
-	PapyShort		fileNb, err;
 	char			*data = 0L;
-	SElement		*theGroupP;
 	
 	#ifdef OSIRIX_VIEWER
 	
@@ -3220,16 +3219,18 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	[PapyrusLock lock];
 	
-	fileNb = Papy3FileOpen ( (char*) [convertedDICOM UTF8String], (PAPY_FILE) 0, TRUE, 0);
+	PapyShort fileNb = Papy3FileOpen ( (char*) [convertedDICOM UTF8String], (PAPY_FILE) 0, TRUE, 0);
 	if (fileNb >= 0)
 	{
 		[convertedDICOM retain];
 		
-		err = Papy3GotoNumber (fileNb, (PapyShort)imageNb, DataSetID);
+		PapyShort err = Papy3GotoNumber (fileNb, (PapyShort)imageNb, DataSetID);
 		
 		// then goto group 0x7FE0 
 		if ((err = Papy3GotoGroupNb (fileNb, 0x7FE0)) == 0)
 		{
+			SElement *theGroupP = 0L;
+			
 			// read group 0x7FE0 from the file 
 			if ((err = Papy3GroupRead (fileNb, &theGroupP)) > 0) 
 			{
@@ -3274,7 +3275,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 	{
 		long					totSize, maxImage;
 		struct BioradHeader 	header;
-		NSData					*fileData;
 		
 		fread(&header, BIORAD_HEADER_LENGTH, 1, fp);
 		
@@ -3313,7 +3313,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		}
 		else {  // 8 bit image
 			unsigned char   *bufPtr;
-			short			*ptr, *tmpImage;
+			short			*ptr;
 			long			loop;
 			//NSLog(@"Reading 8 bit PIC file");
 			// GJ: Fetch the data from an offset given by header + frame *bytes per frame
@@ -3353,11 +3353,10 @@ BOOL gUSEPAPYRUSDCMPIX;
 			// iterate over Biorad Notes
 			struct BioradNote bnote;
 			long curPos=0;
-			float POS, STEP;
 			
 		NSRange charRange = {32,127-32+1};
 		NSCharacterSet *goodSet = [NSCharacterSet characterSetWithRange:charRange];
-		NSScanner *noteCleaner,*noteParser;
+		NSScanner *noteCleaner;
 		NSString *aLine = @"";
 		double zCorrection=1.0;
 		
@@ -3461,12 +3460,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 -(void) LoadTiff:(long) directory
 {
-	unsigned char   *argbImage, *tmpPtr, *srcPtr, *srcImage;
-	long			i, x, y, totSize;
+	#ifndef STATIC_DICOM_LIB
+	
+	long			i, totSize;
 	int				realwidth;
 	int				w, h, row;
 	short			bpp, count, tifspp;
-	short			cur_page, number_of_pages, dataType = 0;
+	short			dataType = 0;
 	
 	isRGB = NO;
 	
@@ -3711,10 +3711,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 		TIFFClose(tif);
 	}
 	else NSLog( @"ERROR TIFF UNKNOWN");
+	
+	#endif
 }
 
 -(void) LoadFVTiff
-{	
+{
+	#ifndef STATIC_DICOM_LIB
 	int success = 0, i;
 	short head_size = 0;
 	char* head_data = 0;
@@ -3763,7 +3766,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			pixelRatio = pixelSpacingY / pixelSpacingX;
 	}
 	if(tif) TIFFClose(tif);
-
+	#endif
 }
 
 
@@ -3795,7 +3798,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 	// GJ: this will store the location of the data for this frame
 	int	imageDataOffsetForThisFrame;
 	int		goodFramesChecked=0;
-	int		timeSeries = 0;
 	
 	// do / while loop which iterates over each image in the directory
 	// there will be as many directory entries as there are slices
@@ -4021,8 +4023,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 	{
 		fseek(fp, TIF_CZ_LSMINFO + 8, SEEK_SET);
 		
-		int	DIMENSION_X, DIMENSION_Y, DIMENSION_Z, NUMBER_OF_CHANNELS, TIMESTACKSIZE, DATATYPE, DATATYPE2;
-		short   SCANTYPE, SPECTRALSCAN;
+		int	DIMENSION_X, DIMENSION_Y, DIMENSION_Z, NUMBER_OF_CHANNELS, TIMESTACKSIZE, DATATYPE;
+		short   SCANTYPE;
 		double   VOXELSIZE_X, VOXELSIZE_Y, VOXELSIZE_Z;
 		
 		fread( &DIMENSION_X, 4, 1, fp);		DIMENSION_X = EndianU32_LtoN( DIMENSION_X);
@@ -4226,12 +4228,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject {
 
+	#ifdef OSIRIX_VIEWER
 	// First determine if this RTSTRUCT has already been converted in this session.
 	// Dunno if this is the best way to do this.  Still have to worry about re-creating
 	// ROIs between sessions.  My concerns that this is a temp solution are why the statics
 	// are handled below rather than at the class level.
 
-	if( [browserWindow isCurrentDatabaseBonjour]) {
+	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour]) {
 		NSLog( @"Can't (or shouldn't?) export ROIs to Bonjour mounted Database" );
 		return;
 	}
@@ -4250,6 +4253,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
 	
+	#endif
 }
 	
 - (void)createROIsFromRTSTRUCTThread: (NSDictionary*)dict {
@@ -4602,7 +4606,6 @@ END_CREATE_ROIS:
 	
 	if( isSigned)
 	{
-		int *signedTable = (int*) table;
 		int *signedSrc = (int*) src;
 		
 		i = width * height;
@@ -4633,6 +4636,8 @@ END_CREATE_ROIS:
 
 - (BOOL)loadDICOMDCMFramework	// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 {
+	#ifndef STATIC_DICOM_LIB
+
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
 	//________________________exceptions___________________________________________________
@@ -4661,8 +4666,10 @@ END_CREATE_ROIS:
 		[pool release];
 		return NO;
 	}
-
+	
+	#ifdef OSIRIX_VIEWER
 	[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
+	#endif
 	
 	NSString            *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
 //	NSString			*MediaStorageSOPInstanceUID = [dcmObject attributeValueWithName:@"MediaStorageSOPInstanceUID"];
@@ -4671,19 +4678,10 @@ END_CREATE_ROIS:
 		
 	
 	int					j;
-	
-	int					elemType;
 	int					realwidth, realheight;
 	short				maxFrame = 1;
 	short				imageNb = frameNo;
 	short				ee;
-
-//Color LUT
-	BOOL				fSetClut = NO, fSetClut16 = NO;
-	unsigned char		*clutRed = 0L, *clutGreen = 0L, *clutBlue = 0L;
-	unsigned short		clutEntryR, clutEntryG, clutEntryB;
-	unsigned short		clutDepthR, clutDepthG, clutDepthB;
-	unsigned short		*shortRed, *shortGreen, *shortBlue;
 
 	int					pixmin, pixmax;
 	
@@ -4720,8 +4718,6 @@ END_CREATE_ROIS:
 		oImage = 0L;
 		unsigned char *srcImage = [TIFFRep bitmapData];
 		
-		unsigned char   *ptr, *tmpImage ;
-		int				loop;
 		unsigned char   *argbImage, *tmpPtr, *srcPtr;
 		int x,y;
 		
@@ -5639,13 +5635,15 @@ END_CREATE_ROIS:
 
 	[pool release];
 	return YES;
+	
+	#endif
 }
 
 
 
 - (BOOL) loadDICOMPapyrus // PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 {
-	int				elemType, pixmin, pixmax, realwidth, realheight, highBit;
+	int				elemType, pixmin, pixmax, realwidth, highBit;
 	PapyShort		fileNb, imageNb, maxFrame = 1, ee,  err, theErr;
 	PapyULong		nbVal, i, pos;
 	SElement		*theGroupP;
@@ -5717,7 +5715,9 @@ END_CREATE_ROIS:
 		
 		if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 		
+		#ifdef OSIRIX_VIEWER
 		[self loadCustomImageAnnotationsPapyLink:fileNb DCMLink:nil];
+		#endif
 		
 		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0008);
 		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
@@ -7071,7 +7071,7 @@ END_CREATE_ROIS:
 							unsigned char   *bufPtr = (unsigned char*) oImage;
 							unsigned short	*bufPtr16 = (unsigned short*) oImage;
 							unsigned char   *tmpImage;
-							int			loop, totSize, pixelR, pixelG, pixelB, x, y;
+							int				totSize, pixelR, pixelG, pixelB, x, y;
 
 							totSize = (int) ((int) height * (int) realwidth * 3L);
 							tmpImage = malloc( totSize);
@@ -7134,7 +7134,7 @@ END_CREATE_ROIS:
 					{
 						unsigned short	*bufPtr = (unsigned short*) oImage;
 						unsigned char   *tmpImage;
-						int				loop, totSize, x, y, ii;
+						int				totSize, x, y, ii;
 						unsigned short pixel;
 						
 						fPlanarConf = NO;
@@ -7728,8 +7728,6 @@ BOOL            readable = YES;
 	
 	NSTask			*theTask = [[NSTask alloc] init];
 	
-	NSImage *frame = 0L;
-	
 	[theTask setArguments: [NSArray arrayWithObjects:@"getFrame", srcFile, [NSString stringWithFormat:@"%d", frameNo], 0L]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Quicktime"]];
 	
@@ -7808,13 +7806,22 @@ BOOL            readable = YES;
 			
 			// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+			
+			#ifdef STATIC_DICOM_LIB
+			gUSEPAPYRUSDCMPIX = YES;
+			#endif
+			
 			if( gUSEPAPYRUSDCMPIX)
 			{
+				NSLog( @"gUSEPAPYRUSDCMPIX");
 				success = [self loadDICOMPapyrus];
+				
+				#ifndef STATIC_DICOM_LIB
 				//only try again if is strict DICOM
 				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
 					success = [self loadDICOMDCMFramework];
-					
+				#endif
+				
 				if (success == NO)
 				{
 					convertedDICOM = [convertDICOM( srcFile) retain];
@@ -7836,8 +7843,11 @@ BOOL            readable = YES;
 			else
 			{
 				success = [self loadDICOMDCMFramework];
+				
+				#ifndef STATIC_DICOM_LIB
 				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
 					success = [self loadDICOMPapyrus];
+				#endif
 				
 				if (success == NO)
 				{
@@ -7866,10 +7876,8 @@ BOOL            readable = YES;
 		if( success == NO)	// Is it a NON-DICOM IMAGE ??
 		{
 			int				realwidth, realheight;
-			PapyShort		fileNb, imageNb, err, theErr;
-			PapyULong		nbVal, i, pos;
-			unsigned char   *clutRed = 0L, *clutGreen = 0L, *clutBlue = 0L;
-
+			PapyULong		i;
+			
 			NSImage		*otherImage = 0L;
 			NSString	*extension = [[srcFile pathExtension] lowercaseString];
 			
@@ -8022,7 +8030,7 @@ BOOL            readable = YES;
 						case 2:
 						{
 							unsigned char   *bufPtr;
-							short			*ptr, *tmpImage;
+							short			*ptr;
 							long			loop;
 							
 							bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(realheight * realwidth);
@@ -8056,7 +8064,7 @@ BOOL            readable = YES;
 						case 8:
 						{
 							unsigned int   *bufPtr;
-							short			*ptr, *tmpImage;
+							short			*ptr;
 							long			loop;
 							
 							bufPtr = (unsigned int*) [fileData bytes];
@@ -8384,7 +8392,7 @@ BOOL            readable = YES;
 								case 2:
 								{
 									unsigned char   *bufPtr;
-									short			*ptr, *tmpImage;
+									short			*ptr;
 									long			loop;
 									
 									bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(realheight * realwidth);
@@ -8417,7 +8425,7 @@ BOOL            readable = YES;
 								case 8:
 								{
 									unsigned int   *bufPtr;
-									short			*ptr, *tmpImage;
+									short			*ptr;
 									long			loop;
 									
 									bufPtr = (unsigned int*) [fileData bytes];
@@ -8521,6 +8529,7 @@ BOOL            readable = YES;
 						[extension isEqualToString:@"stk"] == YES ||
 						[extension isEqualToString:@"tif"] == YES)
 				{
+					#ifndef STATIC_DICOM_LIB
 					TIFF* tif = TIFFOpen([srcFile UTF8String], "r");
 					if( tif)
 					{
@@ -8542,6 +8551,7 @@ BOOL            readable = YES;
 							
 							TIFFClose(tif);
 					}
+					#endif
 					
 					if( USECUSTOMTIFF == NO)
 					{
@@ -8551,9 +8561,6 @@ BOOL            readable = YES;
 			
 			if( otherImage != 0L || USECUSTOMTIFF == YES)
 			{
-				unsigned char   *argbImage, *tmpPtr, *srcPtr, *srcImage;
-				long			i, x, y, totSize;
-				
 				if( USECUSTOMTIFF) // Is it a 16/32-bit TIFF not supported by Apple???
 				{
 					[self LoadTiff:frameNo];
@@ -8651,7 +8658,7 @@ BOOL            readable = YES;
 					pixBaseAddr = GetPixBaseAddr(pixMapHandle);
 					
 					unsigned char   *argbImage, *tmpPtr, *srcPtr, *srcImage;
-					long			i, x, y, totSize;
+					long			y, totSize;
 					
 					height = tempRect.bottom;
 					height /= 2;
@@ -8697,7 +8704,9 @@ BOOL            readable = YES;
 //				[self getFrameFromMovie: extension];
 			}
 			
+			#ifdef OSIRIX_VIEWER
 			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:nil];
+			#endif
 		}
 		
 		if( fImage == 0L)
@@ -8885,7 +8894,6 @@ BOOL            readable = YES;
 -(void) computePixMinPixMax
 {
 	float pixmin, pixmax;
-	long i;
 	
 	if( fImage == 0L) return;
 	
@@ -9556,11 +9564,7 @@ BOOL            readable = YES;
 
 - (float*) computeThickSlabRGB
 {
-	long			countstack = 1;
-	BOOL			flip;
-	vImage_Buffer   src, dst;
-	Pixel_8			convTable[256];
-	long			i, diff, val;
+	long			i, diff;
 	float			*fNext = NULL;
 	float			*fResult = malloc( height * width * sizeof(float) );
 	long			next;
@@ -9663,10 +9667,7 @@ BOOL            readable = YES;
 	BOOL			flip = NO; // case 5
 	long			stacksize;
 	unsigned char   *rgbaImage;
-	float			*fNext = NULL;
 	long			i;
-	long			next;
-	vImage_Buffer	srcf, dst8;
 	float			min, max, iwl, iww;
 	float			*fResult = 0L;
 	
@@ -9798,7 +9799,6 @@ BOOL            readable = YES;
 		return;
 	}
 	
-	long			i;
 	float			iwl, iww;
 	
 	[self CheckLoad]; 
@@ -9867,7 +9867,6 @@ BOOL            readable = YES;
 		
 		if( isRGB == NO) //fImage case
 		{
-			vImage_Error	vIerr;
 			vImage_Buffer	srcf, dst8;
 			
 			srcf.data = [self computefImage];
@@ -9904,7 +9903,7 @@ BOOL            readable = YES;
 					
 					if( convolution) srcf.data = [self applyConvolutionOnImage: srcf.data RGB: NO];
 										
-					vImage_Error vIerr = vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8, subGammaFunction, 0);
+					vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8, subGammaFunction, 0);
 				}
 				else
 				{
@@ -9920,7 +9919,6 @@ BOOL            readable = YES;
 						register unsigned char	*dst8Ptr = (unsigned char*)baseAddr;
 						register float			*src32Ptr = srcf.data;
 						register float			from = wl -ww/2.;
-						register float			to = wl +ww/2.;
 						
 						while( ii-- > 0)
 						{
@@ -10190,12 +10188,12 @@ BOOL            readable = YES;
     return height;
 }
 
-- (long) setPheight:(long) h
+- (void) setPheight:(long) h
 {
 	height = h;
 }
 
-- (long) setPwidth:(long) w
+- (void) setPwidth:(long) w
 {
 	width = w;
 }
@@ -10362,7 +10360,7 @@ BOOL            readable = YES;
 	return units;
 }
 
-- (NSString *)setUnits: (NSString *) s {
+- (void)setUnits: (NSString *) s {
 	[units release];
 	units = [s retain]; 
 }
@@ -10376,7 +10374,7 @@ BOOL            readable = YES;
 	return decayFactor;
 }
 
-- (float) setDecayFactor: (float) f
+- (void) setDecayFactor: (float) f
 {
 	decayFactor = f;
 }
@@ -10543,6 +10541,8 @@ BOOL            readable = YES;
 #pragma mark -
 #pragma mark Image Annotations
 
+
+#ifdef OSIRIX_VIEWER
 
 //PapyShort		fileNb
 - (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element papyLink:(PapyShort)fileNb;
@@ -10740,5 +10740,6 @@ BOOL            readable = YES;
 	}
 //	NSLog(@"annotationsDictionary : %@", annotationsDictionary);
 }
+#endif
 
 @end

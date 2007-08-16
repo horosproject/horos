@@ -268,6 +268,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	int success = NO, i;
 	NSString	*extension = [[file pathExtension] lowercaseString];
 	
+	#ifndef STATIC_DICOM_LIB
+	
 	if( [extension isEqualToString:@"tiff"] == YES ||
 		[extension isEqualToString:@"stk"] == YES ||
 		[extension isEqualToString:@"tif"] == YES)
@@ -279,6 +281,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			TIFFClose(tif);
 		}
 	}
+	
+	#endif
+	
 	return success;
 }
 
@@ -287,6 +292,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	int success = NO, i;
 	NSString	*extension = [[file pathExtension] lowercaseString];
 
+	#ifndef STATIC_DICOM_LIB
 	if( [extension isEqualToString:@"tiff"] == YES ||
 		[extension isEqualToString:@"tif"] == YES)
 	{
@@ -299,6 +305,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			TIFFClose(tif);
 		}
 	}
+	#endif
 	return success;
 }
 
@@ -338,6 +345,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 {
 	//return [DicomFile isDICOMFileDCMTK:file]; 
 	// return [DCMObject isDICOM:[NSData dataWithContentsOfFile:file]]; <- This is EXTREMELY slow with large files like XA, CR: You have to read the ENTIRE file to test it.
+		
 	BOOL            readable = YES;
 	PapyShort       fileNb, theErr;
 
@@ -359,10 +367,15 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	[PapyrusLock unlock];
 	
+	NSLog( file);
+	NSLog( @"%d", fileNb);
+	
+	#ifndef STATIC_DICOM_LIB
 	if (!readable)
 	{
 		return [DCMObject isDICOM:[NSData dataWithContentsOfMappedFile:file]];
 	}
+	#endif
     return readable;
 }
 
@@ -393,6 +406,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	int success = 0;
 	NSString	*extension = [[filePath pathExtension] lowercaseString];
 	
+	#ifndef STATIC_DICOM_LIB
 	if( [extension isEqualToString:@"tiff"] == YES ||
 		[extension isEqualToString:@"tif"] == YES)
 	{
@@ -520,6 +534,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if(tif) TIFFClose(tif);
 	}
 	
+	#endif
+	
 	if (success)
 		return 0;
 	else
@@ -570,6 +586,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	NoOfFrames = 1;
 	
+	
 	if( [extension isEqualToString:@"tiff"] == YES ||
 		[extension isEqualToString:@"tif"] == YES ||
 		[extension isEqualToString:@"stk"] == YES ||
@@ -589,6 +606,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				NSRange				range;
 				NSBitmapImageRep	*rep;
 				
+				#ifndef STATIC_DICOM_LIB
 				if( [extension isEqualToString:@"tiff"] == YES ||
 					[extension isEqualToString:@"stk"] == YES ||
 					[extension isEqualToString:@"tif"] == YES)
@@ -615,6 +633,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					}
 				}
 				else
+				#endif
 				{
 					if( [extension isEqualToString:@"pdf"])
 					{
@@ -2400,10 +2419,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	if( TOOLKITPARSER == 1 || isCD == YES) return [self getDicomFilePapyrus: NO];
 	if( TOOLKITPARSER == 0) return [self decodeDICOMFileWithDCMFramework];
 	if( TOOLKITPARSER == 2) return [self getDicomFileDCMTK];
+	
+	return [self getDicomFileDCMTK];
 }
 
 -(short) decodeDICOMFileWithDCMFramework
 {
+	#ifndef STATIC_DICOM_LIB
+	
 	BOOL returnValue = -1;
 	long cardiacTime = -1;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -2782,6 +2805,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	[pool release];
 	
 	return returnValue;
+	
+	#endif
 }
 
 - (id) initRandom

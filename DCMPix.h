@@ -190,10 +190,10 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (float*) fImage;
 
 // Dimensions in pixels
-- (long) setPwidth:(long) w;
+- (void) setPwidth:(long) w;
 - (long) pwidth;
 
-- (long) setPheight:(long) h;
+- (void) setPheight:(long) h;
 - (long) pheight;
 
 // WL & WW
@@ -203,8 +203,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 -(float) fullwl;
 - (float) savedWL;
 - (float) savedWW;
-- (float) setSavedWL:(float) l;
-- (float) setSavedWW:(float) w;
+- (void) setSavedWL:(float) l;
+- (void) setSavedWW:(float) w;
 - (void) changeWLWW:(float)newWL :(float)newWW;
 -(void) computePixMinPixMax;
 - (float) maxValueOfSeries;
@@ -431,7 +431,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (void) setSUVConverted : (BOOL) v;
 - (BOOL) SUVConverted;
 - (float) decayFactor;
-- (float) setDecayFactor: (float) f;
+- (void) setDecayFactor: (float) f;
 - (NSString*) units;
 - (NSString*) decayCorrection;
 - (void) setDecayCorrection : (NSString*) s;
@@ -440,7 +440,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (BOOL) displaySUVValue;
 - (void) setDisplaySUVValue : (BOOL) v;
 - (void) copySUVfrom: (DCMPix*) from;
-- (NSString *)setUnits: (NSString *) s;
+- (void)setUnits: (NSString *) s;
 - (float) getPixelValueX: (long) x Y:(long) y;
 
 - (NSString *)srcFile;
