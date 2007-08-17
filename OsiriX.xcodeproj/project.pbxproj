@@ -6489,6 +6489,8 @@
 		CE6E2CB906CAE45A00BC7907 /* PlotView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6E2CB106CAE45A00BC7907 /* PlotView.m */; };
 		CE6E2D1406CAED0300BC7907 /* Plot.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE6E2D1106CAED0300BC7907 /* Plot.nib */; };
 		CE70CB5507C36959000B0E49 /* Deployment-InfoVP.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE70CB5407C36959000B0E49 /* Deployment-InfoVP.plist */; };
+		CE7398CA0C7643CF00BCA45A /* libdcmprintscu.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
+		CE7399030C7643DB00BCA45A /* libdcmprintscu.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
 		CE74456906DBA4CB0034D05E /* ITK.h in Headers */ = {isa = PBXBuildFile; fileRef = CE74456706DBA4CB0034D05E /* ITK.h */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CE74456A06DBA4CB0034D05E /* ITK.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE74456806DBA4CB0034D05E /* ITK.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CE74824206C9701200FFA74C /* trash.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE74824006C9701200FFA74C /* trash.icns */; };
@@ -8058,6 +8060,7 @@
 			files = (
 				ABDF6E650BE0926600793094 /* Growl.framework in CopyFiles */,
 				AB7D548D0AF6428F00012A2F /* libxerces-c.27.dylib in CopyFiles */,
+				CE7398CA0C7643CF00BCA45A /* libdcmprintscu.dylib in CopyFiles */,
 				CEFE606B0979B1ED00891EA9 /* DotMacKit.framework in CopyFiles */,
 				CE416BCE07969EEB009A8D42 /* OsiriX.framework in CopyFiles */,
 				7EC3593206FE21EF00188171 /* libtiff.dylib in CopyFiles */,
@@ -8071,6 +8074,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				AB7D548E0AF6429400012A2F /* libxerces-c.27.dylib in CopyFiles */,
+				CE7399030C7643DB00BCA45A /* libdcmprintscu.dylib in CopyFiles */,
 				ABDF6E980BE0929100793094 /* Growl.framework in CopyFiles */,
 				CEFE606C0979B1F600891EA9 /* DotMacKit.framework in CopyFiles */,
 				7E76739D0792E2B700462780 /* OsiriX.framework in CopyFiles */,
