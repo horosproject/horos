@@ -484,6 +484,7 @@ static NSString *hostName = @"";
 		[clutValues setObject:aCLUTFilter forKey:@"Endoscopy"];
 	}
 	
+	#ifdef OSIRIX_VIEWER
 	[self addCLUT: @"VR Muscles-Bones"  dictionary: clutValues];
 	[self addCLUT: @"VR Bones"  dictionary: clutValues];
 	[self addCLUT: @"VR Red Vessels"  dictionary: clutValues];
@@ -508,6 +509,7 @@ static NSString *hostName = @"";
 	[self addCLUT: @"HotGreen"  dictionary: clutValues];	
 
 	[defaultValues setObject:clutValues forKey:@"CLUT"];
+	#endif
 	
 	// ** PREFERENCES - SERVERS
 	

@@ -4636,7 +4636,7 @@ END_CREATE_ROIS:
 
 - (BOOL)loadDICOMDCMFramework	// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 {
-	#ifndef STATIC_DICOM_LIB
+//	#ifndef STATIC_DICOM_LIB
 
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
@@ -5636,7 +5636,7 @@ END_CREATE_ROIS:
 	[pool release];
 	return YES;
 	
-	#endif
+//	#endif
 }
 
 
@@ -7807,20 +7807,13 @@ BOOL            readable = YES;
 			// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			
-			#ifdef STATIC_DICOM_LIB
-			gUSEPAPYRUSDCMPIX = YES;
-			#endif
-			
 			if( gUSEPAPYRUSDCMPIX)
 			{
-				NSLog( @"gUSEPAPYRUSDCMPIX");
 				success = [self loadDICOMPapyrus];
 				
-				#ifndef STATIC_DICOM_LIB
 				//only try again if is strict DICOM
 				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
 					success = [self loadDICOMDCMFramework];
-				#endif
 				
 				if (success == NO)
 				{
@@ -7844,10 +7837,8 @@ BOOL            readable = YES;
 			{
 				success = [self loadDICOMDCMFramework];
 				
-				#ifndef STATIC_DICOM_LIB
 				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
 					success = [self loadDICOMPapyrus];
-				#endif
 				
 				if (success == NO)
 				{

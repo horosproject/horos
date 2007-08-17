@@ -370,12 +370,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	NSLog( file);
 	NSLog( @"%d", fileNb);
 	
-	#ifndef STATIC_DICOM_LIB
 	if (!readable)
 	{
 		return [DCMObject isDICOM:[NSData dataWithContentsOfMappedFile:file]];
 	}
-	#endif
     return readable;
 }
 
@@ -2425,8 +2423,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 -(short) decodeDICOMFileWithDCMFramework
 {
-	#ifndef STATIC_DICOM_LIB
-	
 	BOOL returnValue = -1;
 	long cardiacTime = -1;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -2805,8 +2801,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	[pool release];
 	
 	return returnValue;
-	
-	#endif
 }
 
 - (id) initRandom

@@ -6574,6 +6574,428 @@
 		CE9AF29F0AED5EE600606C3D /* Quicktime in Resources */ = {isa = PBXBuildFile; fileRef = CE9AF29C0AED5EE600606C3D /* Quicktime */; };
 		CE9C734A0B34946B0062FCCC /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = CE9C73490B34946B0062FCCC /* echoscu */; };
 		CE9C734B0B34946B0062FCCC /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = CE9C73490B34946B0062FCCC /* echoscu */; };
+		CE9CED890C75BDF900752D4B /* DCMRootRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E96AD9007CE753C005D435B /* DCMRootRecord.h */; };
+		CE9CED8A0C75BDF900752D4B /* DCMRootRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E96AD9107CE753C005D435B /* DCMRootRecord.m */; };
+		CE9CED8B0C75BDF900752D4B /* DCMRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E331F4907CD416F00AA50DF /* DCMRecord.h */; };
+		CE9CED8C0C75BDF900752D4B /* DCMRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E331F4A07CD416F00AA50DF /* DCMRecord.m */; };
+		CE9CED8D0C75BDF900752D4B /* DCMReportRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EB1607CA48F90075BD36 /* DCMReportRecord.h */; };
+		CE9CED8E0C75BDF900752D4B /* DCMReportRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EB1707CA48F90075BD36 /* DCMReportRecord.m */; };
+		CE9CED8F0C75BDF900752D4B /* DCMImageRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EB1007CA48E00075BD36 /* DCMImageRecord.h */; };
+		CE9CED900C75BDF900752D4B /* DCMImageRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EB1107CA48E00075BD36 /* DCMImageRecord.m */; };
+		CE9CED910C75BDF900752D4B /* DCMSeriesRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EB0A07CA48CE0075BD36 /* DCMSeriesRecord.h */; };
+		CE9CED920C75BDF900752D4B /* DCMSeriesRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EB0B07CA48CE0075BD36 /* DCMSeriesRecord.m */; };
+		CE9CED930C75BDF900752D4B /* DCMStudyRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EB0407CA48BD0075BD36 /* DCMStudyRecord.h */; };
+		CE9CED940C75BDF900752D4B /* DCMStudyRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EB0507CA48BD0075BD36 /* DCMStudyRecord.m */; };
+		CE9CED950C75BDF900752D4B /* DCMPatientRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EAFE07CA48AA0075BD36 /* DCMPatientRecord.h */; };
+		CE9CED960C75BDF900752D4B /* DCMPatientRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EAFF07CA48AA0075BD36 /* DCMPatientRecord.m */; };
+		CE9CED970C75BDF900752D4B /* DCMDirectory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E93EAF207CA486E0075BD36 /* DCMDirectory.h */; };
+		CE9CED980C75BDF900752D4B /* DCMDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93EAF307CA486E0075BD36 /* DCMDirectory.m */; };
+		CE9CED990C75BE0A00752D4B /* DCMNetServiceDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EBB31070887269B00BF6B39 /* DCMNetServiceDelegate.h */; };
+		CE9CED9A0C75BE0A00752D4B /* DCMNetServiceDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EBB31080887269B00BF6B39 /* DCMNetServiceDelegate.m */; };
+		CE9CED9B0C75BE0A00752D4B /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; };
+		CE9CED9C0C75BE0A00752D4B /* jpegdatasrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2269C406BEF624003B09E5 /* jpegdatasrc.h */; };
+		CE9CED9D0C75BE0A00752D4B /* jpegdatasrc.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269C506BEF624003B09E5 /* jpegdatasrc.m */; };
+		CE9CED9E0C75BE0A00752D4B /* DCMPixelDataAttributeJPEG2000.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE38C7C06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.h */; };
+		CE9CED9F0C75BE0A00752D4B /* DCMPixelDataAttributeJPEG2000.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE38C7D06F0FF1100036C7F /* DCMPixelDataAttributeJPEG2000.m */; };
+		CE9CEDA00C75BE0A00752D4B /* DCMPixelDataAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ECBB8210683A68D00FF3FF4 /* DCMPixelDataAttribute.h */; };
+		CE9CEDA10C75BE0A00752D4B /* DCMPixelDataAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ECBB8220683A68D00FF3FF4 /* DCMPixelDataAttribute.m */; };
+		CE9CEDA20C75BE0A00752D4B /* DCMPixelDataAttributeJPEG8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB3F606BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.h */; };
+		CE9CEDA30C75BE0A00752D4B /* DCMPixelDataAttributeJPEG8.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB3F706BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.m */; };
+		CE9CEDA40C75BE0A00752D4B /* DCMPixelDataAttributeJPEG12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB40606BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.h */; };
+		CE9CEDA50C75BE0A00752D4B /* DCMPixelDataAttributeJPEG12.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB40706BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.m */; };
+		CE9CEDA60C75BE0A00752D4B /* DCMPixelDataAttributeJPEG16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB41606BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.h */; };
+		CE9CEDA70C75BE0A00752D4B /* DCMPixelDataAttributeJPEG16.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB41706BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.m */; };
+		CE9CEDA80C75BE0A00752D4B /* DCM Framework_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
+		CE9CEDA90C75BE0A00752D4B /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; };
+		CE9CEDAA0C75BE0A00752D4B /* DCMAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0B3A15067526A600908593 /* DCMAttribute.m */; };
+		CE9CEDAB0C75BE0A00752D4B /* DCMSequenceAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE0DC3C067A5138003E745F /* DCMSequenceAttribute.h */; };
+		CE9CEDAC0C75BE0A00752D4B /* DCMSequenceAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE0DC3D067A5138003E745F /* DCMSequenceAttribute.m */; };
+		CE9CEDAD0C75BE0A00752D4B /* DCMCharacterSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE0DC00067A48A3003E745F /* DCMCharacterSet.h */; };
+		CE9CEDAE0C75BE0A00752D4B /* DCMCharacterSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE0DC01067A48A3003E745F /* DCMCharacterSet.m */; };
+		CE9CEDAF0C75BE0A00752D4B /* DCMAttributeTag.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A16067526A600908593 /* DCMAttributeTag.h */; };
+		CE9CEDB00C75BE0A00752D4B /* DCMAttributeTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0B3A17067526A600908593 /* DCMAttributeTag.m */; };
+		CE9CEDB10C75BE0A00752D4B /* DCMDataContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A18067526A600908593 /* DCMDataContainer.h */; };
+		CE9CEDB20C75BE0A00752D4B /* DCMDataContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0B3A19067526A600908593 /* DCMDataContainer.m */; };
+		CE9CEDB30C75BE0A00752D4B /* DCMObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A1A067526A600908593 /* DCMObject.h */; };
+		CE9CEDB40C75BE0A00752D4B /* DCMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0B3A1B067526A600908593 /* DCMObject.m */; };
+		CE9CEDB50C75BE0A00752D4B /* DCMLimitedObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E82C63D08D9FF35000BAFF9 /* DCMLimitedObject.h */; };
+		CE9CEDB60C75BE0A00752D4B /* DCMLimitedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E82C63E08D9FF35000BAFF9 /* DCMLimitedObject.m */; };
+		CE9CEDB70C75BE0A00752D4B /* DCMUIDs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB767E0678071400F242F3 /* DCMUIDs.h */; };
+		CE9CEDB80C75BE0A00752D4B /* DCMTagDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB76370677FDA700F242F3 /* DCMTagDictionary.h */; };
+		CE9CEDB90C75BE0A00752D4B /* DCMTagDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = BFEB76380677FDA700F242F3 /* DCMTagDictionary.m */; };
+		CE9CEDBA0C75BE0A00752D4B /* DCMTagForNameDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB76390677FDA700F242F3 /* DCMTagForNameDictionary.h */; };
+		CE9CEDBB0C75BE0A00752D4B /* DCMTagForNameDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = BFEB763A0677FDA700F242F3 /* DCMTagForNameDictionary.m */; };
+		CE9CEDBC0C75BE0A00752D4B /* DCMTransferSyntax.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3BB37E067808D5004F6E91 /* DCMTransferSyntax.h */; };
+		CE9CEDBD0C75BE0A00752D4B /* DCMTransferSyntax.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3BB37F067808D5004F6E91 /* DCMTransferSyntax.m */; };
+		CE9CEDBE0C75BE0A00752D4B /* DCMValueRepresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A1C067526A600908593 /* DCMValueRepresentation.h */; };
+		CE9CEDBF0C75BE0A00752D4B /* DCMValueRepresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0B3A1D067526A600908593 /* DCMValueRepresentation.m */; };
+		CE9CEDC00C75BE0A00752D4B /* DCMCalendarDate.h in Headers */ = {isa = PBXBuildFile; fileRef = BF61E58C06A5BB9E001C0B29 /* DCMCalendarDate.h */; };
+		CE9CEDC10C75BE0A00752D4B /* DCMCalendarDate.m in Sources */ = {isa = PBXBuildFile; fileRef = BF61E58D06A5BB9E001C0B29 /* DCMCalendarDate.m */; };
+		CE9CEDC20C75BE0A00752D4B /* DCMPresentationState.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E8340D908E9F7C500E41C5E /* DCMPresentationState.h */; };
+		CE9CEDC30C75BE0A00752D4B /* DCMPresentationState.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8340DA08E9F7C500E41C5E /* DCMPresentationState.m */; };
+		CE9CEDC40C75BE0A00752D4B /* DCMEncapsulatedPDF.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */; };
+		CE9CEDC50C75BE0A00752D4B /* DCMEncapsulatedPDF.m in Sources */ = {isa = PBXBuildFile; fileRef = BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */; };
+		CE9CEDC60C75BE1F00752D4B /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269C806BEF624003B09E5 /* jaricom.c */; };
+		CE9CEDC70C75BE1F00752D4B /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269C906BEF624003B09E5 /* jcapimin.c */; };
+		CE9CEDC80C75BE1F00752D4B /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269CA06BEF624003B09E5 /* jcapistd.c */; };
+		CE9CEDC90C75BE1F00752D4B /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269CB06BEF624003B09E5 /* jcarith.c */; };
+		CE9CEDCA0C75BE1F00752D4B /* jccoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269CC06BEF624003B09E5 /* jccoefct.c */; };
+		CE9CEDCB0C75BE1F00752D4B /* jccolor.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269CD06BEF624003B09E5 /* jccolor.c */; };
+		CE9CEDCC0C75BE1F00752D4B /* jcdctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269CE06BEF624003B09E5 /* jcdctmgr.c */; };
+		CE9CEDCD0C75BE1F00752D4B /* jcdiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269CF06BEF624003B09E5 /* jcdiffct.c */; };
+		CE9CEDCE0C75BE1F00752D4B /* jchuff.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269D006BEF624003B09E5 /* jchuff.c */; };
+		CE9CEDCF0C75BE1F00752D4B /* jchuff12.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2269D106BEF624003B09E5 /* jchuff12.h */; };
+		CE9CEDD00C75BE1F00752D4B /* jcinit.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269D206BEF624003B09E5 /* jcinit.c */; };
+		CE9CEDD10C75BE1F00752D4B /* jclhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269D306BEF624003B09E5 /* jclhuff.c */; };
+		CE9CEDD20C75BE1F00752D4B /* jclossls.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269D406BEF624003B09E5 /* jclossls.c */; };
+		CE9CEDD30C75BE1F00752D4B /* jclossy.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269D506BEF624003B09E5 /* jclossy.c */; };
+		CE9CEDD40C75BE1F00752D4B /* jcmainct.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269D606BEF624003B09E5 /* jcmainct.c */; };
+		CE9CEDD50C75BE1F00752D4B /* jcmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269D706BEF624003B09E5 /* jcmarker.c */; };
+		CE9CEDD60C75BE1F00752D4B /* jcmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269D806BEF624003B09E5 /* jcmaster.c */; };
+		CE9CEDD70C75BE1F00752D4B /* jcodec.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269D906BEF624003B09E5 /* jcodec.c */; };
+		CE9CEDD80C75BE1F00752D4B /* jcomapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269DA06BEF624003B09E5 /* jcomapi.c */; };
+		CE9CEDD90C75BE1F00752D4B /* jconfig12.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2269DB06BEF624003B09E5 /* jconfig12.h */; };
+		CE9CEDDA0C75BE1F00752D4B /* jcparam.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269DC06BEF624003B09E5 /* jcparam.c */; };
+		CE9CEDDB0C75BE1F00752D4B /* jcphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269DD06BEF624003B09E5 /* jcphuff.c */; };
+		CE9CEDDC0C75BE1F00752D4B /* jcpred.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269DE06BEF624003B09E5 /* jcpred.c */; };
+		CE9CEDDD0C75BE1F00752D4B /* jcprepct.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269DF06BEF624003B09E5 /* jcprepct.c */; };
+		CE9CEDDE0C75BE1F00752D4B /* jcsample.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269E006BEF624003B09E5 /* jcsample.c */; };
+		CE9CEDDF0C75BE1F00752D4B /* jcscale.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269E106BEF624003B09E5 /* jcscale.c */; };
+		CE9CEDE00C75BE1F00752D4B /* jcshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269E206BEF624003B09E5 /* jcshuff.c */; };
+		CE9CEDE10C75BE1F00752D4B /* jctrans.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269E306BEF624003B09E5 /* jctrans.c */; };
+		CE9CEDE20C75BE1F00752D4B /* jdapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269E406BEF624003B09E5 /* jdapimin.c */; };
+		CE9CEDE30C75BE1F00752D4B /* jdapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269E506BEF624003B09E5 /* jdapistd.c */; };
+		CE9CEDE40C75BE1F00752D4B /* jdarith.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269E606BEF624003B09E5 /* jdarith.c */; };
+		CE9CEDE50C75BE1F00752D4B /* jdatadst.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269E706BEF624003B09E5 /* jdatadst.c */; };
+		CE9CEDE60C75BE1F00752D4B /* jdatasrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269E806BEF624003B09E5 /* jdatasrc.c */; };
+		CE9CEDE70C75BE1F00752D4B /* jdcoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269E906BEF624003B09E5 /* jdcoefct.c */; };
+		CE9CEDE80C75BE1F00752D4B /* jdcolor.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269EA06BEF624003B09E5 /* jdcolor.c */; };
+		CE9CEDE90C75BE1F00752D4B /* jdct12.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2269EB06BEF624003B09E5 /* jdct12.h */; };
+		CE9CEDEA0C75BE1F00752D4B /* jddctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269EC06BEF624003B09E5 /* jddctmgr.c */; };
+		CE9CEDEB0C75BE1F00752D4B /* jddiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269ED06BEF624003B09E5 /* jddiffct.c */; };
+		CE9CEDEC0C75BE1F00752D4B /* jdhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269EE06BEF624003B09E5 /* jdhuff.c */; };
+		CE9CEDED0C75BE1F00752D4B /* jdhuff12.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2269EF06BEF624003B09E5 /* jdhuff12.h */; };
+		CE9CEDEE0C75BE1F00752D4B /* jdinput.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269F006BEF624003B09E5 /* jdinput.c */; };
+		CE9CEDEF0C75BE1F00752D4B /* jdlhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269F106BEF624003B09E5 /* jdlhuff.c */; };
+		CE9CEDF00C75BE1F00752D4B /* jdlossls.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269F206BEF624003B09E5 /* jdlossls.c */; };
+		CE9CEDF10C75BE1F00752D4B /* jdlossy.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269F306BEF624003B09E5 /* jdlossy.c */; };
+		CE9CEDF20C75BE1F00752D4B /* jdmainct.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269F406BEF624003B09E5 /* jdmainct.c */; };
+		CE9CEDF30C75BE1F00752D4B /* jdmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269F506BEF624003B09E5 /* jdmarker.c */; };
+		CE9CEDF40C75BE1F00752D4B /* jdmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269F606BEF624003B09E5 /* jdmaster.c */; };
+		CE9CEDF50C75BE1F00752D4B /* jdmerge.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269F706BEF624003B09E5 /* jdmerge.c */; };
+		CE9CEDF60C75BE1F00752D4B /* jdphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269F806BEF624003B09E5 /* jdphuff.c */; };
+		CE9CEDF70C75BE1F00752D4B /* jdpostct.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269F906BEF624003B09E5 /* jdpostct.c */; };
+		CE9CEDF80C75BE1F00752D4B /* jdpred.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269FA06BEF624003B09E5 /* jdpred.c */; };
+		CE9CEDF90C75BE1F00752D4B /* jdsample.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269FB06BEF624003B09E5 /* jdsample.c */; };
+		CE9CEDFA0C75BE1F00752D4B /* jdscale.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269FC06BEF624003B09E5 /* jdscale.c */; };
+		CE9CEDFB0C75BE1F00752D4B /* jdshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269FD06BEF624003B09E5 /* jdshuff.c */; };
+		CE9CEDFC0C75BE1F00752D4B /* jdtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269FE06BEF624003B09E5 /* jdtrans.c */; };
+		CE9CEDFD0C75BE1F00752D4B /* jerror.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E2269FF06BEF624003B09E5 /* jerror.c */; };
+		CE9CEDFE0C75BE1F00752D4B /* jerror12.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E226A0006BEF624003B09E5 /* jerror12.h */; };
+		CE9CEDFF0C75BE1F00752D4B /* jfdctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E226A0106BEF624003B09E5 /* jfdctflt.c */; };
+		CE9CEE000C75BE1F00752D4B /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E226A0206BEF624003B09E5 /* jfdctfst.c */; };
+		CE9CEE010C75BE1F00752D4B /* jfdctint.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E226A0306BEF624003B09E5 /* jfdctint.c */; };
+		CE9CEE020C75BE1F00752D4B /* jidctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E226A0406BEF624003B09E5 /* jidctflt.c */; };
+		CE9CEE030C75BE1F00752D4B /* jidctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E226A0506BEF624003B09E5 /* jidctfst.c */; };
+		CE9CEE040C75BE1F00752D4B /* jidctint.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E226A0606BEF624003B09E5 /* jidctint.c */; };
+		CE9CEE050C75BE1F00752D4B /* jidctred.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E226A0706BEF624003B09E5 /* jidctred.c */; };
+		CE9CEE060C75BE1F00752D4B /* jinclude12.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E226A0806BEF624003B09E5 /* jinclude12.h */; };
+		CE9CEE070C75BE1F00752D4B /* jlossls12.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E226A0906BEF624003B09E5 /* jlossls12.h */; };
+		CE9CEE080C75BE1F00752D4B /* jlossy12.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E226A0A06BEF624003B09E5 /* jlossy12.h */; };
+		CE9CEE090C75BE1F00752D4B /* jmemmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E226A0B06BEF624003B09E5 /* jmemmgr.c */; };
+		CE9CEE0A0C75BE1F00752D4B /* jmemnobs.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E226A0C06BEF624003B09E5 /* jmemnobs.c */; };
+		CE9CEE0B0C75BE1F00752D4B /* jmemsys12.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E226A0D06BEF624003B09E5 /* jmemsys12.h */; };
+		CE9CEE0C0C75BE1F00752D4B /* jmorecfg12.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E226A0E06BEF624003B09E5 /* jmorecfg12.h */; };
+		CE9CEE0D0C75BE1F00752D4B /* jpegint12.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E226A0F06BEF624003B09E5 /* jpegint12.h */; };
+		CE9CEE0E0C75BE1F00752D4B /* jpeglib12.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E226A1006BEF624003B09E5 /* jpeglib12.h */; };
+		CE9CEE0F0C75BE1F00752D4B /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E226A1106BEF624003B09E5 /* jquant1.c */; };
+		CE9CEE100C75BE1F00752D4B /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E226A1206BEF624003B09E5 /* jquant2.c */; };
+		CE9CEE110C75BE1F00752D4B /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7E226A1306BEF624003B09E5 /* jutils.c */; };
+		CE9CEE120C75BE1F00752D4B /* jversion12.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E226A1406BEF624003B09E5 /* jversion12.h */; };
+		CE9CEE130C75BE1F00752D4B /* osconfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E226A1706BEF624003B09E5 /* osconfig.h */; };
+		CE9CEE140C75BE2900752D4B /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15706BF2C4F00C7EF1E /* jaricom.c */; };
+		CE9CEE150C75BE2900752D4B /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15806BF2C4F00C7EF1E /* jcapimin.c */; };
+		CE9CEE160C75BE2900752D4B /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15906BF2C4F00C7EF1E /* jcapistd.c */; };
+		CE9CEE170C75BE2900752D4B /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15A06BF2C4F00C7EF1E /* jcarith.c */; };
+		CE9CEE180C75BE2900752D4B /* jccoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15B06BF2C4F00C7EF1E /* jccoefct.c */; };
+		CE9CEE190C75BE2900752D4B /* jccolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15C06BF2C4F00C7EF1E /* jccolor.c */; };
+		CE9CEE1A0C75BE2900752D4B /* jcdctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15D06BF2C4F00C7EF1E /* jcdctmgr.c */; };
+		CE9CEE1B0C75BE2900752D4B /* jcdiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15E06BF2C4F00C7EF1E /* jcdiffct.c */; };
+		CE9CEE1C0C75BE2900752D4B /* jchuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15F06BF2C4F00C7EF1E /* jchuff.c */; };
+		CE9CEE1D0C75BE2900752D4B /* jchuff16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB16006BF2C4F00C7EF1E /* jchuff16.h */; };
+		CE9CEE1E0C75BE2900752D4B /* jcinit.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB16106BF2C4F00C7EF1E /* jcinit.c */; };
+		CE9CEE1F0C75BE2900752D4B /* jclhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB16206BF2C4F00C7EF1E /* jclhuff.c */; };
+		CE9CEE200C75BE2900752D4B /* jclossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB16306BF2C4F00C7EF1E /* jclossls.c */; };
+		CE9CEE210C75BE2900752D4B /* jclossy.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB16406BF2C4F00C7EF1E /* jclossy.c */; };
+		CE9CEE220C75BE2900752D4B /* jcmainct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB16506BF2C4F00C7EF1E /* jcmainct.c */; };
+		CE9CEE230C75BE2900752D4B /* jcmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB16606BF2C4F00C7EF1E /* jcmarker.c */; };
+		CE9CEE240C75BE2900752D4B /* jcmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB16706BF2C4F00C7EF1E /* jcmaster.c */; };
+		CE9CEE250C75BE2900752D4B /* jcodec.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB16806BF2C4F00C7EF1E /* jcodec.c */; };
+		CE9CEE260C75BE2900752D4B /* jcomapi.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB16906BF2C4F00C7EF1E /* jcomapi.c */; };
+		CE9CEE270C75BE2900752D4B /* jconfig16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB16A06BF2C4F00C7EF1E /* jconfig16.h */; };
+		CE9CEE280C75BE2900752D4B /* jcparam.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB16B06BF2C4F00C7EF1E /* jcparam.c */; };
+		CE9CEE290C75BE2900752D4B /* jcphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB16C06BF2C4F00C7EF1E /* jcphuff.c */; };
+		CE9CEE2A0C75BE2900752D4B /* jcpred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB16D06BF2C4F00C7EF1E /* jcpred.c */; };
+		CE9CEE2B0C75BE2900752D4B /* jcprepct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB16E06BF2C4F00C7EF1E /* jcprepct.c */; };
+		CE9CEE2C0C75BE2900752D4B /* jcsample.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB16F06BF2C4F00C7EF1E /* jcsample.c */; };
+		CE9CEE2D0C75BE2900752D4B /* jcscale.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB17006BF2C4F00C7EF1E /* jcscale.c */; };
+		CE9CEE2E0C75BE2900752D4B /* jcshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB17106BF2C4F00C7EF1E /* jcshuff.c */; };
+		CE9CEE2F0C75BE2900752D4B /* jctrans.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB17206BF2C4F00C7EF1E /* jctrans.c */; };
+		CE9CEE300C75BE2900752D4B /* jdapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB17306BF2C4F00C7EF1E /* jdapimin.c */; };
+		CE9CEE310C75BE2900752D4B /* jdapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB17406BF2C4F00C7EF1E /* jdapistd.c */; };
+		CE9CEE320C75BE2900752D4B /* jdarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB17506BF2C4F00C7EF1E /* jdarith.c */; };
+		CE9CEE330C75BE2900752D4B /* jdatadst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB17606BF2C4F00C7EF1E /* jdatadst.c */; };
+		CE9CEE340C75BE2900752D4B /* jdatasrc.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB17706BF2C4F00C7EF1E /* jdatasrc.c */; };
+		CE9CEE350C75BE2900752D4B /* jdcoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB17806BF2C4F00C7EF1E /* jdcoefct.c */; };
+		CE9CEE360C75BE2900752D4B /* jdcolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB17906BF2C4F00C7EF1E /* jdcolor.c */; };
+		CE9CEE370C75BE2900752D4B /* jdct16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB17A06BF2C4F00C7EF1E /* jdct16.h */; };
+		CE9CEE380C75BE2900752D4B /* jddctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB17B06BF2C4F00C7EF1E /* jddctmgr.c */; };
+		CE9CEE390C75BE2900752D4B /* jddiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB17C06BF2C4F00C7EF1E /* jddiffct.c */; };
+		CE9CEE3A0C75BE2900752D4B /* jdhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB17D06BF2C4F00C7EF1E /* jdhuff.c */; };
+		CE9CEE3B0C75BE2900752D4B /* jdhuff16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB17E06BF2C4F00C7EF1E /* jdhuff16.h */; };
+		CE9CEE3C0C75BE2900752D4B /* jdinput.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB17F06BF2C4F00C7EF1E /* jdinput.c */; };
+		CE9CEE3D0C75BE2900752D4B /* jdlhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB18006BF2C4F00C7EF1E /* jdlhuff.c */; };
+		CE9CEE3E0C75BE2900752D4B /* jdlossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB18106BF2C5000C7EF1E /* jdlossls.c */; };
+		CE9CEE3F0C75BE2900752D4B /* jdlossy.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB18206BF2C5000C7EF1E /* jdlossy.c */; };
+		CE9CEE400C75BE2900752D4B /* jdmainct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB18306BF2C5000C7EF1E /* jdmainct.c */; };
+		CE9CEE410C75BE2900752D4B /* jdmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB18406BF2C5000C7EF1E /* jdmarker.c */; };
+		CE9CEE420C75BE2900752D4B /* jdmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB18506BF2C5000C7EF1E /* jdmaster.c */; };
+		CE9CEE430C75BE2900752D4B /* jdmerge.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB18606BF2C5000C7EF1E /* jdmerge.c */; };
+		CE9CEE440C75BE2900752D4B /* jdphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB18706BF2C5000C7EF1E /* jdphuff.c */; };
+		CE9CEE450C75BE2900752D4B /* jdpostct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB18806BF2C5000C7EF1E /* jdpostct.c */; };
+		CE9CEE460C75BE2900752D4B /* jdpred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB18906BF2C5000C7EF1E /* jdpred.c */; };
+		CE9CEE470C75BE2900752D4B /* jdsample.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB18A06BF2C5000C7EF1E /* jdsample.c */; };
+		CE9CEE480C75BE2900752D4B /* jdscale.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB18B06BF2C5000C7EF1E /* jdscale.c */; };
+		CE9CEE490C75BE2900752D4B /* jdshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB18C06BF2C5000C7EF1E /* jdshuff.c */; };
+		CE9CEE4A0C75BE2900752D4B /* jdtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB18D06BF2C5000C7EF1E /* jdtrans.c */; };
+		CE9CEE4B0C75BE2900752D4B /* jerror.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB18E06BF2C5000C7EF1E /* jerror.c */; };
+		CE9CEE4C0C75BE2900752D4B /* jerror16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB18F06BF2C5000C7EF1E /* jerror16.h */; };
+		CE9CEE4D0C75BE2900752D4B /* jfdctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB19006BF2C5000C7EF1E /* jfdctflt.c */; };
+		CE9CEE4E0C75BE2900752D4B /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB19106BF2C5000C7EF1E /* jfdctfst.c */; };
+		CE9CEE4F0C75BE2900752D4B /* jfdctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB19206BF2C5000C7EF1E /* jfdctint.c */; };
+		CE9CEE500C75BE2900752D4B /* jidctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB19306BF2C5000C7EF1E /* jidctflt.c */; };
+		CE9CEE510C75BE2900752D4B /* jidctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB19406BF2C5000C7EF1E /* jidctfst.c */; };
+		CE9CEE520C75BE2900752D4B /* jidctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB19506BF2C5000C7EF1E /* jidctint.c */; };
+		CE9CEE530C75BE2900752D4B /* jidctred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB19606BF2C5000C7EF1E /* jidctred.c */; };
+		CE9CEE540C75BE2900752D4B /* jinclude16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB19706BF2C5000C7EF1E /* jinclude16.h */; };
+		CE9CEE550C75BE2900752D4B /* jlossls16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB19806BF2C5000C7EF1E /* jlossls16.h */; };
+		CE9CEE560C75BE2900752D4B /* jlossy16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB19906BF2C5000C7EF1E /* jlossy16.h */; };
+		CE9CEE570C75BE2900752D4B /* jmemmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB19A06BF2C5000C7EF1E /* jmemmgr.c */; };
+		CE9CEE580C75BE2900752D4B /* jmemnobs.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB19B06BF2C5000C7EF1E /* jmemnobs.c */; };
+		CE9CEE590C75BE2900752D4B /* jmemsys16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB19C06BF2C5000C7EF1E /* jmemsys16.h */; };
+		CE9CEE5A0C75BE2900752D4B /* jmorecfg16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB19D06BF2C5000C7EF1E /* jmorecfg16.h */; };
+		CE9CEE5B0C75BE2900752D4B /* jpegint16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB19E06BF2C5000C7EF1E /* jpegint16.h */; };
+		CE9CEE5C0C75BE2900752D4B /* jpeglib16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB19F06BF2C5000C7EF1E /* jpeglib16.h */; };
+		CE9CEE5D0C75BE2900752D4B /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB1A006BF2C5000C7EF1E /* jquant1.c */; };
+		CE9CEE5E0C75BE2900752D4B /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB1A106BF2C5000C7EF1E /* jquant2.c */; };
+		CE9CEE5F0C75BE2900752D4B /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB1A206BF2C5000C7EF1E /* jutils.c */; };
+		CE9CEE600C75BE2900752D4B /* jversion16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB1A306BF2C5000C7EF1E /* jversion16.h */; };
+		CE9CEE610C75BE3200752D4B /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10606BF2C4E00C7EF1E /* jaricom.c */; };
+		CE9CEE620C75BE3200752D4B /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10706BF2C4E00C7EF1E /* jcapimin.c */; };
+		CE9CEE630C75BE3200752D4B /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10806BF2C4E00C7EF1E /* jcapistd.c */; };
+		CE9CEE640C75BE3200752D4B /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10906BF2C4E00C7EF1E /* jcarith.c */; };
+		CE9CEE650C75BE3200752D4B /* jccoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10A06BF2C4E00C7EF1E /* jccoefct.c */; };
+		CE9CEE660C75BE3200752D4B /* jccolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10B06BF2C4E00C7EF1E /* jccolor.c */; };
+		CE9CEE670C75BE3200752D4B /* jcdctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10C06BF2C4E00C7EF1E /* jcdctmgr.c */; };
+		CE9CEE680C75BE3200752D4B /* jcdiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10D06BF2C4F00C7EF1E /* jcdiffct.c */; };
+		CE9CEE690C75BE3200752D4B /* jchuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10E06BF2C4F00C7EF1E /* jchuff.c */; };
+		CE9CEE6A0C75BE3200752D4B /* jchuff8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB10F06BF2C4F00C7EF1E /* jchuff8.h */; };
+		CE9CEE6B0C75BE3200752D4B /* jcinit.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11006BF2C4F00C7EF1E /* jcinit.c */; };
+		CE9CEE6C0C75BE3200752D4B /* jclhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11106BF2C4F00C7EF1E /* jclhuff.c */; };
+		CE9CEE6D0C75BE3200752D4B /* jclossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11206BF2C4F00C7EF1E /* jclossls.c */; };
+		CE9CEE6E0C75BE3200752D4B /* jclossy.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11306BF2C4F00C7EF1E /* jclossy.c */; };
+		CE9CEE6F0C75BE3200752D4B /* jcmainct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11406BF2C4F00C7EF1E /* jcmainct.c */; };
+		CE9CEE700C75BE3200752D4B /* jcmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11506BF2C4F00C7EF1E /* jcmarker.c */; };
+		CE9CEE710C75BE3200752D4B /* jcmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11606BF2C4F00C7EF1E /* jcmaster.c */; };
+		CE9CEE720C75BE3200752D4B /* jcodec.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11706BF2C4F00C7EF1E /* jcodec.c */; };
+		CE9CEE730C75BE3200752D4B /* jcomapi.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11806BF2C4F00C7EF1E /* jcomapi.c */; };
+		CE9CEE740C75BE3200752D4B /* jconfig8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB11906BF2C4F00C7EF1E /* jconfig8.h */; };
+		CE9CEE750C75BE3200752D4B /* jcparam.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11A06BF2C4F00C7EF1E /* jcparam.c */; };
+		CE9CEE760C75BE3200752D4B /* jcphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11B06BF2C4F00C7EF1E /* jcphuff.c */; };
+		CE9CEE770C75BE3200752D4B /* jcpred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11C06BF2C4F00C7EF1E /* jcpred.c */; };
+		CE9CEE780C75BE3200752D4B /* jcprepct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11D06BF2C4F00C7EF1E /* jcprepct.c */; };
+		CE9CEE790C75BE3200752D4B /* jcsample.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11E06BF2C4F00C7EF1E /* jcsample.c */; };
+		CE9CEE7A0C75BE3200752D4B /* jcscale.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11F06BF2C4F00C7EF1E /* jcscale.c */; };
+		CE9CEE7B0C75BE3200752D4B /* jcshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12006BF2C4F00C7EF1E /* jcshuff.c */; };
+		CE9CEE7C0C75BE3200752D4B /* jctrans.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12106BF2C4F00C7EF1E /* jctrans.c */; };
+		CE9CEE7D0C75BE3200752D4B /* jdapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12206BF2C4F00C7EF1E /* jdapimin.c */; };
+		CE9CEE7E0C75BE3200752D4B /* jdapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12306BF2C4F00C7EF1E /* jdapistd.c */; };
+		CE9CEE7F0C75BE3200752D4B /* jdarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12406BF2C4F00C7EF1E /* jdarith.c */; };
+		CE9CEE800C75BE3200752D4B /* jdatadst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12506BF2C4F00C7EF1E /* jdatadst.c */; };
+		CE9CEE810C75BE3200752D4B /* jdatasrc.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12606BF2C4F00C7EF1E /* jdatasrc.c */; };
+		CE9CEE820C75BE3200752D4B /* jdcoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12706BF2C4F00C7EF1E /* jdcoefct.c */; };
+		CE9CEE830C75BE3200752D4B /* jdcolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12806BF2C4F00C7EF1E /* jdcolor.c */; };
+		CE9CEE840C75BE3200752D4B /* jdct8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB12906BF2C4F00C7EF1E /* jdct8.h */; };
+		CE9CEE850C75BE3200752D4B /* jddctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12A06BF2C4F00C7EF1E /* jddctmgr.c */; };
+		CE9CEE860C75BE3200752D4B /* jddiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12B06BF2C4F00C7EF1E /* jddiffct.c */; };
+		CE9CEE870C75BE3200752D4B /* jdhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12C06BF2C4F00C7EF1E /* jdhuff.c */; };
+		CE9CEE880C75BE3200752D4B /* jdhuff8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB12D06BF2C4F00C7EF1E /* jdhuff8.h */; };
+		CE9CEE890C75BE3200752D4B /* jdinput.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12E06BF2C4F00C7EF1E /* jdinput.c */; };
+		CE9CEE8A0C75BE3200752D4B /* jdlhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12F06BF2C4F00C7EF1E /* jdlhuff.c */; };
+		CE9CEE8B0C75BE3200752D4B /* jdlossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13006BF2C4F00C7EF1E /* jdlossls.c */; };
+		CE9CEE8C0C75BE3200752D4B /* jdlossy.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13106BF2C4F00C7EF1E /* jdlossy.c */; };
+		CE9CEE8D0C75BE3200752D4B /* jdmainct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13206BF2C4F00C7EF1E /* jdmainct.c */; };
+		CE9CEE8E0C75BE3200752D4B /* jdmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13306BF2C4F00C7EF1E /* jdmarker.c */; };
+		CE9CEE8F0C75BE3200752D4B /* jdmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13406BF2C4F00C7EF1E /* jdmaster.c */; };
+		CE9CEE900C75BE3200752D4B /* jdmerge.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13506BF2C4F00C7EF1E /* jdmerge.c */; };
+		CE9CEE910C75BE3200752D4B /* jdphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13606BF2C4F00C7EF1E /* jdphuff.c */; };
+		CE9CEE920C75BE3200752D4B /* jdpostct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13706BF2C4F00C7EF1E /* jdpostct.c */; };
+		CE9CEE930C75BE3200752D4B /* jdpred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13806BF2C4F00C7EF1E /* jdpred.c */; };
+		CE9CEE940C75BE3200752D4B /* jdsample.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13906BF2C4F00C7EF1E /* jdsample.c */; };
+		CE9CEE950C75BE3200752D4B /* jdscale.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13A06BF2C4F00C7EF1E /* jdscale.c */; };
+		CE9CEE960C75BE3200752D4B /* jdshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13B06BF2C4F00C7EF1E /* jdshuff.c */; };
+		CE9CEE970C75BE3200752D4B /* jdtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13C06BF2C4F00C7EF1E /* jdtrans.c */; };
+		CE9CEE980C75BE3200752D4B /* jerror.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13D06BF2C4F00C7EF1E /* jerror.c */; };
+		CE9CEE990C75BE3200752D4B /* jerror8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB13E06BF2C4F00C7EF1E /* jerror8.h */; };
+		CE9CEE9A0C75BE3200752D4B /* jfdctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13F06BF2C4F00C7EF1E /* jfdctflt.c */; };
+		CE9CEE9B0C75BE3200752D4B /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14006BF2C4F00C7EF1E /* jfdctfst.c */; };
+		CE9CEE9C0C75BE3200752D4B /* jfdctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14106BF2C4F00C7EF1E /* jfdctint.c */; };
+		CE9CEE9D0C75BE3200752D4B /* jidctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14206BF2C4F00C7EF1E /* jidctflt.c */; };
+		CE9CEE9E0C75BE3200752D4B /* jidctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14306BF2C4F00C7EF1E /* jidctfst.c */; };
+		CE9CEE9F0C75BE3200752D4B /* jidctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14406BF2C4F00C7EF1E /* jidctint.c */; };
+		CE9CEEA00C75BE3200752D4B /* jidctred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14506BF2C4F00C7EF1E /* jidctred.c */; };
+		CE9CEEA10C75BE3200752D4B /* jinclude8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14606BF2C4F00C7EF1E /* jinclude8.h */; };
+		CE9CEEA20C75BE3200752D4B /* jlossls8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14706BF2C4F00C7EF1E /* jlossls8.h */; };
+		CE9CEEA30C75BE3200752D4B /* jlossy8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14806BF2C4F00C7EF1E /* jlossy8.h */; };
+		CE9CEEA40C75BE3200752D4B /* jmemmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14906BF2C4F00C7EF1E /* jmemmgr.c */; };
+		CE9CEEA50C75BE3200752D4B /* jmemnobs.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14A06BF2C4F00C7EF1E /* jmemnobs.c */; };
+		CE9CEEA60C75BE3200752D4B /* jmemsys8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14B06BF2C4F00C7EF1E /* jmemsys8.h */; };
+		CE9CEEA70C75BE3200752D4B /* jmorecfg8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14C06BF2C4F00C7EF1E /* jmorecfg8.h */; };
+		CE9CEEA80C75BE3200752D4B /* jpegint8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14D06BF2C4F00C7EF1E /* jpegint8.h */; };
+		CE9CEEA90C75BE3200752D4B /* jpeglib8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14E06BF2C4F00C7EF1E /* jpeglib8.h */; };
+		CE9CEEAA0C75BE3200752D4B /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14F06BF2C4F00C7EF1E /* jquant1.c */; };
+		CE9CEEAB0C75BE3200752D4B /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15006BF2C4F00C7EF1E /* jquant2.c */; };
+		CE9CEEAC0C75BE3200752D4B /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15106BF2C4F00C7EF1E /* jutils.c */; };
+		CE9CEEAD0C75BE3200752D4B /* jversion8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB15206BF2C4F00C7EF1E /* jversion8.h */; };
+		CE9CEEAE0C75BE3A00752D4B /* DCMNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = BF28B92A0783A7F000C71DA8 /* DCMNetworking.h */; };
+		CE9CEEAF0C75BE3A00752D4B /* DCMImageQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC094078AF555009D04DF /* DCMImageQueryNode.h */; };
+		CE9CEEB00C75BE3A00752D4B /* DCMImageQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC095078AF555009D04DF /* DCMImageQueryNode.m */; };
+		CE9CEEB10C75BE3A00752D4B /* DCMSeriesQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC08E078AF544009D04DF /* DCMSeriesQueryNode.h */; };
+		CE9CEEB20C75BE3A00752D4B /* DCMSeriesQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC08F078AF544009D04DF /* DCMSeriesQueryNode.m */; };
+		CE9CEEB30C75BE3A00752D4B /* DCMStudyQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC088078AF535009D04DF /* DCMStudyQueryNode.h */; };
+		CE9CEEB40C75BE3A00752D4B /* DCMStudyQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC089078AF535009D04DF /* DCMStudyQueryNode.m */; };
+		CE9CEEB50C75BE3A00752D4B /* DCMRootQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC082078AF523009D04DF /* DCMRootQueryNode.h */; };
+		CE9CEEB60C75BE3A00752D4B /* DCMRootQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC083078AF523009D04DF /* DCMRootQueryNode.m */; };
+		CE9CEEB70C75BE3A00752D4B /* DCMQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC07A078AF4FB009D04DF /* DCMQueryNode.h */; };
+		CE9CEEB80C75BE3A00752D4B /* DCMQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC07B078AF4FB009D04DF /* DCMQueryNode.m */; };
+		CE9CEEB90C75BE3A00752D4B /* DCMMoveSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C1700785D70A00806344 /* DCMMoveSCU.h */; };
+		CE9CEEBA0C75BE3A00752D4B /* DCMMoveSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C1710785D70A00806344 /* DCMMoveSCU.m */; };
+		CE9CEEBB0C75BE3A00752D4B /* DCMFindSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C16A0785D6F800806344 /* DCMFindSCU.h */; };
+		CE9CEEBC0C75BE3A00752D4B /* DCMFindSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C16B0785D6F800806344 /* DCMFindSCU.m */; };
+		CE9CEEBD0C75BE3A00752D4B /* DCMStoreSCP.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EDA38BF077B250100A734D5 /* DCMStoreSCP.h */; };
+		CE9CEEBE0C75BE3A00752D4B /* DCMStoreSCP.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDA38C0077B250100A734D5 /* DCMStoreSCP.m */; };
+		CE9CEEBF0C75BE3A00752D4B /* DCMStoreSCPListener.h in Headers */ = {isa = PBXBuildFile; fileRef = BFE4AAF3077A757700D2D44A /* DCMStoreSCPListener.h */; };
+		CE9CEEC00C75BE3A00752D4B /* DCMStoreSCPListener.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE4AAF4077A757700D2D44A /* DCMStoreSCPListener.m */; };
+		CE9CEEC10C75BE3A00752D4B /* DCMStoreSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E1CE2BA0777828C00190023 /* DCMStoreSCU.h */; };
+		CE9CEEC20C75BE3A00752D4B /* DCMStoreSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1CE2BB0777828C00190023 /* DCMStoreSCU.m */; };
+		CE9CEEC30C75BE3A00752D4B /* DCMSOPClass.h in Headers */ = {isa = PBXBuildFile; fileRef = BFC8C77C076E818F00D17A68 /* DCMSOPClass.h */; };
+		CE9CEEC40C75BE3A00752D4B /* DCMSOPClass.m in Sources */ = {isa = PBXBuildFile; fileRef = BFC8C77D076E818F00D17A68 /* DCMSOPClass.m */; };
+		CE9CEEC50C75BE3A00752D4B /* DCMVerificationSOPClassSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BFC8C76C076E815A00D17A68 /* DCMVerificationSOPClassSCU.h */; };
+		CE9CEEC60C75BE3A00752D4B /* DCMVerificationSOPClassSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = BFC8C76D076E815A00D17A68 /* DCMVerificationSOPClassSCU.m */; };
+		CE9CEEC70C75BE3A00752D4B /* DCMPrintSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9703408C8E238002B5087 /* DCMPrintSCU.h */; };
+		CE9CEEC80C75BE3A00752D4B /* DCMPrintSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9703508C8E238002B5087 /* DCMPrintSCU.m */; };
+		CE9CEEC90C75BE3A00752D4B /* DCMReceivedDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E3EDC0B076E5745002A7DAC /* DCMReceivedDataHandler.h */; };
+		CE9CEECA0C75BE3A00752D4B /* DCMReceivedDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3EDC0C076E5745002A7DAC /* DCMReceivedDataHandler.m */; };
+		CE9CEECB0C75BE3A00752D4B /* DCMCompositeResponseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9D3B240770AA6A002F0847 /* DCMCompositeResponseHandler.h */; };
+		CE9CEECC0C75BE3A00752D4B /* DCMCompositeResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9D3B250770AA6A002F0847 /* DCMCompositeResponseHandler.m */; };
+		CE9CEECD0C75BE3A00752D4B /* DCMCMoveResponseDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF01AA21078CF6C80037222F /* DCMCMoveResponseDataHandler.h */; };
+		CE9CEECE0C75BE3A00752D4B /* DCMCMoveResponseDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF01AA22078CF6C80037222F /* DCMCMoveResponseDataHandler.m */; };
+		CE9CEECF0C75BE3A00752D4B /* DCMCFindResponseDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E21D345078747A500315810 /* DCMCFindResponseDataHandler.h */; };
+		CE9CEED00C75BE3A00752D4B /* DCMCFindResponseDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E21D346078747A500315810 /* DCMCFindResponseDataHandler.m */; };
+		CE9CEED10C75BE3A00752D4B /* DCMCStoreReceivedPDUHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EDA38C7077B25F400A734D5 /* DCMCStoreReceivedPDUHandler.h */; };
+		CE9CEED20C75BE3A00752D4B /* DCMCStoreReceivedPDUHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDA38C8077B25F400A734D5 /* DCMCStoreReceivedPDUHandler.m */; };
+		CE9CEED30C75BE3A00752D4B /* DCMCStoreResponseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E1CE2A0077780D200190023 /* DCMCStoreResponseHandler.h */; };
+		CE9CEED40C75BE3A00752D4B /* DCMCStoreResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1CE2A1077780D200190023 /* DCMCStoreResponseHandler.m */; };
+		CE9CEED50C75BE3A00752D4B /* DCMEchoResponseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E4E71660770E3A200856B65 /* DCMEchoResponseHandler.h */; };
+		CE9CEED60C75BE3A00752D4B /* DCMEchoResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E4E71670770E3A200856B65 /* DCMEchoResponseHandler.m */; };
+		CE9CEED70C75BE3A00752D4B /* DCMPrintResponseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E64AC4408CB81A700CEB599 /* DCMPrintResponseHandler.h */; };
+		CE9CEED80C75BE3A00752D4B /* DCMPrintResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E64AC4508CB81A800CEB599 /* DCMPrintResponseHandler.m */; };
+		CE9CEED90C75BE3A00752D4B /* DCMCommandMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E3EDC34076E5C20002A7DAC /* DCMCommandMessage.h */; };
+		CE9CEEDA0C75BE3A00752D4B /* DCMCommandMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3EDC35076E5C20002A7DAC /* DCMCommandMessage.m */; };
+		CE9CEEDB0C75BE3A00752D4B /* DCMCMoveResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */; };
+		CE9CEEDC0C75BE3A00752D4B /* DCMCMoveResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E56B07BEFFFF00100045 /* DCMCMoveResponse.m */; };
+		CE9CEEDD0C75BE3A00752D4B /* DCMCFindResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = BF03E55B07BEFFC500100045 /* DCMCFindResponse.h */; };
+		CE9CEEDE0C75BE3A00752D4B /* DCMCFindResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */; };
+		CE9CEEDF0C75BE3A00752D4B /* DCMCMoveRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C1420785CE2C00806344 /* DCMCMoveRequest.h */; };
+		CE9CEEE00C75BE3A00752D4B /* DCMCMoveRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C1430785CE2C00806344 /* DCMCMoveRequest.m */; };
+		CE9CEEE10C75BE3A00752D4B /* DCMCFindRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C0FF0785C7C400806344 /* DCMCFindRequest.h */; };
+		CE9CEEE20C75BE3A00752D4B /* DCMCFindRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C1000785C7C400806344 /* DCMCFindRequest.m */; };
+		CE9CEEE30C75BE3A00752D4B /* DCMCStoreResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E1CE1800777536800190023 /* DCMCStoreResponse.h */; };
+		CE9CEEE40C75BE3A00752D4B /* DCMCStoreResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1CE1810777536800190023 /* DCMCStoreResponse.m */; };
+		CE9CEEE50C75BE3A00752D4B /* DCMCStoreRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E1CE162077752BB00190023 /* DCMCStoreRequest.h */; };
+		CE9CEEE60C75BE3A00752D4B /* DCMCStoreRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1CE163077752BB00190023 /* DCMCStoreRequest.m */; };
+		CE9CEEE70C75BE3A00752D4B /* DCMCEchoResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E1CE1150777441E00190023 /* DCMCEchoResponse.h */; };
+		CE9CEEE80C75BE3A00752D4B /* DCMCEchoResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1CE1160777441E00190023 /* DCMCEchoResponse.m */; };
+		CE9CEEE90C75BE3A00752D4B /* DCMCEchoRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E3EDBAB076E4225002A7DAC /* DCMCEchoRequest.h */; };
+		CE9CEEEA0C75BE3A00752D4B /* DCMCEchoRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3EDBAC076E4225002A7DAC /* DCMCEchoRequest.m */; };
+		CE9CEEEB0C75BE3A00752D4B /* DCMNGetRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9703A08C8F9AB002B5087 /* DCMNGetRequest.h */; };
+		CE9CEEEC0C75BE3A00752D4B /* DCMNGetRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9703B08C8F9AB002B5087 /* DCMNGetRequest.m */; };
+		CE9CEEED0C75BE3A00752D4B /* DCMNGetResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9704008C8F9C6002B5087 /* DCMNGetResponse.h */; };
+		CE9CEEEE0C75BE3A00752D4B /* DCMNGetResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9704108C8F9C6002B5087 /* DCMNGetResponse.m */; };
+		CE9CEEEF0C75BE3A00752D4B /* DCMNSetRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9705708C8FA13002B5087 /* DCMNSetRequest.h */; };
+		CE9CEEF00C75BE3A00752D4B /* DCMNSetRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9705808C8FA13002B5087 /* DCMNSetRequest.m */; };
+		CE9CEEF10C75BE3A00752D4B /* DCMNSetResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9705F08C8FA2D002B5087 /* DCMNSetResponse.h */; };
+		CE9CEEF20C75BE3A00752D4B /* DCMNSetResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9706008C8FA2D002B5087 /* DCMNSetResponse.m */; };
+		CE9CEEF30C75BE3A00752D4B /* DCMNActionRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9706508C8FA56002B5087 /* DCMNActionRequest.h */; };
+		CE9CEEF40C75BE3A00752D4B /* DCMNActionRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9706608C8FA56002B5087 /* DCMNActionRequest.m */; };
+		CE9CEEF50C75BE3A00752D4B /* DCMNActionResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9706D08C8FA86002B5087 /* DCMNActionResponse.h */; };
+		CE9CEEF60C75BE3A00752D4B /* DCMNActionResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9706E08C8FA86002B5087 /* DCMNActionResponse.m */; };
+		CE9CEEF70C75BE3A00752D4B /* DCMNCreateRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9707708C8FB1C002B5087 /* DCMNCreateRequest.h */; };
+		CE9CEEF80C75BE3A00752D4B /* DCMNCreateRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9707808C8FB1C002B5087 /* DCMNCreateRequest.m */; };
+		CE9CEEF90C75BE3A00752D4B /* DCMNCreateResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9707F08C8FB42002B5087 /* DCMNCreateResponse.h */; };
+		CE9CEEFA0C75BE3A00752D4B /* DCMNCreateResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9708008C8FB42002B5087 /* DCMNCreateResponse.m */; };
+		CE9CEEFB0C75BE3A00752D4B /* DCMNDeleteRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9708508C8FB74002B5087 /* DCMNDeleteRequest.h */; };
+		CE9CEEFC0C75BE3A00752D4B /* DCMNDeleteRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9708608C8FB74002B5087 /* DCMNDeleteRequest.m */; };
+		CE9CEEFD0C75BE3A00752D4B /* DCMNDeleteResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9708B08C8FB86002B5087 /* DCMNDeleteResponse.h */; };
+		CE9CEEFE0C75BE3A00752D4B /* DCMNDeleteResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9708C08C8FB86002B5087 /* DCMNDeleteResponse.m */; };
+		CE9CEEFF0C75BE3A00752D4B /* DCMPresentationDataValue.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4885A50766BD4D00F30E57 /* DCMPresentationDataValue.h */; };
+		CE9CEF000C75BE3A00752D4B /* DCMPresentationDataValue.m in Sources */ = {isa = PBXBuildFile; fileRef = BF4885A60766BD4D00F30E57 /* DCMPresentationDataValue.m */; };
+		CE9CEF010C75BE3A00752D4B /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1925690762958D009C6832 /* DCMAbstractSyntaxUID.h */; };
+		CE9CEF020C75BE3A00752D4B /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = BF19256A0762958D009C6832 /* DCMAbstractSyntaxUID.m */; };
+		CE9CEF030C75BE3A00752D4B /* DCMAssociationResponder.h in Headers */ = {isa = PBXBuildFile; fileRef = BFC8C703076E785A00D17A68 /* DCMAssociationResponder.h */; };
+		CE9CEF040C75BE3A00752D4B /* DCMAssociationResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = BFC8C704076E785A00D17A68 /* DCMAssociationResponder.m */; };
+		CE9CEF050C75BE3A00752D4B /* DCMAssociation.h in Headers */ = {isa = PBXBuildFile; fileRef = BFE468980761623400409444 /* DCMAssociation.h */; };
+		CE9CEF060C75BE3A00752D4B /* DCMAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE468990761623400409444 /* DCMAssociation.m */; };
+		CE9CEF070C75BE3A00752D4B /* DCMPrintAssociation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E64AC3E08CB80F900CEB599 /* DCMPrintAssociation.h */; };
+		CE9CEF080C75BE3A00752D4B /* DCMPrintAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E64AC3F08CB80F900CEB599 /* DCMPrintAssociation.m */; };
+		CE9CEF090C75BE3A00752D4B /* DCMAssociationItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E5F6075FC852006AA2A3 /* DCMAssociationItem.h */; };
+		CE9CEF0A0C75BE3A00752D4B /* DCMAssociationItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E5F7075FC852006AA2A3 /* DCMAssociationItem.m */; };
+		CE9CEF0B0C75BE3A00752D4B /* DCMPresentationContextItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E6B7075FDDF7006AA2A3 /* DCMPresentationContextItem.h */; };
+		CE9CEF0C0C75BE3A00752D4B /* DCMPresentationContextItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E6B8075FDDF8006AA2A3 /* DCMPresentationContextItem.m */; };
+		CE9CEF0D0C75BE3A00752D4B /* DCMSOPClassExtendedNegotiationUserInformationSubItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E6AA075FDA06006AA2A3 /* DCMSOPClassExtendedNegotiationUserInformationSubItem.h */; };
+		CE9CEF0E0C75BE3A00752D4B /* DCMSOPClassExtendedNegotiationUserInformationSubItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E6AB075FDA06006AA2A3 /* DCMSOPClassExtendedNegotiationUserInformationSubItem.m */; };
+		CE9CEF0F0C75BE3A00752D4B /* DCMImplementationVersionNameUserInformationSubItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E695075FD7DC006AA2A3 /* DCMImplementationVersionNameUserInformationSubItem.h */; };
+		CE9CEF100C75BE3A00752D4B /* DCMImplementationVersionNameUserInformationSubItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E696075FD7DC006AA2A3 /* DCMImplementationVersionNameUserInformationSubItem.m */; };
+		CE9CEF110C75BE3A00752D4B /* DCMImplementationClassUIDUserInformationSubItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E667075FD3A2006AA2A3 /* DCMImplementationClassUIDUserInformationSubItem.h */; };
+		CE9CEF120C75BE3A00752D4B /* DCMImplementationClassUIDUserInformationSubItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E668075FD3A2006AA2A3 /* DCMImplementationClassUIDUserInformationSubItem.m */; };
+		CE9CEF130C75BE3A00752D4B /* DCMMaximumLengthReceivedUserInformationSubItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E654075FD264006AA2A3 /* DCMMaximumLengthReceivedUserInformationSubItem.h */; };
+		CE9CEF140C75BE3A00752D4B /* DCMMaximumLengthReceivedUserInformationSubItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E655075FD264006AA2A3 /* DCMMaximumLengthReceivedUserInformationSubItem.m */; };
+		CE9CEF150C75BE3A00752D4B /* DCMUserInformationSubItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E634075FD02D006AA2A3 /* DCMUserInformationSubItem.h */; };
+		CE9CEF160C75BE3A00752D4B /* DCMUserInformationSubItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E635075FD02D006AA2A3 /* DCMUserInformationSubItem.m */; };
+		CE9CEF170C75BE3A00752D4B /* DCMUserInformationItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E61E075FCD99006AA2A3 /* DCMUserInformationItem.h */; };
+		CE9CEF180C75BE3A00752D4B /* DCMUserInformationItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E61F075FCD99006AA2A3 /* DCMUserInformationItem.m */; };
+		CE9CEF190C75BE3A00752D4B /* DCMApplicationContextItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E49E608075FCBCC006AA2A3 /* DCMApplicationContextItem.h */; };
+		CE9CEF1A0C75BE3A00752D4B /* DCMApplicationContextItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E49E609075FCBCC006AA2A3 /* DCMApplicationContextItem.m */; };
+		CE9CEF1B0C75BE3A00752D4B /* DCMPresentationContext.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBA8272075AA9B4004D2D6C /* DCMPresentationContext.h */; };
+		CE9CEF1C0C75BE3A00752D4B /* DCMPresentationContext.m in Sources */ = {isa = PBXBuildFile; fileRef = BFBA8273075AA9B4004D2D6C /* DCMPresentationContext.m */; };
+		CE9CEF1D0C75BE3A00752D4B /* DCM_PDU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E17DADE075A7B4600A2E803 /* DCM_PDU.h */; };
+		CE9CEF1E0C75BE3A00752D4B /* DCM_PDU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E17DADF075A7B4600A2E803 /* DCM_PDU.m */; };
+		CE9CEF1F0C75BE3A00752D4B /* DCMPDataPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E3EDAAB076CE4BB002A7DAC /* DCMPDataPDU.h */; };
+		CE9CEF200C75BE3A00752D4B /* DCMPDataPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3EDAAC076CE4BB002A7DAC /* DCMPDataPDU.m */; };
+		CE9CEF210C75BE3A00752D4B /* DCMRejectPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6DB82E075A52C300EBC60E /* DCMRejectPDU.h */; };
+		CE9CEF220C75BE3A00752D4B /* DCMRejectPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB82F075A52C300EBC60E /* DCMRejectPDU.m */; };
+		CE9CEF230C75BE3A00752D4B /* DCMAcceptRequestPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E17DB14075A7FBD00A2E803 /* DCMAcceptRequestPDU.h */; };
+		CE9CEF240C75BE3A00752D4B /* DCMAcceptRequestPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E17DB15075A7FBD00A2E803 /* DCMAcceptRequestPDU.m */; };
+		CE9CEF250C75BE3A00752D4B /* DCMRequestPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EB72CAF076127D80025F400 /* DCMRequestPDU.h */; };
+		CE9CEF260C75BE3A00752D4B /* DCMRequestPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EB72CB0076127D80025F400 /* DCMRequestPDU.m */; };
+		CE9CEF270C75BE3A00752D4B /* DCMAcceptPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6DB826075A52AB00EBC60E /* DCMAcceptPDU.h */; };
+		CE9CEF280C75BE3A00752D4B /* DCMAcceptPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB827075A52AB00EBC60E /* DCMAcceptPDU.m */; };
+		CE9CEF290C75BE3A00752D4B /* DCMReleasePDU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6DB81E075A528900EBC60E /* DCMReleasePDU.h */; };
+		CE9CEF2A0C75BE3A00752D4B /* DCMReleasePDU.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB81F075A528900EBC60E /* DCMReleasePDU.m */; };
+		CE9CEF2B0C75BE3A00752D4B /* DCMAbortPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6DB808075A516500EBC60E /* DCMAbortPDU.h */; };
+		CE9CEF2C0C75BE3A00752D4B /* DCMAbortPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB809075A516500EBC60E /* DCMAbortPDU.m */; };
+		CE9CEF2D0C75BE3A00752D4B /* DCMSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E76BEDD085757E20073649A /* DCMSocket.h */; };
+		CE9CEF2E0C75BE3A00752D4B /* DCMSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E76BEDE085757E20073649A /* DCMSocket.m */; };
 		CE9DD284086B35050058DD2A /* DicomStudy.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9DD280086B35050058DD2A /* DicomStudy.m */; };
 		CE9DD285086B35050058DD2A /* DicomStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD281086B35050058DD2A /* DicomStudy.h */; };
 		CE9DD286086B35050058DD2A /* DicomSeries.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD282086B35050058DD2A /* DicomSeries.h */; };
@@ -11106,6 +11528,7 @@
 		CE99E88E073AB4C500725ABC /* iPhoto.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iPhoto.icns; sourceTree = "<group>"; };
 		CE9AF29C0AED5EE600606C3D /* Quicktime */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = Quicktime; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE9C73490B34946B0062FCCC /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = echoscu; path = Binaries/DCMTK/echoscu; sourceTree = SOURCE_ROOT; };
+		CE9CED810C75BD8C00752D4B /* libDCM StaticLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libDCM StaticLibrary.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE9DD280086B35050058DD2A /* DicomStudy.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomStudy.m; sourceTree = "<group>"; };
 		CE9DD281086B35050058DD2A /* DicomStudy.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomStudy.h; sourceTree = "<group>"; };
 		CE9DD282086B35050058DD2A /* DicomSeries.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomSeries.h; sourceTree = "<group>"; };
@@ -11374,6 +11797,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CE9CED7F0C75BD8C00752D4B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CECB054907539E3900576814 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -11587,6 +12017,7 @@
 				AB724FF60ADE6ECB00A212A0 /* Decompress */,
 				CE7A0EED0AED55AD00540017 /* Quicktime */,
 				CEDF6DD00B46FE99008B45B8 /* DICOMPrint */,
+				CE9CED810C75BD8C00752D4B /* libDCM StaticLibrary.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -17939,6 +18370,150 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CE9CED7D0C75BD8C00752D4B /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE9CED890C75BDF900752D4B /* DCMRootRecord.h in Headers */,
+				CE9CED8B0C75BDF900752D4B /* DCMRecord.h in Headers */,
+				CE9CED8D0C75BDF900752D4B /* DCMReportRecord.h in Headers */,
+				CE9CED8F0C75BDF900752D4B /* DCMImageRecord.h in Headers */,
+				CE9CED910C75BDF900752D4B /* DCMSeriesRecord.h in Headers */,
+				CE9CED930C75BDF900752D4B /* DCMStudyRecord.h in Headers */,
+				CE9CED950C75BDF900752D4B /* DCMPatientRecord.h in Headers */,
+				CE9CED970C75BDF900752D4B /* DCMDirectory.h in Headers */,
+				CE9CED990C75BE0A00752D4B /* DCMNetServiceDelegate.h in Headers */,
+				CE9CED9B0C75BE0A00752D4B /* DCM.h in Headers */,
+				CE9CED9C0C75BE0A00752D4B /* jpegdatasrc.h in Headers */,
+				CE9CED9E0C75BE0A00752D4B /* DCMPixelDataAttributeJPEG2000.h in Headers */,
+				CE9CEDA00C75BE0A00752D4B /* DCMPixelDataAttribute.h in Headers */,
+				CE9CEDA20C75BE0A00752D4B /* DCMPixelDataAttributeJPEG8.h in Headers */,
+				CE9CEDA40C75BE0A00752D4B /* DCMPixelDataAttributeJPEG12.h in Headers */,
+				CE9CEDA60C75BE0A00752D4B /* DCMPixelDataAttributeJPEG16.h in Headers */,
+				CE9CEDA80C75BE0A00752D4B /* DCM Framework_Prefix.pch in Headers */,
+				CE9CEDA90C75BE0A00752D4B /* DCMAttribute.h in Headers */,
+				CE9CEDAB0C75BE0A00752D4B /* DCMSequenceAttribute.h in Headers */,
+				CE9CEDAD0C75BE0A00752D4B /* DCMCharacterSet.h in Headers */,
+				CE9CEDAF0C75BE0A00752D4B /* DCMAttributeTag.h in Headers */,
+				CE9CEDB10C75BE0A00752D4B /* DCMDataContainer.h in Headers */,
+				CE9CEDB30C75BE0A00752D4B /* DCMObject.h in Headers */,
+				CE9CEDB50C75BE0A00752D4B /* DCMLimitedObject.h in Headers */,
+				CE9CEDB70C75BE0A00752D4B /* DCMUIDs.h in Headers */,
+				CE9CEDB80C75BE0A00752D4B /* DCMTagDictionary.h in Headers */,
+				CE9CEDBA0C75BE0A00752D4B /* DCMTagForNameDictionary.h in Headers */,
+				CE9CEDBC0C75BE0A00752D4B /* DCMTransferSyntax.h in Headers */,
+				CE9CEDBE0C75BE0A00752D4B /* DCMValueRepresentation.h in Headers */,
+				CE9CEDC00C75BE0A00752D4B /* DCMCalendarDate.h in Headers */,
+				CE9CEDC20C75BE0A00752D4B /* DCMPresentationState.h in Headers */,
+				CE9CEDC40C75BE0A00752D4B /* DCMEncapsulatedPDF.h in Headers */,
+				CE9CEDCF0C75BE1F00752D4B /* jchuff12.h in Headers */,
+				CE9CEDD90C75BE1F00752D4B /* jconfig12.h in Headers */,
+				CE9CEDE90C75BE1F00752D4B /* jdct12.h in Headers */,
+				CE9CEDED0C75BE1F00752D4B /* jdhuff12.h in Headers */,
+				CE9CEDFE0C75BE1F00752D4B /* jerror12.h in Headers */,
+				CE9CEE060C75BE1F00752D4B /* jinclude12.h in Headers */,
+				CE9CEE070C75BE1F00752D4B /* jlossls12.h in Headers */,
+				CE9CEE080C75BE1F00752D4B /* jlossy12.h in Headers */,
+				CE9CEE0B0C75BE1F00752D4B /* jmemsys12.h in Headers */,
+				CE9CEE0C0C75BE1F00752D4B /* jmorecfg12.h in Headers */,
+				CE9CEE0D0C75BE1F00752D4B /* jpegint12.h in Headers */,
+				CE9CEE0E0C75BE1F00752D4B /* jpeglib12.h in Headers */,
+				CE9CEE120C75BE1F00752D4B /* jversion12.h in Headers */,
+				CE9CEE130C75BE1F00752D4B /* osconfig.h in Headers */,
+				CE9CEE1D0C75BE2900752D4B /* jchuff16.h in Headers */,
+				CE9CEE270C75BE2900752D4B /* jconfig16.h in Headers */,
+				CE9CEE370C75BE2900752D4B /* jdct16.h in Headers */,
+				CE9CEE3B0C75BE2900752D4B /* jdhuff16.h in Headers */,
+				CE9CEE4C0C75BE2900752D4B /* jerror16.h in Headers */,
+				CE9CEE540C75BE2900752D4B /* jinclude16.h in Headers */,
+				CE9CEE550C75BE2900752D4B /* jlossls16.h in Headers */,
+				CE9CEE560C75BE2900752D4B /* jlossy16.h in Headers */,
+				CE9CEE590C75BE2900752D4B /* jmemsys16.h in Headers */,
+				CE9CEE5A0C75BE2900752D4B /* jmorecfg16.h in Headers */,
+				CE9CEE5B0C75BE2900752D4B /* jpegint16.h in Headers */,
+				CE9CEE5C0C75BE2900752D4B /* jpeglib16.h in Headers */,
+				CE9CEE600C75BE2900752D4B /* jversion16.h in Headers */,
+				CE9CEE6A0C75BE3200752D4B /* jchuff8.h in Headers */,
+				CE9CEE740C75BE3200752D4B /* jconfig8.h in Headers */,
+				CE9CEE840C75BE3200752D4B /* jdct8.h in Headers */,
+				CE9CEE880C75BE3200752D4B /* jdhuff8.h in Headers */,
+				CE9CEE990C75BE3200752D4B /* jerror8.h in Headers */,
+				CE9CEEA10C75BE3200752D4B /* jinclude8.h in Headers */,
+				CE9CEEA20C75BE3200752D4B /* jlossls8.h in Headers */,
+				CE9CEEA30C75BE3200752D4B /* jlossy8.h in Headers */,
+				CE9CEEA60C75BE3200752D4B /* jmemsys8.h in Headers */,
+				CE9CEEA70C75BE3200752D4B /* jmorecfg8.h in Headers */,
+				CE9CEEA80C75BE3200752D4B /* jpegint8.h in Headers */,
+				CE9CEEA90C75BE3200752D4B /* jpeglib8.h in Headers */,
+				CE9CEEAD0C75BE3200752D4B /* jversion8.h in Headers */,
+				CE9CEEAE0C75BE3A00752D4B /* DCMNetworking.h in Headers */,
+				CE9CEEAF0C75BE3A00752D4B /* DCMImageQueryNode.h in Headers */,
+				CE9CEEB10C75BE3A00752D4B /* DCMSeriesQueryNode.h in Headers */,
+				CE9CEEB30C75BE3A00752D4B /* DCMStudyQueryNode.h in Headers */,
+				CE9CEEB50C75BE3A00752D4B /* DCMRootQueryNode.h in Headers */,
+				CE9CEEB70C75BE3A00752D4B /* DCMQueryNode.h in Headers */,
+				CE9CEEB90C75BE3A00752D4B /* DCMMoveSCU.h in Headers */,
+				CE9CEEBB0C75BE3A00752D4B /* DCMFindSCU.h in Headers */,
+				CE9CEEBD0C75BE3A00752D4B /* DCMStoreSCP.h in Headers */,
+				CE9CEEBF0C75BE3A00752D4B /* DCMStoreSCPListener.h in Headers */,
+				CE9CEEC10C75BE3A00752D4B /* DCMStoreSCU.h in Headers */,
+				CE9CEEC30C75BE3A00752D4B /* DCMSOPClass.h in Headers */,
+				CE9CEEC50C75BE3A00752D4B /* DCMVerificationSOPClassSCU.h in Headers */,
+				CE9CEEC70C75BE3A00752D4B /* DCMPrintSCU.h in Headers */,
+				CE9CEEC90C75BE3A00752D4B /* DCMReceivedDataHandler.h in Headers */,
+				CE9CEECB0C75BE3A00752D4B /* DCMCompositeResponseHandler.h in Headers */,
+				CE9CEECD0C75BE3A00752D4B /* DCMCMoveResponseDataHandler.h in Headers */,
+				CE9CEECF0C75BE3A00752D4B /* DCMCFindResponseDataHandler.h in Headers */,
+				CE9CEED10C75BE3A00752D4B /* DCMCStoreReceivedPDUHandler.h in Headers */,
+				CE9CEED30C75BE3A00752D4B /* DCMCStoreResponseHandler.h in Headers */,
+				CE9CEED50C75BE3A00752D4B /* DCMEchoResponseHandler.h in Headers */,
+				CE9CEED70C75BE3A00752D4B /* DCMPrintResponseHandler.h in Headers */,
+				CE9CEED90C75BE3A00752D4B /* DCMCommandMessage.h in Headers */,
+				CE9CEEDB0C75BE3A00752D4B /* DCMCMoveResponse.h in Headers */,
+				CE9CEEDD0C75BE3A00752D4B /* DCMCFindResponse.h in Headers */,
+				CE9CEEDF0C75BE3A00752D4B /* DCMCMoveRequest.h in Headers */,
+				CE9CEEE10C75BE3A00752D4B /* DCMCFindRequest.h in Headers */,
+				CE9CEEE30C75BE3A00752D4B /* DCMCStoreResponse.h in Headers */,
+				CE9CEEE50C75BE3A00752D4B /* DCMCStoreRequest.h in Headers */,
+				CE9CEEE70C75BE3A00752D4B /* DCMCEchoResponse.h in Headers */,
+				CE9CEEE90C75BE3A00752D4B /* DCMCEchoRequest.h in Headers */,
+				CE9CEEEB0C75BE3A00752D4B /* DCMNGetRequest.h in Headers */,
+				CE9CEEED0C75BE3A00752D4B /* DCMNGetResponse.h in Headers */,
+				CE9CEEEF0C75BE3A00752D4B /* DCMNSetRequest.h in Headers */,
+				CE9CEEF10C75BE3A00752D4B /* DCMNSetResponse.h in Headers */,
+				CE9CEEF30C75BE3A00752D4B /* DCMNActionRequest.h in Headers */,
+				CE9CEEF50C75BE3A00752D4B /* DCMNActionResponse.h in Headers */,
+				CE9CEEF70C75BE3A00752D4B /* DCMNCreateRequest.h in Headers */,
+				CE9CEEF90C75BE3A00752D4B /* DCMNCreateResponse.h in Headers */,
+				CE9CEEFB0C75BE3A00752D4B /* DCMNDeleteRequest.h in Headers */,
+				CE9CEEFD0C75BE3A00752D4B /* DCMNDeleteResponse.h in Headers */,
+				CE9CEEFF0C75BE3A00752D4B /* DCMPresentationDataValue.h in Headers */,
+				CE9CEF010C75BE3A00752D4B /* DCMAbstractSyntaxUID.h in Headers */,
+				CE9CEF030C75BE3A00752D4B /* DCMAssociationResponder.h in Headers */,
+				CE9CEF050C75BE3A00752D4B /* DCMAssociation.h in Headers */,
+				CE9CEF070C75BE3A00752D4B /* DCMPrintAssociation.h in Headers */,
+				CE9CEF090C75BE3A00752D4B /* DCMAssociationItem.h in Headers */,
+				CE9CEF0B0C75BE3A00752D4B /* DCMPresentationContextItem.h in Headers */,
+				CE9CEF0D0C75BE3A00752D4B /* DCMSOPClassExtendedNegotiationUserInformationSubItem.h in Headers */,
+				CE9CEF0F0C75BE3A00752D4B /* DCMImplementationVersionNameUserInformationSubItem.h in Headers */,
+				CE9CEF110C75BE3A00752D4B /* DCMImplementationClassUIDUserInformationSubItem.h in Headers */,
+				CE9CEF130C75BE3A00752D4B /* DCMMaximumLengthReceivedUserInformationSubItem.h in Headers */,
+				CE9CEF150C75BE3A00752D4B /* DCMUserInformationSubItem.h in Headers */,
+				CE9CEF170C75BE3A00752D4B /* DCMUserInformationItem.h in Headers */,
+				CE9CEF190C75BE3A00752D4B /* DCMApplicationContextItem.h in Headers */,
+				CE9CEF1B0C75BE3A00752D4B /* DCMPresentationContext.h in Headers */,
+				CE9CEF1D0C75BE3A00752D4B /* DCM_PDU.h in Headers */,
+				CE9CEF1F0C75BE3A00752D4B /* DCMPDataPDU.h in Headers */,
+				CE9CEF210C75BE3A00752D4B /* DCMRejectPDU.h in Headers */,
+				CE9CEF230C75BE3A00752D4B /* DCMAcceptRequestPDU.h in Headers */,
+				CE9CEF250C75BE3A00752D4B /* DCMRequestPDU.h in Headers */,
+				CE9CEF270C75BE3A00752D4B /* DCMAcceptPDU.h in Headers */,
+				CE9CEF290C75BE3A00752D4B /* DCMReleasePDU.h in Headers */,
+				CE9CEF2B0C75BE3A00752D4B /* DCMAbortPDU.h in Headers */,
+				CE9CEF2D0C75BE3A00752D4B /* DCMSocket.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CECBFEE807539E3900576814 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -19943,6 +20518,23 @@
 			productReference = CE7A0EED0AED55AD00540017 /* Quicktime */;
 			productType = "com.apple.product-type.tool";
 		};
+		CE9CED800C75BD8C00752D4B /* DCM StaticLibrary */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE9CED880C75BDEE00752D4B /* Build configuration list for PBXNativeTarget "DCM StaticLibrary" */;
+			buildPhases = (
+				CE9CED7D0C75BD8C00752D4B /* Headers */,
+				CE9CED7E0C75BD8C00752D4B /* Sources */,
+				CE9CED7F0C75BD8C00752D4B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "DCM StaticLibrary";
+			productName = "DCM StaticLibrary";
+			productReference = CE9CED810C75BD8C00752D4B /* libDCM StaticLibrary.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		CECBFEE707539E3900576814 /* OsiriX VolumePRO */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7E76BEC9085757B70073649A /* Build configuration list for PBXNativeTarget "OsiriX VolumePRO" */;
@@ -20069,6 +20661,7 @@
 				AB28B42E05B7921E00A9906C /* OsiriX */,
 				CECBFEE707539E3900576814 /* OsiriX VolumePRO */,
 				7E0B3A3E067526CD00908593 /* DCM Framework */,
+				CE9CED800C75BD8C00752D4B /* DCM StaticLibrary */,
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
 				4A2F58D8078D118700C514A2 /* Build All Prerequisites */,
 				ABEA7F070A21BCC90094CAEF /* SafeDBRebuild */,
@@ -22703,6 +23296,298 @@
 			files = (
 				CE7A0F650AED582700540017 /* Quicktime.mm in Sources */,
 				CEFB849A0B9F5DDA0063ACD3 /* DOServer.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CE9CED7E0C75BD8C00752D4B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE9CED8A0C75BDF900752D4B /* DCMRootRecord.m in Sources */,
+				CE9CED8C0C75BDF900752D4B /* DCMRecord.m in Sources */,
+				CE9CED8E0C75BDF900752D4B /* DCMReportRecord.m in Sources */,
+				CE9CED900C75BDF900752D4B /* DCMImageRecord.m in Sources */,
+				CE9CED920C75BDF900752D4B /* DCMSeriesRecord.m in Sources */,
+				CE9CED940C75BDF900752D4B /* DCMStudyRecord.m in Sources */,
+				CE9CED960C75BDF900752D4B /* DCMPatientRecord.m in Sources */,
+				CE9CED980C75BDF900752D4B /* DCMDirectory.m in Sources */,
+				CE9CED9A0C75BE0A00752D4B /* DCMNetServiceDelegate.m in Sources */,
+				CE9CED9D0C75BE0A00752D4B /* jpegdatasrc.m in Sources */,
+				CE9CED9F0C75BE0A00752D4B /* DCMPixelDataAttributeJPEG2000.m in Sources */,
+				CE9CEDA10C75BE0A00752D4B /* DCMPixelDataAttribute.m in Sources */,
+				CE9CEDA30C75BE0A00752D4B /* DCMPixelDataAttributeJPEG8.m in Sources */,
+				CE9CEDA50C75BE0A00752D4B /* DCMPixelDataAttributeJPEG12.m in Sources */,
+				CE9CEDA70C75BE0A00752D4B /* DCMPixelDataAttributeJPEG16.m in Sources */,
+				CE9CEDAA0C75BE0A00752D4B /* DCMAttribute.m in Sources */,
+				CE9CEDAC0C75BE0A00752D4B /* DCMSequenceAttribute.m in Sources */,
+				CE9CEDAE0C75BE0A00752D4B /* DCMCharacterSet.m in Sources */,
+				CE9CEDB00C75BE0A00752D4B /* DCMAttributeTag.m in Sources */,
+				CE9CEDB20C75BE0A00752D4B /* DCMDataContainer.m in Sources */,
+				CE9CEDB40C75BE0A00752D4B /* DCMObject.m in Sources */,
+				CE9CEDB60C75BE0A00752D4B /* DCMLimitedObject.m in Sources */,
+				CE9CEDB90C75BE0A00752D4B /* DCMTagDictionary.m in Sources */,
+				CE9CEDBB0C75BE0A00752D4B /* DCMTagForNameDictionary.m in Sources */,
+				CE9CEDBD0C75BE0A00752D4B /* DCMTransferSyntax.m in Sources */,
+				CE9CEDBF0C75BE0A00752D4B /* DCMValueRepresentation.m in Sources */,
+				CE9CEDC10C75BE0A00752D4B /* DCMCalendarDate.m in Sources */,
+				CE9CEDC30C75BE0A00752D4B /* DCMPresentationState.m in Sources */,
+				CE9CEDC50C75BE0A00752D4B /* DCMEncapsulatedPDF.m in Sources */,
+				CE9CEDC60C75BE1F00752D4B /* jaricom.c in Sources */,
+				CE9CEDC70C75BE1F00752D4B /* jcapimin.c in Sources */,
+				CE9CEDC80C75BE1F00752D4B /* jcapistd.c in Sources */,
+				CE9CEDC90C75BE1F00752D4B /* jcarith.c in Sources */,
+				CE9CEDCA0C75BE1F00752D4B /* jccoefct.c in Sources */,
+				CE9CEDCB0C75BE1F00752D4B /* jccolor.c in Sources */,
+				CE9CEDCC0C75BE1F00752D4B /* jcdctmgr.c in Sources */,
+				CE9CEDCD0C75BE1F00752D4B /* jcdiffct.c in Sources */,
+				CE9CEDCE0C75BE1F00752D4B /* jchuff.c in Sources */,
+				CE9CEDD00C75BE1F00752D4B /* jcinit.c in Sources */,
+				CE9CEDD10C75BE1F00752D4B /* jclhuff.c in Sources */,
+				CE9CEDD20C75BE1F00752D4B /* jclossls.c in Sources */,
+				CE9CEDD30C75BE1F00752D4B /* jclossy.c in Sources */,
+				CE9CEDD40C75BE1F00752D4B /* jcmainct.c in Sources */,
+				CE9CEDD50C75BE1F00752D4B /* jcmarker.c in Sources */,
+				CE9CEDD60C75BE1F00752D4B /* jcmaster.c in Sources */,
+				CE9CEDD70C75BE1F00752D4B /* jcodec.c in Sources */,
+				CE9CEDD80C75BE1F00752D4B /* jcomapi.c in Sources */,
+				CE9CEDDA0C75BE1F00752D4B /* jcparam.c in Sources */,
+				CE9CEDDB0C75BE1F00752D4B /* jcphuff.c in Sources */,
+				CE9CEDDC0C75BE1F00752D4B /* jcpred.c in Sources */,
+				CE9CEDDD0C75BE1F00752D4B /* jcprepct.c in Sources */,
+				CE9CEDDE0C75BE1F00752D4B /* jcsample.c in Sources */,
+				CE9CEDDF0C75BE1F00752D4B /* jcscale.c in Sources */,
+				CE9CEDE00C75BE1F00752D4B /* jcshuff.c in Sources */,
+				CE9CEDE10C75BE1F00752D4B /* jctrans.c in Sources */,
+				CE9CEDE20C75BE1F00752D4B /* jdapimin.c in Sources */,
+				CE9CEDE30C75BE1F00752D4B /* jdapistd.c in Sources */,
+				CE9CEDE40C75BE1F00752D4B /* jdarith.c in Sources */,
+				CE9CEDE50C75BE1F00752D4B /* jdatadst.c in Sources */,
+				CE9CEDE60C75BE1F00752D4B /* jdatasrc.c in Sources */,
+				CE9CEDE70C75BE1F00752D4B /* jdcoefct.c in Sources */,
+				CE9CEDE80C75BE1F00752D4B /* jdcolor.c in Sources */,
+				CE9CEDEA0C75BE1F00752D4B /* jddctmgr.c in Sources */,
+				CE9CEDEB0C75BE1F00752D4B /* jddiffct.c in Sources */,
+				CE9CEDEC0C75BE1F00752D4B /* jdhuff.c in Sources */,
+				CE9CEDEE0C75BE1F00752D4B /* jdinput.c in Sources */,
+				CE9CEDEF0C75BE1F00752D4B /* jdlhuff.c in Sources */,
+				CE9CEDF00C75BE1F00752D4B /* jdlossls.c in Sources */,
+				CE9CEDF10C75BE1F00752D4B /* jdlossy.c in Sources */,
+				CE9CEDF20C75BE1F00752D4B /* jdmainct.c in Sources */,
+				CE9CEDF30C75BE1F00752D4B /* jdmarker.c in Sources */,
+				CE9CEDF40C75BE1F00752D4B /* jdmaster.c in Sources */,
+				CE9CEDF50C75BE1F00752D4B /* jdmerge.c in Sources */,
+				CE9CEDF60C75BE1F00752D4B /* jdphuff.c in Sources */,
+				CE9CEDF70C75BE1F00752D4B /* jdpostct.c in Sources */,
+				CE9CEDF80C75BE1F00752D4B /* jdpred.c in Sources */,
+				CE9CEDF90C75BE1F00752D4B /* jdsample.c in Sources */,
+				CE9CEDFA0C75BE1F00752D4B /* jdscale.c in Sources */,
+				CE9CEDFB0C75BE1F00752D4B /* jdshuff.c in Sources */,
+				CE9CEDFC0C75BE1F00752D4B /* jdtrans.c in Sources */,
+				CE9CEDFD0C75BE1F00752D4B /* jerror.c in Sources */,
+				CE9CEDFF0C75BE1F00752D4B /* jfdctflt.c in Sources */,
+				CE9CEE000C75BE1F00752D4B /* jfdctfst.c in Sources */,
+				CE9CEE010C75BE1F00752D4B /* jfdctint.c in Sources */,
+				CE9CEE020C75BE1F00752D4B /* jidctflt.c in Sources */,
+				CE9CEE030C75BE1F00752D4B /* jidctfst.c in Sources */,
+				CE9CEE040C75BE1F00752D4B /* jidctint.c in Sources */,
+				CE9CEE050C75BE1F00752D4B /* jidctred.c in Sources */,
+				CE9CEE090C75BE1F00752D4B /* jmemmgr.c in Sources */,
+				CE9CEE0A0C75BE1F00752D4B /* jmemnobs.c in Sources */,
+				CE9CEE0F0C75BE1F00752D4B /* jquant1.c in Sources */,
+				CE9CEE100C75BE1F00752D4B /* jquant2.c in Sources */,
+				CE9CEE110C75BE1F00752D4B /* jutils.c in Sources */,
+				CE9CEE140C75BE2900752D4B /* jaricom.c in Sources */,
+				CE9CEE150C75BE2900752D4B /* jcapimin.c in Sources */,
+				CE9CEE160C75BE2900752D4B /* jcapistd.c in Sources */,
+				CE9CEE170C75BE2900752D4B /* jcarith.c in Sources */,
+				CE9CEE180C75BE2900752D4B /* jccoefct.c in Sources */,
+				CE9CEE190C75BE2900752D4B /* jccolor.c in Sources */,
+				CE9CEE1A0C75BE2900752D4B /* jcdctmgr.c in Sources */,
+				CE9CEE1B0C75BE2900752D4B /* jcdiffct.c in Sources */,
+				CE9CEE1C0C75BE2900752D4B /* jchuff.c in Sources */,
+				CE9CEE1E0C75BE2900752D4B /* jcinit.c in Sources */,
+				CE9CEE1F0C75BE2900752D4B /* jclhuff.c in Sources */,
+				CE9CEE200C75BE2900752D4B /* jclossls.c in Sources */,
+				CE9CEE210C75BE2900752D4B /* jclossy.c in Sources */,
+				CE9CEE220C75BE2900752D4B /* jcmainct.c in Sources */,
+				CE9CEE230C75BE2900752D4B /* jcmarker.c in Sources */,
+				CE9CEE240C75BE2900752D4B /* jcmaster.c in Sources */,
+				CE9CEE250C75BE2900752D4B /* jcodec.c in Sources */,
+				CE9CEE260C75BE2900752D4B /* jcomapi.c in Sources */,
+				CE9CEE280C75BE2900752D4B /* jcparam.c in Sources */,
+				CE9CEE290C75BE2900752D4B /* jcphuff.c in Sources */,
+				CE9CEE2A0C75BE2900752D4B /* jcpred.c in Sources */,
+				CE9CEE2B0C75BE2900752D4B /* jcprepct.c in Sources */,
+				CE9CEE2C0C75BE2900752D4B /* jcsample.c in Sources */,
+				CE9CEE2D0C75BE2900752D4B /* jcscale.c in Sources */,
+				CE9CEE2E0C75BE2900752D4B /* jcshuff.c in Sources */,
+				CE9CEE2F0C75BE2900752D4B /* jctrans.c in Sources */,
+				CE9CEE300C75BE2900752D4B /* jdapimin.c in Sources */,
+				CE9CEE310C75BE2900752D4B /* jdapistd.c in Sources */,
+				CE9CEE320C75BE2900752D4B /* jdarith.c in Sources */,
+				CE9CEE330C75BE2900752D4B /* jdatadst.c in Sources */,
+				CE9CEE340C75BE2900752D4B /* jdatasrc.c in Sources */,
+				CE9CEE350C75BE2900752D4B /* jdcoefct.c in Sources */,
+				CE9CEE360C75BE2900752D4B /* jdcolor.c in Sources */,
+				CE9CEE380C75BE2900752D4B /* jddctmgr.c in Sources */,
+				CE9CEE390C75BE2900752D4B /* jddiffct.c in Sources */,
+				CE9CEE3A0C75BE2900752D4B /* jdhuff.c in Sources */,
+				CE9CEE3C0C75BE2900752D4B /* jdinput.c in Sources */,
+				CE9CEE3D0C75BE2900752D4B /* jdlhuff.c in Sources */,
+				CE9CEE3E0C75BE2900752D4B /* jdlossls.c in Sources */,
+				CE9CEE3F0C75BE2900752D4B /* jdlossy.c in Sources */,
+				CE9CEE400C75BE2900752D4B /* jdmainct.c in Sources */,
+				CE9CEE410C75BE2900752D4B /* jdmarker.c in Sources */,
+				CE9CEE420C75BE2900752D4B /* jdmaster.c in Sources */,
+				CE9CEE430C75BE2900752D4B /* jdmerge.c in Sources */,
+				CE9CEE440C75BE2900752D4B /* jdphuff.c in Sources */,
+				CE9CEE450C75BE2900752D4B /* jdpostct.c in Sources */,
+				CE9CEE460C75BE2900752D4B /* jdpred.c in Sources */,
+				CE9CEE470C75BE2900752D4B /* jdsample.c in Sources */,
+				CE9CEE480C75BE2900752D4B /* jdscale.c in Sources */,
+				CE9CEE490C75BE2900752D4B /* jdshuff.c in Sources */,
+				CE9CEE4A0C75BE2900752D4B /* jdtrans.c in Sources */,
+				CE9CEE4B0C75BE2900752D4B /* jerror.c in Sources */,
+				CE9CEE4D0C75BE2900752D4B /* jfdctflt.c in Sources */,
+				CE9CEE4E0C75BE2900752D4B /* jfdctfst.c in Sources */,
+				CE9CEE4F0C75BE2900752D4B /* jfdctint.c in Sources */,
+				CE9CEE500C75BE2900752D4B /* jidctflt.c in Sources */,
+				CE9CEE510C75BE2900752D4B /* jidctfst.c in Sources */,
+				CE9CEE520C75BE2900752D4B /* jidctint.c in Sources */,
+				CE9CEE530C75BE2900752D4B /* jidctred.c in Sources */,
+				CE9CEE570C75BE2900752D4B /* jmemmgr.c in Sources */,
+				CE9CEE580C75BE2900752D4B /* jmemnobs.c in Sources */,
+				CE9CEE5D0C75BE2900752D4B /* jquant1.c in Sources */,
+				CE9CEE5E0C75BE2900752D4B /* jquant2.c in Sources */,
+				CE9CEE5F0C75BE2900752D4B /* jutils.c in Sources */,
+				CE9CEE610C75BE3200752D4B /* jaricom.c in Sources */,
+				CE9CEE620C75BE3200752D4B /* jcapimin.c in Sources */,
+				CE9CEE630C75BE3200752D4B /* jcapistd.c in Sources */,
+				CE9CEE640C75BE3200752D4B /* jcarith.c in Sources */,
+				CE9CEE650C75BE3200752D4B /* jccoefct.c in Sources */,
+				CE9CEE660C75BE3200752D4B /* jccolor.c in Sources */,
+				CE9CEE670C75BE3200752D4B /* jcdctmgr.c in Sources */,
+				CE9CEE680C75BE3200752D4B /* jcdiffct.c in Sources */,
+				CE9CEE690C75BE3200752D4B /* jchuff.c in Sources */,
+				CE9CEE6B0C75BE3200752D4B /* jcinit.c in Sources */,
+				CE9CEE6C0C75BE3200752D4B /* jclhuff.c in Sources */,
+				CE9CEE6D0C75BE3200752D4B /* jclossls.c in Sources */,
+				CE9CEE6E0C75BE3200752D4B /* jclossy.c in Sources */,
+				CE9CEE6F0C75BE3200752D4B /* jcmainct.c in Sources */,
+				CE9CEE700C75BE3200752D4B /* jcmarker.c in Sources */,
+				CE9CEE710C75BE3200752D4B /* jcmaster.c in Sources */,
+				CE9CEE720C75BE3200752D4B /* jcodec.c in Sources */,
+				CE9CEE730C75BE3200752D4B /* jcomapi.c in Sources */,
+				CE9CEE750C75BE3200752D4B /* jcparam.c in Sources */,
+				CE9CEE760C75BE3200752D4B /* jcphuff.c in Sources */,
+				CE9CEE770C75BE3200752D4B /* jcpred.c in Sources */,
+				CE9CEE780C75BE3200752D4B /* jcprepct.c in Sources */,
+				CE9CEE790C75BE3200752D4B /* jcsample.c in Sources */,
+				CE9CEE7A0C75BE3200752D4B /* jcscale.c in Sources */,
+				CE9CEE7B0C75BE3200752D4B /* jcshuff.c in Sources */,
+				CE9CEE7C0C75BE3200752D4B /* jctrans.c in Sources */,
+				CE9CEE7D0C75BE3200752D4B /* jdapimin.c in Sources */,
+				CE9CEE7E0C75BE3200752D4B /* jdapistd.c in Sources */,
+				CE9CEE7F0C75BE3200752D4B /* jdarith.c in Sources */,
+				CE9CEE800C75BE3200752D4B /* jdatadst.c in Sources */,
+				CE9CEE810C75BE3200752D4B /* jdatasrc.c in Sources */,
+				CE9CEE820C75BE3200752D4B /* jdcoefct.c in Sources */,
+				CE9CEE830C75BE3200752D4B /* jdcolor.c in Sources */,
+				CE9CEE850C75BE3200752D4B /* jddctmgr.c in Sources */,
+				CE9CEE860C75BE3200752D4B /* jddiffct.c in Sources */,
+				CE9CEE870C75BE3200752D4B /* jdhuff.c in Sources */,
+				CE9CEE890C75BE3200752D4B /* jdinput.c in Sources */,
+				CE9CEE8A0C75BE3200752D4B /* jdlhuff.c in Sources */,
+				CE9CEE8B0C75BE3200752D4B /* jdlossls.c in Sources */,
+				CE9CEE8C0C75BE3200752D4B /* jdlossy.c in Sources */,
+				CE9CEE8D0C75BE3200752D4B /* jdmainct.c in Sources */,
+				CE9CEE8E0C75BE3200752D4B /* jdmarker.c in Sources */,
+				CE9CEE8F0C75BE3200752D4B /* jdmaster.c in Sources */,
+				CE9CEE900C75BE3200752D4B /* jdmerge.c in Sources */,
+				CE9CEE910C75BE3200752D4B /* jdphuff.c in Sources */,
+				CE9CEE920C75BE3200752D4B /* jdpostct.c in Sources */,
+				CE9CEE930C75BE3200752D4B /* jdpred.c in Sources */,
+				CE9CEE940C75BE3200752D4B /* jdsample.c in Sources */,
+				CE9CEE950C75BE3200752D4B /* jdscale.c in Sources */,
+				CE9CEE960C75BE3200752D4B /* jdshuff.c in Sources */,
+				CE9CEE970C75BE3200752D4B /* jdtrans.c in Sources */,
+				CE9CEE980C75BE3200752D4B /* jerror.c in Sources */,
+				CE9CEE9A0C75BE3200752D4B /* jfdctflt.c in Sources */,
+				CE9CEE9B0C75BE3200752D4B /* jfdctfst.c in Sources */,
+				CE9CEE9C0C75BE3200752D4B /* jfdctint.c in Sources */,
+				CE9CEE9D0C75BE3200752D4B /* jidctflt.c in Sources */,
+				CE9CEE9E0C75BE3200752D4B /* jidctfst.c in Sources */,
+				CE9CEE9F0C75BE3200752D4B /* jidctint.c in Sources */,
+				CE9CEEA00C75BE3200752D4B /* jidctred.c in Sources */,
+				CE9CEEA40C75BE3200752D4B /* jmemmgr.c in Sources */,
+				CE9CEEA50C75BE3200752D4B /* jmemnobs.c in Sources */,
+				CE9CEEAA0C75BE3200752D4B /* jquant1.c in Sources */,
+				CE9CEEAB0C75BE3200752D4B /* jquant2.c in Sources */,
+				CE9CEEAC0C75BE3200752D4B /* jutils.c in Sources */,
+				CE9CEEB00C75BE3A00752D4B /* DCMImageQueryNode.m in Sources */,
+				CE9CEEB20C75BE3A00752D4B /* DCMSeriesQueryNode.m in Sources */,
+				CE9CEEB40C75BE3A00752D4B /* DCMStudyQueryNode.m in Sources */,
+				CE9CEEB60C75BE3A00752D4B /* DCMRootQueryNode.m in Sources */,
+				CE9CEEB80C75BE3A00752D4B /* DCMQueryNode.m in Sources */,
+				CE9CEEBA0C75BE3A00752D4B /* DCMMoveSCU.m in Sources */,
+				CE9CEEBC0C75BE3A00752D4B /* DCMFindSCU.m in Sources */,
+				CE9CEEBE0C75BE3A00752D4B /* DCMStoreSCP.m in Sources */,
+				CE9CEEC00C75BE3A00752D4B /* DCMStoreSCPListener.m in Sources */,
+				CE9CEEC20C75BE3A00752D4B /* DCMStoreSCU.m in Sources */,
+				CE9CEEC40C75BE3A00752D4B /* DCMSOPClass.m in Sources */,
+				CE9CEEC60C75BE3A00752D4B /* DCMVerificationSOPClassSCU.m in Sources */,
+				CE9CEEC80C75BE3A00752D4B /* DCMPrintSCU.m in Sources */,
+				CE9CEECA0C75BE3A00752D4B /* DCMReceivedDataHandler.m in Sources */,
+				CE9CEECC0C75BE3A00752D4B /* DCMCompositeResponseHandler.m in Sources */,
+				CE9CEECE0C75BE3A00752D4B /* DCMCMoveResponseDataHandler.m in Sources */,
+				CE9CEED00C75BE3A00752D4B /* DCMCFindResponseDataHandler.m in Sources */,
+				CE9CEED20C75BE3A00752D4B /* DCMCStoreReceivedPDUHandler.m in Sources */,
+				CE9CEED40C75BE3A00752D4B /* DCMCStoreResponseHandler.m in Sources */,
+				CE9CEED60C75BE3A00752D4B /* DCMEchoResponseHandler.m in Sources */,
+				CE9CEED80C75BE3A00752D4B /* DCMPrintResponseHandler.m in Sources */,
+				CE9CEEDA0C75BE3A00752D4B /* DCMCommandMessage.m in Sources */,
+				CE9CEEDC0C75BE3A00752D4B /* DCMCMoveResponse.m in Sources */,
+				CE9CEEDE0C75BE3A00752D4B /* DCMCFindResponse.m in Sources */,
+				CE9CEEE00C75BE3A00752D4B /* DCMCMoveRequest.m in Sources */,
+				CE9CEEE20C75BE3A00752D4B /* DCMCFindRequest.m in Sources */,
+				CE9CEEE40C75BE3A00752D4B /* DCMCStoreResponse.m in Sources */,
+				CE9CEEE60C75BE3A00752D4B /* DCMCStoreRequest.m in Sources */,
+				CE9CEEE80C75BE3A00752D4B /* DCMCEchoResponse.m in Sources */,
+				CE9CEEEA0C75BE3A00752D4B /* DCMCEchoRequest.m in Sources */,
+				CE9CEEEC0C75BE3A00752D4B /* DCMNGetRequest.m in Sources */,
+				CE9CEEEE0C75BE3A00752D4B /* DCMNGetResponse.m in Sources */,
+				CE9CEEF00C75BE3A00752D4B /* DCMNSetRequest.m in Sources */,
+				CE9CEEF20C75BE3A00752D4B /* DCMNSetResponse.m in Sources */,
+				CE9CEEF40C75BE3A00752D4B /* DCMNActionRequest.m in Sources */,
+				CE9CEEF60C75BE3A00752D4B /* DCMNActionResponse.m in Sources */,
+				CE9CEEF80C75BE3A00752D4B /* DCMNCreateRequest.m in Sources */,
+				CE9CEEFA0C75BE3A00752D4B /* DCMNCreateResponse.m in Sources */,
+				CE9CEEFC0C75BE3A00752D4B /* DCMNDeleteRequest.m in Sources */,
+				CE9CEEFE0C75BE3A00752D4B /* DCMNDeleteResponse.m in Sources */,
+				CE9CEF000C75BE3A00752D4B /* DCMPresentationDataValue.m in Sources */,
+				CE9CEF020C75BE3A00752D4B /* DCMAbstractSyntaxUID.m in Sources */,
+				CE9CEF040C75BE3A00752D4B /* DCMAssociationResponder.m in Sources */,
+				CE9CEF060C75BE3A00752D4B /* DCMAssociation.m in Sources */,
+				CE9CEF080C75BE3A00752D4B /* DCMPrintAssociation.m in Sources */,
+				CE9CEF0A0C75BE3A00752D4B /* DCMAssociationItem.m in Sources */,
+				CE9CEF0C0C75BE3A00752D4B /* DCMPresentationContextItem.m in Sources */,
+				CE9CEF0E0C75BE3A00752D4B /* DCMSOPClassExtendedNegotiationUserInformationSubItem.m in Sources */,
+				CE9CEF100C75BE3A00752D4B /* DCMImplementationVersionNameUserInformationSubItem.m in Sources */,
+				CE9CEF120C75BE3A00752D4B /* DCMImplementationClassUIDUserInformationSubItem.m in Sources */,
+				CE9CEF140C75BE3A00752D4B /* DCMMaximumLengthReceivedUserInformationSubItem.m in Sources */,
+				CE9CEF160C75BE3A00752D4B /* DCMUserInformationSubItem.m in Sources */,
+				CE9CEF180C75BE3A00752D4B /* DCMUserInformationItem.m in Sources */,
+				CE9CEF1A0C75BE3A00752D4B /* DCMApplicationContextItem.m in Sources */,
+				CE9CEF1C0C75BE3A00752D4B /* DCMPresentationContext.m in Sources */,
+				CE9CEF1E0C75BE3A00752D4B /* DCM_PDU.m in Sources */,
+				CE9CEF200C75BE3A00752D4B /* DCMPDataPDU.m in Sources */,
+				CE9CEF220C75BE3A00752D4B /* DCMRejectPDU.m in Sources */,
+				CE9CEF240C75BE3A00752D4B /* DCMAcceptRequestPDU.m in Sources */,
+				CE9CEF260C75BE3A00752D4B /* DCMRequestPDU.m in Sources */,
+				CE9CEF280C75BE3A00752D4B /* DCMAcceptPDU.m in Sources */,
+				CE9CEF2A0C75BE3A00752D4B /* DCMReleasePDU.m in Sources */,
+				CE9CEF2C0C75BE3A00752D4B /* DCMAbortPDU.m in Sources */,
+				CE9CEF2E0C75BE3A00752D4B /* DCMSocket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25625,6 +26510,46 @@
 			};
 			name = Development;
 		};
+		CE9CED840C75BD8D00752D4B /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ALTIVEC_EXTENSIONS = YES;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = YES;
+				PRODUCT_NAME = "DCM StaticLibrary";
+			};
+			name = Development;
+		};
+		CE9CED850C75BD8D00752D4B /* Development 64-bits */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ALTIVEC_EXTENSIONS = YES;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = YES;
+				PRODUCT_NAME = "DCM StaticLibrary";
+			};
+			name = "Development 64-bits";
+		};
+		CE9CED860C75BD8D00752D4B /* Deployment Universal 32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ALTIVEC_EXTENSIONS = YES;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = YES;
+				PRODUCT_NAME = "DCM StaticLibrary";
+			};
+			name = "Deployment Universal 32-bit";
+		};
+		CE9CED870C75BD8D00752D4B /* Deployment Universal 64-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ALTIVEC_EXTENSIONS = YES;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = YES;
+				PRODUCT_NAME = "DCM StaticLibrary";
+			};
+			name = "Deployment Universal 64-bit";
+		};
 		CEDF6DCE0B46FE99008B45B8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -25763,6 +26688,17 @@
 				CE5314870C717B0400A2B75F /* Development 64-bits */,
 				CE5314B30C717C3000A2B75F /* Deployment Universal 32-bit */,
 				CE5314BE0C717C3000A2B75F /* Deployment Universal 64-bit */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Development;
+		};
+		CE9CED880C75BDEE00752D4B /* Build configuration list for PBXNativeTarget "DCM StaticLibrary" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE9CED840C75BD8D00752D4B /* Development */,
+				CE9CED850C75BD8D00752D4B /* Development 64-bits */,
+				CE9CED860C75BD8D00752D4B /* Deployment Universal 32-bit */,
+				CE9CED870C75BD8D00752D4B /* Deployment Universal 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;

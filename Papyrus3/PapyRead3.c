@@ -1140,12 +1140,12 @@ ExtractRLE (PapyShort inFileNb, PapyUShort *ioImage16P, PapyULong inPixelStart,
 } /* endof ExtractRLE */
 
 
-inline unsigned short readUint16(const unsigned char *data)
+static inline unsigned short readUint16(const unsigned char *data)
 {
   return (((unsigned short)(*data) << 8) | ((unsigned short)(*(data+1))));
 }
 
-unsigned char scanJpegDataForBitDepth(
+static unsigned char scanJpegDataForBitDepth(
   const unsigned char *data,
   const long fragmentLength)
 {

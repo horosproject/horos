@@ -190,7 +190,7 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 
 + (NSArray *) DICOMServersList
 {
-	[DCMNetServiceDelegate DICOMServersListSendOnly:NO QROnly:NO];
+	return [DCMNetServiceDelegate DICOMServersListSendOnly:NO QROnly:NO];
 }
 
 + (NSString*) gethostnameAndPort: (int*) port forService:(NSNetService*) sender
