@@ -6253,8 +6253,6 @@ static BOOL withReset = NO;
 	
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
 	
-	char *test = calloc( [imageRep pixelsHigh] * [imageRep pixelsWide] , 1);
-	
 	NSLog( @"bits per pixel: %d", [imageRep bitsPerPixel]);
 	
 	NSString	*uniqueFileName = [NSString stringWithFormat:@"/tmp/osirix_thumbnail_%lf.jpg", [NSDate timeIntervalSinceReferenceDate]];
