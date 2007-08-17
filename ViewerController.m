@@ -12660,7 +12660,7 @@ int i,j,l;
 	}
 	else
 	{
-		if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
+		if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO && path != 0L)
 			NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 				
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
@@ -13704,7 +13704,7 @@ int i,j,l;
 					
 					NSString	*filePath = [[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.jpg", 1]];
 					
-					if( [[NSFileManager defaultManager] fileExistsAtPath: filePath] == NO)
+					if( [[NSFileManager defaultManager] fileExistsAtPath: filePath] == NO && filePath != 0L)
 						NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 					
 					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])

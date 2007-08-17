@@ -299,7 +299,7 @@
 }
 
 - (long)paddedValueLength{
- return nil;
+ return 0;
 }
 
 - (NSMutableArray *)values{

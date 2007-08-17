@@ -227,7 +227,7 @@
 	}
 	else 
 		[exception raise];
-	return nil;
+	return 0;
 	
 }
 
@@ -242,7 +242,7 @@
 	
 	else 
 		[exception raise];
-	return nil;
+	return 0;
 
 }
 
@@ -257,7 +257,7 @@
 	}
 	else 
 		[exception raise];
-	return nil;
+	return 0;
 }
 
 - (unsigned int)nextUnsignedLong{
@@ -271,7 +271,7 @@
 	}
 	else 
 		[exception raise];
-	return nil;
+	return 0;
 }
 
 - (int)nextSignedLong{
@@ -285,7 +285,7 @@
 	}
 	else 
 		[exception raise];
-	return nil;
+	return 0;
 }
 
 - (unsigned long long)nextUnsignedLongLong{
@@ -299,7 +299,7 @@
 	}
 	else 
 		[exception raise];
-	return nil;
+	return 0;
 }
 
 - (long long)nextSignedLongLong{
@@ -320,7 +320,7 @@
 	}
 	else 
 		[exception raise];
-	return nil;
+	return 0;
 }
 
 - (float)nextFloat{
@@ -359,7 +359,7 @@
 - (NSString *)nextStringWithLength:(int)length{
 	NSException *exception = [self testForLength:length];
 	if (!exception) {
-		if (stringEncoding == nil)
+		if (stringEncoding == 0)
 			stringEncoding = NSISOLatin1StringEncoding;
 		NSString *string;
 		string = [[[NSString alloc] initWithBytes:(_ptr + position) length:(unsigned)length encoding:stringEncoding] autorelease];
@@ -708,7 +708,7 @@
 	[dicomData appendData:data];
 	int length = [string length];
 	if (length%2)
-		[self addUnsignedChar:nil];
+		[self addUnsignedChar:0];
 		//[self addUnsignedChar:0];
 	
 }
@@ -717,7 +717,7 @@
 	[dicomData appendData:data];
 	int length = [string length];
 	if (length%2)
-		[self addUnsignedChar:nil];
+		[self addUnsignedChar:0];
 		//[self addUnsignedChar:0];
 	
 }

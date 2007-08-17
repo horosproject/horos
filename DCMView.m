@@ -7600,7 +7600,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					[self setStringID: str];
 					[str release];
 				}
-				else if( [curRoiList count]) [self display];
+				else [self display];
 				
 				[[self openGLContext] makeCurrentContext];
 				
