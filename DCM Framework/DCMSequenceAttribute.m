@@ -190,7 +190,7 @@
 			[elements addObject:[[value objectForKey:@"item"] xmlNode]];
 	}
 	NSMutableString *aName = [NSMutableString stringWithString:[[self attrTag] name]];
-	[aName replaceOccurrencesOfString:@"/" withString:@"_" options:nil range:NSMakeRange(0, [aName length])];
+	[aName replaceOccurrencesOfString:@"/" withString:@"_" options:0 range:NSMakeRange(0, [aName length])];
 	myNode = [NSXMLNode elementWithName:aName children:elements attributes:attrs];
 	return myNode;
 }

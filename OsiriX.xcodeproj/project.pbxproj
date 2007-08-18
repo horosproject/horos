@@ -14,6 +14,7 @@
 			);
 			dependencies = (
 				4A2F590D078D124B00C514A2 /* PBXTargetDependency */,
+				CEA048B60C76E46F00B4CA0A /* PBXTargetDependency */,
 				ABCB1B3C0A21FC04008EB2E8 /* PBXTargetDependency */,
 				AB72503C0ADE6F7000A212A0 /* PBXTargetDependency */,
 				CE7A0F7F0AED591800540017 /* PBXTargetDependency */,
@@ -7993,6 +7994,20 @@
 			remoteGlobalIDString = CEDF6C600B46FE99008B45B8;
 			remoteInfo = DICOMPrint;
 		};
+		CEA0484D0C76E2A600B4CA0A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEA048460C76E2A600B4CA0A /* DICOMQuickLook.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D576316048677EA00EA77CD /* DICOMQuickLook.qlgenerator */;
+			remoteInfo = DICOMQuickLook;
+		};
+		CEA048B50C76E46F00B4CA0A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CE9CED800C75BD8C00752D4B /* DCM StaticLibrary */;
+			remoteInfo = "DCM StaticLibrary";
+		};
 		CEAB83070B20979D0019A9AE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BF2EEC300B1F82F4007E9088 /* OSIHotKeysPreferencePane.xcodeproj */;
@@ -11537,6 +11552,7 @@
 		CE9DD281086B35050058DD2A /* DicomStudy.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomStudy.h; sourceTree = "<group>"; };
 		CE9DD282086B35050058DD2A /* DicomSeries.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomSeries.h; sourceTree = "<group>"; };
 		CE9DD283086B35050058DD2A /* DicomSeries.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomSeries.m; sourceTree = "<group>"; };
+		CEA048460C76E2A600B4CA0A /* DICOMQuickLook.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DICOMQuickLook.xcodeproj; path = ../DICOMQuickLook/DICOMQuickLook.xcodeproj; sourceTree = SOURCE_ROOT; };
 		CEA0C72607A6B186004E5D9D /* vtkVolumeProVP1000Mapper.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = vtkVolumeProVP1000Mapper.cxx; path = VolumePRO/vtkVolumeProVP1000Mapper.cxx; sourceTree = "<group>"; };
 		CEA0C72907A6B186004E5D9D /* vtkOpenGLVolumeProVP1000Mapper.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = vtkOpenGLVolumeProVP1000Mapper.cxx; path = VolumePRO/vtkOpenGLVolumeProVP1000Mapper.cxx; sourceTree = "<group>"; };
 		CEA20533073A810100F0DAB7 /* iPhoto.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = iPhoto.h; sourceTree = "<group>"; };
@@ -12203,6 +12219,7 @@
 		4A2F58D9078D119600C514A2 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
+				CEA048460C76E2A600B4CA0A /* DICOMQuickLook.xcodeproj */,
 				A9FF849B0C5F187800D50C95 /* OSICustomImageAnnotations.xcodeproj */,
 				BF2EEC300B1F82F4007E9088 /* OSIHotKeysPreferencePane.xcodeproj */,
 				ABD908DB0AF211BB00E47345 /* AYDicomPrint.xcodeproj */,
@@ -16204,6 +16221,14 @@
 				BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */,
 			);
 			name = CoreData;
+			sourceTree = "<group>";
+		};
+		CEA048470C76E2A600B4CA0A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CEA0484E0C76E2A600B4CA0A /* DICOMQuickLook.qlgenerator */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		CEBD8A4B0875B029000E42D6 /* Pane */ = {
@@ -20612,6 +20637,10 @@
 					ProjectRef = ABD908DB0AF211BB00E47345 /* AYDicomPrint.xcodeproj */;
 				},
 				{
+					ProductGroup = CEA048470C76E2A600B4CA0A /* Products */;
+					ProjectRef = CEA048460C76E2A600B4CA0A /* DICOMQuickLook.xcodeproj */;
+				},
+				{
 					ProductGroup = ABC398F109F527C4000A6508 /* Products */;
 					ProjectRef = ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */;
 				},
@@ -20766,6 +20795,13 @@
 			fileType = wrapper.cfbundle;
 			path = OSIListenerPreferencePane.prefPane;
 			remoteRef = CE4E431008758A1800D0AFDB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CEA0484E0C76E2A600B4CA0A /* DICOMQuickLook.qlgenerator */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = DICOMQuickLook.qlgenerator;
+			remoteRef = CEA0484D0C76E2A600B4CA0A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -24430,6 +24466,11 @@
 			isa = PBXTargetDependency;
 			target = CEDF6C600B46FE99008B45B8 /* DICOMPrint */;
 			targetProxy = CE8DF1250B470DC50035C230 /* PBXContainerItemProxy */;
+		};
+		CEA048B60C76E46F00B4CA0A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CE9CED800C75BD8C00752D4B /* DCM StaticLibrary */;
+			targetProxy = CEA048B50C76E46F00B4CA0A /* PBXContainerItemProxy */;
 		};
 		CEAB83080B20979D0019A9AE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

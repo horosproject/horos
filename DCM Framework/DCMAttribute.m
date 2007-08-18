@@ -627,7 +627,7 @@
 	NSArray *attrs = [NSArray arrayWithObjects:groupAttr,elementAttr, vrAttr,tagNode, nil];
 	NSEnumerator *enumerator = [[self values] objectEnumerator];
 	NSMutableString *aName = [NSMutableString stringWithString:[[self attrTag] name]];
-	[aName replaceOccurrencesOfString:@"/" withString:@"_" options:nil range:NSMakeRange(0, [aName length])];
+	[aName replaceOccurrencesOfString:@"/" withString:@"_" options:0 range:NSMakeRange(0, [aName length])];
 	id value;
 	NSMutableArray *elements = [NSMutableArray array];
 	int i = 0;

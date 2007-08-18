@@ -76,10 +76,10 @@
 }
 		
 - (BOOL)createFilmBox{
-	return nil;
+	return 0;
 }
 - (BOOL)createImageBox{
-	return nil;
+	return 0;
 }
 
 - (BOOL)print{

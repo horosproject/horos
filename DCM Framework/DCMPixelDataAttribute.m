@@ -94,7 +94,7 @@ short DCMHasAltiVec()
 {
 	Boolean hasAltiVec = 0;
 	OSErr      err;       
-	long      ppcFeatures;
+	SInt32      ppcFeatures;
 	
 	err = Gestalt ( gestaltPowerPCProcessorFeatures, &ppcFeatures );       
 	if ( err == noErr)       
@@ -3288,7 +3288,7 @@ NS_ENDHANDLER
 				 &dst8, 
 				max, 
 				min, 
-				nil		
+				0		
 		);
 		//NSLog(@"max %f min: %f intercept: %f, slope: %f", max, min, rescaleIntercept, rescaleSlope);
 		free(dstf.data);	
