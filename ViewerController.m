@@ -12729,8 +12729,11 @@ int i,j,l;
 		[quicktimeInterval takeIntValueFrom: quicktimeIntervalText];
 	}
 	
-	if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] - [sender intValue]];
-	else [imageView setIndex:  [sender intValue]-1];
+	if( [sender tag] != 3)	// 3 = interval
+	{
+		if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] - [sender intValue]];
+		else [imageView setIndex:  [sender intValue]-1];
+	}
 	
 	[imageView sendSyncMessage:1];
 	
@@ -13250,8 +13253,11 @@ int i,j,l;
 			[dcmInterval takeIntValueFrom: dcmIntervalText];
 		}
 		
-		if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] - [sender intValue]];
-		else [imageView setIndex:  [sender intValue]-1];
+		if( [sender tag] != 3)
+		{
+			if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] - [sender intValue]];
+			else [imageView setIndex:  [sender intValue]-1];
+		}
 		
 		[imageView sendSyncMessage:1];
 		
