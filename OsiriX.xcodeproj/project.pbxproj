@@ -7998,14 +7998,14 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = CEA048460C76E2A600B4CA0A /* DICOMQuickLook.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 8D576316048677EA00EA77CD /* DICOMQuickLook.qlgenerator */;
+			remoteGlobalIDString = 8D576316048677EA00EA77CD;
 			remoteInfo = DICOMQuickLook;
 		};
 		CEA048B50C76E46F00B4CA0A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CE9CED800C75BD8C00752D4B /* DCM StaticLibrary */;
+			remoteGlobalIDString = CE9CED800C75BD8C00752D4B;
 			remoteInfo = "DCM StaticLibrary";
 		};
 		CEAB83070B20979D0019A9AE /* PBXContainerItemProxy */ = {

@@ -1082,7 +1082,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		gUSEPAPYRUSDCMPIX = YES;
 		gUseShutter = NO;
 		gDisplayDICOMOverlays = NO;
-		gUseJPEGColorSpace = YES;
+		gUseJPEGColorSpace = NO;
 		#endif
 		
 //		NSLog( @"gUseShutter == %d", gUseShutter);
