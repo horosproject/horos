@@ -30,10 +30,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 ****************************************/
 
 
-#if !__LP64__
 #import "AYDicomPrintWindowController.h"
-#endif
-
 #import "ViewerControllerWindow.h"
 #import "MyOutlineView.h"
 #import "PluginFilter.h"
@@ -97,11 +94,8 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "EndoscopySegmentationController.h"
 #import "HornRegistration.h"
 #import "BonjourBrowser.h"
-
-#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-	#import <InstantMessage/IMService.h>
-	#import <InstantMessage/IMAVManager.h>
-#endif
+#import <InstantMessage/IMService.h>
+#import <InstantMessage/IMAVManager.h>
 
 @class VRPROController;
 
@@ -172,7 +166,7 @@ NSString* convertDICOM( NSString *inputfile);
 // compares the names of 2 ROIs.
 // using the option NSNumericSearch => "Point 1" < "Point 5" < "Point 21".
 // use it with sortUsingFunction:context: to order an array of ROIs
-int sortROIByName(id roi1, id roi2, void *context)
+NSInteger sortROIByName(id roi1, id roi2, void *context)
 {
     NSString *n1 = [roi1 name];
     NSString *n2 = [roi2 name];
@@ -2679,11 +2673,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
-#if !__LP64__
-- (float)splitView:(NSSplitView *)sender constrainSplitPosition:(float)proposedPosition ofSubviewAt:(int)offset
-#else
 - (CGFloat)splitView:(NSSplitView *)sender constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)offset
-#endif
 {
     if( [sender isVertical] == YES)
     {
@@ -2939,11 +2929,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 	}
 	
-	#if !__LP64__
-	int row, column;
-	#else
-	long row, column;
-	#endif
+	NSInteger row, column;
 	
 	if( showSelected)
 	{
@@ -4048,14 +4034,7 @@ static ViewerController *draggedController = 0L;
 	
 	if ([[toolbarItem itemIdentifier] isEqualToString: iChatBroadCastToolbarItemIdentifier])
 	{
-		#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-			enable = YES;
-		#else
-		if( [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/Quicktime/OsiriX Broadcasting.component"] == NO)
-		{
-			enable = NO;
-		}
-		#endif
+		enable = YES;
 	}
 	
 	if([[toolbarItem itemIdentifier] isEqualToString: SUVToolbarItemIdentifier])
@@ -4425,13 +4404,9 @@ static ViewerController *draggedController = 0L;
 	
 	displayOnlyKeyImages = NO;
 	
-#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-//#if !__LP64__
 	[[IMService notificationCenter] addObserver:self selector:@selector(_stateChanged:)
                                            name:IMAVManagerStateChangedNotification object:nil];
 	[[IMAVManager sharedAVManager] setVideoDataSource:imageView];
-//#endif
-#endif
 	
 	[imageView setDrawing: YES];
 	
@@ -4602,12 +4577,8 @@ static ViewerController *draggedController = 0L;
 	
 	NSLog(@"ViewController dealloc End");
 	
-#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-//#if !__LP64__
 	[[IMAVManager sharedAVManager] setVideoDataSource:nil];
 	[[IMService notificationCenter] removeObserver:self];
-//#endif
-#endif
 }
 
 - (void) selectFirstTilingView
@@ -12530,9 +12501,7 @@ int i,j,l;
 {
 	[self checkEverythingLoaded];
 	
-	#if !__LP64__
 	[[[AYDicomPrintWindowController alloc] init] autorelease];
-	#endif
 }
 
 -(NSImage*) imageForFrame:(NSNumber*) cur maxFrame:(NSNumber*) max
@@ -14071,8 +14040,6 @@ int i,j,l;
 #endif
 }
 
-#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-//#if !__LP64__
 // IMAVManager notification callback.
 - (void)_stateChanged:(NSNotification *)aNotification {
     // Read the state.
@@ -14090,35 +14057,32 @@ int i,j,l;
         [avManager stop];
     }
 }
-//#endif
-#else
 
-- (void) iChatBroadcast:(id) sender
-{
-	if( timeriChat)
-    {
-        [timeriChat invalidate];
-        [timeriChat release];
-        timeriChat = nil;
-        
-        [[self findiChatButton] setLabel: NSLocalizedString(@"BroadCast", 0L)];
-		[[self findiChatButton] setPaletteLabel: NSLocalizedString(@"BroadCast", 0L)];
-        [[self findiChatButton] setToolTip: NSLocalizedString(@"BroadCast", 0L)];
-    }
-    else
-    {
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationiChatBroadcast" object:0L userInfo: 0L];
-		
-        timeriChat = [[NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(produceIChatData:) userInfo:nil repeats:YES] retain];
-        [[NSRunLoop currentRunLoop] addTimer:timeriChat forMode:NSModalPanelRunLoopMode];
-        [[NSRunLoop currentRunLoop] addTimer:timeriChat forMode:NSEventTrackingRunLoopMode];
-		
-        [[self findiChatButton] setLabel: NSLocalizedString(@"Stop", nil)];
-		[[self findiChatButton] setPaletteLabel: NSLocalizedString(@"Stop", nil)];
-        [[self findiChatButton] setToolTip: NSLocalizedString(@"Stop", nil)];
-    }
-}
-#endif
+//- (void) iChatBroadcast:(id) sender
+//{
+//	if( timeriChat)
+//    {
+//        [timeriChat invalidate];
+//        [timeriChat release];
+//        timeriChat = nil;
+//        
+//        [[self findiChatButton] setLabel: NSLocalizedString(@"BroadCast", 0L)];
+//		[[self findiChatButton] setPaletteLabel: NSLocalizedString(@"BroadCast", 0L)];
+//        [[self findiChatButton] setToolTip: NSLocalizedString(@"BroadCast", 0L)];
+//    }
+//    else
+//    {
+//		[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationiChatBroadcast" object:0L userInfo: 0L];
+//		
+//        timeriChat = [[NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(produceIChatData:) userInfo:nil repeats:YES] retain];
+//        [[NSRunLoop currentRunLoop] addTimer:timeriChat forMode:NSModalPanelRunLoopMode];
+//        [[NSRunLoop currentRunLoop] addTimer:timeriChat forMode:NSEventTrackingRunLoopMode];
+//		
+//        [[self findiChatButton] setLabel: NSLocalizedString(@"Stop", nil)];
+//		[[self findiChatButton] setPaletteLabel: NSLocalizedString(@"Stop", nil)];
+//        [[self findiChatButton] setToolTip: NSLocalizedString(@"Stop", nil)];
+//    }
+//}
 
 - (void) notificationiChatBroadcast:(NSNotification*)note
 {

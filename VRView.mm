@@ -2076,10 +2076,6 @@ public:
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
-//	#if __LP64__
-//	return;
-//	#endif
-	
 	long	pix[ 3];
 	float	pos[ 3], value;
 	
@@ -4927,13 +4923,7 @@ public:
 	Line2DText->GetTextProperty()->SetShadow( YES);
 	
 	aRenderer->AddActor2D( Line2DActor);
-	
-//	#if !__LP64__
-//	orientationWidget->InteractiveOff();
-//	#endif
-	
-//	[self initAnnotatedCubeActor];
-	
+		
 	[self saView:self];
 	
 	[self setNeedsDisplay:YES];

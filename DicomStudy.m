@@ -92,11 +92,7 @@ Version 2.3
 		NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[self valueForKey:@"dateOfBirth"] timeIntervalSinceReferenceDate]];
 		NSCalendarDate *dateOfBirth = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[self valueForKey:@"date"] timeIntervalSinceReferenceDate]];
 		
-		#if __LP64__
 		NSInteger years, months, days;
-		#else
-		int years, months, days;
-		#endif
 		
 		[dateOfBirth years:&years months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:momsBDay];
 		
@@ -121,11 +117,7 @@ Version 2.3
 		NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[self valueForKey:@"dateOfBirth"] timeIntervalSinceReferenceDate]];
 		NSCalendarDate *dateOfBirth = [NSCalendarDate date];
 		
-		#if __LP64__
 		NSInteger years, months, days;
-		#else
-		int years, months, days;
-		#endif
 		
 		[dateOfBirth years:&years months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:momsBDay];
 		

@@ -4573,7 +4573,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	layerPixelSpacingY = y;
 }
 
-int sortPointArrayAlongX(id point1, id point2, void *context)
+NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 {
     float x1 = (float)[point1 pointValue].x;
     float x2 = (float)[point2 pointValue].x;

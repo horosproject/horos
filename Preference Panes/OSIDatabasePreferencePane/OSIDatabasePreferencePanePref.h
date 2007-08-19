@@ -19,6 +19,7 @@
 {
 	IBOutlet NSMatrix		*locationMatrix;
 	IBOutlet NSTextField	*locationURLField;
+	IBOutlet NSPathControl	*locationPathField;
 	IBOutlet NSMatrix		*copyDatabaseModeMatrix;
 	IBOutlet NSButton		*copyDatabaseOnOffButton;
 	IBOutlet NSButton		*localizerOnOffButton;

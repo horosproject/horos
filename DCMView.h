@@ -368,6 +368,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 - (void) drawTextualData:(NSRect) size :(long) annotations;
 - (void) draw2DPointMarker;
 - (void) setSyncro:(long) s;
+- (void) drawImage:(NSImage *)image inBounds:(NSRect)rect;
 - (long) syncro;
 - (NSFont*)fontGL;
 - (void) setScaleValueCentered:(float) x;

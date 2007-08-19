@@ -50,9 +50,7 @@ Version 2.3
 
 #include <OpenGL/CGLCurrent.h>
 #include <OpenGL/CGLContext.h>
-#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-	#import <CoreVideo/CoreVideo.h>
-#endif
+#import <CoreVideo/CoreVideo.h>
 
 #import "DefaultsOsiriX.h"
 //#include <OpenGL/gl.h> // for OpenGL API
@@ -10017,9 +10015,6 @@ BOOL	lowRes = NO;
 
 #pragma mark -
 #pragma mark IMAVManager delegate methods.
-#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-//#if !__LP64__
-
 // The IMAVManager will call this to ask for the context we'll be providing frames with.
 - (void)getOpenGLBufferContext:(CGLContextObj *)contextOut pixelFormat:(CGLPixelFormatObj *)pixelFormatOut {
 	NSLog(@"alt context: %@ format: %@", [_alternateContext description], [[self pixelFormat] description]);
@@ -10117,7 +10112,7 @@ BOOL	lowRes = NO;
 
 
 
-- (void)drawImage:(NSImage *)image inBounds:(NSRect)rect
+- (void) drawImage:(NSImage *)image inBounds:(NSRect)rect
 {
     // We synchronise to make sure we're not drawing in two threads
     // simultaneously.
@@ -10147,10 +10142,6 @@ BOOL	lowRes = NO;
 
 	//}
 }
-
-
-//#endif
-#endif
 
 // The _hasChanged flag is set to 'NO' after any check (by a client of this 
 // class), and 'YES' after a frame is drawn that is not identical to the 

@@ -6563,11 +6563,7 @@ static BOOL withReset = NO;
     return COLUMN;
 }
 
-#if !__LP64__
-- (float)splitView:(NSSplitView *)sender constrainSplitPosition:(float)proposedPosition ofSubviewAt:(int)offset
-#else
 - (CGFloat)splitView:(NSSplitView *)sender constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)offset
-#endif
 {
 	if ([sender isEqual:sourcesSplitView])
 	{
@@ -6673,11 +6669,7 @@ static BOOL withReset = NO;
 	else return YES;
 }
 
-#if __LP64__
 - (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(NSInteger)offset
-#else
-- (float)splitView:(NSSplitView *)sender constrainMinCoordinate:(float)proposedMin ofSubviewAt:(int)offset
-#endif
 {
 	
 	if ([sender isEqual:sourcesSplitView])
@@ -6695,11 +6687,7 @@ static BOOL withReset = NO;
 	}
 }
 
-#if __LP64__
 - (CGFloat)splitView:(NSSplitView *)sender constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(NSInteger)offset
-#else
-- (float)splitView:(NSSplitView *)sender constrainMaxCoordinate:(float)proposedMax ofSubviewAt:(int)offset
-#endif
 {
 	if ([sender isEqual:splitViewVert])
 	{
@@ -9543,10 +9531,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	[toolbar setVisible:YES];
 	[self showDatabase: self];
-	
-	// SCAN FOR AN IPOD!
-	[self loadDICOMFromiPod];
-	
+		
 	// NSMenu for DatabaseOutline
 	NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Tools"];
 	NSMenuItem *exportItem, *sendItem, *burnItem, *anonymizeItem, *keyImageItem;
@@ -9797,6 +9782,9 @@ static NSArray*	openSubSeriesArray = 0L;
 	[[NSConnection defaultConnection] setRootObject:self];
 //start timer for monitoring incoming logs on main thread
 	[LogManager currentLogManager];
+	
+	// SCAN FOR AN IPOD!
+	[self loadDICOMFromiPod];
 	}
 	
 	@catch( NSException *ne)

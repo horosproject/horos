@@ -62,7 +62,7 @@ htt://www.pixelmed.com
 - (id)initWithData:(NSMutableData *)data{
 	if (self = [super init]) {
 		pdu = [data retain];
-		[pduType getBytes:&pduType range:NSMakeRange(0,1)];
+		[pdu getBytes:&pduType range:NSMakeRange(0,1)];
 		[pdu getBytes:&pduLength range:NSMakeRange(2,4)];
 		pduLength = NSSwapBigIntToHost(pduLength);
 	}

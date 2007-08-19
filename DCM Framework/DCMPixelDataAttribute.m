@@ -1040,7 +1040,7 @@ unsigned char scanJpegDataForBitDepth(
 				{
 					jas_image_readcmpt(jasImage, 0, 0, y, width, 1, pixels[0]);
 					
-					unsigned short *px = newPixelData + y * width*2;
+					unsigned short *px = (unsigned short*) (newPixelData + y * width*2);
 					
 					int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
 					x = width;
@@ -1053,7 +1053,7 @@ unsigned char scanJpegDataForBitDepth(
 				{
 					jas_image_readcmpt(jasImage, 0, 0, y, width, 1, pixels[0]);
 					
-					char *px = newPixelData + y * width;
+					char *px = (char *) (newPixelData + y * width);
 					
 					//ICI char * aulieu de 32
 					int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];

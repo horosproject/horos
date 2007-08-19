@@ -3060,11 +3060,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	}
 	return [settingsGroups sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];;
 }
-#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
 NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
-#else
-int sort3DSettingsDict(id preset1, id preset2, void *context)
-#endif
 {
     NSString *name1 = [preset1 objectForKey:@"name"];
     NSString *name2 = [preset2 objectForKey:@"name"];

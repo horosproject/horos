@@ -984,7 +984,7 @@ static int defaultTimeout = 5000; // in milliseconds
 					}
 					//get rid of last PDU
 
-					NSData *newData = [[_incomingData subdataWithRange:NSMakeRange(pduLength + 6, [_incomingData length] - (pduLength + 6))] mutableCopy];
+					NSMutableData *newData = [[_incomingData subdataWithRange:NSMakeRange(pduLength + 6, [_incomingData length] - (pduLength + 6))] mutableCopy];
 					[_incomingData release];
 					_incomingData = newData;
 					if (_receivePDataCount >= 0)

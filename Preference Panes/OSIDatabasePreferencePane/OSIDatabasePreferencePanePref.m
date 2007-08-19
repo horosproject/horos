@@ -176,12 +176,10 @@ Version 2.4
 //	[displayAllStudies setState:[defaults boolForKey:@"KeepStudiesOfSamePatientTogether"]];
 	
 	long locationValue = [defaults integerForKey:@"DEFAULT_DATABASELOCATION"];
-//	if (locationValue == 0)
-//		[locationURLField setHidden:YES];
-//	else [locationURLField setHidden:NO];
 	
 	[locationMatrix selectCellWithTag:locationValue];
 	[locationURLField setStringValue:[defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]];
+	[locationPathField setURL: [NSURL URLWithString: [defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]]];
 	
 //	[copyDatabaseModeMatrix setEnabled:[defaults boolForKey:@"COPYDATABASE"]];
 	[copyDatabaseModeMatrix selectCellWithTag:[defaults integerForKey:@"COPYDATABASEMODE"]];
@@ -378,10 +376,6 @@ Version 2.4
 			}
 		}
 	}
-	else
-	{
-	//	[locationURLField setHidden:YES];
-	}
 	
 	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:@"DEFAULT_DATABASELOCATION"];
 	
@@ -428,6 +422,7 @@ Version 2.4
 		}
 		
 		[locationURLField setStringValue: location];
+		[locationPathField setURL: [NSURL URLWithString: location]];
 		[[NSUserDefaults standardUserDefaults] setObject:location forKey:@"DEFAULT_DATABASELOCATIONURL"];
 		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
 		[locationMatrix selectCellWithTag:1];
@@ -435,6 +430,7 @@ Version 2.4
 	else 
 	{
 		[locationURLField setStringValue: 0L];
+		[locationPathField setURL: 0L];
 		[[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"DEFAULT_DATABASELOCATIONURL"];
 		[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"DEFAULT_DATABASELOCATION"];
 		[locationMatrix selectCellWithTag:0];

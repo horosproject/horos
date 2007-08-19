@@ -16,7 +16,7 @@
 
 @implementation ImageAndTextCell
 
-- (BOOL)trackMouse:(NSEvent *)theEvent inRect:(NSRect)cellFrame ofView:(NSView *)controlView untilMouseUp:(BOOL)untilMouseUp
+- (NSUInteger) hitTestForEvent:(NSEvent *)theEvent inRect:(NSRect)cellFrame ofView:(NSView *)controlView
 {
 	BOOL clickInButton = NO;
 	
@@ -32,19 +32,42 @@
 		
 		if( NSMouseInRect( pt, cellFrameOut, NO) == NO)
 		{
-			NSImage	*im = lastImage;
-			lastImage = lastImageAlternate;
-			lastImageAlternate = im;
+			if( clickedInLastImage == NO)
+			{
+				NSImage	*im = lastImage;
+				lastImage = lastImageAlternate;
+				lastImageAlternate = im;
+				
+				clickedInLastImage = YES;
+				clickInButton = YES;
+				
+				[controlView display];
+			}
 			
-			clickedInLastImage = YES;
-			clickInButton = YES;
+			while ([theEvent type] != NSLeftMouseUp)
+			{
+				theEvent = [[controlView window] nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSMouseEnteredMask | NSMouseExitedMask)];
+			}
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"AlternateButtonPressed" object: self];
 		}
-		else clickedInLastImage = NO;
+		else
+		{
+			if( clickedInLastImage == YES)
+			{
+				NSImage	*im = lastImage;
+				lastImage = lastImageAlternate;
+				lastImageAlternate = im;
+				
+				clickedInLastImage = NO;
+				clickInButton = NO;
+				
+				[controlView display];
+			}
+		}
 	}
 	
-	return [super trackMouse: theEvent inRect: cellFrame ofView: controlView untilMouseUp: untilMouseUp];
+	return [super hitTestForEvent: theEvent inRect: cellFrame ofView: controlView];
 }
 
 - (BOOL) clickedInLastImage
