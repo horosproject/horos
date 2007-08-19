@@ -13769,276 +13769,276 @@ int i,j,l;
 #define ICHAT_WIDTH 640
 #define ICHAT_HEIGHT 480
 
--(IBAction) produceIChatData:(id) sender
-{
-#if !__LP64__
-	long			i, x, z, zz, inv, swidth, sheight, offsetX, offsetY;
-	float			ratioX, ratioY;
-	unsigned char   *rgbPtr;
-	unsigned char   *finalPtr;
-	FILE			*fp;
-	long			line3, line4, spp, bpp;
-	unsigned char   *src, *dst;
-	long			scrapSize;
-	ScrapRef		scrap;
-
-	// Is there an image in clipboard?
-	
-	GetCurrentScrap( &scrap); 
-	if( GetScrapFlavorSize(scrap, 'OXRA', &scrapSize) == noErr) return;
-	
-	rgbPtr = [imageView getRawPixels: &swidth :&sheight :&spp :&bpp :YES :NO];
-	finalPtr = malloc( 3L*ICHAT_WIDTH*ICHAT_HEIGHT);
-	
-	bzero( finalPtr, 3L*ICHAT_WIDTH*ICHAT_HEIGHT);
-	
-	ratioX = (float) swidth / (float) ICHAT_WIDTH;
-	ratioY = (float) sheight / (float) ICHAT_HEIGHT;
-
-	if( ratioX > ratioY)
-	{
-		offsetX = 0;
-		offsetY =(ICHAT_HEIGHT - sheight/ratioX)/2;
-		offsetY += 2;
-		
-	}
-	else
-	{
-		offsetY = 0;
-		offsetX =(ICHAT_WIDTH - swidth/ratioY)/2;
-		offsetX += 2;
-	}
-	
-	if( ratioX > ratioY)
-	{
-		for( i = offsetY; i < ICHAT_HEIGHT-offsetY; i++)
-		{
-			line3 = (i)* ICHAT_WIDTH * 3L;
-			
-			line4 = (((i-offsetY)* swidth) / ICHAT_WIDTH);
-			line4 *= swidth*3L;
-			
-			for( z = 0 ; z < ICHAT_WIDTH; z++)
-			{
-				dst = &finalPtr[ line3 +z*3];
-				src = &rgbPtr[ line4 + (((z)*swidth) / ICHAT_WIDTH)*3];
-				
-				*dst++		= *src++;
-				*dst++		= *src++;
-				*dst		= *src;
-			}
-		}
-	}
-	else
-	{
-		for( i = 0; i < ICHAT_HEIGHT ; i++)
-		{
-			line3 = i * ICHAT_WIDTH * 3L;
-			line4 = ( (i* sheight) / ICHAT_HEIGHT) * swidth * 3L;
-			
-			for( z = offsetX ; z < ICHAT_WIDTH-offsetX; z++)
-			{
-				dst = &finalPtr[ line3 +(z) *3];
-				src = &rgbPtr[ line4 + (((z-offsetX)*sheight) / ICHAT_HEIGHT)*3];
-				
-				*dst++		= *src++;
-				*dst++		= *src++;
-				*dst		= *src;
-			}
-		}
-	}
-	
-	//Draw Mouse
-	
-	NSPoint cursorLoc;// = [imageView convertPoint:[[self window] convertScreenToBase: [NSEvent mouseLocation]] fromView:0L];
-	
-//	cursorLoc = [[[self window] contentView] convertPoint:[NSEvent mouseLocation] toView:self];
-	
-//	cursorLoc = [imageView convertPoint:[NSEvent mouseLocation] fromView:imageView];
-	cursorLoc = [[[self window] contentView] convertPoint:[[self window] mouseLocationOutsideOfEventStream] toView:imageView];
-	
-//	NSLog( @"x: %2.2f y: %2.2f", cursorLoc.x, cursorLoc.y);
-	
-	long	xx = cursorLoc.x;
-	long	yy = cursorLoc.y;
-	
-	if( ratioX > ratioY)
-	{
-		xx = (xx * ICHAT_WIDTH) / swidth;
-	//	xx = ICHAT_WIDTH - xx;
-		
-		yy = (yy * ICHAT_WIDTH) / swidth;
-		yy = ICHAT_HEIGHT - yy;
-		yy -= offsetY;
-	}
-	else
-	{
-		xx = (xx * ICHAT_HEIGHT) / sheight;
-	//	xx = ICHAT_WIDTH - xx;
-		xx += offsetX;
-		
-		yy = (yy * ICHAT_HEIGHT) / sheight;
-		yy = ICHAT_HEIGHT - yy;
-	}
-	
-//	NSLog( @"offset: %d", offsetX);
-	
-	for( x = -3; x< 3; x++)
-	{
-		for( z = -3; z < 3; z++)
-		{
-			if( x + xx >= 0 && x + xx < ICHAT_WIDTH)
-			{
-				if( z + yy >= 0 && z + yy < ICHAT_HEIGHT)
-				{
-					dst = &finalPtr[ (z + yy)*ICHAT_WIDTH*3L + (x + xx)*3L];
-					*dst++ = 0x00;
-					*dst++ = 0xFF;
-					*dst = 0;
-				}
-			}
-		}
-	}
-	
-//	NSPasteboard	*pb = [NSPasteboard generalPasteboard];
-//	[pb declareTypes:[NSArray arrayWithObject:@"OXRA"] owner:self];
-//	[pb setData: [NSData dataWithBytesNoCopy: finalPtr length:3L*ICHAT_WIDTH*ICHAT_HEIGHT freeWhenDone:YES] forType:@"OXRA"];
-
-	{
-//		ScrapFlavorInfo info[100];
-		
-		ClearCurrentScrap ();
-		GetCurrentScrap( &scrap); 
-		
-		PutScrapFlavor ( scrap, 'OXRA',kScrapFlavorMaskNone ,3L*ICHAT_WIDTH*ICHAT_HEIGHT,finalPtr ); 
-
-	}
-//	fp = fopen("/tmp/osirix24bitsTemp", "wb");
-//	fwrite( finalPtr, 3L*ICHAT_WIDTH*ICHAT_HEIGHT, 1, fp);
-//	fclose( fp);
-//	rename("/tmp/osirix24bitsTemp", "/tmp/osirix24bits");
-	
-	free( rgbPtr);
-	free( finalPtr);
+//-(IBAction) produceIChatData:(id) sender
+//{
+//#if !__LP64__
+//	long			i, x, z, zz, inv, swidth, sheight, offsetX, offsetY;
+//	float			ratioX, ratioY;
+//	unsigned char   *rgbPtr;
+//	unsigned char   *finalPtr;
+//	FILE			*fp;
+//	long			line3, line4, spp, bpp;
+//	unsigned char   *src, *dst;
+//	long			scrapSize;
+//	ScrapRef		scrap;
+//
+//	// Is there an image in clipboard?
 //	
+//	GetCurrentScrap( &scrap); 
+//	if( GetScrapFlavorSize(scrap, 'OXRA', &scrapSize) == noErr) return;
 //	
+//	rgbPtr = [imageView getRawPixels: &swidth :&sheight :&spp :&bpp :YES :NO];
+//	finalPtr = malloc( 3L*ICHAT_WIDTH*ICHAT_HEIGHT);
+//	
+//	bzero( finalPtr, 3L*ICHAT_WIDTH*ICHAT_HEIGHT);
+//	
+//	ratioX = (float) swidth / (float) ICHAT_WIDTH;
+//	ratioY = (float) sheight / (float) ICHAT_HEIGHT;
+//
+//	if( ratioX > ratioY)
 //	{
-//		long scrapSize;
-//		ScrapRef scrap;
-//		ScrapFlavorInfo info[100];
+//		offsetX = 0;
+//		offsetY =(ICHAT_HEIGHT - sheight/ratioX)/2;
+//		offsetY += 2;
 //		
-//		GetCurrentScrap( &scrap); 
-//		
-//		GetScrapFlavorCount ( scrap, &scrapSize);
-//		
-//		GetScrapFlavorInfoList ( scrap,     &scrapSize,     info ); 
-//		
-//		if( GetScrapFlavorSize(scrap, 'OXRA', &scrapSize) == noErr)
+//	}
+//	else
+//	{
+//		offsetY = 0;
+//		offsetX =(ICHAT_WIDTH - swidth/ratioY)/2;
+//		offsetX += 2;
+//	}
+//	
+//	if( ratioX > ratioY)
+//	{
+//		for( i = offsetY; i < ICHAT_HEIGHT-offsetY; i++)
 //		{
+//			line3 = (i)* ICHAT_WIDTH * 3L;
 //			
+//			line4 = (((i-offsetY)* swidth) / ICHAT_WIDTH);
+//			line4 *= swidth*3L;
+//			
+//			for( z = 0 ; z < ICHAT_WIDTH; z++)
+//			{
+//				dst = &finalPtr[ line3 +z*3];
+//				src = &rgbPtr[ line4 + (((z)*swidth) / ICHAT_WIDTH)*3];
+//				
+//				*dst++		= *src++;
+//				*dst++		= *src++;
+//				*dst		= *src;
+//			}
 //		}
 //	}
-//
-//	NSImage *sourceImage = [imageView nsimage:NO];
-//	
-//	[sourceImage setScalesWhenResized:YES];
-//	
-//	// Report an error if the source isn't a valid image
-//	if (![sourceImage isValid])
+//	else
 //	{
-//			NSLog(@"Invalid Image");
-//	} else
-//	{
-//			NSImage *smallImage = [[[NSImage alloc] initWithSize:NSMakeSize(ICHAT_WIDTH, ICHAT_HEIGHT)] autorelease];
+//		for( i = 0; i < ICHAT_HEIGHT ; i++)
+//		{
+//			line3 = i * ICHAT_WIDTH * 3L;
+//			line4 = ( (i* sheight) / ICHAT_HEIGHT) * swidth * 3L;
 //			
-//			[smallImage lockFocus];
-//			
-//			[[NSColor blackColor] set];
-//			[NSBezierPath fillRect: NSMakeRect(0, 0, ICHAT_WIDTH, ICHAT_HEIGHT)];
-//			
-//			NSSize size = [sourceImage size];
-//			
-//			[[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
-//			
-//			float ratioX, ratioY;
-//			
-//			ratioX = size.width / ICHAT_WIDTH;
-//			ratioY = size.height / ICHAT_HEIGHT;
-//			
-//			if( ratioX > ratioY)
+//			for( z = offsetX ; z < ICHAT_WIDTH-offsetX; z++)
 //			{
-//				[sourceImage setSize:NSMakeSize(size.width/ratioX, size.height/ratioX)];
+//				dst = &finalPtr[ line3 +(z) *3];
+//				src = &rgbPtr[ line4 + (((z-offsetX)*sheight) / ICHAT_HEIGHT)*3];
 //				
-//				[sourceImage compositeToPoint:NSMakePoint(0, (ICHAT_HEIGHT - size.height/ratioX)/2) operation:NSCompositeCopy];
-//				
+//				*dst++		= *src++;
+//				*dst++		= *src++;
+//				*dst		= *src;
 //			}
-//			else
-//			{
-//				[sourceImage setSize:NSMakeSize(size.width/ratioY, size.height/ratioY)];
-//				
-//				[sourceImage compositeToPoint:NSMakePoint((ICHAT_WIDTH - size.width/ratioY)/2, 0) operation:NSCompositeCopy];
-//			}
-//			
-//			[smallImage unlockFocus];
-//			
-//			NSBitmapImageRep *bm = [NSBitmapImageRep imageRepWithData: [smallImage TIFFRepresentation]];
-//			
-//			unsigned char *rgb = malloc( 3L*ICHAT_WIDTH*ICHAT_HEIGHT);
-//			
-//			if( bm != 0L && rgb != 0L)
-//			{
-//				long i, x, z, line3, line4, inv;
-//				unsigned char *src = [bm bitmapData];
-//				
-//				NSLog(@"BPP:%d", [bm bitsPerPixel]);
-//				
-//				if( [bm bitsPerPixel] == 24)
-//				{
-//					for( i = 0; i < ICHAT_HEIGHT ; i++)
-//					{
-//						line3 = i * ICHAT_WIDTH * 3L;
-//						line4 = i * ICHAT_WIDTH * 3L;
-//						
-//						for( z = 0 ; z < ICHAT_WIDTH; z++)
-//						{
-//							inv = (ICHAT_WIDTH-1-z);
-//							
-//							rgb[ line3 +z*3]		= src[ line4 + inv*3];
-//							rgb[ line3 +z*3 +1]		= src[ line4 + inv*3 +1];
-//							rgb[ line3 +z*3 +2]		= src[ line4 + inv*3 +2];
-//						}
-//					}
-//				}
-//				else if( [bm bitsPerPixel] == 32)
-//				{
-//					for( i = 0; i < ICHAT_HEIGHT ; i++)
-//					{
-//						line3 = i * ICHAT_WIDTH * 3L;
-//						line4 = i * ICHAT_WIDTH * 4L;
-//						
-//						for( z = 0 ; z < ICHAT_WIDTH; z++)
-//						{
-//							inv = (ICHAT_WIDTH-1-z);
-//							
-//							rgb[ line3 +z*3]		= src[ line4 + inv*4];
-//							rgb[ line3 +z*3 +1]		= src[ line4 + inv*4 +1];
-//							rgb[ line3 +z*3 +2]		= src[ line4 + inv*4 +2];
-//						}
-//					}
-//				}
-//				
-//				NSData *rawData = [NSData dataWithBytesNoCopy:rgb  length:3L*ICHAT_WIDTH*ICHAT_HEIGHT freeWhenDone:YES];
-//				
-//				[rawData writeToFile:@"/tmp/osirix24bits" atomically:YES];
-//			}
-//	//		free( rgb);
-//			
-//	//		[[smallImage TIFFRepresentation] writeToFile:@"/test.tiff" atomically:NO];
+//		}
 //	}
+//	
+//	//Draw Mouse
+//	
+//	NSPoint cursorLoc;// = [imageView convertPoint:[[self window] convertScreenToBase: [NSEvent mouseLocation]] fromView:0L];
+//	
+////	cursorLoc = [[[self window] contentView] convertPoint:[NSEvent mouseLocation] toView:self];
+//	
+////	cursorLoc = [imageView convertPoint:[NSEvent mouseLocation] fromView:imageView];
+//	cursorLoc = [[[self window] contentView] convertPoint:[[self window] mouseLocationOutsideOfEventStream] toView:imageView];
+//	
+////	NSLog( @"x: %2.2f y: %2.2f", cursorLoc.x, cursorLoc.y);
+//	
+//	long	xx = cursorLoc.x;
+//	long	yy = cursorLoc.y;
+//	
+//	if( ratioX > ratioY)
+//	{
+//		xx = (xx * ICHAT_WIDTH) / swidth;
+//	//	xx = ICHAT_WIDTH - xx;
+//		
+//		yy = (yy * ICHAT_WIDTH) / swidth;
+//		yy = ICHAT_HEIGHT - yy;
+//		yy -= offsetY;
+//	}
+//	else
+//	{
+//		xx = (xx * ICHAT_HEIGHT) / sheight;
+//	//	xx = ICHAT_WIDTH - xx;
+//		xx += offsetX;
+//		
+//		yy = (yy * ICHAT_HEIGHT) / sheight;
+//		yy = ICHAT_HEIGHT - yy;
+//	}
+//	
+////	NSLog( @"offset: %d", offsetX);
+//	
+//	for( x = -3; x< 3; x++)
+//	{
+//		for( z = -3; z < 3; z++)
+//		{
+//			if( x + xx >= 0 && x + xx < ICHAT_WIDTH)
+//			{
+//				if( z + yy >= 0 && z + yy < ICHAT_HEIGHT)
+//				{
+//					dst = &finalPtr[ (z + yy)*ICHAT_WIDTH*3L + (x + xx)*3L];
+//					*dst++ = 0x00;
+//					*dst++ = 0xFF;
+//					*dst = 0;
+//				}
+//			}
+//		}
+//	}
+//	
+////	NSPasteboard	*pb = [NSPasteboard generalPasteboard];
+////	[pb declareTypes:[NSArray arrayWithObject:@"OXRA"] owner:self];
+////	[pb setData: [NSData dataWithBytesNoCopy: finalPtr length:3L*ICHAT_WIDTH*ICHAT_HEIGHT freeWhenDone:YES] forType:@"OXRA"];
 //
-//	[sourceImage release];
-#endif
-}
+//	{
+////		ScrapFlavorInfo info[100];
+//		
+//		ClearCurrentScrap ();
+//		GetCurrentScrap( &scrap); 
+//		
+//		PutScrapFlavor ( scrap, 'OXRA',kScrapFlavorMaskNone ,3L*ICHAT_WIDTH*ICHAT_HEIGHT,finalPtr ); 
+//
+//	}
+////	fp = fopen("/tmp/osirix24bitsTemp", "wb");
+////	fwrite( finalPtr, 3L*ICHAT_WIDTH*ICHAT_HEIGHT, 1, fp);
+////	fclose( fp);
+////	rename("/tmp/osirix24bitsTemp", "/tmp/osirix24bits");
+//	
+//	free( rgbPtr);
+//	free( finalPtr);
+////	
+////	
+////	{
+////		long scrapSize;
+////		ScrapRef scrap;
+////		ScrapFlavorInfo info[100];
+////		
+////		GetCurrentScrap( &scrap); 
+////		
+////		GetScrapFlavorCount ( scrap, &scrapSize);
+////		
+////		GetScrapFlavorInfoList ( scrap,     &scrapSize,     info ); 
+////		
+////		if( GetScrapFlavorSize(scrap, 'OXRA', &scrapSize) == noErr)
+////		{
+////			
+////		}
+////	}
+////
+////	NSImage *sourceImage = [imageView nsimage:NO];
+////	
+////	[sourceImage setScalesWhenResized:YES];
+////	
+////	// Report an error if the source isn't a valid image
+////	if (![sourceImage isValid])
+////	{
+////			NSLog(@"Invalid Image");
+////	} else
+////	{
+////			NSImage *smallImage = [[[NSImage alloc] initWithSize:NSMakeSize(ICHAT_WIDTH, ICHAT_HEIGHT)] autorelease];
+////			
+////			[smallImage lockFocus];
+////			
+////			[[NSColor blackColor] set];
+////			[NSBezierPath fillRect: NSMakeRect(0, 0, ICHAT_WIDTH, ICHAT_HEIGHT)];
+////			
+////			NSSize size = [sourceImage size];
+////			
+////			[[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
+////			
+////			float ratioX, ratioY;
+////			
+////			ratioX = size.width / ICHAT_WIDTH;
+////			ratioY = size.height / ICHAT_HEIGHT;
+////			
+////			if( ratioX > ratioY)
+////			{
+////				[sourceImage setSize:NSMakeSize(size.width/ratioX, size.height/ratioX)];
+////				
+////				[sourceImage compositeToPoint:NSMakePoint(0, (ICHAT_HEIGHT - size.height/ratioX)/2) operation:NSCompositeCopy];
+////				
+////			}
+////			else
+////			{
+////				[sourceImage setSize:NSMakeSize(size.width/ratioY, size.height/ratioY)];
+////				
+////				[sourceImage compositeToPoint:NSMakePoint((ICHAT_WIDTH - size.width/ratioY)/2, 0) operation:NSCompositeCopy];
+////			}
+////			
+////			[smallImage unlockFocus];
+////			
+////			NSBitmapImageRep *bm = [NSBitmapImageRep imageRepWithData: [smallImage TIFFRepresentation]];
+////			
+////			unsigned char *rgb = malloc( 3L*ICHAT_WIDTH*ICHAT_HEIGHT);
+////			
+////			if( bm != 0L && rgb != 0L)
+////			{
+////				long i, x, z, line3, line4, inv;
+////				unsigned char *src = [bm bitmapData];
+////				
+////				NSLog(@"BPP:%d", [bm bitsPerPixel]);
+////				
+////				if( [bm bitsPerPixel] == 24)
+////				{
+////					for( i = 0; i < ICHAT_HEIGHT ; i++)
+////					{
+////						line3 = i * ICHAT_WIDTH * 3L;
+////						line4 = i * ICHAT_WIDTH * 3L;
+////						
+////						for( z = 0 ; z < ICHAT_WIDTH; z++)
+////						{
+////							inv = (ICHAT_WIDTH-1-z);
+////							
+////							rgb[ line3 +z*3]		= src[ line4 + inv*3];
+////							rgb[ line3 +z*3 +1]		= src[ line4 + inv*3 +1];
+////							rgb[ line3 +z*3 +2]		= src[ line4 + inv*3 +2];
+////						}
+////					}
+////				}
+////				else if( [bm bitsPerPixel] == 32)
+////				{
+////					for( i = 0; i < ICHAT_HEIGHT ; i++)
+////					{
+////						line3 = i * ICHAT_WIDTH * 3L;
+////						line4 = i * ICHAT_WIDTH * 4L;
+////						
+////						for( z = 0 ; z < ICHAT_WIDTH; z++)
+////						{
+////							inv = (ICHAT_WIDTH-1-z);
+////							
+////							rgb[ line3 +z*3]		= src[ line4 + inv*4];
+////							rgb[ line3 +z*3 +1]		= src[ line4 + inv*4 +1];
+////							rgb[ line3 +z*3 +2]		= src[ line4 + inv*4 +2];
+////						}
+////					}
+////				}
+////				
+////				NSData *rawData = [NSData dataWithBytesNoCopy:rgb  length:3L*ICHAT_WIDTH*ICHAT_HEIGHT freeWhenDone:YES];
+////				
+////				[rawData writeToFile:@"/tmp/osirix24bits" atomically:YES];
+////			}
+////	//		free( rgb);
+////			
+////	//		[[smallImage TIFFRepresentation] writeToFile:@"/test.tiff" atomically:NO];
+////	}
+////
+////	[sourceImage release];
+//#endif
+//}
 
 // IMAVManager notification callback.
 - (void)_stateChanged:(NSNotification *)aNotification {

@@ -1647,16 +1647,14 @@ if( reader)
 					break;
 					
 					case 1:		// Mean
-						#if !__LP64__
-						vadd( imResultBlending, 1, im, 1, imResultBlending, 1, height * width);
+						vDSP_vadd( imResultBlending, 1, im, 1, imResultBlending, 1, height * width);
 						
 						if( uu == thickSlabCount -1) //The last one!
 						{
 							float   invCount = 1.0f/(float)thickSlabCount;
 							
-							vsmul( imResultBlending, 1, &invCount, imResultBlending, 1, height * width);
+							vDSP_vsmul( imResultBlending, 1, &invCount, imResultBlending, 1, height * width);
 						}
-						#endif
 					break;
 					
 					
