@@ -444,12 +444,12 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[fm removeFileAtPath:modelFile handler:0L];
 	
 	[newFilesArray writeToFile:arrayFile atomically: YES];
-	[[documentsDirectory() stringByAppendingPathComponent:DATABASEFPATH] writeToFile:databaseFile atomically: YES];
+	[[documentsDirectory() stringByAppendingPathComponent:DATABASEFPATH] writeToFile:databaseFile atomically: YES encoding : NSUTF8StringEncoding error: 0L];
 	
 	NSMutableSet *allBundles = [[NSMutableSet alloc] init];
 	[allBundles addObject: [NSBundle mainBundle]];
 	[allBundles addObjectsFromArray: [NSBundle allFrameworks]];
-    [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriXDB_DataModel.mom"] writeToFile:modelFile atomically: YES];
+    [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriXDB_DataModel.mom"] writeToFile:modelFile atomically: YES encoding : NSUTF8StringEncoding error: 0L];
     [allBundles release];
 	
 	[[NSUserDefaults standardUserDefaults] synchronize];
@@ -2069,7 +2069,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			if( [[NSFileManager defaultManager] fileExistsAtPath: index])
 			{
-				[path writeToFile: [[path stringByAppendingPathComponent:@"OsiriX Data"] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] atomically:YES];
+				[path writeToFile: [[path stringByAppendingPathComponent:@"OsiriX Data"] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] atomically:YES encoding : NSUTF8StringEncoding error: 0L];
 				
 				return index;
 			}
@@ -2206,7 +2206,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	if( isCurrentDatabaseBonjour == NO)
 	{
-		[[[self documentsDirectory] stringByDeletingLastPathComponent] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] atomically:YES];
+		[[[self documentsDirectory] stringByDeletingLastPathComponent] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] atomically:YES encoding : NSUTF8StringEncoding error: 0L];
 		
 		i = [self findDBPath: path dbFolder: DBFolderLocation];
 		if( i == -1)
@@ -9791,7 +9791,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	{
 		NSLog(@"AwakeFromNib exception: %@", [ne description]);
 		NSString            *path = [documentsDirectory() stringByAppendingPathComponent:@"/Loading"];
-		[path writeToFile:path atomically:NO];
+		[path writeToFile:path atomically:NO encoding : NSUTF8StringEncoding error: 0L];
 	}
 	
 	[wait close];

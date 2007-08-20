@@ -309,7 +309,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
     
     if( [panel runModalForDirectory:0L file:[[self window]title]] == NSFileHandlingPanelOKButton)
     {
-		[[xmlDocument XMLString] writeToFile:[panel filename] atomically:NO];
+		[[xmlDocument XMLString] writeToFile:[panel filename] atomically:NO encoding : NSUTF8StringEncoding error: 0L];
     }
 }
 
@@ -323,7 +323,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
     if( [panel runModalForDirectory:0L file:[[self window]title]] == NSFileHandlingPanelOKButton)
     {
 		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-		[[dcmObject description] writeToFile: [panel filename] atomically:NO];
+		[[dcmObject description] writeToFile: [panel filename] atomically:NO encoding : NSUTF8StringEncoding error: 0L];
     }
 }
 

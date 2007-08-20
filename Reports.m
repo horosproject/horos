@@ -106,7 +106,7 @@ static id aedesc_to_id(AEDesc *desc)
 	
 	[[NSFileManager defaultManager] removeFileAtPath:path handler:0L];
 	
-	[file writeToFile: path atomically: YES];
+	[file writeToFile: path atomically: YES encoding: NSUTF8StringEncoding error: 0L];
 	
 	return path;
 }

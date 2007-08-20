@@ -964,7 +964,7 @@
 		[outString appendString: @" "];
 	dummyShort = CFSwapInt16HostToLittle([outString length]);
 	fwrite(&dummyShort, 2, 1, outFile);
-	fwrite([outString cString], [outString length], 1, outFile);
+	fwrite([outString UTF8String], [outString length], 1, outFile);
 	
 	// new group
 	// image data

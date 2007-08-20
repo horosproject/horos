@@ -39,7 +39,7 @@
 #endif
 #endif
 
-
+#include "PapyTypeDef3.h"
 
 #ifndef PapyTypeDef3H
 #include "PapyTypeDef3.h"
@@ -277,8 +277,8 @@ Papy3DGetNbFiles (char *dicomPath, int *nbFiles)
   struct dirent   *aDirent;
   DIR             *aDIR;
   
-  aStatStruct=  (struct stat*)emalloc3(sizeof(struct stat));
-  aDirent=      (struct dirent*)emalloc3(sizeof(struct dirent));
+  aStatStruct =  (struct stat*)emalloc3(sizeof(struct stat));
+  aDirent =      (struct dirent*)emalloc3(sizeof(struct dirent));
   aDIR=         (DIR*)emalloc3(sizeof(DIR));
 
 

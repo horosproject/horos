@@ -38,12 +38,12 @@
 #endif
 
 
-#ifdef _WINDOWS     
+//#ifdef _WINDOWS     
 #ifdef __cplusplus
 extern "C" 
 {
 #endif /*__cplusplus */
-#endif /* _WINDOWS */
+//#endif /* _WINDOWS */
 
 #ifdef _NO_PROTO
 extern void *emalloc3	();
@@ -57,10 +57,10 @@ extern void *erealloc3 (void *, PapyULong, PapyULong);
 extern void  efree3    (void **);
 #endif
 
-#ifdef _WINDOWS     
+//#ifdef _WINDOWS     
 #ifdef __cplusplus
 }
 #endif
-#endif
+//#endif
 
 #endif /* PapyEalloc3H */

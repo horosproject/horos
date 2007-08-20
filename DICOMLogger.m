@@ -38,7 +38,7 @@ static DICOMLogger *sharedLogger = nil;
 		
 
 	NSString *appendedLog = [[NSString stringWithFormat:@"%@\n%@",log,info] retain];	
-	[appendedLog writeToFile:path atomically:YES];
+	[appendedLog writeToFile:path atomically:YES encoding: NSUTF8StringEncoding error: 0L];
 	//NSLog(@"log %@", appendedLog);
 	[appendedLog release];
 	[log release];

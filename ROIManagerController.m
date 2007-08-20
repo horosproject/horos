@@ -158,7 +158,7 @@ PURPOSE.
 
 - (id)tableView:(NSTableView *)tableView
     objectValueForTableColumn:(NSTableColumn *)tableColumn
-            row:(int)row
+            row:(NSInteger)row
 {
 	if( viewer == 0L) return 0L;
 	

@@ -571,9 +571,9 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 - (NSString *)patientsAge{
 	NSCalendarDate *dob = [[[_viewer currentStudy] valueForKey:@"dateOfBirth"] dateWithCalendarFormat:nil timeZone:nil];
 	NSCalendarDate *studyDate = [[[_viewer currentStudy] valueForKey:@"date"] dateWithCalendarFormat:nil timeZone:nil];
-	int years;
-	int days;
-	int months;
+	NSInteger years;
+	NSInteger days;
+	NSInteger months;
 	if (dob && studyDate) {
 		[studyDate years:&years
 		 months:&months
