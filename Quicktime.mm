@@ -66,8 +66,6 @@ int main(int argc, const char *argv[])
 			
 			int frameNo = [[NSString stringWithCString:argv[ 3]] intValue];
 			
-			NSLog( @"generateQTVR: %@ %@ %d", path, dstPath, frameNo);
-			
 			FSRef				fsref;
 			FSSpec				spec, newspec;
 			
