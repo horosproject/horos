@@ -7686,83 +7686,59 @@ BOOL            readable = YES;
 	
 	fImage = (float*) argbImage;
 	rowBytes = width * 4;
-	// TEST IF Black&White -> Convert to float -> Faster....???
-//				BOOL BW;
-//				i = height * width;
-//				i /= 16;
-//				
-//				while( i -- > 0 && BW == YES)
-//				{
-//					if( argbImage[ (i*16*4)+1] == argbImage[ (i*16*4)+2] == argbImage[ (i*16*4)+3])
-//					{
-//						BW = NO;
-//					}
-//				}
-//				
-//				if( BW)
-//				{
-//					NSLog(@"JPEG -> BW conversion");
-//					
-//					i = height * width;
-//					while( i-->0)
-//					{
-//						fImage[ i] = (argbImage[ (i*4)+1] +  argbImage[ (i*4)+2] + argbImage[ (i*4)+3]) / 3;
-//					}
-//					
-//					isRGB = NO;
-//				}
-//				else
-	{
-		isRGB = YES;
-	}
+	isRGB = YES;
 	
 	[TIFFRep release];
 
 }
 
-- (void) startQuicktimeThread
+- (void) getFrameFromMovie:(NSString*) extension
 {
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
-	quicktimeRunning = YES;
-	
-	NSTask			*theTask = [[NSTask alloc] init];
-	
-	[theTask setArguments: [NSArray arrayWithObjects:@"getFrame", srcFile, [NSString stringWithFormat:@"%d", frameNo], 0L]];
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Quicktime"]];
-	
-	[theTask launch];
-	
-	[pool release];
+	if( [extension isEqualToString:@"mov"] == YES ||
+		[extension isEqualToString:@"mpg"] == YES ||
+		[extension isEqualToString:@"mpeg"] == YES ||
+		[extension isEqualToString:@"avi"] == YES)
+		{
+			if( quicktimeThreadLock == 0L) quicktimeThreadLock = [[NSLock alloc] init];
+			
+			[quicktimeThreadLock lock];
+			
+			[QTMovie enterQTKitOnThreadDisablingThreadSafetyProtection];
+			
+			NSError	*error = 0L;
+			
+			QTMovie *movie = [[QTMovie alloc] initWithFile:srcFile error: &error];
+			
+			if( movie)
+			{
+				[movie attachToCurrentThread];
+				
+				int curFrame = 0;
+				[movie gotoBeginning];
+				
+				QTTime previousTime;
+				
+				curFrame = 0;
+				
+				while( QTTimeCompare( previousTime, [movie currentTime]) == NSOrderedAscending && curFrame != frameNo)
+				{
+					previousTime = [movie currentTime];
+					curFrame++;
+					[movie stepForward];
+				}
+				
+				[self getDataFromNSImage: [movie currentFrameImage]];
+				
+				[movie release];
+			}
+			else NSLog( @"movie == 0L, %@", [error description]);
+			
+			[QTMovie exitQTKitOnThread];
+			
+			[quicktimeThreadLock unlock];
+		}
 }
-
-//- (void) getFrameFromMovie:(NSString*) extension
-//{
-//	
-//	if( [extension isEqualToString:@"mov"] == YES ||
-//		[extension isEqualToString:@"mpg"] == YES ||
-//		[extension isEqualToString:@"mpeg"] == YES ||
-//		[extension isEqualToString:@"avi"] == YES)
-//		{
-//			if( quicktimeThreadLock == 0L) quicktimeThreadLock = [[NSLock alloc] init];
-//			
-//			[quicktimeThreadLock lock];
-//			
-//			if( quicktimeRunning == NO)
-//				[NSThread detachNewThreadSelector:@selector( startQuicktimeThread) toTarget:self withObject: 0L];
-//			DOClient	*client = [[DOClient alloc] init];
-//			
-//			[client connect];
-//			
-//			NSMutableArray *arrayTest = [client log: @"hhhh"];
-//			
-//			NSLog( [arrayTest description]);
-//			
-//			[client release];
-//			
-//			[quicktimeThreadLock unlock];
-//		}
-//}
 
 - (void) CheckLoadIn
 {
@@ -8690,9 +8666,9 @@ BOOL            readable = YES;
 					
 					[movie release];
 				}
+				#else
+				[self getFrameFromMovie: extension];
 				#endif
-				
-//				[self getFrameFromMovie: extension];
 			}
 			
 			#ifdef OSIRIX_VIEWER

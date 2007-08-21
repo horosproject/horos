@@ -32,7 +32,7 @@ int main(int argc, const char *argv[])
 		
 		if( [what isEqualToString:@"getFrame"])
 		{
-			int				frameNo = [[NSString stringWithCString:argv[ 3]] intValue];
+			int frameNo = [[NSString stringWithCString:argv[ 3]] intValue];
 			
 			QTMovie *movie = [[QTMovie alloc] initWithFile:path error: 0L];
 			

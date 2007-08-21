@@ -1129,14 +1129,14 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	return 0L;
 }
 
-- (int) numberOfItemsInComboBox:(NSComboBox *)aComboBox
+- (NSInteger) numberOfItemsInComboBox:(NSComboBox *)aComboBox
 {
 	if( [dictionaryArray count] == 0) [self prepareDictionaryArray];
 	
 	return [dictionaryArray count];
 }
 
-- (id) comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(int)index
+- (id) comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(NSInteger)index
 {
 	if( [dictionaryArray count] == 0) [self prepareDictionaryArray];
 	

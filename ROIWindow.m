@@ -33,7 +33,7 @@
 	[[notification object] reloadData];
 }
 
-- (unsigned int)comboBox:(NSComboBox *)aComboBox indexOfItemWithStringValue:(NSString *)aString
+- (NSUInteger)comboBox:(NSComboBox *)aComboBox indexOfItemWithStringValue:(NSString *)aString
 {
 	if( roiNames == 0L) roiNames = [curController generateROINamesArray];
 	
@@ -47,13 +47,13 @@
 	return NSNotFound;
 }
 
-- (int)numberOfItemsInComboBox:(NSComboBox *)aComboBox
+- (NSInteger)numberOfItemsInComboBox:(NSComboBox *)aComboBox
 {
 	if( roiNames == 0L) roiNames = [curController generateROINamesArray];
 	return [roiNames count];
 }
 
-- (id)comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(int)index
+- (id)comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(NSInteger)index
 {
     if ( index > -1 )
     {
@@ -315,7 +315,7 @@
 {
 //	if( loaded == NO) return;
 	
-	float r, g, b;
+	CGFloat r, g, b;
 	
 	[[sender color] getRed:&r green:&g blue:&b alpha:0L];
 	

@@ -447,7 +447,7 @@ static volatile int sendControllerObjects = 0;
 
 #pragma mark serversArray functions
 
-- (int) numberOfItemsInComboBox:(NSComboBox *)aComboBox
+- (NSInteger) numberOfItemsInComboBox:(NSComboBox *)aComboBox
 {
 	NSArray			*serversArray		= [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 	
@@ -457,7 +457,7 @@ static volatile int sendControllerObjects = 0;
 	}
 }
 
-- (id) comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(int)index
+- (id) comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(NSInteger)index
 {
 	NSArray			*serversArray		= [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 	

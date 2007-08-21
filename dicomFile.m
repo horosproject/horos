@@ -843,64 +843,69 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				return 0;
 			}
 			#else
-//			QTMovie *movie = [[QTMovie alloc] initWithURL:[NSURL fileURLWithPath:filePath] error: 0L];
-//			if( movie)
-//			{
-//				name = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-//				patientID = [[NSString alloc] initWithString:name];
-//				studyID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-//				serieID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-//				imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-//				
-//				
-//				study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-//				Modality = [[NSString alloc] initWithString:extension];
-//				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
-//				serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-//				fileType = [[NSString stringWithString:@"IMAGE"] retain];
-//				
-//				height = [[movie posterImage] size].height;
-//				height /= 2;
-//				height *= 2;
-//				width = [[movie posterImage] size].width;
-//				width /= 2;
-//				width *= 2;
-//				
-//				[movie gotoBeginning];
-//				
-//				NoOfFrames = 0;
-//				NoOfSeries = 1;
-//				
-//				QTTime previousTime;
-//				
-//				do
-//				{
-//					previousTime = [movie currentTime];
-//					NoOfFrames++;
-//					[movie stepForward];
-//				}
-//				while( QTTimeCompare( previousTime, [movie currentTime]) == NSOrderedAscending && NoOfFrames < 400);
-//				
-//				if( NoOfFrames > 400) NoOfFrames = 400;   // Limit number of images to 400 !
-//				
-//				[dicomElements setObject:studyID forKey:@"studyID"];
-//				[dicomElements setObject:study forKey:@"studyDescription"];
-//				[dicomElements setObject:date forKey:@"studyDate"];
-//				[dicomElements setObject:Modality forKey:@"modality"];
-//				[dicomElements setObject:patientID forKey:@"patientID"];
-//				[dicomElements setObject:name forKey:@"patientName"];
-//				[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
-//				[dicomElements setObject:serieID forKey:@"seriesID"];
-//				[dicomElements setObject:name forKey:@"seriesDescription"];
-//				[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
-//				[dicomElements setObject:imageID forKey:@"SOPUID"];
-//				[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
-//				[dicomElements setObject:fileType forKey:@"fileType"];
-//				
-//				[movie release];
-//				
-//				return 0;
-//			}
+			[QTMovie enterQTKitOnThreadDisablingThreadSafetyProtection];
+			
+			QTMovie *movie = [[QTMovie alloc] initWithURL:[NSURL fileURLWithPath:filePath] error: 0L];
+			if( movie)
+			{
+				name = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+				patientID = [[NSString alloc] initWithString:name];
+				studyID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+				serieID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+				imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+				
+				
+				study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+				Modality = [[NSString alloc] initWithString:extension];
+				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+				serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+				fileType = [[NSString stringWithString:@"IMAGE"] retain];
+				
+				[movie gotoBeginning];
+				
+				height = [[movie currentFrameImage] size].height;
+				height /= 2;
+				height *= 2;
+				width = [[movie currentFrameImage] size].width;
+				width /= 2;
+				width *= 2;
+				
+				NoOfFrames = 0;
+				NoOfSeries = 1;
+				
+				QTTime previousTime;
+				
+				do
+				{
+					previousTime = [movie currentTime];
+					NoOfFrames++;
+					[movie stepForward];
+				}
+				while( QTTimeCompare( previousTime, [movie currentTime]) == NSOrderedAscending && NoOfFrames < 400);
+				
+				if( NoOfFrames > 400) NoOfFrames = 400;   // Limit number of images to 400 !
+				
+				[dicomElements setObject:studyID forKey:@"studyID"];
+				[dicomElements setObject:study forKey:@"studyDescription"];
+				[dicomElements setObject:date forKey:@"studyDate"];
+				[dicomElements setObject:Modality forKey:@"modality"];
+				[dicomElements setObject:patientID forKey:@"patientID"];
+				[dicomElements setObject:name forKey:@"patientName"];
+				[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
+				[dicomElements setObject:serieID forKey:@"seriesID"];
+				[dicomElements setObject:name forKey:@"seriesDescription"];
+				[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
+				[dicomElements setObject:imageID forKey:@"SOPUID"];
+				[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
+				[dicomElements setObject:fileType forKey:@"fileType"];
+				
+				[movie release];
+				
+				[QTMovie exitQTKitOnThread];
+				
+				return 0;
+			}
+			[QTMovie exitQTKitOnThread];
 			#endif
 	}
 	
