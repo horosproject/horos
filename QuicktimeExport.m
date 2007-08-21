@@ -21,6 +21,28 @@ NSString * documentsDirectory();
 
 @implementation QuicktimeExport
 
++ (NSString*) generateQTVR:(NSString*) srcPath frames:(int) frames
+{
+	NSTask			*theTask = [[NSTask alloc] init];
+	
+	NSString *newPath = [[srcPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"tempMovie"];
+	[[NSFileManager defaultManager] removeFileAtPath: newPath handler: 0L];
+	
+	[theTask setArguments: [NSArray arrayWithObjects:@"generateQTVR", srcPath, [NSString stringWithFormat:@"%d", frames], 0L]];
+	
+	NSString	*stringPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/QuicktimeEngine.app/Contents/MacOS/QuicktimeEngine"];
+	if( [[NSFileManager defaultManager] fileExistsAtPath: stringPath])
+	{
+		[theTask setLaunchPath: stringPath];
+		[theTask launch];
+		[theTask waitUntilExit];
+	}
+	
+	[theTask release];
+	
+	return newPath;
+}
+
 - (id) initWithSelector:(id) o :(SEL) s :(long) f
 {
 	[super init];
@@ -317,10 +339,10 @@ NSString * documentsDirectory();
 
 - (NSData *)getExportSettings:(QTMovie*) aMovie component:(NSDictionary*) component
 {
-	// QTKit is currently very limited.... Is Apple really investing in Quicktime anymore ??
+	// QTKit is currently very limited.... The only solution for 64-bit app -> 32-bit process. Is Apple really investing in Quicktime anymore ??
 	
-	NSString	*prefString = [NSString stringWithFormat:@"Quicktime Export:%d", [[component valueForKey:@"subtype"] unsignedLongValue]];
-	
+	NSString		*prefString = [NSString stringWithFormat:@"Quicktime Export:%d", [[component valueForKey:@"subtype"] unsignedLongValue]];
+	NSData			*data = 0L;
 	NSTask			*theTask = [[NSTask alloc] init];
 	
 	NSImage *frame = 0L;
@@ -342,33 +364,19 @@ NSString * documentsDirectory();
 	[[NSFileManager defaultManager] removeFileAtPath: tempDataPathOUT handler: 0L];
 	
 	[theTask setArguments: [NSArray arrayWithObjects:@"getExportSettings", @"/tmp/QTExportOsiriX64bits-Movie", tempComponentPath, tempDataPath, tempDataPathOUT, 0L]];
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QuicktimeEngine.app/Contents/MacOS/qtTest"]];
 	
-//	////
-//	
-//	
-//	LSApplicationParameters     appParams;
-//	FSRef						fsr;
-//	
-//	FSPathMakeRef((UInt8*) [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Quicktime"] UTF8String], &fsr, NULL);
-//	
-//	memset(&appParams, 0, sizeof(appParams));
-//	appParams.version = 0;
-//	appParams.flags = kLSLaunchDefaults;
-//	appParams.application = &fsr;
-//	appParams.argv = [NSArray arrayWithObjects:@"getExportSettings", @"/tmp/QTExportOsiriX64bits-Movie", tempComponentPath, tempDataPath, tempDataPathOUT, 0L];
-//	
-//	LSOpenApplication(&appParams, 0L);
-//	
-//	///
-	
-	[theTask launch];
-	[theTask waitUntilExit];
-	
-	NSData	*data = [NSData dataWithContentsOfFile: tempDataPathOUT];
-	if( data)
+	NSString	*stringPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/QuicktimeEngine.app/Contents/MacOS/QuicktimeEngine"];
+	if( [[NSFileManager defaultManager] fileExistsAtPath: stringPath])
 	{
-		[[NSUserDefaults standardUserDefaults] setObject:data forKey: prefString];
+		[theTask setLaunchPath: stringPath];
+		[theTask launch];
+		[theTask waitUntilExit];
+		
+		data = [NSData dataWithContentsOfFile: tempDataPathOUT];
+		if( data)
+		{
+			[[NSUserDefaults standardUserDefaults] setObject:data forKey: prefString];
+		}
 	}
 	
 	[theTask release];

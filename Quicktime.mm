@@ -6,11 +6,20 @@
 // 64-bits apps support only very basic Quicktime API
 // Quicktime is not multi-thread safe: highly recommended to use it only on the main thread
 
+extern "C"
+{
+	extern OSErr VRObject_MakeObjectMovie (FSSpec *theMovieSpec, FSSpec *theDestSpec, long maxFrames);
+}
+
 int main(int argc, const char *argv[])
 {
 	NSAutoreleasePool	*pool	= [[NSAutoreleasePool alloc] init];
 	
 	EnterMovies();
+	
+//	argv[ 1] = "generateQTVR";
+//	argv[ 2] = "/Users/antoinerosset/Desktop/a.mov";
+//	argv[ 3] = "100";
 	
 	//	argv[ 1] : what to do?
 	//	argv[ 2] : Path for Quicktime file
@@ -49,6 +58,25 @@ int main(int argc, const char *argv[])
 				
 				[movie release];
 			}
+		}
+		
+		if( [what isEqualToString:@"generateQTVR"] && argv[ 3])
+		{
+			// argv[ 3] = frameNo
+			
+			int frameNo = [[NSString stringWithCString:argv[ 3]] intValue];
+			
+			NSLog( @"generateQTVR: %@ %@ %d", path, dstPath, frameNo);
+			
+			FSRef				fsref;
+			FSSpec				spec, newspec;
+			
+			FSPathMakeRef((unsigned const char *)[path fileSystemRepresentation], &fsref, NULL);
+			FSGetCatalogInfo( &fsref, kFSCatInfoNone,NULL, NULL, &spec, NULL);
+			
+			FSMakeFSSpec(spec.vRefNum, spec.parID, "\ptempMovie", &newspec);
+			
+			VRObject_MakeObjectMovie( &spec, &newspec, frameNo);
 		}
 		
 		if( [what isEqualToString:@"getExportSettings"] && argv[ 3] && argv[ 4] && argv[ 5])

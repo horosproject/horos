@@ -1388,7 +1388,7 @@
 		ABBB64DC063587B200D9531F /* XML.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AA063587B200D9531F /* XML.icns */; };
 		ABBB64DD063587B200D9531F /* Zoom.tiff in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AB063587B200D9531F /* Zoom.tiff */; };
 		ABBB64DE063587B200D9531F /* ZoomToFit.tiff in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AC063587B200D9531F /* ZoomToFit.tiff */; };
-		ABBDAEBB06407CF90016210A /* VRMakeObject.c in Sources */ = {isa = PBXBuildFile; fileRef = ABBDAEB906407CF90016210A /* VRMakeObject.c */; };
+		ABBDAEBB06407CF90016210A /* VRMakeObject.m in Sources */ = {isa = PBXBuildFile; fileRef = ABBDAEB906407CF90016210A /* VRMakeObject.m */; };
 		ABBDAEBE06407D080016210A /* VRMakeObject.h in Headers */ = {isa = PBXBuildFile; fileRef = ABBDAEBC06407D080016210A /* VRMakeObject.h */; };
 		ABBFDA40063480490011BD0A /* Deployment-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBFDA3F063480490011BD0A /* Deployment-Info.plist */; };
 		ABC3939F09F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABC3938C09F51D6B000A6508 /* OSI3DPreferencePane.prefPane */; };
@@ -7532,7 +7532,7 @@
 		CECB044F07539E3900576814 /* QuicktimeExport.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0128630635991400A74AA1 /* QuicktimeExport.m */; };
 		CECB045007539E3900576814 /* QueryFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE3336A063D624400C8E087 /* QueryFilter.m */; };
 		CECB045107539E3900576814 /* AdvancedQuerySubview.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */; };
-		CECB045207539E3900576814 /* VRMakeObject.c in Sources */ = {isa = PBXBuildFile; fileRef = ABBDAEB906407CF90016210A /* VRMakeObject.c */; };
+		CECB045207539E3900576814 /* VRMakeObject.m in Sources */ = {isa = PBXBuildFile; fileRef = ABBDAEB906407CF90016210A /* VRMakeObject.m */; };
 		CECB045307539E3900576814 /* PreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB73E13706497EDA00545980 /* PreviewView.m */; };
 		CECB045407539E3900576814 /* DICOMLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD64CC6064D93E000EE3393 /* DICOMLogger.m */; };
 		CECB045607539E3900576814 /* SmartWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E569398065007D6001A9762 /* SmartWindowController.m */; };
@@ -7776,6 +7776,7 @@
 		CEF0E6DC06AEF5CB001FF9E5 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */; };
 		CEF30FD10945DEA300824A2B /* windows.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEF30FD00945DEA300824A2B /* windows.tif */; };
 		CEF30FD30945DEA300824A2B /* windows.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEF30FD00945DEA300824A2B /* windows.tif */; };
+		CEF54E030C7B82AA00C66A31 /* VRMakeObject.m in Sources */ = {isa = PBXBuildFile; fileRef = ABBDAEB906407CF90016210A /* VRMakeObject.m */; };
 		CEF64DD10B44266700C1C902 /* Forward.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB18A0B358C8F00666FA9 /* Forward.tif */; };
 		CEF64DD20B44266700C1C902 /* Back.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB1890B358C8F00666FA9 /* Back.tif */; };
 		CEF6A442080324E0001A8BF7 /* 3DCut.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEF6A441080324E0001A8BF7 /* 3DCut.tif */; };
@@ -8055,7 +8056,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CEDAAEC90C7B486A00809161 /* QuicktimeEngine */;
+			remoteGlobalIDString = CEDAAEC90C7B486A00809161;
 			remoteInfo = QuicktimeEngine;
 		};
 /* End PBXContainerItemProxy section */
@@ -8819,7 +8820,7 @@
 		ABBB64AC063587B200D9531F /* ZoomToFit.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ZoomToFit.tiff; sourceTree = "<group>"; };
 		ABBCCDA505643A4C00A4E47A /* browserController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = browserController.m; sourceTree = "<group>"; };
 		ABBCCDA605643A4C00A4E47A /* browserController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = browserController.h; sourceTree = "<group>"; };
-		ABBDAEB906407CF90016210A /* VRMakeObject.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = VRMakeObject.c; sourceTree = "<group>"; };
+		ABBDAEB906407CF90016210A /* VRMakeObject.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = VRMakeObject.m; sourceTree = "<group>"; };
 		ABBDAEBC06407D080016210A /* VRMakeObject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRMakeObject.h; sourceTree = "<group>"; };
 		ABBFDA3F063480490011BD0A /* Deployment-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "Deployment-Info.plist"; sourceTree = "<group>"; };
 		ABC3938C09F51D6B000A6508 /* OSI3DPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSI3DPreferencePane.prefPane; path = "Preference Panes/OSI3DPreferencePane/build/Development/OSI3DPreferencePane.prefPane"; sourceTree = "<group>"; };
@@ -12866,7 +12867,7 @@
 				ABD64CC4064D93E000EE3393 /* DICOMLogger.h */,
 				ABD64CC6064D93E000EE3393 /* DICOMLogger.m */,
 				ABBDAEBC06407D080016210A /* VRMakeObject.h */,
-				ABBDAEB906407CF90016210A /* VRMakeObject.c */,
+				ABBDAEB906407CF90016210A /* VRMakeObject.m */,
 				AB0128620635991400A74AA1 /* QuicktimeExport.h */,
 				AB0128630635991400A74AA1 /* QuicktimeExport.m */,
 				AB94E72306343D91003E4C48 /* MutableArrayCategory.m */,
@@ -22023,7 +22024,7 @@
 				AB0128650635991400A74AA1 /* QuicktimeExport.m in Sources */,
 				ABE3336C063D624400C8E087 /* QueryFilter.m in Sources */,
 				ABE3338E063D629400C8E087 /* AdvancedQuerySubview.m in Sources */,
-				ABBDAEBB06407CF90016210A /* VRMakeObject.c in Sources */,
+				ABBDAEBB06407CF90016210A /* VRMakeObject.m in Sources */,
 				AB73E13B06497EDA00545980 /* PreviewView.m in Sources */,
 				ABD64CCE064D93E100EE3393 /* DICOMLogger.m in Sources */,
 				7E56939A065007D6001A9762 /* SmartWindowController.m in Sources */,
@@ -23687,7 +23688,7 @@
 				CECB044F07539E3900576814 /* QuicktimeExport.m in Sources */,
 				CECB045007539E3900576814 /* QueryFilter.m in Sources */,
 				CECB045107539E3900576814 /* AdvancedQuerySubview.m in Sources */,
-				CECB045207539E3900576814 /* VRMakeObject.c in Sources */,
+				CECB045207539E3900576814 /* VRMakeObject.m in Sources */,
 				CECB045307539E3900576814 /* PreviewView.m in Sources */,
 				CECB045407539E3900576814 /* DICOMLogger.m in Sources */,
 				CECB045607539E3900576814 /* SmartWindowController.m in Sources */,
@@ -24393,6 +24394,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEDAAED80C7B48A300809161 /* Quicktime.mm in Sources */,
+				CEF54E030C7B82AA00C66A31 /* VRMakeObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26482,8 +26484,13 @@
 		CEDAAECE0C7B486B00809161 /* Development 64-bits */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
+				GCC_FAST_OBJC_DISPATCH = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = "";
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "QuicktimeEngine-Info.plist";
@@ -26496,8 +26503,9 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = QuicktimeEngine;
+				STRIP_STYLE = debugging;
 				WRAPPER_EXTENSION = app;
-				ZERO_LINK = YES;
+				ZERO_LINK = NO;
 			};
 			name = "Development 64-bits";
 		};

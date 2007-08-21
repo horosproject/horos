@@ -775,7 +775,7 @@ OSErr VRObject_MakeObjectMovie (FSSpec *theMovieSpec, FSSpec *theDestSpec, long 
 		myTempSpec.name[myTempSpec.name[0]] = 't';
 	
 	// create a single node object movie in the temp file
-		myErr = VRObject_CreateQTVRMovieVers2x0(&myTempSpec, theMovieSpec, maxFrames);
+	myErr = VRObject_CreateQTVRMovieVers2x0(&myTempSpec, theMovieSpec, maxFrames);
 		
 	if (myErr != noErr)
 	{
