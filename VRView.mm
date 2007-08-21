@@ -58,7 +58,6 @@ extern BrowserController *browserWindow;
 extern "C"
 {
 OSErr VRObject_MakeObjectMovie (FSSpec *theMovieSpec, FSSpec *theDestSpec, long maxFrames);
-extern NSString * documentsDirectory();
 }
 
 typedef struct _xyzArray

@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
 #import <QTKit/QTKit.h>
-#import "DOServer.h"
 
 // WHY THIS EXTERNAL APPLICATION FOR QUICKTIME?
 
@@ -12,12 +11,6 @@ int main(int argc, const char *argv[])
 	NSAutoreleasePool	*pool	= [[NSAutoreleasePool alloc] init];
 	
 	EnterMovies();
-	
-	DOServer *server = [[DOServer alloc] init];
-	
-	[server serve];
-	
-	[server release];
 	
 	//	argv[ 1] : what to do?
 	//	argv[ 2] : Path for Quicktime file
@@ -57,8 +50,79 @@ int main(int argc, const char *argv[])
 				[movie release];
 			}
 		}
+		
+		if( [what isEqualToString:@"getExportSettings"] && argv[ 3] && argv[ 4] && argv[ 5])
+		{
+			[NSRunLoop currentRunLoop];
+			
+			QTMovie *aMovie = [[QTMovie alloc] initWithFile:path error: 0L];
+			
+			NSLog( @"getExportSettings : %@", path);
+			
+			// argv[ 3] = component dictionary path
+			// argv[ 4] = pref nsdata path IN
+			// argv[ 5] = pref nsdata path OUT
+			
+			if( aMovie)
+			{
+				NSDictionary *component = [NSDictionary dictionaryWithContentsOfFile: [NSString stringWithCString:argv[ 3]]];
+				
+				NSLog( [component description]);
+				
+				
+				// **** See QuicktimeExport.m
+				
+				Component c;
+				ComponentDescription cd;
+				
+				cd.componentType = [[component objectForKey: @"type"] longValue];
+				cd.componentSubType = [[component objectForKey: @"subtype"] longValue];
+				cd.componentManufacturer = [[component objectForKey: @"manufacturer"] longValue];
+				cd.componentFlags = hasMovieExportUserInterface;
+				cd.componentFlagsMask = hasMovieExportUserInterface;
+				c = FindNextComponent( 0, &cd );
+				
+				MovieExportComponent exporter = OpenComponent(c);
+				
+				Boolean canceled;
+				
+				Movie theMovie = [aMovie quickTimeMovie];
+				TimeValue duration = GetMovieDuration(theMovie);
+				
+				ComponentResult err;
+				
+				NSData *data = [NSData dataWithContentsOfFile: [NSString stringWithCString:argv[ 4]]];
+				char	*ptr = (char*) [data bytes];
+				
+				if( data) MovieExportSetSettingsFromAtomContainer (exporter, &ptr);
+				
+				err = MovieExportDoUserDialog(exporter, theMovie, NULL, 0, duration, &canceled);
+				if( err == NO && canceled == NO)
+				{
+					QTAtomContainer settings;
+					err = MovieExportGetSettingsAsAtomContainer(exporter, &settings);
+					if(err)
+					{
+						NSLog(@"Got error %d when calling MovieExportGetSettingsAsAtomContainer");
+					}
+					else
+					{
+						data = [NSData dataWithBytes:*settings length:GetHandleSize(settings)];	
+						
+						DisposeHandle(settings);
+						CloseComponent(exporter);
+						
+						// **************************
+						
+						NSString	*dataPath = [NSString stringWithCString:argv[ 5]];
+						[[NSFileManager defaultManager] removeFileAtPath: dataPath handler: 0L];
+						[data writeToFile: dataPath atomically: YES];
+					}
+				}
+				[aMovie release];
+			}
+		}
 	}
-	
 	
 	ExitMovies();
 	

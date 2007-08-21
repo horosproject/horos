@@ -298,26 +298,82 @@ NSString * documentsDirectory();
 		nil];
 	[array addObject:dictionary];
 
-//	dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-//		[NSString stringWithString: @"MPEG4 Movie"], @"name",
-//		[NSNumber numberWithLong: kQTFileTypeMP4], @"subtype",
-//		[NSNumber numberWithLong: kAppleManufacturer], @"manufacturer",
-//		nil];
-//	[array addObject:dictionary];
-//
-//	dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-//		[NSString stringWithString: @"AVI Movie"], @"name",
-//		[NSNumber numberWithLong: kQTFileTypeAVI], @"subtype",
-//		[NSNumber numberWithLong: kAppleManufacturer], @"manufacturer",
-//		nil];
-//	[array addObject:dictionary];
+	dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+		[NSString stringWithString: @"MPEG4 Movie"], @"name",
+		[NSNumber numberWithLong: kQTFileTypeMP4], @"subtype",
+		[NSNumber numberWithLong: kAppleManufacturer], @"manufacturer",
+		nil];
+	[array addObject:dictionary];
+
+	dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+		[NSString stringWithString: @"AVI Movie"], @"name",
+		[NSNumber numberWithLong: kQTFileTypeAVI], @"subtype",
+		[NSNumber numberWithLong: kAppleManufacturer], @"manufacturer",
+		nil];
+	[array addObject:dictionary];
 	
 	return array;
 }
 
 - (NSData *)getExportSettings:(QTMovie*) aMovie component:(NSDictionary*) component
 {
-	return 0L;
+	// QTKit is currently very limited.... Is Apple really investing in Quicktime anymore ??
+	
+	NSString	*prefString = [NSString stringWithFormat:@"Quicktime Export:%d", [[component valueForKey:@"subtype"] unsignedLongValue]];
+	
+	NSTask			*theTask = [[NSTask alloc] init];
+	
+	NSImage *frame = 0L;
+	NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:YES], QTMovieExport,
+			[NSNumber numberWithBool:YES], QTMovieFlatten,
+			nil];
+	
+	[aMovie writeToFile: @"/tmp/QTExportOsiriX64bits-Movie" withAttributes: attributes];
+	
+	NSString	*tempComponentPath = [NSString stringWithString:@"/tmp/QTExportOsiriX64bits-Component"];
+	[[NSFileManager defaultManager] removeFileAtPath: tempComponentPath handler: 0L];
+	[component writeToFile: tempComponentPath atomically: YES];
+	
+	NSString	*tempDataPath = [NSString stringWithString:@"/tmp/QTExportOsiriX64bits-DataIN"];
+	[[NSFileManager defaultManager] removeFileAtPath: tempDataPath handler: 0L];
+	[[[NSUserDefaults standardUserDefaults] dataForKey: prefString] writeToFile: tempDataPath atomically: YES];
+	
+	NSString	*tempDataPathOUT = [NSString stringWithString:@"/tmp/QTExportOsiriX64bits-DataOUT"];
+	[[NSFileManager defaultManager] removeFileAtPath: tempDataPathOUT handler: 0L];
+	
+	[theTask setArguments: [NSArray arrayWithObjects:@"getExportSettings", @"/tmp/QTExportOsiriX64bits-Movie", tempComponentPath, tempDataPath, tempDataPathOUT, 0L]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QuicktimeEngine.app/Contents/MacOS/qtTest"]];
+	
+//	////
+//	
+//	
+//	LSApplicationParameters     appParams;
+//	FSRef						fsr;
+//	
+//	FSPathMakeRef((UInt8*) [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Quicktime"] UTF8String], &fsr, NULL);
+//	
+//	memset(&appParams, 0, sizeof(appParams));
+//	appParams.version = 0;
+//	appParams.flags = kLSLaunchDefaults;
+//	appParams.application = &fsr;
+//	appParams.argv = [NSArray arrayWithObjects:@"getExportSettings", @"/tmp/QTExportOsiriX64bits-Movie", tempComponentPath, tempDataPath, tempDataPathOUT, 0L];
+//	
+//	LSOpenApplication(&appParams, 0L);
+//	
+//	///
+	
+	[theTask launch];
+	[theTask waitUntilExit];
+	
+	NSData	*data = [NSData dataWithContentsOfFile: tempDataPathOUT];
+	if( data)
+	{
+		[[NSUserDefaults standardUserDefaults] setObject:data forKey: prefString];
+	}
+	
+	[theTask release];
+	
+	return data;
 }
 #endif
 
@@ -493,24 +549,24 @@ NSString * documentsDirectory();
 					component = [exportTypes objectAtIndex: [type indexOfSelectedItem]];
 				}
 				
-				[self writeMovie:mMovie toFile:fileName withComponent: component withExportSettings: exportSettings];
-				
-				if( openIt)
+				if( exportSettings)
 				{
-					NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-					[ws openFile:fileName];
+					[self writeMovie:mMovie toFile:fileName withComponent: component withExportSettings: exportSettings];
+					
+					if( openIt)
+					{
+						NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+						[ws openFile:fileName];
+					}
 				}
 			}
 		}
 		
 		[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
-		
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXNewMovieSaved" object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"path", nil]];
 		return fileName;
 	}
 	
 	return 0L;
 }
-//#endif
 
 @end

@@ -10055,6 +10055,8 @@ static NSArray*	openSubSeriesArray = 0L;
 
 - (NSString*) _findFirstDicomdirOnCDMedia: (NSString*)startDirectory found:(BOOL) found
 {
+	DicomDirScanDepth++;
+
 	NSArray *fileNames = nil;
 	NSString *filePath = nil;
 	BOOL isDirectory = FALSE;
@@ -10069,13 +10071,12 @@ static NSArray*	openSubSeriesArray = 0L;
 		{
 			return filePath;
 		}
-		else if(/*![[NSWorkspace sharedWorkspace] isFilePackageAtPath: [fileNames objectAtIndex: i]] || */
-				 [[fileNames objectAtIndex: i] characterAtIndex: 0] != '.')
+		else if( [[fileNames objectAtIndex: i] characterAtIndex: 0] != '.')
 		{
 			isDirectory = FALSE;
 			if ([fileManager fileExistsAtPath:filePath isDirectory:&isDirectory])
 			{
-				if(isDirectory)
+				if(isDirectory == YES && DicomDirScanDepth < 3)
 				{
 					if((filePath = [self _findFirstDicomdirOnCDMedia: filePath found:found]) != nil)
 						return filePath;
@@ -10083,6 +10084,8 @@ static NSArray*	openSubSeriesArray = 0L;
 			}
 		}
 	}
+	
+	DicomDirScanDepth--;
 	
 	return nil;
 }
@@ -10095,146 +10098,155 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	for( i = 0; i < [removeableMedia count]; i++)
 	{
-		// ADD ALL FILES OF THIS VOLUME TO THE DATABASE!
-		NSMutableArray  *filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+		BOOL		isWritable, isUnmountable, isRemovable;
+		NSString	*description, *type;
 		
-		found = YES;
+		[[NSWorkspace sharedWorkspace] getFileSystemInfoForPath:[removeableMedia objectAtIndex: i] isRemovable:&isRemovable isWritable:&isWritable isUnmountable:&isUnmountable description:&description type:&type];
 		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USEDICOMDIR"])
+		if( isRemovable == YES && isWritable == NO)
 		{
-			NSString    *aPath = [removeableMedia objectAtIndex: i];
-			NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
+			// ADD ALL FILES OF THIS VOLUME TO THE DATABASE!
+			NSMutableArray  *filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 			
-			if( enumer == 0L)
+			found = YES;
+			
+			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USEDICOMDIR"])
 			{
-				aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
-				enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
-			}
-			
-			// DICOMDIR should be located at the root level
-			// DICOMDIR should be located at the root level
-			// masu 07.10.2005 a Dicomdir is not necessarily in the root.
-			// so search for the firstdicomdir file on disk
-			// !!! on MAC OS X the pathes are casesensitive and in a dicomdir the pathes
-			// are stored in uppercase
-			aPath = [self _findFirstDicomdirOnCDMedia: aPath found: FALSE];
-			
-			if( [[NSFileManager defaultManager] fileExistsAtPath:aPath])
-			{
-				int	i;
-				int mode = [[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"];
+				NSString    *aPath = [removeableMedia objectAtIndex: i];
+				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 				
-				@try
+				if( enumer == 0L)
 				{
-					[self addDICOMDIR: aPath :filesArray];
+					aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
+					enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 				}
 				
-				@catch (NSException * e)
-				{
-					NSLog( [e description]);
-				}
+				// DICOMDIR should be located at the root level
+				// DICOMDIR should be located at the root level
+				// masu 07.10.2005 a Dicomdir is not necessarily in the root.
+				// so search for the firstdicomdir file on disk
+				// !!! on MAC OS X the pathes are casesensitive and in a dicomdir the pathes
+				// are stored in uppercase
+				DicomDirScanDepth = 0;
+				aPath = [self _findFirstDicomdirOnCDMedia: aPath found: FALSE];
 				
-				
-				switch ( mode)
+				if( [[NSFileManager defaultManager] fileExistsAtPath:aPath])
 				{
-					case 0: // ALL FILES
+					int	i;
+					int mode = [[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"];
 					
-					break;
+					@try
+					{
+						[self addDICOMDIR: aPath :filesArray];
+					}
 					
-					case 1: //EXCEPT STILL
-						for( i = 0; i < [filesArray count]; i++)
-						{
-							if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"STILL"] == YES)
-							{
-								[filesArray removeObjectAtIndex:i];
-								i--;
-							}
-						}
-					break;
+					@catch (NSException * e)
+					{
+						NSLog( [e description]);
+					}
 					
-					case 2: //EXCEPT MOVIE
-						for( i = 0; i < [filesArray count]; i++)
-						{
-							if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"MOVIE"] == YES)
-							{
-								[filesArray removeObjectAtIndex:i];
-								i--;
-							}
-						}
-					break;
-				}
-			}
-			else NSRunCriticalAlertPanel(NSLocalizedString(@"DICOMDIR",nil), NSLocalizedString(@"No DICOMDIR file has been found on this CD/DVD. Unable to load images.",nil),NSLocalizedString( @"OK",nil), nil, nil);
-		}
-		else
-		{
-			NSString    *pathname;
-			NSString    *aPath = [removeableMedia objectAtIndex: i];
-			NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
-			
-			if( enumer == 0L)
-			{
-				aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
-				enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
-			}
-			
-			while (pathname = [enumer nextObject])
-			{
-				NSString * itemPath = [aPath stringByAppendingPathComponent:pathname];
-				id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
-				
-				if ([fileType isEqual:NSFileTypeRegular])
-				{
-					BOOL	addFile = YES;
 					
-					switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"])
+					switch ( mode)
 					{
 						case 0: // ALL FILES
 						
 						break;
 						
 						case 1: //EXCEPT STILL
-							if( [[itemPath lastPathComponent] isEqualToString:@"STILL"] == YES) addFile = NO;
+							for( i = 0; i < [filesArray count]; i++)
+							{
+								if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"STILL"] == YES)
+								{
+									[filesArray removeObjectAtIndex:i];
+									i--;
+								}
+							}
 						break;
 						
 						case 2: //EXCEPT MOVIE
-							if( [[itemPath lastPathComponent] isEqualToString:@"MOVIE"] == YES) addFile = NO;
+							for( i = 0; i < [filesArray count]; i++)
+							{
+								if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"MOVIE"] == YES)
+								{
+									[filesArray removeObjectAtIndex:i];
+									i--;
+								}
+							}
 						break;
 					}
+				}
+				else NSRunCriticalAlertPanel(NSLocalizedString(@"DICOMDIR",nil), NSLocalizedString(@"No DICOMDIR file has been found on this CD/DVD. Unable to load images.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+			}
+			else
+			{
+				NSString    *pathname;
+				NSString    *aPath = [removeableMedia objectAtIndex: i];
+				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
+				
+				if( enumer == 0L)
+				{
+					aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
+					enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
+				}
+				
+				while (pathname = [enumer nextObject])
+				{
+					NSString * itemPath = [aPath stringByAppendingPathComponent:pathname];
+					id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
 					
-					if( [[itemPath lastPathComponent] isEqualToString:@"DICOMDIR"] == YES)
+					if ([fileType isEqual:NSFileTypeRegular])
 					{
-						addFile = NO;
+						BOOL	addFile = YES;
+						
+						switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"])
+						{
+							case 0: // ALL FILES
+							
+							break;
+							
+							case 1: //EXCEPT STILL
+								if( [[itemPath lastPathComponent] isEqualToString:@"STILL"] == YES) addFile = NO;
+							break;
+							
+							case 2: //EXCEPT MOVIE
+								if( [[itemPath lastPathComponent] isEqualToString:@"MOVIE"] == YES) addFile = NO;
+							break;
+						}
+						
+						if( [[itemPath lastPathComponent] isEqualToString:@"DICOMDIR"] == YES)
+						{
+							addFile = NO;
+						}
+						
+						if( addFile) [filesArray addObject:itemPath];
 					}
-					
-					if( addFile) [filesArray addObject:itemPath];
+				}
+				
+			}
+			
+			[self autoCleanDatabaseFreeSpace: self];
+			
+			NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray async: YES];
+			
+			if( newfilesArray == filesArray)
+			{
+				mountedVolume = YES;
+				NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
+				mountedVolume = NO;
+			
+				[self outlineViewRefresh];
+			
+				if( [newImages count] > 0)
+				{
+					NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
+				
+					[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
+					[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 				}
 			}
 			
+			[self autoCleanDatabaseFreeSpace: self];
 		}
-		
-		[self autoCleanDatabaseFreeSpace: self];
-		
-		NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray async: YES];
-		
-		if( newfilesArray == filesArray)
-		{
-			mountedVolume = YES;
-			NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
-			mountedVolume = NO;
-		
-			[self outlineViewRefresh];
-		
-			if( [newImages count] > 0)
-			{
-				NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
-			
-				[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
-				[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
-			}
-		}
-		
-		[self autoCleanDatabaseFreeSpace: self];
 	}
 
 	if( found == NO)
@@ -10264,256 +10276,6 @@ static NSArray*	openSubSeriesArray = 0L;
 		
 		NSRunCriticalAlertPanel(NSLocalizedString(@"No CD or DVD has been found...",@"No CD or DVD has been found..."),NSLocalizedString(@"Please insert a DICOM CD or DVD.",@"Please insert a DICOM CD or DVD."), NSLocalizedString(@"OK",nil), nil, nil);
 	}
-
-//	#if !__LP64__
-//    kern_return_t		kernResult; 
-//    OSErr				result = noErr;
-//    ItemCount			volumeIndex;
-//	BOOL				found = NO;
-//	
-//    kernResult = IOMasterPort(MACH_PORT_NULL, &gMasterPort);
-//    if (KERN_SUCCESS != kernResult)
-//        printf("IOMasterPort returned %d\n", kernResult);
-//
-//    // Iterate across all mounted volumes using FSGetVolumeInfo. This will return nsvErr
-//    // (no such volume) when volumeIndex becomes greater than the number of mounted volumes.
-//    for (volumeIndex = 1; result == noErr || result != nsvErr; volumeIndex++)
-//    {
-//        FSVolumeRefNum	actualVolume;
-//        HFSUniStr255	volumeName;
-//        FSVolumeInfo	volumeInfo;
-//        
-//        bzero((void *) &volumeInfo, sizeof(volumeInfo));
-//        
-//        // We're mostly interested in the volume reference number (actualVolume)
-//        result = FSGetVolumeInfo(kFSInvalidVolumeRefNum,
-//                                 volumeIndex,
-//                                 &actualVolume,
-//                                 kFSVolInfoFSInfo,
-//                                 &volumeInfo,
-//                                 &volumeName,
-//                                 NULL); 
-//        
-//        if (result == noErr)
-//        {
-//            GetVolParmsInfoBuffer volumeParms;
-//            HParamBlockRec pb;
-//            
-//            // Use the volume reference number to retrieve the volume parameters. See the documentation
-//            // on PBHGetVolParmsSync for other possible ways to specify a volume.
-//            pb.ioParam.ioNamePtr = NULL;
-//            pb.ioParam.ioVRefNum = actualVolume;
-//            pb.ioParam.ioBuffer = (Ptr) &volumeParms;
-//            pb.ioParam.ioReqCount = sizeof(volumeParms);
-//            
-//            // A version 4 GetVolParmsInfoBuffer contains the BSD node name in the vMDeviceID field.
-//            // It is actually a char * value. This is mentioned in the header CoreServices/CarbonCore/Files.h.
-//            result = PBHGetVolParmsSync(&pb);
-//            
-//            if (result != noErr)
-//            {
-//                printf("PBHGetVolParmsSync returned %d\n", result);
-//            }
-//            else {
-//                // This code is just to convert the volume name from a HFSUniCharStr to
-//                // a plain C string so we can print it with printf. It'd be preferable to
-//                // use CoreFoundation to work with the volume name in its Unicode form.
-//                CFStringRef	volNameAsCFString;
-//                char		volNameAsCString[256];
-//                
-//                volNameAsCFString = CFStringCreateWithCharacters(kCFAllocatorDefault,
-//                                                                 volumeName.unicode,
-//                                                                 volumeName.length);
-//                                                                 
-//                // If the conversion to a C string fails, just treat it as a null string.
-//                if (!CFStringGetCString(volNameAsCFString,
-//                                        volNameAsCString,
-//                                        sizeof(volNameAsCString),
-//                                        kCFStringEncodingUTF8))
-//                {
-//                    volNameAsCString[0] = 0;
-//                }
-//                
-//                // The last parameter of this printf call is the BSD node name from the
-//                // GetVolParmsInfoBuffer struct.
-//                printf("Volume \"%s\" (vRefNum %d), BSD node /dev/%s, ", volNameAsCString, actualVolume, (char *) volumeParms.vMDeviceID);
-//				
-//                // Use the BSD node name to call I/O Kit and get additional information about the volume
-//                if( GetAdditionalVolumeInfo((char *) volumeParms.vMDeviceID) == YES)
-//				{
-//					// ADD ALL FILES OF THIS VOLUME TO THE DATABASE!
-//					NSMutableArray  *filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
-//					
-//					found = YES;
-//					
-//					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USEDICOMDIR"])
-//					{
-//						NSString    *aPath = [NSString stringWithFormat:@"/Volumes/%s",volNameAsCString];
-//						NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
-//						
-//						if( enumer == 0L)
-//						{
-//							aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
-//							enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
-//						}
-//						
-//						// DICOMDIR should be located at the root level
-//						// DICOMDIR should be located at the root level
-//						// masu 07.10.2005 a Dicomdir is not necessarily in the root.
-//						// so search for the firstdicomdir file on disk
-//						// !!! on MAC OS X the pathes are casesensitive and in a dicomdir the pathes
-//						// are stored in uppercase
-//						aPath = [self _findFirstDicomdirOnCDMedia: aPath found: FALSE];
-//						
-//						if( [[NSFileManager defaultManager] fileExistsAtPath:aPath])
-//						{
-//							int	i;
-//							int mode = [[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"];
-//							
-//							@try
-//							{
-//								[self addDICOMDIR: aPath :filesArray];
-//							}
-//							
-//							@catch (NSException * e)
-//							{
-//								NSLog( [e description]);
-//							}
-//							
-//							
-//							switch ( mode)
-//							{
-//								case 0: // ALL FILES
-//								
-//								break;
-//								
-//								case 1: //EXCEPT STILL
-//									for( i = 0; i < [filesArray count]; i++)
-//									{
-//										if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"STILL"] == YES)
-//										{
-//											[filesArray removeObjectAtIndex:i];
-//											i--;
-//										}
-//									}
-//								break;
-//								
-//								case 2: //EXCEPT MOVIE
-//									for( i = 0; i < [filesArray count]; i++)
-//									{
-//										if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"MOVIE"] == YES)
-//										{
-//											[filesArray removeObjectAtIndex:i];
-//											i--;
-//										}
-//									}
-//								break;
-//							}
-//						}
-//						else NSRunCriticalAlertPanel(NSLocalizedString(@"DICOMDIR",nil), NSLocalizedString(@"No DICOMDIR file has been found on this CD/DVD. Unable to load images.",nil),NSLocalizedString( @"OK",nil), nil, nil);
-//					}
-//					else
-//					{
-//						NSString    *pathname;
-//						NSString    *aPath = [NSString stringWithFormat:@"/Volumes/%s",volNameAsCString];
-//						NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
-//						
-//						if( enumer == 0L)
-//						{
-//							aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
-//							enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
-//						}
-//						
-//						while (pathname = [enumer nextObject])
-//						{
-//							NSString * itemPath = [aPath stringByAppendingPathComponent:pathname];
-//							id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
-//							
-//							if ([fileType isEqual:NSFileTypeRegular])
-//							{
-//								BOOL	addFile = YES;
-//								
-//								switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"])
-//								{
-//									case 0: // ALL FILES
-//									
-//									break;
-//									
-//									case 1: //EXCEPT STILL
-//										if( [[itemPath lastPathComponent] isEqualToString:@"STILL"] == YES) addFile = NO;
-//									break;
-//									
-//									case 2: //EXCEPT MOVIE
-//										if( [[itemPath lastPathComponent] isEqualToString:@"MOVIE"] == YES) addFile = NO;
-//									break;
-//								}
-//								
-//								if( [[itemPath lastPathComponent] isEqualToString:@"DICOMDIR"] == YES)
-//								{
-//									addFile = NO;
-//								}
-//								
-//								if( addFile) [filesArray addObject:itemPath];
-//							}
-//						}
-//						
-//					}
-//					
-//					[self autoCleanDatabaseFreeSpace: self];
-//					
-//					NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray async: YES];
-//					
-//					if( newfilesArray == filesArray)
-//					{
-//						mountedVolume = YES;
-//						NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
-//						mountedVolume = NO;
-//					
-//						[self outlineViewRefresh];
-//					
-//						if( [newImages count] > 0)
-//						{
-//							NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
-//						
-//							[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
-//							[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
-//						}
-//					}
-//					
-//					[self autoCleanDatabaseFreeSpace: self];
-//				}
-//            }
-//        }
-//    }
-//	
-//	if( found == NO)
-//	{
-//		if( [[DRDevice devices] count])
-//		{
-//			DRDevice	*device = [[DRDevice devices] objectAtIndex: 0];
-//			
-//			// Is the bay close? open it for the user
-//			if( [[[device status] valueForKey: DRDeviceIsTrayOpenKey] boolValue] == YES)
-//			{
-//				[device closeTray];
-//				[appController growlTitle: NSLocalizedString( @"CD/DVD", 0L) description: NSLocalizedString(@"Please wait. CD/DVD is loading...", 0L) name:@"newfiles"];
-//				return;
-//			}
-//			else
-//			{
-//				if( [[[device status] valueForKey: DRDeviceIsBusyKey] boolValue] == NO &&[[[device status] valueForKey: DRDeviceMediaStateKey] isEqualToString:DRDeviceMediaStateNone])
-//					[device openTray];
-//				else
-//				{
-//					[appController growlTitle: NSLocalizedString( @"CD/DVD", 0L) description: NSLocalizedString(@"Please wait. CD/DVD is loading...", 0L) name:@"newfiles"];
-//					return;
-//				}
-//			}
-//		}
-//		
-//		NSRunCriticalAlertPanel(NSLocalizedString(@"No CD or DVD has been found...",@"No CD or DVD has been found..."),NSLocalizedString(@"Please insert a DICOM CD or DVD.",@"Please insert a DICOM CD or DVD."), NSLocalizedString(@"OK",nil), nil, nil);
-//	}
-//	#endif
 }
 
 +(BOOL) isItCD:(NSArray*) pathFilesComponent
@@ -10529,99 +10291,17 @@ static NSArray*	openSubSeriesArray = 0L;
 		{
 			if( [[[removeableMedia objectAtIndex: i] commonPrefixWithString: path options: NSCaseInsensitiveSearch] isEqualToString: [removeableMedia objectAtIndex: i]])
 			{
-				return YES;
+				BOOL		isWritable, isUnmountable, isRemovable;
+				NSString	*description, *type;
+				
+				[[NSWorkspace sharedWorkspace] getFileSystemInfoForPath:[removeableMedia objectAtIndex: i] isRemovable:&isRemovable isWritable:&isWritable isUnmountable:&isUnmountable description:&description type:&type];
+				
+				if( isRemovable == YES && isWritable == NO)
+				{
+					return YES;
+				}
 			}
 		}
-		
-//		kern_return_t		kernResult; 
-//		OSErr				result = noErr;
-//		ItemCount			volumeIndex;
-//		BOOL				found = NO;
-//		
-//		kernResult = IOMasterPort(MACH_PORT_NULL, &gMasterPort);
-//		if (KERN_SUCCESS != kernResult)
-//			printf("IOMasterPort returned %d\n", kernResult);
-//		
-//		// Iterate across all mounted volumes using FSGetVolumeInfo. This will return nsvErr
-//		// (no such volume) when volumeIndex becomes greater than the number of mounted volumes.
-//		for (volumeIndex = 1; result == noErr || result != nsvErr; volumeIndex++)
-//		{
-//			FSVolumeRefNum	actualVolume;
-//			HFSUniStr255	volumeName;
-//			FSVolumeInfo	volumeInfo;
-//			
-//			bzero((void *) &volumeInfo, sizeof(volumeInfo));
-//			
-//			// We're mostly interested in the volume reference number (actualVolume)
-//			result = FSGetVolumeInfo(kFSInvalidVolumeRefNum,
-//									 volumeIndex,
-//									 &actualVolume,
-//									 kFSVolInfoFSInfo,
-//									 &volumeInfo,
-//									 &volumeName,
-//									 NULL); 
-//			
-//			if (result == noErr)
-//			{
-//				GetVolParmsInfoBuffer volumeParms;
-//				HParamBlockRec pb;
-//				
-//				// Use the volume reference number to retrieve the volume parameters. See the documentation
-//				// on PBHGetVolParmsSync for other possible ways to specify a volume.
-//				pb.ioParam.ioNamePtr = NULL;
-//				pb.ioParam.ioVRefNum = actualVolume;
-//				pb.ioParam.ioBuffer = (Ptr) &volumeParms;
-//				pb.ioParam.ioReqCount = sizeof(volumeParms);
-//				
-//				// A version 4 GetVolParmsInfoBuffer contains the BSD node name in the vMDeviceID field.
-//				// It is actually a char * value. This is mentioned in the header CoreServices/CarbonCore/Files.h.
-//				result = PBHGetVolParmsSync(&pb);
-//				
-//				if (result != noErr)
-//				{
-//					printf("PBHGetVolParmsSync returned %d\n", result);
-//				}
-//				else {
-//					// This code is just to convert the volume name from a HFSUniCharStr to
-//					// a plain C string so we can print it with printf. It'd be preferable to
-//					// use CoreFoundation to work with the volume name in its Unicode form.
-//					CFStringRef	volNameAsCFString;
-//					char		volNameAsCString[256];
-//					
-//					volNameAsCFString = CFStringCreateWithCharacters(kCFAllocatorDefault,
-//																	 volumeName.unicode,
-//																	 volumeName.length);
-//																	 
-//					// If the conversion to a C string fails, just treat it as a null string.
-//					if (!CFStringGetCString(volNameAsCFString,
-//											volNameAsCString,
-//											sizeof(volNameAsCString),
-//											kCFStringEncodingUTF8))
-//					{
-//						volNameAsCString[0] = 0;
-//					}
-//					
-//					// The last parameter of this printf call is the BSD node name from the
-//					// GetVolParmsInfoBuffer struct.
-//					printf("Volume \"%s\" (vRefNum %d), BSD node /dev/%s, ", volNameAsCString, actualVolume, (char *) volumeParms.vMDeviceID);
-//					
-//					// Use the BSD node name to call I/O Kit and get additional information about the volume
-//					if( GetAdditionalVolumeInfo((char *) volumeParms.vMDeviceID) == YES)
-//					{
-//						NSLog([pathFilesComponent objectAtIndex:2]);
-//						if( strcmp( volNameAsCString, [[pathFilesComponent objectAtIndex:2] cString]) == 0)
-//						{
-//							return YES;
-//						}
-//						
-//						if( strcmp( volNameAsCString, "ISO_9660_CD") == 0)
-//						{
-//							return YES;
-//						}
-//					}
-//				}
-//			}
-//		}
 	}
 	
 	#endif

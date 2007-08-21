@@ -17,7 +17,6 @@
 				CEA048B60C76E46F00B4CA0A /* PBXTargetDependency */,
 				ABCB1B3C0A21FC04008EB2E8 /* PBXTargetDependency */,
 				AB72503C0ADE6F7000A212A0 /* PBXTargetDependency */,
-				CE7A0F7F0AED591800540017 /* PBXTargetDependency */,
 				CEACC7AD0878781000CF466E /* PBXTargetDependency */,
 				CEACC7AF0878781000CF466E /* PBXTargetDependency */,
 				CEACC7B10878781000CF466E /* PBXTargetDependency */,
@@ -31,6 +30,7 @@
 				CE0630EE0C625B9C001027D9 /* PBXTargetDependency */,
 				ABD908E50AF211C500E47345 /* PBXTargetDependency */,
 				CEAB83080B20979D0019A9AE /* PBXTargetDependency */,
+				CEDAAED50C7B489100809161 /* PBXTargetDependency */,
 				CE8DF1260B470DC50035C230 /* PBXTargetDependency */,
 			);
 			name = "Build All Prerequisites";
@@ -6499,16 +6499,6 @@
 		CE74DEB108CCE0C1005D12A7 /* SagOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */; };
 		CE79DCFC0753A64D005C8051 /* NO-VRControllerVPRO.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79DCFB0753A64D005C8051 /* NO-VRControllerVPRO.m */; };
 		CE7A0C30071D26D100C5E16F /* PreferencePanesViewer.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE7A0C2D071D26D100C5E16F /* PreferencePanesViewer.nib */; };
-		CE7A0EE20AED55AD00540017 /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E0B3A3F067526CD00908593 /* OsiriX.framework */; };
-		CE7A0EE30AED55AD00540017 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
-		CE7A0EE40AED55AD00540017 /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EC3590806FE212600188171 /* libtiff.dylib */; };
-		CE7A0EE50AED55AD00540017 /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E5692F8064FCF08001A9762 /* libtiff.a */; };
-		CE7A0EE60AED55AD00540017 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		CE7A0EE70AED55AD00540017 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
-		CE7A0EE80AED55AD00540017 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
-		CE7A0EE90AED55AD00540017 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
-		CE7A0F650AED582700540017 /* Quicktime.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE7A0F1A0AED55E700540017 /* Quicktime.mm */; };
-		CE7A0F700AED58E500540017 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
 		CE7E5D4506AC8DDC0058C3AA /* Anonymizer.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */; };
 		CE822F8A0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */; };
 		CE822F8B0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */; };
@@ -7643,6 +7633,11 @@
 		CED80C990BF18BAF0058A469 /* Save.tif in Resources */ = {isa = PBXBuildFile; fileRef = CED80C960BF18BAF0058A469 /* Save.tif */; };
 		CED8BC7C097F93D1002665CE /* SUV.tif in Resources */ = {isa = PBXBuildFile; fileRef = CED8BC7B097F93D1002665CE /* SUV.tif */; };
 		CED8BC7D097F93D1002665CE /* SUV.tif in Resources */ = {isa = PBXBuildFile; fileRef = CED8BC7B097F93D1002665CE /* SUV.tif */; };
+		CEDAAED60C7B489D00809161 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
+		CEDAAED70C7B489E00809161 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
+		CEDAAED80C7B48A300809161 /* Quicktime.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE7A0F1A0AED55E700540017 /* Quicktime.mm */; };
+		CEDAAEFB0C7B49B300809161 /* QuicktimeEngine.app in Resources */ = {isa = PBXBuildFile; fileRef = CEDAAEFA0C7B49B300809161 /* QuicktimeEngine.app */; };
+		CEDAAEFC0C7B49B300809161 /* QuicktimeEngine.app in Resources */ = {isa = PBXBuildFile; fileRef = CEDAAEFA0C7B49B300809161 /* QuicktimeEngine.app */; };
 		CEDB15280768392F00375F65 /* jas_cm.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14AB0768392E00375F65 /* jas_cm.h */; };
 		CEDB15290768392F00375F65 /* jas_config.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14B00768392E00375F65 /* jas_config.h */; };
 		CEDB152A0768392F00375F65 /* jas_config2.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14B50768392E00375F65 /* jas_config2.h */; };
@@ -7797,7 +7792,6 @@
 		CEF9E7E00811B69B00412C8A /* StaticScheduler.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF9E7DE0811B69B00412C8A /* StaticScheduler.h */; };
 		CEF9E7E70811B6AD00412C8A /* StaticScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF9E7E60811B6AD00412C8A /* StaticScheduler.m */; };
 		CEF9E7E80811B6AD00412C8A /* StaticScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF9E7E60811B6AD00412C8A /* StaticScheduler.m */; };
-		CEFB849A0B9F5DDA0063ACD3 /* DOServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBED2F20B4050FD00A6731E /* DOServer.m */; };
 		CEFBB1910B358C8F00666FA9 /* BackPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB18B0B358C8F00666FA9 /* BackPressed.tif */; };
 		CEFBB1920B358C8F00666FA9 /* ForwardDisabled.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB18C0B358C8F00666FA9 /* ForwardDisabled.tif */; };
 		CEFBB1930B358C8F00666FA9 /* BackDisabled.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB18D0B358C8F00666FA9 /* BackDisabled.tif */; };
@@ -7980,13 +7974,6 @@
 			remoteGlobalIDString = 8D202CF80486D31800D8A456;
 			remoteInfo = OSIListenerPreferencePane;
 		};
-		CE7A0F7E0AED591800540017 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CE7A0D7D0AED55AD00540017;
-			remoteInfo = Quicktime;
-		};
 		CE8DF1250B470DC50035C230 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -8063,6 +8050,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8D202CE80486D31800D8A456;
 			remoteInfo = OSIListenerPreferencePane;
+		};
+		CEDAAED40C7B489100809161 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CEDAAEC90C7B486A00809161 /* QuicktimeEngine */;
+			remoteInfo = QuicktimeEngine;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -11510,7 +11504,6 @@
 		CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SagOpposite.tif; sourceTree = "<group>"; };
 		CE79DCFB0753A64D005C8051 /* NO-VRControllerVPRO.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NO-VRControllerVPRO.m"; sourceTree = SOURCE_ROOT; };
 		CE7A0C2E071D26D100C5E16F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/PreferencePanesViewer.nib; sourceTree = "<group>"; };
-		CE7A0EED0AED55AD00540017 /* Quicktime */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Quicktime; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7A0F1A0AED55E700540017 /* Quicktime.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = Quicktime.mm; sourceTree = "<group>"; };
 		CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Anonymizer.icns; sourceTree = "<group>"; };
 		CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewerControllerWindow.h; sourceTree = "<group>"; };
@@ -11600,6 +11593,9 @@
 		CED80C7D0BF187930058A469 /* AutofillPressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = AutofillPressed.tif; sourceTree = "<group>"; };
 		CED80C960BF18BAF0058A469 /* Save.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Save.tif; sourceTree = "<group>"; };
 		CED8BC7B097F93D1002665CE /* SUV.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SUV.tif; sourceTree = "<group>"; };
+		CEDAAECA0C7B486A00809161 /* QuicktimeEngine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuicktimeEngine.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEDAAECC0C7B486A00809161 /* QuicktimeEngine-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "QuicktimeEngine-Info.plist"; sourceTree = "<group>"; };
+		CEDAAEFA0C7B49B300809161 /* QuicktimeEngine.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = QuicktimeEngine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDB14AB0768392E00375F65 /* jas_cm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_cm.h; sourceTree = "<group>"; };
 		CEDB14B00768392E00375F65 /* jas_config.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_config.h; sourceTree = "<group>"; };
 		CEDB14B50768392E00375F65 /* jas_config2.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_config2.h; sourceTree = "<group>"; };
@@ -11801,22 +11797,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CE7A0EE10AED55AD00540017 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CE7A0EE20AED55AD00540017 /* OsiriX.framework in Frameworks */,
-				CE7A0EE30AED55AD00540017 /* Foundation.framework in Frameworks */,
-				CE7A0EE40AED55AD00540017 /* libtiff.dylib in Frameworks */,
-				CE7A0EE50AED55AD00540017 /* libtiff.a in Frameworks */,
-				CE7A0EE60AED55AD00540017 /* Cocoa.framework in Frameworks */,
-				CE7A0EE70AED55AD00540017 /* QuickTime.framework in Frameworks */,
-				CE7A0EE80AED55AD00540017 /* IOKit.framework in Frameworks */,
-				CE7A0EE90AED55AD00540017 /* libz.dylib in Frameworks */,
-				CE7A0F700AED58E500540017 /* QTKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CE9CED7F0C75BD8C00752D4B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -11909,6 +11889,15 @@
 				CE2C83600C708BA30093C162 /* libitkvnl_inst.a in Frameworks */,
 				CE2C83610C708BA30093C162 /* libitkvcl.a in Frameworks */,
 				CE586CC50C74B75D00DB7D5A /* libdcmprintscu.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEDAAEC80C7B486A00809161 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CEDAAED60C7B489D00809161 /* QuickTime.framework in Frameworks */,
+				CEDAAED70C7B489E00809161 /* QTKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12035,9 +12024,9 @@
 				CECB058B07539E3A00576814 /* OsiriXVP.app */,
 				ABEA7F080A21BCC90094CAEF /* SafeDBRebuild */,
 				AB724FF60ADE6ECB00A212A0 /* Decompress */,
-				CE7A0EED0AED55AD00540017 /* Quicktime */,
 				CEDF6DD00B46FE99008B45B8 /* DICOMPrint */,
 				CE9CED810C75BD8C00752D4B /* libDCM StaticLibrary.a */,
+				CEDAAECA0C7B486A00809161 /* QuicktimeEngine.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -12061,6 +12050,7 @@
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				4A2F58D9078D119600C514A2 /* Dependencies */,
 				4A16D0A10965E1D900F82EC4 /* Unit Testing */,
+				CEDAAECC0C7B486A00809161 /* QuicktimeEngine-Info.plist */,
 			);
 			name = OsiriX;
 			sourceTree = "<group>";
@@ -12077,6 +12067,7 @@
 			isa = PBXGroup;
 			children = (
 				CE897DD30C21D951005C669E /* texture.tif */,
+				CEDAAEFA0C7B49B300809161 /* QuicktimeEngine.app */,
 				B78675430AD9C56400731977 /* diameter570frame512.pbm */,
 				B78675440AD9C56400731977 /* diameter1140frame1024.pbm */,
 				CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */,
@@ -20531,22 +20522,6 @@
 			productReference = ABEA7F080A21BCC90094CAEF /* SafeDBRebuild */;
 			productType = "com.apple.product-type.tool";
 		};
-		CE7A0D7D0AED55AD00540017 /* Quicktime */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CE7A0EEA0AED55AD00540017 /* Build configuration list for PBXNativeTarget "Quicktime" */;
-			buildPhases = (
-				CE7A0D7E0AED55AD00540017 /* Sources */,
-				CE7A0EE10AED55AD00540017 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = Quicktime;
-			productName = SafeDBRebuild;
-			productReference = CE7A0EED0AED55AD00540017 /* Quicktime */;
-			productType = "com.apple.product-type.tool";
-		};
 		CE9CED800C75BD8C00752D4B /* DCM StaticLibrary */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CE9CED880C75BDEE00752D4B /* Build configuration list for PBXNativeTarget "DCM StaticLibrary" */;
@@ -20583,6 +20558,23 @@
 			name = "OsiriX VolumePRO";
 			productName = Deployment;
 			productReference = CECB058B07539E3A00576814 /* OsiriXVP.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CEDAAEC90C7B486A00809161 /* QuicktimeEngine */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CEDAAED10C7B486C00809161 /* Build configuration list for PBXNativeTarget "QuicktimeEngine" */;
+			buildPhases = (
+				CEDAAEC60C7B486A00809161 /* Resources */,
+				CEDAAEC70C7B486A00809161 /* Sources */,
+				CEDAAEC80C7B486A00809161 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QuicktimeEngine;
+			productName = QuicktimeEngine;
+			productReference = CEDAAECA0C7B486A00809161 /* QuicktimeEngine.app */;
 			productType = "com.apple.product-type.application";
 		};
 		CEDF6C600B46FE99008B45B8 /* DICOMPrint */ = {
@@ -20699,8 +20691,8 @@
 				4A2F58D8078D118700C514A2 /* Build All Prerequisites */,
 				ABEA7F070A21BCC90094CAEF /* SafeDBRebuild */,
 				AB724F300ADE6ECB00A212A0 /* Decompress */,
-				CE7A0D7D0AED55AD00540017 /* Quicktime */,
 				CEDF6C600B46FE99008B45B8 /* DICOMPrint */,
+				CEDAAEC90C7B486A00809161 /* QuicktimeEngine */,
 			);
 		};
 /* End PBXProject section */
@@ -21218,6 +21210,7 @@
 				AB9723980C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
 				AB9723990C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.2.mom in Resources */,
 				AB97239A0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.3.mom in Resources */,
+				CEDAAEFB0C7B49B300809161 /* QuicktimeEngine.app in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21620,6 +21613,14 @@
 				AB9723920C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
 				AB9723930C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.2.mom in Resources */,
 				AB9723940C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.3.mom in Resources */,
+				CEDAAEFC0C7B49B300809161 /* QuicktimeEngine.app in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEDAAEC60C7B486A00809161 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23330,15 +23331,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CE7A0D7E0AED55AD00540017 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CE7A0F650AED582700540017 /* Quicktime.mm in Sources */,
-				CEFB849A0B9F5DDA0063ACD3 /* DOServer.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CE9CED7E0C75BD8C00752D4B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -24396,6 +24388,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CEDAAEC70C7B486A00809161 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CEDAAED80C7B48A300809161 /* Quicktime.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CEDF6C610B46FE99008B45B8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -24457,11 +24457,6 @@
 			name = OSICustomImageAnnotations;
 			targetProxy = CE0630ED0C625B9C001027D9 /* PBXContainerItemProxy */;
 		};
-		CE7A0F7F0AED591800540017 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CE7A0D7D0AED55AD00540017 /* Quicktime */;
-			targetProxy = CE7A0F7E0AED591800540017 /* PBXContainerItemProxy */;
-		};
 		CE8DF1260B470DC50035C230 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CEDF6C600B46FE99008B45B8 /* DICOMPrint */;
@@ -24511,6 +24506,11 @@
 			isa = PBXTargetDependency;
 			name = OSIListenerPreferencePane;
 			targetProxy = CEACC7B80878781000CF466E /* PBXContainerItemProxy */;
+		};
+		CEDAAED50C7B489100809161 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CEDAAEC90C7B486A00809161 /* QuicktimeEngine */;
+			targetProxy = CEDAAED40C7B489100809161 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -25619,39 +25619,6 @@
 			};
 			name = "Development 64-bits";
 		};
-		CE5314870C717B0400A2B75F /* Development 64-bits */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				COPY_PHASE_STRIP = NO;
-				DEPLOYMENT_LOCATION = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)",
-				);
-				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/Binaries/LibTiff",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = Quicktime;
-				SYMROOT = build;
-			};
-			name = "Development 64-bits";
-		};
 		CE5314880C717B0400A2B75F /* Development 64-bits */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -26035,42 +26002,6 @@
 			};
 			name = "Deployment Universal 32-bit";
 		};
-		CE5314B30C717C3000A2B75F /* Deployment Universal 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				COPY_PHASE_STRIP = NO;
-				DEPLOYMENT_LOCATION = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)",
-				);
-				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = Quicktime;
-				SYMROOT = build;
-				ZERO_LINK = NO;
-			};
-			name = "Deployment Universal 32-bit";
-		};
 		CE5314B40C717C3000A2B75F /* Deployment Universal 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -26443,42 +26374,6 @@
 			};
 			name = "Deployment Universal 64-bit";
 		};
-		CE5314BE0C717C3000A2B75F /* Deployment Universal 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				COPY_PHASE_STRIP = NO;
-				DEPLOYMENT_LOCATION = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)",
-				);
-				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = Quicktime;
-				SYMROOT = build;
-				ZERO_LINK = NO;
-			};
-			name = "Deployment Universal 64-bit";
-		};
 		CE5314BF0C717C3000A2B75F /* Deployment Universal 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -26519,42 +26414,6 @@
 			};
 			name = "Deployment Universal 64-bit";
 		};
-		CE7A0EEB0AED55AD00540017 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				COPY_PHASE_STRIP = NO;
-				DEPLOYMENT_LOCATION = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)",
-				);
-				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = Quicktime;
-				SYMROOT = build;
-				ZERO_LINK = NO;
-			};
-			name = Development;
-		};
 		CE9CED840C75BD8D00752D4B /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -26592,6 +26451,97 @@
 				INSTALL_PATH = /usr/local/lib;
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
+			};
+			name = "Deployment Universal 64-bit";
+		};
+		CEDAAECD0C7B486B00809161 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "QuicktimeEngine-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = QuicktimeEngine;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		CEDAAECE0C7B486B00809161 /* Development 64-bits */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "QuicktimeEngine-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = QuicktimeEngine;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = "Development 64-bits";
+		};
+		CEDAAECF0C7B486B00809161 /* Deployment Universal 32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "QuicktimeEngine-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = QuicktimeEngine;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = "Deployment Universal 32-bit";
+		};
+		CEDAAED00C7B486B00809161 /* Deployment Universal 64-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "QuicktimeEngine-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = QuicktimeEngine;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
 			};
 			name = "Deployment Universal 64-bit";
 		};
@@ -26726,17 +26676,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
 		};
-		CE7A0EEA0AED55AD00540017 /* Build configuration list for PBXNativeTarget "Quicktime" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CE7A0EEB0AED55AD00540017 /* Development */,
-				CE5314870C717B0400A2B75F /* Development 64-bits */,
-				CE5314B30C717C3000A2B75F /* Deployment Universal 32-bit */,
-				CE5314BE0C717C3000A2B75F /* Deployment Universal 64-bit */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
-		};
 		CE9CED880C75BDEE00752D4B /* Build configuration list for PBXNativeTarget "DCM StaticLibrary" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -26744,6 +26683,17 @@
 				CE9CED850C75BD8D00752D4B /* Development 64-bits */,
 				CE9CED860C75BD8D00752D4B /* Deployment Universal 32-bit */,
 				CE9CED870C75BD8D00752D4B /* Deployment Universal 64-bit */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Development;
+		};
+		CEDAAED10C7B486C00809161 /* Build configuration list for PBXNativeTarget "QuicktimeEngine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CEDAAECD0C7B486B00809161 /* Development */,
+				CEDAAECE0C7B486B00809161 /* Development 64-bits */,
+				CEDAAECF0C7B486B00809161 /* Deployment Universal 32-bit */,
+				CEDAAED00C7B486B00809161 /* Deployment Universal 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;

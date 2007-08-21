@@ -1645,7 +1645,7 @@ static BOOL initialized = NO;
 					if( result == NSAlertAlternateReturn) [DCMPix setRunOsiriXInProtectedMode: YES];
 				}
 				
-				[path writeToFile:path atomically:NO];
+				[path writeToFile:path atomically:NO encoding: NSUTF8StringEncoding error: 0L];
 				
 				NSString *reportsDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/REPORTS/"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:reportsDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:reportsDirectory attributes:nil];
@@ -1735,7 +1735,7 @@ static BOOL initialized = NO;
 #endif
 }
 
-#if !__LP64__
+
 - (NSDictionary *) registrationDictionaryForGrowl
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"]) return 0L;
@@ -1743,15 +1743,17 @@ static BOOL initialized = NO;
     NSArray *notifications;
     notifications = [NSArray arrayWithObjects: @"newfiles", @"delete", @"result", 0L];
 
-    NSDictionary *dict;
-
+    NSDictionary *dict = 0L;
+	
+	#if !__LP64__
     dict = [NSDictionary dictionaryWithObjectsAndKeys:
                              notifications, GROWL_NOTIFICATIONS_ALL,
                          notifications, GROWL_NOTIFICATIONS_DEFAULT, nil];
-
+	#endif
+	
     return (dict);
 }
-#endif
+
 
 #pragma mark-
 

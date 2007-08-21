@@ -224,6 +224,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	BOOL							rtstructProgressBar;  // make visible
 	float							rtstructProgressPercent;
+	
+	int								DicomDirScanDepth;
 }
 
 + (BrowserController*) currentBrowser;
