@@ -389,8 +389,6 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		
 		[self setViewSizeToMatrix3DExport];
 		
-		
-		
 		if( numberOfFrames == 10 || numberOfFrames == 20)
 			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames*numberOfFrames];
 		else
