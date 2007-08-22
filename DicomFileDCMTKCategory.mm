@@ -43,6 +43,23 @@
 #include "NrrdIO.h"
 #endif
 
+#include <string>
+
+//#define id Id
+//#include "itkImage.h"
+//#include "itkExceptionObject.h"
+//#include "itkNumericTraits.h"
+//#include "itkImageRegionIterator.h"
+//#include "itkImageIOFactory.h"
+//#include "itkBrains2MaskImageIO.h"
+//#include "itkBrains2MaskImageIOFactory.h"
+//#include "stdlib.h"
+//#include <itksys/SystemTools.hxx>
+//#include "itkImageFileWriter.h"
+//#include "itkImageFileReader.h"
+//#include "itkFlipImageFilter.h"
+//#undef id
+
 extern NSLock	*PapyrusLock;
 
 
@@ -139,7 +156,43 @@ extern NSLock	*PapyrusLock;
 		
 		// ********** Now, test the IO of ITK
 		
-		
+//		typedef itk::Image<char,4> TestImageType; // pixel type doesn't matter for current purpose
+//		typedef itk::ImageFileReader<TestImageType> TestFileReaderType; // reader for testing a file
+//		TestFileReaderType::Pointer onefileReader = TestFileReaderType::New();
+//		
+//		onefileReader->SetFileName([filePath UTF8String]);
+//		
+//		try
+//		{
+//			onefileReader->GenerateOutputInformation();
+//		}
+//		catch(itk::ExceptionObject &excp)
+//		{
+//			return -1;
+//		}
+//		
+//		// grab the ImageIO instance for the reader
+//		itk::ImageIOBase *imageIO = onefileReader->GetImageIO();
+//		unsigned int NumberOfDimensions =  imageIO->GetNumberOfDimensions();
+//		//std::endl;
+//		unsigned dims[32];   // almost always no more than 4 dims, but ...
+//		unsigned origin[32];
+//		double spacing[32];
+//		std::vector<double> directions[32];
+//		for(unsigned i = 0; i < NumberOfDimensions && i < 32; i++)
+//		 {
+//		 dims[i] = imageIO->GetDimensions(i);
+//		 origin[i] = imageIO->GetOrigin(i);
+//		 spacing[i] = imageIO->GetSpacing(i);
+//		 directions[i] = imageIO->GetDirection(i);
+//		 }
+////		// PixelType is SCALAR, RGB, RGBA, VECTOR, COVARIANTVECTOR, POINT,INDEX
+////		itk::ImageIOBase::PixelType pixelType = imageIO->GetPixelType();
+////		// IOComponentType is UCHAR, CHAR, USHORT, SHORT, UINT, INT, ULONG,LONG, FLOAT, DOUBLE
+////		itk::ImageIOBase::IOComponentType componentType = imageIO->GetIOComponentType();
+////		const std::type_info &typeinfo typeInfo = imageIO->GetComponentTypeInfo();
+////		// NumberOfComponents is usually one, but for non-scalar pixel types, it can be anything
+//		unsigned int NumberOfComponents = imageIO->GetNumberOfComponents();
 	}
 	
 	if (success)
