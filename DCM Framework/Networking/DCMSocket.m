@@ -117,14 +117,14 @@
     int err;
 	int family = 0;
     
-    myHostname = [hostname cString];
+    myHostname = [hostname UTF8String];
     bzero(&hints, sizeof(hints));
 	hints.ai_family = PF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
     //results = NULL;
 	//NSLog(@"host lookup");
 	NSString *portString  =[NSString stringWithFormat:@"%d", port];
-    err = getaddrinfo(myHostname, [portString cString], &hints, &results);
+    err = getaddrinfo(myHostname, [portString UTF8String], &hints, &results);
     if (err != 0) {
         NSLog(@"error getting host");
 		freeaddrinfo(results);

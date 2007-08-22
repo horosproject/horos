@@ -1147,19 +1147,10 @@ public:
 		path = [mov createMovieQTKit: NO  :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		if( path)
 		{
-//			FSPathMakeRef((unsigned const char *)[path fileSystemRepresentation], &fsref, NULL);
-//			FSGetCatalogInfo( &fsref, kFSCatInfoNone,NULL, NULL, &spec, NULL);
-//			FSMakeFSSpec(spec.vRefNum, spec.parID, "\ptempMovie", &newspec);
-
 			if( numberOfFrames == 10 || numberOfFrames == 20 || numberOfFrames == 40)
 				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames*numberOfFrames];
 			else
 				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames];
-
-//			if( numberOfFrames == 10 || numberOfFrames == 20 || numberOfFrames == 40)
-//				VRObject_MakeObjectMovie (&spec, &newspec, numberOfFrames*numberOfFrames);
-//			else
-//				VRObject_MakeObjectMovie (&spec, &newspec, numberOfFrames);
 			
 			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 			[[NSFileManager defaultManager] movePath: newpath  toPath: path handler: nil];

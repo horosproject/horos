@@ -80,9 +80,9 @@ static id aedesc_to_id(AEDesc *desc)
 	
 	[file appendString:@"\r"];
 	
-	NSString	*shortDateString = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString];
-	NSDictionary	*localeDictionnary = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
-		
+	NSDateFormatter		*date = [[[NSDateFormatter alloc] init] autorelease];
+	[date setDateStyle: NSDateFormatterShortStyle];
+	
 	for( x = 0; x < [properties count]; x++)
 	{
 		NSString	*name = [properties objectAtIndex: x];
@@ -90,7 +90,7 @@ static id aedesc_to_id(AEDesc *desc)
 		
 		if( [[study valueForKey: name] isKindOfClass: [NSDate class]])
 		{
-			string = [[study valueForKey: name] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary];
+			string = [date stringFromDate: [study valueForKey: name]];
 		}
 		else string = [[study valueForKey: name] description];
 		
@@ -174,8 +174,8 @@ static id aedesc_to_id(AEDesc *desc)
 			NSArray *properties = [[[[model entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
 			NSMutableString	*file = [NSMutableString stringWithString:@""];
 			
-			NSString	*shortDateString = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString];
-			NSDictionary	*localeDictionnary = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+			NSDateFormatter		*date = [[[NSDateFormatter alloc] init] autorelease];
+			[date setDateStyle: NSDateFormatterShortStyle];
 			
 			for( x = 0; x < [properties count]; x++)
 			{
@@ -184,7 +184,7 @@ static id aedesc_to_id(AEDesc *desc)
 				
 				if( [[study valueForKey: name] isKindOfClass: [NSDate class]])
 				{
-					string = [[study valueForKey: name] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary];
+					string = [date stringFromDate: [study valueForKey: name]];
 				}
 				else string = [[study valueForKey: name] description];
 				
@@ -214,7 +214,7 @@ static id aedesc_to_id(AEDesc *desc)
 			range = [rtfString rangeOfString: [NSString stringWithString:@"ÇtodayÈ"] options:0 range: searchRange];
 			if( range.length > 0)
 			{
-				[rtf replaceCharactersInRange:range withString:[[NSDate date] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary]];
+				[rtf replaceCharactersInRange:range withString:[date stringFromDate: [NSDate date]]];
 			}
 			
 			// DICOM Fields
@@ -359,8 +359,8 @@ CHECK;
 	NSManagedObjectModel *model = [[[aStudy managedObjectContext] persistentStoreCoordinator] managedObjectModel];
 	NSArray *properties = [[[[model entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
 	
-	NSString *shortDateString = [[NSUserDefaults standardUserDefaults] stringForKey:NSShortDateFormatString];
-	NSDictionary *localeDictionnary = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+	NSDateFormatter		*date = [[[NSDateFormatter alloc] init] autorelease];
+	[date setDateStyle: NSDateFormatterShortStyle];
 	
 	long x;
 	for( x = 0; x < [properties count]; x++)
@@ -369,7 +369,7 @@ CHECK;
 		NSString *propertyValue;
 		
 		if( [[aStudy valueForKey:propertyName] isKindOfClass:[NSDate class]])
-			propertyValue = [[aStudy valueForKey:propertyName] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary];
+			propertyValue = [date stringFromDate: [aStudy valueForKey:propertyName]];
 		else
 			propertyValue = [[aStudy valueForKey:propertyName] description];
 			
@@ -382,7 +382,7 @@ CHECK;
 	}
 	
 	// "today"
-	[aString replaceOccurrencesOfString:@"&#xAB;today&#xBB;" withString:[[NSDate date] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary] options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
+	[aString replaceOccurrencesOfString:@"&#xAB;today&#xBB;" withString:[date stringFromDate: [NSDate date]] options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
 	
 	NSArray	*seriesArray = [[BrowserController currentBrowser] childrenArray: aStudy];
 	NSArray	*imagePathsArray = [[BrowserController currentBrowser] imagesPathArray: [seriesArray objectAtIndex: 0]];

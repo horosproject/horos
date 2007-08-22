@@ -304,7 +304,7 @@ htt://www.pixelmed.com
 - (void) makeUseOfDataSet:(DCMObject *)object{
 	NSString *filename = [[dcmObject attributeValueWithName:@"SOPInstanceUID"] retain];
 	NSString *destination = [NSString stringWithFormat:@"%@/%@", folder, filename];
-	[object writeToFile:destination withTransferSyntax:nil quality:nil atomically:YES];
+	[object writeToFile:destination withTransferSyntax:0 quality:0 atomically:YES];
 }
 
 - (DCMObject *)dicomObject{

@@ -164,12 +164,6 @@ Version 2.3
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
 - (void)windowDidLoad{
 	[(NSButtonCell *)[tagMatrixfirstColumn prototype] setAllowsMixedState:YES];
 	[(NSButtonCell *)[tagMatrixsecondColumn prototype] setAllowsMixedState:YES];

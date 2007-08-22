@@ -48,11 +48,6 @@
 #define D2R 0.01745329251994329576923690768    // degrees to radians
 #define R2D 57.2957795130823208767981548141    // radians to degrees
 
-extern "C"
-{
-OSErr VRObject_MakeObjectMovie (FSSpec *theMovieSpec, FSSpec *theDestSpec, long maxFrames);
-}
-
 typedef struct _xyzArray
 {
 	short x;
@@ -387,7 +382,6 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	
 	if( [sender tag])
 	{
-		#if !__LP64__
 		NSString			*path, *newpath;
 		FSRef				fsref;
 		FSSpec				spec, newspec;
@@ -408,31 +402,20 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		
 		if( path)
 		{
-			FSPathMakeRef((unsigned const char *)[path fileSystemRepresentation], &fsref, NULL);
-			FSGetCatalogInfo( &fsref, kFSCatInfoNone,NULL, NULL, &spec, NULL);
-			
-			FSMakeFSSpec(spec.vRefNum, spec.parID, "\ptempMovie", &newspec);
-			
-			if( numberOfFrames == 10 || numberOfFrames == 20)
-				VRObject_MakeObjectMovie (&spec,&newspec, numberOfFrames*numberOfFrames);
+			if( numberOfFrames == 10 || numberOfFrames == 20 || numberOfFrames == 40)
+				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames*numberOfFrames];
 			else
-				VRObject_MakeObjectMovie (&spec,&newspec, numberOfFrames);
+				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames];
 			
 			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-			
-			newpath = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"tempMovie"];
-			
-			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-			
 			[[NSFileManager defaultManager] movePath: newpath  toPath: path handler: nil];
+			
+			[[NSWorkspace sharedWorkspace] openFile:path];
 		}
+		
 		[mov release];
 		
-		[[NSWorkspace sharedWorkspace] openFile:path];
-		
 		[self restoreViewSizeAfterMatrix3DExport];
-		
-		#endif
 	}
 }
 

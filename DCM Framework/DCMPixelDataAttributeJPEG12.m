@@ -588,7 +588,7 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
  //int row_stride = columns * samplesPerPixel * 2;
   while (cinfo.next_scanline < cinfo.image_height) 
   {
-    row_pointer[0] = &image_buffer[cinfo.next_scanline * row_stride];
+    row_pointer[0] = (JSAMPROW) (&image_buffer[cinfo.next_scanline * row_stride]);
     jpeg_write_scanlines(&cinfo, row_pointer, 1);
   }
   

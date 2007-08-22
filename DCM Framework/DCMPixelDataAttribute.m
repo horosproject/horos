@@ -1071,7 +1071,7 @@ unsigned char scanJpegDataForBitDepth(
 				for( i = 0 ; i < numcmpts; i++)
 					jas_image_readcmpt(jasImage, i, 0, y, width, 1, pixels[ i]);
 				
-				char *px = newPixelData + y * width * 3;
+				char *px = (char*) (newPixelData + y * width * 3);
 				
 				int_fast32_t	*ptr1 = &(pixels[0])->rows_[0][0];
 				int_fast32_t	*ptr2 = &(pixels[1])->rows_[0][0];

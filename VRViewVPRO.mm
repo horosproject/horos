@@ -46,13 +46,6 @@
 extern int intersect3D_SegmentPlane( float *P0, float *P1, float *Pnormal, float *Ppoint, float* resultPt );
 extern BrowserController *browserWindow;
 
-
-extern "C"
-{
-OSErr VRObject_MakeObjectMovie (FSSpec *theMovieSpec, FSSpec *theDestSpec, long maxFrames);
-
-}
-
 typedef struct _xyzArray
 {
 	short x;
@@ -1205,25 +1198,13 @@ public:
 		
 		if( path)
 		{
-			FSPathMakeRef((unsigned const char *)[path fileSystemRepresentation], &fsref, NULL);
-			FSGetCatalogInfo( &fsref, kFSCatInfoNone,NULL, NULL, &spec, NULL);
-			
-			FSMakeFSSpec(spec.vRefNum, spec.parID, "\ptempMovie", &newspec);
-			
 			if( numberOfFrames == 10 || numberOfFrames == 20 || numberOfFrames == 40)
-				VRObject_MakeObjectMovie (&spec,&newspec, numberOfFrames*numberOfFrames);
+				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames*numberOfFrames];
 			else
-				VRObject_MakeObjectMovie (&spec,&newspec, numberOfFrames);
+				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames];
 			
 			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-			
-			newpath = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"tempMovie"];
-			
-			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-			
 			[[NSFileManager defaultManager] movePath: newpath  toPath: path handler: nil];
-			
-			
 			
 			[[NSWorkspace sharedWorkspace] openFile:path];
 		}

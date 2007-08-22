@@ -165,7 +165,7 @@
 				AET:nil
 				strippingGroupLengthLength:YES]) 
 		return [[container  dicomData] writeToFile:path atomically:YES];
-	return nil;
+	return 0;
 }
 
 
