@@ -6561,8 +6561,6 @@
 		CE97630A08FABDA600E6F8B0 /* PaletteController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9762FE08FABDA600E6F8B0 /* PaletteController.h */; };
 		CE97630B08FABDA600E6F8B0 /* PaletteController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9762FF08FABDA600E6F8B0 /* PaletteController.m */; };
 		CE99E890073AB4C500725ABC /* iPhoto.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE99E88E073AB4C500725ABC /* iPhoto.icns */; };
-		CE9AF29E0AED5EE600606C3D /* Quicktime in Resources */ = {isa = PBXBuildFile; fileRef = CE9AF29C0AED5EE600606C3D /* Quicktime */; };
-		CE9AF29F0AED5EE600606C3D /* Quicktime in Resources */ = {isa = PBXBuildFile; fileRef = CE9AF29C0AED5EE600606C3D /* Quicktime */; };
 		CE9C734A0B34946B0062FCCC /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = CE9C73490B34946B0062FCCC /* echoscu */; };
 		CE9C734B0B34946B0062FCCC /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = CE9C73490B34946B0062FCCC /* echoscu */; };
 		CE9CED890C75BDF900752D4B /* DCMRootRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E96AD9007CE753C005D435B /* DCMRootRecord.h */; };
@@ -11535,7 +11533,6 @@
 		CE9762FE08FABDA600E6F8B0 /* PaletteController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PaletteController.h; sourceTree = "<group>"; };
 		CE9762FF08FABDA600E6F8B0 /* PaletteController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PaletteController.m; sourceTree = "<group>"; };
 		CE99E88E073AB4C500725ABC /* iPhoto.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iPhoto.icns; sourceTree = "<group>"; };
-		CE9AF29C0AED5EE600606C3D /* Quicktime */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = Quicktime; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE9C73490B34946B0062FCCC /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = echoscu; path = Binaries/DCMTK/echoscu; sourceTree = SOURCE_ROOT; };
 		CE9CED810C75BD8C00752D4B /* libDCM StaticLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libDCM StaticLibrary.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE9DD280086B35050058DD2A /* DicomStudy.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomStudy.m; sourceTree = "<group>"; };
@@ -12068,7 +12065,6 @@
 				B78675430AD9C56400731977 /* diameter570frame512.pbm */,
 				B78675440AD9C56400731977 /* diameter1140frame1024.pbm */,
 				CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */,
-				CE9AF29C0AED5EE600606C3D /* Quicktime */,
 				ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */,
 				AB7250370ADE6F5D00A212A0 /* Decompress */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
@@ -21094,7 +21090,6 @@
 				A9ADBBD20ADE80E60022DFC7 /* ReportRTF.icns in Resources */,
 				A9ADBBD30ADE80E60022DFC7 /* ReportWord.icns in Resources */,
 				CE5F9D740AE813A40042280F /* localizedTemplatesPages in Resources */,
-				CE9AF29F0AED5EE600606C3D /* Quicktime in Resources */,
 				ABD559FE0AEE146900108895 /* SagSmall.tif in Resources */,
 				ABD559FF0AEE146900108895 /* CorSmall.tif in Resources */,
 				ABD55A000AEE146900108895 /* AxialSmall.tif in Resources */,
@@ -21495,7 +21490,6 @@
 				A9ADBBD50ADE80E60022DFC7 /* ReportRTF.icns in Resources */,
 				A9ADBBD60ADE80E60022DFC7 /* ReportWord.icns in Resources */,
 				CE5F9D760AE813A40042280F /* localizedTemplatesPages in Resources */,
-				CE9AF29E0AED5EE600606C3D /* Quicktime in Resources */,
 				ABD559F80AEE146900108895 /* SagSmall.tif in Resources */,
 				ABD559F90AEE146900108895 /* CorSmall.tif in Resources */,
 				ABD559FA0AEE146900108895 /* AxialSmall.tif in Resources */,
