@@ -7277,6 +7277,8 @@
 		CEC1721B0874839C0021C3FC /* burn_anim11.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC172030874839C0021C3FC /* burn_anim11.tif */; };
 		CEC3B293086C87D900DFD83E /* 3DRotateCamera.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEC3B292086C87D900DFD83E /* 3DRotateCamera.tiff */; };
 		CEC3B294086C87D900DFD83E /* 3DRotateCamera.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEC3B292086C87D900DFD83E /* 3DRotateCamera.tiff */; };
+		CEC4B5C10C7DF2D600AF5A76 /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */; };
+		CEC4B5C20C7DF2D600AF5A76 /* 3DPRESETS in Resources */ = {isa = PBXBuildFile; fileRef = CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */; };
 		CEC57C350875C9A300389622 /* OSIDatabasePreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */; };
 		CEC57C360875C9A300389622 /* OSIDatabasePreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */; };
 		CECB02B907539E3900576814 /* port.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E0B06398E3400F0C5DD /* port.h */; };
@@ -11581,6 +11583,7 @@
 		CEC172020874839C0021C3FC /* burn_anim10.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim10.tif; sourceTree = "<group>"; };
 		CEC172030874839C0021C3FC /* burn_anim11.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim11.tif; sourceTree = "<group>"; };
 		CEC3B292086C87D900DFD83E /* 3DRotateCamera.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3DRotateCamera.tiff; sourceTree = "<group>"; };
+		CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */ = {isa = PBXFileReference; lastKnownFileType = folder; name = 3DPRESETS; path = Binaries/3DPRESETS; sourceTree = "<group>"; };
 		CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIDatabasePreferencePane.prefPane; path = "Preference Panes/OSIDatabasePreferencePane/build/Development/OSIDatabasePreferencePane.prefPane"; sourceTree = "<group>"; };
 		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CECEF72C081BB265002ECC99 /* DICOMExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMExport.h; sourceTree = "<group>"; };
@@ -12064,6 +12067,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */,
 				CE897DD30C21D951005C669E /* texture.tif */,
 				CEDAAEFA0C7B49B300809161 /* QuicktimeEngine.app */,
 				B78675430AD9C56400731977 /* diameter570frame512.pbm */,
@@ -21207,6 +21211,7 @@
 				AB9723990C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.2.mom in Resources */,
 				AB97239A0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.3.mom in Resources */,
 				CEDAAEFB0C7B49B300809161 /* QuicktimeEngine.app in Resources */,
+				CEC4B5C10C7DF2D600AF5A76 /* 3DPRESETS in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21609,6 +21614,7 @@
 				AB9723930C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.2.mom in Resources */,
 				AB9723940C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.3.mom in Resources */,
 				CEDAAEFC0C7B49B300809161 /* QuicktimeEngine.app in Resources */,
+				CEC4B5C20C7DF2D600AF5A76 /* 3DPRESETS in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
