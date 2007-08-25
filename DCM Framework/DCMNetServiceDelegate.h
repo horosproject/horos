@@ -29,6 +29,7 @@
 
 }
 + (NSString*) gethostnameAndPort: (int*) port forService:(NSNetService*) sender;
++ (NSHost*) currentHost;
 + (NSArray *) DICOMServersList;
 + (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR;
 + (id)sharedNetServiceDelegate;

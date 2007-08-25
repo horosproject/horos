@@ -7,6 +7,7 @@
 //
 
 #import "DefaultsOsiriX.h"
+#import "DCMNetServiceDelegate.h"
 
 extern		NSMutableArray			*preProcessPlugins;
 
@@ -19,10 +20,10 @@ static NSHost *currentHost = 0L;
 +(NSHost*) currentHost
 {
 	#ifdef OSIRIX_VIEWER
+	return [DCMNetServiceDelegate currentHost];
+	#else
 	if( currentHost == 0L)
-	{
 		currentHost = [[NSHost currentHost] retain];
-	}
 	#endif
 	
 	return currentHost;
