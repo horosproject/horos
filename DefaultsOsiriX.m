@@ -12,8 +12,19 @@ extern		NSMutableArray			*preProcessPlugins;
 
 static BOOL isHcugeCh = NO, isUnigeCh = NO, testIsHugDone = NO, testIsUniDone = NO;
 static NSString *hostName = @"";
+static NSHost *currentHost = 0L;
 
 @implementation DefaultsOsiriX
+
++(NSHost*) currentHost
+{
+	if( currentHost == 0L)
+	{
+		currentHost = [[NSHost currentHost] retain];
+	}
+	
+	return currentHost;
+}
 
 // Test if the computer is in the HUG (domain name == hcuge.ch)
 + (NSString*) hostName
@@ -25,7 +36,7 @@ static NSString *hostName = @"";
 {
 	if( testIsHugDone == NO)
 	{
-		NSArray	*names = [[NSHost currentHost] names];
+		NSArray	*names = [[DefaultsOsiriX currentHost] names];
 		int i;
 		for( i = 0; i < [names count] && !isHcugeCh; i++)
 		{
@@ -48,7 +59,7 @@ static NSString *hostName = @"";
 {
 	if( testIsUniDone == NO)
 	{
-		NSArray	*names = [[NSHost currentHost] names];
+		NSArray	*names = [[DefaultsOsiriX currentHost] names];
 		int i;
 		for( i = 0; i < [names count] && !isUnigeCh; i++)
 		{
@@ -539,7 +550,7 @@ static NSString *hostName = @"";
 		NSString *userName = [NSUserName() uppercaseString];
 		if ([userName length] > 4)
 			userName = [userName substringToIndex:4];
-		NSString *computerName = [[[NSHost currentHost] name] uppercaseString];
+		NSString *computerName = [[[DefaultsOsiriX currentHost] name] uppercaseString];
 		if ([computerName length] > 4)
 			computerName = [computerName substringToIndex:4];
 		NSString *suggestedAE = [NSString stringWithFormat:@"OSIRIX_%@_%@", computerName, userName];

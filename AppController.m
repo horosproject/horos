@@ -841,7 +841,7 @@ NSRect screenFrame()
 {
 	if( currentHostName) return currentHostName;
 	
-	currentHostName = [[[NSHost currentHost] name] retain];
+	currentHostName = [[[DefaultsOsiriX currentHost] name] retain];
 }
 
 +(void) cleanOsiriXSubProcesses

@@ -24,7 +24,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-DCMNetServiceDelegate *_netServiceDelegate = 0L;
+static DCMNetServiceDelegate *_netServiceDelegate = 0L;
+static NSHost *currentHost = 0L;
 
 @implementation DCMNetServiceDelegate
 
@@ -32,6 +33,16 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 	if (! _netServiceDelegate)
 		_netServiceDelegate = [[DCMNetServiceDelegate alloc] init];
 	return _netServiceDelegate;
+}
+
++(NSHost*) currentHost
+{
+	if( currentHost == 0L)
+	{
+		currentHost = [[NSHost currentHost] retain];
+	}
+	
+	return currentHost;
 }
 
 - (id)init{
@@ -237,12 +248,11 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 	NSLog( @"netServiceDidResolveAddress:");
 	NSLog( [sender description]);
 	
-	if( [[sender name] isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]] == NO || [[NSHost currentHost] isEqualToHost: [NSHost hostWithName:[sender hostName]]] == NO)
+	if( [[sender name] isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]] == NO || [[[DCMNetServiceDelegate currentHost] name] isEqualToString: [sender hostName]] == NO)
 	{
 		[_dicomServices addObject: sender];
 		[[NSNotificationCenter defaultCenter] 	postNotificationName:@"DCMNetServicesDidChange" object:nil];
 	}
-//	else NSLog( @"Bonjour address (myself): %@", [sender hostName]);
 	
 	[sender release];	// <- We did a retain in the didFindService
 }
