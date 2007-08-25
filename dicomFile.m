@@ -367,9 +367,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	[PapyrusLock unlock];
 	
-	NSLog( file);
-	NSLog( @"%d", fileNb);
-	
 	if (!readable)
 	{
 		return [DCMObject isDICOM:[NSData dataWithContentsOfMappedFile:file]];

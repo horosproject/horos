@@ -18,10 +18,12 @@ static NSHost *currentHost = 0L;
 
 +(NSHost*) currentHost
 {
+	#ifdef OSIRIX_VIEWER
 	if( currentHost == 0L)
 	{
 		currentHost = [[NSHost currentHost] retain];
 	}
+	#endif
 	
 	return currentHost;
 }
@@ -546,7 +548,8 @@ static NSHost *currentHost = 0L;
 	
 	// ** AETITLE
 	if( [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"] == 0L)
-	{	
+	{
+		#ifdef OSIRIX_VIEWER
 		NSString *userName = [NSUserName() uppercaseString];
 		if ([userName length] > 4)
 			userName = [userName substringToIndex:4];
@@ -557,6 +560,7 @@ static NSHost *currentHost = 0L;
 		[defaultValues setObject: suggestedAE forKey: @"AETITLE"];
 		
 		[[NSUserDefaults standardUserDefaults] setObject: suggestedAE forKey: @"AETITLE"];
+		#endif
 	}
 	//[defaultValues setObject:@"OSIRIX" forKey:@"AETITLE"];
 
@@ -1043,7 +1047,7 @@ static NSHost *currentHost = 0L;
 						NSLocalizedString(@"\\", nil),
 						NSLocalizedString(@"n", nil),
 						nil];
-	NSEnumerator *hotKeyEnumerator = [array objectEnumerator];
+						
 	int x = DefaultWWWLHotKeyAction;
 	int count = BoneRemovalHotKeyAction + 1;
 	for (x = DefaultWWWLHotKeyAction; x < count; x++) {
