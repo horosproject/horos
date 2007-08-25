@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 43;
+	objectVersion = 44;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -25193,7 +25193,7 @@
 					AYDicomPrint,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				SDKROOTS = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = Development;
 		};
@@ -25292,7 +25292,7 @@
 					AYDicomPrint,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				SDKROOTS = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = "Development 64-bits";
 		};
@@ -25674,7 +25674,7 @@
 					AYDicomPrint,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				SDKROOTS = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = "Deployment Universal 32-bit";
 		};
@@ -26063,7 +26063,7 @@
 					AYDicomPrint,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				SDKROOTS = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = "Deployment Universal 64-bit";
 		};

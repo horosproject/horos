@@ -102,7 +102,7 @@
 		[pool release];
 		
 	}
-	return nil;
+	return 0;
 }
 
 
