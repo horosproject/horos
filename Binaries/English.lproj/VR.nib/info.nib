@@ -3,20 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>IBFramework Version</key>
-	<string>613</string>
+	<string>623</string>
 	<key>IBLastKnownRelativeProjectPath</key>
 	<string>../../../OsiriX.xcodeproj</string>
 	<key>IBOldestOS</key>
 	<integer>5</integer>
 	<key>IBOpenObjects</key>
-	<array>
-		<integer>1349</integer>
-		<integer>1532</integer>
-		<integer>1043</integer>
-		<integer>1408</integer>
-	</array>
+	<array/>
 	<key>IBSystem Version</key>
-	<string>9A499</string>
+	<string>9A527</string>
 	<key>targetFramework</key>
 	<string>IBCocoaFramework</string>
 </dict>

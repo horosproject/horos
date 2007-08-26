@@ -9485,7 +9485,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	@try
 	{
 	long i;
-
+	
 	[DCMNetServiceDelegate currentHost];	// This host detection (DNS) can take long... do it now...
 	
 	NSTableColumn		*tableColumn = nil;
