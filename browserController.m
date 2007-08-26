@@ -9475,6 +9475,8 @@ static NSArray*	openSubSeriesArray = 0L;
 		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting 32-bit version", nil)];
 	}
 
+	[DCMNetServiceDelegate currentHost];	// This host detection (DNS) can take long... do it now...
+
 	if( autoroutingQueueArray == 0L) autoroutingQueueArray = [[NSMutableArray array] retain];
 	if( autoroutingQueue == 0L) autoroutingQueue = [[NSLock alloc] init];
 	if( autoroutingInProgress == 0L) autoroutingInProgress = [[NSLock alloc] init];
