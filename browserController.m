@@ -9475,7 +9475,6 @@ static NSArray*	openSubSeriesArray = 0L;
 		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting 32-bit version", nil)];
 	}
 
-	[DCMNetServiceDelegate currentHost];	// This host detection (DNS) can take long... do it now...
 
 	if( autoroutingQueueArray == 0L) autoroutingQueueArray = [[NSMutableArray array] retain];
 	if( autoroutingQueue == 0L) autoroutingQueue = [[NSLock alloc] init];
@@ -9486,6 +9485,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	@try
 	{
 	long i;
+
+	[DCMNetServiceDelegate currentHost];	// This host detection (DNS) can take long... do it now...
 	
 	NSTableColumn		*tableColumn = nil;
 	NSPopUpButtonCell	*buttonCell = nil;
