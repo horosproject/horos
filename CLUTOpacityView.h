@@ -50,7 +50,7 @@
 	BOOL isAddCurveButtonHighlighted, isRemoveSelectedCurveButtonHighlighted, isSaveButtonHighlighted;
 	
 	NSPoint mouseDraggingStartPoint;
-	BOOL updateView;
+	BOOL updateView, setCLUTtoVRView;
 }
 
 - (void)cleanup;

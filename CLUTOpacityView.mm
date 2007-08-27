@@ -1974,6 +1974,8 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 - (void)setCLUTtoVRView:(BOOL)lowRes;
 {
+	if( setCLUTtoVRView) return;	// avoir re-entry
+	setCLUTtoVRView = YES;
 	if([curves count]>0)
 	{
 		NSMutableDictionary *clut = [NSMutableDictionary dictionaryWithCapacity:2];
@@ -1998,6 +2000,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 		if( savedWl != wl || savedWw != ww)
 			[vrView setWLWW: wl : ww];
 	}
+	setCLUTtoVRView = NO;
 }
 
 - (void)setWL:(float)wl ww:(float)ww;
