@@ -50,6 +50,7 @@
 	BOOL isAddCurveButtonHighlighted, isRemoveSelectedCurveButtonHighlighted, isSaveButtonHighlighted;
 	
 	NSPoint mouseDraggingStartPoint;
+	BOOL updateView;
 }
 
 - (void)cleanup;

@@ -610,10 +610,15 @@
 
 - (void)updateView;
 {
+	if( updateView) return;	// avoir re-entry
+	updateView = YES;
+	
 	[self setNeedsDisplay:YES];
 	//if(!nothingChanged)[self setCLUTtoVRView];
 	if(clutChanged)[self setCLUTtoVRView];
 	clutChanged = NO;
+	
+	updateView = NO;
 }
 
 #pragma mark -
