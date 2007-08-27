@@ -4034,7 +4034,6 @@
 		CE2C83140C708BA30093C162 /* libITKCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F70C708BA30093C162 /* libITKCommon.a */; };
 		CE2C83150C708BA30093C162 /* libitktiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F80C708BA30093C162 /* libitktiff.a */; };
 		CE2C83160C708BA30093C162 /* libITKSpatialObject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F90C708BA30093C162 /* libITKSpatialObject.a */; };
-		CE2C83170C708BA30093C162 /* libitknetlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82FA0C708BA30093C162 /* libitknetlib.a */; };
 		CE2C83180C708BA30093C162 /* libitkjpeg12.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82FB0C708BA30093C162 /* libitkjpeg12.a */; };
 		CE2C83190C708BA30093C162 /* libitkpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82FC0C708BA30093C162 /* libitkpng.a */; };
 		CE2C831A0C708BA30093C162 /* libITKFEM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82FD0C708BA30093C162 /* libITKFEM.a */; };
@@ -4063,7 +4062,6 @@
 		CE2C834E0C708BA30093C162 /* libITKCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F70C708BA30093C162 /* libITKCommon.a */; };
 		CE2C834F0C708BA30093C162 /* libitktiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F80C708BA30093C162 /* libitktiff.a */; };
 		CE2C83500C708BA30093C162 /* libITKSpatialObject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F90C708BA30093C162 /* libITKSpatialObject.a */; };
-		CE2C83510C708BA30093C162 /* libitknetlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82FA0C708BA30093C162 /* libitknetlib.a */; };
 		CE2C83520C708BA30093C162 /* libitkjpeg12.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82FB0C708BA30093C162 /* libitkjpeg12.a */; };
 		CE2C83530C708BA30093C162 /* libitkpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82FC0C708BA30093C162 /* libitkpng.a */; };
 		CE2C83540C708BA30093C162 /* libITKFEM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82FD0C708BA30093C162 /* libITKFEM.a */; };
@@ -6474,6 +6472,8 @@
 		CE69602009CAB75800EFFDEF /* VRPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE69601C09CAB75800EFFDEF /* VRPanel.nib */; };
 		CE6B2E2008DAFC6500872E84 /* FixedIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */; };
 		CE6B2E2208DAFC6500872E84 /* FixedIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */; };
+		CE6C156D0C82D1DD00A9EEDC /* libitkv3p_netlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6C156C0C82D1DD00A9EEDC /* libitkv3p_netlib.a */; };
+		CE6C156E0C82D1DD00A9EEDC /* libitkv3p_netlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6C156C0C82D1DD00A9EEDC /* libitkv3p_netlib.a */; };
 		CE6C77ED09739B3100F951C2 /* Rotate3DCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */; };
 		CE6C77EE09739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */; };
 		CE6C77F109739B3100F951C2 /* Rotate3DCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */; };
@@ -10270,7 +10270,6 @@
 		CE2C82F70C708BA30093C162 /* libITKCommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKCommon.a; path = ITK180/bin/libITKCommon.a; sourceTree = "<group>"; };
 		CE2C82F80C708BA30093C162 /* libitktiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitktiff.a; path = ITK180/bin/libitktiff.a; sourceTree = "<group>"; };
 		CE2C82F90C708BA30093C162 /* libITKSpatialObject.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKSpatialObject.a; path = ITK180/bin/libITKSpatialObject.a; sourceTree = "<group>"; };
-		CE2C82FA0C708BA30093C162 /* libitknetlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitknetlib.a; path = ITK180/bin/libitknetlib.a; sourceTree = "<group>"; };
 		CE2C82FB0C708BA30093C162 /* libitkjpeg12.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkjpeg12.a; path = ITK180/bin/libitkjpeg12.a; sourceTree = "<group>"; };
 		CE2C82FC0C708BA30093C162 /* libitkpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkpng.a; path = ITK180/bin/libitkpng.a; sourceTree = "<group>"; };
 		CE2C82FD0C708BA30093C162 /* libITKFEM.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKFEM.a; path = ITK180/bin/libITKFEM.a; sourceTree = "<group>"; };
@@ -11491,6 +11490,7 @@
 		CE677D1207A6BDDD003B3650 /* VRControllerVPRO.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRControllerVPRO.h; sourceTree = "<group>"; };
 		CE69601D09CAB75800EFFDEF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/VRPanel.nib; sourceTree = "<group>"; };
 		CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FixedIP.tif; sourceTree = "<group>"; };
+		CE6C156C0C82D1DD00A9EEDC /* libitkv3p_netlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkv3p_netlib.a; path = ITK180/bin/libitkv3p_netlib.a; sourceTree = "<group>"; };
 		CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Rotate3DCursor.tif; path = Cursors/Rotate3DCursor.tif; sourceTree = "<group>"; };
 		CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Rotate3DCameraCursor.tif; path = Cursors/Rotate3DCameraCursor.tif; sourceTree = "<group>"; };
 		CE6E2CAE06CAE45A00BC7907 /* PlotView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PlotView.h; sourceTree = "<group>"; };
@@ -11744,7 +11744,6 @@
 				CE2C83140C708BA30093C162 /* libITKCommon.a in Frameworks */,
 				CE2C83150C708BA30093C162 /* libitktiff.a in Frameworks */,
 				CE2C83160C708BA30093C162 /* libITKSpatialObject.a in Frameworks */,
-				CE2C83170C708BA30093C162 /* libitknetlib.a in Frameworks */,
 				CE2C83180C708BA30093C162 /* libitkjpeg12.a in Frameworks */,
 				CE2C83190C708BA30093C162 /* libitkpng.a in Frameworks */,
 				CE2C831A0C708BA30093C162 /* libITKFEM.a in Frameworks */,
@@ -11762,6 +11761,7 @@
 				CE2C83260C708BA30093C162 /* libitkvnl_inst.a in Frameworks */,
 				CE2C83270C708BA30093C162 /* libitkvcl.a in Frameworks */,
 				CE586CC40C74B75D00DB7D5A /* libdcmprintscu.dylib in Frameworks */,
+				CE6C156D0C82D1DD00A9EEDC /* libitkv3p_netlib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11872,7 +11872,6 @@
 				CE2C834E0C708BA30093C162 /* libITKCommon.a in Frameworks */,
 				CE2C834F0C708BA30093C162 /* libitktiff.a in Frameworks */,
 				CE2C83500C708BA30093C162 /* libITKSpatialObject.a in Frameworks */,
-				CE2C83510C708BA30093C162 /* libitknetlib.a in Frameworks */,
 				CE2C83520C708BA30093C162 /* libitkjpeg12.a in Frameworks */,
 				CE2C83530C708BA30093C162 /* libitkpng.a in Frameworks */,
 				CE2C83540C708BA30093C162 /* libITKFEM.a in Frameworks */,
@@ -11890,6 +11889,7 @@
 				CE2C83600C708BA30093C162 /* libitkvnl_inst.a in Frameworks */,
 				CE2C83610C708BA30093C162 /* libitkvcl.a in Frameworks */,
 				CE586CC50C74B75D00DB7D5A /* libdcmprintscu.dylib in Frameworks */,
+				CE6C156E0C82D1DD00A9EEDC /* libitkv3p_netlib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14887,7 +14887,6 @@
 				CE2C82F70C708BA30093C162 /* libITKCommon.a */,
 				CE2C82F80C708BA30093C162 /* libitktiff.a */,
 				CE2C82F90C708BA30093C162 /* libITKSpatialObject.a */,
-				CE2C82FA0C708BA30093C162 /* libitknetlib.a */,
 				CE2C82FB0C708BA30093C162 /* libitkjpeg12.a */,
 				CE2C82FC0C708BA30093C162 /* libitkpng.a */,
 				CE2C82FD0C708BA30093C162 /* libITKFEM.a */,
@@ -14904,6 +14903,7 @@
 				CE2C83080C708BA30093C162 /* libitkvnl_algo.a */,
 				CE2C83090C708BA30093C162 /* libitkvnl_inst.a */,
 				CE2C830A0C708BA30093C162 /* libitkvcl.a */,
+				CE6C156C0C82D1DD00A9EEDC /* libitkv3p_netlib.a */,
 			);
 			name = ITKLibs;
 			sourceTree = "<group>";
@@ -25720,6 +25720,7 @@
 					Binaries/Jasper,
 					ITK180/bin,
 					AYDicomPrint,
+					"\"$(SRCROOT)/ITK180/bin\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
@@ -26111,6 +26112,7 @@
 					Binaries/Jasper,
 					AYDicomPrint,
 					ITK180/bin,
+					"\"$(SRCROOT)/ITK180/bin\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
