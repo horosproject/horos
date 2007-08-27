@@ -241,7 +241,6 @@
 		7E55ADDE06C7FFCD0059D6EB /* SeriesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E55ADDC06C7FFCD0059D6EB /* SeriesView.m */; };
 		7E55AE1506C80E460059D6EB /* StudyView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E55AE1306C80E460059D6EB /* StudyView.h */; };
 		7E55AE1606C80E460059D6EB /* StudyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E55AE1406C80E460059D6EB /* StudyView.m */; };
-		7E5692FA064FCF08001A9762 /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E5692F8064FCF08001A9762 /* libtiff.a */; };
 		7E56938606500791001A9762 /* SmartAlbum.nib in Resources */ = {isa = PBXBuildFile; fileRef = 7E56938406500791001A9762 /* SmartAlbum.nib */; };
 		7E569399065007D6001A9762 /* SmartWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E569397065007D6001A9762 /* SmartWindowController.h */; };
 		7E56939A065007D6001A9762 /* SmartWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E569398065007D6001A9762 /* SmartWindowController.m */; };
@@ -302,8 +301,6 @@
 		7EBE4B2708917A7500FC1C36 /* LogTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF17E98F088768CA00ECF621 /* LogTableView.h */; };
 		7EBE4B2808917A7B00FC1C36 /* LogTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF17E98F088768CA00ECF621 /* LogTableView.h */; };
 		7EBE4B2908917A7F00FC1C36 /* LogTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF17E990088768CA00ECF621 /* LogTableView.m */; };
-		7EC3590A06FE212600188171 /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EC3590806FE212600188171 /* libtiff.dylib */; };
-		7EC3593206FE21EF00188171 /* libtiff.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7EC3590806FE212600188171 /* libtiff.dylib */; };
 		7ECB4B41072EF9F800C2CFC4 /* DCMCalendarScript.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ECB4B3F072EF9F800C2CFC4 /* DCMCalendarScript.h */; };
 		7ECB4B42072EF9F800C2CFC4 /* DCMCalendarScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ECB4B40072EF9F800C2CFC4 /* DCMCalendarScript.m */; };
 		7ECBB8230683A68D00FF3FF4 /* DCMPixelDataAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ECBB8210683A68D00FF3FF4 /* DCMPixelDataAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -842,8 +839,6 @@
 		AB6AC6490624AC5200AFC7AF /* VRController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6AC6450624AC5200AFC7AF /* VRController.mm */; };
 		AB6B75EA0A53F60600F0CA8F /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
 		AB6B75EC0A53F60600F0CA8F /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
-		AB6FEFDA0A47CD9B00C501F0 /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EC3590806FE212600188171 /* libtiff.dylib */; };
-		AB6FEFDB0A47CD9C00C501F0 /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E5692F8064FCF08001A9762 /* libtiff.a */; };
 		AB6FF09E0A47CE3A00C501F0 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		AB6FF5820A47CF4500C501F0 /* DicomDirInitRecords.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E205646BE500BED927 /* DicomDirInitRecords.c */; };
 		AB6FF5830A47CF4500C501F0 /* DicomDirInit.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E105646BE500BED927 /* DicomDirInit.c */; };
@@ -1012,8 +1007,6 @@
 		AB724FE90ADE6ECB00A212A0 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5F09B6828300545F5E /* jutils.c */; };
 		AB724FEB0ADE6ECB00A212A0 /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E0B3A3F067526CD00908593 /* OsiriX.framework */; };
 		AB724FEC0ADE6ECB00A212A0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
-		AB724FED0ADE6ECB00A212A0 /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EC3590806FE212600188171 /* libtiff.dylib */; };
-		AB724FEE0ADE6ECB00A212A0 /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E5692F8064FCF08001A9762 /* libtiff.a */; };
 		AB724FEF0ADE6ECB00A212A0 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		AB724FF00ADE6ECB00A212A0 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
 		AB724FF10ADE6ECB00A212A0 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
@@ -3949,7 +3942,6 @@
 		CE0F423C0A56A8A600D54F38 /* ofstd.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E6109B6828B00545F5E /* ofstd.cc */; };
 		CE0F423D0A56A8A600D54F38 /* ofstring.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E6509B6828B00545F5E /* ofstring.cc */; };
 		CE0F423E0A56A8A600D54F38 /* ofthread.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E6709B6828B00545F5E /* ofthread.cc */; };
-		CE0F425A0A56A9A800D54F38 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
 		CE1113A108EDD5FD005B15E1 /* libvtkGraphics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE11138F08EDD5FD005B15E1 /* libvtkGraphics.a */; };
 		CE1113A208EDD5FD005B15E1 /* libvtkHybrid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE11139008EDD5FD005B15E1 /* libvtkHybrid.a */; };
 		CE1113A308EDD5FD005B15E1 /* libvtkVolumeRendering.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE11139108EDD5FD005B15E1 /* libvtkVolumeRendering.a */; };
@@ -4028,7 +4020,6 @@
 		CE2C830E0C708BA30093C162 /* libITKStatistics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F10C708BA30093C162 /* libITKStatistics.a */; };
 		CE2C830F0C708BA30093C162 /* libitkjpeg16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F20C708BA30093C162 /* libitkjpeg16.a */; };
 		CE2C83100C708BA30093C162 /* libitksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F30C708BA30093C162 /* libitksys.a */; };
-		CE2C83110C708BA30093C162 /* libITKNrrdIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F40C708BA30093C162 /* libITKNrrdIO.a */; };
 		CE2C83120C708BA30093C162 /* libITKDICOMParser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F50C708BA30093C162 /* libITKDICOMParser.a */; };
 		CE2C83130C708BA30093C162 /* libitktestlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F60C708BA30093C162 /* libitktestlib.a */; };
 		CE2C83140C708BA30093C162 /* libITKCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F70C708BA30093C162 /* libITKCommon.a */; };
@@ -4044,7 +4035,6 @@
 		CE2C831F0C708BA30093C162 /* libitkgdcm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83020C708BA30093C162 /* libitkgdcm.a */; };
 		CE2C83200C708BA30093C162 /* libITKEXPAT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83030C708BA30093C162 /* libITKEXPAT.a */; };
 		CE2C83210C708BA30093C162 /* libitkjpeg8.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83040C708BA30093C162 /* libitkjpeg8.a */; };
-		CE2C83220C708BA30093C162 /* libitkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83050C708BA30093C162 /* libitkzlib.a */; };
 		CE2C83230C708BA30093C162 /* libITKBasicFilters.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83060C708BA30093C162 /* libITKBasicFilters.a */; };
 		CE2C83240C708BA30093C162 /* libITKniftiio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83070C708BA30093C162 /* libITKniftiio.a */; };
 		CE2C83250C708BA30093C162 /* libitkvnl_algo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83080C708BA30093C162 /* libitkvnl_algo.a */; };
@@ -4056,7 +4046,6 @@
 		CE2C83480C708BA30093C162 /* libITKStatistics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F10C708BA30093C162 /* libITKStatistics.a */; };
 		CE2C83490C708BA30093C162 /* libitkjpeg16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F20C708BA30093C162 /* libitkjpeg16.a */; };
 		CE2C834A0C708BA30093C162 /* libitksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F30C708BA30093C162 /* libitksys.a */; };
-		CE2C834B0C708BA30093C162 /* libITKNrrdIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F40C708BA30093C162 /* libITKNrrdIO.a */; };
 		CE2C834C0C708BA30093C162 /* libITKDICOMParser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F50C708BA30093C162 /* libITKDICOMParser.a */; };
 		CE2C834D0C708BA30093C162 /* libitktestlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F60C708BA30093C162 /* libitktestlib.a */; };
 		CE2C834E0C708BA30093C162 /* libITKCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F70C708BA30093C162 /* libITKCommon.a */; };
@@ -4072,14 +4061,11 @@
 		CE2C83590C708BA30093C162 /* libitkgdcm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83020C708BA30093C162 /* libitkgdcm.a */; };
 		CE2C835A0C708BA30093C162 /* libITKEXPAT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83030C708BA30093C162 /* libITKEXPAT.a */; };
 		CE2C835B0C708BA30093C162 /* libitkjpeg8.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83040C708BA30093C162 /* libitkjpeg8.a */; };
-		CE2C835C0C708BA30093C162 /* libitkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83050C708BA30093C162 /* libitkzlib.a */; };
 		CE2C835D0C708BA30093C162 /* libITKBasicFilters.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83060C708BA30093C162 /* libITKBasicFilters.a */; };
 		CE2C835E0C708BA30093C162 /* libITKniftiio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83070C708BA30093C162 /* libITKniftiio.a */; };
 		CE2C835F0C708BA30093C162 /* libitkvnl_algo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83080C708BA30093C162 /* libitkvnl_algo.a */; };
 		CE2C83600C708BA30093C162 /* libitkvnl_inst.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83090C708BA30093C162 /* libitkvnl_inst.a */; };
 		CE2C83610C708BA30093C162 /* libitkvcl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C830A0C708BA30093C162 /* libitkvcl.a */; };
-		CE2C83630C708BD00093C162 /* libITKNrrdIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82F40C708BA30093C162 /* libITKNrrdIO.a */; };
-		CE2C83650C708BE70093C162 /* libitkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C83050C708BA30093C162 /* libitkzlib.a */; };
 		CE2FE58C0753A4A4005C4F80 /* VRVPRO.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE2FE58A0753A4A4005C4F80 /* VRVPRO.nib */; };
 		CE2FE58D0753A4A4005C4F80 /* VRVPRO.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE2FE58A0753A4A4005C4F80 /* VRVPRO.nib */; };
 		CE3422CD0946237A00CCEA2A /* libvtksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE3422CA0946237A00CCEA2A /* libvtksys.a */; };
@@ -6474,6 +6460,7 @@
 		CE6B2E2208DAFC6500872E84 /* FixedIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */; };
 		CE6C156D0C82D1DD00A9EEDC /* libitkv3p_netlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6C156C0C82D1DD00A9EEDC /* libitkv3p_netlib.a */; };
 		CE6C156E0C82D1DD00A9EEDC /* libitkv3p_netlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6C156C0C82D1DD00A9EEDC /* libitkv3p_netlib.a */; };
+		CE6C15B80C82DB5400A9EEDC /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
 		CE6C77ED09739B3100F951C2 /* Rotate3DCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */; };
 		CE6C77EE09739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */; };
 		CE6C77F109739B3100F951C2 /* Rotate3DCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */; };
@@ -6497,6 +6484,20 @@
 		CE74DEB108CCE0C1005D12A7 /* SagOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */; };
 		CE79DCFC0753A64D005C8051 /* NO-VRControllerVPRO.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79DCFB0753A64D005C8051 /* NO-VRControllerVPRO.m */; };
 		CE7A0C30071D26D100C5E16F /* PreferencePanesViewer.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE7A0C2D071D26D100C5E16F /* PreferencePanesViewer.nib */; };
+		CE7BBFCF0C82DC81000AD12F /* libitkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFCE0C82DC81000AD12F /* libitkzlib.a */; };
+		CE7BBFD00C82DC81000AD12F /* libitkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFCE0C82DC81000AD12F /* libitkzlib.a */; };
+		CE7BBFD10C82DC81000AD12F /* libitkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFCE0C82DC81000AD12F /* libitkzlib.a */; };
+		CE7BBFD50C82DCA5000AD12F /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
+		CE7BBFD60C82DCA5000AD12F /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiff.a */; };
+		CE7BBFD70C82DCA5000AD12F /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
+		CE7BBFD80C82DCA5000AD12F /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiff.a */; };
+		CE7BBFD90C82DCA5000AD12F /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
+		CE7BBFDA0C82DCA5000AD12F /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiff.a */; };
+		CE7BBFDB0C82DCA5000AD12F /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
+		CE7BBFDC0C82DCA5000AD12F /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFD40C82DCA5000AD12F /* libtiff.a */; };
+		CE7BBFDF0C82DCC1000AD12F /* libITKNrrdIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFDE0C82DCC1000AD12F /* libITKNrrdIO.a */; };
+		CE7BBFE00C82DCC1000AD12F /* libITKNrrdIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFDE0C82DCC1000AD12F /* libITKNrrdIO.a */; };
+		CE7BBFE10C82DCC1000AD12F /* libITKNrrdIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFDE0C82DCC1000AD12F /* libITKNrrdIO.a */; };
 		CE7E5D4506AC8DDC0058C3AA /* Anonymizer.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */; };
 		CE822F8A0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */; };
 		CE822F8B0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */; };
@@ -7574,13 +7575,10 @@
 		CECB055107539E3900576814 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
 		CECB055207539E3900576814 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
 		CECB055307539E3900576814 /* ScreenSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD95D170625BAEC00C77D11 /* ScreenSaver.framework */; };
-		CECB055407539E3900576814 /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E5692F8064FCF08001A9762 /* libtiff.a */; };
 		CECB056407539E3900576814 /* Message.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E4BB06AEC91F001FF9E5 /* Message.framework */; };
 		CECB056507539E3900576814 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */; };
 		CECB056707539E3900576814 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
-		CECB057F07539E3900576814 /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EC3590806FE212600188171 /* libtiff.dylib */; };
 		CECB058007539E3900576814 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E3E38650715FFDC0049E72E /* PreferencePanes.framework */; };
-		CECB058907539E3900576814 /* libtiff.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7EC3590806FE212600188171 /* libtiff.dylib */; };
 		CECBFEEC07539E3900576814 /* MyOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0813D6057C698900A72813 /* MyOutlineView.h */; };
 		CECBFEED07539E3900576814 /* VTKView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB3DB0B05868E34006494CB /* VTKView.h */; };
 		CECBFEEE07539E3900576814 /* NSFont_OpenGL.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3C6A8E057ADCA60001052D /* NSFont_OpenGL.h */; };
@@ -8073,7 +8071,6 @@
 				ABDF6E650BE0926600793094 /* Growl.framework in CopyFiles */,
 				CEFE606B0979B1ED00891EA9 /* DotMacKit.framework in CopyFiles */,
 				CE416BCE07969EEB009A8D42 /* OsiriX.framework in CopyFiles */,
-				7EC3593206FE21EF00188171 /* libtiff.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8088,7 +8085,6 @@
 				ABDF6E980BE0929100793094 /* Growl.framework in CopyFiles */,
 				CEFE606C0979B1F600891EA9 /* DotMacKit.framework in CopyFiles */,
 				7E76739D0792E2B700462780 /* OsiriX.framework in CopyFiles */,
-				CECB058907539E3900576814 /* libtiff.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8324,7 +8320,6 @@
 		7E55ADDC06C7FFCD0059D6EB /* SeriesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SeriesView.m; sourceTree = "<group>"; };
 		7E55AE1306C80E460059D6EB /* StudyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StudyView.h; sourceTree = "<group>"; };
 		7E55AE1406C80E460059D6EB /* StudyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StudyView.m; sourceTree = "<group>"; };
-		7E5692F8064FCF08001A9762 /* libtiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtiff.a; sourceTree = "<group>"; };
 		7E56938506500791001A9762 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/SmartAlbum.nib; sourceTree = "<group>"; };
 		7E569397065007D6001A9762 /* SmartWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartWindowController.h; sourceTree = "<group>"; };
 		7E569398065007D6001A9762 /* SmartWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmartWindowController.m; sourceTree = "<group>"; };
@@ -8373,7 +8368,6 @@
 		7EB72CB0076127D80025F400 /* DCMRequestPDU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMRequestPDU.m; path = Networking/DCMRequestPDU.m; sourceTree = "<group>"; };
 		7EBB31070887269B00BF6B39 /* DCMNetServiceDelegate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMNetServiceDelegate.h; sourceTree = "<group>"; };
 		7EBB31080887269B00BF6B39 /* DCMNetServiceDelegate.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMNetServiceDelegate.m; sourceTree = "<group>"; };
-		7EC3590806FE212600188171 /* libtiff.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtiff.dylib; path = Binaries/LibTiff/libtiff.dylib; sourceTree = SOURCE_ROOT; };
 		7ECB4B3F072EF9F800C2CFC4 /* DCMCalendarScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCalendarScript.h; sourceTree = "<group>"; };
 		7ECB4B40072EF9F800C2CFC4 /* DCMCalendarScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCalendarScript.m; sourceTree = "<group>"; };
 		7ECBB8210683A68D00FF3FF4 /* DCMPixelDataAttribute.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMPixelDataAttribute.h; sourceTree = "<group>"; };
@@ -10264,7 +10258,6 @@
 		CE2C82F10C708BA30093C162 /* libITKStatistics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKStatistics.a; path = ITK180/bin/libITKStatistics.a; sourceTree = "<group>"; };
 		CE2C82F20C708BA30093C162 /* libitkjpeg16.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkjpeg16.a; path = ITK180/bin/libitkjpeg16.a; sourceTree = "<group>"; };
 		CE2C82F30C708BA30093C162 /* libitksys.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitksys.a; path = ITK180/bin/libitksys.a; sourceTree = "<group>"; };
-		CE2C82F40C708BA30093C162 /* libITKNrrdIO.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKNrrdIO.a; path = ITK180/bin/libITKNrrdIO.a; sourceTree = "<group>"; };
 		CE2C82F50C708BA30093C162 /* libITKDICOMParser.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKDICOMParser.a; path = ITK180/bin/libITKDICOMParser.a; sourceTree = "<group>"; };
 		CE2C82F60C708BA30093C162 /* libitktestlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitktestlib.a; path = ITK180/bin/libitktestlib.a; sourceTree = "<group>"; };
 		CE2C82F70C708BA30093C162 /* libITKCommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKCommon.a; path = ITK180/bin/libITKCommon.a; sourceTree = "<group>"; };
@@ -10280,7 +10273,6 @@
 		CE2C83020C708BA30093C162 /* libitkgdcm.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkgdcm.a; path = ITK180/bin/libitkgdcm.a; sourceTree = "<group>"; };
 		CE2C83030C708BA30093C162 /* libITKEXPAT.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKEXPAT.a; path = ITK180/bin/libITKEXPAT.a; sourceTree = "<group>"; };
 		CE2C83040C708BA30093C162 /* libitkjpeg8.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkjpeg8.a; path = ITK180/bin/libitkjpeg8.a; sourceTree = "<group>"; };
-		CE2C83050C708BA30093C162 /* libitkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkzlib.a; path = ITK180/bin/libitkzlib.a; sourceTree = "<group>"; };
 		CE2C83060C708BA30093C162 /* libITKBasicFilters.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKBasicFilters.a; path = ITK180/bin/libITKBasicFilters.a; sourceTree = "<group>"; };
 		CE2C83070C708BA30093C162 /* libITKniftiio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKniftiio.a; path = ITK180/bin/libITKniftiio.a; sourceTree = "<group>"; };
 		CE2C83080C708BA30093C162 /* libitkvnl_algo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkvnl_algo.a; path = ITK180/bin/libitkvnl_algo.a; sourceTree = "<group>"; };
@@ -11506,6 +11498,10 @@
 		CE79DCFB0753A64D005C8051 /* NO-VRControllerVPRO.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NO-VRControllerVPRO.m"; sourceTree = SOURCE_ROOT; };
 		CE7A0C2E071D26D100C5E16F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/PreferencePanesViewer.nib; sourceTree = "<group>"; };
 		CE7A0F1A0AED55E700540017 /* Quicktime.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = Quicktime.mm; sourceTree = "<group>"; };
+		CE7BBFCE0C82DC81000AD12F /* libitkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkzlib.a; path = ITK180/bin/libitkzlib.a; sourceTree = "<group>"; };
+		CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libtiff.dylib; sourceTree = "<group>"; };
+		CE7BBFD40C82DCA5000AD12F /* libtiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtiff.a; sourceTree = "<group>"; };
+		CE7BBFDE0C82DCC1000AD12F /* libITKNrrdIO.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKNrrdIO.a; path = ITK180/bin/libITKNrrdIO.a; sourceTree = "<group>"; };
 		CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Anonymizer.icns; sourceTree = "<group>"; };
 		CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewerControllerWindow.h; sourceTree = "<group>"; };
 		CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewerControllerWindow.m; sourceTree = "<group>"; };
@@ -11707,9 +11703,7 @@
 				CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */,
 				ABE4692F0A7627FD00327466 /* libvtkjpeg.a in Frameworks */,
 				CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
-				7E5692FA064FCF08001A9762 /* libtiff.a in Frameworks */,
 				CEB7179906CE7CBD00084CA5 /* libjasper2.a in Frameworks */,
-				7EC3590A06FE212600188171 /* libtiff.dylib in Frameworks */,
 				CE1113A108EDD5FD005B15E1 /* libvtkGraphics.a in Frameworks */,
 				CE1113A208EDD5FD005B15E1 /* libvtkHybrid.a in Frameworks */,
 				CE1113A308EDD5FD005B15E1 /* libvtkVolumeRendering.a in Frameworks */,
@@ -11738,7 +11732,6 @@
 				CE2C830E0C708BA30093C162 /* libITKStatistics.a in Frameworks */,
 				CE2C830F0C708BA30093C162 /* libitkjpeg16.a in Frameworks */,
 				CE2C83100C708BA30093C162 /* libitksys.a in Frameworks */,
-				CE2C83110C708BA30093C162 /* libITKNrrdIO.a in Frameworks */,
 				CE2C83120C708BA30093C162 /* libITKDICOMParser.a in Frameworks */,
 				CE2C83130C708BA30093C162 /* libitktestlib.a in Frameworks */,
 				CE2C83140C708BA30093C162 /* libITKCommon.a in Frameworks */,
@@ -11754,7 +11747,6 @@
 				CE2C831F0C708BA30093C162 /* libitkgdcm.a in Frameworks */,
 				CE2C83200C708BA30093C162 /* libITKEXPAT.a in Frameworks */,
 				CE2C83210C708BA30093C162 /* libitkjpeg8.a in Frameworks */,
-				CE2C83220C708BA30093C162 /* libitkzlib.a in Frameworks */,
 				CE2C83230C708BA30093C162 /* libITKBasicFilters.a in Frameworks */,
 				CE2C83240C708BA30093C162 /* libITKniftiio.a in Frameworks */,
 				CE2C83250C708BA30093C162 /* libitkvnl_algo.a in Frameworks */,
@@ -11762,6 +11754,10 @@
 				CE2C83270C708BA30093C162 /* libitkvcl.a in Frameworks */,
 				CE586CC40C74B75D00DB7D5A /* libdcmprintscu.dylib in Frameworks */,
 				CE6C156D0C82D1DD00A9EEDC /* libitkv3p_netlib.a in Frameworks */,
+				CE7BBFCF0C82DC81000AD12F /* libitkzlib.a in Frameworks */,
+				CE7BBFD50C82DCA5000AD12F /* libtiff.dylib in Frameworks */,
+				CE7BBFD60C82DCA5000AD12F /* libtiff.a in Frameworks */,
+				CE7BBFDF0C82DCC1000AD12F /* libITKNrrdIO.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11771,12 +11767,12 @@
 			files = (
 				AB724FEB0ADE6ECB00A212A0 /* OsiriX.framework in Frameworks */,
 				AB724FEC0ADE6ECB00A212A0 /* Foundation.framework in Frameworks */,
-				AB724FED0ADE6ECB00A212A0 /* libtiff.dylib in Frameworks */,
-				AB724FEE0ADE6ECB00A212A0 /* libtiff.a in Frameworks */,
 				AB724FEF0ADE6ECB00A212A0 /* Cocoa.framework in Frameworks */,
 				AB724FF00ADE6ECB00A212A0 /* QuickTime.framework in Frameworks */,
 				AB724FF10ADE6ECB00A212A0 /* IOKit.framework in Frameworks */,
 				AB724FF20ADE6ECB00A212A0 /* libz.dylib in Frameworks */,
+				CE7BBFDB0C82DCA5000AD12F /* libtiff.dylib in Frameworks */,
+				CE7BBFDC0C82DCA5000AD12F /* libtiff.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11786,15 +11782,15 @@
 			files = (
 				AB32FAE30A21C0FB007D44C3 /* OsiriX.framework in Frameworks */,
 				AB3200080A21C338007D44C3 /* Foundation.framework in Frameworks */,
-				AB6FEFDA0A47CD9B00C501F0 /* libtiff.dylib in Frameworks */,
-				AB6FEFDB0A47CD9C00C501F0 /* libtiff.a in Frameworks */,
 				AB6FF09E0A47CE3A00C501F0 /* Cocoa.framework in Frameworks */,
 				AB6FF5890A47CF8700C501F0 /* QuickTime.framework in Frameworks */,
 				AB6FF5BC0A47D24200C501F0 /* IOKit.framework in Frameworks */,
-				CE0F425A0A56A9A800D54F38 /* libz.dylib in Frameworks */,
 				ABE500370AECA4F2009BCB5B /* QTKit.framework in Frameworks */,
-				CE2C83630C708BD00093C162 /* libITKNrrdIO.a in Frameworks */,
-				CE2C83650C708BE70093C162 /* libitkzlib.a in Frameworks */,
+				CE6C15B80C82DB5400A9EEDC /* libz.dylib in Frameworks */,
+				CE7BBFD10C82DC81000AD12F /* libitkzlib.a in Frameworks */,
+				CE7BBFD90C82DCA5000AD12F /* libtiff.dylib in Frameworks */,
+				CE7BBFDA0C82DCA5000AD12F /* libtiff.a in Frameworks */,
+				CE7BBFE10C82DCC1000AD12F /* libITKNrrdIO.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11820,11 +11816,9 @@
 				CECB055107539E3900576814 /* QuickTime.framework in Frameworks */,
 				CECB055207539E3900576814 /* Accelerate.framework in Frameworks */,
 				CECB055307539E3900576814 /* ScreenSaver.framework in Frameworks */,
-				CECB055407539E3900576814 /* libtiff.a in Frameworks */,
 				CECB056407539E3900576814 /* Message.framework in Frameworks */,
 				CECB056507539E3900576814 /* Carbon.framework in Frameworks */,
 				CECB056707539E3900576814 /* libjasper2.a in Frameworks */,
-				CECB057F07539E3900576814 /* libtiff.dylib in Frameworks */,
 				CECB058007539E3900576814 /* PreferencePanes.framework in Frameworks */,
 				7E54303F07A05E7100500ABB /* DiscRecording.framework in Frameworks */,
 				7E54304007A05E7100500ABB /* DiscRecordingUI.framework in Frameworks */,
@@ -11866,7 +11860,6 @@
 				CE2C83480C708BA30093C162 /* libITKStatistics.a in Frameworks */,
 				CE2C83490C708BA30093C162 /* libitkjpeg16.a in Frameworks */,
 				CE2C834A0C708BA30093C162 /* libitksys.a in Frameworks */,
-				CE2C834B0C708BA30093C162 /* libITKNrrdIO.a in Frameworks */,
 				CE2C834C0C708BA30093C162 /* libITKDICOMParser.a in Frameworks */,
 				CE2C834D0C708BA30093C162 /* libitktestlib.a in Frameworks */,
 				CE2C834E0C708BA30093C162 /* libITKCommon.a in Frameworks */,
@@ -11882,7 +11875,6 @@
 				CE2C83590C708BA30093C162 /* libitkgdcm.a in Frameworks */,
 				CE2C835A0C708BA30093C162 /* libITKEXPAT.a in Frameworks */,
 				CE2C835B0C708BA30093C162 /* libitkjpeg8.a in Frameworks */,
-				CE2C835C0C708BA30093C162 /* libitkzlib.a in Frameworks */,
 				CE2C835D0C708BA30093C162 /* libITKBasicFilters.a in Frameworks */,
 				CE2C835E0C708BA30093C162 /* libITKniftiio.a in Frameworks */,
 				CE2C835F0C708BA30093C162 /* libitkvnl_algo.a in Frameworks */,
@@ -11890,6 +11882,10 @@
 				CE2C83610C708BA30093C162 /* libitkvcl.a in Frameworks */,
 				CE586CC50C74B75D00DB7D5A /* libdcmprintscu.dylib in Frameworks */,
 				CE6C156E0C82D1DD00A9EEDC /* libitkv3p_netlib.a in Frameworks */,
+				CE7BBFD00C82DC81000AD12F /* libitkzlib.a in Frameworks */,
+				CE7BBFD70C82DCA5000AD12F /* libtiff.dylib in Frameworks */,
+				CE7BBFD80C82DCA5000AD12F /* libtiff.a in Frameworks */,
+				CE7BBFE00C82DCC1000AD12F /* libITKNrrdIO.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13299,8 +13295,8 @@
 		ABDE6E0806398E3400F0C5DD /* LibTiff */ = {
 			isa = PBXGroup;
 			children = (
-				7EC3590806FE212600188171 /* libtiff.dylib */,
-				7E5692F8064FCF08001A9762 /* libtiff.a */,
+				CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */,
+				CE7BBFD40C82DCA5000AD12F /* libtiff.a */,
 				ABDE6E0B06398E3400F0C5DD /* port.h */,
 				ABDE6E0C06398E3400F0C5DD /* t4.h */,
 				ABDE6E0D06398E3400F0C5DD /* tif_dir.h */,
@@ -14881,7 +14877,7 @@
 				CE2C82F10C708BA30093C162 /* libITKStatistics.a */,
 				CE2C82F20C708BA30093C162 /* libitkjpeg16.a */,
 				CE2C82F30C708BA30093C162 /* libitksys.a */,
-				CE2C82F40C708BA30093C162 /* libITKNrrdIO.a */,
+				CE7BBFDE0C82DCC1000AD12F /* libITKNrrdIO.a */,
 				CE2C82F50C708BA30093C162 /* libITKDICOMParser.a */,
 				CE2C82F60C708BA30093C162 /* libitktestlib.a */,
 				CE2C82F70C708BA30093C162 /* libITKCommon.a */,
@@ -14895,9 +14891,9 @@
 				CE2C83000C708BA30093C162 /* libITKAlgorithms.a */,
 				CE2C83010C708BA30093C162 /* libitkopenjpeg.a */,
 				CE2C83020C708BA30093C162 /* libitkgdcm.a */,
+				CE7BBFCE0C82DC81000AD12F /* libitkzlib.a */,
 				CE2C83030C708BA30093C162 /* libITKEXPAT.a */,
 				CE2C83040C708BA30093C162 /* libitkjpeg8.a */,
-				CE2C83050C708BA30093C162 /* libitkzlib.a */,
 				CE2C83060C708BA30093C162 /* libITKBasicFilters.a */,
 				CE2C83070C708BA30093C162 /* libITKniftiio.a */,
 				CE2C83080C708BA30093C162 /* libitkvnl_algo.a */,
@@ -25017,8 +25013,6 @@
 					Binaries,
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = NO;
@@ -25044,18 +25038,8 @@
 					Binaries/VTKLibs,
 					Binaries/Jasper,
 					ITK180/bin,
-					"$(SRCROOT)/Binaries/Jasper",
-					"$(SRCROOT)/Binaries/LibTiff",
-					"$(SRCROOT)/Binaries/VTKLibs",
-					"$(SRCROOT)/ITK180/bin",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					AYDicomPrint,
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -25120,6 +25104,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
@@ -25217,9 +25202,8 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					Binaries/LibTiff,
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -25253,13 +25237,9 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					Binaries/LibTiff,
+					ITK180/bin,
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/ITK180/bin\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/ITK180/bin\"";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -25306,8 +25286,6 @@
 					Binaries,
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = NO;
@@ -25333,18 +25311,8 @@
 					Binaries/VTKLibs,
 					Binaries/Jasper,
 					ITK180/bin,
-					"$(SRCROOT)/Binaries/Jasper",
-					"$(SRCROOT)/Binaries/LibTiff",
-					"$(SRCROOT)/Binaries/VTKLibs",
-					"$(SRCROOT)/ITK180/bin",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					AYDicomPrint,
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -25409,6 +25377,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
@@ -25570,8 +25539,8 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/Binaries/LibTiff",
-					"$(SRCROOT)/ITK180/bin",
+					Binaries/LibTiff,
+					ITK180/bin,
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -25606,7 +25575,7 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/Binaries/LibTiff",
+					Binaries/LibTiff,
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -25640,8 +25609,8 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/Binaries/LibTiff",
-					"$(SRCROOT)/AYDicomPrint",
+					Binaries/LibTiff,
+					AYDicomPrint,
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -25691,8 +25660,6 @@
 					Binaries,
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
@@ -25720,7 +25687,6 @@
 					Binaries/Jasper,
 					ITK180/bin,
 					AYDicomPrint,
-					"\"$(SRCROOT)/ITK180/bin\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
@@ -25786,6 +25752,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
@@ -25949,13 +25916,9 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					Binaries/LibTiff,
+					ITK180/bin,
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/ITK180/bin\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/ITK180/bin\"";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -25989,9 +25952,8 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					Binaries/LibTiff,
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -26025,13 +25987,9 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					Binaries/LibTiff,
+					AYDicomPrint,
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/AYDicomPrint\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -26084,8 +26042,6 @@
 					Binaries,
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
@@ -26110,9 +26066,8 @@
 					Binaries/LibTiff,
 					Binaries/VTKLibs,
 					Binaries/Jasper,
-					AYDicomPrint,
 					ITK180/bin,
-					"\"$(SRCROOT)/ITK180/bin\"",
+					AYDicomPrint,
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
@@ -26178,6 +26133,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"\"$(SRCROOT)/Binaries/LibTiff\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
@@ -26322,13 +26278,9 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					Binaries/LibTiff,
+					ITK180/bin,
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/ITK180/bin\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/ITK180/bin\"";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -26362,9 +26314,8 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					Binaries/LibTiff,
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -26398,13 +26349,9 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					Binaries/LibTiff,
+					AYDicomPrint,
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/AYDicomPrint\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -26575,13 +26522,9 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					Binaries/LibTiff,
+					AYDicomPrint,
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/AYDicomPrint\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
