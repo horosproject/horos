@@ -7228,6 +7228,8 @@
 		CEB36D55098A694C0089D2D3 /* ROIVolume.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9E80E3F0986897C005121AA /* ROIVolume.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CEB36D56098A694D0089D2D3 /* ROIVolume.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E80E3E0986897C005121AA /* ROIVolume.h */; };
 		CEB7179906CE7CBD00084CA5 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
+		CEBBE1820C82F33900247888 /* libtiff.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
+		CEBBE1850C82F33C00247888 /* libtiff.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */; };
 		CEBD8AC70875B233000E42D6 /* OSICDPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */; };
 		CEBD8AC90875B233000E42D6 /* OSIGeneralPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A7C0875B233000E42D6 /* OSIGeneralPreferencePane.prefPane */; };
 		CEBD8ACA0875B233000E42D6 /* OSIHangingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A8B0875B233000E42D6 /* OSIHangingPreferencePane.prefPane */; };
@@ -8066,6 +8068,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				CEBBE1820C82F33900247888 /* libtiff.dylib in CopyFiles */,
 				CE9A04440C7DBC060007809F /* libxerces-c.27.dylib in CopyFiles */,
 				CE9A04450C7DBC060007809F /* libdcmprintscu.dylib in CopyFiles */,
 				ABDF6E650BE0926600793094 /* Growl.framework in CopyFiles */,
@@ -8080,6 +8083,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				CEBBE1850C82F33C00247888 /* libtiff.dylib in CopyFiles */,
 				AB7D548E0AF6429400012A2F /* libxerces-c.27.dylib in CopyFiles */,
 				CE7399030C7643DB00BCA45A /* libdcmprintscu.dylib in CopyFiles */,
 				ABDF6E980BE0929100793094 /* Growl.framework in CopyFiles */,
