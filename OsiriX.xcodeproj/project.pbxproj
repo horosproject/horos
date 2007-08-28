@@ -389,10 +389,6 @@
 		A932BBBD094DB1110085B58A /* EndoscopyMPRView.m in Sources */ = {isa = PBXBuildFile; fileRef = A932BBBB094DB1110085B58A /* EndoscopyMPRView.m */; };
 		A932BBBE094DB1110085B58A /* EndoscopyMPRView.h in Headers */ = {isa = PBXBuildFile; fileRef = A932BBBA094DB1110085B58A /* EndoscopyMPRView.h */; };
 		A932BBBF094DB1110085B58A /* EndoscopyMPRView.m in Sources */ = {isa = PBXBuildFile; fileRef = A932BBBB094DB1110085B58A /* EndoscopyMPRView.m */; };
-		A93CFF920A516A3500078038 /* LLMPR.nib in Resources */ = {isa = PBXBuildFile; fileRef = A93CFF860A516A3400078038 /* LLMPR.nib */; };
-		A93CFF930A516A3500078038 /* LLScoutView.nib in Resources */ = {isa = PBXBuildFile; fileRef = A93CFF880A516A3400078038 /* LLScoutView.nib */; };
-		A93CFF940A516A3500078038 /* LLMPR.nib in Resources */ = {isa = PBXBuildFile; fileRef = A93CFF860A516A3400078038 /* LLMPR.nib */; };
-		A93CFF950A516A3500078038 /* LLScoutView.nib in Resources */ = {isa = PBXBuildFile; fileRef = A93CFF880A516A3400078038 /* LLScoutView.nib */; };
 		A93CFFA60A516A5100078038 /* LLMPRController.h in Headers */ = {isa = PBXBuildFile; fileRef = A93CFF980A516A5000078038 /* LLMPRController.h */; };
 		A93CFFA70A516A5100078038 /* LLMPRController.m in Sources */ = {isa = PBXBuildFile; fileRef = A93CFF990A516A5000078038 /* LLMPRController.m */; };
 		A93CFFA80A516A5100078038 /* LLMPRView.h in Headers */ = {isa = PBXBuildFile; fileRef = A93CFF9A0A516A5000078038 /* LLMPRView.h */; };
@@ -8458,8 +8454,6 @@
 		A932BAEA094D87C90085B58A /* EndoscopyVRController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndoscopyVRController.m; sourceTree = "<group>"; };
 		A932BBBA094DB1110085B58A /* EndoscopyMPRView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopyMPRView.h; sourceTree = "<group>"; };
 		A932BBBB094DB1110085B58A /* EndoscopyMPRView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndoscopyMPRView.m; sourceTree = "<group>"; };
-		A93CFF870A516A3400078038 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/LLMPR.nib; sourceTree = "<group>"; };
-		A93CFF890A516A3400078038 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/LLScoutView.nib; sourceTree = "<group>"; };
 		A93CFF980A516A5000078038 /* LLMPRController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LLMPRController.h; sourceTree = "<group>"; };
 		A93CFF990A516A5000078038 /* LLMPRController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LLMPRController.m; sourceTree = "<group>"; };
 		A93CFF9A0A516A5000078038 /* LLMPRView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LLMPRView.h; sourceTree = "<group>"; };
@@ -12615,8 +12609,6 @@
 		A93CFF6E0A5169FE00078038 /* LL */ = {
 			isa = PBXGroup;
 			children = (
-				A93CFF860A516A3400078038 /* LLMPR.nib */,
-				A93CFF880A516A3400078038 /* LLScoutView.nib */,
 				A9944C0D0A52A54C004C5E0A /* LLDCMView.h */,
 				A9944C0E0A52A54D004C5E0A /* LLDCMView.m */,
 				A93CFF980A516A5000078038 /* LLMPRController.h */,
@@ -21077,8 +21069,6 @@
 				BF47CBD60A2E31B100700AA9 /* viewHTML.tif in Resources */,
 				BF47CBD70A2E31B100700AA9 /* viewSR.tif in Resources */,
 				BF47CBD80A2E31B100700AA9 /* viewXML.tif in Resources */,
-				A93CFF920A516A3500078038 /* LLMPR.nib in Resources */,
-				A93CFF930A516A3500078038 /* LLScoutView.nib in Resources */,
 				BF8449030A65F407000E9830 /* smallKey.tif in Resources */,
 				AB7CB7B20A6E3886008DFCC9 /* error.png in Resources */,
 				AB7CB7B60A6E3922008DFCC9 /* smile.png in Resources */,
@@ -21491,8 +21481,6 @@
 				BF47CBD00A2E31B100700AA9 /* viewHTML.tif in Resources */,
 				BF47CBD10A2E31B100700AA9 /* viewSR.tif in Resources */,
 				BF47CBD20A2E31B100700AA9 /* viewXML.tif in Resources */,
-				A93CFF940A516A3500078038 /* LLMPR.nib in Resources */,
-				A93CFF950A516A3500078038 /* LLScoutView.nib in Resources */,
 				BF8449050A65F407000E9830 /* smallKey.tif in Resources */,
 				AB7CB7B00A6E3886008DFCC9 /* error.png in Resources */,
 				AB7CB7B40A6E3922008DFCC9 /* smile.png in Resources */,
@@ -24583,22 +24571,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		A93CFF860A516A3400078038 /* LLMPR.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A93CFF870A516A3400078038 /* English */,
-			);
-			name = LLMPR.nib;
-			sourceTree = "<group>";
-		};
-		A93CFF880A516A3400078038 /* LLScoutView.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A93CFF890A516A3400078038 /* English */,
-			);
-			name = LLScoutView.nib;
-			sourceTree = "<group>";
-		};
 		CE286C100964196C001A4573 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
