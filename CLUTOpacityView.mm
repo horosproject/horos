@@ -610,7 +610,7 @@
 
 - (void)updateView;
 {
-	if( updateView) return;	// avoir re-entry
+	if( updateView) return;	// avoid re-entry
 	updateView = YES;
 	
 	[self setNeedsDisplay:YES];
@@ -1974,7 +1974,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 - (void)setCLUTtoVRView:(BOOL)lowRes;
 {
-	if( setCLUTtoVRView) return;	// avoir re-entry
+	if( setCLUTtoVRView) return;	// avoid re-entry
 	setCLUTtoVRView = YES;
 	if([curves count]>0)
 	{
