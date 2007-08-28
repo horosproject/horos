@@ -320,19 +320,22 @@ NSString * documentsDirectory();
 		nil];
 	[array addObject:dictionary];
 
-	dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-		[NSString stringWithString: @"MPEG4 Movie"], @"name",
-		[NSNumber numberWithLong: kQTFileTypeMP4], @"subtype",
-		[NSNumber numberWithLong: kAppleManufacturer], @"manufacturer",
-		nil];
-	[array addObject:dictionary];
+	if( selector != @selector(imageForFrameVR: maxFrame:))		// QTVR is limited to Quicktime file format !
+	{
+		dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+			[NSString stringWithString: @"MPEG4 Movie"], @"name",
+			[NSNumber numberWithLong: kQTFileTypeMP4], @"subtype",
+			[NSNumber numberWithLong: kAppleManufacturer], @"manufacturer",
+			nil];
+		[array addObject:dictionary];
 
-	dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-		[NSString stringWithString: @"AVI Movie"], @"name",
-		[NSNumber numberWithLong: kQTFileTypeAVI], @"subtype",
-		[NSNumber numberWithLong: kAppleManufacturer], @"manufacturer",
-		nil];
-	[array addObject:dictionary];
+		dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+			[NSString stringWithString: @"AVI Movie"], @"name",
+			[NSNumber numberWithLong: kQTFileTypeAVI], @"subtype",
+			[NSNumber numberWithLong: kAppleManufacturer], @"manufacturer",
+			nil];
+		[array addObject:dictionary];
+	}
 	
 	return array;
 }

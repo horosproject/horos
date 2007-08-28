@@ -1,21 +1,28 @@
-//
-//  PluginManagerController.m
-//  OsiriX
-//
-//  Created by joris on 26/02/07.
-//  Copyright 2007 OsiriX Team. All rights reserved.
-//
+/*=========================================================================
+  Program:   OsiriX
+
+  Copyright (c) OsiriX Team
+  All rights reserved.
+  Distributed under GNU - GPL
+  
+  See http://www.osirix-viewer.com/copyright.html for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.
+=========================================================================*/
 
 #import "PluginManagerController.h"
 #import <Message/NSMailDelivery.h>
 
 // this is the address of the plist containing the list of the available plugins.
 // the alternative link will be used if the first one doesn't reply...
-#define PLUGIN_LIST_URL @"http://129.195.133.51/~admin/osirix_plugins/plugins.plist"
-#define PLUGIN_LIST_ALT_URL @"http://129.195.133.51/~admin/osirix_plugins/plugins1.plist"
 
-#define PLUGIN_SUBMISSION_URL @"http://129.195.133.51/~admin/osirix_plugins/submit_plugin/index.html"
-#define PLUGIN_SUBMISSION_NO_MAIL_APP_URL @"http://129.195.133.51/~admin/osirix_plugins/submit_plugin/index_no_mail_app.html"
+#define PLUGIN_LIST_URL @"http://www.osirix-viewer.com/plugins.plist"
+#define PLUGIN_LIST_ALT_URL @"http://www.osirixviewer.com/plugins.plist"
+
+#define PLUGIN_SUBMISSION_URL @"http://www.osirix-viewer.com/submit_plugin/index.html"
+#define PLUGIN_SUBMISSION_NO_MAIL_APP_URL @"http://www.osirix-viewer.com/submit_plugin/index_no_mail_app.html"
 
 @implementation PluginManagerController
 
