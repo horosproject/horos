@@ -36,12 +36,22 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 @implementation OSICustomImageAnnotations
 
-- (void) lockView:(BOOL) v
+- (void) lockView:(BOOL)locked
 {
-	[gray setHidden: !v];
-	[lock setHidden: !v];
+	[gray setHidden: !locked];
+	[lock setHidden: !locked];
 	
-	[[self mainView] sortSubviewsUsingFunction:(NSComparisonResult (*)(id, id, void *))compareViewTags context: [NSNumber numberWithBool: !v]];
+	[modalitiesPopUpButton setEnabled:!locked];
+	[addAnnotationButton setEnabled:!locked];
+	[removeAnnotationButton setEnabled:!locked];
+	[sameAsDefaultButton setEnabled:!locked];
+	[orientationWidgetButton setEnabled:!locked];
+	
+	[layoutView setEnabled:!locked];
+	if(locked) [layoutView setDisabledText:@""];
+	else [layoutView setDefaultDisabledText];
+	
+	[[self mainView] sortSubviewsUsingFunction:(NSComparisonResult (*)(id, id, void *))compareViewTags context: [NSNumber numberWithBool: !locked]];
 }
 
 - (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
@@ -129,6 +139,15 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	[layoutController setLayoutView:layoutView];
 	[layoutController setPrefPane:self];
 	[layoutController awakeFromNib];
+	
+	if( editable)
+	{
+		[self lockView: NO];
+	}
+	else
+	{
+		[self lockView: YES];
+	}
 }
 
 - (NSPreferencePaneUnselectReply)shouldUnselect;

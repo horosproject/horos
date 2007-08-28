@@ -53,6 +53,7 @@
 		}
 		placeHolderArray = [[NSArray arrayWithArray:placeHolderMutableArray] retain];
 		isEnabled = YES;
+		[self setDefaultDisabledText];
     }
     return self;
 }
@@ -139,7 +140,9 @@
 	}
 	else
 	{
-		contentText = [[[NSAttributedString alloc] initWithString:@"Same as Default Settings..." attributes:attrsDictionary] autorelease];
+		//contentText = [[[NSAttributedString alloc] initWithString:@"Same as Default Settings..." attributes:attrsDictionary] autorelease];
+		contentText = [[[NSAttributedString alloc] initWithString:disabledText attributes:attrsDictionary] autorelease];
+
 		textWidth = rect.size.width / 2.0;
 		textHeight = [contentText size].height*3.0;
 	}
@@ -166,6 +169,18 @@
 	int i;
 	for (i=0; i<8; i++)
 		[[placeHolderArray objectAtIndex:i] setEnabled:enabled];
+}
+
+- (void)setDisabledText:(NSString*)text;
+{
+	NSLog(@"setDisabledText: %@", text);
+	disabledText = text;
+}
+
+- (void)setDefaultDisabledText;
+{
+	NSLog(@"setDefaultDisabledText");
+	disabledText = @"Same as Default Settings...";
 }
 
 @end

@@ -11,6 +11,7 @@
 @interface CIALayoutView : NSView {
 	NSArray *placeHolderArray;
 	BOOL isEnabled;
+	NSString *disabledText;
 }
 
 - (void)updatePlaceHolderOrigins;
@@ -18,5 +19,7 @@
 - (NSArray*)placeHolderArray;
 - (BOOL)isEnabled;
 - (void)setEnabled:(BOOL)enabled;
+- (void)setDisabledText:(NSString*)text;
+- (void)setDefaultDisabledText;
 
 @end
