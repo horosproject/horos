@@ -2071,6 +2071,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	NSSize imageSize = [cursorImage size];
 	float arrowWidth = imageSize.width;
 	imageSize.width += labelBounds.size.width;
+	[cursorImage setScalesWhenResized:NO];
 	[cursorImage setSize:imageSize];
 	NSPoint labelPosition = NSMakePoint(arrowWidth-6, .0);
 	
