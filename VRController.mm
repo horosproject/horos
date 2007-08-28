@@ -3476,7 +3476,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 	{
 		NSString *shadingName = [preset objectForKey:@"shading"];
 		NSArray *shadings = [[NSUserDefaults standardUserDefaults] arrayForKey:@"shadingsPresets"];
-		NSDictionary *selectedShading;
+		NSDictionary *selectedShading = 0L;
 		for (i=0; i<[shadings count]; i++)
 		{
 			if([[[shadings objectAtIndex:i] objectForKey:@"name"] isEqualToString:shadingName])
@@ -3486,22 +3486,26 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		}
 		
 		float ambient, diffuse, specular, specularpower;
-		ambient = [[selectedShading valueForKey:@"ambient"] floatValue];
-		diffuse = [[selectedShading valueForKey:@"diffuse"] floatValue];
-		specular = [[selectedShading valueForKey:@"specular"] floatValue];
-		specularpower = [[selectedShading valueForKey:@"specularPower"] floatValue];
-
-		float sambient, sdiffuse, sspecular, sspecularpower;	
-		[preview getShadingValues: &sambient :&sdiffuse :&sspecular :&sspecularpower];
 		
-		if( sambient != ambient || sdiffuse != diffuse || sspecular != specular || sspecularpower != specularpower)
+		if( selectedShading)
 		{
-			[preview setShadingValues: ambient :diffuse :specular :specularpower];
-			[preview setNeedsDisplay: YES];
+			ambient = [[selectedShading valueForKey:@"ambient"] floatValue];
+			diffuse = [[selectedShading valueForKey:@"diffuse"] floatValue];
+			specular = [[selectedShading valueForKey:@"specular"] floatValue];
+			specularpower = [[selectedShading valueForKey:@"specularPower"] floatValue];
+			
+			float sambient, sdiffuse, sspecular, sspecularpower;	
+			[preview getShadingValues: &sambient :&sdiffuse :&sspecular :&sspecularpower];
+			
+			if( sambient != ambient || sdiffuse != diffuse || sspecular != specular || sspecularpower != specularpower)
+			{
+				[preview setShadingValues: ambient :diffuse :specular :specularpower];
+				[preview setNeedsDisplay: YES];
+			}
+			
+			if(![preview shading])
+				[preview activateShading:YES];
 		}
-		
-		if(![preview shading])
-			[preview activateShading:YES];
 	}
 	else
 	{
