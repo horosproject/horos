@@ -2282,15 +2282,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
-	BOOL fullscreen = NO;
-	
 	if( !drawing) return;
 	if( [[self window] isVisible] == NO) return;
 	if( [self is2DViewer] == YES)
 	{
 		if( [[self windowController] windowWillClose]) return;
-		
-		fullscreen = [[self windowController] FullScreenON];
 	}
 	
 	if( curDCM == 0L) return;
@@ -2302,7 +2298,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	if( dcmPixList == 0L) return;
 	
-	if( [[self window] isVisible] && ([[self window] isKeyWindow] || fullscreen))
+	if( [[self window] isVisible] && [[self window] isKeyWindow])
 	{
 		BOOL	needUpdate = NO;
 		

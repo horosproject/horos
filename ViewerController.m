@@ -2335,17 +2335,17 @@ static volatile int numberOfThreadsForRelisce = 0;
             
             contentView = [[self window] contentView];
             [FullScreenWindow setContentView: contentView];
-           
 			
-            [FullScreenWindow makeKeyAndOrderFront:self ];
-            [FullScreenWindow makeFirstResponder:imageView];
-            
             [FullScreenWindow setDelegate:self];
             [FullScreenWindow setWindowController: self];
             [splitView adjustSubviews];
 			
 			frame.size.width = previous;
 			[[[splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
+			
+			[FullScreenWindow makeKeyAndOrderFront: self];
+			[FullScreenWindow makeFirstResponder: imageView];
+			[FullScreenWindow setAcceptsMouseMovedEvents: YES];
 			
             FullScreenOn = YES;
         }
