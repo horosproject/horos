@@ -34,6 +34,11 @@
 	return self;
 }
 
+ - (BOOL) FullScreenON
+ {
+	return NO;
+ }
+
 - (void)dealloc{
 	[super dealloc];
 }
