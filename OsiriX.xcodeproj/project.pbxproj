@@ -6326,104 +6326,104 @@
 		CE3F888808ED63E300F4E202 /* vtkXYPlotWidget.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3F7B0B08ED63DF00F4E202 /* vtkXYPlotWidget.h */; };
 		CE3F888908ED63E300F4E202 /* vtkXYZMolReader.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3F7B0C08ED63DF00F4E202 /* vtkXYZMolReader.h */; };
 		CE3F888A08ED63E300F4E202 /* vtkZLibDataCompressor.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3F7B0D08ED63DF00F4E202 /* vtkZLibDataCompressor.h */; };
-		CE3F97D00C846E4A00CB38F1 /* Placeholder.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F975E0C846E4900CB38F1 /* Placeholder.xib */; };
-		CE3F97D10C846E4A00CB38F1 /* Survey.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97600C846E4900CB38F1 /* Survey.xib */; };
-		CE3F97D30C846E4A00CB38F1 /* SmartAlbum.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97640C846E4900CB38F1 /* SmartAlbum.xib */; };
-		CE3F97D40C846E4A00CB38F1 /* ROIVolumeManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97660C846E4900CB38F1 /* ROIVolumeManager.xib */; };
-		CE3F97D50C846E4A00CB38F1 /* PETCT.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97680C846E4900CB38F1 /* PETCT.xib */; };
-		CE3F97D60C846E4A00CB38F1 /* LogWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F976A0C846E4900CB38F1 /* LogWindow.xib */; };
-		CE3F97D70C846E4A00CB38F1 /* FlyThru.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F976C0C846E4900CB38F1 /* FlyThru.xib */; };
-		CE3F97D80C846E4A00CB38F1 /* CenterlineSegmentation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F976E0C846E4900CB38F1 /* CenterlineSegmentation.xib */; };
-		CE3F97D90C846E4A00CB38F1 /* ToolbarPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97700C846E4900CB38F1 /* ToolbarPanel.xib */; };
-		CE3F97DA0C846E4A00CB38F1 /* KeyObjectReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97720C846E4900CB38F1 /* KeyObjectReport.xib */; };
-		CE3F97DB0C846E4A00CB38F1 /* MSRGPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97740C846E4900CB38F1 /* MSRGPanel.xib */; };
-		CE3F97DD0C846E4A00CB38F1 /* PreferencePanesViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97780C846E4900CB38F1 /* PreferencePanesViewer.xib */; };
-		CE3F97DE0C846E4A00CB38F1 /* MPR2D.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F977A0C846E4900CB38F1 /* MPR2D.xib */; };
-		CE3F97DF0C846E4A00CB38F1 /* Layout.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F977C0C846E4900CB38F1 /* Layout.xib */; };
-		CE3F97E10C846E4A00CB38F1 /* Splash.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97800C846E4900CB38F1 /* Splash.xib */; };
-		CE3F97E20C846E4A00CB38F1 /* ROI.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97820C846E4900CB38F1 /* ROI.xib */; };
-		CE3F97E30C846E4A00CB38F1 /* CalciumScoring.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97840C846E4900CB38F1 /* CalciumScoring.xib */; };
-		CE3F97E50C846E4A00CB38F1 /* ROIManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97880C846E4900CB38F1 /* ROIManager.xib */; };
-		CE3F97E60C846E4A00CB38F1 /* Send.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F978A0C846E4900CB38F1 /* Send.xib */; };
-		CE3F97E70C846E4A00CB38F1 /* OrthogonalMPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F978C0C846E4900CB38F1 /* OrthogonalMPR.xib */; };
-		CE3F97E80C846E4A00CB38F1 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F978E0C846E4900CB38F1 /* Preferences.xib */; };
-		CE3F97E90C846E4A00CB38F1 /* Endoscopy.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97900C846E4900CB38F1 /* Endoscopy.xib */; };
-		CE3F97EA0C846E4A00CB38F1 /* LLMPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97920C846E4900CB38F1 /* LLMPR.xib */; };
-		CE3F97EB0C846E4A00CB38F1 /* SRAnnotation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97940C846E4900CB38F1 /* SRAnnotation.xib */; };
-		CE3F97EC0C846E4A00CB38F1 /* ITKSegmentation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97960C846E4900CB38F1 /* ITKSegmentation.xib */; };
-		CE3F97ED0C846E4A00CB38F1 /* Query.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97980C846E4900CB38F1 /* Query.xib */; };
-		CE3F97EE0C846E4A00CB38F1 /* Histogram.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F979A0C846E4900CB38F1 /* Histogram.xib */; };
-		CE3F97F10C846E4A00CB38F1 /* PluginManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A00C846E4900CB38F1 /* PluginManager.xib */; };
-		CE3F97F20C846E4A00CB38F1 /* ThickSlab.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A20C846E4900CB38F1 /* ThickSlab.xib */; };
-		CE3F97F40C846E4A00CB38F1 /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A60C846E4900CB38F1 /* WaitRendering.xib */; };
-		CE3F97F50C846E4A00CB38F1 /* Plot.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A80C846E4900CB38F1 /* Plot.xib */; };
-		CE3F97F60C846E4A00CB38F1 /* ROIVolume.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97AA0C846E4900CB38F1 /* ROIVolume.xib */; };
-		CE3F97F70C846E4A00CB38F1 /* VRPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97AC0C846E4900CB38F1 /* VRPanel.xib */; };
-		CE3F97F80C846E4A00CB38F1 /* VRVPRO.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97AE0C846E4900CB38F1 /* VRVPRO.xib */; };
-		CE3F97F90C846E4A00CB38F1 /* MIP.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97B00C846E4900CB38F1 /* MIP.xib */; };
-		CE3F97FA0C846E4A00CB38F1 /* PaletteBrush.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97B20C846E4900CB38F1 /* PaletteBrush.xib */; };
-		CE3F97FB0C846E4A00CB38F1 /* Anonymize.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97B40C846E4900CB38F1 /* Anonymize.xib */; };
-		CE3F97FC0C846E4A00CB38F1 /* LLScoutView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97B60C846E4900CB38F1 /* LLScoutView.xib */; };
-		CE3F97FD0C846E4A00CB38F1 /* BurnViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97B80C846E4900CB38F1 /* BurnViewer.xib */; };
-		CE3F97FE0C846E4A00CB38F1 /* ROIDefaults.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97BA0C846E4900CB38F1 /* ROIDefaults.xib */; };
-		CE3F97FF0C846E4A00CB38F1 /* VR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97BC0C846E4900CB38F1 /* VR.xib */; };
-		CE3F98000C846E4A00CB38F1 /* Viewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97BE0C846E4900CB38F1 /* Viewer.xib */; };
-		CE3F98010C846E4A00CB38F1 /* QuicktimeExport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C00C846E4900CB38F1 /* QuicktimeExport.xib */; };
-		CE3F98020C846E4A00CB38F1 /* SR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C20C846E4900CB38F1 /* SR.xib */; };
-		CE3F98040C846E4A00CB38F1 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C60C846E4900CB38F1 /* MainMenu.xib */; };
-		CE3F98050C846E4A00CB38F1 /* Wait.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C80C846E4900CB38F1 /* Wait.xib */; };
-		CE3F98060C846E4A00CB38F1 /* StructuredReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97CA0C846E4900CB38F1 /* StructuredReport.xib */; };
-		CE3F98070C846E4A00CB38F1 /* XMLViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97CC0C846E4A00CB38F1 /* XMLViewer.xib */; };
-		CE3F98080C846E4A00CB38F1 /* AYDicomPrint.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97CE0C846E4A00CB38F1 /* AYDicomPrint.xib */; };
-		CE3F98090C846E4A00CB38F1 /* Placeholder.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F975E0C846E4900CB38F1 /* Placeholder.xib */; };
-		CE3F980A0C846E4A00CB38F1 /* Survey.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97600C846E4900CB38F1 /* Survey.xib */; };
-		CE3F980C0C846E4A00CB38F1 /* SmartAlbum.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97640C846E4900CB38F1 /* SmartAlbum.xib */; };
-		CE3F980D0C846E4A00CB38F1 /* ROIVolumeManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97660C846E4900CB38F1 /* ROIVolumeManager.xib */; };
-		CE3F980E0C846E4A00CB38F1 /* PETCT.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97680C846E4900CB38F1 /* PETCT.xib */; };
-		CE3F980F0C846E4A00CB38F1 /* LogWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F976A0C846E4900CB38F1 /* LogWindow.xib */; };
-		CE3F98100C846E4A00CB38F1 /* FlyThru.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F976C0C846E4900CB38F1 /* FlyThru.xib */; };
-		CE3F98110C846E4A00CB38F1 /* CenterlineSegmentation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F976E0C846E4900CB38F1 /* CenterlineSegmentation.xib */; };
-		CE3F98120C846E4A00CB38F1 /* ToolbarPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97700C846E4900CB38F1 /* ToolbarPanel.xib */; };
-		CE3F98130C846E4A00CB38F1 /* KeyObjectReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97720C846E4900CB38F1 /* KeyObjectReport.xib */; };
-		CE3F98140C846E4A00CB38F1 /* MSRGPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97740C846E4900CB38F1 /* MSRGPanel.xib */; };
-		CE3F98160C846E4A00CB38F1 /* PreferencePanesViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97780C846E4900CB38F1 /* PreferencePanesViewer.xib */; };
-		CE3F98170C846E4A00CB38F1 /* MPR2D.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F977A0C846E4900CB38F1 /* MPR2D.xib */; };
-		CE3F98180C846E4A00CB38F1 /* Layout.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F977C0C846E4900CB38F1 /* Layout.xib */; };
-		CE3F981A0C846E4A00CB38F1 /* Splash.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97800C846E4900CB38F1 /* Splash.xib */; };
-		CE3F981B0C846E4A00CB38F1 /* ROI.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97820C846E4900CB38F1 /* ROI.xib */; };
-		CE3F981C0C846E4A00CB38F1 /* CalciumScoring.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97840C846E4900CB38F1 /* CalciumScoring.xib */; };
-		CE3F981E0C846E4A00CB38F1 /* ROIManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97880C846E4900CB38F1 /* ROIManager.xib */; };
-		CE3F981F0C846E4A00CB38F1 /* Send.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F978A0C846E4900CB38F1 /* Send.xib */; };
-		CE3F98200C846E4A00CB38F1 /* OrthogonalMPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F978C0C846E4900CB38F1 /* OrthogonalMPR.xib */; };
-		CE3F98210C846E4A00CB38F1 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F978E0C846E4900CB38F1 /* Preferences.xib */; };
-		CE3F98220C846E4A00CB38F1 /* Endoscopy.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97900C846E4900CB38F1 /* Endoscopy.xib */; };
-		CE3F98230C846E4A00CB38F1 /* LLMPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97920C846E4900CB38F1 /* LLMPR.xib */; };
-		CE3F98240C846E4A00CB38F1 /* SRAnnotation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97940C846E4900CB38F1 /* SRAnnotation.xib */; };
-		CE3F98250C846E4A00CB38F1 /* ITKSegmentation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97960C846E4900CB38F1 /* ITKSegmentation.xib */; };
-		CE3F98260C846E4A00CB38F1 /* Query.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97980C846E4900CB38F1 /* Query.xib */; };
-		CE3F98270C846E4A00CB38F1 /* Histogram.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F979A0C846E4900CB38F1 /* Histogram.xib */; };
-		CE3F982A0C846E4A00CB38F1 /* PluginManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A00C846E4900CB38F1 /* PluginManager.xib */; };
-		CE3F982B0C846E4A00CB38F1 /* ThickSlab.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A20C846E4900CB38F1 /* ThickSlab.xib */; };
-		CE3F982D0C846E4A00CB38F1 /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A60C846E4900CB38F1 /* WaitRendering.xib */; };
-		CE3F982E0C846E4A00CB38F1 /* Plot.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A80C846E4900CB38F1 /* Plot.xib */; };
-		CE3F982F0C846E4A00CB38F1 /* ROIVolume.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97AA0C846E4900CB38F1 /* ROIVolume.xib */; };
-		CE3F98300C846E4A00CB38F1 /* VRPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97AC0C846E4900CB38F1 /* VRPanel.xib */; };
-		CE3F98310C846E4A00CB38F1 /* VRVPRO.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97AE0C846E4900CB38F1 /* VRVPRO.xib */; };
-		CE3F98320C846E4A00CB38F1 /* MIP.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97B00C846E4900CB38F1 /* MIP.xib */; };
-		CE3F98330C846E4A00CB38F1 /* PaletteBrush.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97B20C846E4900CB38F1 /* PaletteBrush.xib */; };
-		CE3F98340C846E4A00CB38F1 /* Anonymize.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97B40C846E4900CB38F1 /* Anonymize.xib */; };
-		CE3F98350C846E4A00CB38F1 /* LLScoutView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97B60C846E4900CB38F1 /* LLScoutView.xib */; };
-		CE3F98360C846E4A00CB38F1 /* BurnViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97B80C846E4900CB38F1 /* BurnViewer.xib */; };
-		CE3F98370C846E4A00CB38F1 /* ROIDefaults.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97BA0C846E4900CB38F1 /* ROIDefaults.xib */; };
-		CE3F98380C846E4A00CB38F1 /* VR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97BC0C846E4900CB38F1 /* VR.xib */; };
-		CE3F98390C846E4A00CB38F1 /* Viewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97BE0C846E4900CB38F1 /* Viewer.xib */; };
-		CE3F983A0C846E4A00CB38F1 /* QuicktimeExport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C00C846E4900CB38F1 /* QuicktimeExport.xib */; };
-		CE3F983B0C846E4A00CB38F1 /* SR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C20C846E4900CB38F1 /* SR.xib */; };
-		CE3F983D0C846E4A00CB38F1 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C60C846E4900CB38F1 /* MainMenu.xib */; };
-		CE3F983E0C846E4A00CB38F1 /* Wait.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C80C846E4900CB38F1 /* Wait.xib */; };
-		CE3F983F0C846E4A00CB38F1 /* StructuredReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97CA0C846E4900CB38F1 /* StructuredReport.xib */; };
-		CE3F98400C846E4A00CB38F1 /* XMLViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97CC0C846E4A00CB38F1 /* XMLViewer.xib */; };
-		CE3F98410C846E4A00CB38F1 /* AYDicomPrint.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97CE0C846E4A00CB38F1 /* AYDicomPrint.xib */; };
+		CE3F99420C84724B00CB38F1 /* Placeholder.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E00C84724B00CB38F1 /* Placeholder.xib */; };
+		CE3F99430C84724B00CB38F1 /* Survey.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E20C84724B00CB38F1 /* Survey.xib */; };
+		CE3F99440C84724B00CB38F1 /* SmartAlbum.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E40C84724B00CB38F1 /* SmartAlbum.xib */; };
+		CE3F99450C84724B00CB38F1 /* ROIVolumeManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E60C84724B00CB38F1 /* ROIVolumeManager.xib */; };
+		CE3F99460C84724B00CB38F1 /* PETCT.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E80C84724B00CB38F1 /* PETCT.xib */; };
+		CE3F99470C84724B00CB38F1 /* LogWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EA0C84724B00CB38F1 /* LogWindow.xib */; };
+		CE3F99480C84724B00CB38F1 /* FlyThru.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EC0C84724B00CB38F1 /* FlyThru.xib */; };
+		CE3F99490C84724B00CB38F1 /* CenterlineSegmentation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EE0C84724B00CB38F1 /* CenterlineSegmentation.xib */; };
+		CE3F994A0C84724B00CB38F1 /* ToolbarPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */; };
+		CE3F994B0C84724B00CB38F1 /* KeyObjectReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F20C84724B00CB38F1 /* KeyObjectReport.xib */; };
+		CE3F994C0C84724B00CB38F1 /* MSRGPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F40C84724B00CB38F1 /* MSRGPanel.xib */; };
+		CE3F994D0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */; };
+		CE3F994E0C84724B00CB38F1 /* MPR2D.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F80C84724B00CB38F1 /* MPR2D.xib */; };
+		CE3F994F0C84724B00CB38F1 /* Layout.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FA0C84724B00CB38F1 /* Layout.xib */; };
+		CE3F99500C84724B00CB38F1 /* Splash.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FC0C84724B00CB38F1 /* Splash.xib */; };
+		CE3F99510C84724B00CB38F1 /* ROI.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FE0C84724B00CB38F1 /* ROI.xib */; };
+		CE3F99520C84724B00CB38F1 /* CalciumScoring.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99000C84724B00CB38F1 /* CalciumScoring.xib */; };
+		CE3F99530C84724B00CB38F1 /* ROIManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99020C84724B00CB38F1 /* ROIManager.xib */; };
+		CE3F99540C84724B00CB38F1 /* Send.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99040C84724B00CB38F1 /* Send.xib */; };
+		CE3F99550C84724B00CB38F1 /* OrthogonalMPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99060C84724B00CB38F1 /* OrthogonalMPR.xib */; };
+		CE3F99560C84724B00CB38F1 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99080C84724B00CB38F1 /* Preferences.xib */; };
+		CE3F99570C84724B00CB38F1 /* Endoscopy.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F990A0C84724B00CB38F1 /* Endoscopy.xib */; };
+		CE3F99580C84724B00CB38F1 /* LLMPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F990C0C84724B00CB38F1 /* LLMPR.xib */; };
+		CE3F99590C84724B00CB38F1 /* SRAnnotation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F990E0C84724B00CB38F1 /* SRAnnotation.xib */; };
+		CE3F995A0C84724B00CB38F1 /* ITKSegmentation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99100C84724B00CB38F1 /* ITKSegmentation.xib */; };
+		CE3F995B0C84724B00CB38F1 /* Query.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99120C84724B00CB38F1 /* Query.xib */; };
+		CE3F995C0C84724B00CB38F1 /* Histogram.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99140C84724B00CB38F1 /* Histogram.xib */; };
+		CE3F995D0C84724B00CB38F1 /* PluginManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99160C84724B00CB38F1 /* PluginManager.xib */; };
+		CE3F995E0C84724B00CB38F1 /* ThickSlab.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99180C84724B00CB38F1 /* ThickSlab.xib */; };
+		CE3F995F0C84724B00CB38F1 /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */; };
+		CE3F99600C84724B00CB38F1 /* Plot.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991C0C84724B00CB38F1 /* Plot.xib */; };
+		CE3F99610C84724B00CB38F1 /* ROIVolume.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991E0C84724B00CB38F1 /* ROIVolume.xib */; };
+		CE3F99620C84724B00CB38F1 /* VRPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99200C84724B00CB38F1 /* VRPanel.xib */; };
+		CE3F99630C84724B00CB38F1 /* VRVPRO.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99220C84724B00CB38F1 /* VRVPRO.xib */; };
+		CE3F99640C84724B00CB38F1 /* MIP.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99240C84724B00CB38F1 /* MIP.xib */; };
+		CE3F99650C84724B00CB38F1 /* PaletteBrush.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99260C84724B00CB38F1 /* PaletteBrush.xib */; };
+		CE3F99660C84724B00CB38F1 /* Anonymize.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99280C84724B00CB38F1 /* Anonymize.xib */; };
+		CE3F99670C84724B00CB38F1 /* LLScoutView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F992A0C84724B00CB38F1 /* LLScoutView.xib */; };
+		CE3F99680C84724B00CB38F1 /* BurnViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F992C0C84724B00CB38F1 /* BurnViewer.xib */; };
+		CE3F99690C84724B00CB38F1 /* ROIDefaults.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F992E0C84724B00CB38F1 /* ROIDefaults.xib */; };
+		CE3F996A0C84724B00CB38F1 /* VR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99300C84724B00CB38F1 /* VR.xib */; };
+		CE3F996B0C84724B00CB38F1 /* QuicktimeExport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99320C84724B00CB38F1 /* QuicktimeExport.xib */; };
+		CE3F996C0C84724B00CB38F1 /* SR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99340C84724B00CB38F1 /* SR.xib */; };
+		CE3F996D0C84724B00CB38F1 /* Viewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99360C84724B00CB38F1 /* Viewer.xib */; };
+		CE3F996E0C84724B00CB38F1 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99380C84724B00CB38F1 /* MainMenu.xib */; };
+		CE3F996F0C84724B00CB38F1 /* Wait.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F993A0C84724B00CB38F1 /* Wait.xib */; };
+		CE3F99700C84724B00CB38F1 /* StructuredReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F993C0C84724B00CB38F1 /* StructuredReport.xib */; };
+		CE3F99710C84724B00CB38F1 /* XMLViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F993E0C84724B00CB38F1 /* XMLViewer.xib */; };
+		CE3F99720C84724B00CB38F1 /* AYDicomPrint.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99400C84724B00CB38F1 /* AYDicomPrint.xib */; };
+		CE3F99730C84724B00CB38F1 /* Placeholder.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E00C84724B00CB38F1 /* Placeholder.xib */; };
+		CE3F99740C84724B00CB38F1 /* Survey.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E20C84724B00CB38F1 /* Survey.xib */; };
+		CE3F99750C84724B00CB38F1 /* SmartAlbum.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E40C84724B00CB38F1 /* SmartAlbum.xib */; };
+		CE3F99760C84724B00CB38F1 /* ROIVolumeManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E60C84724B00CB38F1 /* ROIVolumeManager.xib */; };
+		CE3F99770C84724B00CB38F1 /* PETCT.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E80C84724B00CB38F1 /* PETCT.xib */; };
+		CE3F99780C84724B00CB38F1 /* LogWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EA0C84724B00CB38F1 /* LogWindow.xib */; };
+		CE3F99790C84724B00CB38F1 /* FlyThru.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EC0C84724B00CB38F1 /* FlyThru.xib */; };
+		CE3F997A0C84724B00CB38F1 /* CenterlineSegmentation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98EE0C84724B00CB38F1 /* CenterlineSegmentation.xib */; };
+		CE3F997B0C84724B00CB38F1 /* ToolbarPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */; };
+		CE3F997C0C84724B00CB38F1 /* KeyObjectReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F20C84724B00CB38F1 /* KeyObjectReport.xib */; };
+		CE3F997D0C84724B00CB38F1 /* MSRGPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F40C84724B00CB38F1 /* MSRGPanel.xib */; };
+		CE3F997E0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */; };
+		CE3F997F0C84724B00CB38F1 /* MPR2D.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F80C84724B00CB38F1 /* MPR2D.xib */; };
+		CE3F99800C84724B00CB38F1 /* Layout.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FA0C84724B00CB38F1 /* Layout.xib */; };
+		CE3F99810C84724B00CB38F1 /* Splash.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FC0C84724B00CB38F1 /* Splash.xib */; };
+		CE3F99820C84724B00CB38F1 /* ROI.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FE0C84724B00CB38F1 /* ROI.xib */; };
+		CE3F99830C84724B00CB38F1 /* CalciumScoring.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99000C84724B00CB38F1 /* CalciumScoring.xib */; };
+		CE3F99840C84724B00CB38F1 /* ROIManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99020C84724B00CB38F1 /* ROIManager.xib */; };
+		CE3F99850C84724B00CB38F1 /* Send.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99040C84724B00CB38F1 /* Send.xib */; };
+		CE3F99860C84724B00CB38F1 /* OrthogonalMPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99060C84724B00CB38F1 /* OrthogonalMPR.xib */; };
+		CE3F99870C84724B00CB38F1 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99080C84724B00CB38F1 /* Preferences.xib */; };
+		CE3F99880C84724B00CB38F1 /* Endoscopy.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F990A0C84724B00CB38F1 /* Endoscopy.xib */; };
+		CE3F99890C84724B00CB38F1 /* LLMPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F990C0C84724B00CB38F1 /* LLMPR.xib */; };
+		CE3F998A0C84724B00CB38F1 /* SRAnnotation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F990E0C84724B00CB38F1 /* SRAnnotation.xib */; };
+		CE3F998B0C84724B00CB38F1 /* ITKSegmentation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99100C84724B00CB38F1 /* ITKSegmentation.xib */; };
+		CE3F998C0C84724B00CB38F1 /* Query.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99120C84724B00CB38F1 /* Query.xib */; };
+		CE3F998D0C84724B00CB38F1 /* Histogram.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99140C84724B00CB38F1 /* Histogram.xib */; };
+		CE3F998E0C84724B00CB38F1 /* PluginManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99160C84724B00CB38F1 /* PluginManager.xib */; };
+		CE3F998F0C84724B00CB38F1 /* ThickSlab.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99180C84724B00CB38F1 /* ThickSlab.xib */; };
+		CE3F99900C84724B00CB38F1 /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */; };
+		CE3F99910C84724B00CB38F1 /* Plot.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991C0C84724B00CB38F1 /* Plot.xib */; };
+		CE3F99920C84724B00CB38F1 /* ROIVolume.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991E0C84724B00CB38F1 /* ROIVolume.xib */; };
+		CE3F99930C84724B00CB38F1 /* VRPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99200C84724B00CB38F1 /* VRPanel.xib */; };
+		CE3F99940C84724B00CB38F1 /* VRVPRO.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99220C84724B00CB38F1 /* VRVPRO.xib */; };
+		CE3F99950C84724B00CB38F1 /* MIP.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99240C84724B00CB38F1 /* MIP.xib */; };
+		CE3F99960C84724B00CB38F1 /* PaletteBrush.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99260C84724B00CB38F1 /* PaletteBrush.xib */; };
+		CE3F99970C84724B00CB38F1 /* Anonymize.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99280C84724B00CB38F1 /* Anonymize.xib */; };
+		CE3F99980C84724B00CB38F1 /* LLScoutView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F992A0C84724B00CB38F1 /* LLScoutView.xib */; };
+		CE3F99990C84724B00CB38F1 /* BurnViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F992C0C84724B00CB38F1 /* BurnViewer.xib */; };
+		CE3F999A0C84724B00CB38F1 /* ROIDefaults.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F992E0C84724B00CB38F1 /* ROIDefaults.xib */; };
+		CE3F999B0C84724B00CB38F1 /* VR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99300C84724B00CB38F1 /* VR.xib */; };
+		CE3F999C0C84724B00CB38F1 /* QuicktimeExport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99320C84724B00CB38F1 /* QuicktimeExport.xib */; };
+		CE3F999D0C84724B00CB38F1 /* SR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99340C84724B00CB38F1 /* SR.xib */; };
+		CE3F999E0C84724B00CB38F1 /* Viewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99360C84724B00CB38F1 /* Viewer.xib */; };
+		CE3F999F0C84724B00CB38F1 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99380C84724B00CB38F1 /* MainMenu.xib */; };
+		CE3F99A00C84724B00CB38F1 /* Wait.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F993A0C84724B00CB38F1 /* Wait.xib */; };
+		CE3F99A10C84724B00CB38F1 /* StructuredReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F993C0C84724B00CB38F1 /* StructuredReport.xib */; };
+		CE3F99A20C84724B00CB38F1 /* XMLViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F993E0C84724B00CB38F1 /* XMLViewer.xib */; };
+		CE3F99A30C84724B00CB38F1 /* AYDicomPrint.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99400C84724B00CB38F1 /* AYDicomPrint.xib */; };
 		CE416BCE07969EEB009A8D42 /* OsiriX.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E0B3A3F067526CD00908593 /* OsiriX.framework */; };
 		CE49E2CA0760B93500444203 /* Empty.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE49E2C50760B93500444203 /* Empty.tif */; };
 		CE49E2CC0760B93500444203 /* Empty.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE49E2C50760B93500444203 /* Empty.tif */; };
@@ -11404,55 +11404,55 @@
 		CE3F7B0B08ED63DF00F4E202 /* vtkXYPlotWidget.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = vtkXYPlotWidget.h; sourceTree = "<group>"; };
 		CE3F7B0C08ED63DF00F4E202 /* vtkXYZMolReader.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = vtkXYZMolReader.h; sourceTree = "<group>"; };
 		CE3F7B0D08ED63DF00F4E202 /* vtkZLibDataCompressor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = vtkZLibDataCompressor.h; sourceTree = "<group>"; };
-		CE3F975F0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Placeholder.xib; sourceTree = "<group>"; };
-		CE3F97610C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Survey.xib; sourceTree = "<group>"; };
-		CE3F97650C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/SmartAlbum.xib; sourceTree = "<group>"; };
-		CE3F97670C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIVolumeManager.xib; sourceTree = "<group>"; };
-		CE3F97690C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PETCT.xib; sourceTree = "<group>"; };
-		CE3F976B0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/LogWindow.xib; sourceTree = "<group>"; };
-		CE3F976D0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/FlyThru.xib; sourceTree = "<group>"; };
-		CE3F976F0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CenterlineSegmentation.xib; sourceTree = "<group>"; };
-		CE3F97710C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ToolbarPanel.xib; sourceTree = "<group>"; };
-		CE3F97730C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/KeyObjectReport.xib; sourceTree = "<group>"; };
-		CE3F97750C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MSRGPanel.xib; sourceTree = "<group>"; };
-		CE3F97790C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PreferencePanesViewer.xib; sourceTree = "<group>"; };
-		CE3F977B0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MPR2D.xib; sourceTree = "<group>"; };
-		CE3F977D0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Layout.xib; sourceTree = "<group>"; };
-		CE3F97810C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Splash.xib; sourceTree = "<group>"; };
-		CE3F97830C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROI.xib; sourceTree = "<group>"; };
-		CE3F97850C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CalciumScoring.xib; sourceTree = "<group>"; };
-		CE3F97890C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIManager.xib; sourceTree = "<group>"; };
-		CE3F978B0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Send.xib; sourceTree = "<group>"; };
-		CE3F978D0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/OrthogonalMPR.xib; sourceTree = "<group>"; };
-		CE3F978F0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Preferences.xib; sourceTree = "<group>"; };
-		CE3F97910C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Endoscopy.xib; sourceTree = "<group>"; };
-		CE3F97930C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/LLMPR.xib; sourceTree = "<group>"; };
-		CE3F97950C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/SRAnnotation.xib; sourceTree = "<group>"; };
-		CE3F97970C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ITKSegmentation.xib; sourceTree = "<group>"; };
-		CE3F97990C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Query.xib; sourceTree = "<group>"; };
-		CE3F979B0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Histogram.xib; sourceTree = "<group>"; };
-		CE3F97A10C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PluginManager.xib; sourceTree = "<group>"; };
-		CE3F97A30C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ThickSlab.xib; sourceTree = "<group>"; };
-		CE3F97A70C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/WaitRendering.xib; sourceTree = "<group>"; };
-		CE3F97A90C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Plot.xib; sourceTree = "<group>"; };
-		CE3F97AB0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIVolume.xib; sourceTree = "<group>"; };
-		CE3F97AD0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VRPanel.xib; sourceTree = "<group>"; };
-		CE3F97AF0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VRVPRO.xib; sourceTree = "<group>"; };
-		CE3F97B10C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MIP.xib; sourceTree = "<group>"; };
-		CE3F97B30C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PaletteBrush.xib; sourceTree = "<group>"; };
-		CE3F97B50C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Anonymize.xib; sourceTree = "<group>"; };
-		CE3F97B70C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/LLScoutView.xib; sourceTree = "<group>"; };
-		CE3F97B90C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/BurnViewer.xib; sourceTree = "<group>"; };
-		CE3F97BB0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIDefaults.xib; sourceTree = "<group>"; };
-		CE3F97BD0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VR.xib; sourceTree = "<group>"; };
-		CE3F97BF0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Viewer.xib; sourceTree = "<group>"; };
-		CE3F97C10C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/QuicktimeExport.xib; sourceTree = "<group>"; };
-		CE3F97C30C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/SR.xib; sourceTree = "<group>"; };
-		CE3F97C70C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		CE3F97C90C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Wait.xib; sourceTree = "<group>"; };
-		CE3F97CB0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/StructuredReport.xib; sourceTree = "<group>"; };
-		CE3F97CD0C846E4A00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/XMLViewer.xib; sourceTree = "<group>"; };
-		CE3F97CF0C846E4A00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/AYDicomPrint.xib; sourceTree = "<group>"; };
+		CE3F98E10C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Placeholder.xib; sourceTree = "<group>"; };
+		CE3F98E30C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Survey.xib; sourceTree = "<group>"; };
+		CE3F98E50C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/SmartAlbum.xib; sourceTree = "<group>"; };
+		CE3F98E70C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIVolumeManager.xib; sourceTree = "<group>"; };
+		CE3F98E90C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PETCT.xib; sourceTree = "<group>"; };
+		CE3F98EB0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/LogWindow.xib; sourceTree = "<group>"; };
+		CE3F98ED0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/FlyThru.xib; sourceTree = "<group>"; };
+		CE3F98EF0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CenterlineSegmentation.xib; sourceTree = "<group>"; };
+		CE3F98F10C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ToolbarPanel.xib; sourceTree = "<group>"; };
+		CE3F98F30C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/KeyObjectReport.xib; sourceTree = "<group>"; };
+		CE3F98F50C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MSRGPanel.xib; sourceTree = "<group>"; };
+		CE3F98F70C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PreferencePanesViewer.xib; sourceTree = "<group>"; };
+		CE3F98F90C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MPR2D.xib; sourceTree = "<group>"; };
+		CE3F98FB0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Layout.xib; sourceTree = "<group>"; };
+		CE3F98FD0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Splash.xib; sourceTree = "<group>"; };
+		CE3F98FF0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROI.xib; sourceTree = "<group>"; };
+		CE3F99010C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CalciumScoring.xib; sourceTree = "<group>"; };
+		CE3F99030C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIManager.xib; sourceTree = "<group>"; };
+		CE3F99050C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Send.xib; sourceTree = "<group>"; };
+		CE3F99070C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/OrthogonalMPR.xib; sourceTree = "<group>"; };
+		CE3F99090C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Preferences.xib; sourceTree = "<group>"; };
+		CE3F990B0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Endoscopy.xib; sourceTree = "<group>"; };
+		CE3F990D0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/LLMPR.xib; sourceTree = "<group>"; };
+		CE3F990F0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/SRAnnotation.xib; sourceTree = "<group>"; };
+		CE3F99110C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ITKSegmentation.xib; sourceTree = "<group>"; };
+		CE3F99130C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Query.xib; sourceTree = "<group>"; };
+		CE3F99150C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Histogram.xib; sourceTree = "<group>"; };
+		CE3F99170C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PluginManager.xib; sourceTree = "<group>"; };
+		CE3F99190C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ThickSlab.xib; sourceTree = "<group>"; };
+		CE3F991B0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/WaitRendering.xib; sourceTree = "<group>"; };
+		CE3F991D0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Plot.xib; sourceTree = "<group>"; };
+		CE3F991F0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIVolume.xib; sourceTree = "<group>"; };
+		CE3F99210C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VRPanel.xib; sourceTree = "<group>"; };
+		CE3F99230C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VRVPRO.xib; sourceTree = "<group>"; };
+		CE3F99250C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MIP.xib; sourceTree = "<group>"; };
+		CE3F99270C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PaletteBrush.xib; sourceTree = "<group>"; };
+		CE3F99290C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Anonymize.xib; sourceTree = "<group>"; };
+		CE3F992B0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/LLScoutView.xib; sourceTree = "<group>"; };
+		CE3F992D0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/BurnViewer.xib; sourceTree = "<group>"; };
+		CE3F992F0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIDefaults.xib; sourceTree = "<group>"; };
+		CE3F99310C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VR.xib; sourceTree = "<group>"; };
+		CE3F99330C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/QuicktimeExport.xib; sourceTree = "<group>"; };
+		CE3F99350C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/SR.xib; sourceTree = "<group>"; };
+		CE3F99370C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Viewer.xib; sourceTree = "<group>"; };
+		CE3F99390C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		CE3F993B0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Wait.xib; sourceTree = "<group>"; };
+		CE3F993D0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/StructuredReport.xib; sourceTree = "<group>"; };
+		CE3F993F0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/XMLViewer.xib; sourceTree = "<group>"; };
+		CE3F99410C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/AYDicomPrint.xib; sourceTree = "<group>"; };
 		CE49E2C50760B93500444203 /* Empty.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Empty.tif; path = Binaries/Icons/Empty.tif; sourceTree = SOURCE_ROOT; };
 		CE4A922B06DBF255006DAAF7 /* ITKSegmentation3D.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ITKSegmentation3D.mm; sourceTree = "<group>"; };
 		CE4A922C06DBF255006DAAF7 /* ITKSegmentation3D.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ITKSegmentation3D.h; sourceTree = "<group>"; };
@@ -12090,55 +12090,55 @@
 				CEBD8A4B0875B029000E42D6 /* Pane */,
 				ABBB639A0635874D00D9531F /* DCMTK */,
 				ABBB647A063587B200D9531F /* Icons */,
-				CE3F975E0C846E4900CB38F1 /* Placeholder.xib */,
-				CE3F97600C846E4900CB38F1 /* Survey.xib */,
-				CE3F97640C846E4900CB38F1 /* SmartAlbum.xib */,
-				CE3F97660C846E4900CB38F1 /* ROIVolumeManager.xib */,
-				CE3F97680C846E4900CB38F1 /* PETCT.xib */,
-				CE3F976A0C846E4900CB38F1 /* LogWindow.xib */,
-				CE3F976C0C846E4900CB38F1 /* FlyThru.xib */,
-				CE3F976E0C846E4900CB38F1 /* CenterlineSegmentation.xib */,
-				CE3F97700C846E4900CB38F1 /* ToolbarPanel.xib */,
-				CE3F97720C846E4900CB38F1 /* KeyObjectReport.xib */,
-				CE3F97740C846E4900CB38F1 /* MSRGPanel.xib */,
-				CE3F97780C846E4900CB38F1 /* PreferencePanesViewer.xib */,
-				CE3F977A0C846E4900CB38F1 /* MPR2D.xib */,
-				CE3F977C0C846E4900CB38F1 /* Layout.xib */,
-				CE3F97800C846E4900CB38F1 /* Splash.xib */,
-				CE3F97820C846E4900CB38F1 /* ROI.xib */,
-				CE3F97840C846E4900CB38F1 /* CalciumScoring.xib */,
-				CE3F97880C846E4900CB38F1 /* ROIManager.xib */,
-				CE3F978A0C846E4900CB38F1 /* Send.xib */,
-				CE3F978C0C846E4900CB38F1 /* OrthogonalMPR.xib */,
-				CE3F978E0C846E4900CB38F1 /* Preferences.xib */,
-				CE3F97900C846E4900CB38F1 /* Endoscopy.xib */,
-				CE3F97920C846E4900CB38F1 /* LLMPR.xib */,
-				CE3F97940C846E4900CB38F1 /* SRAnnotation.xib */,
-				CE3F97960C846E4900CB38F1 /* ITKSegmentation.xib */,
-				CE3F97980C846E4900CB38F1 /* Query.xib */,
-				CE3F979A0C846E4900CB38F1 /* Histogram.xib */,
-				CE3F97A00C846E4900CB38F1 /* PluginManager.xib */,
-				CE3F97A20C846E4900CB38F1 /* ThickSlab.xib */,
-				CE3F97A60C846E4900CB38F1 /* WaitRendering.xib */,
-				CE3F97A80C846E4900CB38F1 /* Plot.xib */,
-				CE3F97AA0C846E4900CB38F1 /* ROIVolume.xib */,
-				CE3F97AC0C846E4900CB38F1 /* VRPanel.xib */,
-				CE3F97AE0C846E4900CB38F1 /* VRVPRO.xib */,
-				CE3F97B00C846E4900CB38F1 /* MIP.xib */,
-				CE3F97B20C846E4900CB38F1 /* PaletteBrush.xib */,
-				CE3F97B40C846E4900CB38F1 /* Anonymize.xib */,
-				CE3F97B60C846E4900CB38F1 /* LLScoutView.xib */,
-				CE3F97B80C846E4900CB38F1 /* BurnViewer.xib */,
-				CE3F97BA0C846E4900CB38F1 /* ROIDefaults.xib */,
-				CE3F97BC0C846E4900CB38F1 /* VR.xib */,
-				CE3F97BE0C846E4900CB38F1 /* Viewer.xib */,
-				CE3F97C00C846E4900CB38F1 /* QuicktimeExport.xib */,
-				CE3F97C20C846E4900CB38F1 /* SR.xib */,
-				CE3F97C60C846E4900CB38F1 /* MainMenu.xib */,
-				CE3F97C80C846E4900CB38F1 /* Wait.xib */,
-				CE3F97CA0C846E4900CB38F1 /* StructuredReport.xib */,
-				CE3F97CC0C846E4A00CB38F1 /* XMLViewer.xib */,
-				CE3F97CE0C846E4A00CB38F1 /* AYDicomPrint.xib */,
+				CE3F98E00C84724B00CB38F1 /* Placeholder.xib */,
+				CE3F98E20C84724B00CB38F1 /* Survey.xib */,
+				CE3F98E40C84724B00CB38F1 /* SmartAlbum.xib */,
+				CE3F98E60C84724B00CB38F1 /* ROIVolumeManager.xib */,
+				CE3F98E80C84724B00CB38F1 /* PETCT.xib */,
+				CE3F98EA0C84724B00CB38F1 /* LogWindow.xib */,
+				CE3F98EC0C84724B00CB38F1 /* FlyThru.xib */,
+				CE3F98EE0C84724B00CB38F1 /* CenterlineSegmentation.xib */,
+				CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */,
+				CE3F98F20C84724B00CB38F1 /* KeyObjectReport.xib */,
+				CE3F98F40C84724B00CB38F1 /* MSRGPanel.xib */,
+				CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */,
+				CE3F98F80C84724B00CB38F1 /* MPR2D.xib */,
+				CE3F98FA0C84724B00CB38F1 /* Layout.xib */,
+				CE3F98FC0C84724B00CB38F1 /* Splash.xib */,
+				CE3F98FE0C84724B00CB38F1 /* ROI.xib */,
+				CE3F99000C84724B00CB38F1 /* CalciumScoring.xib */,
+				CE3F99020C84724B00CB38F1 /* ROIManager.xib */,
+				CE3F99040C84724B00CB38F1 /* Send.xib */,
+				CE3F99060C84724B00CB38F1 /* OrthogonalMPR.xib */,
+				CE3F99080C84724B00CB38F1 /* Preferences.xib */,
+				CE3F990A0C84724B00CB38F1 /* Endoscopy.xib */,
+				CE3F990C0C84724B00CB38F1 /* LLMPR.xib */,
+				CE3F990E0C84724B00CB38F1 /* SRAnnotation.xib */,
+				CE3F99100C84724B00CB38F1 /* ITKSegmentation.xib */,
+				CE3F99120C84724B00CB38F1 /* Query.xib */,
+				CE3F99140C84724B00CB38F1 /* Histogram.xib */,
+				CE3F99160C84724B00CB38F1 /* PluginManager.xib */,
+				CE3F99180C84724B00CB38F1 /* ThickSlab.xib */,
+				CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */,
+				CE3F991C0C84724B00CB38F1 /* Plot.xib */,
+				CE3F991E0C84724B00CB38F1 /* ROIVolume.xib */,
+				CE3F99200C84724B00CB38F1 /* VRPanel.xib */,
+				CE3F99220C84724B00CB38F1 /* VRVPRO.xib */,
+				CE3F99240C84724B00CB38F1 /* MIP.xib */,
+				CE3F99260C84724B00CB38F1 /* PaletteBrush.xib */,
+				CE3F99280C84724B00CB38F1 /* Anonymize.xib */,
+				CE3F992A0C84724B00CB38F1 /* LLScoutView.xib */,
+				CE3F992C0C84724B00CB38F1 /* BurnViewer.xib */,
+				CE3F992E0C84724B00CB38F1 /* ROIDefaults.xib */,
+				CE3F99300C84724B00CB38F1 /* VR.xib */,
+				CE3F99320C84724B00CB38F1 /* QuicktimeExport.xib */,
+				CE3F99340C84724B00CB38F1 /* SR.xib */,
+				CE3F99360C84724B00CB38F1 /* Viewer.xib */,
+				CE3F99380C84724B00CB38F1 /* MainMenu.xib */,
+				CE3F993A0C84724B00CB38F1 /* Wait.xib */,
+				CE3F993C0C84724B00CB38F1 /* StructuredReport.xib */,
+				CE3F993E0C84724B00CB38F1 /* XMLViewer.xib */,
+				CE3F99400C84724B00CB38F1 /* AYDicomPrint.xib */,
 				CE286C100964196C001A4573 /* Localizable.strings */,
 				CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */,
 				CE5F9D730AE813A40042280F /* localizedTemplatesPages */,
@@ -21168,55 +21168,55 @@
 				AB97239A0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.3.mom in Resources */,
 				CEDAAEFB0C7B49B300809161 /* QuicktimeEngine.app in Resources */,
 				CEC4B5C10C7DF2D600AF5A76 /* 3DPRESETS in Resources */,
-				CE3F97D00C846E4A00CB38F1 /* Placeholder.xib in Resources */,
-				CE3F97D10C846E4A00CB38F1 /* Survey.xib in Resources */,
-				CE3F97D30C846E4A00CB38F1 /* SmartAlbum.xib in Resources */,
-				CE3F97D40C846E4A00CB38F1 /* ROIVolumeManager.xib in Resources */,
-				CE3F97D50C846E4A00CB38F1 /* PETCT.xib in Resources */,
-				CE3F97D60C846E4A00CB38F1 /* LogWindow.xib in Resources */,
-				CE3F97D70C846E4A00CB38F1 /* FlyThru.xib in Resources */,
-				CE3F97D80C846E4A00CB38F1 /* CenterlineSegmentation.xib in Resources */,
-				CE3F97D90C846E4A00CB38F1 /* ToolbarPanel.xib in Resources */,
-				CE3F97DA0C846E4A00CB38F1 /* KeyObjectReport.xib in Resources */,
-				CE3F97DB0C846E4A00CB38F1 /* MSRGPanel.xib in Resources */,
-				CE3F97DD0C846E4A00CB38F1 /* PreferencePanesViewer.xib in Resources */,
-				CE3F97DE0C846E4A00CB38F1 /* MPR2D.xib in Resources */,
-				CE3F97DF0C846E4A00CB38F1 /* Layout.xib in Resources */,
-				CE3F97E10C846E4A00CB38F1 /* Splash.xib in Resources */,
-				CE3F97E20C846E4A00CB38F1 /* ROI.xib in Resources */,
-				CE3F97E30C846E4A00CB38F1 /* CalciumScoring.xib in Resources */,
-				CE3F97E50C846E4A00CB38F1 /* ROIManager.xib in Resources */,
-				CE3F97E60C846E4A00CB38F1 /* Send.xib in Resources */,
-				CE3F97E70C846E4A00CB38F1 /* OrthogonalMPR.xib in Resources */,
-				CE3F97E80C846E4A00CB38F1 /* Preferences.xib in Resources */,
-				CE3F97E90C846E4A00CB38F1 /* Endoscopy.xib in Resources */,
-				CE3F97EA0C846E4A00CB38F1 /* LLMPR.xib in Resources */,
-				CE3F97EB0C846E4A00CB38F1 /* SRAnnotation.xib in Resources */,
-				CE3F97EC0C846E4A00CB38F1 /* ITKSegmentation.xib in Resources */,
-				CE3F97ED0C846E4A00CB38F1 /* Query.xib in Resources */,
-				CE3F97EE0C846E4A00CB38F1 /* Histogram.xib in Resources */,
-				CE3F97F10C846E4A00CB38F1 /* PluginManager.xib in Resources */,
-				CE3F97F20C846E4A00CB38F1 /* ThickSlab.xib in Resources */,
-				CE3F97F40C846E4A00CB38F1 /* WaitRendering.xib in Resources */,
-				CE3F97F50C846E4A00CB38F1 /* Plot.xib in Resources */,
-				CE3F97F60C846E4A00CB38F1 /* ROIVolume.xib in Resources */,
-				CE3F97F70C846E4A00CB38F1 /* VRPanel.xib in Resources */,
-				CE3F97F80C846E4A00CB38F1 /* VRVPRO.xib in Resources */,
-				CE3F97F90C846E4A00CB38F1 /* MIP.xib in Resources */,
-				CE3F97FA0C846E4A00CB38F1 /* PaletteBrush.xib in Resources */,
-				CE3F97FB0C846E4A00CB38F1 /* Anonymize.xib in Resources */,
-				CE3F97FC0C846E4A00CB38F1 /* LLScoutView.xib in Resources */,
-				CE3F97FD0C846E4A00CB38F1 /* BurnViewer.xib in Resources */,
-				CE3F97FE0C846E4A00CB38F1 /* ROIDefaults.xib in Resources */,
-				CE3F97FF0C846E4A00CB38F1 /* VR.xib in Resources */,
-				CE3F98000C846E4A00CB38F1 /* Viewer.xib in Resources */,
-				CE3F98010C846E4A00CB38F1 /* QuicktimeExport.xib in Resources */,
-				CE3F98020C846E4A00CB38F1 /* SR.xib in Resources */,
-				CE3F98040C846E4A00CB38F1 /* MainMenu.xib in Resources */,
-				CE3F98050C846E4A00CB38F1 /* Wait.xib in Resources */,
-				CE3F98060C846E4A00CB38F1 /* StructuredReport.xib in Resources */,
-				CE3F98070C846E4A00CB38F1 /* XMLViewer.xib in Resources */,
-				CE3F98080C846E4A00CB38F1 /* AYDicomPrint.xib in Resources */,
+				CE3F99420C84724B00CB38F1 /* Placeholder.xib in Resources */,
+				CE3F99430C84724B00CB38F1 /* Survey.xib in Resources */,
+				CE3F99440C84724B00CB38F1 /* SmartAlbum.xib in Resources */,
+				CE3F99450C84724B00CB38F1 /* ROIVolumeManager.xib in Resources */,
+				CE3F99460C84724B00CB38F1 /* PETCT.xib in Resources */,
+				CE3F99470C84724B00CB38F1 /* LogWindow.xib in Resources */,
+				CE3F99480C84724B00CB38F1 /* FlyThru.xib in Resources */,
+				CE3F99490C84724B00CB38F1 /* CenterlineSegmentation.xib in Resources */,
+				CE3F994A0C84724B00CB38F1 /* ToolbarPanel.xib in Resources */,
+				CE3F994B0C84724B00CB38F1 /* KeyObjectReport.xib in Resources */,
+				CE3F994C0C84724B00CB38F1 /* MSRGPanel.xib in Resources */,
+				CE3F994D0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */,
+				CE3F994E0C84724B00CB38F1 /* MPR2D.xib in Resources */,
+				CE3F994F0C84724B00CB38F1 /* Layout.xib in Resources */,
+				CE3F99500C84724B00CB38F1 /* Splash.xib in Resources */,
+				CE3F99510C84724B00CB38F1 /* ROI.xib in Resources */,
+				CE3F99520C84724B00CB38F1 /* CalciumScoring.xib in Resources */,
+				CE3F99530C84724B00CB38F1 /* ROIManager.xib in Resources */,
+				CE3F99540C84724B00CB38F1 /* Send.xib in Resources */,
+				CE3F99550C84724B00CB38F1 /* OrthogonalMPR.xib in Resources */,
+				CE3F99560C84724B00CB38F1 /* Preferences.xib in Resources */,
+				CE3F99570C84724B00CB38F1 /* Endoscopy.xib in Resources */,
+				CE3F99580C84724B00CB38F1 /* LLMPR.xib in Resources */,
+				CE3F99590C84724B00CB38F1 /* SRAnnotation.xib in Resources */,
+				CE3F995A0C84724B00CB38F1 /* ITKSegmentation.xib in Resources */,
+				CE3F995B0C84724B00CB38F1 /* Query.xib in Resources */,
+				CE3F995C0C84724B00CB38F1 /* Histogram.xib in Resources */,
+				CE3F995D0C84724B00CB38F1 /* PluginManager.xib in Resources */,
+				CE3F995E0C84724B00CB38F1 /* ThickSlab.xib in Resources */,
+				CE3F995F0C84724B00CB38F1 /* WaitRendering.xib in Resources */,
+				CE3F99600C84724B00CB38F1 /* Plot.xib in Resources */,
+				CE3F99610C84724B00CB38F1 /* ROIVolume.xib in Resources */,
+				CE3F99620C84724B00CB38F1 /* VRPanel.xib in Resources */,
+				CE3F99630C84724B00CB38F1 /* VRVPRO.xib in Resources */,
+				CE3F99640C84724B00CB38F1 /* MIP.xib in Resources */,
+				CE3F99650C84724B00CB38F1 /* PaletteBrush.xib in Resources */,
+				CE3F99660C84724B00CB38F1 /* Anonymize.xib in Resources */,
+				CE3F99670C84724B00CB38F1 /* LLScoutView.xib in Resources */,
+				CE3F99680C84724B00CB38F1 /* BurnViewer.xib in Resources */,
+				CE3F99690C84724B00CB38F1 /* ROIDefaults.xib in Resources */,
+				CE3F996A0C84724B00CB38F1 /* VR.xib in Resources */,
+				CE3F996B0C84724B00CB38F1 /* QuicktimeExport.xib in Resources */,
+				CE3F996C0C84724B00CB38F1 /* SR.xib in Resources */,
+				CE3F996D0C84724B00CB38F1 /* Viewer.xib in Resources */,
+				CE3F996E0C84724B00CB38F1 /* MainMenu.xib in Resources */,
+				CE3F996F0C84724B00CB38F1 /* Wait.xib in Resources */,
+				CE3F99700C84724B00CB38F1 /* StructuredReport.xib in Resources */,
+				CE3F99710C84724B00CB38F1 /* XMLViewer.xib in Resources */,
+				CE3F99720C84724B00CB38F1 /* AYDicomPrint.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21572,55 +21572,55 @@
 				AB9723940C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.3.mom in Resources */,
 				CEDAAEFC0C7B49B300809161 /* QuicktimeEngine.app in Resources */,
 				CEC4B5C20C7DF2D600AF5A76 /* 3DPRESETS in Resources */,
-				CE3F98090C846E4A00CB38F1 /* Placeholder.xib in Resources */,
-				CE3F980A0C846E4A00CB38F1 /* Survey.xib in Resources */,
-				CE3F980C0C846E4A00CB38F1 /* SmartAlbum.xib in Resources */,
-				CE3F980D0C846E4A00CB38F1 /* ROIVolumeManager.xib in Resources */,
-				CE3F980E0C846E4A00CB38F1 /* PETCT.xib in Resources */,
-				CE3F980F0C846E4A00CB38F1 /* LogWindow.xib in Resources */,
-				CE3F98100C846E4A00CB38F1 /* FlyThru.xib in Resources */,
-				CE3F98110C846E4A00CB38F1 /* CenterlineSegmentation.xib in Resources */,
-				CE3F98120C846E4A00CB38F1 /* ToolbarPanel.xib in Resources */,
-				CE3F98130C846E4A00CB38F1 /* KeyObjectReport.xib in Resources */,
-				CE3F98140C846E4A00CB38F1 /* MSRGPanel.xib in Resources */,
-				CE3F98160C846E4A00CB38F1 /* PreferencePanesViewer.xib in Resources */,
-				CE3F98170C846E4A00CB38F1 /* MPR2D.xib in Resources */,
-				CE3F98180C846E4A00CB38F1 /* Layout.xib in Resources */,
-				CE3F981A0C846E4A00CB38F1 /* Splash.xib in Resources */,
-				CE3F981B0C846E4A00CB38F1 /* ROI.xib in Resources */,
-				CE3F981C0C846E4A00CB38F1 /* CalciumScoring.xib in Resources */,
-				CE3F981E0C846E4A00CB38F1 /* ROIManager.xib in Resources */,
-				CE3F981F0C846E4A00CB38F1 /* Send.xib in Resources */,
-				CE3F98200C846E4A00CB38F1 /* OrthogonalMPR.xib in Resources */,
-				CE3F98210C846E4A00CB38F1 /* Preferences.xib in Resources */,
-				CE3F98220C846E4A00CB38F1 /* Endoscopy.xib in Resources */,
-				CE3F98230C846E4A00CB38F1 /* LLMPR.xib in Resources */,
-				CE3F98240C846E4A00CB38F1 /* SRAnnotation.xib in Resources */,
-				CE3F98250C846E4A00CB38F1 /* ITKSegmentation.xib in Resources */,
-				CE3F98260C846E4A00CB38F1 /* Query.xib in Resources */,
-				CE3F98270C846E4A00CB38F1 /* Histogram.xib in Resources */,
-				CE3F982A0C846E4A00CB38F1 /* PluginManager.xib in Resources */,
-				CE3F982B0C846E4A00CB38F1 /* ThickSlab.xib in Resources */,
-				CE3F982D0C846E4A00CB38F1 /* WaitRendering.xib in Resources */,
-				CE3F982E0C846E4A00CB38F1 /* Plot.xib in Resources */,
-				CE3F982F0C846E4A00CB38F1 /* ROIVolume.xib in Resources */,
-				CE3F98300C846E4A00CB38F1 /* VRPanel.xib in Resources */,
-				CE3F98310C846E4A00CB38F1 /* VRVPRO.xib in Resources */,
-				CE3F98320C846E4A00CB38F1 /* MIP.xib in Resources */,
-				CE3F98330C846E4A00CB38F1 /* PaletteBrush.xib in Resources */,
-				CE3F98340C846E4A00CB38F1 /* Anonymize.xib in Resources */,
-				CE3F98350C846E4A00CB38F1 /* LLScoutView.xib in Resources */,
-				CE3F98360C846E4A00CB38F1 /* BurnViewer.xib in Resources */,
-				CE3F98370C846E4A00CB38F1 /* ROIDefaults.xib in Resources */,
-				CE3F98380C846E4A00CB38F1 /* VR.xib in Resources */,
-				CE3F98390C846E4A00CB38F1 /* Viewer.xib in Resources */,
-				CE3F983A0C846E4A00CB38F1 /* QuicktimeExport.xib in Resources */,
-				CE3F983B0C846E4A00CB38F1 /* SR.xib in Resources */,
-				CE3F983D0C846E4A00CB38F1 /* MainMenu.xib in Resources */,
-				CE3F983E0C846E4A00CB38F1 /* Wait.xib in Resources */,
-				CE3F983F0C846E4A00CB38F1 /* StructuredReport.xib in Resources */,
-				CE3F98400C846E4A00CB38F1 /* XMLViewer.xib in Resources */,
-				CE3F98410C846E4A00CB38F1 /* AYDicomPrint.xib in Resources */,
+				CE3F99730C84724B00CB38F1 /* Placeholder.xib in Resources */,
+				CE3F99740C84724B00CB38F1 /* Survey.xib in Resources */,
+				CE3F99750C84724B00CB38F1 /* SmartAlbum.xib in Resources */,
+				CE3F99760C84724B00CB38F1 /* ROIVolumeManager.xib in Resources */,
+				CE3F99770C84724B00CB38F1 /* PETCT.xib in Resources */,
+				CE3F99780C84724B00CB38F1 /* LogWindow.xib in Resources */,
+				CE3F99790C84724B00CB38F1 /* FlyThru.xib in Resources */,
+				CE3F997A0C84724B00CB38F1 /* CenterlineSegmentation.xib in Resources */,
+				CE3F997B0C84724B00CB38F1 /* ToolbarPanel.xib in Resources */,
+				CE3F997C0C84724B00CB38F1 /* KeyObjectReport.xib in Resources */,
+				CE3F997D0C84724B00CB38F1 /* MSRGPanel.xib in Resources */,
+				CE3F997E0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */,
+				CE3F997F0C84724B00CB38F1 /* MPR2D.xib in Resources */,
+				CE3F99800C84724B00CB38F1 /* Layout.xib in Resources */,
+				CE3F99810C84724B00CB38F1 /* Splash.xib in Resources */,
+				CE3F99820C84724B00CB38F1 /* ROI.xib in Resources */,
+				CE3F99830C84724B00CB38F1 /* CalciumScoring.xib in Resources */,
+				CE3F99840C84724B00CB38F1 /* ROIManager.xib in Resources */,
+				CE3F99850C84724B00CB38F1 /* Send.xib in Resources */,
+				CE3F99860C84724B00CB38F1 /* OrthogonalMPR.xib in Resources */,
+				CE3F99870C84724B00CB38F1 /* Preferences.xib in Resources */,
+				CE3F99880C84724B00CB38F1 /* Endoscopy.xib in Resources */,
+				CE3F99890C84724B00CB38F1 /* LLMPR.xib in Resources */,
+				CE3F998A0C84724B00CB38F1 /* SRAnnotation.xib in Resources */,
+				CE3F998B0C84724B00CB38F1 /* ITKSegmentation.xib in Resources */,
+				CE3F998C0C84724B00CB38F1 /* Query.xib in Resources */,
+				CE3F998D0C84724B00CB38F1 /* Histogram.xib in Resources */,
+				CE3F998E0C84724B00CB38F1 /* PluginManager.xib in Resources */,
+				CE3F998F0C84724B00CB38F1 /* ThickSlab.xib in Resources */,
+				CE3F99900C84724B00CB38F1 /* WaitRendering.xib in Resources */,
+				CE3F99910C84724B00CB38F1 /* Plot.xib in Resources */,
+				CE3F99920C84724B00CB38F1 /* ROIVolume.xib in Resources */,
+				CE3F99930C84724B00CB38F1 /* VRPanel.xib in Resources */,
+				CE3F99940C84724B00CB38F1 /* VRVPRO.xib in Resources */,
+				CE3F99950C84724B00CB38F1 /* MIP.xib in Resources */,
+				CE3F99960C84724B00CB38F1 /* PaletteBrush.xib in Resources */,
+				CE3F99970C84724B00CB38F1 /* Anonymize.xib in Resources */,
+				CE3F99980C84724B00CB38F1 /* LLScoutView.xib in Resources */,
+				CE3F99990C84724B00CB38F1 /* BurnViewer.xib in Resources */,
+				CE3F999A0C84724B00CB38F1 /* ROIDefaults.xib in Resources */,
+				CE3F999B0C84724B00CB38F1 /* VR.xib in Resources */,
+				CE3F999C0C84724B00CB38F1 /* QuicktimeExport.xib in Resources */,
+				CE3F999D0C84724B00CB38F1 /* SR.xib in Resources */,
+				CE3F999E0C84724B00CB38F1 /* Viewer.xib in Resources */,
+				CE3F999F0C84724B00CB38F1 /* MainMenu.xib in Resources */,
+				CE3F99A00C84724B00CB38F1 /* Wait.xib in Resources */,
+				CE3F99A10C84724B00CB38F1 /* StructuredReport.xib in Resources */,
+				CE3F99A20C84724B00CB38F1 /* XMLViewer.xib in Resources */,
+				CE3F99A30C84724B00CB38F1 /* AYDicomPrint.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24531,394 +24531,394 @@
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
-		CE3F975E0C846E4900CB38F1 /* Placeholder.xib */ = {
+		CE3F98E00C84724B00CB38F1 /* Placeholder.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F975F0C846E4900CB38F1 /* English */,
+				CE3F98E10C84724B00CB38F1 /* English */,
 			);
 			name = Placeholder.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97600C846E4900CB38F1 /* Survey.xib */ = {
+		CE3F98E20C84724B00CB38F1 /* Survey.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97610C846E4900CB38F1 /* English */,
+				CE3F98E30C84724B00CB38F1 /* English */,
 			);
 			name = Survey.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97640C846E4900CB38F1 /* SmartAlbum.xib */ = {
+		CE3F98E40C84724B00CB38F1 /* SmartAlbum.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97650C846E4900CB38F1 /* English */,
+				CE3F98E50C84724B00CB38F1 /* English */,
 			);
 			name = SmartAlbum.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97660C846E4900CB38F1 /* ROIVolumeManager.xib */ = {
+		CE3F98E60C84724B00CB38F1 /* ROIVolumeManager.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97670C846E4900CB38F1 /* English */,
+				CE3F98E70C84724B00CB38F1 /* English */,
 			);
 			name = ROIVolumeManager.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97680C846E4900CB38F1 /* PETCT.xib */ = {
+		CE3F98E80C84724B00CB38F1 /* PETCT.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97690C846E4900CB38F1 /* English */,
+				CE3F98E90C84724B00CB38F1 /* English */,
 			);
 			name = PETCT.xib;
 			sourceTree = "<group>";
 		};
-		CE3F976A0C846E4900CB38F1 /* LogWindow.xib */ = {
+		CE3F98EA0C84724B00CB38F1 /* LogWindow.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F976B0C846E4900CB38F1 /* English */,
+				CE3F98EB0C84724B00CB38F1 /* English */,
 			);
 			name = LogWindow.xib;
 			sourceTree = "<group>";
 		};
-		CE3F976C0C846E4900CB38F1 /* FlyThru.xib */ = {
+		CE3F98EC0C84724B00CB38F1 /* FlyThru.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F976D0C846E4900CB38F1 /* English */,
+				CE3F98ED0C84724B00CB38F1 /* English */,
 			);
 			name = FlyThru.xib;
 			sourceTree = "<group>";
 		};
-		CE3F976E0C846E4900CB38F1 /* CenterlineSegmentation.xib */ = {
+		CE3F98EE0C84724B00CB38F1 /* CenterlineSegmentation.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F976F0C846E4900CB38F1 /* English */,
+				CE3F98EF0C84724B00CB38F1 /* English */,
 			);
 			name = CenterlineSegmentation.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97700C846E4900CB38F1 /* ToolbarPanel.xib */ = {
+		CE3F98F00C84724B00CB38F1 /* ToolbarPanel.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97710C846E4900CB38F1 /* English */,
+				CE3F98F10C84724B00CB38F1 /* English */,
 			);
 			name = ToolbarPanel.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97720C846E4900CB38F1 /* KeyObjectReport.xib */ = {
+		CE3F98F20C84724B00CB38F1 /* KeyObjectReport.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97730C846E4900CB38F1 /* English */,
+				CE3F98F30C84724B00CB38F1 /* English */,
 			);
 			name = KeyObjectReport.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97740C846E4900CB38F1 /* MSRGPanel.xib */ = {
+		CE3F98F40C84724B00CB38F1 /* MSRGPanel.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97750C846E4900CB38F1 /* English */,
+				CE3F98F50C84724B00CB38F1 /* English */,
 			);
 			name = MSRGPanel.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97780C846E4900CB38F1 /* PreferencePanesViewer.xib */ = {
+		CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97790C846E4900CB38F1 /* English */,
+				CE3F98F70C84724B00CB38F1 /* English */,
 			);
 			name = PreferencePanesViewer.xib;
 			sourceTree = "<group>";
 		};
-		CE3F977A0C846E4900CB38F1 /* MPR2D.xib */ = {
+		CE3F98F80C84724B00CB38F1 /* MPR2D.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F977B0C846E4900CB38F1 /* English */,
+				CE3F98F90C84724B00CB38F1 /* English */,
 			);
 			name = MPR2D.xib;
 			sourceTree = "<group>";
 		};
-		CE3F977C0C846E4900CB38F1 /* Layout.xib */ = {
+		CE3F98FA0C84724B00CB38F1 /* Layout.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F977D0C846E4900CB38F1 /* English */,
+				CE3F98FB0C84724B00CB38F1 /* English */,
 			);
 			name = Layout.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97800C846E4900CB38F1 /* Splash.xib */ = {
+		CE3F98FC0C84724B00CB38F1 /* Splash.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97810C846E4900CB38F1 /* English */,
+				CE3F98FD0C84724B00CB38F1 /* English */,
 			);
 			name = Splash.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97820C846E4900CB38F1 /* ROI.xib */ = {
+		CE3F98FE0C84724B00CB38F1 /* ROI.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97830C846E4900CB38F1 /* English */,
+				CE3F98FF0C84724B00CB38F1 /* English */,
 			);
 			name = ROI.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97840C846E4900CB38F1 /* CalciumScoring.xib */ = {
+		CE3F99000C84724B00CB38F1 /* CalciumScoring.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97850C846E4900CB38F1 /* English */,
+				CE3F99010C84724B00CB38F1 /* English */,
 			);
 			name = CalciumScoring.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97880C846E4900CB38F1 /* ROIManager.xib */ = {
+		CE3F99020C84724B00CB38F1 /* ROIManager.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97890C846E4900CB38F1 /* English */,
+				CE3F99030C84724B00CB38F1 /* English */,
 			);
 			name = ROIManager.xib;
 			sourceTree = "<group>";
 		};
-		CE3F978A0C846E4900CB38F1 /* Send.xib */ = {
+		CE3F99040C84724B00CB38F1 /* Send.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F978B0C846E4900CB38F1 /* English */,
+				CE3F99050C84724B00CB38F1 /* English */,
 			);
 			name = Send.xib;
 			sourceTree = "<group>";
 		};
-		CE3F978C0C846E4900CB38F1 /* OrthogonalMPR.xib */ = {
+		CE3F99060C84724B00CB38F1 /* OrthogonalMPR.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F978D0C846E4900CB38F1 /* English */,
+				CE3F99070C84724B00CB38F1 /* English */,
 			);
 			name = OrthogonalMPR.xib;
 			sourceTree = "<group>";
 		};
-		CE3F978E0C846E4900CB38F1 /* Preferences.xib */ = {
+		CE3F99080C84724B00CB38F1 /* Preferences.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F978F0C846E4900CB38F1 /* English */,
+				CE3F99090C84724B00CB38F1 /* English */,
 			);
 			name = Preferences.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97900C846E4900CB38F1 /* Endoscopy.xib */ = {
+		CE3F990A0C84724B00CB38F1 /* Endoscopy.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97910C846E4900CB38F1 /* English */,
+				CE3F990B0C84724B00CB38F1 /* English */,
 			);
 			name = Endoscopy.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97920C846E4900CB38F1 /* LLMPR.xib */ = {
+		CE3F990C0C84724B00CB38F1 /* LLMPR.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97930C846E4900CB38F1 /* English */,
+				CE3F990D0C84724B00CB38F1 /* English */,
 			);
 			name = LLMPR.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97940C846E4900CB38F1 /* SRAnnotation.xib */ = {
+		CE3F990E0C84724B00CB38F1 /* SRAnnotation.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97950C846E4900CB38F1 /* English */,
+				CE3F990F0C84724B00CB38F1 /* English */,
 			);
 			name = SRAnnotation.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97960C846E4900CB38F1 /* ITKSegmentation.xib */ = {
+		CE3F99100C84724B00CB38F1 /* ITKSegmentation.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97970C846E4900CB38F1 /* English */,
+				CE3F99110C84724B00CB38F1 /* English */,
 			);
 			name = ITKSegmentation.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97980C846E4900CB38F1 /* Query.xib */ = {
+		CE3F99120C84724B00CB38F1 /* Query.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97990C846E4900CB38F1 /* English */,
+				CE3F99130C84724B00CB38F1 /* English */,
 			);
 			name = Query.xib;
 			sourceTree = "<group>";
 		};
-		CE3F979A0C846E4900CB38F1 /* Histogram.xib */ = {
+		CE3F99140C84724B00CB38F1 /* Histogram.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F979B0C846E4900CB38F1 /* English */,
+				CE3F99150C84724B00CB38F1 /* English */,
 			);
 			name = Histogram.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97A00C846E4900CB38F1 /* PluginManager.xib */ = {
+		CE3F99160C84724B00CB38F1 /* PluginManager.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97A10C846E4900CB38F1 /* English */,
+				CE3F99170C84724B00CB38F1 /* English */,
 			);
 			name = PluginManager.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97A20C846E4900CB38F1 /* ThickSlab.xib */ = {
+		CE3F99180C84724B00CB38F1 /* ThickSlab.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97A30C846E4900CB38F1 /* English */,
+				CE3F99190C84724B00CB38F1 /* English */,
 			);
 			name = ThickSlab.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97A60C846E4900CB38F1 /* WaitRendering.xib */ = {
+		CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97A70C846E4900CB38F1 /* English */,
+				CE3F991B0C84724B00CB38F1 /* English */,
 			);
 			name = WaitRendering.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97A80C846E4900CB38F1 /* Plot.xib */ = {
+		CE3F991C0C84724B00CB38F1 /* Plot.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97A90C846E4900CB38F1 /* English */,
+				CE3F991D0C84724B00CB38F1 /* English */,
 			);
 			name = Plot.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97AA0C846E4900CB38F1 /* ROIVolume.xib */ = {
+		CE3F991E0C84724B00CB38F1 /* ROIVolume.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97AB0C846E4900CB38F1 /* English */,
+				CE3F991F0C84724B00CB38F1 /* English */,
 			);
 			name = ROIVolume.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97AC0C846E4900CB38F1 /* VRPanel.xib */ = {
+		CE3F99200C84724B00CB38F1 /* VRPanel.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97AD0C846E4900CB38F1 /* English */,
+				CE3F99210C84724B00CB38F1 /* English */,
 			);
 			name = VRPanel.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97AE0C846E4900CB38F1 /* VRVPRO.xib */ = {
+		CE3F99220C84724B00CB38F1 /* VRVPRO.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97AF0C846E4900CB38F1 /* English */,
+				CE3F99230C84724B00CB38F1 /* English */,
 			);
 			name = VRVPRO.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97B00C846E4900CB38F1 /* MIP.xib */ = {
+		CE3F99240C84724B00CB38F1 /* MIP.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97B10C846E4900CB38F1 /* English */,
+				CE3F99250C84724B00CB38F1 /* English */,
 			);
 			name = MIP.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97B20C846E4900CB38F1 /* PaletteBrush.xib */ = {
+		CE3F99260C84724B00CB38F1 /* PaletteBrush.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97B30C846E4900CB38F1 /* English */,
+				CE3F99270C84724B00CB38F1 /* English */,
 			);
 			name = PaletteBrush.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97B40C846E4900CB38F1 /* Anonymize.xib */ = {
+		CE3F99280C84724B00CB38F1 /* Anonymize.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97B50C846E4900CB38F1 /* English */,
+				CE3F99290C84724B00CB38F1 /* English */,
 			);
 			name = Anonymize.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97B60C846E4900CB38F1 /* LLScoutView.xib */ = {
+		CE3F992A0C84724B00CB38F1 /* LLScoutView.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97B70C846E4900CB38F1 /* English */,
+				CE3F992B0C84724B00CB38F1 /* English */,
 			);
 			name = LLScoutView.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97B80C846E4900CB38F1 /* BurnViewer.xib */ = {
+		CE3F992C0C84724B00CB38F1 /* BurnViewer.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97B90C846E4900CB38F1 /* English */,
+				CE3F992D0C84724B00CB38F1 /* English */,
 			);
 			name = BurnViewer.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97BA0C846E4900CB38F1 /* ROIDefaults.xib */ = {
+		CE3F992E0C84724B00CB38F1 /* ROIDefaults.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97BB0C846E4900CB38F1 /* English */,
+				CE3F992F0C84724B00CB38F1 /* English */,
 			);
 			name = ROIDefaults.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97BC0C846E4900CB38F1 /* VR.xib */ = {
+		CE3F99300C84724B00CB38F1 /* VR.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97BD0C846E4900CB38F1 /* English */,
+				CE3F99310C84724B00CB38F1 /* English */,
 			);
 			name = VR.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97BE0C846E4900CB38F1 /* Viewer.xib */ = {
+		CE3F99320C84724B00CB38F1 /* QuicktimeExport.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97BF0C846E4900CB38F1 /* English */,
-			);
-			name = Viewer.xib;
-			sourceTree = "<group>";
-		};
-		CE3F97C00C846E4900CB38F1 /* QuicktimeExport.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F97C10C846E4900CB38F1 /* English */,
+				CE3F99330C84724B00CB38F1 /* English */,
 			);
 			name = QuicktimeExport.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97C20C846E4900CB38F1 /* SR.xib */ = {
+		CE3F99340C84724B00CB38F1 /* SR.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97C30C846E4900CB38F1 /* English */,
+				CE3F99350C84724B00CB38F1 /* English */,
 			);
 			name = SR.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97C60C846E4900CB38F1 /* MainMenu.xib */ = {
+		CE3F99360C84724B00CB38F1 /* Viewer.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97C70C846E4900CB38F1 /* English */,
+				CE3F99370C84724B00CB38F1 /* English */,
+			);
+			name = Viewer.xib;
+			sourceTree = "<group>";
+		};
+		CE3F99380C84724B00CB38F1 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE3F99390C84724B00CB38F1 /* English */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97C80C846E4900CB38F1 /* Wait.xib */ = {
+		CE3F993A0C84724B00CB38F1 /* Wait.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97C90C846E4900CB38F1 /* English */,
+				CE3F993B0C84724B00CB38F1 /* English */,
 			);
 			name = Wait.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97CA0C846E4900CB38F1 /* StructuredReport.xib */ = {
+		CE3F993C0C84724B00CB38F1 /* StructuredReport.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97CB0C846E4900CB38F1 /* English */,
+				CE3F993D0C84724B00CB38F1 /* English */,
 			);
 			name = StructuredReport.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97CC0C846E4A00CB38F1 /* XMLViewer.xib */ = {
+		CE3F993E0C84724B00CB38F1 /* XMLViewer.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97CD0C846E4A00CB38F1 /* English */,
+				CE3F993F0C84724B00CB38F1 /* English */,
 			);
 			name = XMLViewer.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97CE0C846E4A00CB38F1 /* AYDicomPrint.xib */ = {
+		CE3F99400C84724B00CB38F1 /* AYDicomPrint.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE3F97CF0C846E4A00CB38F1 /* English */,
+				CE3F99410C84724B00CB38F1 /* English */,
 			);
 			name = AYDicomPrint.xib;
 			sourceTree = "<group>";
