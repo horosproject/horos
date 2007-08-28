@@ -6328,7 +6328,6 @@
 		CE3F888A08ED63E300F4E202 /* vtkZLibDataCompressor.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3F7B0D08ED63DF00F4E202 /* vtkZLibDataCompressor.h */; };
 		CE3F97D00C846E4A00CB38F1 /* Placeholder.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F975E0C846E4900CB38F1 /* Placeholder.xib */; };
 		CE3F97D10C846E4A00CB38F1 /* Survey.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97600C846E4900CB38F1 /* Survey.xib */; };
-		CE3F97D20C846E4A00CB38F1 /* HuVR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97620C846E4900CB38F1 /* HuVR.xib */; };
 		CE3F97D30C846E4A00CB38F1 /* SmartAlbum.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97640C846E4900CB38F1 /* SmartAlbum.xib */; };
 		CE3F97D40C846E4A00CB38F1 /* ROIVolumeManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97660C846E4900CB38F1 /* ROIVolumeManager.xib */; };
 		CE3F97D50C846E4A00CB38F1 /* PETCT.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97680C846E4900CB38F1 /* PETCT.xib */; };
@@ -6338,15 +6337,12 @@
 		CE3F97D90C846E4A00CB38F1 /* ToolbarPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97700C846E4900CB38F1 /* ToolbarPanel.xib */; };
 		CE3F97DA0C846E4A00CB38F1 /* KeyObjectReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97720C846E4900CB38F1 /* KeyObjectReport.xib */; };
 		CE3F97DB0C846E4A00CB38F1 /* MSRGPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97740C846E4900CB38F1 /* MSRGPanel.xib */; };
-		CE3F97DC0C846E4A00CB38F1 /* MPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97760C846E4900CB38F1 /* MPR.xib */; };
 		CE3F97DD0C846E4A00CB38F1 /* PreferencePanesViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97780C846E4900CB38F1 /* PreferencePanesViewer.xib */; };
 		CE3F97DE0C846E4A00CB38F1 /* MPR2D.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F977A0C846E4900CB38F1 /* MPR2D.xib */; };
 		CE3F97DF0C846E4A00CB38F1 /* Layout.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F977C0C846E4900CB38F1 /* Layout.xib */; };
-		CE3F97E00C846E4A00CB38F1 /* SplashQtz.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F977E0C846E4900CB38F1 /* SplashQtz.xib */; };
 		CE3F97E10C846E4A00CB38F1 /* Splash.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97800C846E4900CB38F1 /* Splash.xib */; };
 		CE3F97E20C846E4A00CB38F1 /* ROI.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97820C846E4900CB38F1 /* ROI.xib */; };
 		CE3F97E30C846E4A00CB38F1 /* CalciumScoring.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97840C846E4900CB38F1 /* CalciumScoring.xib */; };
-		CE3F97E40C846E4A00CB38F1 /* FindSCU.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97860C846E4900CB38F1 /* FindSCU.xib */; };
 		CE3F97E50C846E4A00CB38F1 /* ROIManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97880C846E4900CB38F1 /* ROIManager.xib */; };
 		CE3F97E60C846E4A00CB38F1 /* Send.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F978A0C846E4900CB38F1 /* Send.xib */; };
 		CE3F97E70C846E4A00CB38F1 /* OrthogonalMPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F978C0C846E4900CB38F1 /* OrthogonalMPR.xib */; };
@@ -6357,11 +6353,8 @@
 		CE3F97EC0C846E4A00CB38F1 /* ITKSegmentation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97960C846E4900CB38F1 /* ITKSegmentation.xib */; };
 		CE3F97ED0C846E4A00CB38F1 /* Query.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97980C846E4900CB38F1 /* Query.xib */; };
 		CE3F97EE0C846E4A00CB38F1 /* Histogram.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F979A0C846E4900CB38F1 /* Histogram.xib */; };
-		CE3F97EF0C846E4A00CB38F1 /* MIPPET.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F979C0C846E4900CB38F1 /* MIPPET.xib */; };
-		CE3F97F00C846E4A00CB38F1 /* SearchWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F979E0C846E4900CB38F1 /* SearchWindow.xib */; };
 		CE3F97F10C846E4A00CB38F1 /* PluginManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A00C846E4900CB38F1 /* PluginManager.xib */; };
 		CE3F97F20C846E4A00CB38F1 /* ThickSlab.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A20C846E4900CB38F1 /* ThickSlab.xib */; };
-		CE3F97F30C846E4A00CB38F1 /* SingleWindowViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A40C846E4900CB38F1 /* SingleWindowViewer.xib */; };
 		CE3F97F40C846E4A00CB38F1 /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A60C846E4900CB38F1 /* WaitRendering.xib */; };
 		CE3F97F50C846E4A00CB38F1 /* Plot.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A80C846E4900CB38F1 /* Plot.xib */; };
 		CE3F97F60C846E4A00CB38F1 /* ROIVolume.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97AA0C846E4900CB38F1 /* ROIVolume.xib */; };
@@ -6377,7 +6370,6 @@
 		CE3F98000C846E4A00CB38F1 /* Viewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97BE0C846E4900CB38F1 /* Viewer.xib */; };
 		CE3F98010C846E4A00CB38F1 /* QuicktimeExport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C00C846E4900CB38F1 /* QuicktimeExport.xib */; };
 		CE3F98020C846E4A00CB38F1 /* SR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C20C846E4900CB38F1 /* SR.xib */; };
-		CE3F98030C846E4A00CB38F1 /* ComplexCLUTVR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C40C846E4900CB38F1 /* ComplexCLUTVR.xib */; };
 		CE3F98040C846E4A00CB38F1 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C60C846E4900CB38F1 /* MainMenu.xib */; };
 		CE3F98050C846E4A00CB38F1 /* Wait.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C80C846E4900CB38F1 /* Wait.xib */; };
 		CE3F98060C846E4A00CB38F1 /* StructuredReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97CA0C846E4900CB38F1 /* StructuredReport.xib */; };
@@ -6385,7 +6377,6 @@
 		CE3F98080C846E4A00CB38F1 /* AYDicomPrint.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97CE0C846E4A00CB38F1 /* AYDicomPrint.xib */; };
 		CE3F98090C846E4A00CB38F1 /* Placeholder.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F975E0C846E4900CB38F1 /* Placeholder.xib */; };
 		CE3F980A0C846E4A00CB38F1 /* Survey.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97600C846E4900CB38F1 /* Survey.xib */; };
-		CE3F980B0C846E4A00CB38F1 /* HuVR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97620C846E4900CB38F1 /* HuVR.xib */; };
 		CE3F980C0C846E4A00CB38F1 /* SmartAlbum.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97640C846E4900CB38F1 /* SmartAlbum.xib */; };
 		CE3F980D0C846E4A00CB38F1 /* ROIVolumeManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97660C846E4900CB38F1 /* ROIVolumeManager.xib */; };
 		CE3F980E0C846E4A00CB38F1 /* PETCT.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97680C846E4900CB38F1 /* PETCT.xib */; };
@@ -6395,15 +6386,12 @@
 		CE3F98120C846E4A00CB38F1 /* ToolbarPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97700C846E4900CB38F1 /* ToolbarPanel.xib */; };
 		CE3F98130C846E4A00CB38F1 /* KeyObjectReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97720C846E4900CB38F1 /* KeyObjectReport.xib */; };
 		CE3F98140C846E4A00CB38F1 /* MSRGPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97740C846E4900CB38F1 /* MSRGPanel.xib */; };
-		CE3F98150C846E4A00CB38F1 /* MPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97760C846E4900CB38F1 /* MPR.xib */; };
 		CE3F98160C846E4A00CB38F1 /* PreferencePanesViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97780C846E4900CB38F1 /* PreferencePanesViewer.xib */; };
 		CE3F98170C846E4A00CB38F1 /* MPR2D.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F977A0C846E4900CB38F1 /* MPR2D.xib */; };
 		CE3F98180C846E4A00CB38F1 /* Layout.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F977C0C846E4900CB38F1 /* Layout.xib */; };
-		CE3F98190C846E4A00CB38F1 /* SplashQtz.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F977E0C846E4900CB38F1 /* SplashQtz.xib */; };
 		CE3F981A0C846E4A00CB38F1 /* Splash.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97800C846E4900CB38F1 /* Splash.xib */; };
 		CE3F981B0C846E4A00CB38F1 /* ROI.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97820C846E4900CB38F1 /* ROI.xib */; };
 		CE3F981C0C846E4A00CB38F1 /* CalciumScoring.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97840C846E4900CB38F1 /* CalciumScoring.xib */; };
-		CE3F981D0C846E4A00CB38F1 /* FindSCU.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97860C846E4900CB38F1 /* FindSCU.xib */; };
 		CE3F981E0C846E4A00CB38F1 /* ROIManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97880C846E4900CB38F1 /* ROIManager.xib */; };
 		CE3F981F0C846E4A00CB38F1 /* Send.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F978A0C846E4900CB38F1 /* Send.xib */; };
 		CE3F98200C846E4A00CB38F1 /* OrthogonalMPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F978C0C846E4900CB38F1 /* OrthogonalMPR.xib */; };
@@ -6414,11 +6402,8 @@
 		CE3F98250C846E4A00CB38F1 /* ITKSegmentation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97960C846E4900CB38F1 /* ITKSegmentation.xib */; };
 		CE3F98260C846E4A00CB38F1 /* Query.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97980C846E4900CB38F1 /* Query.xib */; };
 		CE3F98270C846E4A00CB38F1 /* Histogram.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F979A0C846E4900CB38F1 /* Histogram.xib */; };
-		CE3F98280C846E4A00CB38F1 /* MIPPET.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F979C0C846E4900CB38F1 /* MIPPET.xib */; };
-		CE3F98290C846E4A00CB38F1 /* SearchWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F979E0C846E4900CB38F1 /* SearchWindow.xib */; };
 		CE3F982A0C846E4A00CB38F1 /* PluginManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A00C846E4900CB38F1 /* PluginManager.xib */; };
 		CE3F982B0C846E4A00CB38F1 /* ThickSlab.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A20C846E4900CB38F1 /* ThickSlab.xib */; };
-		CE3F982C0C846E4A00CB38F1 /* SingleWindowViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A40C846E4900CB38F1 /* SingleWindowViewer.xib */; };
 		CE3F982D0C846E4A00CB38F1 /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A60C846E4900CB38F1 /* WaitRendering.xib */; };
 		CE3F982E0C846E4A00CB38F1 /* Plot.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97A80C846E4900CB38F1 /* Plot.xib */; };
 		CE3F982F0C846E4A00CB38F1 /* ROIVolume.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97AA0C846E4900CB38F1 /* ROIVolume.xib */; };
@@ -6434,7 +6419,6 @@
 		CE3F98390C846E4A00CB38F1 /* Viewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97BE0C846E4900CB38F1 /* Viewer.xib */; };
 		CE3F983A0C846E4A00CB38F1 /* QuicktimeExport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C00C846E4900CB38F1 /* QuicktimeExport.xib */; };
 		CE3F983B0C846E4A00CB38F1 /* SR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C20C846E4900CB38F1 /* SR.xib */; };
-		CE3F983C0C846E4A00CB38F1 /* ComplexCLUTVR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C40C846E4900CB38F1 /* ComplexCLUTVR.xib */; };
 		CE3F983D0C846E4A00CB38F1 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C60C846E4900CB38F1 /* MainMenu.xib */; };
 		CE3F983E0C846E4A00CB38F1 /* Wait.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97C80C846E4900CB38F1 /* Wait.xib */; };
 		CE3F983F0C846E4A00CB38F1 /* StructuredReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F97CA0C846E4900CB38F1 /* StructuredReport.xib */; };
@@ -11422,7 +11406,6 @@
 		CE3F7B0D08ED63DF00F4E202 /* vtkZLibDataCompressor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = vtkZLibDataCompressor.h; sourceTree = "<group>"; };
 		CE3F975F0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Placeholder.xib; sourceTree = "<group>"; };
 		CE3F97610C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Survey.xib; sourceTree = "<group>"; };
-		CE3F97630C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/HuVR.xib; sourceTree = "<group>"; };
 		CE3F97650C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/SmartAlbum.xib; sourceTree = "<group>"; };
 		CE3F97670C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIVolumeManager.xib; sourceTree = "<group>"; };
 		CE3F97690C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PETCT.xib; sourceTree = "<group>"; };
@@ -11432,15 +11415,12 @@
 		CE3F97710C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ToolbarPanel.xib; sourceTree = "<group>"; };
 		CE3F97730C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/KeyObjectReport.xib; sourceTree = "<group>"; };
 		CE3F97750C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MSRGPanel.xib; sourceTree = "<group>"; };
-		CE3F97770C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MPR.xib; sourceTree = "<group>"; };
 		CE3F97790C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PreferencePanesViewer.xib; sourceTree = "<group>"; };
 		CE3F977B0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MPR2D.xib; sourceTree = "<group>"; };
 		CE3F977D0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Layout.xib; sourceTree = "<group>"; };
-		CE3F977F0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/SplashQtz.xib; sourceTree = "<group>"; };
 		CE3F97810C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Splash.xib; sourceTree = "<group>"; };
 		CE3F97830C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROI.xib; sourceTree = "<group>"; };
 		CE3F97850C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CalciumScoring.xib; sourceTree = "<group>"; };
-		CE3F97870C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/FindSCU.xib; sourceTree = "<group>"; };
 		CE3F97890C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIManager.xib; sourceTree = "<group>"; };
 		CE3F978B0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Send.xib; sourceTree = "<group>"; };
 		CE3F978D0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/OrthogonalMPR.xib; sourceTree = "<group>"; };
@@ -11451,11 +11431,8 @@
 		CE3F97970C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ITKSegmentation.xib; sourceTree = "<group>"; };
 		CE3F97990C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Query.xib; sourceTree = "<group>"; };
 		CE3F979B0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Histogram.xib; sourceTree = "<group>"; };
-		CE3F979D0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MIPPET.xib; sourceTree = "<group>"; };
-		CE3F979F0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/SearchWindow.xib; sourceTree = "<group>"; };
 		CE3F97A10C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PluginManager.xib; sourceTree = "<group>"; };
 		CE3F97A30C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ThickSlab.xib; sourceTree = "<group>"; };
-		CE3F97A50C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/SingleWindowViewer.xib; sourceTree = "<group>"; };
 		CE3F97A70C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/WaitRendering.xib; sourceTree = "<group>"; };
 		CE3F97A90C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Plot.xib; sourceTree = "<group>"; };
 		CE3F97AB0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIVolume.xib; sourceTree = "<group>"; };
@@ -11471,7 +11448,6 @@
 		CE3F97BF0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Viewer.xib; sourceTree = "<group>"; };
 		CE3F97C10C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/QuicktimeExport.xib; sourceTree = "<group>"; };
 		CE3F97C30C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/SR.xib; sourceTree = "<group>"; };
-		CE3F97C50C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ComplexCLUTVR.xib; sourceTree = "<group>"; };
 		CE3F97C70C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		CE3F97C90C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Wait.xib; sourceTree = "<group>"; };
 		CE3F97CB0C846E4900CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/StructuredReport.xib; sourceTree = "<group>"; };
@@ -12116,7 +12092,6 @@
 				ABBB647A063587B200D9531F /* Icons */,
 				CE3F975E0C846E4900CB38F1 /* Placeholder.xib */,
 				CE3F97600C846E4900CB38F1 /* Survey.xib */,
-				CE3F97620C846E4900CB38F1 /* HuVR.xib */,
 				CE3F97640C846E4900CB38F1 /* SmartAlbum.xib */,
 				CE3F97660C846E4900CB38F1 /* ROIVolumeManager.xib */,
 				CE3F97680C846E4900CB38F1 /* PETCT.xib */,
@@ -12126,15 +12101,12 @@
 				CE3F97700C846E4900CB38F1 /* ToolbarPanel.xib */,
 				CE3F97720C846E4900CB38F1 /* KeyObjectReport.xib */,
 				CE3F97740C846E4900CB38F1 /* MSRGPanel.xib */,
-				CE3F97760C846E4900CB38F1 /* MPR.xib */,
 				CE3F97780C846E4900CB38F1 /* PreferencePanesViewer.xib */,
 				CE3F977A0C846E4900CB38F1 /* MPR2D.xib */,
 				CE3F977C0C846E4900CB38F1 /* Layout.xib */,
-				CE3F977E0C846E4900CB38F1 /* SplashQtz.xib */,
 				CE3F97800C846E4900CB38F1 /* Splash.xib */,
 				CE3F97820C846E4900CB38F1 /* ROI.xib */,
 				CE3F97840C846E4900CB38F1 /* CalciumScoring.xib */,
-				CE3F97860C846E4900CB38F1 /* FindSCU.xib */,
 				CE3F97880C846E4900CB38F1 /* ROIManager.xib */,
 				CE3F978A0C846E4900CB38F1 /* Send.xib */,
 				CE3F978C0C846E4900CB38F1 /* OrthogonalMPR.xib */,
@@ -12145,11 +12117,8 @@
 				CE3F97960C846E4900CB38F1 /* ITKSegmentation.xib */,
 				CE3F97980C846E4900CB38F1 /* Query.xib */,
 				CE3F979A0C846E4900CB38F1 /* Histogram.xib */,
-				CE3F979C0C846E4900CB38F1 /* MIPPET.xib */,
-				CE3F979E0C846E4900CB38F1 /* SearchWindow.xib */,
 				CE3F97A00C846E4900CB38F1 /* PluginManager.xib */,
 				CE3F97A20C846E4900CB38F1 /* ThickSlab.xib */,
-				CE3F97A40C846E4900CB38F1 /* SingleWindowViewer.xib */,
 				CE3F97A60C846E4900CB38F1 /* WaitRendering.xib */,
 				CE3F97A80C846E4900CB38F1 /* Plot.xib */,
 				CE3F97AA0C846E4900CB38F1 /* ROIVolume.xib */,
@@ -12165,7 +12134,6 @@
 				CE3F97BE0C846E4900CB38F1 /* Viewer.xib */,
 				CE3F97C00C846E4900CB38F1 /* QuicktimeExport.xib */,
 				CE3F97C20C846E4900CB38F1 /* SR.xib */,
-				CE3F97C40C846E4900CB38F1 /* ComplexCLUTVR.xib */,
 				CE3F97C60C846E4900CB38F1 /* MainMenu.xib */,
 				CE3F97C80C846E4900CB38F1 /* Wait.xib */,
 				CE3F97CA0C846E4900CB38F1 /* StructuredReport.xib */,
@@ -21202,7 +21170,6 @@
 				CEC4B5C10C7DF2D600AF5A76 /* 3DPRESETS in Resources */,
 				CE3F97D00C846E4A00CB38F1 /* Placeholder.xib in Resources */,
 				CE3F97D10C846E4A00CB38F1 /* Survey.xib in Resources */,
-				CE3F97D20C846E4A00CB38F1 /* HuVR.xib in Resources */,
 				CE3F97D30C846E4A00CB38F1 /* SmartAlbum.xib in Resources */,
 				CE3F97D40C846E4A00CB38F1 /* ROIVolumeManager.xib in Resources */,
 				CE3F97D50C846E4A00CB38F1 /* PETCT.xib in Resources */,
@@ -21212,15 +21179,12 @@
 				CE3F97D90C846E4A00CB38F1 /* ToolbarPanel.xib in Resources */,
 				CE3F97DA0C846E4A00CB38F1 /* KeyObjectReport.xib in Resources */,
 				CE3F97DB0C846E4A00CB38F1 /* MSRGPanel.xib in Resources */,
-				CE3F97DC0C846E4A00CB38F1 /* MPR.xib in Resources */,
 				CE3F97DD0C846E4A00CB38F1 /* PreferencePanesViewer.xib in Resources */,
 				CE3F97DE0C846E4A00CB38F1 /* MPR2D.xib in Resources */,
 				CE3F97DF0C846E4A00CB38F1 /* Layout.xib in Resources */,
-				CE3F97E00C846E4A00CB38F1 /* SplashQtz.xib in Resources */,
 				CE3F97E10C846E4A00CB38F1 /* Splash.xib in Resources */,
 				CE3F97E20C846E4A00CB38F1 /* ROI.xib in Resources */,
 				CE3F97E30C846E4A00CB38F1 /* CalciumScoring.xib in Resources */,
-				CE3F97E40C846E4A00CB38F1 /* FindSCU.xib in Resources */,
 				CE3F97E50C846E4A00CB38F1 /* ROIManager.xib in Resources */,
 				CE3F97E60C846E4A00CB38F1 /* Send.xib in Resources */,
 				CE3F97E70C846E4A00CB38F1 /* OrthogonalMPR.xib in Resources */,
@@ -21231,11 +21195,8 @@
 				CE3F97EC0C846E4A00CB38F1 /* ITKSegmentation.xib in Resources */,
 				CE3F97ED0C846E4A00CB38F1 /* Query.xib in Resources */,
 				CE3F97EE0C846E4A00CB38F1 /* Histogram.xib in Resources */,
-				CE3F97EF0C846E4A00CB38F1 /* MIPPET.xib in Resources */,
-				CE3F97F00C846E4A00CB38F1 /* SearchWindow.xib in Resources */,
 				CE3F97F10C846E4A00CB38F1 /* PluginManager.xib in Resources */,
 				CE3F97F20C846E4A00CB38F1 /* ThickSlab.xib in Resources */,
-				CE3F97F30C846E4A00CB38F1 /* SingleWindowViewer.xib in Resources */,
 				CE3F97F40C846E4A00CB38F1 /* WaitRendering.xib in Resources */,
 				CE3F97F50C846E4A00CB38F1 /* Plot.xib in Resources */,
 				CE3F97F60C846E4A00CB38F1 /* ROIVolume.xib in Resources */,
@@ -21251,7 +21212,6 @@
 				CE3F98000C846E4A00CB38F1 /* Viewer.xib in Resources */,
 				CE3F98010C846E4A00CB38F1 /* QuicktimeExport.xib in Resources */,
 				CE3F98020C846E4A00CB38F1 /* SR.xib in Resources */,
-				CE3F98030C846E4A00CB38F1 /* ComplexCLUTVR.xib in Resources */,
 				CE3F98040C846E4A00CB38F1 /* MainMenu.xib in Resources */,
 				CE3F98050C846E4A00CB38F1 /* Wait.xib in Resources */,
 				CE3F98060C846E4A00CB38F1 /* StructuredReport.xib in Resources */,
@@ -21614,7 +21574,6 @@
 				CEC4B5C20C7DF2D600AF5A76 /* 3DPRESETS in Resources */,
 				CE3F98090C846E4A00CB38F1 /* Placeholder.xib in Resources */,
 				CE3F980A0C846E4A00CB38F1 /* Survey.xib in Resources */,
-				CE3F980B0C846E4A00CB38F1 /* HuVR.xib in Resources */,
 				CE3F980C0C846E4A00CB38F1 /* SmartAlbum.xib in Resources */,
 				CE3F980D0C846E4A00CB38F1 /* ROIVolumeManager.xib in Resources */,
 				CE3F980E0C846E4A00CB38F1 /* PETCT.xib in Resources */,
@@ -21624,15 +21583,12 @@
 				CE3F98120C846E4A00CB38F1 /* ToolbarPanel.xib in Resources */,
 				CE3F98130C846E4A00CB38F1 /* KeyObjectReport.xib in Resources */,
 				CE3F98140C846E4A00CB38F1 /* MSRGPanel.xib in Resources */,
-				CE3F98150C846E4A00CB38F1 /* MPR.xib in Resources */,
 				CE3F98160C846E4A00CB38F1 /* PreferencePanesViewer.xib in Resources */,
 				CE3F98170C846E4A00CB38F1 /* MPR2D.xib in Resources */,
 				CE3F98180C846E4A00CB38F1 /* Layout.xib in Resources */,
-				CE3F98190C846E4A00CB38F1 /* SplashQtz.xib in Resources */,
 				CE3F981A0C846E4A00CB38F1 /* Splash.xib in Resources */,
 				CE3F981B0C846E4A00CB38F1 /* ROI.xib in Resources */,
 				CE3F981C0C846E4A00CB38F1 /* CalciumScoring.xib in Resources */,
-				CE3F981D0C846E4A00CB38F1 /* FindSCU.xib in Resources */,
 				CE3F981E0C846E4A00CB38F1 /* ROIManager.xib in Resources */,
 				CE3F981F0C846E4A00CB38F1 /* Send.xib in Resources */,
 				CE3F98200C846E4A00CB38F1 /* OrthogonalMPR.xib in Resources */,
@@ -21643,11 +21599,8 @@
 				CE3F98250C846E4A00CB38F1 /* ITKSegmentation.xib in Resources */,
 				CE3F98260C846E4A00CB38F1 /* Query.xib in Resources */,
 				CE3F98270C846E4A00CB38F1 /* Histogram.xib in Resources */,
-				CE3F98280C846E4A00CB38F1 /* MIPPET.xib in Resources */,
-				CE3F98290C846E4A00CB38F1 /* SearchWindow.xib in Resources */,
 				CE3F982A0C846E4A00CB38F1 /* PluginManager.xib in Resources */,
 				CE3F982B0C846E4A00CB38F1 /* ThickSlab.xib in Resources */,
-				CE3F982C0C846E4A00CB38F1 /* SingleWindowViewer.xib in Resources */,
 				CE3F982D0C846E4A00CB38F1 /* WaitRendering.xib in Resources */,
 				CE3F982E0C846E4A00CB38F1 /* Plot.xib in Resources */,
 				CE3F982F0C846E4A00CB38F1 /* ROIVolume.xib in Resources */,
@@ -21663,7 +21616,6 @@
 				CE3F98390C846E4A00CB38F1 /* Viewer.xib in Resources */,
 				CE3F983A0C846E4A00CB38F1 /* QuicktimeExport.xib in Resources */,
 				CE3F983B0C846E4A00CB38F1 /* SR.xib in Resources */,
-				CE3F983C0C846E4A00CB38F1 /* ComplexCLUTVR.xib in Resources */,
 				CE3F983D0C846E4A00CB38F1 /* MainMenu.xib in Resources */,
 				CE3F983E0C846E4A00CB38F1 /* Wait.xib in Resources */,
 				CE3F983F0C846E4A00CB38F1 /* StructuredReport.xib in Resources */,
@@ -24595,14 +24547,6 @@
 			name = Survey.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97620C846E4900CB38F1 /* HuVR.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F97630C846E4900CB38F1 /* English */,
-			);
-			name = HuVR.xib;
-			sourceTree = "<group>";
-		};
 		CE3F97640C846E4900CB38F1 /* SmartAlbum.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -24675,14 +24619,6 @@
 			name = MSRGPanel.xib;
 			sourceTree = "<group>";
 		};
-		CE3F97760C846E4900CB38F1 /* MPR.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F97770C846E4900CB38F1 /* English */,
-			);
-			name = MPR.xib;
-			sourceTree = "<group>";
-		};
 		CE3F97780C846E4900CB38F1 /* PreferencePanesViewer.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -24707,14 +24643,6 @@
 			name = Layout.xib;
 			sourceTree = "<group>";
 		};
-		CE3F977E0C846E4900CB38F1 /* SplashQtz.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F977F0C846E4900CB38F1 /* English */,
-			);
-			name = SplashQtz.xib;
-			sourceTree = "<group>";
-		};
 		CE3F97800C846E4900CB38F1 /* Splash.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -24737,14 +24665,6 @@
 				CE3F97850C846E4900CB38F1 /* English */,
 			);
 			name = CalciumScoring.xib;
-			sourceTree = "<group>";
-		};
-		CE3F97860C846E4900CB38F1 /* FindSCU.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F97870C846E4900CB38F1 /* English */,
-			);
-			name = FindSCU.xib;
 			sourceTree = "<group>";
 		};
 		CE3F97880C846E4900CB38F1 /* ROIManager.xib */ = {
@@ -24827,22 +24747,6 @@
 			name = Histogram.xib;
 			sourceTree = "<group>";
 		};
-		CE3F979C0C846E4900CB38F1 /* MIPPET.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F979D0C846E4900CB38F1 /* English */,
-			);
-			name = MIPPET.xib;
-			sourceTree = "<group>";
-		};
-		CE3F979E0C846E4900CB38F1 /* SearchWindow.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F979F0C846E4900CB38F1 /* English */,
-			);
-			name = SearchWindow.xib;
-			sourceTree = "<group>";
-		};
 		CE3F97A00C846E4900CB38F1 /* PluginManager.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -24857,14 +24761,6 @@
 				CE3F97A30C846E4900CB38F1 /* English */,
 			);
 			name = ThickSlab.xib;
-			sourceTree = "<group>";
-		};
-		CE3F97A40C846E4900CB38F1 /* SingleWindowViewer.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F97A50C846E4900CB38F1 /* English */,
-			);
-			name = SingleWindowViewer.xib;
 			sourceTree = "<group>";
 		};
 		CE3F97A60C846E4900CB38F1 /* WaitRendering.xib */ = {
@@ -24985,14 +24881,6 @@
 				CE3F97C30C846E4900CB38F1 /* English */,
 			);
 			name = SR.xib;
-			sourceTree = "<group>";
-		};
-		CE3F97C40C846E4900CB38F1 /* ComplexCLUTVR.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F97C50C846E4900CB38F1 /* English */,
-			);
-			name = ComplexCLUTVR.xib;
 			sourceTree = "<group>";
 		};
 		CE3F97C60C846E4900CB38F1 /* MainMenu.xib */ = {
