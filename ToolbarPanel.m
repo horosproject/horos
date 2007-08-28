@@ -35,7 +35,9 @@ extern BOOL USETOOLBARPANEL;
 //	if( [[[self window] toolbar] isVisible] == NO) dstframe.size.height = 12;
 //	else dstframe.size.height = [ToolbarPanelController fixedHeight];
 
-	if( [[[self window] toolbar] isVisible] == NO) [[[self window] toolbar] setVisible: YES];
+//	if( [[[self window] toolbar] isVisible] == NO)
+//		[[[self window] toolbar] setVisible: YES];
+
 	dstframe.size.height = [ToolbarPanelController fixedHeight];
 	dstframe.size.width = screenRect.size.width;
 	dstframe.origin.x = screenRect.origin.x;
@@ -43,7 +45,7 @@ extern BOOL USETOOLBARPANEL;
 	
 //	NSLog(@"X: %2.2f Y:%2.2f", dstframe.origin.x, dstframe.origin.y);
 	
-	[[self window] setFrame:dstframe display:YES];
+	[[self window] setFrame:dstframe display: YES];
 }
 
 - (id)initForScreen: (long) s
@@ -154,9 +156,9 @@ extern BOOL USETOOLBARPANEL;
 	if( toolbar)
 	{
 		[[self window] setToolbar: 0L];
+		[[self window] setToolbar: toolbar];
 		[[self window] setShowsToolbarButton:NO];
 		[[[self window] toolbar] setVisible: YES];
-		[[self window] setToolbar: toolbar];
 	}
 
 	if( toolbar) [[self window] orderBack: self];
