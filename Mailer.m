@@ -59,77 +59,37 @@ return [NSString stringWithFormat:@"[unconverted AEDesc, type=\"%c%c%c%c\"]", ((
 @implementation Mailer
 
 
-- (NSString *)mailScriptBody:(NSString *)body to:(NSString *)to subject:(NSString *)subject isMIME:(BOOL)isMIME name:(NSString *)clientName sendNow:(BOOL)sendWithoutUserReview image:(NSString*) imagePath{
-NSString *cc = @"";
-
+- (NSString *)mailScriptBody:(NSString *)body to:(NSString *)to subject:(NSString *)subject isMIME:(BOOL)isMIME name:(NSString *)clientName sendNow:(BOOL)sendWithoutUserReview image:(NSString*) imagePath
+{
 NSMutableString *s = [NSMutableString stringWithCapacity:1000];
 
-// must skip over the image:
-if (isMIME) body = [body substringFromIndex:1];
-
 [s appendString:@"tell application \"Mail\"\n"];
-[s appendString:@"activate\n"];
-//[s appendString:[NSString stringWithFormat:@"set bodyvar to \"%@\"\n",body]];
-//[s appendString:[NSString stringWithFormat:@"set addrNameVar to \"%@\"\n",clientName]];
-//[s appendString:[NSString stringWithFormat:@"set addrVar to \"%@\"\n",to]];
+	[s appendString:@"activate\n"];
 
-if (cc != 0L) {
-[s appendString:[NSString stringWithFormat:@"set ccNameVar to \"%@\"\n",cc]];
-[s appendString:[NSString stringWithFormat:@"set ccVar to \"%@\"\n",cc]];
-}
-[s appendString:[NSString stringWithFormat:@"set subjectvar to \"%@\"\n",subject]];
-[s appendString:@"set isNewMessage to 0\n"];
+	[s appendString:@"set composeMessage to make new outgoing message with properties {visible:true}\n"];
 
-[s appendString:@"set curMsgs to outgoing messages\n"];
-[s appendString:@"if (count of curMsgs) is equal to 0 then\n"];
-[s appendString:@"set isNewMessage to 1\n"];
-[s appendString:@"set composeMessage to make new outgoing message\n"];
-[s appendString:@"set curMsgs to outgoing messages\n"];
-//[s appendString:@"display dialog \"NO EXISTING MESSAGE.\"\n"];
-[s appendString:@"end if\n"];
-
-[s appendString:@"repeat with composeMessage in curMsgs\n"];
-
-[s appendString:@"tell composeMessage\n"];
-[s appendString:@"set visible to true\n"];
-[s appendString:@"set body to content\n"];
-
-[s appendString:@"if isNewMessage = 1 then\n"];
-NSString *dummyString = [NSString stringWithFormat: @"set content to {\"%@\"", NSLocalizedString(@"Write your text here about this image!", nil)];
-//[s appendString:@"set content to {\""];
-[s appendString:dummyString];
-[s appendString:@", {return}, {return}, body} as string\n"];
-[s appendString:@"set the subject to subjectvar\n"];
-[s appendString:@"end if\n"];
-
-if (isMIME && imagePath != 0L && [[NSFileManager defaultManager] fileExistsAtPath:imagePath])
-{
-	[s appendString:[NSString stringWithFormat:@"set aFile to \"%@\"\n",imagePath]];
-	[s appendString:@"tell content\n"];
-	[s appendString:@"make new attachment with properties {file name:aFile} at after the last word of the first paragraph\n"];
+	[s appendString:@"tell composeMessage\n"];
+	 
+	if (isMIME && imagePath != 0L && [[NSFileManager defaultManager] fileExistsAtPath:imagePath])
+	{
+		[s appendString:[NSString stringWithFormat:@"set aFile to \"%@\"\n",imagePath]];
+		[s appendString:@"tell content\n"];
+			[s appendString:@"make new attachment with properties {file name:aFile} at after the last word of the first paragraph\n"];
+		[s appendString:@"end tell\n"];
+	}
 	[s appendString:@"end tell\n"];
-}
-
 [s appendString:@"end tell\n"];
 
-//if (sendWithoutUserReview) {
-//[s appendString:@"send composeMessage\n"];
-//} else {
-//[s appendString:@"make new message editor at beginning of message editors\n"];
-//[s appendString:@"set compose message of first message editor to composeMessage\n"];
-//}
-[s appendString:@"end repeat\n"];
-[s appendString:@"end tell\n"];
+NSLog(s);
 
-// uncomment next line to see your AppleScript in the console:
-// NSLog(s);
 return s;
 }
 
 
-- (BOOL)sendMail:(NSString *)richBody to:(NSString *)to subject:(NSString *)subject isMIME:(BOOL)isMIME name:(NSString *)client sendNow:(BOOL)sendWithoutUserReview image:(NSString*) imagePath{
-[self runScript:[self mailScriptBody:richBody to:to subject:subject isMIME:isMIME name:client sendNow: sendWithoutUserReview image:imagePath]];
-return YES;
+- (BOOL)sendMail:(NSString *)richBody to:(NSString *)to subject:(NSString *)subject isMIME:(BOOL)isMIME name:(NSString *)client sendNow:(BOOL)sendWithoutUserReview image:(NSString*) imagePath
+{
+	[self runScript:[self mailScriptBody:richBody to:to subject:subject isMIME:isMIME name:client sendNow: sendWithoutUserReview image:imagePath]];
+	return YES;
 }
 
 
