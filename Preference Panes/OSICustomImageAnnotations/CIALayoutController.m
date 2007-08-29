@@ -39,10 +39,11 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(annotationMouseDragged:) name:@"CIAAnnotationMouseDraggedNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(annotationMouseDown:) name:@"CIAAnnotationMouseDownNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(annotationMouseUp:) name:@"CIAAnnotationMouseUpNotification" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidChange:) name:@"NSControlTextDidChangeNotification" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidEndEditing:) name:@"NSControlTextDidEndEditingNotification" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidBeginEditing:) name:@"NSControlTextDidBeginEditingNotification" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewDidChangeSelection:) name:@"NSTextViewDidChangeTypingAttributesNotification" object:nil];
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidChange:) name:@"NSControlTextDidChangeNotification" object:nil];
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidEndEditing:) name:@"NSControlTextDidEndEditingNotification" object:nil];
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidBeginEditing:) name:@"NSControlTextDidBeginEditingNotification" object:nil];
+		//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewDidChangeSelection:) name:@"NSTextViewDidChangeTypingAttributesNotification" object:nil];
+		//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewDidChangeSelection:) name:@"NSTextViewDidChangeSelectionNotification" object:nil];
 	}
 	return self;
 }
@@ -780,11 +781,12 @@
 	if([[prefPane contentTokenField] currentEditor]==[aNotification object])
 	{
 		NSArray *ranges = [[aNotification object] selectedRanges];
+		NSLog(@"ranges : %@", ranges);
 		if([ranges count]==1)
 		{
 			NSRange selectedRange = [[ranges objectAtIndex:0] rangeValue];
 			NSLog(@"selectedRange : %d, %d", selectedRange.location, selectedRange.length);
-			if(selectedRange.length==1)
+			if(selectedRange.length==1 && selectedRange.location!=0)
 			{
 				NSString *selectedString = [[[[prefPane contentTokenField] objectValue] subarrayWithRange:selectedRange] objectAtIndex:0];
 				if([selectedString hasPrefix:@"DICOM_"])
