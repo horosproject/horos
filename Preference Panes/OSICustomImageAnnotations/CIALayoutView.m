@@ -41,7 +41,7 @@
 		y[4] = y[3];
 		y[5] = frame.size.height - [CIAPlaceHolder defaultSize].height - FRAME_MARGIN;
 		y[6] = y[7] = y[5];
-		
+				
 		NSMutableArray *placeHolderMutableArray = [NSMutableArray arrayWithCapacity:8];
         int i;
 		for (i=0; i<8; i++)
@@ -66,11 +66,13 @@
 
 - (void)updatePlaceHolderOrigins;
 {
+	//return;
 	[self updatePlaceHolderOriginsInRect:[self bounds]];
 }
 
 - (void)updatePlaceHolderOriginsInRect:(NSRect)rect;
 {
+	//return;
 	if([placeHolderArray count]<8) return;
 	// The layout view contains 8 place holders for Annotations. They are labeled as follow:
 	//  +-------+
@@ -100,7 +102,7 @@
 	int i;
 	for (i=0; i<8; i++)
 	{
-		[[placeHolderArray objectAtIndex:i] setFrame:NSMakeRect(x[i], y[i], [[placeHolderArray objectAtIndex:i] frame].size.width, [[placeHolderArray objectAtIndex:i] frame].size.height)];
+		[[placeHolderArray objectAtIndex:i] setFrameOrigin:NSMakePoint(x[i], y[i])];
 		[[placeHolderArray objectAtIndex:i] setNeedsDisplay:YES];
 	}
 }
@@ -134,13 +136,12 @@
 	float textWidth, textHeight;
 	if(isEnabled)
 	{
-		contentText = [[[NSAttributedString alloc] initWithString:@"Drag Annotations in the place holders" attributes:attrsDictionary] autorelease];
+		contentText = [[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Drag Annotations in the place holders", @"") attributes:attrsDictionary] autorelease];
 		textWidth = [contentText size].width/2.0;//rect.size.width / 2.0;
 		textHeight = [contentText size].height*3.0;//rect.size.height / 2.0;
 	}
 	else
 	{
-		//contentText = [[[NSAttributedString alloc] initWithString:@"Same as Default Settings..." attributes:attrsDictionary] autorelease];
 		contentText = [[[NSAttributedString alloc] initWithString:disabledText attributes:attrsDictionary] autorelease];
 
 		textWidth = rect.size.width / 2.0;
@@ -148,8 +149,6 @@
 	}
 
 	NSRect textRect = NSMakeRect(rect.origin.x+rect.size.width/2.0-textWidth/2.0, rect.origin.y+rect.size.height/2.0-textHeight/2.0, textWidth, textHeight);
-//	[[NSColor greenColor] set];
-//	NSRectFill(textRect);
 	[contentText drawInRect:textRect];
 }
 
@@ -173,14 +172,12 @@
 
 - (void)setDisabledText:(NSString*)text;
 {
-	NSLog(@"setDisabledText: %@", text);
 	disabledText = text;
 }
 
 - (void)setDefaultDisabledText;
 {
-	NSLog(@"setDefaultDisabledText");
-	disabledText = @"Same as Default Settings...";
+	disabledText = NSLocalizedString(@"Same as Default Settings...", @"");
 }
 
 @end

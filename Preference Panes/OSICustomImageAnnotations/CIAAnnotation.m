@@ -9,6 +9,7 @@
 #import "CIAAnnotation.h"
 #import "CIAPlaceHolder.h"
 #import "NSBezierPath_RoundRect.h"
+#import <QuartzCore/CoreAnimation.h>
 
 @interface NSColor (randomColor)
 
@@ -48,6 +49,7 @@
 		[self setTitle:@"Annotation"];
 		content = [[NSMutableArray array] retain];
 		isOrientationWidget = NO;
+		width = 0;
     }
     return self;
 }
@@ -135,6 +137,7 @@
 	float newY = [self frame].origin.y-deltaY;
 	
 	NSPoint newOrigin = [self frame].origin; // = NSMakePoint([self frame].origin.x+deltaX,[self frame].origin.y-deltaY);
+	animatedFrameOrigin = newOrigin;
 	
 	BOOL needsDisplay = NO;
 	if(newX>0.0 && newX+[self frame].size.width<[[self superview] frame].size.width)
@@ -223,6 +226,7 @@
 	NSRect textBounds = [contentText boundingRectWithSize:[self bounds].size options:NSStringDrawingUsesDeviceMetrics];
 	
 	[self setFrameSize:NSMakeSize(textBounds.size.width +6.0*ROUNDED_CORNER_SIZE, [self frame].size.height)];
+	width = textBounds.size.width +6.0*ROUNDED_CORNER_SIZE;
 	[self setNeedsDisplay:YES];
 }
 
@@ -281,6 +285,42 @@
 - (void)setIsOrientationWidget:(BOOL)boo;
 {
 	isOrientationWidget = boo;
+}
+
+- (float)width
+{
+	return width;
+}
+
+- (NSPoint)animatedFrameOrigin;
+{
+	return animatedFrameOrigin;
+}
+
+- (void)setFrameOrigin:(NSPoint)newOrigin;
+{
+	animatedFrameOrigin = newOrigin;
+	[super setFrameOrigin:newOrigin];
+}
+
+- (void)setAnimatedFrameOrigin:(NSPoint)newOrigin;
+{
+	animatedFrameOrigin = newOrigin;
+	[super setFrameOrigin:newOrigin];
+	[[self superview] setNeedsDisplay:YES];
+}
+
++ (id)defaultAnimationForKey:(NSString *)key
+{
+	//if([key isEqualToString:@"frameOrigin"])
+	if([key isEqualToString:@"animatedFrameOrigin"])
+	{
+		return [CABasicAnimation animation];
+	}
+	else
+	{
+		return [super defaultAnimationForKey:key];
+	}
 }
 
 @end

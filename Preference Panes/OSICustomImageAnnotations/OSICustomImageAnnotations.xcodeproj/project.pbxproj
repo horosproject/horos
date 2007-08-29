@@ -972,6 +972,7 @@
 		A9BBE1230C563CF90067F5D1 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A9BBE1210C563CF90067F5D1 /* libcrypto.dylib */; };
 		A9BBE1240C563CF90067F5D1 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A9BBE1220C563CF90067F5D1 /* libz.dylib */; };
 		A9BBE1270C563D140067F5D1 /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A9BBE1260C563D140067F5D1 /* libssl.dylib */; };
+		A9FDDD0D0C843D1600E24423 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9FDDD0C0C843D1600E24423 /* QuartzCore.framework */; };
 		AB54F6F50C6CABE200B6F653 /* Security.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB54F6F40C6CABE200B6F653 /* Security.tiff */; };
 		AB54F6FD0C6CAC8A00B6F653 /* AlphaGray.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB54F6FC0C6CAC8A00B6F653 /* AlphaGray.tif */; };
 		AB80A66E0A19C8EC00FED357 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80A66D0A19C8EC00FED357 /* Security.framework */; };
@@ -1952,6 +1953,7 @@
 		A9BBE1210C563CF90067F5D1 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
 		A9BBE1220C563CF90067F5D1 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		A9BBE1260C563D140067F5D1 /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = /usr/lib/libssl.dylib; sourceTree = "<absolute>"; };
+		A9FDDD0C0C843D1600E24423 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
 		AB54F6F40C6CABE200B6F653 /* Security.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Security.tiff; sourceTree = "<group>"; };
 		AB54F6FC0C6CAC8A00B6F653 /* AlphaGray.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = AlphaGray.tif; sourceTree = "<group>"; };
 		AB80A66D0A19C8EC00FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
@@ -1971,6 +1973,7 @@
 				A9BBE1230C563CF90067F5D1 /* libcrypto.dylib in Frameworks */,
 				A9BBE1240C563CF90067F5D1 /* libz.dylib in Frameworks */,
 				A9BBE1270C563D140067F5D1 /* libssl.dylib in Frameworks */,
+				A9FDDD0D0C843D1600E24423 /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1993,6 +1996,7 @@
 		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				A9FDDD0C0C843D1600E24423 /* QuartzCore.framework */,
 				A9BBE1210C563CF90067F5D1 /* libcrypto.dylib */,
 				A9BBE1220C563CF90067F5D1 /* libz.dylib */,
 				A9BBE1260C563D140067F5D1 /* libssl.dylib */,

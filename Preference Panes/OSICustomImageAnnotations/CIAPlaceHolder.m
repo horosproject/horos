@@ -10,6 +10,7 @@
 #import "CIAPlaceHolder.h"
 #import "CIAAnnotation.h"
 #import "NSBezierPath_RoundRect.h"
+#import <QuartzCore/CoreAnimation.h>
 
 @implementation CIAPlaceHolder
 
@@ -30,6 +31,7 @@
 	{
 		hasFocus = NO;
 		annotationsArray = [[NSMutableArray arrayWithCapacity:0] retain];
+		animatedFrameSize = frame.size;
     }
     return self;
 }
@@ -76,10 +78,6 @@
 
 	NSFont *font = [NSFont systemFontOfSize:10.0];
 	[attrsDictionary setObject:font forKey:NSFontAttributeName];
-	
-	NSAttributedString *contentText = [[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%d", [annotationsArray count]] attributes:attrsDictionary] autorelease];
-	//[contentText drawInRect:rect];
-
 }
 
 - (BOOL)hasFocus;
@@ -104,17 +102,24 @@
 
 	[self alignAnnotations];
 	[self updateFrameAroundAnnotations];
-	[self alignAnnotations];
-	
-	[(CIALayoutView*)[self superview] updatePlaceHolderOrigins];
 }
 
 - (void)addAnnotation:(CIAAnnotation*)anAnnotation;
 {
-	[self insertAnnotation:anAnnotation atIndex:[annotationsArray count]];
+	[self addAnnotation:anAnnotation animate:YES];
+}
+
+- (void)addAnnotation:(CIAAnnotation*)anAnnotation animate:(BOOL)animate;
+{
+	[self insertAnnotation:anAnnotation atIndex:[annotationsArray count] animate:animate];
 }
 
 - (void)insertAnnotation:(CIAAnnotation*)anAnnotation atIndex:(int)index;
+{
+	[self insertAnnotation:anAnnotation atIndex:index animate:YES];
+}
+
+- (void)insertAnnotation:(CIAAnnotation*)anAnnotation atIndex:(int)index animate:(BOOL)animate;
 {
 //	if(![self isEqualTo:[anAnnotation placeHolder]])
 	{
@@ -130,10 +135,12 @@
 //	}
 	
 	[self alignAnnotations];
-	[self updateFrameAroundAnnotations];
-	[self alignAnnotations];
-	
-	[(CIALayoutView*)[self superview] updatePlaceHolderOrigins];
+	[self updateFrameAroundAnnotationsWithAnimation:animate];
+}
+
+- (BOOL)containsAnnotation:(CIAAnnotation*)anAnnotation;
+{
+	return [annotationsArray containsObject:anAnnotation];
 }
 
 - (NSMutableArray*)annotationsArray;
@@ -143,26 +150,54 @@
 
 - (void)alignAnnotations;
 {
-	float positionX = [self frame].origin.x +3.0;
+	[self alignAnnotationsWithAnimation:NO];
+}
 
-	float totalHeight = 0.0;
+- (void)alignAnnotationsWithAnimation:(BOOL)animate;
+{
+	float positionX = [self frame].origin.x +3.0;
 	float previousY = [self frame].origin.y + [self frame].size.height - TOP_MARGIN ;
+	
+	if(animate)
+	{
+		[NSAnimationContext beginGrouping];
+		[[NSAnimationContext currentContext] setDuration:0.001];
+	}
 	
 	int i;
 	CIAAnnotation *currentAnnotation;
 	for (i=0; i<[annotationsArray count]; i++)
 	{
 		currentAnnotation = [annotationsArray objectAtIndex:i];
-		totalHeight += [currentAnnotation frame].size.height;
-		if(i==0)
-			[currentAnnotation setFrameOrigin:NSMakePoint(positionX, previousY-[currentAnnotation frame].size.height)];
+		
+		if(animate)
+		{
+			if(i==0)
+				[[currentAnnotation animator] setAnimatedFrameOrigin:NSMakePoint(positionX, previousY-[currentAnnotation frame].size.height)];
+			else
+				[[currentAnnotation animator] setAnimatedFrameOrigin:NSMakePoint(positionX, previousY-[currentAnnotation frame].size.height+2.0)];
+		}
 		else
-			[currentAnnotation setFrameOrigin:NSMakePoint(positionX, previousY-[currentAnnotation frame].size.height+2.0)];
+		{
+			if(i==0)
+				[currentAnnotation setFrameOrigin:NSMakePoint(positionX, previousY-[currentAnnotation frame].size.height)];
+			else
+				[currentAnnotation setFrameOrigin:NSMakePoint(positionX, previousY-[currentAnnotation frame].size.height+2.0)];
+		}
 		previousY = [currentAnnotation frame].origin.y;
 	}
+	
+	if(animate) [NSAnimationContext endGrouping];
+	
+	[self setNeedsDisplay:YES];
 }
 
 - (void)updateFrameAroundAnnotations;
+{
+	[self updateFrameAroundAnnotationsWithAnimation:YES];
+}
+
+- (void)updateFrameAroundAnnotationsWithAnimation:(BOOL)animate;
 {
 	float totalHeight = 0.0;
 	float maxWidth = [CIAPlaceHolder defaultSize].width - RIGHT_MARGIN;;
@@ -175,7 +210,7 @@
 			totalHeight += [currentAnnotation frame].size.height;
 		else
 			totalHeight += [currentAnnotation frame].size.height-2.0;
-		if([currentAnnotation frame].size.width > maxWidth) maxWidth=[currentAnnotation frame].size.width;
+		if([currentAnnotation width] > maxWidth) maxWidth=[currentAnnotation width];
 	}
 	
 	totalHeight += TOP_MARGIN + BOTTOM_MARGIN;
@@ -183,11 +218,35 @@
 	
 	if(totalHeight<[CIAPlaceHolder defaultSize].height) totalHeight = [CIAPlaceHolder defaultSize].height;
 	
-//	if([self frame].origin.y + totalHeight >= [[self superview] bounds].size.height)
-//	{
-//		[self setFrameOrigin:NSMakePoint([self frame].origin.x, [[self superview] bounds].size.height - totalHeight)];
-//	}
-	[self setFrameSize:NSMakeSize(maxWidth,totalHeight)];
+	NSSize newSize = NSMakeSize(maxWidth,totalHeight);
+	
+	NSPoint shift;
+	shift.x = [self frame].size.width - newSize.width;
+ 	shift.y = [self frame].size.height - newSize.height;
+	
+	if(newSize.height!=[self frame].size.height || newSize.width!=[self frame].size.width)
+	{
+		if(animate)
+		{
+			[[NSAnimationContext currentContext] setDuration:0.1];
+			[[self animator] setAnimatedFrameSize:newSize];
+		}
+		else
+			[self setAnimatedFrameSize:newSize];
+	}
+	[(CIALayoutView*)[self superview] updatePlaceHolderOrigins];
+}
+
+- (NSSize)animatedFrameSize;
+{
+	return animatedFrameSize;
+}
+
+- (void)setAnimatedFrameSize:(NSSize)size;
+{
+	animatedFrameSize = size;
+	[self setFrameSize:animatedFrameSize];
+	[[self superview] setNeedsDisplay:YES];
 }
 
 - (void)setEnabled:(BOOL)enabled;
@@ -195,6 +254,38 @@
 	int i;
 	for (i=0; i<[annotationsArray count]; i++)
 		[[annotationsArray objectAtIndex:i] setEnabled:enabled];
+}
+
++ (id)defaultAnimationForKey:(NSString *)key
+{
+	if ([key isEqualToString:@"animatedFrameSize"])
+	{
+		return [CABasicAnimation animation];
+	}
+	else
+	{
+		return [super defaultAnimationForKey:key];
+	}
+}
+
+- (void)setFrameOrigin:(NSPoint)newOrigin
+{
+	NSPoint oldOrigin = [self frame].origin;
+	NSPoint shift;
+	shift.x = newOrigin.x - oldOrigin.x;
+	shift.y = newOrigin.y - oldOrigin.y;
+
+	int i;
+	for (i=0; i<[annotationsArray count]; i++)
+	{
+		NSPoint origin = [[annotationsArray objectAtIndex:i] frame].origin;
+		origin.x += shift.x;
+		origin.y -= shift.y;
+		[[annotationsArray objectAtIndex:i] setFrameOrigin:origin];
+	}
+	
+	[super setFrameOrigin:newOrigin];
+	[self alignAnnotations];
 }
 
 @end

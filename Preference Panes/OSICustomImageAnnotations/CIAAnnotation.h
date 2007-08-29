@@ -18,6 +18,8 @@
 	NSString *title;
 	NSMutableArray *content;
 	BOOL isOrientationWidget;
+	NSPoint animatedFrameOrigin;
+	float width;
 }
 
 + (NSSize)defaultSize;
@@ -42,5 +44,10 @@
 - (void)setEnabled:(BOOL)enabled;
 - (BOOL)isOrientationWidget;
 - (void)setIsOrientationWidget:(BOOL)boo;
+
+- (float)width;
+
+- (NSPoint)animatedFrameOrigin;
+- (void)setAnimatedFrameOrigin:(NSPoint)newOrigin;
 
 @end
