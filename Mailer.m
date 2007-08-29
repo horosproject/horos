@@ -102,12 +102,12 @@ NSString *dummyString = [NSString stringWithFormat: @"set content to {\"%@\"", N
 [s appendString:@"set the subject to subjectvar\n"];
 [s appendString:@"end if\n"];
 
-if (isMIME && imagePath != 0L && [[NSFileManager defaultManager] fileExistsAtPath:imagePath]) {
-[s appendString:[NSString stringWithFormat:@"set aFile to \"%@\"\n",imagePath]];
-[s appendString:@"tell content\n"];
-[s appendString:@"make new attachment with properties {file name:aFile} at after the last word of the first paragraph\n"];
-[s appendString:@"end tell\n"];
-
+if (isMIME && imagePath != 0L && [[NSFileManager defaultManager] fileExistsAtPath:imagePath])
+{
+	[s appendString:[NSString stringWithFormat:@"set aFile to \"%@\"\n",imagePath]];
+	[s appendString:@"tell content\n"];
+	[s appendString:@"make new attachment with properties {file name:aFile} at after the last word of the first paragraph\n"];
+	[s appendString:@"end tell\n"];
 }
 
 [s appendString:@"end tell\n"];
