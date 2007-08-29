@@ -9803,6 +9803,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	[self testAutorouting];
 	
 	[self setDBWindowTitle];
+	
+	[[self window] makeKeyAndOrderFront: self];
 }
 
 - (IBAction)customize:(id)sender {

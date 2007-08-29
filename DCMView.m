@@ -1349,7 +1349,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		case tRotate:
 			if( [event type] != NSKeyDown)
 			{
-				if( [event clickCount] == 2 && gClickCountSet == NO && [[self window] isKeyWindow])
+				if( [event clickCount] == 2 && gClickCountSet == NO && isKeyView == YES)
 				{
 					gClickCountSet = YES;
 					
@@ -1361,7 +1361,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					[self setRotation: rot];
 					
-					if( [self is2DViewer] == YES) [[self windowController] propagateSettings];
+					if( [self is2DViewer] == YES)
+						[[self windowController] propagateSettings];
 				}
 			}
 		break;

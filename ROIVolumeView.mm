@@ -70,6 +70,7 @@
 	if( buf)
 	{
 		[self getVTKRenderWindow]->MakeCurrent();
+		[[NSOpenGLContext currentContext] flushBuffer];
 		
 		#if __BIG_ENDIAN__
 			glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
@@ -122,9 +123,10 @@
 		}
 		
 		[TIFFRep release];
+		
+		[[NSOpenGLContext currentContext] flushBuffer];
+		[NSOpenGLContext clearCurrentContext];
 	}
-	
-	[NSOpenGLContext clearCurrentContext];
 	
 	return buf;
 }

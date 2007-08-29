@@ -1000,7 +1000,7 @@ public:
 				}
 				
 				[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO];
-
+				
 				long	width, height, spp, bpp, err;
 				
 				unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :NO];
@@ -1020,6 +1020,13 @@ public:
 					free( dataPtr);
 				}
 				
+				[progress incrementBy: 1];
+				
+				if( [progress aborted])
+				{
+					i = numberOfFrames;
+				}
+				
 				switch( rotationOrientation)
 				{
 					case 0:
@@ -1029,12 +1036,6 @@ public:
 					case 1:
 						[self Vertical: (float) rotationValue / (float) numberOfFrames];
 					break;
-				}
-				[progress incrementBy: 1];
-				
-				if( [progress aborted])
-				{
-					i = numberOfFrames;
 				}
 				
 				[pool release];
@@ -4992,10 +4993,12 @@ public:
 	*spp = 3;
 	*bpp = 8;
 	
+	[self getVTKRenderWindow]->MakeCurrent();
+	[[NSOpenGLContext currentContext] flushBuffer];
+
 	buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
 	if( buf)
 	{
-		[self getVTKRenderWindow]->MakeCurrent();
 		
 		#if __BIG_ENDIAN__
 			glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
@@ -5049,7 +5052,7 @@ public:
 		
 		[TIFFRep release];
 	}
-	
+	[[NSOpenGLContext currentContext] flushBuffer];
 	[NSOpenGLContext clearCurrentContext];
 	
 	return buf;

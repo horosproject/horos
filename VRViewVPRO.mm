@@ -4518,8 +4518,9 @@ public:
 	buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
 	if( buf)
 	{
-		//[[self openGLContext] makeCurrentContext];
 		[self getVTKRenderWindow]->MakeCurrent();
+		[[NSOpenGLContext currentContext] flushBuffer];
+		
 		#if __BIG_ENDIAN__
 			glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 		#else
@@ -4571,6 +4572,9 @@ public:
 		}
 		
 		[TIFFRep release];
+		
+		[[NSOpenGLContext currentContext] flushBuffer];
+		[NSOpenGLContext clearCurrentContext];
 	}
 	
 	return buf;
