@@ -2478,7 +2478,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
                 unsigned short  *numberOfRemainingSubOperations,
                 DcmQueryRetrieveDatabaseStatus  *status)
 {
-
+	return (EC_Normal) ;
 }
 				
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
