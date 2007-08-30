@@ -6074,10 +6074,52 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[yRasterIncrement setObject:[NSNumber numberWithInt:-stringSize.height] forKey:@"LowerRight"];
 		[yRasterIncrement setObject:[NSNumber numberWithInt:-stringSize.height] forKey:@"LowerMiddle"];
 		
+		int i, j, k, increment;
+		NSEnumerator *enumerator;
+		id annot;
+		
+		NSArray *orientationPositionKeys = [NSArray arrayWithObjects:@"TopMiddle", @"MiddleLeft", @"MiddleRight", @"LowerMiddle", nil];
 		BOOL orientationDrawn = NO;
 		
+		for (k=0; k<[orientationPositionKeys count]; k++)
+		{
+			NSArray *annotations = [annotationsDictionary objectForKey:[orientationPositionKeys objectAtIndex:k]];
+			xRaster = [[xRasterInit objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue];
+			yRaster = [[yRasterInit objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue];
+			increment = [[yRasterIncrement objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue];
+			
+			if([[orientationPositionKeys objectAtIndex:k] hasPrefix:@"Lower"])
+				enumerator = [annotations reverseObjectEnumerator];
+			else
+				enumerator = [annotations objectEnumerator];
+			
+			while ((annot = [enumerator nextObject]))
+			{
+				for (j=0; j<[annot count]; j++)
+				{
+					if([[annot objectAtIndex:j] isEqualToString:@"Orientation"])
+					{
+						if(!orientationDrawn)
+						{
+							[self drawOrientation: size];
+							[yRasterInit setObject:[NSNumber numberWithInt:yRaster+increment] forKey:[orientationPositionKeys objectAtIndex:k]];
+						}
+						orientationDrawn = YES;
+					}
+				}
+			}
+		}
+		
+		if(orientationDrawn)
+		{
+			[yRasterInit setObject:[NSNumber numberWithInt:[[yRasterInit objectForKey:@"TopMiddle"] intValue]+[[yRasterIncrement objectForKey:@"TopMiddle"] intValue]] forKey:@"TopMiddle"];
+			[yRasterInit setObject:[NSNumber numberWithInt:[[yRasterInit objectForKey:@"MiddleLeft"] intValue]+[[yRasterIncrement objectForKey:@"MiddleLeft"] intValue]] forKey:@"MiddleLeft"];
+			[yRasterInit setObject:[NSNumber numberWithInt:[[yRasterInit objectForKey:@"MiddleRight"] intValue]+[[yRasterIncrement objectForKey:@"MiddleRight"] intValue]] forKey:@"MiddleRight"];
+			[yRasterInit setObject:[NSNumber numberWithInt:[[yRasterInit objectForKey:@"LowerMiddle"] intValue]+[[yRasterIncrement objectForKey:@"LowerMiddle"] intValue]] forKey:@"LowerMiddle"];
+		}
+		
 		NSArray *keys = [annotationsDictionary allKeys];
-		int i, j, k, increment;
+		
 		for (k=0; k<[keys count]; k++)
 		{
 			NSArray *annotations = [annotationsDictionary objectForKey:[keys objectAtIndex:k]];
@@ -6093,7 +6135,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			id annot;
 			
 			BOOL useStringTexture;
-			
+						
+			if([[keys objectAtIndex:k] hasPrefix:@"Lower"])
+				enumerator = [annotations reverseObjectEnumerator];
+			else
+				enumerator = [annotations objectEnumerator];
+
 			while ((annot = [enumerator nextObject]))
 			{
 				tempString = [NSMutableString stringWithString:@""];
@@ -6240,7 +6287,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						if(!orientationDrawn)[self drawOrientation: size];
 						orientationDrawn = YES;
 					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Thickness"])
+					else if([[annot objectAtIndex:j] isEqualToString:@"Thickness / Location / Position"])
 					{
 						if( [curDCM sliceThickness] != 0 && [curDCM sliceLocation] != 0)
 						{

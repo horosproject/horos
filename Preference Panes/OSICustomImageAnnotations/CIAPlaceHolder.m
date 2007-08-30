@@ -124,7 +124,14 @@
 //	if(![self isEqualTo:[anAnnotation placeHolder]])
 	{
 		[[anAnnotation placeHolder] removeAnnotation:anAnnotation];
-		if(index<[annotationsArray count])
+		
+		if(index==0 && [annotationsArray count]>0)
+			if([[annotationsArray objectAtIndex:0] isOrientationWidget])
+				index = 1;
+		
+		if([anAnnotation isOrientationWidget])
+			[annotationsArray insertObject:anAnnotation atIndex:0];
+		else if(index<[annotationsArray count])
 			[annotationsArray insertObject:anAnnotation atIndex:index];
 		else
 			[annotationsArray addObject:anAnnotation];

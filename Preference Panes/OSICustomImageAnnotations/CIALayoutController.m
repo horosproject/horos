@@ -719,7 +719,7 @@
 	[specialFieldsTitles addObject:NSLocalizedString(@"Rotation Angle", @"")];
 	[specialFieldsTitles addObject:NSLocalizedString(@"Mouse Position (px)", @"")];
 	[specialFieldsTitles addObject:NSLocalizedString(@"Mouse Position (mm)", @"")];
-	[specialFieldsTitles addObject:NSLocalizedString(@"Thickness", @"")];
+	[specialFieldsTitles addObject:NSLocalizedString(@"Thickness / Location / Position", @"")];
 	return specialFieldsTitles;
 }
 
