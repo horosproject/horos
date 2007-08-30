@@ -1,6 +1,5 @@
 //
 //  HTTPServer.m
-//  Web2PDF Server
 //
 //  Created by Jürgen on 19.09.06.
 //  Copyright 2006 Cultured Code.
