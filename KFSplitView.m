@@ -247,7 +247,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     // All coordinates are major axis coordinates unless otherwise specified.  See the top of the file
     // for an explanation of major and minor axes.
     float   minorDim;                                           // common dimension of all subviews
-    int     divider;                                            // index of a divider being dragged
+    NSInteger     divider;                                            // index of a divider being dragged
     float   mouseCoord, mouseToDividerOffset;                   // the mouse holds on to whatever part of the divider it grabs onto
     float   dividerThickness;                                   
     float   dividerCoord, prevDividerCoord;                     
@@ -581,7 +581,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     // Also keep track of the total thickness of all subviews, and 
     // of the first expanded subview
     unsigned totalSubviewThicknesses = 0;
-    int firstExpandedSubviewIndex = NSNotFound;
+    NSInteger firstExpandedSubviewIndex = NSNotFound;
     for (i = 0; i < numSubviews; i++)
     {
         NSView *subview = [subviews objectAtIndex:i];
@@ -637,7 +637,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 // Could be done efficiently here, but would duplicate functionality of other methods.
 - (void)kfLayoutSubviewsUsingThicknesses:(unsigned *)subviewThicknesses
 {
-    int i, lastPositiveThicknessSubviewIndex, numSubviews;
+    NSInteger i, lastPositiveThicknessSubviewIndex, numSubviews;
     float minorDimOfSplitViewSize;
     float curMajAxisPos, dividerThickness;
     NSArray *subviews;
@@ -753,7 +753,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 // given coordinate, or NSNotFound if there isn't a divider there.
 - (int)kfGetDividerAtMajCoord:(float)coord
 {
-    int i, numDividers, result;
+    NSInteger i, numDividers, result;
     float curDividerMinimumMajorCoord, dividerThickness;
         
     numDividers = [kfDividerRects count];

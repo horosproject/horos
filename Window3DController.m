@@ -518,6 +518,12 @@ static float oldsetww, oldsetwl;
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+- (void) load3DState
+{
+//	Override.
+	NSLog(@"Error: inherited [Window3DController load3DState] should not be called");
+}
+
 - (void) ApplyCLUTString: (NSString*) str
 {
 //	Override.

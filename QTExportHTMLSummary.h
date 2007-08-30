@@ -16,10 +16,13 @@
 
 extern NSString* asciiString (NSString* name);
 
-@interface QTExportHTMLSummary : NSObject {
+@interface QTExportHTMLSummary : NSObject
+{
 	NSString *patientsListTemplate, *examsListTemplate, *seriesTemplate; // whole template
 	NSDictionary *patientsDictionary;
 	NSString *rootPath, *footerString;
+	
+	NSDateFormatter	*dateFormat, *timeFormat;
 }
 
 +(NSString*)nonNilString:(NSString*)aString;

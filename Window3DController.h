@@ -101,4 +101,7 @@
 - (NSArray*) pixList;
 - (NSArray*) fileList;
 
+- (void) ApplyOpacityString: (NSString*) str;
+- (void) load3DState;
+
 @end
