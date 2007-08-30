@@ -1560,9 +1560,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	NSLog(@"DCMView released");
 	
 	[mouseModifiers release]; 
-	[shortDateString release];
-	[shortDateTimeString release];
-	[localeDictionnary release];
+	[shortDateFormatter release];
+	[shortTimeFormatter release];
+	[shortDateTimeFormatter release];
 	
 	[dcmFilesList release];
 	dcmFilesList = 0L;
@@ -4593,6 +4593,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	stringSize = [DCMView sizeOfString:@"B" forFont:fontGL];
 }
 
+- (NSDateFormatter*) shortDateFormatter
+{
+	return shortDateFormatter;
+}
+
+- (NSDateFormatter*) shortDateTimeFormatter
+{
+	return shortDateTimeFormatter;
+}
+
 - (id)initWithFrameInt:(NSRect)frameRect
 {
 	long i;
@@ -4603,9 +4613,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	
 	yearOld = 0L;
-	shortDateString = [[[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat"] retain];
-	shortDateTimeString = [[[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat"] retain];
-	localeDictionnary = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
+	
+	shortDateFormatter = [[NSDateFormatter alloc] init];
+	shortTimeFormatter = [[NSDateFormatter alloc] init];
+	shortDateTimeFormatter = [[NSDateFormatter alloc] init];
+	
+	[shortDateFormatter setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat2"]];
+	[shortDateTimeFormatter setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat2"]];
+	[shortTimeFormatter setTimeStyle: NSDateFormatterShortStyle];
+	
 	syncSeriesIndex = -1;
 	mouseXPos = mouseYPos = 0;
 	pixelMouseValue = 0;
@@ -6577,7 +6593,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					if( [file valueForKeyPath:@"series.study.dateOfBirth"])
 					{
-						nsstring = [NSString stringWithFormat: @"%@ - %@ - %@",[file valueForKeyPath:@"series.study.name"], [[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary], yearOld];
+						nsstring = [NSString stringWithFormat: @"%@ - %@ - %@",[file valueForKeyPath:@"series.study.name"], [shortDateFormatter stringFromDate: [file valueForKeyPath:@"series.study.dateOfBirth"]], yearOld];
 					}
 					else  nsstring = [file valueForKeyPath:@"series.study.name"];
 					
@@ -6590,7 +6606,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			{
 				if( [file valueForKeyPath:@"series.study.dateOfBirth"])
 				{
-					NSString *nsstring = [NSString stringWithFormat: @"%@ - %@",[[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary], yearOld];
+					NSString *nsstring = [NSString stringWithFormat: @"%@ - %@",[shortDateFormatter stringFromDate: [file valueForKeyPath:@"series.study.dateOfBirth"]], yearOld];
 					
 					xRaster = size.size.width;
 					[self DrawNSStringGL: nsstring : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
@@ -6671,7 +6687,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			NSCalendarDate  *date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[file valueForKey:@"date"] timeIntervalSinceReferenceDate]];
 			if( date && [date yearOfCommonEra] != 3000)
 			{
-				tempString = [date descriptionWithCalendarFormat: shortDateString];
+				tempString = [shortDateFormatter stringFromDate: date];
 				xRaster = size.size.width;	
 				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: YES];
 				yRaster -= (stringSize.height + stringSize.height/10);
@@ -6681,7 +6697,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( [curDCM acquisitionTime]) date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[curDCM acquisitionTime] timeIntervalSinceReferenceDate]];
 			if( date && [date yearOfCommonEra] != 3000)
 			{
-				tempString = [date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSTimeFormatString]];	//	DDP localized from "%I:%M %p" 
+				tempString = [shortTimeFormatter stringFromDate: date];	//	DDP localized from "%I:%M %p" 
 				xRaster = size.size.width;
 				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: NO];
 				yRaster -= (stringSize.height + stringSize.height/10);

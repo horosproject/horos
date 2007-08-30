@@ -1624,13 +1624,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		NSDate	*bod = [curImage valueForKeyPath:@"series.study.dateOfBirth"];
 		
-		NSString	*shortDateString = [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat"];
-		NSDictionary	*localeDictionnary = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
-
 		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
 		{
 			if( [curImage valueForKeyPath:@"series.study.dateOfBirth"])
-				[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [bod descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
+				[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [[imageView shortDateFormatter] stringFromDate: bod], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
 			else
 				[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
 		}	
@@ -2768,9 +2765,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		studiesArray = [studiesArray sortedArrayUsingDescriptors: sortDescriptors];
 		
-		NSString*		sdf = [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat"];
-		NSDictionary*	locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
-		
 		NSMutableArray	*seriesArray = [NSMutableArray array];
 		
 		i = 0;
@@ -2829,7 +2823,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if( [curStudy isHidden]) action = @"Show Series";
 			else action = @"Hide Series";
 			
-			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@ : %d %@\r%@\r%@\r\r%@", name, [[curStudy valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], modality, [series count], @"series", stateText, comment, action]];
+			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@ : %d %@\r%@\r%@\r\r%@", name, [[imageView shortDateTimeFormatter] stringFromDate: [curStudy valueForKey:@"date"]], modality, [series count], @"series", stateText, comment, action]];
 			[cell setBackgroundColor: [NSColor whiteColor]];
 			
 			index++;
@@ -2875,8 +2869,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 					}
 					else type=[type stringByAppendingString: @"s"];
 					
-					if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [[curSeries valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], keyImagesNumber, count, type]];
-					else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [[curSeries valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], count, type]];
+					if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [[imageView shortDateTimeFormatter] stringFromDate: [curSeries valueForKey:@"date"]], keyImagesNumber, count, type]];
+					else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [[imageView shortDateTimeFormatter] stringFromDate: [curSeries valueForKey:@"date"]], count, type]];
 					
 					[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rClick + Apple Key:\rOpen in new window", 0L), [curSeries valueForKey:@"id"]] forCell:cell];
 					if( [curImage valueForKey:@"series"] == curSeries)
@@ -15812,10 +15806,7 @@ long i;
 				OrthogonalMPRPETCTViewer *pcviewer = [self openOrthogonalMPRPETCTViewer];
 				NSDate *studyDate = [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.date"];
 				
-				NSString*		sdf = [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat"];
-				NSDictionary*	locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
-				
-				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[pcviewer window] title], [studyDate descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], [[self window] title]]];
+				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[pcviewer window] title], [[imageView shortDateTimeFormatter] stringFromDate: studyDate], [[self window] title]]];
 			}
 			else
 			{
@@ -15828,10 +15819,9 @@ long i;
 				[imageView getWLWW:&iwl :&iww];
 				[viewer setWLWW:iwl :iww];
 				
-				NSString*		sdf = [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat"];
-				NSDictionary*	locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
 				
-				[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[viewer window] title], [[[fileList[0] objectAtIndex:0]  valueForKeyPath:@"series.study.date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], [[self window] title]]];
+				
+				[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[viewer window] title], [[imageView shortDateTimeFormatter] stringFromDate: [[fileList[0] objectAtIndex:0]  valueForKeyPath:@"series.study.date"]], [[self window] title]]];
 			}
 		}
 	}

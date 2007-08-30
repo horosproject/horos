@@ -3658,20 +3658,17 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	if( timeIntervalStart != 0L || timeIntervalEnd != 0L)
 	{
-		NSString*		sdf = [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat"];	//stringByAppendingFormat:@"-%H:%M"];
-		NSDictionary*	locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
-		
 		if( timeIntervalStart != 0L && timeIntervalEnd != 0L)
 		{
 			subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\") AND date <= CAST(%lf, \"NSDate\")", [timeIntervalStart timeIntervalSinceReferenceDate], [timeIntervalEnd timeIntervalSinceReferenceDate]];
 		
-			description = [description stringByAppendingFormat: NSLocalizedString(@" / Time Interval: from: %@ to: %@", nil), [timeIntervalStart descriptionWithCalendarFormat:sdf timeZone:0L locale:locale],  [timeIntervalEnd descriptionWithCalendarFormat:sdf timeZone:0L locale:locale] ];
+			description = [description stringByAppendingFormat: NSLocalizedString(@" / Time Interval: from: %@ to: %@", nil),[DBDateFormatFormatter stringFromDate: timeIntervalStart],  [DBDateFormatFormatter stringFromDate: timeIntervalEnd] ];
 		}
 		else
 		{
 			subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [timeIntervalStart timeIntervalSinceReferenceDate]];
 			
-			description = [description stringByAppendingFormat:NSLocalizedString(@" / Time Interval: since: %@", nil), [timeIntervalStart descriptionWithCalendarFormat:sdf timeZone:0L locale:locale]];
+			description = [description stringByAppendingFormat:NSLocalizedString(@" / Time Interval: since: %@", nil), [DBDateFormatFormatter stringFromDate: timeIntervalStart]];
 		}
 		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, 0L]];
 		filtered = YES;
@@ -9450,14 +9447,13 @@ static NSArray*	openSubSeriesArray = 0L;
 
 - (void) setDBDate
 {
-	NSString		*sdf = [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat"];
-	NSDateFormatter	*dateFomat = [[[NSDateFormatter alloc]  initWithDateFormat: sdf allowNaturalLanguage: YES] autorelease];
-	[[[databaseOutline tableColumnWithIdentifier: @"dateOpened"] dataCell] setFormatter: dateFomat];
-	[[[databaseOutline tableColumnWithIdentifier: @"date"] dataCell] setFormatter: dateFomat];
-	[[[databaseOutline tableColumnWithIdentifier: @"dateAdded"] dataCell] setFormatter: dateFomat];
-
-	sdf = [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat"];
-	dateFomat = [[[NSDateFormatter alloc]  initWithDateFormat: sdf allowNaturalLanguage: YES] autorelease];
+	[[[databaseOutline tableColumnWithIdentifier: @"dateOpened"] dataCell] setFormatter: DBDateFormatFormatter];
+	[[[databaseOutline tableColumnWithIdentifier: @"date"] dataCell] setFormatter: DBDateFormatFormatter];
+	[[[databaseOutline tableColumnWithIdentifier: @"dateAdded"] dataCell] setFormatter: DBDateFormatFormatter];
+	
+	NSDateFormatter *dateFomat = [[[NSDateFormatter alloc]  init] autorelease];
+	[dateFomat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat2"]];
+	
 	[[[databaseOutline tableColumnWithIdentifier: @"dateOfBirth"] dataCell] setFormatter: dateFomat];
 	[[[databaseOutline tableColumnWithIdentifier: @"reportURL"] dataCell] setFormatter: dateFomat];
 }
@@ -9484,6 +9480,9 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	@try
 	{
+	DBDateFormatFormatter = [[NSDateFormatter alloc] init];
+	[DBDateFormatFormatter setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat2"]];
+	
 	long i;
 	
 	[DCMNetServiceDelegate currentHost];	// This host detection (DNS) can take long... do it now...

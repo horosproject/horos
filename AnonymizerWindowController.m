@@ -185,18 +185,21 @@ Version 2.3
 	
 	NSDateFormatter	*dateFormat;
 	
-	dateFormat = [[[NSDateFormatter alloc]  initWithDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] allowNaturalLanguage: YES] autorelease];
+	dateFormat = [[[NSDateFormatter alloc] init] autorelease];
+	[dateFormat setDateStyle: NSDateFormatterShortStyle];
 	
 	[[firstColumnValues cellWithTag: 12] setFormatter: dateFormat];
 	[[firstColumnValues cellWithTag: 20] setFormatter: dateFormat];
 	[[firstColumnValues cellWithTag: 32] setFormatter: dateFormat];
 	[[firstColumnValues cellWithTag: 40] setFormatter: dateFormat];
 	
-	dateFormat = [[[NSDateFormatter alloc]  initWithDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: NSShortTimeDateFormatString] allowNaturalLanguage: YES] autorelease];
+	dateFormat = [[[NSDateFormatter alloc] init] autorelease];
+	[dateFormat setTimeStyle: NSDateFormatterShortStyle];
 	
 	[[firstColumnValues cellWithTag: 28] setFormatter: dateFormat];
 	
-	dateFormat = [[[NSDateFormatter alloc]  initWithDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: NSTimeFormatString] allowNaturalLanguage: YES] autorelease];
+	dateFormat = [[[NSDateFormatter alloc] init] autorelease];
+	[dateFormat setTimeStyle: NSDateFormatterLongStyle];
 	
 	[[firstColumnValues cellWithTag: 24] setFormatter: dateFormat];
 	[[firstColumnValues cellWithTag: 36] setFormatter: dateFormat];
@@ -499,10 +502,10 @@ Version 2.3
 					replacement = [[firstColumnValues cellWithTag:[cell tag]] objectValue];
 				else
 					replacement = [[secondColumnValues cellWithTag:[cell tag]] objectValue];
-				if ([replacement isKindOfClass:[NSString class]] && [replacement length] <= 0) {
-					//NSLog(@"Replacement Length: %d", [replacement length]);
-					replacement = nil;
-			//
+				if ([replacement isKindOfClass:[NSString class]])
+				{
+					if( [(NSString*) replacement length] <= 0) 
+						replacement = nil;
 				}
 				NSArray *array = [NSArray arrayWithObjects: attrTag, replacement, nil];
 				//NSLog(@"object: %@ Value: %@", [replacement description], NSStringFromClass([replacement class]));

@@ -827,8 +827,14 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject: @"1" forKey: @"ReserveScreenForDB"];
 	
 	// ** DateFormat
-	[defaultValues setObject:[[NSUserDefaults standardUserDefaults] stringForKey: NSShortTimeDateFormatString] forKey:@"DBDateFormat"];
-	[defaultValues setObject:[[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] forKey:@"DBDateOfBirthFormat"];
+	
+	NSDateFormatter	*dateFormat = [[[NSDateFormatter alloc] init] autorelease];
+	[dateFormat setDateStyle: NSDateFormatterShortStyle];
+	[defaultValues setObject: [dateFormat dateFormat] forKey:@"DBDateOfBirthFormat2"];
+	
+	[dateFormat setDateStyle: NSDateFormatterShortStyle];
+	[dateFormat setTimeStyle: NSDateFormatterShortStyle];
+	[defaultValues setObject: [dateFormat dateFormat] forKey:@"DBDateFormat2"];
 	
 	// ** SERIESORDER
 	[defaultValues setObject:@"0" forKey:@"SERIESORDER"];

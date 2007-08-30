@@ -922,8 +922,9 @@ static char *GetPrivateIP()
 		[searchCell setSearchMenuTemplate:cellMenu];
 	}
 	
-	NSString *sdf = [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat"];
-	NSDateFormatter *dateFomat = [[[NSDateFormatter alloc]  initWithDateFormat: sdf allowNaturalLanguage: YES] autorelease];
+	NSDateFormatter *dateFomat = [[[NSDateFormatter alloc]  init] autorelease];
+	[dateFomat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat2"]];
+	
 	[[[outlineView tableColumnWithIdentifier: @"birthdate"] dataCell] setFormatter: dateFomat];
 	
 	[sourcesTable setDoubleAction: @selector( selectUniqueSource:)];

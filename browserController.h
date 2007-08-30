@@ -49,6 +49,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
     NSManagedObjectContext			*managedObjectContext;
 	NSPersistentStoreCoordinator	*persistentStoreCoordinator;
 	
+	NSDateFormatter			*DBDateFormatFormatter;
+	
+	
 	NSString				*currentDatabasePath;
 	BOOL					isCurrentDatabaseBonjour;
 	NSString				*transferSyntax;

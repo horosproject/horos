@@ -889,9 +889,9 @@ NSRect screenFrame()
 		recomputePETBlending = YES;
 	if( [[previousDefaults valueForKey: @"COPYSETTINGS"] intValue]				!=		[defaults integerForKey: @"COPYSETTINGS"])
 		refreshViewer = YES;
-	if( [[previousDefaults valueForKey: @"DBDateFormat"]			isEqualToString:	[defaults stringForKey: @"DBDateFormat"]] == NO)
+	if( [[previousDefaults valueForKey: @"DBDateFormat2"]			isEqualToString:	[defaults stringForKey: @"DBDateFormat2"]] == NO)
 		refreshDatabase = YES;
-	if( [[previousDefaults valueForKey: @"DBDateOfBirthFormat"]			isEqualToString:	[defaults stringForKey: @"DBDateOfBirthFormat"]] == NO)
+	if( [[previousDefaults valueForKey: @"DBDateOfBirthFormat2"]			isEqualToString:	[defaults stringForKey: @"DBDateOfBirthFormat2"]] == NO)
 		refreshDatabase = YES;
 	if ([[previousDefaults valueForKey: @"DICOMTimeout"]intValue]		!=		[defaults integerForKey: @"DICOMTimeout"])
 		restartListener = YES;

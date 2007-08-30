@@ -124,8 +124,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
     
 	BOOL			suppress_labels; // keep from drawing the labels when command+shift is pressed
 
-	NSString		*shortDateString, *shortDateTimeString;
-	NSDictionary	*localeDictionnary;
+	NSDateFormatter *shortDateFormatter, *shortTimeFormatter, *shortDateTimeFormatter;
 
     NSPoint         start, originStart, originOffsetStart, previous;
 	
@@ -408,6 +407,9 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 - (void) setDrawing:(BOOL) v;
 - (void) updateImage;
 - (BOOL) shouldPropagate;
+
+- (NSDateFormatter*) shortDateTimeFormatter;
+- (NSDateFormatter*) shortDateFormatter;
 
 // methodes to access global variables (for plugins)
 + (BOOL) display2DMPRLines;

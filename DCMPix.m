@@ -10628,9 +10628,10 @@ BOOL            readable = YES;
 //								NSLog(@"date : %@/%@/%@", year, month, day);
 								NSDate *date = [NSDate dateWithString:[NSString stringWithFormat:@"%@-%@-%@ 00:00:00 +0000", year, month, day]];
 //								NSLog(@"NSDate : %@", date);
-								NSString *dateFormat = [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateOfBirthFormat"];
-								NSDictionary *locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
-								value = [date descriptionWithCalendarFormat:dateFormat timeZone:nil locale:locale];
+
+								NSDateFormatter	*dateFormat = [[[NSDateFormatter alloc] init] autorelease];
+								[dateFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateOfBirthFormat2"]];
+								value = [dateFormat stringFromDate: date];
 							}
 						}
 						else if([[field objectForKey:@"name"] hasPrefix:@"Time"] || [[field objectForKey:@"name"] hasSuffix:@"Time"])
@@ -10675,14 +10676,14 @@ BOOL            readable = YES;
 						
 						if([[value className] isEqualToString:@"NSCFDate"])
 						{
-							NSString *dateFormat;
+							NSDateFormatter	*dateFormat = [[[NSDateFormatter alloc] init] autorelease];
+								
 							if([fieldName isEqualToString:@"dateOfBirth"])
-								dateFormat = [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateOfBirthFormat"];
+								[dateFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateOfBirthFormat2"]];
 							else
-								dateFormat = [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat"];
-							NSDictionary *locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+								[dateFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat2"]];
 							
-							value = [(NSCalendarDate *)value descriptionWithCalendarFormat:dateFormat timeZone:nil locale:locale];
+							value = [dateFormat stringFromDate: (NSDate *)value];
 						}
 						else
 							value = [value description];

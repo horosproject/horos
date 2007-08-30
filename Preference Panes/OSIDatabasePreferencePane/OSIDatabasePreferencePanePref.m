@@ -386,12 +386,17 @@ Version 2.4
 
 - (IBAction) resetDate:(id) sender
 {
-	[[NSUserDefaults standardUserDefaults] setObject:[[NSUserDefaults standardUserDefaults] stringForKey: NSShortTimeDateFormatString] forKey:@"DBDateFormat"];
+	NSDateFormatter	*dateFormat = [[[NSDateFormatter alloc] init] autorelease];
+	[dateFormat setDateStyle: NSDateFormatterShortStyle];
+	[dateFormat setTimeStyle: NSDateFormatterShortStyle];
+	[[NSUserDefaults standardUserDefaults] setObject: [dateFormat dateFormat] forKey:@"DBDateFormat2"];
 }
 
 - (IBAction) resetDateOfBirth:(id) sender
 {
-	[[NSUserDefaults standardUserDefaults] setObject:[[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] forKey:@"DBDateOfBirthFormat"];
+	NSDateFormatter	*dateFormat = [[[NSDateFormatter alloc] init] autorelease];
+	[dateFormat setDateStyle: NSDateFormatterShortStyle];
+	[[NSUserDefaults standardUserDefaults] setObject: [dateFormat dateFormat] forKey:@"DBDateOfBirthFormat2"];
 }
 
 - (IBAction)setLocationURL:(id)sender{
