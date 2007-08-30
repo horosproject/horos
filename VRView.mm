@@ -1428,9 +1428,11 @@ public:
 
 - (long) getTool: (NSEvent*) event
 {
-	long tool;
-	
-	if( [event type] == NSRightMouseDown || [event type] == NSRightMouseDragged || [event type] == NSRightMouseUp) tool = tZoom;
+	long tool;	
+	if(([event type] == NSRightMouseDown || [event type] == NSRightMouseDragged || [event type] == NSRightMouseUp) && !_contextualMenuActive) {
+		tool = tZoom;
+		//NSLog(@"Right Mouse Tool");
+	}
 	else if( [event type] == NSOtherMouseDown || [event type] == NSOtherMouseDragged || [event type] == NSOtherMouseUp) tool = tTranslate;
 	else tool = currentTool;
 	
@@ -1834,11 +1836,14 @@ public:
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
+
+	_contextualMenuActive = NO;
 	if (_rightMouseDownTimer) {
 		[self deleteRightMouseDownTimer];
 	}
-		
-	_rightMouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self  selector:@selector(showMenu:) userInfo:theEvent  repeats:NO] retain];
+	if (!([theEvent modifierFlags] & NSControlKeyMask)) 	
+		_rightMouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self  selector:@selector(showMenu:) userInfo:theEvent  repeats:NO] retain];
+	
 	[self mouseDown:theEvent];
 }
 
@@ -1850,7 +1855,9 @@ public:
 	ROIUPDATE = NO;
 }
 
-+ (NSMenu *)defaultMenu {
+
+
+- (NSMenu *)defaultMenu {
     NSMenu *theMenu = [[[NSMenu alloc] initWithTitle:@"Contextual Menu"] autorelease];
 	NSMenuItem *item;
     item = [theMenu insertItemWithTitle:NSLocalizedString(@"Levels", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:0];
@@ -1900,6 +1907,7 @@ public:
 	[item setSubmenu:submenu];
     return theMenu;
 }
+
 
 - (float) getResolution
 {
@@ -2423,6 +2431,10 @@ public:
 
 - (void)mouseUp:(NSEvent *)theEvent{
 	[self deleteMouseDownTimer];
+	if (_contextualMenuActive) {
+		[self rightMouseUp:theEvent];
+		return;
+	}
 	
 	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 	
@@ -2450,7 +2462,8 @@ public:
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 				break;
 			case tZoom:
-				[self rightMouseUp:theEvent];
+				//[self rightMouseUp:theEvent];
+				[self zoomMouseUp:(NSEvent *)theEvent];
 				break;
 			case t3DCut:			// <- DO NOTHING !
 			case tBonesRemoval:		// <- DO NOTHING !
@@ -2462,8 +2475,7 @@ public:
 	}
 }
 
-- (void)rightMouseUp:(NSEvent *)theEvent{
-	[self deleteRightMouseDownTimer];
+- (void)zoomMouseUp:(NSEvent *)theEvent{
 	if (_tool == tZoom)
 	{
 		if( volumeMapper)
@@ -2484,6 +2496,21 @@ public:
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 	}
+}
+
+- (void)rightMouseUp:(NSEvent *)theEvent{
+	NSLog(@"right Mouse Up");
+	[self deleteRightMouseDownTimer];
+	if (_contextualMenuActive) {
+		NSLog(@"Contextual Menu Active on Mouse Up");
+		_contextualMenuActive = NO;
+		[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
+		return;
+	}
+	
+	if (_tool == tZoom)
+		[self zoomMouseUp:(NSEvent *)theEvent];
+		
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
@@ -3458,6 +3485,7 @@ public:
 
 - (void) setCurrentTool:(short) i
 {
+	NSLog(@"setCurrentTool: %d", i);
 	long previousTool = currentTool;
 	
     currentTool = i;
@@ -6251,9 +6279,17 @@ public:
 }
 
 - (void) showMenu:(NSTimer*)theTimer{
+	_contextualMenuActive = YES;
 	NSEvent *event = (NSEvent *)[theTimer userInfo];
-	[NSMenu popUpContextMenu:[self menu] withEvent:event forView:self];
+	[self performSelectorOnMainThread:@selector(showMenuOnMainThread:) withObject:event waitUntilDone:YES];
 }
+
+- (void)showMenuOnMainThread:(NSEvent *)event{
+	NSLog(@"showMenu");
+	[NSMenu popUpContextMenu:[self defaultMenu] withEvent:event forView:self];
+}
+
+
 
 //part of Dragging Source Protocol
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal{

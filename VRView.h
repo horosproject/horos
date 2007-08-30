@@ -311,6 +311,8 @@ typedef char* vtkMyCallbackVR;
 
 	float						verticalAngleForVR;
 	float						rotateDirectionForVR;
+	
+	BOOL						_contextualMenuActive;
 }
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
@@ -437,6 +439,8 @@ typedef char* vtkMyCallbackVR;
 -(void) axView:(id) sender;
 -(void) coView:(id) sender;
 -(void) saViewOpposite:(id) sender;
+
+- (void)zoomMouseUp:(NSEvent *)theEvent;
 
 
 // export
