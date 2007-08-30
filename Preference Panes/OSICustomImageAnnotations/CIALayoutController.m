@@ -35,7 +35,9 @@
 			annotationsLayoutDictionary = [[NSMutableDictionary dictionary] retain];
 			
 		currentModality = NSLocalizedString(@"Default", @"");
-				
+		
+		skipTextViewDidChangeSelectionNotification = NO;
+		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(annotationMouseDragged:) name:@"CIAAnnotationMouseDraggedNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(annotationMouseDown:) name:@"CIAAnnotationMouseDownNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(annotationMouseUp:) name:@"CIAAnnotationMouseUpNotification" object:nil];
@@ -43,7 +45,7 @@
 //		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidEndEditing:) name:@"NSControlTextDidEndEditingNotification" object:nil];
 //		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidBeginEditing:) name:@"NSControlTextDidBeginEditingNotification" object:nil];
 		//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewDidChangeSelection:) name:@"NSTextViewDidChangeTypingAttributesNotification" object:nil];
-		//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewDidChangeSelection:) name:@"NSTextViewDidChangeSelectionNotification" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewDidChangeSelection:) name:@"NSTextViewDidChangeSelectionNotification" object:nil];
 	}
 	return self;
 }
@@ -59,7 +61,7 @@
 	[[[prefPane contentTokenField] cell] setWraps:YES];
 	[[prefPane dicomNameTokenField] setTokenStyle:NSPlainTextTokenStyle];
 
-	[[prefPane contentTokenField] setDelegate:self];
+//	[[prefPane contentTokenField] setDelegate:self];
 
 	// DICOM popup button
 	[self prepareDICOMFieldsArrays];
@@ -455,12 +457,19 @@
 
 - (IBAction)addFieldToken:(id)sender;
 {
+	NSMenuItem *selectedItem;
+	if([sender isEqualTo:[prefPane DICOMFieldsPopUpButton]] || [sender isEqualTo:[prefPane databaseFieldsPopUpButton]] || [sender isEqualTo:[prefPane specialFieldsPopUpButton]])
+	{
+		selectedItem = [sender selectedItem];
+	}
+	
 	[[prefPane contentTokenField] sendAction:[[prefPane contentTokenField] action] to:[[prefPane contentTokenField] target]];
 
 	// see if there is a selected Token in the NSTokenField
 	BOOL aTokenIsSelected = NO;
 	int tokenIndexInContent;
 	NSRange range = [[[prefPane contentTokenField] currentEditor] selectedRange];
+
 	if(range.length==1) // one and only one is selected
 	{
 		aTokenIsSelected = YES;
@@ -472,33 +481,35 @@
 	{
 		formatString = @"DICOM_%@";
 		if(!aTokenIsSelected)
+		{
 			[selectedAnnotation insertObject:[NSString stringWithFormat:formatString, [[[sender selectedItem] representedObject] name]] inContentAtIndex:[selectedAnnotation countOfContent]];
+		}
 		else
 		{
 			[selectedAnnotation removeObjectFromContentAtIndex:tokenIndexInContent];
-			[selectedAnnotation insertObject:[NSString stringWithFormat:formatString, [[[sender selectedItem] representedObject] name]] inContentAtIndex:tokenIndexInContent];
+			[selectedAnnotation insertObject:[NSString stringWithFormat:formatString, [[selectedItem representedObject] name]] inContentAtIndex:tokenIndexInContent];
 		}
 	}
 	else if([sender isEqualTo:[prefPane databaseFieldsPopUpButton]])
 	{
 		formatString = @"DB_%@";		
 		if(!aTokenIsSelected)
-			[selectedAnnotation insertObject:[NSString stringWithFormat:formatString,[[sender selectedItem] representedObject]] inContentAtIndex:[selectedAnnotation countOfContent]];
+			[selectedAnnotation insertObject:[NSString stringWithFormat:formatString,[selectedItem representedObject]] inContentAtIndex:[selectedAnnotation countOfContent]];
 		else
 		{
 			[selectedAnnotation removeObjectFromContentAtIndex:tokenIndexInContent];
-			[selectedAnnotation insertObject:[NSString stringWithFormat:formatString,[[sender selectedItem] representedObject]] inContentAtIndex:tokenIndexInContent];
+			[selectedAnnotation insertObject:[NSString stringWithFormat:formatString,[selectedItem representedObject]] inContentAtIndex:tokenIndexInContent];
 		}
 	}
 	else if([sender isEqualTo:[prefPane specialFieldsPopUpButton]])
 	{
 		formatString = @"Special_%@";
 		if(!aTokenIsSelected)
-			[selectedAnnotation insertObject:[NSString stringWithFormat:formatString,[[sender selectedItem] title]] inContentAtIndex:[selectedAnnotation countOfContent]];
+			[selectedAnnotation insertObject:[NSString stringWithFormat:formatString,[selectedItem title]] inContentAtIndex:[selectedAnnotation countOfContent]];
 		else
 		{
 			[selectedAnnotation removeObjectFromContentAtIndex:tokenIndexInContent];
-			[selectedAnnotation insertObject:[NSString stringWithFormat:formatString,[[sender selectedItem] title]] inContentAtIndex:tokenIndexInContent];
+			[selectedAnnotation insertObject:[NSString stringWithFormat:formatString,[selectedItem title]] inContentAtIndex:tokenIndexInContent];
 		}
 	}
 	else if([sender isEqualTo:[prefPane addCustomDICOMFieldButton]])
@@ -686,7 +697,8 @@
 
 - (void)prepareDatabaseFields;
 {
-	NSManagedObjectModel *currentModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:[NSURL fileURLWithPath:@"/Users/joris/Development/osirix/osirix/build/Development/OsiriX.app/Contents/Resources/OsiriXDB_DataModel.mom"]];
+	NSManagedObjectModel *currentModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"OsiriXDB_DataModel.mom"]]];
+	
 	NSArray *studies = [[[[currentModel entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
 	NSArray *series = [[[[currentModel entitiesByName] objectForKey:@"Series"] attributesByName] allKeys];
 	NSArray *images = [[[[currentModel entitiesByName] objectForKey:@"Image"] attributesByName] allKeys];
@@ -778,28 +790,32 @@
 
 - (void)textViewDidChangeSelection:(NSNotification *)aNotification
 {
+	if(skipTextViewDidChangeSelectionNotification) return;
+	skipTextViewDidChangeSelectionNotification = YES;
+	
 	if([[prefPane contentTokenField] currentEditor]==[aNotification object])
 	{
 		NSArray *ranges = [[aNotification object] selectedRanges];
-		NSLog(@"ranges : %@", ranges);
 		if([ranges count]==1)
 		{
 			NSRange selectedRange = [[ranges objectAtIndex:0] rangeValue];
-			NSLog(@"selectedRange : %d, %d", selectedRange.location, selectedRange.length);
-			if(selectedRange.length==1 && selectedRange.location!=0)
+			if(selectedRange.length==1)
 			{
 				NSString *selectedString = [[[[prefPane contentTokenField] objectValue] subarrayWithRange:selectedRange] objectAtIndex:0];
+				
 				if([selectedString hasPrefix:@"DICOM_"])
 				{
 					[[prefPane DICOMFieldsPopUpButton] setEnabled:YES];
 					[[prefPane DICOMFieldsPopUpButton] selectItemAtIndex:0];
+					
 					[[prefPane databaseFieldsPopUpButton] setEnabled:NO];
-					[[prefPane specialFieldsPopUpButton] setEnabled:NO];					
 					[[prefPane databaseFieldsPopUpButton] selectItemAtIndex:0];
+					
+					[[prefPane specialFieldsPopUpButton] setEnabled:NO];
 					[[prefPane specialFieldsPopUpButton] selectItemAtIndex:0];
 					
 					if([selectedString length]>=7)
-					{
+					{						
 						BOOL found = NO;
 						selectedString = [selectedString substringFromIndex:6];
 						int i;
@@ -886,6 +902,7 @@
 			}
 		}
 	}
+	skipTextViewDidChangeSelectionNotification = NO;
 }
 
 - (void)setCustomDICOMFieldEditingEnable:(BOOL)boo;
@@ -917,7 +934,6 @@
 		if(![[annotationsArray objectAtIndex:a] placeHolder])
 		{
 			int r = NSRunAlertPanel(NSLocalizedString(@"Saving Annotations", nil), NSLocalizedString(@"Any Annotation left outside the place holders will be lost.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil);
-			NSLog(@"r = %d", r);
 			if(r==NSAlertDefaultReturn)
 				return YES;
 			else// if(r==NSAlertAlternateReturn)

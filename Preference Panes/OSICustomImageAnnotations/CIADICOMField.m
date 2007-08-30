@@ -46,5 +46,9 @@
 	return [NSString stringWithFormat:@"(0x%04x,0x%04x) %@", group, element, name];
 }
 
+- (NSString *)description;
+{
+	return [self title];
+}
 
 @end

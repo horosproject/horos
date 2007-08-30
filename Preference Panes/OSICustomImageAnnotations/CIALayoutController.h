@@ -45,6 +45,8 @@
 	
 	NSMutableDictionary *annotationsLayoutDictionary;
 	NSString *currentModality;
+	
+	BOOL skipTextViewDidChangeSelectionNotification;
 }
 
 - (IBAction)addAnnotation:(id)sender;
