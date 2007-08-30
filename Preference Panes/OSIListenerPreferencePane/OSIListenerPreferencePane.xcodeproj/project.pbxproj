@@ -11,11 +11,11 @@
 		8D202CEB0486D31800D8A456 /* OSIListenerPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */; };
 		8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D202CEE0486D31800D8A456 /* OSIListenerPreferencePanePref.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F506C040013D9D8001CA16C8 /* OSIListenerPreferencePanePref.tiff */; };
-		8D202CEF0486D31800D8A456 /* OSIListenerPreferencePanePref.nib in Resources */ = {isa = PBXBuildFile; fileRef = F506C042013D9D8C01CA16C8 /* OSIListenerPreferencePanePref.nib */; };
 		8D202CF10486D31800D8A456 /* OSIListenerPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
 		AB80A1BE0A19C3C000FED357 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80A1BD0A19C3C000FED357 /* Security.framework */; };
+		CEB0705D0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB0705B0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,11 +27,11 @@
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSIListenerPreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSIListenerPreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB80A1BD0A19C3C000FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		CEB0705C0C87502F0011AEE1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIListenerPreferencePanePref.xib; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIListenerPreferencePanePref.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIListenerPreferencePanePref.m; sourceTree = "<group>"; };
 		F506C040013D9D8001CA16C8 /* OSIListenerPreferencePanePref.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OSIListenerPreferencePanePref.tiff; sourceTree = "<group>"; };
-		F506C043013D9D8C01CA16C8 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/OSIListenerPreferencePanePref.nib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,7 +75,7 @@
 				8D202CF70486D31800D8A456 /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 				F506C040013D9D8001CA16C8 /* OSIListenerPreferencePanePref.tiff */,
-				F506C042013D9D8C01CA16C8 /* OSIListenerPreferencePanePref.nib */,
+				CEB0705B0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -183,7 +183,7 @@
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
 				8D202CEE0486D31800D8A456 /* OSIListenerPreferencePanePref.tiff in Resources */,
-				8D202CEF0486D31800D8A456 /* OSIListenerPreferencePanePref.nib in Resources */,
+				CEB0705D0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,12 +219,12 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		F506C042013D9D8C01CA16C8 /* OSIListenerPreferencePanePref.nib */ = {
+		CEB0705B0C87502F0011AEE1 /* OSIListenerPreferencePanePref.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F506C043013D9D8C01CA16C8 /* English */,
+				CEB0705C0C87502F0011AEE1 /* English */,
 			);
-			name = OSIListenerPreferencePanePref.nib;
+			name = OSIListenerPreferencePanePref.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
