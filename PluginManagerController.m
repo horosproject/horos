@@ -18,11 +18,11 @@
 // this is the address of the plist containing the list of the available plugins.
 // the alternative link will be used if the first one doesn't reply...
 
-#define PLUGIN_LIST_URL @"http://www.osirix-viewer.com/plugins.plist"
-#define PLUGIN_LIST_ALT_URL @"http://www.osirixviewer.com/plugins.plist"
+#define PLUGIN_LIST_URL @"http://www.osirix-viewer.com/osirix_plugins/plugins.plist"
+#define PLUGIN_LIST_ALT_URL @"http://www.osirixviewer.com/osirix_plugins/plugins.plist"
 
-#define PLUGIN_SUBMISSION_URL @"http://www.osirix-viewer.com/submit_plugin/index.html"
-#define PLUGIN_SUBMISSION_NO_MAIL_APP_URL @"http://www.osirix-viewer.com/submit_plugin/index_no_mail_app.html"
+#define PLUGIN_SUBMISSION_URL @"http://www.osirix-viewer.com/osirix_plugins/submit_plugin/index.html"
+#define PLUGIN_SUBMISSION_NO_MAIL_APP_URL @"http://www.osirix-viewer.com/osirix_plugins/submit_plugin/index_no_mail_app.html"
 
 @implementation PluginManagerController
 
@@ -54,10 +54,11 @@
 
 - (void)dealloc
 {
-	if(plugins) [plugins release];
-	if(pluginsListURLs) [pluginsListURLs release];
-	if(downloadURL) [downloadURL release];
-	if(downloadedFilePath) [downloadedFilePath release];
+	[plugins release];
+	[pluginsListURLs release];
+	[downloadURL release];
+	[downloadedFilePath release];
+	
 	[super dealloc];
 }
 
