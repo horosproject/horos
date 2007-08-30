@@ -61,7 +61,7 @@
 	[[[prefPane contentTokenField] cell] setWraps:YES];
 	[[prefPane dicomNameTokenField] setTokenStyle:NSPlainTextTokenStyle];
 
-//	[[prefPane contentTokenField] setDelegate:self];
+	[[prefPane contentTokenField] setDelegate:self];
 
 	// DICOM popup button
 	[self prepareDICOMFieldsArrays];

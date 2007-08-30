@@ -232,43 +232,36 @@
 
 - (NSMutableArray*)content;
 {
-//	NSLog(@"content");
 	return content;
 }
 
 - (void)setContent:(NSArray*)newContent;
 {
-//	NSLog(@"setContent");
 	[content setArray:newContent];
 }
 
 - (int)countOfContent;
 {
-//	NSLog(@"countOfContent");
 	return [content count];
 }
 
 - (NSString*)objectInContentAtIndex:(unsigned)index;
 {
-	NSLog(@"objectInContentAtIndex");
 	return [content objectAtIndex:index];
 }
 
 - (void)getContent:(NSString **)strings range:(NSRange)inRange;
 {
-	NSLog(@"getContent:range:");
     [content getObjects:strings range:inRange];
 }
 
 - (void)insertObject:(NSString *)string inContentAtIndex:(unsigned int)index;
 {
-	NSLog(@"insertObject:inContentAtIndex:");
 	[content insertObject:string atIndex:index];
 }
  
 - (void)removeObjectFromContentAtIndex:(unsigned int)index;
 {
-	NSLog(@"removeObjectFromContentAtIndex:");
 	[content removeObjectAtIndex:index];
 }
 
