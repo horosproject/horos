@@ -759,7 +759,8 @@ static NSHost *currentHost = 0L;
 	// ** AUTOROUTINGACTIVATED
 	[defaultValues setObject:@"0" forKey:@"AUTOROUTINGACTIVATED"];
 	
-	
+	[defaultValues setObject:@"0" forKey:@"httpSOAPServer"];
+	[defaultValues setObject:@"8080" forKey:@"httpSOAPServerPort"];
 	
 	// ** ROUTINGACTIVATED
 	[defaultValues setObject:@"0" forKey:@"ROUTINGACTIVATED"];

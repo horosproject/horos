@@ -138,24 +138,27 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>UTExportedTypeDeclarations</key>
+	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.image</string>
-				<string>public.data</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>"Dicom Image"</string>
+			<string>DICOM Image</string>
 			<key>UTTypeIdentifier</key>
 			<string>org.nema.dicom</string>
+			<key>UTTypeReferenceURL</key>
+			<string>http://nema.org</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
 				<array>
 					<string>dcm</string>
 				</array>
+				<key>public.mime-type</key>
+				<string>x-application/dicom</string>
 			</dict>
 		</dict>
 	</array>
