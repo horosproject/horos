@@ -10645,12 +10645,11 @@ BOOL            readable = YES;
 								value = [NSString stringWithFormat:@"%@:%@:%@", hour, min, sec];
 								NSDate *date = [NSDate dateWithString:[NSString stringWithFormat:@"1970-01-01 %@:%@:%@ +0000", hour, min, sec]]; // fake date, we just want the time
 //								NSLog(@"date : %@", date);
-								NSString *dateFormat = [[NSUserDefaults standardUserDefaults] stringForKey:NSTimeFormatString];
-//								NSLog(@"dateFormat : %@", dateFormat);
-								NSDictionary *locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
-								value = [date descriptionWithCalendarFormat:dateFormat timeZone:nil locale:locale];
-//							NSLog(@"value : %@", value);
-								//NSLog(@"dateFormat : %@", dateFormat);
+
+								NSDateFormatter *dateFormat = [[[NSDateFormatter alloc] init] autorelease];
+								[dateFormat setTimeStyle: NSDateFormatterLongStyle];
+								
+								value = [dateFormat stringFromDate: date];
 							}
 						}
 						//NSLog(@"DICOM group: %@, element: %@, field: %@, value: %@", [field objectForKey:@"group"], [field objectForKey:@"element"], [field objectForKey:@"name"], value);

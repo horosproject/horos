@@ -52,7 +52,7 @@ union vectorChar {
 
 
 union vectorLong {
-    vector long longVec;
+    vector int longVec;
     short scalar[4];
 };
 
@@ -3089,7 +3089,7 @@ NS_ENDHANDLER
 				if( singleThread == 0L) singleThread = [[NSLock alloc] init];
 				[singleThread lock];	// These JPEG decompressors are NOT thread-safe....
 				
-				short depth = scanJpegDataForBitDepth( [subData bytes], [subData length]);
+				short depth = scanJpegDataForBitDepth( (unsigned char *) [subData bytes], [subData length]);
 				if( depth == 0)
 				{
 					NSLog( @"depth not found (scanJpegDataForBitDepth), will use : %d", _pixelDepth);

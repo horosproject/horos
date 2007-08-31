@@ -29,15 +29,15 @@
 	return [[[DCMDataContainer alloc] init] autorelease];
 }
 
-+ (id)dataContainerWithBytes:(const void *)bytes length:(unsigned)length{
++ (id)dataContainerWithBytes:(const void *)bytes length:(NSUInteger)length{
 	return [[[DCMDataContainer alloc] initWithBytes:bytes length:length] autorelease];
 }
 
-+ (id)dataContainerWithBytesNoCopy:(void *)bytes length:(unsigned)length{
++ (id)dataContainerWithBytesNoCopy:(void *)bytes length:(NSUInteger)length{
 	return [[[DCMDataContainer alloc] initWithBytesNoCopy:bytes length:length] autorelease];
 }
 
-+ (id)dataContainerWithBytesNoCopy:(void *)bytes length:(unsigned)length freeWhenDone:(BOOL)freeWhenDone{
++ (id)dataContainerWithBytesNoCopy:(void *)bytes length:(NSUInteger)length freeWhenDone:(BOOL)freeWhenDone{
 	return [[[DCMDataContainer alloc] initWithBytesNoCopy:bytes length:length freeWhenDone:freeWhenDone] autorelease];
 }
 
@@ -108,7 +108,7 @@
 	return self;
 }
 
-- (id)initWithBytes:(const void *)bytes length:(unsigned)length{
+- (id)initWithBytes:(const void *)bytes length:(NSUInteger)length{
 	if (self = [super init]) {
 		dicomData = [[NSMutableData dataWithBytes:bytes length:length] retain];
 		_ptr = (unsigned char *)[dicomData bytes];
@@ -119,7 +119,7 @@
 	return self;
 }
 
-- (id)initWithBytesNoCopy:(void *)bytes length:(unsigned)length{
+- (id)initWithBytesNoCopy:(void *)bytes length:(NSUInteger)length{
 	if (self = [super init]) {
 		dicomData = [[NSMutableData dataWithBytesNoCopy:bytes length:length] retain];
 		_ptr = (unsigned char *)[dicomData bytes];
@@ -130,7 +130,7 @@
 	return self;
 }
 
- - (id)initWithBytesNoCopy:(void *)bytes length:(unsigned)length freeWhenDone:(BOOL)flag{
+ - (id)initWithBytesNoCopy:(void *)bytes length:(NSUInteger)length freeWhenDone:(BOOL)flag{
 	if (self = [super init]) {
 		dicomData = [[NSMutableData dataWithBytesNoCopy:bytes length:length freeWhenDone:flag] retain];
 		_ptr = (unsigned char *)[dicomData bytes];

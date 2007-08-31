@@ -36,9 +36,9 @@
 
 
 + (id)dataContainer;
-+ (id)dataContainerWithBytes:(const void *)bytes length:(unsigned)length;
-+ (id)dataContainerWithBytesNoCopy:(void *)bytes length:(unsigned)length;
-+ (id)dataContainerWithBytesNoCopy:(void *)bytes length:(unsigned)length freeWhenDone:(BOOL)freeWhenDone;
++ (id)dataContainerWithBytes:(const void *)bytes length:(NSUInteger)length;
++ (id)dataContainerWithBytesNoCopy:(void *)bytes length:(NSUInteger)length;
++ (id)dataContainerWithBytesNoCopy:(void *)bytes length:(NSUInteger)length freeWhenDone:(BOOL)freeWhenDone;
 + (id)dataContainerWithContentsOfFile:(NSString *)path;
 + (id)dataContainerWithContentsOfMappedFile:(NSString *)path;
 + (id)dataContainerWithContentsOfURL:(NSURL *)aURL;
@@ -50,9 +50,9 @@
 - (id)initWithData:(NSData *)data transferSyntax:(DCMTransferSyntax *)syntax;
 - (id)initWithContentsOfFile:(NSString *)path;
 - (id)initWithContentsOfURL:(NSURL *)aURL;
-- (id)initWithBytes:(const void *)bytes length:(unsigned)length;
-- (id)initWithBytesNoCopy:(void *)bytes length:(unsigned)length;
-- (id)initWithBytesNoCopy:(void *)bytes length:(unsigned)length freeWhenDone:(BOOL)flag;
+- (id)initWithBytes:(const void *)bytes length:(NSUInteger)length;
+- (id)initWithBytesNoCopy:(void *)bytes length:(NSUInteger)length;
+- (id)initWithBytesNoCopy:(void *)bytes length:(NSUInteger)length freeWhenDone:(BOOL)flag;
  
 
 - (void)initValues;
