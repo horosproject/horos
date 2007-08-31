@@ -720,6 +720,7 @@
 	[specialFieldsTitles addObject:NSLocalizedString(@"Mouse Position (px)", @"")];
 	[specialFieldsTitles addObject:NSLocalizedString(@"Mouse Position (mm)", @"")];
 	[specialFieldsTitles addObject:NSLocalizedString(@"Thickness / Location / Position", @"")];
+	[specialFieldsTitles addObject:NSLocalizedString(@"Patient's Actual Age", @"")];
 	return specialFieldsTitles;
 }
 

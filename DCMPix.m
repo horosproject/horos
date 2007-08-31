@@ -10687,6 +10687,22 @@ BOOL            readable = YES;
 					else if([type isEqualToString:@"Special"])
 					{
 						value = [field objectForKey:@"field"];
+						if ([value isEqualToString:@"Patient's Actual Age"])
+						{
+							// Patient's birth date : group=0x0010 element=0x0030
+							if(fileNb>=0)
+								value = [self getDICOMFieldValueForGroup:16 element:48 papyLink:fileNb];
+							else if(dcmObject)
+								value = [self getDICOMFieldValueForGroup:16 element:48 DCMLink:dcmObject];
+							else
+								value = nil;
+							if(value)
+							{
+								NSDate *date = [[[BrowserController currentBrowser] DBDateOfBirthFormat] dateFromString:value];
+								int age = -[date timeIntervalSinceNow]/(60*60*24*365);
+								value = [NSString stringWithFormat:@"%d y", age];
+							}
+						}
 						if(value==nil) value = @"";
 					}
 					else if([type isEqualToString:@"Manual"])

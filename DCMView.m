@@ -5951,6 +5951,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	// Left
 	[self getOrientationText:string :vectors :YES];
 	[self DrawCStringGL: string : labelFontListGL :6 :2+size.size.height/2];
+	
 	// Right
 	float offset = 28;
 	[self getOrientationText:string :vectors :NO];
@@ -6006,7 +6007,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-//#define CUSTOM_ANNOTATIONS
+#define CUSTOM_ANNOTATIONS
 #ifdef CUSTOM_ANNOTATIONS
 - (void) drawTextualData:(NSRect) size :(long) annotations
 {
@@ -6059,12 +6060,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		NSDictionary *annotationsDictionary = [curDCM annotationsDictionary];
 
 		NSMutableDictionary *xRasterInit = [NSMutableDictionary dictionary];
-		[xRasterInit setObject:[NSNumber numberWithInt:4] forKey:@"TopLeft"];
-		[xRasterInit setObject:[NSNumber numberWithInt:4] forKey:@"MiddleLeft"];
-		[xRasterInit setObject:[NSNumber numberWithInt:4] forKey:@"LowerLeft"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width] forKey:@"TopRight"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width] forKey:@"MiddleRight"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width] forKey:@"LowerRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:6] forKey:@"TopLeft"];
+		[xRasterInit setObject:[NSNumber numberWithInt:6] forKey:@"MiddleLeft"];
+		[xRasterInit setObject:[NSNumber numberWithInt:6] forKey:@"LowerLeft"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2] forKey:@"TopRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2] forKey:@"MiddleRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2] forKey:@"LowerRight"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"TopMiddle"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"LowerMiddle"];
 
@@ -6079,9 +6080,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignCenter] forKey:@"LowerMiddle"];
 
 		NSMutableDictionary *yRasterInit = [NSMutableDictionary dictionary];
-		[yRasterInit setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"TopLeft"];
+		[yRasterInit setObject:[NSNumber numberWithInt:stringSize.height+2] forKey:@"TopLeft"];
 		[yRasterInit setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"TopMiddle"];
-		[yRasterInit setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"TopRight"];
+		[yRasterInit setObject:[NSNumber numberWithInt:stringSize.height+2] forKey:@"TopRight"];
 		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height/2] forKey:@"MiddleLeft"];
 		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height/2] forKey:@"MiddleRight"];
 		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2] forKey:@"LowerLeft"];
@@ -6391,7 +6392,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}// while
 		} // for k
 		yRaster = size.size.height-2;
-		xRaster = size.size.width;
+		xRaster = size.size.width-2;
 		[self DrawNSStringGL:@"Made In OsiriX" :fontListGL :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
 	}
 }
