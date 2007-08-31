@@ -5444,6 +5444,67 @@ static BOOL				DICOMDIRCDMODE = NO;
 	return NO;
 }
 
+- (BOOL) findObject:(NSString*) object key:(NSString*) key table:(NSString*) table execute: (NSString*) execute;
+{
+	NSError				*error = 0L;
+	NSString			*name;
+	long				index;
+	
+	NSManagedObject			*element = 0L;
+	NSManagedObjectContext	*context = [self managedObjectContext];
+	
+	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+	[dbRequest setEntity: [[[self managedObjectModel] entitiesByName] objectForKey: table]];
+	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+	
+	[context retain];
+	[context lock];
+	error = 0L;
+	NSArray *array = [context executeFetchRequest:dbRequest error:&error];
+	
+	index = [[array  valueForKey: key] indexOfObject: object];
+	if( index != NSNotFound)
+	{
+		element = [array objectAtIndex: index];
+	}
+	[context unlock];
+	[context release];
+	
+	if( element)
+	{
+		NSManagedObject	*study = 0L;
+		
+		if( [[element valueForKey: @"type"] isEqualToString: @"Image"]) study = [element valueForKeyPath: @"series.study"];
+		else if( [[element valueForKey: @"type"] isEqualToString: @"Series"]) study = [element valueForKeyPath: @"study"];
+		else if( [[element valueForKey: @"type"] isEqualToString: @"Series"]) study = element;
+		else NSLog( @"DB selectObject : Unknown table");
+		
+		if( [execute isEqualToString: @"Select"] || [execute isEqualToString: @"Open"])
+		{
+			NSInteger index = [outlineViewArray indexOfObject: study];
+			
+			if( index == NSNotFound)	// Try again with all studies displayed. This study has to be here ! We found it in the DB
+			{
+				[self showEntireDatabase];
+				index = [outlineViewArray indexOfObject: study];
+			}
+			
+			if( index != NSNotFound)
+			{
+				if( [databaseOutline rowForItem: study] != [databaseOutline selectedRow])
+				{
+					[databaseOutline selectRow:[databaseOutline rowForItem: study] byExtendingSelection: NO];
+					[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+				}
+				
+				return YES;
+			}
+		}
+	}
+	
+	return NO;
+}
+
 -(void) loadNextPatient:(NSManagedObject *) curImage :(long) direction :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
 {
 	NSManagedObjectModel	*model = [self managedObjectModel];
