@@ -6361,23 +6361,28 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						useStringTexture = YES;
 					}					
 				}
-								
-				if(![[tempString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@""])
+				
+				[tempString setString:[tempString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+				[tempString2 setString:[tempString2 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+				[tempString3 setString:[tempString3 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+				[tempString4 setString:[tempString4 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+
+				if(![tempString isEqualToString:@""])
 				{	
 					[self DrawNSStringGL:tempString :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
 				}
-				if(![[tempString2 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@""])
+				if(![tempString2 isEqualToString:@""])
 				{
 					[self DrawNSStringGL:tempString2 :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
 				}
-				if(![[tempString3 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@""])
+				if(![tempString3 isEqualToString:@""])
 				{
 					[self DrawNSStringGL:tempString3 :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
 				}
-				if(![[tempString4 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@""])
+				if(![tempString4 isEqualToString:@""])
 				{
 					[self DrawNSStringGL:tempString4 :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
