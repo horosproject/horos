@@ -6006,7 +6006,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-//#define CUSTOM_ANNOTATIONS
+#define CUSTOM_ANNOTATIONS
 #ifdef CUSTOM_ANNOTATIONS
 - (void) drawTextualData:(NSRect) size :(long) annotations
 {
@@ -6362,22 +6362,22 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					}					
 				}
 								
-				if(![tempString isEqualToString:@""])
+				if(![[tempString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@""])
 				{	
 					[self DrawNSStringGL:tempString :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
 				}
-				if(![tempString2 isEqualToString:@""])
+				if(![[tempString2 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@""])
 				{
 					[self DrawNSStringGL:tempString2 :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
 				}
-				if(![tempString3 isEqualToString:@""])
+				if(![[tempString3 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@""])
 				{
 					[self DrawNSStringGL:tempString3 :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
 				}
-				if(![tempString4 isEqualToString:@""])
+				if(![[tempString4 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@""])
 				{
 					[self DrawNSStringGL:tempString4 :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
