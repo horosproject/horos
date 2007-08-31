@@ -3662,13 +3662,13 @@ static BOOL				DICOMDIRCDMODE = NO;
 		{
 			subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\") AND date <= CAST(%lf, \"NSDate\")", [timeIntervalStart timeIntervalSinceReferenceDate], [timeIntervalEnd timeIntervalSinceReferenceDate]];
 		
-			description = [description stringByAppendingFormat: NSLocalizedString(@" / Time Interval: from: %@ to: %@", nil),[DBDateFormatFormatter stringFromDate: timeIntervalStart],  [DBDateFormatFormatter stringFromDate: timeIntervalEnd] ];
+			description = [description stringByAppendingFormat: NSLocalizedString(@" / Time Interval: from: %@ to: %@", nil),[DBDateFormat stringFromDate: timeIntervalStart],  [DBDateFormat stringFromDate: timeIntervalEnd] ];
 		}
 		else
 		{
 			subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [timeIntervalStart timeIntervalSinceReferenceDate]];
 			
-			description = [description stringByAppendingFormat:NSLocalizedString(@" / Time Interval: since: %@", nil), [DBDateFormatFormatter stringFromDate: timeIntervalStart]];
+			description = [description stringByAppendingFormat:NSLocalizedString(@" / Time Interval: since: %@", nil), [DBDateFormat stringFromDate: timeIntervalStart]];
 		}
 		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, 0L]];
 		filtered = YES;
@@ -9447,15 +9447,54 @@ static NSArray*	openSubSeriesArray = 0L;
 
 - (void) setDBDate
 {
-	[[[databaseOutline tableColumnWithIdentifier: @"dateOpened"] dataCell] setFormatter: DBDateFormatFormatter];
-	[[[databaseOutline tableColumnWithIdentifier: @"date"] dataCell] setFormatter: DBDateFormatFormatter];
-	[[[databaseOutline tableColumnWithIdentifier: @"dateAdded"] dataCell] setFormatter: DBDateFormatFormatter];
+	[TimeFormat release];
+	TimeFormat = [[NSDateFormatter alloc] init];
+	[TimeFormat setTimeStyle: NSDateFormatterShortStyle];
+
+	[DBDateFormat release];
+	DBDateFormat = [[NSDateFormatter alloc] init];
+	[DBDateFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat2"]];
+
+	[DBDateOfBirthFormat release];
+	DBDateOfBirthFormat = [[NSDateFormatter alloc] init];
+	[DBDateOfBirthFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat2"]];
+
+	[[[databaseOutline tableColumnWithIdentifier: @"dateOpened"] dataCell] setFormatter: DBDateFormat];
+	[[[databaseOutline tableColumnWithIdentifier: @"date"] dataCell] setFormatter: DBDateFormat];
+	[[[databaseOutline tableColumnWithIdentifier: @"dateAdded"] dataCell] setFormatter: DBDateFormat];
 	
-	NSDateFormatter *dateFomat = [[[NSDateFormatter alloc]  init] autorelease];
-	[dateFomat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat2"]];
-	
-	[[[databaseOutline tableColumnWithIdentifier: @"dateOfBirth"] dataCell] setFormatter: dateFomat];
-	[[[databaseOutline tableColumnWithIdentifier: @"reportURL"] dataCell] setFormatter: dateFomat];
+	[[[databaseOutline tableColumnWithIdentifier: @"dateOfBirth"] dataCell] setFormatter: DBDateOfBirthFormat];
+	[[[databaseOutline tableColumnWithIdentifier: @"reportURL"] dataCell] setFormatter: DBDateOfBirthFormat];
+}
+
+- (NSDateFormatter*) DBDateFormat
+{
+	return DBDateFormat;
+}
+
+- (NSDateFormatter*) DBDateOfBirthFormat
+{
+	return DBDateOfBirthFormat;
+}
+
+- (NSDateFormatter*) TimeFormat
+{
+	return TimeFormat;
+}
+
++ (NSString*) TimeFormat:(NSDate*) t
+{
+	return [[[BrowserController currentBrowser] TimeFormat] stringFromDate: t];
+}
+
++ (NSString*) DBDateOfBirthFormat:(NSDate*) d
+{
+	return [[[BrowserController currentBrowser] DBDateOfBirthFormat] stringFromDate: d];
+}
+
++ (NSString*) DBDateFormat:(NSDate*) d
+{
+	return [[[BrowserController currentBrowser] DBDateFormat] stringFromDate: d];
 }
 
 -(void) awakeFromNib
@@ -9479,10 +9518,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	[wait showWindow:self];
 	
 	@try
-	{
-	DBDateFormatFormatter = [[NSDateFormatter alloc] init];
-	[DBDateFormatFormatter setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat2"]];
-	
+	{	
 	long i;
 	
 	[DCMNetServiceDelegate currentHost];	// This host detection (DNS) can take long... do it now...

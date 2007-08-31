@@ -10514,16 +10514,22 @@ BOOL            readable = YES;
 //PapyShort		fileNb
 - (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element papyLink:(PapyShort)fileNb;
 {
+	PapyShort theErr;
+	if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+	
 	NSString *field = @"";
 	SElement *theGroupP;
-	PapyShort theErr = Papy3GotoGroupNb (fileNb, group);
-	if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+	theErr = Papy3GotoGroupNb (fileNb, group);
+
+	if( theErr >= 0 && Papy3GroupRead(fileNb, &theGroupP) > 0)
 	{
 		SElement *inGrOrModP = theGroupP;
 		
 		int theEnumGrNb = Papy3ToEnumGroup(group);
 		int theMaxElem = gArrGroup [theEnumGrNb].size;
 		int j;
+		
+		NSCalendarDate *calendarDate;
 		
 		for (j = 0; j < theMaxElem; j++, inGrOrModP++)
 		{
@@ -10535,6 +10541,33 @@ BOOL            readable = YES;
 					if( theValueP->a)
 					{
 						field = [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding];
+						#undef DA
+						#undef DT
+						#undef TM
+						#undef AS
+					
+						if(inGrOrModP->vr==DA)
+						{
+							calendarDate = [DCMCalendarDate dicomDate:field];
+							field = [BrowserController DBDateOfBirthFormat: calendarDate];
+						}
+						else if(inGrOrModP->vr==DT)
+						{
+							calendarDate = [DCMCalendarDate dicomDateTime:field];
+							field = [BrowserController DBDateFormat: calendarDate];
+						}
+						else if(inGrOrModP->vr==TM)
+						{
+							calendarDate = [DCMCalendarDate dicomTime:field];
+							field = [BrowserController TimeFormat: calendarDate];
+						}
+						else if(inGrOrModP->vr==AS)
+						{
+							//Age String Format mmmM,dddD,nnnY ie 018Y
+							int number = [[field substringWithRange:NSMakeRange(0, 3)] intValue];
+							NSString *letter = [field substringWithRange:NSMakeRange(3, 1)];
+							field = [NSString stringWithFormat:@"%d %@", number, [letter lowercaseString]];
+						}
 						break;
 					}
 				}
@@ -10558,7 +10591,9 @@ BOOL            readable = YES;
 		else if([field isKindOfClass:[NSNumber class]])
 			return [field stringValue];//[dicomElements setObject:[field stringValue] forKey:@"commentsAutoFill"];	
 		else if([field isKindOfClass:[NSCalendarDate class]])
+		{
 			return [field description];//[dicomElements setObject:[field description] forKey:@"commentsAutoFill"];
+		}
 		else
 			return nil;
 	}
@@ -10608,8 +10643,6 @@ BOOL            readable = YES;
 					NSString *value;
 					if([type isEqualToString:@"DICOM"])
 					{
-//						if([dicomElements objectforKey:[field objectForKey:@"name"]])
-//							value = [dicomElements objectforKey:[field objectForKey:@"name"]];
 						if(fileNb>=0)
 							value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] papyLink:fileNb];
 						else if(dcmObject)
@@ -10617,42 +10650,6 @@ BOOL            readable = YES;
 						else
 							value = nil;
 						if(value==nil) value = @"";
-						
-						if([[field objectForKey:@"name"] hasPrefix:@"Date"] || [[field objectForKey:@"name"] hasSuffix:@"Date"])
-						{
-							if([value length]==8)
-							{
-								NSString *year = [value substringToIndex:4];
-								NSString *month = [value substringWithRange:NSMakeRange(4,2)];
-								NSString *day = [value substringWithRange:NSMakeRange(6,2)];
-//								NSLog(@"date : %@/%@/%@", year, month, day);
-								NSDate *date = [NSDate dateWithString:[NSString stringWithFormat:@"%@-%@-%@ 00:00:00 +0000", year, month, day]];
-//								NSLog(@"NSDate : %@", date);
-
-								NSDateFormatter	*dateFormat = [[[NSDateFormatter alloc] init] autorelease];
-								[dateFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateOfBirthFormat2"]];
-								value = [dateFormat stringFromDate: date];
-							}
-						}
-						else if([[field objectForKey:@"name"] hasPrefix:@"Time"] || [[field objectForKey:@"name"] hasSuffix:@"Time"])
-						{
-							if([value length]==6)
-							{
-								NSString *hour = [value substringToIndex:2];
-								NSString *min = [value substringWithRange:NSMakeRange(2,2)];
-								NSString *sec = [value substringWithRange:NSMakeRange(4,2)];
-//								NSLog(@"time : %@:%@:%@", hour, min, sec);
-								value = [NSString stringWithFormat:@"%@:%@:%@", hour, min, sec];
-								NSDate *date = [NSDate dateWithString:[NSString stringWithFormat:@"1970-01-01 %@:%@:%@ +0000", hour, min, sec]]; // fake date, we just want the time
-//								NSLog(@"date : %@", date);
-
-								NSDateFormatter *dateFormat = [[[NSDateFormatter alloc] init] autorelease];
-								[dateFormat setTimeStyle: NSDateFormatterLongStyle];
-								
-								value = [dateFormat stringFromDate: date];
-							}
-						}
-						//NSLog(@"DICOM group: %@, element: %@, field: %@, value: %@", [field objectForKey:@"group"], [field objectForKey:@"element"], [field objectForKey:@"name"], value);
 					}
 					else if([type isEqualToString:@"DB"])
 					{
@@ -10672,8 +10669,8 @@ BOOL            readable = YES;
 						}
 						
 						if(value==nil) value = @"";
-						
-						if([[value className] isEqualToString:@"NSCFDate"])
+												
+						if([[value className] isEqualToString:@"__NSCFDate"])
 						{
 							NSDateFormatter	*dateFormat = [[[NSDateFormatter alloc] init] autorelease];
 								
@@ -10705,7 +10702,6 @@ BOOL            readable = YES;
 			[annotationsDictionary setObject:annotationsOUT forKey:[keys objectAtIndex:k]];
 		}
 	}
-//	NSLog(@"annotationsDictionary : %@", annotationsDictionary);
 }
 #endif
 

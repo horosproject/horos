@@ -49,7 +49,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
     NSManagedObjectContext			*managedObjectContext;
 	NSPersistentStoreCoordinator	*persistentStoreCoordinator;
 	
-	NSDateFormatter			*DBDateFormatFormatter;
+	NSDateFormatter			*DBDateFormat, *DBDateOfBirthFormat, *TimeFormat;
 	
 	
 	NSString				*currentDatabasePath;
@@ -464,6 +464,10 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (BonjourBrowser *) bonjourBrowser;
 
 - (void) initAnimationSlider;
+
++ (NSString*) DBDateOfBirthFormat:(NSDate*) d;
++ (NSString*) DBDateFormat:(NSDate*) d;
++ (NSString*) TimeFormat:(NSDate*) t;
 
 //RTSTRUCT
 
