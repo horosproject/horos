@@ -69,6 +69,7 @@ enum { annotNone = 0, annotGraphics, annotBase, annotFull };
 enum { barHide = 0, barOrigin, barFused, barBoth };
 enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 
+typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRight} DCMViewTextAlign;
 
 @class DCMPix;
 @class DCMView;
@@ -362,8 +363,10 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 - (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY :(long) tW :(long) tH;
 - (void) DrawNSStringGL: (NSString*) cstrOut :(GLuint) fontL :(long) x :(long) y;
 - (void) DrawNSStringGL: (NSString*) str :(GLuint) fontL :(long) x :(long) y rightAlignment: (BOOL) right useStringTexture: (BOOL) stringTex;
+- (void)DrawNSStringGL:(NSString*)str :(GLuint)fontL :(long)x :(long)y align:(DCMViewTextAlign)align useStringTexture:(BOOL)stringTex;
 - (void) DrawCStringGL: ( char *) cstrOut :(GLuint) fontL :(long) x :(long) y;
 - (void) DrawCStringGL: ( char *) cstrOut :(GLuint) fontL :(long) x :(long) y rightAlignment: (BOOL) right useStringTexture: (BOOL) stringTex;
+- (void)DrawCStringGL:(char*)cstrOut :(GLuint)fontL :(long)x :(long)y align:(DCMViewTextAlign)align useStringTexture:(BOOL)stringTex;
 - (void) drawTextualData:(NSRect) size :(long) annotations;
 - (void) draw2DPointMarker;
 - (void) setSyncro:(long) s;

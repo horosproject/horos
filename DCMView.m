@@ -1197,7 +1197,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self setXFlipped: !xFlipped];
 }
 
-- (void) DrawNSStringGL: (NSString*) str :(GLuint) fontL :(long) x :(long) y rightAlignment: (BOOL) right useStringTexture: (BOOL) stringTex
+- (void) DrawNSStringGL:(NSString*)str :(GLuint)fontL :(long)x :(long)y rightAlignment:(BOOL)right useStringTexture:(BOOL)stringTex
+{
+	if(right)
+		[self DrawNSStringGL:str :fontL :x :y align:DCMViewTextAlignRight useStringTexture:stringTex];
+	else
+		[self DrawNSStringGL:str :fontL :x :y align:DCMViewTextAlignLeft useStringTexture:stringTex];
+}
+
+- (void)DrawNSStringGL:(NSString*)str :(GLuint)fontL :(long)x :(long)y align:(DCMViewTextAlign)align useStringTexture:(BOOL)stringTex;
 {
 	if( stringTex)
 	{
@@ -1220,7 +1228,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[stringTex release];
 		}
 		
-		if( right) x -= [stringTex texSize].width;
+		if(align==DCMViewTextAlignRight) x -= [stringTex texSize].width;
+		else if(align==DCMViewTextAlignCenter) x -= [stringTex texSize].width/2.0;
 		else x -= 5;
 		
 		glEnable (GL_TEXTURE_RECTANGLE_EXT);
@@ -1242,11 +1251,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	else
 	{
 		char	*cstrOut = (char*) [str UTF8String];
-		if( right)
+		if(align==DCMViewTextAlignRight)
 		{
 			if( fontL == labelFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize] + 2;
 			else x -= [DCMView lengthOfString:cstrOut forFont:fontListGLSize] + 2;
 		}
+		else if(align==DCMViewTextAlignCenter)
+		{
+			if( fontL == labelFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize]/2.0 + 2;
+			else x -= [DCMView lengthOfString:cstrOut forFont:fontListGLSize]/2.0 + 2;
+		}
+		
 		unsigned char	*lstr = (unsigned char*) cstrOut;
 		
 		if (fontColor)
@@ -1276,10 +1291,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (void) DrawCStringGL: ( char *) cstrOut :(GLuint) fontL :(long) x :(long) y rightAlignment: (BOOL) right useStringTexture: (BOOL) stringTex
+- (void)DrawCStringGL:(char*)cstrOut :(GLuint)fontL :(long)x :(long)y rightAlignment:(BOOL)right useStringTexture:(BOOL)stringTex
 {
-	[self DrawNSStringGL: [NSString stringWithCString: cstrOut] :(GLuint) fontL :(long) x :(long) y rightAlignment: (BOOL) right useStringTexture: (BOOL) stringTex];
+	if(right)
+		[self DrawCStringGL:cstrOut :fontL :x :y align:DCMViewTextAlignRight useStringTexture:stringTex];
+	else
+		[self DrawCStringGL:cstrOut :fontL :x :y align:DCMViewTextAlignLeft useStringTexture:stringTex];
 }
+
+- (void)DrawCStringGL:(char*)cstrOut :(GLuint)fontL :(long)x :(long)y align:(DCMViewTextAlign)align useStringTexture:(BOOL)stringTex;
+{
+	[self DrawNSStringGL:[NSString stringWithCString:cstrOut] :fontL :x :y align:align useStringTexture:stringTex];
+}
+
 
 - (void) DrawCStringGL: (char *) cstrOut :(GLuint) fontL :(long) x :(long) y
 {
@@ -6044,15 +6068,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"TopMiddle"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"LowerMiddle"];
 
-		NSMutableDictionary *rightAlign = [NSMutableDictionary dictionary];
-		[rightAlign setObject:[NSNumber numberWithBool:NO] forKey:@"TopLeft"];
-		[rightAlign setObject:[NSNumber numberWithBool:NO] forKey:@"MiddleLeft"];
-		[rightAlign setObject:[NSNumber numberWithBool:NO] forKey:@"LowerLeft"];
-		[rightAlign setObject:[NSNumber numberWithBool:YES] forKey:@"TopRight"];
-		[rightAlign setObject:[NSNumber numberWithBool:YES] forKey:@"MiddleRight"];
-		[rightAlign setObject:[NSNumber numberWithBool:YES] forKey:@"LowerRight"];
-		[rightAlign setObject:[NSNumber numberWithBool:NO] forKey:@"TopMiddle"];
-		[rightAlign setObject:[NSNumber numberWithBool:NO] forKey:@"LowerMiddle"];
+		NSMutableDictionary *align = [NSMutableDictionary dictionary];
+		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignLeft] forKey:@"TopLeft"];
+		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignLeft] forKey:@"MiddleLeft"];
+		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignLeft] forKey:@"LowerLeft"];
+		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignRight] forKey:@"TopRight"];
+		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignRight] forKey:@"MiddleRight"];
+		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignRight] forKey:@"LowerRight"];
+		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignCenter] forKey:@"TopMiddle"];
+		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignCenter] forKey:@"LowerMiddle"];
 
 		NSMutableDictionary *yRasterInit = [NSMutableDictionary dictionary];
 		[yRasterInit setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"TopLeft"];
@@ -6102,7 +6126,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						if(!orientationDrawn)
 						{
 							[self drawOrientation: size];
-							[yRasterInit setObject:[NSNumber numberWithInt:yRaster+increment] forKey:[orientationPositionKeys objectAtIndex:k]];
 						}
 						orientationDrawn = YES;
 					}
@@ -6338,24 +6361,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						useStringTexture = YES;
 					}					
 				}
+								
 				if(![tempString isEqualToString:@""])
-				{
-					[self DrawNSStringGL:tempString :fontListGL :xRaster :yRaster rightAlignment:[[rightAlign objectForKey:[keys objectAtIndex:k]] boolValue] useStringTexture:useStringTexture];
+				{	
+					[self DrawNSStringGL:tempString :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
 				}
 				if(![tempString2 isEqualToString:@""])
 				{
-					[self DrawNSStringGL:tempString2 :fontListGL :xRaster :yRaster rightAlignment:[[rightAlign objectForKey:[keys objectAtIndex:k]] boolValue] useStringTexture:useStringTexture];
+					[self DrawNSStringGL:tempString2 :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
 				}
 				if(![tempString3 isEqualToString:@""])
 				{
-					[self DrawNSStringGL:tempString3 :fontListGL :xRaster :yRaster rightAlignment:[[rightAlign objectForKey:[keys objectAtIndex:k]] boolValue] useStringTexture:useStringTexture];
+					[self DrawNSStringGL:tempString3 :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
 				}
 				if(![tempString4 isEqualToString:@""])
 				{
-					[self DrawNSStringGL:tempString4 :fontListGL :xRaster :yRaster rightAlignment:[[rightAlign objectForKey:[keys objectAtIndex:k]] boolValue] useStringTexture:useStringTexture];
+					[self DrawNSStringGL:tempString4 :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
 				}
 				
