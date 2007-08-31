@@ -36,8 +36,6 @@
 #include "itkSignedMaurerDistanceMapImageFilter.h"
 
 
-
-
 #include "vtkImageImport.h"
 #include "vtkMarchingSquares.h"
 #include "vtkPolyData.h"
@@ -46,6 +44,10 @@
 #include "vtkCell.h"
 #include "vtkContourFilter.h"
 #include "vtkImageData.h"
+#include "vtkDecimatePro.h"
+#include "vtkSmoothPolyDataFilter.h"
+#include "vtkPowerCrustSurfaceReconstruction.h"
+
 
 #undef id
 
@@ -1025,14 +1027,115 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	// make connections Inputs and outputs
 	//resampleFilter->SetInput([itkImage itkImporter]->GetOutput());
 	thresholdFilter->SetInput([itkImage itkImporter]->GetOutput());
-	distanceMapFilter->SetInput(thresholdFilter->GetOutput());	
-	approximateDistanceMapFilter->SetInput(thresholdFilter->GetOutput());	
-		WaitRendering	*wait = 0L;
+	//distanceMapFilter->SetInput(thresholdFilter->GetOutput());	
+	//approximateDistanceMapFilter->SetInput(thresholdFilter->GetOutput());	
+	WaitRendering	*wait = 0L;
 	
 	wait = [[WaitRendering alloc] init: NSLocalizedString(@"Propagating Region...", 0L)];
 	[wait showWindow:self];
 	
 	NSLog(@"RegionGrowing starts...");
+	
+	// Segmenting is fast. Distance map is slow.  Try to use VTK for Centerline 
+	try
+	{
+		thresholdFilter->Update();	
+
+	}
+	catch( itk::ExceptionObject & excep )
+	{
+		NSLog(@"Segmentation failed...");
+		//return;
+	}
+	//------------------------------------------------------------------------
+	// ITK to VTK pipeline connection.
+	//------------------------------------------------------------------------
+
+	typedef itk::VTKImageExport<CharImageType> ImageExportType;
+
+	// Create the itk::VTKImageExport instance and connect it to the
+	ImageExportType::Pointer itkExporter = ImageExportType::New();
+	itkExporter->SetInput(thresholdFilter->GetOutput());
+
+	// Create the vtkImageImport and connect it to the
+	vtkImageImport* vtkImporter = vtkImageImport::New();
+	ConnectPipelines(itkExporter, vtkImporter);
+	vtkImporter->Update();
+	
+	int dataExtent[6];
+	vtkImporter->GetDataExtent(dataExtent);
+
+	// Get surface using IsoContour
+	vtkContourFilter*	isoContour = vtkContourFilter::New();
+	isoContour->SetValue(0, 1);
+	isoContour->SetInput( vtkImporter->GetOutput());
+	
+	isoContour->Update();	
+	
+
+
+	/*
+	vtkPolyDataConnectivityFilter	*filter = vtkPolyDataConnectivityFilter::New();
+	filter->SetColorRegions( 1);
+	filter->SetExtractionModeToLargestRegion();
+	filter->SetInput( isoContour->GetOutput());
+	
+	vtkPolyDataConnectivityFilter	*filter2 = vtkPolyDataConnectivityFilter::New();
+	filter2->SetColorRegions( 1);
+	filter2->SetExtractionModeToLargestRegion();
+	filter2->SetInput( filter->GetOutput());
+	*/
+		
+	vtkDecimatePro *decimateFilter = vtkDecimatePro::New();
+	decimateFilter->SetInput(isoContour->GetOutput());
+	decimateFilter->SetTargetReduction(0.99);
+	decimateFilter->SetPreserveTopology( TRUE);
+	
+	vtkSmoothPolyDataFilter *smoothFilter = vtkSmoothPolyDataFilter::New();
+	smoothFilter->SetInput(decimateFilter->GetOutput());
+	smoothFilter->SetNumberOfIterations(20);
+	
+	
+	vtkPolyData *output = smoothFilter->GetOutput();				
+	output->Update();
+	//NSLog( @"Extracted region: %d", filter->GetNumberOfExtractedRegions());				
+	NSLog( @"Lines: %d Polys: %d, Points: %d", output->GetNumberOfLines(), output->GetNumberOfPolys(), output->GetNumberOfPoints());	
+		
+	int numberOfPoints = output->GetNumberOfPoints();
+	int ii = 0;
+	for (ii = 0; ii < numberOfPoints; ii+=2000) {
+		double *  p = output->GetPoint(ii);
+		NSLog(@"point %f %f %f", p[0], p[1], p[2]);
+		NSMutableArray  *roiImageList;
+		NSArray *roiSeriesList = [srcViewer roiList];
+		DCMPix	*curPix = [[srcViewer pixList] objectAtIndex: p[2] * 2];
+		ROI		*newROI;
+		newROI = [[[ROI alloc] initWithType: t2DPoint :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint( p[0] * 2, p[1] * 2)] autorelease];
+		[newROI setName: @"Centerline"];
+		roiImageList = [roiSeriesList objectAtIndex: p[2] * 2];
+		[roiImageList addObject: newROI];	
+		[newROI mouseRoiDown:NSMakePoint((float)p[0] * 2,(float)p[1] * 2) :p[2] * 2 :1.0];
+		[newROI release];
+	}
+	
+	NSLog(@"Countouring Done");
+	[wait setString:@"Getting Surface"];
+	[wait close];
+	[wait release];
+	
+	//filter->Delete();
+	//filter2->Delete();
+	vtkImporter->Delete();
+	isoContour->Delete();
+	decimateFilter->Delete();
+	smoothFilter->Delete();
+	return;
+	// testing VTK for Centerline. Old code is below this
+	/*******************************************************/
+	
+	
+	
+	
 	
 	try
 	{
@@ -1049,8 +1152,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		//return;
 	}
 	
-	NSLog(@"Done...");
-	
+
 	/* 
 	Get 6 and 4 neighbor maxima
 	6 neighbor maxima is largest in 3 dimension
