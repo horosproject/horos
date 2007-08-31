@@ -1,271 +1,428 @@
-//
-//  HTTPServer.m
-//
-//  Created by Jürgen on 19.09.06.
-//  Copyright 2006 Cultured Code.
-//  License: Creative Commons Attribution 2.5 License
-//           http://creativecommons.org/licenses/by/2.5/
-//
+/*=========================================================================
+  Program:   OsiriX
+
+  Copyright (c) OsiriX Team
+  All rights reserved.
+  Distributed under GNU - GPL
+  
+  See http://www.osirix-viewer.com/copyright.html for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.
+=========================================================================*/
 
 #import "HTTPServer.h"
-#import "HTTPConnection.h"
-#import "AppController.h"
-#import <sys/socket.h>   // for AF_INET, PF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR
-#import <netinet/in.h>   // for IPPROTO_TCP, sockaddr_in
-//#import <unistd.h>
 
-@interface HTTPServer (PrivateMethods)
-- (void)setCurrentRequest:(NSDictionary *)value;
-- (void)processNextRequestIfNecessary;
-@end
 
 @implementation HTTPServer
 
-- (id)initWithTCPPort:(unsigned)po delegate:(id)dl
-{
-    if( self = [super init] ) {
-        port = po;
-        delegate = [dl retain];
-        connections = [[NSMutableArray alloc] init];
-        requests = [[NSMutableArray alloc] init];
-        [self setCurrentRequest:nil];
-        
-        NSAssert(delegate != nil, @"Please specify a delegate");
-        NSAssert([delegate respondsToSelector:@selector(processURL:connection:)],
-                  @"Delegate needs to implement 'processURL:connection:'");
-        NSAssert([delegate respondsToSelector:@selector(stopProcessing)],
-                 @"Delegate needs to implement 'stopProcessing'");
-
-        /*socketPort = [[NSSocketPort alloc] initWithTCPPort:port];
-          fileHandle = [[NSFileHandle alloc] initWithFileDescriptor:[socketPort socket]
-                                                     closeOnDealloc:YES];*/
-        int fd = -1;
-        CFSocketRef socket;
-        socket = CFSocketCreate(kCFAllocatorDefault, PF_INET, SOCK_STREAM, IPPROTO_TCP, 0, NULL, NULL);
-        if( socket ) {
-            fd = CFSocketGetNative(socket);
-            int yes = 1;
-            setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (void *)&yes, sizeof(yes));
-            
-            struct sockaddr_in addr4;
-            memset(&addr4, 0, sizeof(addr4));
-            addr4.sin_len = sizeof(addr4);
-            addr4.sin_family = AF_INET;
-            addr4.sin_port = htons(port);
-            addr4.sin_addr.s_addr = htonl(INADDR_ANY);
-            NSData *address4 = [NSData dataWithBytes:&addr4 length:sizeof(addr4)];
-            if (kCFSocketSuccess != CFSocketSetAddress(socket, (CFDataRef)address4)) {
-                NSLog(@"Could not bind to address");
-            }
-        } else {
-            NSLog(@"No server socket");
-        }
-        
-        fileHandle = [[NSFileHandle alloc] initWithFileDescriptor:fd
-                                                   closeOnDealloc:YES];
-
-        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc addObserver:self
-               selector:@selector(newConnection:)
-                   name:NSFileHandleConnectionAcceptedNotification
-                 object:nil];
-        
-        [fileHandle acceptConnectionInBackgroundAndNotify];
-    }
+- (id)init {
+    connClass = [HTTPConnection self];
     return self;
 }
 
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [fileHandle release];
-    [socketPort release];
-    [currentRequest release];
-    [requests release];
-    [connections release];
-    [delegate release];
+- (void)dealloc {
     [super dealloc];
 }
 
+- (Class)connectionClass {
+    return connClass;
+}
 
-#pragma mark Managing connections
+- (void)setConnectionClass:(Class)value {
+    connClass = value;
+}
 
-- (NSArray *)connections { return connections; }
+- (NSURL *)documentRoot {
+    return docRoot;
+}
 
-- (void)newConnection:(NSNotification *)notification
-{
-    NSDictionary *userInfo = [notification userInfo];
-    NSFileHandle *remoteFileHandle = [userInfo objectForKey:
-                                            NSFileHandleNotificationFileHandleItem];
-    NSNumber *errorNo = [userInfo objectForKey:@"NSFileHandleError"];
-    if( errorNo ) {
-        NSLog(@"NSFileHandle Error: %@", errorNo);
-        return;
-    }
-
-    [fileHandle acceptConnectionInBackgroundAndNotify];
-
-    if( remoteFileHandle ) {
-        HTTPConnection *connection = [[HTTPConnection alloc] initWithFileHandle:remoteFileHandle delegate:self];
-        if( connection ) {
-            NSIndexSet *insertedIndexes = [NSIndexSet indexSetWithIndex:[connections count]];
-            [self willChange:NSKeyValueChangeInsertion
-             valuesAtIndexes:insertedIndexes forKey:@"connections"];
-            [connections addObject:connection];
-            [self didChange:NSKeyValueChangeInsertion
-             valuesAtIndexes:insertedIndexes forKey:@"connections"];
-            [connection release];
-        }
+- (void)setDocumentRoot:(NSURL *)value {
+    if (docRoot != value) {
+        [docRoot release];
+        docRoot = [value copy];
     }
 }
 
-- (void)closeConnection:(HTTPConnection *)connection;
-{
-    NSUInteger connectionIndex = [connections indexOfObjectIdenticalTo:connection];
-    if( connectionIndex == NSNotFound ) return;
-
-    // We remove all pending requests pertaining to connection
-    NSMutableIndexSet *obsoleteRequests = [NSMutableIndexSet indexSet];
-    BOOL stopProcessing = NO;
-    int k;
-    for( k = 0; k < [requests count]; k++) {
-        NSDictionary *request = [requests objectAtIndex:k];
-        if( [request objectForKey:@"connection"] == connection ) {
-            if( request == [self currentRequest] ) stopProcessing = YES;
-            [obsoleteRequests addIndex:k];
-        }
+// Converts the TCPServer delegate notification into the HTTPServer delegate method.
+- (void)handleNewConnectionFromAddress:(NSData *)addr inputStream:(NSInputStream *)istr outputStream:(NSOutputStream *)ostr {
+    HTTPConnection *connection = [[connClass alloc] initWithPeerAddress:addr inputStream:istr outputStream:ostr forServer:self];
+    [connection setDelegate:[self delegate]];
+    if ([self delegate] && [[self delegate] respondsToSelector:@selector(HTTPServer:didMakeNewConnection:)]) { 
+        [[self delegate] HTTPServer:self didMakeNewConnection:connection];
     }
-    
-    NSIndexSet *connectionIndexSet = [NSIndexSet indexSetWithIndex:connectionIndex];
-    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:obsoleteRequests
-              forKey:@"requests"];
-    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:connectionIndexSet
-              forKey:@"connections"];
-    [requests removeObjectsAtIndexes:obsoleteRequests];
-    [connections removeObjectsAtIndexes:connectionIndexSet];
-    [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:connectionIndexSet
-             forKey:@"connections"];
-    [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:obsoleteRequests
-              forKey:@"requests"];
-    
-    if( stopProcessing ) {
-        [delegate stopProcessing];
-        [self setCurrentRequest:nil];
-    }
-    [self processNextRequestIfNecessary];
-}
-
-
-#pragma mark Managing requests
-
-- (NSArray *)requests { return requests; }
-
-- (void)newRequestWithURL:(NSURL *)url connection:(HTTPConnection *)connection
-{
-    //NSLog(@"requestWithURL:connection:");
-    if( url == nil ) return;
-    
-    NSDictionary *request = [NSDictionary dictionaryWithObjectsAndKeys:
-        url, @"url",
-        connection, @"connection",
-        [NSCalendarDate date], @"date", nil];
-    
-    NSIndexSet *insertedIndexes = [NSIndexSet indexSetWithIndex:[requests count]];
-    [self willChange:NSKeyValueChangeInsertion
-     valuesAtIndexes:insertedIndexes forKey:@"requests"];
-    [requests addObject:request];
-    [self didChange:NSKeyValueChangeInsertion
-     valuesAtIndexes:insertedIndexes forKey:@"requests"];
-    
-    [self processNextRequestIfNecessary];
-}
-
-- (void)processNextRequestIfNecessary
-{
-    if( [self currentRequest] == nil && [requests count] > 0 ) {
-        [self setCurrentRequest:[requests objectAtIndex:0]];
-        [delegate processURL:[currentRequest objectForKey:@"url"]
-                  connection:[currentRequest objectForKey:@"connection"]];
-    }
-}
-
-- (void)setCurrentRequest:(NSDictionary *)value
-{
-    [currentRequest autorelease];
-    currentRequest = [value retain];
-}
-- (NSDictionary *)currentRequest { return currentRequest; }
-
-
-#pragma mark Sending replies
-
-// The Content-Length header field will be automatically added
-- (void)replyWithStatusCode:(int)code
-                    headers:(NSDictionary *)headers
-                       body:(NSData *)body
-{
-    CFHTTPMessageRef msg;
-    msg = CFHTTPMessageCreateResponse(kCFAllocatorDefault,
-                                      code,
-                                      NULL, // Use standard status description 
-                                      kCFHTTPVersion1_1);
-
-    NSEnumerator *keys = [headers keyEnumerator];
-    NSString *key;
-    while( key = [keys nextObject] ) {
-        id value = [headers objectForKey:key];
-        if( ![value isKindOfClass:[NSString class]] ) value = [value description];
-        if( ![key isKindOfClass:[NSString class]] ) key = [key description];
-        CFHTTPMessageSetHeaderFieldValue(msg, (CFStringRef)key, (CFStringRef)value);
-    }
-
-    if( body ) {
-        NSString *length = [NSString stringWithFormat:@"%d", [body length]];
-        CFHTTPMessageSetHeaderFieldValue(msg,
-                                         (CFStringRef)@"Content-Length",
-                                         (CFStringRef)length);
-        CFHTTPMessageSetBody(msg, (CFDataRef)body);
-    }
-    
-    CFDataRef msgData = CFHTTPMessageCopySerializedMessage(msg);
-    @try {
-        NSFileHandle *remoteFileHandle = [[[self currentRequest] objectForKey:@"connection"] fileHandle];
-        [remoteFileHandle writeData:(NSData *)msgData];
-    }
-    @catch (NSException *exception) {
-        NSLog(@"Error while sending response (%@): %@", [[self currentRequest] objectForKey:@"url"], [exception  reason]);
-    }
-    
-    CFRelease(msgData);
-    CFRelease(msg);
-    
-    // A reply indicates that the current request has been completed
-    // (either successfully of by responding with an error message)
-    // Hence we need to remove the current request:
-    NSUInteger index = [requests indexOfObjectIdenticalTo:[self currentRequest]];
-    if( index != NSNotFound ) {
-        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:index];
-        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexSet
-                  forKey:@"requests"];
-        [requests removeObjectsAtIndexes:indexSet];
-        [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexSet
-                 forKey:@"requests"];
-    }
-    [self setCurrentRequest:nil];
-    [self processNextRequestIfNecessary];
-}
-
-- (void)replyWithData:(NSData *)data MIMEType:(NSString *)type
-{
-    NSDictionary *headers = [NSDictionary dictionaryWithObject:type forKey:@"Content-Type"];
-    [self replyWithStatusCode:200 headers:headers body:data];  // 200 = 'OK'
-}
-
-- (void)replyWithStatusCode:(int)code message:(NSString *)message
-{
-    NSData *body = [message dataUsingEncoding:NSASCIIStringEncoding
-                         allowLossyConversion:YES];
-    [self replyWithStatusCode:code headers:nil body:body];
+    // The connection at this point is turned loose to exist on its
+    // own, and not released or autoreleased.  Alternatively, the
+    // HTTPServer could keep a list of connections, and HTTPConnection
+    // would have to tell the server to delete one at invalidation
+    // time.  This would perhaps be more correct and ensure no
+    // spurious leaks get reported by the tools, but HTTPServer
+    // has nothing further it wants to do with the HTTPConnections,
+    // and would just be "owning" the connections for form.
 }
 
 @end
+
+
+@implementation HTTPConnection
+
+- (id)init {
+    [self dealloc];
+    return nil;
+}
+
+- (id)initWithPeerAddress:(NSData *)addr inputStream:(NSInputStream *)istr outputStream:(NSOutputStream *)ostr forServer:(HTTPServer *)serv {
+    peerAddress = [addr copy];
+    server = serv;
+    istream = [istr retain];
+    ostream = [ostr retain];
+    [istream setDelegate:self];
+    [ostream setDelegate:self];
+    [istream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:(id)kCFRunLoopCommonModes];
+    [ostream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:(id)kCFRunLoopCommonModes];
+    [istream open];
+    [ostream open];
+    isValid = YES;
+    return self;
+}
+
+- (void)dealloc {
+    [self invalidate];
+    [peerAddress release];
+    [super dealloc];
+}
+
+- (id)delegate {
+    return delegate;
+}
+
+- (void)setDelegate:(id)value {
+    delegate = value;
+}
+
+- (NSData *)peerAddress {
+    return peerAddress;
+}
+
+- (HTTPServer *)server {
+    return server;
+}
+
+- (HTTPServerRequest *)nextRequest {
+    unsigned idx, cnt = requests ? [requests count] : 0;
+    for (idx = 0; idx < cnt; idx++) {
+        id obj = [requests objectAtIndex:idx];
+        if ([obj response] == nil) {
+            return obj;
+        }
+    }
+    return nil;
+}
+
+- (BOOL)isValid {
+    return isValid;
+}
+
+- (void)invalidate {
+    if (isValid) {
+        isValid = NO;
+        [istream close];
+        [ostream close];
+        [istream release];
+        [ostream release];
+        istream = nil;
+        ostream = nil;
+        [ibuffer release];
+        [obuffer release];
+        ibuffer = nil;
+        obuffer = nil;
+        [requests release];
+        requests = nil;
+        [self release];
+        // This last line removes the implicit retain the HTTPConnection
+        // has on itself, given by the HTTPServer when it abandoned the
+        // new connection.
+    }
+}
+
+// YES return means that a complete request was parsed, and the caller
+// should call again as the buffered bytes may have another complete
+// request available.
+- (BOOL)processIncomingBytes {
+    CFHTTPMessageRef working = CFHTTPMessageCreateEmpty(kCFAllocatorDefault, TRUE);
+    CFHTTPMessageAppendBytes(working, [ibuffer bytes], [ibuffer length]);
+    
+    // This "try and possibly succeed" approach is potentially expensive
+    // (lots of bytes being copied around), but the only API available for
+    // the server to use, short of doing the parsing itself.
+    
+    // HTTPConnection does not handle the chunked transfer encoding
+    // described in the HTTP spec.  And if there is no Content-Length
+    // header, then the request is the remainder of the stream bytes.
+    
+    if (CFHTTPMessageIsHeaderComplete(working)) {
+        NSString *contentLengthValue = [(NSString *)CFHTTPMessageCopyHeaderFieldValue(working, (CFStringRef)@"Content-Length") autorelease];
+        
+        unsigned contentLength = contentLengthValue ? [contentLengthValue intValue] : 0;
+        NSData *body = [(NSData *)CFHTTPMessageCopyBody(working) autorelease];
+        unsigned bodyLength = [body length];
+        if (contentLength <= bodyLength) {
+            NSData *newBody = [NSData dataWithBytes:[body bytes] length:contentLength];
+            [ibuffer setLength:0];
+            [ibuffer appendBytes:([body bytes] + contentLength) length:(bodyLength - contentLength)];
+            CFHTTPMessageSetBody(working, (CFDataRef)newBody);
+        } else {
+            CFRelease(working);
+            return NO;
+        }
+    } else {
+        return NO;
+    }
+    
+    HTTPServerRequest *request = [[HTTPServerRequest alloc] initWithRequest:working connection:self];
+    if (!requests) {
+        requests = [[NSMutableArray alloc] init];
+    }
+    [requests addObject:request];
+    if (delegate && [delegate respondsToSelector:@selector(HTTPConnection:didReceiveRequest:)]) { 
+        [delegate HTTPConnection:self didReceiveRequest:request];
+    } else {
+        [self performDefaultRequestHandling:request];
+    }
+    
+    CFRelease(working);
+    return YES;
+}
+
+- (void)processOutgoingBytes {
+    // The HTTP headers, then the body if any, then the response stream get
+    // written out, in that order.  The Content-Length: header is assumed to 
+    // be properly set in the response.  Outgoing responses are processed in 
+    // the order the requests were received (required by HTTP).
+    
+    // Write as many bytes as possible, from buffered bytes, response
+    // headers and body, and response stream.
+
+    if (![ostream hasSpaceAvailable]) {
+        return;
+    }
+
+    unsigned olen = [obuffer length];
+    if (0 < olen) {
+        int writ = [ostream write:[obuffer bytes] maxLength:olen];
+        // buffer any unwritten bytes for later writing
+        if (writ < olen) {
+            memmove([obuffer mutableBytes], [obuffer mutableBytes] + writ, olen - writ);
+            [obuffer setLength:olen - writ];
+            return;
+        }
+        [obuffer setLength:0];
+    }
+
+    unsigned cnt = requests ? [requests count] : 0;
+    HTTPServerRequest *req = (0 < cnt) ? [requests objectAtIndex:0] : nil;
+
+    CFHTTPMessageRef cfresp = req ? [req response] : NULL;
+    if (!cfresp) return;
+    
+    if (!obuffer) {
+        obuffer = [[NSMutableData alloc] init];
+    }
+
+    if (!firstResponseDone) {
+        firstResponseDone = YES;
+        NSData *serialized = [(NSData *)CFHTTPMessageCopySerializedMessage(cfresp) autorelease];
+        unsigned olen = [serialized length];
+        if (0 < olen) {
+            int writ = [ostream write:[serialized bytes] maxLength:olen];
+            if (writ < olen) {
+                // buffer any unwritten bytes for later writing
+                [obuffer setLength:(olen - writ)];
+                memmove([obuffer mutableBytes], [serialized bytes] + writ, olen - writ);
+                return;
+            }
+        }
+    }
+
+    NSInputStream *respStream = [req responseBodyStream];
+    if (respStream) {
+        if ([respStream streamStatus] == NSStreamStatusNotOpen) {
+            [respStream open];
+        }
+        // read some bytes from the stream into our local buffer
+        [obuffer setLength:16 * 1024];
+        int read = [respStream read:[obuffer mutableBytes] maxLength:[obuffer length]];
+        [obuffer setLength:read];
+    }
+
+    if (0 == [obuffer length]) {
+        // When we get to this point with an empty buffer, then the 
+        // processing of the response is done. If the input stream
+        // is closed or at EOF, then no more requests are coming in.
+        if (delegate && [delegate respondsToSelector:@selector(HTTPConnection:didSendResponse:)]) { 
+            [delegate HTTPConnection:self didSendResponse:req];
+        }
+        [requests removeObjectAtIndex:0];
+        firstResponseDone = NO;
+        if ([istream streamStatus] == NSStreamStatusAtEnd && [requests count] == 0) {
+            [self invalidate];
+        }
+        return;
+    }
+    
+    olen = [obuffer length];
+    if (0 < olen) {
+        int writ = [ostream write:[obuffer bytes] maxLength:olen];
+        // buffer any unwritten bytes for later writing
+        if (writ < olen) {
+            memmove([obuffer mutableBytes], [obuffer mutableBytes] + writ, olen - writ);
+        }
+        [obuffer setLength:olen - writ];
+    }
+}
+
+- (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)streamEvent {
+    switch(streamEvent) {
+    case NSStreamEventHasBytesAvailable:;
+        uint8_t buf[16 * 1024];
+        uint8_t *buffer = NULL;
+        unsigned int len = 0;
+        if (![istream getBuffer:&buffer length:&len]) {
+            int amount = [istream read:buf maxLength:sizeof(buf)];
+            buffer = buf;
+            len = amount;
+        }
+        if (0 < len) {
+            if (!ibuffer) {
+                ibuffer = [[NSMutableData alloc] init];
+            }
+            [ibuffer appendBytes:buffer length:len];
+        }
+        do {} while ([self processIncomingBytes]);
+        break;
+    case NSStreamEventHasSpaceAvailable:;
+        [self processOutgoingBytes];
+        break;
+    case NSStreamEventEndEncountered:;
+        [self processIncomingBytes];
+        if (stream == ostream) {
+            // When the output stream is closed, no more writing will succeed and
+            // will abandon the processing of any pending requests and further
+            // incoming bytes.
+            [self invalidate];
+        }
+        break;
+    case NSStreamEventErrorOccurred:;
+        NSLog(@"HTTPServer stream error: %@", [stream streamError]);
+        break;
+    default:
+        break;
+    }
+}
+
+- (void)performDefaultRequestHandling:(HTTPServerRequest *)mess {
+    CFHTTPMessageRef request = [mess request];
+
+    NSString *vers = [(id)CFHTTPMessageCopyVersion(request) autorelease];
+    if (!vers || ![vers isEqual:(id)kCFHTTPVersion1_1]) {
+        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 505, NULL, (CFStringRef)vers); // Version Not Supported
+        [mess setResponse:response];
+        CFRelease(response);
+        return;
+    }
+
+    NSString *method = [(id)CFHTTPMessageCopyRequestMethod(request) autorelease];
+    if (!method) {
+        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+        [mess setResponse:response];
+        CFRelease(response);
+        return;
+    }
+
+    if ([method isEqual:@"GET"] || [method isEqual:@"HEAD"]) {
+        NSURL *uri = [(NSURL *)CFHTTPMessageCopyRequestURL(request) autorelease];
+        NSURL *url = [NSURL URLWithString:[uri path] relativeToURL:[server documentRoot]];
+        NSData *data = [NSData dataWithContentsOfURL:url];
+
+        if (!data) {
+            CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 404, NULL, kCFHTTPVersion1_1); // Not Found
+            [mess setResponse:response];
+            CFRelease(response);
+            return;
+        }
+
+        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, kCFHTTPVersion1_1); // OK
+        CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
+        if ([method isEqual:@"GET"]) {
+            CFHTTPMessageSetBody(response, (CFDataRef)data);
+        }
+        [mess setResponse:response];
+        CFRelease(response);
+        return;
+    }
+
+    CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, kCFHTTPVersion1_1); // Method Not Allowed
+    [mess setResponse:response];
+    CFRelease(response);
+}
+
+@end
+
+
+@implementation HTTPServerRequest
+
+- (id)init {
+    [self dealloc];
+    return nil;
+}
+
+- (id)initWithRequest:(CFHTTPMessageRef)req connection:(HTTPConnection *)conn {
+    connection = conn;
+    request = (CFHTTPMessageRef)CFRetain(req);
+    return self;
+}
+
+- (void)dealloc {
+    if (request) CFRelease(request);
+    if (response) CFRelease(response);
+    [responseStream release];
+    [super dealloc];
+}
+
+- (HTTPConnection *)connection {
+    return connection;
+}
+
+- (CFHTTPMessageRef)request {
+    return request;
+}
+
+- (CFHTTPMessageRef)response {
+    return response;
+}
+
+- (void)setResponse:(CFHTTPMessageRef)value {
+    if (value != response) {
+        if (response) CFRelease(response);
+        response = (CFHTTPMessageRef)CFRetain(value);
+        if (response) {
+            // check to see if the response can now be sent out
+            [connection processOutgoingBytes];
+        }
+    }
+}
+
+- (NSInputStream *)responseBodyStream {
+    return responseStream;
+}
+
+- (void)setResponseBodyStream:(NSInputStream *)value {
+    if (value != responseStream) {
+        [responseStream release];
+        responseStream = [value retain];
+    }
+}
+
+@end
+

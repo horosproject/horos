@@ -56,7 +56,7 @@ MODIFICATION HISTORY
 #import "Survey.h"
 #import "PluginManager.h"
 #import "DicomFile.h"
-
+#import "HTTPServer.h"
 #import <OsiriX/DCMNetworking.h>
 #import <OsiriX/DCM.h>
 //#import "NetworkListener.h"
@@ -1163,6 +1163,11 @@ NSRect screenFrame()
 		[BonjourDICOMService publish];
 	}
 	else BonjourDICOMService = 0L;
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpSOAPServer"])
+	{
+		soapServer = [[SOAPMethods alloc] init];
+	}
 }
 
 - (void)netService:(NSNetService *)sender didNotPublish:(NSDictionary *)errorDict

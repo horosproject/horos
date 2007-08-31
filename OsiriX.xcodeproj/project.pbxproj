@@ -6538,6 +6538,18 @@
 		CE822F8B0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */; };
 		CE822F8E0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */; };
 		CE822F8F0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */; };
+		CE882AC60C889B6500D4F982 /* SOAPMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = CE882AC40C889B6500D4F982 /* SOAPMethods.h */; };
+		CE882AC70C889B6500D4F982 /* SOAPMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = CE882AC50C889B6500D4F982 /* SOAPMethods.m */; };
+		CE882AC80C889B6500D4F982 /* SOAPMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = CE882AC40C889B6500D4F982 /* SOAPMethods.h */; };
+		CE882AC90C889B6500D4F982 /* SOAPMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = CE882AC50C889B6500D4F982 /* SOAPMethods.m */; };
+		CE882B300C889E0200D4F982 /* TCPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = CE882B2C0C889E0200D4F982 /* TCPServer.h */; };
+		CE882B310C889E0200D4F982 /* TCPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE882B2D0C889E0200D4F982 /* TCPServer.m */; };
+		CE882B320C889E0200D4F982 /* HTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE882B2E0C889E0200D4F982 /* HTTPServer.m */; };
+		CE882B330C889E0200D4F982 /* HTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = CE882B2F0C889E0200D4F982 /* HTTPServer.h */; };
+		CE882B340C889E0200D4F982 /* TCPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = CE882B2C0C889E0200D4F982 /* TCPServer.h */; };
+		CE882B350C889E0200D4F982 /* TCPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE882B2D0C889E0200D4F982 /* TCPServer.m */; };
+		CE882B360C889E0200D4F982 /* HTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE882B2E0C889E0200D4F982 /* HTTPServer.m */; };
+		CE882B370C889E0200D4F982 /* HTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = CE882B2F0C889E0200D4F982 /* HTTPServer.h */; };
 		CE88575E08AF938800B72DA7 /* ROIVolumeView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE88575A08AF938800B72DA7 /* ROIVolumeView.h */; };
 		CE88575F08AF938800B72DA7 /* ROIVolumeController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE88575B08AF938800B72DA7 /* ROIVolumeController.h */; };
 		CE88576008AF938800B72DA7 /* ROIVolumeController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE88575C08AF938800B72DA7 /* ROIVolumeController.mm */; };
@@ -6552,14 +6564,6 @@
 		CE8CAB0E0B4715DD0068DBAE /* DICOMPrint in Resources */ = {isa = PBXBuildFile; fileRef = CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */; };
 		CE90D8C4095F5B48004FC7E2 /* FlipData.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE90D8C3095F5B48004FC7E2 /* FlipData.tiff */; };
 		CE90D8C6095F5B48004FC7E2 /* FlipData.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE90D8C3095F5B48004FC7E2 /* FlipData.tiff */; };
-		CE9101B00C86A8AE00D8D273 /* HTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9101AC0C86A8AE00D8D273 /* HTTPConnection.m */; };
-		CE9101B10C86A8AE00D8D273 /* HTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9101AD0C86A8AE00D8D273 /* HTTPServer.h */; };
-		CE9101B20C86A8AE00D8D273 /* HTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9101AE0C86A8AE00D8D273 /* HTTPServer.m */; };
-		CE9101B30C86A8AE00D8D273 /* HTTPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9101AF0C86A8AE00D8D273 /* HTTPConnection.h */; };
-		CE9101B40C86A8AE00D8D273 /* HTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9101AC0C86A8AE00D8D273 /* HTTPConnection.m */; };
-		CE9101B50C86A8AE00D8D273 /* HTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9101AD0C86A8AE00D8D273 /* HTTPServer.h */; };
-		CE9101B60C86A8AE00D8D273 /* HTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9101AE0C86A8AE00D8D273 /* HTTPServer.m */; };
-		CE9101B70C86A8AE00D8D273 /* HTTPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9101AF0C86A8AE00D8D273 /* HTTPConnection.h */; };
 		CE96D0E10BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D0DB0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h */; };
 		CE96D0E20BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE96D0DC0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm */; };
 		CE96D0E30BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D0DB0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h */; };
@@ -11526,6 +11530,12 @@
 		CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Anonymizer.icns; sourceTree = "<group>"; };
 		CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewerControllerWindow.h; sourceTree = "<group>"; };
 		CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewerControllerWindow.m; sourceTree = "<group>"; };
+		CE882AC40C889B6500D4F982 /* SOAPMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOAPMethods.h; sourceTree = "<group>"; };
+		CE882AC50C889B6500D4F982 /* SOAPMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SOAPMethods.m; sourceTree = "<group>"; };
+		CE882B2C0C889E0200D4F982 /* TCPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCPServer.h; sourceTree = "<group>"; };
+		CE882B2D0C889E0200D4F982 /* TCPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCPServer.m; sourceTree = "<group>"; };
+		CE882B2E0C889E0200D4F982 /* HTTPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTTPServer.m; sourceTree = "<group>"; };
+		CE882B2F0C889E0200D4F982 /* HTTPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPServer.h; sourceTree = "<group>"; };
 		CE88575A08AF938800B72DA7 /* ROIVolumeView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeView.h; sourceTree = "<group>"; };
 		CE88575B08AF938800B72DA7 /* ROIVolumeController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeController.h; sourceTree = "<group>"; };
 		CE88575C08AF938800B72DA7 /* ROIVolumeController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolumeController.mm; sourceTree = "<group>"; };
@@ -11533,10 +11543,6 @@
 		CE897DD30C21D951005C669E /* texture.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = texture.tif; path = Binaries/Icons/texture.tif; sourceTree = "<group>"; };
 		CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = DICOMPrint; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE90D8C3095F5B48004FC7E2 /* FlipData.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlipData.tiff; sourceTree = "<group>"; };
-		CE9101AC0C86A8AE00D8D273 /* HTTPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTTPConnection.m; sourceTree = "<group>"; };
-		CE9101AD0C86A8AE00D8D273 /* HTTPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPServer.h; sourceTree = "<group>"; };
-		CE9101AE0C86A8AE00D8D273 /* HTTPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTTPServer.m; sourceTree = "<group>"; };
-		CE9101AF0C86A8AE00D8D273 /* HTTPConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPConnection.h; sourceTree = "<group>"; };
 		CE96D0DB0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = XMLControllerDCMTKCategory.h; sourceTree = "<group>"; };
 		CE96D0DC0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = XMLControllerDCMTKCategory.mm; sourceTree = "<group>"; };
 		CE96D0F20BEE71E800C4E397 /* mdfconen.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mdfconen.cc; path = "Binaries/dcmtk-source/sample apps/dcmdump/mdfconen.cc"; sourceTree = "<group>"; };
@@ -13243,7 +13249,7 @@
 				CE9DD29A086B35740058DD2A /* CoreData */,
 				A99B7E4F08858D0D004328C0 /* Bonjour */,
 				AB4E3CAE05ADDE13001411D1 /* DicomDirParser.h */,
-				CE9101AA0C86A6B800D8D273 /* HTTP Server */,
+				CE9101AA0C86A6B800D8D273 /* SOAP HTTP Server */,
 				AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */,
 				ABBCCDA605643A4C00A4E47A /* browserController.h */,
 				ABBCCDA505643A4C00A4E47A /* browserController.m */,
@@ -16196,15 +16202,17 @@
 			name = ROIVolume;
 			sourceTree = "<group>";
 		};
-		CE9101AA0C86A6B800D8D273 /* HTTP Server */ = {
+		CE9101AA0C86A6B800D8D273 /* SOAP HTTP Server */ = {
 			isa = PBXGroup;
 			children = (
-				CE9101AC0C86A8AE00D8D273 /* HTTPConnection.m */,
-				CE9101AD0C86A8AE00D8D273 /* HTTPServer.h */,
-				CE9101AE0C86A8AE00D8D273 /* HTTPServer.m */,
-				CE9101AF0C86A8AE00D8D273 /* HTTPConnection.h */,
+				CE882AC40C889B6500D4F982 /* SOAPMethods.h */,
+				CE882AC50C889B6500D4F982 /* SOAPMethods.m */,
+				CE882B2C0C889E0200D4F982 /* TCPServer.h */,
+				CE882B2D0C889E0200D4F982 /* TCPServer.m */,
+				CE882B2F0C889E0200D4F982 /* HTTPServer.h */,
+				CE882B2E0C889E0200D4F982 /* HTTPServer.m */,
 			);
-			name = "HTTP Server";
+			name = "SOAP HTTP Server";
 			sourceTree = "<group>";
 		};
 		CE9762B908FABD1100E6F8B0 /* MSRG */ = {
@@ -18416,8 +18424,9 @@
 				ABB230BD0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 				AB64A2DB0C4E0F61000E0981 /* HornRegistration.h in Headers */,
 				CE542D2B0C6F8F7B0021A0E7 /* NrrdIO.h in Headers */,
-				CE9101B10C86A8AE00D8D273 /* HTTPServer.h in Headers */,
-				CE9101B30C86A8AE00D8D273 /* HTTPConnection.h in Headers */,
+				CE882AC60C889B6500D4F982 /* SOAPMethods.h in Headers */,
+				CE882B300C889E0200D4F982 /* TCPServer.h in Headers */,
+				CE882B330C889E0200D4F982 /* HTTPServer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20476,8 +20485,9 @@
 				ABB230BB0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 				AB64A2D90C4E0F61000E0981 /* HornRegistration.h in Headers */,
 				CE542D290C6F8F7B0021A0E7 /* NrrdIO.h in Headers */,
-				CE9101B50C86A8AE00D8D273 /* HTTPServer.h in Headers */,
-				CE9101B70C86A8AE00D8D273 /* HTTPConnection.h in Headers */,
+				CE882AC80C889B6500D4F982 /* SOAPMethods.h in Headers */,
+				CE882B340C889E0200D4F982 /* TCPServer.h in Headers */,
+				CE882B370C889E0200D4F982 /* HTTPServer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22756,8 +22766,9 @@
 				ABB230BE0C2F95DD00B38596 /* JPEGExif.m in Sources */,
 				AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */,
 				CE0718FE0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel in Sources */,
-				CE9101B00C86A8AE00D8D273 /* HTTPConnection.m in Sources */,
-				CE9101B20C86A8AE00D8D273 /* HTTPServer.m in Sources */,
+				CE882AC70C889B6500D4F982 /* SOAPMethods.m in Sources */,
+				CE882B310C889E0200D4F982 /* TCPServer.m in Sources */,
+				CE882B320C889E0200D4F982 /* HTTPServer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24422,8 +24433,9 @@
 				ABB230BC0C2F95DD00B38596 /* JPEGExif.m in Sources */,
 				AB64A2D80C4E0F61000E0981 /* HornRegistration.mm in Sources */,
 				CE0718FF0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel in Sources */,
-				CE9101B40C86A8AE00D8D273 /* HTTPConnection.m in Sources */,
-				CE9101B60C86A8AE00D8D273 /* HTTPServer.m in Sources */,
+				CE882AC90C889B6500D4F982 /* SOAPMethods.m in Sources */,
+				CE882B350C889E0200D4F982 /* TCPServer.m in Sources */,
+				CE882B360C889E0200D4F982 /* HTTPServer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

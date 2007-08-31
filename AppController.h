@@ -18,6 +18,7 @@
 #endif
 
 #import <AppKit/AppKit.h>
+#import "SOAPMethods.h"
 
 @class PreferenceController;
 @class BrowserController;
@@ -72,6 +73,7 @@ extern "C"
 	
 	NSTimer							*updateTimer;
 	DCMNetServiceDelegate			*dicomNetServiceDelegate;
+	SOAPMethods						*soapServer;
 }
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
