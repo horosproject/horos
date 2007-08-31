@@ -6006,7 +6006,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-#define CUSTOM_ANNOTATIONS
+//#define CUSTOM_ANNOTATIONS
 #ifdef CUSTOM_ANNOTATIONS
 - (void) drawTextualData:(NSRect) size :(long) annotations
 {
