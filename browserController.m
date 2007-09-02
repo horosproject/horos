@@ -5444,31 +5444,51 @@ static BOOL				DICOMDIRCDMODE = NO;
 	return NO;
 }
 
-- (BOOL) findObject:(NSString*) object key:(NSString*) key table:(NSString*) table execute: (NSString*) execute;
+- (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute;
 {
+	if( !request) return -32;
+	if( !table) return -33;
+	if( !execute) return -34;
+
 	NSError				*error = 0L;
 	NSString			*name;
-	long				index;
+	NSInteger			index, i;
 	
 	NSManagedObject			*element = 0L;
 	NSManagedObjectContext	*context = [self managedObjectContext];
 	
-	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[[self managedObjectModel] entitiesByName] objectForKey: table]];
-	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-	
-	[context retain];
-	[context lock];
-	error = 0L;
-	NSArray *array = [context executeFetchRequest:dbRequest error:&error];
-	
-	index = [[array  valueForKey: key] indexOfObject: object];
-	if( index != NSNotFound)
+	@try
 	{
-		element = [array objectAtIndex: index];
+		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[[self managedObjectModel] entitiesByName] objectForKey: table]];
+		[dbRequest setPredicate: [NSPredicate predicateWithFormat: request]];
+		
+		[context retain];
+		[context lock];
+		error = 0L;
+		NSArray *array = [context executeFetchRequest:dbRequest error:&error];
+		
+		if( error)
+		{
+			[context unlock];
+			[context release];
+			
+			return [error code];
+		}
+		
+		if( [array count])
+		{
+			element = [array objectAtIndex: 0];	// We select the first object
+		}
+		[context unlock];
+		[context release];
 	}
-	[context unlock];
-	[context release];
+	
+	@catch (NSException * e)
+	{
+		NSLog( @"******* BrowserController findObject Exception");
+		NSLog( [e description]);
+	}
 	
 	if( element)
 	{
@@ -5476,10 +5496,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		if( [[element valueForKey: @"type"] isEqualToString: @"Image"]) study = [element valueForKeyPath: @"series.study"];
 		else if( [[element valueForKey: @"type"] isEqualToString: @"Series"]) study = [element valueForKeyPath: @"study"];
-		else if( [[element valueForKey: @"type"] isEqualToString: @"Series"]) study = element;
+		else if( [[element valueForKey: @"type"] isEqualToString: @"Study"]) study = element;
 		else NSLog( @"DB selectObject : Unknown table");
 		
-		if( [execute isEqualToString: @"Select"] || [execute isEqualToString: @"Open"])
+		if( [execute isEqualToString: @"Select"] || [execute isEqualToString: @"Open"] || [execute isEqualToString: @"Delete"])
 		{
 			NSInteger index = [outlineViewArray indexOfObject: study];
 			
@@ -5496,13 +5516,37 @@ static BOOL				DICOMDIRCDMODE = NO;
 					[databaseOutline selectRow:[databaseOutline rowForItem: study] byExtendingSelection: NO];
 					[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 				}
+
+				if( [execute isEqualToString: @"Open"])
+				{
+					NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
+					BOOL found = NO;
+					
+					// Is a viewer containing this study opened? -> select it
+					for( i = 0; i < [viewersList count]; i++)
+					{
+						if( study == [[[[viewersList objectAtIndex: i] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
+						{
+							[[[viewersList objectAtIndex: i] window] makeKeyAndOrderFront: self];
+							found = YES;
+						}
+					}
+					
+					if( found == NO)
+						[browserWindow viewerDICOM: self];
+				}
 				
-				return YES;
+				if( [execute isEqualToString: @"Delete"])
+				{
+					[browserWindow delItem: self];
+				}
+				
+				return 0;
 			}
 		}
 	}
 	
-	return NO;
+	return -1;
 }
 
 -(void) loadNextPatient:(NSManagedObject *) curImage :(long) direction :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages

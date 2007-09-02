@@ -15,7 +15,7 @@
 #import <Cocoa/Cocoa.h>
 #import "HTTPServer.h"
 
-@interface SOAPMethods : NSObject
+@interface XMLRPCMethods : NSObject
 {
 	HTTPServer	*httpServ;
 }

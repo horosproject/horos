@@ -644,7 +644,7 @@ PluginManager			*pluginManager = 0L;
 
 #pragma mark plugins
 
-int sortPluginArray(id plugin1, id plugin2, void *context)
+NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 {
     NSString *name1 = [plugin1 objectForKey:@"name"];
     NSString *name2 = [plugin2 objectForKey:@"name"];

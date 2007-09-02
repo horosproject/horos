@@ -476,7 +476,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (float)rtstructProgressPercent;
 - (void)setRtstructProgressPercent: (float)p;
 
-- (BOOL) findObject:(NSString*) object key:(NSString*) key table:(NSString*) table execute: (NSString*) execute;
+- (int) findObject:(NSString*) object table:(NSString*) table execute: (NSString*) execute;
 
 /******Notifactions posted by browserController***********
 @"NewStudySelectedNotification" with userinfo key @"Selected Study" posted when a newStudy is selected in the browser

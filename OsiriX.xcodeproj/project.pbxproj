@@ -6538,10 +6538,10 @@
 		CE822F8B0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */; };
 		CE822F8E0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */; };
 		CE822F8F0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */; };
-		CE882AC60C889B6500D4F982 /* SOAPMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = CE882AC40C889B6500D4F982 /* SOAPMethods.h */; };
-		CE882AC70C889B6500D4F982 /* SOAPMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = CE882AC50C889B6500D4F982 /* SOAPMethods.m */; };
-		CE882AC80C889B6500D4F982 /* SOAPMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = CE882AC40C889B6500D4F982 /* SOAPMethods.h */; };
-		CE882AC90C889B6500D4F982 /* SOAPMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = CE882AC50C889B6500D4F982 /* SOAPMethods.m */; };
+		CE882AC60C889B6500D4F982 /* XMLRPCMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = CE882AC40C889B6500D4F982 /* XMLRPCMethods.h */; };
+		CE882AC70C889B6500D4F982 /* XMLRPCMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = CE882AC50C889B6500D4F982 /* XMLRPCMethods.m */; };
+		CE882AC80C889B6500D4F982 /* XMLRPCMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = CE882AC40C889B6500D4F982 /* XMLRPCMethods.h */; };
+		CE882AC90C889B6500D4F982 /* XMLRPCMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = CE882AC50C889B6500D4F982 /* XMLRPCMethods.m */; };
 		CE882B300C889E0200D4F982 /* TCPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = CE882B2C0C889E0200D4F982 /* TCPServer.h */; };
 		CE882B310C889E0200D4F982 /* TCPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE882B2D0C889E0200D4F982 /* TCPServer.m */; };
 		CE882B320C889E0200D4F982 /* HTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE882B2E0C889E0200D4F982 /* HTTPServer.m */; };
@@ -11530,8 +11530,8 @@
 		CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Anonymizer.icns; sourceTree = "<group>"; };
 		CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewerControllerWindow.h; sourceTree = "<group>"; };
 		CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewerControllerWindow.m; sourceTree = "<group>"; };
-		CE882AC40C889B6500D4F982 /* SOAPMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOAPMethods.h; sourceTree = "<group>"; };
-		CE882AC50C889B6500D4F982 /* SOAPMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SOAPMethods.m; sourceTree = "<group>"; };
+		CE882AC40C889B6500D4F982 /* XMLRPCMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLRPCMethods.h; sourceTree = "<group>"; };
+		CE882AC50C889B6500D4F982 /* XMLRPCMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLRPCMethods.m; sourceTree = "<group>"; };
 		CE882B2C0C889E0200D4F982 /* TCPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCPServer.h; sourceTree = "<group>"; };
 		CE882B2D0C889E0200D4F982 /* TCPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCPServer.m; sourceTree = "<group>"; };
 		CE882B2E0C889E0200D4F982 /* HTTPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTTPServer.m; sourceTree = "<group>"; };
@@ -16205,8 +16205,8 @@
 		CE9101AA0C86A6B800D8D273 /* SOAP HTTP Server */ = {
 			isa = PBXGroup;
 			children = (
-				CE882AC40C889B6500D4F982 /* SOAPMethods.h */,
-				CE882AC50C889B6500D4F982 /* SOAPMethods.m */,
+				CE882AC40C889B6500D4F982 /* XMLRPCMethods.h */,
+				CE882AC50C889B6500D4F982 /* XMLRPCMethods.m */,
 				CE882B2C0C889E0200D4F982 /* TCPServer.h */,
 				CE882B2D0C889E0200D4F982 /* TCPServer.m */,
 				CE882B2F0C889E0200D4F982 /* HTTPServer.h */,
@@ -18424,7 +18424,7 @@
 				ABB230BD0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 				AB64A2DB0C4E0F61000E0981 /* HornRegistration.h in Headers */,
 				CE542D2B0C6F8F7B0021A0E7 /* NrrdIO.h in Headers */,
-				CE882AC60C889B6500D4F982 /* SOAPMethods.h in Headers */,
+				CE882AC60C889B6500D4F982 /* XMLRPCMethods.h in Headers */,
 				CE882B300C889E0200D4F982 /* TCPServer.h in Headers */,
 				CE882B330C889E0200D4F982 /* HTTPServer.h in Headers */,
 			);
@@ -20485,7 +20485,7 @@
 				ABB230BB0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 				AB64A2D90C4E0F61000E0981 /* HornRegistration.h in Headers */,
 				CE542D290C6F8F7B0021A0E7 /* NrrdIO.h in Headers */,
-				CE882AC80C889B6500D4F982 /* SOAPMethods.h in Headers */,
+				CE882AC80C889B6500D4F982 /* XMLRPCMethods.h in Headers */,
 				CE882B340C889E0200D4F982 /* TCPServer.h in Headers */,
 				CE882B370C889E0200D4F982 /* HTTPServer.h in Headers */,
 			);
@@ -22766,7 +22766,7 @@
 				ABB230BE0C2F95DD00B38596 /* JPEGExif.m in Sources */,
 				AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */,
 				CE0718FE0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel in Sources */,
-				CE882AC70C889B6500D4F982 /* SOAPMethods.m in Sources */,
+				CE882AC70C889B6500D4F982 /* XMLRPCMethods.m in Sources */,
 				CE882B310C889E0200D4F982 /* TCPServer.m in Sources */,
 				CE882B320C889E0200D4F982 /* HTTPServer.m in Sources */,
 			);
@@ -24433,7 +24433,7 @@
 				ABB230BC0C2F95DD00B38596 /* JPEGExif.m in Sources */,
 				AB64A2D80C4E0F61000E0981 /* HornRegistration.mm in Sources */,
 				CE0718FF0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel in Sources */,
-				CE882AC90C889B6500D4F982 /* SOAPMethods.m in Sources */,
+				CE882AC90C889B6500D4F982 /* XMLRPCMethods.m in Sources */,
 				CE882B350C889E0200D4F982 /* TCPServer.m in Sources */,
 				CE882B360C889E0200D4F982 /* HTTPServer.m in Sources */,
 			);

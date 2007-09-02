@@ -1164,9 +1164,9 @@ NSRect screenFrame()
 	}
 	else BonjourDICOMService = 0L;
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpSOAPServer"])
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"])
 	{
-		soapServer = [[SOAPMethods alloc] init];
+		XMLRPCServer = [[XMLRPCMethods alloc] init];
 	}
 }
 
