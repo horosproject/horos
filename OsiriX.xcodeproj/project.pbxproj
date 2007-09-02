@@ -13249,7 +13249,7 @@
 				CE9DD29A086B35740058DD2A /* CoreData */,
 				A99B7E4F08858D0D004328C0 /* Bonjour */,
 				AB4E3CAE05ADDE13001411D1 /* DicomDirParser.h */,
-				CE9101AA0C86A6B800D8D273 /* SOAP HTTP Server */,
+				CE9101AA0C86A6B800D8D273 /* XML-XPC HTTP Server */,
 				AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */,
 				ABBCCDA605643A4C00A4E47A /* browserController.h */,
 				ABBCCDA505643A4C00A4E47A /* browserController.m */,
@@ -16202,7 +16202,7 @@
 			name = ROIVolume;
 			sourceTree = "<group>";
 		};
-		CE9101AA0C86A6B800D8D273 /* SOAP HTTP Server */ = {
+		CE9101AA0C86A6B800D8D273 /* XML-XPC HTTP Server */ = {
 			isa = PBXGroup;
 			children = (
 				CE882AC40C889B6500D4F982 /* XMLRPCMethods.h */,
@@ -16212,7 +16212,7 @@
 				CE882B2F0C889E0200D4F982 /* HTTPServer.h */,
 				CE882B2E0C889E0200D4F982 /* HTTPServer.m */,
 			);
-			name = "SOAP HTTP Server";
+			name = "XML-XPC HTTP Server";
 			sourceTree = "<group>";
 		};
 		CE9762B908FABD1100E6F8B0 /* MSRG */ = {
