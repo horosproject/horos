@@ -26,7 +26,6 @@
 + (NSMutableDictionary*) fileFormatPlugins;
 + (NSMutableDictionary*) reportPlugins;
 + (NSArray*) preProcessPlugins;
-+ (NSArray*) miscPluginsPlugins;
 + (NSMenu*) fusionPluginsMenu;
 
 #ifdef OSIRIX_VIEWER

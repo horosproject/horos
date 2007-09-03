@@ -23,7 +23,7 @@
 static NSMutableDictionary		*plugins = 0L, *pluginsDict = 0L, *fileFormatPlugins = 0L;
 static NSMutableDictionary		*reportPlugins = 0L;
 
-static NSMutableArray			*preProcessPlugins = 0L, *miscPluginsPlugins = 0L;
+static NSMutableArray			*preProcessPlugins = 0L;
 static NSMenu					*fusionPluginsMenu = 0L;
 
 @implementation PluginManager
@@ -51,11 +51,6 @@ static NSMenu					*fusionPluginsMenu = 0L;
 + (NSArray*) preProcessPlugins
 {
 	return preProcessPlugins;
-}
-
-+ (NSArray*) miscPluginsPlugins
-{
-	return miscPluginsPlugins;
 }
 
 + (NSMenu*) fusionPluginsMenu
@@ -278,8 +273,6 @@ static NSMenu					*fusionPluginsMenu = 0L;
 		[ViewerController setDefaultROINames: defaultROINames];
 		
 		[self discoverPlugins];
-		
-		[[PluginFilter alloc] init];
 	}
 	return self;
 }
@@ -337,7 +330,6 @@ static NSMenu					*fusionPluginsMenu = 0L;
 	[pluginsDict release];
 	[fileFormatPlugins release];
 	[preProcessPlugins release];
-	[miscPluginsPlugins release];
 	[reportPlugins release];
 	[fusionPluginsMenu release];
 	
@@ -345,7 +337,6 @@ static NSMenu					*fusionPluginsMenu = 0L;
 	pluginsDict = [[NSMutableDictionary alloc] init];
 	fileFormatPlugins = [[NSMutableDictionary alloc] init];
 	preProcessPlugins = [[NSMutableArray alloc] initWithCapacity:0];
-	miscPluginsPlugins = [[NSMutableArray alloc] initWithCapacity:0];
 	reportPlugins = [[NSMutableDictionary alloc] init];
 	
 	fusionPluginsMenu = [[NSMenu alloc] initWithTitle:@""];
@@ -370,11 +361,6 @@ static NSMenu					*fusionPluginsMenu = 0L;
 					{
 						PluginFilter*	filter = [filterClass filter];
 						[preProcessPlugins addObject: filter];
-					}
-					else if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"miscPlugin"]) 
-					{
-						PluginFilter*	filter = [filterClass filter];
-						[miscPluginsPlugins addObject: filter];
 					}
 					else if ([[plugin infoDictionary] objectForKey:@"FileFormats"]) 
 					{
@@ -421,6 +407,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 						[reportPlugins setObject: plugin forKey:[[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
 					}
 				}
+				else NSLog( @"********* principal class not found for: %@", name);
 			}
 		}
     }

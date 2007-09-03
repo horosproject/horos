@@ -85,7 +85,7 @@
 		{
 			NSString *selName = [[array objectAtIndex:0] objectValue];
 
-			NSMutableDictionary	*httpServerMessage = [NSMutableDictionary dictionaryWithObjectsAndKeys: doc, @"NSXMLDocument", [NSNumber numberWithBool: NO], @"Processed", 0L];
+			NSMutableDictionary	*httpServerMessage = [NSMutableDictionary dictionaryWithObjectsAndKeys: selName, @"MethodName", doc, @"NSXMLDocument", [NSNumber numberWithBool: NO], @"Processed", 0L];
 			
 			// ********************************************
 			// DBWindowFind
@@ -114,12 +114,11 @@
 					return;
 				}
 				
-				NSMutableDictionary	*paramDict = [NSMutableDictionary dictionary];
+				int i;
+				NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
 				for( i = 0; i < [keys count]; i++)
-				{
-					[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];
-				}
-				
+					[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
+								
 				// *****
 				
 				NSNumber *ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[paramDict valueForKey:@"request"]
@@ -138,7 +137,7 @@
 			
 			// Send the XML-RPC as a notification : give a chance to plugin to answer
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"OsiriX-XMLRPCMessage" object: httpServerMessage];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"OsiriXXMLRPCMessage" object: httpServerMessage];
 			
 			// Did someone processed the message?
 			if( [[httpServerMessage valueForKey: @"Processed"] boolValue])

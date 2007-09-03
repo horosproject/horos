@@ -21,8 +21,8 @@
 
 struct BioradHeader{
 	short int nx,ny,npic;
-	long int unused0;
-	long int notesAvailable;
+	 int unused0;
+	 int notesAvailable;
 	short int byte_format;
 	char unused1[38];
 	short int magicNumber;

@@ -16434,7 +16434,15 @@ sourceRef);
 
 - (void)setImageRows:(int)rows columns:(int)columns
 {
+	if( rows > 8) rows = 8;
+	if( columns > 8) columns = 8;
+
+	if( rows < 1) rows = 1;
+	if( columns < 1) columns = 1;
+	
 	[seriesView setImageViewMatrixForRows:(int)rows  columns:columns];
+	
+	[imageView updateTilingViews];
 }
 
 - (IBAction)setImageTiling: (id)sender

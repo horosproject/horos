@@ -377,6 +377,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) setRows:(int)rows columns:(int)columns;
 - (void)setTag:( long)aTag;
 - (long)tag;
+- (void) updateTilingViews;
 - (float)curWW;
 - (float)curWL;
 - (float)scaleValue;
