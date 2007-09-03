@@ -58,6 +58,7 @@
 		{
 			CIAPlaceHolder *aPlaceHolder = [[CIAPlaceHolder alloc] initWithFrame: NSMakeRect(x[i], y[i], [CIAPlaceHolder defaultSize].width, [CIAPlaceHolder defaultSize].height)];
 			[aPlaceHolder setAlignment:align[i]];
+			if(i==1) [aPlaceHolder setOrientationWidgetPosition:CIAPlaceHolderOrientationWidgetBottom];
 			[self addSubview:aPlaceHolder];
 			[placeHolderMutableArray addObject:aPlaceHolder];
 			[aPlaceHolder release];

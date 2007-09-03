@@ -11,12 +11,14 @@
 @class CIAAnnotation;
 
 typedef enum {CIAPlaceHolderAlignLeft, CIAPlaceHolderAlignCenter, CIAPlaceHolderAlignRight} CIAPlaceHolderAlignement;
+typedef enum {CIAPlaceHolderOrientationWidgetTop, CIAPlaceHolderOrientationWidgetBottom} CIAPlaceHolderOrientationWidgetPosition;
 
 @interface CIAPlaceHolder : NSView  {
 	BOOL hasFocus;
 	NSMutableArray *annotationsArray;
 	NSSize animatedFrameSize;
 	CIAPlaceHolderAlignement align;
+	CIAPlaceHolderOrientationWidgetPosition orientationWidgetPosition;
 }
 
 + (NSSize)defaultSize;
@@ -37,5 +39,6 @@ typedef enum {CIAPlaceHolderAlignLeft, CIAPlaceHolderAlignCenter, CIAPlaceHolder
 - (void)setEnabled:(BOOL)enabled;
 - (void)setAnimatedFrameSize:(NSSize)size;
 - (void)setAlignment:(CIAPlaceHolderAlignement)alignement;
+- (void)setOrientationWidgetPosition:(CIAPlaceHolderOrientationWidgetPosition)pos;
 
 @end

@@ -33,6 +33,7 @@
 		annotationsArray = [[NSMutableArray arrayWithCapacity:0] retain];
 		animatedFrameSize = frame.size;
 		align = CIAPlaceHolderAlignLeft;
+		orientationWidgetPosition = CIAPlaceHolderOrientationWidgetTop;
     }
     return self;
 }
@@ -122,26 +123,36 @@
 
 - (void)insertAnnotation:(CIAAnnotation*)anAnnotation atIndex:(int)index animate:(BOOL)animate;
 {
-//	if(![self isEqualTo:[anAnnotation placeHolder]])
+	[[anAnnotation placeHolder] removeAnnotation:anAnnotation];
+	
+	if(orientationWidgetPosition == CIAPlaceHolderOrientationWidgetTop)
 	{
-		[[anAnnotation placeHolder] removeAnnotation:anAnnotation];
-		
 		if(index==0 && [annotationsArray count]>0)
 			if([[annotationsArray objectAtIndex:0] isOrientationWidget])
 				index = 1;
-		
-		if([anAnnotation isOrientationWidget])
-			[annotationsArray insertObject:anAnnotation atIndex:0];
-		else if(index<[annotationsArray count])
-			[annotationsArray insertObject:anAnnotation atIndex:index];
-		else
-			[annotationsArray addObject:anAnnotation];
-		[anAnnotation setPlaceHolder:self];
 	}
-//	else
-//	{
-//	}
+	else if(orientationWidgetPosition == CIAPlaceHolderOrientationWidgetBottom)
+	{
+		if(index==[annotationsArray count] && [annotationsArray count]>0)
+			if([[annotationsArray lastObject] isOrientationWidget])
+				index = [annotationsArray count] - 1;
+	}
+			
+	if([anAnnotation isOrientationWidget])
+	{
+		if(orientationWidgetPosition == CIAPlaceHolderOrientationWidgetTop)
+			[annotationsArray insertObject:anAnnotation atIndex:0];
+		else if(orientationWidgetPosition == CIAPlaceHolderOrientationWidgetBottom)
+			[annotationsArray addObject:anAnnotation];
+	}
+	else if(index<[annotationsArray count])
+		[annotationsArray insertObject:anAnnotation atIndex:index];
+	else
+		[annotationsArray addObject:anAnnotation];
 	
+	
+	[anAnnotation setPlaceHolder:self];
+			
 	[self alignAnnotations];
 	[self updateFrameAroundAnnotationsWithAnimation:animate];
 }
@@ -307,14 +318,14 @@
 	[self alignAnnotations];
 }
 
-- (CIAPlaceHolderAlignement)align;
-{
-	return align;
-}
-
 - (void)setAlignment:(CIAPlaceHolderAlignement)alignement;
 {
 	align = alignement;
+}
+
+- (void)setOrientationWidgetPosition:(CIAPlaceHolderOrientationWidgetPosition)pos;
+{
+	orientationWidgetPosition = pos;
 }
 
 @end
