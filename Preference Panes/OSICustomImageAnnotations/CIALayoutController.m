@@ -1011,11 +1011,6 @@
 		if([token isEqualToString:@"DICOM_"] || [token isEqualToString:@"DB_"] || [token isEqualToString:@"Special_"])
 		{
 			check = NO;
-//			int r = NSRunAlertPanel(NSLocalizedString(@"Annotation Content", nil), NSLocalizedString(@"Some token have no content. These token (such as 'DICOM_', 'DB_', 'Special_') will not be displayed.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil);
-//			if(r==NSAlertDefaultReturn)
-//				return YES;
-//			else
-//				return NO;
 		}
 	}
 

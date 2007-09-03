@@ -10586,12 +10586,25 @@ BOOL            readable = YES;
 	if (field = [dcmObject attributeValueForKey: grel])
 	{
 		if([field isKindOfClass:[NSString class]])
-			return field; //[dicomElements setObject:field forKey:@"commentsAutoFill"];		
+		{
+			return field;
+		}
 		else if([field isKindOfClass:[NSNumber class]])
-			return [field stringValue];//[dicomElements setObject:[field stringValue] forKey:@"commentsAutoFill"];	
+		{
+			return [field stringValue];
+		}
 		else if([field isKindOfClass:[NSCalendarDate class]])
 		{
-			return [field description];//[dicomElements setObject:[field description] forKey:@"commentsAutoFill"];
+			NSString *vr = [[[dcmObject attributes] objectForKey:grel] vr];
+			if([vr isEqualToString:@"DA"])
+			{
+				return [BrowserController DBDateOfBirthFormat: field];
+			}
+			else if([vr isEqualToString:@"TM"])
+			{
+				return [BrowserController TimeFormat: field];
+			}
+			return [[[BrowserController currentBrowser] DBDateFormat] stringFromDate:(NSDate *)field];
 		}
 		else
 			return nil;
@@ -10688,7 +10701,7 @@ BOOL            readable = YES;
 						value = [field objectForKey:@"field"];
 						if ([value isEqualToString:@"Patient's Actual Age"])
 						{
-							// Patient's birth date : group=0x0010 element=0x0030
+							// Patient's birth date : group = 0x0010 = 16 / element = 0x0030 = 48
 							if(fileNb>=0)
 								value = [self getDICOMFieldValueForGroup:16 element:48 papyLink:fileNb];
 							else if(dcmObject)
@@ -10708,6 +10721,7 @@ BOOL            readable = YES;
 					{
 						value = [field objectForKey:@"field"];
 						if(value==nil) value = @"";
+						if(![value isEqualToString:@""]) value = [value stringByAppendingString:@" "];
 					}
 					
 					[contentOUT addObject:value];
