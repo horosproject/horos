@@ -15,26 +15,12 @@
 
 @class OSICustomImageAnnotations;
 
-@interface CIALayoutController : NSWindowController {
-	
-	//IBOutlet NSPopUpButton *modalitiesPopUpButton;
-	
+@interface CIALayoutController : NSWindowController
+{
 	OSICustomImageAnnotations *prefPane;
 	
 	CIALayoutView *layoutView;
-	
-//	IBOutlet NSTextField *titleLabelTextField, 
-//	IBOutlet NSTextField *titleTextField, 
-//	IBOutlet NSTextField *contentLabeltextField;
-
-//	IBOutlet RWTokenField *contentTokenField;
-//	IBOutlet NSTokenField *dicomNameTokenField;
-//	IBOutlet NSTextField *dicomGroupTextField, *dicomElementTextField;
-//	IBOutlet NSTextField *groupLabel, *elementLabel, *nameLabel;
-//	IBOutlet NSButton *addCustomDICOMFieldButton, *addDICOMFieldButton, *addDatabaseFieldButton, *addSpecialFieldButton;
-//	IBOutlet NSPopUpButton *DICOMFieldsPopUpButton, *databaseFieldsPopUpButton, *specialFieldsPopUpButton;
-//	IBOutlet NSBox *contentBox;
-	
+		
 	NSMutableArray *annotationsArray;
 	CIAAnnotation *selectedAnnotation;
 	
@@ -65,6 +51,7 @@
 - (void)setCustomDICOMFieldEditingEnable:(BOOL)boo;
 
 - (BOOL)checkAnnotations;
+- (BOOL)checkAnnotationContent:(CIAAnnotation*)annotation;
 - (void)saveAnnotationLayout;
 - (void)saveAnnotationLayoutForModality:(NSString*)modality;
 

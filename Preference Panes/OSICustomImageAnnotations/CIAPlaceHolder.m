@@ -14,8 +14,8 @@
 
 @implementation CIAPlaceHolder
 
-#define TOP_MARGIN 10.0
-#define BOTTOM_MARGIN 10.0
+#define TOP_MARGIN 5.0
+#define BOTTOM_MARGIN 5.0
 #define RIGHT_MARGIN 4.0
 
 + (NSSize)defaultSize;

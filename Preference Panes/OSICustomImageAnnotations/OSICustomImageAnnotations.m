@@ -152,7 +152,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (NSPreferencePaneUnselectReply)shouldUnselect;
 {
-	if(![layoutController checkAnnotations])
+	if(![layoutController checkAnnotations] || ![layoutController checkAnnotationsContent])
 		return NSUnselectCancel;
 	else
 		return NSUnselectNow;
