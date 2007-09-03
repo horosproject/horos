@@ -41,12 +41,23 @@
 		y[4] = y[3];
 		y[5] = frame.size.height - [CIAPlaceHolder defaultSize].height - FRAME_MARGIN;
 		y[6] = y[7] = y[5];
-				
+		
+		int align[8];
+		align[0] = CIAPlaceHolderAlignLeft;
+		align[3] = CIAPlaceHolderAlignLeft;
+		align[5] = CIAPlaceHolderAlignLeft;
+		align[1] = CIAPlaceHolderAlignCenter;
+		align[6] = CIAPlaceHolderAlignCenter;
+		align[2] = CIAPlaceHolderAlignRight;
+		align[4] = CIAPlaceHolderAlignRight;
+		align[7] = CIAPlaceHolderAlignRight;
+		
 		NSMutableArray *placeHolderMutableArray = [NSMutableArray arrayWithCapacity:8];
         int i;
 		for (i=0; i<8; i++)
 		{
 			CIAPlaceHolder *aPlaceHolder = [[CIAPlaceHolder alloc] initWithFrame: NSMakeRect(x[i], y[i], [CIAPlaceHolder defaultSize].width, [CIAPlaceHolder defaultSize].height)];
+			[aPlaceHolder setAlignment:align[i]];
 			[self addSubview:aPlaceHolder];
 			[placeHolderMutableArray addObject:aPlaceHolder];
 			[aPlaceHolder release];

@@ -32,6 +32,7 @@
 		hasFocus = NO;
 		annotationsArray = [[NSMutableArray arrayWithCapacity:0] retain];
 		animatedFrameSize = frame.size;
+		align = CIAPlaceHolderAlignLeft;
     }
     return self;
 }
@@ -162,8 +163,16 @@
 
 - (void)alignAnnotationsWithAnimation:(BOOL)animate;
 {
-	float positionX = [self frame].origin.x +3.0;
-	float previousY = [self frame].origin.y + [self frame].size.height - TOP_MARGIN ;
+	float positionX0, positionX, previousY;
+	
+	if(align==CIAPlaceHolderAlignLeft)
+		positionX0 = [self frame].origin.x +3.0;
+	else if(align==CIAPlaceHolderAlignCenter)
+		positionX0 = [self frame].origin.x + [self frame].size.width / 2.0;
+	else if(align==CIAPlaceHolderAlignRight)
+		positionX0 = [self frame].origin.x + [self frame].size.width;
+		
+	previousY = [self frame].origin.y + [self frame].size.height - TOP_MARGIN;
 	
 	if(animate)
 	{
@@ -176,21 +185,24 @@
 	for (i=0; i<[annotationsArray count]; i++)
 	{
 		currentAnnotation = [annotationsArray objectAtIndex:i];
+
+		positionX = positionX0;
+		if(align==CIAPlaceHolderAlignCenter)
+			positionX -= [currentAnnotation frame].size.width / 2.0;
+		else if(align==CIAPlaceHolderAlignRight)
+			positionX -= [currentAnnotation frame].size.width;
+		
+		NSPoint newOrigin;
+		if(i==0)
+			newOrigin = NSMakePoint(positionX, previousY-[currentAnnotation frame].size.height);
+		else
+			newOrigin = NSMakePoint(positionX, previousY-[currentAnnotation frame].size.height+2.0);
 		
 		if(animate)
-		{
-			if(i==0)
-				[[currentAnnotation animator] setAnimatedFrameOrigin:NSMakePoint(positionX, previousY-[currentAnnotation frame].size.height)];
-			else
-				[[currentAnnotation animator] setAnimatedFrameOrigin:NSMakePoint(positionX, previousY-[currentAnnotation frame].size.height+2.0)];
-		}
+			[[currentAnnotation animator] setAnimatedFrameOrigin:newOrigin];
 		else
-		{
-			if(i==0)
-				[currentAnnotation setFrameOrigin:NSMakePoint(positionX, previousY-[currentAnnotation frame].size.height)];
-			else
-				[currentAnnotation setFrameOrigin:NSMakePoint(positionX, previousY-[currentAnnotation frame].size.height+2.0)];
-		}
+			[currentAnnotation setFrameOrigin:newOrigin];
+
 		previousY = [currentAnnotation frame].origin.y;
 	}
 	
@@ -293,6 +305,16 @@
 	
 	[super setFrameOrigin:newOrigin];
 	[self alignAnnotations];
+}
+
+- (CIAPlaceHolderAlignement)align;
+{
+	return align;
+}
+
+- (void)setAlignment:(CIAPlaceHolderAlignement)alignement;
+{
+	align = alignement;
 }
 
 @end

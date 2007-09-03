@@ -10,10 +10,13 @@
 
 @class CIAAnnotation;
 
+typedef enum {CIAPlaceHolderAlignLeft, CIAPlaceHolderAlignCenter, CIAPlaceHolderAlignRight} CIAPlaceHolderAlignement;
+
 @interface CIAPlaceHolder : NSView  {
 	BOOL hasFocus;
 	NSMutableArray *annotationsArray;
 	NSSize animatedFrameSize;
+	CIAPlaceHolderAlignement align;
 }
 
 + (NSSize)defaultSize;
@@ -32,8 +35,7 @@
 - (void)updateFrameAroundAnnotations;
 - (void)updateFrameAroundAnnotationsWithAnimation:(BOOL)animate;
 - (void)setEnabled:(BOOL)enabled;
-
-
 - (void)setAnimatedFrameSize:(NSSize)size;
+- (void)setAlignment:(CIAPlaceHolderAlignement)alignement;
 
 @end
