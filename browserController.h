@@ -465,6 +465,10 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (void) initAnimationSlider;
 
+- (NSDateFormatter*) DBDateFormat;
+- (NSDateFormatter*) DBDateOfBirthFormat;
+- (NSDateFormatter*) TimeFormat;
+
 + (NSString*) DBDateOfBirthFormat:(NSDate*) d;
 + (NSString*) DBDateFormat:(NSDate*) d;
 + (NSString*) TimeFormat:(NSDate*) t;

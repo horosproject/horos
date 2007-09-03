@@ -1584,9 +1584,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	NSLog(@"DCMView released");
 	
 	[mouseModifiers release]; 
-	[shortDateFormatter release];
-	[shortTimeFormatter release];
-	[shortDateTimeFormatter release];
 	
 	[dcmFilesList release];
 	dcmFilesList = 0L;
@@ -4617,15 +4614,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	stringSize = [DCMView sizeOfString:@"B" forFont:fontGL];
 }
 
-- (NSDateFormatter*) shortDateFormatter
-{
-	return shortDateFormatter;
-}
-
-- (NSDateFormatter*) shortDateTimeFormatter
-{
-	return shortDateTimeFormatter;
-}
 
 - (id)initWithFrameInt:(NSRect)frameRect
 {
@@ -4637,14 +4625,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	
 	yearOld = 0L;
-	
-	shortDateFormatter = [[NSDateFormatter alloc] init];
-	shortTimeFormatter = [[NSDateFormatter alloc] init];
-	shortDateTimeFormatter = [[NSDateFormatter alloc] init];
-	
-	[shortDateFormatter setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat2"]];
-	[shortDateTimeFormatter setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat2"]];
-	[shortTimeFormatter setTimeStyle: NSDateFormatterShortStyle];
 	
 	syncSeriesIndex = -1;
 	mouseXPos = mouseYPos = 0;
@@ -6670,7 +6650,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					if( [file valueForKeyPath:@"series.study.dateOfBirth"])
 					{
-						nsstring = [NSString stringWithFormat: @"%@ - %@ - %@",[file valueForKeyPath:@"series.study.name"], [shortDateFormatter stringFromDate: [file valueForKeyPath:@"series.study.dateOfBirth"]], yearOld];
+						nsstring = [NSString stringWithFormat: @"%@ - %@ - %@",[file valueForKeyPath:@"series.study.name"], [BrowserController DBDateOfBirthFormat: [file valueForKeyPath:@"series.study.dateOfBirth"]], yearOld];
 					}
 					else  nsstring = [file valueForKeyPath:@"series.study.name"];
 					
@@ -6683,7 +6663,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			{
 				if( [file valueForKeyPath:@"series.study.dateOfBirth"])
 				{
-					NSString *nsstring = [NSString stringWithFormat: @"%@ - %@",[shortDateFormatter stringFromDate: [file valueForKeyPath:@"series.study.dateOfBirth"]], yearOld];
+					NSString *nsstring = [NSString stringWithFormat: @"%@ - %@",[BrowserController DBDateOfBirthFormat: [file valueForKeyPath:@"series.study.dateOfBirth"]], yearOld];
 					
 					xRaster = size.size.width;
 					[self DrawNSStringGL: nsstring : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
@@ -6764,7 +6744,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			NSCalendarDate  *date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[file valueForKey:@"date"] timeIntervalSinceReferenceDate]];
 			if( date && [date yearOfCommonEra] != 3000)
 			{
-				tempString = [shortDateFormatter stringFromDate: date];
+				tempString = [BrowserController DBDateOfBirthFormat: date];
 				xRaster = size.size.width;	
 				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: YES];
 				yRaster -= (stringSize.height + stringSize.height/10);
@@ -6774,7 +6754,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( [curDCM acquisitionTime]) date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[curDCM acquisitionTime] timeIntervalSinceReferenceDate]];
 			if( date && [date yearOfCommonEra] != 3000)
 			{
-				tempString = [shortTimeFormatter stringFromDate: date];	//	DDP localized from "%I:%M %p" 
+				tempString = [BrowserController TimeFormat: date];	//	DDP localized from "%I:%M %p" 
 				xRaster = size.size.width;
 				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: NO];
 				yRaster -= (stringSize.height + stringSize.height/10);

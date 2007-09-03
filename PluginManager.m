@@ -19,16 +19,51 @@
 #import "browserController.h"
 #import "BLAuthentication.h"
 
-extern BrowserController *browserWindow;
 
-NSMutableDictionary		*plugins = 0L, *pluginsDict = 0L, *fileFormatPlugins = 0L;
-NSMutableDictionary		*reportPlugins = 0L;
+static NSMutableDictionary		*plugins = 0L, *pluginsDict = 0L, *fileFormatPlugins = 0L;
+static NSMutableDictionary		*reportPlugins = 0L;
 
-NSMutableArray			*preProcessPlugins = 0L;
-NSMenu					*fusionPluginsMenu = 0L;
-PluginManager			*pluginManager = 0L;
+static NSMutableArray			*preProcessPlugins = 0L, *miscPluginsPlugins = 0L;
+static NSMenu					*fusionPluginsMenu = 0L;
 
 @implementation PluginManager
+
++ (NSMutableDictionary*) plugins
+{
+	return plugins;
+}
+
++ (NSMutableDictionary*) pluginsDict
+{
+	return pluginsDict;
+}
+
++ (NSMutableDictionary*) fileFormatPlugins
+{
+	return fileFormatPlugins;
+}
+
++ (NSMutableDictionary*) reportPlugins
+{
+	return reportPlugins;
+}
+
++ (NSArray*) preProcessPlugins
+{
+	return preProcessPlugins;
+}
+
++ (NSArray*) miscPluginsPlugins
+{
+	return miscPluginsPlugins;
+}
+
++ (NSMenu*) fusionPluginsMenu
+{
+	return fusionPluginsMenu;
+}
+
+#ifdef OSIRIX_VIEWER
 
 - (void) setMenus:(NSMenu*) filtersMenu :(NSMenu*) roisMenu :(NSMenu*) othersMenu :(NSMenu*) dbMenu
 {
@@ -62,7 +97,7 @@ PluginManager			*pluginManager = 0L;
 						[item setAction:@selector(endBlendingType:)];
 					}
 					else if( [pluginType isEqualToString:@"Database"] || [pluginType isEqualToString:@"Report"]){
-						[item setTarget:browserWindow];	//  browserWindow responds to DB plugins
+						[item setTarget: [BrowserController currentBrowser]];	//  browserWindow responds to DB plugins
 						[item setAction:@selector(executeFilterDB:)];
 					}
 					else
@@ -132,7 +167,7 @@ PluginManager			*pluginManager = 0L;
 				}
 				else if( [pluginType isEqualToString:@"Database"] || [pluginType isEqualToString:@"Report"])
 				{
-					[item setTarget:browserWindow];	//  browserWindow responds to DB plugins
+					[item setTarget:[BrowserController currentBrowser]];	//  browserWindow responds to DB plugins
 					[item setAction:@selector(executeFilterDB:)];
 				}
 				else
@@ -298,10 +333,19 @@ PluginManager			*pluginManager = 0L;
     NSEnumerator *pathEnum = [paths objectEnumerator];
     NSString *path;
 	
+	[plugins release];
+	[pluginsDict release];
+	[fileFormatPlugins release];
+	[preProcessPlugins release];
+	[miscPluginsPlugins release];
+	[reportPlugins release];
+	[fusionPluginsMenu release];
+	
     plugins = [[NSMutableDictionary alloc] init];
 	pluginsDict = [[NSMutableDictionary alloc] init];
 	fileFormatPlugins = [[NSMutableDictionary alloc] init];
 	preProcessPlugins = [[NSMutableArray alloc] initWithCapacity:0];
+	miscPluginsPlugins = [[NSMutableArray alloc] initWithCapacity:0];
 	reportPlugins = [[NSMutableDictionary alloc] init];
 	
 	fusionPluginsMenu = [[NSMenu alloc] initWithTitle:@""];
@@ -327,7 +371,11 @@ PluginManager			*pluginManager = 0L;
 						PluginFilter*	filter = [filterClass filter];
 						[preProcessPlugins addObject: filter];
 					}
-
+					else if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"miscPlugin"]) 
+					{
+						PluginFilter*	filter = [filterClass filter];
+						[miscPluginsPlugins addObject: filter];
+					}
 					else if ([[plugin infoDictionary] objectForKey:@"FileFormats"]) 
 					{
 						NSEnumerator *enumerator = [[[plugin infoDictionary] objectForKey:@"FileFormats"] objectEnumerator];
@@ -715,5 +763,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 {
 	return [NSArray arrayWithObjects:NSLocalizedString(@"Current user", nil), NSLocalizedString(@"All users", nil), NSLocalizedString(@"OsiriX bundle", nil), nil];
 }
+
+#endif
 
 @end

@@ -22,7 +22,7 @@
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import "BrowserController.h"
 #import "DOClient.h"
-
+#import "PluginManager.h"
 #import "ROI.h"
 #import "ROISRConverter.h"
 
@@ -62,7 +62,6 @@ extern NSString* documentsDirectory();
 
 extern NSLock	*PapyrusLock;
 extern short		Altivec;
-extern NSMutableDictionary *fileFormatPlugins;
 
 #if __ppc__ || __ppc64__
 extern void vsubtract(vector float *a, vector float *b, vector float *r, long size);
@@ -7849,7 +7848,7 @@ BOOL            readable = YES;
 			NSString	*extension = [[srcFile pathExtension] lowercaseString];
 			
 			id fileFormatBundle;
-			if (fileFormatBundle = [fileFormatPlugins objectForKey:[srcFile pathExtension]]) {
+			if (fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:[srcFile pathExtension]]) {
 				PluginFileFormatDecoder *decoder = [[[fileFormatBundle principalClass] alloc] init];
 				fImage = [decoder checkLoadAtPath:srcFile];
 				//NSLog(@"decoder width %d", [decoder width]);

@@ -21,6 +21,16 @@
 {
 }
 
++ (NSMutableDictionary*) plugins;
++ (NSMutableDictionary*) pluginsDict;
++ (NSMutableDictionary*) fileFormatPlugins;
++ (NSMutableDictionary*) reportPlugins;
++ (NSArray*) preProcessPlugins;
++ (NSArray*) miscPluginsPlugins;
++ (NSMenu*) fusionPluginsMenu;
+
+#ifdef OSIRIX_VIEWER
+
 - (void)discoverPlugins;
 - (void) setMenus:(NSMenu*) filtersMenu :(NSMenu*) roisMenu :(NSMenu*) othersMenu :(NSMenu*) dbMenu;
 
@@ -42,5 +52,7 @@
 + (NSArray*)pluginsList;
 + (void)createDirectory:(NSString*)directoryPath;
 + (NSArray*)availabilities;
+
+#endif
 
 @end

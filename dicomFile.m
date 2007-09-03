@@ -29,6 +29,7 @@
 #import <QTKit/QTKit.h>
 #include "tiffio.h"
 #import "DicomFileDCMTKCategory.h"
+#import "PluginManager.h"
 #include "nifti1.h"
 #include "nifti1_io.h"
 
@@ -49,7 +50,6 @@
 
 
 extern NSString * convertDICOM( NSString *inputfile);
-extern NSMutableDictionary *fileFormatPlugins;
 extern NSLock	*PapyrusLock;
 
 static BOOL DEFAULTSSET = NO;
@@ -3009,7 +3009,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	NoOfFrames = 1;	
 	
 	id fileFormatBundle;
-	if (fileFormatBundle = [fileFormatPlugins objectForKey:extension])
+	if (fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:extension])
 	{
 		fileType = [[NSString stringWithString:@"IMAGE"] retain];
 		

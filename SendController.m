@@ -48,10 +48,8 @@ Version 2.3
 #import <OsiriX/DCMNetworking.h>
 #import "NetworkSendDataHandler.h"
 #import "PluginFilter.h"
-
+#import "PluginManager.h"
 #import "DCMTKStoreSCU.h"
-
-extern NSMutableDictionary	*plugins, *pluginsDict;
 
 static volatile int sendControllerObjects = 0;
 
@@ -266,11 +264,11 @@ static volatile int sendControllerObjects = 0;
 			if( !([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask && [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask))
 			{
 				// DONT REMOVE THESE LINES - THANX ANTOINE
-				if( [plugins valueForKey:@"ComPACS"] != 0)
+				if( [[PluginManager plugins] valueForKey:@"ComPACS"] != 0)
 				{
-					long result = [[plugins objectForKey:@"ComPACS"] prepareFilter: 0L];
+					long result = [[[PluginManager plugins] objectForKey:@"ComPACS"] prepareFilter: 0L];
 					
-					result = [[plugins objectForKey:@"ComPACS"] filterImage: [NSString stringWithFormat:@"dicomSEND%@", [[objectsToSend objectAtIndex: 0] valueForKeyPath:@"series.study.patientUID"]]];
+					result = [[[PluginManager plugins] objectForKey:@"ComPACS"] filterImage: [NSString stringWithFormat:@"dicomSEND%@", [[objectsToSend objectAtIndex: 0] valueForKeyPath:@"series.study.patientUID"]]];
 					if( result != 0)
 					{
 						NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"Smart card authentification is required for DICOM sending.",nil),NSLocalizedString( @"OK",nil), nil, nil);

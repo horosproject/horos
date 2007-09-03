@@ -110,6 +110,7 @@ Version 2.5
 #import "BrowserControllerDCMTKCategory.h"
 #import "BrowserMatrix.h"
 #import "DicomStudy.h"
+#import "PluginManager.h"
 
 #define DATABASEVERSION @"2.4"
 #define DATABASEPATH @"/DATABASE/"
@@ -141,10 +142,7 @@ extern void compressJPEG (int inQuality, char* filename, unsigned char* inImageB
 extern BOOL hasMacOSXTiger();
 extern NSString					*documentsDirectory();
 
-extern NSMutableArray			*preProcessPlugins;
-extern NSMutableDictionary		*reportPlugins;
 extern AppController			*appController;
-extern NSMutableDictionary		*plugins, *pluginsDict;
 extern NSThread					*mainThread;
 extern BOOL						NEEDTOREBUILD, COMPLETEREBUILD;
 extern NSMutableDictionary		*DATABASECOLUMNS;
@@ -4721,7 +4719,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	{
 		if ([[item valueForKey:@"type"] isEqualToString:@"Study"])
 		{
-			NSBundle *plugin = [reportPlugins objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
+			NSBundle *plugin = [[PluginManager reportPlugins] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
 					
 			if( plugin)
 			{
@@ -10948,9 +10946,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 					[self listenerAnonymizeFiles: filesArray];
 				}
 				
-				for( i = 0; i < [preProcessPlugins count]; i++)
+				for( i = 0; i < [[PluginManager preProcessPlugins] count]; i++)
 				{
-					id				filter = [preProcessPlugins objectAtIndex:i];
+					id				filter = [[PluginManager preProcessPlugins] objectAtIndex:i];
 					
 					[filter processFiles: filesArray];
 				}
@@ -12792,7 +12790,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 3)
 			{
-				NSBundle *plugin = [reportPlugins objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
+				NSBundle *plugin = [[PluginManager reportPlugins] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
 						
 				if( plugin)
 				{
@@ -12860,7 +12858,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		if( reportsMode == 3)
 		{
-			NSBundle *plugin = [reportPlugins objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
+			NSBundle *plugin = [[PluginManager reportPlugins] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
 					
 			if( plugin)
 			{
@@ -13243,9 +13241,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	else
 	{
 		// Is it a plugin menu item?
-		if( [pluginsDict objectForKey: itemIdent] != 0L)
+		if( [[PluginManager pluginsDict] objectForKey: itemIdent] != 0L)
 		{
-			NSBundle *bundle = [pluginsDict objectForKey: itemIdent];
+			NSBundle *bundle = [[PluginManager pluginsDict] objectForKey: itemIdent];
 			NSDictionary *info = [bundle infoDictionary];
 			
 			[toolbarItem setLabel: itemIdent];
@@ -13318,11 +13316,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 											nil];
 
 	long		i;
-	NSArray*	allPlugins = [pluginsDict allKeys];
+	NSArray*	allPlugins = [[PluginManager pluginsDict] allKeys];
 	
 	for( i = 0; i < [allPlugins count]; i++)
 	{
-		NSBundle		*bundle = [pluginsDict objectForKey: [allPlugins objectAtIndex: i]];
+		NSBundle		*bundle = [[PluginManager pluginsDict] objectForKey: [allPlugins objectAtIndex: i]];
 		NSDictionary	*info = [bundle infoDictionary];
 		
 		if( [[info objectForKey:@"pluginType"] isEqualToString: @"Database"] == YES)
@@ -13630,7 +13628,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)executeFilterFromString:( NSString*) name{
 	long			result;
-    id				filter = [plugins objectForKey:name];
+    id				filter = [[PluginManager plugins] objectForKey:name];
 	
 		if(filter==nil)
 	{

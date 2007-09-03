@@ -125,8 +125,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
     
 	BOOL			suppress_labels; // keep from drawing the labels when command+shift is pressed
 
-	NSDateFormatter *shortDateFormatter, *shortTimeFormatter, *shortDateTimeFormatter;
-
     NSPoint         start, originStart, originOffsetStart, previous;
 	
     float			startWW, curWW, startMin, startMax;
@@ -410,9 +408,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) setDrawing:(BOOL) v;
 - (void) updateImage;
 - (BOOL) shouldPropagate;
-
-- (NSDateFormatter*) shortDateTimeFormatter;
-- (NSDateFormatter*) shortDateFormatter;
 
 // methodes to access global variables (for plugins)
 + (BOOL) display2DMPRLines;

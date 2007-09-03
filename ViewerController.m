@@ -94,18 +94,17 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "EndoscopySegmentationController.h"
 #import "HornRegistration.h"
 #import "BonjourBrowser.h"
+#import "PluginManager.h"
 #import <InstantMessage/IMService.h>
 #import <InstantMessage/IMAVManager.h>
 
 @class VRPROController;
 
-extern	NSMutableDictionary		*plugins, *pluginsDict;
 extern  ToolbarPanelController  *toolbarPanel[ 10];
 extern  AppController			*appController;
-extern  BrowserController       *browserWindow;
 extern  BOOL					USETOOLBARPANEL;
-extern  NSMenu					*fusionPluginsMenu;
-extern	BOOL					SYNCSERIES;
+
+static	BOOL					SYNCSERIES = NO;
 
 		
 static NSString* 	ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
@@ -1627,7 +1626,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
 		{
 			if( [curImage valueForKeyPath:@"series.study.dateOfBirth"])
-				[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [[imageView shortDateFormatter] stringFromDate: bod], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
+				[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [BrowserController DBDateOfBirthFormat: bod], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
 			else
 				[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
 		}	
@@ -1782,9 +1781,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[imageView stopROIEditingForce: YES];
 	
 	stopThreadLoadImage = YES;
-	if( [browserWindow isCurrentDatabaseBonjour])
+	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 	{
-		while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
+		while( [ThreadLoadImageLock tryLock] == NO) [[BrowserController currentBrowser] bonjourRunLoop: self];
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
@@ -1827,9 +1826,9 @@ static volatile int numberOfThreadsForRelisce = 0;
     }
 	
 	stopThreadLoadImage = YES;
-	if( [browserWindow isCurrentDatabaseBonjour])
+	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 	{
-		while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
+		while( [ThreadLoadImageLock tryLock] == NO) [[BrowserController currentBrowser] bonjourRunLoop: self];
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
@@ -2066,7 +2065,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( fileList[ curMovieIndex] && [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
 	{
-		[browserWindow findAndSelectFile: 0L image:[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] shouldExpand:NO];
+		[[BrowserController currentBrowser] findAndSelectFile: 0L image:[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] shouldExpand:NO];
 	}
 	
 	[self SetSyncButtonBehavior: self];
@@ -2555,7 +2554,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask && FullScreenOn == NO) 
 	{
-		[browserWindow loadSeries :[[sender selectedCell] representedObject] :0L :YES keyImagesOnly: displayOnlyKeyImages];
+		[[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :0L :YES keyImagesOnly: displayOnlyKeyImages];
 		
 		[self matrixPreviewSelectCurrentSeries];
 		
@@ -2573,7 +2572,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		if( [[sender selectedCell] representedObject] != [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"])
 		{
-			[browserWindow loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
+			[[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
 
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 				[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
@@ -2725,8 +2724,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) buildMatrixPreview: (BOOL) showSelected
 {
-	NSManagedObjectModel	*model = [browserWindow managedObjectModel];
-	NSManagedObjectContext	*context = [browserWindow managedObjectContext];
+	NSManagedObjectModel	*model = [[BrowserController currentBrowser] managedObjectModel];
+	NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
 	NSPredicate				*predicate;
 	NSFetchRequest			*dbRequest;
 	NSError					*error = 0L;
@@ -2770,7 +2769,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		i = 0;
 		for( x = 0; x < [studiesArray count]; x++)
 		{
-			[seriesArray addObject: [browserWindow childrenArray: [studiesArray objectAtIndex: x]]];
+			[seriesArray addObject: [[BrowserController currentBrowser] childrenArray: [studiesArray objectAtIndex: x]]];
 			
 			if( [[studiesArray objectAtIndex: x] isHidden] == NO)
 				i += [[seriesArray objectAtIndex: x] count];
@@ -2786,7 +2785,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			DicomStudy			*curStudy = [studiesArray objectAtIndex: x];
 			NSArray				*series = [seriesArray objectAtIndex: x];
-			NSArray				*images = [browserWindow imagesArray: curStudy preferredObject: oAny];
+			NSArray				*images = [[BrowserController currentBrowser] imagesArray: curStudy preferredObject: oAny];
 			
 			if( [series count] != [images count])
 			{
@@ -2823,7 +2822,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if( [curStudy isHidden]) action = @"Show Series";
 			else action = @"Hide Series";
 			
-			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@ : %d %@\r%@\r%@\r\r%@", name, [[imageView shortDateTimeFormatter] stringFromDate: [curStudy valueForKey:@"date"]], modality, [series count], @"series", stateText, comment, action]];
+			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@ : %d %@\r%@\r%@\r\r%@", name, [BrowserController DBDateFormat: [curStudy valueForKey:@"date"]], modality, [series count], @"series", stateText, comment, action]];
 			[cell setBackgroundColor: [NSColor whiteColor]];
 			
 			index++;
@@ -2869,8 +2868,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 					}
 					else type=[type stringByAppendingString: @"s"];
 					
-					if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [[imageView shortDateTimeFormatter] stringFromDate: [curSeries valueForKey:@"date"]], keyImagesNumber, count, type]];
-					else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [[imageView shortDateTimeFormatter] stringFromDate: [curSeries valueForKey:@"date"]], count, type]];
+					if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [BrowserController DBDateFormat: [curSeries valueForKey:@"date"]], keyImagesNumber, count, type]];
+					else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DBDateFormat: [curSeries valueForKey:@"date"]], count, type]];
 					
 					[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rClick + Apple Key:\rOpen in new window", 0L), [curSeries valueForKey:@"id"]] forCell:cell];
 					if( [curImage valueForKey:@"series"] == curSeries)
@@ -2894,7 +2893,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 						
 						if( img == 0L)
 						{
-							DCMPix*     dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: i] valueForKey:@"completePath"] :0 :0 :0L :0 :[[[images objectAtIndex: i] valueForKeyPath:@"series.id"] intValue] isBonjour:[browserWindow isCurrentDatabaseBonjour] imageObj:[images objectAtIndex: i]];
+							DCMPix*     dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: i] valueForKey:@"completePath"] :0 :0 :0L :0 :[[[images objectAtIndex: i] valueForKeyPath:@"series.id"] intValue] isBonjour:[[BrowserController currentBrowser] isCurrentDatabaseBonjour] imageObj:[images objectAtIndex: i]];
 							
 							if( dcmPix)
 							{
@@ -2959,7 +2958,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) updateRepresentedFileName
 {
-	NSString	*path = [browserWindow getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] : 0];
+	NSString	*path = [[BrowserController currentBrowser] getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] : 0];
 	[[self window] setRepresentedFilename: path];
 }
 
@@ -2967,7 +2966,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	[self checkEverythingLoaded];
 	
-	NSString	*path = [browserWindow getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] : 0];
+	NSString	*path = [[BrowserController currentBrowser] getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] : 0];
 	[[self window] setRepresentedFilename: path];
 	
     XMLController * xmlController = [[XMLController alloc] initWithImage: [fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] windowName:[NSString stringWithFormat:@"Meta-Data: %@", [[self window] title]] viewer: self];
@@ -3013,11 +3012,11 @@ static ViewerController *draggedController = 0L;
 		[blendingResample setEnabled: NO];
 	
 	// Prepare fusion plug-ins menu
-	for( iz = 0; iz < [fusionPluginsMenu numberOfItems]; iz++)
+	for( iz = 0; iz < [[PluginManager fusionPluginsMenu] numberOfItems]; iz++)
 	{
-		if( [[fusionPluginsMenu itemAtIndex:iz] hasSubmenu])
+		if( [[[PluginManager fusionPluginsMenu] itemAtIndex:iz] hasSubmenu])
 		{
-			NSMenu  *subMenu = [[fusionPluginsMenu itemAtIndex:iz] submenu];
+			NSMenu  *subMenu = [[[PluginManager fusionPluginsMenu] itemAtIndex:iz] submenu];
 			
 			for( xz = 0; xz < [subMenu numberOfItems]; xz++)
 			{
@@ -3027,11 +3026,11 @@ static ViewerController *draggedController = 0L;
 		}
 		else
 		{
-			[[fusionPluginsMenu itemAtIndex:iz] setTarget:self];
-			[[fusionPluginsMenu itemAtIndex:iz] setAction:@selector(endBlendingType:)];
+			[[[PluginManager fusionPluginsMenu] itemAtIndex:iz] setTarget:self];
+			[[[PluginManager fusionPluginsMenu] itemAtIndex:iz] setAction:@selector(endBlendingType:)];
 		}
 	}
-	[blendingPlugins setMenu: fusionPluginsMenu];
+	[blendingPlugins setMenu: [PluginManager fusionPluginsMenu]];
 	
 	//[self checkEverythingLoaded];
 	//[draggedController checkEverythingLoaded];
@@ -3259,11 +3258,11 @@ static ViewerController *draggedController = 0L;
 	}
 	else if (c == NSLeftArrowFunctionKey && ([event modifierFlags] & NSCommandKeyMask))
 	{
-		[browserWindow loadNextSeries:[fileList[0] objectAtIndex:0] : -1 :self :YES keyImagesOnly: displayOnlyKeyImages];
+		[[BrowserController currentBrowser] loadNextSeries:[fileList[0] objectAtIndex:0] : -1 :self :YES keyImagesOnly: displayOnlyKeyImages];
 	}
 	else if (c == NSRightArrowFunctionKey && ([event modifierFlags] & NSCommandKeyMask))
 	{
-		[browserWindow loadNextSeries:[fileList[0] objectAtIndex:0] : 1 :self :YES keyImagesOnly: displayOnlyKeyImages];
+		[[BrowserController currentBrowser] loadNextSeries:[fileList[0] objectAtIndex:0] : 1 :self :YES keyImagesOnly: displayOnlyKeyImages];
 	}
 	else
     {
@@ -3552,7 +3551,7 @@ static ViewerController *draggedController = 0L;
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(generateReport:)];
 //	[toolbarItem setImage: [NSImage imageNamed: ReportToolbarItemIdentifier]];
-//	[toolbarItem setTarget: browserWindow];
+//	[toolbarItem setTarget: [BrowserController currentBrowser]];
 //	[toolbarItem setAction: @selector(generateReport:)];
     } 
 	else if ( [itemIdent isEqualToString: DeleteToolbarItemIdentifier])
@@ -3843,9 +3842,9 @@ static ViewerController *draggedController = 0L;
     else
 	{
 		// Is it a plugin menu item?
-		if( [pluginsDict objectForKey: itemIdent] != 0L)
+		if( [[PluginManager pluginsDict] objectForKey: itemIdent] != 0L)
 		{
-			NSBundle *bundle = [pluginsDict objectForKey: itemIdent];
+			NSBundle *bundle = [[PluginManager pluginsDict] objectForKey: itemIdent];
 			NSDictionary *info = [bundle infoDictionary];
 			
 			[toolbarItem setLabel: itemIdent];
@@ -3940,11 +3939,11 @@ static ViewerController *draggedController = 0L;
 														nil];
 	
 	long		i;
-	NSArray*	allPlugins = [pluginsDict allKeys];
+	NSArray*	allPlugins = [[PluginManager pluginsDict] allKeys];
 	
 	for( i = 0; i < [allPlugins count]; i++)
 	{
-		NSBundle		*bundle = [pluginsDict objectForKey: [allPlugins objectAtIndex: i]];
+		NSBundle		*bundle = [[PluginManager pluginsDict] objectForKey: [allPlugins objectAtIndex: i]];
 		NSDictionary	*info = [bundle infoDictionary];
 		//NSLog(@"plugin %@", [[allPlugins objectAtIndex: i] description]);
 		if( [[info objectForKey:@"pluginType"] isEqualToString: @"imageFilter"] == YES || [[info objectForKey:@"pluginType"] isEqualToString: @"roiTool"] == YES || [[info objectForKey:@"pluginType"] isEqualToString: @"other"] == YES)
@@ -4430,9 +4429,9 @@ static ViewerController *draggedController = 0L;
 	int x,i,z;
 	
 	stopThreadLoadImage = YES;
-	if( [browserWindow isCurrentDatabaseBonjour])
+	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 	{
-		while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
+		while( [ThreadLoadImageLock tryLock] == NO) [[BrowserController currentBrowser] bonjourRunLoop: self];
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
@@ -4509,7 +4508,7 @@ static ViewerController *draggedController = 0L;
     
     if([windows count] < 2)
     {
-        [browserWindow showDatabase:self];
+        [[BrowserController currentBrowser] showDatabase:self];
     }
 		
 	numberOf2DViewer--;
@@ -4794,7 +4793,7 @@ static ViewerController *draggedController = 0L;
 	else [CommentsField setTitle: com];
 	
 	if( [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
-		[browserWindow findAndSelectFile: 0L image :[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] shouldExpand :NO];
+		[[BrowserController currentBrowser] findAndSelectFile: 0L image :[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] shouldExpand :NO];
 		
 	////////
 	
@@ -5076,9 +5075,9 @@ static ViewerController *draggedController = 0L;
 			if( stopThreadLoadImage == NO) //there is no interrruption
 			{
 				if ([fileList[ x] count] == [pixList[ x] count]) // I'm not quite sure what this line does, but I'm afraid to take it out. 
-					[browserWindow getLocalDCMPath:[fileList[ x] objectAtIndex: i] : 2]; // Anyway, we are not guarantied to have as many files as pixs, so that is why I put in the if() - Joel
+					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: i] : 2]; // Anyway, we are not guarantied to have as many files as pixs, so that is why I put in the if() - Joel
 				else
-					[browserWindow getLocalDCMPath:[fileList[ x] objectAtIndex: 0] : 2]; 
+					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: 0] : 2]; 
 				
 				
 				DCMPix* pix = [pixList[ x] objectAtIndex: i];
@@ -5306,7 +5305,7 @@ static ViewerController *draggedController = 0L;
 - (void)executeFilterFromString:(NSString*) name
 {
 	long			result;
-    id				filter = [plugins objectForKey:name];
+    id				filter = [[PluginManager plugins] objectForKey:name];
 
 	if(filter==nil)
 	{
@@ -8119,7 +8118,7 @@ extern NSString * documentsDirectory();
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"])
 	{
-		if( [browserWindow isCurrentDatabaseBonjour])
+		if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 		{
 			NSMutableArray	*filesArray = [NSMutableArray array];
 			
@@ -8133,7 +8132,7 @@ extern NSString * documentsDirectory();
 				}
 			}
 			
-			[browserWindow getDICOMROIFiles: filesArray];
+			[[BrowserController currentBrowser] getDICOMROIFiles: filesArray];
 		}
 		
 		for( i = 0; i < [fileList[ mIndex] count]; i++)
@@ -8144,7 +8143,7 @@ extern NSString * documentsDirectory();
 				
 				str = [[fileList[ mIndex] objectAtIndex:i] SRPathForFrame: [[pixList[mIndex] objectAtIndex:i] frameNo]];
 				
-				if( [browserWindow isCurrentDatabaseBonjour])
+				if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 				{
 					NSString	*imagePath = [BonjourBrowser uniqueLocalPath: [fileList[ mIndex] objectAtIndex:i]];
 					
@@ -8178,7 +8177,7 @@ extern NSString * documentsDirectory();
 	BOOL			isDir = YES;
 	int				i, x;
 	
-	if( [browserWindow isCurrentDatabaseBonjour] || [[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"] == NO ) return;
+	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour] || [[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"] == NO ) return;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
@@ -8233,7 +8232,7 @@ extern NSString * documentsDirectory();
 								{
 									if( [[[srs objectAtIndex: x] valueForKey:@"completePath"] isEqualToString: str])
 									{
-										[[browserWindow managedObjectContext] deleteObject: [srs objectAtIndex: x]]; 
+										[[[BrowserController currentBrowser] managedObjectContext] deleteObject: [srs objectAtIndex: x]]; 
 										found = YES;
 										break;
 									}
@@ -11009,12 +11008,12 @@ int i,j,l;
 	{
 		[[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:composedMenuTitle forKeyPath:@"series.comment"];
 		
-		if([browserWindow isCurrentDatabaseBonjour])
+		if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 		{
-			[browserWindow setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[CommentsEditField stringValue] forKey:@"series.comment"];
+			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[CommentsEditField stringValue] forKey:@"series.comment"];
 		}
 		
-		[[browserWindow databaseOutline] reloadData];
+		[[[BrowserController currentBrowser] databaseOutline] reloadData];
 		
 		[CommentsField setTitle: composedMenuTitle];
 		
@@ -11889,7 +11888,7 @@ int i,j,l;
 
 -(void) deleteSeries:(id) sender
 {
-	[browserWindow delItemMatrix: [fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]]];
+	[[BrowserController currentBrowser] delItemMatrix: [fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]]];
 }
 
 - (float) frameRate
@@ -13296,7 +13295,7 @@ int i,j,l;
 		[files2Send addObject: [fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]]];
 	}
 	
-	[browserWindow selectServer: files2Send];
+	[[BrowserController currentBrowser] selectServer: files2Send];
 }
 
 
@@ -15806,7 +15805,7 @@ long i;
 				OrthogonalMPRPETCTViewer *pcviewer = [self openOrthogonalMPRPETCTViewer];
 				NSDate *studyDate = [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.date"];
 				
-				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[pcviewer window] title], [[imageView shortDateTimeFormatter] stringFromDate: studyDate], [[self window] title]]];
+				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[pcviewer window] title], [BrowserController DBDateFormat: studyDate], [[self window] title]]];
 			}
 			else
 			{
@@ -15821,7 +15820,7 @@ long i;
 				
 				
 				
-				[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[viewer window] title], [[imageView shortDateTimeFormatter] stringFromDate: [[fileList[0] objectAtIndex:0]  valueForKeyPath:@"series.study.date"]], [[self window] title]]];
+				[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[viewer window] title], [BrowserController DBDateFormat: [[fileList[0] objectAtIndex:0]  valueForKeyPath:@"series.study.date"]], [[self window] title]]];
 			}
 		}
 	}
@@ -15928,7 +15927,7 @@ long i;
 
 -(IBAction) loadPatient:(id) sender
 {
-	[browserWindow loadNextPatient:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: displayOnlyKeyImages];
+	[[BrowserController currentBrowser] loadNextPatient:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: displayOnlyKeyImages];
 }
 
 -(IBAction) loadSerie:(id) sender
@@ -15938,11 +15937,11 @@ long i;
 	{
 		[[sender selectedItem] setImage:0L];
 		
-		[browserWindow loadSeries :[[sender selectedItem] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
+		[[BrowserController currentBrowser] loadSeries :[[sender selectedItem] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
 	}
 	else
 	{
-		[browserWindow loadNextSeries:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: displayOnlyKeyImages];
+		[[BrowserController currentBrowser] loadNextSeries:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: displayOnlyKeyImages];
 
 	}
 }
@@ -15960,11 +15959,11 @@ long i;
 		WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Data loading...", nil)];
 		[splash showWindow:self];
 		
-		if( [browserWindow isCurrentDatabaseBonjour])
+		if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 		{
 			while( [ThreadLoadImageLock tryLock] == NO)
 			{
-				[browserWindow bonjourRunLoop: self];
+				[[BrowserController currentBrowser] bonjourRunLoop: self];
 				
 			}
 		}
@@ -16041,9 +16040,9 @@ long i;
 {
 	[[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
 	
-	if([browserWindow isCurrentDatabaseBonjour])
+	if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 	{
-		[browserWindow setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
+		[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
 	}
 	
 	[self buildMatrixPreview: NO];
@@ -16069,14 +16068,14 @@ long i;
 			//[keyImageDisplay setTag: 0];
 			//[keyImageDisplay setTitle: NSLocalizedString(@"Key Images", nil)];
 			
-			NSArray	*images = [browserWindow childrenArray: series];
-			[browserWindow openViewerFromImages :[NSArray arrayWithObject: images] movie: NO viewer :self keyImagesOnly: displayOnlyKeyImages];
-			//[browserWindow openViewerFromImages :[NSArray arrayWithObject: images] movie: NO viewer :self keyImagesOnly: tag];
+			NSArray	*images = [[BrowserController currentBrowser] childrenArray: series];
+			[[BrowserController currentBrowser] openViewerFromImages :[NSArray arrayWithObject: images] movie: NO viewer :self keyImagesOnly: displayOnlyKeyImages];
+			//[[BrowserController currentBrowser] openViewerFromImages :[NSArray arrayWithObject: images] movie: NO viewer :self keyImagesOnly: tag];
 		}
 		else
 		{
 			// ONLY KEY IMAGES
-			NSArray	*images = [browserWindow childrenArray: series];
+			NSArray	*images = [[BrowserController currentBrowser] childrenArray: series];
 			NSArray *keyImagesArray = [NSArray array];
 			
 			for( i = 0; i < [images count]; i++)
@@ -16096,8 +16095,8 @@ long i;
 			{
 				//[keyImageDisplay setTag: 1];
 				//[keyImageDisplay setTitle: NSLocalizedString(@"All images", nil)];
-				[browserWindow openViewerFromImages :[NSArray arrayWithObject: keyImagesArray] movie: NO viewer :self keyImagesOnly: displayOnlyKeyImages];
-				//[browserWindow openViewerFromImages :[NSArray arrayWithObject: keyImagesArray] movie: NO viewer :self keyImagesOnly: tag];
+				[[BrowserController currentBrowser] openViewerFromImages :[NSArray arrayWithObject: keyImagesArray] movie: NO viewer :self keyImagesOnly: displayOnlyKeyImages];
+				//[[BrowserController currentBrowser] openViewerFromImages :[NSArray arrayWithObject: keyImagesArray] movie: NO viewer :self keyImagesOnly: tag];
 			}
 		}
 	}
@@ -16189,12 +16188,12 @@ sourceRef);
 	{
 		[[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:[CommentsEditField stringValue] forKeyPath:@"series.comment"];
 		
-		if([browserWindow isCurrentDatabaseBonjour])
+		if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 		{
-			[browserWindow setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[CommentsEditField stringValue] forKey:@"series.comment"];
+			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[CommentsEditField stringValue] forKey:@"series.comment"];
 		}
 		
-		[[browserWindow databaseOutline] reloadData];
+		[[[BrowserController currentBrowser] databaseOutline] reloadData];
 		
 		if( [[CommentsEditField stringValue] isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"No Comments", nil)];
 		else [CommentsField setTitle: [CommentsEditField stringValue]];
@@ -16205,12 +16204,12 @@ sourceRef);
 	{
 		[[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:[CommentsEditField stringValue] forKeyPath:@"series.study.comment"];
 		
-		if([browserWindow isCurrentDatabaseBonjour])
+		if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 		{
-			[browserWindow setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[CommentsEditField stringValue] forKey:@"series.study.comment"];
+			[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[CommentsEditField stringValue] forKey:@"series.study.comment"];
 		}
 		
-		[[browserWindow databaseOutline] reloadData];
+		[[[BrowserController currentBrowser] databaseOutline] reloadData];
 		
 		//if( [[CommentsEditField stringValue] isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"No Comments", nil)];
 		//else [CommentsField setTitle: [CommentsEditField stringValue]];
@@ -16233,12 +16232,12 @@ sourceRef);
 {
 	[[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:[NSNumber numberWithInt:[[sender selectedItem] tag]] forKeyPath:@"series.study.stateText"];
 	
-	if([browserWindow isCurrentDatabaseBonjour])
+	if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 	{
-		[browserWindow setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithInt:[[sender selectedItem] tag]] forKey:@"series.study.stateText"];
+		[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithInt:[[sender selectedItem] tag]] forKey:@"series.study.stateText"];
 	}
 	
-	[[browserWindow databaseOutline] reloadData];
+	[[[BrowserController currentBrowser] databaseOutline] reloadData];
 	[self buildMatrixPreview: NO];
 }
 
@@ -16251,7 +16250,7 @@ sourceRef);
 		[self close];
 	}
 	else
-		[browserWindow showDatabase:self];
+		[[BrowserController currentBrowser] showDatabase:self];
 	
 }
 
@@ -16285,14 +16284,14 @@ sourceRef);
 
 - (IBAction)deleteReport:(id)sender;
 {
-	[browserWindow deleteReport:sender];
+	[[BrowserController currentBrowser] deleteReport:sender];
 	[self updateReportToolbarIcon:nil];
 }
 
 - (IBAction)generateReport:(id)sender;
 {
 	[self updateReportToolbarIcon:nil];
-	[browserWindow generateReport:sender];
+	[[BrowserController currentBrowser] generateReport:sender];
 	[self updateReportToolbarIcon:nil];
 }
 

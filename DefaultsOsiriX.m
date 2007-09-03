@@ -8,8 +8,7 @@
 
 #import "DefaultsOsiriX.h"
 #import "DCMNetServiceDelegate.h"
-
-extern		NSMutableArray			*preProcessPlugins;
+#import "PluginManager.h"
 
 static BOOL isHcugeCh = NO, isUnigeCh = NO, testIsHugDone = NO, testIsUniDone = NO;
 static NSString *hostName = @"";
@@ -87,9 +86,9 @@ static NSHost *currentHost = 0L;
 	{
 		int i;
 		
-		for( i = 0; i < [preProcessPlugins count]; i++)
+		for( i = 0; i < [[PluginManager preProcessPlugins] count]; i++)
 		{
-			id filter = [preProcessPlugins objectAtIndex:i];
+			id filter = [[PluginManager preProcessPlugins] objectAtIndex:i];
 			
 			if( [[filter className] isEqualToString:@"LavimAnonymize"]) return YES;
 		}

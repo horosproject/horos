@@ -59,7 +59,7 @@ MODIFICATION HISTORY
 #import "HTTPServer.h"
 #import <OsiriX/DCMNetworking.h>
 #import <OsiriX/DCM.h>
-//#import "NetworkListener.h"
+#import "PluginManager.h"
 #import "DCMTKQueryRetrieveSCP.h"
 
 #import "AppControllerDCMTKCategory.h"
@@ -76,31 +76,15 @@ MODIFICATION HISTORY
 
 ToolbarPanelController		*toolbarPanel[10] = {0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L};
 
-extern		NSMutableDictionary		*plugins;
-extern		short					syncro;
-extern		NSMutableArray			*preProcessPlugins;
-extern		BrowserController		*browserWindow;
-
 static		NSString				*currentHostName = 0L;
-
-			BOOL					SYNCSERIES = NO;
-
-NSMenu                  *presetsMenu,
-						*convMenu,
-						*clutMenu,
-						*OpacityMenu;
 
 NSThread				*mainThread;
 BOOL					NEEDTOREBUILD = NO;
 BOOL					COMPLETEREBUILD = NO;
 BOOL					USETOOLBARPANEL = NO;
 short					Altivec;
-
 AppController			*appController = 0L;
-
-//NetworkListener			*storeSCP = 0L;
 DCMTKQueryRetrieveSCP   *dcmtkQRSCP = 0L;
-
 NSLock					*PapyrusLock = 0L;			// Papyrus is NOT thread-safe
 
 
@@ -925,8 +909,8 @@ NSRect screenFrame()
 	
 	if (refreshDatabase)
 	{
-		[browserWindow setDBDate];
-		[browserWindow outlineViewRefresh];
+		[[BrowserController currentBrowser] setDBDate];
+		[[BrowserController currentBrowser] outlineViewRefresh];
 	}
 	
 	if (restartListener)
@@ -939,7 +923,7 @@ NSRect screenFrame()
 	}
 	
 	if (refreshColumns)	
-		[browserWindow refreshColumns];
+		[[BrowserController currentBrowser] refreshColumns];
 	
 	if( recomputePETBlending)
 		[DCMView computePETBlendingCLUT];
@@ -1346,26 +1330,26 @@ NSRect screenFrame()
 		}
 	}
 	
-	if( browserWindow != 0L)
+	if( [BrowserController currentBrowser] != 0L)
 	{
-		filesArray = [browserWindow copyFilesIntoDatabaseIfNeeded:filesArray];
+		filesArray = [[BrowserController currentBrowser] copyFilesIntoDatabaseIfNeeded:filesArray];
 		
-		NSArray	*newImages = [browserWindow addFilesToDatabase:filesArray];
-		[browserWindow outlineViewRefresh];
+		NSArray	*newImages = [[BrowserController currentBrowser] addFilesToDatabase:filesArray];
+		[[BrowserController currentBrowser] outlineViewRefresh];
 		
 		if( [newImages count] > 0)
 		{
 			NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
 				
-			[[browserWindow databaseOutline] selectRow: [[browserWindow databaseOutline] rowForItem: object] byExtendingSelection: NO];
-			[[browserWindow databaseOutline] scrollRowToVisible: [[browserWindow databaseOutline] selectedRow]];
+			[[[BrowserController currentBrowser] databaseOutline] selectRow: [[[BrowserController currentBrowser] databaseOutline] rowForItem: object] byExtendingSelection: NO];
+			[[[BrowserController currentBrowser] databaseOutline] scrollRowToVisible: [[[BrowserController currentBrowser] databaseOutline] selectedRow]];
 		}
 	}
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification
 {
-	if( [[browserWindow window] isMiniaturized] == YES || [[browserWindow window] isVisible] == NO)
+	if( [[[BrowserController currentBrowser] window] isMiniaturized] == YES || [[[BrowserController currentBrowser] window] isVisible] == NO)
 	{
 		NSArray				*winList = [NSApp windows];
 		long				i;
@@ -1375,7 +1359,7 @@ NSRect screenFrame()
 			if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]]) return;
 		}
 		
-		[[browserWindow window] makeKeyAndOrderFront: self];
+		[[[BrowserController currentBrowser] window] makeKeyAndOrderFront: self];
 	}
 }
 //
@@ -2703,7 +2687,7 @@ static BOOL initialized = NO;
 // Test ComPACS
 - (void) HUGVerifyComPACSPlugin
 {	
-	if( [plugins valueForKey:@"ComPACS"] == 0)
+	if( [[PluginManager plugins] valueForKey:@"ComPACS"] == 0)
 	{
 		int button = NSRunAlertPanel(@"OsiriX HUG PACS",
 									 @"Si vous voulez telecharger des images du PACS, vous devez installer le plugin ComPACS.",
