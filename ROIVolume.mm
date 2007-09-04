@@ -20,6 +20,7 @@
 	self = [super init];
 	if (self != nil)
 	{
+		NSLog(@"INit ROI Volume");
 		roiList = [[NSMutableArray alloc] initWithCapacity:0];
 		roiVolumeActor = 0L;
 		name = @"";
@@ -217,6 +218,7 @@
 		{
 			vtkDelaunay3D *delaunayTriangulator = 0L;
 			vtkPolyDataNormals *polyDataNormals = 0L;
+			vtkDecimatePro *isoDeci = 0L;
 			vtkDataSet*	output = 0L;
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"])
@@ -230,19 +232,39 @@
 				
 				output = (vtkDataSet*) delaunayTriangulator -> GetOutput();
 			}
+			
 			else
+			
+			{		
+			vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
+			power->SetInput(pointsDataSet);
+			BOOL displayMedialSurface = YES;
+			polyDataNormals = vtkPolyDataNormals::New();
+			polyDataNormals->ConsistencyOn();
+			polyDataNormals->AutoOrientNormalsOn();
+			if (displayMedialSurface) 
 			{
-				vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
-				power->SetInput( pointsDataSet);
-
-				polyDataNormals = vtkPolyDataNormals::New();
-				polyDataNormals->SetInput(  power->GetOutput());
-				polyDataNormals->ConsistencyOn();
-				polyDataNormals->AutoOrientNormalsOn();
-				power->Delete();
-				
-				output = (vtkDataSet*) polyDataNormals -> GetOutput();
+				power->Update();
+				vtkPolyData *medialSurface = power->GetMedialSurface();
+				isoDeci = vtkDecimatePro::New();
+				isoDeci->SetInput(medialSurface);
+				isoDeci->SetTargetReduction(0.9);
+				//isoDeci->SetPreserveTopology( TRUE);	
+				//isoDeci->SetFeatureAngle(60);
+				//isoDeci->SplittingOff();
+				//isoDeci->AccumulateErrorOn();
+				//isoDeci->SetMaximumError(0.3);
+				polyDataNormals->SetInput(isoDeci->GetOutput());
+				//polyDataNormals->SetInput(medialSurface);
 			}
+			else 
+			{
+				polyDataNormals->SetInput(power->GetOutput());
+			}
+			power->Delete();		
+			output = (vtkDataSet*) polyDataNormals -> GetOutput();
+		}
+
 			
 			vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
 				tmapper -> SetInput( output);
@@ -250,6 +272,7 @@
 			
 			if( polyDataNormals) polyDataNormals->Delete();
 			if( delaunayTriangulator) delaunayTriangulator->Delete();
+			if (isoDeci) isoDeci->Delete();
 
 			vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
 				xform->SetInput(tmapper->GetOutput());

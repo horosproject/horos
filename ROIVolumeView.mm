@@ -245,6 +245,7 @@
 {
     if ( self = [super initWithFrame:frame] )
     {
+		NSLog(@"init ROIVolumeView");
 		NSNotificationCenter *nc;
 		nc = [NSNotificationCenter defaultCenter];
 		[nc addObserver: self
@@ -274,7 +275,7 @@
 {
 	short   error = 0;
 	long	i;
-	
+	NSLog(@"Set Pixel Source ROIVolumeView");
 	aRenderer = [self renderer];
 	
 	vtkPoints *points = vtkPoints::New();
@@ -291,6 +292,7 @@
 
 	vtkDelaunay3D *delaunayTriangulator = 0L;
 	vtkPolyDataNormals *polyDataNormals = 0L;
+	vtkDecimatePro *isoDeci = 0L;
 	vtkDataSet*	output = 0L;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"])
@@ -305,16 +307,33 @@
 		output = (vtkDataSet*) delaunayTriangulator -> GetOutput();
 	}
 	else
-	{
+	{		
 		vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
 		power->SetInput( profile);
-
+		BOOL displayMedialSurface = YES;
 		polyDataNormals = vtkPolyDataNormals::New();
-		polyDataNormals->SetInput(  power->GetOutput());
 		polyDataNormals->ConsistencyOn();
 		polyDataNormals->AutoOrientNormalsOn();
-		power->Delete();
-		
+		if (displayMedialSurface) 
+		{
+			power->Update();
+			vtkPolyData *medialSurface = power->GetMedialSurface();
+			isoDeci = vtkDecimatePro::New();
+			isoDeci->SetInput(medialSurface);
+			isoDeci->SetTargetReduction(0.9);
+			//isoDeci->SetPreserveTopology( TRUE);	
+			//isoDeci->SetFeatureAngle(60);
+			//isoDeci->SplittingOff();
+			//isoDeci->AccumulateErrorOn();
+			//isoDeci->SetMaximumError(0.3);
+			polyDataNormals->SetInput(isoDeci->GetOutput());
+			//polyDataNormals->SetInput(medialSurface);
+		}
+		else 
+		{
+			polyDataNormals->SetInput(power->GetOutput());
+		}
+		power->Delete();		
 		output = (vtkDataSet*) polyDataNormals -> GetOutput();
 	}
 	
@@ -324,6 +343,7 @@
 	
 	if( polyDataNormals) polyDataNormals->Delete();
 	if( delaunayTriangulator) delaunayTriangulator->Delete();
+	if (isoDeci) isoDeci->Delete();
 
 	vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
 		xform->SetInput(tmapper->GetOutput());
