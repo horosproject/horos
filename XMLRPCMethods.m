@@ -14,6 +14,7 @@
 
 #import "XMLRPCMethods.h"
 #import "BrowserController.h"
+#import "ViewerController.h"
 
 // HTTP SERVER
 //
@@ -88,8 +89,6 @@
 			NSMutableDictionary	*httpServerMessage = [NSMutableDictionary dictionaryWithObjectsAndKeys: selName, @"MethodName", doc, @"NSXMLDocument", [NSNumber numberWithBool: NO], @"Processed", 0L];
 			
 			// ********************************************
-			// DBWindowFind
-			//
 			// Method: DBWindowFind
 			//
 			// Parameters:
@@ -104,36 +103,69 @@
 
 			if ([selName isEqual:@"DBWindowFind"])
 			{
-				NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
-				NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
-				if (3 != [keys count] || 3 != [values count])
+				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 				{
-					CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
-					[mess setResponse:response];
-					CFRelease(response);
-					return;
+					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
+					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
+					if (3 != [keys count] || 3 != [values count])
+					{
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+						[mess setResponse:response];
+						CFRelease(response);
+						return;
+					}
+					
+					int i;
+					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
+					for( i = 0; i < [keys count]; i++)
+						[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
+									
+					// *****
+					
+					NSNumber *ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[paramDict valueForKey:@"request"]
+																									table: [paramDict valueForKey:@"table"]
+																									execute: [paramDict valueForKey:@"execute"]]];
+					
+					// *****
+					
+					NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
+					NSError *error = nil;
+					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
+					[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
 				}
-				
-				int i;
-				NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
-				for( i = 0; i < [keys count]; i++)
-					[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
-								
-				// *****
-				
-				NSNumber *ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[paramDict valueForKey:@"request"]
-																								table: [paramDict valueForKey:@"table"]
-																								execute: [paramDict valueForKey:@"execute"]]];
-				
-				// *****
-				
-				NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
-				NSError *error = nil;
-				NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-				
-				[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
-				[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
 			}
+
+			// ********************************************
+			// Method: closeAllWindows
+			//
+			// Parameters: No Parameters
+			//
+			// Response: {error: "0"}
+
+			if( [[httpServerMessage valueForKey: @"MethodName"] isEqualToString: @"closeAllWindows"])
+			{
+				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+				{
+					NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
+					int i;
+					
+					for( i = 0; i < [viewersList count] ; i++)
+					{
+						[[[viewersList objectAtIndex: i] window] close];
+					}
+					
+					// Done, we can send the response to the sender
+					
+					NSString *xml = @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>0</value></member></struct></value></param></params></methodResponse>";		// Simple answer, no errors
+					NSError *error = nil;
+					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+					[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+				}
+			}
+			
 			
 			// Send the XML-RPC as a notification : give a chance to plugin to answer
 			
