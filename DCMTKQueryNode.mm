@@ -279,12 +279,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	return self;
 }
 
-/*
-- (void) finalize {
-	// nothing to do . Don't call
-}
-*/
-
 - (void)dealloc{
 	[_children release];
 	[_uid release];

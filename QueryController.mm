@@ -317,6 +317,16 @@ static char *GetPrivateIP()
 	[self query: self];
 }
 
+- (void) querySelectedPatient: (id) sender
+{
+	id   item = [outlineView itemAtRow: [outlineView selectedRow]];
+	
+	if( item && [item isMemberOfClass:[DCMTKStudyQueryNode class]])
+	{
+		[self queryPatientID: [item valueForKey:@"patientID"]];
+	}
+}
+
 - (BOOL) array: uidArray containsObject: (NSString*) uid
 {
 	int x;
@@ -1132,6 +1142,20 @@ static char *GetPrivateIP()
 	[outlineView setDoubleAction:@selector(retrieveAndViewClick:)];
 	ImageAndTextCell *cellName = [[[ImageAndTextCell alloc] init] autorelease];
 	[[outlineView tableColumnWithIdentifier:@"name"] setDataCell:cellName];
+	
+	NSMenu *menu = [[[NSMenu alloc] initWithTitle:@"Tools"] autorelease];
+	NSMenuItem *item;
+	
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Retrieve the images", 0L) action: @selector( retrieve:) keyEquivalent:@""] autorelease];
+	[item setTarget: self];		[menu addItem: item];
+
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Retrieve and display the images", 0L) action: @selector( retrieveAndView:) keyEquivalent:@""] autorelease];
+	[item setTarget: self];		[menu addItem: item];
+	
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query all studies of this patient", 0L) action: @selector( querySelectedPatient:) keyEquivalent:@""] autorelease];
+	[item setTarget: self];		[menu addItem: item];
+	
+	[outlineView setMenu: menu];
 	
 	//set up Query Keys
 	currentQueryKey = PatientName;
