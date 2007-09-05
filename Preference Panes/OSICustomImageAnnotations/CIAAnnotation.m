@@ -120,7 +120,7 @@
 	NSAttributedString *contentText = [[[NSAttributedString alloc] initWithString:title attributes:attrsDictionary] autorelease];
 	
 	[contentText drawInRect:NSMakeRect(rect.origin.x, rect.origin.y-1.0, rect.size.width, rect.size.height)];
-	//[contentText drawInRect:rect];
+	//[contentText drawInRect:rect];	
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent

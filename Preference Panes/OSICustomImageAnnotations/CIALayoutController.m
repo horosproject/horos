@@ -713,13 +713,23 @@
 {
 	NSManagedObjectModel *currentModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"OsiriXDB_DataModel.mom"]]];
 	
-	NSArray *studies = [[[[currentModel entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
-	NSArray *series = [[[[currentModel entitiesByName] objectForKey:@"Series"] attributesByName] allKeys];
-	NSArray *images = [[[[currentModel entitiesByName] objectForKey:@"Image"] attributesByName] allKeys];
+	NSMutableDictionary *studyAttributes = [NSMutableDictionary dictionaryWithDictionary:[[[currentModel entitiesByName] objectForKey:@"Study"] attributesByName]];
+	[studyAttributes removeObjectForKey:@"windowsState"];	
+	NSArray *studies = [studyAttributes allKeys];
+	NSArray *sortedStudies = [studies sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+	
+	NSMutableDictionary *seriesAttributes = [NSMutableDictionary dictionaryWithDictionary:[[[currentModel entitiesByName] objectForKey:@"Series"] attributesByName]];
+	[seriesAttributes removeObjectForKey:@"thumbnail"];
+	NSArray *series = [seriesAttributes allKeys];
+	NSArray *sortedSeries = [series sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
-	[databaseStudyFieldsArray addObjectsFromArray:studies];
-	[databaseSeriesFieldsArray addObjectsFromArray:series];
-	[databaseImageFieldsArray addObjectsFromArray:images];
+	NSMutableDictionary *imageAttributes = [NSMutableDictionary dictionaryWithDictionary:[[[currentModel entitiesByName] objectForKey:@"Image"] attributesByName]];
+	NSArray *images = [imageAttributes allKeys];
+	NSArray *sortedImages = [images sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+
+	[databaseStudyFieldsArray addObjectsFromArray:sortedStudies];
+	[databaseSeriesFieldsArray addObjectsFromArray:sortedSeries];
+	[databaseImageFieldsArray addObjectsFromArray:sortedImages];
 }
 
 - (NSMutableArray*)specialFieldsTitles;
@@ -741,52 +751,85 @@
 // auto completion
 - (NSArray *)tokenField:(NSTokenField *)tokenField completionsForSubstring:(NSString *)substring indexOfToken:(int)tokenIndex indexOfSelectedItem:(int *)selectedIndex
 {
-	int i;
+	int i, j;
 	NSMutableArray *resultArray = [NSMutableArray array];
-	NSRange comparisonRange = NSMakeRange(0, [substring length]);
+	int substringLength = [substring length];
+	NSRange comparisonRange = NSMakeRange(0, substringLength);
 	
 	if([tokenField isEqualTo:[prefPane contentTokenField]])
 	{
 		[resultArray addObject:substring];
 		
-		NSArray *titles = DICOMFieldsArray;
-		NSString *currentTitle;
-
-		for (i=0; i<[titles count]; i++)
-		{
-			currentTitle = [[titles objectAtIndex:i] name];
-			if([currentTitle compare:substring options:NSCaseInsensitiveSearch range:comparisonRange]==NSOrderedSame)
-				[resultArray addObject:[NSString stringWithFormat:@"DICOM_%@", currentTitle]];
-		}
+		NSArray *titles;
+		NSString *currentTitle;	
 		
 		titles = databaseStudyFieldsArray;
 		for (i=0; i<[titles count]; i++)
 		{
 			currentTitle = [titles objectAtIndex:i];
-			if([currentTitle compare:substring options:NSCaseInsensitiveSearch range:comparisonRange]==NSOrderedSame)
-				[resultArray addObject:[NSString stringWithFormat:@"DB_study.%@", currentTitle]];
+			if([currentTitle length]>=substringLength)
+			{
+				for (j=0; j<[currentTitle length]-substringLength+1; j++)
+				{
+					if([[substring lowercaseString] isEqualToString:[[currentTitle substringWithRange:NSMakeRange(j, substringLength)] lowercaseString]])
+						[resultArray addObject:[NSString stringWithFormat:@"DB_study.%@", currentTitle]];
+				}
+			}
 		}
 		titles = databaseSeriesFieldsArray;
 		for (i=0; i<[titles count]; i++)
 		{
 			currentTitle = [titles objectAtIndex:i];
-			if([currentTitle compare:substring options:NSCaseInsensitiveSearch range:comparisonRange]==NSOrderedSame)
-				[resultArray addObject:[NSString stringWithFormat:@"DB_series.%@", currentTitle]];
+			if([currentTitle length]>=substringLength)
+			{
+				for (j=0; j<[currentTitle length]-substringLength+1; j++)
+				{
+					if([[substring lowercaseString] isEqualToString:[[currentTitle substringWithRange:NSMakeRange(j, substringLength)] lowercaseString]])
+						[resultArray addObject:[NSString stringWithFormat:@"DB_series.%@", currentTitle]];
+				}
+			}
 		}
 		titles = databaseImageFieldsArray;
 		for (i=0; i<[titles count]; i++)
 		{
 			currentTitle = [titles objectAtIndex:i];
-			if([currentTitle compare:substring options:NSCaseInsensitiveSearch range:comparisonRange]==NSOrderedSame)
-				[resultArray addObject:[NSString stringWithFormat:@"DB_image.%@", currentTitle]];
+			if([currentTitle length]>=substringLength)
+			{
+				for (j=0; j<[currentTitle length]-substringLength+1; j++)
+				{
+					if([[substring lowercaseString] isEqualToString:[[currentTitle substringWithRange:NSMakeRange(j, substringLength)] lowercaseString]])
+						[resultArray addObject:[NSString stringWithFormat:@"DB_image.%@", currentTitle]];
+				}
+			}
 		}
 		
 		titles = [[prefPane specialFieldsPopUpButton] itemTitles];
 		for (i=0; i<[[[prefPane specialFieldsPopUpButton] itemTitles] count]; i++)
 		{
 			currentTitle = [titles objectAtIndex:i];
-			if([currentTitle compare:substring options:NSCaseInsensitiveSearch range:comparisonRange]==NSOrderedSame)
-				[resultArray addObject:[NSString stringWithFormat:@"Special_%@", currentTitle]];
+			if([currentTitle length]>=substringLength)
+			{
+				for (j=0; j<[currentTitle length]-substringLength+1; j++)
+				{
+					if([[substring lowercaseString] isEqualToString:[[currentTitle substringWithRange:NSMakeRange(j, substringLength)] lowercaseString]])
+						[resultArray addObject:[NSString stringWithFormat:@"Special_%@", currentTitle]];
+				}
+			}
+
+		}
+		
+		titles = DICOMFieldsArray;
+		for (i=0; i<[titles count]; i++)
+		{
+			currentTitle = [[titles objectAtIndex:i] name];
+			if([currentTitle length]>=substringLength)
+			{
+				for (j=0; j<[currentTitle length]-substringLength+1; j++)
+				{
+					if([[substring lowercaseString] isEqualToString:[[currentTitle substringWithRange:NSMakeRange(j, substringLength)] lowercaseString]])
+						[resultArray addObject:[NSString stringWithFormat:@"DICOM_%@", currentTitle]];
+				}
+			}
 		}
 	}
 	else if([tokenField isEqualTo:[prefPane dicomNameTokenField]])
