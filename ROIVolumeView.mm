@@ -30,6 +30,7 @@
 
 -(void) coView:(id) sender
 {
+	aCamera = aRenderer->GetActiveCamera();
 	float distance = aCamera->GetDistance();
 	float pp = aCamera->GetParallelScale();
 
@@ -281,7 +282,6 @@
 - (short) renderVolume {
 	short   error = 0;
 	long	i;
-	NSLog(@"Set Pixel Source ROIVolumeView");
 	aRenderer = [self renderer];
 	
 	vtkPoints *points = vtkPoints::New();
@@ -291,7 +291,7 @@
 		NSArray	*pt3D = [pts objectAtIndex: i];
 		points->InsertPoint( i, [[pt3D objectAtIndex: 0] floatValue], [[pt3D objectAtIndex: 1] floatValue], [[pt3D objectAtIndex: 2] floatValue]);
 	}
-
+	
 	vtkPolyData *profile = vtkPolyData::New();
     profile->SetPoints( points);
 	points->Delete();
@@ -300,7 +300,7 @@
 	vtkPolyDataNormals *polyDataNormals = 0L;
 	vtkDecimatePro *isoDeci = 0L;
 	vtkDataSet*	output = 0L;
-	
+
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"])
 	{
 		delaunayTriangulator = vtkDelaunay3D::New();
@@ -313,7 +313,8 @@
 		output = (vtkDataSet*) delaunayTriangulator -> GetOutput();
 	}
 	else
-	{		
+	{	
+		
 		vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
 		power->SetInput( profile);
 		BOOL displayMedialSurface = NO;
@@ -327,7 +328,7 @@
 			isoDeci = vtkDecimatePro::New();
 			isoDeci->SetInput(medialSurface);
 			isoDeci->SetTargetReduction(0.9);
-			//isoDeci->SetPreserveTopology( TRUE);	
+			isoDeci->SetPreserveTopology( TRUE);	
 			//isoDeci->SetFeatureAngle(60);
 			//isoDeci->SplittingOff();
 			//isoDeci->AccumulateErrorOn();
@@ -361,11 +362,13 @@
 	map->ScalarVisibilityOff();
 	
 	map->Update();
-	
-	roiVolumeActor = vtkActor::New();
+	if (!roiVolumeActor) {
+		roiVolumeActor = vtkActor::New();
+		roiVolumeActor->GetProperty()->FrontfaceCullingOn();
+		roiVolumeActor->GetProperty()->BackfaceCullingOn();
+	}
 	roiVolumeActor->SetMapper(map);
-	roiVolumeActor->GetProperty()->FrontfaceCullingOn();
-	roiVolumeActor->GetProperty()->BackfaceCullingOn();
+
 
 	map->Delete();
 	
@@ -378,9 +381,12 @@
 	vtkTIFFReader *bmpread = vtkTIFFReader::New();
 	   bmpread->SetFileName( [location UTF8String]);
 
-	texture = vtkTexture::New();
-	   texture->SetInput( bmpread->GetOutput());
-	   texture->InterpolateOn();
+	if (!texture) {
+		texture = vtkTexture::New();
+		texture->InterpolateOn();
+	}
+	texture->SetInput( bmpread->GetOutput());
+	   
 	bmpread->Delete();
 
 	roiVolumeActor->SetTexture( texture);
@@ -515,6 +521,7 @@
 //	roiVolumeActor->SetTexture(texture);
 	
 	// The balls
+	
 	vtkSphereSource *ball = vtkSphereSource::New();
 		ball->SetRadius(0.3);
 		ball->SetThetaResolution( 12);
@@ -529,13 +536,16 @@
 		mapBalls->SetInput( balls->GetOutput());
 	balls->Delete();
 	
-	ballActor = vtkActor::New();
-		ballActor->SetMapper( mapBalls);
+	if(!ballActor) {
+		ballActor = vtkActor::New();
 		ballActor->GetProperty()->SetSpecular( 0.5);
 		ballActor->GetProperty()->SetSpecularPower( 20);
 		ballActor->GetProperty()->SetAmbient( 0.2);
 		ballActor->GetProperty()->SetDiffuse( 0.8);
 		ballActor->GetProperty()->SetOpacity( 0.8);
+	}
+	ballActor->SetMapper( mapBalls);
+
 	mapBalls->Delete();
 	
 	profile->Delete();
@@ -574,38 +584,41 @@
 	cube->TextEdgesOff();
 	cube->CubeOn();
 	cube->FaceTextOn();
-
-	orientationWidget = vtkOrientationMarkerWidget::New();
-	orientationWidget->SetOrientationMarker( cube );
-	orientationWidget->SetInteractor( [self getInteractor] );
-	orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
-	orientationWidget->SetEnabled( 1 );
-	orientationWidget->InteractiveOff();
+	if (!orientationWidget) {
+		orientationWidget = vtkOrientationMarkerWidget::New();	
+		orientationWidget->SetInteractor( [self getInteractor] );
+		orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
+		orientationWidget->SetEnabled( 1 );
+		orientationWidget->InteractiveOff();
+		orientationWidget->SetOrientationMarker( cube );
+	}
+	
 	cube->Delete();
 
 	orientationWidget->On();
 	
 	// ***********************
-	
-    aCamera = vtkCamera::New();
-	aCamera->Zoom(1.5);
-
-	aRenderer->SetActiveCamera(aCamera);
-	
-	aCamera->SetFocalPoint (0, 0, 0);
-	aCamera->SetPosition (0, 0, -1);
-	aCamera->ComputeViewPlaneNormal();
-	aCamera->SetViewUp(0, -1, 0);
-	aCamera->OrthogonalizeViewUp();
-	aCamera->SetParallelProjection( false);
-	aCamera->SetViewAngle( 60);
-
-	aRenderer->ResetCamera();
-	
-	aCamera->Delete();
+	if (aCamera) aCamera->Delete();
+	//aCamera = aRenderer->GetActiveCamera();
+	//if (!aCamera) {
+		aCamera = vtkCamera::New();
+		aCamera->Zoom(1.5);
+		// Crashes OsiriX if trying to reload Volume
+		aRenderer->SetActiveCamera(aCamera);
+		
+		aCamera->SetFocalPoint (0, 0, 0);
+		aCamera->SetPosition (0, 0, -1);
+		aCamera->ComputeViewPlaneNormal();
+		aCamera->SetViewUp(0, -1, 0);
+		aCamera->OrthogonalizeViewUp();
+		aCamera->SetParallelProjection( false);
+		aCamera->SetViewAngle( 60);
+		aRenderer->ResetCamera();		
+		aCamera->Delete();
+	//}
 	
 	[self coView: self];
-	
+
 	return error;
 }
 
@@ -652,5 +665,9 @@
 	else roiVolumeActor->SetTexture( 0L);
 	
 	[self setNeedsDisplay: YES];
+}
+
+- (IBAction)reload:(id)sender{
+	[self renderVolume];
 }
 @end
