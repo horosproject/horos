@@ -267,19 +267,25 @@
 	ballActor->Delete();
 	texture->Delete();
 	orientationWidget->Delete();
-	
+	[_points3D release];
     [super dealloc];
 }
 
 - (short) setPixSource:(NSMutableArray*)pts
 {
+	[_points3D release];
+	_points3D = [pts copy];
+	return [self renderVolume];
+}
+
+- (short) renderVolume {
 	short   error = 0;
 	long	i;
 	NSLog(@"Set Pixel Source ROIVolumeView");
 	aRenderer = [self renderer];
 	
 	vtkPoints *points = vtkPoints::New();
-	
+	NSArray *pts = _points3D;
 	for( i = 0; i < [pts count]; i++)
 	{
 		NSArray	*pt3D = [pts objectAtIndex: i];
@@ -310,7 +316,7 @@
 	{		
 		vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
 		power->SetInput( profile);
-		BOOL displayMedialSurface = YES;
+		BOOL displayMedialSurface = NO;
 		polyDataNormals = vtkPolyDataNormals::New();
 		polyDataNormals->ConsistencyOn();
 		polyDataNormals->AutoOrientNormalsOn();
