@@ -1577,36 +1577,36 @@ static BOOL initialized = NO;
 				
 				// Endoscopy LUT
 				NSMutableDictionary *cluts = [[[NSUserDefaults standardUserDefaults] objectForKey:@"CLUT"] mutableCopy];
+				// fix bad CLUT in previous versions
 				NSDictionary *clut = [cluts objectForKey:@"Endoscopy"];
-				if (!clut){
+				if (!clut || [[[clut objectForKey:@"Red"] objectAtIndex:0] intValue] != 240){
 					NSMutableDictionary *aCLUTFilter = [NSMutableDictionary dictionary];
 					NSMutableArray		*rArray = [NSMutableArray arrayWithCapacity:0];
 					NSMutableArray		*gArray = [NSMutableArray arrayWithCapacity:0];
 					NSMutableArray		*bArray = [NSMutableArray arrayWithCapacity:0];
 					for( i = 0; i < 256; i++)  {
-						float ratio = i/255.0;
-						[rArray addObject: [NSNumber numberWithLong:(255 * (0.9 + ratio))]];
-						[gArray addObject: [NSNumber numberWithLong:(255 * (0.7 - (0.2 * ratio)))]];
-						[bArray addObject: [NSNumber numberWithLong:(255 * (0.8 - (0.3 * ratio)))]];
+						[bArray addObject: [NSNumber numberWithLong:(195 - (i * 0.26))]];
+						[gArray addObject: [NSNumber numberWithLong:(187 - (i *0.26))]];
+						[rArray addObject: [NSNumber numberWithLong:(240 + (i * 0.02))]];
 					}
-					[aCLUTFilter setObject:rArray forKey:@"Red"];
-					[aCLUTFilter setObject:gArray forKey:@"Green"];
-					[aCLUTFilter setObject:bArray forKey:@"Blue"];
-					
-					// Points & Colors
-					NSMutableArray *colors = [NSMutableArray arrayWithCapacity:0], *points = [NSMutableArray arrayWithCapacity:0];
-					[points addObject:[NSNumber numberWithLong: 0]];
-					[points addObject:[NSNumber numberWithLong: 255]];
-					
-					[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 0.9], [NSNumber numberWithFloat: 0.7], [NSNumber numberWithFloat: 0.8], 0L]];
-					[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1.0], [NSNumber numberWithFloat: 0.5], [NSNumber numberWithFloat: 0.5], 0L]];
+				[aCLUTFilter setObject:rArray forKey:@"Red"];
+				[aCLUTFilter setObject:gArray forKey:@"Green"];
+				[aCLUTFilter setObject:bArray forKey:@"Blue"];
+		
+				// Points & Colors
+				NSMutableArray *colors = [NSMutableArray arrayWithCapacity:0], *points = [NSMutableArray arrayWithCapacity:0];
+				[points addObject:[NSNumber numberWithLong: 0]];
+				[points addObject:[NSNumber numberWithLong: 255]];
+		
+				[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], [NSNumber numberWithFloat: 1], 0L]];
+				[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], [NSNumber numberWithFloat: 0], 0L]];
 
+		
+				[aCLUTFilter setObject:colors forKey:@"Colors"];
+				[aCLUTFilter setObject:points forKey:@"Points"];
 					
-					[aCLUTFilter setObject:colors forKey:@"Colors"];
-					[aCLUTFilter setObject:points forKey:@"Points"];
-					
-					[cluts setObject:aCLUTFilter forKey:@"Endoscopy"];
-					[[NSUserDefaults standardUserDefaults] setObject:cluts forKey:@"CLUT"];
+				[cluts setObject:aCLUTFilter forKey:@"Endoscopy"];
+				[[NSUserDefaults standardUserDefaults] setObject:cluts forKey:@"CLUT"];
 				}
 				[cluts release];
 				
