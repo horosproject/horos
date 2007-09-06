@@ -9,6 +9,7 @@
 #import "printView.h"
 #import "DCMView.h"
 #import "DCMPix.h"
+#import "BrowserController.h"
 
 @implementation printView
 
@@ -47,10 +48,6 @@
 	[self lockFocus];
 	
 	NSManagedObject	*file = [[viewer fileList] objectAtIndex: 0];
-	
-	
-	NSString *shortDateString = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString];
-	NSDictionary *localeDictionnary = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
 	NSString *string2draw = @"";
 	headerHeight = 13; //leaves in all cases a white line at the end of the header
 	
@@ -70,7 +67,7 @@
 		string2draw = [string2draw stringByAppendingFormat:@"Patient: "];
 		if([file valueForKeyPath:@"series.study.name"]) string2draw = [string2draw stringByAppendingFormat:@"%@", [file valueForKeyPath:@"series.study.name"]];
 		if([file valueForKeyPath:@"series.study.patientID"]) string2draw = [string2draw stringByAppendingFormat:@"  [%@]", [file valueForKeyPath:@"series.study.patientID"]];
-		if( [file valueForKeyPath:@"series.study.dateOfBirth"]) string2draw = [string2draw stringByAppendingFormat:@"  %@", [[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary]];
+		if( [file valueForKeyPath:@"series.study.dateOfBirth"]) string2draw = [string2draw stringByAppendingFormat:@"  %@", [BrowserController DBDateOfBirthFormat: [file valueForKeyPath:@"series.study.dateOfBirth"]]];
 		string2draw = [string2draw stringByAppendingFormat:@"\r"];
 	}	
 	
@@ -83,7 +80,7 @@
 		NSCalendarDate  *date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[file valueForKey:@"date"] timeIntervalSinceReferenceDate]];
 		if( date && [date yearOfCommonEra] != 3000)
 		{
-			NSString *tempString = [date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSShortDateFormatString]];
+			NSString *tempString = [BrowserController DBDateOfBirthFormat: date];
 			string2draw = [string2draw stringByAppendingFormat:@"%@", tempString];
 		
 			DCMPix *curDCM = [[viewer pixList] objectAtIndex: 0];
@@ -91,7 +88,7 @@
 			if( [curDCM acquisitionTime]) date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[curDCM acquisitionTime] timeIntervalSinceReferenceDate]];
 			if( date && [date yearOfCommonEra] != 3000)
 			{
-				tempString = [date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSTimeFormatString]];
+				tempString = [BrowserController TimeFormat: date];
 				string2draw = [string2draw stringByAppendingFormat:@" - %@    ", tempString];
 			}
 		}

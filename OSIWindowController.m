@@ -45,17 +45,17 @@
 
 - (void) addToUndoQueue:(NSString*) what
 {
-	NSLog( @"OSIWindowController addToUndoQueue");
+	NSLog( @"OSIWindowController addToUndoQueue CALL SUPER ??");
 }
 
 - (IBAction) redo:(id) sender
 {
-	NSLog( @"OSIWindowController redo");
+	NSLog( @"OSIWindowController redo CALL SUPER ??");
 }
 
 - (IBAction) undo:(id) sender
 {
-	NSLog( @"OSIWindowController undo");
+	NSLog( @"OSIWindowController undo CALL SUPER ??");
 }
 
 - (NSMutableArray*) pixList{
@@ -69,6 +69,11 @@
 
 - (int)blendingType{
 	return _blendingType;
+}
+
+- (void) applyShading:(id) sender
+{
+	NSLog( @"OSIWindowController applyShading - CALL SUPER ??");
 }
 
 #pragma mark-

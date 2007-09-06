@@ -17,7 +17,7 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-
+#import "OSIWindowController.h"
 
 @interface ShadingArrayController : NSArrayController {
 	BOOL				_enableEditing;
@@ -26,6 +26,6 @@
 
 - (BOOL)enableEditing;
 - (void)setEnableEditing:(BOOL)enable;
-- (void)setWindowController:(NSWindowController*) ctrl;
+- (void)setWindowController:(OSIWindowController*) ctrl;
 
 @end
