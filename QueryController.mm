@@ -304,6 +304,8 @@ static char *GetPrivateIP()
 
 - (void) queryPatientID:(NSString*) ID
 {
+	NSInteger PatientModeMatrixSelected = [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]];
+	
 	[PatientModeMatrix selectTabViewItemAtIndex: 1];	// PatientID search
 	
 	[dateFilterMatrix selectCellWithTag: 0];
@@ -315,6 +317,8 @@ static char *GetPrivateIP()
 	[searchFieldID setStringValue: ID];
 	
 	[self query: self];
+	
+	[PatientModeMatrix selectTabViewItemAtIndex: PatientModeMatrixSelected];
 }
 
 - (void) querySelectedPatient: (id) sender
@@ -325,6 +329,7 @@ static char *GetPrivateIP()
 	{
 		[self queryPatientID: [item valueForKey:@"patientID"]];
 	}
+	else NSRunCriticalAlertPanel( NSLocalizedString(@"No Study Selected", nil), NSLocalizedString(@"Select a study to query all studies of this patient.", nil), NSLocalizedString(@"OK", nil), nil, nil) ;
 }
 
 - (BOOL) array: uidArray containsObject: (NSString*) uid
@@ -1279,12 +1284,16 @@ static char *GetPrivateIP()
 			[self query: sender];
 		break;
 		
-		case 1:		// Retrieve
+		case 2:		// Retrieve
 			[self retrieve: sender];
 		break;
 		
-		case 2:		// Verify
+		case 3:		// Verify
 			[self verify: sender];
+		break;
+		
+		case 1:		// Query Selected Patient
+			[self querySelectedPatient: self];
 		break;
 	}
 }
