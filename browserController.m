@@ -13722,7 +13722,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction) searchForCurrentPatient:(id) sender
 {
-	if( [databaseOutline selectedRow])
+	if( [databaseOutline selectedRow] != -1)
 	{
 		NSManagedObject   *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 	
