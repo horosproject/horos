@@ -28,6 +28,8 @@
 
 @implementation ROIVolumeView
 
+
+
 -(void) coView:(id) sender
 {
 	aCamera = aRenderer->GetActiveCamera();
@@ -253,6 +255,7 @@
 			   selector: @selector(CloseViewerNotification:)
 				   name: @"CloseViewerNotification"
 				 object: nil];
+		computeMedialSurface = NO;
     }
     
     return self;
@@ -317,11 +320,11 @@
 		
 		vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
 		power->SetInput( profile);
-		BOOL displayMedialSurface = NO;
+		//BOOL displayMedialSurface = NO;
 		polyDataNormals = vtkPolyDataNormals::New();
 		polyDataNormals->ConsistencyOn();
 		polyDataNormals->AutoOrientNormalsOn();
-		if (displayMedialSurface) 
+		if (computeMedialSurface) 
 		{
 			power->Update();
 			vtkPolyData *medialSurface = power->GetMedialSurface();
@@ -598,14 +601,12 @@
 	orientationWidget->On();
 	
 	// ***********************
-	if (aCamera) aCamera->Delete();
-	//aCamera = aRenderer->GetActiveCamera();
-	//if (!aCamera) {
-		aCamera = vtkCamera::New();
+	
+	aCamera = aRenderer->GetActiveCamera();
+		//aCamera = vtkCamera::New();
 		aCamera->Zoom(1.5);
 		// Crashes OsiriX if trying to reload Volume
-		aRenderer->SetActiveCamera(aCamera);
-		
+		//aRenderer->SetActiveCamera(aCamera);
 		aCamera->SetFocalPoint (0, 0, 0);
 		aCamera->SetPosition (0, 0, -1);
 		aCamera->ComputeViewPlaneNormal();
@@ -614,8 +615,7 @@
 		aCamera->SetParallelProjection( false);
 		aCamera->SetViewAngle( 60);
 		aRenderer->ResetCamera();		
-		aCamera->Delete();
-	//}
+
 	
 	[self coView: self];
 
