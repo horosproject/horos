@@ -306,6 +306,7 @@
 	vtkDelaunay3D *delaunayTriangulator = 0L;
 	vtkPolyDataNormals *polyDataNormals = 0L;
 	vtkDecimatePro *isoDeci = 0L;
+	vtkSmoothPolyDataFilter * pSmooth = 0L;
 	vtkDataSet*	output = 0L;
 
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"])
@@ -324,24 +325,39 @@
 		
 		vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
 		power->SetInput( profile);
-		//BOOL displayMedialSurface = NO;
 		polyDataNormals = vtkPolyDataNormals::New();
 		polyDataNormals->ConsistencyOn();
 		polyDataNormals->AutoOrientNormalsOn();
-		if (computeMedialSurface) 
+		//if (computeMedialSurface) 
+		if (NO)
 		{
+			vtkPolyData *medialSurface;
+			medialSurface = power->GetMedialSurface();
 			power->Update();
-			vtkPolyData *medialSurface = power->GetMedialSurface();
+			int i;
 			isoDeci = vtkDecimatePro::New();
 			isoDeci->SetInput(medialSurface);
 			isoDeci->SetTargetReduction(0.9);
-			isoDeci->SetPreserveTopology( TRUE);	
-			//isoDeci->SetFeatureAngle(60);
-			//isoDeci->SplittingOff();
-			//isoDeci->AccumulateErrorOn();
-			//isoDeci->SetMaximumError(0.3);
 			polyDataNormals->SetInput(isoDeci->GetOutput());
 			//polyDataNormals->SetInput(medialSurface);
+			/*
+			isoDeci->Update();
+			vtkPolyData *data = isoDeci->GetOutput();
+			vtkPoints *medialPoints = data->GetPoints();
+			int nPoints = data->GetNumberOfPoints();
+			vtkCellLinks *links = vtkCellLinks::New();
+			links->BuildLinks(data);
+			for (i = 0; i < nPoints; i++) {				
+				unsigned short nLinks = links->GetNcells(i);
+				vtkIdType *cells = links->GetCells(i);
+				if (i % 500 == 0)
+					NSLog(@"%d  Cells  links to  %d", nLinks, i);
+			}
+			*/
+			
+			NSLog(@"Medial Surface number of Polygons: %d", medialSurface->GetNumberOfPolys());
+			NSLog(@"Medial Surface number of Points: %d", medialSurface->GetNumberOfPoints());
+
 		}
 		else 
 		{
@@ -351,6 +367,7 @@
 		output = (vtkDataSet*) polyDataNormals -> GetOutput();
 	}
 	
+	// ****************** Mapper
 	vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
 		tmapper -> SetInput( output);
 		tmapper -> PreventSeamOn();
@@ -358,6 +375,7 @@
 	if( polyDataNormals) polyDataNormals->Delete();
 	if( delaunayTriangulator) delaunayTriangulator->Delete();
 	if (isoDeci) isoDeci->Delete();
+	if (pSmooth) pSmooth->Delete();
 
 	vtkTransformTextureCoords *xform = vtkTransformTextureCoords::New();
 		xform->SetInput(tmapper->GetOutput());
@@ -379,7 +397,7 @@
 
 	map->Delete();
 	
-	//Texture
+	// *****************Texture
 	NSString	*location = [[NSUserDefaults standardUserDefaults] stringForKey:@"textureLocation"];
 	
 	if( location == 0L || [location isEqualToString:@""])
@@ -564,7 +582,7 @@
 	
 	aRenderer->AddActor( roiVolumeActor);
 	
-	// ***********************
+	// *********************** Orientation Cube
 	
 	vtkAnnotatedCubeActor* cube = vtkAnnotatedCubeActor::New();
 	cube->SetXPlusFaceText ( "L" );
@@ -595,30 +613,26 @@
 		orientationWidget = vtkOrientationMarkerWidget::New();	
 		orientationWidget->SetInteractor( [self getInteractor] );
 		orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
-		orientationWidget->SetEnabled( 1 );
-		orientationWidget->InteractiveOff();
-		orientationWidget->SetOrientationMarker( cube );
 	}
-	
+	orientationWidget->SetOrientationMarker( cube );
+	orientationWidget->SetEnabled( 1 );
+	orientationWidget->InteractiveOff();
 	cube->Delete();
 
 	orientationWidget->On();
 	
-	// ***********************
+	// *********************** Camera
 	
 	aCamera = aRenderer->GetActiveCamera();
-		//aCamera = vtkCamera::New();
-		aCamera->Zoom(1.5);
-		// Crashes OsiriX if trying to reload Volume
-		//aRenderer->SetActiveCamera(aCamera);
-		aCamera->SetFocalPoint (0, 0, 0);
-		aCamera->SetPosition (0, 0, -1);
-		aCamera->ComputeViewPlaneNormal();
-		aCamera->SetViewUp(0, -1, 0);
-		aCamera->OrthogonalizeViewUp();
-		aCamera->SetParallelProjection( false);
-		aCamera->SetViewAngle( 60);
-		aRenderer->ResetCamera();		
+	aCamera->Zoom(1.5);
+	aCamera->SetFocalPoint (0, 0, 0);
+	aCamera->SetPosition (0, 0, -1);
+	aCamera->ComputeViewPlaneNormal();
+	aCamera->SetViewUp(0, -1, 0);
+	aCamera->OrthogonalizeViewUp();
+	aCamera->SetParallelProjection( false);
+	aCamera->SetViewAngle( 60);
+	aRenderer->ResetCamera();		
 
 	
 	[self coView: self];
@@ -673,4 +687,6 @@
 	
 	[self setNeedsDisplay: YES];
 }
+
+
 @end

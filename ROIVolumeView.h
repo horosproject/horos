@@ -10,6 +10,9 @@
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
+	 
+	 
+	ROIVolumeView creates and displays an ROI Volume created feom a stack of 2D ROIs
 =========================================================================*/
 
 #import <AppKit/AppKit.h>
