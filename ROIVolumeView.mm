@@ -282,7 +282,11 @@
 	return [self renderVolume];
 }
 
-- (short) renderVolume {
+- (short) renderVolume
+{
+	WaitRendering *splash = [[WaitRendering alloc] init:@"Rendering 3D Object..."];
+	[splash showWindow:self]; 
+
 	short   error = 0;
 	long	i;
 	aRenderer = [self renderer];
@@ -619,6 +623,9 @@
 	
 	[self coView: self];
 
+	[splash close];
+	[splash release];
+
 	return error;
 }
 
@@ -665,9 +672,5 @@
 	else roiVolumeActor->SetTexture( 0L);
 	
 	[self setNeedsDisplay: YES];
-}
-
-- (IBAction)reload:(id)sender{
-	[self renderVolume];
 }
 @end

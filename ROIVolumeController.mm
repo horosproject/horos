@@ -24,6 +24,13 @@
 	
 }
 
+- (IBAction) reload:(id)sender
+{
+	[view renderVolume];
+	
+	[self changeParameters: self];
+}
+
 - (void) CloseViewerNotification: (NSNotification*) note
 {
 	if([note object] == viewer)

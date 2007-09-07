@@ -40,4 +40,5 @@
 - (void) setDataString:(NSString*) s;
 - (ViewerController*) viewer;
 - (ROI*) roi;
+- (IBAction) reload:(id)sender;
 @end

@@ -1792,6 +1792,9 @@ static BOOL initialized = NO;
             selector:@selector(switchHandler:)
             name:NSWorkspaceSessionDidResignActiveNotification
             object:nil];
+			
+	
+	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"UseDelaunayFor3DRoi"];	// By default, we always start with VTKDelaunay, PowerCrush has memory leaks and can crash with some 3D objects....
 }
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification

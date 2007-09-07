@@ -18,9 +18,6 @@
 
 @implementation MyOutlineView
 
-extern     BrowserController  *browserWindow;
-
-
 - (NSObject < NSCoding > *)columnState
 {
     NSMutableArray    *state;
@@ -260,7 +257,7 @@ extern     BrowserController  *browserWindow;
 		{
 			if( [[NSFileManager defaultManager] fileExistsAtPath: [[fileArray objectAtIndex: 0] stringByAppendingPathComponent: @"Database.sql"]])
 			{
-				[browserWindow openDatabasePath: [[fileArray objectAtIndex: 0] stringByDeletingLastPathComponent]];
+				[[BrowserController currentBrowser] openDatabasePath: [[fileArray objectAtIndex: 0] stringByDeletingLastPathComponent]];
 				done = YES;
 			}
 		}
@@ -270,18 +267,18 @@ extern     BrowserController  *browserWindow;
 	{
 		if( [fileArray count] == 1 && [[[fileArray objectAtIndex: 0] pathExtension] isEqualToString: @"sql"])  // It's a database file !
 		{
-			[browserWindow openDatabasePath: [fileArray objectAtIndex: 0]];
+			[[BrowserController currentBrowser] openDatabasePath: [fileArray objectAtIndex: 0]];
 		}
 		else
 		{
-			NSArray	*newImages = [browserWindow addFilesAndFolderToDatabase: fileArray];
+			NSArray	*newImages = [[BrowserController currentBrowser] addFilesAndFolderToDatabase: fileArray];
 			
 			// Are we adding new files in a album?
 
 			//can't add to smart Album
-			if( [[browserWindow albumTable] selectedRow] > 0)
+			if( [[[BrowserController currentBrowser] albumTable] selectedRow] > 0)
 			{
-				NSManagedObject *album = [[browserWindow albumArray] objectAtIndex: [[browserWindow albumTable] selectedRow]];
+				NSManagedObject *album = [[[BrowserController currentBrowser] albumArray] objectAtIndex: [[[BrowserController currentBrowser] albumTable] selectedRow]];
 				
 				if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
 				{
@@ -293,7 +290,7 @@ extern     BrowserController  *browserWindow;
 						[studies addObject: [object valueForKeyPath:@"series.study"]];
 					}
 					
-					[browserWindow outlineViewRefresh];
+					[[BrowserController currentBrowser] outlineViewRefresh];
 				}
 			}
 			
