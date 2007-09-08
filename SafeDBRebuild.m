@@ -15,6 +15,10 @@
 #import <OsiriX/DCMCalendarDate.h>
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 
+#ifndef Papyrus3H 
+#include "Papyrus3.h"
+#endif
+
 NSLock	*PapyrusLock = 0L;
 NSMutableDictionary *fileFormatPlugins = 0L;
 

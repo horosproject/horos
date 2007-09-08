@@ -7,10 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "OSIWindowController.h"
 
 @interface ROIVolumeManagerController : NSWindowController
 {
-		NSWindowController			*viewer;
+		OSIWindowController			*viewer;
 		IBOutlet NSTableView		*tableView;
 		IBOutlet NSTableColumn		*columnDisplay, *columnName, *columnVolume, *columnRed, *columnGreen, *columnBlue, *columnOpacity;
 		NSMutableArray				*roiVolumes;//, *displayRoiVolumes;
@@ -18,7 +19,7 @@
 		IBOutlet NSObjectController	*controllerAlias;
 }
 
-- (id) initWithViewer:(NSWindowController*) v;
+- (id) initWithViewer:(OSIWindowController*) v;
 	// Table view data source methods
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView;
 - (void) setRoiVolumes: (NSMutableArray*) volumes;

@@ -12,7 +12,7 @@
 
 @implementation ROIVolumeManagerController
 
-- (id) initWithViewer:(NSWindowController*) v
+- (id) initWithViewer:(OSIWindowController*) v
 {	
 	roiVolumes = [[NSMutableArray alloc] initWithCapacity:0];
 	[roiVolumes setArray:[v roiVolumes]];

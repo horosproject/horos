@@ -48,6 +48,6 @@ enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtr
 - (NSManagedObject *)currentSeries;
 - (NSManagedObject *)currentImage;
 
--(float)curWW;
--(float)curWL;
+- (float)curWW;
+- (float)curWL;
 @end
