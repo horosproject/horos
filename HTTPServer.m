@@ -287,7 +287,7 @@
     case NSStreamEventHasBytesAvailable:;
         uint8_t buf[16 * 1024];
         uint8_t *buffer = NULL;
-        unsigned int len = 0;
+        NSUInteger len = 0;
         if (![istream getBuffer:&buffer length:&len]) {
             int amount = [istream read:buf maxLength:sizeof(buf)];
             buffer = buf;

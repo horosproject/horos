@@ -27,7 +27,7 @@ extern NSString *documentsDirectory();
 - (id)init;
 {
 	if (![super init])
-		return;
+		return 0L;
 	
 	[self readTemplates];
 	

@@ -60,7 +60,7 @@ ExtractGroup28Information (PapyShort inFileNb)
   if ((theErr = Papy3GroupRead (inFileNb, &theGroup28P)) < 0)
     RETURN (theErr);
   
-  long test = malloc_size( theGroup28P);
+//  long test = malloc_size( theGroup28P);
   
   /* *** save the value of the needed elements *** */
   

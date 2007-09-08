@@ -134,5 +134,6 @@
 
 - (void)bringToFrontROI:(ROI*)roi;
 - (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
+- (void) exportDICOMFile:(id) sender;
 
 @end

@@ -40,6 +40,7 @@
 #endif
 
 #include "PapyTypeDef3.h"
+#include "PapyEalloc3.h"
 
 #ifndef PapyTypeDef3H
 #include "PapyTypeDef3.h"

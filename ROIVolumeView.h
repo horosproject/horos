@@ -137,6 +137,5 @@ class vtkMyCallback;
 - (void) setOpacity: (float) opacity showPoints: (BOOL) sp showSurface: (BOOL) sS showWireframe:(BOOL) w texture:(BOOL) tex useColor:(BOOL) usecol color:(NSColor*) col;
 
 - (short) renderVolume;
-- (IBAction)reload:(id)sender;
 
 @end

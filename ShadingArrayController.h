@@ -21,7 +21,7 @@
 
 @interface ShadingArrayController : NSArrayController {
 	BOOL				_enableEditing;
-	NSWindowController	*winController;
+	OSIWindowController	*winController;
 }
 
 - (BOOL)enableEditing;

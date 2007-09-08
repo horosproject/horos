@@ -42,4 +42,7 @@
 - (void) fullWindowPlan: (id) sender;
 
 -(void) ApplyOpacityString:(NSString*) str;
+
+- (void) flipVertical:(id) sender: (OrthogonalMPRPETCTView*) view;
+- (void) flipHorizontal:(id) sender: (OrthogonalMPRPETCTView*) view;
 @end

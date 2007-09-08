@@ -1000,12 +1000,12 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 		if ([currentFocusedView isEqualTo:[vrController view]])
 		{
 			// 3D view
-			[currentFocusedView endDCMExportSettings:sender];
+			[(VRView*)currentFocusedView endDCMExportSettings:sender];
 		}
 		else
 		{
 			// MPR view
-			[currentFocusedView exportDICOMFile:self];
+			[(OrthogonalMPRViewer*) currentFocusedView exportDICOMFile:self];
 		}
 	}
 }

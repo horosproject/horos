@@ -40,6 +40,8 @@ enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtr
 - (IBAction) redo:(id) sender;
 - (IBAction) undo:(id) sender;
 
+- (void) applyShading:(id) sender;
+
 #pragma mark-
 #pragma mark current Core Data Objects
 - (NSManagedObject *)currentStudy;

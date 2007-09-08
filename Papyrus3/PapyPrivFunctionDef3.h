@@ -127,10 +127,10 @@ PapyShort
 PutBufferInGroup3 	(PapyShort, unsigned char *, SElement *, PapyUShort, PapyULong, 
 		   	 PapyULong *, PapyLong);
 
-inline PapyUShort
+PapyUShort
 Extract2Bytes 	  	(unsigned char *, PapyULong *);
 
-inline PapyULong  
+PapyULong  
 Extract4Bytes     	(unsigned char *, PapyULong *);
 
 

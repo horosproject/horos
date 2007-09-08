@@ -450,7 +450,7 @@ struct edge *UpdateActive( struct edge *active, struct edge *edgeTable[], long c
 
 static DCMPix	**restoreImageCache = 0L;
 
-inline void DrawRuns(	struct edge *active,
+static inline void DrawRuns(	struct edge *active,
 						long curY,
 						float *pix,
 						long w,

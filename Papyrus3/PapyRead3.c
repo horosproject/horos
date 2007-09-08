@@ -1834,8 +1834,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 /*										*/
 /********************************************************************************/
 
-inline PapyUShort
-Extract2Bytes (unsigned char *inBufP, PapyULong *ioPosP)
+PapyUShort Extract2Bytes (unsigned char *inBufP, PapyULong *ioPosP)
 
 /*unsigned char *inBufP;				 the buffer to read from */
 /*PapyULong 	*ioPosP;			      the position in the buffer */
@@ -1883,8 +1882,7 @@ Extract2Bytes (unsigned char *inBufP, PapyULong *ioPosP)
 /*										*/
 /********************************************************************************/
 
-inline PapyULong
-Extract4Bytes (unsigned char *inBufP, PapyULong *ioPosP)
+PapyULong Extract4Bytes (unsigned char *inBufP, PapyULong *ioPosP)
 
 /*unsigned char *inBufP;				 the buffer to read from */
 /*PapyULong 	*ioPosP;			      the position in the buffer */
