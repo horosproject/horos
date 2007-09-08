@@ -96,11 +96,6 @@ extern OSStatus SetupAuthorization(void)
 
 #define DATAFILEPATH @"/Database.dat"
 
-extern NSString * documentsDirectory();
-
-extern AppController		*appController;
-extern BrowserController	*browserWindow;
-
 @implementation PreferencePaneController
 
 -(id) init
@@ -109,7 +104,6 @@ extern BrowserController	*browserWindow;
 
     if (self = [super initWithWindowNibName:@"PreferencePanesViewer"])
 	{
-//		previousDefaults = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
 	}
 	return self;
 }
@@ -121,6 +115,7 @@ extern BrowserController	*browserWindow;
 		NSPreferencePaneUnselectReply shouldUnselect = [pane shouldUnselect];
 		if(shouldUnselect==NSUnselectCancel) return NO;
 	}
+	
 	return YES;
 }
 

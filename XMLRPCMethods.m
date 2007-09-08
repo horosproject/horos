@@ -96,11 +96,13 @@
 			// table: OsiriX Table: Image, Series, Study
 			// execute: Nothing, Select, Open, Delete
 			//
+			// execute is performed at the  study level: you cannot delete a single series of a study
+			//
 			// Example: {request: "name == 'OsiriX'", table: "Study", execute: "Select"}
 			// Example: {request: "(name LIKE '*OSIRIX*')", table: "Study", execute: "Open"}
 			//
-			// Response: {error: "0"}
-
+			// Response: {error: "0", elements: array of elements corresponding to the request}
+			
 			if ([selName isEqual:@"DBWindowFind"])
 			{
 				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
@@ -119,16 +121,19 @@
 					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
 					for( i = 0; i < [keys count]; i++)
 						[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
-									
+					
 					// *****
+					
+					NSString *listOfElements = 0L;
 					
 					NSNumber *ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[paramDict valueForKey:@"request"]
 																									table: [paramDict valueForKey:@"table"]
-																									execute: [paramDict valueForKey:@"execute"]]];
+																									execute: [paramDict valueForKey:@"execute"]
+																									elements: &listOfElements]];
 					
 					// *****
+					NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member><member><name>elements</name>%@</member></struct></value></param></params></methodResponse>", [ret stringValue], listOfElements];
 					
-					NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
 					NSError *error = nil;
 					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
 					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
@@ -136,15 +141,120 @@
 					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
 				}
 			}
-
+			
 			// ********************************************
-			// Method: closeAllWindows
+			// Method: OpenDB
+			//
+			// Parameters:
+			// path: path of the folder containing the 'OsiriX Data' folder
+			//
+			// if path is valid, but not DB is found, OsiriX will create a new one
+			//
+			// Example: {path: "/Users/antoinerosset/Documents/"}
+			//
+			// Response: {error: "0"}
+			
+			if ([selName isEqual:@"OpenDB"])
+			{
+				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+				{
+					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
+					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
+					if (1 != [keys count] || 1 != [values count])
+					{
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+						[mess setResponse:response];
+						CFRelease(response);
+						return;
+					}
+					
+					int i;
+					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
+					for( i = 0; i < [keys count]; i++)
+						[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
+					
+					// *****
+					
+					NSNumber *ret = [NSNumber numberWithInt: 0];
+					
+					if( [[NSFileManager defaultManager] fileExistsAtPath: [paramDict valueForKey:@"path"]])
+						[[BrowserController currentBrowser] openDatabasePath: [paramDict valueForKey:@"path"]];
+					else ret = [NSNumber numberWithInt: -1];
+					
+					// *****
+					NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
+					
+					NSError *error = nil;
+					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
+					[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+				}
+			}
+			
+			// ********************************************
+			// Method: SelectAlbum
+			//
+			// Parameters:
+			// name: name of the album
+			//
+			// Example: {name: "Today"}
+			//
+			// Response: {error: "0"}
+			
+			if ([selName isEqual:@"SelectAlbum"])
+			{
+				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+				{
+					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
+					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
+					if (1 != [keys count] || 1 != [values count])
+					{
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+						[mess setResponse:response];
+						CFRelease(response);
+						return;
+					}
+					
+					int i;
+					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
+					for( i = 0; i < [keys count]; i++)
+						[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
+					
+					// *****
+					
+					NSTableView	*albumTable = [[BrowserController currentBrowser] albumTable];
+					NSArray	*albumArray = [[BrowserController currentBrowser] albumArray];
+					NSNumber *ret = [NSNumber numberWithInt: -1];
+					
+					for( NSManagedObject *album in albumArray)
+					{
+						if( [[album valueForKey:@"name"] isEqualToString: [paramDict valueForKey:@"name"]])
+						{
+							[albumTable selectRow: [albumArray indexOfObject: album] byExtendingSelection: NO];
+							ret = [NSNumber numberWithInt: 0];
+						}
+					}
+					
+					// *****
+					NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
+					
+					NSError *error = nil;
+					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
+					[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+				}
+			}
+			
+			// ********************************************
+			// Method: CloseAllWindows
 			//
 			// Parameters: No Parameters
 			//
 			// Response: {error: "0"}
 
-			if( [[httpServerMessage valueForKey: @"MethodName"] isEqualToString: @"closeAllWindows"])
+			if( [[httpServerMessage valueForKey: @"MethodName"] isEqualToString: @"CloseAllWindows"])
 			{
 				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 				{

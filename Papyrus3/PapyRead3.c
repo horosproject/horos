@@ -2092,6 +2092,8 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
       ioElemP->nb_val = (PapyULong) (inElemLength / 2);
       ioElemP->value = (UValue_T *) ecalloc3 ((PapyULong) ioElemP->nb_val,
 					      (PapyULong) sizeof (UValue_T));
+	  if( ioElemP->value == 0L) return -1;
+	  
       theValueTP = ioElemP->value;
       for (j = 0; j < ioElemP->nb_val; j++, theValueTP++)
       {
@@ -2118,6 +2120,8 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
       ioElemP->nb_val = (PapyULong) (inElemLength / 2);
       ioElemP->value  = (UValue_T *) ecalloc3 ((PapyULong) ioElemP->nb_val,
 					       (PapyULong) sizeof (UValue_T));
+	  if( ioElemP->value == 0L) return -1;
+	   
       theValueTP = ioElemP->value;
       for (j = 0; j < ioElemP->nb_val; j++, theValueTP++)
       {
@@ -2143,6 +2147,8 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
       ioElemP->nb_val = (PapyULong) (inElemLength / 4);
       ioElemP->value  = (UValue_T *) ecalloc3 ((PapyULong) ioElemP->nb_val,
 					       (PapyULong) sizeof (UValue_T));
+	   if( ioElemP->value == 0L) return -1;
+	   
       theValueTP = ioElemP->value;
       for (j = 0; j < ioElemP->nb_val; j++, theValueTP++)
       {
@@ -2177,6 +2183,8 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
       ioElemP->nb_val = (PapyULong) (inElemLength / 4);
       ioElemP->value  = (UValue_T *) ecalloc3 ((PapyULong) ioElemP->nb_val,
 					       (PapyULong) sizeof (UValue_T));
+	   if( ioElemP->value == 0L) return -1;
+	   
       theValueTP = ioElemP->value;
       for (j = 0; j < ioElemP->nb_val; j++, theValueTP++)
       {
@@ -2211,6 +2219,8 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
       ioElemP->nb_val = (PapyULong) (inElemLength / 4);
       ioElemP->value  = (UValue_T *) ecalloc3 ((PapyULong) ioElemP->nb_val,
 					       (PapyULong) sizeof (UValue_T));
+	   if( ioElemP->value == 0L) return -1;
+	   
       theValueTP = ioElemP->value;
       for (j = 0; j < ioElemP->nb_val; j++, theValueTP++)
       {
@@ -2246,6 +2256,8 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
       ioElemP->nb_val = (PapyULong) (inElemLength / 8);
       ioElemP->value  = (UValue_T *) ecalloc3 ((PapyULong) ioElemP->nb_val,
 					       (PapyULong) sizeof (UValue_T));
+	   if( ioElemP->value == 0L) return -1;
+	   
       theValueTP = ioElemP->value;
       for (j = 0; j < ioElemP->nb_val; j++, theValueTP++)
       {
@@ -2272,10 +2284,12 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
     case OB :				/* 1 byte image  */
       ioElemP->nb_val = (PapyULong) 1L;
       ioElemP->value  = (UValue_T *) emalloc3 ((PapyULong) sizeof (UValue_T));
-      
+       if( ioElemP->value == 0L) return -1;
+	   
       /* allocate room for the element */
       theCharP = (unsigned char *) emalloc3 ((PapyULong) inElemLength);
-      
+       if( theCharP == 0L) return -1;
+	   
       /* copy the bits of the image to the value */
       theTmp0P = theCharP;
       ioBuffP += *ioBufPosP;
@@ -2295,6 +2309,8 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
       /*ioElemP->value= (UValue_T *) emalloc3 ((PapyULong) sizeof (UValue_T));*/
       ioElemP->value  = (UValue_T *) ecalloc3 ((PapyULong) ioElemP->nb_val,
 					      (PapyULong) sizeof (UValue_T));
+	   if( ioElemP->value == 0L) return -1;
+	   
       theImLength     = inElemLength / 2;
       
       /* pixel data */
@@ -2316,6 +2332,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
       {
         ioElemP->value->ow = (PapyUShort *) ecalloc3 ((PapyULong) theImLength, 
         			        	      (PapyULong) sizeof (PapyUShort));
+		 if( ioElemP->value->ow == 0L) return -1;
         /*ioElemP->value->ow = (PapyUShort *) emalloc3 ((PapyULong)theImLength * sizeof (PapyUShort) + 1L);*/
 
         for (i = 0L, theTmpUsP = ioElemP->value->ow, ioBuffP += *ioBufPosP; i < theImLength; i++, theTmpUsP++, ioBuffP += 2)
@@ -2346,6 +2363,8 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
       {
         ioElemP->nb_val    = 1L;
 	      ioElemP->value     = (UValue_T *) emalloc3 ((PapyULong) sizeof (UValue_T));
+		  if( ioElemP->value == 0L) return -1;
+		  
 	      ioElemP->value->sq = NULL;
 	      
 		  #if DEBUG
@@ -2401,6 +2420,8 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 
 	        /* creates an empty object that will point to the list of groups */
 	        theObjectP = (papObject *) emalloc3 ((PapyULong) sizeof (papObject));
+			if( theObjectP == 0L) return -1;
+			
   	        theObjectP->whoAmI        = papItem;
  	        theObjectP->item          = NULL;
  	        theObjectP->module        = NULL;
@@ -2499,6 +2520,8 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 		      
 	            /* creation of the object that will encapsulate the group */
 	            theObjectP2 = (papObject *) emalloc3 ((PapyULong) sizeof (papObject));
+				if( theObjectP2 == 0L) return -1;
+				
 	            theObjectP2->whoAmI        = papGroup;
 	            theObjectP2->objID         = theEnumSeqNb;
 	            theObjectP2->group         = theSeqGroupP;
@@ -2566,6 +2589,8 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
       /*theCharValP = ExtractString (ioBuffP, ioBufPosP, inElemLength);*/
 		  				   /* 1 for the string terminator */
       theStringP = (char *) emalloc3 ((PapyULong) (inElemLength + 10L));
+	  if( theStringP == 0L) return -1;
+	  
       theP       = theStringP;
       theTmp0P   = ioBuffP;
       /* extract the element from the buffer */
@@ -2596,7 +2621,8 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
           
       ioElemP->value = (UValue_T *) ecalloc3 ((PapyULong) ioElemP->nb_val,
           			              (PapyULong) sizeof (UValue_T));
-          	
+	  if( ioElemP->value == 0L) return -1;
+	  
       /* extraction of the strings */	
       for (j = 0, theCharWrkP = theCharValP; 
            j < ioElemP->nb_val;

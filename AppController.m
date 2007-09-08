@@ -1446,13 +1446,14 @@ static BOOL initialized = NO;
 		if ( self == [AppController class] && initialized == NO)
 		{
 			#if __LP64__
-			if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2007 month:12 day:15 hour:1 minute:1 second:1 timeZone:0L]] > 0)
+			if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2007 month:12 day:15 hour:1 minute:1 second:1 timeZone:0L]] > 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"Outdated"])
 			{
 				NSRunCriticalAlertPanel(NSLocalizedString(@"Outdated Version", 0L), NSLocalizedString(@"Please update your application. Available on the web site.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Outdated"];
 				exit( 0);
 			}
 			else
-				NSRunCriticalAlertPanel(NSLocalizedString(@"OsiriX 64-bit", 0L), NSLocalizedString(@"This is a preview version of OsiriX 64-bit. It is FULLY UNTESTED and you SHOULD NOT use it for any scientific or clinical activities.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+				NSRunCriticalAlertPanel(NSLocalizedString(@"OsiriX 64-bit", 0L), NSLocalizedString(@"This is a preview version of OsiriX 64-bit. You SHOULD NOT use it for any scientific or clinical activities.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
 			#endif
 			
 			if( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundlePackageType"] isEqualToString: @"APPL"])

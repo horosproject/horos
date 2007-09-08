@@ -2349,6 +2349,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			[[NSUserDefaults standardUserDefaults] setObject:DATABASEVERSION forKey: @"DATABASEVERSION"];
 			[[NSUserDefaults standardUserDefaults] setInteger: DATABASEINDEX forKey: @"DATABASEINDEX"];
+			
+			if( [NSThread currentThread] == mainThread)
+				[self outlineViewRefresh];
 		}
 		
 		@catch( NSException *ne)
@@ -5442,7 +5445,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	return NO;
 }
 
-- (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute;
+- (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute elements:(NSString**) elements
 {
 	if( !request) return -32;
 	if( !table) return -33;
@@ -5453,6 +5456,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	NSInteger			index, i;
 	
 	NSManagedObject			*element = 0L;
+	NSArray					*array = 0L;
 	NSManagedObjectContext	*context = [self managedObjectContext];
 	
 	@try
@@ -5464,7 +5468,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		[context retain];
 		[context lock];
 		error = 0L;
-		NSArray *array = [context executeFetchRequest:dbRequest error:&error];
+		array = [context executeFetchRequest:dbRequest error:&error];
 		
 		if( error)
 		{
@@ -5476,7 +5480,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		if( [array count])
 		{
-			element = [array objectAtIndex: 0];	// We select the first object
+			element = [array objectAtIndex: 0];	// We select the first object 
 		}
 		[context unlock];
 		[context release];
@@ -5489,16 +5493,16 @@ static BOOL				DICOMDIRCDMODE = NO;
 	}
 	
 	if( element)
-	{
-		NSManagedObject	*study = 0L;
-		
-		if( [[element valueForKey: @"type"] isEqualToString: @"Image"]) study = [element valueForKeyPath: @"series.study"];
-		else if( [[element valueForKey: @"type"] isEqualToString: @"Series"]) study = [element valueForKeyPath: @"study"];
-		else if( [[element valueForKey: @"type"] isEqualToString: @"Study"]) study = element;
-		else NSLog( @"DB selectObject : Unknown table");
-		
-		if( [execute isEqualToString: @"Select"] || [execute isEqualToString: @"Open"] || [execute isEqualToString: @"Delete"])
+	{		
+		if( [execute isEqualToString: @"Select"] || [execute isEqualToString: @"Open"])		// These 2 functions apply only to the first found element
 		{
+			NSManagedObject	*study = 0L;
+		
+			if( [[element valueForKey: @"type"] isEqualToString: @"Image"]) study = [element valueForKeyPath: @"series.study"];
+			else if( [[element valueForKey: @"type"] isEqualToString: @"Series"]) study = [element valueForKeyPath: @"study"];
+			else if( [[element valueForKey: @"type"] isEqualToString: @"Study"]) study = element;
+			else NSLog( @"DB selectObject : Unknown table");
+			
 			NSInteger index = [outlineViewArray indexOfObject: study];
 			
 			if( index == NSNotFound)	// Try again with all studies displayed. This study has to be here ! We found it in the DB
@@ -5533,15 +5537,78 @@ static BOOL				DICOMDIRCDMODE = NO;
 					if( found == NO)
 						[browserWindow viewerDICOM: self];
 				}
+			}
+			else return -1;
+		}
 				
-				if( [execute isEqualToString: @"Delete"])
+		// Generate an answer containing the elements
+		NSMutableString *a = [NSMutableString stringWithString: @"<array><data>"];
+		
+		for( i = 0 ; i < [array count] ; i++)
+		{
+			NSMutableString *c = [NSMutableString stringWithString: @"<struct>"];
+			
+			NSDictionary *allCommittedValues = [[array objectAtIndex: i] committedValuesForKeys:nil];
+			
+			for (NSString *keyname in [allCommittedValues allKeys])	// My first Objective-C 2.0 'for loop', Antoine - 9/8/07
+			{
+				@try
 				{
-					[browserWindow delItem: self];
+					if( [[allCommittedValues valueForKey: keyname] isKindOfClass:[NSString class]] ||
+						[[allCommittedValues valueForKey: keyname] isKindOfClass:[NSDate class]] ||
+						[[allCommittedValues valueForKey: keyname] isKindOfClass:[NSNumber class]])
+					[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, [[allCommittedValues valueForKey: keyname] description]];
 				}
 				
-				return 0;
+				@catch (NSException * e)
+				{
+				}
+			}
+			
+			[c appendString: @"</struct>"];
+			
+			[a appendString: c];
+		}
+		
+		[a appendString: @"</data></array>"];
+		
+		if( elements)
+			*elements = a;
+		
+		if( [execute isEqualToString: @"Delete"])	
+		{
+			@try
+			{
+				[context retain];
+				[context lock];
+
+				for( NSManagedObject *curElement in array)
+				{
+					NSManagedObject	*study = 0L;
+					
+					if( [[curElement valueForKey: @"type"] isEqualToString: @"Image"]) study = [curElement valueForKeyPath: @"series.study"];
+					else if( [[curElement valueForKey: @"type"] isEqualToString: @"Series"]) study = [curElement valueForKeyPath: @"study"];
+					else if( [[curElement valueForKey: @"type"] isEqualToString: @"Study"]) study = curElement;
+					else NSLog( @"DB selectObject : Unknown table");
+					
+					if( study)
+						[context deleteObject: study];
+				}
+				
+				[self saveDatabase: currentDatabasePath];
+				
+				[context unlock];
+				[context release];
+			}
+			
+			@catch (NSException * e)
+			{
+				NSLog( @"******* BrowserController findObject Exception - Delete");
+				NSLog( [e description]);
 			}
 		}
+		
+		return 0;
 	}
 	
 	return -1;
