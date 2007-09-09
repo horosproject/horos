@@ -14,6 +14,7 @@
 #import "SRAnnotation.h"
 #import <OsiriX/DCMCalendarDate.h>
 #import <OsiriX/DCMAbstractSyntaxUID.h>
+#import "Papyrus3.h"
 
 #ifndef Papyrus3H 
 #include "Papyrus3.h"
