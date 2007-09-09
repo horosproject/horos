@@ -15,6 +15,7 @@
 #import "XMLRPCMethods.h"
 #import "BrowserController.h"
 #import "ViewerController.h"
+#import "DCMView.h"
 
 // HTTP SERVER
 //
@@ -88,6 +89,8 @@
 
 			NSMutableDictionary	*httpServerMessage = [NSMutableDictionary dictionaryWithObjectsAndKeys: selName, @"MethodName", doc, @"NSXMLDocument", [NSNumber numberWithBool: NO], @"Processed", 0L];
 			
+			#pragma mark DBWindowFind
+			
 			// ********************************************
 			// Method: DBWindowFind
 			//
@@ -142,6 +145,8 @@
 				}
 			}
 			
+			#pragma mark OpenDB
+			
 			// ********************************************
 			// Method: OpenDB
 			//
@@ -191,6 +196,8 @@
 					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
 				}
 			}
+			
+			#pragma mark SelectAlbum
 			
 			// ********************************************
 			// Method: SelectAlbum
@@ -247,6 +254,8 @@
 				}
 			}
 			
+			#pragma mark CloseAllWindows
+			
 			// ********************************************
 			// Method: CloseAllWindows
 			//
@@ -276,6 +285,228 @@
 				}
 			}
 			
+			#pragma mark GetDisplayed2DViewerSeries
+			
+			// ********************************************
+			// Method: GetDisplayed2DViewerSeries
+			//
+			// Parameters: No Parameters
+			//
+			// Response: {error: "0", elements: array of series corresponding to displayed windows}
+
+			if( [[httpServerMessage valueForKey: @"MethodName"] isEqualToString: @"GetDisplayed2DViewerSeries"])
+			{
+				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+				{
+					NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
+					int i;
+					
+					// Generate an answer containing the elements
+					NSMutableString *a = [NSMutableString stringWithString: @"<array><data>"];
+					
+					for( i = 0; i < [viewersList count] ; i++)
+					{
+						NSMutableString *c = [NSMutableString stringWithString: @"<struct>"];
+						
+						NSManagedObject *series = [[[viewersList objectAtIndex: i] imageView] seriesObj];
+						
+						NSDictionary *allCommittedValues = [series committedValuesForKeys:nil];
+			
+						for (NSString *keyname in [allCommittedValues allKeys])
+						{
+							@try
+							{
+								if( [[allCommittedValues valueForKey: keyname] isKindOfClass:[NSString class]] ||
+									[[allCommittedValues valueForKey: keyname] isKindOfClass:[NSDate class]] ||
+									[[allCommittedValues valueForKey: keyname] isKindOfClass:[NSNumber class]])
+								[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, [[allCommittedValues valueForKey: keyname] description]];
+							}
+							
+							@catch (NSException * e)
+							{
+							}
+						}
+						
+						[c appendString: @"</struct>"];
+						
+						[a appendString: c];
+					}
+					[a appendString: @"</data></array>"];
+					
+					// Done, we can send the response to the sender
+					NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member><member><name>elements</name>%@</member></struct></value></param></params></methodResponse>", @"0", a];
+					NSError *error = nil;
+					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+					[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+				}
+			}
+
+			#pragma mark GetDisplayed2DViewerStudies
+
+			// ********************************************
+			// Method: GetDisplayed2DViewerStudies
+			//
+			// Parameters: No Parameters
+			//
+			// Response: {error: "0", elements: array of studies corresponding to displayed windows}
+
+			if( [[httpServerMessage valueForKey: @"MethodName"] isEqualToString: @"GetDisplayed2DViewerStudies"])
+			{
+				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+				{
+					NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
+					int i;
+					
+					// Generate an answer containing the elements
+					NSMutableString *a = [NSMutableString stringWithString: @"<array><data>"];
+					
+					for( i = 0; i < [viewersList count] ; i++)
+					{
+						NSMutableString *c = [NSMutableString stringWithString: @"<struct>"];
+						
+						NSManagedObject *study = [[[[viewersList objectAtIndex: i] imageView] seriesObj] valueForKey:@"study"];
+						
+						NSDictionary *allCommittedValues = [study committedValuesForKeys:nil];
+			
+						for (NSString *keyname in [allCommittedValues allKeys])
+						{
+							@try
+							{
+								if( [[allCommittedValues valueForKey: keyname] isKindOfClass:[NSString class]] ||
+									[[allCommittedValues valueForKey: keyname] isKindOfClass:[NSDate class]] ||
+									[[allCommittedValues valueForKey: keyname] isKindOfClass:[NSNumber class]])
+								[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, [[allCommittedValues valueForKey: keyname] description]];
+							}
+							
+							@catch (NSException * e)
+							{
+							}
+						}
+						
+						[c appendString: @"</struct>"];
+						
+						[a appendString: c];
+					}
+					[a appendString: @"</data></array>"];
+					
+					// Done, we can send the response to the sender
+					NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member><member><name>elements</name>%@</member></struct></value></param></params></methodResponse>", @"0", a];
+					NSError *error = nil;
+					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+					[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+				}
+			}
+			
+			#pragma mark Close2DViewerWithSeriesUID
+			
+			// ********************************************
+			// Method: Close2DViewerWithSeriesUID
+			//
+			// Parameters:
+			// uid: series instance uid to close
+			//
+			// Example: {uid: "1.3.12.2.1107.5.1.4.51988.4.0.1164229612882469"}
+			//
+			// Response: {error: "0"}
+			
+			if( [[httpServerMessage valueForKey: @"MethodName"] isEqualToString: @"Close2DViewerWithSeriesUID"])
+			{
+				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+				{
+					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
+					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
+					if (1 != [keys count] || 1 != [values count])
+					{
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+						[mess setResponse:response];
+						CFRelease(response);
+						return;
+					}
+					
+					int i;
+					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
+					for( i = 0; i < [keys count]; i++)
+						[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
+					
+					// *****
+					
+					NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
+					
+					for( i = 0; i < [viewersList count] ; i++)
+					{
+						NSManagedObject *series = [[[viewersList objectAtIndex: i] imageView] seriesObj];
+						
+						if( [[series valueForKey:@"seriesDICOMUID"] isEqualToString: [paramDict valueForKey:@"uid"]])
+							[[[viewersList objectAtIndex: i] window] close];
+					}
+					
+					// Done, we can send the response to the sender
+					
+					NSString *xml = @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>0</value></member></struct></value></param></params></methodResponse>";		// Simple answer, no errors
+					NSError *error = nil;
+					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+					[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+				}
+			}
+			
+			#pragma mark Close2DViewerWithStudyUID
+			
+			// ********************************************
+			// Method: Close2DViewerWithStudyUID
+			//
+			// Parameters:
+			// uid: study instance uid to close
+			//
+			// Example: {uid: "1.2.840.113745.101000.1008000.37915.4331.5559218"}
+			//
+			// Response: {error: "0"}
+			
+			if( [[httpServerMessage valueForKey: @"MethodName"] isEqualToString: @"Close2DViewerWithStudyUID"])
+			{
+				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+				{
+					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
+					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
+					if (1 != [keys count] || 1 != [values count])
+					{
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+						[mess setResponse:response];
+						CFRelease(response);
+						return;
+					}
+					
+					int i;
+					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
+					for( i = 0; i < [keys count]; i++)
+						[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
+					
+					// *****
+					
+					NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
+					
+					for( i = 0; i < [viewersList count] ; i++)
+					{
+						NSManagedObject *study = [[[[viewersList objectAtIndex: i] imageView] seriesObj] valueForKey:@"study"];
+						
+						if( [[study valueForKey:@"studyInstanceUID"] isEqualToString: [paramDict valueForKey:@"uid"]])
+							[[[viewersList objectAtIndex: i] window] close];
+					}
+					
+					// Done, we can send the response to the sender
+					
+					NSString *xml = @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>0</value></member></struct></value></param></params></methodResponse>";		// Simple answer, no errors
+					NSError *error = nil;
+					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+					[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+				}
+			}
+			
+			#pragma mark-
+			#pragma mark Send the XML-RPC as a notification
 			
 			// Send the XML-RPC as a notification : give a chance to plugin to answer
 			
