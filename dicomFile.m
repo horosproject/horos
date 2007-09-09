@@ -3009,6 +3009,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	NoOfFrames = 1;	
 	
 	id fileFormatBundle;
+	#ifdef OSIRIX_VIEWER
 	if (fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:extension])
 	{
 		fileType = [[NSString stringWithString:@"IMAGE"] retain];
@@ -3090,6 +3091,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		free(fImage);
 		return 0;				
 	}
+	#endif
+	
 	return -1;
 }
 

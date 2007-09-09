@@ -7,8 +7,12 @@
 //
 
 #import "DefaultsOsiriX.h"
-#import "DCMNetServiceDelegate.h"
 #import "PluginManager.h"
+
+#ifdef OSIRIX_VIEWER
+#import "DCMNetServiceDelegate.h"
+#endif
+
 
 static BOOL isHcugeCh = NO, isUnigeCh = NO, testIsHugDone = NO, testIsUniDone = NO;
 static NSString *hostName = @"";
@@ -82,6 +86,7 @@ static NSHost *currentHost = 0L;
 
 + (BOOL) isLAVIM
 {
+	#ifdef OSIRIX_VIEWER
 	if( [self isHUG])
 	{
 		int i;
@@ -97,6 +102,8 @@ static NSHost *currentHost = 0L;
 	{
 		if ([hostName isEqualToString:@"lavimcmu1.unige.ch"]) return YES;
 	}
+	#endif
+	
 	return NO;
 }
 

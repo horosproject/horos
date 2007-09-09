@@ -7822,6 +7822,7 @@ BOOL            readable = YES;
 			NSImage		*otherImage = 0L;
 			NSString	*extension = [[srcFile pathExtension] lowercaseString];
 			
+			#ifdef OSIRIX_VIEWER
 			id fileFormatBundle;
 			if (fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:[srcFile pathExtension]]) {
 				PluginFileFormatDecoder *decoder = [[[fileFormatBundle principalClass] alloc] init];
@@ -7837,7 +7838,10 @@ BOOL            readable = YES;
 				[decoder release];					
 							
 			}
-			else if( [extension isEqualToString:@"zip"] == YES)  // ZIP
+			else
+			#endif
+			
+			if( [extension isEqualToString:@"zip"] == YES)  // ZIP
 			{
 				// the ZIP icon
 				NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFile:srcFile];
