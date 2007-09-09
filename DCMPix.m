@@ -200,7 +200,7 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 #define INIT_DELTAS dx=V2.x-V1.x;  dy=V2.y-V1.y;
 #define INIT_CLIP INIT_DELTAS if(dx)m=dy/dx;
 
-inline void CLIP_Left(NSPointInt *Polygon, long *count, NSPointInt V1,NSPointInt V2)
+static inline void CLIP_Left(NSPointInt *Polygon, long *count, NSPointInt V1,NSPointInt V2)
 {
    float   dx,dy, m=1;
    INIT_CLIP
@@ -222,7 +222,7 @@ inline void CLIP_Left(NSPointInt *Polygon, long *count, NSPointInt V1,NSPointInt
       Polygon[(*count)++]=V2;
    }
 }
-inline void CLIP_Right(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2, NSPointInt DownRight)
+static inline void CLIP_Right(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2, NSPointInt DownRight)
 {
    float dx,dy, m=1;
    INIT_CLIP
@@ -248,7 +248,7 @@ inline void CLIP_Right(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt
 CLIP_Top
 =================
 */
-inline void CLIP_Top(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2)
+static inline void CLIP_Top(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2)
 {
    float   dx,dy, m=1;
    INIT_CLIP
@@ -275,7 +275,7 @@ inline void CLIP_Top(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V
       Polygon[(*count)++]=V2;
    }
 }
-inline void CLIP_Bottom(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2, NSPointInt DownRight)
+static inline void CLIP_Bottom(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2, NSPointInt DownRight)
 {
    float dx,dy, m=1;
    INIT_CLIP
@@ -355,7 +355,7 @@ struct edge {
 
 #define MAXVERTICAL     10000
 
-inline long sgn( long x)
+static inline long sgn( long x)
 {
 	if( x > 0) return 1;
 	else if( x < 0) return -1;
@@ -363,7 +363,7 @@ inline long sgn( long x)
 	return 0;
 }
 
-inline void FillEdges( NSPointInt *p, long no, struct edge *edgeTable[])
+static inline void FillEdges( NSPointInt *p, long no, struct edge *edgeTable[])
 {
     int i, j, n = no;
 
@@ -804,7 +804,7 @@ void ras_FillPolygon(	NSPointInt *p,
 	}
 }
 
-inline long pnpoly( NSPoint *p, long count, float x, float y)
+static inline long pnpoly( NSPoint *p, long count, float x, float y)
 {
     int		i, j;
 	long	c = 0;
@@ -4228,10 +4228,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 - (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject {
 
 	#ifdef OSIRIX_VIEWER
-	// First determine if this RTSTRUCT has already been converted in this session.
-	// Dunno if this is the best way to do this.  Still have to worry about re-creating
-	// ROIs between sessions.  My concerns that this is a temp solution are why the statics
-	// are handled below rather than at the class level.
 
 	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour]) {
 		NSLog( @"Can't (or shouldn't?) export ROIs to Bonjour mounted Database" );
@@ -4277,10 +4273,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	}
 	
 	NSMutableArray *refSeriesUIDPredicates = [NSMutableArray arrayWithCapacity: 0];
-	
-	NSEnumerator *refFrameEnum = [[refFrameSequence sequence] objectEnumerator];
-	DCMObject *refFrameSeqItem;
-	
+		
 	NSDictionary *noteDict = [NSDictionary dictionaryWithObjectsAndKeys: 
 		[NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
 		[NSNumber numberWithFloat: 1.0f], @"RTSTRUCTProgressPercent",
@@ -4290,17 +4283,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
 
 
-	while ( refFrameSeqItem = [refFrameEnum nextObject] ) {
+	for ( DCMObject *refFrameSeqItem in [refFrameSequence sequence] ) {
 		DCMSequenceAttribute *refStudySeq = (DCMSequenceAttribute *)[refFrameSeqItem attributeWithName: @"RTReferencedStudySequence"];
-		NSEnumerator *refStudyEnum = [[refStudySeq sequence] objectEnumerator];
-		DCMObject *refStudySeqItem;
 		
-		while ( refStudySeqItem = [refStudyEnum nextObject] ) {
+		for ( DCMObject *refStudySeqItem in [refStudySeq sequence] ) {
 			DCMSequenceAttribute *refSeriesSeq = (DCMSequenceAttribute *)[refStudySeqItem attributeWithName: @"RTReferencedSeriesSequence"];
-			NSEnumerator *refSeriesEnum = [[refSeriesSeq sequence] objectEnumerator];
-			DCMObject *refSeriesSeqItem;
 			
-			while ( refSeriesSeqItem = [refSeriesEnum nextObject] ) {
+			for ( DCMObject *refSeriesSeqItem in [refSeriesSeq sequence] ) {
 				
 				NSString *refSeriesUID = [refSeriesSeqItem attributeValueWithName: @"SeriesInstanceUID"];
 				NSPredicate *pred = [NSPredicate predicateWithFormat: @"series.seriesDICOMUID == %@", refSeriesUID];
@@ -4320,8 +4309,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 			}
 		}
 	}
-	
-	unsigned int i;
 	
 	noteDict = [NSDictionary dictionaryWithObjectsAndKeys: 
 		[NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
@@ -4356,7 +4343,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	NSMutableDictionary *imgDict = [NSMutableDictionary dictionaryWithCapacity: [imgObjects count]];
 	NSMutableArray *dcmImgObjects = [NSMutableArray arrayWithCapacity: [imgObjects count]];
 	
-	for ( i = 0; i < [imgObjects count]; i++ ) {
+	for ( unsigned int i = 0; i < [imgObjects count]; i++ ) {
 		DicomImage *imgObj = [imgObjects objectAtIndex: i];
 		[imgDict setObject: imgObj forKey: [imgObj valueForKey: @"sopInstanceUID"]];
 		[dcmImgObjects addObject: [DCMObject objectWithContentsOfFile: [imgObj completePath] decodingPixelData: NO]];
@@ -4369,11 +4356,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 		goto END_CREATE_ROIS;
 	}
 	
-	NSEnumerator *enumerator = [[roiSequence sequence] objectEnumerator];
-	DCMObject *sequenceItem;
 	NSMutableDictionary *roiNames = [NSMutableDictionary dictionary];
 	
-	while ( sequenceItem = [enumerator nextObject] ) {
+	for ( DCMObject *sequenceItem in [roiSequence sequence] ) {
 		[roiNames setValue: [sequenceItem attributeValueWithName: @"ROIName"]
 					forKey: [sequenceItem attributeValueWithName: @"ROINumber"]];
 	}
@@ -4391,11 +4376,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 		
 		NSMutableArray *roiArray[ [imgObjects count] ];  // Array of ROIs for each defined 'image' referenced by the RTSTRUCT
 		
-		for ( i = 0; i < [imgObjects count]; i++ ) roiArray[ i ] = [NSMutableArray arrayWithCapacity: 0];
-		
-		enumerator = [[roiContourSequence sequence] objectEnumerator];
-		
-		while ( sequenceItem = [enumerator nextObject] ) {
+		for ( unsigned int i = 0; i < [imgObjects count]; i++ ) roiArray[ i ] = [NSMutableArray arrayWithCapacity: 0];
+				
+		for ( DCMObject *sequenceItem in [roiContourSequence sequence] ) {
 			
 			float
 				pixSpacingX,
@@ -4416,13 +4399,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 				NSLog( @"contourSequence not found" );
 				goto END_CREATE_ROIS;
 			}
-			
-			DCMObject *contourItem;
-			
-			NSEnumerator *contourEnum = [[contourSequence sequence] objectEnumerator];
-			
-			
-			while ( contourItem = [contourEnum nextObject] ) {
+						
+			for ( DCMObject *contourItem in [contourSequence sequence] ) {
 				
 				DCMSequenceAttribute *contourImageSequence = (DCMSequenceAttribute*)[contourItem attributeWithName: @"ContourImageSequence"];
 				if ( contourImageSequence == nil ) {
@@ -4441,11 +4419,11 @@ BOOL gUSEPAPYRUSDCMPIX;
 								
 				NSArray *dcmPoints = [contourItem attributeArrayWithName: @"ContourData"];
 								
-				unsigned int imgIndex;
-				for ( imgIndex = 0; imgIndex < [imgObjects count]; imgIndex++ ) {  // Loop over all slices to determine if slice "contains" the ROI based on distance criterion of FIRST point
-																				   // This of course assumes that ALL the points in the contour are in the same slice.
-																				   // Not considering at this time the possibility that the contour intersects multiple slices.
-					
+				// Loop over all slices to determine if slice "contains" the ROI based on distance criterion of FIRST point
+				// This of course assumes that ALL the points in the contour are in the same slice.
+				// Not considering at this time the possibility that the contour intersects multiple slices.
+				
+				for ( unsigned int imgIndex = 0; imgIndex < [imgObjects count]; imgIndex++ ) {  
 					DicomImage *img = [imgObjects objectAtIndex: imgIndex];
 					
 					DCMObject *imgObject = [dcmImgObjects objectAtIndex: imgIndex];
@@ -4476,7 +4454,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 					
 					float orients[ 9 ];
 					
-					for ( i = 0; i < 6; i++ ) {
+					for ( unsigned int i = 0; i < 6; i++ ) {
 						orients[ i ] = [[imageOrientation objectAtIndex: i] floatValue];
 					}
 					
@@ -4509,9 +4487,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 						[pointsArray addObject: [MyPoint point:NSMakePoint( sliceCoords[ 0 ], sliceCoords[ 1 ] )]];
 						
 						// Convert rest of points in contour to sliceCoord space
-						int pointIndex;
 						
-						for ( pointIndex = 1; pointIndex < numPoints; pointIndex++ ) {
+						for ( unsigned int pointIndex = 1; pointIndex < numPoints; pointIndex++ ) {
 							temp[ 0 ] = [[dcmPoints objectAtIndex: 3 * pointIndex] floatValue] - posX;
 							temp[ 1 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 1] floatValue] - posY;
 							temp[ 2 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 2] floatValue] - posZ;
@@ -4558,7 +4535,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		
 		NSMutableArray	*newDICOMSR = [NSMutableArray array];
 		
-		for ( i = 0; i < [imgObjects count]; i++ ) {
+		for ( unsigned int i = 0; i < [imgObjects count]; i++ ) {
 			
 			if ( [roiArray[ i ] count] == 0 ) continue;  // Nothing to see, move on.
 						
@@ -5050,9 +5027,7 @@ END_CREATE_ROIS:
 	// Is it a new MR/CT multi-frame exam?
 	DCMSequenceAttribute *sharedFunctionalGroupsSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"SharedFunctionalGroupsSequence"];
 	if (sharedFunctionalGroupsSequence){
-		NSEnumerator *enumerator = [[sharedFunctionalGroupsSequence sequence] objectEnumerator];
-		DCMObject *sequenceItem;
-		while (sequenceItem = [enumerator nextObject]) {
+		for ( DCMObject *sequenceItem in [sharedFunctionalGroupsSequence sequence] ) {
 			
 			//get Image Orientation for sequence
 			DCMSequenceAttribute *planeOrientationSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PlaneOrientationSequence"];

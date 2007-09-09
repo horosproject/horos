@@ -53,7 +53,6 @@
 #include "Papyrus3.h"
 #endif
 
-
 extern PapyShort ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode);
 extern PapyShort ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode);
 extern PapyShort ExtractJPEGlossy16 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode);
@@ -1824,117 +1823,6 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
   return (PapyUShort *) theBufP;
   
 } /* endof Papy3GetPixelData */
-
-
-/********************************************************************************/
-/*										*/
-/*	Extract2Bytes : extract a 2-Bytes value (USS, SS or AT) from the buf and*/
-/*	increment pos accordingly.						*/
-/* 	return : the extracted value						*/
-/*										*/
-/********************************************************************************/
-
-PapyUShort Extract2Bytes (unsigned char *inBufP, PapyULong *ioPosP)
-
-/*unsigned char *inBufP;				 the buffer to read from */
-/*PapyULong 	*ioPosP;			      the position in the buffer */
-{
-  PapyUShort 		theUShort;
-  unsigned char		*theCharP;
-
-
-  /* points to the right place in the buffer */
-  theCharP  = inBufP;
-  theCharP += *ioPosP;
-  /* updates the current position in the read buffer */
-  *ioPosP += 2;
-
-//	if( syntax != BIG_ENDIAN_EXPL)
-	{
-		/* extract the element according to the little-endian syntax */
-		#if __BIG_ENDIAN__
-		theUShort  = (PapyUShort) (*(theCharP + 1));
-		theUShort  = theUShort << 8;
-		theUShort |= (PapyUShort) *theCharP;
-		#else
-		theUShort	= *((PapyUShort*) theCharP);
-		#endif
-	}
-//	else
-//	{
-//		/* extract the element according to the big-endian syntax */
-//		theUShort  = (PapyUShort) (*theCharP);
-//		theUShort  = theUShort << 8;
-//		theUShort |= (PapyUShort) *(theCharP+1);
-//	}
-  
-  return theUShort;
-
-} /* endof Extract2Bytes */
-
-
-
-/********************************************************************************/
-/*										*/
-/*	Extract4Bytes : extract a 4-Bytes value (UL, SL or FL) of the buf and 	*/
-/*	increment pos accordingly.						*/
-/* 	return : the extracted value					 	*/
-/*										*/
-/********************************************************************************/
-
-PapyULong Extract4Bytes (unsigned char *inBufP, PapyULong *ioPosP)
-
-/*unsigned char *inBufP;				 the buffer to read from */
-/*PapyULong 	*ioPosP;			      the position in the buffer */
-{
-  unsigned char	*theCharP;
-  PapyULong	theULong = 0L, theTmpULong;
-    
-    
-  /* points to the right place in the buffer */
-  theCharP  = inBufP;
-  theCharP += *ioPosP;
-  /* updates the current position in the read buffer */
-  *ioPosP += 4;
-
-//	if( syntax != BIG_ENDIAN_EXPL)
-	{
-  /* extract the element according to the little-endian syntax */
-  #if __BIG_ENDIAN__
-  theTmpULong  = (PapyULong) (*(theCharP + 3));
-  theTmpULong  = theTmpULong << 24;
-  theULong    |= theTmpULong;
-  theTmpULong  = (PapyULong) (*(theCharP + 2));
-  theTmpULong  = theTmpULong << 16;
-  theULong    |= theTmpULong;
-  theTmpULong  = (PapyULong) (*(theCharP + 1));
-  theTmpULong  = theTmpULong << 8;
-  theULong    |= theTmpULong;
-  theTmpULong  = (PapyULong) *theCharP;
-  theULong    |= theTmpULong;
-  #else
-  theULong	= *((PapyULong*) theCharP);
-  #endif
-    }
-//	else
-//	{
-//  /* extract the element according to the little-endian syntax */
-//  theTmpULong  = (PapyULong) (*(theCharP + 0));
-//  theTmpULong  = theTmpULong << 24;
-//  theULong    |= theTmpULong;
-//  theTmpULong  = (PapyULong) (*(theCharP + 1));
-//  theTmpULong  = theTmpULong << 16;
-//  theULong    |= theTmpULong;
-//  theTmpULong  = (PapyULong) (*(theCharP + 2));
-//  theTmpULong  = theTmpULong << 8;
-//  theULong    |= theTmpULong;
-//  theTmpULong  = (PapyULong) (*(theCharP + 3));
-//  theULong    |= theTmpULong;
-//	}
-  return theULong;
-    
-} /* endof Extract4Bytes */
-
 
 
 /********************************************************************************/

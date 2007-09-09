@@ -25,7 +25,7 @@
 
 #define ROIDATABASE @"/ROIs/"
 
-inline int charToInt( unsigned char c)
+static inline int charToInt( unsigned char c)
 {
 	switch( c)
 	{
@@ -46,7 +46,7 @@ inline int charToInt( unsigned char c)
 	return c % 12;
 }
 
-inline unsigned char intToChar( int c)
+static inline unsigned char intToChar( int c)
 {
 	switch( c)
 	{
