@@ -261,21 +261,12 @@
 					<key>content</key>
 					<array>
 						<string>DB_study.patientID</string>
-						<string>DB_study.reportURL</string>
 					</array>
 					<key>fullContent</key>
 					<array>
 						<dict>
 							<key>field</key>
 							<string>patientID</string>
-							<key>level</key>
-							<string>study</string>
-							<key>type</key>
-							<string>DB</string>
-						</dict>
-						<dict>
-							<key>field</key>
-							<string>reportURL</string>
 							<key>level</key>
 							<string>study</string>
 							<key>type</key>
