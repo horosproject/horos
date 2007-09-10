@@ -233,6 +233,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	BOOL			zoomIsSoftwareInterpolated;
 	
 	int				resampledBaseAddrSize, blendingResampledBaseAddrSize;
+	
+	NSLock			*drawLock;
 }
 + (void) setDefaults;
 + (void) setCLUTBARS:(int) c ANNOTATIONS:(int) a;
@@ -356,7 +358,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (float) contextualMenuInWindowPosX;
 - (float) contextualMenuInWindowPosY;
 - (BOOL)checkHasChanged;
-- (BOOL)_checkHasChanged:(BOOL)flag;
 - (GLuint)fontListGL;
 - (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY :(long) tW :(long) tH;
 - (void) DrawNSStringGL: (NSString*) cstrOut :(GLuint) fontL :(long) x :(long) y;

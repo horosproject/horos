@@ -3578,7 +3578,8 @@ static ViewerController *draggedController = 0L;
 	[toolbarItem setLabel: NSLocalizedString(@"Broadcast", nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Broadcast", nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"Broadcast", nil)];
-	[toolbarItem setImage: [NSImage imageNamed: iChatBroadCastToolbarItemIdentifier]];
+	[toolbarItem setImage: [NSImage imageNamed: iChatBroadCastToolbarItemIdentifier]]; //	/Applications/iChat/Contents/Resources/Prefs_Camera.icns is maybe a better image...
+//	[toolbarItem setImage: [NSImage imageNamed:NSImageNameIChatTheaterTemplate]];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(iChatBroadcast:)];
     } 
@@ -4397,9 +4398,9 @@ static ViewerController *draggedController = 0L;
 	
 	displayOnlyKeyImages = NO;
 	
-	[[IMService notificationCenter] addObserver:self selector:@selector(_stateChanged:)
-                                           name:IMAVManagerStateChangedNotification object:nil];
+	[[IMService notificationCenter] addObserver:self selector:@selector(_stateChanged:) name:IMAVManagerStateChangedNotification object:nil];
 	[[IMAVManager sharedAVManager] setVideoDataSource:imageView];
+	[[IMAVManager sharedAVManager] setVideoOptimizationOptions:IMVideoOptimizationStills];
 	
 	[imageView setDrawing: YES];
 	
@@ -14036,18 +14037,35 @@ int i,j,l;
 // IMAVManager notification callback.
 - (void)_stateChanged:(NSNotification *)aNotification {
     // Read the state.
-    IMAVManagerState state = [[IMAVManager sharedAVManager] state];
+	NSLog(@"_stateChanged !");
+	IMAVManager *avManager = [IMAVManager sharedAVManager];
+    IMAVManagerState state = [avManager state];
+	NSLog(@"state: %d", state);
+
+    if(state == IMAVRequested)
+	{
+        [avManager start];
+		NSLog(@"Start iChat Theatre");
+	}
+	else if(state == IMAVInactive)
+	{
+		[avManager stop];
+		NSLog(@"STOP iChat Theatre");
+	}
 }
 
 - (void) iChatBroadcast:(id) sender
 {
 	NSLog(@"ichat broadcast");
     IMAVManager *avManager = [IMAVManager sharedAVManager];
-    if ([avManager state] != IMAVRunning) {
+	NSLog(@"[avManager state] : %d", [avManager state]);
+    if ([avManager state] == IMAVInactive) {
         [avManager start];
 		NSLog(@"Start broadcast");
+		NSLog(@"[avManager state] : %d", [avManager state]);
     } else {
         [avManager stop];
+		NSLog(@"STOP broadcast");
     }
 }
 

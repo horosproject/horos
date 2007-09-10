@@ -633,6 +633,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	if(textualBoxLine4) [textualBoxLine4 release];
 	if(textualBoxLine5) [textualBoxLine5 release];
 	
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if( textureName) glDeleteTextures (1, &textureName);
 	
 	[super dealloc];
@@ -921,6 +922,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	xx = x + 1.0f;
 	yy = y + (line + 1.0);
 	
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     glColor3f (0.0, 0.0, 0.0);
 
     glRasterPos3d (xx, yy, 0);
@@ -2587,6 +2589,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			 vec[a][0]*= rad; vec[a][1]*= rad;
 	 }
 
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	 glBegin(mode);
 
 	 /* start with corner right-bottom */
@@ -2740,6 +2743,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	if( moved && ![curView suppressLabels] && [self isTextualDataDisplayed])	// Draw bezier line
 	{
+		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		glLoadIdentity();
 		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);
 		
@@ -2786,6 +2790,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		if( type != tText)
 		{
 			//glEnable(GL_POLYGON_SMOOTH);
+			CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 			glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
@@ -2904,6 +2909,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	float screenXUpL,screenYUpL,screenXDr,screenYDr; // for tPlain ROI
 	
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     glEnable(GL_POINT_SMOOTH);
     glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH);
@@ -4497,6 +4503,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 	[[curView openGLContext] makeCurrentContext];
 
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if(textureName)
 		glDeleteTextures(1, &textureName);
 		

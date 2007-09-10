@@ -266,6 +266,7 @@
 {	
 	if (displayResliceAxes)
 	{
+		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glEnable(GL_BLEND);
 		glEnable(GL_POINT_SMOOTH);

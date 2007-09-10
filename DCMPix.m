@@ -10525,7 +10525,7 @@ BOOL            readable = YES;
 {
 	PapyShort theErr;
 	
-	NSString *field = @"";
+	NSMutableString *field = [NSMutableString string];
 	
 	SElement *inGrOrModP = [self getPapyGroup: group fileNb: fileNb];
 	
@@ -10536,6 +10536,7 @@ BOOL            readable = YES;
 		int j;
 		
 		NSCalendarDate *calendarDate;
+		NSArray *codes = [NSArray arrayWithObjects:@"AE", @"AS", @"AT", @"CS", @"DA", @"DS", @"DT", @"FL", @"FD", @"IS", @"LO", @"LT", @"OB", @"OW", @"PN", @"SH", @"SL", @"SQ", @"SS", @"ST", @"TM", @"UI", @"UL", @"UN", @"USS", @"UT", @"RET", nil];
 		
 		for (j = 0; j < theMaxElem; j++, inGrOrModP++)
 		{
@@ -10544,37 +10545,83 @@ BOOL            readable = YES;
 				if( inGrOrModP->nb_val > 0)
 				{
 					UValue_T *theValueP = inGrOrModP->value;
-					if( theValueP->a)
+					int k;
+					for (k = 0; k < inGrOrModP->nb_val; k++, theValueP++)
 					{
-						field = [NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding];
-						#undef DA
-						#undef DT
-						#undef TM
-						#undef AS
-					
-						if(inGrOrModP->vr==DA)
+						if( theValueP->a)
 						{
-							calendarDate = [DCMCalendarDate dicomDate:field];
-							field = [BrowserController DBDateOfBirthFormat: calendarDate];
+							#undef UL
+							#undef IS
+							#undef SL
+							#undef SS
+							#undef SQ
+							if(inGrOrModP->vr==UL || inGrOrModP->vr==IS || inGrOrModP->vr==SL || inGrOrModP->vr==SS)
+							{
+								[field appendString:[NSString stringWithFormat:@"%d", theValueP->a]];
+							}
+							else if(inGrOrModP->vr==SQ)
+							{
+								NSLog(@"group : %d, element : %d", group, element);
+								//field = @"";
+								//NSLog(@"inGrOrModP->vr==SQ . field = %@", field);
+								
+								NSMutableString *temp = [NSMutableString string];
+								
+								// Loop over sequence
+								if(theValueP->sq!=NULL)
+								{
+									Papy_List *dcmList = theValueP->sq->object->item;
+									while(dcmList!=NULL)
+									{
+										SElement *gr = (SElement *)dcmList->object->group;
+										
+										//if(gr->value)
+										[temp appendString:[self getDICOMFieldValueForGroup:gr->group element:gr->element papyLink:fileNb]];
+										if(gr->value!=NULL) NSLog(@"++**++   ::    %@", [NSString stringWithCString:gr->value->a encoding:NSASCIIStringEncoding]);
+										else NSLog(@"++**++   ::    %@", [NSString stringWithCString:gr->vm encoding:NSASCIIStringEncoding]);
+										dcmList = dcmList->next;
+									}
+								}
+								[field appendString:[NSString stringWithString:temp]];
+								NSLog(@"SQ field : %@", field);
+							}
+							else
+								[field appendString:[NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
+								
+							#undef OB
+							if(inGrOrModP->vr==OB)	
+								NSLog(@"inGrOrModP->vr==OB . field = %@", field);
+														
+							#undef DA
+							#undef DT
+							#undef TM
+							#undef AS
+						
+							if(inGrOrModP->vr==DA)
+							{
+								calendarDate = [DCMCalendarDate dicomDate:field];
+								[field appendString:[BrowserController DBDateOfBirthFormat: calendarDate]];
+							}
+							else if(inGrOrModP->vr==DT)
+							{
+								calendarDate = [DCMCalendarDate dicomDateTime:field];
+								[field appendString:[BrowserController DBDateFormat: calendarDate]];
+							}
+							else if(inGrOrModP->vr==TM)
+							{
+								calendarDate = [DCMCalendarDate dicomTime:field];
+								[field appendString:[BrowserController TimeFormat: calendarDate]];
+							}
+							else if(inGrOrModP->vr==AS)
+							{
+								//Age String Format mmmM,dddD,nnnY ie 018Y
+								int number = [[field substringWithRange:NSMakeRange(0, 3)] intValue];
+								NSString *letter = [field substringWithRange:NSMakeRange(3, 1)];
+								[field appendString:[NSString stringWithFormat:@"%d %@", number, [letter lowercaseString]]];
+							}
+							//break;
 						}
-						else if(inGrOrModP->vr==DT)
-						{
-							calendarDate = [DCMCalendarDate dicomDateTime:field];
-							field = [BrowserController DBDateFormat: calendarDate];
-						}
-						else if(inGrOrModP->vr==TM)
-						{
-							calendarDate = [DCMCalendarDate dicomTime:field];
-							field = [BrowserController TimeFormat: calendarDate];
-						}
-						else if(inGrOrModP->vr==AS)
-						{
-							//Age String Format mmmM,dddD,nnnY ie 018Y
-							int number = [[field substringWithRange:NSMakeRange(0, 3)] intValue];
-							NSString *letter = [field substringWithRange:NSMakeRange(3, 1)];
-							field = [NSString stringWithFormat:@"%d %@", number, [letter lowercaseString]];
-						}
-						break;
+						if(inGrOrModP->nb_val>1 && k<inGrOrModP->nb_val-1)[field appendString:@"\\"];
 					}
 				}
 			}

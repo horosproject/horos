@@ -20,6 +20,7 @@
 #import <OpenGL/glext.h>
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/CGLContext.h>
+#import <OpenGL/CGLMacro.h>
 
 @interface StringTexture : NSObject {
 	CGLContextObj cgl_ctx; // current context at time of texture creation

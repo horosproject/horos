@@ -23,7 +23,6 @@ Version 2.3
 	20060119	SUV
 */
 
-
 #import <DCMView.h>
 #import "StringTexture.h"
 #import <DCMPix.h>
@@ -48,8 +47,11 @@ Version 2.3
 #include <QuickTime/ImageCompression.h> // for image loading and decompression
 #include <QuickTime/QuickTimeComponents.h> // for file type support
 
+#include <OpenGL/CGLMacro.h>
 #include <OpenGL/CGLCurrent.h>
 #include <OpenGL/CGLContext.h>
+
+
 #import <CoreVideo/CoreVideo.h>
 
 #import "DefaultsOsiriX.h"
@@ -273,6 +275,8 @@ static void DrawGLImageTile (unsigned long drawType, float imageWidth, float ima
 		else
 			endYTexCoord = 1.0f -  2.0f * startYTexCoord; // for the last texture in odd size images there are two texels of padding so step in 2
 	}
+	
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	glBegin (drawType); // draw either tri strips of line strips (so this will drw either two tris or 3 lines)
 		glTexCoord2f (startXTexCoord, startYTexCoord); // draw upper left in world coordinates
@@ -642,6 +646,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	if( display2DPoint.x != 0 || display2DPoint.y != 0)
 	{
+		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+		
 		glColor3f (0.0f, 0.5f, 1.0f);
 		glLineWidth(2.0);
 		glBegin(GL_LINES);
@@ -666,6 +672,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void)drawRepulsorToolArea;
 {
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
 	glEnable(GL_BLEND);
 	glDisable(GL_POLYGON_SMOOTH);
 	glDisable(GL_POINT_SMOOTH);
@@ -704,6 +712,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void)drawROISelectorRegion;
 {
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
 	glEnable(GL_BLEND);
 	glDisable(GL_POLYGON_SMOOTH);
 	glDisable(GL_POINT_SMOOTH);
@@ -1232,6 +1242,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		else if(align==DCMViewTextAlignCenter) x -= [stringTex texSize].width/2.0;
 		else x -= 5;
 		
+		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+		
 		glEnable (GL_TEXTURE_RECTANGLE_EXT);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -1263,6 +1275,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		
 		unsigned char	*lstr = (unsigned char*) cstrOut;
+		
+		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		
 		if (fontColor)
 			glColor4f([fontColor redComponent], [fontColor greenComponent], [fontColor blueComponent], [fontColor alphaComponent]);
@@ -1583,6 +1597,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {	
 	NSLog(@"DCMView released");
 	
+	
 	[mouseModifiers release]; 
 	
 	[dcmFilesList release];
@@ -1601,6 +1616,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     [nc removeObserver: self];
 	
 	[[self openGLContext] makeCurrentContext];
+	
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
     glDeleteLists (fontListGL, 150);
 	glDeleteLists(labelFontListGL, 150);
@@ -1655,6 +1672,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( blendingResampledBaseAddr) free( blendingResampledBaseAddr);
 
 //	[self clearGLContext];
+	[drawLock release];
 	
     [super dealloc];
 }
@@ -4607,6 +4625,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) initFont
 {
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
 	fontListGL = glGenLists (150);
 	fontGL = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"FONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"]] retain];
 	if( fontGL == 0L) fontGL = [[NSFont fontWithName:@"Geneva" size:14] retain];
@@ -4758,7 +4778,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //    glHint (GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
 	
 //	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
+	
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
     // This hint is for antialiasing
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
@@ -5386,6 +5408,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     maxTextureSize = 0x7FFFFFFF;
     maxNOPTDTextureSize = 0x7FFFFFFF;
     
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
     // get strings
     enum { kShortVersionLength = 32 };
     const GLubyte * strVersion = glGetString (GL_VERSION); // get version string
@@ -5697,7 +5721,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	long effectiveTextureMod = 0; // texture size modification (inset) to account for borders
 	long x, y, k = 0, offsetY, offsetX = 0, currTextureWidth, currTextureHeight;
-
+	
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity ();
 	
@@ -5996,6 +6022,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	NSManagedObject   *file;
 	file = [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
 	
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		
 	//** TEXT INFORMATION
 	glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
@@ -6772,6 +6799,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	NSSize size = [self frame].size;
 	
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	glLoadIdentity ();
 	glViewport(0, 0, size.width, size.height);
 
@@ -6793,6 +6821,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	@synchronized (self)
 	{
 		[self drawRect:(NSRect)aRect withContext: [self openGLContext]];
+		
+		//CGLContextObj CGL_MACRO_CONTEXT = [self openGLContext];
+		//[self drawRect:(NSRect)aRect withContext:CGL_MACRO_CONTEXT];
+		
+//		CGLContextObj cgl_ctx = [[self openGLContext] CGLContextObj];
+//		[self drawRect:(NSRect)aRect withContext:cgl_ctx];
+
 	}
 }
 
@@ -6800,6 +6835,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	long		clutBars	= CLUTBARS;			//[[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	long		annotations	= ANNOTATIONS;		//[[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
+	
+	if( drawLock == 0L) drawLock = [[NSLock alloc] init];
+	
+	[drawLock lock];
 	
 	if( needToLoadTexture)
 		[self loadTexturesCompute];
@@ -6810,7 +6849,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[self setOriginX: 0 Y: 0];
 	}
 	
-	if ( [NSGraphicsContext currentContextDrawingToScreen] )
+//	if ( [NSGraphicsContext currentContextDrawingToScreen] )
 	{
 		NSPoint offset;
 		
@@ -6825,6 +6864,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( ctx == [self openGLContext]) size = [self frame];
 		else size = aRect;
+		
+		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		
 		glViewport (0, 0, size.size.width, size.size.height); // set the viewport to cover entire window
 		
@@ -7490,6 +7531,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	// Swap buffer to screen
 	//	[[self openGLContext] flushBuffer];
 	[ctx  flushBuffer];
+	
+	[drawLock unlock];
+	
 	(void)[self _checkHasChanged:YES];
 		
 //		GLenum err = glGetError();
@@ -7500,7 +7544,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //		}
 		
 	}  //[NSGraphicsContext currentContextDrawingToScreen] 
-	else  //not drawing to screen
+//	else  //not drawing to screen
 	{
 //        long		width, height;
 //		NSRect		dstRect;
@@ -7675,6 +7719,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				else [self display];
 				
 				[[self openGLContext] makeCurrentContext];
+				
+				CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				
 				#if __BIG_ENDIAN__
 					glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
@@ -8561,6 +8607,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT textureWidth: (long*) tW textureHeight:(long*) tH resampledBaseAddr:(char**) rAddr resampledBaseAddrSize:(int*) rBAddrSize
 {
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
 	if(  rT == 0L)
 	{
 		rT = redTable;
@@ -8580,6 +8628,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
     if( texture)
 	{
+		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+		
 		glDeleteTextures( *tX * *tY, texture);
 		free( (char*) texture);
 		texture = 0L;
@@ -9030,6 +9080,8 @@ BOOL	lowRes = NO;
 - (void) changeGLFontNotification:(NSNotification*) note
 {
 	[[self openGLContext] makeCurrentContext];
+	
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	glDeleteLists (fontListGL, 150);
 	fontListGL = glGenLists (150);
@@ -10102,12 +10154,25 @@ BOOL	lowRes = NO;
 - (BOOL)renderIntoOpenGLBuffer:(CVOpenGLBufferRef)buffer onScreen:(int *)screenInOut forTime:(CVTimeStamp*)timeStamp {
 	// We ignore the timestamp, signifying that we're providing content for 'now'.
 	NSLog(@"renderIntoOpenGLBuffer:");
+	
+	if(!_hasChanged)
+	{
+		NSLog(@"nothing has Changed");
+		return NO;
+	}
+	
 	// Make sure we agree on the screen ID.
  	CGLContextObj cgl_ctx = [_alternateContext CGLContextObj];
 	CGLGetVirtualScreen(cgl_ctx, screenInOut);
+	
+	//CGLContextObj CGL_MACRO_CONTEXT = [_alternateContext CGLContextObj];
+	//CGLGetVirtualScreen(CGL_MACRO_CONTEXT, screenInOut);
+	
 	NSLog(@"get virtual screen");
 	// Attach the OpenGLBuffer and render into the _alternateContext.
-    if (CVOpenGLBufferAttach(buffer, [_alternateContext CGLContextObj], 0, 0, *screenInOut) == kCVReturnSuccess) {
+
+//	if (CVOpenGLBufferAttach(buffer, [_alternateContext CGLContextObj], 0, 0, *screenInOut) == kCVReturnSuccess) {
+	if (CVOpenGLBufferAttach(buffer, cgl_ctx, 0, 0, *screenInOut) == kCVReturnSuccess) {
         // In case the buffers have changed in size, reset the viewport.
         NSDictionary *attributes = (NSDictionary *)CVOpenGLBufferGetAttributes(buffer);
         GLfloat width = [[attributes objectForKey:(NSString *)kCVOpenGLBufferWidth] floatValue];
@@ -10127,6 +10192,7 @@ BOOL	lowRes = NO;
 
 // Callback from IMAVManager asking what pixel format we'll be providing frames in.
 - (void)getPixelBufferPixelFormat:(OSType *)pixelFormatOut {
+	NSLog(@"getPixelBufferPixelFormat");
     *pixelFormatOut = kCVPixelFormatType_32ARGB;
 }
 
@@ -10136,6 +10202,7 @@ BOOL	lowRes = NO;
 //
 // Note that this will be called on a non-main thread. 
 - (BOOL) renderIntoPixelBuffer:(CVPixelBufferRef)buffer forTime:(CVTimeStamp*)timeStamp {
+NSLog(@"renderIntoPixelBuffer");
     // We ignore the timestamp, signifying that we're providing content for 'now'.
 	CVReturn err;
 	
@@ -10188,6 +10255,7 @@ BOOL	lowRes = NO;
 
 - (void) drawImage:(NSImage *)image inBounds:(NSRect)rect
 {
+NSLog(@"drawImage");
     // We synchronise to make sure we're not drawing in two threads
     // simultaneously.
    
@@ -10223,15 +10291,17 @@ BOOL	lowRes = NO;
 
 // Returns the current state of the flag, and sets it to the passed in value.
 - (BOOL)_checkHasChanged:(BOOL)flag {
+	//NSLog(@"_checkHasChanged");
     BOOL hasChanged;
     @synchronized (self) {
-        hasChanged = _hasChanged;
+		hasChanged = _hasChanged;
         _hasChanged = flag;
     }
     return hasChanged;
 }
 
 - (BOOL)checkHasChanged {
+NSLog(@"checkHasChanged");
     // Calling with 'NO' clears _hasChanged after the call (see above).
     return [self _checkHasChanged:NO];
 }

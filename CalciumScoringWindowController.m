@@ -252,6 +252,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		{
 			NSDictionary	*userInfo = [note userInfo];
 			
+			CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			glColor3f (0.0f, 1.0f, 0.5f);
 			glLineWidth(2.0);
 			glBegin(GL_LINES);

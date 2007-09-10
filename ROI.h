@@ -17,7 +17,8 @@
 
 #import <Foundation/Foundation.h>
 #import "MyPoint.h"
-#include <GLUT/glut.h>
+
+#import <OpenGL/CGLMacro.h>
 
 enum
 {

@@ -20,6 +20,8 @@
 #import "ROI.h"
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/CGLCurrent.h>
+#include <OpenGL/CGLContext.h>
+#include <OpenGL/CGLMacro.h>
 #include "math.h"
 #import "wait.h"
 #import "QuicktimeExport.h"
@@ -5027,7 +5029,7 @@ public:
 	buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
 	if( buf)
 	{
-		
+		CGLContextObj cgl_ctx = (CGLContextObj) [[NSOpenGLContext currentContext] CGLContextObj];
 		#if __BIG_ENDIAN__
 			glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 		#else
