@@ -7639,6 +7639,8 @@
 		CECBFF1207539E3900576814 /* SRController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB154F810627413600BD57AF /* SRController.h */; };
 		CECBFF2207539E3900576814 /* MutableArrayCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = AB94E72406343D91003E4C48 /* MutableArrayCategory.h */; };
 		CECBFF2307539E3900576814 /* QuicktimeExport.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0128620635991400A74AA1 /* QuicktimeExport.h */; };
+		CECDBE6A0C95467B006B11A5 /* AnnotationsDefault.plist in Resources */ = {isa = PBXBuildFile; fileRef = CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */; };
+		CECDBE6B0C95467B006B11A5 /* AnnotationsDefault.plist in Resources */ = {isa = PBXBuildFile; fileRef = CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */; };
 		CECEF72E081BB265002ECC99 /* DICOMExport.h in Headers */ = {isa = PBXBuildFile; fileRef = CECEF72C081BB265002ECC99 /* DICOMExport.h */; };
 		CECEF72F081BB265002ECC99 /* DICOMExport.m in Sources */ = {isa = PBXBuildFile; fileRef = CECEF72D081BB265002ECC99 /* DICOMExport.m */; };
 		CECEF730081BB265002ECC99 /* DICOMExport.h in Headers */ = {isa = PBXBuildFile; fileRef = CECEF72C081BB265002ECC99 /* DICOMExport.h */; };
@@ -11612,6 +11614,7 @@
 		CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */ = {isa = PBXFileReference; lastKnownFileType = folder; name = 3DPRESETS; path = Binaries/3DPRESETS; sourceTree = "<group>"; };
 		CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIDatabasePreferencePane.prefPane; path = "Preference Panes/OSIDatabasePreferencePane/build/Development/OSIDatabasePreferencePane.prefPane"; sourceTree = "<group>"; };
 		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AnnotationsDefault.plist; path = Binaries/AnnotationsDefault.plist; sourceTree = "<group>"; };
 		CECEF72C081BB265002ECC99 /* DICOMExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMExport.h; sourceTree = "<group>"; };
 		CECEF72D081BB265002ECC99 /* DICOMExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMExport.m; sourceTree = "<group>"; };
 		CED80C790BF187930058A469 /* AutofillDisabled.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = AutofillDisabled.tif; sourceTree = "<group>"; };
@@ -12090,6 +12093,7 @@
 			isa = PBXGroup;
 			children = (
 				CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */,
+				CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */,
 				CE897DD30C21D951005C669E /* texture.tif */,
 				CEDAAEFA0C7B49B300809161 /* QuicktimeEngine.app */,
 				B78675430AD9C56400731977 /* diameter570frame512.pbm */,
@@ -21256,6 +21260,7 @@
 				CE3F99700C84724B00CB38F1 /* StructuredReport.xib in Resources */,
 				CE3F99710C84724B00CB38F1 /* XMLViewer.xib in Resources */,
 				CE3F99720C84724B00CB38F1 /* AYDicomPrint.xib in Resources */,
+				CECDBE6A0C95467B006B11A5 /* AnnotationsDefault.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21660,6 +21665,7 @@
 				CE3F99A10C84724B00CB38F1 /* StructuredReport.xib in Resources */,
 				CE3F99A20C84724B00CB38F1 /* XMLViewer.xib in Resources */,
 				CE3F99A30C84724B00CB38F1 /* AYDicomPrint.xib in Resources */,
+				CECDBE6B0C95467B006B11A5 /* AnnotationsDefault.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

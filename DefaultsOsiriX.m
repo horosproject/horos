@@ -843,6 +843,11 @@ static NSHost *currentHost = 0L;
 	[dateFormat setTimeStyle: NSDateFormatterShortStyle];
 	[defaultValues setObject: [dateFormat dateFormat] forKey:@"DBDateFormat2"];
 	
+	
+	NSDictionary *defaultAnnotations = [NSDictionary dictionaryWithContentsOfFile: [[NSBundle mainBundle] pathForResource:@"AnnotationsDefault" ofType:@"plist"]];
+	if( defaultAnnotations)
+		[defaultValues setObject: defaultAnnotations forKey:@"CUSTOM_IMAGE_ANNOTATIONS"];
+	
 	// ** SERIESORDER
 	[defaultValues setObject:@"0" forKey:@"SERIESORDER"];
 	

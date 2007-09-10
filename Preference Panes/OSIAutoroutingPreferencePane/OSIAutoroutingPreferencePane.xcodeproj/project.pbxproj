@@ -300,7 +300,7 @@
 					ppc,
 					x86_64,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Development;
