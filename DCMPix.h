@@ -180,38 +180,109 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	NSMutableDictionary *cachedPapyGroups;
 }
 
+@property long frameNo;
+@property(setter=setID:) long ID;
+
+@property float minValueOfSeries, maxValueOfSeries;
+
+// Dimensions in pixels
+@property long pwidth, pheight;
+
+// Is it an RGB image (ARGB) or float image?
+@property(setter=setRGB:) BOOL isRGB; // Note setter is different to not break existing usage. :-(
+
+// Pointer to image data
+@property(setter=setfImage:) float* fImage;
+
+// WW & WL
+@property(readonly) float ww, wl, fullww, fullwl;
+@property float savedWW, savedWL;
+
+@property(readonly) float slope, offset;
+
+// X/Y ratio - non-square pixels
+@property double pixelRatio;
+
+// pixel size
+@property double pixelSpacingX, pixelSpacingY;
+
+// Slice orientation
+- (void)orientation:(float*) c;
+- (void)setOrientation:(float*) c;
+
+- (void)orientationDouble:(double*) c;
+- (void)setOrientationDouble:(double*) c;
+
+// Slice location
+@property(readonly) double originX, originY, originZ;
+
+- (void)setOrigin :(float*) o;
+- (void)setOriginDouble :(double*) o;
+
+// Thickness/Axial Location
+@property double sliceLocation;
+@property double sliceThickness;
+@property double sliceInterval;
+@property(readonly) double spacingBetweenSlices;
+
+// 8-bit TransferFunction
+@property(retain) NSData *transferFunction; 
+
+@property NSPoint subPixOffset;
+
+@property long DCMPixShutterRectWidth, DCMPixShutterRectHeight;
+@property long DCMPixShutterRectOriginX, DCMPixShutterRectOriginY;
+
+@property(copy) NSString *repetitiontime, *echotime;
+@property(readonly) NSString *flipAngle, *laterality;
+
+@property(readonly) NSString *protocolName;
+@property(readonly) NSString *viewPosition;
+@property(readonly) NSString *patientPosition;
+
+@property char* baseAddr;
+
+@property long rowBytes;
+@property(readonly) long serieNo;
+
+@property(getter=Tot, setter=setTot:) long Tot;
+
+@property(readonly) short stack, stackMode;
+@property(readonly) BOOL generated;
+@property(copy) NSString *sourceFile;
+
+//Database links
+@property(readonly) NSManagedObject *imageObj, *seriesObj;
+@property(readonly) NSString *srcFile;
+@property(readonly) NSMutableDictionary *annotationsDictionary;
+
+// Properties (aka accessors) needed for SUV calculations
+@property(readonly) float philipsFactor;
+@property float patientsWeight;
+@property float halflife;
+@property float radionuclideTotalDose;
+@property float radionuclideTotalDoseCorrected;
+@property(retain) NSCalendarDate *acquisitionTime;
+@property(retain) NSCalendarDate *radiopharmaceuticalStartTime;
+@property BOOL SUVConverted;
+@property(readonly) BOOL hasSUV;
+@property float decayFactor;
+@property(copy) NSString *units, *decayCorrection;
+@property BOOL displaySUVValue;
+
+- (void) copySUVfrom: (DCMPix*) from;
+- (float) getPixelValueX: (long) x Y:(long) y;
+
+- (void) checkSUV;
+
 + (void) checkUserDefaults: (BOOL) update;
 + (void) resetUserDefaults;
 + (BOOL) IsPoint:(NSPoint) x inPolygon:(NSPoint*) poly size:(int) count;
 
-// Is it an RGB image (ARGB) or float image?
-- (BOOL) isRGB;
 
-// Pointer to image data
-- (float*) fImage;
-
-// Dimensions in pixels
-- (void) setPwidth:(long) w;
-- (long) pwidth;
-
-- (void) setPheight:(long) h;
-- (long) pheight;
-
-// WL & WW
-- (float) ww;
-- (float) wl;
--(float) fullww;
--(float) fullwl;
-- (float) savedWL;
-- (float) savedWW;
-- (void) setSavedWL:(float) l;
-- (void) setSavedWW:(float) w;
 - (void) changeWLWW:(float)newWL :(float)newWW;
--(void) computePixMinPixMax;
-- (float) maxValueOfSeries;
-- (void) setMaxValueOfSeries: (float) f;
-- (float) minValueOfSeries;
-- (void) setMinValueOfSeries: (float) f;
+- (void) computePixMinPixMax;
+
 // Compute ROI data
 - (int)calciumCofactorForROI:(ROI *)roi threshold:(int)threshold;
 - (void) computeROI:(ROI*) roi :(float *)mean :(float *)total :(float *)dev :(float *)min :(float *)max;
@@ -233,33 +304,6 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (float*) getROIValue :(long*) numberOfValues :(ROI*) roi :(float**) locations;
 - (float*) getLineROIValue :(long*) numberOfValues :(ROI*) roi;
 
-// X/Y ratio - non-square pixels
--(void) setPixelRatio:(float)r;
--(double) pixelRatio;
-
-// pixel size
--(double) pixelSpacingX;
--(double) pixelSpacingY;
--(void) setPixelSpacingX :(double) s;
--(void) setPixelSpacingY :(double) s;
-
-// 8-bit TransferFunction
-- (NSData*) transferFunction;
-- (void) setTransferFunction:(NSData*) tf;
-
-// Slice orientation
--(void) orientation:(float*) c;
--(void) setOrientation:(float*) c;
-
--(void) orientationDouble:(double*) c;
--(void) setOrientationDouble:(double*) c;
-
-// Slice location
--(double) originX;
--(double) originY;
--(double) originZ;
--(void) setOrigin :(float*) o;
--(void) setOriginDouble :(double*) o;
 
 // Utility methods to convert user supplied pixel coords to DICOM patient coords float d[3] (in mm)
 // using current slice location and orientation and vice versa
@@ -271,20 +315,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
 +(int) nearestSliceInPixelList: (NSArray*)pixlist withDICOMCoords: (float*)dc sliceCoords: (float*) sc;  // Return index & sliceCoords
 
-// Thickness/Axial Location
--(double) sliceLocation;
--(void) setSliceLocation:(float) l;
--(double) sliceThickness;
--(void) setSliceThickness:(float) l;
--(double) sliceInterval;
--(void) setSliceInterval :(float) s;
--(double) spacingBetweenSlices;
 
-// ID / FrameNo
--(long) ID;
-- (void) setID :(long) i;
-- (long) frameNo;
-- (void) setFrameNo:(long) f;
+
 - (BOOL) thickSlabVRActivated;
 - (void) ConvertToBW:(long) mode;
 - (void) ConvertToRGB:(long) mode :(long) cwl :(long) cww;
@@ -299,8 +331,6 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 //DSA
 - (void) setSubSlidersPercent: (float) p gamma: (float) g zero: (float) z;
 - (void) setSubSlidersPercent: (float) p;
-- (NSPoint) subPixOffset;
-- (void) setSubPixOffset:(NSPoint) subOffset;
 - (NSPoint) subMinMax:(float*)input :(float*)subfImage;
 - (void) setSubtractedfImage:(float*)mask :(NSPoint)smm;
 - (float*) subtractImages:(float*)input :(float*)subfImage;
@@ -319,24 +349,11 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (void) setBlackIndex:(int) i;
 + (NSImage*) resizeIfNecessary:(NSImage*) currentImage dcmPix: (DCMPix*) dcmPix;
 -(void) DCMPixShutterRect:(long)x:(long)y:(long)w:(long)h;
--(long) DCMPixShutterRectWidth;
--(long) DCMPixShutterRectHeight;
--(long) DCMPixShutterRectOriginX;
--(long) DCMPixShutterRectOriginY;
 -(BOOL) DCMPixShutterOnOff;
 -(void) DCMPixShutterOnOff:(BOOL)newDCMPixShutterOnOff;
 - (void) computeTotalDoseCorrected;
 - (void) copyFromOther:(DCMPix *) fromDcm;
 - (void) imageArithmeticMultiplication:(DCMPix*) sub;
-- (NSString*) repetitiontime;
-- (NSString*) echotime;
-- (NSString*) flipAngle;
-- (NSString*) laterality;
-- (void) setRepetitiontime:(NSString*)rep;
-- (void) setEchotime:(NSString*)echo;
-- (NSString*) protocolName;
-- (NSString*) viewPosition;
-- (NSString*) patientPosition;
 - (void) setRGB : (BOOL) val;
 - (void) setConvolutionKernel:(short*)val :(short) size :(short) norm;
 - (void) applyConvolutionOnSourceImage;
@@ -344,110 +361,35 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (BOOL) updateToApply;
 - (id) myinitEmpty;
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss;
-/*		s == File Path
-		pos == Image ID (Number)
-		tot == number of IMages?
-		ptr == ptr to volume
-		f == frame number
-		ss == series number
-		hello == Bonjour
-		imageObj (iO) == image core data object
-
-- (id) initWithContentsOfFile:(NSString*) s 
-							imageID:(long) pos 
-							numberOfImages:(long) tot 
-							volume:(float*) ptr 
-							frameNumber:(long) f 
-							seriesNumber:(long) ss 
-							isBonjour:(BOOL) hello 
-					imageObj: (NSManagedObject*) iO;
-*/					
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO;
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ;
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize;
 - (NSImage*) computeWImage: (BOOL) smallIcon :(float)newWW :(float)newWL;
 - (NSImage*) image;
 - (NSImage*) getImage;
-- (char*) baseAddr;
-- (void) setBaseAddr :( char*) ptr;
 - (void) orientation:(float*) c;
 - (void) setOrientation:(float*) c;
 - (short*) oImage;
 - (void) kill8bitsImage;
 - (void) checkImageAvailble:(float)newWW :(float)newWL;
--(long) rowBytes;
--(void) setRowBytes:(long) rb;
 - (BOOL)loadDICOMDCMFramework;
 - (BOOL) loadDICOMPapyrus;
 - (void) CheckLoadIn;
 - (void) CheckLoad;
 - (float*) computefImage;
--(float) slope;
--(float) offset;
--(long) serieNo;
--(long) Tot;
--(void) setTot: (long) tot;
 -(void) setFusion:(short) m :(short) s :(short) direction;
--(short) stack;
--(short) stackMode;
-- (long) rowBytes;
-- (void) setRowBytes:(long) rb;
-- (float) fullww;
-- (float) fullwl;
-- (void)setSourceFile:(NSString*)s;
--(NSString*) sourceFile;
 -(void) setUpdateToApply;
--(void) revert;
-- (NSString*) sourceFile;
 - (void) setUpdateToApply;
-- (void) revert;
+- (void)revert;
 - (void) computePixMinPixMax;
-- (void) setfImage:(float*) ptr;
 - (void) setThickSlabController:( ThickSlabController*) ts;
 - (void) setFixed8bitsWLWW:(BOOL) f;
-- (BOOL) generated;
 - (void) prepareRestore;
 - (void) freeRestore;
 + (void) setRunOsiriXInProtectedMode:(BOOL) v;
 + (BOOL) isRunOsiriXInProtectedModeActivated;
-
-//Database links
-- (NSManagedObject *)imageObj;
-- (NSManagedObject *)seriesObj;
-
-// Accessor methods needed for SUV calculations
-- (float) philipsFactor;
-- (float) patientsWeight;
-- (void) setPatientsWeight : (float) v;
-- (float) halflife;
-- (void) setHalflife : (float) v;
-- (float) radionuclideTotalDose;
-- (void) setRadionuclideTotalDose : (float) v;
-- (float) radionuclideTotalDoseCorrected;
-- (void) setRadionuclideTotalDoseCorrected : (float) v;
-- (NSCalendarDate*) acquisitionTime;
-- (void) setAcquisitionTime : (NSCalendarDate*) d;
-- (NSCalendarDate*) radiopharmaceuticalStartTime;
-- (void) setRadiopharmaceuticalStartTime : (NSCalendarDate*) d;
-- (void) setSUVConverted : (BOOL) v;
-- (BOOL) SUVConverted;
-- (float) decayFactor;
-- (void) setDecayFactor: (float) f;
-- (NSString*) units;
-- (NSString*) decayCorrection;
-- (void) setDecayCorrection : (NSString*) s;
-- (void) checkSUV;
-- (BOOL) hasSUV;
-- (BOOL) displaySUVValue;
-- (void) setDisplaySUVValue : (BOOL) v;
-- (void) copySUVfrom: (DCMPix*) from;
-- (void)setUnits: (NSString *) s;
-- (float) getPixelValueX: (long) x Y:(long) y;
 - (void) clearCachedPapyGroups;
 - (void *) getPapyGroup: (int) group fileNb: (int) fileNb;
-- (NSString *)srcFile;
-
-- (NSMutableDictionary*) annotationsDictionary;
 
 //RTSTRUCT
 - (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject;

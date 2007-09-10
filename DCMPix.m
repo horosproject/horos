@@ -993,6 +993,48 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 @implementation DCMPix
 
+@synthesize frameNo;
+@synthesize minValueOfSeries, maxValueOfSeries;
+@synthesize isRGB;
+@synthesize pwidth = width, pheight = height;
+@synthesize pixelRatio;
+@synthesize transferFunction;
+@synthesize subPixOffset;
+
+@synthesize DCMPixShutterRectWidth = shutterRect_w;
+@synthesize DCMPixShutterRectHeight = shutterRect_h;
+@synthesize DCMPixShutterRectOriginX = shutterRect_x;
+@synthesize DCMPixShutterRectOriginY = shutterRect_y;
+
+@synthesize repetitiontime, echotime;
+@synthesize flipAngle, laterality;
+@synthesize protocolName, viewPosition, patientPosition;
+
+@synthesize rowBytes;
+@synthesize serieNo;
+
+@synthesize stackMode;
+@synthesize generated;
+@synthesize sourceFile;
+@synthesize imageObj;
+@synthesize srcFile;
+@synthesize annotationsDictionary;
+
+// SUV properties
+@synthesize philipsFactor;
+@synthesize patientsWeight;
+@synthesize halflife;
+@synthesize radionuclideTotalDose;
+@synthesize radionuclideTotalDoseCorrected;
+@synthesize acquisitionTime;
+@synthesize radiopharmaceuticalStartTime;
+@synthesize SUVConverted;
+@synthesize hasSUV;
+@synthesize decayFactor;
+@synthesize units;
+@synthesize decayCorrection;
+@synthesize displaySUVValue;
+
 + (BOOL) IsPoint:(NSPoint) x inPolygon:(NSPoint*) pts size:(int) no
 {
 	if( pnpoly( pts, no, x.x, x.y))
@@ -2704,64 +2746,66 @@ BOOL gUSEPAPYRUSDCMPIX;
 	if( fVolImage) fVolImage = fImage;
 }
 
--(float*) fImage
-{
+- (float*)fImage {
     [self CheckLoad];
     return fImage;
 }
 
--(void) setPixelSpacingX :(double) s
-{
-	[self CheckLoad];
+- (double)pixelRatio { [self CheckLoad]; return pixelRatio; }
+
+- (double)pixelSpacingY { [self CheckLoad]; return pixelSpacingY; }
+- (double)pixelSpacingX { [self CheckLoad]; return pixelSpacingX; }
+
+- (void)setPixelSpacingX :(double) s { [self CheckLoad];
 	pixelSpacingX = s;
 }
 
--(void) setPixelSpacingY :(double) s
-{
+- (void)setPixelSpacingY :(double) s {
 	[self CheckLoad];
 	pixelSpacingY = s;
 }
 
--(double) originX { [self CheckLoad]; return originX;}
--(double) originY { [self CheckLoad]; return originY;}
--(double) originZ { [self CheckLoad]; return originZ;}
--(void) setOrigin :(float*) o
-{
-	originX = o[ 0];	originY = o[ 1];	originZ = o[ 2];
+- (double)originX { [self CheckLoad]; return originX;}
+- (double)originY { [self CheckLoad]; return originY;}
+- (double)originZ { [self CheckLoad]; return originZ;}
+
+- (void)setOrigin: (float*)o { originX = o[ 0]; originY = o[ 1]; originZ = o[ 2]; }
+- (void)setOriginDouble: (double*)o { originX = o[ 0]; originY = o[ 1]; originZ = o[ 2]; };
+
+- (double)sliceLocation{ [self CheckLoad]; return sliceLocation;}
+- (void)setSliceLocation: (double)l { [self CheckLoad]; sliceLocation = l;}
+- (double)sliceThickness { [self CheckLoad]; return sliceThickness;}
+- (void)setSliceThickness: (double)l { [self CheckLoad]; sliceThickness = l;}
+- (double) spacingBetweenSlices { [self CheckLoad]; return spacingBetweenSlices;}
+
+- (double)sliceInterval { [self CheckLoad]; return sliceInterval; }
+- (void)setSliceInterval: (double)s { [self CheckLoad]; sliceInterval = s; }
+
+- (float)slope { [self CheckLoad]; return slope; }
+- (float)offset { [self CheckLoad]; return offset; }
+
+// WW & WL
+- (float)ww { [self CheckLoad]; return ww; }
+- (float)wl { [self CheckLoad]; return wl; }
+
+- (float)fullww {
+	if( fullww == 0 && fullwl == 0) [self computePixMinPixMax];
+	return fullww;
 }
--(void) setOriginDouble :(double*) o
-{
-	originX = o[ 0];	originY = o[ 1];	originZ = o[ 2];
+
+- (float)fullwl {
+	if( fullww == 0 && fullwl == 0) [self computePixMinPixMax];
+	return fullwl;
 }
--(double) pixelSpacingY { [self CheckLoad]; return pixelSpacingY;}
--(double) pixelSpacingX { [self CheckLoad]; return pixelSpacingX;}
--(double) pixelRatio { [self CheckLoad]; return pixelRatio;}
--(void) setPixelRatio:(float) r { pixelRatio = r;}
--(double) sliceLocation { [self CheckLoad]; return sliceLocation;}
--(void) setSliceLocation:(float) l { [self CheckLoad]; sliceLocation = l;}
--(double) sliceThickness { [self CheckLoad]; return sliceThickness;}
--(double) spacingBetweenSlices { [self CheckLoad]; return spacingBetweenSlices;}
--(void) setSliceThickness:(float) l { [self CheckLoad]; sliceThickness = l;}
--(float) slope {[self CheckLoad]; return slope;}
--(float) offset{[self CheckLoad]; return offset;}
-- (float) savedWL {[self CheckLoad]; return savedWL;}
-- (float) savedWW {[self CheckLoad]; return savedWW;}
-- (void) setSavedWL:(float) l {[self CheckLoad]; savedWL = l;}
-- (void) setSavedWW:(float) w {[self CheckLoad]; savedWW = w;}
+
+- (float)savedWL { [self CheckLoad]; return savedWL; }
+- (float)savedWW { [self CheckLoad]; return savedWW; }
+- (void)setSavedWL: (float)l { [self CheckLoad]; savedWL = l; }
+- (void)setSavedWW: (float)w { [self CheckLoad]; savedWW = w; }
 
 
 -(float) cineRate {[self CheckLoad]; return cineRate;}
 
--(float) fullwl
-{
-	if( fullww == 0 && fullwl == 0) [self computePixMinPixMax];
-	return fullwl;
-}
--(float) fullww
-{
-	if( fullww == 0 && fullwl == 0) [self computePixMinPixMax];
-	return fullww;
-}
 
 -(id) myinitEmpty
 {
@@ -2958,15 +3002,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 {
 	return [self initwithdata: im :pixelSize :xDim :yDim :xSpace :ySpace :oX :oY :oZ :NO];
 }
-
--(long) frameNo { return frameNo;}
--(void) setFrameNo:(long) f
-{
-	frameNo = f;
-}
--(long) serieNo { return serieNo;}
--(BOOL) generated { return generated;}
-
 
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO
 {	
@@ -3176,40 +3211,6 @@ BOOL gUSEPAPYRUSDCMPIX;
     return copy;
 }
 
--(void) setRGB : (BOOL) val
-{
-	isRGB = val;
-}
-
--(BOOL) isRGB
-{
-	return isRGB;
-}
-
-- (NSString*) repetitiontime {return repetitiontime;}
-- (NSString*) laterality {return laterality;}
-- (NSString*) echotime {return echotime;}
-- (NSString*) flipAngle {return flipAngle;}
-- (void) setRepetitiontime:(NSString*)rep
-{
-	if( rep != repetitiontime)
-	{
-		[repetitiontime release];
-		repetitiontime = [rep retain];
-	}
-}
-- (void) setEchotime:(NSString*)echo
-{
-	if( echo != echotime)
-	{
-		[echotime release];
-		echotime = [echo retain];
-	}
-}
-- (NSString*) protocolName {return protocolName;}
-- (NSString*) viewPosition {return viewPosition;}
-- (NSString*) patientPosition {return patientPosition;}
-
 - (char*) UncompressDICOM : (NSString*) file :( long) imageNb
 {
 	char			*data = 0L;
@@ -3258,13 +3259,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 }
 
 
--(void) setSliceInterval :(float) s
-{
-	[self CheckLoad];
-	sliceInterval = s;
-}
-
--(double) sliceInterval {    [self CheckLoad];   return sliceInterval;}
 
 #include "BioradHeader.h"
 
@@ -4202,31 +4196,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 	float timebetween = -[radiopharmaceuticalStartTime timeIntervalSinceDate: acquisitionTime];
 	if( halflife > 0 && timebetween > 0) radionuclideTotalDoseCorrected = radionuclideTotalDose * exp( -timebetween * logf(2)/halflife);
 	else NSLog(@"ERROR IN computeTotalDoseCorrected");
-}
-
-- (void) checkSUV
-{
-	hasSUV = NO;
-	
-	if ( ![[self units] isEqualToString: @"BQML"] && ![[self units] isEqualToString: @"CNTS"] ) return;  // Must be BQ/cc
-	
-	if( [[self units] isEqualToString: @"CNTS"] && philipsFactor == 0.0) return;
-	
-	if ( [self decayCorrection] == nil ) return;
-	
-	if( decayFactor == 0L) return;
-	
-	if ( [[self decayCorrection] isEqualToString: @"START"] == NO ) return;
-	
-	if ( [self radionuclideTotalDose] <= 0.0 ) return;	
-
-	if( halflife <= 0) return;
-	
-	if( acquisitionTime == 0L || radiopharmaceuticalStartTime == 0L) return;
-	
-//	if ( [curDCM patientsWeight] <= 0.0 ) return;		// <- This can be manually filled later
-	
-	hasSUV = YES;
 }
 
 - (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject {
@@ -8738,18 +8707,14 @@ BOOL            readable = YES;
 	[checking unlock];
 }
 
-- (void) setBaseAddr :( char*) ptr
-{
+- (void)setBaseAddr: (char*) ptr {
 	baseAddr = ptr;
 	[image SetxNSImage: (unsigned char*) baseAddr];
 }
 
-- (char*) baseAddr
-{
+- (char*)baseAddr {
     [self CheckLoad];
-	
-	if( baseAddr == 0L) [self computeWImage: NO: ww :wl];
-	
+	if( baseAddr == nil ) [self computeWImage: NO: ww :wl];
     return baseAddr;
 }
 
@@ -8896,16 +8861,7 @@ BOOL            readable = YES;
 	fullww = (pixmax - pixmin);
 }
 
--(short) stackMode
-{
-	return stackMode;
-}
-
--(short) stack
-{
-	if( stackMode == 0) return 1;
-	return stack;
-}
+- (short)stack { if( stackMode == 0 ) return 1; return stack; }
 
 -(void) setFusion:(short) m :(short) s :(short) direction
 {
@@ -9283,9 +9239,7 @@ BOOL            readable = YES;
 	[self setSubSlidersPercent: p gamma: subtractedfGamma zero: subtractedfZ];
 }
 
--(NSPoint) subPixOffset {return subPixOffset;}
-- (void) setSubPixOffset:(NSPoint) subOffset;
-{
+- (void)setSubPixOffset:(NSPoint) subOffset {
 	subPixOffset = subOffset;
 	updateToBeApplied = YES;
 }
@@ -9380,10 +9334,6 @@ BOOL            readable = YES;
 	shutterRect_w = w;
 	shutterRect_h = h;
 }
--(long) DCMPixShutterRectWidth {return shutterRect_w;}
--(long) DCMPixShutterRectHeight {return shutterRect_h;}
--(long) DCMPixShutterRectOriginX {return shutterRect_x;}
--(long) DCMPixShutterRectOriginY {return shutterRect_y;}
 
 -(BOOL) DCMPixShutterOnOff  {return DCMPixShutterOnOff;}
 -(void) DCMPixShutterOnOff:(BOOL)newDCMPixShutterOnOff
@@ -9747,15 +9697,8 @@ BOOL            readable = YES;
 	return result;
 }
 
-- (NSData*) transferFunction
-{
-	return transferFunction;
-}
-
-- (void) setTransferFunction:(NSData*) tf
-{
-	if( transferFunction != tf)
-	{
+- (void)setTransferFunction:(NSData*) tf {
+	if( transferFunction != tf) {
 		[transferFunction release];
 		transferFunction = [tf retain];
 		
@@ -10116,81 +10059,36 @@ BOOL            readable = YES;
     return image;
 }
 
--(float) ww
-{
-	[self CheckLoad];
-    return ww;
-}
+- (long)ID { return imID; }
+- (void)setID: (long)i { imID = i; }
 
--(long) ID
-{
-    return imID;
-}
-
-- (void) setID :(long) i
-{
-	imID = i;
-}
-
--(long) Tot
-{
+- (long)Tot {
 	[self CheckLoad];
     return imTot;
 }
 
--(void) setTot: (long) tot
-{
+-(void)setTot: (long) tot {
 	[self CheckLoad];
 	imTot = tot;
 }
 
--(float) wl
-{
-	[self CheckLoad];
-    return wl;
-}
-
--(long) pwidth
+-(long)pwidth
 {
 	[self CheckLoad];
     return width;
 }
 
--(long) pheight
+-(long)pheight
 {
 	[self CheckLoad];
     return height;
 }
 
-- (void) setPheight:(long) h
-{
-	height = h;
-}
+- (long)rowBytes { [self CheckLoad]; return rowBytes; }
 
-- (void) setPwidth:(long) w
-{
-	width = w;
-}
-
--(void) setRowBytes:(long) rb
-{
-	rowBytes = rb;
-}
-
--(long) rowBytes
-{
-	[self CheckLoad];
-    return rowBytes;
-}
-
--(void) setUpdateToApply
-{
-	updateToBeApplied = YES;
-}
+- (void)setUpdateToApply { updateToBeApplied = YES; }
 
 -(BOOL) updateToApply { return updateToBeApplied;}
-
-
 
 -(void) setConvolutionKernel:(short*)val :(short) size :(short) norm;
 {
@@ -10329,143 +10227,9 @@ BOOL            readable = YES;
 }
 
 
-// Accessor methods needed for SUV calculations
+// SUV stuff
 #pragma mark-
 #pragma mark SUV
-- (NSString *)units {
-	return units;
-}
-
-- (void)setUnits: (NSString *) s {
-	[units release];
-	units = [s retain]; 
-}
-
-- (NSString *)decayCorrection {
-	return decayCorrection;
-}
-
-- (float) decayFactor
-{
-	return decayFactor;
-}
-
-- (void) setDecayFactor: (float) f
-{
-	decayFactor = f;
-}
-
-- (void) setDecayCorrection : (NSString*) s
-{
-	[decayCorrection release];
-	decayCorrection = [s retain];
-}
-
-- (float) radionuclideTotalDose {
-	return radionuclideTotalDose;
-}
-
-- (float) radionuclideTotalDoseCorrected {
-	return radionuclideTotalDoseCorrected;
-}
-
-- (float) patientsWeight {
-	return patientsWeight;
-}
-
-- (void) setRadionuclideTotalDose: (float) v {
-	radionuclideTotalDose = v;
-}
-
-- (void) setRadionuclideTotalDoseCorrected: (float) v {
-	radionuclideTotalDoseCorrected = v;
-}
-
-- (void) setPatientsWeight: (float) v {
-	 patientsWeight = v;
-}
-
--(NSCalendarDate*) acquisitionTime
-{
-	return acquisitionTime;
-}
-
--(void) setAcquisitionTime : (NSCalendarDate*) d
-{
-	[acquisitionTime release];
-	acquisitionTime = [d retain];
-}
-
--(NSCalendarDate*) radiopharmaceuticalStartTime
-{
-	return radiopharmaceuticalStartTime;
-}
-
--(void) setRadiopharmaceuticalStartTime : (NSCalendarDate*) d
-{
-	[radiopharmaceuticalStartTime release];
-	radiopharmaceuticalStartTime = [d retain];
-}
-
-- (BOOL) SUVConverted
-{
-	return SUVConverted;
-}
-
-- (void) setSUVConverted: (BOOL) v
-{
-	SUVConverted = v;
-}
-
-- (float) philipsFactor
-{
-	return philipsFactor;
-}
-
-- (BOOL) hasSUV
-{
-	return hasSUV;
-}
-
-- (BOOL) displaySUVValue
-{
-	return displaySUVValue;
-}
-
-- (void) setDisplaySUVValue : (BOOL) v
-{
-	displaySUVValue = v;
-}
-
-- (float) halflife
-{
-	return halflife;
-}
-
-- (void) setHalflife: (float) f
-{
-	halflife = f;
-}
-
-- (float) maxValueOfSeries
-{
-	return maxValueOfSeries;
-}
-
-- (void) setMaxValueOfSeries: (float) f
-{
-	maxValueOfSeries = f;
-}
-
-- (float) minValueOfSeries
-{
-	return minValueOfSeries;
-}
-
-- (void) setMinValueOfSeries: (float) f
-{
-	minValueOfSeries = f;
-}
 
 -(void) copySUVfrom:(DCMPix*) from
 {
@@ -10485,21 +10249,34 @@ BOOL            readable = YES;
 	[self checkSUV];
 }
 
+- (void) checkSUV
+{
+	hasSUV = NO;
+	
+	if ( ![[self units] isEqualToString: @"BQML"] && ![[self units] isEqualToString: @"CNTS"] ) return;  // Must be BQ/cc
+	
+	if( [[self units] isEqualToString: @"CNTS"] && philipsFactor == 0.0) return;
+	
+	if ( [self decayCorrection] == nil ) return;
+	
+	if( decayFactor == 0L) return;
+	
+	if ( [[self decayCorrection] isEqualToString: @"START"] == NO ) return;
+	
+	if ( [self radionuclideTotalDose] <= 0.0 ) return;	
+	
+	if( halflife <= 0) return;
+	
+	if( acquisitionTime == 0L || radiopharmaceuticalStartTime == 0L) return;
+		
+	hasSUV = YES;
+}
+
+
 #pragma mark -
 #pragma mark Database links
 
-- (NSManagedObject *)imageObj{
-	return imageObj;
-}
-
-- (NSManagedObject *)seriesObj{
-	return [imageObj valueForKey:@"series"];
-}
-
-- (NSString *)srcFile
-{
-	return srcFile;
-}
+- (NSManagedObject*)seriesObj { return [imageObj valueForKey:@"series"]; }
 
 - (NSString *)description {
 	NSMutableString *description = [NSMutableString string];
@@ -10663,11 +10440,6 @@ BOOL            readable = YES;
 			return nil;
 	}
 	return nil;
-}
-
-- (NSMutableDictionary*) annotationsDictionary;
-{
-	return annotationsDictionary;
 }
 
 @end
