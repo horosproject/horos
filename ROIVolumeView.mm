@@ -332,29 +332,71 @@
 		if (NO)
 		{
 			vtkPolyData *medialSurface;
-			medialSurface = power->GetMedialSurface();
 			power->Update();
-			int i;
+			medialSurface = power->GetMedialSurface();
+			polyDataNormals->SetInput(medialSurface);
+		
 			isoDeci = vtkDecimatePro::New();
 			isoDeci->SetInput(medialSurface);
 			isoDeci->SetTargetReduction(0.9);
-			polyDataNormals->SetInput(isoDeci->GetOutput());
-			//polyDataNormals->SetInput(medialSurface);
-			/*
+			//polyDataNormals->SetInput(isoDeci->GetOutput());
+		
+			
 			isoDeci->Update();
 			vtkPolyData *data = isoDeci->GetOutput();
+			NSLog(@"Build Links");
+			data->BuildLinks();
+			//NSLog(@"build Cells");
+			//data->BuildCells();
 			vtkPoints *medialPoints = data->GetPoints();
 			int nPoints = data->GetNumberOfPoints();
-			vtkCellLinks *links = vtkCellLinks::New();
-			links->BuildLinks(data);
-			for (i = 0; i < nPoints; i++) {				
-				unsigned short nLinks = links->GetNcells(i);
-				vtkIdType *cells = links->GetCells(i);
-				if (i % 500 == 0)
-					NSLog(@"%d  Cells  links to  %d", nLinks, i);
+			NSLog(@"Decimated Points: %d", nPoints);
+			NSLog(@"Polys: %d", data-> GetNumberOfPolys());
+			vtkIdType i;
+			int j, k, neighbors;			
+			double x , y, z;
+			// get all cells around a point
+			for (i = 0; i < nPoints; i++) {	
+				unsigned short ncells;
+				vtkIdType *cells;
+				//int j = 0;
+				neighbors = 0;
+				double *position = medialPoints->GetPoint(i);
+				//NSLog(@"get Point");
+				x = position[0];
+				y = position[1];
+				z = position[2];
+				data->GetPointCells	(i, ncells, cells);	
+				if (i % 500 == 0) {
+						NSLog(@"%d  Cells  links to  %d", ncells, i);
+					// get all points for a cell
+					for (j = 0;  j < ncells; j++) {
+						int numPoints;
+						//vtkIdType *cellPoints;
+						
+						vtkPoints *cellPoints = data->GetCell(cells[i])->GetPoints();
+						numPoints = data->GetCell(cells[i])->GetNumberOfPoints();
+						NSLog(@"get Cell Points: %d", numPoints);
+						// add values
+						 for (k = 0; k < numPoints; k++) {						
+							position = cellPoints->GetPoint(k);
+							x += position[0];
+							y += position[1];
+							z += position[2];
+							neighbors++;
+						 }
+					}
+				}
+				// get average
+				x /= neighbors;
+				y /= neighbors;
+				z /= neighbors;
+				// Set Point
+				medialPoints->SetPoint(i, x ,y ,z);
+
 			}
-			*/
 			
+		
 			NSLog(@"Medial Surface number of Polygons: %d", medialSurface->GetNumberOfPolys());
 			NSLog(@"Medial Surface number of Points: %d", medialSurface->GetNumberOfPoints());
 
