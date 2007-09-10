@@ -2765,7 +2765,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 -(id) myinitEmpty
 {
-	//NSLog(@"myInitEmpty");
+	cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
 	displaySUVValue = NO;
 	fixed8bitsWLWW = NO;
 	checking = [[NSLock alloc] init];
@@ -2821,7 +2821,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 	if( self = [super init])
     {
 		[DCMPix checkUserDefaults: NO];
-
+		
+		cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
+		
 		acquisitionTime = 0L;
 		radiopharmaceuticalStartTime = 0L;
 		radionuclideTotalDose = 0;
@@ -2975,7 +2977,9 @@ BOOL gUSEPAPYRUSDCMPIX;
     if( self = [super init])
     {
 		[DCMPix checkUserDefaults: NO];
-				
+		
+		cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
+		
 		//-------------------------received parameters
 		srcFile = s;
 		imID = pos;
@@ -5613,7 +5617,45 @@ END_CREATE_ROIS:
 //	#endif
 }
 
+- (void*) getPapyGroup: (int) group fileNb: (int) fileNb
+{
+	NSString *groupKey = [NSString stringWithFormat:@"%d", group];
+	
+	if( [cachedPapyGroups valueForKey: groupKey] == 0L)
+	{
+		int theErr = 0;
+		
+		if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+		
+		if( theErr == 0)
+		{
+			SElement *theGroupP = 0L;
+			
+			theErr = Papy3GotoGroupNb (fileNb, group);
+			
+			if( theErr >= 0 && Papy3GroupRead(fileNb, &theGroupP) > 0)
+			{
+				[cachedPapyGroups setValue: [NSValue valueWithPointer: theGroupP]  forKey: groupKey];
+				
+				return theGroupP;
+			}
+		}
+	}
+	else return [[cachedPapyGroups valueForKey: groupKey] pointerValue];
+	
+	return 0L;
+}
 
+- (void) clearCachedPapyGroups
+{
+	for( NSValue *pointer in [cachedPapyGroups allValues])
+	{
+		SElement *theGroupP = (SElement*) [pointer pointerValue];
+		Papy3GroupFree ( &theGroupP, TRUE);
+	}
+	
+	[cachedPapyGroups removeAllObjects];
+}
 
 - (BOOL) loadDICOMPapyrus // PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 {
@@ -5633,8 +5675,10 @@ END_CREATE_ROIS:
 //		return YES;
 //	}
 	
+	[self clearCachedPapyGroups];
+	
 	[PapyrusLock lock];
-
+	
 	if( convertedDICOM)
 	{
 		fileNb = Papy3FileOpen ( (char*) [convertedDICOM UTF8String], (PAPY_FILE) 0, TRUE, 0);
@@ -5693,8 +5737,8 @@ END_CREATE_ROIS:
 		[self loadCustomImageAnnotationsPapyLink:fileNb DCMLink:nil];
 		#endif
 		
-		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0008);
-		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+		theGroupP = (SElement*) [self getPapyGroup: 0x0008 fileNb: fileNb];
+		if( theGroupP)
 		{
 			val = Papy3GetElement (theGroupP, papRecommendedDisplayFrameRateGr, &nbVal, &elemType );
 			if (val != NULL) cineRate = [[NSString stringWithCString:val->a] floatValue];	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
@@ -5710,22 +5754,18 @@ END_CREATE_ROIS:
 				[cd release];
 				[cc release];
 			}
-			
-			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
 		
-		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0010);
-		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+		theGroupP = (SElement*) [self getPapyGroup: 0x0010 fileNb: fileNb];
+		if( theGroupP)
 		{
 			val = Papy3GetElement (theGroupP, papPatientsWeightGr, &nbVal, &elemType);
 			if (val != NULL) patientsWeight = [[NSString stringWithCString:val->a] floatValue];
 			else patientsWeight = 0;
-			
-			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
 		
-		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0018);
-		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+		theGroupP = (SElement*) [self getPapyGroup: 0x0018 fileNb: fileNb];
+		if( theGroupP)
 		{
 			val = Papy3GetElement (theGroupP, papSliceThicknessGr, &nbVal, &elemType);
 			if (val != NULL) sliceThickness = [[NSString stringWithCString:val->a] floatValue];
@@ -5855,12 +5895,10 @@ END_CREATE_ROIS:
 					}
 				}
 			}
-			
-			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
 		
-		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0020);
-		if(  theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+		theGroupP = (SElement*) [self getPapyGroup: 0x0020 fileNb: fileNb];
+		if( theGroupP)
 		{
 			originX = 0;
 			originY = 0;
@@ -5917,12 +5955,10 @@ END_CREATE_ROIS:
 				val = Papy3GetElement (theGroupP, papLateralityGr, &nbVal, &elemType);
 				if (val != NULL) laterality = [[NSString stringWithCString:val->a] retain];
 			}
-			
-			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
-					
-		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0028);
-		if(  theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+		
+		theGroupP = (SElement*) [self getPapyGroup: 0x0028 fileNb: fileNb];
+		if( theGroupP)
 		{
 			maxFrame = gArrNbImages [fileNb];
 			
@@ -6437,9 +6473,6 @@ END_CREATE_ROIS:
 					}
 				}
 			}
-
-			
-			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
 		else // This group is MANDATORY... Try another toolkit
 		{
@@ -6450,8 +6483,9 @@ END_CREATE_ROIS:
 #pragma mark SUV
 
 		// Get values needed for SUV calcs:
-		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0054);
-		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0) {
+		theGroupP = (SElement*) [self getPapyGroup: 0x0054 fileNb: fileNb];
+		if( theGroupP)
+		{
 			val = Papy3GetElement (theGroupP, papUnitsGr, &pos, &elemType );
 			if( val) units = val? [[NSString stringWithCString:val->a] retain] : nil;
 			else units = 0L;
@@ -6505,8 +6539,6 @@ END_CREATE_ROIS:
 			
 				// End of SUV required values
 			}
-
-			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
 		
 		// End SUV			
@@ -6842,8 +6874,8 @@ END_CREATE_ROIS:
 		
 #pragma mark tag group 6000		
 		
-		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x6000);
-		if(  theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+		theGroupP = (SElement*) [self getPapyGroup: 0x6000 fileNb: fileNb];
+		if( theGroupP)
 		{
 			val = Papy3GetElement (theGroupP, papOverlayRows6000Gr, &nbVal, &elemType);
 			if (val != NULL) oRows	= val->us;
@@ -6896,13 +6928,11 @@ END_CREATE_ROIS:
 					}
 				}
 			}
-			err = Papy3GroupFree (&theGroupP, TRUE);
 		}
 		
 #pragma mark PhilipsFactor		
-		
-		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x7053);
-		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+		theGroupP = (SElement*) [self getPapyGroup: 0x7053 fileNb: fileNb];
+		if( theGroupP)
 		{
 			val = Papy3GetElement (theGroupP, papSUVFactor7053Gr, &nbVal, &elemType);
 			
@@ -6914,7 +6944,6 @@ END_CREATE_ROIS:
 					NSLog( @"philipsFactor = %f", philipsFactor);
 				}
 			}
-			err = Papy3GroupFree (&theGroupP, TRUE);
 		}
 		
 #pragma mark compute normal vector
@@ -10222,6 +10251,8 @@ BOOL            readable = YES;
 {
 	if( shutterPolygonal) free( shutterPolygonal);
 	
+	[self clearCachedPapyGroups];
+	[cachedPapyGroups release];
 	[transferFunction release];
 	[positionerPrimaryAngle release];
 	[positionerSecondaryAngle release];
@@ -10489,20 +10520,17 @@ BOOL            readable = YES;
 
 #ifdef OSIRIX_VIEWER
 
-//PapyShort		fileNb
+
 - (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element papyLink:(PapyShort)fileNb;
 {
 	PapyShort theErr;
-	if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 	
 	NSString *field = @"";
-	SElement *theGroupP;
-	theErr = Papy3GotoGroupNb (fileNb, group);
-
-	if( theErr >= 0 && Papy3GroupRead(fileNb, &theGroupP) > 0)
+	
+	SElement *inGrOrModP = [self getPapyGroup: group fileNb: fileNb];
+	
+	if( inGrOrModP)
 	{
-		SElement *inGrOrModP = theGroupP;
-		
 		int theEnumGrNb = Papy3ToEnumGroup(group);
 		int theMaxElem = gArrGroup [theEnumGrNb].size;
 		int j;
@@ -10551,7 +10579,6 @@ BOOL            readable = YES;
 				}
 			}
 		}
-		theErr = Papy3GroupFree (&theGroupP, TRUE);
 	}
 	return field;
 }

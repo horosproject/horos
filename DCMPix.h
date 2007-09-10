@@ -177,6 +177,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	
 // custom annotations
 	NSMutableDictionary *annotationsDictionary;
+	NSMutableDictionary *cachedPapyGroups;
 }
 
 + (void) checkUserDefaults: (BOOL) update;
@@ -442,7 +443,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (void) copySUVfrom: (DCMPix*) from;
 - (void)setUnits: (NSString *) s;
 - (float) getPixelValueX: (long) x Y:(long) y;
-
+- (void) clearCachedPapyGroups;
+- (void *) getPapyGroup: (int) group fileNb: (int) fileNb;
 - (NSString *)srcFile;
 
 - (NSMutableDictionary*) annotationsDictionary;
