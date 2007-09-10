@@ -177,5 +177,7 @@
 			<string>Yes</string>
 		</dict>
 	</array>
+	<key>LSCanProvideIMVideoDataSource</key>
+	<string>Yes</string>
 </dict>
 </plist>
