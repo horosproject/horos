@@ -199,7 +199,7 @@ extern BrowserController	*browserWindow;
 	spacingY = y;
 }
 
-- (void) setSliceThickness: (float) t
+- (void) setSliceThickness: (double) t
 {
 	sliceThickness = t;
 }

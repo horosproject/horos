@@ -377,19 +377,23 @@ extern OSStatus SetupAuthorization(void)
 	NSPreferencePaneUnselectReply shouldUnselect = [pane shouldUnselect];
 	if(shouldUnselect==NSUnselectCancel && sender!=nil) return; // we need to test the sender, because shawAll: is needed for initialization (with sender=nil)
 	
-	[pane willUnselect];
-	[pane didUnselect];
-	[[pane mainView] removeFromSuperview];			
+	[[pane mainView] removeFromSuperview];
 	
 	[[self window] setFrame:newWindowFrame display:YES animate:YES];
 	
 	[[self window] setContentMinSize: newRect.size];
 	[[self window] setFrame:newWindowFrame display:YES animate:YES];
-				
+
 	[destView addSubview:allView];
 	[allView setNeedsDisplay:YES];
+
+	[pane willUnselect];
+	[pane didUnselect];
+
 	[pane release];
 	pane = nil;
+	
+	
 	
 	[[self window] setContentMinSize: NSMakeSize(0 , 0)];
 	

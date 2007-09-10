@@ -64,4 +64,5 @@
 
 - (void)setOrientationWidgetEnabled:(BOOL)enabled;
 
+- (BOOL)checkAnnotationsContent;
 @end

@@ -67,7 +67,7 @@
 - (void) setSeriesNumber: (long) no;
 - (void) setDefaultWWWL: (long) ww :(long) wl;
 - (void) setPixelSpacing: (float) x :(float) y;
-- (void) setSliceThickness: (float) t;
+- (void) setSliceThickness: (double) t;
 - (void) setOrientation: (float*) o;
 - (void) setPosition: (float*) p;
 - (void) setSlicePosition: (float) p;

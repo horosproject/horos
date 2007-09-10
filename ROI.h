@@ -91,7 +91,7 @@ enum
 	
 	BOOL			_displayCalciumScoring;
 	int				_calciumThreshold;
-	float			_sliceThickness;
+	double			_sliceThickness;
 	int				_calciumCofactor;
 	
 	NSString		*layerReferenceFilePath;
@@ -238,8 +238,8 @@ enum
 - (void)setDisplayCalciumScoring:(BOOL)value;
 - (void)setCalciumThreshold:(int)threshold;
 
-- (float) sliceThickness;
-- (void) setSliceThickness:(float)sliceThickness;
+- (double) sliceThickness;
+- (void) setSliceThickness:(double)sliceThickness;
 
 - (void)setLayerReferenceFilePath:(NSString*)path;
 - (NSString*)layerReferenceFilePath;

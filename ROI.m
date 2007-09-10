@@ -4355,11 +4355,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	_calciumThreshold = threshold;
 }
 
-- (float) sliceThickness{
+- (double) sliceThickness{
 	return _sliceThickness;
 }
 
-- (void) setSliceThickness:(float)sliceThickness{
+- (void) setSliceThickness:(double)sliceThickness{
 	_sliceThickness = sliceThickness;
 }
 

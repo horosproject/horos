@@ -116,6 +116,11 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	return self;
 }
 
+- (void) willUnselect
+{
+	
+}
+
 - (void)willSelect
 {
 	NSLog(@"OSICustomImageAnnotations willSelect");
@@ -152,6 +157,11 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (NSPreferencePaneUnselectReply)shouldUnselect;
 {
+	NSWindow *win = [[self mainView] window];
+	[win makeFirstResponder:contentTokenField];
+	
+	[layoutController validateTokenTextField:self];
+	
 	if(![layoutController checkAnnotations] || ![layoutController checkAnnotationsContent])
 		return NSUnselectCancel;
 	else
@@ -172,8 +182,6 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (IBAction)addAnnotation:(id)sender;
 {
-
-	
 	[layoutController addAnnotation:sender];
 	
 	[addCustomDICOMFieldButton setEnabled:YES];
@@ -184,8 +192,6 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (IBAction)removeAnnotation:(id)sender;
 {
-
-	
 	[layoutController removeAnnotation:sender];
 	[titleTextField setStringValue:@""];
 	
@@ -197,15 +203,11 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (IBAction)setTitle:(id)sender;
 {
-
-	
 	[layoutController setTitle:sender];
 }
 
 - (IBAction)addFieldToken:(id)sender;
 {
-
-	
 	if(sender==addCustomDICOMFieldButton || sender==addDICOMFieldButton || sender==addDatabaseFieldButton || sender==addSpecialFieldButton)
 	{
 		NSWindow *win = [[self mainView] window];
@@ -221,8 +223,6 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (IBAction)saveAnnotationLayout:(id)sender;
 {
-
-	
 	[layoutController saveAnnotationLayoutForModality:[[modalitiesPopUpButton selectedItem] title]];
 }
 
@@ -261,8 +261,6 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (IBAction)setSameAsDefault:(id)sender;
 {
-
-	
 	BOOL state = [sameAsDefaultButton state]==NSOnState;
 
 	if(state)
@@ -288,8 +286,6 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (IBAction)toggleOrientationWidget:(id)sender;
 {
-
-	
 	BOOL state = [orientationWidgetButton state]==NSOnState;
 
 	[layoutController setOrientationWidgetEnabled:state];
