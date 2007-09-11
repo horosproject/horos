@@ -33,7 +33,6 @@
 		A9BBD9AC0C563B2B0067F5D1 /* CIADICOMField.h in Headers */ = {isa = PBXBuildFile; fileRef = A9BBD9960C563B2B0067F5D1 /* CIADICOMField.h */; };
 		A9BBD9AD0C563B2B0067F5D1 /* CIADICOMField.m in Sources */ = {isa = PBXBuildFile; fileRef = A9BBD9970C563B2B0067F5D1 /* CIADICOMField.m */; };
 		A9BBD9AF0C563B4A0067F5D1 /* OSICustomImageAnnotations_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = A9BBD9AE0C563B4A0067F5D1 /* OSICustomImageAnnotations_Prefix.pch */; };
-		A9BBD9B40C563B7F0067F5D1 /* OSICustomImageAnnotations.nib in Resources */ = {isa = PBXBuildFile; fileRef = A9BBD9B20C563B7F0067F5D1 /* OSICustomImageAnnotations.nib */; };
 		A9BBDD730C563B900067F5D1 /* cfunix.h in Headers */ = {isa = PBXBuildFile; fileRef = A9BBD9B80C563B8F0067F5D1 /* cfunix.h */; };
 		A9BBDD740C563B900067F5D1 /* osconfig.h in Headers */ = {isa = PBXBuildFile; fileRef = A9BBD9B90C563B8F0067F5D1 /* osconfig.h */; };
 		A9BBDD750C563B900067F5D1 /* cmdlnarg.cc in Sources */ = {isa = PBXBuildFile; fileRef = A9BBD9BB0C563B8F0067F5D1 /* cmdlnarg.cc */; };
@@ -977,6 +976,7 @@
 		AB54F6FD0C6CAC8A00B6F653 /* AlphaGray.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB54F6FC0C6CAC8A00B6F653 /* AlphaGray.tif */; };
 		AB80A66E0A19C8EC00FED357 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80A66D0A19C8EC00FED357 /* Security.framework */; };
 		CE729C53097075C30064790F /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE729C52097075C30064790F /* IOKit.framework */; };
+		CE9217640C972E8200A6DA13 /* OSICustomImageAnnotations.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9217620C972E8200A6DA13 /* OSICustomImageAnnotations.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1009,7 +1009,6 @@
 		A9BBD9960C563B2B0067F5D1 /* CIADICOMField.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CIADICOMField.h; sourceTree = "<group>"; };
 		A9BBD9970C563B2B0067F5D1 /* CIADICOMField.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CIADICOMField.m; sourceTree = "<group>"; };
 		A9BBD9AE0C563B4A0067F5D1 /* OSICustomImageAnnotations_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OSICustomImageAnnotations_Prefix.pch; sourceTree = "<group>"; };
-		A9BBD9B30C563B7F0067F5D1 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/OSICustomImageAnnotations.nib; sourceTree = "<group>"; };
 		A9BBD9B60C563B8F0067F5D1 /* storescp.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = storescp.mm; path = "../../Binaries/dcmtk-source/sample apps/dcmnet/storescp.mm"; sourceTree = SOURCE_ROOT; };
 		A9BBD9B80C563B8F0067F5D1 /* cfunix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cfunix.h; sourceTree = "<group>"; };
 		A9BBD9B90C563B8F0067F5D1 /* osconfig.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = osconfig.h; sourceTree = "<group>"; };
@@ -1958,6 +1957,7 @@
 		AB54F6FC0C6CAC8A00B6F653 /* AlphaGray.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = AlphaGray.tif; sourceTree = "<group>"; };
 		AB80A66D0A19C8EC00FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		CE729C52097075C30064790F /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		CE9217630C972E8200A6DA13 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSICustomImageAnnotations.xib; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -2013,7 +2013,7 @@
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 				AB54F6F40C6CABE200B6F653 /* Security.tiff */,
 				AB54F6FC0C6CAC8A00B6F653 /* AlphaGray.tif */,
-				A9BBD9B20C563B7F0067F5D1 /* OSICustomImageAnnotations.nib */,
+				CE9217620C972E8200A6DA13 /* OSICustomImageAnnotations.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -3662,9 +3662,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
-				A9BBD9B40C563B7F0067F5D1 /* OSICustomImageAnnotations.nib in Resources */,
 				AB54F6F50C6CABE200B6F653 /* Security.tiff in Resources */,
 				AB54F6FD0C6CAC8A00B6F653 /* AlphaGray.tif in Resources */,
+				CE9217640C972E8200A6DA13 /* OSICustomImageAnnotations.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4222,12 +4222,12 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		A9BBD9B20C563B7F0067F5D1 /* OSICustomImageAnnotations.nib */ = {
+		CE9217620C972E8200A6DA13 /* OSICustomImageAnnotations.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				A9BBD9B30C563B7F0067F5D1 /* English */,
+				CE9217630C972E8200A6DA13 /* English */,
 			);
-			name = OSICustomImageAnnotations.nib;
+			name = OSICustomImageAnnotations.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

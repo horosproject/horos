@@ -23,7 +23,7 @@
 	IBOutlet NSWindow *window;
 	IBOutlet NSImageView	*gray, *lock;
 	IBOutlet NSPopUpButton *modalitiesPopUpButton;
-	IBOutlet NSButton *sameAsDefaultButton;
+	IBOutlet NSButton *sameAsDefaultButton, *resetDefaultButton;
 	
 	IBOutlet NSButton *orientationWidgetButton;
 	
@@ -54,6 +54,8 @@
 - (IBAction)switchModality:(id)sender;
 - (IBAction)setSameAsDefault:(id)sender;
 - (IBAction)toggleOrientationWidget:(id)sender;
+- (IBAction)loadsave:(id)sender;
+- (IBAction)reset:(id)sender;
 
 - (CIALayoutController*)layoutController;
 
@@ -74,6 +76,7 @@
 - (NSPopUpButton*)specialFieldsPopUpButton;
 - (NSBox*)contentBox;
 - (NSButton*)sameAsDefaultButton;
+- (NSButton*)resetDefaultButton;
 - (NSButton*)orientationWidgetButton;
 - (NSPopUpButton*)modalitiesPopUpButton;
 

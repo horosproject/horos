@@ -14,6 +14,16 @@
 
 @implementation CIALayoutController
 
+- (void) reloadLayoutDictionary
+{
+	[annotationsLayoutDictionary release];
+
+	if([[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"])
+		annotationsLayoutDictionary = [[NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"]] retain];
+	else
+		annotationsLayoutDictionary = [[NSMutableDictionary dictionary] retain];	
+}
+
 - (id)initWithWindow:(NSWindow *)window
 {
 	self = [super initWithWindow:window];
@@ -29,10 +39,7 @@
 		
 		annotationNumber = 1;
 		
-		if([[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"])
-			annotationsLayoutDictionary = [[NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"]] retain];
-		else
-			annotationsLayoutDictionary = [[NSMutableDictionary dictionary] retain];
+		[self reloadLayoutDictionary];
 			
 		currentModality = NSLocalizedString(@"Default", @"");
 		
@@ -1193,6 +1200,7 @@
 	[self saveAnnotationLayoutForModality:currentModality];
 	currentModality = [[sender selectedItem] title];
 	[[prefPane sameAsDefaultButton] setHidden:[currentModality isEqualToString:@"Default"]];
+	[[prefPane resetDefaultButton] setHidden:![currentModality isEqualToString:@"Default"]];
 	[self loadAnnotationLayoutForModality:currentModality];
 
 	[[prefPane titleTextField] setStringValue:@""];

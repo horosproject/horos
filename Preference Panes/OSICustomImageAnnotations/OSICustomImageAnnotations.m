@@ -45,6 +45,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	[addAnnotationButton setEnabled:!locked];
 	[removeAnnotationButton setEnabled:!locked];
 	[sameAsDefaultButton setEnabled:!locked];
+	[resetDefaultButton setEnabled:!locked];
 	[orientationWidgetButton setEnabled:!locked];
 	
 	[layoutView setEnabled:!locked];
@@ -104,6 +105,33 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	return editable;
 }
 
+- (IBAction) loadsave:(id) sender
+{
+	if( [sender tag] == 0)		// Save
+	{
+		NSLog( @"save");
+	}
+	else						// Load
+	{
+		NSLog( @"load");
+	}
+}
+
+- (IBAction) reset: (id) sender
+{
+	NSMutableDictionary *annotationsLayoutDictionary = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CUSTOM_IMAGE_ANNOTATIONS"]];
+	
+	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"AnnotationsDefault.plist"]];
+	
+	[annotationsLayoutDictionary setObject: [dict objectForKey:@"Default"]  forKey: @"Default"];
+	
+	[[NSUserDefaults standardUserDefaults] setObject:annotationsLayoutDictionary forKey: @"CUSTOM_IMAGE_ANNOTATIONS"];
+	
+	[layoutController reloadLayoutDictionary];
+	[modalitiesPopUpButton selectItemWithTitle: NSLocalizedString( @"Default", 0L)];
+	[self switchModality: modalitiesPopUpButton];
+}
+
 - (id)init
 {
 	NSLog(@"OSICustomImageAnnotations init");
@@ -137,6 +165,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	
 	layoutController = [[CIALayoutController alloc] initWithWindow:window];
 	[sameAsDefaultButton setHidden:YES];
+	[resetDefaultButton setHidden:NO];
 }
 
 - (void)didSelect
@@ -257,6 +286,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 - (NSPopUpButton*)specialFieldsPopUpButton; {return specialFieldsPopUpButton;}
 - (NSBox*)contentBox; {return contentBox;}
 - (NSButton*)sameAsDefaultButton; {return sameAsDefaultButton;}
+- (NSButton*)resetDefaultButton; {return resetDefaultButton;}
 - (NSPopUpButton*)modalitiesPopUpButton; {return modalitiesPopUpButton;}
 
 - (IBAction)setSameAsDefault:(id)sender;

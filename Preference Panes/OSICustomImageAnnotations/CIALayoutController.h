@@ -64,5 +64,6 @@
 
 - (void)setOrientationWidgetEnabled:(BOOL)enabled;
 
+- (void)reloadLayoutDictionary;
 - (BOOL)checkAnnotationsContent;
 @end
