@@ -40,6 +40,7 @@
 #import <QTKit/QTKit.h>
 
 #import "math.h"
+#import "altivecFunctions.h"
 
 #ifdef STATIC_DICOM_LIB
 #define PREVIEWSIZE 512
@@ -65,17 +66,6 @@ extern NSString* documentsDirectory();
 extern NSLock	*PapyrusLock;
 extern short		Altivec;
 
-#if __ppc__ || __ppc64__
-extern void vsubtract(vector float *a, vector float *b, vector float *r, long size);
-extern void vmultiply(vector float *a, vector float *b, vector float *r, long size);
-extern void vmin(vector float *a, vector float *b, vector float *r, long size);
-extern void vmax(vector float *a, vector float *b, vector float *r, long size);
-void vmax8(vector unsigned char *a, vector unsigned char *b, vector unsigned char *r, long size);
-void vmin8(vector unsigned char *a, vector unsigned char *b, vector unsigned char *r, long size);
-#else
-extern void vmaxIntel( vFloat *a, vFloat *b, vFloat *r, long size);
-extern void vminIntel( vFloat *a, vFloat *b, vFloat *r, long size);
-#endif
 extern void vminNoAltivec( float *a,  float *b,  float *r, long size);
 extern void vmaxNoAltivec(float *a, float *b, float *r, long size);
 extern void vsubtractNoAltivec( float *a,  float *b,  float *r, long size);
@@ -9523,8 +9513,8 @@ BOOL            readable = YES;
 					#if __ppc__ || __ppc64__
 					if( Altivec)
 					{
-						if( stackMode == 2) vmax8( (vector unsigned char *)fNext, (vector unsigned char *)fImage, (vector unsigned char *)fResult, height * width);
-						else vmin8( (vector unsigned char *)fNext, (vector unsigned char *)fImage, (vector unsigned char *)fResult, height * width);
+						if( stackMode == 2) vmax8( (vector float*)fNext, (vector float*)fImage, (vector float*)fResult, height * width);
+						else vmin8( (vector float*)fNext, (vector float*)fImage, (vector float*)fResult, height * width);
 					}
 					else
 					#endif
@@ -9554,8 +9544,8 @@ BOOL            readable = YES;
 								#if __ppc__ || __ppc64__
 								if( Altivec)
 								{
-									if( stackMode == 2) vmax8( (vector unsigned char *)fResult, (vector unsigned char *)fNext, (vector unsigned char *)fResult, height * width);
-									else vmin8( (vector unsigned char *)fResult, (vector unsigned char *)fNext, (vector unsigned char *)fResult, height * width);
+									if( stackMode == 2) vmax8( (vector float*)fResult, (vector float*)fNext, (vector float*)fResult, height * width);
+									else vmin8( (vector float*)fResult, (vector float*)fNext, (vector float*)fResult, height * width);
 								}
 								else
 								#endif

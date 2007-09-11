@@ -18,6 +18,8 @@
 #import "dicomFile.h"
 #import "DCMPix.h"
 
+#import "altivecFunctions.h"
+
 extern	NSString * documentsDirectory();
 extern BrowserController	*browserWindow;
 

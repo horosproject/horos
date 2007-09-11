@@ -53,16 +53,13 @@
 #include "Papyrus3.h"
 #endif
 
+#include "altivecFunctions.h"
+
 extern PapyShort ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode);
 extern PapyShort ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode);
 extern PapyShort ExtractJPEGlossy16 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode);
 		  
 extern short Altivec;
-
-#if __ppc__
-extern void InverseShorts( register vector unsigned short *unaligned_input, register long size);
-extern void InverseLongs(register vector unsigned int *unaligned_input, register long size);
-#endif
 
 /********************************************************************************/
 /*										*/

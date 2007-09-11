@@ -70,6 +70,7 @@ MODIFICATION HISTORY
 #import "WindowLayoutManager.h"
 #import "QueryController.h"
 
+#import "altivecFunctions.h"
 
 #define BUILTIN_DCMTK YES
 
@@ -389,7 +390,7 @@ void vsubtract(vector float *a, vector float *b, vector float *r, long size)
 	}
 }
 
-void vmax8(vector unsigned char *a, vector unsigned char *b, vector unsigned char *r, long size)
+void vmax8(vector float *a, vector float *b, vector float *r, long size)
 {
 	long i = size / 4;
 	

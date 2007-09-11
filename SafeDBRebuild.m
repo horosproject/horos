@@ -20,6 +20,8 @@
 #include "Papyrus3.h"
 #endif
 
+#import "altivecFunctions.h"
+
 NSLock	*PapyrusLock = 0L;
 NSMutableDictionary *fileFormatPlugins = 0L;
 
