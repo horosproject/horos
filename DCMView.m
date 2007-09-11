@@ -7490,28 +7490,100 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					[self drawTextualData: size :annotations];
 					
 				} //annotations >= annotBase
-				} //Annotation  != None
+			} //Annotation  != None
 				
-				if(repulsorRadius != 0)
+			if(repulsorRadius != 0)
+			{
+				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+				glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
+				glTranslatef (-(size.size.width) / 2.0f, -(size.size.height) / 2.0f, 0.0f); // translate center to upper left
+				
+				[self drawRepulsorToolArea];
+			}
+			
+			if(ROISelectorStartPoint.x!=ROISelectorEndPoint.x || ROISelectorStartPoint.y!=ROISelectorEndPoint.y)
+			{
+				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+				glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
+				glTranslatef (-(size.size.width) / 2.0f, -(size.size.height) / 2.0f, 0.0f); // translate center to upper left
+				
+				[self drawROISelectorRegion];
+			}
+			
+			//if(ctx == _alternateContext) // iChat Theatre context
+			{
+				// draw the cursor
+				NSEvent *currentEvent = [[NSApplication sharedApplication] currentEvent];
+				NSPoint eventLocation = [currentEvent locationInWindow];
+				
+				NSSize size = [self frame].size;
+
+				eventLocation = [self convertPoint:eventLocation fromView:nil];
+//				eventLocation = [[[currentEvent window] contentView] convertPoint:eventLocation fromView:nil];
+				eventLocation.y = size.height - eventLocation.y;
+				
+				NSSize iChatSize = aRect.size;
+
+//				eventLocation.x = eventLocation.x / size.width * iChatSize.width;
+//				eventLocation.y = eventLocation.y / size.height * iChatSize.height;
+
+				eventLocation.x = eventLocation.x - (size.width/2. - iChatSize.width/2.);
+				eventLocation.y = eventLocation.y - (size.height/2. - iChatSize.height/2.);
+
+				
+				NSPoint eventLocationConverted2OpenGL = [self ConvertFromView2GL:eventLocation];
+				
+//[ctx view];
+//				size = [[ctx view] frame].size;
+//				NSSize size2 = aRect.size;
+				
+				if(ctx == _alternateContext)
 				{
-					glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-					glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
-					glTranslatef (-(size.size.width) / 2.0f, -(size.size.height) / 2.0f, 0.0f); // translate center to upper left
-					
-					[self drawRepulsorToolArea];
+					NSLog(@"size: %f, %f", size.width, size.height);
+					NSLog(@"iChatSize: %f, %f", iChatSize.width, iChatSize.height);
 				}
 				
-				if(ROISelectorStartPoint.x!=ROISelectorEndPoint.x || ROISelectorStartPoint.y!=ROISelectorEndPoint.y)
-				{
-					glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-					glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
-					glTranslatef (-(size.size.width) / 2.0f, -(size.size.height) / 2.0f, 0.0f); // translate center to upper left
-					
-					[self drawROISelectorRegion];
-				}
-			}  
-		
-		else {  //no valid image  ie curImage = -1
+				
+//				glLoadIdentity();
+//				glScalef (2.0f /(xFlipped ? -(size.width) : size.width), -2.0f / (yFlipped ? -(size.height) : size.height), 1.0f); // scale to port per pixel scale
+//				glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+//				glTranslatef( origin.x - offset.x + originOffset.x, -origin.y - offset.y - originOffset.y, 0.0f);
+				
+				glPointSize(10.0);
+				glBegin(GL_POINTS);
+					glColor3f (1.0f, 0.0f, 0.0f);
+					glVertex2f(eventLocation.x, eventLocation.y);
+//					glColor3f (0.0f, 1.0f, 0.0f);
+//					glVertex2f(eventLocation.x-[curDCM pwidth]/2., eventLocation.y-[curDCM pheight]/2.);
+//					glColor3f (0.0f, 0.0f, 1.0f);
+//					glVertex2f(scaleValue*(eventLocation.x-[curDCM pwidth]/2.), scaleValue*(eventLocation.y-[curDCM pheight]/2.));
+//					
+//					glColor3f (1.0f, 1.0f, 0.0f);
+//					glVertex2f(eventLocationConverted2OpenGL.x, eventLocationConverted2OpenGL.y);
+//					glColor3f (1.0f, 0.0f, 1.0f);
+//					glVertex2f(eventLocationConverted2OpenGL.x-[curDCM pwidth]/2., eventLocationConverted2OpenGL.y-[curDCM pheight]/2.);
+//					glColor3f (0.0f, 1.0f, 1.0f);
+//					glVertex2f(scaleValue*(eventLocationConverted2OpenGL.x-[curDCM pwidth]/2.), scaleValue*(eventLocationConverted2OpenGL.y-[curDCM pheight]/2.));
+//					//glVertex2f(scaleValue*(eventLocationConverted2OpenGL.x-[[ctx view] frame].size.width/2.), scaleValue*(eventLocationConverted2OpenGL.y-[[ctx view] frame].size.height/2.));
+//					
+//					glColor3f (1.0f, 1.0f, 1.0f);
+//					glVertex2f((eventLocation.x  - offset.x)*scaleValue, (eventLocation.y  - offset.y)*scaleValue);
+				glEnd();
+							
+				
+//				NSString *imagePath;
+//				NSSound *image;
+//				NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
+//				if (imagePath = [thisBundle pathForResource:@"smile" ofType:@"png"])
+//				{
+//					image = [[[NSImage alloc] initByReferencingFile:imagePath] autorelease];
+//				}
+				
+			}
+			
+		}  
+		else
+		{  //no valid image  ie curImage = -1
 			//NSLog(@"no IMage");
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear (GL_COLOR_BUFFER_BIT);
