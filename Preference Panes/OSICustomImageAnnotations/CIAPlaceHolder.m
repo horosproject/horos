@@ -188,7 +188,7 @@
 	if(animate)
 	{
 		[NSAnimationContext beginGrouping];
-		[[NSAnimationContext currentContext] setDuration:0.001];
+		[[NSAnimationContext currentContext] setDuration: 0.001];
 	}
 	
 	int i;

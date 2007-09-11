@@ -108,6 +108,11 @@ extern OSStatus SetupAuthorization(void)
 	return self;
 }
 
+- (void) awakeFromNib
+{
+	[[self window] setFrameTopLeftPoint: NSMakePoint( [[NSScreen mainScreen] visibleFrame].origin.x, [[NSScreen mainScreen] visibleFrame].origin.y+[[NSScreen mainScreen] visibleFrame].size.height)];
+}
+
 - (BOOL)windowShouldClose:(id)sender
 {
 	if(pane)
