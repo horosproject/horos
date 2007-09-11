@@ -1249,7 +1249,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			@try
 			{
-				[[BrowserController currentBrowser] smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
+				[self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
 			}
 		
 			@catch( NSException *ne)
@@ -4961,7 +4961,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 {
 	if( [[[dropDestination path] lastPathComponent] isEqualToString:@".Trash"])
 	{
-		[[BrowserController currentBrowser] delItem:  0L];
+		[self delItem:  0L];
 		return 0L;
 	}
 	else
@@ -9621,6 +9621,10 @@ static NSArray*	openSubSeriesArray = 0L;
 	TimeFormat = [[NSDateFormatter alloc] init];
 	[TimeFormat setTimeStyle: NSDateFormatterShortStyle];
 
+	[TimeWithSecondsFormat release];
+	TimeWithSecondsFormat = [[NSDateFormatter alloc] init];
+	[TimeWithSecondsFormat setTimeStyle: NSDateFormatterMediumStyle];
+
 	[DBDateFormat release];
 	DBDateFormat = [[NSDateFormatter alloc] init];
 	[DBDateFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat2"]];
@@ -9650,6 +9654,16 @@ static NSArray*	openSubSeriesArray = 0L;
 - (NSDateFormatter*) TimeFormat
 {
 	return TimeFormat;
+}
+
+- (NSDateFormatter*) TimeWithSecondsFormat
+{
+	return TimeWithSecondsFormat;
+}
+
++ (NSString*) TimeWithSecondsFormat:(NSDate*) t
+{
+	return [[[BrowserController currentBrowser] TimeWithSecondsFormat] stringFromDate: t];
 }
 
 + (NSString*) TimeFormat:(NSDate*) t

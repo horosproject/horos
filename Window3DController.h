@@ -26,7 +26,7 @@
 #define STATEDATABASE				@"/3DSTATE/"
 
 
-
+@class ROIVolume;
 @class ViewerController;
 @class DCMPix;
 @class VTKView;
@@ -104,4 +104,7 @@
 - (void) ApplyOpacityString: (NSString*) str;
 - (void) load3DState;
 
+- (NSArray*) roiVolumes;
+- (void) hideROIVolume: (ROIVolume*) v;
+- (void) displayROIVolume: (ROIVolume*) v;
 @end

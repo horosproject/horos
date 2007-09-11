@@ -239,10 +239,23 @@ extern NSString * documentsDirectory();
 	[super dealloc];
 }
 
-/* nothing to do
-- (void)finalize {
+- (void) hideROIVolume: (ROIVolume*) v
+{
+// Override
+	NSLog(@"Error: inherited [Window3DController hideROIVolume] should not be called");
 }
-*/
+
+- (void) displayROIVolume: (ROIVolume*) v
+{
+// Override
+	NSLog(@"Error: inherited [Window3DController displayROIVolume] should not be called");
+}
+
+- (NSArray*) roiVolumes
+{
+// Override
+	NSLog(@"Error: inherited [Window3DController roiVolumes] should not be called");
+}
 
 //====================================================================================================================================================================================================================
 #pragma mark-

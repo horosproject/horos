@@ -205,15 +205,15 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	//NSLog(@"LLMPRViewer blendingPropagate");
 	if ([sender isEqual:subtractedOriginalView])
 	{	
-		[self blendingPropagateOriginal:sender];
+		[self blendingPropagateOriginal: (OrthogonalMPRView*) sender];
 	}
 	else if ([sender isEqual:subtractedXReslicedView])
 	{
-		[self blendingPropagateX:sender];
+		[self blendingPropagateX: (OrthogonalMPRView*) sender];
 	}
 	else if ([sender isEqual:subtractedYReslicedView])
 	{
-		[self blendingPropagateY:sender];
+		[self blendingPropagateY: (OrthogonalMPRView*) sender];
 	}
 }
 

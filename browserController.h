@@ -49,7 +49,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
     NSManagedObjectContext			*managedObjectContext;
 	NSPersistentStoreCoordinator	*persistentStoreCoordinator;
 	
-	NSDateFormatter			*DBDateFormat, *DBDateOfBirthFormat, *TimeFormat;
+	NSDateFormatter			*DBDateFormat, *DBDateOfBirthFormat, *TimeFormat, *TimeWithSecondsFormat;
 	
 	
 	NSString				*currentDatabasePath;
@@ -468,7 +468,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSDateFormatter*) DBDateFormat;
 - (NSDateFormatter*) DBDateOfBirthFormat;
 - (NSDateFormatter*) TimeFormat;
+- (NSDateFormatter*) TimeWithSecondsFormat;
 
++ (NSString*) TimeWithSecondsFormat:(NSDate*) t;
 + (NSString*) DBDateOfBirthFormat:(NSDate*) d;
 + (NSString*) DBDateFormat:(NSDate*) d;
 + (NSString*) TimeFormat:(NSDate*) t;

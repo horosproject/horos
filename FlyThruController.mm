@@ -33,7 +33,7 @@ MODIFICATION HISTORY
 #import "Window3DController.h"
 #import "Wait.h"
 
-@class VRPROController;
+#import "VRControllerVPRO.h"
 
 @implementation FlyThruController
 

@@ -7046,6 +7046,7 @@
 		CEA337BD06AD9BF6006D2357 /* iDiskSend.icns in Resources */ = {isa = PBXBuildFile; fileRef = CEA337BB06AD9BF6006D2357 /* iDiskSend.icns */; };
 		CEA6566F094EF62400D4E5E5 /* vtkVolumeProVP1000Mapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CEA0C72607A6B186004E5D9D /* vtkVolumeProVP1000Mapper.cxx */; };
 		CEA656CC094EF64300D4E5E5 /* vli3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA656CB094EF64300D4E5E5 /* vli3.framework */; };
+		CEAEAC530C966FEF001CEA25 /* VRControllerVPRO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE677D1207A6BDDD003B3650 /* VRControllerVPRO.h */; };
 		CEAF1D7C0A757C3200A0D729 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E /* jaricom.c */; };
 		CEAF1D7D0A757C3200A0D729 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6309B6828300545F5E /* jcapimin.c */; };
 		CEAF1D7E0A757C3200A0D729 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6409B6828300545F5E /* jcapistd.c */; };
@@ -18432,6 +18433,7 @@
 				CE882AC60C889B6500D4F982 /* XMLRPCMethods.h in Headers */,
 				CE882B300C889E0200D4F982 /* TCPServer.h in Headers */,
 				CE882B330C889E0200D4F982 /* HTTPServer.h in Headers */,
+				CEAEAC530C966FEF001CEA25 /* VRControllerVPRO.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

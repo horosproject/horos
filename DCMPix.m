@@ -10377,24 +10377,24 @@ BOOL            readable = YES;
 							if(inGrOrModP->vr==DA)
 							{
 								calendarDate = [DCMCalendarDate dicomDate:field];
-								[field appendString:[BrowserController DBDateOfBirthFormat: calendarDate]];
+								[field setString:[BrowserController DBDateOfBirthFormat: calendarDate]];
 							}
 							else if(inGrOrModP->vr==DT)
 							{
 								calendarDate = [DCMCalendarDate dicomDateTime:field];
-								[field appendString:[BrowserController DBDateFormat: calendarDate]];
+								[field setString:[BrowserController DBDateFormat: calendarDate]];
 							}
 							else if(inGrOrModP->vr==TM)
 							{
 								calendarDate = [DCMCalendarDate dicomTime:field];
-								[field appendString:[BrowserController TimeFormat: calendarDate]];
+								[field setString:[BrowserController TimeWithSecondsFormat: calendarDate]];
 							}
 							else if(inGrOrModP->vr==AS)
 							{
 								//Age String Format mmmM,dddD,nnnY ie 018Y
 								int number = [[field substringWithRange:NSMakeRange(0, 3)] intValue];
 								NSString *letter = [field substringWithRange:NSMakeRange(3, 1)];
-								[field appendString:[NSString stringWithFormat:@"%d %@", number, [letter lowercaseString]]];
+								[field setString:[NSString stringWithFormat:@"%d %@", number, [letter lowercaseString]]];
 							}
 							//break;
 						}
