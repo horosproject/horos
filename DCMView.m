@@ -6817,13 +6817,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	@synchronized (self)
 	{
 		[self drawRect:(NSRect)aRect withContext: [self openGLContext]];
-		
-		//CGLContextObj CGL_MACRO_CONTEXT = [self openGLContext];
-		//[self drawRect:(NSRect)aRect withContext:CGL_MACRO_CONTEXT];
-		
-//		CGLContextObj cgl_ctx = [[self openGLContext] CGLContextObj];
-//		[self drawRect:(NSRect)aRect withContext:cgl_ctx];
-
 	}
 }
 

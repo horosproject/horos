@@ -10409,36 +10409,46 @@ BOOL            readable = YES;
 
 - (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element DCMLink:(DCMObject*)dcmObject;
 {
-	NSString	*grel = [NSString stringWithFormat:@"%04X,%04X", group, element];
+	DCMAttribute *attr = [dcmObject attributeForTag: [DCMAttributeTag tagWithGroup: group element: element]];
 	
-	id field;
-	
-	if (field = [dcmObject attributeValueForKey: grel])
+	if( attr)
 	{
-		if([field isKindOfClass:[NSString class]])
-		{
-			return field;
-		}
-		else if([field isKindOfClass:[NSNumber class]])
-		{
-			return [field stringValue];
-		}
-		else if([field isKindOfClass:[NSCalendarDate class]])
-		{
-			NSString *vr = [[[dcmObject attributes] objectForKey:grel] vr];
-			if([vr isEqualToString:@"DA"])
+		NSMutableString *result = 0L;
+		
+		for( id field in [attr values])
+		{	
+			if([field isKindOfClass:[NSString class]])
 			{
-				return [BrowserController DateOfBirthFormat: field];
+				if( result == 0L) result = [NSMutableString stringWithString: field];
+				else [result appendFormat: @"\\%@", field];
 			}
-			else if([vr isEqualToString:@"TM"])
+			else if([field isKindOfClass:[NSNumber class]])
 			{
-				return [BrowserController TimeWithSecondsFormat: field];
+				if( result == 0L) result = [NSMutableString stringWithString: [field stringValue]];
+				else [result appendFormat: @"\\%@", [field stringValue]];
 			}
-			
-			return [BrowserController DateTimeWithSecondsFormat: field];
+			else if([field isKindOfClass:[NSCalendarDate class]])
+			{
+				NSString *vr = [attr vr];
+				if([vr isEqualToString:@"DA"])
+				{
+					if( result == 0L) result = [NSMutableString stringWithString: [BrowserController DateOfBirthFormat: field]];
+					else [result appendFormat: @"\\%@", [BrowserController DateOfBirthFormat: field]];
+				}
+				else if([vr isEqualToString:@"TM"])
+				{
+					if( result == 0L) result = [NSMutableString stringWithString: [BrowserController TimeWithSecondsFormat: field]];
+					else [result appendFormat: @"\\%@", [BrowserController TimeWithSecondsFormat: field]];
+				}
+				else
+				{
+					if( result == 0L) result = [NSMutableString stringWithString: [BrowserController DateTimeWithSecondsFormat: field]];
+					else [result appendFormat: @"\\%@", [BrowserController DateTimeWithSecondsFormat: field]];
+				}
+			}
 		}
-		else
-			return nil;
+		
+		return result;
 	}
 	return nil;
 }
