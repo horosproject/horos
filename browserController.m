@@ -4500,7 +4500,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
 			[wait showWindow:self];
 			
-			[self saveDatabase: currentDatabasePath];
+			[context save: 0L];
 			@try
 			{
 				// Remove series without images !
@@ -4512,7 +4512,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 					}
 				}
 				
-				[self saveDatabase: currentDatabasePath];
+				[context save: 0L];
 				
 				// Remove studies without series !
 				for( i = 0; i < [studiesArray count]; i++)
