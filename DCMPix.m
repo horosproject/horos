@@ -986,11 +986,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 }
 
-// Following defined to prevent some compile time warnings AND to maintain current order of method definitions
-@interface DCMPix (localCategory)
-- (void)loadCustomImageAnnotationsPapyLink:(PapyShort)fileNb DCMLink:(DCMObject*)dcmObject;
-@end
-
 @implementation DCMPix
 
 @synthesize frameNo;
@@ -10453,11 +10448,7 @@ BOOL            readable = YES;
 	return nil;
 }
 
-@end
-
-@implementation DCMPix (localCategory)
-
-- (void)loadCustomImageAnnotationsPapyLink:(PapyShort)fileNb DCMLink:(DCMObject*)dcmObject;
+- (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject;
 {
 	NSDictionary *annotationsDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"];
 

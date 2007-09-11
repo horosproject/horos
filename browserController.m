@@ -4347,8 +4347,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		[self saveDatabase: currentDatabasePath];
 		
-		[self outlineViewRefresh];
-		
 		[wait close];
 		[wait release];
 	}
@@ -4368,7 +4366,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			NSArray	*lockedImages = [objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"series.study.lockedStudy == YES"]];
 			
-			if( [lockedImages count] == [objectsToDelete count])
+			if( [lockedImages count] == [objectsToDelete count] && [lockedImages count] > 0)
 			{
 				NSRunAlertPanel( NSLocalizedString(@"Locked Studies", nil),  NSLocalizedString(@"These images are stored in locked studies. First, unlock these studies to delete them.", nil), nil, nil, nil);
 			}
@@ -4535,8 +4533,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 				NSLog( [ne description]);
 			}
 			
-			[self outlineViewRefresh];
-			
 			[wait close];
 			[wait release];
 		}
@@ -4550,6 +4546,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[animationCheck setState: animState];
 	
 	databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
+	
+	[previousItem release];
+	previousItem = 0L;	// This will force the matrix update
+	[[NSNotificationCenter defaultCenter] postNotificationName: NSOutlineViewSelectionDidChangeNotification  object:databaseOutline userInfo: 0L];
 }
 
 - (void) buildColumnsMenu

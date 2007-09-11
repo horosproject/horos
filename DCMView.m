@@ -9840,9 +9840,9 @@ BOOL	lowRes = NO;
 	// The image we will drag 
 	NSImage *image;
 	if ([event modifierFlags] & NSShiftKeyMask)
-		image = [self nsimage: YES];
+		image = [[self nsimage: YES] autorelease];
 	else
-		image = [self nsimage: NO];
+		image = [[self nsimage: NO] autorelease];
 		
 	// Thumbnail image and position
 	NSPoint event_location = [event locationInWindow];
@@ -9898,9 +9898,10 @@ BOOL	lowRes = NO;
 	} 
 	else
 	{
-		[pboard setData: [[NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
+		[pboard setData: [image TIFFRepresentation] forType: NSTIFFPboardType];
+//		[pboard setData: [[[NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] imageRepWithData: [image TIFFRepresentation]] forType:NSTIFFPboardType];
 		
-		[self dragImage:thumbnail
+		[self dragImage: thumbnail
 			at:local_point
 			offset:dragOffset
 			event:event 
@@ -9908,8 +9909,6 @@ BOOL	lowRes = NO;
 			source:self 
 			slideBack:YES];
 	}
-	
-	[image release];
 
 	NS_HANDLER
 		NSLog(@"Exception while dragging: %@", [localException description]);
