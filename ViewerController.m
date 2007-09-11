@@ -2822,7 +2822,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if( [curStudy isHidden]) action = @"Show Series";
 			else action = @"Hide Series";
 			
-			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@ : %d %@\r%@\r%@\r\r%@", name, [BrowserController DateTimeFormat: [curStudy valueForKey:@"date"]], modality, [series count], @"series", stateText, comment, action]];
+			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@ : %d %@\r%@\r%@\r\r%@", name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, [series count], @"series", stateText, comment, action]];
 			[cell setBackgroundColor: [NSColor whiteColor]];
 			
 			index++;
@@ -2868,8 +2868,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 					}
 					else type=[type stringByAppendingString: @"s"];
 					
-					if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [BrowserController DateTimeFormat: [curSeries valueForKey:@"date"]], keyImagesNumber, count, type]];
-					else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DateTimeFormat: [curSeries valueForKey:@"date"]], count, type]];
+					if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], keyImagesNumber, count, type]];
+					else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], count, type]];
 					
 					[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rClick + Apple Key:\rOpen in new window", 0L), [curSeries valueForKey:@"id"]] forCell:cell];
 					if( [curImage valueForKey:@"series"] == curSeries)

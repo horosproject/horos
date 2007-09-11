@@ -10513,7 +10513,7 @@ BOOL            readable = YES;
 							if([fieldName isEqualToString:@"dateOfBirth"])
 								value = [BrowserController DateOfBirthFormat: (NSDate *) value];
 							else
-								value = [BrowserController DateTimeFormat: (NSDate *) value];
+								value = [BrowserController DateTimeWithSecondsFormat: (NSDate *) value];
 						}
 						else
 							value = [value description];

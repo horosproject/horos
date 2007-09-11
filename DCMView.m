@@ -6013,8 +6013,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-#define CUSTOM_ANNOTATIONS
-#ifdef CUSTOM_ANNOTATIONS
 - (void) drawTextualData:(NSRect) size :(long) annotations
 {
 	//NSLog(@"CUSTOM_ANNOTATIONS");
@@ -6404,392 +6402,390 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-#else
-- (void) drawTextualData:(NSRect) size :(long) annotations
-{
-	NSManagedObject   *file;
-	file = [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
-	
-		
-	//** TEXT INFORMATION
-	glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-	glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
-	glTranslatef (-(size.size.width) / 2.0f, -(size.size.height) / 2.0f, 0.0f); // translate center to upper left
-	
-	//draw line around edge for key Images only in 2D Viewer
-	
-	if ([[self windowController] isMemberOfClass:[ViewerController class]] && [[self windowController] isKeyImage:curImage] && stringID == 0L) {
-		glLineWidth(8.0);
-		glColor3f (1.0f, 1.0f, 0.0f);
-		glBegin(GL_LINE_LOOP);
-			glVertex2f(0.0,                                      0.0);
-			glVertex2f(0.0,                   size.size.height - 0.0);
-			glVertex2f(size.size.width - 0.0, size.size.height - 0.0);
-			glVertex2f(size.size.width - 0.0,                    0.0);
-		glEnd();
-	}
-		
-	
-	glColor3f (0.0f, 0.0f, 0.0f);
-//	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glLineWidth(1.0);
-	
-	
-	if (annotations == 4) [[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo" object: self];
-	else //none, base, noName, full annotation
-	{
-		NSString	*tempString;
-		long		yRaster = 1, xRaster;
-		BOOL		fullText = YES;
-
-		
-		if( stringID && [stringID isEqualToString:@"OrthogonalMPRVIEW"] == YES)
-		{
-			fullText = NO;
-			
-			if( isKeyView == NO)
-			{
-				[self drawOrientation:size];
-				return;
-			}
-		}
-		
-		// TOP LEFT
-		
-		if( fullText)
-		{
-			tempString = [NSString stringWithFormat: @"Image size: %ld x %ld", (long) [curDCM pwidth], (long) [curDCM pheight]];
-			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height rightAlignment: NO useStringTexture: YES];
-			
-			tempString = [NSString stringWithFormat: @"View size: %ld x %ld", (long) size.size.width, (long) size.size.height];
-			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
-		}
-		
-		if( mouseXPos != 0 && mouseYPos != 0)
-		{
-			if( [curDCM isRGB]) tempString = [NSString stringWithFormat: @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
-			else tempString = [NSString stringWithFormat: @"X: %d px Y: %d px Value: %2.2f", (int)mouseXPos, (int)mouseYPos, pixelMouseValue];
-			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
-			
-			if( blendingView)
-			{
-				if( [[blendingView curDCM] isRGB]) tempString = [NSString stringWithFormat: @"Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB];
-				else tempString = [NSString stringWithFormat: @"Fused Image : X: %d px Y: %d px Value: %2.2f", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue];
-				[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
-			}
-			
-			if( [curDCM displaySUVValue])
-			{
-				if( [curDCM hasSUV] == YES && [curDCM SUVConverted] == NO)
-				{
-					tempString = [NSString stringWithFormat: @"SUV: %.2f", [self getSUV]];
-					[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
-				}
-			}
-			
-			if( blendingView)
-			{
-				if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
-				{
-					tempString = [NSString stringWithFormat: @"SUV (fused image): %.2f", [self getBlendedSUV]];
-					[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
-				}
-			}
-		}
-		
-		float	lwl, lww;
-		
-	
-		lwl = [curDCM wl];
-		lww = [curDCM ww];
-		
-	//	if( fullText)
-		{
-			if( lww < 50) tempString = [NSString stringWithFormat: @"WL: %0.4f WW: %0.4f", lwl, lww];
-			else tempString = [NSString stringWithFormat: @"WL: %ld WW: %ld", (long) lwl, (long) lww];
-			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
-			
-			if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"]  == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
-			{
-				if( [curDCM maxValueOfSeries])
-				{
-					float min = lwl - lww/2, max = lwl + lww/2;
-					
-					tempString = [NSString stringWithFormat: @"From: %d %% (%0.2f) to: %d %% (%0.2f)", (long) (min * 100. / [curDCM maxValueOfSeries]), lwl - lww/2, (long) (max * 100. / [curDCM maxValueOfSeries]), lwl + lww/2];
-					[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
-				}
-			}
-			
-		}		
-		// Draw any additional plugin text information
-		{
-			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-				[NSNumber numberWithFloat: yRaster++ * stringSize.height], @"yPos", nil];
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo"
-																object: self
-															  userInfo: userInfo];
-		}
-		
-		
-		// BOTTOM LEFT
-		
-		yRaster = size.size.height-2;
-		
-		if( stringID == 0L || [stringID isEqualToString:@"OrthogonalMPRVIEW"] || [stringID isEqualToString:@"FinalView"])
-		{
-			if( mouseXPos != 0 && mouseYPos != 0)
-			{
-				float location[ 3 ];
-				
-				if( [curDCM stack] > 1)
-				{
-					long maxVal;
-				
-					if( flippedData) maxVal = curImage-([curDCM stack]-1)/2;
-					else maxVal = curImage+([curDCM stack]-1)/2;
-					
-					if( maxVal < 0) maxVal = 0;
-					if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
-					
-					[[dcmPixList objectAtIndex: maxVal] convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];
-				}
-				else
-				{
-					[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];
-				}
-				
-				if(fabs(location[0]) < 1.0 && location[0] != 0.0)
-					tempString = [NSString stringWithFormat: @"X: %2.2f %cm Y: %2.2f %cm Z: %2.2f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5];
-				else
-					tempString = [NSString stringWithFormat: @"X: %2.2f mm Y: %2.2f mm Z: %2.2f mm", location[0], location[1], location[2]];
-				
-				[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
-				yRaster -= stringSize.height;
-			}
-		}
-		
-		// Thickness
-		if( [curDCM sliceThickness] != 0 && [curDCM sliceLocation] != 0)
-		{
-			if( [curDCM stack] > 1)
-			{
-				float vv, pp;
-				
-				[self getThickSlabThickness: &vv location: &pp];
-				
-				if( vv < 1.0 && vv != 0.0)
-				{
-					if( fabs( pp) < 1.0 && pp != 0.0)
-						tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f %cm", fabs( vv * 1000.0), 0xB5, pp * 1000.0, 0xB5];
-					else
-						tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f mm", fabs( vv * 1000.0), 0xB5, pp];
-				}
-				else
-					tempString = [NSString stringWithFormat: @"Thickness: %0.2f mm Location: %0.2f mm", fabs( vv), pp];
-				
-				[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
-				yRaster -= stringSize.height;
-			}
-			else if( fullText)
-			{
-				if ([curDCM sliceThickness] < 1.0 && [curDCM sliceThickness] != 0.0)
-				{
-					if( fabs( [curDCM sliceLocation]) < 1.0 && [curDCM sliceLocation] != 0.0)
-						tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f %cm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation] * 1000.0, 0xB5];
-					else
-						tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f mm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation]];
-				}
-				else
-					tempString = [NSString stringWithFormat: @"Thickness: %0.2f mm Location: %0.2f mm", [curDCM sliceThickness], [curDCM sliceLocation]];
-				
-				[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
-				yRaster -= stringSize.height;
-			}
-		} 
-		else if( [curDCM viewPosition] || [curDCM patientPosition])	 
-		{	 
-			 NSString        *nsstring = 0L;	 
-
-			 if( [curDCM viewPosition]) nsstring = [NSString stringWithFormat: @"Position: %@ ", [curDCM viewPosition]];	 
-			 if( [curDCM patientPosition])	 
-			 {	 
-				if( nsstring) nsstring = [nsstring stringByAppendingString: [curDCM patientPosition]];	 
-				else nsstring = [NSString stringWithFormat: @"Position: %@ ", [curDCM patientPosition]];	 
-			 }	 
-
-			 // Position
-			 [self DrawNSStringGL: nsstring : fontListGL :4 :yRaster rightAlignment: NO useStringTexture: YES];
-			 yRaster -= stringSize.height;	 
-		}
-		
-		if( fullText)
-		{
-			// Zoom
-			tempString = [NSString stringWithFormat: @"Zoom: %0.0f%% Angle: %0.0f", (float) scaleValue*100.0, (float) ((long) rotation % 360)];
-			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
-			yRaster -= stringSize.height;
-		}
-		
-		// Image Position
-		
-		if( [curDCM stack] > 1)
-		{
-			long maxVal;
-			
-			if( flippedData) maxVal = curImage-[curDCM stack]+1;
-			else maxVal = curImage+[curDCM stack];
-			
-			if( maxVal < 0) maxVal = 0;
-			if( maxVal > [dcmPixList count]) maxVal = [dcmPixList count];
-			
-			if( flippedData) tempString = [NSString stringWithFormat: @"Im: %ld-%ld/%ld", (long) [dcmPixList count] - curImage, [dcmPixList count] - maxVal, (long) [dcmPixList count]];
-			else tempString = [NSString stringWithFormat: @"Im: %ld-%ld/%ld", (long) curImage+1, maxVal, (long) [dcmPixList count]];
-			
-			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
-			yRaster -= stringSize.height;
-		} 
-		else if( fullText)
-		{
-			if( flippedData) tempString = [NSString stringWithFormat: @"Im: %ld/%ld", (long) [dcmPixList count] - curImage, (long) [dcmPixList count]];
-			else tempString = [NSString stringWithFormat: @"Im: %ld/%ld", (long) curImage+1, (long) [dcmPixList count]];
-			
-			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
-			yRaster -= stringSize.height;
-		}
-		
-		[self drawOrientation: size];
-		
-		// More informations
-		
-		//yRaster = 1;
-		yRaster = 0; //absolute value for yRaster;
-		NSManagedObject   *file;
-
-		file = [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
-		if( annotations >= annotBase && fullText)
-		{
-			if( annotations >= annotFull)
-			{
-				if( [file valueForKeyPath:@"series.study.name"])
-				{
-					NSString	*nsstring;
-					
-					if( [file valueForKeyPath:@"series.study.dateOfBirth"])
-					{
-						nsstring = [NSString stringWithFormat: @"%@ - %@ - %@",[file valueForKeyPath:@"series.study.name"], [BrowserController DateOfBirthFormat: [file valueForKeyPath:@"series.study.dateOfBirth"]], yearOld];
-					}
-					else  nsstring = [file valueForKeyPath:@"series.study.name"];
-					
-					xRaster = size.size.width;
-					[self DrawNSStringGL: nsstring : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
-					yRaster += (stringSize.height + stringSize.height/10);
-				}
-			}
-			else
-			{
-				if( [file valueForKeyPath:@"series.study.dateOfBirth"])
-				{
-					NSString *nsstring = [NSString stringWithFormat: @"%@ - %@",[BrowserController DateOfBirthFormat: [file valueForKeyPath:@"series.study.dateOfBirth"]], yearOld];
-					
-					xRaster = size.size.width;
-					[self DrawNSStringGL: nsstring : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
-					yRaster += (stringSize.height + stringSize.height/10);
-				}
-			}
-			
-			if( [file valueForKeyPath:@"series.study.patientID"])
-			{
-				xRaster = size.size.width;
-				[self DrawNSStringGL: [file valueForKeyPath:@"series.study.patientID"] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
-				yRaster += (stringSize.height + stringSize.height/10);
-			}
-			
-		} //annotations >= annotFull
-		
-		if( annotations >= annotBase && fullText)
-		{
-			if( [file valueForKeyPath:@"series.study.studyName"])
-			{
-				xRaster = size.size.width;
-				[self DrawNSStringGL: [file valueForKeyPath:@"series.study.studyName"] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
-				yRaster += (stringSize.height + stringSize.height/10);
-			}
-			
-			if( [file valueForKeyPath:@"series.name"])
-			{
-				xRaster = size.size.width;
-				[self DrawNSStringGL: [file valueForKeyPath:@"series.name"] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
-				yRaster += (stringSize.height + stringSize.height/10);
-			}
-			
-			if( [file valueForKeyPath:@"series.study.id"])
-			{
-				xRaster = size.size.width;		
-				[self DrawNSStringGL: [file valueForKeyPath:@"series.study.id"] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
-				yRaster += (stringSize.height + stringSize.height/10);
-			}
-			
-			if( [file valueForKeyPath:@"series.id"])
-			{
-				xRaster = size.size.width;
-				[self DrawNSStringGL: [[file valueForKeyPath:@"series.id"] stringValue] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
-				yRaster += (stringSize.height + stringSize.height/10);
-			}
-			
-			if( [curDCM echotime] != 0L &&  [curDCM repetitiontime] != 0L) 
-			{
-				float repetitiontime = [[curDCM repetitiontime] floatValue];
-				float echotime = [[curDCM echotime] floatValue];
-				tempString = [NSString stringWithFormat:@"TR: %.2f, TE: %.2f", repetitiontime, echotime];
-				xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
-				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
-				yRaster += (stringSize.height + stringSize.height/10);
-			}
-			
-			if( [curDCM flipAngle] != 0L)
-			{
-				float flipAngle = [[curDCM flipAngle] floatValue];
-				tempString = [NSString stringWithFormat:@"Flip Angle: %.2f", flipAngle];
-				xRaster = size.size.width;
-				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
-				yRaster += (stringSize.height + stringSize.height/10);
-			}
-			
-			if( [curDCM protocolName] != 0L)
-			{
-				xRaster = size.size.width;		
-				[self DrawNSStringGL: [curDCM protocolName] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
-				yRaster += (stringSize.height + stringSize.height/10);
-			}
-			
-			yRaster = size.size.height-2;
-			xRaster = size.size.width;
-			[self DrawNSStringGL: @"Made In OsiriX" : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: YES];
-			yRaster -= (stringSize.height + stringSize.height/10);
-			
-			NSCalendarDate  *date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[file valueForKey:@"date"] timeIntervalSinceReferenceDate]];
-			if( date && [date yearOfCommonEra] != 3000)
-			{
-				tempString = [BrowserController DateOfBirthFormat: date];
-				xRaster = size.size.width;	
-				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: YES];
-				yRaster -= (stringSize.height + stringSize.height/10);
-			}
-			//yRaster -= 12;
-			
-			if( [curDCM acquisitionTime]) date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[curDCM acquisitionTime] timeIntervalSinceReferenceDate]];
-			if( date && [date yearOfCommonEra] != 3000)
-			{
-				tempString = [BrowserController TimeFormat: date];	//	DDP localized from "%I:%M %p" 
-				xRaster = size.size.width;
-				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: NO];
-				yRaster -= (stringSize.height + stringSize.height/10);
-			}
-		}
-	}
-}
-#endif
+//- (void) drawTextualData:(NSRect) size :(long) annotations
+//{
+//	NSManagedObject   *file;
+//	file = [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
+//	
+//		
+//	//** TEXT INFORMATION
+//	glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+//	glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
+//	glTranslatef (-(size.size.width) / 2.0f, -(size.size.height) / 2.0f, 0.0f); // translate center to upper left
+//	
+//	//draw line around edge for key Images only in 2D Viewer
+//	
+//	if ([[self windowController] isMemberOfClass:[ViewerController class]] && [[self windowController] isKeyImage:curImage] && stringID == 0L) {
+//		glLineWidth(8.0);
+//		glColor3f (1.0f, 1.0f, 0.0f);
+//		glBegin(GL_LINE_LOOP);
+//			glVertex2f(0.0,                                      0.0);
+//			glVertex2f(0.0,                   size.size.height - 0.0);
+//			glVertex2f(size.size.width - 0.0, size.size.height - 0.0);
+//			glVertex2f(size.size.width - 0.0,                    0.0);
+//		glEnd();
+//	}
+//		
+//	
+//	glColor3f (0.0f, 0.0f, 0.0f);
+////	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+//	glLineWidth(1.0);
+//	
+//	
+//	if (annotations == 4) [[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo" object: self];
+//	else //none, base, noName, full annotation
+//	{
+//		NSString	*tempString;
+//		long		yRaster = 1, xRaster;
+//		BOOL		fullText = YES;
+//
+//		
+//		if( stringID && [stringID isEqualToString:@"OrthogonalMPRVIEW"] == YES)
+//		{
+//			fullText = NO;
+//			
+//			if( isKeyView == NO)
+//			{
+//				[self drawOrientation:size];
+//				return;
+//			}
+//		}
+//		
+//		// TOP LEFT
+//		
+//		if( fullText)
+//		{
+//			tempString = [NSString stringWithFormat: @"Image size: %ld x %ld", (long) [curDCM pwidth], (long) [curDCM pheight]];
+//			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height rightAlignment: NO useStringTexture: YES];
+//			
+//			tempString = [NSString stringWithFormat: @"View size: %ld x %ld", (long) size.size.width, (long) size.size.height];
+//			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
+//		}
+//		
+//		if( mouseXPos != 0 && mouseYPos != 0)
+//		{
+//			if( [curDCM isRGB]) tempString = [NSString stringWithFormat: @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
+//			else tempString = [NSString stringWithFormat: @"X: %d px Y: %d px Value: %2.2f", (int)mouseXPos, (int)mouseYPos, pixelMouseValue];
+//			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
+//			
+//			if( blendingView)
+//			{
+//				if( [[blendingView curDCM] isRGB]) tempString = [NSString stringWithFormat: @"Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB];
+//				else tempString = [NSString stringWithFormat: @"Fused Image : X: %d px Y: %d px Value: %2.2f", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue];
+//				[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
+//			}
+//			
+//			if( [curDCM displaySUVValue])
+//			{
+//				if( [curDCM hasSUV] == YES && [curDCM SUVConverted] == NO)
+//				{
+//					tempString = [NSString stringWithFormat: @"SUV: %.2f", [self getSUV]];
+//					[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
+//				}
+//			}
+//			
+//			if( blendingView)
+//			{
+//				if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
+//				{
+//					tempString = [NSString stringWithFormat: @"SUV (fused image): %.2f", [self getBlendedSUV]];
+//					[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
+//				}
+//			}
+//		}
+//		
+//		float	lwl, lww;
+//		
+//	
+//		lwl = [curDCM wl];
+//		lww = [curDCM ww];
+//		
+//	//	if( fullText)
+//		{
+//			if( lww < 50) tempString = [NSString stringWithFormat: @"WL: %0.4f WW: %0.4f", lwl, lww];
+//			else tempString = [NSString stringWithFormat: @"WL: %ld WW: %ld", (long) lwl, (long) lww];
+//			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
+//			
+//			if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"]  == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
+//			{
+//				if( [curDCM maxValueOfSeries])
+//				{
+//					float min = lwl - lww/2, max = lwl + lww/2;
+//					
+//					tempString = [NSString stringWithFormat: @"From: %d %% (%0.2f) to: %d %% (%0.2f)", (long) (min * 100. / [curDCM maxValueOfSeries]), lwl - lww/2, (long) (max * 100. / [curDCM maxValueOfSeries]), lwl + lww/2];
+//					[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
+//				}
+//			}
+//			
+//		}		
+//		// Draw any additional plugin text information
+//		{
+//			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+//				[NSNumber numberWithFloat: yRaster++ * stringSize.height], @"yPos", nil];
+//			
+//			[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo"
+//																object: self
+//															  userInfo: userInfo];
+//		}
+//		
+//		
+//		// BOTTOM LEFT
+//		
+//		yRaster = size.size.height-2;
+//		
+//		if( stringID == 0L || [stringID isEqualToString:@"OrthogonalMPRVIEW"] || [stringID isEqualToString:@"FinalView"])
+//		{
+//			if( mouseXPos != 0 && mouseYPos != 0)
+//			{
+//				float location[ 3 ];
+//				
+//				if( [curDCM stack] > 1)
+//				{
+//					long maxVal;
+//				
+//					if( flippedData) maxVal = curImage-([curDCM stack]-1)/2;
+//					else maxVal = curImage+([curDCM stack]-1)/2;
+//					
+//					if( maxVal < 0) maxVal = 0;
+//					if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
+//					
+//					[[dcmPixList objectAtIndex: maxVal] convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];
+//				}
+//				else
+//				{
+//					[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];
+//				}
+//				
+//				if(fabs(location[0]) < 1.0 && location[0] != 0.0)
+//					tempString = [NSString stringWithFormat: @"X: %2.2f %cm Y: %2.2f %cm Z: %2.2f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5];
+//				else
+//					tempString = [NSString stringWithFormat: @"X: %2.2f mm Y: %2.2f mm Z: %2.2f mm", location[0], location[1], location[2]];
+//				
+//				[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
+//				yRaster -= stringSize.height;
+//			}
+//		}
+//		
+//		// Thickness
+//		if( [curDCM sliceThickness] != 0 && [curDCM sliceLocation] != 0)
+//		{
+//			if( [curDCM stack] > 1)
+//			{
+//				float vv, pp;
+//				
+//				[self getThickSlabThickness: &vv location: &pp];
+//				
+//				if( vv < 1.0 && vv != 0.0)
+//				{
+//					if( fabs( pp) < 1.0 && pp != 0.0)
+//						tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f %cm", fabs( vv * 1000.0), 0xB5, pp * 1000.0, 0xB5];
+//					else
+//						tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f mm", fabs( vv * 1000.0), 0xB5, pp];
+//				}
+//				else
+//					tempString = [NSString stringWithFormat: @"Thickness: %0.2f mm Location: %0.2f mm", fabs( vv), pp];
+//				
+//				[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
+//				yRaster -= stringSize.height;
+//			}
+//			else if( fullText)
+//			{
+//				if ([curDCM sliceThickness] < 1.0 && [curDCM sliceThickness] != 0.0)
+//				{
+//					if( fabs( [curDCM sliceLocation]) < 1.0 && [curDCM sliceLocation] != 0.0)
+//						tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f %cm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation] * 1000.0, 0xB5];
+//					else
+//						tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f mm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation]];
+//				}
+//				else
+//					tempString = [NSString stringWithFormat: @"Thickness: %0.2f mm Location: %0.2f mm", [curDCM sliceThickness], [curDCM sliceLocation]];
+//				
+//				[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
+//				yRaster -= stringSize.height;
+//			}
+//		} 
+//		else if( [curDCM viewPosition] || [curDCM patientPosition])	 
+//		{	 
+//			 NSString        *nsstring = 0L;	 
+//
+//			 if( [curDCM viewPosition]) nsstring = [NSString stringWithFormat: @"Position: %@ ", [curDCM viewPosition]];	 
+//			 if( [curDCM patientPosition])	 
+//			 {	 
+//				if( nsstring) nsstring = [nsstring stringByAppendingString: [curDCM patientPosition]];	 
+//				else nsstring = [NSString stringWithFormat: @"Position: %@ ", [curDCM patientPosition]];	 
+//			 }	 
+//
+//			 // Position
+//			 [self DrawNSStringGL: nsstring : fontListGL :4 :yRaster rightAlignment: NO useStringTexture: YES];
+//			 yRaster -= stringSize.height;	 
+//		}
+//		
+//		if( fullText)
+//		{
+//			// Zoom
+//			tempString = [NSString stringWithFormat: @"Zoom: %0.0f%% Angle: %0.0f", (float) scaleValue*100.0, (float) ((long) rotation % 360)];
+//			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
+//			yRaster -= stringSize.height;
+//		}
+//		
+//		// Image Position
+//		
+//		if( [curDCM stack] > 1)
+//		{
+//			long maxVal;
+//			
+//			if( flippedData) maxVal = curImage-[curDCM stack]+1;
+//			else maxVal = curImage+[curDCM stack];
+//			
+//			if( maxVal < 0) maxVal = 0;
+//			if( maxVal > [dcmPixList count]) maxVal = [dcmPixList count];
+//			
+//			if( flippedData) tempString = [NSString stringWithFormat: @"Im: %ld-%ld/%ld", (long) [dcmPixList count] - curImage, [dcmPixList count] - maxVal, (long) [dcmPixList count]];
+//			else tempString = [NSString stringWithFormat: @"Im: %ld-%ld/%ld", (long) curImage+1, maxVal, (long) [dcmPixList count]];
+//			
+//			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
+//			yRaster -= stringSize.height;
+//		} 
+//		else if( fullText)
+//		{
+//			if( flippedData) tempString = [NSString stringWithFormat: @"Im: %ld/%ld", (long) [dcmPixList count] - curImage, (long) [dcmPixList count]];
+//			else tempString = [NSString stringWithFormat: @"Im: %ld/%ld", (long) curImage+1, (long) [dcmPixList count]];
+//			
+//			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
+//			yRaster -= stringSize.height;
+//		}
+//		
+//		[self drawOrientation: size];
+//		
+//		// More informations
+//		
+//		//yRaster = 1;
+//		yRaster = 0; //absolute value for yRaster;
+//		NSManagedObject   *file;
+//
+//		file = [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
+//		if( annotations >= annotBase && fullText)
+//		{
+//			if( annotations >= annotFull)
+//			{
+//				if( [file valueForKeyPath:@"series.study.name"])
+//				{
+//					NSString	*nsstring;
+//					
+//					if( [file valueForKeyPath:@"series.study.dateOfBirth"])
+//					{
+//						nsstring = [NSString stringWithFormat: @"%@ - %@ - %@",[file valueForKeyPath:@"series.study.name"], [BrowserController DateOfBirthFormat: [file valueForKeyPath:@"series.study.dateOfBirth"]], yearOld];
+//					}
+//					else  nsstring = [file valueForKeyPath:@"series.study.name"];
+//					
+//					xRaster = size.size.width;
+//					[self DrawNSStringGL: nsstring : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+//					yRaster += (stringSize.height + stringSize.height/10);
+//				}
+//			}
+//			else
+//			{
+//				if( [file valueForKeyPath:@"series.study.dateOfBirth"])
+//				{
+//					NSString *nsstring = [NSString stringWithFormat: @"%@ - %@",[BrowserController DateOfBirthFormat: [file valueForKeyPath:@"series.study.dateOfBirth"]], yearOld];
+//					
+//					xRaster = size.size.width;
+//					[self DrawNSStringGL: nsstring : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+//					yRaster += (stringSize.height + stringSize.height/10);
+//				}
+//			}
+//			
+//			if( [file valueForKeyPath:@"series.study.patientID"])
+//			{
+//				xRaster = size.size.width;
+//				[self DrawNSStringGL: [file valueForKeyPath:@"series.study.patientID"] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+//				yRaster += (stringSize.height + stringSize.height/10);
+//			}
+//			
+//		} //annotations >= annotFull
+//		
+//		if( annotations >= annotBase && fullText)
+//		{
+//			if( [file valueForKeyPath:@"series.study.studyName"])
+//			{
+//				xRaster = size.size.width;
+//				[self DrawNSStringGL: [file valueForKeyPath:@"series.study.studyName"] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+//				yRaster += (stringSize.height + stringSize.height/10);
+//			}
+//			
+//			if( [file valueForKeyPath:@"series.name"])
+//			{
+//				xRaster = size.size.width;
+//				[self DrawNSStringGL: [file valueForKeyPath:@"series.name"] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+//				yRaster += (stringSize.height + stringSize.height/10);
+//			}
+//			
+//			if( [file valueForKeyPath:@"series.study.id"])
+//			{
+//				xRaster = size.size.width;		
+//				[self DrawNSStringGL: [file valueForKeyPath:@"series.study.id"] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+//				yRaster += (stringSize.height + stringSize.height/10);
+//			}
+//			
+//			if( [file valueForKeyPath:@"series.id"])
+//			{
+//				xRaster = size.size.width;
+//				[self DrawNSStringGL: [[file valueForKeyPath:@"series.id"] stringValue] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+//				yRaster += (stringSize.height + stringSize.height/10);
+//			}
+//			
+//			if( [curDCM echotime] != 0L &&  [curDCM repetitiontime] != 0L) 
+//			{
+//				float repetitiontime = [[curDCM repetitiontime] floatValue];
+//				float echotime = [[curDCM echotime] floatValue];
+//				tempString = [NSString stringWithFormat:@"TR: %.2f, TE: %.2f", repetitiontime, echotime];
+//				xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
+//				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+//				yRaster += (stringSize.height + stringSize.height/10);
+//			}
+//			
+//			if( [curDCM flipAngle] != 0L)
+//			{
+//				float flipAngle = [[curDCM flipAngle] floatValue];
+//				tempString = [NSString stringWithFormat:@"Flip Angle: %.2f", flipAngle];
+//				xRaster = size.size.width;
+//				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+//				yRaster += (stringSize.height + stringSize.height/10);
+//			}
+//			
+//			if( [curDCM protocolName] != 0L)
+//			{
+//				xRaster = size.size.width;		
+//				[self DrawNSStringGL: [curDCM protocolName] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+//				yRaster += (stringSize.height + stringSize.height/10);
+//			}
+//			
+//			yRaster = size.size.height-2;
+//			xRaster = size.size.width;
+//			[self DrawNSStringGL: @"Made In OsiriX" : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: YES];
+//			yRaster -= (stringSize.height + stringSize.height/10);
+//			
+//			NSCalendarDate  *date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[file valueForKey:@"date"] timeIntervalSinceReferenceDate]];
+//			if( date && [date yearOfCommonEra] != 3000)
+//			{
+//				tempString = [BrowserController DateOfBirthFormat: date];
+//				xRaster = size.size.width;	
+//				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: YES];
+//				yRaster -= (stringSize.height + stringSize.height/10);
+//			}
+//			//yRaster -= 12;
+//			
+//			if( [curDCM acquisitionTime]) date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[curDCM acquisitionTime] timeIntervalSinceReferenceDate]];
+//			if( date && [date yearOfCommonEra] != 3000)
+//			{
+//				tempString = [BrowserController TimeFormat: date];	//	DDP localized from "%I:%M %p" 
+//				xRaster = size.size.width;
+//				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: NO];
+//				yRaster -= (stringSize.height + stringSize.height/10);
+//			}
+//		}
+//	}
+//}
 
 #pragma mark-
 #pragma mark image transformation

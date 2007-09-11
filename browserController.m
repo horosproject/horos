@@ -9627,6 +9627,7 @@ static NSArray*	openSubSeriesArray = 0L;
 
 	[DateTimeWithSecondsFormat release];
 	DateTimeWithSecondsFormat = [[NSDateFormatter alloc] init];
+	[DateTimeWithSecondsFormat setDateStyle: NSDateFormatterShortStyle];
 	[DateTimeWithSecondsFormat setTimeStyle: NSDateFormatterMediumStyle];
 
 	[DateTimeFormat release];
