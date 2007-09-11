@@ -10475,6 +10475,8 @@ BOOL            readable = YES;
 				NSDictionary *annot = [annotations objectAtIndex:a];
 				NSArray *content = [annot objectForKey:@"fullContent"];
 				NSMutableArray *contentOUT = [NSMutableArray array];
+				BOOL contentForLine = NO;
+				
 				for (f=0; f<[content count]; f++)
 				{
 					NSDictionary *field = [content objectAtIndex:f];
@@ -10488,7 +10490,8 @@ BOOL            readable = YES;
 							value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] DCMLink:dcmObject];
 						else
 							value = nil;
-						if(value==nil) value = @"";
+						if(value==nil || [value length] == 0) value = @"-";
+						else contentForLine = YES;
 					}
 					else if([type isEqualToString:@"DB"])
 					{
@@ -10507,7 +10510,8 @@ BOOL            readable = YES;
 							value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
 						}
 						
-						if(value==nil) value = @"";
+						if(value==nil) value = @"-";
+						else contentForLine = YES;
 												
 						if([[value className] isEqualToString:@"__NSCFDate"])
 						{
@@ -10517,7 +10521,10 @@ BOOL            readable = YES;
 								value = [BrowserController DateTimeWithSecondsFormat: (NSDate *) value];
 						}
 						else
+						{
 							value = [value description];
+							if( [value length] == 0) value = @"-";
+						}
 					}
 					else if([type isEqualToString:@"Special"])
 					{
@@ -10538,18 +10545,21 @@ BOOL            readable = YES;
 								value = [NSString stringWithFormat:@"%d y", age];
 							}
 						}
-						if(value==nil) value = @"";
+						if(value==nil || [value length] == 0) value = @"-";
+						else contentForLine = YES;
 					}
 					else if([type isEqualToString:@"Manual"])
 					{
 						value = [field objectForKey:@"field"];
-						if(value==nil) value = @"";
+						if(value==nil || [value length] == 0) value = @"-";
+						
 						if(![value isEqualToString:@""]) value = [value stringByAppendingString:@" "];
 					}
 					
 					[contentOUT addObject:value];
 				}
-				[annotationsOUT addObject:contentOUT];
+				if( contentForLine)
+					[annotationsOUT addObject:contentOUT];
 			}
 			[annotationsDictionary setObject:annotationsOUT forKey:[keys objectAtIndex:k]];
 		}
