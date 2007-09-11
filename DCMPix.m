@@ -39,6 +39,8 @@
 #include <Accelerate/Accelerate.h>
 #import <QTKit/QTKit.h>
 
+#import "math.h"
+
 #ifdef STATIC_DICOM_LIB
 #define PREVIEWSIZE 512
 #else
@@ -783,15 +785,16 @@ void ras_FillPolygon(	NSPointInt *p,
 {
 	struct edge *edgeTable[ MAXVERTICAL];
     struct	edge *active;
-    long	curY;
 	BOOL	clip = NO;
 	NSPointInt	*pTemp;
+	long curY;
 	
     FillEdges(p, no, edgeTable);
 	
-    for (curY = 0; edgeTable[ curY] == NULL; curY++)
+    for ( curY = 0; edgeTable[ curY] == NULL; curY++ ) {
         if (curY == MAXVERTICAL - 1)
             return;     /* No edges in polygon */
+	}
 	
     for (active = NULL; (active = UpdateActive(active, edgeTable, curY)) != NULL; curY++)
 	{
@@ -804,13 +807,10 @@ void ras_FillPolygon(	NSPointInt *p,
 	}
 }
 
-static inline long pnpoly( NSPoint *p, long count, float x, float y)
-{
-    int		i, j;
+static inline long pnpoly( NSPoint *p, long count, float x, float y) {
 	long	c = 0;
     
-    for (i = 0, j = count-1; i < count; j = i++)
-	{
+    for ( int i = 0, j = count-1; i < count; j = i++ ) {
 		if ((((p[i].y <= y) && (y < p[j].y)) ||
             ((p[j].y <= y) && (y < p[i].y))) &&
 			(x < (p[j].x - p[i].x) * (y - p[i].y) / (p[j].y - p[i].y) + p[i].x))
@@ -821,11 +821,9 @@ static inline long pnpoly( NSPoint *p, long count, float x, float y)
 
 inline long pnpolyInt( struct NSPointInt *p, long count, long x, long y)
 {
-    long	i, j;
 	long	c = 0;
     
-    for (i = 0, j = count-1; i < count; j = i++)
-	{
+    for ( int i = 0, j = count-1; i < count; j = i++ ) {
 		if ((((p[i].y <= y) && (y < p[j].y)) ||
             ((p[j].y <= y) && (y < p[i].y))) &&
 			(x < (p[j].x - p[i].x) * (y - p[i].y) / (p[j].y - p[i].y) + p[i].x))
@@ -2986,9 +2984,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		sliceLocation = 0;
 		sliceThickness = 0;
 		
-		long j;
-		for (j = 0; j < 9; j++) orientation[ j] = 0;
-
+		memset( orientation, 0, sizeof orientation );
     }
     return self;
 }
@@ -3095,9 +3091,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 }
 
 - (void) copyFromOther:(DCMPix *) fromDcm
-{
-    long	i;
-	
+{	
 	self->imageObj = [fromDcm->imageObj retain];
 	self->isBonjour = fromDcm->isBonjour;
 //	self->fImage = fromDcm->fImage;	// Don't load the image!
@@ -3116,7 +3110,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 	self->originX  = fromDcm->originX;
 	self->originY = fromDcm->originY;
 	self->originZ = fromDcm->originZ;
-	for( i = 0; i < 9; i++) self->orientation[ i] = fromDcm->orientation[ i];
+
+	memcpy( self->orientation, fromDcm->orientation, sizeof orientation );
+
 	self->isRGB = fromDcm->isRGB;
 	self->cineRate = fromDcm->cineRate;
 	self->savedWL = fromDcm->savedWL;
@@ -3172,7 +3168,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 	copy->originX  = self->originX;
 	copy->originY = self->originY;
 	copy->originZ = self->originZ;
-	for( i = 0; i < 9; i++) copy->orientation[ i] = self->orientation[ i];
+	
+	memcpy( copy->orientation, self->orientation, sizeof orientation );
+
 	copy->isRGB = self->isRGB;
 	copy->cineRate = self->cineRate;
 	copy->savedWL = self->savedWL;
@@ -8805,12 +8803,11 @@ BOOL            readable = YES;
 
 	unsigned int
 		count = [pixList count],
-		i,
 		nearestSliceIndx;
 		
-	float minDist = 1000000.0f;
+	float minDist = MAXFLOAT;
 	
-	for ( i = 0; i < count; i++ ) {
+	for ( unsigned int i = 0; i < count; i++ ) {
 		float sliceCoords[ 3 ];
 		DCMPix *pix = [pixList objectAtIndex: i];
 		[pix convertDICOMCoords: dicomCoords toSliceCoords: sliceCoords];
@@ -10226,43 +10223,41 @@ BOOL            readable = YES;
 #pragma mark-
 #pragma mark SUV
 
--(void) copySUVfrom:(DCMPix*) from
-{
-	[self setRadiopharmaceuticalStartTime: [from radiopharmaceuticalStartTime]];
-	[self setAcquisitionTime: [from acquisitionTime]];
-	[self setRadionuclideTotalDose: [from radionuclideTotalDose]];
-	[self setRadionuclideTotalDoseCorrected: [from radionuclideTotalDoseCorrected]];
-	[self setPatientsWeight: [from patientsWeight]];
-	[self setUnits: [from units]];
-	[self setDisplaySUVValue: [from displaySUVValue]];
-	[self setSUVConverted: [from SUVConverted]];
-	[self setDecayCorrection: [from decayCorrection]];
-	[self setMaxValueOfSeries: [from maxValueOfSeries]];
-	[self setMinValueOfSeries: [from minValueOfSeries]];
-	[self setDecayFactor: [from decayFactor]];
-	[self setHalflife: [from halflife]];
+-(void) copySUVfrom: (DCMPix*)from {
+	self.radiopharmaceuticalStartTime = from.radiopharmaceuticalStartTime;
+	self.acquisitionTime = from.acquisitionTime;
+	self.radionuclideTotalDose = from.radionuclideTotalDose;
+	self.radionuclideTotalDoseCorrected = from.radionuclideTotalDoseCorrected;
+	self.patientsWeight = from.patientsWeight;
+	self.units = from.units;
+	self.displaySUVValue = from.displaySUVValue;
+	self.SUVConverted = from.SUVConverted;
+	self.decayCorrection = from.decayCorrection;
+	self.maxValueOfSeries = from.maxValueOfSeries;
+	self.minValueOfSeries = from.minValueOfSeries;
+	self.decayFactor = from.decayFactor;
+	self.halflife = from.halflife;
 	[self checkSUV];
 }
 
-- (void) checkSUV
-{
+- (void) checkSUV {
 	hasSUV = NO;
 	
-	if ( ![[self units] isEqualToString: @"BQML"] && ![[self units] isEqualToString: @"CNTS"] ) return;  // Must be BQ/cc
+	if ( ![self.units isEqualToString: @"BQML"] && ![self.units isEqualToString: @"CNTS"] ) return;  // Must be BQ/cc
 	
-	if( [[self units] isEqualToString: @"CNTS"] && philipsFactor == 0.0) return;
+	if( [self.units isEqualToString: @"CNTS"] && philipsFactor == 0.0) return;
 	
-	if ( [self decayCorrection] == nil ) return;
+	if ( self.decayCorrection == nil ) return;
 	
-	if( decayFactor == 0L) return;
+	if( decayFactor == 0.0f ) return;
 	
-	if ( [[self decayCorrection] isEqualToString: @"START"] == NO ) return;
+	if ( [self.decayCorrection isEqualToString: @"START"] == NO ) return;
 	
-	if ( [self radionuclideTotalDose] <= 0.0 ) return;	
+	if ( self.radionuclideTotalDose <= 0.0 ) return;	
 	
-	if( halflife <= 0) return;
+	if ( halflife <= 0.0f ) return;
 	
-	if( acquisitionTime == 0L || radiopharmaceuticalStartTime == 0L) return;
+	if ( acquisitionTime == nil || radiopharmaceuticalStartTime == nil ) return;
 		
 	hasSUV = YES;
 }
@@ -10461,24 +10456,22 @@ BOOL            readable = YES;
 	// image sides (LowerLeft, LowerMiddle, LowerRight, MiddleLeft, MiddleRight, TopLeft, TopMiddle, TopRight) & sameAsDefault
 	NSArray *keys = [annotationsForModality allKeys];
 	
-	int k, a, f;
-
-	for (k=0; k<[keys count]; k++)
-	{
+	for ( int k=0; k<[keys count]; k++ ) {
+		
 		if(![[keys objectAtIndex:k] isEqualToString:@"sameAsDefault"])
 		{
 			NSArray *annotations = [annotationsForModality objectForKey:[keys objectAtIndex:k]];
 			NSMutableArray *annotationsOUT = [NSMutableArray array];
 			
-			for (a=0; a<[annotations count]; a++)
-			{
+			for ( int a=0; a<[annotations count]; a++ ) {
+				
 				NSDictionary *annot = [annotations objectAtIndex:a];
 				NSArray *content = [annot objectForKey:@"fullContent"];
 				NSMutableArray *contentOUT = [NSMutableArray array];
+
 				BOOL contentForLine = NO;
+				for ( int f=0; f<[content count]; f++ ) {
 				
-				for (f=0; f<[content count]; f++)
-				{
 					NSDictionary *field = [content objectAtIndex:f];
 					NSString *type = [field objectForKey:@"type"];
 					NSString *value;
