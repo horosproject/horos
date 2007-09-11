@@ -3663,13 +3663,13 @@ static BOOL				DICOMDIRCDMODE = NO;
 		{
 			subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\") AND date <= CAST(%lf, \"NSDate\")", [timeIntervalStart timeIntervalSinceReferenceDate], [timeIntervalEnd timeIntervalSinceReferenceDate]];
 		
-			description = [description stringByAppendingFormat: NSLocalizedString(@" / Time Interval: from: %@ to: %@", nil),[DBDateFormat stringFromDate: timeIntervalStart],  [DBDateFormat stringFromDate: timeIntervalEnd] ];
+			description = [description stringByAppendingFormat: NSLocalizedString(@" / Time Interval: from: %@ to: %@", nil),[DateTimeFormat stringFromDate: timeIntervalStart],  [DateTimeFormat stringFromDate: timeIntervalEnd] ];
 		}
 		else
 		{
 			subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [timeIntervalStart timeIntervalSinceReferenceDate]];
 			
-			description = [description stringByAppendingFormat:NSLocalizedString(@" / Time Interval: since: %@", nil), [DBDateFormat stringFromDate: timeIntervalStart]];
+			description = [description stringByAppendingFormat:NSLocalizedString(@" / Time Interval: since: %@", nil), [DateTimeFormat stringFromDate: timeIntervalStart]];
 		}
 		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, 0L]];
 		filtered = YES;
@@ -9625,30 +9625,34 @@ static NSArray*	openSubSeriesArray = 0L;
 	TimeWithSecondsFormat = [[NSDateFormatter alloc] init];
 	[TimeWithSecondsFormat setTimeStyle: NSDateFormatterMediumStyle];
 
-	[DBDateFormat release];
-	DBDateFormat = [[NSDateFormatter alloc] init];
-	[DBDateFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat2"]];
+	[DateTimeWithSecondsFormat release];
+	DateTimeWithSecondsFormat = [[NSDateFormatter alloc] init];
+	[DateTimeWithSecondsFormat setTimeStyle: NSDateFormatterMediumStyle];
 
-	[DBDateOfBirthFormat release];
-	DBDateOfBirthFormat = [[NSDateFormatter alloc] init];
-	[DBDateOfBirthFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat2"]];
+	[DateTimeFormat release];
+	DateTimeFormat = [[NSDateFormatter alloc] init];
+	[DateTimeFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat2"]];
 
-	[[[databaseOutline tableColumnWithIdentifier: @"dateOpened"] dataCell] setFormatter: DBDateFormat];
-	[[[databaseOutline tableColumnWithIdentifier: @"date"] dataCell] setFormatter: DBDateFormat];
-	[[[databaseOutline tableColumnWithIdentifier: @"dateAdded"] dataCell] setFormatter: DBDateFormat];
+	[DateOfBirthFormat release];
+	DateOfBirthFormat = [[NSDateFormatter alloc] init];
+	[DateOfBirthFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat2"]];
+
+	[[[databaseOutline tableColumnWithIdentifier: @"dateOpened"] dataCell] setFormatter: DateTimeFormat];
+	[[[databaseOutline tableColumnWithIdentifier: @"date"] dataCell] setFormatter: DateTimeFormat];
+	[[[databaseOutline tableColumnWithIdentifier: @"dateAdded"] dataCell] setFormatter: DateTimeFormat];
 	
-	[[[databaseOutline tableColumnWithIdentifier: @"dateOfBirth"] dataCell] setFormatter: DBDateOfBirthFormat];
-	[[[databaseOutline tableColumnWithIdentifier: @"reportURL"] dataCell] setFormatter: DBDateOfBirthFormat];
+	[[[databaseOutline tableColumnWithIdentifier: @"dateOfBirth"] dataCell] setFormatter: DateOfBirthFormat];
+	[[[databaseOutline tableColumnWithIdentifier: @"reportURL"] dataCell] setFormatter: DateOfBirthFormat];
 }
 
-- (NSDateFormatter*) DBDateFormat
+- (NSDateFormatter*) DateTimeFormat
 {
-	return DBDateFormat;
+	return DateTimeFormat;
 }
 
-- (NSDateFormatter*) DBDateOfBirthFormat
+- (NSDateFormatter*) DateOfBirthFormat
 {
-	return DBDateOfBirthFormat;
+	return DateOfBirthFormat;
 }
 
 - (NSDateFormatter*) TimeFormat
@@ -9661,6 +9665,16 @@ static NSArray*	openSubSeriesArray = 0L;
 	return TimeWithSecondsFormat;
 }
 
+- (NSDateFormatter*) DateTimeWithSecondsFormat
+{
+	return DateTimeWithSecondsFormat;
+}
+
++ (NSString*) DateTimeWithSecondsFormat:(NSDate*) t
+{
+	return [[[BrowserController currentBrowser] DateTimeWithSecondsFormat] stringFromDate: t];
+}
+
 + (NSString*) TimeWithSecondsFormat:(NSDate*) t
 {
 	return [[[BrowserController currentBrowser] TimeWithSecondsFormat] stringFromDate: t];
@@ -9671,14 +9685,14 @@ static NSArray*	openSubSeriesArray = 0L;
 	return [[[BrowserController currentBrowser] TimeFormat] stringFromDate: t];
 }
 
-+ (NSString*) DBDateOfBirthFormat:(NSDate*) d
++ (NSString*) DateOfBirthFormat:(NSDate*) d
 {
-	return [[[BrowserController currentBrowser] DBDateOfBirthFormat] stringFromDate: d];
+	return [[[BrowserController currentBrowser] DateOfBirthFormat] stringFromDate: d];
 }
 
-+ (NSString*) DBDateFormat:(NSDate*) d
++ (NSString*) DateTimeFormat:(NSDate*) d
 {
-	return [[[BrowserController currentBrowser] DBDateFormat] stringFromDate: d];
+	return [[[BrowserController currentBrowser] DateTimeFormat] stringFromDate: d];
 }
 
 -(void) awakeFromNib

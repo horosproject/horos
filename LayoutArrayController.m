@@ -32,7 +32,7 @@
 #import "SeriesView.h"
 #import "PlaceholderWindowController.h"
 #import "LayoutWindowController.h"
-
+#import "OrthogonalMPRPETCTViewer.h"
 
 @implementation LayoutArrayController
 

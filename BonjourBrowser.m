@@ -1062,7 +1062,7 @@ static char *GetPrivateIP()
 
 - (BOOL) isBonjourDatabaseUpToDate: (int) index
 {
-	if( [lock tryLock] == NO) return;
+	if( [lock tryLock] == NO) return YES;
 	[lock unlock];
 	
 	BOOL result;

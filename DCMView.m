@@ -6677,7 +6677,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					if( [file valueForKeyPath:@"series.study.dateOfBirth"])
 					{
-						nsstring = [NSString stringWithFormat: @"%@ - %@ - %@",[file valueForKeyPath:@"series.study.name"], [BrowserController DBDateOfBirthFormat: [file valueForKeyPath:@"series.study.dateOfBirth"]], yearOld];
+						nsstring = [NSString stringWithFormat: @"%@ - %@ - %@",[file valueForKeyPath:@"series.study.name"], [BrowserController DateOfBirthFormat: [file valueForKeyPath:@"series.study.dateOfBirth"]], yearOld];
 					}
 					else  nsstring = [file valueForKeyPath:@"series.study.name"];
 					
@@ -6690,7 +6690,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			{
 				if( [file valueForKeyPath:@"series.study.dateOfBirth"])
 				{
-					NSString *nsstring = [NSString stringWithFormat: @"%@ - %@",[BrowserController DBDateOfBirthFormat: [file valueForKeyPath:@"series.study.dateOfBirth"]], yearOld];
+					NSString *nsstring = [NSString stringWithFormat: @"%@ - %@",[BrowserController DateOfBirthFormat: [file valueForKeyPath:@"series.study.dateOfBirth"]], yearOld];
 					
 					xRaster = size.size.width;
 					[self DrawNSStringGL: nsstring : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
@@ -6771,7 +6771,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			NSCalendarDate  *date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[file valueForKey:@"date"] timeIntervalSinceReferenceDate]];
 			if( date && [date yearOfCommonEra] != 3000)
 			{
-				tempString = [BrowserController DBDateOfBirthFormat: date];
+				tempString = [BrowserController DateOfBirthFormat: date];
 				xRaster = size.size.width;	
 				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: YES];
 				yRaster -= (stringSize.height + stringSize.height/10);

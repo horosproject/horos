@@ -10377,12 +10377,12 @@ BOOL            readable = YES;
 							if(inGrOrModP->vr==DA)
 							{
 								calendarDate = [DCMCalendarDate dicomDate:field];
-								[field setString:[BrowserController DBDateOfBirthFormat: calendarDate]];
+								[field setString:[BrowserController DateOfBirthFormat: calendarDate]];
 							}
 							else if(inGrOrModP->vr==DT)
 							{
 								calendarDate = [DCMCalendarDate dicomDateTime:field];
-								[field setString:[BrowserController DBDateFormat: calendarDate]];
+								[field setString:[BrowserController DateTimeWithSecondsFormat: calendarDate]];
 							}
 							else if(inGrOrModP->vr==TM)
 							{
@@ -10428,13 +10428,14 @@ BOOL            readable = YES;
 			NSString *vr = [[[dcmObject attributes] objectForKey:grel] vr];
 			if([vr isEqualToString:@"DA"])
 			{
-				return [BrowserController DBDateOfBirthFormat: field];
+				return [BrowserController DateOfBirthFormat: field];
 			}
 			else if([vr isEqualToString:@"TM"])
 			{
-				return [BrowserController TimeFormat: field];
+				return [BrowserController TimeWithSecondsFormat: field];
 			}
-			return [[[BrowserController currentBrowser] DBDateFormat] stringFromDate:(NSDate *)field];
+			
+			return [BrowserController DateTimeWithSecondsFormat: field];
 		}
 		else
 			return nil;
@@ -10509,14 +10510,10 @@ BOOL            readable = YES;
 												
 						if([[value className] isEqualToString:@"__NSCFDate"])
 						{
-							NSDateFormatter	*dateFormat = [[[NSDateFormatter alloc] init] autorelease];
-								
 							if([fieldName isEqualToString:@"dateOfBirth"])
-								[dateFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateOfBirthFormat2"]];
+								value = [BrowserController DateOfBirthFormat: (NSDate *) value];
 							else
-								[dateFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat2"]];
-							
-							value = [dateFormat stringFromDate: (NSDate *)value];
+								value = [BrowserController DateTimeFormat: (NSDate *) value];
 						}
 						else
 							value = [value description];
@@ -10535,7 +10532,7 @@ BOOL            readable = YES;
 								value = nil;
 							if(value)
 							{
-								NSDate *date = [[[BrowserController currentBrowser] DBDateOfBirthFormat] dateFromString:value];
+								NSDate *date = [[[BrowserController currentBrowser] DateOfBirthFormat] dateFromString:value];
 								int age = -[date timeIntervalSinceNow]/(60*60*24*365);
 								value = [NSString stringWithFormat:@"%d y", age];
 							}

@@ -33,7 +33,7 @@
 #import "EndoscopyViewer.h"
 #import "LayoutWindowController.h";
 #import "PlaceholderWindowController.h"
-
+#import "OrthogonalMPRPETCTViewer.h"
 
 
 WindowLayoutManager *sharedLayoutManager;

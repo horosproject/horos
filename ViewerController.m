@@ -1626,7 +1626,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
 		{
 			if( [curImage valueForKeyPath:@"series.study.dateOfBirth"])
-				[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [BrowserController DBDateOfBirthFormat: bod], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
+				[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [BrowserController DateOfBirthFormat: bod], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
 			else
 				[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
 		}	
@@ -2822,7 +2822,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if( [curStudy isHidden]) action = @"Show Series";
 			else action = @"Hide Series";
 			
-			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@ : %d %@\r%@\r%@\r\r%@", name, [BrowserController DBDateFormat: [curStudy valueForKey:@"date"]], modality, [series count], @"series", stateText, comment, action]];
+			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@ : %d %@\r%@\r%@\r\r%@", name, [BrowserController DateTimeFormat: [curStudy valueForKey:@"date"]], modality, [series count], @"series", stateText, comment, action]];
 			[cell setBackgroundColor: [NSColor whiteColor]];
 			
 			index++;
@@ -2868,8 +2868,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 					}
 					else type=[type stringByAppendingString: @"s"];
 					
-					if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [BrowserController DBDateFormat: [curSeries valueForKey:@"date"]], keyImagesNumber, count, type]];
-					else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DBDateFormat: [curSeries valueForKey:@"date"]], count, type]];
+					if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [BrowserController DateTimeFormat: [curSeries valueForKey:@"date"]], keyImagesNumber, count, type]];
+					else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DateTimeFormat: [curSeries valueForKey:@"date"]], count, type]];
 					
 					[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rClick + Apple Key:\rOpen in new window", 0L), [curSeries valueForKey:@"id"]] forCell:cell];
 					if( [curImage valueForKey:@"series"] == curSeries)
@@ -15823,7 +15823,7 @@ long i;
 				OrthogonalMPRPETCTViewer *pcviewer = [self openOrthogonalMPRPETCTViewer];
 				NSDate *studyDate = [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.date"];
 				
-				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[pcviewer window] title], [BrowserController DBDateFormat: studyDate], [[self window] title]]];
+				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[pcviewer window] title], [BrowserController DateTimeFormat: studyDate], [[self window] title]]];
 			}
 			else
 			{
@@ -15838,7 +15838,7 @@ long i;
 				
 				
 				
-				[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[viewer window] title], [BrowserController DBDateFormat: [[fileList[0] objectAtIndex:0]  valueForKeyPath:@"series.study.date"]], [[self window] title]]];
+				[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[viewer window] title], [BrowserController DateTimeFormat: [[fileList[0] objectAtIndex:0]  valueForKeyPath:@"series.study.date"]], [[self window] title]]];
 			}
 		}
 	}
