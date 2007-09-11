@@ -96,7 +96,7 @@
 			seconds = lastDuration;
 			seconds -= hours*60*60 + minutes*60;
 			
-			[lastTimeText setStringValue:[NSString stringWithFormat:@"Last Rendering:\r%2.2d:%2.2d:%2.2d", hours, minutes, seconds]];
+			[lastTimeText setStringValue:[NSString stringWithFormat:@"Last Duration:\r%2.2d:%2.2d:%2.2d", hours, minutes, seconds]];
 		}
 		else [lastTimeText setStringValue:@""];
 		
@@ -155,12 +155,6 @@
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
 - (void) setString:(NSString*) str
 {
 	[string release];
@@ -202,10 +196,17 @@
 	return self;
 }
 
+- (void) setCancelDelegate:(id) object
+{
+	cancelDelegate = object;
+}
+
 - (IBAction) abort:(id) sender
 {
 	stop = YES;
 	aborted = YES;
+	
+	[cancelDelegate abort: self];
 }
 
 //- (NSProgressIndicator*) progress { return progress;}

@@ -96,6 +96,8 @@ static char *GetPrivateIP()
 	return dicomFileName;
 }
 
+
+
 - (id) initWithBrowserController: (BrowserController*) bC bonjourPublisher:(BonjourPublisher*) bPub{
 	self = [super init];
 	if (self != nil)
@@ -1013,6 +1015,11 @@ static char *GetPrivateIP()
 	threadIsRunning = NO;
 }
 
+- (void) abort:(id) sender
+{
+	connectToServerAborted = YES;
+}
+
 - (BOOL) connectToServer:(int) index message:(NSString*) message
 {
 	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L];
@@ -1021,9 +1028,22 @@ static char *GetPrivateIP()
 	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: dict];
 	while( threadIsRunning == YES)
 	{
-		if( [NSThread currentThread] == mainThread) [[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+		if( [NSThread currentThread] == mainThread)
+		{
+			[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+			
+			[[NSRunLoop currentRunLoop] runMode:NSRunLoopCommonModes beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+			[[NSRunLoop currentRunLoop] runMode:NSModalPanelRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+			[[NSRunLoop currentRunLoop] runMode:NSEventTrackingRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+		}
 		else [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+		
+		if(connectToServerAborted )
+			[serviceBeingResolved stop];
 	}
+	
+	connectToServerAborted = NO;
 	
 //	[self performSelectorOnMainThread:@selector(resolveServiceThread:) withObject:dict waitUntilDone: YES];
 	

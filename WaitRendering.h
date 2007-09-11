@@ -30,13 +30,16 @@
 	volatile BOOL				stop;
 	BOOL						cancel;
 	NSModalSession				session;
+	
+	id							cancelDelegate;
 }
 - (id) init:(NSString*) s;
--(BOOL) run;
+- (BOOL) run;
 - (void) start;
 - (void) end;
 - (IBAction) abort:(id) sender;
 - (void) setCancel :(BOOL) val;
--(BOOL) aborted;
+- (BOOL) aborted;
 - (void) setString:(NSString*) str;
+- (void) setCancelDelegate:(id) object;
 @end

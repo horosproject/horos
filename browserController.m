@@ -6420,7 +6420,7 @@ static BOOL withReset = NO;
 	
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
 	
-	NSLog( @"bits per pixel: %d", [imageRep bitsPerPixel]);
+//	NSLog( @"bits per pixel: %d", [imageRep bitsPerPixel]);
 	
 	NSString	*uniqueFileName = [NSString stringWithFormat:@"/tmp/osirix_thumbnail_%lf.jpg", [NSDate timeIntervalSinceReferenceDate]];
 	
@@ -6452,7 +6452,7 @@ static BOOL withReset = NO;
 		//NSJPEGFileType	NSJPEG2000FileType <- MAJOR memory leak with NSJPEG2000FileType when reading !!! Kakadu library...
 	}
 	
-	NSLog( @"thumbnail size: %d", [result length]);
+//	NSLog( @"thumbnail size: %d", [result length]);
 	
 	return result;
 }
@@ -6645,8 +6645,6 @@ static BOOL withReset = NO;
 	}
 	
 	[self saveDatabase: currentDatabasePath];
-	
-	[self outlineViewRefresh];
 	
 	[context unlock];
 	[context release];
@@ -13650,7 +13648,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting to OsiriX database...", nil)];
 			[wait showWindow:self];
+			[wait setCancel: YES];
+			[wait setCancelDelegate: bonjourBrowser];
+			
 			NSString	*path = [bonjourBrowser getDatabaseFile: index];
+			
 			[wait close];
 			[wait release];
 			

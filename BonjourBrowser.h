@@ -47,7 +47,7 @@
 	
 	NSDictionary		*dicomDestination;
 	
-	volatile BOOL		resolved;
+	volatile BOOL		resolved, connectToServerAborted;
 }
 
 + (NSString*) bonjour2local: (NSString*) str;
