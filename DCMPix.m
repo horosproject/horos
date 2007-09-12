@@ -1522,7 +1522,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	long			*xPoints, *yPoints;
     NSPoint			upleft, downright;
 	NSPoint			*pts;
-	NSMutableArray  *ptsTemp = [roi points];
+	NSMutableArray  *ptsTemp = roi.points;
 	
     [self CheckLoad];
 	
@@ -1594,56 +1594,50 @@ BOOL gUSEPAPYRUSDCMPIX;
 	}
 	*numberOfValues = count;
 	
-	if( roi) free( pts);
+	if( roi ) free( pts );
 	
-	free( xPoints);
-	free( yPoints);
+	free( xPoints );
+	free( yPoints );
 	
 	return values;
 }
 
 - (float*) getROIValue :(long*) numberOfValues :(ROI*) roi :(float**) locations
 {
-    long			count = 0, i, no;
-	long			x, y;
+    long			count = 0, no;
 	float			*values = 0L;
 	long			upleftx, uplefty, downrightx, downrighty;
 	NSPoint			*pts;
 	
-	if( [roi type] == tPlain)
+	if( roi.type == tPlain)
 	{
-		long			textWidth = [roi textureWidth];
-		long			textHeight = [roi textureHeight];
-		long			textureUpLeftCornerX = [roi textureUpLeftCornerX];
-		long			textureUpLeftCornerY = [roi textureUpLeftCornerY];
-		unsigned char	*buf = [roi textureBuffer];
+		long			textWidth = roi.textureWidth;
+		long			textHeight = roi.textureHeight;
+		long			textureUpLeftCornerX = roi.textureUpLeftCornerX;
+		long			textureUpLeftCornerY = roi.textureUpLeftCornerY;
+		unsigned char	*buf = roi.textureBuffer;
 		
 		values = (float*) malloc( textHeight*textWidth* sizeof(float));
 		
 		if( locations) *locations = (float*) malloc( textHeight*textWidth*2* sizeof(float));
 		
-		if( values)
-		{
+		if( values)	{
 			count = 0;
 			
-			for( y = 0; y < textHeight; y++)
-			{
-				for( x = 0; x < textWidth; x++)
-				{
-					if( buf [ x + y * textWidth] != 0)
-					{
+			for( long y = 0; y < textHeight; y++ ) {
+				for( long x = 0; x < textWidth; x++ ) {
+					if( buf [ x + y * textWidth] != 0) {
+						
 						long	xx = (x + textureUpLeftCornerX);
 						long	yy = (y + textureUpLeftCornerY);
 						
-						if( xx >= 0 && xx < width && yy >= 0 && yy < height)
-						{
+						if( xx >= 0 && xx < width && yy >= 0 && yy < height) {
+							
 							float	*curPix = &fImage[ (yy * width) + xx];
 							values[ count] = *curPix;	//fImage[ width*y + x];
 							
-							if( locations)
-							{
-								if( *locations)
-								{
+							if( locations) {
+								if( *locations) {
 									(*locations)[ count*2] = xx;
 									(*locations)[ count*2 + 1] = yy;
 								}
@@ -1655,26 +1649,21 @@ BOOL gUSEPAPYRUSDCMPIX;
 			}
 		}
 	}
-	else
-	{
-		NSMutableArray  *ptsTemp = [roi points];
+	else {
+		NSMutableArray  *ptsTemp = roi.points;
 		
-		if( [ptsTemp count] == 0) return 0L;
+		if( [ptsTemp count] == 0) return nil;
 		
 		[self CheckLoad];
 		
 		pts = (NSPoint*) malloc( [ptsTemp count] * sizeof(NSPoint));
 		no = [ptsTemp count];
-		for( i = 0; i < no; i++)
-		{
-			pts[ i] = [[ptsTemp objectAtIndex: i] point];
-		}	
+		for( long i = 0; i < no; i++) pts[ i] = [[ptsTemp objectAtIndex: i] point];
 
 		upleftx = downrightx = [[ptsTemp objectAtIndex:0] x];
 		uplefty = downrighty = [[ptsTemp objectAtIndex:0] y];
 		
-		for( i = 0; i < [ptsTemp count]; i++)
-		{
+		for( long i = 0; i < [ptsTemp count]; i++ ) {
 			if( upleftx > [[ptsTemp objectAtIndex:i] x]) upleftx = [[ptsTemp objectAtIndex:i] x];
 			if( uplefty > [[ptsTemp objectAtIndex:i] y]) uplefty = [[ptsTemp objectAtIndex:i] y];
 
@@ -1693,21 +1682,19 @@ BOOL gUSEPAPYRUSDCMPIX;
 		if( downrighty > height) downrighty = height;
 		
 		count = 0;
-		y = (downrighty - uplefty);
-		x = (downrightx - upleftx);
+		long y = (downrighty - uplefty);
+		long x = (downrightx - upleftx);
 		values = (float*) malloc( x*y* sizeof(float));
 		if( locations) *locations = (float*) malloc( x*y*2* sizeof(float));
 		
-		if( values)
-		{
-			for( y = uplefty; y < downrighty ; y++)
-			{
-				for( x = upleftx; x < downrightx ; x++)
-				{
+		if( values)	{
+			
+			for( y = uplefty; y < downrighty ; y++) {
+				for( x = upleftx; x < downrightx ; x++) {
+					
 					if( pnpoly( pts, no, x, y) > 0)
 					{
-						if( isRGB)
-						{
+						if( isRGB) {
 							unsigned char*  rgbPtr = (unsigned char*) fImage;
 							long			pos;
 							
@@ -1716,13 +1703,11 @@ BOOL gUSEPAPYRUSDCMPIX;
 							
 							values[ count] = (rgbPtr[ pos+1] + rgbPtr[ pos+2] + rgbPtr[ pos+3])/3;
 						}
-						else
-						{
+						else {
 							values[ count] = fImage[ width*y + x];
 						}
 						
-						if( locations)
-						{
+						if( locations ) {
 							if( *locations)
 							{
 								(*locations)[ count*2] = x;
@@ -1738,12 +1723,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 		y = (downrighty - uplefty);
 		x = (downrightx - upleftx);
 		
-		if( count > x*y)
-		{
-			NSLog(@"%d / %d", count, (long) ((downrighty - uplefty) * (downrightx - upleftx)));
-		}
+		if( count > x*y ) NSLog(@"%d / %d", count, (long) ((downrighty - uplefty) * (downrightx - upleftx)));
 		
-		if( roi) free( pts);
+		if( roi ) free( pts );
 	}
 	
 	*numberOfValues = count;
@@ -1753,23 +1735,21 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (BOOL) isInROI:(ROI*) roi:(NSPoint) pt
 {
-	NSMutableArray  *ptsTemp = [roi points];
+	NSMutableArray  *ptsTemp = roi.points;
 	BOOL			result = NO;
-	long			x, y, z, i, no;
+	long			x, y, no;
 	long			minx, maxx, miny, maxy;
 	NSPoint			*pts;
 
 	
     [self CheckLoad];
 
-	if( roi)
-	{
+	if( roi ) {
 		minx = maxx = [[ptsTemp objectAtIndex: 0] x];
 		miny = maxy = [[ptsTemp objectAtIndex: 0] y];
 		
 		// Find the max rectangle of the ROI
-		for( z = 0; z < [ptsTemp count]; z++)
-		{
+		for( long z = 0; z < [ptsTemp count]; z++) {
 			if( minx > [[ptsTemp objectAtIndex: z] x]) minx = [[ptsTemp objectAtIndex: z] x];
 			if( maxx < [[ptsTemp objectAtIndex: z] x]) maxx = [[ptsTemp objectAtIndex: z] x];
 			if( miny > [[ptsTemp objectAtIndex: z] y]) miny = [[ptsTemp objectAtIndex: z] y];
@@ -1779,22 +1759,16 @@ BOOL gUSEPAPYRUSDCMPIX;
 		if( pt.x < minx || pt.x > maxx) return NO;
 		if( pt.y < miny || pt.y > maxy) return NO;
 		
-		if( [roi type] == tROI) return YES;
+		if( roi.type == tROI) return YES;
 		
 		pts = (NSPoint*) malloc( [ptsTemp count] * sizeof(NSPoint));
 		no = [ptsTemp count];
-		for( i = 0; i < no; i++)
-		{
-			pts[ i] = [[ptsTemp objectAtIndex: i] point];
-		}
-		
+		for( long i = 0; i < no; i++ ) pts[ i] = [[ptsTemp objectAtIndex: i] point];
+
 		x = pt.x;
 		y = pt.y;
 		
-		if( pnpoly( pts, no, x, y))
-		{
-			result = YES;
-		}
+		if( pnpoly( pts, no, x, y))	result = YES;
 		
 		free( pts);
 	}
@@ -1804,15 +1778,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (void) prepareRestore
 {
-	int i;
-	
 	if( restoreImageCache) [self freeRestore];
 	
 	restoreImageCache = malloc( [pixArray count] * sizeof(void*));
 	
 	if( restoreImageCache)
 	{
-		for( i = 0; i < [pixArray count]; i++)
+		for( int i = 0; i < [pixArray count]; i++)
 		{
 			DCMPix	*s = [pixArray objectAtIndex:i];
 			
@@ -1824,16 +1796,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 	else NSLog( @"prepare Restore cache - FAILED");
 }
 
-- (void) freeRestore
-{
-	int i;
-	
-	if( restoreImageCache)
-	{
-		for( i = 0; i < [pixArray count]; i++)
-		{
-			[restoreImageCache[ i] release];
-		}
+- (void) freeRestore {
+	if( restoreImageCache) {
+		for( int i = 0; i < [pixArray count]; i++ )	[restoreImageCache[ i] release];
 		
 		free( restoreImageCache);
 		restoreImageCache = 0L;
@@ -1842,11 +1807,11 @@ BOOL gUSEPAPYRUSDCMPIX;
 	}
 }
 
-- (unsigned char*) getMapFromPolygonROI:(ROI*) roi
-{
+- (unsigned char*) getMapFromPolygonROI:(ROI*) roi {
+	
 	unsigned char*	map = malloc( height * width);
 	float*			tempImage = calloc( 1, height * width * sizeof(float));
-	int				i, no;
+	int				no;
 	
 	if( [roi type] == tCPolygon || [roi type] == tOPolygon || [roi type] == tPencil)
 	{	
@@ -1854,8 +1819,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 				
 		struct NSPointInt *ptsInt = (struct NSPointInt*) malloc( [ptsTemp count] * sizeof( struct NSPointInt));
 		no = [ptsTemp count];
-		for( i = 0; i < no; i++)
-		{
+		for( int i = 0; i < no; i++) {
 			ptsInt[ i].x = [[ptsTemp objectAtIndex: i] point].x + 0.5;
 			ptsInt[ i].y = [[ptsTemp objectAtIndex: i] point].y + 0.5;
 		}
@@ -1869,16 +1833,14 @@ BOOL gUSEPAPYRUSDCMPIX;
 		
 		BOOL clip = NO;
 		
-		for( i = 0; i < no && clip == NO; i++)
-		{
+		for( int i = 0; i < no && clip == NO; i++) {
 			if( ptsInt[ i].x < 0) clip = YES;
 			if( ptsInt[ i].y < 0) clip = YES;
 			if( ptsInt[ i].x >= width) clip = YES;
 			if( ptsInt[ i].y >= height) clip = YES;
 		}
 		
-		if( clip)
-		{
+		if( clip) {
 			long newNo;
 			
 			pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
@@ -1890,28 +1852,25 @@ BOOL gUSEPAPYRUSDCMPIX;
 			no = newNo;
 		}
 		
-		if( ptsInt != 0L && no > 1)
-		{
+		if( ptsInt != 0L && no > 1)	{
 			BOOL restore = NO, addition = NO, outside = NO;
 			
 			ras_FillPolygon( ptsInt, no, tempImage, width, height, [pixArray count], -99999, 99999, outside, 255, addition, isRGB, NO, 0L, 0L, 0L, 0L, 0L, 0, 2, 0, restore);
 		}
 		
 		// Convert float to char
-		i = width * height;
-		while( i-- > 0)
-		{
+		int i = width * height;
+		while( i-- > 0)	{
 			map[ i] = tempImage[ i];
 		}
 		
 		// Keep a free box around the image
-		for( i = 0 ; i < width; i++)
-		{
+		for( int i = 0 ; i < width; i++) {
 			map[ i] = 0;
 			map[height*(width-2) +i] = 0;
 		}
-		for( i = 0 ; i < height; i++)
-		{
+		
+		for( int i = 0 ; i < height; i++) {
 			map[ i*width] = 0;
 			map[ i*width + width-1] = 0;
 		}
@@ -1925,8 +1884,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (void) fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition;
 {
-    long				i, no = 0;
-	long				x, y;
+    long				no = 0;
+	long				y;
     long				uplefty, downrighty, ims = width * height;
 	struct NSPointInt	*ptsInt = 0L;
 	NSMutableArray		*ptsTemp = 0L;
@@ -1941,48 +1900,40 @@ BOOL gUSEPAPYRUSDCMPIX;
 		restore = NO;
 	}
 
-	if( roi)
+	if( roi )
 	{
-		if( [roi type] == tPlain)
+		if( roi.type == tPlain )
 		{
-			long			textWidth = [roi textureWidth];
-			long			textHeight = [roi textureHeight];
-			long			textureUpLeftCornerX = [roi textureUpLeftCornerX];
-			long			textureUpLeftCornerY = [roi textureUpLeftCornerY];
-			unsigned char	*buf = [roi textureBuffer];
+			long			textWidth = roi.textureWidth;
+			long			textHeight = roi.textureHeight;
+			long			textureUpLeftCornerX = roi.textureUpLeftCornerX;
+			long			textureUpLeftCornerY = roi.textureUpLeftCornerY;
+			unsigned char	*buf = roi.textureBuffer;
 			
 			// *** INSIDE
 			
-			if( outside == NO)
-			{
-				for( y = textureUpLeftCornerY; y < textureUpLeftCornerY + textHeight; y++)
-				{
-					if( isRGB)
-					{
+			if( outside == NO) {
+				for( y = textureUpLeftCornerY; y < textureUpLeftCornerY + textHeight; y++) {
+					if( isRGB) {
+						
 						unsigned char *rgbPtr = (unsigned char*) (fImage + textureUpLeftCornerX + y*width);
 						unsigned char *fTempRestore = 0L;
 						if( restore) fTempRestore = (unsigned char*) &[restoreImageCache[ stackNo] fImage][textureUpLeftCornerX + y*width];
 						
-						for( x = textureUpLeftCornerX; x < textureUpLeftCornerX + textWidth; x++)
-						{
-							if( *buf++)
-							{
-								if( x >= 0 && x < width && y >= 0 && y < height)
-								{
-									if( restore)
-									{
+						for( long x = textureUpLeftCornerX; x < textureUpLeftCornerX + textWidth; x++) {
+							if( *buf++) {
+								if( x >= 0 && x < width && y >= 0 && y < height) {
+									if( restore) {
 										rgbPtr[ 1] = fTempRestore[ 1];
 										rgbPtr[ 2] = fTempRestore[ 2];
 										rgbPtr[ 3] = fTempRestore[ 3];
 									}
-									else if( addition)
-									{
+									else if( addition ) {
 										if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] += newVal;
 										if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] += newVal;
 										if( rgbPtr[ 3] >= minValue && rgbPtr[ 3] <= maxValue) rgbPtr[ 3] += newVal;
 									}
-									else
-									{
+									else {
 										if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] = newVal;
 										if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] = newVal;
 										if( rgbPtr[ 3] >= minValue && rgbPtr[ 3] <= maxValue) rgbPtr[ 3] = newVal;
@@ -1992,28 +1943,19 @@ BOOL gUSEPAPYRUSDCMPIX;
 							rgbPtr += 4;
 						}
 					}
-					else
-					{
+					else {
 						float *fTempImage = fImage + textureUpLeftCornerX + y*width;
 						float *fTempRestore = 0L;
 						if( restore) fTempRestore = &[restoreImageCache[ stackNo] fImage][textureUpLeftCornerX + y*width];
 						
-						for( x = textureUpLeftCornerX; x < textureUpLeftCornerX + textWidth; x++)
-						{
-							if( *buf++)
-							{
-								if( x >= 0 && x < width && y >= 0 && y < height)
-								{
-									if( restore)
-									{
-										*fTempImage = *fTempRestore;
-									}
-									else if( addition)
-									{
+						for( long x = textureUpLeftCornerX; x < textureUpLeftCornerX + textWidth; x++) {
+							if( *buf++) {
+								if( x >= 0 && x < width && y >= 0 && y < height) {
+									if( restore) *fTempImage = *fTempRestore;
+									else if( addition) {
 										if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage += newVal;
 									}
-									else
-									{
+									else {
 										if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage = newVal;
 									}
 								}
@@ -2027,12 +1969,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 			
 			// *** OUTSIDE
 			
-			else
-			{
-				for( y = 0; y < height; y++)
-				{
-					for( x = 0; x < width; x++)
-					{
+			else {
+				for( long y = 0; y < height; y++ ) {
+					for( long x = 0; x < width; x++) {
 						BOOL doit = NO;
 						
 						if( x >= textureUpLeftCornerX && x < textureUpLeftCornerX + textWidth && y >= textureUpLeftCornerY && y < textureUpLeftCornerY + textHeight)
@@ -2041,38 +1980,31 @@ BOOL gUSEPAPYRUSDCMPIX;
 						} 
 						else doit = YES;
 						
-						if( doit)
-						{
+						if( doit) {
 							long	xx = x;
 							long	yy = y;
 						
-							if( isRGB)
-							{
+							if( isRGB) {
 								unsigned char*  rgbPtr = (unsigned char*) &fImage[ (yy * width) + xx];
 								
-								if( addition)
-								{
+								if( addition) {
 									if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] += newVal;
 									if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] += newVal;
 									if( rgbPtr[ 3] >= minValue && rgbPtr[ 3] <= maxValue) rgbPtr[ 3] += newVal;
 								}
-								else
-								{
+								else {
 									if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] = newVal;
 									if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] = newVal;
 									if( rgbPtr[ 3] >= minValue && rgbPtr[ 3] <= maxValue) rgbPtr[ 3] = newVal;
 								}
 							}
-							else
-							{
+							else {
 								float	*fTempImage = &fImage[ (yy * width) + xx];
 								
-								if( addition)
-								{
+								if( addition) {
 									if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage += newVal;
 								}
-								else
-								{
+								else {
 									if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage = newVal;
 								}
 							}
@@ -2083,14 +2015,12 @@ BOOL gUSEPAPYRUSDCMPIX;
 			
 			return;
 		}
-		else
-		{
-			ptsTemp = [roi points];
+		else {
+			ptsTemp = roi.points;
 			
 			ptsInt = (struct NSPointInt*) malloc( [ptsTemp count] * sizeof( struct NSPointInt));
 			no = [ptsTemp count];
-			for( i = 0; i < no; i++)
-			{
+			for( long i = 0; i < no; i++ ) {
 				ptsInt[ i].x = [[ptsTemp objectAtIndex: i] point].x;
 				ptsInt[ i].y = [[ptsTemp objectAtIndex: i] point].y;
 			}
@@ -2099,27 +2029,23 @@ BOOL gUSEPAPYRUSDCMPIX;
 			NSPointInt *pTemp;
 			long yIm, xIm;
 			
-			switch( orientationStack)
-			{
+			switch( orientationStack) {
 				case 0:	yIm = [pixArray count];		xIm = width;	break;
 				case 1:	yIm = [pixArray count];		xIm = height;	break;
 				case 2:	yIm = height;				xIm = width;	break;
 			}
 			
 			clip = NO;
-			switch( orientationStack)
-			{
+			switch( orientationStack) {
 				case 2:
-					for( i = 0; i < no && clip == NO; i++)
-					{
+					for( long i = 0; i < no && clip == NO; i++) {
 						if( ptsInt[ i].x < 0) clip = YES;
 						if( ptsInt[ i].y < 0) clip = YES;
 						if( ptsInt[ i].x >= width) clip = YES;
 						if( ptsInt[ i].y >= height) clip = YES;
 					}
 					
-					if( clip)
-					{
+					if( clip) {
 						long newNo;
 						
 						pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
@@ -2133,16 +2059,14 @@ BOOL gUSEPAPYRUSDCMPIX;
 					break;
 					
 				case 0:
-					for( i = 0; i < no && clip == NO; i++)
-					{
+					for( long i = 0; i < no && clip == NO; i++) {
 						if( ptsInt[ i].x < 0) clip = YES;
 						if( ptsInt[ i].y < 0) clip = YES;
 						if( ptsInt[ i].x >= height) clip = YES;
 						if( ptsInt[ i].y >= [pixArray count]) clip = YES;
 					}
 					
-					if( clip)
-					{
+					if( clip) {
 						long newNo;
 						
 						pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
@@ -2155,16 +2079,14 @@ BOOL gUSEPAPYRUSDCMPIX;
 					break;
 					
 				case 1:
-					for( i = 0; i < no && clip == NO; i++)
-					{
+					for( long i = 0; i < no && clip == NO; i++) {
 						if( ptsInt[ i].x < 0) clip = YES;
 						if( ptsInt[ i].y < 0) clip = YES;
 						if( ptsInt[ i].x >= width) clip = YES;
 						if( ptsInt[ i].y >= [pixArray count]) clip = YES;
 					}
 					
-					if( clip)
-					{
+					if( clip) {
 						long newNo;
 						
 						pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
@@ -2180,26 +2102,22 @@ BOOL gUSEPAPYRUSDCMPIX;
 	}
 	else ptsInt = 0L;
 
-	if( outside)
-	{
+	if( outside) {
 		long yIm, xIm;
 		
-		switch( orientationStack)
-		{
+		switch( orientationStack) {
 			case 0:	yIm = [pixArray count];		xIm = width;	break;
 			case 1:	yIm = [pixArray count];		xIm = height;	break;
 			case 2:	yIm = height;				xIm = width;	break;
 		}
 		
-		if( roi) uplefty = downrighty = ptsInt[0].y;
-		else
-		{
+		if( roi ) uplefty = downrighty = ptsInt[0].y;
+		else {
 			uplefty = 0;
 			downrighty = yIm;
 		}
 		
-		for( i = 0; i < no; i++)
-		{
+		for( long i = 0; i < no; i++) {
 			if( uplefty > ptsInt[i].y) uplefty = ptsInt[i].y;
 			if( downrighty < ptsInt[i].y) downrighty = ptsInt[i].y;
 		}
@@ -2211,41 +2129,34 @@ BOOL gUSEPAPYRUSDCMPIX;
 		if( downrighty >= yIm) downrighty = yIm-1;
 		
 		
-		if( isRGB)
-		{
-			for( y = 0; y < uplefty ; y++)
-			{
-				switch( orientationStack)
-				{
+		if( isRGB ) {
+			for( long y = 0; y < uplefty ; y++ ) {
+				switch( orientationStack) {
 					case 1:		fTempImage = fImage + (y * ims) + stackNo*width;		break;
 					case 0:		fTempImage = fImage + (y * ims) + stackNo;				break;
 					case 2:		fTempImage = fImage + width*y;							break;
 				}
 				
-				for( x = 0; x < width ; x++)
-				{
+				for( long x = 0; x < width ; x++) {
 					unsigned char*  rgbPtr = (unsigned char*) fTempImage;
 					
 					if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] = newVal;
 					if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] = newVal;
 					if( rgbPtr[ 3] >= minValue && rgbPtr[ 3] <= maxValue) rgbPtr[ 3] = newVal;
 					
-					if( orientationStack) fTempImage ++;
+					if( orientationStack) fTempImage++;
 					else fTempImage += width;
 				}
 			}
 			
-			for( y = downrighty; y < yIm ; y++)
-			{
-				switch( orientationStack)
-				{
+			for( long y = downrighty; y < yIm ; y++) {
+				switch( orientationStack) {
 					case 1:		fTempImage = fImage + (y * ims) + stackNo*width;		break;
 					case 0:		fTempImage = fImage + (y * ims) + stackNo;				break;
 					case 2:		fTempImage = fImage + width*y;							break;
 				}
 				
-				for( x = 0; x < width ; x++)
-				{
+				for( long x = 0; x < width ; x++ ) {
 					unsigned char*  rgbPtr = (unsigned char*) fTempImage;
 					
 					if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] = newVal;
@@ -2257,19 +2168,15 @@ BOOL gUSEPAPYRUSDCMPIX;
 				}
 			}
 		}
-		else
-		{
-			for( y = 0; y < uplefty ; y++)
-			{
-				switch( orientationStack)
-				{
+		else {
+			for( long y = 0; y < uplefty ; y++) {
+				switch( orientationStack) {
 					case 1:		fTempImage = fImage + (y * ims) + stackNo*width;		break;
 					case 0:		fTempImage = fImage + (y * ims) + stackNo;				break;
 					case 2:		fTempImage = fImage + width*y;							break;
 				}
 				
-				for( x = 0; x < width ; x++)
-				{
+				for( long x = 0; x < width ; x++ ) {
 					if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage = newVal;
 					
 					if( orientationStack) fTempImage ++;
@@ -2277,17 +2184,14 @@ BOOL gUSEPAPYRUSDCMPIX;
 				}
 			}
 			
-			for( y = downrighty; y < yIm ; y++)
-			{
-				switch( orientationStack)
-				{
+			for( long y = downrighty; y < yIm ; y++) {
+				switch( orientationStack) {
 					case 1:		fTempImage = fImage + (y * ims) + stackNo*width;		break;
 					case 0:		fTempImage = fImage + (y * ims) + stackNo;				break;
 					case 2:		fTempImage = fImage + width*y;							break;
 				}
 				
-				for( x = 0; x < width ; x++)
-				{
+				for( long x = 0; x < width ; x++ ) {
 					if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage = newVal;
 					
 					if( orientationStack) fTempImage ++;
@@ -2297,36 +2201,28 @@ BOOL gUSEPAPYRUSDCMPIX;
 		}
 	}
 	
-	if( ptsInt != 0L && no > 1)
-	{
+	if( ptsInt != 0L && no > 1) {
 		ras_FillPolygon( ptsInt, no, fImage, width, height, [pixArray count], minValue, maxValue, outside, newVal, addition, isRGB, NO, 0L, 0L, 0L, 0L, 0L, 0, orientationStack, stackNo, restore);
 	}
-	else	
-	{	// Fill the image that contains no ROI :
-		if( outside)
-		{
+	else {	// Fill the image that contains no ROI :
+		if( outside) {
 			long yIm, xIm;
 			
-			switch( orientationStack)
-			{
+			switch( orientationStack) {
 				case 0:	yIm = [pixArray count];		xIm = width;	break;
 				case 1:	yIm = [pixArray count];		xIm = height;	break;
 				case 2:	yIm = height;				xIm = width;	break;
 			}
 		
-			if( isRGB)
-			{
-				for( y = 0; y < yIm ; y++)
-				{
-					switch( orientationStack)
-					{
+			if( isRGB) {
+				for( long y = 0; y < yIm ; y++) {
+					switch( orientationStack) {
 						case 1:		fTempImage = fImage + (y * ims) + stackNo*width;		break;
 						case 0:		fTempImage = fImage + (y * ims) + stackNo;				break;
 						case 2:		fTempImage = fImage + width*y;							break;
 					}
 					
-					for( x = 0; x < xIm ; x++)
-					{
+					for( long x = 0; x < xIm ; x++ ) {
 						unsigned char*  rgbPtr = (unsigned char*) fTempImage;
 						
 						if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] = newVal;
@@ -2338,19 +2234,15 @@ BOOL gUSEPAPYRUSDCMPIX;
 					}
 				}
 			}
-			else
-			{
-				for( y = 0; y < yIm ; y++)
-				{
-					switch( orientationStack)
-					{
+			else {
+				for( long y = 0; y < yIm ; y++) {
+					switch( orientationStack) {
 						case 1:		fTempImage = fImage + (y * ims) + stackNo*width;		break;
 						case 0:		fTempImage = fImage + (y * ims) + stackNo;				break;
 						case 2:		fTempImage = fImage + width*y;							break;
 					}
 					
-					for( x = 0; x < xIm ; x++)
-					{
+					for( long x = 0; x < xIm ; x++ ) {
 						if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage = newVal;
 						
 						if( orientationStack) fTempImage ++;
@@ -2361,10 +2253,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		}
 	}
 	
-	if( roi)
-	{
-		free( ptsInt);
-	}
+	if( roi ) free( ptsInt);
 }
 
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo
@@ -2387,39 +2276,27 @@ BOOL gUSEPAPYRUSDCMPIX;
 	int cf2Count = 0;
 	int cf3Count = 0;
 	int cf4Count = 0;
-	int x;
-	int y;
 	int count = 0;
 	[self CheckLoad];
 	
-	if( [roi type] == tPlain)
-	{
-		long			textWidth = [roi textureWidth];
-		long			textHeight = [roi textureHeight];
-		long			textureUpLeftCornerX = [roi textureUpLeftCornerX];
-		long			textureUpLeftCornerY = [roi textureUpLeftCornerY];
-		unsigned char	*buf = [roi textureBuffer];
+	if( roi.type == tPlain ) {
+		long			textWidth = roi.textureWidth;
+		long			textHeight = roi.textureHeight;
+		long			textureUpLeftCornerX = roi.textureUpLeftCornerX;
+		long			textureUpLeftCornerY = roi.textureUpLeftCornerY;
+		unsigned char	*buf = roi.textureBuffer;
 		float			*fImageTemp;
 		
-		for( y = 0; y < textHeight; y++)
-		{
+		for( int y = 0; y < textHeight; y++) {
 			fImageTemp = fImage + ((y + textureUpLeftCornerY) * width) + textureUpLeftCornerX;
 			
-			for( x = 0; x < textWidth; x++, fImageTemp++)
-			{
-				if( *buf++ != 0)
-				{
+			for( int x = 0; x < textWidth; x++, fImageTemp++) {
+				if( *buf++ != 0) {
 					long	xx = (x + textureUpLeftCornerX);
 					long	yy = (y + textureUpLeftCornerY);
 					
-					if( xx >= 0 && xx < width && yy >= 0 && yy < height)
-					{
-						if( isRGB)
-						{
-	
-						}
-						else
-						{
+					if( xx >= 0 && xx < width && yy >= 0 && yy < height) {
+						if( isRGB == NO ) {
 							float	val = *fImageTemp;
 							
 							count++;
@@ -2444,7 +2321,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (void) computeROIInt:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max
 {
-	long			count, i, no, x, y;
+	long			count, no;
 	float			imax, imin, itotal, idev, imean;
 	
 	count = 0;
@@ -2456,30 +2333,24 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	[self CheckLoad];
 	
-	if( [roi type] == tPlain)
-	{
-		long			textWidth = [roi textureWidth];
-		long			textHeight = [roi textureHeight];
-		long			textureUpLeftCornerX = [roi textureUpLeftCornerX];
-		long			textureUpLeftCornerY = [roi textureUpLeftCornerY];
-		unsigned char	*buf = [roi textureBuffer];
+	if( roi.type == tPlain ) {
+		long			textWidth = roi.textureWidth;
+		long			textHeight = roi.textureHeight;
+		long			textureUpLeftCornerX = roi.textureUpLeftCornerX;
+		long			textureUpLeftCornerY = roi.textureUpLeftCornerY;
+		unsigned char	*buf = roi.textureBuffer;
 		float			*fImageTemp;
 		
-		for( y = 0; y < textHeight; y++)
-		{
+		for( long y = 0; y < textHeight; y++ ) {
 			fImageTemp = fImage + ((y + textureUpLeftCornerY) * width) + textureUpLeftCornerX;
 			
-			for( x = 0; x < textWidth; x++, fImageTemp++)
-			{
-				if( *buf++ != 0)
-				{
+			for( long x = 0; x < textWidth; x++, fImageTemp++ ) {
+				if( *buf++ != 0 ) {
 					long	xx = (x + textureUpLeftCornerX);
 					long	yy = (y + textureUpLeftCornerY);
 					
-					if( xx >= 0 && xx < width && yy >= 0 && yy < height)
-					{
-						if( isRGB)
-						{
+					if( xx >= 0 && xx < width && yy >= 0 && yy < height) {
+						if( isRGB ) {
 							unsigned char*  rgbPtr = (unsigned char*) &fImage[ (yy * width) + xx];
 							float val = rgbPtr[ 0] + rgbPtr[ 1] + rgbPtr[2] / 3;
 							
@@ -2489,8 +2360,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 							if( imin > val) imin = val;
 							if( imax < val) imax = val;
 						}
-						else
-						{
+						else {
 							float	val = *fImageTemp;
 							
 							count++;
@@ -2506,27 +2376,21 @@ BOOL gUSEPAPYRUSDCMPIX;
 		
 		if( count!= 0) imean = itotal / count;
 		
-		if( dev != 0L && count > 0)
-		{
+		if( dev != 0L && count > 0 ) {
 			idev = 0;
 			
 			buf = [roi textureBuffer];
 			
-			for( y = 0; y < textHeight; y++)
-			{
+			for( int y = 0; y < textHeight; y++ ) {
 				fImageTemp = fImage + ((y + textureUpLeftCornerY) * width) + textureUpLeftCornerX;
 				
-				for( x = 0; x < textWidth; x++, fImageTemp++)
-				{
-					if( *buf++ != 0)
-					{
+				for( int x = 0; x < textWidth; x++, fImageTemp++) {
+					if( *buf++ != 0) {
 						long	xx = (x + textureUpLeftCornerX);
 						long	yy = (y + textureUpLeftCornerY);
 						
-						if( xx >= 0 && xx < width && yy >= 0 && yy < height)
-						{
-							if( isRGB)
-							{
+						if( xx >= 0 && xx < width && yy >= 0 && yy < height) {
+							if( isRGB) {
 								unsigned char*  rgbPtr = (unsigned char*) &fImage[ (yy * width) + xx];
 								float val = rgbPtr[ 0] + rgbPtr[ 1] + rgbPtr[2] / 3;
 								
@@ -2534,8 +2398,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 								temp *= temp;
 								idev += temp;
 							}
-							else
-							{
+							else {
 								float	val = *fImageTemp;
 								
 								float temp = imean - val;
@@ -2556,15 +2419,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 		if( total) *total = itotal;
 		if( mean) *mean = imean;
 	}
-	else
-	{
+	else {
 		NSMutableArray  *ptsTemp = [roi points];
 		NSPointInt		*pts;
 		
 		pts = (NSPointInt*) malloc( [ptsTemp count] * sizeof(NSPointInt));
 		no = [ptsTemp count];
-		for( i = 0; i < no; i++)
-		{
+		for( int i = 0; i < no; i++ ) {
 			pts[ i].x = [[ptsTemp objectAtIndex: i] point].x;
 			pts[ i].y = [[ptsTemp objectAtIndex: i] point].y;
 		}
@@ -2573,18 +2434,15 @@ BOOL gUSEPAPYRUSDCMPIX;
 		NSPointInt *pTemp;
 		BOOL clip = NO;
 
-		for( i = 0; i < no && clip == NO; i++)
-		{
+		for( int i = 0; i < no && clip == NO; i++) {
 			if( pts[ i].x < 0) clip = YES;
 			if( pts[ i].y < 0) clip = YES;
 			if( pts[ i].x >= width) clip = YES;
 			if( pts[ i].y >= height) clip = YES;
 		}
 		
-		if( no == 1)
-		{
-			if( clip)
-			{
+		if( no == 1 ) {
+			if( clip ) {
 				if( max) *max = 0;
 				if( min) *min = 0;
 				if( mean) *mean = 0;
@@ -2601,8 +2459,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 				if( mean) *mean = val;
 				if( total) *total = val;
 			}
-			else
-			{
+			else {
 				float	*curPix = &fImage[ (pts[ 0].y * width) + pts[ 0].x];
 				
 				float val = *curPix;
@@ -2613,10 +2470,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 				if( total) *total = val;
 			}
 		}
-		else
-		{
-			if( clip)
-			{
+		else {
+			if( clip ) {
 				long newNo;
 				
 				pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
@@ -2636,8 +2491,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			
 			if( count != 0) imean = itotal / count;
 			
-			if( dev != 0L && count > 0)
-			{
+			if( dev != 0L && count > 0) {
 				idev = 0 ;
 				
 				ras_FillPolygon( pts, no, fImage, width, height, [pixArray count], 0, 0, NO, 0, NO, isRGB, YES, 0L, 0L, 0L, 0L, &idev, imean, 2, 0, NO);
@@ -2661,20 +2515,18 @@ BOOL gUSEPAPYRUSDCMPIX;
 {
 	if( (stackMode == 1 || stackMode == 2 || stackMode == 3) && stack >= 1)
 	{
-		long	i, countstack = 0;
+		long	countstack = 0;
 		float	meanslice, totalslice, devslice, minslice, maxslice;
 		
 		[self computeROIInt: roi :mean :total :dev :min :max];
 		countstack++;
 			
-		for( i = 1; i < stack; i++)
-		{
+		for( long i = 1; i < stack; i++) {
 			long next;
 			if( stackDirection) next = pixPos-i;
 			else next = pixPos+i;
 		
-			if( next < [pixArray count]  && next >= 0)
-			{
+			if( next < [pixArray count]  && next >= 0) {
 				[[pixArray objectAtIndex: next] computeROIInt: roi :&meanslice :&totalslice :&devslice :&minslice :&maxslice];
 				countstack++;
 				
@@ -2688,8 +2540,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		}
 		
 		if( mean) *mean /= countstack;
-		if( dev)
-		{
+		if( dev) {
 			*dev /= countstack;
 			
 			float vv = fabs( (countstack-1) * sliceInterval);
@@ -4461,10 +4312,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 															 : pixSpacingY
 															 : NSMakePoint( posX, posY )] autorelease];
 						
-						[roi setName: roiName];
-						[roi setColor: color];
-						
-						[roi setPoints: pointsArray];
+						roi.name = roiName;
+						roi.rgbcolor = color;
+						roi.points = pointsArray;
 						
 						[roiArray[ [imgObjects indexOfObject: img] ] addObject: roi];
 						
