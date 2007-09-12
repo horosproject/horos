@@ -308,7 +308,7 @@
 	vtkDecimatePro *isoDeci = 0L;
 	vtkSmoothPolyDataFilter * pSmooth = 0L;
 	vtkDataSet*	output = 0L;
-
+	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseDelaunayFor3DRoi"])
 	{
 		delaunayTriangulator = vtkDelaunay3D::New();
@@ -350,64 +350,66 @@
 
 			vtkPoints *medialPoints = data->GetPoints();
 			int nPoints = data->GetNumberOfPoints();
-			NSLog(@"Decimated Points: %d", nPoints);
-			NSLog(@"Polys: %d", data-> GetNumberOfPolys());
 			vtkIdType i;
 			int j, k, neighbors;			
 			double x , y, z;
 			// get all cells around a point
-			
-			for (i = 0; i < nPoints; i++) {	
-				vtkIdType ncells;
-				vtkIdList *cellIds = vtkIdList::New();;
-				//int j = 0;
-				neighbors = 0;
-				double *position = medialPoints->GetPoint(i);
-				
-				x = position[0];
-				y = position[1];
-				z = position[2];
-				
-				data->GetPointCells	(i, cellIds);	
-				ncells = cellIds->GetNumberOfIds();
-			
-				
-				if (i % 500 == 0) {
-						NSLog(@"%d  Cells  links to  %d", ncells, i);
-					// get all points for a cell
+			//NSLog(@"Build Cells");
+			data->BuildCells();
+			for (int a = 0; a < 200 ;  a++){
+				for (i = 0; i < nPoints; i++) {	
+					vtkIdType ncells;
+					vtkIdList *cellIds = vtkIdList::New();;
+					//int j = 0;
+					neighbors = 0;
+					double *position = medialPoints->GetPoint(i);
+					// Get position
+					x = position[0];
+					y = position[1];
+					z = position[2];
+					// All cells for Point and number of cells
+					data->GetPointCells	(i, cellIds);	
+					ncells = cellIds->GetNumberOfIds();
 					
+					//if (i % 200 == 0) 
+					//	NSLog(@"position %f %f %f", x, y ,z);
+	
 					for (j = 0;  j < ncells; j++) {
 						vtkIdType numPoints;
-						vtkIdType *cellPoints;
-						vtkIdType cellId = cellIds->GetId(i);
-						//data->GetCellPoints(cellId, numPoints, 	cellPoints);				
+						vtkIdType *cellPoints ;
+						vtkIdType cellId = cellIds->GetId(j);
+						//get all points for the cell
+						data->GetCellPoints(cellId, numPoints, cellPoints);				
 						//NSLog(@"get Cell Points: %d", numPoints);
 						// add values
-						/*
+						
 						 for (k = 0; k < numPoints; k++) {						
-							position = cellPoints->GetPoint(k);
+							position = medialPoints->GetPoint(cellPoints[k]);
 							x += position[0];
 							y += position[1];
 							z += position[2];
 							neighbors++;
 						 }
-						 */
 					}
+						
+					// get average
+					x /= neighbors;
+					y /= neighbors;
+					z /= neighbors;
+					/// Set Point
+					//if (i % 500 == 0) 
+					//	NSLog(@"after position %f %f %f", x, y ,z);
+					medialPoints->SetPoint(i, x ,y ,z);
 					
+					cellIds->Delete();
 				}
-				// get average
-				//x /= neighbors;
-				//y /= neighbors;
-				//z /= neighbors;
-				/// Set Point
-				//medialPoints->SetPoint(i, x ,y ,z);
-				
-				cellIds->Delete();
 			}
 			
+			polyDataNormals->SetInput(data);
+			
 		
-			NSLog(@"Medial Surface number of Polygons: %d", medialSurface->GetNumberOfPolys());
-			NSLog(@"Medial Surface number of Points: %d", medialSurface->GetNumberOfPoints());
+			//NSLog(@"Medial Surface number of Polygons: %d", medialSurface->GetNumberOfPolys());
+			//NSLog(@"Medial Surface number of Points: %d", medialSurface->GetNumberOfPoints());
 
 		}
 		else 
