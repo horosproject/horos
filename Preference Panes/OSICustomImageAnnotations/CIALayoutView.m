@@ -127,9 +127,9 @@
 
 - (void)drawRect:(NSRect)rect
 {    
-	[self updatePlaceHolderOriginsInRect:rect];
+	[self updatePlaceHolderOriginsInRect: [self frame]];
 	
-	NSBezierPath *borderFrame = [NSBezierPath bezierPathWithRect:rect];
+	NSBezierPath *borderFrame = [NSBezierPath bezierPathWithRect: rect];
 	
 	[[NSColor whiteColor] set];
 	[borderFrame fill];

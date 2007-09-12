@@ -58,6 +58,7 @@
 - (IBAction)validateTokenTextField:(id)sender;
 - (IBAction)saveAnnotationLayout:(id)sender;
 - (IBAction)switchModality:(id)sender;
+- (IBAction)switchModality:(id)sender save:(BOOL) save;
 - (IBAction)setSameAsDefault:(id)sender;
 - (IBAction)toggleOrientationWidget:(id)sender;
 - (IBAction)loadsave:(id)sender;

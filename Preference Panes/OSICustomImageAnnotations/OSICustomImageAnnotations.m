@@ -113,29 +113,46 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (IBAction) loadsave:(id) sender
 {
-	if( [sender tag] == 0)		// Save
+	if( [sender selectedSegment] == 0)		// Save
 	{
-		NSLog( @"save");
+		NSDictionary *cur = [layoutController curDictionary];
+		NSSavePanel		*sPanel		= [NSSavePanel savePanel];
+		[sPanel setRequiredFileType:@"plist"];
+		
+		if ([sPanel runModalForDirectory:0L file: [NSString stringWithFormat:@"%@.plist", [[modalitiesPopUpButton selectedItem] title] ]] == NSFileHandlingPanelOKButton)
+			[cur writeToFile: [sPanel filename] atomically: YES];
 	}
 	else						// Load
 	{
-		NSLog( @"load");
+		NSOpenPanel		*sPanel		= [NSOpenPanel openPanel];
+	
+		[sPanel setRequiredFileType:@"plist"];
+	
+		if ([sPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"plist"]] == NSFileHandlingPanelOKButton)
+		{
+			NSDictionary *cur = [NSDictionary dictionaryWithContentsOfFile: [sPanel filename]];
+			
+			if( cur)
+			{
+				NSMutableDictionary *annotationsLayoutDictionary = [layoutController annotationsLayoutDictionary];
+				
+				[annotationsLayoutDictionary setObject: cur  forKey: [layoutController currentModality]];
+				
+				[self switchModality: modalitiesPopUpButton save: NO];
+			}
+		}
 	}
 }
 
 - (IBAction) reset: (id) sender
 {
-	NSMutableDictionary *annotationsLayoutDictionary = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CUSTOM_IMAGE_ANNOTATIONS"]];
+	NSMutableDictionary *annotationsLayoutDictionary = [layoutController annotationsLayoutDictionary];
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"AnnotationsDefault.plist"]];
 	
 	[annotationsLayoutDictionary setObject: [dict objectForKey:@"Default"]  forKey: @"Default"];
 	
-	[[NSUserDefaults standardUserDefaults] setObject:annotationsLayoutDictionary forKey: @"CUSTOM_IMAGE_ANNOTATIONS"];
-	
-	[layoutController reloadLayoutDictionary];
-	[modalitiesPopUpButton selectItemWithTitle: NSLocalizedString( @"Default", 0L)];
-	[self switchModality: modalitiesPopUpButton];
+	[self switchModality: modalitiesPopUpButton save: NO];
 }
 
 - (id)init
@@ -159,7 +176,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 {
 	NSLog(@"OSICustomImageAnnotations willSelect");
 
-	NSArray *modalities = [NSArray arrayWithObjects:NSLocalizedString(@"Default", nil), NSLocalizedString(@"CR", nil), NSLocalizedString(@"CT", nil), NSLocalizedString(@"DX", nil), NSLocalizedString(@"ES", nil), NSLocalizedString(@"MG", nil), NSLocalizedString(@"MR", nil), NSLocalizedString(@"NM", nil), NSLocalizedString(@"OT", nil),NSLocalizedString(@"PT", nil),NSLocalizedString(@"RF", nil),NSLocalizedString(@"SC", nil),NSLocalizedString(@"US", nil),NSLocalizedString(@"XA", nil), nil];
+	NSArray *modalities = [NSArray arrayWithObjects:NSLocalizedString(@"Default", nil), @"CR", @"CT", @"DX", @"ES", @"MG", @"MR", @"NM", @"OT",@"PT",@"RF",@"SC",@"US",@"XA", nil];
 	
 	[modalitiesPopUpButton removeAllItems];
 
@@ -261,9 +278,14 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	[layoutController saveAnnotationLayoutForModality:[[modalitiesPopUpButton selectedItem] title]];
 }
 
-- (IBAction)switchModality:(id)sender;
+- (IBAction)switchModality:(id)sender
 {
-	[layoutController switchModality:sender];
+	return [self switchModality: sender save: YES];
+}
+
+- (IBAction)switchModality:(id)sender save:(BOOL) save;
+{
+	[layoutController switchModality:sender save: save];
 	[addAnnotationButton setEnabled:[sameAsDefaultButton state]==NSOffState];
 	[removeAnnotationButton setEnabled:[sameAsDefaultButton state]==NSOffState];
 	

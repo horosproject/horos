@@ -20,6 +20,21 @@
 
 @implementation CIALayoutController
 
+- (NSString*) currentModality
+{
+	return currentModality;
+}
+
+- (NSMutableDictionary*) annotationsLayoutDictionary
+{
+	return annotationsLayoutDictionary;
+}
+
+- (NSDictionary*) curDictionary
+{
+	return [annotationsLayoutDictionary objectForKey: currentModality];
+}
+
 - (void) reloadLayoutDictionary
 {
 	[annotationsLayoutDictionary release];
@@ -47,7 +62,8 @@
 		
 		[self reloadLayoutDictionary];
 			
-		currentModality = NSLocalizedString(@"Default", @"");
+		currentModality = @"Default";
+		[currentModality retain];
 		
 		skipTextViewDidChangeSelectionNotification = NO;
 		
@@ -187,6 +203,7 @@
 
 - (void)dealloc
 {
+	[currentModality release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[annotationsArray release];
 	[DICOMFieldsArray release];
@@ -1190,6 +1207,11 @@
 
 - (IBAction)switchModality:(id)sender;
 {
+	return [self switchModality: sender save: YES];
+}
+
+- (IBAction)switchModality:(id)sender save:(BOOL) save;
+{
 	if(![self checkAnnotations] || ![self checkAnnotationsContent])
 	{
 		[[prefPane modalitiesPopUpButton] setTitle:currentModality];//currentModality
@@ -1203,8 +1225,16 @@
 	[[prefPane contentTokenField] setEnabled: NO];
 	[self setCustomDICOMFieldEditingEnable:NO];
 	
-	[self saveAnnotationLayoutForModality:currentModality];
-	currentModality = [[sender selectedItem] title];
+	if( save)
+		[self saveAnnotationLayoutForModality:currentModality];
+	
+	[currentModality release];
+	
+	if( [sender indexOfSelectedItem] == 0) currentModality = @"Default";
+	else currentModality = [[sender selectedItem] title];
+	
+	[currentModality retain];
+	
 	[[prefPane sameAsDefaultButton] setHidden:[currentModality isEqualToString:@"Default"]];
 	[[prefPane resetDefaultButton] setHidden:![currentModality isEqualToString:@"Default"]];
 	[self loadAnnotationLayoutForModality:currentModality];

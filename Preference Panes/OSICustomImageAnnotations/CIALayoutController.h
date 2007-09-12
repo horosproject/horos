@@ -62,6 +62,7 @@
 - (void)saveAnnotationLayoutForModality:(NSString*)modality;
 
 - (IBAction)switchModality:(id)sender;
+- (IBAction)switchModality:(id)sender save:(BOOL) save;
 - (void)loadAnnotationLayoutForModality:(NSString*)modality;
 - (void)removeAllAnnotations;
 
@@ -72,4 +73,7 @@
 
 - (void)reloadLayoutDictionary;
 - (BOOL)checkAnnotationsContent;
+- (NSDictionary*) curDictionary;
+- (NSMutableDictionary*) annotationsLayoutDictionary;
+- (NSString*) currentModality;
 @end
