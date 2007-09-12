@@ -20,6 +20,8 @@
 #import <AppKit/AppKit.h>
 #import "XMLRPCMethods.h"
 
+#import "IChatTheatreDelegate.h"
+
 @class PreferenceController;
 @class BrowserController;
 @class SplashScreen;
@@ -74,6 +76,8 @@ extern "C"
 	NSTimer							*updateTimer;
 	DCMNetServiceDelegate			*dicomNetServiceDelegate;
 	XMLRPCMethods					*XMLRPCServer;
+	
+	IChatTheatreDelegate			*iChatDelegate;
 }
 #pragma mark-
 #pragma mark initialization of the main event loop singleton

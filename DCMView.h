@@ -239,6 +239,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	unsigned char*	iChatCursorTextureBuffer;
 	GLuint			iChatCursorTextureName;
 	NSSize			iChatCursorImageSize;
+	NSPoint			iChatCursorHotSpot;
 }
 + (void) setDefaults;
 + (void) setCLUTBARS:(int) c ANNOTATIONS:(int) a;

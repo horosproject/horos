@@ -1675,6 +1675,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //	[self clearGLContext];
 	[drawLock release];
 	
+	if(iChatCursorTextureBuffer) free(iChatCursorTextureBuffer);
+	if(iChatCursorTextureName) glDeleteTextures(1, &iChatCursorTextureName);
+	
     [super dealloc];
 }
 
@@ -7513,42 +7516,38 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			if(ctx == _alternateContext) // iChat Theatre context
 			{
-				// draw the cursor
 				NSEvent *currentEvent = [[NSApplication sharedApplication] currentEvent];
 				NSPoint eventLocation = [currentEvent locationInWindow];
 				
 				NSSize size = [self frame].size;
-
+				
+				// location of the mouse in the OsiriX View
 				eventLocation = [self convertPoint:eventLocation fromView:nil];
 				eventLocation.y = size.height - eventLocation.y;
 				
 				NSSize iChatTheatreViewSize = aRect.size;
 
+				// location of the mouse in the iChat Theatre View
 				eventLocation.x = eventLocation.x - (size.width/2. - iChatTheatreViewSize.width/2.);
 				eventLocation.y = eventLocation.y - (size.height/2. - iChatTheatreViewSize.height/2.);
-								
+						
+				// generate iChat cursor Texture Buffer (only once)
 				if(!iChatCursorTextureBuffer)
 				{
-					NSLog(@"iChatCursorTextureBuffer");
-					NSString *iChatCursorImagePath;
+					NSLog(@"generate iChatCursor Texture Buffer");
 					NSImage *iChatCursorImage;
-					NSBundle *osirixBundle = [NSBundle bundleForClass:[self class]];
-					//if (iChatCursorImagePath = [osirixBundle pathForResource:@"QueryRetrieve" ofType:@"icns"])
 					if (iChatCursorImage = [[NSCursor pointingHandCursor] image])
 					{
-						//iChatCursorImage = [[[NSImage alloc] initByReferencingFile:iChatCursorImagePath] autorelease];
+						iChatCursorHotSpot = [[NSCursor pointingHandCursor] hotSpot];
 						iChatCursorImageSize = [iChatCursorImage size];
 						
 						NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithData:[iChatCursorImage TIFFRepresentation]]; // [NSBitmapImageRep imageRepWithData: [iChatCursorImage TIFFRepresentation]]
 
-						if(iChatCursorTextureBuffer) free(iChatCursorTextureBuffer);
 						iChatCursorTextureBuffer = malloc([bitmap bytesPerRow] * iChatCursorImageSize.height);
 						memcpy(iChatCursorTextureBuffer, [bitmap bitmapData], [bitmap bytesPerRow] * iChatCursorImageSize.height);
 
 						[bitmap release];
 						
-						if(iChatCursorTextureName) glDeleteTextures(1, &iChatCursorTextureName);
-
 						iChatCursorTextureName = 0L;
 						glGenTextures(1, &iChatCursorTextureName);
 						glBindTexture(GL_TEXTURE_RECTANGLE_EXT, iChatCursorTextureName);
@@ -7558,10 +7557,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					}
 				}
 
-				//glColor3f (1.0f, 1.0f, 1.0f);
+				// draw the cursor in the iChat Theatre View
 				if(iChatCursorTextureBuffer)
 				{
-					glDisable(GL_POLYGON_SMOOTH);
+					eventLocation.x -= iChatCursorHotSpot.x;
+					eventLocation.y -= iChatCursorHotSpot.y;
+					
 					glEnable(GL_TEXTURE_RECTANGLE_EXT);
 					
 					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, iChatCursorTextureName);
@@ -7586,10 +7587,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					glDisable(GL_BLEND);
 					
 					glDisable(GL_TEXTURE_RECTANGLE_EXT);
-					glEnable(GL_POLYGON_SMOOTH);
 				}
-				
-			}
+			} // end iChat Theatre context
 			
 		}  
 		else

@@ -471,6 +471,8 @@
 		A9B411F00890498600913770 /* small_sharedAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B411EE0890498600913770 /* small_sharedAlbum.tiff */; };
 		A9B412D5089180A200913770 /* bonjour.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B412D4089180A200913770 /* bonjour.tiff */; };
 		A9B412D6089180A200913770 /* bonjour.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B412D4089180A200913770 /* bonjour.tiff */; };
+		A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */; };
+		A9BDE5930C9823DC000A161F /* IChatTheatreDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */; };
 		A9C63A9C09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */; };
 		A9C63A9D09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */; };
 		A9D780AE09A4D2A6004302DC /* ITKBrushROIFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */; };
@@ -8499,6 +8501,8 @@
 		A9B411C10890496400913770 /* small_sharedSmartAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_sharedSmartAlbum.tiff; sourceTree = "<group>"; };
 		A9B411EE0890498600913770 /* small_sharedAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_sharedAlbum.tiff; sourceTree = "<group>"; };
 		A9B412D4089180A200913770 /* bonjour.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = bonjour.tiff; sourceTree = "<group>"; };
+		A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IChatTheatreDelegate.h; sourceTree = "<group>"; };
+		A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IChatTheatreDelegate.m; sourceTree = "<group>"; };
 		A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cerveau_icon.jpg; sourceTree = "<group>"; };
 		A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITKBrushROIFilter.h; sourceTree = "<group>"; };
 		A9D780AB09A4D2A6004302DC /* ITKBrushROIFilter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ITKBrushROIFilter.mm; sourceTree = "<group>"; };
@@ -13293,6 +13297,8 @@
 				ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */,
 				7E879E9D067F9BE100CB2F8A /* SearchSubview.h */,
 				7E879E9E067F9BE100CB2F8A /* SearchSubview.m */,
+				A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */,
+				A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */,
 			);
 			name = Database;
 			sourceTree = "<group>";
@@ -18438,6 +18444,7 @@
 				CE882B330C889E0200D4F982 /* HTTPServer.h in Headers */,
 				CEAEAC530C966FEF001CEA25 /* VRControllerVPRO.h in Headers */,
 				32E422150C97301600E193CA /* altivecFunctions.h in Headers */,
+				A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22782,6 +22789,7 @@
 				CE882AC70C889B6500D4F982 /* XMLRPCMethods.m in Sources */,
 				CE882B310C889E0200D4F982 /* TCPServer.m in Sources */,
 				CE882B320C889E0200D4F982 /* HTTPServer.m in Sources */,
+				A9BDE5930C9823DC000A161F /* IChatTheatreDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
