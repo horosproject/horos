@@ -100,6 +100,7 @@
 #include "vtkTextureMapToSphere.h"
 #include "vtkTransformTextureCoords.h"
 #include "vtkPowerCrustSurfaceReconstruction.h"
+#include "vtkTriangleFilter.h"
 #undef id
 
 class vtkMyCallback;

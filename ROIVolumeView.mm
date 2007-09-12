@@ -321,6 +321,7 @@
 		output = (vtkDataSet*) delaunayTriangulator -> GetOutput();
 	}
 	else
+	
 	{	
 		
 		vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
@@ -334,20 +335,19 @@
 			vtkPolyData *medialSurface;
 			power->Update();
 			medialSurface = power->GetMedialSurface();
-			polyDataNormals->SetInput(medialSurface);
-		
+			//polyDataNormals->SetInput(medialSurface);
 			isoDeci = vtkDecimatePro::New();
 			isoDeci->SetInput(medialSurface);
 			isoDeci->SetTargetReduction(0.9);
-			//polyDataNormals->SetInput(isoDeci->GetOutput());
+			isoDeci->SetPreserveTopology( TRUE);
+			polyDataNormals->SetInput(isoDeci->GetOutput());
 		
-			
+
+			NSLog(@"Build Links");
 			isoDeci->Update();
 			vtkPolyData *data = isoDeci->GetOutput();
-			NSLog(@"Build Links");
-			data->BuildLinks();
-			//NSLog(@"build Cells");
-			//data->BuildCells();
+			medialSurface->BuildLinks();
+
 			vtkPoints *medialPoints = data->GetPoints();
 			int nPoints = data->GetNumberOfPoints();
 			NSLog(@"Decimated Points: %d", nPoints);
@@ -356,28 +356,34 @@
 			int j, k, neighbors;			
 			double x , y, z;
 			// get all cells around a point
+			
 			for (i = 0; i < nPoints; i++) {	
-				unsigned short ncells;
-				vtkIdType *cells;
+				vtkIdType ncells;
+				vtkIdList *cellIds = vtkIdList::New();;
 				//int j = 0;
 				neighbors = 0;
 				double *position = medialPoints->GetPoint(i);
-				//NSLog(@"get Point");
+				
 				x = position[0];
 				y = position[1];
 				z = position[2];
-				data->GetPointCells	(i, ncells, cells);	
+				
+				data->GetPointCells	(i, cellIds);	
+				ncells = cellIds->GetNumberOfIds();
+			
+				
 				if (i % 500 == 0) {
 						NSLog(@"%d  Cells  links to  %d", ncells, i);
 					// get all points for a cell
+					
 					for (j = 0;  j < ncells; j++) {
-						int numPoints;
-						//vtkIdType *cellPoints;
-						
-						vtkPoints *cellPoints = data->GetCell(cells[i])->GetPoints();
-						numPoints = data->GetCell(cells[i])->GetNumberOfPoints();
-						NSLog(@"get Cell Points: %d", numPoints);
+						vtkIdType numPoints;
+						vtkIdType *cellPoints;
+						vtkIdType cellId = cellIds->GetId(i);
+						//data->GetCellPoints(cellId, numPoints, 	cellPoints);				
+						//NSLog(@"get Cell Points: %d", numPoints);
 						// add values
+						/*
 						 for (k = 0; k < numPoints; k++) {						
 							position = cellPoints->GetPoint(k);
 							x += position[0];
@@ -385,15 +391,18 @@
 							z += position[2];
 							neighbors++;
 						 }
+						 */
 					}
+					
 				}
 				// get average
-				x /= neighbors;
-				y /= neighbors;
-				z /= neighbors;
-				// Set Point
-				medialPoints->SetPoint(i, x ,y ,z);
-
+				//x /= neighbors;
+				//y /= neighbors;
+				//z /= neighbors;
+				/// Set Point
+				//medialPoints->SetPoint(i, x ,y ,z);
+				
+				cellIds->Delete();
 			}
 			
 		
