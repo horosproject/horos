@@ -2977,7 +2977,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	self->minValueOfSeries = fromDcm->minValueOfSeries;
 	self->maxValueOfSeries = fromDcm->maxValueOfSeries;
-
+	self->annotationsDictionary = [fromDcm->annotationsDictionary retain];
+	self->cachedPapyGroups = [fromDcm->cachedPapyGroups retain];
 }
 
 - (id) copyWithZone:(NSZone *)zone
@@ -3020,6 +3021,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 	copy->convertedDICOM = [self->convertedDICOM retain];
 	copy->viewPosition = [self->viewPosition retain];
 	copy->patientPosition = [self->patientPosition retain];
+	copy->annotationsDictionary = [self->annotationsDictionary retain];
+	copy->cachedPapyGroups = [self->cachedPapyGroups retain];
 	
 	copy->units = [self->units retain];
 	copy->decayCorrection = [self->decayCorrection retain];

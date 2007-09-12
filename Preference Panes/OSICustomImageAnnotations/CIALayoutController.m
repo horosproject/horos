@@ -56,6 +56,7 @@
 		databaseStudyFieldsArray = [[NSMutableArray array] retain];
 		databaseSeriesFieldsArray = [[NSMutableArray array] retain];
 		databaseImageFieldsArray = [[NSMutableArray array] retain];
+		[selectedAnnotation release];
 		selectedAnnotation = nil;
 		
 		annotationNumber = 1;
@@ -203,6 +204,7 @@
 
 - (void)dealloc
 {
+	[selectedAnnotation release];
 	[currentModality release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[annotationsArray release];
@@ -256,6 +258,7 @@
 			[layoutView setNeedsDisplay:YES];
 		}
 		
+		[selectedAnnotation release];
 		selectedAnnotation = nil;
 		[[prefPane titleTextField] setStringValue:@""];
 		[[prefPane contentTokenField] setStringValue:@""];
@@ -468,7 +471,11 @@
 	[anAnnotation setIsSelected:YES];
 
 	[self willChangeValueForKey:@"selectedAnnotation"];
-	selectedAnnotation = anAnnotation;
+	if( selectedAnnotation != anAnnotation)
+	{
+		[selectedAnnotation release];
+		selectedAnnotation = [anAnnotation retain];
+	}
 	[self didChangeValueForKey:@"selectedAnnotation"];
 
 	[[prefPane titleTextField] setEnabled: YES];
@@ -1219,6 +1226,7 @@
 	}
 		
 	[self validateTokenTextField:self];
+	[selectedAnnotation release];
 	selectedAnnotation = nil;
 	
 	[[prefPane titleTextField] setEnabled: NO];
