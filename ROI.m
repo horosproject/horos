@@ -1399,7 +1399,8 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 			{
 				float distance;
 
-				for( int i = 0; i < ([points count] - 1); i++ )	{
+				int i;
+				for( i = 0; i < ([points count] - 1); i++ )	{
 					
 					[self DistancePointLine:pt :[[points objectAtIndex:i] point] : [[points objectAtIndex:(i+1)] point] :&distance];
 					if( distance*scale < 5.0)
