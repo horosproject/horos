@@ -53,6 +53,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	[sameAsDefaultButton setEnabled:!locked];
 	[resetDefaultButton setEnabled:!locked];
 	[orientationWidgetButton setEnabled:!locked];
+	[loadsaveButton setEnabled:!locked];
 	
 	[layoutView setEnabled:!locked];
 	if(locked) [layoutView setDisabledText:@""];
@@ -134,11 +135,14 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 			
 			if( cur)
 			{
-				NSMutableDictionary *annotationsLayoutDictionary = [layoutController annotationsLayoutDictionary];
+				if( NSRunInformationalAlertPanel( NSLocalizedString(@"Settings", nil), NSLocalizedString(@"Are you really sure you want to replace current settings? It will delete the current settings.", nil) , NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+				{
+					NSMutableDictionary *annotationsLayoutDictionary = [layoutController annotationsLayoutDictionary];
 				
-				[annotationsLayoutDictionary setObject: cur  forKey: [layoutController currentModality]];
+					[annotationsLayoutDictionary setObject: cur  forKey: [layoutController currentModality]];
 				
-				[self switchModality: modalitiesPopUpButton save: NO];
+					[self switchModality: modalitiesPopUpButton save: NO];
+				}
 			}
 		}
 	}
@@ -146,13 +150,16 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (IBAction) reset: (id) sender
 {
-	NSMutableDictionary *annotationsLayoutDictionary = [layoutController annotationsLayoutDictionary];
-	
-	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"AnnotationsDefault.plist"]];
-	
-	[annotationsLayoutDictionary setObject: [dict objectForKey:@"Default"]  forKey: @"Default"];
-	
-	[self switchModality: modalitiesPopUpButton save: NO];
+	if( NSRunInformationalAlertPanel( NSLocalizedString(@"Settings", nil), NSLocalizedString(@"Are you really sure you want to reset the current default settings? It will delete the current settings.", nil) , NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+	{
+		NSMutableDictionary *annotationsLayoutDictionary = [layoutController annotationsLayoutDictionary];
+		
+		NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"AnnotationsDefault.plist"]];
+		
+		[annotationsLayoutDictionary setObject: [dict objectForKey:@"Default"]  forKey: @"Default"];
+		
+		[self switchModality: modalitiesPopUpButton save: NO];
+	}
 }
 
 - (id)init
@@ -323,8 +330,13 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 	if(state)
 	{
-		//[layoutController removeAllAnnotations];
-		[layoutController loadAnnotationLayoutForModality:@"Default"];
+		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Default", nil), NSLocalizedString(@"Are you really sure you want to replace current settings with the default settings? It will delete the current settings.", nil) , NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn) 
+			[layoutController loadAnnotationLayoutForModality:@"Default"];
+		else
+		{
+			[sameAsDefaultButton setState: NSOffState];
+			return;
+		}
 	}
 	else
 	{

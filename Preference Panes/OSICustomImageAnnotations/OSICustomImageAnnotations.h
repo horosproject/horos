@@ -35,6 +35,8 @@
 	
 	IBOutlet NSButton *addAnnotationButton, *removeAnnotationButton;
 	
+	IBOutlet NSSegmentedControl *loadsaveButton;
+	
 	IBOutlet CIALayoutView *layoutView;
 	IBOutlet NSTextField *titleLabelTextField, *titleTextField, *contentLabeltextField;
 	IBOutlet NSTokenField *contentTokenField;

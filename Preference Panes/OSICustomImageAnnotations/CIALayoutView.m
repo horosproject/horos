@@ -125,10 +125,12 @@
 	}
 }
 
-- (void)drawRect:(NSRect)rect
-{    
-	[self updatePlaceHolderOriginsInRect: [self frame]];
+- (void)drawRect:(NSRect)updateRect
+{
+	NSRect rect = [self bounds];
 	
+	[self updatePlaceHolderOriginsInRect: rect];
+
 	NSBezierPath *borderFrame = [NSBezierPath bezierPathWithRect: rect];
 	
 	[[NSColor whiteColor] set];
