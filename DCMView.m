@@ -7511,7 +7511,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				[self drawROISelectorRegion];
 			}
 			
-			//if(ctx == _alternateContext) // iChat Theatre context
+			if(ctx == _alternateContext) // iChat Theatre context
 			{
 				// draw the cursor
 				NSEvent *currentEvent = [[NSApplication sharedApplication] currentEvent];
@@ -7520,65 +7520,74 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				NSSize size = [self frame].size;
 
 				eventLocation = [self convertPoint:eventLocation fromView:nil];
-//				eventLocation = [[[currentEvent window] contentView] convertPoint:eventLocation fromView:nil];
 				eventLocation.y = size.height - eventLocation.y;
 				
-				NSSize iChatSize = aRect.size;
+				NSSize iChatTheatreViewSize = aRect.size;
 
-//				eventLocation.x = eventLocation.x / size.width * iChatSize.width;
-//				eventLocation.y = eventLocation.y / size.height * iChatSize.height;
-
-				eventLocation.x = eventLocation.x - (size.width/2. - iChatSize.width/2.);
-				eventLocation.y = eventLocation.y - (size.height/2. - iChatSize.height/2.);
-
-				
-				NSPoint eventLocationConverted2OpenGL = [self ConvertFromView2GL:eventLocation];
-				
-//[ctx view];
-//				size = [[ctx view] frame].size;
-//				NSSize size2 = aRect.size;
-				
-				if(ctx == _alternateContext)
+				eventLocation.x = eventLocation.x - (size.width/2. - iChatTheatreViewSize.width/2.);
+				eventLocation.y = eventLocation.y - (size.height/2. - iChatTheatreViewSize.height/2.);
+								
+				if(!iChatCursorTextureBuffer)
 				{
-					NSLog(@"size: %f, %f", size.width, size.height);
-					NSLog(@"iChatSize: %f, %f", iChatSize.width, iChatSize.height);
+					NSLog(@"iChatCursorTextureBuffer");
+					NSString *iChatCursorImagePath;
+					NSImage *iChatCursorImage;
+					NSBundle *osirixBundle = [NSBundle bundleForClass:[self class]];
+					//if (iChatCursorImagePath = [osirixBundle pathForResource:@"QueryRetrieve" ofType:@"icns"])
+					if (iChatCursorImage = [[NSCursor pointingHandCursor] image])
+					{
+						//iChatCursorImage = [[[NSImage alloc] initByReferencingFile:iChatCursorImagePath] autorelease];
+						iChatCursorImageSize = [iChatCursorImage size];
+						
+						NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithData:[iChatCursorImage TIFFRepresentation]]; // [NSBitmapImageRep imageRepWithData: [iChatCursorImage TIFFRepresentation]]
+
+						if(iChatCursorTextureBuffer) free(iChatCursorTextureBuffer);
+						iChatCursorTextureBuffer = malloc([bitmap bytesPerRow] * iChatCursorImageSize.height);
+						memcpy(iChatCursorTextureBuffer, [bitmap bitmapData], [bitmap bytesPerRow] * iChatCursorImageSize.height);
+
+						[bitmap release];
+						
+						if(iChatCursorTextureName) glDeleteTextures(1, &iChatCursorTextureName);
+
+						iChatCursorTextureName = 0L;
+						glGenTextures(1, &iChatCursorTextureName);
+						glBindTexture(GL_TEXTURE_RECTANGLE_EXT, iChatCursorTextureName);
+						glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
+						glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+						glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, iChatCursorImageSize.width, iChatCursorImageSize.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, iChatCursorTextureBuffer);
+					}
 				}
-				
-				
-//				glLoadIdentity();
-//				glScalef (2.0f /(xFlipped ? -(size.width) : size.width), -2.0f / (yFlipped ? -(size.height) : size.height), 1.0f); // scale to port per pixel scale
-//				glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
-//				glTranslatef( origin.x - offset.x + originOffset.x, -origin.y - offset.y - originOffset.y, 0.0f);
-				
-				glPointSize(10.0);
-				glBegin(GL_POINTS);
-					glColor3f (1.0f, 0.0f, 0.0f);
-					glVertex2f(eventLocation.x, eventLocation.y);
-//					glColor3f (0.0f, 1.0f, 0.0f);
-//					glVertex2f(eventLocation.x-[curDCM pwidth]/2., eventLocation.y-[curDCM pheight]/2.);
-//					glColor3f (0.0f, 0.0f, 1.0f);
-//					glVertex2f(scaleValue*(eventLocation.x-[curDCM pwidth]/2.), scaleValue*(eventLocation.y-[curDCM pheight]/2.));
-//					
-//					glColor3f (1.0f, 1.0f, 0.0f);
-//					glVertex2f(eventLocationConverted2OpenGL.x, eventLocationConverted2OpenGL.y);
-//					glColor3f (1.0f, 0.0f, 1.0f);
-//					glVertex2f(eventLocationConverted2OpenGL.x-[curDCM pwidth]/2., eventLocationConverted2OpenGL.y-[curDCM pheight]/2.);
-//					glColor3f (0.0f, 1.0f, 1.0f);
-//					glVertex2f(scaleValue*(eventLocationConverted2OpenGL.x-[curDCM pwidth]/2.), scaleValue*(eventLocationConverted2OpenGL.y-[curDCM pheight]/2.));
-//					//glVertex2f(scaleValue*(eventLocationConverted2OpenGL.x-[[ctx view] frame].size.width/2.), scaleValue*(eventLocationConverted2OpenGL.y-[[ctx view] frame].size.height/2.));
-//					
-//					glColor3f (1.0f, 1.0f, 1.0f);
-//					glVertex2f((eventLocation.x  - offset.x)*scaleValue, (eventLocation.y  - offset.y)*scaleValue);
-				glEnd();
-							
-				
-//				NSString *imagePath;
-//				NSSound *image;
-//				NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
-//				if (imagePath = [thisBundle pathForResource:@"smile" ofType:@"png"])
-//				{
-//					image = [[[NSImage alloc] initByReferencingFile:imagePath] autorelease];
-//				}
+
+				//glColor3f (1.0f, 1.0f, 1.0f);
+				if(iChatCursorTextureBuffer)
+				{
+					glDisable(GL_POLYGON_SMOOTH);
+					glEnable(GL_TEXTURE_RECTANGLE_EXT);
+					
+					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, iChatCursorTextureName);
+					glBlendEquation(GL_FUNC_ADD);
+					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);		
+					glEnable(GL_BLEND);
+					
+					glBegin(GL_QUAD_STRIP);
+						glTexCoord2f(0, 0);
+						glVertex2f(eventLocation.x, eventLocation.y);
+					
+						glTexCoord2f(iChatCursorImageSize.width, 0);
+						glVertex2f(eventLocation.x + iChatCursorImageSize.width, eventLocation.y);
+					
+						glTexCoord2f(0, iChatCursorImageSize.height);
+						glVertex2f(eventLocation.x, eventLocation.y + iChatCursorImageSize.height);
+					
+						glTexCoord2f(iChatCursorImageSize.width, iChatCursorImageSize.height);
+						glVertex2f(eventLocation.x + iChatCursorImageSize.width, eventLocation.y + iChatCursorImageSize.height);
+					
+						glEnd();
+					glDisable(GL_BLEND);
+					
+					glDisable(GL_TEXTURE_RECTANGLE_EXT);
+					glEnable(GL_POLYGON_SMOOTH);
+				}
 				
 			}
 			
