@@ -37,8 +37,7 @@ Version 2.3
 #define CIRCLERESOLUTION 40
 #define ROIVERSION		7
 
-static		float					PI = 3.14159265358979;
-static		float					deg2rad = 3.14159265358979/180.0; 
+static		float					deg2rad = M_PI / 180.0f; 
 
 static		NSString				*defaultName;
 static		int						gUID = 0;
@@ -50,6 +49,27 @@ static float ROIRegionThickness, ROIRegionColorR, ROIRegionColorG, ROIRegionColo
 static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 
 @implementation ROI
+
+@synthesize textureWidth, textureHeight, textureBuffer;
+@synthesize textureDownRightCornerX,textureDownRightCornerY, textureUpLeftCornerX, textureUpLeftCornerY;
+@synthesize opacity;
+@synthesize name, comments, type, ROImode = mode, thickness;
+@synthesize zPositions;
+@synthesize clickInTextBox;
+@synthesize rect;
+@synthesize pix;
+@synthesize curView;
+@synthesize mousePosMeasure;
+@synthesize rgbcolor = color;
+@synthesize parentROI;
+@synthesize displayCalciumScoring = _displayCalciumScoring, calciumThreshold = _calciumThreshold;
+@synthesize sliceThickness = _sliceThickness;
+@synthesize layerReferenceFilePath;
+@synthesize layerImage;
+@synthesize layerPixelSpacingX, layerPixelSpacingY;
+@synthesize textualBoxLine1, textualBoxLine2, textualBoxLine3, textualBoxLine4, textualBoxLine5;
+@synthesize groupID;
+@synthesize isLayerOpacityConstant, canColorizeLayer, displayTextualData, clickPoint;
 
 +(void) saveDefaultSettings
 {
@@ -200,18 +220,16 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 
 +(NSMutableArray*) resamplePoints: (NSArray*) points number:(int) no
 {
+	float length = 0.0f;
 	int i;
-	float length = 0;
 	
-	for( i = 0; i < [points count]-1; i++ )
-	{
+	for( i = 0; i < [points count]-1; i++ )	{
 		length += [ROI lengthBetween:[[points objectAtIndex:i] point] and:[[points objectAtIndex:i+1] point]];
 	}
 	length += [ROI lengthBetween:[[points objectAtIndex:i] point] and:[[points objectAtIndex:0] point]];
 	
 	NSMutableArray* newPts = [NSMutableArray array];
-	for( i = 0; i < no; i++)
-	{
+	for( int i = 0; i < no; i++) {
 		float s = (i * length) / no;
 		
 		NSPoint p = [ROI positionAtDistance: s inPolygon: points];
@@ -224,8 +242,8 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	int minyIndex = 0, minxIndex = 0;
 	
 	//find min x - reorder the points
-	for( i = 0 ; i < [newPts count] ; i++)
-	{
+	for( int i = 0 ; i < [newPts count] ; i++) {
+		
 		if( minx > [[newPts objectAtIndex: i] x])
 		{
 			minx = [[newPts objectAtIndex: i] x];
@@ -258,8 +276,8 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	NSMutableArray* orderedPts = [NSMutableArray array];
 	if( reverse == NO )
 	{
-		for( i = 0 ; i < [newPts count] ; i++)
-		{
+		for( int i = 0 ; i < [newPts count] ; i++) {
+			
 			[orderedPts addObject: [newPts objectAtIndex: minxIndex]];
 			minxIndex++;
 			if( minxIndex == [newPts count]) minxIndex = 0;
@@ -267,8 +285,8 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	}
 	else
 	{
-		for( i = 0 ; i < [newPts count] ; i++)
-		{
+		for( int i = 0 ; i < [newPts count] ; i++) {
+			
 			[orderedPts addObject: [newPts objectAtIndex: minxIndex]];
 			minxIndex--;
 			if( minxIndex < 0) minxIndex = [newPts count] -1;
@@ -278,58 +296,20 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	return orderedPts;
 }
 
--(void) setDefaultName:(NSString*) n
-{
-	[ROI setDefaultName: n];
-}
-
--(NSString*) defaultName {
-	return defaultName;
-}
+-(void) setDefaultName:(NSString*) n { [ROI setDefaultName: n]; }
+-(NSString*) defaultName { return defaultName; }
+ 
 // --- tPlain functions 
 -(void)displayTexture
 {
-	int i,j;
-	printf("-*- DISPLAY ROI TEXTURE -*-\n");
-	for (j=0;j<textureHeight;j++)
-	{
-		for(i=0;i<textureWidth;i++)
-			printf("%d ",textureBuffer[i+j*textureWidth]);
+	printf( "-*- DISPLAY ROI TEXTURE -*-\n" );
+	for ( int j=0; j<textureHeight; j++ ) {
+		for( int i=0; i<textureWidth; i++ )
+			printf( "%d ",textureBuffer[i+j*textureWidth] );
 		printf("\n");
 	}
 }
-- (int)textureDownRightCornerX
-{
-	return textureDownRightCornerX;
-}
--(int)textureDownRightCornerY
-{
-	return textureDownRightCornerY;
-}
-- (int)textureUpLeftCornerX
-{
-	return textureUpLeftCornerX;
-}
-- (int)textureUpLeftCornerY
-{
-	return textureUpLeftCornerY;
-}
-- (int)textureWidth
-{
-	return textureWidth;
-}
--(int)textureHeight
-{
-	return textureHeight;
-}
-- (unsigned char*)	textureBuffer
-{
-	return textureBuffer;
-}
-- (float) opacity
-{
-	return opacity;
-}
+
 - (void) setOpacity:(float)newOpacity
 {
 	ROIOpacity = opacity = newOpacity;
@@ -343,29 +323,15 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 		needsLoadTexture = YES;
 	}
 }
--(DCMView*) curView
-{
-	return curView;
-}
 
-- (void) setPix: (DCMPix*) newPix
-{
-	pix = newPix;
-}
-
--(DCMPix*) pix
-{
-	if(pix)
-	{
+- (DCMPix*)pix {
+	if ( pix )	{
 		return pix;
 	}
-	else
-	{
+	else {
 		NSLog( @"***** warning pix == [curView curDCM]");
 		
-		pix = [curView curDCM];
-		
-		return [curView curDCM];
+		return pix = curView.curDCM;
 	}
 }
 
@@ -418,13 +384,12 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 			unsigned char* pointerBuff=(unsigned char*)[[coder decodeObject] bytes];
 //			tempTextureBuffer=(unsigned char*)malloc(textureWidth*textureHeight*sizeof(unsigned char));
 			textureBuffer=(unsigned char*)malloc(textureWidth*textureHeight*sizeof(unsigned char));
-			long i,j;
-			for(j=0;j<textureHeight;j++)
-				for(i=0;i<textureWidth;i++)
-				{
-				//	tempTextureBuffer[i+j*textureWidth]=pointerBuff[i+j*textureWidth];
+
+			for( long j=0; j<textureHeight; j++ ) {
+				for( long i=0; i<textureWidth; i++ ) {
 					textureBuffer[i+j*textureWidth]=pointerBuff[i+j*textureWidth];
 				}
+			}
 		}
 		
 		if( fileVersion >= 3)
@@ -595,10 +560,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	[coder encodeObject:[NSNumber numberWithBool:displayTextualData]];
 }
 
-- (NSData*) data
-{
-	return [NSArchiver archivedDataWithRootObject: self];
-}
+- (NSData*) data { return [NSArchiver archivedDataWithRootObject: self]; }
 
 - (void) releaseStringTexture
 {
@@ -651,7 +613,6 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 
 - (void) setOriginAndSpacing :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin :(BOOL) sendNotification
 {
-	long	i;
 	BOOL	change = NO;
 	
 	if( ipixelSpacingx == 0) return;
@@ -689,7 +650,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	rect.size.width *= (pixelSpacingX/ipixelSpacingx);
 	rect.size.height *= (pixelSpacingY/ipixelSpacingy);
 	
-	for( i = 0; i < [points count]; i++)
+	for( long i = 0; i < [points count]; i++)
 	{
 		NSPoint aPoint = [[points objectAtIndex:i] point];
 		
@@ -833,7 +794,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 			
 			name = [[NSString alloc] initWithString:@"Double-Click to edit"];
 			
-			[self setName:name];	// Recompute the texture
+			self.name = name;	// Recompute the texture
 			
 			color.red = ROITextColorR;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextColorR"];
 			color.green = ROITextColorG;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextColorG"];
@@ -946,36 +907,29 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 
 -(float) plainArea
 {
-	long i, x;
-	
-	
-	for( i = 0, x = 0 ; i < textureWidth*textureHeight ; i++)
-	{
-		if( textureBuffer[i] != 0)
-		{
-			x++;
-		}
+	long x = 0;
+	for( long i = 0; i < textureWidth*textureHeight ; i++ )	{
+		if( textureBuffer[i] != 0) x++;
 	}
 	
 	return x;
 }
 
--(float) Area
-{
-   long		i,j;
+-(float) Area {
+	
    float	area = 0;
 
-   for( i = 0 ; i < [points count] ; i++)
+   for( long i = 0 ; i < [points count] ; i++ )
    {
-      j = (i + 1) % [points count];
+      long j = (i + 1) % [points count];
 	  
       area += [[points objectAtIndex:i] x] * [[points objectAtIndex:j] y];
       area -= [[points objectAtIndex:i] y] * [[points objectAtIndex:j] x];
    }
 
-   area /= 2;
+   area *= 0.5f;
    
-   return fabs( area);
+   return fabs( area );
 }
 
 -(float) Angle:(NSPoint) p2 :(NSPoint) p1 :(NSPoint) p3
@@ -1099,7 +1053,6 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 
 - (NSPoint) lowerRightPoint
 {
-	long		i;
 	float		xmin, xmax, ymin, ymax;
 	NSPoint		result;
 	
@@ -1133,8 +1086,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 			xmin = xmax = [[points objectAtIndex:0] x];
 			ymin = ymax = [[points objectAtIndex:0] y];
 			
-			for( i = 0; i < [points count]; i++)
-			{
+			for( long i = 0; i < [points count]; i++ ) {
 				if( [[points objectAtIndex:i] x] < xmin) xmin = [[points objectAtIndex:i] x];
 				if( [[points objectAtIndex:i] x] > xmax) xmax = [[points objectAtIndex:i] x];
 				if( [[points objectAtIndex:i] y] < ymin) ymin = [[points objectAtIndex:i] y];
@@ -1167,16 +1119,6 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	}
 	
 	return result;
-}
-
-- (void) setROIRect:(NSRect) irect
-{
-	rect = irect;
-}
-
-- (NSRect) rect
-{
-	return rect;
 }
 
 - (NSMutableArray*) points
@@ -1225,9 +1167,8 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 		MyPoint			*tempPoint;
 		float			angle;
 		
-		for(i = 0; i < CIRCLERESOLUTION ; i++)
-		{
-			// M_PI defined in cmath.h
+		for( long i = 0; i < CIRCLERESOLUTION ; i++ ) {
+
 			angle = i * 2 * M_PI /CIRCLERESOLUTION;
 		  
 			tempPoint = [[MyPoint alloc] initWithPoint: NSMakePoint( rect.origin.x + rect.size.width*cos(angle), rect.origin.y + rect.size.height*sin(angle))];
@@ -1242,8 +1183,8 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	{
 		NSMutableArray  *tempArray = [ITKSegmentation3D extractContour:textureBuffer width:textureWidth height:textureHeight];
 		
-		for( i = 0; i < [tempArray count]; i++)
-		{
+		for( long i = 0; i < [tempArray count]; i++) {
+			
 			MyPoint	*pt = [tempArray objectAtIndex: i];
 			[pt move: textureUpLeftCornerX :textureUpLeftCornerY];
 		}
@@ -1254,26 +1195,15 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	return points;
 }
 
-- (void) setPoints: (NSArray*) pts {
-	long i;
+- (void) setPoints: (NSMutableArray*) pts {
 	
 	if ( type == tROI || type == tOval ) return;  // Doesn't make sense to set points for these types.
 	
 	[points removeAllObjects];
-	for ( i = 0; i < [pts count]; i++ )
+	for ( long i = 0; i < [pts count]; i++ )
 		[points addObject: [pts objectAtIndex: i]];
 	
 	return;
-}
-
-- (NSMutableArray*) zPositions;
-{
-	return zPositions;
-}
-
-- (BOOL) clickInTextBox
-{
-	return clickInTextBox;
 }
 
 - (void) setTextBoxOffset:(NSPoint) o
@@ -1371,19 +1301,19 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 
 					float xi, yj;
 					BOOL found = NO;
-					int i, j;
-					for(i=-NEIGHBORHOODRADIUS; i<=NEIGHBORHOODRADIUS && !found; i++)
-						for(j=-NEIGHBORHOODRADIUS; j<=NEIGHBORHOODRADIUS && !found; j++)
-						{
+
+					for( int i=-NEIGHBORHOODRADIUS; i<=NEIGHBORHOODRADIUS && !found; i++ ) {
+						for( int j=-NEIGHBORHOODRADIUS; j<=NEIGHBORHOODRADIUS && !found; j++ ) {
 							xi = x+i;
 							yj = y+j;
-							if(xi>=0.0 && yj>=0.0 && xi<width && yj<height)
-							{
+							if(xi>=0.0 && yj>=0.0 && xi<width && yj<height)	{
+								
 								NSColor *pixelColor = [bitmap colorAtX:xi y:yj];
 								if([pixelColor alphaComponent]>0.0)
 									found = YES;
 							}
 						}
+					}
 					if(found)	
 						imode = ROI_selected;
 					[bitmap release];
@@ -1449,8 +1379,8 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 			{
 				float distance;
 
-				for( i = 0; i < ([points count] - 1); i++)
-				{
+				for( int i = 0; i < ([points count] - 1); i++ )	{
+					
 					[self DistancePointLine:pt :[[points objectAtIndex:i] point] : [[points objectAtIndex:(i+1)] point] :&distance];
 					if( distance*scale < 5.0)
 					{
@@ -1469,8 +1399,8 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 			{
 				float distance;
 
-				for( i = 0; i < ([points count] - 1); i++)
-				{
+				for( int i = 0; i < ([points count] - 1); i++ )	{
+					
 					[self DistancePointLine:pt :[[points objectAtIndex:i] point] : [[points objectAtIndex:(i+1)] point] :&distance];
 					if( distance*scale < 5.0)
 					{
@@ -1480,10 +1410,8 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 				}
 				
 				[self DistancePointLine:pt :[[points objectAtIndex:i] point] : [[points objectAtIndex:0] point] :&distance];
-				if( distance*scale < 5.0)
-				{
-					imode = ROI_selected;
-				}
+				if( distance*scale < 5.0f )	imode = ROI_selected;
+
 			}
 			break;
 
@@ -1585,8 +1513,8 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 			case tCPolygon:
 			case tOPolygon:
 			case tPencil:
-				for( i = 0 ; i < [points count]; i++)
-				{
+				for( int i = 0 ; i < [points count]; i++ ) {
+					
 					if( [[points objectAtIndex: i] isNearToPoint: pt :scale :[[curView curDCM] pixelRatio]])
 					{
 						imode = ROI_selectedModify;
@@ -1618,8 +1546,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 		mode = ROI_drawing;
 	}
 	
-	if( [[self comments] isEqualToString: @"morphing generated"])
-		[self setComments:@""];
+	if( [self.comments isEqualToString: @"morphing generated"] ) self.comments = @"";
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 	
@@ -1735,30 +1662,18 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 {
     float theta;
     float dtheta;
-    long i;
     long intUpper;
     float new_x;
     float new_y;
 	float intYCenter, intXCenter;
-	NSMutableArray	*pts = [self points];
+	NSMutableArray	*pts = self.points;
 	
     intUpper = [pts count];
 	if( intUpper > 0)
 	{
 		dtheta = deg2rad;
 		theta = dtheta * angle; 
-		
-//		// Center of polygon
-//		intYCenter = intXCenter = 0;
-//		for( i = 0; i < intUpper; i++)
-//		{ 
-//			intYCenter += [[pts objectAtIndex: i] y];
-//			intXCenter += [[pts objectAtIndex: i] x];
-//		}
-//		
-//		intYCenter /= intUpper;
-//		intXCenter /= intUpper;
-		
+				
 		if( type == tROI || type == tOval)
 		{
 			type = tCPolygon;
@@ -1769,8 +1684,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 		intXCenter = center.x;
 		intYCenter = center.y;
 		
-		for( i = 0; i < intUpper; i++)
-		{ 
+		for( long i = 0; i < intUpper; i++)	{ 
 			new_x = cos(theta) * ([[pts objectAtIndex: i] x] - intXCenter) - sin(theta) * ([[pts objectAtIndex: i] y] - intYCenter);
 			new_y = sin(theta) * ([[pts objectAtIndex: i] x] - intXCenter) + cos(theta) * ([[pts objectAtIndex: i] y] - intYCenter);
 			
@@ -1795,12 +1709,11 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 {
 	if(![self canResize]) return;
 	
-    long i;
     long intUpper;
     float new_x;
     float new_y;
 	float intYCenter, intXCenter;
-	NSMutableArray	*pts = [self points];
+	NSMutableArray	*pts = self.points;
 
     intUpper = [pts count];
 	if( intUpper > 0)
@@ -1815,8 +1728,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 		intXCenter = center.x;
 		intYCenter = center.y;
 		
-		for( i = 0; i < intUpper; i++)
-		{ 
+		for( long i = 0; i < intUpper; i++) { 
 			new_x = ([[pts objectAtIndex: i] x] - intXCenter) * factor;
 			new_y = ([[pts objectAtIndex: i] y] - intYCenter) * factor;
 			
@@ -1924,8 +1836,6 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 {
 	if( mode == ROI_selected)
 	{
-		long i;
-
 		switch( type)
 		{
 			case tOval:
@@ -1945,10 +1855,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 			case tAngle:
 			case tPencil:
 			case tLayerROI:
-				for( i = 0; i < [points count]; i++)
-				{
-					[[points objectAtIndex: i] move: offset.x : offset.y];
-				}
+				for( long i = 0; i < [points count]; i++) [[points objectAtIndex: i] move: offset.x : offset.y];
 			break;
 		}
 		
@@ -1996,7 +1903,6 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 {
 	if( type != tPlain) return YES;
 	
-	long			x, y;
 	long			minX, maxX, minY, maxY;
 	unsigned char	*tempBuf = textureBuffer;
 	
@@ -2005,9 +1911,9 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	minY = textureHeight;
 	maxY = 0;
 	
-	for( y = 0; y < textureHeight ; y++)
+	for( long y = 0; y < textureHeight ; y++)
 	{
-		for( x = 0; x < textureWidth; x++)
+		for( long x = 0; x < textureWidth; x++)
 		{                      
 			if( *tempBuf++ != 0)
 			{
@@ -2045,7 +1951,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 		textureWidth = maxX - minX+1;
 		textureHeight = maxY - minY+1;
 		
-		for( y = 0 ; y < textureHeight ; y++)
+		for( long y = 0 ; y < textureHeight ; y++)
 		{
 			memcpy( textureBuffer + (y * textureWidth), textureBuffer + offsetTextureX+ (y+ offsetTextureY)*oldTextureWidth,  textureWidth);
 		}
@@ -2061,16 +1967,15 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 
 + (void) fillCircle:(unsigned char *) buf :(int) width :(unsigned char) val
 {
-	int		x,y;
 	int		xsqr;
 	int		radsqr = (width*width)/4;
 	int		rad = width/2;
 	
-	for(x = 0; x < rad; x++)
-	{
+	for( int x = 0; x < rad; x++ ) {
+		
 		xsqr = x*x;
-		for( y = 0 ; y < rad; y++)
-		{
+		for( int y = 0 ; y < rad; y++) {
+			
 			if((xsqr + y*y) < radsqr)
 			{
 				buf[ rad+x + (rad+y)*width] = val;
@@ -2086,7 +1991,6 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 - (BOOL) mouseRoiDragged:(NSPoint) pt :(unsigned int) modifier :(float) scale
 {
 	BOOL		action = NO;
-	long		i,j, x;
 	BOOL		textureGrowDownX=YES,textureGrowDownY=YES;
 	float		oldTextureUpLeftCornerX,oldTextureUpLeftCornerY,offsetTextureX,offsetTextureY;
 	
@@ -2135,7 +2039,7 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 				{
 					tempTextureBuffer = malloc( oldTextureHeight*oldTextureWidth*sizeof(unsigned char));
 					
-					for( i = 0; i < oldTextureWidth*oldTextureHeight;i++) tempTextureBuffer[i]=textureBuffer[i];
+					for( long i = 0; i < oldTextureWidth*oldTextureHeight;i++) tempTextureBuffer[i]=textureBuffer[i];
 					free(textureBuffer);
 					textureBuffer = 0L;
 				}
@@ -2157,28 +2061,28 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 				if (textureBuffer!=NULL)
 				{
 					// copy temp buffer to the new buffer
-					for( i = 0; i < textureWidth*textureHeight;i++) textureBuffer[i]=0;
+					for( long i = 0; i < textureWidth*textureHeight;i++) textureBuffer[i]=0;
 					
 					if (textureGrowDownX && textureGrowDownY)
 					{
-						for(j=0;j<oldTextureHeight;j++)
-							for(i=0;i<oldTextureWidth;i++)
+						for( long j=0; j<oldTextureHeight; j++ )
+							for( long i=0; i<oldTextureWidth; i++ )
 								textureBuffer[i+j*textureWidth] = tempTextureBuffer[i+j*oldTextureWidth];
 					}
 					
 					if (!textureGrowDownX && textureGrowDownY)
 					{
 						offsetTextureX=(oldTextureUpLeftCornerX-textureUpLeftCornerX);
-						for(j=0;j<oldTextureHeight;j++)
-							for(i=0;i<oldTextureWidth;i++)
+						for(long j=0; j<oldTextureHeight; j++ )
+							for( long i=0; i<oldTextureWidth; i++)
 								textureBuffer[(long)(i+offsetTextureX+j*textureWidth)]=tempTextureBuffer[i+j*oldTextureWidth];
 					}
 					
 					if (textureGrowDownX && !textureGrowDownY)
 					{
 						offsetTextureY=(oldTextureUpLeftCornerY-textureUpLeftCornerY);
-						for(j=0;j<oldTextureHeight;j++)
-							for(i=0;i<oldTextureWidth;i++)
+						for( long j=0; j<oldTextureHeight; j++ )
+							for( long i=0; i<oldTextureWidth; i++ )
 								textureBuffer[(long)(i+(j+offsetTextureY)*textureWidth)]=tempTextureBuffer[i+j*oldTextureWidth];
 					}
 					
@@ -2186,8 +2090,8 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 					{
 						offsetTextureY=(oldTextureUpLeftCornerY-textureUpLeftCornerY);
 						offsetTextureX=(oldTextureUpLeftCornerX-textureUpLeftCornerX);
-						for(j=0;j<oldTextureHeight;j++)
-							for(i=0;i<oldTextureWidth;i++)
+						for( long j=0; j<oldTextureHeight; j++ )
+							for( long i=0; i<oldTextureWidth; i++)
 								textureBuffer[(long)(i+offsetTextureX+(j+offsetTextureY)*textureWidth)]=tempTextureBuffer[i+j*oldTextureWidth];
 					}
 					
@@ -2227,15 +2131,13 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 									&xPoints,
 									&yPoints);
 				
-				for( x = 0 ; x < size; x++)
-				{
+				for( long x = 0 ; x < size; x++ ) {
 					long xx = xPoints[ x];
 					long yy = yPoints[ x];
 							
-					for ( j =- intThickness; j < intThickness; j++)
-					{
-						for ( i =- intThickness; i < intThickness; i++)
-						{
+					for ( long j =- intThickness; j < intThickness; j++ ) {
+						for ( long i =- intThickness; i < intThickness; i++ ) {
+							
 							if( xx+j > textureUpLeftCornerX && xx+j < textureDownRightCornerX)
 							{
 								if( yy+i > textureUpLeftCornerY && yy+i < textureDownRightCornerY)
@@ -2390,14 +2292,12 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	
 	if( action)
 	{
-		if( [[self comments] isEqualToString: @"morphing generated"])
-			[self setComments:@""];
+		if ( [self.comments isEqualToString: @"morphing generated"] ) self.comments = @"";
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 	}
 	return action;
 }
 
-- (NSString*) name {return name;}
 - (void) setName:(NSString*) a
 {
 	if( a == 0L) a = @"";
@@ -2426,16 +2326,6 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 		rect.size.height *= pixelSpacingX/pixelSpacingY;
 	}	
 }
-- (NSString*) comments {return comments;}
-- (void) setComments:(NSString*) a
-{
-	if( a != comments)
-	{
-		[comments release];
-		comments = [a retain];
-	}
-}
-- (RGBColor) rgbcolor {return color;}
 
 - (void) setColor:(RGBColor) a
 {
@@ -2468,7 +2358,6 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	}
 }
 
-- (float) thickness {return thickness;}
 - (void) setThickness:(float) a
 {
 	thickness = a;
@@ -2489,20 +2378,12 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 		[stanStringAttrib setObject:font forKey:NSFontAttributeName];
 		[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 		
-		[self setName:name];
+		self.name = name;
 	}
-	else
-	{
-		ROIThickness = thickness;	//[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROIThickness"];
+	else {
+		ROIThickness = thickness;
 	}
 }
-
-- (void) setROIMode :(long) v
-{
-	mode = v;
-}
-
-- (long) ROImode { return mode;}
 
 - (BOOL) deleteSelectedPoint
 {
@@ -2570,22 +2451,15 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 	return val;
 }
 
-- (void) setMousePosMeasure:(float) p
-{
-	mousePosMeasure = p;
-}
-
-
 static int roundboxtype= 15;
 
 void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, float rad)
 {
 	 float vec[7][2]= {{0.195, 0.02}, {0.383, 0.067}, {0.55, 0.169}, {0.707, 0.293},
 					   {0.831, 0.45}, {0.924, 0.617}, {0.98, 0.805}};
-	 int a;
-	 
+
 	 /* mult */
-	 for(a=0; a<7; a++) {
+	 for( int a=0; a<7; a++) {
 			 vec[a][0]*= rad; vec[a][1]*= rad;
 	 }
 
@@ -2595,7 +2469,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	 /* start with corner right-bottom */
 	 if(roundboxtype & 4) {
 			 glVertex2f( maxx-rad, miny);
-			 for(a=0; a<7; a++) {
+			 for( int a=0; a<7; a++ ) {
 					 glVertex2f( maxx-rad+vec[a][0], miny+vec[a][1]);
 			 }
 			 glVertex2f( maxx, miny+rad);
@@ -2605,7 +2479,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	 /* corner right-top */
 	 if(roundboxtype & 2) {
 			 glVertex2f( maxx, maxy-rad);
-			 for(a=0; a<7; a++) {
+			 for( int a=0; a<7; a++ ) {
 					 glVertex2f( maxx-vec[a][1], maxy-rad+vec[a][0]);
 			 }
 			 glVertex2f( maxx-rad, maxy);
@@ -2615,7 +2489,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	 /* corner left-top */
 	 if(roundboxtype & 1) {
 			 glVertex2f( minx+rad, maxy);
-			 for(a=0; a<7; a++) {
+			 for( int a=0; a<7; a++ ) {
 					 glVertex2f( minx+rad-vec[a][0], maxy-vec[a][1]);
 			 }
 			 glVertex2f( minx, maxy-rad);
@@ -2625,7 +2499,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	 /* corner left-bottom */
 	 if(roundboxtype & 8) {
 			 glVertex2f( minx, miny+rad);
-			 for(a=0; a<7; a++) {
+			 for( int a=0; a<7; a++ ) {
 					 glVertex2f( minx+vec[a][1], miny+rad-vec[a][0]);
 			 }
 			 glVertex2f( minx+rad, miny);
@@ -2637,7 +2511,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (NSRect) findAnEmptySpaceForMyRect:(NSRect) dRect :(BOOL*) moved
 {
-	long				i;
 	NSMutableArray		*rectArray = [curView rectArray];
 	
 	if( rectArray == 0L)
@@ -2653,8 +2526,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	dRect.origin.x += 8;
 	dRect.origin.y += 8;
 	
-	for( i = 0; i < [rectArray count]; i++)
-	{
+	for( long i = 0; i < [rectArray count]; i++ ) {
+		
 		NSRect	curRect = [[rectArray objectAtIndex: i] rectValue];
 		
 		if( NSIntersectsRect( curRect, dRect))
@@ -2741,7 +2614,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 //	if( fabs( offsetTextBox_x) > 0 || fabs( offsetTextBox_y) > 0) moved = NO;
 	
-	if( moved && ![curView suppressLabels] && [self isTextualDataDisplayed])	// Draw bezier line
+	if( moved && ![curView suppressLabels] && self.isTextualDataDisplayed )	// Draw bezier line
 	{
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		glLoadIdentity();
@@ -2763,9 +2636,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		glEnable(GL_MAP1_VERTEX_3);
 		
 	    glBegin(GL_LINE_STRIP);
-		int i;
-        for (i = 0; i <= 30; i++) 
-            glEvalCoord1f((GLfloat) i/30.0);
+        for ( int i = 0; i <= 30; i++ ) glEvalCoord1f((GLfloat) i/30.0);
 		glEnd();
 		glDisable(GL_MAP1_VERTEX_3);
 		
@@ -2777,18 +2648,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		glEnable(GL_MAP1_VERTEX_3);
 		
 	    glBegin(GL_LINE_STRIP);
-        for (i = 0; i <= 30; i++) 
-            glEvalCoord1f((GLfloat) i/30.0);
+        for ( int i = 0; i <= 30; i++ ) glEvalCoord1f((GLfloat) i/30.0);
 		glEnd();
 		glDisable(GL_MAP1_VERTEX_3);
 		
 		[curView applyImageTransformation];
 	}
 
-	if( [self isTextualDataDisplayed])
-	{
-		if( type != tText)
-		{
+	if( self.isTextualDataDisplayed ) {
+		if( type != tText) {
+			
 			//glEnable(GL_POLYGON_SMOOTH);
 			CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			glEnable(GL_BLEND);
@@ -2862,10 +2731,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		tPt.y = [[points objectAtIndex: 0] y];
 		tPt.x = [[points objectAtIndex: 0] x];
 		
-		long i;
-		
-		for( i = 0; i < [points count]; i++)
-		{
+		for( long i = 0; i < [points count]; i++ ) {
 			if( [[points objectAtIndex:i] y] > ymin)
 			{
 				ymin = [[points objectAtIndex:i] y];
@@ -2898,9 +2764,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 }
 
 - (void) drawROI :(float) scaleValue :(float) offsetx :(float) offsety :(float) spacingX :(float) spacingY
-{
-	long	i;
-	
+{	
 	if( fontListGL == -1) NSLog(@"ERROR: fontListGL == -1 !");
 	if( curView == 0L) NSLog(@"ERROR: curView == 0L !");
 	
@@ -3005,11 +2869,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glColor3f (1.0f, 1.0f, 1.0f);
 				}
 				
-				if( [self isTextualDataDisplayed])
+				if( self.isTextualDataDisplayed )
 				{
 					// TEXT
 					line1[0] = 0; line2[0] = 0; line3[0] = 0; line4[0] = 0; line5[0] = 0;
-					NSPoint tPt = [self lowerRightPoint];
+					NSPoint tPt = self.lowerRightPoint;
 				
 					if(![name isEqualToString:@"Unnamed"]) strcpy(line1, [name UTF8String]);
 					if(textualBoxLine1 && ![textualBoxLine1 isEqualToString:@""]) strcpy(line1, [textualBoxLine1 UTF8String]);
@@ -3041,8 +2905,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			glDisable(GL_POLYGON_SMOOTH);
 			glEnable(GL_TEXTURE_RECTANGLE_EXT);
-			
-			//for( i = 0; i < textureWidth*textureHeight;i++) textureBuffer[ i] = i;
 			
 			if( textureName)
 				glDeleteTextures (1, &textureName);
@@ -3105,8 +2967,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			// TEXT
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( [self isTextualDataDisplayed])
-			{
+			if( self.isTextualDataDisplayed ) {
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
@@ -3149,9 +3010,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 
 			glBegin(GL_LINE_LOOP);
-			for(i = 0; i < CIRCLERESOLUTION ; i++)
-			{
-			  // M_PI defined in cmath.h
+			for( long i = 0; i < CIRCLERESOLUTION ; i++ ) {
+
 			  angle = i * 2 * M_PI /CIRCLERESOLUTION;
 			  
 			  glVertex2f( (rect.origin.x - offsetx)*scaleValue + 8*cos(angle), (rect.origin.y - offsety)*scaleValue + 8*sin(angle)*pixelSpacingX/pixelSpacingY);
@@ -3171,9 +3031,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			// TEXT
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( [self isTextualDataDisplayed])
+			if( self.isTextualDataDisplayed )
 			{
-				NSPoint tPt = [self lowerRightPoint];
+				NSPoint tPt = self.lowerRightPoint;
 				long	line = 0;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
@@ -3225,7 +3085,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			glLineWidth(1.0);
 			
-			NSPoint tPt = [self lowerRightPoint];
+			NSPoint tPt = self.lowerRightPoint;
 			tPt.x = (tPt.x - offsetx)*scaleValue  - rect.size.width/2;		tPt.y = (tPt.y - offsety)*scaleValue - rect.size.height/2;
 			
 			GLint matrixMode;
@@ -3237,7 +3097,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( opacity == 1.0) glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 			else glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
-			if( stringTex == 0L) [self setName: name];
+			if( stringTex == nil ) self.name = name;
 			
 			[stringTex setFlippedX: [curView xFlipped] Y:[curView yFlipped]];
 			
@@ -3323,8 +3183,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			else
 			{
 				glBegin(GL_LINE_STRIP);
-				for( i = 0; i < [points count]; i++)
-				{
+				for( long i = 0; i < [points count]; i++ ) {
 					glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
 				}
 				glEnd();
@@ -3335,8 +3194,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glColor3f (0.5f, 0.5f, 1.0f);
 				glPointSize( thickness * 3);
 				glBegin( GL_POINTS);
-				for( i = 0; i < [points count]; i++)
-				{
+				for( long i = 0; i < [points count]; i++) {
+					
 					if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
 					
 					glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
@@ -3380,9 +3239,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			// TEXT
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( [self isTextualDataDisplayed])
-			{
-				NSPoint tPt = [self lowerRightPoint];
+			if( self.isTextualDataDisplayed ) {
+				NSPoint tPt = self.lowerRightPoint;
 				long	line = 0;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
@@ -3428,9 +3286,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			// TEXT
 			{
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-				if( [self isTextualDataDisplayed])
-				{
-					NSPoint			tPt = [self lowerRightPoint];
+				if( self.isTextualDataDisplayed ) {
+					NSPoint			tPt = self.lowerRightPoint;
 					long			line = 0;
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
@@ -3465,10 +3322,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glLineWidth(thickness);
 			
 			glBegin(GL_LINE_LOOP);
-			for(i = 0; i < CIRCLERESOLUTION ; i++)
-			{
-			  // M_PI defined in cmath.h
-			  angle = i * 2 * M_PI /CIRCLERESOLUTION;
+			for( long i = 0; i < CIRCLERESOLUTION ; i++ ) {
+
+				angle = i * 2 * M_PI /CIRCLERESOLUTION;
 			  
 			  glVertex2f( (rect.origin.x + rect.size.width*cos(angle) - offsetx)*scaleValue, (rect.origin.y + rect.size.height*sin(angle)- offsety)*scaleValue);
 			}
@@ -3492,9 +3348,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			// TEXT
 			
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( [self isTextualDataDisplayed])
-			{
-				NSPoint			tPt = [self lowerRightPoint];
+			if( self.isTextualDataDisplayed ) {
+				NSPoint			tPt = self.lowerRightPoint;
 				long			line = 0;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
@@ -3532,8 +3387,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			glBegin(GL_LINE_LOOP);
 			
-			for( i = 0; i < [points count]; i++)
-			{				
+			for( long i = 0; i < [points count]; i++) {				
 				//NSLog(@"JJCP--	tAxis- New point: %f x, %f y",[[points objectAtIndex:i] x],[[points objectAtIndex:i] y]);
 				glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
 				if(i>2)
@@ -3543,18 +3397,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				}
 			}
 			glEnd();
-			if([points count]>3)
-			{
-				for(i=4;i<[points count];i++)
-				{
-					[points removeObjectAtIndex: i];
-				}
+			if( [points count]>3 ){
+				for( long i=4;i<[points count];i++ ) [points removeObjectAtIndex: i];
 			}
 			//TEXTO
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( [self isTextualDataDisplayed])
-			{
-				NSPoint tPt = [self lowerRightPoint];
+			if( self.isTextualDataDisplayed ) {
+				NSPoint tPt = self.lowerRightPoint;
 				long	line = 0;
 				float   length;
 				
@@ -3575,6 +3424,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 					
 					length = 0;
+					long i;
 					for( i = 0; i < [points count]-1; i++ ) {
 						length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
 					}
@@ -3597,8 +3447,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glColor3f (0.5f, 0.5f, 1.0f);
 					glPointSize( thickness * 3);
 					glBegin( GL_POINTS);
-					for( i = 0; i < [points count]; i++)
-					{
+					for( long i = 0; i < [points count]; i++) {
 						if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
 						else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/thickness :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
 						else glColor3f (0.5f, 0.5f, 1.0f);
@@ -3754,8 +3603,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			glBegin(GL_LINE_STRIP);
 			
-			for( i = 0; i < [points count]; i++)
-			{				
+			for( long i = 0; i < [points count]; i++) {				
 				if(i==1||i==2)
 				{
 					glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., 0.1);
@@ -3772,12 +3620,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				}
 			}
 			glEnd();
-			if([points count]>3)
-			{
-				for(i=4;i<[points count];i++)
-				{
-					[points removeObjectAtIndex: i];
-				}
+			if( [points count]>3 ) {
+				for( long i=4; i<[points count]; i++ ) [points removeObjectAtIndex: i];
 			}			
 			BOOL plot=NO;
 			BOOL plot2=NO;
@@ -3824,9 +3668,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 			//TEXTO
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( [self isTextualDataDisplayed])
-			{
-					NSPoint tPt = [self lowerRightPoint];
+			if( self.isTextualDataDisplayed ) {
+					NSPoint tPt = self.lowerRightPoint;
 					long	line = 0;
 					float   length;
 					
@@ -3849,7 +3692,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 						
 						length = 0;
-						for( i = 0; i < [points count]-1; i++ ) {
+						for( long i = 0; i < [points count]-1; i++ ) {
 							length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
 						}
 						
@@ -3874,8 +3717,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glColor3f (0.5f, 0.5f, 1.0f);
 				glPointSize( thickness * 3);
 				glBegin( GL_POINTS);
-				for( i = 0; i < [points count]; i++)
-				{
+				for( long i = 0; i < [points count]; i++) {
 					if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
 					else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/thickness :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
 					else glColor3f (0.5f, 0.5f, 1.0f);
@@ -3901,8 +3743,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( type == tCPolygon || type == tPencil)	glBegin(GL_LINE_LOOP);
 			else										glBegin(GL_LINE_STRIP);
 			
-			for( i = 0; i < [points count]; i++)
-			{
+			for( long i = 0; i < [points count]; i++) {
 				glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
 			}
 			glEnd();
@@ -3911,9 +3752,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( type == tCPolygon || type == tPencil)
 			{
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-				if( [self isTextualDataDisplayed])
-				{
-					NSPoint tPt = [self lowerRightPoint];
+				if( self.isTextualDataDisplayed ) {
+					NSPoint tPt = self.lowerRightPoint;
 					long	line = 0;
 					float   length;
 					
@@ -3934,6 +3774,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 						
 						length = 0;
+						long i;
 						for( i = 0; i < [points count]-1; i++ ) {
 							length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
 						}
@@ -3951,9 +3792,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			else if( type == tOPolygon)
 			{
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-				if( [self isTextualDataDisplayed])
-				{
-					NSPoint tPt = [self lowerRightPoint];
+				if( self.isTextualDataDisplayed ) {
+					NSPoint tPt = self.lowerRightPoint;
 					long	line = 0;
 					float   length;
 					
@@ -3976,7 +3816,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 						
 						length = 0;
-						for( i = 0; i < [points count]-1; i++ ) {
+						for( long i = 0; i < [points count]-1; i++ ) {
 							length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
 						}
 						
@@ -3994,9 +3834,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				if( [points count] == 3)
 				{
 					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-					if( [self isTextualDataDisplayed])
-					{
-						NSPoint tPt = [self lowerRightPoint];
+					if( self.isTextualDataDisplayed ) {
+						NSPoint tPt = self.lowerRightPoint;
 						long	line = 0;
 						float   angle;
 						
@@ -4020,8 +3859,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glColor3f (0.5f, 0.5f, 1.0f);
 				glPointSize( thickness * 3);
 				glBegin( GL_POINTS);
-				for( i = 0; i < [points count]; i++)
-				{
+				for( long i = 0; i < [points count]; i++) {
 					if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
 					else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/thickness :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
 					else glColor3f (0.5f, 0.5f, 1.0f);
@@ -4067,15 +3905,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 - (NSMutableArray*) dataValues
 {
 	NSMutableArray*		array = [NSMutableArray arrayWithCapacity:0];
-	long				no, i;
+	long				no;
 	float				*data;
 	
 	data = [self dataValuesAsFloatPointer: &no];
 	
 	if( data)
 	{
-		for( i = 0 ; i < no; i++)
-		{
+		for( long i = 0 ; i < no; i++) {
 			[array addObject:[NSNumber numberWithFloat: data[ i]]];
 		}
 		
@@ -4089,8 +3926,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 - (NSMutableDictionary*) dataString
 {
 	NSMutableDictionary*		array = 0L;
-	long						i, length;
-	NSMutableArray				*ptsTemp = [self points];
+	NSMutableArray				*ptsTemp = self.points;
 		
 	switch( type)
 	{
@@ -4130,9 +3966,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			[array setObject: [NSNumber numberWithFloat:rmin] forKey:@"Min"];
 			[array setObject: [NSNumber numberWithFloat:rmax] forKey:@"Max"];
 			
-			length = 0;
-			for( i = 0; i < [ptsTemp count]-1; i++)
-			{
+			long length = 0;
+			long i;
+			for( i = 0; i < [ptsTemp count]-1; i++ ) {
 				length += [self Length:[[ptsTemp objectAtIndex:i] point] :[[ptsTemp objectAtIndex:i+1] point]];
 			}
 			if( type != tOPolygon) length += [self Length:[[ptsTemp objectAtIndex:i] point] :[[ptsTemp objectAtIndex:0] point]];
@@ -4158,10 +3994,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	}
 	
 	return array;
-}
-
-- (long)type {
-	return type;
 }
 
 - (BOOL) needQuartz
@@ -4206,18 +4038,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			return ([self EllipseArea]*pixelSpacingX*pixelSpacingY)/100.;
 		break;
 		case tPlain:
-		{
-			long i;
-			float area=0.0;;
-			for( i = 0; i < textureWidth*textureHeight;i++)
-				if (textureBuffer[i]!=0) area++;;
+			{
+				float area=0.0;;
+				for( long i = 0; i < textureWidth*textureHeight;i++)
+					if (textureBuffer[i]!=0) area++;
 				return (area*pixelSpacingX*pixelSpacingY)/100.;
-		}
+			}
 			break;
-			
 	}
 	
-	return 0.;
+	return 0.0f;
 }
 
 - (NSPoint) centroid {
@@ -4226,14 +4056,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		return rect.origin;
 	}
 	
-	NSArray	*pts = [self points];
+	NSArray	*pts = self.points;
 	
 	int num_points = [pts count];
 	
 	NSPoint centroid;
-	int i;
 	
-	for ( i = 0; i < num_points; i++ ) {
+	for ( int i = 0; i < num_points; i++ ) {
 		centroid.x += [[pts objectAtIndex:i] x] / num_points;
 		centroid.y += [[pts objectAtIndex:i] y] / num_points;
 	}
@@ -4248,19 +4077,15 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	int newHeight = textureHeight + 2*margin;
 	unsigned char* newBuffer = (unsigned char*)calloc(newWidth*newHeight, sizeof(unsigned char));
 	
-	if(newBuffer)
-	{
-		int i;
-		for(i=0; i<margin; i++)
-		{
+	if(newBuffer) {
+		for( int i=0; i<margin; i++) {
 			// skip the 'margin' first lines
 			newBuffer += newWidth; 
 		}
 		
 		unsigned char	*temptextureBuffer = textureBuffer;
 		
-		for(i=0; i<textureHeight; i++)
-		{
+		for( int i=0; i<textureHeight; i++ ) {
 			newBuffer += margin; // skip the left margin pixels
 			memcpy( newBuffer,temptextureBuffer,textureWidth*sizeof(unsigned char));
 			newBuffer += textureWidth+margin; // move to the next line, skipping the right margin pixels
@@ -4279,22 +4104,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		textureHeight = newHeight;
 	}
 }
-
-// parent ROI
-- (ROI*) parentROI
-{
-	return parentROI;
-}
-
-- (void) setParentROI: (ROI*) aROI;
-{
-	if( aROI == parentROI) return;
-	
-	[parentROI release];
-	
-	parentROI = [aROI retain];
-}
-
 
 // Calcium Scoring
 // Should we check to see if we using a brush ROI and other appropriate checks before return a calcium measurement?
@@ -4347,33 +4156,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 	return fabs([self calciumVolume] * rmean)/ 250;
 }
-- (void)setDisplayCalciumScoring:(BOOL)value{
-	_displayCalciumScoring = value;
-}
-
-- (void)setCalciumThreshold:(int)threshold{
-	_calciumThreshold = threshold;
-}
-
-- (double) sliceThickness{
-	return _sliceThickness;
-}
-
-- (void) setSliceThickness:(double)sliceThickness{
-	_sliceThickness = sliceThickness;
-}
-
-- (void)setLayerReferenceFilePath:(NSString*)path;
-{
-	if(layerReferenceFilePath) [layerReferenceFilePath release];
-	layerReferenceFilePath = path;
-	[layerReferenceFilePath retain];
-}
-
-- (NSString*)layerReferenceFilePath;
-{
-	return layerReferenceFilePath;
-}
 
 - (void)setLayerImage:(NSImage*)image;
 {
@@ -4404,45 +4186,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	[[curView openGLContext] makeCurrentContext];
 	[self loadLayerImageTexture];
 	
-	//NSBitmapImageRep *bitmap;
-//	//bitmap = [[NSBitmapImageRep alloc] initWithData:[layerImage TIFFRepresentation]];
-//	bitmap = [[NSBitmapImageRep alloc] initWithData:layerImageJPEG];
-//	unsigned char *imageBuffer = [bitmap bitmapData];
-//	
-//	[[curView openGLContext] makeCurrentContext];
-//	
-//	glGenTextures(1, &textureName);
-//	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
-//	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
-//	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-////	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, imageBuffer);
-//	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_BGRA , GL_UNSIGNED_INT_8_8_8_8, imageBuffer);
-
 }
 
-//- (void)setLayerImageWhenSelected:(NSImage*)image;
-//{
-//	if(layerImageWhenSelected) [layerImageWhenSelected release];
-//	layerImageWhenSelected = image;
-//	[layerImageWhenSelected retain];
-//	
-//	NSSize imageSize = [layerImageWhenSelected size];
-//	float imageWidth = imageSize.width;
-//	float imageHeight = imageSize.height;
-//
-//	NSBitmapImageRep *bitmap;
-//	bitmap = [[NSBitmapImageRep alloc] initWithData:[layerImageWhenSelected TIFFRepresentation]];
-//	unsigned char *imageBuffer = [bitmap bitmapData];
-//	
-//	[[curView openGLContext] makeCurrentContext];
-//	
-//	glGenTextures(1, &textureName2);
-//	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName2);
-//	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
-//	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-//	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, imageBuffer);
-//
-//}
 
 - (void)loadLayerImageTexture;
 {
@@ -4481,9 +4226,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		unsigned char	redTable[ 256], greenTable[ 256], blueTable[ 256], alphaTable[ 256];
 			
-		int i;
-		for( i = 0; i < 256; i++)
-		{
+		for( int i = 0; i < 256; i++ ) {
 			redTable[i] = i * [layerColor redComponent];
 			greenTable[i] = i * [layerColor greenComponent];
 			blueTable[i] = i * [layerColor blueComponent];
@@ -4529,36 +4272,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	[bitmap release];
 }
 
-//- (void)loadLayerImageWhenSelectedTexture;
-//{
-//	NSImage *newImage = layerImageWhenSelected;
-//	if(opacity<1.0)
-//	{
-//		newImage = [[NSImage alloc] initWithSize:[layerImageWhenSelected size]];
-//		[newImage lockFocus];
-//		[layerImageWhenSelected compositeToPoint:NSMakePoint(0.0, 0.0) fromRect:NSMakeRect(0.0, 0.0, [layerImageWhenSelected size].width, [layerImageWhenSelected size].height) operation:NSCompositeCopy fraction:opacity];
-//		[newImage unlockFocus];
-//	}
-//	
-//	NSBitmapImageRep *bitmap;
-//	bitmap = [[NSBitmapImageRep alloc] initWithData:[newImage TIFFRepresentation]];
-//	unsigned char *imageBuffer = [bitmap bitmapData];
-//
-//	[[curView openGLContext] makeCurrentContext];
-//
-//	if(textureName2)
-//		glDeleteTextures(1, &textureName2);
-//		
-//	glGenTextures(1, &textureName2);
-//	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName2);
-//	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
-//	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-//	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImageWhenSelected size].width, [layerImageWhenSelected size].height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, imageBuffer);
-//	
-//	if(opacity<1.0) [newImage release];
-//	[bitmap release];
-//}
-
 - (void)generateEncodedLayerImage;
 {
 	if(layerImageJPEG) [layerImageJPEG release];
@@ -4571,16 +4284,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	else
 		imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
 	layerImageJPEG = [[imageRep representationUsingType:NSJPEG2000FileType properties:imageProps] retain];	//NSJPEGFileType
-}
-
-- (void)setLayerPixelSpacingX:(float)x;
-{
-	layerPixelSpacingX = x;
-}
-
-- (void)setLayerPixelSpacingY:(float)y;
-{
-	layerPixelSpacingY = y;
 }
 
 NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
@@ -4661,51 +4364,6 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	return NSMakePoint(x+center.x, y+center.y);
 }
 
-- (void)setTextualBoxLine1:(NSString*)line;
-{
-	if(textualBoxLine1) [textualBoxLine1 release];
-	textualBoxLine1 = line;
-	[textualBoxLine1 retain];
-}
-
-- (void)setTextualBoxLine2:(NSString*)line;
-{
-	if(textualBoxLine2) [textualBoxLine2 release];
-	textualBoxLine2 = line;
-	[textualBoxLine2 retain];
-}
-
-- (void)setTextualBoxLine3:(NSString*)line;
-{
-	if(textualBoxLine3) [textualBoxLine3 release];
-	textualBoxLine3 = line;
-	[textualBoxLine3 retain];
-}
-
-- (void)setTextualBoxLine4:(NSString*)line;
-{
-	if(textualBoxLine4) [textualBoxLine4 release];
-	textualBoxLine4 = line;
-	[textualBoxLine4 retain];
-}
-
-- (void)setTextualBoxLine5:(NSString*)line;
-{
-	if(textualBoxLine5) [textualBoxLine5 release];
-	textualBoxLine5 = line;
-	[textualBoxLine5 retain];
-}
-
-- (NSTimeInterval)groupID;
-{
-	return groupID;
-}
-
-- (void)setGroupID:(NSTimeInterval)timestamp;
-{
-	groupID = timestamp;
-}
-
 - (void)setIsLayerOpacityConstant:(BOOL)boo;
 {
 	isLayerOpacityConstant = boo;
@@ -4716,16 +4374,6 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 {
 	canColorizeLayer = boo;
 	needsLoadTexture = YES;
-}
-
-- (BOOL)setDisplayTextualData:(BOOL)boo;
-{
-	displayTextualData = boo;
-}
-
-- (NSPoint)clickPoint;
-{
-	return clickPoint;
 }
 
 @end
