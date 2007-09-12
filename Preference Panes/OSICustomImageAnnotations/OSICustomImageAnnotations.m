@@ -114,8 +114,12 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (IBAction) loadsave:(id) sender
 {
+	if( [sameAsDefaultButton state] == NSOnState) return;
+	
 	if( [sender selectedSegment] == 0)		// Save
 	{
+		[self switchModality: modalitiesPopUpButton save: YES];
+		
 		NSDictionary *cur = [layoutController curDictionary];
 		NSSavePanel		*sPanel		= [NSSavePanel savePanel];
 		[sPanel setRequiredFileType:@"plist"];
@@ -295,6 +299,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	[layoutController switchModality:sender save: save];
 	[addAnnotationButton setEnabled:[sameAsDefaultButton state]==NSOffState];
 	[removeAnnotationButton setEnabled:[sameAsDefaultButton state]==NSOffState];
+	[loadsaveButton setEnabled:[sameAsDefaultButton state]==NSOffState];
 	
 	[addCustomDICOMFieldButton setEnabled:NO];
 	[addDICOMFieldButton setEnabled:NO];
@@ -348,6 +353,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	
 	[addAnnotationButton setEnabled:!state];
 	[removeAnnotationButton setEnabled:!state];
+	[loadsaveButton setEnabled:!state];
 	
 	[orientationWidgetButton setEnabled:!state];
 }
