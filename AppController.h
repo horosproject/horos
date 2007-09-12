@@ -76,8 +76,6 @@ extern "C"
 	NSTimer							*updateTimer;
 	DCMNetServiceDelegate			*dicomNetServiceDelegate;
 	XMLRPCMethods					*XMLRPCServer;
-	
-	IChatTheatreDelegate			*iChatDelegate;
 }
 #pragma mark-
 #pragma mark initialization of the main event loop singleton

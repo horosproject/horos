@@ -1450,7 +1450,7 @@ NSRect screenFrame()
 	PapyrusLock = [[NSLock alloc] init];
 	[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 	
-	iChatDelegate = [[IChatTheatreDelegate alloc] init];
+	[IChatTheatreDelegate sharedDelegate];
 	
 	return self;
 }
@@ -2202,7 +2202,7 @@ static BOOL initialized = NO;
 	[dcmtkQRSCP release];
 	dcmtkQRSCP = 0L;
 	
-	[iChatDelegate release];
+	[IChatTheatreDelegate releaseSharedDelegate];
 	
     [super dealloc];
 }

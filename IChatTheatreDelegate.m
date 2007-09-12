@@ -1,17 +1,38 @@
-//
-//  IChatTheatreDelegate.m
-//  OsiriX
-//
-//  Created by joris on 9/12/07.
-//  Copyright 2007 __MyCompanyName__. All rights reserved.
-//
+/*=========================================================================
+  Program:   OsiriX
+
+  Copyright (c) OsiriX Team
+  All rights reserved.
+  Distributed under GNU - GPL
+  
+  See http://www.osirix-viewer.com/copyright.html for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.
+=========================================================================*/
 
 #import "IChatTheatreDelegate.h"
 #import <InstantMessage/IMService.h>
 #import <InstantMessage/IMAVManager.h>
 #import "ViewerController.h"
 
+static IChatTheatreDelegate	*iChatDelegate = 0L;
+
 @implementation IChatTheatreDelegate
+
++ (IChatTheatreDelegate*) releaseSharedDelegate
+{
+	[iChatDelegate release];
+	iChatDelegate = 0L;
+}
+
++ (IChatTheatreDelegate*) sharedDelegate
+{
+	if( iChatDelegate == 0L) iChatDelegate = [[IChatTheatreDelegate alloc] init];
+	
+	return iChatDelegate;
+}
 
 - (id)init
 {
