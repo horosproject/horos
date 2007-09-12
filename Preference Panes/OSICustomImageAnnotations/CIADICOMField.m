@@ -1,10 +1,16 @@
-//
-//  CIADICOMField.m
-//  ImageAnnotations
-//
-//  Created by joris on 17/07/07.
-//  Copyright 2007 OsiriX Team. All rights reserved.
-//
+/*=========================================================================
+  Program:   OsiriX
+
+  Copyright (c) OsiriX Team
+  All rights reserved.
+  Distributed under GNU - GPL
+  
+  See http://www.osirix-viewer.com/copyright.html for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.
+=========================================================================*/
 
 #import "CIADICOMField.h"
 

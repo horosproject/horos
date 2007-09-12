@@ -41,6 +41,7 @@ Version 2.3
 #import "MPR2DView.h"
 #import "OrthogonalMPRController.h"
 #import "OrthogonalMPRView.h"
+#import "OrthogonalMPRPETCTView.h"
 #import "ROIWindow.h"
 #import "ToolbarPanel.h"
 

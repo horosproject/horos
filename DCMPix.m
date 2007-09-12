@@ -66,11 +66,6 @@ extern NSString* documentsDirectory();
 extern NSLock	*PapyrusLock;
 extern short		Altivec;
 
-extern void vminNoAltivec( float *a,  float *b,  float *r, long size);
-extern void vmaxNoAltivec(float *a, float *b, float *r, long size);
-extern void vsubtractNoAltivec( float *a,  float *b,  float *r, long size);
-extern void vmultiplyNoAltivec( float *a,  float *b,  float *r, long size);
-
 void ConvertFloatToNative (float *theFloat)
 {
 	unsigned int		*myLongPtr;
@@ -9363,15 +9358,16 @@ BOOL            readable = YES;
 					#if __ppc__ || __ppc64__
 					if( Altivec)
 					{
-						if( stackMode == 2) vmax8( (vector float*)fNext, (vector float*)fImage, (vector float*)fResult, height * width);
-						else vmin8( (vector float*)fNext, (vector float*)fImage, (vector float*)fResult, height * width);
+						if( stackMode == 2) vmax8( (vector unsigned char*)fNext, (vector unsigned char*)fImage, (vector unsigned char*)fResult, height * width);
+						else vmin8( (vector unsigned char*)fNext, (vector unsigned char*)fImage, (vector unsigned char*)fResult, height * width);
 					}
-					else
-					#endif
+					else NSLog( @"Altivec is REQUIRED");
+					#else
 					{
-						if( stackMode == 2) vmaxNoAltivec( fNext, fImage, fResult, height * width );
-						else vminNoAltivec( fNext, fImage, fResult, height * width );
+						if( stackMode == 2) vmax8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width );
+						else vmin8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width );
 					}
+					#endif
 				}
 				
 				for( i = 2; i < stack; i++)
@@ -9394,15 +9390,16 @@ BOOL            readable = YES;
 								#if __ppc__ || __ppc64__
 								if( Altivec)
 								{
-									if( stackMode == 2) vmax8( (vector float*)fResult, (vector float*)fNext, (vector float*)fResult, height * width);
-									else vmin8( (vector float*)fResult, (vector float*)fNext, (vector float*)fResult, height * width);
+									if( stackMode == 2) vmax8( (vector unsigned char*)fResult, (vector unsigned char*)fNext, (vector unsigned char*)fResult, height * width);
+									else vmin8( (vector unsigned char*)fResult, (vector unsigned char*)fNext, (vector unsigned char*)fResult, height * width);
 								}
-								else
-								#endif
+								else NSLog( @"Altivec is REQUIRED");
+								#else
 								{
-									if( stackMode == 2) vmaxNoAltivec( fResult, fNext, fResult, height * width );
-									else vminNoAltivec( fResult, fNext, fResult, height * width );
+									if( stackMode == 2) vmax8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width );
+									else vmin8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width );
 								}
+								#endif
 							}
 						}
 					}

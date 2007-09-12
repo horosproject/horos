@@ -63,7 +63,10 @@
 				[elapsed setStringValue:[NSString stringWithFormat:@"Estimated remaining time: %2.2d:%2.2d:%2.2d", hours, minutes, seconds]];
 				[elapsed displayIfNeeded];
 				
-				UpdateSystemActivity( 1);	// avoid sleep or screen saver mode
+				#if __LP64__
+				#else
+				UpdateSystemActivity(UsrActivity);	// avoid sleep or screen saver mode
+				#endif
 			}
 		}
 	}

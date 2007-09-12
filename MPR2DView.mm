@@ -18,7 +18,7 @@
 #import "MPR2DController.h"
 #import "MPR2DView.h"
 #import "DCMPix.h"
-
+#import "altivecFunctions.h"
 #import "DCMPix.h"
 #include <Accelerate/Accelerate.h>
 #import "DCMView.h"
@@ -30,23 +30,6 @@
 static		float				deg2rad = 3.14159265358979/180.0; 
 static		NSTimeInterval		interval = 0;
 
-extern "C"
-{
-#if __ppc__ || __ppc64__
-extern short	Altivec;
-extern void vmax(vector float *a, vector float *b, vector float *r, long size);
-extern void vmin(vector float *a, vector float *b, vector float *r, long size);
-extern void vsubtract(vector float *a, vector float *b, vector float *r, long size);
-extern void vmultiply(vector float *a, vector float *b, vector float *r, long size);
-#else
-extern void vmaxIntel( vFloat *a, vFloat *b, vFloat *r, long size);
-extern void vminIntel( vFloat *a, vFloat *b, vFloat *r, long size);
-#endif
-extern void vminNoAltivec( float *a,  float *b,  float *r, long size);
-extern void vmaxNoAltivec(float *a, float *b, float *r, long size);
-extern void vsubtractNoAltivec( float *a,  float *b,  float *r, long size);
-extern void vmultiplyNoAltivec( float *a,  float *b,  float *r, long size);
-}
 
 /*
    Rotate a point p by angle theta around an arbitrary axis r

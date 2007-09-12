@@ -390,7 +390,7 @@ void vsubtract(vector float *a, vector float *b, vector float *r, long size)
 	}
 }
 
-void vmax8(vector float *a, vector float *b, vector float *r, long size)
+void vmax8(vector unsigned char *a, vector unsigned char *b, vector unsigned char *r, long size)
 {
 	long i = size / 4;
 	
@@ -420,7 +420,7 @@ void vmin(vector float *a, vector float *b, vector float *r, long size)
 	}
 }
 
-void vmin8(vector float *a, vector float *b, vector float *r, long size)
+void vmin8(vector unsigned char *a, vector unsigned char *b, vector unsigned char *r, long size)
 {
 	long i = size / 4;
 	
@@ -446,6 +446,24 @@ void vminIntel( vFloat *a, vFloat *b, vFloat *r, long size)
 	while(i-- > 0)
 	{
 		*r++ = _mm_min_ps( *a++, *b++);
+	}
+}
+void vmax8Intel( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size)
+{
+	long i = size/4;
+	
+	while(i-- > 0)
+	{
+		*r++ = _mm_max_epu8( *a++, *b++);
+	}
+}
+void vmin8Intel( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size)
+{
+	long i = size/4;
+	
+	while(i-- > 0)
+	{
+		*r++ = _mm_min_epu8( *a++, *b++);
 	}
 }
 #endif
