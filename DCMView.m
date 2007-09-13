@@ -44,6 +44,7 @@ Version 2.3
 #import "OrthogonalMPRPETCTView.h"
 #import "ROIWindow.h"
 #import "ToolbarPanel.h"
+#import "OrthogonalMPRPETCTView.h"
 
 #include <QuickTime/ImageCompression.h> // for image loading and decompression
 #include <QuickTime/QuickTimeComponents.h> // for file type support
