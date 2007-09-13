@@ -19,8 +19,9 @@
 
 }
 
-- (void)_stateChanged:(NSNotification *)aNotification;
 + (IChatTheatreDelegate*) sharedDelegate;
 + (IChatTheatreDelegate*) releaseSharedDelegate;
+- (void)_stateChanged:(NSNotification *)aNotification;
+- (BOOL)isIChatTheatreRunning;
 
 @end

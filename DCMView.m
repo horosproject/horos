@@ -45,6 +45,7 @@ Version 2.3
 #import "ROIWindow.h"
 #import "ToolbarPanel.h"
 #import "OrthogonalMPRPETCTView.h"
+#import "IChatTheatreDelegate.h"
 
 #include <QuickTime/ImageCompression.h> // for image loading and decompression
 #include <QuickTime/QuickTimeComponents.h> // for file type support
@@ -52,7 +53,6 @@ Version 2.3
 #include <OpenGL/CGLMacro.h>
 #include <OpenGL/CGLCurrent.h>
 #include <OpenGL/CGLContext.h>
-
 
 #import <CoreVideo/CoreVideo.h>
 
@@ -6600,7 +6600,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			// ***********************
 			// DRAW CLUT BARS ********
 			
-			if( [self is2DViewer] == YES && annotations != annotNone) {
+			if( [self is2DViewer] == YES && annotations != annotNone && ctx!=_alternateContext) {
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 				glScalef (2.0f /(size.size.width), -2.0f / (size.size.height), 1.0f); // scale to port per pixel scale
 
@@ -6736,7 +6736,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				//FRAME RECT IF MORE THAN 1 WINDOW and IF THIS WINDOW IS THE FRONTMOST
 				if(( numberOf2DViewer > 1 && [self is2DViewer] == YES && stringID == 0L) || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
 				{	// draw line around key View
-					if( [[self window] isMainWindow] && isKeyView) {
+					if( [[self window] isMainWindow] && isKeyView && ctx!=_alternateContext) {
 						float heighthalf = size.size.height/2;
 						float widthhalf = size.size.width/2;
 						
@@ -7095,6 +7095,71 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					glDisable(GL_TEXTURE_RECTANGLE_EXT);
 				}
 			} // end iChat Theatre context
+			
+			#define ICHAT_WIDTH 640
+			#define ICHAT_HEIGHT 480
+
+			// highlight the visible part of the view (the part visible through iChat)
+			if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView)
+			{
+				NSPoint topLeft;
+				topLeft.x = size.size.width/2 - ICHAT_WIDTH/2.0;
+				topLeft.y = size.size.height/2 - ICHAT_HEIGHT/2.0;
+						
+				glEnable(GL_BLEND);
+				glColor4f (0.0f, 0.0f, 0.0f, 0.5f);
+				glLineWidth(1.0);
+				glBegin(GL_QUADS);
+					glVertex2f(0.0, 0.0);
+					glVertex2f(0.0, topLeft.y);
+					glVertex2f(size.size.width, topLeft.y);
+					glVertex2f(size.size.width, 0.0);
+				glEnd();
+
+				glBegin(GL_QUADS);
+					glVertex2f(0.0, topLeft.y);
+					glVertex2f(topLeft.x, topLeft.y);
+					glVertex2f(topLeft.x, topLeft.y+ICHAT_HEIGHT);
+					glVertex2f(0.0, topLeft.y+ICHAT_HEIGHT);
+				glEnd();
+
+				glBegin(GL_QUADS);
+					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y);
+					glVertex2f(size.size.width, topLeft.y);
+					glVertex2f(size.size.width, topLeft.y+ICHAT_HEIGHT);
+					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y+ICHAT_HEIGHT);
+				glEnd();
+
+				glBegin(GL_QUADS);
+					glVertex2f(0.0, topLeft.y+ICHAT_HEIGHT);
+					glVertex2f(size.size.width, topLeft.y+ICHAT_HEIGHT);
+					glVertex2f(size.size.width, size.size.height);
+					glVertex2f(0.0, size.size.height);
+				glEnd();
+
+				glColor4f (1.0f, 1.0f, 1.0f, 0.8f);
+				glBegin(GL_LINE_LOOP);
+					glVertex2f(topLeft.x, topLeft.y);
+					glVertex2f(topLeft.x, topLeft.y+ICHAT_HEIGHT);
+					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y+ICHAT_HEIGHT);
+					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y);
+				glEnd();
+				
+				glLineWidth(1.0);
+				glDisable(GL_BLEND);
+				
+				// label
+				NSPoint iChatTheatreSharedViewLabelPosition;
+				iChatTheatreSharedViewLabelPosition.x = size.size.width/2.0;
+				iChatTheatreSharedViewLabelPosition.y = topLeft.y;
+				
+//				if(ICHAT_HEIGHT+20.0 >= size.size.height)
+//					iChatTheatreSharedViewLabelPosition.y = size.size.height - 10.0;
+				
+				[self DrawNSStringGL:NSLocalizedString(@"iChat Theatre shared view", nil) :fontListGL :iChatTheatreSharedViewLabelPosition.x :iChatTheatreSharedViewLabelPosition.y align:DCMViewTextAlignCenter useStringTexture:YES];
+				
+					
+			}
 			
 		}  
 		else {    //no valid image  ie curImage = -1

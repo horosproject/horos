@@ -88,4 +88,11 @@ static IChatTheatreDelegate	*iChatDelegate = 0L;
 	}
 }
 
+- (BOOL)isIChatTheatreRunning;
+{
+	if([[IMAVManager sharedAVManager] state] == IMAVInactive)
+		return NO;
+	return YES;
+}
+
 @end
