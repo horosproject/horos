@@ -25,7 +25,7 @@ Version 2.3
 
 #import <DCMView.h>
 #import "StringTexture.h"
-#import <DCMPix.h>
+#import "DCMPix.h"
 #import "ROI.h"
 #import "NSFont_OpenGL.h"
 #import "DCMCursor.h"
@@ -63,8 +63,6 @@ Version 2.3
 
 // kvImageHighQualityResampling
 #define QUALITY kvImageNoFlags
-
-@class OrthogonalMPRPETCTView;
 
 #define BS 10.
 
@@ -410,6 +408,38 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 @implementation DCMView
 
+@synthesize rectArray;
+@synthesize flippedData;
+@synthesize dcmPixList;
+@synthesize dcmFilesList;
+@synthesize dcmRoiList;
+@synthesize syncSeriesIndex;
+@synthesize syncRelativeDiff;
+@synthesize cross, crossPrev;
+@synthesize slab;
+@synthesize blendingMode, blendingView, blendingFactor;
+@synthesize xFlipped, yFlipped;
+@synthesize stringID;
+@synthesize angle;
+@synthesize currentTool, currentToolRight;
+@synthesize curImage;
+@synthesize theMatrix = matrix;
+@synthesize suppressLabels = suppress_labels;
+@synthesize scaleValue, rotation;
+@synthesize origin, originOffset;
+@synthesize curDCM;
+@synthesize mouseXPos, mouseYPos;
+@synthesize contextualMenuInWindowPosX, contextualMenuInWindowPosY;
+@synthesize fontListGL, fontGL;
+@synthesize tag = _tag;
+@synthesize curWW, curWL;
+@synthesize scaleValue;
+@synthesize rows = _imageRows, columns = _imageColumns;
+@synthesize cursor;
+@synthesize eraserFlag;
+@synthesize drawing;
+@synthesize volumicSeries;
+
 + (BOOL) intersectionBetweenTwoLinesA1:(NSPoint) a1 A2:(NSPoint) a2 B1:(NSPoint) b1 B2:(NSPoint) b2 result:(NSPoint*) r
 {
 	float x1 = a1.x,	y1 = a1.y;
@@ -501,10 +531,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [[value objectAtIndex: 0] floatValue] == wl && [[value objectAtIndex: 1] floatValue] == ww) return [allKeys objectAtIndex: i];
 	}
 	
-	if( pix)
-	{
-		if( wl == [pix fullwl] && ww == [pix fullww]) return NSLocalizedString( @"Full Dynamic", 0L);
-		if( wl == [pix savedWL] && ww == [pix savedWW]) return NSLocalizedString(@"Default WL & WW", nil);
+	if( pix ) {
+		if( wl == pix.fullwl && ww == pix.fullww ) return NSLocalizedString( @"Full Dynamic", 0L);
+		if( wl == pix.savedWL && ww == pix.savedWW ) return NSLocalizedString(@"Default WL & WW", nil);
 	}
 	
 	return NSLocalizedString( @"Other", 0L);
@@ -655,8 +684,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		float crossx, crossy;
 		
-		crossx = display2DPoint.x - [curDCM pwidth]/2.;
-		crossy = display2DPoint.y - [curDCM pheight]/2.;
+		crossx = display2DPoint.x - curDCM.pwidth/2.;
+		crossy = display2DPoint.y - curDCM.pheight/2.;
 		
 		glVertex2f( scaleValue * (crossx - 40), scaleValue*(crossy));
 		glVertex2f( scaleValue * (crossx - 5), scaleValue*(crossy));
@@ -694,7 +723,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
 		// M_PI defined in cmath.h
 		float alpha = i * 2 * M_PI /circleRes;
-		glVertex2f( repulsorPosition.x + repulsorRadius*cos(alpha) * scaleValue, repulsorPosition.y + repulsorRadius*sin(alpha) * scaleValue);//*[curDCM pixelSpacingY]/[curDCM pixelSpacingX]
+		glVertex2f( repulsorPosition.x + repulsorRadius*cos(alpha) * scaleValue, repulsorPosition.y + repulsorRadius*sin(alpha) * scaleValue);//*curDCM.pixelSpacingY/curDCM.pixelSpacingX
 	}
 	glEnd();
 	glDisable(GL_BLEND);
@@ -767,13 +796,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) stopROIEditingForce:(BOOL) force
 {
-	long i, x, no;
+	long no;
 	
 	drawingROI = NO;
-	for( i = 0; i < [curRoiList count]; i++)
-	{
-		if( curROI != [curRoiList objectAtIndex:i])
-		{
+	for( long i = 0; i < [curRoiList count]; i++) {
+		if( curROI != [curRoiList objectAtIndex:i] ) {
 			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selectedModify || [[curRoiList objectAtIndex:i] ROImode] == ROI_drawing)
 			{
 				ROI	*roi = [curRoiList objectAtIndex:i];
@@ -782,32 +809,26 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 	}
 	
-	if( curROI)
-	{
-		if( [curROI ROImode] == ROI_selectedModify || [curROI ROImode] == ROI_drawing)
-		{
+	if( curROI ) {
+		if( [curROI ROImode] == ROI_selectedModify || [curROI ROImode] == ROI_drawing) {
 			// Does this ROI have alias in other views?
-			for( x = 0, no = 0; x < [dcmRoiList count]; x++)
-			{
+			for( long x = 0, no = 0; x < [dcmRoiList count]; x++ ) {
 				if( [[dcmRoiList objectAtIndex: x] containsObject: curROI]) no++;
 			}
 		
-			if( no <= 1 || force == YES)
-			{
-				[curROI setROIMode: ROI_selected];
-				curROI = 0L;
+			if( no <= 1 || force == YES) {
+				curROI.ROImode = ROI_selected;
+				curROI = nil;
 			}
 		}
-		else
-		{
-			[curROI setROIMode: ROI_selected];
-			curROI = 0L;
+		else {
+			curROI.ROImode = ROI_selected;
+			curROI = nil;
 		}
 	}
 }
 
-- (void) stopROIEditing
-{
+- (void) stopROIEditing {
 	[self stopROIEditingForce: NO];
 }
 
@@ -818,16 +839,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //		[[self controller] blendingPropagate: self];
 //	}
 //	else 
-	if( blendingView)
-	{
-		if( [stringID isEqualToString:@"Original"])
-		{
-			float fValue = [self scaleValue] / [self pixelSpacing];
-			[blendingView setScaleValue: fValue * [blendingView pixelSpacing]];
+	if( blendingView ) {
+		if( [stringID isEqualToString:@"Original"] ) {
+			float fValue = self.scaleValue / self.pixelSpacing;
+			blendingView.scaleValue = fValue * blendingView.pixelSpacing;
 		}
-		else [blendingView setScaleValue: scaleValue];
+		else blendingView.scaleValue = scaleValue;
 		
-		[blendingView setRotation: rotation];
+		blendingView.rotation = rotation;
 		[blendingView setOrigin: origin];
 		[blendingView setOriginOffset: originOffset];
 	}
@@ -854,7 +873,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
             for( j = 0 ; j < [roiArray count] ; j++)
             {
-                [[roiArray objectAtIndex: j] setOriginAndSpacing:[curDCM pixelSpacingX] :[curDCM pixelSpacingY] :NSMakePoint( [curDCM originX], [curDCM originY])];
+                [[roiArray objectAtIndex: j] setOriginAndSpacing:curDCM.pixelSpacingX :curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
                 [[roiArray objectAtIndex: j] setROIMode: ROI_selected];
                 [[roiArray objectAtIndex: j] setRoiFont: labelFontListGL :labelFontListGLSize :self];
                 
@@ -963,11 +982,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		NSDictionary*	xml = [NSDictionary dictionaryWithContentsOfFile: [[oPanel filenames] objectAtIndex:i]];
 		NSArray*		roiArray = [xml objectForKey: @"ROI array"];
 		
-		if ( roiArray )
-		{
-			int j;
-			for ( j = 0; j < [roiArray count]; j++ )
-			{
+		if ( roiArray ) {
+			for ( int j = 0; j < [roiArray count]; j++ ) {
 				NSDictionary *roiDict = [roiArray objectAtIndex: j];
 				
 				int sliceIndex = [[roiDict objectForKey: @"Slice"] intValue] - 1;
@@ -984,18 +1000,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				if( [pointsStringArray count] == 1)  type = t2DPoint;
 				
 				ROI *roi = [[ROI alloc] initWithType: type :[dcm pixelSpacingX] :[dcm pixelSpacingY] :NSMakePoint( [dcm originX], [dcm originY])];
-				[roi setName: [roiDict objectForKey: @"Name"]];
-				[roi setComments: [roiDict objectForKey: @"Comments"]];
+				roi.name = [roiDict objectForKey: @"Name"];
+				roi.comments = [roiDict objectForKey: @"Comments"];
 				
 				NSMutableArray *pointsArray = [NSMutableArray arrayWithCapacity: 0];
 				
-				int k;
-				for ( k = 0; k < [pointsStringArray count]; k++ ) {
+				for ( int k = 0; k < [pointsStringArray count]; k++ ) {
 					MyPoint *pt = [MyPoint point: NSPointFromString( [pointsStringArray objectAtIndex: k] )];
 					[pointsArray addObject: pt];
 				}
 				
-				[roi setPoints: pointsArray];
+				roi.points =pointsArray;
 				[roi setRoiFont: labelFontListGL :labelFontListGLSize :self];
 				
 				[roiList addObject: roi];
@@ -1004,8 +1019,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				[roi release];
 			}
 		}
-		else
-		{
+		else {
 			// Single ROI - assume current slice
 			
 			NSArray *pointsStringArray = [xml objectForKey: @"ROIPoints"];
@@ -1014,22 +1028,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( [pointsStringArray count] == 2) type = tMesure;
 			if( [pointsStringArray count] == 1)  type = t2DPoint;
 			
-			ROI *roi = [[ROI alloc] initWithType: type :[curDCM pixelSpacingX] :[curDCM pixelSpacingY] :NSMakePoint( [curDCM originX], [curDCM originY])];
-			[roi setName: [xml objectForKey: @"Name"]];
-			[roi setComments: [xml objectForKey: @"Comments"]];
+			ROI *roi = [[ROI alloc] initWithType: type :curDCM.pixelSpacingX :curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
+			roi.name = [xml objectForKey: @"Name"];
+			roi.comments = [xml objectForKey: @"Comments"];
 			
 			NSMutableArray *pointsArray = [NSMutableArray arrayWithCapacity: 0];
 			
-			if( [pointsStringArray count] > 0)
-			{
-				int j;
-				for ( j = 0; j < [pointsStringArray count]; j++ ) {
+			if( [pointsStringArray count] > 0 ) {
+				for ( int j = 0; j < [pointsStringArray count]; j++ ) {
 					MyPoint *pt = [MyPoint point: NSPointFromString( [pointsStringArray objectAtIndex: j] )];
 					[pointsArray addObject: pt];
 				}
 				
-				[roi setPoints: pointsArray];
-				[roi setROIMode: ROI_selected];
+				roi.points = pointsArray;
+				roi.ROImode = ROI_selected;
 				[roi setRoiFont: labelFontListGL :labelFontListGLSize :self];
 				
 				[curRoiList addObject: roi];
@@ -1062,47 +1074,41 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
 		[[self windowController] addToUndoQueue:@"roi"];
 		
-		long	i;
 		NSMutableArray*	roiArray = [NSUnarchiver unarchiveObjectWithData: archived_data];
 		
 		// Unselect all ROIs
-		for( i = 0 ; i < [curRoiList count] ; i++) [[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
+		for( long i = 0 ; i < [curRoiList count] ; i++) [[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
 		
-		for( i = 0 ; i < [roiArray count] ; i++)
-		{
-			[[roiArray objectAtIndex: i] setOriginAndSpacing:[curDCM pixelSpacingX] :[curDCM pixelSpacingY] :NSMakePoint( [curDCM originX], [curDCM originY])];
+		for( long i = 0 ; i < [roiArray count] ; i++) {
+			[[roiArray objectAtIndex: i] setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
 			[[roiArray objectAtIndex: i] setROIMode: ROI_selected];
 			[[roiArray objectAtIndex: i] setRoiFont: labelFontListGL :labelFontListGLSize :self];
 		}
 		
 		[curRoiList addObjectsFromArray: roiArray];
 		
-		for( i = 0 ; i < [roiArray count] ; i++)
+		for( long i = 0 ; i < [roiArray count] ; i++)
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: [roiArray objectAtIndex: i] userInfo: nil];
 
 		[self setNeedsDisplay:YES];
 	}
 }
 
--(IBAction) copy:(id) sender
-{
+-(IBAction) copy:(id) sender {
+	
     NSPasteboard	*pb = [NSPasteboard generalPasteboard];
 	BOOL			roiSelected = NO;
-	long			i;
 	NSMutableArray  *roiSelectedArray = [NSMutableArray arrayWithCapacity:0];
 	
-	for( i = 0; i < [curRoiList count]; i++)
-	{
-		if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
-		{
+	for( long i = 0; i < [curRoiList count]; i++) {
+		if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) {
 			roiSelected = YES;
 			
 			[roiSelectedArray addObject: [curRoiList objectAtIndex:i]];
 		}
 	}
 
-	if( roiSelected == NO)
-	{
+	if( roiSelected == NO) {
 		NSImage *im;
 		
 		[pb declareTypes:[NSArray arrayWithObject:NSTIFFPboardType] owner:self];
@@ -1111,18 +1117,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		[pb setData: [[NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
 		
-		
 		[im release];
 	}
-	else
-	{
+	else {
 		[pb declareTypes:[NSArray arrayWithObjects:@"ROIObject", NSStringPboardType, nil] owner:nil];
 		[pb setData: [NSArchiver archivedDataWithRootObject: roiSelectedArray] forType:@"ROIObject"];
 		
 		NSMutableString		*r = [NSMutableString string];
 		
-		for( i = 0 ; i < [roiSelectedArray count] ; i++)
-		{
+		for( long i = 0 ; i < [roiSelectedArray count] ; i++ ) {
 			[r appendString: [[roiSelectedArray objectAtIndex: i] description]];
 			if( i != [roiSelectedArray count]-1) [r appendString:@"\r"];
 		}
@@ -1158,10 +1161,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self setNeedsDisplay:YES];
 }
 
--(BOOL)yFlipped{
-	return yFlipped;
-}
-
 - (void) setYFlipped:(BOOL) v
 {
 	yFlipped = v;
@@ -1178,10 +1177,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self updateTilingViews];
 	
     [self setNeedsDisplay:YES];
-}
-
--(BOOL)xFlipped{
-	return xFlipped;
 }
 
 - (void) setXFlipped:(BOOL) v
@@ -1201,15 +1196,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 }
 
 - (void)flipVertical: (id)sender {
-	[self setYFlipped: !yFlipped];
+	self.yFlipped = !yFlipped;
 }
 
 - (void)flipHorizontal: (id)sender {
-	[self setXFlipped: !xFlipped];
+	self.xFlipped = !xFlipped;
 }
 
-- (void) DrawNSStringGL:(NSString*)str :(GLuint)fontL :(long)x :(long)y rightAlignment:(BOOL)right useStringTexture:(BOOL)stringTex
-{
+- (void) DrawNSStringGL:(NSString*)str :(GLuint)fontL :(long)x :(long)y rightAlignment:(BOOL)right useStringTexture:(BOOL)stringTex {
 	if(right)
 		[self DrawNSStringGL:str :fontL :x :y align:DCMViewTextAlignRight useStringTexture:stringTex];
 	else
@@ -1330,7 +1324,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self DrawNSStringGL: (NSString*) cstrOut :(GLuint) fontL :(long) x :(long) y rightAlignment: NO useStringTexture: NO];
 }
 
-- (short) currentTool {return currentTool;}
 - (short) currentToolRight  {return currentToolRight;}
 
 -(void) setRightTool:(short) i
@@ -1357,39 +1350,32 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	NSEvent *event = [[NSApplication sharedApplication] currentEvent];
 	
-	switch( currentTool)
-	{
+	switch( currentTool) {
 		case tPlain:
-			if ([self is2DViewer] == YES)
-			{
+			if ([self is2DViewer] == YES) {
 				[[self windowController] brushTool: self];
 			}
 		break;
 		
 		case tZoom:
-			if( [event type] != NSKeyDown)
-			{
-				if( [event clickCount] == 2)
-				{
+			if( [event type] != NSKeyDown) {
+				if( [event clickCount] == 2) {
 					[self setOriginX: 0 Y: 0];
-					[self setRotation: 0];
+					self.rotation = 0.0f;
 					[self scaleToFit];
 				}
 				
-				if( [event clickCount] == 3)
-				{
+				if( [event clickCount] == 3) {
 					[self setOriginX: 0 Y: 0];
-					[self setRotation: 0];
-					[self setScaleValue: 1];
+					self.rotation = 0.0f;
+					self.scaleValue = 1.0f;
 				}
 			}
 		break;
 		
 		case tRotate:
-			if( [event type] != NSKeyDown)
-			{
-				if( [event clickCount] == 2 && gClickCountSet == NO && isKeyView == YES)
-				{
+			if( [event type] != NSKeyDown) {
+				if( [event clickCount] == 2 && gClickCountSet == NO && isKeyView == YES) {
 					gClickCountSet = YES;
 					
 					float rot = [self rotation];
@@ -1398,7 +1384,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					else if ([event modifierFlags] & NSShiftKeyMask) rot -= 90;	// -> 90
 					else rot += 90;	// -> 90
 					
-					[self setRotation: rot];
+					self.rotation = rot;
 					
 					if( [self is2DViewer] == YES)
 						[[self windowController] propagateSettings];
@@ -1411,23 +1397,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self setNeedsDisplay:YES];
 }
 
-- (void) gClickCountSetReset
-{
+- (void) gClickCountSetReset {
 	gClickCountSet = NO;
 }
 
--(void) checkVisible
-{
+-(void) checkVisible {
     float newYY, newXX, xx, yy;
     
     xx = origin.x*cos(rotation*deg2rad) + origin.y*sin(rotation*deg2rad);
     yy = origin.x*sin(rotation*deg2rad) - origin.y*cos(rotation*deg2rad);
 
     NSRect size = [self bounds];
-    if( scaleValue > 1.0)
-    {
-        size.size.width = [curDCM pwidth]*scaleValue;
-        size.size.height = [curDCM pheight]*scaleValue;
+    if( scaleValue > 1.0) {
+        size.size.width = curDCM.pwidth*scaleValue;
+        size.size.height = curDCM.pheight*scaleValue;
     }
     
     if( xx*scaleValue < -size.size.width/2) newXX = (-size.size.width/2.0/scaleValue);
@@ -1441,37 +1424,31 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self setOriginX: newXX*cos(rotation*deg2rad) + newYY*sin(rotation*deg2rad) Y: newXX*sin(rotation*deg2rad) - newYY*cos(rotation*deg2rad)];
 }
 
--(void) setTheMatrix:(NSMatrix*) m
-{
-    matrix = m;
-}
-
 - (void) scaleToFit
 {
 	NSRect  sizeView = [self bounds];
 	
-	if( sizeView.size.width/[curDCM pwidth] < sizeView.size.height/[curDCM pheight]/[curDCM pixelRatio])
-		[self setScaleValue:(sizeView.size.width/[curDCM pwidth])];
+	if( sizeView.size.width/curDCM.pwidth < sizeView.size.height/ curDCM.pheight / curDCM.pixelRatio )
+		self.scaleValue = sizeView.size.width / curDCM.pwidth;
 	else
-		[self setScaleValue:(sizeView.size.height/[curDCM pheight]/[curDCM pixelRatio])];
+		self.scaleValue = sizeView.size.height / curDCM.pheight /curDCM.pixelRatio;
 	
 	[self setNeedsDisplay:YES];
 }
 
-- (void) scaleBy2AndCenterShutter
-{
-	[self setOriginX: (([curDCM pwidth] / 2) - ([curDCM DCMPixShutterRectOriginX] + ([curDCM DCMPixShutterRectWidth]/2))) * scaleValue Y: -(([curDCM pheight] / 2) - ([curDCM DCMPixShutterRectOriginY] + ([curDCM DCMPixShutterRectHeight]/2))) * scaleValue];
+- (void) scaleBy2AndCenterShutter {
+	
+	[self setOriginX:  ((curDCM.pwidth  * 0.5f ) - ( curDCM.DCMPixShutterRectOriginX + ( curDCM.DCMPixShutterRectWidth  * 0.5f ))) * scaleValue
+				   Y: -((curDCM.pheight * 0.5f ) - ( curDCM.DCMPixShutterRectOriginY + ( curDCM.DCMPixShutterRectHeight * 0.5f ))) * scaleValue];
 	[self setNeedsDisplay:YES];
 }
 
-- (void) setIndexWithReset:(short) index :(BOOL) sizeToFit
-{
-	long i;
-	if( dcmPixList && index != -1)
-    {
+- (void) setIndexWithReset:(short) index :(BOOL) sizeToFit {
+
+	if( dcmPixList && index != -1) {
 		[[self window] setAcceptsMouseMovedEvents: YES];
 
-		curROI = 0L;
+		curROI = nil;
 		
 		curImage = index; 
 		if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
@@ -1482,21 +1459,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[curRoiList release];
 		
 		if( dcmRoiList) curRoiList = [[dcmRoiList objectAtIndex: curImage] retain];
-		else
-		{
-			curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
-		}
+		else 			curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
 		
-		for( i = 0; i < [curRoiList count]; i++)
-		{
+		for( long i = 0; i < [curRoiList count]; i++ ) {
 			[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :labelFontListGLSize :self];
 			[[curRoiList objectAtIndex:i ] recompute];
 			// Unselect previous ROIs
 			[[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
 		}
 		
-		curWL = [curDCM wl];
-		curWW = [curDCM ww];
+		curWL = curDCM.wl;
+		curWW = curDCM.ww;
 		origin.x = origin.y = 0;
 		scaleValue = 1;
 		
@@ -1506,16 +1479,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[curDCM checkImageAvailble :curWW :curWL];
 		
 		NSRect  sizeView = [self bounds];
-		if( sizeToFit && [self is2DViewer] == NO)
-		{
+		if( sizeToFit && [self is2DViewer] == NO) {
 			[self scaleToFit];
 		}
 		
-		if( [self is2DViewer] == YES)
-		{
-			if( [curDCM sourceFile])
-			{
-				if( [self is2DViewer] == YES) [[self window] setRepresentedFilename: [curDCM sourceFile]];
+		if( [self is2DViewer] == YES) {
+			if( curDCM.sourceFile ) {
+				if( [self is2DViewer] == YES) [[self window] setRepresentedFilename: curDCM.sourceFile];
 			}
 		}
 		
@@ -1532,8 +1502,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		else
 			yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
 	}
-	else
-	{
+	else {
 		[curDCM release];
 		curDCM = 0L;
 		curImage = -1;
@@ -1544,15 +1513,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset
-{
+- (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset {
 	long i;
 	
 	[curDCM release];
 	curDCM = 0L;
 		
-	if( dcmPixList != c)
-	{
+	if( dcmPixList != c) {
+		
 		if( dcmPixList) [dcmPixList release];
 		dcmPixList = c;
 		[dcmPixList retain];
@@ -1561,8 +1529,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( [[dcmPixList objectAtIndex: 0] sliceLocation] == [[dcmPixList objectAtIndex: [dcmPixList count]-1] sliceLocation]) volumicSeries = NO;
     }
 	
-	if( dcmFilesList != d)
-	{
+	if( dcmFilesList != d) {
+		
 		if( dcmFilesList) [dcmFilesList release];
 		dcmFilesList = d;
 		[dcmFilesList retain];
@@ -1570,8 +1538,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	flippedData = NO;
 	
-	if( dcmRoiList != e)
-	{
+	if( dcmRoiList != e) {
+		
 		if( dcmRoiList) [dcmRoiList release];
 		dcmRoiList = e;
 		[dcmRoiList retain];
@@ -1579,13 +1547,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
     listType = type;
 	
-	if( dcmPixList)
-	{
-		if( reset == YES)
-		{
-//			[self setXFlipped: NO];
-//			[self setYFlipped: NO];
-		
+	if( dcmPixList) {
+		if( reset == YES) {
 			[self setIndexWithReset: firstImage :YES];
 			[self updatePresentationStateFromSeries];
 		}
@@ -1594,11 +1557,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     [self setNeedsDisplay:true];
 }
 
-- (void) dealloc
-{	
+- (void) dealloc {	
 	NSLog(@"DCMView released");
-	
-	
+		
 	[mouseModifiers release]; 
 	
 	[dcmFilesList release];
@@ -1683,17 +1644,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) switchCopySettingsInSeries:(id) sender
 {
-	int i;
-	
-	for( i = 0; i < [dcmPixList count] ; i++)
-	{
+	for( int i = 0; i < [dcmPixList count] ; i++) {
 		[[dcmPixList objectAtIndex: i] changeWLWW :curWL :curWW];
 	}
 }
 
-- (void) setIndex:(short) index
-{
-	long	i;
+- (void) setIndex:(short) index {
+
 	BOOL	keepIt;
 	
 	[self stopROIEditing];
@@ -1703,8 +1660,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 	[[self window] setAcceptsMouseMovedEvents: YES];
 
-	if( dcmPixList && index > -1)
-	{
+	if( dcmPixList && index > -1) {
 		if( [[[[dcmFilesList objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"]) noScale = YES;
 		else noScale = NO;
 			
@@ -1717,14 +1673,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[curRoiList release];
 		
 		if( dcmRoiList) curRoiList = [[dcmRoiList objectAtIndex: curImage] retain];
-		else
-		{
+		else {
 			curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
 		}
 
 		keepIt = NO;
-		for( i = 0; i < [curRoiList count]; i++)
-		{
+		for( long i = 0; i < [curRoiList count]; i++ ) {
 			[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :labelFontListGLSize :self];
 			
 			[[curRoiList objectAtIndex:i ] recompute];
@@ -1736,12 +1690,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		BOOL done = NO;
 		
-		if( [self is2DViewer] == YES)
-		{
+		if( [self is2DViewer] == YES) {
 			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
 			{
-				if( curWW != [curDCM ww] || curWL != [curDCM wl] || [curDCM updateToApply] == YES)
-				{
+				if( curWW != curDCM.ww || curWL != curDCM.wl || [curDCM updateToApply] == YES) {
 					[curDCM changeWLWW :curWL :curWW];
 				}
 				else [curDCM checkImageAvailble :curWW :curWL];
@@ -1752,10 +1704,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 		}
 		
-		if( done == NO)
-		{
-			if( curWW != [curDCM ww] || curWL != [curDCM wl] || [curDCM updateToApply] == YES)
-			{
+		if( done == NO) {
+			if( curWW != curDCM.ww || curWL != curDCM.wl || [curDCM updateToApply] == YES) {
 				[curDCM changeWLWW :curWL :curWW];
 			}
 			else [curDCM checkImageAvailble :curWW :curWL];
@@ -1770,8 +1720,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		else
 			yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
     }
-	else
-	{
+	else {
 		[curDCM release];
 		curDCM = 0L;
 		curImage = -1;
@@ -1792,24 +1741,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self updateTilingViews];
 }
 
--(BOOL) acceptsFirstMouse:(NSEvent*) theEvent
-{
-	if( currentTool >= 5)   // A ROI TOOL !
-	{	 
-		return NO;	 
-	}	 
+-(BOOL) acceptsFirstMouse:(NSEvent*) theEvent {
+	if( currentTool >= 5) return NO;  // A ROI TOOL !
 	else return YES;
 }
 
-- (BOOL)acceptsFirstResponder
-{
+- (BOOL)acceptsFirstResponder {
 	if( curDCM == 0L) return NO;
 	
      return YES;
 }
 
-- (void) keyDown:(NSEvent *)event
-{
+- (void) keyDown:(NSEvent *)event {
 	unichar		c = [[event characters] characterAtIndex:0];
 	long		xMove = 0, yMove = 0, val;
 	BOOL		Jog = NO;
@@ -1893,7 +1836,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			{
 				if( [event modifierFlags]  & NSControlKeyMask)
 				{
-					inc = -[curDCM stack];
+					inc = - curDCM.stack;
 					curImage += inc;
 					if( curImage < 0) curImage = 0;
 				}
@@ -1916,7 +1859,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			{
 				if( [event modifierFlags]  & NSControlKeyMask)
 				{
-					inc = [curDCM stack];
+					inc = curDCM.stack;
 					curImage += inc;
 					if( curImage >= [dcmPixList count]) curImage = [dcmPixList count]-1;
 				}
@@ -1943,7 +1886,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
             if( [[self windowController] maxMovieIndex] > 1 && [[self windowController] maxMovieIndex] > 1) [super keyDown:event];
 			else
 			{
-				[self setScaleValue:(scaleValue-1./50.)];
+				self.scaleValue = scaleValue -1.0f/50.0f;
             
 				[self setNeedsDisplay:YES];
 			}
@@ -1970,18 +1913,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
         }
         
 		
-		if( Jog == YES)
-		{
-			if (currentTool == tZoom)
-			{
+		if( Jog == YES) {
+			if (currentTool == tZoom) {
 				if( yMove) val = yMove;
 				else val = xMove;
 				
-				[self setScaleValue:(scaleValue+val/10.0)];
+				self.scaleValue = scaleValue + val / 10.0f;
 			}
 			
-			if (currentTool == tTranslate)
-			{
+			if (currentTool == tTranslate) {
 				float xmove, ymove, xx, yy;
 			//	GLfloat deg2rad = 3.14159265358979/180.0; 
 				
@@ -1997,23 +1937,21 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				[self setOriginX: origin.x + xx Y: origin.y + yy];
 			}
 			
-			if (currentTool == tRotate)
-			{
+			if (currentTool == tRotate) {
 				if( yMove) val = yMove * 3;
 				else val = xMove * 3;
 				
-				float rot = [self rotation];
+				float rot = self.rotation;
 				
 				rot += val;
 				
 				if( rot < 0) rot += 360;
 				if( rot > 360) rot -= 360;
 				
-				[self setRotation: rot];
+				self.rotation =rot;
 			}
 			
-			if (currentTool == tNext)
-			{
+			if (currentTool == tNext) {
 				short   inc, now, prev, previmage;
 				
 				if( yMove) val = yMove/abs(yMove);
@@ -2021,43 +1959,37 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 				previmage = curImage;
 				
-				if( val < 0)
-				{
+				if( val < 0) {
 					inc = -1;
 					curImage--;
 					if( curImage < 0) curImage = [dcmPixList count]-1;
 				}
-				else if(val> 0)
-				{
+				else if(val> 0) {
 					inc = 1;
 					curImage++;
 					if( curImage >= [dcmPixList count]) curImage = 0;
 				}
 			}
 			
-			if( currentTool == tWL)
-			{
-				[self setWLWW:[curDCM wl] +yMove*10 :[curDCM ww] +xMove*10 ];
+			if( currentTool == tWL)	{
+				[self setWLWW:curDCM.wl +yMove*10 :curDCM.ww +xMove*10 ];
 			}
 			
 			[self setNeedsDisplay:YES];
 		}
 		
-        if( previmage != curImage)
-        {
+        if( previmage != curImage) {
 			if( listType == 'i') [self setIndex:curImage];
             else [self setIndexWithReset:curImage :YES];
             
-            if( matrix)
-            {
+            if( matrix ) {
                 [matrix selectCellAtRow :curImage/[browserWindow COLUMN] column:curImage%[browserWindow COLUMN]];
             }
             
 			if( [self is2DViewer] == YES)
 				[[self windowController] adjustSlider];
 			
-			if( stringID)
-			{
+			if( stringID) {
 				if( [stringID isEqualToString:@"Perpendicular"]  || [stringID isEqualToString:@"Original"]  || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
 					[[self windowController] adjustSlider];
 			}
@@ -2075,19 +2007,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     }
 }
 
-- (BOOL) shouldPropagate
-{
+- (BOOL) shouldPropagate {
+	
 	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO) return NO;
 	else return YES;
 }
 
-- (void)deleteROIGroupID:(NSTimeInterval)groupID;
-{
-	int i;
-	for(i=0; i<[curRoiList count]; i++)
-	{
-		if([[curRoiList objectAtIndex:i] groupID] == groupID)
-		{
+- (void)deleteROIGroupID:(NSTimeInterval)groupID {
+	
+	for( int i=0; i<[curRoiList count]; i++ ) {
+		if([[curRoiList objectAtIndex:i] groupID] == groupID) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"removeROI" object:[curRoiList objectAtIndex:i] userInfo:nil];
 			[curRoiList removeObjectAtIndex:i];
 			i--;
@@ -2154,7 +2083,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( crossMove >= 0) tool = tCross;
 		
-		if( tool == tCross && ![[self stringID] isEqualToString:@"OrthogonalMPRVIEW"]) {
+		if( tool == tCross && ![self.stringID isEqualToString:@"OrthogonalMPRVIEW"]) {
 			[nc postNotificationName: @"crossMove" object: stringID userInfo: [NSDictionary dictionaryWithObject:@"mouseUp" forKey:@"action"]];
 		}
 		
@@ -2191,9 +2120,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 		}
 		
-		if( [self roiTool: tool])
-		{
-			long		i;
+		if( [self roiTool: tool] ) {
 			NSRect      size = [self frame];
 			NSPoint     eventLocation = [event locationInWindow];
 			NSPoint		tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
@@ -2202,8 +2129,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			tempPt = [self ConvertFromView2GL:tempPt];
 			
-			for( i = 0; i < [curRoiList count]; i++)
-			{
+			for( long i = 0; i < [curRoiList count]; i++) {
 				[[curRoiList objectAtIndex:i] mouseRoiUp: tempPt];
 				
 				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)	{
@@ -2212,10 +2138,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 			}
 			
-			for( i = 0; i < [curRoiList count]; i++)
-			{
-				if( [[curRoiList objectAtIndex: i] valid] == NO)
-				{
+			for( long i = 0; i < [curRoiList count]; i++) {
+				if( [[curRoiList objectAtIndex: i] valid] == NO) {
 					[curRoiList removeObjectAtIndex: i];
 					i--;
 				}
@@ -2224,8 +2148,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[self setNeedsDisplay:YES];
 		}
 		
-		if(repulsorROIEdition)
-		{
+		if(repulsorROIEdition) {
 			currentTool = tRepulsor;
 			tool = tRepulsor;
 			repulsorROIEdition = NO;
@@ -2243,15 +2166,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[self setNeedsDisplay:YES];
 		}
 
-		if(selectorROIEdition)
-		{
+		if(selectorROIEdition) {
 			currentTool = tROISelector;
 			tool = tROISelector;
 			selectorROIEdition = NO;
 		}
 		
-		if(tool == tROISelector)
-		{
+		if(tool == tROISelector) {
 			[ROISelectorSelectedROIList release];
 			
 			NSRect rect = NSMakeRect(ROISelectorStartPoint.x-1, ROISelectorStartPoint.y-1, fabsf(ROISelectorEndPoint.x-ROISelectorStartPoint.x)+2, fabsf(ROISelectorEndPoint.y-ROISelectorStartPoint.y)+2);
@@ -2269,19 +2190,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) roiSet
 {
-	long i;
-	for( i = 0; i < [curRoiList count]; i++)
-	{
+	for( long i = 0; i < [curRoiList count]; i++) {
 		[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :labelFontListGLSize :self];
 	}
 }
 
 // checks to see if tool is a valid ID for ROIs
 // A better name might be  - (BOOL)isToolforROIs:(long)tool;
--(BOOL) roiTool:(long) tool
-{
-	switch( tool)
-	{
+
+-(BOOL) roiTool:(long) tool {
+	switch( tool) {
 		case tMesure:
 		case tROI:
 		case tOval:
@@ -2303,10 +2221,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 }
 
 - (IBAction) selectAll: (id) sender
-{
-	long i;
-	
-	for( i = 0; i < [curRoiList count]; i++)
+{	
+	for( long i = 0; i < [curRoiList count]; i++)
 	{
 		[[curRoiList objectAtIndex: i] setROIMode: ROI_selected];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: [curRoiList objectAtIndex: i] userInfo: nil];
@@ -2365,10 +2281,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		mouseYPos = 0;							// otherwise update mouseXPos, mouseYPos, pixelMouseValue
 		pixelMouseValue = 0;
 		
-		if( imageLocation.x >= 0 && imageLocation.x < [curDCM pwidth])	//&& NSPointInRect( eventLocation, size)) <- this doesn't work in MPR Ortho
+		if( imageLocation.x >= 0 && imageLocation.x < curDCM.pwidth)	//&& NSPointInRect( eventLocation, size)) <- this doesn't work in MPR Ortho
 		{
-			if( imageLocation.y >= 0 && imageLocation.y < [curDCM pheight])
-			{
+			if( imageLocation.y >= 0 && imageLocation.y < curDCM.pheight) {
+				
 				mouseXPos = imageLocation.x;
 				mouseYPos = imageLocation.y;
 				
@@ -2376,11 +2292,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					xPos = (int)mouseXPos,
 					yPos = (int)mouseYPos;
 				
-				if( [curDCM isRGB])
-				{
-					pixelMouseValueR = ((unsigned char*) [curDCM fImage])[ 4 * (xPos + yPos * [curDCM pwidth]) +1];
-					pixelMouseValueG = ((unsigned char*) [curDCM fImage])[ 4 * (xPos + yPos * [curDCM pwidth]) +2];
-					pixelMouseValueB = ((unsigned char*) [curDCM fImage])[ 4 * (xPos + yPos * [curDCM pwidth]) +3];
+				if( curDCM.isRGB ) {
+					pixelMouseValueR = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +1];
+					pixelMouseValueG = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +2];
+					pixelMouseValueB = ((unsigned char*) curDCM.fImage)[ 4 * (xPos + yPos * curDCM.pwidth) +3];
 				}
 				else pixelMouseValue = [curDCM getPixelValueX: xPos Y:yPos];
 			}
@@ -2408,33 +2323,32 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		blendingPixelMouseValueB = 0;
 		
 		// Blended view
-		if( blendingView)
-		{
+		if( blendingView) {
+			
 			NSPoint	offset;
 			
-			if( [curDCM pixelSpacingX] != 0 && [curDCM pixelSpacingY] != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
+			if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
 			{
 				float	vectorP[ 9], tempOrigin[ 3], tempOriginBlending[ 3];
 				
 				// Compute blended view offset
 				[curDCM orientation: vectorP];
 				
-				tempOrigin[ 0] = [curDCM originX] * vectorP[ 0] + [curDCM originY] * vectorP[ 1] + [curDCM originZ] * vectorP[ 2];
-				tempOrigin[ 1] = [curDCM originX] * vectorP[ 3] + [curDCM originY] * vectorP[ 4] + [curDCM originZ] * vectorP[ 5];
-				tempOrigin[ 2] = [curDCM originX] * vectorP[ 6] + [curDCM originY] * vectorP[ 7] + [curDCM originZ] * vectorP[ 8];
+				tempOrigin[ 0] = curDCM.originX * vectorP[ 0] + curDCM.originY * vectorP[ 1] + curDCM.originZ * vectorP[ 2];
+				tempOrigin[ 1] = curDCM.originX * vectorP[ 3] + curDCM.originY * vectorP[ 4] + curDCM.originZ * vectorP[ 5];
+				tempOrigin[ 2] = curDCM.originX * vectorP[ 6] + curDCM.originY * vectorP[ 7] + curDCM.originZ * vectorP[ 8];
 				
-				tempOriginBlending[ 0] = [[blendingView curDCM] originX] * vectorP[ 0] + [[blendingView curDCM] originY] * vectorP[ 1] + [[blendingView curDCM] originZ] * vectorP[ 2];
-				tempOriginBlending[ 1] = [[blendingView curDCM] originX] * vectorP[ 3] + [[blendingView curDCM] originY] * vectorP[ 4] + [[blendingView curDCM] originZ] * vectorP[ 5];
-				tempOriginBlending[ 2] = [[blendingView curDCM] originX] * vectorP[ 6] + [[blendingView curDCM] originY] * vectorP[ 7] + [[blendingView curDCM] originZ] * vectorP[ 8];
+				tempOriginBlending[ 0] = [blendingView curDCM].originX * vectorP[ 0] + [blendingView curDCM].originY * vectorP[ 1] + [blendingView curDCM].originZ * vectorP[ 2];
+				tempOriginBlending[ 1] = [blendingView curDCM].originX * vectorP[ 3] + [blendingView curDCM].originY * vectorP[ 4] + [blendingView curDCM].originZ * vectorP[ 5];
+				tempOriginBlending[ 2] = [blendingView curDCM].originX * vectorP[ 6] + [blendingView curDCM].originY * vectorP[ 7] + [blendingView curDCM].originZ * vectorP[ 8];
 				
-				offset.x = (tempOrigin[0] + [curDCM pwidth]*[curDCM pixelSpacingX]/2. - (tempOriginBlending[ 0] + [[blendingView curDCM] pwidth]*[[blendingView curDCM] pixelSpacingX]/2.));
-				offset.y = (tempOrigin[1] + [curDCM pheight]*[curDCM pixelSpacingY]/2. - (tempOriginBlending[ 1] + [[blendingView curDCM] pheight]*[[blendingView curDCM] pixelSpacingY]/2.));
+				offset.x = (tempOrigin[0] + curDCM.pwidth * curDCM.pixelSpacingX / 2.0 - (tempOriginBlending[ 0] + [blendingView curDCM].pwidth*[blendingView curDCM].pixelSpacingX/2.));
+				offset.y = (tempOrigin[1] + curDCM.pheight*curDCM.pixelSpacingY/2. - (tempOriginBlending[ 1] + [blendingView curDCM].pheight*[blendingView curDCM].pixelSpacingY/2.));
 				
-				offset.x /= [[blendingView curDCM] pixelSpacingX];
-				offset.y /= [[blendingView curDCM] pixelSpacingY];
+				offset.x /= [blendingView curDCM].pixelSpacingX;
+				offset.y /= [blendingView curDCM].pixelSpacingY;
 			}
-			else
-			{
+			else {
 				offset.x = 0;
 				offset.y = 0;
 			}
@@ -2593,10 +2507,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) setStartWLWW
 {
-	startWW = [curDCM ww];
-	startWL = [curDCM wl];
-	startMin = [curDCM wl] - [curDCM ww]/2;
-	startMax = [curDCM wl] + [curDCM ww]/2;
+	startWW = curDCM.ww;
+	startWL = curDCM.wl;
+	startMin = curDCM.wl - curDCM.ww/2;
+	startMax = curDCM.wl + curDCM.ww/2;
 	
 	bdstartWW = [[blendingView curDCM] ww];
 	bdstartWL = [[blendingView curDCM] wl];
@@ -2621,8 +2535,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if ([event type] == NSLeftMouseDown)
 		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo: event  repeats:NO] retain];
 	
-    if( dcmPixList)
-    {
+    if( dcmPixList) {
 		[self erase2DPointMarker];
 		if( blendingView) [blendingView erase2DPointMarker];
 		
@@ -2680,19 +2593,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						
 			DCMPix	*thickDCM;
 		
-			if( [curDCM stack] > 1)
-			{
+			if( curDCM.stack > 1) {
 				long maxVal;
 				
 //				if( flippedData)
 //				{
-//					maxVal = [dcmPixList count] - ([curDCM ID] + ([curDCM stack]-1));
+//					maxVal = [dcmPixList count] - ([curDCM ID] + (curDCM.stack-1));
 //					if( maxVal < 0) maxVal = 0;
 //					if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
 //				}
 //				else
 				{
-					maxVal = curImage+([curDCM stack]-1);
+					maxVal = curImage+(curDCM.stack-1);
 					if( maxVal < 0) maxVal = 0;
 					if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
 				}
@@ -2701,9 +2613,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 			else thickDCM = 0L;
 			
-			int pos;
-			if( flippedData) pos = [dcmPixList count] -1 -curImage;
-			else pos = curImage;
+			int pos = flippedData? [dcmPixList count] -1 -curImage : curImage;
 			
 			NSDictionary *instructions = [[[NSDictionary alloc] initWithObjectsAndKeys:     self, @"view",
 																							[NSNumber numberWithLong: pos],@"Pos",
@@ -2722,8 +2632,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[nc postNotificationName: @"sync" object: self userInfo: instructions];
 		}
 		
-		if( cross.x != -9999 && cross.y != -9999)
-		{
+		if( cross.x != -9999 && cross.y != -9999) {
+																																			  
 			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
 			tempPt.y = size.size.height - tempPt.y ;
 			
@@ -2732,8 +2642,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			{
 				crossMove = 1;
 			}
-			else
-			{
+			else {
 				// TESTE SUR LA LIGNE !!!
 				float		distance;
 				NSPoint		cross1 = cross, cross2 = cross;
@@ -2748,8 +2657,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 			//	NSLog( @"Dist:%0.0f / %0.0f_%0.0f", distance, tempPt.x, tempPt.y);
 				
-				if( distance * scaleValue < 10)
-				{
+				if( distance * scaleValue < 10 ) {
 					crossMove = 0;
 					switchAngle = -1;
 				}
@@ -2758,8 +2666,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		else crossMove = -1;
 		
-		if(tool == tRepulsor)
-		{
+		if(tool == tRepulsor) {
 			[self deleteMouseDownTimer];
 			
 			[[self windowController] addToUndoQueue:@"roi"];
@@ -2769,96 +2676,79 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			tempPt = [self ConvertFromView2GL:tempPt];
 			//repulsorPosition = tempPt;
 			
-			int i, j;
 			BOOL clickInROI = NO;
-			for( i = 0; i < [curRoiList count]; i++) 
-			{
-				if([[curRoiList objectAtIndex: i] clickInROI:tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES])
-				{
+			for( int i = 0; i < [curRoiList count]; i++) {
+				if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES]) {
 					clickInROI = YES;
 				}
 			}
 
-			if(!clickInROI)
-			{
-				for( i = 0; i < [curRoiList count]; i++)
-				{
-					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :NO])
-					{
+			if(!clickInROI) {
+				for( int i = 0; i < [curRoiList count]; i++) {
+					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO]) {
 						clickInROI = YES;
 					}
 				}
 			}
 			
-			if(clickInROI)
-			{
+			if(clickInROI) {
 				currentTool = tPencil;
 				tool = tPencil;
 				repulsorROIEdition = YES;
 			}
-			else
-			{
+			else {
 				[self deleteMouseDownTimer];
 				repulsorColorTimer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(setAlphaRepulsor:) userInfo:event repeats:YES] retain];
 				repulsorAlpha = 0.1;
 				repulsorAlphaSign = 1.0;
 				repulsorRadius = 0;
 								
-				float dx, dx2, dy, dy2, d;
-				NSPoint pt;
-				float distance;
-				
 				float pixSpacingRatio = 1.0;
-				if([self pixelSpacingY]!=0 && [self pixelSpacingX]!=0)
-					pixSpacingRatio = [self pixelSpacingY]/[self pixelSpacingX];
+				if ( self.pixelSpacingY != 0 && self.pixelSpacingX != 0 )
+					pixSpacingRatio = self.pixelSpacingY / self.pixelSpacingX;
 					
-				if([curRoiList count]>0)
-				{
-					pt = [[[[curRoiList objectAtIndex:0] points] objectAtIndex:0] point];
-					dx = (pt.x-tempPt.x);
-					dx2 = dx * dx;
-					dy = (pt.y-tempPt.y)*pixSpacingRatio;
-					dy2 = dy * dy;
+				float distance;
+				if( [curRoiList count]>0 ) {
+					NSPoint pt = [[[[curRoiList objectAtIndex:0] points] objectAtIndex:0] point];
+					float dx = (pt.x-tempPt.x);
+					float dx2 = dx * dx;
+					float dy = (pt.y-tempPt.y)*pixSpacingRatio;
+					float dy2 = dy * dy;
 					distance = sqrt(dx2 + dy2);
 				}
 				else distance = 0.0;
 				
 				NSMutableArray *points;
-				for(i=0; i<[curRoiList count]; i++)
-				{
+				for( int i=0; i<[curRoiList count]; i++ ) {
+																																			  
 					points = [[curRoiList objectAtIndex:i] points];
-					for(j=0; j<[points count]; j++)
-					{
-						pt = [[points objectAtIndex:j] point];
-						dx = (pt.x-tempPt.x);
-						dx2 = dx * dx;
-						dy = (pt.y-tempPt.y) *pixSpacingRatio;
-						dy2 = dy * dy;
-						d = sqrt(dx2 + dy2);
+																																			  
+					for( int j=0; j<[points count]; j++ ) {
+						NSPoint pt = [[points objectAtIndex:j] point];
+						float dx = (pt.x-tempPt.x);
+						float dx2 = dx * dx;
+						float dy = (pt.y-tempPt.y) *pixSpacingRatio;
+						float dy2 = dy * dy;
+						float d = sqrt(dx2 + dy2);
 						distance = (d < distance) ? d : distance ;
 					}
 				}
 				repulsorRadius = (int) ((distance + 0.5) * 0.8);
 				if(repulsorRadius<2) repulsorRadius = 2;
-				if(repulsorRadius>[curDCM pwidth]/2) repulsorRadius = [curDCM pwidth]/2;
+				if(repulsorRadius>curDCM.pwidth/2) repulsorRadius = curDCM.pwidth/2;
 				
-				if( [curRoiList count] == 0)
-				{
+				if( [curRoiList count] == 0) {
 					NSRunCriticalAlertPanel(NSLocalizedString(@"Repulsor",nil),NSLocalizedString(@"The Repulsor tool works only if there are ROIs on the image.",nil), NSLocalizedString(@"OK",nil), nil,nil);
 				}
 			}
 		}
 		
-		if(tool == tROISelector)
-		{
-			int i, j;
+		if(tool == tROISelector) {
 			ROISelectorSelectedROIList = [[NSMutableArray arrayWithCapacity:0] retain];
 			
 			// if shift key is pressed, we need to keep track of the ROIs that were selected before the click 
-			if([event modifierFlags] & NSShiftKeyMask)
-			{
-				for(i=0; i<[curRoiList count]; i++)
-				{
+			if([event modifierFlags] & NSShiftKeyMask) {
+				for( int i=0; i<[curRoiList count]; i++ ) {
 					if([[curRoiList objectAtIndex:i] ROImode]==ROI_selected)
 						[ROISelectorSelectedROIList addObject:[curRoiList objectAtIndex:i]];
 				}
@@ -2877,27 +2767,21 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			tempPt = [self ConvertFromView2GL:tempPt];
 
 			BOOL clickInROI = NO;
-			for( i = 0; i < [curRoiList count]; i++) 
-			{
-				if([[curRoiList objectAtIndex: i] clickInROI:tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES])
-				{
+			for( int i = 0; i < [curRoiList count]; i++ ) {
+				if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES] ) {
 					clickInROI = YES;
 				}
 			}
 
-			if(!clickInROI)
-			{
-				for( i = 0; i < [curRoiList count]; i++)
-				{
-					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :NO])
-					{
+			if(!clickInROI) {
+				for( int i = 0; i < [curRoiList count]; i++) {
+					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO] ) {
 						clickInROI = YES;
 					}
 				}
 			}
 			
-			if(clickInROI)
-			{
+			if(clickInROI) {
 				currentTool = tPencil;
 				tool = tPencil;
 				selectorROIEdition = YES;
@@ -2905,8 +2789,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		
 		// ROI TOOLS
-		if( [self roiTool:tool] == YES && crossMove == -1)
-		{
+		if( [self roiTool:tool] == YES && crossMove == -1 ) {
 			[self deleteMouseDownTimer];
 			
 			[[self windowController] addToUndoQueue:@"roi"];
@@ -2925,7 +2808,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if (!(([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSShiftKeyMask)))
 				for( i = 0; i < [curRoiList count] && !roiFound; i++)
 				{
-					if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES])
+					if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
 					{
 						selected = i;
 						roiFound = YES;
@@ -2934,9 +2817,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			if( roiFound == NO)
 			{
-				for( i = 0; i < [curRoiList count]; i++)
-				{
-					if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :NO])
+				for( int i = 0; i < [curRoiList count]; i++) {
+					if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
 					{
 						selected = i;
 						break;
@@ -2944,12 +2826,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 			}
 					
-			if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask))
-			{
-				if( selected != -1)
-				{
-					if( [[curRoiList objectAtIndex: selected] ROImode] == ROI_selected) 
-					{
+			if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask) ) {
+				if( selected != -1 ) {
+					if( [[curRoiList objectAtIndex: selected] ROImode] == ROI_selected) {
 						[[curRoiList objectAtIndex: selected] setROIMode: ROI_sleep];
 						// unselect all ROIs in the same group
 						[[self windowController] setMode:ROI_sleep toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]];
@@ -2957,8 +2836,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					}
 				}
 			}
-			else
-			{
+			else {
 				if( selected == -1 || ( [[curRoiList objectAtIndex: selected] ROImode] != ROI_selected &&  [[curRoiList objectAtIndex: selected] ROImode] != ROI_selectedModify))
 				{
 					// Unselect previous ROIs
@@ -2966,23 +2844,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 			}
 					
-			if( DoNothing == NO)
-			{
-				if( selected >= 0 && drawingROI == NO)
-				{
+			if( DoNothing == NO) {
+				if( selected >= 0 && drawingROI == NO) {
 					curROI = 0L;
 					
 					// Bring the selected ROI to the first position in array
 					ROI	*roi = [[curRoiList objectAtIndex: selected] retain];
 					[[self windowController] bringToFrontROI:roi];
-//					[curRoiList removeObject: roi];
-//					[curRoiList insertObject: roi atIndex: 0];
-//					[roi release];
 					
 					selected = [curRoiList indexOfObject:roi];//0;
 					
-					long roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES];
-					if( roiVal == ROI_sleep) roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :NO];
+					long roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES];
+					if( roiVal == ROI_sleep) roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO];
 					
 					[[self windowController] setMode:roiVal toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]]; // change the mode to the whole group before the selected ROI!
 					[[curRoiList objectAtIndex: selected] setROIMode: roiVal];
@@ -2990,19 +2863,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					NSArray *winList = [[NSApplication sharedApplication] windows];
 					BOOL	found = NO;
 					
-					for( i = 0; i < [winList count]; i++)
-					{
-						if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROI"])
-						{
+					for( int i = 0; i < [winList count]; i++ ) {
+						if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROI"]) {
 							found = YES;
 							[[[winList objectAtIndex:i] windowController] setROI: [curRoiList objectAtIndex: selected] :[self windowController]];
 						}
 					}
 					
-					if( [event clickCount] > 1 && [self is2DViewer] == YES)
-					{
-						if( found == NO)
-						{
+					if( [event clickCount] > 1 && [self is2DViewer] == YES) {
+						if( found == NO) {
 							ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: [curRoiList objectAtIndex: selected] :[self windowController]];
 							[roiWin showWindow:self];
 						}
@@ -3010,22 +2879,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 				else // Start drawing a new ROI !
 				{
-					if( curROI)
-					{
+					if( curROI) {
 						drawingROI = [curROI mouseRoiDown:tempPt :scaleValue];
 						
-						if( drawingROI == NO)
-						{
-							curROI = 0L;
-						}
+						if( drawingROI == NO) curROI = nil;
 						
 						if( [curROI ROImode] == ROI_selected)
 							[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: curROI userInfo: nil];
 					}
-					else
-					{
+					else {
 						// Unselect previous ROIs
-						for( i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
+						for( int i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
 						
 						ROI*		aNewROI;
 						NSString	*roiName = 0L, *finalName;
@@ -3034,14 +2898,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						
 						drawingROI = NO;
 						
-						curROI = aNewROI = [[ROI alloc] initWithType: currentTool :[curDCM pixelSpacingX] :[curDCM pixelSpacingY] :NSMakePoint( [curDCM originX], [curDCM originY])];
+						curROI = aNewROI = [[ROI alloc] initWithType: currentTool : curDCM.pixelSpacingX :curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
 											
 						if ( [ROI defaultName] != nil ) {
 							[aNewROI setName: [ROI defaultName]];
 						}
 						else { 
-							switch( currentTool)
-							{
+							switch( currentTool) {
 								case  tOval:
 									roiName = [NSString stringWithString:@"Oval "];
 									break;
@@ -3084,22 +2947,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 									break;
 							}
 							
-							if( roiName)
-							{
+							if( roiName ) {
 								counter = 1;
 								
-								do
-								{
+								do {
 									existsAlready = NO;
 									
 									finalName = [roiName stringByAppendingFormat:@"%d", counter++];
 									
-									for( i = 0; i < [dcmRoiList count]; i++)
-									{
-										for( x = 0; x < [[dcmRoiList objectAtIndex: i] count]; x++)
-										{
-											if( [[[[dcmRoiList objectAtIndex: i] objectAtIndex: x] name] isEqualToString: finalName])
-											{
+									for( int i = 0; i < [dcmRoiList count]; i++) {
+										for( int x = 0; x < [[dcmRoiList objectAtIndex: i] count]; x++) {
+											if( [[[[dcmRoiList objectAtIndex: i] objectAtIndex: x] name] isEqualToString: finalName]) {
 												existsAlready = YES;
 											}
 										}
@@ -3112,10 +2970,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						}
 						
 						// Create aliases of current ROI to the entire series
-						if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask))
-						{
-							for( i = 0; i < [dcmRoiList count]; i++)
-							{
+						if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask)) {
+							for( int i = 0; i < [dcmRoiList count]; i++) {
 								[[dcmRoiList objectAtIndex: i] addObject: aNewROI];
 							}
 						}
@@ -3123,10 +2979,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						
 						[aNewROI setRoiFont: labelFontListGL :labelFontListGLSize :self];
 						drawingROI = [aNewROI mouseRoiDown: tempPt :scaleValue];
-						if( drawingROI == NO)
-						{
-							curROI = 0L;
-						}
+
+						if( drawingROI == NO) curROI = nil;
 						
 						if( [aNewROI ROImode] == ROI_selected)
 							[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: aNewROI userInfo: nil];
@@ -3142,12 +2996,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 			}
 			
-			for( x = 0; x < [dcmRoiList count]; x++)
-			{
-				for( i = 0; i < [[dcmRoiList objectAtIndex: x] count]; i++)
-				{
-					if( [[[dcmRoiList objectAtIndex: x] objectAtIndex: i] valid] == NO)
-					{
+			for( int x = 0; x < [dcmRoiList count]; x++ ) {
+				for( int i = 0; i < [[dcmRoiList objectAtIndex: x] count]; i++) {
+					if( [[[dcmRoiList objectAtIndex: x] objectAtIndex: i] valid] == NO) {
 						[[dcmRoiList objectAtIndex: x] removeObjectAtIndex: i];
 						i--;
 					}
@@ -3183,25 +3034,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	if( flippedData) reverseScrollWheel *= -1.0;
 	
-    if( dcmPixList)
-    {
+    if( dcmPixList ) {
         short inc;
         
-		if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
-		{
-			//[[self windowController] saveCrossPositions];
+		if( [stringID isEqualToString:@"OrthogonalMPRVIEW"] ) {
+
 			[[self controller] saveCrossPositions];
 			float change;
-			if( fabs( [theEvent deltaY]) >  fabs( deltaX))
-			{
+			if( fabs( [theEvent deltaY]) >  fabs( deltaX) ) {
 				change = reverseScrollWheel * [theEvent deltaY];
-				if( change > 0)
-				{
+				if( change > 0) {
 					change = ceil( change);
 					if( change < 1) change = 1;
 				}
-				else
-				{
+				else {
 					change = floor( change);
 					if( change > -1) change = -1;		
 				}
@@ -3209,16 +3055,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					[(OrthogonalMPRView*)self scrollTool: 0 : (long)change];
 				}
 			}
-			else
-			{
+			else {
 				change = reverseScrollWheel * deltaX;
-				if( change > 0)
-				{
+				if( change > 0) {
 					change = ceil( change);
 					if( change < 1) change = 1;
 				}
-				else
-				{
+				else {
 					change = floor( change);
 					if( change > -1) change = -1;		
 				}
@@ -3229,36 +3072,28 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			[self mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 		}
-		else if( [stringID isEqualToString:@"previewDatabase"])
-		{
+		else if( [stringID isEqualToString:@"previewDatabase"]) {
 			[super scrollWheel: theEvent];
 		}
-		else if( [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Perpendicular"] )
-		{
+		else if( [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Perpendicular"] ) {
 			[super scrollWheel: theEvent];
 		}
-		else
-		{
-			if( fabs( [theEvent deltaY]) * 2.0f >  fabs( deltaX))
-			{
-				if( [theEvent modifierFlags]  & NSAlternateKeyMask)
-				{
-					if( [self is2DViewer])
-					{
+		else {
+			if( fabs( [theEvent deltaY]) * 2.0f >  fabs( deltaX) ) {
+				if( [theEvent modifierFlags]  & NSAlternateKeyMask) {
+					if( [self is2DViewer] ) {
 						// 4D Direction scroll - Cardiac CT eg
 						
 						float change = reverseScrollWheel * [theEvent deltaY] / 2.5f;
 						
-						if( change > 0)
-						{
+						if( change > 0) {
 							change = ceil( change);
 							if( change < 1) change = 1;
 							
 							change += [[self windowController] curMovieIndex];
 							while( change >= [[self windowController] maxMovieIndex]) change -= [[self windowController] maxMovieIndex];
 						}
-						else
-						{
+						else {
 							change = floor( change);
 							if( change > -1) change = -1;
 							
@@ -3269,29 +3104,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						[[self windowController] setMovieIndex: change];
 					}
 				}
-				else if( [theEvent modifierFlags]  & NSShiftKeyMask)
-				{
+				else if( [theEvent modifierFlags]  & NSShiftKeyMask) {
 					float change = reverseScrollWheel * [theEvent deltaY] / 2.5f;
 					
-					if( change > 0)
-					{
+					if( change > 0) {
 						change = ceil( change);
 						if( change < 1) change = 1;
 						
-						inc = [curDCM stack] * change;
+						inc = curDCM.stack * change;
 						curImage += inc;
 					}
-					else
-					{
+					else {
 						change = floor( change);
 						if( change > -1) change = -1;
 						
-						inc = [curDCM stack] * change;
+						inc = curDCM.stack * change;
 						curImage += inc;
 					}
 				}
-				else
-				{
+				else {
 					float change = reverseScrollWheel * [theEvent deltaY] / 2.5f;
 					
 					if( change > 0)
@@ -3312,8 +3143,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					}
 				}
 			}
-			else if( fabs( deltaX) > 0.7)
-			{
+			else if( fabs( deltaX) > 0.7 ) {
 				[self mouseMoved: theEvent];	// Update some variables...
 				
 //				NSLog(@"delta x: %f", deltaX);
@@ -3335,13 +3165,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				[self setNeedsDisplay:YES];
 			}
 			
-			if( [dcmPixList count] > 3)
-			{
+			if( [dcmPixList count] > 3) {
 				if( curImage < 0) curImage = [dcmPixList count]-1;
 				if( curImage >= [dcmPixList count]) curImage = 0;
 			}
-			else
-			{
+			else {
 				if( curImage < 0) curImage = 0;
 				if( curImage >= [dcmPixList count]) curImage = [dcmPixList count]-1;
 			}
@@ -3349,16 +3177,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( listType == 'i') [self setIndex:curImage];
 			else [self setIndexWithReset:curImage :YES];
 			
-			if( matrix)
-			{
+			if( matrix ) {
 				[matrix selectCellAtRow :curImage/[browserWindow COLUMN] column:curImage%[browserWindow COLUMN]];
 			}
 			
 			if( [self is2DViewer] == YES)
 				[[self windowController] adjustSlider];    //mouseDown:theEvent];
 				
-			if( stringID)
-			{
+			if( stringID) {
 				if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"Original"]  || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
 					[[self windowController] adjustSlider];
 			}
@@ -3370,7 +3196,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				[[self windowController] propagateSettings];
 			
 			if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
-//			if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
 			
 			[self setNeedsDisplay:YES];
 		}
@@ -3444,25 +3269,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if (([theEvent modifierFlags] & NSControlKeyMask) && ([theEvent modifierFlags] & NSAlternateKeyMask)) return 0L;
 	return [self menu]; 
 }
-
-- (float) contextualMenuInWindowPosX {return contextualMenuInWindowPosX;}
-- (float) contextualMenuInWindowPosY {return contextualMenuInWindowPosY;}
-	
--(NSString*) stringID
-{
-	return stringID;
-}
-
--(void) setStringID:(NSString*) str
-{
-	if( str != stringID)
-	{
-		[stringID release];
-		stringID = str;
-		[stringID retain];
-	}
-}
-
 
 #pragma mark-
 #pragma mark Mouse dragging methods	
@@ -3573,11 +3379,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 // Check to see if an roi is selected at the Open GL point
 - (BOOL)checkROIsForHitAtPoint:(NSPoint)point  forEvent:(NSEvent *)event{
 	BOOL haveHit = NO;
-	int i;
-	for( i = 0; i < [curRoiList count]; i++)
-	{
-		if( [[curRoiList objectAtIndex:i] mouseRoiDragged: point :[event modifierFlags] :scaleValue] != NO)
-		{
+
+	for( int i = 0; i < [curRoiList count]; i++) {
+		if( [[curRoiList objectAtIndex:i] mouseRoiDragged: point :[event modifierFlags] :scaleValue] != NO) {
 			haveHit = YES;
 		}
 	}
@@ -3585,14 +3389,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 }
 
 // Modifies the Selected ROIs for the drag. Can rotate, scalem move the ROI or the Text Box.
-- (void)mouseDraggedForROIs:(NSEvent *)event{
+- (void)mouseDraggedForROIs:(NSEvent *)event {
 	
 	NSRect  frame = [self frame];
 	NSPoint current = [self currentPointInView:event];
-	int i = 0;
+
 	// Command and Alternate rotate ROI
-	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))
-	{
+	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask)) {
 		NSPoint rotatePoint = [[[event window] contentView] convertPoint:start toView:self];
 		rotatePoint.y = frame.size.height - start.y ;
 		rotatePoint = [self ConvertFromView2GL: rotatePoint];
@@ -3603,14 +3406,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		offset.x = - (previous.x - current.x) / scaleValue;
 		offset.y =  (previous.y - current.y) / scaleValue;
 		
-		for( i = 0; i < [curRoiList count]; i++)
-		{
+		for( int i = 0; i < [curRoiList count]; i++ ) {
 			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) [[curRoiList objectAtIndex:i] rotate: offset.x :rotatePoint];
 		}
 	}
 	// Command and Shift scale
-	else if (([event modifierFlags] & NSCommandKeyMask) && !([event modifierFlags] & NSShiftKeyMask))
-	{
+	else if (([event modifierFlags] & NSCommandKeyMask) && !([event modifierFlags] & NSShiftKeyMask)) {
 		NSPoint rotatePoint = [[[event window] contentView] convertPoint:start toView:self];
 		rotatePoint.y = frame.size.height - start.y ;
 		rotatePoint = [self ConvertFromView2GL: rotatePoint];
@@ -3621,14 +3422,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		offset.x = - (previous.x - current.x) / scaleValue;
 		offset.y =  (previous.y - start.y) / scaleValue;
 		
-		for( i = 0; i < [curRoiList count]; i++)
-		{
+		for( int i = 0; i < [curRoiList count]; i++) {
 			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) [[curRoiList objectAtIndex:i] resize: 1 + (offset.x)/20. :rotatePoint];
 		}
 	}
 	// Move ROI
-	else
-	{
+	else {
 		BOOL textBoxMove = NO;
 		NSPoint offset;
 		float   xx, yy;
@@ -3644,33 +3443,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		offset.x = xx*cos(rotation*deg2rad) + yy*sin(rotation*deg2rad);
 		offset.y = -xx*sin(rotation*deg2rad) + yy*cos(rotation*deg2rad);
 		
-		offset.y /=  [curDCM pixelRatio];
+		offset.y /=  curDCM.pixelRatio;
 		// hit test for text box
-		for( i = 0; i < [curRoiList count]; i++)
-		{
-			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
-			{
+		for( int i = 0; i < [curRoiList count]; i++ ) {
+			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) {
 				if( [[curRoiList objectAtIndex: i] clickInTextBox]) textBoxMove = YES;
 			}
 		}
 		// Move text Box
-		if( textBoxMove)
-		{
-			for( i = 0; i < [curRoiList count]; i++)
-			{
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
-				{
+		if( textBoxMove) {
+			for( int i = 0; i < [curRoiList count]; i++) {
+				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)	{
 					[[curRoiList objectAtIndex: i] setTextBoxOffset: offset];
 				}
 			}
 		}
 		// move ROI
-		else
-		{
-			for( i = 0; i < [curRoiList count]; i++)
-			{
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
-				{
+		else {
+			for( int i = 0; i < [curRoiList count]; i++) {
+				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) {
 					[[curRoiList objectAtIndex:i] roiMove: offset];
 				}
 			}
@@ -3680,8 +3471,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 
 // Method for mouse dragging while 3D rotate. Does nothing
-- (void)mouseDragged3DRotate:(NSEvent *)event{
-}
+- (void)mouseDragged3DRotate:(NSEvent *)event{}
 
 - (void)mouseDraggedCrosshair:(NSEvent *)event{
 	//Moved OrthogonalMPRView specific code to that class
@@ -3790,29 +3580,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 }
 
 //Method for rotating
-- (void)mouseDraggedRotate:(NSEvent *)event
-{
+- (void)mouseDraggedRotate:(NSEvent *)event {
 	NSPoint current = [self currentPointInView:event];
 	
-	float rot;
-	
-	rot = rotationStart - (current.x - start.x);
+	float rot= rotationStart - (current.x - start.x);
+
 	while( rot < 0) rot += 360;
 	while( rot > 360) rot -= 360;
 	
-	[self setRotation: rot];
+	self.rotation = rot;
 }
 
 //Scrolling through images with Mouse
 // could be cleaned up by subclassing DCMView
-- (void)mouseDraggedImageScroll:(NSEvent *)event{
+- (void)mouseDraggedImageScroll:(NSEvent *)event {
 	short   inc, now, prev, previmage;
 	BOOL	movie4Dmove = NO;
 	NSPoint current = [self currentPointInView:event];
-	if( scrollMode == 0)
-	{
-		if( fabs( start.x - current.x) < fabs( start.y - current.y))
-		{
+	if( scrollMode == 0) {
+		if( fabs( start.x - current.x) < fabs( start.y - current.y)) {
 			prev = start.y/2;
 			now = current.y/2;
 			if( fabs( start.y - current.y) > 3) scrollMode = 1;
@@ -3996,8 +3782,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[curDCM changeWLWW : startWL + (current.y -  start.y)*WWAdapter :startWW + (current.x -  start.x)*WWAdapter];
 		}
 		
-		curWW = [curDCM ww];
-		curWL = [curDCM wl];
+		curWW = curDCM.ww;
+		curWL = curDCM.wl;
 		
 		if( [self is2DViewer] == YES)
 		{
@@ -4028,41 +3814,32 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	tempPt = [self ConvertFromView2GL:tempPt];
 	
 	float pixSpacingRatio = 1.0;
-	if([self pixelSpacingY]!=0 && [self pixelSpacingX]!=0)
-		pixSpacingRatio = [self pixelSpacingY]/[self pixelSpacingX];
+	if( self.pixelSpacingY != 0 && self.pixelSpacingX !=0 )
+		pixSpacingRatio = self.pixelSpacingY / self.pixelSpacingX;
 	
-	float dx, dx2, dy, dy2, d;
-	NSPoint pt, pt2;
-
-	float minD, maxD, maxN;
-	minD = 10.0 / scaleValue;
-	maxD = 50.0 / scaleValue;
-	maxN = 10.0 * scaleValue;
+	float minD = 10.0 / scaleValue;
+	float maxD = 50.0 / scaleValue;
+	float maxN = 10.0 * scaleValue;
 	
-	int i, j, k;
 	NSMutableArray *points;
 		
 	NSRect repulsorRect = NSMakeRect(tempPt.x-repulsorRadius, tempPt.y-repulsorRadius, repulsorRadius*2.0 , repulsorRadius*2.0);
 		
-	for(i=0; i<[curRoiList count]; i++)
-	{	
+	for( int i=0; i<[curRoiList count]; i++ ) {	
 		if([(ROI*)[curRoiList objectAtIndex:i] type] != tAxis && [(ROI*)[curRoiList objectAtIndex:i] type] != tDynAngle) //JJCP
 		{		
 			points = [[curRoiList objectAtIndex:i] points];
 			int n = 0;
-			for(j=0; j<[points count]; j++)
-			{
-				pt = [[points objectAtIndex:j] point];
-				if(NSPointInRect(pt, repulsorRect))
-				{
-					dx = (pt.x-tempPt.x);
-					dx2 = dx * dx;
-					dy = (pt.y-tempPt.y)*pixSpacingRatio;
-					dy2 = dy * dy;
-					d = sqrt(dx2 + dy2);
+			for( int j=0; j<[points count]; j++ ) {
+				NSPoint pt = [[points objectAtIndex:j] point];
+				if( NSPointInRect(pt, repulsorRect) ) {
+					float dx = (pt.x-tempPt.x);
+					float dx2 = dx * dx;
+					float dy = (pt.y-tempPt.y)*pixSpacingRatio;
+					float dy2 = dy * dy;
+					float d = sqrt(dx2 + dy2);
 					
-					if(d<repulsorRadius)
-					{
+					if( d < repulsorRadius ) {
 						if([(ROI*)[curRoiList objectAtIndex:i] type] == t2DPoint)
 							[[curRoiList objectAtIndex:i] setROIRect:NSOffsetRect([[curRoiList objectAtIndex:i] rect],dx/d*repulsorRadius-dx,dy/d*repulsorRadius-dy)];
 						else
@@ -4071,34 +3848,28 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						pt.x += dx/d*repulsorRadius-dx;
 						pt.y += dy/d*repulsorRadius-dy;
 						
-						int delta;
-						for(delta=-1; delta<=1; delta++)
-						{
-							k = j+delta;
-							if([(ROI*)[curRoiList objectAtIndex:i] type] == tCPolygon || [(ROI*)[curRoiList objectAtIndex:i] type] == tPencil)
-							{
+						for( int delta = -1; delta <= 1; delta++ ) {
+							int k = j+delta;
+							if([(ROI*)[curRoiList objectAtIndex:i] type] == tCPolygon || [(ROI*)[curRoiList objectAtIndex:i] type] == tPencil) {
 								if(k==-1)
 									k = [points count]-1;
 								else if(k==[points count])
 									k = 0;
 							}
 							
-							if(k!=j && k>=0 && k<[points count])
-							{
-								pt2 = [[points objectAtIndex:k] point];
-								dx = (pt2.x-pt.x);
-								dx2 = dx * dx;
-								dy = (pt2.y-pt.y)*pixSpacingRatio;
-								dy2 = dy * dy;
-								d = sqrt(dx2 + dy2);
+							if(k!=j && k>=0 && k<[points count]) {
+								NSPoint pt2 = [[points objectAtIndex:k] point];
+								float dx = (pt2.x-pt.x);
+								float dx2 = dx * dx;
+								float dy = (pt2.y-pt.y)*pixSpacingRatio;
+								float dy2 = dy * dy;
+								float d = sqrt(dx2 + dy2);
 								
-								if(d<=minD && d<repulsorRadius)
-								{
+								if( d<=minD && d<repulsorRadius ) {
 									[points removeObjectAtIndex:k];
 									if(delta==-1) j--;
 								}
-								else if((d>=maxD || d>=repulsorRadius) && n<maxN)
-								{
+								else if((d>=maxD || d>=repulsorRadius) && n<maxN) {
 									NSPoint pt3;
 									pt3.x = (pt2.x+pt.x)/2.0;
 									pt3.y = (pt2.y+pt.y)/2.0;
@@ -4121,14 +3892,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 		
-- (void)mouseDraggedROISelector:(NSEvent *)event;
-{
-	int i, j, k;
+- (void)mouseDraggedROISelector:(NSEvent *)event {
 	NSMutableArray *points;
 	
 	// deselect all ROIs
-	for(i=0; i<[curRoiList count]; i++)
-	{
+	for( int i=0; i<[curRoiList count]; i++ ) {
 		// ROISelectorSelectedROIList contains ROIs that were selected _before_ the click
 		if([ROISelectorSelectedROIList containsObject:[curRoiList objectAtIndex:i]])// this will be possible only if shift key is pressed
 			[[curRoiList objectAtIndex:i] setROIMode:ROI_selected];
@@ -4146,8 +3914,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	NSRect rect;
 	
-	if( rotation == 0)
-	{	
+	if( rotation == 0 ) {	
 		NSPoint tempStartPoint = [self ConvertFromView2GL:ROISelectorStartPoint];
 		NSPoint tempEndPoint = [self ConvertFromView2GL:ROISelectorEndPoint];
 		
@@ -4156,8 +3923,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if(rect.size.width<1)rect.size.width=1;
 		if(rect.size.height<1)rect.size.height=1;
 	}
-	else
-	{
+	else {
 		polyRect[ 0] = [self ConvertFromView2GL:ROISelectorStartPoint];
 		polyRect[ 1] = [self ConvertFromView2GL:NSMakePoint(ROISelectorStartPoint.x,ROISelectorStartPoint.y - (ROISelectorStartPoint.y-ROISelectorEndPoint.y))];
 		polyRect[ 2] = [self ConvertFromView2GL:ROISelectorEndPoint];
@@ -4165,56 +3931,46 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	
 	// select ROIs in the selection rectangle
-	for(i=0; i<[curRoiList count]; i++)
-	{
+	for( int i=0; i<[curRoiList count]; i++ ) {
 		ROI *roi = [curRoiList objectAtIndex:i];
 		BOOL intersected = NO;
 		long roiType = [roi type];
 		
-		if( rotation == 0)
-		{
-			if(roiType==tText)
-			{
+		if( rotation == 0 ) {
+			if( roiType==tText ) {
 				float w = [roi rect].size.width/scaleValue;
 				float h = [roi rect].size.height/scaleValue;
 				NSPoint o = [roi rect].origin;
 				NSRect curROIRect = NSMakeRect( o.x-w/2.0, o.y-h/2.0, w, h);
 				intersected = NSIntersectsRect(rect, curROIRect);
 			}
-			else if(roiType==tROI)
-			{
+			else if(roiType==tROI) {
 				intersected = NSIntersectsRect(rect, [roi rect]);
 			}
-			else if(roiType==t2DPoint)
-			{
+			else if(roiType==t2DPoint) {
 				intersected = NSPointInRect([[[roi points] objectAtIndex:0] point], rect);
 			}
-			else
-			{
+			else {
 				points = [[curRoiList objectAtIndex:i] points];
 				NSPoint p1, p2;
-				for(j=0; j<[points count]-1 && !intersected; j++)
-				{
+				for( int j=0; j<[points count]-1 && !intersected; j++ ) {
 					p1 = [[points objectAtIndex:j] point];
 					p2 = [[points objectAtIndex:j+1] point];
 					intersected = lineIntersectsRect(p1, p2,  rect);
 				}
 				// last segment: between last point and first one
-				if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow)
-				{
+				if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow) {
 					p1 = [[points lastObject] point];
 					p2 = [[points objectAtIndex:0] point];
 					intersected = lineIntersectsRect(p1, p2,  rect);
 				}
 			}
 		}
-		else
-		{
-			if(roiType==tText)
-			{
-				float w = [roi rect].size.width/scaleValue;
-				float h = [roi rect].size.height/scaleValue;
-				NSPoint o = [roi rect].origin;
+		else {
+			if(roiType==tText) {
+				float w = roi.rect.size.width/scaleValue;
+				float h = roi.rect.size.height/scaleValue;
+				NSPoint o = roi.rect.origin;
 				NSRect curROIRect = NSMakeRect( o.x-w/2.0, o.y-h/2.0, w, h);
 				
 				if(!intersected) intersected = [DCMPix IsPoint: NSMakePoint( NSMinX( curROIRect), NSMinY( curROIRect)) inPolygon:polyRect size:4];
@@ -4222,36 +3978,29 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				if(!intersected) intersected = [DCMPix IsPoint: NSMakePoint( NSMaxX( curROIRect), NSMaxY( curROIRect)) inPolygon:polyRect size:4];
 				if(!intersected) intersected = [DCMPix IsPoint: NSMakePoint( NSMaxX( curROIRect), NSMinY( curROIRect)) inPolygon:polyRect size:4];
 			}
-			else if(roiType==t2DPoint)
-			{
+			else if(roiType==t2DPoint ) {
 				intersected = [DCMPix IsPoint: [[[roi points] objectAtIndex:0] point] inPolygon:polyRect size:4];
 			}
-			else
-			{
+			else {
 				points = [[curRoiList objectAtIndex:i] points];
 				NSPoint p1, p2;
-				for(j=0; j<[points count] && !intersected; j++)
-				{
+				for( int j=0; j<[points count] && !intersected; j++ ) {
 					intersected = [DCMPix IsPoint: [[points objectAtIndex:j] point] inPolygon:polyRect size:4];
 				}
 				
-				if( !intersected)
-				{
+				if( !intersected ) {
 					NSPoint	*p = malloc( sizeof( NSPoint) * [points count]);
-					for(j=0; j<[points count]; j++) p[ j] = [[points objectAtIndex:j] point];
-					for(j=0; j<4 && !intersected; j++)
-					{
+					for( int j=0; j<[points count]; j++)  p[ j] = [[points objectAtIndex:j] point];
+					for( int j=0; j<4 && !intersected; j++ ) {
 						intersected = [DCMPix IsPoint: polyRect[j] inPolygon:p size:[points count]];
 					}
 					free(p);
 				}
 				
-				if( !intersected)
-				{
+				if( !intersected ) {
 					points = [[curRoiList objectAtIndex:i] points];
 					NSPoint p1, p2;
-					for(j=0; j<[points count]-1 && !intersected; j++)
-					{
+					for( int j=0; j<[points count]-1 && !intersected; j++ ) {
 						p1 = [[points objectAtIndex:j] point];
 						p2 = [[points objectAtIndex:j+1] point];
 						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[0] B2:polyRect[1] result: 0L];
@@ -4261,8 +4010,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					}
 					
 					// last segment: between last point and first one
-					if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow)
-					{
+					if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow) {
 						p1 = [[points lastObject] point];
 						p2 = [[points objectAtIndex:0] point];
 						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[0] B2:polyRect[1] result: 0L];
@@ -4274,8 +4022,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 		}
 		
-		if(intersected)
-		{
+		if(intersected) {
 			if([event modifierFlags] & NSShiftKeyMask) // invert the mode: selected->sleep, sleep->selected
 			{
 				long mode = [roi ROImode];
@@ -4286,57 +4033,47 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				[roi setROIMode:mode];
 				[[self windowController] setMode:mode toROIGroupWithID:[roi groupID]];
 			}
-			else
-			{
+			else {
 				[[self windowController] selectROI:roi deselectingOther:NO];
 			}
 		}
 	}
-	
-	
-	
 }
 
 #pragma mark-
 #pragma mark ww/wl
-- (void) getWLWW:(float*) wl :(float*) ww
-{
+
+- (void) getWLWW:(float*) wl :(float*) ww {
 	if( curDCM == 0L) NSLog(@"curDCM 0L");
-	else
-	{
-		if(wl) *wl = [curDCM wl];
-		if(ww) *ww = [curDCM ww];
+	else {
+		if(wl) *wl = curDCM.wl;
+		if(ww) *ww = curDCM.ww;
 	}
 }
 
-- (void) changeWLWW: (NSNotification*) note
-{
+- (void) changeWLWW: (NSNotification*) note {
 	DCMPix	*otherPix = [note object];
 	
 	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO) return;
 	
-	if( [dcmPixList containsObject: otherPix])
-	{
+	if( [dcmPixList containsObject: otherPix] ) {
 		float iwl, iww;
 		
-		iww = [otherPix ww];
-		iwl = [otherPix wl];
+		iww = otherPix.ww;
+		iwl = otherPix.wl;
 		
-		if( iww != [curDCM ww] || iwl != [curDCM wl])
+		if( iww != curDCM.ww || iwl != curDCM.wl)
 			[self setWLWW: iwl :iww];
 	}
 	
-	if( blendingView)
-	{
-		if( [[blendingView dcmPixList] containsObject: otherPix])
-		{
+	if( blendingView) {
+		if( [[blendingView dcmPixList] containsObject: otherPix]) {
 			float iwl, iww;
 			
-			iww = [otherPix ww];
-			iwl = [otherPix wl];
+			iww = otherPix.ww;
+			iwl = otherPix.wl;
 			
-			if( iww != [[blendingView curDCM] ww] || iwl != [[blendingView curDCM] wl])
-			{
+			if( iww != [[blendingView curDCM] ww] || iwl != [[blendingView curDCM] wl]) {
 				[blendingView setWLWW: iwl :iww];
 				[self loadTextures];
 				[self setNeedsDisplay:YES];
@@ -4345,17 +4082,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (void) setWLWW:(float) wl :(float) ww
-{
+- (void) setWLWW:(float) wl :(float) ww {
 	[curDCM changeWLWW :wl : ww];
 	
-	if( curDCM)
-	{
-		curWW = [curDCM ww];
-		curWL = [curDCM wl];
+	if( curDCM) {
+		curWW = curDCM.ww;
+		curWL = curDCM.wl;
 	}
-	else
-	{
+	else {
 		curWW = ww;
 		curWL = wl;
 	}
@@ -4365,11 +4099,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: curDCM userInfo:0L];
 	
-	if( [self is2DViewer])
-	{
+	if( [self is2DViewer] ) {
 		//set value for Series Object Presentation State
-		if( [curDCM SUVConverted] == NO)
-		{
+		if( curDCM.SUVConverted == NO) {
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
 			
@@ -4379,16 +4111,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				[[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
 				[[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
 			}
-			else
-			{
+			else {
 				[[self imageObj] setValue: 0L forKey:@"windowWidth"];
 				[[self imageObj] setValue: 0L forKey:@"windowLevel"];
 			}
 		}
-		else
-		{
-			if( [self is2DViewer] == YES)
-			{
+		else {
+			if( [self is2DViewer] == YES) {
 				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
 				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
 				
@@ -4398,8 +4127,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					[[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
 					[[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
 				}
-				else
-				{
+				else {
 					[[self imageObj] setValue: 0L forKey:@"windowWidth"];
 					[[self imageObj] setValue: 0L forKey:@"windowLevel"];
 				}
@@ -4408,19 +4136,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (void)discretelySetWLWW:(float)wl :(float)ww;
-{
+- (void)discretelySetWLWW:(float)wl :(float)ww {
     [curDCM changeWLWW :wl : ww];
     
-    curWW = [curDCM ww];
-    curWL = [curDCM wl];
+    curWW = curDCM.ww;
+    curWL = curDCM.wl;
 	
     [self loadTextures];
     [self setNeedsDisplay:YES];
 	
 	//set value for Series Object Presentation State
-	if( [curDCM SUVConverted] == NO)
-	{
+	if( curDCM.SUVConverted == NO) {
 		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
 		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
 		
@@ -4430,16 +4156,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
 			[[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
 		}
-		else
-		{
+		else {
 			[[self imageObj] setValue: 0L forKey:@"windowWidth"];
 			[[self imageObj] setValue: 0L forKey:@"windowLevel"];
 		}
 	}
-	else
-	{
-		if( [self is2DViewer] == YES)
-		{
+	else {
+		if( [self is2DViewer] == YES) {
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
 			
@@ -4449,8 +4172,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				[[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
 				[[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
 			}
-			else
-			{
+			else {
 				[[self imageObj] setValue: 0L forKey:@"windowWidth"];
 				[[self imageObj] setValue: 0L forKey:@"windowLevel"];
 			}
@@ -4460,29 +4182,24 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) setFusion:(short) mode :(short) stacks
 {
-	long i, x;
-	
 	thickSlabMode = mode;
 	thickSlabStacks = stacks;
 	
-	for ( i = 0; i < [dcmPixList count]; i ++)
-	{
+	for ( int i = 0; i < [dcmPixList count]; i++ ) {
 		[[dcmPixList objectAtIndex:i] setFusion:mode :stacks :flippedData];
 	}
 	
-	if( [self is2DViewer])
-	{
+	if( [self is2DViewer]) {
 		NSArray		*views = [[[self windowController] seriesView] imageViews];
 		
-		for ( i = 0; i < [views count]; i ++)
+		for ( int i = 0; i < [views count]; i ++)
 			[[views objectAtIndex: i] updateImage];
 	}
 	
 	[self setIndex: curImage];
 }
 
--(void) multiply:(DCMView*) bV
-{
+-(void) multiply:(DCMView*) bV {
 	[curDCM imageArithmeticMultiplication: [bV curDCM]];
 	
 	[curDCM changeWLWW :curWL: curWW];
@@ -4490,8 +4207,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self setNeedsDisplay: YES];
 }
 
--(void) subtract:(DCMView*) bV
-{
+-(void) subtract:(DCMView*) bV {
 	[curDCM imageArithmeticSubtraction: [bV curDCM]];
 	
 	[curDCM changeWLWW :curWL: curWW];
@@ -4499,23 +4215,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self setNeedsDisplay: YES];
 }
 
--(void) setBlending:(DCMView*) bV
-{
-	if( blendingView == bV) return;
-	
-	blendingView = bV;
-}
-
--(void) getCLUT:( unsigned char**) r : (unsigned char**) g : (unsigned char**) b
-{
+-(void) getCLUT:( unsigned char**) r : (unsigned char**) g : (unsigned char**) b {
 	*r = redTable;
 	*g = greenTable;
 	*b = blueTable;
 }
 
-- (void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
-{
-	long i;
+- (void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b {
 	BOOL needUpdate = YES;
 	
 	if( r == 0)	// -> BW
@@ -4524,14 +4230,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	else if( memcmp( redTable, r, 256) == 0 && memcmp( greenTable, g, 256) == 0 && memcmp( blueTable, b, 256) == 0) needUpdate = NO;
 	
-	if( needUpdate)
-	{
-		if( r)
-		{
+	if( needUpdate) {
+		if( r ) {
 			BOOL BWCLUT = YES;
 			
-			for( i = 0; i < 256; i++)
-			{
+			for( int i = 0; i < 256; i++) {
 				redTable[i] = r[i];
 				greenTable[i] = g[i];
 				blueTable[i] = b[i];
@@ -4539,25 +4242,21 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				if( redTable[i] != i || greenTable[i] != i || blueTable[i] != i) BWCLUT = NO;
 			}
 			
-			if( BWCLUT)
-			{
+			if( BWCLUT) {
 				colorTransfer = NO;
 				if( colorBuf) free(colorBuf);
 				colorBuf = 0L;
 			}
-			else
-			{
+			else {
 				colorTransfer = YES;
 			}
 		}
-		else
-		{
+		else {
 			colorTransfer = NO;
 			if( colorBuf) free(colorBuf);
 			colorBuf = 0L;
 			
-			for( i = 0; i < 256; i++)
-			{
+			for( int i = 0; i < 256; i++ ) {
 				redTable[i] = i;
 				greenTable[i] = i;
 				blueTable[i] = i;
@@ -4569,22 +4268,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self updateTilingViews];
 }
 
--(short) curImage
-{
-    return curImage;
-}
-
-- (BOOL) suppressLabels
-{
-	return suppress_labels;
-}
-
 - (void) prepareOpenGL
 {
 
 }
 
-- (float) syncRelativeDiff {return syncRelativeDiff;}
 - (void) setSyncRelativeDiff: (float) v
 {
 	syncRelativeDiff = v;
@@ -4640,14 +4328,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 
 - (id)initWithFrameInt:(NSRect)frameRect
-{
-	long i;
-	
-	if( PETredTable == 0L)
-	{
-		[DCMView computePETBlendingCLUT];
-	}
-	
+{	
+	if( PETredTable == 0L) [DCMView computePETBlendingCLUT];
+
 	yearOld = 0L;
 	
 	syncSeriesIndex = -1;
@@ -4678,14 +4361,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
     NSLog(@"DCMView alloc");
 
-    // Init pixel format attribs
-//    NSOpenGLPixelFormatAttribute attrs[] =
-//    {
-//            NSOpenGLPFADoubleBuffer,
-//			NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32,
-//			0
-//	};
-
 	NSOpenGLPixelFormatAttribute attrs[] =
     {
 			NSOpenGLPFAAccelerated,
@@ -4698,8 +4373,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	// Get pixel format from OpenGL
     NSOpenGLPixelFormat* pixFmt = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
-    if (!pixFmt)
-    {
+    if ( !pixFmt ) {
     //        NSRunCriticalAlertPanel(NSLocalizedString(@"OPENGL ERROR",nil), NSLocalizedString(@"Not able to run Quartz Extreme: OpenGL+Quartz. Update your video hardware!",nil), NSLocalizedString(@"OK",nil), nil, nil);
 	//		exit(1);
     }
@@ -4753,8 +4427,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
     colorTransfer = NO;
 	
-	for (i = 0; i < 256; i++)
-	{
+	for ( unsigned int i = 0; i < 256; i++ ) {
 		alphaTable[i] = 0xFF;
 		redTable[i] = i;
 		greenTable[i] = i;
@@ -4769,7 +4442,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     dcmFilesList = 0L;
     
     [[self openGLContext] makeCurrentContext];
-    
 
     blendingFactor = 0.5;
 	
@@ -4816,8 +4488,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     return self;
 }
 
-- (void) prepareToRelease
-{
+- (void) prepareToRelease {
 	[mouseModifiers invalidate];
 	[mouseModifiers release];
 	mouseModifiers = 0L;
@@ -4825,31 +4496,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 
-- (void)windowWillClose:(NSNotification *)notification
-{
-	if( [notification object] == [self window])
-	{
+- (void)windowWillClose:(NSNotification *)notification {
+	if( [notification object] == [self window])	{
 		[self prepareToRelease];
 	}
 }
 
--(BOOL) volumicSeries
-{
-	return volumicSeries;
-}
-
--(void) sendSyncMessage:(short) inc
-{
+-(void) sendSyncMessage:(short) inc {
 	if( numberOf2DViewer > 1   && isKeyView)	//&&  [[self window] isMainWindow] == YES
     {
 		DCMPix	*thickDCM;
 		
-		if( [curDCM stack] > 1)
-		{
-			long maxVal;
+		if( curDCM.stack > 1) {
 			
-			if( flippedData) maxVal = curImage-([curDCM stack]-1);
-			else maxVal = curImage+[curDCM stack]-1;
+			long maxVal = flippedData? curImage-(curDCM.stack-1) : curImage+curDCM.stack-1;
 			if( maxVal < 0) maxVal = 0;
 			if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
 			
@@ -4857,9 +4517,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		else thickDCM = 0L;
 		
-		int pos;
-		if( flippedData) pos = [dcmPixList count] -1 -curImage;
-		else pos = curImage;
+		int pos = flippedData? [dcmPixList count] -1 -curImage : curImage;
 		
 		if( flippedData) inc = -inc;
 		
@@ -4895,12 +4553,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	float vectorA[ 9], vectorA2[ 9], vectorB[ 9];
 	float originA[ 3], originA2[ 3], originB[ 3];
 	
-	originA[ 0] = [oPix originX];		originA[ 1] = [oPix originY];		originA[ 2] = [oPix originZ];
-	if( oPix2)
-	{
-		originA2[ 0] = [oPix2 originX];		originA2[ 1] = [oPix2 originY];		originA2[ 2] = [oPix2 originZ];
+	originA[ 0] = oPix.originX; originA[ 1 ] = oPix.originY; originA[ 2 ] = oPix.originZ;
+	if( oPix2) {
+		originA2[ 0 ] = oPix2.originX; originA2[ 1 ] = oPix2.originY; originA2[ 2 ] = oPix2.originZ;
 	}
-	originB[ 0] = [curDCM originX];		originB[ 1] = [curDCM originY];		originB[ 2] = [curDCM originZ];
+	originB[ 0] = curDCM.originX; originB[ 1] = curDCM.originY; originB[ 2] = curDCM.originZ;
 	
 	[oPix orientation: vectorA];		//vectorA[0] = vectorA[6];	vectorA[1] = vectorA[7];	vectorA[2] = vectorA[8];
 	if( oPix2) [oPix2 orientation: vectorA2];
@@ -4923,49 +4580,51 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		sliceVector[ 1] = temp[ 1];
 		sliceVector[ 2] = temp[ 2];
 		
-		slicePoint[ 0] -= [curDCM originX];
-		slicePoint[ 1] -= [curDCM originY];
-		slicePoint[ 2] -= [curDCM originZ];
+		slicePoint[ 0] -= curDCM.originX;
+		slicePoint[ 1] -= curDCM.originY;
+		slicePoint[ 2] -= curDCM.originZ;
 		
-		slicePoint[ 0] += perpendicular[ 0] * [oPix sliceThickness]/2.;
-		slicePoint[ 1] += perpendicular[ 1] * [oPix sliceThickness]/2.;
-		slicePoint[ 2] += perpendicular[ 2] * [oPix sliceThickness]/2.;
+		float half_slice_thickness = oPix.sliceThickness * 0.5f;
 		
-		slicePointO[ 0] = slicePoint[ 0] + perpendicular[ 0] * [oPix sliceThickness]/2.;
-		slicePointO[ 1] = slicePoint[ 1] + perpendicular[ 1] * [oPix sliceThickness]/2.;
-		slicePointO[ 2] = slicePoint[ 2] + perpendicular[ 2] * [oPix sliceThickness]/2.;
+		slicePoint[ 0] += perpendicular[ 0] * half_slice_thickness;
+		slicePoint[ 1] += perpendicular[ 1] * half_slice_thickness;
+		slicePoint[ 2] += perpendicular[ 2] * half_slice_thickness;
 		
-		slicePointI[ 0] = slicePoint[ 0] - perpendicular[ 0] * [oPix sliceThickness]/2.;
-		slicePointI[ 1] = slicePoint[ 1] - perpendicular[ 1] * [oPix sliceThickness]/2.;
-		slicePointI[ 2] = slicePoint[ 2] - perpendicular[ 2] * [oPix sliceThickness]/2.;
+		slicePointO[ 0] = slicePoint[ 0] + perpendicular[ 0] * half_slice_thickness;
+		slicePointO[ 1] = slicePoint[ 1] + perpendicular[ 1] * half_slice_thickness;
+		slicePointO[ 2] = slicePoint[ 2] + perpendicular[ 2] * half_slice_thickness;
+		
+		slicePointI[ 0] = slicePoint[ 0] - perpendicular[ 0] * half_slice_thickness;
+		slicePointI[ 1] = slicePoint[ 1] - perpendicular[ 1] * half_slice_thickness;
+		slicePointI[ 2] = slicePoint[ 2] - perpendicular[ 2] * half_slice_thickness;
 		
 		temp[ 0] = slicePoint[ 0] * vectorB[ 0] + slicePoint[ 1] * vectorB[ 1] + slicePoint[ 2]*vectorB[ 2];
 		temp[ 1] = slicePoint[ 0] * vectorB[ 3] + slicePoint[ 1] * vectorB[ 4] + slicePoint[ 2]*vectorB[ 5];
 		temp[ 2] = slicePoint[ 0] * vectorB[ 6] + slicePoint[ 1] * vectorB[ 7] + slicePoint[ 2]*vectorB[ 8];
 		slicePoint[ 0] = temp[ 0];	slicePoint[ 1] = temp[ 1];	slicePoint[ 2] = temp[ 2];
 	
-		slicePoint[ 0] /= [curDCM pixelSpacingX];
-		slicePoint[ 1] /= [curDCM pixelSpacingY];
-		slicePoint[ 0] -= [curDCM pwidth]/2.;
-		slicePoint[ 1] -= [curDCM pheight]/2.;
+		slicePoint[ 0] /= curDCM.pixelSpacingX;
+		slicePoint[ 1] /= curDCM.pixelSpacingY;
+		slicePoint[ 0] -= curDCM.pwidth * 0.5f;
+		slicePoint[ 1] -= curDCM.pheight * 0.5f;
 		
 		temp[ 0] = slicePointO[ 0] * vectorB[ 0] + slicePointO[ 1] * vectorB[ 1] + slicePointO[ 2]*vectorB[ 2];
 		temp[ 1] = slicePointO[ 0] * vectorB[ 3] + slicePointO[ 1] * vectorB[ 4] + slicePointO[ 2]*vectorB[ 5];
 		temp[ 2] = slicePointO[ 0] * vectorB[ 6] + slicePointO[ 1] * vectorB[ 7] + slicePointO[ 2]*vectorB[ 8];
 		slicePointO[ 0] = temp[ 0];	slicePointO[ 1] = temp[ 1];	slicePointO[ 2] = temp[ 2];
-		slicePointO[ 0] /= [curDCM pixelSpacingX];
-		slicePointO[ 1] /= [curDCM pixelSpacingY];
-		slicePointO[ 0] -= [curDCM pwidth]/2.;
-		slicePointO[ 1] -= [curDCM pheight]/2.;
+		slicePointO[ 0] /= curDCM.pixelSpacingX;
+		slicePointO[ 1] /= curDCM.pixelSpacingY;
+		slicePointO[ 0] -= curDCM.pwidth * 0.5f;
+		slicePointO[ 1] -= curDCM.pheight * 0.5f;
 		
 		temp[ 0] = slicePointI[ 0] * vectorB[ 0] + slicePointI[ 1] * vectorB[ 1] + slicePointI[ 2]*vectorB[ 2];
 		temp[ 1] = slicePointI[ 0] * vectorB[ 3] + slicePointI[ 1] * vectorB[ 4] + slicePointI[ 2]*vectorB[ 5];
 		temp[ 2] = slicePointI[ 0] * vectorB[ 6] + slicePointI[ 1] * vectorB[ 7] + slicePointI[ 2]*vectorB[ 8];
 		slicePointI[ 0] = temp[ 0];	slicePointI[ 1] = temp[ 1];	slicePointI[ 2] = temp[ 2];
-		slicePointI[ 0] /= [curDCM pixelSpacingX];
-		slicePointI[ 1] /= [curDCM pixelSpacingY];
-		slicePointI[ 0] -= [curDCM pwidth]/2.;
-		slicePointI[ 1] -= [curDCM pheight]/2.;
+		slicePointI[ 0] /= curDCM.pixelSpacingX;
+		slicePointI[ 1] /= curDCM.pixelSpacingY;
+		slicePointI[ 0] -= curDCM.pwidth * 0.5f;
+		slicePointI[ 1] -= curDCM.pheight * 0.5f;
 	}
 	else
 	{
@@ -4990,49 +4649,52 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			sliceVector2[ 1] = temp[ 1];
 			sliceVector2[ 2] = temp[ 2];
 			
-			slicePoint2[ 0] -= [curDCM originX];
-			slicePoint2[ 1] -= [curDCM originY];
-			slicePoint2[ 2] -= [curDCM originZ];
+			slicePoint2[ 0] -= curDCM.originX;
+			slicePoint2[ 1] -= curDCM.originY;
+			slicePoint2[ 2] -= curDCM.originZ;
+
+			float half_slice_thickness = [oPix2 sliceThickness] * 0.5f;
 			
-			slicePoint2[ 0] += perpendicular[ 0] * [oPix2 sliceThickness]/2.;
-			slicePoint2[ 1] += perpendicular[ 1] * [oPix2 sliceThickness]/2.;
-			slicePoint2[ 2] += perpendicular[ 2] * [oPix2 sliceThickness]/2.;
+			slicePoint2[ 0] += perpendicular[ 0] * half_slice_thickness;
+			slicePoint2[ 1] += perpendicular[ 1] * half_slice_thickness;
+			slicePoint2[ 2] += perpendicular[ 2] * half_slice_thickness;
 			
-			slicePointO2[ 0] = slicePoint2[ 0] + perpendicular[ 0] * [oPix2 sliceThickness]/2.;
-			slicePointO2[ 1] = slicePoint2[ 1] + perpendicular[ 1] * [oPix2 sliceThickness]/2.;
-			slicePointO2[ 2] = slicePoint2[ 2] + perpendicular[ 2] * [oPix2 sliceThickness]/2.;
+			slicePointO2[ 0] = slicePoint2[ 0] + perpendicular[ 0] * half_slice_thickness;
+			slicePointO2[ 1] = slicePoint2[ 1] + perpendicular[ 1] * half_slice_thickness;
+			slicePointO2[ 2] = slicePoint2[ 2] + perpendicular[ 2] * half_slice_thickness;
 			
-			slicePointI2[ 0] = slicePoint2[ 0] - perpendicular[ 0] * [oPix2 sliceThickness]/2.;
-			slicePointI2[ 1] = slicePoint2[ 1] - perpendicular[ 1] * [oPix2 sliceThickness]/2.;
-			slicePointI2[ 2] = slicePoint2[ 2] - perpendicular[ 2] * [oPix2 sliceThickness]/2.;
+			slicePointI2[ 0] = slicePoint2[ 0] - perpendicular[ 0] * half_slice_thickness;
+			slicePointI2[ 1] = slicePoint2[ 1] - perpendicular[ 1] * half_slice_thickness;
+			slicePointI2[ 2] = slicePoint2[ 2] - perpendicular[ 2] * half_slice_thickness;
 			
 			temp[ 0] = slicePoint2[ 0] * vectorB[ 0] + slicePoint2[ 1] * vectorB[ 1] + slicePoint2[ 2]*vectorB[ 2];
 			temp[ 1] = slicePoint2[ 0] * vectorB[ 3] + slicePoint2[ 1] * vectorB[ 4] + slicePoint2[ 2]*vectorB[ 5];
 			temp[ 2] = slicePoint2[ 0] * vectorB[ 6] + slicePoint2[ 1] * vectorB[ 7] + slicePoint2[ 2]*vectorB[ 8];
 			slicePoint2[ 0] = temp[ 0];	slicePoint2[ 1] = temp[ 1];	slicePoint2[ 2] = temp[ 2];
 		
-			slicePoint2[ 0] /= [curDCM pixelSpacingX];
-			slicePoint2[ 1] /= [curDCM pixelSpacingY];
-			slicePoint2[ 0] -= [curDCM pwidth]/2.;
-			slicePoint2[ 1] -= [curDCM pheight]/2.;
+			slicePoint2[ 0] /= curDCM.pixelSpacingX;
+			slicePoint2[ 1] /= curDCM.pixelSpacingY;
+			slicePoint2[ 0] -= curDCM.pwidth * 0.5f;
+			slicePoint2[ 1] -= curDCM.pheight * 0.5f;
 			
 			temp[ 0] = slicePointO2[ 0] * vectorB[ 0] + slicePointO2[ 1] * vectorB[ 1] + slicePointO2[ 2]*vectorB[ 2];
 			temp[ 1] = slicePointO2[ 0] * vectorB[ 3] + slicePointO2[ 1] * vectorB[ 4] + slicePointO2[ 2]*vectorB[ 5];
 			temp[ 2] = slicePointO2[ 0] * vectorB[ 6] + slicePointO2[ 1] * vectorB[ 7] + slicePointO2[ 2]*vectorB[ 8];
 			slicePointO2[ 0] = temp[ 0];	slicePointO2[ 1] = temp[ 1];	slicePointO2[ 2] = temp[ 2];
-			slicePointO2[ 0] /= [curDCM pixelSpacingX];
-			slicePointO2[ 1] /= [curDCM pixelSpacingY];
-			slicePointO2[ 0] -= [curDCM pwidth]/2.;
-			slicePointO2[ 1] -= [curDCM pheight]/2.;
+			
+			slicePointO2[ 0] /= curDCM.pixelSpacingX;
+			slicePointO2[ 1] /= curDCM.pixelSpacingY;
+			slicePointO2[ 0] -= curDCM.pwidth * 0.5f;
+			slicePointO2[ 1] -= curDCM.pheight * 0.5f;
 			
 			temp[ 0] = slicePointI2[ 0] * vectorB[ 0] + slicePointI2[ 1] * vectorB[ 1] + slicePointI2[ 2]*vectorB[ 2];
 			temp[ 1] = slicePointI2[ 0] * vectorB[ 3] + slicePointI2[ 1] * vectorB[ 4] + slicePointI2[ 2]*vectorB[ 5];
 			temp[ 2] = slicePointI2[ 0] * vectorB[ 6] + slicePointI2[ 1] * vectorB[ 7] + slicePointI2[ 2]*vectorB[ 8];
 			slicePointI2[ 0] = temp[ 0];	slicePointI2[ 1] = temp[ 1];	slicePointI2[ 2] = temp[ 2];
-			slicePointI2[ 0] /= [curDCM pixelSpacingX];
-			slicePointI2[ 1] /= [curDCM pixelSpacingY];
-			slicePointI2[ 0] -= [curDCM pwidth]/2.;
-			slicePointI2[ 1] -= [curDCM pheight]/2.;
+			slicePointI2[ 0] /= curDCM.pixelSpacingX;
+			slicePointI2[ 1] /= curDCM.pixelSpacingY;
+			slicePointI2[ 0] -= curDCM.pwidth/2.;
+			slicePointI2[ 1] -= curDCM.pheight/2.;
 		}
 		else
 		{
@@ -5335,13 +4997,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) roiChange:(NSNotification*)note
 {
-	long i;
-	
 	// A ROI changed... do we display it? If yes, update!
-	for( i = 0; i < [curRoiList count]; i++)
-	{
-		if( [curRoiList objectAtIndex:i] == [note object])
-		{
+	for( long i = 0; i < [curRoiList count]; i++) {
+		if( [curRoiList objectAtIndex:i] == [note object]) {
 			[[note object] setRoiFont:labelFontListGL :labelFontListGLSize :self];
 			[self setNeedsDisplay:YES];
 		}
@@ -5353,8 +5011,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     [self setNeedsDisplay:YES];
 }
 
--(void) updateImage
-{
+-(void) updateImage {
 	float wl, ww;
 	
 	[self getWLWW: &wl :&ww];
@@ -5386,16 +5043,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self setSyncro: [sender tag]];
 }
 
--(void) setSyncro:(long) s
-{
+- (short)syncro { return syncro; }
+
+- (void)setSyncro:(short) s {
 	syncro = s;
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationSyncSeries" object:0L userInfo: 0L];
-}
-
--(long) syncro
-{
-	return syncro;
 }
 
 -(void) FindMinimumOpenGLCapabilities
@@ -5533,44 +5186,27 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self setNeedsDisplay:true];
 }
 
--(float) angle { return angle;}
-
-- (NSPoint) cross
-{
-	return cross;
-}
-
-- (NSPoint) crossPrev
-{
-	return crossPrev;
-}
-
-- (void) setCrossPrev:(NSPoint) c
-{
-	crossPrev = c;
-}
-
 -(void) cross3D:(float*) x :(float*) y :(float*) z 
 {
 	NSPoint cPt = cross;	//[self ConvertFromView2GL:cross];
 
-//	cPt.x += [curDCM pwidth]/2.;
-//	cPt.y += [curDCM pheight]/2.;
+//	cPt.x += curDCM.pwidth/2.;
+//	cPt.y += curDCM.pheight/2.;
 	
 	if( x) *x = cPt.x * [[dcmPixList objectAtIndex:0] pixelSpacingX];
 	if( y) *y = cPt.y * [[dcmPixList objectAtIndex:0] pixelSpacingY];
 	
-//	if( [curDCM sliceThickness] < 0) NSLog(@"thickness NEG");
-	if( z) *z = curImage;  //* [curDCM sliceThickness];
-//	*z =  [curDCM sliceLocation];
+//	if( curDCM.sliceThickness < 0) NSLog(@"thickness NEG");
+	if( z) *z = curImage;  //* curDCM.sliceThickness;
+//	*z =  curDCM.sliceLocation;
 	
 	// Now convert this local point in a global 3D coordinate!
 	
 	float temp[ 3], vectorB[ 9];
 	
-//	*x += [curDCM originX];
-//	*y += [curDCM originY];
-//	*z += [curDCM originZ];
+//	*x += curDCM.originX;
+//	*y += curDCM.originY;
+//	*z += curDCM.originZ;
 
 //	[curDCM orientation: vectorB];
 
@@ -5586,9 +5222,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //	*y =  temp[ 1];
 //	*z =  temp[ 2];
 
-//	*x -= [curDCM originX];
-//	*y -= [curDCM originY];
-//	*z -= [curDCM originZ];
+//	*x -= curDCM.originX;
+//	*y -= curDCM.originY;
+//	*z -= curDCM.originZ;
 	
 //	NSLog(@"3D Pt: X=%0.0f Y=%0.0f Z=%0.0f", *x, *y, *z);
 
@@ -5617,29 +5253,28 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     a.x -= (origin.x + originOffset.x);
     a.y += (origin.y + originOffset.y);
 
-	a.x += [curDCM pwidth]/2.;
-	a.y += [curDCM pheight]/ 2.;
+	a.x += curDCM.pwidth/2.;
+	a.y += curDCM.pheight/ 2.;
 	
     return a;
 }
 
 -(NSPoint) ConvertFromGL2View:(NSPoint) a
 {
-    float xx, yy;
     NSRect size = [self frame];
 	
 	if( curDCM)
 	{
-		a.y *= [curDCM pixelRatio];
-		a.y -= [curDCM pheight]*[curDCM pixelRatio]/ 2.;
-		a.x -= [curDCM pwidth]/2.;
+		a.y *= curDCM.pixelRatio;
+		a.y -= curDCM.pheight * curDCM.pixelRatio * 0.5;;
+		a.x -= curDCM.pwidth * 0.5f;
 	}
 	
 	a.y -= (origin.y + originOffset.y)/scaleValue;
 	a.x += (origin.x + originOffset.x)/scaleValue;
 
-    xx = a.x*cos(-rotation*deg2rad) + a.y*sin(-rotation*deg2rad);
-    yy = -a.x*sin(-rotation*deg2rad) + a.y*cos(-rotation*deg2rad);
+    float xx = a.x*cos(-rotation*deg2rad) + a.y*sin(-rotation*deg2rad);
+    float yy = -a.x*sin(-rotation*deg2rad) + a.y*cos(-rotation*deg2rad);
 
     a.y = yy;
     a.x = xx;
@@ -5661,7 +5296,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(NSPoint) ConvertFromView2GL:(NSPoint) a
 {
-    float xx, yy;
     NSRect size = [self frame];
     
 	if( xFlipped) a.x = size.size.width - a.x;
@@ -5673,8 +5307,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     a.y -= size.size.height/2;
     a.y /= scaleValue;
     
-    xx = a.x*cos(rotation*deg2rad) + a.y*sin(rotation*deg2rad);
-    yy = -a.x*sin(rotation*deg2rad) + a.y*cos(rotation*deg2rad);
+    float xx = a.x*cos(rotation*deg2rad) + a.y*sin(rotation*deg2rad);
+    float yy = -a.x*sin(rotation*deg2rad) + a.y*cos(rotation*deg2rad);
     
     a.y = yy;
     a.x = xx;
@@ -5684,9 +5318,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     
 	if( curDCM)
 	{
-		a.x += [curDCM pwidth]/2.;
-		a.y += [curDCM pheight]*[curDCM pixelRatio]/ 2.;
-		a.y /= [curDCM pixelRatio];
+		a.x += curDCM.pwidth * 0.5f;
+		a.y += curDCM.pheight * curDCM.pixelRatio * 0.5f;
+		a.y /= curDCM.pixelRatio;
     }
     return a;
 }
@@ -5737,7 +5371,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 	glTranslatef( origin.x - offset.x + originOffset.x, -origin.y - offset.y - originOffset.y, 0.0f);
 
-	if( [curDCM pixelRatio] != 1.0) glScalef( 1.f, [curDCM pixelRatio], 1.f);
+	if( curDCM.pixelRatio != 1.0) glScalef( 1.f, curDCM.pixelRatio, 1.f);
 	
 	effectiveTextureMod = 0;	//2;	//OVERLAP
 	
@@ -5754,7 +5388,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					// use remaining to determine next texture size
 					currTextureHeight = GetNextTextureSize (tH - offsetY, maxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // effective texture height for drawing
 					glBindTexture(TEXTRECTMODE, texture[k++]); // work through textures in same order as stored, setting each texture name as current in turn
-					DrawGLImageTile (GL_TRIANGLE_STRIP, [curDCM pwidth], [curDCM pheight], scaleValue,		//
+					DrawGLImageTile (GL_TRIANGLE_STRIP, curDCM.pwidth, curDCM.pheight, scaleValue,		//
 										currTextureWidth, currTextureHeight, // draw this single texture on two tris 
 										offsetX,  offsetY, 
 										currTextureWidth + offsetX, 
@@ -5768,25 +5402,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     glDisable (TEXTRECTMODE); // done with texturing
 }
 
--(double) pixelSpacing
-{
-	return [curDCM pixelSpacingX];
-}
+- (double)pixelSpacing { return curDCM.pixelSpacingX; }
+- (double)pixelSpacingX { return curDCM.pixelSpacingX; }
+- (double)pixelSpacingY { return curDCM.pixelSpacingY; }
 
-- (double) pixelSpacingX
-{
-	return [curDCM pixelSpacingX];
-}
-
-- (double) pixelSpacingY
-{
-	return [curDCM pixelSpacingY];
-}
-
-- (DCMPix*) curDCM { return curDCM;}
-
-- (void) getOrientationText:(char *) orientation : (float *) vector :(BOOL) inv
-{
+- (void)getOrientationText:(char *) orientation : (float *) vector :(BOOL) inv {
+	
 	char orientationX;
 	char orientationY;
 	char orientationZ;
@@ -5813,51 +5434,21 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	float absY = fabs( vector[ 1]);
 	float absZ = fabs( vector[ 2]);
 	
-	int i; 
 	// get first 3 AXIS
-	for (i=0; i < 3; ++i)
-	{
-		if (absX>.2 && absX>absY && absX>absZ)
-		{
+	for ( int i=0; i < 3; ++i) {
+		if (absX>.2 && absX>absY && absX>absZ) {
 			*optr++=orientationX; absX=0;
 		}
-		else if (absY>.2 && absY>absX && absY>absZ)
-		{
+		else if (absY>.2 && absY>absX && absY>absZ)	{
 			*optr++=orientationY; absY=0;
-		} else if (absZ>.2 && absZ>absX && absZ>absY)
-		{
+		} else if (absZ>.2 && absZ>absX && absZ>absY) {
 			*optr++=orientationZ; absZ=0;
 		} else break; *optr='\0';
 	}
 }
 
-//- (void) drawRect:(NSRect)aRect
-//{
-//	long i;
-//    [[self openGLContext] makeCurrentContext];
-//		glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//			// init GL stuff here
-//	glEnable(GL_DEPTH_TEST);
-//
-//	glShadeModel(GL_SMOOTH);    
-//	glEnable(GL_CULL_FACE);
-//	glFrontFace(GL_CCW);
-//	glPolygonOffset (1.0f, 1.0f);
-//	
-//	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-//
-//			for( i = 0; i < [curRoiList count]; i++)
-//		{
-//			[[curRoiList objectAtIndex:i] drawROI: scaleValue :[curDCM pwidth]/2. :[curDCM pheight]/2. :[curDCM pixelSpacingX]];
-//		}
-//		
-//	[[self openGLContext] flushBuffer];
-//}
-
--(void) setSlab:(float)s
-{
+-(void) setSlab:(float)s {
 	slab = s;
-	
 	[self setNeedsDisplay:true];
 }
 
@@ -5915,14 +5506,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 }
 //===================================================================
 
-- (long) findPlaneAndPoint:(float*) pt :(float*) location
-{
-	long	i, ii = -1;
+- (long) findPlaneAndPoint:(float*) pt :(float*) location {
+	
+	long	ii = -1;
 	float	vectors[ 9], orig[ 3], locationTemp[ 3];
 	float	distance = 999999, tempDistance;
 	
-	for( i = 0; i < [dcmPixList count]; i++)
-	{
+	for( long i = 0; i < [dcmPixList count]; i++) {
+		
 		[[dcmPixList objectAtIndex: i] orientation: vectors];
 		
 		orig[ 0] = [[dcmPixList objectAtIndex: i] originX];
@@ -5931,8 +5522,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		tempDistance = [self pbase_Plane: pt :orig :&(vectors[ 6]) :locationTemp];
 		
-		if( tempDistance < distance)
-		{
+		if( tempDistance < distance) {
 			location[ 0] = locationTemp[ 0];
 			location[ 1] = locationTemp[ 1];
 			location[ 2] = locationTemp[ 2];
@@ -5941,11 +5531,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 	}
 	
-	if( ii != -1)
-	{
+	if( ii != -1 ) {
 		NSLog(@"Distance: %2.2f, Index: %d", distance, ii);
 		
-		if( distance > [curDCM sliceThickness] * 2) ii = -1;
+		if( distance > curDCM.sliceThickness * 2) ii = -1;
 	}
 	
 	return ii;
@@ -5976,7 +5565,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self getOrientationText:string :vectors+3 :YES];
 	[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :15];
 	
-	if( [curDCM laterality]) [self DrawNSStringGL: [curDCM laterality] : fontListGL :size.size.width/2 :12 + stringSize.height];
+	if( curDCM.laterality ) [self DrawNSStringGL: curDCM.laterality : fontListGL :size.size.width/2 :12 + stringSize.height];
 	//Bottom
 	[self getOrientationText:string :vectors+3 :NO];
 	[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height - 6];
@@ -5984,25 +5573,21 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) getThickSlabThickness:(float*) thickness location:(float*) location
 {
-	*thickness = [curDCM sliceThickness];
-	*location = [curDCM sliceLocation];
+	*thickness = curDCM.sliceThickness;
+	*location = curDCM.sliceLocation;
 	
-	if( [curDCM sliceThickness] != 0 && [curDCM sliceLocation] != 0)
-	{
-		if( [curDCM stack] > 1)
-		{
-			long maxVal;
+	if( curDCM.sliceThickness != 0 && curDCM.sliceLocation != 0) {
+		if( curDCM.stack > 1) {
 			
-			if( flippedData) maxVal = curImage-[curDCM stack];
-			else maxVal = curImage+[curDCM stack];
+			long maxVal = flippedData? maxVal = curImage-curDCM.stack : curImage+curDCM.stack;
 			
 			if( maxVal < 0) maxVal = curImage;
 			else if( maxVal > [dcmPixList count]) maxVal = [dcmPixList count] - curImage;
-			else maxVal = [curDCM stack];
+			else maxVal = curDCM.stack;
 			
 			float vv = fabs( (maxVal-1) * [[dcmPixList objectAtIndex:0] sliceInterval]);
 			
-			vv += [curDCM sliceThickness];
+			vv += curDCM.sliceThickness;
 			
 			float pp;
 			
@@ -6017,12 +5602,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (void) drawTextualData:(NSRect) size :(long) annotations
-{
+- (void)drawTextualData:(NSRect) size :(long) annotations {
 	//NSLog(@"CUSTOM_ANNOTATIONS");
 	
-	NSManagedObject   *file;
-	file = [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
+	NSManagedObject   *file = [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		
@@ -6066,7 +5649,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 		}
 		
-		NSDictionary *annotationsDictionary = [curDCM annotationsDictionary];
+		NSDictionary *annotationsDictionary = curDCM.annotationsDictionary;
 
 		NSMutableDictionary *xRasterInit = [NSMutableDictionary dictionary];
 		[xRasterInit setObject:[NSNumber numberWithInt:6] forKey:@"TopLeft"];
@@ -6184,7 +5767,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				{
 					if([[annot objectAtIndex:j] isEqualToString:@"Image Size"])
 					{
-						[tempString appendFormat: @"Image size: %ld x %ld", (long) [curDCM pwidth], (long) [curDCM pheight]];
+						[tempString appendFormat: @"Image size: %ld x %ld", (long) curDCM.pwidth, (long) curDCM.pheight];
 						useStringTexture = YES;
 					}
 					else if([[annot objectAtIndex:j] isEqualToString:@"View Size"])
@@ -6196,26 +5779,23 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					{
 						if(mouseXPos!=0 && mouseYPos!=0)
 						{
-							if([curDCM isRGB]) [tempString appendFormat: @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
+							if( curDCM.isRGB ) [tempString appendFormat: @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
 							else [tempString appendFormat: @"X: %d px Y: %d px Value: %2.2f", (int)mouseXPos, (int)mouseYPos, pixelMouseValue];
 														
 							if( blendingView)
 							{
-								if( [[blendingView curDCM] isRGB])
+								if( [blendingView curDCM].isRGB )
 									[tempString2 appendFormat: @"Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB];
 								else [tempString2 appendFormat: @"Fused Image : X: %d px Y: %d px Value: %2.2f", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue];
 							}
 							
-							if( [curDCM displaySUVValue])
-							{
-								if( [curDCM hasSUV] == YES && [curDCM SUVConverted] == NO)
-								{
+							if( curDCM.displaySUVValue ) {
+								if( [curDCM hasSUV] == YES && curDCM.SUVConverted == NO) {
 									[tempString3 appendFormat: @"SUV: %.2f", [self getSUV]];
 								}
 							}
 							
-							if( blendingView)
-							{
+							if( blendingView ) {
 								if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
 								{
 									[tempString4 appendFormat: @"SUV (fused image): %.2f", [self getBlendedSUV]];
@@ -6225,24 +5805,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							useStringTexture = NO;
 						}
 					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Zoom"] && fullText)
-					{
+					else if([[annot objectAtIndex:j] isEqualToString:@"Zoom"] && fullText) {
 						[tempString appendFormat: @"Zoom: %0.0f%%", (float) scaleValue*100.0];
 						useStringTexture = NO;
 					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Rotation Angle"] && fullText)
-					{
+					else if([[annot objectAtIndex:j] isEqualToString:@"Rotation Angle"] && fullText) {
 						[tempString appendFormat: @" Angle: %0.0f", (float) ((long) rotation % 360)];
 						useStringTexture = NO;
 					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText)
-					{
-						if( [curDCM stack] > 1)
-						{
+					else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText) {
+						if( curDCM.stack > 1) {
 							long maxVal;
 							
-							if(flippedData) maxVal = curImage-[curDCM stack]+1;
-							else maxVal = curImage+[curDCM stack];
+							if(flippedData) maxVal = curImage-curDCM.stack+1;
+							else maxVal = curImage+curDCM.stack;
 							
 							if(maxVal < 0) maxVal = 0;
 							if(maxVal > [dcmPixList count]) maxVal = [dcmPixList count];
@@ -6266,20 +5842,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							{
 								float location[ 3 ];
 								
-								if( [curDCM stack] > 1)
-								{
+								if( curDCM.stack > 1) {
 									long maxVal;
 								
-									if( flippedData) maxVal = curImage-([curDCM stack]-1)/2;
-									else maxVal = curImage+([curDCM stack]-1)/2;
+									if( flippedData) maxVal = curImage-(curDCM.stack-1)/2;
+									else maxVal = curImage+(curDCM.stack-1)/2;
 									
 									if( maxVal < 0) maxVal = 0;
 									if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
 									
 									[[dcmPixList objectAtIndex: maxVal] convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];
 								}
-								else
-								{
+								else {
 									[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];
 								}
 								
@@ -6290,13 +5864,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							}
 						}
 					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Window Level / Window Width"])
-					{
-						float	lwl, lww;
+					else if([[annot objectAtIndex:j] isEqualToString:@"Window Level / Window Width"]) {
 			
-						lwl = [curDCM wl];
-						lww = [curDCM ww];
-						
+						float lwl = curDCM.wl;
+						float lww = curDCM.ww;
+
 					//	if( fullText)
 						{
 							if(lww < 50)
@@ -6306,11 +5878,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							
 							if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"]))
 							{
-								if( [curDCM maxValueOfSeries])
+								if( curDCM.maxValueOfSeries)
 								{
 									float min = lwl - lww/2, max = lwl + lww/2;
 									
-									[tempString2 appendFormat: @"From: %d %% (%0.2f) to: %d %% (%0.2f)", (long) (min * 100. / [curDCM maxValueOfSeries]), lwl - lww/2, (long) (max * 100. / [curDCM maxValueOfSeries]), lwl + lww/2];
+									[tempString2 appendFormat: @"From: %d %% (%0.2f) to: %d %% (%0.2f)", (long) (min * 100. / curDCM.maxValueOfSeries), lwl - lww/2, (long) (max * 100. / curDCM.maxValueOfSeries), lwl + lww/2];
 								}
 							}	
 						}
@@ -6320,12 +5892,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						if(!orientationDrawn)[self drawOrientation: size];
 						orientationDrawn = YES;
 					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Thickness / Location / Position"])
-					{
-						if( [curDCM sliceThickness] != 0 && [curDCM sliceLocation] != 0)
-						{
-							if( [curDCM stack] > 1)
-							{
+					else if([[annot objectAtIndex:j] isEqualToString:@"Thickness / Location / Position"]) {
+						if( curDCM.sliceThickness != 0 && curDCM.sliceLocation != 0) {
+							if( curDCM.stack > 1) {
 								float vv, pp;
 								
 								[self getThickSlabThickness: &vv location: &pp];
@@ -6340,33 +5909,28 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 								else
 									[tempString appendFormat: @"Thickness: %0.2f mm Location: %0.2f mm", fabs( vv), pp];								
 							}
-							else if( fullText)
-							{
-								if ([curDCM sliceThickness] < 1.0 && [curDCM sliceThickness] != 0.0)
-								{
-									if( fabs( [curDCM sliceLocation]) < 1.0 && [curDCM sliceLocation] != 0.0)
-										[tempString appendFormat: @"Thickness: %0.2f %cm Location: %0.2f %cm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation] * 1000.0, 0xB5];
+							else if( fullText) {
+								if (curDCM.sliceThickness < 1.0 && curDCM.sliceThickness != 0.0) {
+									if( fabs( curDCM.sliceLocation) < 1.0 && curDCM.sliceLocation != 0.0)
+										[tempString appendFormat: @"Thickness: %0.2f %cm Location: %0.2f %cm", curDCM.sliceThickness * 1000.0, 0xB5, curDCM.sliceLocation * 1000.0, 0xB5];
 									else
-										[tempString appendFormat: @"Thickness: %0.2f %cm Location: %0.2f mm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation]];
+										[tempString appendFormat: @"Thickness: %0.2f %cm Location: %0.2f mm", curDCM.sliceThickness * 1000.0, 0xB5, curDCM.sliceLocation];
 								}
 								else
-									[tempString appendFormat: @"Thickness: %0.2f mm Location: %0.2f mm", [curDCM sliceThickness], [curDCM sliceLocation]];
+									[tempString appendFormat: @"Thickness: %0.2f mm Location: %0.2f mm", curDCM.sliceThickness, curDCM.sliceLocation];
 							}
 						} 
-						else if( [curDCM viewPosition] || [curDCM patientPosition])	 
-						{	 
+						else if( curDCM.viewPosition || curDCM.patientPosition ) {	 
 							 NSString        *nsstring = 0L;	 
 
-							 if([curDCM viewPosition]) [tempString appendFormat: @"Position: %@ ", [curDCM viewPosition]];	 
-							 if([curDCM patientPosition])	 
-							 {	 
-								if([curDCM viewPosition]) [tempString appendString: [curDCM patientPosition]];	 
-								else [tempString appendFormat: @"Position: %@ ", [curDCM patientPosition]];	 
+							 if ( curDCM.viewPosition ) [tempString appendFormat: @"Position: %@ ", curDCM.viewPosition];	 
+							 if ( curDCM.patientPosition ) {	 
+								if(curDCM.viewPosition) [tempString appendString: curDCM.patientPosition];	 
+								else [tempString appendFormat: @"Position: %@ ", curDCM.patientPosition];	 
 							 }	 
 						}
 					}
-					else
-					{
+					else {
 						[tempString appendFormat:@" %@", [annot objectAtIndex:j]];
 						useStringTexture = YES;
 					}					
@@ -6400,6 +5964,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 			}// while
 		} // for k
+																																			  
 		yRaster = size.size.height-2;
 		xRaster = size.size.width-2;
 		[self DrawNSStringGL:@"Made In OsiriX" :fontListGL :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
@@ -6459,7 +6024,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //		
 //		if( fullText)
 //		{
-//			tempString = [NSString stringWithFormat: @"Image size: %ld x %ld", (long) [curDCM pwidth], (long) [curDCM pheight]];
+//			tempString = [NSString stringWithFormat: @"Image size: %ld x %ld", (long) curDCM.pwidth, (long) curDCM.pheight];
 //			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height rightAlignment: NO useStringTexture: YES];
 //			
 //			tempString = [NSString stringWithFormat: @"View size: %ld x %ld", (long) size.size.width, (long) size.size.height];
@@ -6468,7 +6033,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //		
 //		if( mouseXPos != 0 && mouseYPos != 0)
 //		{
-//			if( [curDCM isRGB]) tempString = [NSString stringWithFormat: @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
+//			if( curDCM.isRGB) tempString = [NSString stringWithFormat: @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
 //			else tempString = [NSString stringWithFormat: @"X: %d px Y: %d px Value: %2.2f", (int)mouseXPos, (int)mouseYPos, pixelMouseValue];
 //			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
 //			
@@ -6479,9 +6044,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //				[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
 //			}
 //			
-//			if( [curDCM displaySUVValue])
+//			if( curDCM.displaySUVValue)
 //			{
-//				if( [curDCM hasSUV] == YES && [curDCM SUVConverted] == NO)
+//				if( [curDCM hasSUV] == YES && curDCM.SUVConverted == NO)
 //				{
 //					tempString = [NSString stringWithFormat: @"SUV: %.2f", [self getSUV]];
 //					[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
@@ -6501,8 +6066,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //		float	lwl, lww;
 //		
 //	
-//		lwl = [curDCM wl];
-//		lww = [curDCM ww];
+//		lwl = curDCM.wl;
+//		lww = curDCM.ww;
 //		
 //	//	if( fullText)
 //		{
@@ -6512,11 +6077,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //			
 //			if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"]  == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
 //			{
-//				if( [curDCM maxValueOfSeries])
+//				if( curDCM.maxValueOfSeries)
 //				{
 //					float min = lwl - lww/2, max = lwl + lww/2;
 //					
-//					tempString = [NSString stringWithFormat: @"From: %d %% (%0.2f) to: %d %% (%0.2f)", (long) (min * 100. / [curDCM maxValueOfSeries]), lwl - lww/2, (long) (max * 100. / [curDCM maxValueOfSeries]), lwl + lww/2];
+//					tempString = [NSString stringWithFormat: @"From: %d %% (%0.2f) to: %d %% (%0.2f)", (long) (min * 100. / curDCM.maxValueOfSeries), lwl - lww/2, (long) (max * 100. / curDCM.maxValueOfSeries), lwl + lww/2];
 //					[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
 //				}
 //			}
@@ -6543,12 +6108,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //			{
 //				float location[ 3 ];
 //				
-//				if( [curDCM stack] > 1)
+//				if( curDCM.stack > 1)
 //				{
 //					long maxVal;
 //				
-//					if( flippedData) maxVal = curImage-([curDCM stack]-1)/2;
-//					else maxVal = curImage+([curDCM stack]-1)/2;
+//					if( flippedData) maxVal = curImage-(curDCM.stack-1)/2;
+//					else maxVal = curImage+(curDCM.stack-1)/2;
 //					
 //					if( maxVal < 0) maxVal = 0;
 //					if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
@@ -6571,9 +6136,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //		}
 //		
 //		// Thickness
-//		if( [curDCM sliceThickness] != 0 && [curDCM sliceLocation] != 0)
+//		if( curDCM.sliceThickness != 0 && curDCM.sliceLocation != 0)
 //		{
-//			if( [curDCM stack] > 1)
+//			if( curDCM.stack > 1)
 //			{
 //				float vv, pp;
 //				
@@ -6594,29 +6159,29 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //			}
 //			else if( fullText)
 //			{
-//				if ([curDCM sliceThickness] < 1.0 && [curDCM sliceThickness] != 0.0)
+//				if (curDCM.sliceThickness < 1.0 && curDCM.sliceThickness != 0.0)
 //				{
-//					if( fabs( [curDCM sliceLocation]) < 1.0 && [curDCM sliceLocation] != 0.0)
-//						tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f %cm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation] * 1000.0, 0xB5];
+//					if( fabs( curDCM.sliceLocation) < 1.0 && curDCM.sliceLocation != 0.0)
+//						tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f %cm", curDCM.sliceThickness * 1000.0, 0xB5, curDCM.sliceLocation * 1000.0, 0xB5];
 //					else
-//						tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f mm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation]];
+//						tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f mm", curDCM.sliceThickness * 1000.0, 0xB5, curDCM.sliceLocation];
 //				}
 //				else
-//					tempString = [NSString stringWithFormat: @"Thickness: %0.2f mm Location: %0.2f mm", [curDCM sliceThickness], [curDCM sliceLocation]];
+//					tempString = [NSString stringWithFormat: @"Thickness: %0.2f mm Location: %0.2f mm", curDCM.sliceThickness, curDCM.sliceLocation];
 //				
 //				[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
 //				yRaster -= stringSize.height;
 //			}
 //		} 
-//		else if( [curDCM viewPosition] || [curDCM patientPosition])	 
+//		else if( curDCM.viewPosition || curDCM.patientPosition)	 
 //		{	 
 //			 NSString        *nsstring = 0L;	 
 //
-//			 if( [curDCM viewPosition]) nsstring = [NSString stringWithFormat: @"Position: %@ ", [curDCM viewPosition]];	 
-//			 if( [curDCM patientPosition])	 
+//			 if( curDCM.viewPosition) nsstring = [NSString stringWithFormat: @"Position: %@ ", curDCM.viewPosition];	 
+//			 if( curDCM.patientPosition)	 
 //			 {	 
-//				if( nsstring) nsstring = [nsstring stringByAppendingString: [curDCM patientPosition]];	 
-//				else nsstring = [NSString stringWithFormat: @"Position: %@ ", [curDCM patientPosition]];	 
+//				if( nsstring) nsstring = [nsstring stringByAppendingString: curDCM.patientPosition];	 
+//				else nsstring = [NSString stringWithFormat: @"Position: %@ ", curDCM.patientPosition];	 
 //			 }	 
 //
 //			 // Position
@@ -6634,12 +6199,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //		
 //		// Image Position
 //		
-//		if( [curDCM stack] > 1)
+//		if( curDCM.stack > 1)
 //		{
 //			long maxVal;
 //			
-//			if( flippedData) maxVal = curImage-[curDCM stack]+1;
-//			else maxVal = curImage+[curDCM stack];
+//			if( flippedData) maxVal = curImage-curDCM.stack+1;
+//			else maxVal = curImage+curDCM.stack;
 //			
 //			if( maxVal < 0) maxVal = 0;
 //			if( maxVal > [dcmPixList count]) maxVal = [dcmPixList count];
@@ -6806,12 +6371,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	glScalef (2.0f /(xFlipped ? -(size.width) : size.width), -2.0f / (yFlipped ? -(size.height) : size.height), 1.0f);
 	glRotatef (rotation, 0.0f, 0.0f, 1.0f);
 	glTranslatef( origin.x + originOffset.x, -origin.y - originOffset.y, 0.0f);
-	glScalef( 1.f, [curDCM pixelRatio], 1.f);
-}
-
-- (void) setDrawing:(BOOL) v
-{
-	drawing = v;
+	glScalef( 1.f, curDCM.pixelRatio, 1.f);
 }
 
 - (void) drawRect:(NSRect)aRect
@@ -6836,17 +6396,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( needToLoadTexture)
 		[self loadTexturesCompute];
 	
-	if( noScale)
-	{
-		[self setScaleValue:1];
+	if( noScale) {
+		self.scaleValue = 1.0f;
 		[self setOriginX: 0 Y: 0];
 	}
 	
 //	if ( [NSGraphicsContext currentContextDrawingToScreen] )
 	{
-		NSPoint offset;
-		
-		offset.y = offset.x = 0;
+		NSPoint offset = { 0.0f, 0.0f };
 		
 		// Make this context current
 		//[[self openGLContext] makeCurrentContext];
@@ -6865,10 +6422,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear (GL_COLOR_BUFFER_BIT);
 		
-		if( dcmPixList && curImage > -1)
-		{
-			if( blendingView != 0L && syncOnLocationImpossible == NO)
-			{
+		if( dcmPixList && curImage > -1) {
+			if( blendingView != 0L && syncOnLocationImpossible == NO) {
 				glBlendFunc(GL_ONE, GL_ONE);
 				glEnable( GL_BLEND);
 			}
@@ -6878,41 +6433,38 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			BOOL noBlending = NO;
 			
-			if( [self is2DViewer] == YES)
-			{
+			if( [self is2DViewer] == YES) {
 				if( isKeyView == NO) noBlending = YES;
 			}
 			
-			if( blendingView != 0L && syncOnLocationImpossible == NO && noBlending == NO)
-			{
-				if( [curDCM pixelSpacingX] != 0 && [curDCM pixelSpacingY] != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
+			if( blendingView != 0L && syncOnLocationImpossible == NO && noBlending == NO ) {
+				if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
 				{
 //					float vectorP[ 9], tempOrigin[ 3], tempOriginBlending[ 3];
 //					
 //					[curDCM orientation: vectorP];
 //					
-//					tempOrigin[ 0] = [curDCM originX] * vectorP[ 0] + [curDCM originY] * vectorP[ 1] + [curDCM originZ] * vectorP[ 2];
-//					tempOrigin[ 1] = [curDCM originX] * vectorP[ 3] + [curDCM originY] * vectorP[ 4] + [curDCM originZ] * vectorP[ 5];
-//					tempOrigin[ 2] = [curDCM originX] * vectorP[ 6] + [curDCM originY] * vectorP[ 7] + [curDCM originZ] * vectorP[ 8];
+//					tempOrigin[ 0] = curDCM.originX * vectorP[ 0] + curDCM.originY * vectorP[ 1] + curDCM.originZ * vectorP[ 2];
+//					tempOrigin[ 1] = curDCM.originX * vectorP[ 3] + curDCM.originY * vectorP[ 4] + curDCM.originZ * vectorP[ 5];
+//					tempOrigin[ 2] = curDCM.originX * vectorP[ 6] + curDCM.originY * vectorP[ 7] + curDCM.originZ * vectorP[ 8];
 //					
 //					tempOriginBlending[ 0] = [[blendingView curDCM] originX] * vectorP[ 0] + [[blendingView curDCM] originY] * vectorP[ 1] + [[blendingView curDCM] originZ] * vectorP[ 2];
 //					tempOriginBlending[ 1] = [[blendingView curDCM] originX] * vectorP[ 3] + [[blendingView curDCM] originY] * vectorP[ 4] + [[blendingView curDCM] originZ] * vectorP[ 5];
 //					tempOriginBlending[ 2] = [[blendingView curDCM] originX] * vectorP[ 6] + [[blendingView curDCM] originY] * vectorP[ 7] + [[blendingView curDCM] originZ] * vectorP[ 8];
 //					
-//					offset.x = (tempOrigin[0] + [curDCM pwidth]*[curDCM pixelSpacingX]/2. - (tempOriginBlending[ 0] + [[blendingView curDCM] pwidth]*[[blendingView curDCM] pixelSpacingX]/2.));
-//					offset.y = (tempOrigin[1] + [curDCM pheight]*[curDCM pixelSpacingY]/2. - (tempOriginBlending[ 1] + [[blendingView curDCM] pheight]*[[blendingView curDCM] pixelSpacingY]/2.));
+//					offset.x = (tempOrigin[0] + curDCM.pwidth*curDCM.pixelSpacingX/2. - (tempOriginBlending[ 0] + [[blendingView curDCM] pwidth]*[[blendingView curDCM] pixelSpacingX]/2.));
+//					offset.y = (tempOrigin[1] + curDCM.pheight*curDCM.pixelSpacingY/2. - (tempOriginBlending[ 1] + [[blendingView curDCM] pheight]*[[blendingView curDCM] pixelSpacingY]/2.));
 //					
 //					offset.x *= scaleValue;
-//					offset.x /= [curDCM pixelSpacingX];
+//					offset.x /= curDCM.pixelSpacingX;
 //					
 //					offset.y *= scaleValue;
-//					offset.y /= [curDCM pixelSpacingY];
+//					offset.y /= curDCM.pixelSpacingY;
 					
 					offset.y = 0;
 					offset.x = 0;
 				}
-				else
-				{
+				else {
 					offset.y = 0;
 					offset.x = 0;
 				}
@@ -6931,16 +6483,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 			
 			//** SLICE CUT FOR 2D MPR
-			if( cross.x != -9999 && cross.y != -9999 && display2DMPRLines == YES)
-			{
+			if( cross.x != -9999 && cross.y != -9999 && display2DMPRLines == YES) {
 				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 				glEnable(GL_BLEND);
 				glEnable(GL_POINT_SMOOTH);
 				glEnable(GL_LINE_SMOOTH);
 				glEnable(GL_POLYGON_SMOOTH);
 				
-				if(( mprVector[ 0] != 0 || mprVector[ 1] != 0))
-				{
+				if(( mprVector[ 0] != 0 || mprVector[ 1] != 0) ) {
 					float tvec[ 2];
 						
 					tvec[ 0] = cos((angle+90)*deg2rad);
@@ -6949,19 +6499,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					glColor3f (0.0f, 0.0f, 1.0f);
 					
 						// Thick Slab
-						if( slab > 1)
-						{
+						if( slab > 1 ) {
 							float crossx, crossy;
 							float slabx, slaby;
 
 							glLineWidth(1.0);
 							glBegin(GL_LINES);
 							
-							crossx = cross.x-[curDCM pwidth]/2.;
-							crossy = cross.y-[curDCM pheight]/2.;
+							crossx = cross.x-curDCM.pwidth/2.;
+							crossy = cross.y-curDCM.pheight/2.;
 							
-							slabx = (slab/2.)/[curDCM pixelSpacingX]*tvec[ 0];
-							slaby = (slab/2.)/[curDCM pixelSpacingY]*tvec[ 1];
+							slabx = (slab/2.)/ curDCM.pixelSpacingX * tvec[ 0];
+							slaby = (slab/2.)/ curDCM.pixelSpacingY * tvec[ 1];
 							
 							glVertex2f( scaleValue * (crossx - 1000*mprVector[ 0] - slabx), scaleValue*(crossy - 1000*mprVector[ 1] - slaby));
 							glVertex2f( scaleValue * (crossx + 1000*mprVector[ 0] - slabx), scaleValue*(crossy + 1000*mprVector[ 1] - slaby));
@@ -6972,15 +6521,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0] + slabx), scaleValue*(crossy - 1000*mprVector[ 1] + slaby));
 							glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0] + slabx), scaleValue*(crossy + 1000*mprVector[ 1] + slaby));
 						}
-						else
-						{
-							float crossx, crossy;
-							
+						else {
 							glLineWidth(2.0);
 							glBegin(GL_LINES);
 
-							crossx = cross.x-[curDCM pwidth]/2.;
-							crossy = cross.y-[curDCM pheight]/2.;
+							float crossx = cross.x-curDCM.pwidth/2.;
+							float crossy = cross.y-curDCM.pheight/2.;
 							
 							glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0]), scaleValue*(crossy - 1000*mprVector[ 1]));
 							glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0]), scaleValue*(crossy + 1000*mprVector[ 1]));
@@ -6992,16 +6538,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						glColor3f (1.0f, 0.0f, 0.0f);
 						glLineWidth(1.0);
 						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(cross.x-[curDCM pwidth]/2. - 1000*tvec[ 0]), scaleValue*(cross.y-[curDCM pheight]/2. - 1000*tvec[ 1]));
-							glVertex2f( scaleValue*(cross.x-[curDCM pwidth]/2. + 1000*tvec[ 0]), scaleValue*(cross.y-[curDCM pheight]/2. + 1000*tvec[ 1]));
+							glVertex2f( scaleValue*(cross.x-curDCM.pwidth/2. - 1000*tvec[ 0]), scaleValue*(cross.y-curDCM.pheight/2. - 1000*tvec[ 1]));
+							glVertex2f( scaleValue*(cross.x-curDCM.pwidth/2. + 1000*tvec[ 0]), scaleValue*(cross.y-curDCM.pheight/2. + 1000*tvec[ 1]));
 						glEnd();
 					}
 				}
 
 				NSPoint crossB = cross;
 
-				crossB.x -= [curDCM pwidth]/2.;
-				crossB.y -= [curDCM pheight]/2.;
+				crossB.x -= curDCM.pwidth/2.;
+				crossB.y -= curDCM.pheight/2.;
 				
 				crossB.x *=scaleValue;
 				crossB.y *=scaleValue;
@@ -7032,16 +6578,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					glBegin(GL_LINE_LOOP);
 					
-					long i;
-					
 					#define CIRCLERESOLUTION 20
-					for(i = 0; i < CIRCLERESOLUTION ; i++)
-					{
-					  // M_PI defined in cmath.h
+					for( long i = 0; i < CIRCLERESOLUTION ; i++ ) {
 					  float alpha = i * 2 * M_PI /CIRCLERESOLUTION;
-					  
-					  glVertex2f( crossB.x + BS*cos(alpha), crossB.y + BS*sin(alpha)/[curDCM pixelRatio]);
+					  glVertex2f( crossB.x + BS*cos(alpha), crossB.y + BS*sin(alpha)/curDCM.pixelRatio);
 					}
+
 					glEnd();
 				}
 				glLineWidth(1.0);
@@ -7057,13 +6599,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			// ***********************
 			// DRAW CLUT BARS ********
 			
-			if( [self is2DViewer] == YES && annotations != annotNone)
-			{
+			if( [self is2DViewer] == YES && annotations != annotNone) {
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 				glScalef (2.0f /(size.size.width), -2.0f / (size.size.height), 1.0f); // scale to port per pixel scale
 
-				if( clutBars == barOrigin || clutBars == barBoth)
-				{
+				if( clutBars == barOrigin || clutBars == barBoth) {
 					float			heighthalf = size.size.height/2 - 1;
 					float			widthhalf = size.size.width/2 - 1;
 					long			yRaster = 1, xRaster, i;
@@ -7082,8 +6622,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					glLineWidth(1.0);
 					glBegin(GL_LINES);
-					for( i = 0; i < 256; i++)
-					{
+					for( long i = 0; i < 256; i++ ) {
 						glColor3ub ( redTable[ i], greenTable[ i], blueTable[ i]);
 						
 						glVertex2f(  widthhalf - BARPOSX1, heighthalf - (-128.f + i));
@@ -7096,8 +6635,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					glVertex2f(  widthhalf - BARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  widthhalf - BARPOSX2, heighthalf - 127.f);
 					glEnd();
 					
-					if( curWW < 50)
-					{
+					if( curWW < 50 ) {
 						tempString = [NSString stringWithFormat: @"%0.4f", curWL - curWW/2];
 						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
 						
@@ -7107,8 +6645,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						tempString = [NSString stringWithFormat: @"%0.4f", curWL + curWW/2];
 						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
 					}
-					else
-					{
+					else {
 						tempString = [NSString stringWithFormat: @"%0.0f", curWL - curWW/2];
 						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
 						
@@ -7120,10 +6657,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					}
 				} //clutBars == barOrigin || clutBars == barBoth
 				
-				if( blendingView)
-				{
-					if( clutBars == barFused || clutBars == barBoth)
-					{
+				if( blendingView ) {
+					if( clutBars == barFused || clutBars == barBoth) {
 						unsigned char	*bred, *bgreen, *bblue;
 						float			heighthalf = size.size.height/2 - 1;
 						float			widthhalf = size.size.width/2 - 1;
@@ -7131,8 +6666,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						float			bwl, bww;
 						NSString		*tempString = 0L;
 						
-						if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-						{
+						if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"]) {
 							bred = PETredTable;
 							bgreen = PETgreenTable;
 							bblue = PETblueTable;
@@ -7149,8 +6683,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						
 						glLineWidth(1.0);
 						glBegin(GL_LINES);
-						for( i = 0; i < 256; i++)
-						{
+						for( long i = 0; i < 256; i++ ) {
 							glColor3ub ( bred[ i], bgreen[ i], bblue[ i]);
 							
 							glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - (-128.f + i));
@@ -7165,8 +6698,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						
 						[blendingView getWLWW: &bwl :&bww];
 						
-						if( curWW < 50)
-						{
+						if( curWW < 50) {
 							tempString = [NSString stringWithFormat: @"%0.4f", bwl - bww/2];
 							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
 							
@@ -7176,8 +6708,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							tempString = [NSString stringWithFormat: @"%0.4f", bwl + bww/2];
 							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
 						}
-						else
-						{
+						else {
 							tempString = [NSString stringWithFormat: @"%0.0f", bwl - bww/2];
 							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
 							
@@ -7192,8 +6723,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			} //[self is2DViewer] == YES
 
 			
-			if (annotations != annotNone)
-			{
+			if (annotations != annotNone) {
 				long yRaster = 1, xRaster;
 				char cstr [400], *cptr;
 			
@@ -7205,8 +6735,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				//FRAME RECT IF MORE THAN 1 WINDOW and IF THIS WINDOW IS THE FRONTMOST
 				if(( numberOf2DViewer > 1 && [self is2DViewer] == YES && stringID == 0L) || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
 				{	// draw line around key View
-					if( [[self window] isMainWindow] && isKeyView)
-					{
+					if( [[self window] isMainWindow] && isKeyView) {
 						float heighthalf = size.size.height/2;
 						float widthhalf = size.size.width/2;
 						
@@ -7224,8 +6753,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					}
 				}  //drawLines for ImageView Frames
 				
-				if ((_imageColumns > 1 || _imageRows > 1) && [self is2DViewer] == YES && stringID == 0L)
-				{
+				if ((_imageColumns > 1 || _imageRows > 1) && [self is2DViewer] == YES && stringID == 0L ) {
 					float heighthalf = size.size.height/2 - 1;
 					float widthhalf = size.size.width/2 - 1;
 					
@@ -7256,7 +6784,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 				glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 				glTranslatef( origin.x + originOffset.x, -origin.y - originOffset.y, 0.0f);
-				glScalef( 1.f, [curDCM pixelRatio], 1.f);
+				glScalef( 1.f, curDCM.pixelRatio, 1.f);
 				
 				// Draw ROIs
 				BOOL drawROI = NO;
@@ -7264,27 +6792,24 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				if( [self is2DViewer] == YES) drawROI = [[[self windowController] roiLock] tryLock];
 				else drawROI = YES;
 				
-				if( drawROI)
-				{
+				if( drawROI ) {
 					BOOL resetData = NO;
 					if(_imageColumns > 1 || _imageRows > 1) resetData = YES;	//For alias ROIs
 					
 					NSSortDescriptor * roiSorting = [[[NSSortDescriptor alloc] initWithKey:@"uniqueID" ascending:NO] autorelease];
 					
 					rectArray = [[NSMutableArray alloc] initWithCapacity: [curRoiList count]];
-					int i;
-					for( i = [curRoiList count]-1; i >= 0; i--)
-					{
+
+					for( int i = [curRoiList count]-1; i >= 0; i--) {
 						if( resetData) [[curRoiList objectAtIndex:i] recompute];
 						[[curRoiList objectAtIndex:i] setRoiFont: labelFontListGL :labelFontListGLSize :self];
-						[[curRoiList objectAtIndex:i] drawROI: scaleValue :[curDCM pwidth]/2. :[curDCM pheight]/2. :[curDCM pixelSpacingX] :[curDCM pixelSpacingY]];
+						[[curRoiList objectAtIndex:i] drawROI: scaleValue : curDCM.pwidth / 2. : curDCM.pheight / 2. : curDCM.pixelSpacingX : curDCM.pixelSpacingY];
 					}
 					
 					
-					if (!suppress_labels)
-					{
+					if ( !suppress_labels ) {
 						NSArray	*sortedROIs = [curRoiList sortedArrayUsingDescriptors: [NSArray arrayWithObject: roiSorting]];
-						for(i=[sortedROIs count]-1; i>=0; i--) [[sortedROIs objectAtIndex:i] drawTextualData];
+						for( int i = [sortedROIs count]-1; i>=0; i-- ) [[sortedROIs objectAtIndex:i] drawTextualData];
 					}
 					
 					[rectArray release];
@@ -7301,36 +6826,32 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				// Draw any Plugin objects
 				
 				NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithFloat: scaleValue], @"scaleValue",
-																						[NSNumber numberWithFloat: [curDCM pwidth]/2.], @"offsetx",
-																						[NSNumber numberWithFloat: [curDCM pheight]/2.], @"offsety",
-																						[NSNumber numberWithFloat: [curDCM pixelSpacingX]], @"spacingX",
-																						[NSNumber numberWithFloat: [curDCM pixelSpacingY]], @"spacingY",
+																						[NSNumber numberWithFloat: curDCM.pwidth /2. ], @"offsetx",
+																						[NSNumber numberWithFloat: curDCM.pheight /2.], @"offsety",
+																						[NSNumber numberWithFloat: curDCM.pixelSpacingX], @"spacingX",
+																						[NSNumber numberWithFloat: curDCM.pixelSpacingY], @"spacingY",
 																						0L];
 				
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawObjects" object: self userInfo: userInfo];
 				
 				//**SLICE CUR FOR 3D MPR
-				if( stringID)
-				{
-					if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
-					{
+				if( stringID ) {
+					if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) {
 						[self subDrawRect: aRect];
-						[self setScaleValue: scaleValue];
+						self.scaleValue = scaleValue;
 					}
 				}
 				
 				//** SLICE CUT BETWEEN SERIES
 				
-				if( stringID == 0L)
-				{
+				if( stringID == 0L) {
 					glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 					glEnable(GL_BLEND);
 					glEnable(GL_POINT_SMOOTH);
 					glEnable(GL_LINE_SMOOTH);
 					glEnable(GL_POLYGON_SMOOTH);
 
-					if( sliceVector[ 0] != 0 | sliceVector[ 1] != 0  | sliceVector[ 2] != 0 )
-					{
+					if( sliceVector[ 0] != 0 | sliceVector[ 1] != 0  | sliceVector[ 2] != 0 ) {
 						glColor3f (0.0f, 0.6f, 0.0f);
 						glLineWidth(2.0);
 						glBegin(GL_LINES);
@@ -7348,8 +6869,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						glEnd();
 					}
 					
-					if( slicePoint3D[ 0] != 0 | slicePoint3D[ 1] != 0  | slicePoint3D[ 2] != 0 )
-					{
+					if( slicePoint3D[ 0] != 0 | slicePoint3D[ 1] != 0  | slicePoint3D[ 2] != 0 ) {
 						float vectorP[ 9], tempPoint3D[ 3], rotateVector[ 2];
 						
 					//	glColor3f (0.6f, 0.0f, 0.0f);
@@ -7360,47 +6880,45 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						
 					//	NSLog(@"Before: %2.2f / %2.2f / %2.2f", slicePoint3D[ 0], slicePoint3D[ 1], slicePoint3D[ 2]);
 						
-						slicePoint3D[ 0] -= [curDCM originX];
-						slicePoint3D[ 1] -= [curDCM originY];
-						slicePoint3D[ 2] -= [curDCM originZ];
+						slicePoint3D[ 0] -= curDCM.originX;
+						slicePoint3D[ 1] -= curDCM.originY;
+						slicePoint3D[ 2] -= curDCM.originZ;
 						
 						tempPoint3D[ 0] = slicePoint3D[ 0] * vectorP[ 0] + slicePoint3D[ 1] * vectorP[ 1] + slicePoint3D[ 2] * vectorP[ 2];
 						tempPoint3D[ 1] = slicePoint3D[ 0] * vectorP[ 3] + slicePoint3D[ 1] * vectorP[ 4] + slicePoint3D[ 2] * vectorP[ 5];
 						tempPoint3D[ 2] = slicePoint3D[ 0] * vectorP[ 6] + slicePoint3D[ 1] * vectorP[ 7] + slicePoint3D[ 2] * vectorP[ 8];
 						
-						slicePoint3D[ 0] += [curDCM originX];
-						slicePoint3D[ 1] += [curDCM originY];
-						slicePoint3D[ 2] += [curDCM originZ];
+						slicePoint3D[ 0] += curDCM.originX;
+						slicePoint3D[ 1] += curDCM.originY;
+						slicePoint3D[ 2] += curDCM.originZ;
 						
 					//	NSLog(@"After: %2.2f / %2.2f / %2.2f", tempPoint3D[ 0], tempPoint3D[ 1], tempPoint3D[ 2]);
 						
-						tempPoint3D[0] /= [curDCM pixelSpacingX];
-						tempPoint3D[1] /= [curDCM pixelSpacingY];
+						tempPoint3D[0] /= curDCM.pixelSpacingX;
+						tempPoint3D[1] /= curDCM.pixelSpacingY;
 						
-						tempPoint3D[0] -= [curDCM pwidth]/2.;
-						tempPoint3D[1] -= [curDCM pheight]/2.;
+						tempPoint3D[0] -= curDCM.pwidth * 0.5f;
+						tempPoint3D[1] -= curDCM.pheight * 0.5f;
 						
-						if( sliceVector[ 0] != 0 | sliceVector[ 1] != 0  | sliceVector[ 2] != 0 )
-						{
+						if( sliceVector[ 0] != 0 | sliceVector[ 1] != 0  | sliceVector[ 2] != 0 ) {
 							rotateVector[ 0] = sliceVector[ 1];
 							rotateVector[ 1] = -sliceVector[ 0];
 							
 							glBegin(GL_LINES);
-							glVertex2f( scaleValue*(tempPoint3D[ 0]-20/[curDCM pixelSpacingX] *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]-20/[curDCM pixelSpacingY]*(rotateVector[ 1])));
-							glVertex2f( scaleValue*(tempPoint3D[ 0]+20/[curDCM pixelSpacingX] *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]+20/[curDCM pixelSpacingY]*(rotateVector[ 1])));
+							glVertex2f( scaleValue*(tempPoint3D[ 0]-20/curDCM.pixelSpacingX *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]-20/curDCM.pixelSpacingY*(rotateVector[ 1])));
+							glVertex2f( scaleValue*(tempPoint3D[ 0]+20/curDCM.pixelSpacingX *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]+20/curDCM.pixelSpacingY*(rotateVector[ 1])));
 							glEnd();
 						}
-						else
-						{
+						else {
 							glColor3f (0.0f, 0.6f, 0.0f);
 							glLineWidth(2.0);
 							
 							glBegin(GL_LINES);
-								glVertex2f( scaleValue*(tempPoint3D[ 0]-20/[curDCM pixelSpacingX]), scaleValue*(tempPoint3D[ 1]));
-								glVertex2f( scaleValue*(tempPoint3D[ 0]+20/[curDCM pixelSpacingX]), scaleValue*(tempPoint3D[ 1]));
+								glVertex2f( scaleValue*(tempPoint3D[ 0]-20/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
+								glVertex2f( scaleValue*(tempPoint3D[ 0]+20/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
 								
-								glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]-20/[curDCM pixelSpacingY]));
-								glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]+20/[curDCM pixelSpacingY]));
+								glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]-20/curDCM.pixelSpacingY));
+								glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]+20/curDCM.pixelSpacingY));
 							glEnd();
 						}
 						
@@ -7409,8 +6927,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						glLineWidth(1.0);
 					}
 					
-					if( sliceVector2[ 0] != 0 | sliceVector2[ 1] != 0  | sliceVector2[ 2] != 0 )
-					{
+					if( sliceVector2[ 0] != 0 | sliceVector2[ 1] != 0  | sliceVector2[ 2] != 0 ) {
 						glColor3f (0.0f, 0.6f, 0.0f);
 						glLineWidth(2.0);
 						glBegin(GL_LINES);
@@ -7439,54 +6956,47 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 				glColor3f (0.0f, 1.0f, 0.0f);
 				
-				 if( annotations >= annotBase)
-				 {
+				 if( annotations >= annotBase) {
 					//** PIXELSPACING LINES
 					float yOffset = 24;
 					float xOffset = 32;
 					//float xOffset = 10;
 					//float yOffset = 12;
 					glBegin(GL_LINES);
-					if( [curDCM pixelSpacingX] != 0 && [curDCM pixelSpacingX] * 1000.0 < 1)
-					{ 
-						glVertex2f(scaleValue  * (-0.02/[curDCM pixelSpacingX]), size.size.height/2 - yOffset); 
-						glVertex2f(scaleValue  * (0.02/[curDCM pixelSpacingX]), size.size.height/2 - yOffset);
-
-						glVertex2f(-size.size.width/2 + xOffset , scaleValue  * (-0.02/[curDCM pixelSpacingY]*[curDCM pixelRatio])); 
-						glVertex2f(-size.size.width/2 + xOffset , scaleValue  * (0.02/[curDCM pixelSpacingY]*[curDCM pixelRatio]));
-
-						short i, length;
-						for (i = -20; i<=20; i++)
-						{
-							if (i % 10 == 0) length = 10;
-							else  length = 5;
+					if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingX * 1000.0 < 1) {
 						
-							glVertex2f(i*scaleValue *0.001/[curDCM pixelSpacingX], size.size.height/2 - yOffset);
-							glVertex2f(i*scaleValue *0.001/[curDCM pixelSpacingX], size.size.height/2 - yOffset - length);
+						glVertex2f(scaleValue  * (-0.02/curDCM.pixelSpacingX), size.size.height/2 - yOffset); 
+						glVertex2f(scaleValue  * (0.02/curDCM.pixelSpacingX), size.size.height/2 - yOffset);
+
+						glVertex2f(-size.size.width/2 + xOffset , scaleValue  * (-0.02/curDCM.pixelSpacingY*curDCM.pixelRatio)); 
+						glVertex2f(-size.size.width/2 + xOffset , scaleValue  * (0.02/curDCM.pixelSpacingY*curDCM.pixelRatio));
+
+						for ( short i = -20; i<=20; i++ ) {
+							short length = ( i % 10 == 0 )? 10 : 5;
+
+						
+							glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, size.size.height/2 - yOffset);
+							glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, size.size.height/2 - yOffset - length);
 							
-							glVertex2f(-size.size.width/2 + xOffset +  length,  i* scaleValue *0.001/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
-							glVertex2f(-size.size.width/2 + xOffset,  i* scaleValue * 0.001/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
+							glVertex2f(-size.size.width/2 + xOffset +  length,  i* scaleValue *0.001/curDCM.pixelSpacingY*curDCM.pixelRatio);
+							glVertex2f(-size.size.width/2 + xOffset,  i* scaleValue * 0.001/curDCM.pixelSpacingY*curDCM.pixelRatio);
 						}
 					}
-					else if( [curDCM pixelSpacingX] != 0 && [curDCM pixelSpacingY] != 0)
-					{
-						glVertex2f(scaleValue  * (-50/[curDCM pixelSpacingX]), size.size.height/2 - yOffset); 
-						glVertex2f(scaleValue  * (50/[curDCM pixelSpacingX]), size.size.height/2 - yOffset);
+					else if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0) {
+						glVertex2f(scaleValue  * (-50/curDCM.pixelSpacingX), size.size.height/2 - yOffset); 
+						glVertex2f(scaleValue  * (50/curDCM.pixelSpacingX), size.size.height/2 - yOffset);
 						
-						glVertex2f(-size.size.width/2 + xOffset , scaleValue  * (-50/[curDCM pixelSpacingY]*[curDCM pixelRatio])); 
-						glVertex2f(-size.size.width/2 + xOffset , scaleValue  * (50/[curDCM pixelSpacingY]*[curDCM pixelRatio]));
+						glVertex2f(-size.size.width/2 + xOffset , scaleValue  * (-50/curDCM.pixelSpacingY*curDCM.pixelRatio)); 
+						glVertex2f(-size.size.width/2 + xOffset , scaleValue  * (50/curDCM.pixelSpacingY*curDCM.pixelRatio));
 
-						short i, length;
-						for (i = -5; i<=5; i++)
-						{
-							if (i % 5 == 0) length = 10;
-							else  length = 5;
+						for ( short i = -5; i<=5; i++ ) {
+							short length = (i % 5 == 0) ? 10 : 5;
 						
-							glVertex2f(i*scaleValue *10/[curDCM pixelSpacingX], size.size.height/2 - yOffset);
-							glVertex2f(i*scaleValue *10/[curDCM pixelSpacingX], size.size.height/2 - yOffset - length);
+							glVertex2f(i*scaleValue *10/curDCM.pixelSpacingX, size.size.height/2 - yOffset);
+							glVertex2f(i*scaleValue *10/curDCM.pixelSpacingX, size.size.height/2 - yOffset - length);
 							
-							glVertex2f(-size.size.width/2 + xOffset +  length,  i* scaleValue *10/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
-							glVertex2f(-size.size.width/2 + xOffset,  i* scaleValue * 10/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
+							glVertex2f(-size.size.width/2 + xOffset +  length,  i* scaleValue *10/curDCM.pixelSpacingY*curDCM.pixelRatio);
+							glVertex2f(-size.size.width/2 + xOffset,  i* scaleValue * 10/curDCM.pixelSpacingY*curDCM.pixelRatio);
 						}
 					}
 					glEnd();
@@ -7496,8 +7006,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				} //annotations >= annotBase
 			} //Annotation  != None
 				
-			if(repulsorRadius != 0)
-			{
+			if(repulsorRadius != 0) {
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 				glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
 				glTranslatef (-(size.size.width) / 2.0f, -(size.size.height) / 2.0f, 0.0f); // translate center to upper left
@@ -7505,8 +7014,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				[self drawRepulsorToolArea];
 			}
 			
-			if(ROISelectorStartPoint.x!=ROISelectorEndPoint.x || ROISelectorStartPoint.y!=ROISelectorEndPoint.y)
-			{
+			if(ROISelectorStartPoint.x!=ROISelectorEndPoint.x || ROISelectorStartPoint.y!=ROISelectorEndPoint.y) {
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 				glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
 				glTranslatef (-(size.size.width) / 2.0f, -(size.size.height) / 2.0f, 0.0f); // translate center to upper left
@@ -7532,12 +7040,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				eventLocation.y = eventLocation.y - (size.height/2. - iChatTheatreViewSize.height/2.);
 						
 				// generate iChat cursor Texture Buffer (only once)
-				if(!iChatCursorTextureBuffer)
-				{
+				if(!iChatCursorTextureBuffer) {
 					NSLog(@"generate iChatCursor Texture Buffer");
 					NSImage *iChatCursorImage;
-					if (iChatCursorImage = [[NSCursor pointingHandCursor] image])
-					{
+					if (iChatCursorImage = [[NSCursor pointingHandCursor] image]) {
 						iChatCursorHotSpot = [[NSCursor pointingHandCursor] hotSpot];
 						iChatCursorImageSize = [iChatCursorImage size];
 						
@@ -7558,8 +7064,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 
 				// draw the cursor in the iChat Theatre View
-				if(iChatCursorTextureBuffer)
-				{
+				if(iChatCursorTextureBuffer) {
 					eventLocation.x -= iChatCursorHotSpot.x;
 					eventLocation.y -= iChatCursorHotSpot.y;
 					
@@ -7591,8 +7096,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			} // end iChat Theatre context
 			
 		}  
-		else
-		{  //no valid image  ie curImage = -1
+		else {    //no valid image  ie curImage = -1
 			//NSLog(@"no IMage");
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear (GL_COLOR_BUFFER_BIT);
@@ -7643,11 +7147,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (NSMutableArray*) rectArray
-{
-	return rectArray;
-}
-
 - (void)reshape	// scrolled, moved or resized
 {
 	if( dcmPixList && [[self window] isVisible])
@@ -7668,7 +7167,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( [self is2DViewer])
 				[[self windowController] setUpdateTilingViewsValue: YES];
 			
-			[self setScaleValue: (scaleValue * yChanged)];
+			self.scaleValue = scaleValue * yChanged;
 			
 			if( [self is2DViewer])
 				[[self windowController] setUpdateTilingViewsValue: NO];
@@ -7706,8 +7205,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels :(BOOL) allTiles
 {
-	if( allTiles && [self is2DViewer] && (_imageRows != 1 || _imageColumns != 1))
-	{
+	if( allTiles && [self is2DViewer] && (_imageRows != 1 || _imageColumns != 1)) {
 		NSArray		*views = [[[self windowController] seriesView] imageViews];
 		
 		// Create a large buffer for all views
@@ -7722,21 +7220,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		globalView = malloc( viewSize * _imageColumns * _imageRows);
 		
-		int x, y;
-		
 		free( firstView);
 		
-		for( x = 0; x < _imageColumns; x++)
-		{
-			for( y = 0; y < _imageRows; y++)
-			{
+		for( int x = 0; x < _imageColumns; x++ ) {
+			for( int y = 0; y < _imageRows; y++) {
 				unsigned char	*aView = [[views objectAtIndex: x + y*_imageColumns] getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels];
 				
 				unsigned char	*o = globalView + *spp*globalWidth*y**height**bpp/8 +  x**width**spp**bpp/8;
 			
-				int yy;
-				for( yy = 0 ; yy < *height; yy++)
-				{
+				for( int yy = 0 ; yy < *height; yy++) {
 					memcpy( o + yy**spp*globalWidth**bpp/8, aView + yy**spp**width**bpp/8, *spp**width**bpp/8);
 				}
 				
@@ -7755,11 +7247,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 -(unsigned char*) getRawPixelsView:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels
 {
 	unsigned char	*buf = 0L;
-	long			i;
 	
 	if( screenCapture)	// Pixels displayed in current window
 	{
-		for( i = 0; i < [curRoiList count]; i++)	[[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
+		for( long i = 0; i < [curRoiList count]; i++)	[[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
 		
 	//	if( force8bits)
 		{
@@ -7774,10 +7265,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			*bpp = 8;
 			
 			buf = malloc( 1 + *width * *height * 4 * *bpp/8);
-			if( buf)
-			{
-				if(removeGraphical)
-				{
+			if( buf ) {
+				if(removeGraphical) {
 					NSString	*str = [[self stringID] retain];
 					[self setStringID: @"export"];
 					
@@ -7800,8 +7289,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					register int ii = *width * *height;
 					register unsigned char	*t_argb = buf;
 					register unsigned char	*t_rgb = buf;
-					while( ii-->0)
-					{
+					while( ii-->0 ) {
 						*((int*) t_rgb) = *((int*) t_argb);
 						t_argb+=4;
 						t_rgb+=3;
@@ -7812,8 +7300,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 				unsigned char	*tempBuf = malloc( rowBytes);
 				
-				for( i = 0; i < *height/2; i++)
-				{
+				for( long i = 0; i < *height/2; i++ ) {
 					memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
 					memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
 					memcpy( buf + i*rowBytes, tempBuf, rowBytes);
@@ -7822,112 +7309,32 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				free( tempBuf);
 			}
 		}
-//		else
-//		{
-//			// Convert data to 16 bits
-//			vImage_Buffer			srcf, dst8;
-//				
-//			*spp = 1;
-//			*bpp = 16;
-//			*width = [curDCM pwidth];
-//			*height = [curDCM pheight];
-//		
-//			srcf.height = *height;
-//			srcf.width = *width;
-//			srcf.rowBytes = *width * sizeof( float);
-//			
-//			dst8.height =  *height;
-//			dst8.width = *width;
-//			dst8.rowBytes = *width * sizeof( short);
-//			
-//			srcf.data = [curDCM fImage];
-//			
-//			i = *width * *height * *spp * *bpp / 8;
-//			unsigned short	*srcBuf = malloc( i);
-//			if( srcBuf)
-//			{
-//				dst8.data = srcBuf;
-//				vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);	//By default, we use a 1024 rescale intercept !!
-//			}
-//			
-//			NSPoint pt1 = [self frame].origin;
-//			NSPoint pt2;
-//			
-//			pt2.x = [self frame].origin.x + [self frame].size.width;
-//			pt2.y = [self frame].origin.y + [self frame].size.height;
-//			
-//			pt1 = [self ConvertFromView2GL:pt1];
-//			pt2 = [self ConvertFromView2GL:pt2];
-//			
-//		//	NSLog( @"%f %f - %f %f", pt1.x, pt1.y, pt2.x, pt2.y);
-//			
-//			long newWidth, newHeight, originX, originY;
-//			long x, y;
-//			
-//			newWidth = pt2.x - pt1.x;
-//			newHeight = pt2.y - pt1.y;
-//			
-//			newWidth /= 2;
-//			newHeight /= 2;
-//			newWidth *= 2;
-//			newHeight *= 2;
-//			
-//			originX = pt1.x;
-//			originY = pt1.y;
-//			
-//			i = newWidth * newHeight * *spp * *bpp / 8;
-//			unsigned short	*cropBuf = malloc( i);
-//			
-//			if( cropBuf)
-//			{
-//				memset( cropBuf, -1024, i);
-//				
-//				for( x = originX; x < originX+newWidth; x++)
-//				{
-//					for( y = originY; y < originY+newHeight; y++)
-//					{
-//						if( x >= 0 && x < *width && y >= 0 && y < *height)
-//							cropBuf[ (x-originX) + newWidth*(y-originY)] = srcBuf[ x + *width*y];
-//					}
-//				}
-//			}
-//			
-//			free( srcBuf);
-//			buf = (unsigned char*) cropBuf;
-//			
-//			*width = newWidth;
-//			*height = newHeight;
-//		}
 	}
 	else				// Pixels contained in memory  -> only RGB or 16 bits data
 	{
-		BOOL	isRGB = [curDCM isRGB];
+		BOOL	isRGB = curDCM.isRGB;
 		
-		*width = [curDCM pwidth];
-		*height = [curDCM pheight];
+		*width = curDCM.pwidth;
+		*height = curDCM.pheight;
 		
-		if( [curDCM thickSlabVRActivated])
-		{
+		if( [curDCM thickSlabVRActivated]) {
 			force8bits = YES;
 			
-			if( [curDCM stackMode] == 4 || [curDCM stackMode] == 5) isRGB = YES;
+			if( curDCM.stackMode == 4 || curDCM.stackMode == 5) isRGB = YES;
 		}
 		
-		if( isRGB == YES)
-		{
+		if( isRGB == YES) {
 			*spp = 3;
 			*bpp = 8;
 			
-			i = *width * *height * *spp * *bpp / 8;
-			buf = malloc( i);
-			if( buf)
-			{
-				unsigned char *dst = buf, *src = (unsigned char*) [curDCM baseAddr];
+			long i = *width * *height * *spp * *bpp / 8;
+			buf = malloc( i );
+			if( buf ) {
+				unsigned char *dst = buf, *src = (unsigned char*) curDCM.baseAddr;
 				i = *width * *height;
 				
 				// CONVERT ARGB TO RGB
-				while( i-- > 0)
-				{
+				while( i-- > 0) {
 					src++;
 					*dst++ = *src++;
 					*dst++ = *src++;
@@ -7940,10 +7347,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			*spp = 3;
 			*bpp = 8;
 			
-			i = *width * *height * *spp * *bpp / 8;
-			buf = malloc( i);
-			if( buf)
-			{
+			long i = *width * *height * *spp * *bpp / 8;
+			buf = malloc( i );
+			if( buf) {
 				unsigned char *dst = buf, *src = colorBuf;
 				i = *width * *height;
 				
@@ -7957,8 +7363,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					*dst++ = *src++;
 				}
 				#else
-				while( i-- > 0)
-				{
+				while( i-- > 0) {
 					dst[2] = src[0];
 					dst[1] = src[1];
 					dst[0] = src[2];
@@ -7968,19 +7373,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				#endif
 			}
 		}
-		else
-		{
+		else {
 			if( force8bits)	// I don't want 16 bits data, only 8 bits data
 			{
 				*spp = 1;
 				*bpp = 8;
 				
-				i = *width * *height * *spp * *bpp / 8;
+				long i = *width * *height * *spp * *bpp / 8;
 				buf = malloc( i);
-				if( buf)
-				{
-					memcpy( buf, [curDCM baseAddr], *width**height);
-				}
+				if( buf ) memcpy( buf, curDCM.baseAddr, *width**height);
 			}
 			else	// Give me 16 bits !
 			{
@@ -7999,22 +7400,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 				srcf.data = [curDCM computefImage];
 				
-				i = *width * *height * *spp * *bpp / 8;
+				long i = *width * *height * *spp * *bpp / 8;
 				buf = malloc( i);
-				if( buf)
-				{
+				if( buf ) {
 					dst8.data = buf;
 					vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);	//By default, we use a 1024 rescale intercept !!
 				}
 				
-				if( srcf.data != [curDCM fImage]) free( srcf.data);
+				if( srcf.data != curDCM.fImage ) free( srcf.data );
 			}
 		}
 		
 		// IF 8 bits or RGB, IF non-square pixels -> square pixels
 		
-		if( squarePixels == YES && *bpp == 8 && [self pixelSpacingX] != [self pixelSpacingY])
-		{
+		if( squarePixels == YES && *bpp == 8 && self.pixelSpacingX != self.pixelSpacingY) {
 			vImage_Buffer	srcVimage, dstVimage;
 			
 			srcVimage.data = buf;
@@ -8022,13 +7421,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			srcVimage.width = *width;
 			srcVimage.rowBytes = *width * (*bpp/8) * *spp;
 			
-			dstVimage.height =  (int) ((float) *height * [self pixelSpacingY] / [self pixelSpacingX]);
+			dstVimage.height =  (int) ((float) *height * self.pixelSpacingY / self.pixelSpacingX);
 			dstVimage.width = *width;
 			dstVimage.rowBytes = *width * (*bpp/8) * *spp;
 			dstVimage.data = malloc( dstVimage.rowBytes * dstVimage.height);
 			
-			if( *spp == 3)
-			{
+			if( *spp == 3) {
 				vImage_Buffer	argbsrcVimage, argbdstVimage;
 				
 				argbsrcVimage = srcVimage;
@@ -8059,22 +7457,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	return buf;
 }
 
--(NSImage*) nsimage:(BOOL) originalSize
-{
-	return [self nsimage: originalSize allViewers: NO];
-}
+-(NSImage*) nsimage:(BOOL) originalSize{ return [self nsimage: originalSize allViewers: NO]; }
 
--(NSImage*) nsimage:(BOOL) originalSize allViewers:(BOOL) allViewers
-{
+-(NSImage*) nsimage:(BOOL) originalSize allViewers:(BOOL) allViewers {
+	
 	NSBitmapImageRep	*rep;
-	long				width, height, i, spp, bpp, x;
+	long				width, height, spp, bpp;
 	NSString			*colorSpace;
 	unsigned char		*data;
 		
-	if( stringID == 0L && originalSize == NO)
-	{
-		if( numberOf2DViewer > 1 || _imageColumns != 1 || _imageRows != 1)
-		{
+	if( stringID == 0L && originalSize == NO) {
+		if( numberOf2DViewer > 1 || _imageColumns != 1 || _imageRows != 1) {
 			stringID = [@"copy" retain];	// to remove the red square around the image
 			[self display];
 		}
@@ -8082,8 +7475,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	if( [self is2DViewer] == NO) allViewers = NO;
 	
-	if( allViewers)
-	{
+	if( allViewers) {
 		unsigned char	*tempData = 0L;
 		NSRect			unionRect;
 		NSArray			*viewers = [ViewerController getDisplayed2DViewers];
@@ -8092,15 +7484,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		NSMutableArray	*cWindows = [NSMutableArray arrayWithArray: viewers];
 		NSMutableArray	*cResult = [NSMutableArray array];
 		int wCount = [cWindows count];
-		for( i = 0; i < wCount; i++)
-		{		
+		
+		for( int i = 0; i < wCount; i++) {
 			int index = 0;
 			float minY = [[[cWindows objectAtIndex: 0] window] frame].origin.y;
 			
-			for( x = 0; x < [cWindows count]; x++)
-			{
-				if( [[[cWindows objectAtIndex: x] window] frame].origin.y > minY)
-				{
+			for( int x = 0; x < [cWindows count]; x++) {
+				if( [[[cWindows objectAtIndex: x] window] frame].origin.y > minY) {
 					minY  = [[[cWindows objectAtIndex: x] window] frame].origin.y;
 					index = x;
 				}
@@ -8108,8 +7498,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			float minX = [[[cWindows objectAtIndex: index] window] frame].origin.x;
 			
-			for( x = 0; x < [cWindows count]; x++)
-			{
+			for( int x = 0; x < [cWindows count]; x++) {
 				if( [[[cWindows objectAtIndex: x] window] frame].origin.x < minX && [[[cWindows objectAtIndex: x] window] frame].origin.y >= minY)
 				{
 					minX = [[[cWindows objectAtIndex: x] window] frame].origin.x;
@@ -8126,14 +7515,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		NSMutableArray	*viewsRect = [NSMutableArray array];
 		
 		// Compute the enclosing rect
-		for( i = 0; i < [viewers count]; i++)
-		{
+		for( int i = 0; i < [viewers count]; i++) {
 			[[[viewers objectAtIndex: i] seriesView] selectFirstTilingView];
 			
 			NSRect	bounds = [[[viewers objectAtIndex: i] imageView] bounds];
 			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"])
-			{
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"]) {
 				bounds.size.width *= [[[viewers objectAtIndex: i] seriesView] imageColumns];
 				bounds.size.height *= [[[viewers objectAtIndex: i] seriesView] imageRows];
 			}
@@ -8149,31 +7536,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			else unionRect = NSUnionRect( bounds, unionRect);
 		}
 		
-		for( i = 0; i < [viewers count]; i++)
-		{
+		for( int i = 0; i < [viewers count]; i++ ) {
 			NSRect curRect = [[viewsRect objectAtIndex: i] rectValue];
 			BOOL intersect;
 			
 			// X move
-			do
-			{
+			do {
 				intersect = NO;
 				
-				for( x = 0 ; x < [viewers count]; x++)
-				{
-					if( x != i)
-					{
+				for( int x = 0 ; x < [viewers count]; x++) {
+					if( x != i) {
 						NSRect	rect = [[viewsRect objectAtIndex: x] rectValue];
-						if( NSIntersectsRect( curRect, rect))
-						{
+						if( NSIntersectsRect( curRect, rect) ) {
 							curRect.origin.x += 2;
 							intersect = YES;
 						}
 					}
 				}
 				
-				if( intersect == NO)
-				{
+				if( intersect == NO) {
 					curRect.origin.x --;
 					if( curRect.origin.x <= unionRect.origin.x) intersect = YES;
 				}
@@ -8183,31 +7564,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[viewsRect replaceObjectAtIndex: i withObject: [NSValue valueWithRect: curRect]];
 		}
 		
-		for( i = 0; i < [viewers count]; i++)
-		{
+		for( int i = 0; i < [viewers count]; i++) {
 			NSRect curRect = [[viewsRect objectAtIndex: i] rectValue];
 			BOOL intersect;
 			
 			// Y move
-			do
-			{
+			do {
 				intersect = NO;
 				
-				for( x = 0 ; x < [viewers count]; x++)
-				{
-					if( x != i)
-					{
+				for( int x = 0 ; x < [viewers count]; x++) {
+					if( x != i) {
 						NSRect	rect = [[viewsRect objectAtIndex: x] rectValue];
-						if( NSIntersectsRect( curRect, rect))
-						{
+						if( NSIntersectsRect( curRect, rect) ) {
 							curRect.origin.y-= 2;
 							intersect = YES;
 						}
 					}
 				}
 				
-				if( intersect == NO)
-				{
+				if( intersect == NO) {
 					curRect.origin.y ++;
 					if( curRect.origin.y + curRect.size.height > unionRect.origin.y + unionRect.size.height) intersect = YES;
 				}
@@ -8219,8 +7594,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		// Re-Compute the enclosing rect
 		unionRect = [[viewsRect objectAtIndex: 0] rectValue];
-		for( i = 0; i < [viewers count]; i++)
-		{
+		for( int i = 0; i < [viewers count]; i++) {
 			unionRect = NSUnionRect( [[viewsRect objectAtIndex: i] rectValue], unionRect);
 		}
 		
@@ -8233,8 +7607,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		bpp = 8;
 		
 		data = calloc( 1, width * height * spp * bpp/8);
-		for( i = 0; i < [viewers count]; i++)
-		{
+		for( long i = 0; i < [viewers count]; i++) {
 			long	iwidth, iheight, ispp, ibpp;
 			
 			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixels:&iwidth :&iheight :&ispp :&ibpp :YES :NO];
@@ -8244,14 +7617,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			bounds.origin.x -= unionRect.origin.x;
 			bounds.origin.y -= unionRect.origin.y;
 			
-//			NSPoint origin = [[[viewers objectAtIndex: i] imageView] convertPoint: bounds.origin toView: 0L];
-//			bounds.origin = [[[viewers objectAtIndex: i] window] convertBaseToScreen: origin];
-			
 			unsigned char	*o = data + spp*width* (int) (height - bounds.origin.y - iheight) + (int) bounds.origin.x*spp;
 			
-			int y;
-			for( y = 0 ; y < iheight; y++)
-			{
+			for( int y = 0 ; y < iheight; y++) {
 				memcpy( o + y*spp*width, tempData + y*ispp*iwidth, ispp*iwidth);
 			}
 			
@@ -8260,8 +7628,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	else data = [self getRawPixels :&width :&height :&spp :&bpp :!originalSize : YES :NO :YES];
 	
-	if( [stringID isEqualToString:@"copy"])
-	{
+	if( [stringID isEqualToString:@"copy"] ) {
 		[stringID release];
 		stringID = 0L;
 		
@@ -8293,11 +7660,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     return image;
 }
 
--(float) scaleValue;
-{
-	return scaleValue;
-}
-
 - (BOOL) zoomIsSoftwareInterpolated
 {
 	return zoomIsSoftwareInterpolated;
@@ -8307,10 +7669,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	if( x <= 0) return;
 	
-	if( x != scaleValue)
-	{
-		if( scaleValue)
-		{
+	if( x != scaleValue) {
+		if( scaleValue) {
 			[self setOriginX:((origin.x * x) / scaleValue) Y:((origin.y * x) / scaleValue)];
 			
 			originOffset.x = ((originOffset.x * x) / scaleValue);
@@ -8326,8 +7686,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		else if( zoomIsSoftwareInterpolated || [blendingView zoomIsSoftwareInterpolated])
 			[self loadTextures];
 		
-		if( [self is2DViewer])
-		{
+		if( [self is2DViewer]) {
 			// Series Level
 			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / [self frame].size.height] forKey:@"scale"];
 			[[self seriesObj] setValue:[NSNumber numberWithInt: 2] forKey: @"displayStyle"];	//displayStyle = 2  -> scaleValue is proportional to view height
@@ -8347,10 +7706,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) setScaleValue:(float) x
 {
-	if( x <= 0) return;
+	if( x <= 0 ) return;
 	
-	if( scaleValue != x)
-	{
+	if( scaleValue != x ) {
 		scaleValue = x;
 		if( scaleValue < 0.01) scaleValue = 0.01;
 		if( scaleValue > 100) scaleValue = 100;
@@ -8360,8 +7718,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		else if( zoomIsSoftwareInterpolated || [blendingView zoomIsSoftwareInterpolated])
 			[self loadTextures];
 		
-		if( [self is2DViewer])
-		{
+		if( [self is2DViewer]) {
 			// Series Level
 			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / [self frame].size.height] forKey:@"scale"];
 			[[self seriesObj] setValue:[NSNumber numberWithInt: 2] forKey: @"displayStyle"];	//displayStyle = 2  -> scaleValue is proportional to view height
@@ -8379,49 +7736,21 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
--(NSArray*) dcmFilesList
-{
-	return dcmFilesList;
-}
-
--(NSMutableArray*) dcmPixList
-{
-	return dcmPixList;
-}
-
--(NSMutableArray*) dcmRoiList
-{
-	return dcmRoiList;
-}
-
-- (long) indexForPix: (long) pixIndex
-{
+- (long) indexForPix: (long) pixIndex {
 	if ([[[dcmFilesList objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] == 1)
 		return pixIndex;
 	else
 		return 0;
 }
 
-- (long) syncSeriesIndex
-{
-	return syncSeriesIndex;
-}
-
--(void) setSyncSeriesIndex:(long) i
-{
-	syncSeriesIndex = i;
-}
-
--(void) setAlpha:(float) a
-{
-	long	i;
+-(void) setAlpha:(float) a {
 	float   val, ii;
 	float   src[ 256];
+	long i;
 	
-	switch( blendingMode)
-	{
+	switch( blendingMode ) {
 		case 0:				// LINEAR FUSION
-			for( i = 0; i < 256; i++) src[ i] = i;
+			for( i = 0; i < 256; i++ ) src[ i] = i;
 		break;
 		
 		case 1:				// HIGH-LOW-HIGH
@@ -8479,8 +7808,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
--(void) setBlendingFactor:(float) f
-{
+-(void) setBlendingFactor:(float) f {
 	blendingFactor = f;
 	
 	[blendingView setAlpha: blendingFactor];
@@ -8488,8 +7816,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self setNeedsDisplay: YES];
 }
 
--(void) setBlendingMode:(long) f
-{
+-(void) setBlendingMode:(long) f {
 	blendingMode = f;
 	
 	[blendingView setBlendingMode: blendingMode];
@@ -8500,15 +7827,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self setNeedsDisplay: YES];
 }
 
--(float) rotation;
-{
-	return rotation;
-}
-
--(void) setRotation:(float) x
-{
-	if( rotation != x)
-	{
+-(void) setRotation:(float) x {
+	if( rotation != x )	{
 		rotation = x;
 		
 		if( rotation < 0) rotation += 360;
@@ -8526,22 +7846,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (void) orientationCorrectedToView:(float*) correctedOrientation
-{
+- (void) orientationCorrectedToView:(float*) correctedOrientation {
 	float	o[ 9];
 	float   yRot = -1, xRot = -1;
 	float	rot = rotation;
 	
 	[curDCM orientation: o];
 	
-	if( yFlipped && xFlipped)
-	{
+	if( yFlipped && xFlipped) {
 		rot = rot + 180;
 	}
-	else
-	{
-		if( yFlipped)
-		{
+	else {
+		if( yFlipped ) {
 			xRot *= -1;
 			yRot *= -1;
 			
@@ -8550,8 +7866,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			o[ 5] *= -1;
 		}
 		
-		if( xFlipped)
-		{
+		if( xFlipped ) {
 			xRot *= -1;
 			yRot *= -1;
 			
@@ -8583,18 +7898,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	o[7] = o[2]*o[3] - o[0]*o[5];
 	o[8] = o[0]*o[4] - o[1]*o[3];
 
-	int i;
-	for( i = 0; i < 9; i++) correctedOrientation[ i] = o[ i];
-}
-
--(NSPoint) origin
-{
-	return origin;
-}
-
--(NSPoint) originOffset
-{
-	return originOffset;
+	memcpy( correctedOrientation, o, sizeof o );
 }
 
 -(void) setOrigin:(NSPoint) x
@@ -8667,8 +7971,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 - (BOOL) softwareInterpolation
 {
 	if(	scaleValue > 4 && NOINTERPOLATION == NO && 
-		SOFTWAREINTERPOLATION == YES && [curDCM pwidth] <= SOFTWAREINTERPOLATION_MAX &&
-		[curDCM isRGB] == NO && [curDCM thickSlabVRActivated] == NO)
+		SOFTWAREINTERPOLATION == YES && curDCM.pwidth <= SOFTWAREINTERPOLATION_MAX &&
+		curDCM.isRGB == NO && [curDCM thickSlabVRActivated] == NO)
 	{
 		return YES;
 	}
@@ -8711,7 +8015,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 
 	
-	if( [curDCM isRGB] == YES)
+	if( curDCM.isRGB == YES)
 	{
 		if((colorTransfer == YES) || (blending == YES))
 		{
@@ -8719,23 +8023,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			[curDCM changeWLWW :curWL: curWW];
 			
-			src.height = [curDCM pheight];
-			src.width = [curDCM pwidth];
-			src.rowBytes = [curDCM rowBytes];
-			src.data = [curDCM baseAddr];
+			src.height = curDCM.pheight;
+			src.width = curDCM.pwidth;
+			src.rowBytes = curDCM.rowBytes;
+			src.data = curDCM.baseAddr;
 			
-			dest.height = [curDCM pheight];
-			dest.width = [curDCM pwidth];
-			dest.rowBytes = [curDCM rowBytes];
-			dest.data = [curDCM baseAddr];
+			dest.height = curDCM.pheight;
+			dest.width = curDCM.pwidth;
+			dest.rowBytes = curDCM.rowBytes;
+			dest.data = curDCM.baseAddr;
 			
-			if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0)
-			{
+			if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0) {
 				unsigned char  credTable[256], cgreenTable[256], cblueTable[256];
-				long i;
 				
-				for( i = 0; i < 256; i++)
-				{
+				for( long i = 0; i < 256; i++) {
 					credTable[ i] = rT[ i] * redFactor;
 					cgreenTable[ i] = gT[ i] * greenFactor;
 					cblueTable[ i] = bT[ i] * blueFactor;
@@ -8746,8 +8047,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				//vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &cblueTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &credTable, (Pixel_8*) &alphaTable, 0);
 				//#endif
 			}
-			else
-			{
+			else {
 				//#if __BIG_ENDIAN__
 				vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) rT, (Pixel_8*) gT, (Pixel_8*) bT, 0);
 				//#else
@@ -8755,27 +8055,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				//#endif
 			}
 		}
-		else if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0)
-		{
+		else if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0) {
+
 			unsigned char  credTable[256], cgreenTable[256], cblueTable[256];
-			long i;
 			
 			vImage_Buffer src, dest;
 			
 			[curDCM changeWLWW :curWL: curWW];
 			
-			src.height = [curDCM pheight];
-			src.width = [curDCM pwidth];
-			src.rowBytes = [curDCM rowBytes];
-			src.data = [curDCM baseAddr];
+			src.height = curDCM.pheight;
+			src.width = curDCM.pwidth;
+			src.rowBytes = curDCM.rowBytes;
+			src.data = curDCM.baseAddr;
 			
-			dest.height = [curDCM pheight];
-			dest.width = [curDCM pwidth];
-			dest.rowBytes = [curDCM rowBytes];
-			dest.data = [curDCM baseAddr];
+			dest.height = curDCM.pheight;
+			dest.width = curDCM.pwidth;
+			dest.rowBytes = curDCM.rowBytes;
+			dest.data = curDCM.baseAddr;
 			
-			for( i = 0; i < 256; i++)
-			{
+			for( long i = 0; i < 256; i++ ) {
 				credTable[ i] = rT[ i] * redFactor;
 				cgreenTable[ i] = gT[ i] * greenFactor;
 				cblueTable[ i] = bT[ i] * blueFactor;
@@ -8788,35 +8086,30 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 		}
 	}
-	else if( (colorTransfer == YES) || (blending == YES))
-	{
-		if( *colorBufPtr)
-		{
-			free( *colorBufPtr);
-		}
-		*colorBufPtr = malloc( [curDCM rowBytes] * [curDCM pheight] * 4);
+	else if( (colorTransfer == YES) || (blending == YES) ) {
+
+	    if( *colorBufPtr) free( *colorBufPtr);
+
+		*colorBufPtr = malloc( curDCM.rowBytes * curDCM.pheight * 4);
 		
 		vImage_Buffer src8, dest8;
 		
-		src8.height = [curDCM pheight];
-		src8.width = [curDCM pwidth];
-		src8.rowBytes = [curDCM rowBytes];
-		src8.data = [curDCM baseAddr];
+		src8.height = curDCM.pheight;
+		src8.width = curDCM.pwidth;
+		src8.rowBytes = curDCM.rowBytes;
+		src8.data = curDCM.baseAddr;
 		
-		dest8.height = [curDCM pheight];
-		dest8.width = [curDCM pwidth];
-		dest8.rowBytes = [curDCM rowBytes]*4;
+		dest8.height = curDCM.pheight;
+		dest8.width = curDCM.pwidth;
+		dest8.rowBytes = curDCM.rowBytes*4;
 		dest8.data = *colorBufPtr;
 		
 		vImageConvert_Planar8toARGB8888(&src8, &src8, &src8, &src8, &dest8, 0);
 		
-		if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0)
-		{
+		if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0) {
 			unsigned char  credTable[256], cgreenTable[256], cblueTable[256];
-			long i;
 			
-			for( i = 0; i < 256; i++)
-			{
+			for( long i = 0; i < 256; i++ ) {
 				credTable[ i] = rT[ i] * redFactor;
 				cgreenTable[ i] = gT[ i] * greenFactor;
 				cblueTable[ i] = bT[ i] * blueFactor;
@@ -8832,49 +8125,44 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	char*			baseAddr = 0L;
 	int				rowBytes = 0;
 	
-	*tH = [curDCM pheight];
+	*tH = curDCM.pheight;
 	
-	if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES)
-	{
-		*tW = [curDCM rowBytes]/4;
-		rowBytes = [curDCM rowBytes];
-		baseAddr = [curDCM baseAddr];
+	if( curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES ) {
+		*tW = curDCM.rowBytes/4;
+		rowBytes = curDCM.rowBytes;
+		baseAddr = curDCM.baseAddr;
 	}
-    else
-	{
+    else {
 		zoomIsSoftwareInterpolated = NO;
 		
- 		if( [self softwareInterpolation])
-		{
+ 		if( [self softwareInterpolation]) {
 			zoomIsSoftwareInterpolated = YES;
 			
 			float resampledScale;
-			if( [curDCM pwidth] <= 256) resampledScale = 3;
+			if( curDCM.pwidth <= 256) resampledScale = 3;
 			else resampledScale = 2;
 			
-			*tW = [curDCM pwidth] * resampledScale;
-			*tH = [curDCM pheight] * resampledScale;
+			*tW = curDCM.pwidth * resampledScale;
+			*tH = curDCM.pheight * resampledScale;
 			
 			vImage_Buffer src, dst;
 			
-			src.width = [curDCM pwidth];
-			src.height = [curDCM pheight];
+			src.width = curDCM.pwidth;
+			src.height = curDCM.pheight;
 			
 			
-			if( (colorTransfer == YES) || (blending == YES))
-			{
+			if( (colorTransfer == YES) || (blending == YES)) {
 				rowBytes = *tW * 4;
 				
 				src.data = *colorBufPtr;
-				src.rowBytes = [curDCM rowBytes]*4;
+				src.rowBytes = curDCM.rowBytes*4;
 				dst.rowBytes = rowBytes;
 			}
-			else
-			{
+			else {
 				rowBytes = *tW;
 				
-				src.data = [curDCM baseAddr];
-				src.rowBytes = [curDCM rowBytes];
+				src.data = curDCM.baseAddr;
+				src.rowBytes = curDCM.rowBytes;
 				dst.rowBytes = rowBytes;
 			}
 			
@@ -8882,8 +8170,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			dst.height = *tH;
 			
 
-			if( *rBAddrSize < rowBytes * *tH)
-			{
+			if( *rBAddrSize < rowBytes * *tH ) {
 				if( *rAddr) free( *rAddr);
 				*rAddr = malloc( rowBytes * *tH);
 				*rBAddrSize = rowBytes * *tH;
@@ -8902,8 +8189,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				else resampledTempAddr = 0L;
 			}
 			
-			if( *rAddr)
-			{
+			if( *rAddr ) {
 				baseAddr = *rAddr;
 				dst.data = baseAddr;
 				
@@ -8912,48 +8198,40 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				else
 					vImageScale_Planar8( &src, &dst, resampledTempAddr, QUALITY);
 			}
-			else
-			{
+			else {
 				NSLog( @"not enough memory");
-				if( (colorTransfer == YES) || (blending == YES))
-				{
-					*tW = [curDCM rowBytes];
-					rowBytes = [curDCM rowBytes];
+				if( (colorTransfer == YES) || (blending == YES)) {
+					*tW = curDCM.rowBytes;
+					rowBytes = curDCM.rowBytes;
 					baseAddr = (char*) *colorBufPtr;
 				}
-				else
-				{
-					*tW = [curDCM rowBytes];
-					rowBytes = [curDCM rowBytes];
-					baseAddr = [curDCM baseAddr];
+				else {
+					*tW = curDCM.rowBytes;
+					rowBytes = curDCM.rowBytes;
+					baseAddr = curDCM.baseAddr;
 				}
 			}
 		}
-		else if( FULL32BITPIPELINE)
-		{
-			*tW = [curDCM pwidth];
-			rowBytes = [curDCM rowBytes]*4;
-			baseAddr = (char*) [curDCM fImage];
+		else if( FULL32BITPIPELINE) {
+			*tW = curDCM.pwidth;
+			rowBytes = curDCM.rowBytes*4;
+			baseAddr = (char*) curDCM.fImage;
 		}
-		else
-		{
-			if( (colorTransfer == YES) || (blending == YES))
-			{
-				*tW = [curDCM rowBytes];
-				rowBytes = [curDCM rowBytes];
+		else {
+			if( (colorTransfer == YES) || (blending == YES)) {
+				*tW = curDCM.rowBytes;
+				rowBytes = curDCM.rowBytes;
 				baseAddr = (char*) *colorBufPtr;
 			}
-			else
-			{
-				*tW = [curDCM rowBytes];
-				rowBytes = [curDCM rowBytes];
-				baseAddr = [curDCM baseAddr];
+			else {
+				*tW = curDCM.rowBytes;
+				rowBytes = curDCM.rowBytes;
+				baseAddr = curDCM.baseAddr;
 			}
 		}
 	}
 	
 
-	
     glPixelStorei (GL_UNPACK_ROW_LENGTH, *tW); // set image width in groups (pixels), accounts for border this ensures proper image alignment row to row
     // get number of textures x and y
     // extract the number of horiz. textures needed to tile image
@@ -8968,18 +8246,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	glTextureRangeAPPLE(TEXTRECTMODE, *tW * *tH * 4, baseAddr);
 	glGenTextures (*tX * *tY, texture); // generate textures names need to support tiling
     {
-            long x, y, k = 0, offsetY, offsetX = 0, currWidth, currHeight; // texture iterators, texture name iterator, image offsets for tiling, current texture width and height
-            for (x = 0; x < *tX; x++) // for all horizontal textures
+            long k = 0, offsetX = 0, currWidth, currHeight; // texture iterators, texture name iterator, image offsets for tiling, current texture width and height
+            for ( long x = 0; x < *tX; x++) // for all horizontal textures
             {
 				currWidth = GetNextTextureSize (*tW - offsetX, maxTextureSize, f_ext_texture_rectangle); // use remaining to determine next texture size 
 				
-				offsetY = 0; // reset vertical offest for every column
-				for (y = 0; y < *tY; y++) // for all vertical textures
+				long offsetY = 0; // reset vertical offest for every column
+				for ( long y = 0; y < *tY; y++) // for all vertical textures
 				{
-					unsigned char * pBuffer;
+					unsigned char *pBuffer;
 					
-					if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES)
-					{
+					if( curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES) {
 						pBuffer =   (unsigned char*) baseAddr +			
 									offsetY * rowBytes +				
 									offsetX * 4;						
@@ -8989,16 +8266,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 									offsetY * rowBytes * 4 +     
 									offsetX * 4;						
 									
-					else
-					{
-						if( FULL32BITPIPELINE)
-						{
+					else {
+						if( FULL32BITPIPELINE ) {
 							pBuffer =  (unsigned char*) baseAddr +			
 										offsetY * rowBytes*4 +      
 										offsetX;
 						}
-						else
-						{
+						else {
 							pBuffer =  (unsigned char*) baseAddr +			
 										offsetY * rowBytes +      
 										offsetX;
@@ -9012,21 +8286,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					if (f_ext_client_storage) glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);	// Incompatible with GL_TEXTURE_STORAGE_HINT_APPLE
 					else  glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
 					
-					if (f_arb_texture_rectangle && f_ext_texture_rectangle)
-					{
+					if (f_arb_texture_rectangle && f_ext_texture_rectangle) {
 						if( *tW > 2048 && *tH > 2048 || [self class] == [OrthogonalMPRPETCTView class] || [self class] == [OrthogonalMPRView class])
 						{
 							glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW for small matrix in RGB images... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to 1
 						}
 					}
 						
-					if( NOINTERPOLATION)
-					{
+					if( NOINTERPOLATION) {
 						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 					}
-					else
-					{
+					else {
 						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
 						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
 					}
@@ -9035,16 +8306,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 					
-					if( FULL32BITPIPELINE)
-					{					
+					if( FULL32BITPIPELINE ) {					
 						#if __BIG_ENDIAN__
-						if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+						if( curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
 						#else
-						if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+						if( curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 						#endif
 						else if( (colorTransfer == YES) | (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
-						else
-						{
+						else {
 							NSLog( @"FLOAT");
 							float min = curWL - curWW / 2;
 							float max = curWL + curWW / 2;
@@ -9066,13 +8335,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 						}
 					}
-					else
-					{
+					else {
 						#if __BIG_ENDIAN__
-						if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+						if( curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
 						else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
 						#else
-						if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+						if( curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 						else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 						#endif
 						else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
@@ -9090,10 +8358,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	return texture;
 }
 
-- (void) sliderAction2DMPR:(id) sender
-{
-long	x = curImage;
-BOOL	lowRes = NO;
+- (void) sliderAction2DMPR:(id) sender {
+	long	x = curImage;
+    BOOL	lowRes = NO;
 
 	if( [[[NSApplication sharedApplication] currentEvent] type] == NSLeftMouseDragged) lowRes = YES;
 	
@@ -9307,16 +8574,6 @@ BOOL	lowRes = NO;
 
 }
 
--(BOOL) flippedData
-{
-	return flippedData;
-}
-
--(void) setFlippedData:(BOOL) f
-{
-	flippedData = f;
-}
-
 - (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSiz
 {
 	if( [self is2DViewer] != YES)
@@ -9356,38 +8613,6 @@ BOOL	lowRes = NO;
 	NSRect rect = [[self superview] bounds];
 	[self resizeWithOldSuperviewSize:rect.size];
 	[self setNeedsDisplay:YES];
-}
-
--(void)setTag:(long)aTag{
-	_tag = aTag;
-}
-- (long)tag{
-	return _tag;
-}
--(float)curWW{
-	return curWW;
-}
--(float)curWL{
-	return curWL;
-}
-
-- (int)rows{
-	return _imageRows;
-}
-- (int)columns{
-	return _imageColumns;
-}
-
--(DCMView *)blendingView{
-	return blendingView;
-}
-
-- (float)blendingMode{
-	return blendingMode;
-}
-
-- (float)blendingFactor{
-	return blendingFactor;
 }
 
 -(void)setImageParamatersFromView:(DCMView *)aView
@@ -9436,21 +8661,21 @@ BOOL	lowRes = NO;
 					if( curWL != [aView curWL] || curWW != [aView curWW])
 						[self setWLWW:[aView curWL] :[aView curWW]];
 				}	
-				[self setScaleValue: [aView scaleValue]];
-				[self setRotation: [aView rotation]];
+				self.scaleValue = aView.scaleValue;
+				self.rotation = aView.rotation;
 				[self setOrigin: [aView origin]];
 			}
 			
-			[self setXFlipped: [aView xFlipped]];
-			[self setYFlipped: [aView yFlipped]];
+			self.xFlipped = aView.xFlipped;
+			self.yFlipped = aView.yFlipped;
 			
 			//blending
-			if (blendingView != [aView blendingView])
-				[self setBlending:[aView blendingView]];
-			if (blendingFactor != [aView blendingFactor])
-				[self setBlendingFactor:[aView blendingFactor]];
-			if (blendingMode != [aView blendingMode])
-				[self setBlendingMode:[aView blendingMode]];
+			if (blendingView != aView.blendingView)
+				self.blendingView = aView.blendingView;
+			if (blendingFactor != aView.blendingFactor)
+				self.blendingFactor = aView.blendingFactor;
+			if (blendingMode != aView.blendingMode)
+				self.blendingMode = aView.blendingMode;
 			
 			// CLUT
 			unsigned char *aR, *aG, *aB;
@@ -9458,7 +8683,7 @@ BOOL	lowRes = NO;
 			[self setCLUT:aR :aG: aB];
 		}
 		
-		[self setFlippedData: [aView flippedData]];
+		self.flippedData = aView.flippedData;
 		[self setMenu: [aView menu]];
 		
 		if( prevCurImage != [self curImage])
@@ -9475,10 +8700,8 @@ BOOL	lowRes = NO;
 
 //notifications
 
--(void) updateCurrentImage: (NSNotification*) note
-{
-	if( stringID == 0L)
-	{
+-(void) updateCurrentImage: (NSNotification*) note {
+	if( stringID == 0L)	{
 		DCMView *otherView = [note object];
 		
 		if ([[[note object] superview] isEqual:[self superview]] && ![otherView isEqual: self]) 
@@ -9492,13 +8715,8 @@ BOOL	lowRes = NO;
 }
 //cursor methods
 
-- (void) resetCursorRects
-{
+- (void) resetCursorRects {
 	[self addCursorRect:[self bounds] cursor: cursor];
-}
-
-- (NSCursor *)cursor{
-    return cursor;
 }
 
 -(void) setCursorForView: (long) tool
@@ -9557,91 +8775,59 @@ BOOL	lowRes = NO;
 	return blendingPixelMouseValue * [[blendingView curDCM] patientsWeight] * 1000. / [[blendingView curDCM] radionuclideTotalDoseCorrected];
 }
 
-- (float)getSUV
-{
-	if( [curDCM SUVConverted]) return pixelMouseValue;
+- (float)getSUV {
+	if( curDCM.SUVConverted) return pixelMouseValue;
 	
-	if( [[curDCM units] isEqualToString:@"CNTS"]) return pixelMouseValue * [curDCM philipsFactor];
-	else return pixelMouseValue * [curDCM patientsWeight] * 1000. / [curDCM radionuclideTotalDoseCorrected];
-}
-
-- (float)mouseXPos {
-	return mouseXPos;
-}
-
-- (float)mouseYPos {
-	return mouseYPos;
+	if( [curDCM.units isEqualToString:@"CNTS"]) return pixelMouseValue * curDCM.philipsFactor;
+	else return pixelMouseValue * curDCM.patientsWeight * 1000.0f / curDCM.radionuclideTotalDoseCorrected;
 }
 
 + (void)setPluginOverridesMouse: (BOOL)override {
 	pluginOverridesMouse = override;
 }
 
-- (GLuint)fontListGL {
-	return fontListGL;
-}
-
 - (IBOutlet)actualSize:(id)sender
 {
 	[self setOriginX: 0 Y: 0];
-	[self setRotation: 0];
-	[self setScaleValue: 1];
-}
-- (BOOL)eraserFlag
-{
-	return eraserFlag;
-}
-- (void)setEraserFlag: (BOOL)aFlag
-{
-	eraserFlag = aFlag;
-}
-
-- (NSFont*)fontGL {
-	return fontGL;
+	self.rotation = 0.0f;
+	self.scaleValue = 1.0f;
 }
 
 //Database links
-- (NSManagedObject *)imageObj
-{
-	if( stringID == 0L)
-	{
-		if( curDCM)	return [curDCM imageObj];
-		else return 0L;
+- (NSManagedObject *)imageObj {
+																																			  
+	if( stringID == nil ) {
+		if( curDCM)	return curDCM.imageObj;
+		else return nil;
 	}
-	else return 0L;
+	else return nil;
 }
 
-- (NSManagedObject *)seriesObj
-{
-	if( stringID == 0L || [stringID isEqualToString:@"previewDatabase"])
-	{
-		if( curDCM) return [curDCM seriesObj];
-		else return 0L;
+- (NSManagedObject *)seriesObj {
+																																			  
+	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"]) {
+		if( curDCM ) return curDCM.seriesObj;
+		else return nil;
 	}
-	else return 0L;
+	else return nil;
 }
 
 - (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage
 {
 	NSManagedObject *series = [self seriesObj];
 	NSManagedObject *image = [self imageObj];
-	if( series)
-	{
-		if( [image valueForKey:@"xFlipped"]) [self setXFlipped: [[image valueForKey:@"xFlipped"] boolValue]];
-		else if( !onlyImage) [self setXFlipped: [[series valueForKey:@"xFlipped"] boolValue]];
+	if( series ) {
+		if( [image valueForKey:@"xFlipped"]) self.xFlipped = [[image valueForKey:@"xFlipped"] boolValue];
+		else if( !onlyImage) self.xFlipped = [[series valueForKey:@"xFlipped"] boolValue];
 		
-		if( [image valueForKey:@"yFlipped"]) [self setYFlipped: [[image valueForKey:@"yFlipped"] boolValue]];
-		else if( !onlyImage) [self setYFlipped: [[series valueForKey:@"yFlipped"] boolValue]];
+		if( [image valueForKey:@"yFlipped"]) self.yFlipped = [[image valueForKey:@"yFlipped"] boolValue];
+		else if( !onlyImage) self.yFlipped = [[series valueForKey:@"yFlipped"] boolValue];
 		
-		if( [self is2DViewer])
-		{
+		if( [self is2DViewer] ) {
 			if( [image valueForKey:@"scale"]) [self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
-			else if( !onlyImage)
-			{
-				if( [series valueForKey:@"scale"])
-				{
-					if( [[series valueForKey:@"scale"] floatValue] != 0)
-					{
+			else if( !onlyImage) {
+				if( [series valueForKey:@"scale"]) {
+					if( [[series valueForKey:@"scale"] floatValue] != 0) {
 						//displayStyle = 2  -> scaleValue is proportional to view height
 						if( [[series valueForKey:@"displayStyle"] intValue] == 2)
 							[self setScaleValue: [[series valueForKey:@"scale"] floatValue] * [self frame].size.height];
@@ -9658,8 +8844,7 @@ BOOL	lowRes = NO;
 		if( [image valueForKey:@"rotationAngle"]) [self setRotation: [[image valueForKey:@"rotationAngle"] floatValue]];
 		else if( !onlyImage) [self setRotation:  [[series valueForKey:@"rotationAngle"] floatValue]];
 		
-		if ([self is2DViewer] == YES)
-		{
+		if ([self is2DViewer] == YES) {
 			NSPoint o = NSMakePoint(0 , 0);
 			if( [image valueForKey:@"xOffset"])  o.x = [[image valueForKey:@"xOffset"] floatValue];
 			else if( !onlyImage) o.x = [[series valueForKey:@"xOffset"] floatValue];
@@ -9690,7 +8875,7 @@ BOOL	lowRes = NO;
 					switch( [[NSUserDefaults standardUserDefaults] integerForKey:@"DEFAULTPETWLWW"])
 					{
 						case 0:
-							if( [curDCM SUVConverted] == NO)
+							if( curDCM.SUVConverted == NO)
 							{
 								curWW = ww;
 								curWL = wl;
@@ -9706,15 +8891,15 @@ BOOL	lowRes = NO;
 						break;
 						
 						case 1:
-							from = [curDCM maxValueOfSeries] * [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWFROM"] / 100.;
-							to = [curDCM maxValueOfSeries] * [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWTO"] / 100.;
+							from = curDCM.maxValueOfSeries * [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWFROM"] / 100.;
+							to = curDCM.maxValueOfSeries * [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWTO"] / 100.;
 							
 							curWW = to - from;
 							curWL = from + (curWW/2.);
 						break;
 						
 						case 2:
-							if( [curDCM SUVConverted])
+							if( curDCM.SUVConverted)
 							{
 								from = [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWFROMSUV"];
 								to = [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWTOSUV"];
@@ -9755,15 +8940,15 @@ BOOL	lowRes = NO;
 					break;
 					
 					case 1:
-						from = [curDCM maxValueOfSeries] * [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWFROM"] / 100.;
-						to = [curDCM maxValueOfSeries] * [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWTO"] / 100.;
+						from = curDCM.maxValueOfSeries * [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWFROM"] / 100.;
+						to = curDCM.maxValueOfSeries * [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWTO"] / 100.;
 						
 						curWW = to - from;
 						curWL = from + (curWW/2.);
 					break;
 					
 					case 2:
-						if( [curDCM SUVConverted])
+						if( curDCM.SUVConverted)
 						{
 							from = [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWFROMSUV"];
 							to = [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWTOSUV"];
@@ -9802,8 +8987,8 @@ BOOL	lowRes = NO;
 {
 	NSRect frame =  [self frame]; 
 	long i;
-	float curImageWidth = [curDCM pwidth] * resizeScale;
-	float curImageHeight = [curDCM pheight]* resizeScale;
+	float curImageWidth = curDCM.pwidth * resizeScale;
+	float curImageHeight = curDCM.pheight* resizeScale;
 	float frameWidth = frame.size.width;
 	float frameHeight = frame.size.height;
 	NSWindow *window = [self window];
@@ -9857,8 +9042,8 @@ BOOL	lowRes = NO;
 	if([[self windowController] FullScreenON] == FALSE)
 	{
 		float resizeScale = 1.0;
-		float curImageWidth = [curDCM pwidth];
-		float curImageHeight = [curDCM pheight];
+		float curImageWidth = curDCM.pwidth;
+		float curImageHeight = curDCM.pheight;
 		float widthRatio =  320.0 / curImageWidth ;
 		float heightRatio =  320.0 / curImageHeight;
 		switch ([sender tag]) {
@@ -10224,8 +9409,7 @@ BOOL	lowRes = NO;
 	// We ignore the timestamp, signifying that we're providing content for 'now'.
 	NSLog(@"renderIntoOpenGLBuffer:");
 	
-	if(!_hasChanged)
-	{
+	if(!_hasChanged) {
 		NSLog(@"nothing has Changed");
 		return NO;
 	}
