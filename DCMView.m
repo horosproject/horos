@@ -1216,21 +1216,29 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( stringTex)
 	{
 		if( stringTextureCache == 0L) stringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: 0];
+		if( iChatStringTextureCache == 0L) iChatStringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: 0];
 		
-		StringTexture *stringTex = [stringTextureCache objectForKey: str];
+		NSMutableDictionary *_stringTextureCache;
+		if (fontL == iChatFontListGL)
+			_stringTextureCache = iChatStringTextureCache;
+		else
+			_stringTextureCache = stringTextureCache;
+			
+		StringTexture *stringTex = [_stringTextureCache objectForKey: str];
 		if( stringTex == 0L)
 		{
-			if( [stringTextureCache count] > 100) [stringTextureCache removeAllObjects];
+			if( [_stringTextureCache count] > 100) [_stringTextureCache removeAllObjects];
 			
 			NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
 			
 			if( fontL == labelFontListGL) [stanStringAttrib setObject:labelFont forKey:NSFontAttributeName];
+			else if( fontL == iChatFontListGL) [stanStringAttrib setObject:iChatFontGL forKey:NSFontAttributeName];
 			else [stanStringAttrib setObject:fontGL forKey:NSFontAttributeName];
 			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 
 			stringTex = [[StringTexture alloc] initWithString:str withAttributes:stanStringAttrib];
 			[stringTex genTexture];
-			[stringTextureCache setObject:stringTex forKey:str];
+			[_stringTextureCache setObject:stringTex forKey:str];
 			[stringTex release];
 		}
 		
@@ -1262,11 +1270,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if(align==DCMViewTextAlignRight)
 		{
 			if( fontL == labelFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize] + 2;
+			else if( fontL == iChatFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:iChatFontListGLSize] + 2;
 			else x -= [DCMView lengthOfString:cstrOut forFont:fontListGLSize] + 2;
 		}
 		else if(align==DCMViewTextAlignCenter)
 		{
 			if( fontL == labelFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize]/2.0 + 2;
+			else if( fontL == iChatFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:iChatFontListGLSize]/2.0 + 2;
 			else x -= [DCMView lengthOfString:cstrOut forFont:fontListGLSize]/2.0 + 2;
 		}
 		
@@ -1584,6 +1594,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
     glDeleteLists (fontListGL, 150);
 	glDeleteLists(labelFontListGL, 150);
+	glDeleteLists(iChatFontListGL, 150);
 	
 	if( pTextureName)
 	{
@@ -1609,10 +1620,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[fontColor release];
 	[fontGL release];
 	[labelFont release];
+	[iChatFontGL release];
 	[yearOld release];
 	
 	[cursor release];
 	[stringTextureCache release];
+	[iChatStringTextureCache release];
 	
 	[_mouseDownTimer invalidate];
 	[_mouseDownTimer release];
@@ -5603,9 +5616,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (void)drawTextualData:(NSRect) size :(long) annotations {
-	//NSLog(@"CUSTOM_ANNOTATIONS");
-	
+- (void)drawTextualData:(NSRect) size :(long) annotations
+{
 	NSManagedObject   *file = [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -5631,6 +5643,27 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	glColor3f (0.0f, 0.0f, 0.0f);
 //	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glLineWidth(1.0);
+	
+	if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && cgl_ctx==[_alternateContext CGLContextObj])
+	{
+		if(!iChatFontListGL) iChatFontListGL = glGenLists(150);
+		iChatFontGL = [NSFont systemFontOfSize: 12];
+		[iChatFontGL makeGLDisplayListFirst:' ' count:150 base:iChatFontListGL :iChatFontListGLSize :YES];
+		iChatStringSize = [DCMView sizeOfString:@"B" forFont:iChatFontGL];
+	}
+	
+	GLuint fontList;
+	NSSize _stringSize;
+	if(cgl_ctx==[_alternateContext CGLContextObj])
+	{
+		fontList = iChatFontListGL;
+		_stringSize = iChatStringSize;
+	}
+	else
+	{
+		fontList = fontListGL;
+		_stringSize = stringSize;
+	}
 	
 	if (annotations == 4) [[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo" object: self];
 	else //none, base, noName, full annotation
@@ -5673,24 +5706,24 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignCenter] forKey:@"LowerMiddle"];
 
 		NSMutableDictionary *yRasterInit = [NSMutableDictionary dictionary];
-		[yRasterInit setObject:[NSNumber numberWithInt:stringSize.height+2] forKey:@"TopLeft"];
-		[yRasterInit setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"TopMiddle"];
-		[yRasterInit setObject:[NSNumber numberWithInt:stringSize.height+2] forKey:@"TopRight"];
+		[yRasterInit setObject:[NSNumber numberWithInt:_stringSize.height+2] forKey:@"TopLeft"];
+		[yRasterInit setObject:[NSNumber numberWithInt:_stringSize.height] forKey:@"TopMiddle"];
+		[yRasterInit setObject:[NSNumber numberWithInt:_stringSize.height+2] forKey:@"TopRight"];
 		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height/2] forKey:@"MiddleLeft"];
 		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height/2] forKey:@"MiddleRight"];
 		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2] forKey:@"LowerLeft"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2-stringSize.height] forKey:@"LowerRight"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2-_stringSize.height] forKey:@"LowerRight"];
 		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2] forKey:@"LowerMiddle"];
 		
 		NSMutableDictionary *yRasterIncrement = [NSMutableDictionary dictionary];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"TopLeft"];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"TopMiddle"];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"TopRight"];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"MiddleLeft"];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:stringSize.height] forKey:@"MiddleRight"];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:-stringSize.height] forKey:@"LowerLeft"];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:-stringSize.height] forKey:@"LowerRight"];
-		[yRasterIncrement setObject:[NSNumber numberWithInt:-stringSize.height] forKey:@"LowerMiddle"];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:_stringSize.height] forKey:@"TopLeft"];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:_stringSize.height] forKey:@"TopMiddle"];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:_stringSize.height] forKey:@"TopRight"];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:_stringSize.height] forKey:@"MiddleLeft"];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:_stringSize.height] forKey:@"MiddleRight"];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:-_stringSize.height] forKey:@"LowerLeft"];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:-_stringSize.height] forKey:@"LowerRight"];
+		[yRasterIncrement setObject:[NSNumber numberWithInt:-_stringSize.height] forKey:@"LowerMiddle"];
 		
 		int i, j, k, increment;
 		NSEnumerator *enumerator;
@@ -5944,22 +5977,22 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 				if(![tempString isEqualToString:@""])
 				{	
-					[self DrawNSStringGL:tempString :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
+					[self DrawNSStringGL:tempString :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
 				}
 				if(![tempString2 isEqualToString:@""])
 				{
-					[self DrawNSStringGL:tempString2 :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
+					[self DrawNSStringGL:tempString2 :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
 				}
 				if(![tempString3 isEqualToString:@""])
 				{
-					[self DrawNSStringGL:tempString3 :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
+					[self DrawNSStringGL:tempString3 :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
 				}
 				if(![tempString4 isEqualToString:@""])
 				{
-					[self DrawNSStringGL:tempString4 :fontListGL :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
+					[self DrawNSStringGL:tempString4 :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
 					yRaster += increment;
 				}
 				
@@ -5968,7 +6001,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 																																			  
 		yRaster = size.size.height-2;
 		xRaster = size.size.width-2;
-		[self DrawNSStringGL:@"Made In OsiriX" :fontListGL :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
+		[self DrawNSStringGL:@"Made In OsiriX" :fontList :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
 	}
 }
 
@@ -6437,6 +6470,70 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( [self is2DViewer] == YES) {
 				if( isKeyView == NO) noBlending = YES;
 			}
+			
+			#define ICHAT_WIDTH 640
+			#define ICHAT_HEIGHT 480
+			// highlight the visible part of the view (the part visible through iChat)
+			if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView)
+			{
+				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+				glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
+				glTranslatef (-(size.size.width) / 2.0f, -(size.size.height) / 2.0f, 0.0f); // translate center to upper left
+				NSPoint topLeft;
+				topLeft.x = size.size.width/2 - ICHAT_WIDTH/2.0;
+				topLeft.y = size.size.height/2 - ICHAT_HEIGHT/2.0;
+						
+				glEnable(GL_BLEND);
+				
+				glColor4f (0.0f, 0.0f, 0.0f, 0.7f);
+				glLineWidth(1.0);
+				glBegin(GL_QUADS);
+					glVertex2f(0.0, 0.0);
+					glVertex2f(0.0, topLeft.y);
+					glVertex2f(size.size.width, topLeft.y);
+					glVertex2f(size.size.width, 0.0);
+				glEnd();
+
+				glBegin(GL_QUADS);
+					glVertex2f(0.0, topLeft.y);
+					glVertex2f(topLeft.x, topLeft.y);
+					glVertex2f(topLeft.x, topLeft.y+ICHAT_HEIGHT);
+					glVertex2f(0.0, topLeft.y+ICHAT_HEIGHT);
+				glEnd();
+
+				glBegin(GL_QUADS);
+					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y);
+					glVertex2f(size.size.width, topLeft.y);
+					glVertex2f(size.size.width, topLeft.y+ICHAT_HEIGHT);
+					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y+ICHAT_HEIGHT);
+				glEnd();
+
+				glBegin(GL_QUADS);
+					glVertex2f(0.0, topLeft.y+ICHAT_HEIGHT);
+					glVertex2f(size.size.width, topLeft.y+ICHAT_HEIGHT);
+					glVertex2f(size.size.width, size.size.height);
+					glVertex2f(0.0, size.size.height);
+				glEnd();
+
+				glColor4f (1.0f, 1.0f, 1.0f, 0.8f);
+				glBegin(GL_LINE_LOOP);
+					glVertex2f(topLeft.x, topLeft.y);
+					glVertex2f(topLeft.x, topLeft.y+ICHAT_HEIGHT);
+					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y+ICHAT_HEIGHT);
+					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y);
+				glEnd();
+				
+				glLineWidth(1.0);
+				glDisable(GL_BLEND);
+				
+				// label
+				NSPoint iChatTheatreSharedViewLabelPosition;
+				iChatTheatreSharedViewLabelPosition.x = size.size.width/2.0;
+				iChatTheatreSharedViewLabelPosition.y = topLeft.y;
+
+				[self DrawNSStringGL:NSLocalizedString(@"iChat Theatre shared view", nil) :fontListGL :iChatTheatreSharedViewLabelPosition.x :iChatTheatreSharedViewLabelPosition.y align:DCMViewTextAlignCenter useStringTexture:YES];
+			}			
+
 			
 			if( blendingView != 0L && syncOnLocationImpossible == NO && noBlending == NO ) {
 				if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
@@ -7094,73 +7191,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					glDisable(GL_TEXTURE_RECTANGLE_EXT);
 				}
-			} // end iChat Theatre context
-			
-			#define ICHAT_WIDTH 640
-			#define ICHAT_HEIGHT 480
-
-			// highlight the visible part of the view (the part visible through iChat)
-			if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView)
-			{
-				NSPoint topLeft;
-				topLeft.x = size.size.width/2 - ICHAT_WIDTH/2.0;
-				topLeft.y = size.size.height/2 - ICHAT_HEIGHT/2.0;
-						
-				glEnable(GL_BLEND);
-				glColor4f (0.0f, 0.0f, 0.0f, 0.5f);
-				glLineWidth(1.0);
-				glBegin(GL_QUADS);
-					glVertex2f(0.0, 0.0);
-					glVertex2f(0.0, topLeft.y);
-					glVertex2f(size.size.width, topLeft.y);
-					glVertex2f(size.size.width, 0.0);
-				glEnd();
-
-				glBegin(GL_QUADS);
-					glVertex2f(0.0, topLeft.y);
-					glVertex2f(topLeft.x, topLeft.y);
-					glVertex2f(topLeft.x, topLeft.y+ICHAT_HEIGHT);
-					glVertex2f(0.0, topLeft.y+ICHAT_HEIGHT);
-				glEnd();
-
-				glBegin(GL_QUADS);
-					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y);
-					glVertex2f(size.size.width, topLeft.y);
-					glVertex2f(size.size.width, topLeft.y+ICHAT_HEIGHT);
-					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y+ICHAT_HEIGHT);
-				glEnd();
-
-				glBegin(GL_QUADS);
-					glVertex2f(0.0, topLeft.y+ICHAT_HEIGHT);
-					glVertex2f(size.size.width, topLeft.y+ICHAT_HEIGHT);
-					glVertex2f(size.size.width, size.size.height);
-					glVertex2f(0.0, size.size.height);
-				glEnd();
-
-				glColor4f (1.0f, 1.0f, 1.0f, 0.8f);
-				glBegin(GL_LINE_LOOP);
-					glVertex2f(topLeft.x, topLeft.y);
-					glVertex2f(topLeft.x, topLeft.y+ICHAT_HEIGHT);
-					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y+ICHAT_HEIGHT);
-					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y);
-				glEnd();
-				
-				glLineWidth(1.0);
-				glDisable(GL_BLEND);
-				
-				// label
-				NSPoint iChatTheatreSharedViewLabelPosition;
-				iChatTheatreSharedViewLabelPosition.x = size.size.width/2.0;
-				iChatTheatreSharedViewLabelPosition.y = topLeft.y;
-				
-//				if(ICHAT_HEIGHT+20.0 >= size.size.height)
-//					iChatTheatreSharedViewLabelPosition.y = size.size.height - 10.0;
-				
-				[self DrawNSStringGL:NSLocalizedString(@"iChat Theatre shared view", nil) :fontListGL :iChatTheatreSharedViewLabelPosition.x :iChatTheatreSharedViewLabelPosition.y align:DCMViewTextAlignCenter useStringTexture:YES];
-				
-					
-			}
-			
+			} // end iChat Theatre context		
 		}  
 		else {    //no valid image  ie curImage = -1
 			//NSLog(@"no IMage");

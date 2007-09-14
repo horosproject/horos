@@ -77,7 +77,10 @@ static IChatTheatreDelegate	*iChatDelegate = 0L;
 
 - (void)windowChanged:(NSNotification *)aNotification;
 {
+	if(![self isIChatTheatreRunning]) return;
+	
 	IMAVManager *avManager = [IMAVManager sharedAVManager];
+		
 	if([[[aNotification object] windowController] isKindOfClass:[ViewerController class]])
 	{
 		NSLog(@"IChatTheatreDelegate change video source");

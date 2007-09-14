@@ -159,7 +159,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
     GLuint          fontListGL;
 	GLuint          labelFontListGL;
 	float			fontRasterY;
-	
+		
     NSPoint         mesureA, mesureB;
     NSRect          roiRect;
 	NSString		*stringID;
@@ -236,10 +236,17 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	
 	NSLock			*drawLock;
 	
+	// iChat
 	unsigned char*	iChatCursorTextureBuffer;
 	GLuint			iChatCursorTextureName;
 	NSSize			iChatCursorImageSize;
 	NSPoint			iChatCursorHotSpot;
+	
+	GLuint			iChatFontListGL;
+	NSFont			*iChatFontGL;
+	long			iChatFontListGLSize[ 256];
+	NSMutableDictionary	*iChatStringTextureCache;
+	NSSize			iChatStringSize;
 }
 
 @property(readonly) NSMutableArray *rectArray;
@@ -270,6 +277,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property(readonly) float contextualMenuInWindowPosX, contextualMenuInWindowPosY;
 @property(readonly) GLuint fontListGL;
 @property(readonly) NSFont *fontGL;
+@property(readonly) GLuint iChatFontListGL;
+@property(readonly) NSFont *iChatFontGL;
 @property int tag;
 @property(readonly) float curWW, curWL;
 @property int rows, columns;
