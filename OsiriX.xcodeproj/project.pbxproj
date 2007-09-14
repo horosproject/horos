@@ -7649,6 +7649,14 @@
 		CECEF72F081BB265002ECC99 /* DICOMExport.m in Sources */ = {isa = PBXBuildFile; fileRef = CECEF72D081BB265002ECC99 /* DICOMExport.m */; };
 		CECEF730081BB265002ECC99 /* DICOMExport.h in Headers */ = {isa = PBXBuildFile; fileRef = CECEF72C081BB265002ECC99 /* DICOMExport.h */; };
 		CECEF731081BB265002ECC99 /* DICOMExport.m in Sources */ = {isa = PBXBuildFile; fileRef = CECEF72D081BB265002ECC99 /* DICOMExport.m */; };
+		CED2CF8F0C9B28580047F123 /* PreferencePaneControllerDCMTK.h in Headers */ = {isa = PBXBuildFile; fileRef = CED2CF8D0C9B28580047F123 /* PreferencePaneControllerDCMTK.h */; };
+		CED2CF900C9B28580047F123 /* PreferencePaneControllerDCMTK.mm in Sources */ = {isa = PBXBuildFile; fileRef = CED2CF8E0C9B28580047F123 /* PreferencePaneControllerDCMTK.mm */; };
+		CED2CF910C9B28580047F123 /* PreferencePaneControllerDCMTK.h in Headers */ = {isa = PBXBuildFile; fileRef = CED2CF8D0C9B28580047F123 /* PreferencePaneControllerDCMTK.h */; };
+		CED2CF920C9B28580047F123 /* PreferencePaneControllerDCMTK.mm in Sources */ = {isa = PBXBuildFile; fileRef = CED2CF8E0C9B28580047F123 /* PreferencePaneControllerDCMTK.mm */; };
+		CED2CF970C9B288C0047F123 /* CIADICOMField.m in Sources */ = {isa = PBXBuildFile; fileRef = CED2CF950C9B288C0047F123 /* CIADICOMField.m */; };
+		CED2CF980C9B288C0047F123 /* CIADICOMField.h in Headers */ = {isa = PBXBuildFile; fileRef = CED2CF960C9B288C0047F123 /* CIADICOMField.h */; };
+		CED2CF990C9B288C0047F123 /* CIADICOMField.m in Sources */ = {isa = PBXBuildFile; fileRef = CED2CF950C9B288C0047F123 /* CIADICOMField.m */; };
+		CED2CF9A0C9B288C0047F123 /* CIADICOMField.h in Headers */ = {isa = PBXBuildFile; fileRef = CED2CF960C9B288C0047F123 /* CIADICOMField.h */; };
 		CED80C850BF187930058A469 /* AutofillDisabled.tif in Resources */ = {isa = PBXBuildFile; fileRef = CED80C790BF187930058A469 /* AutofillDisabled.tif */; };
 		CED80C860BF187930058A469 /* Autofill.tif in Resources */ = {isa = PBXBuildFile; fileRef = CED80C7A0BF187930058A469 /* Autofill.tif */; };
 		CED80C870BF187930058A469 /* AddLink.tif in Resources */ = {isa = PBXBuildFile; fileRef = CED80C7B0BF187930058A469 /* AddLink.tif */; };
@@ -11624,6 +11632,10 @@
 		CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AnnotationsDefault.plist; path = Binaries/AnnotationsDefault.plist; sourceTree = "<group>"; };
 		CECEF72C081BB265002ECC99 /* DICOMExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMExport.h; sourceTree = "<group>"; };
 		CECEF72D081BB265002ECC99 /* DICOMExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMExport.m; sourceTree = "<group>"; };
+		CED2CF8D0C9B28580047F123 /* PreferencePaneControllerDCMTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencePaneControllerDCMTK.h; sourceTree = "<group>"; };
+		CED2CF8E0C9B28580047F123 /* PreferencePaneControllerDCMTK.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PreferencePaneControllerDCMTK.mm; sourceTree = "<group>"; };
+		CED2CF950C9B288C0047F123 /* CIADICOMField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CIADICOMField.m; path = "Preference Panes/OSICustomImageAnnotations/CIADICOMField.m"; sourceTree = "<group>"; };
+		CED2CF960C9B288C0047F123 /* CIADICOMField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CIADICOMField.h; path = "Preference Panes/OSICustomImageAnnotations/CIADICOMField.h"; sourceTree = "<group>"; };
 		CED80C790BF187930058A469 /* AutofillDisabled.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = AutofillDisabled.tif; sourceTree = "<group>"; };
 		CED80C7A0BF187930058A469 /* Autofill.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Autofill.tif; sourceTree = "<group>"; };
 		CED80C7B0BF187930058A469 /* AddLink.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = AddLink.tif; sourceTree = "<group>"; };
@@ -13291,6 +13303,10 @@
 				AB695A1D063D8261002BDF78 /* Analyze.h */,
 				7E2BE37B0715D2820017898A /* PreferencePaneController.h */,
 				7E2BE37C0715D2820017898A /* PreferencePaneController.m */,
+				CED2CF8D0C9B28580047F123 /* PreferencePaneControllerDCMTK.h */,
+				CED2CF8E0C9B28580047F123 /* PreferencePaneControllerDCMTK.mm */,
+				CED2CF950C9B288C0047F123 /* CIADICOMField.m */,
+				CED2CF960C9B288C0047F123 /* CIADICOMField.h */,
 				ABCB2D4F0655B19A006C5630 /* SearchWindowController.h */,
 				ABCB2D4E0655B19A006C5630 /* SearchWindowController.m */,
 				ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */,
@@ -18445,6 +18461,8 @@
 				CEAEAC530C966FEF001CEA25 /* VRControllerVPRO.h in Headers */,
 				32E422150C97301600E193CA /* altivecFunctions.h in Headers */,
 				A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */,
+				CED2CF8F0C9B28580047F123 /* PreferencePaneControllerDCMTK.h in Headers */,
+				CED2CF980C9B288C0047F123 /* CIADICOMField.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20506,6 +20524,8 @@
 				CE882AC80C889B6500D4F982 /* XMLRPCMethods.h in Headers */,
 				CE882B340C889E0200D4F982 /* TCPServer.h in Headers */,
 				CE882B370C889E0200D4F982 /* HTTPServer.h in Headers */,
+				CED2CF910C9B28580047F123 /* PreferencePaneControllerDCMTK.h in Headers */,
+				CED2CF9A0C9B288C0047F123 /* CIADICOMField.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22790,6 +22810,8 @@
 				CE882B310C889E0200D4F982 /* TCPServer.m in Sources */,
 				CE882B320C889E0200D4F982 /* HTTPServer.m in Sources */,
 				A9BDE5930C9823DC000A161F /* IChatTheatreDelegate.m in Sources */,
+				CED2CF900C9B28580047F123 /* PreferencePaneControllerDCMTK.mm in Sources */,
+				CED2CF970C9B288C0047F123 /* CIADICOMField.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24458,6 +24480,8 @@
 				CE882AC90C889B6500D4F982 /* XMLRPCMethods.m in Sources */,
 				CE882B350C889E0200D4F982 /* TCPServer.m in Sources */,
 				CE882B360C889E0200D4F982 /* HTTPServer.m in Sources */,
+				CED2CF920C9B28580047F123 /* PreferencePaneControllerDCMTK.mm in Sources */,
+				CED2CF990C9B288C0047F123 /* CIADICOMField.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -78,9 +78,9 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 
 @interface DCMView: NSOpenGLView
 {
-	int				_imageRows;
-	int				_imageColumns;
-	int				_tag;
+	NSInteger		_imageRows;
+	NSInteger		_imageColumns;
+	NSInteger		_tag;
 
 	BOOL			flippedData;
 	
@@ -279,9 +279,9 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property(readonly) NSFont *fontGL;
 @property(readonly) GLuint iChatFontListGL;
 @property(readonly) NSFont *iChatFontGL;
-@property int tag;
+@property NSInteger tag;
 @property(readonly) float curWW, curWL;
-@property int rows, columns;
+@property NSInteger rows, columns;
 @property(readonly) NSCursor *cursor;
 @property BOOL eraserFlag;
 @property BOOL drawing;

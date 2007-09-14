@@ -496,20 +496,31 @@ Version 2.3
 				}
 			if (DEBUG)
 				NSLog(@"Anonymize tag:%@", [attrTag description]);
-			if (attrTag) {
+				
+			if (attrTag)
+			{
 				id replacement;
 				if ([cell tag] % 4 == 0)
 					replacement = [[firstColumnValues cellWithTag:[cell tag]] objectValue];
 				else
 					replacement = [[secondColumnValues cellWithTag:[cell tag]] objectValue];
+					
 				if ([replacement isKindOfClass:[NSString class]])
 				{
 					if( [(NSString*) replacement length] <= 0) 
 						replacement = nil;
 				}
+				
+				if ([replacement isKindOfClass:[NSDate class]])
+				{
+					replacement = [NSCalendarDate dateWithTimeIntervalSince1970: [replacement timeIntervalSince1970]];
+				}
+				
 				NSArray *array = [NSArray arrayWithObjects: attrTag, replacement, nil];
+				
 				//NSLog(@"object: %@ Value: %@", [replacement description], NSStringFromClass([replacement class]));
 				//NSLog(@"Replacement tags: %@", [array description]);
+				
 				[tags addObject:array];
 			}
 		}

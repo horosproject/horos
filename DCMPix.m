@@ -10345,8 +10345,8 @@ BOOL            readable = YES;
 						
 						if(value==nil) value = @"-";
 						else contentForLine = YES;
-												
-						if([[value className] isEqualToString:@"__NSCFDate"])
+						
+						if( [value isKindOfClass: [NSDate class]])
 						{
 							if([fieldName isEqualToString:@"dateOfBirth"])
 								value = [BrowserController DateOfBirthFormat: (NSDate *) value];
