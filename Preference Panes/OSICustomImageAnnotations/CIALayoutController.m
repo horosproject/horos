@@ -12,7 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-#import "CIALayoutControllerDCMTK.h"
 #import "CIALayoutController.h"
 #import "CIADICOMField.h"
 
