@@ -79,6 +79,11 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 #pragma mark -
 
+- (NSArray*) prepareDICOMFieldsArrays
+{
+	return [[[[self mainView] window] windowController] prepareDICOMFieldsArrays];
+}
+
 - (void) mainViewDidLoad
 {
 	[_authView setDelegate:self];

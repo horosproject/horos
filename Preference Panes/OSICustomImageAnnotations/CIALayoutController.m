@@ -51,8 +51,6 @@
 	if (self != nil)
 	{
 		annotationsArray = [[NSMutableArray array] retain];
-		DICOMFieldsArray = [[NSMutableArray array] retain];
-		DICOMFieldsTitlesArray = [[NSMutableArray array] retain];
 		databaseStudyFieldsArray = [[NSMutableArray array] retain];
 		databaseSeriesFieldsArray = [[NSMutableArray array] retain];
 		databaseImageFieldsArray = [[NSMutableArray array] retain];
@@ -94,7 +92,7 @@
 	[[prefPane contentTokenField] setDelegate:self];
 
 	// DICOM popup button
-	[self prepareDICOMFieldsArrays];
+	DICOMFieldsArray = [[prefPane prepareDICOMFieldsArrays] retain];
 
 	NSMenu *DICOMFieldsMenu = [[prefPane DICOMFieldsPopUpButton] menu];
 	[DICOMFieldsMenu setAutoenablesItems:NO];
@@ -209,7 +207,6 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[annotationsArray release];
 	[DICOMFieldsArray release];
-	[DICOMFieldsTitlesArray release];
 	[databaseStudyFieldsArray release];
 	[databaseSeriesFieldsArray release];
 	[databaseImageFieldsArray release];

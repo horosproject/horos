@@ -30,7 +30,7 @@
 	NSMutableArray *annotationsArray;
 	CIAAnnotation *selectedAnnotation;
 	
-	NSMutableArray *DICOMFieldsArray, *DICOMFieldsTitlesArray;
+	NSMutableArray *DICOMFieldsArray;
 	NSMutableArray *databaseStudyFieldsArray, *databaseSeriesFieldsArray, *databaseImageFieldsArray;
 	
 	int annotationNumber;

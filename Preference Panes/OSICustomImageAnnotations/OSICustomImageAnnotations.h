@@ -67,6 +67,7 @@
 - (IBAction)reset:(id)sender;
 
 - (CIALayoutController*)layoutController;
+- (NSArray*) prepareDICOMFieldsArrays;
 
 - (NSTextField*)titleTextField;
 - (NSTokenField*)contentTokenField;
