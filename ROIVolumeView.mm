@@ -401,17 +401,13 @@
 			// input for display
 			polyDataNormals->SetInput(data);
 			
-			//get connected Points
-			vtkIdType visitedPoints[nPoints];
-			vtkIdType connectedPoints[nPoints];
+
 			
 			// Find most inferior Point. Rrpresent Rectum
 			// Could be a seed point to generalize.  
 			vtkIdType startingPoint;
 			int zPoint = 100000; 
-			int nVisited = 1;
-			int nConnected = 1;
-			double modelDistance = 10.0;
+			NSLog(@"get starting Point");
 			for (i = 0; i < nPoints; i++) {	
 				double *position = medialPoints->GetPoint(i);
 				if (position[2] < zPoint) {
@@ -419,64 +415,131 @@
 					startingPoint = i;
 				}
 			}
+			double *sp = medialPoints->GetPoint(startingPoint);
+			NSLog(@"starting Point: %f %f %f", sp[0], sp[1], sp[2]);
+			
+			//get connected Points
+			vtkIdType visitedPoints[nPoints];
+			vtkIdType connectedPoints[nPoints];
+			int nVisited = 1;
+			int nConnected = 1;
 			
 			visitedPoints[0] = startingPoint;
 			connectedPoints[0] = startingPoint;
 			
 			// Get Point Distances
-			// Temporary Code
-			for (i = 0; i < nPoints; i++) {	
+			BOOL morePoints = YES;
+			int loopCount = 0;
+			vtkIdType currentPoint;
+			currentPoint = startingPoint;
+			NSLog(@"get Centerline Points: %d %d", loopCount, nPoints);
+			while (morePoints && loopCount < nPoints) {
+				loopCount++;	
 				vtkIdType ncells;
 				vtkIdList *cellIds = vtkIdList::New();;
 				//int j = 0;
 				// count self
-				neighbors = 1;
-				double *position = medialPoints->GetPoint(i);
+				neighbors = 0;
+				double *position = medialPoints->GetPoint(startingPoint);
 				// Get position
 				x = position[0];
 				y = position[1];
 				z = position[2];
 				// All cells for Point and number of cells
-				data->GetPointCells	(i, cellIds);	
+				data->GetPointCells	(startingPoint, cellIds);	
 				ncells = cellIds->GetNumberOfIds();
-
+				double avgX, avgY, avgZ;
+				//Loop through neighbors to get avg neighbor position
 				for (j = 0;  j < ncells; j++) {
 					vtkIdType numPoints;
 					vtkIdType *cellPoints ;
 					vtkIdType cellId = cellIds->GetId(j);
 					//get all points for the cell
 					data->GetCellPoints(cellId, numPoints, cellPoints);				
-					double maxDistance = 0.0;
-					double xVec, yVec, zVec;
-					vtkIdType distantNeighbor;
-					for (k = 0; k < numPoints; k++) {						
-						position = medialPoints->GetPoint(cellPoints[k]);
-						double distance = sqrt( pow((position[0] - x),2)
-												+ pow((position[1] - y),2)
-												+ pow((position[2] - z),2));
-						xVec = position[0] - x;
-						yVec = position[1] - y;
-						zVec = position[2] - z;
-						if (i % 1000 == 0){
-							NSLog(@"%d %d", i, neighbors);
-							if ((xVec > yVec) && (xVec > zVec)) NSLog(@"x Vector");
-							else if ((yVec > xVec) && (yVec > zVec)) NSLog(@"y Vector");
-							else  NSLog(@"z Vector");
+
+					for (k = 0; k < numPoints; k++) {	
+						vtkIdType  nextPt	= cellPoints[k];
+						BOOL visited = NO;
+						for (int m = 0; m < nVisited; m++) {
+							if (visitedPoints[m] == nextPt) visited = YES;
 						}
-						// adjust maxDeistance
-						if (distance > maxDistance) {
-							maxDistance = distance;
-							distantNeighbor = cellPoints[k];
+						// Get avg Position of unvisited neighbors
+						if (!visited) {
+							position = medialPoints->GetPoint(nextPt);
+							NSLog(@"nextPt: %f %f %f", position[0], position[1], position[2]);
+							avgX += position[0];
+							avgY += position[1];
+							avgZ += position[2];
+							neighbors++;
+
 						}
-						
-						neighbors++;
 						
 					 }
-					 if (i % 1000 == 0) 
-						NSLog(@"Max Distance to neighbor %d: %f", distantNeighbor, maxDistance);
-				}			
-				cellIds->Delete();
-			}
+				}
+				// get average
+				avgX /= neighbors;
+				avgY /= neighbors;
+				avgZ /= neighbors;
+				NSLog(@"avg: %f %f %f", avgX, avgY, avgZ);
+				//go through neighbors again and find closet neighbor to avgPt.
+				//add closest neighbor to connected points
+				
+				double closestDistance = 100000;
+				BOOL foundNeighbor = NO;
+				vtkIdType closestNeighbor;
+				for (j = 0;  j < ncells; j++) {
+					vtkIdType numPoints;
+					vtkIdType *cellPoints ;
+					vtkIdType cellId = cellIds->GetId(j);
+					//get all points for the cell
+					data->GetCellPoints(cellId, numPoints, cellPoints);				
+					
+					for (k = 0; k < numPoints; k++) {	
+						vtkIdType  nextPt	= cellPoints[k];
+						position = medialPoints->GetPoint(nextPt);
+						double distance = sqrt( pow(avgX - position[0],2) + pow(avgY - position[1],2) + pow(avgZ - position[2],2));
+						BOOL visited = NO;
+						for (int m = 0; m < nVisited; m++) {
+							NSLog(@"visit: %d", visitedPoints[m]);
+							if (visitedPoints[m] == nextPt) {
+								visited = YES;
+								NSLog(@"visited: %d %d", visitedPoints[m], nextPt);
+							}
+							else{
+								// add neighbors to visited
+								visitedPoints[nVisited] = nextPt;
+								nVisited++;
+							}
+								
+						}
+						NSLog(@"Distance %f, visited %d", distance, visited);
+						if ((distance < closestDistance) && visited == NO) {
+							// closet neighbor cannot be a visited Point
+							closestNeighbor = nextPt;
+							closestDistance = distance;
+							foundNeighbor = YES;
+							
+						}
+					 }
+				}
+				// add closest neighbor to connected points
+				if (foundNeighbor) 
+				{
+					currentPoint = closestNeighbor;
+					connectedPoints[nConnected] = currentPoint;
+					nConnected++;
+					position = medialPoints->GetPoint(currentPoint);
+					NSLog(@"%d next Point: %f % f %f",nConnected, position[0], position[1], position[2]);
+				}
+				// if there is no closest neighbor: stop
+				else
+				 morePoints = NO;
+				
+				
+				// Set Point				
+				cellIds->Delete();				
+			}			
+
 		
 			//NSLog(@"Medial Surface number of Polygons: %d", medialSurface->GetNumberOfPolys());
 			//NSLog(@"Medial Surface number of Points: %d", medialSurface->GetNumberOfPoints());
