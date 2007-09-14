@@ -359,7 +359,20 @@ extern NSLock	*PapyrusLock;
 		
 		
 		//Acquistion Date
-		if (dataset->findAndGetString(DCM_AcquisitionDate, string, OFFalse).good() && string != NULL){
+		if (dataset->findAndGetString(DCM_ContentDate, string, OFFalse).good() && string != NULL){
+			NSString	*studyDate = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
+			if (dataset->findAndGetString(DCM_ContentTime, string, OFFalse).good() && string != NULL){
+				NSString*   completeDate;
+				NSString*   studyTime = [[NSString alloc] initWithBytes:string length:6 encoding: NSASCIIStringEncoding];
+				completeDate = [studyDate stringByAppendingString:studyTime];
+				date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+				[studyTime release];
+			}
+			else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
+				
+			[studyDate release];
+		}
+		else if (dataset->findAndGetString(DCM_AcquisitionDate, string, OFFalse).good() && string != NULL){
 			NSString	*studyDate = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 			if (dataset->findAndGetString(DCM_AcquisitionTime, string, OFFalse).good() && string != NULL){
 				NSString*   completeDate;
@@ -684,7 +697,11 @@ extern NSLock	*PapyrusLock;
 		
 		if( serieID == 0L) serieID = [[NSString alloc] initWithString:name];
 		
-		if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) && [self combineProjectionSeries])
+		if( [Modality isEqualToString:@"US"] && [self oneFileOnSeriesForUS])
+		{
+			[dicomElements setObject: [serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
+		}
+		else if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) && [self combineProjectionSeries])
 		{
 			if( [self combineProjectionSeriesMode] == 0)		// *******Combine all CR and DR Modality series in a study into one series
 			{

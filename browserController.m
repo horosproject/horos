@@ -539,7 +539,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	if( mainThread == [NSThread currentThread])
 	{
-		isCDMedia = [BrowserController isItCD: [[newFilesArray objectAtIndex: 0] pathComponents]];
+		isCDMedia = [BrowserController isItCD: [newFilesArray objectAtIndex: 0]];
 		
 		[DicomFile setFilesAreFromCDMedia: isCDMedia];
 		
@@ -2516,12 +2516,11 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		case cdOnly:
 		{
-			NSArray			*pathFilesComponent = [[filesInput objectAtIndex:0] pathComponents];
 			BOOL			isACDDVD = NO;
 			
 			NSLog( [filesInput objectAtIndex:0]);
 			
-			if( [BrowserController isItCD:pathFilesComponent] == NO) return filesInput;
+			if( [BrowserController isItCD: [filesInput objectAtIndex:0]] == NO) return filesInput;
 		}
 		break;
 		
@@ -10515,23 +10514,26 @@ static NSArray*	openSubSeriesArray = 0L;
 	}
 }
 
-+(BOOL) isItCD:(NSArray*) pathFilesComponent
++(BOOL) isItCD:(NSString*) path
 {
-	#if !__LP64__
+	NSArray *pathFilesComponent = [path pathComponents];
+	
 	if( [pathFilesComponent count] > 2 && [[[pathFilesComponent objectAtIndex: 1] uppercaseString] isEqualToString:@"VOLUMES"])
 	{
 		NSArray	*removeableMedia = [[NSWorkspace sharedWorkspace] mountedRemovableMedia];
-		int i;
-		NSString	*path = [pathFilesComponent componentsJoinedByString:@"/"];
-		
-		for( i = 0; i < [removeableMedia count]; i++)
+		NSLog( @"****");
+		for(int i = 0; i < [removeableMedia count]; i++)
 		{
+			NSLog( path);
+			NSLog( [removeableMedia objectAtIndex: i]);
 			if( [[[removeableMedia objectAtIndex: i] commonPrefixWithString: path options: NSCaseInsensitiveSearch] isEqualToString: [removeableMedia objectAtIndex: i]])
 			{
 				BOOL		isWritable, isUnmountable, isRemovable;
 				NSString	*description, *type;
 				
 				[[NSWorkspace sharedWorkspace] getFileSystemInfoForPath:[removeableMedia objectAtIndex: i] isRemovable:&isRemovable isWritable:&isWritable isUnmountable:&isUnmountable description:&description type:&type];
+				
+				NSLog( path);
 				
 				if( isRemovable == YES && isWritable == NO)
 				{
@@ -10540,8 +10542,6 @@ static NSArray*	openSubSeriesArray = 0L;
 			}
 		}
 	}
-	
-	#endif
 	return NO;
 }
 
@@ -12370,7 +12370,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];
 	NSLog(sNewDrive);
 	
-	if( [BrowserController isItCD:[sNewDrive pathComponents]] == YES)
+	if( [BrowserController isItCD: sNewDrive] == YES)
 	{
 		[self ReadDicomCDRom:self];
 	}

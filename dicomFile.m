@@ -58,7 +58,7 @@ static BOOL COMMENTSAUTOFILL = NO;
 static BOOL splitMultiEchoMR = NO;
 static BOOL useSeriesDescription = NO;
 static BOOL NOLOCALIZER = NO;
-static BOOL combineProjectionSeries = NO;
+static BOOL combineProjectionSeries = NO, oneFileOnSeriesForUS = NO;
 static int combineProjectionSeriesMode = NO;
 static BOOL	CHECKFORLAVIM = NO;
 static int COMMENTSGROUP = NO;
@@ -227,6 +227,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			useSeriesDescription = [sd boolForKey: @"useSeriesDescription"];
 			splitMultiEchoMR = [sd boolForKey: @"splitMultiEchoMR"];
 			NOLOCALIZER = [sd boolForKey: @"NOLOCALIZER"];
+			oneFileOnSeriesForUS = [sd boolForKey: @"oneFileOnSeriesForUS"];
 			combineProjectionSeries = [sd boolForKey: @"combineProjectionSeries"];
 			combineProjectionSeriesMode = [sd boolForKey: @"combineProjectionSeriesMode"];
 			
@@ -254,6 +255,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			splitMultiEchoMR = [[dict objectForKey: @"splitMultiEchoMR"] intValue];
 			NOLOCALIZER = [[dict objectForKey: @"NOLOCALIZER"] intValue];
 			combineProjectionSeries = [[dict objectForKey: @"combineProjectionSeries"] intValue];
+			oneFileOnSeriesForUS = [[dict objectForKey: @"oneFileOnSeriesForUS"] intValue];
 			combineProjectionSeriesMode = [[dict objectForKey: @"combineProjectionSeriesMode"] intValue];
 			
 			CHECKFORLAVIM = NO;
@@ -1903,20 +1905,18 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				else Modality = [[NSString alloc] initWithString:@"OT"];
 				[dicomElements setObject:Modality forKey:@"modality"];
 				
-				val = Papy3GetElement (theGroupP, papAcquisitionDateGr, &nbVal, &itemType);
+				val = Papy3GetElement (theGroupP, papImageDateGr, &nbVal, &itemType);
 				if (val != NULL)
 				{
 					NSString	*studyDate = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 					
-					val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &itemType);
+					val = Papy3GetElement (theGroupP, papImageTimeGr, &nbVal, &itemType);
 					if (val != NULL)
 					{
 						NSString*   completeDate;
 						NSString*   studyTime = [[NSString alloc] initWithBytes:val->a length:6 encoding: NSASCIIStringEncoding];
 						
 						completeDate = [studyDate stringByAppendingString:studyTime];
-						
-					//	NSLog( completeDate);
 						
 						date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
 						
@@ -1928,18 +1928,20 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				else
 				{
-					val = Papy3GetElement (theGroupP, papSeriesDateGr, &nbVal, &itemType);
+					val = Papy3GetElement (theGroupP, papAcquisitionDateGr, &nbVal, &itemType);
 					if (val != NULL)
 					{
 						NSString	*studyDate = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 						
-						val = Papy3GetElement (theGroupP, papSeriesTimeGr, &nbVal, &itemType);
+						val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &itemType);
 						if (val != NULL)
 						{
 							NSString*   completeDate;
 							NSString*   studyTime = [[NSString alloc] initWithBytes:val->a length:6 encoding: NSASCIIStringEncoding];
 							
 							completeDate = [studyDate stringByAppendingString:studyTime];
+							
+						//	NSLog( completeDate);
 							
 							date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
 							
@@ -1951,12 +1953,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					}
 					else
 					{
-						val = Papy3GetElement (theGroupP, papStudyDateGr, &nbVal, &itemType);
+						val = Papy3GetElement (theGroupP, papSeriesDateGr, &nbVal, &itemType);
 						if (val != NULL)
 						{
 							NSString	*studyDate = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 							
-							val = Papy3GetElement (theGroupP, papStudyTimeGr, &nbVal, &itemType);
+							val = Papy3GetElement (theGroupP, papSeriesTimeGr, &nbVal, &itemType);
 							if (val != NULL)
 							{
 								NSString*   completeDate;
@@ -1972,7 +1974,31 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 							
 							[studyDate release];
 						}
-						else date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:0L] retain];
+						else
+						{
+							val = Papy3GetElement (theGroupP, papStudyDateGr, &nbVal, &itemType);
+							if (val != NULL)
+							{
+								NSString	*studyDate = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
+								
+								val = Papy3GetElement (theGroupP, papStudyTimeGr, &nbVal, &itemType);
+								if (val != NULL)
+								{
+									NSString*   completeDate;
+									NSString*   studyTime = [[NSString alloc] initWithBytes:val->a length:6 encoding: NSASCIIStringEncoding];
+									
+									completeDate = [studyDate stringByAppendingString:studyTime];
+									
+									date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+									
+									[studyTime release];
+								}
+								else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
+								
+								[studyDate release];
+							}
+							else date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:0L] retain];
+						}
 					}
 				}
 				
@@ -2347,7 +2373,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if( serieID == 0L) serieID = [[NSString alloc] initWithString:name];
 		
-		if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) && combineProjectionSeries)
+		if( [Modality isEqualToString:@"US"] && oneFileOnSeriesForUS)
+		{
+			[dicomElements setObject: [serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
+		}
+		else if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) && combineProjectionSeries)
 		{
 			if( combineProjectionSeriesMode == 0)		// *******Combine all CR and DR Modality series in a study into one series
 			{
@@ -2537,8 +2567,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		NSString *seriesTime = [[dcmObject attributeValueWithName:@"SeriesTime"] timeString];
 		NSString *acqDate = [[dcmObject attributeValueWithName:@"AcquisitionDate"] dateString];
 		NSString *acqTime = [[dcmObject attributeValueWithName:@"AcquisitionTime"] timeString];
+		NSString *contDate = [[dcmObject attributeValueWithName:@"ContentDate"] dateString];
+		NSString *contTime = [[dcmObject attributeValueWithName:@"ContentTime"] timeString];
+		
 		//NSString *date;
-		if (acqDate && acqTime)
+		if (contDate && contTime)
+			date = [[NSCalendarDate alloc] initWithString:[contDate stringByAppendingString:contTime] calendarFormat:@"%Y%m%d%H%M%S"];
+		else if (acqDate && acqTime)
 			date = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:acqTime] calendarFormat:@"%Y%m%d%H%M%S"];
 		else if (seriesDate && seriesTime)
 			date = [[NSCalendarDate alloc] initWithString:[seriesDate stringByAppendingString:seriesTime] calendarFormat:@"%Y%m%d%H%M%S"];
@@ -2768,7 +2803,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if( serieID == 0L)  
 			serieID = [[NSString alloc] initWithString:name];
 		
-		if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) &&  combineProjectionSeries)
+		if( [Modality isEqualToString:@"US"] && oneFileOnSeriesForUS)
+		{
+			[dicomElements setObject: [serieID stringByAppendingString: [filePath lastPathComponent]] forKey:@"seriesID"];
+		}
+		else if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) &&  combineProjectionSeries)
 		{
 			if( combineProjectionSeriesMode == 0)		// *******Combine all CR and DR Modality series in a study into one series
 			{
@@ -3292,6 +3331,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 - (BOOL) noLocalizer{
 	return NOLOCALIZER;
+}
+
+- (BOOL)oneFileOnSeriesForUS{
+	return oneFileOnSeriesForUS;
 }
 
 - (BOOL)combineProjectionSeries{

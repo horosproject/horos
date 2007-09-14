@@ -336,7 +336,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) previewSliderAction:(id) sender;
 - (void) addHelpMenu;
 
-+ (BOOL) isItCD:(NSArray*) pathFilesComponent;
++ (BOOL) isItCD:(NSString*) path;
 - (void)storeSCPComplete:(id)sender;
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingDicomFile;
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages;

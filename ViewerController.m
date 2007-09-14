@@ -2537,7 +2537,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[cell setBordered: NO];
 			
 //			[previewMatrix selectCellAtRow:index column:0];
-//			[previewMatrix scrollCellToVisibleAtRow: index column:0];
+			[previewMatrix scrollCellToVisibleAtRow: index column:0];
 		}
 	}
 	else
@@ -11997,11 +11997,7 @@ int i,j,l;
 	
 	if( loadingPercentage < 0.5) return;
 	
-	if( [pixList[ curMovieIndex] count] <= 1)
-	{
-		[self PlayStop:[self findPlayStopButton]];
-		return;
-	}
+	if( [pixList[ curMovieIndex] count] <= 1) return;
 
 	if( thisTime - lastTimeFrame > 1.0)
 	{
