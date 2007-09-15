@@ -357,7 +357,7 @@
 			// get all cells around a point
 			//NSLog(@"Build Cells");
 			data->BuildCells();
-			for (int a = 0; a < 50 ;  a++){
+			for (int a = 0; a < 5 ;  a++){
 				for (i = 0; i < nPoints; i++) {	
 					vtkIdType ncells;
 					vtkIdList *cellIds = vtkIdList::New();;
@@ -369,32 +369,24 @@
 					x = position[0];
 					y = position[1];
 					z = position[2];
-					// All cells for Point and number of cells
-					data->GetPointCells	(i, cellIds);	
-					ncells = cellIds->GetNumberOfIds();
-	
-					for (j = 0;  j < ncells; j++) {
-						vtkIdType numPoints;
-						vtkIdType *cellPoints ;
-						vtkIdType cellId = cellIds->GetId(j);
-						//get all points for the cell
-						data->GetCellPoints(cellId, numPoints, cellPoints);				
-
-						for (k = 0; k < numPoints; k++) {						
-							position = medialPoints->GetPoint(cellPoints[k]);
-							x += position[0];
-							y += position[1];
-							z += position[2];
-							neighbors++;
-						 }
+					NSSet *ptSet = [self connectedPointsForPoint:i fromPolyData:data];
+					for (NSNumber *number in ptSet) {
+						vtkIdType pt = [number doubleValue];
+						position = medialPoints->GetPoint(pt);
+						x += position[0];
+						y += position[1];
+						z += position[2];
+						neighbors++;
+						
 					}
+					
 					// get average
 					x /= neighbors;
 					y /= neighbors;
 					z /= neighbors;
 					/// Set Point
-					medialPoints->SetPoint(i, x ,y ,z);					
-					cellIds->Delete();
+					medialPoints->SetPoint(i, x ,y ,z);	
+					
 				}
 			}
 			
@@ -402,7 +394,7 @@
 			polyDataNormals->SetInput(data);
 			
 
-			
+
 			// Find most inferior Point. Rrpresent Rectum
 			// Could be a seed point to generalize.  
 			vtkIdType startingPoint;
@@ -415,9 +407,10 @@
 					startingPoint = i;
 				}
 			}
+
 			double *sp = medialPoints->GetPoint(startingPoint);
 			NSLog(@"starting Point: %f %f %f", sp[0], sp[1], sp[2]);
-			
+/*			
 			//get connected Points
 			vtkIdType visitedPoints[nPoints];
 			vtkIdType connectedPoints[nPoints];
@@ -543,7 +536,7 @@
 		
 			//NSLog(@"Medial Surface number of Polygons: %d", medialSurface->GetNumberOfPolys());
 			//NSLog(@"Medial Surface number of Points: %d", medialSurface->GetNumberOfPoints());
-
+	*/
 		}
 		else 
 		{
@@ -874,5 +867,31 @@
 	[self setNeedsDisplay: YES];
 }
 
+
+- (NSSet *)connectedPointsForPoint:(vtkIdType)pt fromPolyData:(vtkPolyData *)data{
+	NSMutableSet *ptSet = [NSMutableSet set];
+	vtkIdType ncells;
+	vtkIdList *cellIds = vtkIdList::New();
+
+	// All cells for Point and number of cells
+	data->GetPointCells	(pt, cellIds);	
+	ncells = cellIds->GetNumberOfIds();
+	// loop through the cells
+	for (int j = 0;  j < ncells; j++) {
+		vtkIdType numPoints;
+		vtkIdType *cellPoints ;
+		vtkIdType cellId = cellIds->GetId(j);
+		//get all points for the cell
+		data->GetCellPoints(cellId, numPoints, cellPoints);				
+		// points may be duplicate
+		for (int k = 0; k < numPoints; k++) {	
+			NSNumber *number = [NSNumber numberWithDouble:cellPoints[k]];
+			[ptSet addObject:number];
+		 }
+	}
+	cellIds -> Delete();
+	//NSLog(@"number in Set: %d\n%@", [ptSet count], ptSet);
+	return ptSet;
+}
 
 @end
