@@ -275,7 +275,14 @@ Version 2.3
 		//NSLog(dst);
 		//if([[xmlDoc  XMLData] writeToFile:dst atomically:YES])
 		//	NSLog(@"Wrote xml");
-		[DCMObject anonymizeContentsOfFile:file  tags:[self tags]  writingToFile:dest];
+		@try
+		{
+			[DCMObject anonymizeContentsOfFile:file  tags:[self tags]  writingToFile:dest];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"Exception during anonymization -- [DCMObject anonymizeContentsOfFile:file  tags:[self tags]  writingToFile:dest]");
+		}
 		
 		[producedFiles addObject: dest];
 		

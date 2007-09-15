@@ -2619,7 +2619,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	{
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		glLoadIdentity();
-		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);
+		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);	// JORIS ! Here is the problem for iChat : if ICHAT [curView frame] should be 640 *480....
 		
 		GLfloat ctrlpoints[4][3];
 		

@@ -1266,13 +1266,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 	}
 	else
 	{
-		i = width * height;
-		buf = malloc( i);
-		if( buf)
-		{
-			memcpy( buf, baseAddr, width*height);
-		}
-		
 		rep = [[[NSBitmapImageRep alloc]
 			 initWithBitmapDataPlanes:0L
 						   pixelsWide:width
@@ -1285,12 +1278,10 @@ BOOL gUSEPAPYRUSDCMPIX;
 						  bytesPerRow:width
 						 bitsPerPixel:8] autorelease];
 		
-		memcpy( [rep bitmapData], buf, height*width);
+		memcpy( [rep bitmapData], baseAddr, height*width);
 	
 		imageRep = [[[NSImage alloc] init] autorelease];
 		[imageRep addRepresentation:rep];
-     
-		free( buf);
 	}
 	
 	return imageRep;
