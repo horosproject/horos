@@ -6397,13 +6397,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) applyImageTransformation
 {
-	NSSize size = [self frame].size;
-	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	glLoadIdentity ();
-	glViewport(0, 0, size.width, size.height);
+	glViewport(0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height);
 
-	glScalef (2.0f /(xFlipped ? -(size.width) : size.width), -2.0f / (yFlipped ? -(size.height) : size.height), 1.0f);
+	glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f);
 	glRotatef (rotation, 0.0f, 0.0f, 1.0f);
 	glTranslatef( origin.x + originOffset.x, -origin.y - originOffset.y, 0.0f);
 	glScalef( 1.f, curDCM.pixelRatio, 1.f);
