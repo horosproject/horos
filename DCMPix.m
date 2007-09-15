@@ -10153,7 +10153,22 @@ BOOL            readable = YES;
 							#undef SL
 							#undef SS
 							#undef SQ
-							if(inGrOrModP->vr==UL || inGrOrModP->vr==IS || inGrOrModP->vr==SL || inGrOrModP->vr==SS)
+							#undef FD
+							#undef FL
+							#undef DS
+							if(inGrOrModP->vr==DS)	// floating point string
+							{
+								[field appendString:[NSString stringWithFormat:@"%.6g", [[NSString stringWithCString:theValueP->a] floatValue]]];
+							}
+							else if(inGrOrModP->vr==FL)	// floating point string
+							{
+								[field appendString:[NSString stringWithFormat:@"%.6g", theValueP->fl]];
+							}
+							else if( inGrOrModP->vr==FD)
+							{
+								[field appendString:[NSString stringWithFormat:@"%.6g", (float) theValueP->fd]];
+							}
+							else if(inGrOrModP->vr==UL || inGrOrModP->vr==IS || inGrOrModP->vr==SL || inGrOrModP->vr==SS)
 							{
 								[field appendString:[NSString stringWithFormat:@"%d", theValueP->a]];
 							}
@@ -10240,6 +10255,10 @@ BOOL            readable = YES;
 		{	
 			if([field isKindOfClass:[NSString class]])
 			{
+				NSString *vr = [attr vr];
+				
+				if([vr isEqualToString:@"DS"]) field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
+				
 				if( result == 0L) result = [NSMutableString stringWithString: field];
 				else [result appendFormat: @"\\%@", field];
 			}
