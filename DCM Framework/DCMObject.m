@@ -77,17 +77,23 @@ static NSString *softwareVersion = @"001";
 			value = [tagArray objectAtIndex:1];
 		
 		[object anonyimizeAttributeForTag:tag replacingWith:value];
+		
+		NSLog( [value description]);
+		
 		if ([[tag name] isEqualToString: @"PatientID"])
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"OtherPatientIDs"] replacingWith:value];
+		
 		if ([[tag name] isEqualToString: @"InstanceCreationDate"]) {
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"ContentDate"] replacingWith:value];
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionDate"] replacingWith:value];
 		}
+		
 		if ([[tag name] isEqualToString: @"InstanceCreationTime"]) {
 			NSLog(@"InstanceCreationTime");
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"ContentTime"] replacingWith:value];
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionTime"] replacingWith:value];
 		}
+		
 		if ([[tag name] isEqualToString: @"AcquisitionDatetime"])
 		{
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionDate"] replacingWith:value];
