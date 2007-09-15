@@ -2619,7 +2619,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	{
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		glLoadIdentity();
-		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);	// JORIS ! Here is the problem for iChat : if ICHAT [curView frame] should be 640 *480....
+//		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);	// JORIS ! Here is the problem for iChat : if ICHAT [curView frame] should be 640 *480....
+		glScalef( 2.0f /([curView drawingFrameRect].size.width), -2.0f / ([curView drawingFrameRect].size.height), 1.0f);
 		
 		GLfloat ctrlpoints[4][3];
 		
@@ -2670,7 +2671,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			glLoadIdentity();
 			
-			glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);
+			glScalef( 2.0f /([curView drawingFrameRect].size.width), -2.0f / ([curView drawingFrameRect].size.height), 1.0f);
 			
 			gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, 3);
 			
@@ -3442,7 +3443,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 				{
 					NSPoint tempPt = [[[[NSApp currentEvent] window] contentView] convertPoint: [NSEvent mouseLocation] toView: curView];
-					tempPt.y = [curView frame].size.height - tempPt.y ;
+					tempPt.y = [curView drawingFrameRect].size.height - tempPt.y ;
 					tempPt = [curView ConvertFromView2GL:tempPt];
 					
 					glColor3f (0.5f, 0.5f, 1.0f);
@@ -3712,7 +3713,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 			{
 				NSPoint tempPt = [[[[NSApp currentEvent] window] contentView] convertPoint: [NSEvent mouseLocation] toView: curView];
-				tempPt.y = [curView frame].size.height - tempPt.y ;
+				tempPt.y = [curView drawingFrameRect].size.height - tempPt.y ;
 				tempPt = [curView ConvertFromView2GL:tempPt];
 				
 				glColor3f (0.5f, 0.5f, 1.0f);
@@ -3854,7 +3855,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 			{
 				NSPoint tempPt = [[[[NSApp currentEvent] window] contentView] convertPoint: [NSEvent mouseLocation] toView: curView];
-				tempPt.y = [curView frame].size.height - tempPt.y ;
+				tempPt.y = [curView drawingFrameRect].size.height - tempPt.y ;
 				tempPt = [curView ConvertFromView2GL:tempPt];
 				
 				glColor3f (0.5f, 0.5f, 1.0f);

@@ -247,8 +247,10 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	long			iChatFontListGLSize[ 256];
 	NSMutableDictionary	*iChatStringTextureCache;
 	NSSize			iChatStringSize;
+	NSRect			drawingFrameRect;
 }
 
+@property(readonly) NSRect drawingFrameRect;
 @property(readonly) NSMutableArray *rectArray;
 @property BOOL flippedData;
 @property(readonly) NSMutableArray *dcmPixList,  *dcmRoiList;
