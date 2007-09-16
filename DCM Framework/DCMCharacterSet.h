@@ -26,9 +26,10 @@
 	NSString *_characterSet;
 }
 
+@property(readonly) NSStringEncoding encoding;
+@property(readonly) NSString *characterSet, *description;
+
 - (id)initWithCode:(NSString *)characterSet;
 - (id)initWithCharacterSet:(DCMCharacterSet *)characterSet;
-- (NSStringEncoding)encoding;
-- (NSString *)characterSet;
 
 @end

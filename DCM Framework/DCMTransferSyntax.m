@@ -55,6 +55,9 @@ static NSString *DCM_BigEndianOsiriX = @"1.2.840.10008.1.2.2.1";
    
 @implementation DCMTransferSyntax
 
+@synthesize transferSyntax, name, description = name;
+@synthesize isEncapsulated, isLittleEndian, isExplicit;
+
 +(id)OsiriXTransferSyntax{
 	return [[[DCMTransferSyntax alloc] initWithTS:DCM_BigEndianOsiriX] autorelease];
 }
@@ -109,7 +112,6 @@ static NSString *DCM_BigEndianOsiriX = @"1.2.840.10008.1.2.2.1";
 +(id)MPEG2TransferSyntax{
 	return [[[DCMTransferSyntax alloc] initWithTS:DCM_MPEG2Main] autorelease];
 }
-
 
 - (id)initWithTS:(NSString *)ts{
 
@@ -174,35 +176,32 @@ static NSString *DCM_BigEndianOsiriX = @"1.2.840.10008.1.2.2.1";
 					@"RLELossless",
 					nil];
 	if (self = [super init]) {
-		NSEnumerator *enumerator = [syntaxes objectEnumerator];
-		NSString *key;
-		NSEnumerator *enumerator2 = [names objectEnumerator];
-		NSString *aName;
 		NSMutableDictionary *transferSyntaxes = [NSMutableDictionary dictionary];
-		while (key = [enumerator nextObject]) {
-				aName = [enumerator2 nextObject];
-				BOOL encapsulated = YES;
-				BOOL littleEndian = YES;
-				BOOL explicitValue = YES;
-				//only Big Endian in ExplictVRBE
-				if ([key isEqualToString:DCM_ExplicitVRBigEndian])
-					littleEndian = NO;
-				//unencasualted TSs
-				if ([key isEqualToString:DCM_ExplicitVRBigEndian] ||					
-					[key isEqualToString:DCM_ExplicitVRLittleEndian] ||
-					[key isEqualToString:DCM_ImplicitVRLittleEndian] ||
-					[key isEqualToString:DCM_BigEndianOsiriX])
-					encapsulated = NO;
-				//implicit TSs
-				if ([key isEqualToString:DCM_ImplicitVRLittleEndian]) 
-					explicitValue = NO;
-				NSMutableDictionary *syntax = [NSMutableDictionary dictionary];
-					[syntax setObject:[NSNumber numberWithBool:encapsulated] forKey:@"isEncapsulated"];
-					[syntax setObject:[NSNumber numberWithBool:littleEndian] forKey:@"isLittleEndian"];
-					[syntax setObject:[NSNumber numberWithBool:explicitValue] forKey:@"isExplicit"];
-					[syntax setObject:key forKey:@"Transfer Syntax"];
-					[syntax setObject:aName forKey:@"Name"];
-				[transferSyntaxes setObject:syntax forKey:key];
+		for ( unsigned int i = 0; i < [syntaxes count]; i++ ) {
+			NSString *key = [syntaxes objectAtIndex: i ];
+			NSString *aName = [names objectAtIndex: i];
+			BOOL encapsulated = YES;
+			BOOL littleEndian = YES;
+			BOOL explicitValue = YES;
+			//only Big Endian in ExplictVRBE
+			if ([key isEqualToString:DCM_ExplicitVRBigEndian])
+				littleEndian = NO;
+			//unencasualted TSs
+			if ([key isEqualToString:DCM_ExplicitVRBigEndian] ||					
+				[key isEqualToString:DCM_ExplicitVRLittleEndian] ||
+				[key isEqualToString:DCM_ImplicitVRLittleEndian] ||
+				[key isEqualToString:DCM_BigEndianOsiriX])
+				encapsulated = NO;
+			//implicit TSs
+			if ([key isEqualToString:DCM_ImplicitVRLittleEndian]) 
+				explicitValue = NO;
+			NSMutableDictionary *syntax = [NSMutableDictionary dictionary];
+			[syntax setObject:[NSNumber numberWithBool:encapsulated] forKey:@"isEncapsulated"];
+			[syntax setObject:[NSNumber numberWithBool:littleEndian] forKey:@"isLittleEndian"];
+			[syntax setObject:[NSNumber numberWithBool:explicitValue] forKey:@"isExplicit"];
+			[syntax setObject:key forKey:@"Transfer Syntax"];
+			[syntax setObject:aName forKey:@"Name"];
+			[transferSyntaxes setObject:syntax forKey:key];
 		}
 		
 		transferSyntaxDict = [[transferSyntaxes objectForKey: (NSString *)ts] retain];
@@ -259,26 +258,6 @@ static NSString *DCM_BigEndianOsiriX = @"1.2.840.10008.1.2.2.1";
 	[transferSyntax release];
 	[name release];
 	[super dealloc];
-}
-
-- (NSString *)transferSyntax{
-	return transferSyntax;
-}
-- (NSString *)name{
-	return name;
-}
-- (BOOL)isEncapsulated{
-	return isEncapsulated;
-}
-- (BOOL)isLittleEndian{
-	return isLittleEndian;
-}
-- (BOOL)isExplicit{
-	return isExplicit;
-}
-
-- (NSString *)description {
-	return name;
 }
 
 - (BOOL)isEqualToTransferSyntax:(DCMTransferSyntax *)ts{

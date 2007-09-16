@@ -33,11 +33,10 @@
 - (id)initWithNetService:(NSNetService *)netService{
 	int socketFD = -1;
 	//NSLog(@"init WithNetService: %@", [netService hostName]);
-	NSEnumerator *enumerator = [[netService addresses] objectEnumerator];
-	NSData *addr;
 	struct sockaddr *result;
-	
-	while (addr = [enumerator nextObject]) {
+
+	NSData *addr;
+	for ( addr in [netService addresses] ) {
 		 result = (struct sockaddr *)[addr bytes];
 	
 		int family = result->sa_family;
@@ -73,8 +72,6 @@
 	
 }
 	
-	
-
 - (id)initWithAddress:(NSData *)addr {
 	int socketFD = -1;
 	

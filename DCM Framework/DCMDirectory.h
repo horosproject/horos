@@ -27,11 +27,12 @@
 	NSString *dirPath;
 }
 
+@property(readonly) DCMRecord *root;
+
 + (id)directory;
 + (id)directoryWithDICOMDIR:(NSString *)dicomdir;
 + (id)filePathsFromDICOMDIR:(NSString *)dicomdir;
 - (id)initWithDICOMDIR:(NSString *)dicomdir;
-- (DCMRecord *)root;
 - (void)addObjectAtPath:(NSString *)path;
 - (void)buildSequence;
 - (BOOL)writeToFile:(NSString *)path;

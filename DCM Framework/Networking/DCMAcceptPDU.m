@@ -56,16 +56,12 @@ htt://www.pixelmed.com
 	[parameters setObject:[NSNumber numberWithChar:0x02] forKey:@"pduType"];
 	return [super initWithParameters:parameters];
 	
-
 }
 
 - (NSArray *)sanitizePresentationContextsForAcceptance{
 	NSMutableArray *newContexts =  [NSMutableArray array];
-	NSEnumerator *enumerator = [presentationContexts objectEnumerator];
-	DCMPresentationContext *presentationContext;
-	DCMPresentationContext *newContext;
-	while (presentationContext = [enumerator nextObject]) {
-		newContext = [DCMPresentationContext contextWithID:[presentationContext contextID]]; 
+	for ( DCMPresentationContext *presentationContext in presentationContexts ) {
+		DCMPresentationContext *newContext = [DCMPresentationContext contextWithID:[presentationContext contextID]]; 
 		if ([[presentationContext transferSyntaxes] count] > 0) 
 			[newContext addTransferSyntax:[[presentationContext transferSyntaxes] objectAtIndex:0]];
 		else
@@ -75,9 +71,8 @@ htt://www.pixelmed.com
 			//no Abstract Syntax for Acceptance
 		//[presentationContext setAbstractSyntax:nil];
 	}
-	return newContexts;
+	return newContexts;  //  When is this ever populated??  Is the intent to add newContext to the array?  RBR 9/13/07
 }
-
 			
 - (id)initWithData:(NSMutableData *)data{
 	if (self = [super initWithData:data]){
@@ -87,10 +82,4 @@ htt://www.pixelmed.com
 	return self;
 }
 	
-
-
-
-
-
-
 @end

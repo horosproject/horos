@@ -32,6 +32,12 @@ NSString	*name;
 NSMutableDictionary *transferSyntaxDict;
 
 }
+@property(readonly) NSString *transferSyntax;
+@property(readonly) NSString *name, *description;
+@property(readonly )BOOL isEncapsulated;
+@property(readonly) BOOL isLittleEndian;
+@property(readonly) BOOL isExplicit;
+
 +(id)ExplicitVRLittleEndianTransferSyntax;
 +(id)ImplicitVRLittleEndianTransferSyntax;
 +(id)ExplicitVRBigEndianTransferSyntax;
@@ -51,11 +57,6 @@ NSMutableDictionary *transferSyntaxDict;
 - (id)initWithTS:(NSString *)ts isEncapsulated:(BOOL)encapsulated  isLittleEndian:(BOOL)endian  isExplicit:(BOOL)explicitValue name:(NSString *)aName;
 - (id)initWithTransferSyntax:(DCMTransferSyntax *)ts;
 
-- (NSString *)transferSyntax;
-- (NSString *)name;
-- (BOOL)isEncapsulated;
-- (BOOL)isLittleEndian;
-- (BOOL)isExplicit;
 
 - (BOOL)isEqualToTransferSyntax:(DCMTransferSyntax *)ts;
 

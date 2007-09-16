@@ -20,19 +20,16 @@
 
 #import "DCMCharacterSet.h"
 
-char* DCMreplaceInvalidCharacter (char* str) 
-{
+char* DCMreplaceInvalidCharacter( char* str ) {
 	long i = strlen( str);
 	
-	while( i-- >0)
-	{
+	while( i-- >0 )	{
 		if( str[i] == '/') str[i] = '-';
 		if( str[i] == '^') str[i] = ' ';
 	}
 	
 	i = strlen( str);
-	while( --i > 0)
-	{
+	while( --i > 0 ) {
 		if( str[i] ==' ') str[i] = 0;
 		else i = 0;
 	}
@@ -79,9 +76,9 @@ char* DCMreplaceInvalidCharacter (char* str)
 //}
 //@end
 
-
-
 @implementation DCMCharacterSet
+
+@synthesize encoding, characterSet = _characterSet, description = _characterSet;
 
 - (id)initWithCode:(NSString *)characterSet{
 	_characterSet = [characterSet retain];
@@ -107,7 +104,7 @@ char* DCMreplaceInvalidCharacter (char* str)
 	return self;
 }
 
-- (id)initWithCharacterSet:(DCMCharacterSet *)characterSet{
+- (id)initWithCharacterSet:(DCMCharacterSet *)characterSet {
 	return [self initWithCode:[characterSet characterSet]];
 }
 
@@ -118,18 +115,6 @@ char* DCMreplaceInvalidCharacter (char* str)
 - (void)dealloc {
 	[_characterSet release];
 	[super dealloc];
-}
-
-- (NSStringEncoding)encoding{
-	return encoding;
-}
-
-- (NSString *)characterSet{
-	 return _characterSet;
-}
-
-- (NSString *)description{
-	return _characterSet;
 }
 
 @end

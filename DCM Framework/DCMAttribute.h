@@ -56,7 +56,6 @@
 @interface DCMAttribute : NSObject {
 	DCMAttributeTag *_tag;
 	long _valueLength;
-	int _valueMultiplicity;
 	NSMutableArray *_values;
 	NSString *_vr;
 	DCMCharacterSet *characterSet;
@@ -64,6 +63,18 @@
 	unsigned char *_dataPtr;
 
 }
+
+@property(readonly) int group, element;
+@property(readonly) int valueMultiplicity;
+@property(readonly) NSString *vr, *vrStringValue;
+@property(readonly) NSString *description;
+@property(readonly) long paddedLength;
+@property(readonly) long paddedValueLength;
+@property(readonly) long valueLength;
+@property(copy) NSMutableArray *values;
+@property(readonly) DCMAttributeTag *attrTag;
+@property(retain) DCMCharacterSet *characterSet;
+
 + (id)attributeWithAttribute:(DCMAttribute *)attr;
 + (id)attributeWithAttributeTag:(DCMAttributeTag *)tag;
 + (id)attributeWithAttributeTag:(DCMAttributeTag *)tag  vr:(NSString *)vr;
@@ -95,32 +106,17 @@
 			vr:(NSString *)vr 
 			length:(long) vl 
 			dataPtr: (unsigned char *)dataPtr;
-- (int)group;
-- (int)element;
-- (long)valueLength;
 - (long) paddedLength;
-- (int)valueMultiplicity;
-//- (char *)valueRepresentation;
-- (NSString *)vrStringValue;
-- (NSString *)vr;
-- (long)paddedValueLength;
-
-- (NSMutableArray *)values;
 - (id)value;
 - (void)addValue:(id)value;
-- (void)setValues:(NSMutableArray *)values;
 - (void)writeBaseToData:(DCMDataContainer *)dcmData transferSyntax:(DCMTransferSyntax *)ts;
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts;
 
 - (NSString *)valuesAsString;
 - (NSArray *)valuesForVR:(NSString *)vrString  length:(int)length data:(DCMDataContainer *)dicomData;
-//- (DCMAttributeTag *)tag;
-- (DCMAttributeTag *)attrTag;
 - (void)swapBytes:(NSMutableData *)data;
 - (id)copyWithZone:(NSZone *)zone;
 
-- (void)setCharacterSet:(DCMCharacterSet *)specificCharacterSet;
 - (NSXMLNode *)xmlNode;
-
 
 @end

@@ -68,9 +68,7 @@ htt://www.pixelmed.com
 		
 		
 		//add separate presentation Contexts for each syntax
-		NSEnumerator *enumerator  = [[context transferSyntaxes] objectEnumerator];
-		DCMTransferSyntax *syntax;
-		while (syntax = [enumerator nextObject]) {
+		for ( DCMTransferSyntax *syntax in [context transferSyntaxes] ) {
 			NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
 			presentationContextID += 2;
 			DCMPresentationContext *pContext = [DCMPresentationContext contextWithID:presentationContextID];

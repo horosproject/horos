@@ -25,7 +25,7 @@
 
 @implementation DCMRootRecord
 
-+ (NSString *)recordUIDForDCMObject:(DCMObject *)dcmObject{
++ (NSString *)recordUIDForDCMObject:(DCMObject *)dcmObject {
 	return nil;
 }
 
@@ -33,24 +33,24 @@
 	return [[[DCMRootRecord alloc] init] autorelease];
 }
 
-+ (id)rootRecordWithRecordSequence:(NSArray *)recordSequence{
++ (id)rootRecordWithRecordSequence:(NSArray *)recordSequence {
 	return [[[DCMRootRecord alloc] initWithRecordSequence:(NSArray *)recordSequence parent:nil] autorelease];
 }
 
-- (id)init{
+- (id)init {
 	NSLog(@"init Root record");
 	self =  [super initWithDCMObject:nil  atPath:nil parent:nil];
 	return self;
 }
 
-- (id)initWithRecordSequence:(NSArray *)recordSequence parent:(DCMRecord *)record{
+- (id)initWithRecordSequence:(NSArray *)recordSequence parent:(DCMRecord *)record {
 	if (self = [super initWithRecordSequence:(NSArray *)recordSequence parent:(DCMRecord *)record]) {
 		[self parseRecordSequence:(NSArray *)recordSequence recordType:@"PATIENT"];
 	}
 	return self ;
 }
 
-- (void)addChildForDCMObject:(DCMObject *)dcmObject  atPath:(NSString *)path{
+- (void)addChildForDCMObject:(DCMObject *)dcmObject  atPath:(NSString *)path {
 	DCMRecord *child = [self childForUID:[DCMPatientRecord recordUIDForDCMObject:dcmObject]];
 	if (child)
 		[child addChildForDCMObject:dcmObject  atPath:(NSString *)path];
@@ -65,16 +65,16 @@
 	[children addObject:child];		
 }
 
-- (NSArray *)allItems{
+- (NSArray *)allItems {
 	NSMutableArray *array = [NSMutableArray array];
 	NSEnumerator *enumerator = [self sortedChildEnumerator];
 	DCMRecord *child;
-	while (child = [enumerator nextObject]) 
+	while ( child == [enumerator nextObject] ) 
 		[array addObjectsFromArray:[child allItems]];
 	return array;
 }
 
-- (void)subRecordWithSubSequence:(NSArray *)subSequence{
+- (void)subRecordWithSubSequence:(NSArray *)subSequence {
 	[children addObject:[DCMPatientRecord patientRecordWithRecordSequence:(NSArray *)subSequence parent:(DCMRecord *)self]];
 }
 

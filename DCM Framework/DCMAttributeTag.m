@@ -30,8 +30,9 @@ Version 2.3
 #import "DCMAttributeTag.h"
 #import "DCM.h"
 
-
 @implementation DCMAttributeTag
+
+@synthesize group = _group, element = _element, name = _name, vr = _vr;
 
 + (id) tagWithGroup:(int)group element:(int)element{
 	return [[[DCMAttributeTag alloc] initWithGroup:group element:element] autorelease];
@@ -48,8 +49,6 @@ Version 2.3
 + (id) tagWithName:(NSString *)name{
 	return [[[DCMAttributeTag alloc] initWithName:name] autorelease];
 }
-
-
 
 - (id) initWithGroup:(int)group element:(int)element{
 	if (self = [super init]) {
@@ -75,7 +74,7 @@ Version 2.3
 }
 
 - (id) initWithTag:(DCMAttributeTag *)tag{
-	return [self initWithGroup:[tag group] element:[tag element]];
+	return [self initWithGroup: tag.group element: tag.element];
 	
 }
 
@@ -121,53 +120,37 @@ Version 2.3
 	[_stringValue release];
 	[super dealloc];
 }
-- (int)group{
-	return _group;
-}
-- (int)element{
-	return _element;
-}
+
 - (BOOL)isPrivate{
 	if ((_group%2) == 0)
 		return NO;		
 	return YES;
 }
 
-- (NSString *)stringValue{
+- (NSString *)stringValue {
 	if (!_stringValue)
 		_stringValue = [[NSString alloc] initWithFormat:@"%0004X,%0004X", _group, _element];
 	return _stringValue;
 }
 
-- (NSString *)description{
-	return [NSString stringWithFormat:@"%@\t%@\t%@",[self stringValue], _name, _vr];
-	//return [self stringValue];
+- (NSString *)description {
+	return [NSString stringWithFormat:@"%@\t%@\t%@", self.stringValue, _name, _vr];
 }
 
-- (long)longValue{
-	NSLog(@"long Value for %@:%d", [self description], (long)_group<<16 + (long)_element&0xffff);
+- (long)longValue {
+	NSLog(@"long Value for %@:%d", self.description, (long)_group<<16 + (long)_element&0xffff);
 	return (long)_group<<16 + (long)_element&0xffff;
 }
-	
-	
-- (NSComparisonResult)compare:(DCMAttributeTag *)tag{
+
+- (NSComparisonResult)compare:(DCMAttributeTag *)tag {
 	//NSNumber *thisTag = [NSNumber numberWithLong:[self longValue]];
 	//NSNumber *otherTag = [NSNumber numberWithLong:[tag longValue]];
-	return [[self stringValue] compare:[tag stringValue]];
+	return [[self stringValue] compare: tag.stringValue];
 }
 
-- (BOOL)isEquaToTag:(DCMAttributeTag *)tag{
-	return [[tag stringValue] isEqualToString:[self stringValue]];
+- (BOOL)isEquaToTag:(DCMAttributeTag *)tag {
+	return [[tag stringValue] isEqualToString: self.stringValue];
 
 }
-
-- (NSString *)vr{
-	return _vr;
-}
-
-- (NSString *)name{
-	return _name;
-}
-
 
 @end

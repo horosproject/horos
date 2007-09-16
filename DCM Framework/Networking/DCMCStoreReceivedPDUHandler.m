@@ -38,6 +38,15 @@ htt://www.pixelmed.com
 
 @implementation DCMCStoreReceivedPDUHandler
 
+@synthesize dicomObject = dcmObject;
+@synthesize presentationContextID;
+@synthesize response;
+@synthesize responseMessage;
+@synthesize callingAET;
+@synthesize scpDelegate;
+@synthesize commandType;
+
+
 + (id)cStoreDataHanderWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug{
 	return [[[DCMCStoreReceivedPDUHandler alloc] initWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug] autorelease];
 }
@@ -145,15 +154,12 @@ htt://www.pixelmed.com
 
 - (void)sendPDataIndication:(DCMPDataPDU *)pdu   association:(DCMAssociation *)association{
 	
-	NSEnumerator *enumerator =  [[pdu pdvList] objectEnumerator];
-	DCMPresentationDataValue *pdv;
-	DCMTransferSyntax *transferSyntax; 
-	while (pdv = [enumerator nextObject]){
+	for ( DCMPresentationDataValue *pdv in [pdu pdvList]) {
 		if ([pdv isCommand]){
 			[commandReceived appendData:[pdv value]];
 			if ([pdv isLastFragment]){
 				presentationContextID = [pdv presentationContextID];
-				transferSyntax = [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax];
+				DCMTransferSyntax *transferSyntax = [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax];
 				
 				[dcmObject release];
 				dcmObject = [[self objectFromCommandOrData:commandReceived withTransferSyntax:transferSyntax] retain];
@@ -215,7 +221,7 @@ htt://www.pixelmed.com
 			
 			if ([pdv isLastFragment]){
 				presentationContextID = [pdv presentationContextID];
-				transferSyntax = [association transferSyntaxForPresentationContextID:presentationContextID];
+				DCMTransferSyntax *transferSyntax = [association transferSyntaxForPresentationContextID:presentationContextID];
 				[dcmObject release];
 				dcmObject = [[self objectFromCommandOrData:dataReceived withTransferSyntax:transferSyntax] retain];
 				//add metaheader first
@@ -285,6 +291,7 @@ htt://www.pixelmed.com
 	}	
 		
 }
+
 - (void)updateReceiveStatus:(NSDictionary *)userInfo{
 }
 
@@ -295,28 +302,10 @@ htt://www.pixelmed.com
 		[super evaluateStatusAndSetSuccess:object];
 	}
 
-
-- (NSData *)response{
-
-	return response;
-}
-
 - (void) makeUseOfDataSet:(DCMObject *)object{
 	NSString *filename = [[dcmObject attributeValueWithName:@"SOPInstanceUID"] retain];
 	NSString *destination = [NSString stringWithFormat:@"%@/%@", folder, filename];
 	[object writeToFile:destination withTransferSyntax:0 quality:0 atomically:YES];
-}
-
-- (DCMObject *)dicomObject{
-	return dcmObject;
-}
-
-- (unsigned char)presentationContextID{
-	return presentationContextID;
-}
-
-- (DCMCommandMessage *)responseMessage{
-	return responseMessage;
 }
 
 - (void)reset{
@@ -332,23 +321,5 @@ htt://www.pixelmed.com
 	[storeRequest release];
 	storeRequest = nil;
 }
-
-- (NSString *)callingAET{
-	return callingAET;
-}
-- (void)setCallingAET:(NSString *)aet{
-	[callingAET release];
-	callingAET = [aet retain];
-}
-
-- (void)setSCPDelegate:(id)delegate{
-	scpDelegate = delegate;
-}
-
-- (int)commandType{
-	return commandType;
-}
-
-
 
 @end

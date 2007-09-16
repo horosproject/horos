@@ -26,7 +26,7 @@
 
 + (id)nGetRequestWithAttributeList:(NSArray *)attributeList
 		sopClassUID:(NSString *)sopClassUID  
-		sopInstanceUID:(NSString *)sopInstanceUID{
+		sopInstanceUID:(NSString *)sopInstanceUID {
 	return [[[DCMNGetRequest alloc] initWithAttributeList:attributeList
 			sopClassUID:(NSString *)sopClassUID  
 			sopInstanceUID:(NSString *)sopInstanceUID] autorelease];
@@ -60,9 +60,7 @@
 		//sopInstance attr
 		[dcmObject addAttributeValue:sopInstanceUID   forName:@"RequestedSOPInstanceUID"];
 		
-		NSEnumerator *enumerator = [attributeList objectEnumerator];
-		NSNumber *attr;
-		while (attr = [enumerator nextObject])
+		for ( NSNumber *attr in attributeList )
 			[dcmObject addAttributeValue:attr   forName:@"AttributeIdentifierList"];
 		
 		//group length

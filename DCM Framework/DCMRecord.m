@@ -93,7 +93,7 @@
 	return enumerator;
 }
 
-- (NSArray *)children{
+- (NSArray *)children {
 	NSArray *array = [children allObjects];
 	NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"sortValue" ascending:YES] autorelease];
 	[sortedArray release];
@@ -102,33 +102,31 @@
 }
 	
 
-- (void)addChildForDCMObject:(DCMObject *)dcmObject  atPath:(NSString *)path{
+- (void)addChildForDCMObject:(DCMObject *)dcmObject  atPath:(NSString *)path {
 
 }
 
-- (void)newChildForDCMObject:(DCMObject *)dcmObject  atPath:(NSString *)path{
+- (void)newChildForDCMObject:(DCMObject *)dcmObject  atPath:(NSString *)path {
 	//return nil;
 }
 
-- (void)removeChild:(DCMRecord *)child{
+- (void)removeChild:(DCMRecord *)child {
 	[children removeObject:child];
 }
 
-- (id)childForUID:(NSString *)aUID{
-	NSEnumerator *enumerator = [self childEnumerator];
-	id child;
-	while (child = [enumerator nextObject]){
+- (id)childForUID:(NSString *)aUID {
+	for ( id child in children ) {
 		if ([[child uid] isEqualToString:aUID])
 			return child;
 	}
 	return nil;
 }
 
-- (id)sortValue{
+- (id)sortValue {
 	return nil;
 }
 
-- (int)recordLength{
+- (int)recordLength {
 	//add 16 for our item tag and delimiter tag;
 	DCMDataContainer *container = [DCMDataContainer dataContainer];
 	if ([dcmItem writeToDataContainer:(DCMDataContainer *)container 

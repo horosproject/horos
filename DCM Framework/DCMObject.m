@@ -34,6 +34,12 @@ static NSString *implementationName = @"OSIRIX";
 static NSString *softwareVersion = @"001";
 
 @implementation DCMObject
+
+@synthesize pixelDataIsDecoded = _decodePixelData;
+@synthesize transferSyntax;
+@synthesize specificCharacterSet;
+@synthesize attributes;
+
 + (BOOL)isDICOM:(NSData *)data{
 	//int position = 128;
 	if( [data length] < 132) return NO;
@@ -44,7 +50,6 @@ static NSString *softwareVersion = @"001";
 	return YES;
 	return NO;
 }
-
 
 + (NSString *)rootUID{
 	return rootUID;
@@ -64,38 +69,33 @@ static NSString *softwareVersion = @"001";
 
 + (BOOL)anonymizeContentsOfFile:(NSString *)file  tags:(NSArray *)tags  writingToFile:(NSString *)destination{
 	DCMObject *object = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
-	NSEnumerator *enumerator = [tags objectEnumerator];
-	NSArray *tagArray;
-	DCMAttributeTag *tag;
 	[object removePrivateTags];
-	while (tagArray = [enumerator nextObject])
-	{
-		tag = [tagArray objectAtIndex:0];
+
+	for ( NSArray *tagArray in tags ) {
+		DCMAttributeTag *tag = [tagArray objectAtIndex:0];
 		
 		id value = nil;
 		if ([tagArray count] > 1)
 			value = [tagArray objectAtIndex:1];
 		
 		[object anonyimizeAttributeForTag:tag replacingWith:value];
+		NSLog( [value description] );
+		if ([tag.name isEqualToString: @"PatientID"])
+
+
 		
-		NSLog( [value description]);
-		
-		if ([[tag name] isEqualToString: @"PatientID"])
+
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"OtherPatientIDs"] replacingWith:value];
-		
-		if ([[tag name] isEqualToString: @"InstanceCreationDate"]) {
+		if ([tag.name isEqualToString: @"InstanceCreationDate"]) {		
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"ContentDate"] replacingWith:value];
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionDate"] replacingWith:value];
 		}
-		
-		if ([[tag name] isEqualToString: @"InstanceCreationTime"]) {
+		if ([tag.name isEqualToString: @"InstanceCreationTime"]) {
 			NSLog(@"InstanceCreationTime");
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"ContentTime"] replacingWith:value];
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionTime"] replacingWith:value];
 		}
-		
-		if ([[tag name] isEqualToString: @"AcquisitionDatetime"])
-		{
+		if ([tag.name isEqualToString: @"AcquisitionDatetime"] ) {
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionDate"] replacingWith:value];
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionTime"] replacingWith:value];
 		}
@@ -112,10 +112,9 @@ static NSString *softwareVersion = @"001";
 	
 	
 	if (DEBUG)
-		NSLog(@"TransferSyntax: %@", [object transferSyntax]);
-	DCMTransferSyntax *ts = [object transferSyntax];
-	if (![ts isExplicit])
-		ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
+		NSLog(@"TransferSyntax: %@", object.transferSyntax );
+	DCMTransferSyntax *ts = object.transferSyntax;
+	if (!ts.isExplicit ) ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 	return [object  writeToFile:destination withTransferSyntax:ts quality: DCMLosslessQuality atomically:YES];
 }
 
@@ -124,19 +123,17 @@ static NSString *softwareVersion = @"001";
 	DCMObject *scObject = [object copy];
 	NSMutableDictionary *attrs = [scObject attributes];
 	NSMutableArray *keysToRemove = [NSMutableArray array];
-	NSEnumerator *enumerator = [attrs keyEnumerator];
-	NSString *key;
-	DCMAttribute *attr;
-	while (key = [enumerator nextObject]) {
-		attr = [attrs objectForKey:key];
+
+	for ( NSString *key in attrs ) {
+		DCMAttribute *attr = [attrs objectForKey:key];
 		int element;
 		if (attr) {
-			if ([(DCMAttributeTag *)[attr attrTag] group] == 0x0002) {
+			if ( attr.attrTag.group == 0x0002 ) {
 				//keep all metaheaders
 			}
-			else if ([(DCMAttributeTag *)[attr attrTag] group] == 0x0008) {
+			else if ( attr.attrTag.group == 0x0008 ) {
 				//keep these
-				element = [(DCMAttributeTag *)[attr attrTag] element];
+				element = attr.attrTag.element;
 				switch (element) {
 					case 0x0005:
 					case 0x0020:
@@ -174,9 +171,9 @@ static NSString *softwareVersion = @"001";
 					default: [keysToRemove addObject:key]; 
 				}
 			}
-			else if ([(DCMAttributeTag *)[attr attrTag] group] == 0x0010) {
+			else if ( attr.attrTag.group == 0x0010) {
 				//keep these
-				element = [(DCMAttributeTag *)[attr attrTag] element];
+				element = attr.attrTag.element;
 				switch (element) {
 					case 0x0010:
 					case 0x0020:
@@ -215,9 +212,9 @@ static NSString *softwareVersion = @"001";
 					default: [keysToRemove addObject:key]; 
 				}
 			}
-			else if ([(DCMAttributeTag *)[attr attrTag] group] == 0x0020) {
+			else if ( attr.attrTag.group == 0x0020 ) {
 				//keep these
-				element = [(DCMAttributeTag *)[attr attrTag] element];
+				element = attr.attrTag.element;
 				switch (element) {
 					case 0x000D:
 					case 0x0010:
@@ -243,7 +240,7 @@ static NSString *softwareVersion = @"001";
 	[attrs removeObjectsForKeys:keysToRemove];
 	DCMAttributeTag *SOPClassUIDTag = [DCMAttributeTag tagWithName:@"SOPClassUID"];
 	NSMutableArray *SOPClassUIDValue = [NSMutableArray arrayWithObject:DCM_SecondaryCaptureImageStorage];
-	DCMAttribute *SOPClassUIDAttr = [DCMAttribute attributeWithAttributeTag:SOPClassUIDTag  vr:[SOPClassUIDTag vr]  values:SOPClassUIDValue];
+	DCMAttribute *SOPClassUIDAttr = [DCMAttribute attributeWithAttributeTag:SOPClassUIDTag  vr: SOPClassUIDTag.vr  values:SOPClassUIDValue];
 	[attrs setObject:SOPClassUIDAttr forKey:@"SOPClassUID"];
 	NSMutableArray *mediaStorageSOPClassUIDValue = [NSMutableArray arrayWithObject:DCM_SecondaryCaptureImageStorage];
 	DCMAttributeTag *mediaStorageSOPClassUIDTag = [DCMAttributeTag tagWithName:@"MediaStorageSOPClassUID"];
@@ -254,42 +251,42 @@ static NSString *softwareVersion = @"001";
 	
 	DCMAttributeTag *scDeviceIDTag = [DCMAttributeTag tagWithName:@"SecondaryCaptureDeviceID"];
 	NSMutableArray *scDeviceIDValue = [NSMutableArray arrayWithObject:@"OsiriX"];
-	DCMAttribute *scDeviceIDAttr = [DCMAttribute attributeWithAttributeTag:scDeviceIDTag  vr:[scDeviceIDTag vr]  values:scDeviceIDValue];
+	DCMAttribute *scDeviceIDAttr = [DCMAttribute attributeWithAttributeTag:scDeviceIDTag  vr: scDeviceIDTag.vr  values:scDeviceIDValue];
 	[attrs setObject:scDeviceIDAttr forKey:@"SecondaryCaptureDeviceID"];
 	
 	DCMAttributeTag *scDeviceManufacturerTag = [DCMAttributeTag tagWithName:@"SecondaryCaptureDeviceManufacturer"];
 	NSMutableArray *scDeviceManufacturerValue = [NSMutableArray arrayWithObject:@"OsiriX"];
-	DCMAttribute *scDeviceManufacturerAttr = [DCMAttribute attributeWithAttributeTag:scDeviceManufacturerTag  vr:[scDeviceManufacturerTag vr]  values:scDeviceManufacturerValue];
+	DCMAttribute *scDeviceManufacturerAttr = [DCMAttribute attributeWithAttributeTag:scDeviceManufacturerTag  vr: scDeviceManufacturerTag.vr values:scDeviceManufacturerValue];
 	[attrs setObject:scDeviceManufacturerAttr forKey:@"SecondaryCaptureDeviceManufacturer"];
 	
 	DCMAttributeTag *scDeviceModelTag = [DCMAttributeTag tagWithName:@"SecondaryCaptureDeviceManufacturersModelName"];
 	NSMutableArray *scDeviceModelValue = [NSMutableArray arrayWithObject:@"OsiriX"];
-	DCMAttribute *scDeviceModelAttr = [DCMAttribute attributeWithAttributeTag:scDeviceModelTag  vr:[scDeviceModelTag vr]  values:scDeviceModelValue];
+	DCMAttribute *scDeviceModelAttr = [DCMAttribute attributeWithAttributeTag:scDeviceModelTag  vr: scDeviceModelTag.vr values:scDeviceModelValue];
 	[attrs setObject:scDeviceModelAttr forKey:@"SecondaryCaptureDeviceManufacturersModelName"];
 	
 	DCMAttributeTag *scDeviceSoftwareTag = [DCMAttributeTag tagWithName:@"SecondaryCaptureDeviceSoftwareVersions"];
 	NSMutableArray *scDeviceSoftwareValue = [NSMutableArray arrayWithObject:@"1.4"];
-	DCMAttribute *scDeviceSoftwareAttr = [DCMAttribute attributeWithAttributeTag:scDeviceSoftwareTag  vr:[scDeviceSoftwareTag vr]  values:scDeviceSoftwareValue];
+	DCMAttribute *scDeviceSoftwareAttr = [DCMAttribute attributeWithAttributeTag:scDeviceSoftwareTag  vr: scDeviceSoftwareTag.vr values:scDeviceSoftwareValue];
 	[attrs setObject:scDeviceSoftwareAttr forKey:@"SecondaryCaptureDeviceSoftwareVersions"];
 	
 	DCMAttributeTag *scDateTag = [DCMAttributeTag tagWithName:@"DateofSecondaryCapture"];
 	NSMutableArray *scDateValue = [NSMutableArray arrayWithObject:[DCMCalendarDate date]];
-	DCMAttribute *scDateAttr = [DCMAttribute attributeWithAttributeTag:scDateTag  vr:[scDateTag vr]  values:scDateValue];
+	DCMAttribute *scDateAttr = [DCMAttribute attributeWithAttributeTag:scDateTag  vr: scDateTag.vr values:scDateValue];
 	[attrs setObject:scDateAttr forKey:@"DateofSecondaryCapture"];
 	
 	DCMAttributeTag *scTimeTag = [DCMAttributeTag tagWithName:@"TimeofSecondaryCapture"];
 	NSMutableArray *scTimeValue = [NSMutableArray arrayWithObject:[DCMCalendarDate date]];
-	DCMAttribute *scTimeAttr = [DCMAttribute attributeWithAttributeTag:scTimeTag  vr:[scTimeTag vr]  values:scTimeValue];
+	DCMAttribute *scTimeAttr = [DCMAttribute attributeWithAttributeTag:scTimeTag  vr: scTimeTag.vr values:scTimeValue];
 	[attrs setObject:scTimeAttr forKey:@"TimeofSecondaryCapture"];
 	
 	DCMAttributeTag *modalityTag = [DCMAttributeTag tagWithName:@"Modality"];
 	NSMutableArray *modalityValue = [NSMutableArray arrayWithObject:@"SC"];
-	DCMAttribute *modalityAttr = [DCMAttribute attributeWithAttributeTag:modalityTag  vr:[modalityTag vr]  values:modalityValue];
+	DCMAttribute *modalityAttr = [DCMAttribute attributeWithAttributeTag:modalityTag  vr: modalityTag.vr values:modalityValue];
 	[attrs setObject:modalityAttr forKey:@"Modality"];
 	
 	[scObject newSeriesInstanceUID];
 	[scObject newSOPInstanceUID];
-	[scObject updateMetaInformationWithTransferSyntax:[scObject transferSyntax] aet:@"OsiriX"];
+	[scObject updateMetaInformationWithTransferSyntax: scObject.transferSyntax aet:@"OsiriX"];
 	return scObject;
 }
 
@@ -396,7 +393,7 @@ PixelRepresentation
 - (id)initWithData:(NSData *)data transferSyntax:(DCMTransferSyntax *)syntax{
 	DCMDataContainer *container = [DCMDataContainer dataContainerWithData:data transferSyntax:syntax];
 	long offset = 0;
-	return [self  initWithDataContainer:container lengthToRead:[container length] byteOffset:&offset characterSet:nil decodingPixelData:NO];
+	return [self initWithDataContainer:container lengthToRead:[container length] byteOffset:&offset characterSet:nil decodingPixelData:NO];
 }
 
 - (id)initWithContentsOfFile:(NSString *)file decodingPixelData:(BOOL)decodePixelData{
@@ -482,7 +479,6 @@ PixelRepresentation
 	BOOL isExplicit = [[dicomData transferSyntaxInUse] isExplicit];
 	BOOL forImplicitUseOW = NO;
 	
-
 	BOOL pixelRepresentationIsSigned = NO;
 	
 	@try
@@ -510,11 +506,11 @@ PixelRepresentation
 		DCMAttributeTag *tag = [[[DCMAttributeTag alloc]  initWithGroup:group element:element] autorelease];
 		*byteOffset+=4;
 		
-		const char *tagUTF8 = [[tag stringValue] UTF8String];
+		const char *tagUTF8 = [tag.stringValue UTF8String];
 
 
 		if (DEBUG)
-			NSLog(@"Tag: %@  group: 0x%4000x  word 0x%4000x", [tag description], group, element);
+			NSLog(@"Tag: %@  group: 0x%4000x  word 0x%4000x", tag.description, group, element);
 			// "FFFE,E00D" == Item Delimitation Item
 		if (strcmp(tagUTF8, "FFFE,E00D") == 0) {
 			// Read and discard value length
@@ -533,7 +529,7 @@ PixelRepresentation
 			// however, try to work around Philips bug ...
 			long vl = [dicomData nextUnsignedLong];		// always implicit VR form for items and delimiters
 			*byteOffset+=4;
-			NSLog(@"Ignoring bad Item at %d  %@ VL=<0x%x", *byteOffset, [tag stringValue], vl);
+			NSLog(@"Ignoring bad Item at %d  %@ VL=<0x%x", *byteOffset, tag.stringValue, vl);
 			// let's just ignore it for now
 			//continue;
 		}
@@ -553,9 +549,8 @@ PixelRepresentation
 			}
 			
 			//implicit
-			else{
-
-				vr = [tag vr];
+			else {
+				vr = tag.vr;
 				if (!vr)
 					vr = @"UN";
 				if ([vr isEqualToString:@"US/SS/OW"])
@@ -719,13 +714,13 @@ PixelRepresentation
 			long vl = [dicomData nextUnsignedLong];		// always implicit VR form for items and delimiters
 			*byteOffset+=4;
 //System.err.println(byteOffset+" "+tag+" VL=<0x"+Long.toHexString(vl)+">");
-			if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"SequenceDelimitationItem"]]) {
+			if ([tag.stringValue isEqualToString:[sharedTagForNameDictionary objectForKey:@"SequenceDelimitationItem"]]) {
 				if (DEBUG)
 					NSLog(@"SequenceDelimitationItem");
 //System.err.println("readNewSequenceAttribute: SequenceDelimitationItem");
 				break;
 			}
-			else if ([[tag stringValue] isEqualToString:[sharedTagForNameDictionary objectForKey:@"Item"]]) {
+			else if ([tag.stringValue isEqualToString:[sharedTagForNameDictionary objectForKey:@"Item"]]) {
 				if (DEBUG)
 				NSLog(@"New Item");
 				DCMObject *object = [[[[self class] alloc] initWithDataContainer:dicomData lengthToRead:vl byteOffset:byteOffset characterSet:specificCharacterSet decodingPixelData:NO] autorelease];
@@ -759,29 +754,28 @@ PixelRepresentation
 			specificCharacterSet:(DCMCharacterSet *)specificCharacterSet
 			isExplicit:(BOOL) explicit
 			forImplicitUseOW:(BOOL)forImplicitUseOW {
-	DCMAttribute *a = nil;
 
-		return a;
+	DCMAttribute *a = nil;
+	return a;
 }
 
-
-
-
 //Dicom Parsing
-- (int)getGroup:(DCMDataContainer *)dicomData{
+- (int)getGroup:(DCMDataContainer *)dicomData {
 	int group = [dicomData nextUnsignedShort];
 	return group;
 }
-- (int)getElement:(DCMDataContainer *)dicomData{
+
+- (int)getElement:(DCMDataContainer *)dicomData {
 	int element = [dicomData nextUnsignedShort];
 	return element;
 }
-- (int)length:(DCMDataContainer *)dicomData{
+
+- (int)length:(DCMDataContainer *)dicomData {
 	int length = 0;
 	return length;
 }
 
-- (NSString *)getvr:(DCMDataContainer *)dicomData forTag:(DCMAttributeTag *)tag isExplicit:(BOOL)isExplicit{
+- (NSString *)getvr:(DCMDataContainer *)dicomData forTag:(DCMAttributeTag *)tag isExplicit:(BOOL)isExplicit {
 /*
 	if (isExplicit) {
 		//char vr[2] = 
@@ -793,36 +787,30 @@ PixelRepresentation
 	return vr;
 }
 
-- (NSMutableArray *)getValues:(DCMDataContainer *)dicomData{
+- (NSMutableArray *)getValues:(DCMDataContainer *)dicomData {
 	NSMutableArray *values = [NSMutableArray array];
 	return values;
 }
 
-- (NSString *)description{
+- (NSString *)description {
 
 	NSString *description = @"";
 	NSArray *keys = [[attributes allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-	NSEnumerator *enumerator = [keys objectEnumerator];
-	DCMAttribute *attr;
-	NSString *key;
-	while (key = [enumerator nextObject]) {
+	for ( NSString *key in keys ) {
 		//NSLog(@"key: %@", key);
-		attr = [attributes objectForKey:key];
-		description = [NSString stringWithFormat:@"%@ \n%@", description, [attr description]];
+		DCMAttribute *attr = [attributes objectForKey:key];
+		description = [NSString stringWithFormat:@"%@ \n%@", description, attr.description];
 	}
 	return description;
-	
 }
 
-- (void)removeMetaInformation{
-	NSEnumerator *enumerator = [attributes keyEnumerator];
-	NSString *key;
+- (void)removeMetaInformation {
 	NSMutableArray *keysToRemove = [NSMutableArray array];
-	while (key = [enumerator nextObject]) {
+	for ( NSString *key in attributes ) {
 		DCMAttribute *attr = [attributes objectForKey:key];
-		if ([(DCMAttributeTag *)[attr attrTag] group] == 0x0002)
+		if ( attr.attrTag.group == 0x0002 )
 			[keysToRemove addObject:key];
-		}
+	 }
 	[attributes removeObjectsForKeys:keysToRemove];
 }
 
@@ -849,13 +837,12 @@ PixelRepresentation
 	NSData *data = [NSData dataWithBytes:bytes length:2];
 	[attr addValue:data];
 	[attributes setObject:attr forKey:[tag stringValue]];
-	gl += [attr paddedLength];
+	gl += attr.paddedLength;
 	gl += (4+4+4);
 	if (DEBUG)
-		NSLog(@"padded Length: %d  group length: %d", [attr paddedLength], gl);
+		NSLog(@"padded Length: %d  group length: %d", attr.paddedLength, gl);
 	[attr release];
 	[tag release];
-
 	
 	//should already have MediaStorageClassUID and InstanceUID
 	if ([self attributeWithName:@"MediaStorageSOPClassUID"]){
@@ -870,7 +857,7 @@ PixelRepresentation
 			attr = [[DCMAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag];
 			[attr addValue:sopClassUID];
 			[attributes setObject:attr forKey:[(DCMAttributeTag *)tag stringValue]];
-			gl += [attr paddedLength];
+			gl += attr.paddedLength;
 			gl += (4+2+2);
 		}
 	}
@@ -886,7 +873,7 @@ PixelRepresentation
 			attr = [[DCMAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag];
 			[attr addValue:sopInstanceUID];
 			[attributes setObject:attr forKey:[(DCMAttributeTag *)tag stringValue]];
-			gl += [attr paddedLength];
+			gl += attr.paddedLength;
 			gl += (4+2+2);
 		}
 	}
@@ -897,7 +884,7 @@ PixelRepresentation
 	attr = [[DCMAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag];
 	[attr addValue:[ts transferSyntax]];
 	[attributes setObject:attr forKey:[(DCMAttributeTag *)tag stringValue]];
-	gl += [attr paddedLength];
+	gl += attr.paddedLength;
 	gl += (4+2+2);
 
 	[attr release];
@@ -908,7 +895,7 @@ PixelRepresentation
 	attr = [[DCMAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag];
 	[attr addValue:rootUID];
 	[attributes setObject:attr forKey:[(DCMAttributeTag *)tag stringValue]];
-	gl += [attr paddedLength];
+	gl += attr.paddedLength;
 	gl += (4+2+2);
 
 	[attr release];
@@ -919,7 +906,7 @@ PixelRepresentation
 	attr = [[DCMAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag];
 	[attr addValue:@"OSIRIX001"];
 	[attributes setObject:attr forKey:[(DCMAttributeTag *)tag stringValue]];
-	gl += [attr paddedLength];
+	gl += attr.paddedLength;
 	gl += (4+2+2);
 	[attr release];
 	[tag release];
@@ -930,37 +917,29 @@ PixelRepresentation
 		tag = [[DCMAttributeTag alloc] initWithName:@"SourceApplicationEntityTitle"];
 		attr = [[DCMAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag];
 		[attr addValue:aet];
-		[attributes setObject:attr forKey:[tag stringValue]];
+		[attributes setObject:attr forKey: tag.stringValue];
 		[attr release];
 		[tag release];
 	}
 
-	
-	
-
-	
 	attr = [attributes objectForKey:[sharedTagForNameDictionary objectForKey:@"SourceApplicationEntityTitle"]];
 	if (attr) {
 		gl += (4+2+2);	// 1 fixed EVR short-length-form elements
-		gl += [attr paddedLength];
+		gl += attr.paddedLength;
 	}
 	
-
 			//groupLengthTag
 	tag = [[DCMAttributeTag alloc] initWithName:@"MetaElementGroupLength"];
 	attr = [[DCMAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag];
 	[attr addValue:[NSNumber numberWithInt:gl]];
-	[attributes setObject:attr forKey:[tag stringValue]];
+	[attributes setObject:attr forKey: tag.stringValue];
 
 	[attr release];
 	[tag release];
-
-
-
 }
 
 - (DCMAttribute *)attributeForTag:(DCMAttributeTag *)tag{
-	return [attributes objectForKey:[tag stringValue]];
+	return [attributes objectForKey: tag.stringValue];
 }
 
 - (DCMAttribute *)attributeWithName:(NSString *)name{
@@ -990,7 +969,7 @@ PixelRepresentation
 		[[attributes objectForKey:[tag stringValue]] addValue:value];
 	else {
 		[attr addValue:value];
-		[attributes setObject:attr forKey:[tag stringValue]];
+		[attributes setObject:attr forKey: tag.stringValue];
 	}
 }
 
@@ -998,30 +977,20 @@ PixelRepresentation
 	//NSLog(@"setAttr: %@", name);
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:name];
 	DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:(DCMAttributeTag *)tag];
-	[attr setValues:values];
-	[attributes setObject:attr forKey:[tag stringValue]];
+	attr.values = values;
+	[attributes setObject:attr forKey: tag.stringValue];
 }
 
--(NSMutableDictionary *)attributes{
-	return attributes;
-}
-
-- (BOOL)pixelDataIsDecoded{
-	return _decodePixelData;
-}
-
-	//write Data
+//write Data
 
 - (void)removeGroupLengths{
-	NSEnumerator *enumerator = [attributes keyEnumerator];
-	NSString *key;
 	NSMutableArray *keysToRemove = [NSMutableArray array];
-	while (key = [enumerator nextObject]) {
+	for ( NSString *key in attributes ) {
 		DCMAttribute *attr = [attributes objectForKey:key];
 		//remove all group lengths except for Metaheader group
 		if ([(DCMAttributeTag *)[attr attrTag] element] == 0x0000 && [(DCMAttributeTag *)[attr attrTag] group] != 0x0002) {
 			if (DEBUG)
-				NSLog(@"Remove %@", [attr description]);
+				NSLog(@"Remove %@", attr.description);
 			[keysToRemove addObject:key];
 		}
 	}
@@ -1033,13 +1002,11 @@ PixelRepresentation
 }
 
 - (void)removePrivateTags{
-	NSEnumerator *enumerator = [attributes keyEnumerator];
-	NSString *key;
 	NSMutableArray *keysToRemove = [NSMutableArray array];
-	while (key = [enumerator nextObject]) {
+	for ( NSString *key in attributes ) {
 		DCMAttribute *attr = [attributes objectForKey:key];
 		//remove all group lengths except for Metaheader group
-		if ([(DCMAttributeTag *)[attr attrTag] group] % 2 != 0) {
+		if ( attr.attrTag.group % 2 != 0 ) {
 			if (DEBUG)
 				NSLog(@"Remove Private Tag %@", [attr description]);
 			[keysToRemove addObject:key];
@@ -1056,14 +1023,13 @@ PixelRepresentation
 
 
 - (void)anonyimizeAttributeForTag:(DCMAttributeTag *)tag replacingWith:(id)aValue{
-	DCMAttribute *attr = [attributes objectForKey:[tag stringValue]];
+	DCMAttribute *attr = [attributes objectForKey: tag.stringValue];
 	//Add attr is aValue exists create attr if absent and add new value
 	if (aValue && !attr) {
 		attr = [DCMAttribute attributeWithAttributeTag:(DCMAttributeTag *)tag];
 		[attr addValue:aValue];
-		[attributes setObject:attr forKey:[tag stringValue]];
+		[attributes setObject:attr forKey: tag.stringValue];
 	}
-	
 	
 	/*change data if attribute exists.
 	Will not change UIDs or metaheader tags
@@ -1076,17 +1042,14 @@ PixelRepresentation
 //	if ([(DCMAttributeTag *)[attr attrTag] isEquaToTag:[DCMAttributeTag tagWithName:@"PatientsBirthDate"]])
 //		[attr setValues:[NSMutableArray array]];
 //	else
-	if (attr && [tag group] != 0x0002 && ![[tag vr] isEqualToString:@"UI"]) {
-		const char *chars = [[tag vr] UTF8String];
+	if ( attr && tag.group != 0x0002 && ![tag.vr isEqualToString:@"UI"]) {
+		const char *chars = [tag.vr UTF8String];
 		int vr = chars[0]<<8 | chars[1];
-		NSMutableArray *values = [attr values];
-		NSEnumerator *enumerator = [values objectEnumerator];
-		id value;
+		NSMutableArray *values = attr.values;
 		id newValue = nil;
-		NSInteger index;
 		NSString *format = nil;
-		while (value = [enumerator nextObject]) {
-			index = [values indexOfObject:value];
+		for ( id value in attributes ) {
+			NSInteger index = [values indexOfObject:value];
 			switch (vr) {
 					//NSNumbers
 				case AT:	//Attribute Tag 16bit unsigned integer 
@@ -1157,18 +1120,16 @@ PixelRepresentation
 					*/
 					newValue = [self anonymizeString:[values objectAtIndex:index]];
 					break;
-	 
-			}
-			
+	 			}
 
 			if (aValue) {
 				if (DEBUG)
-					NSLog(@"Anonymize Values: %@ to value: %@",[attr description], [aValue description]);
+					NSLog(@"Anonymize Values: %@ to value: %@", attr.description, [aValue description]);
 				[values replaceObjectAtIndex:index withObject:aValue];
 			}
 			else {
 				if (DEBUG)
-					NSLog(@"Anonymize Values: %@ to value: %@",[attr description], [newValue description]);
+					NSLog(@"Anonymize Values: %@ to value: %@", attr.description, [newValue description]);
 				[values replaceObjectAtIndex:index withObject:newValue];
 			}
 		}	
@@ -1335,10 +1296,8 @@ PixelRepresentation
 	//NSString *curentTime = [[NSDate date] descriptionWithCalendarFormat:@"%Y%m%d%H%M%S%F" timeZone:nil  locale:nil];
 	NSString *globallyUniqueString = [[NSProcessInfo processInfo] globallyUniqueString];
 	NSArray *values = [globallyUniqueString componentsSeparatedByString:@"-"];
-	NSEnumerator *enumerator = [values objectEnumerator];
-	NSString *string;
 	NSMutableArray *newUIDValues = [NSMutableArray array];
-	while (string = [enumerator nextObject]) {
+	for ( NSString *string in values ) {
 		unsigned int hexValue;
 		NSScanner *scanner = [NSScanner scannerWithString:string];
 		[scanner scanHexInt:&hexValue];
@@ -1354,19 +1313,16 @@ PixelRepresentation
 	uid = [uid substringToIndex:64];
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"StudyInstanceUID"];
 	NSMutableArray *attrValues = [NSMutableArray arrayWithObject:uid];
-	DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag vr:[tag vr] values:attrValues];
-	[attributes setObject:attr forKey:[tag stringValue]];
+	DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag vr: tag.vr values:attrValues];
+	[attributes setObject:attr forKey: tag.stringValue];
 	//DCMAttribute *attr = [attributes objectForKey:[tag stringValue]];
 	
 }
-- (void)newSeriesInstanceUID{
+- (void)newSeriesInstanceUID {
 	NSString *globallyUniqueString = [[NSProcessInfo processInfo] globallyUniqueString];
 	NSArray *values = [globallyUniqueString componentsSeparatedByString:@"-"];
-	NSEnumerator *enumerator = [values objectEnumerator];
-	NSString *string;
 	NSMutableArray *newUIDValues = [NSMutableArray array];
-	while (string = [enumerator nextObject])
-	{
+	for  ( NSString *string in values ) {
 		unsigned int hexValue;
 		NSScanner *scanner = [NSScanner scannerWithString:string];
 		[scanner scanHexInt:&hexValue];
@@ -1380,17 +1336,15 @@ PixelRepresentation
 	uid = [uid substringToIndex:64];
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"SeriesInstanceUID"];
 	NSMutableArray *attrValues = [NSMutableArray arrayWithObject:uid];
-	DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag vr:[tag vr] values:attrValues];
-	[attributes setObject:attr forKey:[tag stringValue]];
+	DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag vr: tag.vr values:attrValues];
+	[attributes setObject:attr forKey: tag.stringValue];
 }
 
 - (void)newSOPInstanceUID{
 	NSString *globallyUniqueString = [[NSProcessInfo processInfo] globallyUniqueString];
 	NSArray *values = [globallyUniqueString componentsSeparatedByString:@"-"];
-	NSEnumerator *enumerator = [values objectEnumerator];
-	NSString *string;
 	NSMutableArray *newUIDValues = [NSMutableArray array];
-	while (string = [enumerator nextObject]) {
+	for ( NSString *string in values ) {
 		unsigned int hexValue;
 		NSScanner *scanner = [NSScanner scannerWithString:string];
 		[scanner scanHexInt:&hexValue];
@@ -1407,45 +1361,30 @@ PixelRepresentation
 	//NSLog(@"SOPInstanceUID: %@  length: %d", uid, [uid length]);
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"SOPInstanceUID"];
 	NSMutableArray *attrValues = [NSMutableArray arrayWithObject:uid];
-	DCMAttribute *sopAttr = [DCMAttribute attributeWithAttributeTag:tag vr:[tag vr] values:attrValues];
+	DCMAttribute *sopAttr = [DCMAttribute attributeWithAttributeTag:tag vr: tag.vr values:attrValues];
 	if (DEBUG)
-		NSLog(@"New SOP tag: %@ attr: %@", [tag description], [sopAttr description]);
-	[attributes setObject:sopAttr  forKey:[tag stringValue]];
+		NSLog(@"New SOP tag: %@ attr: %@", tag.description, sopAttr.description);
+	[attributes setObject:sopAttr  forKey: tag.stringValue];
 	
 	DCMAttributeTag *mediaTag = [DCMAttributeTag tagWithName:@"MediaStorageSOPInstanceUID"];
 	attrValues = [NSMutableArray arrayWithObject:uid];
 	DCMAttribute  *mediaAttr = [DCMAttribute attributeWithAttributeTag:mediaTag vr:[mediaTag vr] values:attrValues];
-	[attributes setObject:mediaAttr forKey:[mediaTag stringValue]];
+	[attributes setObject:mediaAttr forKey: mediaTag.stringValue];
 }
 		
-
-- (DCMTransferSyntax *)transferSyntax{
-	return transferSyntax;
-}
-
-- (DCMCharacterSet *)specificCharacterSet{
-	return specificCharacterSet;
-}
-
 - (void)setCharacterSet:(DCMCharacterSet *)characterSet{
 	//NSLog(@"set Charcter Set: %@", [characterSet description]);
 	[specificCharacterSet release];
 	specificCharacterSet = [characterSet retain];
 	NSMutableArray *mutableKeys = [NSMutableArray arrayWithArray:[attributes allKeys]];
 	NSArray *sortedKeys = [mutableKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-	NSEnumerator *enumerator = [sortedKeys objectEnumerator];
-	enumerator = [sortedKeys objectEnumerator];
-	DCMAttribute *attr;
 	NSString *key;
-	while (key = [enumerator nextObject]) {
-		attr = [attributes objectForKey:key];
+	for ( NSString *key in sortedKeys ) {
+		DCMAttribute *attr = [attributes objectForKey:key];
 		if (attr)
 			[attr setCharacterSet:specificCharacterSet];
 	}
 }
-
-
-
 
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts  asDICOM3:(BOOL)flag{
 	return [self writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts AET:@"OSIRIX"  asDICOM3:(BOOL)flag];
@@ -1458,14 +1397,10 @@ PixelRepresentation
 	DCMTransferSyntax *explicitTS = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 	[container setTransferSyntaxForDataset:ts];	
 	
-	NSEnumerator *enumerator;
-	DCMAttribute *attr;
-	NSString *key;
 	NSException *exception;
 	BOOL status = YES;
 	//NS_DURING
-	
-	
+		
 	[self removeGroupLengths];
 	
 	//need to convert PixelData TransferSyntax
@@ -1475,7 +1410,7 @@ PixelRepresentation
 	
 	//if we have the attr and the conversion failed stop
 	if (pixelDataAttr && ![pixelDataAttr convertToTransferSyntax: transferSyntax quality:DCMLosslessQuality]) {
-		NSLog(@"Could not convert pixel Data to %@", [transferSyntax description]);
+		NSLog(@"Could not convert pixel Data to %@", transferSyntax.description);
 		return NO;
 	}
 	
@@ -1488,11 +1423,10 @@ PixelRepresentation
 	NSMutableArray *mutableKeys = [NSMutableArray arrayWithArray:[attributes allKeys]];
 	NSArray *sortedKeys = [mutableKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
-	enumerator = [sortedKeys objectEnumerator];
-	while (key = [enumerator nextObject]) {
+	for ( NSString *key in sortedKeys ) {
 		//if (DEBUG)
 		//	NSLog(@"key:%@ %@", key, NSStringFromClass([key class]));
-		attr = [attributes objectForKey:key];
+		DCMAttribute *attr = [attributes objectForKey:key];
 		if (attr) {
 			if (flag && ([(DCMAttributeTag *)[attr attrTag] group] == 0x0002)) {
 				[container setUseMetaheaderTS:YES];
@@ -1554,10 +1488,6 @@ PixelRepresentation
 		ts = transferSyntax;
 	DCMTransferSyntax *explicitTS = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 	
-	
-	NSEnumerator *enumerator;
-	DCMAttribute *attr;
-	NSString *key;
 	NSException *exception = nil;
 	BOOL status = YES;
 	NS_DURING
@@ -1577,17 +1507,17 @@ PixelRepresentation
 
 	//if we have the attr and the conversion failed stop	
 	if (pixelDataAttr && ![pixelDataAttr convertToTransferSyntax: ts quality:quality]) {
-		NSLog(@"Could not convert pixel Data to %@", [ts description]);
+		NSLog(@"Could not convert pixel Data to %@", ts.description);
 		status = NO;
 		//return NO;
 	}
 	[container setTransferSyntaxForDataset:ts];	
 	if (DEBUG)
-		NSLog(@"Writing DICOM Object with syntax:%@", [ts description]);
+		NSLog(@"Writing DICOM Object with syntax:%@", ts.description);
 	//writing Dicom has preamble and metaheader.  Neither for dataset
 	if (flag) {
 		if (DEBUG)
-			NSLog(@"updateMetaInformation newTransferSyntax:%@", [ts description]);
+			NSLog(@"updateMetaInformation newTransferSyntax:%@", ts.description);
 		[self updateMetaInformationWithTransferSyntax:ts aet:aet];
 		[container addPremable];
 	}
@@ -1599,15 +1529,14 @@ PixelRepresentation
 	NSMutableArray *mutableKeys = [NSMutableArray arrayWithArray:[attributes allKeys]];
 	NSArray *sortedKeys = [mutableKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
-	enumerator = [sortedKeys objectEnumerator];
-	while (key = [enumerator nextObject]) {
+	for ( NSString *key in sortedKeys ) {
 		//if (DEBUG)
 		//	NSLog(@"key:%@ %@", key, NSStringFromClass([key class]));
-		attr = [attributes objectForKey:key];
+		DCMAttribute *attr = [attributes objectForKey:key];
 		if (attr) {
 			//skip metaheader for dataset
-			if ([(DCMAttributeTag *)[attr attrTag] group] == 0x0002) {
-				if (flag){
+			if ( attr.attrTag.group == 0x0002 ) {
+				if ( flag ) {
 					[container setUseMetaheaderTS:YES];
 					if (![attr writeToDataContainer:container withTransferSyntax:explicitTS]) {
 						exception = [NSException exceptionWithName:@"DCMWriteDataError" reason:[NSString stringWithFormat:@"Cannot write %@ to data", [attr description]] userInfo:nil];
@@ -1631,9 +1560,7 @@ PixelRepresentation
 		status =  NO;
 	NS_ENDHANDLER
 	
-	return status;
-
-	
+	return status;	
 }
 
 
@@ -1734,11 +1661,8 @@ PixelRepresentation
 	NSMutableArray *mutableKeys = [NSMutableArray arrayWithArray:[attributes allKeys]];
 	NSArray *sortedKeys = [mutableKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
-	DCMAttribute *attr;
-	NSString *key;
-	NSEnumerator *enumerator = [sortedKeys objectEnumerator];
-	while (key = [enumerator nextObject]) {
-		attr = [attributes objectForKey:key];
+	for  ( NSString *key in sortedKeys ) {
+		DCMAttribute *attr = [attributes objectForKey:key];
 		if (attr) 
 			[elements addObject:[attr xmlNode]];
 		
@@ -1754,13 +1678,9 @@ PixelRepresentation
 	NSMutableArray *mutableKeys = [NSMutableArray arrayWithArray:[attributes allKeys]];
 	NSArray *sortedKeys = [mutableKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 
-	DCMAttribute *attr;
-	NSString *key;
-	
-	NSEnumerator *enumerator = [sortedKeys objectEnumerator];
-	while (key = [enumerator nextObject]) {
+	for ( NSString *key in sortedKeys ) {
 		
-		attr = [attributes objectForKey:key];
+		DCMAttribute *attr = [attributes objectForKey:key];
 		if (attr) {
 			
 			[rootElement addChild:[attr xmlNode]];
@@ -1773,8 +1693,6 @@ PixelRepresentation
 	if(![xmlDocument validateAndReturnError:&error])
 	NSLog(@"xml Document erorr:\n%@", [error description]);
 	return xmlDocument;
-	
-	
 }
 
 //accessing frequent sequences
@@ -1799,9 +1717,5 @@ PixelRepresentation
 	return dcmObject;
 		
 }
-
-
-
-
 
 @end

@@ -28,10 +28,8 @@
 + (NSString *)newUID{
 	NSString *globallyUniqueString = [[NSProcessInfo processInfo] globallyUniqueString];
 	NSArray *values = [globallyUniqueString componentsSeparatedByString:@"-"];
-	NSEnumerator *enumerator = [values objectEnumerator];
-	NSString *string;
 	NSMutableArray *newUIDValues = [NSMutableArray array];
-	while (string = [enumerator nextObject]) {
+	for ( NSString *string in values ) {
 		unsigned int hexValue;
 		NSScanner *scanner = [NSScanner scannerWithString:string];
 		[scanner scanHexInt:&hexValue];

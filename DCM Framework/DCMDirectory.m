@@ -25,31 +25,25 @@
 #import "DCM.h"
 #import "DCMNetworking.h"
 
-
-
 @implementation DCMDirectory
 
-- (DCMRecord *)root{
-	return root;
-}
+@synthesize root;
 
 + (id)directory{
 	return [[[DCMDirectory alloc] init] autorelease];
 }
 
-+ (id)directoryWithDICOMDIR:(NSString *)dicomdir{
++ (id)directoryWithDICOMDIR:(NSString *)dicomdir {
 	return [[[DCMDirectory alloc] initWithDICOMDIR:dicomdir] autorelease];
 }
 
-+ (id)filePathsFromDICOMDIR:(NSString *)dicomdir{
++ (id)filePathsFromDICOMDIR:(NSString *)dicomdir {
 	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:dicomdir decodingPixelData:NO];
 	DCMSequenceAttribute *recordSequenceAttr = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"DirectoryRecordSequence"] ;
 	NSArray *recordSequence = [recordSequenceAttr sequence];
 	NSMutableSet *paths = [NSMutableSet set];
-	NSEnumerator *enumerator = [recordSequence objectEnumerator];
-	DCMObject *record;
 	NSString *rootdir = [dicomdir stringByDeletingLastPathComponent];
-	while (record = [enumerator nextObject]) {
+	for ( DCMObject *record in recordSequence ) {
 		//NSLog(@"record: %@", [record description]);
 		NSString *filePath = [[record attributeArrayWithName:@"ReferencedFileID"] componentsJoinedByString:@"/"]; 
 		NSString *path = [rootdir stringByAppendingPathComponent:filePath];
@@ -59,7 +53,7 @@
 	return [paths allObjects];
 }
 
-- (id)init{
+- (id)init {
 	if (self = [super init]){
 		[self setAttributeValues:[NSMutableArray arrayWithObject:[DCMAbstractSyntaxUID mediaStorageDirectoryStorage]] forName:@"MediaStorageSOPClassUID"];	
 
@@ -117,9 +111,7 @@
 	
 - (void)buildSequence{	
 	NSArray *array = [root allItems];
-	NSEnumerator *enumerator = [array objectEnumerator];
-	DCMRecord *record;
-	while (record = [enumerator nextObject])
+	for ( DCMRecord *record in array )
 		[record relativeFilePathForDICOMDIR:dirPath];
 	int startingOffset = 128; 
 	
@@ -142,8 +134,7 @@
 	DCMAttributeTag *tag = [DCMAttributeTag  tagWithName:@"DirectoryRecordSequence"];
 	DCMSequenceAttribute *attr = [[[DCMSequenceAttribute alloc] initWithAttributeTag:(DCMAttributeTag *)tag] autorelease];
 	[self setAttribute:attr];
-	enumerator = [array objectEnumerator];
-	while(record = [enumerator nextObject]){
+	for ( DCMRecord *record in array ) {
 		[attr addItem:[record item]  offset:[record offset]];
 	}
 	//NSLog(@"Dicomdir \n%@", [self description]);
@@ -153,7 +144,7 @@
 
 
 
-- (BOOL)writeToFile:(NSString *)path{
+- (BOOL)writeToFile:(NSString *)path {
 	dirPath = [path retain];
 	[self buildSequence];
 	DCMDataContainer *container = [[[DCMDataContainer alloc] init] autorelease];
@@ -165,8 +156,7 @@
 				AET:nil
 				strippingGroupLengthLength:YES]) 
 		return [[container  dicomData] writeToFile:path atomically:YES];
-	return 0;
+	return NO;
 }
-
 
 @end

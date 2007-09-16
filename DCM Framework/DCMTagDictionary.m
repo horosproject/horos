@@ -49,9 +49,6 @@ static DCMTagDictionary *sharedTagDictionary;
 	
 }
 
-
-
-
 - (void) dealloc {
 	[super dealloc];
 }

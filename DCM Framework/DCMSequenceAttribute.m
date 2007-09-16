@@ -21,8 +21,9 @@
 #import "DCMSequenceAttribute.h"
 #import "DCM.h"
 
-
 @implementation DCMSequenceAttribute
+
+@synthesize sequenceItems;
 
 + (id)contentSequence{
 	DCMSequenceAttribute *sequence = [DCMSequenceAttribute sequenceAttributeWithName:@"ContentSequence"];
@@ -43,14 +44,13 @@
 	return sequence;	
 }
 
-
 + (id)sequenceAttributeWithName:(NSString *)name{
 	DCMAttributeTag * tag = [DCMAttributeTag tagWithName:name];
 	DCMSequenceAttribute *sequence = [[[DCMSequenceAttribute alloc] initWithAttributeTag:tag] autorelease];
 	return sequence;
 }
 
-- (id) initWithAttributeTag:(DCMAttributeTag *)tag{
+- (id)initWithAttributeTag:(DCMAttributeTag *)tag{
 
 	if (self = [super initWithAttributeTag:(DCMAttributeTag *)tag]) 
 		sequenceItems  = [[NSMutableArray array] retain];
@@ -58,8 +58,7 @@
 	return self;
 }
 	
-
-- (id) initWithAttributeTag:(DCMAttributeTag *)tag 
+- (id)initWithAttributeTag:(DCMAttributeTag *)tag 
 			vr:(NSString *)vr 
 			length:(long) vl 
 			data:(DCMDataContainer *)dicomData 
@@ -74,7 +73,7 @@
 
 - (id)copyWithZone:(NSZone *)zone {
 	DCMSequenceAttribute *seq = [super copyWithZone:zone];
-	[seq setSequenceItems: [[[self sequenceItems] mutableCopy] autorelease]];
+	seq = [[self.sequenceItems mutableCopy] autorelease];
 	return seq;
 }
 
@@ -97,20 +96,9 @@
 	[sequenceItems addObject:dictionary];
 }
 
-- (void)setSequenceItems:(NSMutableArray *)sequence{
-	[sequenceItems release];
-	sequenceItems = [sequence retain];
-}
-
-- (NSMutableArray *)sequenceItems{
-	return sequenceItems;
-}
-
-- (NSArray *)sequence{
+- (NSArray *)sequence {
 	NSMutableArray *array = [NSMutableArray array];
-	NSEnumerator *enumerator = [sequenceItems objectEnumerator];
-	NSDictionary *dict;
-	while (dict = [enumerator nextObject])
+	for ( NSDictionary *dict in sequenceItems )
 		[array addObject:[dict objectForKey:@"item"]];
 	return array;
 }
@@ -133,14 +121,12 @@
 }
 
 
-- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts{
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts {
 	// valueLength should be 0xffffffff from constructor
 
 	[self writeBaseToData:container transferSyntax:ts];
 				
-	NSEnumerator *enumerator = [sequenceItems objectEnumerator];
-	NSDictionary *object;
-	while (object = [enumerator nextObject]) {
+	for ( NSDictionary *object in sequenceItems ) {
 		[container addUnsignedShort:(0xfffe)];		// Item
 		[container addUnsignedShort:(0xe000)];
 		[container addUnsignedLong:(0xffffffffl)];		// undefined length
@@ -177,21 +163,20 @@
 }
 
 - (NSXMLNode *)xmlNode{
-	NSXMLNode *myNode;
+
+	NSMutableArray *elements = [NSMutableArray array];
+	for ( id value in sequenceItems ) {
+		[elements addObject:[[value objectForKey:@"item"] xmlNode]];
+	}
+	NSMutableString *aName = [NSMutableString stringWithString:[[self attrTag] name]];
+	[aName replaceOccurrencesOfString:@"/" withString:@"_" options:0 range:NSMakeRange(0, [aName length])];
+	
 	NSXMLNode *groupAttr = [NSXMLNode attributeWithName:@"group" stringValue:[NSString stringWithFormat:@"%04x",[[self attrTag] group]]];
 	NSXMLNode *elementAttr = [NSXMLNode attributeWithName:@"element" stringValue:[NSString stringWithFormat:@"%04x",[[self attrTag] element]]];
 	NSXMLNode *vrAttr = [NSXMLNode attributeWithName:@"vr" stringValue:[[self attrTag] vr]];
 	NSArray *attrs = [NSArray arrayWithObjects:groupAttr,elementAttr, vrAttr, nil];
-	NSEnumerator *enumerator = [sequenceItems objectEnumerator];
-	id value;
-	NSMutableArray *elements = [NSMutableArray array];
+	NSXMLNode *myNode = [NSXMLNode elementWithName:aName children:elements attributes:attrs];
 
-	while (value = [enumerator nextObject]){
-			[elements addObject:[[value objectForKey:@"item"] xmlNode]];
-	}
-	NSMutableString *aName = [NSMutableString stringWithString:[[self attrTag] name]];
-	[aName replaceOccurrencesOfString:@"/" withString:@"_" options:0 range:NSMakeRange(0, [aName length])];
-	myNode = [NSXMLNode elementWithName:aName children:elements attributes:attrs];
 	return myNode;
 }
 		

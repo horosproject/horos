@@ -27,14 +27,12 @@ htt://www.pixelmed.com
 #import "DCMPDataPDU.h"
 #import "DCMPresentationDataValue.h"
 
-
-
-
 @implementation DCMPDataPDU
+
+@synthesize pdvList;
 
 + (id)pDataPDUWithPDVs:(NSMutableArray *)pdvs{
 	return [[[DCMPDataPDU alloc] initPDVs:pdvs] autorelease];
-
 }
 
 + (id)pDataPDUWithData:(NSData *)data{
@@ -53,9 +51,7 @@ htt://www.pixelmed.com
 		[pdu appendBytes:&zero  length:1];
 		[pdu appendBytes:&zero  length:1];
 		[pdu appendBytes:&zero  length:1];
-		NSEnumerator *enumerator = [pdvList objectEnumerator];
-		DCMPresentationDataValue *pdv;
-		while (pdv = [enumerator nextObject]){
+		for (DCMPresentationDataValue *pdv in pdvList ) {
 			[pdu appendData:[pdv pdv]];
 		}
 		pduLength = NSSwapHostIntToBig([pdu length] - 6);
@@ -96,16 +92,12 @@ htt://www.pixelmed.com
 	[super dealloc];
 }
 
-- (NSArray *)pdvList{
-	return pdvList;
-}
-
 - (BOOL)containsLastCommandFragment{
 	BOOL found = NO;
 	if ([pdvList count] > 0){
 		NSEnumerator *enumerator = [pdvList objectEnumerator];
 		DCMPresentationDataValue *pdv;
-		while (pdv = [enumerator nextObject]){
+		for ( DCMPresentationDataValue *pdv in pdvList ) {
 			if ([pdv isLastFragment] && [pdv isCommand]) {
 				found = YES;
 				break;
@@ -118,9 +110,7 @@ htt://www.pixelmed.com
 - (BOOL)containsLastDataFragment{
 	BOOL found = NO;
 	if ([pdvList count] > 0){
-		NSEnumerator *enumerator = [pdvList objectEnumerator];
-		DCMPresentationDataValue *pdv;
-		while (pdv = [enumerator nextObject]){
+		for ( DCMPresentationDataValue *pdv in pdvList ) {
 			if ([pdv isLastFragment] && ![pdv isCommand]) {
 				found = YES;
 				break;

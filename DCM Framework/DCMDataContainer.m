@@ -25,6 +25,8 @@
 
 @implementation DCMDataContainer
 
+@synthesize offset, dicomData;
+
 + (id) dataContainer {
 	return [[[DCMDataContainer alloc] init] autorelease];
 }
@@ -403,24 +405,19 @@
 	return nil;
 }
 
-- (NSMutableArray *)nextDatesWithLength:(int)length{
+- (NSMutableArray *)nextDatesWithLength:(int)length {
 	NSException *exception = [self testForLength:length];
-	NSString *string;
-	NSArray *dateArray;
 	NSMutableArray *dates = [NSMutableArray array];
-	NSEnumerator *enumerator;
-	NSString *dateString;
 	if (!exception) {
-		string = [[[NSString alloc]  initWithBytes:(_ptr + position) length:length encoding:NSUTF8StringEncoding] autorelease];
+		NSString *string = [[[NSString alloc]  initWithBytes:(_ptr + position) length:length encoding:NSUTF8StringEncoding] autorelease];
 		string = [string stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];
 		string = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
 		if (string && [string intValue]) {
-			dateArray = [string componentsSeparatedByString:@"\\"];
-			enumerator = [dateArray objectEnumerator];
-			while (dateString = [enumerator nextObject]) {
+			NSArray *dateArray = [string componentsSeparatedByString:@"\\"];
+			for ( NSString *dateString in dateArray ) {
 				DCMCalendarDate *dcmDate = [DCMCalendarDate dicomDate:dateString];
-				if( dcmDate)
+				if( dcmDate )
 					[dates addObject:dcmDate];
 				
 			}
@@ -460,20 +457,15 @@
 		NSLog(@"Next time with length: %d", length);
 	NSException *exception = [self testForLength:length];
 
-	NSString *string;
-	NSArray *dateArray;
 	NSMutableArray *times = [NSMutableArray array];
-	NSEnumerator *enumerator;
-	NSString *dateString;
 	if (!exception) {
-		string = [[[NSString alloc] initWithBytes:(_ptr + position) length:length encoding:NSUTF8StringEncoding] autorelease];
+		NSString *string = [[[NSString alloc] initWithBytes:(_ptr + position) length:length encoding:NSUTF8StringEncoding] autorelease];
 		string = [string stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];
 		string = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
 		if (string && [string intValue]) {
-			dateArray = [string componentsSeparatedByString:@"\\"];
-			enumerator = [dateArray objectEnumerator];
-			while (dateString = [enumerator nextObject]) {
+			NSArray *dateArray = [string componentsSeparatedByString:@"\\"];
+			for ( NSString *dateString in dateArray ) {
 				DCMCalendarDate *dcmDate = [DCMCalendarDate dicomTime:dateString];
 				if(dcmDate)
 					[times addObject:dcmDate];			
@@ -519,20 +511,15 @@
 	NSException *exception = [self testForLength:length];
 	//NSString *format;
 	NSRange range = {position, length};
-	NSString *string;
-	NSArray *dateArray;
 	NSMutableArray *times = [NSMutableArray array];
 	NSEnumerator *enumerator;
-	NSString *dateString;
-	//NSData *data = [dicomData subdataWithRange:range];
 	if (!exception) {
-		string = [[[NSString alloc] initWithBytes:(_ptr + position) length:length encoding:NSUTF8StringEncoding] autorelease];
+		NSString *string = [[[NSString alloc] initWithBytes:(_ptr + position) length:length encoding:NSUTF8StringEncoding] autorelease];
 		string = [string stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];
 		string = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
-		dateArray = [string componentsSeparatedByString:@"\\"];
-		enumerator = [dateArray objectEnumerator];
-		while (dateString = [enumerator nextObject]) {
+		NSArray *dateArray = [string componentsSeparatedByString:@"\\"];
+		for ( NSString *dateString in dateArray ) {
 			//NSCalendarDate *date = [[[NSCalendarDate alloc] initWithString:dateString  calendarFormat:format] autorelease];
 			DCMCalendarDate *dcmDate = [DCMCalendarDate dicomDateTime:dateString];
 			if(dcmDate)
@@ -900,10 +887,6 @@
 	return [dicomData length];
 }
 
-- (int)offset{
-	return offset;
-}
-
 - (void)startReadingMetaHeader{
 	transferSyntaxInUse = transferSyntaxForMetaheader;
 }
@@ -917,10 +900,5 @@
 	[dicomData appendData:emptyData];
 	[self addString:@"DICM"];
 }
-
-- (NSMutableData *)dicomData{
-	return dicomData;
-}
-
 
 @end

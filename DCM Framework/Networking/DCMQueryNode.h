@@ -31,6 +31,8 @@
 
 }
 
+@property(readonly) NSMutableArray *children;
+
 + (id)queryNodeWithObject:(DCMObject *)object;
 - (id)initWithObject:(DCMObject *)object;
 - (NSString *)uid;
@@ -41,7 +43,6 @@
 - (DCMCalendarDate *)time;
 - (NSString *)modality;
 - (NSNumber *)numberImages;
-- (NSMutableArray *)children;
 - (void)addChild:(id)child;
 - (DCMObject *)queryPrototype;
 // values are a NSDictionary the key for the value is @"value" key for the name is @"name"  name is the tag descriptor from the tag dictionary

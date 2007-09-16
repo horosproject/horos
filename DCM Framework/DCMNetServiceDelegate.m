@@ -144,13 +144,10 @@ static NSHost *currentHost = 0L;
 {
 	NSMutableArray			*serversArray		= [NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"]];
 	NSArray					*dicomServices		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
-	
-	int i;
-	
+		
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
 	{
-		for( i = 0 ; i < [dicomServices count] ; i++)
-		{
+		for( int i = 0 ; i < [dicomServices count] ; i++) {
 			NSNetService*	aServer = [dicomServices objectAtIndex: i];
 			
 			NSString		*hostname;
@@ -158,8 +155,7 @@ static NSHost *currentHost = 0L;
 			
 			hostname = [DCMNetServiceDelegate gethostnameAndPort:&port forService: aServer];
 			
-			if( hostname)
-			{
+			if( hostname) {
 				[serversArray addObject: [NSDictionary dictionaryWithObjectsAndKeys:	hostname, @"Address",
 																						[aServer name], @"AETitle",
 																						[NSString stringWithFormat:@"%d", port], @"Port",
@@ -172,10 +168,8 @@ static NSHost *currentHost = 0L;
 		}
 	}
 	
-	if( send)
-	{
-		for( i = 0 ; i < [serversArray count] ; i++)
-		{
+	if( send) {
+		for( int i = 0 ; i < [serversArray count] ; i++) {
 			if( [[serversArray objectAtIndex: i] valueForKey:@"Send"] != 0L && [[[serversArray objectAtIndex: i] valueForKey:@"Send"] boolValue] == NO)
 			{
 				[serversArray removeObjectAtIndex: i];
@@ -184,10 +178,8 @@ static NSHost *currentHost = 0L;
 		}
 	}
 	
-	if( QR)
-	{
-		for( i = 0 ; i < [serversArray count] ; i++)
-		{
+	if( QR)	{
+		for( int i = 0 ; i < [serversArray count] ; i++ ) {
 			if( [[serversArray objectAtIndex: i] valueForKey:@"QR"] != 0L && [[[serversArray objectAtIndex: i] valueForKey:@"QR"] boolValue] == NO)
 			{
 				[serversArray removeObjectAtIndex: i];
@@ -206,22 +198,19 @@ static NSHost *currentHost = 0L;
 
 + (NSString*) gethostnameAndPort: (int*) port forService:(NSNetService*) sender
 {
-	NSEnumerator		*enumerator = [[sender addresses] objectEnumerator];
-	NSData				*addr;
+//	NSEnumerator		*enumerator = [[sender addresses] objectEnumerator];
+//	NSData				*addr;
 	struct sockaddr		*result;
 	char				buffer[256];
 	NSString			*hostname = nil;
 	NSString			*portString = nil;
 	
-	while (addr = [enumerator nextObject])
-	{
+	for ( NSData *addr in [sender addresses] ) {
 		result = (struct sockaddr *)[addr bytes];
 	
 		int family = result->sa_family;
-		if (family == AF_INET)
-		{
-			if (inet_ntop(AF_INET, &((struct sockaddr_in *)result)->sin_addr, buffer, sizeof(buffer)))
-			{
+		if (family == AF_INET) {
+			if (inet_ntop(AF_INET, &((struct sockaddr_in *)result)->sin_addr, buffer, sizeof(buffer))) {
 				hostname = [NSString stringWithCString:buffer];
 				portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in *)result)->sin_port)];
 				

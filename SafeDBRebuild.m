@@ -20,7 +20,6 @@
 #include "Papyrus3.h"
 #endif
 
-#import "altivecFunctions.h"
 
 NSLock	*PapyrusLock = 0L;
 NSMutableDictionary *fileFormatPlugins = 0L;
@@ -33,44 +32,37 @@ BOOL					NEEDTOREBUILD = NO;
 NSMutableDictionary		*DATABASECOLUMNS = 0L;
 short					Altivec = 0;
 
-#if __ppc__
+#if __ppc__ || __ppc64__
 // ALTIVEC FUNCTIONS
-void InverseLongs(register vector unsigned int *unaligned_input, register long size)
-{
+
+void InverseLongs(register vector unsigned int *unaligned_input, register long size) {
 	register long						i = size / 4;
 	register vector unsigned char		identity = vec_lvsl(0, (int*) NULL );
 	register vector unsigned char		byteSwapLongs = vec_xor( identity, vec_splat_u8(sizeof( int )- 1 ) );
 	
-	while(i-- > 0)
-	{
+	while(i-- > 0)	{
 		*unaligned_input++ = vec_perm( *unaligned_input, *unaligned_input, byteSwapLongs);
 	}
 }
 
-void InverseShorts( register vector unsigned short *unaligned_input, register long size)
-{
+void InverseShorts( register vector unsigned short *unaligned_input, register long size) {
 	register long						i = size / 8;
 	register vector unsigned char		identity = vec_lvsl(0, (int*) NULL );
 	register vector unsigned char		byteSwapShorts = vec_xor( identity, vec_splat_u8(sizeof( short) - 1) );
 	
-	while(i-- > 0)
-	{
+	while(i-- > 0)	{
 		*unaligned_input++ = vec_perm( *unaligned_input, *unaligned_input, byteSwapShorts);
 	}
 }
 #endif
 
-NSString* convertDICOM( NSString *inputfile)
-{
+NSString* convertDICOM( NSString *inputfile) {
 	return inputfile;
 }
 
 void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* context, NSManagedObjectModel* model, NSString* INpath, BOOL COMMENTSAUTOFILL)
 {
 	NSString				*curPatientUID = 0L, *curStudyID = 0L, *curSerieID = 0L;
-	NSEnumerator			*enumerator = [newFilesArray objectEnumerator];
-	long					ii, i, x;
-	NSString				*newFile;
 	NSInteger				index;
 	NSError					*error = 0L;
 	BOOL					addFailed = NO;
@@ -113,8 +105,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 	else
 	{
 		// Add the new files
-		while (newFile = [enumerator nextObject])
-		{
+		for ( NSString *newFile in newFilesArray ) {
 			@try
 			{
 				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -139,11 +130,10 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 					}
 				}
 				
-				if( curFile)
-				{
+				if( curFile ) {
 					curDict = [[curFile dicomElements] retain];
 					[curFile release];
-					curFile = 0L;
+					curFile = nil;
 				}
 				else curDict = [curDict retain];
 				
@@ -190,13 +180,11 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 				{
 					NSLog(@"unsupported DICOM SOP CLASS");
 					[curDict release];
-					curDict = 0L;
+					curDict = nil;
 				}
 				
-				if( curDict != 0L)
-				{
-//					if( 0)
-					{
+				if( curDict ) {
+
 						if( [[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curDict objectForKey: @"patientUID"] isEqualToString: curPatientUID] == YES)
 						{
 							
@@ -255,7 +243,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 						}
 						
 						long NoOfSeries = [[curDict objectForKey: @"numberOfSeries"] intValue];
-						for(i = 0; i < NoOfSeries; i++)
+						for( long i = 0; i < NoOfSeries; i++ )
 						{
 							NSString* SeriesNum;
 							if (i)
@@ -384,9 +372,8 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 									NSArray *albumArray = [context executeFetchRequest:dbRequest error:&error];
 									
 									NSManagedObject *album = nil;
-									int i;
-									for(i=0 ; i<[albumArray count] ; i++)
-									{
+
+									for( int i=0 ; i<[albumArray count] ; i++ )	{
 										if([[[albumArray objectAtIndex: i] valueForKeyPath:@"name"]
 												isEqualToString: [curDict valueForKey:@"album"]])
 										{
@@ -394,37 +381,30 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 										}
 									}
 									
-									if (album == nil)
-									{
-//										NSString *name = [curDict valueForKey:@"album"];
-//										album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
-//										[album setValue:name forKey:@"name"];
-										
-										for(i=0 ; i<[albumArray count] ; i++)
-										{
+									if (album == nil) {
+
+										for( int i=0 ; i<[albumArray count] ; i++ ) {
 											if([[[albumArray objectAtIndex: i] valueForKeyPath:@"name"] isEqualToString: @"other"])
 											{
 												album = [albumArray objectAtIndex: i];
 											}
 										}
 										
-										if (album == nil)
-										{
+										if (album == nil) {
 											album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
 											[album setValue:@"other" forKey:@"name"];
 										}
 									}
 									
 									// add the file to the album
-									if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
-									{
+									if ([[album valueForKey:@"smartAlbum"] boolValue] == NO) {
 										NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];	
 										[studies addObject: [image valueForKeyPath:@"series.study"]];
 									}
 								}
 							}
 						}
-					}
+
 					[curFile release];
 					
 					[curDict release];

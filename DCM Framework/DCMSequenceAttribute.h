@@ -27,21 +27,17 @@
 	NSMutableArray *sequenceItems;
 }
 
+@property(retain) NSMutableArray *sequenceItems;
+@property(readonly) NSArray *sequence;
+
 //for structured reporting
 + (id)contentSequence;
 + (id)conceptNameCodeSequenceWithCodeValue:(NSString *)codeValue 
 		codeSchemeDesignator:(NSString *)csd  
 		codeMeaning:(NSString *)cm;
 
-
-
 + (id)sequenceAttributeWithName:(NSString *)name;
 - (void)addItem:(id)item;
 - (void)addItem:(id)item offset:(long)offset;
-- (void)setSequenceItems:(NSMutableArray *)sequence;
-- (NSMutableArray *)sequenceItems;
-- (NSArray *)sequence;
-
-
 
 @end

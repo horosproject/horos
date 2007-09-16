@@ -33,7 +33,9 @@
 	unsigned char *_ptr;
 }
 
-
+@property(readonly) int offset;
+@property(readonly) unsigned int length;
+@property(readonly) NSMutableData *dicomData;
 
 + (id)dataContainer;
 + (id)dataContainerWithBytes:(const void *)bytes length:(NSUInteger)length;
@@ -117,14 +119,9 @@
 
 - (NSException *)testForLength: (int)elementLength;
 
-- (unsigned)length;
-- (int)offset;
 - (void)startReadingMetaHeader;
 - (void)startReadingDataSet;
 
 - (void)addPremable;
-- (NSMutableData *)dicomData;
-
-
 
 @end

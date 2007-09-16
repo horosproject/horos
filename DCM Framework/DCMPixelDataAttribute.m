@@ -301,16 +301,24 @@ unsigned char scanJpegDataForBitDepth(
 //}
 
 
-
-
 @implementation DCMPixelDataAttribute
+
+@synthesize rows = _rows;
+@synthesize columns = _columns;
+@synthesize numberOfFrames = _numberOfFrames;
+@synthesize transferSyntax;
+@synthesize samplesPerPixel = _samplesPerPixel;
+@synthesize bytesPerSample = _bytesPerSample;
+@synthesize pixelDepth = _pixelDepth;
+@synthesize isShort = _isShort;
+@synthesize compression = _compression;
+@synthesize isDecoded = _isDecoded;
+
 
 - (void)dealloc {
 	[transferSyntax release];
 	[super dealloc];
 }
-
-
 
 - (id) initWithAttributeTag:(DCMAttributeTag *)tag 
 			vr:(NSString *)vr 
@@ -360,7 +368,6 @@ unsigned char scanJpegDataForBitDepth(
 		characterSet = [specificCharacterSet retain];
 		_tag = [tag retain];
 		_valueLength = vl;
-		_valueMultiplicity = 1;
 		_values =  nil;
 	
 		//NSLog(@"data length: %d", [dicomData length]);
@@ -391,8 +398,6 @@ unsigned char scanJpegDataForBitDepth(
 	
 	return self;
 }
-
-			
 
 - (id)initWithAttributeTag:(DCMAttributeTag *)tag{
 	return [super initWithAttributeTag:(DCMAttributeTag *)tag];
@@ -426,75 +431,6 @@ unsigned char scanJpegDataForBitDepth(
 		}
 	}
 	
-}
-
-- (void)setRows:(int)rows{
-	_rows = rows;
-}
-- (void)setColumns:(int)columns{
-	_columns = columns;
-}
-- (void)setNumberOfFrames:(int)frames{
-	_numberOfFrames = frames;
-}
-
-- (void)setSamplesPerPixel:(int)spp{
-	_samplesPerPixel = spp;
-}
-- (void)setBytesPerSample:(int)bps{
-	_bytesPerSample = bps;
-}
-- (void)setPixelDepth:(int)depth{
-	_pixelDepth = depth;
-}
-- (void)setIsShort:(BOOL)value{
-	_isShort = value;
-}
-- (void)setCompression:(float)compression{
-	_compression = compression;
-}
-- (void)setIsDecoded:(BOOL)value{
-	_isDecoded = value;
-}
-
-
-- (int)rows{
-	return _rows;
-}
-- (int)columns{
-	return _columns;
-}
-
-
-- (DCMTransferSyntax *)transferSyntax{
-	return transferSyntax;
-}
-- (int)samplesPerPixel{
-	return _samplesPerPixel;
-}
-- (int)bytesPerSample{
-	return _bytesPerSample;
-}
-- (int)pixelDepth{
-	return _pixelDepth;
-}
-- (BOOL)isShort{
-	return _isShort;
-}
-- (float)compression{
-	return _compression;
-}
-- (BOOL)isDecoded{
-	return _isDecoded;
-}
-
-- (int)numberOfFrames{
-	return _numberOfFrames;
-}
-
-- (void)setTransferSyntax:(DCMTransferSyntax *)ts{
-	[transferSyntax release];
-	transferSyntax = [ts retain];
 }
 
 - (void)addFrame:(NSMutableData *)data{
@@ -544,8 +480,7 @@ unsigned char scanJpegDataForBitDepth(
 
 }
 
-
-- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts{
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts {
 	// valueLength should be 0xffffffff from constructor
 	BOOL status = NO;
 	if (DEBUG) 
@@ -553,9 +488,7 @@ unsigned char scanJpegDataForBitDepth(
 	//NS_DURING
 	if ([ts isEncapsulated] && [transferSyntax isEqualToTransferSyntax:ts]) {
 		[self writeBaseToData:container transferSyntax:ts];
-		NSEnumerator *enumerator = [_values objectEnumerator];
-		id object;
-		while (object = [enumerator nextObject]) {
+		for ( id object in _values ) {
 			if (DEBUG)
 				NSLog(@"Write Item with length:%d", [(NSData *)object length]);
 			[container addUnsignedShort:(0xfffe)];		// Item
@@ -637,7 +570,7 @@ unsigned char scanJpegDataForBitDepth(
 	if ([[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax] isEqualToTransferSyntax:ts]) {
 		//[_dcmObject removePlanarAndRescaleAttributes];
 	
-		[self setTransferSyntax:ts];
+		self.transferSyntax = ts;
 		status = YES;
 		goto finishedConversion;
 		//return YES;
@@ -646,7 +579,7 @@ unsigned char scanJpegDataForBitDepth(
 		if (_pixelDepth > 8)
 			[self convertHostToLittleEndian];
 		//[_dcmObject removePlanarAndRescaleAttributes];
-		[self setTransferSyntax:ts];
+		self.transferSyntax = ts;
 		status = YES;
 		goto finishedConversion;
 		//return YES;
@@ -655,7 +588,7 @@ unsigned char scanJpegDataForBitDepth(
 		if (_pixelDepth > 8)
 			[self convertHostToLittleEndian];
 		//[_dcmObject removePlanarAndRescaleAttributes];
-		[self setTransferSyntax:ts];
+		self.transferSyntax = ts;
 		status = YES;
 		goto finishedConversion;
 		//return YES;
@@ -664,15 +597,12 @@ unsigned char scanJpegDataForBitDepth(
 	//jpeg2000
 	if ([[DCMTransferSyntax JPEG2000LosslessTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEG2000LossyTransferSyntax] isEqualToTransferSyntax:ts] ) {
 		
-		int i =0;
-		NSEnumerator *enumerator = [_values objectEnumerator];
-		NSMutableData *data;
 		NSMutableArray *array = [NSMutableArray array];
-		while (data = [enumerator nextObject]) {
+		for ( NSMutableData *data in _values ) {
 			NSMutableData *newData = [self encodeJPEG2000:data quality:quality];
 			[array addObject:newData];
 		}
-		for (i = 0; i< [array count]; i++) {
+		for ( int i = 0; i< [array count]; i++ ) {
 			[_values replaceObjectAtIndex:i withObject:[array objectAtIndex:i]];
 		}
 		
@@ -681,7 +611,7 @@ unsigned char scanJpegDataForBitDepth(
 			
 		//[_dcmObject removePlanarAndRescaleAttributes];
 		[self createOffsetTable];
-		[self setTransferSyntax:ts];
+		self.transferSyntax = ts;
 		if (DEBUG)
 			NSLog(@"Converted to Syntax %@", [transferSyntax description]);
 		status = YES;
@@ -692,11 +622,8 @@ unsigned char scanJpegDataForBitDepth(
 		//jpeg
 	if ([[DCMTransferSyntax JPEGBaselineTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEGExtendedTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEGLosslessTransferSyntax] isEqualToTransferSyntax:ts] ) {
 		
-		//int i =0;
 		NSMutableArray *values = [NSMutableArray arrayWithArray:_values];
 		[_values removeAllObjects];
-		NSEnumerator *enumerator = [values objectEnumerator];
-		NSMutableData *data;
 		//NSMutableArray *array = [NSMutableArray array];
 		//[_dcmObject removePlanarAndRescaleAttributes];
 		float q = 1.0;
@@ -710,12 +637,12 @@ unsigned char scanJpegDataForBitDepth(
 		else if (quality == DCMLowQuality)
 			q = 70;
 		
-		if( singleThread == 0L) singleThread = [[NSLock alloc] init];
+		if( singleThread == nil ) singleThread = [[NSLock alloc] init];
 		[singleThread lock];
 		
 		_min = 0;
 		_max = 0;
-		while (data = [enumerator nextObject]) {
+		for ( NSMutableData *data in values ) {
 			NSMutableData *newData;
 			if (_pixelDepth <= 8) 
 				newData = [self compressJPEG8:data  compressionSyntax:ts   quality:q];
@@ -728,7 +655,6 @@ unsigned char scanJpegDataForBitDepth(
 			}
 			[self addFrame:newData];
 
-			
 		}
 		
 		[singleThread unlock];
@@ -741,7 +667,7 @@ unsigned char scanJpegDataForBitDepth(
 		if 	( [[DCMTransferSyntax JPEGBaselineTransferSyntax] isEqualToTransferSyntax:ts] || [[DCMTransferSyntax JPEGExtendedTransferSyntax] isEqualToTransferSyntax:ts])
 			[self setLossyImageCompressionRatio:[_values objectAtIndex:0]];
 		[self createOffsetTable];
-		[self setTransferSyntax:ts];
+		self.transferSyntax = ts;
 
 		status = YES;
 		//goto finishedConversion;
@@ -841,37 +767,31 @@ unsigned char scanJpegDataForBitDepth(
 }
 - (void)convertHostToBigEndian{
 	if (NSHostByteOrder() == NS_LittleEndian){
-		NSEnumerator *enumerator = [_values objectEnumerator];
-		NSMutableData *data;
-		while (data = [enumerator nextObject]) {
+		for ( NSMutableData *data in _values ) {
 			if (_pixelDepth <= 16) {	
-				int i = 0;
 				unsigned short *shortsToSwap = [data mutableBytes];
 				//signed short *signedShort = [data mutableBytes];
-				int length = [data length]/2;
-				for (i = 0; i < length; i++) {
+				unsigned int length = [data length]/2;
+				for ( unsigned i = 0; i < length; i++) {
 					shortsToSwap[i] = NSSwapShort(shortsToSwap[i]);
 				}
 			}
 			else {	
-				int i = 0;
 				unsigned long *longsToSwap = [data mutableBytes];
 				//signed short *signedShort = [data mutableBytes];
-				int length = [data length]/4;
-				for (i = 0; i < length; i++) {
+				unsigned int length = [data length]/4;
+				for ( unsigned int i = 0; i < length; i++) {
 					longsToSwap[i] = NSSwapLong(longsToSwap[i]);
 				}
 			}
 		}
 	}
-	[self setTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]];
+	self.transferSyntax = [DCMTransferSyntax ExplicitVRBigEndianTransferSyntax];
 }
 
 - (void)convertLittleEndianToHost{
 	if (NSHostByteOrder() == NS_BigEndian){
-		NSEnumerator *enumerator = [_values objectEnumerator];
-		NSMutableData *data;
-		while (data = [enumerator nextObject]) {
+		for ( NSMutableData *data in _values ) {
 			if (_pixelDepth <= 16) {
 				#if __ppc__
 				if ( DCMHasAltiVec()) { 
@@ -880,11 +800,10 @@ unsigned char scanJpegDataForBitDepth(
 				else
 				#endif
 				{		
-					int i = 0;
 					unsigned short *shortsToSwap = [data mutableBytes];
 					//signed short *signedShort = [data mutableBytes];
-					int length = [data length]/2;
-					for (i = 0; i < length; i++) {
+					unsigned int length = [data length]/2;
+					for ( unsigned int i = 0; i < length; i++ ) {
 						shortsToSwap[i] = NSSwapShort(shortsToSwap[i]);
 					}
 				}
@@ -897,28 +816,25 @@ unsigned char scanJpegDataForBitDepth(
 				else
 				#endif
 				{		
-					int i = 0;
 					unsigned long *longsToSwap = [data mutableBytes];
 					//signed short *signedShort = [data mutableBytes];
-					int length = [data length]/4;
-					for (i = 0; i < length; i++) {
+					unsigned int length = [data length]/4;
+					for ( unsigned int i = 0; i < length; i++) {
 						longsToSwap[i] = NSSwapLong(longsToSwap[i]);
 					}
 				}
 			}
 		}
-		[self setTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]];
+		self.transferSyntax = [DCMTransferSyntax ExplicitVRBigEndianTransferSyntax];
 	}
 	
 	else
-		[self setTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]];
+		self.transferSyntax = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 }
 
 - (void)convertHostToLittleEndian{
 	if (NSHostByteOrder() == NS_BigEndian){
-		NSEnumerator *enumerator = [_values objectEnumerator];
-		NSMutableData *data;
-		while (data = [enumerator nextObject]) {
+		for ( NSMutableData *data in _values ) {
 			if (_pixelDepth <= 16) {
 				#if __ppc__
 				if ( DCMHasAltiVec()) 
@@ -927,7 +843,7 @@ unsigned char scanJpegDataForBitDepth(
 				#endif
 				{
 					unsigned short *shortsToSwap = [data mutableBytes];
-					int length = [data length]/2;
+					unsigned int length = [data length]/2;
 					while (length--) {
 						*shortsToSwap = NSSwapShort(*shortsToSwap);
 						shortsToSwap++;
@@ -942,18 +858,17 @@ unsigned char scanJpegDataForBitDepth(
 				else
 				#endif
 				{		
-					int i = 0;
 					unsigned long *longsToSwap = [data mutableBytes];
 					//signed short *signedShort = [data mutableBytes];
-					int length = [data length]/4;
-					for (i = 0; i < length; i++) {
+					unsigned int length = [data length]/4;
+					for ( unsigned int i = 0; i < length; i++ ) {
 						longsToSwap[i] = NSSwapLong(longsToSwap[i]);
 					}
 				}
 			}
 		}
 	}
-	[self setTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]];
+	self.transferSyntax = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
 }
 
 - (NSMutableData *)convertJPEG8ToHost:(NSData *)jpegData{ 
@@ -1388,16 +1303,14 @@ unsigned char scanJpegDataForBitDepth(
 			[self replaceFrameAtIndex:i withFrame:[self decodeFrameAtIndex:i]];
 		}
 	}
-	[self setTransferSyntax:[DCMTransferSyntax OsiriXTransferSyntax]];
+	self.transferSyntax = [DCMTransferSyntax OsiriXTransferSyntax];
 	_isDecoded = YES;
 	NSString *colorspace = [_dcmObject attributeValueWithName:@"PhotometricInterpretation"];
 	if ([colorspace hasPrefix:@"YBR"] || [colorspace hasPrefix:@"PALETTE"]){
 		//remove Palette stuff
 		NSMutableDictionary *attributes = [_dcmObject attributes];
-		NSEnumerator *enumerator = [attributes keyEnumerator];
-		NSString *key;
 		NSMutableArray *keysToRemove = [NSMutableArray array];
-		while (key = [enumerator nextObject]) {
+		for ( NSString *key in attributes ) {
 			DCMAttribute *attr = [attributes objectForKey:key];
 			if ([(DCMAttributeTag *)[attr attrTag] group] == 0x0028 && ([(DCMAttributeTag *)[attr attrTag] element] > 0x1100 && [(DCMAttributeTag *)[attr attrTag] element] <= 0x1223))
 				[keysToRemove addObject:key];
@@ -1806,7 +1719,6 @@ unsigned char scanJpegDataForBitDepth(
 	DCMAttribute *attr = [_dcmObject attributeForTag:(DCMAttributeTag *)tag];
 	int numberofPlanes = [[attr value] intValue];
 	NSMutableArray *dataArray = [NSMutableArray array];
-	int i,j, k;
 	int bytes = 1;
 	if (_pixelDepth <= 8)
 		bytes = 1;
@@ -1816,19 +1728,16 @@ unsigned char scanJpegDataForBitDepth(
 		bytes = 4;
 	int planeLength = _rows * _columns;
 	if (numberofPlanes > 0 && numberofPlanes <= 4) {
-		NSEnumerator *enumerator = [_values objectEnumerator];
-		NSMutableData *planarData;
 
-		while (planarData = [enumerator nextObject]) {
+		for ( NSMutableData *planarData in _values ) {
 			NSMutableData *interleavedData = [NSMutableData dataWithLength:[planarData length]];
 			if (bytes == 1) {
 
 				unsigned char *planarBuffer = (unsigned char *)[planarData  bytes];
 				unsigned char *bitmapData = (unsigned char *)[interleavedData  mutableBytes];
-				for(i=0; i< _rows; i++){
-
-					for(j=0; j< _columns; j++){
-						for (k = 0; k < _samplesPerPixel; k++)
+				for( unsigned int i=0; i < _rows; i++ ) {
+					for( unsigned int j=0; j< _columns; j++ ) {
+						for ( unsigned int k = 0; k < _samplesPerPixel; k++ )
 							*bitmapData++ = planarBuffer[planeLength*k + i*_columns + j ];
 
 					}
@@ -1837,9 +1746,9 @@ unsigned char scanJpegDataForBitDepth(
 			else if (bytes == 2) {
 				unsigned short *planarBuffer = (unsigned short *)[planarData  mutableBytes];
 				unsigned short *bitmapData = (unsigned short *)[interleavedData  mutableBytes];
-				for(i=0; i< _rows; i++){
-					for(j=0; j< _columns; j++){
-						for (k = 0; k < _samplesPerPixel; k++)
+				for ( unsigned int i=0; i< _rows; i++ ) {
+					for ( unsigned int j=0; j< _columns; j++ ) {
+						for ( unsigned int k = 0; k < _samplesPerPixel; k++ )
 							*bitmapData++ = planarBuffer[planeLength*k + i*_columns + j ];
 
 					}
@@ -1848,9 +1757,9 @@ unsigned char scanJpegDataForBitDepth(
 			else {
 				unsigned long *planarBuffer = (unsigned long *)[planarData  mutableBytes];
 				unsigned long *bitmapData = (unsigned long *)[interleavedData  mutableBytes];
-				for(i=0; i< _rows; i++){
-					for(j=0; j< _columns; j++){
-						for (k = 0; k < _samplesPerPixel; k++)
+				for ( unsigned int i=0; i< _rows; i++ ) {
+					for ( unsigned int j=0; j< _columns; j++ ) {
+						for ( unsigned int k = 0; k < _samplesPerPixel; k++ )
 							*bitmapData++ = planarBuffer[planeLength*k + i*_columns + j ];
 
 					}
@@ -1858,7 +1767,7 @@ unsigned char scanJpegDataForBitDepth(
 			}
 			[dataArray addObject:interleavedData];
 		}
-		for (i = 0; i< [dataArray count]; i++)
+		for ( unsigned int i = 0; i< [dataArray count]; i++)
 			[_values replaceObjectAtIndex:i withObject:[dataArray objectAtIndex:i]];
 	}
 }
@@ -2779,11 +2688,9 @@ NS_ENDHANDLER
 	//NSLog(@"convert tp RGB colorspace");
 	NSString *colorspace = [_dcmObject attributeValueWithName:@"PhotometricInterpretation"];
 	BOOL isPlanar = [[_dcmObject attributeValueWithName:@"PlanarConfiguration"] intValue];
-	NSEnumerator *enumerator = [_values objectEnumerator];
-	NSMutableData *data;
 	NSMutableArray *newValues = [NSMutableArray array];
 	if ([colorspace hasPrefix:@"YBR"]){
-		while (data = [enumerator nextObject]){
+		for ( NSMutableData *data in _values ) {
 			[newValues addObject:[self convertYBrToRGB:data kind:colorspace isPlanar:isPlanar]];
 		}
 		[_values release];
@@ -2792,17 +2699,15 @@ NS_ENDHANDLER
 	}
 	else if ([colorspace hasPrefix:@"PALETTE"]){
 	
-		while (data = [enumerator nextObject]){
+		for ( NSMutableData *data in _values ) {
 			[newValues addObject:[self convertPaletteToRGB:data]];
 		}
 		[_values release];
 		_values = [newValues retain];
 		//remove PAlette stuff
 		NSMutableDictionary *attributes = [_dcmObject attributes];
-		NSEnumerator *enumerator = [attributes keyEnumerator];
-		NSString *key;
 		NSMutableArray *keysToRemove = [NSMutableArray array];
-		while (key = [enumerator nextObject]) {
+		for ( NSString *key in attributes ) {
 			DCMAttribute *attr = [attributes objectForKey:key];
 			if ([(DCMAttributeTag *)[attr attrTag] group] == 0x0028 && ([(DCMAttributeTag *)[attr attrTag] element] > 0x1100 && [(DCMAttributeTag *)[attr attrTag] element] <= 0x1223))
 				[keysToRemove addObject:key];
@@ -2869,9 +2774,7 @@ NS_ENDHANDLER
 				else{
 					//last offset - currentLength =  total length of items 
 					int itemsLength = 0;
-					NSEnumerator *enumerator = [values objectEnumerator];
-					NSData *aData;
-					while (aData = [enumerator nextObject])
+					for ( NSData *aData in values )
 						itemsLength += [aData length];
 					currentLength = itemsLength - currentOffset;
 				}
@@ -2996,9 +2899,7 @@ NS_ENDHANDLER
 					else{
 						//last offset - currentLength =  total length of items 
 						int itemsLength = 0;
-						NSEnumerator *enumerator = [values objectEnumerator];
-						NSData *aData;
-						while (aData = [enumerator nextObject])
+						for ( NSData *aData in values )
 							itemsLength += [aData length];
 						currentLength = itemsLength - currentOffset;
 					}
@@ -3020,9 +2921,8 @@ NS_ENDHANDLER
 						endItem++;
 						dataLength += ([(NSData *)[values objectAtIndex:endItem] length] + 8);
 					}
-					int j;
 					subData = [NSMutableData data];
-					for (j = startingItem; j <= endItem ; j++) 
+					for ( int j = startingItem; j <= endItem ; j++ ) 
 						[subData appendData:[values objectAtIndex:j]];	
 				}
 				//subdata is new frame;
@@ -3034,7 +2934,6 @@ NS_ENDHANDLER
 				//need to parse data into separate frame NSData objects:
 				//NSDate *timeStamp = [NSDate date];
 				//NSLog(@"Start create Frames: %f", -[timeStamp timeIntervalSinceNow]);
-				int i = 0;
 				int depth = 1;
 				if (_pixelDepth <= 8) 
 					depth = 1;
@@ -3045,7 +2944,7 @@ NS_ENDHANDLER
 				int frameLength = _rows * _columns * _samplesPerPixel * depth;
 				NSMutableData *rawData = [[[_values objectAtIndex:0] retain] autorelease];
 				[_values removeAllObjects];
-				for (i = 0; i < _numberOfFrames; i++) {
+				for ( unsigned int i = 0; i < _numberOfFrames; i++ ) {
 					NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
 					//NSLog(@"create Frame %d: %f", i , -[timeStamp timeIntervalSinceNow]);
 					NSRange range = NSMakeRange(i * frameLength, frameLength);
@@ -3328,11 +3227,5 @@ NS_ENDHANDLER
 	return myNode;
 }
 */
-
-
-
-
-
-
 
 @end

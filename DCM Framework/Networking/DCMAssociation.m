@@ -43,11 +43,6 @@ htt://www.pixelmed.com
 #import "DCMPresentationContext.h"
 #import "DCMReceivedDataHandler.h"
 
-
-
-
-
-
 #import "DCMSocket.h"
 #include <sys/select.h>
 #include <sys/uio.h>
@@ -63,6 +58,8 @@ static int defaultTimeout = 5000; // in milliseconds
 
 @implementation DCMAssociation
 
+@synthesize callingAET, calledAET;
+@synthesize delegate = _delegate;
 
 + (int)defaultMaximumLengthReceived{
 	return defaultMaximumLengthReceived;
@@ -693,8 +690,6 @@ static int defaultTimeout = 5000; // in milliseconds
 	
 - (unsigned char)presentationContextIDForAbstractSyntax:(NSString *)abstractSytaxUID{
 	unsigned char contextID = 0;
-	NSEnumerator *enumerator = [presentationContexts objectEnumerator];
-	DCMPresentationContext *context;
 	NSArray *syntaxes = [NSArray arrayWithObjects:
 		[DCMTransferSyntax JPEG2000LossyTransferSyntax], 
 		[DCMTransferSyntax JPEG2000LosslessTransferSyntax], 
@@ -705,13 +700,11 @@ static int defaultTimeout = 5000; // in milliseconds
 		[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax],
 		[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax],
 		nil];
-	while (context = [enumerator nextObject]){
+	for ( DCMPresentationContext *context in presentationContexts ) {
 		//NSLog(@"context: %@", [context description]);
 		if ([[context abstractSyntax] isEqualToString:abstractSytaxUID]) {
 			DCMTransferSyntax *ts = [[context transferSyntaxes] objectAtIndex:0];
-			NSEnumerator *enumerator2 = [syntaxes objectEnumerator];
-			DCMTransferSyntax *syntax;
-			while (syntax = [enumerator2 nextObject]) {
+			for ( DCMTransferSyntax *syntax in syntaxes ) {
 				if ([syntax isEqualToTransferSyntax:ts] && contextID == 0)
 				//if ([syntax isEqualToTransferSyntax:ts] && contextID <= 1)
 					contextID = [context contextID];
@@ -719,9 +712,8 @@ static int defaultTimeout = 5000; // in milliseconds
 		}						
 	}
 	//should we accept something else?
-	if (contextID == 0) {
-		enumerator = [presentationContexts objectEnumerator];
-		while (context = [enumerator nextObject]){
+	if ( contextID == 0 ) {
+		for ( DCMPresentationContext *context in presentationContexts ) {
 			if ([[context abstractSyntax] isEqualToString:abstractSytaxUID]) 
 				contextID = [context contextID];
 		}
@@ -733,9 +725,7 @@ static int defaultTimeout = 5000; // in milliseconds
 - (unsigned char)presentationContextIDForAbstractSyntax:(NSString *)abstractSytaxUID transferSyntax:(DCMTransferSyntax *)transferSyntax{
 
 	unsigned char contextID = 0;
-	NSEnumerator *enumerator = [presentationContexts objectEnumerator];
-	DCMPresentationContext *context;
-	while (context = [enumerator nextObject]){
+	for ( DCMPresentationContext *context in presentationContexts ) {
 		if ([[context abstractSyntax] isEqualToString:abstractSytaxUID] 
 		&& [transferSyntax isEqualToTransferSyntax:[[context transferSyntaxes] objectAtIndex:0]])
 			contextID = [context contextID];
@@ -745,21 +735,11 @@ static int defaultTimeout = 5000; // in milliseconds
 }
 
 - (DCMTransferSyntax *)transferSyntaxForPresentationContextID:(unsigned char)contextID{
-	NSEnumerator *enumerator = [presentationContexts objectEnumerator];
-	DCMPresentationContext *context;
-	while (context = [enumerator nextObject]){
+	for ( DCMPresentationContext *context in presentationContexts ) {
 		if ([context contextID] == contextID)
 			return [[context transferSyntaxes] objectAtIndex:0];
 	}
 	return nil;
-}
-
-- (NSString *)callingAET{
-	return callingAET;
-}
-
-- (NSString *)calledAET{
-	return calledAET;
 }
 
 - (void)send:(NSData *)data{
@@ -840,13 +820,6 @@ static int defaultTimeout = 5000; // in milliseconds
 - (void)setReceivedDataHandler:(DCMReceivedDataHandler *)handler{
 	[dataHandler release];
 	dataHandler = [handler retain];
-}
-
-- (void)setDelegate: (id)delegate{
-	_delegate = delegate;
-}
-- (id)delegate{
-	return _delegate;
 }
 
 //To delegate

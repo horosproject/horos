@@ -29,13 +29,15 @@ htt://www.pixelmed.com
 @interface DCMPDataPDU : DCM_PDU {
 	NSMutableArray *pdvList;
 }
+
+@property(readonly) NSArray *pdvList;
+
 //outgoing PDU
 + (id)pDataPDUWithPDVs:(NSMutableArray *)pdvs;
 //incoming PDU
 + (id)pDataPDUWithData:(NSData *)data;
 - (id)initPDVs:(NSMutableArray *)pdvs;
 - (id)initWithData:(NSData *)data;
-- (NSArray *)pdvList;
 - (BOOL)containsLastCommandFragment;
 - (BOOL)containsLastDataFragment;
 @end

@@ -39,14 +39,13 @@ htt://www.pixelmed.com
 	NSString *calledAET;
 	NSDate *date;
 }
+@property(readonly) BOOL wasSuccessful;
+@property(readonly) int status;
+@property(copy) NSString *calledAET;
 
 - (DCMObject *)objectFromCommandOrData:(NSData *)data withTransferSyntax:(DCMTransferSyntax *)syntax;
 - (void)sendPDataIndication:(DCMPDataPDU *)pdu   association:(DCMAssociation *)association;
 - (void)evaluateStatusAndSetSuccess:(DCMObject *)object;
 - (void)makeUseOfDataSet:(DCMObject *)object;
-- (BOOL)wasSuccessful;
-- (int)status;
-- (NSString *)calledAET;
-- (void)setCalledAET:(NSString *)aet;
 
 @end

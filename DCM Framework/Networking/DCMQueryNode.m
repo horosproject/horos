@@ -26,6 +26,8 @@
 
 @implementation DCMQueryNode
 
+@synthesize children;
+
 + (id)queryNodeWithObject:(DCMObject *)object{
 	return [[[DCMQueryNode alloc] initWithObject:(DCMObject *)object] autorelease];
 }
@@ -78,11 +80,6 @@
 	return nil;
 }
 
-
-- (NSMutableArray *)children{
-	return children;
-}
-
 - (void)addChild:(id)child{
 	if (!children)
 		children = [[NSMutableArray array] retain];
@@ -93,12 +90,12 @@
 	return nil;
 }
 
-- (void)queryWithValues:(NSArray *)values parameters:(NSDictionary *)parameters{
+- (void)queryWithValues:(NSArray *)values parameters:(NSDictionary *)parameters {
 	DCMCFindResponseDataHandler *dataHandler = [DCMCFindResponseDataHandler findHandlerWithDebugLevel:0 queryNode:self];
 	DCMObject *findObject = [self queryPrototype];
-	NSEnumerator *enumerator = [values objectEnumerator];
-	NSDictionary *value;
-	while (value = [enumerator nextObject])
+//	NSEnumerator *enumerator = [values objectEnumerator];
+//	NSDictionary *value;
+	for ( NSDictionary *value in values )
 		[findObject addAttributeValue:[value objectForKey:@"value"]  forName:[value objectForKey:@"name"]];
 	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:parameters];
 	[params setObject:[NSNumber numberWithInt:0] forKey:@"debugLevel"];

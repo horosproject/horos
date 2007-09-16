@@ -37,20 +37,18 @@ htt://www.pixelmed.com
 #import "DCMAssociationItem.h"
 #import "DCMTransferSyntax.h"
 
-
-unsigned char zero = 0x00;
-unsigned char one = 0x01;
-unsigned short four = 0x0004;
-unsigned char ten = 0x10;
-unsigned char fifty = 0x50;
-unsigned char fiftyone = 0x51;
-unsigned char fiftytwo = 0x52;
-unsigned char fiftyfive = 0x55;
-
-
-
+static unsigned char zero = 0x00;
+static unsigned char one = 0x01;
+static unsigned short four = 0x0004;
+static unsigned char ten = 0x10;
+static unsigned char fifty = 0x50;
+static unsigned char fiftyone = 0x51;
+static unsigned char fiftytwo = 0x52;
+static unsigned char fiftyfive = 0x55;
 
 @implementation DCMAcceptRequestPDU
+
+@synthesize calledAET, callingAET, maximumLengthReceived;
 
 - (id)initWithParameters:(NSDictionary *)params{
 	if (self = [super init]) {
@@ -113,16 +111,14 @@ unsigned char fiftyfive = 0x55;
 		[itemList addObject:applicationContextItem];
 		
 		// one or more Presentation Context Items ...
-		NSEnumerator *enumerator = [presentationContexts objectEnumerator];
-		DCMPresentationContext *pc;
-		while (pc = [enumerator nextObject]) {
+
+		for ( DCMPresentationContext *pc in presentationContexts ) {
 			unsigned char itemType = (pduType == 0x01 ? 0x20 : 0x21);
 			NSMutableData *pcData = [self dataForPresentationContext:pc ofType:itemType];
 			[pdu appendData:pcData];	
 			
 			DCMPresentationContextItem *presentationContextItem = [DCMPresentationContextItem presentationContextItemWithType:itemType length:[pcData length] presentationContext:pc];
-			[itemList addObject:presentationContextItem];
-			
+			[itemList addObject:presentationContextItem];			
 		}
 		
 		// one User Information Item ...
@@ -455,9 +451,8 @@ unsigned char fiftyfive = 0x55;
 		[buffer appendData:[self dataForSyntaxSubItem:0x30 name:abstractSyntaxUID]];
 		//NSLog(@"Abstract Syntax: %@", 	abstractSyntaxUID);
 	}
-	NSEnumerator *enumerator = [[context transferSyntaxes] objectEnumerator];
-	DCMTransferSyntax *syntax;
-	while (syntax = [enumerator nextObject]) {
+
+	for ( DCMTransferSyntax *syntax in [context transferSyntaxes] ) {
 		[buffer appendData:[self dataForSyntaxSubItem:0x40 name:[syntax transferSyntax]]];
 		
 	}
@@ -472,17 +467,13 @@ unsigned char fiftyfive = 0x55;
 
 -(NSArray *)acceptedPresentationContextsWithAbstractSyntaxIncludedFromRequest:(NSArray *)request{
 	NSMutableArray *contexts = [NSMutableArray array];
-	NSEnumerator *enumerator = [itemList objectEnumerator];
-	DCMAssociationItem *item;
-	while (item = [enumerator nextObject]){
+	for ( DCMAssociationItem *item in itemList ){
 		if ([item type] == 0x21) {	// Presentation Context Item (accept)
 			DCMPresentationContext *context = [(DCMPresentationContextItem *)item context];
 			if ([context reason] == 0) {	//acceptance not rejection
 				unsigned char contextID = [context contextID];
 				NSString *abstractSyntaxUID = nil;
-				NSEnumerator *requestEnumerator = [request objectEnumerator];
-				DCMPresentationContext *requestContext;
-				while (requestContext = [requestEnumerator nextObject]) {
+				for ( DCMPresentationContext *requestContext in request ) {
 					if ([requestContext contextID] == contextID) {
 						abstractSyntaxUID = [requestContext abstractSyntax];
 						break;
@@ -506,27 +497,13 @@ unsigned char fiftyfive = 0x55;
 
 - (NSArray *)requestedPresentationContexts{
 	NSMutableArray *contexts = [NSMutableArray array];
-	NSEnumerator *enumerator = [itemList objectEnumerator];
-	DCMAssociationItem *item;
-	while (item = [enumerator nextObject]) {
+	for ( DCMAssociationItem *item in itemList ) {
 		if ([item type] == 0x20)  {		// Presentation Context Item (request)
 			DCMPresentationContext *context = [(DCMPresentationContextItem *)item context];
 			[contexts addObject:context];
 		}
-	}
-	
-	
+	}		
 	return contexts;
-}
-
-- (NSString *)calledAET{
-	return calledAET;
-}
-- (NSString *)callingAET{
-	return callingAET;
-}
-- (int)maximumLengthReceived{
-	return maximumLengthReceived;
 }
 
 - (NSString *)description{
@@ -537,6 +514,4 @@ unsigned char fiftyfive = 0x55;
 	return string;
 }
 	
-
-
 @end

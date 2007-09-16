@@ -33,6 +33,8 @@ htt://www.pixelmed.com
 
 @implementation DCMCompositeResponseHandler
 
+@synthesize wasSuccessful = success, status, calledAET;
+
 - (id)initWithDebugLevel:(int)debug{
 	if (self = [super initWithDebugLevel:debug]){
 		success = NO;
@@ -52,11 +54,9 @@ htt://www.pixelmed.com
 	return dcmObject;
 }
 
-- (void)sendPDataIndication:(DCMPDataPDU *)pdu   association:(DCMAssociation *)association{
+- (void)sendPDataIndication:(DCMPDataPDU *)pdu   association:(DCMAssociation *)association {
 	//NSLog(@"sendPDataIndication pdvList: count: %d", [[pdu pdvList] count]);	
-	NSEnumerator *enumerator = [[pdu pdvList] objectEnumerator];
-	DCMPresentationDataValue *pdv;
-	while (pdv = [enumerator nextObject]){
+	for ( DCMPresentationDataValue *pdv in [pdu pdvList] ) {
 		if ([pdv isCommand]){
 			[commandReceived appendData:[pdv value]];
 			if ([pdv isLastFragment]){
@@ -84,26 +84,8 @@ htt://www.pixelmed.com
 - (void) makeUseOfDataSet:(DCMObject *)object{
 }
 
-
-- (BOOL)wasSuccessful{
-	return success;
-}
-
-- (int)status{
-	return status;
-}
-
 - (void)evaluateStatusAndSetSuccess:(DCMObject *)object{
 
-}
-
-- (NSString *)calledAET{
-	return calledAET;
-}
-
-- (void)setCalledAET:(NSString *)aet{
-	[calledAET release];
-	calledAET = [aet retain];
 }
 
 - (void)dealloc{

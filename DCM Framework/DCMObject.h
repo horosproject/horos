@@ -43,6 +43,15 @@
 	BOOL _decodePixelData;
 
 }
+
+@property(readonly) NSMutableDictionary *attributes;
+@property(readonly) BOOL pixelDataIsDecoded;
+@property(readonly) DCMTransferSyntax *transferSyntax;
+@property(readonly) DCMCharacterSet *specificCharacterSet;
+@property(readonly) NSXMLDocument *xmlDocument;
+@property(readonly) NSXMLNode *xmlNode;
+@property(readonly) NSString *description;
+
 + (BOOL)isDICOM:(NSData *)data;
 + (NSString *)rootUID;
 + (NSString *)implementationClassUID;
@@ -91,8 +100,6 @@
 - (void)newSeriesInstanceUID;
 - (void)newSOPInstanceUID;
 - (NSString *)anonymizeString:(NSString *)string;
-- (DCMTransferSyntax *)transferSyntax;
-- (DCMCharacterSet *)specificCharacterSet;
 - (void)setCharacterSet:(DCMCharacterSet *)characterSet;
 - (DCMAttribute *)attributeForTag:(DCMAttributeTag *)tag;
 - (id)attributeValueWithName:(NSString *)name;
@@ -102,8 +109,6 @@
 - (void)setAttribute:(DCMAttribute *)attr;
 - (void)addAttributeValue:(id)value   forName:(NSString *)name;
 - (void)setAttributeValues:(NSMutableArray *)values forName:(NSString *)name;
-- (NSMutableDictionary *)attributes;
-- (BOOL)pixelDataIsDecoded;
 
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts AET:(NSString *)aet  asDICOM3:(BOOL)flag;
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container 
@@ -117,10 +122,6 @@
 
 - (NSData *)writeDatasetWithTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality;
 - (BOOL)isNeededAttribute:(char *)tagString;
-
-- (NSXMLNode *)xmlNode;
-- (NSXMLDocument *)xmlDocument;
-
 
 //deprecated methods
 - (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality;
@@ -142,7 +143,5 @@
 + (id)objectWithCodeValue:(NSString *)codeValue  
 			codingSchemeDesignator:(NSString *)codingSchemeDesignator  
 			codeMeaning:(NSString *)codeMeaning;
-
-
 
 @end

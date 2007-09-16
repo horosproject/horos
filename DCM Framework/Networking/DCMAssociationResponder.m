@@ -209,10 +209,9 @@ static BOOL AETitleMustBeIdentical = NO;
 	[explicitArray autorelease];
 	return explicitArray;
 }
-- (NSArray *)applyAbstractSyntaxSelectionPolicy:(NSArray *)contexts{
-	NSEnumerator *enumerator = [contexts objectEnumerator];
-	DCMPresentationContext *context;
-	while (context = [enumerator nextObject]) {
+
+- (NSArray *)applyAbstractSyntaxSelectionPolicy:(NSArray *)contexts {
+	for ( DCMPresentationContext *context in contexts ) {
 		if ([DCMAbstractSyntaxUID isVerification:[context abstractSyntax]] || [DCMAbstractSyntaxUID isImageStorage:[context abstractSyntax]] || [DCMAbstractSyntaxUID isQuery:[context abstractSyntax]] )
 			[context setReason:0x00];  // acceptance
 		else
@@ -221,10 +220,9 @@ static BOOL AETitleMustBeIdentical = NO;
 	
 	return contexts;
 }
-- (NSArray *)applyTransferSyntaxSelectionPolicy:(NSArray *)contexts{
-	NSEnumerator *enumerator = [contexts objectEnumerator];
-	DCMPresentationContext *context;
-	while (context = [enumerator nextObject]) {
+
+- (NSArray *)applyTransferSyntaxSelectionPolicy:(NSArray *)contexts {
+	for ( DCMPresentationContext *context in contexts ) {
 		BOOL foundExplicitVRLittleEndian = NO;
 		BOOL foundImplicitVRLittleEndian = NO;
 		BOOL foundExplicitVRBigEndian = NO;
@@ -234,9 +232,7 @@ static BOOL AETitleMustBeIdentical = NO;
 		BOOL foundLosslessJPEG2000 = NO;
 		BOOL foundLossyJPEG2000 = NO;
 	//	BOOL foundRLE = NO;
-		NSEnumerator *tsEnumerator = [[context transferSyntaxes] objectEnumerator];
-		DCMTransferSyntax *ts;
-		while (ts = [tsEnumerator nextObject]){
+		for ( DCMTransferSyntax *ts in contexts ){
 		
 			if ([ts isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]])
 				foundExplicitVRLittleEndian = YES;
@@ -282,15 +278,12 @@ static BOOL AETitleMustBeIdentical = NO;
 }
 - (NSArray *)applyExplicitTransferSyntaxPreferencePolicy:(NSArray *)contexts{
 	NSMutableSet *abstractSyntaxSet = [NSMutableSet set];
-	NSEnumerator *enumerator = [contexts objectEnumerator];
-	DCMPresentationContext *context;
-	while (context = [enumerator nextObject]) {
+	for ( DCMPresentationContext *context in contexts ) {
 		if ([[context transferSyntaxes] objectAtIndex:0] && [[[context transferSyntaxes] objectAtIndex:0] isExplicit])
 			[abstractSyntaxSet addObject:[context abstractSyntax]];
 	}
 	
-	enumerator = [contexts objectEnumerator];
-	while (context = [enumerator nextObject]) {
+	for ( DCMPresentationContext *context in contexts ) {
 		if ([[context transferSyntaxes] objectAtIndex:0] && ![[[context transferSyntaxes] objectAtIndex:0] isExplicit]  && [abstractSyntaxSet member:[context abstractSyntax]])
 			[context setReason:0x02];
 	}
@@ -298,12 +291,10 @@ static BOOL AETitleMustBeIdentical = NO;
 	return contexts;
 }
 
-- (NSArray *)sanitizePresentationContextsForAcceptance:(NSArray *)contexts{
+- (NSArray *)sanitizePresentationContextsForAcceptance:(NSArray *)contexts {
 	NSMutableArray *newContexts = [NSMutableArray array];
-	NSEnumerator *enumerator = [contexts objectEnumerator];
-	DCMPresentationContext *presentationContext;
 	DCMPresentationContext *newContext;
-	while (presentationContext = [enumerator nextObject]) {
+	for ( DCMPresentationContext *presentationContext in contexts ) {
 		newContext = [DCMPresentationContext contextWithID:[presentationContext contextID]]; 
 		if ([[presentationContext transferSyntaxes] count] > 0) 
 			[newContext addTransferSyntax:[[presentationContext transferSyntaxes] objectAtIndex:0]];

@@ -60,6 +60,14 @@ htt://www.pixelmed.com
 	id scpDelegate;
 
 }
+@property(readonly) DCMObject *dicomObject;
+@property(readonly) unsigned char presentationContextID;
+@property(readonly) NSData *response;
+@property(readonly) DCMCommandMessage *responseMessage;
+@property(copy) NSString *callingAET;
+@property(retain, setter=setSCPDelegate:) id scpDelegate;
+@property(readonly) int commandType;
+
 + (id)cStoreDataHanderWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug;
 - (id)initWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug;
 - (void)cEchoResponse;
@@ -68,14 +76,6 @@ htt://www.pixelmed.com
 - (void)cFindResponse;
 
 //- (void)sendPDataIndication:(DCMPDataPDU *)pData forAssociation:(DCMAssociation *)association;
-- (DCMObject *)dicomObject;
-- (unsigned char)presentationContextID;
-- (NSData *)response;
-- (DCMCommandMessage *)responseMessage;
 - (void)reset;
-- (NSString *)callingAET;
-- (void)setCallingAET:(NSString *)aet;
-- (void)setSCPDelegate:(id)delegate;
-- (int)commandType;
 - (void)updateReceiveStatus:(NSDictionary *)userInfo;
 @end

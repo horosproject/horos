@@ -50,7 +50,16 @@ enum photometricmode{DCM_UNKNOWN_PHOTOMETRIC, DCM_MONOCHROME1,  DCM_MONOCHROME2,
 
 }
 		
-
+@property int rows;
+@property int columns;
+@property int numberOfFrames;
+@property(retain) DCMTransferSyntax *transferSyntax;
+@property int samplesPerPixel;
+@property int bytesPerSample;
+@property int pixelDepth;
+@property BOOL isShort;
+@property float compression;
+@property BOOL isDecoded;
 			
 - (id) initWithAttributeTag:(DCMAttributeTag *)tag 
 			vr:(NSString *)vr 
@@ -63,34 +72,8 @@ enum photometricmode{DCM_UNKNOWN_PHOTOMETRIC, DCM_MONOCHROME1,  DCM_MONOCHROME2,
 
 - (void)deencapsulateData:(DCMDataContainer *)dicomData;
 
-- (void)setRows:(int)rows;
-- (void)setColumns:(int)columns;
-- (void)setNumberOfFrames:(int)frames;
-- (void)setTransferSyntax:(DCMTransferSyntax *)ts;
-- (void)setSamplesPerPixel:(int)spp;
-- (void)setBytesPerSample:(int)bps;
-- (void)setPixelDepth:(int)depth;
-- (void)setIsShort:(BOOL)value;
-- (void)setCompression:(float)compression;
-- (void)setIsDecoded:(BOOL)value;
-
-
-- (int)rows;
-- (int)columns;
-- (int)numberOfFrames;
-- (DCMTransferSyntax *)transferSyntax;
-- (int)samplesPerPixel;
-- (int)bytesPerSample;
-- (int)pixelDepth;
-- (BOOL)isShort;
-- (float)compression;
-- (BOOL)isDecoded;
-
-
-
 - (void)addFrame:(NSMutableData *)data;
 - (void)replaceFrameAtIndex:(int)index withFrame:(NSMutableData *)data;
-
 
 //Pixel decoding
 - (void)decodeData;
@@ -130,7 +113,5 @@ enum photometricmode{DCM_UNKNOWN_PHOTOMETRIC, DCM_MONOCHROME1,  DCM_MONOCHROME2,
 - (NSMutableData *)convertToFloat:(NSMutableData *)data;
 - (NSMutableData *)decodeFrameAtIndex:(int)index;
 - (NSImage *)imageAtIndex:(int)index ww:(float)ww  wl:(float)wl;
-
-
 
 @end

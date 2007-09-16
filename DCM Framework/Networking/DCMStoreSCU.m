@@ -72,11 +72,9 @@ htt://www.pixelmed.com
 		}
 		
 		NSMutableArray *presentationContexts = [NSMutableArray array];
-		NSEnumerator *syntaxEnumerator = [[DCMAbstractSyntaxUID imageSyntaxes] objectEnumerator];
-		NSString *abstractSyntax;
 		unsigned char presentationContextID = 0x01;	// always odd numbered, starting with 0x01
 		//first PresentationContex contains all syntaxes for sopClassUID
-		while (abstractSyntax = [syntaxEnumerator nextObject]){
+		for ( NSString *abstractSyntax in [DCMAbstractSyntaxUID imageSyntaxes] ){
 			DCMPresentationContext *context = [DCMPresentationContext contextWithID:presentationContextID];
 			[context setAbstractSyntax:abstractSyntax];
 			
@@ -100,9 +98,7 @@ htt://www.pixelmed.com
 			
 			
 			//add separate presentation Contexts for each syntax
-			NSEnumerator *enumerator  = [[context transferSyntaxes] objectEnumerator];
-			DCMTransferSyntax *syntax;
-			while (syntax = [enumerator nextObject]) {
+			for ( DCMTransferSyntax *syntax in [context transferSyntaxes] ) {
 				NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
 				presentationContextID += 2;
 				DCMPresentationContext *pContext = [DCMPresentationContext contextWithID:presentationContextID];
@@ -164,9 +160,7 @@ htt://www.pixelmed.com
 		 transferSyntax = [[association transferSyntaxForPresentationContextID:usePresentationContextID] retain];
 		 if (debugLevel)
 			NSLog(@"using transfer syntax:%@", [transferSyntax description]);
-		 NSEnumerator *enumerator = [filesToSend objectEnumerator];
-		 NSString *file;
-		 while (file = [enumerator nextObject]){
+		 for ( NSString *file in filesToSend ) {
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
 			//create new SOPInstance UID if new lossy transfer syntax

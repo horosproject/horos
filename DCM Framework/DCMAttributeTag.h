@@ -31,25 +31,25 @@
 	
 
 }
-+ (id) tagWithGroup:(int)group element:(int)element;
-+ (id) tagWithTag:(DCMAttributeTag *)tag;
-+ (id) tagWithTagString:(NSString *)tagString;
-+ (id) tagWithName:(NSString *)name;
-- (id) initWithGroup:(int)group element:(int)element;
-- (id) initWithTag:(DCMAttributeTag *)tag;
-- (id) initWithTagString:(NSString *)tagString;
-- (id) initWithName:(NSString *)name;
-- (int) group;
-- (int) element;
-- (BOOL) isPrivate;
-- (NSString * )stringValue;
-- (long) longValue;
+@property(readonly) int group;
+@property(readonly) int element;
+@property(readonly) NSString *stringValue;
+@property(readonly) BOOL isPrivate;
+@property(readonly) long longValue;
+@property(readonly) NSString *vr;
+@property(readonly) NSString *name;
+@property(readonly) NSString *description;
+
++ (id)tagWithGroup:(int)group element:(int)element;
++ (id)tagWithTag:(DCMAttributeTag *)tag;
++ (id)tagWithTagString:(NSString *)tagString;
++ (id)tagWithName:(NSString *)name;
+- (id)initWithGroup:(int)group element:(int)element;
+- (id)initWithTag:(DCMAttributeTag *)tag;
+- (id)initWithTagString:(NSString *)tagString;
+- (id)initWithName:(NSString *)name;
+
 - (NSComparisonResult)compare:(DCMAttributeTag *)tag;
 - (BOOL)isEquaToTag:(DCMAttributeTag *)tag;
-- (NSString *)vr;
-- (NSString *)name;
-
-
-
 
 @end

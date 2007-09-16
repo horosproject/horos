@@ -41,6 +41,10 @@ htt://www.pixelmed.com
 
 }
 
+@property(readonly) NSString *calledAET;
+@property(readonly) NSString *callingAET;
+@property(readonly) int maximumLengthReceived;
+
 - (id)initWithParameters:(NSDictionary *)params;
 - (id)initWithData:(NSMutableData *)data;
 - (NSMutableData *)dataForAET:(NSString *)aet withName:(NSString *)name;
@@ -49,9 +53,6 @@ htt://www.pixelmed.com
 - (NSArray *)acceptedPresentationContextsWithAbstractSyntaxIncludedFromRequest:(NSArray *)request;
 - (NSArray *)requestedPresentationContexts;
 
-- (NSString *)calledAET;
-- (NSString *)callingAET;
-- (int)maximumLengthReceived;
 
 
 

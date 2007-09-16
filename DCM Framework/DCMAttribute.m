@@ -20,10 +20,12 @@
 #import "DCMAttribute.h"
 #import "DCM.h"
 
-
-
-
 @implementation DCMAttribute
+
+@synthesize vr = _vr;
+@synthesize values = _values;
+@synthesize attrTag = _tag;
+@synthesize characterSet;
 
 + (id)attributeWithAttribute:(DCMAttribute *)attr{
 	return [[[DCMAttribute alloc] initWithAttribute:attr] autorelease];
@@ -70,7 +72,6 @@
 		characterSet = [specificCharacterSet retain];
 		_tag = [tag retain];
 		_valueLength = vl;
-		_valueMultiplicity = 0;
 		_values =  nil;
 		if (dicomData) {
 			NSArray *array = [self valuesForVR:_vr length:_valueLength data:dicomData];
@@ -94,7 +95,6 @@
 	if (self = [super init]) {
 			_tag = [tag retain];
 			_valueLength =0;
-			_valueMultiplicity = 0;
 			_values = [[NSMutableArray array] retain];
 		if (vr != nil)
 			_vr = [vr retain];
@@ -112,7 +112,6 @@
 	if (self = [super init]) {
 		_tag = [tag retain];
 		_valueLength =0;
-		_valueMultiplicity = 0;
 		_values = [values retain];
 		if (vr != nil)
 			_vr = [vr retain];
@@ -126,9 +125,9 @@
 
 - (id)initWithAttribute:(DCMAttribute *)attr{
 	if (self = [super init]) {
-		_tag = [[DCMAttributeTag  alloc] initWithTag:(DCMAttributeTag *)[attr attrTag]];
-		_values = [[attr values] mutableCopy];
-		_vr = [[attr vr] copy];
+		_tag = [[DCMAttributeTag  alloc] initWithTag:(DCMAttributeTag *)attr.attrTag];
+		_values = [attr.values mutableCopy];
+		_vr = [attr.vr copy];
 		_dataPtr = nil;
 	}
 	return self;
@@ -141,23 +140,21 @@
 	if (self = [super init]) {
 		_tag = [tag retain];
 		_valueLength = vl;
-		_valueMultiplicity = 0;
 		if (vr != nil)
 			_vr = [vr retain];
 		else
-			_vr = [[tag vr] retain];
+			_vr = [tag.vr retain];
 		_dataPtr = dataPtr;
 	}
 
 	return self;
 }
 	
-
 - (id)copyWithZone:(NSZone *)zone{
 	return [[DCMAttribute allocWithZone:zone] initWithAttribute:self];
 }
 
-- (void) dealloc {
+- (void)dealloc {
 
 	[characterSet release];
 	[_vr release];
@@ -169,18 +166,18 @@
 }
 		
 - (int)group{
-	return [_tag group];
+	return _tag.group;
 }
 
 - (int)element{
-	return [_tag element];
+	return _tag.element;
 }
 
 - (long)valueLength{
 	const char *chars = [_vr UTF8String];
 	int vr = chars[0]<<8 | chars[1];
 	int length = 0;
-	int vm = [self valueMultiplicity];
+	int vm = self.valueMultiplicity;
 	NSString *string;
 	switch (vr) {
 		// unsigned Short
@@ -230,9 +227,7 @@
 		case OB:	//other Byte byte string not little/big endian sensitive
 		case OW:	//other word 16bit word
 				length = 0;
-				NSEnumerator *enumerator = [_values objectEnumerator];
-				NSData *data;
-				while (data = [enumerator nextObject])
+				for ( NSData *data in _values )
 					length += [data length];
 				//length = [(NSData *)[_values objectAtIndex:0] length];
                 break;
@@ -277,53 +272,34 @@
 	return length;
 }
 
-- (long) paddedLength{
+- (long)paddedLength {
 
-	long paddedLength = [self valueLength];
+	long paddedLength = self.valueLength;
 	if (paddedLength%2)
 		paddedLength++;
 	return paddedLength;
 }
-
 
 - (int)valueMultiplicity{
 	return [_values count];
 }
 
 - (NSString *)vrStringValue{
-	return [_tag stringValue];
-}
-
-- (NSString *)vr {
-	return _vr;
+	return _tag.stringValue;
 }
 
 - (long)paddedValueLength{
- return 0;
+	return 0;
 }
-
-- (NSMutableArray *)values{
-	return _values;
-}
-
-
 
 - (void)addValue:(id)value{
 	[_values addObject:value];
 }
 
-- (void)setValues:(NSMutableArray *)values{
-	if( values != _values)
-	{
-		[_values release];
-		_values = [values retain];
-	}
-}
-
 - (void)writeBaseToData:(DCMDataContainer *)dcmData transferSyntax:(DCMTransferSyntax *)ts{
 	
-	[dcmData addUnsignedShort:[self group]];  //write group
-	[dcmData addUnsignedShort:[self element]]; //write Element
+	[dcmData addUnsignedShort: self.group];  //write group
+	[dcmData addUnsignedShort: self.element]; //write Element
 	//write length
 		if ([ts isExplicit]) {	
 			//write VR is explicit
@@ -331,17 +307,17 @@
 				NSLog(@"Write VR: %@", _vr);
 			[dcmData addString:_vr];
 			if ([DCMValueRepresentation isShortValueLengthVR:_vr]) {
-				[dcmData  addUnsignedShort:[self paddedLength]];
+				[dcmData  addUnsignedShort:self.paddedLength];
 			}
 			
 			else {
 				[dcmData  addUnsignedShort:0];		// reserved bytes
-				[dcmData  addUnsignedLong:[self paddedLength]];
+				[dcmData  addUnsignedLong:self.paddedLength];
 			}
 			
 		}
 		else {
-			[dcmData  addUnsignedLong:[self paddedLength]];
+			[dcmData  addUnsignedLong:self.paddedLength];
 		}
 
 }
@@ -351,7 +327,7 @@
 	const char *chars = [_vr UTF8String];
 	int vr = chars[0]<<8 | chars[1];
 
-	int vm = [self valueMultiplicity];
+	int vm = self.valueMultiplicity;
 	NSString *string;
 	[self writeBaseToData:container transferSyntax:ts];
 	if (DEBUG)
@@ -379,7 +355,7 @@
 					if (i < (vm - 1))
 						[container addStringWithoutPadding:@"\\"];
 				}
-				if ([self paddedLength] != [self valueLength])
+				if (self.paddedLength != self.valueLength)
 					[container addStringWithoutPadding:@" "];
                 break;
 			
@@ -389,7 +365,7 @@
 					if (i < (vm - 1))
 						[container addStringWithoutPadding:@"\\"];
 				}
-				if ([self paddedLength] != [self valueLength])
+				if (self.paddedLength != self.valueLength)
 					[container addStringWithoutPadding:@" "];
                 break;
 			
@@ -399,7 +375,7 @@
 					if (i < (vm - 1))
 						[container addStringWithoutPadding:@"\\"];
 				}
-				if ([self paddedLength] != [self valueLength])
+				if (self.paddedLength != self.valueLength)
 					[container addStringWithoutPadding:@" "];
 
                 break;
@@ -468,7 +444,7 @@
 - (id)value{
 	if ([_values count] > 0)
 		return [_values objectAtIndex:0];
-	NSLog(@"No value attribute: %@", [self description]);
+	NSLog(@"No value attribute: %@", self.description);
 	return nil;
 }
 
@@ -485,9 +461,9 @@
 }
 
 - (NSString *)description{
-	if ([self valueLength] < 100)
-		return  [NSString stringWithFormat:@"%@\t %@\t vl:%d\t vm:%d\t %@", [_tag description], [_tag vr],[self valueLength], [self valueMultiplicity], [self valuesAsString]];
-	return  [NSString stringWithFormat:@"%@\t vl:%d\t vm:%d", [_tag description], [self valueLength], [self valueMultiplicity]];
+	if (self.valueLength < 100)
+		return  [NSString stringWithFormat:@"%@\t %@\t vl:%d\t vm:%d\t %@", _tag.description, _tag.vr, self.valueLength, self.valueMultiplicity, [self valuesAsString]];
+	return  [NSString stringWithFormat:@"%@\t vl:%d\t vm:%d", _tag.description, self.valueLength, self.valueMultiplicity];
 }
 	
 
@@ -599,39 +575,22 @@
 	return mutableValues;
 	
 }
-/*
-- (DCMAttributeTag *)tag{
-	return _tag;
-}
-*/
-- (DCMAttributeTag *)attrTag{
-	return _tag;
-	//return [self tag];
-}
 
 - (void)swapBytes:(NSMutableData *)data{
 }
 
-- (void)setCharacterSet:(DCMCharacterSet *)specificCharacterSet{
-	[characterSet release];
-	characterSet = [specificCharacterSet retain];
-}
-
-
 - (NSXMLNode *)xmlNode{
 	NSXMLNode *myNode;
-	NSXMLNode *groupAttr = [NSXMLNode attributeWithName:@"group" stringValue:[NSString stringWithFormat:@"%04x",[[self attrTag] group]]];
-	NSXMLNode *elementAttr = [NSXMLNode attributeWithName:@"element" stringValue:[NSString stringWithFormat:@"%04x",[[self attrTag] element]]];
-	NSXMLNode *tagNode = [NSXMLNode attributeWithName:@"attributeTag" stringValue:[[self attrTag] stringValue]];
-	NSXMLNode *vrAttr = [NSXMLNode attributeWithName:@"vr" stringValue:[[self attrTag] vr]];
+	NSXMLNode *groupAttr = [NSXMLNode attributeWithName:@"group" stringValue:[NSString stringWithFormat:@"%04x", self.attrTag.group]];
+	NSXMLNode *elementAttr = [NSXMLNode attributeWithName:@"element" stringValue:[NSString stringWithFormat:@"%04x", self.attrTag.element]];
+	NSXMLNode *tagNode = [NSXMLNode attributeWithName:@"attributeTag" stringValue: self.attrTag.stringValue];
+	NSXMLNode *vrAttr = [NSXMLNode attributeWithName:@"vr" stringValue: self.attrTag.vr];
 	NSArray *attrs = [NSArray arrayWithObjects:groupAttr,elementAttr, vrAttr,tagNode, nil];
-	NSEnumerator *enumerator = [[self values] objectEnumerator];
-	NSMutableString *aName = [NSMutableString stringWithString:[[self attrTag] name]];
+	NSMutableString *aName = [NSMutableString stringWithString: self.attrTag.name];
 	[aName replaceOccurrencesOfString:@"/" withString:@"_" options:0 range:NSMakeRange(0, [aName length])];
-	id value;
 	NSMutableArray *elements = [NSMutableArray array];
 	int i = 0;
-	while (value = [enumerator nextObject]){
+	for ( id value in self.values ) {
 		NSString *string;
 		if ([value isKindOfClass:[NSString class]])
 			string = value;
@@ -653,7 +612,5 @@
 
 	return myNode;
 }
-
-
 
 @end
