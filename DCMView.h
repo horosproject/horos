@@ -401,6 +401,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void)subDrawRect: (NSRect)aRect;  // Subclassable, default does nothing.
 - (void) updateImage;
 - (BOOL) shouldPropagate;
+- (NSPoint) convertFromView2iChat: (NSPoint) a;
 
 // methods to access global variables (for plugins)
 + (BOOL) display2DMPRLines;

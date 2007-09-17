@@ -72,7 +72,8 @@ Version 2.3
 //#define RECTANGLE false
 //GL_TEXTURE_RECTANGLE_EXT - GL_TEXTURE_2D
 
-
+#define ICHAT_WIDTH 640
+#define ICHAT_HEIGHT 480
 
 extern		NSThread					*mainThread;
 extern		BOOL						USETOOLBARPANEL;
@@ -719,13 +720,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	circleRes = (repulsorRadius>70) ? 80 : circleRes;
 	
 	glColor4f(1.0,1.0,0.0,repulsorAlpha);
-
+	
+	NSPoint pt = [self convertFromView2iChat: repulsorPosition];
+	
 	glBegin(GL_POLYGON);	
 	for(i = 0; i < circleRes ; i++)
 	{
 		// M_PI defined in cmath.h
 		float alpha = i * 2 * M_PI /circleRes;
-		glVertex2f( repulsorPosition.x + repulsorRadius*cos(alpha) * scaleValue, repulsorPosition.y + repulsorRadius*sin(alpha) * scaleValue);//*curDCM.pixelSpacingY/curDCM.pixelSpacingX
+		glVertex2f( pt.x + repulsorRadius*cos(alpha)*scaleValue, pt.y + repulsorRadius*sin(alpha)*scaleValue);//*curDCM.pixelSpacingY/curDCM.pixelSpacingX
 	}
 	glEnd();
 	glDisable(GL_BLEND);
@@ -2689,7 +2692,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
 			tempPt.y = size.size.height - tempPt.y ;
 			tempPt = [self ConvertFromView2GL:tempPt];
-			//repulsorPosition = tempPt;
 			
 			BOOL clickInROI = NO;
 			for( int i = 0; i < [curRoiList count]; i++) {
@@ -3822,11 +3824,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 - (void)mouseDraggedRepulsor:(NSEvent *)event
 {
 	NSRect frame = [self frame];
-	NSPoint     eventLocation = [event locationInWindow];
+	NSPoint eventLocation = [event locationInWindow];
 	NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
 	tempPt.y = frame.size.height - tempPt.y ;
+	
 	repulsorPosition = tempPt;
 	tempPt = [self ConvertFromView2GL:tempPt];
+	
 	
 	float pixSpacingRatio = 1.0;
 	if( self.pixelSpacingY != 0 && self.pixelSpacingX !=0 )
@@ -5245,6 +5249,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 }
 
+- (NSPoint) convertFromView2iChat: (NSPoint) a
+{
+	if( [NSOpenGLContext currentContext] == _alternateContext)
+	{
+//		NSRect	iChat = [[[NSOpenGLContext currentContext] view] frame];
+		NSRect	windowRect = [self frame];
+
+		return NSMakePoint( a.x - (windowRect.size.width - ICHAT_WIDTH)/2.0, a.y - (windowRect.size.height - ICHAT_HEIGHT)/2.0);
+	}
+	else return a;
+}
+
 -(NSPoint) rotatePoint:(NSPoint) a
 {
     float xx, yy;
@@ -5276,7 +5292,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(NSPoint) ConvertFromGL2View:(NSPoint) a
 {
-    NSRect size = [self frame];
+    NSRect size = [[[NSOpenGLContext currentContext] view] frame];
 	
 	if( curDCM)
 	{
@@ -5311,8 +5327,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(NSPoint) ConvertFromView2GL:(NSPoint) a
 {
-    NSRect size = [self frame];
-    
+//    NSRect size = [self frame];
+    NSRect size = [[[NSOpenGLContext currentContext] view] frame];
+	
 	if( xFlipped) a.x = size.size.width - a.x;
 	if( yFlipped) a.y = size.size.height - a.y;
 	
@@ -5369,7 +5386,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	if( mainThread != [NSThread currentThread])
 	{
-		NSLog(@"Warning! OpenGL activity NOT in the main thread???");
+//		NSLog(@"Warning! OpenGL activity NOT in the main thread???");
 	}
 	
 	long effectiveTextureMod = 0; // texture size modification (inset) to account for borders
@@ -6468,8 +6485,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				if( isKeyView == NO) noBlending = YES;
 			}
 			
-			#define ICHAT_WIDTH 640
-			#define ICHAT_HEIGHT 480
 			// highlight the visible part of the view (the part visible through iChat)
 			if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView)
 			{
@@ -7113,23 +7128,26 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
 				
 				[self drawROISelectorRegion];
-			}
+			}			
 			
 			if(ctx == _alternateContext) // iChat Theatre context
 			{
-				NSEvent *currentEvent = [[NSApplication sharedApplication] currentEvent];
-				NSPoint eventLocation = [currentEvent locationInWindow];
+				NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
 				
 				// location of the mouse in the OsiriX View
 				eventLocation = [self convertPoint:eventLocation fromView:nil];
-				eventLocation.y = drawingFrameRect.size.height - eventLocation.y;
+				eventLocation.y = [self frame].size.height - eventLocation.y;
 				
 				NSSize iChatTheatreViewSize = aRect.size;
 
 				// location of the mouse in the iChat Theatre View
-				eventLocation.x = eventLocation.x - (drawingFrameRect.size.width/2. - iChatTheatreViewSize.width/2.);
-				eventLocation.y = eventLocation.y - (drawingFrameRect.size.height/2. - iChatTheatreViewSize.height/2.);
-						
+//				eventLocation.x = eventLocation.x - (drawingFrameRect.size.width/2. - iChatTheatreViewSize.width/2.);
+//				eventLocation.y = eventLocation.y - (drawingFrameRect.size.height/2. - iChatTheatreViewSize.height/2.);
+//				eventLocation.x = eventLocation.x - (drawingFrameRect.size.width - ICHAT_WIDTH)/2.;
+//				eventLocation.y = eventLocation.y - (drawingFrameRect.size.height - ICHAT_HEIGHT)/2.;
+				
+				eventLocation = [self convertFromView2iChat:eventLocation];
+				
 				// generate iChat cursor Texture Buffer (only once)
 				if(!iChatCursorTextureBuffer) {
 					NSLog(@"generate iChatCursor Texture Buffer");
@@ -7184,7 +7202,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					glDisable(GL_TEXTURE_RECTANGLE_EXT);
 				}
-			} // end iChat Theatre context		
+			} // end iChat Theatre context			
 		}  
 		else {    //no valid image  ie curImage = -1
 			//NSLog(@"no IMage");
@@ -8087,7 +8105,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	if( mainThread != [NSThread currentThread])
 	{
-		NSLog(@"Warning! OpenGL activity NOT in the main thread???");
+//		NSLog(@"Warning! OpenGL activity NOT in the main thread???");
 	}
 	
     if( texture)
@@ -9496,11 +9514,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 // Note that this will be called on a non-main thread.
 
 - (BOOL)renderIntoOpenGLBuffer:(CVOpenGLBufferRef)buffer onScreen:(int *)screenInOut forTime:(CVTimeStamp*)timeStamp {
-	// We ignore the timestamp, signifying that we're providing content for 'now'.
-	NSLog(@"renderIntoOpenGLBuffer:");
-	
+	// We ignore the timestamp, signifying that we're providing content for 'now'.	
 	if(!_hasChanged) {
-		NSLog(@"nothing has Changed");
 		return NO;
 	}
 	
@@ -9511,7 +9526,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	//CGLContextObj CGL_MACRO_CONTEXT = [_alternateContext CGLContextObj];
 	//CGLGetVirtualScreen(CGL_MACRO_CONTEXT, screenInOut);
 	
-	NSLog(@"get virtual screen");
 	// Attach the OpenGLBuffer and render into the _alternateContext.
 
 //	if (CVOpenGLBufferAttach(buffer, [_alternateContext CGLContextObj], 0, 0, *screenInOut) == kCVReturnSuccess) {
@@ -9520,9 +9534,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
         NSDictionary *attributes = (NSDictionary *)CVOpenGLBufferGetAttributes(buffer);
         GLfloat width = [[attributes objectForKey:(NSString *)kCVOpenGLBufferWidth] floatValue];
         GLfloat height = [[attributes objectForKey:(NSString *)kCVOpenGLBufferHeight] floatValue];
-		NSLog(@"width %f  height %f:", width, height);
 
-		NSLog(@"render");
 		// Render!
         [self drawRect:NSMakeRect(0,0,width,height) withContext:_alternateContext];
         return YES;

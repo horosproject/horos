@@ -35,6 +35,8 @@ enum
 
 @interface ROI : NSObject <NSCoding>
 {
+	NSLock			*roiLock;
+	
 	int				textureWidth, textureHeight;
 
 	unsigned char*	textureBuffer;

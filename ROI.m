@@ -586,6 +586,8 @@ static BOOL ROIDefaultsLoaded = NO;
 	[comments release];
 	[stringTex release];
 	[stanStringAttrib release];
+	[roiLock release];
+	roiLock = 0;
 	
 	[layerImageJPEG release];
 //	[layerImageWhenSelectedJPEG release];
@@ -1544,7 +1546,7 @@ static BOOL ROIDefaultsLoaded = NO;
 	[self mouseRoiDown:pt :[curView curImage] :scale];
 }
 
-- (BOOL)mouseRoiDown:(NSPoint)pt :(int)slice :(float)scale
+- (BOOL)mouseRoiDownIn:(NSPoint)pt :(int)slice :(float)scale
 {
 	MyPoint				*mypt;
 	
@@ -1663,6 +1665,17 @@ static BOOL ROIDefaultsLoaded = NO;
 	
 	if( mode == ROI_drawing) return YES;
 	else return NO;
+}
+
+- (BOOL)mouseRoiDown:(NSPoint)pt :(int)slice :(float)scale
+{
+	[roiLock lock];
+	
+	BOOL result = [self mouseRoiDownIn:pt :slice :scale];
+	
+	[roiLock unlock];
+	
+	return result;
 }
 
 - (void) rotate: (float) angle :(NSPoint) center
@@ -1958,6 +1971,10 @@ static BOOL ROIDefaultsLoaded = NO;
 		textureWidth = maxX - minX+1;
 		textureHeight = maxY - minY+1;
 		
+		if( textureWidth%4) {textureWidth /=4;	textureWidth *=4;		textureWidth +=4;}
+		if( textureHeight%4) {textureHeight /=4;	textureHeight *=4;		textureHeight += 4;}
+		
+		
 		for( long y = 0 ; y < textureHeight ; y++)
 		{
 			memcpy( textureBuffer + (y * textureWidth), textureBuffer + offsetTextureX+ (y+ offsetTextureY)*oldTextureWidth,  textureWidth);
@@ -1997,6 +2014,8 @@ static BOOL ROIDefaultsLoaded = NO;
 
 - (BOOL) mouseRoiDragged:(NSPoint) pt :(unsigned int) modifier :(float) scale
 {
+	[roiLock lock];
+
 	BOOL		action = NO;
 	BOOL		textureGrowDownX=YES,textureGrowDownY=YES;
 	float		oldTextureUpLeftCornerX,oldTextureUpLeftCornerY,offsetTextureX,offsetTextureY;
@@ -2055,13 +2074,19 @@ static BOOL ROIDefaultsLoaded = NO;
 				textureWidth=((textureDownRightCornerX-textureUpLeftCornerX))+1;
 				textureHeight=((textureDownRightCornerY-textureUpLeftCornerY))+1;	
 			  	
+				if( textureWidth%4) {textureWidth /=4;	textureWidth *=4;		textureWidth +=4;}
+				if( textureHeight%4) {textureHeight /=4;	textureHeight *=4;		textureHeight += 4;}
+				
+				textureDownRightCornerX = textureWidth+textureUpLeftCornerX-1;
+				textureDownRightCornerY = textureHeight+textureUpLeftCornerY-1;
 				// ROI cannot be smaller !
 				if (textureWidth<oldTextureWidth)
 					textureWidth=oldTextureWidth;
 					
 				if (textureHeight<oldTextureHeight)
 					textureHeight=oldTextureHeight;
-						
+				
+				
 				// new texture buffer		
 				textureBuffer = malloc(textureWidth*textureHeight*sizeof(unsigned char));
 				
@@ -2101,14 +2126,13 @@ static BOOL ROIDefaultsLoaded = NO;
 							for( long i=0; i<oldTextureWidth; i++)
 								textureBuffer[(long)(i+offsetTextureX+(j+offsetTextureY)*textureWidth)]=tempTextureBuffer[i+j*oldTextureWidth];
 					}
-					
-					free(tempTextureBuffer);
-					tempTextureBuffer = 0L;
 				}
+					
+				free(tempTextureBuffer);
+				tempTextureBuffer = 0L;
 					
 				oldTextureWidth = textureWidth;
 				oldTextureHeight = textureHeight;	
-				tempTextureBuffer = malloc(textureWidth*textureHeight*sizeof(unsigned char));
 				
 				unsigned char	val;
 				
@@ -2302,6 +2326,9 @@ static BOOL ROIDefaultsLoaded = NO;
 		if ( [self.comments isEqualToString: @"morphing generated"] ) self.comments = @"";
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 	}
+	
+	[roiLock unlock];
+	
 	return action;
 }
 
@@ -2772,7 +2799,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 }
 
 - (void) drawROI :(float) scaleValue :(float) offsetx :(float) offsety :(float) spacingX :(float) spacingY
-{	
+{
+	if( roiLock == 0L) roiLock = [[NSLock alloc] init];
+	
+	[roiLock lock];
+	
 	if( fontListGL == -1) NSLog(@"ERROR: fontListGL == -1 !");
 	if( curView == 0L) NSLog(@"ERROR: curView == 0L !");
 	
@@ -2917,13 +2948,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( textureName)
 				glDeleteTextures (1, &textureName);
 			
-		//	NSLog( @"%d", textureWidth);
+			//NSLog( @"%d", textureWidth);
 			
-			glPixelStorei (GL_UNPACK_ROW_LENGTH, textureWidth);
-			
+			glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, textureWidth * textureHeight, textureBuffer);
 			glGenTextures (1, &textureName);
 			glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
-			
+			glPixelStorei (GL_UNPACK_ROW_LENGTH, textureWidth);
 			glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
 			
 			glBlendEquation(GL_FUNC_ADD);
@@ -3889,6 +3919,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	glDisable(GL_POLYGON_SMOOTH);
 	glDisable(GL_POINT_SMOOTH);
 	glDisable(GL_BLEND);
+	
+	[roiLock unlock];
 }
 
 - (float*) dataValuesAsFloatPointer :(long*) no
