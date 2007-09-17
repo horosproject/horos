@@ -237,6 +237,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	NSLock			*drawLock;
 	
 	// iChat
+	float			iChatWidth, iChatHeight;
 	unsigned char*	iChatCursorTextureBuffer;
 	GLuint			iChatCursorTextureName;
 	NSSize			iChatCursorImageSize;

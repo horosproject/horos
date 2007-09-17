@@ -72,9 +72,6 @@ Version 2.3
 //#define RECTANGLE false
 //GL_TEXTURE_RECTANGLE_EXT - GL_TEXTURE_2D
 
-#define ICHAT_WIDTH 640
-#define ICHAT_HEIGHT 480
-
 extern		NSThread					*mainThread;
 extern		BOOL						USETOOLBARPANEL;
 extern		ToolbarPanelController		*toolbarPanel[10];
@@ -758,22 +755,26 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	#define ROISELECTORREGION_G 0.8
 	#define ROISELECTORREGION_B 1.0
 
+	NSPoint startPt, endPt;
+	startPt = [self convertFromView2iChat: ROISelectorStartPoint];
+	endPt = [self convertFromView2iChat: ROISelectorEndPoint];
+
 	// inside: fill
 	glColor4f(ROISELECTORREGION_R, ROISELECTORREGION_G, ROISELECTORREGION_B, 0.3);
 	glBegin(GL_POLYGON);		
-	glVertex2f(ROISelectorStartPoint.x, ROISelectorStartPoint.y);
-	glVertex2f(ROISelectorStartPoint.x, ROISelectorEndPoint.y);
-	glVertex2f(ROISelectorEndPoint.x, ROISelectorEndPoint.y);
-	glVertex2f(ROISelectorEndPoint.x, ROISelectorStartPoint.y);
+	glVertex2f(startPt.x, startPt.y);
+	glVertex2f(startPt.x, endPt.y);
+	glVertex2f(endPt.x, endPt.y);
+	glVertex2f(endPt.x, startPt.y);
 	glEnd();
 
 	// border
 	glColor4f(ROISELECTORREGION_R, ROISELECTORREGION_G, ROISELECTORREGION_B, 0.75);
 	glBegin(GL_LINE_LOOP);
-	glVertex2f(ROISelectorStartPoint.x, ROISelectorStartPoint.y);
-	glVertex2f(ROISelectorStartPoint.x, ROISelectorEndPoint.y);
-	glVertex2f(ROISelectorEndPoint.x, ROISelectorEndPoint.y);
-	glVertex2f(ROISelectorEndPoint.x, ROISelectorStartPoint.y);
+	glVertex2f(startPt.x, startPt.y);
+	glVertex2f(startPt.x, endPt.y);
+	glVertex2f(endPt.x, endPt.y);
+	glVertex2f(endPt.x, startPt.y);
 	glEnd();
 	
 	glDisable(GL_BLEND);
@@ -2197,7 +2198,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			ROISelectorStartPoint = NSMakePoint(0.0, 0.0);
 			ROISelectorEndPoint = NSMakePoint(0.0, 0.0);
 			[self drawRect:rect];
-		}	
+		}
     }
 }
 
@@ -2277,7 +2278,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( dcmPixList == 0L) return;
 	
 	if( [[self window] isVisible] && [[self window] isKeyWindow])
-	{
+	{		
 		BOOL	needUpdate = NO;
 		
 		float	cpixelMouseValueR = pixelMouseValueR;
@@ -2553,7 +2554,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if ([event type] == NSLeftMouseDown)
 		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo: event  repeats:NO] retain];
 	
-    if( dcmPixList) {
+    if( dcmPixList)
+	{	
 		[self erase2DPointMarker];
 		if( blendingView) [blendingView erase2DPointMarker];
 		
@@ -3310,8 +3312,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	// if we have images do drag
     if( dcmPixList)
-    {
-		
+    {	
         NSPoint     eventLocation = [event locationInWindow];
         NSPoint     current = [self convertPoint:eventLocation fromView:self];
         short       tool;
@@ -3383,6 +3384,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 //		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
+
     }
 }
 
@@ -5256,7 +5258,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //		NSRect	iChat = [[[NSOpenGLContext currentContext] view] frame];
 		NSRect	windowRect = [self frame];
 
-		return NSMakePoint( a.x - (windowRect.size.width - ICHAT_WIDTH)/2.0, a.y - (windowRect.size.height - ICHAT_HEIGHT)/2.0);
+		return NSMakePoint( a.x - (windowRect.size.width - iChatWidth)/2.0, a.y - (windowRect.size.height - iChatHeight)/2.0);
 	}
 	else return a;
 }
@@ -6483,69 +6485,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			if( [self is2DViewer] == YES) {
 				if( isKeyView == NO) noBlending = YES;
-			}
-			
-			// highlight the visible part of the view (the part visible through iChat)
-			if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView)
-			{
-				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
-				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
-				NSPoint topLeft;
-				topLeft.x = drawingFrameRect.size.width/2 - ICHAT_WIDTH/2.0;
-				topLeft.y = drawingFrameRect.size.height/2 - ICHAT_HEIGHT/2.0;
-						
-				glEnable(GL_BLEND);
-				
-				glColor4f (0.0f, 0.0f, 0.0f, 0.7f);
-				glLineWidth(1.0);
-				glBegin(GL_QUADS);
-					glVertex2f(0.0, 0.0);
-					glVertex2f(0.0, topLeft.y);
-					glVertex2f(drawingFrameRect.size.width, topLeft.y);
-					glVertex2f(drawingFrameRect.size.width, 0.0);
-				glEnd();
-
-				glBegin(GL_QUADS);
-					glVertex2f(0.0, topLeft.y);
-					glVertex2f(topLeft.x, topLeft.y);
-					glVertex2f(topLeft.x, topLeft.y+ICHAT_HEIGHT);
-					glVertex2f(0.0, topLeft.y+ICHAT_HEIGHT);
-				glEnd();
-
-				glBegin(GL_QUADS);
-					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y);
-					glVertex2f(drawingFrameRect.size.width, topLeft.y);
-					glVertex2f(drawingFrameRect.size.width, topLeft.y+ICHAT_HEIGHT);
-					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y+ICHAT_HEIGHT);
-				glEnd();
-
-				glBegin(GL_QUADS);
-					glVertex2f(0.0, topLeft.y+ICHAT_HEIGHT);
-					glVertex2f(drawingFrameRect.size.width, topLeft.y+ICHAT_HEIGHT);
-					glVertex2f(drawingFrameRect.size.width, drawingFrameRect.size.height);
-					glVertex2f(0.0, drawingFrameRect.size.height);
-				glEnd();
-
-				glColor4f (1.0f, 1.0f, 1.0f, 0.8f);
-				glBegin(GL_LINE_LOOP);
-					glVertex2f(topLeft.x, topLeft.y);
-					glVertex2f(topLeft.x, topLeft.y+ICHAT_HEIGHT);
-					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y+ICHAT_HEIGHT);
-					glVertex2f(topLeft.x+ICHAT_WIDTH, topLeft.y);
-				glEnd();
-				
-				glLineWidth(1.0);
-				glDisable(GL_BLEND);
-				
-				// label
-				NSPoint iChatTheatreSharedViewLabelPosition;
-				iChatTheatreSharedViewLabelPosition.x = drawingFrameRect.size.width/2.0;
-				iChatTheatreSharedViewLabelPosition.y = topLeft.y;
-
-				[self DrawNSStringGL:NSLocalizedString(@"iChat Theatre shared view", nil) :fontListGL :iChatTheatreSharedViewLabelPosition.x :iChatTheatreSharedViewLabelPosition.y align:DCMViewTextAlignCenter useStringTexture:YES];
-			}			
-
+			}	
 			
 			if( blendingView != 0L && syncOnLocationImpossible == NO && noBlending == NO ) {
 				if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
@@ -6704,6 +6644,67 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				glDisable(GL_POLYGON_SMOOTH);
 				glDisable(GL_POINT_SMOOTH);
 				glDisable(GL_BLEND);
+			}
+			
+			// highlight the visible part of the view (the part visible through iChat)
+			if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView)
+			{
+				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
+				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
+				NSPoint topLeft;
+				topLeft.x = drawingFrameRect.size.width/2 - iChatWidth/2.0;
+				topLeft.y = drawingFrameRect.size.height/2 - iChatHeight/2.0;
+						
+				glEnable(GL_BLEND);
+				
+				glColor4f (0.0f, 0.0f, 0.0f, 0.7f);
+				glLineWidth(1.0);
+				glBegin(GL_QUADS);
+					glVertex2f(0.0, 0.0);
+					glVertex2f(0.0, topLeft.y);
+					glVertex2f(drawingFrameRect.size.width, topLeft.y);
+					glVertex2f(drawingFrameRect.size.width, 0.0);
+				glEnd();
+
+				glBegin(GL_QUADS);
+					glVertex2f(0.0, topLeft.y);
+					glVertex2f(topLeft.x, topLeft.y);
+					glVertex2f(topLeft.x, topLeft.y+iChatHeight);
+					glVertex2f(0.0, topLeft.y+iChatHeight);
+				glEnd();
+
+				glBegin(GL_QUADS);
+					glVertex2f(topLeft.x+iChatWidth, topLeft.y);
+					glVertex2f(drawingFrameRect.size.width, topLeft.y);
+					glVertex2f(drawingFrameRect.size.width, topLeft.y+iChatHeight);
+					glVertex2f(topLeft.x+iChatWidth, topLeft.y+iChatHeight);
+				glEnd();
+
+				glBegin(GL_QUADS);
+					glVertex2f(0.0, topLeft.y+iChatHeight);
+					glVertex2f(drawingFrameRect.size.width, topLeft.y+iChatHeight);
+					glVertex2f(drawingFrameRect.size.width, drawingFrameRect.size.height);
+					glVertex2f(0.0, drawingFrameRect.size.height);
+				glEnd();
+
+				glColor4f (1.0f, 1.0f, 1.0f, 0.8f);
+				glBegin(GL_LINE_LOOP);
+					glVertex2f(topLeft.x, topLeft.y);
+					glVertex2f(topLeft.x, topLeft.y+iChatHeight);
+					glVertex2f(topLeft.x+iChatWidth, topLeft.y+iChatHeight);
+					glVertex2f(topLeft.x+iChatWidth, topLeft.y);
+				glEnd();
+				
+				glLineWidth(1.0);
+				glDisable(GL_BLEND);
+				
+				// label
+				NSPoint iChatTheatreSharedViewLabelPosition;
+				iChatTheatreSharedViewLabelPosition.x = drawingFrameRect.size.width/2.0;
+				iChatTheatreSharedViewLabelPosition.y = topLeft.y;
+
+				[self DrawNSStringGL:NSLocalizedString(@"iChat Theatre shared view", nil) :fontListGL :iChatTheatreSharedViewLabelPosition.x :iChatTheatreSharedViewLabelPosition.y align:DCMViewTextAlignCenter useStringTexture:YES];
 			}
 			
 			// ***********************
@@ -7143,8 +7144,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				// location of the mouse in the iChat Theatre View
 //				eventLocation.x = eventLocation.x - (drawingFrameRect.size.width/2. - iChatTheatreViewSize.width/2.);
 //				eventLocation.y = eventLocation.y - (drawingFrameRect.size.height/2. - iChatTheatreViewSize.height/2.);
-//				eventLocation.x = eventLocation.x - (drawingFrameRect.size.width - ICHAT_WIDTH)/2.;
-//				eventLocation.y = eventLocation.y - (drawingFrameRect.size.height - ICHAT_HEIGHT)/2.;
+//				eventLocation.x = eventLocation.x - (drawingFrameRect.size.width - iChatWidth)/2.;
+//				eventLocation.y = eventLocation.y - (drawingFrameRect.size.height - iChatHeight)/2.;
 				
 				eventLocation = [self convertFromView2iChat:eventLocation];
 				
@@ -7184,6 +7185,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);		
 					glEnable(GL_BLEND);
 					
+					glColor4f(1.0, 1.0, 1.0, 1.0);
 					glBegin(GL_QUAD_STRIP);
 						glTexCoord2f(0, 0);
 						glVertex2f(eventLocation.x, eventLocation.y);
@@ -7202,7 +7204,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					glDisable(GL_TEXTURE_RECTANGLE_EXT);
 				}
-			} // end iChat Theatre context			
+			} // end iChat Theatre context	
+					
 		}  
 		else {    //no valid image  ie curImage = -1
 			//NSLog(@"no IMage");
@@ -9534,7 +9537,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
         NSDictionary *attributes = (NSDictionary *)CVOpenGLBufferGetAttributes(buffer);
         GLfloat width = [[attributes objectForKey:(NSString *)kCVOpenGLBufferWidth] floatValue];
         GLfloat height = [[attributes objectForKey:(NSString *)kCVOpenGLBufferHeight] floatValue];
-
+		iChatWidth = width;
+		iChatHeight = height;
+		
 		// Render!
         [self drawRect:NSMakeRect(0,0,width,height) withContext:_alternateContext];
         return YES;
