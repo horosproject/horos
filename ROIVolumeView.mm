@@ -335,7 +335,7 @@
 			vtkPolyData *medialSurface;
 			power->Update();
 			medialSurface = power->GetMedialSurface();
-			//polyDataNormals->SetInput(medialSurface);
+			//polyDataNormals->SetInput(power->GetOutput());
 			isoDeci = vtkDecimatePro::New();
 			isoDeci->SetInput(medialSurface);
 			isoDeci->SetTargetReduction(0.9);
@@ -355,7 +355,6 @@
 			int j, k, neighbors;			
 			double x , y, z;
 			// get all cells around a point
-			//NSLog(@"Build Cells");
 			data->BuildCells();
 			for (int a = 0; a < 5 ;  a++){
 				for (i = 0; i < nPoints; i++) {	
@@ -398,7 +397,7 @@
 			// Find most inferior Point. Rrpresent Rectum
 			// Could be a seed point to generalize.  
 			vtkIdType startingPoint;
-			int zPoint = 100000; 
+			double zPoint = 100000; 
 			NSLog(@"get starting Point");
 			for (i = 0; i < nPoints; i++) {	
 				double *position = medialPoints->GetPoint(i);
@@ -409,134 +408,102 @@
 			}
 
 			double *sp = medialPoints->GetPoint(startingPoint);
-			NSLog(@"starting Point: %f %f %f", sp[0], sp[1], sp[2]);
-/*			
+			NSLog(@"starting Point %d : %f %f %f",startingPoint, sp[0], sp[1], sp[2]);
+			
 			//get connected Points
-			vtkIdType visitedPoints[nPoints];
-			vtkIdType connectedPoints[nPoints];
-			int nVisited = 1;
-			int nConnected = 1;
+			NSMutableSet *visitedPoints = [NSMutableSet set];
+			NSMutableArray *connectedPoints = [NSMutableArray array];
+			NSMutableArray *stack = [NSMutableArray array];
+
+			NSNumber *start = [NSNumber numberWithDouble:startingPoint];
+			[visitedPoints addObject:start];
+			[connectedPoints addObject:start];
+			[stack  addObject:start];
 			
-			visitedPoints[0] = startingPoint;
-			connectedPoints[0] = startingPoint;
-			
-			// Get Point Distances
-			BOOL morePoints = YES;
-			int loopCount = 0;
 			vtkIdType currentPoint;
 			currentPoint = startingPoint;
-			NSLog(@"get Centerline Points: %d %d", loopCount, nPoints);
-			while (morePoints && loopCount < nPoints) {
-				loopCount++;	
-				vtkIdType ncells;
-				vtkIdList *cellIds = vtkIdList::New();;
-				//int j = 0;
-				// count self
+			while ([stack count] > 0) {
 				neighbors = 0;
-				double *position = medialPoints->GetPoint(startingPoint);
+				[stack removeObjectAtIndex:0];
+				double *position;
+				//double *position = medialPoints->GetPoint(startingPoint);
 				// Get position
-				x = position[0];
-				y = position[1];
-				z = position[2];
+				//x = position[0];
+				//y = position[1];
+				//z = position[2];
 				// All cells for Point and number of cells
-				data->GetPointCells	(startingPoint, cellIds);	
-				ncells = cellIds->GetNumberOfIds();
-				double avgX, avgY, avgZ;
-				//Loop through neighbors to get avg neighbor position
-				for (j = 0;  j < ncells; j++) {
-					vtkIdType numPoints;
-					vtkIdType *cellPoints ;
-					vtkIdType cellId = cellIds->GetId(j);
-					//get all points for the cell
-					data->GetCellPoints(cellId, numPoints, cellPoints);				
 
-					for (k = 0; k < numPoints; k++) {	
-						vtkIdType  nextPt	= cellPoints[k];
-						BOOL visited = NO;
-						for (int m = 0; m < nVisited; m++) {
-							if (visitedPoints[m] == nextPt) visited = YES;
-						}
-						// Get avg Position of unvisited neighbors
-						if (!visited) {
-							position = medialPoints->GetPoint(nextPt);
-							NSLog(@"nextPt: %f %f %f", position[0], position[1], position[2]);
-							avgX += position[0];
-							avgY += position[1];
-							avgZ += position[2];
-							neighbors++;
-
-						}
-						
-					 }
+				double avgX = 0; 
+				double avgY = 0;
+				double avgZ = 0;
+				//Loop through neighbors to get avg neighbor position Go three connections out
+				NSSet *ptSet = [self connectedPointsForPoint:currentPoint fromPolyData:data];
+				NSMutableSet *closeNeighbors = [NSMutableSet set];
+				NSMutableSet *distantNeighbors = [NSMutableSet set];
+				for (NSNumber *number in ptSet) {
+					NSSet *neighborSet = [self connectedPointsForPoint:[number doubleValue]  fromPolyData:data];
+					[closeNeighbors unionSet:neighborSet];
 				}
+				for (NSNumber *number in closeNeighbors) {
+					NSSet *neighborSet = [self connectedPointsForPoint:[number doubleValue]  fromPolyData:data];
+					[distantNeighbors unionSet:neighborSet];
+				}
+				
+				for (NSNumber *number in distantNeighbors) {
+					vtkIdType pt = [number doubleValue];
+					if (![visitedPoints containsObject:number]) {
+						position = medialPoints->GetPoint(pt);
+						avgX += position[0];
+						avgY += position[1];
+						avgZ += position[2];
+						neighbors++;
+						//NSLog(@"pt %f %f %f", position[0], position[1], position[2]);
+					}
+				}
+
 				// get average
 				avgX /= neighbors;
 				avgY /= neighbors;
 				avgZ /= neighbors;
-				NSLog(@"avg: %f %f %f", avgX, avgY, avgZ);
+				//NSLog(@"avg: %f %f %f count: %d", avgX, avgY, avgZ, neighbors);
 				//go through neighbors again and find closet neighbor to avgPt.
 				//add closest neighbor to connected points
-				
+
 				double closestDistance = 100000;
 				BOOL foundNeighbor = NO;
 				vtkIdType closestNeighbor;
-				for (j = 0;  j < ncells; j++) {
-					vtkIdType numPoints;
-					vtkIdType *cellPoints ;
-					vtkIdType cellId = cellIds->GetId(j);
-					//get all points for the cell
-					data->GetCellPoints(cellId, numPoints, cellPoints);				
-					
-					for (k = 0; k < numPoints; k++) {	
-						vtkIdType  nextPt	= cellPoints[k];
-						position = medialPoints->GetPoint(nextPt);
-						double distance = sqrt( pow(avgX - position[0],2) + pow(avgY - position[1],2) + pow(avgZ - position[2],2));
-						BOOL visited = NO;
-						for (int m = 0; m < nVisited; m++) {
-							NSLog(@"visit: %d", visitedPoints[m]);
-							if (visitedPoints[m] == nextPt) {
-								visited = YES;
-								NSLog(@"visited: %d %d", visitedPoints[m], nextPt);
-							}
-							else{
-								// add neighbors to visited
-								visitedPoints[nVisited] = nextPt;
-								nVisited++;
-							}
-								
-						}
-						NSLog(@"Distance %f, visited %d", distance, visited);
-						if ((distance < closestDistance) && visited == NO) {
-							// closet neighbor cannot be a visited Point
-							closestNeighbor = nextPt;
-							closestDistance = distance;
-							foundNeighbor = YES;
-							
-						}
-					 }
+				for (NSNumber *number in distantNeighbors) {
+					vtkIdType pt = [number doubleValue];
+					position = medialPoints->GetPoint(pt);
+					double distance = sqrt( pow(avgX - position[0],2) + pow(avgY - position[1],2) + pow(avgZ - position[2],2));
+
+					if ((distance < closestDistance) && ![visitedPoints containsObject:number]) {
+						// closet neighbor cannot be a visited Point
+						closestNeighbor = pt;
+						closestDistance = distance;
+						foundNeighbor = YES;
+						
+					}
 				}
 				// add closest neighbor to connected points
 				if (foundNeighbor) 
 				{
 					currentPoint = closestNeighbor;
-					connectedPoints[nConnected] = currentPoint;
-					nConnected++;
+					NSNumber *closest = [NSNumber numberWithDouble:closestNeighbor];
+					[connectedPoints addObject:closest];
+					[stack addObject:closest];
 					position = medialPoints->GetPoint(currentPoint);
-					NSLog(@"%d next Point: %f % f %f",nConnected, position[0], position[1], position[2]);
+					//NSLog(@"%d next Point: %f % f %f",[connectedPoints count], position[0], position[1], position[2]);
 				}
-				// if there is no closest neighbor: stop
-				else
-				 morePoints = NO;
 				
-				
-				// Set Point				
-				cellIds->Delete();				
-			}			
+				[visitedPoints unionSet:distantNeighbors];
 
-		
+			}			
+			
+			//NSLog(@"Visited Points: %d total Points: %d", [visitedPoints count], nPoints);
 			//NSLog(@"Medial Surface number of Polygons: %d", medialSurface->GetNumberOfPolys());
 			//NSLog(@"Medial Surface number of Points: %d", medialSurface->GetNumberOfPoints());
-	*/
+
 		}
 		else 
 		{
