@@ -111,6 +111,7 @@ Version 2.5
 #import "BrowserMatrix.h"
 #import "DicomStudy.h"
 #import "PluginManager.h"
+#import "XMLController.h"
 
 #define DATABASEVERSION @"2.4"
 #define DATABASEPATH @"/DATABASE/"
@@ -150,165 +151,6 @@ extern NSLock					*PapyrusLock;
 
 long		DATABASEINDEX;
 
-//NSArray *syntaxArray;
-//BOOL	queueThreadIsRunning;
-
-Boolean IsWholeMedia(io_service_t service, BOOL *result)
-{
-    //
-    // Determine if the object passed in represents an IOMedia (or subclass) object.
-    // If it does, retrieve the "Whole" property.
-    // If this is the whole media object, find out if it is a CD, DVD, or something else.
-    // If it isn't the whole media object, iterate across its parents in the IORegistry
-    // until the whole media object is found.
-    //
-    // Note that media types other than CD and DVD are not distinguished by class name
-    // but are generic IOMedia objects.
-    //
-    
-    Boolean 		isWholeMedia = false;
-    io_name_t		className;
-    kern_return_t	kernResult;
-	
-	*result = NO;
-	
-    if (IOObjectConformsTo(service, kIOMediaClass)) {
-        
-        CFTypeRef wholeMedia;
-        
-        wholeMedia = IORegistryEntryCreateCFProperty(service, 
-                                                     CFSTR(kIOMediaWholeKey), 
-                                                     kCFAllocatorDefault, 
-                                                     0);
-                                                    
-        if (NULL == wholeMedia) {
-            printf("Could not retrieve Whole property\n");
-        }
-        else {                                        
-            isWholeMedia = CFBooleanGetValue(wholeMedia);
-            CFRelease(wholeMedia);
-        }
-    }
-            
-    if (isWholeMedia) {
-        if (IOObjectConformsTo(service, kIOCDMediaClass)) {
-            printf("is a CD\n");
-			*result = YES;
-        }
-        else if (IOObjectConformsTo(service, kIODVDMediaClass)) {
-            printf("is a DVD\n");
-			*result = YES;
-        }
-        else {
-            kernResult = IOObjectGetClass(service, className);
-            printf("is of class %s\n", className);
-        }            
-    }
-
-    return isWholeMedia;
-}
-
-BOOL FindWholeMedia(io_service_t service)
-{
-    kern_return_t	kernResult;
-    io_iterator_t	iter;
-	BOOL			result = NO;
-	BOOL			isWholeMedia = NO;
-    // Create an iterator across all parents of the service object passed in.
-    kernResult = IORegistryEntryCreateIterator(service,
-                                               kIOServicePlane,
-                                               kIORegistryIterateRecursively | kIORegistryIterateParents,
-                                               &iter);
-    
-    if (KERN_SUCCESS != kernResult) {
-        printf("IORegistryEntryCreateIterator returned %d\n", kernResult);
-    }
-    else if (iter == 0L) {
-        printf("IORegistryEntryCreateIterator returned a NULL iterator\n");
-    }
-    else {
-
-        
-        // A reference on the initial service object is released in the do-while loop below,
-        // so add a reference to balance 
-        IOObjectRetain(service);	
-        
-        do {
-            isWholeMedia = IsWholeMedia(service, &result);
-            IOObjectRelease(service);
-        } while ((service = IOIteratorNext(iter)) && !isWholeMedia && result == NO);
-                
-        IOObjectRelease(iter);
-    }
-	
-	return result;
-}
-
-BOOL GetAdditionalVolumeInfo(char *bsdName)
-{
-    // The idea is that given the BSD node name corresponding to a volume,
-    // I/O Kit can be used to find the information about the media, drive, bus, and so on
-    // that is maintained in the IORegistry.
-    //
-    // In this sample, we find out if the volume is on a CD, DVD, or some other media.
-    // This is done as follows:
-    // 
-    // 1. Find the IOMedia object that represents the entire (whole) media that the volume is on. 
-    //
-    // If the volume is on partitioned media, the whole media object will be a parent of the volume's
-    // media object. If the media is not partitioned, (a floppy disk, for example) the volume's media
-    // object will be the whole media object.
-    // 
-    // The whole media object is indicated in the IORegistry by the presence of a property with the key
-    // "Whole" and value "Yes".
-    //
-    // 2. Determine which I/O Kit class the whole media object belongs to.
-    //
-    // For CD media the class name will be "IOCDMedia," and for DVD media the class name will be
-    // "IODVDMedia". Other media will be of the generic "IOMedia" class.
-    //
-    
-    CFMutableDictionaryRef	matchingDict;
-    kern_return_t		kernResult;
-    io_iterator_t 		iter;
-    io_service_t		service;
-	BOOL				result = NO;
-    
-    matchingDict = IOBSDNameMatching(gMasterPort, 0, bsdName);
-    if (NULL == matchingDict) {
-        printf("IOBSDNameMatching returned a NULL dictionary.\n");
-    }
-    else {
-        // Return an iterator across all objects with the matching BSD node name. Note that there
-        // should only be one match!
-        kernResult = IOServiceGetMatchingServices(gMasterPort, matchingDict, &iter);    
-    
-        if (KERN_SUCCESS != kernResult) {
-            printf("IOServiceGetMatchingServices returned %d\n", kernResult);
-        }
-        else if (iter == 0) {
-            printf("IOServiceGetMatchingServices returned a NULL iterator\n");
-        }
-        else {
-            service = IOIteratorNext(iter);
-            
-            // Release this now because we only expect the iterator to contain
-            // a single io_service_t.
-            IOObjectRelease(iter);
-            
-            if (service == 0) {
-                printf("IOIteratorNext returned NULL\n");
-            }
-            else {
-                result = FindWholeMedia(service);
-                IOObjectRelease(service);
-            }
-        }
-    }
-	
-	return result;
-}
-
 NSString* asciiString (NSString* name)
 {
 	NSMutableString	*outString;
@@ -320,13 +162,6 @@ NSString* asciiString (NSString* name)
 	
 	return outString;
 }
-
-@interface BrowserController (private)
-
-- (NSString*) _findFirstDicomdirOnCDMedia: (NSString*)startDirectory found:(BOOL) found;
-
-
-@end
 
 @implementation BrowserController
 
@@ -347,12 +182,11 @@ static NSString*	BurnerToolbarItemIdentifier			= @"Burner.tif";
 static NSString*	ToggleDrawerToolbarItemIdentifier   = @"StartupDisk.tiff";
 static NSString*	SearchToolbarItemIdentifier			= @"Search";
 static NSString*	TimeIntervalToolbarItemIdentifier	= @"TimeInterval";
-
+static NSString*	XMLToolbarItemIdentifier			= @"XML.icns";
 static NSTimeInterval	gLastActivity = 0;
 static BOOL				DICOMDIRCDMODE = NO;
-//static NSArray*		tableColumns = 0L;
 
-		NSArray*	statesArray = 0L;
+static NSArray*	statesArray = 0L;
 
 
 
@@ -12762,6 +12596,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 	}
 }
+
+- (IBAction) viewXML:(id) sender
+{
+    XMLController * xmlController = [[XMLController alloc] initWithImage: [self firstObjectForDatabaseMatrixSelection] windowName:[NSString stringWithFormat:@"Meta-Data: %@", [[self firstObjectForDatabaseMatrixSelection] valueForKey:@"completePath"]] viewer: 0L];
+    
+    [xmlController showWindow:self];
+}
+
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 #pragma mark -
@@ -13292,6 +13134,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(generateReport:)];
     }
+	else if ([itemIdent isEqualToString: XMLToolbarItemIdentifier]) {
+        
+		[toolbarItem setLabel: NSLocalizedString(@"Meta-Data", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Meta-Data", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"View meta-data of this image", nil)];
+		[toolbarItem setImage: [NSImage imageNamed: XMLToolbarItemIdentifier]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector(viewXML:)];
+    } 
 	else if ([itemIdent isEqualToString: BurnerToolbarItemIdentifier]) {
         
 		[toolbarItem setLabel: NSLocalizedString(@"Burn",nil)];
@@ -13299,7 +13150,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setToolTip: NSLocalizedString(@"Burn a DICOM-compatible CD or DVD",@"Burn a DICOM-compatible CD or DVD")];
 		[toolbarItem setImage: [NSImage imageNamed: BurnerToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector(burnDICOM:)];		//burnDICOM
+		[toolbarItem setAction: @selector(burnDICOM:)];
     } 
 	else if ([itemIdent isEqualToString: ToggleDrawerToolbarItemIdentifier]) {
         
@@ -13370,6 +13221,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 										SendToolbarItemIdentifier,
 										AnonymizerToolbarItemIdentifier,
 										BurnerToolbarItemIdentifier,
+										XMLToolbarItemIdentifier,
 										TrashToolbarItemIdentifier,
 										NSToolbarFlexibleSpaceItemIdentifier,
 										ViewerToolbarItemIdentifier,
@@ -13404,6 +13256,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 											ViewerToolbarItemIdentifier,
 											MovieToolbarItemIdentifier,
 											BurnerToolbarItemIdentifier,
+											XMLToolbarItemIdentifier,
 											TrashToolbarItemIdentifier,
 											ReportToolbarItemIdentifier,
 											ToggleDrawerToolbarItemIdentifier,
@@ -13648,8 +13501,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting to OsiriX database...", nil)];
 			[wait showWindow:self];
-			[wait setCancel: YES];
-			[wait setCancelDelegate: bonjourBrowser];
+//			[wait setCancel: YES];
+//			[wait setCancelDelegate: bonjourBrowser];
 			
 			NSString	*path = [bonjourBrowser getDatabaseFile: index];
 			

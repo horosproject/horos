@@ -295,8 +295,12 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	[[self window] makeFirstResponder: table];
 	
 	[viewer checkEverythingLoaded];
-	[[self window] setTitle: [NSString stringWithFormat:@"Meta-Data: %@", [[viewer window] title]]];
 	
+	if( viewer)
+		[[self window] setTitle: [NSString stringWithFormat:@"Meta-Data: %@", [[viewer window] title]]];
+	else
+		[[self window] setTitle: [NSString stringWithFormat:@"Meta-Data: %@", srcFile]];
+		
 	dontClose = NO;
 }
 

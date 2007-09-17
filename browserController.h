@@ -335,7 +335,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (BOOL) is2DViewer;
 - (void) previewSliderAction:(id) sender;
 - (void) addHelpMenu;
-
+- (NSString*) _findFirstDicomdirOnCDMedia: (NSString*)startDirectory found:(BOOL) found;
 + (BOOL) isItCD:(NSString*) path;
 - (void)storeSCPComplete:(id)sender;
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingDicomFile;
