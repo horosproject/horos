@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-
+#import "Centerline.h"
 
 
 #define id Id
@@ -977,18 +977,6 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	typedef signed short SSPixelType;
 	typedef itk::Image< SSPixelType, 3 > SSImageType;
 	// Type distance Filter
-	//typedef itk::SignedMaurerDistanceMapImageFilter< CharImageType, SSImageType  > DistanceMapType;
-	typedef itk::SignedDanielssonDistanceMapImageFilter< CharImageType, SSImageType  > DistanceMapType;
-	DistanceMapType::Pointer distanceMapFilter = DistanceMapType::New();
-	distanceMapFilter->InsideIsPositiveOn ();
-	
-	typedef itk::ApproximateSignedDistanceMapImageFilter< CharImageType, FloatImageType  > ApproximateDistanceMapType;
-	ApproximateDistanceMapType::Pointer approximateDistanceMapFilter = ApproximateDistanceMapType::New();
-	approximateDistanceMapFilter->SetInsideValue(0.0);
-	approximateDistanceMapFilter->SetOutsideValue(255.0);
-	
-
-
 
 	NSLog(@"start Endoscopy segmentation");
 
@@ -1025,10 +1013,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	}
 	
 	// make connections Inputs and outputs
-	//resampleFilter->SetInput([itkImage itkImporter]->GetOutput());
 	thresholdFilter->SetInput([itkImage itkImporter]->GetOutput());
-	//distanceMapFilter->SetInput(thresholdFilter->GetOutput());	
-	//approximateDistanceMapFilter->SetInput(thresholdFilter->GetOutput());	
+
 	WaitRendering	*wait = 0L;
 	
 	wait = [[WaitRendering alloc] init: NSLocalizedString(@"Propagating Region...", 0L)];
@@ -1062,267 +1048,33 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	ConnectPipelines(itkExporter, vtkImporter);
 	vtkImporter->Update();
 	
-	int dataExtent[6];
-	vtkImporter->GetDataExtent(dataExtent);
+	//int dataExtent[6];
+	//vtkImporter->GetDataExtent(dataExtent);
 
-	// Get surface using IsoContour
-	vtkContourFilter*	isoContour = vtkContourFilter::New();
-	isoContour->SetValue(0, 1);
-	isoContour->SetInput( vtkImporter->GetOutput());
-	
-	isoContour->Update();	
-	
-
-
-	/*
-	vtkPolyDataConnectivityFilter	*filter = vtkPolyDataConnectivityFilter::New();
-	filter->SetColorRegions( 1);
-	filter->SetExtractionModeToLargestRegion();
-	filter->SetInput( isoContour->GetOutput());
-	
-	vtkPolyDataConnectivityFilter	*filter2 = vtkPolyDataConnectivityFilter::New();
-	filter2->SetColorRegions( 1);
-	filter2->SetExtractionModeToLargestRegion();
-	filter2->SetInput( filter->GetOutput());
-	*/
-		
-	vtkDecimatePro *decimateFilter = vtkDecimatePro::New();
-	decimateFilter->SetInput(isoContour->GetOutput());
-	decimateFilter->SetTargetReduction(0.99);
-	decimateFilter->SetPreserveTopology( TRUE);
-	
-	vtkSmoothPolyDataFilter *smoothFilter = vtkSmoothPolyDataFilter::New();
-	smoothFilter->SetInput(decimateFilter->GetOutput());
-	smoothFilter->SetNumberOfIterations(20);
-	
-	
-	vtkPolyData *output = smoothFilter->GetOutput();				
-	output->Update();
-	//NSLog( @"Extracted region: %d", filter->GetNumberOfExtractedRegions());				
-	NSLog( @"Lines: %d Polys: %d, Points: %d", output->GetNumberOfLines(), output->GetNumberOfPolys(), output->GetNumberOfPoints());	
-		
-	int numberOfPoints = output->GetNumberOfPoints();
-	int ii = 0;
-	for (ii = 0; ii < numberOfPoints; ii+=2000) {
-		double *  p = output->GetPoint(ii);
-		NSLog(@"point %f %f %f", p[0], p[1], p[2]);
-		NSMutableArray  *roiImageList;
-		NSArray *roiSeriesList = [srcViewer roiList];
-		DCMPix	*curPix = [[srcViewer pixList] objectAtIndex: p[2] * 2];
-		ROI		*newROI;
-		newROI = [[[ROI alloc] initWithType: t2DPoint :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint( p[0] * 2, p[1] * 2)] autorelease];
-		[newROI setName: @"Centerline"];
-		roiImageList = [roiSeriesList objectAtIndex: p[2] * 2];
-		[roiImageList addObject: newROI];	
-		[newROI mouseRoiDown:NSMakePoint((float)p[0] * 2,(float)p[1] * 2) :p[2] * 2 :1.0];
-		[newROI release];
-	}
-	
-	NSLog(@"Countouring Done");
-	[wait setString:@"Getting Surface"];
-	[wait close];
-	[wait release];
-	
-	//filter->Delete();
-	//filter2->Delete();
-	vtkImporter->Delete();
-	isoContour->Delete();
-	decimateFilter->Delete();
-	smoothFilter->Delete();
-	return;
-	// testing VTK for Centerline. Old code is below this
-	/*******************************************************/
-	
-	
-	
-	
-	
-	try
-	{
-		//distanceMapFilter->Update();
-		#ifdef  UseApproximateSignedDistanceMapImageFilter
-			approximateDistanceMapFilter->Update();	
-		#else
-			distanceMapFilter->Update();
-		#endif
-	}
-	catch( itk::ExceptionObject & excep )
-	{
-		NSLog(@"RegionGrowing failed...");
-		//return;
-	}
-	
-
-	/* 
-	Get 6 and 4 neighbor maxima
-	6 neighbor maxima is largest in 3 dimension
-	4 neighbor maxima are largest in 2 dimensions
-	Need to be larger than a minimum distance ? 10 - 20 pixels
-	0.625  * 20 =  12.5 mm.
-	*/
-	
-	NSLog(@"get max values");
-	
-	#ifdef  UseApproximateSignedDistanceMapImageFilter
-		float *buff = approximateDistanceMapFilter->GetOutput()->GetBufferPointer();
-	#else
-		signed short *buff = distanceMapFilter->GetOutput()->GetBufferPointer();
-	#endif
-	[wait setString:@"Finding Distances"];
-
-	NSMutableSet *pointSet = [NSMutableSet set];
-	//[[NSData dataWithBytes:buff length:(width * height * depth * 2)] writeToFile:@"/Users/lpysher/Desktop/DistanceMap.data" atomically:YES];
-	int i;
-	for (z = minSize; z < d; z++) {
-		
-		long sliceAbove = sliceSize * (z - 1);
-		long sliceBelow = sliceSize * (z + 1);
-		long currentSlice = sliceSize * z;
-		//NSLog(@"sliceAbove %d  sliceBelow %d", sliceAbove, sliceBelow);
-		for (y = minSize; y < h; y++) {
-			long rowAbove = width * (y - 1);
-			long rowBelow = width * (y + 1);
-			long currentRow = width * y;
-			//NSLog(@"currentRow: %d", currentRow);
-			for (x = minSize; x < w; x++) {
-				long position = currentSlice + currentRow + x;
-				
-				#ifdef  UseApproximateSignedDistanceMapImageFilter
-					// inside is negative
-					float distance = buff[position];
-				#else
-					signed short distance = buff[position];
-				#endif
-				int isDistanceMaximum = 0;
-				
-				if (distance > minSize) {
-					// get x pixels
-					if (distance > buff[position - 1] && distance > buff[position + 1])
-						isDistanceMaximum++;
-					// get y pixels
-					if (distance > buff[currentSlice + rowAbove + x] && distance > buff[currentSlice + rowBelow + x])
-						isDistanceMaximum++;
-					// get z pixels
-					if (distance > buff[sliceAbove + currentRow + x] && distance > buff[sliceBelow + currentRow + x])
-						isDistanceMaximum++;
-					
-					// if is Distance Maximum in neighborhood
-					if (isDistanceMaximum > 1) {
-						// add to set
-						//NSLog(@"add point");
-						#ifdef  UseApproximateSignedDistanceMapImageFilter
-							[pointSet addObject:[OSIPoint3D pointWithX:(float)x  y:(float)y  z:(float)z value:[NSNumber numberWithFloat:distance]]];
-						#else
-							[pointSet addObject:[OSIPoint3D pointWithX:(float)x  y:(float)y  z:(float)z value:[NSNumber numberWithShort:distance]]];
-						#endif	
-						//change maxDistance
-						if (distance > maxDistance) {
-							maxDistance = distance;
-							//NSLog(@"maxDistance = %f", maxDistance);
-						}
-						
-					}
-				}
-			}
-		}
-	}
-	
 	[wait setString:@"Finding Centerline Points"];
-	/*
-	 Create subset of points 
-	 iterate through pointSet looking for points with largest distances;
-	 Decrease maxDistance unit we had enough points 
-	*/
-	NSMutableSet *nodeSet = [NSMutableSet set];
-	int maxCount = 1000;
-	int count = 0;
-	float scalingFactor = 2.0;
-	//NSLog(@"Distance Point Count: %d", [pointSet count]);
-	while (count < maxCount && maxDistance > minSize) {
-		//NSLog(@"max distance: %f", maxDistance);
-		NSEnumerator *enumerator = [pointSet objectEnumerator];
-		OSIPoint3D *point;
-		NSMutableSet *deleteSet = [NSMutableSet set];
-		#ifdef  UseApproximateSignedDistanceMapImageFilter
-			float distance;
-		#else
-			signed short distance;
-		#endif
-		//
-		while (point = [enumerator nextObject]){
-			//NSLog(@"current Point: %@", point);
-			float positionSlice = [point z];
-			float positionRow = [point y];
-			float positionIndex = [point x];
-			#ifdef  UseApproximateSignedDistanceMapImageFilter
-				distance = [[point value] floatValue];
-			#else
-			distance = [[point value] shortValue];
-			#endif
-			
-			if (distance >= maxDistance) {
-				// Add node if is not within the range of previous nodes
-				NSEnumerator *nodeEnumerator = [nodeSet objectEnumerator];
-				OSIPoint3D *node;
-				BOOL isNewNode = YES;
-		
-				while (node = [nodeEnumerator nextObject]) {
-					// calculated distance 
-					//long nodePosition = [node longValue];
-					float nodeSlice = [node z];
-					float nodeRow = [node y];
-					float  nodeIndex = [node x];
-					#ifdef  UseApproximateSignedDistanceMapImageFilter
-						float nodeDistance = [[node value] floatValue];
-					#else
-						float nodeDistance = [[node value] shortValue];
-					#endif
-					float internodeDistance = sqrt(pow(positionSlice - nodeSlice, 2) + pow(positionRow - nodeRow, 2) + pow(positionIndex - nodeIndex, 2));
-					//keep node away from other nodes
-					if (internodeDistance < nodeDistance * scalingFactor) {
-						// keep larger node.
-						if (nodeDistance < distance)
-							[nodeSet removeObject:node];
-						else
-							isNewNode = NO;
-						break;
-					}
-					//else 
-					
-				}
-				if (isNewNode)
-				{
-					NSLog(@"add Node: %f %f %f", positionIndex, positionRow, positionSlice);
-					[nodeSet addObject: point];
-					NSMutableArray  *roiImageList;
-					NSArray *roiSeriesList = [srcViewer roiList];
-					DCMPix	*curPix = [[srcViewer pixList] objectAtIndex: positionSlice * 2];
-					ROI		*newROI;
-					newROI = [[[ROI alloc] initWithType: t2DPoint :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint( positionIndex * 2, positionRow * 2)] autorelease];
-					[newROI setName: @"Centerline"];
-					roiImageList = [roiSeriesList objectAtIndex: positionSlice * 2];
-					[roiImageList addObject: newROI];	
-					[newROI mouseRoiDown:NSMakePoint((float)positionIndex * 2,(float)positionRow * 2) :positionSlice * 2 :1.0];
-					[newROI release];
-				}
-				
-				[deleteSet addObject:point];
-				
-			}
-			// get rid of points we have already evaluated
-			[pointSet minusSet:deleteSet];
-		}
-		count = [nodeSet count];
-		maxDistance -= 2;
-			
-	}
-		[wait setString:@"Connecting Centerline"];
+	Centerline *centerline = [[Centerline alloc] init];
+	//NSArray *centerlinePoints = [centerline generateCenterline:(vtkDataSet *)vtkImporter->GetOutput()];
 	
-	/* 
-	Connect nodes
-	Criteria:
-		1. Closest node;
-		2. No distance less than minDistance interevening. Keep in lumen
+	vtkImporter->Delete();
+	
+	
+	[wait setString:@"Connecting Centerline"];
+//	 for (OSIPoint3D *point in centerlinePoints)
+//		NSLog(@"Point %@", point);
+	
+	/*
+	NSLog(@"add Node: %f %f %f", positionIndex, positionRow, positionSlice);
+	[nodeSet addObject: point];
+	NSMutableArray  *roiImageList;
+	NSArray *roiSeriesList = [srcViewer roiList];
+	DCMPix	*curPix = [[srcViewer pixList] objectAtIndex: positionSlice * 2];
+	ROI		*newROI;
+	newROI = [[[ROI alloc] initWithType: t2DPoint :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint( positionIndex * 2, positionRow * 2)] autorelease];
+	[newROI setName: @"Centerline"];
+	roiImageList = [roiSeriesList objectAtIndex: positionSlice * 2];
+	[roiImageList addObject: newROI];	
+	[newROI mouseRoiDown:NSMakePoint((float)positionIndex * 2,(float)positionRow * 2) :positionSlice * 2 :1.0];
+	[newROI release];
 	*/
 	
 	[wait close];
