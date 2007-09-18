@@ -68,48 +68,45 @@
 
 @implementation Centerline
 
-- (NSArray *)generateCenterline:(vtkPolyData *)polyData{
+- (NSArray *)generateCenterline:(vtkPolyData *)polyData startingPoint:(OSIPoint *)start{
 	NSMutableSet *visitedPoints = [NSMutableSet set];
 	NSMutableArray *connectedPoints = [NSMutableArray array];
 	NSMutableArray *stack = [NSMutableArray array];
-	NSLog(@"PowerCrust surface");
-	
-	vtkPolyDataNormals *polyDataNormals = 0L;
+
 	vtkDecimatePro *isoDeci = 0L;
 	vtkSmoothPolyDataFilter * pSmooth = 0L;
 	vtkDataSet*	output = 0L;
 	vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
 	power->SetInput(polyData);
-	//polyDataNormals = vtkPolyDataNormals::New();
-	//polyDataNormals->ConsistencyOn();
-	//polyDataNormals->AutoOrientNormalsOn();
+
 
 
 	vtkPolyData *medialSurface;
-	NSLog(@"PowerCrust surface");
 	power->Update();
 	medialSurface = power->GetMedialSurface();
-	NSLog(@"Get Medial Surface");
+
 	isoDeci = vtkDecimatePro::New();
 	isoDeci->SetInput(medialSurface);
 	isoDeci->SetTargetReduction(0.9);
-	isoDeci->SetPreserveTopology( TRUE);
-	//polyDataNormals->SetInput(isoDeci->GetOutput());
+	isoDeci->SetPreserveTopology(TRUE);
 
-
-	NSLog(@"Build Links");
+	
 	isoDeci->Update();
 	vtkPolyData *data = isoDeci->GetOutput();
-	data->BuildLinks();
-
+	NSLog(@"getPoints");
 	vtkPoints *medialPoints = data->GetPoints();
 	int nPoints = data->GetNumberOfPoints();
+	NSLog(@"number of Points: %d", nPoints);
+	NSLog(@"Build Links");
+	data->BuildLinks();
+
 	vtkIdType i;
 	int j, k, neighbors;			
 	double x , y, z;
 	// get all cells around a point
 	data->BuildCells();
 	for (int a = 0; a < 5 ;  a++){
+		NSLog(@"thinning %d", a);
 		for (i = 0; i < nPoints; i++) {	
 			// count self
 			neighbors = 1;
@@ -139,35 +136,39 @@
 		}
 	}
 	
-	// input for display
-	//polyDataNormals->SetInput(data);
+
 	
 
-
+	NSLog(@"find starting Point");
 	// Find most inferior Point. Rrpresent Rectum
 	// Could be a seed point to generalize.  
 	vtkIdType startingPoint;
-	double zPoint = 100000; 
+	float startX = [start x];
+	float startY = [start y];
+	float startZ = [start z];
+	
+	 double minDistance = 1000000;
 	//NSLog(@"get starting Point");
 	for (i = 0; i < nPoints; i++) {	
 		double *position = medialPoints->GetPoint(i);
-		if (position[2] < zPoint) {
-			zPoint = position[2];
+		double distance = sqrt( pow(startX - position[0],2) + pow(startY - position[1],2) + pow(startZ - position[2],2));
+		if (distance < minDistance) {
+			minDistance = distance;
 			startingPoint = i;
 		}
 	}
 
 	double *sp = medialPoints->GetPoint(startingPoint);
-	//NSLog(@"starting Point %d : %f %f %f",startingPoint, sp[0], sp[1], sp[2]);
+	NSLog(@"starting Point %d : %f %f %f",startingPoint, sp[0], sp[1], sp[2]);
 	
 	//get connected Points
 
 
-	NSNumber *start = [NSNumber numberWithInt:startingPoint];
-	[visitedPoints addObject:start];
-	[connectedPoints addObject:start];
-	[stack  addObject:start];
-	
+	NSNumber *first = [NSNumber numberWithInt:startingPoint];
+	[visitedPoints addObject:first];
+	[connectedPoints addObject:first];
+	[stack  addObject:first];
+	NSLog(@"get neighbors");
 	vtkIdType currentPoint;
 	currentPoint = startingPoint;
 	while ([stack count] > 0) {
@@ -241,10 +242,8 @@
 
 	}
 	
-	power->Delete();
-	polyDataNormals->Delete();
-	isoDeci->Delete();
-	
+
+	NSLog(@"convert to OSIPoints");
 	//Convert Points to OSIPoints
 	NSMutableArray *outputArray = [NSMutableArray array];
 	for (NSNumber *number in connectedPoints) {
@@ -253,7 +252,8 @@
 		[outputArray addObject:point3D];
 	}
 	
-	
+	power->Delete();
+	isoDeci->Delete();
 	return outputArray;			
 
 }

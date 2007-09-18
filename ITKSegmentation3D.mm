@@ -30,11 +30,7 @@
 //#include "itkBinaryMask3DMeshSource.h"
 #include "itkVTKImageExport.h"
 #include "itkVTKImageExportBase.h"
-
-#include "itkSignedDanielssonDistanceMapImageFilter.h"
-#include "itkApproximateSignedDistanceMapImageFilter.h"
-#include "itkSignedMaurerDistanceMapImageFilter.h"
-
+#include "itkCannyEdgeDetectionImageFilter.h"
 
 #include "vtkImageImport.h"
 #include "vtkMarchingSquares.h"
@@ -946,7 +942,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	//#define UseApproximateSignedDistanceMapImageFilter
 	DCMPix *curPix = [[srcViewer imageView] curDCM];
 	long minSize = 2;
-	long x,y,z;
+	float x,y,z;
 	long width = (int)[curPix pwidth];
 	long height = (int)[curPix pheight];
 	long depth = (int)[[srcViewer pixList] count];
@@ -983,13 +979,19 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	//Segmentation Filter
 	typedef itk::ConnectedThresholdImageFilter<FloatImageType, CharImageType > ConnectedThresholdFilterType;	
 	ConnectedThresholdFilterType::Pointer thresholdFilter = 0L;
-	
-	// create filter
 	thresholdFilter = ConnectedThresholdFilterType::New();
 			
 	thresholdFilter->SetLower(-2000.0);
-	thresholdFilter->SetUpper(-150.0);
+	thresholdFilter->SetUpper(-500.0);
 	thresholdFilter->SetReplaceValue(255.0);
+	
+	//Edge Filter
+	typedef itk::CannyEdgeDetectionImageFilter<CharImageType, CharImageType > EdgeFilterType;	
+	EdgeFilterType ::Pointer edgeFilter = 0L;
+	edgeFilter = EdgeFilterType::New();
+	edgeFilter->SetLowerThreshold(255.0);
+	
+
 
 
 	NSEnumerator *enumerator = [seeds objectEnumerator];
@@ -1014,6 +1016,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	
 	// make connections Inputs and outputs
 	thresholdFilter->SetInput([itkImage itkImporter]->GetOutput());
+	edgeFilter->SetInput(thresholdFilter->GetOutput());
 
 	WaitRendering	*wait = 0L;
 	
@@ -1025,61 +1028,97 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	// Segmenting is fast. Distance map is slow.  Try to use VTK for Centerline 
 	try
 	{
-		thresholdFilter->Update();	
+		thresholdFilter->Update();
+		//edgeFilter->Update();	
 
 	}
 	catch( itk::ExceptionObject & excep )
 	{
 		NSLog(@"Segmentation failed...");
+		std::cerr << excep.GetDescription() << std::endl;
 		//return;
 	}
+	/*
+	try
+	{
+		edgeFilter->Update();
+		//edgeFilter->Update();	
+
+	}
+	catch( itk::ExceptionObject & excep )
+	{
+		NSLog(@"Segmentation failed...");
+		std::cerr << excep.GetDescription() << std::endl;
+		//return;
+	}
+	*/
+
 	//------------------------------------------------------------------------
 	// ITK to VTK pipeline connection.
 	//------------------------------------------------------------------------
-
+	NSLog(@"get Points for VTK");
 	unsigned char *buff = thresholdFilter->GetOutput()->GetBufferPointer();
+	//unsigned char *buff = edgeFilter->GetOutput()->GetBufferPointer();
 	vtkPoints *points = vtkPoints::New();
 	//int dataLength = width * height * depth;
 	int count = 0;
-	for (float i = 0; i < depth; i++) {
-		for (float j = 0; j < height; j++) {
-			for (float k = 0; k < width; k++) {
+	int count2 = 0;
+	for (z = 0; z < depth; z++) {
+		for (y = 0; y < height; y++) {
+			for (x = 0; x < width; x++) {
+				
+
 				unsigned char value = *buff;
+				unsigned char prior = 0;				 
+				unsigned char next = 0;
+				
+				//try and find the edge points
 				if (value > 0) {
-					points->InsertPoint( count++, k, j, i);
+					prior = *(buff- 1);
+					next  = *(buff + 1);
+					if (prior ==  0 || next == 0)
+						points->InsertPoint( count++, x, y, z);
 					//NSLog(@"Insert Point: %f % f %f", k,j,i);
 				}
 				buff++;
+
 			}
+			
 		}
 	}
-	
+	NSLog(@"point count: %d", points->GetNumberOfPoints());
 	vtkPolyData *profile = vtkPolyData::New();
     profile->SetPoints( points);
 	points->Delete();
 	NSLog(@"Get Centerline");
 	[wait setString:@"Finding Centerline Points"];
 	Centerline *centerline = [[Centerline alloc] init];
-	//NSArray *centerlinePoints = [centerline generateCenterline:profile];
+	NSArray *centerlinePoints = [centerline generateCenterline:profile startingPoint:[seeds objectAtIndex:0]];
 	profile->Delete();
 	[wait setString:@"Connecting Centerline"];
-	//for (OSIPoint3D *point in centerlinePoints)
-	//	NSLog(@"Point %@", point);
 	
-	/*
-	NSLog(@"add Node: %f %f %f", positionIndex, positionRow, positionSlice);
-	[nodeSet addObject: point];
+	
+	//NSLog(@"add Node: %f %f %f", positionIndex, positionRow, positionSlice);
 	NSMutableArray  *roiImageList;
 	NSArray *roiSeriesList = [srcViewer roiList];
-	DCMPix	*curPix = [[srcViewer pixList] objectAtIndex: positionSlice * 2];
-	ROI		*newROI;
-	newROI = [[[ROI alloc] initWithType: t2DPoint :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint( positionIndex * 2, positionRow * 2)] autorelease];
-	[newROI setName: @"Centerline"];
-	roiImageList = [roiSeriesList objectAtIndex: positionSlice * 2];
-	[roiImageList addObject: newROI];	
-	[newROI mouseRoiDown:NSMakePoint((float)positionIndex * 2,(float)positionRow * 2) :positionSlice * 2 :1.0];
-	[newROI release];
-	*/
+	for (OSIPoint3D *point in centerlinePoints) {
+		
+		int slice = round([point z] * 2);
+		int xPos = round([point x] * 2);
+		int yPos = round([point y] * 2);
+		NSLog(@" newROI in curPix: %d x: %d y: %d", slice, xPos, yPos);
+		/*
+		DCMPix	*curPix = [[srcViewer pixList] objectAtIndex: slice];
+		ROI		*newROI;
+		newROI = [[[ROI alloc] initWithType: t2DPoint :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint(xPos , yPos)] autorelease];
+		[newROI setName: @"Centerline"];
+		roiImageList = [roiSeriesList objectAtIndex: slice];
+		[roiImageList addObject: newROI];	
+		[newROI mouseRoiDown:NSMakePoint((float)xPos ,(float)yPos) :slice :1.0];
+		[newROI release];
+		*/
+	}	
+	
 	
 	[wait close];
 	[wait release];
