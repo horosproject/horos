@@ -2072,6 +2072,10 @@
 		BF76A59A06ACC6FD00FABE42 /* ButtonAndTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = BF76A59806ACC6FD00FABE42 /* ButtonAndTextField.m */; };
 		BF76A5A706ACC70C00FABE42 /* ButtonAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF76A5A506ACC70C00FABE42 /* ButtonAndTextCell.h */; };
 		BF76A5A806ACC70C00FABE42 /* ButtonAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF76A5A606ACC70C00FABE42 /* ButtonAndTextCell.m */; };
+		BF79F3C80C9F7EDD007ADFE0 /* Centerline.h in Headers */ = {isa = PBXBuildFile; fileRef = BF79F3C60C9F7EDD007ADFE0 /* Centerline.h */; };
+		BF79F3C90C9F7EDD007ADFE0 /* Centerline.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF79F3C70C9F7EDD007ADFE0 /* Centerline.mm */; };
+		BF79F3CA0C9F7EDD007ADFE0 /* Centerline.h in Headers */ = {isa = PBXBuildFile; fileRef = BF79F3C60C9F7EDD007ADFE0 /* Centerline.h */; };
+		BF79F3CB0C9F7EDD007ADFE0 /* Centerline.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF79F3C70C9F7EDD007ADFE0 /* Centerline.mm */; };
 		BF7A835F09B8B8E70051F091 /* DICOMToNSString.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */; };
 		BF7A836009B8B8E70051F091 /* DICOMToNSString.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */; };
 		BF7A838009B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */; };
@@ -9020,6 +9024,8 @@
 		BF76A59806ACC6FD00FABE42 /* ButtonAndTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonAndTextField.m; sourceTree = "<group>"; };
 		BF76A5A506ACC70C00FABE42 /* ButtonAndTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonAndTextCell.h; sourceTree = "<group>"; };
 		BF76A5A606ACC70C00FABE42 /* ButtonAndTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonAndTextCell.m; sourceTree = "<group>"; };
+		BF79F3C60C9F7EDD007ADFE0 /* Centerline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Centerline.h; sourceTree = "<group>"; };
+		BF79F3C70C9F7EDD007ADFE0 /* Centerline.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Centerline.mm; sourceTree = "<group>"; };
 		BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMToNSString.h; sourceTree = "<group>"; };
 		BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMToNSString.m; sourceTree = "<group>"; };
 		BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKStoreSCU.h; sourceTree = "<group>"; };
@@ -12603,6 +12609,8 @@
 		A90D665D094D7071000B425B /* Endoscopy */ = {
 			isa = PBXGroup;
 			children = (
+				BF79F3C60C9F7EDD007ADFE0 /* Centerline.h */,
+				BF79F3C70C9F7EDD007ADFE0 /* Centerline.mm */,
 				A932B957094D722D0085B58A /* EndoscopyViewer.h */,
 				A932B958094D722D0085B58A /* EndoscopyViewer.m */,
 				A932BAE9094D87C90085B58A /* EndoscopyVRController.h */,
@@ -18463,6 +18471,7 @@
 				A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */,
 				CED2CF8F0C9B28580047F123 /* PreferencePaneControllerDCMTK.h in Headers */,
 				CED2CF980C9B288C0047F123 /* CIADICOMField.h in Headers */,
+				BF79F3C80C9F7EDD007ADFE0 /* Centerline.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20526,6 +20535,7 @@
 				CE882B370C889E0200D4F982 /* HTTPServer.h in Headers */,
 				CED2CF910C9B28580047F123 /* PreferencePaneControllerDCMTK.h in Headers */,
 				CED2CF9A0C9B288C0047F123 /* CIADICOMField.h in Headers */,
+				BF79F3CA0C9F7EDD007ADFE0 /* Centerline.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22812,6 +22822,7 @@
 				A9BDE5930C9823DC000A161F /* IChatTheatreDelegate.m in Sources */,
 				CED2CF900C9B28580047F123 /* PreferencePaneControllerDCMTK.mm in Sources */,
 				CED2CF970C9B288C0047F123 /* CIADICOMField.m in Sources */,
+				BF79F3C90C9F7EDD007ADFE0 /* Centerline.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24482,6 +24493,7 @@
 				CE882B360C889E0200D4F982 /* HTTPServer.m in Sources */,
 				CED2CF920C9B28580047F123 /* PreferencePaneControllerDCMTK.mm in Sources */,
 				CED2CF990C9B288C0047F123 /* CIADICOMField.m in Sources */,
+				BF79F3CB0C9F7EDD007ADFE0 /* Centerline.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
