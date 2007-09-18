@@ -13532,8 +13532,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSString	*path = [documentsDirectory() stringByAppendingPathComponent:DATAFILEPATH];
 		
 		[segmentedAlbumButton setEnabled: YES];
-
-		[self openDatabaseIn: path Bonjour: NO];
+		
+		if( [path isEqualToString: currentDatabasePath] == NO)
+			[self openDatabaseIn: path Bonjour: NO];
 	}
 }
 
