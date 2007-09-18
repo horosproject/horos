@@ -1037,30 +1037,34 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	// ITK to VTK pipeline connection.
 	//------------------------------------------------------------------------
 
-	typedef itk::VTKImageExport<CharImageType> ImageExportType;
-
-	// Create the itk::VTKImageExport instance and connect it to the
-	ImageExportType::Pointer itkExporter = ImageExportType::New();
-	itkExporter->SetInput(thresholdFilter->GetOutput());
-
-	// Create the vtkImageImport and connect it to the
-	vtkImageImport* vtkImporter = vtkImageImport::New();
-	ConnectPipelines(itkExporter, vtkImporter);
-	vtkImporter->Update();
+	unsigned char *buff = thresholdFilter->GetOutput()->GetBufferPointer();
+	vtkPoints *points = vtkPoints::New();
+	//int dataLength = width * height * depth;
+	int count = 0;
+	for (float i = 0; i < depth; i++) {
+		for (float j = 0; j < height; j++) {
+			for (float k = 0; k < width; k++) {
+				unsigned char value = *buff;
+				if (value > 0) {
+					points->InsertPoint( count++, k, j, i);
+					//NSLog(@"Insert Point: %f % f %f", k,j,i);
+				}
+				buff++;
+			}
+		}
+	}
 	
-	//int dataExtent[6];
-	//vtkImporter->GetDataExtent(dataExtent);
-
+	vtkPolyData *profile = vtkPolyData::New();
+    profile->SetPoints( points);
+	points->Delete();
+	NSLog(@"Get Centerline");
 	[wait setString:@"Finding Centerline Points"];
 	Centerline *centerline = [[Centerline alloc] init];
-	//NSArray *centerlinePoints = [centerline generateCenterline:(vtkDataSet *)vtkImporter->GetOutput()];
-	
-	vtkImporter->Delete();
-	
-	
+	//NSArray *centerlinePoints = [centerline generateCenterline:profile];
+	profile->Delete();
 	[wait setString:@"Connecting Centerline"];
-//	 for (OSIPoint3D *point in centerlinePoints)
-//		NSLog(@"Point %@", point);
+	//for (OSIPoint3D *point in centerlinePoints)
+	//	NSLog(@"Point %@", point);
 	
 	/*
 	NSLog(@"add Node: %f %f %f", positionIndex, positionRow, positionSlice);

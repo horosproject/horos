@@ -68,26 +68,28 @@
 
 @implementation Centerline
 
-- (NSArray *)generateCenterline:(vtkDataSet*)polyData{
+- (NSArray *)generateCenterline:(vtkPolyData *)polyData{
 	NSMutableSet *visitedPoints = [NSMutableSet set];
 	NSMutableArray *connectedPoints = [NSMutableArray array];
 	NSMutableArray *stack = [NSMutableArray array];
-	
+	NSLog(@"PowerCrust surface");
 	
 	vtkPolyDataNormals *polyDataNormals = 0L;
 	vtkDecimatePro *isoDeci = 0L;
 	vtkSmoothPolyDataFilter * pSmooth = 0L;
 	vtkDataSet*	output = 0L;
 	vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
-	power->SetInput( polyData);
+	power->SetInput(polyData);
 	//polyDataNormals = vtkPolyDataNormals::New();
 	//polyDataNormals->ConsistencyOn();
 	//polyDataNormals->AutoOrientNormalsOn();
 
 
 	vtkPolyData *medialSurface;
+	NSLog(@"PowerCrust surface");
 	power->Update();
 	medialSurface = power->GetMedialSurface();
+	NSLog(@"Get Medial Surface");
 	isoDeci = vtkDecimatePro::New();
 	isoDeci->SetInput(medialSurface);
 	isoDeci->SetTargetReduction(0.9);

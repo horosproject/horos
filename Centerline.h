@@ -35,7 +35,7 @@
 }
 
 
-- (NSArray *)generateCenterline:(vtkDataSet *)polyData;
+- (NSArray *)generateCenterline:(vtkPolyData *)polyData;
 - (NSSet *)connectedPointsForPoint:(vtkIdType)pt fromPolyData:(vtkPolyData *)data;
 
 @end
