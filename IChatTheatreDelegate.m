@@ -92,6 +92,15 @@ static IChatTheatreDelegate	*iChatDelegate = 0L;
 		[avManager start];
 		isRunning = YES;
 	}
+	else if ([[[aNotification object] windowController] isKindOfClass:[VRController class]])
+	{
+		NSLog(@"IChatTheatreDelegate change video source");
+		[avManager setVideoDataSource:[[[aNotification object] windowController] view]];
+		[avManager setVideoOptimizationOptions:IMVideoOptimizationStills];
+		NSLog(@"IChatTheatreDelegate Start iChat Theatre");
+		[avManager start];
+		isRunning = YES;
+	}
 }
 
 - (BOOL)isIChatTheatreRunning;

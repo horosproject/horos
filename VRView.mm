@@ -30,6 +30,7 @@
 #import "BrowserController.h"
 #import "DICOMExport.h"
 #import "DefaultsOsiriX.h" // for HotKeys
+#import "IChatTheatreDelegate.h"
 
 #include "vtkMath.h"
 #include "vtkAbstractPropPicker.h"
@@ -55,7 +56,7 @@
 #define BONEVALUE 250
 #define BONEOPACITY 1.1
 
-extern BrowserController *browserWindow;
+static			NSRecursiveLock			*drawLock = 0L;
 
 typedef struct _xyzArray
 {
@@ -1720,6 +1721,12 @@ public:
 
 - (void) drawRect:(NSRect)aRect
 {
+	if( drawLock == 0L) drawLock = [[NSRecursiveLock alloc] init];
+	
+	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
+	
+	if(iChatRunning) [drawLock lock];
+
 	WaitRendering	*www = 0;
 	
 	if( firstTime)
@@ -1748,6 +1755,8 @@ public:
 			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 		}
 	}
+	
+	if(iChatRunning) [drawLock unlock];
 }
 
 -(void)dealloc
@@ -1832,13 +1841,13 @@ public:
 	
 	[_hotKeyDictionary release];
 	[appliedCurves release];
-	
+
     [super dealloc];
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
-
+	[drawLock lock];
 	_contextualMenuActive = NO;
 	if (_rightMouseDownTimer) {
 		[self deleteRightMouseDownTimer];
@@ -1847,6 +1856,7 @@ public:
 		_rightMouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self  selector:@selector(showMenu:) userInfo:theEvent  repeats:NO] retain];
 	
 	[self mouseDown:theEvent];
+	[drawLock unlock];
 }
 
 - (void) timerUpdate:(id) sender
@@ -2068,6 +2078,7 @@ public:
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
+	[drawLock lock];
 	long	pix[ 3];
 	float	pos[ 3], value;
 	
@@ -2086,6 +2097,7 @@ public:
 		[pixelInformation setStringValue: [NSString stringWithFormat: @"View Size: %d x %d   Pixel: %@    %@ %@", (int) [self frame].size.width, (int)[self frame].size.height, val, pixLoc, mmLoc]];
 	}
 	else [pixelInformation setStringValue: [NSString stringWithFormat: @"View Size: %d x %d", (int) [self frame].size.width, (int) [self frame].size.height]];
+	[drawLock unlock];
 }
 
 -(void) squareView:(id) sender
@@ -2126,6 +2138,8 @@ public:
 		}
 		
 	if (_dragInProgress == YES) return;
+
+	[drawLock lock];
 	
 	if (_resizeFrame)
 	{
@@ -2294,6 +2308,7 @@ public:
 				{
 					[clutOpacityView setWL:wl ww:ww];
 					[clutOpacityView setCLUTtoVRView:YES];
+					[drawLock unlock];
 					return;
 				}
 				else
@@ -2399,9 +2414,12 @@ public:
 				break;
 		}
 	}
+	[drawLock unlock];
 }
 
-- (void)rightMouseDragged:(NSEvent *)theEvent{
+- (void)rightMouseDragged:(NSEvent *)theEvent
+{
+	[drawLock lock];
 	NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 	float distance ;
 	
@@ -2429,14 +2447,18 @@ public:
 		[self setNeedsDisplay:YES];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 	}
+	[drawLock unlock];
 }
 
-- (void)mouseUp:(NSEvent *)theEvent{
+- (void)mouseUp:(NSEvent *)theEvent
+{
 	[self deleteMouseDownTimer];
 	if (_contextualMenuActive) {
 		[self rightMouseUp:theEvent];
 		return;
 	}
+	
+	[drawLock lock];
 	
 	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 	
@@ -2475,6 +2497,7 @@ public:
 				break;
 		}
 	}
+	[drawLock unlock];
 }
 
 - (void)zoomMouseUp:(NSEvent *)theEvent{
@@ -2517,6 +2540,8 @@ public:
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
+	[drawLock lock];
+	
     BOOL		keepOn = YES;
     NSPoint		mouseLoc, mouseLocPre;
 	short		tool;
@@ -2548,6 +2573,7 @@ public:
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
 		}
 		
+		[drawLock unlock];
 		return;
 	}
 
@@ -2916,6 +2942,7 @@ public:
 		croppingBox->SetHandleSize( 0.005);
 	}
 	noWaitDialog = NO;
+	[drawLock unlock];
 }
 
 - (void) deleteRegion:(int) c :(NSArray*) pxList :(BOOL) blendedSeries
@@ -5011,6 +5038,8 @@ public:
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
 {
+	[drawLock lock];
+
 	unsigned char	*buf = 0L;
 	int				i;
 	
@@ -5084,6 +5113,8 @@ public:
 	}
 	[[NSOpenGLContext currentContext] flushBuffer];
 	[NSOpenGLContext clearCurrentContext];
+	
+	[drawLock unlock];
 	
 	return buf;
 }
@@ -6613,5 +6644,127 @@ public:
 	if(data8) free(data8);
 	data8 = someData;
 }
+
+
+#pragma mark -
+#pragma mark IMAVManager delegate methods.
+
+// Callback from IMAVManager asking what pixel format we'll be providing frames in.
+- (void)getPixelBufferPixelFormat:(OSType *)pixelFormatOut {
+	NSLog(@"getPixelBufferPixelFormat");
+    *pixelFormatOut = kCVPixelFormatType_32ARGB;
+}
+
+// This callback is called periodically when we're in the IMAVActive state.
+// We copy (actually, re-render) what's currently on the screen into the provided 
+// CVPixelBufferRef.
+//
+// Note that this will be called on a non-main thread. 
+- (BOOL) renderIntoPixelBuffer:(CVPixelBufferRef)buffer forTime:(CVTimeStamp*)timeStamp {
+NSLog(@"renderIntoPixelBuffer");
+    // We ignore the timestamp, signifying that we're providing content for 'now'.
+	CVReturn err;
+	
+	// If the image has not changed since we provided the last one return 'NO'.
+    // This enables more efficient transmission of the frame when there is no
+    // new information.
+	if ([self checkHasChanged])
+		return NO;
+	
+    // Lock the pixel buffer's base address so that we can draw into it.
+	if((err = CVPixelBufferLockBaseAddress(buffer, 0)) != kCVReturnSuccess) {
+        // This should not happen.  If it does, the safe thing to do is return 
+        // 'NO'.
+		NSLog(@"Warning, could not lock pixel buffer base address in %s - error %ld", __func__, (long)err);
+		return NO;
+	}
+    @synchronized (self) {
+    // Create a CGBitmapContext with the CVPixelBuffer.  Parameters /must/ match 
+    // pixel format returned in getPixelBufferPixelFormat:, above, width and
+    // height should be read from the provided CVPixelBuffer.
+    size_t width = CVPixelBufferGetWidth(buffer); 
+    size_t height = CVPixelBufferGetHeight(buffer);
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef cgContext = CGBitmapContextCreate(CVPixelBufferGetBaseAddress(buffer),
+                                                   width, height,
+                                                   8,
+                                                   CVPixelBufferGetBytesPerRow(buffer),
+                                                   colorSpace,
+                                                   kCGImageAlphaPremultipliedFirst);
+    CGColorSpaceRelease(colorSpace);
+    
+    // Derive an NSGraphicsContext, make it current, and ask our SlideshowView 
+    // to draw.
+    NSGraphicsContext *context = [NSGraphicsContext graphicsContextWithGraphicsPort:cgContext flipped:NO];
+    [NSGraphicsContext setCurrentContext:context];
+	//get NSImage and draw in the rect
+	
+    [self drawImage:[self nsimage:NO] inBounds:NSMakeRect(0.0, 0.0, width, height)];
+    [context flushGraphics];
+    
+    // Clean up - remember to unlock the pixel buffer's base address (we locked
+    // it above so that we could draw into it).
+    CGContextRelease(cgContext);
+    CVPixelBufferUnlockBaseAddress(buffer, 0);
+    }
+    return YES;
+}
+
+
+
+- (void) drawImage:(NSImage *)image inBounds:(NSRect)rect
+{
+	NSLog(@"drawImage");
+    // We synchronise to make sure we're not drawing in two threads
+    // simultaneously.
+   
+		[[NSColor blackColor] set];
+		NSRectFill(rect);
+		
+		if (image != nil) {
+			NSRect imageBounds = { NSZeroPoint, [image size] };
+			float scaledHeight = NSWidth(rect) * NSHeight(imageBounds);
+			float scaledWidth  = NSHeight(rect) * NSWidth(imageBounds);
+			
+			if (scaledHeight < scaledWidth) {
+				// rect is wider than image: fit height
+				float horizMargin = NSWidth(rect) - scaledWidth / NSHeight(imageBounds);
+				rect.origin.x += horizMargin / 2.0;
+				rect.size.width -= horizMargin;
+			} else {
+				// rect is taller than image: fit width
+				float vertMargin = NSHeight(rect) - scaledHeight / NSWidth(imageBounds);
+				rect.origin.y += vertMargin / 2.0;
+				rect.size.height -= vertMargin;
+			}
+			
+			[image drawInRect:rect fromRect:imageBounds operation:NSCompositeSourceOver fraction:fraction];
+		}
+
+	//}
+}
+
+// The _hasChanged flag is set to 'NO' after any check (by a client of this 
+// class), and 'YES' after a frame is drawn that is not identical to the 
+// previous one (in the drawInBounds: method).
+
+// Returns the current state of the flag, and sets it to the passed in value.
+- (BOOL)_checkHasChanged:(BOOL)flag {
+	//NSLog(@"_checkHasChanged");
+    BOOL hasChanged;
+    @synchronized (self) {
+		hasChanged = _hasChanged;
+        _hasChanged = flag;
+    }
+    return hasChanged;
+}
+
+- (BOOL)checkHasChanged {
+NSLog(@"checkHasChanged");
+    // Calling with 'NO' clears _hasChanged after the call (see above).
+    return [self _checkHasChanged:NO];
+}
+
+
 
 @end

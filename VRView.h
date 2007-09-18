@@ -313,6 +313,10 @@ typedef char* vtkMyCallbackVR;
 	float						rotateDirectionForVR;
 	
 	BOOL						_contextualMenuActive;
+	
+	//Context for rendering to iChat
+	BOOL						_hasChanged;
+	float						iChatWidth, iChatHeight;
 }
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
