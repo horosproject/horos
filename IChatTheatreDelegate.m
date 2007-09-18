@@ -60,6 +60,7 @@ static IChatTheatreDelegate	*iChatDelegate = 0L;
 
     if(state == IMAVRequested)
 	{
+		isRunning = YES;
 		if([[[[NSApplication sharedApplication] keyWindow] windowController] isKindOfClass:[ViewerController class]])
 		{
 			NSLog(@"IChatTheatreDelegate Start iChat Theatre");
@@ -72,6 +73,7 @@ static IChatTheatreDelegate	*iChatDelegate = 0L;
 	{
 		[avManager stop];
 		NSLog(@"IChatTheatreDelegate STOP iChat Theatre");
+		isRunning = NO;
 	}
 }
 
@@ -88,11 +90,13 @@ static IChatTheatreDelegate	*iChatDelegate = 0L;
 		[avManager setVideoOptimizationOptions:IMVideoOptimizationStills];
 		NSLog(@"IChatTheatreDelegate Start iChat Theatre");
 		[avManager start];
+		isRunning = YES;
 	}
 }
 
 - (BOOL)isIChatTheatreRunning;
 {
+//	return isRunning;
 	if([[IMAVManager sharedAVManager] state] == IMAVInactive)
 		return NO;
 	return YES;

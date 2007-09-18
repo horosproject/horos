@@ -93,7 +93,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	BOOL			eraserFlag; // use by the PaletteController to switch between the Brush and the Eraser
 	BOOL			colorTransfer;
 	unsigned char   *colorBuf, *blendingColorBuf;
-	unsigned char   alphaTable[256], redTable[256], greenTable[256], blueTable[256];
+	unsigned char   alphaTable[256], opaqueTable[256], redTable[256], greenTable[256], blueTable[256];
 	float			redFactor, greenFactor, blueFactor;
 	long			blendingMode;
 	float			sliceVector[ 3], slicePoint[ 3], slicePointO[ 3], slicePointI[ 3];
@@ -233,9 +233,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	BOOL			zoomIsSoftwareInterpolated;
 	
 	int				resampledBaseAddrSize, blendingResampledBaseAddrSize;
-	
-	NSLock			*drawLock;
-	
+		
 	// iChat
 	float			iChatWidth, iChatHeight;
 	unsigned char*	iChatCursorTextureBuffer;
@@ -340,7 +338,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) setIndexWithReset:(short) index :(BOOL)sizeToFit;
 - (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset;
 - (void) sendSyncMessage:(short) inc;
-- (void) setQuartzExtreme:(BOOL) set;
 - (void) loadTextures;
 - (void)loadTexturesCompute;
 - (void) flipVertical:(id) sender;

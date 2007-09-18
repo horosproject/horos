@@ -91,6 +91,8 @@ static		int							CLUTBARS, ANNOTATIONS, SOFTWAREINTERPOLATION_MAX;
 static		BOOL						gClickCountSet = NO;
 static		float						margin = 2;
 
+static			NSRecursiveLock			*drawLock = 0L;
+
 NSString *pasteBoardOsiriX = @"OsiriX pasteboard";
 NSString *pasteBoardOsiriXPlugin = @"OsiriXPluginDataType";
 
@@ -1653,7 +1655,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( blendingResampledBaseAddr) free( blendingResampledBaseAddr);
 
 //	[self clearGLContext];
-	[drawLock release];
 	
 	if(iChatCursorTextureBuffer) free(iChatCursorTextureBuffer);
 	if(iChatCursorTextureName) glDeleteTextures(1, &iChatCursorTextureName);
@@ -4450,6 +4451,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	for ( unsigned int i = 0; i < 256; i++ ) {
 		alphaTable[i] = 0xFF;
+		opaqueTable[i] = 0xFF;
 		redTable[i] = i;
 		greenTable[i] = i;
 		blueTable[i] = i;
@@ -5359,29 +5361,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     return a;
 }
 
-- (void) setQuartzExtreme:(BOOL) set
-{
-	if( set != QuartzExtreme)
-	{
-		QuartzExtreme = set;
-		
-		if( QuartzExtreme)		// ACTIVATE
-		{
-			GLint negativeOne = -1;
-			[[self openGLContext] setValues:&negativeOne forParameter:NSOpenGLCPSurfaceOrder];
-			[[self window] setOpaque:NO];
-			[[self window] setAlphaValue:.999f];
-		}
-		else					// DE-ACTIVATE
-		{
-			GLint negativeOne = 1;
-			[[self openGLContext] setValues:&negativeOne forParameter:NSOpenGLCPSurfaceOrder];
-			[[self window] setOpaque:YES];
-			[[self window] setAlphaValue:1.0f];
-		}
-	}
-}
-
 - (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY :(long) tW :(long) tH
 {
 	if( texture == 0L) return;
@@ -5395,7 +5374,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	long x, y, k = 0, offsetY, offsetX = 0, currTextureWidth, currTextureHeight;
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+		
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity ();
 	
@@ -6441,11 +6420,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	long		clutBars	= CLUTBARS;			//[[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	long		annotations	= ANNOTATIONS;		//[[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 	
-	if( drawLock == 0L) drawLock = [[NSLock alloc] init];
+	if( drawLock == 0L) drawLock = [[NSRecursiveLock alloc] init];
 	
-	[drawLock lock];
+	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
 	
-	if( needToLoadTexture)
+	if(iChatRunning) [drawLock lock];
+	
+	[ctx makeCurrentContext];
+	
+	if( needToLoadTexture || iChatRunning)
 		[self loadTexturesCompute];
 	
 	if( noScale) {
@@ -6453,14 +6436,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[self setOriginX: 0 Y: 0];
 	}
 	
-//	if ( [NSGraphicsContext currentContextDrawingToScreen] )
 	{
 		NSPoint offset = { 0.0f, 0.0f };
 		
 		// Make this context current
 		//[[self openGLContext] makeCurrentContext];
-		
-		[ctx makeCurrentContext];
 		
 		if( ctx == [self openGLContext]) drawingFrameRect = [self frame];
 		else drawingFrameRect = aRect;
@@ -6472,12 +6452,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear (GL_COLOR_BUFFER_BIT);
 		
-		if( dcmPixList && curImage > -1) {
-			if( blendingView != 0L && syncOnLocationImpossible == NO) {
+		if( dcmPixList && curImage > -1)
+		{
+			if( blendingView != 0L && syncOnLocationImpossible == NO)// && ctx!=_alternateContext)
+			{
 				glBlendFunc(GL_ONE, GL_ONE);
 				glEnable( GL_BLEND);
 			}
-			else glDisable( GL_BLEND);
+			else
+			{
+				glBlendFunc(GL_ONE, GL_ONE);
+				glDisable( GL_BLEND);
+			}
 			
 			[self drawRectIn:drawingFrameRect :pTextureName :offset :textureX :textureY :textureWidth :textureHeight];
 			
@@ -6487,7 +6473,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				if( isKeyView == NO) noBlending = YES;
 			}	
 			
-			if( blendingView != 0L && syncOnLocationImpossible == NO && noBlending == NO ) {
+			if( blendingView != 0L && syncOnLocationImpossible == NO && noBlending == NO )
+			{
 				if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
 				{
 //					float vectorP[ 9], tempOrigin[ 3], tempOriginBlending[ 3];
@@ -6514,7 +6501,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					offset.y = 0;
 					offset.x = 0;
 				}
-				else {
+				else
+				{
 					offset.y = 0;
 					offset.x = 0;
 				}
@@ -6533,7 +6521,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 			
 			//** SLICE CUT FOR 2D MPR
-			if( cross.x != -9999 && cross.y != -9999 && display2DMPRLines == YES) {
+			if( cross.x != -9999 && cross.y != -9999 && display2DMPRLines == YES)
+			{
 				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 				glEnable(GL_BLEND);
 				glEnable(GL_POINT_SMOOTH);
@@ -6647,7 +6636,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 			
 			// highlight the visible part of the view (the part visible through iChat)
-			if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView)
+			if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView && iChatWidth>0 && iChatHeight>0)
 			{
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
@@ -6710,7 +6699,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			// ***********************
 			// DRAW CLUT BARS ********
 			
-			if( [self is2DViewer] == YES && annotations != annotNone && ctx!=_alternateContext) {
+			if( [self is2DViewer] == YES && annotations != annotNone && ctx!=_alternateContext)
+			{
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 				glScalef (2.0f /(drawingFrameRect.size.width), -2.0f / (drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
 
@@ -6834,7 +6824,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			} //[self is2DViewer] == YES
 
 			
-			if (annotations != annotNone) {
+			if (annotations != annotNone)
+			{
 				long yRaster = 1, xRaster;
 				char cstr [400], *cptr;
 				
@@ -7133,6 +7124,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			if(ctx == _alternateContext) // iChat Theatre context
 			{
+				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
+				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
+									
 				NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
 				
 				// location of the mouse in the OsiriX View
@@ -7141,12 +7136,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 				NSSize iChatTheatreViewSize = aRect.size;
 
-				// location of the mouse in the iChat Theatre View
-//				eventLocation.x = eventLocation.x - (drawingFrameRect.size.width/2. - iChatTheatreViewSize.width/2.);
-//				eventLocation.y = eventLocation.y - (drawingFrameRect.size.height/2. - iChatTheatreViewSize.height/2.);
-//				eventLocation.x = eventLocation.x - (drawingFrameRect.size.width - iChatWidth)/2.;
-//				eventLocation.y = eventLocation.y - (drawingFrameRect.size.height - iChatHeight)/2.;
-				
+				// location of the mouse in the iChat Theatre View			
 				eventLocation = [self convertFromView2iChat:eventLocation];
 				
 				// generate iChat cursor Texture Buffer (only once)
@@ -7217,7 +7207,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	//	[[self openGLContext] flushBuffer];
 	[ctx  flushBuffer];
 	
-	[drawLock unlock];
+	if(iChatRunning) [drawLock unlock];
 	
 	(void)[self _checkHasChanged:YES];
 		
@@ -8093,6 +8083,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 - (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT textureWidth: (long*) tW textureHeight:(long*) tH resampledBaseAddr:(char**) rAddr resampledBaseAddrSize:(int*) rBAddrSize
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	unsigned char* currentAlphaTable = alphaTable;
+	
+	if( blending == NO) currentAlphaTable = opaqueTable;
 	
 	if(  rT == 0L)
 	{
@@ -8153,16 +8146,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					cblueTable[ i] = bT[ i] * blueFactor;
 				}
 				//#if __BIG_ENDIAN__
-				vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) &credTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &cblueTable, 0);
+				vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) currentAlphaTable, (Pixel_8*) &credTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &cblueTable, 0);
 				//#else
-				//vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &cblueTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &credTable, (Pixel_8*) &alphaTable, 0);
+				//vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &cblueTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &credTable, (Pixel_8*) currentAlphaTable, 0);
 				//#endif
 			}
 			else {
 				//#if __BIG_ENDIAN__
-				vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) rT, (Pixel_8*) gT, (Pixel_8*) bT, 0);
+				vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) currentAlphaTable, (Pixel_8*) rT, (Pixel_8*) gT, (Pixel_8*) bT, 0);
 				//#else
-				//vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) bT, (Pixel_8*) gT, (Pixel_8*) rT, (Pixel_8*) &alphaTable, 0);
+				//vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) bT, (Pixel_8*) gT, (Pixel_8*) rT, (Pixel_8*) currentAlphaTable, 0);
 				//#endif
 			}
 		}
@@ -8190,15 +8183,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				cblueTable[ i] = bT[ i] * blueFactor;
 			}
 			//#if __BIG_ENDIAN__
-			vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) &credTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &cblueTable, 0);
+			vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) currentAlphaTable, (Pixel_8*) &credTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &cblueTable, 0);
 			//#else
-			//vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &cblueTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &credTable, (Pixel_8*) &alphaTable, 0);
+			//vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &cblueTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &credTable, (Pixel_8*) currentAlphaTable, 0);
 			//#endif
 
 		}
 	}
-	else if( (colorTransfer == YES) || (blending == YES) ) {
-
+	else if( (colorTransfer == YES) || (blending == YES))
+	{
 	    if( *colorBufPtr) free( *colorBufPtr);
 
 		*colorBufPtr = malloc( curDCM.rowBytes * curDCM.pheight * 4);
@@ -8225,9 +8218,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				cgreenTable[ i] = gT[ i] * greenFactor;
 				cblueTable[ i] = bT[ i] * blueFactor;
 			}
-			vImageTableLookUp_ARGB8888( &dest8, &dest8, (Pixel_8*) &alphaTable, (Pixel_8*) &credTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &cblueTable, 0);
+			vImageTableLookUp_ARGB8888( &dest8, &dest8, (Pixel_8*) currentAlphaTable, (Pixel_8*) &credTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &cblueTable, 0);
 		}
-		else vImageTableLookUp_ARGB8888( &dest8, &dest8, (Pixel_8*) &alphaTable, (Pixel_8*) rT, (Pixel_8*) gT, (Pixel_8*) bT, 0);
+		else vImageTableLookUp_ARGB8888( &dest8, &dest8, (Pixel_8*) currentAlphaTable, (Pixel_8*) rT, (Pixel_8*) gT, (Pixel_8*) bT, 0);
 	}
 
 
@@ -8562,7 +8555,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void)loadTexturesCompute
 {
-    [[self openGLContext] makeCurrentContext];
+    //[[self openGLContext] makeCurrentContext];
 	
 	pTextureName = [self loadTextureIn:pTextureName blending:NO colorBuf:&colorBuf textureX:&textureX textureY:&textureY redTable: redTable greenTable:greenTable blueTable:blueTable textureWidth:&textureWidth textureHeight:&textureHeight resampledBaseAddr:&resampledBaseAddr resampledBaseAddrSize:&resampledBaseAddrSize];
 	

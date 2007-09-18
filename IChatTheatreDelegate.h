@@ -16,7 +16,7 @@
 
 
 @interface IChatTheatreDelegate : NSObject {
-
+	BOOL isRunning;
 }
 
 + (IChatTheatreDelegate*) sharedDelegate;
