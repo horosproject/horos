@@ -30,7 +30,7 @@
 //#include "itkBinaryMask3DMeshSource.h"
 #include "itkVTKImageExport.h"
 #include "itkVTKImageExportBase.h"
-#include "itkCannyEdgeDetectionImageFilter.h"
+
 
 #include "vtkImageImport.h"
 #include "vtkMarchingSquares.h"
@@ -43,6 +43,7 @@
 #include "vtkDecimatePro.h"
 #include "vtkSmoothPolyDataFilter.h"
 #include "vtkPowerCrustSurfaceReconstruction.h"
+#include <vtkMarchingCubes.h>
 
 
 #undef id
@@ -985,11 +986,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	thresholdFilter->SetUpper(-500.0);
 	thresholdFilter->SetReplaceValue(255.0);
 	
-	//Edge Filter
-	typedef itk::CannyEdgeDetectionImageFilter<CharImageType, CharImageType > EdgeFilterType;	
-	EdgeFilterType ::Pointer edgeFilter = 0L;
-	edgeFilter = EdgeFilterType::New();
-	edgeFilter->SetLowerThreshold(255.0);
+
 	
 
 
@@ -1016,8 +1013,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	
 	// make connections Inputs and outputs
 	thresholdFilter->SetInput([itkImage itkImporter]->GetOutput());
-	edgeFilter->SetInput(thresholdFilter->GetOutput());
-
+	
 	WaitRendering	*wait = 0L;
 	
 	wait = [[WaitRendering alloc] init: NSLocalizedString(@"Propagating Region...", 0L)];
@@ -1029,7 +1025,6 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	try
 	{
 		thresholdFilter->Update();
-		//edgeFilter->Update();	
 
 	}
 	catch( itk::ExceptionObject & excep )
@@ -1038,74 +1033,41 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		std::cerr << excep.GetDescription() << std::endl;
 		//return;
 	}
-	/*
-	try
-	{
-		edgeFilter->Update();
-		//edgeFilter->Update();	
 
-	}
-	catch( itk::ExceptionObject & excep )
-	{
-		NSLog(@"Segmentation failed...");
-		std::cerr << excep.GetDescription() << std::endl;
-		//return;
-	}
-	*/
 
 	//------------------------------------------------------------------------
 	// ITK to VTK pipeline connection.
 	//------------------------------------------------------------------------
 	NSLog(@"get Points for VTK");
+	
 	unsigned char *buff = thresholdFilter->GetOutput()->GetBufferPointer();
-	//unsigned char *buff = edgeFilter->GetOutput()->GetBufferPointer();
-	vtkPoints *points = vtkPoints::New();
-	//int dataLength = width * height * depth;
-	int count = 0;
-	int count2 = 0;
-	for (z = 0; z < depth; z++) {
-		for (y = 0; y < height; y++) {
-			for (x = 0; x < width; x++) {
-				
-
-				unsigned char value = *buff;
-				unsigned char prior = 0;				 
-				unsigned char next = 0;
-				unsigned char above = 0;
-				unsigned char below = 0;
-				unsigned char superior = 0;
-				unsigned char inferior = 0;
-				
-				
-				
-				//try and find the edge points
-				if (value > 0) {
-					// make sure we aren't are the beginning or end of row, column, slice
-					if (x > 0)
-						prior = *(buff- 1);
-					if (x < width - 1)
-						next  = *(buff + 1);
-					if (y > 0)
-						superior = *(buff - width);
-					if (y < height -1)
-						inferior = *(buff + width);
-					if (z > 0)
-						above = *(buff - (height * width));
-					if (z < depth -1)
-						below = *(buff + (height * width));
-					// add point if there is a 0 neighbor. Should mean it is an edge point	
-					if (prior ==  0 || next == 0 || superior == 0 || inferior == 0 || above == 0 || below == 0) {
-						if (count2 % 4 == 0) points->InsertPoint( count++, x, y, z);
-						count2++;
-					}
-					//NSLog(@"Insert Point: %f % f %f", k,j,i);
-				}
-				buff++;
-
-			}
-			
-		}
+	vtkImageImport*	image3D = vtkImageImport::New();
+	image3D->SetWholeExtent(0, width-1, 0, height-1, 0, depth - 1);
+	image3D->SetDataExtentToWholeExtent();
+	image3D->SetDataScalarTypeToUnsignedChar();
+	image3D->SetImportVoidPointer(buff);
+	
+	vtkMarchingCubes*		isoContour = vtkMarchingCubes::New();
+	
+	isoContour->SetValue(0, 255);
+	isoContour->SetInput( (vtkDataObject*) image3D->GetOutput());
+	isoContour->Update();
+	
+	vtkPolyData *contour = isoContour->GetOutput();
+	NSLog(@"Get Centerline");
+	[wait setString:@"Finding Centerline Points"];
+	Centerline *centerline = [[Centerline alloc] init];
+	NSArray *centerlinePoints = [centerline generateCenterline:contour startingPoint:[seeds objectAtIndex:0]];
+	for (OSIPoint3D *point in centerlinePoints) {
+		int slice = round([point z] * 2);
+		int xPos = round([point x] * 2);
+		int yPos = round([point y] * 2);
+		NSLog(@" newROI in curPix: %d x: %d y: %d", slice, xPos, yPos);
 	}
+	isoContour->Delete();
+	
+	
+	/*
 	NSLog(@"point count: %d", points->GetNumberOfPoints());
 	vtkPolyData *profile = vtkPolyData::New();
     profile->SetPoints( points);
@@ -1127,7 +1089,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		int xPos = round([point x] * 2);
 		int yPos = round([point y] * 2);
 		NSLog(@" newROI in curPix: %d x: %d y: %d", slice, xPos, yPos);
-		/*
+		///*
 		DCMPix	*curPix = [[srcViewer pixList] objectAtIndex: slice];
 		ROI		*newROI;
 		newROI = [[[ROI alloc] initWithType: t2DPoint :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint(xPos , yPos)] autorelease];
@@ -1136,9 +1098,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		[roiImageList addObject: newROI];	
 		[newROI mouseRoiDown:NSMakePoint((float)xPos ,(float)yPos) :slice :1.0];
 		[newROI release];
-		*/
+		///
 	}	
-	
+	*/
 	
 	[wait close];
 	[wait release];

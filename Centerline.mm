@@ -68,6 +68,9 @@
 
 @implementation Centerline
 
+
+
+
 - (NSArray *)generateCenterline:(vtkPolyData *)polyData startingPoint:(OSIPoint *)start{
 	NSMutableSet *visitedPoints = [NSMutableSet set];
 	NSMutableArray *connectedPoints = [NSMutableArray array];
@@ -77,21 +80,27 @@
 	vtkSmoothPolyDataFilter * pSmooth = 0L;
 	vtkDataSet*	output = 0L;
 	vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
-	power->SetInput(polyData);
+	//power->SetInput(polyData);
 
 
-
+	float oPoints = polyData->GetNumberOfPoints();
+	NSLog(@"original Points: %f", oPoints);
 	vtkPolyData *medialSurface;
-	power->Update();
-	medialSurface = power->GetMedialSurface();
-
+	//power->Update();
+	//medialSurface = power->GetMedialSurface();
+	NSLog(@"Decimate");
+	float reduction = 10000.0/oPoints;
 	isoDeci = vtkDecimatePro::New();
-	isoDeci->SetInput(medialSurface);
-	isoDeci->SetTargetReduction(0.9);
-	isoDeci->SetPreserveTopology(TRUE);
+	//isoDeci->SetInput(medialSurface);
+	isoDeci->SetInput(polyData);
+	isoDeci->SetTargetReduction(reduction);
+	//isoDeci->SetPreserveTopology(TRUE);
 
 	
 	isoDeci->Update();
+	
+
+	
 	vtkPolyData *data = isoDeci->GetOutput();
 	NSLog(@"getPoints");
 	vtkPoints *medialPoints = data->GetPoints();
@@ -116,6 +125,7 @@
 			y = position[1];
 			z = position[2];
 			NSSet *ptSet = [self connectedPointsForPoint:i fromPolyData:data];
+
 			for (NSNumber *number in ptSet) {
 				vtkIdType pt = [number intValue];
 				position = medialPoints->GetPoint(pt);
@@ -148,6 +158,8 @@
 	float startZ = [start z];
 	
 	 double minDistance = 1000000;
+	 double maxDistance = 0;
+	 vtkIdType farPoint;
 	//NSLog(@"get starting Point");
 	for (i = 0; i < nPoints; i++) {	
 		double *position = medialPoints->GetPoint(i);
@@ -156,11 +168,17 @@
 			minDistance = distance;
 			startingPoint = i;
 		}
+		
+		if (distance > maxDistance) {
+			maxDistance = distance;
+			farPoint = i;
+		}
 	}
 
 	double *sp = medialPoints->GetPoint(startingPoint);
 	NSLog(@"starting Point %d : %f %f %f",startingPoint, sp[0], sp[1], sp[2]);
-	
+	double *ep = medialPoints->GetPoint(farPoint);
+	NSLog(@"farthest Point %d : %f %f %f",farPoint, ep[0], ep[1], ep[2]);
 	//get connected Points
 
 
@@ -175,6 +193,7 @@
 		neighbors = 0;
 		[stack removeObjectAtIndex:0];
 		double *position;
+		double *currentPointPosition = medialPoints->GetPoint(currentPoint);
 		double avgX = 0; 
 		double avgY = 0;
 		double avgZ = 0;
@@ -190,7 +209,30 @@
 			NSSet *neighborSet = [self connectedPointsForPoint:[number intValue]  fromPolyData:data];
 			[distantNeighbors unionSet:neighborSet];
 		}
+		/*
+		 // get most distant point of 3 removed neighborhood
+		double maxDistance = 0;
+		BOOL foundNeighbor = NO;
+		vtkIdType closestNeighbor;
+		for (NSNumber *number in distantNeighbors) {
+			// Want points at least two connections away
+			//if (!([ptSet containsObject: number] || [closeNeighbors containsObject:number])) {
+				vtkIdType pt = [number intValue];
+				position = medialPoints->GetPoint(pt);
+				double distance = sqrt( pow(currentPointPosition[0] - position[0],2) + pow(currentPointPosition[0] - position[1],2) + pow(currentPointPosition[2] - position[2],2));
+
+				if ((distance > maxDistance) && ![visitedPoints containsObject:number]) {
+					// closet neighbor cannot be a visited Point
+					closestNeighbor = pt;
+					maxDistance = distance;
+					foundNeighbor = YES;
+					
+				}
+		//	}
+		}
+		*/
 		
+		// Get average position for all neighbors
 		for (NSNumber *number in distantNeighbors) {
 			vtkIdType pt = [number intValue];
 			if (![visitedPoints containsObject:number]) {
@@ -215,18 +257,22 @@
 		BOOL foundNeighbor = NO;
 		vtkIdType closestNeighbor;
 		for (NSNumber *number in distantNeighbors) {
-			vtkIdType pt = [number intValue];
-			position = medialPoints->GetPoint(pt);
-			double distance = sqrt( pow(avgX - position[0],2) + pow(avgY - position[1],2) + pow(avgZ - position[2],2));
+			// Want points at least two connections away
+			//if (!([ptSet containsObject: number] || [closeNeighbors containsObject:number])) {
+				vtkIdType pt = [number intValue];
+				position = medialPoints->GetPoint(pt);
+				double distance = sqrt( pow(avgX - position[0],2) + pow(avgY - position[1],2) + pow(avgZ - position[2],2));
 
-			if ((distance < closestDistance) && ![visitedPoints containsObject:number]) {
-				// closet neighbor cannot be a visited Point
-				closestNeighbor = pt;
-				closestDistance = distance;
-				foundNeighbor = YES;
-				
-			}
+				if ((distance < closestDistance) && ![visitedPoints containsObject:number]) {
+					// closet neighbor cannot be a visited Point
+					closestNeighbor = pt;
+					closestDistance = distance;
+					foundNeighbor = YES;
+					
+				}
+		//	}
 		}
+		
 		// add closest neighbor to connected points
 		if (foundNeighbor) 
 		{
@@ -239,7 +285,7 @@
 		}
 		
 		[visitedPoints unionSet:distantNeighbors];
-		
+				
 		// try and make sure visited most points
 		// Find next closest point
 		/*
