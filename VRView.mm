@@ -48,6 +48,8 @@
 #import "ITKSegmentation3D.h"
 #import "ITKBrushROIFilter.h"
 
+#include <CoreVideo/CVPixelBuffer.h>
+
 //vtkVolumeMapper
 
 #define D2R 0.01745329251994329576923690768    // degrees to radians
