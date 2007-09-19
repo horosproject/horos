@@ -2106,7 +2106,7 @@
 		BF7DEAAA09D1F79300A332B8 /* jcmainct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11406BF2C4F00C7EF1E /* jcmainct.c */; };
 		BF7DEAAB09D1F79400A332B8 /* jcmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11506BF2C4F00C7EF1E /* jcmarker.c */; };
 		BF7DEAAC09D1F79400A332B8 /* jcmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11606BF2C4F00C7EF1E /* jcmaster.c */; };
-		BF7DEAAD09D1F79500A332B8 /* jcodec.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11706BF2C4F00C7EF1E /* jcodec.c */; };
+		BF7DEAAD09D1F79500A332B8 /* jcodec.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11706BF2C4F00C7EF1E; };
 		BF7DEAAE09D1F79600A332B8 /* jcomapi.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11806BF2C4F00C7EF1E /* jcomapi.c */; };
 		BF7DEAAF09D1F79700A332B8 /* jconfig8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB11906BF2C4F00C7EF1E /* jconfig8.h */; };
 		BF7DEAB009D1F79800A332B8 /* jcparam.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11A06BF2C4F00C7EF1E /* jcparam.c */; };
@@ -9079,7 +9079,7 @@
 		BFAEB11406BF2C4F00C7EF1E /* jcmainct.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcmainct.c; sourceTree = "<group>"; };
 		BFAEB11506BF2C4F00C7EF1E /* jcmarker.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcmarker.c; sourceTree = "<group>"; };
 		BFAEB11606BF2C4F00C7EF1E /* jcmaster.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcmaster.c; sourceTree = "<group>"; };
-		BFAEB11706BF2C4F00C7EF1E /* jcodec.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcodec.c; sourceTree = "<group>"; };
+		BFAEB11706BF2C4F00C7EF1E = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcodec.c; sourceTree = "<group>"; };
 		BFAEB11806BF2C4F00C7EF1E /* jcomapi.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcomapi.c; sourceTree = "<group>"; };
 		BFAEB11906BF2C4F00C7EF1E /* jconfig8.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jconfig8.h; sourceTree = "<group>"; };
 		BFAEB11A06BF2C4F00C7EF1E /* jcparam.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcparam.c; sourceTree = "<group>"; };
@@ -13643,7 +13643,7 @@
 				BFAEB11406BF2C4F00C7EF1E /* jcmainct.c */,
 				BFAEB11506BF2C4F00C7EF1E /* jcmarker.c */,
 				BFAEB11606BF2C4F00C7EF1E /* jcmaster.c */,
-				BFAEB11706BF2C4F00C7EF1E /* jcodec.c */,
+				BFAEB11706BF2C4F00C7EF1E,
 				BFAEB11806BF2C4F00C7EF1E /* jcomapi.c */,
 				BFAEB11906BF2C4F00C7EF1E /* jconfig8.h */,
 				BFAEB11A06BF2C4F00C7EF1E /* jcparam.c */,
