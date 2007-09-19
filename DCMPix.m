@@ -1919,7 +1919,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		else {
 			ptsTemp = roi.points;
 
-			long no = ptsTemp.count;
+			no = ptsTemp.count;
 
 			ptsInt = (struct NSPointInt*) malloc( no * sizeof( struct NSPointInt));
 
