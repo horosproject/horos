@@ -187,8 +187,7 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 #define INIT_DELTAS dx=V2.x-V1.x;  dy=V2.y-V1.y;
 #define INIT_CLIP INIT_DELTAS if(dx)m=dy/dx;
 
-static inline void CLIP_Left(NSPointInt *Polygon, long *count, NSPointInt V1,NSPointInt V2)
-{
+static inline void CLIP_Left(NSPointInt *Polygon, long *count, NSPointInt V1,NSPointInt V2) {
 	float   dx,dy, m=1;
 	INIT_CLIP
 	
@@ -196,35 +195,31 @@ static inline void CLIP_Left(NSPointInt *Polygon, long *count, NSPointInt V1,NSP
 	if ( (V1.x>=0) && (V2.x>=0) )
 		Polygon[(*count)++]=V2;
 	// *********LEAVING**********
-	if ( (V1.x>=0) && (V2.x<0) )
-	{
+	if ( (V1.x>=0) && (V2.x<0) ) {
 		Polygon[(*count)].x=0;
 		Polygon[(*count)++].y=V1.y+m*(0-V1.x);
 	}
 	// ********ENTERING*********
-	if ( (V1.x<0) && (V2.x>=0) )
-	{
+	if ( (V1.x<0) && (V2.x>=0) ) {
 		Polygon[(*count)].x=0;
 		Polygon[(*count)++].y=V1.y+m*(0-V1.x);
 		Polygon[(*count)++]=V2;
 	}
 }
-static inline void CLIP_Right(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2, NSPointInt DownRight)
-{
+
+static inline void CLIP_Right(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2, NSPointInt DownRight) {
 	float dx,dy, m=1;
 	INIT_CLIP
 	// ************OK************
 	if ( (V1.x<=DownRight.x) && (V2.x<=DownRight.x) )
 		Polygon[(*count)++]=V2;
 	// *********LEAVING**********
-	if ( (V1.x<=DownRight.x) && (V2.x>DownRight.x) )
-	{
+	if ( (V1.x<=DownRight.x) && (V2.x>DownRight.x) ) {
 		Polygon[(*count)].x=DownRight.x;
 		Polygon[(*count)++].y=V1.y+m*(DownRight.x-V1.x);
 	}
 	// ********ENTERING*********
-	if ( (V1.x>DownRight.x) && (V2.x<=DownRight.x) )
-	{
+	if ( (V1.x>DownRight.x) && (V2.x<=DownRight.x) ) {
 		Polygon[(*count)].x=DownRight.x;
 		Polygon[(*count)++].y=V1.y+m*(DownRight.x-V1.x);
 		Polygon[(*count)++]=V2;
@@ -235,16 +230,14 @@ static inline void CLIP_Right(NSPointInt *Polygon,long *count, NSPointInt V1,NSP
  CLIP_Top
  =================
  */
-static inline void CLIP_Top(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2)
-{
+static inline void CLIP_Top(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2) {
 	float   dx,dy, m=1;
 	INIT_CLIP
 	// ************OK************
 	if ( (V1.y>=0) && (V2.y>=0) )
 		Polygon[(*count)++]=V2;
 	// *********LEAVING**********
-	if ( (V1.y>=0) && (V2.y<0) )
-	{
+	if ( (V1.y>=0) && (V2.y<0) ) {
 		if(dx)
 			Polygon[(*count)].x=V1.x+(0-V1.y)/m;
 		else
@@ -252,8 +245,7 @@ static inline void CLIP_Top(NSPointInt *Polygon,long *count, NSPointInt V1,NSPoi
 		Polygon[(*count)++].y=0;
 	}
 	// ********ENTERING*********
-	if ( (V1.y<0) && (V2.y>=0) )
-	{
+	if ( (V1.y<0) && (V2.y>=0) ) {
 		if(dx)
 			Polygon[(*count)].x=V1.x+(0-V1.y)/m;
 		else
@@ -262,16 +254,14 @@ static inline void CLIP_Top(NSPointInt *Polygon,long *count, NSPointInt V1,NSPoi
 		Polygon[(*count)++]=V2;
 	}
 }
-static inline void CLIP_Bottom(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2, NSPointInt DownRight)
-{
+static inline void CLIP_Bottom(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2, NSPointInt DownRight) {
 	float dx,dy, m=1;
 	INIT_CLIP
 	// ************OK************
 	if ( (V1.y<=DownRight.y) && (V2.y<=DownRight.y) )
 		Polygon[(*count)++]=V2;
 	// *********LEAVING**********
-	if ( (V1.y<=DownRight.y) && (V2.y>DownRight.y) )
-	{
+	if ( (V1.y<=DownRight.y) && (V2.y>DownRight.y) ) {
 		if(dx)
 			Polygon[(*count)].x=V1.x+(DownRight.y-V1.y)/m;
 		else
@@ -279,8 +269,7 @@ static inline void CLIP_Bottom(NSPointInt *Polygon,long *count, NSPointInt V1,NS
 		Polygon[(*count)++].y=DownRight.y;
 	}
 	// ********ENTERING*********
-	if ( (V1.y>DownRight.y) && (V2.y<=DownRight.y) )
-	{
+	if ( (V1.y>DownRight.y) && (V2.y<=DownRight.y) ) {
 		if(dx)
 			Polygon[(*count)].x=V1.x+(DownRight.y-V1.y)/m;
 		else
@@ -290,9 +279,8 @@ static inline void CLIP_Bottom(NSPointInt *Polygon,long *count, NSPointInt V1,NS
 	}
 }
 
-void CLIP_Polygon(NSPointInt *inPoly, long inCount, NSPointInt *outPoly, long *outCount, long w, long h)
-{
-	int				v,d;
+void CLIP_Polygon(NSPointInt *inPoly, long inCount, NSPointInt *outPoly, long *outCount, long w, long h) {
+	int				d;
 	NSPointInt		TmpPoly[ 10000];
 	long			TmpCount;	
 	NSPointInt		DownRight;
@@ -303,28 +291,24 @@ void CLIP_Polygon(NSPointInt *inPoly, long inCount, NSPointInt *outPoly, long *o
 	*outCount = 0;
 	TmpCount=0;
 	
-	for (v=0; v<inCount; v++)
-	{
+	for ( int v=0; v<inCount; v++ ) {
 		d=v+1;
 		if(d==inCount)d=0;
 		CLIP_Left( TmpPoly, &TmpCount, inPoly[v],inPoly[d]);
 	}
-	for (v=0; v<TmpCount; v++)
-	{
+	for ( int v=0; v<TmpCount; v++ ) {
 		d=v+1;
 		if(d==TmpCount)d=0;
 		CLIP_Right(outPoly, outCount, TmpPoly[v],TmpPoly[d], DownRight);
 	}
 	TmpCount=0;
-	for (v=0; v<*outCount; v++)
-	{
+	for ( int v=0; v<*outCount; v++ )	{
 		d=v+1;
 		if(d==*outCount)d=0;
 		CLIP_Top( TmpPoly, &TmpCount, outPoly[v],outPoly[d]);
 	}
 	*outCount=0;
-	for (v=0; v<TmpCount; v++)
-	{
+	for ( int v=0; v<TmpCount; v++ ) {
 		d=v+1;
 		if(d==TmpCount)d=0;
 		CLIP_Bottom(outPoly, outCount, TmpPoly[v],TmpPoly[d], DownRight);
@@ -342,22 +326,19 @@ struct edge {
 
 #define MAXVERTICAL     10000
 
-static inline long sgn( long x)
-{
+static inline long sgn( long x ) {
 	if( x > 0) return 1;
 	else if( x < 0) return -1;
 	
 	return 0;
 }
 
-static inline void FillEdges( NSPointInt *p, long no, struct edge *edgeTable[])
-{
-    int i, j, n = no;
+static inline void FillEdges( NSPointInt *p, long no, struct edge *edgeTable[] ) {
+    int n = no;
 	
 	memset( edgeTable, 0, sizeof(char*) * MAXVERTICAL);
 	
-    for (i = 0; i < n; i++)
-	{
+    for ( int i = 0; i < n; i++) {
         NSPointInt *p1, *p2, *p3;
         struct edge *e;
         p1 = &p[ i];
@@ -365,16 +346,14 @@ static inline void FillEdges( NSPointInt *p, long no, struct edge *edgeTable[])
         if (p1->y == p2->y)
             continue;   /* Skip horiz. edges */
         /* Find next vertex not level with p2 */
-        for (j = (i + 2) % n; ; j = (j + 1) % n)
-		{
+        for ( int j = (i + 2) % n; ; j = (j + 1) % n ) {
             p3 = &p[ j];
             if (p2->y != p3->y)
                 break;
         }
         e = malloc( sizeof( struct edge));
         e->xNowNumStep = ABS(p1->x - p2->x);
-        if ( p2->y > p1->y)
-		{
+        if ( p2->y > p1->y)	{
             e->yTop = p1->y;
             e->yBot = p2->y;
             e->xNowWhole = p1->x;
@@ -411,8 +390,7 @@ static inline void FillEdges( NSPointInt *p, long no, struct edge *edgeTable[])
  * places them on the active list.
  */
 
-struct edge *UpdateActive( struct edge *active, struct edge *edgeTable[], long curY)
-{
+struct edge *UpdateActive( struct edge *active, struct edge *edgeTable[], long curY) {
     struct edge *e, **ep;
     for (ep = &active, e = *ep; e != NULL; e = *ep)
         if (e->yBot < curY) {
@@ -435,7 +413,7 @@ struct edge *UpdateActive( struct edge *active, struct edge *edgeTable[], long c
  * difficult to speed it way up.
  */
 
-static DCMPix	**restoreImageCache = 0L;
+static DCMPix **restoreImageCache = nil;
 
 static inline void DrawRuns(	struct edge *active,
 							long curY,
@@ -459,14 +437,14 @@ static inline void DrawRuns(	struct edge *active,
 							long stackNo,	// Only if X/Y orientation
 							BOOL restore)		
 {
-    struct edge		*e;
 	long			xCoords[ 4096];
 	float			*curPix, val, temp;
     long			numCoords = 0;
-    long			i, x, start, end, ims = w * h;
+    long			start, end, ims = w * h;
 	
-    for (e = active; e != NULL; e = e->next) {
-        for (i = numCoords; i > 0 &&
+    for ( struct edge *e = active; e != NULL; e = e->next) {
+		long i;
+        for ( i = numCoords; i > 0 &&
 			 xCoords[i - 1] > e->xNowWhole; i--)
             xCoords[i] = xCoords[i - 1];
         xCoords[i] = e->xNowWhole;
@@ -477,34 +455,29 @@ static inline void DrawRuns(	struct edge *active,
             e->xNowNum -= e->xNowDen;
         }
     }
+	
     if (numCoords % 2)  /* Protect from degenerate polygons */
         xCoords[numCoords] = xCoords[numCoords - 1], numCoords++;
 	
-    for (i = 0; i < numCoords; i += 2)
-	{
+    for ( long i = 0; i < numCoords; i += 2 ) {
 		// ** COMPUTE
-		if( compute)
-		{
+		if( compute ) {
 			start = xCoords[i];		if( start < 0) start = 0;		if( start >= w) start = w;
 			end = xCoords[i + 1];	if( end < 0) end = 0;			if( end >= w) end = w;
 			
-			switch( orientation)
-		{
+			switch( orientation) {
 			case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];			break;
 			case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		break;
 			case 2:		curPix = &pix[ (curY * w) + start];							break;
 		}
 			
-			x = end - start;
+			long x = end - start;
 			
-			if( RGB == NO)
-			{
-				while( x-- >= 0)
-				{
+			if( RGB == NO ) {
+				while( x-- >= 0 ) {
 					val = *curPix;
 					
-					if( imax)
-					{
+					if( imax ) {
 						if( val > *imax) *imax = val;
 						if( val < *imin) *imin = val;
 						
@@ -513,8 +486,7 @@ static inline void DrawRuns(	struct edge *active,
 						(*count)++;
 					}
 					
-					if( idev)
-					{
+					if( idev ) {
 						temp = imean - val;
 						temp *= temp;
 						*idev += temp;
@@ -527,22 +499,18 @@ static inline void DrawRuns(	struct edge *active,
 		}
 		
 		// ** DRAW
-		else
-		{
+		else {
 			if( outside)	// OUTSIDE
 			{
-				if( i == 0)
-				{
+				if( i == 0 ) {
 					start = 0;			if( start < 0) start = 0;		if( start >= w) start = w;
 					end = xCoords[i];	if( end < 0) end = 0;			if( end >= w) end = w;
 					i--;
 				}
-				else
-				{
+				else {
 					start = xCoords[i]+1;		if( start < 0) start = 0;		if( start >= w) start = w;
 					
-					if( i == numCoords-1)
-					{
+					if( i == numCoords-1 ) {
 						end = w;
 					}
 					else end = xCoords[i+1];
@@ -550,31 +518,25 @@ static inline void DrawRuns(	struct edge *active,
 					if( end < 0) end = 0;			if( end >= w) end = w;
 				}
 				
-				if( RGB == NO)
-				{
-					switch( orientation)
-				{
+				if( RGB == NO ) {
+					switch( orientation ) {
 					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];		break;
 					case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		break;
 					case 2:		curPix = &pix[ (curY * w) + start];							break;
 				}
 					
-					x = end - start;
+					long x = end - start;
 					
-					if( addition)
-					{
-						while( x-- > 0)
-						{
+					if( addition) {
+						while( x-- > 0)	{
 							if( *curPix >= min && *curPix <= max) *curPix += newVal;
 							
 							if( orientation) curPix ++;
 							else curPix += w;
 						}
 					}
-					else
-					{
-						while( x-- > 0)
-						{
+					else {
+						while( x-- > 0 )	{
 							if( *curPix >= min && *curPix <= max) *curPix = newVal;
 							
 							if( orientation) curPix ++;
@@ -582,29 +544,24 @@ static inline void DrawRuns(	struct edge *active,
 						}
 					}
 				}
-				else
-				{
-					switch( orientation)
-				{
+				else {
+					switch( orientation ) {
 					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];		break;
 					case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		break;
 					case 2:		curPix = &pix[ (curY * w) + start];							break;
 				}
 					
-					x = end - start;
+					long x = end - start;
 					
-					while( x-- > 0)
-					{
+					while( x-- > 0 ) {
 						unsigned char*  rgbPtr = (unsigned char*) curPix;
 						
-						if( addition)
-						{
+						if( addition) {
 							if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] += newVal;
 							if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] += newVal;
 							if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] += newVal;
 						}
-						else
-						{
+						else {
 							if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] = newVal;
 							if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] = newVal;
 							if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] = newVal;
@@ -617,40 +574,32 @@ static inline void DrawRuns(	struct edge *active,
 			}
 			else		// INSIDE
 			{
-				float	*restorePtr = 0L;
+				float	*restorePtr = nil;
 				
 				start = xCoords[i];		if( start < 0) start = 0;		if( start >= w) start = w;
 				end = xCoords[i + 1];	if( end < 0) end = 0;			if( end >= w) end = w;
 				
-				switch( orientation)
-			{
-				case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		if( restore && restoreImageCache) restorePtr = &[restoreImageCache[ curY] fImage][(start * w) + stackNo];			break;
+				switch( orientation ) {
+					case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		if( restore && restoreImageCache) restorePtr = &[restoreImageCache[ curY] fImage][(start * w) + stackNo];			break;
 					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];			if( restore && restoreImageCache) restorePtr = &[restoreImageCache[ curY] fImage][start + stackNo *w];				break;
 					case 2:		curPix = &pix[ (curY * w) + start];							if( restore && restoreImageCache) restorePtr = &[restoreImageCache[ stackNo] fImage][(curY * w) + start];			break;
 			}
 				
-				x = end - start;
+				long x = end - start;
 				
-				if( x >= 0)
-				{
-					if( restore && restoreImageCache)
-					{
-						if( RGB == NO)
-						{
-							if( orientation)
-							{
-								while( x-- >= 0)
-								{
+				if( x >= 0 ) {
+					if( restore && restoreImageCache) {
+						if( RGB == NO )	{
+							if( orientation ) {
+								while( x-- >= 0 ) {
 									*curPix = *restorePtr;
 									
 									curPix ++;
 									restorePtr ++;
 								}
 							}
-							else
-							{
-								while( x-- >= 0)
-								{
+							else {
+								while( x-- >= 0) {
 									*curPix = *restorePtr;
 									
 									curPix += w;
@@ -658,10 +607,8 @@ static inline void DrawRuns(	struct edge *active,
 								}
 							}
 						}
-						else
-						{
-							if( orientation)
-							{
+						else {
+							if( orientation ) {
 								while( x-- >= 0)
 								{
 									unsigned char*  rgbPtr = (unsigned char*) curPix;
@@ -674,10 +621,8 @@ static inline void DrawRuns(	struct edge *active,
 									restorePtr ++;
 								}
 							}
-							else
-							{
-								while( x-- >= 0)
-								{
+							else {
+								while( x-- >= 0 ) {
 									unsigned char*  rgbPtr = (unsigned char*) curPix;
 									
 									rgbPtr[ 1] = restorePtr[ 1];
@@ -690,24 +635,18 @@ static inline void DrawRuns(	struct edge *active,
 							}
 						}
 					}
-					else
-					{
-						if( RGB == NO)
-						{
-							if( addition)
-							{
-								while( x-- >= 0)
-								{
+					else {
+						if( RGB == NO ) {
+							if( addition ) {
+								while( x-- >= 0 ) {
 									if( *curPix >= min && *curPix <= max) *curPix += newVal;
 									
 									if( orientation) curPix ++;
 									else curPix += w;
 								}
 							}
-							else
-							{
-								while( x-- >= 0)
-								{
+							else {
+								while( x-- >= 0) {
 									if( *curPix >= min && *curPix <= max) *curPix = newVal;
 									
 									if( orientation) curPix ++;
@@ -715,20 +654,16 @@ static inline void DrawRuns(	struct edge *active,
 								}
 							}
 						}
-						else
-						{
-							while( x-- >= 0)
-							{
+						else {
+							while( x-- >= 0) {
 								unsigned char*  rgbPtr = (unsigned char*) curPix;
 								
-								if( addition)
-								{
+								if( addition ) {
 									if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] += newVal;
 									if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] += newVal;
 									if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] += newVal;
 								}
-								else
-								{
+								else {
 									if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] = newVal;
 									if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] = newVal;
 									if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] = newVal;
@@ -1503,7 +1438,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (float*) getLineROIValue :(long*) numberOfValues :(ROI*) roi
 {
-    long			count, i, no, size;
+    long			count, no, size;
 	float			*values;
 	long			*xPoints, *yPoints;
     NSPoint			upleft, downright;
@@ -1512,10 +1447,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
     [self CheckLoad];
 	
-	pts = (NSPoint*) malloc( [ptsTemp count] * sizeof(NSPoint));
+	pts = (NSPoint*) malloc( ptsTemp.count * sizeof(NSPoint) );
 	no = [ptsTemp count];
-	for( i = 0; i < no; i++)
-	{
+	for( long i = 0; i < no; i++ ) {
 		pts[ i] = [[ptsTemp objectAtIndex: i] point];
 		//	pts[ i].x+=1.5;
 		//	pts[ i].y+=1.5;
@@ -1523,8 +1457,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	upleft = downright = [[ptsTemp objectAtIndex:0] point];
 	
-	for( i = 0; i < [ptsTemp count]; i++)
-	{
+	for( long i = 0; i < [ptsTemp count]; i++) {
 		if( upleft.x > [[ptsTemp objectAtIndex:i] x]) upleft.x = [[ptsTemp objectAtIndex:i] x];
 		if( upleft.y > [[ptsTemp objectAtIndex:i] y]) upleft.y = [[ptsTemp objectAtIndex:i] y];
 		
@@ -1550,15 +1483,11 @@ BOOL gUSEPAPYRUSDCMPIX;
 					&yPoints);
 	
 	values = (float*) malloc( size * sizeof(float));
-	if( values)
-	{
+	if( values ) {
 		count = 0;
-		for( i = 0; i < size; i++)
-		{
-			if( yPoints[ i] >= 0 && yPoints[ i] < height && xPoints[ i] >= 0 && xPoints[ i] < width)
-			{
-				if( isRGB)
-				{
+		for( long i = 0; i < size; i++ ) {
+			if( yPoints[ i] >= 0 && yPoints[ i] < height && xPoints[ i] >= 0 && xPoints[ i] < width ) {
+				if( isRGB ) {
 					unsigned char*  rgbPtr = (unsigned char*) fImage;
 					long			pos;
 					
@@ -1567,8 +1496,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 					
 					values[ count] = (rgbPtr[ pos+1] + rgbPtr[ pos+2] + rgbPtr[ pos+3])/3;
 				}
-				else
-				{
+				else {
 					values[ count] = fImage[ width*yPoints[ i] + xPoints[ i]];
 				}
 				
@@ -1588,15 +1516,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 	return values;
 }
 
-- (float*) getROIValue :(long*) numberOfValues :(ROI*) roi :(float**) locations
-{
+- (float*) getROIValue: (long*)numberOfValues : (ROI*)roi : (float**)locations {
     long			count = 0, no;
 	float			*values = 0L;
 	long			upleftx, uplefty, downrightx, downrighty;
 	NSPoint			*pts;
 	
-	if( roi.type == tPlain)
-	{
+	if( roi.type == tPlain ) {
 		long			textWidth = roi.textureWidth;
 		long			textHeight = roi.textureHeight;
 		long			textureUpLeftCornerX = roi.textureUpLeftCornerX;
@@ -1678,8 +1604,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			for( y = uplefty; y < downrighty ; y++) {
 				for( x = upleftx; x < downrightx ; x++) {
 					
-					if( pnpoly( pts, no, x, y) > 0)
-					{
+					if( pnpoly( pts, no, x, y) > 0) {
 						if( isRGB) {
 							unsigned char*  rgbPtr = (unsigned char*) fImage;
 							long			pos;
@@ -1694,8 +1619,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 						}
 						
 						if( locations ) {
-							if( *locations)
-							{
+							if( *locations )	{
 								(*locations)[ count*2] = x;
 								(*locations)[ count*2 + 1] = y;
 							}
@@ -1719,23 +1643,21 @@ BOOL gUSEPAPYRUSDCMPIX;
 	return values;
 }
 
-- (BOOL) isInROI:(ROI*) roi:(NSPoint) pt
-{
+- (BOOL)isInROI: (ROI*)roi: (NSPoint)pt {
+	
 	NSMutableArray  *ptsTemp = roi.points;
 	BOOL			result = NO;
-	long			x, y, no;
 	long			minx, maxx, miny, maxy;
 	NSPoint			*pts;
-	
-	
+		
     [self CheckLoad];
 	
-	if( roi ) {
+	if ( roi ) {
 		minx = maxx = [[ptsTemp objectAtIndex: 0] x];
 		miny = maxy = [[ptsTemp objectAtIndex: 0] y];
 		
 		// Find the max rectangle of the ROI
-		for( long z = 0; z < [ptsTemp count]; z++) {
+		for( long z = 0; z < ptsTemp.count; z++) {
 			if( minx > [[ptsTemp objectAtIndex: z] x]) minx = [[ptsTemp objectAtIndex: z] x];
 			if( maxx < [[ptsTemp objectAtIndex: z] x]) maxx = [[ptsTemp objectAtIndex: z] x];
 			if( miny > [[ptsTemp objectAtIndex: z] y]) miny = [[ptsTemp objectAtIndex: z] y];
@@ -1747,12 +1669,12 @@ BOOL gUSEPAPYRUSDCMPIX;
 		
 		if( roi.type == tROI) return YES;
 		
-		pts = (NSPoint*) malloc( [ptsTemp count] * sizeof(NSPoint));
-		no = [ptsTemp count];
+		long no = ptsTemp.count;
+		pts = (NSPoint*) malloc( no * sizeof(NSPoint));
 		for( long i = 0; i < no; i++ ) pts[ i] = [[ptsTemp objectAtIndex: i] point];
 		
-		x = pt.x;
-		y = pt.y;
+		long x = pt.x;
+		long y = pt.y;
 		
 		if( pnpoly( pts, no, x, y))	result = YES;
 		
@@ -1762,19 +1684,16 @@ BOOL gUSEPAPYRUSDCMPIX;
 	return result;
 }
 
-- (void) prepareRestore
-{
+- (void) prepareRestore {
 	if( restoreImageCache) [self freeRestore];
 	
 	restoreImageCache = malloc( [pixArray count] * sizeof(void*));
 	
-	if( restoreImageCache)
-	{
-		for( int i = 0; i < [pixArray count]; i++)
-		{
+	if( restoreImageCache )	{
+		for( int i = 0; i < [pixArray count]; i++ ) {
 			DCMPix	*s = [pixArray objectAtIndex:i];
 			
-			restoreImageCache[ i] = [[DCMPix alloc] myinit: [s srcFile] :i :[pixArray count] :0L :[s frameNo] :0];
+			restoreImageCache[ i ] = [[DCMPix alloc] myinit: s.srcFile : i : pixArray.count : nil : s.frameNo : 0];
 		}
 		
 		NSLog( @"prepare Restore cache");
@@ -1784,7 +1703,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (void) freeRestore {
 	if( restoreImageCache) {
-		for( int i = 0; i < [pixArray count]; i++ )	[restoreImageCache[ i] release];
+		for( int i = 0; i < pixArray.count; i++ )	[restoreImageCache[ i] release];
 		
 		free( restoreImageCache);
 		restoreImageCache = 0L;
@@ -1797,14 +1716,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	unsigned char*	map = malloc( height * width);
 	float*			tempImage = calloc( 1, height * width * sizeof(float));
-	int				no;
 	
-	if( [roi type] == tCPolygon || [roi type] == tOPolygon || [roi type] == tPencil)
-	{	
+	if( [roi type] == tCPolygon || [roi type] == tOPolygon || [roi type] == tPencil ) {	
 		NSArray *ptsTemp = [roi points];
 		
-		struct NSPointInt *ptsInt = (struct NSPointInt*) malloc( [ptsTemp count] * sizeof( struct NSPointInt));
-		no = [ptsTemp count];
+		int no = ptsTemp.count;
+		struct NSPointInt *ptsInt = (struct NSPointInt*) malloc( no * sizeof(struct NSPointInt) );
+
 		for( int i = 0; i < no; i++) {
 			ptsInt[ i].x = [[ptsTemp objectAtIndex: i] point].x + 0.5;
 			ptsInt[ i].y = [[ptsTemp objectAtIndex: i] point].y + 0.5;
@@ -1819,14 +1737,14 @@ BOOL gUSEPAPYRUSDCMPIX;
 		
 		BOOL clip = NO;
 		
-		for( int i = 0; i < no && clip == NO; i++) {
+		for( int i = 0; i < no && clip == NO; i++ ) {
 			if( ptsInt[ i].x < 0) clip = YES;
 			if( ptsInt[ i].y < 0) clip = YES;
 			if( ptsInt[ i].x >= width) clip = YES;
 			if( ptsInt[ i].y >= height) clip = YES;
 		}
 		
-		if( clip) {
+		if( clip ) {
 			long newNo;
 			
 			pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
@@ -1838,7 +1756,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			no = newNo;
 		}
 		
-		if( ptsInt != 0L && no > 1)	{
+		if( ptsInt != 0L && no > 1 )	{
 			BOOL restore = NO, addition = NO, outside = NO;
 			
 			ras_FillPolygon( ptsInt, no, tempImage, width, height, [pixArray count], -99999, 99999, outside, 255, addition, isRGB, NO, 0L, 0L, 0L, 0L, 0L, 0, 2, 0, restore);
@@ -1846,17 +1764,17 @@ BOOL gUSEPAPYRUSDCMPIX;
 		
 		// Convert float to char
 		int i = width * height;
-		while( i-- > 0)	{
+		while ( i-- > 0 )	{
 			map[ i] = tempImage[ i];
 		}
 		
 		// Keep a free box around the image
-		for( int i = 0 ; i < width; i++) {
+		for ( int i = 0 ; i < width; i++ ) {
 			map[ i] = 0;
 			map[height*(width-2) +i] = 0;
 		}
 		
-		for( int i = 0 ; i < height; i++) {
+		for ( int i = 0 ; i < height; i++) {
 			map[ i*width] = 0;
 			map[ i*width + width-1] = 0;
 		}
@@ -1880,16 +1798,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
     [self CheckLoad];
 	
-	if( stackNo < 0 && restore)
-	{
+	if( stackNo < 0 && restore)	{
 		NSLog( @"error !!!! stackNo < 0 && restore");
 		restore = NO;
 	}
 	
-	if( roi )
-	{
-		if( roi.type == tPlain )
-		{
+	if( roi ) {
+		if( roi.type == tPlain ) {
 			long			textWidth = roi.textureWidth;
 			long			textHeight = roi.textureHeight;
 			long			textureUpLeftCornerX = roi.textureUpLeftCornerX;
@@ -2003,9 +1918,11 @@ BOOL gUSEPAPYRUSDCMPIX;
 		}
 		else {
 			ptsTemp = roi.points;
-			
-			ptsInt = (struct NSPointInt*) malloc( [ptsTemp count] * sizeof( struct NSPointInt));
-			no = [ptsTemp count];
+
+			long no = ptsTemp.count;
+
+			ptsInt = (struct NSPointInt*) malloc( no * sizeof( struct NSPointInt));
+
 			for( long i = 0; i < no; i++ ) {
 				ptsInt[ i].x = [[ptsTemp objectAtIndex: i] point].x;
 				ptsInt[ i].y = [[ptsTemp objectAtIndex: i] point].y;
@@ -2016,8 +1933,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 			long yIm, xIm;
 			
 			switch( orientationStack) {
-				case 0:	yIm = [pixArray count];		xIm = width;	break;
-				case 1:	yIm = [pixArray count];		xIm = height;	break;
+				case 0:	yIm = pixArray.count;		xIm = width;	break;
+				case 1:	yIm = pixArray.count;		xIm = height;	break;
 				case 2:	yIm = height;				xIm = width;	break;
 			}
 			
@@ -2049,14 +1966,14 @@ BOOL gUSEPAPYRUSDCMPIX;
 						if( ptsInt[ i].x < 0) clip = YES;
 						if( ptsInt[ i].y < 0) clip = YES;
 						if( ptsInt[ i].x >= height) clip = YES;
-						if( ptsInt[ i].y >= [pixArray count]) clip = YES;
+						if( ptsInt[ i].y >= pixArray.count ) clip = YES;
 					}
 					
 					if( clip) {
 						long newNo;
 						
 						pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
-						CLIP_Polygon( ptsInt, no, pTemp, &newNo, height, [pixArray count]);
+						CLIP_Polygon( ptsInt, no, pTemp, &newNo, height, pixArray.count );
 						
 						free( ptsInt);
 						ptsInt = pTemp;
@@ -2069,14 +1986,14 @@ BOOL gUSEPAPYRUSDCMPIX;
 						if( ptsInt[ i].x < 0) clip = YES;
 						if( ptsInt[ i].y < 0) clip = YES;
 						if( ptsInt[ i].x >= width) clip = YES;
-						if( ptsInt[ i].y >= [pixArray count]) clip = YES;
+						if( ptsInt[ i].y >= pixArray.count ) clip = YES;
 					}
 					
-					if( clip) {
+					if( clip ) {
 						long newNo;
 						
 						pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
-						CLIP_Polygon( ptsInt, no, pTemp, &newNo, width, [pixArray count]);
+						CLIP_Polygon( ptsInt, no, pTemp, &newNo, width, pixArray.count );
 						
 						free( ptsInt);
 						ptsInt = pTemp;
@@ -2092,8 +2009,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 		long yIm, xIm;
 		
 		switch( orientationStack) {
-			case 0:	yIm = [pixArray count];		xIm = width;	break;
-			case 1:	yIm = [pixArray count];		xIm = height;	break;
+			case 0:	yIm = pixArray.count;		xIm = width;	break;
+			case 1:	yIm = pixArray.count;		xIm = height;	break;
 			case 2:	yIm = height;				xIm = width;	break;
 		}
 		
@@ -2188,20 +2105,20 @@ BOOL gUSEPAPYRUSDCMPIX;
 	}
 	
 	if( ptsInt != 0L && no > 1) {
-		ras_FillPolygon( ptsInt, no, fImage, width, height, [pixArray count], minValue, maxValue, outside, newVal, addition, isRGB, NO, 0L, 0L, 0L, 0L, 0L, 0, orientationStack, stackNo, restore);
+		ras_FillPolygon( ptsInt, no, fImage, width, height, pixArray.count, minValue, maxValue, outside, newVal, addition, isRGB, NO, 0L, 0L, 0L, 0L, 0L, 0, orientationStack, stackNo, restore);
 	}
 	else {	// Fill the image that contains no ROI :
 		if( outside) {
 			long yIm, xIm;
 			
 			switch( orientationStack) {
-				case 0:	yIm = [pixArray count];		xIm = width;	break;
-				case 1:	yIm = [pixArray count];		xIm = height;	break;
+				case 0:	yIm = pixArray.count;		xIm = width;	break;
+				case 1:	yIm = pixArray.count;		xIm = height;	break;
 				case 2:	yIm = height;				xIm = width;	break;
 			}
 			
 			if( isRGB) {
-				for( long y = 0; y < yIm ; y++) {
+				for( long y = 0; y < yIm ; y++ ) {
 					switch( orientationStack) {
 						case 1:		fTempImage = fImage + (y * ims) + stackNo*width;		break;
 						case 0:		fTempImage = fImage + (y * ims) + stackNo;				break;
@@ -2409,7 +2326,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		NSMutableArray  *ptsTemp = [roi points];
 		NSPointInt		*pts;
 		
-		pts = (NSPointInt*) malloc( [ptsTemp count] * sizeof(NSPointInt));
+		pts = (NSPointInt*) malloc( ptsTemp.count * sizeof(NSPointInt) );
 		no = [ptsTemp count];
 		for( int i = 0; i < no; i++ ) {
 			pts[ i].x = [[ptsTemp objectAtIndex: i] point].x;
@@ -2469,7 +2386,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 				no = newNo;
 			}
 			
-			ras_FillPolygon( pts, no, fImage, width, height, [pixArray count], 0, 0, NO, 0, NO, isRGB, YES, &imax, &imin, &count, &itotal, 0L, 0, 2, 0, NO);
+			ras_FillPolygon( pts, no, fImage, width, height, pixArray.count, 0, 0, NO, 0, NO, isRGB, YES, &imax, &imin, &count, &itotal, 0L, 0, 2, 0, NO);
 			
 			if( max) *max = imax;
 			if( min) *min = imin;
@@ -2480,7 +2397,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			if( dev != 0L && count > 0) {
 				idev = 0 ;
 				
-				ras_FillPolygon( pts, no, fImage, width, height, [pixArray count], 0, 0, NO, 0, NO, isRGB, YES, 0L, 0L, 0L, 0L, &idev, imean, 2, 0, NO);
+				ras_FillPolygon( pts, no, fImage, width, height, pixArray.count, 0, 0, NO, 0, NO, isRGB, YES, 0L, 0L, 0L, 0L, &idev, imean, 2, 0, NO);
 				
 				*dev = idev;
 				*dev = *dev / (count-1);
@@ -2512,7 +2429,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			if( stackDirection) next = pixPos-i;
 			else next = pixPos+i;
 			
-			if( next < [pixArray count]  && next >= 0) {
+			if( next < pixArray.count && next >= 0) {
 				[[pixArray objectAtIndex: next] computeROIInt: roi :&meanslice :&totalslice :&devslice :&minslice :&maxslice];
 				countstack++;
 				
@@ -3222,11 +3139,11 @@ BOOL gUSEPAPYRUSDCMPIX;
 					if([aLine rangeOfString:@"Z_CORRECT_FACTOR"].location!=NSNotFound){
 						NSArray *listItems = [aLine componentsSeparatedByString:@" "];
 						NSString	*subStringVal;
-						if([listItems count]>=3){
+						if ( listItems.count >= 3 ) {
 							subStringVal=[listItems objectAtIndex:2];
 							zCorrection=[subStringVal floatValue];
 							NSLog(@"Set zCorrection factor = %f",zCorrection);
-						}else{
+						} else {
 							NSLog(@"LoadBioradPic: Error setting zCorrection factor - insufficient fields");
 						}
 					}
@@ -3291,8 +3208,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	isRGB = NO;
 	
 	TIFF* tif = TIFFOpen([srcFile UTF8String], "r");
-	if( tif)
-	{
+	if( tif ) {
 		count = 0;
 		while (count < directory && TIFFReadDirectory (tif))
 			count++;
@@ -4661,21 +4577,21 @@ END_CREATE_ROIS:
 	pixelRatio = 1.0;
 	//pixel Spacing
 	NSArray *pixelSpacing = [dcmObject attributeArrayWithName:@"PixelSpacing"];
-	if([pixelSpacing count] >= 2 ) {
+	if(pixelSpacing.count >= 2 ) {
 		pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
 		pixelSpacingX = [[pixelSpacing objectAtIndex:1] floatValue];
 	}
-	else if([pixelSpacing count] >= 1 ) {
+	else if(pixelSpacing.count >= 1 ) {
 		pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
 		pixelSpacingX = [[pixelSpacing objectAtIndex:0] floatValue];
 	}
 	else {
 		NSArray *pixelSpacing = [dcmObject attributeArrayWithName:@"ImagerPixelSpacing"];
-		if([pixelSpacing count] >= 2 ) {
+		if(pixelSpacing.count >= 2 ) {
 			pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
 			pixelSpacingX = [[pixelSpacing objectAtIndex:1] floatValue];
 		}
-		else if([pixelSpacing count] >= 1 )	{
+		else if(pixelSpacing.count >= 1 )	{
 			pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
 			pixelSpacingX = [[pixelSpacing objectAtIndex:0] floatValue];
 		}
@@ -4683,7 +4599,7 @@ END_CREATE_ROIS:
 	
 	//PixelAspectRatio
 	NSArray *par = [dcmObject attributeArrayWithName:@"PixelAspectRatio"];
-	if ([par count] >= 2 ) {
+	if ( par.count >= 2 ) {
 		float ratiox = 1, ratioy = 1;
 		ratiox = [[par objectAtIndex:0] floatValue];
 		ratioy = [[par objectAtIndex:1] floatValue];
@@ -4692,7 +4608,7 @@ END_CREATE_ROIS:
 			pixelRatio = ratiox / ratioy;
 		}
 	}
-	else if( pixelSpacingX != pixelSpacingY) {
+	else if( pixelSpacingX != pixelSpacingY ) {
 		if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
 	}
 	
@@ -4742,7 +4658,7 @@ END_CREATE_ROIS:
 					
 					NSArray *centerArray = [dcmObject attributeArrayWithName:@"CenterofCircularShutter"];
 					
-					if( [centerArray count] == 2) {
+					if( centerArray.count == 2) {
 						shutterCircular_x = [[centerArray objectAtIndex:0] intValue];
 						shutterCircular_y = [[centerArray objectAtIndex:1] intValue];
 					}
@@ -4784,7 +4700,7 @@ END_CREATE_ROIS:
 			NSArray *iop = [planeOrientationObject attributeArrayWithName:@"ImageOrientationPatient"];
 			orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
 			orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
-			for ( int j = 0; j < [iop count]; j++ ) 
+			for ( int j = 0; j < iop.count; j++ ) 
 				orientation[ j] = [[iop objectAtIndex:j] floatValue];
 			
 			// pixelMeasureSequence	
@@ -4792,7 +4708,7 @@ END_CREATE_ROIS:
 			DCMObject *pixelMeasureObject = [[pixelMeasureSequence sequence] objectAtIndex:0];
 			sliceThickness = [[pixelMeasureObject attributeValueWithName:@"SliceThickness"] floatValue];
 			NSArray *pixelSpacing = [pixelMeasureObject attributeArrayWithName:@"PixelSpacing"];
-			if ([pixelSpacing count] >= 2) {
+			if (pixelSpacing.count >= 2) {
 				pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
 				pixelSpacingX = [[pixelSpacing objectAtIndex:1] floatValue];
 			}
@@ -4826,7 +4742,7 @@ END_CREATE_ROIS:
 	
 	//NSLog(@"perFrameFunctionalGroupsSequence: %@", [perFrameFunctionalGroupsSequence description]);
 	if (perFrameFunctionalGroupsSequence) {
-		if ([perFrameFunctionalGroupsSequence.sequence count] > imageNb && imageNb >= 0) {
+		if ( perFrameFunctionalGroupsSequence.sequence.count > imageNb && imageNb >= 0 ) {
 			DCMObject *sequenceItem = [[perFrameFunctionalGroupsSequence sequence] objectAtIndex:imageNb];
 			if (sequenceItem) {
 				if ([sequenceItem attributeArrayWithName:@"ImagePositionPatient"]) {
@@ -4839,7 +4755,7 @@ END_CREATE_ROIS:
 				}	
 				if ([sequenceItem attributeArrayWithName:@"PixelSpacing"]) {
 					NSArray *pixelSpacing = [sequenceItem attributeArrayWithName:@"PixelSpacing"];
-					if ([pixelSpacing count] >= 2) {
+					if (pixelSpacing.count >= 2) {
 						pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
 						pixelSpacingX = [[pixelSpacing objectAtIndex:1] floatValue];
 					}
@@ -4916,15 +4832,14 @@ END_CREATE_ROIS:
 	decayFactor = 1.0;	//1.0 / [[dcmObject attributeValueWithName:@"DecayFactor"] floatValue];	 NOT USED FOR NOW.....
 	
 	DCMSequenceAttribute *radiopharmaceuticalInformationSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"RadiopharmaceuticalInformationSequence"];
-	if( radiopharmaceuticalInformationSequence && [radiopharmaceuticalInformationSequence.sequence count] > 0)
-	{
-		DCMObject *radionuclideTotalDoseObject = [[radiopharmaceuticalInformationSequence sequence] objectAtIndex:0];
+	if( radiopharmaceuticalInformationSequence && radiopharmaceuticalInformationSequence.sequence.count > 0 ) {
+		DCMObject *radionuclideTotalDoseObject = [radiopharmaceuticalInformationSequence.sequence objectAtIndex:0];
 		radionuclideTotalDose = [[radionuclideTotalDoseObject attributeValueWithName:@"RadionuclideTotalDose"] floatValue];
 		halflife = [[radionuclideTotalDoseObject attributeValueWithName:@"RadionuclideHalfLife"] floatValue];
 		radiopharmaceuticalStartTime = [[NSCalendarDate	dateWithString: [[radionuclideTotalDoseObject attributeValueWithName:@"RadiopharmaceuticalStartTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
 		
 		// WARNING : only time is correct. NOT year/month/day
-		acquisitionTime = [[NSCalendarDate	dateWithString:[[dcmObject attributeValueWithName:@"AcquisitionTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+		acquisitionTime = [[NSCalendarDate dateWithString:[[dcmObject attributeValueWithName:@"AcquisitionTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
 		
 		[self computeTotalDoseCorrected];
 	}
@@ -8407,8 +8322,7 @@ END_CREATE_ROIS:
 
 +(int) nearestSliceInPixelList: (NSArray*)pixList withDICOMCoords: (float*)dicomCoords sliceCoords: (float*)nearestSliceCoords {
 	
-	unsigned int
-	count = [pixList count],
+	unsigned int count = pixList.count,
 	nearestSliceIndx;
 	
 	float minDist = MAXFLOAT;
@@ -8626,7 +8540,7 @@ END_CREATE_ROIS:
 				if( stackDirection) next = pixPos-i;
 				else next = pixPos+i;
 				
-				if( next < [pixArray count]  && next >= 0 )	{
+				if( next < pixArray.count && next >= 0 )	{
 					fNext = [[pixArray objectAtIndex: next] fImage];
 					if( fNext ) {
 						switch( stackMode) {
@@ -8663,7 +8577,7 @@ END_CREATE_ROIS:
 		if( stackDirection) res = pixPos-i;
 		else res = pixPos+i;
 		
-		if( res < [pixArray count] && res >= 0 ) {
+		if( res < pixArray.count && res >= 0 ) {
 			fNext = [[pixArray objectAtIndex: res] fImage];
 			if( fNext )	{
 				if( stackMode == 2) vDSP_vmax( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
@@ -9055,21 +8969,18 @@ END_CREATE_ROIS:
 	free( result);
 }
 
-- (float*) computeThickSlabRGB
-{
-	long			i, diff;
+- (float*) computeThickSlabRGB {
+	long			diff;
 	float			*fNext = NULL;
 	float			*fResult = malloc( height * width * sizeof(float) );
 	long			next;
 	float			min, max, iwl, iww;
 	
-	if( fixed8bitsWLWW)
-	{
+	if( fixed8bitsWLWW)	{
 		iww = 256;
 		iwl = 127;
 	}
-	else
-	{
+	else {
 		iww = ww;
 		iwl = wl;
 	}
@@ -9078,101 +8989,87 @@ END_CREATE_ROIS:
 	max = iwl + iww / 2;
 	diff = max - min;
 	
-	switch( stackMode)
-{
-	case 4:		// Volume Rendering
-	case 5:
-		break;
-		
-	case 1:		// Mean
-		break;
-		
-	case 2:		// Maximum IP
-	case 3:		// Minimum IP
-		if( stackDirection) next = pixPos-1;
-		else next = pixPos+1;
-		
-		if( next < [pixArray count]  && next >= 0)
-		{
-			fNext = [[pixArray objectAtIndex: next] fImage];
-			if( fNext )
-			{
-#if __ppc__ || __ppc64__
-				if( Altivec)
-				{
-					if( stackMode == 2) vmax8( (vector unsigned char*)fNext, (vector unsigned char*)fImage, (vector unsigned char*)fResult, height * width);
-					else vmin8( (vector unsigned char*)fNext, (vector unsigned char*)fImage, (vector unsigned char*)fResult, height * width);
-				}
-				else NSLog( @"Altivec is REQUIRED");
-#else
-			{
-				if( stackMode == 2) vmax8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width );
-				else vmin8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width );
-			}
-#endif
-			}
+	switch( stackMode) {
+		case 4:		// Volume Rendering
+		case 5:
+			break;
 			
-			for( i = 2; i < stack; i++)
-			{
-				long res;
-				if( stackDirection) res = pixPos-i;
-				else res = pixPos+i;
-				
-				if( res < [pixArray count])
+		case 1:		// Mean
+			break;
+			
+		case 2:		// Maximum IP
+		case 3:		// Minimum IP
+			if( stackDirection) next = pixPos-1;
+			else next = pixPos+1;
+			
+			if( next < pixArray.count  && next >= 0 ) {
+				fNext = [[pixArray objectAtIndex: next] fImage];
+				if( fNext )	{
+#if __ppc__ || __ppc64__
+					if( Altivec ) {
+						if( stackMode == 2) vmax8( (vector unsigned char*)fNext, (vector unsigned char*)fImage, (vector unsigned char*)fResult, height * width);
+						else vmin8( (vector unsigned char*)fNext, (vector unsigned char*)fImage, (vector unsigned char*)fResult, height * width);
+					}
+					else NSLog( @"Altivec is REQUIRED");
+#else
 				{
+					if( stackMode == 2) vmax8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width );
+					else vmin8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width );
+				}
+#endif
+				}
+				
+				for( long i = 2; i < stack; i++ ) {
 					long res;
 					if( stackDirection) res = pixPos-i;
 					else res = pixPos+i;
 					
-					if( res < [pixArray count] && res >= 0)
-					{
-						fNext = [[pixArray objectAtIndex: res] fImage];
-						if( fNext )
-						{
+					if( res < pixArray.count ) {
+						long res;
+						if( stackDirection) res = pixPos-i;
+						else res = pixPos+i;
+						
+						if( res < pixArray.count && res >= 0 ) {
+							fNext = [[pixArray objectAtIndex: res] fImage];
+							if( fNext )	{
 #if __ppc__ || __ppc64__
-							if( Altivec)
-							{
-								if( stackMode == 2) vmax8( (vector unsigned char*)fResult, (vector unsigned char*)fNext, (vector unsigned char*)fResult, height * width);
-								else vmin8( (vector unsigned char*)fResult, (vector unsigned char*)fNext, (vector unsigned char*)fResult, height * width);
-							}
-							else NSLog( @"Altivec is REQUIRED");
+								if( Altivec ) {
+									if( stackMode == 2) vmax8( (vector unsigned char*)fResult, (vector unsigned char*)fNext, (vector unsigned char*)fResult, height * width);
+									else vmin8( (vector unsigned char*)fResult, (vector unsigned char*)fNext, (vector unsigned char*)fResult, height * width);
+								}
+								else NSLog( @"Altivec is REQUIRED");
 #else
-						{
-							if( stackMode == 2) vmax8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width );
-							else vmin8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width );
-						}
+							{
+								if( stackMode == 2) vmax8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width );
+								else vmin8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width );
+							}
 #endif
+							}
 						}
 					}
 				}
 			}
-		}
-		else
-		{
-			memcpy( fResult, fImage, height * width * sizeof(float) );
-		}
-		break;			
-} //end of switch
+			else {
+				memcpy( fResult, fImage, height * width * sizeof(float) );
+			}
+			break;			
+	} //end of switch
 	
 	return fResult;
 }
 
-- (float*) computeThickSlab
-{
+- (float*) computeThickSlab {
 	BOOL			flip = NO; // case 5
 	long			stacksize;
 	unsigned char   *rgbaImage;
-	long			i;
 	float			min, max, iwl, iww;
 	float			*fResult = 0L;
 	
-	if( fixed8bitsWLWW)
-	{
+	if( fixed8bitsWLWW ) {
 		iww = 256;
 		iwl = 127;
 	}
-	else
-	{
+	else {
 		iww = ww;
 		iwl = wl;
 	}
@@ -9180,87 +9077,79 @@ END_CREATE_ROIS:
 	min = iwl - iww / 2; 
 	max = iwl + iww / 2;
 	
-	switch( stackMode)
-{
-	case 4:		// Volume Rendering
-		flip = YES;
-	case 5:		// Volume Rendering
-		if( thickSlab)
-		{											
-			if( stackDirection)
-			{
-				if( pixPos-stack < 0) stacksize = pixPos+1; 
-				else stacksize = stack+1;
+	switch( stackMode ) {
+		case 4:		// Volume Rendering
+			flip = YES;
+		case 5:		// Volume Rendering
+			if( thickSlab ) 	{											
+				if( stackDirection ) {
+					if( pixPos-stack < 0) stacksize = pixPos+1; 
+					else stacksize = stack+1;
+				}
+				else {
+					if( pixPos+stack < [pixArray count]) stacksize = stack; 
+					else stacksize = [pixArray count] - pixPos;
+				}
+				
+				if( stackDirection) [thickSlab setImageSource: fImage - (stacksize-1)*height * width :stacksize];
+				else [thickSlab setImageSource: fImage :stacksize];
+				[thickSlab setWLWW: iwl: iww];
+				
+				rgbaImage = [thickSlab renderSlab];
+				
+				thickSlabVRActivated = YES;
+				
+				[self setRowBytes: width*4];
+				[self setBaseAddr: (char*) rgbaImage];
 			}
-			else
-			{
-				if( pixPos+stack < [pixArray count]) stacksize = stack; 
-				else stacksize = [pixArray count] - pixPos;
+			break;
+			
+			// ------------------------------------------------------------------------------------------------
+			case 1:		// Mean
+			case 2:		// Maximum IP
+			case 3:		// Minimum IP
+			countstackMean = 1;
+			
+			fResult = malloc( height * width * sizeof(float));
+			memcpy( fResult, fImage, height * width * sizeof(float));
+			
+			if( processorsLock == nil )
+				processorsLock = [[NSLock alloc] init];
+			
+			numberOfThreadsForCompute = MPProcessors ();
+			long i;
+			for( i = 0; i < MPProcessors ()-1; i++ ) {
+				[NSThread detachNewThreadSelector: @selector( computeMaxThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: fResult], @"fResult", [NSNumber numberWithInt: i], @"pos", 0L]];
 			}
 			
-			if( stackDirection) [thickSlab setImageSource: fImage - (stacksize-1)*height * width :stacksize];
-			else [thickSlab setImageSource: fImage :stacksize];
-			[thickSlab setWLWW: iwl: iww];
+			[self computeMaxThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: fResult], @"fResult", [NSNumber numberWithInt: i], @"pos", 0L]];
 			
-			rgbaImage = [thickSlab renderSlab];
+			BOOL done = NO;
+			while( done == NO )	{
+				[processorsLock lock];
+				if( numberOfThreadsForCompute <= 0) done = YES;
+				[processorsLock unlock];
+			}
 			
-			thickSlabVRActivated = YES;
-			
-			[self setRowBytes: width*4];
-			[self setBaseAddr: (char*) rgbaImage];
-		}
-		break;
-		
-		// ------------------------------------------------------------------------------------------------
-		case 1:		// Mean
-		case 2:		// Maximum IP
-		case 3:		// Minimum IP
-		countstackMean = 1;
-		
-		fResult = malloc( height * width * sizeof(float));
-		memcpy( fResult, fImage, height * width * sizeof(float));
-		
-		if( processorsLock == 0L)
-			processorsLock = [[NSLock alloc] init];
-		
-		numberOfThreadsForCompute = MPProcessors ();
-		for( i = 0; i < MPProcessors ()-1; i++)
-		{
-			[NSThread detachNewThreadSelector: @selector( computeMaxThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: fResult], @"fResult", [NSNumber numberWithInt: i], @"pos", 0L]];
-		}
-		
-		[self computeMaxThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: fResult], @"fResult", [NSNumber numberWithInt: i], @"pos", 0L]];
-		
-		BOOL done = NO;
-		while( done == NO)
-		{
-			[processorsLock lock];
-			if( numberOfThreadsForCompute <= 0) done = YES;
-			[processorsLock unlock];
-		}
-		
-		if( countstackMean > 1)
-		{
-			i = height * width;
-			while( i-- > 0) fResult[ i] /= countstackMean;
-		}
-		//-----------------------------------
-		break;
-}
+			if( countstackMean > 1 ) {
+				i = height * width;
+				while( i-- > 0) fResult[ i] /= countstackMean;
+			}
+			//-----------------------------------
+			break;
+	}
 	
 	return fResult;
 }
 
-- (float*) computefImage
-{
+- (float*)computefImage {
 	float *result;
 	
 	thickSlabVRActivated = NO;
 	[self setRowBytes: width];
 	
 	// = STACK IMAGES thickslab
-	if( stackMode > 0 && stack >= 1)
-	{
+	if( stackMode > 0 && stack >= 1 ) {
 		result = [self computeThickSlab];
 	}
 	else result = fImage;
@@ -9279,10 +9168,8 @@ END_CREATE_ROIS:
 	}
 }
 
-- (void) changeWLWW:(float)newWL :(float)newWW
-{
-	if( baseAddr == 0L)
-	{
+- (void) changeWLWW:(float)newWL :(float)newWW {
+	if( baseAddr == nil )	{
 		[self checkImageAvailble:newWW :newWL];
 		return;
 	}
@@ -9291,22 +9178,18 @@ END_CREATE_ROIS:
 	
 	[self CheckLoad]; 
 	
-	
 	if( newWW !=0 || newWL != 0)   // new values to be applied
     {
-		if( fullww > 256)
-		{
+		if( fullww > 256 ) {
 			if( newWW < 1) newWW = 2;
 			
-			if( newWL - newWW/2 == 0)
-			{
+			if( newWL - newWW/2 == 0 ) {
 				//				newWW = (int) newWW;
 				//				newWL = (int) newWL;
 				
 				newWL = newWW/2;
 			}
-			else
-			{
+			else {
 				newWW = (int) newWW;
 				newWL = (int) newWL;
 			}
@@ -9327,21 +9210,18 @@ END_CREATE_ROIS:
 	
 	// --------------------------------
     
-	if( fixed8bitsWLWW)
-	{
+	if( fixed8bitsWLWW ) {
 		iww = 256;
 		iwl = 127;
 	}
-	else
-	{
+	else {
 		iww = ww;
 		iwl = wl;
 	}
 	
 	// ----------------------------------------------------------- iww, iwl contain computMinPixMax or newWW, newWL
     
-    if( baseAddr)
-    {
+    if( baseAddr ) {
 		updateToBeApplied = NO;
 		
 		float  min, max;
@@ -9361,8 +9241,7 @@ END_CREATE_ROIS:
 			
 			// CONVERSION TO 8-BIT for displaying
 			
-			if( thickSlabVRActivated == NO)
-			{
+			if( thickSlabVRActivated == NO ) {
 				dst8.height = height;
 				dst8.width = width;
 				dst8.rowBytes = rowBytes;					
@@ -9372,8 +9251,7 @@ END_CREATE_ROIS:
 				srcf.width = width;
 				srcf.rowBytes = width*sizeof(float);
 				
-				if( subtractedfImage)
-				{
+				if( subtractedfImage ) {
 					if( wl < 2) wl = 2;
 					if( ww < 2) ww = 2;
 					if( wl > 512) wl = 512;
@@ -9393,23 +9271,20 @@ END_CREATE_ROIS:
 					
 					vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8, subGammaFunction, 0);
 				}
-				else
-				{
+				else {
 					if( convolution) srcf.data = [self applyConvolutionOnImage: srcf.data RGB: NO];
 					
 					if( transferFunctionPtr == 0L)	// LINEAR
 					{
 						vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
 					}
-					else
-					{
+					else {
 						register int			ii = height*width;
 						register unsigned char	*dst8Ptr = (unsigned char*)baseAddr;
 						register float			*src32Ptr = srcf.data;
 						register float			from = wl -ww/2.;
 						
-						while( ii-- > 0)
-						{
+						while( ii-- > 0 ) {
 							int value = 4096 * (*src32Ptr - from)/ww;
 							
 							if( value < 0) value = 0;
@@ -9433,14 +9308,12 @@ END_CREATE_ROIS:
 		// ***** SOURCE IMAGE IS RGBA
 		// ***** ***** ***** ***** *****
 		
-		if( isRGB == YES)
-		{
+		if( isRGB ) {
 			vImage_Buffer   src, dst;
 			Pixel_8			convTable[256];
-			long			i, diff = max - min, val;
+			long			diff = max - min, val;
 			
-			if( stackMode > 0 && stack >= 1)
-			{
+			if( stackMode > 0 && stack >= 1 ) {
 				src.data = [self computeThickSlabRGB];
 			}
 			else src.data = fImage;
@@ -9451,8 +9324,7 @@ END_CREATE_ROIS:
 			
 			if( transferFunctionPtr == 0L)	// LINEAR
 			{
-				for(i = 0; i < 256; i++)
-				{
+				for( long i = 0; i < 256; i++ ) {
 					val = (((i-min) * 255L) / diff);
 					if( val < 0) val = 0;
 					else if( val > 255) val = 255;
@@ -9461,8 +9333,7 @@ END_CREATE_ROIS:
 			}
 			else
 			{
-				for(i = 0; i < 256; i++)
-				{
+				for( long i = 0; i < 256; i++ ) {
 					val = (((i-min) * 255L) / diff);
 					if( val < 0) val = 0;
 					else if( val > 255) val = 255;
@@ -9494,23 +9365,19 @@ END_CREATE_ROIS:
 
 #pragma mark-
 
-
-- (void) kill8bitsImage
-{	 
+- (void) kill8bitsImage {	 
 	[image release];	 
 	baseAddr = 0L;	 
 	image = 0L;	 
 }
 
-- (void) checkImageAvailble:(float)newWW :(float)newWL
-{
+- (void)checkImageAvailble: (float)newWW : (float)newWL {
 	[self CheckLoad];
 	
 	if( baseAddr == 0L) [self computeWImage: NO: newWW :newWL];
 }
 
-- (NSImage*) computeWImage: (BOOL) smallIcon :(float)newWW :(float)newWL
-{
+- (NSImage*)computeWImage: (BOOL)smallIcon : (float)newWW : (float)newWL {
     long    destWidth, destHeight;
 	
     [self CheckLoad];
@@ -9518,8 +9385,7 @@ END_CREATE_ROIS:
     [image release];
 	image = 0L;
 	
-    if( smallIcon)
-    {
+    if( smallIcon ) {
         float ratio;
         
         if( (float) width / PREVIEWSIZE > (float) height / PREVIEWSIZE) ratio = (float) width / PREVIEWSIZE;
@@ -9528,15 +9394,13 @@ END_CREATE_ROIS:
         destWidth = (float) width / ratio;
         destHeight = (float) height / ratio;
     }
-    else
-    {
+    else {
         destWidth = width;
         destHeight = height;
     }
     
 	if( isRGB) rowBytes = destWidth * 4;
-	else
-	{
+	else {
 		rowBytes = destWidth;
 	}
 	
@@ -9547,10 +9411,8 @@ END_CREATE_ROIS:
 	
 	baseAddr = (char*) bitmapData;
 	
-	if( smallIcon)
-    {
-		if( isRGB)
-		{
+	if( smallIcon) {
+		if( isRGB ) {
 			bitmapRep = [[NSBitmapImageRep alloc] 
 						 initWithBitmapDataPlanes:&bitmapData
 						 pixelsWide:destWidth
@@ -9564,8 +9426,7 @@ END_CREATE_ROIS:
 						 bitsPerPixel:24
 						 ];
 		}
-		else
-		{
+		else {
 			bitmapRep = [[NSBitmapImageRep alloc] 
 						 initWithBitmapDataPlanes:&bitmapData
 						 pixelsWide:destWidth
@@ -9580,12 +9441,9 @@ END_CREATE_ROIS:
 						 ];
 		}
 		
-		if( bitmapRep)
-		{
-			if( newWW == 0 && newWL == 0)
-			{
-				if( ww == 0 & wl == 0)
-				{
+		if( bitmapRep ) {
+			if( newWW == 0 && newWL == 0 ) {
+				if( ww == 0 & wl == 0 ) {
 					[self computePixMinPixMax];
 					ww = fullww;
 					wl = fullwl;
@@ -9602,10 +9460,9 @@ END_CREATE_ROIS:
 		}
 		else NSLog(@"Memory error... not enough RAM");
 		
-		baseAddr = 0L;		// We dont keep this information, will be deleted when xNSImage released!
+		baseAddr = nil;		// We dont keep this information, will be deleted when xNSImage released!
 	}
-	else
-	{
+	else {
 		// necesary to refresh DCMView of the browser
 		[self changeWLWW: newWL : newWW];
 		
@@ -9617,12 +9474,10 @@ END_CREATE_ROIS:
     return image;
 }
 
-- (NSImage*) getImage
-{
+- (NSImage*)getImage {
 	//    [self CheckLoad];
     
-	if( image == 0L)
-	{
+	if( image == nil ) {
 		NSLog(@"image == 0L!!");
 	}
 	
@@ -9643,14 +9498,12 @@ END_CREATE_ROIS:
 	imTot = tot;
 }
 
--(long)pwidth
-{
+-(long)pwidth {
 	[self CheckLoad];
     return width;
 }
 
--(long)pheight
-{
+-(long)pheight {
 	[self CheckLoad];
     return height;
 }
@@ -9661,35 +9514,30 @@ END_CREATE_ROIS:
 
 -(BOOL) updateToApply { return updateToBeApplied;}
 
--(void) setConvolutionKernel:(short*)val :(short) size :(short) norm;
-{
-	long i;
+-(void) setConvolutionKernel:(short*)val :(short) size :(short) norm {
 	
-	if( val)
-	{
+	if( val ) {
 		kernelsize = size;
 		convolution = YES;
 		normalization = norm;
-		for(  i = 0; i < kernelsize*kernelsize; i++) kernel[i] = val[i];
+		for( long i = 0; i < kernelsize*kernelsize; i++ ) kernel[i] = val[i];
 	}
-	else
-	{
+	else {
 		convolution = NO;
 	}
 	
 	updateToBeApplied = YES;
 }
 
--(void) revert
-{
-	if( fImage == 0L) return;
+- (void)revert {
+	if( fImage == nil ) return;
 	
 	[checking lock];
 	
 	SUVConverted = NO;
 	fullww = 0;
 	fullwl = 0;
-	
+
 	[acquisitionTime release];					acquisitionTime = 0L;
 	[radiopharmaceuticalStartTime release];		radiopharmaceuticalStartTime = 0L;
 	[convertedDICOM release];					convertedDICOM = 0L;
@@ -9703,10 +9551,8 @@ END_CREATE_ROIS:
 	[units release];							units = 0L;
 	[decayCorrection release];					decayCorrection = 0L;
 	
-	if( fVolImage == 0L)
-	{
-		if( fImage != 0L)
-		{
+	if( fVolImage == nil ) {
+		if( fImage != nil )	{
 			free(fImage);
 			fImage = 0L;
 		}
@@ -9716,8 +9562,7 @@ END_CREATE_ROIS:
 	[checking unlock];
 }
 
-- (void) dealloc
-{
+- (void)dealloc {
 	if( shutterPolygonal) free( shutterPolygonal);
 	
 	[self clearCachedPapyGroups];
@@ -9739,22 +9584,19 @@ END_CREATE_ROIS:
 	[viewPosition release];
 	[decayCorrection release];
 	
-	if( fVolImage == 0L)
-	{
-		if( fImage != 0L)
-		{
+	if( fVolImage ) {
+		if( fImage != nil ) {
 			free(fImage);
-			fImage = 0L;
+			fImage = nil;
 		}
 	}
 	
     [srcFile release];
     [image release];
     
-    if( oImage != 0L) 
-    {
-        free ( oImage);
-        oImage = 0L;
+    if( oImage )    {
+        free ( oImage) ;
+        oImage = nil;
     }
 	
 	[imageObj release];
@@ -9762,7 +9604,7 @@ END_CREATE_ROIS:
 	[checking release];
 	checking = 0L;
 	
-	if( oData) free( oData);
+	if( oData ) free( oData);
 	if( VOILUT_table) free( VOILUT_table);
 	
 	if( subGammaFunction) vImageDestroyGammaFunction( subGammaFunction);
@@ -9776,18 +9618,11 @@ END_CREATE_ROIS:
 - (void)finalize {
 	if( shutterPolygonal) free( shutterPolygonal);
 	
-	if( fVolImage == 0L)
-	{
-		if( fImage != 0L)
-		{
-			free(fImage);
-		}
+	if( fVolImage == 0L ) {
+		if( fImage ) free(fImage);
 	}
 	
-	if( oImage != 0L) 
-    {
-        free ( oImage);
-    }
+	if( oImage ) free( oImage);
 	
 	if( oData) free( oData);
 	if( VOILUT_table) free( VOILUT_table);
@@ -9796,7 +9631,6 @@ END_CREATE_ROIS:
 	
 	[super finalize];
 }
-
 
 // SUV stuff
 #pragma mark-
@@ -9875,27 +9709,19 @@ END_CREATE_ROIS:
 	
 	SElement *inGrOrModP = [self getPapyGroup: group fileNb: fileNb];
 	
-	if( inGrOrModP)
-	{
+	if( inGrOrModP ) {
 		int theEnumGrNb = Papy3ToEnumGroup(group);
 		int theMaxElem = gArrGroup [theEnumGrNb].size;
-		int j;
 		
 		NSCalendarDate *calendarDate;
 		NSArray *codes = [NSArray arrayWithObjects:@"AE", @"AS", @"AT", @"CS", @"DA", @"DS", @"DT", @"FL", @"FD", @"IS", @"LO", @"LT", @"OB", @"OW", @"PN", @"SH", @"SL", @"SQ", @"SS", @"ST", @"TM", @"UI", @"UL", @"UN", @"USS", @"UT", @"RET", nil];
 		
-		for (j = 0; j < theMaxElem; j++, inGrOrModP++)
-		{
-			if( inGrOrModP->element == element)
-			{
-				if( inGrOrModP->nb_val > 0)
-				{
+		for ( int j = 0; j < theMaxElem; j++, inGrOrModP++ ) {
+			if( inGrOrModP->element == element ) {
+				if( inGrOrModP->nb_val > 0 )	{
 					UValue_T *theValueP = inGrOrModP->value;
-					int k;
-					for (k = 0; k < inGrOrModP->nb_val; k++, theValueP++)
-					{
-						if( theValueP->a)
-						{
+					for ( int k = 0; k < inGrOrModP->nb_val; k++, theValueP++ )	{
+						if( theValueP->a ) {
 #undef UL
 #undef IS
 #undef SL
@@ -9991,46 +9817,37 @@ END_CREATE_ROIS:
 	return field;
 }
 
-- (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element DCMLink:(DCMObject*)dcmObject;
-{
+- (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element DCMLink:(DCMObject*)dcmObject {
 	DCMAttribute *attr = [dcmObject attributeForTag: [DCMAttributeTag tagWithGroup: group element: element]];
 	
-	if( attr)
-	{
-		NSMutableString *result = 0L;
+	if( attr ) {
+		NSMutableString *result = nil;
 		
-		for( id field in [attr values])
-		{	
-			if([field isKindOfClass:[NSString class]])
-			{
+		for( id field in [attr values]) {	
+			if([field isKindOfClass:[NSString class]]) {
 				NSString *vr = [attr vr];
 				
 				if([vr isEqualToString:@"DS"]) field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
 				
-				if( result == 0L) result = [NSMutableString stringWithString: field];
+				if( result == nil) result = [NSMutableString stringWithString: field];
 				else [result appendFormat: @"\\%@", field];
 			}
-			else if([field isKindOfClass:[NSNumber class]])
-			{
-				if( result == 0L) result = [NSMutableString stringWithString: [field stringValue]];
+			else if([field isKindOfClass:[NSNumber class]])	{
+				if( result == nil) result = [NSMutableString stringWithString: [field stringValue]];
 				else [result appendFormat: @"\\%@", [field stringValue]];
 			}
-			else if([field isKindOfClass:[NSCalendarDate class]])
-			{
+			else if([field isKindOfClass:[NSCalendarDate class]]) {
 				NSString *vr = [attr vr];
-				if([vr isEqualToString:@"DA"])
-				{
-					if( result == 0L) result = [NSMutableString stringWithString: [BrowserController DateOfBirthFormat: field]];
+				if([vr isEqualToString:@"DA"]) {
+					if( result == nil) result = [NSMutableString stringWithString: [BrowserController DateOfBirthFormat: field]];
 					else [result appendFormat: @"\\%@", [BrowserController DateOfBirthFormat: field]];
 				}
-				else if([vr isEqualToString:@"TM"])
-				{
-					if( result == 0L) result = [NSMutableString stringWithString: [BrowserController TimeWithSecondsFormat: field]];
+				else if([vr isEqualToString:@"TM"]) {
+					if( result == nil) result = [NSMutableString stringWithString: [BrowserController TimeWithSecondsFormat: field]];
 					else [result appendFormat: @"\\%@", [BrowserController TimeWithSecondsFormat: field]];
 				}
-				else
-				{
-					if( result == 0L) result = [NSMutableString stringWithString: [BrowserController DateTimeWithSecondsFormat: field]];
+				else {
+					if( result == nil) result = [NSMutableString stringWithString: [BrowserController DateTimeWithSecondsFormat: field]];
 					else [result appendFormat: @"\\%@", [BrowserController DateTimeWithSecondsFormat: field]];
 				}
 			}
@@ -10041,8 +9858,7 @@ END_CREATE_ROIS:
 	return nil;
 }
 
-- (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject;
-{
+- (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject {
 	NSDictionary *annotationsDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"];
 	
 	NSString *modality = [imageObj valueForKeyPath:@"series.modality"]; // imageObj = link to database
