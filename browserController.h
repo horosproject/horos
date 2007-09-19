@@ -43,7 +43,7 @@ enum simpleSearchType {PatientNameSearch, PatientIDSearch};
 enum queueStatus{QueueHasData, QueueEmpty};
 enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
-@interface BrowserController : NSWindowController//NSObject
+@interface BrowserController : NSWindowController   //NSObject
 {
 	NSManagedObjectModel			*managedObjectModel;
     NSManagedObjectContext			*managedObjectContext;
@@ -231,6 +231,44 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	int								DicomDirScanDepth;
 }
 
+@property(readonly) NSDateFormatter *DateTimeFormat;
+@property(readonly) NSDateFormatter *DateOfBirthFormat;
+@property(readonly) NSDateFormatter *TimeFormat;
+@property(readonly) NSDateFormatter *TimeWithSecondsFormat;
+@property(readonly) NSDateFormatter *DateTimeWithSecondsFormat;
+
+@property(readonly) NSArray *matrixViewArray;
+@property(readonly) NSMatrix *oMatrix;
+@property(readonly) long COLUMN;
+@property(readonly) BOOL is2DViewer;
+@property(readonly) MyOutlineView *databaseOutline;
+@property(readonly) NSTableView *albumTable;
+@property(readonly) BOOL isCurrentDatabaseBonjour;
+@property(readonly) NSString *currentDatabasePath;
+@property(readonly) NSString *localDatabasePath;
+@property(readonly) NSString *bonjourPassword;
+@property(readonly) long currentBonjourService;
+
+@property volatile BOOL bonjourDownloading;
+@property(readonly) NSBox *bonjourSourcesBox;
+@property(readonly) NSTextField *bonjourServiceName;
+@property(readonly) NSTextField *bonjourPasswordTextField;
+@property(readonly) NSButton *bonjourSharingCheck;
+@property(readonly) NSButton *bonjourPasswordCheck;
+@property(readonly) BonjourBrowser *bonjourBrowser;
+
+@property(readonly) NSString *documentsDirectory;
+@property(readonly) NSString *fixedDocumentsDirectory;
+@property(readonly) char *cfixedDocumentsDirectory;
+
+@property(retain) NSString *searchString;
+@property(retain) NSPredicate *fetchPredicate;
+@property(readonly) NSPredicate *filterPredicate;
+@property(readonly) NSString *filterPredicateDescription;
+
+@property BOOL rtstructProgressBar;
+@property float rtstructProgressPercent;
+
 + (BrowserController*) currentBrowser;
 + (void) replaceNotAdmitted:(NSMutableString*) name;
 + (NSArray*) statesArray;
@@ -290,7 +328,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) showDatabase:(id)sender;
 -(IBAction) matrixPressed:(id)sender;
 -(void) loadDatabase:(NSString*) path;
-- (NSArray*) matrixViewArray;
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer;
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer tileWindows: (BOOL) tileWindows;
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted;
@@ -323,7 +360,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction)setTimeIntervalType: (id)sender;
 - (IBAction) endCustomInterval:(id) sender;
 - (IBAction) customIntervalNow:(id) sender;
-- (NSMatrix*) oMatrix;
 - (IBAction) openDatabase:(id) sender;
 - (IBAction) createDatabase:(id) sender;
 - (void) openDatabaseIn:(NSString*) a Bonjour:(BOOL) isBonjour;
@@ -331,12 +367,10 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction) endReBuildDatabase:(id) sender;
 - (IBAction) ReBuildDatabase:(id) sender;
 - (IBAction) ReBuildDatabaseSheet: (id)sender;
-- (long) COLUMN;
-- (BOOL) is2DViewer;
 - (void) previewSliderAction:(id) sender;
 - (void) addHelpMenu;
 - (NSString*) _findFirstDicomdirOnCDMedia: (NSString*)startDirectory found:(BOOL) found;
-+ (BOOL) isItCD:(NSString*) path;
++ (BOOL)isItCD:(NSString*) path;
 - (void)storeSCPComplete:(id)sender;
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingDicomFile;
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages;
@@ -356,7 +390,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 //- (void)runSendQueue:(id)object;
 //- (void)addToQueue:(NSArray *)array;
-- (MyOutlineView*) databaseOutline;
 
 -(void) previewPerformAnimation:(id) sender;
 -(void) matrixDisplayIcons:(id) sender;
@@ -381,33 +414,21 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) refreshDatabase:(id) sender;
 - (void) syncReportsIfNecessary: (int) index;
 - (void) removeAllMounted;
-- (NSTableView*) albumTable;
 
 //bonjour
 - (void) getDICOMROIFiles:(NSArray*) files;
 - (void) setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key;
-- (BOOL) isCurrentDatabaseBonjour;
 - (void)setServiceName:(NSString*) title;
 - (IBAction)toggleBonjourSharing:(id) sender;
 - (void) setBonjourSharingEnabled:(BOOL) boo;
 - (void) bonjourWillPublish;
 - (void) bonjourDidStop;
 - (IBAction) bonjourServiceClicked:(id)sender;
-- (NSString*) currentDatabasePath;
-- (void) setBonjourDownloading:(BOOL) v;
 - (NSString*) getLocalDCMPath: (NSManagedObject*) obj :(long) no;
 - (void) displayBonjourServices;
-- (NSString*) localDatabasePath;
 - (NSString*) askPassword;
-- (NSString*) bonjourPassword;
-- (long) currentBonjourService;
 - (void) resetToLocalDatabase;
 - (void) createContextualMenu;
-- (NSBox*) bonjourSourcesBox;
-- (NSTextField*) bonjourServiceName;
-- (NSTextField*) bonjourPasswordTextField;
-- (NSButton*) bonjourSharingCheck;
-- (NSButton*) bonjourPasswordCheck;
 - (void) bonjourRunLoop:(id) sender;
 - (void) checkIncomingThread:(id) sender;
 - (void) checkIncoming:(id) sender;
@@ -421,21 +442,12 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 //DB plugins
 - (void)executeFilterDB:(id)sender;
 
-- (NSString *) documentsDirectory;
-- (NSString *) documentsDirectoryFor:(int) mode url:(NSString*) url;
-- (NSString *) fixedDocumentsDirectory;
-- (char *) cfixedDocumentsDirectory;
-- (NSString *) setFixedDocumentsDirectory;
-- (IBAction)showLogWindow: (id)sender ;
+- (NSString *)documentsDirectoryFor:(int) mode url:(NSString*) url;
+- (NSString *)setFixedDocumentsDirectory;
+- (IBAction)showLogWindow: (id)sender;
 
 - (NSString *)folderPathResolvingAliasAndSymLink:(NSString *)path;
 
-- (NSString *)searchString;
-- (void)setSearchString:(NSString *)searchString;
-- (NSPredicate*)fetchPredicate;
-- (void)setFetchPredicate:(NSPredicate *)predicate;
-- (NSPredicate*)filterPredicate;
-- (NSString*) filterPredicateDescription;
 - (void)setFilterPredicate:(NSPredicate *)predicate description:(NSString*) desc;
 - (NSPredicate *)createFilterPredicate;
 - (NSString *)createFilterDescription;
@@ -461,28 +473,13 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 
-- (BonjourBrowser *) bonjourBrowser;
-
 - (void) initAnimationSlider;
-
-- (NSDateFormatter*) DateTimeFormat;
-- (NSDateFormatter*) DateOfBirthFormat;
-- (NSDateFormatter*) TimeFormat;
-- (NSDateFormatter*) TimeWithSecondsFormat;
-- (NSDateFormatter*) DateTimeWithSecondsFormat;
 
 + (NSString*) DateTimeWithSecondsFormat:(NSDate*) t;
 + (NSString*) TimeWithSecondsFormat:(NSDate*) t;
 + (NSString*) DateOfBirthFormat:(NSDate*) d;
 + (NSString*) DateTimeFormat:(NSDate*) d;
 + (NSString*) TimeFormat:(NSDate*) t;
-
-//RTSTRUCT
-
-- (BOOL)rtstructProgressBar;
-- (void)setRtstructProgressBar: (BOOL)s;
-- (float)rtstructProgressPercent;
-- (void)setRtstructProgressPercent: (float)p;
 
 - (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute elements:(NSString**) elements;
 
