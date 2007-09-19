@@ -7383,7 +7383,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				
 				#if __BIG_ENDIAN__
-					glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
+					glReadPixels(0, 0, *width, *height, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
+					
+					register int ii = *width * *height;
+					register unsigned char	*t_argb = buf;
+					register unsigned char	*t_rgb = buf;
+					while( ii-->0)
+					{
+						*((int*) t_rgb) = *((int*) t_argb);
+						t_argb+=4;
+						t_rgb+=3;
+					}
 				#else
 					glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
 					
@@ -7558,7 +7568,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	return buf;
 }
 
--(NSImage*) nsimage:(BOOL) originalSize{ return [self nsimage: originalSize allViewers: NO]; }
+-(NSImage*) nsimage:(BOOL) originalSize
+{
+	return [self nsimage: originalSize allViewers: NO];
+}
 
 -(NSImage*) nsimage:(BOOL) originalSize allViewers:(BOOL) allViewers {
 	

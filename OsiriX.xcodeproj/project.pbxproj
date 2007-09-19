@@ -237,8 +237,6 @@
 		7E55AE1606C80E460059D6EB /* StudyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E55AE1406C80E460059D6EB /* StudyView.m */; };
 		7E569399065007D6001A9762 /* SmartWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E569397065007D6001A9762 /* SmartWindowController.h */; };
 		7E56939A065007D6001A9762 /* SmartWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E569398065007D6001A9762 /* SmartWindowController.m */; };
-		7E5975D808845D8700762AEF /* OsiriXSCPDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */; };
-		7E5975D908845D8800762AEF /* OsiriXSCPDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */; };
 		7E5975DA08845D9100762AEF /* OsiriXSCPDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */; };
 		7E5975DB08845D9200762AEF /* OsiriXSCPDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */; };
 		7E5DC07C078AF4FB009D04DF /* DCMQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC07A078AF4FB009D04DF /* DCMQueryNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2106,7 +2104,7 @@
 		BF7DEAAA09D1F79300A332B8 /* jcmainct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11406BF2C4F00C7EF1E /* jcmainct.c */; };
 		BF7DEAAB09D1F79400A332B8 /* jcmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11506BF2C4F00C7EF1E /* jcmarker.c */; };
 		BF7DEAAC09D1F79400A332B8 /* jcmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11606BF2C4F00C7EF1E /* jcmaster.c */; };
-		BF7DEAAD09D1F79500A332B8 /* jcodec.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11706BF2C4F00C7EF1E; };
+		BF7DEAAD09D1F79500A332B8 /* jcodec.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11706BF2C4F00C7EF1E /* jcodec.c */; };
 		BF7DEAAE09D1F79600A332B8 /* jcomapi.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11806BF2C4F00C7EF1E /* jcomapi.c */; };
 		BF7DEAAF09D1F79700A332B8 /* jconfig8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB11906BF2C4F00C7EF1E /* jconfig8.h */; };
 		BF7DEAB009D1F79800A332B8 /* jcparam.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11A06BF2C4F00C7EF1E /* jcparam.c */; };
@@ -6565,6 +6563,8 @@
 		CE88576308AF938800B72DA7 /* ROIVolumeController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE88575B08AF938800B72DA7 /* ROIVolumeController.h */; };
 		CE88576408AF938800B72DA7 /* ROIVolumeController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE88575C08AF938800B72DA7 /* ROIVolumeController.mm */; };
 		CE88576508AF938800B72DA7 /* ROIVolumeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE88575D08AF938800B72DA7 /* ROIVolumeView.mm */; };
+		CE8919EF0CA181700044EEDD /* OsiriXSCPDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */; };
+		CE8919F00CA181710044EEDD /* OsiriXSCPDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */; };
 		CE897DD50C21D951005C669E /* texture.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE897DD30C21D951005C669E /* texture.tif */; };
 		CE897DD60C21D951005C669E /* texture.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE897DD30C21D951005C669E /* texture.tif */; };
 		CE8CAB0D0B4715DD0068DBAE /* DICOMPrint in Resources */ = {isa = PBXBuildFile; fileRef = CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */; };
@@ -9079,7 +9079,7 @@
 		BFAEB11406BF2C4F00C7EF1E /* jcmainct.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcmainct.c; sourceTree = "<group>"; };
 		BFAEB11506BF2C4F00C7EF1E /* jcmarker.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcmarker.c; sourceTree = "<group>"; };
 		BFAEB11606BF2C4F00C7EF1E /* jcmaster.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcmaster.c; sourceTree = "<group>"; };
-		BFAEB11706BF2C4F00C7EF1E = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcodec.c; sourceTree = "<group>"; };
+		BFAEB11706BF2C4F00C7EF1E /* jcodec.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcodec.c; sourceTree = "<group>"; };
 		BFAEB11806BF2C4F00C7EF1E /* jcomapi.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcomapi.c; sourceTree = "<group>"; };
 		BFAEB11906BF2C4F00C7EF1E /* jconfig8.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jconfig8.h; sourceTree = "<group>"; };
 		BFAEB11A06BF2C4F00C7EF1E /* jcparam.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcparam.c; sourceTree = "<group>"; };
@@ -13643,7 +13643,7 @@
 				BFAEB11406BF2C4F00C7EF1E /* jcmainct.c */,
 				BFAEB11506BF2C4F00C7EF1E /* jcmarker.c */,
 				BFAEB11606BF2C4F00C7EF1E /* jcmaster.c */,
-				BFAEB11706BF2C4F00C7EF1E,
+				BFAEB11706BF2C4F00C7EF1E /* jcodec.c */,
 				BFAEB11806BF2C4F00C7EF1E /* jcomapi.c */,
 				BFAEB11906BF2C4F00C7EF1E /* jconfig8.h */,
 				BFAEB11A06BF2C4F00C7EF1E /* jcparam.c */,
@@ -16721,7 +16721,6 @@
 				CEE1922F08636FA100DED1F0 /* DicomImage.h in Headers */,
 				CE9DD285086B35050058DD2A /* DicomStudy.h in Headers */,
 				CE9DD286086B35050058DD2A /* DicomSeries.h in Headers */,
-				7E5975D808845D8700762AEF /* OsiriXSCPDataHandler.h in Headers */,
 				A99B7ECC0885A620004328C0 /* BonjourPublisher.h in Headers */,
 				A99B7ECE0885A621004328C0 /* BonjourBrowser.h in Headers */,
 				BF17E97F0887662400ECF621 /* NetworkMoveDataHandler.h in Headers */,
@@ -18472,6 +18471,7 @@
 				CED2CF8F0C9B28580047F123 /* PreferencePaneControllerDCMTK.h in Headers */,
 				CED2CF980C9B288C0047F123 /* CIADICOMField.h in Headers */,
 				BF79F3C80C9F7EDD007ADFE0 /* Centerline.h in Headers */,
+				CE8919F00CA181710044EEDD /* OsiriXSCPDataHandler.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22171,7 +22171,6 @@
 				CEE1922E08636FA100DED1F0 /* DicomImage.m in Sources */,
 				CE9DD284086B35050058DD2A /* DicomStudy.m in Sources */,
 				CE9DD287086B35050058DD2A /* DicomSeries.m in Sources */,
-				7E5975D908845D8800762AEF /* OsiriXSCPDataHandler.m in Sources */,
 				A99B7ECB0885A61F004328C0 /* BonjourPublisher.m in Sources */,
 				A99B7ECD0885A621004328C0 /* BonjourBrowser.m in Sources */,
 				BF17E9800887662400ECF621 /* NetworkMoveDataHandler.m in Sources */,
@@ -22823,6 +22822,7 @@
 				CED2CF900C9B28580047F123 /* PreferencePaneControllerDCMTK.mm in Sources */,
 				CED2CF970C9B288C0047F123 /* CIADICOMField.m in Sources */,
 				BF79F3C90C9F7EDD007ADFE0 /* Centerline.mm in Sources */,
+				CE8919EF0CA181700044EEDD /* OsiriXSCPDataHandler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

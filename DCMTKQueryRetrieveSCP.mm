@@ -268,7 +268,7 @@ void errmsg(const char* msg, ...)
 	options.groupLength_ = EGL_withoutGL;
 	
 	//number of associations
-	options.maxAssociations_ = 20;
+	options.maxAssociations_ = 800;
 	
 	//port
 	opt_port = _port;

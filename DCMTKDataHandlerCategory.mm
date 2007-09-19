@@ -665,7 +665,17 @@ extern BrowserController *browserWindow;
 		[context lock];
 		
 		[findArray release];
-		findArray = [context executeFetchRequest:request error:&error];
+		findArray = 0L;
+		
+		@try
+		{
+			findArray = [context executeFetchRequest:request error:&error];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"prepareFindForDataSet exception");
+			NSLog( [e description]);
+		}
 		
 		[context unlock];
 		[context release];
@@ -721,7 +731,18 @@ extern BrowserController *browserWindow;
 	[context retain];
 	[context lock];
 	
-	NSArray *array = [context executeFetchRequest:request error:&error];
+	NSArray *array = 0L;
+	
+	@try
+	{
+		array = [context executeFetchRequest:request error:&error];
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"prepareMoveForDataSet exception");
+		NSLog( [e description]);
+	}
+	
 	OFCondition cond;
 	
 	if (error)

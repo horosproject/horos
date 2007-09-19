@@ -196,7 +196,7 @@ void DcmQueryRetrieveConfig::initConfigStruct()
    GroupName_ = "";
    networkTCPPort_ = 104;
    maxPDUSize_ = 16384;
-   maxAssociations_ = 16;
+   maxAssociations_ = 800;
    CNF_Config.noOfAEEntries = 0;
    CNF_HETable.noOfHostEntries = 0;
    CNF_VendorTable.noOfHostEntries = 0;
