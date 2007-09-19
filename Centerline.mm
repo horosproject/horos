@@ -234,14 +234,36 @@
 			NSNumber *closest = [NSNumber numberWithInt:closestNeighbor];
 			[connectedPoints addObject:closest];
 			[stack addObject:closest];
-			position = medialPoints->GetPoint(currentPoint);
+			//position = medialPoints->GetPoint(currentPoint);
 			//NSLog(@"%d next Point: %f % f %f",[connectedPoints count], position[0], position[1], position[2]);
 		}
 		
 		[visitedPoints unionSet:distantNeighbors];
-
+		
+		// try and make sure visited most points
+		// Find next closest point
+		/*
+		if (([visitedPoints count] < (nPoints * 0.8)) && ![stack count]) {
+			if (![visitedPoints containsObject:[NSNumber numberWithInt:i]] && i != currentPoint) {
+				position = medialPoints->GetPoint(currentPoint);
+				double neighborDistance = 100000;
+				for (i = 0; i < nPoints; i++) {	
+					double *neighborPosition = medialPoints->GetPoint(i);
+					double distance = sqrt( pow(neighborPosition[0] - position[0],2) + pow(neighborPosition[1] - position[1],2) + pow(neighborPosition[2] - position[2],2));
+					if (distance < neighborDistance) {
+						neighborDistance = distance;
+						currentPoint = i;
+					}
+				}
+				NSNumber *closest = [NSNumber numberWithInt:currentPoint];
+				[connectedPoints addObject:closest];
+				[visitedPoints addObject:closest];
+				[stack addObject:closest];
+			}
+		}
+		*/
 	}
-	
+	NSLog(@"npoints: %d  visited: %d", nPoints, [visitedPoints count]);
 
 	NSLog(@"convert to OSIPoints");
 	//Convert Points to OSIPoints

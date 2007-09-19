@@ -1071,13 +1071,33 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 				unsigned char value = *buff;
 				unsigned char prior = 0;				 
 				unsigned char next = 0;
+				unsigned char above = 0;
+				unsigned char below = 0;
+				unsigned char superior = 0;
+				unsigned char inferior = 0;
+				
+				
 				
 				//try and find the edge points
 				if (value > 0) {
-					prior = *(buff- 1);
-					next  = *(buff + 1);
-					if (prior ==  0 || next == 0)
-						points->InsertPoint( count++, x, y, z);
+					// make sure we aren't are the beginning or end of row, column, slice
+					if (x > 0)
+						prior = *(buff- 1);
+					if (x < width - 1)
+						next  = *(buff + 1);
+					if (y > 0)
+						superior = *(buff - width);
+					if (y < height -1)
+						inferior = *(buff + width);
+					if (z > 0)
+						above = *(buff - (height * width));
+					if (z < depth -1)
+						below = *(buff + (height * width));
+					// add point if there is a 0 neighbor. Should mean it is an edge point	
+					if (prior ==  0 || next == 0 || superior == 0 || inferior == 0 || above == 0 || below == 0) {
+						if (count2 % 4 == 0) points->InsertPoint( count++, x, y, z);
+						count2++;
+					}
 					//NSLog(@"Insert Point: %f % f %f", k,j,i);
 				}
 				buff++;
