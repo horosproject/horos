@@ -9189,7 +9189,7 @@ static NSArray*	openSubSeriesArray = 0L;
 			found = YES;
 			
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USEDICOMDIR"])	{
-				NSString    *aPath = [removeableMedia objectAtIndex: i];
+				NSString    *aPath = mediaPath;
 				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 				
 				if( enumer ==nil ) {
@@ -9246,7 +9246,7 @@ static NSArray*	openSubSeriesArray = 0L;
 			}
 			else {
 				NSString    *pathname;
-				NSString    *aPath = [removeableMedia objectAtIndex: i];
+				NSString    *aPath = mediaPath;
 				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 				
 				if( enumer == nil )	{
