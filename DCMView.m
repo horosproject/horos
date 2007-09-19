@@ -1655,7 +1655,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( blendingResampledBaseAddr) free( blendingResampledBaseAddr);
 
 //	[self clearGLContext];
-	
+
 	if(iChatCursorTextureBuffer) free(iChatCursorTextureBuffer);
 	if(iChatCursorTextureName) glDeleteTextures(1, &iChatCursorTextureName);
 	
@@ -6644,7 +6644,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				NSPoint topLeft;
 				topLeft.x = drawingFrameRect.size.width/2 - iChatWidth/2.0;
 				topLeft.y = drawingFrameRect.size.height/2 - iChatHeight/2.0;
-						
+					
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 				glEnable(GL_BLEND);
 				
 				glColor4f (0.0f, 0.0f, 0.0f, 0.7f);

@@ -50,7 +50,6 @@ static IChatTheatreDelegate	*iChatDelegate = 0L;
 	[super dealloc];
 }
 
-
 - (void)_stateChanged:(NSNotification *)aNotification;
 {
 	NSLog(@"IChatTheatreDelegate _stateChanged !");
@@ -99,7 +98,7 @@ static IChatTheatreDelegate	*iChatDelegate = 0L;
 		[avManager setVideoOptimizationOptions:IMVideoOptimizationStills];
 		NSLog(@"IChatTheatreDelegate Start iChat Theatre");
 		[avManager start];
-		isRunning = YES;
+		isRunning = YES;	
 	}
 }
 

@@ -317,6 +317,7 @@ typedef char* vtkMyCallbackVR;
 	//Context for rendering to iChat
 	BOOL						_hasChanged;
 	float						iChatWidth, iChatHeight;
+	BOOL						iChatFrameIsSet;
 }
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
@@ -478,4 +479,8 @@ typedef char* vtkMyCallbackVR;
 - (char*)data8;
 - (void)setData8:(char*)data;
 
+- (void)drawImage:(NSImage *)image inBounds:(NSRect)rect;
+- (BOOL)checkHasChanged;
+- (void)setIChatFrame:(BOOL)boo;
+- (void)_iChatStateChanged:(NSNotification *)aNotification;
 @end
