@@ -9584,7 +9584,7 @@ END_CREATE_ROIS:
 	[viewPosition release];
 	[decayCorrection release];
 	
-	if( fVolImage ) {
+	if( fVolImage == 0L) {
 		if( fImage != nil ) {
 			free(fImage);
 			fImage = nil;
