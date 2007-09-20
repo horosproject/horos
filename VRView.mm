@@ -1856,6 +1856,7 @@ public:
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
+	_hasChanged = YES;
 	[drawLock lock];
 	_contextualMenuActive = NO;
 	if (_rightMouseDownTimer) {
@@ -2038,6 +2039,7 @@ public:
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
+	_hasChanged = YES;
 	vtkCocoaRenderWindowInteractor *interactor = [self getInteractor];
 	if (!interactor) return;
 	
@@ -2074,6 +2076,7 @@ public:
 
 - (void)otherMouseDown:(NSEvent *)theEvent
 {
+	_hasChanged = YES;
 	int tool = [self getTool: theEvent];
 	[self setCursorForView: tool];
 	
@@ -2514,6 +2517,7 @@ public:
 }
 
 - (void)zoomMouseUp:(NSEvent *)theEvent{
+	_hasChanged = YES;
 	if (_tool == tZoom)
 	{
 		if( volumeMapper)
@@ -2539,6 +2543,7 @@ public:
 - (void)rightMouseUp:(NSEvent *)theEvent
 {
 	_hasChanged = YES;
+	[drawLock lock];
 	NSLog(@"right Mouse Up");
 	[self deleteRightMouseDownTimer];
 	if (_contextualMenuActive) {
@@ -2550,11 +2555,13 @@ public:
 	
 	if (_tool == tZoom)
 		[self zoomMouseUp:(NSEvent *)theEvent];
-		
+	
+	[drawLock unlock];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
+	_hasChanged = YES;
 	[drawLock lock];
 	
     BOOL		keepOn = YES;
