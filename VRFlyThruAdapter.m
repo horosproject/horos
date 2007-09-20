@@ -41,7 +41,7 @@ MODIFICATION HISTORY
 - (Camera*) getCurrentCamera
 {
 	Camera *cam = [[controller view] camera];
-	[cam setPreviewImage: [[[controller view] nsimage:TRUE] autorelease]];
+	[cam setPreviewImage: [[controller view] nsimage:TRUE]];
 	return cam;
 }
 
@@ -58,7 +58,7 @@ MODIFICATION HISTORY
 
 - (NSImage*) getCurrentCameraImage: (BOOL) highQuality
 {
-	return [[[controller view] nsimageQuicktime: highQuality] autorelease];
+	return [[controller view] nsimageQuicktime: highQuality];
 }
 
 - (void) prepareMovieGenerating

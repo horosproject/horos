@@ -834,8 +834,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	
 	[bitmapData writeToFile:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
 	
-	[im release];
-	
 	ifoto = [[iPhoto alloc] init];
 	[ifoto importIniPhoto: [NSArray arrayWithObject:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]]];
 	[ifoto release];
@@ -861,8 +859,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		
 		[bitmapData writeToFile:[panel filename] atomically:YES];
 		
-		[im release];
-		
 		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
 	}
@@ -880,8 +876,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		NSImage *im = [view nsimage:NO];
 		
 		[[im TIFFRepresentation] writeToFile:[panel filename] atomically:NO];
-		
-		[im release];
 		
 		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];

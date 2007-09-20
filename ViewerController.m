@@ -12364,7 +12364,7 @@ int i,j,l;
 			if( saveImage)
 			{
 				[self setImageIndex: i];
-				NSImage *im = [[imageView nsimage: [[printFormat selectedCell] tag]] autorelease]; //original
+				NSImage *im = [imageView nsimage: [[printFormat selectedCell] tag]]; //original
 				im = [DCMPix resizeIfNecessary: im dcmPix: [imageView curDCM]];
 				
 				NSData *bitmapData = [im  TIFFRepresentation];
@@ -13309,8 +13309,6 @@ int i,j,l;
 	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 
 	[bitmapData writeToFile:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
-	
-	[im release];
 				
 	email = [[Mailer alloc] init];
 	
@@ -13662,8 +13660,6 @@ int i,j,l;
 								else
 									[[im TIFFRepresentation] writeToFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.tif", i+1]] atomically:NO];
 							}
-							
-							[im release];
 						}
 					}
 					
@@ -13741,8 +13737,6 @@ int i,j,l;
 						[JPEGExif addExif: [NSURL fileURLWithPath: [panel filename]] properties: exifDict format:@"tiff"]; 
 					}
 				}
-				
-				[im release];
 				
 				if( [[NSFileManager defaultManager] fileExistsAtPath: [panel filename]] == NO)
 						NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
@@ -14026,7 +14020,6 @@ int i,j,l;
 ////	//		[[smallImage TIFFRepresentation] writeToFile:@"/test.tiff" atomically:NO];
 ////	}
 ////
-////	[sourceImage release];
 //#endif
 //}
 

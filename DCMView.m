@@ -665,7 +665,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 	//	[pwindow release];
 		[imageView release];
-		[im release];
 	}
 } 
 
@@ -1124,8 +1123,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		im = [self nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
 		
 		[pb setData: [[NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
-		
-		[im release];
 	}
 	else {
 		[pb declareTypes:[NSArray arrayWithObjects:@"ROIObject", NSStringPboardType, nil] owner:nil];
@@ -7767,7 +7764,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	memcpy( [rep bitmapData], data, height*width*bpp*spp/8);
 	
-	NSImage *image = [[NSImage alloc] init];
+	NSImage *image = [[[NSImage alloc] init] autorelease];
 	[image addRepresentation:rep];
      
 	free( data);
@@ -9224,9 +9221,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	// The image we will drag 
 	NSImage *image;
 	if ([event modifierFlags] & NSShiftKeyMask)
-		image = [[self nsimage: YES] autorelease];
+		image = [self nsimage: YES];
 	else
-		image = [[self nsimage: NO] autorelease];
+		image = [self nsimage: NO];
 		
 	// Thumbnail image and position
 	NSPoint event_location = [event locationInWindow];
@@ -9607,7 +9604,7 @@ NSLog(@"renderIntoPixelBuffer");
     [NSGraphicsContext setCurrentContext:context];
 	//get NSImage and draw in the rect
 	
-    [self drawImage:[self nsimage:NO] inBounds:NSMakeRect(0.0, 0.0, width, height)];
+    [self drawImage: [self nsimage:NO] inBounds:NSMakeRect(0.0, 0.0, width, height)];
     [context flushGraphics];
     
     // Clean up - remember to unlock the pixel buffer's base address (we locked

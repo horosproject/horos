@@ -29,7 +29,7 @@
 - (Camera*) getCurrentCamera
 {
 	Camera *cam = [[controller view] camera];
-	[cam setPreviewImage: [[[controller view] nsimage:TRUE] autorelease]];
+	[cam setPreviewImage: [[controller view] nsimage:TRUE]];
 	return cam;
 }
 
@@ -41,7 +41,7 @@
 
 - (NSImage*) getCurrentCameraImage: (BOOL) notUsed
 {
-	return [[[controller view] nsimageQuicktime] autorelease];
+	return [[controller view] nsimageQuicktime];
 }
 
 - (void) prepareMovieGenerating

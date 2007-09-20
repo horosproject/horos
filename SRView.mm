@@ -2419,7 +2419,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	
 	[TIFFRep release];
 	
-     NSImage *image = [[NSImage alloc] init];
+     NSImage *image = [[[NSImage alloc] init] autorelease];
      [image addRepresentation:rep];
      
 	 free( dataPtr);
@@ -2438,8 +2438,6 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
     im = [self nsimage:NO];
     
     [pb setData: [im TIFFRepresentation] forType:NSTIFFPboardType];
-    
-    [im release];
 }
 
 // joris' modifications for fly thru
@@ -2468,7 +2466,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	[cam setEyeAngle: eyeAngle];
 	[cam setParallelScale: parallelScale];
 	
-	[cam setPreviewImage: [[self nsimage:TRUE] autorelease]];
+	[cam setPreviewImage: [self nsimage:TRUE]];
 	
 	return [cam autorelease];
 }
@@ -3218,8 +3216,6 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 			source:self 
 			slideBack:YES];
 	}
-	
-	[image release];
 	
 	NS_HANDLER
 		NSLog(@"Exception while dragging: %@", [localException description]);

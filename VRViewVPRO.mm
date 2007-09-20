@@ -4633,7 +4633,7 @@ public:
 //	[TIFFRep release];
 
 	
-     NSImage *image = [[NSImage alloc] init];
+     NSImage *image = [[[NSImage alloc] init] autorelease];
      [image addRepresentation:rep];
      
 	 free( dataPtr);
@@ -4745,8 +4745,6 @@ public:
     im = [self nsimage:NO];
     
     [pb setData: [im TIFFRepresentation] forType:NSTIFFPboardType];
-    
-    [im release];
 }
 
 - (IBAction) resetImage:(id) sender
@@ -4804,7 +4802,7 @@ public:
 	// fusion percentage
 	[cam setFusionPercentage:blendingFactor];
 
-	[cam setPreviewImage: [[self nsimage:TRUE] autorelease]];
+	[cam setPreviewImage: [self nsimage:TRUE]];
 	
 	return [cam autorelease];
 }

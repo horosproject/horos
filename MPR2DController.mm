@@ -1300,8 +1300,6 @@ extern NSString * documentsDirectory();
 	NSImage *im = [view nsimage:NO];
 	
 	[self sendMailImage: im];
-	
-	[im release];
 }
 
 -(IBAction) export2iPhoto:(id) sender
@@ -1319,8 +1317,6 @@ extern NSString * documentsDirectory();
 		bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 		
 		[bitmapData writeToFile:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
-		
-		[im release];
 		
 		ifoto = [[iPhoto alloc] init];
 		[ifoto importIniPhoto: [NSArray arrayWithObject:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]]];
@@ -1349,8 +1345,6 @@ extern NSString * documentsDirectory();
 		
 		[bitmapData writeToFile:[panel filename] atomically:YES];
 		
-		[im release];
-		
 		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
 			[ws openFile:[panel filename]];
@@ -1369,8 +1363,6 @@ extern NSString * documentsDirectory();
 		NSImage *im = [view nsimage:NO];
 		
 		[[im TIFFRepresentation] writeToFile:[panel filename] atomically:NO];
-		
-		[im release];
 		
 		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])

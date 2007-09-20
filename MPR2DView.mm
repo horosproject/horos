@@ -2466,7 +2466,5 @@ if( reader)
     im = [self nsimage:NO];
     
     [pb setData: [im TIFFRepresentation] forType:NSTIFFPboardType];
-    
-    [im release];
 }
 @end

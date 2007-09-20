@@ -5169,7 +5169,7 @@ public:
 
 	memcpy( [rep bitmapData], dataPtr, height*width*bpp*spp/8);
 		
-	 NSImage *image = [[NSImage alloc] init];
+	 NSImage *image = [[[NSImage alloc] init] autorelease];
 	 [image addRepresentation:rep];
 	 
 	free( dataPtr);
@@ -5222,8 +5222,6 @@ public:
     im = [self nsimage:NO];
     
     [pb setData: [im TIFFRepresentation] forType:NSTIFFPboardType];
-    
-    [im release];
 }
 
 - (void) updateScissorStateButtons
@@ -5381,7 +5379,7 @@ public:
 	[cam setMovieIndexIn4D:[controller curMovieIndex]];
 	
 	// thumbnail
-	[cam setPreviewImage: [[self nsimage:TRUE] autorelease]];
+	[cam setPreviewImage: [self nsimage:TRUE]];
 	
 	return [cam autorelease];
 }
@@ -6298,8 +6296,6 @@ public:
 			source:self 
 			slideBack:YES];
 	}
-	
-	[image release];
 	
 	NS_HANDLER
 		NSLog(@"Exception while dragging: %@", [localException description]);

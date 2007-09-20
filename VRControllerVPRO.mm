@@ -1543,8 +1543,6 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	NSImage *im = [view nsimage:NO];
 	
 	[self sendMailImage: im];
-	
-	[im release];
 }
 
 - (void) exportJPEG:(id) sender
@@ -1567,8 +1565,6 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 		
 		[bitmapData writeToFile:[panel filename] atomically:YES];
 		
-		[im release];
-		
 		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
 	}
@@ -1589,8 +1585,6 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	
 	[bitmapData writeToFile:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"] atomically:YES];
 	
-	[im release];
-	
 	ifoto = [[iPhoto alloc] init];
 	[ifoto importIniPhoto: [NSArray arrayWithObject:[documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"]]];
 	[ifoto release];
@@ -1608,8 +1602,6 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 		NSImage *im = [view nsimage:NO];
 		
 		[[im TIFFRepresentation] writeToFile:[panel filename] atomically:NO];
-		
-		[im release];
 		
 		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];

@@ -160,7 +160,7 @@
 
 	memcpy( [rep bitmapData], dataPtr, height*width*bpp*spp/8);
 		
-	 NSImage *image = [[NSImage alloc] init];
+	 NSImage *image = [[[NSImage alloc] init] autorelease];
 	 [image addRepresentation:rep];
 	 
 	free( dataPtr);
@@ -188,8 +188,6 @@
 		
 		[bitmapData writeToFile:[panel filename] atomically:YES];
 		
-		[im release];
-		
 		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
 	}
@@ -206,8 +204,6 @@
     im = [self nsimage:NO];
     
     [pb setData: [im TIFFRepresentation] forType:NSTIFFPboardType];
-    
-    [im release];
 }
 
 - (void) exportDICOMFile:(id) sender

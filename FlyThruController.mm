@@ -634,12 +634,12 @@ MODIFICATION HISTORY
 		}
 	
 		[FTAdapter setCurrentViewToCamera:[[FT pathCameras] objectAtIndex: [cur intValue]]];
-		return [[FTAdapter getCurrentCameraImage: [[LOD selectedCell] tag]] retain];
+		return [FTAdapter getCurrentCameraImage: [[LOD selectedCell] tag]];
 	}
 	else
 	{
 		[FTAdapter setCurrentViewToCamera:[[FT pathCameras] objectAtIndex: 0]];
-		return [[FTAdapter getCurrentCameraImage: [[LOD selectedCell] tag]] retain];
+		return [FTAdapter getCurrentCameraImage: [[LOD selectedCell] tag]];
 	}
 }
 

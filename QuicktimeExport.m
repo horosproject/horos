@@ -528,8 +528,6 @@ NSString * documentsDirectory();
 					
 					[[im TIFFRepresentation] writeToFile:curFile atomically:YES];
 				}
-							
-				[im release];
 			}
 			
 			if( [wait aborted])

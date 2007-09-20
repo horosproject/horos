@@ -137,7 +137,7 @@
 	[infoDict setObject: [NSString stringWithFormat: @"%.0f x %.0f", [aImage size].width, [aImage size].height] forKey: @"imageSize"];	
 	[infoDict setObject: [NSString stringWithFormat: @"%.0f", [aImage size].width] forKey: @"imageSize.width"];
 	[infoDict setObject: [NSString stringWithFormat: @"%.0f", [aImage size].height] forKey: @"imageSize.height"];
-	[aImage release];
+	
 	return infoDict;
 }
 
@@ -214,7 +214,7 @@
 //********************************************************************************************
 - (NSString *) _createDicomImageWithViewer: (ViewerController *) viewer toDestinationPath: (NSString *) destPath asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations
 {
-	NSImage *currentImage = [[[viewer imageView] nsimage: NO] autorelease];
+	NSImage *currentImage = [[viewer imageView] nsimage: NO];
 	
 	currentImage = [DCMPix resizeIfNecessary: currentImage dcmPix: [[viewer imageView] curDCM]];
 	
