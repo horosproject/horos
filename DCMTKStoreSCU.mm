@@ -1600,6 +1600,8 @@ NS_ENDHANDLER
 	[context retain];
 	[context lock];
 	
+	@try {
+
 	if (!_logEntry) {		
 		
 		_logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
@@ -1618,7 +1620,13 @@ NS_ENDHANDLER
 	[_logEntry setValue:[NSNumber numberWithInt:_numberErrors] forKey:@"numberError"];
 	[_logEntry setValue:[NSDate date] forKey:@"endTime"];
 	[_logEntry setValue:[userInfo valueForKey:@"Message"] forKey:@"message"];
-	
+		
+	}
+	@catch (NSException * e) {
+		NSLog( @"updateLogEntry exception");
+		NSLog( [e description]);
+	}
+
 	[context unlock];
 	[context release];
 }

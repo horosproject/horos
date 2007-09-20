@@ -153,6 +153,7 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 		[context retain];
 		[context lock];
 		
+		@try {
 		logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
 		[logEntry setValue:[NSDate date] forKey:@"startTime"];
 		[logEntry setValue:@"Move" forKey:@"type"];
@@ -164,6 +165,12 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 		//	[logEntry setValue:_studyDescription forKey:@"studyName"];
 		[node setLogEntry:logEntry];
 		
+		}
+		@catch (NSException * e) {
+			NSLog( @"moveCallback exception");
+			NSLog( [e description]);
+		}
+
 		[context unlock];
 		[context release];
 	

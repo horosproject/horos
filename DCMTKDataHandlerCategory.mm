@@ -733,69 +733,70 @@ extern BrowserController *browserWindow;
 	
 	NSArray *array = 0L;
 	
+	OFCondition cond = EC_IllegalParameter;
+	
 	@try
 	{
 		array = [context executeFetchRequest:request error:&error];
+		
+		if (error)
+		{
+			[moveArray release];
+			moveArray = [[NSArray array] retain];
+			
+			cond = EC_IllegalParameter;
+		}
+		else
+		{
+			NSEnumerator *enumerator = [array objectEnumerator];
+			id moveEntity;
+			//create set
+			NSMutableSet *moveSet = [NSMutableSet set];
+			while (moveEntity = [enumerator nextObject])
+				[moveSet unionSet:[moveEntity valueForKey:@"paths"]];
+			//array from set
+			NSArray *tempMoveArray = [moveSet allObjects];
+			
+			/*
+			create temp folder for Move paths. 
+			Create symbolic links. 
+			Will allow us to convert the sytax on copies if necessary
+			*/
+			
+			//delete if necessary and create temp folder. Allows us to compress and deompress files. Wish we could do on the fly
+	//		tempMoveFolder = [[NSString stringWithFormat:@"/tmp/DICOMMove_%@", [[NSDate date] descriptionWithCalendarFormat:@"%H%M%S%F"  timeZone:nil locale:nil]] retain]; 
+	//		
+	//		NSFileManager *fileManager = [NSFileManager defaultManager];
+	//		if ([fileManager fileExistsAtPath:tempMoveFolder]) [fileManager removeFileAtPath:tempMoveFolder handler:nil];
+	//		if ([fileManager createDirectoryAtPath:tempMoveFolder attributes:nil]) 
+	//			NSLog(@"created temp Folder: %@", tempMoveFolder);
+	//		
+	//		//NSLog(@"Temp Move array: %@", [tempMoveArray description]);
+	//		NSEnumerator *tempEnumerator = [tempMoveArray objectEnumerator];
+	//		NSString *path;
+	//		while (path = [tempEnumerator nextObject]) {
+	//			NSString *lastPath = [path lastPathComponent];
+	//			NSString *newPath = [tempMoveFolder stringByAppendingPathComponent:lastPath];
+	//			[fileManager createSymbolicLinkAtPath:newPath pathContent:path];
+	//			[paths addObject:newPath];
+	//		}
+			
+			tempMoveArray = [tempMoveArray sortedArrayUsingSelector:@selector(compare:)];
+			
+			[moveArray release];
+			moveArray = [tempMoveArray retain];
+			NSLog( @"will move: %d", [moveArray count]);
+			
+			cond = EC_Normal;
+		}
+
 	}
 	@catch (NSException * e)
 	{
 		NSLog( @"prepareMoveForDataSet exception");
 		NSLog( [e description]);
 	}
-	
-	OFCondition cond;
-	
-	if (error)
-	{
-		[moveArray release];
-		moveArray = [[NSArray array] retain];
-		
-		cond = EC_IllegalParameter;
-	}
-	else
-	{
-		NSEnumerator *enumerator = [array objectEnumerator];
-		id moveEntity;
-		//create set
-		NSMutableSet *moveSet = [NSMutableSet set];
-		while (moveEntity = [enumerator nextObject])
-			[moveSet unionSet:[moveEntity valueForKey:@"paths"]];
-		//array from set
-		NSArray *tempMoveArray = [moveSet allObjects];
-		
-		/*
-		create temp folder for Move paths. 
-		Create symbolic links. 
-		Will allow us to convert the sytax on copies if necessary
-		*/
-		
-		//delete if necessary and create temp folder. Allows us to compress and deompress files. Wish we could do on the fly
-//		tempMoveFolder = [[NSString stringWithFormat:@"/tmp/DICOMMove_%@", [[NSDate date] descriptionWithCalendarFormat:@"%H%M%S%F"  timeZone:nil locale:nil]] retain]; 
-//		
-//		NSFileManager *fileManager = [NSFileManager defaultManager];
-//		if ([fileManager fileExistsAtPath:tempMoveFolder]) [fileManager removeFileAtPath:tempMoveFolder handler:nil];
-//		if ([fileManager createDirectoryAtPath:tempMoveFolder attributes:nil]) 
-//			NSLog(@"created temp Folder: %@", tempMoveFolder);
-//		
-//		//NSLog(@"Temp Move array: %@", [tempMoveArray description]);
-//		NSEnumerator *tempEnumerator = [tempMoveArray objectEnumerator];
-//		NSString *path;
-//		while (path = [tempEnumerator nextObject]) {
-//			NSString *lastPath = [path lastPathComponent];
-//			NSString *newPath = [tempMoveFolder stringByAppendingPathComponent:lastPath];
-//			[fileManager createSymbolicLinkAtPath:newPath pathContent:path];
-//			[paths addObject:newPath];
-//		}
-		
-		tempMoveArray = [tempMoveArray sortedArrayUsingSelector:@selector(compare:)];
-		
-		[moveArray release];
-		moveArray = [tempMoveArray retain];
-		NSLog( @"will move: %d", [moveArray count]);
-		
-		cond = EC_Normal;
-	}
-	
+
 	[context unlock];
 	[context release];
 	
