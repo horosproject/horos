@@ -50,7 +50,7 @@
 #include "vtkImageData.h"
 
 #include "vtkExtractPolyDataGeometry.h"
-
+#include "vtkPolyDataConnectivityFilter.h"
 #include "vtkTransformPolyDataFilter.h"
 
 #include "vtkImageResample.h"
@@ -83,21 +83,25 @@
 	//power->SetInput(polyData);
 
 
-	float oPoints = polyData->GetNumberOfPoints();
-	NSLog(@"original Points: %f", oPoints);
+	int oPoints = polyData->GetNumberOfPoints();
+	NSLog(@"original Points: %d", oPoints);
+	NSLog(@"original Polys: %d", polyData->GetNumberOfPolys());
 	vtkPolyData *medialSurface;
 	//power->Update();
 	//medialSurface = power->GetMedialSurface();
-	NSLog(@"Decimate");
-	float reduction = 10000.0/oPoints;
+	
+	float reduction = 1.0 - 10000.0/oPoints;
+	NSLog(@"Decimate: %f", reduction);
 	isoDeci = vtkDecimatePro::New();
 	//isoDeci->SetInput(medialSurface);
 	isoDeci->SetInput(polyData);
 	isoDeci->SetTargetReduction(reduction);
-	//isoDeci->SetPreserveTopology(TRUE);
+	isoDeci->SetPreserveTopology(TRUE);
 
 	
 	isoDeci->Update();
+	
+
 	
 
 	
@@ -106,6 +110,7 @@
 	vtkPoints *medialPoints = data->GetPoints();
 	int nPoints = data->GetNumberOfPoints();
 	NSLog(@"number of Points: %d", nPoints);
+	NSLog(@"number of Polys: %d", data->GetNumberOfPolys());
 	NSLog(@"Build Links");
 	data->BuildLinks();
 
@@ -159,7 +164,7 @@
 	
 	 double minDistance = 1000000;
 	 double maxDistance = 0;
-	 vtkIdType farPoint;
+	
 	//NSLog(@"get starting Point");
 	for (i = 0; i < nPoints; i++) {	
 		double *position = medialPoints->GetPoint(i);
@@ -168,18 +173,21 @@
 			minDistance = distance;
 			startingPoint = i;
 		}
-		
-		if (distance > maxDistance) {
-			maxDistance = distance;
-			farPoint = i;
-		}
+
 	}
 
 	double *sp = medialPoints->GetPoint(startingPoint);
 	NSLog(@"starting Point %d : %f %f %f",startingPoint, sp[0], sp[1], sp[2]);
-	double *ep = medialPoints->GetPoint(farPoint);
-	NSLog(@"farthest Point %d : %f %f %f",farPoint, ep[0], ep[1], ep[2]);
 	//get connected Points
+	
+	vtkPolyDataConnectivityFilter *connectFilter = vtkPolyDataConnectivityFilter::New();
+	connectFilter->SetInput(data);
+	connectFilter->SetExtractionModeToPointSeededRegions();
+	connectFilter->AddSeed(startingPoint);
+	connectFilter->Update();
+	vtkPolyData *connectionData = connectFilter->GetOutput();
+	NSLog(@"connected cells: %d", connectionData->GetNumberOfPolys());
+	NSLog(@"connected Points: %d", connectionData->GetNumberOfPoints());
 
 
 	NSNumber *first = [NSNumber numberWithInt:startingPoint];
@@ -214,12 +222,16 @@
 		double maxDistance = 0;
 		BOOL foundNeighbor = NO;
 		vtkIdType closestNeighbor;
+		double *currentPointPosition = medialPoints->GetPoint(currentPoint);
+		avgX = currentPointPosition[0]; 
+		avgY = currentPointPosition[1];
+		avgZ = currentPointPosition[2];
 		for (NSNumber *number in distantNeighbors) {
 			// Want points at least two connections away
 			//if (!([ptSet containsObject: number] || [closeNeighbors containsObject:number])) {
 				vtkIdType pt = [number intValue];
 				position = medialPoints->GetPoint(pt);
-				double distance = sqrt( pow(currentPointPosition[0] - position[0],2) + pow(currentPointPosition[0] - position[1],2) + pow(currentPointPosition[2] - position[2],2));
+				double distance = sqrt( pow(avgX - position[0],2) + pow(avgY - position[1],2) + pow(avgZ - position[2],2));
 
 				if ((distance > maxDistance) && ![visitedPoints containsObject:number]) {
 					// closet neighbor cannot be a visited Point
