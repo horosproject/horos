@@ -2535,8 +2535,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[exportSubmenu release];
 	[item release];
 	
-	
-	[view setMenu:contextual];
+//	[view setMenu:contextual];	ANR:9/11/08 doesn't work correctly : update problems, loops problems
 	[contextual release];
 												
 }
