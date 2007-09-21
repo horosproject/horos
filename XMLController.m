@@ -30,6 +30,8 @@ static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus-large";
 static NSString*	SearchToolbarItemIdentifier				= @"Search";
 static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 
+static BOOL showWarning = YES;
+
 @implementation XMLController
 
 - (NSString*) getPath:(NSXMLElement*) node
@@ -244,8 +246,11 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	}
 	else
 	{
-		if( editingActivated)
+		if( editingActivated && showWarning)
+		{
 			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is now activated. You can edit any DICOM fields.\r\rSelect at which level you want to apply the changes (this image only, this series or the entire study.\r\rWarning !\rModifying DICOM fields can corrupt the DICOM files!\r\"With Great Power, Comes Great Responsibility\"", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			showWarning = NO;
+		}
 	}
 }
 

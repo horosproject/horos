@@ -631,7 +631,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     DIC_AE calledAETitle;
     ASC_getAPTitles(assoc->params, NULL, calledAETitle, NULL);
 	//change to have 10 possible Syntaxes. We want to accept any incoming Syntax
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, NULL };
+    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL };
     int numTransferSyntaxes = 0;
 
     switch (options_.networkTransferSyntax_)
@@ -643,7 +643,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         break;
       case EXS_LittleEndianExplicit:
         /* we prefer Little Endian Explicit */
-        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;	//;
         transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
 		transferSyntaxes[3] = UID_JPEGProcess14SV1TransferSyntax;				//jpeg lossless
@@ -653,8 +653,9 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
 		transferSyntaxes[7] = UID_JPEG2000TransferSyntax;						//jpeg 2000
 		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
 		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+		transferSyntaxes[10] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
 		
-        numTransferSyntaxes = 10;
+        numTransferSyntaxes = 11;
         break;
 		
       case EXS_BigEndianExplicit:
