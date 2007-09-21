@@ -4469,7 +4469,7 @@ static NSArray*	statesArray = nil;
 				imagesArray = [imagesSet allObjects];
 				NSString *filePath = [imagesArray objectAtIndex:0];
 				
-				if( [[NSWorkspace sharedWorkspace]openFile: filePath withApplication:@"VLC"] == NO)
+				if( [[NSWorkspace sharedWorkspace] openFile: filePath withApplication:@"VLC"] == NO)
 				{
 					NSRunAlertPanel( NSLocalizedString( @"MPEG-2 File", 0L), NSLocalizedString( @"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/", 0L), nil, nil, nil);
 				}
