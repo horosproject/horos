@@ -4465,7 +4465,7 @@ static NSArray*	statesArray = nil;
 			}
 			else if ([[imagesArray objectAtIndex:0] isEqualToString:@"DICOMMPEG2"])
 			{
-				imagesSet = [item valueForKeyPath: @"images.path"];
+				imagesSet = [item valueForKeyPath: @"images.completePath"];
 				imagesArray = [imagesSet allObjects];
 				NSString *filePath = [imagesArray objectAtIndex:0];
 				
