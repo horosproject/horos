@@ -45,6 +45,12 @@
 	_z = z;
 }
 
+- (void) setX:(float)x y:(float)y z:(float)z{
+	_x = x;
+	_y = y;
+	_z = z;
+}
+
 // init with x, y, and z
 - (id)initWithX:(float)x  y:(float)y  z:(float)z value:(NSNumber *)value{
 	if (self = [super init]) {
@@ -52,7 +58,6 @@
 		_y = y;
 		_z = z;
 		_value = [value retain];
-		_connections = [[NSMutableSet set] retain];
 	}
 	return self;
 }
@@ -65,7 +70,6 @@
 		_y = point.y;
 		_z = (float)slice;
 		_value = [value retain];
-		_connections = [[NSMutableSet set] retain];
 	}
 	return self;
 }
@@ -90,7 +94,7 @@
 
 - (void)dealloc{
 	[_value release];
-	[_connections release];
+	[_userInfo release];
 	[super dealloc];
 }
 
@@ -99,32 +103,16 @@
 }
 
 
-- (NSMutableSet *)connections{
-	return _connections;
+- (void)setUserInfo:(id)userInfo{
+	[_userInfo release];
+	_userInfo = [userInfo retain];
 }
 
-- (void)setConnections:(NSMutableSet *)connections{
-	[_connections release];
-	_connections = [connections retain];
-}
-- (void)addConnection:(OSIPoint3D *)connection{
-	[_connections addObject:connection];
-}
-- (void)removeConnection:(OSIPoint3D *)connection{
-	[_connections removeObject:connection];
+
+- (id)userInfo{
+	return _userInfo;
 }
 
-- (BOOL)isEndNode{
-	if ([_connections count] < 2)
-		return YES;
-	return NO;
-}
-
-- (BOOL)isBranchNode {
-		if ([_connections count] > 2)
-		return YES;
-	return NO;
-}
 	
 
 

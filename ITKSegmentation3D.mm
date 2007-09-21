@@ -30,6 +30,7 @@
 //#include "itkBinaryMask3DMeshSource.h"
 #include "itkVTKImageExport.h"
 #include "itkVTKImageExportBase.h"
+#include <itkBinaryDilateImageFilter.h>
 
 
 #include "vtkImageImport.h"
@@ -983,19 +984,19 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	thresholdFilter = ConnectedThresholdFilterType::New();
 			
 	thresholdFilter->SetLower(-2000.0);
-	thresholdFilter->SetUpper(-500.0);
+	thresholdFilter->SetUpper(-800.0);
 	thresholdFilter->SetReplaceValue(255.0);
 	
-
-	
-
-
-
-	NSEnumerator *enumerator = [seeds objectEnumerator];
-	id seed;
+	/*
+	typedef itk::BinaryDilateImageFilter<CharImageType CharImageType> DilateFilterType;
+	DilateFilterType::Pointer binaryFilter::New();
+	binaryFilter->SetDilateValue:(255);
+	binaryFilter->setInput(thresholdFilter->getOutput());
+	*/
+	//id seed;
 	//Add seed points. Can use more than 1
 	
-	while (seed = [enumerator nextObject]) {
+	for (OSIPoint3D *seed in seeds) {
 		FloatImageType::IndexType  index;
 		if (_resampledData){
 			index[0] = (long) [seed x] / 2;

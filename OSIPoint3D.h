@@ -28,7 +28,7 @@
 	float _z;
 	NSNumber *_value;
 	
-	NSMutableSet *_connections;
+	id  _userInfo;
 }
 
 - (float)x;
@@ -38,6 +38,8 @@
 - (void)setX:(float)x;
 - (void)setY:(float)y;
 - (void)setZ:(float)z;
+
+- (void) setX:(float)x y:(float)y z:(float)z;
 
 - (NSNumber *)value;
 - (void)setValue:(NSNumber *)value;
@@ -50,11 +52,9 @@
 + (id)pointWithX:(float)x  y:(float)y  z:(float)z value:(NSNumber *)value;
 + (id)pointWithNSPoint:(NSPoint)point  slice:(long)slice value:(NSNumber *)value;
 
-- (NSMutableSet *)connections;
-- (void)setConnections:(NSMutableSet *)connections;
-- (void)addConnection:(OSIPoint3D *)connection;
-- (void)removeConnection:(OSIPoint3D *)connection;
-- (BOOL)isEndNode;
-- (BOOL)isBranchNode;
+- (void)setUserInfo:(id)userInfo;
+- (id)userInfo;
+
+
 
 @end

@@ -36,6 +36,6 @@
 
 
 - (NSArray *)generateCenterline:(vtkPolyData *)polyData startingPoint:(OSIPoint *)start;
-- (NSSet *)connectedPointsForPoint:(vtkIdType)pt fromPolyData:(vtkPolyData *)data;
+- (NSMutableSet *)connectedPointsForPoint:(vtkIdType)pt fromPolyData:(vtkPolyData *)data;
 
 @end
