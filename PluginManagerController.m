@@ -421,7 +421,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 		[emailMessage appendFormat:@"%@: %@ \n", [param objectAtIndex:0], [[param objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	}
 	
-	NSString *emailAddress = @"joris.heuberger@sim.hcuge.ch,rossetantoine@bluewin.ch";
+	NSString *emailAddress = @"joris@osirix-viewer.com,rossetantoine@osirix-viewer.com";
 	NSString *emailSubject = @"OsiriX: New Plugin Submission"; // don't localize this. This is the subject of the email WE will receive.
 	
 	#if !__LP64__

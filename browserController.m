@@ -2720,50 +2720,56 @@ static NSArray*	statesArray = nil;
 					[wait setCancel: YES];
 					[[wait progress] setMaxValue:[toBeRemoved count]];
 					
-					if( [defaults boolForKey: @"AUTOCLEANINGDELETEORIGINAL"] ) {
-						NSMutableArray	*nonLocalImagesPath = [NSMutableArray array];
-						
-						for ( NSManagedObject *curObj in toBeRemoved ) {
+					@try
+					{
+						if( [defaults boolForKey: @"AUTOCLEANINGDELETEORIGINAL"] ) {
+							NSMutableArray	*nonLocalImagesPath = [NSMutableArray array];
 							
-							if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
-							{
-								NSArray	*seriesArray = [self childrenArray: curObj];
+							for ( NSManagedObject *curObj in toBeRemoved ) {
 								
-								for( NSManagedObject *series in seriesArray ) {
-									NSArray		*imagesArray = [self imagesArray: series];
+								if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
+								{
+									NSArray	*seriesArray = [self childrenArray: curObj];
 									
-									[nonLocalImagesPath addObjectsFromArray: [[imagesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"]];
+									for( NSManagedObject *series in seriesArray ) {
+										NSArray		*imagesArray = [self imagesArray: series];
+										
+										[nonLocalImagesPath addObjectsFromArray: [[imagesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"]];
+									}
+								}
+								else NSLog( @"Uh? Autocleaning, object strange...");
+							}
+							
+							for ( NSString *path in nonLocalImagesPath ) {
+								[[NSFileManager defaultManager] removeFileAtPath: path handler:nil];
+								
+								if( [[path pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
+								{
+									[[NSFileManager defaultManager] removeFileAtPath:[[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+								}
+								
+								if( [[path pathExtension] isEqualToString:@"zip"])		// ZIP -> DELETE XML
+								{
+									[[NSFileManager defaultManager] removeFileAtPath:[[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
 								}
 							}
-							else NSLog( @"Uh? Autocleaning, object strange...");
 						}
 						
-						for ( NSString *path in nonLocalImagesPath ) {
-							[[NSFileManager defaultManager] removeFileAtPath: path handler:nil];
+						for( id obj in toBeRemoved ) {
+							[context deleteObject: obj];
 							
-							if( [[path pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
-							{
-								[[NSFileManager defaultManager] removeFileAtPath:[[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
-							}
-							
-							if( [[path pathExtension] isEqualToString:@"zip"])		// ZIP -> DELETE XML
-							{
-								[[NSFileManager defaultManager] removeFileAtPath:[[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
-							}
+							[wait incrementBy:1];
+							if( [wait aborted]) break;
 						}
-					}
-					
-					for( id obj in toBeRemoved ) {
-						[context deleteObject: obj];
 						
-						[wait incrementBy:1];
-						if( [wait aborted]) break;
+						[self saveDatabase: currentDatabasePath];
+						
+						[self outlineViewRefresh];
 					}
-					
-					[self saveDatabase: currentDatabasePath];
-					
-					[self outlineViewRefresh];
-					
+					@catch (NSException * e) {
+						NSLog( @"autoCleanDatabaseDate");
+						NSLog( [e description]);
+					}
 					[wait close];
 					[wait release];
 				}
