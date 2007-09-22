@@ -278,8 +278,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property(readonly) float contextualMenuInWindowPosX, contextualMenuInWindowPosY;
 @property(readonly) GLuint fontListGL;
 @property(readonly) NSFont *fontGL;
-@property(readonly) GLuint iChatFontListGL;
-@property(readonly) NSFont *iChatFontGL;
 @property NSInteger tag;
 @property(readonly) float curWW, curWL;
 @property NSInteger rows, columns;

@@ -16,6 +16,7 @@
 #import <InstantMessage/IMService.h>
 #import <InstantMessage/IMAVManager.h>
 #import "ViewerController.h"
+#import "VRController.h"
 
 static IChatTheatreDelegate	*iChatDelegate = 0L;
 
