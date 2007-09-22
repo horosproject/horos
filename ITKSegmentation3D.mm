@@ -1058,7 +1058,10 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	NSLog(@"Get Centerline");
 	[wait setString:@"Finding Centerline Points"];
 	Centerline *centerline = [[Centerline alloc] init];
-	NSArray *centerlinePoints = [centerline generateCenterline:contour startingPoint:[seeds objectAtIndex:0]];
+	OSIPoint3D *endingPoint = nil;
+	if ([seeds count] > 2)
+		endingPoint = [seeds objectAtIndex:1];
+	NSArray *centerlinePoints = [centerline generateCenterline:contour startingPoint:[seeds objectAtIndex:0]  endingPoint:(OSIPoint3D *)endingPoint];
 	for (OSIPoint3D *point in centerlinePoints) {
 		int slice = round([point z] * 2);
 		int xPos = round([point x] * 2);

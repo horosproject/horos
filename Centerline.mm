@@ -71,15 +71,20 @@
 
 
 
-- (NSArray *)generateCenterline:(vtkPolyData *)polyData startingPoint:(OSIPoint *)start{
-	//NSMutableSet *visitedPoints = [NSMutableSet set];
+- (NSArray *)generateCenterline:(vtkPolyData *)polyData startingPoint:(OSIPoint3D *)start endingPoint:(OSIPoint3D *)end{
 	NSMutableArray *connectedPoints = [NSMutableArray array];
 	NSMutableArray *stack = [NSMutableArray array];
+	NSMutableArray *outputArray = [NSMutableArray array];
 
 	vtkDecimatePro *decimate = 0L;
 	vtkDecimatePro *decimate2 = 0L;
 	vtkDataSet*	output = 0L;
-	vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
+	
+	BOOL atEnd = NO;
+	
+	OSIPoint3D *endingPoint;
+	OSIPoint3D *startingPoint;
+
 
 
 	int oPoints = polyData->GetNumberOfPoints();
@@ -89,7 +94,7 @@
 	//power->Update();
 	//medialSurface = power->GetMedialSurface();
 	
-	float reduction = 1.0 - 10000.0/oPoints;
+	float reduction = 0.9;
 	NSLog(@"Decimate: %f", reduction);
 	decimate = vtkDecimatePro::New();
 	//decimate->SetInput(medialSurface);
@@ -98,25 +103,10 @@
 	decimate->SetPreserveTopology(YES);
 	decimate->BoundaryVertexDeletionOn();
 	decimate->SplittingOn();
-
-	
-	//decimate->Update();
-/*
-	NSLog(@"medial surface");
-	power->SetInput(decimate->GetOutput());
-	power->Update();
-	medialSurface = power->GetMedialSurface();
-	NSLog(@"Decimate2");
-	decimate2 = vtkDecimatePro::New();
-	decimate2->SetInput(medialSurface);
-	decimate2->SetTargetReduction(0.9);
-	decimate2->SetPreserveTopology(YES);
-	decimate2->Update();
-*/	
+	decimate->SetMaximumError(VTK_DOUBLE_MAX);
 	decimate->Update();
+	
 	vtkPolyData *data = decimate->GetOutput();
-	//vtkPolyData *data = decimate2->GetOutput();
-	NSLog(@"getPoints");
 	vtkPoints *medialPoints = data->GetPoints();
 	int nPoints = data->GetNumberOfPoints();
 	NSLog(@"number of Points: %d", nPoints);
@@ -149,7 +139,7 @@
 			
 			NSSet *ptSet = [point3D userInfo];
 			for (NSNumber *number in ptSet) {
-				OSIPoint *nextPoint = [pointArray objectAtIndex:[number intValue]];
+				OSIPoint3D *nextPoint = [pointArray objectAtIndex:[number intValue]];
 				x += [nextPoint x];
 				y += [nextPoint y];
 				z += [nextPoint z];			
@@ -171,15 +161,12 @@
 	NSLog(@"find starting Point");
 	// Find most inferior Point. Rrpresent Rectum
 	// Could be a seed point to generalize.  
-	OSIPoint3D *startingPoint;
+
 	x = [start x];
 	y = [start y];
 	z = [start z];
 	
-	 double minDistance = 1000000;
-	
-
-	
+	double minDistance = 1000000;
 	for (OSIPoint3D *point3D in pointArray) {
 		double distance = sqrt( pow(x - [point3D x],2) + pow(y - [point3D y],2) + pow(z - [point3D z],2));
 		if (distance < minDistance) {
@@ -187,6 +174,21 @@
 			startingPoint = point3D;
 		}
 	}
+	
+	
+	if (end) {
+		x = [end x];
+		y = [end y];
+		z = [end z];
+		for (OSIPoint3D *point3D in pointArray) {
+			double distance = sqrt( pow(x - [point3D x],2) + pow(y - [point3D y],2) + pow(z - [point3D z],2));
+			if (distance < minDistance) {
+				minDistance = distance;
+				endingPoint = point3D;
+			}
+		}
+	}
+	
 	
 	int startIndex = [pointArray indexOfObject:startingPoint];
 
@@ -211,33 +213,31 @@
 	for (int i = 0; i < nPoints; i++) visited[i] = 0;
 	
 	visited[startIndex] = 1;
-	NSNumber *first = [NSNumber numberWithInt:startIndex];
-	
-	[connectedPoints addObject:startingPoint];
-	[stack  addObject:first];
+	[stack  addObject:[NSNumber numberWithInt:startIndex]];
 	NSLog(@"get centerline Points");
 	vtkIdType currentPoint;
-	//currentPoint = startingPoint;
-	//double *position;
+
 	
 	int count = 0;
-	while ([stack count] > 0 && (count++ < nPoints)) {
-		if (count %500 == 0)
-			NSLog(@"count %d stack: %d", count, [stack count]);
+	int currentModelIndex = startIndex; 
+	OSIPoint3D *currentModelPoint = startingPoint;
+	x = [startingPoint x]; 
+	y = [startingPoint y];
+	z = [startingPoint z];
+	
+	while (([stack count] > 0 ) && !atEnd) {
+
 		neighbors = 0;
 		currentPoint = [[stack lastObject] intValue];
 		[stack removeLastObject];
-		OSIPoint3D *point3D = [pointArray objectAtIndex:currentPoint];
 
-		x = [point3D x]; 
-		y = [point3D y];
-		z = [point3D z];
+	
 		//NSLog(@"get neighbors");
 		//Loop through neighbors to get avg neighbor position Go three connections out
 		NSSet *ptSet = [self connectedPointsForPoint:currentPoint fromPolyData:data];
 		NSMutableSet *neighbors = [NSMutableSet set];
 		[neighbors unionSet:ptSet];
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 2; i++) {
 			NSMutableSet *newNeighbors = [NSMutableSet set];
 			for (NSNumber *number in neighbors)  {
 				NSSet *neighborSet = (NSSet *)[[pointArray objectAtIndex:[number intValue]] userInfo];
@@ -247,40 +247,52 @@
 		}
 
 		
-		//go through neighbors again and find closet neighbor to avgPt.
-		//add closest neighbor to connected points
 
-		double modellingDistance = 7.0;
-		BOOL foundNeighbor = NO;
-		vtkIdType closestNeighbor;
-		//NSLog(@"neighbor count: %d", [neighbors count]);
+		double modellingDistance = 10.0;
+
 		for (NSNumber *number in neighbors)  {
-			OSIPoint3D *nextPoint = [pointArray objectAtIndex:[number intValue]];
-			double distance = sqrt( pow(x - [nextPoint x],2) + pow(y - [nextPoint y],2) + pow(z - [nextPoint z],2));
-			//NSLog(@"distance: %f visited: %d", distance,  visited[pt]);
-			int index = [pointArray indexOfObject:nextPoint];
-			if ((distance > modellingDistance) && visited[index] == 0) {
-				// closet neighbor cannot be a visited Point
-				//NSLog(@"add point: ");
-				[stack addObject:[NSNumber numberWithInt:index]];
-				[connectedPoints addObject:point3D];
-			}
-			visited[index] = 1;
-		}
+			int index = [number intValue];
+			OSIPoint3D *nextPoint = [pointArray objectAtIndex:index];
+			
+			if (visited[index] == 0) {
+				double distance = sqrt( pow(x - [nextPoint x],2) + pow(y - [nextPoint y],2) + pow(z - [nextPoint z],2));
+				//NSLog(@"distance: %f visited: %d", distance,  visited[pt]);
 				
+				if (distance > modellingDistance) {
+					// if point is within modelling distance of an existing point don't add
+					BOOL tooClose = NO;
+					for (OSIPoint3D *existingPoint in connectedPoints) {						
+						if (sqrt( pow([currentModelPoint x] - [existingPoint x],2)
+							+ pow([currentModelPoint y] - [existingPoint y],2)
+							+ pow([currentModelPoint z] - [existingPoint z],2)) <  modellingDistance) tooClose = YES;
+					}
+					if (!tooClose)	[connectedPoints addObject:currentModelPoint];
+					
+					if ([currentModelPoint isEqual:endingPoint]) {
+						atEnd = YES;
+						break;
+					}
+					currentModelIndex = index;
+					currentModelPoint = nextPoint;
+					x = [nextPoint x]; 
+					y = [nextPoint y];
+					z = [nextPoint z];
+				}
+				[stack addObject:[NSNumber numberWithInt:index]];
+				visited[index] = 1;
+			}
+			
+		}				
 		// try and make sure visited most points
 		// Find next closest point
-
 	}
-	NSLog(@"npoints: %d", nPoints);
-	NSLog(@"count: %d", count);
-	// NSLog(@"connectedPoints: %@",  [connectedPoints count]);
-
+	
+	NSLog(@"npoints: %d", nPoints);	
+	NSLog(@"connected Points: %d", [connectedPoints count]);
 
 	
-	power->Delete();
+
 	decimate->Delete();
-	//decimate2->Delete();
 	return connectedPoints;			
 
 }

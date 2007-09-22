@@ -29,13 +29,13 @@
 #undef id
 
 
-@class OSIPoint;
+@class OSIPoint3D;
 @interface Centerline : NSObject {
 
 }
 
 
-- (NSArray *)generateCenterline:(vtkPolyData *)polyData startingPoint:(OSIPoint *)start;
+- (NSArray *)generateCenterline:(vtkPolyData *)polyData startingPoint:(OSIPoint3D *)start endingPoint:(OSIPoint3D *)end;
 - (NSMutableSet *)connectedPointsForPoint:(vtkIdType)pt fromPolyData:(vtkPolyData *)data;
 
 @end
