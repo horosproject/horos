@@ -1862,8 +1862,8 @@ public:
 	if (_rightMouseDownTimer) {
 		[self deleteRightMouseDownTimer];
 	}
-	if (!([theEvent modifierFlags] & NSControlKeyMask)) 	
-		_rightMouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self  selector:@selector(showMenu:) userInfo:theEvent  repeats:NO] retain];
+//	if (!([theEvent modifierFlags] & NSControlKeyMask)) 	
+//		_rightMouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self  selector:@selector(showMenu:) userInfo:theEvent  repeats:NO] retain];
 	
 	[self mouseDown:theEvent];
 	[drawLock unlock];

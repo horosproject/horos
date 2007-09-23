@@ -179,7 +179,7 @@ Version 2.4
 	
 	[locationMatrix selectCellWithTag:locationValue];
 	[locationURLField setStringValue:[defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]];
-	[locationPathField setURL: [NSURL URLWithString: [defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]]];
+	[locationPathField setURL: [NSURL fileURLWithPath: [defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]]];
 	
 //	[copyDatabaseModeMatrix setEnabled:[defaults boolForKey:@"COPYDATABASE"]];
 	[copyDatabaseModeMatrix selectCellWithTag:[defaults integerForKey:@"COPYDATABASEMODE"]];
@@ -427,7 +427,7 @@ Version 2.4
 		}
 		
 		[locationURLField setStringValue: location];
-		[locationPathField setURL: [NSURL URLWithString: location]];
+		[locationPathField setURL: [NSURL fileURLWithPath: location]];
 		[[NSUserDefaults standardUserDefaults] setObject:location forKey:@"DEFAULT_DATABASELOCATIONURL"];
 		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
 		[locationMatrix selectCellWithTag:1];
