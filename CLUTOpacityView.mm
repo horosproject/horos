@@ -2060,7 +2060,6 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	}
 	
 	NSPoint hotSpot = [[NSCursor arrowCursor] hotSpot];
-	NSImage *cursorImage = [[[NSCursor arrowCursor] image] copy];
 
 	NSMutableDictionary *attrsDictionary = [NSMutableDictionary dictionaryWithCapacity:3];
 	[attrsDictionary setObject:textLabelColor forKey:NSForegroundColorAttributeName];
@@ -2068,20 +2067,21 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 //	NSRect labelBounds = [label boundingRectWithSize:[self bounds].size options:NSStringDrawingUsesDeviceMetrics];
 	NSRect labelBounds = [label boundingRectWithSize:drawingRect.size options:NSStringDrawingUsesDeviceMetrics];
 
-	NSSize imageSize = [cursorImage size];
+	NSSize imageSize = [[[NSCursor arrowCursor] image] size];
 	float arrowWidth = imageSize.width;
 	imageSize.width += labelBounds.size.width;
-	[cursorImage setScalesWhenResized:NO];
-	[cursorImage setSize:imageSize];
+	NSImage *cursorImage = [[NSImage alloc] initWithSize: imageSize];
 	NSPoint labelPosition = NSMakePoint(arrowWidth-6, .0);
 	
 	// draw
 	[cursorImage lockFocus];
+	[[[NSCursor arrowCursor] image] drawAtPoint: NSMakePoint( 0, 0) fromRect: NSZeroRect operation: NSCompositeCopy fraction: 1.0];
 	[[[NSColor blackColor] colorWithAlphaComponent:0.5] set];
 	//NSRectFill(NSMakeRect(labelPosition.x-2, labelPosition.y+1, labelBounds.size.width+4, labelBounds.size.height+4));
 	NSRectFill(NSMakeRect(labelPosition.x-2, labelPosition.y+1, labelBounds.size.width+4, 13)); // nicer if the height stays the same when moving the mouse
 	[label drawAtPoint:labelPosition];
 	[cursorImage unlockFocus];
+	
 	NSCursor *cursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:hotSpot];
 	[cursor set];
 	

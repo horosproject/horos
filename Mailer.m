@@ -74,7 +74,7 @@ NSMutableString *s = [NSMutableString stringWithCapacity:1000];
 	{
 		[s appendString:[NSString stringWithFormat:@"set aFile to \"%@\"\n",imagePath]];
 		[s appendString:@"tell content\n"];
-			[s appendString:@"make new attachment with properties {file name:aFile} at after the last word of the first paragraph\n"];
+			[s appendString:@"make new attachment with properties {file name:aFile}\n"];
 		[s appendString:@"end tell\n"];
 	}
 	[s appendString:@"end tell\n"];
