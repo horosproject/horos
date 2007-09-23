@@ -146,9 +146,9 @@
 	float	entries256[ 4096];
 	NSPoint prevPoint;
 	
-	for( i = 0; i < [pointsArray count]; i++)
+	for( id loopItem1 in pointsArray)
 	{
-		NSPoint curPoint = NSPointFromString( [pointsArray objectAtIndex: i]);
+		NSPoint curPoint = NSPointFromString( loopItem1);
 		
 		curPoint.x -= 1000;
 		
@@ -179,9 +179,9 @@
 	float	entries256[ 256];
 	NSPoint prevPoint;
 	
-	for( i = 0; i < [pointsArray count]; i++)
+	for( id loopItem1 in pointsArray)
 	{
-		NSPoint curPoint = NSPointFromString( [pointsArray objectAtIndex: i]);
+		NSPoint curPoint = NSPointFromString( loopItem1);
 		
 		curPoint.x -= 1000;
 		

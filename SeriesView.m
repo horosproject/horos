@@ -228,9 +228,8 @@
     }
 	if( ctag >= 0)
     {
-		NSEnumerator *enumerator = [imageViews objectEnumerator];
 		DCMView *view;
-		while (view = [enumerator nextObject])
+		for (view in imageViews)
         [view setCurrentTool: ctag];
     }
 }
@@ -251,9 +250,8 @@
 	
 	if( ctag >= 0)
     {
-		NSEnumerator *enumerator = [imageViews objectEnumerator];
 		DCMView *view;
-		while (view = [enumerator nextObject])
+		for (view in imageViews)
         [view setRightTool: ctag];
     }
 }
@@ -275,10 +273,9 @@
     	
     listType = type;
 	
-	NSEnumerator *enumerator = [imageViews objectEnumerator];
 	DCMView *view;
 	int i = firstImage;
-	while (view = [enumerator nextObject])
+	for (view in imageViews)
 	{
 		if (i < [dcmPixList count])
 			[view setDCM: c :d :e :i++ :type :reset];
@@ -288,30 +285,26 @@
  }
  
  - (void) setBlendingFactor:(float) value{
-	NSEnumerator *enumerator = [imageViews objectEnumerator];
 	DCMView *view;
-	while (view = [enumerator nextObject])
+	for (view in imageViews)
 		[view setBlendingFactor:value];
 	
  }
 - (void) setBlendingMode:(int) value{
-	NSEnumerator *enumerator = [imageViews objectEnumerator];
 	DCMView *view;
-	while (view = [enumerator nextObject])
+	for (view in imageViews)
 		[view setBlendingMode:value];
 }
 - (void) setFlippedData:(BOOL) value
 {
-	NSEnumerator *enumerator = [imageViews objectEnumerator];
 	DCMView *view;
-	while (view = [enumerator nextObject])
+	for (view in imageViews)
 		[view setFlippedData:value];
 }
 
 -(void) ActivateBlending:(ViewerController*) bC blendingFactor:(float)blendingFactor{
-	NSEnumerator *enumerator = [imageViews objectEnumerator];
 	DCMView *view;
-	while (view = [enumerator nextObject]) {
+	for (view in imageViews) {
 		if( bC)
 			[view setBlending: [bC imageView]];			
 		else

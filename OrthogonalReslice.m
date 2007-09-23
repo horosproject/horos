@@ -136,13 +136,12 @@
 -(void) performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
 {
 	DCMPix					*fPix = [originalDCMPixList objectAtIndex: 0];
-	NSEnumerator			*enumerator = [workUnits objectEnumerator];
 	NSDictionary			*object;
 	long					z, z2;
 	const register long		maxY = [fPix pheight];
 	const register long		maxX = [fPix pwidth];
 	
-	while (object = [enumerator nextObject])
+	for (object in workUnits)
 	{
 		if( [[object objectForKey:@"action"] isEqualToString: @"Ycache"])
 		{

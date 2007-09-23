@@ -146,9 +146,8 @@ extern NSString * documentsDirectory();
 		for(i=0; i<[[[viewer2D imageView] dcmPixList] count]; i++)
 		{
 			curRoiList = [[viewer2D roiList] objectAtIndex: i];
-			for(j=0; j<[curRoiList count];j++)
+			for(curROI in curRoiList)
 			{
-				curROI = [curRoiList objectAtIndex:j];
 				if ([curROI type] == t2DPoint)
 				{
 					float location[ 3 ];

@@ -183,14 +183,13 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 	NSArray				*winList = [NSApp windows];
 	NSMutableArray		*viewersList = [NSMutableArray array];
 	
-	int i;
 	
-	for( i = 0; i < [winList count]; i++)
+	for( id loopItem in winList)
 	{
-		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+		if( [[loopItem windowController] isKindOfClass:[ViewerController class]])
 		{
-			if( [[[winList objectAtIndex:i] windowController] windowWillClose] == NO)
-				[viewersList addObject: [[winList objectAtIndex:i] windowController]];
+			if( [[loopItem windowController] windowWillClose] == NO)
+				[viewersList addObject: [loopItem windowController]];
 		}
 	}
 
@@ -201,11 +200,9 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 {
 	NSArray				*displayedViewers = [ViewerController getDisplayed2DViewers];
 	NSMutableArray		*studiesArray = [NSMutableArray array];
-	int					i;
 	
-	for( i = 0 ; i < [displayedViewers count] ; i++)
+	for( ViewerController *win in displayedViewers)
 	{
-		ViewerController	*win = [displayedViewers objectAtIndex: i];
 		
 		if( [studiesArray containsObject: [[[win imageView] seriesObj] valueForKey:@"study"]] == NO)
 			[studiesArray addObject: [[[win imageView] seriesObj] valueForKey:@"study"]];
@@ -217,14 +214,13 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
 	BOOL valid = NO;
-	int i;
 	
 	if( [item action] == @selector( resetWindowsState:))
 	{
 		NSArray				*studiesArray = [ViewerController getDisplayedStudies];
-		for( i = 0 ; i < [studiesArray count] ; i++)
+		for( id loopItem in studiesArray)
 		{
-			if( [[studiesArray objectAtIndex: i] valueForKey:@"windowsState"]) valid = YES;
+			if( [loopItem valueForKey:@"windowsState"]) valid = YES;
 		}
 	}
 	else if( [item action] == @selector( loadWindowsState:))
@@ -367,11 +363,10 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 - (IBAction) resetWindowsState:(id)sender
 {
 	NSArray				*studiesArray = [ViewerController getDisplayedStudies];
-	int					i;
 		
-	for( i = 0 ; i < [studiesArray count] ; i++)
+	for( id loopItem in studiesArray)
 	{
-		[[studiesArray objectAtIndex: i] setValue: 0L forKey:@"windowsState"];
+		[loopItem setValue: 0L forKey:@"windowsState"];
 	}
 }
 
@@ -1464,7 +1459,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 			NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil), NSLocalizedString(@"Move", nil), NSLocalizedString(@"Magnify", nil), 
 														NSLocalizedString(@"Rotate", nil), NSLocalizedString(@"Scroll", nil), NSLocalizedString(@"ROI", nil), nil];
 			NSArray *images = [NSArray arrayWithObjects: @"WLWW", @"Move", @"Zoom",  @"Rotate",  @"Stack", @"Length", nil];	// DO NOT LOCALIZE THIS LINE ! -> filenames !
-			NSEnumerator *enumerator = [titles objectEnumerator];
 			NSEnumerator *enumerator2 = [images objectEnumerator];
 			NSEnumerator *enumerator3 = [[popupRoi itemArray] objectEnumerator];
 			NSString *title;
@@ -1488,7 +1482,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				else [submenu addItem: [NSMenuItem separatorItem]];
 			}
 
-			while (title = [enumerator nextObject])
+			for (title in titles)
 			{
 				image = [enumerator2 nextObject];
 				item = [[NSMenuItem alloc] initWithTitle: title action: @selector(setDefaultTool:) keyEquivalent:@""];
@@ -1522,10 +1516,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 			submenu =  [[NSMenu alloc] initWithTitle:@"Resize window"];
 			
 			NSArray *resizeWindowArray = [NSArray arrayWithObjects:@"25%", @"50%", @"100%", @"200%", @"300%", @"iPod Video", nil];
-			NSEnumerator *resizeEnumerator = [resizeWindowArray objectEnumerator];
 			i = 0;
 			NSString	*titleMenu;
-			while (titleMenu = [resizeEnumerator nextObject]) {
+			for (titleMenu in resizeWindowArray) {
 				int tag = i++;
 				item = [[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""];
 				[item setTag:tag];
@@ -1840,11 +1833,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 		NSArray		*winList = [NSApp windows];
 		long		i, win = 0;
 		
-		for( i = 0; i < [winList count]; i++)
+		for( id loopItem in winList)
 		{
-			if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+			if( [[loopItem windowController] isKindOfClass:[ViewerController class]])
 			{
-				if( self != [[winList objectAtIndex:i] windowController]) win++;
+				if( self != [loopItem windowController]) win++;
 			}
 		}
 		
@@ -1902,8 +1895,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			NSRect	dstFrame = myFrame;
 			
-			e = [rects objectEnumerator];
-			while (value = [e nextObject])
+			for (value in rects)
 			{
 				frame = [value rectValue];
 				
@@ -1925,8 +1917,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				}
 			}
 			
-			e = [rects objectEnumerator];
-			while (value = [e nextObject])
+			for (value in rects)
 			{
 				if (fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)	//RIGHT
 				{
@@ -1959,13 +1950,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 			// Apply the same size to all displayed windows
 			
 			NSArray	*viewers = [ViewerController getDisplayed2DViewers];
-			int i;
 			
-			for( i = 0; i < [viewers count] ; i++)
+			for( id loopItem in viewers)
 			{
-				if( [viewers objectAtIndex: i] != self)
+				if( loopItem != self)
 				{
-					NSWindow *theWindow = [[viewers objectAtIndex: i] window];
+					NSWindow *theWindow = [loopItem window];
 					
 					NSRect dstFrame = [theWindow frame];
 					
@@ -2130,8 +2120,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		dstFrame = myFrame;
 		
-		e = [rects objectEnumerator];
-		while (value = [e nextObject])
+		for (value in rects)
 		{
 			frame = [value rectValue];
 			
@@ -2529,9 +2518,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 		if( [cell isBordered])
 		{
-			int i;
 			NSArray	*cells = [previewMatrix cells];
-			for( i = 0; i < [cells count] ; i++) [[cells objectAtIndex: i] setBordered: YES];
+			for( id loopItem1 in cells) [loopItem1 setBordered: YES];
 			
 			[cell setBackgroundColor: [NSColor selectedControlColor]];
 			[cell setBordered: NO];
@@ -2542,9 +2530,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	else
 	{
-		int i;
 		NSArray	*cells = [previewMatrix cells];
-		for( i = 0; i < [cells count] ; i++) [[cells objectAtIndex: i] setBordered: YES];
+		for( id loopItem in cells) [loopItem setBordered: YES];
 //			
 //		[previewMatrix selectCellAtRow:-1 column:-1];
 	}
@@ -2689,13 +2676,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 			{
 				NSArray				*winList = [NSApp windows];
 				
-				int i;
-				for( i = 0; i < [winList count]; i++)
+				for( id loopItem in winList)
 				{
-					if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]] && [[winList objectAtIndex:i] windowController] != self)
+					if( [[loopItem windowController] isKindOfClass:[ViewerController class]] && [loopItem windowController] != self)
 					{
-						if( pos) [[[winList objectAtIndex:i] windowController] setMatrixVisible: YES];
-						else [[[winList objectAtIndex:i] windowController] setMatrixVisible: NO];
+						if( pos) [[loopItem windowController] setMatrixVisible: YES];
+						else [[loopItem windowController] setMatrixVisible: NO];
 					}
 				}
 			}
@@ -2714,11 +2700,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[curStudy setHidden: ![curStudy isHidden]];
 	
 	NSArray	*viewers = [ViewerController getDisplayed2DViewers];
-	int i;
 	
-	for( i = 0 ; i < [viewers count] ; i++)
+	for( id loopItem in viewers)
 	{
-		[[viewers objectAtIndex: i] buildMatrixPreview: YES];
+		[loopItem buildMatrixPreview: YES];
 	}
 }
 
@@ -3939,12 +3924,11 @@ static ViewerController *draggedController = 0L;
 														VRPanelToolbarItemIdentifier,
 														nil];
 	
-	long		i;
 	NSArray*	allPlugins = [[PluginManager pluginsDict] allKeys];
 	
-	for( i = 0; i < [allPlugins count]; i++)
+	for( id loopItem in allPlugins)
 	{
-		NSBundle		*bundle = [[PluginManager pluginsDict] objectForKey: [allPlugins objectAtIndex: i]];
+		NSBundle		*bundle = [[PluginManager pluginsDict] objectForKey: loopItem];
 		NSDictionary	*info = [bundle infoDictionary];
 		//NSLog(@"plugin %@", [[allPlugins objectAtIndex: i] description]);
 		if( [[info objectForKey:@"pluginType"] isEqualToString: @"imageFilter"] == YES || [[info objectForKey:@"pluginType"] isEqualToString: @"roiTool"] == YES || [[info objectForKey:@"pluginType"] isEqualToString: @"other"] == YES)
@@ -3953,7 +3937,7 @@ static ViewerController *draggedController = 0L;
 			if( [info objectForKey:@"allowToolbarIcon"])
 			{
 				//NSLog(@"allow allowToolbarIcon %@", [bundle description]);
-				if( [[info objectForKey:@"allowToolbarIcon"] boolValue] == YES) array = [array arrayByAddingObject: [allPlugins objectAtIndex: i]];
+				if( [[info objectForKey:@"allowToolbarIcon"] boolValue] == YES) array = [array arrayByAddingObject: loopItem];
 			}
 		}
 	}
@@ -8162,9 +8146,9 @@ extern NSString * documentsDirectory();
 				{
 					[[roiList[ mIndex] objectAtIndex:i] addObjectsFromArray:array];
 					
-					for( x = 0; x < [array count]; x++)
+					for( id loopItem1 in array)
 					{
-						[imageView roiSet: [array objectAtIndex: x]];
+						[imageView roiSet: loopItem1];
 					}
 				}
 			}
@@ -8203,8 +8187,8 @@ extern NSString * documentsDirectory();
 					{
 						NSArray	*roisArray = [roiList[ mIndex] objectAtIndex: i];
 						
-						for( x = 0 ; x < [roisArray count]; x++)
-							[[roisArray objectAtIndex: x] setPix: [pixList[mIndex] objectAtIndex:i]];
+						for( id loopItem2 in roisArray)
+							[loopItem2 setPix: [pixList[mIndex] objectAtIndex:i]];
 						
 						NSString	*path = [ROISRConverter archiveROIsAsDICOM: roisArray  toPath: str forImage:image];
 						
@@ -8226,14 +8210,13 @@ extern NSString * documentsDirectory();
 								//Check to see if there is already this ROI-image
 								NSArray			*srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
 								
-								int		x;
 								BOOL	found = NO;
 								
-								for( x = 0 ; x < [srs count] ; x++)
+								for( id loopItem1 in srs)
 								{
-									if( [[[srs objectAtIndex: x] valueForKey:@"completePath"] isEqualToString: str])
+									if( [[loopItem1 valueForKey:@"completePath"] isEqualToString: str])
 									{
-										[[[BrowserController currentBrowser] managedObjectContext] deleteObject: [srs objectAtIndex: x]]; 
+										[[[BrowserController currentBrowser] managedObjectContext] deleteObject: loopItem1]; 
 										found = YES;
 										break;
 									}
@@ -8291,9 +8274,9 @@ extern NSString * documentsDirectory();
 			{
 			//	NSLog( [[[roiList[y] objectAtIndex: x] objectAtIndex: z] name]);
 				found = NO;
-				for( i = 0; i < [ROINamesArray count]; i++)
+				for( id loopItem3 in ROINamesArray)
 				{
-					if( [[ROINamesArray objectAtIndex:i] isEqualToString: [[[roiList[y] objectAtIndex: x] objectAtIndex: z] name]])
+					if( [loopItem3 isEqualToString: [[[roiList[y] objectAtIndex: x] objectAtIndex: z] name]])
 					{
 						found = YES;
 					}
@@ -8347,11 +8330,10 @@ extern NSString * documentsDirectory();
 {
 	BOOL	found = NO;
 	NSArray *winList = [NSApp windows];
-	long i;
 	
-	for( i = 0; i < [winList count]; i++)
+	for( id loopItem in winList)
 	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROIManager"])
+		if( [[[loopItem windowController] windowNibName] isEqualToString:@"ROIManager"])
 		{
 			found = YES;
 		}
@@ -9185,9 +9167,8 @@ int i,j,l;
 		//Delete the generated ROIs - There was no generated ROIs previously
 		if( numberOfGeneratedROI == 0)
 		{
-			for( i = 0 ; i < [generatedROIs count] ; i++)
+			for( ROI *c in generatedROIs)
 			{
-				ROI	*c = [generatedROIs objectAtIndex: i];
 				
 				NSInteger index = [self imageIndexOfROI: c];
 				
@@ -9368,11 +9349,10 @@ int i,j,l;
 		[sched setDelegate: self];
 		
 		// Create the work units.
-		long i;
 		NSMutableSet *unitsSet = [NSMutableSet set];
-		for ( i = 0; i < [roiToProceed count]; i++ )
+		for ( id loopItem in roiToProceed )
 		{
-			[unitsSet addObject: [roiToProceed  objectAtIndex: i]];
+			[unitsSet addObject: loopItem];
 		}
 		
 		[sched performScheduleForWorkUnits:unitsSet];
@@ -9750,14 +9730,14 @@ int i,j,l;
 			NSArray *winList = [NSApp windows];
 			BOOL	found = NO;
 			
-			for( x = 0; x < [winList count]; x++)
+			for( id loopItem1 in winList)
 			{
-				if( [[[[winList objectAtIndex:x] windowController] windowNibName] isEqualToString:@"Histogram"])
+				if( [[[loopItem1 windowController] windowNibName] isEqualToString:@"Histogram"])
 				{
-					if( [[[winList objectAtIndex:x] windowController] curROI] == theROI)
+					if( [[loopItem1 windowController] curROI] == theROI)
 					{
 						found = YES;
-						[[[[winList objectAtIndex:x] windowController] window] makeKeyAndOrderFront:self];
+						[[[loopItem1 windowController] window] makeKeyAndOrderFront:self];
 					}
 				}
 			}
@@ -9787,14 +9767,14 @@ int i,j,l;
 			NSArray *winList = [NSApp windows];
 			BOOL	found = NO;
 			
-			for( x = 0; x < [winList count]; x++)
+			for( id loopItem1 in winList)
 			{
-				if( [[[[winList objectAtIndex:x] windowController] windowNibName] isEqualToString:@"ROI"])
+				if( [[[loopItem1 windowController] windowNibName] isEqualToString:@"ROI"])
 				{
-					if( [[[winList objectAtIndex:x] windowController] curROI] == theROI)
+					if( [[loopItem1 windowController] curROI] == theROI)
 					{
 						found = YES;
-						[[[[winList objectAtIndex:x] windowController] window] makeKeyAndOrderFront:self];
+						[[[loopItem1 windowController] window] makeKeyAndOrderFront:self];
 					}
 				}
 			}
@@ -9811,14 +9791,13 @@ int i,j,l;
 
 - (IBAction) roiDefaults:(id) sender
 {
-	long x;
 	NSArray *winList = [NSApp windows];
 				
-	for( x = 0; x < [winList count]; x++)
+	for( id loopItem in winList)
 	{
-		if( [[[[winList objectAtIndex:x] windowController] windowNibName] isEqualToString:@"ROIDefaults"])
+		if( [[[loopItem windowController] windowNibName] isEqualToString:@"ROIDefaults"])
 		{
-			[[[[winList objectAtIndex:x] windowController] window] makeKeyAndOrderFront:self];
+			[[[loopItem windowController] window] makeKeyAndOrderFront:self];
 			return;
 		}
 	}
@@ -10302,10 +10281,9 @@ int i,j,l;
 	if(mode==ROI_selectedModify) mode=ROI_selected;
 	// set the mode to all ROIs in the same group
 	NSArray *curROIList = [roiList[curMovieIndex] objectAtIndex:[imageView curImage]];
-	int i;
-	for(i=0; i<[curROIList count]; i++)
-		if([[curROIList objectAtIndex:i] groupID]==groupID)
-					[[curROIList objectAtIndex:i] setROIMode:mode];
+	for(id loopItem in curROIList)
+		if([loopItem groupID]==groupID)
+					[loopItem setROIMode:mode];
 }
 
 - (void)selectROI:(ROI*)roi deselectingOther:(BOOL)deselectOther;
@@ -10352,14 +10330,12 @@ int i,j,l;
 	else
 		newGroupID = 0.0;
 		
-	int i;
-	for(i=0; i<[curROIList count]; i++)
+	for(id loopItem in curROIList)
 	{
-		mode = [[curROIList objectAtIndex:i] ROImode];
+		mode = [loopItem ROImode];
 			
 		if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 		{
-			selectedROI = [curROIList objectAtIndex:i];
 			[selectedROI setGroupID:newGroupID];
 		}
 	}
@@ -10421,11 +10397,10 @@ int i,j,l;
 {
 	BOOL	found = NO;
 	NSArray *winList = [NSApp windows];
-	long i;
 	
-	for( i = 0; i < [winList count]; i++)
+	for( id loopItem in winList)
 	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"PaletteBrush"])
+		if( [[[loopItem windowController] windowNibName] isEqualToString:@"PaletteBrush"])
 		{
 			found = YES;
 		}
@@ -10443,10 +10418,9 @@ int i,j,l;
 //obligatory class for protocol Schedulable.h
 -(void)performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
 {
-	NSEnumerator	*enumerator = [workUnits objectEnumerator];
 	NSDictionary	*object;
 	
-	while (object = [enumerator nextObject])
+	for (object in workUnits)
 	{
 		// ** Set Pixels
 		
@@ -10685,9 +10659,8 @@ int i,j,l;
 	
 	int tag, i;
 	
-	for( i = 0; i < [selectedROIs count]; i++)
+	for( ROI *selectedROI in selectedROIs)
 	{
-		ROI* selectedROI = [selectedROIs objectAtIndex: i];
 		
 		NSInteger index = [self imageIndexOfROI: selectedROI];
 		
@@ -11090,11 +11063,11 @@ int i,j,l;
 	
 	NSArray *items = [toolbar items];
 	
-	for( i = 0; i < [items count]; i++)
+	for( id loopItem in items)
 	{
-		if( [[[items objectAtIndex:i] itemIdentifier] isEqualToString:SyncSeriesToolbarItemIdentifier] == YES)
+		if( [[loopItem itemIdentifier] isEqualToString:SyncSeriesToolbarItemIdentifier] == YES)
 		{
-			return [items objectAtIndex:i];
+			return loopItem;
 		}
 	}
 	return nil;
@@ -11171,7 +11144,6 @@ int i,j,l;
 {
 	BOOL				allFromSameStudy = YES, previousSyncButtonBehaviorIsBetweenStudies = SyncButtonBehaviorIsBetweenStudies;
 	NSMutableArray		*viewersList = [ViewerController getDisplayed2DViewers];
-	int					i;
 	NSArray				*winList = [NSApp windows];
 	
 	[viewersList removeObject: self];
@@ -11181,9 +11153,8 @@ int i,j,l;
 	{
 		NSString	*studyID = [self studyInstanceUID];
 		
-		for( i = 0 ; i < [viewersList count]; i++)
+		for( ViewerController *v in viewersList)
 		{
-			ViewerController	*v = [viewersList objectAtIndex: i];
 		
 			if( [studyID isEqualToString: [v studyInstanceUID]] == NO)
 			{
@@ -11643,10 +11614,10 @@ int i,j,l;
 				ROI *curSensorPoint2D = [sensorPointROIs objectAtIndex:j];
 				sensorName = [curSensorPoint2D name];
 			
-				for (k=0; k<[previousNames count]; k++)
+				for (id loopItem2 in previousNames)
 				{
-					triplets = triplets || [modelName isEqualToString:[previousNames objectAtIndex:k]]
-										|| [sensorName isEqualToString:[previousNames objectAtIndex:k]];
+					triplets = triplets || [modelName isEqualToString:loopItem2]
+										|| [sensorName isEqualToString:loopItem2];
 				}
 				
 				pointsNamesMatch2by2 = [sensorName isEqualToString:modelName];
@@ -11773,9 +11744,8 @@ int i,j,l;
 	
 	[viewersList removeObject: self];
 	
-	for( i = 0; i < [viewersList count]; i++)
+	for( ViewerController *vC in viewersList)
 	{
-		ViewerController	*vC = [viewersList objectAtIndex: i];
 	}
 	/*
 	 DCMPix	*curPix = [[self pixList] objectAtIndex: [imageView curImage]];
@@ -12086,13 +12056,12 @@ int i,j,l;
     else
     {
 		NSArray		*winList = [NSApp windows];
-		int			i;
 		
-		for( i = 0; i < [winList count]; i++)
+		for( id loopItem in winList)
 		{
-			if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+			if( [[loopItem windowController] isKindOfClass:[ViewerController class]])
 			{
-				[[[winList objectAtIndex:i] windowController] MovieStop: self];
+				[[loopItem windowController] MovieStop: self];
 			}
 		}
 		
@@ -13006,11 +12975,11 @@ int i,j,l;
 	
 	NSArray *items = [toolbar items];
 	
-	for( i = 0; i < [items count]; i++)
+	for( id loopItem in items)
 	{
-		if( [[[items objectAtIndex:i] itemIdentifier] isEqualToString:PlayToolbarItemIdentifier] == YES)
+		if( [[loopItem itemIdentifier] isEqualToString:PlayToolbarItemIdentifier] == YES)
 		{
-			return [items objectAtIndex:i];
+			return loopItem;
 		}
 	}
 	return nil;
@@ -14098,11 +14067,11 @@ int i,j,l;
 	{
 		NSArray *items = [toolbar items];
 		
-		for( i = 0; i < [items count]; i++)
+		for( id loopItem in items)
 		{
-			if( [[[items objectAtIndex:i] itemIdentifier] isEqualToString:iChatBroadCastToolbarItemIdentifier] == YES)
+			if( [[loopItem itemIdentifier] isEqualToString:iChatBroadCastToolbarItemIdentifier] == YES)
 			{
-				return [items objectAtIndex:i];
+				return loopItem;
 			}
 		}
 	}
@@ -15257,12 +15226,11 @@ int i,j,l;
 	{
 		NSArray		*allScreens = [NSScreen screens];
 		
-		int i;
-		for( i = 0; i < [allScreens count]; i++)
+		for( id loopItem in allScreens)
 		{
-			if( [[[self window] screen] frame].origin.x != [[allScreens objectAtIndex: i] frame].origin.x || [[[self window] screen] frame].origin.y != [[allScreens objectAtIndex: i] frame].origin.y)
+			if( [[[self window] screen] frame].origin.x != [loopItem frame].origin.x || [[[self window] screen] frame].origin.y != [loopItem frame].origin.y)
 			{
-				[[viewer window] setFrame: [[allScreens objectAtIndex: i] visibleFrame] display:NO];
+				[[viewer window] setFrame: [loopItem visibleFrame] display:NO];
 				return;
 			}
 		}
@@ -16062,7 +16030,6 @@ long i;
 - (IBAction) keyImageDisplayButton:(id) sender
 {
 	NSManagedObject	*series = [[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKey:@"series"];
-	long i;
 	
 	[self checkEverythingLoaded];
 	
@@ -16085,9 +16052,8 @@ long i;
 			NSArray	*images = [[BrowserController currentBrowser] childrenArray: series];
 			NSArray *keyImagesArray = [NSArray array];
 			
-			for( i = 0; i < [images count]; i++)
+			for( NSManagedObject *image in images)
 			{
-				NSManagedObject	*image = [images objectAtIndex: i];
 				
 				if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
 					keyImagesArray = [keyImagesArray arrayByAddingObject: image];
@@ -16461,8 +16427,7 @@ sourceRef);
 
     if ([sender class] == [NSMenuItem class]) {
         NSArray *menuItems = [[sender menu] itemArray];
-        NSEnumerator *enumerator = [menuItems objectEnumerator];
-        while(item = [enumerator nextObject])
+        for(item in menuItems)
             [item setState:NSOffState];
         tag = [(NSMenuItem *)sender tag];
     }
@@ -16480,11 +16445,10 @@ sourceRef);
 {
 	BOOL	found = NO;
 	NSArray *winList = [NSApp windows];
-	long i;
 	
-	for( i = 0; i < [winList count]; i++)
+	for( id loopItem in winList)
 	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"CalciumScoring"]) found = YES;
+		if( [[[loopItem windowController] windowNibName] isEqualToString:@"CalciumScoring"]) found = YES;
 	}
 	
 	if( !found)
@@ -16497,11 +16461,10 @@ sourceRef);
 - (IBAction)centerline: (id)sender{
 		BOOL	found = NO;
 	NSArray *winList = [NSApp windows];
-	long i;
 	
-	for( i = 0; i < [winList count]; i++)
+	for( id loopItem in winList)
 	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"CenterlineSegmentation"]) found = YES;
+		if( [[[loopItem windowController] windowNibName] isEqualToString:@"CenterlineSegmentation"]) found = YES;
 	}
 	
 	if( !found)

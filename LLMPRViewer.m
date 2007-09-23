@@ -1143,12 +1143,10 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	NSNumber		*nsmaxValue	= [NSNumber numberWithFloat: 99999];
 	NSNumber		*nsoutside	= [NSNumber numberWithBool: NO];
 	NSMutableArray	*roiToProceed = [NSMutableArray array];
-	int				i;
 	
 	//NSLog( @"for");
-	for( i = 0 ; i < [roiList count]; i++)
+	for( NSDictionary *rr in roiList)
 	{
-		NSDictionary	*rr = [roiList objectAtIndex: i];
 		
 		//NSLog( @"i : %d", i);
 		//NSLog( @"[[notInjectedViewer pixList] indexOfObject: ] : %d", [[notInjectedViewer pixList] indexOfObject: [rr objectForKey:@"curPix"]]);
@@ -1294,10 +1292,9 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 -(void) performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
 {
-	NSEnumerator			*enumerator = [workUnits objectEnumerator];
 	NSDictionary			*object;
 	
-	while (object = [enumerator nextObject])
+	for (object in workUnits)
 	{
 		DCMPix			*newAxialPix, *curPix;
 		float			*buffer, *resampledBuffer, *fVolumePtr;
@@ -1724,10 +1721,9 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	NSMenu *menu = [convolutionsPopup menu];
 	[menu addItemWithTitle:NSLocalizedString(@"No Filter", nil) action:@selector(applyConvolutionFilter:) keyEquivalent:@""];
 	[menu addItem:[NSMenuItem separatorItem]];
-	int i;
-	for(i=0; i<[convolutionNamesArray count]; i++)
+	for(id loopItem in convolutionNamesArray)
 	{
-		[menu addItemWithTitle:[convolutionNamesArray objectAtIndex:i] action:@selector(applyConvolutionFilter:) keyEquivalent:@""];
+		[menu addItemWithTitle:loopItem action:@selector(applyConvolutionFilter:) keyEquivalent:@""];
 	}
 }
 
@@ -1885,10 +1881,9 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	NSArray *sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	[settingsPopup removeAllItems];
 	NSMenu *menu = [settingsPopup menu];
-	int i;
-	for(i=0; i<[sortedKeys count]; i++)
+	for(id loopItem in sortedKeys)
 	{
-		[menu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector(applySettings:) keyEquivalent:@""];
+		[menu addItemWithTitle:loopItem action:@selector(applySettings:) keyEquivalent:@""];
 	}
 	if([sortedKeys count])[menu addItem:[NSMenuItem separatorItem]];
 	[menu addItemWithTitle:NSLocalizedString(@"Save current settings as...", nil) action:@selector(addCurrentSettings:) keyEquivalent:@""];

@@ -43,9 +43,8 @@
 
 - (void)addKeyImages:(NSNotification *)note{
 	NSArray *keyImages = [[note userInfo] objectForKey:@"images"];
-	NSEnumerator *enumerator = [keyImages objectEnumerator];
 	id image;
-	while (image = [enumerator nextObject]){
+	for (image in keyImages){
 		if (![[self content] containsObject:image]){
 			[self addObject:image];
 			NSButtonCell *cell = [[[NSButtonCell alloc] initImageCell:[(DicomImage *)image thumbnail]] autorelease];
@@ -85,9 +84,8 @@
 	NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
 
 	NSArray *cells = [keyImageMatrix selectedCells];
-	NSEnumerator *enumerator = [cells objectEnumerator];
 	NSCell *cell;
-	while (cell = [enumerator nextObject])
+	for (cell in cells)
 		[indexes addIndex:[cell tag]];
 
 	[self setSelectionIndexes:(NSIndexSet *)indexes];

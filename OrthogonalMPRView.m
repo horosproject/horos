@@ -110,7 +110,6 @@
 
 - (void) setCurRoiList: (NSMutableArray*) rois
 {
-	long	i;
 //	NSMutableArray	*previousParents = [NSMutableArray	array];
 //	NSMutableArray	*previousMode = [NSMutableArray	array];
 //	
@@ -130,9 +129,9 @@
 	
 	curRoiList = [rois retain];
 	
-	for(i=0; i<[curRoiList count]; i++)
+	for(id loopItem in curRoiList)
 	{
-		[self roiSet:[curRoiList objectAtIndex:i]];
+		[self roiSet:loopItem];
 	}
 	
 //	for( i = 0 ; i < [curRoiList count]; i++)
@@ -539,10 +538,9 @@
 		
 				[[controller originalView] roiSet:new2DPointROI];
 				
-				int i;
-				for(i=0; i<[curRoiList count]; i++)
+				for(id loopItem in curRoiList)
 				{
-					[[curRoiList objectAtIndex:i] setROIMode:ROI_sleep];
+					[loopItem setROIMode:ROI_sleep];
 				}
 				
 				// copy the state

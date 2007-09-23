@@ -48,10 +48,9 @@
 		[removeButton setBezelStyle:NSCircularBezelStyle];
 		[removeButton setEnabled:NO];
 		NSArray *views = [NSArray arrayWithObjects:filterKeyPopup, searchTypePopup, valueField, addButton, removeButton, datePicker, nil];
-		NSEnumerator *enumerator = [views objectEnumerator];
 		id view;
 		NSView *lastView = nil;
-		while (view = [enumerator nextObject]) {
+		for (view in views) {
 			[lastView setNextKeyView:view];
 			[self addSubview:view];
 			lastView = view;

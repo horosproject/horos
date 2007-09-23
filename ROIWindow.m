@@ -126,12 +126,11 @@
 		
 		NSMutableArray  *array = [curController pixList];
 		
-		long i;
 		
-		for( i = 0; i < [array count]; i++)
+		for( id loopItem in array)
 		{
-			[[array objectAtIndex: i] setPixelSpacingX: newResolution];
-			[[array objectAtIndex: i] setPixelSpacingY: newResolution];
+			[loopItem setPixelSpacingX: newResolution];
+			[loopItem setPixelSpacingY: newResolution];
 		}
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"recomputeROI" object:curController userInfo: 0L];
@@ -225,14 +224,10 @@
 	
 	NSArray *roiSeriesList = [curController roiList];
 	
-	int i;
 	
-	for ( i = 0; i < [roiSeriesList count]; i++ ) {
-		NSArray *roiImageList = [roiSeriesList objectAtIndex: i];
-		int j;
+	for ( NSArray *roiImageList in roiSeriesList ) {
 		
-		for ( j = 0; j < [roiImageList count]; j++ ) {
-			ROI *roi = [roiImageList objectAtIndex: j ];
+		for ( ROI *roi in roiImageList ) {
 			
 			if ( roi == curROI ) continue;
 			
@@ -251,10 +246,8 @@
 		
 	NSArray *roiSeriesList = [curController roiList];
 	
-	int i;
 	
-	for ( i = 0; i < [roiSeriesList count]; i++ ) {
-		NSMutableArray *roiImageList = [roiSeriesList objectAtIndex: i];
+	for ( NSMutableArray *roiImageList in roiSeriesList ) {
 		int j;
 		
 		for ( j = 0; j < [roiImageList count]; j++ ) {
@@ -355,10 +348,8 @@
 			int i;			
 			for ( i = 0; i < [roiSeriesList count]; i++ ) {
 				NSArray *roiImageList = [roiSeriesList objectAtIndex: i];
-				int j;
 				
-				for ( j = 0; j < [roiImageList count]; j++ ) {
-					ROI *roi = [roiImageList objectAtIndex: j ];
+				for ( ROI *roi in roiImageList ) {
 										
 					if ( [[roi name] isEqualToString: [curROI name]] ) {
 						NSMutableDictionary *roiData = [[NSMutableDictionary alloc] init];
@@ -371,9 +362,8 @@
 						points = [roi points];
 						temp = [NSMutableArray arrayWithCapacity:0];
 						
-						int k;
-						for( k = 0 ; k < [points count]; k++)
-							[temp addObject: NSStringFromPoint( [[points objectAtIndex: k] point]) ];
+						for( id loopItem3 in points)
+							[temp addObject: NSStringFromPoint( [loopItem3 point]) ];
 						
 						[roiData setObject:temp forKey:@"ROIPoints"];
 						
@@ -393,10 +383,9 @@
 			points = [curROI points];
 			temp = [NSMutableArray arrayWithCapacity:0];
 			
-			int i;
-			for( i = 0 ; i < [points count]; i++)
+			for( id loopItem in points)
 			{
-				[temp addObject: NSStringFromPoint( [[points objectAtIndex: i] point]) ];
+				[temp addObject: NSStringFromPoint( [loopItem point]) ];
 			}
 			[xml setObject:temp forKey:@"ROIPoints"];
 			
@@ -415,16 +404,15 @@
 {
 	NSArray *winList = [NSApp windows];
 	BOOL	found = NO;
-	long	i;
 	
-	for( i = 0; i < [winList count]; i++)
+	for( id loopItem in winList)
 	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"Histogram"])
+		if( [[[loopItem windowController] windowNibName] isEqualToString:@"Histogram"])
 		{
-			if( [[[winList objectAtIndex:i] windowController] curROI] == curROI)
+			if( [[loopItem windowController] curROI] == curROI)
 			{
 				found = YES;
-				[[[[winList objectAtIndex:i] windowController] window] makeKeyAndOrderFront:self];
+				[[[loopItem windowController] window] makeKeyAndOrderFront:self];
 			}
 		}
 	}
@@ -444,16 +432,15 @@
 {
 	NSArray *winList = [NSApp windows];
 	BOOL	found = NO;
-	long	i;
 	
-	for( i = 0; i < [winList count]; i++)
+	for( id loopItem in winList)
 	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"Plot"])
+		if( [[[loopItem windowController] windowNibName] isEqualToString:@"Plot"])
 		{
-			if( [[[winList objectAtIndex:i] windowController] curROI] == curROI)
+			if( [[loopItem windowController] curROI] == curROI)
 			{
 				found = YES;
-				[[[[winList objectAtIndex:i] windowController] window] makeKeyAndOrderFront:self];
+				[[[loopItem windowController] window] makeKeyAndOrderFront:self];
 			}
 		}
 	}

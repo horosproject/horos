@@ -1599,10 +1599,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if([allLines count] > 0)
 		{
 			NSLog(@"allLines Count:  %d", [allLines count]);
-			int k = 0;
-			for(k = 0; k < [allLines count]; k++)
+			for(id loopItem1 in allLines)
 			{
-				NSString* aLine = (NSString *) [allLines objectAtIndex: k];
+				NSString* aLine = (NSString *) loopItem1;
 				
 				// Now split string based on location of equals (=) sign
 				NSArray *splitLine = [aLine componentsSeparatedByString:@" = '"];

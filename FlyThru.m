@@ -154,9 +154,8 @@
 	stepMovieIndexIn4D = [NSMutableArray arrayWithCapacity:nbStep];
 	
 	// initialisation
-	NSEnumerator *eCam = [tempStepCameras objectEnumerator];
 	Camera *cam;
-	while (cam = [eCam nextObject])
+	for (cam in tempStepCameras)
 	{
 		[stepPosition addObject:[cam position]];
 		[stepViewUp addObject:[cam viewUp]];
@@ -213,7 +212,6 @@
 	pathMovieIndexIn4D = [self path:stepMovieIndexIn4D :interpolationMethod :NO];
 	
 	// result
-	NSEnumerator *ePathPosition = [pathPosition objectEnumerator];
 	NSEnumerator *ePathViewUp = [pathViewUp objectEnumerator];
 	NSEnumerator *ePathFocalPoint = [pathFocalPoint objectEnumerator];
 	NSEnumerator *ePathClippingRangeNear = [pathClippingRangeNear objectEnumerator];
@@ -232,7 +230,7 @@
 	
 	[pathCameras removeAllObjects];
 	
-	while (pos = [ePathPosition nextObject])
+	for (pos in pathPosition)
 	{
 		vUp = [ePathViewUp nextObject];
 		foPt = [ePathFocalPoint nextObject];
@@ -288,7 +286,6 @@
 		function = [[Piecewise3D alloc] init];
 	}
 	
-	NSEnumerator *enumSteps = [pts objectEnumerator];
 	id stepPoint;
 	long nbStep = [pts count];
 	float t, deltaT;
@@ -298,7 +295,7 @@
 	long i = 0;
 	float timeStep[nbStep];
 	
-	while (stepPoint = [enumSteps nextObject])
+	for (stepPoint in pts)
 	{
 		Point3D *p = [[Point3D alloc] initWithPoint3D:stepPoint];
 		[function addPoint :t :p];
@@ -350,9 +347,8 @@
 	xml = [[NSMutableDictionary alloc] init];
 	temp = [NSMutableArray arrayWithCapacity:0];
 
-	NSEnumerator *eCam = [stepCameras objectEnumerator];
 	Camera *cam;
-	while (cam = [eCam nextObject])
+	for (cam in stepCameras)
 	{
 		[temp addObject: [cam exportToXML]];
 	}
@@ -365,9 +361,8 @@
 {
 	[self removeAllCamera];
 	NSArray *stepsXML = [xml valueForKey:@"Step Cameras"];
-	NSEnumerator *enumerator = [stepsXML objectEnumerator];
 	id cam;
-	while ((cam = [enumerator nextObject]))
+	for (cam in stepsXML)
 	{
 		[self addCamera:[(Camera*) [[Camera alloc] initWithDictionary: cam] autorelease]];
 	}

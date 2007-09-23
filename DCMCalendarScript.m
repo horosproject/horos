@@ -52,9 +52,8 @@
 	NSString *route = [description stringValue];
 	if (route && ![route isEqualToString: @""]) {
 		NSArray *routes = [route componentsSeparatedByString:@"/"];
-		NSEnumerator *enumerator = [routes objectEnumerator];
 		NSString *nextRoute;
-		while (nextRoute = [enumerator nextObject]) {
+		for (nextRoute in routes) {
 			NSMutableArray *routeParams = [NSMutableArray arrayWithArray:[nextRoute componentsSeparatedByString:@":"]];
 			[routingDestination addObject:routeParams];
 		}

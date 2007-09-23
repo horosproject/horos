@@ -112,9 +112,8 @@ WindowLayoutManager *sharedLayoutManager;
 - (id) findViewerWithNibNamed:(NSString*) nib andPixList:(NSMutableArray*) pixList
 {
 
-	NSEnumerator		*enumerator = [_windowControllers objectEnumerator];
 	OSIWindowController			*windowController;
-	while (windowController = [enumerator nextObject])
+	for (windowController in _windowControllers)
 	{
 		if( [[windowController windowNibName] isEqualToString: nib])
 		{
@@ -128,12 +127,11 @@ WindowLayoutManager *sharedLayoutManager;
 
 - (NSArray*) findRelatedViewersForPixList:(NSMutableArray*) pixList
 {
-	NSEnumerator		*enumerator = [_windowControllers objectEnumerator];
 	OSIWindowController			*windowController;
 	
 	NSMutableArray		*viewersList = [NSMutableArray array];
 	
-	while (windowController = [enumerator nextObject])
+	for (windowController in _windowControllers)
 	{
 		if( [ windowController respondsToSelector:@selector( pixList)])
 		{
@@ -175,10 +173,9 @@ WindowLayoutManager *sharedLayoutManager;
 
 - (void) checkAllWindowsAreVisible:(id) sender
 {
-	NSEnumerator			*enumerator = [_windowControllers objectEnumerator];
 	id						windowController;
 	
-	while (windowController = [enumerator nextObject])
+	for (windowController in _windowControllers)
 	{
 		if( [windowController isKindOfClass:[ViewerController class]])
 		{
@@ -387,7 +384,6 @@ WindowLayoutManager *sharedLayoutManager;
 		//Search for a hanging Protocol for the study description in the modality array
 		NSArray *hangingProtocolArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] objectForKey: modality];
 		if ([hangingProtocolArray count] > 0) {
-			NSEnumerator *enumerator = [hangingProtocolArray objectEnumerator];
 
 			[_currentHangingProtocol release];
 			_currentHangingProtocol = nil;
@@ -397,7 +393,7 @@ WindowLayoutManager *sharedLayoutManager;
 			IMAGECOLUMNS =  [[_currentHangingProtocol objectForKey: @"Image Columns"] intValue];
 			
 			NSMutableDictionary *protocol;
-			while (protocol = [enumerator nextObject])
+			for (protocol in hangingProtocolArray)
 			{
 				NSRange searchRange = [description rangeOfString:[protocol objectForKey: @"Study Description"] options: NSCaseInsensitiveSearch | NSLiteralSearch];
 				if (searchRange.location != NSNotFound)
@@ -602,7 +598,7 @@ WindowLayoutManager *sharedLayoutManager;
 	BrowserController *browserController = [BrowserController currentBrowser];
 	NSMutableArray *usableViewers = [NSMutableArray arrayWithArray:[self viewers2D]];
 	int comparisonSeriesIndex = 0;
-	while (seriesInfo = [enumerator nextObject]){
+	for (seriesInfo in viewers){
 		// only load ViewerControllers first
 		if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] || 
 			[[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([PlaceholderWindowController class])] ) {
@@ -717,8 +713,7 @@ WindowLayoutManager *sharedLayoutManager;
 	// A new hanging protocol should start with a fresh set of WindowControllers that should match the 2D Viewers
 	//Close unused Viewers	
 	ViewerController *viewer = nil;
-	NSEnumerator *viewerEnumerator = [usableViewers objectEnumerator];
-	while (viewer = [viewerEnumerator nextObject]) {
+	for (viewer in usableViewers) {
 		[viewer close];
 	}
 	/*
@@ -738,10 +733,9 @@ WindowLayoutManager *sharedLayoutManager;
 	
 	//go through a second time for 2d viewers to adjust window frame, zoom, wwwl, rotation, etc
 	// need to make this more efficient
-	enumerator = [viewers objectEnumerator];
 	NSEnumerator *windowEnumerator = [[self viewers2D] objectEnumerator];
 	ViewerController *controller;
-	while (seriesInfo = [enumerator nextObject]){
+	for (seriesInfo in viewers){
 		// Viewer Controllers
 		if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
 			controller = [windowEnumerator nextObject];
@@ -797,9 +791,8 @@ WindowLayoutManager *sharedLayoutManager;
 	// Need to do fusion/ Subtration/ open 3D Windows
 	// Once we have 2D windows opened and fused can look for 3D windows to open  
 	[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
-	enumerator = [viewers objectEnumerator];
 
-	while (seriesInfo = [enumerator nextObject]){
+	for (seriesInfo in viewers){
 		// have a 3D Viewer
 		// Need to determine if 3D Viewer is for Current Study or Comparison. Not done yet.
 		
@@ -975,10 +968,9 @@ WindowLayoutManager *sharedLayoutManager;
 #pragma mark-
 #pragma mark Subarrays of Window Controllers
 - (NSArray *)viewers2D{
-	NSEnumerator *enumerator = [_windowControllers objectEnumerator];
 	OSIWindowController *controller;
 	NSMutableArray *array = [NSMutableArray array];
-	while (controller = [enumerator nextObject]){
+	for (controller in _windowControllers){
 		if ([controller isKindOfClass:[ViewerController class]])
 			[array addObject:controller];
 	}
@@ -986,10 +978,9 @@ WindowLayoutManager *sharedLayoutManager;
 }
 
 - (NSArray *)viewers3D{
-	NSEnumerator *enumerator = [_windowControllers objectEnumerator];
 	OSIWindowController *controller;
 	NSMutableArray *array = [NSMutableArray array];
-	while (controller = [enumerator nextObject]){
+	for (controller in _windowControllers){
 		if ([controller isKindOfClass:[Window3DController class]])
 			[array addObject:controller];
 	}
@@ -1081,8 +1072,7 @@ WindowLayoutManager *sharedLayoutManager;
 		NSArray *subArray = [_relatedStudies filteredArrayUsingPredicate:datePredicate];
 		//NSLog(@"filtered Studies count: %d", [subArray count]);
 		//NSEnumerator *comparisonEnumerator = [_relatedStudies objectEnumerator];
-		NSEnumerator *comparisonEnumerator = [subArray objectEnumerator];
-		while (comparisonStudy  = [comparisonEnumerator nextObject]) {
+		for (comparisonStudy in subArray) {
 			NSEnumerator *keywordEnumerator = [[bodyRegion objectForKey:@"keywords"] objectEnumerator];
 			NSDictionary *keywordDict;
 			while (keywordDict = [keywordEnumerator  nextObject]){

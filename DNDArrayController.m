@@ -100,9 +100,8 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 	// create new array of selected rows for remote drop
     // could do deferred provision, but keep it direct for clarity
 	NSMutableArray *rowCopies = [NSMutableArray arrayWithCapacity:[rows count]];    
-	NSEnumerator *rowEnumerator = [rows objectEnumerator];
 	NSNumber *idx;
-	while (idx = [rowEnumerator nextObject]) {
+	for (idx in rows) {
 		[rowCopies addObject:[[self arrangedObjects] objectAtIndex:[idx intValue]]];
 		[tableView selectRow: [idx intValue] byExtendingSelection: NO];
 	}
@@ -225,9 +224,8 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 - (NSIndexSet *)indexSetFromRows:(NSArray *)rows
 {
     NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSet];
-    NSEnumerator *rowEnumerator = [rows objectEnumerator];
     NSNumber *idx;
-    while (idx = [rowEnumerator nextObject]) {
+    for (idx in rows) {
 		[indexSet addIndex:[idx intValue]];
     }
     return indexSet;

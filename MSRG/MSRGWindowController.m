@@ -154,9 +154,8 @@ PURPOSE.
 	for(i=0;i<nbImages;i++)
 	{
 		curRoiList= [[viewer roiList] objectAtIndex: i];
-		for( j = 0; j < [curRoiList count]; j++)
+		for( ROI *currentROI in curRoiList)
 		{
-			ROI* currentROI=[curRoiList objectAtIndex:j];
 			if( ([[currentROI name] isEqualToString:@"Bounding Box"]) && ([currentROI type]==tROI))
 			{
 				if(!isBoundingBox) //first time we find a ROI Bounding Box
@@ -357,9 +356,8 @@ PURPOSE.
 				for(i=0;i<nbImages;i++)
 				{
 					curRoiList= [[viewer roiList] objectAtIndex: i];
-					for( j = 0; j < [curRoiList count]; j++)
+					for( ROI *currentROI in curRoiList)
 					{
-						ROI* currentROI=[curRoiList objectAtIndex:j];
 						if( !(([[currentROI name] isEqualToString:@"Bounding Box"]) && ([currentROI type]==tROI)))
 							cleanStack=YES;
 					}

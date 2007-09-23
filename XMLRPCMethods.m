@@ -268,11 +268,10 @@
 				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 				{
 					NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
-					int i;
 					
-					for( i = 0; i < [viewersList count] ; i++)
+					for( id loopItem6 in viewersList)
 					{
-						[[[viewersList objectAtIndex: i] window] close];
+						[[loopItem6 window] close];
 					}
 					
 					// Done, we can send the response to the sender
@@ -299,16 +298,15 @@
 				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 				{
 					NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
-					int i;
 					
 					// Generate an answer containing the elements
 					NSMutableString *a = [NSMutableString stringWithString: @"<array><data>"];
 					
-					for( i = 0; i < [viewersList count] ; i++)
+					for( id loopItem5 in viewersList)
 					{
 						NSMutableString *c = [NSMutableString stringWithString: @"<struct>"];
 						
-						NSManagedObject *series = [[[viewersList objectAtIndex: i] imageView] seriesObj];
+						NSManagedObject *series = [[loopItem5 imageView] seriesObj];
 						
 						NSDictionary *allCommittedValues = [series committedValuesForKeys:nil];
 			
@@ -356,16 +354,15 @@
 				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 				{
 					NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
-					int i;
 					
 					// Generate an answer containing the elements
 					NSMutableString *a = [NSMutableString stringWithString: @"<array><data>"];
 					
-					for( i = 0; i < [viewersList count] ; i++)
+					for( id loopItem4 in viewersList)
 					{
 						NSMutableString *c = [NSMutableString stringWithString: @"<struct>"];
 						
-						NSManagedObject *study = [[[[viewersList objectAtIndex: i] imageView] seriesObj] valueForKey:@"study"];
+						NSManagedObject *study = [[[loopItem4 imageView] seriesObj] valueForKey:@"study"];
 						
 						NSDictionary *allCommittedValues = [study committedValuesForKeys:nil];
 			

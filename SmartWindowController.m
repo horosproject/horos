@@ -113,9 +113,8 @@
 		[[view removeButton] setEnabled:NO];
 	}
 	else {
-		NSEnumerator *enumerator = [subviews  objectEnumerator];
 		AdvancedQuerySubview *view;
-		while (view = [enumerator nextObject])
+		for (view in subviews)
 				[[view removeButton] setEnabled:YES];
 	}
 }
@@ -126,10 +125,9 @@
 }
 
 -(void) createCriteria {
-	NSEnumerator *enumerator = [subviews objectEnumerator];
 	AdvancedQuerySubview *view;
 	criteria = [[NSMutableArray array] retain];
-	while (view = [enumerator nextObject])
+	for (view in subviews)
 	{
 		NSString *predicateString = 0L;
 		NSString *value = 0L;

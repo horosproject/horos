@@ -78,11 +78,9 @@ static NSMenu					*fusionPluginsMenu = 0L;
 				// Create a sub menu item
 				
 				NSMenu  *subMenu = [[[NSMenu alloc] initWithTitle: pluginName] autorelease];
-				long	i;
 				
-				for( i = 0; i < [menuTitles count]; i++)
+				for( NSString *menuTitle in menuTitles)
 				{
-					NSString *menuTitle = [menuTitles objectAtIndex: i];
 					NSMenuItem *item = [[[NSMenuItem alloc] init] autorelease];
 					[item setTitle:menuTitle];
 					
@@ -323,7 +321,6 @@ static NSMenu					*fusionPluginsMenu = 0L;
 	if ([[NSFileManager defaultManager] fileExistsAtPath:sysPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:sysPath attributes:nil];
 	
 	NSArray *paths = [NSArray arrayWithObjects:appPath, userPath, sysPath, nil];
-    NSEnumerator *pathEnum = [paths objectEnumerator];
     NSString *path;
 	
 	[plugins release];
@@ -342,7 +339,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 	fusionPluginsMenu = [[NSMenu alloc] initWithTitle:@""];
 	[fusionPluginsMenu insertItemWithTitle:NSLocalizedString(@"Select a fusion plug-in", nil) action:0L keyEquivalent:@"" atIndex:0];
 	
-    while ( path = [pathEnum nextObject] )
+    for ( path in paths )
 	{
 		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
 		NSString *name;
@@ -384,11 +381,9 @@ static NSMenu					*fusionPluginsMenu = 0L;
 							
 							if( [menuTitles count] > 1)
 							{
-								long	i;
 								
-								for( i = 0; i < [menuTitles count]; i++)
+								for( NSString *menuTitle in menuTitles)
 								{
-									NSString *menuTitle = [menuTitles objectAtIndex: i];
 									
 									[plugins setObject:filter forKey:menuTitle];
 									[pluginsDict setObject:plugin forKey:menuTitle];
@@ -529,10 +524,9 @@ static NSMenu					*fusionPluginsMenu = 0L;
 	
 	NSEnumerator *activePathEnum = [activePaths objectEnumerator];
     NSString *activePath;
-	NSEnumerator *inactivePathEnum = [inactivePaths objectEnumerator];
     NSString *inactivePath;
 	
-	while(inactivePath = [inactivePathEnum nextObject])
+	for(inactivePath in inactivePaths)
 	{
 		activePath = [activePathEnum nextObject];
 		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:inactivePath] objectEnumerator];
@@ -554,12 +548,11 @@ static NSMenu					*fusionPluginsMenu = 0L;
 	NSMutableArray *activePaths = [NSMutableArray arrayWithArray:[PluginManager activeDirectories]];
 	NSMutableArray *inactivePaths = [NSMutableArray arrayWithArray:[PluginManager inactiveDirectories]];
 	
-	NSEnumerator *activePathEnum = [activePaths objectEnumerator];
     NSString *activePath;
 	NSEnumerator *inactivePathEnum = [inactivePaths objectEnumerator];
     NSString *inactivePath;
 	
-	while(activePath = [activePathEnum nextObject])
+	for(activePath in activePaths)
 	{
 		inactivePath = [inactivePathEnum nextObject];
 		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:activePath] objectEnumerator];
@@ -652,10 +645,9 @@ static NSMenu					*fusionPluginsMenu = 0L;
 	NSMutableArray *pluginsPaths = [NSMutableArray arrayWithArray:[PluginManager activeDirectories]];
 	[pluginsPaths addObjectsFromArray:[PluginManager inactiveDirectories]];
 	
-	NSEnumerator *pluginsPathEnum = [pluginsPaths objectEnumerator];
     NSString *path;
 	
-	while(path = [pluginsPathEnum nextObject])
+	for(path in pluginsPaths)
 	{
 		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
 		NSString *name;
@@ -700,12 +692,11 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 	[paths addObjectsFromArray:[PluginManager activeDirectories]];
 	[paths addObjectsFromArray:[PluginManager inactiveDirectories]];
 	
-    NSEnumerator *pathEnum = [paths objectEnumerator];
     NSString *path;
 	
     NSMutableArray *plugins = [[NSMutableArray alloc] init];
 	Class filterClass;
-    while(path=[pathEnum nextObject])
+    for(path in paths)
 	{
 //		BOOL active = ([path isEqualToString:userActivePath] || [path isEqualToString:sysActivePath]);
 //		BOOL allUsers = ([path isEqualToString:sysActivePath] || [path isEqualToString:sysInactivePath]);

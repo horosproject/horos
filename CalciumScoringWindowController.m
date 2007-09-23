@@ -52,9 +52,8 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 														nil] retain];
 		
 		_vessels = [[NSMutableArray alloc] init];
-		NSEnumerator *enumerator = [_vesselNames objectEnumerator];
 		NSString *name;
-		while (name = [enumerator nextObject]) {
+		for (name in _vesselNames) {
 			[(NSMutableArray *)_vessels addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys: name, @"vesselName",
 															[NSNumber numberWithFloat:0.0], @"score",
 															[NSNumber numberWithFloat:0.0], @"mass",
@@ -430,9 +429,8 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	}
 	
 	NSArray *roiList = [_viewer roisWithName:name];
-	NSEnumerator *enumerator = [roiList objectEnumerator];
 	ROI *roi ;
-	while (roi = [enumerator nextObject]) {
+	for (roi in roiList) {
 		[roi setDisplayCalciumScoring:YES];
 		if (addROIs) {
 			RGBColor aColor;
@@ -476,9 +474,8 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	float totalScore = 0.0;
 	float totalMass = 0.0;
 	float totalVolume = 0.0;
-	NSEnumerator *vesselEnumerator = [_vessels objectEnumerator];
 	NSMutableDictionary *vessel;
-	while (vessel = [vesselEnumerator nextObject]) {
+	for (vessel in _vessels) {
 		NSString *vesselName = [vessel objectForKey:@"vesselName"];
 		//NSLog(@"vessel: %@", vesselName);
 		if ([vesselName isEqualToString:NSLocalizedString(@"Total", nil)]) {

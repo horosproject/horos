@@ -87,10 +87,8 @@
 		@"patientUID",
 		nil];
 
-	int i;
-	for (i = 0; i < [imageInformation count]; i++)
+	for (NSString *key in imageInformation)
 	{
-		NSString *key = [imageInformation objectAtIndex: i];
 		if ([key hasPrefix: @"series."])
 		{
 			if ([curImage valueForKeyPath: key])
@@ -193,12 +191,11 @@
 	NSMutableArray	*dicomFilePathList = [NSMutableArray arrayWithCapacity: 0];
 	int currentImageIndex = [[currentViewer imageView] curImage];
 
-	int i;
-	for(i = 0; i < [fileList count]; i++)
+	for(id loopItem in fileList)
 	{
 		NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 		
-		[currentViewer setImageIndex: [[fileList objectAtIndex: i] intValue]];
+		[currentViewer setImageIndex: [loopItem intValue]];
 		[dicomFilePathList addObject: [self _createDicomImageWithViewer: currentViewer toDestinationPath: destPath asColorPrint: colorPrint withAnnotations: annotations]];
 		
 		[pool release];
@@ -373,9 +370,9 @@
 {
 	int i, theLongest = 0;
 	NSArray *values = [tileDict allValues];
-	for (i = 0; i < [values count]; i++)
+	for (id loopItem in values)
 	{
-		NSString *value = [NSString stringWithFormat: @"%@",  [values objectAtIndex: i]];
+		NSString *value = [NSString stringWithFormat: @"%@",  loopItem];
 
 		if (theLongest < [value length])
 			theLongest = [value length];

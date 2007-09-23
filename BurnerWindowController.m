@@ -122,11 +122,10 @@ NSString* asciiString (NSString* name);
 		
 		files = [theFiles retain];
 		dbObjects = [managedObjects retain];
-		NSEnumerator *enumerator = [managedObjects objectEnumerator];
 		id managedObject;
 		id patient = nil;
 		_multiplePatients = NO;
-		while (managedObject = [enumerator nextObject]){
+		for (managedObject in managedObjects){
 			id newPatient = [managedObject valueForKeyPath:@"series.study.patientUID"];
 			
 			if (patient == nil)
@@ -193,16 +192,14 @@ NSString* asciiString (NSString* name);
 
 
 - (NSArray *)extractFileNames:(NSArray *)filenames{
-    NSEnumerator *enumerator;
     NSString *pname;
     NSString *fname;
     NSString *pathName;
     BOOL isDir;
 
     NSMutableArray *fileNames = [[[NSMutableArray alloc] init] autorelease];
-    enumerator = [filenames objectEnumerator];
 	//NSLog(@"Extract");
-    while (fname = [enumerator nextObject]){ 
+    for (fname in filenames){ 
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		//NSLog(@"fname %@", fname);
         NSFileManager *manager = [NSFileManager defaultManager];
@@ -853,12 +850,11 @@ NSString* asciiString (NSString* name);
 
 
 - (void)estimateFolderSize: (id) object {
-	NSEnumerator			*enumerator = [files objectEnumerator];
 	NSString				*file;
 	long					size = 0;
 	NSFileManager			*manager = [NSFileManager defaultManager];
 	NSDictionary			*fattrs;
-	while (file = [enumerator nextObject]){
+	for (file in files){
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		fattrs = [manager fileAttributesAtPath:file traverseLink:YES];
 		size += [fattrs fileSize]/1024;

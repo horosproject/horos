@@ -579,12 +579,10 @@ NSString * documentsDirectory();
 
 - (void) updateToolbarItems
 {
-	long i;
 	NSToolbarItem *item;
 	NSArray *toolbarItems = [toolbar items];
-	for(i=0;i<[toolbarItems count];i++)
+	for(item in toolbarItems)
 	{
-		item = [toolbarItems objectAtIndex:i];
 		if ([[item itemIdentifier] isEqualToString:TurnSplitViewToolbarItemIdentifier])
 		{
 			if ([splitView isVertical])

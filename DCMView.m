@@ -524,13 +524,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	NSDictionary	*list = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"];
 	NSArray			*allKeys = [list allKeys];
 	
-	int i;
 	
-	for( i = 0 ; i < [allKeys count] ; i++)
+	for( id loopItem in allKeys)
 	{
-		NSArray		*value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey: [allKeys objectAtIndex: i]];
+		NSArray		*value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey: loopItem];
 		
-		if( [[value objectAtIndex: 0] floatValue] == wl && [[value objectAtIndex: 1] floatValue] == ww) return [allKeys objectAtIndex: i];
+		if( [[value objectAtIndex: 0] floatValue] == wl && [[value objectAtIndex: 1] floatValue] == ww) return loopItem;
 	}
 	
 	if( pix ) {
@@ -568,12 +567,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	ANNOTATIONS = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 	
 	NSArray		*viewers = [ViewerController getDisplayed2DViewers];
-	int			i;
 	
 	
-	for( i = 0; i < [viewers count]; i++)
+	for( id loopItem in viewers)
 	{
-		[[viewers objectAtIndex:i] refresh];
+		[loopItem refresh];
 	}
 }
 
@@ -878,13 +876,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
         {
             NSMutableArray*    roiArray = [NSUnarchiver unarchiveObjectWithFile: [[oPanel filenames] objectAtIndex:i]];
 
-            for( j = 0 ; j < [roiArray count] ; j++)
+            for( id loopItem1 in roiArray)
             {
-                [[roiArray objectAtIndex: j] setOriginAndSpacing:curDCM.pixelSpacingX :curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
-                [[roiArray objectAtIndex: j] setROIMode: ROI_selected];
-                [[roiArray objectAtIndex: j] setRoiFont: labelFontListGL :labelFontListGLSize :self];
+                [loopItem1 setOriginAndSpacing:curDCM.pixelSpacingX :curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
+                [loopItem1 setROIMode: ROI_selected];
+                [loopItem1 setRoiFont: labelFontListGL :labelFontListGLSize :self];
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: [roiArray objectAtIndex: j] userInfo: nil];
+                [[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: loopItem1 userInfo: nil];
             }
             
             [curRoiList addObjectsFromArray: roiArray];
@@ -897,13 +895,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
 	BOOL valid = NO;
-	int i;
 	
     if ([item action] == @selector( roiSaveSelected:))
 	{
-		for( i = 0; i < [curRoiList count]; i++)
+		for( id loopItem in curRoiList)
 		{
-			if( [[curRoiList objectAtIndex: i] ROImode] == ROI_selected) valid = YES;
+			if( [loopItem ROImode] == ROI_selected) valid = YES;
 		}
     }
 	else if( [item action] == @selector( flipHorizontal:))
@@ -5004,13 +5001,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 -(void) roiSelected:(NSNotification*) note
 {
 	NSArray *winList = [[NSApplication sharedApplication] windows];
-	long	i;
 	
-	for( i = 0; i < [winList count]; i++)
+	for( id loopItem in winList)
 	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROI"])
+		if( [[[loopItem windowController] windowNibName] isEqualToString:@"ROI"])
 		{
-			[[[winList objectAtIndex:i] windowController] setROI: [note object] :[self windowController]];
+			[[loopItem windowController] setROI: [note object] :[self windowController]];
 		}
 	}
 }
@@ -9101,7 +9097,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 -(void)resizeWindowToScale:(float)resizeScale
 {
 	NSRect frame =  [self frame]; 
-	long i;
 	float curImageWidth = curDCM.pwidth * resizeScale;
 	float curImageHeight = curDCM.pheight* resizeScale;
 	float frameWidth = frame.size.width;
@@ -9117,11 +9112,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	NSArray *screens = [NSScreen screens];
 	
-	for( i = 0; i < [screens count]; i++)
+	for( id loopItem in screens)
 	{
-		if( NSPointInRect( center, [[screens objectAtIndex: i] frame]))
+		if( NSPointInRect( center, [loopItem frame]))
 		{
-			NSRect	screenFrame = [[screens objectAtIndex: i] visibleFrame];
+			NSRect	screenFrame = [loopItem visibleFrame];
 			
 			if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
 			{

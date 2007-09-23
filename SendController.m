@@ -312,20 +312,18 @@ static volatile int sendControllerObjects = 0;
 	
 	if( _abort) return;
 	
-	int x;
-	for( x = 0; x < [samePatientArray count] ; x++) if( [[samePatientArray objectAtIndex: x] isFault]) isFault = YES;
+	for( id loopItem1 in samePatientArray) if( [loopItem1 isFault]) isFault = YES;
 	
 	NSArray	*files = [samePatientArray valueForKey: @"completePathResolved"];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"])
 	{
 		NSLog( @"add ROIs for DICOM sending");
-		int i;
 		NSMutableArray	*roiFiles = [NSMutableArray array];
 		
-		for( i = 0 ; i < [samePatientArray count] ; i++)
+		for( id loopItem in samePatientArray)
 		{
-			[roiFiles addObjectsFromArray: [[samePatientArray objectAtIndex: i] valueForKey: @"SRPaths"]];
+			[roiFiles addObjectsFromArray: [loopItem valueForKey: @"SRPaths"]];
 		}
 		
 		files = [files arrayByAddingObjectsFromArray: roiFiles];
@@ -377,7 +375,6 @@ static volatile int sendControllerObjects = 0;
 	
 	NSLog(@"Server destination: %@", [[self server] description]);	
 			
-	int					i;
 	NSString			*previousPatientUID = 0L;
 	NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
 	
@@ -386,11 +383,11 @@ static volatile int sendControllerObjects = 0;
 	
 	objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
 	
-	for( i = 0; i < [objectsToSend count] ; i++)
+	for( id loopItem in objectsToSend)
 	{
-		if( [previousPatientUID isEqualToString: [[objectsToSend objectAtIndex: i] valueForKeyPath:@"series.study.patientUID"]])
+		if( [previousPatientUID isEqualToString: [loopItem valueForKeyPath:@"series.study.patientUID"]])
 		{
-			[samePatientArray addObject: [objectsToSend objectAtIndex: i]];
+			[samePatientArray addObject: loopItem];
 		}
 		else
 		{
@@ -398,9 +395,9 @@ static volatile int sendControllerObjects = 0;
 			
 			// Reset
 			[samePatientArray removeAllObjects];
-			[samePatientArray addObject: [objectsToSend objectAtIndex: i]];
+			[samePatientArray addObject: loopItem];
 			
-			previousPatientUID = [[objectsToSend objectAtIndex: i] valueForKeyPath:@"series.study.patientUID"];
+			previousPatientUID = [loopItem valueForKeyPath:@"series.study.patientUID"];
 		}
 	}
 	

@@ -119,9 +119,9 @@ static BOOL showWarning = YES;
 			NSArray	*allSeries =  [[BrowserController currentBrowser] childrenArray: [imObj valueForKeyPath:@"series.study"]];
 			NSMutableArray *result = [NSMutableArray array];
 			
-			for(i = 0 ; i < [allSeries count]; i++)
+			for(id loopItem in allSeries)
 			{
-				[result addObjectsFromArray: [[BrowserController currentBrowser] childrenArray: [allSeries objectAtIndex: i]]];
+				[result addObjectsFromArray: [[BrowserController currentBrowser] childrenArray: loopItem]];
 			}
 			
 			return [result valueForKey:@"completePath"];
@@ -684,9 +684,8 @@ static BOOL showWarning = YES;
 			
 			[self modifyDicom: params];
 			
-			int i;
-			for( i = 0; i < [files count]; i++)
-				[[NSFileManager defaultManager] removeFileAtPath:[[files objectAtIndex: i] stringByAppendingString:@".bak"] handler:0L];
+			for( id loopItem in files)
+				[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:0L];
 			
 			[self updateDB: files];
 			
@@ -796,9 +795,8 @@ static BOOL showWarning = YES;
 					}
 					
 					[self modifyDicom: params];
-					int i;
-					for( i = 0; i < [files count]; i++)
-						[[NSFileManager defaultManager] removeFileAtPath:[[files objectAtIndex: i] stringByAppendingString:@".bak"] handler:0L];
+					for( id loopItem in files)
+						[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:0L];
 					
 					[self updateDB: files];
 					
@@ -1073,14 +1071,13 @@ static BOOL showWarning = YES;
 	
 	NSString	*string = [NSString stringWithFormat:@"(0x%04x,0x%04x)", group, element];
 	
-	int i;
 	
-	for( i = 0; i < [dictionaryArray count] ; i++)
+	for( id loopItem in dictionaryArray)
 	{
-		if( [[[dictionaryArray objectAtIndex: i] substringToIndex: 15] isEqualToString: string])
+		if( [[loopItem substringToIndex: 15] isEqualToString: string])
 		{
-			NSLog( [dictionaryArray objectAtIndex: i]);
-			[dicomFieldsCombo setStringValue: [[dictionaryArray objectAtIndex: i] substringFromIndex: 16]];
+			NSLog( loopItem);
+			[dicomFieldsCombo setStringValue: [loopItem substringFromIndex: 16]];
 			
 			return;
 		}
@@ -1125,13 +1122,12 @@ static BOOL showWarning = YES;
 	
 	if( [uncompletedString length] == 0) return 0L;
 	
-	int i;
 	
-	for( i = 0; i < [dictionaryArray count] ; i++)
+	for( id loopItem in dictionaryArray)
 	{
-		if( [[[[dictionaryArray objectAtIndex: i] substringFromIndex: 16] uppercaseString] hasPrefix: [uncompletedString uppercaseString]])
+		if( [[[loopItem substringFromIndex: 16] uppercaseString] hasPrefix: [uncompletedString uppercaseString]])
 		{
-			return [[dictionaryArray objectAtIndex: i] substringFromIndex: 16];
+			return [loopItem substringFromIndex: 16];
 		}
 	}
 	

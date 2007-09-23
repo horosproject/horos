@@ -692,9 +692,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	
 	//loop through the ROIs and add
 	NSSet *rois = [self primitiveValueForKey:@"rois"];
-	NSEnumerator *enumerator = [rois objectEnumerator];
 	id roi;
-	while (roi = [enumerator nextObject]){
+	for (roi in rois){
 		//will be either a Graphic Object sequence or a Text Object Sequence
 		int roiType = [[roi valueForKey:@"roiType"] intValue];
 		NSString *typeString = nil;

@@ -22,14 +22,12 @@
 {
     NSMutableArray    *state;
     NSArray            *columns;
-    NSEnumerator    *enumerator;
     NSTableColumn    *column;
 
     columns = [self tableColumns];
     state = [NSMutableArray arrayWithCapacity:[columns count]];
-    enumerator = [columns objectEnumerator];
 
-    while( column = [enumerator nextObject] )
+    for( column in columns )
     {
         [state addObject:
             [NSDictionary dictionaryWithObjectsAndKeys:
@@ -44,7 +42,6 @@
 - (void)restoreColumnState:(NSObject *)columnState
 {
     NSArray                *state;
-    NSEnumerator        *enumerator;
     NSDictionary        *params;
     NSTableColumn        *column;
 
@@ -53,9 +50,8 @@
 
     state = (NSArray *)columnState;
 
-    enumerator = [state objectEnumerator];
     [self removeAllColumns];
-    while( params = [enumerator nextObject] )
+    for( params in state )
     {
 		if( [[params objectForKey:@"Identifier"] isEqualToString:@"name"] == NO)
 		{
@@ -116,12 +112,10 @@
 
 - (NSTableColumn *)initialColumnWithIdentifier:(id)identifier
 {
-    NSEnumerator    *enumerator;
     NSTableColumn    *column = nil;
 
-    enumerator = [allColumns objectEnumerator];
 
-    while( column = [enumerator nextObject] )
+    for( column in allColumns )
         if( [[column identifier] isEqual:identifier] )
             break;
 
@@ -131,13 +125,11 @@
 - (void)removeAllColumns
 {
     NSArray            *columns;
-    NSEnumerator    *enumerator;
     NSTableColumn    *column;
 
     columns = [NSArray arrayWithArray:[self tableColumns]];
-    enumerator = [columns objectEnumerator];
 
-    while( column = [enumerator nextObject] )
+    for( column in columns )
 	{
 		if( [[column identifier] isEqualToString:@"name"] == NO) [self removeTableColumn:column];
 	}
@@ -247,7 +239,6 @@
 
 - (void) terminateDrag:(NSArray*) fileArray
 {
-	long	i;
 	BOOL	directory;
 	BOOL	done = NO;
 	
@@ -284,9 +275,8 @@
 				{
 					NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
 					
-					for( i = 0; i < [newImages count]; i++)
+					for( NSManagedObject *object in newImages)
 					{
-						NSManagedObject		*object = [newImages objectAtIndex: i];
 						[studies addObject: [object valueForKeyPath:@"series.study"]];
 					}
 					

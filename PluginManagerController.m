@@ -229,10 +229,9 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	[pluginsListPopUp removeAllItems];
 	
 	NSArray *availablePlugins = [self availablePlugins];
-	int i;
-	for (i=0; i<[availablePlugins count]; i++)
+	for (id loopItem in availablePlugins)
 	{
-		[pluginsListPopUp addItemWithTitle:[[availablePlugins objectAtIndex:i] objectForKey:@"name"]];
+		[pluginsListPopUp addItemWithTitle:[loopItem objectForKey:@"name"]];
 	}
 	
 	[[pluginsListPopUp menu] addItem:[NSMenuItem separatorItem]];
@@ -256,13 +255,12 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 - (void)setURLforPluginWithName:(NSString*)name;
 {
 	NSArray* availablePlugins = [self availablePlugins];
-	int i;
-	for(i=0; i<[availablePlugins count]; i++)
+	for(id loopItem in availablePlugins)
 	{
-		if([[[availablePlugins objectAtIndex:i] valueForKey:@"name"] isEqualTo:name])
+		if([[loopItem valueForKey:@"name"] isEqualTo:name])
 		{
-			[self setURL:[[availablePlugins objectAtIndex:i] valueForKey:@"url"]];
-			[self setDownloadURL:[[availablePlugins objectAtIndex:i] valueForKey:@"download_url"]];
+			[self setURL:[loopItem valueForKey:@"url"]];
+			[self setDownloadURL:[loopItem valueForKey:@"download_url"]];
 			return;
 		}
 		else if([name isEqualTo:NSLocalizedString(@"Your Plugin here!", nil)])
@@ -414,10 +412,9 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 		
 	NSMutableString *emailMessage = [NSMutableString stringWithString:@""];
 	
-	int i;
-	for (i=0; i<[parametersArray count]; i++)
+	for (id loopItem in parametersArray)
 	{
-		NSArray *param = [[parametersArray objectAtIndex:i] componentsSeparatedByString:@"="];
+		NSArray *param = [loopItem componentsSeparatedByString:@"="];
 		[emailMessage appendFormat:@"%@: %@ \n", [param objectAtIndex:0], [[param objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	}
 	

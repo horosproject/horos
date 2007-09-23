@@ -147,10 +147,10 @@ Version 2.3
 		
 		long sum = 0, i;
 		
-		for( i = 0; i < [array count]; i++)
+		for( id loopItem in array)
 		{
-			if( [DCMAbstractSyntaxUID isStructuredReport: [[array objectAtIndex:i] valueForKey: @"seriesSOPClassUID"]] == NO)
-				sum += [[[array objectAtIndex:i] valueForKey:@"noFiles"] intValue];
+			if( [DCMAbstractSyntaxUID isStructuredReport: [loopItem valueForKey: @"seriesSOPClassUID"]] == NO)
+				sum += [[loopItem valueForKey:@"noFiles"] intValue];
 		}
 		
 		NSNumber	*no = [NSNumber numberWithInt:sum];
@@ -167,11 +167,10 @@ Version 2.3
 {
 //	NSLog(@"keyPath: %@", [[self valueForKeyPath:@"series.images.completePath"] description]);
 	NSSet *sets = [self valueForKeyPath: @"series.images.completePath"];
-	NSEnumerator *enumerator = [sets objectEnumerator];
 	NSMutableSet *set = [NSMutableSet set];
 //	NSEnumerator *enumerator = [[self primitiveValueForKey:@"series"] objectEnumerator];
 	id subset;
-	while (subset = [enumerator nextObject])
+	for (subset in sets)
 		[set unionSet: subset];
 	return set;
 }
@@ -197,9 +196,8 @@ Version 2.3
 	NSArray *array = [self primitiveValueForKey: @"series"];
 	
 	NSMutableArray *newArray = [NSMutableArray array];
-	NSEnumerator *enumerator = [array objectEnumerator];
 	id series;
-	while (series = [enumerator nextObject]){
+	for (series in array){
 		if ([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]] || [DCMAbstractSyntaxUID isRadiotherapy:[series valueForKey:@"seriesSOPClassUID"]] || [series valueForKey:@"seriesSOPClassUID"] == nil)
 			[newArray addObject:series];
 	}
@@ -209,9 +207,8 @@ Version 2.3
 - (NSArray *)reportSeries{
 	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	NSMutableArray *newArray = [NSMutableArray array];
-	NSEnumerator *enumerator = [array objectEnumerator];
 	id series;
-	while (series = [enumerator nextObject]){
+	for (series in array){
 		if ([DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]])
 			[newArray addObject:series];
 	}
@@ -221,9 +218,8 @@ Version 2.3
 - (NSArray *)structuredReports{
 	NSArray *array = [self primitiveValueForKey:@"reportSeries"];
 	NSMutableSet *set = [NSMutableSet set];
-	NSEnumerator *enumerator = [array objectEnumerator];
 	id series;
-	while (series = [enumerator nextObject])
+	for (series in array)
 		[set unionSet:[series primitiveValueForKey:@"images"]];
 	return [set allObjects];
 }
@@ -231,9 +227,8 @@ Version 2.3
 - (NSArray *)keyObjectSeries{
 	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	NSMutableArray *newArray = [NSMutableArray array];
-	NSEnumerator *enumerator = [array objectEnumerator];
 	id series;
-	while (series = [enumerator nextObject]){
+	for (series in array){
 		if ([[DCMAbstractSyntaxUID keyObjectSelectionDocumentStorage] isEqualToString:[series valueForKey:@"seriesSOPClassUID"]])
 			[newArray addObject:series];
 	}
@@ -243,9 +238,8 @@ Version 2.3
 - (NSArray *)keyObjects{
 	NSArray *array = [self keyObjectSeries];
 	NSMutableSet *set = [NSMutableSet set];
-	NSEnumerator *enumerator = [array objectEnumerator];
 	id series;
-	while (series = [enumerator nextObject])
+	for (series in array)
 		[set unionSet:[series primitiveValueForKey:@"images"]];
 	return [set allObjects];
 }
@@ -253,9 +247,8 @@ Version 2.3
 - (NSArray *)presentationStateSeries{
 	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	NSMutableArray *newArray = [NSMutableArray array];
-	NSEnumerator *enumerator = [array objectEnumerator];
 	id series;
-	while (series = [enumerator nextObject]){
+	for (series in array){
 		if ([DCMAbstractSyntaxUID isPresentationState:[series valueForKey:@"seriesSOPClassUID"]])
 			[newArray addObject:series];
 	}
@@ -265,9 +258,8 @@ Version 2.3
 - (NSArray *)waveFormSeries{
 	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	NSMutableArray *newArray = [NSMutableArray array];
-	NSEnumerator *enumerator = [array objectEnumerator];
 	id series;
-	while (series = [enumerator nextObject]){
+	for (series in array){
 		if ([DCMAbstractSyntaxUID isWaveform:[series valueForKey:@"seriesSOPClassUID"]])
 			[newArray addObject:series];
 	}

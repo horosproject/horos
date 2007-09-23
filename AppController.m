@@ -951,13 +951,12 @@ NSRect screenFrame()
 	{
 		NSArray *windows = [NSApp windows];
 
-		int i;
-		for(i = 0; i < [windows count]; i++)
+		for(id loopItem in windows)
 		{
-			if([[[windows objectAtIndex: i] windowController] isKindOfClass: [ViewerController class]] &&
-				[[windows objectAtIndex: i] isMainWindow])
+			if([[loopItem windowController] isKindOfClass: [ViewerController class]] &&
+				[loopItem isMainWindow])
 			{
-				[[[windows objectAtIndex: i] windowController] copySettingsToOthers: self];
+				[[loopItem windowController] copySettingsToOthers: self];
 			}
 		}
 	}
@@ -1371,11 +1370,10 @@ NSRect screenFrame()
 	if( [[[BrowserController currentBrowser] window] isMiniaturized] == YES || [[[BrowserController currentBrowser] window] isVisible] == NO)
 	{
 		NSArray				*winList = [NSApp windows];
-		long				i;
 		
-		for( i = 0; i < [winList count]; i++)
+		for( id loopItem in winList)
 		{
-			if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]]) return;
+			if( [[loopItem windowController] isKindOfClass:[ViewerController class]]) return;
 		}
 		
 		[[[BrowserController currentBrowser] window] makeKeyAndOrderFront: self];
@@ -1426,13 +1424,12 @@ NSRect screenFrame()
 - (void) terminate :(id) sender
 {
 	NSArray				*winList = [NSApp windows];
-	long				i;
 	
 	if( [[BrowserController currentBrowser] shouldTerminate: sender] == NO) return;
 	
-	for( i = 0; i < [winList count]; i++)
+	for( id loopItem in winList)
 	{
-		[[winList objectAtIndex:i] orderOut:sender];
+		[loopItem orderOut:sender];
 	}
 	
 	[[QueryController currentQueryController] release];
@@ -1544,8 +1541,7 @@ static BOOL initialized = NO;
 				BOOL exists = NO;
 				
 				exists = NO;
-				enumerator = [shadingArray objectEnumerator];
-				while (shading = [enumerator nextObject]) {
+				for (shading in shadingArray) {
 					if ([[shading objectForKey:@"name"] isEqualToString:@"Endoscopy"])
 						exists = YES;					
 				}
@@ -1561,8 +1557,7 @@ static BOOL initialized = NO;
 				}
 				
 				exists = NO;
-				enumerator = [shadingArray objectEnumerator];
-				while (shading = [enumerator nextObject]) {
+				for (shading in shadingArray) {
 					if ([[shading objectForKey:@"name"] isEqualToString:@"Glossy Bone"])
 						exists = YES;					
 				}
@@ -1578,8 +1573,7 @@ static BOOL initialized = NO;
 				}
 				
 				exists = NO;
-				enumerator = [shadingArray objectEnumerator];
-				while (shading = [enumerator nextObject]) {
+				for (shading in shadingArray) {
 					if ([[shading objectForKey:@"name"] isEqualToString:@"Glossy Vascular"])
 						exists = YES;					
 				}
@@ -1964,14 +1958,13 @@ static BOOL initialized = NO;
 
 - (IBAction) updateViews:(id) sender
 {
-	long				i;
 	NSArray				*winList = [NSApp windows];
 	
-	for( i = 0; i < [winList count]; i++)
+	for( id loopItem in winList)
 	{
-		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+		if( [[loopItem windowController] isKindOfClass:[ViewerController class]])
 		{
-			[[[winList objectAtIndex:i] windowController] needsDisplayUpdate];
+			[[loopItem windowController] needsDisplayUpdate];
 		}
 	}	
 }
@@ -2171,14 +2164,13 @@ static BOOL initialized = NO;
 {
 	NSArray *winList = [NSApp windows];
 	BOOL	found = NO;
-	long	i;
 					
-	for( i = 0; i < [winList count]; i++)
+	for( id loopItem in winList)
 	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"PreferencePanesViewer"])
+		if( [[[loopItem windowController] windowNibName] isEqualToString:@"PreferencePanesViewer"])
 		{
 			found = YES;
-			[[[winList objectAtIndex:i] windowController] showWindow:self];
+			[[loopItem windowController] showWindow:self];
 		}
 	}
 	
@@ -2211,15 +2203,14 @@ static BOOL initialized = NO;
 
 - (id) FindViewer:(NSString*) nib :(NSMutableArray*) pixList
 {
-	long				i;
 	NSArray				*winList = [NSApp windows];
 	
-	for( i = 0; i < [winList count]; i++)
+	for( id loopItem in winList)
 	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString: nib])
+		if( [[[loopItem windowController] windowNibName] isEqualToString: nib])
 		{
-			if( [[[winList objectAtIndex:i] windowController] pixList] == pixList)
-				return [[winList objectAtIndex:i] windowController];
+			if( [[loopItem windowController] pixList] == pixList)
+				return [loopItem windowController];
 		}
 	}
 	
@@ -2228,17 +2219,16 @@ static BOOL initialized = NO;
 
 - (NSArray*) FindRelatedViewers:(NSMutableArray*) pixList
 {
-	long				i;
 	NSArray				*winList = [NSApp windows];
 	NSMutableArray		*viewersList = [NSMutableArray array];
 	
-	for( i = 0; i < [winList count]; i++)
+	for( id loopItem in winList)
 	{
-		if( [[[winList objectAtIndex:i] windowController] respondsToSelector:@selector( pixList)])
+		if( [[loopItem windowController] respondsToSelector:@selector( pixList)])
 		{
-			if( [[[winList objectAtIndex:i] windowController] pixList] == pixList)
+			if( [[loopItem windowController] pixList] == pixList)
 			{
-				[viewersList addObject: [[winList objectAtIndex:i] windowController]];
+				[viewersList addObject: [loopItem windowController]];
 			}
 		}
 	}
@@ -2342,14 +2332,13 @@ static BOOL initialized = NO;
 - (void) checkAllWindowsAreVisible:(id) sender
 {
 	NSArray					*winList = [NSApp windows];
-	long					i;
 	
-	for( i = 0; i < [winList count]; i++)
+	for( id loopItem in winList)
 	{
-		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+		if( [[loopItem windowController] isKindOfClass:[ViewerController class]])
 		{
-			if( [[[winList objectAtIndex:i] windowController] windowWillClose] == NO)
-				[[winList objectAtIndex:i] orderFront:self];
+			if( [[loopItem windowController] windowWillClose] == NO)
+				[loopItem orderFront:self];
 		}
 	}
 }

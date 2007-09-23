@@ -997,9 +997,8 @@ static NSHost *currentHost = 0L;
 	// **HANGING PROTOCOLS
 	NSMutableDictionary *defaultHangingProtocols = [NSMutableDictionary dictionary];
 	NSArray *modalities = [NSArray arrayWithObjects:NSLocalizedString(@"CR", nil), NSLocalizedString(@"CT", nil), NSLocalizedString(@"DX", nil), NSLocalizedString(@"ES", nil), NSLocalizedString(@"MG", nil), NSLocalizedString(@"MR", nil), NSLocalizedString(@"NM", nil), NSLocalizedString(@"OT", nil),NSLocalizedString(@"PT", nil),NSLocalizedString(@"RF", nil),NSLocalizedString(@"SC", nil),NSLocalizedString(@"US", nil),NSLocalizedString(@"XA", nil), nil];
-	NSEnumerator *enumerator = [modalities objectEnumerator];
 	NSString *modality;
-	while (modality = [enumerator nextObject]) {
+	for (modality in modalities) {
 		//NSLog(@"Modality %@", modality);
 		NSMutableDictionary *protocol = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"Default", [NSNumber numberWithInt:1], [NSNumber numberWithInt:1], [NSNumber numberWithInt:1], [NSNumber numberWithInt:1], nil] forKeys:[NSArray arrayWithObjects:@"Study Description", @"Rows", @"Columns",@"Image Rows", @"Image Columns", nil]];
 		NSMutableArray *protocols = [NSMutableArray arrayWithObject:protocol];

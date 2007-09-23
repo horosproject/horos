@@ -60,7 +60,6 @@ static id aedesc_to_id(AEDesc *desc)
 
 - (NSString *) scriptBody:(NSArray*) files
 {
-	long i;
 	NSString *albumNameStr	= [[NSUserDefaults standardUserDefaults] stringForKey: @"ALBUMNAME"];
 	
 	
@@ -75,9 +74,9 @@ static id aedesc_to_id(AEDesc *desc)
 	[s appendString:[NSString stringWithFormat:@"set this_album to album \"%@\" \n", albumNameStr]];
 	[s appendString:@"select this_album \n"];
 	
-	for( i = 0; i < [files count]; i++)
+	for( id loopItem in files)
 	{
-		[s appendString:[NSString stringWithFormat:@"set this_path to \"%@\" \n",[files objectAtIndex:i]]];
+		[s appendString:[NSString stringWithFormat:@"set this_path to \"%@\" \n",loopItem]];
 		[s appendString:@"import from this_path to this_album \n"];
 	}
 	

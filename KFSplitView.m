@@ -729,9 +729,8 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
 
 - (void)kfMoveCollapsedSubviewsOffScreen
 {
-    NSEnumerator *collapsedSubviewEnumerator = [kfCollapsedSubviews objectEnumerator];
     NSView *subview;
-    while (subview = [collapsedSubviewEnumerator nextObject])
+    for (subview in kfCollapsedSubviews)
     {
         [subview setFrameOrigin:KFOffScreenPoint];
     }

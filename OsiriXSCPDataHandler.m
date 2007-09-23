@@ -178,9 +178,8 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 				if ([fetchArray count]) {
 					//NSLog(@"found object to move: %@", [fetchArray description]);
 					NSMutableSet *set = [NSMutableSet set];
-					NSEnumerator *enumerator = [fetchArray objectEnumerator];
 					id object;
-					while (object = [enumerator nextObject]) {
+					for (object in fetchArray) {
 						[set unionSet:[object paths]];
 					}
 					numberMoving = [set count];
@@ -290,10 +289,9 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 		//	unsigned short failed = 0;
 		//	unsigned short warning = 0;
 			
-			NSEnumerator *enumerator = [fetchArray objectEnumerator];
 			id fetchedObject;
 			//NSLog(@"fetch: %@", [fetchArray description]);
-			while (fetchedObject = [enumerator nextObject]){
+			for (fetchedObject in fetchArray){
 				DCMObject *object = nil;
 				NSLog(@"Fetch: %@", [fetchedObject description]);
 				if ([searchType isEqualToString:@"STUDY"])

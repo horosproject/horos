@@ -607,9 +607,9 @@ static char *GetPrivateIP()
 					
 					temp = NSSwapHostIntToBig( noOfFiles);
 					[toTransfer appendBytes:&temp length: 4];
-					for( i = 0; i < noOfFiles ; i++)
+					for( id loopItem1 in paths)
 					{
-						const char* string = [[paths objectAtIndex: i] UTF8String];
+						const char* string = [loopItem1 UTF8String];
 						int stringSize = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
 						
 						[toTransfer appendBytes:&stringSize length: 4];
@@ -624,9 +624,9 @@ static char *GetPrivateIP()
 					temp = NSSwapHostIntToBig( noOfFiles);
 					[toTransfer appendBytes:&temp length: 4];
 					
-					for( i = 0; i < noOfFiles ; i++)
+					for( id loopItem in paths)
 					{
-						NSData	*file = [NSData dataWithContentsOfFile: [paths objectAtIndex: i]];
+						NSData	*file = [NSData dataWithContentsOfFile: loopItem];
 						
 						int fileSize = NSSwapHostIntToBig( [file length]);
 						[toTransfer appendBytes:&fileSize length: 4];
@@ -1324,11 +1324,10 @@ static char *GetPrivateIP()
 
 - (BOOL) sendDICOMFile:(int) index paths:(NSArray*) ip
 {
-	int i;
 	
-	for( i = 0 ; i < [ip count]; i++)
+	for( id loopItem in ip)
 	{
-		if( [[NSFileManager defaultManager] fileExistsAtPath: [ip objectAtIndex: i]] == NO) return NO;
+		if( [[NSFileManager defaultManager] fileExistsAtPath: loopItem] == NO) return NO;
 	}
 	
 	[BonjourBrowser waitForLock: lock];
@@ -1355,17 +1354,16 @@ static char *GetPrivateIP()
 	
 	// TRY TO LOAD MULTIPLE DICOM FILES AT SAME TIME -> better network performances
 	
-	int		i;
 	NSString	*roistring = [NSString stringWithString:@"ROIs/"];
 	
-	for( i = 0; i < [roisPaths count] ; i++)
+	for( id loopItem in roisPaths)
 	{
-		NSString	*local = [[documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"] stringByAppendingPathComponent: [roisPaths objectAtIndex: i]];
+		NSString	*local = [[documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"] stringByAppendingPathComponent: loopItem];
 		 
 		if( [[NSFileManager defaultManager] fileExistsAtPath: local] == NO)
 		{
-			[paths addObject: [roistring stringByAppendingPathComponent: [roisPaths objectAtIndex: i]]];
-			[dicomFileNames addObject: [BonjourBrowser bonjour2local: [roisPaths objectAtIndex: i]]];
+			[paths addObject: [roistring stringByAppendingPathComponent: loopItem]];
+			[dicomFileNames addObject: [BonjourBrowser bonjour2local: loopItem]];
 		}
 	}
 	

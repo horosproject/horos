@@ -63,10 +63,8 @@
 @implementation NSMutableArray (MutableArrayCategory) 
 
 - (void)mergeWithArray:(NSArray*)array {
-    int i, max=[array count];
     NSRange searchRange=NSMakeRange(0, [self count]);
-    for (i=0; i<max; i++) {
-        id object=[array objectAtIndex:i];
+    for (id object in array) {
         NSInteger index=[self indexOfObject:object inRange:searchRange];
         if (index == NSNotFound) [self addObject:object];
     }

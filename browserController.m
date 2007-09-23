@@ -336,7 +336,6 @@ static NSArray*	statesArray = nil;
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder
 {
-	NSEnumerator			*enumerator = [newFilesArray objectEnumerator];
 	NSString				*newFile;
 	NSDate					*today = [NSDate date];
 	NSError					*error = nil;
@@ -434,7 +433,7 @@ static NSArray*	statesArray = nil;
 		}
 		
 		// Add the new files
-		while (newFile = [enumerator nextObject] )
+		for (newFile in newFilesArray )
 		{
 			@try
 		{
@@ -10579,9 +10578,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
     [anonymizerController showWindow:self];
 	
-	NSEnumerator *enumerator = [filesToAnonymize objectEnumerator];
 	NSString *file;
-	while (file = [enumerator nextObject]) {
+	for (file in filesToAnonymize) {
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		NSString	*extension = [file pathExtension];
 		if([extension isEqualToString:@"" ]) extension = [NSString stringWithString:@"dcm"];

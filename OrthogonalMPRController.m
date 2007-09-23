@@ -66,9 +66,8 @@
 		
 		originalDCMPixList = [[NSMutableArray alloc] initWithCapacity: [pix count]];
 		
-		int i;
-		for( i = 0 ; i < [pix count] ; i++)
-			[originalDCMPixList addObject:  [[[pix objectAtIndex: i] copy] autorelease]];
+		for( id loopItem in pix)
+			[originalDCMPixList addObject:  [[loopItem copy] autorelease]];
 		
 		originalDCMFilesList = [[NSMutableArray alloc] initWithArray:files];
 		
@@ -1005,7 +1004,6 @@
 															[NSNumber numberWithInt:8],
 															nil];
 															
-			NSEnumerator *enumerator = [titles objectEnumerator];
 			NSEnumerator *enumerator2 = [images objectEnumerator];
 			NSEnumerator *enumerator3 = [tagIndexes objectEnumerator];
 			NSString *title;
@@ -1014,7 +1012,7 @@
 			NSMenuItem *subItem;
 			int i = 0;
 			
-			while (title = [enumerator nextObject]) {
+			for (title in titles) {
 				image = [enumerator2 nextObject];
 				tag = [enumerator3 nextObject];
 				item = [[NSMenuItem alloc] initWithTitle: title action: @selector(changeTool:) keyEquivalent:@""];
@@ -1047,10 +1045,9 @@
 			NSMenu *submenu =  [[NSMenu alloc] initWithTitle:@"Resize window"];
 			
 			NSArray *resizeWindowArray = [NSArray arrayWithObjects:@"25%", @"50%", @"100%", @"200%", @"300%", @"iPod Video", nil];
-			NSEnumerator *resizeEnumerator = [resizeWindowArray objectEnumerator];
 			i = 0;
 			NSString	*titleMenu;
-			while (titleMenu = [resizeEnumerator nextObject]) {
+			for (titleMenu in resizeWindowArray) {
 				int tag = i++;
 				item = [[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""];
 				[item setTag:tag];

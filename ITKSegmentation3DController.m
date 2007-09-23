@@ -29,15 +29,14 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 +(id) segmentationControllerForViewer:(ViewerController*) v
 {
 	NSArray *winList = [NSApp windows];
-	long	x;
 	
-	for( x = 0; x < [winList count]; x++)
+	for( id loopItem in winList)
 	{
-		if( [[[[winList objectAtIndex:x] windowController] windowNibName] isEqualToString:@"ITKSegmentation"])
+		if( [[[loopItem windowController] windowNibName] isEqualToString:@"ITKSegmentation"])
 		{
-			if( [[[winList objectAtIndex:x] windowController] viewer] == v)
+			if( [[loopItem windowController] viewer] == v)
 			{
-				return [[winList objectAtIndex:x] windowController];
+				return [loopItem windowController];
 			}
 		}
 	}

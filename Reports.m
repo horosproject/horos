@@ -169,7 +169,6 @@ static id aedesc_to_id(AEDesc *desc)
 			
 			// SCAN FIELDS
 			
-			long x;
 			NSManagedObjectModel	*model = [[[study managedObjectContext] persistentStoreCoordinator] managedObjectModel];
 			NSArray *properties = [[[[model entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
 			NSMutableString	*file = [NSMutableString stringWithString:@""];
@@ -177,9 +176,8 @@ static id aedesc_to_id(AEDesc *desc)
 			NSDateFormatter		*date = [[[NSDateFormatter alloc] init] autorelease];
 			[date setDateStyle: NSDateFormatterShortStyle];
 			
-			for( x = 0; x < [properties count]; x++)
+			for( NSString *name in properties)
 			{
-				NSString	*name = [properties objectAtIndex: x];
 				NSString	*string;
 				
 				if( [[study valueForKey: name] isKindOfClass: [NSDate class]])
@@ -362,10 +360,8 @@ CHECK;
 	NSDateFormatter		*date = [[[NSDateFormatter alloc] init] autorelease];
 	[date setDateStyle: NSDateFormatterShortStyle];
 	
-	long x;
-	for( x = 0; x < [properties count]; x++)
+	for( NSString *propertyName in properties)
 	{
-		NSString *propertyName = [properties objectAtIndex:x];
 		NSString *propertyValue;
 		
 		if( [[aStudy valueForKey:propertyName] isKindOfClass:[NSDate class]])

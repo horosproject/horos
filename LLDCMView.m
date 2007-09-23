@@ -25,7 +25,6 @@
 
 - (void) setIndexWithReset:(short) index :(BOOL) sizeToFit
 {
-	long i;
 	if( dcmPixList && index != -1)
     {
 		[[self window] setAcceptsMouseMovedEvents: YES];
@@ -45,12 +44,12 @@
 			curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
 		}
 		
-		for( i = 0; i < [curRoiList count]; i++)
+		for( id loopItem in curRoiList)
 		{
-			[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :labelFontListGLSize :self];
-			[[curRoiList objectAtIndex:i ] recompute];
+			[loopItem setRoiFont: labelFontListGL :labelFontListGLSize :self];
+			[loopItem recompute];
 			// Unselect previous ROIs
-			[[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
+			[loopItem setROIMode : ROI_sleep];
 		}
 		
 		curWW = [curDCM ww];

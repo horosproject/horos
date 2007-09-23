@@ -90,8 +90,7 @@
 	NSMutableArray	*array = [NSMutableArray array];
 	NSArray			*src = [[NSUserDefaults standardUserDefaults] arrayForKey:@"shadingsPresets"];
 	
-	int i;
-	for( i = 0 ; i < [src count] ; i++) [array addObject: [[[src objectAtIndex:i] mutableCopy] autorelease]];
+	for( id loopItem in src) [array addObject: [[loopItem mutableCopy] autorelease]];
 
 	[self setContent: array];
 }
