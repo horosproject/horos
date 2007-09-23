@@ -400,8 +400,9 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	if([NSMailDelivery hasDeliveryClassBeenConfigured])
 		[self setURL:PLUGIN_SUBMISSION_URL];
 	else
-		[self setURL:PLUGIN_SUBMISSION_NO_MAIL_APP_URL];
 	#endif
+		[self setURL:PLUGIN_SUBMISSION_NO_MAIL_APP_URL];
+	
 	[self setDownloadURL:@""];
 }
 
