@@ -249,7 +249,7 @@
 
 		
 
-		double modellingDistance = 10.0;
+		double modellingDistance = 5.0;
 
 		for (NSNumber *number in neighbors)  {
 			int index = [number intValue];
@@ -261,13 +261,16 @@
 				
 				if (distance > modellingDistance) {
 					// if point is within modelling distance of an existing point don't add
+					
 					BOOL tooClose = NO;
 					for (OSIPoint3D *existingPoint in connectedPoints) {						
 						if (sqrt( pow([currentModelPoint x] - [existingPoint x],2)
 							+ pow([currentModelPoint y] - [existingPoint y],2)
 							+ pow([currentModelPoint z] - [existingPoint z],2)) <  modellingDistance) tooClose = YES;
 					}
-					if (!tooClose)	[connectedPoints addObject:currentModelPoint];
+					if (!tooClose)	
+					
+					[connectedPoints addObject:currentModelPoint];
 					
 					if ([currentModelPoint isEqual:endingPoint]) {
 						atEnd = YES;

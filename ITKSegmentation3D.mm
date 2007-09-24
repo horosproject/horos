@@ -31,7 +31,12 @@
 //#include "itkBinaryMask3DMeshSource.h"
 #include "itkVTKImageExport.h"
 #include "itkVTKImageExportBase.h"
-#include <itkBinaryDilateImageFilter.h>
+#include "itkGrayscaleDilateImageFilter.h" 
+#include "itkBinaryBallStructuringElement.h"
+
+#include "itkAffineTransform.h" 
+#include "itkNearestNeighborInterpolateImageFunction.h" 
+#include "itkResampleImageFilter.h"
 
 
 #include "vtkImageImport.h"
@@ -962,19 +967,20 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	long d = depth - minSize;
 	float maxDistance = 3;
 	long sliceSize = width * height; 
+	const unsigned int Dimension = 3; 
 
-		// Fllat Pixel Type
+		// Float Pixel Type
 	typedef float FloatPixelType;
-	typedef itk::Image< FloatPixelType, 3 > FloatImageType; 
+	typedef itk::Image< FloatPixelType, Dimension > FloatImageType; 
 	// Char Output image
 	typedef unsigned char CharPixelType;
-	typedef itk::Image< CharPixelType, 3 > CharImageType;
+	typedef itk::Image< CharPixelType, Dimension > CharImageType;
 	// signed Char Output image
 	typedef signed char SignedCharPixelType;
-	typedef itk::Image< SignedCharPixelType, 3 > SignedCharImageType;
+	typedef itk::Image< SignedCharPixelType, Dimension > SignedCharImageType;
 	//Short image type
 	typedef signed short SSPixelType;
-	typedef itk::Image< SSPixelType, 3 > SSImageType;
+	typedef itk::Image< SSPixelType, Dimension > SSImageType;
 	// Type distance Filter
 
 	NSLog(@"start Endoscopy segmentation");
@@ -988,12 +994,49 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	thresholdFilter->SetUpper(-800.0);
 	thresholdFilter->SetReplaceValue(255.0);
 	
-	/*
-	typedef itk::BinaryDilateImageFilter<CharImageType CharImageType> DilateFilterType;
-	DilateFilterType::Pointer binaryFilter::New();
-	binaryFilter->SetDilateValue:(255);
-	binaryFilter->setInput(thresholdFilter->getOutput());
-	*/
+	typedef itk::ResampleImageFilter<CharImageType, CharImageType > ResampleFilterType;
+	ResampleFilterType::Pointer resampleFilter = ResampleFilterType::New();
+	typedef itk::AffineTransform< double, 3 > TransformType;
+	TransformType::Pointer transform = TransformType::New(); 
+	resampleFilter->SetTransform( transform );
+	typedef itk::NearestNeighborInterpolateImageFunction< CharImageType, double > InterpolatorType; 
+	InterpolatorType::Pointer interpolator = InterpolatorType::New(); 
+	resampleFilter->SetInterpolator( interpolator );
+	
+	double resampleX = 1.0;
+	double resampleY = 1.0;
+	double resampleZ = 1.0;
+	const double *spacing = [itkImage itkImporter]->GetSpacing();
+	double newSpacing[Dimension];
+	newSpacing[0] = spacing[0] * resampleX; // pixel spacing in millimeters along X 
+	newSpacing[1] = spacing[1] * resampleY; // pixel spacing in millimeters along Y 
+	newSpacing[2] = spacing[2] * resampleZ; // pixel spacing in millimeters along Z
+	resampleFilter->SetOutputSpacing( newSpacing );
+	
+	CharImageType::SizeType size; 
+	size[0] = width/resampleX; // number of pixels along X 
+	size[1] = height/resampleY; // number of pixels along Y 
+	size[2] = depth/resampleZ;// number of pixels along Z
+	resampleFilter->SetSize( size );
+	
+	const double *origin = [itkImage itkImporter]->GetOrigin(); 
+	resampleFilter->SetOutputOrigin(origin);
+	
+	
+	
+	typedef itk::BinaryBallStructuringElement<CharPixelType, Dimension > StructuringElementType;
+	StructuringElementType structuringElement; 
+	structuringElement.SetRadius( 1 ); // 3x3 structuring element 
+	structuringElement.CreateStructuringElement();  
+
+	typedef itk::GrayscaleDilateImageFilter<CharImageType, CharImageType, StructuringElementType > DilateFilterType; 
+	DilateFilterType::Pointer dilateFilter =  DilateFilterType::New();
+	//dilateFilter->SetInsideValue(255);
+	//dilateFilter->SetDilateValue(255);
+	//dilateFilter->SetOutsideValue(0);		
+	dilateFilter->SetKernel( structuringElement ); 
+	
+	
 	//id seed;
 	//Add seed points. Can use more than 1
 	
@@ -1015,6 +1058,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	
 	// make connections Inputs and outputs
 	thresholdFilter->SetInput([itkImage itkImporter]->GetOutput());
+	resampleFilter->SetInput(thresholdFilter->GetOutput());
+	dilateFilter->SetInput(resampleFilter->GetOutput());
 	
 	WaitRendering	*wait = 0L;
 	
@@ -1023,10 +1068,12 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	
 	NSLog(@"RegionGrowing starts...");
 	
-	// Segmenting is fast. Distance map is slow.  Try to use VTK for Centerline 
+
 	try
 	{
-		thresholdFilter->Update();
+		//thresholdFilter->Update();
+		//resampleFilter->Update();
+		dilateFilter->Update();
 
 	}
 	catch( itk::ExceptionObject & excep )
@@ -1041,14 +1088,14 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	// ITK to VTK pipeline connection.
 	//------------------------------------------------------------------------
 	NSLog(@"get Points for VTK");
-	
-	unsigned char *buff = thresholdFilter->GetOutput()->GetBufferPointer();
+	unsigned char *buff = dilateFilter->GetOutput()->GetBufferPointer();
+	//unsigned char *buff = thresholdFilter->GetOutput()->GetBufferPointer();
 	vtkImageImport*	image3D = vtkImageImport::New();
-	image3D->SetWholeExtent(0, width-1, 0, height-1, 0, depth - 1);
+	image3D->SetWholeExtent(0, size[0] - 1, 0, size[1] - 1, 0, size[2]- 1);
 	image3D->SetDataExtentToWholeExtent();
 	image3D->SetDataScalarTypeToUnsignedChar();
 	image3D->SetImportVoidPointer(buff);
-	
+	 
 	vtkMarchingCubes*		isoContour = vtkMarchingCubes::New();
 	
 	isoContour->SetValue(0, 255);
@@ -1070,13 +1117,13 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	NSMutableArray  *roiImageList;
 
 	for (OSIPoint3D *point3D in centerlinePoints) {
-		NSPoint point = NSMakePoint([point3D x]* 2, [point3D y] * 2);
+		NSPoint point = NSMakePoint([point3D x] * resampleX, [point3D y] * resampleY);
 		ROI *theNewROI  = [srcViewer newROI: t2DPoint];
 		NSMutableArray *pointArray = [theNewROI  points];
 		[theNewROI setName: @"Centerline"];
-		roiImageList = [roiSeriesList objectAtIndex:[point3D z] * 2];
+		roiImageList = [roiSeriesList objectAtIndex:[point3D z] * resampleZ];
 		[roiImageList addObject: theNewROI];
-		[theNewROI mouseRoiDown:point :(int)([point3D z] * 2) :1.0];
+		[theNewROI mouseRoiDown:point :(int)([point3D z] * resampleZ) :1.0];
 		[theNewROI mouseRoiUp:point ];
 
 	}
