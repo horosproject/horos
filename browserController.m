@@ -2588,7 +2588,8 @@ static NSArray*	statesArray = nil;
 	if( managedObjectContext == nil ) return;
 	if( [NSDate timeIntervalSinceReferenceDate] - gLastActivity < 60*10) return;
 	
-	if( [checkIncomingLock tryLock]) {
+	if( [checkIncomingLock tryLock])
+	{
 		NSError					*error = nil;
 		NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
 		NSArray					*logArray;
@@ -2602,9 +2603,17 @@ static NSArray*	statesArray = nil;
 		[context retain];
 		[context lock];
 		error = nil;
-		logArray = [context executeFetchRequest:request error:&error];
-		
-		for( id log in logArray ) [context deleteObject: log];
+		@try
+		{
+			logArray = [context executeFetchRequest:request error:&error];
+			
+			for( id log in logArray ) [context deleteObject: log];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"autoCleanDatabaseDate exception");
+			NSLog( [e description]);
+		}
 		
 		[context unlock];
 		[context release];
@@ -2635,74 +2644,81 @@ static NSArray*	statesArray = nil;
 				[context retain];
 				[context lock];
 				
-				studiesArray = [context executeFetchRequest:request error:&error];
-				
-				NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease];
-				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
-				
-				for( long i = 0; i < [studiesArray count]; i++ ) {
-					NSString	*patientID = [[studiesArray objectAtIndex: i] valueForKey:@"patientID"];
-					NSDate		*studyDate = [[studiesArray objectAtIndex: i] valueForKey:@"date"];
-					NSDate		*openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"];
-					
-					if( openedStudyDate == nil ) openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
-					long		to, from = i;
-					
-					while( i < [studiesArray count]-1 && [patientID isEqualToString:[[studiesArray objectAtIndex: i+1] valueForKey:@"patientID"]] == YES)
-					{
-						i++;
-						studyDate = [studyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"date"]];
-						if( [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"]) openedStudyDate = [openedStudyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"]];
-						else openedStudyDate = [openedStudyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"]];
-					}
-					to = i;
-					
-					BOOL dateProduced = YES, dateOpened = YES;
-					
-					if( [defaults boolForKey: @"AUTOCLEANINGDATEPRODUCED"] )
-						dateProduced = [producedDate compare: studyDate] == NSOrderedDescending;
-					
-					if( [defaults boolForKey: @"AUTOCLEANINGDATEOPENED"] ) {
-						if( openedStudyDate == 0L) openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
-						
-						dateOpened = [openedDate compare: openedStudyDate] == NSOrderedDescending;
-					}
-					
-					if(  dateProduced == YES && dateOpened == YES) {
-						for( long x = from; x <= to; x++ ) if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO && [[[studiesArray objectAtIndex: x] valueForKey:@"lockedStudy"] boolValue] == NO) [toBeRemoved addObject: [studiesArray objectAtIndex: x]];
-					}
-				}
-				
-				for ( long i = 0; i<[toBeRemoved count]; i++ )					// Check if studies are in an album or added this week.  If so don't autoclean that study from the database (DDP: 051108).
+				@try
 				{
-					if ( [[[toBeRemoved objectAtIndex: i] valueForKey: @"albums"] count] > 0 ||
-						[[[toBeRemoved objectAtIndex: i] valueForKey: @"dateAdded"] timeIntervalSinceNow] > -60*60*7*24.0 )  // within 7 days
+					studiesArray = [context executeFetchRequest:request error:&error];
+					
+					NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease];
+					studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
+					
+					for( long i = 0; i < [studiesArray count]; i++ ) {
+						NSString	*patientID = [[studiesArray objectAtIndex: i] valueForKey:@"patientID"];
+						NSDate		*studyDate = [[studiesArray objectAtIndex: i] valueForKey:@"date"];
+						NSDate		*openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"];
+						
+						if( openedStudyDate == nil ) openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
+						long		to, from = i;
+						
+						while( i < [studiesArray count]-1 && [patientID isEqualToString:[[studiesArray objectAtIndex: i+1] valueForKey:@"patientID"]] == YES)
+						{
+							i++;
+							studyDate = [studyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"date"]];
+							if( [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"]) openedStudyDate = [openedStudyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"]];
+							else openedStudyDate = [openedStudyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"]];
+						}
+						to = i;
+						
+						BOOL dateProduced = YES, dateOpened = YES;
+						
+						if( [defaults boolForKey: @"AUTOCLEANINGDATEPRODUCED"] )
+							dateProduced = [producedDate compare: studyDate] == NSOrderedDescending;
+						
+						if( [defaults boolForKey: @"AUTOCLEANINGDATEOPENED"] ) {
+							if( openedStudyDate == 0L) openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
+							
+							dateOpened = [openedDate compare: openedStudyDate] == NSOrderedDescending;
+						}
+						
+						if(  dateProduced == YES && dateOpened == YES) {
+							for( long x = from; x <= to; x++ ) if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO && [[[studiesArray objectAtIndex: x] valueForKey:@"lockedStudy"] boolValue] == NO) [toBeRemoved addObject: [studiesArray objectAtIndex: x]];
+						}
+					}
+					
+					for ( long i = 0; i<[toBeRemoved count]; i++ )					// Check if studies are in an album or added this week.  If so don't autoclean that study from the database (DDP: 051108).
 					{
-						[toBeRemoved removeObjectAtIndex: i];
-						i--;
+						if ( [[[toBeRemoved objectAtIndex: i] valueForKey: @"albums"] count] > 0 ||
+							[[[toBeRemoved objectAtIndex: i] valueForKey: @"dateAdded"] timeIntervalSinceNow] > -60*60*7*24.0 )  // within 7 days
+						{
+							[toBeRemoved removeObjectAtIndex: i];
+							i--;
+						}
+					}
+					
+					if( [defaults boolForKey: @"AUTOCLEANINGCOMMENTS"])	{
+						for ( long i = 0; i<[toBeRemoved count]; i++ ) {
+							NSString	*comment = [[toBeRemoved objectAtIndex: i] valueForKey: @"comment"];
+							
+							if( comment == 0L) comment = @"";
+							
+							if ([comment rangeOfString:[defaults stringForKey: @"AUTOCLEANINGCOMMENTSTEXT"] options:NSCaseInsensitiveSearch].location == NSNotFound)
+							{
+								if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 0 ) {
+									[toBeRemoved removeObjectAtIndex: i];
+									i--;
+								}
+							}
+							else {
+								if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 1) {
+									[toBeRemoved removeObjectAtIndex: i];
+									i--;
+								}
+							}
+						}
 					}
 				}
-				
-				if( [defaults boolForKey: @"AUTOCLEANINGCOMMENTS"])	{
-					for ( long i = 0; i<[toBeRemoved count]; i++ ) {
-						NSString	*comment = [[toBeRemoved objectAtIndex: i] valueForKey: @"comment"];
-						
-						if( comment == 0L) comment = @"";
-						
-						if ([comment rangeOfString:[defaults stringForKey: @"AUTOCLEANINGCOMMENTSTEXT"] options:NSCaseInsensitiveSearch].location == NSNotFound)
-						{
-							if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 0 ) {
-								[toBeRemoved removeObjectAtIndex: i];
-								i--;
-							}
-						}
-						else {
-							if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 1) {
-								[toBeRemoved removeObjectAtIndex: i];
-								i--;
-							}
-						}
-					}
+				@catch (NSException * e) {
+					NSLog( @"autoCleanDatabaseDate");
+					NSLog( [e description]);
 				}
 				
 				if( [toBeRemoved count] > 0)							// (DDP: 051109) was > 1, i.e. required at least 2 studies out of date to be removed.
@@ -2816,54 +2832,39 @@ static NSArray*	statesArray = nil;
 			
 			[context retain];
 			[context lock];
-			[request setEntity: [self.managedObjectModel.entitiesByName objectForKey:@"Study"]];
-			[request setPredicate: [NSPredicate predicateWithValue: YES]];
-			
-			do {
-				NSTimeInterval		producedInterval = 0;
-				NSTimeInterval		openedInterval = 0;
-				NSMutableArray		*toBeRemoved = [NSMutableArray arrayWithCapacity: 0];
-				NSManagedObject		*oldestStudy = nil, *oldestOpenedStudy = nil;
+
+			@try
+			{
+
+				[request setEntity: [self.managedObjectModel.entitiesByName objectForKey:@"Study"]];
+				[request setPredicate: [NSPredicate predicateWithValue: YES]];
 				
-				NSError *error = nil;
-				studiesArray = [context executeFetchRequest:request error:&error];
-				
-				NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease];
-				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
-				
-				unlockedStudies = [NSMutableArray arrayWithArray: studiesArray];
-				
-				for( long i = 0; i < [unlockedStudies count]; i++ ) {
-					if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"lockedStudy"] boolValue] == YES)	{
-						[unlockedStudies removeObjectAtIndex: i];
-						i--;
+				do {
+					NSTimeInterval		producedInterval = 0;
+					NSTimeInterval		openedInterval = 0;
+					NSMutableArray		*toBeRemoved = [NSMutableArray arrayWithCapacity: 0];
+					NSManagedObject		*oldestStudy = nil, *oldestOpenedStudy = nil;
+					
+					NSError *error = nil;
+					studiesArray = [context executeFetchRequest:request error:&error];
+					
+					NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease];
+					studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
+					
+					unlockedStudies = [NSMutableArray arrayWithArray: studiesArray];
+					
+					for( long i = 0; i < [unlockedStudies count]; i++ ) {
+						if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"lockedStudy"] boolValue] == YES)	{
+							[unlockedStudies removeObjectAtIndex: i];
+							i--;
+						}
 					}
-				}
-				
-				if( [unlockedStudies count] > 2) {
-					for( long i = 0; i < [unlockedStudies count]; i++ )	{
-						NSString	*patientID = [[unlockedStudies objectAtIndex: i] valueForKey:@"patientID"];
-						long		to, from = i;
-						
-						if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)	{
-							if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"] timeIntervalSinceNow] < -60*60*24)	// 24 hours
-							{
-								oldestStudy = [unlockedStudies objectAtIndex: i];
-								producedInterval = [[oldestStudy valueForKey:@"date"] timeIntervalSinceNow];
-							}
-						}
-						
-						NSDate *openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
-						if( openedDate == 0L) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
-						
-						if( [openedDate timeIntervalSinceNow] < openedInterval ) {
-							oldestOpenedStudy = [unlockedStudies objectAtIndex: i];
-							openedInterval = [openedDate timeIntervalSinceNow];
-						}
-						
-						while( i < [unlockedStudies count]-1 && [patientID isEqualToString:[[unlockedStudies objectAtIndex: i+1] valueForKey:@"patientID"]] == YES)
-						{
-							i++;
+					
+					if( [unlockedStudies count] > 2) {
+						for( long i = 0; i < [unlockedStudies count]; i++ )	{
+							NSString	*patientID = [[unlockedStudies objectAtIndex: i] valueForKey:@"patientID"];
+							long		to, from = i;
+							
 							if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)	{
 								if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"] timeIntervalSinceNow] < -60*60*24)	// 24 hours
 								{
@@ -2872,50 +2873,76 @@ static NSArray*	statesArray = nil;
 								}
 							}
 							
-							openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
+							NSDate *openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
 							if( openedDate == 0L) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
 							
-							if( [openedDate timeIntervalSinceNow] < openedInterval)	{
+							if( [openedDate timeIntervalSinceNow] < openedInterval ) {
 								oldestOpenedStudy = [unlockedStudies objectAtIndex: i];
 								openedInterval = [openedDate timeIntervalSinceNow];
 							}
+							
+							while( i < [unlockedStudies count]-1 && [patientID isEqualToString:[[unlockedStudies objectAtIndex: i+1] valueForKey:@"patientID"]] == YES)
+							{
+								i++;
+								if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)	{
+									if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"] timeIntervalSinceNow] < -60*60*24)	// 24 hours
+									{
+										oldestStudy = [unlockedStudies objectAtIndex: i];
+										producedInterval = [[oldestStudy valueForKey:@"date"] timeIntervalSinceNow];
+									}
+								}
+								
+								openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
+								if( openedDate == 0L) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
+								
+								if( [openedDate timeIntervalSinceNow] < openedInterval)	{
+									oldestOpenedStudy = [unlockedStudies objectAtIndex: i];
+									openedInterval = [openedDate timeIntervalSinceNow];
+								}
+							}
+							to = i;
 						}
-						to = i;
 					}
-				}
-				
-				if( [defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"] ) {
-					if( oldestStudy) {
-						NSLog( @"delete oldestStudy: %@", [oldestStudy valueForKey:@"patientUID"]);
-						[context deleteObject: oldestStudy];
+					
+					if( [defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"] ) {
+						if( oldestStudy) {
+							NSLog( @"delete oldestStudy: %@", [oldestStudy valueForKey:@"patientUID"]);
+							[context deleteObject: oldestStudy];
+						}
 					}
-				}
-				
-				if ( [defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"] ) {
-					if( oldestOpenedStudy) {
-						NSLog( @"delete oldestOpenedStudy: %@", [oldestOpenedStudy valueForKey:@"patientUID"]);
-						[context deleteObject: oldestOpenedStudy];
+					
+					if ( [defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"] ) {
+						if( oldestOpenedStudy) {
+							NSLog( @"delete oldestOpenedStudy: %@", [oldestOpenedStudy valueForKey:@"patientUID"]);
+							[context deleteObject: oldestOpenedStudy];
+						}
 					}
+					
+					[deleteInProgress lock];
+					[deleteInProgress unlock];
+					
+					[self emptyDeleteQueueThread];
+					
+					[deleteInProgress lock];
+					[deleteInProgress unlock];
+					
+					fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: currentDatabasePath];
+					
+					free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
+					free /= 1024;
+					free /= 1024;
+					NSLog(@"HD Free Space: %d MB", (long) free);
 				}
+				while( (long) free < [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue] && [unlockedStudies count] > 2);
 				
-				[deleteInProgress lock];
-				[deleteInProgress unlock];
-				
-				[self emptyDeleteQueueThread];
-				
-				[deleteInProgress lock];
-				[deleteInProgress unlock];
-				
-				fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: currentDatabasePath];
-				
-				free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
-				free /= 1024;
-				free /= 1024;
-				NSLog(@"HD Free Space: %d MB", (long) free);
+				[self saveDatabase: currentDatabasePath];
 			}
-			while( (long) free < [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue] && [unlockedStudies count] > 2);
 			
-			[self saveDatabase: currentDatabasePath];
+			@catch ( NSException *e)
+			{
+				NSLog( @"autoCleanDatabaseFreeSpace exception");
+				NSLog( [e description]);
+			}
 			
 			[context unlock];
 			[context release];
@@ -3321,9 +3348,18 @@ static NSArray*	statesArray = nil;
 	[checkIncomingLock lock];
 	[checkBonjourUpToDateThreadLock lock];
 	
-	NSString	*path = [bonjourBrowser getDatabaseFile: [bonjourServicesList selectedRow]-1];
-	if( path != nil ) {
-		[self performSelectorOnMainThread:@selector(openDatabaseInBonjour:) withObject:path waitUntilDone:YES];
+	@try
+	{
+		NSString	*path = [bonjourBrowser getDatabaseFile: [bonjourServicesList selectedRow]-1];
+		if( path != nil ) {
+			[self performSelectorOnMainThread:@selector(openDatabaseInBonjour:) withObject:path waitUntilDone:YES];
+	}
+		
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"checkBonjourUpToDateThread");
+		NSLog( [e description]);
 	}
 	
 	[checkIncomingLock unlock];
@@ -3385,8 +3421,17 @@ static NSArray*	statesArray = nil;
 	if( [databaseOutline editedRow] != -1) return;
 	
 	if( needDBRefresh || [[[self.albumArray objectAtIndex: albumTable.selectedRow] valueForKey:@"smartAlbum"] boolValue] == YES )	{
-		if( [checkIncomingLock tryLock] ) {
-			[self outlineViewRefresh];
+		if( [checkIncomingLock tryLock] )
+		{
+			@try
+			{
+				[self outlineViewRefresh];
+			}
+			@catch (NSException * e)
+			{
+				NSLog( @"refreshDatabase exception");
+				NSLog( [e description]);
+			}
 			[checkIncomingLock unlock];
 		}
 		else NSLog(@"refreshDatabase locked...");
@@ -3397,16 +3442,26 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (NSArray*)childrenArray: (NSManagedObject*)item onlyImages: (BOOL)onlyImages {
+- (NSArray*)childrenArray: (NSManagedObject*)item onlyImages: (BOOL)onlyImages
+{
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"] ) {
 		[managedObjectContext lock];
 		
+		NSArray *sortedArray = 0L;
+		
+		@try
+		{
 		// Sort images with "instanceNumber"
 		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
 		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
 		[sort release];
-		NSArray *sortedArray = [[[item valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
-		
+		sortedArray = [[[item valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
+			
+		}
+		@catch (NSException * e) {
+			NSLog( [e description]);
+		}
+
 		[managedObjectContext unlock];
 		
 		return sortedArray;
@@ -3415,6 +3470,9 @@ static NSArray*	statesArray = nil;
 	if ([[item valueForKey:@"type"] isEqualToString:@"Study"] )	{
 		[managedObjectContext lock];
 		
+		NSArray *sortedArray = 0L;
+		@try
+		{
 		// Sort series with "id" & date
 		NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
 		NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
@@ -3424,10 +3482,15 @@ static NSArray*	statesArray = nil;
 		[sortid release];
 		[sortdate release];
 		
-		NSArray *sortedArray;
+		
 		
 		if( onlyImages) sortedArray = [[item valueForKey:@"imageSeries"] sortedArrayUsingDescriptors: sortDescriptors];
 		else sortedArray = [[[item valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
+		
+		}
+		@catch (NSException * e) {
+			NSLog( [e description]);
+		}
 		
 		[managedObjectContext unlock];
 		
@@ -3932,32 +3995,33 @@ static NSArray*	statesArray = nil;
 			
 			[context save: 0L];
 			@try
-		{
-			// Remove series without images !
-			for( NSManagedObject *series in seriesArray ) {
-				if( [[series valueForKey:@"images"] count] == 0 ) {
-					[context deleteObject: series];
+			{
+				// Remove series without images !
+				for( NSManagedObject *series in seriesArray ) {
+					if( [[series valueForKey:@"images"] count] == 0 ) {
+						[context deleteObject: series];
+					}
 				}
-			}
-			
-			[context save: nil];
-			
-			// Remove studies without series !
-			for( NSManagedObject *study in studiesArray ) {
-				NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
 				
-				if( [[study valueForKey:@"imageSeries"] count] == 0 ) {
-					[context deleteObject: study];
+				[context save: nil];
+				
+				// Remove studies without series !
+				for( NSManagedObject *study in studiesArray ) {
+					NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
+					
+					if( [[study valueForKey:@"imageSeries"] count] == 0 ) {
+						[context deleteObject: study];
+					}
 				}
+				[self saveDatabase: currentDatabasePath];
+				
 			}
-			[self saveDatabase: currentDatabasePath];
 			
-		}
 			@catch( NSException *ne)
-		{
-			NSLog( @"Exception during delItem");
-			NSLog( [ne description]);
-		}
+			{
+				NSLog( @"Exception during delItem");
+				NSLog( [ne description]);
+			}
 			
 			[wait close];
 			[wait release];
@@ -4062,13 +4126,19 @@ static NSArray*	statesArray = nil;
 	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
+	@try
+	{
 	if( item == nil ) {
 		returnVal = [outlineViewArray objectAtIndex: index];
 	}
 	else {
 		returnVal = [[self childrenArray: item] objectAtIndex: index];
 	}
-	
+	}
+	@catch (NSException * e) {
+		NSLog( [e description]);
+	}
+
 	[managedObjectContext unlock];
 	[managedObjectContext release];
 	
@@ -4208,8 +4278,18 @@ static NSArray*	statesArray = nil;
 	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
-	id returnVal = [self intOutlineView: outlineView objectValueForTableColumn: tableColumn byItem: item];
+	id returnVal = 0L;
 	
+	@try
+	{
+		returnVal = [self intOutlineView: outlineView objectValueForTableColumn: tableColumn byItem: item];
+	}
+	
+	@catch (NSException * e)
+	{
+		NSLog( [e description]);
+	}
+
 	[managedObjectContext unlock];
 	[managedObjectContext release];
 	
@@ -5799,29 +5879,29 @@ static BOOL withReset = NO;
 			DatabaseIsEdited = YES;
 			
 			@try
-		{
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
-			[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"thumbnail == NIL"]];
-			NSError	*error = 0L;
-			NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
-			
-			int maxSeries = [seriesArray count];
-			
-			if( maxSeries > 60 ) maxSeries = 60;	// We will continue next time...
-			
-			for( NSManagedObject *series in seriesArray ) {					
-				if([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]] || [DCMAbstractSyntaxUID isRadiotherapy:[series valueForKey:@"seriesSOPClassUID"]] || [series valueForKey:@"seriesSOPClassUID"] == nil)
-					[self buildThumbnail: series];
+			{
+				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+				[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
+				[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"thumbnail == NIL"]];
+				NSError	*error = 0L;
+				NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
+				
+				int maxSeries = [seriesArray count];
+				
+				if( maxSeries > 60 ) maxSeries = 60;	// We will continue next time...
+				
+				for( NSManagedObject *series in seriesArray ) {					
+					if([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]] || [DCMAbstractSyntaxUID isRadiotherapy:[series valueForKey:@"seriesSOPClassUID"]] || [series valueForKey:@"seriesSOPClassUID"] == nil)
+						[self buildThumbnail: series];
+				}
+				
+				[self saveDatabase: currentDatabasePath];
 			}
 			
-			[self saveDatabase: currentDatabasePath];
-		}
-			
 			@catch( NSException *ne)
-		{
-			NSLog(@"buildAllThumbnails exception: %@", [ne description]);
-		}
+			{
+				NSLog(@"buildAllThumbnails exception: %@", [ne description]);
+			}
 			
 			[context unlock];
 			[context release];
