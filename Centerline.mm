@@ -131,7 +131,7 @@
 	}
 	
 	NSLog(@"thinning NSArray" );
-	for (int a = 0; a < 100 ;  a++){
+	for (int a = 0; a < 300 ;  a++){
 		for (OSIPoint3D *point3D in pointArray) {
 			x = [point3D x];
 			y = [point3D y];
@@ -144,13 +144,14 @@
 				y += [nextPoint y];
 				z += [nextPoint z];			
 			}
-				
+			neighbors = [ptSet count] + 1;		
 			// get average
 			x /= neighbors;
 			y /= neighbors;
 			z /= neighbors;
 			
-			neighbors = [ptSet count] + 1;	
+			[point3D setX:(float)x y:(float)y z:(float)z];
+			
 		}
 	}
 	NSLog(@"end Thinning NSArray");

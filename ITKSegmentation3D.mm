@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "Centerline.h"
+#import "MyPoint.h"
 
 
 #define id Id
@@ -1062,49 +1063,25 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	if ([seeds count] > 2)
 		endingPoint = [seeds objectAtIndex:1];
 	NSArray *centerlinePoints = [centerline generateCenterline:contour startingPoint:[seeds objectAtIndex:0]  endingPoint:(OSIPoint3D *)endingPoint];
-	for (OSIPoint3D *point in centerlinePoints) {
-		int slice = round([point z] * 2);
-		int xPos = round([point x] * 2);
-		int yPos = round([point y] * 2);
-		NSLog(@" newROI in curPix: %d x: %d y: %d", slice, xPos, yPos);
-	}
 	isoContour->Delete();
 	
 	
-	/*
-	NSLog(@"point count: %d", points->GetNumberOfPoints());
-	vtkPolyData *profile = vtkPolyData::New();
-    profile->SetPoints( points);
-	points->Delete();
-	NSLog(@"Get Centerline");
-	[wait setString:@"Finding Centerline Points"];
-	Centerline *centerline = [[Centerline alloc] init];
-	NSArray *centerlinePoints = [centerline generateCenterline:profile startingPoint:[seeds objectAtIndex:0]];
-	profile->Delete();
-	[wait setString:@"Connecting Centerline"];
-	
-	
-	//NSLog(@"add Node: %f %f %f", positionIndex, positionRow, positionSlice);
+	NSMutableArray  *roiSeriesList = [srcViewer roiList];
 	NSMutableArray  *roiImageList;
-	NSArray *roiSeriesList = [srcViewer roiList];
-	for (OSIPoint3D *point in centerlinePoints) {
-		
-		int slice = round([point z] * 2);
-		int xPos = round([point x] * 2);
-		int yPos = round([point y] * 2);
-		NSLog(@" newROI in curPix: %d x: %d y: %d", slice, xPos, yPos);
-		///*
-		DCMPix	*curPix = [[srcViewer pixList] objectAtIndex: slice];
-		ROI		*newROI;
-		newROI = [[[ROI alloc] initWithType: t2DPoint :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint(xPos , yPos)] autorelease];
-		[newROI setName: @"Centerline"];
-		roiImageList = [roiSeriesList objectAtIndex: slice];
-		[roiImageList addObject: newROI];	
-		[newROI mouseRoiDown:NSMakePoint((float)xPos ,(float)yPos) :slice :1.0];
-		[newROI release];
-		///
-	}	
-	*/
+
+	for (OSIPoint3D *point3D in centerlinePoints) {
+		NSPoint point = NSMakePoint([point3D x]* 2, [point3D y] * 2);
+		ROI *theNewROI  = [srcViewer newROI: t2DPoint];
+		NSMutableArray *pointArray = [theNewROI  points];
+		[theNewROI setName: @"Centerline"];
+		roiImageList = [roiSeriesList objectAtIndex:[point3D z] * 2];
+		[roiImageList addObject: theNewROI];
+		[theNewROI mouseRoiDown:point :(int)([point3D z] * 2) :1.0];
+		[theNewROI mouseRoiUp:point ];
+
+	}
+
+
 	
 	[wait close];
 	[wait release];
