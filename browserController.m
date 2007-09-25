@@ -10798,32 +10798,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void)scaniDiskDir: (DMiDiskSession*)mySession :(NSString*)path : (NSArray*)dir : (NSMutableArray*)files {
-	
-	for( NSString *path in dir ) {
-		NSString *item = [path stringByAppendingPathComponent: path];
-		
-		NSLog( item );
-
-		BOOL isDirectory;
-		
-		if( [mySession fileExistsAtPath:item isDirectory:&isDirectory] ) {
-			if( isDirectory ) {
-				NSArray *dirContent = [mySession directoryContentsAtPath: item];
-				[self scaniDiskDir:mySession :item :dirContent :files];
-			}
-			else [files addObject: item];
-		}
-	}
-}
-
 - (void)loadDICOMFromiDisk: (id)sender
 {
 	if( isCurrentDatabaseBonjour ) return;
 	
-#if !__LP64__
-	
-	BOOL				delete, success;
+	BOOL delete, success;
 
 	if( NSRunInformationalAlertPanel( NSLocalizedString(@"iDisk", nil), NSLocalizedString(@"Should I delete the files on the iDisk after the copy?", nil), NSLocalizedString(@"Delete the files", nil), NSLocalizedString(@"Leave them", nil), 0L) == NSAlertDefaultReturn)
 	{
@@ -10835,68 +10814,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	NSString	*path = @"Documents/DICOM";
 	
-	NSMutableArray  *filesArray = [[NSMutableArray alloc] initWithCapacity: 0];
-	Wait			*splash = [[Wait alloc] initWithString: NSLocalizedString(@"Getting DICOM files from your iDisk",@"Getting DICOM files from your iDisk")];
+	NSArray	*filesArray = [NSArray arrayWithContentsOfFile: @"/tmp/files2load"];
 	
-	[splash setCancel:YES];
-	[splash showWindow:self];
-	
-	[[NSFileManager defaultManager] removeFileAtPath:[documentsDirectory() stringByAppendingFormat:@"/TEMP/DICOM"] handler: 0L];
-	
-	// Move the new DICOM FILES to the DATABASE folder
-	
-	NSString        *dstPath, *OUTpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
-	BOOL			isDir = YES;
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:OUTpath isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:OUTpath attributes:nil];
-	
-	DMMemberAccount		*myDotMacMemberAccount = [DMMemberAccount accountFromPreferencesWithApplicationID:@"----"];
-	
-	if ( myDotMacMemberAccount )
+	if( [filesArray count])
 	{
-		DMiDiskSession *mySession = [DMiDiskSession iDiskSessionWithAccount: myDotMacMemberAccount];
+		NSString *incomingFolder = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
 		
-		if( mySession )
+		for( NSString *path in filesArray)
 		{
-			// Find the DICOM folder
-			success = YES;
-			if( ![mySession fileExistsAtPath:path]) success = [mySession createDirectoryAtPath:path attributes:nil];
-			
-			if( success )
-			{
-				NSArray *dirContent = [mySession directoryContentsAtPath: path];
-				[self scaniDiskDir:mySession :path :dirContent :filesArray];
-				[[splash progress] setMaxValue:[filesArray count]];
-
-				for( long i = 0; i < [filesArray count]; i++ )
-				{
-					dstPath = [self getNewFileDatabasePath:@"dcm"];
-					
-					[mySession movePath:[filesArray objectAtIndex: i] toPath:dstPath handler: 0L];
-					
-					[filesArray replaceObjectAtIndex:i withObject: dstPath];
-					
-					[splash incrementBy:1];
-					
-					if( [splash aborted] )
-						[filesArray removeObjectsInRange: NSMakeRange(i, [filesArray count]-i)];
-				}
-				
-				if( delete)
-					[mySession removeFileAtPath:path handler: 0L];
-			}
+			[[NSFileManager defaultManager] movePath: path toPath: [incomingFolder stringByAppendingPathComponent: [path lastPathComponent]] handler: 0L];
 		}
-		else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?", 0L), NSLocalizedString(@"Unable to contact dotMac service.", 0L), NSLocalizedString(@"OK",nil),nil, nil);
 	}
-	else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?", 0L), NSLocalizedString(@"Unable to contact dotMac service.", 0L), NSLocalizedString(@"OK",nil),nil, nil);
-	
-	[browserWindow addFilesAndFolderToDatabase: filesArray];
-	
-	[filesArray release];
-	
-	[splash close];
-	[splash release];
-#endif
 }
 
 - (IBAction)sendiDisk: (id)sender
@@ -10916,7 +10844,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		NSMutableArray	*directories2copy = [NSMutableArray array];
 		
-		NSString *path = @"tmp/folder2send2iDisk/";
+		NSString *path = @"/tmp/folder2send2iDisk/";
 		
 		[[NSFileManager defaultManager] removeFileAtPath: path handler: 0L];
 		[[NSFileManager defaultManager] createDirectoryAtPath: path attributes: 0L];
@@ -10978,12 +10906,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 		}
 		
-		[[NSFileManager defaultManager] removeFileAtPath: @"tmp/files2send" handler: 0L];
-		[directories2copy writeToFile: @"tmp/files2send" atomically: YES];
+		[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/files2send" handler: 0L];
+		[directories2copy writeToFile: @"/tmp/files2send" atomically: YES];
 		
 		NSTask *theTask = [[NSTask alloc] init];
 		
-		[theTask setArguments: [NSArray arrayWithObjects: @"sendFilesToiDisk", @"tmp/files2send", 0L]];
+		[theTask setArguments: [NSArray arrayWithObjects: @"sendFilesToiDisk", @"/tmp/files2send", 0L]];
 		[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/QuicktimeEngine.app/Contents/MacOS/QuicktimeEngine"]];
 		[theTask launch];
 		[theTask waitUntilExit];

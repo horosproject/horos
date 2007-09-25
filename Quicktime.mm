@@ -13,6 +13,27 @@ extern "C"
 	extern OSErr VRObject_MakeObjectMovie (FSSpec *theMovieSpec, FSSpec *theDestSpec, long maxFrames);
 }
 
+void scaniDiskDir( DMiDiskSession* mySession, NSString* path, NSArray* dir, NSMutableArray* files)
+{
+	for( NSString *path in dir )
+	{
+		NSString *item = [path stringByAppendingPathComponent: path];
+		
+		BOOL isDirectory;
+		
+		if( [mySession fileExistsAtPath:item isDirectory:&isDirectory])
+		{
+			if( isDirectory )
+			{
+				NSArray *dirContent = [mySession directoryContentsAtPath: item];
+				scaniDiskDir( mySession, item, dirContent, files);
+			}
+			else [files addObject: item];
+		}
+	}
+}
+
+
 int main(int argc, const char *argv[])
 {
 	NSAutoreleasePool	*pool	= [[NSAutoreleasePool alloc] init];
@@ -36,7 +57,71 @@ int main(int argc, const char *argv[])
 		
 		if( [what isEqualToString:@"getFilesFromiDisk"])
 		{
-		
+			BOOL deleteFolder = [[NSString stringWithCString:argv[ 2]] intValue];
+			BOOL success = YES;
+			
+			NSMutableArray  *filesArray = [NSMutableArray array];
+			Wait			*splash = [[Wait alloc] initWithString: NSLocalizedString(@"Getting DICOM files from your iDisk",@"Getting DICOM files from your iDisk")];
+			
+			[splash setCancel: YES];
+			[splash showWindow: 0L];
+			
+			NSString        *dstPath, *OUTpath = @"/tmp/filesFromiDisk";
+			NSString		*DICOMpath = @"Documents/DICOM";
+			
+			[[NSFileManager defaultManager] removeFileAtPath: OUTpath handler: 0L];
+			[[NSFileManager defaultManager] createDirectoryAtPath: OUTpath attributes:nil];
+			
+			DMMemberAccount		*myDotMacMemberAccount = [DMMemberAccount accountFromPreferencesWithApplicationID:@"----"];
+			
+			if ( myDotMacMemberAccount )
+			{
+				DMiDiskSession *mySession = [DMiDiskSession iDiskSessionWithAccount: myDotMacMemberAccount];
+				
+				if( mySession )
+				{
+					// Find the DICOM folder
+					if( ![mySession fileExistsAtPath: DICOMpath]) success = [mySession createDirectoryAtPath: DICOMpath attributes:nil];
+					
+					if( success )
+					{
+						NSArray *dirContent = [mySession directoryContentsAtPath: DICOMpath];
+						scaniDiskDir( mySession, DICOMpath, dirContent, filesArray);
+						[[splash progress] setMaxValue:[filesArray count]];
+
+						for( long i = 0; i < [filesArray count]; i++ )
+						{
+							dstPath = [OUTpath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", i]];
+							
+							[mySession movePath: [filesArray objectAtIndex: i] toPath: dstPath handler: 0L];
+							
+							[filesArray replaceObjectAtIndex:i withObject: dstPath];
+							
+							[splash incrementBy:1];
+							
+							if( [splash aborted])
+							{
+								[filesArray removeObjectsInRange: NSMakeRange(i, [filesArray count]-i)];
+								i = [filesArray count];
+							}
+						}
+						
+						if( deleteFolder)
+							[mySession removeFileAtPath: DICOMpath handler: 0L];
+					}
+				}
+				else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?", 0L), NSLocalizedString(@"Unable to contact dotMac service.", 0L), NSLocalizedString(@"OK",nil),nil, nil);
+			}
+			else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?", 0L), NSLocalizedString(@"Unable to contact dotMac service.", 0L), NSLocalizedString(@"OK",nil),nil, nil);
+			
+			if( [filesArray count])
+			{
+				[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/files2load" handler: 0L];
+				[filesArray writeToFile: @"/tmp/files2load" atomically: 0L];
+			}
+			
+			[splash close];
+			[splash release];
 		}
 		
 		if( [what isEqualToString:@"sendFilesToiDisk"])
@@ -45,7 +130,7 @@ int main(int argc, const char *argv[])
 			
 			NSLog( [files2Copy description]);
 			
-			NSString	*path = @"Documents/DICOM";
+			NSString	*DICOMpath = @"Documents/DICOM";
 			
 			Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying to your iDisk",nil)];
 			
@@ -61,13 +146,13 @@ int main(int argc, const char *argv[])
 				if( mySession )
 				{
 					// Find the DICOM folder
-					if( ![mySession fileExistsAtPath:path]) [mySession createDirectoryAtPath:path attributes:nil];
+					if( ![mySession fileExistsAtPath: DICOMpath]) [mySession createDirectoryAtPath: DICOMpath attributes:nil];
 
 					for( long x = 0 ; x < [files2Copy count]; x++ )
 					{
 						NSString			*dstPath, *srcPath = [files2Copy objectAtIndex:x];
 						
-						dstPath = [path stringByAppendingPathComponent: [srcPath lastPathComponent]];
+						dstPath = [DICOMpath stringByAppendingPathComponent: [srcPath lastPathComponent]];
 						
 						if( ![mySession fileExistsAtPath: srcPath]) [mySession copyPath: srcPath toPath: dstPath handler:nil];
 						else {
