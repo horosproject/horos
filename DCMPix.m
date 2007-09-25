@@ -4845,8 +4845,17 @@ END_CREATE_ROIS:
 	}
 	// Loop over sequence to find injected dose
 	
-	if( [dcmObject attributeValueForKey: @"7053,1000"] )	{
-		philipsFactor = [[NSString stringWithUTF8String:[[dcmObject attributeValueForKey: @"7053,1000"] bytes]] floatValue];
+	if( [dcmObject attributeValueForKey: @"7053,1000"] )
+	{
+		@try
+		{
+			philipsFactor = [[dcmObject attributeValueForKey: @"7053,1000"] floatValue];
+		}
+		@catch ( NSException *e)
+		{
+			NSLog( @"philipsFactor exception");
+			NSLog( [e description]);
+		}
 		NSLog( @"philipsFactor = %f", philipsFactor);
 	}
 	
@@ -7289,56 +7298,66 @@ END_CREATE_ROIS:
 				// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 				
-				if( gUSEPAPYRUSDCMPIX)
+				@try
 				{
-					success = [self loadDICOMPapyrus];
-					
-					//only try again if is strict DICOM
-					if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
-						success = [self loadDICOMDCMFramework];
-					
-					if (success == NO)
+					if( gUSEPAPYRUSDCMPIX)
 					{
-						convertedDICOM = [convertDICOM( srcFile) retain];
 						success = [self loadDICOMPapyrus];
 						
-						if( success == YES && imageObj != 0L)
+						//only try again if is strict DICOM
+						if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
+							success = [self loadDICOMDCMFramework];
+						
+						if (success == NO)
 						{
-							if( [[imageObj valueForKey:@"inDatabaseFolder"] boolValue])
+							convertedDICOM = [convertDICOM( srcFile) retain];
+							success = [self loadDICOMPapyrus];
+							
+							if( success == YES && imageObj != 0L)
 							{
-								[[NSFileManager defaultManager] removeFileAtPath:srcFile handler: 0L];
-								[[NSFileManager defaultManager] movePath:convertedDICOM toPath:srcFile handler: 0L];
-								
-								[convertedDICOM release];
-								convertedDICOM = 0L;
+								if( [[imageObj valueForKey:@"inDatabaseFolder"] boolValue])
+								{
+									[[NSFileManager defaultManager] removeFileAtPath:srcFile handler: 0L];
+									[[NSFileManager defaultManager] movePath:convertedDICOM toPath:srcFile handler: 0L];
+									
+									[convertedDICOM release];
+									convertedDICOM = 0L;
+								}
+							}
+						}
+					}
+					else
+					{
+						success = [self loadDICOMDCMFramework];
+						
+						if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
+							success = [self loadDICOMPapyrus];
+						
+						if (success == NO)
+						{
+							convertedDICOM = [convertDICOM( srcFile) retain];
+							success = [self loadDICOMDCMFramework];
+							
+							if( success == YES && imageObj != 0L)
+							{
+								if( [[imageObj valueForKey:@"inDatabaseFolder"] boolValue])
+								{
+									[[NSFileManager defaultManager] removeFileAtPath:srcFile handler: 0L];
+									[[NSFileManager defaultManager] movePath:convertedDICOM toPath:srcFile handler: 0L];
+									
+									[convertedDICOM release];
+									convertedDICOM = 0L;
+								}
 							}
 						}
 					}
 				}
-				else
+				
+				@catch ( NSException *e)
 				{
-					success = [self loadDICOMDCMFramework];
-					
-					if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
-						success = [self loadDICOMPapyrus];
-					
-					if (success == NO)
-					{
-						convertedDICOM = [convertDICOM( srcFile) retain];
-						success = [self loadDICOMDCMFramework];
-						
-						if( success == YES && imageObj != 0L)
-						{
-							if( [[imageObj valueForKey:@"inDatabaseFolder"] boolValue])
-							{
-								[[NSFileManager defaultManager] removeFileAtPath:srcFile handler: 0L];
-								[[NSFileManager defaultManager] movePath:convertedDICOM toPath:srcFile handler: 0L];
-								
-								[convertedDICOM release];
-								convertedDICOM = 0L;
-							}
-						}
-					}
+					NSLog( @"CheckLoadIn Exception");
+					NSLog( [e description]);
+					success = NO;
 				}
 				
 				[self checkSUV];
@@ -8212,14 +8231,15 @@ END_CREATE_ROIS:
 	[checking lock];
 	
 	@try
-{
-	[self CheckLoadIn];
-}
+	{
+		[self CheckLoadIn];
+	}
 	@catch (NSException *ne)
-{
-	NSLog( @"CheckLoad Exception");
-	NSLog( @"Exception : %@", [ne description]);
-}
+	{
+		NSLog( @"CheckLoad Exception");
+		NSLog( @"Exception : %@", [ne description]);
+	}
+	
 	[checking unlock];
 }
 
@@ -9240,6 +9260,8 @@ END_CREATE_ROIS:
 			vImage_Buffer	srcf, dst8;
 			
 			srcf.data = [self computefImage];
+			
+			if( srcf.data == 0L) return;
 			
 			// CONVERSION TO 8-BIT for displaying
 			

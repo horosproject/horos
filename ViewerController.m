@@ -2728,10 +2728,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( study == 0L) return;
 	
 	// FIND ALL STUDIES of this patient
-	
 	NSLog(@"buildMatrixPreview");
 	
-	predicate = [NSPredicate predicateWithFormat: @"(patientID == %@)", [study valueForKey:@"patientID"]];  // , [study valueForKey:@"name"]
+	NSString	*searchString = [study valueForKey:@"patientID"];
+	
+	if( [searchString length] == 0)
+	{
+		searchString = [study valueForKey:@"name"];
+		predicate = [NSPredicate predicateWithFormat: @"(name == %@)", searchString];
+	}
+	else predicate = [NSPredicate predicateWithFormat: @"(patientID == %@)", searchString];
+	
 	dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 	[dbRequest setPredicate: predicate];
