@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <QTKit/QTKit.h>
+#import "Wait.h"
+#import "DotMacKit/DotMacKit.h"
 
 // WHY THIS EXTERNAL APPLICATION FOR QUICKTIME?
 
@@ -31,6 +33,65 @@ int main(int argc, const char *argv[])
 		
 		NSLog( what);
 		NSLog( path);
+		
+		if( [what isEqualToString:@"getFilesFromiDisk"])
+		{
+		
+		}
+		
+		if( [what isEqualToString:@"sendFilesToiDisk"])
+		{
+			NSArray	*files2Copy = [NSArray arrayWithContentsOfFile: [NSString stringWithCString:argv[ 2]]];
+			
+			NSLog( [files2Copy description]);
+			
+			NSString	*path = @"Documents/DICOM";
+			
+			Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying to your iDisk",nil)];
+			
+			[splash setCancel:YES];
+			[splash showWindow: 0L];
+			[[splash progress] setMaxValue:[files2Copy count]];
+			
+			DMMemberAccount		*myDotMacMemberAccount = [DMMemberAccount accountFromPreferencesWithApplicationID:@"----"];
+		
+			if (myDotMacMemberAccount != nil )
+			{
+				DMiDiskSession *mySession = [DMiDiskSession iDiskSessionWithAccount: myDotMacMemberAccount];
+				if( mySession )
+				{
+					// Find the DICOM folder
+					if( ![mySession fileExistsAtPath:path]) [mySession createDirectoryAtPath:path attributes:nil];
+
+					for( long x = 0 ; x < [files2Copy count]; x++ )
+					{
+						NSString			*dstPath, *srcPath = [files2Copy objectAtIndex:x];
+						
+						dstPath = [path stringByAppendingPathComponent: [srcPath lastPathComponent]];
+						
+						if( ![mySession fileExistsAtPath: srcPath]) [mySession copyPath: srcPath toPath: dstPath handler:nil];
+						else {
+								if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [srcPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+								{
+									[mySession removeFileAtPath: srcPath handler:nil];
+									[mySession copyPath: srcPath toPath: dstPath handler:nil];
+								}
+								else break;
+						}
+						
+						[splash incrementBy:1];
+						
+						if( [splash aborted] )
+							x = [files2Copy count];
+					}
+					
+					[splash close];
+					[splash release];
+				}
+				else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?",@"iDisk?"), NSLocalizedString(@"Unable to contact dotMac service.",@"Unable to contact dotMac service."), NSLocalizedString(@"OK",nil),nil, nil);
+			}
+			else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?",@"iDisk?"), NSLocalizedString(@"No iDisk is currently defined in your system.",@"No iDisk is currently defined in your system."), NSLocalizedString(@"OK",nil),nil, nil);
+		}
 		
 		if( [what isEqualToString:@"getFrame"])
 		{

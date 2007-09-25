@@ -6614,6 +6614,9 @@
 		CE99E890073AB4C500725ABC /* iPhoto.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE99E88E073AB4C500725ABC /* iPhoto.icns */; };
 		CE9A04440C7DBC060007809F /* libxerces-c.27.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
 		CE9A04450C7DBC060007809F /* libdcmprintscu.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
+		CE9B50C80CA8EAA600C6C982 /* Wait.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6F34FC0574081F00CDCA47 /* Wait.m */; };
+		CE9B50D50CA8EBD600C6C982 /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
+		CE9B51610CA8F41E00C6C982 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CE9C734A0B34946B0062FCCC /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = CE9C73490B34946B0062FCCC /* echoscu */; };
 		CE9C734B0B34946B0062FCCC /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = CE9C73490B34946B0062FCCC /* echoscu */; };
 		CE9CED890C75BDF900752D4B /* DCMRootRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E96AD9007CE753C005D435B /* DCMRootRecord.h */; };
@@ -8095,6 +8098,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		CE9B516D0CA8F42E00C6C982 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CE9B51610CA8F41E00C6C982 /* DotMacKit.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CECA66E306CD8C1500D8750E /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -11949,6 +11962,7 @@
 			files = (
 				CEDAAED60C7B489D00809161 /* QuickTime.framework in Frameworks */,
 				CEDAAED70C7B489E00809161 /* QTKit.framework in Frameworks */,
+				CE9B50D50CA8EBD600C6C982 /* DotMacKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20658,6 +20672,7 @@
 				CEDAAEC60C7B486A00809161 /* Resources */,
 				CEDAAEC70C7B486A00809161 /* Sources */,
 				CEDAAEC80C7B486A00809161 /* Frameworks */,
+				CE9B516D0CA8F42E00C6C982 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -24503,6 +24518,7 @@
 			files = (
 				CEDAAED80C7B48A300809161 /* Quicktime.mm in Sources */,
 				CEF54E030C7B82AA00C66A31 /* VRMakeObject.m in Sources */,
+				CE9B50C80CA8EAA600C6C982 /* Wait.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26550,6 +26566,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -26575,6 +26595,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_FAST_OBJC_DISPATCH = NO;
@@ -26602,6 +26626,10 @@
 		CEDAAECF0C7B486B00809161 /* Deployment Universal 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -26624,6 +26652,10 @@
 		CEDAAED00C7B486B00809161 /* Deployment Universal 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
