@@ -94,7 +94,7 @@
 	//power->Update();
 	//medialSurface = power->GetMedialSurface();
 	
-	float reduction = 0.9;
+	float reduction = 0.8;
 	NSLog(@"Decimate: %f", reduction);
 	decimate = vtkDecimatePro::New();
 	//decimate->SetInput(medialSurface);
@@ -106,9 +106,41 @@
 	decimate->SetMaximumError(VTK_DOUBLE_MAX);
 	decimate->Update();
 	
+
+	/*
+	NSLog(@"Find largest Region");
+	// Need to find the largest Region.  With Topology off we leave some islands
+	int largestRegionIndex = 0;
+	int regionCount = 0;
+	for (int i = 0; i < nPoints; i++) {
+		vtkPolyDataConnectivityFilter *connectFilter = vtkPolyDataConnectivityFilter::New();
+		connectFilter->SetInput(decimate->GetOutput());
+		connectFilter->SetExtractionModeToPointSeededRegions();
+		connectFilter->AddSeed(i);
+		connectFilter->Update();
+		vtkPolyData *connectionData = connectFilter->GetOutput();
+		if (connectionData->GetNumberOfPoints() > regionCount) {
+			largestRegionIndex = i;
+			// assume 50% is the largest region
+			if (regionCount > nPoints * 0.5) break;
+		}
+		//NSLog(@"connected cells: %d", connectionData->GetNumberOfPolys());
+		//NSLog(@"connected Points: %d", connectionData->GetNumberOfPoints());
+		connectFilter->Delete();
+	}
+		
+	vtkPolyDataConnectivityFilter *connectFilter = vtkPolyDataConnectivityFilter::New();
+	connectFilter->SetInput(decimate->GetOutput());
+	connectFilter->SetExtractionModeToPointSeededRegions();
+	connectFilter->AddSeed(largestRegionIndex);
+	connectFilter->Update();
+	//vtkPolyData *connectionData = connectFilter->GetOutput();
+	NSLog(@"Found largest Region");
+	*/
+	
 	vtkPolyData *data = decimate->GetOutput();
-	vtkPoints *medialPoints = data->GetPoints();
 	int nPoints = data->GetNumberOfPoints();
+	vtkPoints *medialPoints = data->GetPoints();
 	NSLog(@"number of Points: %d", nPoints);
 	NSLog(@"number of Polys: %d", data->GetNumberOfPolys());
 	NSLog(@"Build Links");
@@ -131,7 +163,7 @@
 	}
 	
 	NSLog(@"thinning NSArray" );
-	for (int a = 0; a < 300 ;  a++){
+	for (int a = 0; a < 500 ;  a++){
 		for (OSIPoint3D *point3D in pointArray) {
 			x = [point3D x];
 			y = [point3D y];
@@ -198,16 +230,7 @@
 	NSLog(@"starting Point %@",startingPoint);
 	//get connected Points
 	
-	vtkPolyDataConnectivityFilter *connectFilter = vtkPolyDataConnectivityFilter::New();
-	connectFilter->SetInput(data);
-	connectFilter->SetExtractionModeToPointSeededRegions();
-	connectFilter->AddSeed(startIndex);
-	connectFilter->Update();
-	vtkPolyData *connectionData = connectFilter->GetOutput();
-	NSLog(@"connected cells: %d", connectionData->GetNumberOfPolys());
-	NSLog(@"connected Points: %d", connectionData->GetNumberOfPoints());
 	
-
 	
 		//set array to 0
 	unsigned char visited[nPoints];
@@ -293,11 +316,36 @@
 	
 	NSLog(@"npoints: %d", nPoints);	
 	NSLog(@"connected Points: %d", [connectedPoints count]);
-
+	
+	// Arrange points from start to end based on proximity
+	NSMutableArray *arrangedPoints = [NSMutableArray array];
+	[arrangedPoints addObject:startingPoint];
+	[connectedPoints removeObject:startingPoint];
+	OSIPoint3D *nextPoint;
+	currentModelPoint = startingPoint;
+/*
+	while ([connectedPoints count]) {
+		for (OSIPoint3D *point3D in connectedPoints) {
+			double distance = sqrt( pow([currentModelPoint x] - [point3D x],2)
+				+ pow([currentModelPoint y] - [point3D y],2)
+				+ pow([currentModelPoint z] - [point3D z],2));
+			if (distance < minDistance) {
+					minDistance = distance;
+					nextPoint = point3D;
+			}							
+		}
+		[connectedPoints removeObject:nextPoint];
+		[arrangedPoints addObject:nextPoint];
+		currentModelPoint = nextPoint;
+	}
+*/
 	
 
 	decimate->Delete();
-	return connectedPoints;			
+	//connectFilter->Delete();
+	return connectedPoints;	
+	//return arrangedPoints;	
+	//return pointArray;	
 
 }
 
