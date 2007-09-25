@@ -441,6 +441,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 @synthesize eraserFlag;
 @synthesize drawing;
 @synthesize volumicSeries;
+@synthesize isKeyView;
 
 + (BOOL) intersectionBetweenTwoLinesA1:(NSPoint) a1 A2:(NSPoint) a2 B1:(NSPoint) b1 B2:(NSPoint) b2 result:(NSPoint*) r
 {
@@ -8612,7 +8613,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 }
 
 - (BOOL)becomeFirstResponder
-{
+{	
 	isKeyView = YES;
 	
 	[self updateTilingViews];
@@ -8643,6 +8644,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[[self windowController] adjustSlider];
 		[[self windowController] propagateSettings];
 	}
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMViewDidBecomeFirstResponder" object:self];
 	
 	return YES;
 }

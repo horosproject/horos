@@ -35,4 +35,10 @@
 - (void) setShadingValues:(float) ambient :(float) diffuse :(float) specular :(float) specularpower{
 	[super setShadingValues:(float) ambient :(float) diffuse :(float) specular :(float) specularpower];
 }
+
+- (void)setIChatFrame:(BOOL)set;
+{
+	return;
+}
+
 @end

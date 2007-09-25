@@ -32,30 +32,6 @@ BOOL					NEEDTOREBUILD = NO;
 NSMutableDictionary		*DATABASECOLUMNS = 0L;
 short					Altivec = 0;
 
-#if __ppc__ || __ppc64__
-// ALTIVEC FUNCTIONS
-
-void InverseLongs(register vector unsigned int *unaligned_input, register long size) {
-	register long						i = size / 4;
-	register vector unsigned char		identity = vec_lvsl(0, (int*) NULL );
-	register vector unsigned char		byteSwapLongs = vec_xor( identity, vec_splat_u8(sizeof( int )- 1 ) );
-	
-	while(i-- > 0)	{
-		*unaligned_input++ = vec_perm( *unaligned_input, *unaligned_input, byteSwapLongs);
-	}
-}
-
-void InverseShorts( register vector unsigned short *unaligned_input, register long size) {
-	register long						i = size / 8;
-	register vector unsigned char		identity = vec_lvsl(0, (int*) NULL );
-	register vector unsigned char		byteSwapShorts = vec_xor( identity, vec_splat_u8(sizeof( short) - 1) );
-	
-	while(i-- > 0)	{
-		*unaligned_input++ = vec_perm( *unaligned_input, *unaligned_input, byteSwapShorts);
-	}
-}
-#endif
-
 NSString* convertDICOM( NSString *inputfile) {
 	return inputfile;
 }

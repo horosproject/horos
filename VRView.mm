@@ -6669,7 +6669,7 @@ public:
 
 // Callback from IMAVManager asking what pixel format we'll be providing frames in.
 - (void)getPixelBufferPixelFormat:(OSType *)pixelFormatOut {
-	NSLog(@"getPixelBufferPixelFormat");
+//	NSLog(@"getPixelBufferPixelFormat");
     *pixelFormatOut = kCVPixelFormatType_32ARGB;
 }
 
@@ -6678,8 +6678,9 @@ public:
 // CVPixelBufferRef.
 //
 // Note that this will be called on a non-main thread. 
-- (BOOL) renderIntoPixelBuffer:(CVPixelBufferRef)buffer forTime:(CVTimeStamp*)timeStamp {
-
+- (BOOL) renderIntoPixelBuffer:(CVPixelBufferRef)buffer forTime:(CVTimeStamp*)timeStamp
+{
+//	NSLog(@"renderIntoPixelBuffer");
     // We ignore the timestamp, signifying that we're providing content for 'now'.
 	CVReturn err;
 	
@@ -6691,8 +6692,6 @@ public:
 		return NO;
 	}
 	
-//	if( [drawLock tryLock] == NO) return NO;
-//	else [drawLock unlock];
 	
     // Lock the pixel buffer's base address so that we can draw into it.
 	if((err = CVPixelBufferLockBaseAddress(buffer, 0)) != kCVReturnSuccess) {
@@ -6723,7 +6722,12 @@ public:
     NSGraphicsContext *context = [NSGraphicsContext graphicsContextWithGraphicsPort:cgContext flipped:NO];
     [NSGraphicsContext setCurrentContext:context];
 	//get NSImage and draw in the rect
-    [self drawImage:[self nsimage:NO] inBounds:NSMakeRect(0.0, 0.0, iChatWidth, iChatHeight)];
+	NSImage *image = [self nsimage:NO];
+	
+	if(image) //if([image size].width>0 && [image size].height>0)
+		[self drawImage:image inBounds:NSMakeRect(0.0, 0.0, iChatWidth, iChatHeight)];
+	else
+		[self drawImage:[[NSWorkspace sharedWorkspace] iconForFile:[[NSBundle mainBundle] bundlePath]] inBounds:NSMakeRect(0.0, 0.0, iChatWidth, iChatHeight)];
     [context flushGraphics];
     
     // Clean up - remember to unlock the pixel buffer's base address (we locked
@@ -6736,7 +6740,7 @@ public:
 
 - (void)drawImage:(NSImage *)image inBounds:(NSRect)rect
 {
-	NSLog(@"drawImage");
+//	NSLog(@"drawImage");
     // We synchronise to make sure we're not drawing in two threads
     // simultaneously.
    
@@ -6789,11 +6793,11 @@ public:
 
 - (void)setIChatFrame:(BOOL)set;
 {
+	//NSLog(@"setIChatFrame");
 	if(set)
 	{
 		if(iChatFrameIsSet) return;
-		NSLog(@"iChatWidth : %f", iChatWidth);
-		NSLog(@"iChatHeight : %f", iChatHeight);
+		//NSLog(@"iChatWidth : %f , iChatHeight : %f", iChatWidth, iChatHeight);
 		if(iChatWidth==0 || iChatHeight==0) return;
 
 		iChatFrameIsSet = YES;
@@ -6810,13 +6814,20 @@ public:
 	else
 	{
 		iChatFrameIsSet = NO;
-		[self setFrame:savedViewSizeFrame];
+		if(savedViewSizeFrame.size.width>0 && savedViewSizeFrame.size.height>0)
+			[self setFrame:savedViewSizeFrame];
 	}
 }
 
 - (void)_iChatStateChanged:(NSNotification *)aNotification;
 {
 	[self setIChatFrame:[[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning]];	
+}
+
+- (BOOL)becomeFirstResponder
+{
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"VRViewDidBecomeFirstResponder" object:self];
+	return [super becomeFirstResponder];
 }
 
 @end

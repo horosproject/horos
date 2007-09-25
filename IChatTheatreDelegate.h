@@ -16,12 +16,18 @@
 
 
 @interface IChatTheatreDelegate : NSObject {
-	BOOL isRunning;
+	BOOL _hasChanged;
 }
 
 + (IChatTheatreDelegate*) sharedDelegate;
 + (IChatTheatreDelegate*) releaseSharedDelegate;
 - (void)_stateChanged:(NSNotification *)aNotification;
 - (BOOL)isIChatTheatreRunning;
+
+- (void)setVideoDataSource:(NSWindow*)window;
+
+- (void)drawImage:(NSImage *)image inBounds:(NSRect)rect;
+- (BOOL)_checkHasChanged:(BOOL)flag;
+- (BOOL)checkHasChanged;
 
 @end

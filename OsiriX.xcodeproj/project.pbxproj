@@ -443,6 +443,14 @@
 		A95B98AF0A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */; };
 		A98159A009AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
 		A98159A109AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
+		A98FFBE50CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
+		A98FFBE60CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
+		A98FFBE70CA92B58000291C8 /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = A98FFBE40CA92B58000291C8 /* altivecFunctions.h */; };
+		A98FFBE80CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
+		A98FFBE90CA92B58000291C8 /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = A98FFBE40CA92B58000291C8 /* altivecFunctions.h */; };
+		A98FFBEA0CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
+		A98FFBEB0CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
+		A98FFBEC0CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
 		A9944C0F0A52A54D004C5E0A /* LLDCMView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9944C0D0A52A54C004C5E0A /* LLDCMView.h */; };
 		A9944C100A52A54D004C5E0A /* LLDCMView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9944C0E0A52A54D004C5E0A /* LLDCMView.m */; };
 		A9944C110A52A54D004C5E0A /* LLDCMView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9944C0D0A52A54C004C5E0A /* LLDCMView.h */; };
@@ -8509,6 +8517,8 @@
 		A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html; path = QTExportPatientsTemplate.html; sourceTree = "<group>"; };
 		A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html; path = QTExportStudiesTemplate.html; sourceTree = "<group>"; };
 		A981599E09AC6B25003FF1FB /* bonesRemoval.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = bonesRemoval.tif; sourceTree = "<group>"; };
+		A98FFBE30CA92B58000291C8 /* altivecFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = altivecFunctions.c; sourceTree = "<group>"; };
+		A98FFBE40CA92B58000291C8 /* altivecFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = altivecFunctions.h; sourceTree = "<group>"; };
 		A9944C0D0A52A54C004C5E0A /* LLDCMView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLDCMView.h; sourceTree = "<group>"; };
 		A9944C0E0A52A54D004C5E0A /* LLDCMView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LLDCMView.m; sourceTree = "<group>"; };
 		A99B7E5008858D31004328C0 /* BonjourPublisher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourPublisher.h; sourceTree = "<group>"; };
@@ -12920,6 +12930,8 @@
 		ABAA285A058A675600F0601D /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				A98FFBE40CA92B58000291C8 /* altivecFunctions.h */,
+				A98FFBE30CA92B58000291C8 /* altivecFunctions.c */,
 				AB36742F0BE0CEB0003634E6 /* iLifeControls */,
 				BF348573095126B700B05AD2 /* Sending */,
 				7E0339E307415C330025DDB4 /* Burning */,
@@ -18485,6 +18497,7 @@
 				CED2CF980C9B288C0047F123 /* CIADICOMField.h in Headers */,
 				BF79F3C80C9F7EDD007ADFE0 /* Centerline.h in Headers */,
 				CE8919F00CA181710044EEDD /* OsiriXSCPDataHandler.h in Headers */,
+				A98FFBE70CA92B58000291C8 /* altivecFunctions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20549,6 +20562,7 @@
 				CED2CF910C9B28580047F123 /* PreferencePaneControllerDCMTK.h in Headers */,
 				CED2CF9A0C9B288C0047F123 /* CIADICOMField.h in Headers */,
 				BF79F3CA0C9F7EDD007ADFE0 /* Centerline.h in Headers */,
+				A98FFBE90CA92B58000291C8 /* altivecFunctions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22838,6 +22852,7 @@
 				CED2CF970C9B288C0047F123 /* CIADICOMField.m in Sources */,
 				BF79F3C90C9F7EDD007ADFE0 /* Centerline.mm in Sources */,
 				CE8919EF0CA181700044EEDD /* OsiriXSCPDataHandler.m in Sources */,
+				A98FFBE60CA92B58000291C8 /* altivecFunctions.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23199,6 +23214,7 @@
 				AB7252350ADE791700A212A0 /* jccolor.c in Sources */,
 				AB7252360ADE791700A212A0 /* jcarith.c in Sources */,
 				AB7252370ADE791700A212A0 /* jcapistd.c in Sources */,
+				A98FFBEA0CA92B58000291C8 /* altivecFunctions.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23446,6 +23462,7 @@
 				AB6A77EA0C5A18FE00BA235F /* dsrmamcc.cc in Sources */,
 				AB6A77EB0C5A190000BA235F /* dsrdattn.cc in Sources */,
 				CEBD0D320C8BE8D200A724F6 /* PluginManager.m in Sources */,
+				A98FFBE50CA92B58000291C8 /* altivecFunctions.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24509,6 +24526,7 @@
 				CED2CF920C9B28580047F123 /* PreferencePaneControllerDCMTK.mm in Sources */,
 				CED2CF990C9B288C0047F123 /* CIADICOMField.m in Sources */,
 				BF79F3CB0C9F7EDD007ADFE0 /* Centerline.mm in Sources */,
+				A98FFBE80CA92B58000291C8 /* altivecFunctions.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24519,6 +24537,7 @@
 				CEDAAED80C7B48A300809161 /* Quicktime.mm in Sources */,
 				CEF54E030C7B82AA00C66A31 /* VRMakeObject.m in Sources */,
 				CE9B50C80CA8EAA600C6C982 /* Wait.m in Sources */,
+				A98FFBEC0CA92B58000291C8 /* altivecFunctions.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24527,6 +24546,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEDF6E1D0B46FF40008B45B8 /* DICOMPrint.mm in Sources */,
+				A98FFBEB0CA92B58000291C8 /* altivecFunctions.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -47,6 +47,8 @@
 
 }
 
+@property(readonly) EndoscopyVRController *vrController;
+
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC : (ViewerController*) vC;
 - (BOOL) is2DViewer;
 - (NSMutableArray*) pixList;

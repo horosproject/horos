@@ -50,6 +50,8 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 
 @implementation EndoscopyViewer
 
+@synthesize vrController;
+
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC : (ViewerController*) vC
 {
 	self = [super initWithWindowNibName:@"Endoscopy"];

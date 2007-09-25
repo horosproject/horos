@@ -285,6 +285,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property BOOL eraserFlag;
 @property BOOL drawing;
 @property BOOL volumicSeries;
+@property(readonly) BOOL isKeyView;
 
 + (void) setDefaults;
 + (void) setCLUTBARS:(int) c ANNOTATIONS:(int) a;
