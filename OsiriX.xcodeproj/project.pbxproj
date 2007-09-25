@@ -7846,7 +7846,6 @@
 		CEFC048408D4B1AA00058461 /* Point.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEFC048108D4B1AA00058461 /* Point.tiff */; };
 		CEFE605A0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CEFE605B0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
-		CEFE606B0979B1ED00891EA9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CEFE606C0979B1F600891EA9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -8119,7 +8118,6 @@
 				CE9A04440C7DBC060007809F /* libxerces-c.27.dylib in CopyFiles */,
 				CE9A04450C7DBC060007809F /* libdcmprintscu.dylib in CopyFiles */,
 				ABDF6E650BE0926600793094 /* Growl.framework in CopyFiles */,
-				CEFE606B0979B1ED00891EA9 /* DotMacKit.framework in CopyFiles */,
 				CE416BCE07969EEB009A8D42 /* OsiriX.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -8065,7 +8065,7 @@ END_CREATE_ROIS:
 				}
 				else	// It's a Movie ??
 				{
-#if !__LP64__
+				#if !__LP64__
 					NSMovie *movie = nil;
 					
 					if( [extension isEqualToString:@"mov"] == YES ||
