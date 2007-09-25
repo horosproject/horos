@@ -7221,15 +7221,17 @@ END_CREATE_ROIS:
 			int curFrame = 0;
 			[movie gotoBeginning];
 			
-			QTTime previousTime;
+			QTTime previousTime = [movie currentTime];
 			
 			curFrame = 0;
 			
-			while( QTTimeCompare( previousTime, [movie currentTime]) == NSOrderedAscending && curFrame != frameNo)
+			while( curFrame != frameNo)
 			{
 				previousTime = [movie currentTime];
 				curFrame++;
 				[movie stepForward];
+				
+				if( QTTimeCompare( previousTime, [movie currentTime]) != NSOrderedAscending) curFrame = frameNo;
 			}
 			
 			[self getDataFromNSImage: [movie currentFrameImage]];
