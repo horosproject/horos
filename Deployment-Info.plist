@@ -28,6 +28,8 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSCanProvideIMVideoDataSource</key>
+			<string>Yes</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>

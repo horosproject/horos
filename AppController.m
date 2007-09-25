@@ -1152,6 +1152,19 @@ NSRect screenFrame()
 	NSFileManager       *defaultManager = [NSFileManager defaultManager];
 	BOOL                isDirectory;
 
+	if([filenames count]==1) // for iChat Theatre... (drag & drop a DICOM file on the video chat window)
+	{
+		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+		{
+			for( id im in [v fileList])
+				if([[im path] isEqualToString:[filenames objectAtIndex: 0]])
+				{
+					[[v window] makeKeyWindow];
+					return;
+				}
+		}
+	}
+	
 	for( i = 0; i < [filenames count]; i++)
 	{
 		if([defaultManager fileExistsAtPath:[filenames objectAtIndex:i] isDirectory:&isDirectory])     // A directory

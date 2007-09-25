@@ -7117,7 +7117,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				[self drawROISelectorRegion];
 			}			
 			
-			if(ctx == _alternateContext) // iChat Theatre context
+			if(ctx == _alternateContext && [[NSApplication sharedApplication] isActive]) // iChat Theatre context
 			{
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
