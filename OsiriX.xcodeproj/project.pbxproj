@@ -6617,6 +6617,7 @@
 		CE9B50C80CA8EAA600C6C982 /* Wait.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6F34FC0574081F00CDCA47 /* Wait.m */; };
 		CE9B50D50CA8EBD600C6C982 /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CE9B51610CA8F41E00C6C982 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
+		CE9B51790CA8F49500C6C982 /* Wait.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F993A0C84724B00CB38F1 /* Wait.xib */; };
 		CE9C734A0B34946B0062FCCC /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = CE9C73490B34946B0062FCCC /* echoscu */; };
 		CE9C734B0B34946B0062FCCC /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = CE9C73490B34946B0062FCCC /* echoscu */; };
 		CE9CED890C75BDF900752D4B /* DCMRootRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E96AD9007CE753C005D435B /* DCMRootRecord.h */; };
@@ -21731,6 +21732,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE9B51790CA8F49500C6C982 /* Wait.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
