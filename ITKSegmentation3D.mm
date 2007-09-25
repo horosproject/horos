@@ -1003,8 +1003,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	InterpolatorType::Pointer interpolator = InterpolatorType::New(); 
 	resampleFilter->SetInterpolator( interpolator );
 	
-	double resampleX = 2.0;
-	double resampleY = 2.0;
+	double resampleX = 1.0;
+	double resampleY = 1.0;
 	double resampleZ = 2.0;
 	const double *spacing = [itkImage itkImporter]->GetSpacing();
 	double newSpacing[Dimension];
@@ -1113,9 +1113,15 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	OSIPoint3D *firstPoint = [seeds objectAtIndex:0];
 	OSIPoint3D *endPoint = nil;
 	if (endingPoint) {
-		endPoint = [OSIPoint3D pointWithX:[endingPoint x] / resampleX  y:[endingPoint y] / resampleY  z:[endingPoint z] / resampleZ value:nil];
+		endPoint = [OSIPoint3D pointWithX:[endingPoint x] / resampleX  y:endingPoint.y / resampleY  z:endingPoint.z / resampleZ value:nil];
+		endPoint.voxelWidth = newSpacing[0];
+		endPoint.voxelHeight = newSpacing[1];
+		endPoint.voxelDepth = newSpacing[2];
 	}
-	OSIPoint3D *startingPoint = [OSIPoint3D pointWithX:[firstPoint x] / resampleX  y:[firstPoint y] / resampleY  z:[firstPoint z] / resampleZ value:nil];
+	OSIPoint3D *startingPoint = [OSIPoint3D pointWithX:firstPoint.x / resampleX  y:firstPoint.y / resampleY  z:firstPoint.z / resampleZ value:nil];
+	startingPoint.voxelWidth = newSpacing[0];
+	startingPoint.voxelHeight = newSpacing[1];
+	startingPoint.voxelDepth = newSpacing[2];
 	NSArray *centerlinePoints = [centerline generateCenterline:contour startingPoint:startingPoint  endingPoint:endPoint];
 	isoContour->Delete();
 	
@@ -1125,13 +1131,13 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	//int count = 0;
 	for (OSIPoint3D *point3D in centerlinePoints) {
 	//	if (count++ % 50 == 0) {
-			NSPoint point = NSMakePoint([point3D x] * resampleX, [point3D y] * resampleY);
+			NSPoint point = NSMakePoint(point3D.x * resampleX, point3D.y * resampleY);
 			ROI *theNewROI  = [srcViewer newROI: t2DPoint];
 			NSMutableArray *pointArray = [theNewROI  points];
 			[theNewROI setName: @"Centerline"];
-			roiImageList = [roiSeriesList objectAtIndex:[point3D z] * resampleZ];
+			roiImageList = [roiSeriesList objectAtIndex:point3D.z * resampleZ];
 			[roiImageList addObject: theNewROI];
-			[theNewROI mouseRoiDown:point :(int)([point3D z] * resampleZ) :1.0];
+			[theNewROI mouseRoiDown:point :(int)(point3D.z * resampleZ) :1.0];
 			[theNewROI mouseRoiUp:point ];
 	//	}
 

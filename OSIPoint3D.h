@@ -27,22 +27,28 @@
 	float _y;
 	float _z;
 	NSNumber *_value;
-	
+	float _voxelWidth;
+	float _voxelHeight;
+	float _voxelDepth;	
 	id  _userInfo;
 }
 
-- (float)x;
-- (float)y;
-- (float)z;
+@property float voxelWidth;
+@property float voxelHeight;
+@property float voxelDepth;
+@property float x;
+@property float y;
+@property float z;
+@property (copy, readwrite) NSNumber *value;
+@property (retain, readwrite) id userInfo;
+//@property id userInfo;
 
-- (void)setX:(float)x;
-- (void)setY:(float)y;
-- (void)setZ:(float)z;
+
+
+
 
 - (void) setX:(float)x y:(float)y z:(float)z;
 
-- (NSNumber *)value;
-- (void)setValue:(NSNumber *)value;
 
 // init with x, y, and z
 - (id)initWithX:(float)x  y:(float)y  z:(float)z value:(NSNumber *)value;
@@ -52,8 +58,7 @@
 + (id)pointWithX:(float)x  y:(float)y  z:(float)z value:(NSNumber *)value;
 + (id)pointWithNSPoint:(NSPoint)point  slice:(long)slice value:(NSNumber *)value;
 
-- (void)setUserInfo:(id)userInfo;
-- (id)userInfo;
+
 
 
 

@@ -22,28 +22,9 @@
 
 @implementation OSIPoint3D
 
-- (float)x{
-	return _x;
-}
+@synthesize voxelWidth = _voxelWidth, voxelDepth = _voxelDepth, voxelHeight = _voxelHeight, x = _x, y = _y, z = _z, value = _value, userInfo = _userInfo;
 
-- (float)y{
-	return _y;
-}
-- (float)z{
-	return _z;
-}
 
-- (void)setX:(float)x{
-	_x = x;
-}
-
-- (void)setY:(float)y{
-	_y = y;
-}
-
-- (void)setZ:(float)z{
-	_z = z;
-}
 
 - (void) setX:(float)x y:(float)y z:(float)z{
 	_x = x;
@@ -83,14 +64,6 @@
 	return [[[OSIPoint3D alloc] initWithPoint:(NSPoint)point  slice:(long)slice value:(NSNumber *)value] autorelease];
 }
 
-- (NSNumber *)value {
-	return _value;
-}
-
-- (void)setValue:(NSNumber *)value{
-	[_value release];
-	_value = [value retain];
-}
 
 - (void)dealloc{
 	[_value release];
@@ -103,14 +76,15 @@
 }
 
 
-- (void)setUserInfo:(id)userInfo{
-	[_userInfo release];
-	_userInfo = [userInfo retain];
-}
 
 
-- (id)userInfo{
-	return _userInfo;
+- (id)copyWithZone:(NSZone *)zone{
+	OSIPoint3D *newPoint = [[OSIPoint3D pointWithX:_x y:_y z:_z value:_value] retain];
+	newPoint.voxelWidth = _voxelWidth;
+	newPoint.voxelHeight = _voxelHeight;
+	newPoint.voxelDepth = _voxelDepth;
+	newPoint.userInfo = _userInfo;
+	return newPoint;
 }
 
 	
