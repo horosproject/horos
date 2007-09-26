@@ -30,7 +30,7 @@
 #undef id
 
 
-@class OSIPoint3D;
+@class OSIVoxel;
 @class WaitRendering;
 @interface Centerline : NSObject {
 	WaitRendering *_wait;
@@ -39,8 +39,9 @@
 
 @property (readwrite, retain) WaitRendering *wait;
 
-
-- (NSArray *)generateCenterline:(vtkPolyData *)polyData startingPoint:(OSIPoint3D *)start endingPoint:(OSIPoint3D *)end;
+/// Creates the centerline from a marchingCubes created polygon.
+- (NSArray *)generateCenterline:(vtkPolyData *)polyData startingPoint:(OSIVoxel *)start endingPoint:(OSIVoxel *)end;
+///Creates a set of all neighbors
 - (NSMutableSet *)connectedPointsForPoint:(vtkIdType)pt fromPolyData:(vtkPolyData *)data;
 
 @end

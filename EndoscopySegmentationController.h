@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "OSIPoint3D.h"
+#import "OSIVoxel.h"
 
 @class ViewerController;
 @interface EndoscopySegmentationController : NSWindowController {

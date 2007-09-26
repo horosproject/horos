@@ -23,7 +23,7 @@
 =========================================================================*/
 
 #import "Centerline.h"
-#import "OSIPoint3D.h"
+#import "OSIVoxel.h"
 #import "WaitRendering.h"
 
 #define id Id
@@ -72,7 +72,7 @@
 
 
 
-- (NSArray *)generateCenterline:(vtkPolyData *)polyData startingPoint:(OSIPoint3D *)start endingPoint:(OSIPoint3D *)end{
+- (NSArray *)generateCenterline:(vtkPolyData *)polyData startingPoint:(OSIVoxel *)start endingPoint:(OSIVoxel *)end{
 	NSMutableArray *connectedPoints = [NSMutableArray array];
 	NSMutableArray *stack = [NSMutableArray array];
 	NSMutableArray *centerlinePoints = [NSMutableArray array];
@@ -82,8 +82,8 @@
 	
 	BOOL atEnd = NO;
 	
-	OSIPoint3D *endingPoint;
-	OSIPoint3D *startingPoint;
+	OSIVoxel *endingPoint;
+	OSIVoxel *startingPoint;
 	
 	float voxelWidth = start.voxelWidth;
 	float voxelHeight = start.voxelHeight;
@@ -126,9 +126,9 @@
 	[_wait setString:NSLocalizedString(@"Building Points", nil)];
 	for (i = 0; i < nPoints; i++) {	
 		double *position = medialPoints->GetPoint(i);
-		OSIPoint3D *point3D = [OSIPoint3D pointWithX:position[0]  y:position[1]  z:position[2] value:nil];
+		OSIVoxel *point3D = [OSIVoxel pointWithX:position[0]  y:position[1]  z:position[2] value:nil];
 		[point3D setUserInfo:[self connectedPointsForPoint:i fromPolyData:data]];
-		OSIPoint3D *point2 = [[point3D copy] autorelease];
+		OSIVoxel *point2 = [[point3D copy] autorelease];
 		[pointArray addObject:point3D];
 		[originalPoints addObject:point2];
 	}
@@ -137,14 +137,14 @@
 	[_wait setString:thinning];
  // Create NSArray from Polygon points
 	for (int a = 0; a < 500 ;  a++){
-		for (OSIPoint3D *point3D in pointArray) {
+		for (OSIVoxel *point3D in pointArray) {
 			x = point3D.x;
 			y = point3D.y;
 			z = point3D.z;
 			
 			NSSet *ptSet = [point3D userInfo];
 			for (NSNumber *number in ptSet) {
-				OSIPoint3D *nextPoint = [pointArray objectAtIndex:[number intValue]];
+				OSIVoxel *nextPoint = [pointArray objectAtIndex:[number intValue]];
 				x += nextPoint.x;
 				y += nextPoint.y;
 				z += nextPoint.z;			
@@ -166,7 +166,7 @@
 	z = [start z];
 	
 	double minDistance = 1000000;
-	for (OSIPoint3D *point3D in pointArray) {
+	for (OSIVoxel *point3D in pointArray) {
 		double distance = sqrt( pow((x - point3D.x) * voxelWidth,2) + pow((y - point3D.y) * voxelHeight,2) + pow((z - point3D.z) * voxelDepth,2));
 		if (distance < minDistance) {
 			minDistance = distance;
@@ -179,7 +179,7 @@
 		x = [end x];
 		y = [end y];
 		z = [end z];
-		for (OSIPoint3D *point3D in pointArray) {
+		for (OSIVoxel *point3D in pointArray) {
 			double distance = sqrt( pow((x - point3D.x) * voxelWidth,2) + pow((y - point3D.y) * voxelHeight,2) + pow((z - point3D.z) * voxelDepth,2));
 			if (distance < minDistance) {
 				minDistance = distance;
@@ -202,7 +202,7 @@
 	
 	int count = 0;
 	int currentModelIndex = startIndex; 
-	OSIPoint3D *currentModelPoint = startingPoint;
+	OSIVoxel *currentModelPoint = startingPoint;
 	x = startingPoint.x; 
 	y = startingPoint.y;
 	z = startingPoint.z;
@@ -236,7 +236,7 @@
 
 		for (NSNumber *number in neighbors)  {
 			int index = [number intValue];
-			OSIPoint3D *nextPoint = [pointArray objectAtIndex:index];
+			OSIVoxel *nextPoint = [pointArray objectAtIndex:index];
 			
 			if (visited[index] == 0) {
 				double distance = sqrt( pow((x - nextPoint.x) * voxelWidth,2) + pow((y - nextPoint.y) * voxelHeight,2) + pow((z - nextPoint.z) * voxelDepth,2));
@@ -244,7 +244,7 @@
 				if (distance > modellingDistance) {
 					// if point is within modelling distance of an existing point don't add					
 					BOOL tooClose = NO;
-					for (OSIPoint3D *existingPoint in connectedPoints) {						
+					for (OSIVoxel *existingPoint in connectedPoints) {						
 						if (sqrt( pow((currentModelPoint.x - existingPoint.x) * voxelWidth,2)
 							+ pow((currentModelPoint.y - existingPoint.y) * voxelHeight,2)
 							+ pow((currentModelPoint.z - existingPoint.z) * voxelDepth,2)) <  modellingDistance) tooClose = YES;
@@ -276,12 +276,12 @@
 	NSMutableArray *arrangedPoints = [NSMutableArray array];
 	[arrangedPoints addObject:startingPoint];
 	[connectedPoints removeObject:startingPoint];
-	OSIPoint3D *nextPoint;
+	OSIVoxel *nextPoint;
 	currentModelPoint = startingPoint;
 	
 	while ([connectedPoints count] > 1) {
 			minDistance = 1000000;
-			for (OSIPoint3D *point3D in connectedPoints) {
+			for (OSIVoxel *point3D in connectedPoints) {
 				double distance = sqrt( pow((currentModelPoint.x - point3D.x) * voxelWidth,2)
 					+ pow((currentModelPoint.y - point3D.y) * voxelHeight,2)
 					+ pow((currentModelPoint.z - point3D.z) * voxelDepth,2));
@@ -306,12 +306,12 @@
 		[_wait setString:NSLocalizedString(@"Finding Centerline Points", nil)];
 		for (int i = 0; i < pointCount; i++) {
 			NSMutableSet *nearbyPoints = [NSMutableSet set];
-			OSIPoint3D *firstPoint = [arrangedPoints objectAtIndex:i];
-			OSIPoint3D *nextPoint = [arrangedPoints objectAtIndex: i+1];
+			OSIVoxel *firstPoint = [arrangedPoints objectAtIndex:i];
+			OSIVoxel *nextPoint = [arrangedPoints objectAtIndex: i+1];
 			double distance = sqrt( pow((firstPoint.x - nextPoint.x) * voxelWidth,2)
 					+ pow((firstPoint.y - nextPoint.y) * voxelHeight,2)
 					+ pow((firstPoint.z - nextPoint.z) * voxelDepth,2));
-			for (OSIPoint3D *point3D in pointArray) {
+			for (OSIVoxel *point3D in pointArray) {
 				double distance1 = sqrt( pow((firstPoint.x - point3D.x) * voxelWidth,2)
 					+ pow((firstPoint.y - point3D.y) * voxelHeight,2)
 					+ pow((firstPoint.z - point3D.z) * voxelDepth,2));
@@ -327,7 +327,7 @@
 			
 			double neighborsCount = (double)[nearbyPoints count];
 			double xPos, yPos, zPos;
-			for (OSIPoint3D *point3D in nearbyPoints) {
+			for (OSIVoxel *point3D in nearbyPoints) {
 				xPos += point3D.x;
 				yPos += point3D.y;
 				zPos += point3D.z;
@@ -338,7 +338,7 @@
 			yPos /= neighborsCount;
 			zPos /= neighborsCount;
 			
-			[centerlinePoints addObject:[OSIPoint3D pointWithX: xPos y:yPos z:zPos value:nil]];		
+			[centerlinePoints addObject:[OSIVoxel pointWithX: xPos y:yPos z:zPos value:nil]];		
 		}
 	}
 	

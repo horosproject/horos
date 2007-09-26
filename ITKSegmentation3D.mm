@@ -61,7 +61,7 @@
 #import "DCMView.h"
 #import "ROI.h"
 #import "MyPoint.h"
-#import "OSIPoint3D.h"
+#import "OSIVoxel.h"
 
 #import "ITKSegmentation3D.h"
 
@@ -1037,7 +1037,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	//id seed;
 	//Add seed points. Can use more than 1
 	
-	for (OSIPoint3D *seed in seeds) {
+	for (OSIVoxel *seed in seeds) {
 		FloatImageType::IndexType  index;
 		index[0] = (long) [seed x] / resampleX;
 		index[1] = (long) [seed y] / resampleY;
@@ -1092,19 +1092,19 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	[wait setString:NSLocalizedString(@"Finding Centerline Points", nil)];
 	Centerline *centerline = [[Centerline alloc] init];
 	centerline.wait = wait;
-	OSIPoint3D *endingPoint = nil;
+	OSIVoxel *endingPoint = nil;
 	// Get starting point and Ending POints
 	if ([seeds count] > 2)
 		endingPoint = [seeds objectAtIndex:1];
-	OSIPoint3D *firstPoint = [seeds objectAtIndex:0];
-	OSIPoint3D *endPoint = nil;
+	OSIVoxel *firstPoint = [seeds objectAtIndex:0];
+	OSIVoxel *endPoint = nil;
 	if (endingPoint) {
-		endPoint = [OSIPoint3D pointWithX:[endingPoint x] / resampleX  y:endingPoint.y / resampleY  z:endingPoint.z / resampleZ value:nil];
+		endPoint = [OSIVoxel pointWithX:[endingPoint x] / resampleX  y:endingPoint.y / resampleY  z:endingPoint.z / resampleZ value:nil];
 		endPoint.voxelWidth = newSpacing[0];
 		endPoint.voxelHeight = newSpacing[1];
 		endPoint.voxelDepth = newSpacing[2];
 	}
-	OSIPoint3D *startingPoint = [OSIPoint3D pointWithX:firstPoint.x / resampleX  y:firstPoint.y / resampleY  z:firstPoint.z / resampleZ value:nil];
+	OSIVoxel *startingPoint = [OSIVoxel pointWithX:firstPoint.x / resampleX  y:firstPoint.y / resampleY  z:firstPoint.z / resampleZ value:nil];
 	startingPoint.voxelWidth = newSpacing[0];
 	startingPoint.voxelHeight = newSpacing[1];
 	startingPoint.voxelDepth = newSpacing[2];
@@ -1115,7 +1115,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	// Create Point2D ROIs for now. Need to create pipeline to Flythrough.
 	NSMutableArray  *roiSeriesList = [srcViewer roiList];
 	NSMutableArray  *roiImageList;
-	for (OSIPoint3D *point3D in centerlinePoints) {
+	for (OSIVoxel *point3D in centerlinePoints) {
 			NSPoint point = NSMakePoint(point3D.x * resampleX, point3D.y * resampleY);
 			ROI *theNewROI  = [srcViewer newROI: t2DPoint];
 			NSMutableArray *pointArray = [theNewROI  points];

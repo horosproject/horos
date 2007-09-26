@@ -13,7 +13,7 @@
 #import "DCMView.h"
 #import "ROI.h"
 #import "browserController.h"
-#import "OSIPoint3D.h"
+#import "OSIVoxel.h"
 
 
 @implementation EndoscopySegmentationController
@@ -102,7 +102,7 @@
 		ymm = location[1];
 		zmm = location[2];
 		
-		[self addSeed:[OSIPoint3D pointWithX:xpx  y:ypx  z:zpx value:nil]];
+		[self addSeed:[OSIVoxel pointWithX:xpx  y:ypx  z:zpx value:nil]];
 		
 	//	[self setStartingPointPixelPosition:[NSString stringWithFormat:NSLocalizedString(@"px:\t\tx:%d y:%d", 0L), xpx, ypx]];
 	//	[self setStartingPointWorldPosition:[NSString stringWithFormat:NSLocalizedString(@"mm:\t\tx:%2.2f y:%2.2f z:%2.2f", 0L), xmm, ymm, zmm]];
