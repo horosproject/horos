@@ -10802,17 +10802,23 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	if( isCurrentDatabaseBonjour ) return;
 	
-	BOOL delete, success;
+	int delete = 0;
 
 	if( NSRunInformationalAlertPanel( NSLocalizedString(@"iDisk", nil), NSLocalizedString(@"Should I delete the files on the iDisk after the copy?", nil), NSLocalizedString(@"Delete the files", nil), NSLocalizedString(@"Leave them", nil), 0L) == NSAlertDefaultReturn)
 	{
-		delete = YES;
+		delete = 1;
 	}
 	else {
-		delete = NO;
+		delete = 0;
 	}
 	
-	NSString	*path = @"Documents/DICOM";
+	NSTask *theTask = [[NSTask alloc] init];
+	
+	[theTask setArguments: [NSArray arrayWithObjects: @"getFilesFromiDisk", [NSString stringWithFormat:@"%d", delete], 0L]];
+	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/QuicktimeEngine.app/Contents/MacOS/QuicktimeEngine"]];
+	[theTask launch];
+	[theTask waitUntilExit];
+	[theTask release];
 	
 	NSArray	*filesArray = [NSArray arrayWithContentsOfFile: @"/tmp/files2load"];
 	

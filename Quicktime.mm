@@ -75,7 +75,8 @@ int main(int argc, const char *argv[])
 			BOOL success = YES;
 			
 			NSMutableArray  *filesArray = [NSMutableArray array];
-			Wait			*splash = [[Wait alloc] initWithString: NSLocalizedString(@"Getting DICOM files from your iDisk",@"Getting DICOM files from your iDisk")];
+			
+			Wait			*splash = [[Wait alloc] initWithString: NSLocalizedString(@"Getting DICOM files from your iDisk", 0L)];
 			
 			[splash setCancel: YES];
 			[splash showWindow: 0L];
@@ -90,10 +91,14 @@ int main(int argc, const char *argv[])
 			
 			if ( myDotMacMemberAccount )
 			{
+				NSLog( @"myDotMacMemberAccount");
+				
 				DMiDiskSession *mySession = [DMiDiskSession iDiskSessionWithAccount: myDotMacMemberAccount];
 				
 				if( mySession )
 				{
+					NSLog( @"mySession");
+					
 					// Find the DICOM folder
 					if( ![mySession fileExistsAtPath: DICOMpath]) success = [mySession createDirectoryAtPath: DICOMpath attributes:nil];
 					
@@ -156,9 +161,13 @@ int main(int argc, const char *argv[])
 		
 			if (myDotMacMemberAccount != nil )
 			{
+				NSLog( @"myDotMacMemberAccount");
+				
 				DMiDiskSession *mySession = [DMiDiskSession iDiskSessionWithAccount: myDotMacMemberAccount];
 				if( mySession )
 				{
+					NSLog( @"mySession");
+					
 					// Find the DICOM folder
 					if( ![mySession fileExistsAtPath: DICOMpath]) [mySession createDirectoryAtPath: DICOMpath attributes:nil];
 
