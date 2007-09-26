@@ -9956,22 +9956,31 @@ END_CREATE_ROIS:
 					else if([type isEqualToString:@"Special"])
 					{
 						value = [field objectForKey:@"field"];
-						if ([value isEqualToString:@"Patient's Actual Age"])
+						if ([value isEqualToString: NSLocalizedString(@"Patient's Actual Age", 0L)])
 						{
-							// Patient's birth date : group = 0x0010 = 16 / element = 0x0030 = 48
-							if(fileNb>=0)
-								value = [self getDICOMFieldValueForGroup:16 element:48 papyLink:fileNb];
-							else if(dcmObject)
-								value = [self getDICOMFieldValueForGroup:16 element:48 DCMLink:dcmObject];
-							else
-								value = nil;
-							if(value)
+							NSDate *date = [imageObj valueForKeyPath: @"series.study.dateOfBirth"];
+							
+							if(date)
 							{
-								NSDate *date = [[[BrowserController currentBrowser] DateOfBirthFormat] dateFromString:value];
 								int age = -[date timeIntervalSinceNow]/(60*60*24*365);
 								value = [NSString stringWithFormat:@"%d y", age];
 							}
+							else value = 0L;
 						}
+						
+						if ([value isEqualToString: NSLocalizedString(@"Patient's Age At Acquisition", 0L)])
+						{
+							NSDate *date1 = [imageObj valueForKeyPath: @"series.study.dateOfBirth"];
+							NSDate *date2 = [imageObj valueForKeyPath: @"series.study.date"];
+							
+							if(date1 && date2)
+							{
+								int age = -[date1 timeIntervalSinceDate: date2]/(60*60*24*365);
+								value = [NSString stringWithFormat:@"%d y", age];
+							}
+							else value = 0L;
+						}
+						
 						if(value==nil || [value length] == 0) value = @"-";
 						else contentForLine = YES;
 					}
