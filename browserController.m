@@ -10812,6 +10812,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		delete = 0;
 	}
 	
+	WaitRendering *wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Receiving files from iDisk", nil)]];
+	[wait showWindow:self];
+	
 	NSTask *theTask = [[NSTask alloc] init];
 	
 	[theTask setArguments: [NSArray arrayWithObjects: @"getFilesFromiDisk", [NSString stringWithFormat:@"%d", delete], 0L]];
@@ -10831,6 +10834,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[[NSFileManager defaultManager] movePath: path toPath: [incomingFolder stringByAppendingPathComponent: [path lastPathComponent]] handler: 0L];
 		}
 	}
+	
+	[wait close];
+	[wait release];
 }
 
 - (IBAction)sendiDisk: (id)sender
@@ -10916,11 +10922,22 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		NSTask *theTask = [[NSTask alloc] init];
 		
+		long fileSize = 0;
+		
+		for( NSString *file in files2Copy)
+			fileSize += [[[[NSFileManager defaultManager] fileAttributesAtPath:file traverseLink: YES] objectForKey:NSFileSize] longLongValue];
+		
+		WaitRendering *wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Sending files (%d files, %d MB) to iDisk", nil), [files2Copy count], fileSize]];
+		[wait showWindow:self];
+		
 		[theTask setArguments: [NSArray arrayWithObjects: @"sendFilesToiDisk", @"/tmp/files2send", 0L]];
 		[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/QuicktimeEngine.app/Contents/MacOS/QuicktimeEngine"]];
 		[theTask launch];
 		[theTask waitUntilExit];
 		[theTask release];
+		
+		[wait close];
+		[wait release];
 		
 		for( NSString *directoryPath in directories2copy)
 			[[NSFileManager defaultManager] removeFileAtPath: directoryPath handler: 0L];

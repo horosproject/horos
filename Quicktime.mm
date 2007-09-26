@@ -79,10 +79,6 @@ int main(int argc, const char *argv[])
 			
 			NSMutableArray  *filesArray = [NSMutableArray array];
 			
-			Wait			*splash = 0L;	//[[Wait alloc] initWithString: NSLocalizedString(@"Getting DICOM files from your iDisk", 0L)];
-			
-			[splash setCancel: YES];
-			[splash showWindow: 0L];
 			
 			NSString        *dstPath, *OUTpath = @"/tmp/filesFromiDisk";
 			NSString		*DICOMpath = @"Documents/DICOM";
@@ -112,7 +108,6 @@ int main(int argc, const char *argv[])
 						NSLog( [dirContent description]);
 						
 						scaniDiskDir( mySession, DICOMpath, dirContent, filesArray);
-						[[splash progress] setMaxValue:[filesArray count]];
 						
 						NSLog( [filesArray description]);
 						
@@ -123,14 +118,6 @@ int main(int argc, const char *argv[])
 							[mySession movePath: [filesArray objectAtIndex: i] toPath: dstPath handler: 0L];
 							
 							[filesArray replaceObjectAtIndex:i withObject: dstPath];
-							
-							[splash incrementBy:1];
-							
-							if( [splash aborted])
-							{
-								[filesArray removeObjectsInRange: NSMakeRange(i, [filesArray count]-i)];
-								i = [filesArray count];
-							}
 						}
 						
 						if( deleteFolder)
@@ -146,9 +133,6 @@ int main(int argc, const char *argv[])
 				[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/files2load" handler: 0L];
 				[filesArray writeToFile: @"/tmp/files2load" atomically: 0L];
 			}
-			
-			[splash close];
-			[splash release];
 		}
 		
 		if( [what isEqualToString:@"sendFilesToiDisk"])
@@ -158,12 +142,6 @@ int main(int argc, const char *argv[])
 			NSLog( [files2Copy description]);
 			
 			NSString	*DICOMpath = @"Documents/DICOM";
-			
-			Wait *splash = 0L;	//[[Wait alloc] initWithString: NSLocalizedString(@"Copying to your iDisk",nil)];
-			
-			[splash setCancel:YES];
-			[splash showWindow: 0L];
-			[[splash progress] setMaxValue:[files2Copy count]];
 			
 			DMMemberAccount		*myDotMacMemberAccount = [DMMemberAccount accountFromPreferencesWithApplicationID:@"----"];
 		
@@ -197,15 +175,7 @@ int main(int argc, const char *argv[])
 								}
 								else break;
 						}
-						
-						[splash incrementBy:1];
-						
-						if( [splash aborted] )
-							x = [files2Copy count];
 					}
-					
-					[splash close];
-					[splash release];
 				}
 				else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?",@"iDisk?"), NSLocalizedString(@"Unable to contact dotMac service.",@"Unable to contact dotMac service."), NSLocalizedString(@"OK",nil),nil, nil);
 			}
