@@ -10836,7 +10836,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (IBAction)sendiDisk: (id)sender
 {
 	int					index;
-	BOOL				success = YES;
+	int					success;
 	
 	// Copy the files!
 
@@ -10876,31 +10876,34 @@ static volatile int numberOfThreadsForJPEG = 0;
 			// Find the DICOM-PATIENT folder
 			if( [[NSFileManager defaultManager] fileExistsAtPath: tempPath] == NO)
 			{
-				[[NSFileManager defaultManager] createDirectoryAtPath: tempPath attributes: 0L];
+				success = [[NSFileManager defaultManager] createDirectoryAtPath: tempPath attributes: 0L];
+				NSLog( @"success = %d", success);
 				[directories2copy addObject: tempPath];
 			}
 			
 			tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.studyName"] ];
 			
-			[[NSFileManager defaultManager] createDirectoryAtPath: tempPath attributes: 0L];
+			success = [[NSFileManager defaultManager] createDirectoryAtPath: tempPath attributes: 0L];
+			NSLog( @"success = %d", success);
 			
 			tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.name"] ];
 			
 			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
 			
-			[[NSFileManager defaultManager] createDirectoryAtPath: tempPath attributes: 0L];
+			success = [[NSFileManager defaultManager] createDirectoryAtPath: tempPath attributes: 0L];
+			NSLog( @"success = %d", success);
 			
 			dstPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d.%@", [[curImage valueForKey:@"instanceNumber"] intValue], extension]];
 			
 			long t = 2;
 			while( [[NSFileManager defaultManager] fileExistsAtPath: dstPath] )
 			{
-				dstPath = [NSString stringWithFormat:@"%@/%d #%d.%@", tempPath, [[curImage valueForKey:@"instanceNumber"] intValue], t, extension];
+				dstPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d #%d.%@", [[curImage valueForKey:@"instanceNumber"] intValue], t, extension]];
 				t++;
 			}
 					
-			if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler: nil] == NO )
-				success = NO;
+			success = [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler: nil];
+			NSLog( @"success = %d", success);
 					
 			if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
 			{
