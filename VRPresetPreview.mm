@@ -689,4 +689,9 @@
 		[super setVtkCamera:aVtkCamera];
 }
 
+- (void)setIChatFrame:(BOOL)set;
+{
+	return;
+}
+
 @end

@@ -1,0 +1,58 @@
+body {
+	margin-left: 40px;
+	margin-top: 40px;
+	font-family: "Lucida Grande";
+	font-size:10pt;
+}
+
+h1 {
+
+}
+
+#iChatIcon {
+	position: absolute;
+	left: -10px;
+	top: -20px;
+	opacity: 0.5;
+	z-index: -1;
+}
+
+#intro {
+	width: 440px;
+	margin-bottom: 40px;
+}
+
+ul {
+	width: 380px;
+	border: thin dotted #999999;
+	background-color:#ddDDdd;
+	padding-right:20px;
+	padding-top: 30px;
+	margin-bottom: 40px;
+}
+
+li {
+	margin-bottom: 30px;
+}
+
+#outro {
+	width: 440px;
+}
+
+#images {
+	position: absolute;
+	width: 430px;
+	top: 90px;
+	left: 490px;
+}
+
+#imgShareMenu {
+	margin-left: 20px;
+	margin-bottom: 20px;
+}
+
+#imgShareButton {
+}
+
+#imgBrowse {
+}

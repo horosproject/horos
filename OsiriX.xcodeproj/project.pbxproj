@@ -441,6 +441,24 @@
 		A95B98AD0A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */; };
 		A95B98AE0A6E65C900E476D4 /* QTExportPatientsTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */; };
 		A95B98AF0A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */; };
+		A97520070CAA8481005D172F /* browse2OsiriX_small.png in Resources */ = {isa = PBXBuildFile; fileRef = A97520000CAA8481005D172F /* browse2OsiriX_small.png */; };
+		A97520080CAA8481005D172F /* iChatHelper.xib in Resources */ = {isa = PBXBuildFile; fileRef = A97520010CAA8481005D172F /* iChatHelper.xib */; };
+		A97520090CAA8481005D172F /* iChatIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = A97520020CAA8481005D172F /* iChatIcon.png */; };
+		A975200A0CAA8481005D172F /* iChatTheatre.html in Resources */ = {isa = PBXBuildFile; fileRef = A97520030CAA8481005D172F /* iChatTheatre.html */; };
+		A975200B0CAA8481005D172F /* shareFromMenu_small.png in Resources */ = {isa = PBXBuildFile; fileRef = A97520040CAA8481005D172F /* shareFromMenu_small.png */; };
+		A975200C0CAA8481005D172F /* shareFromVideoChatWindow_small.png in Resources */ = {isa = PBXBuildFile; fileRef = A97520050CAA8481005D172F /* shareFromVideoChatWindow_small.png */; };
+		A975200D0CAA8481005D172F /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = A97520060CAA8481005D172F /* style.css */; };
+		A975200E0CAA8481005D172F /* browse2OsiriX_small.png in Resources */ = {isa = PBXBuildFile; fileRef = A97520000CAA8481005D172F /* browse2OsiriX_small.png */; };
+		A975200F0CAA8481005D172F /* iChatHelper.xib in Resources */ = {isa = PBXBuildFile; fileRef = A97520010CAA8481005D172F /* iChatHelper.xib */; };
+		A97520100CAA8481005D172F /* iChatIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = A97520020CAA8481005D172F /* iChatIcon.png */; };
+		A97520110CAA8481005D172F /* iChatTheatre.html in Resources */ = {isa = PBXBuildFile; fileRef = A97520030CAA8481005D172F /* iChatTheatre.html */; };
+		A97520120CAA8481005D172F /* shareFromMenu_small.png in Resources */ = {isa = PBXBuildFile; fileRef = A97520040CAA8481005D172F /* shareFromMenu_small.png */; };
+		A97520130CAA8481005D172F /* shareFromVideoChatWindow_small.png in Resources */ = {isa = PBXBuildFile; fileRef = A97520050CAA8481005D172F /* shareFromVideoChatWindow_small.png */; };
+		A97520140CAA8481005D172F /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = A97520060CAA8481005D172F /* style.css */; };
+		A975206B0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = A97520690CAA98BA005D172F /* IChatTheatreHelpWindowController.h */; };
+		A975206C0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A975206A0CAA98BA005D172F /* IChatTheatreHelpWindowController.m */; };
+		A975206D0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = A97520690CAA98BA005D172F /* IChatTheatreHelpWindowController.h */; };
+		A975206E0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A975206A0CAA98BA005D172F /* IChatTheatreHelpWindowController.m */; };
 		A98159A009AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
 		A98159A109AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
 		A98FFBE50CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
@@ -8516,6 +8534,15 @@
 		A95B98A30A6E65B100E476D4 /* QTExportHTMLSummary.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = QTExportHTMLSummary.m; sourceTree = "<group>"; };
 		A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html; path = QTExportPatientsTemplate.html; sourceTree = "<group>"; };
 		A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html; path = QTExportStudiesTemplate.html; sourceTree = "<group>"; };
+		A97520000CAA8481005D172F /* browse2OsiriX_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = browse2OsiriX_small.png; sourceTree = "<group>"; };
+		A97520010CAA8481005D172F /* iChatHelper.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = iChatHelper.xib; sourceTree = "<group>"; };
+		A97520020CAA8481005D172F /* iChatIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iChatIcon.png; sourceTree = "<group>"; };
+		A97520030CAA8481005D172F /* iChatTheatre.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = iChatTheatre.html; sourceTree = "<group>"; };
+		A97520040CAA8481005D172F /* shareFromMenu_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shareFromMenu_small.png; sourceTree = "<group>"; };
+		A97520050CAA8481005D172F /* shareFromVideoChatWindow_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shareFromVideoChatWindow_small.png; sourceTree = "<group>"; };
+		A97520060CAA8481005D172F /* style.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
+		A97520690CAA98BA005D172F /* IChatTheatreHelpWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IChatTheatreHelpWindowController.h; sourceTree = "<group>"; };
+		A975206A0CAA98BA005D172F /* IChatTheatreHelpWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IChatTheatreHelpWindowController.m; sourceTree = "<group>"; };
 		A981599E09AC6B25003FF1FB /* bonesRemoval.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = bonesRemoval.tif; sourceTree = "<group>"; };
 		A98FFBE30CA92B58000291C8 /* altivecFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = altivecFunctions.c; sourceTree = "<group>"; };
 		A98FFBE40CA92B58000291C8 /* altivecFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = altivecFunctions.h; sourceTree = "<group>"; };
@@ -12141,6 +12168,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A9751FFF0CAA8481005D172F /* iChatTheatreHelp */,
 				CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */,
 				CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */,
 				CE897DD30C21D951005C669E /* texture.tif */,
@@ -12669,6 +12697,20 @@
 				A93CFFA50A516A5100078038 /* LLSubtraction.m */,
 			);
 			name = LL;
+			sourceTree = "<group>";
+		};
+		A9751FFF0CAA8481005D172F /* iChatTheatreHelp */ = {
+			isa = PBXGroup;
+			children = (
+				A97520000CAA8481005D172F /* browse2OsiriX_small.png */,
+				A97520010CAA8481005D172F /* iChatHelper.xib */,
+				A97520020CAA8481005D172F /* iChatIcon.png */,
+				A97520030CAA8481005D172F /* iChatTheatre.html */,
+				A97520040CAA8481005D172F /* shareFromMenu_small.png */,
+				A97520050CAA8481005D172F /* shareFromVideoChatWindow_small.png */,
+				A97520060CAA8481005D172F /* style.css */,
+			);
+			path = iChatTheatreHelp;
 			sourceTree = "<group>";
 		};
 		A99B7E4F08858D0D004328C0 /* Bonjour */ = {
@@ -13348,6 +13390,8 @@
 				7E879E9E067F9BE100CB2F8A /* SearchSubview.m */,
 				A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */,
 				A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */,
+				A97520690CAA98BA005D172F /* IChatTheatreHelpWindowController.h */,
+				A975206A0CAA98BA005D172F /* IChatTheatreHelpWindowController.m */,
 			);
 			name = Database;
 			sourceTree = "<group>";
@@ -18498,6 +18542,7 @@
 				BF79F3C80C9F7EDD007ADFE0 /* Centerline.h in Headers */,
 				CE8919F00CA181710044EEDD /* OsiriXSCPDataHandler.h in Headers */,
 				A98FFBE70CA92B58000291C8 /* altivecFunctions.h in Headers */,
+				A975206B0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20563,6 +20608,7 @@
 				CED2CF9A0C9B288C0047F123 /* CIADICOMField.h in Headers */,
 				BF79F3CA0C9F7EDD007ADFE0 /* Centerline.h in Headers */,
 				A98FFBE90CA92B58000291C8 /* altivecFunctions.h in Headers */,
+				A975206D0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21332,6 +21378,13 @@
 				CE3F99710C84724B00CB38F1 /* XMLViewer.xib in Resources */,
 				CE3F99720C84724B00CB38F1 /* AYDicomPrint.xib in Resources */,
 				CECDBE6A0C95467B006B11A5 /* AnnotationsDefault.plist in Resources */,
+				A97520070CAA8481005D172F /* browse2OsiriX_small.png in Resources */,
+				A97520080CAA8481005D172F /* iChatHelper.xib in Resources */,
+				A97520090CAA8481005D172F /* iChatIcon.png in Resources */,
+				A975200A0CAA8481005D172F /* iChatTheatre.html in Resources */,
+				A975200B0CAA8481005D172F /* shareFromMenu_small.png in Resources */,
+				A975200C0CAA8481005D172F /* shareFromVideoChatWindow_small.png in Resources */,
+				A975200D0CAA8481005D172F /* style.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21737,6 +21790,13 @@
 				CE3F99A20C84724B00CB38F1 /* XMLViewer.xib in Resources */,
 				CE3F99A30C84724B00CB38F1 /* AYDicomPrint.xib in Resources */,
 				CECDBE6B0C95467B006B11A5 /* AnnotationsDefault.plist in Resources */,
+				A975200E0CAA8481005D172F /* browse2OsiriX_small.png in Resources */,
+				A975200F0CAA8481005D172F /* iChatHelper.xib in Resources */,
+				A97520100CAA8481005D172F /* iChatIcon.png in Resources */,
+				A97520110CAA8481005D172F /* iChatTheatre.html in Resources */,
+				A97520120CAA8481005D172F /* shareFromMenu_small.png in Resources */,
+				A97520130CAA8481005D172F /* shareFromVideoChatWindow_small.png in Resources */,
+				A97520140CAA8481005D172F /* style.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22853,6 +22913,7 @@
 				BF79F3C90C9F7EDD007ADFE0 /* Centerline.mm in Sources */,
 				CE8919EF0CA181700044EEDD /* OsiriXSCPDataHandler.m in Sources */,
 				A98FFBE60CA92B58000291C8 /* altivecFunctions.c in Sources */,
+				A975206C0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24527,6 +24588,7 @@
 				CED2CF990C9B288C0047F123 /* CIADICOMField.m in Sources */,
 				BF79F3CB0C9F7EDD007ADFE0 /* Centerline.mm in Sources */,
 				A98FFBE80CA92B58000291C8 /* altivecFunctions.c in Sources */,
+				A975206E0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -3570,7 +3570,9 @@ static ViewerController *draggedController = 0L;
 	[toolbarItem setLabel: NSLocalizedString(@"Broadcast", nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Broadcast", nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"Broadcast", nil)];
-	[toolbarItem setImage: [NSImage imageNamed: iChatBroadCastToolbarItemIdentifier]]; //	/Applications/iChat/Contents/Resources/Prefs_Camera.icns is maybe a better image...
+//	[toolbarItem setImage: [NSImage imageNamed: iChatBroadCastToolbarItemIdentifier]]; //	/Applications/iChat/Contents/Resources/Prefs_Camera.icns is maybe a better image...
+	NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.iChat"];
+	[toolbarItem setImage: [[NSWorkspace sharedWorkspace] iconForFile:path]];
 //	[toolbarItem setImage: [NSImage imageNamed:NSImageNameIChatTheaterTemplate]];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(iChatBroadcast:)];
@@ -14059,6 +14061,13 @@ int i,j,l;
 //        [[self findiChatButton] setToolTip: NSLocalizedString(@"Stop", nil)];
 //    }
 //}
+
+- (void)iChatBroadcast:(id)sender
+{
+	[[IChatTheatreDelegate sharedDelegate] showIChatHelp];
+	NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.iChat"];
+	[[NSWorkspace sharedWorkspace] launchApplication:path];
+}
 
 - (void) notificationiChatBroadcast:(NSNotification*)note
 {

@@ -13,11 +13,14 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-
+#import <WebKit/WebView.h>
 
 @interface IChatTheatreDelegate : NSObject {
 	BOOL _hasChanged;
+	IBOutlet WebView *web;
 }
+
+@property(readonly) WebView *web;
 
 + (IChatTheatreDelegate*) sharedDelegate;
 + (IChatTheatreDelegate*) releaseSharedDelegate;
@@ -29,5 +32,7 @@
 - (void)drawImage:(NSImage *)image inBounds:(NSRect)rect;
 - (BOOL)_checkHasChanged:(BOOL)flag;
 - (BOOL)checkHasChanged;
+
+- (void)showIChatHelp;
 
 @end

@@ -19,14 +19,21 @@
 #import "OrthogonalMPRViewer.h"
 #import "VRController.h"
 #import "EndoscopyViewer.h"
+#import "PreviewView.h"
+#import "IChatTheatreHelpWindowController.h"
+@class VRPresetPreview;
 
 static IChatTheatreDelegate	*iChatDelegate = 0L;
+static NSWindowController *helpWindowController = 0L;
 
 @implementation IChatTheatreDelegate
+
+@synthesize web;
 
 + (IChatTheatreDelegate*) releaseSharedDelegate
 {
 	[iChatDelegate release];
+	if(helpWindowController) [helpWindowController release];
 	iChatDelegate = 0L;
 }
 
@@ -92,7 +99,11 @@ static IChatTheatreDelegate	*iChatDelegate = 0L;
 	IMAVManager *avManager = [IMAVManager sharedAVManager];
 	
 	[[avManager videoDataSource] release];
-	[avManager setVideoDataSource: [[aNotification object] retain]];
+
+	if([[aNotification object] isKindOfClass:[PreviewView class]] || [[aNotification object] isKindOfClass:[VRPresetPreview class]])
+		[avManager setVideoDataSource: [self retain]];
+	else
+		[avManager setVideoDataSource: [[aNotification object] retain]];
 	[avManager setVideoOptimizationOptions:IMVideoOptimizationStills];
 	
 	NSLog(@"focusChanged : Start iChat Theatre");
@@ -272,6 +283,17 @@ static IChatTheatreDelegate	*iChatDelegate = 0L;
 
     // Calling with 'NO' clears _hasChanged after the call (see above).
     return [self _checkHasChanged:NO];
+}
+
+- (void)showIChatHelp;
+{
+//	if(![[[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys] containsObject:@"DONT_DISPLAY_ICHAT_HELP"])
+//		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"DONT_DISPLAY_ICHAT_HELP"];
+//	else
+	if([[NSUserDefaults standardUserDefaults] boolForKey:@"DONT_DISPLAY_ICHAT_HELP"]) return;
+
+	if(!helpWindowController) helpWindowController = [[IChatTheatreHelpWindowController alloc] initWithWindowNibName:@"iChatHelper" owner:self];
+	[helpWindowController showWindow:self];
 }
 
 @end
