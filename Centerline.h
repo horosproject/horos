@@ -24,15 +24,20 @@
 
 #import <Cocoa/Cocoa.h>
 
+
 #define id Id
 #include "vtkPolyData.h"
 #undef id
 
 
 @class OSIPoint3D;
+@class WaitRendering;
 @interface Centerline : NSObject {
+	WaitRendering *_wait;
 
 }
+
+@property (readwrite, retain) WaitRendering *wait;
 
 
 - (NSArray *)generateCenterline:(vtkPolyData *)polyData startingPoint:(OSIPoint3D *)start endingPoint:(OSIPoint3D *)end;
