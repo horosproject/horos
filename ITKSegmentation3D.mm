@@ -945,7 +945,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 }
 
 
-- (void)endoscopySegmentationForViewer:(ViewerController*) srcViewer seeds:(NSArray *)seeds {
+- (NSArray *)endoscopySegmentationForViewer:(ViewerController*) srcViewer seeds:(NSArray *)seeds {
 	// Setup 
 	//#define UseApproximateSignedDistanceMapImageFilter
 	DCMPix *curPix = [[srcViewer imageView] curDCM];
@@ -1124,6 +1124,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			[roiImageList addObject: theNewROI];
 			[theNewROI mouseRoiDown:point :(int)(point3D.z * resampleZ) :1.0];
 			[theNewROI mouseRoiUp:point ];	
+			point3D.x *= resampleX;
+			point3D.y *+ resampleY;
+			point3D.z *= resampleZ;
 	}
 
 
@@ -1132,6 +1135,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	[wait release];
 	
 	[srcViewer needsDisplayUpdate];
+	
+	return centerlinePoints;
 }
 
 

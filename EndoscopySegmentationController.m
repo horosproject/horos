@@ -14,6 +14,8 @@
 #import "ROI.h"
 #import "browserController.h"
 #import "OSIVoxel.h"
+#import "EndoscopyViewer.h"
+#import "OSIVoxel.h"
 
 
 @implementation EndoscopySegmentationController
@@ -158,7 +160,11 @@
 - (void)compute{
 	//ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWith:[_viewer pixList] :[_viewer volumePtr] :-1];
 	ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWithPix :[_viewer pixList]  volume:[_viewer volumePtr]  slice:-1  resampleData:NO];
-	[itk endoscopySegmentationForViewer:_viewer seeds:_seeds];
+	NSArray *centerlinePoints = [itk endoscopySegmentationForViewer:_viewer seeds:_seeds];
+	[_viewer endoscopyViewer:self];
+	EndoscopyViewer *endoscopyViewer = [_viewer openEndoscopyViewer];
+	//OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:0];
+	//[[[endoscopyViewer vrController] view] flyTo:firstPoint.x :firstPoint.y :firstPoint.z]	
 	[itk release];
 }
 
