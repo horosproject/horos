@@ -2080,6 +2080,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
     if( dcmPixList)
     {
+		[[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
+		
 		[self mouseMoved: event];	// Update some variables...
 		
         if( curImage != startImage && (matrix && browserWindow))
@@ -2274,7 +2276,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( dcmPixList == 0L) return;
 	
 	if( [[self window] isVisible] && [[self window] isKeyWindow])
-	{		
+	{
+		[[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
+		
 		BOOL	needUpdate = NO;
 		
 		float	cpixelMouseValueR = pixelMouseValueR;
@@ -2551,7 +2555,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo: event  repeats:NO] retain];
 	
     if( dcmPixList)
-	{	
+	{
+		[[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
+		
 		[self erase2DPointMarker];
 		if( blendingView) [blendingView erase2DPointMarker];
 		
@@ -3308,7 +3314,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	// if we have images do drag
     if( dcmPixList)
-    {	
+    {
+		[[self openGLContext] makeCurrentContext];	
+		
         NSPoint     eventLocation = [event locationInWindow];
         NSPoint     current = [self convertPoint:eventLocation fromView:self];
         short       tool;
@@ -4349,7 +4357,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( PETredTable == 0L) [DCMView computePETBlendingCLUT];
 
 	yearOld = 0L;
-	
+	drawingFrameRect = [self frame];
 	syncSeriesIndex = -1;
 	mouseXPos = mouseYPos = 0;
 	pixelMouseValue = 0;
@@ -4459,7 +4467,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     dcmPixList = 0L;
     dcmFilesList = 0L;
     
-    [[self openGLContext] makeCurrentContext];
+    [[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
 
     blendingFactor = 0.5;
 	
@@ -5290,7 +5298,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(NSPoint) ConvertFromGL2View:(NSPoint) a
 {
-    NSRect size = [[[NSOpenGLContext currentContext] view] frame];
+    NSRect size = drawingFrameRect;
 	
 	if( curDCM)
 	{
@@ -5325,8 +5333,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(NSPoint) ConvertFromView2GL:(NSPoint) a
 {
-//    NSRect size = [self frame];
-    NSRect size = [[[NSOpenGLContext currentContext] view] frame];
+	NSRect size = drawingFrameRect;	//[[[NSOpenGLContext currentContext] view] frame];
 	
 	if( xFlipped) a.x = size.size.width - a.x;
 	if( yFlipped) a.y = size.size.height - a.y;
@@ -6430,47 +6437,43 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[self setOriginX: 0 Y: 0];
 	}
 	
+	NSPoint offset = { 0.0f, 0.0f };
+	
+	if( ctx == [self openGLContext]) drawingFrameRect = [self frame];
+	else drawingFrameRect = aRect;
+	
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
+	glViewport (0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height); // set the viewport to cover entire window
+	
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear (GL_COLOR_BUFFER_BIT);
+	
+	if( dcmPixList && curImage > -1)
 	{
-		NSPoint offset = { 0.0f, 0.0f };
-		
-		// Make this context current
-		//[[self openGLContext] makeCurrentContext];
-		
-		if( ctx == [self openGLContext]) drawingFrameRect = [self frame];
-		else drawingFrameRect = aRect;
-		
-		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-		
-		glViewport (0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height); // set the viewport to cover entire window
-		
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear (GL_COLOR_BUFFER_BIT);
-		
-		if( dcmPixList && curImage > -1)
+		if( blendingView != 0L && syncOnLocationImpossible == NO)// && ctx!=_alternateContext)
 		{
-			if( blendingView != 0L && syncOnLocationImpossible == NO)// && ctx!=_alternateContext)
+			glBlendFunc(GL_ONE, GL_ONE);
+			glEnable( GL_BLEND);
+		}
+		else
+		{
+			glBlendFunc(GL_ONE, GL_ONE);
+			glDisable( GL_BLEND);
+		}
+		
+		[self drawRectIn:drawingFrameRect :pTextureName :offset :textureX :textureY :textureWidth :textureHeight];
+		
+		BOOL noBlending = NO;
+		
+		if( [self is2DViewer] == YES) {
+			if( isKeyView == NO) noBlending = YES;
+		}	
+		
+		if( blendingView != 0L && syncOnLocationImpossible == NO && noBlending == NO )
+		{
+			if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
 			{
-				glBlendFunc(GL_ONE, GL_ONE);
-				glEnable( GL_BLEND);
-			}
-			else
-			{
-				glBlendFunc(GL_ONE, GL_ONE);
-				glDisable( GL_BLEND);
-			}
-			
-			[self drawRectIn:drawingFrameRect :pTextureName :offset :textureX :textureY :textureWidth :textureHeight];
-			
-			BOOL noBlending = NO;
-			
-			if( [self is2DViewer] == YES) {
-				if( isKeyView == NO) noBlending = YES;
-			}	
-			
-			if( blendingView != 0L && syncOnLocationImpossible == NO && noBlending == NO )
-			{
-				if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
-				{
 //					float vectorP[ 9], tempOrigin[ 3], tempOriginBlending[ 3];
 //					
 //					[curDCM orientation: vectorP];
@@ -6491,116 +6494,116 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //					
 //					offset.y *= scaleValue;
 //					offset.y /= curDCM.pixelSpacingY;
-					
-					offset.y = 0;
-					offset.x = 0;
-				}
-				else
-				{
-					offset.y = 0;
-					offset.x = 0;
-				}
 				
-				//NSLog(@"offset:%f - %f", offset.x, offset.y);
-				
-				glBlendEquation(GL_FUNC_ADD);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				
-				if( blendingTextureName)
-					[blendingView drawRectIn:drawingFrameRect :blendingTextureName :offset :blendingTextureX :blendingTextureY :blendingTextureWidth :blendingTextureHeight];
-				else
-					NSLog( @"blendingTextureName == 0L");
-				
-				glDisable( GL_BLEND);
+				offset.y = 0;
+				offset.x = 0;
+			}
+			else
+			{
+				offset.y = 0;
+				offset.x = 0;
 			}
 			
-			//** SLICE CUT FOR 2D MPR
-			if( cross.x != -9999 && cross.y != -9999 && display2DMPRLines == YES)
-			{
-				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-				glEnable(GL_BLEND);
-				glEnable(GL_POINT_SMOOTH);
-				glEnable(GL_LINE_SMOOTH);
-				glEnable(GL_POLYGON_SMOOTH);
+			//NSLog(@"offset:%f - %f", offset.x, offset.y);
+			
+			glBlendEquation(GL_FUNC_ADD);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			
+			if( blendingTextureName)
+				[blendingView drawRectIn:drawingFrameRect :blendingTextureName :offset :blendingTextureX :blendingTextureY :blendingTextureWidth :blendingTextureHeight];
+			else
+				NSLog( @"blendingTextureName == 0L");
+			
+			glDisable( GL_BLEND);
+		}
+		
+		//** SLICE CUT FOR 2D MPR
+		if( cross.x != -9999 && cross.y != -9999 && display2DMPRLines == YES)
+		{
+			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+			glEnable(GL_BLEND);
+			glEnable(GL_POINT_SMOOTH);
+			glEnable(GL_LINE_SMOOTH);
+			glEnable(GL_POLYGON_SMOOTH);
+			
+			if(( mprVector[ 0] != 0 || mprVector[ 1] != 0) ) {
+				float tvec[ 2];
+					
+				tvec[ 0] = cos((angle+90)*deg2rad);
+				tvec[ 1] = sin((angle+90)*deg2rad);
+
+				glColor3f (0.0f, 0.0f, 1.0f);
 				
-				if(( mprVector[ 0] != 0 || mprVector[ 1] != 0) ) {
-					float tvec[ 2];
-						
-					tvec[ 0] = cos((angle+90)*deg2rad);
-					tvec[ 1] = sin((angle+90)*deg2rad);
+					// Thick Slab
+					if( slab > 1 ) {
+						float crossx, crossy;
+						float slabx, slaby;
 
-					glColor3f (0.0f, 0.0f, 1.0f);
-					
-						// Thick Slab
-						if( slab > 1 ) {
-							float crossx, crossy;
-							float slabx, slaby;
-
-							glLineWidth(1.0);
-							glBegin(GL_LINES);
-							
-							crossx = cross.x-curDCM.pwidth/2.;
-							crossy = cross.y-curDCM.pheight/2.;
-							
-							slabx = (slab/2.)/ curDCM.pixelSpacingX * tvec[ 0];
-							slaby = (slab/2.)/ curDCM.pixelSpacingY * tvec[ 1];
-							
-							glVertex2f( scaleValue * (crossx - 1000*mprVector[ 0] - slabx), scaleValue*(crossy - 1000*mprVector[ 1] - slaby));
-							glVertex2f( scaleValue * (crossx + 1000*mprVector[ 0] - slabx), scaleValue*(crossy + 1000*mprVector[ 1] - slaby));
-
-							glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0]), scaleValue*(crossy - 1000*mprVector[ 1]));
-							glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0]), scaleValue*(crossy + 1000*mprVector[ 1]));
-
-							glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0] + slabx), scaleValue*(crossy - 1000*mprVector[ 1] + slaby));
-							glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0] + slabx), scaleValue*(crossy + 1000*mprVector[ 1] + slaby));
-						}
-						else {
-							glLineWidth(2.0);
-							glBegin(GL_LINES);
-
-							float crossx = cross.x-curDCM.pwidth/2.;
-							float crossy = cross.y-curDCM.pheight/2.;
-							
-							glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0]), scaleValue*(crossy - 1000*mprVector[ 1]));
-							glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0]), scaleValue*(crossy + 1000*mprVector[ 1]));
-						}
-					glEnd();
-					
-					if( [stringID isEqualToString:@"Original"])
-					{
-						glColor3f (1.0f, 0.0f, 0.0f);
 						glLineWidth(1.0);
 						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(cross.x-curDCM.pwidth/2. - 1000*tvec[ 0]), scaleValue*(cross.y-curDCM.pheight/2. - 1000*tvec[ 1]));
-							glVertex2f( scaleValue*(cross.x-curDCM.pwidth/2. + 1000*tvec[ 0]), scaleValue*(cross.y-curDCM.pheight/2. + 1000*tvec[ 1]));
-						glEnd();
+						
+						crossx = cross.x-curDCM.pwidth/2.;
+						crossy = cross.y-curDCM.pheight/2.;
+						
+						slabx = (slab/2.)/ curDCM.pixelSpacingX * tvec[ 0];
+						slaby = (slab/2.)/ curDCM.pixelSpacingY * tvec[ 1];
+						
+						glVertex2f( scaleValue * (crossx - 1000*mprVector[ 0] - slabx), scaleValue*(crossy - 1000*mprVector[ 1] - slaby));
+						glVertex2f( scaleValue * (crossx + 1000*mprVector[ 0] - slabx), scaleValue*(crossy + 1000*mprVector[ 1] - slaby));
+
+						glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0]), scaleValue*(crossy - 1000*mprVector[ 1]));
+						glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0]), scaleValue*(crossy + 1000*mprVector[ 1]));
+
+						glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0] + slabx), scaleValue*(crossy - 1000*mprVector[ 1] + slaby));
+						glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0] + slabx), scaleValue*(crossy + 1000*mprVector[ 1] + slaby));
 					}
-				}
+					else {
+						glLineWidth(2.0);
+						glBegin(GL_LINES);
 
-				NSPoint crossB = cross;
-
-				crossB.x -= curDCM.pwidth/2.;
-				crossB.y -= curDCM.pheight/2.;
+						float crossx = cross.x-curDCM.pwidth/2.;
+						float crossy = cross.y-curDCM.pheight/2.;
+						
+						glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0]), scaleValue*(crossy - 1000*mprVector[ 1]));
+						glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0]), scaleValue*(crossy + 1000*mprVector[ 1]));
+					}
+				glEnd();
 				
-				crossB.x *=scaleValue;
-				crossB.y *=scaleValue;
-				
-				glColor3f (1.0f, 0.0f, 0.0f);
-				
-		//		if( [stringID isEqualToString:@"Perpendicular"])
-		//		{
-		//			glLineWidth(2.0);
-		//			glBegin(GL_LINES);
-		//				glVertex2f( crossB.x-BS, crossB.y);
-		//				glVertex2f(  crossB.x+BS, crossB.y);
-		//				
-		//				glVertex2f( crossB.x, crossB.y-BS);
-		//				glVertex2f(  crossB.x, crossB.y+BS);
-		//			glEnd();
-		//		}
-		//		else
+				if( [stringID isEqualToString:@"Original"])
 				{
-					glLineWidth(2.0);
+					glColor3f (1.0f, 0.0f, 0.0f);
+					glLineWidth(1.0);
+					glBegin(GL_LINES);
+						glVertex2f( scaleValue*(cross.x-curDCM.pwidth/2. - 1000*tvec[ 0]), scaleValue*(cross.y-curDCM.pheight/2. - 1000*tvec[ 1]));
+						glVertex2f( scaleValue*(cross.x-curDCM.pwidth/2. + 1000*tvec[ 0]), scaleValue*(cross.y-curDCM.pheight/2. + 1000*tvec[ 1]));
+					glEnd();
+				}
+			}
+
+			NSPoint crossB = cross;
+
+			crossB.x -= curDCM.pwidth/2.;
+			crossB.y -= curDCM.pheight/2.;
+			
+			crossB.x *=scaleValue;
+			crossB.y *=scaleValue;
+			
+			glColor3f (1.0f, 0.0f, 0.0f);
+			
+	//		if( [stringID isEqualToString:@"Perpendicular"])
+	//		{
+	//			glLineWidth(2.0);
+	//			glBegin(GL_LINES);
+	//				glVertex2f( crossB.x-BS, crossB.y);
+	//				glVertex2f(  crossB.x+BS, crossB.y);
+	//				
+	//				glVertex2f( crossB.x, crossB.y-BS);
+	//				glVertex2f(  crossB.x, crossB.y+BS);
+	//			glEnd();
+	//		}
+	//		else
+			{
+				glLineWidth(2.0);
 //					glBegin(GL_LINE_LOOP);
 //						glVertex2f( crossB.x-BS, crossB.y-BS);
 //						glVertex2f( crossB.x+BS, crossB.y-BS);
@@ -6608,252 +6611,235 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //						glVertex2f( crossB.x-BS, crossB.y+BS);
 //						glVertex2f( crossB.x-BS, crossB.y-BS);
 //					glEnd();
-					
-					glBegin(GL_LINE_LOOP);
-					
-					#define CIRCLERESOLUTION 20
-					for( long i = 0; i < CIRCLERESOLUTION ; i++ ) {
-					  float alpha = i * 2 * M_PI /CIRCLERESOLUTION;
-					  glVertex2f( crossB.x + BS*cos(alpha), crossB.y + BS*sin(alpha)/curDCM.pixelRatio);
-					}
-
-					glEnd();
-				}
-				glLineWidth(1.0);
 				
-				glColor3f (0.0f, 0.0f, 0.0f);
-				
-				glDisable(GL_LINE_SMOOTH);
-				glDisable(GL_POLYGON_SMOOTH);
-				glDisable(GL_POINT_SMOOTH);
-				glDisable(GL_BLEND);
-			}
-			
-			// highlight the visible part of the view (the part visible through iChat)
-			if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView && iChatWidth>0 && iChatHeight>0)
-			{
-				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
-				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
-				NSPoint topLeft;
-				topLeft.x = drawingFrameRect.size.width/2 - iChatWidth/2.0;
-				topLeft.y = drawingFrameRect.size.height/2 - iChatHeight/2.0;
-					
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				glEnable(GL_BLEND);
-				
-				glColor4f (0.0f, 0.0f, 0.0f, 0.7f);
-				glLineWidth(1.0);
-				glBegin(GL_QUADS);
-					glVertex2f(0.0, 0.0);
-					glVertex2f(0.0, topLeft.y);
-					glVertex2f(drawingFrameRect.size.width, topLeft.y);
-					glVertex2f(drawingFrameRect.size.width, 0.0);
-				glEnd();
-
-				glBegin(GL_QUADS);
-					glVertex2f(0.0, topLeft.y);
-					glVertex2f(topLeft.x, topLeft.y);
-					glVertex2f(topLeft.x, topLeft.y+iChatHeight);
-					glVertex2f(0.0, topLeft.y+iChatHeight);
-				glEnd();
-
-				glBegin(GL_QUADS);
-					glVertex2f(topLeft.x+iChatWidth, topLeft.y);
-					glVertex2f(drawingFrameRect.size.width, topLeft.y);
-					glVertex2f(drawingFrameRect.size.width, topLeft.y+iChatHeight);
-					glVertex2f(topLeft.x+iChatWidth, topLeft.y+iChatHeight);
-				glEnd();
-
-				glBegin(GL_QUADS);
-					glVertex2f(0.0, topLeft.y+iChatHeight);
-					glVertex2f(drawingFrameRect.size.width, topLeft.y+iChatHeight);
-					glVertex2f(drawingFrameRect.size.width, drawingFrameRect.size.height);
-					glVertex2f(0.0, drawingFrameRect.size.height);
-				glEnd();
-
-				glColor4f (1.0f, 1.0f, 1.0f, 0.8f);
 				glBegin(GL_LINE_LOOP);
-					glVertex2f(topLeft.x, topLeft.y);
-					glVertex2f(topLeft.x, topLeft.y+iChatHeight);
-					glVertex2f(topLeft.x+iChatWidth, topLeft.y+iChatHeight);
-					glVertex2f(topLeft.x+iChatWidth, topLeft.y);
+				
+				#define CIRCLERESOLUTION 20
+				for( long i = 0; i < CIRCLERESOLUTION ; i++ ) {
+				  float alpha = i * 2 * M_PI /CIRCLERESOLUTION;
+				  glVertex2f( crossB.x + BS*cos(alpha), crossB.y + BS*sin(alpha)/curDCM.pixelRatio);
+				}
+
 				glEnd();
+			}
+			glLineWidth(1.0);
+			
+			glColor3f (0.0f, 0.0f, 0.0f);
+			
+			glDisable(GL_LINE_SMOOTH);
+			glDisable(GL_POLYGON_SMOOTH);
+			glDisable(GL_POINT_SMOOTH);
+			glDisable(GL_BLEND);
+		}
+		
+		// highlight the visible part of the view (the part visible through iChat)
+		if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView && iChatWidth>0 && iChatHeight>0)
+		{
+			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
+			glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
+			NSPoint topLeft;
+			topLeft.x = drawingFrameRect.size.width/2 - iChatWidth/2.0;
+			topLeft.y = drawingFrameRect.size.height/2 - iChatHeight/2.0;
+				
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glEnable(GL_BLEND);
+			
+			glColor4f (0.0f, 0.0f, 0.0f, 0.7f);
+			glLineWidth(1.0);
+			glBegin(GL_QUADS);
+				glVertex2f(0.0, 0.0);
+				glVertex2f(0.0, topLeft.y);
+				glVertex2f(drawingFrameRect.size.width, topLeft.y);
+				glVertex2f(drawingFrameRect.size.width, 0.0);
+			glEnd();
+
+			glBegin(GL_QUADS);
+				glVertex2f(0.0, topLeft.y);
+				glVertex2f(topLeft.x, topLeft.y);
+				glVertex2f(topLeft.x, topLeft.y+iChatHeight);
+				glVertex2f(0.0, topLeft.y+iChatHeight);
+			glEnd();
+
+			glBegin(GL_QUADS);
+				glVertex2f(topLeft.x+iChatWidth, topLeft.y);
+				glVertex2f(drawingFrameRect.size.width, topLeft.y);
+				glVertex2f(drawingFrameRect.size.width, topLeft.y+iChatHeight);
+				glVertex2f(topLeft.x+iChatWidth, topLeft.y+iChatHeight);
+			glEnd();
+
+			glBegin(GL_QUADS);
+				glVertex2f(0.0, topLeft.y+iChatHeight);
+				glVertex2f(drawingFrameRect.size.width, topLeft.y+iChatHeight);
+				glVertex2f(drawingFrameRect.size.width, drawingFrameRect.size.height);
+				glVertex2f(0.0, drawingFrameRect.size.height);
+			glEnd();
+
+			glColor4f (1.0f, 1.0f, 1.0f, 0.8f);
+			glBegin(GL_LINE_LOOP);
+				glVertex2f(topLeft.x, topLeft.y);
+				glVertex2f(topLeft.x, topLeft.y+iChatHeight);
+				glVertex2f(topLeft.x+iChatWidth, topLeft.y+iChatHeight);
+				glVertex2f(topLeft.x+iChatWidth, topLeft.y);
+			glEnd();
+			
+			glLineWidth(1.0);
+			glDisable(GL_BLEND);
+			
+			// label
+			NSPoint iChatTheatreSharedViewLabelPosition;
+			iChatTheatreSharedViewLabelPosition.x = drawingFrameRect.size.width/2.0;
+			iChatTheatreSharedViewLabelPosition.y = topLeft.y;
+
+			[self DrawNSStringGL:NSLocalizedString(@"iChat Theatre shared view", nil) :fontListGL :iChatTheatreSharedViewLabelPosition.x :iChatTheatreSharedViewLabelPosition.y align:DCMViewTextAlignCenter useStringTexture:YES];
+		}
+		
+		// ***********************
+		// DRAW CLUT BARS ********
+		
+		if( [self is2DViewer] == YES && annotations != annotNone && ctx!=_alternateContext)
+		{
+			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+			glScalef (2.0f /(drawingFrameRect.size.width), -2.0f / (drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
+
+			if( clutBars == barOrigin || clutBars == barBoth) {
+				float			heighthalf = drawingFrameRect.size.height/2 - 1;
+				float			widthhalf = drawingFrameRect.size.width/2 - 1;
+				long			yRaster = 1, xRaster, i;
+				NSString		*tempString = 0L;
+				
+				//#define BARPOSX1 50.f
+				//#define BARPOSX2 20.f
+				
+				#define BARPOSX1 62.f
+				#define BARPOSX2 32.f
+				
+				heighthalf = 0;
+				
+//					glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+//					glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f);
 				
 				glLineWidth(1.0);
-				glDisable(GL_BLEND);
+				glBegin(GL_LINES);
+				for( long i = 0; i < 256; i++ ) {
+					glColor3ub ( redTable[ i], greenTable[ i], blueTable[ i]);
+					
+					glVertex2f(  widthhalf - BARPOSX1, heighthalf - (-128.f + i));
+					glVertex2f(  widthhalf - BARPOSX2, heighthalf - (-128.f + i));
+				}
+				glColor3ub ( 128, 128, 128);
+				glVertex2f(  widthhalf - BARPOSX1, heighthalf - -128.f);		glVertex2f(  widthhalf - BARPOSX2 , heighthalf - -128.f);
+				glVertex2f(  widthhalf - BARPOSX1, heighthalf - 127.f);			glVertex2f(  widthhalf - BARPOSX2 , heighthalf - 127.f);
+				glVertex2f(  widthhalf - BARPOSX1, heighthalf - -128.f);		glVertex2f(  widthhalf - BARPOSX1, heighthalf - 127.f);
+				glVertex2f(  widthhalf - BARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  widthhalf - BARPOSX2, heighthalf - 127.f);
+				glEnd();
 				
-				// label
-				NSPoint iChatTheatreSharedViewLabelPosition;
-				iChatTheatreSharedViewLabelPosition.x = drawingFrameRect.size.width/2.0;
-				iChatTheatreSharedViewLabelPosition.y = topLeft.y;
-
-				[self DrawNSStringGL:NSLocalizedString(@"iChat Theatre shared view", nil) :fontListGL :iChatTheatreSharedViewLabelPosition.x :iChatTheatreSharedViewLabelPosition.y align:DCMViewTextAlignCenter useStringTexture:YES];
-			}
+				if( curWW < 50 ) {
+					tempString = [NSString stringWithFormat: @"%0.4f", curWL - curWW/2];
+					[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
+					
+					tempString = [NSString stringWithFormat: @"%0.4f", curWL];
+					[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
+					
+					tempString = [NSString stringWithFormat: @"%0.4f", curWL + curWW/2];
+					[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
+				}
+				else {
+					tempString = [NSString stringWithFormat: @"%0.0f", curWL - curWW/2];
+					[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
+					
+					tempString = [NSString stringWithFormat: @"%0.0f", curWL];
+					[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
+					
+					tempString = [NSString stringWithFormat: @"%0.0f", curWL + curWW/2];
+					[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
+				}
+			} //clutBars == barOrigin || clutBars == barBoth
 			
-			// ***********************
-			// DRAW CLUT BARS ********
-			
-			if( [self is2DViewer] == YES && annotations != annotNone && ctx!=_alternateContext)
-			{
-				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-				glScalef (2.0f /(drawingFrameRect.size.width), -2.0f / (drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
-
-				if( clutBars == barOrigin || clutBars == barBoth) {
+			if( blendingView ) {
+				if( clutBars == barFused || clutBars == barBoth) {
+					unsigned char	*bred, *bgreen, *bblue;
 					float			heighthalf = drawingFrameRect.size.height/2 - 1;
 					float			widthhalf = drawingFrameRect.size.width/2 - 1;
 					long			yRaster = 1, xRaster, i;
+					float			bwl, bww;
 					NSString		*tempString = 0L;
 					
-					//#define BARPOSX1 50.f
-					//#define BARPOSX2 20.f
+					if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"]) {
+						bred = PETredTable;
+						bgreen = PETgreenTable;
+						bblue = PETblueTable;
+					}
+					else [blendingView getCLUT:&bred :&bgreen :&bblue];
 					
-					#define BARPOSX1 62.f
-					#define BARPOSX2 32.f
+					#define BBARPOSX1 55.f
+					#define BBARPOSX2 25.f
 					
 					heighthalf = 0;
 					
-//					glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-//					glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f);
+//						glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+//						glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f);
 					
 					glLineWidth(1.0);
 					glBegin(GL_LINES);
 					for( long i = 0; i < 256; i++ ) {
-						glColor3ub ( redTable[ i], greenTable[ i], blueTable[ i]);
+						glColor3ub ( bred[ i], bgreen[ i], bblue[ i]);
 						
-						glVertex2f(  widthhalf - BARPOSX1, heighthalf - (-128.f + i));
-						glVertex2f(  widthhalf - BARPOSX2, heighthalf - (-128.f + i));
+						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - (-128.f + i));
+						glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - (-128.f + i));
 					}
 					glColor3ub ( 128, 128, 128);
-					glVertex2f(  widthhalf - BARPOSX1, heighthalf - -128.f);		glVertex2f(  widthhalf - BARPOSX2 , heighthalf - -128.f);
-					glVertex2f(  widthhalf - BARPOSX1, heighthalf - 127.f);			glVertex2f(  widthhalf - BARPOSX2 , heighthalf - 127.f);
-					glVertex2f(  widthhalf - BARPOSX1, heighthalf - -128.f);		glVertex2f(  widthhalf - BARPOSX1, heighthalf - 127.f);
-					glVertex2f(  widthhalf - BARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  widthhalf - BARPOSX2, heighthalf - 127.f);
+					glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - -128.f);
+					glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - 127.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - 127.f);
+					glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - 127.f);
+					glVertex2f(  -widthhalf + BBARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - 127.f);
 					glEnd();
 					
-					if( curWW < 50 ) {
-						tempString = [NSString stringWithFormat: @"%0.4f", curWL - curWW/2];
-						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
+					[blendingView getWLWW: &bwl :&bww];
+					
+					if( curWW < 50) {
+						tempString = [NSString stringWithFormat: @"%0.4f", bwl - bww/2];
+						[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
 						
-						tempString = [NSString stringWithFormat: @"%0.4f", curWL];
-						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
+						tempString = [NSString stringWithFormat: @"%0.4f", bwl];
+						[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
 						
-						tempString = [NSString stringWithFormat: @"%0.4f", curWL + curWW/2];
-						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
+						tempString = [NSString stringWithFormat: @"%0.4f", bwl + bww/2];
+						[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
 					}
 					else {
-						tempString = [NSString stringWithFormat: @"%0.0f", curWL - curWW/2];
-						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
+						tempString = [NSString stringWithFormat: @"%0.0f", bwl - bww/2];
+						[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
 						
-						tempString = [NSString stringWithFormat: @"%0.0f", curWL];
-						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
+						tempString = [NSString stringWithFormat: @"%0.0f", bwl];
+						[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
 						
-						tempString = [NSString stringWithFormat: @"%0.0f", curWL + curWW/2];
-						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
+						tempString = [NSString stringWithFormat: @"%0.0f", bwl + bww/2];
+						[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
 					}
-				} //clutBars == barOrigin || clutBars == barBoth
-				
-				if( blendingView ) {
-					if( clutBars == barFused || clutBars == barBoth) {
-						unsigned char	*bred, *bgreen, *bblue;
-						float			heighthalf = drawingFrameRect.size.height/2 - 1;
-						float			widthhalf = drawingFrameRect.size.width/2 - 1;
-						long			yRaster = 1, xRaster, i;
-						float			bwl, bww;
-						NSString		*tempString = 0L;
-						
-						if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"]) {
-							bred = PETredTable;
-							bgreen = PETgreenTable;
-							bblue = PETblueTable;
-						}
-						else [blendingView getCLUT:&bred :&bgreen :&bblue];
-						
-						#define BBARPOSX1 55.f
-						#define BBARPOSX2 25.f
-						
-						heighthalf = 0;
-						
-//						glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-//						glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f);
-						
-						glLineWidth(1.0);
-						glBegin(GL_LINES);
-						for( long i = 0; i < 256; i++ ) {
-							glColor3ub ( bred[ i], bgreen[ i], bblue[ i]);
-							
-							glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - (-128.f + i));
-							glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - (-128.f + i));
-						}
-						glColor3ub ( 128, 128, 128);
-						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - -128.f);
-						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - 127.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - 127.f);
-						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - 127.f);
-						glVertex2f(  -widthhalf + BBARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - 127.f);
-						glEnd();
-						
-						[blendingView getWLWW: &bwl :&bww];
-						
-						if( curWW < 50) {
-							tempString = [NSString stringWithFormat: @"%0.4f", bwl - bww/2];
-							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
-							
-							tempString = [NSString stringWithFormat: @"%0.4f", bwl];
-							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
-							
-							tempString = [NSString stringWithFormat: @"%0.4f", bwl + bww/2];
-							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
-						}
-						else {
-							tempString = [NSString stringWithFormat: @"%0.0f", bwl - bww/2];
-							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
-							
-							tempString = [NSString stringWithFormat: @"%0.0f", bwl];
-							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
-							
-							tempString = [NSString stringWithFormat: @"%0.0f", bwl + bww/2];
-							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
-						}
-					}
-				} //blendingView
-			} //[self is2DViewer] == YES
+				}
+			} //blendingView
+		} //[self is2DViewer] == YES
 
+		
+		if (annotations != annotNone)
+		{
+			long yRaster = 1, xRaster;
+			char cstr [400], *cptr;
 			
-			if (annotations != annotNone)
-			{
-				long yRaster = 1, xRaster;
-				char cstr [400], *cptr;
-				
-				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-				glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
+			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+			glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
 
-				//FRAME RECT IF MORE THAN 1 WINDOW and IF THIS WINDOW IS THE FRONTMOST
-				if(( numberOf2DViewer > 1 && [self is2DViewer] == YES && stringID == 0L) || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
-				{	// draw line around key View
-					if( [[self window] isMainWindow] && isKeyView && ctx!=_alternateContext) {
-						float heighthalf = drawingFrameRect.size.height/2;
-						float widthhalf = drawingFrameRect.size.width/2;
-						
-						glEnable(GL_BLEND);
-						glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
-						glLineWidth(8.0);
-						glBegin(GL_LINE_LOOP);
-							glVertex2f(  -widthhalf, -heighthalf);
-							glVertex2f(  -widthhalf, heighthalf);
-							glVertex2f(  widthhalf, heighthalf);
-							glVertex2f(  widthhalf, -heighthalf);
-						glEnd();
-						glLineWidth(1.0);
-						glDisable(GL_BLEND);
-					}
-				}  //drawLines for ImageView Frames
-				
-				if ((_imageColumns > 1 || _imageRows > 1) && [self is2DViewer] == YES && stringID == 0L ) {
-					float heighthalf = drawingFrameRect.size.height/2 - 1;
-					float widthhalf = drawingFrameRect.size.width/2 - 1;
+			//FRAME RECT IF MORE THAN 1 WINDOW and IF THIS WINDOW IS THE FRONTMOST
+			if(( numberOf2DViewer > 1 && [self is2DViewer] == YES && stringID == 0L) || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
+			{	// draw line around key View
+				if( [[self window] isMainWindow] && isKeyView && ctx!=_alternateContext) {
+					float heighthalf = drawingFrameRect.size.height/2;
+					float widthhalf = drawingFrameRect.size.width/2;
 					
-					glColor3f (0.5f, 0.5f, 0.5f);
-					glLineWidth(1.0);
+					glEnable(GL_BLEND);
+					glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
+					glLineWidth(8.0);
 					glBegin(GL_LINE_LOOP);
 						glVertex2f(  -widthhalf, -heighthalf);
 						glVertex2f(  -widthhalf, heighthalf);
@@ -6861,342 +6847,359 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						glVertex2f(  widthhalf, -heighthalf);
 					glEnd();
 					glLineWidth(1.0);
-					if (isKeyView && [[self window] isMainWindow]) {
-						float heighthalf = drawingFrameRect.size.height/2 - 1;
-						float widthhalf = drawingFrameRect.size.width/2 - 1;
-						
-						glColor3f (1.0f, 0.0f, 0.0f);
-						glLineWidth(2.0);
-						glBegin(GL_LINE_LOOP);
-							glVertex2f(  -widthhalf, -heighthalf);
-							glVertex2f(  -widthhalf, heighthalf);
-							glVertex2f(  widthhalf, heighthalf);
-							glVertex2f(  widthhalf, -heighthalf);
-						glEnd();
-						glLineWidth(1.0);
-					}
-				}
-				
-				glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
-				glTranslatef( origin.x + originOffset.x, -origin.y - originOffset.y, 0.0f);
-				glScalef( 1.f, curDCM.pixelRatio, 1.f);
-				
-				// Draw ROIs
-				BOOL drawROI = NO;
-				
-				if( [self is2DViewer] == YES) drawROI = [[[self windowController] roiLock] tryLock];
-				else drawROI = YES;
-				
-				if( drawROI ) {
-					BOOL resetData = NO;
-					if(_imageColumns > 1 || _imageRows > 1) resetData = YES;	//For alias ROIs
-					
-					NSSortDescriptor * roiSorting = [[[NSSortDescriptor alloc] initWithKey:@"uniqueID" ascending:NO] autorelease];
-					
-					rectArray = [[NSMutableArray alloc] initWithCapacity: [curRoiList count]];
-
-					for( int i = [curRoiList count]-1; i >= 0; i--) {
-						if( resetData) [[curRoiList objectAtIndex:i] recompute];
-						[[curRoiList objectAtIndex:i] setRoiFont: labelFontListGL :labelFontListGLSize :self];
-						[[curRoiList objectAtIndex:i] drawROI: scaleValue : curDCM.pwidth / 2. : curDCM.pheight / 2. : curDCM.pixelSpacingX : curDCM.pixelSpacingY];
-					}
-					
-					
-					if ( !suppress_labels ) {
-						NSArray	*sortedROIs = [curRoiList sortedArrayUsingDescriptors: [NSArray arrayWithObject: roiSorting]];
-						for( int i = [sortedROIs count]-1; i>=0; i-- ) [[sortedROIs objectAtIndex:i] drawTextualData];
-					}
-					
-					[rectArray release];
-					rectArray = 0L;
-				}
-				
-				if( drawROI && [self is2DViewer] == YES) [[[self windowController] roiLock] unlock];
-				
-				// Draw 2D point cross (used when double-click in 3D panel)
-				
-				[self draw2DPointMarker];
-				if( blendingView) [blendingView draw2DPointMarker];
-				
-				// Draw any Plugin objects
-				
-				NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithFloat: scaleValue], @"scaleValue",
-																						[NSNumber numberWithFloat: curDCM.pwidth /2. ], @"offsetx",
-																						[NSNumber numberWithFloat: curDCM.pheight /2.], @"offsety",
-																						[NSNumber numberWithFloat: curDCM.pixelSpacingX], @"spacingX",
-																						[NSNumber numberWithFloat: curDCM.pixelSpacingY], @"spacingY",
-																						0L];
-				
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawObjects" object: self userInfo: userInfo];
-				
-				//**SLICE CUR FOR 3D MPR
-				if( stringID ) {
-					if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) {
-						[self subDrawRect: aRect];
-						self.scaleValue = scaleValue;
-					}
-				}
-				
-				//** SLICE CUT BETWEEN SERIES
-				
-				if( stringID == 0L) {
-					glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-					glEnable(GL_BLEND);
-					glEnable(GL_POINT_SMOOTH);
-					glEnable(GL_LINE_SMOOTH);
-					glEnable(GL_POLYGON_SMOOTH);
-
-					if( sliceVector[ 0] != 0 | sliceVector[ 1] != 0  | sliceVector[ 2] != 0 ) {
-						glColor3f (0.0f, 0.6f, 0.0f);
-						glLineWidth(2.0);
-						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(slicePoint[ 0] - 10000*sliceVector[ 0]), scaleValue*(slicePoint[ 1] - 10000*sliceVector[ 1]));
-							glVertex2f( scaleValue*(slicePoint[ 0] + 10000*sliceVector[ 0]), scaleValue*(slicePoint[ 1] + 10000*sliceVector[ 1]));
-						glEnd();
-						glLineWidth(1.0);
-						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(slicePointI[ 0] - 10000*sliceVector[ 0]), scaleValue*(slicePointI[ 1] - 10000*sliceVector[ 1]));
-							glVertex2f( scaleValue*(slicePointI[ 0] + 10000*sliceVector[ 0]), scaleValue*(slicePointI[ 1] + 10000*sliceVector[ 1]));
-						glEnd();
-						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(slicePointO[ 0] - 10000*sliceVector[ 0]), scaleValue*(slicePointO[ 1] - 10000*sliceVector[ 1]));
-							glVertex2f( scaleValue*(slicePointO[ 0] + 10000*sliceVector[ 0]), scaleValue*(slicePointO[ 1] + 10000*sliceVector[ 1]));
-						glEnd();
-					}
-					
-					if( slicePoint3D[ 0] != 0 | slicePoint3D[ 1] != 0  | slicePoint3D[ 2] != 0 ) {
-						float vectorP[ 9], tempPoint3D[ 3], rotateVector[ 2];
-						
-					//	glColor3f (0.6f, 0.0f, 0.0f);
-						
-						[curDCM orientation: vectorP];
-						
-						glLineWidth(2.0);
-						
-					//	NSLog(@"Before: %2.2f / %2.2f / %2.2f", slicePoint3D[ 0], slicePoint3D[ 1], slicePoint3D[ 2]);
-						
-						slicePoint3D[ 0] -= curDCM.originX;
-						slicePoint3D[ 1] -= curDCM.originY;
-						slicePoint3D[ 2] -= curDCM.originZ;
-						
-						tempPoint3D[ 0] = slicePoint3D[ 0] * vectorP[ 0] + slicePoint3D[ 1] * vectorP[ 1] + slicePoint3D[ 2] * vectorP[ 2];
-						tempPoint3D[ 1] = slicePoint3D[ 0] * vectorP[ 3] + slicePoint3D[ 1] * vectorP[ 4] + slicePoint3D[ 2] * vectorP[ 5];
-						tempPoint3D[ 2] = slicePoint3D[ 0] * vectorP[ 6] + slicePoint3D[ 1] * vectorP[ 7] + slicePoint3D[ 2] * vectorP[ 8];
-						
-						slicePoint3D[ 0] += curDCM.originX;
-						slicePoint3D[ 1] += curDCM.originY;
-						slicePoint3D[ 2] += curDCM.originZ;
-						
-					//	NSLog(@"After: %2.2f / %2.2f / %2.2f", tempPoint3D[ 0], tempPoint3D[ 1], tempPoint3D[ 2]);
-						
-						tempPoint3D[0] /= curDCM.pixelSpacingX;
-						tempPoint3D[1] /= curDCM.pixelSpacingY;
-						
-						tempPoint3D[0] -= curDCM.pwidth * 0.5f;
-						tempPoint3D[1] -= curDCM.pheight * 0.5f;
-						
-						if( sliceVector[ 0] != 0 | sliceVector[ 1] != 0  | sliceVector[ 2] != 0 ) {
-							rotateVector[ 0] = sliceVector[ 1];
-							rotateVector[ 1] = -sliceVector[ 0];
-							
-							glBegin(GL_LINES);
-							glVertex2f( scaleValue*(tempPoint3D[ 0]-20/curDCM.pixelSpacingX *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]-20/curDCM.pixelSpacingY*(rotateVector[ 1])));
-							glVertex2f( scaleValue*(tempPoint3D[ 0]+20/curDCM.pixelSpacingX *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]+20/curDCM.pixelSpacingY*(rotateVector[ 1])));
-							glEnd();
-						}
-						else {
-							glColor3f (0.0f, 0.6f, 0.0f);
-							glLineWidth(2.0);
-							
-							glBegin(GL_LINES);
-								glVertex2f( scaleValue*(tempPoint3D[ 0]-20/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
-								glVertex2f( scaleValue*(tempPoint3D[ 0]+20/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
-								
-								glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]-20/curDCM.pixelSpacingY));
-								glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]+20/curDCM.pixelSpacingY));
-							glEnd();
-						}
-						
-						
-						
-						glLineWidth(1.0);
-					}
-					
-					if( sliceVector2[ 0] != 0 | sliceVector2[ 1] != 0  | sliceVector2[ 2] != 0 ) {
-						glColor3f (0.0f, 0.6f, 0.0f);
-						glLineWidth(2.0);
-						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(slicePoint2[ 0] - 10000*sliceVector2[ 0]), scaleValue*(slicePoint2[ 1] - 10000*sliceVector2[ 1]));
-							glVertex2f( scaleValue*(slicePoint2[ 0] + 10000*sliceVector2[ 0]), scaleValue*(slicePoint2[ 1] + 10000*sliceVector2[ 1]));
-						glEnd();
-						glLineWidth(1.0);
-						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(slicePointI2[ 0] - 10000*sliceVector2[ 0]), scaleValue*(slicePointI2[ 1] - 10000*sliceVector2[ 1]));
-							glVertex2f( scaleValue*(slicePointI2[ 0] + 10000*sliceVector2[ 0]), scaleValue*(slicePointI2[ 1] + 10000*sliceVector2[ 1]));
-						glEnd();
-						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(slicePointO2[ 0] - 10000*sliceVector2[ 0]), scaleValue*(slicePointO2[ 1] - 10000*sliceVector2[ 1]));
-							glVertex2f( scaleValue*(slicePointO2[ 0] + 10000*sliceVector2[ 0]), scaleValue*(slicePointO2[ 1] + 10000*sliceVector2[ 1]));
-						glEnd();
-					}
-					
-					glDisable(GL_LINE_SMOOTH);
-					glDisable(GL_POLYGON_SMOOTH);
-					glDisable(GL_POINT_SMOOTH);
 					glDisable(GL_BLEND);
 				}
+			}  //drawLines for ImageView Frames
+			
+			if ((_imageColumns > 1 || _imageRows > 1) && [self is2DViewer] == YES && stringID == 0L ) {
+				float heighthalf = drawingFrameRect.size.height/2 - 1;
+				float widthhalf = drawingFrameRect.size.width/2 - 1;
 				
-				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
-				
-				glColor3f (0.0f, 1.0f, 0.0f);
-				
-				 if( annotations >= annotBase) {
-					//** PIXELSPACING LINES
-					float yOffset = 24;
-					float xOffset = 32;
-					//float xOffset = 10;
-					//float yOffset = 12;
-					glBegin(GL_LINES);
-					if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingX * 1000.0 < 1) {
-						
-						glVertex2f(scaleValue  * (-0.02/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset); 
-						glVertex2f(scaleValue  * (0.02/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset);
-
-						glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (-0.02/curDCM.pixelSpacingY*curDCM.pixelRatio)); 
-						glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (0.02/curDCM.pixelSpacingY*curDCM.pixelRatio));
-
-						for ( short i = -20; i<=20; i++ ) {
-							short length = ( i % 10 == 0 )? 10 : 5;
-
-						
-							glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset);
-							glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset - length);
-							
-							glVertex2f(-drawingFrameRect.size.width/2 + xOffset +  length,  i* scaleValue *0.001/curDCM.pixelSpacingY*curDCM.pixelRatio);
-							glVertex2f(-drawingFrameRect.size.width/2 + xOffset,  i* scaleValue * 0.001/curDCM.pixelSpacingY*curDCM.pixelRatio);
-						}
-					}
-					else if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0) {
-						glVertex2f(scaleValue  * (-50/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset); 
-						glVertex2f(scaleValue  * (50/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset);
-						
-						glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (-50/curDCM.pixelSpacingY*curDCM.pixelRatio)); 
-						glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (50/curDCM.pixelSpacingY*curDCM.pixelRatio));
-
-						for ( short i = -5; i<=5; i++ ) {
-							short length = (i % 5 == 0) ? 10 : 5;
-						
-							glVertex2f(i*scaleValue *10/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset);
-							glVertex2f(i*scaleValue *10/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset - length);
-							
-							glVertex2f(-drawingFrameRect.size.width/2 + xOffset +  length,  i* scaleValue *10/curDCM.pixelSpacingY*curDCM.pixelRatio);
-							glVertex2f(-drawingFrameRect.size.width/2 + xOffset,  i* scaleValue * 10/curDCM.pixelSpacingY*curDCM.pixelRatio);
-						}
-					}
+				glColor3f (0.5f, 0.5f, 0.5f);
+				glLineWidth(1.0);
+				glBegin(GL_LINE_LOOP);
+					glVertex2f(  -widthhalf, -heighthalf);
+					glVertex2f(  -widthhalf, heighthalf);
+					glVertex2f(  widthhalf, heighthalf);
+					glVertex2f(  widthhalf, -heighthalf);
+				glEnd();
+				glLineWidth(1.0);
+				if (isKeyView && [[self window] isMainWindow]) {
+					float heighthalf = drawingFrameRect.size.height/2 - 1;
+					float widthhalf = drawingFrameRect.size.width/2 - 1;
+					
+					glColor3f (1.0f, 0.0f, 0.0f);
+					glLineWidth(2.0);
+					glBegin(GL_LINE_LOOP);
+						glVertex2f(  -widthhalf, -heighthalf);
+						glVertex2f(  -widthhalf, heighthalf);
+						glVertex2f(  widthhalf, heighthalf);
+						glVertex2f(  widthhalf, -heighthalf);
 					glEnd();
-					
-					[self drawTextualData: drawingFrameRect :annotations];
-					
-				} //annotations >= annotBase
-			} //Annotation  != None
-				
-			if(repulsorRadius != 0) {
-				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
-				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
-				
-				[self drawRepulsorToolArea];
+					glLineWidth(1.0);
+				}
 			}
 			
-			if(ROISelectorStartPoint.x!=ROISelectorEndPoint.x || ROISelectorStartPoint.y!=ROISelectorEndPoint.y) {
-				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
-				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
-				
-				[self drawROISelectorRegion];
-			}			
+			glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+			glTranslatef( origin.x + originOffset.x, -origin.y - originOffset.y, 0.0f);
+			glScalef( 1.f, curDCM.pixelRatio, 1.f);
 			
-			if(ctx == _alternateContext && [[NSApplication sharedApplication] isActive]) // iChat Theatre context
-			{
-				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
-				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
-									
-				NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
+			// Draw ROIs
+			BOOL drawROI = NO;
+			
+			if( [self is2DViewer] == YES) drawROI = [[[self windowController] roiLock] tryLock];
+			else drawROI = YES;
+			
+			if( drawROI ) {
+				BOOL resetData = NO;
+				if(_imageColumns > 1 || _imageRows > 1) resetData = YES;	//For alias ROIs
 				
-				// location of the mouse in the OsiriX View
-				eventLocation = [self convertPoint:eventLocation fromView:nil];
-				eventLocation.y = [self frame].size.height - eventLocation.y;
+				NSSortDescriptor * roiSorting = [[[NSSortDescriptor alloc] initWithKey:@"uniqueID" ascending:NO] autorelease];
 				
-				NSSize iChatTheatreViewSize = aRect.size;
+				rectArray = [[NSMutableArray alloc] initWithCapacity: [curRoiList count]];
 
-				// location of the mouse in the iChat Theatre View			
-				eventLocation = [self convertFromView2iChat:eventLocation];
+				for( int i = [curRoiList count]-1; i >= 0; i--) {
+					if( resetData) [[curRoiList objectAtIndex:i] recompute];
+					[[curRoiList objectAtIndex:i] setRoiFont: labelFontListGL :labelFontListGLSize :self];
+					[[curRoiList objectAtIndex:i] drawROI: scaleValue : curDCM.pwidth / 2. : curDCM.pheight / 2. : curDCM.pixelSpacingX : curDCM.pixelSpacingY];
+				}
 				
-				// generate iChat cursor Texture Buffer (only once)
-				if(!iChatCursorTextureBuffer) {
-					NSLog(@"generate iChatCursor Texture Buffer");
-					NSImage *iChatCursorImage;
-					if (iChatCursorImage = [[NSCursor pointingHandCursor] image]) {
-						iChatCursorHotSpot = [[NSCursor pointingHandCursor] hotSpot];
-						iChatCursorImageSize = [iChatCursorImage size];
+				
+				if ( !suppress_labels ) {
+					NSArray	*sortedROIs = [curRoiList sortedArrayUsingDescriptors: [NSArray arrayWithObject: roiSorting]];
+					for( int i = [sortedROIs count]-1; i>=0; i-- ) [[sortedROIs objectAtIndex:i] drawTextualData];
+				}
+				
+				[rectArray release];
+				rectArray = 0L;
+			}
+			
+			if( drawROI && [self is2DViewer] == YES) [[[self windowController] roiLock] unlock];
+			
+			// Draw 2D point cross (used when double-click in 3D panel)
+			
+			[self draw2DPointMarker];
+			if( blendingView) [blendingView draw2DPointMarker];
+			
+			// Draw any Plugin objects
+			
+			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithFloat: scaleValue], @"scaleValue",
+																					[NSNumber numberWithFloat: curDCM.pwidth /2. ], @"offsetx",
+																					[NSNumber numberWithFloat: curDCM.pheight /2.], @"offsety",
+																					[NSNumber numberWithFloat: curDCM.pixelSpacingX], @"spacingX",
+																					[NSNumber numberWithFloat: curDCM.pixelSpacingY], @"spacingY",
+																					0L];
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawObjects" object: self userInfo: userInfo];
+			
+			//**SLICE CUR FOR 3D MPR
+			if( stringID ) {
+				if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) {
+					[self subDrawRect: aRect];
+					self.scaleValue = scaleValue;
+				}
+			}
+			
+			//** SLICE CUT BETWEEN SERIES
+			
+			if( stringID == 0L) {
+				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+				glEnable(GL_BLEND);
+				glEnable(GL_POINT_SMOOTH);
+				glEnable(GL_LINE_SMOOTH);
+				glEnable(GL_POLYGON_SMOOTH);
+
+				if( sliceVector[ 0] != 0 | sliceVector[ 1] != 0  | sliceVector[ 2] != 0 ) {
+					glColor3f (0.0f, 0.6f, 0.0f);
+					glLineWidth(2.0);
+					glBegin(GL_LINES);
+						glVertex2f( scaleValue*(slicePoint[ 0] - 10000*sliceVector[ 0]), scaleValue*(slicePoint[ 1] - 10000*sliceVector[ 1]));
+						glVertex2f( scaleValue*(slicePoint[ 0] + 10000*sliceVector[ 0]), scaleValue*(slicePoint[ 1] + 10000*sliceVector[ 1]));
+					glEnd();
+					glLineWidth(1.0);
+					glBegin(GL_LINES);
+						glVertex2f( scaleValue*(slicePointI[ 0] - 10000*sliceVector[ 0]), scaleValue*(slicePointI[ 1] - 10000*sliceVector[ 1]));
+						glVertex2f( scaleValue*(slicePointI[ 0] + 10000*sliceVector[ 0]), scaleValue*(slicePointI[ 1] + 10000*sliceVector[ 1]));
+					glEnd();
+					glBegin(GL_LINES);
+						glVertex2f( scaleValue*(slicePointO[ 0] - 10000*sliceVector[ 0]), scaleValue*(slicePointO[ 1] - 10000*sliceVector[ 1]));
+						glVertex2f( scaleValue*(slicePointO[ 0] + 10000*sliceVector[ 0]), scaleValue*(slicePointO[ 1] + 10000*sliceVector[ 1]));
+					glEnd();
+				}
+				
+				if( slicePoint3D[ 0] != 0 | slicePoint3D[ 1] != 0  | slicePoint3D[ 2] != 0 ) {
+					float vectorP[ 9], tempPoint3D[ 3], rotateVector[ 2];
+					
+				//	glColor3f (0.6f, 0.0f, 0.0f);
+					
+					[curDCM orientation: vectorP];
+					
+					glLineWidth(2.0);
+					
+				//	NSLog(@"Before: %2.2f / %2.2f / %2.2f", slicePoint3D[ 0], slicePoint3D[ 1], slicePoint3D[ 2]);
+					
+					slicePoint3D[ 0] -= curDCM.originX;
+					slicePoint3D[ 1] -= curDCM.originY;
+					slicePoint3D[ 2] -= curDCM.originZ;
+					
+					tempPoint3D[ 0] = slicePoint3D[ 0] * vectorP[ 0] + slicePoint3D[ 1] * vectorP[ 1] + slicePoint3D[ 2] * vectorP[ 2];
+					tempPoint3D[ 1] = slicePoint3D[ 0] * vectorP[ 3] + slicePoint3D[ 1] * vectorP[ 4] + slicePoint3D[ 2] * vectorP[ 5];
+					tempPoint3D[ 2] = slicePoint3D[ 0] * vectorP[ 6] + slicePoint3D[ 1] * vectorP[ 7] + slicePoint3D[ 2] * vectorP[ 8];
+					
+					slicePoint3D[ 0] += curDCM.originX;
+					slicePoint3D[ 1] += curDCM.originY;
+					slicePoint3D[ 2] += curDCM.originZ;
+					
+				//	NSLog(@"After: %2.2f / %2.2f / %2.2f", tempPoint3D[ 0], tempPoint3D[ 1], tempPoint3D[ 2]);
+					
+					tempPoint3D[0] /= curDCM.pixelSpacingX;
+					tempPoint3D[1] /= curDCM.pixelSpacingY;
+					
+					tempPoint3D[0] -= curDCM.pwidth * 0.5f;
+					tempPoint3D[1] -= curDCM.pheight * 0.5f;
+					
+					if( sliceVector[ 0] != 0 | sliceVector[ 1] != 0  | sliceVector[ 2] != 0 ) {
+						rotateVector[ 0] = sliceVector[ 1];
+						rotateVector[ 1] = -sliceVector[ 0];
 						
-						NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithData:[iChatCursorImage TIFFRepresentation]]; // [NSBitmapImageRep imageRepWithData: [iChatCursorImage TIFFRepresentation]]
-
-						iChatCursorTextureBuffer = malloc([bitmap bytesPerRow] * iChatCursorImageSize.height);
-						memcpy(iChatCursorTextureBuffer, [bitmap bitmapData], [bitmap bytesPerRow] * iChatCursorImageSize.height);
-
-						[bitmap release];
+						glBegin(GL_LINES);
+						glVertex2f( scaleValue*(tempPoint3D[ 0]-20/curDCM.pixelSpacingX *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]-20/curDCM.pixelSpacingY*(rotateVector[ 1])));
+						glVertex2f( scaleValue*(tempPoint3D[ 0]+20/curDCM.pixelSpacingX *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]+20/curDCM.pixelSpacingY*(rotateVector[ 1])));
+						glEnd();
+					}
+					else {
+						glColor3f (0.0f, 0.6f, 0.0f);
+						glLineWidth(2.0);
 						
-						iChatCursorTextureName = 0L;
-						glGenTextures(1, &iChatCursorTextureName);
-						glBindTexture(GL_TEXTURE_RECTANGLE_EXT, iChatCursorTextureName);
-						glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
-						glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-						glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, iChatCursorImageSize.width, iChatCursorImageSize.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, iChatCursorTextureBuffer);
+						glBegin(GL_LINES);
+							glVertex2f( scaleValue*(tempPoint3D[ 0]-20/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
+							glVertex2f( scaleValue*(tempPoint3D[ 0]+20/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
+							
+							glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]-20/curDCM.pixelSpacingY));
+							glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]+20/curDCM.pixelSpacingY));
+						glEnd();
+					}
+					
+					
+					
+					glLineWidth(1.0);
+				}
+				
+				if( sliceVector2[ 0] != 0 | sliceVector2[ 1] != 0  | sliceVector2[ 2] != 0 ) {
+					glColor3f (0.0f, 0.6f, 0.0f);
+					glLineWidth(2.0);
+					glBegin(GL_LINES);
+						glVertex2f( scaleValue*(slicePoint2[ 0] - 10000*sliceVector2[ 0]), scaleValue*(slicePoint2[ 1] - 10000*sliceVector2[ 1]));
+						glVertex2f( scaleValue*(slicePoint2[ 0] + 10000*sliceVector2[ 0]), scaleValue*(slicePoint2[ 1] + 10000*sliceVector2[ 1]));
+					glEnd();
+					glLineWidth(1.0);
+					glBegin(GL_LINES);
+						glVertex2f( scaleValue*(slicePointI2[ 0] - 10000*sliceVector2[ 0]), scaleValue*(slicePointI2[ 1] - 10000*sliceVector2[ 1]));
+						glVertex2f( scaleValue*(slicePointI2[ 0] + 10000*sliceVector2[ 0]), scaleValue*(slicePointI2[ 1] + 10000*sliceVector2[ 1]));
+					glEnd();
+					glBegin(GL_LINES);
+						glVertex2f( scaleValue*(slicePointO2[ 0] - 10000*sliceVector2[ 0]), scaleValue*(slicePointO2[ 1] - 10000*sliceVector2[ 1]));
+						glVertex2f( scaleValue*(slicePointO2[ 0] + 10000*sliceVector2[ 0]), scaleValue*(slicePointO2[ 1] + 10000*sliceVector2[ 1]));
+					glEnd();
+				}
+				
+				glDisable(GL_LINE_SMOOTH);
+				glDisable(GL_POLYGON_SMOOTH);
+				glDisable(GL_POINT_SMOOTH);
+				glDisable(GL_BLEND);
+			}
+			
+			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
+			
+			glColor3f (0.0f, 1.0f, 0.0f);
+			
+			 if( annotations >= annotBase) {
+				//** PIXELSPACING LINES
+				float yOffset = 24;
+				float xOffset = 32;
+				//float xOffset = 10;
+				//float yOffset = 12;
+				glBegin(GL_LINES);
+				if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingX * 1000.0 < 1) {
+					
+					glVertex2f(scaleValue  * (-0.02/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset); 
+					glVertex2f(scaleValue  * (0.02/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset);
+
+					glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (-0.02/curDCM.pixelSpacingY*curDCM.pixelRatio)); 
+					glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (0.02/curDCM.pixelSpacingY*curDCM.pixelRatio));
+
+					for ( short i = -20; i<=20; i++ ) {
+						short length = ( i % 10 == 0 )? 10 : 5;
+
+					
+						glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset);
+						glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset - length);
+						
+						glVertex2f(-drawingFrameRect.size.width/2 + xOffset +  length,  i* scaleValue *0.001/curDCM.pixelSpacingY*curDCM.pixelRatio);
+						glVertex2f(-drawingFrameRect.size.width/2 + xOffset,  i* scaleValue * 0.001/curDCM.pixelSpacingY*curDCM.pixelRatio);
 					}
 				}
+				else if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0) {
+					glVertex2f(scaleValue  * (-50/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset); 
+					glVertex2f(scaleValue  * (50/curDCM.pixelSpacingX), drawingFrameRect.size.height/2 - yOffset);
+					
+					glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (-50/curDCM.pixelSpacingY*curDCM.pixelRatio)); 
+					glVertex2f(-drawingFrameRect.size.width/2 + xOffset , scaleValue  * (50/curDCM.pixelSpacingY*curDCM.pixelRatio));
 
-				// draw the cursor in the iChat Theatre View
-				if(iChatCursorTextureBuffer) {
-					eventLocation.x -= iChatCursorHotSpot.x;
-					eventLocation.y -= iChatCursorHotSpot.y;
+					for ( short i = -5; i<=5; i++ ) {
+						short length = (i % 5 == 0) ? 10 : 5;
 					
-					glEnable(GL_TEXTURE_RECTANGLE_EXT);
-					
-					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, iChatCursorTextureName);
-					glBlendEquation(GL_FUNC_ADD);
-					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);		
-					glEnable(GL_BLEND);
-					
-					glColor4f(1.0, 1.0, 1.0, 1.0);
-					glBegin(GL_QUAD_STRIP);
-						glTexCoord2f(0, 0);
-						glVertex2f(eventLocation.x, eventLocation.y);
-					
-						glTexCoord2f(iChatCursorImageSize.width, 0);
-						glVertex2f(eventLocation.x + iChatCursorImageSize.width, eventLocation.y);
-					
-						glTexCoord2f(0, iChatCursorImageSize.height);
-						glVertex2f(eventLocation.x, eventLocation.y + iChatCursorImageSize.height);
-					
-						glTexCoord2f(iChatCursorImageSize.width, iChatCursorImageSize.height);
-						glVertex2f(eventLocation.x + iChatCursorImageSize.width, eventLocation.y + iChatCursorImageSize.height);
-					
-						glEnd();
-					glDisable(GL_BLEND);
-					
-					glDisable(GL_TEXTURE_RECTANGLE_EXT);
+						glVertex2f(i*scaleValue *10/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset);
+						glVertex2f(i*scaleValue *10/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset - length);
+						
+						glVertex2f(-drawingFrameRect.size.width/2 + xOffset +  length,  i* scaleValue *10/curDCM.pixelSpacingY*curDCM.pixelRatio);
+						glVertex2f(-drawingFrameRect.size.width/2 + xOffset,  i* scaleValue * 10/curDCM.pixelSpacingY*curDCM.pixelRatio);
+					}
 				}
-			} // end iChat Theatre context	
-					
-		}  
-		else {    //no valid image  ie curImage = -1
-			//NSLog(@"no IMage");
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			glClear (GL_COLOR_BUFFER_BIT);
+				glEnd();
+				
+				[self drawTextualData: drawingFrameRect :annotations];
+				
+			} //annotations >= annotBase
+		} //Annotation  != None
+			
+		if(repulsorRadius != 0) {
+			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
+			glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
+			
+			[self drawRepulsorToolArea];
 		}
+		
+		if(ROISelectorStartPoint.x!=ROISelectorEndPoint.x || ROISelectorStartPoint.y!=ROISelectorEndPoint.y) {
+			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
+			glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
+			
+			[self drawROISelectorRegion];
+		}			
+		
+		if(ctx == _alternateContext && [[NSApplication sharedApplication] isActive]) // iChat Theatre context
+		{
+			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
+			glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
+								
+			NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
+			
+			// location of the mouse in the OsiriX View
+			eventLocation = [self convertPoint:eventLocation fromView:nil];
+			eventLocation.y = [self frame].size.height - eventLocation.y;
+			
+			NSSize iChatTheatreViewSize = aRect.size;
+
+			// location of the mouse in the iChat Theatre View			
+			eventLocation = [self convertFromView2iChat:eventLocation];
+			
+			// generate iChat cursor Texture Buffer (only once)
+			if(!iChatCursorTextureBuffer) {
+				NSLog(@"generate iChatCursor Texture Buffer");
+				NSImage *iChatCursorImage;
+				if (iChatCursorImage = [[NSCursor pointingHandCursor] image]) {
+					iChatCursorHotSpot = [[NSCursor pointingHandCursor] hotSpot];
+					iChatCursorImageSize = [iChatCursorImage size];
+					
+					NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithData:[iChatCursorImage TIFFRepresentation]]; // [NSBitmapImageRep imageRepWithData: [iChatCursorImage TIFFRepresentation]]
+
+					iChatCursorTextureBuffer = malloc([bitmap bytesPerRow] * iChatCursorImageSize.height);
+					memcpy(iChatCursorTextureBuffer, [bitmap bitmapData], [bitmap bytesPerRow] * iChatCursorImageSize.height);
+
+					[bitmap release];
+					
+					iChatCursorTextureName = 0L;
+					glGenTextures(1, &iChatCursorTextureName);
+					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, iChatCursorTextureName);
+					glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
+					glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+					glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, iChatCursorImageSize.width, iChatCursorImageSize.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, iChatCursorTextureBuffer);
+				}
+			}
+
+			// draw the cursor in the iChat Theatre View
+			if(iChatCursorTextureBuffer) {
+				eventLocation.x -= iChatCursorHotSpot.x;
+				eventLocation.y -= iChatCursorHotSpot.y;
+				
+				glEnable(GL_TEXTURE_RECTANGLE_EXT);
+				
+				glBindTexture(GL_TEXTURE_RECTANGLE_EXT, iChatCursorTextureName);
+				glBlendEquation(GL_FUNC_ADD);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);		
+				glEnable(GL_BLEND);
+				
+				glColor4f(1.0, 1.0, 1.0, 1.0);
+				glBegin(GL_QUAD_STRIP);
+					glTexCoord2f(0, 0);
+					glVertex2f(eventLocation.x, eventLocation.y);
+				
+					glTexCoord2f(iChatCursorImageSize.width, 0);
+					glVertex2f(eventLocation.x + iChatCursorImageSize.width, eventLocation.y);
+				
+					glTexCoord2f(0, iChatCursorImageSize.height);
+					glVertex2f(eventLocation.x, eventLocation.y + iChatCursorImageSize.height);
+				
+					glTexCoord2f(iChatCursorImageSize.width, iChatCursorImageSize.height);
+					glVertex2f(eventLocation.x + iChatCursorImageSize.width, eventLocation.y + iChatCursorImageSize.height);
+				
+					glEnd();
+				glDisable(GL_BLEND);
+				
+				glDisable(GL_TEXTURE_RECTANGLE_EXT);
+			}
+		} // end iChat Theatre context	
+				
+	}  
+	else {    //no valid image  ie curImage = -1
+		//NSLog(@"no IMage");
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear (GL_COLOR_BUFFER_BIT);
+	}
 		
 	// Swap buffer to screen
 	//	[[self openGLContext] flushBuffer];
@@ -7205,42 +7208,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if(iChatRunning) [drawLock unlock];
 	
 	(void)[self _checkHasChanged:YES];
-		
-//		GLenum err = glGetError();
-//		if (GL_NO_ERROR != err)
-//		{
-//			NSString * errString = [NSString stringWithFormat:@"Error: %d.", err];
-//			NSLog (@"%@\n", errString);
-//		}
-		
-	}  //[NSGraphicsContext currentContextDrawingToScreen] 
-//	else  //not drawing to screen
-	{
-//        long		width, height;
-//		NSRect		dstRect;
-//		float		scale;
-//		
-//		NSLog(@"size: %f, %f", aRect.size.width, aRect.size.height);
-//		
-//		NSImage *im = [self nsimage:YES];
-//		
-//		[im setScalesWhenResized:YES];
-//        
-//		[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
-//		
-//		if( [im size].width / aRect.size.width > [im size].height / aRect.size.height)
-//		{
-//			scale = [im size].width / aRect.size.width;
-//		}
-//		else
-//		{
-//			scale = [im size].height / aRect.size.height;
-//		}
-//		
-//		dstRect = NSMakeRect( 0, 0, [im size].width / scale, [im size].height / scale);
-//		
-//		[im drawRepresentation:[im bestRepresentationForDevice:nil] inRect:dstRect]; 
-	}
+	
+	drawingFrameRect = [self frame];
 }
 
 - (void)reshape	// scrolled, moved or resized
@@ -8562,8 +8531,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void)loadTexturesCompute
 {
-    //[[self openGLContext] makeCurrentContext];
-	
 	pTextureName = [self loadTextureIn:pTextureName blending:NO colorBuf:&colorBuf textureX:&textureX textureY:&textureY redTable: redTable greenTable:greenTable blueTable:blueTable textureWidth:&textureWidth textureHeight:&textureHeight resampledBaseAddr:&resampledBaseAddr resampledBaseAddrSize:&resampledBaseAddrSize];
 	
 	if( blendingView)
