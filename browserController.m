@@ -10882,19 +10882,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.studyName"] ];
 			
-			// Find the DICOM-STUDY folder
-			if( [[NSFileManager defaultManager] fileExistsAtPath: tempPath] == NO)
-				[[NSFileManager defaultManager] createDirectoryAtPath: tempPath attributes: 0L];
+			[[NSFileManager defaultManager] createDirectoryAtPath: tempPath attributes: 0L];
 			
 			tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.name"] ];
 			
 			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
 			
-			// Find the DICOM-SERIE folder
-			if( [[NSFileManager defaultManager] fileExistsAtPath: tempPath] == NO)
-				[[NSFileManager defaultManager] createDirectoryAtPath: tempPath attributes: 0L];
+			[[NSFileManager defaultManager] createDirectoryAtPath: tempPath attributes: 0L];
 			
-			dstPath = [NSString stringWithFormat:@"%@/%d.%@", tempPath, [[curImage valueForKey:@"instanceNumber"] intValue], extension];
+			dstPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d.%@", [[curImage valueForKey:@"instanceNumber"] intValue], extension]];
 			
 			long t = 2;
 			while( [[NSFileManager defaultManager] fileExistsAtPath: dstPath] )

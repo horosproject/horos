@@ -29,11 +29,13 @@ extern "C"
 
 void scaniDiskDir( DMiDiskSession* mySession, NSString* path, NSArray* dir, NSMutableArray* files)
 {
-	for( NSString *path in dir )
+	for( NSString *currentPath in dir )
 	{
-		NSString *item = [path stringByAppendingPathComponent: path];
+		NSString *item = [path stringByAppendingPathComponent: currentPath];
 		
 		BOOL isDirectory;
+		
+		NSLog( item);
 		
 		if( [mySession fileExistsAtPath:item isDirectory:&isDirectory])
 		{
@@ -44,6 +46,7 @@ void scaniDiskDir( DMiDiskSession* mySession, NSString* path, NSArray* dir, NSMu
 			}
 			else [files addObject: item];
 		}
+		else NSLog( @"File is missing??");
 	}
 }
 
@@ -76,7 +79,7 @@ int main(int argc, const char *argv[])
 			
 			NSMutableArray  *filesArray = [NSMutableArray array];
 			
-			Wait			*splash = [[Wait alloc] initWithString: NSLocalizedString(@"Getting DICOM files from your iDisk", 0L)];
+			Wait			*splash = 0L;	//[[Wait alloc] initWithString: NSLocalizedString(@"Getting DICOM files from your iDisk", 0L)];
 			
 			[splash setCancel: YES];
 			[splash showWindow: 0L];
@@ -105,9 +108,14 @@ int main(int argc, const char *argv[])
 					if( success )
 					{
 						NSArray *dirContent = [mySession directoryContentsAtPath: DICOMpath];
+						
+						NSLog( [dirContent description]);
+						
 						scaniDiskDir( mySession, DICOMpath, dirContent, filesArray);
 						[[splash progress] setMaxValue:[filesArray count]];
-
+						
+						NSLog( [filesArray description]);
+						
 						for( long i = 0; i < [filesArray count]; i++ )
 						{
 							dstPath = [OUTpath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", i]];
@@ -151,7 +159,7 @@ int main(int argc, const char *argv[])
 			
 			NSString	*DICOMpath = @"Documents/DICOM";
 			
-			Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying to your iDisk",nil)];
+			Wait *splash = 0L;	//[[Wait alloc] initWithString: NSLocalizedString(@"Copying to your iDisk",nil)];
 			
 			[splash setCancel:YES];
 			[splash showWindow: 0L];
@@ -177,11 +185,14 @@ int main(int argc, const char *argv[])
 						
 						dstPath = [DICOMpath stringByAppendingPathComponent: [srcPath lastPathComponent]];
 						
-						if( ![mySession fileExistsAtPath: srcPath]) [mySession copyPath: srcPath toPath: dstPath handler:nil];
+						NSLog( srcPath);
+						NSLog( dstPath);
+						
+						if( ![mySession fileExistsAtPath: dstPath]) [mySession copyPath: srcPath toPath: dstPath handler:nil];
 						else {
 								if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [srcPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
 								{
-									[mySession removeFileAtPath: srcPath handler:nil];
+									[mySession removeFileAtPath: dstPath handler:nil];
 									[mySession copyPath: srcPath toPath: dstPath handler:nil];
 								}
 								else break;
