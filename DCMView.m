@@ -6429,7 +6429,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
 	
-	if(iChatRunning)
+	if( iChatRunning)
 	{
 		if( drawLock == 0L) drawLock = [[NSRecursiveLock alloc] init];
 		[drawLock lock];
