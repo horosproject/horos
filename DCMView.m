@@ -8311,7 +8311,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					vImageScale_Planar8( &src, &dst, resampledTempAddr, QUALITY);
 			}
 			else {
-				NSLog( @"not enough memory");
 				if( (colorTransfer == YES) || (blending == YES)) {
 					*tW = curDCM.rowBytes;
 					rowBytes = curDCM.rowBytes;
