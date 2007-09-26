@@ -2080,7 +2080,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
     if( dcmPixList)
     {
-		[[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
+		if ( pluginOverridesMouse && ( [event modifierFlags] & NSControlKeyMask ) )
+		{  // Simulate Right Mouse Button action
+			[nc postNotificationName: @"PLUGINrightMouseUp" object: self userInfo: userInfo];
+			return;
+		}
+		
+		[drawLock lock];
 		
 		[self mouseMoved: event];	// Update some variables...
 		
@@ -2090,11 +2096,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
             [cell performClick:0L];
             [matrix selectCellAtRow :curImage/[browserWindow COLUMN] column:curImage%[browserWindow COLUMN]];
         }
-		
-		if ( pluginOverridesMouse && ( [event modifierFlags] & NSControlKeyMask ) ) {  // Simulate Right Mouse Button action
-			[nc postNotificationName: @"PLUGINrightMouseUp" object: self userInfo: userInfo];
-			return;
-		}
 		
 		long tool = [self getTool:event];
 		
@@ -2197,6 +2198,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			ROISelectorEndPoint = NSMakePoint(0.0, 0.0);
 			[self drawRect:rect];
 		}
+		
+		[drawLock unlock];
     }
 }
 
@@ -2556,7 +2559,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
     if( dcmPixList)
 	{
-		[[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
+		[drawLock lock];
 		
 		[self erase2DPointMarker];
 		if( blendingView) [blendingView erase2DPointMarker];
@@ -3027,6 +3030,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 		}
 		[self mouseDragged:event];
+		
+		[drawLock unlock];
     }
 }
 
@@ -3315,8 +3320,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	// if we have images do drag
     if( dcmPixList)
     {
-		[[self openGLContext] makeCurrentContext];	
-		
+		[drawLock lock];
+	
         NSPoint     eventLocation = [event locationInWindow];
         NSPoint     current = [self convertPoint:eventLocation fromView:self];
         short       tool;
@@ -3389,6 +3394,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 //		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
 
+		[drawLock unlock];
     }
 }
 
