@@ -10890,14 +10890,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 			tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.studyName"] ];
 			
 			success = [[NSFileManager defaultManager] createDirectoryAtPath: tempPath attributes: 0L];
-			NSLog( @"success = %d", success);
+			NSLog( @"success = %d %@", success, tempPath);
 			
 			tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.name"] ];
 			
 			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
 			
 			success = [[NSFileManager defaultManager] createDirectoryAtPath: tempPath attributes: 0L];
-			NSLog( @"success = %d", success);
+			NSLog( @"success = %d %@", success, tempPath);
 			
 			dstPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d.%@", [[curImage valueForKey:@"instanceNumber"] intValue], extension]];
 			
@@ -10909,7 +10909,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 					
 			success = [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler: nil];
-			NSLog( @"success = %d", success);
+			NSLog( @"success = %d %@", success, dstPath);
 					
 			if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
 			{
