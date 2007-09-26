@@ -6427,11 +6427,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	long		clutBars	= CLUTBARS;			//[[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	long		annotations	= ANNOTATIONS;		//[[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 	
-	if( drawLock == 0L) drawLock = [[NSRecursiveLock alloc] init];
-	
 	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
 	
-	if(iChatRunning) [drawLock lock];
+	if(iChatRunning)
+	{
+		if( drawLock == 0L) drawLock = [[NSRecursiveLock alloc] init];
+		[drawLock lock];
+	}
+	else
+	{
+		[drawLock release];
+		drawLock = 0L;
+	}
 	
 	[ctx makeCurrentContext];
 	
