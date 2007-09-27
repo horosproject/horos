@@ -3788,10 +3788,6 @@
 		BFE4689B0761623400409444 /* DCMAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE468990761623400409444 /* DCMAssociation.m */; };
 		BFE4AAF5077A757700D2D44A /* DCMStoreSCPListener.h in Headers */ = {isa = PBXBuildFile; fileRef = BFE4AAF3077A757700D2D44A /* DCMStoreSCPListener.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFE4AAF6077A757700D2D44A /* DCMStoreSCPListener.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE4AAF4077A757700D2D44A /* DCMStoreSCPListener.m */; };
-		BFE857380BE14704000A4C11 /* OSIPoint3D.h in Headers */ = {isa = PBXBuildFile; fileRef = BFE857360BE14704000A4C11 /* OSIPoint3D.h */; };
-		BFE857390BE14704000A4C11 /* OSIPoint3D.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE857370BE14704000A4C11 /* OSIPoint3D.m */; };
-		BFE8573A0BE14704000A4C11 /* OSIPoint3D.h in Headers */ = {isa = PBXBuildFile; fileRef = BFE857360BE14704000A4C11 /* OSIPoint3D.h */; };
-		BFE8573B0BE14704000A4C11 /* OSIPoint3D.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE857370BE14704000A4C11 /* OSIPoint3D.m */; };
 		BFEA82E00940F1D500B90699 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFEA82DF0940F1D500B90699 /* Quartz.framework */; };
 		BFEB763D0677FDA700F242F3 /* DCMTagDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB76370677FDA700F242F3 /* DCMTagDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFEB763E0677FDA700F242F3 /* DCMTagDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = BFEB76380677FDA700F242F3 /* DCMTagDictionary.m */; };
@@ -7873,6 +7869,10 @@
 		CEFE605A0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CEFE605B0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CEFE606C0979B1F600891EA9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
+		DB5961380CAB447B00809190 /* OSIVoxel.h in Headers */ = {isa = PBXBuildFile; fileRef = DB5961360CAB447B00809190 /* OSIVoxel.h */; };
+		DB5961390CAB447B00809190 /* OSIVoxel.m in Sources */ = {isa = PBXBuildFile; fileRef = DB5961370CAB447B00809190 /* OSIVoxel.m */; };
+		DB59613A0CAB447B00809190 /* OSIVoxel.h in Headers */ = {isa = PBXBuildFile; fileRef = DB5961360CAB447B00809190 /* OSIVoxel.h */; };
+		DB59613B0CAB447B00809190 /* OSIVoxel.m in Sources */ = {isa = PBXBuildFile; fileRef = DB5961370CAB447B00809190 /* OSIVoxel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -10244,8 +10244,6 @@
 		BFE468990761623400409444 /* DCMAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMAssociation.m; path = Networking/DCMAssociation.m; sourceTree = "<group>"; };
 		BFE4AAF3077A757700D2D44A /* DCMStoreSCPListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMStoreSCPListener.h; path = Networking/DCMStoreSCPListener.h; sourceTree = "<group>"; };
 		BFE4AAF4077A757700D2D44A /* DCMStoreSCPListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMStoreSCPListener.m; path = Networking/DCMStoreSCPListener.m; sourceTree = "<group>"; };
-		BFE857360BE14704000A4C11 /* OSIPoint3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIPoint3D.h; sourceTree = "<group>"; };
-		BFE857370BE14704000A4C11 /* OSIPoint3D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIPoint3D.m; sourceTree = "<group>"; };
 		BFEA82DF0940F1D500B90699 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		BFEB76370677FDA700F242F3 /* DCMTagDictionary.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMTagDictionary.h; sourceTree = "<group>"; };
 		BFEB76380677FDA700F242F3 /* DCMTagDictionary.m */ = {isa = PBXFileReference; fileEncoding = 30; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = DCMTagDictionary.m; sourceTree = "<group>"; };
@@ -11762,6 +11760,8 @@
 		CEFBB18E0B358C8F00666FA9 /* ForwardPressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ForwardPressed.tif; sourceTree = "<group>"; };
 		CEFC048108D4B1AA00058461 /* Point.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Point.tiff; sourceTree = "<group>"; };
 		CEFE60580979B1DB00891EA9 /* DotMacKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DotMacKit.framework; sourceTree = "<group>"; };
+		DB5961360CAB447B00809190 /* OSIVoxel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIVoxel.h; sourceTree = "<group>"; };
+		DB5961370CAB447B00809190 /* OSIVoxel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIVoxel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -15044,8 +15044,8 @@
 			children = (
 				BF30B3AB0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h */,
 				BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */,
-				BFE857360BE14704000A4C11 /* OSIPoint3D.h */,
-				BFE857370BE14704000A4C11 /* OSIPoint3D.m */,
+				DB5961360CAB447B00809190 /* OSIVoxel.h */,
+				DB5961370CAB447B00809190 /* OSIVoxel.m */,
 				CE74456706DBA4CB0034D05E /* ITK.h */,
 				CE74456806DBA4CB0034D05E /* ITK.mm */,
 				CE4A922C06DBF255006DAAF7 /* ITKSegmentation3D.h */,
@@ -18512,7 +18512,6 @@
 				BF3FA0C70BC6F3A300C254A4 /* MPRPerpendicularView.h in Headers */,
 				BF3FA0D50BC6F40F00C254A4 /* MPRFinalView.h in Headers */,
 				BFF97D710BDE8BE6008333CF /* ShadingArrayController.h in Headers */,
-				BFE857380BE14704000A4C11 /* OSIPoint3D.h in Headers */,
 				BFBBF2120BE28E320064E449 /* EndoscopySegmentationController.h in Headers */,
 				CE96D0E30BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */,
 				CE96D0F90BEE71E800C4E397 /* mdfconen.h in Headers */,
@@ -18543,6 +18542,7 @@
 				CE8919F00CA181710044EEDD /* OsiriXSCPDataHandler.h in Headers */,
 				A98FFBE70CA92B58000291C8 /* altivecFunctions.h in Headers */,
 				A975206B0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */,
+				DB5961380CAB447B00809190 /* OSIVoxel.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20582,7 +20582,6 @@
 				BF3FA0CB0BC6F3A300C254A4 /* MPRPerpendicularView.h in Headers */,
 				BF3FA0D90BC6F40F00C254A4 /* MPRFinalView.h in Headers */,
 				BFF97D750BDE8BE6008333CF /* ShadingArrayController.h in Headers */,
-				BFE8573A0BE14704000A4C11 /* OSIPoint3D.h in Headers */,
 				BFBBF2100BE28E320064E449 /* EndoscopySegmentationController.h in Headers */,
 				CE96D0E10BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */,
 				CE96D0F70BEE71E800C4E397 /* mdfconen.h in Headers */,
@@ -20609,6 +20608,7 @@
 				BF79F3CA0C9F7EDD007ADFE0 /* Centerline.h in Headers */,
 				A98FFBE90CA92B58000291C8 /* altivecFunctions.h in Headers */,
 				A975206D0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */,
+				DB59613A0CAB447B00809190 /* OSIVoxel.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22886,7 +22886,6 @@
 				BF3FA0C80BC6F3A300C254A4 /* MPRPerpendicularView.m in Sources */,
 				BF3FA0D60BC6F40F00C254A4 /* MPRFinalView.m in Sources */,
 				BFF97D720BDE8BE6008333CF /* ShadingArrayController.m in Sources */,
-				BFE857390BE14704000A4C11 /* OSIPoint3D.m in Sources */,
 				BFBBF2130BE28E320064E449 /* EndoscopySegmentationController.m in Sources */,
 				CE96D0E40BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,
 				CE96D0F80BEE71E800C4E397 /* mdfconen.cc in Sources */,
@@ -22914,6 +22913,7 @@
 				CE8919EF0CA181700044EEDD /* OsiriXSCPDataHandler.m in Sources */,
 				A98FFBE60CA92B58000291C8 /* altivecFunctions.c in Sources */,
 				A975206C0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */,
+				DB5961390CAB447B00809190 /* OSIVoxel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24563,7 +24563,6 @@
 				BF3FA0CC0BC6F3A300C254A4 /* MPRPerpendicularView.m in Sources */,
 				BF3FA0DA0BC6F40F00C254A4 /* MPRFinalView.m in Sources */,
 				BFF97D760BDE8BE6008333CF /* ShadingArrayController.m in Sources */,
-				BFE8573B0BE14704000A4C11 /* OSIPoint3D.m in Sources */,
 				BFBBF2110BE28E320064E449 /* EndoscopySegmentationController.m in Sources */,
 				CE96D0E20BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,
 				CE96D0F60BEE71E800C4E397 /* mdfconen.cc in Sources */,
@@ -24589,6 +24588,7 @@
 				BF79F3CB0C9F7EDD007ADFE0 /* Centerline.mm in Sources */,
 				A98FFBE80CA92B58000291C8 /* altivecFunctions.c in Sources */,
 				A975206E0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */,
+				DB59613B0CAB447B00809190 /* OSIVoxel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
