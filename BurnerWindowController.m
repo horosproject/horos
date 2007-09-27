@@ -243,6 +243,7 @@ NSString* asciiString (NSString* name);
 		[misc1 setEnabled: NO];
 		[misc2 setEnabled: NO];
 		[misc3 setEnabled: NO];
+		[misc4 setEnabled: NO];
 
 		writeDMG = NO;
 		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) writeDMG = YES;
@@ -303,6 +304,7 @@ NSString* asciiString (NSString* name);
 	[misc1 setEnabled: YES];
 	[misc2 setEnabled: YES];
 	[misc3 setEnabled: YES];
+	[misc4 setEnabled: YES];
 
 	[pool release];
 }
@@ -380,6 +382,8 @@ NSString* asciiString (NSString* name);
 	[misc1 setEnabled: YES];
 	[misc2 setEnabled: YES];
 	[misc3 setEnabled: YES];
+	[misc4 setEnabled: YES];
+
 }
 
 
@@ -833,10 +837,28 @@ NSString* asciiString (NSString* name);
 					NSEnumerator *enumerator=[manager enumeratorAtPath: supplementaryBurnPath];
 					while (file=[enumerator nextObject])
 					{
-						[manager copyPath: [NSString stringWithFormat:@"%@/%@", supplementaryBurnPath,file]
-						  toPath: [NSString stringWithFormat:@"%@/%@", burnFolder,file] handler:nil]; 
+						[manager copyPath: [NSString stringWithFormat:@"%@/%@", supplementaryBurnPath,file] toPath: [NSString stringWithFormat:@"%@/%@", burnFolder,file] handler:nil]; 
 					}
 				}
+			}
+		}
+		
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"copyReportsToCD"])
+		{
+			NSMutableArray *studies = [NSMutableArray array];
+			
+			for( NSManagedObject *im in dbObjects)
+			{
+				if( [im valueForKeyPath:@"series.study.reportURL"])
+				{
+					if( [studies containsObject: [im valueForKeyPath:@"series.study"]] == NO)
+						[studies addObject: [im valueForKeyPath:@"series.study"]];
+				}
+			}
+			
+			for( NSManagedObject *study in studies)
+			{
+				[manager copyPath: [study valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [study valueForKey:@"modality"], [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]], [[study valueForKey:@"reportURL"] pathExtension]] handler:nil]; 
 			}
 		}
 		
