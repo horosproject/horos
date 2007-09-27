@@ -658,12 +658,13 @@ NSRect screenFrame()
 }
 
 -(IBAction)help:(id)sender{
-	[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"QuickManual" ofType:@"pdf"]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Learning.html"]];
+//	[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"QuickManual" ofType:@"pdf"]];
 }
 
--(IBAction)openOsirixWikiWebPage:(id)sender{
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://en.wikibooks.org/wiki/Online_Osirix_Documentation"]];
-}
+//-(IBAction)openOsirixWikiWebPage:(id)sender{
+//	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://en.wikibooks.org/wiki/Online_Osirix_Documentation"]];
+//}
 
 -(IBAction)openOsirixDiscussion:(id)sender{
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://groups.yahoo.com/group/osirix/"]];

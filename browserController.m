@@ -9165,11 +9165,10 @@ static NSArray*	openSubSeriesArray = 0L;
 	NSMenu *helpMenu = [[NSMenu allocWithZone: [NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Help", nil)];
 	[helpItem setSubmenu:helpMenu];
 	[helpMenu addItemWithTitle: NSLocalizedString(@"Email Project Lead", nil) action: @selector(sendEmail:) keyEquivalent: @""];
-	[helpMenu addItemWithTitle: NSLocalizedString(@"Go to Home Page", nil) action: @selector(openOsirixWebPage:) keyEquivalent: @""];	
+	[helpMenu addItemWithTitle: NSLocalizedString(@"OsiriX Web site", nil) action: @selector(openOsirixWebPage:) keyEquivalent: @""];	
 	[helpMenu addItemWithTitle: NSLocalizedString(@"OsiriX Discussion Group", nil) action: @selector(openOsirixDiscussion:) keyEquivalent: @""];
 	[helpMenu addItem: [NSMenuItem separatorItem]];
-	[helpMenu addItemWithTitle: NSLocalizedString(@"User Manual", nil) action: @selector(help:) keyEquivalent: @""];
-	[helpMenu addItemWithTitle: NSLocalizedString(@"Online Documentation", nil) action: @selector(openOsirixWikiWebPage:) keyEquivalent: @""];
+	[helpMenu addItemWithTitle: NSLocalizedString(@"OsiriX Help", nil) action: @selector(help:) keyEquivalent: @""];
 	[helpMenu release];
 }
 

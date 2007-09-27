@@ -1247,7 +1247,6 @@
 		AB80EBB80AF1F5B600E7E934 /* AYDicomPrintWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB80EBA60AF1F5B600E7E934 /* AYDicomPrintWindowController.mm */; };
 		AB80EBB90AF1F5B600E7E934 /* AYNSImageToDicom.h in Headers */ = {isa = PBXBuildFile; fileRef = AB80EBA70AF1F5B600E7E934 /* AYNSImageToDicom.h */; };
 		AB80EBBA0AF1F5B600E7E934 /* AYNSImageToDicom.m in Sources */ = {isa = PBXBuildFile; fileRef = AB80EBA80AF1F5B600E7E934 /* AYNSImageToDicom.m */; };
-		AB851A6A063E0A02003DE553 /* QuickManual.pdf in Resources */ = {isa = PBXBuildFile; fileRef = AB851A68063E0A02003DE553 /* QuickManual.pdf */; };
 		AB853A510A76135D00B6C909 /* PapyJpeg12.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F80A7552E0001C27C4 /* PapyJpeg12.c */; };
 		AB85C65D0BFADA9500C4B52E /* FileIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB85C65B0BFADA9500C4B52E /* FileIcon.tif */; };
 		AB85C65E0BFADA9500C4B52E /* FolderIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB85C65C0BFADA9500C4B52E /* FolderIcon.tif */; };
@@ -7484,7 +7483,6 @@
 		CECB03AC07539E3900576814 /* ZoomToFit.tiff in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AC063587B200D9531F /* ZoomToFit.tiff */; };
 		CECB03AD07539E3900576814 /* add.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABDEBD51063D6938005B99B4 /* add.tif */; };
 		CECB03AE07539E3900576814 /* minus.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABDEBD52063D6938005B99B4 /* minus.tif */; };
-		CECB03AF07539E3900576814 /* QuickManual.pdf in Resources */ = {isa = PBXBuildFile; fileRef = AB851A68063E0A02003DE553 /* QuickManual.pdf */; };
 		CECB03B007539E3900576814 /* BlackBody.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC2E063EFD8D00E24B0E /* BlackBody.plist */; };
 		CECB03B107539E3900576814 /* Flow.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC4C063F00A900E24B0E /* Flow.plist */; };
 		CECB03B207539E3900576814 /* NIH.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC4D063F00A900E24B0E /* NIH.plist */; };
@@ -8768,7 +8766,6 @@
 		AB80EBA70AF1F5B600E7E934 /* AYNSImageToDicom.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AYNSImageToDicom.h; sourceTree = "<group>"; };
 		AB80EBA80AF1F5B600E7E934 /* AYNSImageToDicom.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AYNSImageToDicom.m; sourceTree = "<group>"; };
 		AB80EBA90AF1F5B600E7E934 /* AYPrintManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AYPrintManager.h; path = AYDicomPrint/AYPrintManager.h; sourceTree = "<group>"; };
-		AB851A68063E0A02003DE553 /* QuickManual.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = QuickManual.pdf; sourceTree = "<group>"; };
 		AB85C65B0BFADA9500C4B52E /* FileIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FileIcon.tif; sourceTree = "<group>"; };
 		AB85C65C0BFADA9500C4B52E /* FolderIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FolderIcon.tif; sourceTree = "<group>"; };
 		AB866037066E40970015E1C4 /* ToolbarPanel.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ToolbarPanel.m; sourceTree = "<group>"; };
@@ -12242,7 +12239,6 @@
 				CE286C100964196C001A4573 /* Localizable.strings */,
 				CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */,
 				CE5F9D730AE813A40042280F /* localizedTemplatesPages */,
-				AB851A68063E0A02003DE553 /* QuickManual.pdf */,
 				ABD7BC2E063EFD8D00E24B0E /* BlackBody.plist */,
 				ABBFDA3F063480490011BD0A /* Deployment-Info.plist */,
 				CE70CB5407C36959000B0E49 /* Deployment-InfoVP.plist */,
@@ -21036,7 +21032,6 @@
 				ABBB64DE063587B200D9531F /* ZoomToFit.tiff in Resources */,
 				ABDEBD6C063D693F005B99B4 /* add.tif in Resources */,
 				ABDEBD6D063D693F005B99B4 /* minus.tif in Resources */,
-				AB851A6A063E0A02003DE553 /* QuickManual.pdf in Resources */,
 				ABD7BC30063EFD8D00E24B0E /* BlackBody.plist in Resources */,
 				ABD7BC5A063F00A900E24B0E /* Flow.plist in Resources */,
 				ABD7BC5B063F00A900E24B0E /* NIH.plist in Resources */,
@@ -21447,7 +21442,6 @@
 				CECB03AC07539E3900576814 /* ZoomToFit.tiff in Resources */,
 				CECB03AD07539E3900576814 /* add.tif in Resources */,
 				CECB03AE07539E3900576814 /* minus.tif in Resources */,
-				CECB03AF07539E3900576814 /* QuickManual.pdf in Resources */,
 				CECB03B007539E3900576814 /* BlackBody.plist in Resources */,
 				CECB03B107539E3900576814 /* Flow.plist in Resources */,
 				CECB03B207539E3900576814 /* NIH.plist in Resources */,
