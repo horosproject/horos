@@ -1125,7 +1125,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			[theNewROI mouseRoiDown:point :(int)(point3D.z * resampleZ) :1.0];
 			[theNewROI mouseRoiUp:point ];	
 			point3D.x *= resampleX;
-			point3D.y *+ resampleY;
+			point3D.y *= resampleY;
 			point3D.z *= resampleZ;
 	}
 

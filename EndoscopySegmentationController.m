@@ -15,7 +15,7 @@
 #import "browserController.h"
 #import "OSIVoxel.h"
 #import "EndoscopyViewer.h"
-#import "OSIVoxel.h"
+//#import "VRView.h"
 
 
 @implementation EndoscopySegmentationController
@@ -163,8 +163,8 @@
 	NSArray *centerlinePoints = [itk endoscopySegmentationForViewer:_viewer seeds:_seeds];
 	[_viewer endoscopyViewer:self];
 	EndoscopyViewer *endoscopyViewer = [_viewer openEndoscopyViewer];
-	//OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:0];
-	//[[[endoscopyViewer vrController] view] flyTo:firstPoint.x :firstPoint.y :firstPoint.z]	
+	OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:0];
+	[[[endoscopyViewer vrController] view] flyToVoxel:firstPoint];	
 	[itk release];
 }
 

@@ -47,6 +47,7 @@
 #undef id
 #import "ITKSegmentation3D.h"
 #import "ITKBrushROIFilter.h"
+#import "OSIVoxel.h"
 
 #include <CoreVideo/CVPixelBuffer.h>
 
@@ -3331,6 +3332,29 @@ public:
 	aRenderer->ResetCameraClippingRange();
 }
 
+- (void) flyToVoxel:(OSIVoxel *)voxel{
+	float pt2D[3];
+	float pt3D[3];
+	pt2D[0] = voxel.x;
+	pt2D[1] = voxel.y;
+	pt2D[2] = voxel.z;
+	//DCMPix *slice = [pixList objectAtIndex:voxel.z];
+	//[slice  convertPixX: voxel.x pixY: voxel.y toDICOMCoords: pt3D];
+	[self convert2DPoint:(float *)pt2D to3DPoint:(float *)pt3D];
+	[self flyTo:pt3D[0] :pt3D[1]  :pt3D[2]];
+}
+
+//Fly to 2D position on a slice;
+- (void) flyToPoint:(NSPoint)point  slice:(int)slice{
+	float pt2D[3];
+	pt2D[0] = point.x;
+	pt2D[1] = point.y;
+	pt2D[2] = slice;
+	float pt3D[3];
+	[self convert2DPoint:(float *)pt2D to3DPoint:(float *)pt3D];
+	[self flyTo:pt3D[0] :pt3D[1]  :pt3D[2]];
+}
+
 - (void) processFlyTo
 {
 //		NSPoint mousePoint = [self convertPoint: [[self window] mouseLocationOutsideOfEventStream] fromView: 0L];
@@ -5509,6 +5533,29 @@ public:
 	Transform->Delete();
 }
 
+- (void)convert2DPoint:(float *)pt2D to3DPoint:(float *)pt3D
+{
+	// convert to world size
+	pt2D[0] *= [firstObject pixelSpacingX];
+	pt2D[1] *= [firstObject pixelSpacingY];
+	pt2D[2] *= [firstObject sliceInterval];
+	
+	double vPos[ 3];	
+	volume->GetPosition( vPos);
+	
+	// add in origin
+	pt2D[ 0] += vPos[ 0];
+	pt2D[ 1] += vPos[ 1];
+	pt2D[ 2] += vPos[ 2];
+	
+	// tranform the point using the volume trnsform matrix
+	vtkTransform *Transform = vtkTransform::New();			
+	Transform->SetMatrix( volume->GetUserMatrix());
+	Transform->Push();
+	Transform->TransformPoint( pt2D, pt3D);
+	Transform->Delete();
+}
+
 - (BOOL) isViewportResizable
 {
 	return isViewportResizable;
@@ -5904,11 +5951,11 @@ public:
 {
 	display3DPoints = on;
 	
-	NSEnumerator *enumerator = [point3DActorArray objectEnumerator];
-	id object;
+	//NSEnumerator *enumerator = [point3DActorArray objectEnumerator];
+	//id object;
 	vtkActor *actor;
 		
-	while (object = [enumerator nextObject])
+	for  (id object in point3DActorArray)
 	{
 		actor = (vtkActor*)[object pointerValue];
 		if(on)

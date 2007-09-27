@@ -140,6 +140,7 @@ typedef char* vtkMyCallbackVR;
 @class DICOMExport;
 @class Camera;
 @class VRController;
+@class OSIVoxel;
 
 #import "CLUTOpacityView.h"
 
@@ -358,6 +359,12 @@ typedef char* vtkMyCallbackVR;
 -(id)initWithFrame:(NSRect)frame;
 -(short)setPixSource:(NSMutableArray*)pix :(float*) volumeData;
 -(void)dealloc;
+//Fly to point in world coordinates;
+- (void) flyTo:(float) x :(float) y :(float) z;
+// Fly to Volume Point 
+- (void) flyToVoxel:(OSIVoxel *)voxel;
+//Fly to 2D position on a slice;
+- (void) flyToPoint:(NSPoint)point  slice:(int)slice;
 - (void) processFlyTo;
 -(void) setWLWW:(float) wl :(float) ww;
 -(void) getWLWW:(float*) wl :(float*) ww;
@@ -429,6 +436,7 @@ typedef char* vtkMyCallbackVR;
 - (IBAction) save3DPointsDefaultProperties: (id) sender;
 - (void) load3DPointsDefaultProperties;
 - (void) convert3Dto2Dpoint:(float*) pt3D :(float*) pt2D;
+- (void)convert2DPoint:(float *)pt2D to3DPoint:(float *)pt3D;
 - (IBAction) setCurrentdcmExport:(id) sender;
 - (IBAction) switchToSeriesRadio:(id) sender;
 - (float) offset;
