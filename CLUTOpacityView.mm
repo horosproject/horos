@@ -501,6 +501,7 @@
 
 - (int)selectedCurveIndex;
 {
+	return selectedCurveIndex;
 	int i, j;
 	int curveIndex = -1;
 	for (i=0; i<[curves count] && curveIndex<0; i++)
@@ -515,7 +516,9 @@
 - (void)selectCurveAtIndex:(int)i;
 {
 	NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
+	selectedCurveIndex = i;
 	selectedPoint = controlPoint;
+	[self setCLUTtoVRView:NO];
 }
 
 - (void)setColor:(NSColor*)color forCurveAtIndex:(int)curveIndex;
@@ -640,12 +643,15 @@
 				selectedPoint = [[aCurve objectAtIndex:j] pointValue];
 				[colorPanel setColor:[[pointColors objectAtIndex:i] objectAtIndex:j]];
 				[self sendToFrontCurveAtIndex:i];
+				selectedCurveIndex = -1;
 				clutChanged = NO;
 				[self updateView];
+				[self setCLUTtoVRView:NO];
 				return YES;
 			}
 		}
 	}
+	[self setCLUTtoVRView:NO];
 	return NO;
 }
 
@@ -829,6 +835,8 @@ NSRect rect = drawingRect;
 		{
 			selectedPoint = controlPoint;
 			[self sendToFrontCurveAtIndex:i];
+			selectedCurveIndex = 0;
+			[self setCLUTtoVRView:NO];
 			//[self updateView];
 			return YES;
 		}
@@ -890,6 +898,7 @@ NSRect rect = drawingRect;
 		float blendingFactor = (newPoint.x - [[aCurve objectAtIndex:j-2] pointValue].x) / ([[aCurve objectAtIndex:j-1] pointValue].x - [[aCurve objectAtIndex:j-2] pointValue].x);
 		[self addPoint:newPoint atIndex:j-1 inCurveAtIndex:i-1 withColor:[[colors objectAtIndex:j-2] blendedColorWithFraction:blendingFactor ofColor:[colors objectAtIndex:j-1]]];
 		[self sendToFrontCurveAtIndex:i-1];
+		selectedCurveIndex = 0;
 		[self updateView];
 	}
 	

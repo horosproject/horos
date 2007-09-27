@@ -21,6 +21,7 @@
 	int histogramSize;
 	float HUmin, HUmax; // houndsfield units bounds
 	NSPoint selectedPoint;
+	int selectedCurveIndex;
 	int pointDiameter, lineWidth, pointBorder;
 	
 	NSColorPanel *colorPanel;
