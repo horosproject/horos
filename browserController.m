@@ -6599,6 +6599,15 @@ static BOOL needToRezoom;
 			[editSmartAlbumName setStringValue: [album valueForKey:@"name"]];
 			[editSmartAlbumQuery setStringValue: [album valueForKey:@"predicateString"]];
 			
+//			NSArray *templates = [NSPredicateEditorRowTemplate templatesWithAttributeKeyPaths: [NSArray arrayWithObjects: @"comment", @"date", @"name",  0L] inEntityDescription: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+//			
+//			[editSmartAlbumPredicate setRowTemplates: templates];	//[self smartAlbumPredicateString: [album valueForKey:@"predicateString"]]];
+//			
+//			if ([editSmartAlbumPredicate numberOfRows] == 0)
+//				[editSmartAlbumPredicate addRow:self];
+//			
+//			[editSmartAlbumPredicate setObjectValue: [self smartAlbumPredicateString: [album valueForKey:@"predicateString"]]];
+			
 			[NSApp beginSheet: editSmartAlbum
 			   modalForWindow: self.window
 				modalDelegate: nil
