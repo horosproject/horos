@@ -11132,9 +11132,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSManagedObjectContext		*context = self.managedObjectContext;
 	NSManagedObjectModel		*model = self.managedObjectModel;
 	
-	[checkIncomingLock lock];
-	
-	if( [context tryLock] )	{
+	if( [context tryLock] )
+	{
 		[context retain];
 		
 		DatabaseIsEdited = YES;
@@ -11148,40 +11147,47 @@ static volatile int numberOfThreadsForJPEG = 0;
 		Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Unmounting volume...",@"Unmounting volume")];
 		[splash showWindow:self];
 		
-		if( [seriesArray count] > 0 ) {
+		if( [seriesArray count] > 0 )
+		{
 			NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
 			
 			[[splash progress] setMaxValue:[seriesArray count]/50];
 			
-			@try {
-			// Find unavailable files
-			for( int i = 0; i < [seriesArray count]; i++ ) {
-				NSManagedObject	*image = [[[seriesArray objectAtIndex:i] valueForKey:@"images"] anyObject];
-				if( [[image  valueForKey:@"completePath"] compare:sNewDrive options:NSCaseInsensitiveSearch range:range] == 0 )	{
-					NSManagedObject	*study = [[seriesArray objectAtIndex:i] valueForKeyPath:@"study"];
-					
-					needsUpdate = YES;
-					
-					// Is a viewer containing this study opened? -> close it
-					for( ViewerController *vc in viewersList ) {
-						if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
+			@try
+			{
+				// Find unavailable files
+				for( int i = 0; i < [seriesArray count]; i++ )
+				{
+					NSManagedObject	*image = [[[seriesArray objectAtIndex:i] valueForKey:@"images"] anyObject];
+					if( [[image  valueForKey:@"completePath"] compare:sNewDrive options:NSCaseInsensitiveSearch range:range] == 0 )
+					{
+						NSManagedObject	*study = [[seriesArray objectAtIndex:i] valueForKeyPath:@"study"];
+						
+						needsUpdate = YES;
+						
+						// Is a viewer containing this study opened? -> close it
+						for( ViewerController *vc in viewersList )
 						{
-							[[vc window] close];
+							if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
+							{
+								[[vc window] close];
+							}
 						}
+						
+						[context deleteObject: study];
 					}
 					
-					[context deleteObject: study];
+					if( i % 50 == 0) [splash incrementBy:1];
 				}
-				
-				if( i % 50 == 0) [splash incrementBy:1];
 			}
-		}
-			@catch( NSException *ne) {
-			NSLog( @"Unmount exception");
-			NSLog( [ne description]);
-		}
+			@catch( NSException *ne)
+			{
+				NSLog( @"Unmount exception");
+				NSLog( [ne description]);
+			}
 			
-			if( needsUpdate ) {
+			if( needsUpdate )
+			{
 				[self saveDatabase: currentDatabasePath];
 			}
 			
@@ -11192,11 +11198,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[splash release];
 		[context unlock];
 		[context release];
+		
+		DatabaseIsEdited = NO;
 	}
-	
-	[checkIncomingLock unlock];
-	
-	DatabaseIsEdited = NO;
 	
 	[self displayBonjourServices];
 }
