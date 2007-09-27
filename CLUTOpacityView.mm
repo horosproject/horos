@@ -643,7 +643,7 @@
 				selectedPoint = [[aCurve objectAtIndex:j] pointValue];
 				[colorPanel setColor:[[pointColors objectAtIndex:i] objectAtIndex:j]];
 				[self sendToFrontCurveAtIndex:i];
-				selectedCurveIndex = -1;
+				selectedCurveIndex = 0;
 				clutChanged = NO;
 				[self updateView];
 				[self setCLUTtoVRView:NO];
