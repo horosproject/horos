@@ -104,7 +104,6 @@ extern "C"
 - (IBAction) openOsirixDiscussion: (id) sender;
 //---------------------------------------------
 - (IBAction) help: (id) sender;
-- (IBAction) openOsirixWikiWebPage: (id) sender;
 //=============================================
 
 #pragma mark-
