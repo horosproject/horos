@@ -650,7 +650,7 @@ NSRect screenFrame()
 #pragma mark-
 
 -(IBAction)sendEmail:(id)sender{
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:rossetantoine@bluewin.ch"]]; 
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:rossetantoine@osirix-viewer.com"]]; 
 }
 
 -(IBAction)openOsirixWebPage:(id)sender{
