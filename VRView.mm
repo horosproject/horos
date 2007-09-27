@@ -6840,6 +6840,8 @@ public:
 
 - (void)setIChatFrame:(BOOL)set;
 {
+	if([[[self controller] style] isEqualToString:@"panel"]) return;
+
 	//NSLog(@"setIChatFrame");
 	if(set)
 	{

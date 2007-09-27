@@ -22,6 +22,7 @@
 #import "PreviewView.h"
 #import "IChatTheatreHelpWindowController.h"
 @class VRPresetPreview;
+@class VRView;
 
 static IChatTheatreDelegate	*iChatDelegate = 0L;
 static NSWindowController *helpWindowController = 0L;
@@ -32,8 +33,9 @@ static NSWindowController *helpWindowController = 0L;
 
 + (IChatTheatreDelegate*) releaseSharedDelegate
 {
-	[iChatDelegate release];
 	if(helpWindowController) [helpWindowController release];
+	helpWindowController = 0L;
+	[iChatDelegate release];
 	iChatDelegate = 0L;
 }
 
@@ -50,12 +52,15 @@ static NSWindowController *helpWindowController = 0L;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowChanged:) name:NSWindowDidBecomeKeyNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(focusChanged:) name:@"DCMViewDidBecomeFirstResponder" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(focusChanged:) name:@"VRViewDidBecomeFirstResponder" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(focusChanged:) name:@"VRCameraDidChange" object:nil];
+	
 	return self;
 }
 
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[[[IMAVManager sharedAVManager] videoDataSource] release];
 	[[IMAVManager sharedAVManager] setVideoDataSource:nil];
 	[[IMService notificationCenter] removeObserver:self];
 	[super dealloc];
@@ -70,13 +75,21 @@ static NSWindowController *helpWindowController = 0L;
     IMAVManagerState state = [avManager state];
 	
     if(state == IMAVRequested)
-	{				
-		[self setVideoDataSource: [[[[NSApplication sharedApplication] orderedWindows] objectAtIndex:0] retain]];
-		NSLog(@"_stateChanged : Start iChat Theatre");
-		[avManager start];
+	{	
+		//[self setVideoDataSource: [[[NSApplication sharedApplication] orderedWindows] objectAtIndex:0]];
+//		NSLog(@"[[NSApplication sharedApplication] keyWindow] :%@", [[NSApplication sharedApplication] keyWindow]);
+//		[self setVideoDataSource: [[NSApplication sharedApplication] keyWindow]];
+//		[[avManager videoDataSource] release];
+//		[avManager setVideoDataSource: [self retain]];
+//		[avManager setVideoOptimizationOptions:IMVideoOptimizationStills];
+		
+//		NSLog(@"_stateChanged : Start iChat Theatre");
+//		[avManager start];
 	}
 	else if(state == IMAVInactive)
 	{
+		[[avManager videoDataSource] release];
+		[avManager setVideoDataSource:nil];
 		[avManager stop];
 		NSLog(@"_stateChanged: Stop iChat Theatre");
 	}
@@ -85,28 +98,34 @@ static NSWindowController *helpWindowController = 0L;
 - (void)windowChanged:(NSNotification *)aNotification;
 {
 	if(![self isIChatTheatreRunning]) return;
+
+	if([[aNotification object] isKindOfClass:[VRView class]])
+	{
+		[[[IMAVManager sharedAVManager] videoDataSource] release];
+		[[IMAVManager sharedAVManager] setVideoDataSource: [self retain]];
+	}
+	else
+		[self setVideoDataSource:[aNotification object]];
 	
-	[self setVideoDataSource:[aNotification object]];
-	
-	NSLog(@"windowChanged : Start iChat Theatre");
 	[[IMAVManager sharedAVManager] start];
 }
 
 - (void)focusChanged:(NSNotification *)aNotification;
 {
 	if(![self isIChatTheatreRunning]) return;
-	
+	if([[aNotification name] isEqualToString:@"VRCameraDidChange"])
+		if(![[(VRController*)[[aNotification object] controller] style] isEqualToString:@"panel"]) return;
+		
 	IMAVManager *avManager = [IMAVManager sharedAVManager];
 	
 	[[avManager videoDataSource] release];
-
+	
 	if([[aNotification object] isKindOfClass:[PreviewView class]] || [[aNotification object] isKindOfClass:[VRPresetPreview class]])
 		[avManager setVideoDataSource: [self retain]];
 	else
 		[avManager setVideoDataSource: [[aNotification object] retain]];
 	[avManager setVideoOptimizationOptions:IMVideoOptimizationStills];
 	
-	NSLog(@"focusChanged : Start iChat Theatre");
 	[[IMAVManager sharedAVManager] start];
 }
 
@@ -116,17 +135,16 @@ static NSWindowController *helpWindowController = 0L;
 
 	[[avManager videoDataSource] release];
 
-	NSLog(@"[[window windowController] class] : %@", [[window windowController] class]);
-	if(![window windowController])
+	if(!window)
 	{
-		NSLog(@"windowChanged: IChatTheatreDelegate DOES THE DRAWING !!");
+		[avManager setVideoDataSource: [self retain]];
+	}
+	else if(![window windowController])
+	{
 		[avManager setVideoDataSource: [self retain]];
 	}
 	else if([[window windowController] isKindOfClass:[OrthogonalMPRViewer class]])
 	{	
-		NSLog(@"windowChanged: IChatTheatreDelegate change video source (OrthogonalMPRViewer)");
-		NSLog(@"[[window windowController] keyView] : %@", [[window windowController] keyView]);
-
 		if([[[[window windowController] controller] originalView] isKeyView])
 			[avManager setVideoDataSource: [[[[window windowController] controller] originalView] retain]];
 		else if([[[[window windowController] controller] xReslicedView] isKeyView])
@@ -138,9 +156,12 @@ static NSWindowController *helpWindowController = 0L;
 	}
 	else if([[window windowController] isKindOfClass:[ViewerController class]])
 	{
-		NSLog(@"windowChanged: IChatTheatreDelegate change video source (DCMView)");
-		NSLog(@"[[window windowController] imageView] : %@", [[window windowController] imageView]);
-		[avManager setVideoDataSource: [[[window windowController] imageView] retain]];
+		if(![window isKeyWindow])
+		{
+			[avManager setVideoDataSource: [self retain]];
+		}
+		else
+			[avManager setVideoDataSource: [[[window windowController] imageView] retain]];
 	}
 	else if ([[window windowController] isKindOfClass:[EndoscopyViewer class]])
 	{
@@ -148,12 +169,15 @@ static NSWindowController *helpWindowController = 0L;
 	}
 	else if ([[window windowController] isKindOfClass:[VRController class]])
 	{
-		NSLog(@"windowChanged: IChatTheatreDelegate change video source (VRView)");
-		[avManager setVideoDataSource: [[[window windowController] view] retain]];
+		if([window isKindOfClass:[NSPanel class]])
+		{
+			[avManager setVideoDataSource: [self retain]];
+		}
+		else
+			[avManager setVideoDataSource: [[[window windowController] view] retain]];
 	}
 	else
 	{
-		NSLog(@"windowChanged: IChatTheatreDelegate DOES THE DRAWING !!");
 		[avManager setVideoDataSource: [self retain]];
 	}
 	[avManager setVideoOptimizationOptions:IMVideoOptimizationStills];

@@ -435,6 +435,7 @@
 	{
 		[controller saveCrossPositions];
 		[super mouseDown:event];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMViewDidBecomeFirstResponder" object:self];
 	}
 }
 
@@ -1015,7 +1016,10 @@
 }
 
 
-
+- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
+{
+	return YES;
+}
 
 
 @end
