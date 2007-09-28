@@ -11,11 +11,11 @@
 		8D202CEB0486D31800D8A456 /* OSICDPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = F506C03C013D9D7901CA16C8 /* OSICDPreferencePanePref.h */; };
 		8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D202CEE0486D31800D8A456 /* OSICDPreferencePanePref.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F506C040013D9D8001CA16C8 /* OSICDPreferencePanePref.tiff */; };
-		8D202CEF0486D31800D8A456 /* OSICDPreferencePanePref.nib in Resources */ = {isa = PBXBuildFile; fileRef = F506C042013D9D8C01CA16C8 /* OSICDPreferencePanePref.nib */; };
 		8D202CF10486D31800D8A456 /* OSICDPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* OSICDPreferencePanePref.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
 		AB80A68D0A19C91D00FED357 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80A68C0A19C91D00FED357 /* Security.framework */; };
+		CE9D07160CACFA6F00D7636A /* OSICDPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9D07140CACFA6F00D7636A /* OSICDPreferencePanePref.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,11 +27,11 @@
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSICDPreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSICDPreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB80A68C0A19C91D00FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		CE9D07150CACFA6F00D7636A /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSICDPreferencePanePref.xib; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSICDPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSICDPreferencePanePref.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* OSICDPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSICDPreferencePanePref.m; sourceTree = "<group>"; };
 		F506C040013D9D8001CA16C8 /* OSICDPreferencePanePref.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OSICDPreferencePanePref.tiff; sourceTree = "<group>"; };
-		F506C043013D9D8C01CA16C8 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/OSICDPreferencePanePref.nib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,9 +73,9 @@
 			isa = PBXGroup;
 			children = (
 				8D202CF70486D31800D8A456 /* Info.plist */,
+				CE9D07140CACFA6F00D7636A /* OSICDPreferencePanePref.xib */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 				F506C040013D9D8001CA16C8 /* OSICDPreferencePanePref.tiff */,
-				F506C042013D9D8C01CA16C8 /* OSICDPreferencePanePref.nib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -183,7 +183,7 @@
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
 				8D202CEE0486D31800D8A456 /* OSICDPreferencePanePref.tiff in Resources */,
-				8D202CEF0486D31800D8A456 /* OSICDPreferencePanePref.nib in Resources */,
+				CE9D07160CACFA6F00D7636A /* OSICDPreferencePanePref.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,12 +219,12 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		F506C042013D9D8C01CA16C8 /* OSICDPreferencePanePref.nib */ = {
+		CE9D07140CACFA6F00D7636A /* OSICDPreferencePanePref.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F506C043013D9D8C01CA16C8 /* English */,
+				CE9D07150CACFA6F00D7636A /* English */,
 			);
-			name = OSICDPreferencePanePref.nib;
+			name = OSICDPreferencePanePref.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
