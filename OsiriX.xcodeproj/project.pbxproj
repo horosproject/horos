@@ -1836,8 +1836,6 @@
 		BF0AAEB00A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0AAEAE0A9AB2560001C8EB /* DragMatrixWithDelete.m */; };
 		BF0AAEB30A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */ = {isa = PBXBuildFile; fileRef = BF0AAEAD0A9AB2560001C8EB /* DragMatrixWithDelete.h */; };
 		BF0AAEB40A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0AAEAE0A9AB2560001C8EB /* DragMatrixWithDelete.m */; };
-		BF0CBBF00C18B41E00DAF4B5 /* NodeGraph.h in Headers */ = {isa = PBXBuildFile; fileRef = BF0CBBEE0C18B41E00DAF4B5 /* NodeGraph.h */; };
-		BF0CBBF10C18B41E00DAF4B5 /* NodeGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0CBBEF0C18B41E00DAF4B5 /* NodeGraph.m */; };
 		BF0CBBF40C18B41E00DAF4B5 /* NodeGraph.h in Headers */ = {isa = PBXBuildFile; fileRef = BF0CBBEE0C18B41E00DAF4B5 /* NodeGraph.h */; };
 		BF0CBBF50C18B41E00DAF4B5 /* NodeGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0CBBEF0C18B41E00DAF4B5 /* NodeGraph.m */; };
 		BF15840A0A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */; };
@@ -2090,6 +2088,10 @@
 		BF65669C0B263C1600574803 /* LayoutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6566980B263C1600574803 /* LayoutWindowController.m */; };
 		BF65669D0B263C1600574803 /* LayoutWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6566970B263C1600574803 /* LayoutWindowController.h */; };
 		BF65669E0B263C1600574803 /* LayoutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6566980B263C1600574803 /* LayoutWindowController.m */; };
+		BF6F18DC0CAD6ACF006DE602 /* FlyThruStepsArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6F18DA0CAD6ACF006DE602 /* FlyThruStepsArrayController.h */; };
+		BF6F18DD0CAD6AD0006DE602 /* FlyThruStepsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6F18DB0CAD6ACF006DE602 /* FlyThruStepsArrayController.m */; };
+		BF6F18DE0CAD6AD0006DE602 /* FlyThruStepsArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF6F18DA0CAD6ACF006DE602 /* FlyThruStepsArrayController.h */; };
+		BF6F18DF0CAD6AD0006DE602 /* FlyThruStepsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6F18DB0CAD6ACF006DE602 /* FlyThruStepsArrayController.m */; };
 		BF76A59906ACC6FD00FABE42 /* ButtonAndTextField.h in Headers */ = {isa = PBXBuildFile; fileRef = BF76A59706ACC6FD00FABE42 /* ButtonAndTextField.h */; };
 		BF76A59A06ACC6FD00FABE42 /* ButtonAndTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = BF76A59806ACC6FD00FABE42 /* ButtonAndTextField.m */; };
 		BF76A5A706ACC70C00FABE42 /* ButtonAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF76A5A506ACC70C00FABE42 /* ButtonAndTextCell.h */; };
@@ -9065,6 +9067,8 @@
 		BF6DB827075A52AB00EBC60E /* DCMAcceptPDU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMAcceptPDU.m; path = Networking/DCMAcceptPDU.m; sourceTree = "<group>"; };
 		BF6DB82E075A52C300EBC60E /* DCMRejectPDU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMRejectPDU.h; path = Networking/DCMRejectPDU.h; sourceTree = "<group>"; };
 		BF6DB82F075A52C300EBC60E /* DCMRejectPDU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMRejectPDU.m; path = Networking/DCMRejectPDU.m; sourceTree = "<group>"; };
+		BF6F18DA0CAD6ACF006DE602 /* FlyThruStepsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlyThruStepsArrayController.h; sourceTree = "<group>"; };
+		BF6F18DB0CAD6ACF006DE602 /* FlyThruStepsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlyThruStepsArrayController.m; sourceTree = "<group>"; };
 		BF76A59706ACC6FD00FABE42 /* ButtonAndTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonAndTextField.h; sourceTree = "<group>"; };
 		BF76A59806ACC6FD00FABE42 /* ButtonAndTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonAndTextField.m; sourceTree = "<group>"; };
 		BF76A5A506ACC70C00FABE42 /* ButtonAndTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonAndTextCell.h; sourceTree = "<group>"; };
@@ -12111,6 +12115,8 @@
 				183C864908563F3A000E6A68 /* VRFlyThruAdapter.m */,
 				CE0B46C8087D2B910052E309 /* VRPROFlyThruAdapter.h */,
 				CE0B46C7087D2B900052E309 /* VRPROFlyThruAdapter.m */,
+				BF6F18DA0CAD6ACF006DE602 /* FlyThruStepsArrayController.h */,
+				BF6F18DB0CAD6ACF006DE602 /* FlyThruStepsArrayController.m */,
 			);
 			name = "Fly Thru";
 			sourceTree = "<group>";
@@ -18521,7 +18527,6 @@
 				AB87FA7C0C06BEB200CD2976 /* nifti1_io.h in Headers */,
 				AB87FA7E0C06BEB200CD2976 /* znzlib.h in Headers */,
 				BF30B3AD0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */,
-				BF0CBBF00C18B41E00DAF4B5 /* NodeGraph.h in Headers */,
 				CE822F8E0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */,
 				ABB230BD0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 				AB64A2DB0C4E0F61000E0981 /* HornRegistration.h in Headers */,
@@ -18539,6 +18544,7 @@
 				A98FFBE70CA92B58000291C8 /* altivecFunctions.h in Headers */,
 				A975206B0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */,
 				DB5961380CAB447B00809190 /* OSIVoxel.h in Headers */,
+				BF6F18DC0CAD6ACF006DE602 /* FlyThruStepsArrayController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20605,6 +20611,7 @@
 				A98FFBE90CA92B58000291C8 /* altivecFunctions.h in Headers */,
 				A975206D0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */,
 				DB59613A0CAB447B00809190 /* OSIVoxel.h in Headers */,
+				BF6F18DE0CAD6AD0006DE602 /* FlyThruStepsArrayController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22892,7 +22899,6 @@
 				AB87FA7B0C06BEB200CD2976 /* nifti1_io.c in Sources */,
 				AB87FA7D0C06BEB200CD2976 /* znzlib.c in Sources */,
 				BF30B3A90C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */,
-				BF0CBBF10C18B41E00DAF4B5 /* NodeGraph.m in Sources */,
 				CE822F8F0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */,
 				ABB230BE0C2F95DD00B38596 /* JPEGExif.m in Sources */,
 				AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */,
@@ -22908,6 +22914,7 @@
 				A98FFBE60CA92B58000291C8 /* altivecFunctions.c in Sources */,
 				A975206C0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */,
 				DB5961390CAB447B00809190 /* OSIVoxel.m in Sources */,
+				BF6F18DD0CAD6AD0006DE602 /* FlyThruStepsArrayController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24583,6 +24590,7 @@
 				A98FFBE80CA92B58000291C8 /* altivecFunctions.c in Sources */,
 				A975206E0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */,
 				DB59613B0CAB447B00809190 /* OSIVoxel.m in Sources */,
+				BF6F18DF0CAD6AD0006DE602 /* FlyThruStepsArrayController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
