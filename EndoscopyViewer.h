@@ -21,6 +21,7 @@
 #import "Camera.h"
 #import "OSIWindowController.h"
 
+@class OSIVoxel;
 
 @interface EndoscopyViewer : OSIWindowController {
 	IBOutlet OrthogonalMPRController	*mprController;
@@ -47,6 +48,7 @@
 
 }
 
+
 @property(readonly) EndoscopyVRController *vrController;
 
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC : (ViewerController*) vC;
@@ -61,6 +63,7 @@
 - (void) setCamera;
 - (void) setupToolbar;
 - (void) Apply2DCLUT:(id) sender;
+- (void) setCameraPosition:(OSIVoxel *)position  focalPoint:(OSIVoxel *)focalPoint;
 
 
 #pragma mark-

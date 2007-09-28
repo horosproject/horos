@@ -30,6 +30,7 @@ MODIFICATION HISTORY
 #import "EndoscopyViewer.h"
 #import "EndoscopyMPRView.h"
 #import "DICOMExport.h"
+#import "OSIVoxel.h"
 
 static NSString* 	EndoscopyToolbarIdentifier				= @"Endoscopy Viewer Toolbar Identifier";
 static NSString*	endo3DToolsToolbarItemIdentifier		= @"3DTools";
@@ -387,6 +388,44 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	[[mprController originalView] setNeedsDisplay:YES];
 	[[mprController xReslicedView] setNeedsDisplay:YES];
 	[[mprController yReslicedView] setNeedsDisplay:YES];
+}
+
+- (void) setCameraPosition:(OSIVoxel *)position  focalPoint:(OSIVoxel *)focalPoint{
+	Camera *curCamera = [[vrController view] camera];
+	float factor = [vrController factor];
+		// coordinates conversion
+	float pos[3], fp[3];
+	 // The order of the piXList appears reversed in the views relative to the orginal viewer2D
+	int pixCount = [[[mprController originalView] dcmPixList] count];
+	// tranform coordinates
+	[[[[mprController originalView] pixList]	objectAtIndex:pixCount - round(position.z) - 1]
+												convertPixX: position.x
+												pixY: position.y
+												toDICOMCoords: pos];
+												
+	[[[[mprController originalView] pixList]	objectAtIndex:pixCount - focalPoint.z - 1]
+												convertPixX: focalPoint.x
+												pixY: focalPoint.y
+												toDICOMCoords: fp];
+	pos[0] *= factor;
+	pos[1] *= factor;
+	pos[2] *= factor;
+	fp[0] *= factor;
+	fp[0] *= factor;
+	fp[0] *= factor;
+	
+	[curCamera setPosition:[[Point3D alloc] initWithValues: pos[0]
+													: pos[1]
+													: pos[2]]];
+													
+	[curCamera setFocalPoint:[[Point3D alloc] initWithValues: fp[0]
+														: fp[1]
+														: fp[2]]];
+	[[vrController view] setCamera: curCamera];
+	[[mprController originalView] setNeedsDisplay:YES];
+	[[mprController xReslicedView] setNeedsDisplay:YES];
+	[[mprController yReslicedView] setNeedsDisplay:YES];
+	[[vrController view] setNeedsDisplay:YES];
 }
 
 #pragma mark-

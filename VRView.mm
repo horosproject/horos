@@ -5457,9 +5457,11 @@ public:
 	// 4D
 	if([controller is4D])
 		[controller setMovieFrame:[cam movieIndexIn4D]];
-
+	
+	double distance = aCamera->GetDistance();
 	aCamera->SetPosition(pos);
 	aCamera->SetFocalPoint(focal);
+	//aCamera->SetDistance(distance);
 	aCamera->SetViewUp(vUp);
 	//aCamera->SetClippingRange(clippingRange);
 	aCamera->SetViewAngle(viewAngle);

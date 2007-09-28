@@ -163,8 +163,16 @@
 	NSArray *centerlinePoints = [itk endoscopySegmentationForViewer:_viewer seeds:_seeds];
 	[_viewer endoscopyViewer:self];
 	EndoscopyViewer *endoscopyViewer = [_viewer openEndoscopyViewer];
+	[[endoscopyViewer vrController] flyThruControllerInit:self];
 	OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:0];
-	[[[endoscopyViewer vrController] view] flyToVoxel:firstPoint];	
+	int count  = [centerlinePoints count] - 1;
+	for (int i = 0; i < count; i++) {
+		OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:i];
+		OSIVoxel *secondPoint = [centerlinePoints objectAtIndex:i + 1];
+		[endoscopyViewer setCameraPosition:firstPoint  
+			focalPoint:secondPoint];
+		[[[endoscopyViewer vrController] flyThruController] flyThruTag:0];
+	}
 	[itk release];
 }
 

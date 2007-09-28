@@ -1116,6 +1116,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	NSMutableArray  *roiSeriesList = [srcViewer roiList];
 	NSMutableArray  *roiImageList;
 	for (OSIVoxel *point3D in centerlinePoints) {
+	/*
 			NSPoint point = NSMakePoint(point3D.x * resampleX, point3D.y * resampleY);
 			ROI *theNewROI  = [srcViewer newROI: t2DPoint];
 			NSMutableArray *pointArray = [theNewROI  points];
@@ -1124,6 +1125,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			[roiImageList addObject: theNewROI];
 			[theNewROI mouseRoiDown:point :(int)(point3D.z * resampleZ) :1.0];
 			[theNewROI mouseRoiUp:point ];	
+	*/
 			point3D.x *= resampleX;
 			point3D.y *= resampleY;
 			point3D.z *= resampleZ;
