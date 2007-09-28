@@ -1269,6 +1269,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		BOOL volumicData = YES;
 		
 		int previousFusion = [popFusion selectedTag];
+		int previousFusionActivated = [activatedFusion state];
 		
 		long moviePixWidth = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth];
 		long moviePixHeight = [[pixList[ curMovieIndex] objectAtIndex: 0] pheight];
@@ -1414,7 +1415,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			[self checkEverythingLoaded];
 			[self computeInterval];
-			if( [activatedFusion state] == NSOnState)
+			if( previousFusionActivated == NSOnState)
 				[self setFusionMode: previousFusion];
 			[popFusion selectItemWithTag:previousFusion];
 		}
@@ -4583,7 +4584,8 @@ static ViewerController *draggedController = 0L;
 	long		diffWL;
 	long		startWW;
 	long		previousColumns = [imageView columns], previousRows = [imageView rows];
-	
+	int			previousFusion = [popFusion selectedTag], previousFusionActivated = [activatedFusion state];
+		
 	NSString	*previousPatientUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"] retain];
 	NSString	*previousStudyInstanceUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] retain];
 	float		previousOrientation[ 9];
@@ -4912,6 +4914,12 @@ static ViewerController *draggedController = 0L;
 	[self setUpdateTilingViewsValue: NO];
 	
 	[seriesView selectFirstTilingView];
+	
+	if( previousFusionActivated)
+	{
+		[self setFusionMode: previousFusion];
+		[popFusion selectItemWithTag:previousFusion];
+	}
 }
 
 - (void) showWindowTransition
