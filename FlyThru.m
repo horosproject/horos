@@ -21,21 +21,13 @@
 
 @implementation FlyThru
 
+@synthesize steps = stepCameras,  pathCameras, stepsPositionInPath, 
+numberOfFrames, interpolationMethod, constantSpeed, loop;
+
+
 -(id) init
 {
-	NSLog(@"FlyThru:init");
-	self = [super init];
-	
-	stepCameras = [[NSMutableArray alloc] initWithCapacity:0];
-	pathCameras = [[NSMutableArray alloc] initWithCapacity:0];
-	stepsPositionInPath = 0L;
-	
-	[self setNumberOfFrames:50];
-	interpolationMethod = 0;
-	constantSpeed = YES;
-	loop = NO;
-	
-	return self;
+	return [[FlyThru alloc] initWithFirstCamera:nil];
 }
 
 // steps
@@ -48,11 +40,11 @@
 	pathCameras = [[NSMutableArray alloc] initWithCapacity:0];
 	stepsPositionInPath = 0L;
 	
-	[self addCamera: sCamera];
-	[self setNumberOfFrames:50];
-	interpolationMethod = 0;
-	constantSpeed = YES;
-	loop = NO;
+	if (sCamera) [self addCamera: sCamera];
+	self.numberOfFrames = 50;
+	self.interpolationMethod = 1;
+	self.constantSpeed = YES;
+	self.loop = NO;
 	
 	return self;
 }
@@ -86,41 +78,6 @@
 	[stepCameras removeAllObjects];
 }
 
--(NSArray*) steps
-{
-	return stepCameras;
-}
-
-// interpolation
--(void) setNumberOfFrames:(int)n
-{
-	numberOfFrames = n;
-}
-
--(int) numberOfFrames
-{
-	return numberOfFrames;
-}
-
--(void) setInterpolationMethod:(int)i
-{
-	interpolationMethod = i;
-}
-
--(int) interpolationMethod
-{
-	return interpolationMethod;
-}
-
--(void) setLoop:(BOOL)boo
-{
-	loop = boo;
-}
-
--(BOOL) loop
-{
-	return loop;
-}
 
 -(void) computePath
 {
@@ -330,15 +287,7 @@
 	return [path autorelease];
 }
 
--(NSArray*) pathCameras
-{
-	return pathCameras;
-}
 
--(NSArray*) stepsPositionInPath
-{
-	return stepsPositionInPath;
-}
 
 -(NSMutableDictionary*) exportToXML
 {

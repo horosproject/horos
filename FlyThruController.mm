@@ -37,6 +37,9 @@ MODIFICATION HISTORY
 
 @implementation FlyThruController
 
+@synthesize flyThru = FT;
+@synthesize currentMovieIndex = curMovieIndex;
+
 - (void)setWindow3DController:(Window3DController*) w3Dc
 {
 	if( controller3D == w3Dc) return;
@@ -69,7 +72,7 @@ MODIFICATION HISTORY
 	[self loadWindow];
 	
 	[FTview setDataSource:self];
-	FT = [[FlyThru alloc] init];
+	self.flyThru = [[[FlyThru alloc] init] autorelease];
 	FTAdapter = [aFlyThruAdapter retain];
 	
 	boxPlayOrigin = [boxPlay frame].origin;
@@ -322,21 +325,6 @@ MODIFICATION HISTORY
 	[self setCurrentView];
 }
 
-- (void) flyThruSetNumberOfFrames
-{
-	int v = [nbFramesTextField intValue];
-	
-	if( v < 2) v = 2;
-	if( v > 1000) v = 1000;
-	
-	[FT setNumberOfFrames: v];
-	[framesSlider setMaxValue: v-1];
-}
-
-- (IBAction) flyThruSetNumberOfFrames:(id) sender
-{
-	[self flyThruSetNumberOfFrames];
-}
 
 - (IBAction) flyThruCompute:(id) sender
 {
@@ -418,18 +406,20 @@ MODIFICATION HISTORY
 }
 
 
+
 - (IBAction) flyThruSetCurrentViewToSliderPosition:(id) sender
 {
 	if ([[FT pathCameras] count]>0)
 	{
 		int index = [framesSlider intValue];
-		[FTAdapter setCurrentViewToCamera:[[FT pathCameras] objectAtIndex:index]];
+		if (index > FT.pathCameras.count) index = FT.pathCameras.count - 1;
+		[FTAdapter setCurrentViewToCamera:[FT.pathCameras objectAtIndex:index]];
 	}
 }
 
 - (void) flyThruPlayStop:(id) sender
 {
-	curMovieIndex = [framesSlider intValue];
+	//self.curMovieIndex = [framesSlider intValue];
 	
     if( movieTimer)
     {
@@ -504,14 +494,14 @@ MODIFICATION HISTORY
 	val = curMovieIndex;
 	val ++;
 	
-	if( val < 0) val = 0;
-	if( val > [framesSlider maxValue]) val = 0;
+	if( val < 0) val = 1;
+	if( val > FT.numberOfFrames) val = 1;
 	
-	curMovieIndex = val;
+	self.currentMovieIndex = val;
 	
 	if( [[self window3DController] movieFrames] > 1)
 	{	
-		short movieIndex = curMovieIndex;
+		short movieIndex = curMovieIndex - 1;
 		
 		while( movieIndex >= [[self window3DController] movieFrames]) movieIndex -= [[self window3DController] movieFrames];
 		if( movieIndex < 0) movieIndex = 0;
@@ -519,8 +509,8 @@ MODIFICATION HISTORY
 		[[self window3DController] setMovieFrame: movieIndex];
 	}
 	
-	[framesSlider setIntValue:curMovieIndex];
-	[FTAdapter setCurrentViewToLowResolutionCamera:[[FT pathCameras] objectAtIndex:curMovieIndex]];
+	//[framesSlider setIntValue:curMovieIndex];
+	[FTAdapter setCurrentViewToLowResolutionCamera:[[FT pathCameras] objectAtIndex:curMovieIndex - 1]];
 	
 	lastMovieTime = thisTime;
 }
@@ -643,17 +633,8 @@ MODIFICATION HISTORY
 	}
 }
 
-- (IBAction) flyThruChangeInterpolationMethod :(id) sender
-{
-	[FT setInterpolationMethod:[[sender selectedCell] tag]];
-}
 
-- (IBAction) flyThruLoop :(id) sender
-{
-	int check = [sender state];
-	BOOL boo = (check==1)?YES:NO;
-	[FT setLoop: boo];
-}
+
 
 -(void) updateThumbnails
 {
@@ -672,6 +653,19 @@ MODIFICATION HISTORY
 - (NSButton*) exportButtonOption;
 {
 	return exportButtonOption;
+}
+
+
+- (int)currentMovieIndex{
+	return curMovieIndex;
+}
+
+- (void)setCurrentMovieIndex:(int)index{
+	if ([FT.pathCameras count] > 0)
+	{
+		[FTAdapter setCurrentViewToCamera:[FT.pathCameras objectAtIndex:index - 1]];
+	}
+	curMovieIndex = index;
 }
 
 @end

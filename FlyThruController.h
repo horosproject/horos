@@ -61,6 +61,9 @@
 	IBOutlet NSButton		*exportButtonOption;
 }
 
+@property (readwrite, retain) FlyThru *flyThru;
+@property int currentMovieIndex;
+
 - (void)setWindow3DController:(Window3DController*) w3Dc;
 - (Window3DController*)window3DController;
 - (id) initWithFlyThruAdapter:(FlyThruAdapter*)aFlyThruAdapter;
@@ -74,20 +77,18 @@
 - (IBAction) flyThruButton:(id) sender;
 - (void) setCurrentView;
 - (IBAction) flyThruSetCurrentView:(id) sender;
-- (void) flyThruSetNumberOfFrames;
-- (IBAction) flyThruSetNumberOfFrames:(id) sender;
 - (IBAction) flyThruCompute:(id) sender;
-- (IBAction) flyThruSetCurrentViewToSliderPosition:(id) sender;
+//- (IBAction) flyThruSetCurrentViewToSliderPosition:(id) sender;
 - (void) flyThruPlayStop:(id) sender;
 - (void) performMovieAnimation:(id) sender;
 - (IBAction) flyThruQuicktimeExport :(id) sender;
 - (NSImage*) imageForFrame:(NSNumber*) cur maxFrame:(NSNumber*) max;
-- (IBAction) flyThruChangeInterpolationMethod :(id) sender;
-- (IBAction) flyThruLoop :(id) sender;
 - (void) updateThumbnails;
 - (void) flyThruTag:(int) x;
 
 // specific optional button for Endoscopy
 - (NSButton*) exportButtonOption;
+- (int)currentMovieIndex;
+- (void)setCurrentMovieIndex:(int)index;
 
 @end
