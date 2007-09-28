@@ -11,7 +11,6 @@
 		8D202CEB0486D31800D8A456 /* OSIHotKeysPref.h in Headers */ = {isa = PBXBuildFile; fileRef = F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */; };
 		8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D202CEE0486D31800D8A456 /* OSIHotKeysPref.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F506C040013D9D8001CA16C8 /* OSIHotKeysPref.tiff */; };
-		8D202CEF0486D31800D8A456 /* OSIHotKeysPref.nib in Resources */ = {isa = PBXBuildFile; fileRef = F506C042013D9D8C01CA16C8 /* OSIHotKeysPref.nib */; };
 		8D202CF10486D31800D8A456 /* OSIHotKeysPref.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
@@ -20,6 +19,7 @@
 		BF2EECA70B1F8DDE007E9088 /* HotKeyTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2EECA50B1F8DDE007E9088 /* HotKeyTextFieldCell.h */; };
 		BF2EECA80B1F8DDE007E9088 /* HotKeyTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2EECA60B1F8DDE007E9088 /* HotKeyTextFieldCell.m */; };
 		BF92A1CD0B1D4433001DB893 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF92A1CC0B1D4433001DB893 /* Security.framework */; };
+		CE5C6D020CAD9B2900597FEF /* OSIHotKeysPref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE5C6D000CAD9B2900597FEF /* OSIHotKeysPref.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,11 +35,11 @@
 		BF2EECA50B1F8DDE007E9088 /* HotKeyTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyTextFieldCell.h; sourceTree = "<group>"; };
 		BF2EECA60B1F8DDE007E9088 /* HotKeyTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyTextFieldCell.m; sourceTree = "<group>"; };
 		BF92A1CC0B1D4433001DB893 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		CE5C6D010CAD9B2900597FEF /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIHotKeysPref.xib; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIHotKeysPref.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIHotKeysPref.m; sourceTree = "<group>"; };
 		F506C040013D9D8001CA16C8 /* OSIHotKeysPref.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OSIHotKeysPref.tiff; sourceTree = "<group>"; };
-		F506C043013D9D8C01CA16C8 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/OSIHotKeysPref.nib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,7 +84,7 @@
 				8D202CF70486D31800D8A456 /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 				F506C040013D9D8001CA16C8 /* OSIHotKeysPref.tiff */,
-				F506C042013D9D8C01CA16C8 /* OSIHotKeysPref.nib */,
+				CE5C6D000CAD9B2900597FEF /* OSIHotKeysPref.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -197,7 +197,7 @@
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
 				8D202CEE0486D31800D8A456 /* OSIHotKeysPref.tiff in Resources */,
-				8D202CEF0486D31800D8A456 /* OSIHotKeysPref.nib in Resources */,
+				CE5C6D020CAD9B2900597FEF /* OSIHotKeysPref.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,12 +235,12 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		F506C042013D9D8C01CA16C8 /* OSIHotKeysPref.nib */ = {
+		CE5C6D000CAD9B2900597FEF /* OSIHotKeysPref.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F506C043013D9D8C01CA16C8 /* English */,
+				CE5C6D010CAD9B2900597FEF /* English */,
 			);
-			name = OSIHotKeysPref.nib;
+			name = OSIHotKeysPref.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

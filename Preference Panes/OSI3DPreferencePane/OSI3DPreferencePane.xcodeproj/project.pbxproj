@@ -14,8 +14,8 @@
 		ABC3989D09F525B0000A6508 /* OSI3DPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC3989B09F525B0000A6508 /* OSI3DPreferencePane.h */; };
 		ABC3989E09F525B0000A6508 /* OSI3DPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC3989C09F525B0000A6508 /* OSI3DPreferencePane.m */; };
 		ABC398A209F525C1000A6508 /* OSI3DPreferencePane_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = ABC398A109F525C1000A6508 /* OSI3DPreferencePane_Prefix.pch */; };
-		ABC398A509F525CD000A6508 /* OSI3DPreferencePanePref.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABC398A309F525CD000A6508 /* OSI3DPreferencePanePref.nib */; };
 		ABC398A709F525D4000A6508 /* OSI3DPreferencePanePref.tiff in Resources */ = {isa = PBXBuildFile; fileRef = ABC398A609F525D4000A6508 /* OSI3DPreferencePanePref.tiff */; };
+		CE5C6D3E0CAD9B5700597FEF /* OSI3DPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE5C6D3C0CAD9B5700597FEF /* OSI3DPreferencePanePref.xib */; };
 		CE729C53097075C30064790F /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE729C52097075C30064790F /* IOKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -30,8 +30,8 @@
 		ABC3989B09F525B0000A6508 /* OSI3DPreferencePane.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OSI3DPreferencePane.h; sourceTree = "<group>"; };
 		ABC3989C09F525B0000A6508 /* OSI3DPreferencePane.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OSI3DPreferencePane.m; sourceTree = "<group>"; };
 		ABC398A109F525C1000A6508 /* OSI3DPreferencePane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OSI3DPreferencePane_Prefix.pch; sourceTree = "<group>"; };
-		ABC398A409F525CD000A6508 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/OSI3DPreferencePanePref.nib; sourceTree = "<group>"; };
 		ABC398A609F525D4000A6508 /* OSI3DPreferencePanePref.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OSI3DPreferencePanePref.tiff; sourceTree = "<group>"; };
+		CE5C6D3D0CAD9B5700597FEF /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSI3DPreferencePanePref.xib; sourceTree = "<group>"; };
 		CE729C52097075C30064790F /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
@@ -76,8 +76,8 @@
 			isa = PBXGroup;
 			children = (
 				8D202CF70486D31800D8A456 /* Info.plist */,
+				CE5C6D3C0CAD9B5700597FEF /* OSI3DPreferencePanePref.xib */,
 				ABC398A609F525D4000A6508 /* OSI3DPreferencePanePref.tiff */,
-				ABC398A309F525CD000A6508 /* OSI3DPreferencePanePref.nib */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 			);
 			name = Resources;
@@ -186,8 +186,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
-				ABC398A509F525CD000A6508 /* OSI3DPreferencePanePref.nib in Resources */,
 				ABC398A709F525D4000A6508 /* OSI3DPreferencePanePref.tiff in Resources */,
+				CE5C6D3E0CAD9B5700597FEF /* OSI3DPreferencePanePref.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,12 +223,12 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		ABC398A309F525CD000A6508 /* OSI3DPreferencePanePref.nib */ = {
+		CE5C6D3C0CAD9B5700597FEF /* OSI3DPreferencePanePref.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				ABC398A409F525CD000A6508 /* English */,
+				CE5C6D3D0CAD9B5700597FEF /* English */,
 			);
-			name = OSI3DPreferencePanePref.nib;
+			name = OSI3DPreferencePanePref.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

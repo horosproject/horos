@@ -15,7 +15,7 @@
 		ABC3930209F51C01000A6508 /* OSIPETPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC3930009F51C01000A6508 /* OSIPETPreferencePane.h */; };
 		ABC3930409F51C06000A6508 /* OSIPETPreferencePane_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = ABC3930309F51C06000A6508 /* OSIPETPreferencePane_Prefix.pch */; };
 		ABC3930609F51C0B000A6508 /* OSIPETPreferencePanePref.tiff in Resources */ = {isa = PBXBuildFile; fileRef = ABC3930509F51C0B000A6508 /* OSIPETPreferencePanePref.tiff */; };
-		ABC3930909F51C1D000A6508 /* OSIPETPreferencePanePref.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABC3930709F51C1D000A6508 /* OSIPETPreferencePanePref.nib */; };
+		CE5C6CF30CAD9B1D00597FEF /* OSIPETPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE5C6CF10CAD9B1D00597FEF /* OSIPETPreferencePanePref.xib */; };
 		CE729C53097075C30064790F /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE729C52097075C30064790F /* IOKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -31,7 +31,7 @@
 		ABC3930009F51C01000A6508 /* OSIPETPreferencePane.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OSIPETPreferencePane.h; sourceTree = "<group>"; };
 		ABC3930309F51C06000A6508 /* OSIPETPreferencePane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OSIPETPreferencePane_Prefix.pch; sourceTree = "<group>"; };
 		ABC3930509F51C0B000A6508 /* OSIPETPreferencePanePref.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OSIPETPreferencePanePref.tiff; sourceTree = "<group>"; };
-		ABC3930809F51C1D000A6508 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/OSIPETPreferencePanePref.nib; sourceTree = "<group>"; };
+		CE5C6CF20CAD9B1D00597FEF /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIPETPreferencePanePref.xib; sourceTree = "<group>"; };
 		CE729C52097075C30064790F /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
@@ -77,7 +77,7 @@
 			children = (
 				8D202CF70486D31800D8A456 /* Info.plist */,
 				ABC3930509F51C0B000A6508 /* OSIPETPreferencePanePref.tiff */,
-				ABC3930709F51C1D000A6508 /* OSIPETPreferencePanePref.nib */,
+				CE5C6CF10CAD9B1D00597FEF /* OSIPETPreferencePanePref.xib */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 			);
 			name = Resources;
@@ -187,7 +187,7 @@
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
 				ABC3930609F51C0B000A6508 /* OSIPETPreferencePanePref.tiff in Resources */,
-				ABC3930909F51C1D000A6508 /* OSIPETPreferencePanePref.nib in Resources */,
+				CE5C6CF30CAD9B1D00597FEF /* OSIPETPreferencePanePref.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,12 +223,12 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		ABC3930709F51C1D000A6508 /* OSIPETPreferencePanePref.nib */ = {
+		CE5C6CF10CAD9B1D00597FEF /* OSIPETPreferencePanePref.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				ABC3930809F51C1D000A6508 /* English */,
+				CE5C6CF20CAD9B1D00597FEF /* English */,
 			);
-			name = OSIPETPreferencePanePref.nib;
+			name = OSIPETPreferencePanePref.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

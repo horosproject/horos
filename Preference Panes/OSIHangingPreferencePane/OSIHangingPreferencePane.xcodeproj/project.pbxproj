@@ -13,7 +13,6 @@
 		8D202CEB0486D31800D8A456 /* OSIHangingPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = F506C03C013D9D7901CA16C8 /* OSIHangingPreferencePanePref.h */; };
 		8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D202CEE0486D31800D8A456 /* OSIHangingPreferencePanePref.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F506C040013D9D8001CA16C8 /* OSIHangingPreferencePanePref.tiff */; };
-		8D202CEF0486D31800D8A456 /* OSIHangingPreferencePanePref.nib in Resources */ = {isa = PBXBuildFile; fileRef = F506C042013D9D8C01CA16C8 /* OSIHangingPreferencePanePref.nib */; };
 		8D202CF10486D31800D8A456 /* OSIHangingPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* OSIHangingPreferencePanePref.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
@@ -26,6 +25,7 @@
 		BF2FAB060B4C6DED000791F0 /* UpperCaseStringFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2FAB040B4C6DED000791F0 /* UpperCaseStringFormatter.m */; };
 		BF2FAB1F0B4C73C2000791F0 /* UpperCaseTableColumn.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2FAB1D0B4C73C1000791F0 /* UpperCaseTableColumn.h */; };
 		BF2FAB200B4C73C2000791F0 /* UpperCaseTableColumn.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2FAB1E0B4C73C2000791F0 /* UpperCaseTableColumn.m */; };
+		CE5C6D110CAD9B3400597FEF /* OSIHangingPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE5C6D0F0CAD9B3400597FEF /* OSIHangingPreferencePanePref.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,11 +47,11 @@
 		BF2FAB040B4C6DED000791F0 /* UpperCaseStringFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpperCaseStringFormatter.m; sourceTree = "<group>"; };
 		BF2FAB1D0B4C73C1000791F0 /* UpperCaseTableColumn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpperCaseTableColumn.h; sourceTree = "<group>"; };
 		BF2FAB1E0B4C73C2000791F0 /* UpperCaseTableColumn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpperCaseTableColumn.m; sourceTree = "<group>"; };
+		CE5C6D100CAD9B3400597FEF /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIHangingPreferencePanePref.xib; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSIHangingPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIHangingPreferencePanePref.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* OSIHangingPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIHangingPreferencePanePref.m; sourceTree = "<group>"; };
 		F506C040013D9D8001CA16C8 /* OSIHangingPreferencePanePref.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OSIHangingPreferencePanePref.tiff; sourceTree = "<group>"; };
-		F506C043013D9D8C01CA16C8 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/OSIHangingPreferencePanePref.nib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,7 +95,7 @@
 				8D202CF70486D31800D8A456 /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 				F506C040013D9D8001CA16C8 /* OSIHangingPreferencePanePref.tiff */,
-				F506C042013D9D8C01CA16C8 /* OSIHangingPreferencePanePref.nib */,
+				CE5C6D0F0CAD9B3400597FEF /* OSIHangingPreferencePanePref.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -218,7 +218,7 @@
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
 				8D202CEE0486D31800D8A456 /* OSIHangingPreferencePanePref.tiff in Resources */,
-				8D202CEF0486D31800D8A456 /* OSIHangingPreferencePanePref.nib in Resources */,
+				CE5C6D110CAD9B3400597FEF /* OSIHangingPreferencePanePref.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,12 +259,12 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		F506C042013D9D8C01CA16C8 /* OSIHangingPreferencePanePref.nib */ = {
+		CE5C6D0F0CAD9B3400597FEF /* OSIHangingPreferencePanePref.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F506C043013D9D8C01CA16C8 /* English */,
+				CE5C6D100CAD9B3400597FEF /* English */,
 			);
-			name = OSIHangingPreferencePanePref.nib;
+			name = OSIHangingPreferencePanePref.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

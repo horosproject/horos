@@ -11,7 +11,6 @@
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
 		AB381A6D0ABE8BBD00239326 /* OSIAutoroutingPreferencePane_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AB381A6C0ABE8BBD00239326 /* OSIAutoroutingPreferencePane_Prefix.pch */; };
-		AB381A700ABE8BC900239326 /* OSIAutoroutingPreferencePanePref.nib in Resources */ = {isa = PBXBuildFile; fileRef = AB381A6E0ABE8BC900239326 /* OSIAutoroutingPreferencePanePref.nib */; };
 		AB381A720ABE8BD200239326 /* OSIAutoroutingPreferencePanePref.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB381A710ABE8BD200239326 /* OSIAutoroutingPreferencePanePref.tiff */; };
 		AB381A790ABE8D8F00239326 /* OSIAutoroutingPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = AB381A770ABE8D8F00239326 /* OSIAutoroutingPreferencePanePref.m */; };
 		AB381A7A0ABE8D8F00239326 /* OSIAutoroutingPreferencePanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = AB381A780ABE8D8F00239326 /* OSIAutoroutingPreferencePanePref.h */; };
@@ -19,6 +18,7 @@
 		ABACC7020ABEC02200DAA92B /* ServerTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABACC7000ABEC02200DAA92B /* ServerTableView.h */; };
 		ABACC7030ABEC02200DAA92B /* ServerTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABACC7010ABEC02200DAA92B /* ServerTableView.m */; };
 		CE1EF6CB0AF0067800A728F2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE1EF6C90AF0067800A728F2 /* Localizable.strings */; };
+		CE5C6D2F0CAD9B4D00597FEF /* OSIAutoroutingPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE5C6D2D0CAD9B4D00597FEF /* OSIAutoroutingPreferencePanePref.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,7 +29,6 @@
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSIAutoroutingPreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSIAutoroutingPreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB381A6C0ABE8BBD00239326 /* OSIAutoroutingPreferencePane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OSIAutoroutingPreferencePane_Prefix.pch; sourceTree = "<group>"; };
-		AB381A6F0ABE8BC900239326 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/OSIAutoroutingPreferencePanePref.nib; sourceTree = "<group>"; };
 		AB381A710ABE8BD200239326 /* OSIAutoroutingPreferencePanePref.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OSIAutoroutingPreferencePanePref.tiff; sourceTree = "<group>"; };
 		AB381A770ABE8D8F00239326 /* OSIAutoroutingPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OSIAutoroutingPreferencePanePref.m; sourceTree = "<group>"; };
 		AB381A780ABE8D8F00239326 /* OSIAutoroutingPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OSIAutoroutingPreferencePanePref.h; sourceTree = "<group>"; };
@@ -37,6 +36,7 @@
 		ABACC7000ABEC02200DAA92B /* ServerTableView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ServerTableView.h; sourceTree = "<group>"; };
 		ABACC7010ABEC02200DAA92B /* ServerTableView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ServerTableView.m; sourceTree = "<group>"; };
 		CE1EF6CA0AF0067800A728F2 /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CE5C6D2E0CAD9B4D00597FEF /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIAutoroutingPreferencePanePref.xib; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -78,9 +78,9 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				AB381A6E0ABE8BC900239326 /* OSIAutoroutingPreferencePanePref.nib */,
 				CE1EF6C90AF0067800A728F2 /* Localizable.strings */,
 				AB381A710ABE8BD200239326 /* OSIAutoroutingPreferencePanePref.tiff */,
+				CE5C6D2D0CAD9B4D00597FEF /* OSIAutoroutingPreferencePanePref.xib */,
 				8D202CF70486D31800D8A456 /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 			);
@@ -192,9 +192,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
-				AB381A700ABE8BC900239326 /* OSIAutoroutingPreferencePanePref.nib in Resources */,
 				AB381A720ABE8BD200239326 /* OSIAutoroutingPreferencePanePref.tiff in Resources */,
 				CE1EF6CB0AF0067800A728F2 /* Localizable.strings in Resources */,
+				CE5C6D2F0CAD9B4D00597FEF /* OSIAutoroutingPreferencePanePref.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,20 +231,20 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		AB381A6E0ABE8BC900239326 /* OSIAutoroutingPreferencePanePref.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AB381A6F0ABE8BC900239326 /* English */,
-			);
-			name = OSIAutoroutingPreferencePanePref.nib;
-			sourceTree = "<group>";
-		};
 		CE1EF6C90AF0067800A728F2 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				CE1EF6CA0AF0067800A728F2 /* English */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		CE5C6D2D0CAD9B4D00597FEF /* OSIAutoroutingPreferencePanePref.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE5C6D2E0CAD9B4D00597FEF /* English */,
+			);
+			name = OSIAutoroutingPreferencePanePref.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
