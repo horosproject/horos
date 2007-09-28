@@ -19,47 +19,42 @@
 
 
 @implementation Point3D
+
+@synthesize x, y, z;
+
++ (id)point{
+	return [[[Point3D alloc] init] autorelease];
+}
+
++ (id) pointWithX:(float)x1 y:(float)y1 z:(float)z1{
+	return [[[Point3D alloc] initWithX:(float)x1 y:(float)y1 z:(float)z1] autorelease];
+}
+
 -(id) init
 {
-	self = [super init];
-	x = 0;
-	y = 0;
-	z = 0;
-	return self;
+	return [self initWithX:0.0  y:0.0  z:0.0];
 }
 
 -(id) initWithValues:(float)x1 :(float)y1 :(float)z1
 {
-	self = [super init];
-	x = x1;
-	y = y1;
-	z = z1;
-	return self;
+	return [self initWithX:x1  y:y1  z:z1];	
 }
 
 -(id) initWithPoint3D: (Point3D*)p
 {
-	self = [super init];
-	x = [p x];
-	y = [p y];
-	z = [p z];
+	return [self initWithX:p.x  y:p.y  z:p.z];
+}
+
+-(id) initWithX:(float)x1  y:(float)y1  z:(float)z1{
+	if (self = [super init]) {
+		x = x1;
+		y = y1;
+		z = z1;
+	}
 	return self;
 }
 
--(float) x
-{
-	return x;
-}
 
--(float) y
-{
-	return y;
-}
-
--(float) z
-{
-	return z;
-}
 
 -(void) setPoint3D: (Point3D*)p
 {
@@ -111,11 +106,11 @@
 
 -(id) initWithDictionary: (NSDictionary*) xml
 {
-	self = [super init];
+
 	x = [[xml valueForKey:@"x"] floatValue];
 	y = [[xml valueForKey:@"y"] floatValue];
 	z = [[xml valueForKey:@"z"] floatValue];
-	return self;
+	return [self initWithX:x  y:y  z:z];
 }
 
 @end

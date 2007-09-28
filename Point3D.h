@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-
+// This class represents a 3D Point;
 
 
 #import <Cocoa/Cocoa.h>
@@ -22,13 +22,17 @@
 	float x, y, z;
 }
 
+@property float x;
+@property float y;
+@property float z;
+
++ (id)point;
++ (id) pointWithX:(float)x1 y:(float)y1 z:(float)z1;
+
 -(id) init; // initiatize to origin
 -(id) initWithValues:(float)x :(float)y :(float)z;
 -(id) initWithPoint3D: (Point3D*)p;
-
--(float) x;
--(float) y;
--(float) z;
+-(id) initWithX:(float)x  y:(float)y  z:(float)z;
 
 -(void) setPoint3D: (Point3D*)p;
 

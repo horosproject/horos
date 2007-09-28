@@ -18,7 +18,7 @@
 =========================================================================*/
 
 #import "OSIVoxel.h"
-
+#import "Point3D.h"
 
 @implementation OSIVoxel
 
@@ -32,6 +32,10 @@
 	_z = z;
 }
 
+- (id)init {
+	return [self initWithX:0  y:0  z:0 value:nil];
+}
+
 // init with x, y, and z
 - (id)initWithX:(float)x  y:(float)y  z:(float)z value:(NSNumber *)value{
 	if (self = [super init]) {
@@ -39,6 +43,10 @@
 		_y = y;
 		_z = z;
 		_value = [value retain];
+		_voxelWidth = 1.0;
+		_voxelHeight = 1.0;
+		_voxelDepth = 1.0;
+		_userInfo = nil;
 	}
 	return self;
 }
@@ -46,13 +54,7 @@
 
 // init with the point and the slice
 - (id)initWithPoint:(NSPoint)point  slice:(long)slice value:(NSNumber *)value{
-	if (self = [super init]) {
-		_x = point.x;
-		_y = point.y;
-		_z = (float)slice;
-		_value = [value retain];
-	}
-	return self;
+	return [self initWithX:point.x  y:point.y  z:(float)slice value:nil];
 }
 
 + (id)pointWithX:(float)x  y:(float)y  z:(float)z value:(NSNumber *)value{
@@ -62,6 +64,14 @@
 
 + (id)pointWithNSPoint:(NSPoint)point  slice:(long)slice value:(NSNumber *)value{
 	return [[[OSIVoxel alloc] initWithPoint:(NSPoint)point  slice:(long)slice value:(NSNumber *)value] autorelease];
+}
+
++ (id)pointWithPoint3D:(Point3D *)point3D{
+	return [[[OSIVoxel alloc] initWithPoint3D:point3D] autorelease];
+}
+
+- (id)initWithPoint3D:(Point3D *)point3D{
+	return [self initWithX:point3D.x y:point3D.y  z:point3D.z];
 }
 
 
@@ -87,6 +97,24 @@
 	return newPoint;
 }
 
+
+-(NSMutableDictionary*) exportToXML
+{
+	NSMutableDictionary *xml;
+	xml = [[NSMutableDictionary alloc] init];
+	[xml setObject: [NSString stringWithFormat:@"%f",[self x]] forKey:@"x"];
+	[xml setObject: [NSString stringWithFormat:@"%f",[self y]] forKey:@"y"];
+	[xml setObject: [NSString stringWithFormat:@"%f",[self z]] forKey:@"z"];
+	return [xml autorelease];
+}
+
+-(id) initWithDictionary: (NSDictionary*) xml
+{	
+	float x1 = [[xml valueForKey:@"x"] floatValue];
+	float y1 = [[xml valueForKey:@"y"] floatValue];
+	float z1 = [[xml valueForKey:@"z"] floatValue];
+	return [self initWithX:x1  y:y1  z:z1 value:nil];
+}
 	
 
 

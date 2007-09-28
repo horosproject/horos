@@ -68,11 +68,29 @@
 #undef id
 
 @implementation Centerline
-@synthesize wait = _wait;
+@synthesize wait = _wait, startingPoint = _startingPoint, endingPoint = _endingPoint, thinningIterations = _thinningIterations;
 
++ (id)centerline{
+	return [[[Centerline alloc] init] autorelease];
+}
 
+- (id)init {
+	if (self = [super init]) {
+		_thinningIterations = 500;
+		_wait = nil;
+		_startingPoint = nil;
+		_endingPoint = nil;
+	}
+	return self;
+}
 
 - (NSArray *)generateCenterline:(vtkPolyData *)polyData startingPoint:(OSIVoxel *)start endingPoint:(OSIVoxel *)end{
+	int oPoints = polyData->GetNumberOfPoints();
+	if (oPoints == 0) {
+		NSLog(@"No data to create centerline");
+		return nil;
+	}
+	
 	NSMutableArray *connectedPoints = [NSMutableArray array];
 	NSMutableArray *stack = [NSMutableArray array];
 	NSMutableArray *centerlinePoints = [NSMutableArray array];
@@ -89,9 +107,7 @@
 	float voxelHeight = start.voxelHeight;
 	float voxelDepth = start.voxelDepth;
 
-
-
-	int oPoints = polyData->GetNumberOfPoints();
+	
 	vtkPolyData *medialSurface;
 
 	// Never reach 0.8. Usually around 0.5, but we can hope.
@@ -136,7 +152,7 @@
 	NSString *thinning = NSLocalizedString(@"Thinning", nil);
 	[_wait setString:thinning];
  // Create NSArray from Polygon points
-	for (int a = 0; a < 500 ;  a++){
+	for (int a = 0; a < _thinningIterations ;  a++){
 		for (OSIVoxel *point3D in pointArray) {
 			x = point3D.x;
 			y = point3D.y;
