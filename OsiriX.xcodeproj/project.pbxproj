@@ -1443,7 +1443,6 @@
 		ABDF5A1D0A1B641F002A353A /* small_sharedSmartAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B411C10890496400913770 /* small_sharedSmartAlbum.tiff */; };
 		ABDF6E2E0BE0904D00793094 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
 		ABDF6E300BE0904D00793094 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
-		ABDF6E650BE0926600793094 /* Growl.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
 		ABDF6E980BE0929100793094 /* Growl.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
 		ABE1E8B00649F4150028E2E0 /* iPod.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABE1E8AE0649F4150028E2E0 /* iPod.icns */; };
 		ABE3336B063D624400C8E087 /* QueryFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE33369063D624400C8E087 /* QueryFilter.h */; };
@@ -7063,6 +7062,7 @@
 		CE9CEF2C0C75BE3A00752D4B /* DCMAbortPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB809075A516500EBC60E /* DCMAbortPDU.m */; };
 		CE9CEF2D0C75BE3A00752D4B /* DCMSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E76BEDD085757E20073649A /* DCMSocket.h */; };
 		CE9CEF2E0C75BE3A00752D4B /* DCMSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E76BEDE085757E20073649A /* DCMSocket.m */; };
+		CE9D06DE0CACE20A00D7636A /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
 		CE9DD284086B35050058DD2A /* DicomStudy.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9DD280086B35050058DD2A /* DicomStudy.m */; };
 		CE9DD285086B35050058DD2A /* DicomStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD281086B35050058DD2A /* DicomStudy.h */; };
 		CE9DD286086B35050058DD2A /* DicomSeries.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD282086B35050058DD2A /* DicomSeries.h */; };
@@ -8141,7 +8141,6 @@
 				CEBBE1820C82F33900247888 /* libtiff.dylib in CopyFiles */,
 				CE9A04440C7DBC060007809F /* libxerces-c.27.dylib in CopyFiles */,
 				CE9A04450C7DBC060007809F /* libdcmprintscu.dylib in CopyFiles */,
-				ABDF6E650BE0926600793094 /* Growl.framework in CopyFiles */,
 				CE416BCE07969EEB009A8D42 /* OsiriX.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -11858,6 +11857,7 @@
 				CE7BBFD50C82DCA5000AD12F /* libtiff.dylib in Frameworks */,
 				CE7BBFD60C82DCA5000AD12F /* libtiff.a in Frameworks */,
 				CE7BBFDF0C82DCC1000AD12F /* libITKNrrdIO.a in Frameworks */,
+				CE9D06DE0CACE20A00D7636A /* Growl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25225,6 +25225,7 @@
 					Binaries,
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
+					"\"$(SRCROOT)/Binaries\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = NO;
@@ -25506,6 +25507,7 @@
 					Binaries,
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
+					"\"$(SRCROOT)/Binaries\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = NO;
@@ -25886,6 +25888,7 @@
 					Binaries,
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
+					"\"$(SRCROOT)/Binaries\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
@@ -26273,6 +26276,7 @@
 					Binaries,
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
+					"\"$(SRCROOT)/Binaries\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
