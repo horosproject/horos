@@ -87,7 +87,7 @@ numberOfFrames, interpolationMethod, constantSpeed, loop;
 	if(loop)
 	{
 		[tempStepCameras addObject:[stepCameras objectAtIndex:0]];
-		[self setNumberOfFrames:[self numberOfFrames]+1];
+		self.numberOfFrames += 1;
 	}
 	
 	long nbStep = [tempStepCameras count];
@@ -226,7 +226,7 @@ numberOfFrames, interpolationMethod, constantSpeed, loop;
 		[pathCameras removeLastObject]; // otherwise this frame appears 2 times (it is the first AND last frame)
 	}
 	
-	[self setNumberOfFrames: [pathCameras count]];
+	self.numberOfFrames =  [pathCameras count];
 
 }
 

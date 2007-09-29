@@ -39,6 +39,13 @@ MODIFICATION HISTORY
 
 @synthesize flyThru = FT;
 @synthesize currentMovieIndex = curMovieIndex;
+@synthesize hidePlayBox;
+@synthesize hideComputeBox;
+@synthesize hideExportBox;
+@synthesize exportFormat;
+@synthesize dcmSeriesName;
+@synthesize levelOfDetailType;
+@synthesize exportSize;
 
 - (void)setWindow3DController:(Window3DController*) w3Dc
 {
@@ -73,6 +80,13 @@ MODIFICATION HISTORY
 	
 	[FTview setDataSource:self];
 	self.flyThru = [[[FlyThru alloc] init] autorelease];
+	self.hidePlayBox = YES;
+	self.hideComputeBox = NO;
+	self.hideExportBox = YES;
+	self.exportFormat = 0;
+	self.levelOfDetailType = 1;
+	self.dcmSeriesName = NSLocalizedString(@"FlyThru", nil);
+	self.exportSize = 0;
 	FTAdapter = [aFlyThruAdapter retain];
 	
 	boxPlayOrigin = [boxPlay frame].origin;
@@ -208,8 +222,8 @@ MODIFICATION HISTORY
 	[self setCurrentView];
 	[FTview reloadData];
 	
-	[boxPlay setHidden:YES];
-	[boxExport setHidden:YES];
+	self.hidePlayBox = YES;
+	self.hideExportBox = YES;
 }
 
 - (void) flyThruTag:(int) x
@@ -233,8 +247,8 @@ MODIFICATION HISTORY
 			[FTview selectRowIndexes: [NSIndexSet indexSetWithIndex:selectedRow+1] byExtendingSelection:NO];
 			[FTview scrollRowToVisible: selectedRow+1];
 			
-			[boxPlay setHidden:YES];
-			[boxExport setHidden:YES];
+			self.hidePlayBox = YES;
+			self.hideExportBox = YES;
 		}
 		break;
 		
@@ -262,8 +276,8 @@ MODIFICATION HISTORY
 		{
 			[FT removeAllCamera];
 			[FTview reloadData];
-			[boxPlay setHidden:YES];
-			[boxExport setHidden:YES];
+			self.hidePlayBox = YES;
+			self.hideExportBox = YES;
 		}
 		break;
 		
@@ -328,35 +342,35 @@ MODIFICATION HISTORY
 
 - (IBAction) flyThruCompute:(id) sender
 {
-	int minSteps = ([FT loop])?2:3; // for the spline, 3 points are needed. (in the case of a loop, the 3rd point is added in the 'computePath' method of the FlyThru)
+	int minSteps = (FT.loop)?2:3; // for the spline, 3 points are needed. (in the case of a loop, the 3rd point is added in the 'computePath' method of the FlyThru)
 	int userChoice = 1;
 	
-	if( [[FT steps] count] < 2)
+	if( [FT.steps count] < 2)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"Error",nil), NSLocalizedString(@"Add at least 2 frames for a Fly Thru.",nil), nil, nil, nil);
 		return;
 	}
 	
-	if ([FT interpolationMethod] == 1 && [[FT steps] count] < minSteps)
+	if ([FT interpolationMethod] == 1 && [FT.steps count] < minSteps)
 	{
 		userChoice = NSRunAlertPanel(NSLocalizedString(@"Spline Interpolation Error", nil), NSLocalizedString(@"The Spline Interpolation needs at least 3 points to be run.", nil), NSLocalizedString(@"Use Linear Interpollation", nil), NSLocalizedString(@"Cancel", nil), nil);
 		if(userChoice == 1)
 		{
-			[FT setInterpolationMethod:2]; // changing the method
+			FT.interpolationMethod = 2; // changing the method
 			// selection of the right radio button
-			[[methodChooser cellWithTag:1] setState: NSOffState]; 
-			[[methodChooser cellWithTag:2] setState: NSOnState];
+			//[[methodChooser cellWithTag:1] setState: NSOffState]; 
+			//[[methodChooser cellWithTag:2] setState: NSOnState];
 		}
 	}
 	
 	if(userChoice == 1)
 	{
-		int v = [nbFramesTextField intValue];
+		int v = FT.numberOfFrames;
 	
 		if( v < 2) v = 2;
-		if( v > 1000) v = 1000;
+		if( v > 2000) v = 2000;
 	
-		[FT setNumberOfFrames: v];
+		FT.numberOfFrames = v;
 		[FT computePath];
 		
 		// 4D
@@ -386,8 +400,8 @@ MODIFICATION HISTORY
 		}
 
 		
-		[boxPlay setHidden:NO];
-		[boxExport setHidden:NO];
+		self.hidePlayBox = NO;
+		self.hideExportBox = NO;
 		
 	//	[nbFramesTextField setStringValue: [NSString stringWithFormat:@"%d",[FT numberOfFrames]]];
 		
@@ -395,7 +409,7 @@ MODIFICATION HISTORY
 		
 		if( [controller3D isKindOfClass: [VRController class]] == NO || [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1)	// Only the VR supports LOD versus Best rendering mode if ray casting is used
 		{
-			[LOD selectCellWithTag: 0];
+			self.levelOfDetailType =  0;
 			[[LOD cellWithTag: 1] setEnabled: NO];
 		}
 		else
@@ -432,8 +446,8 @@ MODIFICATION HISTORY
 		[FTAdapter setCurrentViewToCamera:[[FT pathCameras] objectAtIndex:curMovieIndex]];
 		
 		// resize the window to the original size (with the 3 box)
-		[boxCompute setHidden:NO];
-		[boxExport setHidden:NO];
+		self.hideComputeBox = NO;
+		self.hideExportBox = NO;
 		
 		NSPoint upperLeftCorner = [[self window] frame].origin;
 		upperLeftCorner.y += [[self window] frame].size.height;
@@ -467,8 +481,7 @@ MODIFICATION HISTORY
 
 		// resize the window
 		NSPoint newOrigin = [boxExport frame].origin;
-		[boxCompute setHidden:YES];
-		[boxExport setHidden:YES];
+		self.hideComputeBox = YES;
 		boxPlayOrigin = [boxPlay frame].origin;
 		
 		windowFrame = [[self window] frame];
@@ -519,9 +532,9 @@ MODIFICATION HISTORY
 {
 	[FTAdapter prepareMovieGenerating];
 
-	if( [[exportFormat selectedCell] tag] == 0)
+	if( exportFormat == 0)
 	{
-		long numberOfFrames = [FT numberOfFrames];
+		long numberOfFrames = FT.numberOfFrames;
 		
 		if( [[self window3DController] movieFrames] > 1)
 		{
@@ -537,7 +550,7 @@ MODIFICATION HISTORY
 	{
 		long			i;
 		DICOMExport		*dcmSequence = [[DICOMExport alloc] init];
-		long numberOfFrames = [FT numberOfFrames];
+		long numberOfFrames = FT.numberOfFrames;
 		
 		if( [[self window3DController] movieFrames] > 1)
 		{
@@ -550,7 +563,7 @@ MODIFICATION HISTORY
 		[[progress progress] setMaxValue: numberOfFrames];
 		
 		[dcmSequence setSeriesNumber:8500 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
-		[dcmSequence setSeriesDescription: [dcmSeriesName stringValue]];
+		[dcmSequence setSeriesDescription: dcmSeriesName];
 		[dcmSequence setSourceFile: [[[controller3D pixList] objectAtIndex:0] sourceFile]];
 				
 		for( i = 0; i < numberOfFrames; i++)
@@ -568,7 +581,7 @@ MODIFICATION HISTORY
 			}
 			
 			[FTAdapter setCurrentViewToCamera:[[FT pathCameras] objectAtIndex: i]];
-			[FTAdapter getCurrentCameraImage: [[LOD selectedCell] tag]];
+			[FTAdapter getCurrentCameraImage: levelOfDetailType];
 			
 			long	width, height, spp, bpp, err;
 			
@@ -624,12 +637,12 @@ MODIFICATION HISTORY
 		}
 	
 		[FTAdapter setCurrentViewToCamera:[[FT pathCameras] objectAtIndex: [cur intValue]]];
-		return [FTAdapter getCurrentCameraImage: [[LOD selectedCell] tag]];
+		return [FTAdapter getCurrentCameraImage: levelOfDetailType];
 	}
 	else
 	{
 		[FTAdapter setCurrentViewToCamera:[[FT pathCameras] objectAtIndex: 0]];
-		return [FTAdapter getCurrentCameraImage: [[LOD selectedCell] tag]];
+		return [FTAdapter getCurrentCameraImage: levelOfDetailType];
 	}
 }
 

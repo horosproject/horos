@@ -24,22 +24,21 @@
 @interface FlyThruController : NSWindowController {
 
 	IBOutlet NSMatrix		*LOD;
-	IBOutlet NSMatrix		*exportFormat;
+	IBOutlet NSBox			*boxPlay;
+	IBOutlet NSBox			*boxExport;
+	IBOutlet NSBox			*boxCompute;
 	
 	IBOutlet NSTabView		*tabView;
 	IBOutlet NSTableView	*FTview;
 	IBOutlet NSTableColumn	*colCamNumber;
 	IBOutlet NSTableColumn	*colCamPreview;
 
-	IBOutlet NSBox			*boxCompute;
-	IBOutlet NSTextField	*nbFramesTextField;
 	IBOutlet NSMatrix		*methodChooser;
 	IBOutlet NSButton		*computeButton;
 	
-	IBOutlet NSBox			*boxPlay;
 	IBOutlet NSSlider		*framesSlider;
 	IBOutlet NSButton		*playButton;
-	IBOutlet NSTextField	*dcmSeriesName;
+
 	
 	IBOutlet NSTextField	*MatrixSize;
 	IBOutlet NSPopUpButton	*MatrixSizePopup;
@@ -47,7 +46,6 @@
 			 NSPoint		boxPlayOrigin;
 			 NSRect			windowFrame;
 			 
-	IBOutlet NSBox			*boxExport;
 	IBOutlet NSButton		*exportButton;
 	
 	FlyThru					*FT;
@@ -57,12 +55,27 @@
 	NSTimer					*movieTimer;
 	NSTimeInterval			lastMovieTime;
 	int						curMovieIndex;
+	BOOL					hidePlayBox;
+	BOOL					hideComputeBox;
+	BOOL					hideExportBox;
+	BOOL					enableRenderingType;
+	int						exportFormat;
+	int						levelOfDetailType;
+	int						exportSize;
 	
 	IBOutlet NSButton		*exportButtonOption;
+	NSString *				dcmSeriesName;
 }
 
 @property (readwrite, retain) FlyThru *flyThru;
 @property int currentMovieIndex;
+@property BOOL hidePlayBox;
+@property BOOL hideComputeBox;
+@property BOOL hideExportBox;
+@property int  exportFormat;
+@property NSString *dcmSeriesName;
+@property int	levelOfDetailType;
+@property int	exportSize;
 
 - (void)setWindow3DController:(Window3DController*) w3Dc;
 - (Window3DController*)window3DController;
@@ -78,7 +91,7 @@
 - (void) setCurrentView;
 - (IBAction) flyThruSetCurrentView:(id) sender;
 - (IBAction) flyThruCompute:(id) sender;
-//- (IBAction) flyThruSetCurrentViewToSliderPosition:(id) sender;
+
 - (void) flyThruPlayStop:(id) sender;
 - (void) performMovieAnimation:(id) sender;
 - (IBAction) flyThruQuicktimeExport :(id) sender;
