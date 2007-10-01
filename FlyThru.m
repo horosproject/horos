@@ -27,7 +27,7 @@ numberOfFrames, interpolationMethod, constantSpeed, loop;
 
 -(id) init
 {
-	return [[FlyThru alloc] initWithFirstCamera:nil];
+	return [self initWithFirstCamera:nil];
 }
 
 // steps

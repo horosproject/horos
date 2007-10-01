@@ -459,6 +459,20 @@
 		A975206C0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A975206A0CAA98BA005D172F /* IChatTheatreHelpWindowController.m */; };
 		A975206D0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = A97520690CAA98BA005D172F /* IChatTheatreHelpWindowController.h */; };
 		A975206E0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A975206A0CAA98BA005D172F /* IChatTheatreHelpWindowController.m */; };
+		A978DE910CB0D4BE00FB2C3D /* NFHUDSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE680CB0D4BE00FB2C3D /* NFHUDSlider.h */; };
+		A978DE9B0CB0D4BE00FB2C3D /* NFHUDButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE720CB0D4BE00FB2C3D /* NFHUDButtonCell.m */; };
+		A978DE9C0CB0D4BE00FB2C3D /* NFHUDButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE730CB0D4BE00FB2C3D /* NFHUDButtonCell.h */; };
+		A978DE9D0CB0D4BE00FB2C3D /* NFHUDButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE740CB0D4BE00FB2C3D /* NFHUDButton.m */; };
+		A978DE9E0CB0D4BE00FB2C3D /* NFHUDButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE750CB0D4BE00FB2C3D /* NFHUDButton.h */; };
+		A978DEA10CB0D4BE00FB2C3D /* NFHUDSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE780CB0D4BE00FB2C3D /* NFHUDSliderCell.m */; };
+		A978DEA20CB0D4BE00FB2C3D /* NFHUDSliderCell.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE790CB0D4BE00FB2C3D /* NFHUDSliderCell.h */; };
+		A978DEA30CB0D4BE00FB2C3D /* NFHUDSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE7A0CB0D4BE00FB2C3D /* NFHUDSlider.m */; };
+		A978DEA40CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE7B0CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.m */; };
+		A978DEA50CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE7C0CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.h */; };
+		A978DEA70CB0D4BE00FB2C3D /* NSImage+FrameworkImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE7E0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.m */; };
+		A978DEA80CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE7F0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h */; };
+		A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE870CB0D4BE00FB2C3D /* NFHUDPopUpButton.m */; };
+		A978DEB10CB0D4BE00FB2C3D /* NFHUDPopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE880CB0D4BE00FB2C3D /* NFHUDPopUpButton.h */; };
 		A98159A009AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
 		A98159A109AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
 		A98FFBE50CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
@@ -664,21 +678,6 @@
 		AB3200080A21C338007D44C3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
 		AB32FAE30A21C0FB007D44C3 /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E0B3A3F067526CD00908593 /* OsiriX.framework */; };
 		AB32FB2B0A21C270007D44C3 /* DCMObjectDBImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E172F550933CAE00057BCE8 /* DCMObjectDBImport.m */; };
-		AB3674920BE0CEB1003634E6 /* ButtonFillD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674300BE0CEB0003634E6 /* ButtonFillD.tiff */; };
-		AB3674930BE0CEB1003634E6 /* ButtonFillN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674310BE0CEB0003634E6 /* ButtonFillN.tiff */; };
-		AB3674940BE0CEB1003634E6 /* ButtonFillP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674320BE0CEB0003634E6 /* ButtonFillP.tiff */; };
-		AB3674950BE0CEB1003634E6 /* ButtonLeftD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674330BE0CEB0003634E6 /* ButtonLeftD.tiff */; };
-		AB3674960BE0CEB1003634E6 /* ButtonLeftN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674340BE0CEB0003634E6 /* ButtonLeftN.tiff */; };
-		AB3674970BE0CEB1003634E6 /* ButtonLeftP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674350BE0CEB0003634E6 /* ButtonLeftP.tiff */; };
-		AB3674980BE0CEB1003634E6 /* ButtonRightD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674360BE0CEB0003634E6 /* ButtonRightD.tiff */; };
-		AB3674990BE0CEB1003634E6 /* ButtonRightN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674370BE0CEB0003634E6 /* ButtonRightN.tiff */; };
-		AB36749A0BE0CEB1003634E6 /* ButtonRightP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674380BE0CEB0003634E6 /* ButtonRightP.tiff */; };
-		AB36749B0BE0CEB1003634E6 /* CheckboxOffD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674390BE0CEB0003634E6 /* CheckboxOffD.tiff */; };
-		AB36749C0BE0CEB1003634E6 /* CheckboxOffN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743A0BE0CEB0003634E6 /* CheckboxOffN.tiff */; };
-		AB36749D0BE0CEB1003634E6 /* CheckboxOffP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743B0BE0CEB0003634E6 /* CheckboxOffP.tiff */; };
-		AB36749E0BE0CEB1003634E6 /* CheckboxOnD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743C0BE0CEB0003634E6 /* CheckboxOnD.tiff */; };
-		AB36749F0BE0CEB1003634E6 /* CheckboxOnN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743D0BE0CEB0003634E6 /* CheckboxOnN.tiff */; };
-		AB3674A00BE0CEB1003634E6 /* CheckboxOnP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743E0BE0CEB0003634E6 /* CheckboxOnP.tiff */; };
 		AB3674A90BE0CEB1003634E6 /* HUDButtonFillN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674480BE0CEB0003634E6 /* HUDButtonFillN.tiff */; };
 		AB3674AA0BE0CEB1003634E6 /* HUDButtonFillP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674490BE0CEB0003634E6 /* HUDButtonFillP.tiff */; };
 		AB3674AB0BE0CEB1003634E6 /* HUDButtonLeftN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36744A0BE0CEB0003634E6 /* HUDButtonLeftN.tiff */; };
@@ -703,35 +702,6 @@
 		AB3674BE0BE0CEB1003634E6 /* HUDSliderTrackFill.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745D0BE0CEB1003634E6 /* HUDSliderTrackFill.tiff */; };
 		AB3674BF0BE0CEB1003634E6 /* HUDSliderTrackLeft.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745E0BE0CEB1003634E6 /* HUDSliderTrackLeft.tiff */; };
 		AB3674C00BE0CEB1003634E6 /* HUDSliderTrackRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tiff */; };
-		AB3674C30BE0CEB1003634E6 /* IWWindowCornerBL.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674620BE0CEB1003634E6 /* IWWindowCornerBL.tiff */; };
-		AB3674C40BE0CEB1003634E6 /* IWWindowCornerBR.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674630BE0CEB1003634E6 /* IWWindowCornerBR.tiff */; };
-		AB3674C50BE0CEB1003634E6 /* IWWindowCornerTL.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674640BE0CEB1003634E6 /* IWWindowCornerTL.tiff */; };
-		AB3674C60BE0CEB1003634E6 /* IWWindowCornerTR.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674650BE0CEB1003634E6 /* IWWindowCornerTR.tiff */; };
-		AB3674C70BE0CEB1003634E6 /* IWWindowResizeControl.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674660BE0CEB1003634E6 /* IWWindowResizeControl.tiff */; };
-		AB3674EA0BE0CEB1003634E6 /* PopUpFillD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674890BE0CEB1003634E6 /* PopUpFillD.tiff */; };
-		AB3674EB0BE0CEB1003634E6 /* PopUpFillN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748A0BE0CEB1003634E6 /* PopUpFillN.tiff */; };
-		AB3674EC0BE0CEB2003634E6 /* PopUpFillP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748B0BE0CEB1003634E6 /* PopUpFillP.tiff */; };
-		AB3674ED0BE0CEB2003634E6 /* PopUpLeftD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748C0BE0CEB1003634E6 /* PopUpLeftD.tiff */; };
-		AB3674EE0BE0CEB2003634E6 /* PopUpLeftN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748D0BE0CEB1003634E6 /* PopUpLeftN.tiff */; };
-		AB3674EF0BE0CEB2003634E6 /* PopUpLeftP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748E0BE0CEB1003634E6 /* PopUpLeftP.tiff */; };
-		AB3674F00BE0CEB2003634E6 /* PopUpRightD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748F0BE0CEB1003634E6 /* PopUpRightD.tiff */; };
-		AB3674F10BE0CEB2003634E6 /* PopUpRightN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674900BE0CEB1003634E6 /* PopUpRightN.tiff */; };
-		AB3674F20BE0CEB2003634E6 /* PopUpRightP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674910BE0CEB1003634E6 /* PopUpRightP.tiff */; };
-		AB3675540BE0CEB2003634E6 /* ButtonFillD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674300BE0CEB0003634E6 /* ButtonFillD.tiff */; };
-		AB3675550BE0CEB2003634E6 /* ButtonFillN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674310BE0CEB0003634E6 /* ButtonFillN.tiff */; };
-		AB3675560BE0CEB2003634E6 /* ButtonFillP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674320BE0CEB0003634E6 /* ButtonFillP.tiff */; };
-		AB3675570BE0CEB2003634E6 /* ButtonLeftD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674330BE0CEB0003634E6 /* ButtonLeftD.tiff */; };
-		AB3675580BE0CEB2003634E6 /* ButtonLeftN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674340BE0CEB0003634E6 /* ButtonLeftN.tiff */; };
-		AB3675590BE0CEB2003634E6 /* ButtonLeftP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674350BE0CEB0003634E6 /* ButtonLeftP.tiff */; };
-		AB36755A0BE0CEB2003634E6 /* ButtonRightD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674360BE0CEB0003634E6 /* ButtonRightD.tiff */; };
-		AB36755B0BE0CEB2003634E6 /* ButtonRightN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674370BE0CEB0003634E6 /* ButtonRightN.tiff */; };
-		AB36755C0BE0CEB2003634E6 /* ButtonRightP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674380BE0CEB0003634E6 /* ButtonRightP.tiff */; };
-		AB36755D0BE0CEB2003634E6 /* CheckboxOffD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674390BE0CEB0003634E6 /* CheckboxOffD.tiff */; };
-		AB36755E0BE0CEB2003634E6 /* CheckboxOffN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743A0BE0CEB0003634E6 /* CheckboxOffN.tiff */; };
-		AB36755F0BE0CEB2003634E6 /* CheckboxOffP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743B0BE0CEB0003634E6 /* CheckboxOffP.tiff */; };
-		AB3675600BE0CEB2003634E6 /* CheckboxOnD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743C0BE0CEB0003634E6 /* CheckboxOnD.tiff */; };
-		AB3675610BE0CEB2003634E6 /* CheckboxOnN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743D0BE0CEB0003634E6 /* CheckboxOnN.tiff */; };
-		AB3675620BE0CEB2003634E6 /* CheckboxOnP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36743E0BE0CEB0003634E6 /* CheckboxOnP.tiff */; };
 		AB36756B0BE0CEB2003634E6 /* HUDButtonFillN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674480BE0CEB0003634E6 /* HUDButtonFillN.tiff */; };
 		AB36756C0BE0CEB2003634E6 /* HUDButtonFillP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674490BE0CEB0003634E6 /* HUDButtonFillP.tiff */; };
 		AB36756D0BE0CEB2003634E6 /* HUDButtonLeftN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36744A0BE0CEB0003634E6 /* HUDButtonLeftN.tiff */; };
@@ -756,20 +726,6 @@
 		AB3675800BE0CEB2003634E6 /* HUDSliderTrackFill.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745D0BE0CEB1003634E6 /* HUDSliderTrackFill.tiff */; };
 		AB3675810BE0CEB2003634E6 /* HUDSliderTrackLeft.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745E0BE0CEB1003634E6 /* HUDSliderTrackLeft.tiff */; };
 		AB3675820BE0CEB2003634E6 /* HUDSliderTrackRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tiff */; };
-		AB3675850BE0CEB2003634E6 /* IWWindowCornerBL.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674620BE0CEB1003634E6 /* IWWindowCornerBL.tiff */; };
-		AB3675860BE0CEB2003634E6 /* IWWindowCornerBR.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674630BE0CEB1003634E6 /* IWWindowCornerBR.tiff */; };
-		AB3675870BE0CEB2003634E6 /* IWWindowCornerTL.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674640BE0CEB1003634E6 /* IWWindowCornerTL.tiff */; };
-		AB3675880BE0CEB2003634E6 /* IWWindowCornerTR.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674650BE0CEB1003634E6 /* IWWindowCornerTR.tiff */; };
-		AB3675890BE0CEB2003634E6 /* IWWindowResizeControl.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674660BE0CEB1003634E6 /* IWWindowResizeControl.tiff */; };
-		AB3675AC0BE0CEB2003634E6 /* PopUpFillD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674890BE0CEB1003634E6 /* PopUpFillD.tiff */; };
-		AB3675AD0BE0CEB2003634E6 /* PopUpFillN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748A0BE0CEB1003634E6 /* PopUpFillN.tiff */; };
-		AB3675AE0BE0CEB2003634E6 /* PopUpFillP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748B0BE0CEB1003634E6 /* PopUpFillP.tiff */; };
-		AB3675AF0BE0CEB2003634E6 /* PopUpLeftD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748C0BE0CEB1003634E6 /* PopUpLeftD.tiff */; };
-		AB3675B00BE0CEB2003634E6 /* PopUpLeftN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748D0BE0CEB1003634E6 /* PopUpLeftN.tiff */; };
-		AB3675B10BE0CEB2003634E6 /* PopUpLeftP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748E0BE0CEB1003634E6 /* PopUpLeftP.tiff */; };
-		AB3675B20BE0CEB2003634E6 /* PopUpRightD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB36748F0BE0CEB1003634E6 /* PopUpRightD.tiff */; };
-		AB3675B30BE0CEB2003634E6 /* PopUpRightN.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674900BE0CEB1003634E6 /* PopUpRightN.tiff */; };
-		AB3675B40BE0CEB2003634E6 /* PopUpRightP.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB3674910BE0CEB1003634E6 /* PopUpRightP.tiff */; };
 		AB381AFD0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = AB381AE90ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane */; };
 		AB381AFF0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = AB381AE90ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane */; };
 		AB3886AC0B2449CD00831F74 /* SagSmallOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB7598280AEE62CE005EE3A9 /* SagSmallOpposite.tif */; };
@@ -8542,6 +8498,20 @@
 		A97520060CAA8481005D172F /* style.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
 		A97520690CAA98BA005D172F /* IChatTheatreHelpWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IChatTheatreHelpWindowController.h; sourceTree = "<group>"; };
 		A975206A0CAA98BA005D172F /* IChatTheatreHelpWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IChatTheatreHelpWindowController.m; sourceTree = "<group>"; };
+		A978DE680CB0D4BE00FB2C3D /* NFHUDSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDSlider.h; sourceTree = "<group>"; };
+		A978DE720CB0D4BE00FB2C3D /* NFHUDButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDButtonCell.m; sourceTree = "<group>"; };
+		A978DE730CB0D4BE00FB2C3D /* NFHUDButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDButtonCell.h; sourceTree = "<group>"; };
+		A978DE740CB0D4BE00FB2C3D /* NFHUDButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDButton.m; sourceTree = "<group>"; };
+		A978DE750CB0D4BE00FB2C3D /* NFHUDButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDButton.h; sourceTree = "<group>"; };
+		A978DE780CB0D4BE00FB2C3D /* NFHUDSliderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDSliderCell.m; sourceTree = "<group>"; };
+		A978DE790CB0D4BE00FB2C3D /* NFHUDSliderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDSliderCell.h; sourceTree = "<group>"; };
+		A978DE7A0CB0D4BE00FB2C3D /* NFHUDSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDSlider.m; sourceTree = "<group>"; };
+		A978DE7B0CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDPopUpButtonCell.m; sourceTree = "<group>"; };
+		A978DE7C0CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDPopUpButtonCell.h; sourceTree = "<group>"; };
+		A978DE7E0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSImage+FrameworkImage.m"; sourceTree = "<group>"; };
+		A978DE7F0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+FrameworkImage.h"; sourceTree = "<group>"; };
+		A978DE870CB0D4BE00FB2C3D /* NFHUDPopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDPopUpButton.m; sourceTree = "<group>"; };
+		A978DE880CB0D4BE00FB2C3D /* NFHUDPopUpButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDPopUpButton.h; sourceTree = "<group>"; };
 		A981599E09AC6B25003FF1FB /* bonesRemoval.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = bonesRemoval.tif; sourceTree = "<group>"; };
 		A98FFBE30CA92B58000291C8 /* altivecFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = altivecFunctions.c; sourceTree = "<group>"; };
 		A98FFBE40CA92B58000291C8 /* altivecFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = altivecFunctions.h; sourceTree = "<group>"; };
@@ -8653,21 +8623,6 @@
 		AB2C24E10677861300A08910 /* PluginFilter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginFilter.h; sourceTree = "<group>"; };
 		AB2C25200677873200A08910 /* PluginManager.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginManager.m; sourceTree = "<group>"; };
 		AB2C25210677873200A08910 /* PluginManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManager.h; sourceTree = "<group>"; };
-		AB3674300BE0CEB0003634E6 /* ButtonFillD.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ButtonFillD.tiff; sourceTree = "<group>"; };
-		AB3674310BE0CEB0003634E6 /* ButtonFillN.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ButtonFillN.tiff; sourceTree = "<group>"; };
-		AB3674320BE0CEB0003634E6 /* ButtonFillP.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ButtonFillP.tiff; sourceTree = "<group>"; };
-		AB3674330BE0CEB0003634E6 /* ButtonLeftD.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ButtonLeftD.tiff; sourceTree = "<group>"; };
-		AB3674340BE0CEB0003634E6 /* ButtonLeftN.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ButtonLeftN.tiff; sourceTree = "<group>"; };
-		AB3674350BE0CEB0003634E6 /* ButtonLeftP.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ButtonLeftP.tiff; sourceTree = "<group>"; };
-		AB3674360BE0CEB0003634E6 /* ButtonRightD.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ButtonRightD.tiff; sourceTree = "<group>"; };
-		AB3674370BE0CEB0003634E6 /* ButtonRightN.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ButtonRightN.tiff; sourceTree = "<group>"; };
-		AB3674380BE0CEB0003634E6 /* ButtonRightP.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ButtonRightP.tiff; sourceTree = "<group>"; };
-		AB3674390BE0CEB0003634E6 /* CheckboxOffD.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CheckboxOffD.tiff; sourceTree = "<group>"; };
-		AB36743A0BE0CEB0003634E6 /* CheckboxOffN.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CheckboxOffN.tiff; sourceTree = "<group>"; };
-		AB36743B0BE0CEB0003634E6 /* CheckboxOffP.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CheckboxOffP.tiff; sourceTree = "<group>"; };
-		AB36743C0BE0CEB0003634E6 /* CheckboxOnD.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CheckboxOnD.tiff; sourceTree = "<group>"; };
-		AB36743D0BE0CEB0003634E6 /* CheckboxOnN.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CheckboxOnN.tiff; sourceTree = "<group>"; };
-		AB36743E0BE0CEB0003634E6 /* CheckboxOnP.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CheckboxOnP.tiff; sourceTree = "<group>"; };
 		AB3674480BE0CEB0003634E6 /* HUDButtonFillN.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDButtonFillN.tiff; sourceTree = "<group>"; };
 		AB3674490BE0CEB0003634E6 /* HUDButtonFillP.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDButtonFillP.tiff; sourceTree = "<group>"; };
 		AB36744A0BE0CEB0003634E6 /* HUDButtonLeftN.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDButtonLeftN.tiff; sourceTree = "<group>"; };
@@ -8692,20 +8647,6 @@
 		AB36745D0BE0CEB1003634E6 /* HUDSliderTrackFill.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrackFill.tiff; sourceTree = "<group>"; };
 		AB36745E0BE0CEB1003634E6 /* HUDSliderTrackLeft.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrackLeft.tiff; sourceTree = "<group>"; };
 		AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrackRight.tiff; sourceTree = "<group>"; };
-		AB3674620BE0CEB1003634E6 /* IWWindowCornerBL.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = IWWindowCornerBL.tiff; sourceTree = "<group>"; };
-		AB3674630BE0CEB1003634E6 /* IWWindowCornerBR.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = IWWindowCornerBR.tiff; sourceTree = "<group>"; };
-		AB3674640BE0CEB1003634E6 /* IWWindowCornerTL.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = IWWindowCornerTL.tiff; sourceTree = "<group>"; };
-		AB3674650BE0CEB1003634E6 /* IWWindowCornerTR.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = IWWindowCornerTR.tiff; sourceTree = "<group>"; };
-		AB3674660BE0CEB1003634E6 /* IWWindowResizeControl.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = IWWindowResizeControl.tiff; sourceTree = "<group>"; };
-		AB3674890BE0CEB1003634E6 /* PopUpFillD.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PopUpFillD.tiff; sourceTree = "<group>"; };
-		AB36748A0BE0CEB1003634E6 /* PopUpFillN.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PopUpFillN.tiff; sourceTree = "<group>"; };
-		AB36748B0BE0CEB1003634E6 /* PopUpFillP.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PopUpFillP.tiff; sourceTree = "<group>"; };
-		AB36748C0BE0CEB1003634E6 /* PopUpLeftD.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PopUpLeftD.tiff; sourceTree = "<group>"; };
-		AB36748D0BE0CEB1003634E6 /* PopUpLeftN.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PopUpLeftN.tiff; sourceTree = "<group>"; };
-		AB36748E0BE0CEB1003634E6 /* PopUpLeftP.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PopUpLeftP.tiff; sourceTree = "<group>"; };
-		AB36748F0BE0CEB1003634E6 /* PopUpRightD.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PopUpRightD.tiff; sourceTree = "<group>"; };
-		AB3674900BE0CEB1003634E6 /* PopUpRightN.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PopUpRightN.tiff; sourceTree = "<group>"; };
-		AB3674910BE0CEB1003634E6 /* PopUpRightP.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PopUpRightP.tiff; sourceTree = "<group>"; };
 		AB381AE90ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIAutoroutingPreferencePane.prefPane; path = "Preference Panes/OSIAutoroutingPreferencePane/build/Development/OSIAutoroutingPreferencePane.prefPane"; sourceTree = "<group>"; };
 		AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIAutoroutingPreferencePane.xcodeproj; path = "Preference Panes/OSIAutoroutingPreferencePane/OSIAutoroutingPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		AB38FC99057A9B050041FEBB /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -12805,21 +12746,20 @@
 		AB36742F0BE0CEB0003634E6 /* iLifeControls */ = {
 			isa = PBXGroup;
 			children = (
-				AB3674300BE0CEB0003634E6 /* ButtonFillD.tiff */,
-				AB3674310BE0CEB0003634E6 /* ButtonFillN.tiff */,
-				AB3674320BE0CEB0003634E6 /* ButtonFillP.tiff */,
-				AB3674330BE0CEB0003634E6 /* ButtonLeftD.tiff */,
-				AB3674340BE0CEB0003634E6 /* ButtonLeftN.tiff */,
-				AB3674350BE0CEB0003634E6 /* ButtonLeftP.tiff */,
-				AB3674360BE0CEB0003634E6 /* ButtonRightD.tiff */,
-				AB3674370BE0CEB0003634E6 /* ButtonRightN.tiff */,
-				AB3674380BE0CEB0003634E6 /* ButtonRightP.tiff */,
-				AB3674390BE0CEB0003634E6 /* CheckboxOffD.tiff */,
-				AB36743A0BE0CEB0003634E6 /* CheckboxOffN.tiff */,
-				AB36743B0BE0CEB0003634E6 /* CheckboxOffP.tiff */,
-				AB36743C0BE0CEB0003634E6 /* CheckboxOnD.tiff */,
-				AB36743D0BE0CEB0003634E6 /* CheckboxOnN.tiff */,
-				AB36743E0BE0CEB0003634E6 /* CheckboxOnP.tiff */,
+				A978DE720CB0D4BE00FB2C3D /* NFHUDButtonCell.m */,
+				A978DE730CB0D4BE00FB2C3D /* NFHUDButtonCell.h */,
+				A978DE740CB0D4BE00FB2C3D /* NFHUDButton.m */,
+				A978DE750CB0D4BE00FB2C3D /* NFHUDButton.h */,
+				A978DE780CB0D4BE00FB2C3D /* NFHUDSliderCell.m */,
+				A978DE790CB0D4BE00FB2C3D /* NFHUDSliderCell.h */,
+				A978DE7A0CB0D4BE00FB2C3D /* NFHUDSlider.m */,
+				A978DE680CB0D4BE00FB2C3D /* NFHUDSlider.h */,
+				A978DE7B0CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.m */,
+				A978DE7C0CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.h */,
+				A978DE7E0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.m */,
+				A978DE7F0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h */,
+				A978DE870CB0D4BE00FB2C3D /* NFHUDPopUpButton.m */,
+				A978DE880CB0D4BE00FB2C3D /* NFHUDPopUpButton.h */,
 				AB3674480BE0CEB0003634E6 /* HUDButtonFillN.tiff */,
 				AB3674490BE0CEB0003634E6 /* HUDButtonFillP.tiff */,
 				AB36744A0BE0CEB0003634E6 /* HUDButtonLeftN.tiff */,
@@ -12844,20 +12784,6 @@
 				AB36745D0BE0CEB1003634E6 /* HUDSliderTrackFill.tiff */,
 				AB36745E0BE0CEB1003634E6 /* HUDSliderTrackLeft.tiff */,
 				AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tiff */,
-				AB3674620BE0CEB1003634E6 /* IWWindowCornerBL.tiff */,
-				AB3674630BE0CEB1003634E6 /* IWWindowCornerBR.tiff */,
-				AB3674640BE0CEB1003634E6 /* IWWindowCornerTL.tiff */,
-				AB3674650BE0CEB1003634E6 /* IWWindowCornerTR.tiff */,
-				AB3674660BE0CEB1003634E6 /* IWWindowResizeControl.tiff */,
-				AB3674890BE0CEB1003634E6 /* PopUpFillD.tiff */,
-				AB36748A0BE0CEB1003634E6 /* PopUpFillN.tiff */,
-				AB36748B0BE0CEB1003634E6 /* PopUpFillP.tiff */,
-				AB36748C0BE0CEB1003634E6 /* PopUpLeftD.tiff */,
-				AB36748D0BE0CEB1003634E6 /* PopUpLeftN.tiff */,
-				AB36748E0BE0CEB1003634E6 /* PopUpLeftP.tiff */,
-				AB36748F0BE0CEB1003634E6 /* PopUpRightD.tiff */,
-				AB3674900BE0CEB1003634E6 /* PopUpRightN.tiff */,
-				AB3674910BE0CEB1003634E6 /* PopUpRightP.tiff */,
 			);
 			name = iLifeControls;
 			path = Binaries/iLifeControls;
@@ -18545,6 +18471,13 @@
 				A975206B0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */,
 				DB5961380CAB447B00809190 /* OSIVoxel.h in Headers */,
 				BF6F18DC0CAD6ACF006DE602 /* FlyThruStepsArrayController.h in Headers */,
+				A978DE910CB0D4BE00FB2C3D /* NFHUDSlider.h in Headers */,
+				A978DE9C0CB0D4BE00FB2C3D /* NFHUDButtonCell.h in Headers */,
+				A978DE9E0CB0D4BE00FB2C3D /* NFHUDButton.h in Headers */,
+				A978DEA20CB0D4BE00FB2C3D /* NFHUDSliderCell.h in Headers */,
+				A978DEA50CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.h in Headers */,
+				A978DEA80CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h in Headers */,
+				A978DEB10CB0D4BE00FB2C3D /* NFHUDPopUpButton.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21250,21 +21183,6 @@
 				AB10FA680B96C95500D74684 /* OsirixDownload.icns in Resources */,
 				AB10FA9D0B96CCF000D74684 /* Osirix.icns in Resources */,
 				A9044D390BBAA29200F36689 /* ROISelector.tiff in Resources */,
-				AB3674920BE0CEB1003634E6 /* ButtonFillD.tiff in Resources */,
-				AB3674930BE0CEB1003634E6 /* ButtonFillN.tiff in Resources */,
-				AB3674940BE0CEB1003634E6 /* ButtonFillP.tiff in Resources */,
-				AB3674950BE0CEB1003634E6 /* ButtonLeftD.tiff in Resources */,
-				AB3674960BE0CEB1003634E6 /* ButtonLeftN.tiff in Resources */,
-				AB3674970BE0CEB1003634E6 /* ButtonLeftP.tiff in Resources */,
-				AB3674980BE0CEB1003634E6 /* ButtonRightD.tiff in Resources */,
-				AB3674990BE0CEB1003634E6 /* ButtonRightN.tiff in Resources */,
-				AB36749A0BE0CEB1003634E6 /* ButtonRightP.tiff in Resources */,
-				AB36749B0BE0CEB1003634E6 /* CheckboxOffD.tiff in Resources */,
-				AB36749C0BE0CEB1003634E6 /* CheckboxOffN.tiff in Resources */,
-				AB36749D0BE0CEB1003634E6 /* CheckboxOffP.tiff in Resources */,
-				AB36749E0BE0CEB1003634E6 /* CheckboxOnD.tiff in Resources */,
-				AB36749F0BE0CEB1003634E6 /* CheckboxOnN.tiff in Resources */,
-				AB3674A00BE0CEB1003634E6 /* CheckboxOnP.tiff in Resources */,
 				AB3674A90BE0CEB1003634E6 /* HUDButtonFillN.tiff in Resources */,
 				AB3674AA0BE0CEB1003634E6 /* HUDButtonFillP.tiff in Resources */,
 				AB3674AB0BE0CEB1003634E6 /* HUDButtonLeftN.tiff in Resources */,
@@ -21289,20 +21207,6 @@
 				AB3674BE0BE0CEB1003634E6 /* HUDSliderTrackFill.tiff in Resources */,
 				AB3674BF0BE0CEB1003634E6 /* HUDSliderTrackLeft.tiff in Resources */,
 				AB3674C00BE0CEB1003634E6 /* HUDSliderTrackRight.tiff in Resources */,
-				AB3674C30BE0CEB1003634E6 /* IWWindowCornerBL.tiff in Resources */,
-				AB3674C40BE0CEB1003634E6 /* IWWindowCornerBR.tiff in Resources */,
-				AB3674C50BE0CEB1003634E6 /* IWWindowCornerTL.tiff in Resources */,
-				AB3674C60BE0CEB1003634E6 /* IWWindowCornerTR.tiff in Resources */,
-				AB3674C70BE0CEB1003634E6 /* IWWindowResizeControl.tiff in Resources */,
-				AB3674EA0BE0CEB1003634E6 /* PopUpFillD.tiff in Resources */,
-				AB3674EB0BE0CEB1003634E6 /* PopUpFillN.tiff in Resources */,
-				AB3674EC0BE0CEB2003634E6 /* PopUpFillP.tiff in Resources */,
-				AB3674ED0BE0CEB2003634E6 /* PopUpLeftD.tiff in Resources */,
-				AB3674EE0BE0CEB2003634E6 /* PopUpLeftN.tiff in Resources */,
-				AB3674EF0BE0CEB2003634E6 /* PopUpLeftP.tiff in Resources */,
-				AB3674F00BE0CEB2003634E6 /* PopUpRightD.tiff in Resources */,
-				AB3674F10BE0CEB2003634E6 /* PopUpRightN.tiff in Resources */,
-				AB3674F20BE0CEB2003634E6 /* PopUpRightP.tiff in Resources */,
 				ABF7D84D0BE1EB5E00D1A1B4 /* DynamicAngle.tiff in Resources */,
 				ABF7D84E0BE1EB5E00D1A1B4 /* Axis.tiff in Resources */,
 				CED80C8B0BF187930058A469 /* AutofillDisabled.tif in Resources */,
@@ -21661,21 +21565,6 @@
 				AB10FA6A0B96C95500D74684 /* OsirixDownload.icns in Resources */,
 				AB10FA9F0B96CCF000D74684 /* Osirix.icns in Resources */,
 				A9044D3A0BBAA29200F36689 /* ROISelector.tiff in Resources */,
-				AB3675540BE0CEB2003634E6 /* ButtonFillD.tiff in Resources */,
-				AB3675550BE0CEB2003634E6 /* ButtonFillN.tiff in Resources */,
-				AB3675560BE0CEB2003634E6 /* ButtonFillP.tiff in Resources */,
-				AB3675570BE0CEB2003634E6 /* ButtonLeftD.tiff in Resources */,
-				AB3675580BE0CEB2003634E6 /* ButtonLeftN.tiff in Resources */,
-				AB3675590BE0CEB2003634E6 /* ButtonLeftP.tiff in Resources */,
-				AB36755A0BE0CEB2003634E6 /* ButtonRightD.tiff in Resources */,
-				AB36755B0BE0CEB2003634E6 /* ButtonRightN.tiff in Resources */,
-				AB36755C0BE0CEB2003634E6 /* ButtonRightP.tiff in Resources */,
-				AB36755D0BE0CEB2003634E6 /* CheckboxOffD.tiff in Resources */,
-				AB36755E0BE0CEB2003634E6 /* CheckboxOffN.tiff in Resources */,
-				AB36755F0BE0CEB2003634E6 /* CheckboxOffP.tiff in Resources */,
-				AB3675600BE0CEB2003634E6 /* CheckboxOnD.tiff in Resources */,
-				AB3675610BE0CEB2003634E6 /* CheckboxOnN.tiff in Resources */,
-				AB3675620BE0CEB2003634E6 /* CheckboxOnP.tiff in Resources */,
 				AB36756B0BE0CEB2003634E6 /* HUDButtonFillN.tiff in Resources */,
 				AB36756C0BE0CEB2003634E6 /* HUDButtonFillP.tiff in Resources */,
 				AB36756D0BE0CEB2003634E6 /* HUDButtonLeftN.tiff in Resources */,
@@ -21700,20 +21589,6 @@
 				AB3675800BE0CEB2003634E6 /* HUDSliderTrackFill.tiff in Resources */,
 				AB3675810BE0CEB2003634E6 /* HUDSliderTrackLeft.tiff in Resources */,
 				AB3675820BE0CEB2003634E6 /* HUDSliderTrackRight.tiff in Resources */,
-				AB3675850BE0CEB2003634E6 /* IWWindowCornerBL.tiff in Resources */,
-				AB3675860BE0CEB2003634E6 /* IWWindowCornerBR.tiff in Resources */,
-				AB3675870BE0CEB2003634E6 /* IWWindowCornerTL.tiff in Resources */,
-				AB3675880BE0CEB2003634E6 /* IWWindowCornerTR.tiff in Resources */,
-				AB3675890BE0CEB2003634E6 /* IWWindowResizeControl.tiff in Resources */,
-				AB3675AC0BE0CEB2003634E6 /* PopUpFillD.tiff in Resources */,
-				AB3675AD0BE0CEB2003634E6 /* PopUpFillN.tiff in Resources */,
-				AB3675AE0BE0CEB2003634E6 /* PopUpFillP.tiff in Resources */,
-				AB3675AF0BE0CEB2003634E6 /* PopUpLeftD.tiff in Resources */,
-				AB3675B00BE0CEB2003634E6 /* PopUpLeftN.tiff in Resources */,
-				AB3675B10BE0CEB2003634E6 /* PopUpLeftP.tiff in Resources */,
-				AB3675B20BE0CEB2003634E6 /* PopUpRightD.tiff in Resources */,
-				AB3675B30BE0CEB2003634E6 /* PopUpRightN.tiff in Resources */,
-				AB3675B40BE0CEB2003634E6 /* PopUpRightP.tiff in Resources */,
 				ABF7D8510BE1EB5E00D1A1B4 /* DynamicAngle.tiff in Resources */,
 				ABF7D8520BE1EB5E00D1A1B4 /* Axis.tiff in Resources */,
 				CED80C850BF187930058A469 /* AutofillDisabled.tif in Resources */,
@@ -22915,6 +22790,13 @@
 				A975206C0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */,
 				DB5961390CAB447B00809190 /* OSIVoxel.m in Sources */,
 				BF6F18DD0CAD6AD0006DE602 /* FlyThruStepsArrayController.m in Sources */,
+				A978DE9B0CB0D4BE00FB2C3D /* NFHUDButtonCell.m in Sources */,
+				A978DE9D0CB0D4BE00FB2C3D /* NFHUDButton.m in Sources */,
+				A978DEA10CB0D4BE00FB2C3D /* NFHUDSliderCell.m in Sources */,
+				A978DEA30CB0D4BE00FB2C3D /* NFHUDSlider.m in Sources */,
+				A978DEA40CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.m in Sources */,
+				A978DEA70CB0D4BE00FB2C3D /* NSImage+FrameworkImage.m in Sources */,
+				A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

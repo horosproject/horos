@@ -14,10 +14,11 @@
 
 + (id)frameworkImageNamed:(NSString *)name
 {
-	if([NSImage imageNamed:name])
-		return [NSImage imageNamed:name];
+//	if([NSImage imageNamed:name])
+//		return [NSImage imageNamed:name];
 		
-	NSBundle *bundle = [NSBundle bundleForClass: [NFIWindow class]];
+//	NSBundle *bundle = [NSBundle bundleForClass: [NFIWindow class]];
+	NSBundle *bundle = [NSBundle mainBundle];
 	NSImage *image = [[[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:name]] autorelease];
 	if(!image)
 		return nil;

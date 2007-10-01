@@ -30,11 +30,13 @@
 		self = [super initWithCoder: coder];
 		[coder setClass: oldClass forClassName: oldClassName];
 		
-		NSMutableDictionary *attrs = [[NSMutableDictionary alloc]init];
+		NSMutableDictionary *attrs = [[NSMutableDictionary alloc] init];
 		[attrs addEntriesFromDictionary:[[self attributedTitle] attributesAtIndex:0 effectiveRange:NULL]];
 		[attrs setObject:[NSColor whiteColor]forKey:NSForegroundColorAttributeName];
 		NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:[self title] attributes:attrs];
 		[self setAttributedTitle:attrStr];
+		[attrStr release];
+		[attrs release];
 	}
 	
 	return self;
