@@ -2596,10 +2596,14 @@ static NSArray*	statesArray = nil;
 		[checkIncomingLock lock];
 		
 		[self saveDatabase: currentDatabasePath];
+				
+		[[self window] display];
 		
 		[self updateDatabaseModel: currentDatabasePath :DATABASEVERSION];
 		
 		[self loadDatabase: currentDatabasePath];
+		
+		[[self window] display];
 		
 		[checkIncomingLock unlock];
 	}
