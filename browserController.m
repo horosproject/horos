@@ -1531,6 +1531,8 @@ static NSArray*	statesArray = nil;
 {
 	NSString	*model = [NSString stringWithFormat:@"/OsiriXDB_Previous_DataModel%@.mom", DBVersion];
 	
+	if( [DBVersion isEqualToString: DATABASEVERSION]) model = [NSString stringWithFormat:@"/OsiriXDB_DataModel.mom"];
+	
 	if( [[NSFileManager defaultManager] fileExistsAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: model]] )
 	{
 		Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Updating database model...", nil)];
@@ -1642,7 +1644,8 @@ static NSArray*	statesArray = nil;
 			}
 			
 			NSArray		*storedInAlbums = [[previousStudy valueForKey: @"albums"] allObjects];
-			for( NSString *name in storedInAlbums ) {				
+			for( NSString *sa in storedInAlbums ) {
+				NSString		*name = [sa valueForKey:@"name"];
 				NSMutableSet	*studiesStoredInAlbum = [[currentAlbums objectAtIndex: [currentAlbumsNames indexOfObject: name]] mutableSetValueForKey:@"studies"];
 				[studiesStoredInAlbum addObject: currentStudyTable];
 			}
@@ -2578,6 +2581,28 @@ static NSArray*	statesArray = nil;
 		modalDelegate: nil
 	   didEndSelector: nil
 		  contextInfo: nil];
+}
+
+- (IBAction) rebuildSQLFile:(id) sender
+{
+	if( isCurrentDatabaseBonjour ) return;
+
+	if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Rebuild SQL Index File", 0L),
+											 NSLocalizedString(@"Are you sure you want to rebuild SQL Index File? It can take several minutes.", 0L),
+											 NSLocalizedString(@"OK",nil),
+											 NSLocalizedString(@"Cancel",nil),
+											 0L) == NSAlertDefaultReturn)
+	{
+		[checkIncomingLock lock];
+		
+		[self saveDatabase: currentDatabasePath];
+		
+		[self updateDatabaseModel: currentDatabasePath :DATABASEVERSION];
+		
+		[self loadDatabase: currentDatabasePath];
+		
+		[checkIncomingLock unlock];
+	}
 }
 
 - (void)autoCleanDatabaseDate: (id)sender {
