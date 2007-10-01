@@ -1671,10 +1671,10 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 		NSMutableArray *aCurve = [dict objectForKey:@"curve"];
 		NSMutableArray *newColors = [dict objectForKey:@"colors"];
 		
-		int selectedCurveIndex = [self selectedCurveIndex];
+		int scx = [self selectedCurveIndex];
 		NSMutableArray *selectedCurve;
-		if(selectedCurveIndex>=0)
-			selectedCurve = [curves objectAtIndex:selectedCurveIndex];
+		if(scx>=0)
+			selectedCurve = [curves objectAtIndex:scx];
 		else
 			selectedCurve = aCurve;
 		

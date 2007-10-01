@@ -150,8 +150,6 @@ MODIFICATION HISTORY
 	unichar	c = [[theEvent characters] characterAtIndex:0];
 	if (c == NSDeleteCharacter)
 	{
-		//int index = [self selectedRow];
-		//[self removeRowAtIndex:index];
 		[stepsArrayController  keyDown:(NSEvent *)theEvent];
 	}
 	else
@@ -160,7 +158,15 @@ MODIFICATION HISTORY
 	}
 }
 
-
+- (void) setCurrentView
+{
+	if ([[FT steps] count]>0)
+	{
+		int index = [FTview selectedRow];
+		[FTAdapter setCurrentViewToCamera:[[FT steps] objectAtIndex:index]];
+		[framesSlider setIntValue:[[[FT stepsPositionInPath] objectAtIndex:index] intValue]];
+	}
+}
 
 - (IBAction) flyThruSetCurrentView:(id) sender
 {

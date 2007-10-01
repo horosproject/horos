@@ -37,8 +37,6 @@
 	for (Camera *camera in [self arrangedObjects]) camera.index = count++;
 }
 
-
-
 - (void)removeObjectAtArrangedObjectIndex:(NSUInteger)index{
 	[super removeObjectAtArrangedObjectIndex:(NSUInteger)index];
 	int count = 1;
@@ -52,10 +50,6 @@
 	{
 		[self remove:self];
 	}
-	else
-	{
-		[super keyDown:theEvent];
-	}
 }
 
 - (void) flyThruTag:(int) x
@@ -65,7 +59,6 @@
 		case 0:	// ADD
 		{
 			[self add:self];
-
 			
 			flyThruController.hidePlayBox = YES;
 			flyThruController.hideExportBox = YES;
@@ -81,6 +74,7 @@
 		case 2:	//RESET
 		{
 			[self removeObjects:[self arrangedObjects]];
+			
 			flyThruController.hidePlayBox = YES;
 			flyThruController.hideExportBox = YES;
 		}
@@ -100,6 +94,9 @@
 				[stepsDictionary release];
 				
 				[flyThruController updateThumbnails];
+				
+				[self add:self];
+				[self remove:self];
 			}
 		}
 		break;

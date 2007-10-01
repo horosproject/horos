@@ -71,7 +71,7 @@
 }
 
 - (id)initWithPoint3D:(Point3D *)point3D{
-	return [self initWithX:point3D.x y:point3D.y  z:point3D.z];
+	return [self initWithX:point3D.x y:point3D.y  z:point3D.z value:nil];
 }
 
 
