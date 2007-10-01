@@ -21,13 +21,10 @@
 #import "QueryLogController.h"
 #import "browserController.h"
 
-extern BrowserController *browserWindow;
-
-
 @implementation QueryLogController
 
 - (void)awakeFromNib{
-	[self setManagedObjectContext:[browserWindow managedObjectContext]];
+	[self setManagedObjectContext:[[BrowserController currentBrowser] managedObjectContext]];
 	//NSLog(@"filter Predicate: %@", [[self filterPredicate] description]);
 	[self fetch:nil];
 	//NSLog(@"Content: %@", [[self content] description]);
@@ -36,7 +33,7 @@ extern BrowserController *browserWindow;
 }
 
 -(NSManagedObjectContext *)managedObjectContext{
-	return [browserWindow managedObjectContext];
+	return [[BrowserController currentBrowser] managedObjectContext];
 }
 
 - (IBAction)nothing:(id)sender{

@@ -28,7 +28,6 @@
 
 
 extern AppController		*appController;
-extern BrowserController	*browserWindow;
 
 
 NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotification";
@@ -151,7 +150,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 					port = [server objectForKey:@"Port"];
 //				}
 				NSLog(@"Server: %@", [server description]);
-				NSManagedObjectModel *model = [browserWindow managedObjectModel];
+				NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
 				NSError *error = 0L;
 				NSString *searchType = [object attributeValueWithName:@"Query/RetrieveLevel"];
 				NSEntityDescription *entity;
@@ -169,7 +168,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 				[request setPredicate:predicate];
 				
 				error = 0L;
-				NSManagedObjectContext	*context = [browserWindow managedObjectContext];
+				NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
 				NSArray *fetchArray = [context executeFetchRequest:request error:&error];
 				
 				if (error) 
@@ -261,7 +260,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			and end with setting cFind Response to complete
 		*/
 		//NSLog(@"query");
-		NSManagedObjectModel *model = [browserWindow managedObjectModel];
+		NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
 		NSError *error = 0L;
 		NSString *searchType = [object attributeValueWithName:@"Query/RetrieveLevel"];
 		NSEntityDescription *entity;
@@ -281,7 +280,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 		
 		NS_DURING
 		error = 0L;
-		NSManagedObjectContext	*context = [browserWindow managedObjectContext];
+		NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
 		NSArray *fetchArray = [context executeFetchRequest:request error:&error];
 		if (!error && [fetchArray count]) {
 			unsigned short remaining = [fetchArray count];

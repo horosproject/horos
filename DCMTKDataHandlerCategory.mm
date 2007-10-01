@@ -24,8 +24,6 @@
 
 #import "browserController.h"
 
-extern BrowserController *browserWindow;
-
 
 @implementation OsiriXSCPDataHandler (DCMTKDataHandlerCategory)
 
@@ -635,7 +633,7 @@ extern BrowserController *browserWindow;
 }
 
 - (OFCondition)prepareFindForDataSet:( DcmDataset *)dataset{
-	NSManagedObjectModel *model = [browserWindow managedObjectModel];
+	NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
 	NSError *error = 0L;
 	NSEntityDescription *entity;
 	NSPredicate *predicate = [self predicateForDataset:dataset];
@@ -659,7 +657,7 @@ extern BrowserController *browserWindow;
 					
 		error = 0L;
 		
-		NSManagedObjectContext		*context = [browserWindow managedObjectContext];
+		NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
 		
 		[context retain];
 		[context lock];
@@ -704,7 +702,7 @@ extern BrowserController *browserWindow;
 - (OFCondition)prepareMoveForDataSet:( DcmDataset *)dataset
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSManagedObjectModel *model = [browserWindow managedObjectModel];
+	NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
 	NSError *error = 0L;
 	NSEntityDescription *entity;
 	NSPredicate *predicate = [self predicateForDataset:dataset];
@@ -726,7 +724,7 @@ extern BrowserController *browserWindow;
 	
 	error = 0L;
 	
-	NSManagedObjectContext		*context = [browserWindow managedObjectContext];
+	NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
 	
 	[context retain];
 	[context lock];
