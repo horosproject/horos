@@ -3218,6 +3218,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 				[self showCLUTOpacityPanel: self];
 			}
 			
+			[clutOpacityView selectCurveAtIndex:0];
 			[clutOpacityView updateView];
 		}
 		
