@@ -360,59 +360,52 @@ extern NSLock	*PapyrusLock;
 		
 		//Acquistion Date
 		if (dataset->findAndGetString(DCM_ContentDate, string, OFFalse).good() && string != NULL){
-			NSString	*studyDate = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
-			if (dataset->findAndGetString(DCM_ContentTime, string, OFFalse).good() && string != NULL){
+			NSString	*studyDate = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
+			if( [studyDate length] != 8) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
+			if (dataset->findAndGetString(DCM_ContentTime, string, OFFalse).good() && string != NULL && strlen( string) == 6){
 				NSString*   completeDate;
-				NSString*   studyTime = [[NSString alloc] initWithBytes:string length:6 encoding: NSASCIIStringEncoding];
+				NSString*   studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 				completeDate = [studyDate stringByAppendingString:studyTime];
 				date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
-				[studyTime release];
 			}
 			else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
-				
-			[studyDate release];
 		}
 		else if (dataset->findAndGetString(DCM_AcquisitionDate, string, OFFalse).good() && string != NULL){
-			NSString	*studyDate = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
-			if (dataset->findAndGetString(DCM_AcquisitionTime, string, OFFalse).good() && string != NULL){
+			NSString	*studyDate = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
+			if( [studyDate length] != 8) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
+			if (dataset->findAndGetString(DCM_AcquisitionTime, string, OFFalse).good() && string != NULL && strlen( string) == 6){
 				NSString*   completeDate;
-				NSString*   studyTime = [[NSString alloc] initWithBytes:string length:6 encoding: NSASCIIStringEncoding];
+				NSString*   studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 				completeDate = [studyDate stringByAppendingString:studyTime];
 				date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
-				[studyTime release];
 			}
 			else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
-				
-			[studyDate release];
 		}
 		else if (dataset->findAndGetString(DCM_SeriesDate, string, OFFalse).good() && string != NULL){
-			NSString	*studyDate = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
-			if (dataset->findAndGetString(DCM_SeriesTime, string, OFFalse).good() && string != NULL){
+			NSString	*studyDate = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
+			if( [studyDate length] != 8) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
+			if (dataset->findAndGetString(DCM_SeriesTime, string, OFFalse).good() && string != NULL && strlen( string) == 6){
 				NSString*   completeDate;
-				NSString*   studyTime = [[NSString alloc] initWithBytes:string length:6 encoding: NSASCIIStringEncoding];
+				NSString*   studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 				completeDate = [studyDate stringByAppendingString:studyTime];
 				date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
-				[studyTime release];
 			}
 			else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
-				
-			[studyDate release];
 		}
 		
 		else if (dataset->findAndGetString(DCM_StudyDate, string, OFFalse).good() && string != NULL){
-			NSString	*studyDate = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
-			if (dataset->findAndGetString(DCM_StudyTime, string, OFFalse).good() && string != NULL){
+			NSString	*studyDate = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
+			if( [studyDate length] != 8) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
+			if (dataset->findAndGetString(DCM_StudyTime, string, OFFalse).good() && string != NULL && strlen( string) == 6){
 				NSString*   completeDate;
-				NSString*   studyTime = [[NSString alloc] initWithBytes:string length:6 encoding: NSASCIIStringEncoding];
+				NSString*   studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 				completeDate = [studyDate stringByAppendingString:studyTime];
 				date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
-				[studyTime release];
 			}
 			else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
-				
-			[studyDate release];
 		}
 		else date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:0L] retain];
+		
 		if( date) [dicomElements setObject:date forKey:@"studyDate"];
 		
 		//Series Description
