@@ -2299,6 +2299,10 @@
 		BF83CD8F09E741BC002041F3 /* ReportPluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF83CD8B09E741BC002041F3 /* ReportPluginFilter.m */; };
 		BF8449030A65F407000E9830 /* smallKey.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF8449020A65F407000E9830 /* smallKey.tif */; };
 		BF8449050A65F407000E9830 /* smallKey.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF8449020A65F407000E9830 /* smallKey.tif */; };
+		BF84E53F0CB16A2900431BC2 /* FlyThruTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF84E53D0CB16A2900431BC2 /* FlyThruTableView.h */; };
+		BF84E5400CB16A2900431BC2 /* FlyThruTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF84E53E0CB16A2900431BC2 /* FlyThruTableView.m */; };
+		BF84E5410CB16A2900431BC2 /* FlyThruTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF84E53D0CB16A2900431BC2 /* FlyThruTableView.h */; };
+		BF84E5420CB16A2900431BC2 /* FlyThruTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF84E53E0CB16A2900431BC2 /* FlyThruTableView.m */; };
 		BF8B2A4B09F470F400F1F759 /* dcmqrsrv.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8B2A4909F470F400F1F759 /* dcmqrsrv.mm */; };
 		BF8B2A4C09F470F400F1F759 /* dcmqrsrv.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8B2A4909F470F400F1F759 /* dcmqrsrv.mm */; };
 		BF8DE5E206507355005DB40E /* Album.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5DA06507355005DB40E /* Album.tiff */; };
@@ -9023,6 +9027,8 @@
 		BF83CD8A09E741BC002041F3 /* ReportPluginFilter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ReportPluginFilter.h; sourceTree = "<group>"; };
 		BF83CD8B09E741BC002041F3 /* ReportPluginFilter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ReportPluginFilter.m; sourceTree = "<group>"; };
 		BF8449020A65F407000E9830 /* smallKey.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smallKey.tif; sourceTree = "<group>"; };
+		BF84E53D0CB16A2900431BC2 /* FlyThruTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlyThruTableView.h; sourceTree = "<group>"; };
+		BF84E53E0CB16A2900431BC2 /* FlyThruTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlyThruTableView.m; sourceTree = "<group>"; };
 		BF8B2A4909F470F400F1F759 /* dcmqrsrv.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrsrv.mm; sourceTree = "<group>"; };
 		BF8DE5DA06507355005DB40E /* Album.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Album.tiff; sourceTree = "<group>"; };
 		BF8DE5E006507355005DB40E /* SmartAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmartAlbum.tiff; sourceTree = "<group>"; };
@@ -12058,6 +12064,8 @@
 				CE0B46C7087D2B900052E309 /* VRPROFlyThruAdapter.m */,
 				BF6F18DA0CAD6ACF006DE602 /* FlyThruStepsArrayController.h */,
 				BF6F18DB0CAD6ACF006DE602 /* FlyThruStepsArrayController.m */,
+				BF84E53D0CB16A2900431BC2 /* FlyThruTableView.h */,
+				BF84E53E0CB16A2900431BC2 /* FlyThruTableView.m */,
 			);
 			name = "Fly Thru";
 			sourceTree = "<group>";
@@ -18478,6 +18486,7 @@
 				A978DEA50CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.h in Headers */,
 				A978DEA80CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h in Headers */,
 				A978DEB10CB0D4BE00FB2C3D /* NFHUDPopUpButton.h in Headers */,
+				BF84E5410CB16A2900431BC2 /* FlyThruTableView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20545,6 +20554,7 @@
 				A975206D0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */,
 				DB59613A0CAB447B00809190 /* OSIVoxel.h in Headers */,
 				BF6F18DE0CAD6AD0006DE602 /* FlyThruStepsArrayController.h in Headers */,
+				BF84E53F0CB16A2900431BC2 /* FlyThruTableView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22797,6 +22807,7 @@
 				A978DEA40CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.m in Sources */,
 				A978DEA70CB0D4BE00FB2C3D /* NSImage+FrameworkImage.m in Sources */,
 				A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.m in Sources */,
+				BF84E5420CB16A2900431BC2 /* FlyThruTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24473,6 +24484,7 @@
 				A975206E0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */,
 				DB59613B0CAB447B00809190 /* OSIVoxel.m in Sources */,
 				BF6F18DF0CAD6AD0006DE602 /* FlyThruStepsArrayController.m in Sources */,
+				BF84E5400CB16A2900431BC2 /* FlyThruTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

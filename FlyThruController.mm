@@ -46,7 +46,7 @@ MODIFICATION HISTORY
 @synthesize dcmSeriesName;
 @synthesize levelOfDetailType;
 @synthesize exportSize;
-@synthesize FT;
+@synthesize FT, FTAdapter;
 
 - (void)setWindow3DController:(Window3DController*) w3Dc
 {
@@ -513,6 +513,10 @@ MODIFICATION HISTORY
 		[FTAdapter setCurrentViewToCamera:[FT.pathCameras objectAtIndex:index - 1]];
 	}
 	curMovieIndex = index;
+}
+
+- (int)curMovieIndex {
+	return curMovieIndex;
 }
 
 - (Camera *)currentCamera{
