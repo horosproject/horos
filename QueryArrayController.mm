@@ -92,10 +92,14 @@
 	queries = [newQueries retain];
 }
 
-- (void)performQuery{
-	NS_DURING
+- (void)performQuery
+{
 	if( queryLock == 0L) queryLock = [[NSLock alloc] init];
+
 	[queryLock lock];
+	
+	NS_DURING
+	
 	//NSLog(@"query");
 	NSMutableDictionary *params = [NSMutableDictionary dictionary];
 	[params setObject:[NSNumber numberWithInt:1] forKey:@"debugLevel"];

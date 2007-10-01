@@ -197,7 +197,14 @@ static char *GetPrivateIP()
 		[context retain];
 		[context lock];
 		
-		studyArray = [context executeFetchRequest:request error:&error];
+		@try
+		{
+			studyArray = [context executeFetchRequest:request error:&error];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"**** localStudy exception: %@", [e description]);
+		}
 		
 		[context unlock];
 		[context release];
@@ -732,70 +739,78 @@ static char *GetPrivateIP()
 	[context retain];
 	[context lock];
 
-	if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+	@try
 	{
-		NSPredicate	*predicate = [NSPredicate predicateWithFormat:  @"(studyInstanceUID == %@)", [item valueForKey:@"uid"]];
-		
-		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
-		[request setPredicate: predicate];
-		
-		studyArray = [context executeFetchRequest:request error:&error];
-		if( [studyArray count] > 0)
+		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 		{
-			NSManagedObject	*study = [studyArray objectAtIndex: 0];
-			NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: study] objectAtIndex:0];
+			NSPredicate	*predicate = [NSPredicate predicateWithFormat:  @"(studyInstanceUID == %@)", [item valueForKey:@"uid"]];
 			
-			if( [[BrowserController currentBrowser] findAndSelectFile:0L image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO] == NO)
+			[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+			[request setPredicate: predicate];
+			
+			studyArray = [context executeFetchRequest:request error:&error];
+			if( [studyArray count] > 0)
 			{
-				[[BrowserController currentBrowser] showEntireDatabase];
-				if( [[BrowserController currentBrowser] findAndSelectFile:0L image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO]) success = YES;
-			}
-			else success = YES;
-			
-			if( success) [[BrowserController currentBrowser] databaseOpenStudy: study];
-		}
-	}
-	
-	if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
-	{
-		NSPredicate	*predicate = [NSPredicate predicateWithFormat:  @"(seriesDICOMUID == %@)", [item valueForKey:@"uid"]];
-		
-		NSLog( [predicate description]);
-		
-		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
-		[request setPredicate: predicate];
-		
-		seriesArray = [context executeFetchRequest:request error:&error];
-		if( [seriesArray count] > 0)
-		{
-			NSLog( [seriesArray description]);
-			
-			NSManagedObject	*series = [seriesArray objectAtIndex: 0];
-			
-			[[BrowserController currentBrowser] openViewerFromImages: [NSArray arrayWithObject: [[BrowserController currentBrowser] childrenArray: series]] movie: nil viewer :nil keyImagesOnly:NO];
-			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-				[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
-			else
-				[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+				NSManagedObject	*study = [studyArray objectAtIndex: 0];
+				NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: study] objectAtIndex:0];
 				
-			success = YES;
+				if( [[BrowserController currentBrowser] findAndSelectFile:0L image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO] == NO)
+				{
+					[[BrowserController currentBrowser] showEntireDatabase];
+					if( [[BrowserController currentBrowser] findAndSelectFile:0L image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO]) success = YES;
+				}
+				else success = YES;
+				
+				if( success) [[BrowserController currentBrowser] databaseOpenStudy: study];
+			}
 		}
-	}
-	
-	if( !success)
-	{
-		[[BrowserController currentBrowser] checkIncoming: self];
 		
-		if( checkAndViewTry-- > 0 && [sendToPopup indexOfSelectedItem] == 0)
-			[self performSelector:@selector( checkAndView:) withObject:item afterDelay:1.0];
-		else
-			success = YES;
+		if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
+		{
+			NSPredicate	*predicate = [NSPredicate predicateWithFormat:  @"(seriesDICOMUID == %@)", [item valueForKey:@"uid"]];
+			
+			NSLog( [predicate description]);
+			
+			[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
+			[request setPredicate: predicate];
+			
+			seriesArray = [context executeFetchRequest:request error:&error];
+			if( [seriesArray count] > 0)
+			{
+				NSLog( [seriesArray description]);
+				
+				NSManagedObject	*series = [seriesArray objectAtIndex: 0];
+				
+				[[BrowserController currentBrowser] openViewerFromImages: [NSArray arrayWithObject: [[BrowserController currentBrowser] childrenArray: series]] movie: nil viewer :nil keyImagesOnly:NO];
+				
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+					[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+				else
+					[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+					
+				success = YES;
+			}
+		}
+		
+		if( !success)
+		{
+			[[BrowserController currentBrowser] checkIncoming: self];
+			
+			if( checkAndViewTry-- > 0 && [sendToPopup indexOfSelectedItem] == 0)
+				[self performSelector:@selector( checkAndView:) withObject:item afterDelay:1.0];
+			else
+				success = YES;
+		}
+		
+		if( success)
+		{
+			[item release];
+		}
+				
 	}
-	
-	if( success)
+	@catch (NSException * e)
 	{
-		[item release];
+		NSLog( @"**** checkAndView exception: %@", [e description]);
 	}
 	
 	[context unlock];
