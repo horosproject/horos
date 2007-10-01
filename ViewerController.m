@@ -2788,7 +2788,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
 				
 			[cell setBezelStyle: NSShadowlessSquareBezelStyle];
-			[cell setFont:[NSFont boldSystemFontOfSize:9]];
+			[cell setFont:[NSFont boldSystemFontOfSize:8.5]];
 			[cell setButtonType:NSMomentaryPushInButton];
 			[cell setEnabled:YES];
 			[cell setImage: 0L];
@@ -2837,8 +2837,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
 					[cell setBezelStyle: NSShadowlessSquareBezelStyle];
 					[cell setRepresentedObject: curSeries];
-					if( keyImagesNumber) [cell setFont:[NSFont boldSystemFontOfSize:9]];
-					else [cell setFont:[NSFont systemFontOfSize:9]];
+					if( keyImagesNumber) [cell setFont:[NSFont boldSystemFontOfSize:8.5]];
+					else [cell setFont:[NSFont systemFontOfSize:8.5]];
 					[cell setImagePosition: NSImageBelow];
 					[cell setAction: @selector(matrixPreviewPressed:)];
 					[cell setTarget: self];
