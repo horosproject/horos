@@ -145,6 +145,41 @@
 		else
 			histogram[i] = (vImagePixelCount)temp;
 	}
+	[self simplifyHistogram];
+}
+
+- (void)simplifyHistogram;
+{
+	if(!histogram) return;
+	if(histogramSize==0) return;
+	
+	vImagePixelCount sum = 0;
+	for (int i=0 ; i<histogramSize; i++)
+	{
+		sum += histogram[i];
+	}
+	if(sum<=100) return;
+	
+	int maxBin = histogramSize-1;
+	float binWidth = (HUmax - HUmin) / histogramSize;
+	float newHUmax;
+
+	for (int i=histogramSize-2; i>=0; i--)
+	{
+		if(histogram[i]<=10)
+		{
+			maxBin=i;
+			newHUmax = HUmin+binWidth*i*1.5; // factor 1.5 is for tunning
+		}
+		else i=-1;
+	}
+	
+	if(maxBin < histogramSize-2)
+	{
+		if(newHUmax >= HUmax) return;
+		[self setHUmin:HUmin HUmax:newHUmax];
+		[self computeHistogram];
+	}
 }
 
 - (void)drawBinHistogramInRect:(NSRect)rect;
@@ -515,6 +550,7 @@
 
 - (void)selectCurveAtIndex:(int)i;
 {
+	if([curves count]==0) return;
 	NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
 	selectedCurveIndex = i;
 	selectedPoint = controlPoint;
