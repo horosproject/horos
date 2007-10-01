@@ -54,6 +54,10 @@
 	return self;
 }
 
+- (id)copyWithZone:(NSZone *)zone{
+	return [[Point3D alloc] initWithPoint3D:self];
+}
+
 
 
 -(void) setPoint3D: (Point3D*)p

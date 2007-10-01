@@ -33,6 +33,7 @@
 -(id) initWithValues:(float)x :(float)y :(float)z;
 -(id) initWithPoint3D: (Point3D*)p;
 -(id) initWithX:(float)x  y:(float)y  z:(float)z;
+- (id)copyWithZone:(NSZone *)zone;
 
 -(void) setPoint3D: (Point3D*)p;
 

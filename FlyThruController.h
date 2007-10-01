@@ -47,6 +47,7 @@
 			 NSRect			windowFrame;
 			 
 	IBOutlet NSButton		*exportButton;
+	IBOutlet NSArrayController *stepsArrayController;
 	
 	FlyThru					*FT;
 	Window3DController		*controller3D;
@@ -64,7 +65,8 @@
 	int						exportSize;
 	
 	IBOutlet NSButton		*exportButtonOption;
-	NSString *				dcmSeriesName;
+	NSString				*dcmSeriesName;
+	
 }
 
 @property (readwrite, retain) FlyThru *flyThru;
@@ -73,9 +75,11 @@
 @property BOOL hideComputeBox;
 @property BOOL hideExportBox;
 @property int  exportFormat;
-@property NSString *dcmSeriesName;
+@property (readwrite, copy) NSString *dcmSeriesName;
 @property int	levelOfDetailType;
 @property int	exportSize;
+@property (readonly) Camera  *currentCamera;
+@property (readonly) FlyThru *FT;
 
 - (void)setWindow3DController:(Window3DController*) w3Dc;
 - (Window3DController*)window3DController;
@@ -103,5 +107,7 @@
 - (NSButton*) exportButtonOption;
 - (int)currentMovieIndex;
 - (void)setCurrentMovieIndex:(int)index;
+
+- (Camera *)currentCamera;
 
 @end

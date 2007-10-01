@@ -46,6 +46,7 @@ MODIFICATION HISTORY
 @synthesize dcmSeriesName;
 @synthesize levelOfDetailType;
 @synthesize exportSize;
+@synthesize FT;
 
 - (void)setWindow3DController:(Window3DController*) w3Dc
 {
@@ -143,65 +144,15 @@ MODIFICATION HISTORY
 	[super dealloc];
 }
 
-//Getting values
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
-{
-	return [[FT steps] count];
-}
-
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
-{
-	if (aTableColumn==colCamNumber)
-	{
-		return [NSString stringWithFormat:@"%d", (rowIndex+1)];
-	}
-//	else if (aTableColumn==colCamSymbol)
-//	{
-//		if (rowIndex==0)
-//		{
-//			//return @"Start";
-//			return [NSImage imageNamed: @"FlyThruStart"];
-//		}
-//		else if (rowIndex==[[FT steps] count]-1)
-//		{
-//			//return @"End";
-//			return [NSImage imageNamed: @"FlyThruEnd"];
-//		}
-//		else
-//		{
-//			//return @"Via";
-//			return [NSImage imageNamed: @"FlyThruVia"];
-//		}
-//	}
-	else if (aTableColumn==colCamPreview)
-	{
-		return [[[FT steps] objectAtIndex:rowIndex] previewImage];
-	}
-//	else if (aTableColumn==colCamDescription)
-//	{
-//		return [[[FT steps] objectAtIndex:rowIndex] description];
-//	}
-}
-
-- (int) selectedRow
-{
-	return [FTview selectedRow];
-}
-
-- (void) selectRowAtIndex:(int)index
-{
-	[FTview selectRowIndexes: [NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
-	[FTview scrollRowToVisible: index];
-	[self setCurrentView];
-}
 
 - (void) keyDown:(NSEvent *)theEvent
 {
 	unichar	c = [[theEvent characters] characterAtIndex:0];
 	if (c == NSDeleteCharacter)
 	{
-		int index = [self selectedRow];
-		[self removeRowAtIndex:index];
+		//int index = [self selectedRow];
+		//[self removeRowAtIndex:index];
+		[stepsArrayController  keyDown:(NSEvent *)theEvent];
 	}
 	else
 	{
@@ -209,130 +160,7 @@ MODIFICATION HISTORY
 	}
 }
 
-- (void) removeRowAtIndex:(int)index
-{
-	[FT removeCameraAtIndex: index];
-	
-	if (index==[[FT steps] count])
-	{	
-		index = [[FT steps] count]-1; 
-	}
 
-	[self selectRowAtIndex:index];
-	[self setCurrentView];
-	[FTview reloadData];
-	
-	self.hidePlayBox = YES;
-	self.hideExportBox = YES;
-}
-
-- (void) flyThruTag:(int) x
-{
-	switch( x)
-	{
-		case 0:	// ADD
-		{
-			int selectedRow = [self selectedRow];
-			if (selectedRow<[[FT steps] count]-1)
-			{
-				[FT addCamera: [FTAdapter getCurrentCamera] atIndex: selectedRow+1];
-			}
-			else
-			{
-				[FT addCamera: [FTAdapter getCurrentCamera]];
-			}
-			[FTview reloadData];
-			
-		//	[self selectRowAtIndex:(selectedRow+1)];
-			[FTview selectRowIndexes: [NSIndexSet indexSetWithIndex:selectedRow+1] byExtendingSelection:NO];
-			[FTview scrollRowToVisible: selectedRow+1];
-			
-			self.hidePlayBox = YES;
-			self.hideExportBox = YES;
-		}
-		break;
-		
-		case 1: //REMOVE
-		{
-			int index = [self selectedRow];
-			[self removeRowAtIndex:index];
-//			[FT removeCameraAtIndex: index];
-//			
-//			if (index==[[FT steps] count])
-//			{	
-//				index = [[FT steps] count]-1; 
-//			}
-//
-//			[self selectRowAtIndex:index];
-//			[self setCurrentView];
-//			[FTview reloadData];
-//			
-//			[boxPlay setHidden:YES];
-//			[boxExport setHidden:YES];
-		}
-		break;
-		
-		case 2:	//RESET
-		{
-			[FT removeAllCamera];
-			[FTview reloadData];
-			self.hidePlayBox = YES;
-			self.hideExportBox = YES;
-		}
-		break;
-		
-		case 3:	//IMPORT
-		{
-			NSOpenPanel	*oPanel = [NSOpenPanel openPanel];
-			[oPanel setAllowsMultipleSelection:NO];
-			[oPanel setCanChooseDirectories:NO];
-			int result = [oPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"xml"]];
-
-			if (result == NSOKButton) 
-			{	
-				NSDictionary* stepsDictionary = [[NSDictionary alloc] initWithContentsOfFile: [[oPanel filenames] objectAtIndex:0]];
-				[FT setFromDictionary: stepsDictionary];
-				[stepsDictionary release];
-				
-				[self updateThumbnails];
-				[FTview reloadData];
-			}
-		}
-		break;
-		
-		case 4: //SAVE
-		{
-			NSSavePanel     *panel = [NSSavePanel savePanel];
-
-			[panel setCanSelectHiddenExtension:NO];
-			[panel setRequiredFileType:@"xml"];
-
-			if( [panel runModalForDirectory:0L file:@"OsiriX Fly Through"] == NSFileHandlingPanelOKButton)
-			{
-				NSMutableDictionary *xml;
-				xml = [FT exportToXML];
-				[xml writeToFile:[panel filename] atomically: TRUE];
-				//[xml release];
-			}
-		}
-		break;
-	}
-}
-
-- (IBAction) flyThruButton:(id) sender
-{
-	[self flyThruTag: [sender selectedSegment]];
-}
-
-- (void) setCurrentView
-{
-	if ([[FT steps] count]>0)
-	{
-		int index = [FTview selectedRow];
-		[FTAdapter setCurrentViewToCamera:[[FT steps] objectAtIndex:index]];
-		[framesSlider setIntValue:[[[FT stepsPositionInPath] objectAtIndex:index] intValue]];
-	}
-}
 
 - (IBAction) flyThruSetCurrentView:(id) sender
 {
@@ -679,6 +507,10 @@ MODIFICATION HISTORY
 		[FTAdapter setCurrentViewToCamera:[FT.pathCameras objectAtIndex:index - 1]];
 	}
 	curMovieIndex = index;
+}
+
+- (Camera *)currentCamera{
+	return [FTAdapter getCurrentCamera];
 }
 
 @end
