@@ -1048,7 +1048,7 @@ PixelRepresentation
 		NSMutableArray *values = attr.values;
 		id newValue = nil;
 		NSString *format = nil;
-		for ( id value in attributes ) {
+		for ( id value in values ) {
 			NSInteger index = [values indexOfObject:value];
 			switch (vr) {
 					//NSNumbers
@@ -1118,19 +1118,20 @@ PixelRepresentation
 						newValue = @"";
 					}
 					*/
-					newValue = [self anonymizeString:[values objectAtIndex:index]];
+					if(index!=NSNotFound)
+						newValue = [self anonymizeString:[values objectAtIndex:index]];
 					break;
 	 			}
 
 			if (aValue) {
 				if (DEBUG)
 					NSLog(@"Anonymize Values: %@ to value: %@", attr.description, [aValue description]);
-				[values replaceObjectAtIndex:index withObject:aValue];
+				if(index!=NSNotFound)[values replaceObjectAtIndex:index withObject:aValue];
 			}
 			else {
 				if (DEBUG)
 					NSLog(@"Anonymize Values: %@ to value: %@", attr.description, [newValue description]);
-				[values replaceObjectAtIndex:index withObject:newValue];
+				if(index!=NSNotFound)[values replaceObjectAtIndex:index withObject:newValue];
 			}
 		}	
 		
