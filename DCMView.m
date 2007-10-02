@@ -75,7 +75,6 @@ Version 2.3
 extern		NSThread					*mainThread;
 extern		BOOL						USETOOLBARPANEL;
 extern		ToolbarPanelController		*toolbarPanel[10];
-extern      BrowserController			*browserWindow;
 extern		AppController				*appController;
 			short						syncro = syncroLOC;
 static		float						deg2rad = 3.14159265358979/180.0; 
@@ -580,6 +579,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( reload) [v executeRevert];
 	}
+	
+	if( reload) [[BrowserController currentBrowser] refreshMatrix: self];		// This will refresh the DCMView of the BrowserController
 }
 
 +(void) setCLUTBARS:(int) c ANNOTATIONS:(int) a
@@ -1792,7 +1793,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	BOOL		Jog = NO;
 
 
-	if( [self windowController]  == browserWindow) { [super keyDown:event]; return;}
+	if( [self windowController]  == [BrowserController currentBrowser]) { [super keyDown:event]; return;}
 	
 //	if([stringID isEqualToString:@"Perpendicular"] == YES || [stringID isEqualToString:@"Original"] == YES )
 //	{
@@ -2017,7 +2018,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
             else [self setIndexWithReset:curImage :YES];
             
             if( matrix ) {
-                [matrix selectCellAtRow :curImage/[browserWindow COLUMN] column:curImage%[browserWindow COLUMN]];
+                [matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
             }
             
 			if( [self is2DViewer] == YES)
@@ -2109,11 +2110,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		[self mouseMoved: event];	// Update some variables...
 		
-        if( curImage != startImage && (matrix && browserWindow))
+        if( curImage != startImage && (matrix && [BrowserController currentBrowser]))
         {
-            NSButtonCell *cell = [matrix cellAtRow:curImage/[browserWindow COLUMN] column:curImage%[browserWindow COLUMN]];
+            NSButtonCell *cell = [matrix cellAtRow:curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
             [cell performClick:0L];
-            [matrix selectCellAtRow :curImage/[browserWindow COLUMN] column:curImage%[browserWindow COLUMN]];
+            [matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
         }
 		
 		long tool = [self getTool:event];
@@ -2617,9 +2618,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"mouseDown" object: [self windowController] userInfo: dict];
 		}
 		
-        if( [event clickCount] > 1 && [self window] == [browserWindow window])
+        if( [event clickCount] > 1 && [self window] == [[BrowserController currentBrowser] window])
         {
-            [browserWindow matrixDoublePressed:nil];
+            [[BrowserController currentBrowser] matrixDoublePressed:nil];
         }
 		else if( [event clickCount] > 1 && ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask))
 		{
@@ -3223,7 +3224,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			else [self setIndexWithReset:curImage :YES];
 			
 			if( matrix ) {
-				[matrix selectCellAtRow :curImage/[browserWindow COLUMN] column:curImage%[browserWindow COLUMN]];
+				[matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
 			}
 			
 			if( [self is2DViewer] == YES)
@@ -3682,7 +3683,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( listType == 'i') [self setIndex:curImage];
 			else [self setIndexWithReset:curImage :YES];
 			
-			if( matrix) [matrix selectCellAtRow :curImage/[browserWindow COLUMN] column:curImage%[browserWindow COLUMN]];
+			if( matrix) [matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
 			
 			if( [self is2DViewer] == YES)
 				[[self windowController] adjustSlider];
@@ -5083,18 +5084,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: chosenLine forKey: @"ANNOTATIONS"];
     
-	BOOL reload;
-	
-	if( ANNOTATIONS != annotFull) reload = [DCMPix setAnonymizedAnnotations: YES];
-	else reload = [DCMPix setAnonymizedAnnotations: NO];
-	
-	NSArray		*viewers = [ViewerController getDisplayed2DViewers];
-	
-	for( ViewerController *v in viewers)
-	{
-		[v refresh];
-		if( reload) [v executeRevert];
-	}
+	[DCMView setDefaults];
 	
     NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];

@@ -3816,6 +3816,15 @@ static NSArray*	statesArray = nil;
 	}
 }
 
+- (void) refreshMatrix:(id) sender
+{
+	[previousItem release];
+	previousItem = 0L;	// This will force the matrix update
+	[[NSNotificationCenter defaultCenter] postNotificationName: NSOutlineViewSelectionDidChangeNotification  object:databaseOutline userInfo: 0L];
+	
+	[imageView display];
+}
+
 - (IBAction)delItem: (id)sender {
 	NSInteger				result;
 	NSManagedObjectContext	*context = self.managedObjectContext;
@@ -4077,9 +4086,7 @@ static NSArray*	statesArray = nil;
 	
 	databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 	
-	[previousItem release];
-	previousItem = 0L;	// This will force the matrix update
-	[[NSNotificationCenter defaultCenter] postNotificationName: NSOutlineViewSelectionDidChangeNotification  object:databaseOutline userInfo: 0L];
+	[self refreshMatrix];
 }
 
 - (void)buildColumnsMenu {
@@ -5381,12 +5388,12 @@ static BOOL withReset = NO;
 					if( [images count] > 1 || noOfImages == 1 ) {
 						animate = YES;
 						
-						if( [sender intValue] >= [images count]) return;
+						if( [animationSlider intValue] >= [images count]) return;
 						
-						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [sender intValue]] valueForKey:@"completePath"]] == NO)
+						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO)
 						{						
 							DCMPix*     dcmPix = nil;
-							dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: [sender intValue]] valueForKey:@"completePath"] :[sender intValue] :[images count] :0L :0 :[[[images objectAtIndex: [sender intValue]] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: [sender intValue]]];
+							dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"] :[animationSlider intValue] :[images count] :0L :0 :[[[images objectAtIndex: [animationSlider intValue]] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: [animationSlider intValue]]];
 							
 							if( dcmPix ) {
 								float   wl, ww;
@@ -5407,11 +5414,11 @@ static BOOL withReset = NO;
 						animate = YES;
 						
 						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex:0] valueForKey:@"completePath"]] == NO
-						   || [[imageView curDCM] frameNo] != [sender intValue]
+						   || [[imageView curDCM] frameNo] != [animationSlider intValue]
 						   || [[imageView curDCM] serieNo] != [[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue])
 						{
 							DCMPix*     dcmPix = 0L;
-							dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[sender intValue] :noOfImages :0L :[sender intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: 0]];
+							dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :0L :[animationSlider intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: 0]];
 							
 							if( dcmPix ) {
 								float   wl, ww;
@@ -5439,7 +5446,7 @@ static BOOL withReset = NO;
 				animate = YES;
 				
 				DCMPix*     dcmPix = 0L;
-				dcmPix = [[DCMPix alloc] myinit: [image valueForKey:@"completePath"] :[sender intValue] :noOfImages :0L :[sender intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
+				dcmPix = [[DCMPix alloc] myinit: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :0L :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
 				
 				if( dcmPix ) {
 					float   wl, ww;
@@ -6048,9 +6055,7 @@ static BOOL withReset = NO;
 	[context unlock];
 	[context release];
 	
-	[previousItem release];
-	previousItem = nil;
-	[[NSNotificationCenter defaultCenter] postNotificationName: NSOutlineViewSelectionDidChangeNotification  object:databaseOutline userInfo: 0L];
+	[self refreshMatrix];
 }
 
 - (void)matrixLoadIcons: (NSDictionary*)dict {
@@ -9194,6 +9199,11 @@ static NSArray*	openSubSeriesArray = 0L;
 - (BOOL)validateMenuItem: (NSMenuItem*)menuItem {
 	if ( menuItem.menu == imageTileMenu ) {
 		return [mainWindow.windowController isKindOfClass:[ViewerController class]];
+	}
+	else if( [menuItem action] == @selector( annotMenu:))
+	{
+		if( [menuItem tag] == [[NSUserDefaults standardUserDefaults] integerForKey:@"ANNOTATIONS"]) [menuItem setState: NSOnState];
+		else [menuItem setState: NSOffState];
 	}
 	return YES;
 }

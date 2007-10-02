@@ -472,6 +472,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 -(void) compressDICOMJPEG:(NSString*) compressedPath;
 -(void) decompressDICOMJPEG:(NSString*) compressedPath;
 
+- (void) refreshMatrix:(id) sender;
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 
 - (void) initAnimationSlider;
