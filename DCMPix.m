@@ -9931,7 +9931,7 @@ END_CREATE_ROIS:
 							
 						if( anonymizedAnnotations)
 						{
-							if( [[field objectForKey:@"group"] intValue] == 0x0008 && [[field objectForKey:@"element"] intValue] == 0x0010) value = @"name hidden";
+							if( [[field objectForKey:@"group"] intValue] == 0x0010 && [[field objectForKey:@"element"] intValue] == 0x0010) value = @"name hidden";
 						}
 						
 						if(value==nil || [value length] == 0) value = @"-";
