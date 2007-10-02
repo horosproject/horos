@@ -32,5 +32,6 @@
 - (void) resetCameraIndexes;
 - (IBAction)updateCamera:(id)sender;
 - (IBAction)resetCameras:(id)sender;
+- (void) keyDown:(NSEvent *)theEvent;
 
 @end

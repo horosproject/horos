@@ -15987,22 +15987,13 @@ long i;
 	[self computeInterval];
 }
 
--(void) revertSeries:(id) sender
+-(void) executeRevert
 {
-	long i, x;
-	
-	if( postprocessed)
-	{
-		NSRunAlertPanel(NSLocalizedString(@"Revert", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot revert it.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-		
-		return;
-	}
-	
 	[self checkEverythingLoaded];
 	
-	for( x = 0; x < maxMovieIndex; x++)
+	for( int x = 0; x < maxMovieIndex; x++)
 	{
-		for( i = 0 ; i < [pixList[ x] count]; i++)
+		for( int i = 0 ; i < [pixList[ x] count]; i++)
 		{
 			if( stopThreadLoadImage == NO)
 			{
@@ -16018,6 +16009,18 @@ long i;
 	[self checkEverythingLoaded];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: 0L];
+}
+
+-(void) revertSeries:(id) sender
+{
+	if( postprocessed)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Revert", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot revert it.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		
+		return;
+	}
+
+	[self executeRevert];
 }
 
 -(void) revertSeriesNotification:(id) note

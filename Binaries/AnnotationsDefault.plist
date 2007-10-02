@@ -308,24 +308,68 @@
 		<key>TopRight</key>
 		<array>
 			<dict>
-				<key>content</key>
-				<array>
-					<string>DB_study.patientID</string>
-				</array>
-				<key>fullContent</key>
-				<array>
-					<dict>
-						<key>field</key>
-						<string>patientID</string>
-						<key>level</key>
-						<string>study</string>
-						<key>type</key>
-						<string>DB</string>
-					</dict>
-				</array>
-				<key>title</key>
-				<string>Patient ID</string>
-			</dict>
+					<key>content</key>
+					<array>
+						<string>DB_study.name</string>
+						<string>DB_study.patientID</string>
+						<string>(</string>
+						<string>Special_Patient's Actual Age</string>
+						<string>,</string>
+						<string>Special_Patient's Age At Acquisition</string>
+						<string>)</string>
+					</array>
+					<key>fullContent</key>
+					<array>
+						<dict>
+							<key>field</key>
+							<string>name</string>
+							<key>level</key>
+							<string>study</string>
+							<key>type</key>
+							<string>DB</string>
+						</dict>
+						<dict>
+							<key>field</key>
+							<string>patientID</string>
+							<key>level</key>
+							<string>study</string>
+							<key>type</key>
+							<string>DB</string>
+						</dict>
+						<dict>
+							<key>field</key>
+							<string>(</string>
+							<key>type</key>
+							<string>Manual</string>
+						</dict>
+						<dict>
+							<key>field</key>
+							<string>Patient's Actual Age</string>
+							<key>type</key>
+							<string>Special</string>
+						</dict>
+						<dict>
+							<key>field</key>
+							<string>,</string>
+							<key>type</key>
+							<string>Manual</string>
+						</dict>
+						<dict>
+							<key>field</key>
+							<string>Patient's Age At Acquisition</string>
+							<key>type</key>
+							<string>Special</string>
+						</dict>
+						<dict>
+							<key>field</key>
+							<string>)</string>
+							<key>type</key>
+							<string>Manual</string>
+						</dict>
+					</array>
+					<key>title</key>
+					<string>Patient ID</string>
+				</dict>
 			<dict>
 				<key>content</key>
 				<array>

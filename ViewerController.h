@@ -595,6 +595,7 @@ enum
 - (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow;
 - (IBAction) Panel3D:(id) sender;
 - (void) revertSeries:(id) sender;
+- (void) executeRevert;
 - (NSImage*) imageForROI: (int) i;
 - (void) ActivateBlending:(ViewerController*) bC;
 - (void) setFusionMode:(long) m;

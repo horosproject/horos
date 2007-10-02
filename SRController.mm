@@ -889,10 +889,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	return view;
 }
 
-- (IBAction) flyThruButtonMenu:(id) sender
-{
-	[flyThruController flyThruTag: [sender tag]];
-}
+//- (IBAction) flyThruButtonMenu:(id) sender
+//{
+//	[flyThruController flyThruTag: [sender tag]];
+//}
 
 - (IBAction) flyThruControllerInit:(id) sender
 {

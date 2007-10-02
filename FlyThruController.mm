@@ -37,6 +37,7 @@ MODIFICATION HISTORY
 
 @implementation FlyThruController
 
+@synthesize curMovieIndex;
 @synthesize flyThru = FT;
 @synthesize currentMovieIndex = curMovieIndex;
 @synthesize hidePlayBox;

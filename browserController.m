@@ -1545,125 +1545,136 @@ static NSArray*	statesArray = nil;
 		NSPersistentStoreCoordinator	*currentSC = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: currentModel];
 		NSManagedObjectContext			*currentContext = [[NSManagedObjectContext alloc] init];
 		NSManagedObjectContext			*previousContext = [[NSManagedObjectContext alloc] init];
-		
-		[currentContext setPersistentStoreCoordinator: currentSC];
-		[previousContext setPersistentStoreCoordinator: previousSC];
-		
-		[[NSFileManager defaultManager] removeFileAtPath: [documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql"] handler: 0L];
-		[[NSFileManager defaultManager] removeFileAtPath: [documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql-journal"] handler: 0L];
-		
-		[previousSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: currentDatabasePath] options:nil error:&error];
-		[currentSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: [documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql"]] options:nil error:&error];
-		
-		NSArray	*previousEntities = [previousModel entities];
-		NSEntityDescription		*currentStudyTable, *currentSeriesTable, *currentImageTable, *currentAlbumTable;
-		NSArray					*albumProperties, *studyProperties, *seriesProperties, *imageProperties;
-		
-		[currentContext setStalenessInterval: 1];
-		[previousContext setStalenessInterval: 1];
-		
-		// ALBUMS
-		NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[previousModel entitiesByName] objectForKey:@"Album"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		
-		error = nil;
-		NSArray *albums = [previousContext executeFetchRequest:dbRequest error:&error];
-		albumProperties = [[[[previousModel entitiesByName] objectForKey:@"Album"] attributesByName] allKeys];
-		for( NSManagedObject *previousAlbum in albums ) {
+
+		@try
+		{
+			[currentContext setPersistentStoreCoordinator: currentSC];
+			[previousContext setPersistentStoreCoordinator: previousSC];
 			
-			currentAlbumTable = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: currentContext];
+			[[NSFileManager defaultManager] removeFileAtPath: [documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql"] handler: 0L];
+			[[NSFileManager defaultManager] removeFileAtPath: [documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql-journal"] handler: 0L];
 			
-			for ( NSString *name in albumProperties ) {
-				[currentAlbumTable setValue: [previousAlbum valueForKey: name] forKey: name];
-			}
-		}
-		
-		error = nil;
-		[currentContext save: &error];
-		
-		// Find all current albums
-		dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[currentModel entitiesByName] objectForKey:@"Album"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		
-		error = 0L;
-		NSArray *currentAlbums = [currentContext executeFetchRequest:dbRequest error:&error];
-		NSArray *currentAlbumsNames = [currentAlbums valueForKey:@"name"];
-		
-		// STUDIES
-		dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[previousModel entitiesByName] objectForKey:@"Study"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		
-		error = nil;
-		NSArray *studies = [previousContext executeFetchRequest:dbRequest error:&error];
-		[[splash progress] setMaxValue:[studies count]];
-		
-		studyProperties = [[[[previousModel entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
-		seriesProperties = [[[[previousModel entitiesByName] objectForKey:@"Series"] attributesByName] allKeys];
-		imageProperties = [[[[previousModel entitiesByName] objectForKey:@"Image"] attributesByName] allKeys];
-		
-		int counter = 0;
-		
-		for( NSManagedObject *previousStudy in studies ) {
+			[previousSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: currentDatabasePath] options:nil error:&error];
+			[currentSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: [documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql"]] options:nil error:&error];
 			
-			currentStudyTable = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext: currentContext];
+			NSArray	*previousEntities = [previousModel entities];
+			NSEntityDescription		*currentStudyTable, *currentSeriesTable, *currentImageTable, *currentAlbumTable;
+			NSArray					*albumProperties, *studyProperties, *seriesProperties, *imageProperties;
 			
-			for ( NSString *name in studyProperties ) {
-				[currentStudyTable setValue: [previousStudy primitiveValueForKey: name] forKey: name];
-			}
+			[currentContext setStalenessInterval: 1];
+			[previousContext setStalenessInterval: 1];
 			
-			// SERIES
-			NSArray *series = [[previousStudy valueForKey:@"series"] allObjects];
-			for( NSManagedObject *previousSeries in series ) {
-				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+			// ALBUMS
+			NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[previousModel entitiesByName] objectForKey:@"Album"]];
+			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+			
+			error = nil;
+			NSArray *albums = [previousContext executeFetchRequest:dbRequest error:&error];
+			albumProperties = [[[[previousModel entitiesByName] objectForKey:@"Album"] attributesByName] allKeys];
+			for( NSManagedObject *previousAlbum in albums ) {
 				
-				currentSeriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext: currentContext];
+				currentAlbumTable = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: currentContext];
 				
-				for ( NSString *name in seriesProperties ) {
-					//	NSLog( @"Series: %@ : %@", name, [previousSeries valueForKey: name]);
-					
-					[currentSeriesTable setValue: [previousSeries primitiveValueForKey: name] forKey: name];
+				for ( NSString *name in albumProperties ) {
+					[currentAlbumTable setValue: [previousAlbum valueForKey: name] forKey: name];
 				}
-				[currentSeriesTable setValue: currentStudyTable forKey: @"study"];
+			}
+			
+			error = nil;
+			[currentContext save: &error];
+			
+			// Find all current albums
+			dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[currentModel entitiesByName] objectForKey:@"Album"]];
+			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+			
+			error = 0L;
+			NSArray *currentAlbums = [currentContext executeFetchRequest:dbRequest error:&error];
+			NSArray *currentAlbumsNames = [currentAlbums valueForKey:@"name"];
+			
+			// STUDIES
+			dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[previousModel entitiesByName] objectForKey:@"Study"]];
+			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+			
+			error = nil;
+			NSArray *studies = [previousContext executeFetchRequest:dbRequest error:&error];
+			[[splash progress] setMaxValue:[studies count]];
+			
+			studyProperties = [[[[previousModel entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
+			seriesProperties = [[[[previousModel entitiesByName] objectForKey:@"Series"] attributesByName] allKeys];
+			imageProperties = [[[[previousModel entitiesByName] objectForKey:@"Image"] attributesByName] allKeys];
+			
+			int counter = 0;
+			
+			for( NSManagedObject *previousStudy in studies ) {
 				
-				// IMAGES
-				NSArray *images = [[previousSeries valueForKey:@"images"] allObjects];
-				for ( NSManagedObject *previousImage in images ) {
+				currentStudyTable = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext: currentContext];
+				
+				for ( NSString *name in studyProperties ) {
+					[currentStudyTable setValue: [previousStudy primitiveValueForKey: name] forKey: name];
+				}
+				
+				// SERIES
+				NSArray *series = [[previousStudy valueForKey:@"series"] allObjects];
+				for( NSManagedObject *previousSeries in series ) {
+					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 					
-					currentImageTable = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext: currentContext];
+					currentSeriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext: currentContext];
 					
-					for( NSString *name in imageProperties ) {
-						[currentImageTable setValue: [previousImage primitiveValueForKey: name] forKey: name];
+					for ( NSString *name in seriesProperties ) {
+						//	NSLog( @"Series: %@ : %@", name, [previousSeries valueForKey: name]);
+						
+						[currentSeriesTable setValue: [previousSeries primitiveValueForKey: name] forKey: name];
 					}
-					[currentImageTable setValue: currentSeriesTable forKey: @"series"];
+					[currentSeriesTable setValue: currentStudyTable forKey: @"study"];
+					
+					// IMAGES
+					NSArray *images = [[previousSeries valueForKey:@"images"] allObjects];
+					for ( NSManagedObject *previousImage in images ) {
+						
+						currentImageTable = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext: currentContext];
+						
+						for( NSString *name in imageProperties ) {
+							[currentImageTable setValue: [previousImage primitiveValueForKey: name] forKey: name];
+						}
+						[currentImageTable setValue: currentSeriesTable forKey: @"series"];
+					}
+					
+					[pool release];
 				}
 				
-				[pool release];
+				NSArray		*storedInAlbums = [[previousStudy valueForKey: @"albums"] allObjects];
+				for( NSString *sa in storedInAlbums ) {
+					NSString		*name = [sa valueForKey:@"name"];
+					NSMutableSet	*studiesStoredInAlbum = [[currentAlbums objectAtIndex: [currentAlbumsNames indexOfObject: name]] mutableSetValueForKey:@"studies"];
+					[studiesStoredInAlbum addObject: currentStudyTable];
+				}
+				
+				[splash incrementBy:1];
+				
+				if( counter % 100 == 0) {
+					error = nil;
+					[currentContext save: &error];
+				}
+				counter++;
 			}
 			
-			NSArray		*storedInAlbums = [[previousStudy valueForKey: @"albums"] allObjects];
-			for( NSString *sa in storedInAlbums ) {
-				NSString		*name = [sa valueForKey:@"name"];
-				NSMutableSet	*studiesStoredInAlbum = [[currentAlbums objectAtIndex: [currentAlbumsNames indexOfObject: name]] mutableSetValueForKey:@"studies"];
-				[studiesStoredInAlbum addObject: currentStudyTable];
-			}
+			error = nil;
+			[currentContext save: &error];
 			
-			[splash incrementBy:1];
+			[[NSFileManager defaultManager] removeFileAtPath:currentDatabasePath handler:nil];
+			[[NSFileManager defaultManager] movePath:[documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql"] toPath:currentDatabasePath handler:nil];
 			
-			if( counter % 100 == 0) {
-				error = nil;
-				[currentContext save: &error];
-			}
-			counter++;
 		}
-		
-		error = nil;
-		[currentContext save: &error];
-		
-		[[NSFileManager defaultManager] removeFileAtPath:currentDatabasePath handler:nil];
-		[[NSFileManager defaultManager] movePath:[documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql"] toPath:currentDatabasePath handler:nil];
+		@catch (NSException *e)
+		{
+			NSLog( @"updateDatabaseModel failed...");
+			NSLog( [e description]);
+			
+			NSRunAlertPanel( NSLocalizedString(@"Database Update", nil), NSLocalizedString(@"Database updating failed... The database SQL index file is probably corrupted...", nil), nil, nil, nil);
+		}
 		
 		[previousModel release];
 		[currentModel release];
@@ -6416,6 +6427,11 @@ static BOOL withReset = NO;
 	indx = [contextualRT indexOfItemWithTitle: @"Open Key Images"];
 	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
 	
+}
+
+-(void) annotMenu:(id) sender
+{
+	[imageView annotMenu: sender];
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ

@@ -393,5 +393,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
 //RTSTRUCT
 - (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject;
+
 - (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject;
++ (BOOL) setAnonymizedAnnotations: (BOOL) v;
+
 @end

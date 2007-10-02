@@ -567,12 +567,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	CLUTBARS = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	ANNOTATIONS = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 	
+	BOOL reload;
+	
+	if( ANNOTATIONS != annotFull) reload = [DCMPix setAnonymizedAnnotations: YES];
+	else reload = [DCMPix setAnonymizedAnnotations: NO];
+	
 	NSArray		*viewers = [ViewerController getDisplayed2DViewers];
 	
-	
-	for( id loopItem in viewers)
+	for( ViewerController *v in viewers)
 	{
-		[loopItem refresh];
+		[v refresh];
+		
+		if( reload) [v executeRevert];
 	}
 }
 
@@ -580,6 +586,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	CLUTBARS = c;
 	ANNOTATIONS = a;
+	
+	BOOL reload;
+	
+	if( ANNOTATIONS != annotFull) reload = [DCMPix setAnonymizedAnnotations: YES];
+	else reload = [DCMPix setAnonymizedAnnotations: NO];
+	
+	NSArray		*viewers = [ViewerController getDisplayed2DViewers];
+	
+	for( ViewerController *v in viewers)
+	{
+		[v refresh];
+		if( reload) [v executeRevert];
+	}
 }
 
 + (NSSize)sizeOfString:(NSString *)string forFont:(NSFont *)font
@@ -5064,6 +5083,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: chosenLine forKey: @"ANNOTATIONS"];
     
+	BOOL reload;
+	
+	if( ANNOTATIONS != annotFull) reload = [DCMPix setAnonymizedAnnotations: YES];
+	else reload = [DCMPix setAnonymizedAnnotations: NO];
+	
+	NSArray		*viewers = [ViewerController getDisplayed2DViewers];
+	
+	for( ViewerController *v in viewers)
+	{
+		[v refresh];
+		if( reload) [v executeRevert];
+	}
+	
     NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
     [nc postNotificationName: @"updateView" object: self userInfo: nil];

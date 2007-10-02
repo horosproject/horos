@@ -20,6 +20,7 @@
 #import "FlyThruAdapter.h"
 #import "Window3DController.h"
 #import "QuicktimeExport.h"
+#import "FlyThruStepsArrayController.h"
 
 @interface FlyThruController : NSWindowController {
 
@@ -47,7 +48,7 @@
 			 NSRect			windowFrame;
 			 
 	IBOutlet NSButton		*exportButton;
-	IBOutlet NSArrayController *stepsArrayController;
+	IBOutlet FlyThruStepsArrayController *stepsArrayController;
 	
 	FlyThru					*FT;
 	Window3DController		*controller3D;

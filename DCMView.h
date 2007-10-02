@@ -399,6 +399,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) updateImage;
 - (BOOL) shouldPropagate;
 - (NSPoint) convertFromView2iChat: (NSPoint) a;
+- (void) annotMenu:(id) sender;
+
 
 // methods to access global variables (for plugins)
 + (BOOL) display2DMPRLines;

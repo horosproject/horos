@@ -48,6 +48,7 @@
 #define PREVIEWSIZE 70.0
 #endif
 
+BOOL	anonymizedAnnotations = NO;
 BOOL	runOsiriXInProtectedMode = NO;
 BOOL	quicktimeRunning = NO;
 NSLock	*quicktimeThreadLock = 0L;
@@ -9724,6 +9725,15 @@ END_CREATE_ROIS:
 
 #ifdef OSIRIX_VIEWER
 
++ (BOOL) setAnonymizedAnnotations: (BOOL) v
+{
+	if( anonymizedAnnotations != v)
+	{
+		anonymizedAnnotations = v;
+		return YES;
+	}
+	else return NO;
+}
 
 - (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element papyLink:(PapyShort)fileNb;
 {
@@ -9918,6 +9928,12 @@ END_CREATE_ROIS:
 							value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] DCMLink:dcmObject];
 						else
 							value = nil;
+							
+						if( anonymizedAnnotations)
+						{
+							if( [[field objectForKey:@"group"] intValue] == 0x0008 && [[field objectForKey:@"element"] intValue] == 0x0010) value = @"name hidden";
+						}
+						
 						if(value==nil || [value length] == 0) value = @"-";
 						else contentForLine = YES;
 					}
@@ -9935,6 +9951,11 @@ END_CREATE_ROIS:
 						else if([level isEqualToString:@"study"])
 						{
 							value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
+							
+							if( anonymizedAnnotations)
+							{
+								if( [fieldName isEqualToString:@"name"]) value = @"name hidden";
+							}
 						}
 						
 						if(value==nil) value = @"-";

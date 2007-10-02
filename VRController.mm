@@ -2115,11 +2115,11 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 {	
 	return view;
 }
-
-- (IBAction) flyThruButtonMenu:(id) sender
-{
-	[flyThruController flyThruTag: [sender tag]];
-}
+//
+//- (IBAction) flyThruButtonMenu:(id) sender
+//{
+//	[flyThruController flyThruTag: [sender tag]];
+//}
 
 - (IBAction) flyThruControllerInit:(id) sender
 {
