@@ -5430,7 +5430,7 @@ public:
 	parallelScale = [cam parallelScale];
 
 	// window level
-	[self setWLWW:[cam wl] :[cam ww]];
+	if(!advancedCLUT)[self setWLWW:[cam wl] :[cam ww]];
 	// cropping box
 	double min[3], max[3], a[ 6];
 	a[0] = [[cam minCroppingPlanes] x];
