@@ -13,7 +13,7 @@
 =========================================================================*/
 
 
-//#import "ITKSegmentation3D.h"
+#import "ITKSegmentation3D.h"
 #import "EndoscopyFlyThruController.h"
 #import "EndoscopyVRController.h"
 #import "EndoscopyViewer.h"
@@ -53,21 +53,22 @@
 	OSIVoxel *seed = [OSIVoxel pointWithX:pos2D[0]  y:pos2D[1]  z:pos2D[2] value:nil];
 	NSLog(@"Compute centerline starting Point: %@", seed);
 	[seeds addObject:seed];
-	NSArray *centerlinePoints;
-	//ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWithPix :[controller3D pixList]  volume:[controller3D volumePtr]  slice:-1  resampleData:NO];
-	//NSArray *centerlinePoints = [itk endoscopySegmentationForViewer:_viewer seeds:_seeds];
+	/*
+	ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWithPix :[controller3D pixList]  volume:[controller3D volumePtr]  slice:-1  resampleData:NO];
+	NSArray *centerlinePoints = [itk endoscopySegmentationForViewer:_viewer seeds:_seeds];
 	//EndoscopyViewer *endoscopyViewer = [vrController openEndoscopyViewer];
 	//[[endoscopyViewer vrController] flyThruControllerInit:self];
-	//OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:0];
-	//int count  = [centerlinePoints count] - 1;
-	//for (int i = 0; i < count; i++) {
-	//	OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:i];
-	//	OSIVoxel *secondPoint = [centerlinePoints objectAtIndex:i + 1];
-		//[endoscopyViewer setCameraPosition:firstPoint  
-		//	focalPoint:secondPoint];
-		//[self flyThruTag:0];
-	//}
-	//[itk release];
+	OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:0];
+	int count  = [centerlinePoints count] - 1;
+	for (int i = 0; i < count; i++) {
+		OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:i];
+		OSIVoxel *secondPoint = [centerlinePoints objectAtIndex:i + 1];
+		[controller3D setCameraPosition:firstPoint  
+			focalPoint:secondPoint];
+		[self flyThruTag:0];
+	}
+	[itk release];
+	*/
 }
 
 - (IBAction)calculate: (id)sender{

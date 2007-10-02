@@ -2304,9 +2304,9 @@
 		BF85640D0CB2B73F005F7178 /* EndoscopyFlyThru.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF85640B0CB2B73F005F7178 /* EndoscopyFlyThru.xib */; };
 		BF85640E0CB2B73F005F7178 /* EndoscopyFlyThru.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF85640B0CB2B73F005F7178 /* EndoscopyFlyThru.xib */; };
 		BF8564120CB2B781005F7178 /* EndoscopyFlyThruController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF8564100CB2B781005F7178 /* EndoscopyFlyThruController.h */; };
-		BF8564130CB2B781005F7178 /* EndoscopyFlyThruController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8564110CB2B781005F7178 /* EndoscopyFlyThruController.mm */; };
+		BF8564130CB2B781005F7178 /* EndoscopyFlyThruController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF8564110CB2B781005F7178 /* EndoscopyFlyThruController.m */; };
 		BF8564140CB2B781005F7178 /* EndoscopyFlyThruController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF8564100CB2B781005F7178 /* EndoscopyFlyThruController.h */; };
-		BF8564150CB2B781005F7178 /* EndoscopyFlyThruController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8564110CB2B781005F7178 /* EndoscopyFlyThruController.mm */; };
+		BF8564150CB2B781005F7178 /* EndoscopyFlyThruController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF8564110CB2B781005F7178 /* EndoscopyFlyThruController.m */; };
 		BF8B2A4B09F470F400F1F759 /* dcmqrsrv.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8B2A4909F470F400F1F759 /* dcmqrsrv.mm */; };
 		BF8B2A4C09F470F400F1F759 /* dcmqrsrv.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8B2A4909F470F400F1F759 /* dcmqrsrv.mm */; };
 		BF8DE5E206507355005DB40E /* Album.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5DA06507355005DB40E /* Album.tiff */; };
@@ -9033,7 +9033,7 @@
 		BF84E53E0CB16A2900431BC2 /* FlyThruTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlyThruTableView.m; sourceTree = "<group>"; };
 		BF85640C0CB2B73F005F7178 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/EndoscopyFlyThru.xib; sourceTree = "<group>"; };
 		BF8564100CB2B781005F7178 /* EndoscopyFlyThruController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopyFlyThruController.h; sourceTree = "<group>"; };
-		BF8564110CB2B781005F7178 /* EndoscopyFlyThruController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EndoscopyFlyThruController.mm; sourceTree = "<group>"; };
+		BF8564110CB2B781005F7178 /* EndoscopyFlyThruController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndoscopyFlyThruController.m; sourceTree = "<group>"; };
 		BF8B2A4909F470F400F1F759 /* dcmqrsrv.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrsrv.mm; sourceTree = "<group>"; };
 		BF8DE5DA06507355005DB40E /* Album.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Album.tiff; sourceTree = "<group>"; };
 		BF8DE5E006507355005DB40E /* SmartAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmartAlbum.tiff; sourceTree = "<group>"; };
@@ -12630,7 +12630,7 @@
 				BFBBF20E0BE28E320064E449 /* EndoscopySegmentationController.h */,
 				BFBBF20F0BE28E320064E449 /* EndoscopySegmentationController.m */,
 				BF8564100CB2B781005F7178 /* EndoscopyFlyThruController.h */,
-				BF8564110CB2B781005F7178 /* EndoscopyFlyThruController.mm */,
+				BF8564110CB2B781005F7178 /* EndoscopyFlyThruController.m */,
 			);
 			name = Endoscopy;
 			sourceTree = "<group>";
@@ -22817,7 +22817,7 @@
 				A978DEA70CB0D4BE00FB2C3D /* NSImage+FrameworkImage.m in Sources */,
 				A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.m in Sources */,
 				BF84E5420CB16A2900431BC2 /* FlyThruTableView.m in Sources */,
-				BF8564150CB2B781005F7178 /* EndoscopyFlyThruController.mm in Sources */,
+				BF8564150CB2B781005F7178 /* EndoscopyFlyThruController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24494,7 +24494,7 @@
 				DB59613B0CAB447B00809190 /* OSIVoxel.m in Sources */,
 				BF6F18DF0CAD6AD0006DE602 /* FlyThruStepsArrayController.m in Sources */,
 				BF84E5400CB16A2900431BC2 /* FlyThruTableView.m in Sources */,
-				BF8564130CB2B781005F7178 /* EndoscopyFlyThruController.mm in Sources */,
+				BF8564130CB2B781005F7178 /* EndoscopyFlyThruController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
