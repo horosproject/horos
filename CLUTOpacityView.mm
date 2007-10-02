@@ -322,40 +322,82 @@
 	[self updateView];
 }
 
+//- (void)fillCurvesInRect:(NSRect)rect;
+//{
+//	int i, j;
+//		
+//	NSAffineTransform* transform = [self transform];
+//	
+//	for (i=[curves count]-1; i>=0; i--)
+//	{
+//		NSArray *aCurve = [curves objectAtIndex:i];
+//
+//		// GRADIENT FILL
+//		NSRect smallRect;
+//		NSPoint p0, p1;
+//		NSColor *c, *c0, *c1;
+//		for (j=0; j<[aCurve count]-1; j++)
+//		{
+//			p0 = [transform transformPoint:[[aCurve objectAtIndex:j] pointValue]];
+//			p1 = [transform transformPoint:[[aCurve objectAtIndex:j+1] pointValue]];
+//			c0 = [[pointColors objectAtIndex:i] objectAtIndex:j];
+//			c1 = [[pointColors objectAtIndex:i] objectAtIndex:j+1];
+//			int numberOfSmallRect = p1.x - p0.x + 1;
+//			int n;
+//			for(n=0; n<numberOfSmallRect; n++)
+//			{
+//				if(p0.y<p1.y)
+//					smallRect = NSMakeRect(p0.x+n, 0, 2, ((numberOfSmallRect-n)*p0.y+n*p1.y)/numberOfSmallRect);
+//				else
+//					smallRect = NSMakeRect(p0.x+n-1, 0, 2, ((numberOfSmallRect-n)*p0.y+n*p1.y)/numberOfSmallRect);
+//					
+//				c = [c0 blendedColorWithFraction:(float)n/(float)numberOfSmallRect ofColor:c1];
+//				[c set];
+//				NSRectFill(smallRect);
+//			}
+//		}
+//	}
+//}
+
 - (void)fillCurvesInRect:(NSRect)rect;
-{
-	int i, j;
-		
+{	
 	NSAffineTransform* transform = [self transform];
 	
-	for (i=[curves count]-1; i>=0; i--)
+	for (int i=[curves count]-1; i>=0; i--)
 	{
 		NSArray *aCurve = [curves objectAtIndex:i];
 
-		// GRADIENT FILL
+		CGFloat *locations = (CGFloat*)malloc(sizeof(CGFloat)*[aCurve count]); // for NSGradient
+		
+		NSBezierPath *line = [NSBezierPath bezierPath];
+		NSPoint p0 = [[aCurve objectAtIndex:0] pointValue];
+		[line moveToPoint:NSMakePoint(p0.x, 0.0)];
+		
+		float minX = [[aCurve objectAtIndex:0] pointValue].x;
+		float maxX = [[aCurve lastObject] pointValue].x;
+		float d = maxX - minX;
+		
+		// construct path & locations
 		NSRect smallRect;
-		NSPoint p0, p1;
-		NSColor *c, *c0, *c1;
-		for (j=0; j<[aCurve count]-1; j++)
+		NSPoint p, pt;
+		for (int j=0; j<[aCurve count]; j++)
 		{
-			p0 = [transform transformPoint:[[aCurve objectAtIndex:j] pointValue]];
-			p1 = [transform transformPoint:[[aCurve objectAtIndex:j+1] pointValue]];
-			c0 = [[pointColors objectAtIndex:i] objectAtIndex:j];
-			c1 = [[pointColors objectAtIndex:i] objectAtIndex:j+1];
-			int numberOfSmallRect = p1.x - p0.x + 1;
-			int n;
-			for(n=0; n<numberOfSmallRect; n++)
-			{
-				if(p0.y<p1.y)
-					smallRect = NSMakeRect(p0.x+n, 0, 2, ((numberOfSmallRect-n)*p0.y+n*p1.y)/numberOfSmallRect);
-				else
-					smallRect = NSMakeRect(p0.x+n-1, 0, 2, ((numberOfSmallRect-n)*p0.y+n*p1.y)/numberOfSmallRect);
-					
-				c = [c0 blendedColorWithFraction:(float)n/(float)numberOfSmallRect ofColor:c1];
-				[c set];
-				NSRectFill(smallRect);
-			}
+			pt = [[aCurve objectAtIndex:j] pointValue];
+			locations[j] = (pt.x-minX) / d;
+			[line lineToPoint:pt];
 		}
+		
+		// close path
+		NSPoint pt_closing = [[aCurve lastObject] pointValue];
+		pt_closing.y = 0.0;
+		[line lineToPoint:pt_closing];
+		[line closePath];
+		line = [transform transformBezierPath:line];
+		
+		// GRADIENT FILL
+		NSGradient *gradient = [[NSGradient alloc] initWithColors:[pointColors objectAtIndex:i] atLocations:locations colorSpace:[NSColorSpace deviceRGBColorSpace]];
+		[gradient drawInBezierPath:line angle:0];
+		[gradient release];
 	}
 }
 
