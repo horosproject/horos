@@ -24,6 +24,7 @@ MODIFICATION HISTORY
 */
 
 #import "EndoscopyVRController.h"
+#import "EndoscopyFlyThruController.h"
 #import "DCMView.h"
 #import "ROI.h"
 
@@ -312,6 +313,29 @@ extern NSString * documentsDirectory();
 	[view getShadingValues: &ambient :&diffuse :&specular :&specularpower];
 	NSLog([NSString stringWithFormat:@"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", ambient, diffuse, specular, specularpower]);
 	[shadingValues setStringValue: [NSString stringWithFormat:@"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", ambient, diffuse, specular, specularpower]];
+}
+
+- (IBAction) flyThruControllerInit:(id) sender
+{
+	//Only open 1 fly through controller
+	NSArray *winList = [NSApp windows];
+	long	i;
+	
+	for( i = 0; i < [winList count]; i++)
+	{
+		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"EndoscopyFlyThru"])
+		{
+			[[flyThruController window] makeKeyAndOrderFront :sender];
+			return;
+		}
+	}
+	
+	FTAdapter = [[VRFlyThruAdapter alloc] initWithVRController: self];
+	flyThruController = [[EndoscopyFlyThruController alloc] initWithFlyThruAdapter:FTAdapter];
+	[FTAdapter release];
+	[flyThruController loadWindow];
+	[[flyThruController window] makeKeyAndOrderFront :sender];
+	[flyThruController setWindow3DController: self];
 }
 
 
