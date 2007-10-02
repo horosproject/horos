@@ -20,29 +20,29 @@
 
 @implementation FlyThruStepsArrayController
 
+
+
 - (void)addObject:(id)object {
 	// add the current Camera from flythuController
 	[super addObject:flyThruController.currentCamera];
 	int count = 1;
-	for (Camera *camera in [self arrangedObjects]) camera.index = count++;
+	[self resetCameraIndexes];
 }
 
 - (void)removeObject:(id)sender{
 	[super removeObject:sender];
 	int count = 1;
-	for (Camera *camera in [self arrangedObjects]) camera.index = count++;
+	[self resetCameraIndexes];
 }
 
 - (void)removeObjects:(id)sender{
 	[super removeObjects:sender];
-	int count = 1;
-	for (Camera *camera in [self arrangedObjects]) camera.index = count++;
+	[self resetCameraIndexes];
 }
 
 - (void)removeObjectAtArrangedObjectIndex:(NSUInteger)index{
 	[super removeObjectAtArrangedObjectIndex:(NSUInteger)index];
-	int count = 1;
-	for (Camera *camera in [self arrangedObjects]) camera.index = count++;
+	[self resetCameraIndexes];
 }
 
 - (BOOL)setSelectionIndexes:(NSIndexSet *)indexes{
@@ -84,10 +84,7 @@
 		
 		case 2:	//RESET
 		{
-			[self removeObjects:[self arrangedObjects]];
-			
-			flyThruController.hidePlayBox = YES;
-			flyThruController.hideExportBox = YES;
+			[self resetCameras:self];
 		}
 		break;
 		
@@ -150,7 +147,7 @@
 
 - (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard*)pboard
 {
-	NSLog(@"write rows");
+
 	 // Copy the row numbers to the pasteboard.
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:rowIndexes];
     [pboard declareTypes:[NSArray arrayWithObject:FlyThruTableViewDataType] owner:self];
@@ -160,25 +157,53 @@
 
 - (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op
 {
-    // Add code here to validate the drop
-    NSLog(@"validate Drop");
-    return NSDragOperationEvery;
+  
+	// only allow drops within the table
+
+   if ([tv isEqual:tableview])
+		return NSDragOperationMove;
+		
+	return NSDragOperationNone;
+	
 }
 
 - (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id <NSDraggingInfo>)info
             row:(int)row dropOperation:(NSTableViewDropOperation)operation
 {
-	NSLog(@"accept drop");
+
     NSPasteboard* pboard = [info draggingPasteboard];
     NSData* rowData = [pboard dataForType:FlyThruTableViewDataType];
     NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
 	int rowIndex = [rowIndexes firstIndex];
 	if (rowIndex  < row)
 		row--;
-	NSArray *selection = [[self arrangedObjects] objectsAtIndexes:rowIndexes];
-	[self removeSelectedObjects:selection];
-	[self insertObjects:selection atArrangedObjectIndexes:[NSIndexSet indexSetWithIndex:row]];
+	id object = [[self arrangedObjects] objectAtIndex: rowIndex];
+	[self removeObjectsAtArrangedObjectIndexes:rowIndexes];
+	if (row >= [[self arrangedObjects] count])
+		[self addObjects:[NSArray arrayWithObject:object]];
+	else
+		[self insertObject:object atArrangedObjectIndex:row];	
+	[self resetCameraIndexes];
+	return YES;
+}
+
+- (void) resetCameraIndexes{
+ 	int count = 1;
+	for (Camera *camera in [self arrangedObjects]) camera.index = count++;
+}
+
+- (IBAction)updateCamera:(id)sender{
+	int index = [self selectionIndex];
+	[self remove:sender];
+	[self insertObject:flyThruController.currentCamera atArrangedObjectIndex:index];	
 	
+	
+}
+- (IBAction)resetCameras:(id)sender{
+	[self removeObjects:[self arrangedObjects]];
+	
+	flyThruController.hidePlayBox = YES;
+	flyThruController.hideExportBox = YES;
 }
 
 

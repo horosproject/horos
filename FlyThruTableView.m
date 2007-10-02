@@ -29,14 +29,6 @@
  
 }
 
-- (NSImage *)dragImageForRowsWithIndexes:(NSIndexSet *)dragRows 
-	tableColumns:(NSArray *)tableColumns 
-	event:(NSEvent *)dragEvent 
-	offset:(NSPointPointer)dragImageOffset{
-	
-	return [[[[self delegate] selectedObjects] objectAtIndex:0] previewImage];
-}
-
 
 - (BOOL)canDragRowsWithIndexes:(NSIndexSet *)rowIndexes atPoint:(NSPoint)mouseDownPoint{
 	return YES;

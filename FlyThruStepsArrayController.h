@@ -29,5 +29,8 @@
 
 - (IBAction) flyThruButton:(id) sender;
 - (void) flyThruTag:(int) x;
+- (void) resetCameraIndexes;
+- (IBAction)updateCamera:(id)sender;
+- (IBAction)resetCameras:(id)sender;
 
 @end

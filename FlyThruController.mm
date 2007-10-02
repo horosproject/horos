@@ -71,7 +71,14 @@ MODIFICATION HISTORY
 - (id) initWithFlyThruAdapter:(FlyThruAdapter*)aFlyThruAdapter
 {
 	self = [super initWithWindowNibName:@"FlyThru"];
+	[self setupController];
+	self.FTAdapter = aFlyThruAdapter;
+
 	
+	return self;
+}
+
+- (void)setupController {
 	controller3D = 0L;
 	
 	[[self window] setDelegate:self];   //In order to receive the windowWillClose notification!
@@ -79,7 +86,6 @@ MODIFICATION HISTORY
 	[[self window] setAlphaValue:0.75];
 	[self loadWindow];
 	
-	[FTview setDataSource:self];
 	self.flyThru = [[[FlyThru alloc] init] autorelease];
 	self.hidePlayBox = YES;
 	self.hideComputeBox = NO;
@@ -88,7 +94,6 @@ MODIFICATION HISTORY
 	self.levelOfDetailType = 1;
 	self.dcmSeriesName = NSLocalizedString(@"FlyThru", nil);
 	self.exportSize = 0;
-	FTAdapter = [aFlyThruAdapter retain];
 	
 	boxPlayOrigin = [boxPlay frame].origin;
 	windowFrame =[[self window] frame];
@@ -97,8 +102,6 @@ MODIFICATION HISTORY
 											selector: @selector(Window3DClose:)
 											name: @"Window3DClose"
 											object: nil];
-	
-	return self;
 }
 
 - (void) Window3DClose: (NSNotification *)notification

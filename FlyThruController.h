@@ -80,7 +80,7 @@
 @property int	exportSize;
 @property (readonly) Camera  *currentCamera;
 @property (readonly) FlyThru *FT;
-@property (readonly) FlyThruAdapter *FTAdapter;
+@property (readwrite, retain) FlyThruAdapter *FTAdapter;
 @property int curMovieIndex;
 
 - (void)setWindow3DController:(Window3DController*) w3Dc;
@@ -111,5 +111,5 @@
 - (void)setCurrentMovieIndex:(int)index;
 
 - (Camera *)currentCamera;
-
+- (void)setupController;
 @end
