@@ -1145,6 +1145,7 @@ NSRect screenFrame()
 {
 	long				i;
 	NSMutableArray		*filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+	NSMutableArray		*pluginsArray = [NSMutableArray array];
 	NSFileManager       *defaultManager = [NSFileManager defaultManager];
 	BOOL                isDirectory;
 
@@ -1169,16 +1170,23 @@ NSRect screenFrame()
 			{
 				NSString    *pathname;
 				NSString    *aPath = [filenames objectAtIndex:i];
-				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
-				
-				while (pathname = [enumer nextObject])
+				if([[aPath pathExtension] isEqualToString:@"osirixplugin"])
 				{
-					NSString * itemPath = [aPath stringByAppendingPathComponent:pathname];
-					id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
+					[pluginsArray addObject:aPath];
+				}
+				else
+				{
+					NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 					
-					if ([fileType isEqual:NSFileTypeRegular])
+					while (pathname = [enumer nextObject])
 					{
-						[filesArray addObject:itemPath];
+						NSString * itemPath = [aPath stringByAppendingPathComponent:pathname];
+						id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
+						
+						if ([fileType isEqual:NSFileTypeRegular])
+						{
+							[filesArray addObject:itemPath];
+						}
 					}
 				}
 			}
@@ -1202,6 +1210,31 @@ NSRect screenFrame()
 				
 			[[[BrowserController currentBrowser] databaseOutline] selectRow: [[[BrowserController currentBrowser] databaseOutline] rowForItem: object] byExtendingSelection: NO];
 			[[[BrowserController currentBrowser] databaseOutline] scrollRowToVisible: [[[BrowserController currentBrowser] databaseOutline] selectedRow]];
+		}
+	}
+	
+	if([pluginsArray count])
+	{
+		NSMutableString *pluginNames = [NSMutableString string];
+		
+		for(NSString *path in pluginsArray)
+			[pluginNames appendFormat:@"%@, ", [[path lastPathComponent] stringByDeletingPathExtension]];
+		
+		pluginNames = [NSMutableString stringWithString:[pluginNames substringToIndex:[pluginNames length]-2]];
+		
+		NSString *msg;
+		NSString *areYouSure = NSLocalizedString(@"Are you sure you want to install", @"");
+		
+		if([pluginsArray count]==1)
+			msg = [NSString stringWithFormat:NSLocalizedString(@"%@ the plugin named : %@ ?", @""), areYouSure, pluginNames];
+		else
+			msg = [NSString stringWithFormat:NSLocalizedString(@"%@ the following plugins : %@ ?", @""), areYouSure, pluginNames];
+		
+		NSInteger res = NSRunAlertPanel(NSLocalizedString(@"Plugins Installation", @""), msg, NSLocalizedString(@"OK", @""), NSLocalizedString(@"Cancel", @""), nil);
+
+		if(res)
+		{
+			// TO DO : copy the plugin package into the plugins directory
 		}
 	}
 }
