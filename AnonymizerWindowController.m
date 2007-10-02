@@ -281,7 +281,7 @@ Version 2.3
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"Exception during anonymization -- [DCMObject anonymizeContentsOfFile:file  tags:[self tags]  writingToFile:dest]");
+			NSLog( @"Exception during anonymization -- [DCMObject anonymizeContentsOfFile:file  tags:[self tags]  writingToFile:dest] : %@", e);
 		}
 		
 		[producedFiles addObject: dest];

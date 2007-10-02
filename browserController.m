@@ -10071,15 +10071,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 		tempPath = [path stringByAppendingPathComponent: asciiString( [curImage valueForKeyPath: @"series.study.name"])];
 		
 		NSMutableArray *htmlExportSeriesArray;
-		if(![htmlExportDictionary objectForKey:[curImage valueForKeyPath: @"series.study.patientUID"]])
+		if(![htmlExportDictionary objectForKey:[curImage valueForKeyPath: @"series.study.name"]])
 		{
 			htmlExportSeriesArray = [NSMutableArray array];
 			[htmlExportSeriesArray addObject:[curImage valueForKey: @"series"]];
-			[htmlExportDictionary setObject:htmlExportSeriesArray forKey:[curImage valueForKeyPath: @"series.study.patientUID"]];
+			[htmlExportDictionary setObject:htmlExportSeriesArray forKey:[curImage valueForKeyPath: @"series.study.name"]];
 		}
 		else
 		{
-			htmlExportSeriesArray = [htmlExportDictionary objectForKey:[curImage valueForKeyPath: @"series.study.patientUID"]];
+			htmlExportSeriesArray = [htmlExportDictionary objectForKey:[curImage valueForKeyPath: @"series.study.name"]];
 			[htmlExportSeriesArray addObject:[curImage valueForKey: @"series"]];
 		}
 		
