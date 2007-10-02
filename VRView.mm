@@ -1474,7 +1474,8 @@ public:
 
 - (void) startAutoRotate:(id) sender
 {
-	rotate = YES;
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"autorotate3D"])
+		rotate = YES;
 }
 
 - (void) autoRotate:(id) sender
