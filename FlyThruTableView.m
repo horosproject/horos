@@ -29,6 +29,10 @@
  
 }
 
+- (BOOL)allowsColumnSelection
+{
+	return NO;
+}
 
 - (BOOL)canDragRowsWithIndexes:(NSIndexSet *)rowIndexes atPoint:(NSPoint)mouseDownPoint{
 	return YES;

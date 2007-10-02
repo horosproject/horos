@@ -25,13 +25,11 @@
 - (void)addObject:(id)object {
 	// add the current Camera from flythuController
 	[super addObject:flyThruController.currentCamera];
-	int count = 1;
 	[self resetCameraIndexes];
 }
 
 - (void)removeObject:(id)sender{
 	[super removeObject:sender];
-	int count = 1;
 	[self resetCameraIndexes];
 }
 
@@ -48,6 +46,7 @@
 - (BOOL)setSelectionIndexes:(NSIndexSet *)indexes{
 	BOOL result = [super setSelectionIndexes:(NSIndexSet *)indexes];
 	int index = [indexes firstIndex];
+	if( index == NSNotFound) return NO;
 	[flyThruController.FTAdapter setCurrentViewToCamera:[[self selectedObjects] objectAtIndex:0]];
 	return result;
 }
@@ -97,9 +96,9 @@
 
 			if (result == NSOKButton) 
 			{	
+				[self resetCameras:self];
 				NSDictionary* stepsDictionary = [[NSDictionary alloc] initWithContentsOfFile: [[oPanel filenames] objectAtIndex:0]];
 				NSArray *stepsXML = [stepsDictionary valueForKey:@"Step Cameras"];
-				NSMutableArray *steps = [NSMutableArray array];
 				int count = 1;
 				for (NSDictionary *cam in stepsXML) {
 					Camera *camera = [[[Camera alloc] initWithDictionary: cam] autorelease];
@@ -107,15 +106,10 @@
 					[flyThruController.FTAdapter setCurrentViewToCamera:camera];
 					NSImage *im = [flyThruController.FTAdapter getCurrentCameraImage: NO];
 					[camera setPreviewImage:im];
-					[steps addObject:camera];
+					[self addObject:camera];
 				}
-				[self setContent:steps];
 				[stepsDictionary release];
-				
-				[flyThruController updateThumbnails];
-				
-				[self add:self];
-				[self remove:self];
+				[self resetCameraIndexes];
 			}
 		}
 		break;
@@ -177,13 +171,11 @@
 	int rowIndex = [rowIndexes firstIndex];
 	if (rowIndex  < row)
 		row--;
-	id object = [[self arrangedObjects] objectAtIndex: rowIndex];
+	id object = [[[self arrangedObjects] objectAtIndex: rowIndex] retain];
 	[self removeObjectsAtArrangedObjectIndexes:rowIndexes];
-	if (row >= [[self arrangedObjects] count])
-		[self addObjects:[NSArray arrayWithObject:object]];
-	else
-		[self insertObject:object atArrangedObjectIndex:row];	
+	[self insertObject:object atArrangedObjectIndex:row];	
 	[self resetCameraIndexes];
+	[object release];
 	return YES;
 }
 
@@ -194,11 +186,12 @@
 
 - (IBAction)updateCamera:(id)sender{
 	int index = [self selectionIndex];
+	if(index==NSNotFound) return;
 	[self remove:sender];
-	[self insertObject:flyThruController.currentCamera atArrangedObjectIndex:index];	
-	
-	
+	[self insertObject:flyThruController.currentCamera atArrangedObjectIndex:index];
+	[self resetCameraIndexes];
 }
+
 - (IBAction)resetCameras:(id)sender{
 	[self removeObjects:[self arrangedObjects]];
 	
