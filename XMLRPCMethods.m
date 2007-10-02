@@ -81,6 +81,9 @@
         NSError *error = nil;
         NSData *data = [(id)CFHTTPMessageCopyBody(request) autorelease];
         NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithData:data options:NSXMLNodeOptionsNone error:&error] autorelease];
+		
+		NSLog( [doc description]);
+		
         NSArray *array = [doc nodesForXPath:@"//methodName" error:&error];
 		
 		if( [array count] == 1)
