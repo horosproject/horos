@@ -43,16 +43,25 @@
 }
 
 - (void)compute{
+	// Create centerline
+	// get ViewerController, EndoscopyViewer, and pixlist.
 	ViewerController *viewer2D = [(EndoscopyVRController *)controller3D viewer2D];
 	EndoscopyViewer *endoscopyViewer = [viewer2D openEndoscopyViewer];
-
-	// coordinates conversion
+	NSArray *pixList = [viewer2D pixList];
+	int count = [pixList count];
+	// coordinates conversion  need to convert by 'the factor' to get final conversion
 	float pos[3], pos2D[3];
-	
+	float factor = [(EndoscopyVRController *)controller3D factor];
 	pos[0] = [[self.currentCamera position] x];
 	pos[1] = [[self.currentCamera position] y];
 	pos[2] = [[self.currentCamera position] z];
+
 	[[(EndoscopyVRController *)controller3D view] convert3Dto2Dpoint:pos :pos2D];
+	pos2D[0] /= factor;
+	pos2D[1] /= factor;
+	pos2D[2] /= factor;
+	// Pixlists in VR are reversed from the Viewer Controller
+	//pos2D[2] = count - pos2D[2];
 	OSIVoxel *seed = [OSIVoxel pointWithX:pos2D[0]  y:pos2D[1]  z:pos2D[2] value:nil];
 	NSLog(@"Compute centerline starting Point: %@", seed);
 	[seeds addObject:seed];
@@ -61,7 +70,7 @@
 	NSArray *centerlinePoints = [itk endoscopySegmentationForViewer:viewer2D seeds:seeds];
 
 	OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:0];
-	int count  = [centerlinePoints count] - 1;
+	count  = [centerlinePoints count] - 1;
 	for (int i = 0; i < count; i++) {
 		OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:i];
 		OSIVoxel *secondPoint = [centerlinePoints objectAtIndex:i + 1];

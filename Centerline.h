@@ -19,10 +19,23 @@
 	 
 	 
 	Centerline extracts the centerline from a volume using thinning
-	Use either Volume and extract region or use pointArray
+	
 =========================================================================*/
 
-///Extracts an array of centerline points from  marching cubes filtered Polydata
+/** \brief Extracts an array of centerline points from  marching cubes filtered Polydata
+*
+*  Centerline extracts the centerline from a volume using thinning
+*  Based on Iordanescu and Summers
+*  Automated Centerline for CT Colonography
+*  Academic Radiology Vol 10 No 11 Nov 2003 pp1291-1301
+*
+*
+*  Has properties:
+*  WaitRendering *wait;
+*  OSIVoxel *startingPoint
+*  OSIVoxel *endingPoint
+*  int thinningIterations
+*/
 
 #import <Cocoa/Cocoa.h>
 
