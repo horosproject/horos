@@ -77,11 +77,11 @@
 
 - (IBAction)modifiyActivation:(id)sender;
 {
-	NSArray *pluginsList = [PluginManager pluginsList];
+	NSArray *pluginsList = [pluginsArrayController arrangedObjects];
 	NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable clickedRow]] objectForKey:@"name"];
 	BOOL pluginIsActive = [[[pluginsList objectAtIndex:[pluginTable clickedRow]] objectForKey:@"active"] boolValue];
 
-	if(pluginIsActive)
+	if(!pluginIsActive)
 	{
 		[PluginManager deactivatePluginWithName:pluginName];
 	}
@@ -96,7 +96,7 @@
 
 - (IBAction)delete:(id)sender;
 {
-	NSArray *pluginsList = [PluginManager pluginsList];
+	NSArray *pluginsList = [pluginsArrayController arrangedObjects];
 	NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable selectedRow]] objectForKey:@"name"];
 
 	[PluginManager deletePluginWithName:pluginName];
@@ -106,10 +106,13 @@
 
 - (IBAction)modifiyAvailability:(id)sender;
 {
-	NSString *pluginAvailability = [[plugins objectAtIndex:[pluginTable clickedRow]] objectForKey:@"availability"];
-	NSString *pluginName = [[plugins objectAtIndex:[pluginTable clickedRow]] objectForKey:@"name"];
+	NSArray *pluginsList = [pluginsArrayController arrangedObjects];
+	NSString *pluginAvailability = [[pluginsList objectAtIndex:[pluginTable clickedRow]] objectForKey:@"availability"];
+	NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable clickedRow]] objectForKey:@"name"];
 	
 	[PluginManager changeAvailabilityOfPluginWithName:pluginName to:[[sender selectedCell] title]];
+	
+	[self refreshPluginList]; // needed to restore the availability menu in case the user did provided a good admin password
 }
 
 - (void)loadPlugins;

@@ -24,6 +24,7 @@
 	IBOutlet NSMenu	*dbMenu;
 
 	NSMutableArray* plugins;
+	IBOutlet NSArrayController* pluginsArrayController;
 	IBOutlet NSTableView *pluginTable;
 	
 	IBOutlet NSTabView *tabView;

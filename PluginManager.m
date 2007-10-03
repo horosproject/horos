@@ -719,14 +719,17 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 			{
 //				NSBundle *plugin = [NSBundle bundleWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
 //				if (filterClass = [plugin principalClass])	
-				{
+				{					
 					NSMutableDictionary *pluginDescription = [NSMutableDictionary dictionaryWithCapacity:3];
 					[pluginDescription setObject:[name stringByDeletingPathExtension] forKey:@"name"];
 					[pluginDescription setObject:[NSNumber numberWithBool:active] forKey:@"active"];
 					[pluginDescription setObject:[NSNumber numberWithBool:allUsers] forKey:@"allUsers"];
-					
-					
+						
 					[pluginDescription setObject:availability forKey:@"availability"];
+					
+					NSBundle *pluginBundle = [NSBundle bundleWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
+					NSString *pluginVersion = [[pluginBundle infoDictionary] objectForKey:@"CFBundleVersion"];
+					[pluginDescription setObject:pluginVersion forKey:@"version"];
 					
 					[plugins addObject:pluginDescription];
 				}
