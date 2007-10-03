@@ -1213,6 +1213,7 @@ NSRect screenFrame()
 		}
 	}
 	
+	// Plugins installation
 	if([pluginsArray count])
 	{
 		NSMutableString *pluginNames = [NSMutableString string];
@@ -1234,7 +1235,15 @@ NSRect screenFrame()
 
 		if(res)
 		{
-			// TO DO : copy the plugin package into the plugins directory
+			// move the plugin package into the plugins (active) directory
+			NSString *destinationDirectory = [PluginManager userActivePluginsDirectoryPath];
+			NSString *destinationPath;
+			for(NSString *path in pluginsArray)
+			{
+				destinationPath = [destinationDirectory stringByAppendingPathComponent:[path lastPathComponent]];
+				NSLog(@"destinationPath : %@", destinationPath);
+				[PluginManager movePluginFromPath:path toPath:destinationPath];
+			}
 		}
 	}
 }

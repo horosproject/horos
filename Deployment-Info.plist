@@ -111,6 +111,20 @@
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>osirixplugin</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>osirixplugin.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>OsiriX plugin</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSTypeIsPackage</key>
+			<true/>
+		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>OsiriX</string>

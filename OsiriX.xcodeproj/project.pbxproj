@@ -473,6 +473,8 @@
 		A978DEA80CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE7F0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h */; };
 		A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE870CB0D4BE00FB2C3D /* NFHUDPopUpButton.m */; };
 		A978DEB10CB0D4BE00FB2C3D /* NFHUDPopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE880CB0D4BE00FB2C3D /* NFHUDPopUpButton.h */; };
+		A97B73980CB380EF00E5348D /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = A97B73970CB380EF00E5348D /* osirixplugin.icns */; };
+		A97B73990CB380F600E5348D /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = A97B73970CB380EF00E5348D /* osirixplugin.icns */; };
 		A98159A009AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
 		A98159A109AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
 		A98FFBE50CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
@@ -8520,6 +8522,7 @@
 		A978DE7F0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+FrameworkImage.h"; sourceTree = "<group>"; };
 		A978DE870CB0D4BE00FB2C3D /* NFHUDPopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDPopUpButton.m; sourceTree = "<group>"; };
 		A978DE880CB0D4BE00FB2C3D /* NFHUDPopUpButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDPopUpButton.h; sourceTree = "<group>"; };
+		A97B73970CB380EF00E5348D /* osirixplugin.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = osirixplugin.icns; sourceTree = "<group>"; };
 		A981599E09AC6B25003FF1FB /* bonesRemoval.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = bonesRemoval.tif; sourceTree = "<group>"; };
 		A98FFBE30CA92B58000291C8 /* altivecFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = altivecFunctions.c; sourceTree = "<group>"; };
 		A98FFBE40CA92B58000291C8 /* altivecFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = altivecFunctions.h; sourceTree = "<group>"; };
@@ -13063,6 +13066,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				A97B73970CB380EF00E5348D /* osirixplugin.icns */,
 				A922F3BA0C631F3C0007AB98 /* CustomImageAnnotations.png */,
 				CE27BA0E0C113BBA00BDC9B3 /* 3DPresetsPanel.tiff */,
 				CE0817B70C0FEEAE00BBD907 /* iPodEjectOff.tif */,
@@ -21309,6 +21313,7 @@
 				A975200C0CAA8481005D172F /* shareFromVideoChatWindow_small.png in Resources */,
 				A975200D0CAA8481005D172F /* style.css in Resources */,
 				BF85640E0CB2B73F005F7178 /* EndoscopyFlyThru.xib in Resources */,
+				A97B73980CB380EF00E5348D /* osirixplugin.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21692,6 +21697,7 @@
 				A97520130CAA8481005D172F /* shareFromVideoChatWindow_small.png in Resources */,
 				A97520140CAA8481005D172F /* style.css in Resources */,
 				BF85640D0CB2B73F005F7178 /* EndoscopyFlyThru.xib in Resources */,
+				A97B73990CB380F600E5348D /* osirixplugin.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
