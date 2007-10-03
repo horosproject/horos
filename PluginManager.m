@@ -346,7 +346,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 		
 		while ( name = [e nextObject] )
 		{
-			if ( [[name pathExtension] isEqualToString:@"plugin"] )
+			if ( [[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"])
 			{
 				NSBundle *plugin = [NSBundle bundleWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
 				 
@@ -715,7 +715,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 		NSString *name;
 		while(name = [e nextObject])
 		{
-			if([[name pathExtension] isEqualToString:@"plugin"])
+			if([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"])
 			{
 //				NSBundle *plugin = [NSBundle bundleWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
 //				if (filterClass = [plugin principalClass])	
