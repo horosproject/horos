@@ -137,8 +137,10 @@
 		[dbMenu removeItemAtIndex:0];
 	}
 
-	[[PluginManager alloc] discoverPlugins];
-	[[PluginManager alloc] setMenus:filtersMenu :roisMenu :othersMenu :dbMenu];
+	//[[PluginManager alloc] discoverPlugins];
+	[PluginManager discoverPlugins];
+	//[[PluginManager alloc] setMenus:filtersMenu :roisMenu :othersMenu :dbMenu];
+	[PluginManager setMenus:filtersMenu :roisMenu :othersMenu :dbMenu];
 	
 	pluginsNeedToReload = NO;
 }

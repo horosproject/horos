@@ -72,6 +72,8 @@ MODIFICATION HISTORY
 
 #import "altivecFunctions.h"
 
+#import "PluginManagerController.h"
+
 #define BUILTIN_DCMTK YES
 
 
@@ -1215,13 +1217,44 @@ NSRect screenFrame()
 	
 	// Plugins installation
 	if([pluginsArray count])
-	{
+	{	
 		NSMutableString *pluginNames = [NSMutableString string];
+		NSMutableString *replacingPlugins = [NSMutableString string];
+		
+		NSString *replacing = NSLocalizedString(@" will be replaced by ", @"");
+		NSString *strVersion = NSLocalizedString(@" version ", @"");
+		
+		NSMutableDictionary *availabilities = [NSMutableDictionary dictionary];
 		
 		for(NSString *path in pluginsArray)
+		{
 			[pluginNames appendFormat:@"%@, ", [[path lastPathComponent] stringByDeletingPathExtension]];
+			
+			NSBundle *pluginBundle = [NSBundle bundleWithPath:[PluginManager pathResolved:path]];
+			NSString *pluginBundleName = [[path lastPathComponent] stringByDeletingPathExtension];
+			NSString *pluginBundleVersion = [[pluginBundle infoDictionary] objectForKey:@"CFBundleVersion"];
+			
+			NSArray *pluginsDictArray = [PluginManager pluginsList];
+			for(NSDictionary *plug in pluginsDictArray)
+			{
+				if([pluginBundleName isEqualToString:[plug objectForKey:@"name"]])
+				{
+					[replacingPlugins appendString:[plug objectForKey:@"name"]];
+					[replacingPlugins appendString:strVersion];
+					[replacingPlugins appendString:[plug objectForKey:@"version"]];
+					[replacingPlugins appendString:replacing];
+					[replacingPlugins appendString:pluginBundleName];
+					[replacingPlugins appendString:strVersion];
+					[replacingPlugins appendString:pluginBundleVersion];
+					[replacingPlugins appendString:@"\n\n"];
+					
+					[availabilities setObject:[plug objectForKey:@"availability"] forKey:path];
+				}
+			}
+		}
 		
 		pluginNames = [NSMutableString stringWithString:[pluginNames substringToIndex:[pluginNames length]-2]];
+		if([replacingPlugins length]) replacingPlugins = [NSMutableString stringWithString:[replacingPlugins substringToIndex:[replacingPlugins length]-2]];
 		
 		NSString *msg;
 		NSString *areYouSure = NSLocalizedString(@"Are you sure you want to install", @"");
@@ -1231,19 +1264,67 @@ NSRect screenFrame()
 		else
 			msg = [NSString stringWithFormat:NSLocalizedString(@"%@ the following plugins : %@ ?", @""), areYouSure, pluginNames];
 		
+		if([replacingPlugins length])
+			msg = [NSString stringWithFormat:@"%@\n\n%@", msg, replacingPlugins];
+			
 		NSInteger res = NSRunAlertPanel(NSLocalizedString(@"Plugins Installation", @""), msg, NSLocalizedString(@"OK", @""), NSLocalizedString(@"Cancel", @""), nil);
 
 		if(res)
 		{
 			// move the plugin package into the plugins (active) directory
-			NSString *destinationDirectory = [PluginManager userActivePluginsDirectoryPath];
+			NSString *destinationDirectory;
 			NSString *destinationPath;
+
+			NSArray *pluginManagerAvailabilities = [PluginManager availabilities];
+			
 			for(NSString *path in pluginsArray)
-			{
+			{			
+				NSString *availability = [availabilities objectForKey:path];
+				
+				if([availability isEqualToString:[pluginManagerAvailabilities objectAtIndex:0]])
+					destinationDirectory = [PluginManager userActivePluginsDirectoryPath];
+				else if([availability isEqualToString:[pluginManagerAvailabilities objectAtIndex:1]])
+					destinationDirectory = [PluginManager systemActivePluginsDirectoryPath];
+				else if([availability isEqualToString:[pluginManagerAvailabilities objectAtIndex:2]])
+					destinationDirectory = [PluginManager appActivePluginsDirectoryPath];
+				else
+					destinationDirectory = [PluginManager userActivePluginsDirectoryPath];
+							
 				destinationPath = [destinationDirectory stringByAppendingPathComponent:[path lastPathComponent]];
 				NSLog(@"destinationPath : %@", destinationPath);
+				
+				NSMutableArray *args = [NSMutableArray array];
+				[args addObject:@"-r"];
+				[args addObject:destinationPath];
+				
+				NSTask *aTask = [[NSTask alloc] init];
+				[aTask setLaunchPath:@"/bin/rm"];
+				[aTask setArguments:args];
+				[aTask launch];
+				[aTask waitUntilExit];
+				[aTask release];
+				
 				[PluginManager movePluginFromPath:path toPath:destinationPath];
+				
+				NSBundle *plugBundle = [NSBundle bundleWithPath:[PluginManager pathResolved:path]];
+//				if([plugBundle isLoaded])
+//				{
+//					[plugBundle unload];
+//					[plugBundle load];
+//				}
 			}
+			
+			[PluginManager discoverPlugins];
+			[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
+			
+			// refresh the plugin manager window (if open)
+			NSArray *winList = [NSApp windows];		
+			for(NSWindow *window in winList)
+			{
+				if( [[window windowController] isKindOfClass:[PluginManagerController class]])
+					[[window windowController] refreshPluginList];
+			}
+
 		}
 	}
 }
@@ -1709,8 +1790,8 @@ static BOOL initialized = NO;
 //	[client connect];
 //	[client log:@"Happy Xmas 2006"];
 		
-	[[PluginManager alloc] setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
-
+//	[[PluginManager alloc] setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
+	[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
     NSLog(@"Finishing Launching");
     
 	theTask = nil;

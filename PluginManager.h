@@ -30,8 +30,9 @@
 
 #ifdef OSIRIX_VIEWER
 
-- (void)discoverPlugins;
-- (void) setMenus:(NSMenu*) filtersMenu :(NSMenu*) roisMenu :(NSMenu*) othersMenu :(NSMenu*) dbMenu;
++ (NSString*) pathResolved:(NSString*) inPath;
++ (void)discoverPlugins;
++ (void) setMenus:(NSMenu*) filtersMenu :(NSMenu*) roisMenu :(NSMenu*) othersMenu :(NSMenu*) dbMenu;
 
 + (NSString*)activePluginsDirectoryPath;
 + (NSString*)inactivePluginsDirectoryPath;

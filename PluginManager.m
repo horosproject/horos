@@ -60,8 +60,13 @@ static NSMenu					*fusionPluginsMenu = 0L;
 
 #ifdef OSIRIX_VIEWER
 
-- (void) setMenus:(NSMenu*) filtersMenu :(NSMenu*) roisMenu :(NSMenu*) othersMenu :(NSMenu*) dbMenu
++ (void) setMenus:(NSMenu*) filtersMenu :(NSMenu*) roisMenu :(NSMenu*) othersMenu :(NSMenu*) dbMenu
 {
+	while([filtersMenu numberOfItems])[filtersMenu removeItemAtIndex:0];
+	while([roisMenu numberOfItems])[roisMenu removeItemAtIndex:0];
+	while([othersMenu numberOfItems])[othersMenu removeItemAtIndex:0];
+	while([dbMenu numberOfItems])[dbMenu removeItemAtIndex:0];
+	
 	NSEnumerator *enumerator = [pluginsDict objectEnumerator];
 	NSBundle *plugin;
 	
@@ -270,7 +275,8 @@ static NSMenu					*fusionPluginsMenu = 0L;
 		
 		[ViewerController setDefaultROINames: defaultROINames];
 		
-		[self discoverPlugins];
+		//[self discoverPlugins];
+		[PluginManager discoverPlugins];
 	}
 	return self;
 }
@@ -298,7 +304,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 	else return (NSString *)resolvedPath;
 }
 
-- (void) discoverPlugins
++ (void) discoverPlugins
 {
 	BOOL		conflict = NO;
     Class		filterClass;
