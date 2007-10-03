@@ -13,6 +13,9 @@
 =========================================================================*/
 //  Created by joris on 12/12/05.
 
+/** \brief   Window Controller for Endoscopy
+*/
+
 
 #import <Cocoa/Cocoa.h>
 #import "OrthogonalMPRController.h"
