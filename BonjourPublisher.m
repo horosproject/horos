@@ -804,7 +804,6 @@ while ( [data length] < pos + 4 && (readData = [incomingConnection availableData
 	}
 	
 	[incomingConnection release];
-	[connectionLock unlock];
 	
 	if( refreshDB) [interfaceOsiriX performSelectorOnMainThread:@selector( refreshDatabase:) withObject:0L waitUntilDone: YES];		// This has to be performed on the main thread
 	if( saveDB) [interfaceOsiriX performSelectorOnMainThread:@selector( saveDatabase:) withObject:0L waitUntilDone: YES];			// This has to be performed on the main thread
@@ -820,6 +819,8 @@ while ( [data length] < pos + 4 && (readData = [incomingConnection availableData
 	
 	[[aNotification object] acceptConnectionInBackgroundAndNotify];
 	[NSThread detachNewThreadSelector: @selector (subConnectionReceived:) toTarget: self withObject: [[aNotification userInfo] objectForKey:NSFileHandleNotificationFileHandleItem]];
+	
+	[connectionLock unlock];
 	
 	[pool release];
 }
