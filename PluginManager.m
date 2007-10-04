@@ -733,10 +733,28 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 						
 					[pluginDescription setObject:availability forKey:@"availability"];
 					
-					NSBundle *pluginBundle = [NSBundle bundleWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
-					NSString *pluginVersion = [[pluginBundle infoDictionary] objectForKey:@"CFBundleVersion"];
+					// plugin version
+					
+					// taking the "version" through NSBundle is a BAD idea: Cocoa keeps the NSBundle in cache... thus for a same path you'll always have the same version
+					
+					NSURL *bundleURL = [NSURL fileURLWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
+					CFDictionaryRef bundleInfoDict = CFBundleCopyInfoDictionaryInDirectory((CFURLRef)bundleURL);
+								
+					CFStringRef versionString;
+					if(bundleInfoDict != NULL)
+						versionString = CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleVersion"));
+					
+					NSString *pluginVersion;
+					if(versionString != NULL)
+						pluginVersion = (NSString*)versionString;
+					else
+						pluginVersion = @"";
+						
 					[pluginDescription setObject:pluginVersion forKey:@"version"];
 					
+					CFRelease(versionString);
+				
+					// plugin description dictionary
 					[plugins addObject:pluginDescription];
 				}
 			}

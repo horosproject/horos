@@ -1224,15 +1224,27 @@ NSRect screenFrame()
 		NSString *replacing = NSLocalizedString(@" will be replaced by ", @"");
 		NSString *strVersion = NSLocalizedString(@" version ", @"");
 		
+		NSMutableDictionary *active = [NSMutableDictionary dictionary];
 		NSMutableDictionary *availabilities = [NSMutableDictionary dictionary];
 		
 		for(NSString *path in pluginsArray)
 		{
 			[pluginNames appendFormat:@"%@, ", [[path lastPathComponent] stringByDeletingPathExtension]];
 			
-			NSBundle *pluginBundle = [NSBundle bundleWithPath:[PluginManager pathResolved:path]];
 			NSString *pluginBundleName = [[path lastPathComponent] stringByDeletingPathExtension];
-			NSString *pluginBundleVersion = [[pluginBundle infoDictionary] objectForKey:@"CFBundleVersion"];
+
+			NSURL *bundleURL = [NSURL fileURLWithPath:[PluginManager pathResolved:path]];
+			CFDictionaryRef bundleInfoDict = CFBundleCopyInfoDictionaryInDirectory((CFURLRef)bundleURL);
+						
+			CFStringRef versionString;
+			if(bundleInfoDict != NULL)
+				versionString = CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleVersion"));
+			
+			NSString *pluginBundleVersion;
+			if(versionString != NULL)
+				pluginBundleVersion = (NSString*)versionString;
+			else
+				pluginBundleVersion = @"";		
 			
 			NSArray *pluginsDictArray = [PluginManager pluginsList];
 			for(NSDictionary *plug in pluginsDictArray)
@@ -1249,8 +1261,10 @@ NSRect screenFrame()
 					[replacingPlugins appendString:@"\n\n"];
 					
 					[availabilities setObject:[plug objectForKey:@"availability"] forKey:path];
+					[active setObject:[plug objectForKey:@"active"] forKey:path];
 				}
 			}
+			CFRelease(versionString);
 		}
 		
 		pluginNames = [NSMutableString stringWithString:[pluginNames substringToIndex:[pluginNames length]-2]];
@@ -1280,38 +1294,68 @@ NSRect screenFrame()
 			for(NSString *path in pluginsArray)
 			{			
 				NSString *availability = [availabilities objectForKey:path];
-				
+				BOOL isActive = [[active objectForKey:path] boolValue];
 				if([availability isEqualToString:[pluginManagerAvailabilities objectAtIndex:0]])
-					destinationDirectory = [PluginManager userActivePluginsDirectoryPath];
+				{
+					if(isActive)
+						destinationDirectory = [PluginManager userActivePluginsDirectoryPath];
+					else
+						destinationDirectory = [PluginManager userInactivePluginsDirectoryPath];
+				}
 				else if([availability isEqualToString:[pluginManagerAvailabilities objectAtIndex:1]])
-					destinationDirectory = [PluginManager systemActivePluginsDirectoryPath];
+				{
+					if(isActive)
+						destinationDirectory = [PluginManager systemActivePluginsDirectoryPath];
+					else
+						destinationDirectory = [PluginManager systemInactivePluginsDirectoryPath];
+				}
 				else if([availability isEqualToString:[pluginManagerAvailabilities objectAtIndex:2]])
-					destinationDirectory = [PluginManager appActivePluginsDirectoryPath];
+				{
+					if(isActive)
+						destinationDirectory = [PluginManager appActivePluginsDirectoryPath];
+					else
+						destinationDirectory = [PluginManager appInactivePluginsDirectoryPath];
+				}
 				else
-					destinationDirectory = [PluginManager userActivePluginsDirectoryPath];
+				{
+					if(isActive)
+						destinationDirectory = [PluginManager userActivePluginsDirectoryPath];
+					else
+						destinationDirectory = [PluginManager userInactivePluginsDirectoryPath];
+				}
 							
 				destinationPath = [destinationDirectory stringByAppendingPathComponent:[path lastPathComponent]];
-				NSLog(@"destinationPath : %@", destinationPath);
+			
+				// delete the plugin if it already exists.
 				
-				NSMutableArray *args = [NSMutableArray array];
-				[args addObject:@"-r"];
-				[args addObject:destinationPath];
+				NSString *pathToDelete;
 				
-				NSTask *aTask = [[NSTask alloc] init];
-				[aTask setLaunchPath:@"/bin/rm"];
-				[aTask setArguments:args];
-				[aTask launch];
-				[aTask waitUntilExit];
-				[aTask release];
+				if([[NSFileManager defaultManager] fileExistsAtPath:destinationPath]) // .osirixplugin extension
+					pathToDelete = destinationPath;
+				else
+				{
+					NSString *pathWithOldExt = [[destinationPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"plugin"];
+					
+					if([[NSFileManager defaultManager] fileExistsAtPath:pathWithOldExt]) // the plugin already exists but with the old extension ".plugin"
+						pathToDelete = pathWithOldExt;
+				}
+
+				if(pathToDelete)
+				{
+					NSMutableArray *args = [NSMutableArray array];
+					[args addObject:@"-r"];
+					[args addObject:pathToDelete];
+					
+					NSTask *aTask = [[NSTask alloc] init];
+					[aTask setLaunchPath:@"/bin/rm"];
+					[aTask setArguments:args];
+					[aTask launch];
+					[aTask waitUntilExit];
+					[aTask release];
+				}
 				
+				// move the new plugin to the plugin folder				
 				[PluginManager movePluginFromPath:path toPath:destinationPath];
-				
-				NSBundle *plugBundle = [NSBundle bundleWithPath:[PluginManager pathResolved:path]];
-//				if([plugBundle isLoaded])
-//				{
-//					[plugBundle unload];
-//					[plugBundle load];
-//				}
 			}
 			
 			[PluginManager discoverPlugins];
