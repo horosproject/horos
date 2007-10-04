@@ -301,7 +301,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 	}
 	
 	if( resolvedPath == 0L) return inPath;
-	else return (NSString *)resolvedPath;
+	else return [(NSString *) resolvedPath autorelease];
 }
 
 + (void) discoverPlugins
@@ -753,7 +753,8 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 					[pluginDescription setObject:pluginVersion forKey:@"version"];
 					
 //					if( versionString) CFRelease(versionString);	// Joris, pourquoi un release???
-				
+					if( bundleInfoDict) CFRelease( bundleInfoDict);
+					
 					// plugin description dictionary
 					[plugins addObject:pluginDescription];
 				}
