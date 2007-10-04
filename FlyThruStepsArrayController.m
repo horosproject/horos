@@ -124,7 +124,7 @@
 			if( [panel runModalForDirectory:0L file:@"OsiriX Fly Through"] == NSFileHandlingPanelOKButton)
 			{
 				NSMutableDictionary *xml;
-				xml = [flyThruController.FT exportToXML];
+				xml = [flyThruController.flyThru exportToXML];
 				[xml writeToFile:[panel filename] atomically: TRUE];
 			}
 		}

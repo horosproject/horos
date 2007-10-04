@@ -21,8 +21,7 @@
 
 @implementation FlyThru
 
-@synthesize steps = stepCameras,  pathCameras, stepsPositionInPath, 
-numberOfFrames, interpolationMethod, constantSpeed, loop;
+@synthesize steps = stepCameras,  pathCameras, stepsPositionInPath, numberOfFrames, interpolationMethod, constantSpeed, loop;
 
 
 -(id) init

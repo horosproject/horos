@@ -12,19 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
-/*
-
-MODIFICATION HISTORY
-
-	20060110	DDP	Reducing the variable duplication of userDefault objects (work in progress).
-
-  
-*/
-
-
 #import "FlyThruController.h"
 #import "VRController.h"
 #import "EndoscopyVRController.h"
@@ -38,8 +25,7 @@ MODIFICATION HISTORY
 @implementation FlyThruController
 
 @synthesize curMovieIndex;
-@synthesize flyThru = FT;
-@synthesize currentMovieIndex = curMovieIndex;
+@synthesize flyThru;
 @synthesize hidePlayBox;
 @synthesize hideComputeBox;
 @synthesize hideExportBox;
@@ -47,7 +33,7 @@ MODIFICATION HISTORY
 @synthesize dcmSeriesName;
 @synthesize levelOfDetailType;
 @synthesize exportSize;
-@synthesize FT, FTAdapter;
+@synthesize FTAdapter;
 
 - (void)setWindow3DController:(Window3DController*) w3Dc
 {
@@ -142,7 +128,7 @@ MODIFICATION HISTORY
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
 	[FTAdapter release];
-	[FT release];
+	[flyThru release];
 	[controller3D release];
 	
 	[super dealloc];
@@ -164,11 +150,11 @@ MODIFICATION HISTORY
 
 - (void) setCurrentView
 {
-	if ([[FT steps] count]>0)
+	if ([[flyThru steps] count]>0)
 	{
 		int index = [FTview selectedRow];
-		[FTAdapter setCurrentViewToCamera:[[FT steps] objectAtIndex:index]];
-		[framesSlider setIntValue:[[[FT stepsPositionInPath] objectAtIndex:index] intValue]];
+		[FTAdapter setCurrentViewToCamera:[[flyThru steps] objectAtIndex:index]];
+		[framesSlider setIntValue:[[[flyThru stepsPositionInPath] objectAtIndex:index] intValue]];
 	}
 }
 
@@ -180,21 +166,21 @@ MODIFICATION HISTORY
 
 - (IBAction) flyThruCompute:(id) sender
 {
-	int minSteps = (FT.loop)?2:3; // for the spline, 3 points are needed. (in the case of a loop, the 3rd point is added in the 'computePath' method of the FlyThru)
+	int minSteps = (flyThru.loop)?2:3; // for the spline, 3 points are needed. (in the case of a loop, the 3rd point is added in the 'computePath' method of the FlyThru)
 	int userChoice = 1;
 	
-	if( [FT.steps count] < 2)
+	if( [flyThru.steps count] < 2)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"Error",nil), NSLocalizedString(@"Add at least 2 frames for a Fly Thru.",nil), nil, nil, nil);
 		return;
 	}
 	
-	if ([FT interpolationMethod] == 1 && [FT.steps count] < minSteps)
+	if ([flyThru interpolationMethod] == 1 && [flyThru.steps count] < minSteps)
 	{
 		userChoice = NSRunAlertPanel(NSLocalizedString(@"Spline Interpolation Error", nil), NSLocalizedString(@"The Spline Interpolation needs at least 3 points to be run.", nil), NSLocalizedString(@"Use Linear Interpollation", nil), NSLocalizedString(@"Cancel", nil), nil);
 		if(userChoice == 1)
 		{
-			FT.interpolationMethod = 2; // changing the method
+			flyThru.interpolationMethod = 2; // changing the method
 			// selection of the right radio button
 			//[[methodChooser cellWithTag:1] setState: NSOffState]; 
 			//[[methodChooser cellWithTag:2] setState: NSOnState];
@@ -203,18 +189,18 @@ MODIFICATION HISTORY
 	
 	if(userChoice == 1)
 	{
-		int v = FT.numberOfFrames;
+		int v = flyThru.numberOfFrames;
 	
 		if( v < 2) v = 2;
 		if( v > 2000) v = 2000;
 	
-		FT.numberOfFrames = v;
-		[FT computePath];
+		flyThru.numberOfFrames = v;
+		[flyThru computePath];
 		
 		// 4D
 		if([controller3D is4D])
 		{
-			NSArray *pathCameras = [FT pathCameras];
+			NSArray *pathCameras = [flyThru pathCameras];
 			int i;
 			long previousIndex = [[pathCameras objectAtIndex:0] movieIndexIn4D];
 			BOOL sameIndexes = YES;
@@ -241,9 +227,9 @@ MODIFICATION HISTORY
 		self.hidePlayBox = NO;
 		self.hideExportBox = NO;
 		
-	//	[nbFramesTextField setStringValue: [NSString stringWithFormat:@"%d",[FT numberOfFrames]]];
+	//	[nbFramesTextField setStringValue: [NSString stringWithFormat:@"%d",[flyThru numberOfFrames]]];
 		
-		[framesSlider setMaxValue: [FT numberOfFrames]-1];
+		[framesSlider setMaxValue: [flyThru numberOfFrames]-1];
 		
 		if( [controller3D isKindOfClass: [VRController class]] == NO || [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1)	// Only the VR supports LOD versus Best rendering mode if ray casting is used
 		{
@@ -261,11 +247,11 @@ MODIFICATION HISTORY
 
 - (IBAction) flyThruSetCurrentViewToSliderPosition:(id) sender
 {
-	if ([[FT pathCameras] count]>0)
+	if ([[flyThru pathCameras] count]>0)
 	{
 		int index = [framesSlider intValue];
-		if (index > FT.pathCameras.count) index = FT.pathCameras.count - 1;
-		[FTAdapter setCurrentViewToCamera:[FT.pathCameras objectAtIndex:index]];
+		if (index > flyThru.pathCameras.count) index = flyThru.pathCameras.count - 1;
+		[FTAdapter setCurrentViewToCamera:[flyThru.pathCameras objectAtIndex:index]];
 	}
 }
 
@@ -281,7 +267,7 @@ MODIFICATION HISTORY
         
         [playButton setTitle: @"Play"];
 		
-		[FTAdapter setCurrentViewToCamera:[[FT pathCameras] objectAtIndex:curMovieIndex]];
+		[FTAdapter setCurrentViewToCamera:[[flyThru pathCameras] objectAtIndex:curMovieIndex]];
 		
 		// resize the window to the original size (with the 3 box)
 		self.hideComputeBox = NO;
@@ -346,9 +332,9 @@ MODIFICATION HISTORY
 	val ++;
 	
 	if( val < 0) val = 1;
-	if( val > FT.numberOfFrames) val = 1;
+	if( val > flyThru.numberOfFrames) val = 1;
 	
-	self.currentMovieIndex = val;
+	self.curMovieIndex = val;
 	
 	if( [[self window3DController] movieFrames] > 1)
 	{	
@@ -361,7 +347,7 @@ MODIFICATION HISTORY
 	}
 	
 	//[framesSlider setIntValue:curMovieIndex];
-	[FTAdapter setCurrentViewToLowResolutionCamera:[[FT pathCameras] objectAtIndex:curMovieIndex - 1]];
+	[FTAdapter setCurrentViewToLowResolutionCamera:[[flyThru pathCameras] objectAtIndex:curMovieIndex - 1]];
 	
 	lastMovieTime = thisTime;
 }
@@ -372,7 +358,7 @@ MODIFICATION HISTORY
 
 	if( exportFormat == 0)
 	{
-		long numberOfFrames = FT.numberOfFrames;
+		long numberOfFrames = flyThru.numberOfFrames;
 		
 		if( [[self window3DController] movieFrames] > 1)
 		{
@@ -388,7 +374,7 @@ MODIFICATION HISTORY
 	{
 		long			i;
 		DICOMExport		*dcmSequence = [[DICOMExport alloc] init];
-		long numberOfFrames = FT.numberOfFrames;
+		long numberOfFrames = flyThru.numberOfFrames;
 		
 		if( [[self window3DController] movieFrames] > 1)
 		{
@@ -418,7 +404,7 @@ MODIFICATION HISTORY
 				[[self window3DController] setMovieFrame: movieIndex];
 			}
 			
-			[FTAdapter setCurrentViewToCamera:[[FT pathCameras] objectAtIndex: i]];
+			[FTAdapter setCurrentViewToCamera:[[flyThru pathCameras] objectAtIndex: i]];
 			[FTAdapter getCurrentCameraImage: levelOfDetailType];
 			
 			long	width, height, spp, bpp, err;
@@ -474,22 +460,19 @@ MODIFICATION HISTORY
 			[[self window3DController] setMovieFrame: movieIndex];
 		}
 	
-		[FTAdapter setCurrentViewToCamera:[[FT pathCameras] objectAtIndex: [cur intValue]]];
+		[FTAdapter setCurrentViewToCamera:[[flyThru pathCameras] objectAtIndex: [cur intValue]]];
 		return [FTAdapter getCurrentCameraImage: levelOfDetailType];
 	}
 	else
 	{
-		[FTAdapter setCurrentViewToCamera:[[FT pathCameras] objectAtIndex: 0]];
+		[FTAdapter setCurrentViewToCamera:[[flyThru pathCameras] objectAtIndex: 0]];
 		return [FTAdapter getCurrentCameraImage: levelOfDetailType];
 	}
 }
 
-
-
-
 -(void) updateThumbnails
 {
-	NSArray *stepsCameras = [FT steps];
+	NSArray *stepsCameras = [flyThru steps];
 	NSEnumerator *enumerator = [stepsCameras objectEnumerator];
 	id cam;
 	NSImage * im;
@@ -506,21 +489,16 @@ MODIFICATION HISTORY
 	return exportButtonOption;
 }
 
-
-- (int)currentMovieIndex{
+- (int)curMovieIndex{
 	return curMovieIndex;
 }
 
-- (void)setCurrentMovieIndex:(int)index{
-	if ([FT.pathCameras count] > 0)
+- (void)setCurMovieIndex:(int)index{
+	if ([flyThru.pathCameras count] > 0)
 	{
-		[FTAdapter setCurrentViewToCamera:[FT.pathCameras objectAtIndex:index - 1]];
+		[FTAdapter setCurrentViewToCamera:[flyThru.pathCameras objectAtIndex:index - 1]];
 	}
 	curMovieIndex = index;
-}
-
-- (int)curMovieIndex {
-	return curMovieIndex;
 }
 
 - (Camera *)currentCamera{
