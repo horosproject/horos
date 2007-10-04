@@ -5393,14 +5393,14 @@ END_CREATE_ROIS:
 			
 			// *** 
 			
-			val = Papy3GetElement (theGroupP, papPhysicalUnitsXDirection, &nbVal, &elemType);
-			if ( val ) NSLog( [NSString stringWithCString:val->a]);
-			val = Papy3GetElement (theGroupP, papPhysicalUnitsYDirection, &nbVal, &elemType);
-			if ( val ) NSLog( [NSString stringWithCString:val->a]);
-			val = Papy3GetElement (theGroupP, papPhysicalDeltaX, &nbVal, &elemType);
-			if ( val ) NSLog( [NSString stringWithCString:val->a]);
-			val = Papy3GetElement (theGroupP, papPhysicalDeltaY, &nbVal, &elemType);
-			if ( val ) NSLog( [NSString stringWithCString:val->a]);
+//			val = Papy3GetElement (theGroupP, papPhysicalUnitsXDirection, &nbVal, &elemType);
+//			if ( val ) NSLog( [NSString stringWithCString:val->a]);
+//			val = Papy3GetElement (theGroupP, papPhysicalUnitsYDirection, &nbVal, &elemType);
+//			if ( val ) NSLog( [NSString stringWithCString:val->a]);
+//			val = Papy3GetElement (theGroupP, papPhysicalDeltaX, &nbVal, &elemType);
+//			if ( val ) NSLog( [NSString stringWithCString:val->a]);
+//			val = Papy3GetElement (theGroupP, papPhysicalDeltaY, &nbVal, &elemType);
+//			if ( val ) NSLog( [NSString stringWithCString:val->a]);
 			
 			val = Papy3GetElement (theGroupP, papCineRateGr, &nbVal, &elemType);
 			if (!cineRate && val != NULL) cineRate = [[NSString stringWithCString:val->a] floatValue];	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
