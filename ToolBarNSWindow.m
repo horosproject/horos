@@ -12,16 +12,14 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import "ToolBarNSWindow.h"
-
+#import "ToolbarPanel.h"
 
 @implementation ToolBarNSWindow
 
 - (BOOL) canBecomeMainWindow
 {
+	[self setDelegate: self];
 	return NO;
 }
 
@@ -30,4 +28,8 @@
 	return NO;
 }
 
+- (void)windowDidResize:(NSNotification *)notification
+{
+	[ (ToolbarPanelController*) [self windowController] fixSize];
+}
 @end
