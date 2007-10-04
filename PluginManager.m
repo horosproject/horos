@@ -740,7 +740,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 					NSURL *bundleURL = [NSURL fileURLWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
 					CFDictionaryRef bundleInfoDict = CFBundleCopyInfoDictionaryInDirectory((CFURLRef)bundleURL);
 								
-					CFStringRef versionString;
+					CFStringRef versionString = 0L;
 					if(bundleInfoDict != NULL)
 						versionString = CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleVersion"));
 					
@@ -752,7 +752,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 						
 					[pluginDescription setObject:pluginVersion forKey:@"version"];
 					
-					CFRelease(versionString);
+//					if( versionString) CFRelease(versionString);	// Joris, pourquoi un release???
 				
 					// plugin description dictionary
 					[plugins addObject:pluginDescription];

@@ -12,24 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-/***************************************** Modifications *********************************************
-
-Version 2.3
-
-	20060123	LP	added sliceLocation to userinfo for synchronize to allow calculation of relative slice location
-	20060124	LP	SyncSeriesMenuItem status updated with status of sync series
-	
-Version 2.3.1
-
-	20060208	LP	Revised zooming behavior
-	20060217	LP	Added some more menu items 
-	20060216	LP	Added a Shift option to databaseWindow. Holding down the shift key will bring the browser to the front without closing viewers
-
-Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without changing anything else (work in progress)
-	
-****************************************/
-
-
 #import "AYDicomPrintWindowController.h"
 #import "ViewerControllerWindow.h"
 #import "MyOutlineView.h"
@@ -3970,6 +3952,12 @@ static ViewerController *draggedController = 0L;
     //    playstopItem = addedItem;
 
 //    }
+
+	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
+	{
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
+			[toolbarPanel[ i] fixSize];
+	}
 }  
 
 - (void) toolbarDidRemoveItem: (NSNotification *) notif {
@@ -3983,6 +3971,12 @@ static ViewerController *draggedController = 0L;
     }*/
     
 //    [removedItem release];
+
+	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
+	{
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
+			[toolbarPanel[ i] fixSize];
+	}
 }
 
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem
