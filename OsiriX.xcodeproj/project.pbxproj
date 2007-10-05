@@ -6418,6 +6418,8 @@
 		CE3F99A20C84724B00CB38F1 /* XMLViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F993E0C84724B00CB38F1 /* XMLViewer.xib */; };
 		CE3F99A30C84724B00CB38F1 /* AYDicomPrint.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99400C84724B00CB38F1 /* AYDicomPrint.xib */; };
 		CE416BCE07969EEB009A8D42 /* OsiriX.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E0B3A3F067526CD00908593 /* OsiriX.framework */; };
+		CE438F420CB621DF006AAFD9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
+		CE438F4D0CB621EC006AAFD9 /* Growl.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
 		CE49E2CA0760B93500444203 /* Empty.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE49E2C50760B93500444203 /* Empty.tif */; };
 		CE49E2CC0760B93500444203 /* Empty.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE49E2C50760B93500444203 /* Empty.tif */; };
 		CE4A922D06DBF255006DAAF7 /* ITKSegmentation3D.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE4A922B06DBF255006DAAF7 /* ITKSegmentation3D.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
@@ -8106,6 +8108,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				CE438F4D0CB621EC006AAFD9 /* Growl.framework in CopyFiles */,
+				CE438F420CB621DF006AAFD9 /* DotMacKit.framework in CopyFiles */,
 				CEBBE1820C82F33900247888 /* libtiff.dylib in CopyFiles */,
 				CE9A04440C7DBC060007809F /* libxerces-c.27.dylib in CopyFiles */,
 				CE9A04450C7DBC060007809F /* libdcmprintscu.dylib in CopyFiles */,
