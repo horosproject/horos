@@ -22,6 +22,8 @@ extern BOOL USETOOLBARPANEL;
 
 @implementation ToolbarPanelController
 
+@synthesize viewer;
+
 + (long) fixedHeight
 {
 	return 88;
@@ -77,6 +79,8 @@ extern BOOL USETOOLBARPANEL;
 
 - (void)windowDidBecomeMain:(NSNotification *)aNotification
 {
+	return;
+
 	if( [aNotification object] == [self window])
 	{
 		return;
@@ -104,7 +108,7 @@ extern BOOL USETOOLBARPANEL;
 		}
 		else
 		{
-			[self setToolbar: 0L];
+			[self setToolbar: 0L viewer: 0L];
 			[[self window] orderOut:self];
 			NSLog(@"hide toolbar");
 		}
@@ -127,6 +131,9 @@ extern BOOL USETOOLBARPANEL;
 	
 	emptyToolbar = [[NSToolbar alloc] initWithIdentifier: @"nstoolbar osirix"];
 	[[self window] setToolbar: emptyToolbar];
+	
+	
+	[[self window] setLevel: NSNormalWindowLevel];
 }
 
 - (NSToolbar*) toolbar
@@ -141,16 +148,25 @@ extern BOOL USETOOLBARPANEL;
 		[[self window] setToolbar: 0L];
 		
 		[toolbar release];
+		[viewer release];
+
 		toolbar = 0;
+		viewer = 0;
 	}
 }
 
-- (void) setToolbar :(NSToolbar*) tb
+- (void) setToolbar :(NSToolbar*) tb viewer:(ViewerController*) v
 {
-	if( tb == toolbar) return;
+	if( tb == toolbar)
+	{
+		[[self window] orderWindow: NSWindowAbove relativeTo: [[viewer window] windowNumber]];
+		return;
+	}
 	
 	[toolbar release];
+	[viewer release];
 	
+	viewer = [v retain];
 	toolbar = [tb retain];
 	
 	if( toolbar)
@@ -168,6 +184,8 @@ extern BOOL USETOOLBARPANEL;
 	{
 		[[self window] setFrameTopLeftPoint: NSMakePoint([[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.x, [[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.y+[[[NSScreen screens] objectAtIndex: screen] visibleFrame].size.height)];
 		[self fixSize];
+		
+		[[self window] orderWindow: NSWindowAbove relativeTo: [[viewer window] windowNumber]];
 	}
 }
 

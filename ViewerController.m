@@ -1979,7 +1979,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			if( [toolbarPanel[ i] toolbar] == toolbar && [[self window] screen] != [[NSScreen screens] objectAtIndex: i])
 			{
-				[toolbarPanel[ i] setToolbar: 0L];
+				[toolbarPanel[ i] setToolbar: 0L viewer: 0L];
 			}
 		}
 		
@@ -1988,7 +1988,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			if( [[self window] screen] == [[NSScreen screens] objectAtIndex: i])
 			{
-				[toolbarPanel[ i] setToolbar: toolbar];
+				[toolbarPanel[ i] setToolbar: toolbar viewer: self];
 				found = YES;
 			}
 			else [[toolbarPanel[ i] window] orderOut:self];
@@ -2014,7 +2014,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			if( [toolbarPanel[ i] toolbar] == toolbar && [[self window] screen] != [[NSScreen screens] objectAtIndex: i])
 			{
-				[toolbarPanel[ i] setToolbar: 0L];
+				[toolbarPanel[ i] setToolbar: 0L viewer: 0L];
 			}
 		}
 		
@@ -2023,7 +2023,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			if( [[self window] screen] == [[NSScreen screens] objectAtIndex: i])
 			{
-				[toolbarPanel[ i] setToolbar: toolbar];
+				[toolbarPanel[ i] setToolbar: toolbar viewer: self];
 				found = YES;
 			}
 			else [[toolbarPanel[ i] window] orderOut:self];
@@ -2534,7 +2534,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
 
 		int i;
-		for( i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: 0L];
+		for( i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: 0L viewer: 0L];
 		[[self window] makeKeyAndOrderFront: self];
 		[self refreshToolbar];
 	}
