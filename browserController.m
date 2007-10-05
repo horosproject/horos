@@ -8468,13 +8468,17 @@ static NSArray*	openSubSeriesArray = 0L;
 - (NSArray*)openSubSeries: (NSArray*)toOpenArray {
 	openSubSeriesArray = [toOpenArray retain];
 	
+	NSLog( @"[[NSApp mainWindow] level]: %d", [[NSApp mainWindow] level]);
+	
+	if( [[NSApp mainWindow] level] >= NSFloatingWindowLevel) return 0L;		// To avoid the problem of displaying this sheet when the user is in fullscreen mode
+	
 	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subTo"];
 	[self setValue:[NSNumber numberWithInt:1] forKey:@"subFrom"];
 	[self setValue:[NSNumber numberWithInt:2] forKey:@"subInterval"];
 	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subMax"];
 	
 	[NSApp beginSheet: subSeriesWindow
-	   modalForWindow:	[NSApp mainWindow]					//self.window
+	   modalForWindow: [NSApp mainWindow]
 		modalDelegate: nil
 	   didEndSelector: nil
 		  contextInfo: nil];
