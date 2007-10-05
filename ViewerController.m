@@ -1953,6 +1953,19 @@ static volatile int numberOfThreadsForRelisce = 0;
 			}
 		}
 	}
+	else
+	{
+		if( USETOOLBARPANEL)
+		{
+			NSRect dstFrame = [[self window] frame];
+		
+			if( dstFrame.size.height >= [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController fixedHeight])
+			{
+				dstFrame.size.height = [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController fixedHeight];
+				[[self window] setFrame: dstFrame display:YES];
+			}
+		}
+	}
 }
 
 - (void) windowDidResignMain:(NSNotification *)aNotification
