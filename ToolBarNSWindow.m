@@ -25,7 +25,7 @@
 
 - (BOOL) canBecomeKeyWindow
 {
-	return NO;
+	return YES;
 }
 
 - (void)windowDidResize:(NSNotification *)notification
