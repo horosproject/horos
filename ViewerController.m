@@ -4909,6 +4909,10 @@ static ViewerController *draggedController = 0L;
 		[self setFusionMode: previousFusion];
 		[popFusion selectItemWithTag:previousFusion];
 	}
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 }
 
 - (void) showWindowTransition
@@ -14880,6 +14884,10 @@ int i,j,l;
 	if( matrixPreviewBuilt == NO) [self buildMatrixPreview];
 	
 	[self matrixPreviewSelectCurrentSeries];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 }
 
 - (IBAction) Panel3D:(id) sender
