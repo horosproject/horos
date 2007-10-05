@@ -80,7 +80,7 @@
 
 -(void) closeViewerNotification:(NSNotification*) note
 {
-	if( [note object] == _viewer) [self close];
+	if( [note object] == _viewer) [[self window] close];
 }
 
 - (void)windowDidBeomeKey:(NSNotification*) note {

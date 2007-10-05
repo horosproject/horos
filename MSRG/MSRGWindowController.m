@@ -275,7 +275,7 @@ PURPOSE.
 {	
 	if( [note object] == viewer)
 	{
-		[self close];
+		[[self window] close];
 	}
 }
 

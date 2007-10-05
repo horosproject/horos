@@ -200,7 +200,7 @@ PURPOSE.
 	{
 		NSLog( @"ROIManager CloseViewerNotification");
 		
-		[self close];
+		[[self window] close];
 	}
 }
 
@@ -209,7 +209,6 @@ PURPOSE.
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
  
 	NSLog( @"ROIManager windowWillClose");
-	[tableView setDataSource: 0L];
 	
 	[self release];
 }
@@ -217,17 +216,11 @@ PURPOSE.
 - (void) dealloc
 {
 	NSLog( @"ROIManager dealloc");
-	
+	[tableView setDataSource: 0L];
 	viewer = 0L;
 	
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 	
 	[super dealloc];
 }
-
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
 @end

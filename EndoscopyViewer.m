@@ -700,7 +700,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	{
 		if( [v pixList] == pixList)
 		{
-			[self close];
+			[[self window] close];
 			return;
 		}
 	}

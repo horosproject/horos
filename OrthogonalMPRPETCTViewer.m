@@ -51,13 +51,13 @@ NSString * documentsDirectory();
 	
 	if( [[v pixList] containsObject:[[PETController originalDCMPixList] objectAtIndex: 0]])
 	{
-		[self close];
+		[[self window] close];
 		return;
 	}
 	
 	if( [[v pixList] containsObject:[[CTController originalDCMPixList] objectAtIndex: 0]])
 	{
-		[self close];
+		[[self window] close];
 		return;
 	}
 }

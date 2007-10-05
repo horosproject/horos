@@ -402,7 +402,7 @@ static BOOL showWarning = YES;
 	
 	if( [note object] == viewer)
 	{
-		[self close];
+		[[self window] close];
 	}
 }
 

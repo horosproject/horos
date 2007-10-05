@@ -4142,13 +4142,8 @@ static ViewerController *draggedController = 0L;
 	[shutterOnOff setState: [b boolValue]];
 }
 
-//added by Jacques Fauquex 2006-09-30
 - (IBAction) shutterOnOff:(id) sender
-{
-// ***************
-	[self rotateDataSet: kRotate90DegreesClockwise];
-	return;
-	
+{	
 //	{
 //	int i;
 //	NSArray	*rois = [self selectedROIs];
@@ -16241,7 +16236,7 @@ sourceRef);
 	{	
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceSave"]) [self saveWindowsState: self];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];	
-		[self close];
+		[[self window] close];
 	}
 	else
 		[[BrowserController currentBrowser] showDatabase:self];

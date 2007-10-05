@@ -638,7 +638,7 @@ extern NSString * documentsDirectory();
 		if( [v pixList] == pixList[ i])
 		{
 			[self offFullScreen];
-			[self close];
+			[[self window] close];
 			return;
 		}
 	}

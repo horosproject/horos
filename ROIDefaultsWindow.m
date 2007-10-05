@@ -77,7 +77,7 @@ static ViewerController		*curController;
 }
 
 - (IBAction)setDefaultName: (id)sender {
-	[self close];
+	[[self window] close];
 }
 
 - (IBAction)unsetDefaultName: (id)sender {

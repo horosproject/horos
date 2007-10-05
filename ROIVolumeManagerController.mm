@@ -169,7 +169,7 @@
 	if( [note object] == viewer)
 	{
 		NSLog( @"ROIVolumeManager Window3DClose");
-		[self close];
+		[[self window] close];
 	}
 }
 
