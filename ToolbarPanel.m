@@ -79,25 +79,38 @@ extern BOOL USETOOLBARPANEL;
 
 - (void)windowDidResignKey:(NSNotification *)aNotification
 {
-	if( [[self window] isVisible]) [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+	if( [aNotification object] == [self window])
+	{
+		if( [[self window] isVisible]) [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+	}
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)aNotification
 {
-	if( [[self window] isVisible]) [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+	if( [aNotification object] == [self window])
+	{
+		if( [[self window] isVisible])
+		{
+			[[viewer window] makeKeyAndOrderFront: self];
+			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+		}
+	}
 }
 
 - (void)windowDidResignMain:(NSNotification *)aNotification
 {
-	if( [[self window] isVisible]) [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+	if( [aNotification object] == [self window])
+	{
+		if( [[self window] isVisible]) [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+	}
 }
 
 - (void)windowDidBecomeMain:(NSNotification *)aNotification
 {
-	if( [[self window] isVisible]) [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
-	
 	if( [aNotification object] == [self window])
 	{
+		[[viewer window] makeKeyAndOrderFront: self];
+		if( [[self window] isVisible]) [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 		return;
 	}
 	
@@ -116,7 +129,6 @@ extern BOOL USETOOLBARPANEL;
 	{
 		if( [[aNotification object] screen] == [[NSScreen screens] objectAtIndex: screen])
 		{
-			
 			[[self window] orderBack:self];
 			[toolbar setVisible:YES];
 			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
@@ -142,9 +154,9 @@ extern BOOL USETOOLBARPANEL;
 - (void) windowDidLoad
 {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeMain:) name:NSWindowDidBecomeMainNotification object:0];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignMain:) name:NSWindowDidBecomeMainNotification object:0];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeMainNotification object:0];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignKey:) name:NSWindowDidBecomeMainNotification object:0];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignMain:) name:NSWindowDidResignMainNotification object:0];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:0];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignKey:) name:NSWindowDidResignKeyNotification object:0];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WindowDidMoveNotification:) name:NSWindowDidMoveNotification object:0];
 	
