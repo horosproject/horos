@@ -4598,6 +4598,46 @@ END_CREATE_ROIS:
 		}
 	}
 	
+	NSString *modalityString = [dcmObject attributeValueWithName:@"Modality"];
+	
+	// Ultrasounds pixel spacing
+	if( [modalityString isEqualToString:@"US"])
+	{
+		DCMSequenceAttribute* seq = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"SequenceofUltrasoundRegions"];
+		
+		if (seq)
+		{
+			BOOL spacingFound = NO;
+			
+			for ( DCMObject *sequenceItem in seq.sequence )
+			{
+				if( spacingFound == NO)
+				{
+					int physicalUnitsX = 0;
+					int physicalUnitsY = 0;
+					
+					physicalUnitsX = [[sequenceItem attributeValueWithName:@"PhysicalUnitsXDirection"] intValue];
+					physicalUnitsY = [[sequenceItem attributeValueWithName:@"PhysicalUnitsYDirection"] intValue];
+					
+					if( physicalUnitsX == 3 && physicalUnitsY == 3)	// We want only cm !
+					{
+						double xxx = 0, yyy = 0;
+						
+						xxx = [[sequenceItem attributeValueWithName:@"PhysicalDeltaX"] doubleValue];
+						yyy = [[sequenceItem attributeValueWithName:@"PhysicalDeltaY"] doubleValue];
+						
+						if( xxx && yyy)
+						{
+							pixelSpacingX = xxx * 10.;	// These are in cm !
+							pixelSpacingY = yyy * 10.;
+							spacingFound = YES;
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	//PixelAspectRatio
 	NSArray *par = [dcmObject attributeArrayWithName:@"PixelAspectRatio"];
 	if ( par.count >= 2 ) {
@@ -5312,6 +5352,7 @@ END_CREATE_ROIS:
 	if (fileNb >= 0) {
 		UValue_T		*val3, *tmpVal3;
 		unsigned short	*shortRed, *shortGreen, *shortBlue;
+		NSString		*modalityString = 0L;
 		
 		imageNb = 1 + frameNo; 
 		
@@ -5342,6 +5383,9 @@ END_CREATE_ROIS:
 				[cd release];
 				[cc release];
 			}
+			
+			val = Papy3GetElement (theGroupP, papModalityGr, &nbVal, &elemType);
+			if (val != NULL) modalityString = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
 		}
 		
 		theGroupP = (SElement*) [self getPapyGroup: 0x0010 fileNb: fileNb];
@@ -5391,19 +5435,55 @@ END_CREATE_ROIS:
 			if ( val ) patientPosition = [[NSString stringWithCString:val->a] retain];
 			else patientPosition = 0;
 			
-			// *** 
-			
-//			val = Papy3GetElement (theGroupP, papPhysicalUnitsXDirection, &nbVal, &elemType);
-//			if ( val ) NSLog( [NSString stringWithCString:val->a]);
-//			val = Papy3GetElement (theGroupP, papPhysicalUnitsYDirection, &nbVal, &elemType);
-//			if ( val ) NSLog( [NSString stringWithCString:val->a]);
-//			val = Papy3GetElement (theGroupP, papPhysicalDeltaX, &nbVal, &elemType);
-//			if ( val ) NSLog( [NSString stringWithCString:val->a]);
-//			val = Papy3GetElement (theGroupP, papPhysicalDeltaY, &nbVal, &elemType);
-//			if ( val ) NSLog( [NSString stringWithCString:val->a]);
-			
 			val = Papy3GetElement (theGroupP, papCineRateGr, &nbVal, &elemType);
 			if (!cineRate && val != NULL) cineRate = [[NSString stringWithCString:val->a] floatValue];	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
+			
+			// Ultrasounds pixel spacing
+			if( [modalityString isEqualToString:@"US"])
+			{
+				val = Papy3GetElement (theGroupP, papSequenceofUltrasoundRegionsGr, &nbVal, &elemType);
+				if ( val != NULL)
+				{
+					if( val->sq != NULL )
+					{
+						BOOL spacingFound = NO;
+						
+						Papy_List	*dcmList = val->sq->object->item;
+						while (dcmList != NULL)
+						{
+							SElement *gr = (SElement *)dcmList->object->group;
+							if ( gr->group == 0x0018 && spacingFound == NO)
+							{
+								int physicalUnitsX = 0;
+								int physicalUnitsY = 0;
+								
+								val = Papy3GetElement (gr, papPhysicalUnitsXDirectionGr, &nbVal, &elemType);
+								if ( val ) physicalUnitsX = val->us;
+								val = Papy3GetElement (gr, papPhysicalUnitsYDirectionGr, &nbVal, &elemType);
+								if ( val ) physicalUnitsY = val->us;
+								
+								if( physicalUnitsX == 3 && physicalUnitsY == 3)	// We want only cm !
+								{
+									double xxx = 0, yyy = 0;
+									
+									val = Papy3GetElement (gr, papPhysicalDeltaXGr, &nbVal, &elemType);
+									if ( val ) xxx = val->fd;
+									val = Papy3GetElement (gr, papPhysicalDeltaYGr, &nbVal, &elemType);
+									if ( val ) yyy = val->fd;
+									
+									if( xxx && yyy)
+									{
+										pixelSpacingX = xxx * 10.;	// These are in cm !
+										pixelSpacingY = yyy * 10.;
+										spacingFound = YES;
+									}
+								}
+							}
+							dcmList = dcmList->next;
+						}
+					}
+				}
+			}
 			
 			val = Papy3GetElement (theGroupP, papImagerPixelSpacingGr, &nbVal, &elemType);
 			if ( val ) {

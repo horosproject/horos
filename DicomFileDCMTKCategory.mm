@@ -362,7 +362,7 @@ extern NSLock	*PapyrusLock;
 		if (dataset->findAndGetString(DCM_ContentDate, string, OFFalse).good() && string != NULL){
 			NSString	*studyDate = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 			if( [studyDate length] != 8) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
-			if (dataset->findAndGetString(DCM_ContentTime, string, OFFalse).good() && string != NULL && strlen( string) == 6){
+			if (dataset->findAndGetString(DCM_ContentTime, string, OFFalse).good() && string != NULL){
 				NSString*   completeDate;
 				NSString*   studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 				completeDate = [studyDate stringByAppendingString:studyTime];
@@ -373,7 +373,7 @@ extern NSLock	*PapyrusLock;
 		else if (dataset->findAndGetString(DCM_AcquisitionDate, string, OFFalse).good() && string != NULL){
 			NSString	*studyDate = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 			if( [studyDate length] != 8) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
-			if (dataset->findAndGetString(DCM_AcquisitionTime, string, OFFalse).good() && string != NULL && strlen( string) == 6){
+			if (dataset->findAndGetString(DCM_AcquisitionTime, string, OFFalse).good() && string != NULL){
 				NSString*   completeDate;
 				NSString*   studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 				completeDate = [studyDate stringByAppendingString:studyTime];
@@ -384,7 +384,7 @@ extern NSLock	*PapyrusLock;
 		else if (dataset->findAndGetString(DCM_SeriesDate, string, OFFalse).good() && string != NULL){
 			NSString	*studyDate = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 			if( [studyDate length] != 8) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
-			if (dataset->findAndGetString(DCM_SeriesTime, string, OFFalse).good() && string != NULL && strlen( string) == 6){
+			if (dataset->findAndGetString(DCM_SeriesTime, string, OFFalse).good() && string != NULL){
 				NSString*   completeDate;
 				NSString*   studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 				completeDate = [studyDate stringByAppendingString:studyTime];
@@ -396,7 +396,7 @@ extern NSLock	*PapyrusLock;
 		else if (dataset->findAndGetString(DCM_StudyDate, string, OFFalse).good() && string != NULL){
 			NSString	*studyDate = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 			if( [studyDate length] != 8) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
-			if (dataset->findAndGetString(DCM_StudyTime, string, OFFalse).good() && string != NULL && strlen( string) == 6){
+			if (dataset->findAndGetString(DCM_StudyTime, string, OFFalse).good() && string != NULL){
 				NSString*   completeDate;
 				NSString*   studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 				completeDate = [studyDate stringByAppendingString:studyTime];

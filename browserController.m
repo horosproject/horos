@@ -4086,7 +4086,7 @@ static NSArray*	statesArray = nil;
 	
 	databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 	
-	[self refreshMatrix];
+	[self refreshMatrix: self];
 }
 
 - (void)buildColumnsMenu {
@@ -6055,7 +6055,7 @@ static BOOL withReset = NO;
 	[context unlock];
 	[context release];
 	
-	[self refreshMatrix];
+	[self refreshMatrix: self];
 }
 
 - (void)matrixLoadIcons: (NSDictionary*)dict {
