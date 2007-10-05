@@ -77,10 +77,25 @@ extern BOOL USETOOLBARPANEL;
 	}
 }
 
+- (void)windowDidResignKey:(NSNotification *)aNotification
+{
+	if( [[self window] isVisible]) [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+}
+
+- (void)windowDidBecomeKey:(NSNotification *)aNotification
+{
+	if( [[self window] isVisible]) [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+}
+
+- (void)windowDidResignMain:(NSNotification *)aNotification
+{
+	if( [[self window] isVisible]) [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+}
+
 - (void)windowDidBecomeMain:(NSNotification *)aNotification
 {
-	return;
-
+	if( [[self window] isVisible]) [[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+	
 	if( [aNotification object] == [self window])
 	{
 		return;
@@ -104,6 +119,8 @@ extern BOOL USETOOLBARPANEL;
 			
 			[[self window] orderBack:self];
 			[toolbar setVisible:YES];
+			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+			
 			NSLog(@"show toolbar");
 		}
 		else
@@ -113,11 +130,11 @@ extern BOOL USETOOLBARPANEL;
 			NSLog(@"hide toolbar");
 		}
 	}
-	else
-	{
-		[[self window] orderOut:self];
-		NSLog(@"hide toolbar");
-	}
+//	else
+//	{
+//		[[self window] orderOut:self];
+//		NSLog(@"hide toolbar");
+//	}
 	
 	[[self window] setFrame:[[self window] frame] display:YES];
 }
@@ -125,6 +142,10 @@ extern BOOL USETOOLBARPANEL;
 - (void) windowDidLoad
 {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeMain:) name:NSWindowDidBecomeMainNotification object:0];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignMain:) name:NSWindowDidBecomeMainNotification object:0];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeMainNotification object:0];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignKey:) name:NSWindowDidBecomeMainNotification object:0];
+
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WindowDidMoveNotification:) name:NSWindowDidMoveNotification object:0];
 	
 	[super windowDidLoad];
@@ -148,7 +169,6 @@ extern BOOL USETOOLBARPANEL;
 		[[self window] setToolbar: 0L];
 		
 		[toolbar release];
-		[viewer release];
 
 		toolbar = 0;
 		viewer = 0;
@@ -159,14 +179,13 @@ extern BOOL USETOOLBARPANEL;
 {
 	if( tb == toolbar)
 	{
-		[[self window] orderWindow: NSWindowAbove relativeTo: [[viewer window] windowNumber]];
+		[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 		return;
 	}
 	
 	[toolbar release];
-	[viewer release];
 	
-	viewer = [v retain];
+	viewer = v;
 	toolbar = [tb retain];
 	
 	if( toolbar)
@@ -185,7 +204,7 @@ extern BOOL USETOOLBARPANEL;
 		[[self window] setFrameTopLeftPoint: NSMakePoint([[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.x, [[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.y+[[[NSScreen screens] objectAtIndex: screen] visibleFrame].size.height)];
 		[self fixSize];
 		
-		[[self window] orderWindow: NSWindowAbove relativeTo: [[viewer window] windowNumber]];
+		[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	}
 }
 
