@@ -3988,7 +3988,9 @@ static ViewerController *draggedController = 0L;
 	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
 	{
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
+		{
 			[toolbarPanel[ i] fixSize];
+		}
 	}
 }
 

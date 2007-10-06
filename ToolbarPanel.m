@@ -129,6 +129,8 @@ extern BOOL USETOOLBARPANEL;
 	{
 		if( [[aNotification object] screen] == [[NSScreen screens] objectAtIndex: screen])
 		{
+			[[viewer window] orderFront: self];
+			
 			[[self window] orderBack:self];
 			[toolbar setVisible:YES];
 			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
@@ -195,10 +197,15 @@ extern BOOL USETOOLBARPANEL;
 		return;
 	}
 	
-	[toolbar release];
+	
 	
 	viewer = v;
-	toolbar = [tb retain];
+	
+	if( toolbar != tb)
+	{
+		[toolbar release];
+		toolbar = [tb retain];
+	}
 	
 	if( toolbar)
 	{
