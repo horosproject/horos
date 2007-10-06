@@ -197,8 +197,6 @@ extern BOOL USETOOLBARPANEL;
 		return;
 	}
 	
-	
-	
 	viewer = v;
 	
 	if( toolbar != tb)

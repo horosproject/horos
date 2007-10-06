@@ -3950,46 +3950,45 @@ static ViewerController *draggedController = 0L;
 	return array;
 }
 
-- (void) toolbarWillAddItem: (NSNotification *) notif {
-    // Optional delegate method:  Before an new item is added to the toolbar, this notification is posted.
-    // This is the best place to notice a new item is going into the toolbar.  For instance, if you need to 
-    // cache a reference to the toolbar item or need to set up some initial state, this is the best place 
-    // to do it.  The notification object is the toolbar to which the item is being added.  The item being 
-    // added is found by referencing the @"item" key in the userInfo 
-//    NSToolbarItem *addedItem = [[notif userInfo] objectForKey: @"item"];
-    
-//    [addedItem retain];
-    
-//    if ([[addedItem itemIdentifier] isEqualToString: PlayToolbarItemIdentifier]) {
-	
-    //    playstopItem = addedItem;
+- (NSToolbar*) toolbar
+{
+	return toolbar;
+}
 
-//    }
-
-	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
-	{
-		for( int i = 0; i < [[NSScreen screens] count]; i++)
-			[toolbarPanel[ i] fixSize];
-	}
-}  
-
-- (void) toolbarDidRemoveItem: (NSNotification *) notif {
-    // Optional delegate method:  After an item is removed from a toolbar, this notification is sent.   This allows 
-    // the chance to tear down information related to the item that may have been cached.   The notification object
-    // is the toolbar from which the item is being removed.  The item being added is found by referencing the @"item"
-    // key in the userInfo 
-//    NSToolbarItem *removedItem = [[notif userInfo] objectForKey: @"item"];
- /*   if (removedItem==playstopItem) {
-	playstopItem = nil;    
-    }*/
-    
-//    [removedItem release];
-
+- (void) toolbarWillAddItem: (NSNotification *) notif
+{
 	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
 	{
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 		{
+			[toolbarPanel[ i] setToolbar: 0L viewer: 0L];
 			[toolbarPanel[ i] fixSize];
+		}
+		
+		NSArray *displayed2DViewers = [ViewerController getDisplayed2DViewers];
+		
+		for( ViewerController *v in displayed2DViewers)
+		{
+			[v refreshToolbar];
+		}
+	}
+}  
+
+- (void) toolbarDidRemoveItem: (NSNotification *) notif
+{
+	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
+	{
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
+		{
+			[toolbarPanel[ i] setToolbar: 0L viewer: 0L];
+			[toolbarPanel[ i] fixSize];
+		}
+		
+		NSArray *displayed2DViewers = [ViewerController getDisplayed2DViewers];
+		
+		for( ViewerController *v in displayed2DViewers)
+		{
+			[v refreshToolbar];
 		}
 	}
 }
