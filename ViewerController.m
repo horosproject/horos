@@ -13725,10 +13725,10 @@ int i,j,l;
 						
 						[JPEGExif addExif: [NSURL fileURLWithPath: [panel filename]] properties: exifDict format:@"tiff"]; 
 					}
-				
+					
 					if( [[NSFileManager defaultManager] fileExistsAtPath: [panel filename]] == NO)
 						NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-						
+					
 					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
 					{
 						[ws openFile:[panel filename]];

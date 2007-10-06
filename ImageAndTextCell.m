@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "ImageAndTextCell.h"
+#import "BrowserController.h"
 
 @implementation ImageAndTextCell
 
@@ -44,12 +45,7 @@
 				[controlView display];
 			}
 			
-			while ([theEvent type] != NSLeftMouseUp)
-			{
-				theEvent = [[controlView window] nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSMouseEnteredMask | NSMouseExitedMask)];
-			}
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"AlternateButtonPressed" object: self];
+			[[BrowserController currentBrowser] performSelector:@selector( AlternateButtonPressed:) withObject:0L afterDelay: 0.02];
 		}
 		else
 		{
