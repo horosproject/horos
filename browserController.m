@@ -1915,6 +1915,8 @@ static NSArray*	statesArray = nil;
 			
 			NSArray			*dbArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
 			
+			if( dbArray == 0L) dbArray = [NSArray array];
+			
 			if( [[path lastPathComponent] isEqualToString: @"Database.sql"])	// We will add the folder, since it is the default sql file for a DB folder
 			{
 				NSString	*name = [[NSFileManager defaultManager] displayNameAtPath: DBFolderLocation];
@@ -1935,6 +1937,7 @@ static NSArray*	statesArray = nil;
 		
 		if( i != [bonjourServicesList selectedRow])
 		{
+			if( i == -1) NSLog( @"**** NOT FOUND??? WHY? we added it... no?");
 			dontLoadSelectionSource = YES;
 			[bonjourServicesList selectRow: i byExtendingSelection: NO];
 			dontLoadSelectionSource = NO;
@@ -5651,7 +5654,7 @@ static BOOL withReset = NO;
 			[cell setTransparent:NO];
 			[cell setEnabled:YES];
 			
-			[cell setFont:[NSFont systemFontOfSize:10]];
+			[cell setFont:[NSFont systemFontOfSize:9]];
 			[cell setImagePosition: NSImageBelow];
 			[cell setAction: @selector(matrixPressed:)];
 			
@@ -5727,7 +5730,7 @@ static BOOL withReset = NO;
 			[cell setImage: nil];
 			[oMatrix setToolTip: NSLocalizedString(@"File not readable", nil) forCell:cell];
 			[cell setTitle: NSLocalizedString(@"File not readable", nil)];			
-			[cell setFont:[NSFont systemFontOfSize:10]];
+			[cell setFont:[NSFont systemFontOfSize:9]];
 			[cell setTransparent:NO];
 			[cell setEnabled:NO];
 			[cell setButtonType:NSPushOnPushOffButton];

@@ -696,6 +696,8 @@ static char *GetPrivateIP()
 	int			i;
 	NSArray			*dbArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
 	
+	if( dbArray == 0L) dbArray = [NSArray array];
+	
 	for( i = 0; i < [services count]; i++)
 	{
 		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"localPath"])
