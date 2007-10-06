@@ -320,6 +320,8 @@ enum
 	NSRect					savedWindowsFrame;
 	
 	ViewerController		*registeredViewer;
+	
+	NSMutableArray			*retainedToolbarItems;
 }
 
 + (NSMutableArray*) getDisplayed2DViewers;

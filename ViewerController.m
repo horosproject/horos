@@ -138,6 +138,7 @@ static	BOOL EXPORT2IPHOTO								= NO;
 static	ViewerController *blendedwin					= 0L;
 static	float	deg2rad									= 3.14159265358979/180.0; 
 static	BOOL dontEnterMagneticFunctions = NO;
+static  BOOL  toolbarDidChanged = NO;
 
 long numberOf2DViewer = 0;
 
@@ -2024,6 +2025,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( USETOOLBARPANEL)
 	{
 		for( i = 0; i < [[NSScreen screens] count]; i++)
+			[toolbarPanel[ i] setToolbar: 0 viewer: 0];
+	
+		for( i = 0; i < [[NSScreen screens] count]; i++)
 		{
 			if( [toolbarPanel[ i] toolbar] == toolbar && [[self window] screen] != [[NSScreen screens] objectAtIndex: i])
 			{
@@ -2059,12 +2063,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) windowDidBecomeMain:(NSNotification *)aNotification
 {
-	[self refreshToolbar];
+	NSArray *displayed2DViewers = [ViewerController getDisplayed2DViewers];
+	
+		[self refreshToolbar];
 }
 
 - (void) windowDidBecomeKey:(NSNotification *)aNotification
 {
-	[self refreshToolbar];
+	NSArray *displayed2DViewers = [ViewerController getDisplayed2DViewers];
+	
+		[self refreshToolbar];
 }
 
 - (void)windowWillMove:(NSNotification *)notification
@@ -3957,20 +3965,14 @@ static ViewerController *draggedController = 0L;
 
 - (void) toolbarWillAddItem: (NSNotification *) notif
 {
+	// To avoid a bug related to the 'separated toolbar window' :  we need to retain each toolbar item. We release them in the dealloc function
+	NSToolbarItem *item = [[notif userInfo] objectForKey: @"item"];
+	if( [retainedToolbarItems containsObject: item] == NO) [retainedToolbarItems addObject: item];
+	
 	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
-	{
+	{		
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
-		{
-			[toolbarPanel[ i] setToolbar: 0L viewer: 0L];
 			[toolbarPanel[ i] fixSize];
-		}
-		
-		NSArray *displayed2DViewers = [ViewerController getDisplayed2DViewers];
-		
-		for( ViewerController *v in displayed2DViewers)
-		{
-			[v refreshToolbar];
-		}
 	}
 }  
 
@@ -3979,17 +3981,7 @@ static ViewerController *draggedController = 0L;
 	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
 	{
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
-		{
-			[toolbarPanel[ i] setToolbar: 0L viewer: 0L];
 			[toolbarPanel[ i] fixSize];
-		}
-		
-		NSArray *displayed2DViewers = [ViewerController getDisplayed2DViewers];
-		
-		for( ViewerController *v in displayed2DViewers)
-		{
-			[v refreshToolbar];
-		}
 	}
 }
 
@@ -4338,27 +4330,21 @@ static ViewerController *draggedController = 0L;
 
 - (void) setupToolbar
 {
-	long i;
+	// Create a new toolbar instance, and attach it to our document window 
+	toolbar = [[NSToolbar alloc] initWithIdentifier: ViewerToolbarIdentifier];
 	
-//	for( i = 0 ; i < [[NSScreen screens] count]; i++)
-	{
-		// Create a new toolbar instance, and attach it to our document window 
-		toolbar = [[NSToolbar alloc] initWithIdentifier: ViewerToolbarIdentifier];
-		
-		// Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
-		[toolbar setAllowsUserCustomization: YES];
-		[toolbar setAutosavesConfiguration: YES];
+	// Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
+	[toolbar setAllowsUserCustomization: YES];
+	[toolbar setAutosavesConfiguration: YES];
 //		[toolbar setDisplayMode: NSToolbarDisplayModeIconOnly];
-		
-		// We are the delegate
-		[toolbar setDelegate: self];
-		
-		if( USETOOLBARPANEL == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == NO) [[self window] setToolbar: toolbar];
-		
-		[[self window] setShowsToolbarButton:NO];
-		[[[self window] toolbar] setVisible: YES];
-    }
-//    [window makeKeyAndOrderFront:nil];
+	
+	// We are the delegate
+	[toolbar setDelegate: self];
+	
+	if( USETOOLBARPANEL == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == NO) [[self window] setToolbar: toolbar];
+	
+	[[self window] setShowsToolbarButton:NO];
+	[[[self window] toolbar] setVisible: YES];
 }
 
 #pragma mark-
@@ -4367,6 +4353,8 @@ static ViewerController *draggedController = 0L;
 - (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
 {
 	self = [super initWithWindowNibName:@"Viewer"];
+	
+	retainedToolbarItems = [[NSMutableArray alloc] initWithCapacity: 0];
 	
 	[ROI loadDefaultSettings];
 	
@@ -4555,6 +4543,7 @@ static ViewerController *draggedController = 0L;
 	[curConvMenu release];
 	[curWLWWMenu release];
 	[processorsLock release];
+	[retainedToolbarItems release];
 	
     [super dealloc];
 
