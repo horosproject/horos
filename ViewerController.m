@@ -2014,6 +2014,20 @@ static volatile int numberOfThreadsForRelisce = 0;
 		for( i = 0; i < [[NSScreen screens] count]; i++)
 			[[toolbarPanel[ i] window] orderOut:self];
 	}
+	
+	// Check the window size compared to the screen size
+	
+	NSRect screen = [[[self window] screen] visibleFrame];
+	NSRect window = [[self window] frame];
+	
+	if( window.size.height > screen.size.height)
+		window.size.height = screen.size.height;
+		
+	if( window.size.width > screen.size.width)
+		window.size.width = screen.size.width;
+		
+	if( NSEqualRects(window, [[self window] frame]) == NO)
+		[[self window] setFrame: window display: YES];
 }
 
 - (void) refreshToolbar
@@ -2024,9 +2038,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( USETOOLBARPANEL)
 	{
-		for( i = 0; i < [[NSScreen screens] count]; i++)
-			[toolbarPanel[ i] setToolbar: 0 viewer: 0];
-	
 		for( i = 0; i < [[NSScreen screens] count]; i++)
 		{
 			if( [toolbarPanel[ i] toolbar] == toolbar && [[self window] screen] != [[NSScreen screens] objectAtIndex: i])
@@ -2063,16 +2074,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) windowDidBecomeMain:(NSNotification *)aNotification
 {
-	NSArray *displayed2DViewers = [ViewerController getDisplayed2DViewers];
-	
-		[self refreshToolbar];
+	[self refreshToolbar];
 }
 
 - (void) windowDidBecomeKey:(NSNotification *)aNotification
 {
-	NSArray *displayed2DViewers = [ViewerController getDisplayed2DViewers];
-	
-		[self refreshToolbar];
+	[self refreshToolbar];
 }
 
 - (void)windowWillMove:(NSNotification *)notification

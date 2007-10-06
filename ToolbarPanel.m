@@ -207,7 +207,7 @@ extern BOOL USETOOLBARPANEL;
 	
 	if( toolbar)
 	{
-		[[self window] setToolbar: 0L];
+///		[[self window] setToolbar: 0L];
 		[[self window] setToolbar: toolbar];
 		[[self window] setShowsToolbarButton:NO];
 		[[[self window] toolbar] setVisible: YES];
