@@ -23,6 +23,7 @@
 	
 	NSString *path = [[NSBundle mainBundle] pathForResource:@"iChatTheatre" ofType:@"html"];
 	[[[IChatTheatreDelegate sharedDelegate] web] setMainFrameURL:path];
+	
 }
 
 @end

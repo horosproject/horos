@@ -4784,7 +4784,7 @@ static ViewerController *draggedController = 0L;
 	
 	NSString	*com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.comment"];//JF20070103
 	
-	if( com == 0L || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"No Comments", nil)];
+	if( com == 0L || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
 	else [CommentsField setTitle: com];
 	
 	if( [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
@@ -14887,7 +14887,7 @@ int i,j,l;
 	
 	NSString	*com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.comment"];//JF20070103
 	
-	if( com == 0L || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"No Comments", nil)];
+	if( com == 0L || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
 	else [CommentsField setTitle: com];
 
 	// SplitView
@@ -16205,7 +16205,7 @@ sourceRef);
 		
 		[[[BrowserController currentBrowser] databaseOutline] reloadData];
 		
-		if( [[CommentsEditField stringValue] isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"No Comments", nil)];
+		if( [[CommentsEditField stringValue] isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
 		else [CommentsField setTitle: [CommentsEditField stringValue]];
 		
 		[self buildMatrixPreview: NO];
@@ -16221,7 +16221,7 @@ sourceRef);
 		
 		[[[BrowserController currentBrowser] databaseOutline] reloadData];
 		
-		//if( [[CommentsEditField stringValue] isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"No Comments", nil)];
+		//if( [[CommentsEditField stringValue] isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
 		//else [CommentsField setTitle: [CommentsEditField stringValue]];
 		
 		[self buildMatrixPreview: NO];
@@ -16230,7 +16230,7 @@ sourceRef);
 
 - (IBAction) setComments:(id) sender
 {
-	if( [[CommentsField title] isEqualToString:NSLocalizedString(@"No Comments", nil)]) [CommentsEditField setStringValue: @""];
+	if( [[CommentsField title] isEqualToString:NSLocalizedString(@"Add a comment", nil)]) [CommentsEditField setStringValue: @""];
 	else [CommentsEditField setStringValue: [CommentsField title]];
 	
 	[CommentsEditField selectText: self];

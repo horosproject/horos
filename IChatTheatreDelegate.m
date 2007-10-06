@@ -25,7 +25,6 @@
 @class VRView;
 
 static IChatTheatreDelegate	*iChatDelegate = 0L;
-static NSWindowController *helpWindowController = 0L;
 
 @implementation IChatTheatreDelegate
 
@@ -33,8 +32,6 @@ static NSWindowController *helpWindowController = 0L;
 
 + (IChatTheatreDelegate*) releaseSharedDelegate
 {
-	if(helpWindowController) [helpWindowController release];
-	helpWindowController = 0L;
 	[iChatDelegate release];
 	iChatDelegate = 0L;
 }
@@ -316,7 +313,18 @@ static NSWindowController *helpWindowController = 0L;
 //	else
 	if([[NSUserDefaults standardUserDefaults] boolForKey:@"DONT_DISPLAY_ICHAT_HELP"]) return;
 
-	if(!helpWindowController) helpWindowController = [[IChatTheatreHelpWindowController alloc] initWithWindowNibName:@"iChatHelper" owner:self];
+		NSArray				*winList = [NSApp windows];
+	
+	for( id loopItem in winList)
+	{
+		if( [[[loopItem windowController] windowNibName] isEqualToString: @"iChatHelper"])
+		{
+			[[[loopItem windowController] window] makeKeyAndOrderFront:self];
+			return;
+		}
+	}
+
+	IChatTheatreHelpWindowController *helpWindowController = [[IChatTheatreHelpWindowController alloc] initWithWindowNibName:@"iChatHelper" owner:self];
 	[helpWindowController showWindow:self];
 }
 
