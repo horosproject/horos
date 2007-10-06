@@ -13255,6 +13255,9 @@ int i,j,l;
 	long			i,x;
 	NSMutableArray  *files2Send;
 	
+	for( i = 0; i < maxMovieIndex; i++)
+		[self saveROI: i];
+	
 	if( [pixList[ curMovieIndex] count] > 1)
 	{
 		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Send to DICOM node", nil), NSLocalizedString(@"Should I send only current image or all images of current series?", nil), NSLocalizedString(@"Current", nil), NSLocalizedString(@"All", nil), 0L) == NSAlertDefaultReturn) all = NO;

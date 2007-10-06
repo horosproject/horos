@@ -424,9 +424,8 @@ NSString* convertDICOM( NSString *inputfile)
 	if ([[NSFileManager defaultManager] fileExistsAtPath:outputfile]) return outputfile;
 	
 	converting = YES;
-	NSLog(@"IN");
+	NSLog(@"convertDICOM - FAILED to use current DICOM File Parser");
 	[[BrowserController currentBrowser] decompressDICOM:inputfile to:outputfile deleteOriginal: NO];
-	NSLog(@"OUT");
 	
 	return outputfile;
 }
