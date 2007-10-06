@@ -13672,7 +13672,7 @@ int i,j,l;
 				
 				representations = [im representations];
 				
-				if( [[imageFormat selectedCell] tag] == 2)
+				if( [[imageFormat selectedCell] tag] == 2)	// ifoto
 				{
 					bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 					
@@ -13725,15 +13725,15 @@ int i,j,l;
 						
 						[JPEGExif addExif: [NSURL fileURLWithPath: [panel filename]] properties: exifDict format:@"tiff"]; 
 					}
-				}
 				
-				if( [[NSFileManager defaultManager] fileExistsAtPath: [panel filename]] == NO)
+					if( [[NSFileManager defaultManager] fileExistsAtPath: [panel filename]] == NO)
 						NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-					
-				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
-				{
-					[ws openFile:[panel filename]];
-				}
+						
+					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+					{
+						[ws openFile:[panel filename]];
+					}
+				}									
 			}
 		}
 	}
