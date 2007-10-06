@@ -4127,13 +4127,13 @@ static ViewerController *draggedController = 0L;
 {
 	if( [[sender selectedCell] tag] == 0)
 	{
-		[[toolsMatrix cellWithTag:5] setEnabled:YES];
+		[[toolsMatrix cellAtRow:0 column: 5] setEnabled:YES];
 		[popupRoi setEnabled:YES];
 		[toolsMatrix selectCellWithTag:[imageView currentTool]];
 	}
 	else
 	{
-		[[toolsMatrix cellWithTag:5] setEnabled:NO];
+		[[toolsMatrix cellAtRow:0 column: 5] setEnabled:NO];
 		[popupRoi setEnabled:NO];
 		[toolsMatrix selectCellWithTag:[imageView currentToolRight]];
 	}

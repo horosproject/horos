@@ -420,11 +420,10 @@ NSString* convertDICOM( NSString *inputfile)
 {
 	NSString		*outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/%@", filenameWithDate( inputfile)];
 	
-	NSLog(inputfile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:outputfile]) return outputfile;
 	
 	converting = YES;
-	NSLog(@"convertDICOM - FAILED to use current DICOM File Parser");
+	NSLog(@"convertDICOM - FAILED to use current DICOM File Parser : %@", inputfile);
 	[[BrowserController currentBrowser] decompressDICOM:inputfile to:outputfile deleteOriginal: NO];
 	
 	return outputfile;
@@ -992,6 +991,8 @@ NSRect screenFrame()
 		BonjourDICOMService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
 		[BonjourDICOMService setDelegate: self];
 		[BonjourDICOMService publish];
+		
+		[[DCMNetServiceDelegate sharedNetServiceDelegate] setPublisher: BonjourDICOMService];
 	}
 	else BonjourDICOMService = 0L;
 	

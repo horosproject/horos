@@ -25,14 +25,14 @@
 
 	NSNetServiceBrowser *_dicomNetBrowser;
 	NSMutableArray *_dicomServices;
-
-
+	NSNetService *publisher;
 }
 + (NSString*) gethostnameAndPort: (int*) port forService:(NSNetService*) sender;
 + (NSHost*) currentHost;
 + (NSArray *) DICOMServersList;
 + (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR;
 + (id)sharedNetServiceDelegate;
+- (void) setPublisher: (NSNetService*) p;
 - (void)update;
 - (NSArray *)dicomServices;
 - (int)portForNetService:(NSNetService *)netService;

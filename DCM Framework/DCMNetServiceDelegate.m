@@ -45,6 +45,11 @@ static NSHost *currentHost = 0L;
 	return currentHost;
 }
 
+- (void) setPublisher: (NSNetService*) p
+{
+	publisher = p;
+}
+
 - (id)init{
 
 	if (self = [super init]){
@@ -98,7 +103,11 @@ static NSHost *currentHost = 0L;
 
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
+	if( aNetService == publisher || [[aNetService name] isEqualToString: [publisher name]] == YES)
+	{
+	
+	}
+	else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
 	{
 		[aNetService retain];
 		[aNetService resolveWithTimeout: 30];

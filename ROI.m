@@ -3871,6 +3871,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			{
 				if( [points count] == 3)
 				{
+					displayTextualData = YES;
 					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 					if( self.isTextualDataDisplayed ) {
 						NSPoint tPt = self.lowerRightPoint;
@@ -3886,6 +3887,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 					}
 				}
+				else displayTextualData = NO;
 			}
 			
 			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
