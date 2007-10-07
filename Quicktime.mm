@@ -107,13 +107,13 @@ int executeProcess(int argc, char *argv[])
 				{
 					NSLog( @"mySession");
 					
+					Wait *wait = [[Wait alloc] initWithString:NSLocalizedString(@"Receiving files from iDisk...", nil)];
+					
 					// Find the DICOM folder
 					if( ![mySession fileExistsAtPath: DICOMpath]) success = [mySession createDirectoryAtPath: DICOMpath attributes:nil];
 					
 					if( success )
 					{
-						Wait *wait = [[Wait alloc] initWithString:NSLocalizedString(@"Receiving files from iDisk...", nil)];
-						
 						NSArray *dirContent = [mySession directoryContentsAtPath: DICOMpath];
 						
 						NSLog( [dirContent description]);
@@ -138,10 +138,10 @@ int executeProcess(int argc, char *argv[])
 						
 						if( deleteFolder)
 							[mySession removeFileAtPath: DICOMpath handler: 0L];
-						
-						[wait close];
-						[wait release];
 					}
+					
+					[wait close];
+					[wait release];
 				}
 				else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?", 0L), NSLocalizedString(@"Unable to contact dotMac service.", 0L), NSLocalizedString(@"OK",nil),nil, nil);
 			}
