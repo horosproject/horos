@@ -2762,9 +2762,14 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
       *ioBufPosP += 4L;
     } /* else ...little_endian implicit VR */
     
-    
+    /* odd element length are forbidden */
+    if (theElemLength % 2 != 0)
+	{
+		theElemLength = 0xFFFFFFFF;
+		// For 
+	}
+
     /* it could be an undefined length, i.e. VR = SQ or VR = UN */
-	//theElemLength = 0xFFFFFFFF;
     if (theElemLength == 0xFFFFFFFF)
     {
       /* for futur move of the buffer pointer */
