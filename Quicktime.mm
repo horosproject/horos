@@ -55,6 +55,8 @@ int main(int argc, const char *argv[])
 {
 	NSAutoreleasePool	*pool	= [[NSAutoreleasePool alloc] init];
 	
+	int error = 0;
+	
 	EnterMovies();
 	
 //	argv[ 1] = "generateQTVR";
@@ -304,5 +306,5 @@ int main(int argc, const char *argv[])
 	
 	[pool release];
 	
-	return 0;
+	return error;
 }

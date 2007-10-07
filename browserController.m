@@ -10997,6 +10997,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		for( NSString *file in files2Copy)
 			fileSize += [[[[NSFileManager defaultManager] fileAttributesAtPath:file traverseLink: YES] objectForKey:NSFileSize] longLongValue];
 		
+		fileSize /= 1024;
+		fileSize /= 1024;
+		
 		WaitRendering *wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Sending files (%d files, %d MB) to iDisk", nil), [files2Copy count], fileSize]];
 		[wait showWindow:self];
 		

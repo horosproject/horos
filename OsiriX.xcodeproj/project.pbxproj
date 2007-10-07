@@ -6451,6 +6451,8 @@
 		CE586CCA0C74B7DB00DB7D5A /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
 		CE59FFB509BEA986000CC7FE /* DICOMToNSString.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */; };
 		CE59FFB609BEA986000CC7FE /* DICOMToNSString.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */; };
+		CE5A7F8C0CB9430D009C80B4 /* 32-bit shell.app in Resources */ = {isa = PBXBuildFile; fileRef = CE5A7F8B0CB9430D009C80B4 /* 32-bit shell.app */; };
+		CE5A7F8D0CB9430D009C80B4 /* 32-bit shell.app in Resources */ = {isa = PBXBuildFile; fileRef = CE5A7F8B0CB9430D009C80B4 /* 32-bit shell.app */; };
 		CE5D33B509E1C26400CC6884 /* add-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B309E1C26400CC6884 /* add-large.tif */; };
 		CE5D33B609E1C26400CC6884 /* minus-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B409E1C26400CC6884 /* minus-large.tif */; };
 		CE5D33B909E1C26400CC6884 /* add-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B309E1C26400CC6884 /* add-large.tif */; };
@@ -7670,8 +7672,6 @@
 		CEDAAED60C7B489D00809161 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
 		CEDAAED70C7B489E00809161 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
 		CEDAAED80C7B48A300809161 /* Quicktime.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE7A0F1A0AED55E700540017 /* Quicktime.mm */; };
-		CEDAAEFB0C7B49B300809161 /* QuicktimeEngine.app in Resources */ = {isa = PBXBuildFile; fileRef = CEDAAEFA0C7B49B300809161 /* QuicktimeEngine.app */; };
-		CEDAAEFC0C7B49B300809161 /* QuicktimeEngine.app in Resources */ = {isa = PBXBuildFile; fileRef = CEDAAEFA0C7B49B300809161 /* QuicktimeEngine.app */; };
 		CEDB15280768392F00375F65 /* jas_cm.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14AB0768392E00375F65 /* jas_cm.h */; };
 		CEDB15290768392F00375F65 /* jas_config.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14B00768392E00375F65 /* jas_config.h */; };
 		CEDB152A0768392F00375F65 /* jas_config2.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14B50768392E00375F65 /* jas_config2.h */; };
@@ -11516,6 +11516,7 @@
 		CE5487400989346800CF4C60 /* BrushPalette.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BrushPalette.tif; sourceTree = "<group>"; };
 		CE5487790989363200CF4C60 /* Brush.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Brush.tiff; sourceTree = "<group>"; };
 		CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdcmprintscu.dylib; path = AYDicomPrint/libdcmprintscu.dylib; sourceTree = "<group>"; };
+		CE5A7F8B0CB9430D009C80B4 /* 32-bit shell.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; name = "32-bit shell.app"; path = "build/Development/32-bit shell.app"; sourceTree = "<group>"; };
 		CE5D33B309E1C26400CC6884 /* add-large.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "add-large.tif"; sourceTree = "<group>"; };
 		CE5D33B409E1C26400CC6884 /* minus-large.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "minus-large.tif"; sourceTree = "<group>"; };
 		CE5EABBA0935E702006D85DD /* UCLA.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = UCLA.plist; sourceTree = "<group>"; };
@@ -11654,9 +11655,8 @@
 		CED80C7D0BF187930058A469 /* AutofillPressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = AutofillPressed.tif; sourceTree = "<group>"; };
 		CED80C960BF18BAF0058A469 /* Save.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Save.tif; sourceTree = "<group>"; };
 		CED8BC7B097F93D1002665CE /* SUV.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SUV.tif; sourceTree = "<group>"; };
-		CEDAAECA0C7B486A00809161 /* QuicktimeEngine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuicktimeEngine.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CEDAAECC0C7B486A00809161 /* QuicktimeEngine-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "QuicktimeEngine-Info.plist"; sourceTree = "<group>"; };
-		CEDAAEFA0C7B49B300809161 /* QuicktimeEngine.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = QuicktimeEngine.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEDAAECA0C7B486A00809161 /* 32-bit shell.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "32-bit shell.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEDAAECC0C7B486A00809161 /* 32bit shell-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "32bit shell-Info.plist"; sourceTree = "<group>"; };
 		CEDB14AB0768392E00375F65 /* jas_cm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_cm.h; sourceTree = "<group>"; };
 		CEDB14B00768392E00375F65 /* jas_config.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_config.h; sourceTree = "<group>"; };
 		CEDB14B50768392E00375F65 /* jas_config2.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_config2.h; sourceTree = "<group>"; };
@@ -12091,7 +12091,7 @@
 				AB724FF60ADE6ECB00A212A0 /* Decompress */,
 				CEDF6DD00B46FE99008B45B8 /* DICOMPrint */,
 				CE9CED810C75BD8C00752D4B /* libDCM StaticLibrary.a */,
-				CEDAAECA0C7B486A00809161 /* QuicktimeEngine.app */,
+				CEDAAECA0C7B486A00809161 /* 32-bit shell.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -12099,7 +12099,7 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
-				CE7A0D670AED557500540017 /* Quicktime */,
+				CE7A0D670AED557500540017 /* 32-bit Shell */,
 				CEDF6E1E0B46FF46008B45B8 /* DICOMPrint */,
 				AB724F1C0ADE6CFC00A212A0 /* DecompressDICOM */,
 				ABEA7F420A21BD310094CAEF /* SafeDBRebuild */,
@@ -12115,7 +12115,7 @@
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				4A2F58D9078D119600C514A2 /* Dependencies */,
 				4A16D0A10965E1D900F82EC4 /* Unit Testing */,
-				CEDAAECC0C7B486A00809161 /* QuicktimeEngine-Info.plist */,
+				CEDAAECC0C7B486A00809161 /* 32bit shell-Info.plist */,
 			);
 			name = OsiriX;
 			sourceTree = "<group>";
@@ -12134,9 +12134,9 @@
 			children = (
 				A9751FFF0CAA8481005D172F /* iChatTheatreHelp */,
 				CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */,
+				CE5A7F8B0CB9430D009C80B4 /* 32-bit shell.app */,
 				CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */,
 				CE897DD30C21D951005C669E /* texture.tif */,
-				CEDAAEFA0C7B49B300809161 /* QuicktimeEngine.app */,
 				B78675430AD9C56400731977 /* diameter570frame512.pbm */,
 				B78675440AD9C56400731977 /* diameter1140frame1024.pbm */,
 				CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */,
@@ -16237,12 +16237,12 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CE7A0D670AED557500540017 /* Quicktime */ = {
+		CE7A0D670AED557500540017 /* 32-bit Shell */ = {
 			isa = PBXGroup;
 			children = (
 				CE7A0F1A0AED55E700540017 /* Quicktime.mm */,
 			);
-			name = Quicktime;
+			name = "32-bit Shell";
 			sourceTree = "<group>";
 		};
 		CE88574908AF936200B72DA7 /* ROIVolume */ = {
@@ -20685,9 +20685,9 @@
 			productReference = CECB058B07539E3A00576814 /* OsiriXVP.app */;
 			productType = "com.apple.product-type.application";
 		};
-		CEDAAEC90C7B486A00809161 /* QuicktimeEngine */ = {
+		CEDAAEC90C7B486A00809161 /* 32-bit shell */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CEDAAED10C7B486C00809161 /* Build configuration list for PBXNativeTarget "QuicktimeEngine" */;
+			buildConfigurationList = CEDAAED10C7B486C00809161 /* Build configuration list for PBXNativeTarget "32-bit shell" */;
 			buildPhases = (
 				CEDAAEC60C7B486A00809161 /* Resources */,
 				CEDAAEC70C7B486A00809161 /* Sources */,
@@ -20698,9 +20698,9 @@
 			);
 			dependencies = (
 			);
-			name = QuicktimeEngine;
+			name = "32-bit shell";
 			productName = QuicktimeEngine;
-			productReference = CEDAAECA0C7B486A00809161 /* QuicktimeEngine.app */;
+			productReference = CEDAAECA0C7B486A00809161 /* 32-bit shell.app */;
 			productType = "com.apple.product-type.application";
 		};
 		CEDF6C600B46FE99008B45B8 /* DICOMPrint */ = {
@@ -20818,7 +20818,7 @@
 				ABEA7F070A21BCC90094CAEF /* SafeDBRebuild */,
 				AB724F300ADE6ECB00A212A0 /* Decompress */,
 				CEDF6C600B46FE99008B45B8 /* DICOMPrint */,
-				CEDAAEC90C7B486A00809161 /* QuicktimeEngine */,
+				CEDAAEC90C7B486A00809161 /* 32-bit shell */,
 			);
 		};
 /* End PBXProject section */
@@ -21257,7 +21257,6 @@
 				AB9723980C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
 				AB9723990C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.2.mom in Resources */,
 				AB97239A0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.3.mom in Resources */,
-				CEDAAEFB0C7B49B300809161 /* QuicktimeEngine.app in Resources */,
 				CEC4B5C10C7DF2D600AF5A76 /* 3DPRESETS in Resources */,
 				CE3F99420C84724B00CB38F1 /* Placeholder.xib in Resources */,
 				CE3F99430C84724B00CB38F1 /* Survey.xib in Resources */,
@@ -21318,6 +21317,7 @@
 				A975200D0CAA8481005D172F /* style.css in Resources */,
 				BF85640E0CB2B73F005F7178 /* EndoscopyFlyThru.xib in Resources */,
 				A97B73980CB380EF00E5348D /* osirixplugin.icns in Resources */,
+				CE5A7F8C0CB9430D009C80B4 /* 32-bit shell.app in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21641,7 +21641,6 @@
 				AB9723920C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
 				AB9723930C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.2.mom in Resources */,
 				AB9723940C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.3.mom in Resources */,
-				CEDAAEFC0C7B49B300809161 /* QuicktimeEngine.app in Resources */,
 				CEC4B5C20C7DF2D600AF5A76 /* 3DPRESETS in Resources */,
 				CE3F99730C84724B00CB38F1 /* Placeholder.xib in Resources */,
 				CE3F99740C84724B00CB38F1 /* Survey.xib in Resources */,
@@ -21702,6 +21701,7 @@
 				A97520140CAA8481005D172F /* style.css in Resources */,
 				BF85640D0CB2B73F005F7178 /* EndoscopyFlyThru.xib in Resources */,
 				A97B73990CB380F600E5348D /* osirixplugin.icns in Resources */,
+				CE5A7F8D0CB9430D009C80B4 /* 32-bit shell.app in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24633,7 +24633,7 @@
 		};
 		CEDAAED50C7B489100809161 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CEDAAEC90C7B486A00809161 /* QuicktimeEngine */;
+			target = CEDAAEC90C7B486A00809161 /* 32-bit shell */;
 			targetProxy = CEDAAED40C7B489100809161 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -26586,7 +26586,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				INFOPLIST_FILE = "QuicktimeEngine-Info.plist";
+				INFOPLIST_FILE = "32bit shell-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -26595,7 +26595,7 @@
 					AppKit,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = QuicktimeEngine;
+				PRODUCT_NAME = "32-bit shell";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -26617,7 +26617,7 @@
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				INFOPLIST_FILE = "QuicktimeEngine-Info.plist";
+				INFOPLIST_FILE = "32bit shell-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -26626,7 +26626,7 @@
 					AppKit,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = QuicktimeEngine;
+				PRODUCT_NAME = "32-bit shell";
 				STRIP_STYLE = debugging;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
@@ -26644,7 +26644,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				INFOPLIST_FILE = "QuicktimeEngine-Info.plist";
+				INFOPLIST_FILE = "32bit shell-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -26653,7 +26653,7 @@
 					AppKit,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = QuicktimeEngine;
+				PRODUCT_NAME = "32-bit shell";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -26670,7 +26670,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				INFOPLIST_FILE = "QuicktimeEngine-Info.plist";
+				INFOPLIST_FILE = "32bit shell-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -26679,7 +26679,7 @@
 					AppKit,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = QuicktimeEngine;
+				PRODUCT_NAME = "32-bit shell";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -26823,7 +26823,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
 		};
-		CEDAAED10C7B486C00809161 /* Build configuration list for PBXNativeTarget "QuicktimeEngine" */ = {
+		CEDAAED10C7B486C00809161 /* Build configuration list for PBXNativeTarget "32-bit shell" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEDAAECD0C7B486B00809161 /* Development */,
