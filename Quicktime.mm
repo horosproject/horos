@@ -112,6 +112,8 @@ int executeProcess(int argc, char *argv[])
 					
 					if( success )
 					{
+						Wait *wait = [[Wait alloc] initWithString:NSLocalizedString(@"Receiving files from iDisk...", nil)];
+						
 						NSArray *dirContent = [mySession directoryContentsAtPath: DICOMpath];
 						
 						NSLog( [dirContent description]);
@@ -119,8 +121,6 @@ int executeProcess(int argc, char *argv[])
 						scaniDiskDir( mySession, DICOMpath, dirContent, filesArray);
 						
 						NSLog( [filesArray description]);
-						
-						Wait *wait = [[Wait alloc] initWithString:NSLocalizedString(@"Receiving files from iDisk...", nil)];
 						
 						[wait showWindow: 0L];
 						[[wait progress] setMaxValue: [filesArray count]];
