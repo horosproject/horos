@@ -15,6 +15,7 @@
 #import <Foundation/Foundation.h>
 #import <QTKit/QTKit.h>
 #import "Wait.h"
+#import "WaitRendering.h"
 #import "DotMacKit/DotMacKit.h"
 
 // WHY THIS EXTERNAL APPLICATION FOR QUICKTIME?
@@ -52,6 +53,12 @@ void scaniDiskDir( DMiDiskSession* mySession, NSString* path, NSArray* dir, NSMu
 
 
 int main(int argc, const char *argv[])
+{
+
+	return NSApplicationMain(argc, argv);
+}
+
+int executeProcess(int argc, char *argv[])
 {
 	NSAutoreleasePool	*pool	= [[NSAutoreleasePool alloc] init];
 	
@@ -113,6 +120,11 @@ int main(int argc, const char *argv[])
 						
 						NSLog( [filesArray description]);
 						
+						Wait *wait = [[Wait alloc] initWithString:NSLocalizedString(@"Receiving files from iDisk...", nil)];
+						
+						[wait showWindow: 0L];
+						[[wait progress] setMaxValue: [filesArray count]];
+						
 						for( long i = 0; i < [filesArray count]; i++ )
 						{
 							dstPath = [OUTpath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", i]];
@@ -120,10 +132,15 @@ int main(int argc, const char *argv[])
 							[mySession movePath: [filesArray objectAtIndex: i] toPath: dstPath handler: 0L];
 							
 							[filesArray replaceObjectAtIndex:i withObject: dstPath];
+							
+							[wait incrementBy:1];
 						}
 						
 						if( deleteFolder)
 							[mySession removeFileAtPath: DICOMpath handler: 0L];
+						
+						[wait close];
+						[wait release];
 					}
 				}
 				else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?", 0L), NSLocalizedString(@"Unable to contact dotMac service.", 0L), NSLocalizedString(@"OK",nil),nil, nil);
@@ -146,7 +163,7 @@ int main(int argc, const char *argv[])
 			NSString	*DICOMpath = @"Documents/DICOM";
 			
 			DMMemberAccount		*myDotMacMemberAccount = [DMMemberAccount accountFromPreferencesWithApplicationID:@"----"];
-		
+			
 			if (myDotMacMemberAccount != nil )
 			{
 				NSLog( @"myDotMacMemberAccount");
@@ -158,7 +175,12 @@ int main(int argc, const char *argv[])
 					
 					// Find the DICOM folder
 					if( ![mySession fileExistsAtPath: DICOMpath]) [mySession createDirectoryAtPath: DICOMpath attributes:nil];
-
+					
+					Wait *wait = [[Wait alloc] initWithString:NSLocalizedString(@"Sending files to iDisk...", nil)];
+						
+					[wait showWindow: 0L];
+					[[wait progress] setMaxValue: [files2Copy count]];
+					
 					for( long x = 0 ; x < [files2Copy count]; x++ )
 					{
 						NSString			*dstPath, *srcPath = [files2Copy objectAtIndex:x];
@@ -177,7 +199,12 @@ int main(int argc, const char *argv[])
 								}
 								else break;
 						}
+						
+						[wait incrementBy:1];
 					}
+					
+					[wait close];
+					[wait release];
 				}
 				else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?",@"iDisk?"), NSLocalizedString(@"Unable to contact dotMac service.",@"Unable to contact dotMac service."), NSLocalizedString(@"OK",nil),nil, nil);
 			}
@@ -308,3 +335,65 @@ int main(int argc, const char *argv[])
 	
 	return error;
 }
+
+@interface ShellMainClass : NSApplication
+{
+
+}
+
+@end
+
+@implementation ShellMainClass
+
+- (id) init
+{
+	self = [super init];
+	if (self != nil)
+	{
+		[self setDelegate: self];
+	}
+	return self;
+}
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+{
+	NSArray *arguments = [[NSProcessInfo processInfo] arguments];
+
+	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...", nil)];
+						
+	[wait showWindow:self];
+	
+	NSLog( @"**** 32-bit shell started");
+	
+	NSLog( [arguments description]);
+	
+	int argc = [arguments count];
+	
+	char **argv = (char**) malloc( argc * sizeof( char*));
+	
+	for( int i = 0; i < argc; i++)
+		argv[ i] = (char*) [[arguments objectAtIndex: i] UTF8String];
+	
+	[[NSApplication sharedApplication] activateIgnoringOtherApps: YES];
+	
+	ProcessSerialNumber psn;
+	
+	if (!GetCurrentProcess(&psn))
+	{
+        TransformProcessType(&psn, kProcessTransformToForegroundApplication);
+        SetFrontProcess(&psn);
+    }
+	
+	executeProcess( argc, argv);
+	
+	free( argv);
+	
+	NSLog( @"**** 32-bit shell exit");
+	
+	[wait close];
+	[wait release];
+	
+	exit( 0);
+}
+
+@end

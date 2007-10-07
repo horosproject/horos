@@ -30,7 +30,7 @@ NSString * documentsDirectory();
 	
 	[theTask setArguments: [NSArray arrayWithObjects:@"generateQTVR", srcPath, [NSString stringWithFormat:@"%d", frames], 0L]];
 	
-	NSString	*stringPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/QuicktimeEngine.app/Contents/MacOS/QuicktimeEngine"];
+	NSString	*stringPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"];
 	if( [[NSFileManager defaultManager] fileExistsAtPath: stringPath])
 	{
 		[theTask setLaunchPath: stringPath];
@@ -368,7 +368,7 @@ NSString * documentsDirectory();
 	
 	[theTask setArguments: [NSArray arrayWithObjects:@"getExportSettings", @"/tmp/QTExportOsiriX64bits-Movie", tempComponentPath, tempDataPath, tempDataPathOUT, 0L]];
 	
-	NSString	*stringPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/QuicktimeEngine.app/Contents/MacOS/QuicktimeEngine"];
+	NSString	*stringPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"];
 	if( [[NSFileManager defaultManager] fileExistsAtPath: stringPath])
 	{
 		[theTask setLaunchPath: stringPath];

@@ -6515,6 +6515,8 @@
 		CE74824206C9701200FFA74C /* trash.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE74824006C9701200FFA74C /* trash.icns */; };
 		CE74DEB008CCE0C1005D12A7 /* SagOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */; };
 		CE74DEB108CCE0C1005D12A7 /* SagOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */; };
+		CE77B0740CB9718C00BE873C /* WaitRendering.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */; };
+		CE77B0B10CB9719C00BE873C /* WaitRendering.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB218B805CF1E9300D8B619 /* WaitRendering.m */; };
 		CE79DCFC0753A64D005C8051 /* NO-VRControllerVPRO.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79DCFB0753A64D005C8051 /* NO-VRControllerVPRO.m */; };
 		CE7BBFCF0C82DC81000AD12F /* libitkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFCE0C82DC81000AD12F /* libitkzlib.a */; };
 		CE7BBFD00C82DC81000AD12F /* libitkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFCE0C82DC81000AD12F /* libitkzlib.a */; };
@@ -21710,6 +21712,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE9B51790CA8F49500C6C982 /* Wait.xib in Resources */,
+				CE77B0740CB9718C00BE873C /* WaitRendering.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24516,6 +24519,7 @@
 				CEF54E030C7B82AA00C66A31 /* VRMakeObject.m in Sources */,
 				CE9B50C80CA8EAA600C6C982 /* Wait.m in Sources */,
 				A98FFBEC0CA92B58000291C8 /* altivecFunctions.c in Sources */,
+				CE77B0B10CB9719C00BE873C /* WaitRendering.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

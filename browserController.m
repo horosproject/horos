@@ -10094,10 +10094,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[splash showWindow:self];
 	[[splash progress] setMaxValue:[dicomFiles2Export count]];
 	
-	@try 
-{
+	@try
+	{
 	BOOL first = YES;
-	for( NSManagedObject *curImage in dicomFiles2Export ) {
+	for( NSManagedObject *curImage in dicomFiles2Export )
+	{
 
 		NSString *extension = nil;
 		
@@ -10888,7 +10889,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSTask *theTask = [[NSTask alloc] init];
 	
 	[theTask setArguments: [NSArray arrayWithObjects: @"getFilesFromiDisk", [NSString stringWithFormat:@"%d", delete], 0L]];
-	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/QuicktimeEngine.app/Contents/MacOS/QuicktimeEngine"]];
+	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
 	[theTask launch];
 	[theTask waitUntilExit];
 	[theTask release];
@@ -11004,7 +11005,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[wait showWindow:self];
 		
 		[theTask setArguments: [NSArray arrayWithObjects: @"sendFilesToiDisk", @"/tmp/files2send", 0L]];
-		[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/QuicktimeEngine.app/Contents/MacOS/QuicktimeEngine"]];
+		[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
 		[theTask launch];
 		[theTask waitUntilExit];
 		[theTask release];
