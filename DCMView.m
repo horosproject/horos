@@ -3933,6 +3933,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							}
 						}
 						
+						[[curRoiList objectAtIndex:i] recompute];
+						
 						if( [[[curRoiList objectAtIndex:i] comments] isEqualToString: @"morphing generated"])
 							[[curRoiList objectAtIndex:i] setComments:@""];
 						[[NSNotificationCenter defaultCenter] postNotificationName:@"roiChange" object:[curRoiList objectAtIndex:i] userInfo: 0L];
