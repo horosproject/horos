@@ -6561,6 +6561,7 @@
 		CE8919F00CA181710044EEDD /* OsiriXSCPDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */; };
 		CE897DD50C21D951005C669E /* texture.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE897DD30C21D951005C669E /* texture.tif */; };
 		CE897DD60C21D951005C669E /* texture.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE897DD30C21D951005C669E /* texture.tif */; };
+		CE898D8B0CBA1B470029E907 /* Osirix32bitShell.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898D8A0CBA1B470029E907 /* Osirix32bitShell.icns */; };
 		CE8CAB0D0B4715DD0068DBAE /* DICOMPrint in Resources */ = {isa = PBXBuildFile; fileRef = CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */; };
 		CE8CAB0E0B4715DD0068DBAE /* DICOMPrint in Resources */ = {isa = PBXBuildFile; fileRef = CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */; };
 		CE90D8C4095F5B48004FC7E2 /* FlipData.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE90D8C3095F5B48004FC7E2 /* FlipData.tiff */; };
@@ -7673,7 +7674,7 @@
 		CED8BC7D097F93D1002665CE /* SUV.tif in Resources */ = {isa = PBXBuildFile; fileRef = CED8BC7B097F93D1002665CE /* SUV.tif */; };
 		CEDAAED60C7B489D00809161 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
 		CEDAAED70C7B489E00809161 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
-		CEDAAED80C7B48A300809161 /* Quicktime.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE7A0F1A0AED55E700540017 /* Quicktime.mm */; };
+		CEDAAED80C7B48A300809161 /* ShellMainClass.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE7A0F1A0AED55E700540017 /* ShellMainClass.mm */; };
 		CEDB15280768392F00375F65 /* jas_cm.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14AB0768392E00375F65 /* jas_cm.h */; };
 		CEDB15290768392F00375F65 /* jas_config.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14B00768392E00375F65 /* jas_config.h */; };
 		CEDB152A0768392F00375F65 /* jas_config2.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14B50768392E00375F65 /* jas_config2.h */; };
@@ -11555,7 +11556,7 @@
 		CE74824006C9701200FFA74C /* trash.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = trash.icns; sourceTree = "<group>"; };
 		CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SagOpposite.tif; sourceTree = "<group>"; };
 		CE79DCFB0753A64D005C8051 /* NO-VRControllerVPRO.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NO-VRControllerVPRO.m"; sourceTree = SOURCE_ROOT; };
-		CE7A0F1A0AED55E700540017 /* Quicktime.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = Quicktime.mm; sourceTree = "<group>"; };
+		CE7A0F1A0AED55E700540017 /* ShellMainClass.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ShellMainClass.mm; sourceTree = "<group>"; };
 		CE7BBFCE0C82DC81000AD12F /* libitkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkzlib.a; path = ITK180/bin/libitkzlib.a; sourceTree = "<group>"; };
 		CE7BBFD30C82DCA5000AD12F /* libtiff.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libtiff.dylib; sourceTree = "<group>"; };
 		CE7BBFD40C82DCA5000AD12F /* libtiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtiff.a; sourceTree = "<group>"; };
@@ -11574,6 +11575,7 @@
 		CE88575C08AF938800B72DA7 /* ROIVolumeController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolumeController.mm; sourceTree = "<group>"; };
 		CE88575D08AF938800B72DA7 /* ROIVolumeView.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolumeView.mm; sourceTree = "<group>"; };
 		CE897DD30C21D951005C669E /* texture.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = texture.tif; path = Binaries/Icons/texture.tif; sourceTree = "<group>"; };
+		CE898D8A0CBA1B470029E907 /* Osirix32bitShell.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Osirix32bitShell.icns; path = Binaries/Icons/Osirix32bitShell.icns; sourceTree = "<group>"; };
 		CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = DICOMPrint; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE90D8C3095F5B48004FC7E2 /* FlipData.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlipData.tiff; sourceTree = "<group>"; };
 		CE96D0DB0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = XMLControllerDCMTKCategory.h; sourceTree = "<group>"; };
@@ -12137,6 +12139,7 @@
 				A9751FFF0CAA8481005D172F /* iChatTheatreHelp */,
 				CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */,
 				CE5A7F8B0CB9430D009C80B4 /* 32-bit shell.app */,
+				CE898D8A0CBA1B470029E907 /* Osirix32bitShell.icns */,
 				CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */,
 				CE897DD30C21D951005C669E /* texture.tif */,
 				B78675430AD9C56400731977 /* diameter570frame512.pbm */,
@@ -16242,7 +16245,7 @@
 		CE7A0D670AED557500540017 /* 32-bit Shell */ = {
 			isa = PBXGroup;
 			children = (
-				CE7A0F1A0AED55E700540017 /* Quicktime.mm */,
+				CE7A0F1A0AED55E700540017 /* ShellMainClass.mm */,
 			);
 			name = "32-bit Shell";
 			sourceTree = "<group>";
@@ -21713,6 +21716,7 @@
 			files = (
 				CE9B51790CA8F49500C6C982 /* Wait.xib in Resources */,
 				CE77B0740CB9718C00BE873C /* WaitRendering.xib in Resources */,
+				CE898D8B0CBA1B470029E907 /* Osirix32bitShell.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24515,7 +24519,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEDAAED80C7B48A300809161 /* Quicktime.mm in Sources */,
+				CEDAAED80C7B48A300809161 /* ShellMainClass.mm in Sources */,
 				CEF54E030C7B82AA00C66A31 /* VRMakeObject.m in Sources */,
 				CE9B50C80CA8EAA600C6C982 /* Wait.m in Sources */,
 				A98FFBEC0CA92B58000291C8 /* altivecFunctions.c in Sources */,
