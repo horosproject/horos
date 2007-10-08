@@ -2308,7 +2308,6 @@ static volatile int numberOfThreadsForRelisce = 0;
         [FullScreenWindow close];
 		[FullScreenWindow release];
         
-        [StartingWindow makeKeyAndOrderFront: self];
         FullScreenOn = NO;
 		
 		NSRect	rr = [StartingWindow frame];
