@@ -10351,7 +10351,6 @@ int i,j,l;
 - (void)setSelectedROIsGrouped:(BOOL)grouped;
 {
 	NSArray *curROIList = [roiList[curMovieIndex] objectAtIndex:[imageView curImage]];
-	ROI *selectedROI;
 	long mode;
 	
 	NSTimeInterval newGroupID;
@@ -10360,13 +10359,13 @@ int i,j,l;
 	else
 		newGroupID = 0.0;
 		
-	for(id loopItem in curROIList)
+	for(ROI *roi in curROIList)
 	{
-		mode = [loopItem ROImode];
+		mode = [roi ROImode];
 			
 		if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 		{
-			[selectedROI setGroupID:newGroupID];
+			[roi setGroupID:newGroupID];
 		}
 	}
 }
