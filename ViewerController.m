@@ -1981,6 +1981,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[imageView stopROIEditingForce: YES];
 	
 	if (AUTOHIDEMATRIX) [self autoHideMatrix];
+	
+	if( FullScreenOn == YES ) [self fullScreenMenu: self];
 }
 
 - (void)windowDidChangeScreen:(NSNotification *)aNotification
@@ -2283,6 +2285,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 		NSLog(@"close");
 		[[self window] close];
 	}
+}
+
+- (void)applicationDidResignActive:(NSNotification *)aNotification
+{
+	if( FullScreenOn == YES ) [self fullScreenMenu: self];
 }
 
 -(IBAction) fullScreenMenu:(id) sender
@@ -14776,6 +14783,7 @@ int i,j,l;
 	NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
 	
+	[nc addObserver:self selector:@selector(applicationDidResignActive:) name:NSApplicationDidResignActiveNotification object:0L];
     [nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
 	[nc	addObserver:self selector:@selector(Display3DPoint:) name:@"Display3DPoint" object:nil];
 	[nc addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
