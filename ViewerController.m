@@ -8734,6 +8734,7 @@ int i,j,l;
 	[theNewROI setLayerPixelSpacingY:layerPixelSpacingY];
 	[theNewROI setLayerReferenceFilePath:path];
 	[theNewROI setLayerImage:image];
+	
 //	[theNewROI setLayerImageWhenSelected:imageWhenSelected];
 
 	[[[self roiList] objectAtIndex:[imageView curImage]] addObject:theNewROI];		
@@ -8766,9 +8767,11 @@ int i,j,l;
 		if(y>maxY) maxY = y;
 	}
 	
-	float imageHeight = maxY - minY+1;
-	float imageWidth = maxX - minX+1;
-	NSLog(@"imageWidth : %f, imageHeight: %f", imageWidth, imageHeight);
+	int imageHeight = maxY - minY+1;
+	int imageWidth = maxX - minX+1;
+//	imageHeight /= 4; imageHeight *= 4;
+//	imageWidth /= 4; imageWidth *= 4;
+	NSLog(@"imageWidth : %d, imageHeight: %d", imageWidth, imageHeight);
 
 	NSBitmapImageRep *bitmap;
 
@@ -8786,8 +8789,6 @@ int i,j,l;
 		
 	unsigned char *imageBuffer = [bitmap bitmapData];
 	
-	//float *buffer = malloc(imageWidth*imageHeight*sizeof(float));
-	
 	// need the window level to do a RGB image	
 	float windowLevel, windowWidth;
 	[imageView getWLWW:&windowLevel :&windowWidth];
@@ -8797,7 +8798,7 @@ int i,j,l;
 	float value;
 	char imageValue;
 
-	int bytesPerRow = [bitmap bytesPerRow];
+	int bytesPerRow =imageWidth*4;// [bitmap bytesPerRow];
 
 //	NSBitmapFormat format = [bitmap bitmapFormat];
 
@@ -8830,7 +8831,9 @@ int i,j,l;
 		imageBuffer[4*(int)x+3+(int)y*(int)bytesPerRow] = 255;
 	}
 
-	NSImage *image = [[NSImage alloc] init] ;
+//	NSImage *image = [[NSImage alloc] init] ;
+	NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(imageWidth, imageHeight)];
+	
 	[image addRepresentation: bitmap];
 
 	NSLog(@"image: %f, %f", [image size].width, [image size].height);

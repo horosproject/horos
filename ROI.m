@@ -4235,21 +4235,57 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 {
 	NSBitmapImageRep *bitmap;
 	bitmap = [[NSBitmapImageRep alloc] initWithData:layerImageJPEG];
-	
+
+	int bytesPerRow = [bitmap bytesPerRow];
+	int spp = [bitmap samplesPerPixel];
 	
 	if(textureBuffer) free(textureBuffer);
-	textureBuffer = malloc(  [bitmap bytesPerRow] * [layerImage size].height);
-	memcpy( textureBuffer, [bitmap bitmapData], [bitmap bytesPerRow] * [layerImage size].height);
+	
+	if(spp!=4) 
+	{
+		bytesPerRow = [bitmap bytesPerRow]/spp;
+		bytesPerRow *= 4;
+
+		unsigned char *ptr, *tmpImage;
+		int	loop = (int) [layerImage size].height * (int) [layerImage size].width;
+		tmpImage = malloc (loop * 4L);
+		ptr   = tmpImage;
+		
+		unsigned char   *bufPtr;
+		bufPtr = [bitmap bitmapData];
+		while( loop-- > 0)
+		{
+			*ptr++	= *bufPtr++;
+			*ptr++	= *bufPtr++;
+			*ptr++	= *bufPtr++;
+			*ptr++	= 255;
+		}
+		
+		textureBuffer = tmpImage;
+	}
+	else
+	{
+		textureBuffer = malloc(  bytesPerRow * [layerImage size].height);
+		memcpy( textureBuffer, [bitmap bitmapData], [bitmap bytesPerRow] * [layerImage size].height);
+	}
 	
 	if(!isLayerOpacityConstant)// && opacity<1.0)
 	{
-		unsigned char*	argbPtr = (unsigned char*) textureBuffer;
-		long			ss = [bitmap bytesPerRow]/4 * [layerImage size].height;
+		unsigned char*	rgbaPtr = (unsigned char*) textureBuffer;
+		long			ss = bytesPerRow/4 * [layerImage size].height;
 		
 		while( ss-->0)
 		{
-			*argbPtr = (*(argbPtr+1) + *(argbPtr+2) + *(argbPtr+3)) / 3 * opacity;
-			argbPtr+=4;
+			unsigned char r = *(rgbaPtr+0);
+			unsigned char g = *(rgbaPtr+1);
+			unsigned char b = *(rgbaPtr+2);
+			
+			*(rgbaPtr+0) = (r+g+b) / 3 * opacity;
+			*(rgbaPtr+1) = r;
+			*(rgbaPtr+2) = g;
+			*(rgbaPtr+3) = b;
+			
+			rgbaPtr+= 4;
 		}
 	}
 
@@ -4259,31 +4295,29 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		dest.height = [layerImage size].height;
 		dest.width = [layerImage size].width;
-		dest.rowBytes = [bitmap bytesPerRow];
+		dest.rowBytes = bytesPerRow;
 		dest.data = textureBuffer;
 		
 		src = dest;
 		
-		src.data = [bitmap bitmapData];
-		
 		unsigned char	redTable[ 256], greenTable[ 256], blueTable[ 256], alphaTable[ 256];
 			
 		for( int i = 0; i < 256; i++ ) {
-			redTable[i] = i * [layerColor redComponent];
-			greenTable[i] = i * [layerColor greenComponent];
-			blueTable[i] = i * [layerColor blueComponent];
-			alphaTable[i] = i;
+			redTable[i] = (float) i * [layerColor redComponent];
+			greenTable[i] = (float) i * [layerColor greenComponent];
+			blueTable[i] = (float) i * [layerColor blueComponent];
+			alphaTable[i] = (float) i * opacity;
 		}
 		
 		//vImageOverwriteChannels_ARGB8888(const vImage_Buffer *newSrc, &src, &dest, 0x4, 0);
 		
-		#if __BIG_ENDIAN__
-		vImageTableLookUp_ARGB8888( &src, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) redTable, (Pixel_8*) greenTable, (Pixel_8*) blueTable, 0);
-		#else
-		vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) blueTable, (Pixel_8*) greenTable, (Pixel_8*) redTable, (Pixel_8*) &alphaTable, 0);
-		#endif
+//		#if __BIG_ENDIAN__
+//		vImageTableLookUp_ARGB8888( &src, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) redTable, (Pixel_8*) greenTable, (Pixel_8*) blueTable, 0);
+//		#else
+//		vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) blueTable, (Pixel_8*) greenTable, (Pixel_8*) redTable, (Pixel_8*) &alphaTable, 0);
+//		#endif
 
-//		vImageTableLookUp_ARGB8888( &src, &dest, (Pixel_8*) redTable , (Pixel_8*) greenTable, (Pixel_8*)blueTable, (Pixel_8*) &alphaTable, 0);
+		vImageTableLookUp_ARGB8888( &src, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) redTable, (Pixel_8*) greenTable, (Pixel_8*) blueTable, 0);
 	}
 
 	[[curView openGLContext] makeCurrentContext];
@@ -4295,21 +4329,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	textureName = 0L;
 	glGenTextures(1, &textureName);
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, bytesPerRow/4);
 	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
 
-//	if(!isLayerOpacityConstant)
-//	{
-//		NSLog(@"isLayerOpacityConstant : NO");
-//		glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, textureBuffer);
-//	}
-//	else
-//	{
-//		NSLog(@"isLayerOpacityConstant : YES");
-//		glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, textureBuffer);
-//	}
-
+	#if __BIG_ENDIAN__
+	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, textureBuffer);
+	#else
 	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, textureBuffer);
+	#endif
 
 	[bitmap release];
 }
@@ -4319,13 +4346,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	if(layerImageJPEG) [layerImageJPEG release];
 	
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [layerImage TIFFRepresentation]];
+	
 	NSSize size = [layerImage size];
 	NSDictionary *imageProps;
 	if(size.height>512 && size.width>512)
 		imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.3] forKey:NSImageCompressionFactor];
 	else
 		imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
-	layerImageJPEG = [[imageRep representationUsingType:NSJPEG2000FileType properties:imageProps] retain];	//NSJPEGFileType
+	layerImageJPEG = [[imageRep representationUsingType:NSPNGFileType properties:imageProps] retain];	//NSJPEGFileType //NSJPEG2000FileType
 }
 
 NSInteger sortPointArrayAlongX(id point1, id point2, void *context)

@@ -2212,6 +2212,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if(tool == tROISelector) {
 			[ROISelectorSelectedROIList release];
+			ROISelectorSelectedROIList = 0L;
 			
 			NSRect rect = NSMakeRect(ROISelectorStartPoint.x-1, ROISelectorStartPoint.y-1, fabsf(ROISelectorEndPoint.x-ROISelectorStartPoint.x)+2, fabsf(ROISelectorEndPoint.y-ROISelectorStartPoint.y)+2);
 			ROISelectorStartPoint = NSMakePoint(0.0, 0.0);
