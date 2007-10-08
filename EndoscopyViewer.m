@@ -433,10 +433,13 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 														: fp[1]
 														: fp[2]]];
 	[[vrController view] setCamera: curCamera];
+	[[vrController view] setNeedsDisplay:YES];
 	[[mprController originalView] setNeedsDisplay:YES];
 	[[mprController xReslicedView] setNeedsDisplay:YES];
 	[[mprController yReslicedView] setNeedsDisplay:YES];
-	[[vrController view] setNeedsDisplay:YES];
+	
+	[[self window] display];
+	
 }
 
 #pragma mark-
