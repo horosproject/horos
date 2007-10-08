@@ -76,7 +76,7 @@
 		OSIVoxel *secondPoint = [centerlinePoints objectAtIndex:i + 1];
 		[endoscopyViewer setCameraPosition:firstPoint  
 			focalPoint:secondPoint];
-		[stepsArrayController add:self];
+		[stepsArrayController addObject:self.currentCamera];
 	}
 	[itk release];
 	
