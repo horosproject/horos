@@ -8787,7 +8787,7 @@ int i,j,l;
 		
 	unsigned char *imageBuffer = [bitmap bitmapData];
 	
-	float *buffer = malloc(imageWidth*imageHeight*sizeof(float));
+	//float *buffer = malloc(imageWidth*imageHeight*sizeof(float));
 	
 	// need the window level to do a RGB image	
 	float windowLevel, windowWidth;
