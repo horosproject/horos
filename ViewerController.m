@@ -2021,8 +2021,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSRect window = [[self window] frame];
 	
 	if( window.size.height > screen.size.height)
+	{
+		window.origin.y += window.size.height - screen.size.height;
 		window.size.height = screen.size.height;
-		
+	}
+			
 	if( window.size.width > screen.size.width)
 		window.size.width = screen.size.width;
 		

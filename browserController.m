@@ -8472,8 +8472,10 @@ static NSArray*	openSubSeriesArray = 0L;
 	openSubSeriesArray = [toOpenArray retain];
 	
 	NSLog( @"[[NSApp mainWindow] level]: %d", [[NSApp mainWindow] level]);
+	NSLog( @"[[NSApp keyWindow] level]: %d", [[NSApp keyWindow] level]);
 	
-	if( [[NSApp mainWindow] level] >= NSFloatingWindowLevel) return 0L;		// To avoid the problem of displaying this sheet when the user is in fullscreen mode
+	if( [[NSApp mainWindow] level] >= NSFloatingWindowLevel) { NSBeep(); return 0L;}		// To avoid the problem of displaying this sheet when the user is in fullscreen mode
+	if( [[NSApp keyWindow] level] >= NSFloatingWindowLevel) { NSBeep(); return 0L;}		// To avoid the problem of displaying this sheet when the user is in fullscreen mode
 	
 	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subTo"];
 	[self setValue:[NSNumber numberWithInt:1] forKey:@"subFrom"];
