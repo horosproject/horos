@@ -8769,8 +8769,6 @@ int i,j,l;
 	
 	int imageHeight = maxY - minY+1;
 	int imageWidth = maxX - minX+1;
-//	imageHeight /= 4; imageHeight *= 4;
-//	imageWidth /= 4; imageWidth *= 4;
 	NSLog(@"imageWidth : %d, imageHeight: %d", imageWidth, imageHeight);
 
 	NSBitmapImageRep *bitmap;
@@ -8798,7 +8796,7 @@ int i,j,l;
 	float value;
 	char imageValue;
 
-	int bytesPerRow =imageWidth*4;// [bitmap bytesPerRow];
+	int bytesPerRow = [bitmap bytesPerRow];
 
 //	NSBitmapFormat format = [bitmap bitmapFormat];
 
@@ -8831,8 +8829,7 @@ int i,j,l;
 		imageBuffer[4*(int)x+3+(int)y*(int)bytesPerRow] = 255;
 	}
 
-//	NSImage *image = [[NSImage alloc] init] ;
-	NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(imageWidth, imageHeight)];
+	NSImage *image = [[NSImage alloc] init] ;
 	
 	[image addRepresentation: bitmap];
 
