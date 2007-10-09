@@ -9156,7 +9156,7 @@ int i,j,l;
 	
 	NSString	*error;
 	int			numberOfGeneratedROI = [[self roisWithComment: @"morphing generated"] count];
-	
+		
 	[self addToUndoQueue: @"roi"];
 	
 	WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Preparing data...", nil)];
@@ -9209,6 +9209,12 @@ int i,j,l;
 				}
 			}
 		}
+	}
+	else if( [sender tag]==1 && !error)
+	{
+		int	numberOfGeneratedROIafter = [[self roisWithComment: @"morphing generated"] count];
+		if(!numberOfGeneratedROIafter)
+			NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), NSLocalizedString(@"The missing ROIs where not created (this feature does not work with ROIs of types: Rectangles, Elipses and Axis).", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
 
 	[splash close];
