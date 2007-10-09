@@ -139,16 +139,9 @@
     [NSApp stopModalWithCode: [sender tag]];
 }
 
-- (void) setAllWithSameName: (BOOL) s {
-	allWithSameName = s;
-}
-
-- (BOOL) allWithSameName {
-	return allWithSameName;
-}
-
-- (IBAction) setSameName: (id) sender {
-	allWithSameName = [sender state] == NSOnState;
+- (BOOL) allWithSameName
+{
+	return [allWithSameName state]==NSOnState;
 }
 
 - (void) setROI: (ROI*) iroi :(ViewerController*) c
@@ -187,9 +180,13 @@
 
 	if( [curROI type] == tLayerROI) [exportToXMLButton setEnabled:NO];
 	else [exportToXMLButton setEnabled:YES];
-	
-	[self setAllWithSameName: NO];
+}
 
+- (void)changeROI:(NSNotification*)notification;
+{
+	ROI* roi = [notification object];
+	[comments setString:[roi comments]];
+	[name setStringValue:[roi name]];
 }
 
 - (id) initWithROI: (ROI*) iroi :(ViewerController*) c
@@ -197,7 +194,7 @@
 	self = [super initWithWindowNibName:@"ROI"];
 	
 	[[self window] setFrameAutosaveName:@"ROIInfoWindow"];
-	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeROI:) name:@"changeROI" object:nil];
 	roiNames = 0L;
 	
 	[self setROI: iroi :c];
@@ -279,7 +276,7 @@
 
 - (IBAction) setTextData:(id) sender
 {
-	if ( allWithSameName ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [sender stringValue]];
+	if ( [self allWithSameName] ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [sender stringValue]];
 	
 	[curROI setName: [sender stringValue]];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: 0L];
@@ -290,7 +287,7 @@
 	[curROI setThickness: [sender floatValue]];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: 0L];
 	
-	if ( allWithSameName ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [curROI name]];
+	if ( [self allWithSameName] ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [curROI name]];
 }
 
 - (IBAction) setOpacity:(NSSlider*) sender
@@ -298,7 +295,7 @@
 	[curROI setOpacity: [sender floatValue]];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: 0L];
 	
-	if ( allWithSameName ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [curROI name]];
+	if ( [self allWithSameName] ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [curROI name]];
 }
 
 - (IBAction) setColor:(NSColorWell*) sender
@@ -318,7 +315,7 @@
 	[curROI setColor:c];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: 0L];
 	
-	if ( allWithSameName ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [curROI name]];
+	if ( [self allWithSameName] ) [self setAllMatchingROIsToSameParamsAs: curROI withNewName: [curROI name]];
 
 	[comments setTextColor:0L];
 }
@@ -350,7 +347,7 @@
 		// allocate an NSMutableDictionary to hold our preference data
 		xml = [[NSMutableDictionary alloc] init];
 		
-		if ( allWithSameName ) {
+		if ( [self allWithSameName] ) {
 			NSArray *roiSeriesList = [curController roiList];
 			NSMutableArray *roiArray = [NSMutableArray arrayWithCapacity: 0];
 			

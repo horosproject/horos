@@ -26,7 +26,7 @@
 	ViewerController		*curController;
 	
 	BOOL					loaded;
-	BOOL					allWithSameName;
+	IBOutlet NSButton		*allWithSameName;
 	
 	IBOutlet NSComboBox		*name;
 	IBOutlet MyNSTextView   *comments;
@@ -53,7 +53,6 @@
 - (IBAction) setTextData:(id) sender;
 - (IBAction) roiSaveCurrent: (id) sender;
 - (void) setROI: (ROI*) iroi :(ViewerController*) c;
-- (IBAction) setSameName: (id) sender;
-- (void) setAllWithSameName: (BOOL) s;
 - (BOOL) allWithSameName;
+
 @end

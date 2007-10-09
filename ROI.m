@@ -3067,9 +3067,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glEnd();
 			
 			if( mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing) glColor4f (0.5f, 0.5f, 1.0f, opacity);
-			else glColor4f (1.0f, 0.0f, 0.0f, opacity);
+			else glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+			//else glColor4f (1.0f, 0.0f, 0.0f, opacity);
 			
-			glPointSize( thickness * 3);
+			glPointSize( (1 + sqrt( thickness))*3.5);
 			glBegin( GL_POINTS);
 			glVertex2f(  (rect.origin.x  - offsetx)*scaleValue, (rect.origin.y  - offsety)*scaleValue);
 			glEnd();
@@ -3240,7 +3241,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing)
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
-				glPointSize( thickness * 3);
+				glPointSize( (1 + sqrt( thickness))*3.5);
 				glBegin( GL_POINTS);
 				for( long i = 0; i < [points count]; i++) {
 					
@@ -3276,7 +3277,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				}
 				
 				glColor3f (1.0f, 0.0f, 0.0f);
-				glPointSize( thickness * 3);
+				glPointSize( (1 + sqrt( thickness))*3.5);
 				glBegin( GL_POINTS);
 					glVertex2f( (pt.x - offsetx) * scaleValue , (pt.y - offsety) * scaleValue );
 				glEnd();
@@ -3319,7 +3320,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing)
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
-				glPointSize( thickness * 3);
+				glPointSize( (1 + sqrt( thickness))*3.5);
 				glBegin( GL_POINTS);
 				glVertex2f(  (rect.origin.x - offsetx)*scaleValue, (rect.origin.y - offsety)*scaleValue);
 				glVertex2f(  (rect.origin.x - offsetx)*scaleValue, (rect.origin.y + rect.size.height- offsety)*scaleValue);
@@ -3381,7 +3382,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing)
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
-				glPointSize( thickness * 3);
+				glPointSize( (1 + sqrt( thickness))*3.5);
 				glBegin( GL_POINTS);
 				glVertex2f( (rect.origin.x - offsetx - rect.size.width) * scaleValue, (rect.origin.y - rect.size.height - offsety) * scaleValue);
 				glVertex2f( (rect.origin.x - offsetx - rect.size.width) * scaleValue, (rect.origin.y + rect.size.height - offsety) * scaleValue);
@@ -3493,7 +3494,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					tempPt = [curView ConvertFromView2GL:tempPt];
 					
 					glColor3f (0.5f, 0.5f, 1.0f);
-					glPointSize( thickness * 3);
+					glPointSize( (1 + sqrt( thickness))*3.5);
 					glBegin( GL_POINTS);
 					for( long i = 0; i < [points count]; i++) {
 						if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
@@ -3763,7 +3764,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				tempPt = [curView ConvertFromView2GL:tempPt];
 				
 				glColor3f (0.5f, 0.5f, 1.0f);
-				glPointSize( thickness * 3);
+				glPointSize( (1 + sqrt( thickness))*3.5);
 				glBegin( GL_POINTS);
 				for( long i = 0; i < [points count]; i++) {
 					if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
@@ -3907,7 +3908,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				tempPt = [curView ConvertFromView2GL:tempPt];
 				
 				glColor3f (0.5f, 0.5f, 1.0f);
-				glPointSize( thickness * 3);
+				glPointSize( (1 + sqrt( thickness))*3.5);
 				glBegin( GL_POINTS);
 				for( long i = 0; i < [points count]; i++) {
 					if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
