@@ -34,6 +34,7 @@
 	IBOutlet NSSlider		*thicknessSlider, *opacitySlider;
 	IBOutlet NSButton		*recalibrate;
 	IBOutlet NSButton		*xyPlot;
+	IBOutlet NSButton		*exportToXMLButton;
 	IBOutlet NSWindow		*recalibrateWindow;
 	IBOutlet NSTextField	*recalibrateValue;
 	

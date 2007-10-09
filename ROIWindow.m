@@ -184,6 +184,9 @@
 	
 	if( [curROI type] == tMesure) [xyPlot setEnabled: YES];
 	else [xyPlot setEnabled: NO];
+
+	if( [curROI type] == tLayerROI) [exportToXMLButton setEnabled:NO];
+	else [exportToXMLButton setEnabled:YES];
 	
 	[self setAllWithSameName: NO];
 
@@ -327,6 +330,11 @@
 		NSInteger confirm;
 		confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Export to XML", @""), NSLocalizedString(@"Exporting this kind of ROI to XML will only export the contour line.", @""), NSLocalizedString(@"OK", @""), NSLocalizedString(@"Cancel", @""), nil);
 		if(!confirm) return;
+	}
+	else if([curROI type]==tLayerROI)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Export to XML", @""), NSLocalizedString(@"This kind of ROI can not be exported to XML.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+		return;
 	}
 	
 	NSSavePanel     *panel = [NSSavePanel savePanel];
