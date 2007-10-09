@@ -2572,7 +2572,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [[self windowController] windowWillClose]) return;
 	}
 	
-	if( [self is2DViewer] == YES)
+	if( [self is2DViewer] == YES && [event type] == NSLeftMouseDown && ([event modifierFlags]& NSDeviceIndependentModifierFlagsMask) == 0)
 	{
 		NSPoint tempPt = [[[event window] contentView] convertPoint: [event locationInWindow] toView:self];
 		tempPt.y = [self frame].size.height - tempPt.y;
