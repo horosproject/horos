@@ -16,6 +16,8 @@
 #import "BrowserController.h"
 #import "ViewerController.h"
 #import "DCMView.h"
+#import "QueryController.h"
+#import "DCMNetServiceDelegate.h"
 
 // HTTP SERVER
 //
@@ -498,6 +500,70 @@
 					// Done, we can send the response to the sender
 					
 					NSString *xml = @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>0</value></member></struct></value></param></params></methodResponse>";		// Simple answer, no errors
+					NSError *error = nil;
+					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+					[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+				}
+			}
+			
+			#pragma mark CMove
+			
+			// ********************************************
+			// Method: CMove
+			//
+			// Parameters:
+			// accessionNumber: accessionNumber of the study to retrieve
+			// server: server description where the images are located (See OsiriX Locations Preferences)
+			//
+			// Example: {accessionNumber: "UA876410", server: "Main-PACS"}
+			//
+			// Response: {error: "0"}
+			
+			if( [[httpServerMessage valueForKey: @"MethodName"] isEqualToString: @"CMove"])
+			{
+				if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+				{
+					NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
+					NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
+					if (2 != [keys count] || 2 != [values count])
+					{
+						CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1); // Bad Request
+						[mess setResponse:response];
+						CFRelease(response);
+						return;
+					}
+					
+					int i;
+					NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
+					for( i = 0; i < [keys count]; i++)
+						[paramDict setValue: [[values objectAtIndex: i] objectValue] forKey: [[keys objectAtIndex: i] objectValue]];	
+					
+					// *****
+					
+					NSArray *sources = [DCMNetServiceDelegate DICOMServersList];
+					NSDictionary *sourceServer = 0L;
+					NSNumber *ret = [NSNumber numberWithInt: 0];
+					
+					for( NSDictionary *s in sources)
+					{
+						if( [[s valueForKey:@"Description"] isEqualToString: [paramDict valueForKey:@"server"]]) // We found the source server
+						{
+							sourceServer = s;
+							
+							break;
+						}
+					}
+					
+					if( sourceServer)
+					{
+						ret = [NSNumber numberWithInt :[QueryController queryAndRetrieveAccessionNumber: [paramDict valueForKey:@"accessionNumber"] server: sourceServer]];
+					}
+					else ret = [NSNumber numberWithInt: -1];
+					
+					// Done, we can send the response to the sender
+					
+					NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
 					NSError *error = nil;
 					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
 					[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];

@@ -375,7 +375,7 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
         printf("Received Move SCP: ");
         DIMSE_printCMoveRQ(stdout, request);
     }
-
+	
     cond = DIMSE_moveProvider(assoc, presID, request,
         moveCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad()) {

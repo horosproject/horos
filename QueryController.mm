@@ -59,6 +59,60 @@ static char *GetPrivateIP()
 
 //******	OUTLINEVIEW
 
++ (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer
+{
+	QueryArrayController *qm = 0L;
+	int error = 0;
+	
+	@try
+	{
+		NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
+		NSString *theirAET = [aServer objectForKey:@"AETitle"];
+		NSString *hostname = [aServer objectForKey:@"Address"];
+		NSString *port = [[aServer objectForKey:@"Port"] stringValue];
+
+		qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:0L];
+		
+		NSString *filterValue = [an stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		
+		if ([filterValue length] > 0)
+		{
+			[qm addFilter:filterValue forDescription:@"AccessionNumber"];
+			
+			[qm performQuery];
+			
+			NSArray *array = [qm queries];
+			
+			NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [qm parameters]];
+			NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
+			[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
+			
+			for( int i = 0; i < [array count] ; i++)
+			{
+				DCMTKQueryNode	*object = [array objectAtIndex: i];
+
+				[dictionary setObject: [object valueForKey:@"calledAET"] forKey:@"calledAET"];
+				[dictionary setObject: [object valueForKey:@"hostname"] forKey:@"hostname"];
+				[dictionary setObject: [object valueForKey:@"port"] forKey:@"port"];
+				[dictionary setObject: [object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
+				
+				[object move: dictionary];
+			}
+			
+			if( [array count] == 0) error = -3;
+		}
+	}
+	@catch (NSException * e)
+	{
+		NSLog( [e description]);
+		error = -2;
+	}
+	
+	[qm release];
+	
+	return error;
+}
+
 + (QueryController*) currentQueryController
 {
 	return currentQueryController;
@@ -406,7 +460,7 @@ static char *GetPrivateIP()
 			NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
 			theirAET = [aServer objectForKey:@"AETitle"];
 			hostname = [aServer objectForKey:@"Address"];
-			port = [aServer objectForKey:@"Port"];
+			port = [[aServer objectForKey:@"Port"] stringValue];
 			
 			int numberPacketsReceived = 0;
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
@@ -680,8 +734,7 @@ static char *GetPrivateIP()
 	
 	[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
 	
-	int i;
-	for( i = 0; i < [array count] ; i++)
+	for( int i = 0; i < [array count] ; i++)
 	{
 		DCMTKQueryNode	*object = [array objectAtIndex: i];
 
@@ -1221,7 +1274,7 @@ static char *GetPrivateIP()
 	
 	theirAET = [aServer objectForKey:@"AETitle"];
 	hostname = [aServer objectForKey:@"Address"];
-	port = [aServer objectForKey:@"Port"];
+	port = [[aServer objectForKey:@"Port"] stringValue];
 	
 	int numberPacketsReceived = 0;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))

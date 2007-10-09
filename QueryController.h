@@ -54,6 +54,7 @@
 
 + (QueryController*) currentQueryController;
 + (BOOL) echo: (NSString*) address port:(int) port AET:(NSString*) aet;
++ (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer;
 
 - (IBAction) selectUniqueSource:(id) sender;
 - (void) refreshSources;
