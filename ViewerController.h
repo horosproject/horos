@@ -639,6 +639,7 @@ enum
 - (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
 - (void)selectROI:(ROI*)roi deselectingOther:(BOOL)deselectOther;
 - (void)deselectAllROIs;
+- (void) refreshToolbar;
 
 #pragma mark-
 #pragma mark Brush ROI Filters

@@ -2561,17 +2561,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask && FullScreenOn == NO) 
 	{
-		[[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :0L :YES keyImagesOnly: displayOnlyKeyImages];
+		ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :0L :YES keyImagesOnly: displayOnlyKeyImages];
 		
 		[self matrixPreviewSelectCurrentSeries];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 			[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
 		else
+		{
 			[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
-
-		int i;
-		for( i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: 0L viewer: 0L];
+		}
+		
+		for( int i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: 0L viewer: 0L];
 		[[self window] makeKeyAndOrderFront: self];
 		[self refreshToolbar];
 	}
@@ -2579,12 +2580,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		if( [[sender selectedCell] representedObject] != [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"])
 		{
-			[[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
+			ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
 
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-				[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
-			else
-				[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+			[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
 				
 			[self matrixPreviewSelectCurrentSeries];
 		}

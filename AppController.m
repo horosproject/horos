@@ -2404,8 +2404,9 @@ static BOOL initialized = NO;
 	// Array of arrays of viewers with same StudyUID
 	NSMutableArray		*studyList = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	int					keyWindow = 0, numberOfMonitors;	
-
-	NSLog(@"tile Windows");
+	NSArray				*screens = [self viewerScreens];
+	
+	numberOfMonitors = [screens count];
 	
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"COPYSETTINGS"];
 	
@@ -2421,7 +2422,7 @@ static BOOL initialized = NO;
 		}
 	}
 	
-	//order windows from left-top to right-bottom
+	//order windows from left-top to right-bottom, per screen if necessary
 	NSMutableArray	*cWindows = [NSMutableArray arrayWithArray: viewersList];
 	
 	// Only the visible windows
@@ -2432,16 +2433,19 @@ static BOOL initialized = NO;
 	
 	NSMutableArray	*cResult = [NSMutableArray array];
 	int count = [cWindows count];
-	for( i = 0; i < count; i++)
-	{		
+	while( count > 0)
+	{
 		int index = 0;
-		float minY = [[[cWindows objectAtIndex: 0] window] frame].origin.y;
+		
+		float minY = [[[cWindows objectAtIndex: index] window] frame].origin.y;
+		float maxY = [[[cWindows objectAtIndex: index] window] frame].origin.y + [[[cWindows objectAtIndex: index] window] frame].size.height;
 		
 		for( x = 0; x < [cWindows count]; x++)
 		{
-			if( [[[cWindows objectAtIndex: x] window] frame].origin.y > minY)
+			if( [[[cWindows objectAtIndex: x] window] frame].origin.y > minY && [[[cWindows objectAtIndex: x] window] frame].origin.y + [[[cWindows objectAtIndex: x] window] frame].size.height < maxY)
 			{
-				minY  = [[[cWindows objectAtIndex: x] window] frame].origin.y;
+				minY = [[[cWindows objectAtIndex: x] window] frame].origin.y;
+				maxY = [[[cWindows objectAtIndex: x] window] frame].origin.y + [[[cWindows objectAtIndex: x] window] frame].size.height;
 				index = x;
 			}
 		}
@@ -2450,7 +2454,7 @@ static BOOL initialized = NO;
 		
 		for( x = 0; x < [cWindows count]; x++)
 		{
-			if( [[[cWindows objectAtIndex: x] window] frame].origin.x < minX && [[[cWindows objectAtIndex: x] window] frame].origin.y >= minY)
+			if( [[[cWindows objectAtIndex: x] window] frame].origin.x < minX && [[[cWindows objectAtIndex: x] window] frame].origin.y + [[[cWindows objectAtIndex: x] window] frame].size.height <= maxY && [[[cWindows objectAtIndex: x] window] frame].origin.y > minY)
 			{
 				minX = [[[cWindows objectAtIndex: x] window] frame].origin.x;
 				index = x;
@@ -2459,6 +2463,7 @@ static BOOL initialized = NO;
 		
 		[cResult addObject: [cWindows objectAtIndex: index]];
 		[cWindows removeObjectAtIndex: index];
+		count--;
 	}
 	
 	// Add the hidden windows
@@ -2503,8 +2508,6 @@ static BOOL initialized = NO;
 		NSLog( [studyList description]);
 	
 	int viewerCount = [viewersList count];
-	NSArray *screens = [self viewerScreens];
-	numberOfMonitors = [screens count];
 	
 	screenRect = [[screens objectAtIndex:0] visibleFrame];
 	BOOL landscape = (screenRect.size.width/screenRect.size.height > 1) ? YES : NO;
@@ -2554,7 +2557,6 @@ static BOOL initialized = NO;
 		}
 	}
 	
-	//I will generalize the options once I get a handle on the issues. LP
 	// if monitor count is greater than or equal to viewers. One viewer per window
 	
 	else if (viewerCount <= numberOfMonitors)
@@ -2593,25 +2595,25 @@ static BOOL initialized = NO;
 			frame.origin.x += (frame.size.width * viewerPosition);
 			
 			[[viewersList objectAtIndex:i] setWindowFrame: frame];
-		}		
+		}
 	} 
 	//have different number of columns in each window
 	else if( viewerCount <= columns) 
 	{
-		int viewersPerScreen = ceil(((float) columns / numberOfMonitors));
+		int columnsPerScreen = ceil(((float) columns / numberOfMonitors));
 
 		int extraViewers = viewerCount % numberOfMonitors;
 		for( i = 0; i < viewerCount; i++) {
-			int monitorIndex = (int) i /viewersPerScreen;
-			int viewerPosition = i % viewersPerScreen;
+			int monitorIndex = (int) i /columnsPerScreen;
+			int viewerPosition = i % columnsPerScreen;
 			NSScreen *screen = [screens objectAtIndex:monitorIndex];
 			NSRect frame = [screen visibleFrame];
 			
 			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
 			if (monitorIndex < extraViewers) 
-				frame.size.width /= viewersPerScreen;
+				frame.size.width /= columnsPerScreen;
 			else
-				frame.size.width /= (viewersPerScreen - 1);
+				frame.size.width /= (columnsPerScreen - 1);
 				
 			frame.origin.x += (frame.size.width * viewerPosition);
 			
@@ -2621,22 +2623,23 @@ static BOOL initialized = NO;
 	//adjust for actual number of rows needed
 	else if (viewerCount <=  columns * rows)  
 	{
-		int viewersPerScreen = ceil(((float) columns / numberOfMonitors));
+		int columnsPerScreen = ceil(((float) columns / numberOfMonitors));
 		int extraViewers = columns % numberOfMonitors;
 		for( i = 0; i < viewerCount; i++) {
 			int row = i/columns;
 			int columnIndex = (i - (row * columns));
-			int monitorIndex =  columnIndex /viewersPerScreen;
-			int viewerPosition = columnIndex % viewersPerScreen;
+			int monitorIndex =  columnIndex / columnsPerScreen;
+			int viewerPosition = columnIndex % columnsPerScreen;
+			
 			NSScreen *screen = [screens objectAtIndex:monitorIndex];
 			NSRect frame = [screen visibleFrame];
-
+			
 			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
 			
 			if (monitorIndex < extraViewers || extraViewers == 0) 
-				frame.size.width /= viewersPerScreen;
+				frame.size.width /= columnsPerScreen;
 			else
-				frame.size.width /= (viewersPerScreen - 1);
+				frame.size.width /= (columnsPerScreen - 1);
 			
 			frame.origin.x += (frame.size.width * viewerPosition);
 			if( i == viewerCount-1)

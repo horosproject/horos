@@ -171,7 +171,7 @@
 		OSIVoxel *secondPoint = [centerlinePoints objectAtIndex:i + 1];
 		[endoscopyViewer setCameraPosition:firstPoint  
 			focalPoint:secondPoint];
-		[[[endoscopyViewer vrController] flyThruController] flyThruTag:0];
+//		[[[endoscopyViewer vrController] flyThruController] flyThruTag:0];
 	}
 	[itk release];
 }

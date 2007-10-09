@@ -5260,8 +5260,8 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (void)loadSeries:(NSManagedObject *) series :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages {
-	[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages];
+- (ViewerController*) loadSeries:(NSManagedObject *) series :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages {
+	return [self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages];
 }
 
 - (IBAction)copy: (id)sender {
@@ -7491,16 +7491,18 @@ static BOOL needToRezoom;
 	return enoughMemory;
 }
 
-- (void) openViewerFromImages:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer:(ViewerController*) viewer keyImagesOnly:(BOOL) keyImages
+- (ViewerController*) openViewerFromImages:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer:(ViewerController*) viewer keyImagesOnly:(BOOL) keyImages
 {
 	unsigned long		*memBlockSize = malloc( [toOpenArray count] * sizeof (unsigned long));
 	
-	NS_DURING
 	BOOL				multiFrame = NO;
 	float				*fVolumePtr = 0L;
 	NSData				*volumeData = 0L;
 	NSMutableArray		*viewerPix[ 200];
 	ViewerController	*movieController = 0L;
+	ViewerController	*createdViewer = viewer;
+	
+	NS_DURING
 	
 	// NS_DURING (1) keyImages
 	
@@ -7747,10 +7749,9 @@ static BOOL needToRezoom;
 							}
 							else {
 								//creation of new viewer
-								ViewerController * viewerController;
-								viewerController = [[ViewerController alloc] viewCinit:viewerPix[0] :filesAr :volumeData];
-								[viewerController showWindowTransition];
-								[viewerController startLoadImageThread];
+								createdViewer = [[ViewerController alloc] viewCinit:viewerPix[0] :filesAr :volumeData];
+								[createdViewer showWindowTransition];
+								[createdViewer startLoadImageThread];
 							}		
 							
 							[filesAr release];
@@ -7764,10 +7765,9 @@ static BOOL needToRezoom;
 							}
 							else {
 								//creation of new viewer
-								ViewerController * viewerController;
-								viewerController = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
-								[viewerController showWindowTransition];
-								[viewerController startLoadImageThread];
+								createdViewer = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
+								[createdViewer showWindowTransition];
+								[createdViewer startLoadImageThread];
 							}
 						}
 					}
@@ -7803,6 +7803,9 @@ static BOOL needToRezoom;
 	
 	free( memBlockSize );
 	
+	if( movieController) createdViewer = movieController;
+	
+	return createdViewer;
 }
 
 - (IBAction) selectSubSeriesAndOpen:(id) sender
