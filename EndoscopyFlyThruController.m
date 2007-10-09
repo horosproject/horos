@@ -72,7 +72,7 @@
 	OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:0];
 	count  = [centerlinePoints count] - 1;
 	NSLog(@"Centerline count: %d", count);
-	NSMutableArray *steps = [self.flyThru.steps mutableCopy];
+	NSMutableArray *steps = [NSMutableArray array];
 	for (int i = 0; i < count; i++) {
 		
 		OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:i];
@@ -80,14 +80,13 @@
 		NSLog(@"point %d: %@ %@", i, firstPoint, secondPoint);
 		[endoscopyViewer setCameraPosition:firstPoint  
 			focalPoint:secondPoint];
-		[steps addObject:self.currentCamera];
-		//[stepsArrayController addObject:self.currentCamera];
-		
+		[steps addObject:self.currentCamera];		
 	}
+	[stepsArrayController addObjects:steps];
 	self.flyThru.steps = steps;
 	self.tabIndex = 1;
 	[itk release];
-	[steps release];
+	
 	
 }
 
