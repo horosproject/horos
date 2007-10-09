@@ -575,6 +575,11 @@ static BOOL ROIDefaultsLoaded = NO;
 
 - (void) dealloc
 {
+	[[curView openGLContext] makeCurrentContext];
+	
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	if( textureName) glDeleteTextures (1, &textureName);
+
 	if (textureBuffer) free(textureBuffer);
 		
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:self userInfo: 0L];
@@ -603,8 +608,7 @@ static BOOL ROIDefaultsLoaded = NO;
 	if(textualBoxLine4) [textualBoxLine4 release];
 	if(textualBoxLine5) [textualBoxLine5 release];
 	
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	if( textureName) glDeleteTextures (1, &textureName);
+	[curView release];
 	
 	[super dealloc];
 }
@@ -711,7 +715,7 @@ static BOOL ROIDefaultsLoaded = NO;
 		zPositions = [[NSMutableArray arrayWithCapacity:0] retain];
 		comments = [[NSString alloc] initWithString:@""];
 		fontListGL = -1;
-		curView = 0L; //@TODO attention curView Null impossible de recuperer l'etat de la gomme !
+		curView = 0L;
 		stringTex = 0L;
 		rmean = rmax = rmin = rdev = rtotal = -1;
 		Brmean = Brmax = Brmin = Brdev = Brtotal = -1;
@@ -1974,7 +1978,6 @@ static BOOL ROIDefaultsLoaded = NO;
 		if( textureWidth%4) {textureWidth /=4;	textureWidth *=4;		textureWidth +=4;}
 		if( textureHeight%4) {textureHeight /=4;	textureHeight *=4;		textureHeight += 4;}
 		
-		
 		for( long y = 0 ; y < textureHeight ; y++)
 		{
 			memcpy( textureBuffer + (y * textureWidth), textureBuffer + offsetTextureX+ (y+ offsetTextureY)*oldTextureWidth,  textureWidth);
@@ -2947,6 +2950,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			if( textureName)
 				glDeleteTextures (1, &textureName);
+			textureName = 0L;
 			
 			//NSLog( @"%d", textureWidth);
 			
@@ -4052,7 +4056,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 - (void) setRoiFont: (long) f :(long*) s :(DCMView*) v
 {
 	fontListGL = f;
-	curView = v;
+	if( curView != v)
+	{
+		[curView release];
+		curView = [v retain];
+	}
 	fontSize = s;
 }
 
@@ -4325,8 +4333,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	if(textureName)
 		glDeleteTextures(1, &textureName);
-		
 	textureName = 0L;
+	
 	glGenTextures(1, &textureName);
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, bytesPerRow/4);

@@ -208,6 +208,8 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 		startingPoint = NSMakePoint(xpx, ypx);
 		
 		[self preview: self];
+		
+		[[note userInfo] setValue: [NSNumber numberWithBool: YES] forKey: @"stopMouseDown"];
 	}
 }
 

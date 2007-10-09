@@ -2117,7 +2117,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
             [matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
         }
 		
-		long tool = [self getTool:event];
+		long tool = currentMouseEventTool;
 		
 		if( crossMove >= 0) tool = tCross;
 		
@@ -2517,8 +2517,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-
-
 - (long) getTool: (NSEvent*) event
 {
 	long tool;
@@ -2563,6 +2561,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void)mouseDown:(NSEvent *)event
 {
+	currentMouseEventTool = -1;
+	
 	if( !drawing) return;
 	if( [[self window] isVisible] == NO) return;
 	if( curDCM == 0L) return;
@@ -2570,6 +2570,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( [self is2DViewer] == YES)
 	{
 		if( [[self windowController] windowWillClose]) return;
+	}
+	
+	if( [self is2DViewer] == YES)
+	{
+		NSPoint tempPt = [[[event window] contentView] convertPoint: [event locationInWindow] toView:self];
+		tempPt.y = [self frame].size.height - tempPt.y;
+		tempPt = [self ConvertFromView2GL:tempPt];
+		
+		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithFloat:tempPt.y], @"Y", [NSNumber numberWithLong:tempPt.x],@"X", [NSNumber numberWithBool: NO], @"stopMouseDown", 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"mouseDown" object: [self windowController] userInfo: dict];
+		
+		if( [[dict valueForKey:@"stopMouseDown"] boolValue]) return;
 	}
 	
 	if (_mouseDownTimer) {
@@ -2610,14 +2622,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
         
         roiRect.origin = [[[event window] contentView] convertPoint:eventLocation toView:self];
         roiRect.origin.y = size.size.height - roiRect.origin.y;
-        
-		if( [self is2DViewer] == YES)
-		{
-			NSPoint tempPt = [self ConvertFromView2GL:mesureA];
-			
-			NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithFloat:tempPt.y], @"Y", [NSNumber numberWithLong:tempPt.x],@"X",0L];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"mouseDown" object: [self windowController] userInfo: dict];
-		}
 		
         if( [event clickCount] > 1 && [self window] == [[BrowserController currentBrowser] window])
         {
@@ -2943,13 +2947,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						
 						drawingROI = NO;
 						
-						curROI = aNewROI = [[ROI alloc] initWithType: currentTool : curDCM.pixelSpacingX :curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
+						curROI = aNewROI = [[ROI alloc] initWithType: tool : curDCM.pixelSpacingX :curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
 											
 						if ( [ROI defaultName] != nil ) {
 							[aNewROI setName: [ROI defaultName]];
 						}
 						else { 
-							switch( currentTool) {
+							switch( tool) {
 								case  tOval:
 									roiName = [NSString stringWithString:@"Oval "];
 									break;
@@ -3050,6 +3054,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 			}
 		}
+		
+		currentMouseEventTool = tool;
+		
 		[self mouseDragged:event];
 		
 		[drawLock unlock];
@@ -3345,12 +3352,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
         NSPoint     eventLocation = [event locationInWindow];
         NSPoint     current = [self convertPoint:eventLocation fromView:self];
-        short       tool;
+        short       tool = currentMouseEventTool;
         NSRect      size = [self frame];
 		
 		[self mouseMoved: event];	// Update some variables...
-		
-		tool = [self getTool: event];
 		
 		if( crossMove >= 0) tool = tCross;
 		

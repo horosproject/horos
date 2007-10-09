@@ -121,7 +121,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
     
     short           curImage, startImage;
     
-    short           currentTool, currentToolRight;
+    short           currentTool, currentToolRight, currentMouseEventTool;
     
 	BOOL			suppress_labels; // keep from drawing the labels when command+shift is pressed
 
