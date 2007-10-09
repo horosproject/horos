@@ -2625,6 +2625,7 @@ static BOOL initialized = NO;
 	{
 		int columnsPerScreen = ceil(((float) columns / numberOfMonitors));
 		int extraViewers = columns % numberOfMonitors;
+		
 		for( i = 0; i < viewerCount; i++) {
 			int row = i/columns;
 			int columnIndex = (i - (row * columns));
@@ -2642,13 +2643,22 @@ static BOOL initialized = NO;
 				frame.size.width /= (columnsPerScreen - 1);
 			
 			frame.origin.x += (frame.size.width * viewerPosition);
-			if( i == viewerCount-1)
+			if( i == viewerCount-1 && monitorIndex != numberOfMonitors-1)
 			{
 				frame.size.width = [screen visibleFrame].size.width - (frame.origin.x - [screen visibleFrame].origin.x);
 			}
 			
 			frame.size.height /= rows;
 			frame.origin.y += frame.size.height * ((rows - 1) - row);
+
+			if( monitorIndex == numberOfMonitors-1)
+			{
+				if( i + columns >= viewerCount)
+				{
+					frame.size.height += frame.origin.y - [screen visibleFrame].origin.y;
+					frame.origin.y = [screen visibleFrame].origin.y;
+				}
+			}
 			
 			[[viewersList objectAtIndex:i] setWindowFrame:frame];
 		}
