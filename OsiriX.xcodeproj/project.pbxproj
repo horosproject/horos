@@ -7747,6 +7747,8 @@
 		CEDB15910768392F00375F65 /* jas_types.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14F60768392E00375F65 /* jas_types.h */; };
 		CEDB15920768392F00375F65 /* jas_version.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB14FB0768392E00375F65 /* jas_version.h */; };
 		CEDB15930768392F00375F65 /* jasper.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDB15000768392E00375F65 /* jasper.h */; };
+		CEDC793B0CBB7EF600411DDB /* ITKSegmentation3DController.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDC793A0CBB7EF600411DDB /* ITKSegmentation3DController.h */; };
+		CEDC793C0CBB7EF600411DDB /* ITKSegmentation3DController.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDC793A0CBB7EF600411DDB /* ITKSegmentation3DController.h */; };
 		CEDCDD5B099C8AA20026AA4B /* ROIManager.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDCDD5A099C8AA20026AA4B /* ROIManager.tiff */; };
 		CEDCDD5D099C8AA20026AA4B /* ROIManager.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDCDD5A099C8AA20026AA4B /* ROIManager.tiff */; };
 		CEDCFB3B0B4C4A4B00510ABD /* SyncSmall.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB380B4C4A4B00510ABD /* SyncSmall.tiff */; };
@@ -11679,6 +11681,7 @@
 		CEDB14F60768392E00375F65 /* jas_types.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_types.h; sourceTree = "<group>"; };
 		CEDB14FB0768392E00375F65 /* jas_version.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_version.h; sourceTree = "<group>"; };
 		CEDB15000768392E00375F65 /* jasper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jasper.h; sourceTree = "<group>"; };
+		CEDC793A0CBB7EF600411DDB /* ITKSegmentation3DController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITKSegmentation3DController.h; sourceTree = "<group>"; };
 		CEDCDD5A099C8AA20026AA4B /* ROIManager.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROIManager.tiff; sourceTree = "<group>"; };
 		CEDCFB380B4C4A4B00510ABD /* SyncSmall.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncSmall.tiff; sourceTree = "<group>"; };
 		CEDCFB3E0B4C4E3900510ABD /* SyncSmallLocked.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncSmallLocked.tif; sourceTree = "<group>"; };
@@ -12159,8 +12162,8 @@
 				CEBD8A4B0875B029000E42D6 /* Pane */,
 				ABBB639A0635874D00D9531F /* DCMTK */,
 				ABBB647A063587B200D9531F /* Icons */,
-				CE3F98E00C84724B00CB38F1 /* Placeholder.xib */,
 				CE3F98E20C84724B00CB38F1 /* Survey.xib */,
+				CE3F98E00C84724B00CB38F1 /* Placeholder.xib */,
 				CE3F98E40C84724B00CB38F1 /* SmartAlbum.xib */,
 				CE3F98E60C84724B00CB38F1 /* ROIVolumeManager.xib */,
 				CE3F98E80C84724B00CB38F1 /* PETCT.xib */,
@@ -15008,6 +15011,7 @@
 				CE4A922C06DBF255006DAAF7 /* ITKSegmentation3D.h */,
 				CE4A922B06DBF255006DAAF7 /* ITKSegmentation3D.mm */,
 				CE26441F06DCF096007F5B71 /* ITKSegmentation3DController.m */,
+				CEDC793A0CBB7EF600411DDB /* ITKSegmentation3DController.h */,
 				CE9762B908FABD1100E6F8B0 /* MSRG */,
 				A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */,
 				A9D780AB09A4D2A6004302DC /* ITKBrushROIFilter.mm */,
@@ -18507,6 +18511,7 @@
 				A978DEB10CB0D4BE00FB2C3D /* NFHUDPopUpButton.h in Headers */,
 				BF84E5410CB16A2900431BC2 /* FlyThruTableView.h in Headers */,
 				BF8564140CB2B781005F7178 /* EndoscopyFlyThruController.h in Headers */,
+				CEDC793C0CBB7EF600411DDB /* ITKSegmentation3DController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20575,6 +20580,7 @@
 				BF6F18DE0CAD6AD0006DE602 /* FlyThruStepsArrayController.h in Headers */,
 				BF84E53F0CB16A2900431BC2 /* FlyThruTableView.h in Headers */,
 				BF8564120CB2B781005F7178 /* EndoscopyFlyThruController.h in Headers */,
+				CEDC793B0CBB7EF600411DDB /* ITKSegmentation3DController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

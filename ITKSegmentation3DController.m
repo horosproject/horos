@@ -552,8 +552,9 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	
 	//adjust the size of the parameters box
 	NSRect parametersBoxFrameBefore = [parametersBox frame];
-	[parametersBox setContentViewMargins:NSMakeSize(14, 10)];
+	[parametersBox setContentViewMargins:NSMakeSize(4, 12)];
 	[parametersBox sizeToFit];
+	[parametersBox setFrame: NSMakeRect( parametersBoxFrameBefore.origin.x, [parametersBox frame].origin.y, parametersBoxFrameBefore.size.width, [parametersBox frame].size.height) ];
 	
 	// frames
 	NSRect parametersBoxFrame = [parametersBox frame];
