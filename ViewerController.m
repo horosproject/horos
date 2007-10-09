@@ -9038,6 +9038,7 @@ int i,j,l;
 	}
 	
 	[name release];
+	[[self imageView] setNeedsDisplay:YES];
 }
 
 - (IBAction) roiDeleteAllROIsWithSameName:(id) sender
