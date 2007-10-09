@@ -11643,6 +11643,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			//	BONJOUR
 			// *********************************************
 			
+			@try {
+				
 			if( isCurrentDatabaseBonjour ) {
 				NSString	*localFile = nil;
 				
@@ -11710,6 +11712,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 						[self srReports:sender];
 					}
 				}
+			}
+			}
+			@catch (NSException * e) {
+				NSLog( @"Generate Report: %@", [e description]);
 			}
 			
 			[checkBonjourUpToDateThreadLock unlock];
