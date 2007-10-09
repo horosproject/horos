@@ -322,6 +322,13 @@
 
 - (IBAction) exportData:(id) sender
 {
+	if([curROI type]==tPlain)
+	{
+		NSInteger confirm;
+		confirm = NSRunInformationalAlertPanel(NSLocalizedString(@"Export to XML", @""), NSLocalizedString(@"Exporting this kind of ROI to XML will only export the contour line.", @""), NSLocalizedString(@"OK", @""), NSLocalizedString(@"Cancel", @""), nil);
+		if(!confirm) return;
+	}
+	
 	NSSavePanel     *panel = [NSSavePanel savePanel];
 	
 	[panel setCanSelectHiddenExtension:NO];
