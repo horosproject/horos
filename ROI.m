@@ -1981,8 +1981,8 @@ static BOOL ROIDefaultsLoaded = NO;
 		if( textureWidth%4) {textureWidth /=4;	textureWidth *=4;		textureWidth +=4;}
 		if( textureHeight%4) {textureHeight /=4;	textureHeight *=4;		textureHeight += 4;}
 		
-		if( textureHeight > oldTextureHeight) {textureHeight = oldTextureHeight;		offsetTextureY = 0;}
-		if( textureWidth > oldTextureWidth) {textureWidth = oldTextureWidth;	offsetTextureX = 0; }
+		if( textureHeight+offsetTextureY > oldTextureHeight) {textureHeight = oldTextureHeight;		offsetTextureY = 0;}
+		if( textureWidth+offsetTextureX > oldTextureWidth) {textureWidth = oldTextureWidth;	offsetTextureX = 0; }
 		
 		for( long y = 0 ; y < textureHeight ; y++)
 		{
