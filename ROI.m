@@ -1927,7 +1927,7 @@ static BOOL ROIDefaultsLoaded = NO;
 {
 	if( type != tPlain) return YES;
 	
-	long			minX, maxX, minY, maxY;
+	int				minX, maxX, minY, maxY;
 	unsigned char	*tempBuf = textureBuffer;
 	
 	minX = textureWidth;
@@ -1954,6 +1954,9 @@ static BOOL ROIDefaultsLoaded = NO;
 	
 	#define CUTOFF 8
 	
+//	NSLog( @"%d %d %d %d", minX, maxX, minY, maxY);
+//	NSLog( @"%d %d %d %d", 0, textureWidth, 0, textureHeight);
+	
 	if( minX > CUTOFF || maxX < textureWidth-CUTOFF || minY > CUTOFF || maxY < textureHeight-CUTOFF)
 	{
 		minX -= 2;
@@ -1977,6 +1980,9 @@ static BOOL ROIDefaultsLoaded = NO;
 		
 		if( textureWidth%4) {textureWidth /=4;	textureWidth *=4;		textureWidth +=4;}
 		if( textureHeight%4) {textureHeight /=4;	textureHeight *=4;		textureHeight += 4;}
+		
+		if( textureHeight > oldTextureHeight) {textureHeight = oldTextureHeight;		offsetTextureY = 0;}
+		if( textureWidth > oldTextureWidth) {textureWidth = oldTextureWidth;	offsetTextureX = 0; }
 		
 		for( long y = 0 ; y < textureHeight ; y++)
 		{

@@ -120,7 +120,12 @@ PURPOSE.
 - (id) initWithViewer:(ViewerController*) v
 {
 	self = [super initWithWindowNibName:@"PaletteBrush"];
-
+	
+	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"ROIRegionThickness"] == 0)
+	{
+		[[NSUserDefaults standardUserDefaults] setFloat: 2.0 forKey:@"ROIRegionThickness"];
+	}
+	
 	[[self window] setFrameAutosaveName:@"BrushTool"];
 	[[self window] setDelegate:self];
 		
