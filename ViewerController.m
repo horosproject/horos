@@ -9214,7 +9214,7 @@ int i,j,l;
 	{
 		int	numberOfGeneratedROIafter = [[self roisWithComment: @"morphing generated"] count];
 		if(!numberOfGeneratedROIafter)
-			NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), NSLocalizedString(@"The missing ROIs where not created (this feature does not work with ROIs of types: Rectangles, Elipses and Axis).", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), NSLocalizedString(@"The missing ROIs were not created (this feature does not work with ROIs of types: Rectangles, Elipses and Axis).", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
 
 	[splash close];
