@@ -699,6 +699,52 @@
 	 
 }
 
+//- (void) updateLog:(NSArray*) moveArray
+//{
+//	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
+//	
+//	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
+//	if( context == 0L) return;
+//	
+//	[context retain];
+//	[context lock];
+//	
+//	@try {
+//
+//	id _logEntry = 0L;
+//
+//	_logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
+//	[_logEntry setValue:[NSDate date] forKey:@"startTime"];
+//	[_logEntry setValue:@"Move" forKey:@"type"];
+//	[_logEntry setValue:calledAET forKey:@"destinationName"];
+//	[_logEntry setValue:callingAET forKey:@"originName"];
+//	if (patientName)
+//		[_logEntry setValue:patientName forKey:@"patientName"];
+//	if (studyDescription)
+//		[_logEntry setValue:studyDescription forKey:@"studyName"];
+//	
+////	[_logEntry setValue:[NSNumber numberWithInt:_numberOfFiles] forKey:@"numberImages"];
+////	[_logEntry setValue:[NSNumber numberWithInt:_numberSent] forKey:@"numberSent"];
+////	[_logEntry setValue:[NSNumber numberWithInt:_numberErrors] forKey:@"numberError"];
+////	[_logEntry setValue:[NSDate date] forKey:@"endTime"];
+////	[_logEntry setValue:[userInfo valueForKey:@"Message"] forKey:@"message"];
+//
+//	[_logEntry setValue:[NSNumber numberWithInt:3] forKey:@"numberImages"];
+//	[_logEntry setValue:[NSNumber numberWithInt:3] forKey:@"numberSent"];
+//	[_logEntry setValue:[NSNumber numberWithInt:0] forKey:@"numberError"];
+//	[_logEntry setValue:[NSDate date] forKey:@"endTime"];
+////	[_logEntry setValue:[userInfo valueForKey:@"Message"] forKey:@"message"];
+//		
+//	}
+//	@catch (NSException * e) {
+//		NSLog( @"updateLogEntry exception");
+//		NSLog( [e description]);
+//	}
+//
+//	[context unlock];
+//	[context release];
+//}
+
 - (OFCondition)prepareMoveForDataSet:( DcmDataset *)dataset
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -784,6 +830,9 @@
 			[moveArray release];
 			moveArray = [tempMoveArray retain];
 			NSLog( @"will move: %d", [moveArray count]);
+			NSLog( @"will move: %@", [moveArray description]);
+			
+//			[self updateLog: moveArray];	<- This is untested and has never worked....
 			
 			cond = EC_Normal;
 		}
