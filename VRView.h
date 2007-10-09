@@ -393,6 +393,7 @@ typedef char* vtkMyCallbackVR;
 -(NSImage*) nsimageQuicktime:(BOOL) renderingMode;
 - (vtkCamera*) vtkCamera;
 - (void) setVtkCamera:(vtkCamera*)aVtkCamera;
+- (void)setCenterlineCamera: (Camera *) cam;
 - (void) setCamera: (Camera*) cam;
 - (Camera*) camera;
 - (IBAction) scissorStateButtons:(id) sender;
