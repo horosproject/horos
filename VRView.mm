@@ -5409,6 +5409,40 @@ public:
 	return [cam autorelease];
 }
 
+- (void)setCenterlineCamera: (Camera *) cam{
+double pos[3], focal[3], vUp[3],  fpVector[3];
+
+	pos[0] = [[cam position] x];
+	pos[1] = [[cam position] y];
+	pos[2] = [[cam position] z];
+	focal[0] = [[cam focalPoint] x];
+	focal[1] = [[cam focalPoint] y];
+	focal[2] = [[cam focalPoint] z];	
+	vUp[0] = [[cam viewUp] x];
+	vUp[1] = [[cam viewUp] y];
+	vUp[2] = [[cam viewUp] z];
+	fpVector[0] = focal[0] - pos[0];
+	fpVector[1] = focal[1] - pos[1];
+	fpVector[2] = focal[2] - pos[2];
+	double vMax = fabs(fpVector[0]) + fabs(fpVector[1]) + fabs(fpVector[2]);
+	//fpVector[0] = 0;
+	//fpVector[1] = 1;
+	//fpVector[2] = 0;
+	//NSLog(@"view Up x: %f y: %f z: %f", vUp[0], vUp[1], vUp[2]);
+	//NSLog(@"vector to FP x: %f y: %f z: %f", fpVector[0], fpVector[1], fpVector[2]);
+	//NSLog(@"normalized vector to FP x: %f y: %f z: %f", fpVector[0]/vMax, fpVector[1]/vMax, fpVector[2]/vMax)
+	
+	double distance = aCamera->GetDistance();
+	aCamera->SetPosition(pos);
+	aCamera->SetFocalPoint(focal);
+	aCamera->SetDistance(distance);
+	//aCamera->SetViewUp(fpVector);
+	aRenderer->ResetCameraClippingRange();
+
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+
+}
+
 - (void) setCamera: (Camera*) cam
 {	
 	double pos[3], focal[3], vUp[3];
@@ -5463,6 +5497,8 @@ public:
 	aCamera->SetPosition(pos);
 	aCamera->SetFocalPoint(focal);
 	//aCamera->SetDistance(distance);
+	// Compute view plane from position and focalPoint
+	//aCamera->ComputeViewPlaneNormal();
 	aCamera->SetViewUp(vUp);
 	//aCamera->SetClippingRange(clippingRange);
 	aCamera->SetViewAngle(viewAngle);

@@ -28,6 +28,12 @@
 	[self resetCameraIndexes];
 }
 
+- (void)addObjects:(NSArray *)objects{
+	[super addObjects:objects];
+	[self resetCameraIndexes];
+}
+	
+
 - (void)removeObject:(id)sender{
 	[super removeObject:sender];
 	[self resetCameraIndexes];

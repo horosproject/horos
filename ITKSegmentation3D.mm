@@ -1005,7 +1005,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	
 	double resampleX = 2.0;
 	double resampleY = 2.0;
-	double resampleZ = 4.0;
+	double resampleZ = 2.0;
 	const double *spacing = [itkImage itkImporter]->GetSpacing();
 	double newSpacing[Dimension];
 	newSpacing[0] = spacing[0] * resampleX; // pixel spacing in millimeters along X 

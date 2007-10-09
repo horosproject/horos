@@ -173,6 +173,7 @@
 			focalPoint:secondPoint];
 //		[[[endoscopyViewer vrController] flyThruController] flyThruTag:0];
 	}
+	
 	[itk release];
 }
 

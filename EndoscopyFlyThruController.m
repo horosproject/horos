@@ -63,30 +63,30 @@
 	// Pixlists in VR are reversed from the Viewer Controller
 	//pos2D[2] = count - pos2D[2];
 	OSIVoxel *seed = [OSIVoxel pointWithX:pos2D[0]  y:pos2D[1]  z:pos2D[2] value:nil];
-	NSLog(@"Compute centerline starting Point: %@", seed);
 	[seeds addObject:seed];
 	
 	ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWithPix :[viewer2D pixList]  volume:[viewer2D volumePtr]   slice:-1  resampleData:NO];
-	NSArray *centerlinePoints = [itk endoscopySegmentationForViewer:viewer2D seeds:seeds];
+	NSArray *centerlinePoints = [[itk endoscopySegmentationForViewer:viewer2D seeds:seeds] copy];
+	[itk release];
 
 	OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:0];
 	count  = [centerlinePoints count] - 1;
 	NSLog(@"Centerline count: %d", count);
 	NSMutableArray *steps = [NSMutableArray array];
 	for (int i = 0; i < count; i++) {
-		
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:i];
 		OSIVoxel *secondPoint = [centerlinePoints objectAtIndex:i + 1];
-		NSLog(@"point %d: %@ %@", i, firstPoint, secondPoint);
 		[endoscopyViewer setCameraPosition:firstPoint  
 			focalPoint:secondPoint];
-		[steps addObject:self.currentCamera];		
+		[steps addObject:self.currentCamera];
+		[pool release];		
 	}
+	[centerlinePoints release];
 	[stepsArrayController addObjects:steps];
-	self.flyThru.steps = steps;
-	self.tabIndex = 1;
-	[itk release];
+	//self.tabIndex = 1;
 	
+	NSLog(@"end compute centerline: %d", [steps count]);
 	
 }
 

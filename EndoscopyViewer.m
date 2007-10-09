@@ -415,6 +415,9 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	fp[0] *= factor;
 	fp[0] *= factor;
 	
+	//NSLog(@"origin x: %f y: %f z: %f", pos[0], pos[1], pos[2]);
+	//NSLog(@"focalPoint x: %f y: %f z: %f", fp[0], fp[1], fp[2]);
+	
 	[curCamera setPosition:[[Point3D alloc] initWithValues: pos[0]
 													: pos[1]
 													: pos[2]]];
@@ -423,13 +426,15 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 														: fp[1]
 														: fp[2]]];
 												
-	[[vrController view] setCamera: curCamera];
+	[[vrController view] setCenterlineCamera: curCamera];
 	[[vrController view] setNeedsDisplay:YES];
 	[[mprController originalView] setNeedsDisplay:YES];
 	[[mprController xReslicedView] setNeedsDisplay:YES];
 	[[mprController yReslicedView] setNeedsDisplay:YES];
 	
 	[[self window] display];
+	
+	//NSLog(@"camera: %@", [[vrController view] camera]);
 	
 }
 
