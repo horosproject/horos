@@ -88,7 +88,7 @@
 		[tempStepCameras addObject:[stepCameras objectAtIndex:0]];
 		self.numberOfFrames += 1;
 	}
-	
+	NSLog(@"numberOfFrames: %d", numberOfFrames);
 	long nbStep = [tempStepCameras count];
 
 	// instantiation
@@ -224,7 +224,7 @@
 	{
 		[pathCameras removeLastObject]; // otherwise this frame appears 2 times (it is the first AND last frame)
 	}
-	
+	NSLog(@"pathCameras: %d", [pathCameras count]);
 	self.numberOfFrames =  [pathCameras count];
 
 }

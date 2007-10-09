@@ -67,6 +67,7 @@
 	
 	IBOutlet NSButton		*exportButtonOption;
 	NSString				*dcmSeriesName;
+	int				tabIndex;
 	
 }
 
@@ -81,6 +82,7 @@
 @property (readonly) Camera  *currentCamera;
 @property (readwrite, retain) FlyThruAdapter *FTAdapter;
 @property int curMovieIndex;
+@property int tabIndex;
 
 - (void)setWindow3DController:(Window3DController*) w3Dc;
 - (Window3DController*)window3DController;

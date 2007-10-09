@@ -24,6 +24,7 @@
 	int				numberOfFrames;
 	int				interpolationMethod; // 1: spline / 2: piecewise
 	BOOL			constantSpeed, loop;
+	
 }
 
 @property (readwrite, retain) NSMutableArray *steps;
@@ -31,6 +32,7 @@
 @property (readwrite, retain) NSMutableArray *stepsPositionInPath;
 @property int numberOfFrames;
 @property int interpolationMethod;
+
 @property BOOL constantSpeed;
 @property BOOL loop;
 

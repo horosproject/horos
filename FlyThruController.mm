@@ -33,7 +33,7 @@
 @synthesize dcmSeriesName;
 @synthesize levelOfDetailType;
 @synthesize exportSize;
-@synthesize FTAdapter;
+@synthesize FTAdapter, tabIndex;
 
 - (void)setWindow3DController:(Window3DController*) w3Dc
 {

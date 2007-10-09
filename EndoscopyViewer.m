@@ -398,17 +398,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	 // The order of the piXList appears reversed in the views relative to the orginal viewer2D
 	int pixCount = [[[mprController originalView] dcmPixList] count];
 	// tranform coordinates
-	/*
-	[[[[mprController originalView] pixList]	objectAtIndex:pixCount - round(position.z) - 1]
-												convertPixX: position.x
-												pixY: position.y
-												toDICOMCoords: pos];
-												
-	[[[[mprController originalView] pixList]	objectAtIndex:pixCount - focalPoint.z - 1]
-												convertPixX: focalPoint.x
-												pixY: focalPoint.y
-												toDICOMCoords: fp];
-	*/
+
 	[[[[mprController originalView] pixList]	objectAtIndex:round(position.z)]
 												convertPixX: position.x
 												pixY: position.y
@@ -432,6 +422,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	[curCamera setFocalPoint:[[Point3D alloc] initWithValues: fp[0]
 														: fp[1]
 														: fp[2]]];
+												
 	[[vrController view] setCamera: curCamera];
 	[[vrController view] setNeedsDisplay:YES];
 	[[mprController originalView] setNeedsDisplay:YES];

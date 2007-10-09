@@ -76,7 +76,7 @@
 
 - (id)init {
 	if (self = [super init]) {
-		_thinningIterations = 500;
+		_thinningIterations = 750;
 		_wait = nil;
 		_startingPoint = nil;
 		_endingPoint = nil;
