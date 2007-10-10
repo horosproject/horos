@@ -506,7 +506,6 @@
 // overwrite the DCMView method:
 - (void) addROI:(NSNotification*)note
 {
-	NSLog(@"addROI:(NSNotification*)note [overwrited]");
 	DCMView *sender = [note object];
 	ROI *addedROI = [[note userInfo] objectForKey:@"ROI"];
 	int sliceNumber = [[[note userInfo] objectForKey:@"sliceNumber"] intValue];
@@ -517,10 +516,8 @@
 	{
 		if (([[controller xReslicedView] isEqualTo:sender] || [[controller yReslicedView] isEqualTo:sender]) && [[controller originalView] isEqualTo:self])
 		{
-			NSLog(@"sender is xReslicedView OR yReslicedView");
 			if([addedROI type]==t2DPoint)
 			{
-				NSLog(@"ROI is a Point");
 				ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[[controller originalView] pixelSpacingX] :[[controller originalView] pixelSpacingY] :NSMakePoint( [[controller originalView] origin].x, [[controller originalView] origin].y)] autorelease];
 
 				NSRect irect;
@@ -546,16 +543,32 @@
 				
 				// copy the state
 				[new2DPointROI setROIMode:ROI_selected];
-				// copy the name
-				[new2DPointROI setName:[addedROI name]];
+				
+				// name		
+				NSString *finalName, *roiName = [NSString stringWithString:@"Point "];
+				int counter = 1;
+				BOOL existsAlready = YES;
+				while (existsAlready)
+				{
+					existsAlready = NO;
+					finalName = [roiName stringByAppendingFormat:@"%d", counter++];
+					for( int i = 0; i < [[[controller originalView] dcmRoiList] count]; i++)
+					{
+						for( int x = 0; x < [[[[controller originalView] dcmRoiList] objectAtIndex: i] count]; x++)
+						{
+							if([[[[[[controller originalView] dcmRoiList] objectAtIndex:i] objectAtIndex:x] name] isEqualToString:finalName])
+								existsAlready = YES;
+						}
+					}
+				}
+				[addedROI setName:finalName];
+				[new2DPointROI setName:finalName];
 					
 				// add the 2D Point ROI to the ROI list
 				long slice = ([controller sign]>0)? [[[controller originalView] dcmPixList] count]-1 -[[[addedROI points] objectAtIndex:0] y] : [[[addedROI points] objectAtIndex:0] y];
 				
 				if( slice < 0) slice = 0;
 				if( slice >= [[[controller originalView] dcmRoiList] count]) slice = [[[controller originalView] dcmRoiList] count]-1;
-
-				NSLog(@"slice : %d", slice);
 				
 				[[[[controller originalView] dcmRoiList] objectAtIndex: slice] addObject: new2DPointROI];
 			}
