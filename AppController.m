@@ -1295,6 +1295,10 @@ NSRect screenFrame()
 			{			
 				NSString *availability = [availabilities objectForKey:path];
 				BOOL isActive = [[active objectForKey:path] boolValue];
+				
+				if(!availability)
+					isActive = YES;
+				
 				if([availability isEqualToString:[pluginManagerAvailabilities objectAtIndex:0]])
 				{
 					if(isActive)
@@ -1328,7 +1332,7 @@ NSRect screenFrame()
 			
 				// delete the plugin if it already exists.
 				
-				NSString *pathToDelete;
+				NSString *pathToDelete = nil;
 				
 				if([[NSFileManager defaultManager] fileExistsAtPath:destinationPath]) // .osirixplugin extension
 					pathToDelete = destinationPath;
