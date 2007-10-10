@@ -2070,9 +2070,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	
 	if( fileList[ curMovieIndex] && [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
-	{
 		[[BrowserController currentBrowser] findAndSelectFile: 0L image:[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] shouldExpand:NO];
-	}
 	
 	[self SetSyncButtonBehavior: self];
 }
@@ -16033,6 +16031,8 @@ long i;
 	[self startLoadImageThread];
 	
 	ThreadLoadImage = YES;
+	[imageView updatePresentationStateFromSeries];
+	
 	[self checkEverythingLoaded];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: 0L];
