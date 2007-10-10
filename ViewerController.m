@@ -2210,6 +2210,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 					[theWindow setFrame: frame display: YES animate:YES];
 					dontEnterMagneticFunctions = NO;
 					
+					[theWindow makeKeyAndOrderFront: self];
+					[self refreshToolbar];
+					
 					return;
 				}
 			}

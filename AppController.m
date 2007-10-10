@@ -2390,6 +2390,14 @@ static BOOL initialized = NO;
 	}
 }
 
+- (int) currentRowForViewer: (ViewerController*) v
+{
+	int rows = ([[[v window] screen] visibleFrame].size.height / [[v window] frame].size.height);
+	int currentrow = rows * ([[v window] frame].origin.y + [[v window] frame].size.height/2 - [[[v window] screen] visibleFrame].origin.y) / [[[v window] screen] visibleFrame].size.height;
+
+	return rows - currentrow;
+}
+
 - (void) tileWindows:(id)sender
 {
 	long				i, j, k, x;
@@ -2436,16 +2444,13 @@ static BOOL initialized = NO;
 	while( count > 0)
 	{
 		int index = 0;
-		
-		float minY = [[[cWindows objectAtIndex: index] window] frame].origin.y;
-		float maxY = [[[cWindows objectAtIndex: index] window] frame].origin.y + [[[cWindows objectAtIndex: index] window] frame].size.height;
+		int row = [self currentRowForViewer: [cWindows objectAtIndex: index]];
 		
 		for( x = 0; x < [cWindows count]; x++)
 		{
-			if( [[[cWindows objectAtIndex: x] window] frame].origin.y > minY && [[[cWindows objectAtIndex: x] window] frame].origin.y + [[[cWindows objectAtIndex: x] window] frame].size.height < maxY)
+			if( [self currentRowForViewer: [cWindows objectAtIndex: x]] < row)
 			{
-				minY = [[[cWindows objectAtIndex: x] window] frame].origin.y;
-				maxY = [[[cWindows objectAtIndex: x] window] frame].origin.y + [[[cWindows objectAtIndex: x] window] frame].size.height;
+				row = [self currentRowForViewer: [cWindows objectAtIndex: x]];
 				index = x;
 			}
 		}
@@ -2454,7 +2459,7 @@ static BOOL initialized = NO;
 		
 		for( x = 0; x < [cWindows count]; x++)
 		{
-			if( [[[cWindows objectAtIndex: x] window] frame].origin.x < minX && [[[cWindows objectAtIndex: x] window] frame].origin.y + [[[cWindows objectAtIndex: x] window] frame].size.height <= maxY && [[[cWindows objectAtIndex: x] window] frame].origin.y > minY)
+			if( [[[cWindows objectAtIndex: x] window] frame].origin.x < minX && [self currentRowForViewer: [cWindows objectAtIndex: x]] <= row)
 			{
 				minX = [[[cWindows objectAtIndex: x] window] frame].origin.x;
 				index = x;
@@ -2465,6 +2470,8 @@ static BOOL initialized = NO;
 		[cWindows removeObjectAtIndex: index];
 		count--;
 	}
+	
+	NSLog( [cResult description]);
 	
 	// Add the hidden windows
 	for( i = 0; i < [viewersList count]; i++)
@@ -2504,8 +2511,8 @@ static BOOL initialized = NO;
 		}
 	}
 	
-	if( [studyList count])
-		NSLog( [studyList description]);
+//	if( [studyList count])
+//		NSLog( [studyList description]);
 	
 	int viewerCount = [viewersList count];
 	
@@ -2684,6 +2691,7 @@ static BOOL initialized = NO;
 		}
 		
 		[[[viewersList objectAtIndex: keyWindow] imageView] becomeMainWindow];
+		[[viewersList objectAtIndex: keyWindow] refreshToolbar];
 	}
 }
 
