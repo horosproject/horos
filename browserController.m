@@ -7857,7 +7857,9 @@ static BOOL needToRezoom;
 		
 		selectedFilesList = [[NSMutableArray alloc] initWithCapacity:0];
 		
-		for( NSManagedObject* curImage in cells ) {			
+		for( NSCell* c in cells )
+		{
+			NSManagedObject*  curImage = [curList objectAtIndex: [c tag]];
 			[selectedFilesList addObject: curImage];
 		}
 		
