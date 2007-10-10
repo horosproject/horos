@@ -472,7 +472,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	pFile = fopen (dir,"w+");
 	if( pFile)
 	{
-		fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime);
+		fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive");
 		fclose (pFile);
 		strcpy( newdir, dir);
 		strcat( newdir, ".log");
@@ -1150,7 +1150,9 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
 	//NSLog(@"search core data for move");
 	if( handle -> dataHandler == 0L)
 		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
-		
+	
+	[handle -> dataHandler setValue: [NSString stringWithUTF8String: handle -> callingAET] forKey: @"callingAET"];
+	
 	cond = [handle->dataHandler prepareMoveForDataSet:moveRequestIdentifiers];
 	handle->NumberRemainOperations = [handle->dataHandler moveMatchFound];
 	//NSLog(@"NumberRemainOperations: %d", [handle->dataHandler moveMatchFound]);
@@ -1254,7 +1256,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
-				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime);
+				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive");
 				fclose (pFile);
 				strcpy( newdir, dir);
 				strcat( newdir, ".log");

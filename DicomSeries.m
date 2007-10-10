@@ -12,23 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-/***************************************** Modifications *********************************************
-* Version 2.3
-*	20051215 LP Added sortedImages method to export the images sorted by Instance Number
-*	20051229	LP	Fixed bug in paths method. Now Accesses completePath
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*****************************************************************************************************/
-
-
 #import "DicomSeries.h"
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import <OsiriX/DCM.h>

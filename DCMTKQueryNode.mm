@@ -136,68 +136,70 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
     int responseCount, T_DIMSE_C_MoveRSP *response)
 
 {
-	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
+	return;
 	
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
-	if( context == 0L) return;
-	
-    OFCondition cond = EC_Normal;
-    MyCallbackInfo *myCallbackData;
-
-    myCallbackData = (MyCallbackInfo*)callbackData;
-	DCMTKQueryNode *node = myCallbackData -> node;
-
-	NSManagedObject *logEntry = [node logEntry];
-	if (!logEntry)
-	{
-		[context retain];
-		[context lock];
-		
-		@try {
-		logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
-		[logEntry setValue:[NSDate date] forKey:@"startTime"];
-		[logEntry setValue:@"Move" forKey:@"type"];
-		[logEntry setValue:[node calledAET] forKey:@"destinationName"];
-		[logEntry setValue:[node callingAET] forKey:@"originName"];
-		//if (_patientName)
-		//	[logEntry setValue:_patientName forKey:@"patientName"];
-		//if (_studyDescription)
-		//	[logEntry setValue:_studyDescription forKey:@"studyName"];
-		[node setLogEntry:logEntry];
-		
-		}
-		@catch (NSException * e) {
-			NSLog( @"moveCallback exception");
-			NSLog( [e description]);
-		}
-
-		[context unlock];
-		[context release];
-	
-	}	
-	int numberPending = response -> NumberOfRemainingSubOperations;
-	int numberSent = response -> NumberOfCompletedSubOperations;
-	int numberErrors = response -> NumberOfFailedSubOperations + response -> NumberOfWarningSubOperations;
-	int numberImages = numberPending + numberSent + numberErrors ;
-	[logEntry setValue:[NSNumber numberWithInt:numberImages] forKey:@"numberImages"];
-	[logEntry setValue:[NSNumber numberWithInt:numberPending] forKey:@"numberPending"];
-	[logEntry setValue:[NSNumber numberWithInt:numberSent] forKey:@"numberSent"];
-	[logEntry setValue:[NSNumber numberWithInt:numberErrors] forKey:@"numberError"];
-	if (numberPending > 0) {
-		[logEntry setValue:@"In Progress" forKey:@"message"];
-	}
-	else{
-		[logEntry setValue:@"Complete" forKey:@"message"];
-	
-	}
-	[logEntry setValue:[NSDate date] forKey:@"endTime"];
-
-	if (debugLevel > 0) {
-        printf("Move Response %d: \n", responseCount);
-        DIMSE_printCMoveRSP(stdout, response);
-    }
-
-   
+//	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
+//	
+//	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
+//	if( context == 0L) return;
+//	
+//    OFCondition cond = EC_Normal;
+//    MyCallbackInfo *myCallbackData;
+//
+//    myCallbackData = (MyCallbackInfo*)callbackData;
+//	DCMTKQueryNode *node = myCallbackData -> node;
+//
+//	NSManagedObject *logEntry = [node logEntry];
+//	if (!logEntry)
+//	{
+//		[context retain];
+//		[context lock];
+//		
+//		@try {
+//		logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
+//		[logEntry setValue:[NSDate date] forKey:@"startTime"];
+//		[logEntry setValue:@"Move" forKey:@"type"];
+//		[logEntry setValue:[node calledAET] forKey:@"destinationName"];
+//		[logEntry setValue:[node callingAET] forKey:@"originName"];
+//		//if (_patientName)
+//		//	[logEntry setValue:_patientName forKey:@"patientName"];
+//		//if (_studyDescription)
+//		//	[logEntry setValue:_studyDescription forKey:@"studyName"];
+//		[node setLogEntry:logEntry];
+//		
+//		}
+//		@catch (NSException * e) {
+//			NSLog( @"moveCallback exception");
+//			NSLog( [e description]);
+//		}
+//
+//		[context unlock];
+//		[context release];
+//	
+//	}	
+//	int numberPending = response -> NumberOfRemainingSubOperations;
+//	int numberSent = response -> NumberOfCompletedSubOperations;
+//	int numberErrors = response -> NumberOfFailedSubOperations + response -> NumberOfWarningSubOperations;
+//	int numberImages = numberPending + numberSent + numberErrors ;
+//	[logEntry setValue:[NSNumber numberWithInt:numberImages] forKey:@"numberImages"];
+//	[logEntry setValue:[NSNumber numberWithInt:numberPending] forKey:@"numberPending"];
+//	[logEntry setValue:[NSNumber numberWithInt:numberSent] forKey:@"numberSent"];
+//	[logEntry setValue:[NSNumber numberWithInt:numberErrors] forKey:@"numberError"];
+//	if (numberPending > 0) {
+//		[logEntry setValue:@"In Progress" forKey:@"message"];
+//	}
+//	else{
+//		[logEntry setValue:@"Complete" forKey:@"message"];
+//	
+//	}
+//	[logEntry setValue:[NSDate date] forKey:@"endTime"];
+//
+//	if (debugLevel > 0) {
+//        printf("Move Response %d: \n", responseCount);
+//        DIMSE_printCMoveRSP(stdout, response);
+//    }
+//
+//   
 }
 
 static void

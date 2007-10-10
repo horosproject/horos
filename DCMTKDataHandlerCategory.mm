@@ -699,51 +699,45 @@
 	 
 }
 
-//- (void) updateLog:(NSArray*) moveArray
-//{
-//	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
-//	
-//	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
-//	if( context == 0L) return;
-//	
-//	[context retain];
-//	[context lock];
-//	
-//	@try {
-//
-//	id _logEntry = 0L;
-//
-//	_logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
-//	[_logEntry setValue:[NSDate date] forKey:@"startTime"];
-//	[_logEntry setValue:@"Move" forKey:@"type"];
-//	[_logEntry setValue:calledAET forKey:@"destinationName"];
-//	[_logEntry setValue:callingAET forKey:@"originName"];
-//	if (patientName)
-//		[_logEntry setValue:patientName forKey:@"patientName"];
-//	if (studyDescription)
-//		[_logEntry setValue:studyDescription forKey:@"studyName"];
-//	
-////	[_logEntry setValue:[NSNumber numberWithInt:_numberOfFiles] forKey:@"numberImages"];
-////	[_logEntry setValue:[NSNumber numberWithInt:_numberSent] forKey:@"numberSent"];
-////	[_logEntry setValue:[NSNumber numberWithInt:_numberErrors] forKey:@"numberError"];
-////	[_logEntry setValue:[NSDate date] forKey:@"endTime"];
-////	[_logEntry setValue:[userInfo valueForKey:@"Message"] forKey:@"message"];
-//
-//	[_logEntry setValue:[NSNumber numberWithInt:3] forKey:@"numberImages"];
-//	[_logEntry setValue:[NSNumber numberWithInt:3] forKey:@"numberSent"];
-//	[_logEntry setValue:[NSNumber numberWithInt:0] forKey:@"numberError"];
-//	[_logEntry setValue:[NSDate date] forKey:@"endTime"];
-////	[_logEntry setValue:[userInfo valueForKey:@"Message"] forKey:@"message"];
-//		
-//	}
-//	@catch (NSException * e) {
-//		NSLog( @"updateLogEntry exception");
-//		NSLog( [e description]);
-//	}
-//
-//	[context unlock];
-//	[context release];
-//}
+- (void) updateLog:(NSArray*) mArray
+{
+	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
+	
+	for( NSManagedObject *object in mArray)
+	{
+		if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
+		{
+			FILE * pFile;
+			char dir[ 1024], newdir[1024];
+			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/move_log_", random());
+			pFile = fopen (dir,"w+");
+			if( pFile)
+			{
+				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r", [[object valueForKeyPath:@"study.name"] UTF8String], [[object valueForKeyPath:@"study.studyName"] UTF8String], [[self callingAET] UTF8String], time (NULL), "Complete", "unused", [[object valueForKey:@"noFiles"] intValue], time (NULL), "Move");
+				fclose (pFile);
+				strcpy( newdir, dir);
+				strcat( newdir, ".log");
+				rename( dir, newdir);
+			}
+		}
+		
+		if( [[object valueForKey:@"type"] isEqualToString: @"Study"])
+		{
+			FILE * pFile;
+			char dir[ 1024], newdir[1024];
+			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/move_log_", random());
+			pFile = fopen (dir,"w+");
+			if( pFile)
+			{
+				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r", [[object valueForKey:@"name"] UTF8String], [[object valueForKey:@"studyName"] UTF8String], [[self callingAET] UTF8String], time (NULL), "Complete", "unused", [[object valueForKey:@"noFiles"] intValue], time (NULL), "Move");
+				fclose (pFile);
+				strcpy( newdir, dir);
+				strcat( newdir, ".log");
+				rename( dir, newdir);
+			}
+		}
+	}
+}
 
 - (OFCondition)prepareMoveForDataSet:( DcmDataset *)dataset
 {
@@ -829,10 +823,9 @@
 			
 			[moveArray release];
 			moveArray = [tempMoveArray retain];
-			NSLog( @"will move: %d", [moveArray count]);
-			NSLog( @"will move: %@", [moveArray description]);
+			NSLog( @"will move: %d dicom files", [moveArray count]);
 			
-//			[self updateLog: moveArray];	<- This is untested and has never worked....
+			[self updateLog: array];
 			
 			cond = EC_Normal;
 		}
