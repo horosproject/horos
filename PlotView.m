@@ -103,7 +103,7 @@
 	if( dataArray == 0L) return;
 	if( dataSize < 2) return;
 	
-	[[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.2 alpha:1.0] set];
+	[[NSColor whiteColor] set];
 	NSRectFill(aRect);
 	
 	minValue = maxValue = dataArray[ 0];
@@ -176,23 +176,44 @@
 		
 		
 
-		[[NSColor redColor] set];
+		[[NSColor selectedMenuItemColor] set];
 		NSRect lineRect = NSMakeRect( (curMousePosition * boundsRect.size.width)/(dataSize-1), 0, 2, boundsRect.size.height);
 		NSRectFill( lineRect);
 		
 		[paragraphStyle setAlignment:NSCenterTextAlignment];
+		
 		trace = [NSString stringWithFormat:@"X: %d", curMousePosition+1];
-		[trace drawAtPoint: NSMakePoint( 0, lineRect.origin.y)  withAttributes: boldFont];
+		
+		NSSize traceSize = [trace sizeWithAttributes:boldFont];
+		NSPoint xLabelPosition;
+		xLabelPosition = lineRect.origin;
+		xLabelPosition.x += 4;
+		if(lineRect.origin.x + traceSize.width + 2 > boundsRect.size.width)
+			xLabelPosition.x = boundsRect.size.width - traceSize.width - 2;
+		
+		[[NSColor whiteColor] set];	
+		NSRectFill(NSMakeRect(xLabelPosition.x, xLabelPosition.y, traceSize.width, traceSize.height));
+		[[NSColor blackColor] set];
+		[trace drawAtPoint:xLabelPosition withAttributes:boldFont];
 		
 		if( lineRect.origin.x - boundsRect.size.width/2 > 0) [paragraphStyle setAlignment:NSLeftTextAlignment];
 		else [paragraphStyle setAlignment:NSRightTextAlignment];
-		
-		[[NSColor redColor] set];
+				
+		[[NSColor selectedMenuItemColor] set];
 		lineRect = NSMakeRect( 0, ((dataArray[ curMousePosition] - minValue) * boundsRect.size.height)/(maxValue- minValue), boundsRect.size.width, 2);
 		NSRectFill( lineRect);
 		
 		trace = [NSString stringWithFormat:@"Y: %2.2f", dataArray[ curMousePosition]];
-		[trace drawAtPoint: lineRect.origin withAttributes: boldFont];
+		
+		NSPoint yLabelPosition;
+		yLabelPosition = lineRect.origin;
+		yLabelPosition.x += 2;
+		yLabelPosition.y += 2;
+
+		traceSize = [trace sizeWithAttributes:boldFont];
+		[[NSColor whiteColor] set];	
+		NSRectFill(NSMakeRect(yLabelPosition.x, yLabelPosition.y, traceSize.width, traceSize.height));
+		[trace drawAtPoint:yLabelPosition withAttributes:boldFont];
 	}
 	
 	[[NSColor blackColor] set];
