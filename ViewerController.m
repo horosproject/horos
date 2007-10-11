@@ -15052,7 +15052,7 @@ int i,j,l;
 		
 	if( volumicData == NO)
 	{
-		NSRunAlertPanel(NSLocalizedString(@"Growing Region", nil), NSLocalizedString(@"Growing Region algorithms are currently supported only for B/W images.", nil), nil, nil, nil);
+		NSRunAlertPanel(NSLocalizedString(@"Growing Region", nil), NSLocalizedString(@"Growing Region algorithms are currently supported only for volumic data and BW images.", nil), nil, nil, nil);
 		return;
 	}
 

@@ -1592,7 +1592,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) dealloc {	
 	NSLog(@"DCMView released");
-		
+	[curRoiList release];
+	curRoiList = 0L;
+	
+	[dcmRoiList release];
+	dcmRoiList = 0L;
+	
 	[mouseModifiers release]; 
 	
 	[dcmFilesList release];
@@ -1633,11 +1638,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( colorBuf) free( colorBuf);
 	if( blendingColorBuf) free( blendingColorBuf);
 	
-	[curRoiList release];
-	curRoiList = 0L;
-	
-	[dcmRoiList release];
-	dcmRoiList = 0L;
 	
 	[fontColor release];
 	[fontGL release];

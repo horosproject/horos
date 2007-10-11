@@ -10002,7 +10002,6 @@ END_CREATE_ROIS:
 			NSMutableArray *annotationsOUT = [NSMutableArray array];
 			
 			for ( NSDictionary *annot in annotations ) {
-				
 				NSArray *content = [annot objectForKey:@"fullContent"];
 				NSMutableArray *contentOUT = [NSMutableArray array];
 				

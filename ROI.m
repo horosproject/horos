@@ -574,7 +574,7 @@ static BOOL ROIDefaultsLoaded = NO;
 }
 
 - (void) dealloc
-{
+{	
 	[[curView openGLContext] makeCurrentContext];
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -607,8 +607,6 @@ static BOOL ROIDefaultsLoaded = NO;
 	if(textualBoxLine3) [textualBoxLine3 release];
 	if(textualBoxLine4) [textualBoxLine4 release];
 	if(textualBoxLine5) [textualBoxLine5 release];
-	
-	[curView release];
 	
 	[super dealloc];
 }
@@ -4063,11 +4061,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 - (void) setRoiFont: (long) f :(long*) s :(DCMView*) v
 {
 	fontListGL = f;
-	if( curView != v)
-	{
-		[curView release];
-		curView = [v retain];
-	}
+	curView = v;
 	fontSize = s;
 }
 

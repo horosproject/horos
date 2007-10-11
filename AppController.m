@@ -1146,7 +1146,7 @@ NSRect screenFrame()
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames
 {
 	long				i;
-	NSMutableArray		*filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+	NSMutableArray		*filesArray = [NSMutableArray array];
 	NSMutableArray		*pluginsArray = [NSMutableArray array];
 	NSFileManager       *defaultManager = [NSFileManager defaultManager];
 	BOOL                isDirectory;
@@ -2408,13 +2408,13 @@ static BOOL initialized = NO;
 	// Array of open Windows
 	NSArray				*winList = [NSApp windows];
 	// array of viewers
-	NSMutableArray		*viewersList = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+	NSMutableArray		*viewersList = [NSMutableArray array];
 	BOOL				origCopySettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
 	NSRect				screenRect =  screenFrame();
 	// User default to keep studies segregated to separate screens
 	BOOL				keepSameStudyOnSameScreen = [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesTogetherOnSameScreen"];
 	// Array of arrays of viewers with same StudyUID
-	NSMutableArray		*studyList = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+	NSMutableArray		*studyList = [NSMutableArray array];
 	int					keyWindow = 0, numberOfMonitors;	
 	NSArray				*screens = [self viewerScreens];
 	

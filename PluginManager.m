@@ -700,7 +700,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 	
     NSString *path;
 	
-    NSMutableArray *plugins = [[NSMutableArray alloc] init];
+    NSMutableArray *plugins = [NSMutableArray array];
 	Class filterClass;
     for(path in paths)
 	{
@@ -752,7 +752,6 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 						
 					[pluginDescription setObject:pluginVersion forKey:@"version"];
 					
-//					if( versionString) CFRelease(versionString);	// Joris, pourquoi un release???
 					if( bundleInfoDict) CFRelease( bundleInfoDict);
 					
 					// plugin description dictionary
