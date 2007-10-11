@@ -1335,7 +1335,7 @@ static BOOL ROIDefaultsLoaded = NO;
 				{
 					if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 					{
-						imode = ROI_selectedModify;
+						if([curView currentTool]==tPlain) imode = ROI_selectedModify; // tPlain ROIs can only be modified by the tPlain tool
 					}
 					else
 					{
