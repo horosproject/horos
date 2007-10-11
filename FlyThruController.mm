@@ -189,10 +189,15 @@
 	
 	if(userChoice == 1)
 	{
+		flyThru.numberOfFrames = [numberOfFramesTextField intValue];
+	
 		int v = flyThru.numberOfFrames;
 	
 		if( v < 2) v = 2;
 		if( v > 2000) v = 2000;
+	
+		[numberOfFramesTextField setIntValue: v];
+		NSLog( @"numberOfFrames setIntValue: %d", v);
 	
 		flyThru.numberOfFrames = v;
 		[flyThru computePath];

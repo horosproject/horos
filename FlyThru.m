@@ -88,7 +88,7 @@
 		[tempStepCameras addObject:[stepCameras objectAtIndex:0]];
 		self.numberOfFrames += 1;
 	}
-	NSLog(@"numberOfFrames: %d", numberOfFrames);
+	NSLog(@"numberOfFrames: %d", self.numberOfFrames);
 	long nbStep = [tempStepCameras count];
 
 	// instantiation
@@ -249,7 +249,7 @@
 	deltaT = 1.0/(float)(nbStep-1);
 	
 	long i = 0;
-	float timeStep[nbStep];
+	float timeStep[ nbStep];
 	
 	for (stepPoint in pts)
 	{

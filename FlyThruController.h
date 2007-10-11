@@ -42,6 +42,7 @@
 
 	
 	IBOutlet NSTextField	*MatrixSize;
+	IBOutlet NSTextField	*numberOfFramesTextField;
 	IBOutlet NSPopUpButton	*MatrixSizePopup;
 	
 			 NSPoint		boxPlayOrigin;
