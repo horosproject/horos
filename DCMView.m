@@ -6000,7 +6000,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							 }	 
 						}
 					}
-					else {
+					else if(fullText) {
 						[tempString appendFormat:@" %@", [annot objectAtIndex:j]];
 						useStringTexture = YES;
 					}					
