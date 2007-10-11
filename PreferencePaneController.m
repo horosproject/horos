@@ -146,12 +146,12 @@ extern OSStatus SetupAuthorization(void)
 {
 	//need to load panes
 	//inDirectory: @"PreferencePanes"
-	NSString *pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIGeneralPreferencePane" ofType: @"prefPane"];
-	NSBundle *prefBundle = [NSBundle bundleWithPath: pathToPrefPaneBundle];
-	Class prefPaneClass = [prefBundle principalClass];
-	NSPreferencePane *aPane = [[prefPaneClass alloc] initWithBundle:prefBundle];
-	//[self setPane:aPane];
-	[aPane release];
+//	NSString *pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIGeneralPreferencePane" ofType: @"prefPane"];
+//	NSBundle *prefBundle = [NSBundle bundleWithPath: pathToPrefPaneBundle];
+//	Class prefPaneClass = [prefBundle principalClass];
+//	NSPreferencePane *aPane = [[prefPaneClass alloc] initWithBundle:prefBundle];
+//	//[self setPane:aPane];
+//	[aPane release];
 	
 	[[self window] setDelegate:self];
 	[self showAll:nil];
@@ -258,9 +258,8 @@ extern OSStatus SetupAuthorization(void)
 	
 	prefBundle = [NSBundle bundleWithPath: pathToPrefPaneBundle];
 	prefPaneClass = [prefBundle principalClass];
-	NSPreferencePane *aPane = [[prefPaneClass alloc] initWithBundle:prefBundle];	
+	NSPreferencePane *aPane = [[[prefPaneClass alloc] initWithBundle:prefBundle] autorelease];	
 	[self setPane:aPane];
-	[pane release];
 	
 	curPaneIndex = 0;
 }
@@ -356,9 +355,8 @@ extern OSStatus SetupAuthorization(void)
 	
 	prefBundle = [NSBundle bundleWithPath: pathToPrefPaneBundle];
 	prefPaneClass = [prefBundle principalClass];
-	NSPreferencePane *aPane = [[prefPaneClass alloc] initWithBundle:prefBundle];	
+	NSPreferencePane *aPane = [[[prefPaneClass alloc] initWithBundle:prefBundle] autorelease];
 	[self setPane:aPane];
-	[pane release];
 }
 
 - (IBAction)selectPane:(id)sender

@@ -86,6 +86,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (void) mainViewDidLoad
 {
+	NSLog(@"mainViewDidLoad");
 	[_authView setDelegate:self];
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
@@ -185,7 +186,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (void) willUnselect
 {
-	
+
 }
 
 - (void)willSelect
@@ -238,14 +239,15 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (void)didUnselect
 {
-	NSLog(@"OSICustomImageAnnotations didUnselect");
-	
 	if(layoutController)
 	{
 		[layoutController saveAnnotationLayout];
 		[layoutController release];
 	}
 	layoutController = nil;
+
+	[DICOMFieldsPopUpButton removeAllItems];
+
 }
 
 - (IBAction)addAnnotation:(id)sender;

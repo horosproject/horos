@@ -185,12 +185,8 @@
 
 - (void)recomputeMouseDownLocation;
 {
-//	NSLog(@"recomputeMouseDownLocation>>>>");
-//	NSLog(@"mouseDownLocation : %f, %f", mouseDownLocation.x, mouseDownLocation.y);
 	NSPoint eventLocation = [[[NSApplication sharedApplication] currentEvent] locationInWindow];
 	mouseDownLocation = [self convertPoint:eventLocation fromView:nil];
-//	NSLog(@"mouseDownLocation : %f, %f", mouseDownLocation.x, mouseDownLocation.y);
-//	NSLog(@"<<<<<<");
 }
 
 - (void)mouseUp:(NSEvent *)theEvent

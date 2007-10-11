@@ -64,7 +64,7 @@
 		[currentModality retain];
 		
 		skipTextViewDidChangeSelectionNotification = NO;
-		
+
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(annotationMouseDragged:) name:@"CIAAnnotationMouseDraggedNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(annotationMouseDown:) name:@"CIAAnnotationMouseDownNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(annotationMouseUp:) name:@"CIAAnnotationMouseUpNotification" object:nil];
@@ -91,13 +91,15 @@
 	[[prefPane contentTokenField] setDelegate:self];
 
 	// DICOM popup button
+	if(DICOMFieldsArray) [DICOMFieldsArray release];
 	DICOMFieldsArray = [[prefPane prepareDICOMFieldsArrays] retain];
 
 	NSMenu *DICOMFieldsMenu = [[prefPane DICOMFieldsPopUpButton] menu];
 	[DICOMFieldsMenu setAutoenablesItems:NO];
 	
-	for (i=0; i<[[DICOMFieldsMenu itemArray] count]; i++)
-		[DICOMFieldsMenu removeItemAtIndex:i];
+//	for (i=0; i<[[DICOMFieldsMenu itemArray] count]; i++)
+//		[DICOMFieldsMenu removeItemAtIndex:i];
+	[[prefPane DICOMFieldsPopUpButton] removeAllItems];
 	
 	NSMenuItem *item;
 	item = [[NSMenuItem alloc] init];
@@ -205,11 +207,13 @@
 	[currentModality release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[annotationsArray release];
-	[DICOMFieldsArray release];
 	[databaseStudyFieldsArray release];
 	[databaseSeriesFieldsArray release];
 	[databaseImageFieldsArray release];
 	[annotationsLayoutDictionary release];
+	
+	[DICOMFieldsArray release];
+	
 	[super dealloc];
 }
 
