@@ -654,6 +654,8 @@ static char *GetPrivateIP()
 			}
 			else
 			{
+				NSLog( @"Failed to connect to the distant computer: is there a firewall on port 8780?? is OsiriX running on this distant computer??");
+				
 				[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: sendConnection];
 				[sendConnection release];
 			}
