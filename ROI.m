@@ -895,8 +895,9 @@ static BOOL ROIDefaultsLoaded = NO;
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     glColor3f (0.0, 0.0, 0.0);
-
-    glRasterPos3d (xx, yy, 0);
+	
+    glRasterPos3d( 0, 0, 0);
+	glBitmap (0, 0, 0, 0, xx, -yy, NULL);
 	
     GLint i = 0;
     while (cstrOut [i]) glCallList (fontListGL + cstrOut[i++] - ' ');
@@ -905,7 +906,8 @@ static BOOL ROIDefaultsLoaded = NO;
 	yy = y + line;
 	
     glColor3f (1.0f, 1.0f, 1.0f);
-    glRasterPos3d (xx, yy, 0);
+    glRasterPos3d( 0, 0, 0);
+	glBitmap (0, 0, 0, 0, xx, -yy, NULL);
     i = 0;
     while (cstrOut [i]) glCallList (fontListGL + cstrOut[i++] - ' ');
 }

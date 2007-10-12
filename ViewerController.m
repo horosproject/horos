@@ -377,32 +377,35 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 		
 		ViewerController	*win = [displayedViewers objectAtIndex: i];
 		
-		NSRect	r = [[win window] frame];
-		[dict setObject: [NSString stringWithFormat: @"%f %f %f %f", r.origin.x, r.origin.y, r.size.width, r.size.height]  forKey:@"window position"];
-		[dict setObject: [NSNumber numberWithInt: [[win imageView] rows]] forKey:@"rows"];
-		[dict setObject: [NSNumber numberWithInt: [[win imageView] columns]] forKey:@"columns"];
-		[dict setObject: [NSNumber numberWithInt: [[[win seriesView] firstView] curImage]] forKey:@"index"];
-		
-		if( [[[win imageView] curDCM] SUVConverted] == NO)
-		{
-			[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWL]] forKey:@"wl"];
-			[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWW]] forKey:@"ww"];
+		if( [win studyInstanceUID] && [[[win imageView] seriesObj] valueForKey:@"seriesInstanceUID"])
+		{		
+			NSRect	r = [[win window] frame];
+			[dict setObject: [NSString stringWithFormat: @"%f %f %f %f", r.origin.x, r.origin.y, r.size.width, r.size.height]  forKey:@"window position"];
+			[dict setObject: [NSNumber numberWithInt: [[win imageView] rows]] forKey:@"rows"];
+			[dict setObject: [NSNumber numberWithInt: [[win imageView] columns]] forKey:@"columns"];
+			[dict setObject: [NSNumber numberWithInt: [[[win seriesView] firstView] curImage]] forKey:@"index"];
+			
+			if( [[[win imageView] curDCM] SUVConverted] == NO)
+			{
+				[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWL]] forKey:@"wl"];
+				[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWW]] forKey:@"ww"];
+			}
+			else
+			{
+				[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWL] / [win factorPET2SUV]] forKey:@"wl"];
+				[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWW] / [win factorPET2SUV]] forKey:@"ww"];
+			}
+			[dict setObject: [NSNumber numberWithFloat: [[win imageView] scaleValue]] forKey:@"scale"];
+			[dict setObject: [NSNumber numberWithFloat: [[win imageView] origin].x] forKey:@"x"];
+			[dict setObject: [NSNumber numberWithFloat: [[win imageView] origin].y] forKey:@"y"];
+			[dict setObject: [NSNumber numberWithFloat: [[win imageView] rotation]] forKey:@"rotation"];
+			[dict setObject: [NSNumber numberWithBool: [[win imageView] xFlipped]] forKey:@"xFlipped"];
+			[dict setObject: [NSNumber numberWithBool: [[win imageView] xFlipped]] forKey:@"yFlipped"];
+			[dict setObject: [win studyInstanceUID] forKey:@"studyInstanceUID"];
+			[dict setObject: [[[win imageView] seriesObj] valueForKey:@"seriesInstanceUID"] forKey:@"seriesInstanceUID"];
+			
+			[state addObject: dict];
 		}
-		else
-		{
-			[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWL] / [win factorPET2SUV]] forKey:@"wl"];
-			[dict setObject: [NSNumber numberWithFloat: [[win imageView] curWW] / [win factorPET2SUV]] forKey:@"ww"];
-		}
-		[dict setObject: [NSNumber numberWithFloat: [[win imageView] scaleValue]] forKey:@"scale"];
-		[dict setObject: [NSNumber numberWithFloat: [[win imageView] origin].x] forKey:@"x"];
-		[dict setObject: [NSNumber numberWithFloat: [[win imageView] origin].y] forKey:@"y"];
-		[dict setObject: [NSNumber numberWithFloat: [[win imageView] rotation]] forKey:@"rotation"];
-		[dict setObject: [NSNumber numberWithBool: [[win imageView] xFlipped]] forKey:@"xFlipped"];
-		[dict setObject: [NSNumber numberWithBool: [[win imageView] xFlipped]] forKey:@"yFlipped"];
-		[dict setObject: [win studyInstanceUID] forKey:@"studyInstanceUID"];
-		[dict setObject: [[[win imageView] seriesObj] valueForKey:@"seriesInstanceUID"] forKey:@"seriesInstanceUID"];
-		
-		[state addObject: dict];
 	}
 	
 	NSString	*tmp = [NSString stringWithFormat:@"/tmp/windowsState"];
