@@ -189,15 +189,12 @@
 	
 	if(userChoice == 1)
 	{
-		flyThru.numberOfFrames = [numberOfFramesTextField intValue];
-	
+		
+		[numberOfFramesTextField selectText: self];
 		int v = flyThru.numberOfFrames;
 	
 		if( v < 2) v = 2;
 		if( v > 2000) v = 2000;
-	
-		[numberOfFramesTextField setIntValue: v];
-		[numberOfFramesTextField selectText: self];
 	
 		flyThru.numberOfFrames = v;
 		[flyThru computePath];
@@ -234,7 +231,7 @@
 		
 	//	[nbFramesTextField setStringValue: [NSString stringWithFormat:@"%d",[flyThru numberOfFrames]]];
 		
-		[framesSlider setMaxValue: [flyThru numberOfFrames]-1];
+		[framesSlider setMaxValue: flyThru.numberOfFrames - 1];
 		
 		if( [controller3D isKindOfClass: [VRController class]] == NO || [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1)	// Only the VR supports LOD versus Best rendering mode if ray casting is used
 		{
