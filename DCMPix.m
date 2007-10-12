@@ -9992,7 +9992,8 @@ END_CREATE_ROIS:
 	return nil;
 }
 
-- (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject {
+- (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject
+{
 	NSDictionary *annotationsDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"];
 	
 	NSString *modality = [imageObj valueForKeyPath:@"series.modality"]; // imageObj = link to database
@@ -10004,23 +10005,27 @@ END_CREATE_ROIS:
 	// image sides (LowerLeft, LowerMiddle, LowerRight, MiddleLeft, MiddleRight, TopLeft, TopMiddle, TopRight) & sameAsDefault
 	NSArray *keys = [annotationsForModality allKeys];
 	
-	for ( NSString *key in keys ) {
-		
-		if(![key isEqualToString:@"sameAsDefault"]) {
+	for ( NSString *key in keys )
+	{
+		if(![key isEqualToString:@"sameAsDefault"])
+		{
 			NSArray *annotations = [annotationsForModality objectForKey: key];
 			NSMutableArray *annotationsOUT = [NSMutableArray array];
 			
-			for ( NSDictionary *annot in annotations ) {
+			for ( NSDictionary *annot in annotations )
+			{
 				NSArray *content = [annot objectForKey:@"fullContent"];
 				NSMutableArray *contentOUT = [NSMutableArray array];
 				
 				BOOL contentForLine = NO;
-				for ( int f=0; f<[content count]; f++ ) {
+				for ( int f=0; f<[content count]; f++ )
+				{
 					
 					NSDictionary *field = [content objectAtIndex:f];
 					NSString *type = [field objectForKey:@"type"];
 					NSString *value;
-					if( [type isEqualToString:@"DICOM"] ) {
+					if( [type isEqualToString:@"DICOM"] )
+					{
 						if(fileNb>=0)
 							value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] papyLink:fileNb];
 						else if(dcmObject)
@@ -10036,7 +10041,8 @@ END_CREATE_ROIS:
 						if(value==nil || [value length] == 0) value = @"-";
 						else contentForLine = YES;
 					}
-					else if([type isEqualToString:@"DB"]) {
+					else if([type isEqualToString:@"DB"])
+					{
 						NSString *fieldName = [field objectForKey:@"field"];
 						NSString *level = [field objectForKey:@"level"];
 						if([level isEqualToString:@"image"])

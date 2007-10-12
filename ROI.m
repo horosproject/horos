@@ -1989,8 +1989,8 @@ static BOOL ROIDefaultsLoaded = NO;
 			memcpy( textureBuffer + (y * textureWidth), textureBuffer + offsetTextureX+ (y+ offsetTextureY)*oldTextureWidth,  textureWidth);
 		}
 		
-		textureUpLeftCornerX += minX;
-		textureUpLeftCornerY += minY;
+		textureUpLeftCornerX += offsetTextureX;
+		textureUpLeftCornerY += offsetTextureY;
 		textureDownRightCornerX = textureUpLeftCornerX + textureWidth-1;
 		textureDownRightCornerY = textureUpLeftCornerY + textureHeight-1;
 	}
