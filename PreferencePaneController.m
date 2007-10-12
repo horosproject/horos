@@ -12,14 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-/***************************************** Modifications *********************************************
-
-Version 2.3
-	20060109	LP	Fixed Infinite Loop in preferencesUpdated:
-	20060110	DDP	Reducing the variable duplication of userDefault objects (work in progress).
-	
-*****************************************************************************************************/
-
 #import "QueryController.h"
 
 #include <Security/Security.h>
@@ -144,15 +136,6 @@ extern OSStatus SetupAuthorization(void)
 
 - (void) windowDidLoad
 {
-	//need to load panes
-	//inDirectory: @"PreferencePanes"
-//	NSString *pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIGeneralPreferencePane" ofType: @"prefPane"];
-//	NSBundle *prefBundle = [NSBundle bundleWithPath: pathToPrefPaneBundle];
-//	Class prefPaneClass = [prefBundle principalClass];
-//	NSPreferencePane *aPane = [[prefPaneClass alloc] initWithBundle:prefBundle];
-//	//[self setPane:aPane];
-//	[aPane release];
-	
 	[[self window] setDelegate:self];
 	[self showAll:nil];
 }
@@ -160,12 +143,12 @@ extern OSStatus SetupAuthorization(void)
 - (void) dealloc
 {
 	NSLog(@"PreferencePaneController released !");
-	// In+case Pne does anyting on closing
 	[pane shouldUnselect];
 	[pane willUnselect];
 	[[pane mainView] removeFromSuperview];
 	[pane didUnselect];
 	[pane release];
+	[bundles release];
 	[super dealloc];
 }
 
@@ -246,22 +229,6 @@ extern OSStatus SetupAuthorization(void)
 
 - (NSPreferencePane *)pane{
 	return pane;
-}
-
-- (void) selectFirstPane
-{
-	NSString *pathToPrefPaneBundle;
-	NSBundle *prefBundle;
-	Class prefPaneClass;
-	
-	pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIGeneralPreferencePane" ofType: @"prefPane"];
-	
-	prefBundle = [NSBundle bundleWithPath: pathToPrefPaneBundle];
-	prefPaneClass = [prefBundle principalClass];
-	NSPreferencePane *aPane = [[[prefPaneClass alloc] initWithBundle:prefBundle] autorelease];	
-	[self setPane:aPane];
-	
-	curPaneIndex = 0;
 }
 
 - (IBAction)nextAndPrevPane:(id)sender
@@ -353,7 +320,16 @@ extern OSStatus SetupAuthorization(void)
 	}
 	[[self window] setRepresentedFilename: pathToPrefPaneBundle];
 	
-	prefBundle = [NSBundle bundleWithPath: pathToPrefPaneBundle];
+	if( bundles == 0L) bundles = [[NSMutableDictionary dictionary] retain];
+	
+	if( [bundles objectForKey: pathToPrefPaneBundle] == 0L)
+	{
+		prefBundle = [NSBundle bundleWithPath: pathToPrefPaneBundle];
+		[bundles setObject: prefBundle forKey: pathToPrefPaneBundle];
+	}
+	
+	prefBundle = [bundles objectForKey: pathToPrefPaneBundle];
+	
 	prefPaneClass = [prefBundle principalClass];
 	NSPreferencePane *aPane = [[[prefPaneClass alloc] initWithBundle:prefBundle] autorelease];
 	[self setPane:aPane];

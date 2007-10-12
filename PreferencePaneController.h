@@ -27,6 +27,8 @@
 	NSPreferencePane			*pane;
 	IBOutlet	NSView			*destView;
 	IBOutlet	NSView			*allView;
+	
+	NSMutableDictionary			*bundles;
 }
 
 - (void)setPane:(NSPreferencePane *)aPane;
@@ -34,7 +36,6 @@
 - (IBAction)selectPane:(id)sender;
 - (IBAction)showAll:(id)sender;
 - (void) reopenDatabase;
-- (void) selectFirstPane;
 - (IBAction)nextAndPrevPane:(id)sender;
 - (void)selectPaneIndex:(int) index;
 @end
