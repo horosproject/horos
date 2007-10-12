@@ -136,7 +136,6 @@ static char *GetPrivateIP()
 		setValueKey = 0L;
 		modelVersion = 0L;
 		
-		serviceBeingResolvedIndex = -1;
 		[browser setDelegate:self];
 		
 		[browser searchForServicesOfType:@"_osirix._tcp." inDomain:@""];
@@ -780,11 +779,10 @@ static char *GetPrivateIP()
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-
-- (BOOL) fixedIP: (int) index
+- (BOOL) connectToAdress: (NSString*) address port: (int) port
 {
 	struct sockaddr_in service;
-	const char	*host_name = [[[services objectAtIndex: index] valueForKey:@"Address"] UTF8String];
+	const char	*host_name = [address UTF8String];
 	
 	bzero((char *) &service, sizeof(service));
 	service.sin_family = AF_INET;
@@ -801,7 +799,7 @@ static char *GetPrivateIP()
 	}
 	else service.sin_addr.s_addr = inet_addr( host_name);
 	
-	service.sin_port = htons(8780);
+	service.sin_port = htons( port);
 	
 	return [self connectToService: &service];
 }
@@ -837,8 +835,6 @@ static char *GetPrivateIP()
                     
                     // Cancel the resolve now that we have an IPv4 address.
                     [sender stop];
-                    [sender release];
-                    serviceBeingResolved = nil;
 
                     break;
                 case AF_INET6:
@@ -847,10 +843,15 @@ static char *GetPrivateIP()
             }
         }
 		
-//		int numberPacketsReceived = 0;
-//		if( SimplePing( [ipAddressString UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+		for( NSDictionary *serviceDict in services)
 		{
-			[self connectToService: (struct sockaddr_in *) socketAddress];
+			if( [serviceDict objectForKey:@"service"] == sender)
+			{
+				NSLog( @"netServiceDidResolveAddress: %@:%@", ipAddressString, portString);
+				
+				[serviceDict setValue: ipAddressString forKey:@"Address"];
+				[serviceDict setValue: portString forKey:@"Port"];
+			}
 		}
 	}
 }
@@ -865,10 +866,15 @@ static char *GetPrivateIP()
 	}
 	else
 	{
-		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: aNetService, @"service", @"bonjour", @"type", 0L];
+		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: aNetService, @"service", @"bonjour", @"type", 0L];
 		
 		[services addObject:dict];
 		
+		// Resolve the address and port for this NSNetService
+		
+		[aNetService setDelegate:self];
+		[aNetService scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
+		[aNetService resolveWithTimeout: 5];
 	}
 	
 	// update interface
@@ -910,32 +916,13 @@ static char *GetPrivateIP()
             break;
         }
     }
-
-    if (serviceBeingResolved && [serviceBeingResolved isEqual:aNetService]) {
-        [serviceBeingResolved stop];
-        [serviceBeingResolved release];
-        serviceBeingResolved = nil;
-    }
-
+	
     if(!moreComing)
 	{
 		[self arrangeServices];
 		[interfaceOsiriX displayBonjourServices];
 	}
 }
-//
-//- (void) stopService
-//{
-//	return;
-//	
-//	if (serviceBeingResolved)
-//	{
-//        [serviceBeingResolved stop];
-//        [serviceBeingResolved release];
-//        serviceBeingResolved = nil;
-//    }
-//}
-
 
 - (BOOL) resolveServiceWithIndex:(int)index msg: (char*) msg
 {
@@ -944,14 +931,6 @@ static char *GetPrivateIP()
 	serviceBeingResolvedIndex = index;
 	strcpy( messageToRemoteService, msg);
 	resolved = YES;
-	
-    //  Make sure to cancel any previous resolves.
-    if (serviceBeingResolved)
-	{
-        [serviceBeingResolved stop];
-        [serviceBeingResolved release];
-        serviceBeingResolved = nil;
-    }
 	
 	NSDictionary	*dict = 0L;
 	
@@ -964,28 +943,19 @@ static char *GetPrivateIP()
 	else if( [[dict valueForKey:@"type"] isEqualToString:@"fixedIP"])
 	{
 		resolved = NO;
-		succeed = [self fixedIP: index];
+		succeed = [self connectToAdress: [dict valueForKey:@"Address"]  port: 8780];
 	}
 	else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"])
 	{   
-		@try
+		if( [dict valueForKey:@"Address"] && [dict valueForKey:@"Port"])
 		{
-			serviceBeingResolved = [dict valueForKey:@"service"];
-			[serviceBeingResolved retain];
-			[serviceBeingResolved setDelegate:self];
-			
-	//		[serviceBeingResolved scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
-			[serviceBeingResolved scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: @"OsiriXLoopMode"];
-			
 			resolved = NO;
-			[serviceBeingResolved resolveWithTimeout: TIMEOUT];
-			succeed = YES;
+			succeed = [self connectToAdress: [dict valueForKey:@"Address"]  port: [[dict valueForKey:@"Port"] intValue]];
 		}
-		
-		@catch( NSException *ne)
+		else
 		{
-			NSLog( [ne description]);
-			NSLog( @"resolveServiceWithIndex FAILED");
+			resolved = NO;
+			succeed = NO;
 		}
     }
 	else NSLog( @"ERROR !");
@@ -1030,31 +1000,10 @@ static char *GetPrivateIP()
 	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: dict];
 	while( threadIsRunning == YES)
 	{
-		if( [NSThread currentThread] == mainThread)
-		{
-			[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-			
-//			[[NSRunLoop currentRunLoop] runMode:NSRunLoopCommonModes beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-//			[[NSRunLoop currentRunLoop] runMode:NSModalPanelRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-//			[[NSRunLoop currentRunLoop] runMode:NSEventTrackingRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-//			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-		}
-		else [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-		
-		if(connectToServerAborted )
-			[serviceBeingResolved stop];
+		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 	}
 	
 	connectToServerAborted = NO;
-	
-//	[self performSelectorOnMainThread:@selector(resolveServiceThread:) withObject:dict waitUntilDone: YES];
-	
-//	[self resolveServiceThread: dict];
-	
-//	[self performSelectorOnMainThread:@selector(resolveServiceThread:) withObject:dict waitUntilDone:YES modes: [NSArray arrayWithObject:@"OsiriXLoopMode"]];
-
-//	[self resolveServiceThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L]];
-	
 	
 	return resolved;
 }

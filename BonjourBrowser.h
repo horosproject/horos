@@ -78,5 +78,7 @@
 - (void) buildLocalPathsList;
 - (void) arrangeServices;
 
+- (BOOL) connectToAdress: (NSString*) address port: (int) port;
+
 - (NSDictionary*) getDICOMDestinationInfo:(int) index;
 @end
