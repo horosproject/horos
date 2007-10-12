@@ -849,7 +849,7 @@ static char *GetPrivateIP()
 			{
 				NSLog( @"netServiceDidResolveAddress: %@:%@", ipAddressString, portString);
 				
-				[serviceDict setValue: ipAddressString forKey:@"OsiriXAddress"];
+				[serviceDict setValue: ipAddressString forKey:@"Address"];
 				[serviceDict setValue: portString forKey:@"OsiriXPort"];
 			}
 		}
@@ -943,14 +943,14 @@ static char *GetPrivateIP()
 	else if( [[dict valueForKey:@"type"] isEqualToString:@"fixedIP"])
 	{
 		resolved = NO;
-		succeed = [self connectToAdress: [dict valueForKey:@"OsiriXAddress"]  port: 8780];
+		succeed = [self connectToAdress: [dict valueForKey:@"Address"]  port: 8780];
 	}
 	else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"])
 	{   
-		if( [dict valueForKey:@"OsiriXAddress"] && [dict valueForKey:@"OsiriXPort"])
+		if( [dict valueForKey:@"Address"] && [dict valueForKey:@"OsiriXPort"])
 		{
 			resolved = NO;
-			succeed = [self connectToAdress: [dict valueForKey:@"OsiriXAddress"]  port: [[dict valueForKey:@"OsiriXPort"] intValue]];
+			succeed = [self connectToAdress: [dict valueForKey:@"Address"]  port: [[dict valueForKey:@"OsiriXPort"] intValue]];
 		}
 		else
 		{
@@ -1235,7 +1235,7 @@ static char *GetPrivateIP()
 		[dict addEntriesFromDictionary: [self getDICOMDestinationInfo: indexTo]];
 		[services replaceObjectAtIndex:indexTo withObject: dict];
 		
-		if( [dict valueForKey: @"Address"] == 0L) return NO;
+		if( [dict valueForKey: @"Port"] == 0L) return NO;
 	}
 	
 	if( indexFrom >= 0)	// indexFrom == -1: this computer
@@ -1244,7 +1244,7 @@ static char *GetPrivateIP()
 		[dict addEntriesFromDictionary: [self getDICOMDestinationInfo: indexFrom]];
 		[services replaceObjectAtIndex:indexFrom withObject: dict];
 		
-		if( [dict valueForKey: @"Address"] == 0L) return NO;
+		if( [dict valueForKey: @"Port"] == 0L) return NO;
 	}
 	
 	[BonjourBrowser waitForLock: lock];

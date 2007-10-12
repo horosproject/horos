@@ -7299,7 +7299,16 @@ static BOOL needToRezoom;
 				
 				if( OnlyDICOM == NO ) NSLog( @"Not Only DICOM !");
 				
-				if( [dcmNode valueForKey:@"Address"] && OnlyDICOM )	{
+				if( [dcmNode valueForKey:@"Port"] == 0L && OnlyDICOM )
+				{
+					NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: dcmNode];
+					[dict addEntriesFromDictionary: [bonjourBrowser getDICOMDestinationInfo: row-1]];
+					[[bonjourBrowser services] replaceObjectAtIndex: row-1 withObject: dict];
+					
+					dcmNode = dict;
+				}
+				
+				if( [dcmNode valueForKey:@"Port"] && OnlyDICOM )	{
 					WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Transfer started...", nil)];
 					[wait showWindow:self];
 					
@@ -7319,7 +7328,7 @@ static BOOL needToRezoom;
 					[splash showWindow:self];
 					[[splash progress] setMaxValue:[imagesArray count]];
 					
-					for( long i = 0; i < [imagesArray count]; ) {
+					for( int i = 0; i < [imagesArray count]; ) {
 						NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 						NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: 10];
 						
@@ -7344,7 +7353,11 @@ static BOOL needToRezoom;
 							i++;
 						}
 						
-						[bonjourBrowser sendDICOMFile: row-1 paths: packArray];
+						if( [bonjourBrowser sendDICOMFile: row-1 paths: packArray] == NO)
+						{
+							NSRunAlertPanel( NSLocalizedString(@"Network Error", nil), NSLocalizedString(@"Failed to send the files to this node.", nil), nil, nil, nil);
+							i = [imagesArray count];
+						}
 						
 						[pool release];
 					}
