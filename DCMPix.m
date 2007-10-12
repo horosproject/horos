@@ -2871,7 +2871,10 @@ BOOL gUSEPAPYRUSDCMPIX;
 	self->convertedDICOM = [fromDcm->convertedDICOM retain];
 	self->viewPosition = [fromDcm->viewPosition retain];
 	self->patientPosition = [fromDcm->patientPosition retain];
-	
+
+	self->patientsWeight = fromDcm->patientsWeight;
+	self->SUVConverted = fromDcm->SUVConverted;
+
 	self->units = [fromDcm->units retain];
 	self->decayCorrection = [fromDcm->decayCorrection retain];
 	self->radionuclideTotalDose = fromDcm->radionuclideTotalDose;
@@ -2932,6 +2935,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 	copy->patientPosition = [self->patientPosition retain];
 	copy->annotationsDictionary = [self->annotationsDictionary retain];
 	copy->cachedPapyGroups = [self->cachedPapyGroups retain];
+	
+	copy->patientsWeight = self->patientsWeight;
+	copy->SUVConverted = self->SUVConverted;
 	
 	copy->units = [self->units retain];
 	copy->decayCorrection = [self->decayCorrection retain];
@@ -9766,6 +9772,9 @@ END_CREATE_ROIS:
 	self.minValueOfSeries = from.minValueOfSeries;
 	self.decayFactor = from.decayFactor;
 	self.halflife = from.halflife;
+	
+	[annotationsDictionary release];
+	annotationsDictionary = [from.annotationsDictionary retain];
 	[self checkSUV];
 }
 

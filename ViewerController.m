@@ -10795,7 +10795,7 @@ int i,j,l;
 					*imageData++ *=  factorPET2SUV;
 				}
 				
-				[pix setSUVConverted : YES];
+				pix.SUVConverted = YES;
 			}
 			
 			[pix computePixMinPixMax];

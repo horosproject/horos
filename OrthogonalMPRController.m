@@ -66,8 +66,8 @@
 		
 		originalDCMPixList = [[NSMutableArray alloc] initWithCapacity: [pix count]];
 		
-		for( id loopItem in pix)
-			[originalDCMPixList addObject:  [[loopItem copy] autorelease]];
+		for( DCMPix *p in pix)
+			[originalDCMPixList addObject:  [[p copy] autorelease]];
 		
 		originalDCMFilesList = [[NSMutableArray alloc] initWithArray:files];
 		

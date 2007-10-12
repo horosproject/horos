@@ -197,7 +197,7 @@
 		if( v > 2000) v = 2000;
 	
 		[numberOfFramesTextField setIntValue: v];
-		NSLog( @"numberOfFrames setIntValue: %d", v);
+		[numberOfFramesTextField selectText: self];
 	
 		flyThru.numberOfFrames = v;
 		[flyThru computePath];
