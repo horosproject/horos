@@ -10030,7 +10030,7 @@ END_CREATE_ROIS:
 							
 						if( anonymizedAnnotations)
 						{
-							if( [[field objectForKey:@"group"] intValue] == 0x0010 && [[field objectForKey:@"element"] intValue] == 0x0010) value = @"name hidden";
+							if( [[field objectForKey:@"group"] intValue] == 0x0010 && [[field objectForKey:@"element"] intValue] == 0x0010) value = @" ";
 						}
 						
 						if(value==nil || [value length] == 0) value = @"-";
@@ -10053,7 +10053,7 @@ END_CREATE_ROIS:
 							
 							if( anonymizedAnnotations)
 							{
-								if( [fieldName isEqualToString:@"name"]) value = @"name hidden";
+								if( [fieldName isEqualToString:@"name"]) value = @" ";
 							}
 						}
 						
