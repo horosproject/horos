@@ -849,8 +849,8 @@ static char *GetPrivateIP()
 			{
 				NSLog( @"netServiceDidResolveAddress: %@:%@", ipAddressString, portString);
 				
-				[serviceDict setValue: ipAddressString forKey:@"Address"];
-				[serviceDict setValue: portString forKey:@"Port"];
+				[serviceDict setValue: ipAddressString forKey:@"OsiriXAddress"];
+				[serviceDict setValue: portString forKey:@"OsiriXPort"];
 			}
 		}
 	}
@@ -943,14 +943,14 @@ static char *GetPrivateIP()
 	else if( [[dict valueForKey:@"type"] isEqualToString:@"fixedIP"])
 	{
 		resolved = NO;
-		succeed = [self connectToAdress: [dict valueForKey:@"Address"]  port: 8780];
+		succeed = [self connectToAdress: [dict valueForKey:@"OsiriXAddress"]  port: 8780];
 	}
 	else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"])
 	{   
-		if( [dict valueForKey:@"Address"] && [dict valueForKey:@"Port"])
+		if( [dict valueForKey:@"OsiriXAddress"] && [dict valueForKey:@"OsiriXPort"])
 		{
 			resolved = NO;
-			succeed = [self connectToAdress: [dict valueForKey:@"Address"]  port: [[dict valueForKey:@"Port"] intValue]];
+			succeed = [self connectToAdress: [dict valueForKey:@"OsiriXAddress"]  port: [[dict valueForKey:@"OsiriXPort"] intValue]];
 		}
 		else
 		{
