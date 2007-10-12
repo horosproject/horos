@@ -1002,7 +1002,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 			}
 			else{
 				distance = aCamera->GetDistance();
-				aCamera->Dolly( 1.0 + (_mouseLocStart.y - mouseLocPre.y) / 1200.);
+				aCamera->Dolly( 1.0 + ( mouseLocPre.y - _mouseLocStart.y) / 1200.);
 				aCamera->SetDistance( distance);
 				aCamera->ComputeViewPlaneNormal();
 				aCamera->OrthogonalizeViewUp();
