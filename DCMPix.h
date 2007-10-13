@@ -374,6 +374,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (void) checkImageAvailble:(float)newWW :(float)newWL;
 - (BOOL)loadDICOMDCMFramework;
 - (BOOL) loadDICOMPapyrus;
+- (void) reloadAnnotations;
 - (void) CheckLoadIn;
 - (void) CheckLoad;
 - (float*) computefImage;

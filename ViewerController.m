@@ -16017,6 +16017,23 @@ long i;
 	[self computeInterval];
 }
 
+-(void) reloadAnnotations
+{
+	[self checkEverythingLoaded];
+	
+	for( int x = 0; x < maxMovieIndex; x++)
+	{
+		for( int i = 0 ; i < [pixList[ x] count]; i++)
+		{
+			if( stopThreadLoadImage == NO)
+			{
+				DCMPix* pix = [pixList[ x] objectAtIndex: i];
+				[pix reloadAnnotations];
+			}
+		}
+	}
+}
+
 -(void) executeRevert
 {
 	[self checkEverythingLoaded];

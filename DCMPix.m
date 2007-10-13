@@ -4326,6 +4326,44 @@ END_CREATE_ROIS:
 
 #pragma mark-
 
+- (void) reloadAnnotations
+{
+	[PapyrusLock lock];
+	
+	[annotationsDictionary release];
+	annotationsDictionary = [[NSMutableDictionary dictionary] retain];
+	
+	@try
+	{
+		if( gUSEPAPYRUSDCMPIX)
+		{
+			PapyShort		fileNb;
+			
+			if( srcFile == 0L) fileNb = -1;
+			else fileNb = Papy3FileOpen ( (char*) [srcFile UTF8String], (PAPY_FILE) 0, TRUE, 0);
+				
+			if (fileNb >= 0)
+			{
+				if (gIsPapyFile [fileNb] == DICOM10) Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+				[self loadCustomImageAnnotationsPapyLink:fileNb DCMLink:nil];
+				
+				Papy3FileClose (fileNb, TRUE);
+			}
+		}
+		else
+		{
+			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:dcmObject];
+		}
+	}
+	@catch (NSException * e)
+	{
+		NSLog(@"reloadAnnotations: %@", e);
+	}
+	
+	[PapyrusLock unlock];
+}
+
 - (BOOL)loadDICOMDCMFramework	// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 {
 	//	#ifndef STATIC_DICOM_LIB

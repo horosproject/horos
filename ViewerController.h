@@ -640,6 +640,7 @@ enum
 - (void)selectROI:(ROI*)roi deselectingOther:(BOOL)deselectOther;
 - (void)deselectAllROIs;
 - (void) refreshToolbar;
+- (void) reloadAnnotations;
 
 #pragma mark-
 #pragma mark Brush ROI Filters

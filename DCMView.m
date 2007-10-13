@@ -575,9 +575,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	for( ViewerController *v in viewers)
 	{
-		[v refresh];
+		if( reload) [v reloadAnnotations];
 		
-		if( reload) [v executeRevert];
+		[v refresh];
 	}
 	
 	if( reload) [[BrowserController currentBrowser] refreshMatrix: self];		// This will refresh the DCMView of the BrowserController
