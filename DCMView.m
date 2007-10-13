@@ -1947,8 +1947,27 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			ANNOTATIONS++;
 			if( ANNOTATIONS > annotFull) ANNOTATIONS = 0;
 			
+			switch( ANNOTATIONS)
+			{
+				case annotNone:
+					[appController growlTitle: NSLocalizedString( @"Incoming Files", 0L) description: NSLocalizedString(@"Turn Off Annotations", 0L) name:@"result"];
+				break;
+				
+				case annotGraphics:
+					[appController growlTitle: NSLocalizedString( @"Incoming Files", 0L) description: NSLocalizedString(@"Switch Annotations to Graphic Only", 0L) name:@"result"];
+				break;
+				
+				case annotBase:
+					[appController growlTitle: NSLocalizedString( @"Incoming Files", 0L) description: NSLocalizedString(@"Switch Annotations to Full without names", 0L) name:@"result"];
+				break;
+				
+				case annotFull:
+					[appController growlTitle: NSLocalizedString( @"Incoming Files", 0L) description: NSLocalizedString(@"Switch Annotations to Full", 0L) name:@"result"];
+				break;
+			}
+			
 			[[NSUserDefaults standardUserDefaults] setInteger: ANNOTATIONS forKey: @"ANNOTATIONS"];
-    
+			
 			[DCMView setDefaults];
 	
 			NSNotificationCenter *nc;
