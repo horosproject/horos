@@ -189,13 +189,14 @@
 	
 	if(userChoice == 1)
 	{
+		int v = [numberOfFramesTextField intValue];
 		
-		[numberOfFramesTextField selectText: self];
-		int v = flyThru.numberOfFrames;
-	
 		if( v < 2) v = 2;
 		if( v > 2000) v = 2000;
-	
+		
+		[numberOfFramesTextField setIntValue: v];
+		[numberOfFramesTextField selectText: self];
+		
 		flyThru.numberOfFrames = v;
 		[flyThru computePath];
 		
