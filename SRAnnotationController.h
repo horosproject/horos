@@ -29,7 +29,7 @@
 - (BOOL)exportAllROIsForCurrentDCMPix;
 - (BOOL)exportSelectedROI;
 
-- (void)writeResult;
-- (IBAction)export:(id)sender;
+//- (void)writeResult;
+//- (IBAction)export:(id)sender;
 
 @end

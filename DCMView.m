@@ -1941,9 +1941,24 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		else if (c == NSHomeFunctionKey)
 			curImage = 0;
 		else if (c == NSEndFunctionKey)
-			curImage = [dcmPixList count]-1; 
+			curImage = [dcmPixList count]-1;
+		else if (c == 9)	// Tab key
+		{
+			ANNOTATIONS++;
+			if( ANNOTATIONS > annotFull) ANNOTATIONS = 0;
+			
+			[[NSUserDefaults standardUserDefaults] setInteger: ANNOTATIONS forKey: @"ANNOTATIONS"];
+    
+			[DCMView setDefaults];
+	
+			NSNotificationCenter *nc;
+			nc = [NSNotificationCenter defaultCenter];
+			[nc postNotificationName: @"updateView" object: self userInfo: nil];
+		}
         else
         {
+			NSLog( @"%d", c);
+			
 			if( [self actionForHotKey:[event characters]] == NO) [super keyDown:event];
         }
         

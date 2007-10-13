@@ -115,58 +115,58 @@
 
 #pragma mark -
 #pragma mark Result
-
-- (void)writeResult;
-{
-	if(!annotation) return;
-	
-	if([annotation save])
-	{
-		[annotation saveAsHTML];
-		NSLog(@"SR Annotation export done.");
-	}
-	else
-		NSLog(@"SR Annotation export failed.");
-}
-
-- (IBAction)export:(id)sender;
-{
-	NSLog(@"############## SR Annotation ##############");
-	if(annotation) [annotation release];
-	annotation = [[SRAnnotation alloc] init];
-	
-	BOOL result = NO;
-	NSString *alertTitle, *alertMessage;
-	
-	switch ([[whichROIsMatrix selectedCell] tag])
-	{
-		case 0:
-			result = [self exportSelectedROI];
-			alertTitle = NSLocalizedString(@"No ROI selected", 0L);
-			alertMessage = NSLocalizedString(@"Please select a ROI first.", 0L);
-		break;
-		
-		case 1:
-			result = [self exportAllROIsForCurrentDCMPix];
-			alertTitle = NSLocalizedString(@"No ROIs", 0L);
-			alertMessage = NSLocalizedString(@"There is no ROIs on current image.", 0L);
-		break;
-		
-		case 2:
-			result = [self exportAllROIs];
-			alertTitle = NSLocalizedString(@"No ROIs", 0L);
-			alertMessage = NSLocalizedString(@"There is no ROIs on this series.", 0L);
-		break;
-	}
-	
-	[self endSheet];
-	
-	if(result)
-		[self writeResult];
-	else
-		NSRunAlertPanel( alertTitle, alertMessage, NSLocalizedString(@"OK", nil), nil, nil);
-		
-	NSLog(@"!!!!!!!!!!!!!! SR Annotation !!!!!!!!!!!!!!");
-}
+//
+//- (void)writeResult;
+//{
+//	if(!annotation) return;
+//	
+//	if([annotation save])
+//	{
+//		[annotation saveAsHTML];
+//		NSLog(@"SR Annotation export done.");
+//	}
+//	else
+//		NSLog(@"SR Annotation export failed.");
+//}
+//
+//- (IBAction)export:(id)sender;
+//{
+//	NSLog(@"############## SR Annotation ##############");
+//	if(annotation) [annotation release];
+//	annotation = [[SRAnnotation alloc] init];
+//	
+//	BOOL result = NO;
+//	NSString *alertTitle, *alertMessage;
+//	
+//	switch ([[whichROIsMatrix selectedCell] tag])
+//	{
+//		case 0:
+//			result = [self exportSelectedROI];
+//			alertTitle = NSLocalizedString(@"No ROI selected", 0L);
+//			alertMessage = NSLocalizedString(@"Please select a ROI first.", 0L);
+//		break;
+//		
+//		case 1:
+//			result = [self exportAllROIsForCurrentDCMPix];
+//			alertTitle = NSLocalizedString(@"No ROIs", 0L);
+//			alertMessage = NSLocalizedString(@"There is no ROIs on current image.", 0L);
+//		break;
+//		
+//		case 2:
+//			result = [self exportAllROIs];
+//			alertTitle = NSLocalizedString(@"No ROIs", 0L);
+//			alertMessage = NSLocalizedString(@"There is no ROIs on this series.", 0L);
+//		break;
+//	}
+//	
+//	[self endSheet];
+//	
+//	if(result)
+//		[self writeResult];
+//	else
+//		NSRunAlertPanel( alertTitle, alertMessage, NSLocalizedString(@"OK", nil), nil, nil);
+//		
+//	NSLog(@"!!!!!!!!!!!!!! SR Annotation !!!!!!!!!!!!!!");
+//}
 
 @end

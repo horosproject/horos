@@ -3218,6 +3218,7 @@ static ViewerController *draggedController = 0L;
 - (void) keyDown:(NSEvent *)event
 {
     unichar c = [[event characters] characterAtIndex:0];
+	
     if( c == 3 || c == 13 || c == ' ')
     {
 		[self PlayStop:[self findPlayStopButton]];
@@ -3248,6 +3249,7 @@ static ViewerController *draggedController = 0L;
 	{
 		if( timer)  [self PlayStop:[self findPlayStopButton]];  // STOP
 	}
+	
 	else if (c == NSUpArrowFunctionKey)
 	{
 		if( maxMovieIndex > 1)
