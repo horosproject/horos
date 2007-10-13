@@ -216,8 +216,12 @@ static char *GetPrivateIP()
 	BOOL				success = YES;
 	NSData				*data = [[[note userInfo] objectForKey:NSFileHandleNotificationDataItem] retain];
 	
+	if( currentConnection != [note object])
+		NSLog( @"Ug? currentConnection != [note object] ?! BonjourBrowser readAllTheData");
+	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: [note object]];
 	[[note object] release];
+	currentConnection = 0L;
 
 	if( data)
 	{
@@ -438,12 +442,12 @@ static char *GetPrivateIP()
 	{
 		// SEND DATA
 	
-		NSFileHandle * sendConnection = [[NSFileHandle alloc] initWithFileDescriptor:socketToRemoteServer closeOnDealloc:YES];
-		if(sendConnection)
+		currentConnection = [[NSFileHandle alloc] initWithFileDescriptor:socketToRemoteServer closeOnDealloc:YES];
+		if( currentConnection)
 		{
-//			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionReceived:) name:NSFileHandleReadCompletionNotification object:sendConnection];
+//			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionReceived:) name:NSFileHandleReadCompletionNotification object:currentConnection];
            
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(readAllTheData:) name:NSFileHandleReadToEndOfFileCompletionNotification object: sendConnection];
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(readAllTheData:) name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
 			
 			 if(connect(socketToRemoteServer, (struct sockaddr *)socketAddress, sizeof(*socketAddress)) == 0)
 			 {
@@ -642,13 +646,13 @@ static char *GetPrivateIP()
 					[toTransfer appendBytes:passwordUTF length: strlen( passwordUTF)+1];
 				}
 				
-				[sendConnection writeData: toTransfer];
+				[currentConnection writeData: toTransfer];
 				
-//				[sendConnection readInBackgroundAndNotify];
+//				[currentConnection readInBackgroundAndNotify];
 				
-//				[sendConnection readToEndOfFileInBackgroundAndNotify];
+//				[currentConnection readToEndOfFileInBackgroundAndNotify];
 
-				[sendConnection readToEndOfFileInBackgroundAndNotifyForModes:[NSArray arrayWithObject:@"OsiriXLoopMode"]];
+				[currentConnection readToEndOfFileInBackgroundAndNotifyForModes:[NSArray arrayWithObject:@"OsiriXLoopMode"]];
 				
 				succeed = YES;
 			}
@@ -656,8 +660,9 @@ static char *GetPrivateIP()
 			{
 				NSLog( @"Failed to connect to the distant computer: is there a firewall on port 8780?? is OsiriX running on this distant computer??");
 				
-				[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: sendConnection];
-				[sendConnection release];
+				[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
+				[currentConnection release];
+				currentConnection = 0L;
 			}
 		}
 		else
@@ -978,7 +983,7 @@ static char *GetPrivateIP()
 		NSDate			*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
 		NSRunLoop		*run = [NSRunLoop currentRunLoop];
 		
-		while( resolved == NO && [timeout timeIntervalSinceNow] >= 0)
+		while( resolved == NO && [timeout timeIntervalSinceNow] >= 0 && connectToServerAborted == NO)
 		{
 			[run runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 		}
@@ -989,6 +994,11 @@ static char *GetPrivateIP()
 	threadIsRunning = NO;
 }
 
+- (void) setWaitDialog: (WaitRendering*) w
+{
+	waitWindow = w;
+}
+
 - (void) abort:(id) sender
 {
 	connectToServerAborted = YES;
@@ -996,14 +1006,35 @@ static char *GetPrivateIP()
 
 - (BOOL) connectToServer:(int) index message:(NSString*) message
 {
+	[waitWindow start];
+
 	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L];
 	
 	threadIsRunning = YES;
 	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: dict];
-	while( threadIsRunning == YES)
+	while( threadIsRunning == YES  && connectToServerAborted == NO)
 	{
 		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+		
+		if( [waitWindow run] == NO) connectToServerAborted = YES;
 	}
+	
+	if( connectToServerAborted)
+	{
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
+		[currentConnection release];
+		currentConnection = 0L;
+		
+		while( threadIsRunning == YES)
+		{
+			[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+		}
+		resolved = NO;
+	}
+	
+	[waitWindow end];
+
+	waitWindow = 0L;
 	
 	connectToServerAborted = NO;
 	

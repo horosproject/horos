@@ -15,6 +15,7 @@
 #import <Cocoa/Cocoa.h>
 #import "BrowserController.h"
 #import "BonjourPublisher.h"
+#import "WaitRendering.h"
 
 @interface BonjourBrowser : NSObject
 {
@@ -48,11 +49,16 @@
 	NSDictionary		*dicomDestination;
 	
 	volatile BOOL		resolved, connectToServerAborted;
+	
+	WaitRendering		*waitWindow;
+	
+	NSFileHandle		*currentConnection;
 }
 
 + (NSString*) bonjour2local: (NSString*) str;
 + (NSString*) uniqueLocalPath:(NSManagedObject*) image;
 - (void) waitTheLock;
+- (void) setWaitDialog: (WaitRendering*) w;
 
 - (id) initWithBrowserController: (BrowserController*) bC bonjourPublisher:(BonjourPublisher*) bPub;
 

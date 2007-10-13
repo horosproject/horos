@@ -12291,8 +12291,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting to OsiriX database...", nil)];
 			[wait showWindow:self];
-//			[wait setCancel: YES];
-//			[wait setCancelDelegate: bonjourBrowser];
+			[wait setCancel: YES];
+			[wait setCancelDelegate: bonjourBrowser];
+			[bonjourBrowser setWaitDialog: wait];
 			
 			NSString	*path = [bonjourBrowser getDatabaseFile: index];
 			
