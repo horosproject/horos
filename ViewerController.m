@@ -10602,17 +10602,19 @@ int i,j,l;
 
 - (ROI*) convertPolygonROItoBrush:(ROI*) selectedROI
 {
-	unsigned char* texture = [[imageView curDCM] getMapFromPolygonROI: selectedROI];
+	NSSize s;
+	NSPoint o;
+	unsigned char* texture = [[imageView curDCM] getMapFromPolygonROI: selectedROI size: &s origin: &o];
 	ROI *theNewROI = 0L;
 	
 	if( texture)
 	{
 		theNewROI = [[ROI alloc]		initWithTexture: texture
-										textWidth: [[imageView curDCM] pwidth]
-										textHeight: [[imageView curDCM] pheight]
+										textWidth: s.width
+										textHeight: s.height
 										textName: @""
-										positionX: 0
-										positionY: 0
+										positionX: o.x
+										positionY: o.y
 										spacingX: [[imageView curDCM] pixelSpacingX]
 										spacingY: [[imageView curDCM] pixelSpacingY]
 										imageOrigin: NSMakePoint([[imageView curDCM] originX], [[imageView curDCM] originY])];

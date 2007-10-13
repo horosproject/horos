@@ -1713,71 +1713,106 @@ BOOL gUSEPAPYRUSDCMPIX;
 	}
 }
 
-- (unsigned char*) getMapFromPolygonROI:(ROI*) roi {
+- (unsigned char*) getMapFromPolygonROI:(ROI*) roi size:(NSSize*) size origin:(NSPoint*) origin
+{	
+	unsigned char*	map = 0L;
+	float*			tempImage = 0L;
 	
-	unsigned char*	map = malloc( height * width);
-	float*			tempImage = calloc( 1, height * width * sizeof(float));
-	
-	if( [roi type] == tCPolygon || [roi type] == tOPolygon || [roi type] == tPencil ) {	
+	if( [roi type] == tCPolygon || [roi type] == tOPolygon || [roi type] == tPencil )
+	{
 		NSArray *ptsTemp = [roi points];
 		
 		int no = ptsTemp.count;
 		struct NSPointInt *ptsInt = (struct NSPointInt*) malloc( no * sizeof(struct NSPointInt) );
-
+		
+		if( no == 0) NSLog( @"******** ERROR no == 0 getMapFromPolygonROI");
+		
+		int minX,maxX,minY,maxY;
+		
 		for( int i = 0; i < no; i++) {
 			ptsInt[ i].x = [[ptsTemp objectAtIndex: i] point].x + 0.5;
 			ptsInt[ i].y = [[ptsTemp objectAtIndex: i] point].y + 0.5;
+			
+			if( i == 0)
+			{
+				minX = ptsInt[ 0].x;
+				maxX = ptsInt[ 0].x;
+				minY = ptsInt[ 0].y;
+				maxY = ptsInt[ 0].y;
+			}
+			else
+			{
+				if( ptsInt[ i].x < minX) minX = ptsInt[ i].x;
+				if( ptsInt[ i].x > maxX) maxX = ptsInt[ i].x;
+				if( ptsInt[ i].y < minY) minY = ptsInt[ i].y;
+				if( ptsInt[ i].y > maxY) maxY = ptsInt[ i].y;
+			}
 		}
+		
+		for( int i = 0; i < no; i++)
+		{
+			ptsInt[ i].x -= minX;
+			ptsInt[ i].y -= minY;
+		}
+		
+		size->width = maxX-minX+2;
+		size->height = maxY-minY+2;
+		
+		origin->x = minX;
+		origin->y = minY;
+		
+		map = malloc( size->height * size->width);
+		tempImage = calloc( 1, size->height * size->width * sizeof(float));
 		
 		// Need to clip?
 		NSPointInt *pTemp;
 		int yIm, xIm;
 		
-		yIm = height;
-		xIm = width;
+		yIm = size->height;
+		xIm = size->width;
 		
 		BOOL clip = NO;
 		
-		for( int i = 0; i < no && clip == NO; i++ ) {
-			if( ptsInt[ i].x < 0) clip = YES;
-			if( ptsInt[ i].y < 0) clip = YES;
-			if( ptsInt[ i].x >= width) clip = YES;
-			if( ptsInt[ i].y >= height) clip = YES;
-		}
-		
-		if( clip ) {
-			long newNo;
-			
-			pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
-			CLIP_Polygon( ptsInt, no, pTemp, &newNo, width, height);
-			
-			free( ptsInt);
-			ptsInt = pTemp;
-			
-			no = newNo;
-		}
+//		for( int i = 0; i < no && clip == NO; i++ ) {
+//			if( ptsInt[ i].x < 0) clip = YES;
+//			if( ptsInt[ i].y < 0) clip = YES;
+//			if( ptsInt[ i].x >= width) clip = YES;
+//			if( ptsInt[ i].y >= height) clip = YES;
+//		}
+//		
+//		if( clip ) {
+//			long newNo;
+//			
+//			pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
+//			CLIP_Polygon( ptsInt, no, pTemp, &newNo, width, height);
+//			
+//			free( ptsInt);
+//			ptsInt = pTemp;
+//			
+//			no = newNo;
+//		}
 		
 		if( ptsInt != 0L && no > 1 )	{
 			BOOL restore = NO, addition = NO, outside = NO;
 			
-			ras_FillPolygon( ptsInt, no, tempImage, width, height, [pixArray count], -99999, 99999, outside, 255, addition, isRGB, NO, 0L, 0L, 0L, 0L, 0L, 0, 2, 0, restore);
+			ras_FillPolygon( ptsInt, no, tempImage, size->width, size->height, [pixArray count], -99999, 99999, outside, 255, addition, NO, NO, 0L, 0L, 0L, 0L, 0L, 0, 2, 0, restore);
 		}
 		
 		// Convert float to char
-		int i = width * height;
+		int i = size->height * size->width;
 		while ( i-- > 0 )	{
 			map[ i] = tempImage[ i];
 		}
 		
 		// Keep a free box around the image
-		for ( int i = 0 ; i < width; i++ ) {
+		for ( int i = 0 ; i < (int)size->width; i++ ) {
 			map[ i] = 0;
-			map[height*(width-2) +i] = 0;
+			map[(int)size->height*((int)size->width-2) +i] = 0;
 		}
 		
-		for ( int i = 0 ; i < height; i++) {
-			map[ i*width] = 0;
-			map[ i*width + width-1] = 0;
+		for ( int i = 0 ; i < (int)size->height; i++) {
+			map[ i*(int)size->width] = 0;
+			map[ i*(int)size->width + (int)size->width-1] = 0;
 		}
 		
 		free( tempImage);
