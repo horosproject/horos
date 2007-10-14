@@ -653,7 +653,7 @@ static char *GetPrivateIP()
 						[toTransfer appendBytes:string length: strlen( string)+1];
 					}
 				}
-			
+				
 				if ((strcmp( messageToRemoteService, "SENDD") == 0))
 				{
 					int i, temp, noOfFiles = [paths count];
@@ -1301,6 +1301,8 @@ static char *GetPrivateIP()
 			BonjourDatabaseIndexFileSize = 0;
 			if( [self connectToServer: index message: @"DBSIZ"] == YES)
 			{
+				NSLog( @"BonjourDatabaseIndexFileSize = %d Kb", BonjourDatabaseIndexFileSize);
+			
 				if( [self connectToServer: index message: @"DATAB"] == YES)
 				{
 					[self connectToServer: index message: @"VERSI"];

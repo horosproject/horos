@@ -256,6 +256,8 @@ static char *GetPrivateIP()
 				
 				int size, fileSize = [[fattrs objectForKey:NSFileSize] longLongValue] / 1024;
 				
+				representationToSend = [NSMutableData data];
+				
 				size = NSSwapHostIntToBig( fileSize);
 				[representationToSend appendBytes: &size length: 4];
 			}
