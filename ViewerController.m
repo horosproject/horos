@@ -4194,8 +4194,10 @@ static ViewerController *draggedController = 0L;
 //	return;
 //	}
 	
-	if ([[sender title] isEqualToString:@"Shutter"] == YES) [shutterOnOff setState: (![shutterOnOff state])];//from menu
+	if ([[sender title] isEqualToString:@"Shutter"] == YES) [shutterOnOff setState: (![shutterOnOff state])]; //from menu
 	long i;
+	
+	DCMPix *curPix = [[imageView dcmPixList] objectAtIndex:[imageView curImage]];
 	
 	NSRect shutterRect;
 	shutterRect.origin.x = 0;
@@ -4223,8 +4225,8 @@ static ViewerController *draggedController = 0L;
 		
 		//shutterRect inside frame?
 		//NSLog(@"x:%f, y:%f, w:%f, h:%f",shutterRect.origin.x,shutterRect.origin.y,shutterRect.size.width,shutterRect.size.height);
-		float DCMPixWidth = [[[imageView dcmPixList] objectAtIndex:[imageView curImage]] pwidth];
-		float DCMPixHeight = [[[imageView dcmPixList] objectAtIndex:[imageView curImage]] pheight];
+		float DCMPixWidth = [curPix pwidth];
+		float DCMPixHeight = [curPix pheight];
 		//NSLog(@"DCMPix w:%f",DCMPixWidth);
 		//NSLog(@"DCMPix h:%f",DCMPixHeight);		
 		if (shutterRect.origin.x < 0) shutterRect.origin.x = 0;
@@ -4245,7 +4247,7 @@ static ViewerController *draggedController = 0L;
 		else
 		{
 			//using stored shutterRect?
-			if  ([[[imageView dcmPixList] objectAtIndex:[imageView curImage]] DCMPixShutterRectWidth] == 0)
+			if  ([curPix DCMPixShutterRectWidth] == 0 || ([curPix DCMPixShutterRectWidth] == [curPix pwidth] && [curPix DCMPixShutterRectHeight] == [curPix pheight]))
 			{
 				//NSLog(@"no shutter rectangle available");
 				[shutterOnOff setState:NSOffState];

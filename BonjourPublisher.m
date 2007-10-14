@@ -816,7 +816,7 @@ while ( [data length] < pos + 4 && (readData = [incomingConnection availableData
 	}
 	@catch( NSException *ne)
 	{
-		NSLog( @"catch in ConnectionReceived");
+		NSLog( @"Exception in ConnectionReceived - Communication Interrupted : %@", ne);
 	}
 	
 	[incomingConnection release];
