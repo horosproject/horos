@@ -2156,6 +2156,7 @@ static NSArray*	statesArray = nil;
 }
 
 - (NSMutableArray*)copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput async: (BOOL)async {
+	if ( isCurrentDatabaseBonjour) return 0L;
 	if ([ filesInput count] == 0) return filesInput;
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"COPYDATABASE"] == NO) return filesInput;
 	
@@ -2222,7 +2223,7 @@ static NSArray*	statesArray = nil;
 	if (![[NSFileManager defaultManager] fileExistsAtPath:OUTpath isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:OUTpath attributes:nil];
 	
 	NSString        *pathname;
-    NSMutableArray  *filesOutput = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+    NSMutableArray  *filesOutput = [NSMutableArray array];
 	
 	if( async ) {
 		[NSThread detachNewThreadSelector:@selector(copyFilesThread:) toTarget:self withObject: filesInput];
