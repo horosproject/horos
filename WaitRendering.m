@@ -74,6 +74,11 @@
 	stop = YES;
 }
 
+-(void) resetLastDuration
+{
+	lastDuration = 0L;
+}
+
 -(void) start
 {
 	if( startTime == 0L)

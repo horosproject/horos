@@ -12289,16 +12289,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		else	// NETWORK - DATABASE - bonjour / fixedIP
 		{
-			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting to OsiriX database...", nil)];
-			[wait showWindow:self];
-			[wait setCancel: YES];
-			[wait setCancelDelegate: bonjourBrowser];
-			[bonjourBrowser setWaitDialog: wait];
-			
 			NSString	*path = [bonjourBrowser getDatabaseFile: index];
-			
-			[wait close];
-			[wait release];
 			
 			if( path == nil ) {
 				NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot connect to the database.", nil), nil, nil, nil);

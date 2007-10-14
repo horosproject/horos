@@ -42,4 +42,5 @@
 - (BOOL) aborted;
 - (void) setString:(NSString*) str;
 - (void) setCancelDelegate:(id) object;
+- (void) resetLastDuration;
 @end

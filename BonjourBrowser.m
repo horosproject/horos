@@ -1016,7 +1016,7 @@ static char *GetPrivateIP()
 		[currentTimeOut release];
 		currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
 		
-		while( resolved == NO && [currentTimeOut timeIntervalSinceNow] >= 0 && connectToServerAborted == NO)
+		while( resolved == NO && [currentTimeOut timeIntervalSinceNow] >= 0)
 		{
 			[run runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 		}
@@ -1041,9 +1041,9 @@ static char *GetPrivateIP()
 {
 	WaitRendering	*w = 0L;
 	
-	if( [message isEqualToString:@"DATAB"]) w = waitWindow;
+	connectToServerAborted = NO;
 	
-	[w start];
+	if( [message isEqualToString:@"DATAB"] || [message isEqualToString:@"DBVER"]) w = waitWindow;
 
 	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L];
 	
@@ -1077,21 +1077,20 @@ static char *GetPrivateIP()
 	if( connectToServerAborted)
 	{
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
-		[currentConnection release];
-		currentConnection = 0L;
+		[currentConnection closeFile];
 		
 		while( threadIsRunning == YES)
 		{
 			[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 		}
+		
+		[currentConnection release];
+		currentConnection = 0L;
+		
 		resolved = NO;
+		
+		return NO;
 	}
-	
-	[w end];
-	
-	if( w) waitWindow = 0L;
-	
-	connectToServerAborted = NO;
 	
 	return resolved;
 }
@@ -1256,12 +1255,22 @@ static char *GetPrivateIP()
 	dbFileName = 0L;
 	
 	isPasswordProtected = NO;
+
+	waitWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting to OsiriX database...", nil)];
+	[waitWindow showWindow:self];
+	[waitWindow setCancel: YES];
+	[waitWindow setCancelDelegate: self];
+	[waitWindow start];
 	
 	if( [self connectToServer: index message:@"DBVER"])
 	{
 		if( [modelVersion isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"]] == NO)
 		{
 			[lock unlock];
+			[waitWindow end];
+			[waitWindow release];
+			waitWindow = 0L;
+			
 			NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", 0L), NSLocalizedString( @"Database structure is not identical. Use the SAME version of OsiriX on clients and servers to correct the problem.", 0L), nil, nil, nil);
 			
 			return 0L;
@@ -1291,9 +1300,13 @@ static char *GetPrivateIP()
 				if( resolved == NO || wrongPassword == YES)
 				{
 					[lock unlock];
+					[waitWindow end];
+					[waitWindow release];
+					waitWindow = 0L;
 					
 					NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", 0L), NSLocalizedString( @"Wrong password.", 0L), nil, nil, nil);
 					serviceBeingResolvedIndex = -1;
+					
 					return 0L;
 				}
 			}
@@ -1309,9 +1322,33 @@ static char *GetPrivateIP()
 					
 					localVersion = BonjourDatabaseVersion;
 				}
+				else
+				{
+					[dbFileName release];
+					dbFileName = 0L;
+				}
+			}
+			else
+			{
+				[dbFileName release];
+				dbFileName = 0L;
 			}
 		}
+		else
+		{
+			[dbFileName release];
+			dbFileName = 0L;
+		}
 	}
+	else
+	{
+		[dbFileName release];
+		dbFileName = 0L;
+	}
+	
+	[waitWindow end];
+	[waitWindow release];
+	waitWindow = 0L;
 	
 	[lock unlock];
 	
