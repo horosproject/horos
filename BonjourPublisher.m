@@ -258,6 +258,8 @@ static char *GetPrivateIP()
 				
 				representationToSend = [NSMutableData data];
 				
+				NSLog( @"DB fileSize = %d", fileSize);
+				
 				size = NSSwapHostIntToBig( fileSize);
 				[representationToSend appendBytes: &size length: 4];
 			}
