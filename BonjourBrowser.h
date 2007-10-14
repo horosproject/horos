@@ -38,6 +38,7 @@
 	id					setValueValue;
 	
 	NSTimeInterval		localVersion, BonjourDatabaseVersion;
+	int					BonjourDatabaseIndexFileSize;
 	
 	NSString			*modelVersion;
 	NSString			*filePathToLoad;
@@ -53,6 +54,8 @@
 	WaitRendering		*waitWindow;
 	
 	NSFileHandle		*currentConnection;
+	NSMutableData		*currentData;
+	NSDate				*currentTimeOut;
 }
 
 + (NSString*) bonjour2local: (NSString*) str;

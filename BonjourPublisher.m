@@ -247,7 +247,19 @@ static char *GetPrivateIP()
 			// Waiting for incomming message (6 first bytes)
 			while ( [data length] < 6 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 			
-			if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DATAB" length: 6]])
+			if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DBSIZ" length: 6]])
+			{
+				[interfaceOsiriX saveDatabase: 0L];
+				NSString *databasePath = [interfaceOsiriX localDatabasePath];
+				
+				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
+				
+				int size, fileSize = [[fattrs objectForKey:NSFileSize] longLongValue] / 1024;
+				
+				size = NSSwapHostIntToBig( fileSize);
+				[representationToSend appendBytes: &size length: 4];
+			}
+			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DATAB" length: 6]])
 			{
 				[interfaceOsiriX saveDatabase: 0L];
 				

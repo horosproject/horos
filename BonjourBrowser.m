@@ -28,7 +28,7 @@
 
 #define FILESSIZE 512*512*2
 
-static int TIMEOUT	= 60;
+static int TIMEOUT	= 30;
 #define USEZIP NO
 
 extern NSString			*documentsDirectory();
@@ -63,7 +63,7 @@ static char *GetPrivateIP()
 	{
 		if( [NSThread currentThread] == mainThread)
 		{
-			[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+			[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow: 0.2]];
 		}
 	}
 }
@@ -196,33 +196,10 @@ static char *GetPrivateIP()
 //	return YES;
 //}
 
-//- (void)connectionReceived:(NSNotification *)note
-//{
-//	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash (remplissage memoire) - Antoine
-////    NSFileHandle		*incomingConnection = [[note userInfo] objectForKey:NSFileHandleNotificationFileHandleItem];
-//	
-//	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadCompletionNotification object: [note object]];
-//	
-//	[[note object] readToEndOfFileInBackgroundAndNotify];
-//	
-//	NSLog( @"connectionReceived");
-//	
-//	[pool release];
-//}
-
-- (void)readAllTheData:(NSNotification *)note
+- (BOOL) processTheData:(NSData *) data
 {
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash (remplissage memoire) - Antoine
 	BOOL				success = YES;
-	NSData				*data = [[[note userInfo] objectForKey:NSFileHandleNotificationDataItem] retain];
 	
-	if( currentConnection != [note object])
-		NSLog( @"Ug? currentConnection != [note object] ?! BonjourBrowser readAllTheData");
-	
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: [note object]];
-	[[note object] release];
-	currentConnection = 0L;
-
 	if( data)
 	{
 		if( [data bytes])
@@ -399,6 +376,12 @@ static char *GetPrivateIP()
 				[modelVersion release];
 				modelVersion = [[NSString alloc] initWithData:data encoding: NSASCIIStringEncoding];
 			}
+			else if (strcmp( messageToRemoteService, "DBSIZ") == 0)
+			{
+				// we asked for the file size of the DB index file
+				
+				BonjourDatabaseIndexFileSize = NSSwapBigIntToHost( *((int*) [data bytes]));
+			}
 			else if (strcmp( messageToRemoteService, "PASWD") == 0)
 			{
 				int result = NSSwapBigIntToHost( *((int*) [data bytes]));
@@ -425,12 +408,64 @@ static char *GetPrivateIP()
 		}
 	}
 	
+	return success;
+}
+
+- (void)readAllTheData:(NSNotification *)note
+{
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash (remplissage memoire) - Antoine
+	BOOL				success = YES;
+	NSData				*data = [[[note userInfo] objectForKey:NSFileHandleNotificationDataItem] retain];
+	
+	if( currentConnection != [note object])
+		NSLog( @"Ug? currentConnection != [note object] ?! BonjourBrowser readAllTheData");
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: [note object]];
+	[[note object] release];
+	currentConnection = 0L;
+
+	if( data)
+	{
+		success = [self processTheData: data];
+	}
+	
 	[data release];
 	
 	resolved = YES;
 	
 	[pool release];
 }
+
+
+- (void) incomingConnection:(NSNotification *)note
+{
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	
+	NSData		*incomingData = [[note userInfo] objectForKey: NSFileHandleNotificationDataItem];
+	
+	if( incomingData && [incomingData length])
+	{
+		[[note object] readInBackgroundAndNotifyForModes: [NSArray arrayWithObject:@"OsiriXLoopMode"]];
+	
+		if( currentData == 0L) currentData = [[NSMutableData dataWithData: incomingData] retain];
+		else [currentData appendData: incomingData];
+		
+		[currentTimeOut release];
+		currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
+	}
+	else
+	{
+		BOOL success = [self processTheData: currentData];
+		
+		[currentData release];
+		currentData = 0L;
+		
+		resolved = YES;
+	}
+	
+	[pool release];
+}
+
 
 //socket.h
 - (BOOL) connectToService: (struct sockaddr_in*) socketAddress
@@ -445,8 +480,7 @@ static char *GetPrivateIP()
 		currentConnection = [[NSFileHandle alloc] initWithFileDescriptor:socketToRemoteServer closeOnDealloc:YES];
 		if( currentConnection)
 		{
-//			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionReceived:) name:NSFileHandleReadCompletionNotification object:currentConnection];
-           
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incomingConnection:) name:NSFileHandleReadCompletionNotification object:currentConnection];
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(readAllTheData:) name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
 			
 			 if(connect(socketToRemoteServer, (struct sockaddr *)socketAddress, sizeof(*socketAddress)) == 0)
@@ -648,11 +682,8 @@ static char *GetPrivateIP()
 				
 				[currentConnection writeData: toTransfer];
 				
-//				[currentConnection readInBackgroundAndNotify];
-				
-//				[currentConnection readToEndOfFileInBackgroundAndNotify];
-
-				[currentConnection readToEndOfFileInBackgroundAndNotifyForModes:[NSArray arrayWithObject:@"OsiriXLoopMode"]];
+				[currentConnection readInBackgroundAndNotifyForModes: [NSArray arrayWithObject:@"OsiriXLoopMode"]];
+//				[currentConnection readToEndOfFileInBackgroundAndNotifyForModes: [NSArray arrayWithObject:@"OsiriXLoopMode"]];
 				
 				succeed = YES;
 			}
@@ -980,12 +1011,14 @@ static char *GetPrivateIP()
 	
 	if( succeed)
 	{
-		NSDate			*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
 		NSRunLoop		*run = [NSRunLoop currentRunLoop];
 		
-		while( resolved == NO && [timeout timeIntervalSinceNow] >= 0 && connectToServerAborted == NO)
+		[currentTimeOut release];
+		currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
+		
+		while( resolved == NO && [currentTimeOut timeIntervalSinceNow] >= 0 && connectToServerAborted == NO)
 		{
-			[run runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+			[run runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.5]];
 		}
 	}
 	
@@ -1010,13 +1043,34 @@ static char *GetPrivateIP()
 
 	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L];
 	
+	int previousPercentage = 0;
+	
 	threadIsRunning = YES;
 	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: dict];
 	while( threadIsRunning == YES  && connectToServerAborted == NO)
 	{
-		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow: 0.01]];
 		
-		if( [waitWindow run] == NO) connectToServerAborted = YES;
+		if( waitWindow)
+		{
+			if( [waitWindow run] == NO) connectToServerAborted = YES;
+			
+			if( BonjourDatabaseIndexFileSize)
+			{
+				int currentPercentage = [currentData length] / 1024;
+				
+				currentPercentage = currentPercentage * 100 / BonjourDatabaseIndexFileSize;
+				
+				currentPercentage /= 10;
+				currentPercentage *= 10;
+				
+				if( currentPercentage != previousPercentage)
+				{
+					currentPercentage = previousPercentage;
+					[waitWindow setString: [NSString stringWithFormat:@"Downloading DB Index File (%d %%)", currentPercentage]];
+				}
+			}
+		}
 	}
 	
 	if( connectToServerAborted)
@@ -1033,7 +1087,8 @@ static char *GetPrivateIP()
 	}
 	
 	[waitWindow end];
-
+	
+	BonjourDatabaseIndexFileSize = 0;
 	waitWindow = 0L;
 	
 	connectToServerAborted = NO;
@@ -1243,11 +1298,15 @@ static char *GetPrivateIP()
 				}
 			}
 			
-			if( [self connectToServer: index message: @"DATAB"] == YES)
+			BonjourDatabaseIndexFileSize = 0;
+			if( [self connectToServer: index message: @"DBSIZ"] == YES)
 			{
-				[self connectToServer: index message: @"VERSI"];
-				
-				localVersion = BonjourDatabaseVersion;
+				if( [self connectToServer: index message: @"DATAB"] == YES)
+				{
+					[self connectToServer: index message: @"VERSI"];
+					
+					localVersion = BonjourDatabaseVersion;
+				}
 			}
 		}
 	}
