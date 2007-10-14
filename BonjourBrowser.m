@@ -1063,11 +1063,8 @@ static char *GetPrivateIP()
 			{
 				int currentPercentage = [currentData length] / 1024;
 				
-				currentPercentage = currentPercentage * 100 / BonjourDatabaseIndexFileSize;
-				
-				currentPercentage /= 10;
+				currentPercentage = currentPercentage * 10 / BonjourDatabaseIndexFileSize;
 				currentPercentage *= 10;
-				
 				if( currentPercentage != previousPercentage)
 				{
 					previousPercentage = currentPercentage;
