@@ -411,30 +411,30 @@ static char *GetPrivateIP()
 	return success;
 }
 
-- (void)readAllTheData:(NSNotification *)note
-{
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash (remplissage memoire) - Antoine
-	BOOL				success = YES;
-	NSData				*data = [[[note userInfo] objectForKey:NSFileHandleNotificationDataItem] retain];
-	
-	if( currentConnection != [note object])
-		NSLog( @"Ug? currentConnection != [note object] ?! BonjourBrowser readAllTheData");
-	
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: [note object]];
-	[[note object] release];
-	currentConnection = 0L;
-
-	if( data)
-	{
-		success = [self processTheData: data];
-	}
-	
-	[data release];
-	
-	resolved = YES;
-	
-	[pool release];
-}
+//- (void)readAllTheData:(NSNotification *)note
+//{
+//	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash (remplissage memoire) - Antoine
+//	BOOL				success = YES;
+//	NSData				*data = [[[note userInfo] objectForKey:NSFileHandleNotificationDataItem] retain];
+//	
+//	if( currentConnection != [note object])
+//		NSLog( @"Ug? currentConnection != [note object] ?! BonjourBrowser readAllTheData");
+//	
+//	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: [note object]];
+//	[[note object] release];
+//	currentConnection = 0L;
+//
+//	if( data)
+//	{
+//		success = [self processTheData: data];
+//	}
+//	
+//	[data release];
+//	
+//	resolved = YES;
+//	
+//	[pool release];
+//}
 
 
 - (void) incomingConnection:(NSNotification *)note
@@ -481,7 +481,7 @@ static char *GetPrivateIP()
 		if( currentConnection)
 		{
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incomingConnection:) name:NSFileHandleReadCompletionNotification object:currentConnection];
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(readAllTheData:) name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
+//			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(readAllTheData:) name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
 			
 			 if(connect(socketToRemoteServer, (struct sockaddr *)socketAddress, sizeof(*socketAddress)) == 0)
 			 {
@@ -1039,7 +1039,11 @@ static char *GetPrivateIP()
 
 - (BOOL) connectToServer:(int) index message:(NSString*) message
 {
-	[waitWindow start];
+	WaitRendering	*w = 0L;
+	
+	if( [message isEqualToString:@"DATAB"]) w = waitWindow;
+	
+	[w start];
 
 	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L];
 	
@@ -1051,9 +1055,9 @@ static char *GetPrivateIP()
 	{
 		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow: 0.002]];
 		
-		if( waitWindow)
+		if( w)
 		{
-			if( [waitWindow run] == NO) connectToServerAborted = YES;
+			if( [w run] == NO) connectToServerAborted = YES;
 			
 			if( BonjourDatabaseIndexFileSize)
 			{
@@ -1066,8 +1070,8 @@ static char *GetPrivateIP()
 				
 				if( currentPercentage != previousPercentage)
 				{
-					currentPercentage = previousPercentage;
-					[waitWindow setString: [NSString stringWithFormat:@"Downloading DB Index File (%d %%)", currentPercentage]];
+					previousPercentage = currentPercentage;
+					[w setString: [NSString stringWithFormat:@"Downloading DB Index File (%d %%)", currentPercentage]];
 				}
 			}
 		}
@@ -1086,9 +1090,9 @@ static char *GetPrivateIP()
 		resolved = NO;
 	}
 	
-	[waitWindow end];
+	[w end];
 	
-	waitWindow = 0L;
+	if( w) waitWindow = 0L;
 	
 	connectToServerAborted = NO;
 	
