@@ -63,7 +63,7 @@ static char *GetPrivateIP()
 	{
 		if( [NSThread currentThread] == mainThread)
 		{
-			[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow: 0.2]];
+			[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow: 0.002]];
 		}
 	}
 }
@@ -299,7 +299,7 @@ static char *GetPrivateIP()
 					[unzipTask setCurrentDirectoryPath:[[destPath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
 					[unzipTask setArguments:[NSArray arrayWithObjects:@"-o", destPath, nil]]; // -o to override existing report w/ same name
 					[unzipTask launch];
-					while( [unzipTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+					while( [unzipTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 					int result = [unzipTask terminationStatus];
 					[unzipTask release];
 					
@@ -561,7 +561,7 @@ static char *GetPrivateIP()
 						[zipTask setCurrentDirectoryPath:[[filePathToLoad stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
 						[zipTask setArguments:[NSArray arrayWithObjects:@"-r" , zipFileName, [filePathToLoad lastPathComponent], nil]];
 						[zipTask launch];
-						while( [zipTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+						while( [zipTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 						int result = [zipTask terminationStatus];
 						[zipTask release];
 
@@ -1018,7 +1018,7 @@ static char *GetPrivateIP()
 		
 		while( resolved == NO && [currentTimeOut timeIntervalSinceNow] >= 0 && connectToServerAborted == NO)
 		{
-			[run runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.5]];
+			[run runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 		}
 	}
 	
@@ -1049,7 +1049,7 @@ static char *GetPrivateIP()
 	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: dict];
 	while( threadIsRunning == YES  && connectToServerAborted == NO)
 	{
-		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow: 0.01]];
+		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow: 0.002]];
 		
 		if( waitWindow)
 		{
@@ -1088,7 +1088,6 @@ static char *GetPrivateIP()
 	
 	[waitWindow end];
 	
-	BonjourDatabaseIndexFileSize = 0;
 	waitWindow = 0L;
 	
 	connectToServerAborted = NO;
