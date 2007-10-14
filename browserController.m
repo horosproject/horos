@@ -4127,13 +4127,15 @@ static NSArray*	statesArray = nil;
 	if( [[sender representedObject] isEqualToString:@"name"]) [[NSUserDefaults standardUserDefaults] setBool:![sender state] forKey:@"HIDEPATIENTNAME"];
 	else {
 		NSArray				*titleArray = [[columnsMenu itemArray] valueForKey:@"title"];
-		int				i;
 		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithCapacity: 0];
 		
-		for( NSString *key in titleArray ) {			
-			if( [key length] > 0)
-				[dict setValue:[NSNumber numberWithInt:[[[columnsMenu itemArray] objectAtIndex: i] state]] forKey: key];
-		}
+		for( int i = 0; i < [titleArray count]; i++)
+  		{
+  			NSString*	key = [titleArray objectAtIndex: i];
+  
+  			if( [key length] > 0)
+  				[dict setValue:[NSNumber numberWithInt:[[[columnsMenu itemArray] objectAtIndex: i] state]] forKey: key];
+  		}
 		
 		[[NSUserDefaults standardUserDefaults] setObject:dict forKey:@"COLUMNSDATABASE"];
 	}
