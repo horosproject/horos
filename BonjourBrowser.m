@@ -1214,13 +1214,14 @@ static char *GetPrivateIP()
 	{
 //		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadCompletionNotification object: currentConnection];
 //		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
-		
+
+		[currentConnection closeFile];
+
 		while( threadIsRunning == YES)
 		{
 			[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 		}
 		
-		[currentConnection closeFile];
 		[currentConnection release];
 		currentConnection = 0L;
 		
@@ -1522,6 +1523,7 @@ static char *GetPrivateIP()
 	if( [waitWindow aborted]) returnedPath = @"aborted";
 	
 	[waitWindow end];
+	[waitWindow close];
 	[waitWindow release];
 	waitWindow = 0L;
 	
