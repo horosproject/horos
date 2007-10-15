@@ -62,7 +62,7 @@
 	void				*currentDataPtr;
 	int					currentDataPos;
 	
-	volatile NSDate		*currentTimeOut;
+	NSDate				*currentTimeOut;
 }
 
 + (NSString*) bonjour2local: (NSString*) str;
