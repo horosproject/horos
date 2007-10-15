@@ -31,8 +31,7 @@
 static int TIMEOUT	= 30;
 #define USEZIP NO
 
-#define OSIRIXRUNMODE NSDefaultRunLoopMode
-//@"OsiriXLoopMode"
+#define OSIRIXRUNMODE @"OsiriXLoopMode"
 
 extern NSString			*documentsDirectory();
 extern NSThread			*mainThread;
@@ -752,7 +751,7 @@ static char *GetPrivateIP()
 			else
 			{
 				NSLog( @"Failed to connect to the distant computer: is there a firewall on port 8780?? is OsiriX running on this distant computer?? aborted??");
-				
+				[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadCompletionNotification object: currentConnection];
 				[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
 				[currentConnection release];
 				currentConnection = 0L;
@@ -1078,7 +1077,7 @@ static char *GetPrivateIP()
 		[currentTimeOut release];
 		currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
 		
-		while( resolved == NO && [currentTimeOut timeIntervalSinceNow] >= 0)
+		while( resolved == NO && [currentTimeOut timeIntervalSinceNow] >= 0 && connectToServerAborted == NO)
 		{
 			[run runMode:OSIRIXRUNMODE beforeDate: [NSDate distantFuture]];
 		}
@@ -1105,7 +1104,8 @@ static char *GetPrivateIP()
 	
 	connectToServerAborted = NO;
 	
-	if( [message isEqualToString:@"DATAB"] || [message isEqualToString:@"DBVER"]) w = waitWindow;
+	//if( [message isEqualToString:@"DATAB"] || [message isEqualToString:@"DBVER"])
+	w = waitWindow;
 
 	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L];
 	
@@ -1138,6 +1138,7 @@ static char *GetPrivateIP()
 	
 	if( connectToServerAborted)
 	{
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadCompletionNotification object: currentConnection];
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
 		[currentConnection closeFile];
 		
@@ -1307,6 +1308,11 @@ static char *GetPrivateIP()
 
 - (NSString*) getDatabaseFile:(int) index
 {
+	return [self getDatabaseFile: index showWaitingWindow: NO];
+}
+
+- (NSString*) getDatabaseFile:(int) index showWaitingWindow: (BOOL) showWaitingWindow
+{
 	BOOL newConnection = NO;
 	
 	if( serviceBeingResolvedIndex != index) newConnection = YES;
@@ -1318,7 +1324,11 @@ static char *GetPrivateIP()
 	
 	isPasswordProtected = NO;
 
-	waitWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting to OsiriX database...", nil)];
+	if( showWaitingWindow)
+		waitWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting to OsiriX database...", nil)];
+	else
+		waitWindow = 0L;
+		
 	[waitWindow showWindow:self];
 	[waitWindow setCancel: YES];
 	[waitWindow setCancelDelegate: self];

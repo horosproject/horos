@@ -83,6 +83,7 @@
 - (void) getDICOMROIFiles:(int) index roisPaths:(NSArray*) roisPaths;
 - (NSString*) getDICOMFile:(int) index forObject:(NSManagedObject*) image noOfImages: (int) noOfImages;
 - (NSString*) getDatabaseFile:(int) index ;
+- (NSString*) getDatabaseFile:(int) index showWaitingWindow: (BOOL) showWaitingWindow;
 - (void) setBonjourDatabaseValue:(int) index item:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key;
 
 - (BOOL) sendDICOMFile:(int) index paths:(NSArray*) ip;

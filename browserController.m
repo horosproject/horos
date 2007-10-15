@@ -1423,8 +1423,9 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (void)bonjourRunLoop: (id)sender {
-	[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+- (void)bonjourRunLoop: (id)sender
+{
+//	[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 }
 
 -(void)openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour {
@@ -12277,12 +12278,24 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (IBAction)bonjourServiceClicked: (id)sender {
+- (IBAction)bonjourServiceClicked: (id)sender
+{
+	[[self window] orderOut: self];
+	[self drawerToggle: self];
+
+	NSArray	*viewers = [ViewerController getDisplayed2DViewers];
+	
+	[[AppController sharedAppController] closeAllViewers: self];	
+	
+	[self waitForRunningProcesses];
+	[bonjourBrowser waitTheLock];
+	
     int index = [bonjourServicesList selectedRow]-1;
 	
 	[bonjourReportFilesToCheck removeAllObjects];
 	
-	if( index >= 0 )	{
+	if( index >= 0 )
+	{
 		NSDictionary *object = [[bonjourBrowser services] objectAtIndex: index];
 		
 		// LOCAL PATH - DATABASE
@@ -12292,13 +12305,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		else	// NETWORK - DATABASE - bonjour / fixedIP
 		{
-			NSString	*path = [bonjourBrowser getDatabaseFile: index];
-			
-			if( path == nil ) {
-				NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot connect to the database.", nil), nil, nil, nil);
+			NSString	*path = [bonjourBrowser getDatabaseFile: index showWaitingWindow: YES];
+						
+			if( path == nil )
+			{
 				[bonjourServicesList selectRow: 0 byExtendingSelection:NO];
+				NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot connect to the database.", nil), nil, nil, nil);
 			}
-			else {
+			else
+			{
 				NSLog(@"Bonjour DB = %@", path);
 				
 				[segmentedAlbumButton setEnabled: NO];
@@ -12319,6 +12334,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if( [path isEqualToString: currentDatabasePath] == NO)
 			[self openDatabaseIn: path Bonjour: NO];
 	}
+	
+	[self drawerToggle: self];
+	[[self window] makeKeyAndOrderFront: self];
 }
 
 - (NSString*) localDatabasePath {

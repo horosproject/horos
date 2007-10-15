@@ -135,6 +135,11 @@ extern BOOL USETOOLBARPANEL;
 			[toolbar setVisible:YES];
 			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 			
+			if( [[viewer window] isVisible] == NO)
+			{
+				[[self window] orderBack:self];
+				NSLog( @"problem....");
+			}
 			NSLog(@"show toolbar");
 		}
 		else

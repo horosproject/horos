@@ -166,7 +166,6 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 	NSArray				*winList = [NSApp windows];
 	NSMutableArray		*viewersList = [NSMutableArray array];
 	
-	
 	for( id loopItem in winList)
 	{
 		if( [[loopItem windowController] isKindOfClass:[ViewerController class]])
@@ -1767,7 +1766,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
-
+	
 	// **************************
 
 	if( FullScreenOn == YES ) [self fullScreenMenu: self];
@@ -1812,7 +1811,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
-	
+	while( ThreadLoadImage)
+		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: 0L];
 	
 	if( SYNCSERIES)
@@ -1833,7 +1834,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[self SyncSeries: self];
 		}
 	}
-
+	
 	[self release];
 }
 
@@ -4443,6 +4444,9 @@ static ViewerController *draggedController = 0L;
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
+
+	while( ThreadLoadImage)
+		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 
 	if( resampleRatio != 1)
 	{
@@ -16008,9 +16012,7 @@ long i;
 		[ThreadLoadImageLock unlock];
 		
 		while( ThreadLoadImage)
-		{
 			[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];		// To be sure that PerformOnMainThread has been called !
-		}
 		
 		[splash close];
 		[splash release];
