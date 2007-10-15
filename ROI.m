@@ -575,11 +575,14 @@ static BOOL ROIDefaultsLoaded = NO;
 
 - (void) dealloc
 {	
-	[[curView openGLContext] makeCurrentContext];
+	if( textureName)
+	{
+		[[curView openGLContext] makeCurrentContext];
 	
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	if( textureName) glDeleteTextures (1, &textureName);
-
+		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+		if( textureName) glDeleteTextures (1, &textureName);
+	}
+	
 	if (textureBuffer) free(textureBuffer);
 		
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:self userInfo: 0L];

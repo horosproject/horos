@@ -92,7 +92,13 @@ static char *GetPrivateIP()
         // In order to use NSFileHandle's acceptConnectionInBackgroundAndNotify method, we need to create a
         // file descriptor that is itself a socket, bind that socket, and then set it up for listening. At this
         // point, it's ready to be handed off to acceptConnectionInBackgroundAndNotify.
-        if((fdForListening = socket(AF_INET, SOCK_STREAM, 0)) > 0) {
+        if((fdForListening = socket(AF_INET, SOCK_STREAM, 0)) > 0)
+		{
+//			int sock_buf_size = 10000;
+//	
+//			setsockopt( fdForListening, SOL_SOCKET, SO_SNDBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
+//			setsockopt( fdForListening, SOL_SOCKET, SO_RCVBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
+
             memset(&serverAddress, 0, sizeof(serverAddress));
             serverAddress.sin_family = AF_INET;
             serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -270,7 +276,7 @@ static char *GetPrivateIP()
 				// we send the database SQL file
 				NSString *databasePath = [interfaceOsiriX localDatabasePath];
 				
-				representationToSend = [NSMutableData dataWithData: [[NSFileManager defaultManager] contentsAtPath:databasePath]];
+				representationToSend = [NSMutableData dataWithContentsOfMappedFile: databasePath];
 				
 				struct sockaddr serverAddress;
 				socklen_t namelen = sizeof(serverAddress);

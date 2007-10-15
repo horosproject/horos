@@ -484,11 +484,13 @@ static char *GetPrivateIP()
 			currentDataPos = 0L;
 		}
 		
-		if( currentDataPos + length >= BonjourDatabaseIndexFileSize)
-			NSLog( @"error: currentDataPos + length >= BonjourDatabaseIndexFileSize");
+		if( currentDataPos + length > BonjourDatabaseIndexFileSize)
+			NSLog( @"error: currentDataPos + length > BonjourDatabaseIndexFileSize");
 		
 		memcpy( currentDataPtr + currentDataPos, [incomingData bytes], length);
 		currentDataPos += length;
+		
+		NSLog( @"%d", length);
 		
 		[async unlock];
 		
@@ -532,7 +534,14 @@ static char *GetPrivateIP()
 {
 	BOOL succeed = NO;
 	
-	int socketToRemoteServer = socket(AF_INET, SOCK_STREAM, 0);
+	int socketToRemoteServer = socket(AF_INET, SOCK_STREAM, 0);	//SOCK_STREAM, 0);
+	
+//	int sock_buf_size = 10000;
+//
+//	setsockopt( socketToRemoteServer, SOL_SOCKET, SO_SNDBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
+//	setsockopt( socketToRemoteServer, SOL_SOCKET, SO_RCVBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
+
+	
 	if(socketToRemoteServer > 0)
 	{
 		// SEND DATA
@@ -1113,7 +1122,7 @@ static char *GetPrivateIP()
 
 	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L];
 	
-	int previousPercentage = 0;
+	long long previousPercentage = 0;
 	
 	threadIsRunning = YES;
 	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: dict];
@@ -1127,10 +1136,10 @@ static char *GetPrivateIP()
 			
 			if( BonjourDatabaseIndexFileSize)
 			{
-				int currentPercentage = [currentData length];
+				long long currentPercentage = currentDataPos;
 				
-				currentPercentage = currentPercentage * 10 / BonjourDatabaseIndexFileSize;
-				currentPercentage *= 10;
+				currentPercentage = currentPercentage * 25 / BonjourDatabaseIndexFileSize;
+				currentPercentage *= 4;
 				if( currentPercentage != previousPercentage)
 				{
 					previousPercentage = currentPercentage;
@@ -1434,13 +1443,17 @@ static char *GetPrivateIP()
 		dbFileName = 0L;
 	}
 	
+	NSString *returnedPath = dbFileName;
+	
+	if( [waitWindow aborted]) returnedPath = @"aborted";
+	
 	[waitWindow end];
 	[waitWindow release];
 	waitWindow = 0L;
 	
 	[lock unlock];
 	
-	return dbFileName;
+	return returnedPath;
 }
 
 - (BOOL) retrieveDICOMFilesWithSTORESCU:(int) indexFrom to:(int) indexTo paths:(NSArray*) ip

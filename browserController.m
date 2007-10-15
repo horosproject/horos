@@ -3232,6 +3232,8 @@ static NSArray*	statesArray = nil;
 	
 	predicate = [NSPredicate predicateWithValue:YES];
 	
+	if( displayEmptyDatabase) predicate = [NSPredicate predicateWithValue:NO];
+	
 	if( isCurrentDatabaseBonjour ) {
 		int rowIndex = [bonjourServicesList selectedRow];
 		
@@ -12305,15 +12307,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		else	// NETWORK - DATABASE - bonjour / fixedIP
 		{
-			[[self window] performClose: self];
-			[albumDrawer close];
+			displayEmptyDatabase = YES;
+			[self outlineViewRefresh];
+			[self refreshMatrix: self];
+			
+//			[[self window] performClose: self];
+//			[albumDrawer close];
 		
 			NSString	*path = [bonjourBrowser getDatabaseFile: index showWaitingWindow: YES];
 						
-			if( path == nil )
+			if( path == nil || [path isEqualToString: @"aborted"])
 			{
 				[bonjourServicesList selectRow: 0 byExtendingSelection:NO];
-				NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot connect to the database.", nil), nil, nil, nil);
+				
+				if( [path isEqualToString: @"aborted"]) NSLog( @"Transfer aborted");
+				else NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot connect to the database.", nil), nil, nil, nil);
 			}
 			else
 			{
@@ -12324,8 +12332,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[self openDatabaseIn: path Bonjour: YES];
 			}
 			
-			[albumDrawer open];
-			[[self window] makeKeyAndOrderFront: self];
+			displayEmptyDatabase = NO;
+			[self outlineViewRefresh];
+			[self refreshMatrix: self];
+			
+//			[albumDrawer open];
+//			[[self window] makeKeyAndOrderFront: self];
 		}
 	}
 	else // LOCAL DEFAULT DATABASE

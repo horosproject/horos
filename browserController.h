@@ -183,7 +183,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSLock							*checkBonjourUpToDateThreadLock;
 	NSTimeInterval					lastSaved;
 	
-    BOOL							showAllImages, DatabaseIsEdited, isNetworkLogsActive;
+    BOOL							showAllImages, DatabaseIsEdited, isNetworkLogsActive, displayEmptyDatabase;
 	NSConditionLock					*queueLock;
 	
 	IBOutlet NSScrollView			*thumbnailsScrollView;

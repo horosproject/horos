@@ -58,7 +58,6 @@
 	WaitRendering		*waitWindow;
 	
 	NSFileHandle		*currentConnection;
-	NSMutableData		*currentData;
 	
 	void				*currentDataPtr;
 	int					currentDataPos;
