@@ -10742,12 +10742,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[burnerWindowController showWindow:self];
 	}
 	else {
-		NSAlert *alert = [NSAlert alertWithMessageText:@"OsiriX" 
-										 defaultButton:@"OK" 
-									   alternateButton:nil 
-										   otherButton:nil 
-							 informativeTextWithFormat:@"Burn in Progress. Please Wait."];
-		[alert runModal];
+		[[burnerWindowController window] makeKeyAndOrderFront:self];
+//		NSAlert *alert = [NSAlert alertWithMessageText:@"OsiriX" 
+//										 defaultButton:@"OK" 
+//									   alternateButton:nil 
+//										   otherButton:nil 
+//							 informativeTextWithFormat:@"Burn in Progress. Please Wait."];
+//		[alert runModal];
 	}
 	//send to OsirixBurner
 	
