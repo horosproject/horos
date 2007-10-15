@@ -59,6 +59,10 @@
 	
 	NSFileHandle		*currentConnection;
 	NSMutableData		*currentData;
+	
+	void				*currentDataPtr;
+	int					currentDataPos;
+	
 	NSDate				*currentTimeOut;
 	
 

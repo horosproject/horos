@@ -31,6 +31,9 @@
 static int TIMEOUT	= 30;
 #define USEZIP NO
 
+#define OSIRIXRUNMODE NSDefaultRunLoopMode
+//@"OsiriXLoopMode"
+
 extern NSString			*documentsDirectory();
 extern NSThread			*mainThread;
 
@@ -63,7 +66,7 @@ static char *GetPrivateIP()
 	{
 		if( [NSThread currentThread] == mainThread)
 		{
-			[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow: 0.002]];
+			[[NSRunLoop currentRunLoop] runMode: OSIRIXRUNMODE beforeDate:[NSDate dateWithTimeIntervalSinceNow: 0.002]];
 		}
 	}
 }
@@ -143,7 +146,7 @@ static char *GetPrivateIP()
 		
 		[browser searchForServicesOfType:@"_osirix._tcp." inDomain:@""];
 		
-		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: @"OsiriXLoopMode"];
+		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: OSIRIXRUNMODE];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
 															  selector: @selector(updateFixedList:)
@@ -419,52 +422,47 @@ static char *GetPrivateIP()
 	return success;
 }
 
-//- (void)readAllTheData:(NSNotification *)note
-//{
-//	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash (remplissage memoire) - Antoine
-//	BOOL				success = YES;
-//	NSData				*data = [[[note userInfo] objectForKey:NSFileHandleNotificationDataItem] retain];
-//	
-//	if( currentConnection != [note object])
-//		NSLog( @"Ug? currentConnection != [note object] ?! BonjourBrowser readAllTheData");
-//	
-//	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: [note object]];
-//	[[note object] release];
-//	currentConnection = 0L;
-//
-//	if( data)
-//	{
-//		success = [self processTheData: data];
-//	}
-//	
-//	[data release];
-//	
-//	resolved = YES;
-//	
-//	[pool release];
-//}
+- (void)readAllTheData:(NSNotification *)note
+{
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash (remplissage memoire) - Antoine
+	BOOL				success = YES;
+	NSData				*data = [[[note userInfo] objectForKey:NSFileHandleNotificationDataItem] retain];
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: [note object]];
+	[[note object] release];
+	currentConnection = 0L;
+
+	if( data)
+	{
+		success = [self processTheData: data];
+	}
+	
+	[data release];
+	
+	resolved = YES;
+	
+	[pool release];
+}
 
 - (void) asyncWrite: (NSString*) p
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
 	[async lock];
-		int size = [currentData length] - lastAsyncPos;
-		void *buffer = malloc( size);
-		[currentData getBytes: buffer range: NSMakeRange( lastAsyncPos, [currentData length] - lastAsyncPos)];
-		lastAsyncPos = [currentData length];
+		int size = currentDataPos - lastAsyncPos;
 	[async unlock];
 	
 	[asyncWrite lock];
 	FILE *f = fopen ([p UTF8String], "wb");
 	fseek( f, 0L, SEEK_END);
 	
-	fwrite( buffer, size, 1, f);
+	fwrite( currentDataPtr + lastAsyncPos, size, 1, f);
 	
 	fclose( f);
 	
-	free( buffer);
 	[asyncWrite unlock];
+	
+	lastAsyncPos = currentDataPos;
 	
 	[pool release];
 }
@@ -474,19 +472,26 @@ static char *GetPrivateIP()
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
 	NSData		*incomingData = [[note userInfo] objectForKey: NSFileHandleNotificationDataItem];
+	int length = [incomingData length];
 	
-	if( incomingData && [incomingData length])
+	if( incomingData && length)
 	{
-		[[note object] readInBackgroundAndNotifyForModes: [NSArray arrayWithObject:@"OsiriXLoopMode"]];
+		[[note object] readInBackgroundAndNotifyForModes: [NSArray arrayWithObject:OSIRIXRUNMODE]];
 		
 		[async lock];
-		if( currentData == 0L) currentData = [[NSMutableData dataWithData: incomingData] retain];
-		else [currentData appendData: incomingData];
+		if( currentDataPtr == 0L)
+		{
+			currentDataPtr = malloc( BonjourDatabaseIndexFileSize);
+			currentDataPos = 0L;
+		}
+		memcpy( currentDataPtr + currentDataPos, [incomingData bytes], length);
+		currentDataPos += length;
+		
 		[async unlock];
 		
 		if ( strcmp( messageToRemoteService, "DATAB") == 0)
 		{
-			if( [currentData length] - lastAsyncPos > 1024L * 1024L * 10L)
+			if( currentDataPos - lastAsyncPos > 1024L * 1024L * 10L)
 				[NSThread detachNewThreadSelector: @selector( asyncWrite:) toTarget: self withObject: tempDatabaseFile];
 		}
 		
@@ -498,12 +503,21 @@ static char *GetPrivateIP()
 		if ( strcmp( messageToRemoteService, "DATAB") == 0)
 			[self asyncWrite: tempDatabaseFile];
 		
-		BOOL success = [self processTheData: currentData];
+		BOOL success = [self processTheData: [NSData dataWithBytesNoCopy: currentDataPtr  length: currentDataPos freeWhenDone: NO]];
 		
-		[currentData release];
-		currentData = 0L;
+		if( currentDataPtr)
+		{
+			free( currentDataPtr);
+			currentDataPtr = 0L;
+		}
+		currentDataPos = 0L;
 		
 		resolved = YES;
+		
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadCompletionNotification object:[note object]];
+		
+		[[note object] release];
+		currentConnection = 0L;
 	}
 	
 	[pool release];
@@ -522,10 +536,7 @@ static char *GetPrivateIP()
 	
 		currentConnection = [[NSFileHandle alloc] initWithFileDescriptor:socketToRemoteServer closeOnDealloc:YES];
 		if( currentConnection)
-		{
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incomingConnection:) name:NSFileHandleReadCompletionNotification object:currentConnection];
-//			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(readAllTheData:) name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
-			
+		{			
 			 if(connect(socketToRemoteServer, (struct sockaddr *)socketAddress, sizeof(*socketAddress)) == 0)
 			 {
 				// transfering the type of data we need
@@ -725,8 +736,16 @@ static char *GetPrivateIP()
 				
 				[currentConnection writeData: toTransfer];
 				
-				[currentConnection readInBackgroundAndNotifyForModes: [NSArray arrayWithObject:@"OsiriXLoopMode"]];
-//				[currentConnection readToEndOfFileInBackgroundAndNotifyForModes: [NSArray arrayWithObject:@"OsiriXLoopMode"]];
+				if ((strcmp( messageToRemoteService, "DATAB") == 0))
+				{
+					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incomingConnection:) name:NSFileHandleReadCompletionNotification object:currentConnection];
+					[currentConnection readInBackgroundAndNotifyForModes: [NSArray arrayWithObject:OSIRIXRUNMODE]];
+				}
+				else
+				{
+					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(readAllTheData:) name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
+					[currentConnection readToEndOfFileInBackgroundAndNotifyForModes: [NSArray arrayWithObject:OSIRIXRUNMODE]];
+				}
 				
 				succeed = YES;
 			}
@@ -1061,7 +1080,7 @@ static char *GetPrivateIP()
 		
 		while( resolved == NO && [currentTimeOut timeIntervalSinceNow] >= 0)
 		{
-			[run runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+			[run runMode:OSIRIXRUNMODE beforeDate: [NSDate distantFuture]];
 		}
 	}
 	
@@ -1096,7 +1115,7 @@ static char *GetPrivateIP()
 	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: dict];
 	while( threadIsRunning == YES  && connectToServerAborted == NO)
 	{
-		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow: 0.002]];
+		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow: 0.01]];
 		
 		if( w)
 		{
@@ -1104,7 +1123,7 @@ static char *GetPrivateIP()
 			
 			if( BonjourDatabaseIndexFileSize)
 			{
-				int currentPercentage = [currentData length] / 1024;
+				int currentPercentage = [currentData length];
 				
 				currentPercentage = currentPercentage * 10 / BonjourDatabaseIndexFileSize;
 				currentPercentage *= 10;
@@ -1357,7 +1376,7 @@ static char *GetPrivateIP()
 			BonjourDatabaseIndexFileSize = 0;
 			if( [self connectToServer: index message: @"DBSIZ"] == YES)
 			{
-				NSLog( @"BonjourDatabaseIndexFileSize = %d Kb", BonjourDatabaseIndexFileSize);
+				NSLog( @"BonjourDatabaseIndexFileSize = %d Kb", BonjourDatabaseIndexFileSize/1024);
 				
 				// For async writing
 				[[NSFileManager defaultManager] removeFileAtPath: tempDatabaseFile handler: 0L];

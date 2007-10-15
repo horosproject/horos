@@ -254,7 +254,7 @@ static char *GetPrivateIP()
 				
 				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
 				
-				int size, fileSize = [[fattrs objectForKey:NSFileSize] longLongValue] / 1024;
+				int size, fileSize = [[fattrs objectForKey:NSFileSize] longLongValue];
 				
 				representationToSend = [NSMutableData data];
 				
