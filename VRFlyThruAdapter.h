@@ -12,7 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
-
+/** \brief Flythru adaptor for VR
+*/
 
 
 #import <Cocoa/Cocoa.h>

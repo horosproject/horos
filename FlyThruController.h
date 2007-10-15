@@ -12,7 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
-
+/** \brief Window Controller for flythrus
+*/
 
 
 #import <Cocoa/Cocoa.h>

@@ -13,6 +13,8 @@
 =========================================================================*/
 
 
+/** \brief Linear interpolation for flythru
+*/
 
 
 #import <Cocoa/Cocoa.h>

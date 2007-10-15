@@ -13,6 +13,9 @@
 =========================================================================*/
 
 
+/** \brief Interpolates flight path between flythru steps
+*/
+
 
 
 #import <Cocoa/Cocoa.h>

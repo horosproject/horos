@@ -12,7 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
-
+/** \brief Spline interpolation for flythru
+*/
 
 
 #import <Cocoa/Cocoa.h>

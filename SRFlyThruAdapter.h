@@ -13,7 +13,8 @@
 =========================================================================*/
 
 
-
+/** \brief Flythru adaptor for SR
+*/
 
 #import <Cocoa/Cocoa.h>
 #import "FlyThruAdapter.h"

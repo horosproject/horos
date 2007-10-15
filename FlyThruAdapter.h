@@ -13,6 +13,11 @@
 =========================================================================*/
 
 
+/** \brief Adaptor for flythru
+*
+*  Adaptor flythru
+*  Subclassed for SR, VR, VRPro
+*/
 
 
 #import <Cocoa/Cocoa.h>
