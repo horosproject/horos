@@ -3208,7 +3208,7 @@ static NSArray*	statesArray = nil;
 
 - (void) outlineViewRefresh		// This function creates the 'root' array for the outlineView
 {
-	if( [self.window isVisible] == NO) return;
+	if( databaseOutline == 0L) return;
 	
 	NSError				*error =nil;
 	NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
@@ -12280,16 +12280,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction)bonjourServiceClicked: (id)sender
 {
-	[[self window] orderOut: self];
-	[self drawerToggle: self];
-
-	NSArray	*viewers = [ViewerController getDisplayed2DViewers];
+	NSArray *viewers = [ViewerController getDisplayed2DViewers];
+	
+	for( ViewerController *v in viewers)
+		[v checkEverythingLoaded];
 	
 	[[AppController sharedAppController] closeAllViewers: self];	
 	
 	[self waitForRunningProcesses];
 	[bonjourBrowser waitTheLock];
-	
+
     int index = [bonjourServicesList selectedRow]-1;
 	
 	[bonjourReportFilesToCheck removeAllObjects];
@@ -12305,6 +12305,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		else	// NETWORK - DATABASE - bonjour / fixedIP
 		{
+			[[self window] performClose: self];
+			[albumDrawer close];
+		
 			NSString	*path = [bonjourBrowser getDatabaseFile: index showWaitingWindow: YES];
 						
 			if( path == nil )
@@ -12320,6 +12323,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				[self openDatabaseIn: path Bonjour: YES];
 			}
+			
+			[albumDrawer open];
+			[[self window] makeKeyAndOrderFront: self];
 		}
 	}
 	else // LOCAL DEFAULT DATABASE
@@ -12334,9 +12340,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if( [path isEqualToString: currentDatabasePath] == NO)
 			[self openDatabaseIn: path Bonjour: NO];
 	}
-	
-	[self drawerToggle: self];
-	[[self window] makeKeyAndOrderFront: self];
 }
 
 - (NSString*) localDatabasePath {

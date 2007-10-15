@@ -449,19 +449,19 @@ static char *GetPrivateIP()
 	
 	[async lock];
 		int size = currentDataPos - lastAsyncPos;
+		int pos = lastAsyncPos;
+		lastAsyncPos = currentDataPos;
 	[async unlock];
 	
+	if( size <= 0)
+		return;
+	
 	[asyncWrite lock];
-	FILE *f = fopen ([p UTF8String], "wb");
-	fseek( f, 0L, SEEK_END);
-	
-	fwrite( currentDataPtr + lastAsyncPos, size, 1, f);
-	
+	FILE *f = fopen ([p UTF8String], "ab");
+	fwrite( currentDataPtr + pos, size, 1, f);
 	fclose( f);
 	
 	[asyncWrite unlock];
-	
-	lastAsyncPos = currentDataPos;
 	
 	[pool release];
 }
@@ -483,6 +483,10 @@ static char *GetPrivateIP()
 			currentDataPtr = malloc( BonjourDatabaseIndexFileSize);
 			currentDataPos = 0L;
 		}
+		
+		if( currentDataPos + length >= BonjourDatabaseIndexFileSize)
+			NSLog( @"error: currentDataPos + length >= BonjourDatabaseIndexFileSize");
+		
 		memcpy( currentDataPtr + currentDataPos, [incomingData bytes], length);
 		currentDataPos += length;
 		
@@ -1388,8 +1392,12 @@ static char *GetPrivateIP()
 			{
 				NSLog( @"BonjourDatabaseIndexFileSize = %d Kb", BonjourDatabaseIndexFileSize/1024);
 				
+				if( currentDataPtr) free( currentDataPtr);
+				currentDataPtr = 0L;
+				
 				// For async writing
 				[[NSFileManager defaultManager] removeFileAtPath: tempDatabaseFile handler: 0L];
+				[[NSFileManager defaultManager] createFileAtPath: tempDatabaseFile contents:0L attributes:0L];
 				lastAsyncPos = 0L;
 				[asyncWrite lock];
 				[asyncWrite unlock];
