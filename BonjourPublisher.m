@@ -62,6 +62,7 @@ static char *GetPrivateIP()
 		netService = 0L;
 		
 		connectionLock = [[NSLock alloc] init];
+		subConnectionLock = [[NSRecursiveLock alloc] init];
 	}
 	return self;
 }
@@ -250,6 +251,8 @@ static char *GetPrivateIP()
 		
 		if( incomingConnection)
 		{
+			[subConnectionLock lock];
+			
 			// Waiting for incomming message (6 first bytes)
 			while ( [data length] < 6 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 			
@@ -818,6 +821,8 @@ while ( [data length] < pos + 4 && (readData = [incomingConnection availableData
 			
 			[incomingConnection writeData:representationToSend];
 			[incomingConnection closeFile];
+			
+			[subConnectionLock unlock];
 		}
 	}
 	@catch( NSException *ne)
@@ -831,6 +836,11 @@ while ( [data length] < pos + 4 && (readData = [incomingConnection availableData
 	if( saveDB) [interfaceOsiriX performSelectorOnMainThread:@selector( saveDatabase:) withObject:0L waitUntilDone: YES];			// This has to be performed on the main thread
 	
 	[mPool release];
+}
+
+- (NSRecursiveLock*) subConnectionLock
+{
+	return subConnectionLock;
 }
 
 - (void) connectionReceived:(NSNotification *)aNotification

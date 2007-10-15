@@ -26,6 +26,7 @@
 	BrowserController	*interfaceOsiriX;
 	
 	NSLock				*connectionLock;
+	NSRecursiveLock		*subConnectionLock;
 }
 
 - (id)initWithBrowserController: (BrowserController*) bC;
@@ -44,5 +45,6 @@
 
 - (void)setServiceName:(NSString *) newName;
 - (NSString *) serviceName;
+- (NSRecursiveLock*) subConnectionLock;
 
 @end

@@ -490,7 +490,7 @@ static char *GetPrivateIP()
 		memcpy( currentDataPtr + currentDataPos, [incomingData bytes], length);
 		currentDataPos += length;
 		
-		NSLog( @"%d", length);
+//		NSLog( @"%d", length);
 		
 		[async unlock];
 		
@@ -1117,7 +1117,6 @@ static char *GetPrivateIP()
 	
 	connectToServerAborted = NO;
 	
-	//if( [message isEqualToString:@"DATAB"] || [message isEqualToString:@"DBVER"])
 	w = waitWindow;
 
 	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L];
