@@ -12,7 +12,11 @@
      PURPOSE.
 =========================================================================*/
 
-// This class represents a 3D Point;
+/** \brief  Represents a a 3D Point
+*
+*  Represents a 3D Point
+*  Has x, y, and z positions as float
+*/
 
 
 #import <Cocoa/Cocoa.h>

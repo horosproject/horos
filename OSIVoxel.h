@@ -17,7 +17,25 @@
      PURPOSE.
 =========================================================================*/
 
-// This class represents a 3D Voxel;
+/** \brief  Represents a 3D Voxel.  
+*
+*  Represents a 3D Voxel.  
+*  x, y, and z represent the 3D Point
+*  voxelWidth, voxelHeight, voxelDepth represent the size
+*  value is the pixel value
+*  userInfo is anything
+*
+*
+*  Has properties:
+*  float		x
+*  float		y
+*  float		x
+*  NSNumber		*value
+*  float		voxelWidth
+*  float		voxelHeight
+*  float		voxelDepth
+*  id			userInfo
+*/
 
 #import <Cocoa/Cocoa.h>
 
