@@ -1423,11 +1423,6 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (void)bonjourRunLoop: (id)sender
-{
-//	[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-}
-
 -(void)openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour {
 	[self waitForRunningProcesses];
 	
@@ -1441,15 +1436,6 @@ static NSArray*	statesArray = nil;
 	currentDatabasePath = [a retain];
 	isCurrentDatabaseBonjour = isBonjour;
 	[self loadDatabase: currentDatabasePath];
-	
-	if( isCurrentDatabaseBonjour ) {
-		bonjourRunLoopTimer = [[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(bonjourRunLoop:) userInfo:self repeats:YES] retain];
-	}
-	else
-	{
-		[bonjourRunLoopTimer release];
-		bonjourRunLoopTimer = 0L;
-	}
 	
 	[wait close];
 	[wait release];
@@ -8691,7 +8677,6 @@ static NSArray*	openSubSeriesArray = 0L;
 		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain];
 		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval:35 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain];
 		
-		bonjourRunLoopTimer = nil;
 		
 		loadPreviewIndex = 0;
 		matrixDisplayIcons = [[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(matrixDisplayIcons:) userInfo:self repeats:YES] retain];

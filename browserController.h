@@ -80,7 +80,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
     DCMPix                  *curPreviewPix;
     
-    NSTimer                 *timer, *IncomingTimer, *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer, *bonjourTimer, *bonjourRunLoopTimer, *deleteQueueTimer, *autoroutingQueueTimer;
+    NSTimer                 *timer, *IncomingTimer, *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer, *bonjourTimer, *deleteQueueTimer, *autoroutingQueueTimer;
 	long					loadPreviewIndex, previousNoOfFiles;
 	NSManagedObject			*previousItem;
     
@@ -430,7 +430,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSString*) askPassword;
 - (void) resetToLocalDatabase;
 - (void) createContextualMenu;
-- (void) bonjourRunLoop:(id) sender;
 - (void) checkIncomingThread:(id) sender;
 - (void) checkIncoming:(id) sender;
 - (NSArray*) openSubSeries: (NSArray*) toOpenArray;

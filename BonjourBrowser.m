@@ -61,13 +61,15 @@ static char *GetPrivateIP()
 
 + (void) waitForLock:(NSLock*) l
 {
-	while( [l tryLock] == NO)
-	{
-		if( [NSThread currentThread] == mainThread)
-		{
-			[[NSRunLoop currentRunLoop] runMode: OSIRIXRUNMODE beforeDate:[NSDate dateWithTimeIntervalSinceNow: 0.002]];
-		}
-	}
+	[l lock];
+	
+//	while( [l tryLock] == NO)
+//	{
+//		if( [NSThread currentThread] == mainThread)
+//		{
+//			[[NSRunLoop currentRunLoop] runMode: OSIRIXRUNMODE beforeDate:[NSDate dateWithTimeIntervalSinceNow: 0.002]];
+//		}
+//	}
 }
 
 - (void) waitTheLock
@@ -145,7 +147,7 @@ static char *GetPrivateIP()
 		
 		[browser searchForServicesOfType:@"_osirix._tcp." inDomain:@""];
 		
-		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: OSIRIXRUNMODE];
+		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
 															  selector: @selector(updateFixedList:)
@@ -824,8 +826,8 @@ static char *GetPrivateIP()
 			else
 			{
 				NSLog( @"Failed to connect to the distant computer: is there a firewall on port 8780?? is OsiriX running on this distant computer?? aborted??");
-				[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadCompletionNotification object: currentConnection];
-				[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
+//				[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadCompletionNotification object: currentConnection];
+//				[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
 				[currentConnection release];
 				currentConnection = 0L;
 			}

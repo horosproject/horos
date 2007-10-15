@@ -1760,11 +1760,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[imageView stopROIEditingForce: YES];
 	
 	stopThreadLoadImage = YES;
-	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-	{
-		while( [ThreadLoadImageLock tryLock] == NO) [[BrowserController currentBrowser] bonjourRunLoop: self];
-	}
-	else [ThreadLoadImageLock lock];
+	[ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
 	
 	// **************************
@@ -1805,11 +1801,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     }
 	
 	stopThreadLoadImage = YES;
-	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-	{
-		while( [ThreadLoadImageLock tryLock] == NO) [[BrowserController currentBrowser] bonjourRunLoop: self];
-	}
-	else [ThreadLoadImageLock lock];
+	[ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
 	while( ThreadLoadImage)
 		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
@@ -4438,11 +4430,7 @@ static ViewerController *draggedController = 0L;
 	int x,i,z;
 	
 	stopThreadLoadImage = YES;
-	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-	{
-		while( [ThreadLoadImageLock tryLock] == NO) [[BrowserController currentBrowser] bonjourRunLoop: self];
-	}
-	else [ThreadLoadImageLock lock];
+	[ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
 
 	while( ThreadLoadImage)
@@ -15996,18 +15984,7 @@ long i;
 		WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Data loading...", nil)];
 		[splash showWindow:self];
 		
-		if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
-		{
-			while( [ThreadLoadImageLock tryLock] == NO)
-			{
-				[[BrowserController currentBrowser] bonjourRunLoop: self];
-				
-			}
-		}
-		else
-		{
-			while( [ThreadLoadImageLock tryLock] == NO) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
-		}
+		while( [ThreadLoadImageLock tryLock] == NO) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
 		
 		[ThreadLoadImageLock unlock];
 		
