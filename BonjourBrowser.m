@@ -788,7 +788,11 @@ static char *GetPrivateIP()
 						while( (readData = [currentConnection availableData]) && [readData length])
 						{
 							[data appendData: readData];
-
+							
+							NSDate *oldCurrentTimeOut = currentTimeOut;
+							currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
+							[oldCurrentTimeOut release];
+							
 //							NSLog( @"%d", [readData length]);
 						}
 						
