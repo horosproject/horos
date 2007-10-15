@@ -28,7 +28,7 @@
 
 #define FILESSIZE 512*512*2
 
-static int TIMEOUT	= 30;
+static int TIMEOUT	= 10;
 #define USEZIP NO
 
 #define OSIRIXRUNMODE @"OsiriXLoopMode"
@@ -500,8 +500,9 @@ static char *GetPrivateIP()
 				[NSThread detachNewThreadSelector: @selector( asyncWrite:) toTarget: self withObject: tempDatabaseFile];
 		}
 		
-		[currentTimeOut release];
+		NSDate *oldCurrentTimeOut = currentTimeOut;
 		currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
+		[oldCurrentTimeOut release];
 	}
 	else
 	{
@@ -1140,24 +1141,11 @@ static char *GetPrivateIP()
 - (void) resolveServiceThread:(NSDictionary*) object
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-	BOOL				succeed;
 	
 	resolved = NO;
-	succeed = [self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: (char*) [[object valueForKey:@"msg"] UTF8String]];
 	
-//	if( succeed)
-//	{
-//		NSRunLoop		*run = [NSRunLoop currentRunLoop];
-//		
-//		[currentTimeOut release];
-//		currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
-//		
-//		while( resolved == NO && [currentTimeOut timeIntervalSinceNow] >= 0 && connectToServerAborted == NO)
-//		{
-//			[run runMode:OSIRIXRUNMODE beforeDate: [NSDate distantFuture]];
-//		}
-//	}
-	
+	[self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: (char*) [[object valueForKey:@"msg"] UTF8String]];
+
 	[pool release];
 	
 	threadIsRunning = NO;
@@ -1187,7 +1175,7 @@ static char *GetPrivateIP()
 	
 	threadIsRunning = YES;
 	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: dict];
-	while( threadIsRunning == YES  && connectToServerAborted == NO)
+	while( threadIsRunning == YES  && connectToServerAborted == NO && [currentTimeOut timeIntervalSinceNow] >= 0)
 	{
 		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow: 0.01]];
 		

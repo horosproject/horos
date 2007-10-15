@@ -308,12 +308,10 @@ static IChatTheatreDelegate	*iChatDelegate = 0L;
 
 - (void)showIChatHelp;
 {
-//	if(![[[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys] containsObject:@"DONT_DISPLAY_ICHAT_HELP"])
-//		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"DONT_DISPLAY_ICHAT_HELP"];
-//	else
-	if([[NSUserDefaults standardUserDefaults] boolForKey:@"DONT_DISPLAY_ICHAT_HELP"]) return;
+	if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) == 0)
+		if([[NSUserDefaults standardUserDefaults] boolForKey:@"DONT_DISPLAY_ICHAT_HELP"]) return;
 
-		NSArray				*winList = [NSApp windows];
+	NSArray				*winList = [NSApp windows];
 	
 	for( id loopItem in winList)
 	{

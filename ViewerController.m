@@ -3895,7 +3895,7 @@ static ViewerController *draggedController = 0L;
 										PlayToolbarItemIdentifier,
 										SpeedToolbarItemIdentifier,
 										VRPanelToolbarItemIdentifier,
-										PrintToolbarItemIdentifier,
+										iChatBroadCastToolbarItemIdentifier,
 										XMLToolbarItemIdentifier,
 										nil];
 }
