@@ -751,6 +751,24 @@ static char *GetPrivateIP()
 				
 				[currentConnection writeData: toTransfer];
 				
+				// *************
+				
+//				NSMutableData *data = [NSMutableData array];
+//				NSData *readData = 0L;
+//
+//				while ((readData = [currentConnection availableData]) && [readData length])
+//				{
+//					[data appendData: readData];
+//				}
+//				
+//				[self processTheData: data];
+//				
+//				[currentConnection release];
+//				currentConnection = 0L;
+//				resolved = YES;
+				
+				// *************
+				
 				if ((strcmp( messageToRemoteService, "DATAB") == 0))
 				{
 					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incomingConnection:) name:NSFileHandleReadCompletionNotification object:currentConnection];
