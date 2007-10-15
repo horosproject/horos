@@ -712,7 +712,7 @@ while ( [data length] < pos + 4 && (readData = [incomingConnection availableData
 				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &noOfFiles];	noOfFiles = NSSwapBigIntToHost( noOfFiles);
 				pos += 4;
 				
-				representationToSend = [NSMutableData dataWithCapacity: 0];
+				representationToSend = [NSMutableData dataWithCapacity: 512*512*2*(noOfFiles+1)];
 				
 				for( i = 0; i < noOfFiles; i++)
 				{
@@ -805,7 +805,8 @@ while ( [data length] < pos + 4 && (readData = [incomingConnection availableData
 					
 					if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO) NSLog( @"Bonjour Publisher - File doesn't exist at path: %@", path);
 					
-					NSData	*content = [[NSFileManager defaultManager] contentsAtPath: path];
+//					NSData	*content = [[NSFileManager defaultManager] contentsAtPath: path];
+					NSData	*content = [NSData dataWithContentsOfMappedFile: path];
 					
 					size = NSSwapHostIntToBig( [content length]);
 					[representationToSend appendBytes: &size length: 4];

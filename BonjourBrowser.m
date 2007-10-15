@@ -783,7 +783,7 @@ static char *GetPrivateIP()
 				else
 				{
 					NSData *readData = 0L;
-					NSMutableData *data = [NSMutableData data];
+					NSMutableData *data = [NSMutableData dataWithCapacity: 512*512*2*20];
 					
 					@try
 					{
