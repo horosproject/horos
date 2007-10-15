@@ -99,5 +99,7 @@
 
 - (BOOL) connectToAdress: (NSString*) address port: (int) port;
 
+- (void) incomingConnectionProcess: (NSData*) data;
+
 - (NSDictionary*) getDICOMDestinationInfo:(int) index;
 @end

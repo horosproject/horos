@@ -421,27 +421,27 @@ static char *GetPrivateIP()
 	return success;
 }
 
-- (void)readAllTheData:(NSNotification *)note
-{
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash (remplissage memoire) - Antoine
-	BOOL				success = YES;
-	NSData				*data = [[[note userInfo] objectForKey:NSFileHandleNotificationDataItem] retain];
-	
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: [note object]];
-	[[note object] release];
-	currentConnection = 0L;
-
-	if( data)
-	{
-		success = [self processTheData: data];
-	}
-	
-	[data release];
-	
-	resolved = YES;
-	
-	[pool release];
-}
+//- (void)readAllTheData:(NSNotification *)note
+//{
+//	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash (remplissage memoire) - Antoine
+//	BOOL				success = YES;
+//	NSData				*data = [[[note userInfo] objectForKey:NSFileHandleNotificationDataItem] retain];
+//	
+//	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: [note object]];
+//	[[note object] release];
+//	currentConnection = 0L;
+//
+//	if( data)
+//	{
+//		success = [self processTheData: data];
+//	}
+//	
+//	[data release];
+//	
+//	resolved = YES;
+//	
+//	[pool release];
+//}
 
 - (void) asyncWrite: (NSString*) p
 {
@@ -468,17 +468,12 @@ static char *GetPrivateIP()
 	[pool release];
 }
 
-- (void) incomingConnection:(NSNotification *)note
+- (void) incomingConnectionProcess: (NSData*) incomingData
 {
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-	
-	NSData		*incomingData = [[note userInfo] objectForKey: NSFileHandleNotificationDataItem];
 	int length = [incomingData length];
 	
 	if( incomingData && length)
 	{
-		[[note object] readInBackgroundAndNotifyForModes: [NSArray arrayWithObject:OSIRIXRUNMODE]];
-		
 		[async lock];
 		if( currentDataPtr == 0L)
 		{
@@ -522,14 +517,25 @@ static char *GetPrivateIP()
 		
 		resolved = YES;
 		
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadCompletionNotification object:[note object]];
-		
-		[[note object] release];
+		[currentConnection closeFile];
+		[currentConnection release];
 		currentConnection = 0L;
 	}
-	
-	[pool release];
 }
+
+//- (void) incomingConnection:(NSNotification *) note
+//{
+//	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+//	
+//	NSData		*incomingData = [[note userInfo] objectForKey: NSFileHandleNotificationDataItem];
+//	
+//	[self incomingConnectionProcess: incomingData];
+//	
+//	if( [incomingData length]) [currentConnection readInBackgroundAndNotifyForModes: [NSArray arrayWithObject:OSIRIXRUNMODE]];
+//	else [[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadCompletionNotification object:currentConnection];
+//	
+//	[pool release];
+//}
 
 
 //socket.h
@@ -752,33 +758,66 @@ static char *GetPrivateIP()
 				[currentConnection writeData: toTransfer];
 				
 				// *************
-				
-//				NSMutableData *data = [NSMutableData array];
-//				NSData *readData = 0L;
-//
-//				while ((readData = [currentConnection availableData]) && [readData length])
-//				{
-//					[data appendData: readData];
-//				}
-//				
-//				[self processTheData: data];
-//				
-//				[currentConnection release];
-//				currentConnection = 0L;
-//				resolved = YES;
-				
-				// *************
-				
 				if ((strcmp( messageToRemoteService, "DATAB") == 0))
 				{
-					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incomingConnection:) name:NSFileHandleReadCompletionNotification object:currentConnection];
-					[currentConnection readInBackgroundAndNotifyForModes: [NSArray arrayWithObject:OSIRIXRUNMODE]];
+					NSData *readData = 0L;
+					
+					@try
+					{
+						while( connectToServerAborted == NO && (readData = [currentConnection availableData]) && [readData length])
+						{
+							[self incomingConnectionProcess: readData];
+							
+//							NSLog( @"%d", [readData length]);
+						}
+						
+						[self incomingConnectionProcess: readData];
+					}
+					@catch ( NSException *e)
+					{
+						NSLog(@"connectToService 'DATAB' exception: %@", e);
+					}
 				}
 				else
 				{
-					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(readAllTheData:) name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
-					[currentConnection readToEndOfFileInBackgroundAndNotifyForModes: [NSArray arrayWithObject:OSIRIXRUNMODE]];
+					NSData *readData = 0L;
+					NSMutableData *data = [NSMutableData data];
+					
+					@try
+					{
+						while( (readData = [currentConnection availableData]) && [readData length])
+						{
+							[data appendData: readData];
+
+//							NSLog( @"%d", [readData length]);
+						}
+						
+						[self processTheData: data];
+						
+						[currentConnection closeFile];
+						[currentConnection release];
+						currentConnection = 0L;
+						
+						resolved = YES;
+					}
+					@catch ( NSException *e)
+					{
+						NSLog(@"connectToService exception: %@", e);
+					}
 				}
+				
+				// *************
+				
+//				if ((strcmp( messageToRemoteService, "DATAB") == 0))
+//				{
+//					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incomingConnection:) name:NSFileHandleReadCompletionNotification object:currentConnection];
+//					[currentConnection readInBackgroundAndNotifyForModes: [NSArray arrayWithObject:OSIRIXRUNMODE]];
+//				}
+//				else
+//				{
+//					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(readAllTheData:) name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
+//					[currentConnection readToEndOfFileInBackgroundAndNotifyForModes: [NSArray arrayWithObject:OSIRIXRUNMODE]];
+//				}
 				
 				succeed = YES;
 			}
@@ -1104,18 +1143,18 @@ static char *GetPrivateIP()
 	resolved = NO;
 	succeed = [self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: (char*) [[object valueForKey:@"msg"] UTF8String]];
 	
-	if( succeed)
-	{
-		NSRunLoop		*run = [NSRunLoop currentRunLoop];
-		
-		[currentTimeOut release];
-		currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
-		
-		while( resolved == NO && [currentTimeOut timeIntervalSinceNow] >= 0 && connectToServerAborted == NO)
-		{
-			[run runMode:OSIRIXRUNMODE beforeDate: [NSDate distantFuture]];
-		}
-	}
+//	if( succeed)
+//	{
+//		NSRunLoop		*run = [NSRunLoop currentRunLoop];
+//		
+//		[currentTimeOut release];
+//		currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
+//		
+//		while( resolved == NO && [currentTimeOut timeIntervalSinceNow] >= 0 && connectToServerAborted == NO)
+//		{
+//			[run runMode:OSIRIXRUNMODE beforeDate: [NSDate distantFuture]];
+//		}
+//	}
 	
 	[pool release];
 	
@@ -1171,15 +1210,15 @@ static char *GetPrivateIP()
 	
 	if( connectToServerAborted)
 	{
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadCompletionNotification object: currentConnection];
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
-		[currentConnection closeFile];
+//		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadCompletionNotification object: currentConnection];
+//		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
 		
 		while( threadIsRunning == YES)
 		{
 			[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 		}
 		
+		[currentConnection closeFile];
 		[currentConnection release];
 		currentConnection = 0L;
 		
