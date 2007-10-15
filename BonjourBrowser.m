@@ -104,6 +104,8 @@ static char *GetPrivateIP()
 	{
 		int i;
 		
+		async = [[NSLock alloc] init];
+		asyncWrite = [[NSLock alloc] init];
 		lock = [[NSLock alloc] init];
 		browser = [[NSNetServiceBrowser alloc] init];
 		services = [[NSMutableArray array] retain];
@@ -119,6 +121,7 @@ static char *GetPrivateIP()
 		
 		publisher = bPub;
 		
+		tempDatabaseFile = [[self databaseFilePathForService: @"incomingDatabaseFile"] retain];
 		dbFileName = 0L;
 		dicomFileNames = 0L;
 		paths = 0L;
@@ -160,6 +163,12 @@ static char *GetPrivateIP()
 	[modelVersion release];
 	[FileModificationDate release];
 	[filePathToLoad release];
+	[tempDatabaseFile release];
+	[lock release];
+	[asyncWrite release];
+	[async release];
+	[browser release];
+	[services release];
 	
 	[super dealloc];
 }
@@ -215,10 +224,9 @@ static char *GetPrivateIP()
 				else dbFileName = [[self databaseFilePathForService:[dict valueForKey:@"Description"]] retain];
 				
 				[[NSFileManager defaultManager] removeFileAtPath: dbFileName handler:0L];
+				[[NSFileManager defaultManager] movePath: tempDatabaseFile toPath: dbFileName handler: 0L];
 				
-				success = [data writeToFile: dbFileName atomically:YES];
-				
-			//	success = [[NSFileManager defaultManager] createFileAtPath: dbFileName contents:data attributes:nil];
+//				success = [data writeToFile: dbFileName atomically:YES];
 			}
 			else if ( strcmp( messageToRemoteService, "GETDI") == 0)
 			{
@@ -436,6 +444,30 @@ static char *GetPrivateIP()
 //	[pool release];
 //}
 
+- (void) asyncWrite: (NSString*) p
+{
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	
+	[async lock];
+		int size = [currentData length] - lastAsyncPos;
+		void *buffer = malloc( size);
+		[currentData getBytes: buffer range: NSMakeRange( lastAsyncPos, [currentData length] - lastAsyncPos)];
+		lastAsyncPos = [currentData length];
+	[async unlock];
+	
+	[asyncWrite lock];
+	FILE *f = fopen ([p UTF8String], "wb");
+	fseek( f, 0L, SEEK_END);
+	
+	fwrite( buffer, size, 1, f);
+	
+	fclose( f);
+	
+	free( buffer);
+	[asyncWrite unlock];
+	
+	[pool release];
+}
 
 - (void) incomingConnection:(NSNotification *)note
 {
@@ -446,15 +478,26 @@ static char *GetPrivateIP()
 	if( incomingData && [incomingData length])
 	{
 		[[note object] readInBackgroundAndNotifyForModes: [NSArray arrayWithObject:@"OsiriXLoopMode"]];
-	
+		
+		[async lock];
 		if( currentData == 0L) currentData = [[NSMutableData dataWithData: incomingData] retain];
 		else [currentData appendData: incomingData];
+		[async unlock];
+		
+		if ( strcmp( messageToRemoteService, "DATAB") == 0)
+		{
+			if( [currentData length] - lastAsyncPos > 1024L * 1024L * 10L)
+				[NSThread detachNewThreadSelector: @selector( asyncWrite:) toTarget: self withObject: tempDatabaseFile];
+		}
 		
 		[currentTimeOut release];
 		currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
 	}
 	else
 	{
+		if ( strcmp( messageToRemoteService, "DATAB") == 0)
+			[self asyncWrite: tempDatabaseFile];
+		
 		BOOL success = [self processTheData: currentData];
 		
 		[currentData release];
@@ -1315,7 +1358,15 @@ static char *GetPrivateIP()
 			if( [self connectToServer: index message: @"DBSIZ"] == YES)
 			{
 				NSLog( @"BonjourDatabaseIndexFileSize = %d Kb", BonjourDatabaseIndexFileSize);
-			
+				
+				// For async writing
+				[[NSFileManager defaultManager] removeFileAtPath: tempDatabaseFile handler: 0L];
+				lastAsyncPos = 0L;
+				[asyncWrite lock];
+				[asyncWrite unlock];
+				[async lock];
+				[async unlock];
+				
 				if( [self connectToServer: index message: @"DATAB"] == YES)
 				{
 					[self connectToServer: index message: @"VERSI"];

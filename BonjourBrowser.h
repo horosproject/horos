@@ -19,7 +19,11 @@
 
 @interface BonjourBrowser : NSObject
 {
-	NSLock				*lock;
+	NSLock				*lock, *async, *asyncWrite;
+	
+	int					lastAsyncPos;
+	NSString			*tempDatabaseFile;
+		
     NSNetServiceBrowser	*browser;
 	NSMutableArray		*services;
     NSNetService		*serviceBeingResolved;
@@ -56,6 +60,8 @@
 	NSFileHandle		*currentConnection;
 	NSMutableData		*currentData;
 	NSDate				*currentTimeOut;
+	
+
 }
 
 + (NSString*) bonjour2local: (NSString*) str;
