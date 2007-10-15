@@ -540,8 +540,6 @@ static char *GetPrivateIP()
 //	[pool release];
 //}
 
-
-//socket.h
 - (BOOL) connectToService: (struct sockaddr_in*) socketAddress
 {
 	BOOL succeed = NO;
@@ -552,7 +550,6 @@ static char *GetPrivateIP()
 //
 //	setsockopt( socketToRemoteServer, SOL_SOCKET, SO_SNDBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
 //	setsockopt( socketToRemoteServer, SOL_SOCKET, SO_RCVBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
-
 	
 	if(socketToRemoteServer > 0)
 	{
