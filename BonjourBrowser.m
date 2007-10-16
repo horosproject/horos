@@ -1186,6 +1186,10 @@ static char *GetPrivateIP()
 	
 	long long previousPercentage = 0;
 	
+	NSDate *oldCurrentTimeOut = currentTimeOut;
+	currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
+	[oldCurrentTimeOut release];
+	
 	threadIsRunning = YES;
 	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: dict];
 	while( threadIsRunning == YES  && connectToServerAborted == NO && [currentTimeOut timeIntervalSinceNow] >= 0)
