@@ -486,9 +486,14 @@ static char *GetPrivateIP()
 		if( currentDataPtr)
 		{
 			if( currentDataPos + length > BonjourDatabaseIndexFileSize)
+			{
 				NSLog( @"error: currentDataPos + length > BonjourDatabaseIndexFileSize");
-			
-			memcpy( currentDataPtr + currentDataPos, [incomingData bytes], length);
+				[currentConnection closeFile];
+				[currentConnection release];
+				currentConnection = 0L;
+			}
+			else
+				memcpy( currentDataPtr + currentDataPos, [incomingData bytes], length);
 			currentDataPos += length;
 		}
 		

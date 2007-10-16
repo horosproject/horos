@@ -10749,8 +10749,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 //							 informativeTextWithFormat:@"Burn in Progress. Please Wait."];
 //		[alert runModal];
 	}
-	//send to OsirixBurner
-	
 }
 
 - (IBAction)anonymizeDICOM: (id)sender {
