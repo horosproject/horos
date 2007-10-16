@@ -121,9 +121,9 @@ extern "C"
 - (void) growlTitle:(NSString*) title description:(NSString*) description name:(NSString*) name;
 - (NSDictionary *) registrationDictionaryForGrowl;
 
-#pragma mark-
-#pragma mark display setters and getters
-- (IBAction) saveLayout: (id)sender;
+//#pragma mark-
+//#pragma mark display setters and getters
+//- (IBAction) saveLayout: (id)sender;
 
 #pragma mark-
 #pragma mark Geneva University Hospital (HUG) specific function
