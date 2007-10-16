@@ -15,6 +15,7 @@
 #import "TCPServer.h"
 
 @class HTTPConnection, HTTPServerRequest;
+/** \brief HTTP server for RIS integration */
 
 @interface HTTPServer : TCPServer {
 @private
@@ -31,6 +32,8 @@
 - (void)setDocumentRoot:(NSURL *)value;
 
 @end
+
+
 
 @interface HTTPServer (HTTPServerDelegateMethods)
 - (void)HTTPServer:(HTTPServer *)serv didMakeNewConnection:(HTTPConnection *)conn;

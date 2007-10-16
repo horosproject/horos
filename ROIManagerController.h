@@ -20,6 +20,9 @@ PURPOSE.
 #import "ROI.h"
 #import "ViewerController.h"
 
+
+/** \brief  Window Controlle for ROI management */
+
 @interface ROIManagerController : NSWindowController
 {
 		ViewerController			*viewer;

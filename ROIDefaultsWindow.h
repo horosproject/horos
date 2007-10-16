@@ -19,6 +19,7 @@
 #import "MyNSTextView.h"
 #import "ViewerController.h"
 
+/** \brief  Window Controller for ROI defaults */
 
 @interface ROIDefaultsWindow : NSWindowController {
 //	IBOutlet NSComboBox		*name;

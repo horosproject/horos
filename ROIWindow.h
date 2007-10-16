@@ -20,6 +20,8 @@
 #import "MyNSTextView.h"
 #import "ViewerController.h"
 
+/** \brief Window Controller for ROI */
+
 @interface ROIWindow : NSWindowController {
 	
 	ROI						*curROI;

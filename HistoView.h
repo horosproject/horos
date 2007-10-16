@@ -19,6 +19,8 @@
 
 @class ROI;
 
+/** \brief  View for histogram display */
+
 @interface HistoView : NSView
 {
         float					*dataArray;

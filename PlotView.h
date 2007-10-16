@@ -19,6 +19,8 @@
 
 @class ROI;
 
+/** \brief  Plot View */
+
 @interface PlotView : NSView
 {
 			float					*dataArray;

@@ -17,6 +17,7 @@
 
 #import <Foundation/Foundation.h>
 
+/** \brief Wrapper for NSPoint */
 
 @interface MyPoint : NSObject  <NSCoding>
 {

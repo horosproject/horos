@@ -23,6 +23,9 @@ typedef enum {
     kTCPServerNoSocketsAvailable = 3,
 } TCPServerErrorCode;
 
+
+/** \brief TCP Server for RIS intergration */
+
 @interface TCPServer : NSObject {
 @private
     id delegate;

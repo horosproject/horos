@@ -33,6 +33,8 @@ enum
 @class StringTexture;
 @class DCMObject;
 
+/** \brief ROI */
+
 @interface ROI : NSObject <NSCoding>
 {
 	NSLock			*roiLock;

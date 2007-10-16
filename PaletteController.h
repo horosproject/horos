@@ -18,6 +18,9 @@ PURPOSE.
 #import "DCMView.h"
 #import "ROI.h"
 @class ViewerController;
+
+/** \brief  Window Controller for ROI palette */
+
 @interface PaletteController : NSWindowController
 {
 	ViewerController			*viewer;

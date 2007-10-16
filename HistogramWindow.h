@@ -21,6 +21,8 @@
 
 #define HISTOSIZE 512
 
+/** \brief Window Controller for histogram display */
+
 @interface HistoWindow : NSWindowController {
 	
 	ROI						*curROI;

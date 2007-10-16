@@ -15,6 +15,8 @@
 #import <Cocoa/Cocoa.h>
 #import "HTTPServer.h"
 
+
+/** \brief XML-RPC for RIS integration */
 @interface XMLRPCMethods : NSObject
 {
 	HTTPServer	*httpServ;

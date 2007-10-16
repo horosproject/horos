@@ -19,6 +19,8 @@
 #import "ROI.h"
 #import "PlotView.h"
 
+/** \brief  Window Controller for Plot */
+
 @interface PlotWindow : NSWindowController {
 	
 	ROI						*curROI;
