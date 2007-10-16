@@ -36,7 +36,7 @@ It is a shared class.
 	//NSDictionary			*_advancedHangingProtocol;
 	BOOL					_hangingProtocolInUse;
 	BOOL					_useToolbarPanel;
-	NSMutableArray			*_windowControllers;
+//	NSMutableArray			*_windowControllers;	<- Major memory leak !
 	NSManagedObject			*_currentStudy;
 	NSArray					*_seriesSets;
 	int						_seriesSetIndex;

@@ -18,7 +18,7 @@
 =========================================================================*/
 
 #import "OSIWindowController.h"
-#import "WindowLayoutManager.h"
+//#import "WindowLayoutManager.h"
 
 @implementation OSIWindowController
 
@@ -26,9 +26,9 @@
 	if (self = [super initWithWindowNibName:(NSString *)windowNibName])
 	{
 		// Register with WindowLayoutManager
-		[[WindowLayoutManager sharedWindowLayoutManager] registerWindowController:self];
-	//	NSLog(@"Register Window: %@", NSStringFromClass([self class])); 
-	 // do what OsiriX needs to do for window Controllers
+//		[[WindowLayoutManager sharedWindowLayoutManager] registerWindowController:self];	<- MAJOR memory leak !!!!!!!
+//	//	NSLog(@"Register Window: %@", NSStringFromClass([self class])); 
+//	 // do what OsiriX needs to do for window Controllers
 	 
 	}
 	return self;
@@ -63,9 +63,9 @@
 	return nil;
 }
 
-- (void)windowWillClose:(NSNotification *)notification{
-	[[WindowLayoutManager sharedWindowLayoutManager] unregisterWindowController:self];
-}
+//- (void)windowWillClose:(NSNotification *)notification{
+//	[[WindowLayoutManager sharedWindowLayoutManager] unregisterWindowController:self];
+//}
 
 - (int)blendingType{
 	return _blendingType;

@@ -4729,28 +4729,26 @@ static NSArray*	statesArray = nil;
 			}
 		}
 		
-		if( windowsStateApplied == NO) {
-			if ( ![[WindowLayoutManager sharedWindowLayoutManager] hangStudy:item]) {
-				//Use Basic Hanging Protocols
-				[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[item valueForKey:@"modality"] description:[item valueForKey:@"studyName"]];
+		if( windowsStateApplied == NO)
+		{
+			[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[item valueForKey:@"modality"] description:[item valueForKey:@"studyName"]];
+			
+			NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
+			
+			if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
+			{
+				[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:0L];
+			}
+			else {
+				unsigned count = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
+				if( count < 1) count = 1;
 				
-				NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
+				NSMutableArray *children =  [NSMutableArray array];
 				
-				if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
-				{
-					[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:0L];
-				}
-				else {
-					unsigned count = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
-					if( count < 1) count = 1;
-					
-					NSMutableArray *children =  [NSMutableArray array];
-					
-					for ( int i = 0; i < count; i++ )
-						[children addObject:[[self childrenArray: item] objectAtIndex:i]];
-					
-					[self viewerDICOMInt :NO  dcmFile:children viewer:0L];
-				}
+				for ( int i = 0; i < count; i++ )
+					[children addObject:[[self childrenArray: item] objectAtIndex:i]];
+				
+				[self viewerDICOMInt :NO  dcmFile:children viewer:0L];
 			}
 		}
 	}
@@ -5146,120 +5144,111 @@ static NSArray*	statesArray = nil;
 
 -(void) loadNextSeries:(NSManagedObject *) curImage :(long) direction :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
 {
-	if ([[WindowLayoutManager sharedWindowLayoutManager] hangingProtocolInUse]) {
-		if (direction)
-			[[WindowLayoutManager sharedWindowLayoutManager] nextSeriesSet];
-		else
-			[[WindowLayoutManager sharedWindowLayoutManager] previousSeriesSet];
-	}
+	NSManagedObjectModel	*model = self.managedObjectModel;
+	NSManagedObjectContext	*context = self.managedObjectContext;
+	NSArray					*winList = [NSApp windows];
+	NSMutableArray			*viewersList = [[NSMutableArray alloc] initWithCapacity:0];
+	
+	if( [viewer FullScreenON]) [viewersList addObject: viewer];
 	else
 	{
-		NSManagedObjectModel	*model = self.managedObjectModel;
-		NSManagedObjectContext	*context = self.managedObjectContext;
-		NSArray					*winList = [NSApp windows];
-		NSMutableArray			*viewersList = [[NSMutableArray alloc] initWithCapacity:0];
-		
-		if( [viewer FullScreenON]) [viewersList addObject: viewer];
-		else
+		// If multiple viewer are opened, apply it to the entire list
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"])
 		{
-			// If multiple viewer are opened, apply it to the entire list
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"])
-			{
-				for( NSWindow *win in winList )	{
-					if( [[win windowController] isKindOfClass:[ViewerController class]]) {
-						[viewersList addObject: [win windowController]];
-					}
+			for( NSWindow *win in winList )	{
+				if( [[win windowController] isKindOfClass:[ViewerController class]]) {
+					[viewersList addObject: [win windowController]];
 				}
-				viewer = [viewersList objectAtIndex: 0];
-				curImage = [[viewer fileList] objectAtIndex: 0];
 			}
-			else {
-				[viewersList addObject: viewer];
-			}
+			viewer = [viewersList objectAtIndex: 0];
+			curImage = [[viewer fileList] objectAtIndex: 0];
 		}
-		
-		// FIND ALL STUDIES of this patient
-		NSManagedObject		*study = [curImage valueForKeyPath:@"series.study"];
-		NSManagedObject		*currentSeries = [curImage valueForKeyPath:@"series"];
-		
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientID == %@)", [study valueForKey:@"patientID"]];
-		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
-		[dbRequest setPredicate: predicate];
-		
-		[context retain];
-		[context lock];
-		
-		NSError	*error = nil;
-		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-		
-		if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound ) {
-			NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
-			NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
-			[sort release];
-			
-			studiesArray = [studiesArray sortedArrayUsingDescriptors: sortDescriptors];
-			
-			NSArray	*seriesArray = [NSArray array];
-			
-			for(NSManagedObject	*curStudy in studiesArray )	{				
-				seriesArray = [seriesArray arrayByAddingObjectsFromArray: [self childrenArray: curStudy]];
-			}
-			
-			NSInteger index = [seriesArray indexOfObject: currentSeries];
-			
-			if( index != NSNotFound ) {
-				if( direction == 0)	// Called from loadNextPatient
-				{
-					if( firstViewer == NO) direction = 1;
-				}
-				
-				index += direction*[viewersList count];
-				if( index < 0) index = 0;
-				if( index < [seriesArray count ] ) {
-					for( ViewerController *vc in viewersList ) {
-						if( index >= 0 && index < [seriesArray count] )	{
-							[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [seriesArray objectAtIndex: index]]] movie: NO viewer:vc keyImagesOnly: keyImages];
-						}
-						else {
-							// CREATE AN EMPTY SERIES !!!!
-							
-							NSMutableArray  *viewerPix = [[NSMutableArray alloc] initWithCapacity:0];
-							NSMutableArray  *filesAr = [[NSMutableArray alloc] initWithCapacity:0];
-							float			*fVolumePtr = 0L;
-							NSData			*volumeData = 0L;
-							NSString		*path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Empty.tif"];
-							
-							NSDictionary	*curFile = [NSDictionary dictionaryWithObjectsAndKeys:path, @"completePath", @"xxx", @"uniqueFilename", @"OT", @"modality", 0L];
-							[filesAr addObject: curFile];
-							
-							fVolumePtr = malloc(100 * 100 * sizeof(float));
-							
-							DCMPix			*dcmPix = [[DCMPix alloc] myinit:path :0 :1 :fVolumePtr :0 :0];
-							[viewerPix addObject: dcmPix];
-							[dcmPix release];
-							
-							volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr length:100 * 100 * sizeof(float) freeWhenDone:YES]; 
-							
-							[vc changeImageData:viewerPix :filesAr :volumeData :NO];
-							[vc startLoadImageThread];
-							
-							[volumeData release];
-							[viewerPix release];
-							[filesAr release];
-						}
-						
-						index++;
-					}
-				}
-			}
+		else {
+			[viewersList addObject: viewer];
 		}
-		
-		[context unlock];
-		[context release];
-		
-		[viewersList release];
 	}
+	
+	// FIND ALL STUDIES of this patient
+	NSManagedObject		*study = [curImage valueForKeyPath:@"series.study"];
+	NSManagedObject		*currentSeries = [curImage valueForKeyPath:@"series"];
+	
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientID == %@)", [study valueForKey:@"patientID"]];
+	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
+	[dbRequest setPredicate: predicate];
+	
+	[context retain];
+	[context lock];
+	
+	NSError	*error = nil;
+	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+	
+	if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound ) {
+		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
+		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
+		[sort release];
+		
+		studiesArray = [studiesArray sortedArrayUsingDescriptors: sortDescriptors];
+		
+		NSArray	*seriesArray = [NSArray array];
+		
+		for(NSManagedObject	*curStudy in studiesArray )	{				
+			seriesArray = [seriesArray arrayByAddingObjectsFromArray: [self childrenArray: curStudy]];
+		}
+		
+		NSInteger index = [seriesArray indexOfObject: currentSeries];
+		
+		if( index != NSNotFound ) {
+			if( direction == 0)	// Called from loadNextPatient
+			{
+				if( firstViewer == NO) direction = 1;
+			}
+			
+			index += direction*[viewersList count];
+			if( index < 0) index = 0;
+			if( index < [seriesArray count ] ) {
+				for( ViewerController *vc in viewersList ) {
+					if( index >= 0 && index < [seriesArray count] )	{
+						[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [seriesArray objectAtIndex: index]]] movie: NO viewer:vc keyImagesOnly: keyImages];
+					}
+					else {
+						// CREATE AN EMPTY SERIES !!!!
+						
+						NSMutableArray  *viewerPix = [[NSMutableArray alloc] initWithCapacity:0];
+						NSMutableArray  *filesAr = [[NSMutableArray alloc] initWithCapacity:0];
+						float			*fVolumePtr = 0L;
+						NSData			*volumeData = 0L;
+						NSString		*path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Empty.tif"];
+						
+						NSDictionary	*curFile = [NSDictionary dictionaryWithObjectsAndKeys:path, @"completePath", @"xxx", @"uniqueFilename", @"OT", @"modality", 0L];
+						[filesAr addObject: curFile];
+						
+						fVolumePtr = malloc(100 * 100 * sizeof(float));
+						
+						DCMPix			*dcmPix = [[DCMPix alloc] myinit:path :0 :1 :fVolumePtr :0 :0];
+						[viewerPix addObject: dcmPix];
+						[dcmPix release];
+						
+						volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr length:100 * 100 * sizeof(float) freeWhenDone:YES]; 
+						
+						[vc changeImageData:viewerPix :filesAr :volumeData :NO];
+						[vc startLoadImageThread];
+						
+						[volumeData release];
+						[viewerPix release];
+						[filesAr release];
+					}
+					
+					index++;
+				}
+			}
+		}
+	}
+	
+	[context unlock];
+	[context release];
+	
+	[viewersList release];
 }
 
 - (ViewerController*) loadSeries:(NSManagedObject *) series :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages {
