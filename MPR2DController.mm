@@ -621,13 +621,6 @@ extern NSString * documentsDirectory();
 	NSLog(@"Dealloc MPR2DController C");
 }
 
-
-- (void)finalize {
-	[self save3DState];
-	[super finalize];
-}
-
-
 - (void) CloseViewerNotification: (NSNotification*) note
 {
 	long				i;

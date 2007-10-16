@@ -764,7 +764,6 @@ static char *GetPrivateIP()
 				
 				@try
 				{
-					[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 					[currentConnection writeData: toTransfer];
 				}
 				
@@ -1302,6 +1301,8 @@ static char *GetPrivateIP()
 	
 	[self connectToServer: index message:@"SETVA"];
 	
+	[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];  // for rock stable opening/closing socket
+	
 	[self connectToServer: index message:@"VERSI"];
 	localVersion = BonjourDatabaseVersion;
 	
@@ -1346,8 +1347,6 @@ static char *GetPrivateIP()
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath:returnedFile]) return returnedFile;
 	else returnedFile = 0L;
-	
-	//
 	
 	[BonjourBrowser waitForLock: lock];
 	
@@ -1421,6 +1420,8 @@ static char *GetPrivateIP()
 	
 	if( [self connectToServer: index message:@"DBVER"])
 	{
+		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]]; // for rock stable opening/closing socket
+		
 		if( [modelVersion isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"]] == NO)
 		{
 			[lock unlock];
@@ -1436,11 +1437,15 @@ static char *GetPrivateIP()
 		if( newConnection)
 		{
 			[self connectToServer: index message:@"ISPWD"];
+			
+			[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];  // for rock stable opening/closing socket
 		}
 		else
 		{
 			resolved = YES;
 		}
+		
+		
 		
 		if( resolved == YES)
 		{
@@ -1453,6 +1458,7 @@ static char *GetPrivateIP()
 				
 				wrongPassword = YES;
 				[self connectToServer: index message:@"PASWD"];
+				[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]]; // for rock stable opening/closing socket
 				
 				if( resolved == NO || wrongPassword == YES)
 				{
@@ -1470,6 +1476,8 @@ static char *GetPrivateIP()
 			
 			if( [self connectToServer: index message: @"DBSIZ"] == YES)
 			{
+				[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]]; // for rock stable opening/closing socket
+				
 				if( BonjourDatabaseIndexFileSize)
 				{
 					NSLog( @"BonjourDatabaseIndexFileSize = %d Kb", BonjourDatabaseIndexFileSize/1024);
@@ -1493,6 +1501,8 @@ static char *GetPrivateIP()
 					
 					if( [self connectToServer: index message: @"DATAB"] == YES)
 					{
+						[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]]; // for rock stable opening/closing socket
+						
 						[self connectToServer: index message: @"VERSI"];
 						
 						localVersion = BonjourDatabaseVersion;

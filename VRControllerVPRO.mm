@@ -742,23 +742,6 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	[super dealloc];
 }
 
-- (void)finalize {
-	// Release Undo system
-	int i;
-	for( i = 0; i < maxMovieIndex; i++)
-	{
-		DCMPix  *firstObject = [pixList[ i] objectAtIndex:0];
-		
-		if( undodata[ i])
-		{
-			free( undodata[ i]);
-		}
-	}
-	
-	[self save3DState];
-	[super finalize];
-}
-
 - (void) CloseViewerNotification: (NSNotification*) note
 {
 	long				i;

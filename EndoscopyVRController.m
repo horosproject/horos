@@ -252,7 +252,7 @@ extern NSString * documentsDirectory();
 	NSMutableDictionary *dict = [view get3DStateDictionary];
 	[dict setObject:curCLUTMenu forKey:@"CLUTName"];
 	[dict setObject:curOpacityMenu forKey:@"OpacityName"];
-	[dict setObject:[[shadingsPresetsController selection] valueForKey:@"name"]  forKey:@"shading"];
+//	[dict setObject:[[shadingsPresetsController selection] valueForKey:@"name"]  forKey:@"shading"]; // crash if 1) flythru panel open & 2) shading panel not opened... 
 	
 	if( [viewer2D postprocessed] == NO)
 		[dict writeToFile:str atomically:YES];
