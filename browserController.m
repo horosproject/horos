@@ -4168,9 +4168,11 @@ static NSArray*	statesArray = nil;
 	[managedObjectContext release];
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item {
+- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
+{
 	if( managedObjectContext == nil ) return nil;
-	
+	if( displayEmptyDatabase) return nil;
+		
 	id returnVal = nil;
 	
 	[managedObjectContext retain];
@@ -4212,6 +4214,7 @@ static NSArray*	statesArray = nil;
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item {
 	if( managedObjectContext == 0L) return 0L;
+	if( displayEmptyDatabase) return 0L;
 	
 	int returnVal = 0;
 	
@@ -4324,6 +4327,7 @@ static NSArray*	statesArray = nil;
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
 	if( managedObjectContext == 0L) return 0L;
+	if( displayEmptyDatabase) return nil;
 	
 	[managedObjectContext retain];
 	[managedObjectContext lock];
@@ -6790,7 +6794,10 @@ static BOOL needToRezoom;
 #pragma mark Albums/send & ReceiveLog/Bonjour TableView functions
 
 //NSTableView delegate and datasource
-- (NSInteger)numberOfRowsInTableView: (NSTableView *)aTableView {
+- (NSInteger)numberOfRowsInTableView: (NSTableView *)aTableView
+{
+	if( displayEmptyDatabase) return 0L;
+	
 	if ([aTableView isEqual:albumTable] ) {
 		return [self.albumArray count];
 	}
@@ -6805,8 +6812,12 @@ static BOOL needToRezoom;
 	return 0;
 }
 
-- (id)tableView: (NSTableView *)aTableView objectValueForTableColumn: (NSTableColumn *)aTableColumn row: (NSInteger)rowIndex {
-	if ([aTableView isEqual:albumTable] ) {
+- (id)tableView: (NSTableView *)aTableView objectValueForTableColumn: (NSTableColumn *)aTableColumn row: (NSInteger)rowIndex
+{
+	if ([aTableView isEqual:albumTable] )
+	{
+		if( displayEmptyDatabase) return 0L;
+		
 		if([[aTableColumn identifier] isEqualToString:@"no"] ) {
 			int albumNo = [self.albumArray count];
 			
@@ -6897,14 +6908,17 @@ static BOOL needToRezoom;
 	return nil;
 }
 
-- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
-	
+- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
+{
 	if( [aCell isKindOfClass: [ImageAndTextCell class]] ) {
 		[(ImageAndTextCell*) aCell setLastImage: 0L];
 		[(ImageAndTextCell*) aCell setLastImageAlternate: 0L];
 	}
 	
-	if ([aTableView isEqual:albumTable] ) {
+	if ([aTableView isEqual:albumTable] )
+	{
+		if( displayEmptyDatabase) return;
+		
 		NSFont *txtFont;
 		
 		if( rowIndex == 0) txtFont = [NSFont boldSystemFontOfSize: 11];

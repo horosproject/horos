@@ -755,75 +755,78 @@ static char *GetPrivateIP()
 					[toTransfer appendBytes:passwordUTF length: strlen( passwordUTF)+1];
 				}
 				
-				[currentConnection writeData: toTransfer];
-				
-				// *************
-				if ((strcmp( messageToRemoteService, "DATAB") == 0))
+				@try
 				{
-					NSData *readData = 0L;
-					
-					@try
+					[currentConnection writeData: toTransfer];
+				}
+				
+				@catch ( NSException *e)
+				{
+					NSLog(@"connectToService [currentConnection writeData: toTransfer] exception: %@", e);
+					[currentConnection closeFile];
+					[currentConnection release];
+					currentConnection = 0L;
+					resolved = NO;
+					succeed = NO;
+				}
+				
+				if( currentConnection)
+				{
+					// *************
+					if ((strcmp( messageToRemoteService, "DATAB") == 0))
 					{
-						while( connectToServerAborted == NO && (readData = [currentConnection availableData]) && [readData length])
+						NSData *readData = 0L;
+						
+						@try
 						{
+							while( connectToServerAborted == NO && (readData = [currentConnection availableData]) && [readData length])
+							{
+								[self incomingConnectionProcess: readData];
+								
+	//							NSLog( @"%d", [readData length]);
+							}
+							
 							[self incomingConnectionProcess: readData];
-							
-//							NSLog( @"%d", [readData length]);
 						}
-						
-						[self incomingConnectionProcess: readData];
-					}
-					@catch ( NSException *e)
-					{
-						NSLog(@"connectToService 'DATAB' exception: %@", e);
-					}
-				}
-				else
-				{
-					NSData *readData = 0L;
-					NSMutableData *data = [NSMutableData dataWithCapacity: 512*512*2*20];
-					
-					@try
-					{
-						while( (readData = [currentConnection availableData]) && [readData length])
+						@catch ( NSException *e)
 						{
-							[data appendData: readData];
-							
-							NSDate *oldCurrentTimeOut = currentTimeOut;
-							currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
-							[oldCurrentTimeOut release];
-							
-//							NSLog( @"%d", [readData length]);
+							NSLog(@"connectToService 'DATAB' exception: %@", e);
 						}
-						
-						[self processTheData: data];
-						
-						[currentConnection closeFile];
-						[currentConnection release];
-						currentConnection = 0L;
-						
-						resolved = YES;
 					}
-					@catch ( NSException *e)
+					else
 					{
-						NSLog(@"connectToService exception: %@", e);
+						NSData *readData = 0L;
+						NSMutableData *data = [NSMutableData dataWithCapacity: 512*512*2*20];
+						
+						@try
+						{
+							while( (readData = [currentConnection availableData]) && [readData length])
+							{
+								[data appendData: readData];
+								
+								NSDate *oldCurrentTimeOut = currentTimeOut;
+								currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
+								[oldCurrentTimeOut release];
+								
+	//							NSLog( @"%d", [readData length]);
+							}
+							
+							[self processTheData: data];
+							
+							[currentConnection closeFile];
+							[currentConnection release];
+							currentConnection = 0L;
+							
+							resolved = YES;
+						}
+						@catch ( NSException *e)
+						{
+							NSLog(@"connectToService exception: %@", e);
+						}
 					}
+					
+					succeed = YES;
 				}
-				
-				// *************
-				
-//				if ((strcmp( messageToRemoteService, "DATAB") == 0))
-//				{
-//					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incomingConnection:) name:NSFileHandleReadCompletionNotification object:currentConnection];
-//					[currentConnection readInBackgroundAndNotifyForModes: [NSArray arrayWithObject:OSIRIXRUNMODE]];
-//				}
-//				else
-//				{
-//					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(readAllTheData:) name:NSFileHandleReadToEndOfFileCompletionNotification object: currentConnection];
-//					[currentConnection readToEndOfFileInBackgroundAndNotifyForModes: [NSArray arrayWithObject:OSIRIXRUNMODE]];
-//				}
-				
-				succeed = YES;
 			}
 			else
 			{
@@ -1450,43 +1453,51 @@ static char *GetPrivateIP()
 			BonjourDatabaseIndexFileSize = 0;
 			if( [self connectToServer: index message: @"DBSIZ"] == YES)
 			{
-				NSLog( @"BonjourDatabaseIndexFileSize = %d Kb", BonjourDatabaseIndexFileSize/1024);
-				
-				if( currentDataPtr)
+				if( BonjourDatabaseIndexFileSize)
 				{
-					[asyncWrite lock];
-					free( currentDataPtr);
-					currentDataPtr = 0L;
-					[asyncWrite unlock];
-				}
-				
-				// For async writing
-				[[NSFileManager defaultManager] removeFileAtPath: tempDatabaseFile handler: 0L];
-				[[NSFileManager defaultManager] createFileAtPath: tempDatabaseFile contents:0L attributes:0L];
-				lastAsyncPos = 0L;
-				[asyncWrite lock];
-				[asyncWrite unlock];
-				[async lock];
-				[async unlock];
-				
-				if( [self connectToServer: index message: @"DATAB"] == YES)
-				{
-					[self connectToServer: index message: @"VERSI"];
+					NSLog( @"BonjourDatabaseIndexFileSize = %d Kb", BonjourDatabaseIndexFileSize/1024);
 					
-					localVersion = BonjourDatabaseVersion;
+					if( currentDataPtr)
+					{
+						[asyncWrite lock];
+						free( currentDataPtr);
+						currentDataPtr = 0L;
+						[asyncWrite unlock];
+					}
+					
+					// For async writing
+					[[NSFileManager defaultManager] removeFileAtPath: tempDatabaseFile handler: 0L];
+					[[NSFileManager defaultManager] createFileAtPath: tempDatabaseFile contents:0L attributes:0L];
+					lastAsyncPos = 0L;
+					[asyncWrite lock];
+					[asyncWrite unlock];
+					[async lock];
+					[async unlock];
+					
+					if( [self connectToServer: index message: @"DATAB"] == YES)
+					{
+						[self connectToServer: index message: @"VERSI"];
+						
+						localVersion = BonjourDatabaseVersion;
+					}
+					else
+					{
+						[dbFileName release];
+						dbFileName = 0L;
+					}
+					
+					if( currentDataPtr)
+					{
+						[asyncWrite lock];
+						free( currentDataPtr);
+						currentDataPtr = 0L;
+						[asyncWrite unlock];
+					}
 				}
 				else
 				{
 					[dbFileName release];
 					dbFileName = 0L;
-				}
-				
-				if( currentDataPtr)
-				{
-					[asyncWrite lock];
-					free( currentDataPtr);
-					currentDataPtr = 0L;
-					[asyncWrite unlock];
 				}
 			}
 			else
