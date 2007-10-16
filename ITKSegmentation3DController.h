@@ -12,6 +12,9 @@
      PURPOSE.
 =========================================================================*/
 
+/** \brief Segmentation WindowController
+*/
+
 #import <Cocoa/Cocoa.h>
 
 @class ViewerController;

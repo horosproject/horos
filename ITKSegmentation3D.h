@@ -12,6 +12,9 @@
      PURPOSE.
 =========================================================================*/
 
+/** \brief ITK based segmentation for region growing
+*/
+
 #import <Cocoa/Cocoa.h>
 
 #ifdef __cplusplus

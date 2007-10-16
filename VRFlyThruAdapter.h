@@ -13,6 +13,7 @@
 =========================================================================*/
 
 /** \brief Flythru adaptor for VR
+* Volume Rendering Flythru adaptor
 */
 
 

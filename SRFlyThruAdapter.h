@@ -14,6 +14,7 @@
 
 
 /** \brief Flythru adaptor for SR
+* Surface Rendering Flythru adaptor
 */
 
 #import <Cocoa/Cocoa.h>

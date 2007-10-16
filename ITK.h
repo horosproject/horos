@@ -13,6 +13,8 @@
 =========================================================================*/
 
 
+/** \brief Creates an itkImageImportFilter
+*/
 
 
 #import <Cocoa/Cocoa.h>
