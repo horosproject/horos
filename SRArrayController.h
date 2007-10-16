@@ -9,6 +9,9 @@
 #import <Cocoa/Cocoa.h>
 
 
+
+/** \brief  Controller for a StructuredReport array */ 
+
 @interface SRArrayController : NSArrayController {
 
 }

@@ -22,6 +22,8 @@
 
 #undef verify
 #include "dsrdoc.h"
+
+/** \brief  DICOM  key object note */
 @interface KeyObjectReport : NSObject {
 	id _study;
 	DSRDocument *_doc;

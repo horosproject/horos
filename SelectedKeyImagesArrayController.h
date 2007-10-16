@@ -23,6 +23,9 @@
 #import "AllKeyImagesArrayController.h"
 
 
+ /** \brief  Controller for array of keyImages */
+ 
+
 @interface SelectedKeyImagesArrayController : AllKeyImagesArrayController {
 	
 }

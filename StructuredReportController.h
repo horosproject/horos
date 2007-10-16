@@ -25,6 +25,8 @@
 @class StructuredReport;
 @class AllKeyImagesArrayController;
 
+/** \brief  Window Controller for StructuredReport management */
+
 @interface StructuredReportController : NSWindowController {
 
 	id _study;

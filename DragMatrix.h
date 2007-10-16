@@ -16,8 +16,13 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-/*****************************************************************************
- * DragMatrix
+
+
+#import <AppKit/AppKit.h>
+
+/*****************************************************************************/
+/* DragMatrix */
+ /** \brief  A matrix of image cells with reordering
  *
  * This calls allows you to create a matrix of image cells that can be
  * reordered (similar to object in an outline view).  To use this class
@@ -27,9 +32,8 @@
  * "DragMatrixImageMoved".  The object is itself.  The user info contains
  * the following keys
  * 	- "images" = Selected DicomImages
-*****************************************************************************/
-
-#import <AppKit/AppKit.h>
+ */
+/*****************************************************************************/
 
 @interface DragMatrix : NSMatrix {
     NSEvent * downEvent;

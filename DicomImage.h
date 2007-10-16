@@ -17,6 +17,8 @@
 
 @class DCMSequenceAttribute;
 
+/** \brief  Core Data Entity for an image (frame) */
+
 @interface DicomImage : NSManagedObject
 {
 	NSString	*completePathCache;

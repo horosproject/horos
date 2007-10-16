@@ -22,6 +22,9 @@
 #import "DragMatrix.h"
 
 
+ /** \brief  A matrix of image cells with reordering and deletion */
+ 
+ 
 @interface DragMatrixWithDelete : DragMatrix {
 
 }

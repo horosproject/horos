@@ -21,6 +21,8 @@
 #import <Cocoa/Cocoa.h>
 
 @class ViewerController;
+
+/** \brief  Control for KeyObjectReport popup button*/
 @interface KeyObjectPopupController : NSObject {
 	NSArray *_reports;
 	NSMenu *_menu;

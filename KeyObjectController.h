@@ -19,7 +19,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-
+/** \brief  Window Controller for creating key Object Notes */
 @interface KeyObjectController : NSWindowController {
 	int _title;
 	NSString *_keyDescription;

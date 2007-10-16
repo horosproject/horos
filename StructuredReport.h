@@ -24,6 +24,8 @@
 #undef verify
 #include "dsrdoc.h"
 
+/** \brief  DICOM Structured Report */
+
 @interface StructuredReport : NSObject {
 	id _study;
 	DSRDocument *_doc;

@@ -22,6 +22,8 @@
 #import <Cocoa/Cocoa.h>
 
 
+/** \brief  Array Controller for keyImages in a StructuredReport */
+
 @interface AllKeyImagesArrayController : NSArrayController {
 	IBOutlet NSMatrix *keyImageMatrix;
 }

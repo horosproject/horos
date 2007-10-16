@@ -15,6 +15,8 @@
 #import <Cocoa/Cocoa.h>
 #import "BrowserController.h"
 
+/** \brief  Shares DB with Bonjour */
+
 @interface BonjourPublisher : NSObject
 {
 	NSString			*serviceName;

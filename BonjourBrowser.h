@@ -17,6 +17,8 @@
 #import "BonjourPublisher.h"
 #import "WaitRendering.h"
 
+/** \brief  Searches and retrieves Bonjour shared databases */
+
 @interface BonjourBrowser : NSObject
 {
 	NSLock				*lock, *async, *asyncWrite;

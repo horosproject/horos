@@ -18,6 +18,8 @@
 #import <Cocoa/Cocoa.h>
 #import "DicomSeries.h"
 
+/** \brief  Core Data Entity for a Series */
+
 @interface DicomSeries : NSManagedObject
 {
 	NSNumber	*dicomTime;
