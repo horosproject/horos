@@ -562,9 +562,11 @@ static char *GetPrivateIP()
 	
 		currentConnection = [[NSFileHandle alloc] initWithFileDescriptor:socketToRemoteServer closeOnDealloc:YES];
 		if( currentConnection)
-		{			
+		{
 			 if(connect(socketToRemoteServer, (struct sockaddr *)socketAddress, sizeof(*socketAddress)) == 0)
 			 {
+				NSLog( @"socket connected: %d", socketToRemoteServer);
+			 
 				// transfering the type of data we need
 				NSMutableData	*toTransfer = [NSMutableData dataWithCapacity:0];
 				
@@ -762,6 +764,7 @@ static char *GetPrivateIP()
 				
 				@try
 				{
+					[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 					[currentConnection writeData: toTransfer];
 				}
 				
@@ -845,8 +848,10 @@ static char *GetPrivateIP()
 		else
 		{
 			close(socketToRemoteServer);
+			NSLog( @"NSFileHandle creation failed");
 		}
 	}
+	else NSLog( @"socket creation failed");
 	
 	return succeed;
 }
@@ -1207,6 +1212,11 @@ static char *GetPrivateIP()
 		}
 	}
 	
+	if( w)
+	{
+		[w setString: @"Connecting..."];
+	}
+	
 	if( connectToServerAborted)
 	{
 //		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadCompletionNotification object: currentConnection];
@@ -1400,7 +1410,10 @@ static char *GetPrivateIP()
 		waitWindow = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting to OsiriX database...", nil)];
 	else
 		waitWindow = 0L;
-		
+
+	BonjourDatabaseIndexFileSize = 0;
+	currentDataPos = 0L;
+
 	[waitWindow showWindow:self];
 	[waitWindow setCancel: YES];
 	[waitWindow setCancelDelegate: self];
@@ -1455,7 +1468,6 @@ static char *GetPrivateIP()
 				}
 			}
 			
-			BonjourDatabaseIndexFileSize = 0;
 			if( [self connectToServer: index message: @"DBSIZ"] == YES)
 			{
 				if( BonjourDatabaseIndexFileSize)

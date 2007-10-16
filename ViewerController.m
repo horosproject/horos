@@ -5087,9 +5087,9 @@ static ViewerController *draggedController = 0L;
 			if( stopThreadLoadImage == NO) //there is no interrruption
 			{
 				if ([fileList[ x] count] == [pixList[ x] count]) // I'm not quite sure what this line does, but I'm afraid to take it out. 
-					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: i] : 2]; // Anyway, we are not guarantied to have as many files as pixs, so that is why I put in the if() - Joel
+					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: i] : 4]; // Anyway, we are not guarantied to have as many files as pixs, so that is why I put in the if() - Joel
 				else
-					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: 0] : 2]; 
+					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: 0] : 4]; 
 				
 				
 				DCMPix* pix = [pixList[ x] objectAtIndex: i];
