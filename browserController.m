@@ -7460,16 +7460,9 @@ static BOOL needToRezoom;
 	}
 	
 	if( [[aNotification object] isEqual: bonjourServicesList] )	{
-		if( dontLoadSelectionSource == NO )	{
-			[self syncReportsIfNecessary: previousBonjourIndex];
-			
-			[albumNoOfStudiesCache removeAllObjects];
-			
+		if( dontLoadSelectionSource == NO )
+		{
 			[self bonjourServiceClicked: bonjourServicesList];
-			
-			[self setSearchString:nil];
-			
-			previousBonjourIndex = [bonjourServicesList selectedRow]-1;
 		}
 	}
 }
@@ -12285,19 +12278,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[self resetToLocalDatabase];
 	}
 }
-
-- (IBAction)bonjourServiceClicked: (id)sender
+	
+- (IBAction)bonjourServiceClickedProceed: (id)sender
 {
-	NSArray *viewers = [ViewerController getDisplayed2DViewers];
-	
-	for( ViewerController *v in viewers)
-		[v checkEverythingLoaded];
-	
-	[[AppController sharedAppController] closeAllViewers: self];	
-	
-	[self waitForRunningProcesses];
-	[bonjourBrowser waitTheLock];
-
     int index = [bonjourServicesList selectedRow]-1;
 	
 	[bonjourReportFilesToCheck removeAllObjects];
@@ -12317,9 +12300,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[self outlineViewRefresh];
 			[self refreshMatrix: self];
 			
-//			[[self window] performClose: self];
-//			[albumDrawer close];
-		
 			NSString	*path = [bonjourBrowser getDatabaseFile: index showWaitingWindow: YES];
 						
 			if( path == nil || [path isEqualToString: @"aborted"])
@@ -12339,11 +12319,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			
 			displayEmptyDatabase = NO;
-			[self outlineViewRefresh];
-			[self refreshMatrix: self];
-			
-//			[albumDrawer open];
-//			[[self window] makeKeyAndOrderFront: self];
 		}
 	}
 	else // LOCAL DEFAULT DATABASE
@@ -12358,6 +12333,22 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if( [path isEqualToString: currentDatabasePath] == NO)
 			[self openDatabaseIn: path Bonjour: NO];
 	}
+	
+	[self setSearchString:nil];
+	previousBonjourIndex = [bonjourServicesList selectedRow]-1;
+}
+
+- (IBAction)bonjourServiceClicked: (id)sender
+{
+	[self syncReportsIfNecessary: previousBonjourIndex];
+	[albumNoOfStudiesCache removeAllObjects];
+	
+	[[AppController sharedAppController] closeAllViewers: self];	
+	
+	[self waitForRunningProcesses];
+	[bonjourBrowser waitTheLock];
+
+	[self performSelector:@selector( bonjourServiceClickedProceed:) withObject: sender afterDelay: 0.1];
 }
 
 - (NSString*) localDatabasePath {
