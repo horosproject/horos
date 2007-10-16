@@ -28,22 +28,22 @@ It is a shared class.
 #import <Cocoa/Cocoa.h>
 
 @class OSIWindowController;
-@class LayoutWindowController;
+//@class LayoutWindowController;
 @interface WindowLayoutManager : NSObject
 {
-	BOOL					_xFlipped, _yFlipped;  // Dependent on current DCMView settings.
+//	BOOL					_xFlipped, _yFlipped;  // Dependent on current DCMView settings.
 	NSMutableDictionary		*_currentHangingProtocol;
-	//NSDictionary			*_advancedHangingProtocol;
-	BOOL					_hangingProtocolInUse;
-	BOOL					_useToolbarPanel;
+//	NSDictionary			*_advancedHangingProtocol;
+//	BOOL					_hangingProtocolInUse;
+//	BOOL					_useToolbarPanel;
 //	NSMutableArray			*_windowControllers;	<- Major memory leak !
-	NSManagedObject			*_currentStudy;
-	NSArray					*_seriesSets;
-	int						_seriesSetIndex;
-	NSArray					*_relatedStudies;
-	NSMutableDictionary		*_hangingProtocol;
-	LayoutWindowController	*_layoutWindowController;
-	OSIWindowController		*_currentViewer;
+//	NSManagedObject			*_currentStudy;
+//	NSArray					*_seriesSets;
+//	int						_seriesSetIndex;
+//	NSArray					*_relatedStudies;
+//	NSMutableDictionary		*_hangingProtocol;
+//	LayoutWindowController	*_layoutWindowController;
+//	OSIWindowController		*_currentViewer;
 	
 	int						IMAGEROWS, IMAGECOLUMNS;
 }
@@ -53,12 +53,12 @@ It is a shared class.
 #pragma mark-
 #pragma mark WindowController registration
 
-- (void)registerWindowController:(OSIWindowController *)controller;
-- (void)unregisterWindowController:(OSIWindowController *)controller;
-
-
-- (id) findViewerWithNibNamed:(NSString*) nib andPixList:(NSMutableArray*) pixList;
-- (NSArray*)findRelatedViewersForPixList:(NSMutableArray*) pixList;
+//- (void)registerWindowController:(OSIWindowController *)controller;
+//- (void)unregisterWindowController:(OSIWindowController *)controller;
+//
+//
+//- (id) findViewerWithNibNamed:(NSString*) nib andPixList:(NSMutableArray*) pixList;
+//- (NSArray*)findRelatedViewersForPixList:(NSMutableArray*) pixList;
 
 - (int) IMAGEROWS;
 - (int) IMAGECOLUMNS;
@@ -70,47 +70,47 @@ It is a shared class.
 - (NSDictionary*) currentHangingProtocol;
 
 
-#pragma mark-
-#pragma mark Advanced Hanging
--(BOOL)hangStudy:(id)study;
-- (NSDictionary *)hangingProtocol;
-- (void)setHangingProtocol:(NSMutableDictionary *)hangingProtocol;
-
-
-#pragma mark-
-#pragma mark Moving Through Series Sets
-- (void)nextSeriesSet;
-- (void)previousSeriesSet;
-- (void)hangSet:(NSDictionary *)seriesSet;
-- (BOOL)hangingProtocolInUse;
-
-#pragma mark-
-#pragma mark Subarrays of Window Controllers
-- (NSArray *)viewers2D;
-- (NSArray *)viewers3D;
-- (NSArray *)viewers;
-- (NSArray *)placeholderWindowControllers;
-
-
-#pragma mark-
-#pragma mark Comparisons
-- (NSArray *)relatedStudies;
-- (void)setRelatedStudies:(NSArray *)relatedStudies;
-- (id)comparionStudy;
-- (NSArray *)comparisonStudies;
-- (id)comparisonStudyForModality:(NSString *)modality studyDescription:(NSString *)studyDescription;
-
-#pragma mark-
-#pragma mark Layout Window
-- (IBAction)openLayoutWindow:(id)sender;
-
-- (id)currentStudy;
-- (void)setCurrentStudy:(id)study;
-- (NSArray *)seriesSets;
-- (void)setSeriesSetIndex: (int)seriesSetIndex;
-- (int)seriesSetIndex;
-
-- (NSWindowController	*)currentViewer;
+//#pragma mark-
+//#pragma mark Advanced Hanging
+//-(BOOL)hangStudy:(id)study;
+//- (NSDictionary *)hangingProtocol;
+//- (void)setHangingProtocol:(NSMutableDictionary *)hangingProtocol;
+//
+//
+//#pragma mark-
+//#pragma mark Moving Through Series Sets
+//- (void)nextSeriesSet;
+//- (void)previousSeriesSet;
+//- (void)hangSet:(NSDictionary *)seriesSet;
+//- (BOOL)hangingProtocolInUse;
+//
+//#pragma mark-
+//#pragma mark Subarrays of Window Controllers
+//- (NSArray *)viewers2D;
+//- (NSArray *)viewers3D;
+//- (NSArray *)viewers;
+//- (NSArray *)placeholderWindowControllers;
+//
+//
+//#pragma mark-
+//#pragma mark Comparisons
+//- (NSArray *)relatedStudies;
+//- (void)setRelatedStudies:(NSArray *)relatedStudies;
+//- (id)comparionStudy;
+//- (NSArray *)comparisonStudies;
+//- (id)comparisonStudyForModality:(NSString *)modality studyDescription:(NSString *)studyDescription;
+//
+//#pragma mark-
+//#pragma mark Layout Window
+//- (IBAction)openLayoutWindow:(id)sender;
+//
+//- (id)currentStudy;
+//- (void)setCurrentStudy:(id)study;
+//- (NSArray *)seriesSets;
+//- (void)setSeriesSetIndex: (int)seriesSetIndex;
+//- (int)seriesSetIndex;
+//
+//- (NSWindowController	*)currentViewer;
 
 
 

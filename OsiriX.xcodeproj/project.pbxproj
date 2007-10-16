@@ -6308,7 +6308,6 @@
 		CE3F994C0C84724B00CB38F1 /* MSRGPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F40C84724B00CB38F1 /* MSRGPanel.xib */; };
 		CE3F994D0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */; };
 		CE3F994E0C84724B00CB38F1 /* MPR2D.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F80C84724B00CB38F1 /* MPR2D.xib */; };
-		CE3F994F0C84724B00CB38F1 /* Layout.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FA0C84724B00CB38F1 /* Layout.xib */; };
 		CE3F99500C84724B00CB38F1 /* Splash.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FC0C84724B00CB38F1 /* Splash.xib */; };
 		CE3F99510C84724B00CB38F1 /* ROI.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FE0C84724B00CB38F1 /* ROI.xib */; };
 		CE3F99520C84724B00CB38F1 /* CalciumScoring.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99000C84724B00CB38F1 /* CalciumScoring.xib */; };
@@ -6357,7 +6356,6 @@
 		CE3F997D0C84724B00CB38F1 /* MSRGPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F40C84724B00CB38F1 /* MSRGPanel.xib */; };
 		CE3F997E0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */; };
 		CE3F997F0C84724B00CB38F1 /* MPR2D.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98F80C84724B00CB38F1 /* MPR2D.xib */; };
-		CE3F99800C84724B00CB38F1 /* Layout.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FA0C84724B00CB38F1 /* Layout.xib */; };
 		CE3F99810C84724B00CB38F1 /* Splash.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FC0C84724B00CB38F1 /* Splash.xib */; };
 		CE3F99820C84724B00CB38F1 /* ROI.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98FE0C84724B00CB38F1 /* ROI.xib */; };
 		CE3F99830C84724B00CB38F1 /* CalciumScoring.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99000C84724B00CB38F1 /* CalciumScoring.xib */; };
@@ -11432,7 +11430,6 @@
 		CE3F98F50C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MSRGPanel.xib; sourceTree = "<group>"; };
 		CE3F98F70C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PreferencePanesViewer.xib; sourceTree = "<group>"; };
 		CE3F98F90C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MPR2D.xib; sourceTree = "<group>"; };
-		CE3F98FB0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Layout.xib; sourceTree = "<group>"; };
 		CE3F98FD0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Splash.xib; sourceTree = "<group>"; };
 		CE3F98FF0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROI.xib; sourceTree = "<group>"; };
 		CE3F99010C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CalciumScoring.xib; sourceTree = "<group>"; };
@@ -12145,7 +12142,6 @@
 				CE3F98F40C84724B00CB38F1 /* MSRGPanel.xib */,
 				CE3F98F60C84724B00CB38F1 /* PreferencePanesViewer.xib */,
 				CE3F98F80C84724B00CB38F1 /* MPR2D.xib */,
-				CE3F98FA0C84724B00CB38F1 /* Layout.xib */,
 				CE3F98FC0C84724B00CB38F1 /* Splash.xib */,
 				CE3F98FE0C84724B00CB38F1 /* ROI.xib */,
 				CE3F99000C84724B00CB38F1 /* CalciumScoring.xib */,
@@ -21224,7 +21220,6 @@
 				CE3F994C0C84724B00CB38F1 /* MSRGPanel.xib in Resources */,
 				CE3F994D0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */,
 				CE3F994E0C84724B00CB38F1 /* MPR2D.xib in Resources */,
-				CE3F994F0C84724B00CB38F1 /* Layout.xib in Resources */,
 				CE3F99500C84724B00CB38F1 /* Splash.xib in Resources */,
 				CE3F99510C84724B00CB38F1 /* ROI.xib in Resources */,
 				CE3F99520C84724B00CB38F1 /* CalciumScoring.xib in Resources */,
@@ -21608,7 +21603,6 @@
 				CE3F997D0C84724B00CB38F1 /* MSRGPanel.xib in Resources */,
 				CE3F997E0C84724B00CB38F1 /* PreferencePanesViewer.xib in Resources */,
 				CE3F997F0C84724B00CB38F1 /* MPR2D.xib in Resources */,
-				CE3F99800C84724B00CB38F1 /* Layout.xib in Resources */,
 				CE3F99810C84724B00CB38F1 /* Splash.xib in Resources */,
 				CE3F99820C84724B00CB38F1 /* ROI.xib in Resources */,
 				CE3F99830C84724B00CB38F1 /* CalciumScoring.xib in Resources */,
@@ -24703,14 +24697,6 @@
 				CE3F98F90C84724B00CB38F1 /* English */,
 			);
 			name = MPR2D.xib;
-			sourceTree = "<group>";
-		};
-		CE3F98FA0C84724B00CB38F1 /* Layout.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F98FB0C84724B00CB38F1 /* English */,
-			);
-			name = Layout.xib;
 			sourceTree = "<group>";
 		};
 		CE3F98FC0C84724B00CB38F1 /* Splash.xib */ = {

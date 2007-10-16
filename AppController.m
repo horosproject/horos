@@ -2710,9 +2710,9 @@ static BOOL initialized = NO;
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-- (IBAction) saveLayout:(id) sender{
-	[[WindowLayoutManager sharedWindowLayoutManager] openLayoutWindow:sender];
-}
+//- (IBAction) saveLayout:(id) sender{
+//	[[WindowLayoutManager sharedWindowLayoutManager] openLayoutWindow:sender];
+//}
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
