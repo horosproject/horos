@@ -71,7 +71,7 @@
 
 	OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:0];
 	count  = [centerlinePoints count] - 1;
-	NSLog(@"Centerline count: %d", count);
+	//NSLog(@"Centerline count: %d", count);
 	NSMutableArray *steps = [NSMutableArray array];
 	for (int i = 0; i < count; i++) {
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -82,11 +82,20 @@
 		[steps addObject:self.currentCamera];
 		[pool release];		
 	}
+	for (int i = count; i > 0; i--) {
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		OSIVoxel *firstPoint = [centerlinePoints objectAtIndex:i];
+		OSIVoxel *secondPoint = [centerlinePoints objectAtIndex:i - 1];
+		[endoscopyViewer setCameraPosition:firstPoint  
+			focalPoint:secondPoint];
+		[steps addObject:self.currentCamera];
+		[pool release];	
+	}
 	[centerlinePoints release];
 	[stepsArrayController addObjects:steps];
-	//self.tabIndex = 1;
+	self.tabIndex = 1;
 	
-	NSLog(@"end compute centerline: %d", [steps count]);
+	//NSLog(@"end compute centerline: %d", [steps count]);
 	
 }
 

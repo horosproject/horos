@@ -192,7 +192,7 @@
 		int v = [numberOfFramesTextField intValue];
 		
 		if( v < 2) v = 2;
-		if( v > 2000) v = 2000;
+		if( v > 5000) v = 5000;
 		
 		[numberOfFramesTextField setIntValue: v];
 		[numberOfFramesTextField selectText: self];
