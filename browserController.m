@@ -3224,10 +3224,8 @@ static NSArray*	statesArray = nil;
 	
 	if( displayEmptyDatabase) predicate = [NSPredicate predicateWithValue:NO];
 	
-	if( isCurrentDatabaseBonjour ) {
+	if( isCurrentDatabaseBonjour && [bonjourServicesList selectedRow] > 0) {
 		int rowIndex = [bonjourServicesList selectedRow];
-		
-		if( rowIndex <= 0) NSLog( @"******** rowIndex <= 0" );
 		
 		NSDictionary *dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
 		
