@@ -13,6 +13,8 @@
 =========================================================================*/
 
 
+
+
 #if !__LP64__
 #import <Growl/Growl.h>
 #endif
@@ -46,6 +48,15 @@ extern "C"
 }
 #endif
 
+
+/** \brief  NSApplication delegate
+*
+*  NSApplication delegate 
+*  Primarily manages the user defaults and server
+*  Also controls some general main items
+*
+*
+*/
 #if !__LP64__
 @interface AppController : NSObject	<GrowlApplicationBridgeDelegate>
 #else

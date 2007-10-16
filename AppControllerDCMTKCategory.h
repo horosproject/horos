@@ -23,6 +23,8 @@
 #import "AppController.h"
 
 
+/** \brief  AppController category containing DCMTK call */
+
 @interface AppController (AppControllerDCMTKCategory)
 
 - (void)initDCMTK;
