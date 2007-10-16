@@ -13,8 +13,7 @@
 =========================================================================*/
 
 
-/** \brief Creates an itkImageImportFilter
-*/
+
 
 
 #import <Cocoa/Cocoa.h>
@@ -27,6 +26,8 @@ typedef itk::Image< itkPixelType, 3 > ImageType;
 typedef itk::ImportImageFilter< itkPixelType, 3 > ImportFilterType;
 
 
+/** \brief Creates an itkImageImportFilter
+*/
 
 @interface ITK : NSObject {
 	

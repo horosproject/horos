@@ -21,7 +21,7 @@
 #import <Cocoa/Cocoa.h>
 #import "browserController.h"
 
-
+/** \brief  Category for DCMTK calls from BrowserController */
 
 @interface BrowserController (BrowserControllerDCMTKCategory)
 

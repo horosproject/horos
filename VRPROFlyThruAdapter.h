@@ -12,13 +12,18 @@
      PURPOSE.
 =========================================================================*/
 
-/** \brief Flythru adaptor for VR
-*/
+
 
 #import <Cocoa/Cocoa.h>
 #import "FlyThruAdapter.h"
 
 @class VRPROController;
+
+/** \brief FlyThruAdapter for VRPro
+*
+*
+* FlyThruAdapter for VRPro
+*/
 
 @interface VRPROFlyThruAdapter : FlyThruAdapter {
 }

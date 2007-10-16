@@ -11,7 +11,14 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-/** \brief  Manages the array of flythru steps
+
+
+#import <Cocoa/Cocoa.h>
+
+@class FlyThruController;
+
+
+/** \brief  Manages the array of FlyThru steps
 *
 * A subclass of NSArrayController used to manage the steps of the flythru.
 * Each step consists of a Camera -- See Camera.h
@@ -19,9 +26,6 @@
 */
 
 
-#import <Cocoa/Cocoa.h>
-
-@class FlyThruController;
 @interface FlyThruStepsArrayController : NSArrayController {
 	IBOutlet FlyThruController *flyThruController;
 	IBOutlet NSTableView	*tableview;

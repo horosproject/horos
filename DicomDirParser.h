@@ -16,6 +16,7 @@
 
 #import <Foundation/Foundation.h>
 
+/** \brief  Reads and parses DICOMDIRs */
 
 @interface DicomDirParser : NSObject
 {

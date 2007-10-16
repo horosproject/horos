@@ -19,6 +19,8 @@
 #import "Scheduler.h"
 #import "StaticScheduler.h"
 
+/** \brief Reslcie volume sagittally and Coronally */
+
 @interface OrthogonalReslice : NSObject  <Schedulable> {
 	NSMutableArray		*originalDCMPixList, *xReslicedDCMPixList, *yReslicedDCMPixList;
 	NSMutableArray		*newPixListX, *newPixListY;

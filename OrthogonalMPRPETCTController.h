@@ -18,6 +18,8 @@
 
 @class OrthogonalMPRPETCTViewer;
 
+/** \brief OrthogonalMPRController for PET-CT */
+
 @interface OrthogonalMPRPETCTController : OrthogonalMPRController {
 
 	BOOL						isBlending;

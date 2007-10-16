@@ -22,6 +22,20 @@
 	
 =========================================================================*/
 
+
+
+#import <Cocoa/Cocoa.h>
+
+
+#define id Id
+#include "vtkPolyData.h"
+#undef id
+
+
+@class OSIVoxel;
+@class WaitRendering;
+
+
 /** \brief Extracts an array of centerline points from  marching cubes filtered Polydata
 *
 *  Centerline extracts the centerline from a volume using thinning
@@ -37,16 +51,7 @@
 *  int thinningIterations
 */
 
-#import <Cocoa/Cocoa.h>
 
-
-#define id Id
-#include "vtkPolyData.h"
-#undef id
-
-
-@class OSIVoxel;
-@class WaitRendering;
 @interface Centerline : NSObject {
 	WaitRendering *_wait;
 	OSIVoxel *_startingPoint;

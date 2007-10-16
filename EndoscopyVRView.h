@@ -12,12 +12,13 @@
      PURPOSE.
 =========================================================================*/
 
-/** \brief   VR view for Endoscopy
-*/
+
 
 #import <Cocoa/Cocoa.h>
-
 #import "VRView.h"
+
+/** \brief   VRview for Endoscopy
+*/
 
 @interface EndoscopyVRView : VRView {
 

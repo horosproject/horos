@@ -92,6 +92,8 @@
 
 #undef id
 
+/** \brief  creates volume from stack of Brush ROIs */
+
 @interface ROIVolume : NSObject {
 	NSMutableArray		*roiList;
 	vtkActor			*roiVolumeActor;

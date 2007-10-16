@@ -13,14 +13,17 @@
 =========================================================================*/
 
 
-/** \brief Flythru adaptor for SR
-* Surface Rendering Flythru adaptor
-*/
+
 
 #import <Cocoa/Cocoa.h>
 #import "FlyThruAdapter.h"
 
 @class SRController;
+
+/** \brief FlyThruAdapter for Surface Rendering
+*
+* Surface Rendering FlyThruAdapter
+*/
 
 @interface SRFlyThruAdapter : FlyThruAdapter {
 

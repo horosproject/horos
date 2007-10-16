@@ -12,12 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-/** \brief Managed the GUI for Endoscopy flythroughs
-*
-*  Window controller for Endoscopy flythrus
-*  Subclass of Flythru Controller.
-*  Single property is NSMutableArray *seeds
-*/ 
+
 
 #import <Cocoa/Cocoa.h>
 #import "FlyThruController.h"
@@ -25,6 +20,13 @@
 
 @class EndoscopyVRController;
 @class EndoscopyViewer;
+
+/** \brief Manages the GUI for Endoscopy FlyThru
+*
+*  Window controller for Endoscopy flythrus
+*  Subclass of Flythru Controller.
+*  Single property is NSMutableArray *seeds
+*/ 
 
 @interface EndoscopyFlyThruController : FlyThruController {
 	NSMutableArray *seeds;

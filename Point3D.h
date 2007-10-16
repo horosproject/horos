@@ -12,14 +12,16 @@
      PURPOSE.
 =========================================================================*/
 
-/** \brief  Represents a a 3D Point
+
+
+#import <Cocoa/Cocoa.h>
+
+
+/** \brief  Represents a 3D Point
 *
 *  Represents a 3D Point
 *  Has x, y, and z positions as float
 */
-
-
-#import <Cocoa/Cocoa.h>
 
 
 @interface Point3D : NSObject {

@@ -17,6 +17,8 @@
 #import "OrthogonalReslice.h"
 @class OrthogonalMPRView;
 
+/** \brief  Controller for Orthogonal MPR */
+
 @interface OrthogonalMPRController : NSObject { //NSWindowController {
 	NSMutableArray				*originalDCMPixList, *xReslicedDCMPixList, *yReslicedDCMPixList, *originalDCMFilesList, *originalROIList;
 	OrthogonalReslice			*reslicer;

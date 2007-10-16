@@ -144,6 +144,12 @@ typedef char* vtkMyCallbackVR;
 
 #import "CLUTOpacityView.h"
 
+
+/** \brief  Volume Rendering View
+*
+*   View for volume rendering and MIP
+*/
+
 @interface VRView : VTKView <Schedulable>
 {
 	NSTimer						*autoRotate, *startAutoRotate;

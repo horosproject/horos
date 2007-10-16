@@ -111,6 +111,8 @@ class vtkMyCallback;
 
 @class Camera;
 
+/** \brief  View for ROI Volume */
+
 @interface ROIVolumeView : VTKView
 {
     vtkRenderer					*aRenderer;

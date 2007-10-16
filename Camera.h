@@ -12,15 +12,17 @@
      PURPOSE.
 =========================================================================*/
 
+
+
+
+#import <Cocoa/Cocoa.h>
+#import "Point3D.h"
+
 /** \brief Describes a 3D view state
 *
 * Camera saves the state of a 3D View to manage the vtkCamera, cropping planes
 * window width and level, and 4D movie index
 */
-
-
-#import <Cocoa/Cocoa.h>
-#import "Point3D.h"
 
 @interface Camera : NSObject {
 	Point3D *position, *viewUp, *focalPoint, *minCroppingPlanes, *maxCroppingPlanes;

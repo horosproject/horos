@@ -43,6 +43,13 @@ enum simpleSearchType {PatientNameSearch, PatientIDSearch};
 enum queueStatus{QueueHasData, QueueEmpty};
 enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
+/** \brief Window controller for Browser
+*
+*   This is a large class with a lot of functions.
+*   Along with managing the Browser Window it manages all the view in the browser
+*	and manges the database
+*/
+
 @interface BrowserController : NSWindowController   //NSObject
 {
 	NSManagedObjectModel			*managedObjectModel;

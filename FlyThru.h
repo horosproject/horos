@@ -12,13 +12,15 @@
      PURPOSE.
 =========================================================================*/
 
-/** \brief Manages 3D flythrus
-*/
+
 
 
 #import <Cocoa/Cocoa.h>
 #import "Camera.h"
 #import "Interpolation3D.h"
+
+/** \brief Manages 3D flythrus
+*/
 
 @interface FlyThru : NSObject {
 	NSMutableArray	*stepCameras, *pathCameras, *stepsPositionInPath;

@@ -17,6 +17,8 @@
 #import "KFSplitView.h"
 #import "OSIWindowController.h"
 
+/** \brief Window Controller for PET-CT fusion display */
+
 @interface OrthogonalMPRPETCTViewer : OSIWindowController
 {
 	ViewerController							*viewer, *blendingViewerController;

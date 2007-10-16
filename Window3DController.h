@@ -31,6 +31,9 @@
 @class DCMPix;
 @class VTKView;
 
+
+/** \brief Base Window Controller for 3D viewers */
+
 @interface Window3DController : OSIWindowController
 {
 	IBOutlet NSWindow				*setWLWWWindow;

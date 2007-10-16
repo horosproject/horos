@@ -10,6 +10,12 @@
 
 @class ROI;
 
+/** \brief Filters brush ROIs
+*
+*   Filters brush ROI
+*   Erode, dilate, open, close
+*/
+
 @interface ITKBrushROIFilter : NSObject {
 
 unsigned char *kernelDilate, *kernelErode;

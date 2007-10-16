@@ -1,8 +1,4 @@
-//
-//  OSIVoxel.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 4/26/07.
+
 /*=========================================================================
   Program:   OsiriX
 
@@ -17,30 +13,20 @@
      PURPOSE.
 =========================================================================*/
 
-/** \brief OSIVoxel represents a 3D Voxel.  
-*
-* Represents a 3D Voxel.  
-* x, y, and z represent the 3D Point
-* voxelWidth, voxelHeight, voxelDepth represent the size
-* value is the pixel value
-* userInfo is anything
-*
-*
-* Has properties:
-* float		x
-* float		y
-* float		x
-* NSNumber		*value
-* float		voxelWidth
-* float		voxelHeight
-* float		voxelDepth
-* id			userInfo
-*/
+
 
 
 #import <Cocoa/Cocoa.h>
 
 @class Point3D;
+
+/** \brief Represents a Voxel
+*
+*  Represents a Voxel
+*  Has x, y, and z positions as float
+*/
+
+
 @interface OSIVoxel : NSObject {
 	float _x;
 	float _y;
@@ -65,21 +51,27 @@
 
 
 
-
+/** set the x, y, z position */
 - (void) setX:(float)x y:(float)y z:(float)z;
 
 
-// init with x, y, and z
+/** init with x, y, and z position and pixel value */
 - (id)initWithX:(float)x  y:(float)y  z:(float)z value:(NSNumber *)value;
-// init with the point and the slice
+/**  init with image point and the slice */
 - (id)initWithPoint:(NSPoint)point  slice:(long)slice value:(NSNumber *)value;
+/** init with Point3D */
 - (id)initWithPoint3D:(Point3D *)point3D;
 
+/**  Class init with x, y, and z position and pixel value */
 + (id)pointWithX:(float)x  y:(float)y  z:(float)z value:(NSNumber *)value;
+/**  Class init with image point and the slice */
 + (id)pointWithNSPoint:(NSPoint)point  slice:(long)slice value:(NSNumber *)value;
+/** Class init with Point3D */
 + (id)pointWithPoint3D:(Point3D *)point3D;
 
+/** export to xml */
 -(NSMutableDictionary*) exportToXML;
+/** init with xml dictonary */
 -(id) initWithDictionary: (NSDictionary*) xml;
 
 

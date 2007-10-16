@@ -21,6 +21,8 @@
 #import <Cocoa/Cocoa.h>
 #import "dicomFile.h"
 
+/** \brief  DCMTK calls for DicomFile */
+
 @interface DicomFile (DicomFileDCMTKCategory)
 
 + (BOOL) isDICOMFileDCMTK:(NSString *) file;

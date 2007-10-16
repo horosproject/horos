@@ -22,6 +22,8 @@
 
 @class ROIVolumeView;
 
+/** \brief  Window Controller for ROI Volume display */
+
 @interface ROIVolumeController : Window3DController
 {
     IBOutlet ROIVolumeView			*view;

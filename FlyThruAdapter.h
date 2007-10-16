@@ -13,16 +13,18 @@
 =========================================================================*/
 
 
-/** \brief Adaptor for flythru
-*
-*  Adaptor flythru
-*  Subclassed for SR, VR, VRPro
-*/
+
 
 
 #import <Cocoa/Cocoa.h>
 #import "Camera.h"
 #import "Window3DController.h"
+
+/** \brief Adapter for FlyThru
+*
+*  Adaptor FlyThru
+*  Subclassed for SR, VR, VRPro
+*/
 
 @interface FlyThruAdapter : NSObject {
 	

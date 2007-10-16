@@ -13,12 +13,14 @@
 =========================================================================*/
 //  Created by joris on 12/12/05.
 
-/** \brief   Controller for the VR View in the Endoscopy Window
-*/
 
 
 #import <Cocoa/Cocoa.h>
 #import "VRController.h"
+
+/** \brief   Controller for the VRView in the Endoscopy Window
+*/
+
 
 @interface EndoscopyVRController : VRController {
 

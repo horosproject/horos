@@ -13,8 +13,6 @@
 =========================================================================*/
 
 
-/** \brief Linear interpolation for flythru
-*/
 
 
 #import <Cocoa/Cocoa.h>
@@ -25,6 +23,11 @@
 #else
 typedef char* vtkPiecewiseFunction;
 #endif
+
+
+/** \brief Linear interpolation for FlyThru
+*/
+
 
 @interface Piecewise3D : Interpolation3D {
 	vtkPiecewiseFunction	*xPiecewise, *yPiecewise, *zPiecewise;

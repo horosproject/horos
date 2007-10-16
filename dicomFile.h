@@ -16,6 +16,7 @@
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
 
+/** \brief  Parses files for importing into the database */
 
 @interface DicomFile: NSObject
 {

@@ -9,6 +9,8 @@
 #import <Cocoa/Cocoa.h>
 #import "Window3DController.h"
 
+/** \brief  Window Controller for managing ROIVolume collection */
+
 @interface ROIVolumeManagerController : NSWindowController
 {
 		Window3DController			*viewer;

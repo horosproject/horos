@@ -13,13 +13,15 @@
 =========================================================================*/
 
 
-/** \brief Interpolates flight path between flythru steps
-*/
+
 
 
 
 #import <Cocoa/Cocoa.h>
 #import "Point3D.h"
+
+/** \brief Interpolates flight path between FlyThru steps
+*/
 
 @interface Interpolation3D : NSObject {
 }

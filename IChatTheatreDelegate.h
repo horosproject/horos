@@ -15,6 +15,8 @@
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebView.h>
 
+/** \brief Delegate for managing iChat Theatre */
+
 @interface IChatTheatreDelegate : NSObject {
 	BOOL _hasChanged;
 	IBOutlet WebView *web;

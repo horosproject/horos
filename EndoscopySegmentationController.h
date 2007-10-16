@@ -6,16 +6,18 @@
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
-/** \brief   Window Controller for Centerline segementation. 
-* 
-*   Window Controller for Centerline segementation
-*   DEPRECATED -- PLANNED FOR DELETION
-*/
+
 
 #import <Cocoa/Cocoa.h>
 #import "OSIVoxel.h"
 
 @class ViewerController;
+
+/** \brief   Window Controller for Centerline segementation. 
+* 
+*   Window Controller for Centerline segementation
+*   DEPRECATED -- PLANNED FOR DELETION
+*/
 @interface EndoscopySegmentationController : NSWindowController {
 	ViewerController		*_viewer, *_resultsViewer;
 	NSMutableArray			*_seeds;

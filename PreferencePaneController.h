@@ -21,6 +21,8 @@
 
 
 @class AppController;
+
+/** \brief Window Controller for Preferences */
 @interface PreferencePaneController : NSWindowController
 {
 	int							curPaneIndex;

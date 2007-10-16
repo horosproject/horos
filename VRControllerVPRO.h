@@ -27,6 +27,8 @@
 
 @class VRPROView;
 
+/** \brief WindowController for VPRO */
+
 @interface VRPROController : Window3DController
 {
     IBOutlet NSSlider       *LODSlider;

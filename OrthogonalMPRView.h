@@ -20,7 +20,10 @@
 
 //@class OrthogonalMPRController;
 
-// this view displays a cross to show where the 2 orthogonal plane are crossing
+/** \brief View for MPRs
+*
+* This view displays a cross to show where the 2 orthogonal plane are crossing 
+*/
 
 @interface OrthogonalMPRView : DCMView {
 	float						crossPositionX, crossPositionY; // coordinate x and Y of the cross

@@ -16,6 +16,8 @@
 
 #import "ViewerController.h"
 
+/** /brief  ITK based affine transform */
+
 @interface ITKTransform : NSObject {
 	ITK						*itkImage;
 	ViewerController		*originalViewer, *resultViewer;

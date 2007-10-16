@@ -12,8 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-/** \brief Spline interpolation for flythru
-*/
+
 
 
 #import <Cocoa/Cocoa.h>
@@ -24,6 +23,11 @@
 #else
 typedef char* vtkCardinalSpline;
 #endif
+
+
+/** \brief Spline interpolation for FlyThru
+*/
+
 
 @interface Spline3D : Interpolation3D {
 	vtkCardinalSpline	*xSpline, *ySpline, *zSpline;

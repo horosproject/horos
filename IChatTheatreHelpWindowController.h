@@ -14,7 +14,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-
+/** \brief Window Controller for iChat Theatre */
 @interface IChatTheatreHelpWindowController : NSWindowController {
 
 }

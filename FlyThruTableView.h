@@ -12,13 +12,15 @@
      PURPOSE.
 =========================================================================*/
 
+
+
+#import <Cocoa/Cocoa.h>
+
 /** \brief TableView for FlyThru steps
 *
 * TableView subclass to manage drag and drop ofsteps
 * for Flythrus
 */
-
-#import <Cocoa/Cocoa.h>
 
 
 @interface FlyThruTableView : NSTableView {

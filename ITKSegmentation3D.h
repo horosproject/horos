@@ -12,8 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-/** \brief ITK based segmentation for region growing
-*/
+
 
 #import <Cocoa/Cocoa.h>
 
@@ -29,6 +28,9 @@
 
 @class ViewerController;
 
+
+/** \brief ITK based segmentation for region growing
+*/
 @interface ITKSegmentation3D : NSObject {
 
 	ITK		*itkImage;

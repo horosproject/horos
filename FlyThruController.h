@@ -12,8 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-/** \brief Window Controller for flythrus
-*/
+
 
 
 #import <Cocoa/Cocoa.h>
@@ -22,6 +21,9 @@
 #import "Window3DController.h"
 #import "QuicktimeExport.h"
 #import "FlyThruStepsArrayController.h"
+
+/** \brief Window Controller for FlyThru
+*/
 
 @interface FlyThruController : NSWindowController {
 

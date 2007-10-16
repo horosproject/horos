@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+/** \brief VTK horn registration */
+
 
 @interface HornRegistration : NSObject {
 	NSMutableArray	*modelPoints, *sensorPoints;

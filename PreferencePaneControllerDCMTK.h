@@ -15,6 +15,8 @@
 #import <Cocoa/Cocoa.h>
 #import "PreferencePaneController.h"
 
+/** \brief Category for DCMTK calls for PreferencePaneController*/
+
 @interface PreferencePaneController (PreferencePaneControllerDCMTK)
 
 - (NSArray*) prepareDICOMFieldsArrays;

@@ -13,12 +13,14 @@
 =========================================================================*/
 //  Created by joris on 12/12/05.
 
-/** \brief   MPR views for endoscopy
-*/
+
 
 #import <Cocoa/Cocoa.h>
 #import "OrthogonalMPRController.h"
 #import "OrthogonalMPRView.h"
+
+/** \brief   MPR views for endoscopy
+*/
 
 @interface EndoscopyMPRView : OrthogonalMPRView {
 	NSPoint	cameraPosition, cameraFocalPoint;

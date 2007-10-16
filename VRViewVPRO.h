@@ -144,6 +144,8 @@ typedef char* vtkVolumeRayCastCompositeFunction;
 @class DICOMExport;
 @class Camera;
 
+/** \brief VRView for VRPro  */
+
 @interface VRPROView : VTKView <Schedulable>
 {
 	NSTimer						*autoRotate;

@@ -13,8 +13,6 @@
 =========================================================================*/
 //  Created by joris on 12/12/05.
 
-/** \brief   Window Controller for Endoscopy
-*/
 
 
 #import <Cocoa/Cocoa.h>
@@ -25,6 +23,10 @@
 #import "OSIWindowController.h"
 
 @class OSIVoxel;
+
+/** \brief   Window Controller for Endoscopy
+*/
+
 
 @interface EndoscopyViewer : OSIWindowController {
 	IBOutlet OrthogonalMPRController	*mprController;

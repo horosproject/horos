@@ -31,6 +31,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 @class ThickSlabController;
 @class DCMObject;
 
+/** \brief Represents an image for display */
+
 @interface DCMPix: NSObject <NSCopying>
 {
 //SOURCES

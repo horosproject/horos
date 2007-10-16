@@ -37,6 +37,11 @@
 @class VRPresetPreview;
 #import "ColorView.h"
 
+
+/** \brief Window Controller for VR and MIP 
+*/
+
+
 @interface VRController : Window3DController
 {
     IBOutlet NSSlider       *LODSlider;

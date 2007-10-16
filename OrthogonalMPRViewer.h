@@ -20,6 +20,8 @@
 
 @class DICOMExport;
 
+/** \brief  Window Controller for Orthogonal MPR */
+
 @interface OrthogonalMPRViewer : OSIWindowController
 {
 	ViewerController					*viewer;
