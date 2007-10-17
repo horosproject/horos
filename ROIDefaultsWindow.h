@@ -21,8 +21,9 @@
 
 /** \brief  Window Controller for ROI defaults */
 
-@interface ROIDefaultsWindow : NSWindowController {
-//	IBOutlet NSComboBox		*name;
+@interface ROIDefaultsWindow : NSWindowController
+{
+	ViewerController		*curController;
 	NSMutableArray			*roiNames;
 	
 }

@@ -18,8 +18,6 @@
 #import "ROIDefaultsWindow.h"
 #import "ViewerController.h"
 
-static ViewerController		*curController;
-
 @implementation ROIDefaultsWindow
 
 
@@ -62,17 +60,36 @@ static ViewerController		*curController;
     return nil;
 }
 
+- (void) CloseViewerNotification: (NSNotification*) note
+{
+	ViewerController	*v = [note object];
+	
+	if( v == curController)
+	{
+		[[self window] close];
+		return;
+	}
+}
 
-- (id) initWithController: (ViewerController*) c {
+- (id) initWithController: (ViewerController*) c
+{
 	self = [super initWithWindowNibName:@"ROIDefaults"];
 	
 	curController = c;
+	
+	[[NSNotificationCenter defaultCenter] addObserver: self
+			   selector: @selector(CloseViewerNotification:)
+				   name: @"CloseViewerNotification"
+				 object: nil];
 
 	return self;
 }
 
 
-- (void)windowWillClose:(NSNotification *)notification {	
+- (void)windowWillClose:(NSNotification *)notification
+{
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
+	
 	[self release];
 }
 
