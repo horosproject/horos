@@ -60,31 +60,20 @@
     return nil;
 }
 
-- (void) CloseViewerNotification: (NSNotification*) note
-{
-	ViewerController	*v = [note object];
-	
-	if( v == curController)
-	{
-		[[self window] close];
-		return;
-	}
-}
-
 - (id) initWithController: (ViewerController*) c
 {
 	self = [super initWithWindowNibName:@"ROIDefaults"];
 	
-	curController = c;
+	curController = [c retain];
 	
-	[[NSNotificationCenter defaultCenter] addObserver: self
-			   selector: @selector(CloseViewerNotification:)
-				   name: @"CloseViewerNotification"
-				 object: nil];
-
 	return self;
 }
 
+- (void) dealloc
+{
+	[curController release];
+	[super dealloc];
+}
 
 - (void)windowWillClose:(NSNotification *)notification
 {
