@@ -1078,28 +1078,48 @@ if( reader)
 			temp[ 0] = [[dict objectForKey:@"pt3Dx"] floatValue];
 			temp[ 1] = [[dict objectForKey:@"pt3Dy"] floatValue];
 			temp[ 2] = [[dict objectForKey:@"pt3Dz"] floatValue];
-			[firstObject convertDICOMCoords: temp toSliceCoords: s];
+			
 			
 			NSLog( @"3D cross position: %f %f %f", temp[ 0], temp[ 1], temp[ 2]);
+			
+			
+			float resultPoint[ 3];
+			int index = [oView findPlaneAndPoint: temp :resultPoint];
+			
+			[[pixList objectAtIndex: index] convertDICOMCoords: resultPoint toSliceCoords: s];
 			
 			s[ 0] /= [firstObject pixelSpacingX];
 			s[ 1] /= [firstObject pixelSpacingY];
 			s[ 2] /= sliceThickness;
 			
-			NSLog( @"2D position: %f %f %f", s[ 0], s[ 1], s[ 2]);
+			NSLog( @"sliceThickness: %f", sliceThickness);
 			
-			int index = s[ 2];
-			//if( sliceThickness > 0) index = [pixList count] -1 -index;
+			NSLog( @"2D position: %f %f %d", s[ 0], s[ 1], index);
+			
+//			int index = s[ 2];
+//			
+//			[[pixList objectAtIndex: index] convertPixX: s[ 0] pixY: s[ 1] toDICOMCoords: temp];
+//			NSLog( @"3D cross position: %f %f %f", temp[ 0], temp[ 1], temp[ 2]);
+//			
+//			if( index < 0) NSLog( @"index < 0");
+//			if( index >= [pixList count]) NSLog( @"index >= [pixList count]");
+//			
+			NSLog( @"********** FLIPPED DATA: %d", [oView flippedData]);
+
+			if( [oView flippedData]) index = [pixList count] -1 -index;
 			
 			[oView setIndex: index];
 			[oView sliderAction2DMPR: [NSNumber numberWithInt: index]];
 			[[[self window] windowController] adjustSlider];
 			
-			oView.cross.x = s[ 0];
-			oView.cross.y = s[ 1];
+			[oView setCrossCoordinates: s[ 0] :-s[ 1] : NO];
+			
+			NSLog( @"oView.cross.x: %f oView.cross.y: %f", oView.cross.x, oView.cross.y);
 		}
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: @"Original" userInfo: [NSDictionary dictionaryWithObject:@"set" forKey:@"action"]];
+		
+		NSLog( @"oView.cross.x: %f oView.cross.y: %f", oView.cross.x, oView.cross.y);
 	}
 }
 
@@ -1147,7 +1167,6 @@ if( reader)
 	[dict setObject:[NSNumber numberWithFloat:[finalView rotation]] forKey:@"rotation3"];
 	
 	int index = [oView curImage];
-	//if( sliceThickness > 0) index = [pixList count] -1 -index;
 	
 	[[pixList objectAtIndex: index] convertPixX: [oView cross].x pixY: [oView cross].y toDICOMCoords: temp];
 	[dict setObject:[NSNumber numberWithFloat: temp[ 0]] forKey:@"pt3Dx"];

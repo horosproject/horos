@@ -258,7 +258,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property(readonly) NSArray *dcmFilesList;
 @property long syncSeriesIndex;
 @property float syncRelativeDiff;
-@property(readonly) NSPoint cross;
+@property NSPoint cross;
 @property NSPoint crossPrev;
 @property float slab;
 @property long blendingMode;
