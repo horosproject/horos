@@ -17,9 +17,10 @@
      PURPOSE.
 =========================================================================*/
 
-/*
-Root class for the Viewer Window Controllers such as ViewerController
-and Window3DController
+/** \brief base class for Window Controllers in OsiriX
+*
+*Root class for the Viewer Window Controllers such as ViewerController
+*and Window3DController
 */
 
 #import <Cocoa/Cocoa.h>

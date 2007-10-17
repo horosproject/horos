@@ -18,7 +18,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class DRTrack;
-
+/** \brief Window Controller for DICOM disk burning */
 @interface BurnerWindowController : NSWindowController {
 	volatile BOOL burning, isIrisAnimation;
 	NSMutableArray *nodeArray;

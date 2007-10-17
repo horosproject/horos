@@ -17,7 +17,7 @@
 
 #import <AppKit/AppKit.h>
 
-
+/** \brief Window Controller for surveys */
 @interface Survey : NSWindowController {
 
 	IBOutlet		NSMatrix		*who, *where, *what, *usage, *plugin;

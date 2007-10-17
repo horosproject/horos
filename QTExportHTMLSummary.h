@@ -16,6 +16,8 @@
 
 extern NSString* asciiString (NSString* name);
 
+
+/** \brief Used for html export for disk burning*/
 @interface QTExportHTMLSummary : NSObject
 {
 	NSString *patientsListTemplate, *examsListTemplate, *seriesTemplate; // whole template

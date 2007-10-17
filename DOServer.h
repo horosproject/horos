@@ -1,5 +1,5 @@
 //// DOServer.h
-
+/** \brief Distributed object server */
 @interface DOServer : NSObject
 {
          NSConnection* serverConnection;

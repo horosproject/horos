@@ -10,6 +10,7 @@
 #import <Cocoa/Cocoa.h>
 #import <Security/Authorization.h>
 
+/** \brief authentication and authorization */
 @interface BLAuthentication : NSObject 
 {
 	AuthorizationRef authorizationRef; 

@@ -15,13 +15,14 @@
 
 
 #import <Cocoa/Cocoa.h>
-
+/** \brief  Category to shuffle arrays */
 @interface NSArray (ArrayCategory)
 
 - (NSArray*)shuffledArray;
 
 @end
 
+/** \brief  Category to shuffle mutableArrays */
 @interface NSMutableArray (MutableArrayCategory)
 
 //appends array to self except when the object is already in the array as determined by isEqual:

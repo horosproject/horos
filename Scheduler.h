@@ -17,6 +17,7 @@
 
 @protocol Schedulable;
 
+/** \brief Does multithreading scheduling*/
 @interface Scheduler : NSObject {
     @private
     id _delegate;                               // Delegate

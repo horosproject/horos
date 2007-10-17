@@ -19,6 +19,8 @@ enum HotKeyActions {DefaultWWWLHotKeyAction, FullDynamicWWWLHotKeyAction,
 	ClosedPolygonHotKeyAction, PencilHotKeyAction, ThreeDPointHotKeyAction, PlainToolHotKeyAction,
 	BoneRemovalHotKeyAction, Rotate3DHotKeyAction, Camera3DotKeyAction, scissors3DHotKeyAction, RepulsorHotKeyAction};
 
+
+/** \brief Sets up user defaults */
 @interface DefaultsOsiriX : NSObject {
 
 }

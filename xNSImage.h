@@ -18,6 +18,8 @@
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
 
+
+/** \brief Used by DCMPix */
 @interface xNSImage : NSImage {
 
     unsigned char    *data;

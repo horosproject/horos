@@ -16,7 +16,7 @@
 
 #import <Foundation/Foundation.h>
 
-
+/** \brief Someting with network logging */
 @interface DICOMLogger : NSObject {
 
 }

@@ -18,6 +18,7 @@
 #import <Foundation/Foundation.h>
 #import <Carbon/Carbon.h>
 
+/** \brief Import into iPhoto*/
 @interface iPhoto : NSObject {
 
 ComponentInstance myComponent;

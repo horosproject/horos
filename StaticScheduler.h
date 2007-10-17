@@ -16,6 +16,7 @@
 #import <Foundation/Foundation.h>
 #import "Scheduler.h"
 
+/** \brief Static multithreaded  Scheduler */
 @interface StaticScheduler : Scheduler {
     @private
     int _numberOfThreadsLeft; // Used to keep track of how many threads already have work

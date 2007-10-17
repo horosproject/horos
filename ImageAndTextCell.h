@@ -13,7 +13,7 @@
 =========================================================================*/
 
 
-
+/** \brief Cell that can contain text and and image */
 
 #import <Cocoa/Cocoa.h>
 

@@ -18,6 +18,8 @@
 
 @class DCMObject;
 
+
+/** \brief Export image as DICOM  */
 @interface DICOMExport : NSObject
 {
 		NSString			*dcmSourcePath;

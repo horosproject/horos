@@ -16,6 +16,7 @@
 #import <Foundation/Foundation.h>
 #import "Scheduler.h"
 
+/** \brief Protocol for multithreading scheduling*/
 @protocol Schedulable 
 -(void)performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler;
 @end

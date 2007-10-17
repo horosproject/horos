@@ -22,6 +22,8 @@
 #import <OpenGL/CGLContext.h>
 #import <OpenGL/CGLMacro.h>
 
+
+/** \brief  Converts NSStrings to OpenGL textures*/
 @interface StringTexture : NSObject {
 	CGLContextObj cgl_ctx; // current context at time of texture creation
 	GLuint texName;

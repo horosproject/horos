@@ -16,6 +16,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+
+/** \brief Window Controller for the Wait Panel */
 @interface Wait : NSWindowController
 {
     IBOutlet NSProgressIndicator *progress;

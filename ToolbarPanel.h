@@ -18,6 +18,7 @@
 #import <AppKit/AppKit.h>
 #import "ViewerController.h"
 
+/** Window Controller for Toolbar */
 @interface ToolbarPanelController : NSWindowController {
 	
 	NSToolbar               *toolbar;

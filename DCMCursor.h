@@ -17,7 +17,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-
+/** \brief  Cursors */
 @interface NSCursor(DCMCursor) 
 
 +(id)zoomCursor;

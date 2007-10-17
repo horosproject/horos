@@ -1,4 +1,6 @@
-/*
+/** /brief Addition to NSFont to allow easy OpenGL display list creation of bitmaps
+ * based on the receiver's font.
+ *
  * Addition to NSFont to allow easy OpenGL display list creation of bitmaps
  * based on the receiver's font.  Example usage:
  *

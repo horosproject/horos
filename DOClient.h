@@ -2,6 +2,8 @@
 
 #import <Foundation/Foundation.h>
 
+
+/** \brief Distributed object client */
 @interface DOClient:NSObject
 {
          id serverObject;

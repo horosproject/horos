@@ -46,6 +46,7 @@ enum SendServerType { osirixServer, offisServer };
 @class Wait;
 @class DCMTKStoreSCU;
 
+/** \brief Window Controller for DICOM Send */
 @interface SendController : NSWindowController {
 	id					_server;
 	NSArray				*_files;

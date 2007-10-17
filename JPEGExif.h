@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-
+/** \brief add exif to JPEG */
 @interface JPEGExif : NSObject {
 
 }

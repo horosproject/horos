@@ -21,7 +21,7 @@
 // You could roll this into the Mail class as presented above
 
 #import <Carbon/Carbon.h>
-
+/** \brief Sends email */
 @interface Mailer : NSObject {
 
 ComponentInstance myComponent;

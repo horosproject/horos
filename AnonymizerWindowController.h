@@ -14,6 +14,7 @@
 
 #import <AppKit/AppKit.h>
 
+/** \brief Window Controller for anonymizing */
 @interface AnonymizerWindowController : NSWindowController
 {
 	IBOutlet NSMatrix			*tagMatrixfirstColumn, *tagMatrixsecondColumn;

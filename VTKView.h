@@ -35,6 +35,8 @@ typedef char* vtkCocoaRenderWindowInteractor;
 typedef char* vtkCocoaRenderWindow;
 #endif
 
+
+/** \brief View for using VTK */
 @interface VTKView : vtkCocoaGLView {
     vtkCocoaRenderWindow			*_cocoaRenderWindow;
     vtkRenderer						*_renderer;

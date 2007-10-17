@@ -15,6 +15,7 @@
 #import <Foundation/Foundation.h>
 #import <Carbon/Carbon.h>
 
+/** \brief reports */
 @interface Reports : NSObject
 {
 	ComponentInstance myComponent;

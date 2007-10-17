@@ -16,7 +16,7 @@
 
 
 #import <Cocoa/Cocoa.h>
-
+/** \brief OutlineView for BrowserController */
 @interface MyOutlineView : NSOutlineView
 {
 	NSArray	*allColumns;

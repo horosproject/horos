@@ -16,6 +16,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+/** \brief Window Controller for Wait rendering */
 @interface WaitRendering : NSWindowController
 {
     IBOutlet NSProgressIndicator *progress;
