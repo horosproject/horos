@@ -12,6 +12,19 @@
      PURPOSE.
 =========================================================================*/
 
+// This will be added to the main inded page of the Doxygen documentation
+/** \mainpage OsiriX index page
+*  <img src= "Binaries/Icons/SmallLogo.tif">
+* \section Intro OsiriX DICOM workstation
+*  Osirix is a free open source DICOM workstation with full 64 bit support.
+*
+*  We extend out thanks to other in the open source community.
+*
+*  VTK, ITK, and DCMTK open source projects are extensively used in OsiriX.
+*
+*  The OsiriX team.
+*/
+
 
 
 
