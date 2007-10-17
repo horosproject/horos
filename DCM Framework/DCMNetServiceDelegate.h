@@ -20,7 +20,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-
+/** \ brief Eanbles DICOM Bonjour */
 @interface DCMNetServiceDelegate : NSObject {
 
 	NSNetServiceBrowser *_dicomNetBrowser;
