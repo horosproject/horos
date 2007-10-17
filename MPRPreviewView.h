@@ -21,7 +21,7 @@
 #import <Cocoa/Cocoa.h>
 #import "PreviewView.h"
 
-
+/** \brief Initial MPR view */
 @interface MPRPreviewView : PreviewView {
 
 }

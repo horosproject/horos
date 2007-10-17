@@ -12,7 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
-
+/** \brief  SuperClass for 3D WindowControllers
+*/
 
 
 #import <Foundation/Foundation.h>

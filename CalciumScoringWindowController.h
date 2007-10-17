@@ -26,6 +26,9 @@ Manages the Window for creating Calcium Scoring ROIs
 #import "ViewerController.h"
 
 @class ViewerController;
+
+/** \brief Manages the Window for creating Calcium Scoring ROIs*/
+
 @interface CalciumScoringWindowController : NSWindowController {
 	ViewerController		*_viewer, *_resultsViewer;
 	int						_ctType;

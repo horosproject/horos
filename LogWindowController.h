@@ -21,7 +21,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-
+/** \brief  Window Controller for network logs */
 @interface LogWindowController : NSWindowController
 {
 }

@@ -15,6 +15,8 @@
 #import <Cocoa/Cocoa.h>
 #import "XMLController.h"
 
+/** \brief DCMTK calls for xml */
+
 @interface XMLController (XMLControllerDCMTKCategory)
 
 - (int) modifyDicom:(NSArray*) params;

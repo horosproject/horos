@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-
+/** \brief Series View for ViewerControllerr */
 
 
 #import <Cocoa/Cocoa.h>

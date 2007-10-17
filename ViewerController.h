@@ -68,6 +68,8 @@ enum
 	eAxialNeg				// 5
 };
 
+/** \brief Window Controller for 2D Viewer*/
+
 @interface ViewerController : OSIWindowController  <Schedulable>
 {
 	NSLock	*ThreadLoadImageLock;

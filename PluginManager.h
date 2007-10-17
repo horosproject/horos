@@ -16,7 +16,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "PluginFilter.h"
-
+/** \brief Mangages PluginFilter loading */
 @interface PluginManager : NSObject
 {
 }

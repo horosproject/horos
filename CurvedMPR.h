@@ -20,6 +20,8 @@
 @class ROI;
 @class ViewerController;
 
+
+/** \brief  Curved MPR */
 @interface CurvedMPR : NSObject {
 
     NSMutableArray			*pixList;

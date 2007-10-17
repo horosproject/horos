@@ -21,7 +21,7 @@
 #import <Cocoa/Cocoa.h>
 #import "DCMTKQueryNode.h"
 
-
+/** \brief Series level DCMTKQueryNode */
 @interface DCMTKSeriesQueryNode : DCMTKQueryNode {
 	NSString *_studyInstanceUID;
 }

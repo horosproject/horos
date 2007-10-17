@@ -9,6 +9,8 @@
 #import <Cocoa/Cocoa.h>
 //#import "NSMenu.h"
 
+
+/** \brief MenuDictionary category used to modify contextual menus */
 @interface NSMenu (MenuDictionary)
 - (NSMenu*)initWithTitle:(NSString *)aTitle withDictionary:(NSDictionary *)aDictionary forWindowController:(NSWindowController *)aWindowController;
 

@@ -76,6 +76,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @class ROI;
 @class OrthogonalMPRController;
 
+/** \brief Image/Frame View for ViewerController */
+
 @interface DCMView: NSOpenGLView
 {
 	NSInteger		_imageRows;

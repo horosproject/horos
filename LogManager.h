@@ -19,7 +19,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-
+/** \brief Managed network logging */
 @interface LogManager : NSObject {
 	NSTimer *_timer;
 	NSMutableDictionary *_currentLogs;

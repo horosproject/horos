@@ -18,6 +18,8 @@
 
 @class ViewerController;
 
+/** \brief Window Controller for XML parsing */
+
 @interface XMLController : NSWindowController
 {
     IBOutlet NSOutlineView		*table;

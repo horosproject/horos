@@ -20,7 +20,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-
+/** \brief Plugin for adding file format */
 @interface PluginFileFormatDecoder : NSObject {
 
 	NSNumber *_height;

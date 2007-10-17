@@ -9,6 +9,8 @@
 #import <Cocoa/Cocoa.h>
 #import "ViewerController.h"
 
+
+/** \brief View used for printing from ViewerController */
 @interface printView : NSView
 {
 	id						viewer;

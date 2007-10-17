@@ -18,7 +18,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-
+/** \brief Controller for performing query */
 @interface QueryArrayController : NSObject {
 	id rootNode;
 	NSMutableDictionary *filters;

@@ -27,6 +27,11 @@
 
 //NSString * const OsiriXFileReceivedNotification;
 
+/** \brief  Finds the appropriate study/series/image for Q/R
+*
+* Finds the appropriate study/series/image for Q/R
+* Interface between server and database 
+*/
 
 @interface OsiriXSCPDataHandler : DCMCStoreReceivedPDUHandler {
 	int numberMoving;

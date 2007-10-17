@@ -24,6 +24,8 @@
 #import <Cocoa/Cocoa.h>
 #import "MPRPreviewView.h"
 
+/** \brief Does nothing */
+
 @interface MPRPerpendicularView : MPRPreviewView {
 
 }

@@ -89,6 +89,8 @@ enum {
 	fovMaxY,
 	fovMaxZ};
 
+
+/** \brief View used to create MPR images */
 @interface MPR2DView : NSOpenGLView <Schedulable>
 {
 	float				blendingAxis[ 3], blendingAngle, blendingAxis2[ 3], blendingAngle2;

@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #include "ViewerController.h"
 
-
+/** \brief Window Controller for DICOM printing */
 @interface AYDicomPrintWindowController : NSWindowController
 {
 	NSImage *m_PrinterOnImage;

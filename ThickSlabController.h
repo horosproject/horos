@@ -20,6 +20,8 @@
 
 @class ThickSlabVR;
 
+
+/** \brief Thick Slab window coontroller */
 @interface ThickSlabController : NSWindowController {
 
 	IBOutlet	ThickSlabVR		*view;

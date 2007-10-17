@@ -24,6 +24,8 @@ struct rawData
 	long bytesWritten;
 };
 
+
+/** \brief Creates DICOM print images */
 @interface AYNSImageToDicom : NSObject
 {
 	NSMutableData	*m_ImageDataBytes;

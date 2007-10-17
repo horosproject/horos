@@ -28,7 +28,7 @@
 #include "dviface.h"
 #include "dvpssp.h"
 
-
+/** \brief DCMTK based PrintSCU Not in use */
 @interface DCMTKPrintSCU : DCMTKServiceClassUser {
 
     const char *              _printerID;             /* printer ID */

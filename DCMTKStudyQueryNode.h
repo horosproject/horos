@@ -21,6 +21,7 @@
 #import <Cocoa/Cocoa.h>
 #import "DCMTKQueryNode.h"
 
+/** \brief Study level DCMTKQueryNode */
 @interface DCMTKStudyQueryNode : DCMTKQueryNode {
 
 }

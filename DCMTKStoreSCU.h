@@ -22,7 +22,11 @@
 
 int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int port, NSDictionary *extraParameters);
 
-
+/** \brief  DICOM Send 
+*
+* DCMTKStoreSCU performs the DICOM send
+* based on DCMTK 
+*/
 @interface DCMTKStoreSCU : NSObject {
 	NSString *_callingAET;
 	NSString *_calledAET;

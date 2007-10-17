@@ -138,6 +138,8 @@ typedef char* vtkPolyDataNormals;
 @class SRController;
 @class DICOMExport;
 
+
+/** \brief Surface Rendering View */
 @interface SRView : VTKView
 {
 	int							projectionMode;

@@ -16,6 +16,8 @@
 #import <WebKit/WebKit.h>
 #import "PluginManager.h"
 
+/** \brief Window Controller for PluginFilter management */
+
 @interface PluginManagerController : NSWindowController {
 
     IBOutlet NSMenu	*filtersMenu;

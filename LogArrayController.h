@@ -21,7 +21,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-
+/** \brief Array Controller for network logs */
 @interface LogArrayController : NSArrayController {
 
 }

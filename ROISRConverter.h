@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-
+/** \brief Converts between SR and ROI */
 @interface ROISRConverter : NSObject
 
 + (NSData *) roiFromDICOM:(NSString *)path;

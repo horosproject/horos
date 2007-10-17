@@ -20,6 +20,8 @@
 //@class DICOMQueryStudyRoot;
 @class QueryArrayController;
 @class QueryFilter;
+
+/** \brief Window Controller for Q/R */
 @interface QueryController : NSWindowController {
 
     IBOutlet    NSOutlineView				*outlineView;

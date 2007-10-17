@@ -36,6 +36,12 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 //#include "ofstring.h"
 
 
+/** \brief  Base Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU 
+*
+* SCU classes are usually outgoing connections
+* based on DCMTK 
+*/
+
 @interface DCMTKServiceClassUser : NSObject {
 	NSString *_callingAET;
 	NSString *_calledAET;

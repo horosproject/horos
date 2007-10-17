@@ -16,6 +16,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+/** \brief Study View for ViewerController */
 
 @interface StudyView : NSView {
 	int seriesRows;

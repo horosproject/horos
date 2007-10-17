@@ -25,6 +25,8 @@
 
 @class MPR2DView;
 @class DICOMExport;
+
+/** \brief Window Controller for 2D MPR */
 @interface MPR2DController : Window3DController
 {
     IBOutlet NSWindow       *quicktimeWindow;

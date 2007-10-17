@@ -21,7 +21,7 @@
 #import <Cocoa/Cocoa.h>
 #import "PluginFilter.h"
 
-
+/** \brief  Report Plugin Filter base class */
 @interface ReportPluginFilter : PluginFilter {
 
 }

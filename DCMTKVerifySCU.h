@@ -18,7 +18,7 @@
 #import "DCMTKServiceClassUser.h"
 #undef verify
 
-
+/** \brief DICOM verify/echo */
 
 int runEcho(const char *myAET, const char*peerAET, const char*hostname, int port, NSDictionary *extraParameters);
 

@@ -20,7 +20,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-
+/** \brief  DICOM Q/R SCP 
+*
+* DCMTKQueryRetrieveSCP is the Query/ Retrieve Server and listener
+* based on DCMTK 
+*/
 @interface DCMTKQueryRetrieveSCP : NSObject {
 	int _port;
 	NSString *_aeTitle;

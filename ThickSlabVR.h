@@ -60,6 +60,8 @@
 
 #include <Accelerate/Accelerate.h>
 
+
+/** \brief View for Thick Slab Volume Rendering */
 @interface ThickSlabVR : NSView {
 	float								*imageBlendingPtr, *imagePtr;
 	long								width, height, count;

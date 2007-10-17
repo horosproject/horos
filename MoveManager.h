@@ -20,7 +20,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-
+/** \brief move manager */
 @interface MoveManager : NSObject {
 	NSMutableSet *_set;
 }

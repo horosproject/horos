@@ -22,7 +22,7 @@
 #import <Cocoa/Cocoa.h>
 #import <OsiriX/DCMCMoveResponseDataHandler.h>
 
-
+/** \brief No longer in use */
 @interface NetworkMoveDataHandler : DCMCMoveResponseDataHandler {
 	id logEntry;
 }

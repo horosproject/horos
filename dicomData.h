@@ -15,6 +15,8 @@
 
 #import <Foundation/Foundation.h>
 
+
+/** \brief Tree node for xml */
 @interface dicomData: NSObject {
     NSString        *group;
     NSString        *name;

@@ -34,7 +34,7 @@
 
 
 @class DCMCalendarDate;
-
+/** \brief Base class for query nodes */
 @interface DCMTKQueryNode : DCMTKServiceClassUser {
 	NSMutableArray *_children;
 	NSString *_uid;
