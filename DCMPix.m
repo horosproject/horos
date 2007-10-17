@@ -2871,7 +2871,11 @@ BOOL gUSEPAPYRUSDCMPIX;
 }
 
 - (void) copyFromOther:(DCMPix *) fromDcm
-{	
+{
+	[cachedPapyGroups release];
+	[imageObj release];
+	[annotationsDictionary release];
+
 	self->imageObj = [fromDcm->imageObj retain];
 	self->isBonjour = fromDcm->isBonjour;
 	//	self->fImage = fromDcm->fImage;	// Don't load the image!
@@ -2933,6 +2937,10 @@ BOOL gUSEPAPYRUSDCMPIX;
     long	i;
 	
 	DCMPix *copy = [[[self class] allocWithZone: zone] myinit:self->srcFile :self->imID :self->imTot :self->fVolImage :self->frameNo :self->serieNo];
+	
+	[cachedPapyGroups release];
+	[imageObj release];
+	[annotationsDictionary release];
 	
 	copy->imageObj = [self->imageObj retain];
 	copy->isBonjour = self->isBonjour;
@@ -9804,6 +9812,7 @@ END_CREATE_ROIS:
 	
 	if( subGammaFunction) vImageDestroyGammaFunction( subGammaFunction);
 	
+//	NSLog(@"retainCount:%d", [annotationsDictionary retainCount]);
 	[annotationsDictionary release];
 	
     [super dealloc];
