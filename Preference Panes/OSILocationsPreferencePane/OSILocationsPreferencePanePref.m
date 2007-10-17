@@ -48,7 +48,7 @@
 		if( value < 1) value = 1;
 		if( value > 131072) value = 131072;
 		[[serverList objectAtIndex: x] setValue: [NSNumber numberWithInt: value] forKey: @"Port"];		
-		[[serverList objectAtIndex: x] setValue: [[[serverList objectAtIndex: x] valueForKey:@"AETitle"] uppercaseString] forKey:@"AETitle"];
+		[[serverList objectAtIndex: x] setValue: [[serverList objectAtIndex: x] valueForKey:@"AETitle"] forKey:@"AETitle"];
 		
 		NSString *currentAETitle = [[serverList objectAtIndex: x] valueForKey: @"AETitle"];
 		
