@@ -2870,67 +2870,67 @@ BOOL gUSEPAPYRUSDCMPIX;
 	return [self myinit: s :pos :tot :ptr :f :ss isBonjour:NO imageObj: 0L];
 }
 
-- (void) copyFromOther:(DCMPix *) fromDcm
-{
-	[cachedPapyGroups release];
-	[imageObj release];
-	[annotationsDictionary release];
-
-	self->imageObj = [fromDcm->imageObj retain];
-	self->isBonjour = fromDcm->isBonjour;
-	//	self->fImage = fromDcm->fImage;	// Don't load the image!
-	self->height = fromDcm->height;
-	self->width = fromDcm->width;
-	self->rowBytes = fromDcm->rowBytes;
-	self->wl = fromDcm->wl;
-	self->ww = fromDcm->ww;
-	self->sliceInterval = fromDcm->sliceInterval;
-	self->pixelSpacingX = fromDcm->pixelSpacingX;
-	self->pixelSpacingY = fromDcm->pixelSpacingY;
-	self->sliceLocation = fromDcm->sliceLocation;
-	self->spacingBetweenSlices = fromDcm->spacingBetweenSlices;
-	self->sliceThickness = fromDcm->sliceThickness;
-	self->pixelRatio = fromDcm->pixelRatio;
-	self->originX  = fromDcm->originX;
-	self->originY = fromDcm->originY;
-	self->originZ = fromDcm->originZ;
-	
-	memcpy( self->orientation, fromDcm->orientation, sizeof orientation );
-	
-	self->isRGB = fromDcm->isRGB;
-	self->cineRate = fromDcm->cineRate;
-	self->savedWL = fromDcm->savedWL;
-	self->savedWW = fromDcm->savedWW;
-	
-	self->echotime = [fromDcm->echotime retain];
-	self->flipAngle = [fromDcm->flipAngle retain];
-	self->laterality = [fromDcm->laterality retain];
-	self->repetitiontime = [fromDcm->repetitiontime retain];
-	self->protocolName = [fromDcm->protocolName retain];
-	self->convertedDICOM = [fromDcm->convertedDICOM retain];
-	self->viewPosition = [fromDcm->viewPosition retain];
-	self->patientPosition = [fromDcm->patientPosition retain];
-
-	self->patientsWeight = fromDcm->patientsWeight;
-	self->SUVConverted = fromDcm->SUVConverted;
-
-	self->units = [fromDcm->units retain];
-	self->decayCorrection = [fromDcm->decayCorrection retain];
-	self->radionuclideTotalDose = fromDcm->radionuclideTotalDose;
-	self->radionuclideTotalDoseCorrected = fromDcm->radionuclideTotalDoseCorrected;
-	self->acquisitionTime = [fromDcm->acquisitionTime retain];
-	self->radiopharmaceuticalStartTime = [fromDcm->radiopharmaceuticalStartTime retain];
-	self->displaySUVValue = fromDcm->displaySUVValue;
-	self->decayFactor = fromDcm->decayFactor;
-	self->halflife = fromDcm->halflife;
-	self->philipsFactor = fromDcm->philipsFactor;
-	self->generated = YES;
-	
-	self->minValueOfSeries = fromDcm->minValueOfSeries;
-	self->maxValueOfSeries = fromDcm->maxValueOfSeries;
-	self->annotationsDictionary = [fromDcm->annotationsDictionary retain];
-	self->cachedPapyGroups = [fromDcm->cachedPapyGroups retain];
-}
+//- (void) copyFromOther:(DCMPix *) fromDcm
+//{
+//	[self->cachedPapyGroups release];
+//	[self->imageObj release];
+//	[self->annotationsDictionary release];
+//
+//	self->imageObj = [fromDcm->imageObj retain];
+//	self->isBonjour = fromDcm->isBonjour;
+//	//	self->fImage = fromDcm->fImage;	// Don't load the image!
+//	self->height = fromDcm->height;
+//	self->width = fromDcm->width;
+//	self->rowBytes = fromDcm->rowBytes;
+//	self->wl = fromDcm->wl;
+//	self->ww = fromDcm->ww;
+//	self->sliceInterval = fromDcm->sliceInterval;
+//	self->pixelSpacingX = fromDcm->pixelSpacingX;
+//	self->pixelSpacingY = fromDcm->pixelSpacingY;
+//	self->sliceLocation = fromDcm->sliceLocation;
+//	self->spacingBetweenSlices = fromDcm->spacingBetweenSlices;
+//	self->sliceThickness = fromDcm->sliceThickness;
+//	self->pixelRatio = fromDcm->pixelRatio;
+//	self->originX  = fromDcm->originX;
+//	self->originY = fromDcm->originY;
+//	self->originZ = fromDcm->originZ;
+//	
+//	memcpy( self->orientation, fromDcm->orientation, sizeof orientation );
+//	
+//	self->isRGB = fromDcm->isRGB;
+//	self->cineRate = fromDcm->cineRate;
+//	self->savedWL = fromDcm->savedWL;
+//	self->savedWW = fromDcm->savedWW;
+//	
+//	self->echotime = [fromDcm->echotime retain];
+//	self->flipAngle = [fromDcm->flipAngle retain];
+//	self->laterality = [fromDcm->laterality retain];
+//	self->repetitiontime = [fromDcm->repetitiontime retain];
+//	self->protocolName = [fromDcm->protocolName retain];
+//	self->convertedDICOM = [fromDcm->convertedDICOM retain];
+//	self->viewPosition = [fromDcm->viewPosition retain];
+//	self->patientPosition = [fromDcm->patientPosition retain];
+//
+//	self->patientsWeight = fromDcm->patientsWeight;
+//	self->SUVConverted = fromDcm->SUVConverted;
+//
+//	self->units = [fromDcm->units retain];
+//	self->decayCorrection = [fromDcm->decayCorrection retain];
+//	self->radionuclideTotalDose = fromDcm->radionuclideTotalDose;
+//	self->radionuclideTotalDoseCorrected = fromDcm->radionuclideTotalDoseCorrected;
+//	self->acquisitionTime = [fromDcm->acquisitionTime retain];
+//	self->radiopharmaceuticalStartTime = [fromDcm->radiopharmaceuticalStartTime retain];
+//	self->displaySUVValue = fromDcm->displaySUVValue;
+//	self->decayFactor = fromDcm->decayFactor;
+//	self->halflife = fromDcm->halflife;
+//	self->philipsFactor = fromDcm->philipsFactor;
+//	self->generated = YES;
+//	
+//	self->minValueOfSeries = fromDcm->minValueOfSeries;
+//	self->maxValueOfSeries = fromDcm->maxValueOfSeries;
+//	self->annotationsDictionary = [fromDcm->annotationsDictionary retain];
+//	self->cachedPapyGroups = [fromDcm->cachedPapyGroups retain];
+//}
 
 - (id) copyWithZone:(NSZone *)zone
 {
@@ -2938,9 +2938,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	DCMPix *copy = [[[self class] allocWithZone: zone] myinit:self->srcFile :self->imID :self->imTot :self->fVolImage :self->frameNo :self->serieNo];
 	
-	[cachedPapyGroups release];
-	[imageObj release];
-	[annotationsDictionary release];
+	[copy->cachedPapyGroups release];
+	[copy->imageObj release];
+	[copy->annotationsDictionary release];
 	
 	copy->imageObj = [self->imageObj retain];
 	copy->isBonjour = self->isBonjour;

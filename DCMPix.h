@@ -354,7 +354,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 -(BOOL) DCMPixShutterOnOff;
 -(void) DCMPixShutterOnOff:(BOOL)newDCMPixShutterOnOff;
 - (void) computeTotalDoseCorrected;
-- (void) copyFromOther:(DCMPix *) fromDcm;
+//- (void) copyFromOther:(DCMPix *) fromDcm;
 - (void) imageArithmeticMultiplication:(DCMPix*) sub;
 - (void) setRGB : (BOOL) val;
 - (void) setConvolutionKernel:(short*)val :(short) size :(short) norm;
