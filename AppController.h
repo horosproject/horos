@@ -14,7 +14,7 @@
 
 // This will be added to the main inded page of the Doxygen documentation
 /** \mainpage OsiriX index page
-*  <img src= "Binaries/Icons/SmallLogo.tif">
+*  <img src= "../../../osirix/Binaries/Icons/SmallLogo.tif">
 * \section Intro OsiriX DICOM workstation
 *  Osirix is a free open source DICOM workstation with full 64 bit support.
 *
