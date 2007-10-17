@@ -44,6 +44,7 @@ static NSString*	ToolsToolbarItemIdentifier		= @"Tools";
 static NSString*	ThickSlabToolbarItemIdentifier  = @"ThickSlab";
 static NSString*	WLWWToolbarItemIdentifier		= @"WLWW";
 static NSString*	BlendingToolbarItemIdentifier   = @"2DBlending";
+static NSString*	OrientationToolbarItemIdentifier	= @"Orientation";
 //static NSString*	AxToolbarItemIdentifier			= @"Axial.tif";
 //static NSString*	SaToolbarItemIdentifier			= @"Sag.tif";
 //static NSString*	CoToolbarItemIdentifier			= @"Cor.tif";
@@ -537,6 +538,8 @@ extern NSString * documentsDirectory();
 	
 	[view setCurrentTool: tWL];
 	[originalView setCurrentTool: tWL];
+	
+	[orientationMatrix selectCellWithTag:[viewerController currentOrientationTool]];
 	
 	[[self window] setInitialFirstResponder: originalView];
 	
@@ -1068,6 +1071,18 @@ extern NSString * documentsDirectory();
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([movieView frame]), NSHeight([movieView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([movieView frame]),NSHeight([movieView frame]))];
     }
+	else if([itemIdent isEqualToString: OrientationToolbarItemIdentifier])
+	 {
+	// Set up the standard properties 
+	[toolbarItem setLabel: NSLocalizedString(@"Orientation", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"Orientation", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"Orientation", nil)];
+	
+	// Use a custom view, a text field, for the search item 
+	[toolbarItem setView: orientationView];
+	[toolbarItem setMinSize:NSMakeSize(NSWidth([orientationView frame]), NSHeight([orientationView frame]))];
+	[toolbarItem setMaxSize:NSMakeSize(NSWidth([orientationView frame]), NSHeight([orientationView frame]))];
+	}
 //	else if([itemIdent isEqual: AxesToolbarItemIdentifier]) {
 //	// Set up the standard properties 
 //	[toolbarItem setLabel: @"MPR Axes"];
@@ -1094,6 +1109,7 @@ extern NSString * documentsDirectory();
     // user chooses to revert to the default items this set will be used 
     return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
                                             WLWWToolbarItemIdentifier,
+											OrientationToolbarItemIdentifier,
 											BlendingToolbarItemIdentifier,
 											ThickSlabToolbarItemIdentifier,
 											MovieToolbarItemIdentifier,
@@ -1124,6 +1140,7 @@ extern NSString * documentsDirectory();
 										QTExportToolbarItemIdentifier,
 										iPhotoToolbarItemIdentifier,
 										MailToolbarItemIdentifier,
+										OrientationToolbarItemIdentifier,
 							//			AxToolbarItemIdentifier,
 							//			SaToolbarItemIdentifier,
 							//			CoToolbarItemIdentifier,
@@ -1391,5 +1408,10 @@ extern NSString * documentsDirectory();
 
 - (void)bringToFrontROI:(ROI*)roi;{}
 - (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;{}
+
+- (IBAction) setOrientationTool:(id)sender;
+{
+	[viewerController setOrientationToolFrom2DMPR:sender];
+}
 
 @end

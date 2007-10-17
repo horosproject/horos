@@ -326,6 +326,8 @@ enum
 	NSMutableArray			*retainedToolbarItems;
 }
 
+@property(readonly) short currentOrientationTool;
+
 + (NSMutableArray*) getDisplayed2DViewers;
 
 // Create a new 2D Viewer
@@ -624,6 +626,7 @@ enum
 - (void)setToolbarReportIconForItem:(NSToolbarItem *)item;
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 - (IBAction) setOrientationTool:(id) sender;
+- (void)setOrientationToolFrom2DMPR:(id)sender;
 - (void) setWindowTitle:(id) sender;
 - (IBAction) printSlider:(id) sender;
 - (void) setConv:(short*) matrix :(short) size :(short) norm;

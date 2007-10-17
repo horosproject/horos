@@ -159,6 +159,8 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 
 @implementation ViewerController
 
+@synthesize currentOrientationTool;
+
 #define UNDOQUEUESIZE 40
 
 + (NSMutableArray*) getDisplayed2DViewers
@@ -1416,6 +1418,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[imageView sendSyncMessage:1];
 		[self adjustSlider];
 	}
+}
+
+- (void)setOrientationToolFrom2DMPR:(id)sender
+{
+	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...", nil)];
+	[wait showWindow:self];
+	[orientationMatrix selectCellWithTag:[[sender selectedCell] tag]];
+	[self setOrientationTool:orientationMatrix];
+	[self checkEverythingLoaded];
+	[self performSelector:@selector(MPR2DViewer:) withObject:self afterDelay:0.05];
+	[wait close];
+	[wait release];
 }
 
 - (void) contextualDictionaryPath:(NSString *)newContextualDictionaryPath
@@ -15637,9 +15651,15 @@ long i;
 {
 	long i;
 	
+	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...", nil)];
+	[wait showWindow:self];
+	
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	[self squareDataSet: self];		// MPR2D works better if pixel are squares !
+
+	[wait close];
+	[wait release];
 
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||

@@ -37,8 +37,9 @@
 	IBOutlet NSSlider       *slider;
 	IBOutlet PreviewView	*originalView;
     IBOutlet NSView         *toolsView, *ThickSlabView;
-    IBOutlet NSView         *WLWWView, *axesView, *BlendingView, *movieView, *iPhotoView;
+    IBOutlet NSView         *WLWWView, *axesView, *BlendingView, *movieView, *iPhotoView, *orientationView;
 	IBOutlet MPR2DView		*view;
+	IBOutlet NSMatrix		*orientationMatrix;
 	
     NSToolbar				*toolbar;
     NSMutableArray			*pixList[ 100];
@@ -89,5 +90,6 @@
 - (void)applyWLWWForString:(NSString *)menuString;
 - (void)bringToFrontROI:(ROI*)roi;
 - (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
+- (IBAction) setOrientationTool:(id)sender;
 
 @end
