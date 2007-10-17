@@ -565,12 +565,7 @@ extern NSString * documentsDirectory();
 	
 	NSMutableDictionary *dict = [view get3DStateDictionary];
 	[dict setObject:curCLUTMenu forKey:@"CLUTName"];
-	
-	if( [viewerController postprocessed] == NO)
-	{
-		NSLog( str);
-		[dict writeToFile:str atomically:YES];
-	}
+	[dict writeToFile:str atomically:YES];
 }
 
 -(void) load3DState
@@ -586,7 +581,6 @@ extern NSString * documentsDirectory();
 	NSString	*str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"MPR2D-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
-	if( [viewerController postprocessed]) dict = 0L;
 	
 	[view set3DStateDictionary:dict];
 	[self ApplyCLUTString: [dict objectForKey:@"CLUTName"]];
