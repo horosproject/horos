@@ -1122,7 +1122,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
         movieTimer = nil;
 	}
 
-	if([presetsPanel isVisible]) [presetsPanel close];	
+	[presetsPanel close];	
 	[presetsInfoPanel close];
 	
     [[self window] setDelegate:nil];
