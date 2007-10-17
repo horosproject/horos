@@ -1074,7 +1074,6 @@ if( reader)
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: @"Original" userInfo: [NSDictionary dictionaryWithObject:@"set" forKey:@"action"]];
 	}
-
 }
 
 -(NSMutableDictionary*) get3DStateDictionary
@@ -1119,8 +1118,6 @@ if( reader)
 	[dict setObject:[NSNumber numberWithFloat:[finalView origin].y] forKey:@"origin3-y"];
 	[dict setObject:[NSNumber numberWithFloat:[finalView scaleValue]] forKey:@"scale3"];
 	[dict setObject:[NSNumber numberWithFloat:[finalView rotation]] forKey:@"rotation3"];
-	
-
 	
 	return dict;
 }
@@ -2178,6 +2175,14 @@ if( reader)
 	{
 		[self performSelector :@selector( crossStopMoving:) withObject :[note object] afterDelay :1.0];
 	}
+
+	// Cross position in 3D
+	[[pixList objectAtIndex: [oView curImage]] convertPixX: [oView cross].x pixY: [oView cross].y toDICOMCoords: temp];
+	NSLog( @"3D position: %f %f %f", temp[ 0], temp[ 1], temp[ 2]);
+	
+	float s[ 3];
+	[firstObject convertDICOMCoords: temp toSliceCoords: s];
+	NSLog( @"2D position: %f %f %f", s[ 0], s[ 1], s[ 2]);
 }
 
 //-(void) computeSlice
