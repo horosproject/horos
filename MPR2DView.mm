@@ -2176,13 +2176,14 @@ if( reader)
 		[self performSelector :@selector( crossStopMoving:) withObject :[note object] afterDelay :1.0];
 	}
 
-	// Cross position in 3D
-	[[pixList objectAtIndex: [oView curImage]] convertPixX: [oView cross].x pixY: [oView cross].y toDICOMCoords: temp];
-	NSLog( @"3D position: %f %f %f", temp[ 0], temp[ 1], temp[ 2]);
-	
-	float s[ 3];
-	[firstObject convertDICOMCoords: temp toSliceCoords: s];
-	NSLog( @"2D position: %f %f %f", s[ 0], s[ 1], s[ 2]);
+//	// Cross position in 3D
+//	[[pixList objectAtIndex: [oView curImage]] convertPixX: [oView cross].x pixY: [oView cross].y toDICOMCoords: temp];
+//	NSLog( @"3D position: %f %f %f", temp[ 0], temp[ 1], temp[ 2]);
+//	
+//	// Back to 2D
+//	float s[ 3];
+//	[firstObject convertDICOMCoords: temp toSliceCoords: s];
+//	NSLog( @"2D position: %f %f %f", s[ 0]/[firstObject pixelSpacingX], s[ 1]/[firstObject pixelSpacingY], s[ 2]/sliceThickness);
 }
 
 //-(void) computeSlice
