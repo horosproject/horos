@@ -8998,6 +8998,7 @@
 		BF6DB82F075A52C300EBC60E /* DCMRejectPDU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMRejectPDU.m; path = Networking/DCMRejectPDU.m; sourceTree = "<group>"; };
 		BF6F18DA0CAD6ACF006DE602 /* FlyThruStepsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlyThruStepsArrayController.h; sourceTree = "<group>"; };
 		BF6F18DB0CAD6ACF006DE602 /* FlyThruStepsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlyThruStepsArrayController.m; sourceTree = "<group>"; };
+		BF746FB50CC6811A00198387 /* Documentation */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Documentation; path = ../Documentation; sourceTree = SOURCE_ROOT; };
 		BF76A59706ACC6FD00FABE42 /* ButtonAndTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonAndTextField.h; sourceTree = "<group>"; };
 		BF76A59806ACC6FD00FABE42 /* ButtonAndTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonAndTextField.m; sourceTree = "<group>"; };
 		BF76A5A506ACC70C00FABE42 /* ButtonAndTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonAndTextCell.h; sourceTree = "<group>"; };
@@ -12082,6 +12083,7 @@
 				7E0B3A08067525FD00908593 /* DCM Framework */,
 				ABF1427B056469CC00CB071B /* Papyrus */,
 				ABAA285A058A675600F0601D /* Utilities */,
+				BF746FB50CC6811A00198387 /* Documentation */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
