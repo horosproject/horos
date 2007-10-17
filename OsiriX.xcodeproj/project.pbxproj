@@ -47,6 +47,17 @@
 			name = "Unzip Binaries";
 			productName = "Unzip Binaries";
 		};
+		BF7486A50CC6AA5C00198387 /* Documentation */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = BF7486AA0CC6AA7C00198387 /* Build configuration list for PBXAggregateTarget "Documentation" */;
+			buildPhases = (
+				BF7486A40CC6AA5C00198387 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Documentation;
+			productName = Documentation;
+		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
@@ -20770,6 +20781,7 @@
 				AB724F300ADE6ECB00A212A0 /* Decompress */,
 				CEDF6C600B46FE99008B45B8 /* DICOMPrint */,
 				CEDAAEC90C7B486A00809161 /* 32-bit shell */,
+				BF7486A50CC6AA5C00198387 /* Documentation */,
 			);
 		};
 /* End PBXProject section */
@@ -21693,6 +21705,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/perl -w";
 			shellScript = "# Xcode auto-versioning script for Subversion\n# by Axel Andersson, modified by Daniel Jalkut to add\n# \"--revision HEAD\" to the svn info line, which allows\n# the latest revision to always be used.\n\nuse strict;\n\ndie \"$0: Must be run from Xcode\" unless $ENV{\"BUILT_PRODUCTS_DIR\"};\n\n# Get the current subversion revision number and use it to set the CFBundleVersion value\nmy $REV = `/usr/bin/svnversion -n ./`;\nmy $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Contents/Info.plist\";\n\nif(! $REV)\n{\n\t$REV = `/opt/local/bin/svnversion -n ./`;\n}\n\nif($REV)\n{\n\tmy $version = $REV;\n\n\t# (Match the last group of digits and optional letter M/S):\n\n\t# ugly yet functional (barely) regex by Daniel Jalkut:\n\t#$version =~ s/([\\d]*:)(\\d+[M|S]*).*/$2/;\n\n\t# better yet still functional regex via Kevin \"Regex Nerd\" Ballard\n\t($version =~ m/\\d+[MS]*$/) && ($version = $&);\n\n\tdie \"$0: No Subversion revision found\" unless $version;\n\n\topen(FH, \"$INFO\") or die \"$0: $INFO: $!\";\n\tmy $info = join(\"\", <FH>);\n\tclose(FH);\n\n\t$info =~ s/([\\t ]+<key>CFBundleVersion<\\/key>\\n[\\t ]+<string>).*?(<\\/string>)/$1$version$2/;\n\n\topen(FH, \">$INFO\") or die \"$0: $INFO: $!\";\n\tprint FH $info;\n\tclose(FH);\n}";
+		};
+		BF7486A40CC6AA5C00198387 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/Applications/Doxygen.app/Contents/Resources/doxygen Doxyfile-osirix\n/Applications/Doxygen.app/Contents/Resources/doxygen Doxyfile-dcmframework\nexit 0";
 		};
 		CEED244F0C71EEDC00E3BEC5 /* SVN Revision number */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -25335,6 +25360,37 @@
 			};
 			name = Development;
 		};
+		BF7486A60CC6AA5D00198387 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = Documentation;
+			};
+			name = Development;
+		};
+		BF7486A70CC6AA5D00198387 /* Development 64-bits */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = Documentation;
+			};
+			name = "Development 64-bits";
+		};
+		BF7486A80CC6AA5D00198387 /* Deployment Universal 32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = Documentation;
+			};
+			name = "Deployment Universal 32-bit";
+		};
+		BF7486A90CC6AA5D00198387 /* Deployment Universal 64-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = Documentation;
+			};
+			name = "Deployment Universal 64-bit";
+		};
 		CE53147D0C717B0400A2B75F /* Development 64-bits */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -26742,6 +26798,17 @@
 				CE5314850C717B0400A2B75F /* Development 64-bits */,
 				CE5314B10C717C3000A2B75F /* Deployment Universal 32-bit */,
 				CE5314BC0C717C3000A2B75F /* Deployment Universal 64-bit */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Development;
+		};
+		BF7486AA0CC6AA7C00198387 /* Build configuration list for PBXAggregateTarget "Documentation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF7486A60CC6AA5D00198387 /* Development */,
+				BF7486A70CC6AA5D00198387 /* Development 64-bits */,
+				BF7486A80CC6AA5D00198387 /* Deployment Universal 32-bit */,
+				BF7486A90CC6AA5D00198387 /* Deployment Universal 64-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
