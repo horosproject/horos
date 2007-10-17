@@ -318,14 +318,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
-
-
 - (void) CloseViewerNotification: (NSNotification*) note
 {
 	if([note object] == viewer2D)

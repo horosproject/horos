@@ -677,6 +677,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 
 -(id)initWithFrame:(NSRect)frame
 {
+	NSLog(@"SRView initWithFrame");
     if ( self = [super initWithFrame:frame] )
     {
 		splash = [[WaitRendering alloc] init:@"Rendering..."];
@@ -740,39 +741,6 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		[[NSNotificationCenter defaultCenter] removeObserver: self];
 	}
 }
-
- 
-- (void)finalize {
-	[splash close];
-	if([firstObject isRGB]) free( dataFRGB);
-	int i;
-	for( i = 0 ; i < 2; i++)
-	{
-		[self deleteActor:i];
-		[self BdeleteActor:i];
-	}
-	
-	if( flip) flip->Delete();
-	
-	if( isoResample) isoResample->Delete();
-	if( BisoResample) BisoResample->Delete();
-	
-	cbStart->Delete();
-	matrice->Delete();
-	
-	outlineData->Delete();
-	mapOutline->Delete();
-	outlineRect->Delete();
-	
-	reader->Delete();
-    aCamera->Delete();
-	textX->Delete();
-	orientationWidget->Delete();
-	for( i = 0; i < 4; i++) oText[ i]->Delete();
-	
-	[super finalize];
-}
-
 
 -(void)dealloc
 {
