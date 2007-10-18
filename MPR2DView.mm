@@ -1037,7 +1037,6 @@ if( reader)
 
 -(void) set3DStateDictionary:(NSDictionary*) dict
 {
-
 	float		temp[ 3];
 	NSArray		*tempArray;
 	DCMView		*oView = [[[self window] windowController] originalView];
@@ -1117,6 +1116,89 @@ if( reader)
 			NSLog( @"oView.cross.x: %f oView.cross.y: %f", oView.cross.x, oView.cross.y);
 		}
 		
+		if( [dict objectForKey:@"orientation"])
+		{
+			int previousOrientation = [[dict objectForKey:@"orientation"] intValue];
+			int currentOrientation = [[[[self window] windowController] viewerController] currentOrientationTool];
+			
+			NSLog( @"previousOrientation: %d currentOrientation: %d", previousOrientation, currentOrientation);
+			
+			if( previousOrientation != currentOrientation)
+			{
+				[oView setOrigin: NSMakePoint(0, 0)];
+				[finalView setOrigin: NSMakePoint(0, 0)];
+				[perpendicularView setOrigin: NSMakePoint(0, 0)];
+			}
+			
+			switch( previousOrientation)
+			{
+				/////////////////////////////////////
+				
+				case 0:
+					switch( currentOrientation)
+					{
+						case 1:
+							[perpendicularView setRotation: 90 + [perpendicularView rotation]];
+							[finalView setRotation: 180 + [finalView rotation]];
+							
+							[oView setMPRAngle: [oView MPRAngle] + 180];
+						break;
+						
+						case 2:
+							[perpendicularView setRotation: 90 + [perpendicularView rotation]];
+							[finalView setRotation: -90 + [finalView rotation]];
+							
+							[oView setMPRAngle: [oView MPRAngle] + 180];
+						break;
+					}
+				break;
+				
+				/////////////////////////////////////
+				
+				case 1:
+					switch( currentOrientation)
+					{
+						case 0:
+							[perpendicularView setRotation: -90 + [perpendicularView rotation]];
+							[finalView setRotation: -180 + [finalView rotation]];
+							
+							[oView setMPRAngle: [oView MPRAngle] - 180];
+						break;
+						
+						case 2:
+							[finalView setRotation: -90 + [finalView rotation]];
+							[perpendicularView setRotation: 180 + [perpendicularView rotation]];
+							
+							[oView setMPRAngle: [oView MPRAngle] - 180];
+							[perpendicularView setMPRAngle: [perpendicularView MPRAngle] - 180];
+						break;
+					}
+				break;
+				
+				/////////////////////////////////////
+				
+				case 2:
+					switch( currentOrientation)
+					{
+						case 0:
+							[perpendicularView setRotation: -90 + [perpendicularView rotation]];
+							[finalView setRotation: 90 + [finalView rotation]];
+							
+							[oView setMPRAngle: [oView MPRAngle] - 180];
+						break;
+						
+						case 1:
+							[finalView setRotation: 90 + [finalView rotation]];
+							[perpendicularView setRotation: -180 + [perpendicularView rotation]];
+							
+							[oView setMPRAngle: [oView MPRAngle] + 180];
+							[perpendicularView setMPRAngle: [perpendicularView MPRAngle] + 180];
+						break;
+					}
+				break;
+			}
+		}
+		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: @"Original" userInfo: [NSDictionary dictionaryWithObject:@"set" forKey:@"action"]];
 		
 		NSLog( @"oView.cross.x: %f oView.cross.y: %f", oView.cross.x, oView.cross.y);
@@ -1172,18 +1254,19 @@ if( reader)
 	[dict setObject:[NSNumber numberWithFloat: temp[ 0]] forKey:@"pt3Dx"];
 	[dict setObject:[NSNumber numberWithFloat: temp[ 1]] forKey:@"pt3Dy"];
 	[dict setObject:[NSNumber numberWithFloat: temp[ 2]] forKey:@"pt3Dz"];
+	[dict setObject:[NSNumber numberWithInt: [[[[self window] windowController] viewerController] currentOrientationTool]] forKey:@"orientation"];
 	
-	NSLog( @"2D position: %f %f %d", [oView cross].x, [oView cross].y, [oView curImage]);
-	NSLog( @"3D cross position: %f %f %f", temp[ 0], temp[ 1], temp[ 2]);
-	
-	float s[ 3];
-	[firstObject convertDICOMCoords: temp toSliceCoords: s];
-	
-	s[ 0] /= [firstObject pixelSpacingX];
-	s[ 1] /= [firstObject pixelSpacingY];
-	s[ 2] /= sliceThickness;
-			
-	NSLog( @"2D position: %f %f %f", s[ 0], s[ 1], s[ 2]);
+//	NSLog( @"2D position: %f %f %d", [oView cross].x, [oView cross].y, [oView curImage]);
+//	NSLog( @"3D cross position: %f %f %f", temp[ 0], temp[ 1], temp[ 2]);
+//	
+//	float s[ 3];
+//	[firstObject convertDICOMCoords: temp toSliceCoords: s];
+//	
+//	s[ 0] /= [firstObject pixelSpacingX];
+//	s[ 1] /= [firstObject pixelSpacingY];
+//	s[ 2] /= sliceThickness;
+//			
+//	NSLog( @"2D position: %f %f %f", s[ 0], s[ 1], s[ 2]);
 
 	return dict;
 }

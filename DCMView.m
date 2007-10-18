@@ -5272,6 +5272,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: stringID userInfo: [NSDictionary dictionaryWithObject:@"set" forKey:@"action"]];
 }
 
+- (float) MPRAngle
+{
+	return angle;
+}
+
 -(void) setMPRAngle: (float) vectorMPR
 {
 	angle = vectorMPR;
