@@ -6325,7 +6325,6 @@
 		CE3F99530C84724B00CB38F1 /* ROIManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99020C84724B00CB38F1 /* ROIManager.xib */; };
 		CE3F99540C84724B00CB38F1 /* Send.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99040C84724B00CB38F1 /* Send.xib */; };
 		CE3F99550C84724B00CB38F1 /* OrthogonalMPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99060C84724B00CB38F1 /* OrthogonalMPR.xib */; };
-		CE3F99560C84724B00CB38F1 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99080C84724B00CB38F1 /* Preferences.xib */; };
 		CE3F99570C84724B00CB38F1 /* Endoscopy.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F990A0C84724B00CB38F1 /* Endoscopy.xib */; };
 		CE3F99580C84724B00CB38F1 /* LLMPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F990C0C84724B00CB38F1 /* LLMPR.xib */; };
 		CE3F99590C84724B00CB38F1 /* SRAnnotation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F990E0C84724B00CB38F1 /* SRAnnotation.xib */; };
@@ -6373,7 +6372,6 @@
 		CE3F99840C84724B00CB38F1 /* ROIManager.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99020C84724B00CB38F1 /* ROIManager.xib */; };
 		CE3F99850C84724B00CB38F1 /* Send.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99040C84724B00CB38F1 /* Send.xib */; };
 		CE3F99860C84724B00CB38F1 /* OrthogonalMPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99060C84724B00CB38F1 /* OrthogonalMPR.xib */; };
-		CE3F99870C84724B00CB38F1 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99080C84724B00CB38F1 /* Preferences.xib */; };
 		CE3F99880C84724B00CB38F1 /* Endoscopy.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F990A0C84724B00CB38F1 /* Endoscopy.xib */; };
 		CE3F99890C84724B00CB38F1 /* LLMPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F990C0C84724B00CB38F1 /* LLMPR.xib */; };
 		CE3F998A0C84724B00CB38F1 /* SRAnnotation.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F990E0C84724B00CB38F1 /* SRAnnotation.xib */; };
@@ -11448,7 +11446,6 @@
 		CE3F99030C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIManager.xib; sourceTree = "<group>"; };
 		CE3F99050C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Send.xib; sourceTree = "<group>"; };
 		CE3F99070C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/OrthogonalMPR.xib; sourceTree = "<group>"; };
-		CE3F99090C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Preferences.xib; sourceTree = "<group>"; };
 		CE3F990B0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Endoscopy.xib; sourceTree = "<group>"; };
 		CE3F990D0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/LLMPR.xib; sourceTree = "<group>"; };
 		CE3F990F0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/SRAnnotation.xib; sourceTree = "<group>"; };
@@ -12161,7 +12158,6 @@
 				CE3F99020C84724B00CB38F1 /* ROIManager.xib */,
 				CE3F99040C84724B00CB38F1 /* Send.xib */,
 				CE3F99060C84724B00CB38F1 /* OrthogonalMPR.xib */,
-				CE3F99080C84724B00CB38F1 /* Preferences.xib */,
 				CE3F990A0C84724B00CB38F1 /* Endoscopy.xib */,
 				BF85640B0CB2B73F005F7178 /* EndoscopyFlyThru.xib */,
 				CE3F990C0C84724B00CB38F1 /* LLMPR.xib */,
@@ -21240,7 +21236,6 @@
 				CE3F99530C84724B00CB38F1 /* ROIManager.xib in Resources */,
 				CE3F99540C84724B00CB38F1 /* Send.xib in Resources */,
 				CE3F99550C84724B00CB38F1 /* OrthogonalMPR.xib in Resources */,
-				CE3F99560C84724B00CB38F1 /* Preferences.xib in Resources */,
 				CE3F99570C84724B00CB38F1 /* Endoscopy.xib in Resources */,
 				CE3F99580C84724B00CB38F1 /* LLMPR.xib in Resources */,
 				CE3F99590C84724B00CB38F1 /* SRAnnotation.xib in Resources */,
@@ -21623,7 +21618,6 @@
 				CE3F99840C84724B00CB38F1 /* ROIManager.xib in Resources */,
 				CE3F99850C84724B00CB38F1 /* Send.xib in Resources */,
 				CE3F99860C84724B00CB38F1 /* OrthogonalMPR.xib in Resources */,
-				CE3F99870C84724B00CB38F1 /* Preferences.xib in Resources */,
 				CE3F99880C84724B00CB38F1 /* Endoscopy.xib in Resources */,
 				CE3F99890C84724B00CB38F1 /* LLMPR.xib in Resources */,
 				CE3F998A0C84724B00CB38F1 /* SRAnnotation.xib in Resources */,
@@ -24772,14 +24766,6 @@
 				CE3F99070C84724B00CB38F1 /* English */,
 			);
 			name = OrthogonalMPR.xib;
-			sourceTree = "<group>";
-		};
-		CE3F99080C84724B00CB38F1 /* Preferences.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F99090C84724B00CB38F1 /* English */,
-			);
-			name = Preferences.xib;
 			sourceTree = "<group>";
 		};
 		CE3F990A0C84724B00CB38F1 /* Endoscopy.xib */ = {

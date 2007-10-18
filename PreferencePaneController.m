@@ -236,7 +236,7 @@ extern OSStatus SetupAuthorization(void)
 	if( curPaneIndex == -1) curPaneIndex = 0;
 	else
 	{
-		switch ([[sender selectedCell] tag])
+		switch ([sender selectedSegment])
 		{
 			case 0:	// Previous
 					curPaneIndex--;
