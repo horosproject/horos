@@ -28,14 +28,6 @@
     [super dealloc];
 }
 
-
-- (void)finalize {
-	// free any data. malloc not covered in garbage collection
-	if( data != 0L) free( data);
-	[super finalize];
-}
-
-
 -(void) SetxNSImage:(unsigned char*)b
 {
 	if( data != b)

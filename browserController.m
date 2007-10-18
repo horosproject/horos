@@ -10223,11 +10223,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[bitmapData writeToFile:[previousPath stringByAppendingString:@".jpg"] atomically:YES];
 	}
 	
-	if(createHTML) {
+	if(createHTML)
+	{
 		QTExportHTMLSummary *htmlExport = [[QTExportHTMLSummary alloc] init];
 		[htmlExport setPatientsDictionary:htmlExportDictionary];
 		[htmlExport setPath:path];
 		[htmlExport createHTMLfiles];
+		[htmlExport release];
 	}
 }
 	
