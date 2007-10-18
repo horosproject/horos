@@ -69,7 +69,7 @@ static char *GetPrivateIP()
 		NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
 		NSString *theirAET = [aServer objectForKey:@"AETitle"];
 		NSString *hostname = [aServer objectForKey:@"Address"];
-		NSString *port = [[aServer objectForKey:@"Port"] stringValue];
+		NSString *port = [aServer objectForKey:@"Port"];
 
 		qm = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:0L];
 		
@@ -460,7 +460,7 @@ static char *GetPrivateIP()
 			NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
 			theirAET = [aServer objectForKey:@"AETitle"];
 			hostname = [aServer objectForKey:@"Address"];
-			port = [[aServer objectForKey:@"Port"] stringValue];
+			port = [aServer objectForKey:@"Port"];
 			
 			int numberPacketsReceived = 0;
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
@@ -1274,7 +1274,7 @@ static char *GetPrivateIP()
 	
 	theirAET = [aServer objectForKey:@"AETitle"];
 	hostname = [aServer objectForKey:@"Address"];
-	port = [[aServer objectForKey:@"Port"] stringValue];
+	port = [aServer objectForKey:@"Port"];
 	
 	int numberPacketsReceived = 0;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))

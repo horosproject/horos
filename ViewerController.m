@@ -409,6 +409,8 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 		}
 	}
 	
+	if( [displayedViewers count] != [state count]) return;	//We will save the states ONLY if we can save the state of ALL DISPLAYED windows !:!:!:
+	
 	NSString	*tmp = [NSString stringWithFormat:@"/tmp/windowsState"];
 	[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
 	[state writeToFile: tmp atomically: YES];
@@ -419,8 +421,11 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 	{
 		ViewerController	*win = [displayedViewers objectAtIndex: i];
 		
-		if( [studiesArray containsObject: [[[win imageView] seriesObj] valueForKey:@"study"]] == NO)
-			[studiesArray addObject: [[[win imageView] seriesObj] valueForKey:@"study"]];
+		if( [[[win imageView] seriesObj] valueForKey:@"seriesInstanceUID"])
+		{
+			if( [studiesArray containsObject: [[[win imageView] seriesObj] valueForKey:@"study"]] == NO)
+				[studiesArray addObject: [[[win imageView] seriesObj] valueForKey:@"study"]];
+		}
 	}
 	
 	for( i = 0 ; i < [studiesArray count] ; i++)

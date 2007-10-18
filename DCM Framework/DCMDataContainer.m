@@ -85,7 +85,7 @@
 		dicomData = [data retain];
 		transferSyntaxForMetaheader = [syntax retain];
 		transferSyntaxForDataset = [syntax retain];
-		transferSyntaxInUse = transferSyntaxForDataset;
+		transferSyntaxInUse = [transferSyntaxForDataset retain];
 		_ptr = (unsigned char *)[dicomData bytes];
 	}
 	return self;
@@ -155,6 +155,7 @@
 - (void)dealloc {
 	[transferSyntaxForDataset release];
 	[transferSyntaxForMetaheader release];
+	[transferSyntaxInUse release];
 	[dicomData release];
 	[super dealloc];
 }
@@ -750,26 +751,26 @@
 		NSLog(@"setTransferSyntaxForDataset:%@", [ts description]);
 	[transferSyntaxForDataset release];
 	transferSyntaxForDataset = [ts retain];
-	//transferSyntaxInUse = transferSyntaxForDataset;
 }
 
 - (void)setTransferSyntaxForMetaheader:(DCMTransferSyntax *)ts{
 	[transferSyntaxForMetaheader release];
 	transferSyntaxForMetaheader = [ts retain];
-//	transferSyntaxInUse = transferSyntaxForMetaheader;
 }
 
 - (void)setUseMetaheaderTS:(BOOL)flag{
+	[transferSyntaxInUse release];
 	if (flag)
-		transferSyntaxInUse = transferSyntaxForMetaheader;
+		transferSyntaxInUse = [transferSyntaxForMetaheader retain];
 	else	
-		transferSyntaxInUse = transferSyntaxForDataset;
+		transferSyntaxInUse = [transferSyntaxForDataset retain];
 }
 
 
-- (BOOL)determineTransferSyntax{
-	DCMTransferSyntax *tempTS  = [[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] retain];
-	transferSyntaxInUse = tempTS;
+- (BOOL)determineTransferSyntax
+{
+	[transferSyntaxInUse release];
+	transferSyntaxInUse = [[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] retain];
 	NSException* exception;
 	position = 128;
 	int group;
@@ -792,13 +793,16 @@
 			NSLog(@"group: %0004d element: %0004d vr: %@" , group, element, vr);
 
 		if ([DCMValueRepresentation isValidVR:vr]) {
+			[transferSyntaxForMetaheader release];
 			transferSyntaxForMetaheader = [[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] retain];
 			
 		}
 		else {
+			[transferSyntaxForMetaheader release];
 			transferSyntaxForMetaheader = [[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] retain];
 		}
-		transferSyntaxInUse = transferSyntaxForMetaheader;
+		[transferSyntaxInUse release];
+		transferSyntaxInUse = [transferSyntaxForMetaheader retain];
 		offset = 132;
 		position = 132;
 		return YES;
@@ -812,8 +816,10 @@
 		element = [self nextUnsignedShort];
 		vr = [self nextStringWithLength:2];
 		if ([DCMValueRepresentation isValidVR:vr]) {  //have valid VR assume explicit Little Endian
+			[transferSyntaxForDataset release];
 			transferSyntaxForDataset =  [[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] retain];
-			transferSyntaxInUse = transferSyntaxForDataset;
+			[transferSyntaxInUse release];
+			transferSyntaxInUse = [transferSyntaxForDataset retain];
 			return YES;
 		}
 		// implicit is the default. Could still be Big Endian
@@ -824,8 +830,11 @@
 			flipVR[1] = vrChars[0];
 			NSString *newVR = [NSString stringWithCString:flipVR length:2];
 			if ([DCMValueRepresentation isValidVR:newVR]) {
+				[transferSyntaxForDataset release];
 				transferSyntaxForDataset = [[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax] retain];
-				transferSyntaxInUse = transferSyntaxForDataset;
+				
+				[transferSyntaxInUse release];
+				transferSyntaxInUse = [transferSyntaxForDataset retain];
 				position = 0;
 				offset = 0;
 				return YES;
@@ -846,12 +855,15 @@
 				//NSDictionary *tagValues = [[DCMTagDictionary sharedTagDictionary] objectForKey:[tag stringValue]];
 				// have valid tag. Should be dicom
 				if (tag) {
-					[transferSyntaxForDataset release];
+					
 					[transferSyntaxForMetaheader release];
 					transferSyntaxForMetaheader = [[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] retain];
+					
+					[transferSyntaxForDataset release];
 					transferSyntaxForDataset = [transferSyntaxForMetaheader retain];
 				}
-				transferSyntaxInUse = transferSyntaxForDataset;
+				[transferSyntaxInUse release];
+				transferSyntaxInUse = [transferSyntaxForDataset retain];
 				position = 0;
 				offset = 0;
 				return YES;
@@ -865,7 +877,6 @@
 	NS_HANDLER
 		NSLog(@"ERROR:%@  REASON:%@", [exception name], [exception reason]);
 	NS_ENDHANDLER
-	[tempTS release];
 	return NO;			
 }
 
@@ -887,12 +898,14 @@
 	return [dicomData length];
 }
 
-- (void)startReadingMetaHeader{
-	transferSyntaxInUse = transferSyntaxForMetaheader;
+- (void)startReadingMetaHeader
+{
+	[transferSyntaxInUse release];
+	transferSyntaxInUse = [transferSyntaxForMetaheader retain];
 }
 - (void)startReadingDataSet{
-	//NSLog(@"dataset TS: %@", [transferSyntaxForDataset description]);
-	transferSyntaxInUse = transferSyntaxForDataset;
+	[transferSyntaxInUse release];
+	transferSyntaxInUse = [transferSyntaxForDataset retain];
 }
 
 - (void)addPremable{

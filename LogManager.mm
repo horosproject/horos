@@ -180,7 +180,10 @@ LogManager *currentLogManager;
 								[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logEndTime] intValue]] forKey:@"endTime"];
 								
 								if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
+								{
+									NSLog(@"LogManager transfer Complete");
 									[_currentLogs removeObjectForKey: uid];
+								}
 							}
 						}
 					}
