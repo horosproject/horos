@@ -18,9 +18,7 @@
      PURPOSE.
 =========================================================================*/
 
-/*
-	This is the  main object representaing a Dicom File or as a list of Attributes for networking
-*/
+
 
 #import <Foundation/Foundation.h>
 
@@ -31,6 +29,12 @@
 @class DCMTagDictionary ;
 @class DCMTagForNameDictionary;
 @class DCMTransferSyntax;
+
+/** \brief This is the main object representaing a Dicom File or as a list of Attributes for networking
+*
+*	DCMObject is the main representation of a DICOM file or attribute list for networking. The object can be 
+*	an image, Structured Report, Presentation State, etc
+*/
 
 @interface DCMObject : NSObject {
 
@@ -44,13 +48,13 @@
 
 }
 
-@property(readonly) NSMutableDictionary *attributes;
-@property(readonly) BOOL pixelDataIsDecoded;
-@property(readonly) DCMTransferSyntax *transferSyntax;
-@property(readonly) DCMCharacterSet *specificCharacterSet;
-@property(readonly) NSXMLDocument *xmlDocument;
-@property(readonly) NSXMLNode *xmlNode;
-@property(readonly) NSString *description;
+@property(readonly) NSMutableDictionary *attributes; /**< Attributes as an NSDictionary */
+@property(readonly) BOOL pixelDataIsDecoded; /**< Returns whether the pixel data has been converted to host endian transfer syntax */
+@property(readonly) DCMTransferSyntax *transferSyntax;/**< The current transferSyntax */
+@property(readonly) DCMCharacterSet *specificCharacterSet; /**< Encoding character set */
+@property(readonly) NSXMLDocument *xmlDocument; /**< The object as an xml document */
+@property(readonly) NSXMLNode *xmlNode; /**< The object as an xml node */
+@property(readonly) NSString *description; /**< Human readable description */
 
 + (BOOL)isDICOM:(NSData *)data;
 + (NSString *)rootUID;
