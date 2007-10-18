@@ -191,8 +191,8 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	sliceIndex = (sliceIndex<0)? 0 :sliceIndex;
 	sliceIndex = (sliceIndex>=[[[mprController originalView] dcmPixList] count])? [[[mprController originalView] dcmPixList] count]-1 :sliceIndex;
 	[[mprController originalView] setIndex:sliceIndex];
-	[[mprController originalView] setCrossPositionX: (float)(pos2D[0]+0.5)];
-	[[mprController originalView] setCrossPositionY: (float)(pos2D[1]+0.5)];
+	[[mprController originalView] setCrossPositionX: (float)(pos2D[0])];
+	[[mprController originalView] setCrossPositionY: (float)(pos2D[1])];
 		
 	// xReslicedView
 	[(EndoscopyMPRView*)[mprController xReslicedView] setCameraPosition:pos2D[0] :pos2D[2]];
