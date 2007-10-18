@@ -23,8 +23,7 @@
 
 @interface ROIDefaultsWindow : NSWindowController
 {
-	ViewerController		*curController;
-	NSMutableArray			*roiNames;
+	NSArray			*roiNames;
 	
 }
 

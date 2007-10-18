@@ -20,11 +20,38 @@
 
 @implementation ROIDefaultsWindow
 
+- (NSArray*) generateROINamesArray
+{
+	NSArray *viewers = [ViewerController getDisplayed2DViewers];
+	NSMutableArray *names = [NSMutableArray array];
+	
+	for( ViewerController *v in viewers)
+	{
+		NSArray *vNames = [v generateROINamesArray];
+		
+		for( NSString *vName in vNames)
+		{
+			BOOL found = NO;
+			
+			for( NSString *name in names)
+			{
+				if( [name isEqualToString: vName]) found = YES;
+			}
+			
+			if( found == NO)
+			{
+				[names addObject: vName];
+			}
+		}
+	}
+	
+	return names;
+}
 
 - (void)comboBoxWillPopUp:(NSNotification *)notification
 {
-	NSLog(@"will display...");
-	roiNames = [curController generateROINamesArray];
+	[roiNames release];
+	roiNames = [[self generateROINamesArray] retain];
 	[[notification object] setDataSource: self];
 	
 	[[notification object] noteNumberOfItemsChanged];
@@ -33,7 +60,7 @@
 
 - (NSUInteger)comboBox:(NSComboBox *)aComboBox indexOfItemWithStringValue:(NSString *)aString
 {
-	if( roiNames == 0L) roiNames = [curController generateROINamesArray];
+	if( roiNames == 0L) roiNames = [[self generateROINamesArray] retain];
 	
 	long i;
 	
@@ -45,7 +72,7 @@
 
 - (NSInteger)numberOfItemsInComboBox:(NSComboBox *)aComboBox
 {
-	if( roiNames == 0L) roiNames = [curController generateROINamesArray];
+	if( roiNames == 0L) roiNames = [[self generateROINamesArray] retain];
 	return [roiNames count];
 }
 
@@ -53,7 +80,7 @@
 {
     if ( index > -1 )
     {
-		if( roiNames == 0L) roiNames = [curController generateROINamesArray];
+		if( roiNames == 0L) roiNames = [[self generateROINamesArray] retain];
 		return [roiNames objectAtIndex: index];
     }
     
@@ -64,14 +91,12 @@
 {
 	self = [super initWithWindowNibName:@"ROIDefaults"];
 	
-	curController = [c retain];
-	
 	return self;
 }
 
 - (void) dealloc
 {
-	[curController release];
+	[roiNames release];
 	[super dealloc];
 }
 
