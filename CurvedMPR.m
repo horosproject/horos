@@ -269,6 +269,8 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			[pix setTot: thickSlab];
 			[pix setFrameNo: thick];
 			[pix setID: thick];
+			[pix copySUVfrom: firstObject];
+			
 		//	[pix setSliceLocation: thick * [firstObject pixelSpacingX]];
 			
 			float newVector[ 9];
@@ -490,6 +492,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 					//	[pix setTot: thickSlab];
 						[pix setFrameNo: imageCounter];
 						[pix setID: imageCounter];
+						[pix copySUVfrom: firstObject];
 						
 						// Set Origin & Orientation
 						float location[ 3 ];
@@ -874,6 +877,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			DCMPix	*pix = [[DCMPix alloc] initwithdata:curData :32 :newX :newY :xSpace :ySpace :0 :0 :0 :YES];
 			[pix changeWLWW: [[roiViewer imageView] curWL] : [[roiViewer imageView] curWW]];
 			
+			[pix copySUVfrom: firstObject];
 			[pix setTot: thickSlab];
 			[pix setFrameNo: thick];
 			[pix setID: thick];

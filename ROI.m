@@ -3033,7 +3033,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					if (!_displayCalciumScoring) {
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
 							if( area*pixelSpacingX*pixelSpacingY < 1. )
-								sprintf (line2, "A: %0.1f %cm2", area*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
+								sprintf (line2, "Area: %0.1f %cm2", area*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
 							else
 								sprintf (line2, "Area: %0.3f cm2", area*pixelSpacingX*pixelSpacingY/100.);
 						}
@@ -3352,7 +3352,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
 							if ( fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY) < 1.)
-								sprintf (line2, "A: %0.1f %cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY * 1000000.0), 0xB5);
+								sprintf (line2, "Area: %0.1f %cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY * 1000000.0), 0xB5);
 							else
 								sprintf (line2, "Area: %0.3f cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY/100.));
 						}
@@ -3413,7 +3413,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					if( pixelSpacingX != 0 && pixelSpacingY != 0)
 					{
 						if( [self EllipseArea]*pixelSpacingX*pixelSpacingY < 1.)
-							sprintf (line2, "A: %0.1f %cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
+							sprintf (line2, "Area: %0.1f %cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
 						else
 							sprintf (line2, "Area: %0.3f cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY/100.);
 					}
@@ -3467,7 +3467,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					
 					if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
 						if([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-							sprintf (line2, "A: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+							sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
 						else
 							sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
 					}
@@ -3734,7 +3734,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
 							if ([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-								sprintf (line2, "A: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+								sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
 							else
 								sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
 						}
@@ -3817,7 +3817,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
 							if([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-								sprintf (line2, "A: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+								sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
 							else
 								sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
 						}
@@ -3858,7 +3858,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
 							if ([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-								sprintf (line2, "A: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+								sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
 							else
 								sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
 						}
