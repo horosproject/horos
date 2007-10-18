@@ -168,9 +168,6 @@ extern NSString * documentsDirectory();
 
 - (void) setSliderValue:(int) i
 {
-	NSLog( @"SetSlider: %d", i);
-	NSLog( [slider description]);
-	
 	if( [[viewerController imageView] flippedData]) [slider setIntValue: [pixList[ curMovieIndex] count] -1 -i];
 	else [slider setIntValue: i];
 }
