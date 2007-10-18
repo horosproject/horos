@@ -214,6 +214,7 @@ enum
 	
 	IBOutlet NSWindow       *imageExportWindow;
 	IBOutlet NSMatrix		*imageSelection, *imageFormat;
+	IBOutlet NSButton		*imageAllViewers;
 	
 	IBOutlet NSWindow		*displaySUVWindow;
 	IBOutlet NSForm			*suvForm;

@@ -13346,6 +13346,11 @@ int i,j,l;
 
 - (void) exportImage:(id) sender
 {
+	[imageAllViewers setState: NSOffState];
+	
+	if( [[ViewerController getDisplayed2DViewers] count] > 1) [imageAllViewers setEnabled: YES];
+	else [imageAllViewers setEnabled: NO];
+	
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) [self endExportImage: 0L];
 	else [NSApp beginSheet: imageExportWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
@@ -13623,7 +13628,7 @@ int i,j,l;
 				if( [[imageFormat selectedCell] tag] == 2 && [[imageSelection selectedCell] tag] == 1)
 				{
 					EXPORT2IPHOTO = YES;
-					[self exportQuicktimeIn: 1 :0 :[pixList[ curMovieIndex] count]: 1];
+					[self exportQuicktimeIn: 1 :0 :[pixList[ curMovieIndex] count]: 1 :[imageAllViewers state]];
 					EXPORT2IPHOTO = NO;
 				}
 				else
@@ -13647,7 +13652,7 @@ int i,j,l;
 							[imageView sendSyncMessage:1];
 							[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
 							
-							NSImage *im = [imageView nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
+							NSImage *im = [imageView nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"] allViewers:[imageAllViewers state]];
 							
 							NSArray *representations;
 							NSData *bitmapData;
@@ -13702,7 +13707,7 @@ int i,j,l;
 			}
 			else
 			{
-				NSImage *im = [imageView nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
+				NSImage *im = [imageView nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"] allViewers:[imageAllViewers state]];
 				
 				NSArray *representations;
 				NSData *bitmapData;
