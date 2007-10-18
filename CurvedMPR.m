@@ -496,7 +496,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 						
 						// Set Origin & Orientation
 						float location[ 3 ];
-						[[pixList objectAtIndex: 0] convertPixX: xPosA pixY: yPosA toDICOMCoords: location];
+						[[pixList objectAtIndex: [pixList count]-1] convertPixX: xPosA pixY: yPosA toDICOMCoords: location];
 						[pix setOrigin: location];
 						
 						float vector[ 9];
