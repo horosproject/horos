@@ -157,16 +157,16 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 - (void) setCameraRepresentation
 {
 	// get the camera
-	Camera *curCamera = [((VRView*)[vrController view]) camera];
+	Camera *curCamera = [((VRView*)[vrController view]) cameraWithThumbnail: NO];
 	
 	[self setCameraPositionRepresentation: curCamera];
 	[self setCameraFocalPointRepresentation: curCamera];
 	[self setCameraViewUpRepresentation: curCamera];
 			
 	// refresh the views
-	[[mprController originalView] display];
-	[[mprController xReslicedView] display];
-	[[mprController yReslicedView] display];
+	[[mprController originalView] setNeedsDisplay: YES];
+	[[mprController xReslicedView] setNeedsDisplay: YES];
+	[[mprController yReslicedView] setNeedsDisplay: YES];
 }
 
 - (void) setCameraPositionRepresentation: (Camera*) aCamera
@@ -274,7 +274,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	
 	// get the camera
 	// Camera *cam = [[vrController view] camera];
-	Camera *curCamera = [[vrController view] camera];
+	Camera *curCamera = [[vrController view] cameraWithThumbnail: NO];
 	// change the Position	
 	[[[[mprController originalView] pixList]	objectAtIndex:[[mprController originalView] curImage]]
 												convertPixX: [(EndoscopyMPRView*)[mprController originalView] crossPositionX]
@@ -383,7 +383,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	}
 	[self setCamera];
 	
-	[self setCameraViewUpRepresentation: [[vrController view] camera]];
+	[self setCameraViewUpRepresentation: [[vrController view] cameraWithThumbnail: NO]];
 	// refresh the MPR views
 	[[mprController originalView] setNeedsDisplay:YES];
 	[[mprController xReslicedView] setNeedsDisplay:YES];
@@ -391,7 +391,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 }
 
 - (void) setCameraPosition:(OSIVoxel *)position  focalPoint:(OSIVoxel *)focalPoint{
-	Camera *curCamera = [[vrController view] camera];
+	Camera *curCamera = [[vrController view] cameraWithThumbnail: NO];
 	float factor = [vrController factor];
 		// coordinates conversion
 	float pos[3], fp[3];
@@ -1009,7 +1009,6 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 {
 	[[self window] makeFirstResponder: (NSView*) [vrController view]];
 	[NSApp beginSheet: exportDCMWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
-	NSLog(@"Endo Viewer exportDICOMFile OK");
 }
 
 -(IBAction) endDCMExportSettings:(id) sender
@@ -1089,7 +1088,10 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	
 	// append the 4 views into one memory block
 	//long	width, height, spp, bpp;
-	*width = widthAx+widthCor;
+	
+	if( widthSag+width3D > widthAx+widthCor) *width = widthSag+width3D;
+	else *width = widthAx+widthCor;
+	
 	*height = heightAx+heightSag;
 	*spp = 3;
 	*bpp = 8;
@@ -1101,16 +1103,16 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 		// copy the axial and coronal views row by row
 		for(i=0; i<heightAx; i++)
 		{
-			memcpy(dataPtr+i*(widthAx+widthCor)*3,axialDataPtr+i*widthAx*3,widthAx*3);
-			memcpy(dataPtr+widthAx*3+i*(widthAx+widthCor)*3,coronalDataPtr+i*widthCor*3,widthCor*3);
+			memcpy(dataPtr+i*(*width)*3,axialDataPtr+i*widthAx*3,widthAx*3);
+			memcpy(dataPtr+widthAx*3+i*(*width)*3,coronalDataPtr+i*widthCor*3,widthCor*3);
 		}
 		free(axialDataPtr);
 		free(coronalDataPtr);
 		// copy the sagittal and 3D views row by row
 		for(i=0; i<heightSag; i++)
 		{
-			memcpy(dataPtr+(heightAx*widthAx+heightCor*widthCor)*3+i*(widthSag+width3D)*3,sagittalDataPtr+i*widthSag*3,widthSag*3);
-			memcpy(dataPtr+(heightAx*widthAx+heightCor*widthCor)*3+widthSag*3+i*(widthSag+width3D)*3,view3DDataPtr+i*width3D*3,width3D*3);
+			memcpy(dataPtr+(heightAx*widthAx+heightCor*widthCor)*3+i*(*width)*3,sagittalDataPtr+i*widthSag*3,widthSag*3);
+			memcpy(dataPtr+(heightAx*widthAx+heightCor*widthCor)*3+widthSag*3+i*(*width)*3,view3DDataPtr+i*width3D*3,width3D*3);
 		}
 		free(sagittalDataPtr);
 		free(view3DDataPtr);

@@ -402,6 +402,7 @@ typedef char* vtkMyCallbackVR;
 - (void)setCenterlineCamera: (Camera *) cam;
 - (void) setCamera: (Camera*) cam;
 - (Camera*) camera;
+- (Camera*) cameraWithThumbnail:(BOOL) produceThumbnail;
 - (IBAction) scissorStateButtons:(id) sender;
 - (void) updateScissorStateButtons;
 -(void) switchOrientationWidget:(id) sender;

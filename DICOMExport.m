@@ -380,9 +380,6 @@ extern BrowserController	*browserWindow;
 			}
 		}
 		
-		NSNumber *rows = [NSNumber numberWithInt: height];
-		NSNumber *columns  = [NSNumber numberWithInt: width];
-
 		#if __BIG_ENDIAN__
 		if( bpp == 16)
 		{
@@ -391,7 +388,21 @@ extern BrowserController	*browserWindow;
 		}
 		#endif
 		
-		NSMutableData *imageNSData = [NSMutableData dataWithBytes:data length: height * width * spp * bpp / 8];
+		int elemLength = height * width * spp * bpp / 8;
+		
+		if( elemLength%2 != 0)
+		{
+			NSLog( @"Warning ODD element: DICOM doesn't like them... I will correct it. height--");
+			height--;
+			elemLength = height * width * spp * bpp / 8;
+			
+			if( elemLength%2 != 0) NSLog( @"***************** ODD element !!!!!!!!!!");
+		}
+		
+		NSNumber *rows = [NSNumber numberWithInt: height];
+		NSNumber *columns  = [NSNumber numberWithInt: width];
+		
+		NSMutableData *imageNSData = [NSMutableData dataWithBytes:data length: elemLength];
 		NSString *vr;
 		int highBit;
 		int bitsAllocated;
@@ -524,7 +535,7 @@ extern BrowserController	*browserWindow;
 		[dcmDst setAttribute:attr];
 
 		[dcmDst writeToFile:dstPath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
-		
+		NSLog( dstPath);
 		if( squaredata)
 		{
 			free( squaredata);

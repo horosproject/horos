@@ -5359,7 +5359,7 @@ public:
 	[self setNeedsDisplay:YES];
 }
 
-- (Camera*) camera
+- (Camera*) cameraWithThumbnail:(BOOL) produceThumbnail
 {
 	// data extraction from the vtkCamera
 	
@@ -5404,9 +5404,15 @@ public:
 	[cam setMovieIndexIn4D:[controller curMovieIndex]];
 	
 	// thumbnail
-	[cam setPreviewImage: [self nsimage:TRUE]];
+	if( produceThumbnail)
+		[cam setPreviewImage: [self nsimage:TRUE]];
 	
 	return [cam autorelease];
+}
+
+- (Camera*) camera
+{
+	return [self cameraWithThumbnail: YES];
 }
 
 - (void)setCenterlineCamera: (Camera *) cam{
