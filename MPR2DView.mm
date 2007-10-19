@@ -1237,12 +1237,11 @@ if( reader)
 	[dict setObject:[NSNumber numberWithFloat:[oView rotation]] forKey:@"rotation1"];
 	[dict setObject:[NSNumber numberWithLong:[oView curImage]] forKey:@"index"];
 	
-		
 	[dict setObject:[NSNumber numberWithFloat:[perpendicularView origin].x] forKey:@"origin2-x"];
 	[dict setObject:[NSNumber numberWithFloat:[perpendicularView origin].y] forKey:@"origin2-y"];
 	[dict setObject:[NSNumber numberWithFloat:[perpendicularView scaleValue]] forKey:@"scale2"];
 	[dict setObject:[NSNumber numberWithFloat:[perpendicularView rotation]] forKey:@"rotation2"];
-
+	
 	[dict setObject:[NSNumber numberWithFloat:[finalView origin].x] forKey:@"origin3-x"];
 	[dict setObject:[NSNumber numberWithFloat:[finalView origin].y] forKey:@"origin3-y"];
 	[dict setObject:[NSNumber numberWithFloat:[finalView scaleValue]] forKey:@"scale3"];

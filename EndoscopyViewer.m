@@ -1048,7 +1048,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 		if ([currentFocusedView isEqualTo:[vrController view]])
 		{
 			// 3D view
-			[(VRView*)currentFocusedView endDCMExportSettings:sender];
+			[(VRView*)currentFocusedView exportDCMCurrentImage];
 		}
 		else
 		{

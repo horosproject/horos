@@ -857,6 +857,40 @@ public:
 	}
 }
 
+- (void) exportDCMCurrentImage
+{
+	long	width, height, spp, bpp, err;
+	float	cwl, cww;
+	float	o[ 9];
+	
+	if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
+	
+	[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO];
+	unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :NO];
+	[self endRenderImageWithBestQuality];
+	
+	if( dataPtr)
+	{
+		if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
+		
+		[exportDCM setSourceFile: [firstObject sourceFile]];
+		[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
+		[exportDCM setSeriesNumber:5500];
+		[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
+		
+		[self getOrientation: o];
+		[exportDCM setOrientation: o];
+		
+		if( aCamera->GetParallelProjection())
+			[exportDCM setPixelSpacing: [self getResolution] :[self getResolution]];
+		
+		err = [exportDCM writeDCMFile: 0L];
+		if( err)  NSRunCriticalAlertPanel( NSLocalizedString(@"Error", 0L),  NSLocalizedString( @"Error during the creation of the DICOM File!", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+		
+		free( dataPtr);
+	}
+}
+
 #define DATABASEPATH @"/DATABASE/"
 -(IBAction) endDCMExportSettings:(id) sender
 {
@@ -879,36 +913,7 @@ public:
 		// CURRENT image only
 		if( [[dcmExportMode selectedCell] tag] == 0)
 		{
-			long	width, height, spp, bpp, err;
-			float	cwl, cww;
-			float	o[ 9];
-			
-			if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
-			
-			[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO];
-			unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :NO];
-			[self endRenderImageWithBestQuality];
-			
-			if( dataPtr)
-			{
-				if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
-				
-				[exportDCM setSourceFile: [firstObject sourceFile]];
-				[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
-				[exportDCM setSeriesNumber:5500];
-				[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
-				
-				[self getOrientation: o];
-				[exportDCM setOrientation: o];
-				
-				if( aCamera->GetParallelProjection())
-					[exportDCM setPixelSpacing: [self getResolution] :[self getResolution]];
-				
-				err = [exportDCM writeDCMFile: 0L];
-				if( err)  NSRunCriticalAlertPanel( NSLocalizedString(@"Error", 0L),  NSLocalizedString( @"Error during the creation of the DICOM File!", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
-				
-				free( dataPtr);
-			}
+			[self exportDCMCurrentImage];
 		}
 		// 4th dimension
 		else if( [[dcmExportMode selectedCell] tag] == 2)
