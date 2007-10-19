@@ -3820,6 +3820,53 @@ static NSArray*	statesArray = nil;
 	[imageView display];
 }
 
+- (IBAction) mergeStudies:(id) sender
+{
+	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Merge Studies", 0L), NSLocalizedString(@"Are you sure you want to merge the selected studies? It cannot be cancelled. Patient name and ID will also be merged.", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+	
+	if( result == NSAlertDefaultReturn)
+	{
+		NSManagedObjectContext	*context = self.managedObjectContext;
+		NSManagedObjectModel    *model = self.managedObjectModel;
+		
+		[context retain];
+		[context lock];
+		
+		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
+		
+		// The destination study
+		NSManagedObject	*destStudy = [databaseOutline itemAtRow: [selectedRows firstIndex]];
+		if( [[destStudy valueForKey:@"type"] isEqualToString: @"Study"] == NO) destStudy = [destStudy valueForKey:@"study"];
+		
+		for( NSInteger x = 0; x < [selectedRows count] ; x++ )
+		{
+			NSInteger row = ( x == 0 ) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
+			
+			if( x != 0)
+			{
+				NSManagedObject	*study = [databaseOutline itemAtRow: row];
+				
+				if( [[study valueForKey:@"type"] isEqualToString: @"Study"] == NO) study = [study valueForKey:@"study"];
+				
+				if( [[study valueForKey:@"type"] isEqualToString: @"Study"])
+				{
+					NSArray *series = [[study valueForKey: @"series"] allObjects];
+					
+					for( id s in series)
+						[s setValue: destStudy forKey: @"study"];
+						
+					[context deleteObject: study];
+				}
+			}
+		}
+		
+		[self saveDatabase: currentDatabasePath];
+		
+		[context unlock];
+		[context release];
+	}
+}
+
 - (IBAction)delItem: (id)sender {
 	NSInteger				result;
 	NSManagedObjectContext	*context = self.managedObjectContext;
@@ -8895,6 +8942,13 @@ static NSArray*	openSubSeriesArray = 0L;
 		[exportItem setTarget:self];
 		[menu addItem:exportItem];
 		[exportItem release];
+			
+		[menu addItem: [NSMenuItem separatorItem]];
+		
+		sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Merge selected Studies", nil) action: @selector(mergeStudies:) keyEquivalent:@""];
+		[sendItem setTarget:self];
+		[menu addItem:sendItem];
+		[sendItem release];
 		
 		[menu addItem: [NSMenuItem separatorItem]];
 		
@@ -9219,6 +9273,13 @@ static NSArray*	openSubSeriesArray = 0L;
 - (BOOL)validateMenuItem: (NSMenuItem*)menuItem {
 	if ( menuItem.menu == imageTileMenu ) {
 		return [mainWindow.windowController isKindOfClass:[ViewerController class]];
+	}
+	else if( [menuItem action] == @selector( mergeStudies:))
+	{
+		NSIndexSet			*index = [databaseOutline selectedRowIndexes];
+		
+		if( [index count] > 1) return YES;
+		else return NO;
 	}
 	else if( [menuItem action] == @selector( annotMenu:))
 	{
