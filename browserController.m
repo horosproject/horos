@@ -3822,7 +3822,7 @@ static NSArray*	statesArray = nil;
 
 - (void) mergeSeriesExecute:(NSArray*) seriesArray
 {
-	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Merge Series", 0L), NSLocalizedString(@"Are you sure you want to merge the selected series? It cannot be cancelled.", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Merge Series", 0L), NSLocalizedString(@"Are you sure you want to merge the selected series? It cannot be cancelled.\r\rWARNING! If you merge multiple patients, the Patient Name and ID will be identical.", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 	
 	if( result == NSAlertDefaultReturn)
 	{
@@ -3838,7 +3838,9 @@ static NSArray*	statesArray = nil;
 			NSManagedObject	*destSeries = [seriesArray objectAtIndex: 0];
 			if( [[destSeries valueForKey:@"type"] isEqualToString: @"Series"] == NO) destSeries = [destSeries valueForKey:@"Series"];
 			
-			for( id	*series in seriesArray )
+			NSLog(@"MERGING SERIES: %@", destSeries);
+			
+			for( NSManagedObject	*series in seriesArray )
 			{
 				if( series != destSeries)
 				{
@@ -3909,7 +3911,7 @@ static NSArray*	statesArray = nil;
 		}
 	}
 
-	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Merge Studies", 0L), NSLocalizedString(@"Are you sure you want to merge the selected studies? It cannot be cancelled. Patient name and ID will also be merged.", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Merge Studies", 0L), NSLocalizedString(@"Are you sure you want to merge the selected studies? It cannot be cancelled.\r\rWARNING! If you merge multiple patients, the Patient Name and ID will be identical.", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 	
 	if( result == NSAlertDefaultReturn)
 	{
@@ -3924,6 +3926,8 @@ static NSArray*	statesArray = nil;
 		// The destination study
 		NSManagedObject	*destStudy = [databaseOutline itemAtRow: [selectedRows firstIndex]];
 		if( [[destStudy valueForKey:@"type"] isEqualToString: @"Study"] == NO) destStudy = [destStudy valueForKey:@"study"];
+		
+		NSLog(@"MERGING STUDIES: %@", destStudy);
 		
 		for( NSInteger x = 0; x < [selectedRows count] ; x++ )
 		{
