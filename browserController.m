@@ -3820,8 +3820,95 @@ static NSArray*	statesArray = nil;
 	[imageView display];
 }
 
+- (void) mergeSeriesExecute:(NSArray*) seriesArray
+{
+	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Merge Series", 0L), NSLocalizedString(@"Are you sure you want to merge the selected series? It cannot be cancelled.", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+	
+	if( result == NSAlertDefaultReturn)
+	{
+		NSManagedObjectContext	*context = self.managedObjectContext;
+		NSManagedObjectModel    *model = self.managedObjectModel;
+
+		[context retain];
+		[context lock];
+		
+		if( [seriesArray count])
+		{
+			// The destination series
+			NSManagedObject	*destSeries = [seriesArray objectAtIndex: 0];
+			if( [[destSeries valueForKey:@"type"] isEqualToString: @"Series"] == NO) destSeries = [destSeries valueForKey:@"Series"];
+			
+			for( id	*series in seriesArray )
+			{
+				if( series != destSeries)
+				{
+					if( [[series valueForKey:@"type"] isEqualToString:@"Series"] )
+					{
+						NSArray *images = [[series valueForKey: @"images"] allObjects];
+				
+						for( id i in images)
+							[i setValue: destSeries forKey: @"series"];
+						
+						[context deleteObject: series];
+					}
+				}
+			}
+			
+			[destSeries setValue:[NSNumber numberWithInt:0] forKey:@"numberOfImages"];
+		}
+		
+		[self saveDatabase: currentDatabasePath];
+		
+		[self refreshMatrix: self];
+		
+		[context unlock];
+		[context release];
+	}
+}
+
+- (IBAction) mergeSeries:(id) sender
+{
+	NSArray				*cells = [oMatrix selectedCells];
+	NSMutableArray		*seriesArray = [NSMutableArray array];
+	
+	for( NSCell *cell in cells )
+	{
+		if( [cell isEnabled] == YES )
+		{
+			NSManagedObject	*series = [matrixViewArray objectAtIndex: [cell tag]];
+		
+			[seriesArray addObject: series];
+		}
+	}
+	
+	[self mergeSeriesExecute: seriesArray];
+}
+
+
 - (IBAction) mergeStudies:(id) sender
 {
+	// Is it only series??
+	{
+		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
+		BOOL	onlySeries = YES;
+		NSMutableArray	*seriesArray = [NSMutableArray array];
+		
+		for( NSInteger x = 0; x < [selectedRows count] ; x++ )
+		{
+			NSInteger row = ( x == 0 ) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
+			NSManagedObject	*series = [databaseOutline itemAtRow: row];
+			if( [[series valueForKey:@"type"] isEqualToString: @"Series"] == NO) onlySeries = NO;
+			
+			[seriesArray addObject: series];
+		}
+		
+		if( onlySeries)
+		{
+			[self mergeSeriesExecute: seriesArray];
+			return;
+		}
+	}
+
 	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Merge Studies", 0L), NSLocalizedString(@"Are you sure you want to merge the selected studies? It cannot be cancelled. Patient name and ID will also be merged.", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 	
 	if( result == NSAlertDefaultReturn)
@@ -3860,7 +3947,12 @@ static NSArray*	statesArray = nil;
 			}
 		}
 		
+		[destStudy setValue:[NSNumber numberWithInt:0] forKey:@"numberOfImages"];
+		
 		[self saveDatabase: currentDatabasePath];
+		
+		[self outlineViewRefresh];
+		[self refreshMatrix: self];
 		
 		[context unlock];
 		[context release];
@@ -6422,6 +6514,12 @@ static BOOL withReset = NO;
 	
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Merge Selected Series", nil)  action:@selector(mergeSeries:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
+	
+	[contextual addItem: [NSMenuItem separatorItem]];
+	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete", nil)  action:@selector(delItem:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
@@ -8945,7 +9043,7 @@ static NSArray*	openSubSeriesArray = 0L;
 			
 		[menu addItem: [NSMenuItem separatorItem]];
 		
-		sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Merge selected Studies", nil) action: @selector(mergeStudies:) keyEquivalent:@""];
+		sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Merge Selected Studies", nil) action: @selector(mergeStudies:) keyEquivalent:@""];
 		[sendItem setTarget:self];
 		[menu addItem:sendItem];
 		[sendItem release];
@@ -9274,11 +9372,49 @@ static NSArray*	openSubSeriesArray = 0L;
 	if ( menuItem.menu == imageTileMenu ) {
 		return [mainWindow.windowController isKindOfClass:[ViewerController class]];
 	}
+	else if( [menuItem action] == @selector( createROIsFromRTSTRUCT:))
+	{
+		if( isCurrentDatabaseBonjour) return NO;
+	}
+	else if( [menuItem action] == @selector( compressSelectedFiles:))
+	{
+		if( isCurrentDatabaseBonjour) return NO;
+	}
+	else if( [menuItem action] == @selector( decompressSelectedFiles:))
+	{
+		if( isCurrentDatabaseBonjour) return NO;
+	}
+	else if( [menuItem action] == @selector( delItem:))
+	{
+		if( isCurrentDatabaseBonjour) return NO;
+	}
 	else if( [menuItem action] == @selector( mergeStudies:))
 	{
-		NSIndexSet			*index = [databaseOutline selectedRowIndexes];
+		if( isCurrentDatabaseBonjour) return NO;
 		
-		if( [index count] > 1) return YES;
+		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
+		BOOL	onlySeries = YES;
+		
+		for( NSInteger x = 0; x < [selectedRows count] ; x++ )
+		{
+			NSInteger row = ( x == 0 ) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
+			NSManagedObject	*series = [databaseOutline itemAtRow: row];
+			if( [[series valueForKey:@"type"] isEqualToString: @"Series"] == NO) onlySeries = NO;
+		}
+		
+		if( onlySeries && [selectedRows count])
+			[menuItem setTitle: NSLocalizedString( @"Merge Selected Series", 0L)];
+		else
+			[menuItem setTitle: NSLocalizedString( @"Merge Selected Studies", 0L)];
+		
+		if( [selectedRows count] > 1) return YES;
+		else return NO;
+	}
+	else if( [menuItem action] == @selector( mergeSeries:))
+	{
+		if( isCurrentDatabaseBonjour) return NO;
+		
+		if( [[oMatrix selectedCells] count] > 1) return YES;
 		else return NO;
 	}
 	else if( [menuItem action] == @selector( annotMenu:))
