@@ -3984,7 +3984,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	// WARNING : only time is correct. NOT year/month/day
 	float timebetween = -[radiopharmaceuticalStartTime timeIntervalSinceDate: acquisitionTime];
 	if( halflife > 0 && timebetween > 0) radionuclideTotalDoseCorrected = radionuclideTotalDose * exp( -timebetween * logf(2)/halflife);
-	else NSLog(@"ERROR IN computeTotalDoseCorrected");
+	else NSLog(@"ERROR IN computeTotalDoseCorrected : halflife: %f timebetween: %f", halflife, timebetween);
 }
 
 - (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject {

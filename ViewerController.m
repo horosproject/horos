@@ -10859,6 +10859,8 @@ int i,j,l;
 	
 	if( [sender tag] == 1)
 	{
+		[self updateSUVValues: self];
+	
 		BOOL savedDefault = [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"];
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"ConvertPETtoSUVautomatically"];
 		
