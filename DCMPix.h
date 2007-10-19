@@ -310,30 +310,86 @@ Note setter is different to not break existing usage. :-( */
 /** Not sure when this is used rather than computeROI: */
 - (void) computeROIInt:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max;
 
-// Fill a ROI with a value!
+/** Fill a ROI with a value
+*  roi = Selected ROI
+* newVal = The replacement value
+* minVal = lower threshold
+* maxVal = upper threshold
+* outside = if YES replace outside the ROI
+* orientation Stack = 
+* stackNo = 
+* restore = 
+* addition = 
+*/
 - (void) fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition;
+
+/** Fill a ROI with a value
+*  roi = Selected ROI
+* newVal = The replacement value
+* minVal = lower threshold
+* maxVal = upper threshold
+* outside = if YES replace outside the ROI
+* orientation Stack = 
+* stackNo = 
+* restore = 
+*/
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo :(BOOL) restore;
+
+/** Fill a ROI with a value
+*  roi = Selected ROI
+* newVal = The replacement value
+* minVal = lower threshold
+* maxVal = upper threshold
+* outside = if YES replace outside the ROI
+* orientation Stack = 
+* stackNo =  
+*/
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientation :(long) stackNo;
+/** Fill a ROI with a value.
+*  roi = Selected ROI
+* newVal = The replacement value
+* minVal = lower threshold
+* maxVal = upper threshold
+* outside = if YES replace outside the ROI
+*/
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside;
 
-- (unsigned char*) getMapFromPolygonROI:(ROI*) roi size:(NSSize*) size origin:(NSPoint*) origin;
+- (unsigned char*) getMapFromPolygonROI:(ROI*) roi size:(NSSize*) size origin:(NSPoint*) origin; /**< Map from Polygon ROI */
 
-// Is this Point (pt) in this ROI ?
+/** Is this Point (pt) in this ROI ? */
 - (BOOL) isInROI:(ROI*) roi :(NSPoint) pt;
 
-// Return a pointer with all pixels values contained in the current ROI
-// Free the pointer with the free() function
+/** Returns a pointer with all pixels values contained in the current ROI
+* User must Free the pointer with the free() function
+* Returns reference number of pixels in numberOfValues
+* Returns a pointer to the pixel locations. Each point has the x position followed by the y position
+* Locations is malloced but not freed
+*/
 - (float*) getROIValue :(long*) numberOfValues :(ROI*) roi :(float**) locations;
+
+/** Returns a pointer with all pixels values contained in the current ROI
+* User must Free the pointer with the free() function
+* Returns reference number of pixels in numberOfValues
+* Returns a pointer to the pixel locations. Each point has the x position followed by the y position
+* Locations is malloced but not freed
+*/
 - (float*) getLineROIValue :(long*) numberOfValues :(ROI*) roi;
 
 
 /** Utility methods to convert user supplied pixel coords to DICOM patient coords float d[3] (in mm)
-* using current slice location and orientation and vice versa
+* using current slice location and orientation
 */
 -(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d;
+
+/** Utility methods to convert user supplied pixel coords to DICOM patient coords double d[3] (in mm)
+* using current slice location and orientation
+*/
 -(void) convertPixDoubleX: (double) x pixY: (double) y toDICOMCoords: (double*) d;
 
+/** convert DICOM coordinated to slice coordinates */
 -(void) convertDICOMCoords: (float*) dc toSliceCoords: (float*) sc;
+
+/** convert DICOM coordinated to slice coordinates */
 -(void) convertDICOMCoordsDouble: (double*) dc toSliceCoords: (double*) sc;
 
 
@@ -342,10 +398,23 @@ Note setter is different to not break existing usage. :-( */
 
 
 
-- (BOOL) thickSlabVRActivated;
-- (void) ConvertToBW:(long) mode;
+- (BOOL) thickSlabVRActivated; /**< Activate Thick Slab VR */
+
+/** convert to Black and White. 
+* Mode values: 0 Use Red Channel, 1 use Green Channel
+* 2 use Blue Channel  3 Merge and use RGB
+*/
+- (void) ConvertToBW:(long) mode; 
+
+/** convert to RGB. 
+* Mode values: 0 create Red Channel, 1 create Green Channel
+* 2 create Blue Channel  3 create all channels
+*  cwl  = window level to use
+* cww = window width to use
+*/
 - (void) ConvertToRGB:(long) mode :(long) cwl :(long) cww;
-- (float) cineRate;
+
+- (float) cineRate;  /**< Returns the Cine rate */
 
 // drag-drop subtraction-multiplication between series
 - (void) imageArithmeticMultiplication:(DCMPix*) sub;
@@ -384,8 +453,23 @@ Note setter is different to not break existing usage. :-( */
 - (void) applyConvolutionOnSourceImage;
 - (void) setArrayPix :(NSArray*) array :(short) i;
 - (BOOL) updateToApply;
-- (id) myinitEmpty;
+- (id) myinitEmpty;  /**< Returns an Empty object */
+/**  calls 
+* myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO
+* with hello = NO and iO = 0L
+*/
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss;
+/**  Initialize
+* doesn't load pix data, only initializes instance variables
+* s = filename
+* pos = imageID  Position in array.
+* tot = imTot  Total number of images. 
+* ptr = pointer to volume
+* f = frame number
+* ss = series number
+* isBonjour = flag to indicate remote bonjour file
+* imageObj = coreData image Entity for image
+*/ 
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO;
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ;
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize;
