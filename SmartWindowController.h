@@ -13,7 +13,10 @@
 =========================================================================*/
 
 
-
+/** \brief Window Controller for creating smart albums
+*
+* Window Controller for creating Smart albums
+*/
 
 #import <AppKit/AppKit.h>
 
@@ -28,17 +31,21 @@
 
 }
 
-- (IBAction)newAlbum:(id)sender;
-- (void)removeSubview:(id)sender;
-- (void)addSubview:(id)sender;
-- (void)drawSubviews;
+- (IBAction)newAlbum:(id)sender; /**< Create a new smart album. */
+- (void)removeSubview:(id)sender; /**< Removes a subView representing a smart filter predicate. */
+- (void)addSubview:(id)sender; /**< Add a subview for creating a new subpredicate. */
+- (void)drawSubviews;  /**< Redraws the subviews */
 
-- (void)updateRemoveButtons;
+- (void)updateRemoveButtons; /**< Disables the remove button if only one subview remains */
 
-- (void)createCriteria;
-- (NSMutableArray *)criteria;
-- (NSString *)albumTitle;
-- (NSCalendarDate *)dateBeforeNow:(int)value;
-- (BOOL)madeCriteria;
+- (void)createCriteria; /**< Create the smart album criteria */
+- (NSMutableArray *)criteria; /**< Array of subpredicates used to make the smart album predicate */
+- (NSString *)albumTitle;  /**< Smart album title */
+/** Return a date that corresponds to date earlier than today.
+*  Value can be: searchWithinToday, searchWithinLast2Days, searchWithinLastWeek, searchWithinLast2Weeks,
+*   searchWithinLastMonth, searchWithinLast2Months, searchWithinLast3Months, searchWithinLastYear
+*/
+- (NSCalendarDate *)dateBeforeNow:(int)value; 
+- (BOOL)madeCriteria;  /**< Checks to see if the criteria has been made. */
 
 @end

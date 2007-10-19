@@ -18,6 +18,7 @@
 #import <Cocoa/Cocoa.h>
 #import <Accelerate/Accelerate.h>
 
+
 #define USEVIMAGE
 
 typedef struct {
@@ -30,29 +31,31 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 @class ROI;
 @class ThickSlabController;
 @class DCMObject;
+@class Point3D;
 
 /** \brief Represents an image for display */
 
 @interface DCMPix: NSObject <NSCopying>
 {
 //SOURCES
-	NSString            *srcFile;
-	BOOL				isBonjour;
-	BOOL				nonDICOM;
+	NSString            *srcFile;  /**< source File */
+	BOOL				isBonjour;  /**< Flag to indicate if file is accessed over Bonour */
+	BOOL				nonDICOM;   /**< Flag to indicate if file is not DICOM */
 
 //BUFFERS	
 	NSArray				*pixArray;
-    NSManagedObject		*imageObj;	
-    xNSImage			*image;
-    short               *oImage;
-	float				*fImage, *fVolImage;
-    char                *wImage;
+    NSManagedObject		*imageObj;	/**< Core data object for image */
+    xNSImage			*image;    /**< buffer for creating an NSImage */
+    short               *oImage;   /**< short buffer of image Data */
+	float				*fImage /**< float buffer of image Data */, *fVolImage;  /**< float buffer of volume Data */
+    char                *wImage; /**< ? */
 	
 //DICOM TAGS
 
 //	orientation
-	double				originX, originY, originZ;
-	double				orientation[ 9];
+	Point3D				*origin;
+	double				originX /**< x position of image origin */ , originY /**< y Position of image origin */ , originZ /**< Z position of image origin*/;
+	double				orientation[ 9];  /**< pointer to orientation vectors  */
 
 //	pixel representation
 	BOOL				fIsSigned;
@@ -177,7 +180,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	NSData				*transferFunction;
 	float				*transferFunctionPtr;
 	
-// custom annotations
+/** custom annotations */
 	NSMutableDictionary *annotationsDictionary;
 	NSMutableDictionary *cachedPapyGroups;
 }
@@ -190,44 +193,48 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 // Dimensions in pixels
 @property long pwidth, pheight;
 
-// Is it an RGB image (ARGB) or float image?
-@property(setter=setRGB:) BOOL isRGB; // Note setter is different to not break existing usage. :-(
+/** Is it an RGB image (ARGB) or float image?
+Note setter is different to not break existing usage. :-( */
+@property(setter=setRGB:) BOOL isRGB;  
 
-// Pointer to image data
+/** Pointer to image data */
 @property(setter=setfImage:) float* fImage;
 
-// WW & WL
+/** WW & WL */
 @property(readonly) float ww, wl, fullww, fullwl;
 @property float savedWW, savedWL;
 
 @property(readonly) float slope, offset;
 
-// X/Y ratio - non-square pixels
+/**  X/Y ratio - non-square pixels */
 @property double pixelRatio;
 
-// pixel size
+/**  pixel size */
 @property double pixelSpacingX, pixelSpacingY;
 
-// Slice orientation
+/** Slice orientation */
 - (void)orientation:(float*) c;
 - (void)setOrientation:(float*) c;
 
 - (void)orientationDouble:(double*) c;
 - (void)setOrientationDouble:(double*) c;
 
-// Slice location
+/** Slice location */
 @property(readonly) double originX, originY, originZ;
 
 - (void)setOrigin :(float*) o;
 - (void)setOriginDouble :(double*) o;
 
-// Thickness/Axial Location
+/**  Axial Location */
 @property double sliceLocation;
+/**  Slice Thickness */
 @property double sliceThickness;
+/**  Slice Interval */
 @property double sliceInterval;
+/**  Gap between slices */
 @property(readonly) double spacingBetweenSlices;
 
-// 8-bit TransferFunction
+/**  8-bit TransferFunction */
 @property(retain) NSData *transferFunction; 
 
 @property NSPoint subPixOffset;
@@ -253,7 +260,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 @property(readonly) BOOL generated;
 @property(copy) NSString *sourceFile;
 
-//Database links
+/** Database links */
 @property(readonly) NSManagedObject *imageObj, *seriesObj;
 @property(readonly) NSString *srcFile;
 @property(readonly) NSMutableDictionary *annotationsDictionary;
@@ -272,22 +279,35 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 @property(copy) NSString *units, *decayCorrection;
 @property BOOL displaySUVValue;
 
-- (void) copySUVfrom: (DCMPix*) from;
-- (float) getPixelValueX: (long) x Y:(long) y;
+- (void) copySUVfrom: (DCMPix*) from;  /**< Copy the SUV from another DCMPic */
+- (float) getPixelValueX: (long) x Y:(long) y;  /**< Get the pixel for a point with x,y coordinates */
 
-- (void) checkSUV;
+- (void) checkSUV; /**< Makes sure all the necessary values for SUV calculation are present */
 
-+ (void) checkUserDefaults: (BOOL) update;
-+ (void) resetUserDefaults;
-+ (BOOL) IsPoint:(NSPoint) x inPolygon:(NSPoint*) poly size:(int) count;
++ (void) checkUserDefaults: (BOOL) update;  /**< Check User Default for needed setting */
++ (void) resetUserDefaults;  /**< Reset the defaults */
+ /** Determine if a point is inside a polygon
+ * x is the NSPoint to check.  Poly is a pointer to an array of NSPoints. Count is the number of 
+ * points in the polygon.
+*/
++ (BOOL) IsPoint:(NSPoint) x inPolygon:(NSPoint*) poly size:(int) count; 
 
 
-- (void) changeWLWW:(float)newWL :(float)newWW;
-- (void) computePixMinPixMax;
+- (void) changeWLWW:(float)newWL :(float)newWW;  /**< Change window level to window width to the new values */
+- (void) computePixMinPixMax;  /**< Compute the min and max values in the image */
 
 // Compute ROI data
-- (int)calciumCofactorForROI:(ROI *)roi threshold:(int)threshold;
-- (void) computeROI:(ROI*) roi :(float *)mean :(float *)total :(float *)dev :(float *)min :(float *)max;
+/** Calculates the cofactor used Calcium scoring.  
+* Depends on the threshold used for scoring 
+* Threshold is usually 90 or 120 depending on whether the source is
+* Electron Beam or Multislice CT
+*/
+- (int)calciumCofactorForROI:(ROI *)roi threshold:(int)threshold;  
+/** returns calculated values for ROI:
+*  mean, total, deviation, min, max
+*/
+- (void) computeROI:(ROI*) roi :(float *)mean :(float *)total :(float *)dev :(float *)min :(float *)max;  
+/** Not sure when this is used rather than computeROI: */
 - (void) computeROIInt:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max;
 
 // Fill a ROI with a value!
@@ -307,15 +327,18 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (float*) getLineROIValue :(long*) numberOfValues :(ROI*) roi;
 
 
-// Utility methods to convert user supplied pixel coords to DICOM patient coords float d[3] (in mm)
-// using current slice location and orientation and vice versa
+/** Utility methods to convert user supplied pixel coords to DICOM patient coords float d[3] (in mm)
+* using current slice location and orientation and vice versa
+*/
 -(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d;
 -(void) convertPixDoubleX: (double) x pixY: (double) y toDICOMCoords: (double*) d;
 
 -(void) convertDICOMCoords: (float*) dc toSliceCoords: (float*) sc;
 -(void) convertDICOMCoordsDouble: (double*) dc toSliceCoords: (double*) sc;
 
-+(int) nearestSliceInPixelList: (NSArray*)pixlist withDICOMCoords: (float*)dc sliceCoords: (float*) sc;  // Return index & sliceCoords
+
+/** Return index & sliceCoords */
++(int) nearestSliceInPixelList: (NSArray*)pixlist withDICOMCoords: (float*)dc sliceCoords: (float*) sc;  
 
 
 

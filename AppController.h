@@ -103,40 +103,60 @@ extern "C"
 }
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
-+ (id) sharedAppController;
-+ (void)checkForPagesTemplate;
-+ (NSString*) currentHostName;
 
-- (void) terminate :(id) sender;
-- (void) restartSTORESCP;
-- (void) startSTORESCP:(id) sender;
-- (void) startDICOMBonjourSearch;
+
++ (id) sharedAppController; /**< Return the shared AppController instance */
++ (void)checkForPagesTemplate; /**< Check for Pages report template */
++ (NSString*) currentHostName; /**< Return Network hostname */
+
+#pragma mark-
+#pragma mark HTML Templates
++ (void)checkForHTMLTemplates;
+
+
+#pragma mark-
+#pragma mark  Server management
+- (void) terminate :(id) sender; /**< Terminate listener (Q/R SCP) */
+- (void) restartSTORESCP; /**< Restart listener (Q/R SCP) */
+- (void) startSTORESCP:(id) sender; /**< Start listener (Q/R SCP) */
+- (void) startDICOMBonjourSearch; /**< Use Bonjour to search for other DICOM services */
+
+
+
 
 #pragma mark-
 #pragma mark static menu items
 //===============OSIRIX========================
-- (IBAction) about:(id)sender;
-- (IBAction) showPreferencePanel:(id)sender;
-- (IBAction) checkForUpdates:(id) sender;
+- (IBAction) about:(id)sender; /**< Display the about window */
+- (IBAction) showPreferencePanel:(id)sender; /**< Show Preferences window */
+- (IBAction) checkForUpdates:(id) sender;  /**< Check for update */
 //===============WINDOW========================
-- (void) tileWindows:(id)sender;
-- (IBAction) closeAllViewers: (id) sender;
+- (void) tileWindows:(id)sender;  /**< Tile open window */
+- (IBAction) closeAllViewers: (id) sender;  /**< Close All Viewers */
 - (void) checkAllWindowsAreVisible:(id) sender;
 //===============HELP==========================
-- (IBAction) sendEmail: (id) sender;
-- (IBAction) openOsirixWebPage: (id) sender;
-- (IBAction) openOsirixDiscussion: (id) sender;
+- (IBAction) sendEmail: (id) sender;   /**< Send email to lead developer */
+- (IBAction) openOsirixWebPage: (id) sender;  /**<  Open OsiriX web page */
+- (IBAction) openOsirixDiscussion: (id) sender; /**< Open OsiriX discussion web page */
 //---------------------------------------------
-- (IBAction) help: (id) sender;
+- (IBAction) help: (id) sender;  /**< Open help window */
 //=============================================
 
 #pragma mark-
 #pragma mark window routines
-- (IBAction) updateViews:(id) sender;
-- (NSScreen *)dbScreen;
-- (NSArray *)viewerScreens;
-- (id) FindViewer:(NSString*) nib :(NSMutableArray*) pixList;
-- (NSArray*) FindRelatedViewers:(NSMutableArray*) pixList;
+- (IBAction) updateViews:(id) sender;  /**< Update Viewers */
+- (NSScreen *)dbScreen;  /**< Return monitor with DB */
+- (NSArray *)viewerScreens; /**< Return array of monitors for displaying viewers */
+
+ /** 
+ * Find the WindowController with the named nib and using the pixList
+ * This is commonly used to find the 3D Viewer associated with a ViewerController.
+ * Conversely this could be used to find the ViewerController that created a 3D Viewer
+ * Each 3D Viewer has its own distinctly named nib as does the ViewerController.
+ * The pixList is the Array of DCMPix that the viewer uses.  It should uniquely identify related viewers
+*/
+- (id) FindViewer:(NSString*) nib :(NSMutableArray*) pixList; 
+- (NSArray*) FindRelatedViewers:(NSMutableArray*) pixList; /**< Return an array of all WindowControllers using the pixList */
 - (IBAction) cancelModal: (id) sender;
 - (IBAction) okModal: (id) sender;
 
@@ -154,8 +174,5 @@ extern "C"
 - (void) HUGVerifyComPACSPlugin;
 - (void) HUGDisableBonjourFeature;
 
-#pragma mark-
-#pragma mark HTML Templates
-+ (void)checkForHTMLTemplates;
 @end
 
