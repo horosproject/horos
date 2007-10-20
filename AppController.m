@@ -46,7 +46,6 @@ MODIFICATION HISTORY
 #import "DOClient.h"
 #import "ToolbarPanel.h"
 #import "AppController.h"
-#import "PreferenceController.h"
 #import "PreferencePaneController.h"
 #import "BrowserController.h"
 #import "BrowserControllerDCMTKCategory.h"

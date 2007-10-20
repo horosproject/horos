@@ -17,7 +17,6 @@
 #import "sourcesTableView.h"
 #import <AppKit/AppKit.h>
 
-//@class DICOMQueryStudyRoot;
 @class QueryArrayController;
 @class QueryFilter;
 
