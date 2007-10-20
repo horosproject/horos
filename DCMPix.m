@@ -1713,7 +1713,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	}
 }
 
-- (unsigned char*) getMapFromPolygonROI:(ROI*) roi size:(NSSize*) size origin:(NSPoint*) origin
+- (unsigned char*) getMapFromPolygonROI:(ROI*) roi size:(NSSize*) size origin:(NSPoint*) ROIorigin
 {	
 	unsigned char*	map = 0L;
 	float*			tempImage = 0L;
@@ -1758,20 +1758,20 @@ BOOL gUSEPAPYRUSDCMPIX;
 		size->width = maxX-minX+2;
 		size->height = maxY-minY+2;
 		
-		origin->x = minX;
-		origin->y = minY;
+		ROIorigin->x = minX;
+		ROIorigin->y = minY;
 		
 		map = malloc( size->height * size->width);
 		tempImage = calloc( 1, size->height * size->width * sizeof(float));
 		
 		// Need to clip?
-		NSPointInt *pTemp;
+//		NSPointInt *pTemp;
 		int yIm, xIm;
 		
 		yIm = size->height;
 		xIm = size->width;
 		
-		BOOL clip = NO;
+//		BOOL clip = NO;
 		
 //		for( int i = 0; i < no && clip == NO; i++ ) {
 //			if( ptsInt[ i].x < 0) clip = YES;
@@ -2945,7 +2945,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (id) copyWithZone:(NSZone *)zone
 {
-    long	i;
 	
 	DCMPix *copy = [[[self class] allocWithZone: zone] myinit:self->srcFile :self->imID :self->imTot :self->fVolImage :self->frameNo :self->serieNo];
 	
@@ -4382,6 +4381,7 @@ END_CREATE_ROIS:
 
 - (void) reloadAnnotations
 {
+	#ifdef OSIRIX_VIEWER
 	[PapyrusLock lock];
 	
 	[annotationsDictionary release];
@@ -4416,6 +4416,7 @@ END_CREATE_ROIS:
 	}
 	
 	[PapyrusLock unlock];
+	#endif
 }
 
 - (BOOL)loadDICOMDCMFramework	// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS

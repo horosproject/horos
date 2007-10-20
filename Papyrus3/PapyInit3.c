@@ -256,6 +256,7 @@ enum EModality SetModality (char *modality)
     } /* switch */
   } /* endif ...there is a modality */
 
+ return 0;
 } /* endof SetModality */
 
 

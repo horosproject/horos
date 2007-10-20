@@ -190,7 +190,7 @@ Extract4Bytes (unsigned char *inBufP, PapyULong *ioPosP)
 /*PapyULong 	*ioPosP;			      the position in the buffer */
 {
 	unsigned char	*theCharP;
-	PapyULong	theULong = 0L, theTmpULong;
+	PapyULong	theULong = 0L;
     
     
 	/* points to the right place in the buffer */
@@ -203,6 +203,8 @@ Extract4Bytes (unsigned char *inBufP, PapyULong *ioPosP)
 {
 	/* extract the element according to the little-endian syntax */
 #if __BIG_ENDIAN__
+	PapyULong theTmpULong;
+	
 	theTmpULong  = (PapyULong) (*(theCharP + 3));
 	theTmpULong  = theTmpULong << 24;
 	theULong    |= theTmpULong;

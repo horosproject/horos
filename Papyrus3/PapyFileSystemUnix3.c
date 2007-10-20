@@ -297,4 +297,5 @@ Papy3DGetNbFiles (char *dicomPath, int *nbFiles)
   efree3 ((void **) &aDirent);
   efree3 ((void **) &aDIR);
   
+  return 0;
 } /* endof Papy3DGetNbFiles */

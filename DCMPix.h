@@ -535,7 +535,9 @@ Note setter is different to not break existing usage. :-( */
 //RTSTRUCT
 - (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject;
 
+#ifdef OSIRIX_VIEWER
 - (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject;
 + (BOOL) setAnonymizedAnnotations: (BOOL) v;
+#endif
 
 @end
