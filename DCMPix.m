@@ -2632,6 +2632,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 	}
 }
 
+
+	
+
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize
 {
 	//if( pixelSize != 32) NSLog( @"Only floating images are supported...");
@@ -2772,6 +2775,14 @@ BOOL gUSEPAPYRUSDCMPIX;
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ
 {
 	return [self initwithdata: im :pixelSize :xDim :yDim :xSpace :ySpace :oX :oY :oZ :NO];
+}
+
+- (id) initWithImageObj: (NSManagedObject *)entity{
+	return  [self myinit:[entity valueForKey:@"completePath"] :0 :1 :0L :0L :0L isBonjour:NO imageObj: entity];
+}
+
+ - (id)initWithContentsOfFile: (NSString *)file {
+ return  [self myinit:file :0 :1 :0L :0L :0L isBonjour:NO imageObj: 0L];
 }
 
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO

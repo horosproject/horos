@@ -287,7 +287,9 @@ Note setter is different to not break existing usage. :-( */
 + (void) checkUserDefaults: (BOOL) update;  /**< Check User Default for needed setting */
 + (void) resetUserDefaults;  /**< Reset the defaults */
  /** Determine if a point is inside a polygon
- * x is the NSPoint to check.  Poly is a pointer to an array of NSPoints. Count is the number of 
+ * @param x is the NSPoint to check. 
+ * @param  poly is a pointer to an array of NSPoints. 
+ * @param count is the number of 
  * points in the polygon.
 */
 + (BOOL) IsPoint:(NSPoint) x inPolygon:(NSPoint*) poly size:(int) count; 
@@ -303,6 +305,7 @@ Note setter is different to not break existing usage. :-( */
 * Electron Beam or Multislice CT
 */
 - (int)calciumCofactorForROI:(ROI *)roi threshold:(int)threshold;  
+
 /** returns calculated values for ROI:
 *  mean, total, deviation, min, max
 */
@@ -311,46 +314,47 @@ Note setter is different to not break existing usage. :-( */
 - (void) computeROIInt:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max;
 
 /** Fill a ROI with a value
-*  roi = Selected ROI
-* newVal = The replacement value
-* minVal = lower threshold
-* maxVal = upper threshold
-* outside = if YES replace outside the ROI
-* orientation Stack = 
-* stackNo = 
-* restore = 
-* addition = 
+* @param roi  Selected ROI
+* @param newVal  The replacement value
+* @param minValue  Lower threshold
+* @param maxValue Upper threshold
+* @param outside  if YES replace outside the ROI
+* @param orientationStack  
+* @param stackNo  
+* @param restore  
+* @param addition  
 */
-- (void) fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition;
+- (void) fillROI:(ROI*) roi newVal:(float) newVal minValue:(float) minValue maxValue:(float) maxValue outside:(BOOL) outside orientationStack:(long) orientationStack stackNo:(long) stackNo restore:(BOOL) restore addition:(BOOL) addition;
 
 /** Fill a ROI with a value
-*  roi = Selected ROI
-* newVal = The replacement value
-* minVal = lower threshold
-* maxVal = upper threshold
-* outside = if YES replace outside the ROI
-* orientation Stack = 
-* stackNo = 
-* restore = 
+* @param roi  Selected ROI
+* @param newVal  The replacement value
+* @param minValue  lower threshold
+* @param maxValue  upper threshold
+* @param outside  if YES replace outside the ROI
+* @param orientationStack  ?
+* @param  stackNo  
+* @param  restore  
 */
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo :(BOOL) restore;
 
 /** Fill a ROI with a value
-*  roi = Selected ROI
-* newVal = The replacement value
-* minVal = lower threshold
-* maxVal = upper threshold
-* outside = if YES replace outside the ROI
-* orientation Stack = 
-* stackNo =  
+* @param roi  Selected ROI
+* @param newVal  The replacement value
+* @param minValue  lower threshold
+* @param maxValue  upper threshold
+* @param outside  if YES replace outside the ROI
+* @param orientation  
+* @param stackNo   
 */
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientation :(long) stackNo;
+
 /** Fill a ROI with a value.
-*  roi = Selected ROI
-* newVal = The replacement value
-* minVal = lower threshold
-* maxVal = upper threshold
-* outside = if YES replace outside the ROI
+* @param roi Selected ROI
+* @param newVal  The replacement value
+* @param minValue  Lower threshold
+* @param maxValue  Upper threshold
+* @param outside  If YES replace outside the ROI
 */
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside;
 
@@ -401,16 +405,14 @@ Note setter is different to not break existing usage. :-( */
 - (BOOL) thickSlabVRActivated; /**< Activate Thick Slab VR */
 
 /** convert to Black and White. 
-* Mode values: 0 Use Red Channel, 1 use Green Channel
-* 2 use Blue Channel  3 Merge and use RGB
+* @param mode values: 0 Use Red Channel, 1 use Green Channel 2 use Blue Channel  3 Merge and use RGB
 */
 - (void) ConvertToBW:(long) mode; 
 
 /** convert to RGB. 
-* Mode values: 0 create Red Channel, 1 create Green Channel
-* 2 create Blue Channel  3 create all channels
-*  cwl  = window level to use
-* cww = window width to use
+* @param mode values: 0 create Red Channel, 1 create Green Channel 2 create Blue Channel  3 create all channels
+* @param  cwl  = window level to use
+* @param cww = window width to use
 */
 - (void) ConvertToRGB:(long) mode :(long) cwl :(long) cww;
 
@@ -454,25 +456,54 @@ Note setter is different to not break existing usage. :-( */
 - (void) setArrayPix :(NSArray*) array :(short) i;
 - (BOOL) updateToApply;
 - (id) myinitEmpty;  /**< Returns an Empty object */
+
 /**  calls 
 * myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO
 * with hello = NO and iO = 0L
 */
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss;
+
 /**  Initialize
 * doesn't load pix data, only initializes instance variables
-* s = filename
-* pos = imageID  Position in array.
-* tot = imTot  Total number of images. 
-* ptr = pointer to volume
-* f = frame number
-* ss = series number
-* isBonjour = flag to indicate remote bonjour file
-* imageObj = coreData image Entity for image
+* @param s  filename
+* @param pos  imageID  Position in array.
+* @param tot  imTot  Total number of images. 
+* @param ptr  pointer to volume
+* @param f  frame number
+* @param ss  series number
+* @param hello  flag to indicate remote bonjour file
+* @param iO  coreData image Entity for image
 */ 
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO;
+
+/** init with data pointer
+* @param im  pointer to image data
+* @param pixelSize  pixelDepth in bits
+* @param xDim  image width
+* @param yDim =image height
+* @param xSpace  pixel width
+* @param ySpace  pxiel height
+* @param oX x position of origin
+* @param oY y position of origin
+* @param oZ z position of origin
+*/
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ;
+
+/** init with data pointer
+* @param im = pointer to image data
+* @param pixelSize = pixelDepth in bits
+* @param xDim  image width
+* @param yDim  image height
+* @param xSpace  pixel width
+* @param ySpace  pxiel height
+* @param oX x position of origin
+* @param oY y position of origin
+* @param oZ z position of origin
+* @param volSize ?
+*/
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize;
+- (id) initWithImageObj: (NSManagedObject *)entity;
+- (id) initWithContentsOfFile: (NSString *)file; 
 - (NSImage*) computeWImage: (BOOL) smallIcon :(float)newWW :(float)newWL;
 - (NSImage*) image;
 - (NSImage*) getImage;
