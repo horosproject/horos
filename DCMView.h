@@ -362,7 +362,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (IBAction) sliderRGBFactor:(id) sender;
 - (IBAction) alwaysSyncMenu:(id) sender;
 - (void) getCLUT:( unsigned char**) r : (unsigned char**) g : (unsigned char**) b;
-- (void) doSyncronize:(NSNotification*)note;
+- (void) sync:(NSNotification*)note;
 - (id)initWithFrame:(NSRect)frame imageRows:(int)rows  imageColumns:(int)columns;
 - (float)getSUV;
 - (IBAction) roiLoadFromXMLFiles: (id) sender;

@@ -4479,7 +4479,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
     [nc addObserver: self
-           selector: @selector(doSyncronize:)
+           selector: @selector(sync:)
                name: @"sync"
              object: nil];
 	
@@ -4815,7 +4815,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	syncOnLocationImpossible = v;
 }
 
--(void) doSyncronize:(NSNotification*)note
+-(void) sync:(NSNotification*)note
 {
 	if (![[[note object] superview] isEqual:[self superview]] && [self is2DViewer])
 	{
