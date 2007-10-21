@@ -31,6 +31,10 @@
 	IBOutlet	sourcesTableView			*sourcesTable;
 	IBOutlet	NSTextField					*selectedResultSource;
 	IBOutlet	NSTextField					*numberOfStudies;
+	IBOutlet	NSPopUpButton				*presetsPopup;
+	
+	IBOutlet	NSWindow					*presetWindow;
+	IBOutlet	NSTextField					*presetName;
 	
 	IBOutlet	NSMatrix					*dateFilterMatrix;
 	IBOutlet	NSMatrix					*modalityFilterMatrix;
@@ -78,4 +82,6 @@
 - (void) refresh: (id) sender;
 - (IBAction) pressButtons:(id) sender;
 - (NSArray*) localStudy:(id) item;
+- (IBAction) endAddPreset:(id) sender;
+- (void) buildPresetsMenu;
 @end
