@@ -3836,6 +3836,23 @@ static NSArray*	statesArray = nil;
 		{
 			// The destination series
 			NSManagedObject	*destSeries = [seriesArray objectAtIndex: 0];
+			
+			for( NSInteger x = 0; x < [seriesArray count] ; x++ )
+			{
+				NSManagedObject	*series = [seriesArray objectAtIndex: x];
+				
+				if( [[series valueForKey:@"type"] isEqualToString: @"Series"] == NO)
+					series = [[series valueForKey:@"series"] anyObject];
+				
+				if( [[series valueForKey:@"type"] isEqualToString: @"Series"])
+				{
+					NSManagedObject *image = [[series valueForKey: @"images"] anyObject];
+				
+					if( [[image valueForKey:@"extension"] isEqualToString:@"dcm"])
+						destSeries = series;
+				}
+			}
+			
 			if( [[destSeries valueForKey:@"type"] isEqualToString: @"Series"] == NO) destSeries = [destSeries valueForKey:@"Series"];
 			
 			NSLog(@"MERGING SERIES: %@", destSeries);
@@ -3923,8 +3940,22 @@ static NSArray*	statesArray = nil;
 		
 		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
 		
-		// The destination study
+		// The destination study : prefer DICOM study
 		NSManagedObject	*destStudy = [databaseOutline itemAtRow: [selectedRows firstIndex]];
+		for( NSInteger x = 0; x < [selectedRows count] ; x++ )
+		{
+			NSInteger row = ( x == 0 ) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
+			
+			NSManagedObject	*study = [databaseOutline itemAtRow: row];
+			
+			if( [[study valueForKey:@"type"] isEqualToString: @"Study"] == NO) study = [study valueForKey:@"study"];
+			
+			NSManagedObject *image = [[[[study valueForKey:@"series"] anyObject] valueForKey: @"images"] anyObject];
+			
+			if( [[image valueForKey:@"extension"] isEqualToString:@"dcm"])
+				destStudy = study;
+		}
+		
 		if( [[destStudy valueForKey:@"type"] isEqualToString: @"Study"] == NO) destStudy = [destStudy valueForKey:@"study"];
 		
 		NSLog(@"MERGING STUDIES: %@", destStudy);
