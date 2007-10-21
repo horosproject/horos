@@ -456,6 +456,9 @@ Note setter is different to not break existing usage. :-( */
 - (void) setArrayPix :(NSArray*) array :(short) i;
 - (BOOL) updateToApply;
 - (id) myinitEmpty;  /**< Returns an Empty object */
+- (short*) kernel;
+- (short) normalization;
+- (short) kernelsize;
 
 /**  calls 
 * myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO

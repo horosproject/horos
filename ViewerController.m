@@ -6782,6 +6782,8 @@ static float oldsetww, oldsetwl;
 	
 	if( [curConvMenu isEqualToString:NSLocalizedString(@"No Filter", nil)] == NO)
 	{
+		float interval = [self computeInterval];
+		
 		for ( x = 0; x < maxMovieIndex; x++)
 		{
 			for ( i = 0; i < [pixList[ x] count]; i ++)
@@ -6789,7 +6791,46 @@ static float oldsetww, oldsetwl;
 				[[pixList[ x] objectAtIndex:i] applyConvolutionOnSourceImage];
 			}
 		}
-	
+		
+		if( interval != 0)	// It's a 3D volumetric data
+		{
+			// Apply the convolution in the Z direction
+			
+			for ( x = 0; x < maxMovieIndex; x++)
+			{
+				DCMPix	*pix = [pixList[ x] objectAtIndex: 0];
+				
+				if( [pix isRGB] == NO)
+				{
+					for ( i = 0; i < [pix pheight]; i ++)
+					{
+						vImage_Buffer dstf, srcf;
+						
+						dstf.height = [pixList[ x] count];
+						dstf.width = [pix pwidth];
+						dstf.rowBytes = [pix pwidth]*[pix pheight]*sizeof(float);
+						dstf.data = [volumeData[ x] bytes];
+						
+						srcf = dstf;
+						if( srcf.data)
+						{
+							short err;
+							float  fkernel[25];
+							int i;
+							
+							if( [pix normalization] != 0)
+								for( i = 0; i < 25; i++) fkernel[ i] = (float) [pix kernel][ i] / (float) [pix normalization]; 
+							else
+								for( i = 0; i < 25; i++) fkernel[ i] = (float) [pix kernel][ i]; 
+							
+							err = vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, [pix kernelsize], [pix kernelsize], 0, kvImageEdgeExtend);
+							if( err) NSLog(@"Error applyConvolutionOnImage = %d", err);
+						}
+					}
+				}
+			}
+		}
+		
 		[self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: 0L];

@@ -1025,14 +1025,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			// Biorad files _usually_ keep the channel number in the last two digits
 			NSString	*channelString = [fileNameStem substringFromIndex:[fileNameStem length]-2];
 			NSString	*imageStem = [fileNameStem substringToIndex:[fileNameStem length]-2];
-			
-			NSLog(@" channelString %@",channelString);
-
-			// GJ: Use the enclosing directory name of the image as Patient Name
-			name = [[NSString alloc] initWithString: [[filePath stringByDeletingLastPathComponent] lastPathComponent]  ];
-
-			//name = [[NSString alloc] initWithString: [filePath lastPathComponent]];
-			// GJ: 050115 want the name to be the patientID as well
+			name = [[NSString alloc] initWithString: [filePath lastPathComponent]];
 			patientID = [[NSString alloc] initWithString:name];
 			studyID = [[NSString alloc] initWithString:imageStem];
 			serieID = [[NSString alloc] initWithString:fileNameStem];

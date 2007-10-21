@@ -9731,6 +9731,21 @@ END_CREATE_ROIS:
 
 -(BOOL) updateToApply { return updateToBeApplied;}
 
+- (short) normalization
+{
+	return normalization;
+}
+
+- (short) kernelsize
+{
+	return kernelsize;
+}
+
+- (short*) kernel
+{
+	return kernel;
+}
+
 -(void) setConvolutionKernel:(short*)val :(short) size :(short) norm {
 	
 	if( val ) {
