@@ -734,16 +734,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				if( [extension isEqualToString:@"pdf"])
 				{
-					id tempID = [otherImage bestRepresentationForDevice:0L];
+					NSPDFImageRep		*pdfRepresentation = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: filePath]];
 					
-					if([tempID isKindOfClass: [NSPDFImageRep class]])
-					{
-						NSPDFImageRep		*pdfRepresentation = tempID;
-						
-						NoOfFrames = [pdfRepresentation pageCount];
-						
-						if( NoOfFrames > 20) NoOfFrames = 20;   // Limit number of pages to 20 !
-					}
+					NoOfFrames = [pdfRepresentation pageCount];
+					
+					if( NoOfFrames > 20) NoOfFrames = 20;   // Limit number of pages to 20 !
 				}
 				
 				[dicomElements setObject:studyID forKey:@"studyID"];
