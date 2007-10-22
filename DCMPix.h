@@ -507,39 +507,121 @@ Note setter is different to not break existing usage. :-( */
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize;
 - (id) initWithImageObj: (NSManagedObject *)entity;
 - (id) initWithContentsOfFile: (NSString *)file; 
+/** create an NSImage from the current pix
+* @param smallIcon  thumbnail size
+* @param newWW  window width to use
+* @param newWL window level to use;
+*/
 - (NSImage*) computeWImage: (BOOL) smallIcon :(float)newWW :(float)newWL;
-- (NSImage*) image;
-- (NSImage*) getImage;
-- (void) orientation:(float*) c;
-- (void) setOrientation:(float*) c;
-- (short*) oImage;
-- (void) kill8bitsImage;
-- (void) checkImageAvailble:(float)newWW :(float)newWL;
-- (BOOL)loadDICOMDCMFramework;
-- (BOOL) loadDICOMPapyrus;
-- (void) reloadAnnotations;
-- (void) CheckLoadIn;
-- (void) CheckLoad;
-- (float*) computefImage;
--(void) setFusion:(short) m :(short) s :(short) direction;
--(void) setUpdateToApply;
-- (void) setUpdateToApply;
-- (void)revert;
-- (void) computePixMinPixMax;
-- (void) setThickSlabController:( ThickSlabController*) ts;
-- (void) setFixed8bitsWLWW:(BOOL) f;
-- (void) prepareRestore;
-- (void) freeRestore;
-+ (void) setRunOsiriXInProtectedMode:(BOOL) v;
-+ (BOOL) isRunOsiriXInProtectedModeActivated;
-- (void) clearCachedPapyGroups;
-- (void *) getPapyGroup: (int) group fileNb: (int) fileNb;
 
-//RTSTRUCT
+/** create an NSImage from the current pix using the current ww/wl. Full size*/
+- (NSImage*) image;
+
+/** reeturns the current image. returns nil if no image has be previously created */
+- (NSImage*) getImage;
+
+/** A pointer to the orientation.  9 values in length. 3 for each axis. */
+- (void) orientation:(float*) c;
+
+/** Sets the orientation.  9 values in length. 3 for each axis. */
+- (void) setOrientation:(float*) c;
+
+/** A short pointer to the image data */
+- (short*) oImage;
+
+/** Releases the current NSImage */
+- (void) kill8bitsImage;
+
+
+/** if no image. Creates one using
+* computeWImage: (BOOL) smallIcon :(float)newWW :(float)newWL
+*/ 
+- (void) checkImageAvailble:(float)newWW :(float)newWL;
+
+/** Load the DICOM image using the DCMFramework.  
+* There should be no reason to call this. The class will call it when needed. */
+- (BOOL)loadDICOMDCMFramework;
+
+/** Load the DICOM image using Papyrus.
+* There should be no reason to call this. The class will call it when needed.
+*/
+- (BOOL) loadDICOMPapyrus;
+
+/** Reset the Annotations */
+- (void) reloadAnnotations;
+
+
+/** Parses the file. Extracts necessary data. Load image data.
+* This class will be called by the class when necessay. 
+* There should be no need to call it externally
+*/
+- (void) CheckLoadIn;
+
+/** Calls CheckLoadIn when needed */
+- (void) CheckLoad;
+
+/** Compute the float pointer for the image data */
+- (float*) computefImage;
+
+/** Sets fusion paramaters
+* @param m  stack mode
+* @param s stack
+* @param direction stack direction
+*/
+-(void) setFusion:(short) m :(short) s :(short) direction;
+
+/** Sets updateToBeApplied to YES. It is called whenver a setting has been changed.  
+* Should be called by the class automatically when needed */
+-(void) setUpdateToApply;
+
+
+/** Releases the fImage and sets all values to nil. */
+- (void)revert;
+
+/** finds the min and max pixel values. 
+* Sets the appropriate values for fullWW and fullWL 
+*/
+- (void) computePixMinPixMax;
+
+/** Sets the ThickSlabController */
+- (void) setThickSlabController:( ThickSlabController*) ts;
+
+
+/** Sets the fixed8bitsWLWW flag */
+- (void) setFixed8bitsWLWW:(BOOL) f;
+
+/** Creates a DCMPix with the original values and places it in the restore cache*/
+- (void) prepareRestore;
+
+
+/** Releases the restored DCMPix from the restoreCache */
+- (void) freeRestore;
+
+/** Sets flag for when OsiriX is running in protected mode */
++ (void) setRunOsiriXInProtectedMode:(BOOL) v;
+
+/** Returns flag for protected mode */
++ (BOOL) isRunOsiriXInProtectedModeActivated;
+
+/** Clears the papyrus group cache */
+- (void) clearCachedPapyGroups;
+
+/** Returns a pointer the the papyrus group
+* @param group group
+* @param fileNb papyrus file
+*/
+- (void *) getPapyGroup: (int)group fileNb: (int)fileNb;
+
+/** create ROIs from RTSTRUCT */
 - (void)createROIsFromRTSTRUCT: (DCMObject*)dcmObject;
 
 #ifdef OSIRIX_VIEWER
+
+/** Custom Annotations */
 - (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject;
+
+
+/** Set flag to anonymize the annotations */
 + (BOOL) setAnonymizedAnnotations: (BOOL) v;
 #endif
 
