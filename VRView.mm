@@ -5550,7 +5550,7 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	return [backgroundColor color];
 }
 
-- (void) convert3Dto2Dpoint:(float*) pt3D :(float*) pt2D
+- (void) convert3Dto2Dpoint:(double*) pt3D :(double*) pt2D
 {
 	vtkTransform *Transform = vtkTransform::New();
 			

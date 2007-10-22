@@ -1114,7 +1114,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 			picker->GetPickPosition(wXYZ);
 			picker->Delete();
 			
-			float dc[3], sc[3];
+			double dc[3], sc[3];
 			dc[0] = wXYZ[0];
 			dc[1] = wXYZ[1];
 			dc[2] = wXYZ[2];
@@ -2480,7 +2480,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	}
 }
 
-- (void) convert3Dto2Dpoint:(float*) pt3D :(float*) pt2D
+- (void) convert3Dto2Dpoint:(double*) pt3D :(double*) pt2D
 {
 	vtkTransform *Transform = vtkTransform::New();
 			

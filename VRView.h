@@ -443,7 +443,7 @@ typedef char* vtkMyCallbackVR;
 - (void) set3DPointAtIndex:(unsigned int) index Radius: (float) radius;
 - (IBAction) save3DPointsDefaultProperties: (id) sender;
 - (void) load3DPointsDefaultProperties;
-- (void) convert3Dto2Dpoint:(float*) pt3D :(float*) pt2D;
+- (void) convert3Dto2Dpoint:(double*) pt3D :(double*) pt2D;
 - (void)convert2DPoint:(float *)pt2D to3DPoint:(float *)pt3D;
 - (IBAction) setCurrentdcmExport:(id) sender;
 - (IBAction) switchToSeriesRadio:(id) sender;

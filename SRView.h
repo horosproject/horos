@@ -319,7 +319,7 @@ typedef char* vtkPolyDataNormals;
 - (void) set3DPointAtIndex:(unsigned int) index Radius: (float) radius;
 - (IBAction) save3DPointsDefaultProperties: (id) sender;
 - (void) load3DPointsDefaultProperties;
-- (void) convert3Dto2Dpoint:(float*) pt3D :(float*) pt2D;
+- (void) convert3Dto2Dpoint:(double*) pt3D :(double*) pt2D;
 
 // 3D Points annotations
 - (IBAction) IBSetSelected3DPointAnnotation: (id) sender;

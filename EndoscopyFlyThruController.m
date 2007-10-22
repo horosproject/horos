@@ -50,7 +50,7 @@
 	NSArray *pixList = [viewer2D pixList];
 	int count = [pixList count];
 	// coordinates conversion  need to convert by 'the factor' to get final conversion
-	float pos[3], pos2D[3];
+	double pos[3], pos2D[3];
 	float factor = [(EndoscopyVRController *)controller3D factor];
 	pos[0] = [[self.currentCamera position] x];
 	pos[1] = [[self.currentCamera position] y];

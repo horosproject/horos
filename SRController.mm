@@ -917,7 +917,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		DCMPix *firstDCMPix = [[viewer2D pixList] objectAtIndex: 0];
 		DCMPix *secondDCMPix = [[viewer2D pixList] objectAtIndex: 1];
 		// compute 2D Coordinates
-		float dc[3], sc[3];
+		double dc[3], sc[3];
 		dc[0] = x;
 		dc[1] = y;
 		dc[2] = z;

@@ -174,7 +174,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	float factor = [vrController factor];
 	
 	// coordinates conversion
-	float pos[3], pos2D[3];
+	double pos[3], pos2D[3];
 	pos[0] = [[aCamera position] x];
 	pos[1] = [[aCamera position] y];
 	pos[2] = [[aCamera position] z];
@@ -186,7 +186,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	// orthogonal projection of Camera vectors
 	// originalView
 	[(EndoscopyMPRView*)[mprController originalView] setCameraPosition:pos2D[0] :pos2D[1]];
-	[mprController reslice: (long)(pos2D[0]+0.5):  (long)(pos2D[1]+0.5): [mprController originalView]];
+	[mprController reslice: (long)(pos2D[0]+0.0):  (long)(pos2D[1]+0.0): [mprController originalView]];
 	long sliceIndex = (long)(pos2D[2]+0.5);
 	sliceIndex = (sliceIndex<0)? 0 :sliceIndex;
 	sliceIndex = (sliceIndex>=[[[mprController originalView] dcmPixList] count])? [[[mprController originalView] dcmPixList] count]-1 :sliceIndex;
@@ -213,7 +213,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	float factor = [vrController factor];
 	
 	// coordinates conversion
-	float focal[3], focal2D[3];
+	double focal[3], focal2D[3];
 	focal[0] = [[aCamera focalPoint] x];
 	focal[1] = [[aCamera focalPoint] y];
 	focal[2] = [[aCamera focalPoint] z];
@@ -269,24 +269,33 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 
 - (void) setCamera
 {
-	float position1[3], position2[3], focalPoint1[3], focalPoint2[3];
+	double position1[3], focalPoint1[3], focalPoint2[3];
 	double x, y, z;
 	
 	// get the camera
 	// Camera *cam = [[vrController view] camera];
 	Camera *curCamera = [[vrController view] cameraWithThumbnail: NO];
 	// change the Position	
-	[[[[mprController originalView] pixList]	objectAtIndex:[[mprController originalView] curImage]]
-												convertPixX: [(EndoscopyMPRView*)[mprController originalView] crossPositionX]
-												pixY: [(EndoscopyMPRView*)[mprController originalView] crossPositionY]
-												toDICOMCoords: position1];
+	[[[[mprController originalView] pixList] objectAtIndex:[[mprController originalView] curImage]] convertPixDoubleX:[(EndoscopyMPRView*)[mprController originalView] crossPositionX]
+																									pixY:[(EndoscopyMPRView*)[mprController originalView] crossPositionY]
+																									toDICOMCoords:position1];
 						
-	[[[[mprController xReslicedView] pixList]	objectAtIndex:[[mprController xReslicedView] curImage]]
-												convertPixX: [(EndoscopyMPRView*)[mprController xReslicedView] crossPositionX]
-												pixY: [(EndoscopyMPRView*)[mprController xReslicedView] crossPositionY]
-												toDICOMCoords: position2];
+//	[[[[mprController xReslicedView] pixList] objectAtIndex:[[mprController xReslicedView] curImage]]	convertPixDoubleX: [(EndoscopyMPRView*)[mprController xReslicedView] crossPositionX]
+//																										pixY: [(EndoscopyMPRView*)[mprController xReslicedView] crossPositionY]
+//																										toDICOMCoords: position2];
 
 	float factor = [vrController factor];
+	float sliceInterval;
+	if ([[[self pixList] objectAtIndex:0] sliceInterval]==0)
+	{
+		sliceInterval = [[pixList objectAtIndex: 1] sliceLocation]-[[pixList objectAtIndex:0] sliceLocation];
+	}
+	else
+	{
+		sliceInterval = [[pixList objectAtIndex:0] sliceInterval];
+	}
+	
+	position1[2] -= sliceInterval/2.;
 	
 	position1[0] = position1[0] * factor;
 	position1[1] = position1[1] * factor;
@@ -299,20 +308,12 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 													: position1[2]]];
 	// change the Focal Point
 	[[[self pixList]	objectAtIndex:[[mprController originalView] curImage]]
-						convertPixX: [(EndoscopyMPRView*)[mprController originalView] focalPointX]
+						convertPixDoubleX: [(EndoscopyMPRView*)[mprController originalView] focalPointX]
 						pixY: [(EndoscopyMPRView*)[mprController originalView] focalPointY]
 						toDICOMCoords: focalPoint1];
 	
 	
-	float sliceInterval;
-	if ([[[self pixList] objectAtIndex:0] sliceInterval]==0)
-	{
-		sliceInterval = [[pixList objectAtIndex: 1] sliceLocation]-[[pixList objectAtIndex:0] sliceLocation];
-	}
-	else
-	{
-		sliceInterval = [[pixList objectAtIndex:0] sliceInterval];
-	}
+
 	
 	float s = (sliceInterval>0)? 1.0: -1.0;
 	
