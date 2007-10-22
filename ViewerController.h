@@ -425,6 +425,7 @@ enum
 - (IBAction) shutterOnOff:(id) sender;
 - (void) setLoadingPause:(BOOL) lp;
 - (void) setImageIndex:(long) i;
+- (long) imageIndex;
 - (IBAction) ConvertToRGBMenu:(id) sender;
 - (BOOL) updateTilingViewsValue;
 - (void) setUpdateTilingViewsValue:(BOOL) v;

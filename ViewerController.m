@@ -370,7 +370,7 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 	NSArray				*displayedViewers = [ViewerController getDisplayed2DViewers];
 	NSMutableArray		*state = [NSMutableArray array];
 	
-	int i;
+	int i, indexImage;
 	
 	for( i = 0 ; i < [displayedViewers count] ; i++)
 	{
@@ -384,7 +384,11 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 			[dict setObject: [NSString stringWithFormat: @"%f %f %f %f", r.origin.x, r.origin.y, r.size.width, r.size.height]  forKey:@"window position"];
 			[dict setObject: [NSNumber numberWithInt: [[win imageView] rows]] forKey:@"rows"];
 			[dict setObject: [NSNumber numberWithInt: [[win imageView] columns]] forKey:@"columns"];
-			[dict setObject: [NSNumber numberWithInt: [[[win seriesView] firstView] curImage]] forKey:@"index"];
+			
+			if( [imageView flippedData]) indexImage = [self getNumberOfImages] -1 -[[[win seriesView] firstView] curImage];
+			else indexImage = [[[win seriesView] firstView] curImage];
+			
+			[dict setObject: [NSNumber numberWithInt: indexImage] forKey:@"index"];
 			
 			if( [[[win imageView] curDCM] SUVConverted] == NO)
 			{
@@ -402,6 +406,8 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 			[dict setObject: [NSNumber numberWithFloat: [[win imageView] rotation]] forKey:@"rotation"];
 			[dict setObject: [NSNumber numberWithBool: [[win imageView] xFlipped]] forKey:@"xFlipped"];
 			[dict setObject: [NSNumber numberWithBool: [[win imageView] xFlipped]] forKey:@"yFlipped"];
+			[dict setObject: [NSNumber numberWithBool: [[win imageView] flippedData]] forKey:@"flippedData"];
+			
 			[dict setObject: [win studyInstanceUID] forKey:@"studyInstanceUID"];
 			[dict setObject: [[[win imageView] seriesObj] valueForKey:@"seriesInstanceUID"] forKey:@"seriesInstanceUID"];
 			
@@ -12043,8 +12049,17 @@ int i,j,l;
     }
 }
 
+- (long) imageIndex
+{
+	if( [imageView flippedData]) return [self getNumberOfImages] -1 - [imageView curImage];
+	return  [imageView curImage];
+}
+
 - (void) setImageIndex:(long) i
 {
+	if( i < 0) i = 0;
+	if( i >= [self getNumberOfImages]) i = [self getNumberOfImages] -1;
+	
 	if( [imageView flippedData]) [imageView setIndex: [self getNumberOfImages] -1 -i];
 	else [imageView setIndex: i];
 

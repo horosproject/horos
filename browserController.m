@@ -4878,13 +4878,16 @@ static NSArray*	statesArray = nil;
 					float scale = [[dict valueForKey:@"scale"] floatValue];
 					BOOL xF = [[dict valueForKey:@"xFlipped"] boolValue];
 					BOOL yF = [[dict valueForKey:@"yFlipped"] boolValue];
+					BOOL fD = [[dict valueForKey:@"flippedData"] boolValue];
 					
 					NSString	*studyUID = [dict valueForKey:@"studyInstanceUID"];
 					NSString	*seriesUID = [dict valueForKey:@"seriesInstanceUID"];
 					
 					[v setWindowFrame: r showWindow: NO];
 					[v setImageRows: rows columns: columns];
-					[v setImageIndex: index];
+					
+					if( fD) [v setImageIndex: [v getNumberOfImages] -1 -index];
+					else [v setImageIndex: index];
 					
 					if( [[[v imageView] curDCM] SUVConverted]) [v setWL: wl*[v factorPET2SUV] WW: ww*[v factorPET2SUV]];
 					else [v setWL: wl WW: ww];
