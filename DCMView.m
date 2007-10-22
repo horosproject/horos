@@ -4137,8 +4137,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 #pragma mark ww/wl
 
 - (void) getWLWW:(float*) wl :(float*) ww {
-	if( curDCM == 0L) NSLog(@"curDCM 0L");
-	else {
+	if( curDCM == 0L)
+	{
+		if(wl) *wl = 0;
+		if(ww) *ww = 0;
+	}
+	else
+	{
 		if(wl) *wl = curDCM.wl;
 		if(ww) *ww = curDCM.ww;
 	}
@@ -5108,7 +5113,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	float wl, ww;
 	
 	[self getWLWW: &wl :&ww];
-	[self setWLWW: wl :ww];
+	
+	if( ww)
+		[self setWLWW: wl :ww];
 }
 
 -(void) barMenu:(id) sender
