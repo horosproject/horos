@@ -141,10 +141,6 @@ static char *GetPrivateIP()
 
 - (IBAction) endAddPreset:(id) sender
 {
-	[presetWindow orderOut:sender];
-    
-    [NSApp endSheet:presetWindow returnCode:[sender tag]];
-
 	if( [sender tag])
 	{
 		if( [[presetName stringValue] isEqualToString: @""])
@@ -155,7 +151,9 @@ static char *GetPrivateIP()
 		
 		NSDictionary *savedPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"QRPresets"];
 		
-		if( [savedPresets objectForKey: [[sender selectedItem] title]])
+		if( savedPresets == 0L) savedPresets = [NSDictionary dictionary];
+		
+		if( [savedPresets objectForKey: [[presetsPopup selectedItem] title]])
 		{
 			if (NSRunCriticalAlertPanel( NSLocalizedString(@"Add Preset", nil),  NSLocalizedString(@"A Preset with the same name already exists. Should I replace it with the current one?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) != NSAlertDefaultReturn) return;
 		}
@@ -167,7 +165,8 @@ static char *GetPrivateIP()
 		[presets setValue: [searchFieldAN stringValue] forKey: @"searchFieldAN"];
 		
 		[presets setValue: [NSNumber numberWithInt: [dateFilterMatrix selectedTag]] forKey: @"dateFilterMatrix"];
-		[presets setValue: [NSNumber numberWithInt: [modalityFilterMatrix selectedTag]] forKey: @"modalityFilterMatrix"];
+		[presets setValue: [NSNumber numberWithInt: [modalityFilterMatrix selectedRow]] forKey: @"modalityFilterMatrixRow"];
+		[presets setValue: [NSNumber numberWithInt: [modalityFilterMatrix selectedColumn]] forKey: @"modalityFilterMatrixColumn"];
 		[presets setValue: [NSNumber numberWithInt: [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]]] forKey: @"PatientModeMatrix"];
 		
 		[presets setValue: [NSNumber numberWithDouble: [[fromDate dateValue] timeIntervalSinceReferenceDate]] forKey: @"fromDate"];
@@ -177,8 +176,13 @@ static char *GetPrivateIP()
 		NSMutableDictionary *m = [NSMutableDictionary dictionaryWithDictionary: savedPresets];
 		[m setValue: presets forKey: [presetName stringValue]];
 		
+		[[NSUserDefaults standardUserDefaults] setObject: m forKey:@"QRPresets"];
+		
 		[self buildPresetsMenu];
 	}
+
+	[presetWindow orderOut:sender];
+    [NSApp endSheet:presetWindow returnCode:[sender tag]];
 }
 
 - (void) addPreset:(id) sender
@@ -196,7 +200,7 @@ static char *GetPrivateIP()
 			NSDictionary *savedPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"QRPresets"];
 			
 			NSMutableDictionary *m = [NSMutableDictionary dictionaryWithDictionary: savedPresets];
-			[m removeObjectForKey: [[sender selectedItem] title]];
+			[m removeObjectForKey: [sender title]];
 			
 			[[NSUserDefaults standardUserDefaults] setObject: m forKey:@"QRPresets"];
 			
@@ -207,16 +211,16 @@ static char *GetPrivateIP()
 	{
 		NSDictionary *savedPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"QRPresets"];
 		
-		if( [savedPresets objectForKey: [[sender selectedItem] title]])
+		if( [savedPresets objectForKey: [[presetsPopup selectedItem] title]])
 		{
-			NSDictionary *presets = [savedPresets objectForKey: [[sender selectedItem] title]];
+			NSDictionary *presets = [savedPresets objectForKey: [sender title]];
 			
 			[searchFieldName setStringValue: [presets valueForKey: @"searchFieldName"]];
 			[searchFieldID setStringValue: [presets valueForKey: @"searchFieldID"]];
 			[searchFieldAN setStringValue: [presets valueForKey: @"searchFieldAN"]];
 			
 			[dateFilterMatrix selectCellWithTag: [[presets valueForKey: @"dateFilterMatrix"] intValue]];
-			[modalityFilterMatrix selectCellWithTag: [[presets valueForKey: @"modalityFilterMatrix"] intValue]];
+			[modalityFilterMatrix selectCellAtRow: [[presets valueForKey: @"modalityFilterMatrixRow"] intValue]  column:[[presets valueForKey: @"modalityFilterMatrixColumn"] intValue]];
 			[PatientModeMatrix selectTabViewItemAtIndex: [[presets valueForKey: @"PatientModeMatrix"] intValue]];
 			
 			[fromDate setDateValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[presets valueForKey: @"fromDate"] doubleValue]]];
@@ -231,16 +235,15 @@ static char *GetPrivateIP()
 	[presetsPopup removeAllItems];
 	NSMenu *menu = [presetsPopup menu];
 	
+	[menu setAutoenablesItems: NO];
+	
 	[menu addItemWithTitle: @"" action:0L keyEquivalent: @""];
 	
 	NSDictionary *savedPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"QRPresets"];
 	
-	
-	
 	if( [savedPresets count] == 0)
 	{
-		[menu addItemWithTitle: NSLocalizedString( @"No Presets Saved", 0L) action:0L keyEquivalent: @""];
-		
+		[[menu addItemWithTitle: NSLocalizedString( @"No Presets Saved", 0L) action:0L keyEquivalent: @""] setEnabled: NO];
 	}
 	else
 	{
