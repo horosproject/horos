@@ -10706,10 +10706,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		else {
 			if( i == 0 ) {
-				if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+				int a = NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@), or merge the existing content with the new files?", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Merge", nil));
+				
+				if( a == NSAlertDefaultReturn)
 				{
 					[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
 					[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+				}
+				else if( a == NSAlertOtherReturn)
+				{
+					// Merge
 				}
 				else break;
 			}
