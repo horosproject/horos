@@ -15657,6 +15657,13 @@ long i;
 				else selectedRoi = 0L;
 			}
 		}
+
+		// if no ROI is selected and there is only one -> we know that is the one the user wants to use
+		if( selectedRoi == 0L && [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]==1)
+		{
+			selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: 0];
+			[selectedRoi setROIMode: ROI_selected];
+		}
 		
 		if( selectedRoi == 0L)
 		{
