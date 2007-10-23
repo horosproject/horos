@@ -5410,18 +5410,43 @@ static ViewerController *draggedController = 0L;
 	[self checkEverythingLoaded];
 	[imageView stopROIEditingForce: YES];
 	
-	NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];
-	NSMutableArray *newDcmList = [NSMutableArray arrayWithCapacity:0];
-	NSData *newData = 0L;
+	NSMutableArray *xPix = [NSMutableArray array];
+	NSMutableArray *xFiles = [NSMutableArray array];
+	NSMutableArray *xData = [NSMutableArray array];
+	
 	BOOL wasDataFlipped = [imageView flippedData];
 	int index = [imageView curImage];
+	BOOL isResampled;
 	
-	BOOL isResampled = [ViewerController resampleDataFromViewer:self inPixArray:newPixList fileArray:newDcmList data:&newData withXFactor:xFactor yFactor:yFactor zFactor:zFactor];
-	if(isResampled)
+	for( int j = 0 ; j < maxMovieIndex ; j ++)
+	{	
+		NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray *newDcmList = [NSMutableArray arrayWithCapacity:0];
+		NSData *newData = 0L;
+		
+		isResampled = [ViewerController resampleDataFromViewer:self inPixArray:newPixList fileArray:newDcmList data:&newData withXFactor:xFactor yFactor:yFactor zFactor:zFactor movieIndex: j];
+		
+		if( isResampled)
+		{
+			[xPix addObject: newPixList];
+			[xFiles addObject: newDcmList];
+			[xData addObject: newData];
+		}
+	}
+	
+	if( [xPix count])
 	{
 		resampleRatio = xFactor;
 		
-		[self changeImageData:newPixList :newDcmList :newData :NO];
+		int mx = maxMovieIndex;
+		for( int j = 0 ; j < mx ; j ++)
+		{
+			if( j == 0)
+				[self changeImageData: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j] :NO];
+			else
+				[self addMovieSerie: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
+		}
+		
 		loadingPercentage = 1;
 		[self computeInterval];
 		[self setWindowTitle:self];
@@ -5432,15 +5457,24 @@ static ViewerController *draggedController = 0L;
 		[imageView sendSyncMessage:1];
 		
 		[self adjustSlider];
+		
+		isResampled = YES;
 	}
+	else isResampled = NO;
+
 	return isResampled;
 }
 
 + (BOOL)resampleDataFromViewer:(ViewerController *)aViewer inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor;
 {
+	return [ViewerController resampleDataFromViewer:(ViewerController *)aViewer inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor movieIndex: 0];
+}
+
++ (BOOL)resampleDataFromViewer:(ViewerController *)aViewer inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor movieIndex:(int) j;
+{
 	[aViewer setPostprocessed: YES];
 	
-	BOOL result =  [ViewerController resampleDataFromPixArray:[aViewer pixList] fileArray:[aViewer fileList] inPixArray:aPixList fileArray:aFileList data:aData withXFactor:xFactor yFactor:yFactor zFactor:zFactor];
+	BOOL result =  [ViewerController resampleDataFromPixArray:[aViewer pixList: j] fileArray:[aViewer fileList: j] inPixArray:aPixList fileArray:aFileList data:aData withXFactor:xFactor yFactor:yFactor zFactor:zFactor];
 	
 	return result;
 }
@@ -6811,7 +6845,7 @@ static float oldsetww, oldsetwl;
 						dstf.height = [pixList[ x] count];
 						dstf.width = [pix pwidth];
 						dstf.rowBytes = [pix pwidth]*[pix pheight]*sizeof(float);
-						dstf.data = [volumeData[ x] bytes];
+						dstf.data = (void*) [volumeData[ x] bytes];
 						
 						srcf = dstf;
 						if( srcf.data)
