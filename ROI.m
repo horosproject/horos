@@ -589,6 +589,8 @@ static BOOL ROIDefaultsLoaded = NO;
 
 - (void) dealloc
 {
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:self userInfo: 0L];
+	
 //	NSLog( @"dealloc ROI: %d contexts", [ctxArray count]);
 	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];		// lastObject is CORRECT ! we delete objects !
 	[ctxArray release];
@@ -596,7 +598,6 @@ static BOOL ROIDefaultsLoaded = NO;
 	
 	if (textureBuffer) free(textureBuffer);
 		
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:self userInfo: 0L];
 	
 	[uniqueID release];
 	[points release];

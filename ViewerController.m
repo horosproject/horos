@@ -4730,7 +4730,11 @@ static ViewerController *draggedController = 0L;
 	
  	
 	[imageView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
-	if( sameSeries) [imageView setIndex: imageIndex];
+	if( sameSeries)
+	{
+		[imageView setIndex: imageIndex];
+		[imageView updatePresentationStateFromSeries];
+	}
 	else [imageView setIndexWithReset: imageIndex :YES];
 		
 	DCMPix *curDCM = [pixList[0] objectAtIndex: imageIndex];
@@ -4766,21 +4770,6 @@ static ViewerController *draggedController = 0L;
 	[moviePlayStop setEnabled:NO];
 	
 	[seriesView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
-	
-//	i = [[NSApp orderedWindows] indexOfObject: [self window]];
-//	if( i != NSNotFound)
-//	{
-//		i++;
-//		for( ; i < [[NSApp orderedWindows] count]; i++)
-//		{
-//			if( [[[[NSApp orderedWindows] objectAtIndex: i] windowController] isKindOfClass:[ViewerController class]])
-//			{
-//				[[[[[NSApp orderedWindows] objectAtIndex: i] windowController] imageView]  sendSyncMessage:1];
-//				[[[[NSApp orderedWindows] objectAtIndex: i] windowController] propagateSettings];
-//			}
-//		}
-//		
-//	}
 	
 	if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 	{
