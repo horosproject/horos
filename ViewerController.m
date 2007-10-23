@@ -4659,14 +4659,6 @@ static ViewerController *draggedController = 0L;
 		[imageView setRotation: 0];
 	}
 	
-//	if( previousColumns != 1 || previousRows != 1)
-//	{
-//		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:1], [NSNumber numberWithInt:1], nil];
-//		NSArray *keys = [NSArray arrayWithObjects:@"Columns", @"Rows", nil];
-//		NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-//		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
-//	}
-	
 	// Release previous data
 	[self finalizeSeriesViewing];
 	
@@ -4810,14 +4802,6 @@ static ViewerController *draggedController = 0L;
 		[[BrowserController currentBrowser] findAndSelectFile: 0L image :[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] shouldExpand :NO];
 		
 	////////
-	
-//	if( previousColumns != 1 || previousRows != 1)
-//	{
-//		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:previousColumns], [NSNumber numberWithInt:previousRows], nil];
-//		NSArray *keys = [NSArray arrayWithObjects:@"Columns", @"Rows", nil];
-//		NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-//		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
-//	}
 	
 	if( [previousPatientUID isEqualToString: [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"]] == NO)
 	{
