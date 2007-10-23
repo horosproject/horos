@@ -4475,8 +4475,6 @@ static ViewerController *draggedController = 0L;
 		{
 			for( z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
 			{
-				[[[roiList[ i] objectAtIndex: x] objectAtIndex: z] releaseStringTexture];
-				
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: 0L];
 			}
 		}

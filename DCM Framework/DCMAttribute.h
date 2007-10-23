@@ -71,7 +71,7 @@
 @property(readonly) long paddedLength;
 @property(readonly) long paddedValueLength;
 @property(readonly) long valueLength;
-@property(copy) NSMutableArray *values;
+@property(retain) NSMutableArray *values;
 @property(readonly) DCMAttributeTag *attrTag;
 @property(retain) DCMCharacterSet *characterSet;
 

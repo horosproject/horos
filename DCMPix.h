@@ -242,7 +242,7 @@ Note setter is different to not break existing usage. :-( */
 @property long DCMPixShutterRectWidth, DCMPixShutterRectHeight;
 @property long DCMPixShutterRectOriginX, DCMPixShutterRectOriginY;
 
-@property(copy) NSString *repetitiontime, *echotime;
+@property(retain) NSString *repetitiontime, *echotime;
 @property(readonly) NSString *flipAngle, *laterality;
 
 @property(readonly) NSString *protocolName;
@@ -258,7 +258,7 @@ Note setter is different to not break existing usage. :-( */
 
 @property(readonly) short stack, stackMode;
 @property(readonly) BOOL generated;
-@property(copy) NSString *sourceFile;
+@property(retain) NSString *sourceFile;
 
 /** Database links */
 @property(readonly) NSManagedObject *imageObj, *seriesObj;
@@ -276,7 +276,7 @@ Note setter is different to not break existing usage. :-( */
 @property BOOL SUVConverted;
 @property(readonly) BOOL hasSUV;
 @property float decayFactor;
-@property(copy) NSString *units, *decayCorrection;
+@property(retain) NSString *units, *decayCorrection;
 @property BOOL displaySUVValue;
 
 - (void) copySUVfrom: (DCMPix*) from;  /**< Copy the SUV from another DCMPic */

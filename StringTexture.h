@@ -24,9 +24,11 @@
 
 
 /** \brief  Converts NSStrings to OpenGL textures*/
-@interface StringTexture : NSObject {
-	CGLContextObj cgl_ctx; // current context at time of texture creation
-	GLuint texName;
+@interface StringTexture : NSObject
+{
+	NSMutableArray *ctxArray;	//All contexts where this texture is used
+	NSMutableArray *textArray;	//All texture id
+	
 	NSSize texSize;
 	
 	BOOL xFlipped;
@@ -56,8 +58,8 @@
 
 - (void) dealloc;
 - (void) deleteTexture;
+- (void) deleteTexture:(NSOpenGLContext*) c;
 
-- (GLuint) texName; // 0 if no texture allocated
 - (NSSize) texSize; // actually size of texture generated in texels, (0, 0) if no texture allocated
 
 - (void) setFlippedX: (BOOL) x Y:(BOOL) y;
@@ -70,7 +72,7 @@
 
 - (NSSize) marginSize; // current margins for text offset and pads for dynamic frame
 
-- (void) genTexture; // generates the texture without drawing texture to current context
+- (GLuint) genTexture; // generates the texture without drawing texture to current context
 - (void) drawWithBounds:(NSRect)bounds; // will update the texture if required due to change in settings (note context should be setup to be orthographic scaled to per pixel scale)
 - (void) drawAtPoint:(NSPoint)point;
 - (void) drawAtPoint:(NSPoint)point ratio:(float) ratio;

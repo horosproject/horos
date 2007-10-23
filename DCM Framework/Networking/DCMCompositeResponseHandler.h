@@ -41,7 +41,7 @@ htt://www.pixelmed.com
 }
 @property(readonly) BOOL wasSuccessful;
 @property(readonly) int status;
-@property(copy) NSString *calledAET;
+@property(retain) NSString *calledAET;
 
 - (DCMObject *)objectFromCommandOrData:(NSData *)data withTransferSyntax:(DCMTransferSyntax *)syntax;
 - (void)sendPDataIndication:(DCMPDataPDU *)pdu   association:(DCMAssociation *)association;

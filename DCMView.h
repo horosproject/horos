@@ -265,7 +265,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property(retain,setter=setBlending:) DCMView *blendingView;
 @property(readonly) float blendingFactor;
 @property BOOL xFlipped, yFlipped;
-@property(copy) NSString *stringID;
+@property(retain) NSString *stringID;
 @property(readonly) float angle;
 @property short currentTool;
 @property(setter=setRightTool:) short currentToolRight;

@@ -326,7 +326,7 @@ static BOOL ROIDefaultsLoaded = NO;
 	}
 	else if(type == tLayerROI)
 	{
-		needsLoadTexture = YES;
+		for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
 	}
 }
 
@@ -433,7 +433,7 @@ static BOOL ROIDefaultsLoaded = NO;
 				layerImage = [[NSImage alloc] initWithData: layerImageJPEG];
 //				layerImageWhenSelected = [[NSImage alloc] initWithData: layerImageWhenSelectedJPEG];
 				
-				needsLoadTexture = YES;
+				for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
 				//needsLoadTexture2 = YES;
 			}
 			textualBoxLine1 = [coder decodeObject];
@@ -441,11 +441,11 @@ static BOOL ROIDefaultsLoaded = NO;
 			textualBoxLine3 = [coder decodeObject];
 			textualBoxLine4 = [coder decodeObject];
 			textualBoxLine5 = [coder decodeObject];
-			if(textualBoxLine1) [textualBoxLine1 retain];
-			if(textualBoxLine2) [textualBoxLine2 retain];
-			if(textualBoxLine3) [textualBoxLine3 retain];
-			if(textualBoxLine4) [textualBoxLine4 retain];
-			if(textualBoxLine5) [textualBoxLine5 retain];
+			[textualBoxLine1 retain];
+			[textualBoxLine2 retain];
+			[textualBoxLine3 retain];
+			[textualBoxLine4 retain];
+			[textualBoxLine5 retain];
 		}
 
 		if (fileVersion >= 7)
@@ -466,12 +466,14 @@ static BOOL ROIDefaultsLoaded = NO;
 		previousPoint.x = previousPoint.y = -1000;
 		
 		fontListGL = -1;
-		curView = 0L;
 		stringTex = 0L;
 		rmean = rmax = rmin = rdev = rtotal = -1;
 		Brmean = Brmax = Brmin = Brdev = Brtotal = -1;
 		mousePosMeasure = -1;
-		textureName = 0L;
+		
+		ctxArray = [[NSMutableArray arrayWithCapacity: 10] retain];
+		textArray = [[NSMutableArray arrayWithCapacity: 10] retain];
+		
 		{
 			// init fonts for use with strings
 			NSFont * font =[NSFont fontWithName:@"Helvetica" size: 12.0 + thickness*2];
@@ -568,22 +570,30 @@ static BOOL ROIDefaultsLoaded = NO;
 
 - (NSData*) data { return [NSArchiver archivedDataWithRootObject: self]; }
 
-- (void) releaseStringTexture
+- (void) deleteTexture:(NSOpenGLContext*) c
 {
-	[stringTex deleteTexture];
+	NSUInteger index = [ctxArray indexOfObject: c];
 	
-	if( textureName)
+	if( c && index != NSNotFound)
 	{
-		[[curView openGLContext] makeCurrentContext];
-	
-		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-		if( textureName) glDeleteTextures (1, &textureName);
-		textureName = 0L;
+		GLuint t = [[textArray objectAtIndex: index] intValue];
+		CGLContextObj cgl_ctx = [c CGLContextObj];
+		
+		if( t)
+			(*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
+		
+		[ctxArray removeObjectAtIndex: index];
+		[textArray removeObjectAtIndex: index];
 	}
 }
 
 - (void) dealloc
 {
+//	NSLog( @"dealloc ROI: %d contexts", [ctxArray count]);
+	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];		// lastObject is CORRECT ! we delete objects !
+	[ctxArray release];
+	[textArray release];
+	
 	if (textureBuffer) free(textureBuffer);
 		
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:self userInfo: 0L];
@@ -606,11 +616,11 @@ static BOOL ROIDefaultsLoaded = NO;
 //	if(layerImageWhenSelected) [layerImageWhenSelected release];
 	if(layerColor) [layerColor release];
 	
-	if(textualBoxLine1) [textualBoxLine1 release];
-	if(textualBoxLine2) [textualBoxLine2 release];
-	if(textualBoxLine3) [textualBoxLine3 release];
-	if(textualBoxLine4) [textualBoxLine4 release];
-	if(textualBoxLine5) [textualBoxLine5 release];
+	[textualBoxLine1 release];
+	[textualBoxLine2 release];
+	[textualBoxLine3 release];
+	[textualBoxLine4 release];
+	[textualBoxLine5 release];
 	
 	[super dealloc];
 }
@@ -701,6 +711,9 @@ static BOOL ROIDefaultsLoaded = NO;
 		// basic init from other rois ...
 		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
 		groupID = 0.0;
+
+		ctxArray = [[NSMutableArray arrayWithCapacity: 10] retain];
+		textArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 		
 		long i,j;
         type = tPlain;
@@ -708,7 +721,6 @@ static BOOL ROIDefaultsLoaded = NO;
 		parentROI = 0L;
 		thickness = 2.0;
 		opacity = 0.5;
-		textureName = 0L;
 		mousePosMeasure = -1;
 		pixelSpacingX = ipixelSpacingx;
 		pixelSpacingY = ipixelSpacingy;
@@ -717,7 +729,6 @@ static BOOL ROIDefaultsLoaded = NO;
 		zPositions = [[NSMutableArray arrayWithCapacity:0] retain];
 		comments = [[NSString alloc] initWithString:@""];
 		fontListGL = -1;
-		curView = 0L;
 		stringTex = 0L;
 		rmean = rmax = rmin = rdev = rtotal = -1;
 		Brmean = Brmax = Brmin = Brdev = Brtotal = -1;
@@ -766,6 +777,9 @@ static BOOL ROIDefaultsLoaded = NO;
 		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
 		groupID = 0.0;
 		
+		ctxArray = [[NSMutableArray arrayWithCapacity: 10] retain];
+		textArray = [[NSMutableArray arrayWithCapacity: 10] retain];
+
         type = itype;
 		mode = ROI_sleep;
 		parentROI = 0L;
@@ -791,9 +805,7 @@ static BOOL ROIDefaultsLoaded = NO;
 		
 		comments = [[NSString alloc] initWithString:@""];
 		
-		textureName = 0L;
 		fontListGL = -1;
-		curView = 0L;
 		stringTex = 0L;
 		rmean = rmax = rmin = rdev = rtotal = -1;
 		Brmean = Brmax = Brmin = Brdev = Brtotal = -1;
@@ -848,7 +860,14 @@ static BOOL ROIDefaultsLoaded = NO;
 			textualBoxLine3 = @"";
 			textualBoxLine4 = @"";
 			textualBoxLine5 = @"";
-			needsLoadTexture = NO;
+			
+			[textualBoxLine1 retain];
+			[textualBoxLine2 retain];
+			[textualBoxLine3 retain];
+			[textualBoxLine4 retain];
+			[textualBoxLine5 retain];
+			
+			for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
 			//needsLoadTexture2 = NO;
 		}
 		else
@@ -993,7 +1012,7 @@ static BOOL ROIDefaultsLoaded = NO;
 		double coteA, coteB;
 		
 		coteA = fabs(mesureA.x - mesureB.x);
-		coteB = fabs(mesureA.y - mesureB.y);	// * [[curView curDCM] pixelRatio]
+		coteB = fabs(mesureA.y - mesureB.y);
 		
 		if( pixelSpacingX != 0 && pixelSpacingY != 0)
 		{
@@ -2395,7 +2414,7 @@ static BOOL ROIDefaultsLoaded = NO;
 		if(layerColor) [layerColor release];
 		layerColor = [NSColor colorWithCalibratedRed:color.red/65535.0 green:color.green/65535.0 blue:color.blue/65535.0 alpha:1.0];
 		[layerColor retain];
-		needsLoadTexture = YES;
+		for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
 	}
 	else
 	{
@@ -2825,7 +2844,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	float screenXUpL,screenYUpL,screenXDr,screenYDr; // for tPlain ROI
 	
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
+	CGLContextObj cgl_ctx = [currentContext CGLContextObj];
+	
     glEnable(GL_POINT_SMOOTH);
     glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH);
@@ -2864,9 +2885,15 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 //				}
 //				else
 				{
-					if(needsLoadTexture)[self loadLayerImageTexture];
-					needsLoadTexture = NO;
-					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
+					GLuint texName = 0L;
+					NSUInteger index = [ctxArray indexOfObject: currentContext];
+					if( index != NSNotFound)
+						texName = [[textArray objectAtIndex: index] intValue];
+					
+					if (!texName)
+						texName = [self loadLayerImageTexture];
+						
+					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, texName);
 				}
 				
 				
@@ -2958,17 +2985,18 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glDisable(GL_POLYGON_SMOOTH);
 			glEnable(GL_TEXTURE_RECTANGLE_EXT);
 			
-			if( textureName)
-				glDeleteTextures (1, &textureName);
-			textureName = 0L;
+			[self deleteTexture: currentContext];
 			
-			//NSLog( @"%d", textureWidth);
+			GLuint textureName = 0L;
 			
 			glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, textureWidth * textureHeight, textureBuffer);
 			glGenTextures (1, &textureName);
 			glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
 			glPixelStorei (GL_UNPACK_ROW_LENGTH, textureWidth);
 			glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+			
+			[ctxArray addObject: currentContext];
+			[textArray addObject: [NSNumber numberWithInt: textureName]];
 			
 			glBlendEquation(GL_FUNC_ADD);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -4240,13 +4268,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	[points setArray:pts];
 
 	[self generateEncodedLayerImage];
-	[[curView openGLContext] makeCurrentContext];
-	[self loadLayerImageTexture];
 	
+	[self loadLayerImageTexture];
 }
 
 
-- (void)loadLayerImageTexture;
+- (GLuint )loadLayerImageTexture;
 {
 	NSBitmapImageRep *bitmap;
 	bitmap = [[NSBitmapImageRep alloc] initWithData:layerImageJPEG];
@@ -4334,13 +4361,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 		vImageTableLookUp_ARGB8888( &src, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) redTable, (Pixel_8*) greenTable, (Pixel_8*) blueTable, 0);
 	}
-
-	[[curView openGLContext] makeCurrentContext];
-
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	if(textureName)
-		glDeleteTextures(1, &textureName);
-	textureName = 0L;
+	
+	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
+	CGLContextObj cgl_ctx = [currentContext CGLContextObj];
+	
+	[self deleteTexture: currentContext];
+	
+	GLuint textureName = 0L;
 	
 	glGenTextures(1, &textureName);
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
@@ -4353,7 +4380,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, textureBuffer);
 	#endif
 
+	[ctxArray addObject: currentContext];
+	[textArray addObject: [NSNumber numberWithInt: textureName]];
+			
 	[bitmap release];
+	
+	return textureName;
 }
 
 - (void)generateEncodedLayerImage;
@@ -4452,13 +4484,13 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 - (void)setIsLayerOpacityConstant:(BOOL)boo;
 {
 	isLayerOpacityConstant = boo;
-	needsLoadTexture = YES;
+	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
 }
 
 - (void)setCanColorizeLayer:(BOOL)boo;
 {
 	canColorizeLayer = boo;
-	needsLoadTexture = YES;
+	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
 }
 
 @end

@@ -42,7 +42,10 @@ enum
 	int				textureWidth, textureHeight;
 
 	unsigned char*	textureBuffer;
-	GLuint			textureName, textureName2;
+	
+	NSMutableArray *ctxArray;	//All contexts where this texture is used
+	NSMutableArray *textArray;	//All texture id
+
 	int				textureUpLeftCornerX,textureUpLeftCornerY,textureDownRightCornerX,textureDownRightCornerY;
 	int				textureFirstPoint;
 	
@@ -73,6 +76,7 @@ enum
 	long			selectedModifyPoint;
 	NSPoint			clickPoint, previousPoint, originAnchor;
 	long			fontListGL, *fontSize;
+	
 	DCMView			*curView;
 	DCMPix			*pix;
 	
@@ -102,7 +106,6 @@ enum
 	NSImage			*layerImage;//, *layerImageWhenSelected;
 	NSData			*layerImageJPEG;//, *layerImageWhenSelectedJPEG;
 	float			layerPixelSpacingX, layerPixelSpacingY;
-	BOOL			needsLoadTexture, needsLoadTexture2;
 	BOOL			isLayerOpacityConstant;
 	BOOL			canColorizeLayer;
 	NSColor			*layerColor;
@@ -117,7 +120,7 @@ enum
 @property(readonly) int textureDownRightCornerX,textureDownRightCornerY, textureUpLeftCornerX, textureUpLeftCornerY;
 @property(readonly) unsigned char *textureBuffer;
 @property float opacity;
-@property(copy) NSString *name, *comments;
+@property(retain) NSString *name, *comments;
 @property(readonly) long type;
 @property(setter=setROIMode:) long ROImode;
 @property(retain) NSMutableArray *points; // Return/set the points state of the ROI
@@ -136,7 +139,7 @@ enum
 // Set/retrieve default ROI name (if not set, then default name is the currentTool)
 + (void) setDefaultName:(NSString*) n;
 + (NSString*) defaultName;
-@property(copy) NSString *defaultName;
+@property(retain) NSString *defaultName;
 
 +(void) loadDefaultSettings;
 +(void) saveDefaultSettings;
@@ -201,8 +204,7 @@ enum
 - (void) drawTextualData;
 - (long) clickInROI:(NSPoint) pt :(float) offsetx :(float) offsety :(float) scale :(BOOL) testDrawRect;
 - (NSPoint) ProjectionPointLine: (NSPoint) Point :(NSPoint) startPoint :(NSPoint) endPoint;
-- (void) releaseStringTexture;
-
+- (void) deleteTexture:(NSOpenGLContext*) c;
 // Calcium Scoring
 
 - (int)calciumScoreCofactor;
@@ -213,16 +215,16 @@ enum
 @property BOOL displayCalciumScoring;
 @property int calciumThreshold;
 
-@property(copy) NSString *layerReferenceFilePath;
+@property(retain) NSString *layerReferenceFilePath;
 @property(retain) NSImage *layerImage;
 @property float layerPixelSpacingX, layerPixelSpacingY;
 
-- (void)loadLayerImageTexture;
+- (GLuint)loadLayerImageTexture;
 - (void)generateEncodedLayerImage;
 - (BOOL)isPoint:(NSPoint)point inRectDefinedByPointA:(NSPoint)pointA pointB:(NSPoint)pointB pointC:(NSPoint)pointC pointD:(NSPoint)pointD;
 - (NSPoint)rotatePoint:(NSPoint)point withAngle:(float)alpha aroundCenter:(NSPoint)center;
 
-@property(copy) NSString *textualBoxLine1, *textualBoxLine2, *textualBoxLine3, *textualBoxLine4, *textualBoxLine5;
+@property(retain) NSString *textualBoxLine1, *textualBoxLine2, *textualBoxLine3, *textualBoxLine4, *textualBoxLine5;
 @property NSTimeInterval groupID;
 
 - (NSPoint) lowerRightPoint;

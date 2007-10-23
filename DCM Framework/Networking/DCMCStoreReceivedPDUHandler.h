@@ -64,7 +64,7 @@ htt://www.pixelmed.com
 @property(readonly) unsigned char presentationContextID;
 @property(readonly) NSData *response;
 @property(readonly) DCMCommandMessage *responseMessage;
-@property(copy) NSString *callingAET;
+@property(retain) NSString *callingAET;
 @property(retain, setter=setSCPDelegate:) id scpDelegate;
 @property(readonly) int commandType;
 

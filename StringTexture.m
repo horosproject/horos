@@ -18,11 +18,37 @@
 
 - (void) deleteTexture
 {
-	if (texName && cgl_ctx)
+	NSOpenGLContext *c = [NSOpenGLContext currentContext];
+	
+	NSUInteger index = [ctxArray indexOfObject: c];
+	
+	if( c && index != NSNotFound)
 	{
-		(*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &texName);
-		texName = 0; // ensure it is zeroed for failure cases
-		cgl_ctx = 0;
+		GLuint t = [[textArray objectAtIndex: index] intValue];
+		CGLContextObj cgl_ctx = [c CGLContextObj];
+		
+		if( t)
+			(*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
+		
+		[ctxArray removeObjectAtIndex: index];
+		[textArray removeObjectAtIndex: index];
+	}
+}
+
+- (void) deleteTexture:(NSOpenGLContext*) c
+{
+	NSUInteger index = [ctxArray indexOfObject: c];
+	
+	if( c && index != NSNotFound)
+	{
+		GLuint t = [[textArray objectAtIndex: index] intValue];
+		CGLContextObj cgl_ctx = [c CGLContextObj];
+		
+		if( t)
+			(*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &t);
+		
+		[ctxArray removeObjectAtIndex: index];
+		[textArray removeObjectAtIndex: index];
 	}
 }
 
@@ -30,9 +56,7 @@
 - (id) initWithAttributedString:(NSAttributedString *)attributedString withTextColor:(NSColor *)text withBoxColor:(NSColor *)box withBorderColor:(NSColor *)border
 {
 	[super init];
-	cgl_ctx = NULL;
 	antialiasing = NO;
-	texName = 0;
 	texSize.width = 0.0f;
 	texSize.height = 0.0f;
 	[attributedString retain];
@@ -46,6 +70,8 @@
 	staticFrame = NO;
 	marginSize.width = 4.0f; // standard margins
 	marginSize.height = 2.0f;
+	ctxArray = [[NSMutableArray arrayWithCapacity: 10] retain];
+	textArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 	// all other variables 0 or NULL
 	return self;
 }
@@ -68,18 +94,19 @@
 
 - (void) dealloc
 {
-	[self deleteTexture];
+//	NSLog( @"dealloc StringTexture: %d contexts", [ctxArray count]);
+	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+	[ctxArray release];
+	[textArray release];
+	
 	[textColor release];
 	[boxColor release];
 	[borderColor release];
 	[string release];
+	
 	[super dealloc];
 }
 
-- (GLuint) texName
-{
-	return texName;
-}
 
 - (NSSize) texSize
 {
@@ -126,12 +153,21 @@
 	antialiasing = a;
 }
 
-- (void) genTexture; // generates the texture without drawing texture to current context
+- (GLuint) genTexture; // generates the texture without drawing texture to current context
 {
 	NSImage * image;
 	NSBitmapImageRep * bitmap;
 	
-	[self deleteTexture];
+	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
+	CGLContextObj cgl_ctx = [currentContext CGLContextObj];
+	
+	if( currentContext == 0L)
+	{
+		NSLog( @"********* NO CURRENT CONTEXT for genTexture");
+		return 0;
+	}
+	
+	[self deleteTexture: currentContext];
 	if ((NO == staticFrame) && (0.0f == frameSize.width) && (0.0f == frameSize.height)) { // find frame size if we have not already found it
 		frameSize = [string size]; // current string size
 		frameSize.width += marginSize.width * 2.0f; // add padding
@@ -157,17 +193,22 @@
 	[image unlockFocus];
 	texSize.width = [bitmap size].width;
 	texSize.height = [bitmap size].height;
-	if (cgl_ctx = CGLGetCurrentContext ())
-	{ // if we successfully retrieve a current context (required)
-		glGenTextures (1, &texName);
-		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
-		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-		glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
-		glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, texSize.width, texSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, [bitmap bitmapData]);
-	} else
-		NSLog (@"StringTexture -genTexture: Failure to get current OpenGL context\n");
+	
+	GLuint texName = 0;
+	
+	glGenTextures (1, &texName);
+	glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+	glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
+	glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, texSize.width, texSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, [bitmap bitmapData]);
+	
+	[ctxArray addObject: currentContext];
+	[textArray addObject: [NSNumber numberWithInt: texName]];
+		
 	[bitmap release];
 	[image release];
+	
+	return texName;
 }
 
 - (void) setFlippedX: (BOOL) x Y:(BOOL) y
@@ -178,15 +219,18 @@
 
 - (void) drawWithBounds:(NSRect)bounds
 {
+	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
+	GLuint texName = 0L;
+	NSUInteger index = [ctxArray indexOfObject: currentContext];
+	if( index != NSNotFound)
+		texName = [[textArray objectAtIndex: index] intValue];
+	
 	if (!texName)
-		[self genTexture];
+		texName = [self genTexture];
 	
 	if (texName)
 	{
-		if( cgl_ctx != CGLGetCurrentContext ())
-		{
-			[self genTexture];
-		}
+		CGLContextObj cgl_ctx = [currentContext CGLContextObj];
 		
 		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
 		
@@ -256,8 +300,15 @@
 
 - (void) drawAtPoint:(NSPoint)point ratio:(float) ratio
 {
+	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
+	GLuint texName = 0L;
+	NSUInteger index = [ctxArray indexOfObject: currentContext];
+	if( index != NSNotFound)
+		texName = [[textArray objectAtIndex: index] intValue];
+	
 	if (!texName)
-		[self genTexture]; // ensure size is calculated for bounds
+		texName = [self genTexture];
+	
 	if (texName) // if successful
 		[self drawWithBounds:NSMakeRect (point.x, point.y, texSize.width, texSize.height*ratio)];
 
@@ -272,7 +323,7 @@
 // these will force the texture to be regenerated at the next draw
 - (void) setMargins:(NSSize)size // set offset size and size to fit with offset
 {
-	[self deleteTexture];
+	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
 	marginSize = size;
 	if (NO == staticFrame) { // ensure dynamic frame sizes will be recalculated
 		frameSize.width = 0.0f;
@@ -283,7 +334,7 @@
 
 - (void) useStaticFrame:(NSSize)size // set static frame size and size to frame
 {
-	[self deleteTexture];
+	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
 	frameSize = size;
 	staticFrame = YES;
 	[self genTexture];
@@ -291,8 +342,9 @@
 
 - (void) useDynamicFrame
 {
-	if (staticFrame) { // set to dynamic frame and set to regen texture
-		[self deleteTexture];
+	if (staticFrame)
+	{ // set to dynamic frame and set to regen texture
+		for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
 		staticFrame = NO;
 		frameSize.width = 0.0f; // ensure frame sizes will be recalculated
 		frameSize.height = 0.0f;
@@ -302,7 +354,7 @@
 
 - (void) setString:(NSAttributedString *)attributedString // set string after initial creation
 {
-	[self deleteTexture];
+	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
 	[attributedString retain];
 	[string release];
 	string = attributedString;
@@ -320,7 +372,7 @@
 
 - (void) setTextColor:(NSColor *)color // set default text color
 {
-	[self deleteTexture];
+	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
 	[color retain];
 	[textColor release];
 	textColor = color;
@@ -329,7 +381,7 @@
 
 - (void) setBoxColor:(NSColor *)color // set default text color
 {
-	[self deleteTexture];
+	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
 	[color retain];
 	[boxColor release];
 	boxColor = color;
@@ -338,7 +390,7 @@
 
 - (void) setBorderColor:(NSColor *)color // set default text color
 {
-	[self deleteTexture];
+	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
 	[color retain];
 	[borderColor release];
 	borderColor = color;
