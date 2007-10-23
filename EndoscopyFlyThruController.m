@@ -19,21 +19,16 @@
 #import "EndoscopyViewer.h"
 #import "OSIVoxel.h"
 
-
-
-
-
 @implementation EndoscopyFlyThruController
 
 @synthesize seeds;
 
 - (id) initWithFlyThruAdapter:(FlyThruAdapter*)aFlyThruAdapter
 {
-	if (self = [super initWithWindowNibName:@"EndoscopyFlyThru"]) {
-		[self setupController];
-		self.FTAdapter = aFlyThruAdapter;
-		self.seeds = [NSMutableArray array];
-	}	
+	self = [super initWithFlyThruAdapter: aFlyThruAdapter];
+	
+	self.seeds = [NSMutableArray array];
+	
 	return self;
 }
 

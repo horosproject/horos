@@ -45,9 +45,7 @@ static NSString*	WLWW2DToolbarItemIdentifier				= @"WLWW2D";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
 static NSString*	ShadingToolbarItemIdentifier			= @"Shading";
 static NSString*	LODToolbarItemIdentifier				= @"LOD";
-
-
-
+static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 
 @implementation EndoscopyViewer
 
@@ -295,7 +293,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 		sliceInterval = [[pixList objectAtIndex:0] sliceInterval];
 	}
 	
-	position1[2] -= sliceInterval/2.;
+//	position1[2] -= sliceInterval/2.;
 	
 	position1[0] = position1[0] * factor;
 	position1[1] = position1[1] * factor;
@@ -532,6 +530,14 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	[[[vrController flyThruController] exportButtonOption] setHidden:NO];
 	[[[vrController flyThruController] exportButtonOption] setTarget:self];
 	[[[vrController flyThruController] exportButtonOption] setAction:@selector(setExportAllViews:)];
+}
+
+- (IBAction) centerline: (id) sender
+{
+	// Display the Fly Thru Controller
+	
+	[self flyThruControllerInit: sender];
+	[[vrController flyThruController] calculate: sender];
 }
 
 - (void) applyWLWWForString:(NSString*) str
@@ -904,6 +910,17 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 		[toolbarItem setView: shadingView];
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([shadingView frame]), NSHeight([shadingView frame]))];
     }
+	else if([itemIdent isEqualToString: CenterlineToolbarItemIdentifier])
+	{
+		// Set up the standard properties 
+		[toolbarItem setLabel: NSLocalizedString(@"Centerline",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Centerline",nil)];
+		[toolbarItem setToolTip:NSLocalizedString( @"Compute Centerline",nil)];
+		
+		[toolbarItem setImage: [NSImage imageNamed: CenterlineToolbarItemIdentifier]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector( centerline:)];	
+    }
 	else if([itemIdent isEqualToString: LODToolbarItemIdentifier])
 	{
 		// Set up the standard properties 
@@ -935,6 +952,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 											NSToolbarSeparatorItemIdentifier,
 											NSToolbarFlexibleSpaceItemIdentifier,
 											FlyThruToolbarItemIdentifier,
+											CenterlineToolbarItemIdentifier,
 											ShadingToolbarItemIdentifier,
 											endo3DToolsToolbarItemIdentifier,
 											nil];
@@ -952,6 +970,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 											endo3DToolsToolbarItemIdentifier,
 											endoMPRToolsToolbarItemIdentifier,
 											FlyThruToolbarItemIdentifier,
+											CenterlineToolbarItemIdentifier,
 											EngineToolbarItemIdentifier,
 											//CroppingToolbarItemIdentifier,
 											WLWW3DToolbarItemIdentifier,

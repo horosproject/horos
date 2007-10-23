@@ -2298,8 +2298,6 @@
 		BF84E5400CB16A2900431BC2 /* FlyThruTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF84E53E0CB16A2900431BC2 /* FlyThruTableView.m */; };
 		BF84E5410CB16A2900431BC2 /* FlyThruTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF84E53D0CB16A2900431BC2 /* FlyThruTableView.h */; };
 		BF84E5420CB16A2900431BC2 /* FlyThruTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF84E53E0CB16A2900431BC2 /* FlyThruTableView.m */; };
-		BF85640D0CB2B73F005F7178 /* EndoscopyFlyThru.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF85640B0CB2B73F005F7178 /* EndoscopyFlyThru.xib */; };
-		BF85640E0CB2B73F005F7178 /* EndoscopyFlyThru.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF85640B0CB2B73F005F7178 /* EndoscopyFlyThru.xib */; };
 		BF8564120CB2B781005F7178 /* EndoscopyFlyThruController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF8564100CB2B781005F7178 /* EndoscopyFlyThruController.h */; };
 		BF8564130CB2B781005F7178 /* EndoscopyFlyThruController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF8564110CB2B781005F7178 /* EndoscopyFlyThruController.m */; };
 		BF8564140CB2B781005F7178 /* EndoscopyFlyThruController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF8564100CB2B781005F7178 /* EndoscopyFlyThruController.h */; };
@@ -7779,6 +7777,8 @@
 		CEEA84AD0B345F9800BBE4B1 /* SimplePing.c in Sources */ = {isa = PBXBuildFile; fileRef = CEEA84AB0B345F9800BBE4B1 /* SimplePing.c */; };
 		CEEA84AE0B345F9800BBE4B1 /* SimplePing.h in Headers */ = {isa = PBXBuildFile; fileRef = CEEA84AA0B345F9800BBE4B1 /* SimplePing.h */; };
 		CEEA84AF0B345F9800BBE4B1 /* SimplePing.c in Sources */ = {isa = PBXBuildFile; fileRef = CEEA84AB0B345F9800BBE4B1 /* SimplePing.c */; };
+		CEEB5CCB0CCDD161008803E2 /* Centerline.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEEB5CCA0CCDD161008803E2 /* Centerline.tif */; };
+		CEEB5CCC0CCDD161008803E2 /* Centerline.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEEB5CCA0CCDD161008803E2 /* Centerline.tif */; };
 		CEEC8F900979B73B0060CE79 /* libvtksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE3422CA0946237A00CCEA2A /* libvtksys.a */; };
 		CEEC8F910979B73C0060CE79 /* libvtkpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE11138D08EDD5FD005B15E1 /* libvtkpng.a */; };
 		CEEC8F930979B73F0060CE79 /* libvtkCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE11138E08EDD5FD005B15E1 /* libvtkCommon.a */; };
@@ -9023,7 +9023,6 @@
 		BF8449020A65F407000E9830 /* smallKey.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smallKey.tif; sourceTree = "<group>"; };
 		BF84E53D0CB16A2900431BC2 /* FlyThruTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlyThruTableView.h; sourceTree = "<group>"; };
 		BF84E53E0CB16A2900431BC2 /* FlyThruTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlyThruTableView.m; sourceTree = "<group>"; };
-		BF85640C0CB2B73F005F7178 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/EndoscopyFlyThru.xib; sourceTree = "<group>"; };
 		BF8564100CB2B781005F7178 /* EndoscopyFlyThruController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopyFlyThruController.h; sourceTree = "<group>"; };
 		BF8564110CB2B781005F7178 /* EndoscopyFlyThruController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndoscopyFlyThruController.m; sourceTree = "<group>"; };
 		BF8B2A4909F470F400F1F759 /* dcmqrsrv.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrsrv.mm; sourceTree = "<group>"; };
@@ -11679,6 +11678,7 @@
 		CEE73FD208F44749002A395F /* stringNumericCompare.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = stringNumericCompare.h; sourceTree = "<group>"; };
 		CEEA84AA0B345F9800BBE4B1 /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SimplePing.h; sourceTree = "<group>"; };
 		CEEA84AB0B345F9800BBE4B1 /* SimplePing.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = SimplePing.c; sourceTree = "<group>"; };
+		CEEB5CCA0CCDD161008803E2 /* Centerline.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Centerline.tif; sourceTree = "<group>"; };
 		CEEDA35306A061EB00DEAB22 /* ThickSlabVR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThickSlabVR.h; sourceTree = "<group>"; };
 		CEEDA35406A061EB00DEAB22 /* ThickSlabVR.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThickSlabVR.mm; sourceTree = "<group>"; };
 		CEF0E4BB06AEC91F001FF9E5 /* Message.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Message.framework; path = /System/Library/Frameworks/Message.framework; sourceTree = "<absolute>"; };
@@ -12159,7 +12159,6 @@
 				CE3F99040C84724B00CB38F1 /* Send.xib */,
 				CE3F99060C84724B00CB38F1 /* OrthogonalMPR.xib */,
 				CE3F990A0C84724B00CB38F1 /* Endoscopy.xib */,
-				BF85640B0CB2B73F005F7178 /* EndoscopyFlyThru.xib */,
 				CE3F990C0C84724B00CB38F1 /* LLMPR.xib */,
 				CE3F990E0C84724B00CB38F1 /* SRAnnotation.xib */,
 				CE3F99100C84724B00CB38F1 /* ITKSegmentation.xib */,
@@ -13056,6 +13055,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				CEEB5CCA0CCDD161008803E2 /* Centerline.tif */,
 				A97B73970CB380EF00E5348D /* osirixplugin.icns */,
 				A922F3BA0C631F3C0007AB98 /* CustomImageAnnotations.png */,
 				CE27BA0E0C113BBA00BDC9B3 /* 3DPresetsPanel.tiff */,
@@ -21272,9 +21272,9 @@
 				A975200B0CAA8481005D172F /* shareFromMenu_small.png in Resources */,
 				A975200C0CAA8481005D172F /* shareFromVideoChatWindow_small.png in Resources */,
 				A975200D0CAA8481005D172F /* style.css in Resources */,
-				BF85640E0CB2B73F005F7178 /* EndoscopyFlyThru.xib in Resources */,
 				A97B73980CB380EF00E5348D /* osirixplugin.icns in Resources */,
 				CE5A7F8C0CB9430D009C80B4 /* 32-bit shell.app in Resources */,
+				CEEB5CCC0CCDD161008803E2 /* Centerline.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21654,9 +21654,9 @@
 				A97520120CAA8481005D172F /* shareFromMenu_small.png in Resources */,
 				A97520130CAA8481005D172F /* shareFromVideoChatWindow_small.png in Resources */,
 				A97520140CAA8481005D172F /* style.css in Resources */,
-				BF85640D0CB2B73F005F7178 /* EndoscopyFlyThru.xib in Resources */,
 				A97B73990CB380F600E5348D /* osirixplugin.icns in Resources */,
 				CE5A7F8D0CB9430D009C80B4 /* 32-bit shell.app in Resources */,
+				CEEB5CCB0CCDD161008803E2 /* Centerline.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24600,14 +24600,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		BF85640B0CB2B73F005F7178 /* EndoscopyFlyThru.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BF85640C0CB2B73F005F7178 /* English */,
-			);
-			name = EndoscopyFlyThru.xib;
-			sourceTree = "<group>";
-		};
 		CE286C100964196C001A4573 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (

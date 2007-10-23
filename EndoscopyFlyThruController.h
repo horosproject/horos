@@ -30,7 +30,6 @@
 
 @interface EndoscopyFlyThruController : FlyThruController {
 	NSMutableArray *seeds;
-	EndoscopyViewer *vrViewer;
 	
 }
 

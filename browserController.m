@@ -8682,7 +8682,8 @@ static NSArray*	openSubSeriesArray = 0L;
 		modalDelegate: nil
 	   didEndSelector: nil
 		  contextInfo: nil];
-	
+
+
 	[self checkMemory: self];
 	
 	int result = [NSApp runModalForWindow: subSeriesWindow];

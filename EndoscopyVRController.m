@@ -323,7 +323,7 @@ extern NSString * documentsDirectory();
 	
 	for( i = 0; i < [winList count]; i++)
 	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"EndoscopyFlyThru"])
+		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"FlyThru"])
 		{
 			[[flyThruController window] makeKeyAndOrderFront :sender];
 			return;

@@ -59,6 +59,7 @@
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC : (ViewerController*) vC;
 - (BOOL) is2DViewer;
 - (NSMutableArray*) pixList;
+- (IBAction) centerline: (id) sender;
 
 - (void) setCameraRepresentation: (NSNotification*) note;
 - (void) setCameraRepresentation;

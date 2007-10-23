@@ -648,6 +648,10 @@ NSRect screenFrame()
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 #pragma mark-
 
+-(IBAction)osirix64bit:(id)sender{
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriX-64bit.html"]];
+}
+
 -(IBAction)sendEmail:(id)sender{
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:rossetantoine@osirix-viewer.com"]]; 
 }
@@ -1479,7 +1483,7 @@ static BOOL initialized = NO;
 			else
 				NSRunCriticalAlertPanel(NSLocalizedString(@"OsiriX 64-bit", 0L), NSLocalizedString(@"This is a preview version of OsiriX 64-bit. You SHOULD NOT use it for any scientific or clinical activities.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
 			#endif
-			
+						
 			if( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundlePackageType"] isEqualToString: @"APPL"])
 			{
 				[AppController cleanOsiriXSubProcesses];
