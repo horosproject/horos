@@ -597,19 +597,20 @@ static volatile int numberOfThreadsForRelisce = 0;
 	int newX = [[dict valueForKey:@"newX"] intValue];
 	float *curPixFImage = [[dict valueForKey:@"curPix"] fImage];
 	int rowBytes = [[dict valueForKey:@"rowBytes"] intValue];
+	int j = [[dict valueForKey:@"curMovieIndex"] intValue];
 	
 	float *srcPtr, *dstPtr, *mainSrcPtr;
-	int count = [pixList[ curMovieIndex] count];
+	int count = [pixList[ j] count];
 	
 	count /= 2;
 	count *= 2;
 	
 	if( sign > 0)
-		mainSrcPtr = [[pixList[ curMovieIndex] objectAtIndex: count-1] fImage];
+		mainSrcPtr = [[pixList[ j] objectAtIndex: count-1] fImage];
 	else
-		mainSrcPtr = [[pixList[ curMovieIndex] objectAtIndex: 0] fImage];
+		mainSrcPtr = [[pixList[ j] objectAtIndex: 0] fImage];
 	
-	int sliceSize = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth] * [[pixList[ curMovieIndex] objectAtIndex: 0] pheight];
+	int sliceSize = [[pixList[ j] objectAtIndex: 0] pwidth] * [[pixList[ j] objectAtIndex: 0] pheight];
 	
 	for(x = 0; x < count; x++)
 	{
@@ -713,262 +714,287 @@ static volatile int numberOfThreadsForRelisce = 0;
 	imageSize = sizeof(float) * newX * newY;
 	size = newTotal * imageSize;
 	
-	// CREATE A NEW SERIES WITH ALL IMAGES !
-	emptyData = malloc( size);
-	if( emptyData)
+	NSMutableArray *xPix = [NSMutableArray array];
+	NSMutableArray *xFiles = [NSMutableArray array];
+	NSMutableArray *xData = [NSMutableArray array];
+	
+	for( int j = 0 ; j < maxMovieIndex; j++)
 	{
-		NSMutableArray	*newPixList = [NSMutableArray arrayWithCapacity: 0];
-		NSMutableArray	*newDcmList = [NSMutableArray arrayWithCapacity: 0];
+		firstPix = [pixList[ j] objectAtIndex: 0];
 		
-		NSData	*newData = [NSData dataWithBytesNoCopy:emptyData length: size freeWhenDone:YES];
-		
-		NSLog( @"reslice start");
-		
-		for( i = 0 ; i < newTotal; i ++)
+		// CREATE A NEW SERIES WITH ALL IMAGES !
+		emptyData = malloc( size);
+		if( emptyData)
 		{
-			[newPixList addObject: [[[pixList[ curMovieIndex] objectAtIndex: 0] copy] autorelease]];
+			NSMutableArray	*newPixList = [NSMutableArray arrayWithCapacity: 0];
+			NSMutableArray	*newDcmList = [NSMutableArray arrayWithCapacity: 0];
 			
-			// SUV
-			[[newPixList lastObject] setDisplaySUVValue: [firstPix displaySUVValue]];
-			[[newPixList lastObject] setSUVConverted: [firstPix SUVConverted]];
-			[[newPixList lastObject] setRadiopharmaceuticalStartTime: [firstPix radiopharmaceuticalStartTime]];
-			[[newPixList lastObject] setPatientsWeight: [firstPix patientsWeight]];
-			[[newPixList lastObject] setRadionuclideTotalDose: [firstPix radionuclideTotalDose]];
-			[[newPixList lastObject] setRadionuclideTotalDoseCorrected: [firstPix radionuclideTotalDoseCorrected]];
-			[[newPixList lastObject] setAcquisitionTime: [firstPix acquisitionTime]];
-			[[newPixList lastObject] setDecayCorrection: [firstPix decayCorrection]];
-			[[newPixList lastObject] setDecayFactor: [firstPix decayFactor]];
-			[[newPixList lastObject] setUnits: [firstPix units]];
+			NSData	*newData = [NSData dataWithBytesNoCopy:emptyData length: size freeWhenDone:YES];
 			
-			[[newPixList lastObject] setPwidth: newX];
-			[[newPixList lastObject] setRowBytes: newX];
-			[[newPixList lastObject] setPheight: newY];
+			NSLog( @"reslice start");
 			
-			[[newPixList lastObject] setfImage: (float*) (emptyData + imageSize * ([newPixList count] - 1))];
-			[[newPixList lastObject] setTot: newTotal];
-			[[newPixList lastObject] setFrameNo: [newPixList count]-1];
-			[[newPixList lastObject] setID: [newPixList count]-1];
-			
-			[newDcmList addObject: [fileList[ curMovieIndex] objectAtIndex: 0] ];
-			
-			if( directionm == 0)		// X - RESLICE
+			for( i = 0 ; i < newTotal; i ++)
 			{
-				DCMPix	*curPix = [newPixList lastObject];
+				[newPixList addObject: [[[pixList[ j] objectAtIndex: 0] copy] autorelease]];
 				
-				int count = [pixList[ curMovieIndex] count];
-				int pwidth = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth];
+				// SUV
+				[[newPixList lastObject] setDisplaySUVValue: [firstPix displaySUVValue]];
+				[[newPixList lastObject] setSUVConverted: [firstPix SUVConverted]];
+				[[newPixList lastObject] setRadiopharmaceuticalStartTime: [firstPix radiopharmaceuticalStartTime]];
+				[[newPixList lastObject] setPatientsWeight: [firstPix patientsWeight]];
+				[[newPixList lastObject] setRadionuclideTotalDose: [firstPix radionuclideTotalDose]];
+				[[newPixList lastObject] setRadionuclideTotalDoseCorrected: [firstPix radionuclideTotalDoseCorrected]];
+				[[newPixList lastObject] setAcquisitionTime: [firstPix acquisitionTime]];
+				[[newPixList lastObject] setDecayCorrection: [firstPix decayCorrection]];
+				[[newPixList lastObject] setDecayFactor: [firstPix decayFactor]];
+				[[newPixList lastObject] setUnits: [firstPix units]];
 				
-				count /= 2;
-				count *= 2;
+				[[newPixList lastObject] setPwidth: newX];
+				[[newPixList lastObject] setRowBytes: newX];
+				[[newPixList lastObject] setPheight: newY];
 				
-				if( sign > 0)
+				[[newPixList lastObject] setfImage: (float*) (emptyData + imageSize * ([newPixList count] - 1))];
+				[[newPixList lastObject] setTot: newTotal];
+				[[newPixList lastObject] setFrameNo: [newPixList count]-1];
+				[[newPixList lastObject] setID: [newPixList count]-1];
+				
+				[newDcmList addObject: [fileList[ j] objectAtIndex: 0] ];
+				
+				if( directionm == 0)		// X - RESLICE
 				{
-					for( y = 0; y < count; y++)
+					DCMPix	*curPix = [newPixList lastObject];
+					
+					int count = [pixList[ j] count];
+					int pwidth = [[pixList[ j] objectAtIndex: 0] pwidth];
+					
+					count /= 2;
+					count *= 2;
+					
+					if( sign > 0)
 					{
-						memcpy(	[curPix fImage] + (count-y-1) * newX,
-								[[pixList[ curMovieIndex] objectAtIndex: y] fImage] + i * pwidth,
-								newX * sizeof( float));
+						for( y = 0; y < count; y++)
+						{
+							memcpy(	[curPix fImage] + (count-y-1) * newX,
+									[[pixList[ j] objectAtIndex: y] fImage] + i * pwidth,
+									newX * sizeof( float));
+						}
 					}
-				}
-				else
-				{
-					for( y = 0; y < count; y++)
+					else
 					{
-						memcpy(	[curPix fImage] + y * newX,
-								[[pixList[ curMovieIndex] objectAtIndex: y] fImage] + i * pwidth,
-								newX * sizeof( float));
+						for( y = 0; y < count; y++)
+						{
+							memcpy(	[curPix fImage] + y * newX,
+									[[pixList[ j] objectAtIndex: y] fImage] + i * pwidth,
+									newX * sizeof( float));
+						}
 					}
+					
+					if( square)
+					{
+						vImage_Buffer	srcVimage, dstVimage;
+						
+						srcVimage.data = [curPix fImage];
+						srcVimage.height =  count;
+						srcVimage.width = newX;
+						srcVimage.rowBytes = newX*4;
+						
+						dstVimage.data = [curPix fImage];
+						dstVimage.height =  newY;
+						dstVimage.width = newX;
+						dstVimage.rowBytes = newX*4;
+						
+						vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, 0);
+												
+	//						for( x = 0; x < newX; x++)
+	//						{
+	//							srcPtr = [curPix fImage] + x ;
+	//							
+	//							for( y = newY-1; y >= 0; y--)
+	//							{
+	//								s = y / ratio;
+	//								left = s - floor(s);
+	//								right = 1-left;
+	//								
+	//								*(srcPtr + y * rowBytes) = right * *(srcPtr + (long) (s) * rowBytes) + left * *(srcPtr + (long) ((s)+1) * rowBytes);
+	//							}
+	//						}
+					}
+					
+					[lastPix orientationDouble: orientation];
+					
+					orientation[ 3] = orientation[ 6] * -sign;
+					orientation[ 4] = orientation[ 7] * -sign;
+					orientation[ 5] = orientation[ 8] * -sign;
+					
+					[curPix setOrientationDouble: orientation];	// Normal vector is recomputed in this procedure
+					
+					[curPix setPixelSpacingX: newXSpace];
+					[curPix setPixelSpacingY: newYSpace];
+					
+					[curPix setPixelRatio:  newYSpace / newXSpace];
+					
+					[curPix orientationDouble: orientation];
+					
+					[lastPix convertPixDoubleX:0 pixY: i toDICOMCoords: origin];
+					
+					[curPix setOriginDouble: origin];
+					
+					if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
+						[[newPixList lastObject] setSliceLocation: origin[ 0]];
+					
+					if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
+						[[newPixList lastObject] setSliceLocation: origin[ 1]];
+					
+					if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
+						[[newPixList lastObject] setSliceLocation: origin[ 2]];
+					
+					[[newPixList lastObject] setSliceThickness: [firstPix pixelSpacingY]];
+					[[newPixList lastObject] setSliceInterval: 0];
+					
 				}
-				
-				if( square)
+				else											// Y - RESLICE
 				{
-					vImage_Buffer	srcVimage, dstVimage;
+					DCMPix	*curPix = [newPixList lastObject];
+					float	*srcPtr;
+					float	*dstPtr;
+					long	rowBytes = [firstPix pwidth];
 					
-					srcVimage.data = [curPix fImage];
-					srcVimage.height =  count;
-					srcVimage.width = newX;
-					srcVimage.rowBytes = newX*4;
+					[self waitForAProcessor];
 					
-					dstVimage.data = [curPix fImage];
-					dstVimage.height =  newY;
-					dstVimage.width = newX;
-					dstVimage.rowBytes = newX*4;
+					[NSThread detachNewThreadSelector: @selector( resliceThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: i], @"i", [NSNumber numberWithInt: sign], @"sign", [NSNumber numberWithInt: newX], @"newX",[NSNumber numberWithInt: rowBytes], @"rowBytes", curPix, @"curPix", [NSNumber numberWithInt: j], @"curMovieIndex", 0L]];
 					
-					vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, 0);
-											
-//						for( x = 0; x < newX; x++)
-//						{
-//							srcPtr = [curPix fImage] + x ;
-//							
-//							for( y = newY-1; y >= 0; y--)
-//							{
-//								s = y / ratio;
-//								left = s - floor(s);
-//								right = 1-left;
-//								
-//								*(srcPtr + y * rowBytes) = right * *(srcPtr + (long) (s) * rowBytes) + left * *(srcPtr + (long) ((s)+1) * rowBytes);
-//							}
-//						}
+	//				for(x = 0; x < [pixList[ curMovieIndex] count]; x++)
+	//				{
+	//					if( sign > 0)
+	//						srcPtr = [[pixList[ curMovieIndex] objectAtIndex: [pixList[ curMovieIndex] count]-x-1] fImage] + i;
+	//					else
+	//						srcPtr = [[pixList[ curMovieIndex] objectAtIndex: x] fImage] + i;
+	//					dstPtr = [curPix fImage] + x * newX;
+	//					
+	//					y = newX;
+	//					while (y-->0)
+	//					{
+	//						*dstPtr = *srcPtr;
+	//						dstPtr++;
+	//						srcPtr += rowBytes;
+	//					}
+	//				}
+										
+					if( square)
+					{
+						vImage_Buffer	srcVimage, dstVimage;
+						
+						srcVimage.data = [curPix fImage];
+						srcVimage.height =  [pixList[ j] count];
+						srcVimage.width = newX;
+						srcVimage.rowBytes = newX*4;
+						
+						dstVimage.data = [curPix fImage];
+						dstVimage.height =  newY;
+						dstVimage.width = newX;
+						dstVimage.rowBytes = newX*4;
+						
+						vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, 0);
+						
+	//						for( x = 0; x < newX; x++)
+	//						{
+	//							srcPtr = [curPix fImage] + x ;
+	//							
+	//							for( y = newY-1; y >= 0; y--)
+	//							{
+	//								s = y / ratio;
+	//								left = s - floor(s);
+	//								right = 1-left;
+	//								
+	//								*(srcPtr + y * rowBytes) = right * *(srcPtr + (long) (s) * rowBytes) + left * *(srcPtr + (long) ((s)+1) * rowBytes);
+	//							}
+	//						}
+					}
+					
+					[lastPix orientationDouble: orientation];
+					
+					// Y Vector = Normal Vector
+					orientation[ 0] = orientation[ 3];
+					orientation[ 1] = orientation[ 4];
+					orientation[ 2] = orientation[ 5];
+					
+					orientation[ 3] = orientation[ 6] * -sign;
+					orientation[ 4] = orientation[ 7] * -sign;
+					orientation[ 5] = orientation[ 8] * -sign;
+					
+					[curPix setOrientationDouble: orientation];	// Normal vector is recomputed in this procedure
+					
+					[curPix setPixelSpacingX: newXSpace];
+					[curPix setPixelSpacingY: newYSpace];
+					
+					[curPix setPixelRatio:  newYSpace / newXSpace];
+					
+					[curPix orientationDouble: orientation];
+					
+					[lastPix convertPixDoubleX:i pixY:0 toDICOMCoords: origin];
+					
+					if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
+						[[newPixList lastObject] setSliceLocation: origin[ 0]];
+					
+					if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
+						[[newPixList lastObject] setSliceLocation: origin[ 1]];
+					
+					if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
+						[[newPixList lastObject] setSliceLocation: origin[ 2]];
+					
+					[[newPixList lastObject] setSliceThickness: [firstPix pixelSpacingX]];
+					[[newPixList lastObject] setSliceInterval: 0];
+					
+					[curPix setOriginDouble: origin];
 				}
-				
-				[lastPix orientationDouble: orientation];
-				
-				orientation[ 3] = orientation[ 6] * -sign;
-				orientation[ 4] = orientation[ 7] * -sign;
-				orientation[ 5] = orientation[ 8] * -sign;
-				
-				[curPix setOrientationDouble: orientation];	// Normal vector is recomputed in this procedure
-				
-				[curPix setPixelSpacingX: newXSpace];
-				[curPix setPixelSpacingY: newYSpace];
-				
-				[curPix setPixelRatio:  newYSpace / newXSpace];
-				
-				[curPix orientationDouble: orientation];
-				
-				[lastPix convertPixDoubleX:0 pixY: i toDICOMCoords: origin];
-				
-				[curPix setOriginDouble: origin];
-				
-				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-					[[newPixList lastObject] setSliceLocation: origin[ 0]];
-				
-				if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-					[[newPixList lastObject] setSliceLocation: origin[ 1]];
-				
-				if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-					[[newPixList lastObject] setSliceLocation: origin[ 2]];
-				
-				[[newPixList lastObject] setSliceThickness: [firstPix pixelSpacingY]];
-				[[newPixList lastObject] setSliceInterval: 0];
-				
 			}
-			else											// Y - RESLICE
-			{
-				DCMPix	*curPix = [newPixList lastObject];
-				float	*srcPtr;
-				float	*dstPtr;
-				long	rowBytes = [firstPix pwidth];
-				
-				[self waitForAProcessor];
-				
-				[NSThread detachNewThreadSelector: @selector( resliceThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: i], @"i", [NSNumber numberWithInt: sign], @"sign", [NSNumber numberWithInt: newX], @"newX",[NSNumber numberWithInt: rowBytes], @"rowBytes", curPix, @"curPix", 0L]];
-				
-//				for(x = 0; x < [pixList[ curMovieIndex] count]; x++)
-//				{
-//					if( sign > 0)
-//						srcPtr = [[pixList[ curMovieIndex] objectAtIndex: [pixList[ curMovieIndex] count]-x-1] fImage] + i;
-//					else
-//						srcPtr = [[pixList[ curMovieIndex] objectAtIndex: x] fImage] + i;
-//					dstPtr = [curPix fImage] + x * newX;
-//					
-//					y = newX;
-//					while (y-->0)
-//					{
-//						*dstPtr = *srcPtr;
-//						dstPtr++;
-//						srcPtr += rowBytes;
-//					}
-//				}
-									
-				if( square)
-				{
-					vImage_Buffer	srcVimage, dstVimage;
-					
-					srcVimage.data = [curPix fImage];
-					srcVimage.height =  [pixList[ curMovieIndex] count];
-					srcVimage.width = newX;
-					srcVimage.rowBytes = newX*4;
-					
-					dstVimage.data = [curPix fImage];
-					dstVimage.height =  newY;
-					dstVimage.width = newX;
-					dstVimage.rowBytes = newX*4;
-					
-					vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, 0);
-					
-//						for( x = 0; x < newX; x++)
-//						{
-//							srcPtr = [curPix fImage] + x ;
-//							
-//							for( y = newY-1; y >= 0; y--)
-//							{
-//								s = y / ratio;
-//								left = s - floor(s);
-//								right = 1-left;
-//								
-//								*(srcPtr + y * rowBytes) = right * *(srcPtr + (long) (s) * rowBytes) + left * *(srcPtr + (long) ((s)+1) * rowBytes);
-//							}
-//						}
-				}
-				
-				[lastPix orientationDouble: orientation];
-				
-				// Y Vector = Normal Vector
-				orientation[ 0] = orientation[ 3];
-				orientation[ 1] = orientation[ 4];
-				orientation[ 2] = orientation[ 5];
-				
-				orientation[ 3] = orientation[ 6] * -sign;
-				orientation[ 4] = orientation[ 7] * -sign;
-				orientation[ 5] = orientation[ 8] * -sign;
-				
-				[curPix setOrientationDouble: orientation];	// Normal vector is recomputed in this procedure
-				
-				[curPix setPixelSpacingX: newXSpace];
-				[curPix setPixelSpacingY: newYSpace];
-				
-				[curPix setPixelRatio:  newYSpace / newXSpace];
-				
-				[curPix orientationDouble: orientation];
-				
-				[lastPix convertPixDoubleX:i pixY:0 toDICOMCoords: origin];
-				
-				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-					[[newPixList lastObject] setSliceLocation: origin[ 0]];
-				
-				if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-					[[newPixList lastObject] setSliceLocation: origin[ 1]];
-				
-				if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-					[[newPixList lastObject] setSliceLocation: origin[ 2]];
-				
-				[[newPixList lastObject] setSliceThickness: [firstPix pixelSpacingX]];
-				[[newPixList lastObject] setSliceInterval: 0];
-				
-				[curPix setOriginDouble: origin];
-			}
-		}
-		
-		BOOL finished = NO;
-		do
-		{
-			[processorsLock lockWhenCondition: 1];
-			if( numberOfThreadsForRelisce <= 0)
-			{
-				finished = YES;
-				[processorsLock unlockWithCondition: 1];
-			}
-			else [processorsLock unlockWithCondition: 0];
-		}
-		while( finished == NO);
-		
-		NSLog( @"reslice end");
-		
-		if( newViewer)
-		{
-			ViewerController	*new2DViewer;
 			
-			// CREATE A SERIES
-			new2DViewer = [self newWindow	:newPixList :newDcmList :newData];
-			[new2DViewer setImageIndex: [newPixList count]/2];
-			[[new2DViewer window] makeKeyAndOrderFront: self];
+			BOOL finished = NO;
+			do
+			{
+				[processorsLock lockWhenCondition: 1];
+				if( numberOfThreadsForRelisce <= 0)
+				{
+					finished = YES;
+					[processorsLock unlockWithCondition: 1];
+				}
+				else [processorsLock unlockWithCondition: 0];
+			}
+			while( finished == NO);
+			
+			NSLog( @"reslice end");
+			
+			[xData addObject: newData];
+			[xFiles addObject: newDcmList];
+			[xPix addObject: newPixList];
+			
+			postprocessed = YES;
 		}
-		else [self replaceSeriesWith :newPixList :newDcmList :newData];
-		
-		postprocessed = YES;
+		else succeed = NO;
 	}
-	else succeed = NO;
+	
+	int mx = maxMovieIndex;
+	
+	for( int j = 0 ; j < mx; j++)
+	{
+		if( j == 0)
+		{
+			if( newViewer)
+			{
+				ViewerController	*new2DViewer;
+				
+				// CREATE A SERIES
+				new2DViewer = [self newWindow: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
+				[new2DViewer setImageIndex: [[xPix objectAtIndex: j] count] /2];
+				[[new2DViewer window] makeKeyAndOrderFront: self];
+			}
+			else [self replaceSeriesWith: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
+		}
+		else
+		{
+			[self addMovieSerie: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
+		}
+	}
 	
 	// Close the waiting window
 	[self endWaitWindow: waitWindow];
@@ -1272,8 +1298,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		long moviePixWidth = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth];
 		long moviePixHeight = [[pixList[ curMovieIndex] objectAtIndex: 0] pheight];
 		
-		long j;
-		for( j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
+		for( int j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
 		{
 			if ( moviePixWidth != [[pixList[ curMovieIndex] objectAtIndex: j] pwidth]) volumicData = NO;
 			if ( moviePixHeight != [[pixList[ curMovieIndex] objectAtIndex: j] pheight]) volumicData = NO;
