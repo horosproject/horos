@@ -3512,7 +3512,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		rotatePoint.y = frame.size.height - start.y ;
 		rotatePoint = [self ConvertFromView2GL: rotatePoint];
 		
-		double ss = 1 - (previous.x - current.x)/200.;
+		double ss = 1.0 - (previous.x - current.x)/200.;
 		
 		if( resizeTotal*ss < 0.2) ss = 0.2 / resizeTotal;
 		if( resizeTotal*ss > 5.) ss = 5. / resizeTotal;
