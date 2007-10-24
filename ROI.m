@@ -4302,7 +4302,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 		unsigned char *ptr, *tmpImage;
 		int	loop = (int) [layerImage size].height * (int) [layerImage size].width;
-		tmpImage = malloc (loop * 4L);
+		tmpImage = malloc (bytesPerRow * [layerImage size].height);
 		ptr   = tmpImage;
 		
 		unsigned char   *bufPtr;

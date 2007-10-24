@@ -146,7 +146,9 @@
 
 - (void) setROI: (ROI*) iroi :(ViewerController*) c
 {
-	[curROI setComments: [comments string]];
+	if( curROI == iroi) return;
+	
+	[curROI setComments: [NSString stringWithString: [comments string]]];	// stringWithString is very important - see NSText string !
 	[curROI setName: [name stringValue]];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: 0L];
@@ -158,13 +160,6 @@
 	NSColor		*color = [NSColor colorWithDeviceRed:rgb.red/65535. green: rgb.green/65535. blue:rgb.blue/65535. alpha:1.0];
 	
 	[colorButton setColor: color];
-	
-	NSNotificationCenter *nc;
-    nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver: self
-           selector: @selector(removeROI:)
-               name: @"removeROI"
-             object: nil];
 	
 	[thicknessSlider setFloatValue: [curROI thickness]];
 	[opacitySlider setFloatValue: [curROI opacity]];
@@ -182,11 +177,11 @@
 	else [exportToXMLButton setEnabled:YES];
 }
 
-- (void)changeROI:(NSNotification*)notification;
+- (void)roiChange:(NSNotification*)notification;
 {
-	ROI* roi = [notification object];
-	[comments setString:[roi comments]];
-	[name setStringValue:[roi name]];
+//	ROI* roi = [notification object];
+//	[comments setString:[roi comments]];
+//	[name setStringValue:[roi name]];
 }
 
 - (id) initWithROI: (ROI*) iroi :(ViewerController*) c
@@ -194,7 +189,9 @@
 	self = [super initWithWindowNibName:@"ROI"];
 	
 	[[self window] setFrameAutosaveName:@"ROIInfoWindow"];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeROI:) name:@"changeROI" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(roiChange:) name:@"roiChange" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(removeROI:) name: @"removeROI" object: nil];
+	
 	roiNames = 0L;
 	
 	[self setROI: iroi :c];
@@ -206,8 +203,10 @@
 {
 	[ROI saveDefaultSettings];
 	
-	[curROI setComments: [comments string]];
+	[curROI setComments: [NSString stringWithString: [comments string]]]; 	// stringWithString is very important - see NSText string !
 	[curROI setName: [name stringValue]];
+	
+	curROI = 0L;
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: 0L];
 	
