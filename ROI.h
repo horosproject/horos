@@ -107,7 +107,7 @@ enum
 	NSData			*layerImageJPEG;//, *layerImageWhenSelectedJPEG;
 	float			layerPixelSpacingX, layerPixelSpacingY;
 	BOOL			isLayerOpacityConstant;
-	BOOL			canColorizeLayer;
+	BOOL			canColorizeLayer, canResizeLayer;
 	NSColor			*layerColor;
 	
 	NSNumber		*uniqueID;		// <- not saved, only valid during the 'life' of a ROI
@@ -205,6 +205,10 @@ enum
 - (long) clickInROI:(NSPoint) pt :(float) offsetx :(float) offsety :(float) scale :(BOOL) testDrawRect;
 - (NSPoint) ProjectionPointLine: (NSPoint) Point :(NSPoint) startPoint :(NSPoint) endPoint;
 - (void) deleteTexture:(NSOpenGLContext*) c;
+
+- (void)setCanResizeLayer:(BOOL)boo;
+
+
 // Calcium Scoring
 
 - (int)calciumScoreCofactor;

@@ -35,7 +35,7 @@ Version 2.3
 #import "ITKSegmentation3D.h"
 
 #define CIRCLERESOLUTION 40
-#define ROIVERSION		7
+#define ROIVERSION		8
 
 static		float					deg2rad = M_PI / 180.0f; 
 
@@ -457,6 +457,11 @@ static BOOL ROIDefaultsLoaded = NO;
 			displayTextualData = [[coder decodeObject] boolValue];
 		}
 		
+		if (fileVersion >= 8)
+		{
+			canResizeLayer = [[coder decodeObject] boolValue];
+		}
+		
 		[points retain];
 		[name retain];
 		[comments retain];
@@ -566,6 +571,9 @@ static BOOL ROIDefaultsLoaded = NO;
 	[coder encodeObject:[NSNumber numberWithBool:canColorizeLayer]];
 	[coder encodeObject:layerColor];
 	[coder encodeObject:[NSNumber numberWithBool:displayTextualData]];
+	
+	// ROIVERSION = 8
+	[coder encodeObject:[NSNumber numberWithBool:canResizeLayer]];
 }
 
 - (NSData*) data { return [NSArchiver archivedDataWithRootObject: self]; }
@@ -1748,7 +1756,7 @@ static BOOL ROIDefaultsLoaded = NO;
 - (BOOL)canResize;
 {
 	if(type == tLayerROI)
-		return NO;
+		return canResizeLayer;
 	else
 		return YES;
 }
@@ -4515,6 +4523,11 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 {
 	canColorizeLayer = boo;
 	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+}
+
+- (void)setCanResizeLayer:(BOOL)boo
+{
+	canResizeLayer = boo;
 }
 
 @end

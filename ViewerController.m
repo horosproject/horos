@@ -3206,6 +3206,7 @@ static ViewerController *draggedController = 0L;
 								[theNewROI setName: [file lastPathComponent]];
 								[theNewROI setIsLayerOpacityConstant: YES];
 								[theNewROI setCanColorizeLayer: NO];
+								[theNewROI setCanResizeLayer: YES];
 								
 								NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
 								NSRect size = [imageView frame];
@@ -3215,8 +3216,6 @@ static ViewerController *draggedController = 0L;
 								
 								NSPoint centroid = [theNewROI centroid];
 								NSPoint offset;
-								
-								NSLog( @"%f %f", centroid.x, centroid.y);
 								
 								offset.x = imageLocation.x - centroid.x;
 								offset.y = imageLocation.y - centroid.y;
