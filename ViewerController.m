@@ -3177,13 +3177,34 @@ static ViewerController *draggedController = 0L;
 										else if( draggedController == self)
 										{
 											NSLog(@"Myself => Cancel fusion if previous one!");
-											found = YES;
 											[self ActivateBlending: 0L];
 										}
 									}
 //								}
 //							}
 //						}
+					}
+				}
+				
+				if( found == NO)
+				{
+					//Is it an image? -> Create a layer ROI
+					
+					for( NSString *file in fileArray)
+					{
+						NSImage *im = [[NSImage alloc] initWithContentsOfFile: file];
+						if( im)
+						{
+							ROI* theNewROI = [self addLayerRoiToCurrentSliceWithImage: im referenceFilePath:@"none" layerPixelSpacingX:[[imageView curDCM] pixelSpacingX] layerPixelSpacingY:[[imageView curDCM] pixelSpacingY]];
+							
+							[theNewROI setName: [file lastPathComponent]];
+							[theNewROI setIsLayerOpacityConstant: YES];
+							[theNewROI setCanColorizeLayer: NO];
+							
+							[im release];
+							
+							[self selectROI:theNewROI deselectingOther:YES];
+						}
 					}
 				}
 			}

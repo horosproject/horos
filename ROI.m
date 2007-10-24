@@ -4331,6 +4331,26 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			rgbaPtr+= 4;
 		}
 	}
+	else
+	{
+		unsigned char*	rgbaPtr = (unsigned char*) textureBuffer;
+		long			ss = bytesPerRow/4 * [layerImage size].height;
+		
+		while( ss-->0)
+		{
+			unsigned char r = *(rgbaPtr+0);
+			unsigned char g = *(rgbaPtr+1);
+			unsigned char b = *(rgbaPtr+2);
+			unsigned char a = *(rgbaPtr+3);
+			
+			*(rgbaPtr+0) = a;
+			*(rgbaPtr+1) = r;
+			*(rgbaPtr+2) = g;
+			*(rgbaPtr+3) = b;
+			
+			rgbaPtr+= 4;
+		}
+	}
 
 	if(canColorizeLayer && layerColor)
 	{
