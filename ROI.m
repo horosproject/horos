@@ -1770,7 +1770,7 @@ static BOOL ROIDefaultsLoaded = NO;
     float new_y;
 	float intYCenter, intXCenter;
 	NSMutableArray	*pts = self.points;
-
+	
     intUpper = [pts count];
 	if( intUpper > 0)
 	{

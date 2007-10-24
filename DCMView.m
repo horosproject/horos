@@ -3514,7 +3514,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		NSPoint offset;
 		float   xx, yy;
 		
-		offset.x = - (previous.x - current.x) / scaleValue;
+		if( (start.x - current.x) / scaleValue < -0.01)
+		{
+			offset.x = 0;
+		}
+		else if( (start.x - current.x) / scaleValue > 100)
+		{
+			offset.x = 0;
+		}
+		else offset.x = - (previous.x - current.x) / scaleValue;
 		offset.y =  (previous.y - start.y) / scaleValue;
 		
 		for( int i = 0; i < [curRoiList count]; i++) {
