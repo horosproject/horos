@@ -2653,7 +2653,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
         rotationStart = rotation;
 		blendingFactorStart = blendingFactor;
 		scrollMode = 0;
-        		
+		resizeTotal = 1;
+		
         originStart = origin;
 		originOffsetStart = originOffset;
         
@@ -3514,19 +3515,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		NSPoint offset;
 		float   xx, yy;
 		
-		if( (start.x - current.x) / scaleValue < -0.01)
-		{
-			offset.x = 0;
-		}
-		else if( (start.x - current.x) / scaleValue > 100)
-		{
-			offset.x = 0;
-		}
-		else offset.x = - (previous.x - current.x) / scaleValue;
+		offset.x = - (previous.x - current.x) / scaleValue;
 		offset.y =  (previous.y - start.y) / scaleValue;
 		
+		double ss = 1 + (offset.x)/20.;
+		
+		if( resizeTotal*ss < 0.1) ss = 0.1 / resizeTotal;
+		if( resizeTotal*ss > 5.) ss = 5. / resizeTotal;
+		
+		resizeTotal *= ss;
+		
 		for( int i = 0; i < [curRoiList count]; i++) {
-			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) [[curRoiList objectAtIndex:i] resize: 1 + (offset.x)/20. :rotatePoint];
+			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) [[curRoiList objectAtIndex:i] resize: ss :rotatePoint];
 		}
 	}
 	// Move ROI

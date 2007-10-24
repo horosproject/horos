@@ -137,6 +137,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	
     NSSize          scaleStart, scaleInit;
     
+	double			resizeTotal;
     float           scaleValue, startScaleValue;
     float           rotation, rotationStart;
     NSPoint			origin, originOffset;
