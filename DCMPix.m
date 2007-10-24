@@ -2504,6 +2504,11 @@ BOOL gUSEPAPYRUSDCMPIX;
     return oImage;
 }
 
+- (void) setRGB:(BOOL) b
+{
+	isRGB = b;
+}
+
 -(void) setfImage:(float*) ptr
 {
 	if( fVolImage == 0L)
@@ -8644,6 +8649,8 @@ END_CREATE_ROIS:
 	
 	free( dstPtr);
 }
+
+
 
 - (void)ConvertToRGB:(long) mode :(long) cwl :(long) cww {
 	vImage_Buffer		srcf, dst8, dst8888;
