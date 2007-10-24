@@ -4148,6 +4148,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	NSPoint centroid;
 	
+	centroid.x = 0;
+	centroid.y = 0;
+	
 	for ( int i = 0; i < num_points; i++ ) {
 		centroid.x += [[pts objectAtIndex:i] x] / num_points;
 		centroid.y += [[pts objectAtIndex:i] y] / num_points;

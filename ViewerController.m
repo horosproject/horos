@@ -3192,18 +3192,43 @@ static ViewerController *draggedController = 0L;
 					
 					for( NSString *file in fileArray)
 					{
-						NSImage *im = [[NSImage alloc] initWithContentsOfFile: file];
-						if( im)
+						if( [[file pathExtension] isEqualToString:@"roi"])
 						{
-							ROI* theNewROI = [self addLayerRoiToCurrentSliceWithImage: im referenceFilePath:@"none" layerPixelSpacingX:[[imageView curDCM] pixelSpacingX] layerPixelSpacingY:[[imageView curDCM] pixelSpacingY]];
-							
-							[theNewROI setName: [file lastPathComponent]];
-							[theNewROI setIsLayerOpacityConstant: YES];
-							[theNewROI setCanColorizeLayer: NO];
-							
-							[im release];
-							
-							[self selectROI:theNewROI deselectingOther:YES];
+							[imageView roiLoadFromFilesArray: [NSArray arrayWithObject: file]];
+						}
+						else
+						{
+							NSImage *im = [[NSImage alloc] initWithContentsOfFile: file];
+							if( im)
+							{
+								ROI* theNewROI = [self addLayerRoiToCurrentSliceWithImage: im referenceFilePath:@"none" layerPixelSpacingX:[[imageView curDCM] pixelSpacingX] layerPixelSpacingY:[[imageView curDCM] pixelSpacingY]];
+								
+								[theNewROI setName: [file lastPathComponent]];
+								[theNewROI setIsLayerOpacityConstant: YES];
+								[theNewROI setCanColorizeLayer: NO];
+								
+								NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
+								NSRect size = [imageView frame];
+								eventLocation = [imageView convertPoint:eventLocation fromView:nil];
+								eventLocation.y = size.size.height - eventLocation.y;
+								NSPoint imageLocation = [imageView ConvertFromView2GL:eventLocation];
+								
+								NSPoint centroid = [theNewROI centroid];
+								NSPoint offset;
+								
+								NSLog( @"%f %f", centroid.x, centroid.y);
+								
+								offset.x = imageLocation.x - centroid.x;
+								offset.y = imageLocation.y - centroid.y;
+								
+								NSArray *newROIPoints = [theNewROI points];
+								for ( MyPoint *p in newROIPoints)
+									[p move:offset.x :offset.y];
+								
+								[im release];
+								
+								[self selectROI:theNewROI deselectingOther:YES];
+							}
 						}
 					}
 				}

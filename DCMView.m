@@ -878,6 +878,31 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
+- (void) roiLoadFromFilesArray: (NSArray*) filenames
+{
+	// Unselect all ROIs
+	for( int i = 0 ; i < [curRoiList count] ; i++) [[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
+	
+	for( NSString *path in filenames)
+	{
+		NSMutableArray*    roiArray = [NSUnarchiver unarchiveObjectWithFile: path];
+
+		for( id loopItem1 in roiArray)
+		{
+			[loopItem1 setOriginAndSpacing:curDCM.pixelSpacingX :curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
+			[loopItem1 setROIMode: ROI_selected];
+			[loopItem1 setRoiFont: labelFontListGL :labelFontListGLSize :self];
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: loopItem1 userInfo: nil];
+		}
+		
+		[curRoiList addObjectsFromArray: roiArray];
+	}
+	
+	[self setNeedsDisplay:YES];
+
+}
+
 - (IBAction) roiLoadFromFiles: (id) sender
 {
     long    i, j, x, result;
@@ -890,26 +915,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     
     if (result == NSOKButton) 
     {
-        // Unselect all ROIs
-        for( i = 0 ; i < [curRoiList count] ; i++) [[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
-        
-        for( i = 0; i < [[oPanel filenames] count]; i++)
-        {
-            NSMutableArray*    roiArray = [NSUnarchiver unarchiveObjectWithFile: [[oPanel filenames] objectAtIndex:i]];
-
-            for( id loopItem1 in roiArray)
-            {
-                [loopItem1 setOriginAndSpacing:curDCM.pixelSpacingX :curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
-                [loopItem1 setROIMode: ROI_selected];
-                [loopItem1 setRoiFont: labelFontListGL :labelFontListGLSize :self];
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: loopItem1 userInfo: nil];
-            }
-            
-            [curRoiList addObjectsFromArray: roiArray];
-        }
-        
-        [self setNeedsDisplay:YES];
+		[self roiLoadFromFilesArray: [oPanel filenames]];
     }
 }
 

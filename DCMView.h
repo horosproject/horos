@@ -414,6 +414,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) startDrag:(NSTimer*)theTimer;
 - (void)deleteMouseDownTimer;
 - (id)dicomImage;
+- (void) roiLoadFromFilesArray: (NSArray*) filenames;
 
 //windowController
 - (id)windowController;
