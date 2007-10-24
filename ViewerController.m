@@ -718,7 +718,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSMutableArray *xFiles = [NSMutableArray array];
 	NSMutableArray *xData = [NSMutableArray array];
 	
-	for( int j = 0 ; j < maxMovieIndex; j++)
+	succeed = YES;
+	
+	for( int j = 0 ; j < maxMovieIndex && succeed == YES; j++)
 	{
 		firstPix = [pixList[ j] objectAtIndex: 0];
 		
@@ -973,26 +975,29 @@ static volatile int numberOfThreadsForRelisce = 0;
 		else succeed = NO;
 	}
 	
-	int mx = maxMovieIndex;
-	
-	for( int j = 0 ; j < mx; j++)
+	if( succeed)
 	{
-		if( j == 0)
+		int mx = maxMovieIndex;
+		
+		for( int j = 0 ; j < mx; j++)
 		{
-			if( newViewer)
+			if( j == 0)
 			{
-				ViewerController	*new2DViewer;
-				
-				// CREATE A SERIES
-				new2DViewer = [self newWindow: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
-				[new2DViewer setImageIndex: [[xPix objectAtIndex: j] count] /2];
-				[[new2DViewer window] makeKeyAndOrderFront: self];
+				if( newViewer)
+				{
+					ViewerController	*new2DViewer;
+					
+					// CREATE A SERIES
+					new2DViewer = [self newWindow: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
+					[new2DViewer setImageIndex: [[xPix objectAtIndex: j] count] /2];
+					[[new2DViewer window] makeKeyAndOrderFront: self];
+				}
+				else [self replaceSeriesWith: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
 			}
-			else [self replaceSeriesWith: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
-		}
-		else
-		{
-			[self addMovieSerie: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
+			else
+			{
+				[self addMovieSerie: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
+			}
 		}
 	}
 	
@@ -5416,9 +5421,9 @@ static ViewerController *draggedController = 0L;
 	
 	BOOL wasDataFlipped = [imageView flippedData];
 	int index = [imageView curImage];
-	BOOL isResampled;
+	BOOL isResampled = YES;
 	
-	for( int j = 0 ; j < maxMovieIndex ; j ++)
+	for( int j = 0 ; j < maxMovieIndex && isResampled == YES ; j ++)
 	{	
 		NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];
 		NSMutableArray *newDcmList = [NSMutableArray arrayWithCapacity:0];
@@ -5434,7 +5439,7 @@ static ViewerController *draggedController = 0L;
 		}
 	}
 	
-	if( [xPix count])
+	if( isResampled)
 	{
 		resampleRatio = xFactor;
 		
@@ -5457,10 +5462,7 @@ static ViewerController *draggedController = 0L;
 		[imageView sendSyncMessage:1];
 		
 		[self adjustSlider];
-		
-		isResampled = YES;
 	}
-	else isResampled = NO;
 
 	return isResampled;
 }
