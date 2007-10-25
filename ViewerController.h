@@ -15,23 +15,7 @@
 #import <Cocoa/Cocoa.h>
 #import <AppKit/AppKit.h>
 
-//#import "DCMView.h"
-//#import "OpacityTransferView.h"
-//#import "ColorTransferView.h"
-//#import "MyPoint.h"
-//#import "ROI.h"
-//#import "ThickSlabController.h"
-//#import "StudyView.h"
-//#import "SeriesView.h"
-//#import "CurvedMPR.h"
-//#import "DICOMExport.h"
-//#import "KeyObjectPopupController.h"
-//#import "VRController.h"
-//#import "MPR2DController.h"
-//#import "OrthogonalMPRViewer.h"
-//#import "OrthogonalMPRPETCTViewer.h"
-//#import "SRController.h"
-//#import "EndoscopyViewer.h"
+
 
 @class DCMView;
 @class OpacityTransferView;
@@ -329,60 +313,91 @@ enum
 
 @property(readonly) short currentOrientationTool;
 
+/** Array of all 2D Viewers */
 + (NSMutableArray*) getDisplayed2DViewers;
 
-// Create a new 2D Viewer
+/**  Create a new 2D Viewer
+* @param pixList Array of DCMPix objects
+* @param fileList Array of files for DCMPix objects 
+* @param volumeData NSData object containing the volume data 
+*/
 + (ViewerController *) newWindow:(NSMutableArray*)pixList :(NSMutableArray*)fileList :(NSData*) volumeData;
+
+/**  Create a new 2D Viewer
+* @param pixList Array of DCMPix objects
+* @param fileList Array of files for DCMPix objects 
+* @param volumeData NSData object containing the volume data 
+*/
 - (ViewerController *) newWindow:(NSMutableArray*)pixList :(NSMutableArray*)fileList :(NSData*) volumeData;
+
+/** Notifcation to close Viewer */
 - (void) CloseViewerNotification: (NSNotification*) note;
+
+/** Change Series 
+* @param newPixList Array of DCMPix objects to used instead
+* @param newDcmList Array of file strings
+* @param newData NSData of new volume data
+*/
 - (void) replaceSeriesWith:(NSMutableArray*)newPixList :(NSMutableArray*)newDcmList :(NSData*) newData;
 
-// Return the 'dragged' window, the destination window is contained in the 'viewerController' object of the 'PluginFilter' object
+/** Return the 'dragged' window, the destination window is contained in the 'viewerController' object of the 'PluginFilter' object */
 -(ViewerController*) blendedWindow;
 
-// Display a waiting window
+/**  Display a Wait window with the message
+* @param message  The message for the Wait window to display */
 - (id) startWaitWindow :(NSString*) message;
 
+
+/**  Display a Wait window with the message  progress length of max
+* @param message  The message for the Wait window to display
+* @param max  Progress bar max */
 - (id) startWaitProgressWindow :(NSString*) message :(long) max;
+
+/**  Increment the Wait window progress bar
+* @param waitWindow  The Wait Window
+* @param val  Amount to increment the Wait window 
+*/
 - (void) waitIncrementBy:(id) waitWindow :(long) val;
 
+
+/** End the wait window */
 - (void) endWaitWindow:(id) waitWindow;
 
-// Refresh the current displayed image
+/** Refresh the current displayed image */
 - (void) needsDisplayUpdate;
 
-// Return the memory pointer that contains the ENTIRE series (a unique memory block for all images)
+/** Return the memory pointer that contains the ENTIRE series (a unique memory block for all images)  */
 - (float*) volumePtr;
 - (float*) volumePtr: (long) i;
 
-// Return the index into fileList that coresponds to the index in pixList
+/** Return the index into fileList that coresponds to the index in pixList */
 - (long) indexForPix: (long) pixIndex;
 
-// Return the image pane object
+/**  Return the image pane object */
 - (DCMView*) imageView;
 
-// Return the array of DCMPix objects
+/**  Return the array of DCMPix objects */
 - (NSMutableArray*) pixList;
 - (NSMutableArray*) pixList: (long) i;
 
-// Return the array of DicomFile objects
+/** Return the array of DicomFile objects */
 - (NSMutableArray*) fileList;
 - (NSMutableArray*) fileList: (long) i;
 
-// Return the array of ROI objects
+/** Return the array of ROI objects */
 - (NSMutableArray*) roiList;
 - (NSMutableArray*) roiList: (long) i;
 
-// Create a new Point object
+/**  Create a new MyPoint object */
 - (MyPoint*) newPoint: (float) x :(float) y;
 
-// Create a new ROI object
+/** Create a new ROI object */
 - (ROI*) newROI: (long) type;
 
-// Delete ALL ROIs of current series
+/** Delete ALL ROI objects for  current series */
 - (IBAction) roiDeleteAll:(id) sender;
 
-// methods to access global variables
+/**  methods to access global variables */
 + (long) numberOf2DViewer;
 
 // UNDOCUMENTED FUNCTIONS
@@ -656,14 +671,11 @@ enum
 - (void) applyMorphology: (NSArray*) rois action:(NSString*) action	radius: (long) radius sendNotification: (BOOL) sendNotification;
 
 - (IBAction) setStructuringElementRadius: (id) sender;
-//- (IBAction) closeBrushROIFilterOptionsSheet: (id) sender;
+
 
 - (IBAction) morphoSelectedBrushROIWithRadius: (id) sender;
 - (IBAction) morphoSelectedBrushROI: (id) sender;
-//- (IBAction) dilateSelectedBrushROIWithRadius: (id) sender;
-//- (IBAction) dilateSelectedBrushROI: (id) sender;
-//- (IBAction) closeSelectedBrushROIWithRadius: (id) sender;
-//- (IBAction) closeSelectedBrushROI: (id) sender;
+
 - (ROI*) roiMorphingBetween:(ROI*) a and:(ROI*) b ratio:(float) ratio;
 - (ROI*) convertPolygonROItoBrush:(ROI*) selectedROI;
 - (ROI*) convertBrushROItoPolygon:(ROI*) selectedROI numPoints: (int) numPoints;
