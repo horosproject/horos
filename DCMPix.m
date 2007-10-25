@@ -38,6 +38,7 @@
 #include "nifti1_io.h"
 #include <Accelerate/Accelerate.h>
 #import <QTKit/QTKit.h>
+#import "Point3D.h"
 
 #import "math.h"
 #import "altivecFunctions.h"
