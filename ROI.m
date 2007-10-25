@@ -4288,7 +4288,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 - (GLuint )loadLayerImageTexture;
 {
 	NSBitmapImageRep *bitmap;
-	bitmap = [[NSBitmapImageRep alloc] initWithData:layerImageJPEG];
+	bitmap = [[NSBitmapImageRep alloc] initWithData: [layerImage TIFFRepresentation]];
 
 	int bytesPerRow = [bitmap bytesPerRow];
 	int spp = [bitmap samplesPerPixel];
@@ -4301,7 +4301,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		bytesPerRow *= 4;
 
 		unsigned char *ptr, *tmpImage;
-		int	loop = (int) [layerImage size].height * (int) [layerImage size].width;
+		int	loop = (int) [layerImage size].height * bytesPerRow/4;
 		tmpImage = malloc (bytesPerRow * [layerImage size].height);
 		ptr   = tmpImage;
 		
