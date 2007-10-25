@@ -431,7 +431,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 
 + (NSString*)inactivePluginsDirectoryPath;
 {
-	return @"Library/Application Support/OsiriX/Plugins (off)/";
+	return @"Library/Application Support/OsiriX/Plugins Disabled/";
 }
 
 + (NSString*)userActivePluginsDirectoryPath;
@@ -464,7 +464,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 + (NSString*)appInactivePluginsDirectoryPath;
 {
 	NSMutableString *appPath = [NSMutableString stringWithString:[[NSBundle mainBundle] builtInPlugInsPath]];
-	[appPath appendString:@" (off)"];
+	[appPath appendString:@" Disabled"];
 	return appPath;
 }
 
