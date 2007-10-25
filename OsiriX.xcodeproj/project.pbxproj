@@ -25001,6 +25001,8 @@
 				ARCHS = (
 					i386,
 					ppc,
+					ppc64,
+					x86_64,
 				);
 				BUILD_VARIANTS = normal;
 				COPY_PHASE_STRIP = NO;
