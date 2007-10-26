@@ -1363,8 +1363,7 @@ static char *GetPrivateIP()
 	[buttonCell setAction:@selector(retrieveClick:)];
 	[buttonCell setControlSize:NSMiniControlSize];
 	[buttonCell setImage:[NSImage imageNamed:@"InArrow.tif"]];
-//	[buttonCell setBordered:YES];
-	[buttonCell setBezelStyle: NSRegularSquareBezelStyle];
+	[buttonCell setBezelStyle: NSRoundRectBezelStyle]; // was NSRegularSquareBezelStyle
 	[tableColumn setDataCell:buttonCell];
 	
 	[fromDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
