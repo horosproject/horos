@@ -397,9 +397,9 @@ static char *GetPrivateIP()
 			if( [studyArray count] > 0)
 			{
 				if( [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
-					[(ImageAndTextCell *)cell setImage: Realised3];
+					[(ImageAndTextCell *)cell setImage: alreadyInDatabase];
 				else
-					[(ImageAndTextCell *)cell setImage: Realised2];
+					[(ImageAndTextCell *)cell setImage: partiallyInDatabase];
 			}
 			else [(ImageAndTextCell *)cell setImage: 0L];
 		}
@@ -423,9 +423,9 @@ static char *GetPrivateIP()
 //			if( [seriesArray count] > 0)
 //			{
 //				if( [[[seriesArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
-//					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised3.tif"]];
+//					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"QRalreadyInDatabase.tif"]];
 //				else
-//					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised2.tif"]];
+//					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"QRpartiallyInDatabase.tif"]];
 //			}
 //			else [(ImageAndTextCell *)cell setImage: 0L];
 //			
@@ -1261,8 +1261,8 @@ static char *GetPrivateIP()
 		echoSuccess = 0L;
 		activeMoves = 0L;
 		
-		Realised2 = [[NSImage imageNamed:@"Realised2.tif"] retain];
-		Realised3 = [[NSImage imageNamed:@"Realised3.tif"] retain];
+		partiallyInDatabase = [[NSImage imageNamed:@"QRpartiallyInDatabase.tif"] retain];
+		alreadyInDatabase = [[NSImage imageNamed:@"QRalreadyInDatabase.tif"] retain];
 		
 		pressedKeys = [[NSMutableString stringWithString:@""] retain];
 		queryFilters = [[NSMutableArray array] retain];
@@ -1302,8 +1302,8 @@ static char *GetPrivateIP()
 	[activeMoves release];
 	[sourcesArray release];
 	[resultArray release];
-	[Realised2 release];
-	[Realised3 release];
+	[partiallyInDatabase release];
+	[alreadyInDatabase release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
 	

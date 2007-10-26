@@ -470,6 +470,10 @@
 		A975206C0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A975206A0CAA98BA005D172F /* IChatTheatreHelpWindowController.m */; };
 		A975206D0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = A97520690CAA98BA005D172F /* IChatTheatreHelpWindowController.h */; };
 		A975206E0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A975206A0CAA98BA005D172F /* IChatTheatreHelpWindowController.m */; };
+		A977ECAD0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif in Resources */ = {isa = PBXBuildFile; fileRef = A977ECAB0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif */; };
+		A977ECAE0CD1F7E500C418D8 /* QRalreadyInDatabase.tif in Resources */ = {isa = PBXBuildFile; fileRef = A977ECAC0CD1F7E500C418D8 /* QRalreadyInDatabase.tif */; };
+		A977ECAF0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif in Resources */ = {isa = PBXBuildFile; fileRef = A977ECAB0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif */; };
+		A977ECB00CD1F7E500C418D8 /* QRalreadyInDatabase.tif in Resources */ = {isa = PBXBuildFile; fileRef = A977ECAC0CD1F7E500C418D8 /* QRalreadyInDatabase.tif */; };
 		A978DE910CB0D4BE00FB2C3D /* NFHUDSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE680CB0D4BE00FB2C3D /* NFHUDSlider.h */; };
 		A978DE9B0CB0D4BE00FB2C3D /* NFHUDButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE720CB0D4BE00FB2C3D /* NFHUDButtonCell.m */; };
 		A978DE9C0CB0D4BE00FB2C3D /* NFHUDButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE730CB0D4BE00FB2C3D /* NFHUDButtonCell.h */; };
@@ -8504,6 +8508,8 @@
 		A97520060CAA8481005D172F /* style.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
 		A97520690CAA98BA005D172F /* IChatTheatreHelpWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IChatTheatreHelpWindowController.h; sourceTree = "<group>"; };
 		A975206A0CAA98BA005D172F /* IChatTheatreHelpWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IChatTheatreHelpWindowController.m; sourceTree = "<group>"; };
+		A977ECAB0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = QRpartiallyInDatabase.tif; path = DatabaseStates/QRpartiallyInDatabase.tif; sourceTree = "<group>"; };
+		A977ECAC0CD1F7E500C418D8 /* QRalreadyInDatabase.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = QRalreadyInDatabase.tif; path = DatabaseStates/QRalreadyInDatabase.tif; sourceTree = "<group>"; };
 		A978DE680CB0D4BE00FB2C3D /* NFHUDSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDSlider.h; sourceTree = "<group>"; };
 		A978DE720CB0D4BE00FB2C3D /* NFHUDButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDButtonCell.m; sourceTree = "<group>"; };
 		A978DE730CB0D4BE00FB2C3D /* NFHUDButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDButtonCell.h; sourceTree = "<group>"; };
@@ -13139,6 +13145,8 @@
 				CE4CD8D80890DAC700CF4FE4 /* Realised2.tif */,
 				CE4CD8DA0890DAC700CF4FE4 /* Realised3.tif */,
 				CE4CD8D90890DAC700CF4FE4 /* Realised4.tif */,
+				A977ECAB0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif */,
+				A977ECAC0CD1F7E500C418D8 /* QRalreadyInDatabase.tif */,
 				A9B411EE0890498600913770 /* small_sharedAlbum.tiff */,
 				A9B411B40890492F00913770 /* small_smartAlbum.tiff */,
 				A9B411C10890496400913770 /* small_sharedSmartAlbum.tiff */,
@@ -21275,6 +21283,8 @@
 				A97B73980CB380EF00E5348D /* osirixplugin.icns in Resources */,
 				CE5A7F8C0CB9430D009C80B4 /* 32-bit shell.app in Resources */,
 				CEEB5CCC0CCDD161008803E2 /* Centerline.tif in Resources */,
+				A977ECAD0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif in Resources */,
+				A977ECAE0CD1F7E500C418D8 /* QRalreadyInDatabase.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21657,6 +21667,8 @@
 				A97B73990CB380F600E5348D /* osirixplugin.icns in Resources */,
 				CE5A7F8D0CB9430D009C80B4 /* 32-bit shell.app in Resources */,
 				CEEB5CCB0CCDD161008803E2 /* Centerline.tif in Resources */,
+				A977ECAF0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif in Resources */,
+				A977ECB00CD1F7E500C418D8 /* QRalreadyInDatabase.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
