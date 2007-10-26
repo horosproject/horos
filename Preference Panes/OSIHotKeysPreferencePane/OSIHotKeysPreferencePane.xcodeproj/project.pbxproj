@@ -19,6 +19,7 @@
 		BF2EECA70B1F8DDE007E9088 /* HotKeyTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2EECA50B1F8DDE007E9088 /* HotKeyTextFieldCell.h */; };
 		BF2EECA80B1F8DDE007E9088 /* HotKeyTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2EECA60B1F8DDE007E9088 /* HotKeyTextFieldCell.m */; };
 		BF92A1CD0B1D4433001DB893 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF92A1CC0B1D4433001DB893 /* Security.framework */; };
+		CE24147C0CD2A05C009D0877 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE24147A0CD2A05C009D0877 /* Localizable.strings */; };
 		CE5C6D020CAD9B2900597FEF /* OSIHotKeysPref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE5C6D000CAD9B2900597FEF /* OSIHotKeysPref.xib */; };
 /* End PBXBuildFile section */
 
@@ -35,6 +36,7 @@
 		BF2EECA50B1F8DDE007E9088 /* HotKeyTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyTextFieldCell.h; sourceTree = "<group>"; };
 		BF2EECA60B1F8DDE007E9088 /* HotKeyTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyTextFieldCell.m; sourceTree = "<group>"; };
 		BF92A1CC0B1D4433001DB893 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		CE24147B0CD2A05C009D0877 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE5C6D010CAD9B2900597FEF /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIHotKeysPref.xib; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIHotKeysPref.h; sourceTree = "<group>"; };
@@ -82,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				8D202CF70486D31800D8A456 /* Info.plist */,
+				CE24147A0CD2A05C009D0877 /* Localizable.strings */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 				F506C040013D9D8001CA16C8 /* OSIHotKeysPref.tiff */,
 				CE5C6D000CAD9B2900597FEF /* OSIHotKeysPref.xib */,
@@ -198,6 +201,7 @@
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
 				8D202CEE0486D31800D8A456 /* OSIHotKeysPref.tiff in Resources */,
 				CE5C6D020CAD9B2900597FEF /* OSIHotKeysPref.xib in Resources */,
+				CE24147C0CD2A05C009D0877 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,6 +237,14 @@
 				089C167EFE841241C02AAC07 /* English */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		CE24147A0CD2A05C009D0877 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE24147B0CD2A05C009D0877 /* English */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 		CE5C6D000CAD9B2900597FEF /* OSIHotKeysPref.xib */ = {

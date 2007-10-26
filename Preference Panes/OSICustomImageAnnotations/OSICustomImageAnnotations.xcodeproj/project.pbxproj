@@ -31,6 +31,7 @@
 		AB54F6F50C6CABE200B6F653 /* Security.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB54F6F40C6CABE200B6F653 /* Security.tiff */; };
 		AB54F6FD0C6CAC8A00B6F653 /* AlphaGray.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB54F6FC0C6CAC8A00B6F653 /* AlphaGray.tif */; };
 		AB80A66E0A19C8EC00FED357 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80A66D0A19C8EC00FED357 /* Security.framework */; };
+		CE2414710CD2A04A009D0877 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE24146F0CD2A04A009D0877 /* Localizable.strings */; };
 		CE729C53097075C30064790F /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE729C52097075C30064790F /* IOKit.framework */; };
 		CE9217640C972E8200A6DA13 /* OSICustomImageAnnotations.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9217620C972E8200A6DA13 /* OSICustomImageAnnotations.xib */; };
 /* End PBXBuildFile section */
@@ -63,6 +64,7 @@
 		AB54F6F40C6CABE200B6F653 /* Security.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Security.tiff; sourceTree = "<group>"; };
 		AB54F6FC0C6CAC8A00B6F653 /* AlphaGray.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = AlphaGray.tif; sourceTree = "<group>"; };
 		AB80A66D0A19C8EC00FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		CE2414700CD2A04A009D0877 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE729C52097075C30064790F /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		CE9217630C972E8200A6DA13 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSICustomImageAnnotations.xib; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
@@ -110,6 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				8D202CF70486D31800D8A456 /* Info.plist */,
+				CE24146F0CD2A04A009D0877 /* Localizable.strings */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 				AB54F6F40C6CABE200B6F653 /* Security.tiff */,
 				AB54F6FC0C6CAC8A00B6F653 /* AlphaGray.tif */,
@@ -245,6 +248,7 @@
 				AB54F6F50C6CABE200B6F653 /* Security.tiff in Resources */,
 				AB54F6FD0C6CAC8A00B6F653 /* AlphaGray.tif in Resources */,
 				CE9217640C972E8200A6DA13 /* OSICustomImageAnnotations.xib in Resources */,
+				CE2414710CD2A04A009D0877 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,6 +289,14 @@
 				089C167EFE841241C02AAC07 /* English */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		CE24146F0CD2A04A009D0877 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE2414700CD2A04A009D0877 /* English */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 		CE9217620C972E8200A6DA13 /* OSICustomImageAnnotations.xib */ = {
