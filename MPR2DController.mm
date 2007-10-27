@@ -371,6 +371,11 @@ extern NSString * documentsDirectory();
 
 -(NSMutableArray*) pixList { return pixList[0];}
 
+- (void) updateOrientationMatrix
+{
+	[orientationMatrix selectCellWithTag:[viewerController currentOrientationTool]];
+}
+
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC
 {
     unsigned long   i;
@@ -536,7 +541,7 @@ extern NSString * documentsDirectory();
 	[view setCurrentTool: tWL];
 	[originalView setCurrentTool: tWL];
 	
-	[orientationMatrix selectCellWithTag:[viewerController currentOrientationTool]];
+	[self updateOrientationMatrix];
 	
 	[[self window] setInitialFirstResponder: originalView];
 	

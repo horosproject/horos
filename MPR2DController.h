@@ -91,5 +91,5 @@
 - (void)bringToFrontROI:(ROI*)roi;
 - (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
 - (IBAction) setOrientationTool:(id)sender;
-
+- (void) updateOrientationMatrix;
 @end

@@ -15847,6 +15847,8 @@ long i;
 			[viewer showWindow:self];
 			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 		}
+		
+		[viewer updateOrientationMatrix];
 	}
 }
 
