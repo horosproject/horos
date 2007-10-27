@@ -1403,8 +1403,6 @@ extern NSString * documentsDirectory();
 - (IBAction) setOrientationTool:(id)sender;
 {
 	[viewerController setOrientationToolFrom2DMPR:sender];
-	
-	[orientationMatrix selectCellWithTag:[viewerController currentOrientationTool]];
 }
 
 @end
