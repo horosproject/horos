@@ -110,7 +110,7 @@ static NSHost *currentHost = 0L;
 	else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
 	{
 		[aNetService retain];
-		[aNetService resolveWithTimeout: 30];
+		[aNetService resolveWithTimeout: 5];
 		[aNetService setDelegate:self];
 	}
 }
