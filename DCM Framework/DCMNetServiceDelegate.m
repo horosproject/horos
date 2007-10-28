@@ -109,9 +109,11 @@ static NSHost *currentHost = 0L;
 	}
 	else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
 	{
+		#if !__LP64__
 		[aNetService retain];
 		[aNetService resolveWithTimeout: 5];
 		[aNetService setDelegate:self];
+		#endif
 	}
 }
 

@@ -1062,10 +1062,12 @@ static char *GetPrivateIP()
 		
 		// Resolve the address and port for this NSNetService
 		
+		#if !__LP64__
 		[aNetService retain];
 		[aNetService setDelegate:self];
 //		[aNetService scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
 		[aNetService resolveWithTimeout: 5];
+		#endif
 	}
 	
 	// update interface
