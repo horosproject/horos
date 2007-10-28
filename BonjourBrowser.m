@@ -147,7 +147,7 @@ static char *GetPrivateIP()
 		
 		[browser searchForServicesOfType:@"_osirix._tcp." inDomain:@""];
 		
-		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
+//		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
 															  selector: @selector(updateFixedList:)
@@ -1042,6 +1042,8 @@ static char *GetPrivateIP()
 			}
 		}
 	}
+	
+	[sender release];	// <- We did a retain in the didFindService
 }
 
 // This object is the delegate of its NSNetServiceBrowser object.
@@ -1060,8 +1062,9 @@ static char *GetPrivateIP()
 		
 		// Resolve the address and port for this NSNetService
 		
+		[aNetService retain];
 		[aNetService setDelegate:self];
-		[aNetService scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
+//		[aNetService scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
 		[aNetService resolveWithTimeout: 5];
 	}
 	
