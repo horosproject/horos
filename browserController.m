@@ -8934,7 +8934,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	return [[[BrowserController currentBrowser] DateTimeFormat] stringFromDate: d];
 }
 
--(void) awakeFromNib {
+-(void) awakeFromNib
+{
 	WaitRendering *wait = nil;
 	
 	if( sizeof( long) == 8 ) {
@@ -9270,6 +9271,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	[self setDBWindowTitle];
 	
 	[self.window makeKeyAndOrderFront: self];
+	
+	[self refreshMatrix: self];
 }
 
 - (IBAction)customize:(id)sender {
