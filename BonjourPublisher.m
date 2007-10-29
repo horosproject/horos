@@ -110,8 +110,6 @@ static char *GetPrivateIP()
 			{
 				NSLog(@"bind failed... select another port than 8780");
 				
-				NSRunCriticalAlertPanel(NSLocalizedString(@"Bonjour Port",nil), NSLocalizedString(@"Cannot use port 8780 for Bonjour sharing. It is already used.",nil),NSLocalizedString( @"OK",nil), nil, nil);
-				
 				serverAddress.sin_port = htons(0);
 				if (bind(fdForListening, (struct sockaddr *)&serverAddress, namelen) < 0)
 				{
@@ -127,7 +125,28 @@ static char *GetPrivateIP()
             }
 			
             chosenPort = ntohs(serverAddress.sin_port);
-
+			
+			if( chosenPort != 8780)
+			{
+				NSString *exampleAlertSuppress = @"Bonjour Port";
+				NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+				if ([defaults boolForKey:exampleAlertSuppress])
+				{
+				}
+				else
+				{
+					NSAlert* alert = [NSAlert new];
+					[alert setInformativeText: NSLocalizedString(@"Bonjour Port", 0L)];
+					[alert setMessageText: NSLocalizedString(@"Cannot use port 8780 for Bonjour sharing. It is already used, another port will be selected.", 0L)];
+					[alert setShowsSuppressionButton:YES];
+					[alert runModal];
+					if ([[alert suppressionButton] state] == NSOnState)
+					{
+						[defaults setBool:YES forKey:exampleAlertSuppress];
+					}
+				}
+			}
+			
 			NSLog(@"Chosen port: %d", chosenPort);		
 
 			// Once we're here, we know bind must have returned, so we can start the listen

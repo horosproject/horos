@@ -1481,7 +1481,24 @@ static BOOL initialized = NO;
 				exit( 0);
 			}
 			else
-				NSRunCriticalAlertPanel(NSLocalizedString(@"OsiriX 64-bit", 0L), NSLocalizedString(@"This is a preview version of OsiriX 64-bit. You SHOULD NOT use it for any scientific or clinical activities.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+			{
+				NSString *exampleAlertSuppress = @"OsiriX 64-bit Warning";
+				NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+				if ([defaults boolForKey:exampleAlertSuppress])
+				{
+				}
+				else {
+					NSAlert* alert = [NSAlert new];
+					[alert setInformativeText: NSLocalizedString(@"OsiriX 64-bit Warning", 0L)];
+					[alert setMessageText:     NSLocalizedString(@"This is a preview version of OsiriX 64-bit. You SHOULD NOT use it for any scientific or clinical activities.", 0L)];
+					[alert setShowsSuppressionButton:YES];
+					[alert runModal];
+					if ([[alert suppressionButton] state] == NSOnState)
+					{
+						[defaults setBool:YES forKey:exampleAlertSuppress];
+					}
+				}
+			}
 			#endif
 						
 			if( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundlePackageType"] isEqualToString: @"APPL"])

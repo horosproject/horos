@@ -7556,6 +7556,7 @@ END_CREATE_ROIS:
 				{
 					NSLog( @"CheckLoadIn Exception");
 					NSLog( [e description]);
+					NSLog( @"Exception for this file: %@", srcFile);
 					success = NO;
 				}
 				
@@ -8437,6 +8438,7 @@ END_CREATE_ROIS:
 	{
 		NSLog( @"CheckLoad Exception");
 		NSLog( @"Exception : %@", [ne description]);
+		NSLog( @"Exception for this file: %@", srcFile);
 	}
 	
 	[checking unlock];
@@ -10237,12 +10239,16 @@ END_CREATE_ROIS:
 						if(![value isEqualToString:@""]) value = [value stringByAppendingString:@" "];
 					}
 					
-					[contentOUT addObject:value];
+					if( value) [contentOUT addObject:value];
 				}
 				if( contentForLine)
-					[annotationsOUT addObject:contentOUT];
+				{
+					if( contentOUT)
+						[annotationsOUT addObject:contentOUT];
+				}
 			}
-			[annotationsDictionary setObject:annotationsOUT forKey: key];
+			if( annotationsOUT)
+				[annotationsDictionary setObject:annotationsOUT forKey: key];
 		}
 	}
 }
