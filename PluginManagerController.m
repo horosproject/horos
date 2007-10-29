@@ -182,12 +182,15 @@
 
 - (void)refreshPluginList;
 {
+	NSIndexSet *selectedIndexes = [pluginTable selectedRowIndexes];
 	pluginsNeedToReload = YES;
 	
 	[self willChangeValueForKey:@"plugins"];
 	[plugins removeAllObjects];
 	[plugins addObjectsFromArray:[PluginManager pluginsList]];
 	[self didChangeValueForKey:@"plugins"];
+	
+	[pluginTable selectRowIndexes:selectedIndexes byExtendingSelection:NO];
 }
 
 #pragma mark NSTabView Delegate methods

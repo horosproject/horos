@@ -505,6 +505,9 @@ static NSMenu					*fusionPluginsMenu = 0L;
 
 + (void)movePluginFromPath:(NSString*)sourcePath toPath:(NSString*)destinationPath;
 {
+	if(![[NSFileManager defaultManager] fileExistsAtPath:[destinationPath stringByDeletingLastPathComponent]])
+		[[NSFileManager defaultManager] createDirectoryAtPath:[destinationPath stringByDeletingLastPathComponent] attributes:nil];
+
     NSMutableArray *args = [NSMutableArray array];
 	[args addObject:@"-f"];
     [args addObject:sourcePath];
