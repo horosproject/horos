@@ -81,6 +81,7 @@
 - (void) ApplyCLUTString:(NSString*) str;
 - (void) setWLWW:(float) iwl :(float) iww:(id) sender;
 - (IBAction) flipVolume;
+- (ViewerController*) viewerController;
 
 - (void) resliceFromOriginal: (float) x: (float) y: (id) sender;
 - (void) resliceFromX: (float) x: (float) y: (id) sender;

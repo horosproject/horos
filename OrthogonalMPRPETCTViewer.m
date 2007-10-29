@@ -49,13 +49,13 @@ NSString * documentsDirectory();
 {
 	ViewerController	*v = [note object];
 	
-	if( [[v pixList] containsObject:[[PETController originalDCMPixList] objectAtIndex: 0]])
+	if( v == [[PETController viewer] viewerController])	//OrthogonalMPRPETCTViewer
 	{
 		[[self window] close];
 		return;
 	}
 	
-	if( [[v pixList] containsObject:[[CTController originalDCMPixList] objectAtIndex: 0]])
+	if( v == [[CTController viewer] viewerController])
 	{
 		[[self window] close];
 		return;
@@ -66,7 +66,7 @@ NSString * documentsDirectory();
 {
 	NSMutableArray	*v = [note object];
 	
-	if( [[PETController originalDCMPixList] firstObjectCommonWithArray: v])
+	if( [blendingViewerController pixList] == v)
 	{
 		OrthogonalMPRView *view = [PETController originalView];
 		
@@ -77,7 +77,7 @@ NSString * documentsDirectory();
 		[view setCrossPosition: [view crossPositionX] :[[PETController originalDCMPixList] count] -1 - ([[[note userInfo] valueForKey:@"z"] intValue] + fistPETSlice)];
 	}
 	
-	if( [[CTController originalDCMPixList] firstObjectCommonWithArray: v])
+	if( [viewer pixList] == v)
 	{
 		OrthogonalMPRView *view = [CTController originalView];
 		
@@ -187,7 +187,7 @@ NSString * documentsDirectory();
 	
 	// initialisations
 	[CTController initWithPixList: [NSMutableArray arrayWithArray: [pix subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [files subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : vC : nil : self];
-	[PETController initWithPixList: [NSMutableArray arrayWithArray: [[bC pixList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)]] : [[bC fileList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)] : vData : vC : nil : self];
+	[PETController initWithPixList: [NSMutableArray arrayWithArray: [[bC pixList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)]] : [[bC fileList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)] : vData : bC : nil : self];
 	[PETCTController initWithPixList: [NSMutableArray arrayWithArray: [pix subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [files subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : vC : bC : self];
 
 	isFullWindow = NO;

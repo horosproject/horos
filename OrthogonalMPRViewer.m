@@ -61,7 +61,7 @@ NSString * documentsDirectory();
 {
 	NSMutableArray	*v = [note object];
 	
-	if( v == [controller originalDCMPixList])
+	if( v == [viewer pixList])
 	{
 		OrthogonalMPRView *view = [controller originalView];
 		
@@ -77,7 +77,7 @@ NSString * documentsDirectory();
 {
 	ViewerController	*v = [note object];
 	
-	if( [v pixList] == [controller originalDCMPixList])
+	if( v == viewer)
 	{
 		[[self window] performClose: self];
 		return;
