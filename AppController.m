@@ -1794,7 +1794,7 @@ static BOOL initialized = NO;
     if ([[notification name] isEqualToString:
                 NSWorkspaceSessionDidResignActiveNotification])
     {
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"RunListenerOnlyIfActiveSession"])
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"RunListenerOnlyIfActive"])
 		{
 			NSLog( @"***** OsiriX : session deactivation: STOP DICOM LISTENER FOR THIS SESSION");
 			
@@ -1818,7 +1818,8 @@ static BOOL initialized = NO;
 		
 		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow: 2]];
 		
-		[self restartSTORESCP];
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"RunListenerOnlyIfActive"])
+			[self restartSTORESCP];
     }
 }
 

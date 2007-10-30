@@ -1,6 +1,7 @@
 // !$*UTF8*$!
 {
 	089C1669FE841209C02AAC07 /* Project object */ = {
+		activeArchitecture = i386;
 		activeBuildConfigurationName = Development;
 		activeExecutable = AB34B70609AA11020057FE0E /* Executable */;
 		activeTarget = 8D202CE80486D31800D8A456 /* OSIListenerPreferencePane */;
@@ -10,7 +11,6 @@
 		breakpoints = (
 			AB34B70409AA10ED0057FE0E /* OSIListenerPreferencePanePref.m:85 */,
 		);
-		breakpointsGroup = AB34B72609AA11120057FE0E /* XCBreakpointsBucket */;
 		codeSenseManager = AB34B6EB09AA0E9A0057FE0E /* Code sense */;
 		executables = (
 			AB34B70609AA11020057FE0E /* Executable */,
@@ -52,19 +52,16 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 188489037;
-			PBXWorkspaceStateSaveDate = 188489037;
+			PBXPerProjectTemplateStateSaveDate = 215424442;
+			PBXWorkspaceStateSaveDate = 215424442;
 		};
 		perUserProjectItems = {
-			AB35516209B74B1B00F0C358 /* PBXTextBookmark */ = AB35516209B74B1B00F0C358 /* PBXTextBookmark */;
 			AB52E74B0A19FC0F00726305 /* PBXTextBookmark */ = AB52E74B0A19FC0F00726305 /* PBXTextBookmark */;
 			AB52E74E0A19FC0F00726305 /* PBXTextBookmark */ = AB52E74E0A19FC0F00726305 /* PBXTextBookmark */;
 			AB7925FD09FCBE46006E342C /* PBXTextBookmark */ = AB7925FD09FCBE46006E342C /* PBXTextBookmark */;
-			AB7D38590B3C221E00B15EC9 /* PBXTextBookmark */ = AB7D38590B3C221E00B15EC9 /* PBXTextBookmark */;
 			AB80AB470A19CF1800FED357 /* PBXTextBookmark */ = AB80AB470A19CF1800FED357 /* PBXTextBookmark */;
 			AB80AB4C0A19CF1800FED357 /* PBXTextBookmark */ = AB80AB4C0A19CF1800FED357 /* PBXTextBookmark */;
 			ABF8345B0AC7CD680035413E /* PBXTextBookmark */ = ABF8345B0AC7CD680035413E /* PBXTextBookmark */;
-			ABF834760AC7D47E0035413E /* PBXTextBookmark */ = ABF834760AC7D47E0035413E /* PBXTextBookmark */;
 		};
 		sourceControlManager = AB34B6EA09AA0E9A0057FE0E /* Source Control */;
 		userBuildSettings = {
@@ -91,10 +88,12 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */;
 		functionName = "-setExtraStoreSCP:";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 85;
 		location = OSIListenerPreferencePane;
 		modificationTime = 180865703.81534;
@@ -102,12 +101,12 @@
 	};
 	AB34B70609AA11020057FE0E /* Executable */ = {
 		isa = PBXExecutable;
-		activeArgIndex = 2147483647;
 		activeArgIndices = (
 		);
 		argumentStrings = (
 		);
 		autoAttachOnCrash = 1;
+		breakpointsEnabled = 1;
 		configStateDict = {
 		};
 		customDataFormattersEnabled = 1;
@@ -133,23 +132,6 @@
 		name = OsiriX.app;
 		path = /Users/rossetantoine/osirix/build/Development/OsiriX.app;
 		sourceTree = "<absolute>";
-	};
-	AB34B72609AA11120057FE0E /* XCBreakpointsBucket */ = {
-		isa = XCBreakpointsBucket;
-		name = "Project Breakpoints";
-		objects = (
-			AB34B70409AA10ED0057FE0E /* OSIListenerPreferencePanePref.m:85 */,
-		);
-	};
-	AB35516209B74B1B00F0C358 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */;
-		name = "OSIListenerPreferencePanePref.h: 29";
-		rLen = 0;
-		rLoc = 1139;
-		rType = 0;
-		vrLen = 1349;
-		vrLoc = 0;
 	};
 	AB52E74B0A19FC0F00726305 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -180,16 +162,6 @@
 		rType = 0;
 		vrLen = 1091;
 		vrLoc = 97;
-	};
-	AB7D38590B3C221E00B15EC9 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */;
-		name = "OSIListenerPreferencePanePref.h: setAE:";
-		rLen = 0;
-		rLoc = 1262;
-		rType = 0;
-		vrLen = 1527;
-		vrLoc = 148;
 	};
 	AB80AB470A19CF1800FED357 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -241,16 +213,6 @@
 		rType = 0;
 		vrLen = 1534;
 		vrLoc = 5665;
-	};
-	ABF834760AC7D47E0035413E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */;
-		name = "OSIListenerPreferencePanePref.h: setAE:";
-		rLen = 0;
-		rLoc = 1262;
-		rType = 0;
-		vrLen = 1527;
-		vrLoc = 148;
 	};
 	F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */ = {
 		uiCtxt = {

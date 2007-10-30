@@ -963,7 +963,7 @@ static NSHost *currentHost = 0L;
 	//VRDefaultViewSize
 	[defaultValues setObject:@"0" forKey: @"VRDefaultViewSize"];
 	
-	[defaultValues setObject:@"1" forKey: @"RunListenerOnlyIfActiveSession"];
+	[defaultValues setObject:@"0" forKey: @"RunListenerOnlyIfActive"];
 	
 	[defaultValues setObject:@"0" forKey: @"Ping"];
 	

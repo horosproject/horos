@@ -6108,7 +6108,10 @@ static BOOL withReset = NO;
 				
 				if( maxSeries > 60 ) maxSeries = 60;	// We will continue next time...
 				
-				for( NSManagedObject *series in seriesArray ) {					
+				for( int i = 0; i < maxSeries; i++ )
+				{
+					NSManagedObject *series = [seriesArray objectAtIndex: i];
+					
 					if([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]] || [DCMAbstractSyntaxUID isRadiotherapy:[series valueForKey:@"seriesSOPClassUID"]] || [series valueForKey:@"seriesSOPClassUID"] == nil)
 						[self buildThumbnail: series];
 				}
