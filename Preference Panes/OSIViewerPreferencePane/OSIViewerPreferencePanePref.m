@@ -115,6 +115,12 @@
 - (IBAction) setAutoTiling: (id) sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey: @"AUTOTILING"];
+	
+	if( [sender state])
+	{
+		[[NSUserDefaults standardUserDefaults] setInteger:0 forKey: @"WINDOWSIZEVIEWER"];
+		[windowSizeMatrix selectCellWithTag: 0];
+	}
 }
 
 - (IBAction) setWindowSizeViewer: (id) sender
