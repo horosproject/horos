@@ -1489,8 +1489,8 @@ static BOOL initialized = NO;
 				}
 				else {
 					NSAlert* alert = [NSAlert new];
-					[alert setInformativeText: NSLocalizedString(@"OsiriX 64-bit Warning", 0L)];
-					[alert setMessageText:     NSLocalizedString(@"This is a preview version of OsiriX 64-bit. You SHOULD NOT use it for any scientific or clinical activities.", 0L)];
+					[alert setMessageText: NSLocalizedString(@"OsiriX 64-bit Warning", 0L)];
+					[alert setInformativeText:     NSLocalizedString(@"This is a preview version of OsiriX 64-bit. You SHOULD NOT use it for any scientific or clinical activities.", 0L)];
 					[alert setShowsSuppressionButton:YES];
 					[alert runModal];
 					if ([[alert suppressionButton] state] == NSOnState)
