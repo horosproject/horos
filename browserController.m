@@ -6086,7 +6086,6 @@ static BOOL withReset = NO;
 	
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	NSManagedObjectModel	*model = self.managedObjectModel;
-	long i;
 	
 	if( [checkIncomingLock tryLock])
 	{	
