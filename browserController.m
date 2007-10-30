@@ -12008,9 +12008,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void)updateReportToolbarIcon: (NSNotification *)note {
 	NSToolbarItem *item;
 	NSArray *toolbarItems = [toolbar items];
-	for( long i=0; i<[toolbarItems count]; i++ ) {
+	for( long i=0; i<[toolbarItems count]; i++ )
+	{
 		item = [toolbarItems objectAtIndex:i];
-		if ([[item itemIdentifier] isEqualToString:ReportToolbarItemIdentifier] ) {
+		if ([[item itemIdentifier] isEqualToString:ReportToolbarItemIdentifier] )
+		{
 			[toolbar removeItemAtIndex:i];
 			[toolbar insertItemWithItemIdentifier:ReportToolbarItemIdentifier atIndex:i];
 		}

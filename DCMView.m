@@ -566,10 +566,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	CLUTBARS = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	ANNOTATIONS = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 	
-	BOOL reload;
+	BOOL reload = NO;
 	
-	if( ANNOTATIONS != annotFull) reload = [DCMPix setAnonymizedAnnotations: YES];
-	else reload = [DCMPix setAnonymizedAnnotations: NO];
+	if( ANNOTATIONS == annotBase) reload = [DCMPix setAnonymizedAnnotations: YES];
+	else if( ANNOTATIONS == annotFull) reload = [DCMPix setAnonymizedAnnotations: NO];
 	
 	NSArray		*viewers = [ViewerController getDisplayed2DViewers];
 	
@@ -588,10 +588,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	CLUTBARS = c;
 	ANNOTATIONS = a;
 	
-	BOOL reload;
+	BOOL reload = NO;
 	
-	if( ANNOTATIONS != annotFull) reload = [DCMPix setAnonymizedAnnotations: YES];
-	else reload = [DCMPix setAnonymizedAnnotations: NO];
+	if( ANNOTATIONS == annotBase) reload = [DCMPix setAnonymizedAnnotations: YES];
+	else if( ANNOTATIONS == annotFull) reload = [DCMPix setAnonymizedAnnotations: NO];
 	
 	NSArray		*viewers = [ViewerController getDisplayed2DViewers];
 	
@@ -7444,7 +7444,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 				
 				#if __BIG_ENDIAN__
-					glReadPixels(0, 0, *width, *height, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
+					glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
 					
 					register int ii = *width * *height;
 					register unsigned char	*t_argb = buf;
