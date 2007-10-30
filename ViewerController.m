@@ -4893,6 +4893,7 @@ static ViewerController *draggedController = 0L;
 	{
 		float	currentOrientation[ 9];
 		BOOL	equalVector = YES;
+		BOOL	keepFusion = NO;
 		
 		[[pixList[ 0] objectAtIndex:0] orientation: currentOrientation];
 		
@@ -4936,10 +4937,17 @@ static ViewerController *draggedController = 0L;
 				{
 					[imageView setIndex: index];
 					[self adjustSlider];
+					keepFusion = YES;
 				}
 			}
 		}
 		
+		if( keepFusion)
+			if( [[self modality] isEqualToString:@"CT"] == NO) keepFusion = NO;
+		
+		if( keepFusion == NO)
+			if( blendingController) [self ActivateBlending: 0L];
+			
 //		[imageView setScaleValue: previousScale];
 //		[imageView setWLWW: previousWL : previousWW];
 	}
@@ -4949,6 +4957,7 @@ static ViewerController *draggedController = 0L;
 		if( blendingController) [self ActivateBlending: 0L];
 	}
 	
+		
 	[previousStudyInstanceUID release];
 	[previousPatientUID release];
 	
@@ -4997,7 +5006,10 @@ static ViewerController *draggedController = 0L;
 		[self setFusionMode: previousFusion];
 		[popFusion selectItemWithTag:previousFusion];
 	}
-	
+
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOMATIC FUSE"])
+		[self blendWindows: 0L];
+			
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
