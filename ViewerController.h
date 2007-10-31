@@ -403,10 +403,30 @@ enum
 // UNDOCUMENTED FUNCTIONS
 // For more informations: rossetantoine@bluewin.ch
 
+
+/** Adds to undo queue
+*  @param string  The type of undo
+*  This method calls - (id) prepareObjectForUndo:(NSString*) string get the undo object
+*/
 - (void) addToUndoQueue:(NSString*) string;
+
+/** Prepare for Undo
+*  returns the undo object
+*  @param string  The type of undo
+*/
 - (id) prepareObjectForUndo:(NSString*) string;
+
+/** Redo
+* Gets the last object in the redo queue
+* and Redo action  */
 - (IBAction) redo:(id) sender;
+
+/** Undo
+** Gets the last object in the undo queue 
+*  Undo action*/
 - (IBAction) undo:(id) sender;
+
+
 - (void) updateRepresentedFileName;
 - (IBAction) closeModal:(id) sender;
 - (void)bringToFrontROI:(ROI*)roi;
@@ -717,29 +737,65 @@ enum
 // Opening 3D Viewers
 #pragma mark-
 #pragma mark 3D Viewers
+/** Returns the VRController for this ViewerController; creating one if necessary */
 - (VRController *)openVRViewerForMode:(NSString *)mode;
+
+/** Returns the VRPROController for this ViewerController; creating one if necessary */
 - (VRPROController*)openVRVPROViewerForMode:(NSString *)mode;
+
+/** Returns the OrthogonalMPRViewer for this ViewerController; creating one if necessary */
 - (OrthogonalMPRViewer *)openOrthogonalMPRViewer;
+
+/** Returns the OrthogonalMPRPETCTViewer for this ViewerController; creating one if necessary */
 - (OrthogonalMPRPETCTViewer *)openOrthogonalMPRPETCTViewer;
+
+/** Returns the MPR2DController for this ViewerController; creating one if necessary */
 - (MPR2DController *)openMPR2DViewer;
+
+/** Returns the EndoscopyViewer for this ViewerController; creating one if necessary */
 - (EndoscopyViewer *)openEndoscopyViewer;
+
+/** Returns the SRController for this ViewerController; creating one if necessary */
 - (SRController *)openSRViewer;
 
+/** Current SeriesView */
 - (SeriesView *) seriesView;
+
+/** Tiles the DCMView in the SeriesView of the current ViewerController 
+*  This tiles images within a series.
+* @param rows number of rows to tile
+* @param columns number of columns
+*/
 - (void)setImageRows:(int)rows columns:(int)columns;
+
+/** Tile the images within the active ViewerController
+* Tiling based on tag of menu item
+* 16 possible arrangements
+* rows = (tag / 4) + 1;
+* columns =  (tag %  4) + 1; 
+* - (void)setImageRows:(int)rows columns:(int)columns then called
+*/
 - (IBAction)setImageTiling: (id)sender;
 
 #pragma mark-
 #pragma mark Calcium scoring
+/** Deprecated
+* Calcium Scoring moved to a plugin
+*/
 - (IBAction)calciumScoring:(id)sender;
 
 #pragma mark-
 #pragma mark Centerline
+/** Nonfunctional
+* Centerline only works in Endoscopy Mode 
+*/
 - (IBAction)centerline: (id)sender;
 
 #pragma mark-
 #pragma mark ROI Grouping
+/**  Group selected ROI together */
 - (IBAction)groupSelectedROIs:(id)sender;
+/** Ungroup ROI */
 - (IBAction)ungroupSelectedROIs:(id)sender;
 
 - (void) turnOffSyncSeriesBetweenStudies:(id) sender;
