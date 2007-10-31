@@ -709,7 +709,13 @@ enum
 
 #pragma mark-
 #pragma mark Key Objects
+
+/** Creates a Key Object note for the current key Images */
 - (IBAction)createKeyObjectNote:(id)sender;
+
+/** End sheet method for creating key Object notes
+* Called internally 
+*/
 - (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(id)contextInfo;
 - (IBAction)keyObjectNotes:(id)sender;
 - (BOOL)displayOnlyKeyImages;
@@ -720,27 +726,54 @@ enum
 
 #pragma mark-
 #pragma mark Convience methods for accessing values in the current imageView
+/** Current ImageView window width */
 -(float)curWW;
+
+/** Current ImageView window level */
 -(float)curWL;
+
+/** Set window width and window level for current ImageView */
 - (void)setWL:(float)wl  WW:(float)ww;
+
+/** Current ImageView horizontal flip */
 - (BOOL)xFlipped;
+
+/** Current ImageView vertical flip */
 - (BOOL)yFlipped;
+
+/** Current ImageView rotation */
 - (float)rotation;
+
+/** Set rotation for current ImageView */
 - (void)setRotation:(float)rotation;
+
+/** Set origin for current ImageView */
 - (void)setOrigin:(NSPoint) o;
+
+/** Current ImageView zoom */
 - (float)scaleValue;
+
+/** Set zoom for current ImageView */
 - (void)setScaleValue:(float)scaleValue;
+
+/** Set vertical flip for current ImageView */
 - (void)setYFlipped:(BOOL) v;
+
+/** Set horizontal flip for current ImageView */
 - (void)setXFlipped:(BOOL) v;
 
 
 // Opening 3D Viewers
 #pragma mark-
 #pragma mark 3D Viewers
-/** Returns the VRController for this ViewerController; creating one if necessary */
+/** Returns the VRController for this ViewerController; creating one if necessary
+* See VRController for modes
+ */
 - (VRController *)openVRViewerForMode:(NSString *)mode;
 
-/** Returns the VRPROController for this ViewerController; creating one if necessary */
+/** Returns the VRPROController for this ViewerController; creating one if necessary 
+* See VRController for modes
+*/
 - (VRPROController*)openVRVPROViewerForMode:(NSString *)mode;
 
 /** Returns the OrthogonalMPRViewer for this ViewerController; creating one if necessary */
