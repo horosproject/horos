@@ -7426,7 +7426,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //			*spp = 4;
 			*bpp = 8;
 			
-			buf = malloc( 1 + *width * *height * 4 * *bpp/8);
+			buf = malloc( 10 + *width * *height * 4 * *bpp/8);
 			if( buf ) {
 				if(removeGraphical) {
 					NSString	*str = [[self stringID] retain];
