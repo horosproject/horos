@@ -789,8 +789,6 @@ static char *GetPrivateIP()
 							while( connectToServerAborted == NO && (readData = [currentConnection availableData]) && [readData length])
 							{
 								[self incomingConnectionProcess: readData];
-								
-	//							NSLog( @"%d", [readData length]);
 							}
 							
 							[self incomingConnectionProcess: readData];
@@ -1189,7 +1187,7 @@ static char *GetPrivateIP()
 
 	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L];
 	
-	long long previousPercentage = 0;
+	long previousPercentage = 0;
 	
 	NSDate *oldCurrentTimeOut = currentTimeOut;
 	currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
@@ -1207,14 +1205,17 @@ static char *GetPrivateIP()
 			
 			if( BonjourDatabaseIndexFileSize)
 			{
-				long long currentPercentage = currentDataPos;
+				float fcurrentPercentage = (float) currentDataPos / (float) BonjourDatabaseIndexFileSize;
 				
-				currentPercentage = currentPercentage * 25 / BonjourDatabaseIndexFileSize;
+				int currentPercentage = fcurrentPercentage * 100;
+				
+				currentPercentage /= 4;
 				currentPercentage *= 4;
+				
 				if( currentPercentage != previousPercentage)
 				{
 					previousPercentage = currentPercentage;
-					[w setString: [NSString stringWithFormat:@"Downloading DB Index File (%d %%)", currentPercentage]];
+					[w setString: [NSString stringWithFormat:@"Downloading DB Index File (%d %%)", (int) currentPercentage]];
 				}
 			}
 		}
