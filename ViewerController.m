@@ -7838,6 +7838,12 @@ NSMutableArray		*array;
 	int		i, x;
 	BOOL	fused = NO;
 	
+	if( sender && blendingController)
+	{
+		[self ActivateBlending: 0L];
+		return;
+	}
+	
 	for( i = 0; i < [viewers count]; i++)
 	{
 		if( [[[viewers objectAtIndex: i] modality] isEqualToString:@"CT"])
