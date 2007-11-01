@@ -16490,8 +16490,6 @@ sourceRef);
 	[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
 }
 
-- (IBAction)keyObjectNotes:(id)sender{
-}
 
 - (BOOL)displayOnlyKeyImages{
 	return displayOnlyKeyImages;

@@ -688,23 +688,69 @@ enum
 #pragma mark-
 #pragma mark Brush ROI Filters
 
+/** Applies the selected Brush ROI morpho filter
+* @param  rois  ROI array to filter
+* @param action The filter to apply: Possible values are: open, close, erode, dilate
+* @param radius structuringElementRadius for the filter
+* @param sendNotification Will post an @"roiChange" notification if YES
+*/
 - (void) applyMorphology: (NSArray*) rois action:(NSString*) action	radius: (long) radius sendNotification: (BOOL) sendNotification;
 
+/** Set the structuring radius for the brush ROI morpho filter */
 - (IBAction) setStructuringElementRadius: (id) sender;
 
 
+/** Action to start filter for the selected brush ROI using the filter selected with
+- (IBAction) morphoSelectedBrushROI: (id) sender
+*  Filters are: erode, dilate, open, close 
+*/
 - (IBAction) morphoSelectedBrushROIWithRadius: (id) sender;
+
+/** Select filter for the selected brush ROI 
+*  Filters are: erode, dilate, open, close 
+*/
 - (IBAction) morphoSelectedBrushROI: (id) sender;
 
+
+/** Create a new ROI between two ROI
+* Converts both ROIs into polygons, after a marching square isocontour
+* @param a First ROI
+* @param b Second ROI
+* @param ratio Weighting used to morph between the two
+*/
 - (ROI*) roiMorphingBetween:(ROI*) a and:(ROI*) b ratio:(float) ratio;
+
+/** Convert Polygon ROI to a Brush ROI.
+* @param selectedROI The ROI to convert
+*/
 - (ROI*) convertPolygonROItoBrush:(ROI*) selectedROI;
+
+/** Convert Brush ROI to a Polygon ROI. Returns converted ROI
+* @param selectedROI The ROI to convert
+* @param numPoints Number of points for the polygon
+*/
 - (ROI*) convertBrushROItoPolygon:(ROI*) selectedROI numPoints: (int) numPoints;
 
 #pragma mark-
 #pragma mark Registration
 
+/** Returns an NSArray of all t2DPoint type ROI*/
 - (NSMutableArray*) point2DList;
+
+
+/** Computes registration between the current Viewer and another ViewerController
+*  A HornRegistatration is first performed
+*  ITKTransform is used for the transform.
+*  At least three t2DPoint type ROI to compute
+*  Each point on the moving viewer needs a twin on the fixed viewer.
+*  Two points are twin brothers if and only if they have the same name.
+*/
 - (void) computeRegistrationWithMovingViewer:(ViewerController*) movingViewer;
+
+/** Returns a new viewer with the current series resampled to match the Orientation of series in the other viewer
+*  Both series must be from the same study to insure matching imageOrientationPatient and imagePositionPatient
+*  @param movingViewer  The ViewerController to resample the series to match
+*/
 - (ViewerController*) resampleSeries:(ViewerController*) movingViewer;
 
 #pragma mark-
@@ -717,8 +763,15 @@ enum
 * Called internally 
 */
 - (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(id)contextInfo;
-- (IBAction)keyObjectNotes:(id)sender;
+
+
+/**  return flag indicating whether only the key images are being displayed */
 - (BOOL)displayOnlyKeyImages;
+
+
+/** Returns whether the image at the index is a key image
+* @param index of image to check
+*/
 - (BOOL)isKeyImage:(int)index;
 
 
