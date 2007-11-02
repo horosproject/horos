@@ -426,18 +426,47 @@ enum
 *  Undo action*/
 - (IBAction) undo:(id) sender;
 
-
+/** Get path for current image */
 - (void) updateRepresentedFileName;
+
+/** Stops or aborts any open modal window */
 - (IBAction) closeModal:(id) sender;
+
+/** Brings ROI to front of ROI array for current image.
+* If roi is in a group, the whole group is brought to the front
+* @param roi The ROI that should be up front
+*/
 - (void)bringToFrontROI:(ROI*)roi;
+
+/** Change fusion status
+* Called by an action.
+*/
 - (void) activateFusion:(id) sender;
+
+/** Action to Propagte current settings */
 - (void) copySettingsToOthers: (id)sender;
+
+/** Set the postprocessed flag */
 - (void) setPostprocessed:(BOOL) v;
+
+/** returns postprocessed status */
 - (BOOL) postprocessed;
+
+/** Apply the opacity setting
+* @param str The name of the opacity setting.  Should be one of the menu item name from the opacity menu 
+*/
 - (void) ApplyOpacityString:(NSString*) str;
+
+/** Refreshed window width and window level */
 - (void) refresh;
+
+/** Action to sset up non DICOM printing */
 - (IBAction) setPagesToPrint:(id) sender;
+
+/** Action to start printing.  Called when print window is ordered out */
 - (IBAction) endPrint:(id) sender;
+
+
 - (IBAction) startMSRG:(id) sender;
 - (IBAction) startMSRGWithAutomaticBounding:(id) sender;
 //arg: this function will automatically scan the buffer to create a textured ROI (tPlain) for all slices
@@ -533,17 +562,34 @@ enum
 - (void) popFusionAction:(id) sender;
 - (void) propagateSettings;
 - (void) setCurWLWWMenu:(NSString*)s ;
+
+/** Used to determine in the Window Controller is a 2D Viewer.
+* Always return YES
+*/
 - (BOOL) is2DViewer;
+
+/** String for the currently selected CLUT menu item */
 - (NSString*) curCLUTMenu;
+
+/** String for the currently selected WLWW mewnu item */
 - (NSString*) curWLWWMenu;
+
+/** String for the currently selected Opacity menu item */
 - (NSString*) curOpacityMenu;
+
+
+/** Flag to indicate the the window will close */
 - (BOOL) windowWillClose;
+
+
 - (void) ApplyCLUTString:(NSString*) str;
 - (NSSlider*) blendingSlider;
 - (void) blendingSlider:(id) sender;
 - (void) blendingMode:(id) sender;
 - (ViewerController*) blendingController;
 - (void)blendWithViewer:(ViewerController *)bc blendingType:(int)blendingType;
+
+/** Modality of the study */
 - (NSString*) modality;
 - (void) selectFirstTilingView;
 - (NSString*) studyInstanceUID;
@@ -571,15 +617,27 @@ enum
 - (IBAction) VRViewer:(id) sender;
 - (IBAction) MPR2DViewer:(id) sender;
 - (IBAction) blendWindows:(id) sender;
+
+/** Action to open the OrthogonalMPRViewer */
 - (IBAction) orthogonalMPRViewer:(id) sender;
 
+/** Action to open the EndoscopyViewer */
 - (IBAction) endoscopyViewer:(id) sender;
+
+/** Action to open the CurvedMPRViewer */
 - (IBAction) CurvedMPR:(id) sender;
+
 - (void) showCurrentThumbnail:(id) sender;
 
+/** Action to open SRViewer (Surface Rendering) */
 - (IBAction) SRViewer:(id) sender;
+
 - (NSMenu *)contextualMenu;
+
+/** Action to export as JPEG */
 - (void) exportJPEG:(id) sender;
+
+/** Notification to close all windows */
 - (void)closeAllWindows:(NSNotification *)note;
 - (NSMutableArray*) generateROINamesArray;
 - (ThickSlabController*) thickSlabController;
