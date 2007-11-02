@@ -8471,7 +8471,7 @@ static BOOL needToRezoom;
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 			[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
 		else
-			[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+			[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 	}
 	
 	[wait close];
@@ -8525,7 +8525,7 @@ static BOOL needToRezoom;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 		[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
 	else
-		[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+		[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];;
 }
 
 - (void) viewerDICOMKeyImages:(id) sender
@@ -8541,7 +8541,7 @@ static BOOL needToRezoom;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 		[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
 	else
-		[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+		[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 }
 
 - (void) MovieViewerDICOM:(id) sender

@@ -297,7 +297,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 				[appController tileWindows: self];
 			else
-				[appController checkAllWindowsAreVisible:self];
+				[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 		}
 		else
 		{
@@ -576,7 +576,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 				[appController tileWindows: self];
 			else
-				[appController checkAllWindowsAreVisible:self];
+				[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 		}
 		else
 		{
@@ -910,7 +910,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 				[appController tileWindows: self];
 			else
-				[appController checkAllWindowsAreVisible:self];
+				[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 		}
 		else
 		{

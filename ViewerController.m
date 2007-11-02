@@ -1732,7 +1732,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 		[appController tileWindows: self];
 	else
-		[appController checkAllWindowsAreVisible: self];
+		[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 	return win;
 }
 
@@ -2621,7 +2621,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
 		else
 		{
-			[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+			[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 		}
 		
 		for( int i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: 0L viewer: 0L];
@@ -3022,6 +3022,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	NSString	*path = [[BrowserController currentBrowser] getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] : 0];
 	[[self window] setRepresentedFilename: path];
+}
+
+- (BOOL)window:(NSWindow *)sender shouldPopUpDocumentPathMenu:(NSMenu *)titleMenu
+{
+	[self updateRepresentedFileName];
+	
+	return YES;
 }
 
 - (void) viewXML:(id) sender

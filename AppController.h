@@ -134,6 +134,7 @@ extern "C"
 - (void) tileWindows:(id)sender;  /**< Tile open window */
 - (IBAction) closeAllViewers: (id) sender;  /**< Close All Viewers */
 - (void) checkAllWindowsAreVisible:(id) sender;
+- (void) checkAllWindowsAreVisible:(id) sender makeKey: (BOOL) makeKey;
 //===============HELP==========================
 - (IBAction) sendEmail: (id) sender;   /**< Send email to lead developer */
 - (IBAction) openOsirixWebPage: (id) sender;  /**<  Open OsiriX web page */

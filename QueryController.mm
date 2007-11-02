@@ -16,6 +16,7 @@
 #import "WaitRendering.h"
 #import "QueryFilter.h"
 #import "AdvancedQuerySubview.h"
+#import "AppController.h"
 #import "DICOMLogger.h"
 #import "ImageAndTextCell.h"
 #import <OsiriX/DCMNetworking.h>
@@ -956,7 +957,7 @@ static char *GetPrivateIP()
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 					[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
 				else
-					[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+					[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 					
 				success = YES;
 			}

@@ -2357,18 +2357,29 @@ static BOOL initialized = NO;
 //	return returnRect;
 //}
 
-- (void) checkAllWindowsAreVisible:(id) sender
+- (void) checkAllWindowsAreVisible:(id) sender makeKey: (BOOL) makeKey
 {
-	NSArray					*winList = [NSApp windows];
+	NSArray *winList = [NSApp windows];
+	NSWindow *last = 0L;
 	
-	for( id loopItem in winList)
+	for( NSWindow *loopItem in winList)
 	{
 		if( [[loopItem windowController] isKindOfClass:[ViewerController class]])
 		{
 			if( [[loopItem windowController] windowWillClose] == NO)
-				[loopItem orderFront:self];
+			{
+				last = loopItem;
+				[loopItem orderFront: self];
+			}
 		}
 	}
+	
+	if( last) [last makeKeyAndOrderFront: self];
+}
+
+- (void) checkAllWindowsAreVisible:(id) sender
+{
+	[self checkAllWindowsAreVisible: sender makeKey: NO];
 }
 
 - (void) displayViewers: (NSArray*) viewers OnThisScreen: (NSScreen*) screen
