@@ -4696,7 +4696,9 @@ static ViewerController *draggedController = 0L;
 	float		previousLocation = 0, previousScale = 0;
 //	float		previousWL, previousWW;
 //	NSPoint		previousRotation
-
+	
+	[imageView mouseUp: [[NSApplication sharedApplication] currentEvent]];
+	
 	[seriesView selectFirstTilingView];
 	
 	[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];

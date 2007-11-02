@@ -2524,7 +2524,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	fImage = ptr;
 	
-	if( fVolImage) fVolImage = fImage;
+	if( fVolImage)
+		fVolImage = fImage;
 }
 
 - (float*)fImage {
@@ -7176,13 +7177,9 @@ END_CREATE_ROIS:
 					dstf.data = imPix->fImage;
 					
 					if( fIsSigned)
-					{
 						vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
-					}
 					else
-					{
 						vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
-					}
 					
 					if( inverseVal)
 					{

@@ -1602,6 +1602,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) dealloc {	
 	NSLog(@"DCMView released");
+	[self deleteMouseDownTimer];
+	
+	[drawLock lock];
+	[drawLock unlock];
+	
 	[curRoiList release];
 	curRoiList = 0L;
 	
@@ -2126,7 +2131,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 - (void)mouseUp:(NSEvent *)event {
 	// get rid of timer
 	[self deleteMouseDownTimer];
-
 	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
