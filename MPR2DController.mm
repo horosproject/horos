@@ -1231,8 +1231,12 @@ extern NSString * documentsDirectory();
 				[[view finalView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
 				[exportDCM setOrientation: o];
 				
-				pos[ 0] = [[[view finalView] curDCM] originX];		pos[ 1] = [[[view finalView] curDCM] originY];		pos[ 2] = [[[view finalView] curDCM] originZ];
-				[exportDCM setPosition: pos];
+				NSPoint tempPt = [[view finalView] ConvertFromView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
+				[[[view finalView] curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o];
+				[exportDCM setPosition: o];
+				
+//				pos[ 0] = [[[view finalView] curDCM] originX];		pos[ 1] = [[[view finalView] curDCM] originY];		pos[ 2] = [[[view finalView] curDCM] originZ];
+//				[exportDCM setPosition: pos];
 				
 				if( fabs( o[6]) > fabs(o[7]) && fabs( o[6]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 0]];
 				if( fabs( o[7]) > fabs(o[6]) && fabs( o[7]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 1]];
@@ -1283,8 +1287,12 @@ extern NSString * documentsDirectory();
 			[[view finalView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
 			[exportDCM setOrientation: o];
 			
-			pos[ 0] = [[[view finalView] curDCM] originX];		pos[ 1] = [[[view finalView] curDCM] originY];		pos[ 2] = [[[view finalView] curDCM] originZ];
-			[exportDCM setPosition: pos];
+			NSPoint tempPt = [[view finalView] ConvertFromView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
+			[[[view finalView] curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o];
+			[exportDCM setPosition: o];
+			
+//			pos[ 0] = [[[view finalView] curDCM] originX];		pos[ 1] = [[[view finalView] curDCM] originY];		pos[ 2] = [[[view finalView] curDCM] originZ];
+//			[exportDCM setPosition: pos];
 			
 			if( fabs( o[6]) > fabs(o[7]) && fabs( o[6]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 0]];
 			if( fabs( o[7]) > fabs(o[6]) && fabs( o[7]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 1]];

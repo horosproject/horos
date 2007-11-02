@@ -11509,8 +11509,9 @@ int i,j,l;
 				
 				if(  curvedController == 0L && [vC curvedController] == 0L)
 				{
-					if( (int) (vectorsA[ 6]*1000.) == (int) (vectorsB[ 6]*1000.) && (int) (vectorsA[ 7]*1000.) == (int) (vectorsB[ 7]*1000.) && (int) (vectorsA[ 8]*1000.) == (int) (vectorsB[ 8]*1000.) && curvedController == 0L)
-	//				if( curvedController == 0L)
+					if( (int) (vectorsA[ 0]*1000.) == (int) (vectorsB[ 0]*1000.) && (int) (vectorsA[ 1]*1000.) == (int) (vectorsB[ 1]*1000.) && (int) (vectorsA[ 2]*1000.) == (int) (vectorsB[ 2]*1000.) &&
+						(int) (vectorsA[ 3]*1000.) == (int) (vectorsB[ 3]*1000.) && (int) (vectorsA[ 4]*1000.) == (int) (vectorsB[ 4]*1000.) && (int) (vectorsA[ 5]*1000.) == (int) (vectorsB[ 5]*1000.) &&
+						curvedController == 0L)
 					{
 					//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
 						{
@@ -11531,7 +11532,9 @@ int i,j,l;
 					}
 				}
 				
-				if( (int) (vectorsA[ 6]*1000.) == (int) (vectorsB[ 6]*1000.) && (int) (vectorsA[ 7]*1000.) == (int) (vectorsB[ 7]*1000.) && (int) (vectorsA[ 8]*1000.) == (int) (vectorsB[ 8]*1000.) && curvedController == 0L)
+				if( (int) (vectorsA[ 0]*1000.) == (int) (vectorsB[ 0]*1000.) && (int) (vectorsA[ 1]*1000.) == (int) (vectorsB[ 1]*1000.) && (int) (vectorsA[ 2]*1000.) == (int) (vectorsB[ 2]*1000.) &&
+						(int) (vectorsA[ 3]*1000.) == (int) (vectorsB[ 3]*1000.) && (int) (vectorsA[ 4]*1000.) == (int) (vectorsB[ 4]*1000.) && (int) (vectorsA[ 5]*1000.) == (int) (vectorsB[ 5]*1000.) &&
+						curvedController == 0L)
 				{
 				//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
 					{
@@ -13159,8 +13162,18 @@ int i,j,l;
 		else [curPix orientation: o];
 		[exportDCM setOrientation: o];
 		
-		o[ 0] = [curPix originX];		o[ 1] = [curPix originY];		o[ 2] = [curPix originZ];
-		[exportDCM setPosition: o];
+		if( screenCapture)
+		{
+			// Get the upper left pixel position
+			NSPoint tempPt = [imageView ConvertFromView2GL: NSMakePoint( 0, 0)];
+			[[imageView curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o];
+			[exportDCM setPosition: o];
+		}
+		else
+		{
+			o[ 0] = [curPix originX];		o[ 1] = [curPix originY];		o[ 2] = [curPix originZ];
+			[exportDCM setPosition: o];
+		}
 		
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
