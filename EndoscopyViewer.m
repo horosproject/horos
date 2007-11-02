@@ -1091,6 +1091,8 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	
 	[[self window] makeFirstResponder: (NSView*) [vrController view]];
 	[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
+	[DCMView setDefaults];
+	
 	[[mprController originalView] display];
 	[[mprController xReslicedView] display];
 	[[mprController yReslicedView] display];
@@ -1100,6 +1102,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	sagittalDataPtr = [(EndoscopyMPRView*)[mprController yReslicedView] superGetRawPixels:&widthSag :&heightSag :&sppSag :&bppSag :YES :YES :NO];
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: annotations forKey: @"ANNOTATIONS"];
+	
 	[[mprController originalView] setNeedsDisplay: YES];
 	[[mprController xReslicedView] setNeedsDisplay: YES];
 	[[mprController yReslicedView] setNeedsDisplay: YES];

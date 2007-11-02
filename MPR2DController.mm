@@ -1198,6 +1198,7 @@ extern NSString * documentsDirectory();
 		float	o[ 9], pos[ 3];;
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
+		[DCMView setDefaults];
 		
 		DICOMExport		*dcmSequence = [[DICOMExport alloc] init];
 		
@@ -1262,6 +1263,7 @@ extern NSString * documentsDirectory();
 				
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
+		[DCMView setDefaults];
 		
 		if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
 		

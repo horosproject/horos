@@ -405,6 +405,7 @@ extern  short		annotations;
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 		[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
+		[DCMView setDefaults];
 		
 		unsigned char *data = [self superGetRawPixels:&width :&height :&spp :&bpp :YES :NO :NO];
 		

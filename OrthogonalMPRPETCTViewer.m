@@ -2092,6 +2092,7 @@ NSString * documentsDirectory();
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
+	[DCMView setDefaults];
 	
 	unsigned char *data = [curView getRawPixels:&width :&height :&spp :&bpp :screenCapture :NO];
 	

@@ -86,7 +86,7 @@ extern NSMutableDictionary				*plugins;
 static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable = 0L;
 
 static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, COPYSETTINGSINSERIES, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
-static		int							CLUTBARS, ANNOTATIONS, SOFTWAREINTERPOLATION_MAX;
+static		int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX;
 static		BOOL						gClickCountSet = NO;
 static		float						margin = 2;
 
@@ -564,23 +564,27 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	IndependentCRWLWW = [[NSUserDefaults standardUserDefaults] boolForKey:@"IndependentCRWLWW"];
 	COPYSETTINGSINSERIES = [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGSINSERIES"];
 	CLUTBARS = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
+	
+	int previousANNOTATIONS = ANNOTATIONS;
 	ANNOTATIONS = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 	
 	BOOL reload = NO;
 	
-	if( ANNOTATIONS == annotBase) reload = [DCMPix setAnonymizedAnnotations: YES];
-	else if( ANNOTATIONS == annotFull) reload = [DCMPix setAnonymizedAnnotations: NO];
-	
-	NSArray		*viewers = [ViewerController getDisplayed2DViewers];
-	
-	for( ViewerController *v in viewers)
+	if( previousANNOTATIONS != ANNOTATIONS)
 	{
-		if( reload) [v reloadAnnotations];
+		if( ANNOTATIONS == annotBase) reload = [DCMPix setAnonymizedAnnotations: YES];
+		else if( ANNOTATIONS == annotFull) reload = [DCMPix setAnonymizedAnnotations: NO];
 		
-		[v refresh];
+		NSArray		*viewers = [ViewerController getDisplayed2DViewers];
+		
+		for( ViewerController *v in viewers)
+		{
+			[v refresh];
+			if( reload) [v reloadAnnotations];
+		}
+		
+		if( reload) [[BrowserController currentBrowser] refreshMatrix: self];		// This will refresh the DCMView of the BrowserController
 	}
-	
-	if( reload) [[BrowserController currentBrowser] refreshMatrix: self];		// This will refresh the DCMView of the BrowserController
 }
 
 +(void) setCLUTBARS:(int) c ANNOTATIONS:(int) a
@@ -598,7 +602,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	for( ViewerController *v in viewers)
 	{
 		[v refresh];
-		if( reload) [v executeRevert];
+		if( reload) [v reloadAnnotations];
 	}
 }
 
@@ -1973,7 +1977,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 			
 			[[NSUserDefaults standardUserDefaults] setInteger: ANNOTATIONS forKey: @"ANNOTATIONS"];
-			
 			[DCMView setDefaults];
 	
 			NSNotificationCenter *nc;
@@ -2891,7 +2894,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			tempPt = [self ConvertFromView2GL:tempPt];
 			
 			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
+			{
 				[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
+				[DCMView setDefaults];
+			}
 			
 			BOOL roiFound = NO;
 			
@@ -5140,7 +5146,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	short chosenLine = [sender tag];
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: chosenLine forKey: @"ANNOTATIONS"];
-    
 	[DCMView setDefaults];
 	
     NSNotificationCenter *nc;
