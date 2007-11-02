@@ -1032,7 +1032,7 @@ static char *GetPrivateIP()
 		{
 			case 0:			date = nil;																								break;
 			case 1:			date = [DCMCalendarDate date];											searchType = SearchToday;		break;
-			case 2:			date = [DCMCalendarDate dateWithNaturalLanguageString:@"Yesterday"];	searchType = searchYesterday;	break;
+			case 2:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24 -1];	searchType = searchYesterday;	break;
 			case 3:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*7 -1];										break;
 			case 4:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31 -1];									break;
 			
