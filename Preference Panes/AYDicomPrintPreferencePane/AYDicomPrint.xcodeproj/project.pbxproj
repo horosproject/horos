@@ -14,8 +14,19 @@
 		8D202CF10486D31800D8A456 /* AYDicomPrintPref.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* AYDicomPrintPref.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
-		CE5C6D4D0CAD9B6300597FEF /* AYDicomPrintPref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE5C6D4B0CAD9B6300597FEF /* AYDicomPrintPref.xib */; };
+		ABE0D67C0CDB179800F0494B /* AYDicomPrintPref.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABE0D67A0CDB179800F0494B /* AYDicomPrintPref.xib */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		ABE0D6770CDB16EB00F0494B /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			fileType = file.xib;
+			isEditable = 1;
+			outputFiles = (
+			);
+		};
+/* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
 		089C1672FE841209C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -25,7 +36,7 @@
 		32DBCFA20370C41700C91783 /* AYDicomPrint_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AYDicomPrint_Prefix.pch; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* AYDicomPrint.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AYDicomPrint.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
-		CE5C6D4C0CAD9B6300597FEF /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/AYDicomPrintPref.xib; sourceTree = "<group>"; };
+		ABE0D67B0CDB179800F0494B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/AYDicomPrintPref.xib; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* AYDicomPrintPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AYDicomPrintPref.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* AYDicomPrintPref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AYDicomPrintPref.m; sourceTree = "<group>"; };
@@ -70,7 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				8D202CF70486D31800D8A456 /* Info.plist */,
-				CE5C6D4B0CAD9B6300597FEF /* AYDicomPrintPref.xib */,
+				ABE0D67A0CDB179800F0494B /* AYDicomPrintPref.xib */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 				F506C040013D9D8001CA16C8 /* AYDicomPrintPref.tiff */,
 			);
@@ -146,6 +157,7 @@
 				8D202CF50486D31800D8A456 /* Rez */,
 			);
 			buildRules = (
+				ABE0D6770CDB16EB00F0494B /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -179,7 +191,7 @@
 			files = (
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
 				8D202CEE0486D31800D8A456 /* AYDicomPrintPref.tiff in Resources */,
-				CE5C6D4D0CAD9B6300597FEF /* AYDicomPrintPref.xib in Resources */,
+				ABE0D67C0CDB179800F0494B /* AYDicomPrintPref.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,10 +227,10 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		CE5C6D4B0CAD9B6300597FEF /* AYDicomPrintPref.xib */ = {
+		ABE0D67A0CDB179800F0494B /* AYDicomPrintPref.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CE5C6D4C0CAD9B6300597FEF /* English */,
+				ABE0D67B0CDB179800F0494B /* English */,
 			);
 			name = AYDicomPrintPref.xib;
 			sourceTree = "<group>";

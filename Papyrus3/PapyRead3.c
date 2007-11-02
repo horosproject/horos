@@ -26,6 +26,7 @@
 /********************************************************************************/
 
 #define DEBUG 0
+#define COMPUTELENGTH 0
 
 #ifdef Mac
 #pragma segment papy3
@@ -2282,8 +2283,11 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
   	      thePosInItem = 0L;	/* the position in this item of the sequence */
 	        
 	        /* if undefined item length, compute it */
-			//theSeqSize = 0xFFFFFFFF;
-	        if (theSeqSize == 0xFFFFFFFF)
+			#if COMPUTELENGTH
+			theSeqSize = 0xFFFFFFFF;
+	        #endif
+			
+			if (theSeqSize == 0xFFFFFFFF)
 	        {
 	          /* set a boolean for futur computing of the seq length */
 	          theIsUndefItemLen = TRUE;
@@ -2769,6 +2773,10 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
 		// For 
 	}
 
+	#if COMPUTELENGTH
+	theElemLength = 0xFFFFFFFF;
+	#endif
+	
     /* it could be an undefined length, i.e. VR = SQ or VR = UN */
     if (theElemLength == 0xFFFFFFFF)
     {

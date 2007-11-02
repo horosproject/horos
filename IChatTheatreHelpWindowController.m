@@ -21,7 +21,12 @@
 {
 	[super windowDidLoad];
 	
-	NSString *path = [[NSBundle mainBundle] pathForResource:@"iChatTheatre" ofType:@"html"];
+	NSString	*source = [NSString stringWithFormat:@"iChatTheatre-%@", [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex: 0]];
+	
+	NSString *path = [[NSBundle mainBundle] pathForResource: source ofType:@"html"];
+	
+	if( path == 0L) path = [[NSBundle mainBundle] pathForResource:@"iChatTheatre-English" ofType:@"html"];
+	
 	[[[IChatTheatreDelegate sharedDelegate] web] setMainFrameURL:path];
 	
 }
