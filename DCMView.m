@@ -1959,10 +1959,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			curImage = [dcmPixList count]-1;
 		else if (c == 9)	// Tab key
 		{
-			ANNOTATIONS++;
-			if( ANNOTATIONS > annotFull) ANNOTATIONS = 0;
+			int a = ANNOTATIONS + 1;
+			if( a > annotFull) a = 0;
 			
-			switch( ANNOTATIONS)
+			switch( a)
 			{
 				case annotNone:
 					[appController growlTitle: NSLocalizedString( @"Annotations", 0L) description: NSLocalizedString(@"Turn Off Annotations", 0L) name:@"result"];
@@ -1981,7 +1981,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				break;
 			}
 			
-			[[NSUserDefaults standardUserDefaults] setInteger: ANNOTATIONS forKey: @"ANNOTATIONS"];
+			[[NSUserDefaults standardUserDefaults] setInteger: a forKey: @"ANNOTATIONS"];
 			[DCMView setDefaults];
 	
 			NSNotificationCenter *nc;
