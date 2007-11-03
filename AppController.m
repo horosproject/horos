@@ -1753,7 +1753,7 @@ static BOOL initialized = NO;
 
 - (void) growlTitle:(NSString*) title description:(NSString*) description name:(NSString*) name
 {
-#if !__LP64__
+//#if !__LP64__
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"]) return;
 	
@@ -1764,7 +1764,7 @@ static BOOL initialized = NO;
 							priority: 0
 							isSticky: NO
 							clickContext: nil];
-#endif
+//#endif
 }
 
 
@@ -1777,11 +1777,11 @@ static BOOL initialized = NO;
 
     NSDictionary *dict = 0L;
 	
-	#if !__LP64__
+//	#if !__LP64__
     dict = [NSDictionary dictionaryWithObjectsAndKeys:
                              notifications, GROWL_NOTIFICATIONS_ALL,
                          notifications, GROWL_NOTIFICATIONS_DEFAULT, nil];
-	#endif
+//	#endif
 	
     return (dict);
 }
@@ -1845,10 +1845,10 @@ static BOOL initialized = NO;
 {
 	long i;
 	
-	#if !__LP64__
+//	#if !__LP64__
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"] == NO)
 		[GrowlApplicationBridge setGrowlDelegate:self];
-	#endif
+//	#endif
 	
 //	DOClient	*client = [[DOClient alloc] init];
 //	[client connect];

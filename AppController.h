@@ -28,9 +28,9 @@
 
 
 
-#if !__LP64__
+//#if !__LP64__
 #import <Growl/Growl.h>
-#endif
+//#endif
 
 #import <AppKit/AppKit.h>
 #import "XMLRPCMethods.h"
@@ -70,11 +70,11 @@ extern "C"
 *
 *
 */
-#if !__LP64__
+//#if !__LP64__
 @interface AppController : NSObject	<GrowlApplicationBridgeDelegate>
-#else
-@interface AppController : NSObject
-#endif
+//#else
+//@interface AppController : NSObject
+//#endif
 {
 	IBOutlet BrowserController		*browserController;
 
