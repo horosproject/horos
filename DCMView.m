@@ -7351,7 +7351,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			if( [self is2DViewer] == YES)
 			{
-				if( [[self window] isKeyWindow])
+				if( [[self window] isMainWindow])
 					[[self windowController] propagateSettings];
 			}
 			
