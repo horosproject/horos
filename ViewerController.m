@@ -2018,6 +2018,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			}
 		}
 	}
+	
+	[self showCurrentThumbnail: self];
 }
 
 - (void) windowDidResignMain:(NSNotification *)aNotification
