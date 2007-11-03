@@ -245,7 +245,24 @@ static BOOL showWarning = YES;
 	{
 		if( editingActivated && showWarning)
 		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is now activated. You can edit any DICOM fields.\r\rSelect at which level you want to apply the changes (this image only, this series or the entire study.\r\rWarning !\rModifying DICOM fields can corrupt the DICOM files!\r\"With Great Power, Comes Great Responsibility\"", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			NSString *exampleAlertSuppress = @"DICOM Editing Warning";
+			NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+			if ([defaults boolForKey:exampleAlertSuppress])
+			{
+			}
+			else
+			{
+				NSAlert* alert = [NSAlert new];
+				[alert setMessageText: NSLocalizedString(@"DICOM Editing", nil)];
+				[alert setInformativeText: NSLocalizedString(@"DICOM editing is now activated. You can edit any DICOM fields.\r\rSelect at which level you want to apply the changes (this image only, this series or the entire study.\r\rWarning !\rModifying DICOM fields can corrupt the DICOM files!\r\"With Great Power, Comes Great Responsibility\"", nil)];
+				[alert setShowsSuppressionButton:YES];
+				[alert runModal];
+				if ([[alert suppressionButton] state] == NSOnState)
+				{
+					[defaults setBool:YES forKey:exampleAlertSuppress];
+				}
+			}
+			
 			showWarning = NO;
 		}
 	}
