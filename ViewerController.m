@@ -1773,12 +1773,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( NSEqualRects( curRect, rect) == NO)
 	{
 		float scaleValue = [imageView scaleValue];
-		float previousHeight = [imageView frame].size.height;
+		float previousHeight = [imageView frame].size.width;
 		
 		[[self window] setFrame:rect display:YES];
 		if( showWindow) [[self window] orderFront:self];
 		
-		[imageView setScaleValue: scaleValue * [imageView frame].size.height / previousHeight];
+		[imageView setScaleValue: scaleValue * [imageView frame].size.width / previousHeight];
 	}
 	else
 	{

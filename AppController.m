@@ -2681,7 +2681,8 @@ static BOOL initialized = NO;
 		int columnsPerScreen = ceil(((float) columns / numberOfMonitors));
 		int extraViewers = columns % numberOfMonitors;
 		
-		for( i = 0; i < viewerCount; i++) {
+		for( i = 0; i < viewerCount; i++)
+		{
 			int row = i/columns;
 			int columnIndex = (i - (row * columns));
 			int monitorIndex =  columnIndex / columnsPerScreen;

@@ -1471,7 +1471,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	NSRect  sizeView = [self bounds];
 	
-	if( sizeView.size.width/curDCM.pwidth < sizeView.size.height/ curDCM.pheight / curDCM.pixelRatio )
+	if( sizeView.size.width / curDCM.pwidth < sizeView.size.height / curDCM.pheight / curDCM.pixelRatio )
 		self.scaleValue = sizeView.size.width / curDCM.pwidth;
 	else
 		self.scaleValue = sizeView.size.height / curDCM.pheight /curDCM.pixelRatio;
@@ -7324,11 +7324,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     {
 		NSRect rect = [self frame];
 		
-		if( previousViewSize.height != 0 && previousViewSize.height != rect.size.height)
+		if( previousViewSize.width != 0 && previousViewSize.width != rect.size.width)
 		{
 			// Adapted scale to new viewSize!
 			
-			float	yChanged = (rect.size.height ) / previousViewSize.height;
+			float	yChanged = (rect.size.width ) / previousViewSize.width;
 			
 			previousViewSize = rect.size;
 			
@@ -9220,10 +9220,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self setNeedsDisplay:YES];
 }
 
-- (IBAction)resizeWindow:(id)sender{
-	// 2006-02-09 masu: resizing a view, which is in fullscreen mode, cuts connection
-	// between view and window. When more viewers are open the app will crash.
-	// So resizing is only allowed in non fullscreen mode.
+- (IBAction)resizeWindow:(id)sender
+{
 	if([[self windowController] FullScreenON] == FALSE)
 	{
 		float resizeScale = 1.0;
