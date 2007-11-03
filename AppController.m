@@ -2580,6 +2580,18 @@ static BOOL initialized = NO;
 			columns ++;
 	}
 	
+	if( viewerCount)
+	{
+		BOOL r  = YES;
+		while( viewerCount+columns < (rows * columns))
+		{
+			if( r) rows--;
+			else columns--;
+			
+			r = !r;
+		}
+	}
+	
 	if( keepSameStudyOnSameScreen && numberOfMonitors > 1 && [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] == 0L)
 	{
 		for( i = 0; i < numberOfMonitors && i < [studyList count]; i++)
