@@ -2434,6 +2434,14 @@ static BOOL initialized = NO;
 	return rows - currentrow;
 }
 
+- (void) scaleToFit:(id)sender
+{
+	NSArray *array = [ViewerController getDisplayed2DViewers];
+	
+	for( ViewerController *v in array)
+		[[v imageView] scaleToFit];
+}
+
 - (void) tileWindows:(id)sender
 {
 	long				i, j, k, x;
@@ -2558,7 +2566,7 @@ static BOOL initialized = NO;
 	int rows = [[[[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] objectForKey:@"Rows"] intValue];
 	int columns = [[[[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] objectForKey:@"Columns"] intValue];
 
-	if (![[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol])
+	if (![[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] || viewerCount < rows * columns)
 	{
 		if (landscape) {
 			columns = 2 * numberOfMonitors;
@@ -2571,24 +2579,15 @@ static BOOL initialized = NO;
 	}
 	
 	//excess viewers. Need to add spaces to accept
-	while (viewerCount > (rows * columns)){
-		float ratio = ((float)columns/(float)rows)/numberOfMonitors;
-		//NSLog(@"ratio: %f", ratio);
-		if (ratio > 1.5 && landscape)
-			rows ++;
-		else 
-			columns ++;
-	}
-	
-	if( viewerCount)
+	if( viewerCount > (rows * columns))
 	{
-		BOOL r  = YES;
-		while( viewerCount+columns < (rows * columns))
-		{
-			if( r) rows--;
-			else columns--;
-			
-			r = !r;
+		while (viewerCount > (rows * columns)){
+			float ratio = ((float)columns/(float)rows)/numberOfMonitors;
+			//NSLog(@"ratio: %f", ratio);
+			if (ratio > 1.5 && landscape)
+				rows ++;
+			else 
+				columns ++;
 		}
 	}
 	

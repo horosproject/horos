@@ -8469,7 +8469,10 @@ static BOOL needToRezoom;
 	
 	if( tileWindows ) {
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-			[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+		{
+			[[AppController sharedAppController] tileWindows: self];
+			[[AppController sharedAppController] scaleToFit: self];
+		}
 		else
 			[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 	}

@@ -132,6 +132,7 @@ extern "C"
 - (IBAction) checkForUpdates:(id) sender;  /**< Check for update */
 //===============WINDOW========================
 - (void) tileWindows:(id)sender;  /**< Tile open window */
+- (void) scaleToFit:(id)sender;    /**< Scale opened windows */
 - (IBAction) closeAllViewers: (id) sender;  /**< Close All Viewers */
 - (void) checkAllWindowsAreVisible:(id) sender;
 - (void) checkAllWindowsAreVisible:(id) sender makeKey: (BOOL) makeKey;

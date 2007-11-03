@@ -7318,7 +7318,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	drawingFrameRect = [self frame];
 }
 
-- (void)reshape	// scrolled, moved or resized
+- (void) reshape	// scrolled, moved or resized
 {
 	if( dcmPixList && [[self window] isVisible])
     {
@@ -7350,7 +7350,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			originOffset.y *= yChanged;
 			
 			if( [self is2DViewer] == YES)
-				[[self windowController] propagateSettings];
+			{
+				if( [[self window] isKeyWindow])
+					[[self windowController] propagateSettings];
+			}
 			
 			if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 			if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
