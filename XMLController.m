@@ -158,7 +158,7 @@ static BOOL showWarning = YES;
 			
 			NSString	*path = [NSString stringWithFormat:@"(%@,%@)", [NSString stringWithFormat:@"%04x", group], [NSString stringWithFormat:@"%04x", element]];
 			
-			[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [addValue stringValue], 0L]]];
+			[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [addValue stringValue]], 0L]];
 			
 			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", 0L];
 			[params addObjectsFromArray:  groupsAndElements];
@@ -177,8 +177,7 @@ static BOOL showWarning = YES;
 				
 				[self modifyDicom: params];
 				
-				int i;			
-				for( i = 0; i < [files count]; i++)
+				for( int i = 0; i < [files count]; i++)
 					[[NSFileManager defaultManager] removeFileAtPath:[[files objectAtIndex: i] stringByAppendingString:@".bak"] handler:0L];
 				
 				[self updateDB: files];
@@ -191,11 +190,9 @@ static BOOL showWarning = YES;
 				
 				NSString	*searchGpEl = [NSString stringWithFormat:@"%@,%@", [NSString stringWithFormat:@"%04x", group], [NSString stringWithFormat:@"%04x", element]];
 				
-				for( i = 0 ; i < [table numberOfRows]; i++)
+				for( int i = 0 ; i < [table numberOfRows]; i++)
 				{
-					id item = [table itemAtRow: i];
-					
-					if( [[[item attributeForName:@"attributeTag"] stringValue] isEqualToString: searchGpEl])
+					if( [[[[table itemAtRow: i] attributeForName:@"attributeTag"] stringValue] isEqualToString: searchGpEl])
 					{
 						[table selectRow: i byExtendingSelection: NO];
 					}
