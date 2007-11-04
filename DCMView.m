@@ -4441,7 +4441,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 - (id)initWithFrameInt:(NSRect)frameRect
 {	
 	if( PETredTable == 0L) [DCMView computePETBlendingCLUT];
-		
+	
 	yearOld = 0L;
 	drawingFrameRect = [self frame];
 	syncSeriesIndex = -1;
@@ -4460,7 +4460,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	crossMove = -1;
 	previousViewSize.height = previousViewSize.width = 0;
 	slab = 0;
-	cursor = 0L;
+	cursor = [[NSCursor contrastCursor] retain];
 	syncRelativeDiff = 0;
 	volumicSeries = YES;
 	currentToolRight = [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTRIGHTTOOL"];
@@ -4489,6 +4489,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     }
 	self = [super initWithFrame:frameRect pixelFormat:pixFmt];
 	
+	cursorTracking = [[NSTrackingArea alloc] initWithRect: [self visibleRect] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow) owner: self userInfo: 0L];
+	[self addTrackingArea: cursorTracking];
+		
 	blendingView = 0L;
 	pTextureName = 0L;
 	blendingTextureName = 0L;
@@ -8747,9 +8750,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
            selector: @selector(updateCurrentImage:)
                name: @"DCMUpdateCurrentImage"
              object: nil];
-			 
-		cursorTracking = [[NSTrackingArea alloc] initWithRect: [self bounds] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp) owner: self userInfo: 0L];
-		[self addTrackingArea: cursorTracking];
     }
     return self;
 

@@ -4702,9 +4702,12 @@ static ViewerController *draggedController = 0L;
 //	float		previousWL, previousWW;
 //	NSPoint		previousRotation
 	
+	if( previousColumns != 1 || previousRows != 1)
+		[self setImageRows: 1 columns: 1];
+	
 	[imageView mouseUp: [[NSApplication sharedApplication] currentEvent]];
 	
-	[seriesView selectFirstTilingView];
+	[self selectFirstTilingView];
 	
 	[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
 	previousLocation = [[imageView curDCM] sliceLocation];
@@ -4810,7 +4813,7 @@ static ViewerController *draggedController = 0L;
 		[imageView updatePresentationStateFromSeries];
 	}
 	else [imageView setIndexWithReset: imageIndex :YES];
-		
+	
 	DCMPix *curDCM = [pixList[0] objectAtIndex: imageIndex];
 	NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
 	
@@ -5023,6 +5026,11 @@ static ViewerController *draggedController = 0L;
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
+	
+	if( previousColumns != 1 || previousRows != 1)
+		[self setImageRows: previousRows columns: previousColumns];
+	
+	[self selectFirstTilingView];
 }
 
 - (void) showWindowTransition
