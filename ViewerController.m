@@ -5380,9 +5380,7 @@ static ViewerController *draggedController = 0L;
 		imageView = [[note object] retain];
 		
 		if( [imageView columns] != 1 || [imageView rows] != 1)
-		{
-			[self updateTilingViews];
-		}
+			[imageView updateTilingViews];
 	}
 }
 
@@ -7606,13 +7604,13 @@ NSMutableArray		*array;
 		[self updateImage:self];
 	}
 	
-	NSArray *viewers = [ViewerController getDisplayed2DViewers];
-	
-	for( i = 0; i < [viewers count]; i++)
-		[[viewers objectAtIndex: i] updateImage: self];
-	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
+	
+	NSArray *viewers = [ViewerController getDisplayed2DViewers];
+	
+	for( ViewerController *v in viewers)
+		[v updateImage: self];
 }
 
 - (void) ApplyOpacity: (id) sender

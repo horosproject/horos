@@ -6367,7 +6367,7 @@ static BOOL withReset = NO;
         if( COLUMN == 0) { COLUMN = 1; NSLog(@"ERROR COLUMN = 0");}
         
 		row = ceil((float)[matrixViewArray count]/(float) newColumn);
-		//		row = ceil((float)[[oMatrix cells] count]/(float)newColumn);
+		//	row = ceil((float)[[oMatrix cells] count]/(float)newColumn);
 		//	minrow = 1 + (frame.size.height / (size.height + space.height*2));
 		//	if( row < minrow) row = minrow;
 		
