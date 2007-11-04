@@ -5024,6 +5024,9 @@ static ViewerController *draggedController = 0L;
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
 }
 
 - (void) showWindowTransition
@@ -5375,6 +5378,11 @@ static ViewerController *draggedController = 0L;
 	{
 		[imageView release];
 		imageView = [[note object] retain];
+		
+		if( [imageView columns] != 1 || [imageView rows] != 1)
+		{
+			[self updateTilingViews];
+		}
 	}
 }
 
