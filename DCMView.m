@@ -1604,6 +1604,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	NSLog(@"DCMView released");
 	[self deleteMouseDownTimer];
 	
+	[cursorTracking release];
+	
 	[drawLock lock];
 	[drawLock unlock];
 	
@@ -1612,8 +1614,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	[dcmRoiList release];
 	dcmRoiList = 0L;
-	
-	[mouseModifiers release]; 
 	
 	[dcmFilesList release];
 	dcmFilesList = 0L;
@@ -2125,6 +2125,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 		if (update == YES) [self setNeedsDisplay:YES];
 	}
+	
+	[self setCursorForView: [self getTool: event]];
+	if( cursorSet) [cursor set];
+	
 	[super flagsChanged:event];
 }
 
@@ -2317,15 +2321,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	
 	[self setNeedsDisplay:YES];
-}
-
-- (void) checkMouseModifiers:(id) sender
-{
-	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags])
-	{
-		long tool = [self getTool: [[NSApplication sharedApplication] currentEvent]];
-		[self setCursorForView: tool];
-	}
 }
 
 -(void) mouseMoved: (NSEvent*) theEvent
@@ -2566,7 +2561,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (long) getTool: (NSEvent*) event
 {
-	long tool;
+	int tool;
 	
 	if( [event type] == NSRightMouseDown || [event type] == NSRightMouseDragged || [event type] == NSRightMouseUp) tool = currentToolRight;
 	else if( [event type] == NSOtherMouseDown || [event type] == NSOtherMouseDragged || [event type] == NSOtherMouseUp) tool = tTranslate;
@@ -4446,7 +4441,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 - (id)initWithFrameInt:(NSRect)frameRect
 {	
 	if( PETredTable == 0L) [DCMView computePETBlendingCLUT];
-
+		
 	yearOld = 0L;
 	drawingFrameRect = [self frame];
 	syncSeriesIndex = -1;
@@ -4466,7 +4461,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	previousViewSize.height = previousViewSize.width = 0;
 	slab = 0;
 	cursor = 0L;
-	cursorSet = NO;
 	syncRelativeDiff = 0;
 	volumicSeries = YES;
 	currentToolRight = [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTRIGHTTOOL"];
@@ -4592,8 +4586,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     
 	cross.x = cross.y = -9999;
 	
-	mouseModifiers = [[NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(checkMouseModifiers:) userInfo:nil repeats:YES] retain];
-	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
 	
 	_alternateContext = [[NSOpenGLContext alloc] initWithFormat:pixFmt shareContext:[self openGLContext]];
@@ -4605,11 +4597,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     return self;
 }
 
-- (void) prepareToRelease {
-	[mouseModifiers invalidate];
-	[mouseModifiers release];
-	mouseModifiers = 0L;
-	
+- (void) prepareToRelease
+{	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 
@@ -8758,6 +8747,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
            selector: @selector(updateCurrentImage:)
                name: @"DCMUpdateCurrentImage"
              object: nil];
+			 
+		cursorTracking = [[NSTrackingArea alloc] initWithRect: [self bounds] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp) owner: self userInfo: 0L];
+		[self addTrackingArea: cursorTracking];
     }
     return self;
 
@@ -8886,9 +8878,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	return [super resignFirstResponder];
 }
 
-
-//notifications
-
 -(void) updateCurrentImage: (NSNotification*) note {
 	if( stringID == 0L)	{
 		DCMView *otherView = [note object];
@@ -8902,10 +8891,22 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if ([note object] != self)
 		isKeyView = NO;
 }
+
 //cursor methods
 
-- (void) resetCursorRects {
-	[self addCursorRect:[self bounds] cursor: cursor];
+- (void)mouseEntered:(NSEvent *)theEvent
+{
+	cursorSet = YES;
+}
+
+- (void)mouseExited:(NSEvent *)theEvent
+{
+	cursorSet = NO;
+}
+
+-(void)cursorUpdate:(NSEvent *)theEvent
+{
+    [cursor set];
 }
 
 -(void) setCursorForView: (long) tool
@@ -8943,7 +8944,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		cursor = [c retain];
 		
-		[[self window] invalidateCursorRectsForView: self];
+//		[[self window] invalidateCursorRectsForView: self];
 	}
 }
 

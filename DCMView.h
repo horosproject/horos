@@ -117,8 +117,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	NSMutableArray  *dcmRoiList, *curRoiList;
     DCMPix			*curDCM;
 	
-    NSTimer			*mouseModifiers;
-	
     char            listType;
     
     short           curImage, startImage;
@@ -200,7 +198,10 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	
 	BOOL			isKeyView; //needed for Image View subclass
 	NSCursor		*cursor;
+	
 	BOOL			cursorSet;
+	NSTrackingArea	*cursorTracking;
+	
 	NSPoint			display2DPoint;
 	
 	NSMutableDictionary	*stringTextureCache;
