@@ -1698,17 +1698,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(IBAction) updateImage:(id) sender
 {
-	float cwl, cww;
-	
-	[imageView getWLWW:&cwl :&cww];
-	[imageView setWLWW:cwl :cww];
+	for( DCMView *v in [seriesView imageViews]) [v updateImage];
 }
 
 -(void) needsDisplayUpdate
 {
 	[self updateImage:self];
 }
-
 
 - (void)windowDidLoad
 {
