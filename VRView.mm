@@ -1498,13 +1498,10 @@ public:
 	}
 }
 
-- (void) checkMouseModifiers:(id) sender
+- (void) flagsChanged:(NSEvent *)theEvent
 {
-	if( [[NSApp currentEvent] modifierFlags])
-	{
-		long tool = [self getTool:[NSApp currentEvent]];
-		[self setCursorForView: tool];
-	}
+	long tool = [self getTool:theEvent];
+	[self setCursorForView: tool];
 }
 
 -(id)initWithFrame:(NSRect)frame
@@ -1596,7 +1593,6 @@ public:
 		
 		[self load3DPointsDefaultProperties];
 		
-		mouseModifiers = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkMouseModifiers:) userInfo:nil repeats:YES] retain];
 		autoRotate = [[NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(autoRotate:) userInfo:nil repeats:YES] retain];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"autorotate3D"] && [[[self window] windowController] isKindOfClass:[VRController class]])
@@ -1626,10 +1622,6 @@ public:
 		[autoRotate invalidate];
 		[autoRotate release];
 		autoRotate = 0L;
-		
-		[mouseModifiers invalidate];
-		[mouseModifiers release];
-		mouseModifiers = 0L;
 		
 		[self deleteMouseDownTimer];
 		[self deleteRightMouseDownTimer];

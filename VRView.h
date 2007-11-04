@@ -207,7 +207,6 @@ typedef char* vtkMyCallbackVR;
 	float					rotationValue, factor;
 	long					rotationOrientation, renderingMode;
 	
-	NSTimer					*mouseModifiers;
 	NSArray					*currentOpacityArray;
     NSMutableArray			*pixList;
     DCMPix					*firstObject;

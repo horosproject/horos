@@ -1413,7 +1413,7 @@ public:
 	return tool;
 }
 
-- (void) checkMouseModifiers:(id) sender
+- (void) flagsChanged:(NSEvent *)theEvent
 {
 	if( [[NSApp currentEvent] modifierFlags])
 	{
@@ -1479,7 +1479,6 @@ public:
 				   name: NSViewFrameDidChangeNotification
 				 object: nil];
 				 
-		mouseModifiers = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkMouseModifiers:) userInfo:nil repeats:YES] retain];
 		autoRotate = [[NSTimer scheduledTimerWithTimeInterval:0.25 target:self selector:@selector(autoRotate:) userInfo:nil repeats:YES] retain];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
     }
@@ -1494,10 +1493,6 @@ public:
 		[autoRotate invalidate];
 		[autoRotate release];
 		autoRotate = 0L;
-		
-		[mouseModifiers invalidate];
-		[mouseModifiers release];
-		mouseModifiers = 0L;
 		
 		[[NSNotificationCenter defaultCenter] removeObserver: self];
 	}

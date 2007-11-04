@@ -666,7 +666,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	return tool;
 }
 
-- (void) checkMouseModifiers:(id) sender
+- (void) flagsChanged:(NSEvent *)theEvent
 {
 	if( [[NSApp currentEvent] modifierFlags])
 	{
@@ -723,7 +723,6 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		display3DPoints = YES;
 		[self load3DPointsDefaultProperties];
 		
-		mouseModifiers = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkMouseModifiers:) userInfo:nil repeats:YES] retain];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
     }
     
@@ -734,10 +733,6 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 {
 	if( [notification object] == [self window])
 	{
-		[mouseModifiers invalidate];
-		[mouseModifiers release];
-		mouseModifiers = 0L;
-		
 		[[NSNotificationCenter defaultCenter] removeObserver: self];
 	}
 }
