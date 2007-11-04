@@ -146,7 +146,7 @@ static char *GetPrivateIP()
 		[browser setDelegate:self];
 		
 		#if !__LP64__
-		[browser searchForServicesOfType:@"_osirix._dbsharing3." inDomain:@""];
+		[browser searchForServicesOfType:@"_osirixdbsharing._tcp." inDomain:@""];
 		#endif
 		
 //		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
