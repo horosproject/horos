@@ -145,9 +145,7 @@ static char *GetPrivateIP()
 		
 		[browser setDelegate:self];
 		
-		#if !__LP64__
 		[browser searchForServicesOfType:@"_osirixdbsharing._tcp." inDomain:@""];
-		#endif
 		
 //		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
 		
@@ -1147,6 +1145,12 @@ static char *GetPrivateIP()
 		}
 		else
 		{
+			#if __LP64__
+			NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", 0L), NSLocalizedString( @"There is currently a bug in MacOS 10.5 for 64-bit application. Bonjour addresses cannot be resolved. Add your OsiriX nodes as fixed addresses in Locations-Preferences.", 0L), NSLocalizedString(@"OK", 0L), 0, 0);
+			#else
+			NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", 0L), NSLocalizedString( @"This address wasn't resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", 0L), NSLocalizedString(@"OK", 0L), 0, 0);
+			#endif
+			
 			resolved = NO;
 			succeed = NO;
 		}
