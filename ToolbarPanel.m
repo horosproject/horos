@@ -57,6 +57,8 @@ extern BOOL USETOOLBARPANEL;
 	if (self = [super initWithWindowNibName:@"ToolbarPanel"])
 	{
 		toolbar = 0L;
+		
+		[[self window] setCollectionBehavior: NSWindowCollectionBehaviorCanJoinAllSpaces];
 	}
 	
 	return self;

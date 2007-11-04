@@ -5639,6 +5639,12 @@ static ViewerController *draggedController = 0L;
 		
 		interval *= (float) zFactor;
 		
+		if( interval == 0L)
+		{
+			free( emptyData);
+			return NO;
+		}
+		
 		NSMutableArray	*newPixList = [NSMutableArray arrayWithCapacity: 0];
 		NSData *newData = [NSData dataWithBytesNoCopy:emptyData length:size freeWhenDone:YES];
 		
