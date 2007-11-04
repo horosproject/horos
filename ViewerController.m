@@ -1643,16 +1643,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if( loadingPercentage != 1)
 		{
 			loading = [NSString stringWithFormat:NSLocalizedString(@" - %2.f%%", nil), loadingPercentage * 100.];
-			[NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(setWindowTitle:)  userInfo:0L repeats:NO];
+			[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(setWindowTitle:)  userInfo:0L repeats:NO];
 		}
 	}
 	
 	NSManagedObject	*curImage = [fileList[ curMovieIndex] objectAtIndex:0];
 	
 	if( [[[curImage valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"])
-	{
 		[[self window] setTitle: NSLocalizedString( @"No images", 0L)];
-	}
 	else
 	{
 		NSDate	*bod = [curImage valueForKeyPath:@"series.study.dateOfBirth"];
@@ -5313,7 +5311,6 @@ static ViewerController *draggedController = 0L;
 	{
 		[self performSelectorOnMainThread:@selector( computeIntervalFlipNow:) withObject:[NSNumber numberWithBool: NO] waitUntilDone: NO];
 		[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: NO];
-//		[self performSelectorOnMainThread:@selector( resampleDataIfNeeded:) withObject:self waitUntilDone: NO];
 		
 		switch( orientationVector)
 		{

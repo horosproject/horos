@@ -4437,7 +4437,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	stringSize = [DCMView sizeOfString:@"B" forFont:fontGL];
 }
 
-
 - (id)initWithFrameInt:(NSRect)frameRect
 {	
 	if( PETredTable == 0L) [DCMView computePETBlendingCLUT];
