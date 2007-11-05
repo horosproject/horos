@@ -84,6 +84,7 @@
 @property int	levelOfDetailType;
 @property int	exportSize;
 @property (readonly) Camera  *currentCamera;
+@property (readonly) FlyThruStepsArrayController *stepsArrayController;
 @property (readwrite, retain) FlyThruAdapter *FTAdapter;
 @property int curMovieIndex;
 @property int tabIndex;

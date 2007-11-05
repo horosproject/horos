@@ -143,8 +143,6 @@
 	[self flyThruTag: [sender selectedSegment]];
 }
 
-
-
 - (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard*)pboard
 {
 

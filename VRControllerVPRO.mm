@@ -1600,7 +1600,9 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 
 - (IBAction) flyThruButtonMenu:(id) sender
 {
-	[flyThruController flyThruTag: [sender tag]];
+	if( flyThruController == 0L) [self flyThruControllerInit: self];
+	
+	[flyThruController.stepsArrayController flyThruTag: [sender tag]];
 }
 
 - (IBAction) flyThruControllerInit:(id) sender

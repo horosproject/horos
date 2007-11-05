@@ -24,6 +24,7 @@
 
 @implementation FlyThruController
 
+@synthesize stepsArrayController;
 @synthesize curMovieIndex;
 @synthesize flyThru;
 @synthesize hidePlayBox;
