@@ -8908,6 +8908,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     [cursor set];
 }
 
+- (void) checkCursor
+{
+	if(cursorSet) [cursor set];
+}
+
 -(void) setCursorForView: (long) tool
 {
 	NSCursor	*c;

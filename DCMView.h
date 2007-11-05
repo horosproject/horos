@@ -385,6 +385,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) setRows:(int)rows columns:(int)columns;
 - (void) updateTilingViews;
 - (void) becomeMainWindow;
+- (void) checkCursor;
 - (NSManagedObject *)imageObj;
 - (NSManagedObject *)seriesObj;
 - (void) updatePresentationStateFromSeries;

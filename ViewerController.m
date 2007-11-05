@@ -1664,6 +1664,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}	
 		else [[self window] setTitle: [NSString stringWithFormat: @"%@ (%@)%@", [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
 	}
+	
+	[imageView checkCursor];	// <- To avoid a stupid bug between setTitle and NSTrackingArea..... 
 }
 
 - (id) startWaitProgressWindow :(NSString*) message :(long) max
