@@ -8945,10 +8945,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( c != cursor)
 	{
 		[cursor release];
-		
 		cursor = [c retain];
-		
-//		[[self window] invalidateCursorRectsForView: self];
 	}
 }
 

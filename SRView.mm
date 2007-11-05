@@ -673,13 +673,16 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	return tool;
 }
 
-- (void) flagsChanged:(NSEvent *)theEvent
+- (void) flagsChanged:(NSEvent *)event
 {
-	if( [[NSApp currentEvent] modifierFlags])
+	if( [event modifierFlags])
 	{
-		long tool = [self getTool:[NSApp currentEvent]];
+		long tool = [self getTool: event];
 		[self setCursorForView: tool];
+		if( cursorSet) [cursor set];
 	}
+	
+	[super flagsChanged: event];
 }
 
 -(id)initWithFrame:(NSRect)frame
@@ -687,6 +690,10 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	NSLog(@"SRView initWithFrame");
     if ( self = [super initWithFrame:frame] )
     {
+		NSTrackingArea *cursorTracking = [[[NSTrackingArea alloc] initWithRect: [self visibleRect] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow) owner: self userInfo: 0L] autorelease];
+		
+		[self addTrackingArea: cursorTracking];
+		
 		splash = [[WaitRendering alloc] init:@"Rendering..."];
 //		[[splash window] makeKeyAndOrderFront:self];
 		
@@ -3083,9 +3090,26 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 #pragma mark-
 #pragma mark Cursors
 
-- (void) resetCursorRects
+//cursor methods
+
+- (void)mouseEntered:(NSEvent *)theEvent
 {
-	[self addCursorRect:[self bounds] cursor: cursor];
+	cursorSet = YES;
+}
+
+- (void)mouseExited:(NSEvent *)theEvent
+{
+	cursorSet = NO;
+}
+
+-(void)cursorUpdate:(NSEvent *)theEvent
+{
+    [cursor set];
+}
+
+- (void) checkCursor
+{
+	if(cursorSet) [cursor set];
 }
 
 -(void) setCursorForView: (long) tool
@@ -3124,10 +3148,6 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		[cursor release];
 		
 		cursor = [c retain];
-		
-		[[self window] invalidateCursorRectsForView: self];
-		[self resetCursorRects];
-		[cursor set];
 	}
 }
 

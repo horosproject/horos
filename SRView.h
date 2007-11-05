@@ -154,6 +154,8 @@ typedef char* vtkPolyDataNormals;
 	vtkTextActor				*oText[ 4];
 	
 	NSCursor					*cursor;
+	BOOL						cursorSet;
+	
     NSMutableArray				*pixList;
     DCMPix						*firstObject;
     float						*data, *dataFRGB;

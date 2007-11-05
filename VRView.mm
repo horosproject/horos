@@ -1505,16 +1505,23 @@ public:
 	}
 }
 
-- (void) flagsChanged:(NSEvent *)theEvent
+- (void) flagsChanged:(NSEvent *) event
 {
-	long tool = [self getTool:theEvent];
+	long tool = [self getTool: event];
 	[self setCursorForView: tool];
+	if( cursorSet) [cursor set];
+	
+	[super flagsChanged: event];
 }
 
 -(id)initWithFrame:(NSRect)frame
 {
     if ( self = [super initWithFrame:frame] )
     {
+		NSTrackingArea *cursorTracking = [[[NSTrackingArea alloc] initWithRect: [self visibleRect] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow) owner: self userInfo: 0L] autorelease];
+		
+		[self addTrackingArea: cursorTracking];
+	
 		rotate = NO;
 		
 		splash = [[WaitRendering alloc] init:NSLocalizedString(@"Rendering...", nil)];
@@ -6286,9 +6293,26 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 #pragma mark-
 #pragma mark Cursors
 
-- (void) resetCursorRects
+//cursor methods
+
+- (void)mouseEntered:(NSEvent *)theEvent
 {
-	[self addCursorRect:[self bounds] cursor: cursor];
+	cursorSet = YES;
+}
+
+- (void)mouseExited:(NSEvent *)theEvent
+{
+	cursorSet = NO;
+}
+
+-(void)cursorUpdate:(NSEvent *)theEvent
+{
+    [cursor set];
+}
+
+- (void) checkCursor
+{
+	if(cursorSet) [cursor set];
 }
 
 -(void) setCursorForView: (long) tool
@@ -6329,10 +6353,6 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 		[cursor release];
 		
 		cursor = [c retain];
-		
-		[[self window] invalidateCursorRectsForView: self];
-		[self resetCursorRects];
-		[cursor set];
 	}
 }
 

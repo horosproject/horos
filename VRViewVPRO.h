@@ -258,6 +258,7 @@ typedef char* vtkVolumeRayCastCompositeFunction;
 	DICOMExport					*exportDCM;
 	
 	NSCursor					*cursor;
+	BOOL						cursorSet;
 	
 	NSRect						savedViewSizeFrame;
 }

@@ -227,6 +227,7 @@ typedef char* vtkMyCallbackVR;
 	double					alpha[ 256];
 
 	NSCursor				*cursor;
+	BOOL					cursorSet;
 	
     vtkRenderer				*aRenderer;
     vtkCamera				*aCamera;
