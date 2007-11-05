@@ -251,6 +251,11 @@ typedef char* vtkPolyDataNormals;
 	short						_tool;
 	
 	NSRect						savedViewSizeFrame;
+
+	// 3DConnexion SpaceNavigator
+	NSTimer			*snCloseEventTimer;
+	BOOL			snStopped;
+	UInt16			snConnexionClientID;
 }
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
@@ -335,5 +340,10 @@ typedef char* vtkPolyDataNormals;
 - (void) startDrag:(NSTimer*)theTimer;
 - (void)deleteMouseDownTimer;
 -(void) squareView:(id) sender;
+
+// 3DConnexion SpaceNavigator
+- (void)connect2SpaceNavigator;
+- (void) panX:(float) x Y:(float) y;
+void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageType, void *messageArgument);
 
 @end

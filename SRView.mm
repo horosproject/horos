@@ -48,6 +48,13 @@
 #define D2R 0.01745329251994329576923690768    // degrees to radians
 #define R2D 57.2957795130823208767981548141    // radians to degrees
 
+#include <3DConnexionClient/ConnexionClientAPI.h>
+SRView	*snSRView = 0L;
+extern "C" 
+{
+	extern OSErr InstallConnexionHandlers(ConnexionMessageHandlerProc messageHandler, ConnexionAddedHandlerProc addedHandler, ConnexionRemovedHandlerProc removedHandler) __attribute__((weak_import));
+}
+
 typedef struct _xyzArray
 {
 	short x;
@@ -723,6 +730,8 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		display3DPoints = YES;
 		[self load3DPointsDefaultProperties];
 		
+		[self connect2SpaceNavigator];
+		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
     }
     
@@ -798,6 +807,14 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	[_mouseDownTimer release];
 	
 	[destinationImage release];
+		
+	// 3D Connexion SpaceNavigator: Make sure the framework is installed
+	if(InstallConnexionHandlers != NULL)
+	{
+		// 3D Connexion SpaceNavigator: Unregister our client and clean up all handlers
+		if(snConnexionClientID) UnregisterConnexionClient(snConnexionClientID);
+		CleanupConnexionHandlers();
+	}
 		
     [super dealloc];
 }
@@ -1016,7 +1033,12 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	
 	noWaitDialog = YES;
 	tool = currentTool;
-	
+		
+	if( snCloseEventTimer)
+	{
+		[snCloseEventTimer fire];
+	}
+	snStopped = YES;
 
 	if ([theEvent type] == NSLeftMouseDown) {
 		if (_mouseDownTimer) {
@@ -3238,5 +3260,240 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	[[self window] display];
 }
 
+- (vtkRenderer*) vtkRenderer;
+{
+	return aRenderer;
+}
+
+- (vtkCamera*) vtkCamera;
+{
+	return aCamera;
+}
+
+#pragma mark-
+#pragma mark  3DConnexion SpaceNavigator
+
+- (void)connect2SpaceNavigator;
+{
+	snSRView = self;
+	snStopped = YES;
+	OSErr	error;
+	if(InstallConnexionHandlers != NULL)
+	{
+		// Install message handler and register our client
+		error = InstallConnexionHandlers(SRSpaceNavigatorMessageHandler, 0L, 0L);
+
+		// This takes over in our application only
+		snConnexionClientID = RegisterConnexionClient('OsiX', (UInt8*) "\pOsiriX", kConnexionClientModeTakeOver, kConnexionMaskAll);
+	}
+}
+
+- (void)closeEvent:(id) sender
+{
+	SRView *sV = (SRView*) snSRView;
+	
+	[sV getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent,NULL);
+
+	snStopped = YES;
+	
+	[snCloseEventTimer release];
+	snCloseEventTimer = 0L;
+}
+
+- (void) panX:(float) x Y:(float) y;
+{
+	vtkRenderWindowInteractor *rwi = [self getInteractor];
+
+	double ViewFocus[4];
+	double NewPickPoint[4];
+
+	// Calculate the focal depth
+	vtkCamera* camera = aCamera;
+	camera->GetFocalPoint(ViewFocus);
+	rwi->GetInteractorStyle()->ComputeWorldToDisplay(aRenderer, ViewFocus[0], ViewFocus[1], ViewFocus[2], ViewFocus);
+	double focalDepth = ViewFocus[2];
+
+	rwi->GetInteractorStyle()->ComputeDisplayToWorld(aRenderer, (double)x, (double)y, focalDepth, NewPickPoint);
+
+	// Get the current focal point and position
+
+	camera->GetFocalPoint(ViewFocus);
+
+	double *ViewPoint = camera->GetPosition();
+
+	// Compute a translation vector, moving everything 1/10
+	// the distance to the cursor. (Arbitrary scale factor)
+
+	double MotionVector[3];
+	MotionVector[0] = 0.01 * (ViewFocus[0] - NewPickPoint[0]);
+	MotionVector[1] = 0.01 * (ViewFocus[1] - NewPickPoint[1]);
+	MotionVector[2] = 0.01 * (ViewFocus[2] - NewPickPoint[2]);
+
+	camera->SetFocalPoint(MotionVector[0] + ViewFocus[0],
+						  MotionVector[1] + ViewFocus[1],
+						  MotionVector[2] + ViewFocus[2]);
+
+	camera->SetPosition(MotionVector[0] + ViewPoint[0],
+						MotionVector[1] + ViewPoint[1],
+						MotionVector[2] + ViewPoint[2]);
+
+	if (rwi->GetLightFollowCamera()) 
+	{
+		aRenderer->UpdateLightsGeometryToFollowCamera();
+	}
+}
+
+void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageType, void *messageArgument)
+{
+	static ConnexionDeviceState	lastState;
+	ConnexionDeviceState		*state;
+	SRView *sV = (SRView*) snSRView;
+	
+	SInt16 tx, ty, tz, rx, ry, rz, xPos, yPos;
+	float axis_max, speed, rot;
+	switch(messageType)
+	{
+		case kConnexionMsgDeviceState:
+			state = (ConnexionDeviceState*)messageArgument;
+			
+			AbsoluteTime theTime = UpTime();
+			uint64_t t = ((uint64_t*) &theTime)[0];
+
+			if(t - state->time > 2*1000*1000)
+			{		
+				break;
+			}
+
+			if(state->client == snSRView->snConnexionClientID)
+			{
+                // decipher what command/event is being reported by the driver
+                switch (state->command)
+                {
+                    case kConnexionCmdHandleAxis:
+						// get the axis movement (names are taken from the SDK documentation)
+						tx = state->axis[0];
+						ty = state->axis[1];
+						tz = state->axis[2];
+						rx = state->axis[3];
+						ry = state->axis[4];
+						rz = state->axis[5];
+						
+						// normalization
+						axis_max = 500.0; // typical value according to the SDK
+						
+						if( sV->snCloseEventTimer)
+						{
+							[sV->snCloseEventTimer invalidate];
+							[sV->snCloseEventTimer release];
+							sV->snCloseEventTimer = 0L;
+						}
+						
+						// *** zoom ***					
+						if( sV->projectionMode != 2)
+						{
+							speed = 0.2; // zoom speed 0.2 is slow 1.0 is fast
+							float zoom = ((float)tz/axis_max)*speed +1.0;
+
+							if( zoom < 0.98 || zoom > 1.02)
+							{
+								[sV vtkCamera]->Zoom(zoom);
+								[sV setNeedsDisplay:YES];
+							}
+						}
+						else // endosocpy
+						{
+							float distance = [sV vtkCamera]->GetDistance();
+							float dolly = ((float)tz/axis_max) / 40.;
+							if( dolly < -0.9) dolly = -0.9;
+							
+							[sV vtkCamera]->Dolly( 1.0 + dolly); 
+							[sV vtkCamera]->SetDistance( distance);
+							[sV vtkCamera]->ComputeViewPlaneNormal();
+							[sV vtkCamera]->OrthogonalizeViewUp();
+							[sV vtkRenderer]->ResetCameraClippingRange();
+							[sV setNeedsDisplay:YES];
+						}
+
+						// *** rotation ***
+						rot = -(float)rz;
+						if( sV->projectionMode == 2) rot = (float)rz;
+						
+						float rotX, rotY;
+						rotX = [sV frame].size.width/2.0 + cos(rot/axis_max)*50.0;
+						rotY = [sV frame].size.height/2.0 + sin(rot/axis_max)*50.0;
+						[sV vtkCamera]->Roll(rot/axis_max*10.0);
+						[sV setNeedsDisplay:YES];
+						
+						// *** pan ***
+						if( sV->projectionMode != 2)
+						{
+							[sV panX:[sV frame].size.width/2.0+tx*10.0 Y:[sV frame].size.height/2.0-ty*10.0];
+							[sV setNeedsDisplay:YES];
+						}
+						// no pan for endoscopy mode
+												
+						// *** 3D rotation ***
+						if( sV->projectionMode != 2)
+						{
+							xPos = lastState.axis[4]-(float)ry/axis_max*50.0;
+							yPos = lastState.axis[3]-(float)rx/axis_max*50.0;
+							[sV getInteractor]->SetEventInformation((int)xPos, (int)yPos, 0, 0);						
+							if( sV->snStopped)
+							{
+								[sV getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
+								sV->snStopped = NO;
+							}
+							else
+								[sV getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);						
+							state->axis[3] = yPos;
+							state->axis[4] = xPos;
+							[sV setNeedsDisplay:YES];
+						}
+						else // endoscopy
+						{
+							[sV vtkCamera]->Yaw((float)ry/axis_max*10.0);
+							[sV vtkCamera]->Pitch(-(float)rx/axis_max*10.0);
+							[sV vtkCamera]->ComputeViewPlaneNormal();
+							[sV vtkCamera]->OrthogonalizeViewUp();
+							[sV vtkRenderer]->ResetCameraClippingRange();
+							[sV computeOrientationText];
+							[sV setNeedsDisplay:YES];
+						}
+						[sV computeOrientationText];
+						
+						if([sV needsDisplay]) [sV display];
+						
+						sV->snCloseEventTimer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:sV selector:@selector(closeEvent:) userInfo:nil repeats:0] retain];
+                        break;
+                        
+                    case kConnexionCmdHandleButtons:
+						if(state->buttons==0) // buttons released
+						{
+							[sV closeEvent:nil];
+						}
+						else if(state->buttons==1) // left button pressed
+						{
+							if( sV->projectionMode != 2) [sV coView:nil];
+						}
+						else if(state->buttons==2) // right button pressed
+						{
+							if( sV->projectionMode != 2) [sV saView:nil];
+						}
+						else if(state->buttons==3) // both button are presed
+						{
+							if( sV->projectionMode != 2) [sV saViewOpposite:nil];
+						}
+                        break;
+                }                
+				
+				BlockMoveData(state, &lastState, (long)sizeof(ConnexionDeviceState));
+			}
+			break;
+
+		default:
+			// other messageTypes can happen and should be ignored
+			break;
+	}
+}
 
 @end

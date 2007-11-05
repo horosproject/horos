@@ -504,8 +504,9 @@ typedef char* vtkMyCallbackVR;
 - (void)setIChatFrame:(BOOL)boo;
 - (void)_iChatStateChanged:(NSNotification *)aNotification;
 
+// 3DConnexion SpaceNavigator
 - (void)connect2SpaceNavigator;
 - (void) panX:(float) x Y:(float) y;
-void SpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageType, void *messageArgument);
+void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageType, void *messageArgument);
 
 @end

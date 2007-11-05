@@ -1857,10 +1857,10 @@ public:
 	[_hotKeyDictionary release];
 	[appliedCurves release];
 
-	// Make sure the framework is installed
+	// 3D Connexion SpaceNavigator: Make sure the framework is installed
 	if(InstallConnexionHandlers != NULL)
 	{
-		// Unregister our client and clean up all handlers
+		// 3D Connexion SpaceNavigator: Unregister our client and clean up all handlers
 		if(snConnexionClientID) UnregisterConnexionClient(snConnexionClientID);
 		CleanupConnexionHandlers();
 	}
@@ -2583,7 +2583,6 @@ public:
 	if( snCloseEventTimer)
 	{
 		[snCloseEventTimer fire];
-		
 	}
 	snStopped = YES;
 	
@@ -6953,14 +6952,18 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 }
 
+#pragma mark-
+#pragma mark  3DConnexion SpaceNavigator
+
 - (void)connect2SpaceNavigator;
 {
 	snVRView = self;
+	snStopped = YES;
 	OSErr	error;
 	if(InstallConnexionHandlers != NULL)
 	{
 		// Install message handler and register our client
-		error = InstallConnexionHandlers(SpaceNavigatorMessageHandler, 0L, 0L);
+		error = InstallConnexionHandlers(VRSpaceNavigatorMessageHandler, 0L, 0L);
 
 		// This takes over in our application only
 		snConnexionClientID = RegisterConnexionClient('OsiX', (UInt8*) "\pOsiriX", kConnexionClientModeTakeOver, kConnexionMaskAll);
@@ -6969,7 +6972,6 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 
 - (void) closeEvent:(id) sender
 {	
-	NSLog(@"closeEvent");
 	VRView *vV = (VRView*) snVRView;
 	
 	[vV getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent,NULL);
@@ -7023,7 +7025,7 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	}
 }
 
-void SpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageType, void *messageArgument)
+void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageType, void *messageArgument)
 {
 	static ConnexionDeviceState	lastState;
 	ConnexionDeviceState		*state;
@@ -7119,12 +7121,12 @@ void SpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageType
 							yPos = lastState.axis[3]-(float)rx/axis_max*50.0;
 							[vV getInteractor]->SetEventInformation((int)xPos, (int)yPos, 0, 0);						
 							if( vV->snStopped)
-						{
-							[vV getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
-							vV->snStopped = NO;
-						}
-						else
-							[vV getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);						
+							{
+								[vV getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
+								vV->snStopped = NO;
+							}
+							else
+								[vV getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);						
 							state->axis[3] = yPos;
 							state->axis[4] = xPos;
 						}
