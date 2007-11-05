@@ -17,6 +17,15 @@
 
 @implementation EndoscopyVRView
 
+-(id)initWithFrame:(NSRect)frame;
+{
+    if ( self = [super initWithFrame:frame] )
+    {
+		[self connect2SpaceNavigator];
+	}
+	return self;
+}
+
 -(unsigned char*) superGetRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
 {
 	[super getRawPixels:width :height :spp :bpp :screenCapture :force8bits];

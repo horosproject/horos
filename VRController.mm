@@ -79,6 +79,8 @@ static NSString*	ConvolutionViewToolbarItemIdentifier		= @"ConvolutionView";
 static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorView";
 static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
+#include <3DConnexionClient/ConnexionClientAPI.h>
+
 @implementation VRController
 
 //- (float) ambient

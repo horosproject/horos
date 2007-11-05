@@ -8,7 +8,6 @@
 
 #import "VRPresetPreview.h"
 
-
 @implementation VRPresetPreview
 
 -(id)initWithFrame:(NSRect)frame
@@ -696,5 +695,12 @@
 {
 	return;
 }
+
+- (BOOL)becomeFirstResponder
+{
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"VRViewDidBecomeFirstResponder" object:self];
+	return YES;
+}
+
 
 @end

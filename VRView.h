@@ -144,7 +144,6 @@ typedef char* vtkMyCallbackVR;
 
 #import "CLUTOpacityView.h"
 
-
 /** \brief  Volume Rendering View
 *
 *   View for volume rendering and MIP
@@ -324,6 +323,11 @@ typedef char* vtkMyCallbackVR;
 	BOOL						_hasChanged;
 	float						iChatWidth, iChatHeight;
 	BOOL						iChatFrameIsSet;
+	
+	// 3DConnexion SpaceNavigator
+	NSTimer			*snCloseEventTimer;
+	BOOL			snStopped;
+	UInt16			snConnexionClientID;
 }
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
@@ -396,6 +400,7 @@ typedef char* vtkMyCallbackVR;
 - (IBAction)setRenderMode:(id)sender;
 - (void) setBlendingMode: (long) modeID;
 -(NSImage*) nsimageQuicktime:(BOOL) renderingMode;
+- (vtkRenderer*) vtkRenderer;
 - (vtkCamera*) vtkCamera;
 - (void) setVtkCamera:(vtkCamera*)aVtkCamera;
 - (void)setCenterlineCamera: (Camera *) cam;
@@ -498,4 +503,9 @@ typedef char* vtkMyCallbackVR;
 - (BOOL)checkHasChanged;
 - (void)setIChatFrame:(BOOL)boo;
 - (void)_iChatStateChanged:(NSNotification *)aNotification;
+
+- (void)connect2SpaceNavigator;
+- (void) panX:(float) x Y:(float) y;
+void SpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageType, void *messageArgument);
+
 @end
