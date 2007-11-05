@@ -12,6 +12,12 @@
      PURPOSE.
 =========================================================================*/
 
+#if !__LP64__
+#define USE3DCONNEXION 1
+#else
+#define USE3DCONNEXION 0
+#endif
+
 #import "VRView.h"
 #import "DCMCursor.h"
 #import "AppController.h"
@@ -54,7 +60,14 @@
 #import <InstantMessage/IMService.h>
 #import <InstantMessage/IMAVManager.h>
 
+
+#if USE3DCONNEXION
 #include <3DConnexionClient/ConnexionClientAPI.h>
+extern "C" 
+{
+	extern OSErr InstallConnexionHandlers(ConnexionMessageHandlerProc messageHandler, ConnexionAddedHandlerProc addedHandler, ConnexionRemovedHandlerProc removedHandler) __attribute__((weak_import));
+}
+#endif
 
 //vtkVolumeMapper
 
@@ -66,11 +79,7 @@
 
 static			NSRecursiveLock			*drawLock = 0L;
 
-VRView	*snVRView = 0L;
-extern "C" 
-{
-	extern OSErr InstallConnexionHandlers(ConnexionMessageHandlerProc messageHandler, ConnexionAddedHandlerProc addedHandler, ConnexionRemovedHandlerProc removedHandler) __attribute__((weak_import));
-}
+static VRView	*snVRView = 0L;
 
 typedef struct _xyzArray
 {
@@ -1865,13 +1874,15 @@ public:
 	[appliedCurves release];
 
 	// 3D Connexion SpaceNavigator: Make sure the framework is installed
+	#if USE3DCONNEXION
 	if(InstallConnexionHandlers != NULL)
 	{
 		// 3D Connexion SpaceNavigator: Unregister our client and clean up all handlers
 		if(snConnexionClientID) UnregisterConnexionClient(snConnexionClientID);
 		CleanupConnexionHandlers();
 	}
-
+	#endif
+	
     [super dealloc];
 }
 
@@ -6975,20 +6986,6 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 #pragma mark-
 #pragma mark  3DConnexion SpaceNavigator
 
-- (void)connect2SpaceNavigator;
-{
-	snVRView = self;
-	snStopped = YES;
-	OSErr	error;
-	if(InstallConnexionHandlers != NULL)
-	{
-		// Install message handler and register our client
-		error = InstallConnexionHandlers(VRSpaceNavigatorMessageHandler, 0L, 0L);
-
-		// This takes over in our application only
-		snConnexionClientID = RegisterConnexionClient('OsiX', (UInt8*) "\pOsiriX", kConnexionClientModeTakeOver, kConnexionMaskAll);
-	}
-}
 
 - (void) closeEvent:(id) sender
 {	
@@ -7042,6 +7039,22 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	if (rwi->GetLightFollowCamera()) 
 	{
 		aRenderer->UpdateLightsGeometryToFollowCamera();
+	}
+}
+
+#if USE3DCONNEXION
+- (void)connect2SpaceNavigator;
+{
+	snVRView = self;
+	snStopped = YES;
+	OSErr	error;
+	if(InstallConnexionHandlers != NULL)
+	{
+		// Install message handler and register our client
+		error = InstallConnexionHandlers(VRSpaceNavigatorMessageHandler, 0L, 0L);
+
+		// This takes over in our application only
+		snConnexionClientID = RegisterConnexionClient('OsiX', (UInt8*) "\pOsiriX", kConnexionClientModeTakeOver, kConnexionMaskAll);
 	}
 }
 
@@ -7188,7 +7201,7 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
                         break;
                 }                
 				
-				BlockMoveData(state, &lastState, (long)sizeof(ConnexionDeviceState));
+				memcpy( &lastState, state, (long)sizeof(ConnexionDeviceState));
 			}
 			break;
 
@@ -7197,5 +7210,9 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 			break;
 	}
 }
-
+#else
+- (void)connect2SpaceNavigator
+{
+}
+#endif
 @end

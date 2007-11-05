@@ -168,7 +168,7 @@ void FVTIFFInitialize(void)
     /* Grab the inherited method and install */
     _TIFFParentExtender = TIFFSetTagExtender(_FVTIFFDefaultDirectory);
 	
-	TIFFSetWarningHandler((TIFFErrorHandler) FV_EMPTY_TIFFWarning);
+//	TIFFSetWarningHandler((TIFFErrorHandler) FV_EMPTY_TIFFWarning);			<- This is crashing in 64-bit !!!
 }
 
 static void

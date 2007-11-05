@@ -12,8 +12,11 @@
      PURPOSE.
 =========================================================================*/
 
-
-
+#if !__LP64__
+#define USE3DCONNEXION 1
+#else
+#define USE3DCONNEXION 0
+#endif
 
 #import "SRView.h"
 #import "SRController.h"
@@ -48,12 +51,15 @@
 #define D2R 0.01745329251994329576923690768    // degrees to radians
 #define R2D 57.2957795130823208767981548141    // radians to degrees
 
+#if USE3DCONNEXION
 #include <3DConnexionClient/ConnexionClientAPI.h>
-SRView	*snSRView = 0L;
 extern "C" 
 {
 	extern OSErr InstallConnexionHandlers(ConnexionMessageHandlerProc messageHandler, ConnexionAddedHandlerProc addedHandler, ConnexionRemovedHandlerProc removedHandler) __attribute__((weak_import));
 }
+#endif
+
+static SRView	*snSRView = 0L;
 
 typedef struct _xyzArray
 {
@@ -816,12 +822,14 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	[destinationImage release];
 		
 	// 3D Connexion SpaceNavigator: Make sure the framework is installed
+	#if USE3DCONNEXION
 	if(InstallConnexionHandlers != NULL)
 	{
 		// 3D Connexion SpaceNavigator: Unregister our client and clean up all handlers
 		if(snConnexionClientID) UnregisterConnexionClient(snConnexionClientID);
 		CleanupConnexionHandlers();
 	}
+	#endif
 		
     [super dealloc];
 }
@@ -3293,21 +3301,6 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 #pragma mark-
 #pragma mark  3DConnexion SpaceNavigator
 
-- (void)connect2SpaceNavigator;
-{
-	snSRView = self;
-	snStopped = YES;
-	OSErr	error;
-	if(InstallConnexionHandlers != NULL)
-	{
-		// Install message handler and register our client
-		error = InstallConnexionHandlers(SRSpaceNavigatorMessageHandler, 0L, 0L);
-
-		// This takes over in our application only
-		snConnexionClientID = RegisterConnexionClient('OsiX', (UInt8*) "\pOsiriX", kConnexionClientModeTakeOver, kConnexionMaskAll);
-	}
-}
-
 - (void)closeEvent:(id) sender
 {
 	SRView *sV = (SRView*) snSRView;
@@ -3360,6 +3353,22 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	if (rwi->GetLightFollowCamera()) 
 	{
 		aRenderer->UpdateLightsGeometryToFollowCamera();
+	}
+}
+
+#if USE3DCONNEXION
+- (void)connect2SpaceNavigator;
+{
+	snSRView = self;
+	snStopped = YES;
+	OSErr	error;
+	if(InstallConnexionHandlers != NULL)
+	{
+		// Install message handler and register our client
+		error = InstallConnexionHandlers(SRSpaceNavigatorMessageHandler, 0L, 0L);
+
+		// This takes over in our application only
+		snConnexionClientID = RegisterConnexionClient('OsiX', (UInt8*) "\pOsiriX", kConnexionClientModeTakeOver, kConnexionMaskAll);
 	}
 }
 
@@ -3506,7 +3515,7 @@ void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
                         break;
                 }                
 				
-				BlockMoveData(state, &lastState, (long)sizeof(ConnexionDeviceState));
+				memcpy( &lastState, state, (long)sizeof(ConnexionDeviceState));
 			}
 			break;
 
@@ -3515,5 +3524,10 @@ void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 			break;
 	}
 }
+#else
+- (void)connect2SpaceNavigator;
+{
+}
+#endif
 
 @end

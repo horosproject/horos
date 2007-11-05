@@ -407,14 +407,19 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	if( [extension isEqualToString:@"tiff"] == YES ||
 		[extension isEqualToString:@"tif"] == YES)
 	{
-		int i, j;
+		TIFF* tif = TIFFOpen( [filePath UTF8String], "r");
+		
 		short head_size = 0;
 		char* head_data = 0;
-		TIFF* tif = TIFFOpen([filePath UTF8String], "r");
+		
 		if(tif)
 			success = TIFFGetField(tif, TIFFTAG_FV_MMHEADER, &head_size, &head_data);
+		
 		if (success)
 		{
+			int i, j;
+			
+		
 			int w = 0, h = 0;
 			FV_MM_HEAD mm_head;
 			NSXMLDocument *xmlDocument;
@@ -619,6 +624,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 							count++;
 						
 						NoOfFrames = count;
+						
+						NSLog( @"TIFF NoOfFrames: %d", NoOfFrames);
 						
 						TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &w);
 						TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
