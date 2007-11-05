@@ -4239,7 +4239,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 }
 
 - (float)calciumVolume{
-	// area * thickeness
+	// area * thickness
 	//
 	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 	float area = [self plainArea] * pixelSpacingX * pixelSpacingY;

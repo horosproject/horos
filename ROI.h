@@ -136,84 +136,193 @@ enum
 @property(retain) ROI *parentROI;
 @property double sliceThickness;
 
-// Set/retrieve default ROI name (if not set, then default name is the currentTool)
+/** Set default ROI name (if not set, then default name is the currentTool) */
 + (void) setDefaultName:(NSString*) n;
+/** Return the default name */
 + (NSString*) defaultName;
 @property(retain) NSString *defaultName;
 
+/** Load User Defaults */
 +(void) loadDefaultSettings;
+
+/** Save User Defaults */
 +(void) saveDefaultSettings;
 
-// Create a new ROI, needs the current pixel resolution and image origin
+/** Create a new ROI, needs the current pixel resolution and image origin
+* @param itype ROI Type
+* @param ipixelSpacing  Assumes pixel size is same in both x and y
+* @param iimageOrigin  Origin on image
+*/
 - (id) initWithType: (long) itype :(float) ipixelSpacing :(NSPoint) iimageOrigin;
+
+/** Create a new ROI, needs the current pixel resolution  x and y and image origin* @param itype ROI Type
+* @param ipixelSpacingx  Pixel width
+* @param ipixelSpacingy  Pixel height
+* @param iimageOrigin  Origin on image
+*/
 - (id) initWithType: (long) itype :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin;
 
-// arg: specific methods for tPlain roi
+/** arg: specific methods for tPlain roi 
+* @param tBuff  Pointer to the texture buffer
+* @param tWidth Texture width
+* @param tHeight Texture height
+* @param tName ROI Name
+* @param posX Origin.x of texture upper left corner
+* @param posY Origin.y of texture upper left corner
+* @param ipixelSpacingx  Pixel width
+* @param ipixelSpacingy  Pixel height 
+* @param iimageOrigin  Origin on image
+*/
 - (id) initWithTexture: (unsigned char*)tBuff  textWidth:(int)tWidth textHeight:(int)tHeight textName:(NSString*)tName
 			 positionX:(int)posX positionY:(int)posY
 			  spacingX:(float) ipixelSpacingx spacingY:(float) ipixelSpacingy imageOrigin:(NSPoint) iimageOrigin;
 
 
+
+/** Set offset for text box */
 - (void) setTextBoxOffset:(NSPoint) o;
 
+
+/** Prints info about texture to output */
 - (void)displayTexture;
 
-// Set resolution and origin associated to the ROI
+/** Set resolution and origin associated to the ROI */
 - (void) setOriginAndSpacing :(float) ipixelSpacing :(NSPoint) iimageOrigin;
+
+/** Set resolution and origin associated to the ROI */
 - (void) setOriginAndSpacing :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin;
+
+/** Set resolution and origin associated to the ROI */
 - (void) setOriginAndSpacing :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin :(BOOL) sendNotification;
 
-// Compute the roiArea in cm2
+/** Compute the roiArea in cm2 */
 - (float) roiArea;
 
-// Compute the geometric centroid in pixel space
+/** Compute the geometric centroid in pixel space */
 - (NSPoint) centroid;
 
-// Compute the length for tMeasure ROI in cm
+/**  Compute the length for tMeasure ROI in cm */
 - (float) MesureLength: (float*) pixels;
+
+/**  Compute the length for between two points in cm */
 - (float) Length:(NSPoint) mesureA :(NSPoint) mesureB;
 
-// Compute an angle between 2 lines
+/** Compute an angle between 2 lines */
 - (float) Angle:(NSPoint) p2 :(NSPoint) p1 :(NSPoint) p3;
 
 - (float*) dataValuesAsFloatPointer :(long*) no;
+- (NSMutableArray*) dataValues;
 
+/** Find a point between two points 
+*  @param a First point
+*  @param b Second point
+*  @param r Weighting bewtween the two points
+*/
 + (NSPoint) pointBetweenPoint:(NSPoint) a and:(NSPoint) b ratio: (float) r;
+
+
 + (NSMutableArray*) resamplePoints: (NSArray*) points number:(int) no;
 
+
+/** Update ROI on mouse down. For most rois this will be the origin of the ROI */
 - (BOOL)mouseRoiDown:(NSPoint)pt :(int)slice :(float)scale;
-- (void) roiMove:(NSPoint) offset;
-- (void) roiMove:(NSPoint) offset :(BOOL) sendNotification;
+
+/** Update ROI on mouse down in the current image. For most rois this will be the origin of the ROI */
 - (BOOL) mouseRoiDown:(NSPoint) pt :(float) scale;
+
+/** Move the ROI */
+- (void) roiMove:(NSPoint) offset;
+
+/** Move the ROI */
+- (void) roiMove:(NSPoint) offset :(BOOL) sendNotification;
+
+/** Modify roi as mouse is dragged */
 - (BOOL) mouseRoiDragged:(NSPoint) pt :(unsigned int) modifier :(float) scale;
-- (NSMutableArray*) dataValues;
-- (BOOL) valid;
-- (void) drawROI :(float) scaleValue :(float) offsetx :(float) offsety :(float) spacingx :(float) spacingy;
-- (BOOL) needQuartz;
-- (BOOL) deleteSelectedPoint;
-- (NSMutableDictionary*) dataString;
+
+/** Moedify roi on mouse up */
 - (BOOL) mouseRoiUp:(NSPoint) pt;
+
+/** Returns YES if roi is valid */
+- (BOOL) valid;
+
+/** Draw the ROI */
+- (void) drawROI :(float) scaleValue :(float) offsetx :(float) offsety :(float) spacingx :(float) spacingy;
+
+/** Always returns NO */
+- (BOOL) needQuartz;
+
+/** Delete the current selected point */
+- (BOOL) deleteSelectedPoint;
+
+/** The info displayed in the text box */
+- (NSMutableDictionary*) dataString;
+
+/** Set the font */
 - (void) setRoiFont: (long) f :(long*) s :(DCMView*) v;
+
+/** Returns an OpenGL string */
 - (void) glStr: (unsigned char *) cstrOut :(float) x :(float) y :(float) line;
+
+/** Recompute */
 - (void) recompute;
+
+/** Rotate the ROI */
 - (void) rotate: (float) angle :(NSPoint) center;
+
+/** Test to see if ROI can be resized */
 - (BOOL)canResize;
+
+/** Resize ROI */
 - (void) resize: (float) factor :(NSPoint) center;
+
+/** Test to see if texture can be reduced */
 - (BOOL) reduceTextureIfPossible;
+
+/** Add a margin to the buffer */
 - (void) addMarginToBuffer: (int) margin;
+
+/** Draw text box for ROI */
 - (void) drawTextualData;
+
+
+/** Test to see if point is in text box or ROI and returns the mode. 
+* Can be ROI_Selected or ROI_selectedModify if hit test is YES 
+*/
 - (long) clickInROI:(NSPoint) pt :(float) offsetx :(float) offsety :(float) scale :(BOOL) testDrawRect;
 - (NSPoint) ProjectionPointLine: (NSPoint) Point :(NSPoint) startPoint :(NSPoint) endPoint;
+
+/** Delete texture */
 - (void) deleteTexture:(NSOpenGLContext*) c;
 
+
+/** Set cab resize layer */
 - (void)setCanResizeLayer:(BOOL)boo;
 
 
 // Calcium Scoring
-
+/** Cofactor for Calcium Score 
+*	Cofactor values used by Agaston.  
+*	Using a threshold of 90 rather than 130. Assuming
+*	multislice CT rather than electron beam.
+*	We could have a flag for Electron beam rather than multichannel CT
+*	and use 130 as a cutoff
+*   Based on Hounsfield density of Calcium
+*/
 - (int)calciumScoreCofactor;
+/** Calcium score 
+* roi Area * cofactor;  area is is mm2.
+*plainArea is number of pixels 
+*/
 - (float)calciumScore;
+
+/** Calcium volume 
+* area * thickness
+*/
 - (float)calciumVolume;
+
+/** Calcium mass
+* Volume * mean CT Density / 250 
+ */
 - (float)calciumMass;
 
 @property BOOL displayCalciumScoring;
@@ -231,6 +340,8 @@ enum
 @property(retain) NSString *textualBoxLine1, *textualBoxLine2, *textualBoxLine3, *textualBoxLine4, *textualBoxLine5;
 @property NSTimeInterval groupID;
 
+
+/** Lower right point of ROI */
 - (NSPoint) lowerRightPoint;
 
 @property BOOL isLayerOpacityConstant;
