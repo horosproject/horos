@@ -1,6 +1,7 @@
 // !$*UTF8*$!
 {
 	089C1669FE841209C02AAC07 /* Project object */ = {
+		activeArchitecture = i386;
 		activeBuildConfigurationName = Development;
 		activeExecutable = AB8EE86509AB159D00F4090C /* Executable */;
 		activeTarget = 8D202CE80486D31800D8A456 /* OSIDatabasePreferencePane */;
@@ -9,7 +10,6 @@
 		);
 		breakpoints = (
 		);
-		breakpointsGroup = AB8EE88509AB15B700F4090C /* XCBreakpointsBucket */;
 		codeSenseManager = AB465F4C09A32E06005A2766 /* Code sense */;
 		executables = (
 			AB8EE86509AB159D00F4090C /* Executable */,
@@ -34,7 +34,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					1000,
+					1120,
 					20,
 					48,
 					43,
@@ -51,8 +51,30 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 202405085;
-			PBXWorkspaceStateSaveDate = 202405085;
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					1080,
+					60,
+					20,
+					48.16259765625,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 215942650;
+			PBXWorkspaceStateSaveDate = 215942650;
 		};
 		perUserProjectItems = {
 			AB0C3CB50C10769C00421F69 /* PBXTextBookmark */ = AB0C3CB50C10769C00421F69 /* PBXTextBookmark */;
@@ -61,7 +83,7 @@
 			AB80AB580A19CF2500FED357 /* PBXTextBookmark */ = AB80AB580A19CF2500FED357 /* PBXTextBookmark */;
 			AB80AB5F0A19CF2500FED357 /* PBXTextBookmark */ = AB80AB5F0A19CF2500FED357 /* PBXTextBookmark */;
 			AB8B034E0B4022530019CA7D /* PBXTextBookmark */ = AB8B034E0B4022530019CA7D /* PBXTextBookmark */;
-			ABE56DBA0BFB3C61008CEC30 /* PBXTextBookmark */ = ABE56DBA0BFB3C61008CEC30 /* PBXTextBookmark */;
+			ABB1D3540CDF0604009C38A2 /* PBXTextBookmark */ = ABB1D3540CDF0604009C38A2 /* PBXTextBookmark */;
 		};
 		sourceControlManager = AB465F4B09A32E06005A2766 /* Source Control */;
 		userBuildSettings = {
@@ -158,12 +180,12 @@
 	};
 	AB8EE86509AB159D00F4090C /* Executable */ = {
 		isa = PBXExecutable;
-		activeArgIndex = 2147483647;
 		activeArgIndices = (
 		);
 		argumentStrings = (
 		);
 		autoAttachOnCrash = 1;
+		breakpointsEnabled = 1;
 		configStateDict = {
 		};
 		customDataFormattersEnabled = 1;
@@ -190,21 +212,15 @@
 		path = /Users/rossetantoine/osirix/build/Development/OsiriX.app;
 		sourceTree = "<absolute>";
 	};
-	AB8EE88509AB15B700F4090C /* XCBreakpointsBucket */ = {
-		isa = XCBreakpointsBucket;
-		name = OSIDatabasePreferencePane;
-		objects = (
-		);
-	};
-	ABE56DBA0BFB3C61008CEC30 /* PBXTextBookmark */ = {
+	ABB1D3540CDF0604009C38A2 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
-		name = DEFAULT_DATABASELOCATIONURL;
-		rLen = 27;
-		rLoc = 15629;
+		name = "OSIDatabasePreferencePanePref.m: 340";
+		rLen = 650;
+		rLoc = 12294;
 		rType = 0;
-		vrLen = 3511;
-		vrLoc = 13658;
+		vrLen = 3193;
+		vrLoc = 9756;
 	};
 	CE75CA4A0A23AAFA00D22E9E /* PreferencePaneController.h */ = {
 		uiCtxt = {
@@ -224,8 +240,9 @@
 	};
 	F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1312, 6790}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1298, 6776}}";
 			sepNavSelRange = "{12294, 650}";
+			sepNavVisRange = "{9756, 3193}";
 			sepNavVisRect = "{{0, 4053}, {1312, 1456}}";
 			sepNavWindowFrame = "{{1079, 543}, {1245, 698}}";
 		};

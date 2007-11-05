@@ -17,17 +17,6 @@
 		ABE0D67C0CDB179800F0494B /* AYDicomPrintPref.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABE0D67A0CDB179800F0494B /* AYDicomPrintPref.xib */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBuildRule section */
-		ABE0D6770CDB16EB00F0494B /* PBXBuildRule */ = {
-			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.proxy.script;
-			fileType = file.xib;
-			isEditable = 1;
-			outputFiles = (
-			);
-		};
-/* End PBXBuildRule section */
-
 /* Begin PBXFileReference section */
 		089C1672FE841209C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -157,7 +146,6 @@
 				8D202CF50486D31800D8A456 /* Rez */,
 			);
 			buildRules = (
-				ABE0D6770CDB16EB00F0494B /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -245,6 +233,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AYDicomPrint_Prefix.pch;
+				IBC_FLATTEN_NIBS = NO;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
 				PRODUCT_NAME = AYDicomPrint;
