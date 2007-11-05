@@ -1125,16 +1125,16 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			//////////////////////////////////////////////////////////////////////////////////////
 			
 			FILE *fp = fopen([ filePath UTF8String], "r");
-			long it = 0;
-			long nextoff=0;
+			int it = 0;
+			int nextoff=0;
 			int counter=0;
-			long pos=8, k;
+			int pos=8, k;
 			short shortval;
 			
-			long	LENGTH1, TIF_BITSPERSAMPLE_CHANNEL1, TIF_BITSPERSAMPLE_CHANNEL2, TIF_BITSPERSAMPLE_CHANNEL3;
-			long	TIF_COMPRESSION, TIF_PHOTOMETRICINTERPRETATION, LENGTH2, TIF_STRIPOFFSETS, TIF_SAMPLESPERPIXEL, TIF_STRIPBYTECOUNTS;
-			long	TIF_CZ_LSMINFO, TIF_STRIPOFFSETS1, TIF_STRIPOFFSETS2, TIF_STRIPOFFSETS3;
-			long	TIF_STRIPBYTECOUNTS1, TIF_STRIPBYTECOUNTS2, TIF_STRIPBYTECOUNTS3;
+			int	LENGTH1, TIF_BITSPERSAMPLE_CHANNEL1, TIF_BITSPERSAMPLE_CHANNEL2, TIF_BITSPERSAMPLE_CHANNEL3;
+			int	TIF_COMPRESSION, TIF_PHOTOMETRICINTERPRETATION, LENGTH2, TIF_STRIPOFFSETS, TIF_SAMPLESPERPIXEL, TIF_STRIPBYTECOUNTS;
+			int	TIF_CZ_LSMINFO, TIF_STRIPOFFSETS1, TIF_STRIPOFFSETS2, TIF_STRIPOFFSETS3;
+			int	TIF_STRIPBYTECOUNTS1, TIF_STRIPBYTECOUNTS2, TIF_STRIPBYTECOUNTS3;
 			
 			do
 			{
@@ -1149,7 +1149,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					
 					{
 						int TAGTYPE = 0;
-						long LENGTH = 0;
+						int LENGTH = 0;
 						int MASK = 0x00ff;
 						int MASK2 = 0x000000ff;
 						
@@ -1217,7 +1217,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			} while( 0);	//while (nextoff!=0);
 
 			/* Searches for the number of tags in the first image directory */
-			long iterator1;
+			int iterator1;
 			fseek(fp, 8, SEEK_SET);
 			fread(&shortval, 2, 1, fp);
 			iterator1 = EndianU16_LtoN( shortval);
@@ -1231,7 +1231,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				{
 					int TAGTYPE = 0;
-					long LENGTH = 0;
+					int LENGTH = 0;
 					int MASK = 0x00ff;
 					int MASK2 = 0x000000ff;
 					
@@ -1296,7 +1296,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				fseek(fp, TIF_CZ_LSMINFO + 8, SEEK_SET);
 				
-				long	DIMENSION_X, DIMENSION_Y, DIMENSION_Z, NUMBER_OF_CHANNELS, TIMESTACKSIZE, DATATYPE, DATATYPE2, SCANTYPE;
+				int		DIMENSION_X, DIMENSION_Y, DIMENSION_Z, NUMBER_OF_CHANNELS, TIMESTACKSIZE, DATATYPE, DATATYPE2, SCANTYPE;
 				short   SPECTRALSCAN;
 				double   VOXELSIZE_X, VOXELSIZE_Y, VOXELSIZE_Z;
 				
