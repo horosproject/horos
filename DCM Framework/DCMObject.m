@@ -312,7 +312,7 @@ static NSString *softwareVersion = @"001";
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject:@"OsiriX"]  forName:@"SecondaryCaptureDeviceID"];
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject:@"OsiriX"]  forName:@"SecondaryCaptureDeviceManufacturer"];
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject:@"OsiriX"]  forName:@"SecondaryCaptureDeviceManufacturersModelName"];
-	[scObject setAttributeValues:[NSMutableArray arrayWithObject:@"2.0.0"]  forName:@"SecondaryCaptureDeviceSoftwareVersions"];
+	[scObject setAttributeValues:[NSMutableArray arrayWithObject:@"3.0.0"]  forName:@"SecondaryCaptureDeviceSoftwareVersions"];
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate date]]  forName:@"DateofSecondaryCapture"];
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate date]]  forName:@"TimeofSecondaryCapture"];
 	[scObject setAttributeValues:[NSMutableArray arrayWithObject:@"SC"]  forName:@"Modality"];
