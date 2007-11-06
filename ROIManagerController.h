@@ -21,7 +21,7 @@ PURPOSE.
 #import "ViewerController.h"
 
 
-/** \brief  Window Controlle for ROI management */
+/** \brief  Window Controller for ROI management */
 
 @interface ROIManagerController : NSWindowController
 {
@@ -29,7 +29,10 @@ PURPOSE.
 		IBOutlet NSTableView		*tableView;
 		float						pixelSpacingZ;
 }
+
+/** Default initializer */
 - (id) initWithViewer:(ViewerController*) v;
+/** Delete ROI */
 - (IBAction)deleteROI:(id)sender;
 	// Table view data source methods
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView;

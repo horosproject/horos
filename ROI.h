@@ -33,7 +33,26 @@ enum
 @class StringTexture;
 @class DCMObject;
 
-/** \brief ROI */
+/** \brief Region of Interest
+* 
+* Region of Interest on a 2D Image:\n
+* Types\n
+*	tMesure  = line\n
+*	tROI = Rectangle\n
+*	tOval = Oval\n
+*	tOPolygon = Open Polygon\n
+*	tCPolygon = Closed Polygon\n
+*	tAngle = Angle\n
+*	tText = Text\n
+*	tArrow = Arrow\n
+*	tPencil = Pencil\n
+*	t3Dpoint= 3D Point\n
+*	t2DPoint = 2D Point\n
+*	tPlain = Brush ROI\n
+*	tLayerROI = Layer Overlay\n
+*	tAxis = Axis\n					
+*	tDynAngle = Dynamic Angle\n
+*/
 
 @interface ROI : NSObject <NSCoding>
 {

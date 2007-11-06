@@ -26,10 +26,13 @@
 	NSArray			*roiNames;
 	
 }
-
+/** Set Name and closes Window */
 - (IBAction)setDefaultName:(id)sender;
+
+/** Set default name to nil */
 - (IBAction)unsetDefaultName:(id)sender;
 
+/** Default initializer */
 - (id)initWithController: (ViewerController*) c;
 
 @end
