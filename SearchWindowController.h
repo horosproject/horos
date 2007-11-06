@@ -18,7 +18,7 @@
 #import <AppKit/AppKit.h>
 #import "SmartWindowController.h"
 
-
+/** No longer supported */
 @interface SearchWindowController : SmartWindowController {
 
 }

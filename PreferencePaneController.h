@@ -33,11 +33,25 @@
 	NSMutableDictionary			*bundles;
 }
 
+
+/** Set the Preference pane to display */
 - (void)setPane:(NSPreferencePane *)aPane;
+
+/** The current preference pane */
 - (NSPreferencePane *)pane;
+
+/** Action to select a pane */
 - (IBAction)selectPane:(id)sender;
+
+/** Return to the all Panes view */
 - (IBAction)showAll:(id)sender;
+
+/** Reset database to the default database */
 - (void) reopenDatabase;
+
+/** Action to go the next or previous preference pane */
 - (IBAction)nextAndPrevPane:(id)sender;
+
+/** Select the preference pane with the index */
 - (void)selectPaneIndex:(int) index;
 @end
