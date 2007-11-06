@@ -7118,7 +7118,7 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 						else // endosocpy
 						{
 							float distance = [vV vtkCamera]->GetDistance();
-							float dolly = ((float)tz/axis_max) / 40.;
+							float dolly = ((float)tz/axis_max) / 60.;
 							if( dolly < -0.9) dolly = -0.9;
 							
 							[vV vtkCamera]->Dolly( 1.0 + dolly); 
@@ -7165,8 +7165,8 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 						}
 						else // endoscopy
 						{
-							[vV vtkCamera]->Yaw((float)ry/axis_max*10.0);
-							[vV vtkCamera]->Pitch(-(float)rx/axis_max*10.0);
+							[vV vtkCamera]->Yaw(-(float)ry/axis_max*8.0);
+							[vV vtkCamera]->Pitch((float)rx/axis_max*8.0);
 							[vV vtkCamera]->ComputeViewPlaneNormal();
 							[vV vtkCamera]->OrthogonalizeViewUp();
 							[vV vtkRenderer]->ResetCameraClippingRange();
