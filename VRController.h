@@ -97,7 +97,6 @@
 	float					blendingMinimumValue, blendingMaximumValue;
 	
 	// Fly Thru
-	FlyThruController		*flyThruController;
 	VRFlyThruAdapter		*FTAdapter;
 
 	// 3D Points
@@ -146,6 +145,7 @@
 	BOOL					needToMovePresetsPanelToUserDefinedPosition;
 	BOOL					firstTimeDisplayed;
 	
+	NSTimeInterval			flyThruRecordingTimeFrame;
 }
 
 - (IBAction) applyConvolution:(id) sender;
@@ -207,6 +207,7 @@
 - (float) blendingMaximumValue;
 - (FlyThruController *) flyThruController;
 - (IBAction) flyThruControllerInit:(id) sender;
+- (void)recordFlyThru;
 - (IBAction) applyShading:(id) sender;
 - (void) findShadingPreset:(id) sender;
 

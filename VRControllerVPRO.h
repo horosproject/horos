@@ -71,7 +71,6 @@
 	float					*undodata[ 100];
 	
 	// Fly Thru
-	FlyThruController		*flyThruController;
 	VRPROFlyThruAdapter		*FTAdapter;
 	
 	NSString				*_renderingMode;

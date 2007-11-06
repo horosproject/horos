@@ -520,8 +520,6 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	
 	for( i = 0; i < 100; i++) undodata[ i] = 0L;
 	
-	flyThruController = 0L;
-	
 	curMovieIndex = 0;
 	maxMovieIndex = 1;
 	
@@ -2120,28 +2118,18 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 - (IBAction) flyThruButtonMenu:(id) sender
 {
-	if( flyThruController == 0L) [self flyThruControllerInit: self];
+	[self flyThruControllerInit: self];
 	
-	[flyThruController.stepsArrayController flyThruTag: [sender tag]];
+	[[self flyThruController].stepsArrayController flyThruTag: [sender tag]];
 }
 
 - (IBAction) flyThruControllerInit:(id) sender
 {
 	//Only open 1 fly through controller
-	NSArray *winList = [NSApp windows];
-	long	i;
-	
-	for( i = 0; i < [winList count]; i++)
-	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"FlyThru"])
-		{
-			[[flyThruController window] makeKeyAndOrderFront :sender];
-			return;
-		}
-	}
+	if( [self flyThruController]) return;
 	
 	FTAdapter = [[VRFlyThruAdapter alloc] initWithVRController: self];
-	flyThruController = [[FlyThruController alloc] initWithFlyThruAdapter:FTAdapter];
+	FlyThruController *flyThruController = [[FlyThruController alloc] initWithFlyThruAdapter:FTAdapter];
 	[FTAdapter release];
 	[flyThruController loadWindow];
 	[[flyThruController window] makeKeyAndOrderFront :sender];
@@ -2150,7 +2138,23 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 - (FlyThruController *) flyThruController
 {
-	return flyThruController;
+	for( NSWindow *w in [NSApp windows])
+	{
+		if( [[[w windowController] windowNibName] isEqualToString:@"FlyThru"] && self == [[w windowController] window3DController])
+			return [w windowController];
+	}
+	
+	return 0L;
+}
+
+- (void)recordFlyThru;
+{
+	NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+	if(now-flyThruRecordingTimeFrame<1.0) return;
+	
+	flyThruRecordingTimeFrame = now;
+	[self flyThruControllerInit:self];
+	[[self flyThruController].stepsArrayController flyThruTag:0];
 }
 
 // 3D points

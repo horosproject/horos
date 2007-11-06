@@ -42,8 +42,6 @@ extern NSString * documentsDirectory();
 	for( i = 0; i < 100; i++) undodata[ i] = 0L;
 	
 //	[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"MAPPERMODEVR"];	// texture mapping
-
-	flyThruController = 0L;
 	
 	curMovieIndex = 0;
 	maxMovieIndex = 1;
@@ -318,20 +316,10 @@ extern NSString * documentsDirectory();
 - (IBAction) flyThruControllerInit:(id) sender
 {
 	//Only open 1 fly through controller
-	NSArray *winList = [NSApp windows];
-	long	i;
-	
-	for( i = 0; i < [winList count]; i++)
-	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"FlyThru"])
-		{
-			[[flyThruController window] makeKeyAndOrderFront :sender];
-			return;
-		}
-	}
+	if( [self flyThruController]) return;
 	
 	FTAdapter = [[VRFlyThruAdapter alloc] initWithVRController: self];
-	flyThruController = [[EndoscopyFlyThruController alloc] initWithFlyThruAdapter:FTAdapter];
+	EndoscopyFlyThruController *flyThruController = [[EndoscopyFlyThruController alloc] initWithFlyThruAdapter:FTAdapter];
 	[FTAdapter release];
 	[flyThruController loadWindow];
 	[[flyThruController window] makeKeyAndOrderFront :sender];

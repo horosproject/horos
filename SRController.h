@@ -75,7 +75,6 @@
 	NSData					*volumeData;
 	
 	// Fly Thru
-	FlyThruController		*flyThruController;
 	SRFlyThruAdapter		*FTAdapter;
 	
 	// 3D Points
@@ -103,7 +102,7 @@
 	BOOL					_fusionUseFirstSurface;
 	BOOL					_fusionUseSecondSurface;
 	
-	
+	NSTimeInterval			flyThruRecordingTimeFrame;
 
 }
 
@@ -119,6 +118,10 @@
 - (void) BChangeSettings:(id) sender;
 - (IBAction) BSettingsPopup:(id) sender;
 - (NSArray*) fileList;
+
+- (IBAction)flyThruButtonMenu:(id)sender;
+- (IBAction)flyThruControllerInit:(id)sender;
+- (void)recordFlyThru;
 
 // 3D Points
 - (void) add2DPoint: (float) x : (float) y : (float) z;

@@ -1600,9 +1600,20 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 
 - (IBAction) flyThruButtonMenu:(id) sender
 {
-	if( flyThruController == 0L) [self flyThruControllerInit: self];
+	[self flyThruControllerInit: self];
+
+	[[self flyThruController].stepsArrayController flyThruTag: [sender tag]];
+}
+
+- (FlyThruController *) flyThruController
+{
+	for( NSWindow *w in [NSApp windows])
+	{
+		if( [[[w windowController] windowNibName] isEqualToString:@"FlyThru"] && self == [[w windowController] window3DController])
+			return [w windowController];
+	}
 	
-	[flyThruController.stepsArrayController flyThruTag: [sender tag]];
+	return 0L;
 }
 
 - (IBAction) flyThruControllerInit:(id) sender
@@ -1610,20 +1621,10 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	NSLog(@"flyThruControllerInit-->");
 	
 	//Only open 1 fly through controller
-	NSArray *winList = [NSApp windows];
-	long	i;
-	
-	for( i = 0; i < [winList count]; i++)
-	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"FlyThru"])
-		{
-			[[flyThruController window] makeKeyAndOrderFront :sender];
-			return;
-		}
-	}
+	if( [self flyThruController]) return;
 	
 	FTAdapter = [[VRPROFlyThruAdapter alloc] initWithVRController: self];
-	flyThruController = [[FlyThruController alloc] initWithFlyThruAdapter:FTAdapter];
+	FlyThruController *flyThruController = [[FlyThruController alloc] initWithFlyThruAdapter:FTAdapter];
 	[FTAdapter release];
 	[flyThruController loadWindow];
 	[[flyThruController window] makeKeyAndOrderFront :sender];

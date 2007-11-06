@@ -1469,6 +1469,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		{
 			[self removeSelected3DPoint];
 		}
+		else [self yaw:-90.0];
 	}
 	
 	[super keyDown:event];
@@ -3298,22 +3299,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	return aCamera;
 }
 
-#pragma mark-
-#pragma mark  3DConnexion SpaceNavigator
-
-- (void)closeEvent:(id) sender
-{
-	SRView *sV = (SRView*) snSRView;
-	
-	[sV getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent,NULL);
-
-	snStopped = YES;
-	
-	[snCloseEventTimer release];
-	snCloseEventTimer = 0L;
-}
-
-- (void) panX:(float) x Y:(float) y;
+- (void)panX:(float)x Y:(float)y;
 {
 	vtkRenderWindowInteractor *rwi = [self getInteractor];
 
@@ -3356,6 +3342,33 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	}
 }
 
+- (void)yaw:(float)degrees;
+{
+	aCamera->Yaw(degrees);
+	aRenderer->ResetCameraClippingRange();
+	[self setNeedsDisplay:YES];
+}
+
+- (void)recordFlyThru;
+{
+	[controller recordFlyThru];
+}
+
+#pragma mark-
+#pragma mark  3DConnexion SpaceNavigator
+
+- (void)closeEvent:(id) sender
+{
+	SRView *sV = (SRView*) snSRView;
+	
+	[sV getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent,NULL);
+
+	snStopped = YES;
+	
+	[snCloseEventTimer release];
+	snCloseEventTimer = 0L;
+}
+
 #if USE3DCONNEXION
 - (void)connect2SpaceNavigator;
 {
@@ -3380,6 +3393,9 @@ void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 	
 	SInt16 tx, ty, tz, rx, ry, rz, xPos, yPos;
 	float axis_max, speed, rot;
+	
+	BOOL record;
+	
 	switch(messageType)
 	{
 		case kConnexionMsgDeviceState:
@@ -3409,7 +3425,18 @@ void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 						
 						// normalization
 						axis_max = 500.0; // typical value according to the SDK
-						
+
+						// if shift is pressed -> faster movement
+						BOOL faster;
+						if([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
+							faster = YES;
+						else faster = NO;
+
+						// if ctrl is pressed -> record
+						if([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSControlKeyMask)
+							record = YES;
+						else record = NO;
+
 						if( sV->snCloseEventTimer)
 						{
 							[sV->snCloseEventTimer invalidate];
@@ -3432,7 +3459,8 @@ void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 						else // endosocpy
 						{
 							float distance = [sV vtkCamera]->GetDistance();
-							float dolly = ((float)tz/axis_max) / 40.;
+							float dolly = ((float)tz/axis_max) / 60.;
+							if(faster) dolly*=3.;
 							if( dolly < -0.9) dolly = -0.9;
 							
 							[sV vtkCamera]->Dolly( 1.0 + dolly); 
@@ -3481,7 +3509,7 @@ void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 						else // endoscopy
 						{
 							[sV vtkCamera]->Yaw((float)ry/axis_max*10.0);
-							[sV vtkCamera]->Pitch(-(float)rx/axis_max*10.0);
+							[sV vtkCamera]->Pitch((float)rx/axis_max*10.0);
 							[sV vtkCamera]->ComputeViewPlaneNormal();
 							[sV vtkCamera]->OrthogonalizeViewUp();
 							[sV vtkRenderer]->ResetCameraClippingRange();
@@ -3503,10 +3531,12 @@ void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 						else if(state->buttons==1) // left button pressed
 						{
 							if( sV->projectionMode != 2) [sV coView:nil];
+							else [sV yaw:180.0];
 						}
 						else if(state->buttons==2) // right button pressed
 						{
 							if( sV->projectionMode != 2) [sV saView:nil];
+							else [sV yaw:90.0];
 						}
 						else if(state->buttons==3) // both button are presed
 						{
@@ -3523,6 +3553,7 @@ void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 			// other messageTypes can happen and should be ignored
 			break;
 	}
+	if(record) [sV recordFlyThru];
 }
 #else
 - (void)connect2SpaceNavigator;

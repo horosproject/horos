@@ -6983,23 +6983,14 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 }
 
-#pragma mark-
-#pragma mark  3DConnexion SpaceNavigator
-
-
-- (void) closeEvent:(id) sender
-{	
-	VRView *vV = (VRView*) snVRView;
-	
-	[vV getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent,NULL);
-
-	snStopped = YES;
-	
-	[snCloseEventTimer release];
-	snCloseEventTimer = 0L;
+- (void)yaw:(float)degrees;
+{
+	aCamera->Yaw(degrees);
+	aRenderer->ResetCameraClippingRange();
+	[self setNeedsDisplay:YES];
 }
 
-- (void) panX:(float) x Y:(float) y;
+- (void)panX:(float)x Y:(float)y;
 {
 	vtkRenderWindowInteractor *rwi = [self getInteractor];
 
@@ -7042,6 +7033,30 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	}
 }
 
+- (void)recordFlyThru;
+{
+	[controller recordFlyThru];
+}
+
+#pragma mark-
+#pragma mark  3DConnexion SpaceNavigator
+
+- (void) closeEvent:(id) sender
+{	
+	VRView *vV = (VRView*) snVRView;
+	if( volumeMapper)
+	{
+		volumeMapper->SetAutoAdjustSampleDistances( 1);
+		volumeMapper->SetMinimumImageSampleDistance( LOD);
+	}
+	[vV getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent,NULL);
+
+	snStopped = YES;
+	
+	[snCloseEventTimer release];
+	snCloseEventTimer = 0L;
+}
+
 #if USE3DCONNEXION
 - (void)connect2SpaceNavigator;
 {
@@ -7066,6 +7081,9 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 	
 	SInt16 tx, ty, tz, rx, ry, rz, xPos, yPos;
 	float axis_max, speed, rot;
+	
+	BOOL record;
+	
 	switch(messageType)
 	{
 		case kConnexionMsgDeviceState:
@@ -7096,6 +7114,17 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 						// normalization
 						axis_max = 500.0; // typical value according to the SDK
 						
+						// if shift is pressed -> faster movement
+						BOOL faster;
+						if([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
+							faster = YES;
+						else faster = NO;
+
+						// if ctrl is pressed -> record
+						if([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSControlKeyMask)
+							record = YES;
+						else record = NO;
+						
 						if( vV->snCloseEventTimer)
 						{
 							[vV->snCloseEventTimer invalidate];
@@ -7119,6 +7148,7 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 						{
 							float distance = [vV vtkCamera]->GetDistance();
 							float dolly = ((float)tz/axis_max) / 60.;
+							if(faster) dolly*=3.;
 							if( dolly < -0.9) dolly = -0.9;
 							
 							[vV vtkCamera]->Dolly( 1.0 + dolly); 
@@ -7165,7 +7195,13 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 						}
 						else // endoscopy
 						{
-							[vV vtkCamera]->Yaw(-(float)ry/axis_max*8.0);
+							if( vV->snStopped)
+							{
+								[vV getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
+								vV->snStopped = NO;
+							}
+						
+							[vV vtkCamera]->Yaw((float)ry/axis_max*8.0);
 							[vV vtkCamera]->Pitch((float)rx/axis_max*8.0);
 							[vV vtkCamera]->ComputeViewPlaneNormal();
 							[vV vtkCamera]->OrthogonalizeViewUp();
@@ -7173,7 +7209,8 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 							[vV computeOrientationText];
 							[vV setNeedsDisplay:YES];
 						}
-						[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV  userInfo:0L];				
+												
+						[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:0L];
 						[vV computeOrientationText];
 						
 						[vV displayLowRes];
@@ -7189,17 +7226,22 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 						else if(state->buttons==1) // left button pressed
 						{
 							if( vV->projectionMode != 2) [vV coView:nil];
+							else [vV yaw:180.0];
+							[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:0L];
 						}
 						else if(state->buttons==2) // right button pressed
 						{
 							if( vV->projectionMode != 2) [vV saView:nil];
+							else [vV yaw:90.0];
+							[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:0L];
 						}
 						else if(state->buttons==3) // both button are presed
 						{
 							if( vV->projectionMode != 2) [vV saViewOpposite:nil];
+							[[NSNotificationCenter defaultCenter] postNotificationName:@"VRCameraDidChange" object:vV userInfo:0L];
 						}
                         break;
-                }                
+                }
 				
 				memcpy( &lastState, state, (long)sizeof(ConnexionDeviceState));
 			}
@@ -7209,6 +7251,7 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 			// other messageTypes can happen and should be ignored
 			break;
 	}
+	if(record) [vV recordFlyThru];
 }
 #else
 - (void)connect2SpaceNavigator

@@ -343,9 +343,11 @@ typedef char* vtkPolyDataNormals;
 - (void)deleteMouseDownTimer;
 -(void) squareView:(id) sender;
 
+- (void)yaw:(float)degrees;
+- (void)panX:(float)x Y:(float)y;
+
 // 3DConnexion SpaceNavigator
 - (void)connect2SpaceNavigator;
-- (void) panX:(float) x Y:(float) y;
 void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageType, void *messageArgument);
 
 @end

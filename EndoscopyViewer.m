@@ -146,7 +146,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 
 - (void) setCameraRepresentation: (NSNotification*) note
 {
-	if ([[note object] isEqualTo:[vrController view]])
+	if([note object]==[vrController view])
 	{
 		[self setCameraRepresentation];
 	}
