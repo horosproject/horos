@@ -2089,6 +2089,11 @@ static BOOL initialized = NO;
 
 - (void) displayUpdateMessage: (NSString*) msg
 {
+	if( [msg isEqualToString:@"LISTENER"])
+	{
+		NSRunAlertPanel( NSLocalizedString( @"DICOM Listener Error", 0L), NSLocalizedString( @"OsiriX listener cannot start. Is the Port valid? Is there another process using this Port?\r\rSee Listener - Preferences.", 0L), NSLocalizedString( @"OK", 0L), nil, nil);
+	}
+	
 	if( [msg isEqualToString:@"UPTODATE"])
 	{
 		NSRunAlertPanel( NSLocalizedString( @"OsiriX is up-to-date", 0L), NSLocalizedString( @"You have the most recent version of OsiriX.", 0L), NSLocalizedString( @"OK", 0L), nil, nil);

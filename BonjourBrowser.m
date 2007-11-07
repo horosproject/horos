@@ -1579,6 +1579,8 @@ static char *GetPrivateIP()
 {
 	int i;
 	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"] == NO) return NO;
+	
 	//Do we have DICOM Node informations about the destination node?
 	if( indexTo >= 0)	// indexTo == -1: this computer
 	{

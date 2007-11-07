@@ -19,6 +19,7 @@
 =========================================================================*/
 
 #import "DCMTKQueryRetrieveSCP.h"
+#import "AppController.h"
 
 #undef verify
 
@@ -286,10 +287,12 @@ void errmsg(const char* msg, ...)
 	
 	//init the network
 	cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, options.acse_timeout_, &options.net_);
-    if (cond.bad()) {
-    errmsg("Error initialising network:");
-    DimseCondition::dump(cond);
-        return;
+    if (cond.bad())
+	{
+		errmsg("Error initialising network:");
+		DimseCondition::dump(cond);
+        [[AppController sharedAppController] performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"LISTENER" waitUntilDone:YES];
+		return;
     }
 	
 #if defined(HAVE_SETUID) && defined(HAVE_GETUID)
@@ -333,7 +336,12 @@ DcmQueryRetrieveConfig config;
 	
 	delete scp;
 	scp = NULL;
-		
+	
+	if (cond.bad())
+	{
+		NSLog(@"wwwwwwww");
+	}
+	
 	cond = ASC_dropNetwork(&options.net_);
     if (cond.bad()) {
         errmsg("Error dropping network:");

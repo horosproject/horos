@@ -7424,7 +7424,9 @@ static BOOL needToRezoom;
 					if( [[img valueForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) OnlyDICOM = NO;
 				}
 				
-				if( OnlyDICOM ) {
+				if( OnlyDICOM && [[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
+				{
+					// We will use the DICOM-Store-SCP
 					NSMutableArray	*files = [NSMutableArray arrayWithArray: [imagesArray valueForKey:@"path"]];
 					
 					succeed = [bonjourBrowser retrieveDICOMFilesWithSTORESCU: [bonjourServicesList selectedRow]-1 to: row-1 paths: [imagesArray valueForKey:@"path"]];
