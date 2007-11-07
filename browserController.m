@@ -258,14 +258,12 @@ static NSArray*	statesArray = nil;
 - (void) reloadViewers: (NSMutableArray*) vl {
 	
 	// Reload series if needed
-	NSMutableArray *cvl = [NSMutableArray arrayWithArray: vl];
-	
-	for( ViewerController *vc in cvl )
+	for( ViewerController *vc in vl )
 	{
 		if( [[vc window] isVisible] && [[vc imageView] mouseDragging] == NO)
 		{
+			NSLog( @"******** reloadViewers");
 			[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [[[vc fileList] objectAtIndex: 0] valueForKey:@"series"]]] movie: NO viewer : vc keyImagesOnly: NO];
-			[vl removeObject: vc];
 		}
 	}
 	
@@ -275,14 +273,11 @@ static NSArray*	statesArray = nil;
 - (void) rebuildViewers: (NSMutableArray*) vlToRebuild
 {	
 	// Refresh preview matrix if needed
-	NSMutableArray *cvl = [NSMutableArray arrayWithArray: vlToRebuild];
-	
-	for( ViewerController *vc in cvl )
+	for( ViewerController *vc in vlToRebuild )
 	{
 		if( [[vc window] isVisible] && [[vc imageView] mouseDragging] == NO)
 		{
 			[vc buildMatrixPreview: NO];
-			[vlToRebuild removeObject: vc];
 		}
 	}
 }
@@ -955,7 +950,7 @@ static NSArray*	statesArray = nil;
 	return addedImagesArray;
 }
 
-- (void) newFilesGUIUpdateRun:(int) state
+- (void) newFilesGUIUpdateRun: (int) state viewersListToReload: (NSMutableArray*) cReload viewersListToRebuild: (NSMutableArray*) cRebuild
 {
 	if( state == 1)
 	{
@@ -968,19 +963,29 @@ static NSArray*	statesArray = nil;
 		[self outlineViewSelectionDidChange: 0L];
 	}
 	
-	[self reloadViewers: viewersListToReload];
-	[self rebuildViewers: viewersListToRebuild];
+	[self reloadViewers: cReload];
+	[self rebuildViewers: cRebuild];
+}
+
+- (void) newFilesGUIUpdateRun:(int) state
+{
+	return [self newFilesGUIUpdateRun: state viewersListToReload: viewersListToReload viewersListToRebuild: viewersListToRebuild];
 }
 
 - (void) newFilesGUIUpdate:(id) sender
 {
 	if( [newFilesConditionLock tryLockWhenCondition: 1] || [newFilesConditionLock tryLockWhenCondition: 2])
 	{
+		NSMutableArray *cReload = [NSMutableArray arrayWithArray: viewersListToReload];
+		NSMutableArray *cRebuild = [NSMutableArray arrayWithArray: viewersListToRebuild];
+		
+		[viewersListToReload removeAllObjects];
+		[viewersListToRebuild removeAllObjects];
+		
 		int condition = [newFilesConditionLock condition];
 		[newFilesConditionLock unlockWithCondition: 0];
 		
-		NSLog( @"newFilesGUIUpdate");
-		[self newFilesGUIUpdateRun: condition];
+		[self newFilesGUIUpdateRun: condition viewersListToReload: cReload viewersListToRebuild: cRebuild];
 	}
 }
 

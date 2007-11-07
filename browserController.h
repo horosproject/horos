@@ -469,6 +469,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSArray *)databaseSelection;
 
 - (void) newFilesGUIUpdateRun:(int) state;
+- (void) newFilesGUIUpdateRun: (int) state viewersListToReload: (NSMutableArray*) cReload viewersListToRebuild: (NSMutableArray*) cRebuild;
 - (void) newFilesGUIUpdate:(id) sender;
 
 - (IBAction) decompressSelectedFiles:(id) sender;
