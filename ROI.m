@@ -2856,6 +2856,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
 	CGLContextObj cgl_ctx = [currentContext CGLContextObj];
 	
+	glColor3f ( 1.0f, 1.0f, 1.0f);
+	
     glEnable(GL_POINT_SMOOTH);
     glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH);
