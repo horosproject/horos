@@ -40,8 +40,8 @@
 	IBOutlet CIALayoutView *layoutView;
 	IBOutlet NSTextField *titleLabelTextField, *titleTextField, *contentLabeltextField;
 	IBOutlet NSTokenField *contentTokenField;
-	IBOutlet NSTokenField *dicomNameTokenField;
-	IBOutlet NSTextField *dicomGroupTextField, *dicomElementTextField;
+//	IBOutlet NSTokenField *dicomNameTokenField;
+	IBOutlet NSTextField *dicomGroupTextField, *dicomElementTextField, *dicomNameTokenField;
 	IBOutlet NSTextField *groupLabel, *elementLabel, *nameLabel;
 	IBOutlet NSButton *addCustomDICOMFieldButton, *addDICOMFieldButton, *addDatabaseFieldButton, *addSpecialFieldButton;
 	IBOutlet NSPopUpButton *DICOMFieldsPopUpButton, *databaseFieldsPopUpButton, *specialFieldsPopUpButton;
@@ -71,7 +71,7 @@
 
 - (NSTextField*)titleTextField;
 - (NSTokenField*)contentTokenField;
-- (NSTokenField*)dicomNameTokenField;
+- (NSTextField*)dicomNameTokenField;
 - (NSTextField*)dicomGroupTextField;
 - (NSTextField*)dicomElementTextField;
 - (NSTextField*)groupLabel;

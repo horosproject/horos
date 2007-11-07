@@ -69,7 +69,7 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(annotationMouseDown:) name:@"CIAAnnotationMouseDownNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(annotationMouseUp:) name:@"CIAAnnotationMouseUpNotification" object:nil];
 //		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidChange:) name:@"NSControlTextDidChangeNotification" object:nil];
-//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidEndEditing:) name:@"NSControlTextDidEndEditingNotification" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidEndEditing:) name:@"NSControlTextDidEndEditingNotification" object:nil];
 //		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidBeginEditing:) name:@"NSControlTextDidBeginEditingNotification" object:nil];
 		//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewDidChangeSelection:) name:@"NSTextViewDidChangeTypingAttributesNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewDidChangeSelection:) name:@"NSTextViewDidChangeSelectionNotification" object:nil];
@@ -86,7 +86,7 @@
 	[self setCustomDICOMFieldEditingEnable:NO];
 	
 	[[[prefPane contentTokenField] cell] setWraps:YES];
-	[[prefPane dicomNameTokenField] setTokenStyle:NSPlainTextTokenStyle];
+	//[[prefPane dicomNameTokenField] setTokenStyle:NSPlainTextTokenStyle];
 
 	[[prefPane contentTokenField] setDelegate:self];
 
@@ -487,7 +487,6 @@
 	
 	[layoutView addSubview:anAnnotation]; // in order to bring the Annotation to front
 	[layoutView setNeedsDisplay:YES];
-	[self resizeTokenField];
 	
 	[[prefPane DICOMFieldsPopUpButton] setEnabled:NO];
 	[[prefPane DICOMFieldsPopUpButton] selectItemAtIndex:0];
@@ -514,8 +513,6 @@
 		selectedItem = [sender selectedItem];
 	}
 	
-	[[prefPane contentTokenField] sendAction:[[prefPane contentTokenField] action] to:[[prefPane contentTokenField] target]];
-
 	// see if there is a selected Token in the NSTokenField
 	BOOL aTokenIsSelected = NO;
 	int tokenIndexInContent;
@@ -526,6 +523,9 @@
 		aTokenIsSelected = YES;
 		tokenIndexInContent = range.location;
 	}
+
+	// next line validates the NSToken field content : same as if the user hit 'return'. we NEED that.
+	[[prefPane contentTokenField] sendAction:[[prefPane contentTokenField] action] to:[[prefPane contentTokenField] target]];
 
 	NSString *formatString;	
 	if([sender isEqualTo:[prefPane DICOMFieldsPopUpButton]])
@@ -577,24 +577,24 @@
 			if([[[prefPane dicomNameTokenField] stringValue] isEqualToString:@""])
 			{
 				formatString = @"DICOM_%@_%@";
-				if(!aTokenIsSelected)
+//				if(!aTokenIsSelected)
 					[selectedAnnotation insertObject:[NSString stringWithFormat:formatString, [[prefPane dicomGroupTextField] stringValue], [[prefPane dicomElementTextField] stringValue]] inContentAtIndex:[selectedAnnotation countOfContent]];
-				else
-				{
-					[selectedAnnotation removeObjectFromContentAtIndex:tokenIndexInContent];
-					[selectedAnnotation insertObject:[NSString stringWithFormat:formatString, [[prefPane dicomGroupTextField] stringValue], [[prefPane dicomElementTextField] stringValue]] inContentAtIndex:tokenIndexInContent];
-				}
+//				else
+//				{
+//					[selectedAnnotation removeObjectFromContentAtIndex:tokenIndexInContent];
+//					[selectedAnnotation insertObject:[NSString stringWithFormat:formatString, [[prefPane dicomGroupTextField] stringValue], [[prefPane dicomElementTextField] stringValue]] inContentAtIndex:tokenIndexInContent];
+//				}
 			}
 			else
 			{
 				formatString = @"DICOM_%@_%@_%@";
-				if(!aTokenIsSelected)
+//				if(!aTokenIsSelected)
 					[selectedAnnotation insertObject:[NSString stringWithFormat:formatString, [[prefPane dicomGroupTextField] stringValue], [[prefPane dicomElementTextField] stringValue], [[prefPane dicomNameTokenField] stringValue]] inContentAtIndex:[selectedAnnotation countOfContent]];
-				else
-				{
-					[selectedAnnotation removeObjectFromContentAtIndex:tokenIndexInContent];
-					[selectedAnnotation insertObject:[NSString stringWithFormat:formatString, [[prefPane dicomGroupTextField] stringValue], [[prefPane dicomElementTextField] stringValue], [[prefPane dicomNameTokenField] stringValue]] inContentAtIndex:tokenIndexInContent];
-				}
+//				else
+//				{
+//					[selectedAnnotation removeObjectFromContentAtIndex:tokenIndexInContent];
+//					[selectedAnnotation insertObject:[NSString stringWithFormat:formatString, [[prefPane dicomGroupTextField] stringValue], [[prefPane dicomElementTextField] stringValue], [[prefPane dicomNameTokenField] stringValue]] inContentAtIndex:tokenIndexInContent];
+//				}
 			}
 		}
 		else
@@ -653,8 +653,6 @@
 	[[prefPane contentTokenField] setObjectValue:[selectedAnnotation content]];
 
 	[selectedAnnotation didChangeValueForKey:@"content"];
-
-	[self resizeTokenField];
 	
 	if(!aTokenIsSelected)
 	{
@@ -671,7 +669,7 @@
 	[[selectedAnnotation content] setArray:[[prefPane contentTokenField] objectValue]];
 }
 
-- (void)resizeTokenField;
+- (void)resizeTokenField; // not used
 {
 	return;
 	int i;
@@ -706,13 +704,18 @@
 {
 	if([[aNotification object] isEqualTo:[prefPane dicomGroupTextField]])
 	{
-		if(![[[prefPane dicomGroupTextField] stringValue] hasPrefix:@"0x"])
-			[[prefPane dicomGroupTextField] setStringValue:[NSString stringWithFormat:@"0x%04d", [[prefPane dicomGroupTextField] intValue]]];
+		unsigned group = 0;
+		[[NSScanner scannerWithString: [[prefPane dicomGroupTextField] stringValue]] scanHexInt:&group];
+		if(group>0xffFF) group = 0xffFF;
+		[[prefPane dicomGroupTextField] setStringValue:[NSString stringWithFormat:@"0x%04x", group]];
+		
 	}
 	else if([[aNotification object] isEqualTo:[prefPane dicomElementTextField]])
 	{
-		if(![[[prefPane dicomElementTextField] stringValue] hasPrefix:@"0x"])
-			[[prefPane dicomElementTextField] setStringValue:[NSString stringWithFormat:@"0x%04d", [[prefPane dicomElementTextField] intValue]]];
+		unsigned element = 0;
+		[[NSScanner scannerWithString: [[prefPane dicomElementTextField] stringValue]] scanHexInt:&element];
+		if(element>0xffFF) element = 0xffFF;
+		[[prefPane dicomElementTextField] setStringValue:[NSString stringWithFormat:@"0x%04x", element]];
 		
 		int i;
 		for (i=0; i<[DICOMFieldsArray count]; i++)
@@ -730,8 +733,7 @@
 			}
 		}
 	}
-	else
-		[self resizeTokenField];
+
 }
 
 - (NSArray *)tokenField:(NSTokenField *)tokenField readFromPasteboard:(NSPasteboard *)pboard
@@ -888,13 +890,15 @@
 {
 	if(skipTextViewDidChangeSelectionNotification) return;
 	skipTextViewDidChangeSelectionNotification = YES;
-	
+
 	if([[prefPane contentTokenField] currentEditor]==[aNotification object])
 	{
 		NSArray *ranges = [[aNotification object] selectedRanges];
+		
 		if([ranges count]==1)
 		{
 			NSRange selectedRange = [[ranges objectAtIndex:0] rangeValue];
+
 			if(selectedRange.length==1)
 			{
 				NSString *selectedString = [[[[prefPane contentTokenField] objectValue] subarrayWithRange:selectedRange] objectAtIndex:0];
@@ -922,6 +926,11 @@
 //								[[prefPane dicomGroupTextField] setStringValue:[NSString stringWithFormat:@"0x%04x", [[DICOMFieldsArray objectAtIndex:i] group]]];
 //								[[prefPane dicomElementTextField] setStringValue:[NSString stringWithFormat:@"0x%04x", [[DICOMFieldsArray objectAtIndex:i] element]]];
 //								[[prefPane dicomNameTokenField] setStringValue:[[DICOMFieldsArray objectAtIndex:i] name]];
+								[[prefPane dicomGroupTextField] setStringValue:@""];
+								[[prefPane dicomElementTextField] setStringValue:@""];
+								[[prefPane dicomNameTokenField] setStringValue:@""];
+
+
 								[[prefPane DICOMFieldsPopUpButton] selectItemAtIndex:i+1];
 								[[prefPane DICOMFieldsPopUpButton] setEnabled:YES];
 								found = YES;
@@ -929,9 +938,9 @@
 							}
 						}
 						
-						if(!found)
-						{
-							// this is a custom DICOM field, with this format : DICOM_0x0001_0x0001 or DICOM_0x0001_0x0001_name
+//						if(!found)
+//						{
+//							// this is a custom DICOM field, with this format : DICOM_0x0001_0x0001 or DICOM_0x0001_0x0001_name
 //							NSString *groupString = [selectedString substringWithRange:NSMakeRange(0,6)];
 //							NSString *elementString = [selectedString substringWithRange:NSMakeRange(7,6)];
 //							[[prefPane dicomGroupTextField] setStringValue:groupString];
@@ -943,10 +952,10 @@
 //							else
 //								name = [selectedString substringFromIndex:14];
 //							[[prefPane dicomNameTokenField] setStringValue:name];
-							
-							[[prefPane DICOMFieldsPopUpButton] setEnabled:NO];
-							[[prefPane DICOMFieldsPopUpButton] selectItemAtIndex:0];
-						}
+//							
+//							[[prefPane DICOMFieldsPopUpButton] setEnabled:NO];
+//							[[prefPane DICOMFieldsPopUpButton] selectItemAtIndex:0];
+//						}
 					}
 				}
 				else if([selectedString hasPrefix:@"DB_"])
@@ -993,7 +1002,6 @@
 					[[prefPane databaseFieldsPopUpButton] selectItemAtIndex:0];
 					[[prefPane specialFieldsPopUpButton] setEnabled:NO];
 					[[prefPane specialFieldsPopUpButton] selectItemAtIndex:0];
-
 				}
 			}
 		}
@@ -1151,25 +1159,42 @@
 					
 					if([currentField hasPrefix:@"DICOM_"])
 					{
+						unsigned group, element;
+						NSString *name = @"";
+						BOOL isCustomDICOMField = YES;
 						if([currentField length]>6)
 						{
 							[fieldDict setObject:@"DICOM" forKey:@"type"];
 							
 							comparisonRange = NSMakeRange(6, [currentField length]-6);
 							NSString *currentTitle;
-							for (k=0; k<[DICOMFieldsArray count]; k++)
+							for (k=0; k<[DICOMFieldsArray count] && isCustomDICOMField; k++)
 							{
 								currentTitle = [[DICOMFieldsArray objectAtIndex:k] name];
 								if([currentField compare:currentTitle options:NSCaseInsensitiveSearch range:comparisonRange]==NSOrderedSame)
 								{
-									[fieldDict setObject:[NSNumber numberWithInt:[[DICOMFieldsArray objectAtIndex:k] group]] forKey:@"group"];
-									[fieldDict setObject:[NSNumber numberWithInt:[[DICOMFieldsArray objectAtIndex:k] element]] forKey:@"element"];
-									[fieldDict setObject:[[DICOMFieldsArray objectAtIndex:k] name] forKey:@"name"];
-									[fieldDict setObject:currentField forKey:@"tokenTitle"];
-									[contentToSave addObject:fieldDict];
-									break;
+									group = [[DICOMFieldsArray objectAtIndex:k] group];
+									element = [[DICOMFieldsArray objectAtIndex:k] element];
+									name = [[DICOMFieldsArray objectAtIndex:k] name];
+									isCustomDICOMField = NO;
 								}
 							}
+							if(isCustomDICOMField)
+							{
+								NSArray *components = [currentField componentsSeparatedByString:@"_"];
+								if([components count]>=3)
+								{
+									[[NSScanner scannerWithString:[components objectAtIndex:1]] scanHexInt:&group];
+									[[NSScanner scannerWithString:[components objectAtIndex:2]] scanHexInt:&element];
+									if([components count]==4)
+										name = [components objectAtIndex:3];
+								}
+							}
+							[fieldDict setObject:[NSNumber numberWithInt:group] forKey:@"group"];
+							[fieldDict setObject:[NSNumber numberWithInt:element] forKey:@"element"];
+							[fieldDict setObject:name forKey:@"name"];
+							[fieldDict setObject:currentField forKey:@"tokenTitle"];
+							[contentToSave addObject:fieldDict];
 						}
 					}
 					else if([currentField hasPrefix:@"DB_"])

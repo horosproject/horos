@@ -318,7 +318,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (NSTextField*)titleTextField; {return titleTextField;}
 - (NSTokenField*)contentTokenField; {return contentTokenField;}
-- (NSTokenField*)dicomNameTokenField; {return dicomNameTokenField;}
+- (NSTextField*)dicomNameTokenField; {return dicomNameTokenField;}
 - (NSTextField*)dicomGroupTextField {return dicomGroupTextField;}
 - (NSTextField*)dicomElementTextField; {return dicomElementTextField;}
 - (NSTextField*)groupLabel; {return groupLabel;}

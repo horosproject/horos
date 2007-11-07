@@ -10142,6 +10142,7 @@ END_CREATE_ROIS:
 					NSDictionary *field = [content objectAtIndex:f];
 					NSString *type = [field objectForKey:@"type"];
 					NSString *value;
+					
 					if( [type isEqualToString:@"DICOM"] )
 					{
 						if(fileNb>=0)
