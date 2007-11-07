@@ -440,7 +440,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 @synthesize eraserFlag;
 @synthesize drawing;
 @synthesize volumicSeries;
-@synthesize isKeyView;
+@synthesize isKeyView, mouseDragging;
 
 + (BOOL) intersectionBetweenTwoLinesA1:(NSPoint) a1 A2:(NSPoint) a2 B1:(NSPoint) b1 B2:(NSPoint) b2 result:(NSPoint*) r
 {
@@ -2132,7 +2132,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[super flagsChanged:event];
 }
 
-- (void)mouseUp:(NSEvent *)event {
+- (void)mouseUp:(NSEvent *)event
+{
+	mouseDragging = NO;
+	
 	// get rid of timer
 	[self deleteMouseDownTimer];
 	
@@ -3374,6 +3377,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 #pragma mark Mouse dragging methods	
 - (void)mouseDragged:(NSEvent *)event
 {
+	mouseDragging = YES;
+	
 	// if window is not visible do nothing
 	if( [[self window] isVisible] == NO) return;
 	

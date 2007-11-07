@@ -258,21 +258,32 @@ static NSArray*	statesArray = nil;
 - (void) reloadViewers: (NSMutableArray*) vl {
 	
 	// Reload series if needed
-	for( ViewerController *vc in vl ) {
-		if( [[vc window] isVisible])
+	NSMutableArray *cvl = [NSMutableArray arrayWithArray: vl];
+	
+	for( ViewerController *vc in cvl )
+	{
+		if( [[vc window] isVisible] && [[vc imageView] mouseDragging] == NO)
+		{
 			[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [[[vc fileList] objectAtIndex: 0] valueForKey:@"series"]]] movie: NO viewer : vc keyImagesOnly: NO];
+			[vl removeObject: vc];
+		}
 	}
 	
 	[[QueryController currentQueryController] refresh: self];
 }
 
-- (void) rebuildViewers: (NSMutableArray*) vlToRebuild {
-	
+- (void) rebuildViewers: (NSMutableArray*) vlToRebuild
+{	
 	// Refresh preview matrix if needed
-	for( ViewerController *vc in vlToRebuild ) {
-		if( [[vc window] isVisible])
+	NSMutableArray *cvl = [NSMutableArray arrayWithArray: vlToRebuild];
+	
+	for( ViewerController *vc in cvl )
+	{
+		if( [[vc window] isVisible] && [[vc imageView] mouseDragging] == NO)
+		{
 			[vc buildMatrixPreview: NO];
-		//	[[vlToRebuild objectAtIndex: i] matrixPreviewSelectCurrentSeries];
+			[vlToRebuild removeObject: vc];
+		}
 	}
 }
 
@@ -897,8 +908,16 @@ static NSArray*	statesArray = nil;
 				// Purge viewersListToReload & viewersListToReload arrays
 				[self newFilesGUIUpdate: self];
 				
-				[viewersListToReload addObjectsFromArray: vlToReload];
-				[viewersListToRebuild addObjectsFromArray: vlToRebuild];
+				for( ViewerController *a in vlToReload)
+				{
+					if( [viewersListToReload containsObject: a] == NO)
+						[viewersListToReload addObject: a];
+				}
+				for( ViewerController *a in vlToRebuild)
+				{
+					if( [viewersListToRebuild containsObject: a] == NO)
+						[viewersListToRebuild addObject: a];
+				}
 				
 				if( newStudy) [self newFilesGUIUpdateRun: 1];
 				else [self newFilesGUIUpdateRun: 2];
@@ -906,8 +925,16 @@ static NSArray*	statesArray = nil;
 			else {
 				[newFilesConditionLock lockWhenCondition: 0];
 				
-				[viewersListToReload addObjectsFromArray: vlToReload];
-				[viewersListToRebuild addObjectsFromArray: vlToRebuild];
+				for( ViewerController *a in vlToReload)
+				{
+					if( [viewersListToReload containsObject: a] == NO)
+						[viewersListToReload addObject: a];
+				}
+				for( ViewerController *a in vlToRebuild)
+				{
+					if( [viewersListToRebuild containsObject: a] == NO)
+						[viewersListToRebuild addObject: a];
+				}
 				
 				if( newStudy) [newFilesConditionLock unlockWithCondition: 1];
 				else [newFilesConditionLock unlockWithCondition: 2];
@@ -943,9 +970,6 @@ static NSArray*	statesArray = nil;
 	
 	[self reloadViewers: viewersListToReload];
 	[self rebuildViewers: viewersListToRebuild];
-	
-	[viewersListToReload removeAllObjects];
-	[viewersListToRebuild removeAllObjects];
 }
 
 - (void) newFilesGUIUpdate:(id) sender

@@ -123,6 +123,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
     
     short           currentTool, currentToolRight, currentMouseEventTool;
     
+	BOOL			mouseDragging;
 	BOOL			suppress_labels; // keep from drawing the labels when command+shift is pressed
 
     NSPoint         start, originStart, originOffsetStart, previous;
@@ -289,7 +290,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property BOOL eraserFlag;
 @property BOOL drawing;
 @property BOOL volumicSeries;
-@property(readonly) BOOL isKeyView;
+@property(readonly) BOOL isKeyView, mouseDragging;
 
 + (void) setDefaults;
 + (void) setCLUTBARS:(int) c ANNOTATIONS:(int) a;
