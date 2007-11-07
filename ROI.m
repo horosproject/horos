@@ -4297,7 +4297,29 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	if(textureBuffer) free(textureBuffer);
 	
-	if(spp!=4) 
+	if(spp == 1)
+	{
+		bytesPerRow = [bitmap bytesPerRow]/spp;
+		bytesPerRow *= 4;
+
+		unsigned char *ptr, *tmpImage;
+		int	loop = (int) [layerImage size].height * bytesPerRow/4;
+		tmpImage = malloc (bytesPerRow * [layerImage size].height);
+		ptr   = tmpImage;
+		
+		unsigned char   *bufPtr;
+		bufPtr = [bitmap bitmapData];
+		while( loop-- > 0)
+		{
+			*ptr++	= *bufPtr;
+			*ptr++	= *bufPtr;
+			*ptr++	= *bufPtr++;
+			*ptr++	= 255;
+		}
+		
+		textureBuffer = tmpImage;
+	}
+	else if(spp == 3) 
 	{
 		bytesPerRow = [bitmap bytesPerRow]/spp;
 		bytesPerRow *= 4;
