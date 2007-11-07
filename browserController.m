@@ -12,47 +12,6 @@
  PURPOSE.
  =========================================================================*/
 
-
-/***************************************** Modifications *********************************************
- 
- Version 2.3
- 
- 20051215	LP	Added viewerDICOMMergeSelection method to open a viewer with merged Series 
- Added newDICOMViewer method to allow for key masks to vary viewer opening
- 20051215	LP	Added _searchString varaible and associated methods. SearchField bound to _searchString
- Allows searches to be performed programmatically. 
- Also separates the model from the view.
- 20051216	DDP	Database autocleaning now checks to see if an old study was added today and won't purge it if so.
- 20051216	LP	Added filter and fetch predicates to clean up fetch code in the future and to allow fetches to be 
- performed programmatically such as by plugins
- 20051217	ANR	viewerDICOMMergeSelection and viewerDICOMKeyImages modified to support matrix contextual menu
- 20051217	LP	Modified outlineViewRefresh to use filterPredicate. 
- Clear search field when changing search type
- 20051220	LP	Moved DICOM send code to SendController.
- 20060101	DDP	Changed opendDatabase method to openDatabase (also in MainMenu Nib class definition).
- 20060110	DDP	Reducing the variable duplication of userDefault objects (work in progress).
- 20060111	LP	Added AddDirectory option to ExportDICOM. Also added option to add DICOMDIR. 
- 20060112	DDP	I think files may be autoreleased during recursive call to _testForValidFilePath, so I've bracketed
- the call to [... parseArray] in addDICOMDIR with a retain/release pair.
- DDP	Now allows return key to open from database like a double click with modality layout prefs, but only
- when one series is selected. Achieved by modifying [... newViwerDICOM].
- 20060116	LP	Fixed potential bug assigning image path when adding DICOMDIR to exported Files
- 20060128	LP	Changing routing Protocol
- 20060128	LP	Modified isDICOMFile to test with DCMFramework as last resort. some valid files not read by papyrus
- 20060308	RBR	Added test for RTSTRUCT in matrixNewIcon.  Write button icon indicating RTSTRUCT rather than error button.
- 20060309	LP	added databaseWindow: to close all viewers
- 20060607	LP Converted routing to DCMTK
- 20060720	MS	openViewerWithImages caused some problems with large series. App became unstable and crashed from time to time
- memBlockTestPtr & memBlockSize arrays were limited to 200
- 
- Version 2.5
- 
- 20060809	DDP	Increased auto-delete safe buffer to 7 days from the time a study is added to a database.
- DDP	Renamed clearComplePathCache to clearCompletePathCache, as per DicomImage.
- DDP	Included DicomImage.h and typed image to be a DicomImage* rather than just NSManagedObject in addFilesToDatabase (reduces compile warnings).
- 
- */
-
 #import <DiscRecording/DRDevice.h>
 #import "DCMView.h"
 #import "MyOutlineView.h"
@@ -976,17 +935,45 @@ static NSArray*	statesArray = nil;
 {
 	if( [newFilesConditionLock tryLockWhenCondition: 1] || [newFilesConditionLock tryLockWhenCondition: 2])
 	{
-		NSMutableArray *cReload = [NSMutableArray arrayWithArray: viewersListToReload];
-		NSMutableArray *cRebuild = [NSMutableArray arrayWithArray: viewersListToRebuild];
+		NSMutableArray *cReload = [NSMutableArray arrayWithArray: viewersListToReload], *vReload = [NSMutableArray arrayWithCapacity: 20];
 		
-		[viewersListToReload removeAllObjects];
-		[viewersListToRebuild removeAllObjects];
+		for( ViewerController *v in cReload)
+		{
+			if( [[v imageView] mouseDragging] == NO && [v postprocessed] == NO)
+			{
+				[viewersListToReload removeObject: v];
+				[vReload addObject: v];
+			}
+		}
+		
+		NSMutableArray *cRebuild = [NSMutableArray arrayWithArray: viewersListToRebuild], *vRebuild = [NSMutableArray arrayWithCapacity: 20];
+		
+		for( ViewerController *v in cRebuild)
+		{
+			if( [[v imageView] mouseDragging] == NO && [v postprocessed] == NO)
+			{
+				[viewersListToRebuild removeObject: v];
+				[vRebuild addObject: v];
+			}
+		}
 		
 		int condition = [newFilesConditionLock condition];
-		[newFilesConditionLock unlockWithCondition: 0];
 		
-		[self newFilesGUIUpdateRun: condition viewersListToReload: cReload viewersListToRebuild: cRebuild];
+		if( [viewersListToRebuild count] || [viewersListToReload count]) [newFilesConditionLock unlockWithCondition: condition];
+		else [newFilesConditionLock unlockWithCondition: 0];
+		
+		[self newFilesGUIUpdateRun: condition viewersListToReload: vReload viewersListToRebuild: vRebuild];
 	}
+}
+
+- (void) CloseViewerNotification: (NSNotification*) note
+{
+	[newFilesConditionLock lock];
+	
+	[viewersListToReload removeObject: [note object]];
+	[viewersListToRebuild removeObject: [note object]];
+	
+	[newFilesConditionLock unlock];
 }
 
 - (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames copied:(BOOL*) copied
@@ -8532,10 +8519,16 @@ static BOOL needToRezoom;
 	if (sender == Nil && [[oMatrix selectedCells] count] == 1 && [[item valueForKey:@"type"] isEqualToString:@"Study"] == YES )	{
 		NSArray *array = [self databaseSelection];
 		
+		BOOL savedValue = [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"];
+		
+		if( [array count] > 1 && savedValue == YES) [[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"automaticWorkspaceLoad"];
+		
 		for( id obj in array ) {
 			[databaseOutline selectRow: [databaseOutline rowForItem: obj] byExtendingSelection: NO];
 			[self databaseOpenStudy: obj];
 		}
+		
+		if( [array count] > 1 && savedValue == YES) [[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"automaticWorkspaceLoad"];
 	}
 	else {
 		if( [self isUsingExternalViewer: [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]]] == NO )	{
@@ -8902,6 +8895,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeUnmount:) name:NSWorkspaceDidUnmountNotification object:nil];
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(willVolumeUnmount:) name:NSWorkspaceWillUnmountNotification object:nil];
 		
+		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowHasChanged:) name:NSWindowDidBecomeMainNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(OsirixAddToDBNotification:) name:@"OsirixAddToDBNotification" object:nil];
@@ -8911,6 +8905,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rtstructNotification:) name:@"RTSTRUCTNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AlternateButtonPressed:) name:@"AlternateButtonPressed" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
 	}
 	return self;
 }
