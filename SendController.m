@@ -154,7 +154,8 @@ static volatile int sendControllerObjects = 0;
 	[super dealloc];
 }
 
-- (void)releaseSelfWhenDone:(id)sender{
+- (void)releaseSelfWhenDone:(id)sender
+{
 	[_lock lock];
 	[_lock unlock];
 	[self release];
@@ -337,7 +338,7 @@ static volatile int sendControllerObjects = 0;
 		NSString *calledAET = [[self server] objectForKey:@"AETitle"];
 		NSString *hostname = [[self server] objectForKey:@"Address"];
 		NSString *destPort = [[self server] objectForKey:@"Port"];
-
+		
 		storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
 				calledAET:calledAET 
 				hostname:hostname 
@@ -410,12 +411,11 @@ static volatile int sendControllerObjects = 0;
 	[info setObject:calledAET forKey:@"CalledAET"];
 	
 	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone:YES];	
-	
-	//need to unlock to allow release of self after send complete
-	[_lock unlock];
-	
+		
 	[pool release];
 	
+	//need to unlock to allow release of self after send complete
+	[_lock performSelectorOnMainThread:@selector(unlock) withObject:0L waitUntilDone:NO];
 }
 
 - (void)closeSendPanel:(id)sender{

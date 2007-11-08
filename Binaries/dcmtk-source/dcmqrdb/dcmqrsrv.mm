@@ -638,8 +638,9 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     {
       case EXS_LittleEndianImplicit:
         /* we only support Little Endian Implicit */
-        transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 1;
+        transferSyntaxes[0]  = UID_LittleEndianExplicitTransferSyntax;
+		transferSyntaxes[1]  = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 2;
         break;
       case EXS_LittleEndianExplicit:
         /* we prefer Little Endian Explicit */
@@ -894,7 +895,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
       T_ASC_SC_ROLE role;
       int npc = ASC_countPresentationContexts(assoc->params);
 	  
-	  NSLog( @"****************************");
+	 // NSLog( @"****************************"); WARNING NO NSLOG !!! fork() !!!!!
 	  
       for (i=0; i<npc; i++)
       {
@@ -922,7 +923,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
                */
               if (strcmp(pc.proposedTransferSyntaxes[j], transferSyntaxes[k]) == 0)
               {
-			    printf( "context: %s\r", transferSyntaxes[k]);
+			    // NSLog( @"context: %s\r", transferSyntaxes[k]);WARNING NO NSLOG !!! fork() !!!!!
 			  
                 cond = ASC_acceptPresentationContext(
                     assoc->params, pc.presentationContextID, transferSyntaxes[k], role);
@@ -933,7 +934,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         }
       } /* for */
 	  
-	  NSLog( @"****************************");
+	  // NSLog( @"****************************");WARNING NO NSLOG !!! fork() !!!!!
 	  
     } /* else */
 

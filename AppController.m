@@ -729,6 +729,8 @@ NSRect screenFrame()
 		refreshDatabase = YES;
 	if ([[previousDefaults valueForKey: @"DICOMTimeout"]intValue]		!=		[defaults integerForKey: @"DICOMTimeout"])
 		restartListener = YES;
+	if ([[previousDefaults valueForKey: @"acceptOnlyExplicitLittleEndian"]intValue]		!=		[defaults integerForKey: @"acceptOnlyExplicitLittleEndian"])
+		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"LISTENERCHECKINTERVAL"]intValue]		!=		[defaults integerForKey: @"LISTENERCHECKINTERVAL"])
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"SINGLEPROCESS"]intValue]				!=		[defaults integerForKey: @"SINGLEPROCESS"])
@@ -1814,13 +1816,15 @@ static BOOL initialized = NO;
     }
     else
     {
-        NSLog( @"***** OsiriX : session activation: START DICOM LISTENER FOR THIS SESSION");
-		
 		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow: 2]];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"RunListenerOnlyIfActive"])
+		{
+			 NSLog( @"***** OsiriX : session activation: START DICOM LISTENER FOR THIS SESSION");
+			 
 			[self restartSTORESCP];
-    }
+		}
+	}
 }
 
 - (void) applicationDidFinishLaunching:(NSNotification*) aNotification

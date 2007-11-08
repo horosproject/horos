@@ -978,11 +978,11 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 		}
 		else
 		{
-			NSLog( @"Error");
+			NSLog( @"******* DCMQRDBQ Error");
 		}
 		
 	}
-	else NSLog( @"Error");
+	else NSLog( @"******* DCMQRDBQ Error");
 	
 	//read file to get SOPClass and SOPInstanceUIDs
 	

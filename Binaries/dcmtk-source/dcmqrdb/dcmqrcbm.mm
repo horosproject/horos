@@ -534,7 +534,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 	
 	servers = serversArray;
 	
-	NSLog( @"***** C-MOVE SCP: Map Move Destination: %@", moveDestination);
+//	NSLog( @"***** C-MOVE SCP: Map Move Destination: %@", moveDestination);
 	
 	//NSString *theirAET;
 	NSString *hostname;

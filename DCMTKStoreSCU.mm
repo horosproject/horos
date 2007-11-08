@@ -716,7 +716,6 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 	 //reload file after syntax change
 	if (status)
 	{
-		printf("on the fly conversion\n");
 		cond = 	dcmff.loadFile(fname);
 		filexfer = dcmff.getDataset()->getOriginalXfer();
 		
@@ -1017,6 +1016,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			break;
 		case SendJPEGLossless: 
 			opt_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+			break;
 		case SendJPEGLossy9:
 			opt_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
 			opt_Quality = 90;
