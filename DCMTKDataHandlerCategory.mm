@@ -792,6 +792,7 @@
 			NSMutableSet *moveSet = [NSMutableSet set];
 			while (moveEntity = [enumerator nextObject])
 				[moveSet unionSet:[moveEntity valueForKey:@"paths"]];
+			
 			//array from set
 			NSArray *tempMoveArray = [moveSet allObjects];
 			

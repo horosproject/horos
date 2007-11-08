@@ -516,17 +516,22 @@ progressCallback(void * /*callbackData*/,
     }
 }
 
-static OFBool decompressFile(DcmFileFormat fileformat, const char *fname){
+static OFBool decompressFile(DcmFileFormat fileformat, const char *fname, char *outfname)
+{
 	OFBool status = YES;
-	//DcmFileFormat fileformat;
 	OFCondition cond;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-	//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
-	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000) {
+	
+	NSLog( @"SEND - decompress: %s", fname);
+	
+	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
+	{
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
-		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+		
+		unlink( outfname);
+		[dcmObject writeToFile: outpath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 	}
 	else {
@@ -539,42 +544,53 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname){
 		  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
 		  {
 			fileformat.loadAllDataIntoMemory();
-			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
-			cond = fileformat.saveFile(fname, EXS_LittleEndianExplicit);
+			unlink( outfname);
+			cond = fileformat.saveFile( outfname, EXS_LittleEndianExplicit);
 			status =  (cond.good()) ? YES : NO;
-			
 		  }
 		  else
 			status = NO;
-
 	}
-
+	
 	return status;
 }
 
-static OFBool compressFile(DcmFileFormat fileformat, const char *fname ){
-	
-
+static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *outfname)
+{
 	OFCondition cond;
 	OFBool status = YES;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-	//hopefully dcmtk willsupport jpeg2000 compressio and compression in the future
-	if (opt_networkTransferSyntax == EXS_JPEG2000) {
-		NSLog(@"Compress JPEG 2000 Lossy");
+	
+	if (opt_networkTransferSyntax == EXS_JPEG2000)
+	{
+		NSLog(@"SEND - Compress JPEG 2000 Lossy: %s", fname);
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
+		
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
-		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:opt_Quality AET:@"OsiriX" atomically:YES];
+		
+		unlink( outfname);
+		
+		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:opt_Quality AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 	}
-	else if  (opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly) {
+	else if  (opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly)
+	{
+		NSLog(@"SEND - Compress JPEG 2000 Lossless: %s", fname);
+		
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
+		
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
-		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality:0 AET:@"OsiriX" atomically:YES];
+		
+		unlink( outfname);
+		
+		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality:0 AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 	}
-	else {
+	else
+	{
+		NSLog(@"SEND - Compress JPEG: %s", fname);
 		
 		DcmDataset *dataset = fileformat.getDataset();
 		DcmItem *metaInfo = fileformat.getMetaInfo();
@@ -604,8 +620,10 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname ){
 			// store in lossless JPEG format
 			
 			fileformat.loadAllDataIntoMemory();
-			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
-			cond = fileformat.saveFile(fname, opt_networkTransferSyntax);
+			
+			unlink( outfname);
+			
+			cond = fileformat.saveFile( outfname, opt_networkTransferSyntax);
 			status =  (cond.good()) ? YES : NO;
 		}
 		else
@@ -614,6 +632,8 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname ){
 
 	return status;
 }
+
+static long seed = 0;
 
 static OFCondition
 storeSCU(T_ASC_Association * assoc, const char *fname)
@@ -635,6 +655,9 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     DIC_UI sopClass;
     DIC_UI sopInstance;
     DcmDataset *statusDetail = NULL;
+	char outfname[ 4096];
+	
+	sprintf( outfname, "%s/%s/%d.dcm", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP", seed++);
 
     unsuccessfulStoreEncountered = OFTrue; // assumption
 	
@@ -691,22 +714,22 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 	presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, preferredXfer.getXferID());
 	T_ASC_PresentationContext pc;
 	ASC_findAcceptedPresentationContext(assoc->params, presId, &pc);
-	DcmXfer propoesdTransfer(pc.acceptedTransferSyntax);
-	 if (presId != 0) {
-		//printf("presID: %d\n", presId);
-		if (filexfer.isNotEncapsulated() && propoesdTransfer.isNotEncapsulated()) {
+	DcmXfer proposedTransfer(pc.acceptedTransferSyntax);
+	 if (presId != 0)
+	 {
+		if (filexfer.isNotEncapsulated() && proposedTransfer.isNotEncapsulated()) {
 			// do nothing
 			status = NO;
 		}
-		else if (filexfer.isEncapsulated() && propoesdTransfer.isNotEncapsulated()) {
-			status = decompressFile(dcmff, fname);
+		else if (filexfer.isEncapsulated() && proposedTransfer.isNotEncapsulated()) {
+			status = decompressFile(dcmff, fname, outfname);
 		}
-		else if (filexfer.isNotEncapsulated() && propoesdTransfer.isEncapsulated()) {
-			status = compressFile(dcmff, fname);
+		else if (filexfer.isNotEncapsulated() && proposedTransfer.isEncapsulated()) {
+			status = compressFile(dcmff, fname, outfname);
 		}
-		else if (filexfer.getXfer() != opt_networkTransferSyntax){
-		// may need to convert encapsulated syntax
-			status = compressFile(dcmff, fname);
+		else if (filexfer.getXfer() != opt_networkTransferSyntax)
+		{
+			status = compressFile(dcmff, fname, outfname);
 		}
 	 }
 	 else
@@ -714,17 +737,20 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 		
 	// printf("presentation for syntax:%s %d\n", dcmFindNameOfUID(preferredXfer.getXferID()), presId);
 	 //reload file after syntax change
+	 
 	if (status)
 	{
-		cond = 	dcmff.loadFile(fname);
+		cond = 	dcmff.loadFile( outfname);
 		filexfer = dcmff.getDataset()->getOriginalXfer();
 		
 		/* figure out which SOP class and SOP instance is encapsulated in the file */
 		if (!DU_findSOPClassAndInstanceInDataSet(dcmff.getDataset(),
 			sopClass, sopInstance, opt_correctUIDPadding)) {
-			errmsg("No SOP Class & Instance UIDs in file: %s", fname);
+			errmsg("No SOP Class & Instance UIDs in file: %s", outfname);
 			return DIMSE_BADDATA;
 		}
+		
+		fname = outfname;
 	}
 	 
     if (filexfer.getXfer() != EXS_Unknown) presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
@@ -796,6 +822,14 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
         statusDetail->print(COUT);
         delete statusDetail;
     }
+	
+	if( status)
+	{
+		// We created a temporary file. Delete it now.
+		
+		unlink( outfname);
+	}
+	
     /* return */
     return cond;
 }

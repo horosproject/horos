@@ -1296,7 +1296,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
 	unsigned seedvalue = seed;
     newImageFileName[0] = 0; // return empty string in case of error
 	
-	char dir[ 1024];
+	char dir[ 4096];
 	sprintf( dir, "%s/%s", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP");
 	if (! fnamecreator.makeFilename(seedvalue, dir, prefix, ".dcm", filename))
 	{
