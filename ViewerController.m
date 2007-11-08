@@ -1433,6 +1433,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 			currentOrientationTool = newOrientationTool;
 		}
 		
+		if( currentOrientationTool != originalOrientation) [self setPostprocessed: YES];
+		else [self setPostprocessed: NO];
+		
 		if( newViewer == NO) [orientationMatrix selectCellWithTag: currentOrientationTool];
 
 		float   iwl, iww;
