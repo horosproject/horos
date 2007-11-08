@@ -10987,6 +10987,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 	burnerWindowController = nil;
 }
 
+- (BOOL) checkBurner
+{
+	if( burnerWindowController)
+	{
+		[[burnerWindowController window] makeKeyAndOrderFront: self];
+		
+		return NO;
+	}
+	
+	return YES;
+}
+
 - (void)burnDICOM: (id)sender {
 	if( burnerWindowController == nil )	{
 		NSMutableArray *managedObjects = [[NSMutableArray alloc] init];

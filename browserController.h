@@ -405,6 +405,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) pdfPreview:(id)sender;
 - (IBAction)importRawData:(id)sender;
 - (void) setBurnerWindowControllerToNIL;
+- (BOOL) checkBurner;
 
 - (void) refreshColumns;
 - (void) outlineViewRefresh;

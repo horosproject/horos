@@ -1397,6 +1397,11 @@ NSRect screenFrame()
 	}
 }
 
+- (NSApplicationTerminateReply) applicationShouldTerminate:(NSApplication *)sender
+{
+	return [[BrowserController currentBrowser] checkBurner];
+}
+
 - (void) applicationWillTerminate: (NSNotification*) aNotification
 {
 	[ROI saveDefaultSettings];
