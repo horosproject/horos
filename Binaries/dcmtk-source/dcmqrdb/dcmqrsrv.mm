@@ -893,6 +893,9 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
       T_ASC_PresentationContext pc;
       T_ASC_SC_ROLE role;
       int npc = ASC_countPresentationContexts(assoc->params);
+	  
+	  NSLog( @"****************************");
+	  
       for (i=0; i<npc; i++)
       {
         ASC_getPresentationContext(assoc->params, i, &pc);
@@ -919,6 +922,8 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
                */
               if (strcmp(pc.proposedTransferSyntaxes[j], transferSyntaxes[k]) == 0)
               {
+			    printf( "context: %s\r", transferSyntaxes[k]);
+			  
                 cond = ASC_acceptPresentationContext(
                     assoc->params, pc.presentationContextID, transferSyntaxes[k], role);
                 if (cond.bad()) return cond;
@@ -927,6 +932,9 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
           }
         }
       } /* for */
+	  
+	  NSLog( @"****************************");
+	  
     } /* else */
 
     /*
