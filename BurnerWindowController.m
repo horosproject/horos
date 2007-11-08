@@ -234,6 +234,12 @@ NSString* asciiString (NSString* name);
 		
 		cdName = [[nameField stringValue] retain];
 		
+		if( [cdName length] <= 0)
+		{
+			[cdName release];
+			cdName = [[NSString stringWithString: @"UNTITLED"] retain];
+		}
+		
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"/tmp/burnAnonymized"] handler:nil];
 		
@@ -267,7 +273,7 @@ NSString* asciiString (NSString* name);
 			anonymizedFiles = 0L;
 		}
 		
-		if (cdName != nil) {
+		if (cdName != nil && [cdName length] > 0) {
 			runBurnAnimation = YES;
 			[NSThread detachNewThreadSelector:@selector(burnAnimation:) toTarget:self withObject:nil];
 			[NSThread detachNewThreadSelector:@selector(performBurn:) toTarget:self withObject:nil];
@@ -313,8 +319,11 @@ NSString* asciiString (NSString* name);
 {
 	if( [anonymizedCheckButton state] == NSOnState)
 	{
-		NSDate *date = [NSDate date];
-		[self setCDTitle: [NSString stringWithFormat:@"Archive-%@",  [date descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]]];
+		if( [[nameField stringValue] isEqualToString: [self defaultTitle]])
+		{
+			NSDate *date = [NSDate date];
+			[self setCDTitle: [NSString stringWithFormat:@"Archive-%@",  [date descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]]];
+		}
 	}
 }
 
@@ -599,6 +608,21 @@ NSString* asciiString (NSString* name);
 - (void)importFiles:(NSArray *)filenames{
 }
 
+- (NSString*) defaultTitle
+{
+	NSString *title = 0L;
+	
+	if ([files count] > 0)
+	{
+		NSString *file = [files objectAtIndex:0];
+		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
+		title = [dcmObject attributeValueWithName:@"PatientsName"];
+	}
+	else title = @"UNTITLED";
+	
+	return asciiString([title uppercaseString]);
+}
+
 - (void)setup:(id)sender{
 	//NSLog(@"Set up burn");
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -606,28 +630,22 @@ NSString* asciiString (NSString* name);
 	runBurnAnimation = NO;
 	[burnButton setEnabled:NO];
 	isExtracting = YES;
-
-//	[filesTableView reloadData];
-
+	
 	[self performSelectorOnMainThread:@selector(estimateFolderSize:) withObject:nil waitUntilDone:YES];
 	isExtracting = NO;
 	[NSThread detachNewThreadSelector:@selector(irisAnimation:) toTarget:self withObject:nil];
 	[burnButton setEnabled:YES];
-	NSString *title;
-	if ([files count] > 0) {
-		if (_multiplePatients || [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"]){
-			NSDate *date = [NSDate date];
-			title = [NSString stringWithFormat:@"Archive-%@",  [date descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil 
-    locale:nil]];
-		}
-		else{
-			NSString *file = [files objectAtIndex:0];
-			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
-			title = [dcmObject attributeValueWithName:@"PatientsName"];		
-		}
+	
+	NSString *title = 0L;
+	
+	if (_multiplePatients || [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"])
+	{
+		NSDate *date = [NSDate date];
+		title = [NSString stringWithFormat:@"Archive-%@",  [date descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]];
 	}
-	else title = @"no name";
-	[self setCDTitle:[title uppercaseString]];
+	else title = [[self defaultTitle] uppercaseString];
+	
+	[self setCDTitle: title];
 	[pool release];
 }
 
@@ -662,8 +680,10 @@ NSString* asciiString (NSString* name);
 
 - (NSNumber*)getSizeOfDirectory:(NSString*)path
 {
+	if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO) return [NSNumber numberWithLong: 0];
+
 	NSNumber *sizeFieldNumber;
-	if([[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeSymbolicLink || [[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeUnknown)
+	if( [[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeSymbolicLink || [[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeUnknown)
 	{
 		NSArray *args;
 		NSPipe *fromPipe;
@@ -871,7 +891,8 @@ NSString* asciiString (NSString* name);
 }
 
 
-- (void)estimateFolderSize: (id) object {
+- (IBAction) estimateFolderSize: (id) sender
+{
 	NSString				*file;
 	long					size = 0;
 	NSFileManager			*manager = [NSFileManager defaultManager];
@@ -887,14 +908,12 @@ NSString* asciiString (NSString* name);
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Osirix Application"])
 	{
-		fattrs = [manager fileAttributesAtPath: [[NSBundle mainBundle] bundlePath] traverseLink:YES];
-		size += [fattrs fileSize]/1024;
+		size += [[self getSizeOfDirectory: [[NSBundle mainBundle] bundlePath]] longLongValue];
 	}
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Supplementary Folder"])
 	{
-		fattrs = [manager fileAttributesAtPath: [[NSUserDefaults standardUserDefaults] stringForKey: @"Supplementary Burn Path"] traverseLink:YES];
-		size += [fattrs fileSize]/1024;
+		size += [[self getSizeOfDirectory: [[NSUserDefaults standardUserDefaults] stringForKey: @"Supplementary Burn Path"]] longLongValue];
 	}
 	
 	[sizeField setStringValue:[NSString stringWithFormat:@"%@ %d  %@ %3.2fMB", NSLocalizedString(@"No of Files:", nil), [files count], NSLocalizedString(@"Original Image Files size:", nil), size/1024.0]];

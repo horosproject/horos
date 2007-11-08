@@ -66,5 +66,6 @@
 - (void)irisAnimation:(id)object;
 - (void)throbAnimation:(id)object;
 - (NSNumber*)getSizeOfDirectory:(NSString*)path;
-
+- (NSString*) defaultTitle;
+- (IBAction) estimateFolderSize: (id) sender;
 @end
