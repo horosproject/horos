@@ -6684,8 +6684,9 @@ static BOOL withReset = NO;
 		
 		BOOL first = YES;
 		for( NSString *search in criteria )	{
-			if ( first ) first == NO;
+			if ( first ) first = NO;
 			else format = [format stringByAppendingFormat: NSLocalizedString(@" AND ", nil)];
+			
 			format = [format stringByAppendingFormat: @"(%@)", search];
 		}
 		
