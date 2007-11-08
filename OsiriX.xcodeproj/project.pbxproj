@@ -476,6 +476,10 @@
 		A978DEB10CB0D4BE00FB2C3D /* NFHUDPopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE880CB0D4BE00FB2C3D /* NFHUDPopUpButton.h */; };
 		A97B73980CB380EF00E5348D /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = A97B73970CB380EF00E5348D /* osirixplugin.icns */; };
 		A97B73990CB380F600E5348D /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = A97B73970CB380EF00E5348D /* osirixplugin.icns */; };
+		A97D4C610CE3459D003FE2E6 /* PieChartImage.h in Headers */ = {isa = PBXBuildFile; fileRef = A97D4C5F0CE3459D003FE2E6 /* PieChartImage.h */; };
+		A97D4C620CE3459D003FE2E6 /* PieChartImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A97D4C600CE3459D003FE2E6 /* PieChartImage.m */; };
+		A97D4C630CE3459D003FE2E6 /* PieChartImage.h in Headers */ = {isa = PBXBuildFile; fileRef = A97D4C5F0CE3459D003FE2E6 /* PieChartImage.h */; };
+		A97D4C640CE3459D003FE2E6 /* PieChartImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A97D4C600CE3459D003FE2E6 /* PieChartImage.m */; };
 		A97E19EF0CDF55E50065EE29 /* 3DconnexionClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97E19EE0CDF55E50065EE29 /* 3DconnexionClient.framework */; };
 		A97E19F00CDF55E50065EE29 /* 3DconnexionClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97E19EE0CDF55E50065EE29 /* 3DconnexionClient.framework */; };
 		A98159A009AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
@@ -8518,6 +8522,8 @@
 		A978DE870CB0D4BE00FB2C3D /* NFHUDPopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDPopUpButton.m; sourceTree = "<group>"; };
 		A978DE880CB0D4BE00FB2C3D /* NFHUDPopUpButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDPopUpButton.h; sourceTree = "<group>"; };
 		A97B73970CB380EF00E5348D /* osirixplugin.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = osirixplugin.icns; sourceTree = "<group>"; };
+		A97D4C5F0CE3459D003FE2E6 /* PieChartImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PieChartImage.h; sourceTree = "<group>"; };
+		A97D4C600CE3459D003FE2E6 /* PieChartImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PieChartImage.m; sourceTree = "<group>"; };
 		A97E19EE0CDF55E50065EE29 /* 3DconnexionClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = 3DconnexionClient.framework; path = Binaries/3DconnexionClient.framework; sourceTree = "<group>"; };
 		A981599E09AC6B25003FF1FB /* bonesRemoval.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = bonesRemoval.tif; sourceTree = "<group>"; };
 		A98FFBE30CA92B58000291C8 /* altivecFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = altivecFunctions.c; sourceTree = "<group>"; };
@@ -12996,6 +13002,8 @@
 				ABB230B90C2F95DD00B38596 /* JPEGExif.h */,
 				ABB230BA0C2F95DD00B38596 /* JPEGExif.m */,
 				CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */,
+				A97D4C5F0CE3459D003FE2E6 /* PieChartImage.h */,
+				A97D4C600CE3459D003FE2E6 /* PieChartImage.m */,
 			);
 			name = Utilities;
 			sourceTree = SOURCE_ROOT;
@@ -18474,6 +18482,7 @@
 				BF8564140CB2B781005F7178 /* EndoscopyFlyThruController.h in Headers */,
 				CEDC793C0CBB7EF600411DDB /* ITKSegmentation3DController.h in Headers */,
 				CE4700FF0CC51A6600ECF78A /* WindowLayoutManager.h in Headers */,
+				A97D4C610CE3459D003FE2E6 /* PieChartImage.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20538,6 +20547,7 @@
 				BF8564120CB2B781005F7178 /* EndoscopyFlyThruController.h in Headers */,
 				CEDC793B0CBB7EF600411DDB /* ITKSegmentation3DController.h in Headers */,
 				CE4700FD0CC51A6600ECF78A /* WindowLayoutManager.h in Headers */,
+				A97D4C630CE3459D003FE2E6 /* PieChartImage.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22805,6 +22815,7 @@
 				BF84E5420CB16A2900431BC2 /* FlyThruTableView.m in Sources */,
 				BF8564150CB2B781005F7178 /* EndoscopyFlyThruController.m in Sources */,
 				CE4701000CC51A6600ECF78A /* WindowLayoutManager.m in Sources */,
+				A97D4C620CE3459D003FE2E6 /* PieChartImage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24477,6 +24488,7 @@
 				BF84E5400CB16A2900431BC2 /* FlyThruTableView.m in Sources */,
 				BF8564130CB2B781005F7178 /* EndoscopyFlyThruController.m in Sources */,
 				CE4700FE0CC51A6600ECF78A /* WindowLayoutManager.m in Sources */,
+				A97D4C640CE3459D003FE2E6 /* PieChartImage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -53,7 +53,8 @@
 	int										checkAndViewTry;
 	
 	NSImage									*Realised3, *Realised2;
-	NSImage									*alreadyInDatabase, *partiallyInDatabase;
+//	NSImage									*alreadyInDatabase, *partiallyInDatabase;
+	IBOutlet NSImageView					*alreadyInDatabase, *partiallyInDatabase;
 	
 	QueryArrayController					*queryManager;
 }

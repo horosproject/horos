@@ -33,6 +33,8 @@
 
 #include "SimplePing.h"
 
+#import "PieChartImage.h"
+
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
 static NSString *AccessionNumber = @"AccessionNumber";
@@ -397,10 +399,15 @@ static char *GetPrivateIP()
 			
 			if( [studyArray count] > 0)
 			{
-				if( [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
-					[(ImageAndTextCell *)cell setImage: alreadyInDatabase];
-				else
-					[(ImageAndTextCell *)cell setImage: partiallyInDatabase];
+				float percentage = [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
+				if(percentage>1.0) percentage = 1.0;
+
+				[(ImageAndTextCell *)cell setImage:[NSImage pieChartImageWithPercentage:percentage]];
+				
+//				if( [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
+//					[(ImageAndTextCell *)cell setImage: alreadyInDatabase];
+//				else
+//					[(ImageAndTextCell *)cell setImage: partiallyInDatabase];
 			}
 			else [(ImageAndTextCell *)cell setImage: 0L];
 		}
@@ -1144,6 +1151,9 @@ static char *GetPrivateIP()
 	}
 	
 	[self buildPresetsMenu];
+	
+	[alreadyInDatabase setImage:[NSImage pieChartImageWithPercentage:1.0]];
+	[partiallyInDatabase setImage:[NSImage pieChartImageWithPercentage:0.33]];
 }
 
 //******
@@ -1262,8 +1272,8 @@ static char *GetPrivateIP()
 		echoSuccess = 0L;
 		activeMoves = 0L;
 		
-		partiallyInDatabase = [[NSImage imageNamed:@"QRpartiallyInDatabase.tif"] retain];
-		alreadyInDatabase = [[NSImage imageNamed:@"QRalreadyInDatabase.tif"] retain];
+//		partiallyInDatabase = [[NSImage imageNamed:@"QRpartiallyInDatabase.tif"] retain];
+//		alreadyInDatabase = [[NSImage imageNamed:@"QRalreadyInDatabase.tif"] retain];
 		
 		pressedKeys = [[NSMutableString stringWithString:@""] retain];
 		queryFilters = [[NSMutableArray array] retain];
@@ -1303,8 +1313,8 @@ static char *GetPrivateIP()
 	[activeMoves release];
 	[sourcesArray release];
 	[resultArray release];
-	[partiallyInDatabase release];
-	[alreadyInDatabase release];
+//	[partiallyInDatabase release];
+//	[alreadyInDatabase release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
 	
