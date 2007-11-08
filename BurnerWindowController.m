@@ -876,12 +876,27 @@ NSString* asciiString (NSString* name);
 	long					size = 0;
 	NSFileManager			*manager = [NSFileManager defaultManager];
 	NSDictionary			*fattrs;
-	for (file in files){
+	
+	for (file in files)
+	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		fattrs = [manager fileAttributesAtPath:file traverseLink:YES];
 		size += [fattrs fileSize]/1024;
 		[pool release];
 	}
+	
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Osirix Application"])
+	{
+		fattrs = [manager fileAttributesAtPath: [[NSBundle mainBundle] bundlePath] traverseLink:YES];
+		size += [fattrs fileSize]/1024;
+	}
+	
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Supplementary Folder"])
+	{
+		fattrs = [manager fileAttributesAtPath: [[NSUserDefaults standardUserDefaults] stringForKey: @"Supplementary Burn Path"] traverseLink:YES];
+		size += [fattrs fileSize]/1024;
+	}
+	
 	[sizeField setStringValue:[NSString stringWithFormat:@"%@ %d  %@ %3.2fMB", NSLocalizedString(@"No of Files:", nil), [files count], NSLocalizedString(@"Original Image Files size:", nil), size/1024.0]];
 }
 
