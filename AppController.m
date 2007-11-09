@@ -60,7 +60,7 @@ MODIFICATION HISTORY
 #import <OsiriX/DCM.h>
 #import "PluginManager.h"
 #import "DCMTKQueryRetrieveSCP.h"
-
+#import "BLAuthentication.h"
 #import "AppControllerDCMTKCategory.h"
 #import "DefaultsOsiriX.h"
 #import "OrthogonalMPRViewer.h"
@@ -1348,23 +1348,36 @@ NSRect screenFrame()
 					if([[NSFileManager defaultManager] fileExistsAtPath:pathWithOldExt]) // the plugin already exists but with the old extension ".plugin"
 						pathToDelete = pathWithOldExt;
 				}
-
+				
+				BOOL move = YES;
+				
 				if(pathToDelete)
 				{
-					NSMutableArray *args = [NSMutableArray array];
-					[args addObject:@"-r"];
-					[args addObject:pathToDelete];
+					// first, try with NSFileManager
 					
-					NSTask *aTask = [[NSTask alloc] init];
-					[aTask setLaunchPath:@"/bin/rm"];
-					[aTask setArguments:args];
-					[aTask launch];
-					[aTask waitUntilExit];
-					[aTask release];
+					if( [[NSFileManager defaultManager] removeFileAtPath: pathToDelete handler: 0L] == NO)			// Please leave this line! ANR
+					{
+						NSMutableArray *args = [NSMutableArray array];
+						[args addObject:@"-r"];
+						[args addObject:pathToDelete];
+					
+						[[BLAuthentication sharedInstance] executeCommand:@"/bin/rm" withArgs:args];
+					}
+					
+					Delay(30, 0L);
+					
+					[[NSFileManager defaultManager] removeFileAtPath: pathToDelete handler: 0L];			// Please leave this line! ANR
+					
+					if( [[NSFileManager defaultManager] fileExistsAtPath: pathToDelete])
+					{
+						NSRunAlertPanel( NSLocalizedString( @"Plugins Installation", 0L), NSLocalizedString( @"Failed to remove previous version of the plugin.", 0L), NSLocalizedString( @"OK", 0L), nil, nil);
+						move = NO;
+					}
 				}
 				
 				// move the new plugin to the plugin folder				
-				[PluginManager movePluginFromPath:path toPath:destinationPath];
+				if( move)
+					[PluginManager movePluginFromPath:path toPath:destinationPath];
 			}
 			
 			[PluginManager discoverPlugins];
