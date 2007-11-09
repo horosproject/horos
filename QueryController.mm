@@ -420,6 +420,30 @@ static char *GetPrivateIP()
 	return studyArray;
 }
 
+- (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation;
+{
+	if( [[tableColumn identifier] isEqualToString: @"name"])
+	{
+		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+		{
+			NSArray *studyArray;
+			
+			studyArray = [self localStudy: item];
+			
+			if( [studyArray count] > 0)
+			{
+				float localFiles = [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] floatValue];
+				float totalFiles = [[item valueForKey:@"numberImages"] floatValue];
+				float percentage = localFiles / totalFiles;
+				if(percentage>1.0) percentage = 1.0;
+
+				return [NSString stringWithFormat:@"%@\n%d%% (%d/%d)", [cell title], (int)(percentage*100), (int)localFiles, (int)totalFiles];
+			}
+		}
+	}
+	return @"";
+}
+
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
 	if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
@@ -436,7 +460,7 @@ static char *GetPrivateIP()
 				if(percentage>1.0) percentage = 1.0;
 
 				[(ImageAndTextCell *)cell setImage:[NSImage pieChartImageWithPercentage:percentage]];
-				
+			
 //				if( [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
 //					[(ImageAndTextCell *)cell setImage: alreadyInDatabase];
 //				else
