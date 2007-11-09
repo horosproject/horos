@@ -1347,11 +1347,6 @@ static char *GetPrivateIP()
     return self;
 }
 
-- (void)finalize {
-	[NSObject cancelPreviousPerformRequestsWithTarget: pressedKeys];
-	[super finalize];
-}
-
 - (void)dealloc
 {
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
