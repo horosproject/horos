@@ -1861,13 +1861,13 @@ static BOOL initialized = NO;
 	
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"UseDelaunayFor3DRoi"];	// By default, we always start with VTKDelaunay, PowerCrush has memory leaks and can crash with some 3D objects....
 	
-	#if !__LP64__
-	[[[NSApplication sharedApplication] dockTile] setBadgeLabel: @"32-bit"];
-	[[[NSApplication sharedApplication] dockTile] display];
-	#else
-	[[[NSApplication sharedApplication] dockTile] setBadgeLabel: @"64-bit"];
-	[[[NSApplication sharedApplication] dockTile] display];
-	#endif
+//	#if !__LP64__
+//	[[[NSApplication sharedApplication] dockTile] setBadgeLabel: @"32-bit"];
+//	[[[NSApplication sharedApplication] dockTile] display];
+//	#else
+//	[[[NSApplication sharedApplication] dockTile] setBadgeLabel: @"64-bit"];
+//	[[[NSApplication sharedApplication] dockTile] display];
+//	#endif
 }
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification

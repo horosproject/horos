@@ -802,7 +802,12 @@ static NSArray*	statesArray = nil;
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixAddToDBNotification" object: nil userInfo:userInfo];
 			
 			if( [addedImagesArray count])
+			{
+				[[[NSApplication sharedApplication] dockTile] setBadgeLabel: [NSString stringWithFormat:@"%d", [addedImagesArray count]]];
+				[[[NSApplication sharedApplication] dockTile] display];
+				
 				[appController growlTitle: NSLocalizedString( @"Incoming Files", 0L) description:[NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", 0L), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]] name:@"newfiles"];
+			}
 		}
 		
 		[curPatientUID release];
@@ -10311,7 +10316,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSImage	*image = nil;
 	
 	if( newFilesInIncoming) image = downloadingOsiriXIcon;
-	else image = standardOsiriXIcon;
+	else
+	{
+		image = standardOsiriXIcon;
+		[[[NSApplication sharedApplication] dockTile] setBadgeLabel:@""];
+	}
 	
 	if( currentIcon != image) {
 		currentIcon = image;
