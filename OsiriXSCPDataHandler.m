@@ -26,10 +26,6 @@
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 
-
-extern AppController		*appController;
-
-
 NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotification";
 
 @implementation OsiriXSCPDataHandler
