@@ -288,6 +288,8 @@
 												0, args, NULL);
 	}
 
+	Delay(30, 0L); // do not delete this line... [joris/antoine]
+
     if(err!=0) {
 		NSBeep();
 		NSLog(@"Error %d in AuthorizationExecuteWithPrivileges",err);

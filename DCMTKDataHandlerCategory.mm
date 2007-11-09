@@ -882,7 +882,7 @@
 	if (path = [moveEnumerator nextObject])
 	{
 		//NSLog(@"move path: %@", path);
-		strcpy(imageFileName, [path cStringUsingEncoding:[NSString defaultCStringEncoding]]);
+		strcpy(imageFileName, [path UTF8String]);
 	}
 	else
 	{

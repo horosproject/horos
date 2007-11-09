@@ -260,6 +260,63 @@ static char *GetPrivateIP()
 	[menu addItemWithTitle: NSLocalizedString( @"Add current settings as a new Preset", 0L) action:@selector( addPreset:) keyEquivalent:@""];
 }
 
+- (BOOL)validateMenuItem:(NSMenuItem *)item
+{
+	BOOL valid = NO;
+	
+    if ([item action] == @selector( deleteSelection:))
+	{
+		[[BrowserController currentBrowser] showEntireDatabase];
+	
+		NSIndexSet* indices = [outlineView selectedRowIndexes];
+		BOOL extendingSelection = NO;
+		
+		for( int i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
+		{
+			if( [indices containsIndex: i])
+			{
+				NSArray *studyArray = [self localStudy: [outlineView itemAtRow: i]];
+
+				if( [studyArray count] > 0)
+				{
+					valid = YES;
+				}
+			}
+		}
+    }
+	else valid = YES;
+	
+    return valid;
+}
+
+-(void) deleteSelection:(id) sender
+{
+	[[BrowserController currentBrowser] showEntireDatabase];
+	
+	NSIndexSet* indices = [outlineView selectedRowIndexes];
+	BOOL extendingSelection = NO;
+	
+	for( int i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
+	{
+		if( [indices containsIndex: i])
+		{
+			NSArray *studyArray = [self localStudy: [outlineView itemAtRow: i]];
+
+			if( [studyArray count] > 0)
+			{
+				NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: [studyArray objectAtIndex: 0]] objectAtIndex:0];
+				[[BrowserController currentBrowser] findAndSelectFile:0L image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO extendingSelection: extendingSelection];
+				extendingSelection = YES;
+			}
+		} 
+	}
+	
+	if( extendingSelection)
+	{
+		[[BrowserController currentBrowser] delItem: self];
+	}
+}
+
 - (void)keyDown:(NSEvent *)event
 {
     unichar c = [[event characters] characterAtIndex:0];
@@ -268,31 +325,7 @@ static char *GetPrivateIP()
 	{
 		if( c == NSDeleteCharacter)
 		{
-			[[BrowserController currentBrowser] showEntireDatabase];
-			
-			NSIndexSet* indices = [outlineView selectedRowIndexes];
-			NSInteger i;
-			BOOL extendingSelection = NO;
-			
-			for( i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
-			{
-				if( [indices containsIndex: i])
-				{
-					NSArray *studyArray = [self localStudy: [outlineView itemAtRow: i]];
-		
-					if( [studyArray count] > 0)
-					{
-						NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: [studyArray objectAtIndex: 0]] objectAtIndex:0];
-						[[BrowserController currentBrowser] findAndSelectFile:0L image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO extendingSelection: extendingSelection];
-						extendingSelection = YES;
-					}
-				} 
-			}
-			
-			if( extendingSelection)
-			{
-				[[BrowserController currentBrowser] delItem: self];
-			}
+			[self deleteSelection: self];
 		}
 		else if( c == NSNewlineCharacter || c == NSEnterCharacter || c == NSCarriageReturnCharacter)
 		{
@@ -669,7 +702,28 @@ static char *GetPrivateIP()
 						
 						if( atLeastOneSource == NO)
 						{
-							 if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil),  NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil), NSLocalizedString(@"Continue", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn) doit = YES;
+							NSString *alertSuppress = @"No parameters query";
+							NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+							if ([defaults boolForKey:alertSuppress])
+							{
+								doit = YES;
+							}
+							else
+							{
+								NSAlert* alert = [NSAlert new];
+								[alert setMessageText: NSLocalizedString(@"Query", 0L)];
+								[alert setInformativeText: NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil)];
+								[alert setShowsSuppressionButton:YES ];
+								[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
+								[alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
+								
+								if ( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
+								
+								if ([[alert suppressionButton] state] == NSOnState)
+								{
+									[defaults setBool:YES forKey:alertSuppress];
+								}
+							}
 						}
 						else doit = YES;
 						
@@ -1356,6 +1410,11 @@ static char *GetPrivateIP()
 	[item setTarget: self];		[menu addItem: item];
 	
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query all studies of this patient", 0L) action: @selector( querySelectedPatient:) keyEquivalent:@""] autorelease];
+	[item setTarget: self];		[menu addItem: item];
+	
+	[menu addItem: [NSMenuItem separatorItem]];
+	
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete the local images", 0L) action: @selector( deleteSelection:) keyEquivalent:@""] autorelease];
 	[item setTarget: self];		[menu addItem: item];
 	
 	[outlineView setMenu: menu];

@@ -1181,7 +1181,7 @@ NSRect screenFrame()
 				{
 					[pluginsArray addObject:aPath];
 				}
-				else
+				else if( [[aPath pathExtension] isEqualToString:@""])
 				{
 					NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 					
@@ -1196,6 +1196,7 @@ NSRect screenFrame()
 						}
 					}
 				}
+				else NSLog(@"application:openFiles: File not added because bundle with extension at path:%@", aPath);
 			}
 			else    // A file
 			{
@@ -1363,8 +1364,6 @@ NSRect screenFrame()
 					
 						[[BLAuthentication sharedInstance] executeCommand:@"/bin/rm" withArgs:args];
 					}
-					
-					Delay(30, 0L);
 					
 					[[NSFileManager defaultManager] removeFileAtPath: pathToDelete handler: 0L];			// Please leave this line! ANR
 					

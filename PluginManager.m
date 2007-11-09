@@ -505,6 +505,8 @@ static NSMenu					*fusionPluginsMenu = 0L;
 
 + (void)movePluginFromPath:(NSString*)sourcePath toPath:(NSString*)destinationPath;
 {
+	if([sourcePath isEqualToString:destinationPath]) return;
+	
 	if(![[NSFileManager defaultManager] fileExistsAtPath:[destinationPath stringByDeletingLastPathComponent]])
 		[[NSFileManager defaultManager] createDirectoryAtPath:[destinationPath stringByDeletingLastPathComponent] attributes:nil];
 
@@ -513,17 +515,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
     [args addObject:sourcePath];
     [args addObject:destinationPath];
 
-	if([[sourcePath stringByDeletingLastPathComponent] isEqualToString:[PluginManager userActivePluginsDirectoryPath]] || [[sourcePath stringByDeletingLastPathComponent] isEqualToString:[PluginManager userInactivePluginsDirectoryPath]] || [[destinationPath stringByDeletingLastPathComponent] isEqualToString:[PluginManager userActivePluginsDirectoryPath]] || [[destinationPath stringByDeletingLastPathComponent] isEqualToString:[PluginManager userInactivePluginsDirectoryPath]])
-	{
-		NSTask *aTask = [[NSTask alloc] init];
-		[aTask setLaunchPath:@"/bin/mv"];
-		[aTask setArguments:args];
-		[aTask launch];
-		[aTask waitUntilExit];
-		[aTask release];
-	}
-	else
-		[[BLAuthentication sharedInstance] executeCommand:@"/bin/mv" withArgs:args];
+	[[BLAuthentication sharedInstance] executeCommand:@"/bin/mv" withArgs:args];
 }
 
 + (void)activatePluginWithName:(NSString*)pluginName;
