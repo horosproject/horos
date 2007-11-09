@@ -2480,6 +2480,7 @@ static BOOL initialized = NO;
 	NSRect				screenRect =  screenFrame();
 	// User default to keep studies segregated to separate screens
 	BOOL				keepSameStudyOnSameScreen = [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesTogetherOnSameScreen"];
+	BOOL				strechWindows = [[NSUserDefaults standardUserDefaults] boolForKey: @"StrechWindows"];
 	// Array of arrays of viewers with same StudyUID
 	NSMutableArray		*studyList = [NSMutableArray array];
 	int					keyWindow = 0, numberOfMonitors;	
@@ -2727,7 +2728,8 @@ static BOOL initialized = NO;
 			frame.origin.x += (frame.size.width * viewerPosition);
 			if( i == viewerCount-1 && monitorIndex != numberOfMonitors-1)
 			{
-				frame.size.width = [screen visibleFrame].size.width - (frame.origin.x - [screen visibleFrame].origin.x);
+				if( strechWindows)
+					frame.size.width = [screen visibleFrame].size.width - (frame.origin.x - [screen visibleFrame].origin.x);
 			}
 			
 			frame.size.height /= rows;
@@ -2735,7 +2737,7 @@ static BOOL initialized = NO;
 
 			if( monitorIndex == numberOfMonitors-1)
 			{
-				if( i + columns >= viewerCount)
+				if( i + columns >= viewerCount && strechWindows == YES)
 				{
 					frame.size.height += frame.origin.y - [screen visibleFrame].origin.y;
 					frame.origin.y = [screen visibleFrame].origin.y;
