@@ -9994,10 +9994,14 @@ END_CREATE_ROIS:
 							{
 								[field appendString:[NSString stringWithFormat:@"%.6g", (float) theValueP->fd]];
 							}
-							else if(inGrOrModP->vr==UL || inGrOrModP->vr==IS || inGrOrModP->vr==SL || inGrOrModP->vr==SS)
-							{
-								[field appendString:[NSString stringWithFormat:@"%d", theValueP->a]];
-							}
+							else if(inGrOrModP->vr==UL)
+								[field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->ul]];
+							else if(inGrOrModP->vr==US)
+								[field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->us]];
+							else if(inGrOrModP->vr==SL)
+								[field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->sl]];
+							else if(inGrOrModP->vr==SS)
+								[field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->ss]];
 							else if(inGrOrModP->vr==SQ)
 							{
 								NSLog(@"group : %d, element : %d", group, element);
