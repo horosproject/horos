@@ -4559,6 +4559,10 @@ static NSArray*	statesArray = nil;
 	{
 		if( [object intValue] >= 0) [item setValue:object forKey:[tableColumn identifier]];
 	}
+	else if( [[tableColumn identifier] isEqualToString:@"lockedStudy"])
+	{
+		if( [[item valueForKey:@"type"] isEqualToString:@"Study"]) [item setValue:[NSNumber numberWithBool: [object intValue]] forKey: @"lockedStudy"];
+	}
 	else [item setValue:object forKey:[tableColumn identifier]];
 	
 	[refreshTimer setFireDate: [NSDate dateWithTimeIntervalSinceNow:0.5]];
