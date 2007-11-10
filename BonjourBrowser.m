@@ -879,7 +879,8 @@ static char *GetPrivateIP()
 - (void) buildLocalPathsList
 {
 	int			i;
-	NSArray			*dbArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
+	NSArray		*dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
+	NSString	*defaultPath = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]);
 	
 	if( dbArray == 0L) dbArray = [NSArray array];
 	
@@ -895,9 +896,12 @@ static char *GetPrivateIP()
 	for( i = 0; i < [dbArray count]; i++)
 	{
 		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: [dbArray objectAtIndex: i]];
-		[dict setValue:@"localPath" forKey:@"type"];
 		
-		[services addObject: dict];
+		if( [[dict valueForKey:@"Path"] isEqualToString: defaultPath] == NO && [[[dict valueForKey:@"Path"] stringByAppendingPathComponent:@"OsiriX Data"] isEqualToString: defaultPath] == NO)
+		{
+			[dict setValue:@"localPath" forKey:@"type"];
+			[services addObject: dict];
+		}
 	}
 }
 

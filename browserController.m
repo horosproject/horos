@@ -2019,6 +2019,8 @@ static NSArray*	statesArray = nil;
 	}
 	
 	[self setDBWindowTitle];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:0L];
 }
 
 -(long)saveDatabase: (NSString*)path {
@@ -11136,60 +11138,65 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void)loadDICOMFromiPod {
 	NSArray *allVolumes = [[NSWorkspace sharedWorkspace] mountedLocalVolumePaths];
 	int index;
+	NSString	*defaultPath = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]);
 	
 	for ( NSString *path in allVolumes ) {
 		NSString *iPodControlPath = [path stringByAppendingPathComponent:@"iPod_Control"];
 		BOOL isItAnIpod = [[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath];
 		BOOL isThereAnOsiriXDataAtTheRoot = [[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"]];
 		
-		if( isItAnIpod || isThereAnOsiriXDataAtTheRoot ) {
-			NSString *volumeName = [path lastPathComponent];
-			
-			NSLog(@"Got a volume named %@", volumeName);
+		if( isItAnIpod || isThereAnOsiriXDataAtTheRoot )
+		{
+			if( [path isEqualToString: defaultPath] == NO && [[path stringByAppendingPathComponent:@"OsiriX Data"] isEqualToString: defaultPath] == NO)
+			{
+				NSString *volumeName = [path lastPathComponent];
+				
+				NSLog(@"Got a volume named %@", volumeName);
+							
+				// Find the OsiriX Data folder at root
+				if (![[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"]]) [[NSFileManager defaultManager] createDirectoryAtPath:[path stringByAppendingPathComponent:@"OsiriX Data"] attributes:nil];
+				
+				// Is this iPod already in the list?
+				BOOL found = NO;
+				for( NSDictionary *service in [bonjourBrowser services] ) {
+					
+					if( [[service valueForKey:@"type"] isEqualToString:@"localPath"] ) {
+						if( [[service valueForKey:@"Path"] isEqualToString: path]) found = YES;
+					}
+				}
+				
+				if( found == NO ) {
+					int z = self.currentBonjourService;
+					NSDictionary	*selectedDict = nil;
+					if( z >= 0) selectedDict = [[bonjourBrowser.services objectAtIndex: z] retain];
+					
+					NSMutableDictionary	*dict = [NSMutableDictionary dictionary];
+					
+					NSString	*name = nil;
+					
+					if( isItAnIpod) name = volumeName;
+					else name = [[[NSFileManager defaultManager] displayNameAtPath: volumeName] stringByAppendingString:@" DB"];
+					
+					[dict setValue:path forKey:@"Path"];
+					[dict setValue:name forKey:@"Description"];
+					[dict setValue:@"localPath" forKey:@"type"];
+					
+					[[bonjourBrowser services] addObject: dict];
+					[bonjourBrowser arrangeServices];
+					[self displayBonjourServices];
+					
+					if( selectedDict ) {
+						NSInteger index = [[bonjourBrowser services] indexOfObject: selectedDict];
 						
-			// Find the OsiriX Data folder at root
-			if (![[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"]]) [[NSFileManager defaultManager] createDirectoryAtPath:[path stringByAppendingPathComponent:@"OsiriX Data"] attributes:nil];
-			
-			// Is this iPod already in the list?
-			BOOL found = NO;
-			for( NSDictionary *service in [bonjourBrowser services] ) {
-				
-				if( [[service valueForKey:@"type"] isEqualToString:@"localPath"] ) {
-					if( [[service valueForKey:@"Path"] isEqualToString: path]) found = YES;
+						if( index == NSNotFound)
+							[self resetToLocalDatabase];
+						else
+							self.currentBonjourService = index;
+						
+						[selectedDict release];
+					}
+					[self displayBonjourServices];
 				}
-			}
-			
-			if( found == NO ) {
-				int z = self.currentBonjourService;
-				NSDictionary	*selectedDict = nil;
-				if( z >= 0) selectedDict = [[bonjourBrowser.services objectAtIndex: z] retain];
-				
-				NSMutableDictionary	*dict = [NSMutableDictionary dictionary];
-				
-				NSString	*name = nil;
-				
-				if( isItAnIpod) name = volumeName;
-				else name = [[[NSFileManager defaultManager] displayNameAtPath: volumeName] stringByAppendingString:@" DB"];
-				
-				[dict setValue:path forKey:@"Path"];
-				[dict setValue:name forKey:@"Description"];
-				[dict setValue:@"localPath" forKey:@"type"];
-				
-				[[bonjourBrowser services] addObject: dict];
-				[bonjourBrowser arrangeServices];
-				[self displayBonjourServices];
-				
-				if( selectedDict ) {
-					NSInteger index = [[bonjourBrowser services] indexOfObject: selectedDict];
-					
-					if( index == NSNotFound)
-						[self resetToLocalDatabase];
-					else
-						self.currentBonjourService = index;
-					
-					[selectedDict release];
-				}
-				[self displayBonjourServices];
 			}
 		}
 	}
