@@ -13889,9 +13889,13 @@ int i,j,l;
 							}
 						}
 					}
+					NSString	*filePath;
 					
-					NSString	*filePath = [[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.jpg", 1]];
-					
+					if( [[imageFormat selectedCell] tag] == 0)
+						filePath = [[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.jpg", 1]];
+					else
+						filePath = [[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.tif", 1]];
+						
 					if( [[NSFileManager defaultManager] fileExistsAtPath: filePath] == NO && filePath != 0L)
 						NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 					

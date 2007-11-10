@@ -613,6 +613,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	return [attrString size];
 }
 
+- (BOOL) isKeyImage
+{
+	BOOL result = NO;
+	
+	if( [[self windowController] isMemberOfClass:[ViewerController class]])
+		result = [[self windowController] isKeyImage:curImage];
+	
+	return result;
+}
+
 - (void) updateTilingViews
 {
 	if( [self is2DViewer] && [[self window] isVisible])
@@ -5724,7 +5734,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	//draw line around edge for key Images only in 2D Viewer
 	
-	if ([[self windowController] isMemberOfClass:[ViewerController class]] && [[self windowController] isKeyImage:curImage] && stringID == 0L) {
+	if ([self isKeyImage] && stringID == 0L) {
 		glLineWidth(8.0);
 		glColor3f (1.0f, 1.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
@@ -6113,7 +6123,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //	
 //	//draw line around edge for key Images only in 2D Viewer
 //	
-//	if ([[self windowController] isMemberOfClass:[ViewerController class]] && [[self windowController] isKeyImage:curImage] && stringID == 0L) {
+//	if ([self isKeyImage] && stringID == 0L) {
 //		glLineWidth(8.0);
 //		glColor3f (1.0f, 1.0f, 0.0f);
 //		glBegin(GL_LINE_LOOP);
@@ -7650,7 +7660,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	unsigned char		*data;
 		
 	if( stringID == 0L && originalSize == NO) {
-		if( numberOf2DViewer > 1 || _imageColumns != 1 || _imageRows != 1) {
+		if( numberOf2DViewer > 1 || _imageColumns != 1 || _imageRows != 1 || [self isKeyImage] == YES) {
 			stringID = [@"copy" retain];	// to remove the red square around the image
 			[self display];
 		}
