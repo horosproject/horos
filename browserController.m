@@ -4680,6 +4680,11 @@ static NSArray*	statesArray = nil;
 //	}
 //}
 
+- (void)tableView:(NSTableView *)tableView mouseDownInHeaderOfTableColumn:(NSTableColumn *)tableColumn
+{
+
+}
+
 - (NSArray *)outlineView:(NSOutlineView *)outlineView namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedItems:(NSArray *)items
 {
 	if( [[[dropDestination path] lastPathComponent] isEqualToString:@".Trash"] ) {
@@ -4956,13 +4961,17 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (IBAction)databaseDoublePressed:(id)sender {
-	NSManagedObject		*item;
-	
-	if( [databaseOutline clickedRow] != -1) item = [databaseOutline itemAtRow:[databaseOutline clickedRow]];
-	else item = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
-	
-	[self databaseOpenStudy: item];
+- (IBAction)databaseDoublePressed:(id)sender
+{
+	if( [sender clickedRow] != -1)
+	{			
+		NSManagedObject		*item;
+		
+		if( [databaseOutline clickedRow] != -1) item = [databaseOutline itemAtRow:[databaseOutline clickedRow]];
+		else item = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+		
+		[self databaseOpenStudy: item];
+	}
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
@@ -5738,7 +5747,8 @@ static BOOL withReset = NO;
     }
 }
 
-- (IBAction) matrixDoublePressed:(id)sender {
+- (IBAction) matrixDoublePressed:(id)sender
+{
     id  theCell = [oMatrix selectedCell];
     int column,row;
     
