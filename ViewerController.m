@@ -6359,219 +6359,222 @@ static ViewerController *draggedController = 0L;
 
 -(float) computeIntervalFlipNow: (NSNumber*) flipNowNumber
 {
-	double				interval = [[pixList[ curMovieIndex] objectAtIndex:0] sliceInterval];
-	long				i, x;
-	BOOL				flipNow = [flipNowNumber boolValue];
-	
 	[self selectFirstTilingView];
 	
-	if( interval < 0 && [pixList[ curMovieIndex] count] > 1)
+	int z = curMovieIndex;
 	{
-		if( flipNow)
+		double				interval = [[pixList[ z] objectAtIndex:0] sliceInterval];
+		long				i, x;
+		BOOL				flipNow = [flipNowNumber boolValue];
+		
+		if( interval < 0 && [pixList[ z] count] > 1)
 		{
-			interval = 0;
-		}
-	}
-	
-	if( interval == 0 && [pixList[ curMovieIndex] count] > 1)
-	{
-		titledGantry = NO;
-		
-		[orientationMatrix setEnabled: NO];
-		
-		double		vectors[ 9], vectorsB[ 9];
-		BOOL		equalVector = YES;
-		
-		[[pixList[ curMovieIndex] objectAtIndex:0] orientationDouble: vectors];
-		[[pixList[ curMovieIndex] objectAtIndex:1] orientationDouble: vectorsB];
-		
-		for( i = 0; i < 9; i++)
-		{
-			if( vectors[ i] != vectorsB[ i]) equalVector = NO;
+			if( flipNow)
+			{
+				interval = 0;
+			}
 		}
 		
-		if( equalVector)
+		if( interval == 0 && [pixList[ z] count] > 1)
 		{
-			if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
+			titledGantry = NO;
+			
+			[orientationMatrix setEnabled: NO];
+			
+			double		vectors[ 9], vectorsB[ 9];
+			BOOL		equalVector = YES;
+			
+			[[pixList[ z] objectAtIndex:0] orientationDouble: vectors];
+			[[pixList[ z] objectAtIndex:1] orientationDouble: vectorsB];
+			
+			for( i = 0; i < 9; i++)
 			{
-				NSLog(@"Sagittal");
-				interval = [[pixList[ curMovieIndex] objectAtIndex:0] originX] - [[pixList[ curMovieIndex] objectAtIndex:1] originX];
-				
-				if( vectors[6] > 0) interval = -( interval);
-				else interval = ( interval);
-				
-				if( vectors[6] > 0) orientationVector = eSagittalPos;
-				else orientationVector = eSagittalNeg;
-				
-				[orientationMatrix selectCellWithTag: 2];
-				if( interval != 0) [orientationMatrix setEnabled: YES];
-				currentOrientationTool = 2;
+				if( vectors[ i] != vectorsB[ i]) equalVector = NO;
 			}
 			
-			if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
+			if( equalVector)
 			{
-				NSLog(@"Coronal");
-				interval = [[pixList[ curMovieIndex] objectAtIndex:0] originY] - [[pixList[ curMovieIndex] objectAtIndex:1] originY];
-				
-				if( vectors[7] > 0) interval = -( interval);
-				else interval = ( interval);
-				
-				if( vectors[7] > 0) orientationVector = eCoronalPos;
-				else orientationVector = eCoronalNeg;
-				
-				[orientationMatrix selectCellWithTag: 1];
-				if( interval != 0) [orientationMatrix setEnabled: YES];
-				currentOrientationTool = 1;
-			}
-			
-			if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
-			{
-				NSLog(@"Axial");
-				interval = [[pixList[ curMovieIndex] objectAtIndex:0] originZ] - [[pixList[ curMovieIndex] objectAtIndex:1] originZ];
-				
-				if( vectors[8] > 0) interval = -( interval);
-				else interval = ( interval);
-				
-				if( vectors[8] > 0) orientationVector = eAxialPos;
-				else orientationVector = eAxialNeg;
-				
-				[orientationMatrix selectCellWithTag: 0];
-				if( interval != 0) [orientationMatrix setEnabled: YES];
-				currentOrientationTool = 0;
-			}
-			
-			double interval3d;
-			double xd = [[pixList[ curMovieIndex] objectAtIndex: 1] originX] - [[pixList[ curMovieIndex] objectAtIndex: 0] originX];
-			double yd = [[pixList[ curMovieIndex] objectAtIndex: 1] originY] - [[pixList[ curMovieIndex] objectAtIndex: 0] originY];
-			double zd = [[pixList[ curMovieIndex] objectAtIndex: 1] originZ] - [[pixList[ curMovieIndex] objectAtIndex: 0] originZ];
-			
-			interval3d = sqrt(xd*xd + yd*yd + zd*zd);
-			
-			xd /= interval3d;
-			yd /= interval3d;
-			zd /= interval3d;
-			
-			NSLog( @"Interval: %f %f", interval, interval3d);
-			
-			if( interval == 0)
-				interval = [[pixList[ curMovieIndex] objectAtIndex:0] spacingBetweenSlices];
-			
-			NSLog( @"Orientation Vector: %d", orientationVector);
-			NSLog( @"Interval: %2.2f", interval);
-						
-			// FLIP DATA !!!!!! FOR 3D TEXTURE MAPPING !!!!!
-			if( interval < 0 && flipNow == YES)
-			{
-				BOOL sameSize = YES;
-				
-				DCMPix	*firstObject = [pixList[ curMovieIndex] objectAtIndex: 0];
-				
-				for(  i = 0 ; i < [pixList[ curMovieIndex] count]; i++)
+				if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
 				{
-					if( [firstObject pheight] != [[pixList[ curMovieIndex] objectAtIndex: i] pheight] ) sameSize = NO;
-					if( [firstObject pwidth] != [[pixList[ curMovieIndex] objectAtIndex: i] pwidth] ) sameSize = NO;
+					NSLog(@"Sagittal");
+					interval = [[pixList[ z] objectAtIndex:0] originX] - [[pixList[ z] objectAtIndex:1] originX];
+					
+					if( vectors[6] > 0) interval = -( interval);
+					else interval = ( interval);
+					
+					if( vectors[6] > 0) orientationVector = eSagittalPos;
+					else orientationVector = eSagittalNeg;
+					
+					[orientationMatrix selectCellWithTag: 2];
+					if( interval != 0) [orientationMatrix setEnabled: YES];
+					currentOrientationTool = 2;
 				}
 				
-				if( sameSize)
+				if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
 				{
-					NSLog(@"Flip Data Now");
+					NSLog(@"Coronal");
+					interval = [[pixList[ z] objectAtIndex:0] originY] - [[pixList[ z] objectAtIndex:1] originY];
 					
-					interval = fabs( interval3d);	//interval3d;	//-interval;
+					if( vectors[7] > 0) interval = -( interval);
+					else interval = ( interval);
 					
-					for( x = 0; x < maxMovieIndex; x++)
+					if( vectors[7] > 0) orientationVector = eCoronalPos;
+					else orientationVector = eCoronalNeg;
+					
+					[orientationMatrix selectCellWithTag: 1];
+					if( interval != 0) [orientationMatrix setEnabled: YES];
+					currentOrientationTool = 1;
+				}
+				
+				if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
+				{
+					NSLog(@"Axial");
+					interval = [[pixList[ z] objectAtIndex:0] originZ] - [[pixList[ z] objectAtIndex:1] originZ];
+					
+					if( vectors[8] > 0) interval = -( interval);
+					else interval = ( interval);
+					
+					if( vectors[8] > 0) orientationVector = eAxialPos;
+					else orientationVector = eAxialNeg;
+					
+					[orientationMatrix selectCellWithTag: 0];
+					if( interval != 0) [orientationMatrix setEnabled: YES];
+					currentOrientationTool = 0;
+				}
+				
+				double interval3d;
+				double xd = [[pixList[ z] objectAtIndex: 1] originX] - [[pixList[ z] objectAtIndex: 0] originX];
+				double yd = [[pixList[ z] objectAtIndex: 1] originY] - [[pixList[ z] objectAtIndex: 0] originY];
+				double zd = [[pixList[ z] objectAtIndex: 1] originZ] - [[pixList[ z] objectAtIndex: 0] originZ];
+				
+				interval3d = sqrt(xd*xd + yd*yd + zd*zd);
+				
+				xd /= interval3d;
+				yd /= interval3d;
+				zd /= interval3d;
+				
+				NSLog( @"Interval: %f %f", interval, interval3d);
+				
+				if( interval == 0)
+					interval = [[pixList[ z] objectAtIndex:0] spacingBetweenSlices];
+				
+				NSLog( @"Orientation Vector: %d", orientationVector);
+				NSLog( @"Interval: %2.2f", interval);
+							
+				// FLIP DATA !!!!!! FOR 3D TEXTURE MAPPING !!!!!
+				if( interval < 0 && flipNow == YES)
+				{
+					BOOL sameSize = YES;
+					
+					DCMPix	*firstObject = [pixList[ z] objectAtIndex: 0];
+					
+					for(  i = 0 ; i < [pixList[ z] count]; i++)
 					{
-						firstObject = [pixList[ x] objectAtIndex: 0];
-						
-						float	*volumeDataPtr = [firstObject fImage];
-						
-						[self flipData: (char*) volumeDataPtr :[pixList[ x] count] :[firstObject pwidth] :[firstObject pheight]];
-						
-						for(  i = 0 ; i < [pixList[ x] count]; i++)
-						{
-							long offset = ([pixList[ x] count]-1-i)*[firstObject pheight] * [firstObject pwidth];
-							
-							[[pixList[ x] objectAtIndex: i] setfImage: volumeDataPtr + offset];
-							[[pixList[ x] objectAtIndex: i] setSliceInterval: interval];
-						}
-						
-						id tempObj;
-						
-						for( i = 0; i < [pixList[ x] count]/2 ; i++)
-						{
-							tempObj = [[pixList[ x] objectAtIndex: i] retain];
-							[pixList[ x] replaceObjectAtIndex: i withObject:[pixList[ x] objectAtIndex: [pixList[ x] count]-i-1]];
-							[pixList[ x] replaceObjectAtIndex: [pixList[ x] count]-i-1 withObject: tempObj];
-							[tempObj release];
-							
-							tempObj = [[fileList[ x] objectAtIndex: i] retain];
-							[fileList[ x] replaceObjectAtIndex: i withObject:[fileList[ x] objectAtIndex: [fileList[ x] count]-i-1]];
-							[fileList[ x] replaceObjectAtIndex: [fileList[ x] count]-i-1 withObject: tempObj];
-							[tempObj release];
-							
-							tempObj = [[roiList[ x] objectAtIndex: i] retain];
-							[roiList[ x] replaceObjectAtIndex: i withObject:[roiList[ x] objectAtIndex: [roiList[ x] count]-i-1]];
-							[roiList[ x] replaceObjectAtIndex: [roiList[ x] count]-i-1 withObject: tempObj];
-							[tempObj release];
-						}
+						if( [firstObject pheight] != [[pixList[ z] objectAtIndex: i] pheight] ) sameSize = NO;
+						if( [firstObject pwidth] != [[pixList[ z] objectAtIndex: i] pwidth] ) sameSize = NO;
 					}
+					
+					if( sameSize)
+					{
+						NSLog(@"Flip Data Now");
+						
+						interval = fabs( interval3d);	//interval3d;	//-interval;
+						
+						for( x = 0; x < maxMovieIndex; x++)
+						{
+							firstObject = [pixList[ x] objectAtIndex: 0];
+							
+							float	*volumeDataPtr = [firstObject fImage];
+							
+							[self flipData: (char*) volumeDataPtr :[pixList[ x] count] :[firstObject pwidth] :[firstObject pheight]];
+							
+							for(  i = 0 ; i < [pixList[ x] count]; i++)
+							{
+								long offset = ([pixList[ x] count]-1-i)*[firstObject pheight] * [firstObject pwidth];
+								
+								[[pixList[ x] objectAtIndex: i] setfImage: volumeDataPtr + offset];
+								[[pixList[ x] objectAtIndex: i] setSliceInterval: interval];
+							}
+							
+							id tempObj;
+							
+							for( i = 0; i < [pixList[ x] count]/2 ; i++)
+							{
+								tempObj = [[pixList[ x] objectAtIndex: i] retain];
+								[pixList[ x] replaceObjectAtIndex: i withObject:[pixList[ x] objectAtIndex: [pixList[ x] count]-i-1]];
+								[pixList[ x] replaceObjectAtIndex: [pixList[ x] count]-i-1 withObject: tempObj];
+								[tempObj release];
+								
+								tempObj = [[fileList[ x] objectAtIndex: i] retain];
+								[fileList[ x] replaceObjectAtIndex: i withObject:[fileList[ x] objectAtIndex: [fileList[ x] count]-i-1]];
+								[fileList[ x] replaceObjectAtIndex: [fileList[ x] count]-i-1 withObject: tempObj];
+								[tempObj release];
+								
+								tempObj = [[roiList[ x] objectAtIndex: i] retain];
+								[roiList[ x] replaceObjectAtIndex: i withObject:[roiList[ x] objectAtIndex: [roiList[ x] count]-i-1]];
+								[roiList[ x] replaceObjectAtIndex: [roiList[ x] count]-i-1 withObject: tempObj];
+								[tempObj release];
+							}
+						}
+						
+						for( x = 0; x < maxMovieIndex; x++)
+						{
+							for( i = 0; i < [pixList[ x] count]; i++)
+							{
+								[[pixList[ x] objectAtIndex: i] setArrayPix: pixList[ x] :i];
+								[[pixList[ x] objectAtIndex: i] setID: i];
+							}
+						}
+						
+						subCtrlMaskID = [pixList[ z] count] - subCtrlMaskID -1;
+						
+						[self flipDataSeries: self];
+					}
+				}
+				else
+				{
+					if( interval < 0) interval = -interval3d;
+					else interval = interval3d;
 					
 					for( x = 0; x < maxMovieIndex; x++)
 					{
 						for( i = 0; i < [pixList[ x] count]; i++)
 						{
-							[[pixList[ x] objectAtIndex: i] setArrayPix: pixList[ x] :i];
-							[[pixList[ x] objectAtIndex: i] setID: i];
+							[[pixList[ x] objectAtIndex: i] setSliceInterval: interval];
 						}
 					}
-					
-					subCtrlMaskID = [pixList[ curMovieIndex] count] - subCtrlMaskID -1;
-					
-					[self flipDataSeries: self];
 				}
-			}
-			else
-			{
-				if( interval < 0) interval = -interval3d;
-				else interval = interval3d;
 				
-				for( x = 0; x < maxMovieIndex; x++)
+				if( flipNow == YES)
 				{
-					for( i = 0; i < [pixList[ x] count]; i++)
+					xd = [[pixList[ z] objectAtIndex: 1] originX] - [[pixList[ z] objectAtIndex: 0] originX];
+					yd = [[pixList[ z] objectAtIndex: 1] originY] - [[pixList[ z] objectAtIndex: 0] originY];
+					zd = [[pixList[ z] objectAtIndex: 1] originZ] - [[pixList[ z] objectAtIndex: 0] originZ];
+					
+					interval3d = sqrt(xd*xd + yd*yd + zd*zd);
+					
+					xd /= interval3d;		yd /= interval3d;		zd /= interval3d;
+					
+					// Check if the slices represent a 3D volume?
+					
+					xd = fabs( xd - vectors[ 6]);
+					yd = fabs( yd - vectors[ 7]);
+					zd = fabs( zd - vectors[ 8]);
+					
+					if( xd + yd + zd > 0.01)
 					{
-						[[pixList[ x] objectAtIndex: i] setSliceInterval: interval];
+						NSLog( @"Not a real 3D data set.");
+						titledGantry = YES;
 					}
-				}
-			}
-			
-			if( flipNow == YES)
-			{
-				xd = [[pixList[ curMovieIndex] objectAtIndex: 1] originX] - [[pixList[ curMovieIndex] objectAtIndex: 0] originX];
-				yd = [[pixList[ curMovieIndex] objectAtIndex: 1] originY] - [[pixList[ curMovieIndex] objectAtIndex: 0] originY];
-				zd = [[pixList[ curMovieIndex] objectAtIndex: 1] originZ] - [[pixList[ curMovieIndex] objectAtIndex: 0] originZ];
-				
-				interval3d = sqrt(xd*xd + yd*yd + zd*zd);
-				
-				xd /= interval3d;		yd /= interval3d;		zd /= interval3d;
-				
-				// Check if the slices represent a 3D volume?
-				
-				xd = fabs( xd - vectors[ 6]);
-				yd = fabs( yd - vectors[ 7]);
-				zd = fabs( zd - vectors[ 8]);
-				
-				if( xd + yd + zd > 0.01)
-				{
-					NSLog( @"Not a real 3D data set.");
-					titledGantry = YES;
 				}
 			}
 		}
+		else if( interval == 0) [orientationMatrix setEnabled: NO];
 	}
-	else if( interval == 0) [orientationMatrix setEnabled: NO];
 	
 	[blendingController computeInterval];
 	
-	return interval;
+	return [[pixList[ curMovieIndex] objectAtIndex:0] sliceInterval];
 }
 
 -(float) computeInterval
@@ -12087,6 +12090,11 @@ int i,j,l;
 	[movieRateSlider setEnabled: YES];
 	[moviePosSlider setEnabled: YES];
 	[moviePlayStop setEnabled: YES];
+	
+//	int z = curMovieIndex;
+//	curMovieIndex = maxMovieIndex-1;
+//	[self computeInterval];
+//	curMovieIndex = z;
 }
 
 -(void) deleteSeries:(id) sender
