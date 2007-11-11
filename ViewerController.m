@@ -992,13 +992,23 @@ static volatile int numberOfThreadsForRelisce = 0;
 					[new2DViewer setImageIndex: [[xPix objectAtIndex: j] count] /2];
 					[[new2DViewer window] makeKeyAndOrderFront: self];
 				}
-				else [self replaceSeriesWith: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
+				else
+				{
+					[self changeImageData: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j] :NO];
+				}
 			}
 			else
 			{
 				[self addMovieSerie: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
 			}
 		}
+		
+		loadingPercentage = 1;
+		[self computeInterval];
+		[self setWindowTitle:self];
+		[imageView setIndex: [[xPix objectAtIndex: 0] count]/2];
+		[imageView sendSyncMessage:1];
+		[self adjustSlider];
 	}
 	
 	// Close the waiting window
