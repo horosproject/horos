@@ -6284,6 +6284,7 @@ static ViewerController *draggedController = 0L;
 
 - (IBAction) flipDataSeries: (id) sender
 {
+	int activatedFusionState = [activatedFusion state];
 	int previousFusion = [popFusion selectedTag];
 	[self setFusionMode: 0];
 	
@@ -6294,7 +6295,7 @@ static ViewerController *draggedController = 0L;
 	
 	[imageView sendSyncMessage:1];
 	
-	if( [activatedFusion state] == NSOnState)
+	if( activatedFusionState == NSOnState)
 		[self setFusionMode: previousFusion];
 	
 	[popFusion selectItemWithTag:previousFusion];
