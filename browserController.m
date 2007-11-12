@@ -368,16 +368,18 @@ static NSArray*	statesArray = nil;
 	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 	error = nil;
 	NSArray *studiesArray;
+	
 	@try
-{
-	studiesArray = [[context executeFetchRequest:dbRequest error:&error] retain];
-}
+	{
+		studiesArray = [[context executeFetchRequest:dbRequest error:&error] retain];
+	}
 	@catch( NSException *ne)
-{
-	NSLog(@"AddFilesToDatabase executeFetchRequest exception: %@", [ne description]);
-	NSLog(@"executeFetchRequest failed for studiesArray.");
-	error = [NSError errorWithDomain:@"OsiriXDomain" code:1 userInfo: 0L];
-}
+	{
+		NSLog(@"AddFilesToDatabase executeFetchRequest exception: %@", [ne description]);
+		NSLog(@"executeFetchRequest failed for studiesArray.");
+		error = [NSError errorWithDomain:@"OsiriXDomain" code:1 userInfo: 0L];
+	}
+	
 	if (error)
 	{
 		NSLog( @"addFilesToDatabase ERROR: %@", [error localizedDescription]);
@@ -400,7 +402,7 @@ static NSArray*	statesArray = nil;
 		// Add the new files
 		for (newFile in newFilesArray )
 		{
-			@try
+		@try
 		{
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			
@@ -2423,7 +2425,7 @@ static NSArray*	statesArray = nil;
 	for( NSString *name in dirContent ) {
 		if( [name characterAtIndex: 0] != '.') {
 			[filesArray addObject: [[documentsDirectory() stringByAppendingPathComponent:@"ROIs"] stringByAppendingPathComponent: name]];
-			NSLog( [[documentsDirectory() stringByAppendingPathComponent:@"ROIs"] stringByAppendingPathComponent: name]);
+//			NSLog( [[documentsDirectory() stringByAppendingPathComponent:@"ROIs"] stringByAppendingPathComponent: name]);
 		}
 	}
 	

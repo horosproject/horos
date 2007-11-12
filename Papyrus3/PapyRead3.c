@@ -2480,6 +2480,9 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 	  
       theP       = theStringP;
       theTmp0P   = ioBuffP;
+	  
+	  if( inElemLength)
+	  
       /* extract the element from the buffer */
       for (ii = 0L; ii < inElemLength; ii++, (*ioBufPosP)++) 
       {
@@ -2862,6 +2865,12 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
       	      !(theArrElemP [theStructPos].group   == 0x7FE0 && 
       	        theArrElemP [theStructPos].element == 0x0010))
           {
+			if( theElemLength > inBytesToRead)
+			{
+				printf("err theElemLength > inBytesToRead\n");
+				return -1;
+			}
+			
             /* extract the element depending on the value representation */
 	          if ((theErr = PutBufferInElement3 (inFileNb, ioBuffP, theElemLength, 
 				               &theArrElemP [theStructPos], ioBufPosP, theInitialFilePos)) < 0)
