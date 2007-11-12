@@ -368,4 +368,6 @@ enum
 @property BOOL displayTextualData;
 @property(readonly) NSPoint clickPoint;
 
+-(NSMutableArray*)splinePoints;
+
 @end

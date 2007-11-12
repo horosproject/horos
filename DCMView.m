@@ -4072,7 +4072,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				intersected = NSPointInRect([[[roi points] objectAtIndex:0] point], rect);
 			}
 			else {
-				points = [[curRoiList objectAtIndex:i] points];
+				points = [[curRoiList objectAtIndex:i] splinePoints];
 				NSPoint p1, p2;
 				for( int j=0; j<[points count]-1 && !intersected; j++ ) {
 					p1 = [[points objectAtIndex:j] point];
@@ -4103,7 +4103,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				intersected = [DCMPix IsPoint: [[[roi points] objectAtIndex:0] point] inPolygon:polyRect size:4];
 			}
 			else {
-				points = [[curRoiList objectAtIndex:i] points];
+				points = [[curRoiList objectAtIndex:i] splinePoints];
 				NSPoint p1, p2;
 				for( int j=0; j<[points count] && !intersected; j++ ) {
 					intersected = [DCMPix IsPoint: [[points objectAtIndex:j] point] inPolygon:polyRect size:4];
@@ -4119,7 +4119,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 				
 				if( !intersected ) {
-					points = [[curRoiList objectAtIndex:i] points];
+					points = [[curRoiList objectAtIndex:i] splinePoints];
 					NSPoint p1, p2;
 					for( int j=0; j<[points count]-1 && !intersected; j++ ) {
 						p1 = [[points objectAtIndex:j] point];

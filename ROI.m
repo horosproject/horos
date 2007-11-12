@@ -49,6 +49,187 @@ static float ROIRegionThickness, ROIRegionColorR, ROIRegionColorG, ROIRegionColo
 static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 static BOOL ROIDefaultsLoaded = NO;
 
+int spline(NSPoint *Pt, int tot, NSPoint **newPt)
+{
+	NSPoint p1, p2;
+	int i, j;
+	float xi, yi;
+	int nb;
+	float *px, *py;
+	int ok;
+
+	float *a, b, *c, *cx, *cy, *d, *g, *h;
+	float bet, *gam;
+	float aax, bbx, ccx, ddx, aay, bby, ccy, ddy; // coef of spline
+
+	// function spline S(x) = a x3 + bx2 + cx + d
+	// with S continue, S1 continue, S2 continue.
+	// smoothing of a closed polygon given by a list of points (x,y)
+	// we compute a spline for x and a spline for y
+	// where x and y are function of d where t is the distance between points
+
+	// compute tridiag matrix
+	//   | b1 c1 0 ...                   |   |  u1 |   |  r1 |
+	//   | a2 b2 c2 0 ...                |   |  u2 |   |  r2 |
+	//   |  0 a3 b3 c3 0 ...             | * | ... | = | ... |
+	//   |                  ...          |   | ... |   | ... |
+	//   |                an-1 bn-1 cn-1 |   | ... |   | ... |
+	//   |                 0    an   bn  |   |  un |   |  rn |
+	// bi = 4
+	// resolution algorithm is taken from the book : Numerical recipes in C
+
+	// initialization of different vectors
+	// element number 0 is not used (except h[0])
+	nb  = tot + 2;
+	a   = malloc(nb*sizeof(float));
+	c   = malloc(nb*sizeof(float));
+	cx  = malloc(nb*sizeof(float));
+	cy  = malloc(nb*sizeof(float));
+	d   = malloc(nb*sizeof(float));
+	g   = malloc(nb*sizeof(float));
+	gam = malloc(nb*sizeof(float));
+	h   = malloc(nb*sizeof(float));
+	px  = malloc(nb*sizeof(float));
+	py  = malloc(nb*sizeof(float));
+
+	//initialisation
+	for (i=0; i<nb; i++)
+		h[i] = a[i] = cx[i] = d[i] = c[i] = cy[i] = g[i] = gam[i] = 0.0;
+
+	// as a spline starts and ends with a line one adds two points
+	// in order to have continuity in starting point
+	for (i=0; i<tot; i++)
+	{
+		px[i+1] = Pt[i].x;// * fZoom / 100;
+		py[i+1] = Pt[i].y;// * fZoom / 100;
+	}
+	px[0] = px[nb-3]; px[nb-1] = px[2];
+	py[0] = py[nb-3]; py[nb-1] = py[2];
+
+	// check all points are separate, if not do not smooth
+	// this happens when the zoom factor is too small
+	// so in this case the smooth is not useful
+
+	ok=TRUE;
+	if(nb<3) ok=FALSE;
+
+	for (i=1; i<nb; i++) 
+	if (px[i] == px[i-1] && py[i] == py[i-1]) {ok = FALSE; break;}
+	if (ok == FALSE)
+		return 0;
+			 
+	// define hi (distance between points) h0 distance between 0 and 1.
+	// di distance of point i from start point
+	for (i = 0; i<nb-1; i++)
+	{
+		xi = px[i+1] - px[i];
+		yi = py[i+1] - py[i];
+		h[i] = (float) sqrt(xi*xi + yi*yi);
+		d[i+1] = d[i] + h[i];
+	}
+
+	// define ai and ci
+	for (i=2; i<nb-1; i++) a[i] = 2.0 * h[i-1] / (h[i] + h[i-1]);
+	for (i=1; i<nb-2; i++) c[i] = 2.0 * h[i] / (h[i] + h[i-1]);
+
+	// define gi in function of x
+	// gi+1 = 6 * Y[hi, hi+1, hi+2], 
+	// Y[hi, hi+1, hi+2] = [(yi - yi+1)/(di - di+1) - (yi+1 - yi+2)/(di+1 - di+2)]
+	//                      / (di - di+2)
+	for (i=1; i<nb-1; i++) 
+		g[i] = 6.0 * ( ((px[i-1] - px[i]) / (d[i-1] - d[i])) - ((px[i] - px[i+1]) / (d[i] - d[i+1])) ) / (d[i-1]-d[i+1]);
+
+	// compute cx vector
+	b=4; bet=4;
+	cx[1] = g[1]/b;
+	for (j=2; j<nb-1; j++)
+	{
+		gam[j] = c[j-1] / bet;
+		bet = b - a[j] * gam[j];
+		cx[j] = (g[j] - a[j] * cx[j-1]) / bet;
+	}
+	for (j=(nb-2); j>=1; j--) cx[j] -= gam[j+1] * cx[j+1];
+
+	// define gi in function of y
+	// gi+1 = 6 * Y[hi, hi+1, hi+2], 
+	// Y[hi, hi+1, hi+2] = [(yi - yi+1)/(hi - hi+1) - (yi+1 - yi+2)/(hi+1 - hi+2)]
+	//                      / (hi - hi+2)
+	for (i=1; i<nb-1; i++)
+		g[i] = 6.0 * ( ((py[i-1] - py[i]) / (d[i-1] - d[i])) - ((py[i] - py[i+1]) / (d[i] - d[i+1])) ) / (d[i-1]-d[i+1]);
+
+	// compute cy vector
+	b = 4.0; bet = 4.0;
+	cy[1] = g[1] / b;
+	for (j=2; j<nb-1; j++)
+	{
+		gam[j] = c[j-1] / bet;
+		bet = b - a[j] * gam[j];
+		cy[j] = (g[j] - a[j] * cy[j-1]) / bet;
+	}
+	for (j=(nb-2); j>=1; j--) cy[j] -= gam[j+1] * cy[j+1];
+
+	// OK we have the cx and cy vectors, from that we can compute the
+	// coeff of the polynoms for x and y and for each interval
+	// S(x) (xi, xi+1)  = ai + bi (x-xi) + ci (x-xi)2 + di (x-xi)3
+	// di = (ci+1 - ci) / 3 hi
+	// ai = yi
+	// bi = ((ai+1 - ai) / hi) - (hi/3) (ci+1 + 2 ci)
+	int totNewPt = 0;
+	for (i=1; i<nb-2; i++)
+	{
+		totNewPt++;
+		for (j = 1; j <= h[i]; j++) totNewPt++;
+	}
+
+	*newPt = calloc(totNewPt, sizeof(NSPoint));
+
+	int tt = 0;
+	// for each interval
+	for (i=1; i<nb-2; i++)
+	{
+		// compute coef for x polynom
+		ccx = cx[i];
+		aax = px[i];
+		ddx = (cx[i+1] - cx[i]) / (3.0 * h[i]);
+		bbx = ((px[i+1] - px[i]) / h[i]) - (h[i] / 3.0) * (cx[i+1] + 2.0 * cx[i]);
+
+		// compute coef for y polynom
+		ccy = cy[i];
+		aay = py[i];
+		ddy = (cy[i+1] - cy[i]) / (3.0 * h[i]);
+		bby = ((py[i+1] - py[i]) / h[i]) - (h[i] / 3.0) * (cy[i+1] + 2.0 * cy[i]);
+
+		// compute points in this interval and display
+		p1.x = aax;
+		p1.y = aay;
+
+		(*newPt)[tt]=p1;
+		tt++;
+		
+		for (j = 1; j <= h[i]; j++)
+		{
+			p2.x = (aax + bbx * (float)j + ccx * (float)(j * j) + ddx * (float)(j * j * j));
+			p2.y = (aay + bby * (float)j + ccy * (float)(j * j) + ddy * (float)(j * j * j));
+			(*newPt)[tt]=p2;
+			tt++;
+		}//endfor points in 1 interval
+	}//endfor each interval
+
+	// delete dynamic structures
+	free(a);
+	free(c);
+	free(cx);
+	free(cy);
+	free(d);
+	free(g);
+	free(gam);
+	free(h);
+	free(px);
+	free(py);
+
+	return tt;
+}
+
 @implementation ROI
 
 @synthesize textureWidth, textureHeight, textureBuffer;
@@ -1422,10 +1603,11 @@ static BOOL ROIDefaultsLoaded = NO;
 			case tAngle:
 			{
 				float distance;
-
-				for( int i = 0; i < ([points count] - 1); i++ )	{
+				NSMutableArray *splinePoints = [self splinePoints];
+				
+				for( int i = 0; i < ([splinePoints count] - 1); i++ )	{
 					
-					[self DistancePointLine:pt :[[points objectAtIndex:i] point] : [[points objectAtIndex:(i+1)] point] :&distance];
+					[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:(i+1)] point] :&distance];
 					if( distance*scale < 5.0)
 					{
 						imode = ROI_selected;
@@ -1442,11 +1624,12 @@ static BOOL ROIDefaultsLoaded = NO;
 			case tPencil:
 			{
 				float distance;
-
+				NSMutableArray *splinePoints = [self splinePoints];
+				
 				int i;
-				for( i = 0; i < ([points count] - 1); i++ )	{
+				for( i = 0; i < ([splinePoints count] - 1); i++ )	{
 					
-					[self DistancePointLine:pt :[[points objectAtIndex:i] point] : [[points objectAtIndex:(i+1)] point] :&distance];
+					[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:(i+1)] point] :&distance];
 					if( distance*scale < 5.0)
 					{
 						imode = ROI_selected;
@@ -1454,7 +1637,7 @@ static BOOL ROIDefaultsLoaded = NO;
 					}
 				}
 				
-				[self DistancePointLine:pt :[[points objectAtIndex:i] point] : [[points objectAtIndex:0] point] :&distance];
+				[self DistancePointLine:pt :[[splinePoints objectAtIndex:i] point] : [[splinePoints objectAtIndex:0] point] :&distance];
 				if( distance*scale < 5.0f )	imode = ROI_selected;
 
 			}
@@ -1558,14 +1741,15 @@ static BOOL ROIDefaultsLoaded = NO;
 			case tCPolygon:
 			case tOPolygon:
 			case tPencil:
+			{
 				for( int i = 0 ; i < [points count]; i++ ) {
-					
 					if( [[points objectAtIndex: i] isNearToPoint: pt :scale :[[curView curDCM] pixelRatio]])
 					{
 						imode = ROI_selectedModify;
 						selectedModifyPoint = i;
 					}
 				}
+			}
 			break;
 		}
 		
@@ -3835,11 +4019,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( type == tCPolygon || type == tPencil)	glBegin(GL_LINE_LOOP);
 			else										glBegin(GL_LINE_STRIP);
 			
-			for( long i = 0; i < [points count]; i++) {
-				glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
+			NSMutableArray *splinePoints = [self splinePoints];
+						
+			for(long i=0; i<[splinePoints count]; i++)
+			{
+				glVertex2f( ([[splinePoints objectAtIndex:i] x]-offsetx)*scaleValue , ([[splinePoints objectAtIndex:i] y]-offsety)*scaleValue);
 			}
 			glEnd();
-			
+						
 			// TEXT
 			if( type == tCPolygon || type == tPencil)
 			{
@@ -4552,6 +4739,40 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 - (void)setCanResizeLayer:(BOOL)boo
 {
 	canResizeLayer = boo;
+}
+
+-(NSMutableArray*)splinePoints;
+{
+	// available only for ROI types : Open Polygon, Close Polygon, Pencil
+	// for other types, returns the original points
+	if(type!=tOPolygon && type!=tCPolygon && type!=tPencil) return points;
+	
+	// available only for polygons with at least 3 points
+	if([points count]<3) return points;
+	
+	int nb; // number of points
+	if(type==tOPolygon) nb = [points count];
+	else nb = [points count]+1;
+
+	NSPoint pts[nb];
+	
+	for(long i=0; i<[points count]; i++)
+		pts[i] = [[points objectAtIndex:i] point];
+	if(type!=tOPolygon)
+		pts[[points count]] = [[points objectAtIndex:0] point]; // we add the first point as the last one to smooth the spline
+							
+	NSPoint *splinePts;
+	long newNb = spline(pts, nb, &splinePts);
+	
+	NSMutableArray *newPoints = [NSMutableArray array];
+	for(long i=0; i<newNb; i++)
+	{
+		[newPoints addObject:[MyPoint point:splinePts[i]]];
+	}
+
+	if(newNb) free(splinePts);
+	
+	return newPoints;
 }
 
 @end
