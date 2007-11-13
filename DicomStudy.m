@@ -110,6 +110,22 @@ Version 2.3
 	else return @"";
 }
 
+- (NSNumber*) yearOldInDays
+{
+	if( [self valueForKey: @"dateOfBirth"])
+	{
+		NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[self valueForKey:@"dateOfBirth"] timeIntervalSinceReferenceDate]];
+		NSCalendarDate *dateOfBirth = [NSCalendarDate date];
+		
+		NSInteger days;
+		
+		days = [dateOfBirth timeIntervalSinceDate: momsBDay] / 86400.;
+		
+		return [NSNumber numberWithInt: days];
+	}
+	else return [NSNumber numberWithInt: 0];
+}
+
 - (NSString*) yearOld
 {
 	if( [self valueForKey: @"dateOfBirth"])

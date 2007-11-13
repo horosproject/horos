@@ -1227,7 +1227,7 @@ static NSArray*	statesArray = nil;
 				
 				if( server ) {
 					
-					@try
+				@try
 				{
 					NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientID" ascending:YES] autorelease];
 					NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
