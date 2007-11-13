@@ -4780,4 +4780,41 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	return newPoints;
 }
 
+-(NSMutableArray*)splineZPositions;
+{
+	// activated in the prefs
+	if( splineForROI == NO) return zPositions;
+	
+	// available only for ROI types : Open Polygon, Close Polygon, Pencil
+	// for other types, returns the original points
+	if(type!=tOPolygon && type!=tCPolygon && type!=tPencil) return zPositions;
+	
+	// available only for polygons with at least 3 points
+	if([points count]<3) return zPositions;
+	
+	int nb; // number of points
+	if(type==tOPolygon) nb = [zPositions count];
+	else nb = [zPositions count]+1;
+
+	NSPoint pts[nb];
+	
+	for(long i=0; i<[zPositions count]; i++)
+		pts[i] = NSMakePoint([[zPositions objectAtIndex:i] floatValue], 0.0);
+	if(type!=tOPolygon)
+		pts[[zPositions count]] = NSMakePoint([[zPositions objectAtIndex:0] floatValue], 0.0); // we add the first point as the last one to smooth the spline
+							
+	NSPoint *splinePts;
+	long newNb = spline(pts, nb, &splinePts);
+	
+	NSMutableArray *newPoints = [NSMutableArray array];
+	for(long i=0; i<newNb; i++)
+	{
+		[newPoints addObject:[NSNumber numberWithFloat:splinePts[i].x]];
+	}
+
+	if(newNb) free(splinePts);
+	
+	return newPoints;
+}
+
 @end

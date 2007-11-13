@@ -369,5 +369,6 @@ enum
 @property(readonly) NSPoint clickPoint;
 
 -(NSMutableArray*)splinePoints;
+-(NSMutableArray*)splineZPositions;
 
 @end

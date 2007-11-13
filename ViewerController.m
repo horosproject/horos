@@ -5591,7 +5591,7 @@ static ViewerController *draggedController = 0L;
 	imageSize = newX * newY;
 	size = sizeof(float) * maxZ * imageSize;
 	
-	emptyData = malloc( size + 300*1024);
+	emptyData = malloc( size + newX*newY*sizeof(float)*50);		// Just to be sure we have enough memory to play with them !
 	if( emptyData)
 	{
 		free( emptyData);
