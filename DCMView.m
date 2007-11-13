@@ -843,8 +843,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	long no;
 	
-	NSLog( @"stop roi editing");
-	
 	drawingROI = NO;
 	for( long i = 0; i < [curRoiList count]; i++) {
 		if( curROI != [curRoiList objectAtIndex:i] ) {

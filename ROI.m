@@ -1744,7 +1744,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt)
 			case tOPolygon:
 			case tPencil:
 			{
-				for( int i = 0 ; i < [points count]; i++ ) {
+				selectedModifyPoint = 0;
+				for( int i = 0 ; i < [points count]; i++ )
+				{
 					if( [[points objectAtIndex: i] isNearToPoint: pt :scale :[[curView curDCM] pixelRatio]])
 					{
 						imode = ROI_selectedModify;
