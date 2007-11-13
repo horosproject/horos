@@ -17,7 +17,7 @@
 
 #import "MyPoint.h"
 
-#define NEAR 5.
+#define NEAR 7.
 
 
 @implementation MyPoint

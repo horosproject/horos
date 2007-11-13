@@ -1687,7 +1687,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt)
 		}
 	}
 	
-	if( imode == ROI_selected)
+//	if( imode == ROI_selected)
 	{
 		MyPoint		*tempPoint = [[MyPoint alloc] initWithPoint: pt];
 		NSPoint		aPt;
