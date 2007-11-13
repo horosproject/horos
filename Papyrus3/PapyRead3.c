@@ -2850,7 +2850,7 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
       
         else 
         {
-			long ccval = *ioBufPosP;
+		  long ccval = *ioBufPosP;
 			
           theArrElemP [theStructPos].length = theElemLength;
         
@@ -2869,6 +2869,12 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
 			{
 				printf("err theElemLength > inBytesToRead\n");
 				return -1;
+			}
+			
+			if( *ioBufPosP - theInitialBufPos + theElemLength > inBytesToRead)
+			{
+				printf("err length : *ioBufPosP - theInitialBufPos + theElemLength > inBytesToRead \n");
+				RETURN (papReadGroup);
 			}
 			
             /* extract the element depending on the value representation */
