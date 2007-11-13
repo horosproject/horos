@@ -21706,7 +21706,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
+			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
 		};
 		A9EDB1D50ACBC39700D8B534 /* SVN Revision number */ = {
 			isa = PBXShellScriptBuildPhase;
