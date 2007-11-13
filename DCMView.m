@@ -581,6 +581,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		{
 			[v refresh];
 			if( reload) [v reloadAnnotations];
+			
+			NSArray	*relatedViewers = [appController FindRelatedViewers: [v pixList]];
+			for( NSWindowController *r in relatedViewers)
+				[[r window] display];
+				
 		}
 		
 		if( reload) [[BrowserController currentBrowser] refreshMatrix: self];		// This will refresh the DCMView of the BrowserController
@@ -6523,8 +6528,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
 {
-	long		clutBars	= CLUTBARS;			//[[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
-	long		annotations	= ANNOTATIONS;		//[[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
+	long		clutBars	= CLUTBARS;
+	long		annotations	= ANNOTATIONS;
 	
 	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
 	
@@ -9213,7 +9218,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		{
 			NSRect	screenFrame = [loopItem visibleFrame];
 			
-			if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
+			if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 			{
 				screenFrame.size.height -= [ToolbarPanelController fixedHeight];
 			}

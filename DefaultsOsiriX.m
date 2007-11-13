@@ -697,7 +697,7 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject:@"1" forKey: @"AUTOTILING"];
 	
 	// ** USEALWAYSTOOLBARPANEL
-	[defaultValues setObject:@"0" forKey: @"USEALWAYSTOOLBARPANEL"];
+	[defaultValues setObject:@"1" forKey: @"USEALWAYSTOOLBARPANEL2"];
 	
 	[defaultValues setObject:@"Softw Tissue CT" forKey: @"LAST_3D_PRESET"];
 	

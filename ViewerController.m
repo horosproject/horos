@@ -4100,7 +4100,7 @@ static ViewerController *draggedController = 0L;
 	NSToolbarItem *item = [[notif userInfo] objectForKey: @"item"];
 	if( [retainedToolbarItems containsObject: item] == NO) [retainedToolbarItems addObject: item];
 	
-	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
+	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{		
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 			[toolbarPanel[ i] fixSize];
@@ -4109,7 +4109,7 @@ static ViewerController *draggedController = 0L;
 
 - (void) toolbarDidRemoveItem: (NSNotification *) notif
 {
-	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
+	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
 			[toolbarPanel[ i] fixSize];
@@ -4474,7 +4474,7 @@ static ViewerController *draggedController = 0L;
 	// We are the delegate
 	[toolbar setDelegate: self];
 	
-	if( USETOOLBARPANEL == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == NO) [[self window] setToolbar: toolbar];
+	if( USETOOLBARPANEL == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == NO) [[self window] setToolbar: toolbar];
 	
 	[[self window] setShowsToolbarButton:NO];
 	[[[self window] toolbar] setVisible: YES];
@@ -4712,8 +4712,6 @@ static ViewerController *draggedController = 0L;
 	NSString	*previousStudyInstanceUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] retain];
 	float		previousOrientation[ 9];
 	float		previousLocation = 0, previousScale = 0;
-//	float		previousWL, previousWW;
-//	NSPoint		previousRotation
 	
 	if( previousColumns != 1 || previousRows != 1)
 		[self setImageRows: 1 columns: 1];
@@ -4724,23 +4722,21 @@ static ViewerController *draggedController = 0L;
 	
 	[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
 	previousLocation = [[imageView curDCM] sliceLocation];
-		
-//	previousScale = [imageView scaleValue];
-//	[imageView getWLWW: &previousWL :&previousWW];
-	
-	[self setFusionMode: 0];
-	[imageView setIndex: 0];
 	
 	// Check if another post-processing viewer is open : we CANNOT release the fVolumePtr -> OsiriX WILL crash
 	
 	long minWindows = 1;
 	if( [self FullScreenON]) minWindows++;
+	
 	if( [[appController FindRelatedViewers:pixList[0]] count] > minWindows)
 	{
 		NSLog( @"changeImageData not possible with other post-processing windows opened");
 		return;
 	}
-	
+
+	[self setFusionMode: 0];
+	[imageView setIndex: 0];
+
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: 0L];
 	
 	windowWillClose = YES;
@@ -5078,7 +5074,7 @@ static ViewerController *draggedController = 0L;
 		break;
 	}
 	
-	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
+	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{
 		screenRect.size.height -= [ToolbarPanelController fixedHeight];
 	}
@@ -14882,7 +14878,7 @@ int i,j,l;
 	long i;
 	
 	numberOf2DViewer++;
-	if( numberOf2DViewer > 1 || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
+	if( numberOf2DViewer > 1 || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{
 		if( USETOOLBARPANEL == NO)
 		{
@@ -15118,7 +15114,7 @@ int i,j,l;
 		}
 	}
 	
-//	if( numberOf2DViewer > 1 || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
+//	if( numberOf2DViewer > 1 || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 //	{
 //		if( USETOOLBARPANEL == NO)
 //		{

@@ -97,7 +97,7 @@
 	[reverseScrollWheelCheck setState: [defaults boolForKey: @"Scroll Wheel Reversed"]];
 	[multipleScreensMatrix selectCellWithTag: [defaults integerForKey: @"ReserveScreenForDB"]];
 	[iPhotoAlbumName setStringValue: [defaults stringForKey: @"ALBUMNAME"]];
-	[toolbarPanelMatrix selectCellWithTag:[defaults boolForKey: @"USEALWAYSTOOLBARPANEL"]];
+	[toolbarPanelMatrix selectCellWithTag:[defaults boolForKey: @"USEALWAYSTOOLBARPANEL2"]];
 	[autoHideMatrix setState: [defaults boolForKey: @"AUTOHIDEMATRIX"]];
 	[tilingCheck setState: [defaults boolForKey: @"AUTOTILING"]];
 	
@@ -135,7 +135,7 @@
 
 - (IBAction) setToolbarMatrix: (id) sender
 {
-	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: @"USEALWAYSTOOLBARPANEL"];
+	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: @"USEALWAYSTOOLBARPANEL2"];
 }
 
 - (IBAction) setAutoHideMatrixState: (id) sender

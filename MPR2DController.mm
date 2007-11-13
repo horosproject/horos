@@ -1417,6 +1417,7 @@ extern NSString * documentsDirectory();
 
 - (IBAction) setOrientationTool:(id)sender;
 {
+	[self close];
 	[viewerController setOrientationToolFrom2DMPR:sender];
 }
 
