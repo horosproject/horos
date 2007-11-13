@@ -7343,6 +7343,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			previousViewSize = rect.size;
 			
+			if( yChanged > 1.0) yChanged = 1.0 + (yChanged - 1.0) * 0.5;
+			
 			if( yChanged > 0.01 && yChanged < 1000) yChanged = yChanged;
 			else yChanged = 0.01;
 			
