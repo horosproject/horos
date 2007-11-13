@@ -833,8 +833,19 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 						}
 						else if(view==1) // coronal
 						{
-							float *srcIm = [[pixList objectAtIndex: height-yInt-1] fImage];
-							float *srcIm1 = [[pixList objectAtIndex: height-yInt-2] fImage];
+							float *srcIm = 0L, *srcIm1 = 0L;
+							
+							if( [[roiViewer imageView] flippedData])
+							{
+								srcIm = [[pixList objectAtIndex: height-yInt-1] fImage];
+								srcIm1 = [[pixList objectAtIndex: height-yInt-2] fImage];							
+							}
+							else
+							{
+								srcIm = [[pixList objectAtIndex: yInt] fImage];
+								srcIm1 = [[pixList objectAtIndex: yInt+1] fImage];
+
+							}
 							
 							for( y = 0; y < maxY ; y++)
 							{
@@ -843,8 +854,20 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 						}
 						else if(view==2) // saggital
 						{
-							float *srcIm = [[pixList objectAtIndex: height-yInt-1] fImage];
-							float *srcIm1 = [[pixList objectAtIndex: height-yInt-2] fImage];
+							float *srcIm = 0L, *srcIm1 = 0L;
+							
+							if( [[roiViewer imageView] flippedData])
+							{
+								srcIm = [[pixList objectAtIndex: height-yInt-1] fImage];
+								srcIm1 = [[pixList objectAtIndex: height-yInt-2] fImage];							
+							}
+							else
+							{
+								srcIm = [[pixList objectAtIndex: yInt] fImage];
+								srcIm1 = [[pixList objectAtIndex: yInt+1] fImage];
+
+							}
+							
 							for( y = 0; y < maxY ; y++)
 							{
 								*(curData + x + xInc + newX*y) = (*(srcIm1 + (xInt + 1) * width + y) * rightLeftX + *(srcIm1 + xInt * width + y) * rightLeftXInv) * rightLeftY  + (*(srcIm + (xInt + 1) * width + y) * rightLeftX + *(srcIm + xInt * width + y) * rightLeftXInv) * rightLeftYInv;
@@ -1019,7 +1042,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	perPendicular = NO;
 	
 	thickSlab = t;
-
+	
 	roiViewer = roiV;
 
 	fileList = [NSMutableArray array];

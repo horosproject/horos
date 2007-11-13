@@ -843,6 +843,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	long no;
 	
+	NSLog( @"stop roi editing");
+	
 	drawingROI = NO;
 	for( long i = 0; i < [curRoiList count]; i++) {
 		if( curROI != [curRoiList objectAtIndex:i] ) {
@@ -855,9 +857,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	
 	if( curROI ) {
-		if( [curROI ROImode] == ROI_selectedModify || [curROI ROImode] == ROI_drawing) {
+		if( [curROI ROImode] == ROI_selectedModify || [curROI ROImode] == ROI_drawing)
+		{
+			no = 0;
+			
 			// Does this ROI have alias in other views?
-			for( long x = 0, no = 0; x < [dcmRoiList count]; x++ ) {
+			for( long x = 0; x < [dcmRoiList count]; x++ )
+			{
 				if( [[dcmRoiList objectAtIndex: x] containsObject: curROI]) no++;
 			}
 		
