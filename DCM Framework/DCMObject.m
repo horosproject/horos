@@ -79,7 +79,7 @@ static NSString *softwareVersion = @"001";
 			value = [tagArray objectAtIndex:1];
 		
 		[object anonyimizeAttributeForTag:tag replacingWith:value];
-		NSLog( [value description] );
+		//NSLog( [value description] );
 		if ([tag.name isEqualToString: @"PatientID"])
 
 
