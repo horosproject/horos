@@ -84,16 +84,10 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	[super dealloc];
  }
  
- /*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
--(float) lengthPoints:(NSPoint) mesureA :(NSPoint) mesureB :(float) ratio
+-(double) lengthPoints:(NSPoint) mesureA :(NSPoint) mesureB :(double) ratio
 {
 	long yT, xT;
-	float mesureLength;
+	double mesureLength;
 	
 	if( mesureA.x > mesureB.x)
 	{
@@ -128,11 +122,13 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 - (void) compute
 {
 	DCMPix		*firstObject = [pixList objectAtIndex:0];
-	float		*emptyData, *curData,  length;
+	float		*emptyData, *curData;
+	double		length;
 	long		size, newX, newY, i, x, y, z, xInc, noOfPoints, thick;
 	NSData		*newData;
-	NSArray		*pts = [selectedROI points];
-	
+	//NSArray		*pts = [selectedROI points];
+	NSArray		*pts = [selectedROI splinePoints];
+	NSLog(@"[pts count] : %d", [pts count]);
 	// Compute size of the curved MPR image
 	
 	newY = [pixList count];
@@ -167,9 +163,9 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			
 			for( i = 0; i < [pts count]-1; i++)
 			{
-				float	xPos, yPos;
-				float	sideX, sideY, startX, startY;
-				float	angle, perAngle;
+				double	xPos, yPos;
+				double	sideX, sideY, startX, startY;
+				double	angle, perAngle;
 				long	pos;
 				
 				length = [self lengthPoints: [[pts objectAtIndex:i] point]  :[[pts objectAtIndex:i+1] point] :[firstObject pixelRatio]];
@@ -198,8 +194,8 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 				noOfPoints = length;
 				for( x = 0; x < noOfPoints; x++)
 				{
-					float	rightLeftX, rightLeftY;
-					float	X1, X2, Y1, Y2;
+					double	rightLeftX, rightLeftY;
+					double	X1, X2, Y1, Y2;
 					long	xInt, yInt, width, height;
 					
 					if( sideX >= 0)
@@ -216,8 +212,8 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 					xInt = xPos;
 					yInt = yPos;
 					
-					rightLeftX = xPos - (float) xInt;
-					rightLeftY = yPos - (float) yInt;
+					rightLeftX = xPos - (double) xInt;
+					rightLeftY = yPos - (double) yInt;
 					
 					width = [[pixList objectAtIndex: 0] pwidth];
 					height = [[pixList objectAtIndex: 0] pheight];
@@ -229,8 +225,8 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 						long yx = yInt * width + xInt;
 						long y1x1 =  (yInt+1) * width + xInt+1;
 						long y1x = (yInt+1) * width + xInt;
-						float rightLeftXInv = 1.0 - rightLeftX;
-						float rightLeftYInv = 1.0 - rightLeftY;
+						double rightLeftXInv = 1.0 - rightLeftX;
+						double rightLeftYInv = 1.0 - rightLeftY;
 					
 						if( [firstObject sliceInterval] > 0)
 						{
@@ -311,10 +307,12 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 - (void) computePerpendicular
 {
 	DCMPix		*firstObject = [pixList objectAtIndex:0];
-	float		*emptyData, *curData,  length;
+	float		*emptyData, *curData;
+	double		length;
 	long		size, newX, newY, i, x, y, z, xInc, noOfPoints, imageCounter = 0;
 	NSData		*newData;
-	NSArray		*pts = [selectedROI points];
+	//NSArray		*pts = [selectedROI points];
+	NSArray		*pts = [selectedROI splinePoints];
 	
 	// Compute size of the curved MPR image
 	
@@ -363,12 +361,20 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			
 			for( i = 0; i < [pts count]-1; i++)
 			{
-				float	xPos, yPos, xPosA, yPosA, xPosB, yPosB;
-				float	sideX, sideY, startX, startY;
-				float	angle, perAngle;
+				double	xPos, yPos, xPosA, yPosA, xPosB, yPosB;
+				double	sideX, sideY, startX, startY;
+				double	angle, perAngle;
 				long	pos, imNo;
 				
-				length = [self lengthPoints: [[pts objectAtIndex:i] point]  :[[pts objectAtIndex:i+1] point] :[firstObject pixelRatio]];
+				// joris
+				length = 0;
+				long j = 0;
+				while (length < 1 && i+j<[pts count]-1)
+				{
+					j++;
+					length = [self lengthPoints: [[pts objectAtIndex:i] point]  :[[pts objectAtIndex:i+j] point] :[firstObject pixelRatio]];
+				}
+				i = i+j-1;
 				
 				sideX = [[pts objectAtIndex:i] x] - [[pts objectAtIndex:i+1] x];
 				sideY = [[pts objectAtIndex:i] y] - [[pts objectAtIndex:i+1] y];
@@ -383,8 +389,8 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 				noOfPoints = length;
 				for( x = 0; x < noOfPoints; x++)
 				{
-					float	rightLeftX, rightLeftY;
-					float	X1, X2, Y1, Y2, sideXPer;
+					double	rightLeftX, rightLeftY;
+					double	X1, X2, Y1, Y2, sideXPer;
 					long	xInt, yInt, width, height;
 					
 					if( xInc % perInterval == 0)
@@ -404,27 +410,27 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 						
 						if( sideX < 0)
 						{
-							xPosA = xPos + cos( perAngle) * (float) (newX/2);
-							yPosA = yPos - sin (perAngle) * (float) (newX/2);
+							xPosA = xPos + cos( perAngle) * (double) (newX/2);
+							yPosA = yPos - sin (perAngle) * (double) (newX/2);
 							
-							xPosB = xPos - cos( perAngle) * (float) (newX/2);
-							yPosB = yPos + sin (perAngle) * (float) (newX/2);
+							xPosB = xPos - cos( perAngle) * (double) (newX/2);
+							yPosB = yPos + sin (perAngle) * (double) (newX/2);
 						}
 						else
 						{
-							xPosA = xPos - cos( perAngle) * (float) (newX/2);
-							yPosA = yPos + sin (perAngle) * (float) (newX/2);
+							xPosA = xPos - cos( perAngle) * (double) (newX/2);
+							yPosA = yPos + sin (perAngle) * (double) (newX/2);
 							
-							xPosB = xPos + cos( perAngle) * (float) (newX/2);
-							yPosB = yPos + sin (perAngle) * (float) (newX/2);
+							xPosB = xPos + cos( perAngle) * (double) (newX/2);
+							yPosB = yPos + sin (perAngle) * (double) (newX/2);
 						}
 						
 						sideXPer = xPosB - xPosA;
 						
 						for( z = 0; z < newX; z++)
 						{
-							float	rightLeftX, rightLeftY;
-							float	X1, X2, Y1, Y2;
+							double	rightLeftX, rightLeftY;
+							double	X1, X2, Y1, Y2;
 							long	xInt, yInt, width, height;
 							
 							if( sideX >= 0)
@@ -441,8 +447,8 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 							xInt = xPos;
 							yInt = yPos;
 							
-							rightLeftX = xPos - (float) xInt;
-							rightLeftY = yPos - (float) yInt;
+							rightLeftX = xPos - (double) xInt;
+							rightLeftY = yPos - (double) yInt;
 							
 							width = [[pixList objectAtIndex: 0] pwidth];
 							height = [[pixList objectAtIndex: 0] pheight];
@@ -454,8 +460,8 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 								long yx = yInt * width + xInt;
 								long y1x1 =  (yInt+1) * width + xInt+1;
 								long y1x = (yInt+1) * width + xInt;
-								float rightLeftXInv = 1.0 - rightLeftX;
-								float rightLeftYInv = 1.0 - rightLeftY;
+								double rightLeftXInv = 1.0 - rightLeftX;
+								double rightLeftYInv = 1.0 - rightLeftY;
 								
 								
 								if( [firstObject sliceInterval] > 0)
@@ -597,10 +603,12 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	*/
 	
 	DCMPix		*firstObject = [pixList objectAtIndex:0];
-	float		*emptyData, *curData, length;
-	long		size, newX, newY, i, x, y, z, xInc, noOfPoints, thick;
+	float		*emptyData, *curData;
+	double		length;
+	long		size, newX, newY, i, j, x, y, z, xInc, noOfPoints, thick;
 	NSData		*newData;
-	NSArray		*pts = [selectedROI points];
+	//NSArray		*pts = [selectedROI points];
+	NSArray		*pts = [selectedROI splinePoints];
 	
 	// Compute size of the curved MPR image
 	length = 0;
@@ -622,7 +630,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			NSPoint newPtA = NSMakePoint(ptA.x,[[[selectedROI zPositions] objectAtIndex:i] floatValue]);
 			NSPoint newPtB = NSMakePoint(ptB.x,[[[selectedROI zPositions] objectAtIndex:i+1] floatValue]);
 			//float newRatio = [[selectedROI pix] sliceInterval] / [[selectedROI pix] pixelSpacingX];
-			float newRatio = [firstObject pixelRatio];
+			double newRatio = [firstObject pixelRatio];
 			length += [self lengthPoints:newPtA :newPtB :newRatio];
 		}
 	}
@@ -636,7 +644,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			NSPoint newPtA = NSMakePoint(ptA.y,[[[selectedROI zPositions] objectAtIndex:i] floatValue]);
 			NSPoint newPtB = NSMakePoint(ptB.y,[[[selectedROI zPositions] objectAtIndex:i+1] floatValue]);
 			//float newRatio = [[selectedROI pix] sliceInterval] / [[selectedROI pix] pixelSpacingY];
-			float newRatio = [firstObject pixelRatio];
+			double newRatio = [firstObject pixelRatio];
 			length += [self lengthPoints:newPtA :newPtB :newRatio];
 		}	
 	}
@@ -672,104 +680,119 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			
 			xInc = 0;
 			
+			double remainingLength = 0.0;
+			
 			for( i = 0; i < [pts count]-1; i++)
 			{
-				float xPos, yPos;
-				float sideX, sideY, startX, startY;
-				float angle, perAngle;
+				double xPos, yPos;
+				double sideX, sideY, startX, startY;
+				double angle, perAngle;
 				long pos, width, height;
 				long maxY;
 				
-				if(view==0)
+				length = 0;
+				j = 0;
+				while (length < 2 && i+j<[pts count]-1)
 				{
-					length = [self lengthPoints: [[pts objectAtIndex:i] point]  :[[pts objectAtIndex:i+1] point] :[firstObject pixelRatio]];
-					
-					sideX = [[pts objectAtIndex:i] x] - [[pts objectAtIndex:i+1] x];
-					sideY = [[pts objectAtIndex:i] y] - [[pts objectAtIndex:i+1] y];
-					
-					startX = [[pts objectAtIndex:i] x];
-					startY = [[pts objectAtIndex:i] y];
-										
-					width = [[pixList objectAtIndex: 0] pwidth];
-					height = [[pixList objectAtIndex: 0] pheight];
-
-					maxY = [pixList count];
-				}
-				else
-				{
-					NSPoint ptA, ptB, newPtA, newPtB;
-					float newRatio;
-					if(view==1) // coronal
+					j++;
+					if(view==0)
 					{
-						ptA = [[pts objectAtIndex:i] point];
-						ptB = [[pts objectAtIndex:i+1] point];
-						newPtA = NSMakePoint(ptA.x,[[[selectedROI zPositions] objectAtIndex:i] floatValue]);
-						newPtB = NSMakePoint(ptB.x,[[[selectedROI zPositions] objectAtIndex:i+1] floatValue]);
-						//newRatio = [[selectedROI pix] sliceInterval] / [[selectedROI pix] pixelSpacingX];
-						newRatio = [firstObject pixelRatio];				
+						length = [self lengthPoints: [[pts objectAtIndex:i] point]  :[[pts objectAtIndex:i+j] point] :[firstObject pixelRatio]];
+						
+						sideX = [[pts objectAtIndex:i] x] - [[pts objectAtIndex:i+j] x];
+						sideY = [[pts objectAtIndex:i] y] - [[pts objectAtIndex:i+j] y];
+						
+						startX = [[pts objectAtIndex:i] x];
+						startY = [[pts objectAtIndex:i] y];
+											
 						width = [[pixList objectAtIndex: 0] pwidth];
-						maxY = [[pixList objectAtIndex: 0] pheight];
+						height = [[pixList objectAtIndex: 0] pheight];
+
+						maxY = [pixList count];
 					}
-					else if(view==2) // saggital
+					else
 					{
-						ptA = [[pts objectAtIndex:i] point];
-						ptB = [[pts objectAtIndex:i+1] point];
-						newPtA = NSMakePoint(ptA.y,[[[selectedROI zPositions] objectAtIndex:i] floatValue]);
-						newPtB = NSMakePoint(ptB.y,[[[selectedROI zPositions] objectAtIndex:i+1] floatValue]);
-						//newRatio = [[selectedROI pix] sliceInterval] / [[selectedROI pix] pixelSpacingY];
-						newRatio = [firstObject pixelRatio];
-						width = [[pixList objectAtIndex: 0] pheight];
-						maxY = [[pixList objectAtIndex: 0] pwidth];
+						NSPoint ptA, ptB, newPtA, newPtB;
+						double newRatio;
+						if(view==1) // coronal
+						{
+							ptA = [[pts objectAtIndex:i] point];
+							ptB = [[pts objectAtIndex:i+j] point];
+							newPtA = NSMakePoint(ptA.x,[[[selectedROI zPositions] objectAtIndex:i] floatValue]);
+							newPtB = NSMakePoint(ptB.x,[[[selectedROI zPositions] objectAtIndex:i+j] floatValue]);
+							//newRatio = [[selectedROI pix] sliceInterval] / [[selectedROI pix] pixelSpacingX];
+							newRatio = [firstObject pixelRatio];				
+							width = [[pixList objectAtIndex: 0] pwidth];
+							maxY = [[pixList objectAtIndex: 0] pheight];
+						}
+						else if(view==2) // saggital
+						{
+							ptA = [[pts objectAtIndex:i] point];
+							ptB = [[pts objectAtIndex:i+j] point];
+							newPtA = NSMakePoint(ptA.y,[[[selectedROI zPositions] objectAtIndex:i] floatValue]);
+							newPtB = NSMakePoint(ptB.y,[[[selectedROI zPositions] objectAtIndex:i+j] floatValue]);
+							//newRatio = [[selectedROI pix] sliceInterval] / [[selectedROI pix] pixelSpacingY];
+							newRatio = [firstObject pixelRatio];
+							width = [[pixList objectAtIndex: 0] pheight];
+							maxY = [[pixList objectAtIndex: 0] pwidth];
+						}
+						height = [pixList count];
+						
+						length = [self lengthPoints:newPtA :newPtB :newRatio];
+						
+						sideX = newPtA.x - newPtB.x;
+						sideY = newPtA.y - newPtB.y;
+						
+						startX = newPtA.x;
+						startY = newPtA.y;
 					}
-					height = [pixList count];
-					
-					length = [self lengthPoints:newPtA :newPtB :newRatio];
-					
-					sideX = newPtA.x - newPtB.x;
-					sideY = newPtA.y - newPtB.y;
-					
-					startX = newPtA.x;
-					startY = newPtA.y;
 				}
+				i = i+j-1;
 				
 				angle = atan( sideY / sideX);
 				perAngle = 90*deg2rad - angle;
 								
 				if( sideX < 0)
 				{
-					startX += 1.5 * cos(perAngle) * (float) (thick - (thickSlab-1)/2);
-					startY -= 1.5 * sin(perAngle) * (float) (thick - (thickSlab-1)/2);
+					startX += 1.5 * cos(perAngle) * (double) (thick - (thickSlab-1)/2);
+					startY -= 1.5 * sin(perAngle) * (double) (thick - (thickSlab-1)/2);
 				}
 				else
 				{
-					startX -= 1.5 * cos(perAngle) * (float) (thick - (thickSlab-1)/2);
-					startY += 1.5 * sin(perAngle) * (float) (thick - (thickSlab-1)/2);
+					startX -= 1.5 * cos(perAngle) * (double) (thick - (thickSlab-1)/2);
+					startY += 1.5 * sin(perAngle) * (double) (thick - (thickSlab-1)/2);
 				}
 				
+				double reallength = length;
+				
+				length += remainingLength;
 				noOfPoints = length;
+				double nextPixel = reallength / (double) noOfPoints;
+				remainingLength = length - (double)noOfPoints;
+				
 				for(x=0; x<noOfPoints; x++)
 				{
-					float rightLeftX, rightLeftY;
-					float X1, X2, Y1, Y2;
+					double rightLeftX, rightLeftY;
+					double X1, X2, Y1, Y2;
 					long xInt, yInt;
 					//long width, height;
 					
 					if( sideX >= 0)
 					{
-						xPos = startX - x * cos( angle);
-						yPos = startY - x * sin( angle);
+						xPos = startX - x*nextPixel * cos( angle);
+						yPos = startY - x*nextPixel * sin( angle);
 					}
 					else
 					{
-						xPos = startX + x * cos( angle);
-						yPos = startY + x * sin( angle);
+						xPos = startX + x*nextPixel * cos( angle);
+						yPos = startY + x*nextPixel * sin( angle);
 					}
 					
 					xInt = xPos;
 					yInt = yPos;
 
-					rightLeftX = xPos - (float) xInt;
-					rightLeftY = yPos - (float) yInt;
+					rightLeftX = xPos - (double) xInt;
+					rightLeftY = yPos - (double) yInt;
 					
 					if( yInt >= 0 && yInt < height-1 && xInt >= 0 && xInt < width+1)
 					{
@@ -784,8 +807,8 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 						long yx = yInt * width + xInt;
 						long y1x1 =  (yInt+1) * width + xInt+1;
 						long y1x = (yInt+1) * width + xInt;
-						float rightLeftXInv = 1.0 - rightLeftX;
-						float rightLeftYInv = 1.0 - rightLeftY;
+						double rightLeftXInv = 1.0 - rightLeftX;
+						double rightLeftYInv = 1.0 - rightLeftY;
 						
 						if(view==0)
 						{
@@ -856,6 +879,8 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 				
 				xInc += noOfPoints;
 			}
+			
+			NSLog(@"%f", remainingLength);
 			
 			float xSpace, ySpace;
 			if(view==0)
@@ -939,16 +964,33 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 
 	roiViewer = roiV;
 
-	fileList = files;
-	[fileList retain];
+	fileList = [NSMutableArray array];
+	pixList = [NSMutableArray array];
+	volumeData = 0L;
+
+	float factor = 0.5;
+	while ( ![ViewerController resampleDataFromPixArray:pix fileArray:files inPixArray:pixList fileArray:fileList data:&volumeData withXFactor:factor yFactor:factor zFactor:factor] && factor<=0.8)
+		factor += 0.1;
 	
-	pixList = pix;
+	if(factor > 0.8)
+	{
+		fileList = [NSMutableArray arrayWithArray:files];
+		pixList = pix;
+		volumeData = vData;
+	}
+	else
+	{
+		[[pixList objectAtIndex:0] setSliceInterval: [[pix objectAtIndex: 0] sliceInterval] * factor];
+		NSLog(@"factor : %f", factor);
+	}
+	[fileList retain];	
 	[pixList retain];
-	
-	volumeData = vData;
 	[volumeData retain];
+
+	selectedROI = [NSUnarchiver unarchiveObjectWithData: [NSArchiver archivedDataWithRootObject: roi]];
 	
-	selectedROI = roi;
+	[selectedROI setOriginAndSpacing:[[pixList objectAtIndex:0] pixelSpacingX] : [[pixList objectAtIndex:0] pixelSpacingY] :NSMakePoint([[pixList objectAtIndex:0] originX], [[pixList objectAtIndex:0] originY])];
+	
 	[selectedROI retain];
 	
 	newPixList = [[NSMutableArray arrayWithCapacity: 0] retain];
@@ -958,6 +1000,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 
 	// Compute
 	[self computeForView:view];
+
 }
 
 - (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t forAxial:(BOOL)axial forCoronal:(BOOL)coronal forSaggital:(BOOL)saggital
@@ -973,7 +1016,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 
 	roiViewer = roiV;
 
-	fileList = files;
+	fileList = [NSMutableArray arrayWithArray:files];
 	[fileList retain];
 	
 	pixList = pix;
@@ -1014,7 +1057,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 
 	roiViewer = roiV;
 
-	fileList = files;
+	fileList = [NSMutableArray arrayWithArray:files];
 	[fileList retain];
 	
 	pixList = pix;

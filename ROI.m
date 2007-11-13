@@ -4745,11 +4745,11 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 
 -(NSMutableArray*)splinePoints;
 {
-	// available only for ROI types : Open Polygon, Close Polygon, Pencil
-	// for other types, returns the original points
-	
+	// activated in the prefs
 	if( splineForROI == NO) return points;
 	
+	// available only for ROI types : Open Polygon, Close Polygon, Pencil
+	// for other types, returns the original points
 	if(type!=tOPolygon && type!=tCPolygon && type!=tPencil) return points;
 	
 	// available only for polygons with at least 3 points

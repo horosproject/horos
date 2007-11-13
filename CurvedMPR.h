@@ -25,7 +25,7 @@
 @interface CurvedMPR : NSObject {
 
     NSMutableArray			*pixList;
-	NSArray					*fileList;
+	NSMutableArray			*fileList;
 	NSData					*volumeData;
 	ROI						*selectedROI;
 	short					curMovieIndex, maxMovieIndex;

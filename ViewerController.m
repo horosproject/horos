@@ -5591,9 +5591,12 @@ static ViewerController *draggedController = 0L;
 	imageSize = newX * newY;
 	size = sizeof(float) * maxZ * imageSize;
 	
-	emptyData = malloc( size);
+	emptyData = malloc( size + 300*1024);
 	if( emptyData)
 	{
+		free( emptyData);
+		emptyData = malloc( size);
+		
 		float vectors[ 9], vectorsB[ 9], interval = 0, origin[ 3], newOrigin[ 3];
 		BOOL equalVector = YES;
 		int o;
