@@ -28,6 +28,7 @@
 
 #define FILESSIZE 512*512*2
 
+static BOOL bugFixedForDNSResolve = NO;
 static int TIMEOUT	= 10;
 #define USEZIP NO
 
@@ -107,6 +108,15 @@ static char *GetPrivateIP()
 	if (self != nil)
 	{
 		int i;
+		OSErr err;       
+		SInt32 osVersion;
+		
+		err = Gestalt ( gestaltSystemVersion, &osVersion );       
+		if ( err == noErr)       
+		{
+			if ( osVersion >= 0x1051UL ) bugFixedForDNSResolve = YES;
+			bugFixedForDNSResolve = NO;
+		}
 		
 		async = [[NSLock alloc] init];
 		asyncWrite = [[NSLock alloc] init];
@@ -1064,12 +1074,12 @@ static char *GetPrivateIP()
 		
 		// Resolve the address and port for this NSNetService
 		
-		#if !__LP64__
-		[aNetService retain];
-		[aNetService setDelegate:self];
-//		[aNetService scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
-		[aNetService resolveWithTimeout: 5];
-		#endif
+		if( bugFixedForDNSResolve)
+		{
+			[aNetService retain];
+			[aNetService setDelegate:self];
+			[aNetService resolveWithTimeout: 5];
+		}
 	}
 	
 	// update interface
@@ -1149,11 +1159,10 @@ static char *GetPrivateIP()
 		}
 		else
 		{
-			#if __LP64__
-			NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", 0L), NSLocalizedString( @"There is currently a bug in MacOS 10.5 for 64-bit application. Bonjour addresses cannot be resolved. Add your OsiriX nodes as fixed addresses in Locations-Preferences.", 0L), NSLocalizedString(@"OK", 0L), 0, 0);
-			#else
-			NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", 0L), NSLocalizedString( @"This address wasn't resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", 0L), NSLocalizedString(@"OK", 0L), 0, 0);
-			#endif
+			if( bugFixedForDNSResolve == NO)
+				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", 0L), NSLocalizedString( @"There is a bug in MacOS 10.5.0 for 64-bit application. Bonjour addresses cannot be resolved. Please update your MacOS to 10.5.1.", 0L), NSLocalizedString(@"OK", 0L), 0, 0);
+			else
+				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", 0L), NSLocalizedString( @"This address wasn't resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", 0L), NSLocalizedString(@"OK", 0L), 0, 0);
 			
 			resolved = NO;
 			succeed = NO;

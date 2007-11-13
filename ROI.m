@@ -48,6 +48,7 @@ static float ROIRegionOpacity, ROITextThickness, ROIThickness, ROIOpacity, ROICo
 static float ROIRegionThickness, ROIRegionColorR, ROIRegionColorG, ROIRegionColorB;
 static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 static BOOL ROIDefaultsLoaded = NO;
+static BOOL splineForROI = NO;
 
 int spline(NSPoint *Pt, int tot, NSPoint **newPt)
 {
@@ -297,6 +298,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt)
 	
 	ROITEXTIFSELECTED = [[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTIFSELECTED"];
 	ROITEXTNAMEONLY = [[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTNAMEONLY"];
+	splineForROI = [[NSUserDefaults standardUserDefaults] boolForKey: @"splineForROI"];
 	
 	ROIDefaultsLoaded = YES;
 }
@@ -4745,6 +4747,9 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 {
 	// available only for ROI types : Open Polygon, Close Polygon, Pencil
 	// for other types, returns the original points
+	
+	if( splineForROI == NO) return points;
+	
 	if(type!=tOPolygon && type!=tCPolygon && type!=tPencil) return points;
 	
 	// available only for polygons with at least 3 points

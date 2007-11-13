@@ -795,22 +795,33 @@ static NSArray*	statesArray = nil;
 		
 		[studiesArray release];
 		
-		// Compute no of images in studies/series
-		if( produceAddedFiles)
-			for( NSManagedObject *study in modifiedStudiesArray ) [study valueForKey:@"noFiles"];
-		
-		if( produceAddedFiles) {
-			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:@"OsiriXAddToDBArray"];
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixAddToDBNotification" object: nil userInfo:userInfo];
+		@try
+		{
+			// Compute no of images in studies/series
+			if( produceAddedFiles)
+				for( NSManagedObject *study in modifiedStudiesArray ) [study valueForKey:@"noFiles"];
 			
-			if( [addedImagesArray count])
-			{
-				[[[NSApplication sharedApplication] dockTile] setBadgeLabel: [NSString stringWithFormat:@"%d", [addedImagesArray count]]];
-				[[[NSApplication sharedApplication] dockTile] display];
+			if( produceAddedFiles) {
+				NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:@"OsiriXAddToDBArray"];
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixAddToDBNotification" object: nil userInfo:userInfo];
 				
-				[appController growlTitle: NSLocalizedString( @"Incoming Files", 0L) description:[NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", 0L), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]] name:@"newfiles"];
+				if( [addedImagesArray count])
+				{
+// Problems? with X-RAID server?
+// 11/13/07 3:59:57 PM OsiriX[9820] *** +[NSSQLObjectID_64l_3 _tryLockViewHierarchyForModification]: unrecognized selector sent to class 0x10c49bfc0 
+// 11/13/07 3:59:57 PM OsiriX[9820] Compute no of images in studies/series: *** +[NSSQLObjectID_64l_3 _tryLockViewHierarchyForModification]: unrecognized selector sent to class 0x10c49bfc0 
+//					[[[NSApplication sharedApplication] dockTile] setBadgeLabel: [NSString stringWithFormat:@"%d", [addedImagesArray count]]];
+//					[[[NSApplication sharedApplication] dockTile] display];
+					
+					[appController growlTitle: NSLocalizedString( @"Incoming Files", 0L) description:[NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", 0L), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]] name:@"newfiles"];
+				}
 			}
 		}
+		@catch( NSException *ne)
+		{
+			NSLog(@"Compute no of images in studies/series: %@", [ne description]);
+		}
+
 		
 		[curPatientUID release];
 		[curStudyID release];
@@ -822,6 +833,8 @@ static NSArray*	statesArray = nil;
 			splash = 0L;
 		}
 		
+		@try
+		{
 		if( [NSDate timeIntervalSinceReferenceDate] - lastSaved > 120) {
 			[self autoCleanDatabaseFreeSpace: self];
 			
@@ -858,6 +871,11 @@ static NSArray*	statesArray = nil;
 					}
 				}
 			}
+		}
+		}
+		@catch( NSException *ne)
+		{
+			NSLog(@"vlToReload vlToRebuild: %@", [ne description]);
 		}
 		
 		[context setStalenessInterval: 1200];
