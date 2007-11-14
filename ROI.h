@@ -369,6 +369,7 @@ enum
 @property(readonly) NSPoint clickPoint;
 
 -(NSMutableArray*)splinePoints;
+-(NSMutableArray*)splinePoints:(float) scale;
 -(NSMutableArray*)splineZPositions;
 
 @end

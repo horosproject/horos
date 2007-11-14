@@ -50,18 +50,20 @@ static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 static BOOL ROIDefaultsLoaded = NO;
 static BOOL splineForROI = NO;
 
-int spline(NSPoint *Pt, int tot, NSPoint **newPt)
+int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 {
 	NSPoint p1, p2;
-	int i, j;
-	float xi, yi;
-	int nb;
-	float *px, *py;
+	long long  i, j;
+	double xi, yi;
+	long long nb;
+	double *px, *py;
 	int ok;
 
-	float *a, b, *c, *cx, *cy, *d, *g, *h;
-	float bet, *gam;
-	float aax, bbx, ccx, ddx, aay, bby, ccy, ddy; // coef of spline
+	double *a, b, *c, *cx, *cy, *d, *g, *h;
+	double bet, *gam;
+	double aax, bbx, ccx, ddx, aay, bby, ccy, ddy; // coef of spline
+
+	if( scale > 5) scale = 5;
 
 	// function spline S(x) = a x3 + bx2 + cx + d
 	// with S continue, S1 continue, S2 continue.
@@ -82,17 +84,47 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt)
 	// initialization of different vectors
 	// element number 0 is not used (except h[0])
 	nb  = tot + 2;
-	a   = malloc(nb*sizeof(float));
-	c   = malloc(nb*sizeof(float));
-	cx  = malloc(nb*sizeof(float));
-	cy  = malloc(nb*sizeof(float));
-	d   = malloc(nb*sizeof(float));
-	g   = malloc(nb*sizeof(float));
-	gam = malloc(nb*sizeof(float));
-	h   = malloc(nb*sizeof(float));
-	px  = malloc(nb*sizeof(float));
-	py  = malloc(nb*sizeof(float));
+	a   = malloc(nb*sizeof(double));	
+	c   = malloc(nb*sizeof(double));	
+	cx  = malloc(nb*sizeof(double));	
+	cy  = malloc(nb*sizeof(double));	
+	d   = malloc(nb*sizeof(double));	
+	g   = malloc(nb*sizeof(double));	
+	gam = malloc(nb*sizeof(double));	
+	h   = malloc(nb*sizeof(double));	
+	px  = malloc(nb*sizeof(double));	
+	py  = malloc(nb*sizeof(double));	
 
+	
+	BOOL failed = NO;
+	
+	if( !a) failed = YES;
+	if( !c) failed = YES;
+	if( !cx) failed = YES;
+	if( !cy) failed = YES;
+	if( !d) failed = YES;
+	if( !g) failed = YES;
+	if( !gam) failed = YES;
+	if( !h) failed = YES;
+	if( !px) failed = YES;
+	if( !py) failed = YES;
+	
+	if( failed)
+	{
+		if( !a) 		free(a);
+		if( !c) 		free(c);
+		if( !cx)		free(cx);
+		if( !cy)		free(cy);
+		if( !d) 		free(d);
+		if( !g) 		free(g);
+		if( !gam)		free(gam);
+		if( !h) 		free(h);
+		if( !px)		free(px);
+		if( !py)		free(py);
+		
+		return 0;
+	}
+	
 	//initialisation
 	for (i=0; i<nb; i++)
 		h[i] = a[i] = cx[i] = d[i] = c[i] = cy[i] = g[i] = gam[i] = 0.0;
@@ -117,7 +149,23 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt)
 	for (i=1; i<nb; i++) 
 	if (px[i] == px[i-1] && py[i] == py[i-1]) {ok = FALSE; break;}
 	if (ok == FALSE)
+		failed = YES;
+		
+	if( failed)
+	{
+		if( !a) 		free(a);
+		if( !c) 		free(c);
+		if( !cx)		free(cx);
+		if( !cy)		free(cy);
+		if( !d) 		free(d);
+		if( !g) 		free(g);
+		if( !gam)		free(gam);
+		if( !h) 		free(h);
+		if( !px)		free(px);
+		if( !py)		free(py);
+		
 		return 0;
+	}
 			 
 	// define hi (distance between points) h0 distance between 0 and 1.
 	// di distance of point i from start point
@@ -125,7 +173,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt)
 	{
 		xi = px[i+1] - px[i];
 		yi = py[i+1] - py[i];
-		h[i] = (float) sqrt(xi*xi + yi*yi);
+		h[i] = (double) sqrt(xi*xi + yi*yi) * scale;
 		d[i+1] = d[i] + h[i];
 	}
 
@@ -209,8 +257,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt)
 		
 		for (j = 1; j <= h[i]; j++)
 		{
-			p2.x = (aax + bbx * (float)j + ccx * (float)(j * j) + ddx * (float)(j * j * j));
-			p2.y = (aay + bby * (float)j + ccy * (float)(j * j) + ddy * (float)(j * j * j));
+			p2.x = (aax + bbx * (double)j + ccx * (double)(j * j) + ddx * (double)(j * j * j));
+			p2.y = (aay + bby * (double)j + ccy * (double)(j * j) + ddy * (double)(j * j * j));
 			(*newPt)[tt]=p2;
 			tt++;
 		}//endfor points in 1 interval
@@ -1605,7 +1653,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt)
 			case tAngle:
 			{
 				float distance;
-				NSMutableArray *splinePoints = [self splinePoints];
+				NSMutableArray *splinePoints = [self splinePoints: scale];
 				
 				for( int i = 0; i < ([splinePoints count] - 1); i++ )	{
 					
@@ -1626,7 +1674,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt)
 			case tPencil:
 			{
 				float distance;
-				NSMutableArray *splinePoints = [self splinePoints];
+				NSMutableArray *splinePoints = [self splinePoints: scale];
 				
 				int i;
 				for( i = 0; i < ([splinePoints count] - 1); i++ )	{
@@ -4023,11 +4071,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( type == tCPolygon || type == tPencil)	glBegin(GL_LINE_LOOP);
 			else										glBegin(GL_LINE_STRIP);
 			
-			NSMutableArray *splinePoints = [self splinePoints];
+			NSMutableArray *splinePoints = [self splinePoints: scaleValue];
 						
 			for(long i=0; i<[splinePoints count]; i++)
 			{
-				glVertex2f( ([[splinePoints objectAtIndex:i] x]-offsetx)*scaleValue , ([[splinePoints objectAtIndex:i] y]-offsety)*scaleValue);
+				glVertex2d( ((double) [[splinePoints objectAtIndex:i] x]- (double) offsetx)*(double) scaleValue , ((double) [[splinePoints objectAtIndex:i] y]-(double) offsety)*(double) scaleValue);
 			}
 			glEnd();
 						
@@ -4745,7 +4793,7 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	canResizeLayer = boo;
 }
 
--(NSMutableArray*)splinePoints;
+-(NSMutableArray*)splinePoints:(float) scale;
 {
 	// activated in the prefs
 	if( splineForROI == NO) return points;
@@ -4765,11 +4813,12 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	
 	for(long i=0; i<[points count]; i++)
 		pts[i] = [[points objectAtIndex:i] point];
+	
 	if(type!=tOPolygon)
 		pts[[points count]] = [[points objectAtIndex:0] point]; // we add the first point as the last one to smooth the spline
 							
 	NSPoint *splinePts;
-	long newNb = spline(pts, nb, &splinePts);
+	long newNb = spline(pts, nb, &splinePts, scale);
 	
 	NSMutableArray *newPoints = [NSMutableArray array];
 	for(long i=0; i<newNb; i++)
@@ -4780,6 +4829,10 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	if(newNb) free(splinePts);
 	
 	return newPoints;
+}
+-(NSMutableArray*)splinePoints;
+{
+	return [self splinePoints: 1.0];
 }
 
 -(NSMutableArray*)splineZPositions;
@@ -4806,7 +4859,7 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 		pts[[zPositions count]] = NSMakePoint([[zPositions objectAtIndex:0] floatValue], 0.0); // we add the first point as the last one to smooth the spline
 							
 	NSPoint *splinePts;
-	long newNb = spline(pts, nb, &splinePts);
+	long newNb = spline(pts, nb, &splinePts, 1);
 	
 	NSMutableArray *newPoints = [NSMutableArray array];
 	for(long i=0; i<newNb; i++)
@@ -4818,5 +4871,4 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	
 	return newPoints;
 }
-
 @end

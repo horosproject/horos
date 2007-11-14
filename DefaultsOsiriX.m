@@ -894,6 +894,8 @@ static NSHost *currentHost = 0L;
 	// ** Burn Supplementary Folder	
 	[defaultValues setObject: @"0" forKey: @"Burn Supplementary Folder"];
 	
+	[defaultValues setObject: @"1" forKey: @"splineForROI"];
+	
 	// ** Supplementary Burn Path	
 	[defaultValues setObject: @"" forKey: @"Supplementary Burn Path"];
 	

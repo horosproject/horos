@@ -241,6 +241,12 @@ static NSArray*	statesArray = nil;
 	}
 }
 
+- (void) setDockLabel:(NSString*) label
+{
+	[[[NSApplication sharedApplication] dockTile] setBadgeLabel: label];
+	[[[NSApplication sharedApplication] dockTile] display];
+}
+					
 - (void) callAddFilesToDatabaseSafe: (NSArray*) newFilesArray
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
@@ -795,6 +801,8 @@ static NSArray*	statesArray = nil;
 		
 		[studiesArray release];
 		
+		NSString *dockLabel = 0L;
+		
 		@try
 		{
 			// Compute no of images in studies/series
@@ -807,12 +815,8 @@ static NSArray*	statesArray = nil;
 				
 				if( [addedImagesArray count])
 				{
-// Problems? with X-RAID server?
-// 11/13/07 3:59:57 PM OsiriX[9820] *** +[NSSQLObjectID_64l_3 _tryLockViewHierarchyForModification]: unrecognized selector sent to class 0x10c49bfc0 
-// 11/13/07 3:59:57 PM OsiriX[9820] Compute no of images in studies/series: *** +[NSSQLObjectID_64l_3 _tryLockViewHierarchyForModification]: unrecognized selector sent to class 0x10c49bfc0 
-//					[[[NSApplication sharedApplication] dockTile] setBadgeLabel: [NSString stringWithFormat:@"%d", [addedImagesArray count]]];
-//					[[[NSApplication sharedApplication] dockTile] display];
-					
+					dockLabel = [NSString stringWithFormat:@"%d", [addedImagesArray count]];
+				
 					[appController growlTitle: NSLocalizedString( @"Incoming Files", 0L) description:[NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", 0L), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]] name:@"newfiles"];
 				}
 			}
@@ -882,7 +886,11 @@ static NSArray*	statesArray = nil;
 		[context unlock];
 		[context release];
 		
-		if( addFailed == NO) {
+		if( addFailed == NO)
+		{
+			if( dockLabel)
+				[self performSelectorOnMainThread:@selector( setDockLabel:) withObject: dockLabel waitUntilDone:NO];
+			
 			if( mainThread == [NSThread currentThread])	{
 				// Purge viewersListToReload & viewersListToReload arrays
 				[self newFilesGUIUpdate: self];
