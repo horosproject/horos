@@ -14893,8 +14893,10 @@ int i,j,l;
 			{
 				if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
 				{
+//					if( [[winList objectAtIndex:i] toolbar])
+//						[[winList objectAtIndex:i] toggleToolbarShown: self];
 					if( [[winList objectAtIndex:i] toolbar])
-						[[winList objectAtIndex:i] toggleToolbarShown: self];
+						[[winList objectAtIndex:i] setToolbar: 0L];
 				}
 			}
 		}
