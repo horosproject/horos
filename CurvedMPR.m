@@ -12,9 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
+#import "WaitRendering.h"
 #import "CurvedMPR.h"
 
 #import "ROI.h"
@@ -74,10 +72,6 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	[pixList release];
 	[volumeData release];
 	[selectedROI release];
-	[newPixList release];
-	[newDcmList release];
-	[newPixListPer release];
-	[newDcmListPer release];
 	
 	NSLog(@"Curved MPR Controller released");
 	
@@ -119,193 +113,201 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	return selectedROI;
 }
 
-- (void) compute
-{
-	DCMPix		*firstObject = [pixList objectAtIndex:0];
-	float		*emptyData, *curData;
-	double		length;
-	long		size, newX, newY, i, x, y, z, xInc, noOfPoints, thick;
-	NSData		*newData;
-	//NSArray		*pts = [selectedROI points];
-	NSArray		*pts = [selectedROI splinePoints];
-	NSLog(@"[pts count] : %d", [pts count]);
-	// Compute size of the curved MPR image
-	
-	newY = [pixList count];
-	
-	length = 0;
-	for( i = 0; i < [pts count]-1; i++)
-	{
-		length += [self lengthPoints: [[pts objectAtIndex:i] point]  :[[pts objectAtIndex:i+1] point] :[firstObject pixelRatio]];
-	}
-	newX = length + 4;
-	newX /=4;
-	newX *=4;
-	
-	size = newX * newY * sizeof( float);
-	
-	[newPixList removeAllObjects];
-	[newDcmList removeAllObjects];
-	
-	// Allocate data for curved MPR image
-	emptyData = (float*) malloc( size * thickSlab);
-	if( emptyData)
-	{
-		newData = [NSData dataWithBytesNoCopy:emptyData length:size*thickSlab freeWhenDone:YES];
-		
-		for( thick = 0; thick < thickSlab; thick++)
-		{
-			// *** *** *** *** Create Image Data
-			
-			curData = emptyData + thick * newX * newY;
-			
-			xInc = 0;
-			
-			for( i = 0; i < [pts count]-1; i++)
-			{
-				double	xPos, yPos;
-				double	sideX, sideY, startX, startY;
-				double	angle, perAngle;
-				long	pos;
-				
-				length = [self lengthPoints: [[pts objectAtIndex:i] point]  :[[pts objectAtIndex:i+1] point] :[firstObject pixelRatio]];
-				
-				sideX = [[pts objectAtIndex:i] x] - [[pts objectAtIndex:i+1] x];
-				sideY = [[pts objectAtIndex:i] y] - [[pts objectAtIndex:i+1] y];
-				
-				startX = [[pts objectAtIndex:i] x];
-				startY = [[pts objectAtIndex:i] y];
-				
-				angle = atan( sideY / sideX);
-				
-				perAngle = 90*deg2rad - angle;
-				
-				if( sideX < 0)
-				{
-					startX += 1.5 * cos( perAngle) * (float) (thick - (thickSlab-1)/2);
-					startY -= 1.5 * sin (perAngle) * (float) (thick - (thickSlab-1)/2);
-				}
-				else
-				{
-					startX -= 1.5 * cos( perAngle) * (float) (thick - (thickSlab-1)/2);
-					startY += 1.5 * sin (perAngle) * (float) (thick - (thickSlab-1)/2);
-				}
-				
-				noOfPoints = length;
-				for( x = 0; x < noOfPoints; x++)
-				{
-					double	rightLeftX, rightLeftY;
-					double	X1, X2, Y1, Y2;
-					long	xInt, yInt, width, height;
-					
-					if( sideX >= 0)
-					{
-						xPos = startX - x * cos( angle);
-						yPos = startY - x * sin( angle);
-					}
-					else
-					{
-						xPos = startX + x * cos( angle);
-						yPos = startY + x * sin( angle);
-					}
-					
-					xInt = xPos;
-					yInt = yPos;
-					
-					rightLeftX = xPos - (double) xInt;
-					rightLeftY = yPos - (double) yInt;
-					
-					width = [[pixList objectAtIndex: 0] pwidth];
-					height = [[pixList objectAtIndex: 0] pheight];
-					
-					if( yInt >= 0 && yInt < height-1 && xInt >= 0 && xInt < width+1)
-					{
-						long maxY = [pixList count];
-						long yx1 = yInt * width + xInt+1;
-						long yx = yInt * width + xInt;
-						long y1x1 =  (yInt+1) * width + xInt+1;
-						long y1x = (yInt+1) * width + xInt;
-						double rightLeftXInv = 1.0 - rightLeftX;
-						double rightLeftYInv = 1.0 - rightLeftY;
-					
-						if( [firstObject sliceInterval] > 0)
-						{
-							for( y = 0; y < maxY ; y++)
-							{
-								float *srcIm = [[pixList objectAtIndex: y] fImage];
-								
-								*(curData + x + xInc + newX*(maxY-y-1)) = (*(srcIm + y1x1) * rightLeftX + *(srcIm + y1x) * rightLeftXInv) * rightLeftY  + (*(srcIm + yx1) * rightLeftX + *(srcIm + yx) * rightLeftXInv) * rightLeftYInv;
-							}
-						}
-						else
-						{
-							for( y = 0; y < maxY ; y++)
-							{
-								float *srcIm = [[pixList objectAtIndex: y] fImage];
-								
-								*(curData + x + xInc + newX*y) = (*(srcIm + y1x1) * rightLeftX + *(srcIm + y1x) * rightLeftXInv) * rightLeftY  + (*(srcIm + yx1) * rightLeftX + *(srcIm + yx) * rightLeftXInv) * rightLeftYInv;
-							}
-						}
-					}
-					else
-					{
-						for( y = 0; y < [pixList count] ; y++)
-						{
-							*(curData + x + xInc + newX*y) = -1000.0;
-						}
-					}
-				}
-				
-				xInc += noOfPoints;
-			}
-			
-			DCMPix	*pix = [[DCMPix alloc] initwithdata:curData :32 :newX :newY :[firstObject pixelSpacingX] :fabs( [firstObject sliceInterval]) :0 :0 :0 :YES];
-			[pix changeWLWW: [[roiViewer imageView] curWL] : [[roiViewer imageView] curWW]];
-			
-			[pix setTot: thickSlab];
-			[pix setFrameNo: thick];
-			[pix setID: thick];
-			[pix copySUVfrom: firstObject];
-			
-		//	[pix setSliceLocation: thick * [firstObject pixelSpacingX]];
-			
-			float newVector[ 9];
-			for( i = 0; i < 9; i++) newVector[ i] = 0;
-			[pix setOrientation: newVector];
-			
-			[newPixList addObject: pix];
-			[newDcmList addObject: [fileList objectAtIndex: 0]];
-			
-			[pix release];
-		}
-		
-		if( firstTime == YES)
-		{
-			firstTime = NO;
-			
-			// CREATE A SERIES
-			viewerController = [[ViewerController alloc] viewCinit:newPixList :newDcmList :newData];
-			
-			[viewerController showWindowTransition];
-			[viewerController startLoadImageThread]; // Start async reading of all images
-			[viewerController setCurvedController: self];
-			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-				[appController tileWindows: self];
-			else
-				[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
-		}
-		else
-		{
-			[viewerController changeImageData: newPixList :newDcmList :newData :NO];
-		}
-		
-		[viewerController setImageIndex: (thickSlab-1)/2];
-	}
-}
+//- (void) compute
+//{
+//	DCMPix		*firstObject = [pixList objectAtIndex:0];
+//	float		*emptyData, *curData;
+//	double		length;
+//	long		size, newX, newY, i, x, y, z, xInc, noOfPoints, thick;
+//	NSData		*newData;
+//	//NSArray		*pts = [selectedROI points];
+//	NSArray		*pts = [selectedROI splinePoints];
+//	NSLog(@"[pts count] : %d", [pts count]);
+//	// Compute size of the curved MPR image
+//	
+//	newY = [pixList count];
+//	
+//	length = 0;
+//	for( i = 0; i < [pts count]-1; i++)
+//	{
+//		length += [self lengthPoints: [[pts objectAtIndex:i] point]  :[[pts objectAtIndex:i+1] point] :[firstObject pixelRatio]];
+//	}
+//	newX = length + 4;
+//	newX /=4;
+//	newX *=4;
+//	
+//	size = newX * newY * sizeof( float);
+//	
+//	[newPixList removeAllObjects];
+//	[newDcmList removeAllObjects];
+//	
+//	// Allocate data for curved MPR image
+//	emptyData = (float*) malloc( size * thickSlab);
+//	if( emptyData)
+//	{
+//		newData = [NSData dataWithBytesNoCopy:emptyData length:size*thickSlab freeWhenDone:YES];
+//		
+//		for( thick = 0; thick < thickSlab; thick++)
+//		{
+//			// *** *** *** *** Create Image Data
+//			
+//			curData = emptyData + thick * newX * newY;
+//			
+//			xInc = 0;
+//			
+//			for( i = 0; i < [pts count]-1; i++)
+//			{
+//				double	xPos, yPos;
+//				double	sideX, sideY, startX, startY;
+//				double	angle, perAngle;
+//				long	pos;
+//				
+//				length = [self lengthPoints: [[pts objectAtIndex:i] point]  :[[pts objectAtIndex:i+1] point] :[firstObject pixelRatio]];
+//				
+//				sideX = [[pts objectAtIndex:i] x] - [[pts objectAtIndex:i+1] x];
+//				sideY = [[pts objectAtIndex:i] y] - [[pts objectAtIndex:i+1] y];
+//				
+//				startX = [[pts objectAtIndex:i] x];
+//				startY = [[pts objectAtIndex:i] y];
+//				
+//				angle = atan( sideY / sideX);
+//				
+//				perAngle = 90*deg2rad - angle;
+//				
+//				if( sideX < 0)
+//				{
+//					startX += 1.5 * cos( perAngle) * (float) (thick - (thickSlab-1)/2);
+//					startY -= 1.5 * sin (perAngle) * (float) (thick - (thickSlab-1)/2);
+//				}
+//				else
+//				{
+//					startX -= 1.5 * cos( perAngle) * (float) (thick - (thickSlab-1)/2);
+//					startY += 1.5 * sin (perAngle) * (float) (thick - (thickSlab-1)/2);
+//				}
+//				
+//				noOfPoints = length;
+//				for( x = 0; x < noOfPoints; x++)
+//				{
+//					double	rightLeftX, rightLeftY;
+//					double	X1, X2, Y1, Y2;
+//					long	xInt, yInt, width, height;
+//					
+//					if( sideX >= 0)
+//					{
+//						xPos = startX - x * cos( angle);
+//						yPos = startY - x * sin( angle);
+//					}
+//					else
+//					{
+//						xPos = startX + x * cos( angle);
+//						yPos = startY + x * sin( angle);
+//					}
+//					
+//					xInt = xPos;
+//					yInt = yPos;
+//					
+//					rightLeftX = xPos - (double) xInt;
+//					rightLeftY = yPos - (double) yInt;
+//					
+//					width = [[pixList objectAtIndex: 0] pwidth];
+//					height = [[pixList objectAtIndex: 0] pheight];
+//					
+//					if( yInt >= 0 && yInt < height-1 && xInt >= 0 && xInt < width+1)
+//					{
+//						long maxY = [pixList count];
+//						long yx1 = yInt * width + xInt+1;
+//						long yx = yInt * width + xInt;
+//						long y1x1 =  (yInt+1) * width + xInt+1;
+//						long y1x = (yInt+1) * width + xInt;
+//						double rightLeftXInv = 1.0 - rightLeftX;
+//						double rightLeftYInv = 1.0 - rightLeftY;
+//					
+//						if( [firstObject sliceInterval] > 0)
+//						{
+//							for( y = 0; y < maxY ; y++)
+//							{
+//								float *srcIm = [[pixList objectAtIndex: y] fImage];
+//								
+//								*(curData + x + xInc + newX*(maxY-y-1)) = (*(srcIm + y1x1) * rightLeftX + *(srcIm + y1x) * rightLeftXInv) * rightLeftY  + (*(srcIm + yx1) * rightLeftX + *(srcIm + yx) * rightLeftXInv) * rightLeftYInv;
+//							}
+//						}
+//						else
+//						{
+//							for( y = 0; y < maxY ; y++)
+//							{
+//								float *srcIm = [[pixList objectAtIndex: y] fImage];
+//								
+//								*(curData + x + xInc + newX*y) = (*(srcIm + y1x1) * rightLeftX + *(srcIm + y1x) * rightLeftXInv) * rightLeftY  + (*(srcIm + yx1) * rightLeftX + *(srcIm + yx) * rightLeftXInv) * rightLeftYInv;
+//							}
+//						}
+//					}
+//					else
+//					{
+//						for( y = 0; y < [pixList count] ; y++)
+//						{
+//							*(curData + x + xInc + newX*y) = -1000.0;
+//						}
+//					}
+//				}
+//				
+//				xInc += noOfPoints;
+//			}
+//			
+//			DCMPix	*pix = [[DCMPix alloc] initwithdata:curData :32 :newX :newY :[firstObject pixelSpacingX] :fabs( [firstObject sliceInterval]) :0 :0 :0 :YES];
+//			[pix changeWLWW: [[roiViewer imageView] curWL] : [[roiViewer imageView] curWW]];
+//			
+//			[pix setTot: thickSlab];
+//			[pix setFrameNo: thick];
+//			[pix setID: thick];
+//			[pix copySUVfrom: firstObject];
+//			
+//		//	[pix setSliceLocation: thick * [firstObject pixelSpacingX]];
+//			
+//			float newVector[ 9];
+//			for( i = 0; i < 9; i++) newVector[ i] = 0;
+//			[pix setOrientation: newVector];
+//			
+//			[newPixList addObject: pix];
+//			[newDcmList addObject: [fileList objectAtIndex: 0]];
+//			
+//			[pix release];
+//		}
+//		
+//		if( firstTime == YES)
+//		{
+//			firstTime = NO;
+//			
+//			// CREATE A SERIES
+//			viewerController = [[ViewerController alloc] viewCinit:newPixList :newDcmList :newData];
+//			
+//			[viewerController showWindowTransition];
+//			[viewerController startLoadImageThread]; // Start async reading of all images
+//			[viewerController setCurvedController: self];
+//			
+//			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+//				[appController tileWindows: self];
+//			else
+//				[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
+//		}
+//		else
+//		{
+//			[viewerController changeImageData: newPixList :newDcmList :newData :NO];
+//		}
+//		
+//		[viewerController setImageIndex: (thickSlab-1)/2];
+//	}
+//}
 
 - (void) computePerpendicular
 {
+	NSMutableArray			*newDcmList, *newPixList;
+	NSMutableArray			*newDcmListPer, *newPixListPer;
+
+	newPixList = [NSMutableArray arrayWithCapacity: 0];
+	newDcmList = [NSMutableArray arrayWithCapacity: 0];
+	newPixListPer = [NSMutableArray arrayWithCapacity: 0];
+	newDcmListPer = [NSMutableArray arrayWithCapacity: 0];
+
 	DCMPix		*firstObject = [pixList objectAtIndex:0];
 	float		*emptyData, *curData;
 	double		length;
@@ -594,6 +596,9 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 
 - (void) computeForView:(short)view
 {
+	NSMutableArray			*newDcmList, *newPixList;
+	NSMutableArray			*newDcmListPer, *newPixListPer;
+	
 	NSLog(@"computeForView : %d", view);
 	/*
 		values for 'view':
@@ -601,7 +606,12 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 		1 - coronal
 		2 - saggital
 	*/
-	
+
+	newPixList = [NSMutableArray arrayWithCapacity: 0];
+	newDcmList = [NSMutableArray arrayWithCapacity: 0];
+	newPixListPer = [NSMutableArray arrayWithCapacity: 0];
+	newDcmListPer = [NSMutableArray arrayWithCapacity: 0];
+
 	DCMPix		*firstObject = [pixList objectAtIndex:0];
 	float		*emptyData, *curData;
 	double		length;
@@ -1040,6 +1050,9 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	
 	self = [super init];
 	
+	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing curved-MPR...", nil)];
+	[wait showWindow:self];
+	
 	firstTime = YES;
 	perPendicular = NO;
 	
@@ -1081,11 +1094,6 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	
 	[selectedROI retain];
 	
-	newPixList = [[NSMutableArray arrayWithCapacity: 0] retain];
-	newDcmList = [[NSMutableArray arrayWithCapacity: 0] retain];
-	newPixListPer = [[NSMutableArray arrayWithCapacity: 0] retain];
-	newDcmListPer = [[NSMutableArray arrayWithCapacity: 0] retain];
-
 	// Compute
 	if(axial)
 		[self computeForView:0];
@@ -1096,7 +1104,11 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	if(saggital)
 		[self computeForView:2];
 	//firstTime = YES;
-	
+
+	[wait close];
+	[wait release];
+
+
 	return self;
 }
 
@@ -1123,11 +1135,6 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	
 	selectedROI = roi;
 	[selectedROI retain];
-	
-	newPixList = [[NSMutableArray arrayWithCapacity: 0] retain];
-	newDcmList = [[NSMutableArray arrayWithCapacity: 0] retain];
-	newPixListPer = [[NSMutableArray arrayWithCapacity: 0] retain];
-	newDcmListPer = [[NSMutableArray arrayWithCapacity: 0] retain];
 	
 	// Compute
 	[self computePerpendicular];

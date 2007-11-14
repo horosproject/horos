@@ -31,17 +31,14 @@
 	short					curMovieIndex, maxMovieIndex;
 	long					thickSlab;
 	ViewerController		*viewerController, *roiViewer;
-	
-	NSMutableArray			*newDcmList, *newPixList;
-	NSMutableArray			*newDcmListPer, *newPixListPer;
-	
+		
 	long					perSize, perInterval;
 
 	BOOL					firstTime, perPendicular;
 }
 
 - (ROI*) roi;
-- (void) compute;
+//- (void) compute;
 - (void) computeForView:(short)view;
 - (void) recompute;
 - (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t;
