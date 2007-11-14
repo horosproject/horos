@@ -4185,14 +4185,17 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 			{
-				NSPoint tempPt = [[[[NSApp currentEvent] window] contentView] convertPoint: [NSEvent mouseLocation] toView: curView];
+				[curView window];
+				
+				NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: 0L];
 				tempPt.y = [curView drawingFrameRect].size.height - tempPt.y ;
 				tempPt = [curView ConvertFromView2GL:tempPt];
 				
 				glColor3f (0.5f, 0.5f, 1.0f);
 				glPointSize( (1 + sqrt( thickness))*3.5);
 				glBegin( GL_POINTS);
-				for( long i = 0; i < [points count]; i++) {
+				for( long i = 0; i < [points count]; i++)
+				{
 					if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
 					else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/thickness :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
 					else glColor3f (0.5f, 0.5f, 1.0f);
