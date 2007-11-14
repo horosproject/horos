@@ -3768,7 +3768,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 				if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 				{
-					NSPoint tempPt = [[[[NSApp currentEvent] window] contentView] convertPoint: [NSEvent mouseLocation] toView: curView];
+					NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: 0L];
 					tempPt.y = [curView drawingFrameRect].size.height - tempPt.y ;
 					tempPt = [curView ConvertFromView2GL:tempPt];
 					
@@ -4038,7 +4038,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			//ROI MODE
 			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 			{
-				NSPoint tempPt = [[[[NSApp currentEvent] window] contentView] convertPoint: [NSEvent mouseLocation] toView: curView];
+				NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: 0L];
 				tempPt.y = [curView drawingFrameRect].size.height - tempPt.y ;
 				tempPt = [curView ConvertFromView2GL:tempPt];
 				
