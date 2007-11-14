@@ -622,13 +622,14 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	}
 	else if(view==1) // coronal
 	{
+		pts = [selectedROI points];
 		newY = [firstObject pheight];
 		for(i=0; i<[pts count]-1; i++)
 		{
 			NSPoint ptA = [[pts objectAtIndex:i] point];
 			NSPoint ptB = [[pts objectAtIndex:i+1] point];
-			NSPoint newPtA = NSMakePoint(ptA.x,[[[selectedROI splineZPositions] objectAtIndex:i] floatValue]);
-			NSPoint newPtB = NSMakePoint(ptB.x,[[[selectedROI splineZPositions] objectAtIndex:i+1] floatValue]);
+			NSPoint newPtA = NSMakePoint(ptA.x,[[[selectedROI zPositions] objectAtIndex:i] floatValue]);
+			NSPoint newPtB = NSMakePoint(ptB.x,[[[selectedROI zPositions] objectAtIndex:i+1] floatValue]);
 			//float newRatio = [[selectedROI pix] sliceInterval] / [[selectedROI pix] pixelSpacingX];
 			double newRatio = [firstObject pixelRatio];
 			length += [self lengthPoints:newPtA :newPtB :newRatio];
@@ -636,13 +637,14 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	}
 	else if(view==2) // saggital
 	{
+		pts = [selectedROI points];
 		newY = [firstObject pwidth];
 		for(i=0; i<[pts count]-1; i++)
 		{
 			NSPoint ptA = [[pts objectAtIndex:i] point];
 			NSPoint ptB = [[pts objectAtIndex:i+1] point];
-			NSPoint newPtA = NSMakePoint(ptA.y,[[[selectedROI splineZPositions] objectAtIndex:i] floatValue]);
-			NSPoint newPtB = NSMakePoint(ptB.y,[[[selectedROI splineZPositions] objectAtIndex:i+1] floatValue]);
+			NSPoint newPtA = NSMakePoint(ptA.y,[[[selectedROI zPositions] objectAtIndex:i] floatValue]);
+			NSPoint newPtB = NSMakePoint(ptB.y,[[[selectedROI zPositions] objectAtIndex:i+1] floatValue]);
 			//float newRatio = [[selectedROI pix] sliceInterval] / [[selectedROI pix] pixelSpacingY];
 			double newRatio = [firstObject pixelRatio];
 			length += [self lengthPoints:newPtA :newPtB :newRatio];
@@ -716,10 +718,11 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 						double newRatio;
 						if(view==1) // coronal
 						{
+							pts = [selectedROI points];
 							ptA = [[pts objectAtIndex:i] point];
 							ptB = [[pts objectAtIndex:i+j] point];
-							newPtA = NSMakePoint(ptA.x,[[[selectedROI splineZPositions] objectAtIndex:i] floatValue]);
-							newPtB = NSMakePoint(ptB.x,[[[selectedROI splineZPositions] objectAtIndex:i+j] floatValue]);
+							newPtA = NSMakePoint(ptA.x,[[[selectedROI zPositions] objectAtIndex:i] floatValue]);
+							newPtB = NSMakePoint(ptB.x,[[[selectedROI zPositions] objectAtIndex:i+j] floatValue]);
 							//newRatio = [[selectedROI pix] sliceInterval] / [[selectedROI pix] pixelSpacingX];
 							newRatio = [firstObject pixelRatio];				
 							width = [[pixList objectAtIndex: 0] pwidth];
@@ -727,10 +730,11 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 						}
 						else if(view==2) // saggital
 						{
+							pts = [selectedROI points];
 							ptA = [[pts objectAtIndex:i] point];
 							ptB = [[pts objectAtIndex:i+j] point];
-							newPtA = NSMakePoint(ptA.y,[[[selectedROI splineZPositions] objectAtIndex:i] floatValue]);
-							newPtB = NSMakePoint(ptB.y,[[[selectedROI splineZPositions] objectAtIndex:i+j] floatValue]);
+							newPtA = NSMakePoint(ptA.y,[[[selectedROI zPositions] objectAtIndex:i] floatValue]);
+							newPtB = NSMakePoint(ptB.y,[[[selectedROI zPositions] objectAtIndex:i+j] floatValue]);
 							//newRatio = [[selectedROI pix] sliceInterval] / [[selectedROI pix] pixelSpacingY];
 							newRatio = [firstObject pixelRatio];
 							width = [[pixList objectAtIndex: 0] pheight];
@@ -903,8 +907,6 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 				xInc += noOfPoints;
 			}
 			
-			NSLog(@"%f", remainingLength);
-			
 			float xSpace, ySpace;
 			if(view==0)
 			{
@@ -971,7 +973,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 
 - (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t
 {
-	[self initWithObjects:pix :files :vData :roi :roiV :t forAxial:YES forCoronal:YES forSaggital:YES];
+	return [self initWithObjects:pix :files :vData :roi :roiV :t forAxial:YES forCoronal:YES forSagittal:YES];
 }
 
 - (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t forView:(short)view
@@ -1025,14 +1027,14 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 //	[self computeForView:view];
 
 	if(view==0)
-		[self initWithObjects:pix :files :vData :roi :roiV :t forAxial:YES forCoronal:NO forSaggital:NO];
+		return [self initWithObjects:pix :files :vData :roi :roiV :t forAxial:YES forCoronal:NO forSagittal:NO];
 	else if(view==1)
-		[self initWithObjects:pix :files :vData :roi :roiV :t forAxial:NO forCoronal:YES forSaggital:NO];
+		return [self initWithObjects:pix :files :vData :roi :roiV :t forAxial:NO forCoronal:YES forSagittal:NO];
 	else if(view==2)
-		[self initWithObjects:pix :files :vData :roi :roiV :t forAxial:NO forCoronal:NO forSaggital:YES];
+		return [self initWithObjects:pix :files :vData :roi :roiV :t forAxial:NO forCoronal:NO forSagittal:YES];
 }
 
-- (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t forAxial:(BOOL)axial forCoronal:(BOOL)coronal forSaggital:(BOOL)saggital
+- (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t forAxial:(BOOL)axial forCoronal:(BOOL)coronal forSagittal:(BOOL)saggital
 {
 	long i;
 	
@@ -1050,10 +1052,15 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	volumeData = 0L;
 
 	float factor = 0.5;
-	while ( ![ViewerController resampleDataFromPixArray:pix fileArray:files inPixArray:pixList fileArray:fileList data:&volumeData withXFactor:factor yFactor:factor zFactor:factor] && factor<=0.8)
+	while ( ![ViewerController resampleDataFromPixArray:pix fileArray:files inPixArray:pixList fileArray:fileList data:&volumeData withXFactor:factor yFactor:factor zFactor:1.0] && factor<=0.8)
+	{
 		factor += 0.1;
+	}
 	
-	if(factor > 0.8)
+	BOOL didResample = YES;
+	if(factor > 0.8) didResample = NO;
+	
+	if(!didResample)
 	{
 		fileList = [NSMutableArray arrayWithArray:files];
 		pixList = pix;
@@ -1061,7 +1068,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	}
 	else
 	{
-		[[pixList objectAtIndex:0] setSliceInterval: [[pix objectAtIndex: 0] sliceInterval] * factor];
+		[[pixList objectAtIndex:0] setSliceInterval: [[pix objectAtIndex: 0] sliceInterval]];
 		NSLog(@"factor : %f", factor);
 	}
 	[fileList retain];	
@@ -1089,6 +1096,8 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	if(saggital)
 		[self computeForView:2];
 	//firstTime = YES;
+	
+	return self;
 }
 
 - (id) initWithObjectsPer:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) i :(long) s
@@ -1122,6 +1131,8 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	
 	// Compute
 	[self computePerpendicular];
+	
+	return self;
 }
 
 - (void) recompute

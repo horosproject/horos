@@ -4833,6 +4833,7 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	
 	return newPoints;
 }
+
 -(NSMutableArray*)splinePoints;
 {
 	return [self splinePoints: 1.0];
@@ -4857,7 +4858,8 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	NSPoint pts[nb];
 	
 	for(long i=0; i<[zPositions count]; i++)
-		pts[i] = NSMakePoint([[zPositions objectAtIndex:i] floatValue], 0.0);
+		pts[i] = NSMakePoint([[zPositions objectAtIndex:i] floatValue], i);
+	
 	if(type!=tOPolygon)
 		pts[[zPositions count]] = NSMakePoint([[zPositions objectAtIndex:0] floatValue], 0.0); // we add the first point as the last one to smooth the spline
 							
@@ -4874,4 +4876,5 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	
 	return newPoints;
 }
+
 @end

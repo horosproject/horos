@@ -1701,7 +1701,9 @@ static BOOL initialized = NO;
 				NSString *reportsDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/REPORTS/"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:reportsDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:reportsDirectory attributes:nil];
 				
-				NSString *roisDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/ROIs/"];
+				NSString *roisDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/ROIs"];
+				BOOL isDir = YES;
+				if ([[NSFileManager defaultManager] fileExistsAtPath:roisDirectory isDirectory: &isDir] == YES && isDir == NO) [[NSFileManager defaultManager] removeFileAtPath: roisDirectory handler: nil];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:roisDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:roisDirectory attributes:nil];
 				
 				// DELETE & CREATE THE TEMP DIRECTORY...
