@@ -20,7 +20,7 @@
 #import <Cocoa/Cocoa.h>
 #import "DCMObject.h"
 
-
+/** DCMObject category for dealing with Presentation States */
 @interface   DCMObject (DCMPresentationState) 
 
 - (BOOL)isPresentationState;
@@ -42,14 +42,16 @@
 //BoundingBox
 - (NSPoint)boundingBoxTopLeftHandCornerForObject:(DCMObject *)object;
 - (NSPoint)boundingBoxBottomRightHandCornerForObject:(DCMObject *)object;
-- (NSString *)boundingBoxTextHorizontalJustificationForObject:(DCMObject *)object;
-/*Justification Values
-	LEFT
-	RIGHT
-	CENTER
-*/
 
-//graphic annotation sequence info
+/**Justification Values
+*	LEFT
+*	RIGHT
+*	CENTER
+*/
+- (NSString *)boundingBoxTextHorizontalJustificationForObject:(DCMObject *)object;
+
+
+//** graphic annotation sequence info */
 - (NSArray *)graphicAnnotationSequence;
 - (NSArray *)textObjectSequenceForObject:(DCMObject *)object;
 - (NSArray *)graphicObjectSequenceForObject:(DCMObject *)object;
@@ -60,12 +62,12 @@
 //graphic layer module attributes
 // do nothing for now.
 
-/* DICOM graphic types
-POINT 
-POLYLINE 
-INTERPOLATED 
-CIRCLE 
-ELLIPSE 
+/** DICOM graphic types
+* POINT 
+* POLYLINE 
+* INTERPOLATED 
+* CIRCLE 
+* ELLIPSE 
 */
 - (NSString *)graphicTypeForGraphicsObject:(DCMObject *)object;
 - (BOOL)graphicFilledForGraphicsObject:(DCMObject *)object;
