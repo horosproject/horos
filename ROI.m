@@ -4885,7 +4885,7 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 -(NSMutableArray*)splinePoints:(float) scale;
 {
 	// activated in the prefs
-	if( splineForROI == NO) return points;
+	if( splineForROI == NO) return [self points];
 	
 	// available only for ROI types : Open Polygon, Close Polygon, Pencil
 	// for other types, returns the original points
