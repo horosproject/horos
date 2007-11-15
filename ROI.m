@@ -4889,10 +4889,10 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	
 	// available only for ROI types : Open Polygon, Close Polygon, Pencil
 	// for other types, returns the original points
-	if(type!=tOPolygon && type!=tCPolygon && type!=tPencil) return points;
+	if(type!=tOPolygon && type!=tCPolygon && type!=tPencil) return [self points];
 	
 	// available only for polygons with at least 3 points
-	if([points count]<3) return points;
+	if([points count]<3) return [self points];
 	
 	int nb; // number of points
 	if(type==tOPolygon) nb = [points count];
