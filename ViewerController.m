@@ -10386,13 +10386,13 @@ int i,j,l;
 {
 	if( [a type] == tCPolygon || [a type] == tOPolygon || [a type] == tPencil)
 	{
-		[a setPoints: [ROI resamplePoints: [a points] number: nof]];
+		[a setPoints: [ROI resamplePoints: [a splinePoints] number: nof]];
 		return a;
 	}
 	else if( [a type] == tPlain)
 	{
 		a = [self convertBrushROItoPolygon: a numPoints: nof];
-		[a setPoints: [ROI resamplePoints: [a points] number: nof]];
+		[a setPoints: [ROI resamplePoints: [a splinePoints] number: nof]];
 		return a;
 	}
 	else return 0L;
@@ -10402,9 +10402,12 @@ int i,j,l;
 {
 	// Convert both ROIs into polygons, after a marching square isocontour
 	
-	int maxPoints = [[a points] count];
-	if( maxPoints < [[b points] count]) maxPoints = [[b points] count];
-	maxPoints += maxPoints / 5;
+	NSMutableArray	*aPts = [a points];
+	NSMutableArray	*bPts = [b points];
+	
+	int maxPoints = [aPts count];
+	if( maxPoints < [bPts count]) maxPoints = [bPts count];
+	maxPoints += maxPoints / 3;
 	
 	ROI* inputROI = a;
 	
@@ -10422,9 +10425,10 @@ int i,j,l;
 		NSLog( @"***** NoOfPoints !");
 		return 0L;
 	}
+
+	aPts = [a points];
+	bPts = [b points];
 	
-	NSArray *aPts = [a points];
-	NSArray *bPts = [b points];
 	ROI* newROI = [self newROI: tCPolygon];
 	NSMutableArray *pts = [newROI points];
 	int i;
