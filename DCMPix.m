@@ -1566,7 +1566,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		}
 	}
 	else {
-		NSMutableArray  *ptsTemp = roi.points;
+		NSMutableArray  *ptsTemp = [roi splinePoints];
 		
 		if( [ptsTemp count] == 0) return nil;
 		
@@ -1649,7 +1649,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (BOOL)isInROI: (ROI*)roi: (NSPoint)pt {
 	
-	NSMutableArray  *ptsTemp = roi.points;
+	NSMutableArray  *ptsTemp = [roi splinePoints];
 	BOOL			result = NO;
 	long			minx, maxx, miny, maxy;
 	NSPoint			*pts;
@@ -1956,7 +1956,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			return;
 		}
 		else {
-			ptsTemp = roi.points;
+			ptsTemp = [roi splinePoints];
 
 			no = ptsTemp.count;
 
@@ -2362,7 +2362,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		if( mean) *mean = imean;
 	}
 	else {
-		NSMutableArray  *ptsTemp = [roi points];
+		NSMutableArray  *ptsTemp = [roi splinePoints];
 		NSPointInt		*pts;
 		
 		pts = (NSPointInt*) malloc( ptsTemp.count * sizeof(NSPointInt) );

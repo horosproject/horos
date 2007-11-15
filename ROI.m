@@ -1190,21 +1190,25 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	return x;
 }
 
--(float) Area {
-	
-   float	area = 0;
+-(float) Area: (NSMutableArray*) pts
+{
+	float area = 0;
 
-   for( long i = 0 ; i < [points count] ; i++ )
+   for( long i = 0 ; i < [pts count] ; i++ )
    {
-      long j = (i + 1) % [points count];
+      long j = (i + 1) % [pts count];
 	  
-      area += [[points objectAtIndex:i] x] * [[points objectAtIndex:j] y];
-      area -= [[points objectAtIndex:i] y] * [[points objectAtIndex:j] x];
+      area += [[pts objectAtIndex:i] x] * [[pts objectAtIndex:j] y];
+      area -= [[pts objectAtIndex:i] y] * [[pts objectAtIndex:j] x];
    }
 
    area *= 0.5f;
    
    return fabs( area );
+}
+-(float) Area
+{
+	return [self Area: [self splinePoints]];
 }
 
 -(float) Angle:(NSPoint) p2 :(NSPoint) p1 :(NSPoint) p3
@@ -4106,10 +4110,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						
 						length = 0;
 						long i;
-						for( i = 0; i < [points count]-1; i++ ) {
-							length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
+						
+						for( i = 0; i < [splinePoints count]-1; i++ ) {
+							length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
 						}
-						length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:0] point]];
+						length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:0] point]];
 						
 						if (length < .1)
 							sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
@@ -4147,8 +4152,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 						
 						length = 0;
-						for( long i = 0; i < [points count]-1; i++ ) {
-							length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
+						for( long i = 0; i < [splinePoints count]-1; i++ ) {
+							length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
 						}
 						
 						if (length < .1)
@@ -4834,9 +4839,9 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 	return newPoints;
 }
 
--(NSMutableArray*)splinePoints;
+-(NSMutableArray*) splinePoints;
 {
-	return [self splinePoints: 1.0];
+	return [self splinePoints: 2.0];
 }
 
 -(NSMutableArray*)splineZPositions;

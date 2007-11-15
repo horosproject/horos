@@ -1119,7 +1119,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	/*
 			NSPoint point = NSMakePoint(point3D.x * resampleX, point3D.y * resampleY);
 			ROI *theNewROI  = [srcViewer newROI: t2DPoint];
-			NSMutableArray *pointArray = [theNewROI  points];
+			NSMutableArray *pointArray = [theNewROI splinePoints];
 			[theNewROI setName: @"Centerline"];
 			roiImageList = [roiSeriesList objectAtIndex:point3D.z * resampleZ];
 			[roiImageList addObject: theNewROI];

@@ -127,7 +127,7 @@
 				[pt move: mx :my];
 			}
 		}
-		else points = [curROI points];
+		else points = [curROI splinePoints];
 		
 		for( j = 0; j < [points count]; j++)
 		{
