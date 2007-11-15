@@ -580,6 +580,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
     {
 		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
 		groupID = 0.0;
+		PointUnderMouse = -1;
 		
 		fileVersion = [coder versionForClassName: @"ROI"];
 		
@@ -951,7 +952,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		// basic init from other rois ...
 		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
 		groupID = 0.0;
-
+		PointUnderMouse = -1;
+		
 		ctxArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 		textArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 		
@@ -1016,6 +1018,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	{
 		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
 		groupID = 0.0;
+		PointUnderMouse = -1;
 		
 		ctxArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 		textArray = [[NSMutableArray arrayWithCapacity: 10] retain];
@@ -1815,6 +1818,70 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	}
 	
 	return imode;
+}
+
+- (void) displayPointUnderMouse:(NSPoint) pt :(float) offsetx :(float) offsety :(float) scale
+{
+	MyPoint		*tempPoint = [[[MyPoint alloc] initWithPoint: pt] autorelease];
+	PointUnderMouse = -1;
+	NSPoint aPt;
+	
+	switch( type)
+	{
+		case tOval:
+			aPt.x = rect.origin.x - rect.size.width;		aPt.y = rect.origin.y - rect.size.height;
+			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 1;
+			
+			aPt.x = rect.origin.x - rect.size.width;		aPt.y = rect.origin.y + rect.size.height;
+			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 2;
+			
+			aPt.x = rect.origin.x + rect.size.width;		aPt.y = rect.origin.y + rect.size.height;
+			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 3;
+			
+			aPt.x = rect.origin.x + rect.size.width;		aPt.y = rect.origin.y - rect.size.height;
+			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 4;
+		break;
+		
+		case tROI:
+			aPt.x = rect.origin.x;		aPt.y = rect.origin.y;
+			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 1;
+			
+			aPt.x = rect.origin.x;		aPt.y = rect.origin.y + rect.size.height;
+			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 2;
+			
+			aPt.x = rect.origin.x + rect.size.width;		aPt.y = rect.origin.y + rect.size.height;
+			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 3;
+			
+			aPt.x = rect.origin.x + rect.size.width;		aPt.y = rect.origin.y;
+			if( [tempPoint isNearToPoint: aPt :scale :[[curView curDCM] pixelRatio]]) PointUnderMouse = 4;
+		break;
+		
+		case tAngle:
+		case tArrow:
+		case tMesure:
+		//JJCP
+		case tDynAngle:
+		//JJCP
+		case tAxis:
+		case tCPolygon:
+		case tOPolygon:
+		case tPencil:
+		{
+			for( int i = 0 ; i < [points count]; i++ )
+			{
+				if( [[points objectAtIndex: i] isNearToPoint: pt :scale :[[curView curDCM] pixelRatio]])
+				{
+					PointUnderMouse = i;
+				}
+			}
+		}
+		break;
+	}
+	
+	if( PointUnderMouse != -1)
+	{
+		[curView setNeedsDisplay: YES];
+	}
 }
 
 - (BOOL)mouseRoiDown:(NSPoint)pt :(float)scale
@@ -4208,6 +4275,20 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue);
 				}
 				glEnd();
+			}
+			
+			if( PointUnderMouse != -1)
+			{
+				if( PointUnderMouse < [points count])
+				{
+					glColor3f (1.0f, 0.0f, 1.0f);
+					glPointSize( (1 + sqrt( thickness))*3.5);
+					glBegin( GL_POINTS);
+					
+					glVertex2f( ([[points objectAtIndex: PointUnderMouse] x]- offsetx) * scaleValue , ([[points objectAtIndex: PointUnderMouse] y]- offsety) * scaleValue);
+					
+					glEnd();
+				}
 			}
 			
 			glLineWidth(1.0);

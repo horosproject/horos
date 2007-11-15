@@ -2573,12 +2573,21 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				else [view mouseMoved:theEvent];
 			}
 		}
+		
+		// Are we near a ROI point?
+		if( [self roiTool: currentTool])
+		{
+			NSPoint pt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+			pt.y = size.size.height - pt.y ;
+			pt = [self ConvertFromView2GL: pt];
+			
+			for( ROI *r in curRoiList)
+				[r displayPointUnderMouse :pt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue];
+		}
 	}
 	
 	if ([self is2DViewer] == YES)
-	{
 		[super mouseMoved: theEvent];
-	}
 }
 
 - (long) getTool: (NSEvent*) event

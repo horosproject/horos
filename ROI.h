@@ -92,6 +92,7 @@ enum
 	
 	// **** **** **** **** **** **** **** **** **** **** TRACKING
 	
+	int				PointUnderMouse;
 	long			selectedModifyPoint;
 	NSPoint			clickPoint, previousPoint, originAnchor;
 	long			fontListGL, *fontSize;
@@ -355,6 +356,7 @@ enum
 - (void)generateEncodedLayerImage;
 - (BOOL)isPoint:(NSPoint)point inRectDefinedByPointA:(NSPoint)pointA pointB:(NSPoint)pointB pointC:(NSPoint)pointC pointD:(NSPoint)pointD;
 - (NSPoint)rotatePoint:(NSPoint)point withAngle:(float)alpha aroundCenter:(NSPoint)center;
+- (void) displayPointUnderMouse:(NSPoint) pt :(float) offsetx :(float) offsety :(float) scale;
 
 @property(retain) NSString *textualBoxLine1, *textualBoxLine2, *textualBoxLine3, *textualBoxLine4, *textualBoxLine5;
 @property NSTimeInterval groupID;
