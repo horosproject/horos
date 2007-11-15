@@ -246,6 +246,11 @@ static NSArray*	statesArray = nil;
 	[[[NSApplication sharedApplication] dockTile] setBadgeLabel: label];
 	[[[NSApplication sharedApplication] dockTile] display];
 }
+
+- (void) setGrowlMessage:(NSString*) message
+{
+	[appController growlTitle: NSLocalizedString( @"Incoming Files", 0L) description: message name: @"newfiles"];
+}
 					
 - (void) callAddFilesToDatabaseSafe: (NSArray*) newFilesArray
 {
@@ -802,6 +807,7 @@ static NSArray*	statesArray = nil;
 		[studiesArray release];
 		
 		NSString *dockLabel = 0L;
+		NSString *growlString = 0L;
 		
 		@try
 		{
@@ -816,8 +822,7 @@ static NSArray*	statesArray = nil;
 				if( [addedImagesArray count])
 				{
 					dockLabel = [NSString stringWithFormat:@"%d", [addedImagesArray count]];
-				
-					[appController growlTitle: NSLocalizedString( @"Incoming Files", 0L) description:[NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", 0L), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]] name:@"newfiles"];
+					growlString = [NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", 0L), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]];
 				}
 			}
 		}
@@ -890,6 +895,8 @@ static NSArray*	statesArray = nil;
 		{
 			if( dockLabel)
 				[self performSelectorOnMainThread:@selector( setDockLabel:) withObject: dockLabel waitUntilDone:NO];
+			if( growlString)
+				[self performSelectorOnMainThread:@selector( setGrowlMessage:) withObject: growlString waitUntilDone:NO];
 			
 			if( mainThread == [NSThread currentThread])	{
 				// Purge viewersListToReload & viewersListToReload arrays
