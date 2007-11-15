@@ -663,6 +663,7 @@ const char* dcmShortSCUStorageSOPClassUIDs[] = {
 //  UID_StoredPrintStorage,
     UID_TwelveLeadECGWaveformStorage,
     UID_UltrasoundImageStorage,
+	UID_RETIRED_UltrasoundImageStorage,
     UID_UltrasoundMultiframeImageStorage,
     UID_VLEndoscopicImageStorage,
     UID_VLMicroscopicImageStorage,
