@@ -14611,7 +14611,7 @@ int i,j,l;
 							[pt move: mx :my];
 						}
 					}
-					else points = [curROI points];
+					else points = [curROI splinePoints];
 					
 					for( y = 0; y < [points count]; y++)
 					{
