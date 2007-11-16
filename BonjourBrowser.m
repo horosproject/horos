@@ -101,8 +101,6 @@ static char *GetPrivateIP()
 	return dicomFileName;
 }
 
-
-
 - (id) initWithBrowserController: (BrowserController*) bC bonjourPublisher:(BonjourPublisher*) bPub{
 	self = [super init];
 	if (self != nil)
@@ -114,9 +112,12 @@ static char *GetPrivateIP()
 		err = Gestalt ( gestaltSystemVersion, &osVersion );       
 		if ( err == noErr)       
 		{
-			if ( osVersion >= 0x1051UL ) bugFixedForDNSResolve = YES;
-			bugFixedForDNSResolve = NO;
+			if ( osVersion >= 0x1052UL ) bugFixedForDNSResolve = YES;
 		}
+		
+		#if !__LP64__
+			bugFixedForDNSResolve = YES;
+		#endif
 		
 		async = [[NSLock alloc] init];
 		asyncWrite = [[NSLock alloc] init];
@@ -189,6 +190,7 @@ static char *GetPrivateIP()
 
 - (NSMutableArray*) services
 {
+	NSLog(@"%@", services);
 	return services;
 }
 
@@ -1160,7 +1162,7 @@ static char *GetPrivateIP()
 		else
 		{
 			if( bugFixedForDNSResolve == NO)
-				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", 0L), NSLocalizedString( @"There is a bug in MacOS 10.5.0 for 64-bit application. Bonjour addresses cannot be resolved. Please update your MacOS to 10.5.1.", 0L), NSLocalizedString(@"OK", 0L), 0, 0);
+				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", 0L), NSLocalizedString( @"There is a bug in MacOS 10.5.0 for 64-bit application. Bonjour addresses cannot be resolved. Please update your MacOS to 10.5.2.", 0L), NSLocalizedString(@"OK", 0L), 0, 0);
 			else
 				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", 0L), NSLocalizedString( @"This address wasn't resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", 0L), NSLocalizedString(@"OK", 0L), 0, 0);
 			
@@ -1168,7 +1170,10 @@ static char *GetPrivateIP()
 			succeed = NO;
 		}
     }
-	else NSLog( @"ERROR !");
+	else
+	{
+		NSLog( @"ERROR index: %d : %@", index, dict);
+	}
 	
 	return succeed;
 }

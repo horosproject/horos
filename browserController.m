@@ -3435,7 +3435,10 @@ static NSArray*	statesArray = nil;
 	[albumTable reloadData];
 }
 
-- (void)checkBonjourUpToDateThread: (id)sender {
+- (void)checkBonjourUpToDateThread: (id)sender
+{	
+	if( [bonjourServicesList selectedRow] == -1) return;
+	
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
 	[checkIncomingLock lock];
@@ -3464,12 +3467,14 @@ static NSArray*	statesArray = nil;
 }
 
 
--(void)checkBonjourUpToDate: (id)sender {
+-(void)checkBonjourUpToDate: (id)sender
+{
 	[self testAutorouting];
 	
 	if( bonjourDownloading) return;
 	if( DatabaseIsEdited) return;
 	if( managedObjectContext == 0L) return;
+	if( [bonjourServicesList selectedRow] == -1) return;
 	
 	if( isCurrentDatabaseBonjour) {
 		NSArray		*winList = [NSApp windows];
@@ -7040,10 +7045,9 @@ static BOOL needToRezoom;
 
 //NSTableView delegate and datasource
 - (NSInteger)numberOfRowsInTableView: (NSTableView *)aTableView
-{
-	if( displayEmptyDatabase) return 0L;
-	
+{	
 	if ([aTableView isEqual:albumTable] ) {
+		if( displayEmptyDatabase) return 0L;
 		return [self.albumArray count];
 	}
 	else if ([aTableView isEqual:bonjourServicesList] )	{
@@ -7136,7 +7140,8 @@ static BOOL needToRezoom;
 	}
 	else if ([aTableView isEqual:bonjourServicesList] )	{
 		if([[aTableColumn identifier] isEqualToString:@"Source"] ) {
-			if (bonjourBrowser!=nil) {
+			if (bonjourBrowser!=nil)
+			{
 				NSDictionary *dict = nil;
 				if( rowIndex > 0) dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
 				
@@ -12636,6 +12641,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 - (IBAction)bonjourServiceClickedProceed: (id)sender
 {
+	if( [bonjourServicesList selectedRow] == -1) return;
+	
     int index = [bonjourServicesList selectedRow]-1;
 	
 	[bonjourReportFilesToCheck removeAllObjects];
