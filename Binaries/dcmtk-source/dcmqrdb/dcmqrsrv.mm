@@ -638,9 +638,8 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     {
       case EXS_LittleEndianImplicit:
         /* we only support Little Endian Implicit */
-        transferSyntaxes[0]  = UID_LittleEndianExplicitTransferSyntax;
-		transferSyntaxes[1]  = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 2;
+        transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 1;
         break;
       case EXS_LittleEndianExplicit:
         /* we prefer Little Endian Explicit */
