@@ -34,7 +34,7 @@ Version 2.3
 #import "DCMPix.h"
 #import "ITKSegmentation3D.h"
 
-#define CIRCLERESOLUTION 40
+#define CIRCLERESOLUTION 80
 #define ROIVERSION		8
 
 static		float					deg2rad = M_PI / 180.0f; 
@@ -3165,12 +3165,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	glColor3f ( 1.0f, 1.0f, 1.0f);
 	
+	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
     glEnable(GL_POINT_SMOOTH);
     glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	
 
 	switch( type)
 	{
@@ -3586,6 +3588,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
 				}
 				glEnd();
+				
+				glPointSize( thickness);
+			
+				glBegin( GL_POINTS);
+				for( long i = 0; i < [points count]; i++ ) {
+					glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
+				}
+				glEnd();
 			}
 			
 			if( mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing)
@@ -3667,6 +3677,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glVertex2f(  (rect.origin.x+ rect.size.width - offsetx)*scaleValue, (rect.origin.y - offsety)*scaleValue);
 			glEnd();
 			
+			glPointSize( thickness);
+			glBegin( GL_POINTS);
+				glVertex2f(  (rect.origin.x - offsetx)*scaleValue, (rect.origin.y - offsety)*scaleValue);
+				glVertex2f(  (rect.origin.x - offsetx)*scaleValue, (rect.origin.y + rect.size.height- offsety)*scaleValue);
+				glVertex2f(  (rect.origin.x+ rect.size.width- offsetx)*scaleValue, (rect.origin.y + rect.size.height- offsety)*scaleValue);
+				glVertex2f(  (rect.origin.x+ rect.size.width - offsetx)*scaleValue, (rect.origin.y - offsety)*scaleValue);
+			glEnd();
+			
 			if( mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing)
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
@@ -3721,6 +3739,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glLineWidth(thickness);
 			
 			glBegin(GL_LINE_LOOP);
+			for( long i = 0; i < CIRCLERESOLUTION ; i++ ) {
+
+				angle = i * 2 * M_PI /CIRCLERESOLUTION;
+			  
+			  glVertex2f( (rect.origin.x + rect.size.width*cos(angle) - offsetx)*scaleValue, (rect.origin.y + rect.size.height*sin(angle)- offsety)*scaleValue);
+			}
+			glEnd();
+			
+			glPointSize( thickness);
+			glBegin( GL_POINTS);
 			for( long i = 0; i < CIRCLERESOLUTION ; i++ ) {
 
 				angle = i * 2 * M_PI /CIRCLERESOLUTION;
@@ -4139,6 +4167,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( mode == ROI_drawing) glLineWidth(thickness * 2);
 			else glLineWidth(thickness);
 			
+
 			if( type == tCPolygon || type == tPencil)	glBegin(GL_LINE_LOOP);
 			else										glBegin(GL_LINE_STRIP);
 			
@@ -4149,7 +4178,17 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glVertex2d( ((double) [[splinePoints objectAtIndex:i] x]- (double) offsetx)*(double) scaleValue , ((double) [[splinePoints objectAtIndex:i] y]-(double) offsety)*(double) scaleValue);
 			}
 			glEnd();
-						
+			
+			if( mode == ROI_drawing) glPointSize( thickness * 2);
+			else glPointSize( thickness);
+			
+			glBegin( GL_POINTS);
+			for(long i=0; i<[splinePoints count]; i++)
+			{
+				glVertex2d( ((double) [[splinePoints objectAtIndex:i] x]- (double) offsetx)*(double) scaleValue , ((double) [[splinePoints objectAtIndex:i] y]-(double) offsety)*(double) scaleValue);
+			}
+			glEnd();
+			
 			// TEXT
 			if( type == tCPolygon || type == tPencil)
 			{
