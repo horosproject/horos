@@ -190,7 +190,6 @@ static char *GetPrivateIP()
 
 - (NSMutableArray*) services
 {
-	NSLog(@"%@", services);
 	return services;
 }
 
@@ -1162,7 +1161,7 @@ static char *GetPrivateIP()
 		else
 		{
 			if( bugFixedForDNSResolve == NO)
-				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", 0L), NSLocalizedString( @"There is a bug in MacOS 10.5.0 for 64-bit application. Bonjour addresses cannot be resolved. Please update your MacOS to 10.5.2.", 0L), NSLocalizedString(@"OK", 0L), 0, 0);
+				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", 0L), NSLocalizedString( @"There is a bug in MacOS 10.5 for 64-bit application. Bonjour addresses cannot be resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", 0L), NSLocalizedString(@"OK", 0L), 0, 0);
 			else
 				NSRunCriticalAlertPanel( NSLocalizedString( @"Bonjour Error", 0L), NSLocalizedString( @"This address wasn't resolved. Try to add this OsiriX workstation as a fixed node in Locations-Preferences.", 0L), NSLocalizedString(@"OK", 0L), 0, 0);
 			
