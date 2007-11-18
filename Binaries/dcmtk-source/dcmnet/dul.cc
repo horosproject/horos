@@ -2022,6 +2022,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
           sprintf(buf3, "TCP Initialization Error: %s", strerror(errno));
           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf3);
         }
+				
 /* Find out assigned port number and print it out */
         length = sizeof(server);
         if (getsockname((*key)->networkSpecific.TCP.listenSocket,
@@ -2031,6 +2032,9 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
           sprintf(buf4, "TCP Initialization Error: %s", strerror(errno));
           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf4);
         }
+		
+		printf( "%s\r", ((struct sockaddr *) &server)->sa_data);
+		
 #ifdef HAVE_GUSI_H
         /* GUSI always returns an error for setsockopt(...) */
 #else
