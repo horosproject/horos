@@ -2033,8 +2033,6 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf4);
         }
 		
-		printf( "%s\r", ((struct sockaddr *) &server)->sa_data);
-		
 #ifdef HAVE_GUSI_H
         /* GUSI always returns an error for setsockopt(...) */
 #else
