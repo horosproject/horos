@@ -7190,6 +7190,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				float xOffset = 32;
 				//float xOffset = 10;
 				//float yOffset = 12;
+				glLineWidth( 1.0);
 				glBegin(GL_LINES);
 				if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingX * 1000.0 < 1) {
 					

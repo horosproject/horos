@@ -2837,58 +2837,76 @@ static int roundboxtype= 15;
 
 void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, float rad)
 {
-	 float vec[7][2]= {{0.195, 0.02}, {0.383, 0.067}, {0.55, 0.169}, {0.707, 0.293},
-					   {0.831, 0.45}, {0.924, 0.617}, {0.98, 0.805}};
-
-	 /* mult */
-	 for( int a=0; a<7; a++) {
-			 vec[a][0]*= rad; vec[a][1]*= rad;
-	 }
-
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	 glBegin(mode);
+	
+	glLineWidth( 5);
+	glBegin(GL_POLYGON);
+		glVertex2f(  minx, miny);
+		glVertex2f(  minx, maxy);
+		glVertex2f(  maxx, maxy);
+		glVertex2f(  maxx, miny);
+	glEnd();
+	
+//	glPointSize( 5);
+//	glBegin( GL_POINTS);
+//		glVertex2f(  minx, miny);
+//		glVertex2f(  minx, maxy);
+//		glVertex2f(  maxx, maxy);
+//		glVertex2f(  maxx, miny);
+//	glEnd();
 
-	 /* start with corner right-bottom */
-	 if(roundboxtype & 4) {
-			 glVertex2f( maxx-rad, miny);
-			 for( int a=0; a<7; a++ ) {
-					 glVertex2f( maxx-rad+vec[a][0], miny+vec[a][1]);
-			 }
-			 glVertex2f( maxx, miny+rad);
-	 }
-	 else glVertex2f( maxx, miny);
-	 
-	 /* corner right-top */
-	 if(roundboxtype & 2) {
-			 glVertex2f( maxx, maxy-rad);
-			 for( int a=0; a<7; a++ ) {
-					 glVertex2f( maxx-vec[a][1], maxy-rad+vec[a][0]);
-			 }
-			 glVertex2f( maxx-rad, maxy);
-	 }
-	 else glVertex2f( maxx, maxy);
-	 
-	 /* corner left-top */
-	 if(roundboxtype & 1) {
-			 glVertex2f( minx+rad, maxy);
-			 for( int a=0; a<7; a++ ) {
-					 glVertex2f( minx+rad-vec[a][0], maxy-vec[a][1]);
-			 }
-			 glVertex2f( minx, maxy-rad);
-	 }
-	 else glVertex2f( minx, maxy);
-	 
-	 /* corner left-bottom */
-	 if(roundboxtype & 8) {
-			 glVertex2f( minx, miny+rad);
-			 for( int a=0; a<7; a++ ) {
-					 glVertex2f( minx+vec[a][1], miny+rad-vec[a][0]);
-			 }
-			 glVertex2f( minx+rad, miny);
-	 }
-	 else glVertex2f( minx, miny);
-	 
-	 glEnd();
+//	 float vec[7][2]= {{0.195, 0.02}, {0.383, 0.067}, {0.55, 0.169}, {0.707, 0.293},
+//					   {0.831, 0.45}, {0.924, 0.617}, {0.98, 0.805}};
+//
+//	 /* mult */
+//	 for( int a=0; a<7; a++) {
+//			 vec[a][0]*= rad; vec[a][1]*= rad;
+//	 }
+//
+//	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+//	 glBegin(mode);
+//
+//	 /* start with corner right-bottom */
+//	 if(roundboxtype & 4) {
+//			 glVertex2f( maxx-rad, miny);
+//			 for( int a=0; a<7; a++ ) {
+//					 glVertex2f( maxx-rad+vec[a][0], miny+vec[a][1]);
+//			 }
+//			 glVertex2f( maxx, miny+rad);
+//	 }
+//	 else glVertex2f( maxx, miny);
+//	 
+//	 /* corner right-top */
+//	 if(roundboxtype & 2) {
+//			 glVertex2f( maxx, maxy-rad);
+//			 for( int a=0; a<7; a++ ) {
+//					 glVertex2f( maxx-vec[a][1], maxy-rad+vec[a][0]);
+//			 }
+//			 glVertex2f( maxx-rad, maxy);
+//	 }
+//	 else glVertex2f( maxx, maxy);
+//	 
+//	 /* corner left-top */
+//	 if(roundboxtype & 1) {
+//			 glVertex2f( minx+rad, maxy);
+//			 for( int a=0; a<7; a++ ) {
+//					 glVertex2f( minx+rad-vec[a][0], maxy-vec[a][1]);
+//			 }
+//			 glVertex2f( minx, maxy-rad);
+//	 }
+//	 else glVertex2f( minx, maxy);
+//	 
+//	 /* corner left-bottom */
+//	 if(roundboxtype & 8) {
+//			 glVertex2f( minx, miny+rad);
+//			 for( int a=0; a<7; a++ ) {
+//					 glVertex2f( minx+vec[a][1], miny+rad-vec[a][0]);
+//			 }
+//			 glVertex2f( minx+rad, miny);
+//	 }
+//	 else glVertex2f( minx, miny);
+//	 
+//	 glEnd();
 }
 
 - (NSRect) findAnEmptySpaceForMyRect:(NSRect) dRect :(BOOL*) moved

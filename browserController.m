@@ -3742,11 +3742,17 @@ static NSArray*	statesArray = nil;
 			if( correspondingManagedObjects) [correspondingManagedObjects addObjectsFromArray: imagesArray];
 		}
 		
-		if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"] ) {
+		if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"] )
+		{
 			NSArray	*seriesArray = [self childrenArray: curObj onlyImages: onlyImages];
 			
-			for( NSManagedObject *obj in seriesArray ) {
+			int totImage = 0;
+			
+			for( NSManagedObject *obj in seriesArray )
+			{
 				NSArray		*imagesArray = [self imagesArray: obj onlyImages: onlyImages];
+				
+				totImage += [imagesArray count];
 				
 				if( isCurrentDatabaseBonjour ) {
 					for( NSManagedObject *obj in imagesArray ) {
@@ -3757,6 +3763,9 @@ static NSArray*	statesArray = nil;
 				
 				if( correspondingManagedObjects) [correspondingManagedObjects addObjectsFromArray: imagesArray];
 			}
+			
+			if( onlyImages == NO && totImage == 0)							// We don't want empty studies
+				[self.managedObjectContext deleteObject: curObj];
 		}
 	}
 	
