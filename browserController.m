@@ -12161,13 +12161,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 	else
 		studySelected = [selectedItem valueForKey:@"study"];
 	
-	if([pagesTemplatesArray count]>1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]==2 && ![[NSFileManager defaultManager] fileExistsAtPath:[studySelected valueForKey:@"reportURL"]])
+	if([pagesTemplatesArray count]>1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]==2 && [studySelected valueForKey:@"reportURL"] == 0L)
 	{
 		[item setView:reportTemplatesView];
 		[item setMinSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
 		[item setMaxSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
 	}
-	else {
+	else
+	{
 		[item setImage:[self reportIcon]];
 	}
 }
