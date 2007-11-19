@@ -853,7 +853,7 @@ static NSHost *currentHost = 0L;
 	// ** SERIESORDER
 	[defaultValues setObject:@"0" forKey:@"SERIESORDER"];
 	
-	[defaultValues setObject:@"15" forKey:@"DICOMTimeout"];
+	[defaultValues setObject:@"5" forKey:@"DICOMTimeout"];
 	
 	// ** TRANSITIONTYPE
 	[defaultValues setObject: @"0" forKey: @"TRANSITIONTYPE"];
