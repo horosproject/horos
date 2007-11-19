@@ -110,6 +110,18 @@ return self;
 
 - (void)runScript:(NSString *)txt
 {
+#if __LP64__
+	NSTask *theTask = [[NSTask alloc] init];
+	
+	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/osascript" handler:0L];
+	[txt writeToFile:@"/tmp/osascript" atomically:YES];
+	[theTask setArguments: [NSArray arrayWithObjects: @"OSAScript", @"/tmp/osascript", 0L]];
+	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
+	[theTask launch];
+	[theTask waitUntilExit];
+	[theTask release];
+	return;
+#else
 NSData *scriptChars = [txt dataUsingEncoding:[NSString defaultCStringEncoding]];
 AEDesc source, resultText;
 OSAID scriptId, resultId;
@@ -167,6 +179,7 @@ OSADispose(myComponent, resultId);
 
 ok = OSADispose(myComponent, scriptId);
 CHECK;
+#endif
 }
 
 @end

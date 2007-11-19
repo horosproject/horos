@@ -6525,6 +6525,7 @@
 		CE7BBFDF0C82DCC1000AD12F /* libITKNrrdIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFDE0C82DCC1000AD12F /* libITKNrrdIO.a */; };
 		CE7BBFE00C82DCC1000AD12F /* libITKNrrdIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFDE0C82DCC1000AD12F /* libITKNrrdIO.a */; };
 		CE7BBFE10C82DCC1000AD12F /* libITKNrrdIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7BBFDE0C82DCC1000AD12F /* libITKNrrdIO.a */; };
+		CE7C7E950CF2201F0028A7F2 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */; };
 		CE7E5D4506AC8DDC0058C3AA /* Anonymizer.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */; };
 		CE822F8A0C2D74750080BE67 /* ViewerControllerWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE822F880C2D74750080BE67 /* ViewerControllerWindow.h */; };
 		CE822F8B0C2D74750080BE67 /* ViewerControllerWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE822F890C2D74750080BE67 /* ViewerControllerWindow.m */; };
@@ -11956,6 +11957,7 @@
 				CEDAAED60C7B489D00809161 /* QuickTime.framework in Frameworks */,
 				CEDAAED70C7B489E00809161 /* QTKit.framework in Frameworks */,
 				CE9B50D50CA8EBD600C6C982 /* DotMacKit.framework in Frameworks */,
+				CE7C7E950CF2201F0028A7F2 /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

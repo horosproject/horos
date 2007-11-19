@@ -111,6 +111,20 @@ return self;
 
 - (void)runScript:(NSString *)txt
 {
+
+#if __LP64__
+	NSTask *theTask = [[NSTask alloc] init];
+	
+	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/osascript" handler:0L];
+	[txt writeToFile:@"/tmp/osascript" atomically:YES];
+	[theTask setArguments: [NSArray arrayWithObjects: @"OSAScript", @"/tmp/osascript", 0L]];
+	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
+	[theTask launch];
+	[theTask waitUntilExit];
+	[theTask release];
+	return;
+#else
+
 NSData *scriptChars = [txt dataUsingEncoding:[NSString defaultCStringEncoding]];
 AEDesc source, resultText;
 OSAID scriptId, resultId;
@@ -126,29 +140,29 @@ ok = OSACompile(myComponent, &source, kOSAModeNull, &scriptId);
 AEDisposeDesc(&source);
 CHECK;
 
-
 // Execute the script, using defaults for everything.
 resultId = 0;
 ok = OSAExecute(myComponent, scriptId, kOSANullScript, kOSAModeNull, &resultId);
 CHECK;
 
-if (ok == errOSAScriptError) {
-AEDesc ernum, erstr;
-id ernumobj, erstrobj;
+if (ok == errOSAScriptError)
+{
+	AEDesc ernum, erstr;
+	id ernumobj, erstrobj;
 
-// Extract the error number and error message from our scripting component.
-ok = OSAScriptError(myComponent, kOSAErrorNumber, typeSInt16, &ernum);
-CHECK;
-ok = OSAScriptError(myComponent, kOSAErrorMessage, typeChar, &erstr);
-CHECK;
+	// Extract the error number and error message from our scripting component.
+	ok = OSAScriptError(myComponent, kOSAErrorNumber, typeSInt16, &ernum);
+	CHECK;
+	ok = OSAScriptError(myComponent, kOSAErrorMessage, typeChar, &erstr);
+	CHECK;
 
-// Convert them to ObjC types.
-ernumobj = aedesc_to_id(&ernum);
-AEDisposeDesc(&ernum);
-erstrobj = aedesc_to_id(&erstr);
-AEDisposeDesc(&erstr);
+	// Convert them to ObjC types.
+	ernumobj = aedesc_to_id(&ernum);
+	AEDisposeDesc(&ernum);
+	erstrobj = aedesc_to_id(&erstr);
+	AEDisposeDesc(&erstr);
 
-txt = [NSString stringWithFormat:@"Error, number=%@, message=%@", ernumobj, erstrobj];
+	txt = [NSString stringWithFormat:@"Error, number=%@, message=%@", ernumobj, erstrobj];
 } else {
 // If no error, extract the result, and convert it to a string for display
 
@@ -168,6 +182,7 @@ OSADispose(myComponent, resultId);
 
 ok = OSADispose(myComponent, scriptId);
 CHECK;
+#endif
 }
 
 @end

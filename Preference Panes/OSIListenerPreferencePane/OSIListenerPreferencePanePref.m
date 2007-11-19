@@ -36,6 +36,25 @@ char *GetPrivateIP()
 
 @implementation OSIListenerPreferencePanePref
 
+-(NSArray*)IPv4Address;
+{
+	NSEnumerator* e = [[[NSHost currentHost] addresses] objectEnumerator];
+	NSString* addr;
+	NSMutableArray* r = [NSMutableArray array];
+
+	while (addr = (NSString*)[e nextObject])
+	{
+		if ([[addr componentsSeparatedByString:@"."] count] == 4 && ![addr isEqual:@"127.0.0.1"])
+		{
+			[r addObject: addr];
+		}
+	}
+	
+	if( [r count] == 0) [r addObject: [NSString stringWithFormat:@"127.0.0.1"]];
+   
+   return r;
+}
+
 - (void)checkView:(NSView *)aView :(BOOL) OnOff
 {
     id view;
@@ -124,7 +143,8 @@ char *GetPrivateIP()
 
 	//setup GUI
 	
-	NSString *ip = [NSString stringWithCString:GetPrivateIP()];
+//	NSString *ip = [NSString stringWithCString:GetPrivateIP()];
+	NSString *ip = [[self IPv4Address] componentsJoinedByString:@", "];
 	char			hostname[100];
 	gethostname(hostname, 99);
 	NSString *name = [NSString stringWithCString:hostname];
