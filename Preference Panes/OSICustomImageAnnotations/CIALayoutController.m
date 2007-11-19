@@ -174,11 +174,12 @@
 		[specialFieldsMenu removeItemAtIndex:i];
 
 	NSMutableArray *fields = [self specialFieldsTitles];
-
+	NSMutableArray *localizedFields = [self specialFieldsLocalizedTitles];
+	
 	for (i=0; i<[fields count]; i++)
 	{
 		item = [[NSMenuItem alloc] init];
-		[item setTitle:[fields objectAtIndex:i]];
+		[item setTitle:[localizedFields objectAtIndex:i]];
 		[item setRepresentedObject:[fields objectAtIndex:i]];
 		[specialFieldsMenu addItem:item];
 		[item release];
@@ -556,11 +557,11 @@
 	{
 		formatString = @"Special_%@";
 		if(!aTokenIsSelected)
-			[selectedAnnotation insertObject:[NSString stringWithFormat:formatString,[selectedItem title]] inContentAtIndex:[selectedAnnotation countOfContent]];
+			[selectedAnnotation insertObject:[NSString stringWithFormat:formatString,[selectedItem representedObject]] inContentAtIndex:[selectedAnnotation countOfContent]];
 		else
 		{
 			[selectedAnnotation removeObjectFromContentAtIndex:tokenIndexInContent];
-			[selectedAnnotation insertObject:[NSString stringWithFormat:formatString,[selectedItem title]] inContentAtIndex:tokenIndexInContent];
+			[selectedAnnotation insertObject:[NSString stringWithFormat:formatString,[selectedItem representedObject]] inContentAtIndex:tokenIndexInContent];
 		}
 	}
 	else if([sender isEqualTo:[prefPane addCustomDICOMFieldButton]])
@@ -771,20 +772,37 @@
 	[databaseImageFieldsArray addObjectsFromArray:sortedImages];
 }
 
+- (NSMutableArray*)specialFieldsLocalizedTitles;
+{
+	NSMutableArray *specialFieldsTitles = [NSMutableArray array];
+	[specialFieldsTitles addObject: NSLocalizedString(@"Image Size", 0L)];
+	[specialFieldsTitles addObject: NSLocalizedString(@"View Size", 0L)];
+	[specialFieldsTitles addObject: NSLocalizedString(@"Window Level / Window Width", 0L)];
+	[specialFieldsTitles addObject: NSLocalizedString(@"Image Position", 0L)];
+	[specialFieldsTitles addObject: NSLocalizedString(@"Zoom", 0L)];
+	[specialFieldsTitles addObject: NSLocalizedString(@"Rotation Angle", 0L)];
+	[specialFieldsTitles addObject: NSLocalizedString(@"Mouse Position (px)", 0L)];
+	[specialFieldsTitles addObject: NSLocalizedString(@"Mouse Position (mm)", 0L)];
+	[specialFieldsTitles addObject: NSLocalizedString(@"Thickness / Location / Position", 0L)];
+	[specialFieldsTitles addObject: NSLocalizedString(@"Patient's Actual Age", 0L)];
+	[specialFieldsTitles addObject: NSLocalizedString(@"Patient's Age At Acquisition", 0L)];
+	return specialFieldsTitles;
+}
+
 - (NSMutableArray*)specialFieldsTitles;
 {
 	NSMutableArray *specialFieldsTitles = [NSMutableArray array];
-	[specialFieldsTitles addObject:NSLocalizedString(@"Image Size", @"")];
-	[specialFieldsTitles addObject:NSLocalizedString(@"View Size", @"")];
-	[specialFieldsTitles addObject:NSLocalizedString(@"Window Level / Window Width", @"")];
-	[specialFieldsTitles addObject:NSLocalizedString(@"Image Position", @"")];
-	[specialFieldsTitles addObject:NSLocalizedString(@"Zoom", @"")];
-	[specialFieldsTitles addObject:NSLocalizedString(@"Rotation Angle", @"")];
-	[specialFieldsTitles addObject:NSLocalizedString(@"Mouse Position (px)", @"")];
-	[specialFieldsTitles addObject:NSLocalizedString(@"Mouse Position (mm)", @"")];
-	[specialFieldsTitles addObject:NSLocalizedString(@"Thickness / Location / Position", @"")];
-	[specialFieldsTitles addObject:NSLocalizedString(@"Patient's Actual Age", @"")];
-	[specialFieldsTitles addObject:NSLocalizedString(@"Patient's Age At Acquisition", @"")];
+	[specialFieldsTitles addObject:(@"Image Size")];
+	[specialFieldsTitles addObject:(@"View Size")];
+	[specialFieldsTitles addObject:(@"Window Level / Window Width")];
+	[specialFieldsTitles addObject:(@"Image Position")];
+	[specialFieldsTitles addObject:(@"Zoom")];
+	[specialFieldsTitles addObject:(@"Rotation Angle")];
+	[specialFieldsTitles addObject:(@"Mouse Position (px)")];
+	[specialFieldsTitles addObject:(@"Mouse Position (mm)")];
+	[specialFieldsTitles addObject:(@"Thickness / Location / Position")];
+	[specialFieldsTitles addObject:(@"Patient's Actual Age")];
+	[specialFieldsTitles addObject:(@"Patient's Age At Acquisition")];
 	return specialFieldsTitles;
 }
 
@@ -843,16 +861,18 @@
 			}
 		}
 		
-		titles = [[prefPane specialFieldsPopUpButton] itemTitles];
-		for (i=0; i<[[[prefPane specialFieldsPopUpButton] itemTitles] count]; i++)
+		NSArray *localizedTitles = [self specialFieldsLocalizedTitles];
+		titles = [self specialFieldsTitles];
+		
+		for (i=0; i<[localizedTitles count]; i++)
 		{
-			currentTitle = [titles objectAtIndex:i];
+			currentTitle = [localizedTitles objectAtIndex:i];
 			if([currentTitle length]>=substringLength)
 			{
 				for (j=0; j<[currentTitle length]-substringLength+1; j++)
 				{
 					if([[substring lowercaseString] isEqualToString:[[currentTitle substringWithRange:NSMakeRange(j, substringLength)] lowercaseString]])
-						[resultArray addObject:[NSString stringWithFormat:@"Special_%@", currentTitle]];
+						[resultArray addObject:[NSString stringWithFormat:@"Special_%@", [titles objectAtIndex:i]]];
 				}
 			}
 
@@ -987,7 +1007,9 @@
 					if([selectedString length]>=9)
 					{
 						selectedString = [selectedString substringFromIndex:8];
-						[[prefPane specialFieldsPopUpButton] selectItemAtIndex:[[[prefPane specialFieldsPopUpButton] menu] indexOfItemWithRepresentedObject:selectedString]];
+						
+						int index = [[self specialFieldsTitles] indexOfObject: selectedString];
+						[[prefPane specialFieldsPopUpButton] selectItemAtIndex: index];
 					}
 					else
 					{

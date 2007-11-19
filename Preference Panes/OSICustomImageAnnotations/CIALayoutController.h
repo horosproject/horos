@@ -54,6 +54,7 @@
 
 - (void)prepareDatabaseFields;
 - (NSMutableArray*)specialFieldsTitles;
+- (NSMutableArray*)specialFieldsLocalizedTitles;
 - (void)setCustomDICOMFieldEditingEnable:(BOOL)boo;
 
 - (BOOL)checkAnnotations;
