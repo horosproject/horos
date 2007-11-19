@@ -735,7 +735,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 		/* create association, i.e. try to establish a network connection to another */
 	/* DICOM application. This call creates an instance of T_ASC_Association*. */
-	if (_verbose)
+//	if (_verbose)
 		printf("Requesting Association\n");
 	cond = ASC_requestAssociation(net, params, &assoc);
 	if (cond.bad()) {
@@ -758,7 +758,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	
 	  /* dump the presentation contexts which have been accepted/refused */
-    if (_verbose) {
+//if (_verbose)
+	{
         printf("Association Parameters Negotiated:\n");
         ASC_dumpParameters(params, COUT);
     }

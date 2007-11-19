@@ -11508,7 +11508,7 @@
 		CE5487400989346800CF4C60 /* BrushPalette.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BrushPalette.tif; sourceTree = "<group>"; };
 		CE5487790989363200CF4C60 /* Brush.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Brush.tiff; sourceTree = "<group>"; };
 		CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdcmprintscu.dylib; path = AYDicomPrint/libdcmprintscu.dylib; sourceTree = "<group>"; };
-		CE5A7F8B0CB9430D009C80B4 /* 32-bit shell.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; name = "32-bit shell.app"; path = "build/Development/32-bit shell.app"; sourceTree = "<group>"; };
+		CE5A7F8B0CB9430D009C80B4 /* 32-bit shell.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = "32-bit shell.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE5D33B309E1C26400CC6884 /* add-large.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "add-large.tif"; sourceTree = "<group>"; };
 		CE5D33B409E1C26400CC6884 /* minus-large.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "minus-large.tif"; sourceTree = "<group>"; };
 		CE5EABBA0935E702006D85DD /* UCLA.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = UCLA.plist; sourceTree = "<group>"; };

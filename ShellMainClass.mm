@@ -18,6 +18,21 @@
 #import "WaitRendering.h"
 #import "DotMacKit/DotMacKit.h"
 
+#import <sys/socket.h>
+#import <netinet/in.h>
+#import <arpa/inet.h>
+#import <unistd.h>
+
+
+@interface ShellMainClass : NSApplication
+{
+	NSMutableArray	*services;
+}
+
+@end
+
+static ShellMainClass	*mainClass = 0L;
+
 // WHY THIS EXTERNAL APPLICATION FOR QUICKTIME?
 
 // 64-bits apps support only very basic Quicktime API
@@ -78,8 +93,19 @@ int executeProcess(int argc, char *argv[])
 		NSString	*what = [NSString stringWithCString:argv[ 1]];
 		NSString	*path = [NSString stringWithCString:argv[ 2]];
 		
-		NSLog( what);
-		NSLog( path);
+		if( [what isEqualToString:@"DNSResolve"])
+		{
+			NSLog( @"NSNetServiceBrowser *browser = [[NSNetServiceBrowser alloc] init]");
+			
+			NSNetServiceBrowser *browser = [[NSNetServiceBrowser alloc] init];
+			
+			[browser setDelegate: mainClass];
+			[browser searchForServicesOfType:@"_osirixdbsharing._tcp." inDomain:@""];
+			
+			[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow: 1]];
+			
+			[mainClass writeServices: path];
+		}
 		
 		if( [what isEqualToString:@"getFilesFromiDisk"])
 		{
@@ -336,14 +362,76 @@ int executeProcess(int argc, char *argv[])
 	return error;
 }
 
-@interface ShellMainClass : NSApplication
-{
+@implementation ShellMainClass
 
+- (void) writeServices:(NSString*) path
+{
+	[services writeToFile: path atomically: YES];
 }
 
-@end
+- (void) netServiceDidResolveAddress:(NSNetService *)sender
+{
+	NSLog( @"netServiceDidResolveAddress");
+	
+   if ([[sender addresses] count] > 0)
+   {
+        NSData * address;
+        struct sockaddr * socketAddress;
+        NSString * ipAddressString = nil;
+        NSString * portString = nil;
+        char buffer[256];
+        int index;
 
-@implementation ShellMainClass
+        // Iterate through addresses until we find an IPv4 address
+        for (index = 0; index < [[sender addresses] count]; index++) {
+            address = [[sender addresses] objectAtIndex:index];
+            socketAddress = (struct sockaddr *)[address bytes];
+
+            if (socketAddress->sa_family == AF_INET) break;
+        }
+
+        // Be sure to include <netinet/in.h> and <arpa/inet.h> or else you'll get compile errors.
+
+        if (socketAddress) {
+            switch(socketAddress->sa_family) {
+                case AF_INET:
+                    if (inet_ntop(AF_INET, &((struct sockaddr_in *)socketAddress)->sin_addr, buffer, sizeof(buffer))) {
+                        ipAddressString = [NSString stringWithCString:buffer];
+                        portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in *)socketAddress)->sin_port)];
+                    }
+                    
+                    // Cancel the resolve now that we have an IPv4 address.
+                    [sender stop];
+
+                    break;
+                case AF_INET6:
+                    // OsiriX server doesn't support IPv6
+                    return;
+            }
+        }
+		
+		NSMutableDictionary	*serviceDict = [NSMutableDictionary dictionary];
+		
+		[serviceDict setValue: [sender hostName] forKey:@"HostName"];
+		[serviceDict setValue: [sender name] forKey:@"Name"];
+		[serviceDict setValue: ipAddressString forKey:@"Address"];
+		[serviceDict setValue: portString forKey:@"OsiriXPort"];
+		
+		[services addObject: serviceDict];
+	}
+	
+	[sender release];
+}
+
+// This object is the delegate of its NSNetServiceBrowser object.
+- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
+{
+	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: aNetService, @"service", @"bonjour", @"type", 0L];
+	
+	[aNetService retain];
+	[aNetService setDelegate:self];
+	[aNetService resolveWithTimeout: 1];
+}
 
 - (id) init
 {
@@ -351,16 +439,19 @@ int executeProcess(int argc, char *argv[])
 	if (self != nil)
 	{
 		[self setDelegate: self];
+		mainClass = self;
 	}
 	return self;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+	services = [[NSMutableArray array] retain];
+
 	NSArray *arguments = [[NSProcessInfo processInfo] arguments];
 
 	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...", nil)];
-						
+	
 	[wait showWindow:self];
 	
 	NSLog( @"**** 32-bit shell started");

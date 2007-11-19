@@ -1086,6 +1086,32 @@ static char *GetPrivateIP()
 	// update interface
     if(!moreComing)
 	{
+		if( bugFixedForDNSResolve == NO)
+		{
+			NSTask *theTask = [[NSTask alloc] init];
+			
+			[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dnsresolve" handler:0L];
+			[theTask setArguments: [NSArray arrayWithObjects: @"DNSResolve", @"/tmp/dnsresolve", 0L]];
+			[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
+			[theTask launch];
+			[theTask waitUntilExit];
+			[theTask release];
+			
+			NSMutableArray *newServices = [NSMutableArray arrayWithContentsOfFile: @"/tmp/dnsresolve"];
+			
+			for (NSDictionary *newDict in newServices)
+			{
+				for( NSMutableDictionary *s in services)
+				{
+					if( [[newDict valueForKey:@"Name"] isEqualToString: [[s objectForKey:@"service"] name]])
+					{	
+						[s setValue: [newDict valueForKey:@"Address"] forKey:@"Address"];
+						[s setValue: [newDict valueForKey:@"OsiriXPort"] forKey:@"OsiriXPort"];
+					}
+				}
+			}
+		}
+		
 		[self arrangeServices];
 		[interfaceOsiriX displayBonjourServices];
 	}
