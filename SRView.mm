@@ -3394,7 +3394,7 @@ void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 	SInt16 tx, ty, tz, rx, ry, rz, xPos, yPos;
 	float axis_max, speed, rot;
 	
-	BOOL record;
+	BOOL record = NO;
 	
 	switch(messageType)
 	{

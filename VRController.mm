@@ -1911,7 +1911,6 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 												CroppingToolbarItemIdentifier,
 												OrientationToolbarItemIdentifier,
 												ShadingToolbarItemIdentifier,
-												EngineToolbarItemIdentifier,
 												PerspectiveToolbarItemIdentifier,
 												ConvolutionViewToolbarItemIdentifier,
 												BlendingToolbarItemIdentifier,
