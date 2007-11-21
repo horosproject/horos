@@ -1736,6 +1736,8 @@ static NSArray*	statesArray = nil;
 		int r = NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot understand the model of current saved database... The database index will be deleted and reconstructed (no images are lost).", nil), NSLocalizedString(@"OK", 0L), NSLocalizedString(@"Quit", 0L), nil);
 		if( r == NSAlertAlternateReturn)
 		{
+			NSString *pathTemp = [documentsDirectory() stringByAppendingString:@"/Loading"];	// To avoid the crash message during next startup
+			[[NSFileManager defaultManager] removeFileAtPath:pathTemp handler: nil];
 			[[NSApplication sharedApplication] terminate: self];
 		}
 		[[NSFileManager defaultManager] removeFileAtPath:currentDatabasePath handler:nil];
