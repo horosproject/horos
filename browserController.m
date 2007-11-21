@@ -4550,7 +4550,7 @@ static NSArray*	statesArray = nil;
 			NSString	*name;
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
-				name = [NSString stringWithString:@"Name hidden"];
+				name = [NSString stringWithString: NSLocalizedString( @"Name hidden", 0L)];
 			else
 				name = [item valueForKey:@"name"];
 			
