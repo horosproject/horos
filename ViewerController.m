@@ -6476,7 +6476,30 @@ static ViewerController *draggedController = 0L;
 				NSLog( @"Interval: %f %f", interval, interval3d);
 				
 				if( interval == 0)
-					interval = ( [[pixList[ z] objectAtIndex:0] spacingBetweenSlices]);
+				{
+					interval = [[pixList[ z] objectAtIndex:0] spacingBetweenSlices];
+					if( interval)
+					{
+						interval3d = -interval;
+						orientationVector = eAxialNeg;
+						[orientationMatrix setEnabled: YES];
+						
+						float v[ 9], o[ 3];
+						
+						o[ 0] = 0; o[ 1] = 0; o[ 2] = 0;
+						
+						v[ 0] = 1;	v[ 1] = 0;	v[ 2] = 0;
+						v[ 3] = 0;	v[ 4] = 1;	v[ 5] = 0;
+						v[ 6] = 1;	v[ 7] = 0;	v[ 8] = 1;
+						
+						for( DCMPix *pix in pixList[ z])
+						{
+							[pix setOrientation: v];
+							[pix setOrigin: o];
+							o[ 2] += interval;
+						}
+					}
+				}
 				
 				NSLog( @"Orientation Vector: %d", orientationVector);
 				NSLog( @"Interval: %2.2f", interval);
@@ -6553,6 +6576,7 @@ static ViewerController *draggedController = 0L;
 						
 						[self flipDataSeries: self];
 					}
+					else NSLog( @"sameSize = NO");
 				}
 				else
 				{
