@@ -187,9 +187,11 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 	
 	for( ViewerController *win in displayedViewers)
 	{
-		
-		if( [studiesArray containsObject: [[[win imageView] seriesObj] valueForKey:@"study"]] == NO)
-			[studiesArray addObject: [[[win imageView] seriesObj] valueForKey:@"study"]];
+		if( [[[win imageView] seriesObj] valueForKey:@"study"])
+		{
+			if( [studiesArray containsObject: [[[win imageView] seriesObj] valueForKey:@"study"]] == NO)
+				[studiesArray addObject: [[[win imageView] seriesObj] valueForKey:@"study"]];
+		}
 	}
 	
 	return studiesArray;
