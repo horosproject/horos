@@ -5562,10 +5562,10 @@ END_CREATE_ROIS:
 					{
 						BOOL spacingFound = NO;
 						
-						Papy_List	*dcmList = val->sq->object->item;
+						Papy_List	*dcmList = val->sq;
 						while (dcmList != NULL)
 						{
-							SElement *gr = (SElement *)dcmList->object->group;
+							SElement *gr = (SElement *)dcmList->object->item->object->group;
 							if ( gr->group == 0x0018 && spacingFound == NO)
 							{
 								int physicalUnitsX = 0;
@@ -6235,7 +6235,6 @@ END_CREATE_ROIS:
 									}
 								}
 							}
-							//	dcmList = dcmList->next;
 						}
 					}
 				}
@@ -6271,9 +6270,9 @@ END_CREATE_ROIS:
 			
 			if ( val ) {
 				if( val->sq ) {
-					Papy_List	*dcmList = val->sq->object->item;
+					Papy_List	*dcmList = val->sq;
 					while (dcmList != NULL) {
-						SElement *gr = (SElement *)dcmList->object->group;
+						SElement *gr = (SElement *)dcmList->object->item->object->group;
 						if ( gr->group == 0x0018 ) {
 							val = Papy3GetElement (gr, papRadionuclideTotalDoseGr, &pos, &elemType );
 							radionuclideTotalDose = val? [[NSString stringWithCString:val->a] floatValue] : 0.0;
