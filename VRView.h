@@ -265,6 +265,8 @@ typedef char* vtkMyCallbackVR;
 	
 	NSDate						*startRenderingTime;
 	
+	NSMutableArray				*ROIPoints;
+	
 	vtkPolyData					*ROI3DData;
 	vtkPolyDataMapper2D			*ROI3D;
 	vtkActor2D					*ROI3DActor;

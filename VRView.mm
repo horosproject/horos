@@ -66,6 +66,7 @@
 extern "C" 
 {
 	extern OSErr InstallConnexionHandlers(ConnexionMessageHandlerProc messageHandler, ConnexionAddedHandlerProc addedHandler, ConnexionRemovedHandlerProc removedHandler) __attribute__((weak_import));
+	extern int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale);
 }
 #endif
 
@@ -1552,6 +1553,7 @@ public:
 		currentOpacityArray = 0L;
 		textWLWW = 0L;
 		cursor = 0L;
+		ROIPoints = [[NSMutableArray array] retain];
 		
 		dataFRGB = 0L;
 		
@@ -1799,7 +1801,7 @@ public:
 	[deleteRegion lock];
 	[deleteRegion unlock];
 	[deleteRegion release];
-	
+	[ROIPoints release];
 	[exportDCM release];
 	[splash close];
 	[splash release];
@@ -2175,6 +2177,49 @@ public:
 	[[self window] display];
 }
 
+- (void) generateROI
+{
+	vtkPoints *pts = vtkPoints::New();
+	
+	if( 0)		// Spline
+	{
+		int nb;
+		
+		nb = [ROIPoints count]+1;
+		
+		NSPoint nspts[nb];
+
+		for(long i=0; i<[ROIPoints count]; i++)
+			nspts[i] = [[ROIPoints objectAtIndex:i] pointValue];
+	
+		nspts[[ROIPoints count]] = [[ROIPoints objectAtIndex:0] pointValue]; // we add the first point as the last one to smooth the spline
+
+		NSPoint *splinePts;
+		
+		long newNb = spline(nspts, nb, &splinePts, 1.0);
+		
+		for( long i=0; i<newNb; i++)
+			pts->InsertPoint( pts->GetNumberOfPoints(), splinePts[i].x, splinePts[i].y, 0);
+			
+		if(newNb) free(splinePts);
+	}
+	else
+	{
+		for( NSValue *pt in ROIPoints)
+			pts->InsertPoint( pts->GetNumberOfPoints(), [pt pointValue].x, [pt pointValue].y, 0);
+	}
+	
+	vtkCellArray *rect = vtkCellArray::New();
+	rect->InsertNextCell( pts->GetNumberOfPoints()+1);
+	for( int i = 0; i < pts->GetNumberOfPoints(); i++) rect->InsertCellPoint( i);
+	rect->InsertCellPoint( 0);
+	
+	ROI3DData->SetVerts( rect);
+	ROI3DData->SetLines( rect);		rect->Delete();
+	
+	ROI3DData->SetPoints( pts);
+}
+
 - (void)mouseDragged:(NSEvent *)theEvent
 {
 	//snVRView = self;
@@ -2378,7 +2423,7 @@ public:
 				[self setNeedsDisplay:YES];
 			break;
 				
-				case t3DCut:
+			case t3DCut:
 				
 				if( fabs(mouseLoc.x - _previousLoc.x) > 5. || fabs(mouseLoc.y - _previousLoc.y) > 5.)
 				{
@@ -2398,18 +2443,22 @@ public:
 					
 					NSLog(@"New pt: %2.2f %2.2f", tempPoint[0] , tempPoint[ 1]);
 					
-					vtkPoints *pts = ROI3DData->GetPoints();
-					pts->InsertPoint( pts->GetNumberOfPoints(), tempPoint[0], tempPoint[ 1], 0);
+					[ROIPoints addObject: [NSValue valueWithPoint: NSMakePoint( tempPoint[0], tempPoint[ 1])]];
 					
-					vtkCellArray *rect = vtkCellArray::New();
-					rect->InsertNextCell( pts->GetNumberOfPoints()+1);
-					for( i = 0; i < pts->GetNumberOfPoints(); i++) rect->InsertCellPoint( i);
-					rect->InsertCellPoint( 0);
+					[self generateROI];
 					
-					ROI3DData->SetVerts( rect);
-					ROI3DData->SetLines( rect);		rect->Delete();
-					
-					ROI3DData->SetPoints( pts);
+//					vtkPoints *pts = ROI3DData->GetPoints();
+//					pts->InsertPoint( pts->GetNumberOfPoints(), tempPoint[0], tempPoint[ 1], 0);
+//					
+//					vtkCellArray *rect = vtkCellArray::New();
+//					rect->InsertNextCell( pts->GetNumberOfPoints()+1);
+//					for( i = 0; i < pts->GetNumberOfPoints(); i++) rect->InsertCellPoint( i);
+//					rect->InsertCellPoint( 0);
+//					
+//					ROI3DData->SetVerts( rect);
+//					ROI3DData->SetLines( rect);		rect->Delete();
+//					
+//					ROI3DData->SetPoints( pts);
 					
 					if( ROIUPDATE == NO)
 					{
@@ -2734,18 +2783,8 @@ public:
 			
 			NSLog(@"New pt: %2.2f %2.2f", tempPoint[0] , tempPoint[ 1]);
 			
-			vtkPoints *pts = ROI3DData->GetPoints();
-			pts->InsertPoint( pts->GetNumberOfPoints(), tempPoint[0], tempPoint[ 1], 0);
-			
-			vtkCellArray *rect = vtkCellArray::New();
-			rect->InsertNextCell( pts->GetNumberOfPoints()+1);
-			for( i = 0; i < pts->GetNumberOfPoints(); i++) rect->InsertCellPoint( i);
-			rect->InsertCellPoint( 0);
-			
-			ROI3DData->SetVerts( rect);
-			ROI3DData->SetLines( rect);		rect->Delete();
-			
-			ROI3DData->SetPoints( pts);
+			[ROIPoints addObject: [NSValue valueWithPoint: NSMakePoint( tempPoint[0], tempPoint[ 1])]];
+			[self generateROI];
 			
 			if( ROIUPDATE == NO)
 			{
@@ -3333,6 +3372,7 @@ public:
 	vtkCellArray *rect = vtkCellArray::New();
 	ROI3DData-> SetPoints( pts);		pts->Delete();
 	ROI3DData-> SetLines( rect);		rect->Delete();
+	[ROIPoints removeAllObjects];
 }
 
 #define FLYTO 30
@@ -3478,6 +3518,7 @@ public:
 			vtkCellArray *rect = vtkCellArray::New();
 			ROI3DData-> SetPoints( pts);		pts->Delete();
 			ROI3DData-> SetLines( rect);		rect->Delete();
+			[ROIPoints removeAllObjects];
 			
 			[self setNeedsDisplay:YES];
 		}
@@ -3493,6 +3534,8 @@ public:
 			vtkCellArray *rect = vtkCellArray::New();
 			ROI3DData-> SetPoints( pts);		pts->Delete();
 			ROI3DData-> SetLines( rect);		rect->Delete();
+			[ROIPoints removeAllObjects];
+			
 			[self setNeedsDisplay:YES];
 		}
 	}
@@ -3637,6 +3680,7 @@ public:
 			vtkCellArray *rect = vtkCellArray::New();
 			ROI3DData-> SetPoints( pts);		pts->Delete();
 			ROI3DData-> SetLines( rect);		rect->Delete();
+			[ROIPoints removeAllObjects];
 			
 			[self setNeedsDisplay:YES];
 		}
