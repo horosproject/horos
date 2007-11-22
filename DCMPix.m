@@ -1827,6 +1827,11 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (void) fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition;
 {
+	return [self fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition spline: [ROI splineForROI]];
+}
+
+- (void) fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition spline:(BOOL) spline;
+{
     long				no = 0;
 	long				y;
     long				uplefty, downrighty, ims = width * height;
@@ -1956,7 +1961,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 			return;
 		}
 		else {
-			ptsTemp = [roi splinePoints];
+			if( spline) ptsTemp = [roi splinePoints];
+			else ptsTemp = [roi points];
 
 			no = ptsTemp.count;
 

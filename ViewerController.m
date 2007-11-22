@@ -5512,11 +5512,15 @@ static ViewerController *draggedController = 0L;
 	int index = [imageView curImage];
 	BOOL isResampled = YES;
 	
+	NSData *savedROIs[ 200];
+	
 	for( int j = 0 ; j < maxMovieIndex && isResampled == YES ; j ++)
 	{	
 		NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];
 		NSMutableArray *newDcmList = [NSMutableArray arrayWithCapacity:0];
 		NSData *newData = 0L;
+		
+//		savedROIs[ j] = [NSArchiver archivedDataWithRootObject: roiList[ j]];
 		
 		isResampled = [ViewerController resampleDataFromViewer:self inPixArray:newPixList fileArray:newDcmList data:&newData withXFactor:xFactor yFactor:yFactor zFactor:zFactor movieIndex: j];
 		
@@ -5540,7 +5544,7 @@ static ViewerController *draggedController = 0L;
 			else
 				[self addMovieSerie: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
 		}
-		
+				
 		loadingPercentage = 1;
 		[self computeInterval];
 		[self setWindowTitle:self];
@@ -5551,6 +5555,14 @@ static ViewerController *draggedController = 0L;
 		[imageView sendSyncMessage:1];
 		
 		[self adjustSlider];
+//		
+//		for( int j = 0 ; j < maxMovieIndex; j ++)
+//		{
+//			NSLog(@"%@", [NSUnarchiver unarchiveObjectWithData: savedROIs[ j]]);
+//			[roiList[ j] addObjectsFromArray: [NSUnarchiver unarchiveObjectWithData: savedROIs[ j]]];
+//		}
+//		[imageView roiSet];
+
 	}
 
 	return isResampled;
@@ -8424,9 +8436,7 @@ extern NSString * documentsDirectory();
 					[[roiList[ mIndex] objectAtIndex:i] addObjectsFromArray:array];
 					
 					for( id loopItem1 in array)
-					{
 						[imageView roiSet: loopItem1];
-					}
 				}
 			}
 		}

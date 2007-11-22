@@ -351,6 +351,11 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	ROIDefaultsLoaded = YES;
 }
 
++ (BOOL) splineForROI
+{
+	return splineForROI;
+}
+
 +(void) setDefaultName:(NSString*) n
 {
 	[defaultName release];

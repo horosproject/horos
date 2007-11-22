@@ -568,18 +568,18 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 		switch( stackOrientation)
 		{
 			case 2:
-				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: i] fillROI: roi :-3000 :-999999 :999999 :YES :2 :i];
-				else [[pixList[ x] objectAtIndex: i] fillROI: roi :-3000 :-999999 :999999 :NO :2 :i];
+				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: i] fillROI: roi newVal :-3000 minValue :-999999 maxValue :999999 outside :YES orientationStack :2 stackNo :i restore:NO addition:NO spline: NO];
+				else [[pixList[ x] objectAtIndex: i] fillROI: roi newVal :-3000 minValue :-999999 maxValue :999999 outside :NO orientationStack :2 stackNo :i restore:NO addition:NO spline: NO];
 				break;
 				
 			case 1:
-				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :-3000 :-999999 :999999 :YES :1 :i];
-				else [[pixList[ x] objectAtIndex: 0] fillROI: roi :-3000 :-999999 :999999 :NO :1 :i];
+				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi newVal :-3000 minValue :-999999 maxValue :999999 outside :YES orientationStack :1 stackNo :i restore:NO addition:NO spline: NO];
+				else [[pixList[ x] objectAtIndex: 0] fillROI: roi newVal :-3000 minValue :-999999 maxValue :999999 outside :NO orientationStack :1 stackNo :i restore:NO addition:NO spline: NO];
 				break;
 				
 			case 0:
-				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :-3000 :-999999 :999999 :YES :0 : i];
-				else [[pixList[ x] objectAtIndex: 0] fillROI: roi :-3000 :-999999 :999999 :NO :0 :i];
+				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi newVal :-3000 minValue :-999999 maxValue :999999 outside :YES orientationStack :0 stackNo :i restore:NO addition:NO spline: NO];
+				else [[pixList[ x] objectAtIndex: 0] fillROI: roi newVal :-3000 minValue :-999999 maxValue :999999 outside :NO orientationStack :0 stackNo :i restore:NO addition:NO spline: NO];
 				break;
 		}
 	}

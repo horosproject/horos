@@ -4503,14 +4503,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
     NSLog(@"DCMView alloc");
 
-	NSOpenGLPixelFormatAttribute attrs[] =
-    {
-			NSOpenGLPFAAccelerated,
-			NSOpenGLPFANoRecovery,
-            NSOpenGLPFADoubleBuffer,
-			NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32,
-			0
-	};
+	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
+	
+//	NSOpenGLPixelFormatAttribute attrs[] =
+//    {
+//			NSOpenGLPFAAccelerated,
+//			NSOpenGLPFANoRecovery,
+//            NSOpenGLPFADoubleBuffer,
+//			NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32,
+//			0
+//	};
 	
 	
 	// Get pixel format from OpenGL

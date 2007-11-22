@@ -956,13 +956,13 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	
 	if( blendedSeries)
 	{
-		[[blendingPixList objectAtIndex: index] fillROI:roi newVal:newVal minValue:-999999 maxValue:999999 outside:outside orientationStack:stackOrientation stackNo:i restore:restore addition:addition];
+		[[blendingPixList objectAtIndex: index] fillROI:roi newVal:newVal minValue:-999999 maxValue:999999 outside:outside orientationStack:stackOrientation stackNo:i restore:restore addition:addition spline: NO];
 	}
 	else
 	{
 		for( x = 0; x < maxMovieIndex; x++)
 		{
-			[[pixList[ x] objectAtIndex: index] fillROI:roi newVal:newVal minValue:-999999 maxValue:999999 outside:outside orientationStack:stackOrientation stackNo:i restore:restore addition:addition];
+			[[pixList[ x] objectAtIndex: index] fillROI:roi newVal:newVal minValue:-999999 maxValue:999999 outside:outside orientationStack:stackOrientation stackNo:i restore:restore addition:addition spline: NO];
 		}
 	}
 }

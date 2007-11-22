@@ -2181,7 +2181,7 @@ public:
 {
 	vtkPoints *pts = vtkPoints::New();
 	
-	if( 0)		// Spline
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"SplineForScissors"] && [ROIPoints count] >= 3)		// Spline
 	{
 		int nb;
 		
@@ -2196,7 +2196,7 @@ public:
 
 		NSPoint *splinePts;
 		
-		long newNb = spline(nspts, nb, &splinePts, 1.0);
+		long newNb = spline(nspts, nb, &splinePts, 0.1);
 		
 		for( long i=0; i<newNb; i++)
 			pts->InsertPoint( pts->GetNumberOfPoints(), splinePts[i].x, splinePts[i].y, 0);

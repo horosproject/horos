@@ -162,6 +162,8 @@ enum
 + (NSString*) defaultName;
 @property(retain) NSString *defaultName;
 
++ (BOOL) splineForROI;
+
 /** Load User Defaults */
 +(void) loadDefaultSettings;
 
