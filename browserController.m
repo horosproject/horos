@@ -1881,7 +1881,8 @@ static NSArray*	statesArray = nil;
 	
 	// Third, is it available in the list ?
 	if( found == NO) {
-		for( NSDictionary *service in [bonjourBrowser services] ) {
+		for( NSDictionary *service in [bonjourBrowser services] )
+		{
 			NSString	*type = [service valueForKey:@"type"];
 			
 			if( [type isEqualToString:@"localPath"] ) {
@@ -1891,18 +1892,19 @@ static NSArray*	statesArray = nil;
 				if( [[[cPath pathExtension] lowercaseString] isEqualToString:@"sql"]) {
 					if( [path isEqualToString: cPath]) {
 						found = YES;
+						i = [[bonjourBrowser services] indexOfObject: service] + 1;
 						break;
 					}
 				}
 				else {
 					if( [cPath isEqualToString: DBFolderLocation] && [[path lastPathComponent] isEqualToString:@"Database.sql"]) {
 						found = YES;
+						i = [[bonjourBrowser services] indexOfObject: service] + 1;
 						break;
 					}
 				}
 			}
 		}
-		i++;
 	}
 	
 	if( found)	return i;
