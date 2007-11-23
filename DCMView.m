@@ -7480,6 +7480,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 				else [self display];
 				
+				[[self openGLContext] flushBuffer];	// <- Very important! Keep this line
+				
 				[[self openGLContext] makeCurrentContext];
 				
 				CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];

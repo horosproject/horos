@@ -797,7 +797,7 @@ static NSArray*	statesArray = nil;
 			[pool release];
 		}
 			
-			@catch( NSException *ne)
+		@catch( NSException *ne)
 		{
 			NSLog(@"AddFilesToDatabase DicomFile exception: %@", [ne description]);
 			NSLog(@"Parser failed for this file: %@", newFile);
@@ -868,7 +868,7 @@ static NSArray*	statesArray = nil;
 						
 						// For each new image in a pre-existing study, check if a viewer is already opened -> refresh the preview list
 						
-						if( [curPatientID isEqualToString: [firstObject valueForKeyPath:@"series.study.patientID"]]) {
+						if( curPatientID == 0L || [curPatientID isEqualToString: [firstObject valueForKeyPath:@"series.study.patientID"]]) {
 							if( [vlToRebuild containsObject: vc] == NO)
 								[vlToRebuild addObject: vc];
 						}
@@ -898,41 +898,27 @@ static NSArray*	statesArray = nil;
 			if( growlString)
 				[self performSelectorOnMainThread:@selector( setGrowlMessage:) withObject: growlString waitUntilDone:NO];
 			
-			if( mainThread == [NSThread currentThread])	{
-				// Purge viewersListToReload & viewersListToReload arrays
+			if( mainThread == [NSThread currentThread])
 				[self newFilesGUIUpdate: self];
 				
-				for( ViewerController *a in vlToReload)
-				{
-					if( [viewersListToReload containsObject: a] == NO)
-						[viewersListToReload addObject: a];
-				}
-				for( ViewerController *a in vlToRebuild)
-				{
-					if( [viewersListToRebuild containsObject: a] == NO)
-						[viewersListToRebuild addObject: a];
-				}
+			[newFilesConditionLock lockWhenCondition: 0];
 				
-				if( newStudy) [self newFilesGUIUpdateRun: 1];
-				else [self newFilesGUIUpdateRun: 2];
+			for( ViewerController *a in vlToReload)
+			{
+				if( [viewersListToReload containsObject: a] == NO)
+					[viewersListToReload addObject: a];
 			}
-			else {
-				[newFilesConditionLock lockWhenCondition: 0];
-				
-				for( ViewerController *a in vlToReload)
-				{
-					if( [viewersListToReload containsObject: a] == NO)
-						[viewersListToReload addObject: a];
-				}
-				for( ViewerController *a in vlToRebuild)
-				{
-					if( [viewersListToRebuild containsObject: a] == NO)
-						[viewersListToRebuild addObject: a];
-				}
-				
-				if( newStudy) [newFilesConditionLock unlockWithCondition: 1];
-				else [newFilesConditionLock unlockWithCondition: 2];
+			for( ViewerController *a in vlToRebuild)
+			{
+				if( [viewersListToRebuild containsObject: a] == NO)
+					[viewersListToRebuild addObject: a];
 			}
+			
+			if( newStudy) [newFilesConditionLock unlockWithCondition: 1];
+			else [newFilesConditionLock unlockWithCondition: 2];
+			
+			if( mainThread == [NSThread currentThread])
+				[self newFilesGUIUpdate: self];
 			
 			databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 		}
@@ -3987,27 +3973,25 @@ static NSArray*	statesArray = nil;
 - (IBAction) mergeStudies:(id) sender
 {
 	// Is it only series??
+	NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
+	BOOL	onlySeries = YES;
+	NSMutableArray	*seriesArray = [NSMutableArray array];
+	
+	for( NSInteger x = 0; x < [selectedRows count] ; x++ )
 	{
-		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
-		BOOL	onlySeries = YES;
-		NSMutableArray	*seriesArray = [NSMutableArray array];
+		NSInteger row = ( x == 0 ) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
+		NSManagedObject	*series = [databaseOutline itemAtRow: row];
+		if( [[series valueForKey:@"type"] isEqualToString: @"Series"] == NO) onlySeries = NO;
 		
-		for( NSInteger x = 0; x < [selectedRows count] ; x++ )
-		{
-			NSInteger row = ( x == 0 ) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
-			NSManagedObject	*series = [databaseOutline itemAtRow: row];
-			if( [[series valueForKey:@"type"] isEqualToString: @"Series"] == NO) onlySeries = NO;
-			
-			[seriesArray addObject: series];
-		}
-		
-		if( onlySeries)
-		{
-			[self mergeSeriesExecute: seriesArray];
-			return;
-		}
+		[seriesArray addObject: series];
 	}
-
+	
+	if( onlySeries)
+	{
+		[self mergeSeriesExecute: seriesArray];
+		return;
+	}
+	
 	NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Merge Studies", 0L), NSLocalizedString(@"Are you sure you want to merge the selected studies? It cannot be cancelled.\r\rWARNING! If you merge multiple patients, the Patient Name and ID will be identical.", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 	
 	if( result == NSAlertDefaultReturn)
@@ -4044,19 +4028,19 @@ static NSArray*	statesArray = nil;
 		{
 			NSInteger row = ( x == 0 ) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
 			
-			if( x != 0)
+			NSManagedObject	*study = [databaseOutline itemAtRow: row];
+			
+			if( [[study valueForKey:@"type"] isEqualToString: @"Study"] == NO) study = [study valueForKey:@"study"];
+			
+			if( study != destStudy)
 			{
-				NSManagedObject	*study = [databaseOutline itemAtRow: row];
-				
-				if( [[study valueForKey:@"type"] isEqualToString: @"Study"] == NO) study = [study valueForKey:@"study"];
-				
 				if( [[study valueForKey:@"type"] isEqualToString: @"Study"])
 				{
 					NSArray *series = [[study valueForKey: @"series"] allObjects];
 					
 					for( id s in series)
 						[s setValue: destStudy forKey: @"study"];
-						
+					
 					[context deleteObject: study];
 				}
 			}
@@ -4067,6 +4051,10 @@ static NSArray*	statesArray = nil;
 		[self saveDatabase: currentDatabasePath];
 		
 		[self outlineViewRefresh];
+		
+		[databaseOutline selectRow:[databaseOutline rowForItem: destStudy] byExtendingSelection: NO];
+		[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+		
 		[self refreshMatrix: self];
 		
 		[context unlock];
@@ -8894,9 +8882,10 @@ static NSArray*	openSubSeriesArray = 0L;
 		
 		pressedKeys = [[NSMutableString stringWithString:@""] retain];
 		numFmt = [[NSNumberFormatter alloc] init];
-		[numFmt setLocale: [NSLocale currentLocale]];
-		[numFmt setFormat:@"0"];
-		[numFmt setHasThousandSeparators: YES];
+		[numFmt setNumberStyle: NSNumberFormatterDecimalStyle];
+//		[numFmt setLocale: [NSLocale currentLocale]];
+//		[numFmt setFormat:@"0"];
+//		[numFmt setHasThousandSeparators: YES];
 		
 		matrixLoadIconsLock = [[NSLock alloc] init];
 		checkBonjourUpToDateThreadLock = [[NSLock alloc] init];

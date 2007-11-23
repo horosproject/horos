@@ -66,9 +66,13 @@
 extern "C" 
 {
 	extern OSErr InstallConnexionHandlers(ConnexionMessageHandlerProc messageHandler, ConnexionAddedHandlerProc addedHandler, ConnexionRemovedHandlerProc removedHandler) __attribute__((weak_import));
-	extern int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale);
 }
 #endif
+
+extern "C" 
+{
+	extern int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale);
+}
 
 //vtkVolumeMapper
 

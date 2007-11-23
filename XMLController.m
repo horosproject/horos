@@ -696,13 +696,19 @@ static BOOL showWarning = YES;
 				[wait showWindow:self];
 			}
 			
-			[self modifyDicom: params];
-			
-			for( id loopItem in files)
-				[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:0L];
-			
-			[self updateDB: files];
-			
+			@try
+			{
+				[self modifyDicom: params];
+				
+				for( id loopItem in files)
+					[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:0L];
+				
+				[self updateDB: files];
+			}
+			@catch (NSException * e)
+			{
+				NSLog(@"%@", e);
+			}
 			[wait close];
 			[wait release];
 			wait = 0L;
@@ -808,12 +814,18 @@ static BOOL showWarning = YES;
 						[wait showWindow:self];
 					}
 					
-					[self modifyDicom: params];
-					for( id loopItem in files)
-						[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:0L];
+					@try
+					{
+						[self modifyDicom: params];
+						for( id loopItem in files)
+							[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:0L];
 					
-					[self updateDB: files];
-					
+						[self updateDB: files];
+					}
+					@catch (NSException * e)
+					{
+						NSLog(@"%@", e);
+					}
 					[wait close];
 					[wait release];
 					wait = 0L;

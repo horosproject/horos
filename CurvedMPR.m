@@ -310,8 +310,9 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 
 	DCMPix		*firstObject = [pixList objectAtIndex:0];
 	float		*emptyData, *curData;
-	double		length;
-	long		size, newX, newY, i, x, y, z, xInc, noOfPoints, imageCounter = 0;
+	double		length, remainingL;
+	long long	size;
+	long		newX, newY, i, x, y, z, xInc, noOfPoints, imageCounter = 0;
 	NSData		*newData;
 	//NSArray		*pts = [selectedROI points];
 	NSArray		*pts = [selectedROI splinePoints];
@@ -325,7 +326,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	imageCounter = 0;
 	for( i = 0; i < [pts count]-1; i++)
 	{
-		length += [self lengthPoints: [[pts objectAtIndex:i] point]  :[[pts objectAtIndex:i+1] point] :[firstObject pixelRatio]];
+		length = [self lengthPoints: [[pts objectAtIndex:i] point]  :[[pts objectAtIndex:i+1] point] :[firstObject pixelRatio]];
 		
 		for( x = 0; x < length; x++)
 		{

@@ -5565,31 +5565,34 @@ END_CREATE_ROIS:
 						Papy_List	*dcmList = val->sq;
 						while (dcmList != NULL)
 						{
-							SElement *gr = (SElement *)dcmList->object->item->object->group;
-							if ( gr->group == 0x0018 && spacingFound == NO)
+							if( dcmList->object->item)
 							{
-								int physicalUnitsX = 0;
-								int physicalUnitsY = 0;
-								
-								val = Papy3GetElement (gr, papPhysicalUnitsXDirectionGr, &nbVal, &elemType);
-								if ( val ) physicalUnitsX = val->us;
-								val = Papy3GetElement (gr, papPhysicalUnitsYDirectionGr, &nbVal, &elemType);
-								if ( val ) physicalUnitsY = val->us;
-								
-								if( physicalUnitsX == 3 && physicalUnitsY == 3)	// We want only cm !
+								SElement *gr = (SElement *)dcmList->object->item->object->group;
+								if ( gr->group == 0x0018 && spacingFound == NO)
 								{
-									double xxx = 0, yyy = 0;
+									int physicalUnitsX = 0;
+									int physicalUnitsY = 0;
 									
-									val = Papy3GetElement (gr, papPhysicalDeltaXGr, &nbVal, &elemType);
-									if ( val ) xxx = val->fd;
-									val = Papy3GetElement (gr, papPhysicalDeltaYGr, &nbVal, &elemType);
-									if ( val ) yyy = val->fd;
+									val = Papy3GetElement (gr, papPhysicalUnitsXDirectionGr, &nbVal, &elemType);
+									if ( val ) physicalUnitsX = val->us;
+									val = Papy3GetElement (gr, papPhysicalUnitsYDirectionGr, &nbVal, &elemType);
+									if ( val ) physicalUnitsY = val->us;
 									
-									if( xxx && yyy)
+									if( physicalUnitsX == 3 && physicalUnitsY == 3)	// We want only cm !
 									{
-										pixelSpacingX = xxx * 10.;	// These are in cm !
-										pixelSpacingY = yyy * 10.;
-										spacingFound = YES;
+										double xxx = 0, yyy = 0;
+										
+										val = Papy3GetElement (gr, papPhysicalDeltaXGr, &nbVal, &elemType);
+										if ( val ) xxx = val->fd;
+										val = Papy3GetElement (gr, papPhysicalDeltaYGr, &nbVal, &elemType);
+										if ( val ) yyy = val->fd;
+										
+										if( xxx && yyy)
+										{
+											pixelSpacingX = xxx * 10.;	// These are in cm !
+											pixelSpacingY = yyy * 10.;
+											spacingFound = YES;
+										}
 									}
 								}
 							}
@@ -6271,26 +6274,30 @@ END_CREATE_ROIS:
 			if ( val ) {
 				if( val->sq ) {
 					Papy_List	*dcmList = val->sq;
-					while (dcmList != NULL) {
-						SElement *gr = (SElement *)dcmList->object->item->object->group;
-						if ( gr->group == 0x0018 ) {
-							val = Papy3GetElement (gr, papRadionuclideTotalDoseGr, &pos, &elemType );
-							radionuclideTotalDose = val? [[NSString stringWithCString:val->a] floatValue] : 0.0;
-							
-							val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType );
-							if( val ) {
-								NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
-								NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
+					while (dcmList != NULL)
+					{
+						if( dcmList->object->item)
+						{
+							SElement *gr = (SElement *)dcmList->object->item->object->group;
+							if ( gr->group == 0x0018 ) {
+								val = Papy3GetElement (gr, papRadionuclideTotalDoseGr, &pos, &elemType );
+								radionuclideTotalDose = val? [[NSString stringWithCString:val->a] floatValue] : 0.0;
 								
-								radiopharmaceuticalStartTime = [[NSCalendarDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+								val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType );
+								if( val ) {
+									NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
+									NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
+									
+									radiopharmaceuticalStartTime = [[NSCalendarDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+									
+									[cd release];
+									[cc release];
+								}
 								
-								[cd release];
-								[cc release];
+								val = Papy3GetElement (gr, papRadionuclideHalfLifeGr, &pos, &elemType );
+								halflife = val? [[NSString stringWithCString:val->a] floatValue] : 0.0;
+								break;
 							}
-							
-							val = Papy3GetElement (gr, papRadionuclideHalfLifeGr, &pos, &elemType );
-							halflife = val? [[NSString stringWithCString:val->a] floatValue] : 0.0;
-							break;
 						}
 						dcmList = dcmList->next;
 					}
@@ -6496,77 +6503,81 @@ END_CREATE_ROIS:
 						Papy_List *dcmList = val->sq;
 						
 						// loop through the elements of the sequence
-						while (dcmList)	{
-							SElement * gr = (SElement *) dcmList->object->item->object->group;
-							
-							//NSLog(@"frameCount:%d imageNb:%d", frameCount, imageNb);
-							
-							if( frameCount == imageNb-1 ) {
-								//NSLog( @"group:%x, element:%x", gr->group, gr->element);
+						while (dcmList)
+						{
+							if( dcmList->object->item)
+							{
+								SElement * gr = (SElement *) dcmList->object->item->object->group;
 								
-								switch( gr->group) {
-									case 0x0020:
-										val = Papy3GetElement (gr, papPlanePositionSequence, &nbVal, &elemType);
-										if (val != NULL && nbVal >= 1) {
-											// there is a sequence
-											if (val->sq) {
-												// get a pointer to the first element of the list
-												Papy_List *PlanePositionSequence = val->sq->object->item;
-												
-												// loop through the elements of the sequence
-												while (PlanePositionSequence) {
-													SElement * gr20 = (SElement *) PlanePositionSequence->object->group;
+								//NSLog(@"frameCount:%d imageNb:%d", frameCount, imageNb);
+								
+								if( frameCount == imageNb-1 ) {
+									//NSLog( @"group:%x, element:%x", gr->group, gr->element);
+									
+									switch( gr->group) {
+										case 0x0020:
+											val = Papy3GetElement (gr, papPlanePositionSequence, &nbVal, &elemType);
+											if (val != NULL && nbVal >= 1) {
+												// there is a sequence
+												if (val->sq) {
+													// get a pointer to the first element of the list
+													Papy_List *PlanePositionSequence = val->sq->object->item;
 													
-													//NSLog( @"group:%x, element:%x", gr20->group, gr20->element);
-													
-													switch( gr20->group) {
-														case 0x0020:
-															val3 = Papy3GetElement (gr20, papImagePositionPatientGr, &nbVal, &elemType);
-															if (val3 != NULL && nbVal >= 1) {
-																tmp = val3;
-																
-																originX = [[NSString stringWithCString:tmp->a] floatValue];
-																
-																if( nbVal > 1) {
-																	tmp++;
-																	originY = [[NSString stringWithCString:tmp->a] floatValue];
+													// loop through the elements of the sequence
+													while (PlanePositionSequence) {
+														SElement * gr20 = (SElement *) PlanePositionSequence->object->group;
+														
+														//NSLog( @"group:%x, element:%x", gr20->group, gr20->element);
+														
+														switch( gr20->group) {
+															case 0x0020:
+																val3 = Papy3GetElement (gr20, papImagePositionPatientGr, &nbVal, &elemType);
+																if (val3 != NULL && nbVal >= 1) {
+																	tmp = val3;
+																	
+																	originX = [[NSString stringWithCString:tmp->a] floatValue];
+																	
+																	if( nbVal > 1) {
+																		tmp++;
+																		originY = [[NSString stringWithCString:tmp->a] floatValue];
+																	}
+																	
+																	if( nbVal > 2) {
+																		tmp++;
+																		originZ = [[NSString stringWithCString:tmp->a] floatValue];
+																	}
+																	
+																	NSLog(@"X:%f Y:%f Z:%f", originX, originY, originZ);
 																}
+																break;
 																
-																if( nbVal > 2) {
-																	tmp++;
-																	originZ = [[NSString stringWithCString:tmp->a] floatValue];
+																case 0x0028:
+																val3 = Papy3GetElement (gr20, papPixelSpacingGr, &nbVal, &elemType);
+																if (val3 != NULL && nbVal >= 1) {
+																	tmp = val3;
+																	
+																	pixelSpacingY = [[NSString stringWithCString:tmp->a] floatValue];
+																	
+																	if( nbVal > 1) {
+																		tmp++;
+																		pixelSpacingX = [[NSString stringWithCString:tmp->a] floatValue];
+																	}
 																}
-																
-																NSLog(@"X:%f Y:%f Z:%f", originX, originY, originZ);
-															}
-															break;
-															
-															case 0x0028:
-															val3 = Papy3GetElement (gr20, papPixelSpacingGr, &nbVal, &elemType);
-															if (val3 != NULL && nbVal >= 1) {
-																tmp = val3;
-																
-																pixelSpacingY = [[NSString stringWithCString:tmp->a] floatValue];
-																
-																if( nbVal > 1) {
-																	tmp++;
-																	pixelSpacingX = [[NSString stringWithCString:tmp->a] floatValue];
-																}
-															}
-															break;
+																break;
+														}
+														
+														// get the next element of the list
+														PlanePositionSequence = PlanePositionSequence->next;
 													}
-													
-													// get the next element of the list
-													PlanePositionSequence = PlanePositionSequence->next;
 												}
 											}
-										}
-										
-										break;
-								}
-								// STOP THE LOOP
-								dcmList = nil;
-							} // right frame?
+											
+											break;
+									}
+									// STOP THE LOOP
+									dcmList = nil;
+								} // right frame?
+							}
 							
 							if( dcmList ) {
 								// get the next element of the list
