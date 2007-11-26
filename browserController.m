@@ -11224,7 +11224,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				if( found == NO ) {
 					int z = self.currentBonjourService;
 					NSDictionary	*selectedDict = nil;
-					if( z >= 0) selectedDict = [[bonjourBrowser.services objectAtIndex: z] retain];
+					if( z >= 0 && z < [bonjourBrowser.services count]) selectedDict = [[bonjourBrowser.services objectAtIndex: z] retain];
 					
 					NSMutableDictionary	*dict = [NSMutableDictionary dictionary];
 					
