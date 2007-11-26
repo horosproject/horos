@@ -6492,6 +6492,8 @@
 		CE6C77EE09739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */; };
 		CE6C77F109739B3100F951C2 /* Rotate3DCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */; };
 		CE6C77F209739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */; };
+		CE6CD06D0CFB0462001DF429 /* OsiriXToolbar.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6CD06B0CFB0462001DF429 /* OsiriXToolbar.h */; };
+		CE6CD06E0CFB0462001DF429 /* OsiriXToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6CD06C0CFB0462001DF429 /* OsiriXToolbar.m */; };
 		CE6D47720A76B22C0034A4B4 /* DicomDirInitRecords.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E205646BE500BED927 /* DicomDirInitRecords.c */; };
 		CE6D47730A76B22D0034A4B4 /* DicomDirInit.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E105646BE500BED927 /* DicomDirInit.c */; };
 		CE6D47740A76B22D0034A4B4 /* DicomDirFiles.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E005646BE500BED927 /* DicomDirFiles.c */; };
@@ -11536,6 +11538,8 @@
 		CE6C156C0C82D1DD00A9EEDC /* libitkv3p_netlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkv3p_netlib.a; path = ITK180/bin/libitkv3p_netlib.a; sourceTree = "<group>"; };
 		CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Rotate3DCursor.tif; path = Cursors/Rotate3DCursor.tif; sourceTree = "<group>"; };
 		CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Rotate3DCameraCursor.tif; path = Cursors/Rotate3DCameraCursor.tif; sourceTree = "<group>"; };
+		CE6CD06B0CFB0462001DF429 /* OsiriXToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OsiriXToolbar.h; sourceTree = "<group>"; };
+		CE6CD06C0CFB0462001DF429 /* OsiriXToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OsiriXToolbar.m; sourceTree = "<group>"; };
 		CE6E2CAE06CAE45A00BC7907 /* PlotView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PlotView.h; sourceTree = "<group>"; };
 		CE6E2CAF06CAE45A00BC7907 /* PlotWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PlotWindow.h; sourceTree = "<group>"; };
 		CE6E2CB006CAE45A00BC7907 /* PlotWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PlotWindow.m; sourceTree = "<group>"; };
@@ -12962,6 +12966,8 @@
 				ABDC3C730670FF440042069D /* ToolBarNSWindow.h */,
 				AB866038066E40970015E1C4 /* ToolbarPanel.h */,
 				AB866037066E40970015E1C4 /* ToolbarPanel.m */,
+				CE6CD06B0CFB0462001DF429 /* OsiriXToolbar.h */,
+				CE6CD06C0CFB0462001DF429 /* OsiriXToolbar.m */,
 				7ED5C2660699E08E00875C39 /* AnonymizerWindowController.h */,
 				7ED5C2670699E08E00875C39 /* AnonymizerWindowController.m */,
 				BF76A59706ACC6FD00FABE42 /* ButtonAndTextField.h */,
@@ -18485,6 +18491,7 @@
 				CEDC793C0CBB7EF600411DDB /* ITKSegmentation3DController.h in Headers */,
 				CE4700FF0CC51A6600ECF78A /* WindowLayoutManager.h in Headers */,
 				A97D4C610CE3459D003FE2E6 /* PieChartImage.h in Headers */,
+				CE6CD06D0CFB0462001DF429 /* OsiriXToolbar.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22818,6 +22825,7 @@
 				BF8564150CB2B781005F7178 /* EndoscopyFlyThruController.m in Sources */,
 				CE4701000CC51A6600ECF78A /* WindowLayoutManager.m in Sources */,
 				A97D4C620CE3459D003FE2E6 /* PieChartImage.m in Sources */,
+				CE6CD06E0CFB0462001DF429 /* OsiriXToolbar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

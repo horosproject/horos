@@ -554,6 +554,7 @@ enum
 - (void) setPixelList:(NSMutableArray*)f fileList:(NSMutableArray *)d volumeData:(NSData *) v;
 - (void) speedSliderAction:(id) sender;
 - (void) setupToolbar;
+- (NSToolbar*) toolbar;
 - (void) PlayStop:(id) sender;
 - (short) getNumberOfImages;
 - (float) frameRate;

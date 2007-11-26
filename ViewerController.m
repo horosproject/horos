@@ -22,7 +22,7 @@
 #import "VRControllerVPRO.h"
 #import "NSSplitViewSave.h"
 #import "SRController.h"
-//#import "MPRController.h"
+#import "OsiriXToolbar.h"
 #import "MPR2DController.h"
 #import "NSFullScreenWindow.h"
 #import "ViewerController.h"
@@ -4102,6 +4102,8 @@ static ViewerController *draggedController = 0L;
 	NSToolbarItem *item = [[notif userInfo] objectForKey: @"item"];
 	if( [retainedToolbarItems containsObject: item] == NO) [retainedToolbarItems addObject: item];
 	
+	
+	
 	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{		
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
@@ -4466,7 +4468,7 @@ static ViewerController *draggedController = 0L;
 - (void) setupToolbar
 {
 	// Create a new toolbar instance, and attach it to our document window 
-	toolbar = [[NSToolbar alloc] initWithIdentifier: ViewerToolbarIdentifier];
+	toolbar = [[OsiriXToolbar alloc] initWithIdentifier: ViewerToolbarIdentifier];
 	
 	// Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
 	[toolbar setAllowsUserCustomization: YES];
@@ -4476,7 +4478,8 @@ static ViewerController *draggedController = 0L;
 	// We are the delegate
 	[toolbar setDelegate: self];
 	
-	if( USETOOLBARPANEL == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == NO) [[self window] setToolbar: toolbar];
+	if( USETOOLBARPANEL == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == NO)
+		[[self window] setToolbar: toolbar];
 	
 	[[self window] setShowsToolbarButton:NO];
 	[[[self window] toolbar] setVisible: YES];
@@ -14961,7 +14964,7 @@ int i,j,l;
 			}
 		}
 	}
-
+		
 	speedometer = 0;
 	matrixPreviewBuilt = NO;
 	
