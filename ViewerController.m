@@ -4535,6 +4535,8 @@ static ViewerController *draggedController = 0L;
 	
 	[OpacityPopup setEnabled:YES];
 	
+	[self refreshToolbar];
+	
 	return self;
 }
 
