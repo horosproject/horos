@@ -733,7 +733,10 @@
 }
 
 - (void)addData:(NSData *)data{
-	[dicomData appendData:data];
+	NSMutableData *newData = [NSMutableData dataWithData:data];
+	if ([data length] %2 != 0)
+		[newData increaseLengthBy:1];
+	[dicomData appendData:newData];
 }
 
 - (DCMTransferSyntax *) transferSyntaxForDataset{
