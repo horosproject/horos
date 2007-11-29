@@ -1304,7 +1304,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		// loop on the pixels of the image
 		pYBR = ybrImage;
 		
-		for( yy = 0; yy < h/2; yy++)
+		for( yy = 0; yy < h; yy++)
 		{
 			unsigned char	*rr = pRGB;
 			unsigned char	*rr2 = pRGB+3*w;
@@ -1319,16 +1319,17 @@ BOOL gUSEPAPYRUSDCMPIX;
 				*(rr+1) = b;
 				*(rr+2) = r;
 				
-				*(rr2) = y;
-				*(rr2+1) = b;
-				*(rr2+2) = r;
+//				*(rr2) = y;
+//				*(rr2+1) = b;
+//				*(rr2+2) = r;
 				
 				pYBR += 3;
 				rr += 3;
 				rr2 += 3;
 			}
 			
-			pRGB += 2*w*3;
+//			pRGB += 2*w*3;
+			pRGB += w*3;
 		}
 		break;
 		

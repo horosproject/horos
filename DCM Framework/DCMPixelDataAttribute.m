@@ -2436,10 +2436,10 @@ NS_ENDHANDLER
 		  pYBR = (unsigned char *) [ybrData bytes];
           
 		  int yy, x;
-		  for( yy = 0; yy < _rows/2; yy++)
+		  for( yy = 0; yy < _rows; yy++)	//_rows/2
 		  {
 			unsigned char	*rr = pRGB;
-			unsigned char	*rr2 = pRGB+3*_columns;
+//			unsigned char	*rr2 = pRGB+3*_columns;
 			
 			for( x = 0; x < _columns; x++)
 			{
@@ -2451,16 +2451,17 @@ NS_ENDHANDLER
 				*(rr+1) = b;
 				*(rr+2) = r;
 				
-				*(rr2) = y;
-				*(rr2+1) = b;
-				*(rr2+2) = r;
+//				*(rr2) = y;
+//				*(rr2+1) = b;
+//				*(rr2+2) = r;
 				
 				pYBR += 3;
 				rr += 3;
-				rr2 += 3;
+//				rr2 += 3;
 			}
 			
-			pRGB += 2*_columns*3;
+//			pRGB += 2*_columns*3;
+			pRGB += _columns*3;
 		  }
 
 		}
