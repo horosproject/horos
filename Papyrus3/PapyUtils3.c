@@ -89,7 +89,8 @@ PapyStrDup (char *inS)
   if (inS != NULL)
   {
     theStr = (char *) emalloc3 ((PapyULong) (strlen (inS) + 1));
-    strcpy (theStr, inS);
+    if( theStr)
+		strcpy (theStr, inS);
   }
   else
     theStr = NULL;

@@ -5557,7 +5557,19 @@ static BOOL withReset = NO;
 		}
 		
 		NSManagedObject   *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
-		if([[aFile valueForKey:@"type"] isEqualToString:@"Study"])
+		if ([[aFile valueForKey:@"type"] isEqualToString:@"Series"] && 
+				 [[[aFile valueForKey:@"images"] allObjects] count] == 1 && 
+				 [[[[[aFile valueForKey:@"images"] allObjects] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] > 1)
+		{
+			noOfImages = [[[[[aFile valueForKey:@"images"] allObjects] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue];
+			animate = YES;
+		}
+		else if([[aFile valueForKey:@"type"] isEqualToString:@"Series"] && [[[aFile valueForKey:@"images"] allObjects] count] > 1)
+		{
+			noOfImages = [[[aFile valueForKey:@"images"] allObjects] count];
+			animate = YES;
+		}
+		else if([[aFile valueForKey:@"type"] isEqualToString:@"Study"])
 		{
 			NSArray *images = [self imagesArray: [matrixViewArray objectAtIndex: [cell tag]]];
 			
@@ -5576,14 +5588,6 @@ static BOOL withReset = NO;
 				}
 			}
 		}
-		else if ([[aFile valueForKey:@"type"] isEqualToString:@"Series"] && 
-				 [[[aFile valueForKey:@"images"] allObjects] count] == 1 && 
-				 [[[[[aFile valueForKey:@"images"] allObjects] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] > 1)
-		{
-			noOfImages = [[[[[aFile valueForKey:@"images"] allObjects] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue];
-			animate = YES;
-		}
-		
 		
 		if( animate == NO)
 		{
@@ -5629,10 +5633,43 @@ static BOOL withReset = NO;
 			if( [cell tag] >= [matrixViewArray count]) return;
 			
 			NSManagedObject   *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
-			if( [[aFile valueForKey:@"type"] isEqualToString:@"Study"])
+			if ([[aFile valueForKey:@"type"] isEqualToString:@"Series"] && 
+					 [[[aFile valueForKey:@"images"] allObjects] count] == 1 && 
+					 [[[[[aFile valueForKey:@"images"] allObjects] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] > 1) // multi frame image that is directly selected
 			{
-				NSArray *images = [self imagesArray: [matrixViewArray objectAtIndex: [cell tag]]];
+				NSManagedObject* image = [[[aFile valueForKey:@"images"] allObjects] objectAtIndex:0];
 				
+				noOfImages = [[image valueForKey:@"numberOfFrames"] intValue];
+				animate = YES;
+				
+				DCMPix*     dcmPix = 0L;
+				dcmPix = [[DCMPix alloc] myinit: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :0L :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
+				
+				if( dcmPix ) {
+					float   wl, ww;
+					int     row, column;
+					
+					[imageView getWLWW:&wl :&ww];
+					
+					[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
+					[dcmPix release];
+					
+					[imageView setIndex:[cell tag]];
+				}
+			}
+			else if( [[aFile valueForKey:@"type"] isEqualToString:@"Study"] || ([[aFile valueForKey:@"type"] isEqualToString:@"Series"] && [[[aFile valueForKey:@"images"] allObjects] count] > 1))
+			{
+				NSArray *images;
+				
+				if( [[aFile valueForKey:@"type"] isEqualToString:@"Study"])
+					images = [self imagesArray: [matrixViewArray objectAtIndex: [cell tag]]];
+				else
+				{
+					images = [self imagesArray: aFile];
+					if( sender)
+						[oMatrix selectCellWithTag: [animationSlider intValue]];
+				}
+					
 				if( [images count] ) { 
 					if( [images count] > 1) noOfImages = [images count];
 					else noOfImages = [[[images objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue];
@@ -5688,30 +5725,6 @@ static BOOL withReset = NO;
 					}
 				}
 			}
-			else if ([[aFile valueForKey:@"type"] isEqualToString:@"Series"] && 
-					 [[[aFile valueForKey:@"images"] allObjects] count] == 1 && 
-					 [[[[[aFile valueForKey:@"images"] allObjects] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] > 1) // multi frame image that is directly selected
-			{
-				NSManagedObject* image = [[[aFile valueForKey:@"images"] allObjects] objectAtIndex:0];
-				
-				noOfImages = [[image valueForKey:@"numberOfFrames"] intValue];
-				animate = YES;
-				
-				DCMPix*     dcmPix = 0L;
-				dcmPix = [[DCMPix alloc] myinit: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :0L :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
-				
-				if( dcmPix ) {
-					float   wl, ww;
-					int     row, column;
-					
-					[imageView getWLWW:&wl :&ww];
-					
-					[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
-					[dcmPix release];
-					
-					[imageView setIndex:[cell tag]];
-				}
-			}
 		}
     }
 }
@@ -5735,11 +5748,12 @@ static BOOL withReset = NO;
 	if( pos > animationSlider.maxValue) pos = 0;
 	
 	[animationSlider setIntValue: pos];
-	[self previewSliderAction: animationSlider];
+	[self previewSliderAction: 0L];
 }
 
-- (void)scrollWheel: (NSEvent *)theEvent {
-	float reverseScrollWheel;					// DDP (050913): allow reversed scroll wheel preference.
+- (void)scrollWheel: (NSEvent *)theEvent
+{
+	float reverseScrollWheel;
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"])
 		reverseScrollWheel=-1.0;
@@ -5769,20 +5783,35 @@ static BOOL withReset = NO;
 	[self previewSliderAction: animationSlider];
 }
 
-- (IBAction)matrixPressed: (id)sender {
+- (IBAction) matrixPressed: (id)sender {
     id          theCell = [sender selectedCell];
     int         row, column, count, index;
     
-	NSLog(@"matrixPressed");
-	
 	[self.window makeFirstResponder:databaseOutline];
+
+	if( [theCell tag] >= 0 )
+	{
+		NSManagedObject         *dcmFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+		
+		if( [[dcmFile valueForKey:@"type"] isEqualToString: @"Series"] && [[[dcmFile valueForKey:@"images"] allObjects] count] > 1)
+		{
+			[animationSlider setIntValue: [theCell tag]];
+			[self previewSliderAction: 0L];
+			
+			// ******************************
+			
+			return;
+		}
+	}
+	
 	
 	[animationSlider setEnabled:NO];
 	[animationSlider setMaxValue:0];
 	[animationSlider setNumberOfTickMarks:1];
 	[animationSlider setIntValue:0];
 	
-    if( [theCell tag] >= 0 ) {
+    if( [theCell tag] >= 0 )
+	{
 		NSManagedObject         *dcmFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 		
 		if( [[dcmFile valueForKey:@"type"] isEqualToString: @"Study"] == NO ) {
@@ -8750,7 +8779,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	else return;
 	
 	[animationSlider setIntValue: subFrom-1];
-	[self previewSliderAction: animationSlider];
+	[self previewSliderAction: 0L];
 	
 	[self checkMemory: self];
 }
@@ -8764,7 +8793,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	else return;
 	
 	[animationSlider setIntValue: subTo-1];
-	[self previewSliderAction: animationSlider];
+	[self previewSliderAction: 0L];
 	
 	[self checkMemory: self];
 }

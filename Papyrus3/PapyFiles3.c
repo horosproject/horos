@@ -775,6 +775,10 @@ Papy3FileClose (PapyShort inFileNb, int inToClose)
     efree3 ((void **) &(gImageSOPinstUID [inFileNb]));
   } /* if */
 
+
+  if( gx0028ImageFormat [inFileNb])
+	efree3 ((void **) &(gx0028ImageFormat [inFileNb]));
+
   gx0028BitsAllocated [inFileNb] = 0;
 
   gPatientSummaryItem [inFileNb] = NULL;
