@@ -409,6 +409,15 @@ CHECK;
 			{
 				NSString	*dicomField = [aString substringWithRange: NSMakeRange( firstChar.location+firstChar.length, secondChar.location - (firstChar.location+firstChar.length))];
 				
+				NSRange sChar;
+				do
+				{
+					sChar = [dicomField rangeOfString: @"<"];
+					if( sChar.location != NSNotFound)
+						dicomField = [dicomField substringWithRange: NSMakeRange( 0, sChar.location)];
+				}
+				while( sChar.location != NSNotFound);
+				
 				NSLog( dicomField);
 				
 				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [imagePathsArray objectAtIndex: 0] decodingPixelData:NO];
@@ -421,7 +430,7 @@ CHECK;
 					else
 					{
 						NSLog( @"**** Dicom field not found: %@ in %@", dicomField, [imagePathsArray objectAtIndex: 0]);
-						[aString replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+1)  withString:@""];
+						[aString replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+secondChar.length)  withString:@""];
 					}
 				}
 				moreFields = YES;

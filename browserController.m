@@ -7857,17 +7857,28 @@ static BOOL needToRezoom;
 			{
 				multiFrame = YES;
 				
-				mem += [[curFile valueForKey:@"width"] intValue]* [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
+				mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
 				memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
 			}
-			else {
-				for( curFile in loadList ) {						
-					mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
-					memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
+			else
+			{
+				for( curFile in loadList )
+				{
+					long h = [[curFile valueForKey:@"height"] intValue];
+					long w = [[curFile valueForKey:@"width"] intValue];
+					
+					if( w*h < 256*256)
+					{
+						w = 256;
+						h = 256;
+					}
+					
+					mem += w * h;
+					memBlock += w * h;
 				}
 			}
 			
-			if ( memBlock == 1 ) memBlock = 256 * 256;  // This is the size of array created when when an image doesn't exist, a 256 square graduated gray scale.
+			if ( memBlock < 256 * 256 ) memBlock = 256 * 256;  // This is the size of array created when when an image doesn't exist, a 256 square graduated gray scale.
 			
 			NSLog(@"Test memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
 			testPtr[ x] = malloc( (memBlock * sizeof(float)) + 4096);

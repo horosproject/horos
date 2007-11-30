@@ -8415,15 +8415,15 @@ END_CREATE_ROIS:
 					fImage = fVolImage;
 				}
 				else {
-					fImage = malloc( 256 * 256 * 4);
+					fImage = malloc( 128 * 128 * 4);
 				}
 				
-				height = 256;
-				rowBytes = width = 256;
+				height = 128;
+				rowBytes = width = 128;
 				oImage = 0L;
 				isRGB = NO;
 				
-				for( long i = 0; i < 256*256; i++ ) fImage[ i ] = i;
+				for( long i = 0; i < 128*128; i++ ) fImage[ i ] = i;
 			}
 			
 			if( isRGB)	// COMPUTE ALPHA MASK = ALPHA = R+G+B/3

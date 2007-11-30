@@ -12,6 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
+#import "NSAppleScript+HandlerCalls.h"
 #import "AYDicomPrintWindowController.h"
 #import "ViewerControllerWindow.h"
 #import "MyOutlineView.h"
@@ -12908,6 +12909,85 @@ int i,j,l;
 		[ifoto release];
 		
 		[[NSFileManager defaultManager] removeFileAtPath: path handler: 0L];
+		
+		
+		
+		
+		
+		
+		
+		
+//		#define kScriptName (@"Mail")
+//		#define kScriptType (@"scpt")
+//		#define kHandlerName (@"mail_images")
+//		#define noScriptErr 0
+//		
+//		/* Locate the script within the bundle */
+//		NSString *scriptPath = [[NSBundle mainBundle] pathForResource: kScriptName ofType: kScriptType];
+//		NSURL *scriptURL = [NSURL fileURLWithPath: scriptPath];
+//
+//		NSDictionary *errorInfo = nil;
+//		
+//		/* Here I am using "initWithContentsOfURL:" to load a pre-compiled script, rather than using "initWithSource:" to load a text file with AppleScript source.  The main reason for this is that the latter technique seems to give rise to inexplicable -1708 (errAEEventNotHandled) errors on Jaguar. */
+//		NSAppleScript *script = [[NSAppleScript alloc] initWithContentsOfURL: scriptURL error: &errorInfo];
+//		
+//		/* See if there were any errors loading the script */
+//		if (!script || errorInfo)
+//		{
+//			NSLog(@"%@", errorInfo);
+//		}
+//		
+//		/* We have to construct an AppleEvent descriptor to contain the arguments for our handler call.  Remember that this list is 1, rather than 0, based. */
+//		NSAppleEventDescriptor *arguments = [[NSAppleEventDescriptor alloc] initListDescriptor];
+//		[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"subject"] atIndex: 1];
+//		[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"defaultaddress@mac.com"] atIndex: 2];
+//		
+//		
+//		NSAppleEventDescriptor *listFiles = [NSAppleEventDescriptor listDescriptor];
+//		NSAppleEventDescriptor *listCaptions = [NSAppleEventDescriptor listDescriptor];
+//		NSAppleEventDescriptor *listComments = [NSAppleEventDescriptor listDescriptor];
+//		
+//		int f = 0;
+//		NSString *root = [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"];
+//		NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: 0L];
+//		for( int x = 0; x < [files count] ; x++)
+//		{
+//			if( [[[files objectAtIndex: x] pathExtension] isEqualToString: @"tif"])
+//			{
+//				NSLog(@"%@", [files objectAtIndex: x]);
+//				[listFiles insertDescriptor: [NSAppleEventDescriptor descriptorWithString: [root stringByAppendingPathComponent: [files objectAtIndex: x]]] atIndex:1+f];
+//				[listCaptions insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
+//				[listComments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
+//				f++;
+//			}
+//		}
+//		
+//		[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithInt32: f] atIndex: 3];
+//		[arguments insertDescriptor: listFiles atIndex: 4];
+//		[arguments insertDescriptor: listCaptions atIndex: 5];
+//		[arguments insertDescriptor: listComments atIndex: 6];
+//		
+//		[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"Cancel"] atIndex: 7];
+//
+//		errorInfo = nil;
+//
+//		/* Call the handler using the method in our special category */
+//		NSAppleEventDescriptor *result = [script callHandler: kHandlerName withArguments: arguments errorInfo: &errorInfo];
+//		
+//		int scriptResult = [result int32Value];
+//
+//		/* Check for errors in running the handler */
+//		if (errorInfo)
+//		{
+//			NSLog(@"%@", errorInfo);
+//		}
+//		/* Check the handler's return value */
+//		else if (scriptResult != noScriptErr) {
+//			NSRunAlertPanel(NSLocalizedString(@"Script Failure", @"Title on script failure window."), [NSString stringWithFormat: @"%@ %d", NSLocalizedString(@"The script failed:", @"Message on script failure window."), scriptResult], NSLocalizedString(@"OK", @""), nil, nil);
+//		}
+//
+//		[script release];
+//		[arguments release];
 	}
 	else
 	{

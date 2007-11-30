@@ -260,7 +260,6 @@
 		7E5DC091078AF544009D04DF /* DCMSeriesQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC08F078AF544009D04DF /* DCMSeriesQueryNode.m */; };
 		7E5DC096078AF555009D04DF /* DCMImageQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC094078AF555009D04DF /* DCMImageQueryNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E5DC097078AF555009D04DF /* DCMImageQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC095078AF555009D04DF /* DCMImageQueryNode.m */; };
-		7E5E925A072FEE86007683A2 /* iCal script.applescript in Resources */ = {isa = PBXBuildFile; fileRef = 7E5E9259072FEE86007683A2 /* iCal script.applescript */; };
 		7E64AC4008CB80F900CEB599 /* DCMPrintAssociation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E64AC3E08CB80F900CEB599 /* DCMPrintAssociation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E64AC4108CB80F900CEB599 /* DCMPrintAssociation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E64AC3F08CB80F900CEB599 /* DCMPrintAssociation.m */; };
 		7E64AC4608CB81A800CEB599 /* DCMPrintResponseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E64AC4408CB81A700CEB599 /* DCMPrintResponseHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -3946,6 +3945,8 @@
 		CE28086C0B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */; };
 		CE286C120964196C001A4573 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE286C100964196C001A4573 /* Localizable.strings */; };
 		CE286C140964196C001A4573 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE286C100964196C001A4573 /* Localizable.strings */; };
+		CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */ = {isa = PBXBuildFile; fileRef = CE289B020D00ADBA004F0A93 /* Mail.scpt */; };
+		CE289B1E0D00AFA4004F0A93 /* Mail.scpt in Resources */ = {isa = PBXBuildFile; fileRef = CE289B020D00ADBA004F0A93 /* Mail.scpt */; };
 		CE2C82E30C708B310093C162 /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82E20C708B310093C162 /* InstantMessage.framework */; };
 		CE2C82E50C708B310093C162 /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82E20C708B310093C162 /* InstantMessage.framework */; };
 		CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5F14C20B14E12700B309B9 /* CoreVideo.framework */; };
@@ -7497,7 +7498,6 @@
 		CECB03EC07539E3900576814 /* Network.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE3F40715DBFB0017898A /* Network.tiff */; };
 		CECB03ED07539E3900576814 /* StartupDisk.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE3FD0715DC0D0017898A /* StartupDisk.tiff */; };
 		CECB03EF07539E3900576814 /* CD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE4180715E5040017898A /* CD.tiff */; };
-		CECB03F907539E3900576814 /* iCal script.applescript in Resources */ = {isa = PBXBuildFile; fileRef = 7E5E9259072FEE86007683A2 /* iCal script.applescript */; };
 		CECB03FA07539E3900576814 /* iPhoto.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE99E88E073AB4C500725ABC /* iPhoto.icns */; };
 		CECB03FC07539E3900576814 /* iPhotoSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE646B150751D8D9002962B7 /* iPhotoSmall.tif */; };
 		CECB03FE07539E3900576814 /* PapyInit3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5BA05646BBF00BED927 /* PapyInit3.c */; };
@@ -7784,6 +7784,10 @@
 		CEE73FD408F44749002A395F /* stringNumericCompare.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE73FD208F44749002A395F /* stringNumericCompare.h */; };
 		CEE73FD508F44749002A395F /* stringNumericCompare.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FD108F44749002A395F /* stringNumericCompare.m */; };
 		CEE73FD608F44749002A395F /* stringNumericCompare.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE73FD208F44749002A395F /* stringNumericCompare.h */; };
+		CEE8CED00D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE8CECE0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m */; };
+		CEE8CED10D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE8CECF0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h */; };
+		CEE8CED20D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE8CECE0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m */; };
+		CEE8CED30D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE8CECF0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h */; };
 		CEEA84AC0B345F9800BBE4B1 /* SimplePing.h in Headers */ = {isa = PBXBuildFile; fileRef = CEEA84AA0B345F9800BBE4B1 /* SimplePing.h */; };
 		CEEA84AD0B345F9800BBE4B1 /* SimplePing.c in Sources */ = {isa = PBXBuildFile; fileRef = CEEA84AB0B345F9800BBE4B1 /* SimplePing.c */; };
 		CEEA84AE0B345F9800BBE4B1 /* SimplePing.h in Headers */ = {isa = PBXBuildFile; fileRef = CEEA84AA0B345F9800BBE4B1 /* SimplePing.h */; };
@@ -8376,7 +8380,6 @@
 		7E5DC08F078AF544009D04DF /* DCMSeriesQueryNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMSeriesQueryNode.m; path = Networking/DCMSeriesQueryNode.m; sourceTree = "<group>"; };
 		7E5DC094078AF555009D04DF /* DCMImageQueryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMImageQueryNode.h; path = Networking/DCMImageQueryNode.h; sourceTree = "<group>"; };
 		7E5DC095078AF555009D04DF /* DCMImageQueryNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMImageQueryNode.m; path = Networking/DCMImageQueryNode.m; sourceTree = "<group>"; };
-		7E5E9259072FEE86007683A2 /* iCal script.applescript */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.applescript; path = "iCal script.applescript"; sourceTree = "<group>"; };
 		7E64AC3E08CB80F900CEB599 /* DCMPrintAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMPrintAssociation.h; sourceTree = "<group>"; };
 		7E64AC3F08CB80F900CEB599 /* DCMPrintAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMPrintAssociation.m; sourceTree = "<group>"; };
 		7E64AC4408CB81A700CEB599 /* DCMPrintResponseHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMPrintResponseHandler.h; sourceTree = "<group>"; };
@@ -10259,6 +10262,7 @@
 		CE2808630B6B76730093E9D3 /* CalciumScoringWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CalciumScoringWindowController.h; sourceTree = "<group>"; };
 		CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CalciumScoringWindowController.m; sourceTree = "<group>"; };
 		CE286C110964196C001A4573 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = Binaries/English.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CE289B020D00ADBA004F0A93 /* Mail.scpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.scpt; name = Mail.scpt; path = Binaries/Mail.scpt; sourceTree = "<group>"; };
 		CE2C82E20C708B310093C162 /* InstantMessage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InstantMessage.framework; path = /System/Library/Frameworks/InstantMessage.framework; sourceTree = "<absolute>"; };
 		CE2C82EE0C708BA30093C162 /* libITKNumerics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libITKNumerics.a; path = ITK180/bin/libITKNumerics.a; sourceTree = "<group>"; };
 		CE2C82EF0C708BA30093C162 /* libitkvnl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitkvnl.a; path = ITK180/bin/libitkvnl.a; sourceTree = "<group>"; };
@@ -11693,6 +11697,8 @@
 		CEE73FC808F44724002A395F /* FVTiff.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = FVTiff.m; sourceTree = "<group>"; };
 		CEE73FD108F44749002A395F /* stringNumericCompare.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = stringNumericCompare.m; sourceTree = "<group>"; };
 		CEE73FD208F44749002A395F /* stringNumericCompare.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = stringNumericCompare.h; sourceTree = "<group>"; };
+		CEE8CECE0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAppleScript+HandlerCalls.m"; sourceTree = "<group>"; };
+		CEE8CECF0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAppleScript+HandlerCalls.h"; sourceTree = "<group>"; };
 		CEEA84AA0B345F9800BBE4B1 /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SimplePing.h; sourceTree = "<group>"; };
 		CEEA84AB0B345F9800BBE4B1 /* SimplePing.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = SimplePing.c; sourceTree = "<group>"; };
 		CEEB5CCA0CCDD161008803E2 /* Centerline.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Centerline.tif; sourceTree = "<group>"; };
@@ -12155,7 +12161,7 @@
 				A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */,
 				A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */,
 				A9A9F4C00A74C9A9005A1CA7 /* QTExportStyle.css */,
-				7E5E9259072FEE86007683A2 /* iCal script.applescript */,
+				CE289B020D00ADBA004F0A93 /* Mail.scpt */,
 				AB9723880C684B4E00DC727C /* DB_Previous_Models */,
 				CEBD8A4B0875B029000E42D6 /* Pane */,
 				ABBB639A0635874D00D9531F /* DCMTK */,
@@ -12912,6 +12918,8 @@
 		ABAA285A058A675600F0601D /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				CEE8CECE0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m */,
+				CEE8CECF0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h */,
 				CE4700FB0CC51A6600ECF78A /* WindowLayoutManager.h */,
 				CE4700FC0CC51A6600ECF78A /* WindowLayoutManager.m */,
 				A98FFBE40CA92B58000291C8 /* altivecFunctions.h */,
@@ -18492,6 +18500,7 @@
 				CE4700FF0CC51A6600ECF78A /* WindowLayoutManager.h in Headers */,
 				A97D4C610CE3459D003FE2E6 /* PieChartImage.h in Headers */,
 				CE6CD06D0CFB0462001DF429 /* OsiriXToolbar.h in Headers */,
+				CEE8CED10D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20557,6 +20566,7 @@
 				CEDC793B0CBB7EF600411DDB /* ITKSegmentation3DController.h in Headers */,
 				CE4700FD0CC51A6600ECF78A /* WindowLayoutManager.h in Headers */,
 				A97D4C630CE3459D003FE2E6 /* PieChartImage.h in Headers */,
+				CEE8CED30D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20929,6 +20939,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */,
 				ABB7A43406343BCA00AD1777 /* dicomDictionary.plist in Resources */,
 				ABBFDA40063480490011BD0A /* Deployment-Info.plist in Resources */,
 				ABBB63A70635874E00D9531F /* dcmdump in Resources */,
@@ -21028,7 +21039,6 @@
 				7E2BE3F50715DBFB0017898A /* Network.tiff in Resources */,
 				7E2BE3FE0715DC0D0017898A /* StartupDisk.tiff in Resources */,
 				7E2BE4190715E5040017898A /* CD.tiff in Resources */,
-				7E5E925A072FEE86007683A2 /* iCal script.applescript in Resources */,
 				CE99E890073AB4C500725ABC /* iPhoto.icns in Resources */,
 				CE646B1B0751D8D9002962B7 /* iPhotoSmall.tif in Resources */,
 				CE49E2CA0760B93500444203 /* Empty.tif in Resources */,
@@ -21312,6 +21322,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE289B1E0D00AFA4004F0A93 /* Mail.scpt in Resources */,
 				CECB036407539E3900576814 /* dicomDictionary.plist in Resources */,
 				CECB036807539E3900576814 /* dcmdump in Resources */,
 				CECB036907539E3900576814 /* dicom.dic in Resources */,
@@ -21410,7 +21421,6 @@
 				CECB03EC07539E3900576814 /* Network.tiff in Resources */,
 				CECB03ED07539E3900576814 /* StartupDisk.tiff in Resources */,
 				CECB03EF07539E3900576814 /* CD.tiff in Resources */,
-				CECB03F907539E3900576814 /* iCal script.applescript in Resources */,
 				CECB03FA07539E3900576814 /* iPhoto.icns in Resources */,
 				CECB03FC07539E3900576814 /* iPhotoSmall.tif in Resources */,
 				CE49E2CC0760B93500444203 /* Empty.tif in Resources */,
@@ -22826,6 +22836,7 @@
 				CE4701000CC51A6600ECF78A /* WindowLayoutManager.m in Sources */,
 				A97D4C620CE3459D003FE2E6 /* PieChartImage.m in Sources */,
 				CE6CD06E0CFB0462001DF429 /* OsiriXToolbar.m in Sources */,
+				CEE8CED00D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24499,6 +24510,7 @@
 				BF8564130CB2B781005F7178 /* EndoscopyFlyThruController.m in Sources */,
 				CE4700FE0CC51A6600ECF78A /* WindowLayoutManager.m in Sources */,
 				A97D4C640CE3459D003FE2E6 /* PieChartImage.m in Sources */,
+				CEE8CED20D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
