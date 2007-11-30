@@ -77,12 +77,6 @@
 	[super dealloc];
 }
 
- 
-- (void)finalize {
-	if (histogram) free(histogram);
-	[super finalize];
-}
-
 #pragma mark -
 #pragma mark Contextual menu
 

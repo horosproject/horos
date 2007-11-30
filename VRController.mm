@@ -1113,21 +1113,24 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: self userInfo: 0];
-		
-	if( movieTimer)
+	if( [notification object] == [self window])
 	{
-        [movieTimer invalidate];
-        [movieTimer release];
-        movieTimer = nil;
-	}
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: self userInfo: 0];
+			
+		if( movieTimer)
+		{
+			[movieTimer invalidate];
+			[movieTimer release];
+			movieTimer = nil;
+		}
 
-	[presetsPanel close];	
-	[presetsInfoPanel close];
-	
-    [[self window] setDelegate:nil];
-	
-    [self release];
+		[presetsPanel close];	
+		[presetsInfoPanel close];
+		
+		[[self window] setDelegate:nil];
+		
+		[self release];
+	}
 }
 
 -(NSMatrix*) toolsMatrix
@@ -3156,17 +3159,17 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		[self showPresetsPanel];
 	}
 	else if([sender isEqualTo:presetsApplyButton])
-	{
-		if([presetsPanel isVisible]) [presetsPanel close];
+	{	
+		if([presetsPanel isVisible])
+			[presetsPanel close];
 		
 		[self load3DSettings];
 	}
 	else if([sender isEqualTo:self])
 	{
 		if( firstTimeDisplayed)
-		{
 			[presetsPanel close];
-		}
+			
 		firstTimeDisplayed = NO;
 
 		WaitRendering *www = [[WaitRendering alloc] init:NSLocalizedString(@"Applying 3D Preset...", nil)];
@@ -3693,7 +3696,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 
 - (void)windowWillCloseNotification:(NSNotification*)notification;
 {
-	if([[notification object] isEqualTo:presetsPanel])
+	if( [notification object] == presetsPanel)
 	{
 		[presetsInfoPanel close];
 		if(needToMovePresetsPanelToUserDefinedPosition)
@@ -3707,7 +3710,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 
 - (void)windowWillMoveNotification:(NSNotification*)notification;
 {
-	if([[notification object] isEqualTo:presetsPanel])
+	if( [notification object] == presetsPanel)
 	{
 		if(needToMovePresetsPanelToUserDefinedPosition)
 		{

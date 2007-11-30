@@ -1642,8 +1642,6 @@ public:
 {
 	if( [notification object] == [self window])
 	{
-		if(clutOpacityView) [[clutOpacityView window] close];
-		
 		[startAutoRotate invalidate];
 		[startAutoRotate release];
 		startAutoRotate = 0L;
