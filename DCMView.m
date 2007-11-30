@@ -1588,7 +1588,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[dcmPixList retain];
 		volumicSeries = YES;
 		if( [stringID isEqualToString:@"previewDatabase"] == NO)
-			if( [[dcmPixList objectAtIndex: 0] sliceLocation] == [[dcmPixList objectAtIndex: [dcmPixList count]-1] sliceLocation]) volumicSeries = NO;
+		{
+			if( [dcmPixList count] > 1)
+			{
+				if( [[dcmPixList objectAtIndex: 0] sliceLocation] == [[dcmPixList objectAtIndex: [dcmPixList count]-1] sliceLocation]) volumicSeries = NO;
+			}
+			else volumicSeries = NO;
+		}
     }
 	
 	if( dcmFilesList != d) {

@@ -8192,9 +8192,14 @@ static BOOL needToRezoom;
 				x++;
 				loadList = nil;
 				
-				if( [[curFile valueForKey:@"type"] isEqualToString: @"Study"] )	{
-					curFile = [[[curFile valueForKey:@"series"] allObjects] objectAtIndex: 0];
-					loadList = [self childrenArray: curFile];
+				if( [[curFile valueForKey:@"type"] isEqualToString: @"Study"] )
+				{
+					// Find the first series of images! DONT TAKE A ROI SERIES !
+					if( [[curFile valueForKey:@"imageSeries"] count])
+					{
+						curFile = [[curFile valueForKey:@"imageSeries"] objectAtIndex: 0];
+						loadList = [self childrenArray: curFile];
+					}
 				}
 				
 				if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"] ) {
