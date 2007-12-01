@@ -135,7 +135,6 @@ static NSString*	PrintToolbarItemIdentifier			= @"Print.icns";
 static NSArray*		DefaultROINames;
 
 static  BOOL AUTOHIDEMATRIX								= NO;
-static	BOOL EXPORT2IPHOTO								= NO;
 static	ViewerController *blendedwin					= 0L;
 static	float	deg2rad									= 3.14159265358979/180.0; 
 static	BOOL dontEnterMagneticFunctions = NO;
@@ -12845,7 +12844,7 @@ int i,j,l;
 	[self exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :NO];
 }
 
--(void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :(BOOL) allViewers
+-(void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :(BOOL) allViewers mode:(NSString*) mode
 {
 	QuicktimeExport *mov;
 	
@@ -12900,7 +12899,7 @@ int i,j,l;
 		break;
 	}
 	
-	NSString *path = [mov createMovieQTKit: NO  :EXPORT2IPHOTO :[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+	NSString *path = [mov createMovieQTKit: NO  :mode :[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 	
 	if( EXPORT2IPHOTO)
 	{
@@ -13987,7 +13986,7 @@ int i,j,l;
 				if( [[imageFormat selectedCell] tag] == 2 && [[imageSelection selectedCell] tag] == 1)
 				{
 					EXPORT2IPHOTO = YES;
-					[self exportQuicktimeIn: 1 :0 :[pixList[ curMovieIndex] count]: 1 :[imageAllViewers state]];
+					[self exportQuicktimeIn: 1 :0 :[pixList[ curMovieIndex] count]: 1 :[imageAllViewers state] :@"export2iphoto"];
 					EXPORT2IPHOTO = NO;
 				}
 				else
