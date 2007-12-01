@@ -12844,6 +12844,11 @@ int i,j,l;
 	[self exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :NO];
 }
 
+-(void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :(BOOL) allViewers
+{
+	[self exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :NO mode: 0L];
+}
+
 -(void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :(BOOL) allViewers mode:(NSString*) mode
 {
 	QuicktimeExport *mov;
@@ -12899,9 +12904,14 @@ int i,j,l;
 		break;
 	}
 	
-	NSString *path = [mov createMovieQTKit: NO  :mode :[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+	BOOL produceImageFiles = NO;
 	
-	if( EXPORT2IPHOTO)
+	if( [mode isEqualToString:@"export2iphoto"]) produceImageFiles = YES;
+	else produceImageFiles = NO;
+	
+	NSString *path = [mov createMovieQTKit: NO  :produceImageFiles :[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+	
+	if( [mode isEqualToString:@"export2iphoto"])
 	{
 		iPhoto *ifoto = [[iPhoto alloc] init];
 		[ifoto importIniPhoto: [NSArray arrayWithObject:[documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"]]];
@@ -13078,9 +13088,6 @@ int i,j,l;
 	
 	if( [[ViewerController getDisplayed2DViewers] count] > 1) [quicktimeAllViewers setEnabled: YES];
 	else [quicktimeAllViewers setEnabled: NO];
-
-	if( [sender tag] == 1) EXPORT2IPHOTO = YES;
-	else EXPORT2IPHOTO = NO;
 	
 	if( [sliderFusion isEnabled])
 		[quicktimeInterval setIntValue: [sliderFusion intValue]];
@@ -13985,9 +13992,7 @@ int i,j,l;
 			{
 				if( [[imageFormat selectedCell] tag] == 2 && [[imageSelection selectedCell] tag] == 1)
 				{
-					EXPORT2IPHOTO = YES;
-					[self exportQuicktimeIn: 1 :0 :[pixList[ curMovieIndex] count]: 1 :[imageAllViewers state] :@"export2iphoto"];
-					EXPORT2IPHOTO = NO;
+					[self exportQuicktimeIn: 1 :0 :[pixList[ curMovieIndex] count]: 1 :[imageAllViewers state] mode:@"export2iphoto"];
 				}
 				else
 				{
@@ -15054,7 +15059,6 @@ int i,j,l;
 	
 	factorPET2SUV = 1.0;
 	windowWillClose = NO;
-	EXPORT2IPHOTO = NO;
 	loadingPause = NO;
 	loadingPercentage = 0;
 	exportDCM = 0L;

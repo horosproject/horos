@@ -678,6 +678,7 @@ enum
 - (void) autoHideMatrix;
 - (void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval;
 - (void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :(BOOL) allViewers;
+- (void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :(BOOL) allViewers mode:(NSString*) mode;
 - (IBAction) endExportImage: (id) sender;
 - (IBAction) setCurrentPosition:(id) sender;
 - (IBAction) setCurrentdcmExport:(id) sender;

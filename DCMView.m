@@ -23,6 +23,7 @@ Version 2.3
 	20060119	SUV
 */
 
+#import "DCMAbstractSyntaxUID.h"
 #import <DCMView.h>
 #import "StringTexture.h"
 #import "DCMPix.h"
@@ -1587,6 +1588,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		dcmPixList = c;
 		[dcmPixList retain];
 		volumicSeries = YES;
+		
+		id sopclassuid = [d valueForKeyPath:@"series.seriesSOPClassUID"];
+		if ([DCMAbstractSyntaxUID isImageStorage: sopclassuid] || [DCMAbstractSyntaxUID isRadiotherapy: sopclassuid] || sopclassuid == nil)
+		{
+		
+		}
+		else NSLog( @"Ehh ! ****** It's not a DICOM image.... it will crash !!!!!!!");
+		
 		if( [stringID isEqualToString:@"previewDatabase"] == NO)
 		{
 			if( [dcmPixList count] > 1)
