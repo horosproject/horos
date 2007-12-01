@@ -1589,12 +1589,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[dcmPixList retain];
 		volumicSeries = YES;
 		
-		id sopclassuid = [d valueForKeyPath:@"series.seriesSOPClassUID"];
-		if ([DCMAbstractSyntaxUID isImageStorage: sopclassuid] || [DCMAbstractSyntaxUID isRadiotherapy: sopclassuid] || sopclassuid == nil)
+		if( [d count] > 0)
 		{
-		
+			id sopclassuid = [[d objectAtIndex: 0] valueForKeyPath:@"series.seriesSOPClassUID"];
+			if ([DCMAbstractSyntaxUID isImageStorage: sopclassuid] || [DCMAbstractSyntaxUID isRadiotherapy: sopclassuid] || sopclassuid == nil)
+			{
+				
+			}
+			else NSLog( @"***Ehh ! ****** It's not a DICOM image.... it will crash !!!!!!!");
 		}
-		else NSLog( @"Ehh ! ****** It's not a DICOM image.... it will crash !!!!!!!");
 		
 		if( [stringID isEqualToString:@"previewDatabase"] == NO)
 		{

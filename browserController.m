@@ -1947,7 +1947,8 @@ static NSArray*	statesArray = nil;
 		[[self.documentsDirectory stringByDeletingLastPathComponent] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] atomically:YES encoding : NSUTF8StringEncoding error: 0L];
 		
 		i = [self findDBPath: path dbFolder: DBFolderLocation];
-		if( i == -1 ) {
+		if( i == -1 )
+		{
 			NSLog( @"DB Not found -> we add it");
 			
 			NSArray			*dbArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
@@ -8902,7 +8903,31 @@ static NSArray*	openSubSeriesArray = 0L;
 	}
 	
 	self = [super initWithWindow: window];
-	if( self ) {
+	if( self )
+	{
+		// Remove identical local sources
+		
+		NSArray *dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
+		NSMutableArray *filteredArray = [NSMutableArray arrayWithCapacity: [dbArray count]];
+		
+		for( NSDictionary *dict in dbArray)
+		{
+			BOOL duplicated = NO;
+			
+			for( NSDictionary *c in filteredArray)
+			{
+				if( c != dict)
+				{
+					if( [[dict valueForKey:@"Path"] isEqualToString: [c valueForKey: @"Path"]])
+						duplicated = YES;
+				}
+			}
+			
+			if( duplicated == NO)
+				[filteredArray addObject: dict];
+		}
+		
+		[[NSUserDefaults standardUserDefaults] setObject: filteredArray forKey: @"localDatabasePaths"];
 		
 		if( [BrowserController _currentModifierFlags] & NSShiftKeyMask && [BrowserController _currentModifierFlags] & NSAlternateKeyMask ) {
 			NSLog( @"WARNING ---- Protected Mode Activated");
