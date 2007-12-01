@@ -7758,6 +7758,12 @@
 		CEDE5B5F07F206B5003034B6 /* ROIDefaultsWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDE5B5D07F206B5003034B6 /* ROIDefaultsWindow.h */; };
 		CEDE5B6207F206B5003034B6 /* ROIDefaultsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDE5B5C07F206B5003034B6 /* ROIDefaultsWindow.m */; };
 		CEDE5B6307F206B5003034B6 /* ROIDefaultsWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDE5B5D07F206B5003034B6 /* ROIDefaultsWindow.h */; };
+		CEDEF7D60D020E9100CADB15 /* TIFFSmall.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D30D020E9100CADB15 /* TIFFSmall.tiff */; };
+		CEDEF7D70D020E9100CADB15 /* MailSmall.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D40D020E9100CADB15 /* MailSmall.tiff */; };
+		CEDEF7D80D020E9100CADB15 /* JPEGSmall.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D50D020E9100CADB15 /* JPEGSmall.tiff */; };
+		CEDEF7D90D020E9100CADB15 /* TIFFSmall.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D30D020E9100CADB15 /* TIFFSmall.tiff */; };
+		CEDEF7DA0D020E9100CADB15 /* MailSmall.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D40D020E9100CADB15 /* MailSmall.tiff */; };
+		CEDEF7DB0D020E9100CADB15 /* JPEGSmall.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D50D020E9100CADB15 /* JPEGSmall.tiff */; };
 		CEDF6DC60B46FE99008B45B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
 		CEDF6DC90B46FE99008B45B8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		CEDF6DCA0B46FE99008B45B8 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
@@ -11684,6 +11690,9 @@
 		CEDCFB3F0B4C4E3900510ABD /* SyncSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncSmall.tif; sourceTree = "<group>"; };
 		CEDE5B5C07F206B5003034B6 /* ROIDefaultsWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ROIDefaultsWindow.m; sourceTree = "<group>"; };
 		CEDE5B5D07F206B5003034B6 /* ROIDefaultsWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIDefaultsWindow.h; sourceTree = "<group>"; };
+		CEDEF7D30D020E9100CADB15 /* TIFFSmall.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TIFFSmall.tiff; sourceTree = "<group>"; };
+		CEDEF7D40D020E9100CADB15 /* MailSmall.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MailSmall.tiff; sourceTree = "<group>"; };
+		CEDEF7D50D020E9100CADB15 /* JPEGSmall.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = JPEGSmall.tiff; sourceTree = "<group>"; };
 		CEDF6DD00B46FE99008B45B8 /* DICOMPrint */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DICOMPrint; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDF6E1C0B46FF40008B45B8 /* DICOMPrint.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DICOMPrint.mm; sourceTree = "<group>"; };
 		CEE1922C08636FA100DED1F0 /* DicomImage.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomImage.m; sourceTree = "<group>"; };
@@ -13074,6 +13083,9 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				CEDEF7D30D020E9100CADB15 /* TIFFSmall.tiff */,
+				CEDEF7D40D020E9100CADB15 /* MailSmall.tiff */,
+				CEDEF7D50D020E9100CADB15 /* JPEGSmall.tiff */,
 				CEEB5CCA0CCDD161008803E2 /* Centerline.tif */,
 				A97B73970CB380EF00E5348D /* osirixplugin.icns */,
 				A922F3BA0C631F3C0007AB98 /* CustomImageAnnotations.png */,
@@ -21315,6 +21327,9 @@
 				ABE0D6A60CDB1B9E00F0494B /* shareFromMenu_small.png in Resources */,
 				ABE0D6A70CDB1B9E00F0494B /* shareFromVideoChatWindow_small.png in Resources */,
 				ABE0D6A80CDB1B9E00F0494B /* style.css in Resources */,
+				CEDEF7D60D020E9100CADB15 /* TIFFSmall.tiff in Resources */,
+				CEDEF7D70D020E9100CADB15 /* MailSmall.tiff in Resources */,
+				CEDEF7D80D020E9100CADB15 /* JPEGSmall.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21698,6 +21713,9 @@
 				ABE0D6AD0CDB1B9E00F0494B /* shareFromMenu_small.png in Resources */,
 				ABE0D6AE0CDB1B9E00F0494B /* shareFromVideoChatWindow_small.png in Resources */,
 				ABE0D6AF0CDB1B9E00F0494B /* style.css in Resources */,
+				CEDEF7D90D020E9100CADB15 /* TIFFSmall.tiff in Resources */,
+				CEDEF7DA0D020E9100CADB15 /* MailSmall.tiff in Resources */,
+				CEDEF7DB0D020E9100CADB15 /* JPEGSmall.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

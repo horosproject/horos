@@ -641,6 +641,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[[NSNotificationCenter defaultCenter]  postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
 			
 			[[self windowController] setUpdateTilingViewsValue : NO];
+			
+			previousViewSize.height = previousViewSize.width = 0;
 		}
 	}
 }
