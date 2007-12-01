@@ -12918,85 +12918,81 @@ int i,j,l;
 		[ifoto release];
 		
 		[[NSFileManager defaultManager] removeFileAtPath: path handler: 0L];
+	}
+	
+	if( [mode isEqualToString:@"export2mail"])
+	{
+		#define kScriptName (@"Mail")
+		#define kScriptType (@"scpt")
+		#define kHandlerName (@"mail_images")
+		#define noScriptErr 0
+		
+		/* Locate the script within the bundle */
+		NSString *scriptPath = [[NSBundle mainBundle] pathForResource: kScriptName ofType: kScriptType];
+		NSURL *scriptURL = [NSURL fileURLWithPath: scriptPath];
+
+		NSDictionary *errorInfo = nil;
+		
+		/* Here I am using "initWithContentsOfURL:" to load a pre-compiled script, rather than using "initWithSource:" to load a text file with AppleScript source.  The main reason for this is that the latter technique seems to give rise to inexplicable -1708 (errAEEventNotHandled) errors on Jaguar. */
+		NSAppleScript *script = [[NSAppleScript alloc] initWithContentsOfURL: scriptURL error: &errorInfo];
+		
+		/* See if there were any errors loading the script */
+		if (!script || errorInfo)
+		{
+			NSLog(@"%@", errorInfo);
+		}
+		
+		/* We have to construct an AppleEvent descriptor to contain the arguments for our handler call.  Remember that this list is 1, rather than 0, based. */
+		NSAppleEventDescriptor *arguments = [[NSAppleEventDescriptor alloc] initListDescriptor];
+		[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"subject"] atIndex: 1];
+		[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"defaultaddress@mac.com"] atIndex: 2];
 		
 		
+		NSAppleEventDescriptor *listFiles = [NSAppleEventDescriptor listDescriptor];
+		NSAppleEventDescriptor *listCaptions = [NSAppleEventDescriptor listDescriptor];
+		NSAppleEventDescriptor *listComments = [NSAppleEventDescriptor listDescriptor];
 		
+		int f = 0;
+		NSString *root = [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"];
+		NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: 0L];
+		for( int x = 0; x < [files count] ; x++)
+		{
+			if( [[[files objectAtIndex: x] pathExtension] isEqualToString: @"tif"])
+			{
+				NSLog(@"%@", [files objectAtIndex: x]);
+				[listFiles insertDescriptor: [NSAppleEventDescriptor descriptorWithString: [root stringByAppendingPathComponent: [files objectAtIndex: x]]] atIndex:1+f];
+				[listCaptions insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
+				[listComments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
+				f++;
+			}
+		}
 		
+		[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithInt32: f] atIndex: 3];
+		[arguments insertDescriptor: listFiles atIndex: 4];
+		[arguments insertDescriptor: listCaptions atIndex: 5];
+		[arguments insertDescriptor: listComments atIndex: 6];
 		
+		[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"Cancel"] atIndex: 7];
+
+		errorInfo = nil;
+
+		/* Call the handler using the method in our special category */
+		NSAppleEventDescriptor *result = [script callHandler: kHandlerName withArguments: arguments errorInfo: &errorInfo];
 		
-		
-		
-//		#define kScriptName (@"Mail")
-//		#define kScriptType (@"scpt")
-//		#define kHandlerName (@"mail_images")
-//		#define noScriptErr 0
-//		
-//		/* Locate the script within the bundle */
-//		NSString *scriptPath = [[NSBundle mainBundle] pathForResource: kScriptName ofType: kScriptType];
-//		NSURL *scriptURL = [NSURL fileURLWithPath: scriptPath];
-//
-//		NSDictionary *errorInfo = nil;
-//		
-//		/* Here I am using "initWithContentsOfURL:" to load a pre-compiled script, rather than using "initWithSource:" to load a text file with AppleScript source.  The main reason for this is that the latter technique seems to give rise to inexplicable -1708 (errAEEventNotHandled) errors on Jaguar. */
-//		NSAppleScript *script = [[NSAppleScript alloc] initWithContentsOfURL: scriptURL error: &errorInfo];
-//		
-//		/* See if there were any errors loading the script */
-//		if (!script || errorInfo)
-//		{
-//			NSLog(@"%@", errorInfo);
-//		}
-//		
-//		/* We have to construct an AppleEvent descriptor to contain the arguments for our handler call.  Remember that this list is 1, rather than 0, based. */
-//		NSAppleEventDescriptor *arguments = [[NSAppleEventDescriptor alloc] initListDescriptor];
-//		[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"subject"] atIndex: 1];
-//		[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"defaultaddress@mac.com"] atIndex: 2];
-//		
-//		
-//		NSAppleEventDescriptor *listFiles = [NSAppleEventDescriptor listDescriptor];
-//		NSAppleEventDescriptor *listCaptions = [NSAppleEventDescriptor listDescriptor];
-//		NSAppleEventDescriptor *listComments = [NSAppleEventDescriptor listDescriptor];
-//		
-//		int f = 0;
-//		NSString *root = [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"];
-//		NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: 0L];
-//		for( int x = 0; x < [files count] ; x++)
-//		{
-//			if( [[[files objectAtIndex: x] pathExtension] isEqualToString: @"tif"])
-//			{
-//				NSLog(@"%@", [files objectAtIndex: x]);
-//				[listFiles insertDescriptor: [NSAppleEventDescriptor descriptorWithString: [root stringByAppendingPathComponent: [files objectAtIndex: x]]] atIndex:1+f];
-//				[listCaptions insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
-//				[listComments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @""] atIndex:1+f];
-//				f++;
-//			}
-//		}
-//		
-//		[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithInt32: f] atIndex: 3];
-//		[arguments insertDescriptor: listFiles atIndex: 4];
-//		[arguments insertDescriptor: listCaptions atIndex: 5];
-//		[arguments insertDescriptor: listComments atIndex: 6];
-//		
-//		[arguments insertDescriptor: [NSAppleEventDescriptor descriptorWithString: @"Cancel"] atIndex: 7];
-//
-//		errorInfo = nil;
-//
-//		/* Call the handler using the method in our special category */
-//		NSAppleEventDescriptor *result = [script callHandler: kHandlerName withArguments: arguments errorInfo: &errorInfo];
-//		
-//		int scriptResult = [result int32Value];
-//
-//		/* Check for errors in running the handler */
-//		if (errorInfo)
-//		{
-//			NSLog(@"%@", errorInfo);
-//		}
-//		/* Check the handler's return value */
-//		else if (scriptResult != noScriptErr) {
-//			NSRunAlertPanel(NSLocalizedString(@"Script Failure", @"Title on script failure window."), [NSString stringWithFormat: @"%@ %d", NSLocalizedString(@"The script failed:", @"Message on script failure window."), scriptResult], NSLocalizedString(@"OK", @""), nil, nil);
-//		}
-//
-//		[script release];
-//		[arguments release];
+		int scriptResult = [result int32Value];
+
+		/* Check for errors in running the handler */
+		if (errorInfo)
+		{
+			NSLog(@"%@", errorInfo);
+		}
+		/* Check the handler's return value */
+		else if (scriptResult != noScriptErr) {
+			NSRunAlertPanel(NSLocalizedString(@"Script Failure", @"Title on script failure window."), [NSString stringWithFormat: @"%@ %d", NSLocalizedString(@"The script failed:", @"Message on script failure window."), scriptResult], NSLocalizedString(@"OK", @""), nil, nil);
+		}
+
+		[script release];
+		[arguments release];
 	}
 	else
 	{
@@ -13980,7 +13976,7 @@ int i,j,l;
 	{
 		BOOL pathOK = YES;
 		
-		if( [[imageFormat selectedCell] tag] != 2)
+		if( [[imageFormat selectedCell] tag] != 2 && [[imageFormat selectedCell] tag] != 3)		//Mail or iPhoto
 		{
 			if( [panel runModalForDirectory:0L file:[[fileList[ curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.name"]] != NSFileHandlingPanelOKButton)
 				pathOK = NO;
@@ -13988,126 +13984,50 @@ int i,j,l;
 		
 		if( pathOK == YES)
 		{
-			if( [[imageSelection selectedCell] tag] == 1 || [[imageSelection selectedCell] tag] == 2)
+			for( i = 0; i < [pixList[ curMovieIndex] count]; i++)
 			{
-				if( [[imageFormat selectedCell] tag] == 2 && [[imageSelection selectedCell] tag] == 1)
-				{
-					[self exportQuicktimeIn: 1 :0 :[pixList[ curMovieIndex] count]: 1 :[imageAllViewers state] mode:@"export2iphoto"];
-				}
-				else
-				{
-					for( i = 0; i < [pixList[ curMovieIndex] count]; i++)
-					{
-						BOOL export = YES;
-						
-						if( [[imageSelection selectedCell] tag] == 2)
-						{
-							NSManagedObject	*image;
-							
-							image = [[self fileList] objectAtIndex: i];
-							
-							export = [[image valueForKey:@"isKeyImage"] boolValue];
-						}
-						
-						if( export)
-						{					
-							[imageView setIndex:i];
-							[imageView sendSyncMessage:1];
-							[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
-							
-							NSImage *im = [imageView nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"] allViewers:[imageAllViewers state]];
-							
-							NSArray *representations;
-							NSData *bitmapData;
-
-							representations = [im representations];
-							
-							if( [[imageFormat selectedCell] tag] == 2)
-							{
-								bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-
-								NSString *jpegFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"];
-								
-								[bitmapData writeToFile: jpegFile atomically:YES];
-								
-								NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
-								
-								NSDictionary *exifDict = [NSDictionary dictionaryWithObjectsAndKeys:
-																	@"Exported from OsiriX", kCGImagePropertyExifUserComment,
-																	[[curImage valueForKeyPath: @"series.study.date"] descriptionWithCalendarFormat:@"%Y:%m:%d %H:%M:%S" timeZone:0L locale: 0L] , kCGImagePropertyExifDateTimeOriginal,
-																	0L];
-
-								
-								[JPEGExif addExif: [NSURL fileURLWithPath: jpegFile] properties: exifDict format:@"jpeg"];
-								
-								iPhoto	*ifoto = [[iPhoto alloc] init];
-								[ifoto importIniPhoto: [NSArray arrayWithObject:jpegFile]];
-								[ifoto release];
-							}
-							else
-							{
-								if( [[imageFormat selectedCell] tag] == 0)
-								{
-									bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-									[bitmapData writeToFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.jpg", i+1]] atomically:YES];
-								}
-								else
-									[[im TIFFRepresentation] writeToFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.tif", i+1]] atomically:NO];
-							}
-						}
-					}
-					NSString	*filePath;
-					
-					if( [[imageFormat selectedCell] tag] == 0)
-						filePath = [[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.jpg", 1]];
-					else
-						filePath = [[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.tif", 1]];
-						
-					if( [[NSFileManager defaultManager] fileExistsAtPath: filePath] == NO && filePath != 0L)
-						NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-					
-					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
-					{
-						[ws openFile: filePath];
-					}
-				}
-			}
-			else
-			{
-				NSImage *im = [imageView nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"] allViewers:[imageAllViewers state]];
+				BOOL export = YES;
 				
-				NSArray *representations;
-				NSData *bitmapData;
-				
-				representations = [im representations];
-				
-				if( [[imageFormat selectedCell] tag] == 2)	// ifoto
+				if( [[imageSelection selectedCell] tag] == 1)	// All images
 				{
-					bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-					
-					NSString *jpegFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"];
-					
-					[bitmapData writeToFile: jpegFile atomically:YES];
-					
-					NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
-								
-					NSDictionary *exifDict = [NSDictionary dictionaryWithObjectsAndKeys:
-													@"Exported from OsiriX", kCGImagePropertyExifUserComment,
-													[[curImage valueForKeyPath: @"series.study.date"] descriptionWithCalendarFormat:@"%Y:%m:%d %H:%M:%S" timeZone:0L locale: 0L] , kCGImagePropertyExifDateTimeOriginal,
-													0L];
-
-					[JPEGExif addExif: [NSURL fileURLWithPath: jpegFile] properties: exifDict format:@"jpeg"];
-					
-					iPhoto	*ifoto = [[iPhoto alloc] init];
-					[ifoto importIniPhoto: [NSArray arrayWithObject: jpegFile]];
-					[ifoto release];
+					export = YES;
 				}
-				else
+				
+				if( [[imageSelection selectedCell] tag] == 2)	// Keyimages only
 				{
-					if( [[imageFormat selectedCell] tag] == 0)
+					NSManagedObject	*image;
+					
+					image = [[self fileList] objectAtIndex: i];
+					
+					export = [[image valueForKey:@"isKeyImage"] boolValue];
+				}
+				
+				if( [[imageSelection selectedCell] tag] == 0)	// Current image only
+				{
+					if( i == [imageView curImage]) export = YES;
+					else export = NO;
+				}
+				
+				if( export)
+				{
+					[imageView setIndex:i];
+					[imageView sendSyncMessage:1];
+					[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
+					
+					NSImage *im = [imageView nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"] allViewers:[imageAllViewers state]];
+					
+					NSArray *representations;
+					NSData *bitmapData;
+
+					representations = [im representations];
+					
+					if( [[imageFormat selectedCell] tag] == 2 || [[imageFormat selectedCell] tag] == 3)		//Mail or iPhoto
 					{
 						bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-						[bitmapData writeToFile:[panel filename] atomically:YES];
+
+						NSString *jpegFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"];
+						
+						[bitmapData writeToFile: jpegFile atomically:YES];
 						
 						NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
 						
@@ -14115,36 +14035,117 @@ int i,j,l;
 															@"Exported from OsiriX", kCGImagePropertyExifUserComment,
 															[[curImage valueForKeyPath: @"series.study.date"] descriptionWithCalendarFormat:@"%Y:%m:%d %H:%M:%S" timeZone:0L locale: 0L] , kCGImagePropertyExifDateTimeOriginal,
 															0L];
-
 						
-						[JPEGExif addExif: [NSURL fileURLWithPath: [panel filename]] properties: exifDict format:@"jpeg"]; 
+						[JPEGExif addExif: [NSURL fileURLWithPath: jpegFile] properties: exifDict format:@"jpeg"];
+						
+						if( [[imageFormat selectedCell] tag])
+						{
+							
+						}
+						
+						iPhoto	*ifoto = [[iPhoto alloc] init];
+						[ifoto importIniPhoto: [NSArray arrayWithObject:jpegFile]];
+						[ifoto release];
 					}
 					else
 					{
-						NSString *tiffFile = [[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"tif"]];
-						[[im TIFFRepresentation] writeToFile: tiffFile atomically:NO];
-						
-						NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
-						
-						NSDictionary *exifDict = [NSDictionary dictionaryWithObjectsAndKeys:
-															@"Exported from OsiriX", kCGImagePropertyExifUserComment,
-															[[curImage valueForKeyPath: @"series.study.date"] descriptionWithCalendarFormat:@"%Y:%m:%d %H:%M:%S" timeZone:0L locale: 0L] , kCGImagePropertyExifDateTimeOriginal,
-															0L];
-
-						
-						[JPEGExif addExif: [NSURL fileURLWithPath: [panel filename]] properties: exifDict format:@"tiff"]; 
+						if( [[imageFormat selectedCell] tag] == 0)
+						{
+							bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+							[bitmapData writeToFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.jpg", i+1]] atomically:YES];
+						}
+						else
+							[[im TIFFRepresentation] writeToFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.tif", i+1]] atomically:NO];
 					}
-					
-					if( [[NSFileManager defaultManager] fileExistsAtPath: [panel filename]] == NO)
-						NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-					
-					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
-					{
-						[ws openFile:[panel filename]];
-					}
-				}									
+				}
+			}
+			
+			NSString	*filePath;
+			
+			if( [[imageFormat selectedCell] tag] == 0)
+				filePath = [[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.jpg", 1]];
+			else
+				filePath = [[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%4.4d.tif", 1]];
+				
+			if( [[NSFileManager defaultManager] fileExistsAtPath: filePath] == NO && filePath != 0L)
+				NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			
+			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+			{
+				[ws openFile: filePath];
 			}
 		}
+//			{
+//				NSImage *im = [imageView nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"] allViewers:[imageAllViewers state]];
+//				
+//				NSArray *representations;
+//				NSData *bitmapData;
+//				
+//				representations = [im representations];
+//				
+//				if( [[imageFormat selectedCell] tag] == 2)	// ifoto
+//				{
+//					bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+//					
+//					NSString *jpegFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriX.jpg"];
+//					
+//					[bitmapData writeToFile: jpegFile atomically:YES];
+//					
+//					NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
+//								
+//					NSDictionary *exifDict = [NSDictionary dictionaryWithObjectsAndKeys:
+//													@"Exported from OsiriX", kCGImagePropertyExifUserComment,
+//													[[curImage valueForKeyPath: @"series.study.date"] descriptionWithCalendarFormat:@"%Y:%m:%d %H:%M:%S" timeZone:0L locale: 0L] , kCGImagePropertyExifDateTimeOriginal,
+//													0L];
+//
+//					[JPEGExif addExif: [NSURL fileURLWithPath: jpegFile] properties: exifDict format:@"jpeg"];
+//					
+//					iPhoto	*ifoto = [[iPhoto alloc] init];
+//					[ifoto importIniPhoto: [NSArray arrayWithObject: jpegFile]];
+//					[ifoto release];
+//				}
+//				else
+//				{
+//					if( [[imageFormat selectedCell] tag] == 0)
+//					{
+//						bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+//						[bitmapData writeToFile:[panel filename] atomically:YES];
+//						
+//						NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
+//						
+//						NSDictionary *exifDict = [NSDictionary dictionaryWithObjectsAndKeys:
+//															@"Exported from OsiriX", kCGImagePropertyExifUserComment,
+//															[[curImage valueForKeyPath: @"series.study.date"] descriptionWithCalendarFormat:@"%Y:%m:%d %H:%M:%S" timeZone:0L locale: 0L] , kCGImagePropertyExifDateTimeOriginal,
+//															0L];
+//
+//						
+//						[JPEGExif addExif: [NSURL fileURLWithPath: [panel filename]] properties: exifDict format:@"jpeg"]; 
+//					}
+//					else
+//					{
+//						NSString *tiffFile = [[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"tif"]];
+//						[[im TIFFRepresentation] writeToFile: tiffFile atomically:NO];
+//						
+//						NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
+//						
+//						NSDictionary *exifDict = [NSDictionary dictionaryWithObjectsAndKeys:
+//															@"Exported from OsiriX", kCGImagePropertyExifUserComment,
+//															[[curImage valueForKeyPath: @"series.study.date"] descriptionWithCalendarFormat:@"%Y:%m:%d %H:%M:%S" timeZone:0L locale: 0L] , kCGImagePropertyExifDateTimeOriginal,
+//															0L];
+//
+//						
+//						[JPEGExif addExif: [NSURL fileURLWithPath: [panel filename]] properties: exifDict format:@"tiff"]; 
+//					}
+//					
+//					if( [[NSFileManager defaultManager] fileExistsAtPath: [panel filename]] == NO)
+//						NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+//					
+//					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+//					{
+//						[ws openFile:[panel filename]];
+//					}
+//				}									
+//			}
 	}
 }
 

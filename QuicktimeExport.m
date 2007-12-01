@@ -524,9 +524,10 @@ NSString * documentsDirectory();
 				}
 				else
 				{
-					NSString *curFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/OsiriX%4d.tif", curSample];
+					NSString *curFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/OsiriX-%4d.jpg", curSample];
 					
-					[[im TIFFRepresentation] writeToFile:curFile atomically:YES];
+					NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray: [im representations] usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+					[bitmapData writeToFile:curFile atomically:YES];
 				}
 			}
 			
