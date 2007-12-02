@@ -27,6 +27,9 @@
 	IBOutlet NSMatrix		*seriesOrderMatrix;
 	IBOutlet NSPopUpButton	*reportsMode;
 	
+	NSArray					*DICOMFieldsArray;
+	IBOutlet NSPopUpButton	*dicomFieldsMenu;
+	
 	IBOutlet NSMatrix		*commentsDeleteMatrix;
 	IBOutlet NSTextField	*commentsDeleteText;
 	
@@ -60,6 +63,7 @@
 - (IBAction)setReportMode:(id) sender;
 - (IBAction) resetDate:(id) sender;
 - (IBAction) resetDateOfBirth:(id) sender;
+- (IBAction) setDICOMFieldMenu: (id) sender;
 - (BOOL)useSeriesDescription;
 - (void)setUseSeriesDescription:(BOOL)value;
 - (BOOL)splitMultiEchoMR;

@@ -23,6 +23,7 @@ Version 2.4
 
 #import "OSIDatabasePreferencePanePref.h"
 #import "PreferencePaneController.h"
+#import "PreferencePaneControllerDCMTK.h"
 
 @implementation OSIDatabasePreferencePanePref
 
@@ -65,6 +66,8 @@ Version 2.4
 - (void) dealloc
 {	
 	NSLog(@"dealloc OSIDatabasePreferencePanePref");
+	
+	[DICOMFieldsArray release];
 	
 	[super dealloc];
 }
@@ -243,6 +246,31 @@ Version 2.4
 	[[columnsDisplay cellWithTag:0] setState: ![defaults boolForKey:@"HIDEPATIENTNAME"]];
 }
 
+- (void)didSelect
+{
+	DICOMFieldsArray = [[[[[self mainView] window] windowController] prepareDICOMFieldsArrays] retain];
+	
+	NSMenu *DICOMFieldsMenu = [dicomFieldsMenu menu];
+	[DICOMFieldsMenu setAutoenablesItems:NO];
+	[dicomFieldsMenu removeAllItems];
+	
+	NSMenuItem *item;
+	item = [[[NSMenuItem alloc] init] autorelease];
+	[item setTitle:NSLocalizedString(@"DICOM Fields", @"")];
+	[item setEnabled:NO];
+	[DICOMFieldsMenu addItem:item];
+	int i;
+	for (i=0; i<[DICOMFieldsArray count]; i++)
+	{
+		item = [[[NSMenuItem alloc] init] autorelease];
+		[item setTitle:[[DICOMFieldsArray objectAtIndex:i] title]];
+		[item setRepresentedObject:[DICOMFieldsArray objectAtIndex:i]];
+		[DICOMFieldsMenu addItem:item];
+	}
+	NSLog(@"DICOMFieldsArray : %@", DICOMFieldsArray);
+	[dicomFieldsMenu setMenu:DICOMFieldsMenu];
+}
+
 - (IBAction) setReportMode:(id) sender
 {
 	// report mode int value
@@ -296,8 +324,16 @@ Version 2.4
 	[hexscanner scanHexInt:&val];
 	[[NSUserDefaults standardUserDefaults] setInteger:val forKey:@"COMMENTSELEMENT"];
 	
-	[commentsGroup setStringValue:[NSString stringWithFormat:@"%04X", [[[NSUserDefaults standardUserDefaults] stringForKey:@"COMMENTSGROUP"] intValue]]];
-	[commentsElement setStringValue:[NSString stringWithFormat:@"%04X", [[[NSUserDefaults standardUserDefaults] stringForKey:@"COMMENTSELEMENT"] intValue]]];
+	[commentsGroup setStringValue:[NSString stringWithFormat:@"0x%04X", [[[NSUserDefaults standardUserDefaults] stringForKey:@"COMMENTSGROUP"] intValue]]];
+	[commentsElement setStringValue:[NSString stringWithFormat:@"0x%04X", [[[NSUserDefaults standardUserDefaults] stringForKey:@"COMMENTSELEMENT"] intValue]]];
+}
+
+- (IBAction) setDICOMFieldMenu: (id) sender;
+{
+	[commentsGroup setStringValue: [[[sender selectedItem] title] substringWithRange: NSMakeRange( 1, 6)]];
+	[commentsElement setStringValue: [[[sender selectedItem] title] substringWithRange: NSMakeRange( 8, 6)]];
+	
+	[self setAutoComments: sender];
 }
 
 - (IBAction) databaseCleaning:(id)sender

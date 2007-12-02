@@ -102,17 +102,16 @@
 	[[prefPane DICOMFieldsPopUpButton] removeAllItems];
 	
 	NSMenuItem *item;
-	item = [[NSMenuItem alloc] init];
+	item = [[[NSMenuItem alloc] init] autorelease];
 	[item setTitle:NSLocalizedString(@"DICOM Fields", @"")];
 	[item setEnabled:NO];
 	[DICOMFieldsMenu addItem:item];
 	for (i=0; i<[DICOMFieldsArray count]; i++)
 	{
-		item = [[NSMenuItem alloc] init];
+		item = [[[NSMenuItem alloc] init] autorelease];
 		[item setTitle:[[DICOMFieldsArray objectAtIndex:i] title]];
 		[item setRepresentedObject:[DICOMFieldsArray objectAtIndex:i]];
 		[DICOMFieldsMenu addItem:item];
-		[item release];
 	}
 	
 	[[prefPane DICOMFieldsPopUpButton] setMenu:DICOMFieldsMenu];
@@ -126,45 +125,42 @@
 	for (i=0; i<[[databaseFieldsMenu itemArray] count]; i++)
 		[databaseFieldsMenu removeItemAtIndex:i];
 	
-	item = [[NSMenuItem alloc] init];
+	item = [[[NSMenuItem alloc] init] autorelease];
 	[item setTitle:NSLocalizedString(@"Study level", @"")];
 	[item setEnabled:NO];
 	[databaseFieldsMenu addItem:item];
 	for (i=0; i<[databaseStudyFieldsArray count]; i++)
 	{
-		item = [[NSMenuItem alloc] init];
+		item = [[[NSMenuItem alloc] init] autorelease];
 		[item setTitle:[NSString stringWithFormat:@"\t%@",[databaseStudyFieldsArray objectAtIndex:i]]];
 		[item setRepresentedObject:[NSString stringWithFormat:@"study.%@",[databaseStudyFieldsArray objectAtIndex:i]]];
 		[databaseFieldsMenu addItem:item];
-		[item release];
 	}
 
 	[databaseFieldsMenu addItem:[NSMenuItem separatorItem]];	
-	item = [[NSMenuItem alloc] init];
+	item = [[[NSMenuItem alloc] init] autorelease];
 	[item setTitle:NSLocalizedString(@"Series level", @"")];
 	[item setEnabled:NO];
 	[databaseFieldsMenu addItem:item];
 	for (i=0; i<[databaseSeriesFieldsArray count]; i++)
 	{
-		item = [[NSMenuItem alloc] init];
+		item = [[[NSMenuItem alloc] init] autorelease];
 		[item setTitle:[NSString stringWithFormat:@"\t%@",[databaseSeriesFieldsArray objectAtIndex:i]]];
 		[item setRepresentedObject:[NSString stringWithFormat:@"series.%@",[databaseSeriesFieldsArray objectAtIndex:i]]];
 		[databaseFieldsMenu addItem:item];
-		[item release];
 	}
 	
 	[databaseFieldsMenu addItem:[NSMenuItem separatorItem]];
-	item = [[NSMenuItem alloc] init];
+	item = [[[NSMenuItem alloc] init] autorelease];
 	[item setTitle:NSLocalizedString(@"Image level", @"")];
 	[item setEnabled:NO];
 	[databaseFieldsMenu addItem:item];
 	for (i=0; i<[databaseImageFieldsArray count]; i++)
 	{
-		item = [[NSMenuItem alloc] init];
+		item = [[[NSMenuItem alloc] init] autorelease];
 		[item setTitle:[NSString stringWithFormat:@"\t%@",[databaseImageFieldsArray objectAtIndex:i]]];
 		[item setRepresentedObject:[NSString stringWithFormat:@"image.%@",[databaseImageFieldsArray objectAtIndex:i]]];
 		[databaseFieldsMenu addItem:item];
-		[item release];
 	}
 	
 	// Specials popup button
@@ -178,11 +174,10 @@
 	
 	for (i=0; i<[fields count]; i++)
 	{
-		item = [[NSMenuItem alloc] init];
+		item = [[[NSMenuItem alloc] init] autorelease];
 		[item setTitle:[localizedFields objectAtIndex:i]];
 		[item setRepresentedObject:[fields objectAtIndex:i]];
 		[specialFieldsMenu addItem:item];
-		[item release];
 	}
 
 	[[prefPane DICOMFieldsPopUpButton] setEnabled:NO];
