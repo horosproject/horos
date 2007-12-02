@@ -7702,10 +7702,22 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	NSString			*colorSpace;
 	unsigned char		*data;
 		
-	if( stringID == 0L && originalSize == NO) {
-		if( numberOf2DViewer > 1 || _imageColumns != 1 || _imageRows != 1 || [self isKeyImage] == YES) {
-			stringID = [@"copy" retain];	// to remove the red square around the image
-			[self display];
+	if( stringID == 0L && originalSize == NO)
+	{
+		if( numberOf2DViewer > 1 || _imageColumns != 1 || _imageRows != 1 || [self isKeyImage] == YES)
+		{
+			if( [self is2DViewer] && (_imageColumns != 1 || _imageRows != 1))
+			{
+				NSArray	*vs = [[self windowController] imageViews];
+				
+				[vs makeObjectsPerformSelector: @selector( setStringID:) withObject: @"copy"];
+				[vs makeObjectsPerformSelector: @selector( display)];
+			}
+			else
+			{
+				stringID = [@"copy" retain];	// to remove the red square around the image
+				[self display];
+			}
 		}
 	}
 	
@@ -7864,11 +7876,22 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	else data = [self getRawPixels :&width :&height :&spp :&bpp :!originalSize : YES :NO :YES];
 	
-	if( [stringID isEqualToString:@"copy"] ) {
-		[stringID release];
-		stringID = 0L;
-		
-		[self setNeedsDisplay: YES];
+	if( [stringID isEqualToString:@"copy"] )
+	{
+		if( [self is2DViewer] && (_imageColumns != 1 || _imageRows != 1))
+		{
+			NSArray	*vs = [[self windowController] imageViews];
+			
+			[vs makeObjectsPerformSelector: @selector( setStringID:) withObject: 0L];
+			[vs makeObjectsPerformSelector: @selector( display)];
+		}
+		else
+		{
+			[stringID release];
+			stringID = 0L;
+			
+			[self setNeedsDisplay: YES];
+		}
 	}
 	
 	if( spp == 3) colorSpace = NSCalibratedRGBColorSpace;

@@ -2578,6 +2578,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return imageView;
 }
 
+- (NSArray*) imageViews
+{
+	return [seriesView imageViews];
+}
+
 -(NSString*) modality
 {
 	return [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.modality"];

@@ -375,6 +375,7 @@ enum
 
 /**  Return the image pane object */
 - (DCMView*) imageView;
+- (NSArray*) imageViews;
 
 /**  Return the array of DCMPix objects */
 - (NSMutableArray*) pixList;
