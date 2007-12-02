@@ -299,27 +299,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
     return self;
 }
 
-- (void)finalize {
-if( reader)
-	{
-		if( [firstObject isRGB]) free( dataFRGB);
-	
-		reader->Delete();		
-		bwLut->Delete();
-		axialColors->Delete();
-		axial->Delete();		
-		rotate->Delete();
-		rotatePerpendicular->Delete();
-		perpendicularSliceTransform->Delete();		
-		sliceTransform->Delete();		
-		aCamera->Delete();
-		//changeImageInfo->Delete();
-	}
-	[super finalize];
-}
-
-
-
 -(void)dealloc
 {
     NSLog(@"Dealloc MPRView2D");
@@ -2323,7 +2302,7 @@ if( reader)
 	{
 		[self performSelector :@selector( crossStopMoving:) withObject :[note object] afterDelay :1.0];
 	}
-
+	
 //	// Cross position in 3D
 //	[[pixList objectAtIndex: [oView curImage]] convertPixX: [oView cross].x pixY: [oView cross].y toDICOMCoords: temp];
 //	NSLog( @"3D position: %f %f %f", temp[ 0], temp[ 1], temp[ 2]);
