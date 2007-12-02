@@ -194,8 +194,8 @@ Version 2.4
 	// COMMENTS
 	
 	[commentsAutoFill setState:[defaults boolForKey:@"COMMENTSAUTOFILL"]];
-	[commentsGroup setStringValue:[NSString stringWithFormat:@"%04X", [[defaults stringForKey:@"COMMENTSGROUP"] intValue]]];
-	[commentsElement setStringValue:[NSString stringWithFormat:@"%04X", [[defaults stringForKey:@"COMMENTSELEMENT"] intValue]]];
+	[commentsGroup setStringValue:[NSString stringWithFormat:@"0x%04X", [[defaults stringForKey:@"COMMENTSGROUP"] intValue]]];
+	[commentsElement setStringValue:[NSString stringWithFormat:@"0x%04X", [[defaults stringForKey:@"COMMENTSELEMENT"] intValue]]];
 	
 	// REPORTS
 	[self buildPluginsMenu];
