@@ -1800,6 +1800,8 @@ public:
 	
     NSLog(@"Dealloc VRView");
 	
+	[[IMService notificationCenter] removeObserver: self];
+	
 	[deleteRegion lock];
 	[deleteRegion unlock];
 	[deleteRegion release];
