@@ -11242,37 +11242,48 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[filesToAnonymize release];
 }	
 
+- (void) unmountPath:(NSString*) path
+{
+	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Volume unmounting...", nil)];
+	[wait showWindow:self];
+	
+	[bonjourServicesList display];
+	
+	int attempts = 0;
+	BOOL success = NO;
+	while( success == NO)
+	{
+		success = [[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath:  path];
+		if( success == NO)
+		{
+			attempts++;
+			if( attempts < 5)
+				Delay( 60, 0L);
+			else success = YES;
+		}
+	}
+	
+	[path release];
+	
+	[bonjourServicesList display];
+	[bonjourServicesList setNeedsDisplay];
+	[wait close];
+	[wait release];
+	
+	if( attempts == 5 )	{
+		NSRunCriticalAlertPanel(NSLocalizedString(@"Failed", nil), NSLocalizedString(@"Unable to unmount this disk. This disk is probably in used by another application.", 0L), NSLocalizedString(@"OK",nil),nil, nil);
+	}
+}
+
 - (void)AlternateButtonPressed: (NSNotification*)n {
 	int i = [bonjourServicesList selectedRow];
-	if( i > 0 )	{
-		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Volume unmounting...", nil)];
-		[wait showWindow:self];
-		[bonjourServicesList display];
-		NSString	*path = [[[bonjourBrowser services] objectAtIndex: i-1] valueForKey:@"Path"];
+	if( i > 0 )
+	{
+		NSString *path = [[[[bonjourBrowser services] objectAtIndex: i-1] valueForKey:@"Path"] retain];
+	
+		[self resetToLocalDatabase];
 		
-		int attempts = 0;
-		BOOL success = NO;
-		while( success == NO)
-		{
-			success = [[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath:  path];
-			if( success == NO)
-			{
-				if( attempts++ < 5)
-				{
-					Delay( 60, 0L);
-				}
-				else success = YES;
-			}
-		}
-		
-		[bonjourServicesList display];
-		[bonjourServicesList setNeedsDisplay];
-		[wait close];
-		[wait release];
-		
-		if( success == NO )	{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"Failed", nil), NSLocalizedString(@"Unable to unmount this disk. This disk is probably in used by another application.", 0L), NSLocalizedString(@"OK",nil),nil, nil);
-		}
+		[self performSelector:@selector(unmountPath:) withObject:path afterDelay:0.2];
 	}
 }
 
