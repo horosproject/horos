@@ -1493,7 +1493,7 @@ static BOOL initialized = NO;
 		if ( self == [AppController class] && initialized == NO)
 		{
 			#if __LP64__
-			if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2007 month:12 day:15 hour:1 minute:1 second:1 timeZone:0L]] > 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"Outdated"])
+			if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2007 month:12 day:20 hour:1 minute:1 second:1 timeZone:0L]] > 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"Outdated"])
 			{
 				NSRunCriticalAlertPanel(NSLocalizedString(@"Outdated Version", 0L), NSLocalizedString(@"Please update your application. Available on the web site.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Outdated"];

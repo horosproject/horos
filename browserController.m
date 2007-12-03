@@ -11249,7 +11249,22 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[wait showWindow:self];
 		[bonjourServicesList display];
 		NSString	*path = [[[bonjourBrowser services] objectAtIndex: i-1] valueForKey:@"Path"];
-		BOOL success = [[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath:  path];
+		
+		int attempts = 0;
+		BOOL success = NO;
+		while( success == NO)
+		{
+			success = [[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath:  path];
+			if( success == NO)
+			{
+				if( attempts++ < 5)
+				{
+					Delay( 60, 0L);
+				}
+				else success = YES;
+			}
+		}
+		
 		[bonjourServicesList display];
 		[bonjourServicesList setNeedsDisplay];
 		[wait close];

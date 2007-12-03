@@ -1812,7 +1812,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (BOOL)windowShouldClose:(id)sender
 {
-	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
+	if (([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask))
 	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceSave"]) [self saveWindowsState: self];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];
