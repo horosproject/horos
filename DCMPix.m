@@ -9005,6 +9005,9 @@ END_CREATE_ROIS:
 	float	*firstSourcePixel = subfImage + (firstPixelAbs + firstPixel)/2;
 	long	i = height * width;	
 	float	*result = malloc( i * sizeof(float));
+	
+	if (result == 0L) return input;
+	
 	float	*firstResultPixel = result + (firstPixelAbs - firstPixel)/2;
 	long	lengthToBeCopied = i - firstPixelAbs;
 	
@@ -9014,6 +9017,7 @@ END_CREATE_ROIS:
 	vDSP_vsub (result,1,input,1,result,1,lengthToBeCopied);				//mask - frame
 	
 	float ratio = fabs(subMinMax.y-subMinMax.x);						//Max difference in subtraction without pixel shift
+	if( ratio == 0) ratio = 1;
 	vDSP_vsdiv (result,1,&ratio,result,1,i);							//normalize result [-1...1]
 	vDSP_vsadd (result,1,&subtractedfZero,result,1,i);					//normalize result [0...n]
 	
@@ -9411,7 +9415,33 @@ END_CREATE_ROIS:
 	}
 }
 
-- (void) changeWLWW:(float)newWL :(float)newWW {
+- (void) changeWLWW:(float)newWL :(float)newWW
+{
+//	{
+//	GammaFunction f = vImageCreateGammaFunction( 2.0, kvImageGamma_UseGammaValue_half_precision, 0 );	
+//	
+//	vImage_Buffer	src, dst;
+//	
+//	src.height = 512;
+//	src.width = 512;
+//	src.rowBytes = src.width * sizeof( float);
+//	src.data = calloc( src.rowBytes * src.height, 1);
+//
+//	dst.height = 512;
+//	dst.width = 512;
+//	dst.rowBytes = dst.width * sizeof( char);
+//	dst.data = calloc( src.rowBytes * src.height, 1);
+//	
+//	vImageGamma_PlanarFtoPlanar8 (&src, &dst, f, 0);
+//	
+//	free( src.data);
+//	free( dst.data);
+//	
+//	vImageDestroyGammaFunction( f);
+//	
+//	NSLog( @"succeed");
+//	}
+
 	if( baseAddr == nil )	{
 		[self checkImageAvailble:newWW :newWL];
 		return;
