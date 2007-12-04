@@ -9709,8 +9709,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 }
 
 // Callback from IMAVManager asking what pixel format we'll be providing frames in.
-- (void)getPixelBufferPixelFormat:(OSType *)pixelFormatOut {
-	NSLog(@"getPixelBufferPixelFormat");
+- (void)getPixelBufferPixelFormat:(OSType *)pixelFormatOut
+{
     *pixelFormatOut = kCVPixelFormatType_32ARGB;
 }
 
@@ -9719,8 +9719,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 // CVPixelBufferRef.
 //
 // Note that this will be called on a non-main thread. 
-- (BOOL) renderIntoPixelBuffer:(CVPixelBufferRef)buffer forTime:(CVTimeStamp*)timeStamp {
-NSLog(@"renderIntoPixelBuffer");
+- (BOOL) renderIntoPixelBuffer:(CVPixelBufferRef)buffer forTime:(CVTimeStamp*)timeStamp
+{
     // We ignore the timestamp, signifying that we're providing content for 'now'.
 	CVReturn err;
 	
@@ -9773,7 +9773,6 @@ NSLog(@"renderIntoPixelBuffer");
 
 - (void) drawImage:(NSImage *)image inBounds:(NSRect)rect
 {
-NSLog(@"drawImage");
     // We synchronise to make sure we're not drawing in two threads
     // simultaneously.
    
@@ -9808,18 +9807,19 @@ NSLog(@"drawImage");
 // previous one (in the drawInBounds: method).
 
 // Returns the current state of the flag, and sets it to the passed in value.
-- (BOOL)_checkHasChanged:(BOOL)flag {
-	//NSLog(@"_checkHasChanged");
+- (BOOL)_checkHasChanged:(BOOL)flag
+{
     BOOL hasChanged;
-    @synchronized (self) {
+    @synchronized (self)
+	{
 		hasChanged = _hasChanged;
         _hasChanged = flag;
     }
     return hasChanged;
 }
 
-- (BOOL)checkHasChanged {
-NSLog(@"checkHasChanged");
+- (BOOL)checkHasChanged
+{
     // Calling with 'NO' clears _hasChanged after the call (see above).
     return [self _checkHasChanged:NO];
 }
