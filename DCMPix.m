@@ -9159,7 +9159,7 @@ END_CREATE_ROIS:
 
 - (float*) applyConvolutionOnImage:(float*) src RGB:(BOOL) color
 {
-	float	*result;
+	float	*result = src;
 	
 	[self CheckLoad]; 
 	

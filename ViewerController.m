@@ -5110,6 +5110,11 @@ static ViewerController *draggedController = 0L;
 	[self setWindowTitle:self];
 }
 
+- (BOOL) subtractionActivated
+{
+	return [subCtrlOnOff state];
+}
+
 - (void) enableSubtraction
 {
 	if( enableSubtraction)
@@ -5522,7 +5527,7 @@ static ViewerController *draggedController = 0L;
 	int index = [imageView curImage];
 	BOOL isResampled = YES;
 	
-	NSData *savedROIs[ 200];
+	NSMutableArray *savedROIs[ 200];
 	
 	for( int j = 0 ; j < maxMovieIndex && isResampled == YES ; j ++)
 	{	
@@ -5530,7 +5535,10 @@ static ViewerController *draggedController = 0L;
 		NSMutableArray *newDcmList = [NSMutableArray arrayWithCapacity:0];
 		NSData *newData = 0L;
 		
-//		savedROIs[ j] = [NSArchiver archivedDataWithRootObject: roiList[ j]];
+		savedROIs[ j] = [NSMutableArray array];
+		
+		for( NSArray *r in roiList[ j])
+			[savedROIs[ j] addObject: [NSArchiver archivedDataWithRootObject: r]];
 		
 		isResampled = [ViewerController resampleDataFromViewer:self inPixArray:newPixList fileArray:newDcmList data:&newData withXFactor:xFactor yFactor:yFactor zFactor:zFactor movieIndex: j];
 		
@@ -5554,7 +5562,7 @@ static ViewerController *draggedController = 0L;
 			else
 				[self addMovieSerie: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
 		}
-				
+		
 		loadingPercentage = 1;
 		[self computeInterval];
 		[self setWindowTitle:self];
@@ -5565,13 +5573,26 @@ static ViewerController *draggedController = 0L;
 		[imageView sendSyncMessage:1];
 		
 		[self adjustSlider];
-//		
-//		for( int j = 0 ; j < maxMovieIndex; j ++)
-//		{
-//			NSLog(@"%@", [NSUnarchiver unarchiveObjectWithData: savedROIs[ j]]);
-//			[roiList[ j] addObjectsFromArray: [NSUnarchiver unarchiveObjectWithData: savedROIs[ j]]];
-//		}
-//		[imageView roiSet];
+		
+		for( int j = 0 ; j < maxMovieIndex; j ++)
+		{
+			int currentTotal = [pixList[ j] count];
+			
+			for( int x = 0 ; x < [pixList[ j] count] ; x++)
+			{
+				int index = (x * [savedROIs[ j] count]) / [pixList[ j] count];
+				
+				if( index >= [savedROIs[ j] count]) index = [savedROIs[ j] count] -1;
+				
+				NSData *r = [savedROIs[ j] objectAtIndex: index];
+				
+				[[roiList[ j] objectAtIndex: x] addObjectsFromArray: [NSUnarchiver unarchiveObjectWithData: r]];
+				
+				for( ROI *r in [roiList[ j] objectAtIndex: x])
+					[r setOriginAndSpacing :[imageView curDCM].pixelSpacingX : [imageView curDCM].pixelSpacingY :NSMakePoint( [imageView curDCM].originX, [imageView curDCM].originY)];
+			}
+		}
+		[imageView roiSet];
 
 	}
 
@@ -7831,7 +7852,21 @@ NSMutableArray		*array;
 - (void) setFusionMode:(long) m
 {
 	long i, x;
+
+	BOOL volumicData = YES;
+
+	long moviePixWidth = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth];
+	long moviePixHeight = [[pixList[ curMovieIndex] objectAtIndex: 0] pheight];
 	
+	for( int j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
+	{
+		if ( moviePixWidth != [[pixList[ curMovieIndex] objectAtIndex: j] pwidth]) volumicData = NO;
+		if ( moviePixHeight != [[pixList[ curMovieIndex] objectAtIndex: j] pheight]) volumicData = NO;
+	}
+	
+	if( volumicData == NO)
+		m = 0;
+
 	// Thick Slab
 	if( m == 4 || m == 5)
 	{
@@ -11586,6 +11621,8 @@ int i,j,l;
 					if( [[imageView curDCM] isRGB] != [[[vC imageView] curDCM] isRGB]) propagate = NO;
 					
 					if( [[vC modality] isEqualToString:[self modality]] == NO) propagate = NO;
+					
+					if( [vC subtractionActivated] != [self subtractionActivated]) propagate = NO;
 					
 					if( [[vC modality] isEqualToString: @"CR"]) propagate = NO;
 					
@@ -15955,6 +15992,7 @@ long i;
 	
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
+	[self squareDataSet: self];			// CurvedMPR works better if pixel are squares !
 	
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
