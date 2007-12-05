@@ -2273,6 +2273,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 					dontEnterMagneticFunctions = NO;
 					
 					[theWindow makeKeyAndOrderFront: self];
+					[theWindow makeKeyAndOrderFront: self];
 					[self refreshToolbar];
 					
 					return;

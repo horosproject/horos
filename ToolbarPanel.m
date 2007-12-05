@@ -201,6 +201,7 @@ extern BOOL USETOOLBARPANEL;
 	if( tb == toolbar)
 	{
 		[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+		[[self window] setToolbar: toolbar];
 		if( tb == 0L) [[self window] orderOut: self];
 		return;
 	}

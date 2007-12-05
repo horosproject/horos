@@ -2628,7 +2628,7 @@ static BOOL initialized = NO;
 		}
 	}
 	
-	if( keepSameStudyOnSameScreen && numberOfMonitors > 1 && [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] == 0L)
+	if( keepSameStudyOnSameScreen && numberOfMonitors > 1)
 	{
 		for( i = 0; i < numberOfMonitors && i < [studyList count]; i++)
 		{
