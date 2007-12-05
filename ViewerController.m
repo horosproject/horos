@@ -4605,6 +4605,8 @@ static ViewerController *draggedController = 0L;
 {
 	long	i;
 	
+	[self ActivateBlending: 0L];
+	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
 	[self finalizeSeriesViewing];
