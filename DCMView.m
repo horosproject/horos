@@ -1644,9 +1644,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[drawLock unlock];
 }
 
-- (void) dealloc {	
+- (void) dealloc {
 	NSLog(@"DCMView released");
 	[self deleteMouseDownTimer];
+	
+	[matrix release];
 	
 	[cursorTracking release];
 	
@@ -1669,6 +1671,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	dcmPixList = 0L;
 
 	[stringID release];
+	stringID = 0L;
 	
     NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];

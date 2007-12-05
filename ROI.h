@@ -160,7 +160,9 @@ enum
 + (void) setDefaultName:(NSString*) n;
 /** Return the default name */
 + (NSString*) defaultName;
-@property(retain) NSString *defaultName;
+
+- (void) setDefaultName:(NSString*) n;
+- (NSString*) defaultName;
 
 + (BOOL) splineForROI;
 

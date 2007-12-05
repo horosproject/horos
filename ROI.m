@@ -857,16 +857,19 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	[layerImageJPEG release];
 //	[layerImageWhenSelectedJPEG release];
 
-	if(layerReferenceFilePath) [layerReferenceFilePath release];
-	if(layerImage) [layerImage release];
-//	if(layerImageWhenSelected) [layerImageWhenSelected release];
-	if(layerColor) [layerColor release];
+	[layerReferenceFilePath release];
+	[layerImage release];
+//	[layerImageWhenSelected release];
+	[layerColor release];
 	
 	[textualBoxLine1 release];
 	[textualBoxLine2 release];
 	[textualBoxLine3 release];
 	[textualBoxLine4 release];
 	[textualBoxLine5 release];
+	
+	[parentROI release];
+	[pix release];
 	
 	[super dealloc];
 }
