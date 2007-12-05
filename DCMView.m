@@ -1578,7 +1578,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset {
+- (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset
+{
+	[drawLock lock];
+	
 	long i;
 	
 	[curDCM release];
@@ -1637,6 +1640,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	
     [self setNeedsDisplay:true];
+	
+	[drawLock unlock];
 }
 
 - (void) dealloc {	
@@ -1738,7 +1743,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (void) setIndex:(short) index {
+- (void) setIndex:(short) index
+{
+	[drawLock lock];
 
 	BOOL	keepIt;
 	
@@ -1828,6 +1835,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self setNeedsDisplay:YES];
 	
 	[self updateTilingViews];
+	
+	[drawLock unlock];
 }
 
 -(BOOL) acceptsFirstMouse:(NSEvent*) theEvent {
@@ -2385,6 +2394,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	if( [[self window] isVisible] && [[self window] isKeyWindow])
 	{
+		[drawLock lock];
+		
 		[[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
 		
 		BOOL	needUpdate = NO;
@@ -2604,6 +2615,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			for( ROI *r in curRoiList)
 				[r displayPointUnderMouse :pt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue];
 		}
+		
+		[drawLock unlock];
 	}
 	
 	if ([self is2DViewer] == YES)
@@ -8712,6 +8725,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void)loadTexturesCompute
 {
+	[drawLock lock];
+	
 	pTextureName = [self loadTextureIn:pTextureName blending:NO colorBuf:&colorBuf textureX:&textureX textureY:&textureY redTable: redTable greenTable:greenTable blueTable:blueTable textureWidth:&textureWidth textureHeight:&textureHeight resampledBaseAddr:&resampledBaseAddr resampledBaseAddrSize:&resampledBaseAddrSize];
 	
 	if( blendingView)
@@ -8723,6 +8738,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 
 	needToLoadTexture = NO;
+	
+	[drawLock unlock];
 }
 
 - (void) loadTextures
@@ -9699,6 +9716,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		iChatHeight = height;
 		
 		// Render!
+		
         [self drawRect:NSMakeRect(0,0,width,height) withContext:_alternateContext];
         return YES;
     } else {
