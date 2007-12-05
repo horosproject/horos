@@ -20,6 +20,8 @@
 
 extern BOOL USETOOLBARPANEL;
 
+static 	NSMutableDictionary *associatedScreen = 0L;
+
 @implementation ToolbarPanelController
 
 @synthesize viewer;
@@ -187,7 +189,12 @@ extern BOOL USETOOLBARPANEL;
 {
 	if( toolbar == tb)
 	{
+		[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
+		
 		[[self window] setToolbar: 0L];
+		[[self window] orderOut: self];
+		
+		[associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
 		
 		[toolbar release];
 
@@ -198,11 +205,22 @@ extern BOOL USETOOLBARPANEL;
 
 - (void) setToolbar :(NSToolbar*) tb viewer:(ViewerController*) v
 {
+	if( associatedScreen == 0L) associatedScreen = [[NSMutableDictionary alloc] init];
+
 	if( tb == toolbar)
 	{
 		[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
-		[[self window] setToolbar: toolbar];
-		if( tb == 0L) [[self window] orderOut: self];
+	
+		if( toolbar)
+		{
+			if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
+			{
+				[[self window] setToolbar: 0L];
+				[[self window] setToolbar: toolbar];
+				[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
+			}
+		}
+		else [[self window] orderOut: self];
 		return;
 	}
 	
@@ -216,7 +234,12 @@ extern BOOL USETOOLBARPANEL;
 	
 	if( toolbar)
 	{
-//		[[self window] setToolbar: 0L];
+		if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
+		{
+			[[self window] setToolbar: 0L];
+			[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
+		}
+			
 		[[self window] setToolbar: toolbar];
 		
 		[[self window] setShowsToolbarButton:NO];
