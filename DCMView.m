@@ -9685,8 +9685,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 #pragma mark -
 #pragma mark IMAVManager delegate methods.
 // The IMAVManager will call this to ask for the context we'll be providing frames with.
-- (void)getOpenGLBufferContext:(CGLContextObj *)contextOut pixelFormat:(CGLPixelFormatObj *)pixelFormatOut {
-	NSLog(@"alt context: %@ format: %@", [_alternateContext description], [[self pixelFormat] description]);
+- (void)getOpenGLBufferContext:(CGLContextObj *)contextOut pixelFormat:(CGLPixelFormatObj *)pixelFormatOut
+{
+
     *contextOut = [_alternateContext CGLContextObj];
     *pixelFormatOut = [[self pixelFormat] CGLPixelFormatObj];
 }
@@ -9694,7 +9695,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 // The IMAVManager will call this when it wants a frame.
 // Note that this will be called on a non-main thread.
 
-- (BOOL)renderIntoOpenGLBuffer:(CVOpenGLBufferRef)buffer onScreen:(int *)screenInOut forTime:(CVTimeStamp*)timeStamp {
+- (BOOL)renderIntoOpenGLBuffer:(CVOpenGLBufferRef)buffer onScreen:(int *)screenInOut forTime:(CVTimeStamp*)timeStamp
+{
 	// We ignore the timestamp, signifying that we're providing content for 'now'.	
 	if(!_hasChanged) {
 		return NO;
