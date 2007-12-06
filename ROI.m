@@ -834,10 +834,12 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (void) dealloc
 {
+	NSLog( @"dealloc ROI");
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:self userInfo: 0L];
 	
-//	NSLog( @"dealloc ROI: %d contexts", [ctxArray count]);
 	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];		// lastObject is CORRECT ! we delete objects !
+	if( [ctxArray count]) NSLog( @"****** ctxArray is not empty");
 	[ctxArray release];
 	[textArray release];
 	

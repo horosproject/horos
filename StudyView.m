@@ -44,7 +44,6 @@
 			float newX = newWidth * (i / seriesColumns);
 			float newY = newHeight * (i % seriesColumns);
 			NSRect newFrame = NSMakeRect(newX, newY, newWidth, newHeight);
-			//SeriesView *seriesView = [[[SeriesView alloc] initWithFrame:newFrame] autorelease];
 			SeriesView *seriesView = [[[SeriesView alloc] initWithFrame:newFrame seriesRows:seriesRows  seriesColumns:seriesColumns] autorelease];
 			[seriesViews addObject:seriesView];
 			[seriesView setTag:i];
@@ -57,17 +56,11 @@
 }
 
 - (void)dealloc{
-	//NSLog(@"studyView dealloc");
+	NSLog(@"studyView dealloc");
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[seriesViews release];
 	[super dealloc];
 }
-
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
 
 - (void)drawRect:(NSRect)rect {
     NSDrawLightBezel(rect, rect);

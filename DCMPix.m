@@ -9852,7 +9852,10 @@ END_CREATE_ROIS:
 	[checking unlock];
 }
 
-- (void)dealloc {
+- (void)dealloc
+{
+	NSLog( @"dcmPix dealloc");
+
 	if( shutterPolygonal) free( shutterPolygonal);
 	
 	[self clearCachedPapyGroups];
