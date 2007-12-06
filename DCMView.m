@@ -1681,9 +1681,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
-    glDeleteLists (fontListGL, 150);
-	glDeleteLists(labelFontListGL, 150);
-	glDeleteLists(iChatFontListGL, 150);
+    if( fontListGL) glDeleteLists (fontListGL, 150);
+	if( labelFontListGL) glDeleteLists(labelFontListGL, 150);
+	if( iChatFontListGL) glDeleteLists(iChatFontListGL, 150);
 	
 	if( pTextureName)
 	{

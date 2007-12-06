@@ -94,8 +94,8 @@
 
 - (void) dealloc
 {
-//	NSLog( @"dealloc StringTexture: %d contexts", [ctxArray count]);
 	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+	if( [ctxArray count]) NSLog( @"***** StringTexture - ctxArray is NOT EMPTY");
 	[ctxArray release];
 	[textArray release];
 	
