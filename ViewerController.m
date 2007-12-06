@@ -11387,10 +11387,16 @@ int i,j,l;
 	[self revertSeries: self];
 }
 
-- (void)useVOILUT: (id)sender
+- (void) applyLUT: (id) sender
 {
+	[DCMPix checkUserDefaults: YES];
 	[self revertSeries: self];
 	[imageView setWLWW:[[imageView curDCM] savedWL] :[[imageView curDCM] savedWW]];
+}
+
+- (void)useVOILUT: (id)sender
+{
+	[self performSelector:@selector( applyLUT:) withObject: self afterDelay:0.2];
 }
 
 
