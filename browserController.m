@@ -6863,6 +6863,8 @@ static BOOL withReset = NO;
 			break;
 			
 		case 2:	// Remove
+			if( albumTable.selectedRow > 0)
+			{
 			if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete an album", 0L),
 											 NSLocalizedString(@"Are you sure you want to delete this album?", 0L),
 											 NSLocalizedString(@"OK",nil),
@@ -6894,6 +6896,8 @@ static BOOL withReset = NO;
 				
 				[self outlineViewRefresh];
 			}
+			}
+			else SysBeep( 1);
 			break;
 	}
 }
