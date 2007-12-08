@@ -334,7 +334,11 @@ static char *GetPrivateIP()
 				
 				NSTimeInterval val = [interfaceOsiriX databaseLastModification];
 				
-				representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(NSTimeInterval)];
+				NSSwappedDouble swappedValue = NSSwapHostDoubleToBig( val);
+				
+				if( sizeof( swappedValue.v) != 8) NSLog(@"********** warning sizeof( swappedValue) != 8");
+				
+				representationToSend = [NSMutableData dataWithBytes: &swappedValue.v length:sizeof(NSTimeInterval)];
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DBVER" length: 6]])
 			{

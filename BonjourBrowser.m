@@ -1336,8 +1336,8 @@ static char *GetPrivateIP()
 	
 	if( result == NO)
 	{
-		NSLog( @"isBonjourDatabaseUpToDate : NO");
-//		NSLog( @"date: %@ versus: %@", [[NSDate dateWithTimeIntervalSince1970:localVersion] description], [[NSDate dateWithTimeIntervalSince1970:BonjourDatabaseVersion] description]);
+		NSLog( @"isBonjourDatabaseUpToDate == NO");
+ 		NSLog( @"date: %@ versus: %@", [[NSDate dateWithTimeIntervalSinceReferenceDate:localVersion] description], [[NSDate dateWithTimeIntervalSinceReferenceDate:BonjourDatabaseVersion] description]);
 	}
 	
 	[lock unlock];

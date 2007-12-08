@@ -3471,13 +3471,11 @@ static NSArray*	statesArray = nil;
 	if( managedObjectContext == 0L) return;
 	if( [bonjourServicesList selectedRow] == -1) return;
 	
-	if( isCurrentDatabaseBonjour) {
-		NSArray		*winList = [NSApp windows];
+	if( isCurrentDatabaseBonjour)
+	{
 		BOOL		doit = YES;
 		
-		for( NSWindow *win in winList )	{
-			if( [[win windowController] isKindOfClass:[ViewerController class]]) doit = NO;
-		}
+		if( [[ViewerController getDisplayed2DViewers] count]) doit = NO;
 		
 		if( doit ) {
 			if( [bonjourBrowser isBonjourDatabaseUpToDate: [bonjourServicesList selectedRow]-1] == NO )	{
@@ -9031,7 +9029,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		timer = [[NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(previewPerformAnimation:) userInfo:self repeats:YES] retain];
 		IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
 		refreshTimer = [[NSTimer scheduledTimerWithTimeInterval:63.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];
-		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval:10*60 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];
+		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval:60*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain];
 		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain];
 		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval:35 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain];
