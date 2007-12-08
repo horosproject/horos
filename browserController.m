@@ -901,8 +901,10 @@ static NSArray*	statesArray = nil;
 			if( mainThread == [NSThread currentThread])
 				[self newFilesGUIUpdate: self];
 				
-			[newFilesConditionLock lockWhenCondition: 0];
-				
+			[newFilesConditionLock lock];
+			
+			int prevCondition = [newFilesConditionLock condition];
+			
 			for( ViewerController *a in vlToReload)
 			{
 				if( [viewersListToReload containsObject: a] == NO)
@@ -914,7 +916,7 @@ static NSArray*	statesArray = nil;
 					[viewersListToRebuild addObject: a];
 			}
 			
-			if( newStudy) [newFilesConditionLock unlockWithCondition: 1];
+			if( newStudy || prevCondition == 1) [newFilesConditionLock unlockWithCondition: 1];
 			else [newFilesConditionLock unlockWithCondition: 2];
 			
 			if( mainThread == [NSThread currentThread])
