@@ -6521,7 +6521,7 @@ static ViewerController *draggedController = 0L;
 				
 				NSLog( @"Interval: %f %f", interval, interval3d);
 				
-				if( interval == 0)
+				if( interval == 0 && [[pixList[ z] objectAtIndex: 0] originX] == 0 && [[pixList[ z] objectAtIndex: 0] originY] == 0 && [[pixList[ z] objectAtIndex: 0] originZ] == 0)
 				{
 					interval = [[pixList[ z] objectAtIndex:0] spacingBetweenSlices];
 					if( interval)
