@@ -835,6 +835,9 @@ NSString* asciiString (NSString* name);
 				NSLog( @"lipo / mv exception");
 			}
 			
+			[[NSFileManager defaultManager] removeFileAtPath: pathExecutable handler: 0L];
+			[[NSFileManager defaultManager] movePath: pathLightExecutable toPath: pathExecutable handler: 0L];
+			
 			// **********
 		}
 		
@@ -881,7 +884,7 @@ NSString* asciiString (NSString* name);
 			}
 		}
 		
-		[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Data size to burn: %3.2fMB", (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)] waitUntilDone:YES];
+		[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Final files size to burn: %3.2fMB", (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)] waitUntilDone:YES];
 	}
 	
 	NS_HANDLER
@@ -906,6 +909,10 @@ NSString* asciiString (NSString* name);
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Osirix Application"])
 	{
 		size += [[self getSizeOfDirectory: [[NSBundle mainBundle] bundlePath]] longLongValue];
+		
+		#if __LP64__				// Remove the 64-bit binary
+		size -= 44 * 1024;	// About 40 MB
+		#endif
 	}
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Supplementary Folder"])
@@ -913,7 +920,7 @@ NSString* asciiString (NSString* name);
 		size += [[self getSizeOfDirectory: [[NSUserDefaults standardUserDefaults] stringForKey: @"Supplementary Burn Path"]] longLongValue];
 	}
 	
-	[sizeField setStringValue:[NSString stringWithFormat:@"%@ %d  %@ %3.2fMB", NSLocalizedString(@"No of Files:", nil), [files count], NSLocalizedString(@"Original Image Files size:", nil), size/1024.0]];
+	[sizeField setStringValue:[NSString stringWithFormat:@"%@ %d  %@ %3.2fMB", NSLocalizedString(@"No of files:", nil), [files count], NSLocalizedString(@"Files size (without compression):", nil), size/1024.0]];
 }
 
 
