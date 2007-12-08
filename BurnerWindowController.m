@@ -682,7 +682,6 @@ NSString* asciiString (NSString* name);
 {
 	if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO) return [NSNumber numberWithLong: 0];
 
-	NSNumber *sizeFieldNumber;
 	if( [[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeSymbolicLink || [[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeUnknown)
 	{
 		NSArray *args;
@@ -713,9 +712,9 @@ NSString* asciiString (NSString* name);
 		size=[stringComponents objectAtIndex:0];
 		size=[size substringToIndex:[size length]-1];
 		
-		return sizeFieldNumber = [NSNumber numberWithUnsignedLongLong:(unsigned long long)[size doubleValue]];
+		return [NSNumber numberWithUnsignedLongLong:(unsigned long long)[size doubleValue]];
 	}
-	else return sizeFieldNumber = [NSNumber numberWithUnsignedLongLong:(unsigned long long)0];
+	else return [NSNumber numberWithUnsignedLongLong:(unsigned long long)0];
 }
 
 - (void)addDicomdir
@@ -900,10 +899,8 @@ NSString* asciiString (NSString* name);
 	
 	for (file in files)
 	{
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		fattrs = [manager fileAttributesAtPath:file traverseLink:YES];
 		size += [fattrs fileSize]/1024;
-		[pool release];
 	}
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Osirix Application"])
