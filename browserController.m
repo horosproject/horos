@@ -3439,24 +3439,26 @@ static NSArray*	statesArray = nil;
 	[checkIncomingLock lock];
 	[checkBonjourUpToDateThreadLock lock];
 	
+	NSString	*path = 0L;
 	@try
 	{
-		NSString	*path = [bonjourBrowser getDatabaseFile: [bonjourServicesList selectedRow]-1];
-		if( path != nil ) {
-			[self performSelectorOnMainThread:@selector(openDatabaseInBonjour:) withObject:path waitUntilDone:YES];
+		path = [bonjourBrowser getDatabaseFile: [bonjourServicesList selectedRow]-1];
 	}
-		
-	}
+	
 	@catch (NSException * e)
 	{
+
 		NSLog( @"checkBonjourUpToDateThread");
 		NSLog( [e description]);
 	}
-	
+
 	[checkIncomingLock unlock];
 	[checkBonjourUpToDateThreadLock unlock];
-	
-	[self performSelectorOnMainThread:@selector(outlineViewRefresh) withObject:nil waitUntilDone:YES];
+
+	if( path != nil )
+		[self performSelectorOnMainThread:@selector(openDatabaseInBonjour:) withObject:path waitUntilDone:YES];
+		
+//	[self performSelectorOnMainThread:@selector(outlineViewRefresh) withObject:nil waitUntilDone:YES];
 	
 	[pool release];
 }
@@ -6895,7 +6897,6 @@ static BOOL withReset = NO;
 				[self outlineViewRefresh];
 			}
 			}
-			else SysBeep( 1);
 			break;
 	}
 }
