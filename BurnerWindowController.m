@@ -911,7 +911,7 @@ NSString* asciiString (NSString* name);
 		size += [[self getSizeOfDirectory: [[NSBundle mainBundle] bundlePath]] longLongValue];
 		
 		#if __LP64__				// Remove the 64-bit binary
-		size -= 44 * 1024;	// About 40 MB
+		size -= 44 * 1024;			// About 44 MB
 		#endif
 	}
 	
