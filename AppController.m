@@ -1485,9 +1485,38 @@ NSRect screenFrame()
 	return appController;
 }
 
+#define EXTRACT_LONG_BIG(A,B)	{			\
+	(B) = (unsigned long)(A)[3]				\
+	  | (((unsigned long)(A)[2]) << 8)		\
+	  | (((unsigned long)(A)[1]) << 16)		\
+	  | (((unsigned long)(A)[0]) << 24);	\
+	}
+
+
+#define EXTRACT_LONG_BIG2(A,B)	{			\
+	(B) = (unsigned int)(A)[3]				\
+	  | (((unsigned int)(A)[2]) << 8)		\
+	  | (((unsigned int)(A)[1]) << 16)		\
+	  | (((unsigned int)(A)[0]) << 24);	\
+	}
+
+
 static BOOL initialized = NO;
 + (void) initialize
 {
+
+	// DCMTK BUG for LP64 systems
+
+	int test = NSSwapHostIntToBig( 19191919);
+	unsigned char *ptr = (unsigned char*) &test;
+	long result;
+	
+	EXTRACT_LONG_BIG2( ptr, result);
+	NSLog(@"%d", result);
+	
+	EXTRACT_LONG_BIG( ptr, result);
+	NSLog(@"%d", result);
+
 	@try
 	{
 		if ( self == [AppController class] && initialized == NO)
