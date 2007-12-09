@@ -1492,14 +1492,12 @@ NSRect screenFrame()
 	  | (((unsigned long)(A)[0]) << 24);	\
 	}
 
-
 #define EXTRACT_LONG_BIG2(A,B)	{			\
 	(B) = (unsigned int)(A)[3]				\
 	  | (((unsigned int)(A)[2]) << 8)		\
 	  | (((unsigned int)(A)[1]) << 16)		\
-	  | (((unsigned int)(A)[0]) << 24);	\
+	  | (((unsigned int)(A)[0]) << 24);		\
 	}
-
 
 static BOOL initialized = NO;
 + (void) initialize
