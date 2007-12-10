@@ -362,6 +362,8 @@ static NSArray*	statesArray = nil;
 			
 			if( isCDMedia) [[splash progress] setMaxValue:[newFilesArray count]];
 			else [[splash progress] setMaxValue:[newFilesArray count]/30];
+			
+			[splash setCancel: YES];
 		}
 	}
 	
@@ -512,13 +514,18 @@ static NSArray*	statesArray = nil;
 				}
 				else
 				{
-					if( (ii++) % 30 == 0) [splash incrementBy:1];
+					if( (ii++) % 30 == 0)
+					{
+						[splash incrementBy:1];
+					}
 				}
 				
 				if( ii % 50000 == 0)
 				{
 					[self saveDatabase:currentDatabasePath];
 				}
+				
+				
 			}
 			
 			if( curDict != 0L)
@@ -801,6 +808,9 @@ static NSArray*	statesArray = nil;
 			NSLog(@"AddFilesToDatabase DicomFile exception: %@", [ne description]);
 			NSLog(@"Parser failed for this file: %@", newFile);
 		}
+		
+		if( [splash aborted])
+			break;
 		}
 		
 		[studiesArray release];
@@ -2278,6 +2288,7 @@ static NSArray*	statesArray = nil;
 		
 		[splash showWindow:self];
 		[[splash progress] setMaxValue:[filesInput count]];
+		[splash setCancel: YES];
 		
 		for( NSString *srcPath in filesInput ) {
 			NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
@@ -2311,6 +2322,9 @@ static NSArray*	statesArray = nil;
 			[splash incrementBy:1];
 			
 			[pool release];
+			
+			if( [splash aborted])
+				break;
 		}
 		
 		[splash close];
