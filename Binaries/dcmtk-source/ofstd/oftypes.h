@@ -52,7 +52,7 @@ typedef signed int      Sint32;
 typedef unsigned int    Uint32;
 #else
 typedef signed long     Sint32;
-typedef unsigned int   Uint32;
+typedef unsigned long   Uint32;
 #endif
 
 typedef signed short    Sint16;

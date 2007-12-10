@@ -408,8 +408,8 @@ DicomImage *DicomImage::createScaledImage(const double xfactor,
 
 // --- clip & scale
 
-DicomImage *DicomImage::createScaledImage(const signed long left_pos,
-                                          const signed long top_pos,
+DicomImage *DicomImage::createScaledImage(const signed int left_pos,
+                                          const signed int top_pos,
                                           unsigned int clip_width,
                                           unsigned int clip_height,
                                           unsigned int scale_width,
@@ -482,8 +482,8 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
 
 // --- clip & scale
 
-DicomImage *DicomImage::createScaledImage(const signed long left_pos,
-                                          const signed long top_pos,
+DicomImage *DicomImage::createScaledImage(const signed int left_pos,
+                                          const signed int top_pos,
                                           unsigned int width,
                                           unsigned int height,
                                           const double xfactor,
@@ -510,8 +510,8 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
 // --- create clipped to given box ('left_pos', 'top_pos' and 'width', 'height') image,
 // ---- memory isn't handled internally! 'width' and 'height' are optional
 
-DicomImage *DicomImage::createClippedImage(const signed long left_pos,
-                                           const signed long top_pos,
+DicomImage *DicomImage::createClippedImage(const signed int left_pos,
+                                           const signed int top_pos,
                                            unsigned int width,
                                            unsigned int height,
                                            const Uint16 pvalue) const

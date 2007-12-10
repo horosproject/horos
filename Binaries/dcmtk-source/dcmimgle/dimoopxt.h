@@ -1020,8 +1020,8 @@ class DiMonoOutputPixelTemplate
             {
                 if (overlays[j] != NULL)
                 {
-                    const signed long left_pos = overlays[j]->getLeft();
-                    const signed long top_pos = overlays[j]->getTop();
+                    const signed int left_pos = overlays[j]->getLeft();
+                    const signed int top_pos = overlays[j]->getTop();
                     register DiOverlayPlane *plane;
                     for (unsigned int i = 0; i < overlays[j]->getCount(); ++i)
                     {

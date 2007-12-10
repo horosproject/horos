@@ -714,7 +714,7 @@ static void addConceptModContentItems(DcmDirectoryRecord *record,
     if ((record != NULL) && (dataset != NULL))
     {
         OFString tmpString;
-        signed long i = 0;
+        signed int i = 0;
         DcmItem *ditem = NULL;
         /* create new ContentSequence */
         DcmSequenceOfItems *newSeq = new DcmSequenceOfItems(DCM_ContentSequence);

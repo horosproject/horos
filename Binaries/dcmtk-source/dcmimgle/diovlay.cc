@@ -89,8 +89,8 @@ DiOverlay::DiOverlay(const DiDocument *docu,
 // --- scale/clip overlay
 
 DiOverlay::DiOverlay(const DiOverlay *overlay,
-                     const signed long left_pos,
-                     const signed long top_pos,
+                     const signed int left_pos,
+                     const signed int top_pos,
                      const double xfactor,
                      const double yfactor)
   : Left(left_pos),
@@ -145,8 +145,8 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
         {
             if (Data->Planes[i] != NULL)
             {
-                Data->Planes[i]->setFlipping(horz, vert, OFstatic_cast(signed long, columns) + overlay->Left,
-                    OFstatic_cast(signed long, rows) + overlay->Top);
+                Data->Planes[i]->setFlipping(horz, vert, OFstatic_cast(signed int, columns) + overlay->Left,
+                    OFstatic_cast(signed int, rows) + overlay->Top);
             }
         }
     }

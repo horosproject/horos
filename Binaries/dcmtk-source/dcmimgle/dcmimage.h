@@ -1347,8 +1347,8 @@ class DicomImage
      *
      ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
-    DicomImage *createScaledImage(const signed long left_pos,
-                                  const signed long top_pos,
+    DicomImage *createScaledImage(const signed int left_pos,
+                                  const signed int top_pos,
                                   unsigned int clip_width,
                                   unsigned int clip_height,
                                   unsigned int scale_width = 0,
@@ -1377,8 +1377,8 @@ class DicomImage
      *
      ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
-    DicomImage *createScaledImage(const signed long left_pos,
-                                  const signed long top_pos,
+    DicomImage *createScaledImage(const signed int left_pos,
+                                  const signed int top_pos,
                                   unsigned int width,
                                   unsigned int height,
                                   const double xfactor,
@@ -1399,8 +1399,8 @@ class DicomImage
      *
      ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
-    DicomImage *createClippedImage(const signed long left_pos,
-                                   const signed long top_pos,
+    DicomImage *createClippedImage(const signed int left_pos,
+                                   const signed int top_pos,
                                    unsigned int width = 0,
                                    unsigned int height = 0,
                                    const Uint16 pvalue = 0) const;

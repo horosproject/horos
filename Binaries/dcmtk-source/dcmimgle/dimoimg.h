@@ -840,8 +840,8 @@ class DiMonoImage
      *  @param  pvalue        P-value used for the border outside the image (0..65535)
      */
     DiMonoImage(const DiMonoImage *image,
-                const signed long left_pos,
-                const signed long top_pos,
+                const signed int left_pos,
+                const signed int top_pos,
                 const Uint16 src_cols,
                 const Uint16 src_rows,
                 const Uint16 dest_cols,

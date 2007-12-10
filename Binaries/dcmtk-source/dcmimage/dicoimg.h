@@ -172,8 +172,8 @@ class DiColorImage
      *
      ** @return pointer to new DiImage object (NULL if an error occurred)
      */
-    DiImage *createScale(const signed long left_pos,
-                         const signed long top_pos,
+    DiImage *createScale(const signed int left_pos,
+                         const signed int top_pos,
                          const unsigned int src_cols,
                          const unsigned int src_rows,
                          const unsigned int dest_cols,
@@ -374,8 +374,8 @@ class DiColorImage
      *                        automatically)
      */
     DiColorImage(const DiColorImage *image,
-                 const signed long left_pos,
-                 const signed long top_pos,
+                 const signed int left_pos,
+                 const signed int top_pos,
                  const Uint16 src_cols,
                  const Uint16 src_rows,
                  const Uint16 dest_cols,

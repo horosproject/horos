@@ -1277,7 +1277,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
  *      Provides a storage filename
  *********************************/
 
-static long seed = 0;
+static int seed = 0;
 
 OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
                 const char      *SOPClassUID,

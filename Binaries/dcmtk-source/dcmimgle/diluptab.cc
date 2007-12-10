@@ -94,7 +94,7 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
                              const DcmUnsignedShort &descriptor,
                              const DcmLongString *explanation,
                              const OFBool ignoreDepth,
-                             const signed long first,
+                             const signed int first,
                              EI_Status *status)
   : DiBaseLUT(),
     OriginalBitsAllocated(16),

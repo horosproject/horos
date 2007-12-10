@@ -49,7 +49,7 @@
  *--------------------*/
 
 /// signed integer value
-typedef signed long OFCmdSignedInt;
+typedef signed int OFCmdSignedInt;
 /// unsigned integer value
 typedef unsigned int OFCmdUnsignedInt;
 /// floating point value

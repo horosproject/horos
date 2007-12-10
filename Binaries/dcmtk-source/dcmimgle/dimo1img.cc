@@ -58,8 +58,8 @@ DiMono1Image::DiMono1Image(const DiMonoImage *image,
 
 
 DiMono1Image::DiMono1Image(const DiMonoImage *image,
-                           const signed long left_pos,
-                           const signed long top_pos,
+                           const signed int left_pos,
+                           const signed int top_pos,
                            const Uint16 src_cols,
                            const Uint16 src_rows,
                            const Uint16 dest_cols,
@@ -125,8 +125,8 @@ DiImage *DiMono1Image::createImage(const unsigned int fstart,
 }
 
 
-DiImage *DiMono1Image::createScale(const signed long left_pos,
-                                   const signed long top_pos,
+DiImage *DiMono1Image::createScale(const signed int left_pos,
+                                   const signed int top_pos,
                                    const unsigned int src_cols,
                                    const unsigned int src_rows,
                                    const unsigned int dest_cols,

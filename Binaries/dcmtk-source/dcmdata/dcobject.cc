@@ -208,7 +208,7 @@ void DcmObject::printInfoLineStart(ostream &out,
         /* print tag name */
         out << tag->getTagName() << ' ';
         /* add padding spaces if required */
-        const signed long padLength = 35 - strlen(tag->getTagName()) - 2 * level;
+        const signed int padLength = 35 - strlen(tag->getTagName()) - 2 * level;
         if (padLength > 0)
             out << OFString(OFstatic_cast(size_t, padLength), ' ');
     } else {

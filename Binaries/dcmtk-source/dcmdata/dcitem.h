@@ -567,7 +567,7 @@ class DcmItem
      */
     OFCondition findAndGetSequenceItem(const DcmTagKey &seqTagKey,
                                        DcmItem *&item,
-                                       const signed long itemNum = 0);
+                                       const signed int itemNum = 0);
 
 
     /* --- findOrCreate functions: find an element or create a new one --- */
@@ -586,7 +586,7 @@ class DcmItem
      */
     OFCondition findOrCreateSequenceItem(const DcmTag &seqTag,
                                          DcmItem *&item,
-                                         const signed long itemNum = 0);
+                                         const signed int itemNum = 0);
 
 
     /* --- findAndXXX functions: find an element and do something with it --- */

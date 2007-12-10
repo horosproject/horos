@@ -412,8 +412,8 @@ OFCondition DVPresentationState::getPrintBitmap(void *bitmap,
         }
 
         /* clip to displayed area if necessary */
-        if ((renderedImageLeft != 1) || (renderedImageRight != (signed long)renderedImageWidth) ||
-            (renderedImageTop != 1) || (renderedImageBottom != (signed long)renderedImageHeight))
+        if ((renderedImageLeft != 1) || (renderedImageRight != (signed int)renderedImageWidth) ||
+            (renderedImageTop != 1) || (renderedImageBottom != (signed int)renderedImageHeight))
         {
           DicomImage *img = currentImage->createMonoOutputImage(currentImageSelectedFrame-1, 12 /*bits*/);
           if (img == NULL)
@@ -424,8 +424,8 @@ OFCondition DVPresentationState::getPrintBitmap(void *bitmap,
             delete img;
         }
         /* scale up to minimum size or down to maximum size if necessary */
-        if (((signed long)width != renderedImageRight - renderedImageLeft + 1) ||
-           ((signed long)height != renderedImageBottom - renderedImageTop + 1))
+        if (((signed int)width != renderedImageRight - renderedImageLeft + 1) ||
+           ((signed int)height != renderedImageBottom - renderedImageTop + 1))
         {
           DicomImage *img = image;
           image = img->createScaledImage(width, height, 0 /*no interpolation*/, 0 /*ignore aspect ratio*/);
@@ -1104,7 +1104,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
   OFCondition status = EC_IllegalCall;
   const unsigned int numberOfBits = 16;
   unsigned int numberOfEntries = 0;
-  signed long firstMapped = 0;
+  signed int firstMapped = 0;
   if (haveActiveVOIWindow())    // use active VOI window to specify the LUT descriptor
   {
     double ww, wc;
@@ -1113,7 +1113,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
       if (ww <= 65536)
       {
         numberOfEntries = (unsigned int)ww;
-        firstMapped = (signed long)(wc - ww / 2);
+        firstMapped = (signed int)(wc - ww / 2);
       }
     }
   }
@@ -1125,7 +1125,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
       if (max - min < 65536.0)
       {
         numberOfEntries = (unsigned int)(max - min + 1.0);
-        firstMapped = (signed long)min;
+        firstMapped = (signed int)min;
       }
     }
   }
@@ -1712,28 +1712,28 @@ void DVPresentationState::renderPixelData(OFBool display)
       break;
     case DVPSR_90_deg:
       renderedImageTop = tlhcX;
-      renderedImageLeft = (signed long)currentImageHeight - brhcY + 1;
+      renderedImageLeft = (signed int)currentImageHeight - brhcY + 1;
       renderedImageBottom = brhcX;
-      renderedImageRight = (signed long)currentImageHeight - tlhcY + 1;
+      renderedImageRight = (signed int)currentImageHeight - tlhcY + 1;
       break;
     case DVPSR_180_deg:
-      renderedImageTop = (signed long)currentImageHeight - brhcY + 1;
-      renderedImageLeft = (signed long)currentImageWidth - brhcX + 1;
-      renderedImageBottom = (signed long)currentImageHeight - tlhcY + 1;
-      renderedImageRight = (signed long)currentImageWidth - tlhcX + 1;
+      renderedImageTop = (signed int)currentImageHeight - brhcY + 1;
+      renderedImageLeft = (signed int)currentImageWidth - brhcX + 1;
+      renderedImageBottom = (signed int)currentImageHeight - tlhcY + 1;
+      renderedImageRight = (signed int)currentImageWidth - tlhcX + 1;
       break;
     case DVPSR_270_deg:
-      renderedImageTop = (signed long)currentImageWidth - brhcX + 1;
+      renderedImageTop = (signed int)currentImageWidth - brhcX + 1;
       renderedImageLeft = tlhcY;
-      renderedImageBottom = (signed long)currentImageWidth - tlhcX + 1;
+      renderedImageBottom = (signed int)currentImageWidth - tlhcX + 1;
       renderedImageRight = brhcY;
       break;
   }
   if (pstateFlip)
   {
-    signed long tmp = renderedImageLeft;
-    renderedImageLeft = (signed long)renderedImageWidth - renderedImageRight + 1;
-    renderedImageRight = (signed long)renderedImageWidth - tmp + 1;
+    signed int tmp = renderedImageLeft;
+    renderedImageLeft = (signed int)renderedImageWidth - renderedImageRight + 1;
+    renderedImageRight = (signed int)renderedImageWidth - tmp + 1;
   }
 
   // we can always reach the final rotation/flip status with

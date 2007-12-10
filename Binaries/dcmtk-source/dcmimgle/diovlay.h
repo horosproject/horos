@@ -83,8 +83,8 @@ class DiOverlay
      *  @param  yfactor   scaling factor in y-direction
      */
     DiOverlay(const DiOverlay *overlay,
-              const signed long left_pos,
-              const signed long top_pos,
+              const signed int left_pos,
+              const signed int top_pos,
               const double xfactor,
               const double yfactor);
 
@@ -249,7 +249,7 @@ class DiOverlay
      *
      ** @return x-coordinate of overlay origin
      */
-    inline signed long getLeft() const
+    inline signed int getLeft() const
     {
         return Left;
     }
@@ -259,7 +259,7 @@ class DiOverlay
      *
      ** @return y-coordinate of overlay origin
      */
-    inline signed long getTop() const
+    inline signed int getTop() const
     {
         return Top;
     }
@@ -459,9 +459,9 @@ class DiOverlay
  private:
 
     /// left offset to all planes
-    signed long Left;
+    signed int Left;
     /// top offset to all planes
-    signed long Top;
+    signed int Top;
     /// maximum width of all planes
     Uint16 Width;
     /// maximum height of all planes

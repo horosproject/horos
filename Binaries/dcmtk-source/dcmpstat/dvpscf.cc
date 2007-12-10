@@ -428,7 +428,7 @@ unsigned int DVConfiguration::getTargetMaxPDU(const char *targetID)
 Sint32 DVConfiguration::getTargetTimeout(const char *targetID)
 {
   const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_TIMEOUT);
-  signed long result = -1; // default is -1
+  signed int result = -1; // default is -1
   if (c)
   {
     if (1 != sscanf(c, "%ld", &result)) result=0;
@@ -539,7 +539,7 @@ unsigned int DVConfiguration::getQueryRetrieveMaxPDU()
 Sint32 DVConfiguration::getQueryRetrieveTimeout()
 {
   const char *c = getConfigEntry(L2_GENERAL, L1_QUERY_RETRIEVE, L0_TIMEOUT);
-  signed long result = -1; // default is -1
+  signed int result = -1; // default is -1
   if (c)
   {
     if (1 != sscanf(c, "%ld", &result)) result=0;

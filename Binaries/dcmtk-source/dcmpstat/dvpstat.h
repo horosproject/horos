@@ -1234,18 +1234,18 @@ private:
    unsigned int renderedImageHeight;
    /** contains the top hand corner of the attached image after pixel data have been rendered.
     */
-   signed long renderedImageTop;
+   signed int renderedImageTop;
    /** contains the left hand corner of the attached image after pixel data have been rendered.
     *  (the following equation is always true: renderedImageTop <= renderedImageBottom)
     */
-   signed long renderedImageLeft;
+   signed int renderedImageLeft;
    /** contains the bottom hand corner of the attached image after pixel data have been rendered.
     *  (the following equation is always true: renderedImageLeft <= renderedImageRight)
     */
-   signed long renderedImageBottom;
+   signed int renderedImageBottom;
    /** contains the right hand corner of the attached image after pixel data have been rendered.
     */
-   signed long renderedImageRight;
+   signed int renderedImageRight;
    /** contains the SOP Class UID of the attached image
     */
    char *currentImageSOPClassUID;

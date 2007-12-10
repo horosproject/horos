@@ -247,8 +247,8 @@ class DiOverlayPlane
      */
     void setFlipping(const int horz,
                      const int vert,
-                     const signed long columns,
-                     const signed long rows);
+                     const signed int columns,
+                     const signed int rows);
 
     /** set rotation
      *
@@ -259,8 +259,8 @@ class DiOverlayPlane
      *  @param  rows      height of surrounding image (already rotated)
      */
     void setRotation(const int degree,
-                     const signed long left_pos,
-                     const signed long top_pos,
+                     const signed int left_pos,
+                     const signed int top_pos,
                      const Uint16 columns,
                      const Uint16 rows);
 

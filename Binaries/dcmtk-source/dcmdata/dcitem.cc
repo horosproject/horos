@@ -2486,7 +2486,7 @@ OFCondition DcmItem::findAndGetSequence(const DcmTagKey &seqTagKey,
 
 OFCondition DcmItem::findAndGetSequenceItem(const DcmTagKey &seqTagKey,
                                             DcmItem *&item,
-                                            const signed long itemNum)
+                                            const signed int itemNum)
 {
     DcmStack stack;
     /* find sequence */
@@ -2536,7 +2536,7 @@ OFCondition DcmItem::findAndGetSequenceItem(const DcmTagKey &seqTagKey,
 
 OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
                                               DcmItem *&item,
-                                              const signed long itemNum)
+                                              const signed int itemNum)
 {
     DcmStack stack;
     /* find sequence */
@@ -2574,7 +2574,7 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
         {
             const unsigned int count = seq->card();
             /* existing item? */
-            if ((count > 0) && (itemNum >= -1) && (itemNum < OFstatic_cast(signed long, count)))
+            if ((count > 0) && (itemNum >= -1) && (itemNum < OFstatic_cast(signed int, count)))
             {
                 if (itemNum == -1)
                 {
@@ -2588,7 +2588,7 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
             } else {
                 unsigned int i = 0;
                 /* create empty trailing items if required */
-                const unsigned int itemCount = (itemNum > OFstatic_cast(signed long, count)) ? (itemNum - count + 1) : 1;
+                const unsigned int itemCount = (itemNum > OFstatic_cast(signed int, count)) ? (itemNum - count + 1) : 1;
                 while ((i < itemCount) && (status.good()))
                 {
                     item = new DcmItem();

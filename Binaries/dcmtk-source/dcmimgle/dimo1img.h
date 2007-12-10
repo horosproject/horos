@@ -130,8 +130,8 @@ class DiMono1Image
      *
      ** @return pointer to new DiImage object (NULL if an error occurred)
      */
-    DiImage *createScale(const signed long left_pos,
-                         const signed long top_pos,
+    DiImage *createScale(const signed int left_pos,
+                         const signed int top_pos,
                          const unsigned int clip_width,
                          const unsigned int clip_height,
                          const unsigned int scale_width,
@@ -202,8 +202,8 @@ class DiMono1Image
      *  @param  pvalue       P-value used for the border outside the image (0..65535)
      */
     DiMono1Image(const DiMonoImage *image,
-                 const signed long left_pos,
-                 const signed long top_pos,
+                 const signed int left_pos,
+                 const signed int top_pos,
                  const Uint16 src_cols,
                  const Uint16 src_rows,
                  const Uint16 dest_cols,

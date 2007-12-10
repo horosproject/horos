@@ -345,8 +345,8 @@ class DiImage
      *
      ** @return pointer to new DiImage object (NULL if an error occurred)
      */
-    virtual DiImage *createScale(const signed long left_pos,
-                                 const signed long top_pos,
+    virtual DiImage *createScale(const signed int left_pos,
+                                 const signed int top_pos,
                                  const unsigned int clip_width,
                                  const unsigned int clip_height,
                                  const unsigned int scale_width,

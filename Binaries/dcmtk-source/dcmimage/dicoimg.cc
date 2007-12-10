@@ -102,8 +102,8 @@ DiColorImage::DiColorImage(const DiColorImage *image,
 
 
 DiColorImage::DiColorImage(const DiColorImage *image,
-                           const signed long left_pos,
-                           const signed long top_pos,
+                           const signed int left_pos,
+                           const signed int top_pos,
                            const Uint16 src_cols,
                            const Uint16 src_rows,
                            const Uint16 dest_cols,
@@ -396,8 +396,8 @@ DiImage *DiColorImage::createImage(const unsigned int fstart,
 }
 
 
-DiImage *DiColorImage::createScale(const signed long left_pos,
-                                   const signed long top_pos,
+DiImage *DiColorImage::createScale(const signed int left_pos,
+                                   const signed int top_pos,
                                    const unsigned int src_cols,
                                    const unsigned int src_rows,
                                    const unsigned int dest_cols,

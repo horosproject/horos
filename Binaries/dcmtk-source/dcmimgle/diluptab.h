@@ -114,7 +114,7 @@ class DiLookupTable
                   const DcmUnsignedShort &descriptor,
                   const DcmLongString *explanation = NULL,
                   const OFBool ignoreDepth = OFFalse,
-                  const signed long first = -1,
+                  const signed int first = -1,
                   EI_Status *status = NULL);
 
     /** constructor

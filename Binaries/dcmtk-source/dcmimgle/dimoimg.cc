@@ -314,8 +314,8 @@ DiMonoImage::DiMonoImage(const DiColorImage *image,
  */
 
 DiMonoImage::DiMonoImage(const DiMonoImage *image,
-                         const signed long left_pos,
-                         const signed long top_pos,
+                         const signed int left_pos,
+                         const signed int top_pos,
                          const Uint16 src_cols,
                          const Uint16 src_rows,
                          const Uint16 dest_cols,
@@ -1649,7 +1649,7 @@ unsigned int DiMonoImage::createDIB(void *&data,
         getOutputData(frame, 8);                            // create output data with 8 bit depth
         if ((OutputData != NULL) && (OutputData->getData() != NULL))
         {
-            const signed long nextRow = (upsideDown) ? -2 * OFstatic_cast(signed long, Columns) : 0;
+            const signed int nextRow = (upsideDown) ? -2 * OFstatic_cast(signed int, Columns) : 0;
             register const Uint8 *p = OFstatic_cast(const Uint8 *, OutputData->getData()) + ((upsideDown) ?
                 OFstatic_cast(unsigned int, Rows - 1) * OFstatic_cast(unsigned int, Columns) : 0);
             if (bits == 8)                                  // -- for idx color model (byte)

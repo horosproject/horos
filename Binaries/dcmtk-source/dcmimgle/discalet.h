@@ -120,8 +120,8 @@ class DiScaleTemplate
     DiScaleTemplate(const int planes,
                     const Uint16 columns,           /* resolution of source image */
                     const Uint16 rows,
-                    const signed long left_pos,     /* origin of clipping area */
-                    const signed long top_pos,
+                    const signed int left_pos,     /* origin of clipping area */
+                    const signed int top_pos,
                     const Uint16 src_cols,          /* extension of clipping area */
                     const Uint16 src_rows,
                     const Uint16 dest_cols,         /* extension of destination image */
@@ -191,8 +191,8 @@ class DiScaleTemplate
                 ofConsole.unlockCout();
             }
 #endif
-            if ((Left + OFstatic_cast(signed long, this->Src_X) <= 0) || (Top + OFstatic_cast(signed long, this->Src_Y) <= 0) ||
-                (Left >= OFstatic_cast(signed long, Columns)) || (Top >= OFstatic_cast(signed long, Rows)))
+            if ((Left + OFstatic_cast(signed int, this->Src_X) <= 0) || (Top + OFstatic_cast(signed int, this->Src_Y) <= 0) ||
+                (Left >= OFstatic_cast(signed int, Columns)) || (Top >= OFstatic_cast(signed int, Rows)))
             {                                                                   // no image to be displayed
 #ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
@@ -231,9 +231,9 @@ class DiScaleTemplate
  protected:
 
     /// left coordinate of clipping area
-    const signed long Left;
+    const signed int Left;
     /// top coordinate of clipping area
-    const signed long Top;
+    const signed int Top;
     /// width of source image
     const Uint16 Columns;
     /// height of source image
@@ -546,10 +546,10 @@ class DiScaleTemplate
         const unsigned int sxscale = OFstatic_cast(unsigned int, (OFstatic_cast(double, this->Dest_X) / OFstatic_cast(double, this->Src_X)) * SCALE_FACTOR);
         const unsigned int syscale = OFstatic_cast(unsigned int, (OFstatic_cast(double, this->Dest_Y) / OFstatic_cast(double, this->Src_Y)) * SCALE_FACTOR);
         DiPixelRepresentationTemplate<T> rep;
-        const signed long maxvalue = DicomImageClass::maxval(this->Bits - rep.isSigned());
+        const signed int maxvalue = DicomImageClass::maxval(this->Bits - rep.isSigned());
 
         T *xtemp = new T[this->Src_X];
-        signed long *xvalue = new signed long[this->Src_X];
+        signed int *xvalue = new signed int[this->Src_X];
 
         if ((xtemp == NULL) || (xvalue == NULL))
         {
@@ -597,7 +597,7 @@ class DiScaleTemplate
                                     ++ysrc;
                                 }
                                 for (x = 0, p = sp; x < this->Src_X; ++x)
-                                    xvalue[x] += yleft * OFstatic_cast(signed long, *(p++));
+                                    xvalue[x] += yleft * OFstatic_cast(signed int, *(p++));
                                 yfill -= yleft;
                                 yleft = syscale;
                                 yneed = 1;
@@ -611,7 +611,7 @@ class DiScaleTemplate
                             }
                             for (x = 0, p = sp, q = xtemp; x < this->Src_X; ++x)
                             {
-                                register signed long v = xvalue[x] + yfill * OFstatic_cast(signed long, *(p++));
+                                register signed int v = xvalue[x] + yfill * OFstatic_cast(signed int, *(p++));
                                 v /= SCALE_FACTOR;
                                 *(q++) = OFstatic_cast(T, (v > maxvalue) ? maxvalue : v);
                                 xvalue[x] = HALFSCALE_FACTOR;
@@ -632,7 +632,7 @@ class DiScaleTemplate
                         }
                         else
                         {
-                            register signed long v = HALFSCALE_FACTOR;
+                            register signed int v = HALFSCALE_FACTOR;
                             register unsigned int xfill = SCALE_FACTOR;
                             register unsigned int xleft;
                             register int xneed = 0;
@@ -647,7 +647,7 @@ class DiScaleTemplate
                                         ++q;
                                         v = HALFSCALE_FACTOR;
                                     }
-                                    v += xfill * OFstatic_cast(signed long, *p);
+                                    v += xfill * OFstatic_cast(signed int, *p);
                                     v /= SCALE_FACTOR;
                                     *q = OFstatic_cast(T, (v > maxvalue) ? maxvalue : v);
                                     xleft -= xfill;
@@ -662,12 +662,12 @@ class DiScaleTemplate
                                         v = HALFSCALE_FACTOR;
                                         xneed = 0;
                                     }
-                                    v += xleft * OFstatic_cast(signed long, *p);
+                                    v += xleft * OFstatic_cast(signed int, *p);
                                     xfill -= xleft;
                                 }
                             }
                             if (xfill > 0)
-                                v += xfill * OFstatic_cast(signed long, *(--p));
+                                v += xfill * OFstatic_cast(signed int, *(--p));
                             if (!xneed)
                             {
                                 v /= SCALE_FACTOR;

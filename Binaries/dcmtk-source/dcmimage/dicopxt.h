@@ -239,7 +239,7 @@ class DiColorPixelTemplate
             const unsigned int count = OFstatic_cast(unsigned int, width) * OFstatic_cast(unsigned int, height);
             const unsigned int start = count * frame + ((upsideDown) ?
                 OFstatic_cast(unsigned int, height - 1) * OFstatic_cast(unsigned int, width) : 0);
-            const signed long nextRow = (upsideDown) ? -2 * OFstatic_cast(signed long, width) : 0;
+            const signed int nextRow = (upsideDown) ? -2 * OFstatic_cast(signed int, width) : 0;
             register const T *r = Data[0] + start;
             register const T *g = Data[1] + start;
             register const T *b = Data[2] + start;

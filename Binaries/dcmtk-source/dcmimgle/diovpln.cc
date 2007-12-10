@@ -545,25 +545,25 @@ void DiOverlayPlane::setScaling(const double xfactor,
 
 void DiOverlayPlane::setFlipping(const int horz,
                                  const int vert,
-                                 const signed long columns,
-                                 const signed long rows)
+                                 const signed int columns,
+                                 const signed int rows)
 {
     if (horz)
     {
         Left = OFstatic_cast(Sint16, columns - Width - Left);
-        StartLeft = OFstatic_cast(Uint16, OFstatic_cast(signed long, Columns) - Width - StartLeft);
+        StartLeft = OFstatic_cast(Uint16, OFstatic_cast(signed int, Columns) - Width - StartLeft);
     }
     if (vert)
     {
         Top = OFstatic_cast(Sint16, rows - Height - Top);
-        StartTop = OFstatic_cast(Uint16, OFstatic_cast(signed long, Rows) - Height - StartTop);
+        StartTop = OFstatic_cast(Uint16, OFstatic_cast(signed int, Rows) - Height - StartTop);
     }
 }
 
 
 void DiOverlayPlane::setRotation(const int degree,
-                                 const signed long left_pos,
-                                 const signed long top_pos,
+                                 const signed int left_pos,
+                                 const signed int top_pos,
                                  const Uint16 columns,
                                  const Uint16 rows)
 {
@@ -583,8 +583,8 @@ void DiOverlayPlane::setRotation(const int degree,
         {
             Sint16 ss = Left;
             us = StartLeft;
-            Left = OFstatic_cast(Sint16, OFstatic_cast(signed long, columns) - Width - Top + top_pos);
-            StartLeft = OFstatic_cast(Uint16, OFstatic_cast(signed long, Columns) - Width - StartTop);
+            Left = OFstatic_cast(Sint16, OFstatic_cast(signed int, columns) - Width - Top + top_pos);
+            StartLeft = OFstatic_cast(Uint16, OFstatic_cast(signed int, Columns) - Width - StartTop);
             Top = OFstatic_cast(Sint16, ss - left_pos);
             StartTop = us;
         } else {                                // rotate left
@@ -592,8 +592,8 @@ void DiOverlayPlane::setRotation(const int degree,
             us = StartLeft;
             Left = OFstatic_cast(Sint16, Top - top_pos);
             StartLeft = StartTop;
-            Top = OFstatic_cast(Sint16, OFstatic_cast(signed long, rows) - Height - ss + left_pos);
-            StartTop = OFstatic_cast(Uint16, OFstatic_cast(signed long, Rows) - Height - us);
+            Top = OFstatic_cast(Sint16, OFstatic_cast(signed int, rows) - Height - ss + left_pos);
+            StartTop = OFstatic_cast(Uint16, OFstatic_cast(signed int, Rows) - Height - us);
         }
     }
 }
