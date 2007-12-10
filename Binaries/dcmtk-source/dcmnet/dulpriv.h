@@ -81,25 +81,25 @@ OFCondition
 constructAssociateRejectPDU(unsigned char result,
 			    unsigned char source, unsigned char reason,
 			    DUL_REJECTRELEASEABORTPDU * pdu);
-OFCondition constructReleaseRQPDU(DUL_REJECTRELEASEABORTPDU * pdu, unsigned long mode);
+OFCondition constructReleaseRQPDU(DUL_REJECTRELEASEABORTPDU * pdu, unsigned int mode);
 OFCondition constructReleaseRPPDU(DUL_REJECTRELEASEABORTPDU * pdu);
 OFCondition
 constructAbortPDU(unsigned char src, unsigned char reason,
-		  DUL_REJECTRELEASEABORTPDU * pdu, unsigned long mode);
+		  DUL_REJECTRELEASEABORTPDU * pdu, unsigned int mode);
 OFCondition
-constructDataPDU(void *buf, unsigned long length, DUL_DATAPDV type,
+constructDataPDU(void *buf, unsigned int length, DUL_DATAPDV type,
        DUL_PRESENTATIONCONTEXTID ctxID, OFBool last, DUL_DATAPDU * pdu);
 OFCondition
 streamAssociatePDU(PRV_ASSOCIATEPDU * assoc, unsigned char *b,
-		   unsigned long maxLength, unsigned long *rtnLen);
+		   unsigned int maxLength, unsigned int *rtnLen);
 OFCondition
 streamRejectReleaseAbortPDU(DUL_REJECTRELEASEABORTPDU * pdu,
-	  unsigned char *b, unsigned long maxLength, unsigned long *rtnLen);
+	  unsigned char *b, unsigned int maxLength, unsigned int *rtnLen);
 OFCondition
 streamDataPDUHead(DUL_DATAPDU * pdu, unsigned char *buf,
-		  unsigned long maxLength, unsigned long *rtnLen);
+		  unsigned int maxLength, unsigned int *rtnLen);
 OFCondition
-parseAssociate(unsigned char *buf, unsigned long len,
+parseAssociate(unsigned char *buf, unsigned int len,
 	       PRV_ASSOCIATEPDU * pdu);
 OFCondition
 PRV_NextPDUType(PRIVATE_ASSOCIATIONKEY ** association,

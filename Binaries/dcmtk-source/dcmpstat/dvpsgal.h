@@ -125,7 +125,7 @@ public:
    *  @param frame number of the current frame
    *  @return number of text objects
    */   
-  size_t getNumberOfTextObjects(const char *layer, const char *instanceUID, unsigned long frame);
+  size_t getNumberOfTextObjects(const char *layer, const char *instanceUID, unsigned int frame);
 
   /** gets the text object (applicable to the current image and frame) 
    *  with the given index on the given layer. 
@@ -136,7 +136,7 @@ public:
    *  @param idx index of the text object, must be < getNumberOfTextObjects(layer)
    *  @return a pointer to the text object
    */   
-  DVPSTextObject *getTextObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx);
+  DVPSTextObject *getTextObject(const char *layer, const char *instanceUID, unsigned int frame, size_t idx);
 
   /** creates a new text object on the given layer. 
    *  Returns a pointer to the new text object. 
@@ -157,7 +157,7 @@ public:
     const char *layer, 
     const char *sopclassUID, 
     const char *instanceUID, 
-    unsigned long frame, 
+    unsigned int frame, 
     DVPSObjectApplicability applicability, 
     DVPSTextObject *text=NULL);
 
@@ -169,7 +169,7 @@ public:
    *  @param idx index of the text object, must be < getNumberOfTextObjects(layer)
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  OFCondition removeTextObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx);
+  OFCondition removeTextObject(const char *layer, const char *instanceUID, unsigned int frame, size_t idx);
 
   /** moves the text object (applicable to the current image and frame) with the given index 
    *  on the given layer to a different layer. 
@@ -186,7 +186,7 @@ public:
     const char *old_layer, 
     const char *sopclassUID, 
     const char *instanceUID,
-    unsigned long frame,
+    unsigned int frame,
     size_t idx,
     DVPSObjectApplicability applicability, 
     const char *new_layer);
@@ -198,7 +198,7 @@ public:
    *  @param frame number of the current frame
    *  @return number of graphic objects
    */   
-  size_t getNumberOfGraphicObjects(const char *layer, const char *instanceUID, unsigned long frame);
+  size_t getNumberOfGraphicObjects(const char *layer, const char *instanceUID, unsigned int frame);
 
   /** gets the graphic object with the given index
    *  on the given layer. If the graphic object or the graphic layer does
@@ -209,7 +209,7 @@ public:
    *  @param idx index of the graphic object, must be < getNumberOfGraphicObjects(layer)
    *  @return a pointer to the graphic object
    */   
-  DVPSGraphicObject *getGraphicObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx);
+  DVPSGraphicObject *getGraphicObject(const char *layer, const char *instanceUID, unsigned int frame, size_t idx);
 
   /** creates a new graphic object on the given layer. 
    *  Returns a pointer to the new graphic object. If the graphic layer
@@ -229,7 +229,7 @@ public:
     const char *layer, 
     const char *sopclassUID, 
     const char *instanceUID, 
-    unsigned long frame, 
+    unsigned int frame, 
     DVPSObjectApplicability applicability, 
     DVPSGraphicObject *graphic=NULL);
 
@@ -241,7 +241,7 @@ public:
    *  @param idx index of the graphic object, must be < getNumberOfGraphicObjects(layer)
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  OFCondition removeGraphicObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx);
+  OFCondition removeGraphicObject(const char *layer, const char *instanceUID, unsigned int frame, size_t idx);
 
   /** moves the graphic object with the given index on the given
    *  layer to a different layer. 
@@ -258,7 +258,7 @@ public:
     const char *old_layer, 
     const char *sopclassUID, 
     const char *instanceUID,
-    unsigned long frame,
+    unsigned int frame,
     size_t idx,
     DVPSObjectApplicability applicability, 
     const char *new_layer);

@@ -198,7 +198,7 @@ DIMSE_sendEchoResponse(T_ASC_Association * assoc,
 **
 ** Revision 1.2  1996/04/25 16:11:14  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
-** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
+** of DIC_UL with unsigned int (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due
 ** to MIPS/Ultrix).
 **

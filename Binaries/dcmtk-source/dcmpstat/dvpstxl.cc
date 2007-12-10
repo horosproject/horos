@@ -88,7 +88,7 @@ OFCondition DVPSTextObject_PList::read(DcmItem &dset)
     dseq=(DcmSequenceOfItems *)stack.top();
     if (dseq)
     {
-      unsigned long numItems = dseq->card();
+      unsigned int numItems = dseq->card();
       for (unsigned int i=0; i<numItems; i++)
       {
         ditem = dseq->getItem(i);

@@ -99,7 +99,7 @@
 
 /* these types are for backwards compatibility */
 typedef Uint16	U_SHORT;	/* normal unsigned short*/
-typedef Uint32	U_LONG;		/* normal unsigned long */
+typedef Uint32	U_LONG;		/* normal unsigned int */
 typedef Uint32	MASK_32;	/* For bit masks	*/
 
 

@@ -45,7 +45,7 @@ static int sumcompare(const void *x1, const void *x2)
 END_EXTERN_C
 
 
-void DcmQuantPixelBoxArray::sort(unsigned long boxes)
+void DcmQuantPixelBoxArray::sort(unsigned int boxes)
 {
 #ifdef DEBUG
   assert(boxes <= length);
@@ -54,18 +54,18 @@ void DcmQuantPixelBoxArray::sort(unsigned long boxes)
 }
 
 
-DcmQuantPixelBoxArray::DcmQuantPixelBoxArray(unsigned long entries)
+DcmQuantPixelBoxArray::DcmQuantPixelBoxArray(unsigned int entries)
 : array(NULL)
 , length(entries)
 {
   array = new DcmQuantPixelBoxPointer[entries];
-  for (unsigned long i=0; i<entries; i++) array[i] = new DcmQuantPixelBox();
+  for (unsigned int i=0; i<entries; i++) array[i] = new DcmQuantPixelBox();
 }
 
 
 DcmQuantPixelBoxArray::~DcmQuantPixelBoxArray()
 {
-  for (unsigned long i=0; i<length; i++) delete array[i];
+  for (unsigned int i=0; i<length; i++) delete array[i];
   delete[] array;
 }
 

@@ -81,7 +81,7 @@ OFCondition DcmQuant::createPaletteColorImage(
     result = chv.computeHistogram(sourceImage, DcmQuantMaxColors);
     if (result.bad()) return result;
 
-    unsigned long maxval = chv.getMaxVal();
+    unsigned int maxval = chv.getMaxVal();
     if (verbose)
     {
       ofConsole.lockCerr() << "image histogram: found " << chv.getColors() << " colors (at maxval=" << maxval << ")" << endl;
@@ -89,9 +89,9 @@ OFCondition DcmQuant::createPaletteColorImage(
     }
 
     // apply median-cut to histogram, making the new colormap.
-    unsigned long cols = sourceImage.getWidth();
-    unsigned long rows = sourceImage.getHeight();
-    unsigned long frames = sourceImage.getFrameCount();
+    unsigned int cols = sourceImage.getWidth();
+    unsigned int rows = sourceImage.getHeight();
+    unsigned int frames = sourceImage.getFrameCount();
 
     if (verbose)
     {
@@ -124,7 +124,7 @@ OFCondition DcmQuant::createPaletteColorImage(
     register OFBool isByteData = (numberOfColors <= 256);
 
     // compute size requirement for palette color pixel data in bytes
-    unsigned long totalSize = cols * rows * frames;
+    unsigned int totalSize = cols * rows * frames;
     if (! isByteData) totalSize *= 2;
     if (totalSize & 1) totalSize++;
 
@@ -141,7 +141,7 @@ OFCondition DcmQuant::createPaletteColorImage(
          result = target.insert(pixelData, OFTrue);
          if (result.good())
          {
-            for (unsigned long ff=0; ff<frames; ff++)
+            for (unsigned int ff=0; ff<frames; ff++)
             {
               if (isByteData)
               {
@@ -188,7 +188,7 @@ OFCondition DcmQuant::createPaletteColorImage(
     {
       bitsAllocated = 16;
       bitsStored = 8;
-      while ((1UL << bitsStored) < OFstatic_cast(unsigned long, numberOfColors)) bitsStored++;
+      while ((1UL << bitsStored) < OFstatic_cast(unsigned int, numberOfColors)) bitsStored++;
       highBit = bitsStored - 1;
     }
     if (result.good()) result = target.putAndInsertUint16(DCM_BitsAllocated, bitsAllocated);

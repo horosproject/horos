@@ -144,7 +144,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         /* final validity checks */
         if (Valid)
         {
-            unsigned long length = docu->getValue(tag, Data) * 2 /* bytes */;
+            unsigned int length = docu->getValue(tag, Data) * 2 /* bytes */;
             if (length == 0)
             {
                 ImageFrameOrigin = 0;                               // see supplement 4
@@ -175,8 +175,8 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
                 BitPosition = BitsAllocated - 1;
             }
             /* expected length of overlay data */
-            const unsigned long expLen = (OFstatic_cast(unsigned long, NumberOfFrames) * OFstatic_cast(unsigned long, Rows) *
-                                          OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, BitsAllocated) + 7) / 8;
+            const unsigned int expLen = (OFstatic_cast(unsigned int, NumberOfFrames) * OFstatic_cast(unsigned int, Rows) *
+                                          OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, BitsAllocated) + 7) / 8;
             if ((length == 0) || (length < expLen))
             {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
@@ -235,9 +235,9 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
     DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &description), Description);
     if ((Columns > 0) && (Rows > 0))
     {
-        const unsigned long length = DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &data), Data) * 2 /* Bytes */;
+        const unsigned int length = DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &data), Data) * 2 /* Bytes */;
         /* expected length of overlay data */
-        const unsigned long expLen = (OFstatic_cast(unsigned long, Rows) * OFstatic_cast(unsigned long, Columns) + 7) / 8;
+        const unsigned int expLen = (OFstatic_cast(unsigned int, Rows) * OFstatic_cast(unsigned int, Columns) + 7) / 8;
         if ((length == 0) || (length < expLen))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
@@ -299,8 +299,8 @@ DiOverlayPlane::DiOverlayPlane(DiOverlayPlane *plane,
         register Uint16 *q = temp;
         register const Uint16 mask = 1 << bit;
         const Uint16 skip_x = width - plane->Columns;
-        const unsigned long skip_f = OFstatic_cast(unsigned long, height - plane->Rows) * OFstatic_cast(unsigned long, width);
-        for (unsigned long f = 0; f < NumberOfFrames; ++f)
+        const unsigned int skip_f = OFstatic_cast(unsigned int, height - plane->Rows) * OFstatic_cast(unsigned int, width);
+        for (unsigned int f = 0; f < NumberOfFrames; ++f)
         {
             if (plane->reset(f + ImageFrameOrigin))
             {
@@ -335,7 +335,7 @@ DiOverlayPlane::~DiOverlayPlane()
 /********************************************************************/
 
 
-void *DiOverlayPlane::getData(const unsigned long frame,
+void *DiOverlayPlane::getData(const unsigned int frame,
                               const Uint16 xmin,
                               const Uint16 ymin,
                               const Uint16 xmax,
@@ -344,13 +344,13 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                               const Uint16 fore,
                               const Uint16 back)
 {
-    const unsigned long count = OFstatic_cast(unsigned long, xmax - xmin) * OFstatic_cast(unsigned long, ymax - ymin);
+    const unsigned int count = OFstatic_cast(unsigned int, xmax - xmin) * OFstatic_cast(unsigned int, ymax - ymin);
     if (Valid && (count > 0))
     {
         const Uint16 mask = OFstatic_cast(Uint16, DicomImageClass::maxval(bits));
         if (bits == 1)
         {
-            const unsigned long count8 = (count + 7) / 8;           // round value: 8 bit padding
+            const unsigned int count8 = (count + 7) / 8;           // round value: 8 bit padding
             Uint8 *data = new Uint8[count8];
             if (data != NULL)
             {
@@ -457,19 +457,19 @@ void *DiOverlayPlane::getData(const unsigned long frame,
 }
 
 
-unsigned long DiOverlayPlane::create6xxx3000Data(Uint8 *&buffer,
+unsigned int DiOverlayPlane::create6xxx3000Data(Uint8 *&buffer,
                                                  unsigned int &width,
                                                  unsigned int &height,
-                                                 unsigned long &frames)
+                                                 unsigned int &frames)
 {
     buffer = NULL;
     width = Width;
     height = Height;
     frames = NumberOfFrames;
-    const unsigned long count = OFstatic_cast(unsigned long, Width) * OFstatic_cast(unsigned long, Height) * NumberOfFrames;
+    const unsigned int count = OFstatic_cast(unsigned int, Width) * OFstatic_cast(unsigned int, Height) * NumberOfFrames;
     if (Valid && (count > 0))
     {
-        const unsigned long count8 = ((count + 15) / 16) * 2;           // round value: 16 bit padding
+        const unsigned int count8 = ((count + 15) / 16) * 2;           // round value: 16 bit padding
         buffer = new Uint8[count8];
         if (buffer != NULL)
         {
@@ -479,7 +479,7 @@ unsigned long DiOverlayPlane::create6xxx3000Data(Uint8 *&buffer,
             register Uint8 value = 0;
             register Uint8 *q = buffer;
             register int bit = 0;
-            for (unsigned long f = 0; f < NumberOfFrames; ++f)
+            for (unsigned int f = 0; f < NumberOfFrames; ++f)
             {
                 if (reset(f + ImageFrameOrigin))
                 {

@@ -45,11 +45,11 @@
  *  constructors  *
  *----------------*/
 
-DiGSDFLUT::DiGSDFLUT(const unsigned long count,
+DiGSDFLUT::DiGSDFLUT(const unsigned int count,
                      const Uint16 max,
                      const Uint16 *ddl_tab,
                      const double *val_tab,
-                     const unsigned long ddl_cnt,
+                     const unsigned int ddl_cnt,
                      const double *gsdf_tab,
                      const double *gsdf_spl,
                      const unsigned int gsdf_cnt,
@@ -104,7 +104,7 @@ DiGSDFLUT::~DiGSDFLUT()
 
 int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                          const double *val_tab,
-                         const unsigned long ddl_cnt,
+                         const unsigned int ddl_cnt,
                          const double *gsdf_tab,
                          const double *gsdf_spl,
                          const unsigned int gsdf_cnt,
@@ -121,12 +121,12 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
         (gsdf_cnt > 0) && (jnd_min < jnd_max))
     {
         int status = 0;
-        const unsigned long gin_ctn = (inverse) ? ddl_cnt : Count;      // number of points to be interpolated
+        const unsigned int gin_ctn = (inverse) ? ddl_cnt : Count;      // number of points to be interpolated
         double *jidx = new double[gin_ctn];
         if (jidx != NULL)
         {
             const double dist = (jnd_max - jnd_min) / (gin_ctn - 1);    // distance between two entries
-            register unsigned long i;
+            register unsigned int i;
             register double *s = jidx;
             register double value = jnd_min;                            // first value is fixed !
             for (i = gin_ctn; i > 1; --i)                               // initialize scaled JND index array
@@ -152,7 +152,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                         {
                             const double amb = getAmbientLightValue();
                             register Uint16 *q = DataBuffer;
-                            register unsigned long j = 0;
+                            register unsigned int j = 0;
                             /* check whether to apply the inverse transformation */
                             if (inverse)
                             {
@@ -170,8 +170,8 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                 }
                             } else {
                                 /* initial DDL boundaries */
-                                unsigned long ddl_min = 0;
-                                unsigned long ddl_max= ddl_cnt - 1;
+                                unsigned int ddl_min = 0;
+                                unsigned int ddl_max= ddl_cnt - 1;
                                 /* check whether minimum luminance is specified */
                                 if (lum_min >= 0)
                                 {

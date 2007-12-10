@@ -87,7 +87,7 @@ class DcmOtherFloat
     /** get value multiplicity
      *  @return always returns 1 (according to the DICOM standard)
      */
-    virtual unsigned long getVM();
+    virtual unsigned int getVM();
 };
 
 

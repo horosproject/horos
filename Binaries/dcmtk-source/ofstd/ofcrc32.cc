@@ -38,15 +38,15 @@
 #include "ofcrc32.h"
 #include "ofcast.h"
 
-void OFCRC32::addBlock(const void *ptr, unsigned long size)
+void OFCRC32::addBlock(const void *ptr, unsigned int size)
 {
   const unsigned char *p= OFstatic_cast(const unsigned char *, ptr);
-  for (unsigned long i=0; i<size; i++)
+  for (unsigned int i=0; i<size; i++)
     value = crctab[(value^p[i]) & 0xff] ^ (value >> 8);
 }
 
 
-unsigned int OFCRC32::compute(const void *ptr, unsigned long size)
+unsigned int OFCRC32::compute(const void *ptr, unsigned int size)
 {
   OFCRC32 crc;
   crc.addBlock(ptr, size);

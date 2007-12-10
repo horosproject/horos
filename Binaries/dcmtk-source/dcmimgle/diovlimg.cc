@@ -71,8 +71,8 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
             }
             if ((Rows > 0) && (Columns > 0))
             {
-                InterData = new DiMonoPixelTemplate<Uint8>(OFstatic_cast(unsigned long, Rows) *
-                    OFstatic_cast(unsigned long, Columns) * NumberOfFrames);
+                InterData = new DiMonoPixelTemplate<Uint8>(OFstatic_cast(unsigned int, Rows) *
+                    OFstatic_cast(unsigned int, Columns) * NumberOfFrames);
                 if (InterData == NULL)
                 {
                     ImageStatus = EIS_MemoryFailure;

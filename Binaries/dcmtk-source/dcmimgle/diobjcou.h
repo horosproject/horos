@@ -110,7 +110,7 @@ class DiObjectCounter
  private:
 
     /// internal counter
-    unsigned long Counter;
+    unsigned int Counter;
 
 #ifdef _REENTRANT
     /** if compiled for multi-thread operation, the Mutex protecting

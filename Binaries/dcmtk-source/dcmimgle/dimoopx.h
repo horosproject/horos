@@ -70,9 +70,9 @@ class DiMonoOutputPixel
      *  @param  max    maximum output value
      */
     DiMonoOutputPixel(const DiMonoPixel *pixel,
-                      const unsigned long size,
-                      const unsigned long frame,
-                      const unsigned long max);
+                      const unsigned int size,
+                      const unsigned int frame,
+                      const unsigned int max);
 
     /** destructor
      */
@@ -126,7 +126,7 @@ class DiMonoOutputPixel
      *
      ** @return number of pixel per frame
      */
-    inline unsigned long getCount() const
+    inline unsigned int getCount() const
     {
         return FrameSize;
     }
@@ -139,7 +139,7 @@ class DiMonoOutputPixel
      *
      ** @return true if value is used, false otherwise
      */
-    int isUnused(const unsigned long value);
+    int isUnused(const unsigned int value);
 
 
  protected:
@@ -150,14 +150,14 @@ class DiMonoOutputPixel
 
 
     /// number of pixels per frame (intermediate representation)
-    /*const*/ unsigned long Count;
+    /*const*/ unsigned int Count;
     /// number of pixels per frame (memory buffer size)
-    const unsigned long FrameSize;
+    const unsigned int FrameSize;
 
     /// array of used pixel values
     Uint8 *UsedValues;
     /// maximum output value
-    const unsigned long MaxValue;
+    const unsigned int MaxValue;
 
 
  private:

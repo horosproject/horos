@@ -81,7 +81,7 @@ DcmEVR DcmIntegerString::ident() const
 
 
 OFCondition DcmIntegerString::getSint32(Sint32 &sintVal,
-                                        const unsigned long pos)
+                                        const unsigned int pos)
 {
     /* get integer string value */
     OFString str;
@@ -104,7 +104,7 @@ OFCondition DcmIntegerString::getSint32(Sint32 &sintVal,
 
 
 OFCondition DcmIntegerString::getOFString(OFString &stringVal,
-                                          const unsigned long pos,
+                                          const unsigned int pos,
                                           OFBool normalize)
 {
     /* call inherited method */

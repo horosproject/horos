@@ -90,14 +90,14 @@ public:
     E_SubSampling pSampleFactors = ESS_444,
     OFBool pWriteYBR422 = OFFalse,
     OFBool pConvertToSC = OFFalse,
-    unsigned long pWindowType = 0,
-    unsigned long pWindowParameter = 0,
+    unsigned int pWindowType = 0,
+    unsigned int pWindowParameter = 0,
     double pVoiCenter = 0.0,
     double pVoiWidth = 0.0,
-    unsigned long pRoiLeft = 0,
-    unsigned long pRoiTop = 0,
-    unsigned long pRoiWidth = 0,
-    unsigned long pRoiHeight = 0,
+    unsigned int pRoiLeft = 0,
+    unsigned int pRoiTop = 0,
+    unsigned int pRoiWidth = 0,
+    unsigned int pRoiHeight = 0,
     OFBool pUsePixelValues = OFTrue,
     OFBool pUseModalityRescale = OFFalse,
     OFBool pAcceptWrongPaletteTags = OFFalse,
@@ -197,7 +197,7 @@ public:
   /** returns mode for VOI transformation of monochrome images.
    *  @return mode for VOI transformation of monochrome images
    */
-  unsigned long getWindowType() const
+  unsigned int getWindowType() const
   {
     return windowType;
   }
@@ -205,7 +205,7 @@ public:
   /** returns parameter for VOI transform of monochrome images, used in VOI modes 1, 2, 4, 6
    *  @return parameter for VOI transform of monochrome images, used in VOI modes 1, 2, 4, 6
    */
-  unsigned long getWindowParameter() const
+  unsigned int getWindowParameter() const
   {
     return windowParameter;
   }
@@ -227,10 +227,10 @@ public:
    *  @param height ROI height returned in this parameter
    */
   void getROI(
-    unsigned long& left_pos,
-    unsigned long& top_pos,
-    unsigned long& width,
-    unsigned long& height) const
+    unsigned int& left_pos,
+    unsigned int& top_pos,
+    unsigned int& width,
+    unsigned int& height) const
   {
     left_pos = roiLeft;
     top_pos = roiTop;
@@ -356,10 +356,10 @@ private:
   E_UIDCreation uidCreation;
 
   /// mode for VOI transformation of monochrome images
-  unsigned long windowType;
+  unsigned int windowType;
 
   /// parameter for VOI transform of monochrome images, used in modes 1, 2, 4, 6
-  unsigned long windowParameter;
+  unsigned int windowParameter;
 
   /// VOI window center for mode 5
   double voiCenter;
@@ -368,16 +368,16 @@ private:
   double voiWidth;
 
   /// Region of Interest left corner for for VOI transform of monochrome images, mode 7
-  unsigned long roiLeft;
+  unsigned int roiLeft;
 
   /// Region of Interest upper corner for for VOI transform of monochrome images, mode 7
-  unsigned long roiTop;
+  unsigned int roiTop;
 
   /// Region of Interest width for for VOI transform of monochrome images, mode 7
-  unsigned long roiWidth;
+  unsigned int roiWidth;
 
   /// Region of Interest height for for VOI transform of monochrome images, mode 7
-  unsigned long roiHeight;
+  unsigned int roiHeight;
 
   /// Check smallest and largest pixel value and optimize compression, mode 0 only
   OFBool usePixelValues;

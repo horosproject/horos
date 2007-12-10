@@ -1531,7 +1531,7 @@ OFCondition DSRDocument::getVerifyingObserver(const size_t idx,
     if ((idx > 0) && (idx <= getNumberOfVerifyingObservers()))
     {
         /* access by index is currently not very efficient */
-        DcmItem *ditem = VerifyingObserver.getItem(OFstatic_cast(unsigned long, idx - 1));
+        DcmItem *ditem = VerifyingObserver.getItem(OFstatic_cast(unsigned int, idx - 1));
         if (ditem != NULL)
         {
             result = getStringValueFromDataset(*ditem, DCM_VerificationDateTime, dateTime);

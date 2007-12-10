@@ -980,7 +980,7 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFil
 
 
 OFCondition DcmDirectoryRecord::masterInsertSub(DcmDirectoryRecord *dirRec,
-                                                const unsigned long where)
+                                                const unsigned int where)
 {
     // insert without type check
     errorFlag = lowerLevelList->insert(dirRec, where);
@@ -1256,7 +1256,7 @@ OFCondition DcmDirectoryRecord::assignToMRDR(DcmDirectoryRecord *mrdr)
 // ********************************
 
 
-unsigned long DcmDirectoryRecord::cardSub()
+unsigned int DcmDirectoryRecord::cardSub()
 {
     return lowerLevelList->card();
 }
@@ -1266,7 +1266,7 @@ unsigned long DcmDirectoryRecord::cardSub()
 
 
 OFCondition DcmDirectoryRecord::insertSub(DcmDirectoryRecord *dirRec,
-                                          unsigned long where,
+                                          unsigned int where,
                                           OFBool before)
 {
     if (dirRec != NULL)
@@ -1307,7 +1307,7 @@ OFCondition DcmDirectoryRecord::insertSubAtCurrentPos(DcmDirectoryRecord *dirRec
 // ********************************
 
 
-DcmDirectoryRecord *DcmDirectoryRecord::getSub(const unsigned long num)
+DcmDirectoryRecord *DcmDirectoryRecord::getSub(const unsigned int num)
 {
     DcmDirectoryRecord *retRec = OFstatic_cast(DcmDirectoryRecord *, lowerLevelList->getItem(num));
     errorFlag = lowerLevelList->error();
@@ -1329,7 +1329,7 @@ DcmDirectoryRecord *DcmDirectoryRecord::nextSub(const DcmDirectoryRecord *dirRec
 // ********************************
 
 
-DcmDirectoryRecord* DcmDirectoryRecord::removeSub(const unsigned long num)
+DcmDirectoryRecord* DcmDirectoryRecord::removeSub(const unsigned int num)
 {
     DcmDirectoryRecord *retRec = OFstatic_cast(DcmDirectoryRecord *, lowerLevelList->remove(num));
     errorFlag = lowerLevelList->error();
@@ -1351,7 +1351,7 @@ DcmDirectoryRecord* DcmDirectoryRecord::removeSub(DcmDirectoryRecord *dirRec)
 // ********************************
 
 
-OFCondition DcmDirectoryRecord::deleteSubAndPurgeFile(const unsigned long num)
+OFCondition DcmDirectoryRecord::deleteSubAndPurgeFile(const unsigned int num)
 {
     DcmDirectoryRecord *subDirRec = OFstatic_cast(DcmDirectoryRecord *, lowerLevelList->remove(num));
     errorFlag = lowerLevelList->error();
@@ -1368,7 +1368,7 @@ OFCondition DcmDirectoryRecord::deleteSubAndPurgeFile(const unsigned long num)
         DCM_dcmdataDebug(2, ("DcmDirectoryRecord::deleteSubAndPurgeFile() now purging lower records:"));
 
         while (subDirRec->cardSub() > 0)    // remove all sub sub records
-            subDirRec->deleteSubAndPurgeFile(OFstatic_cast(unsigned long, 0));
+            subDirRec->deleteSubAndPurgeFile(OFstatic_cast(unsigned int, 0));
         delete subDirRec;                   // remove sub directory record
     }
     return errorFlag;
@@ -1395,7 +1395,7 @@ OFCondition DcmDirectoryRecord::deleteSubAndPurgeFile(DcmDirectoryRecord *dirRec
         DCM_dcmdataDebug(2, ("DcmDirectoryRecord::deleteSubAndPurgeFile() now purging lower records:"));
 
         while (subDirRec->cardSub() > 0)    // remove all sub sub records
-            subDirRec->deleteSubAndPurgeFile(OFstatic_cast(unsigned long, 0));
+            subDirRec->deleteSubAndPurgeFile(OFstatic_cast(unsigned int, 0));
         delete subDirRec;                   // remove sub directory record
     }
     return errorFlag;

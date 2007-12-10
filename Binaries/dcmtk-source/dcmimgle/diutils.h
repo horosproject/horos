@@ -54,28 +54,28 @@
 //@{
 
 /// compatibility with old ACR-NEMA images
-const unsigned long CIF_AcrNemaCompatibility         = 0x0000001;
+const unsigned int CIF_AcrNemaCompatibility         = 0x0000001;
 
 /// accept wrong palette attribute tags
-const unsigned long CIF_WrongPaletteAttributeTags    = 0x0000002;
+const unsigned int CIF_WrongPaletteAttributeTags    = 0x0000002;
 
 /// element pixel data may be detached if it is no longer needed by dcmimage
-const unsigned long CIF_MayDetachPixelData           = 0x0000004;
+const unsigned int CIF_MayDetachPixelData           = 0x0000004;
 
 /// use presentation state instead of 'built-in' LUTs & overlays
-const unsigned long CIF_UsePresentationState         = 0x0000008;
+const unsigned int CIF_UsePresentationState         = 0x0000008;
 
 /// don't convert YCbCr (Full and Full 4:2:2) color images to RGB
-const unsigned long CIF_KeepYCbCrColorModel          = 0x0000010;
+const unsigned int CIF_KeepYCbCrColorModel          = 0x0000010;
 
 /// take responsibility for the given external DICOM dataset, i.e. delete it on destruction
-const unsigned long CIF_TakeOverExternalDataset      = 0x0000020;
+const unsigned int CIF_TakeOverExternalDataset      = 0x0000020;
 
 /// ignore modality transformation (rescale slope/intercept or LUT) stored in the dataset
-const unsigned long CIF_IgnoreModalityTransformation = 0x0000040;
+const unsigned int CIF_IgnoreModalityTransformation = 0x0000040;
 
 /// ignore third value of the modality LUT descriptor, determine bit depth automatically
-const unsigned long CIF_IgnoreModalityLutBitDepth    = 0x0000080;
+const unsigned int CIF_IgnoreModalityLutBitDepth    = 0x0000080;
 //@}
 
 
@@ -321,11 +321,11 @@ class DicomImageClass
      *
      ** @return maximum value
      */
-    static inline unsigned long maxval(const int mv_bits,
-                                       const unsigned long mv_pos = 1)
+    static inline unsigned int maxval(const int mv_bits,
+                                       const unsigned int mv_pos = 1)
     {
         return (mv_bits < MAX_BITS) ?
-            (OFstatic_cast(unsigned long, 1) << mv_bits) - mv_pos : OFstatic_cast(MAX_BITS_TYPE, -1);
+            (OFstatic_cast(unsigned int, 1) << mv_bits) - mv_pos : OFstatic_cast(MAX_BITS_TYPE, -1);
     }
 
     /** calculate number of bits which are necessary to store the specified value
@@ -335,8 +335,8 @@ class DicomImageClass
      *
      ** @return number of bits
      */
-    static inline unsigned int tobits(unsigned long tb_value,
-                                      const unsigned long tb_pos = 1)
+    static inline unsigned int tobits(unsigned int tb_value,
+                                      const unsigned int tb_pos = 1)
     {
         if (tb_value > 0)
             tb_value -= tb_pos;

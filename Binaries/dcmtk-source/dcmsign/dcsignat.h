@@ -117,19 +117,19 @@ public:
   /** returns the number of signatures in the dataset. Does not count 
    *  signatures embedded in sequence items within the dataset.
    */
-  unsigned long numberOfSignatures();
+  unsigned int numberOfSignatures();
 
   /** removes a signature from the dataset.
    *  @param i index, must be < numberOfSignatures().
    *  @return status code
    */
-  OFCondition removeSignature(unsigned long i);
+  OFCondition removeSignature(unsigned int i);
 
   /** selects one of the digital signatures from the attached dataset for reading.
    *  @param i index, must be < numberOfSignatures()
    *  @return status code
    */
-  OFCondition selectSignature(unsigned long i);
+  OFCondition selectSignature(unsigned int i);
   
   /** verifies the current signature.
    *  Current signature must be selected with selectSignature().

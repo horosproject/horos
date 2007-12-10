@@ -80,7 +80,7 @@ DcmEVR DcmDate::ident() const
 
 
 OFCondition DcmDate::getOFString(OFString &stringVal,
-                                 const unsigned long pos,
+                                 const unsigned int pos,
                                  OFBool normalize)
 {
     OFCondition l_error = DcmByteString::getOFString(stringVal, pos, normalize);
@@ -94,7 +94,7 @@ OFCondition DcmDate::getOFString(OFString &stringVal,
 
 
 OFCondition DcmDate::getOFDate(OFDate &dateValue,
-                               const unsigned long pos,
+                               const unsigned int pos,
                                const OFBool supportOldFormat)
 {
     OFString dicomDate;
@@ -109,7 +109,7 @@ OFCondition DcmDate::getOFDate(OFDate &dateValue,
 
 
 OFCondition DcmDate::getISOFormattedDate(OFString &formattedDate,
-                                         const unsigned long pos,
+                                         const unsigned int pos,
                                          const OFBool supportOldFormat)
 {
     OFString dicomDate;

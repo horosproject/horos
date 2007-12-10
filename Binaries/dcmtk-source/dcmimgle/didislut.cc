@@ -40,7 +40,7 @@
  *  constructors  *
  *----------------*/
 
-DiDisplayLUT::DiDisplayLUT(const unsigned long count,
+DiDisplayLUT::DiDisplayLUT(const unsigned int count,
                            const Uint16 max,
                            const double amb,
                            const double illum)

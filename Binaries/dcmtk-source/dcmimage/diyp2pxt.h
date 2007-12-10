@@ -106,12 +106,12 @@ class DiYBRPart422PixelTemplate
             register T2 *r = this->Data[0];
             register T2 *g = this->Data[1];
             register T2 *b = this->Data[2];
-            register unsigned long i;
+            register unsigned int i;
             const T2 maxvalue = OFstatic_cast(T2, DicomImageClass::maxval(bits));
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
-            const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
+            const unsigned int count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
 
             register const T1 *p = pixel;
             register T2 y1;

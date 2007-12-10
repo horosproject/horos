@@ -88,7 +88,7 @@ public:
   /** returns a combined code and module for this object.
    *  code is lower 16 bits, module is upper 16 bits
    */
-  virtual unsigned long codeAndModule() const = 0;
+  virtual unsigned int codeAndModule() const = 0;
 
   /// returns the status for this object.
   virtual OFStatus status() const = 0;
@@ -161,7 +161,7 @@ public:
    */
   OFConditionConst(unsigned short aModule, unsigned short aCode, OFStatus aStatus, const char *aText)
   : OFConditionBase()
-  , theCodeAndModule(OFstatic_cast(unsigned long, aCode) | OFstatic_cast(unsigned long, aModule << 16))
+  , theCodeAndModule(OFstatic_cast(unsigned int, aCode) | OFstatic_cast(unsigned int, aModule << 16))
   , theStatus(aStatus)
   , theText(aText)
   {
@@ -190,7 +190,7 @@ public:
   /** returns a combined code and module for this object.
    *  code is lower 16 bits, module is upper 16 bits
    */
-  virtual unsigned long codeAndModule() const;
+  virtual unsigned int codeAndModule() const;
 
   /// returns the status for this object.
   virtual OFStatus status() const;
@@ -210,7 +210,7 @@ private:
   OFConditionConst& operator=(const OFConditionConst& arg);
 
   /// code/module identification. Code is lower 16 bits, module is upper 16 bits
-  unsigned long theCodeAndModule;
+  unsigned int theCodeAndModule;
 
   /// status
   OFStatus theStatus;
@@ -238,7 +238,7 @@ public:
    */
   OFConditionString(unsigned short aModule, unsigned short aCode, OFStatus aStatus, const char *aText)
   : OFConditionBase()
-  , theCodeAndModule(OFstatic_cast(unsigned long, aCode) | OFstatic_cast(unsigned long, aModule << 16))
+  , theCodeAndModule(OFstatic_cast(unsigned int, aCode) | OFstatic_cast(unsigned int, aModule << 16))
   , theStatus(aStatus)
   , theText()
   {
@@ -268,7 +268,7 @@ public:
   /** returns a combined code and module for this object.
    *  code is lower 16 bits, module is upper 16 bits
    */
-  virtual unsigned long codeAndModule() const;
+  virtual unsigned int codeAndModule() const;
 
   /// returns the status for this object.
   virtual OFStatus status() const;
@@ -287,7 +287,7 @@ private:
   OFConditionString& operator=(const OFConditionString& arg);
 
   /// code/module identification. Code is lower 16 bits, module is upper 16 bits
-  unsigned long theCodeAndModule;
+  unsigned int theCodeAndModule;
 
   /// status
   OFStatus theStatus;

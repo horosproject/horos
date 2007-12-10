@@ -134,7 +134,7 @@ public:
     /** returns n-th element from stack without removing it.
      *  @return n-th element from stack
      */
-    DcmObject* elem(const unsigned long number) const;
+    DcmObject* elem(const unsigned int number) const;
 
     /** checks if the stack is empty
      *  @return true if stack is empty, false otherwise
@@ -144,7 +144,7 @@ public:
     /** returns cardinality (number of entries) of the stack
      *  @return cardinality of stack
      */
-    unsigned long card() const;
+    unsigned int card() const;
 
     /** returns the stack to default-constructed state, i.e. empty state.
      */
@@ -155,7 +155,7 @@ private:
     DcmStackNode *topNode_;
 
     /// current cardinality of the stack
-    unsigned long cardinality_;
+    unsigned int cardinality_;
 };
 
 

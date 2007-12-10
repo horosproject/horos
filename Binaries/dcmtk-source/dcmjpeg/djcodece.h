@@ -169,7 +169,7 @@ protected:
    */
   static OFCondition togglePlanarConfiguration8(
     Uint8 *pixelData,
-    const unsigned long numValues,
+    const unsigned int numValues,
     const Uint16 samplesPerPixel,
     const Uint16 oldPlanarConfig);
 
@@ -186,7 +186,7 @@ protected:
    */
   static OFCondition togglePlanarConfiguration16(
     Uint16 *pixelData,
-    const unsigned long numValues,
+    const unsigned int numValues,
     const Uint16 samplesPerPixel,
     const Uint16 oldPlanarConfig);
 

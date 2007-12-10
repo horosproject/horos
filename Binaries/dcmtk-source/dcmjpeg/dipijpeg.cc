@@ -142,7 +142,7 @@ void DiJPEGPlugin::outputMessage(void *arg) const
 
 int DiJPEGPlugin::write(DiImage *image,
                         FILE *stream,
-                        const unsigned long frame) const
+                        const unsigned int frame) const
 {
     int result = 0;
     if ((image != NULL) && (stream != NULL))
@@ -227,7 +227,7 @@ int DiJPEGPlugin::write(DiImage *image,
             /* Process data */
             JSAMPROW row_pointer[1];
             Uint8 *image_buffer = (Uint8 *)data;
-            const unsigned long row_stride = cinfo.image_width * cinfo.input_components;
+            const unsigned int row_stride = cinfo.image_width * cinfo.input_components;
             while (cinfo.next_scanline < cinfo.image_height)
             {
                 row_pointer[0] = &image_buffer[cinfo.next_scanline * row_stride];

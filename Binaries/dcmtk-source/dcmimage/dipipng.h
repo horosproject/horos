@@ -106,7 +106,7 @@ class DiPNGPlugin
      */
     virtual int write(DiImage *image,
                       FILE *stream,
-                      const unsigned long frame = 0) const;
+                      const unsigned int frame = 0) const;
 
     /** set interlace type for PNG creation
      *  @param inter interlace type

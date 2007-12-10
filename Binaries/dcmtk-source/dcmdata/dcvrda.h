@@ -92,7 +92,7 @@ class DcmDate
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOFString(OFString &stringVal,
-                                    const unsigned long pos,
+                                    const unsigned int pos,
                                     OFBool normalize = OFTrue);
 
     /** set the element value to the current system date.
@@ -119,7 +119,7 @@ class DcmDate
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition getOFDate(OFDate &dateValue,
-                          const unsigned long pos = 0,
+                          const unsigned int pos = 0,
                           const OFBool supportOldFormat = OFTrue);
 
     /** get the current element value in ISO date format.
@@ -133,7 +133,7 @@ class DcmDate
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition getISOFormattedDate(OFString &formattedDate,
-                                    const unsigned long pos = 0,
+                                    const unsigned int pos = 0,
                                     const OFBool supportOldFormat = OFTrue);
 
     /* --- static helper functions --- */

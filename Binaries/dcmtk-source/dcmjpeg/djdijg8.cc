@@ -138,7 +138,7 @@ ijg_boolean DJDIJG8fillInputBuffer(j_decompress_ptr cinfo)
     // In this case we must skip the remaining number of bytes here.
     if (src->skip_bytes > 0)
     {
-      if (src->pub.bytes_in_buffer < (unsigned long) src->skip_bytes)
+      if (src->pub.bytes_in_buffer < (unsigned int) src->skip_bytes)
       {
         src->skip_bytes            -= src->pub.bytes_in_buffer;
         src->pub.next_input_byte   += src->pub.bytes_in_buffer;

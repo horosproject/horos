@@ -91,7 +91,7 @@ class DcmPersonName
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOFString(OFString &stringVal,
-                                    const unsigned long pos,
+                                    const unsigned int pos,
                                     OFBool normalize = OFTrue);
 
     /** get name components from the element value.
@@ -119,7 +119,7 @@ class DcmPersonName
                                   OFString &middleName,
                                   OFString &namePrefix,
                                   OFString &nameSuffix,
-                                  const unsigned long pos = 0,
+                                  const unsigned int pos = 0,
                                   const unsigned int componentGroup = 0);
 
     /** get current element value as a formatted/readable name.
@@ -133,7 +133,7 @@ class DcmPersonName
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition getFormattedName(OFString &formattedName,
-                                 const unsigned long pos = 0,
+                                 const unsigned int pos = 0,
                                  const unsigned int componentGroup = 0);
 
 

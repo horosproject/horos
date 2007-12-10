@@ -107,9 +107,9 @@ OFCondition DSRReferencedTimeOffsetList::read(DcmItem &dataset,
         /* clear internal list */
         clear();
         Float64 value = 0;
-        const unsigned long count = delem.getVM();
+        const unsigned int count = delem.getVM();
         /* fill list with values from decimal string */
-        for (unsigned long i = 0; i < count; i++)
+        for (unsigned int i = 0; i < count; i++)
         {
             if (delem.getFloat64(value, i).good())
                 addItem(value);

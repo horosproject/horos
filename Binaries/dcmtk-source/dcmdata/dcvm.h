@@ -37,7 +37,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 // get the number of values stored in string
-unsigned long getVMFromString(const char * val);
+unsigned int getVMFromString(const char * val);
 
 // get first value stored in string, set the parameter to beginning of the
 // next value

@@ -43,7 +43,7 @@
 #include "ofstdinc.h"
 
 
-const unsigned long DCM_EndOfListIndex = OFstatic_cast(unsigned long, -1L);
+const unsigned int DCM_EndOfListIndex = OFstatic_cast(unsigned int, -1L);
 
 
 class DcmObject;    // forward declaration
@@ -85,7 +85,7 @@ class DcmList {
     DcmListNode *firstNode;
     DcmListNode *lastNode;
     DcmListNode *currentNode;
-    unsigned long cardinality;
+    unsigned int cardinality;
 
  // --- declarations to avoid compiler warnings
  
@@ -103,8 +103,8 @@ public:
     DcmObject *remove();
     DcmObject *get(     E_ListPos pos = ELP_atpos );
     DcmObject *seek(    E_ListPos pos = ELP_next );
-    DcmObject *seek_to(unsigned long absolute_position);
-    inline unsigned long card() const { return cardinality; }
+    DcmObject *seek_to(unsigned int absolute_position);
+    inline unsigned int card() const { return cardinality; }
     inline OFBool empty(void) const { return firstNode == NULL; }
     inline OFBool valid(void) const { return currentNode != NULL; }
 };

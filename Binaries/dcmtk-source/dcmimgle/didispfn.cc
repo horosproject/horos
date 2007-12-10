@@ -85,7 +85,7 @@ DiDisplayFunction::DiDisplayFunction(const char *filename,
 
 
 DiDisplayFunction::DiDisplayFunction(const double *val_tab,             // UNTESTED !!
-                                     const unsigned long count,
+                                     const unsigned int count,
                                      const Uint16 max,
                                      const E_DeviceType deviceType,
                                      const signed int ord)
@@ -105,7 +105,7 @@ DiDisplayFunction::DiDisplayFunction(const double *val_tab,             // UNTES
 {
     OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
     /* check number of entries */
-    if ((ValueCount > 0) && (ValueCount == OFstatic_cast(unsigned long, MaxDDLValue) + 1))
+    if ((ValueCount > 0) && (ValueCount == OFstatic_cast(unsigned int, MaxDDLValue) + 1))
     {
         /* copy value table */
         DDLValue = new Uint16[ValueCount];
@@ -126,7 +126,7 @@ DiDisplayFunction::DiDisplayFunction(const double *val_tab,             // UNTES
 
 DiDisplayFunction::DiDisplayFunction(const Uint16 *ddl_tab,             // UNTESTED !!
                                      const double *val_tab,
-                                     const unsigned long count,
+                                     const unsigned int count,
                                      const Uint16 max,
                                      const E_DeviceType deviceType,
                                      const signed int ord)
@@ -153,7 +153,7 @@ DiDisplayFunction::DiDisplayFunction(const Uint16 *ddl_tab,             // UNTES
 
 DiDisplayFunction::DiDisplayFunction(const double val_min,
                                      const double val_max,
-                                     const unsigned long count,
+                                     const unsigned int count,
                                      const E_DeviceType deviceType,
                                      const signed int ord)
   : Valid(0),
@@ -228,7 +228,7 @@ Uint16 DiDisplayFunction::getDDLforValue(const double value) const
 {
     if ((LODValue != NULL) && (ValueCount > 0))
     {
-        register unsigned long j = 0;
+        register unsigned int j = 0;
         /* search for closest index, assuming monotony */
         if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
         {
@@ -250,7 +250,7 @@ Uint16 DiDisplayFunction::getDDLforValue(const double value) const
 
 
 const DiDisplayLUT *DiDisplayFunction::getLookupTable(const int bits,
-                                                      unsigned long count)
+                                                      unsigned int count)
 {
     if (Valid && (bits >= MinBits) && (bits <= MaxBits))
     {
@@ -372,8 +372,8 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             file >> MaxDDLValue;
                             if (MaxDDLValue > 0)
                             {
-                                DDLValue = new Uint16[OFstatic_cast(unsigned long, MaxDDLValue) + 1];
-                                LODValue = new double[OFstatic_cast(unsigned long, MaxDDLValue) + 1];
+                                DDLValue = new Uint16[OFstatic_cast(unsigned int, MaxDDLValue) + 1];
+                                LODValue = new double[OFstatic_cast(unsigned int, MaxDDLValue) + 1];
                                 if ((DDLValue == NULL) || (LODValue == NULL))
                                     return 0;
                             } else {
@@ -468,7 +468,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             return 0;                                       // abort
                         }
                     } else {
-                        if (ValueCount <= OFstatic_cast(unsigned long, MaxDDLValue))
+                        if (ValueCount <= OFstatic_cast(unsigned int, MaxDDLValue))
                         {
                             file >> DDLValue[ValueCount];                   // read DDL value
                             file >> LODValue[ValueCount];                   // read luminance/OD value
@@ -534,14 +534,14 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
     double *old_val = LODValue;
     if ((ValueCount > 0) && (ddl_tab != NULL) && (val_tab != NULL))
     {
-        const unsigned long count = OFstatic_cast(unsigned long, MaxDDLValue) + 1;
+        const unsigned int count = OFstatic_cast(unsigned int, MaxDDLValue) + 1;
         DDLValue = new Uint16[ValueCount];
         LODValue = new double[ValueCount];
         Sint32 *sort_tab = new Sint32[count];                                       // auxilliary array (temporary)
         if ((DDLValue != NULL) && (LODValue != NULL) && (sort_tab != NULL))
         {
             OFBitmanipTemplate<Sint32>::setMem(sort_tab, -1, count);                // initialize array
-            register unsigned long i;
+            register unsigned int i;
             for (i = 0; i < ValueCount; ++i)
             {
                 if (ddl_tab[i] <= MaxDDLValue)                                      // calculate sort table
@@ -596,7 +596,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
 
 int DiDisplayFunction::interpolateValues()
 {
-    if (ValueCount <= OFstatic_cast(unsigned long, MaxDDLValue))        // interpolation necessary ?
+    if (ValueCount <= OFstatic_cast(unsigned int, MaxDDLValue))        // interpolation necessary ?
     {
         int status = 0;
         if (Order > 0)
@@ -611,7 +611,7 @@ int DiDisplayFunction::interpolateValues()
                 delete[] DDLValue;
                 delete[] LODValue;
                 /* create new data arrays */
-                ValueCount = OFstatic_cast(unsigned long, MaxDDLValue) + 1;
+                ValueCount = OFstatic_cast(unsigned int, MaxDDLValue) + 1;
                 DDLValue = new Uint16[ValueCount];
                 LODValue = new double[ValueCount];
                 if ((DDLValue != NULL) && (LODValue != NULL))
@@ -633,11 +633,11 @@ int DiDisplayFunction::interpolateValues()
                 DiCubicSpline<Uint16, double>::Function(DDLValue, LODValue, OFstatic_cast(unsigned int, ValueCount), spline))
             {
                 /* save old values */
-                const unsigned long count = ValueCount;
+                const unsigned int count = ValueCount;
                 Uint16 *old_ddl = DDLValue;
                 double *old_val = LODValue;
                 /* create new data arrays */
-                ValueCount = OFstatic_cast(unsigned long, MaxDDLValue) + 1;
+                ValueCount = OFstatic_cast(unsigned int, MaxDDLValue) + 1;
                 DDLValue = new Uint16[ValueCount];
                 LODValue = new double[ValueCount];
                 if ((DDLValue != NULL) && (LODValue != NULL))
@@ -668,7 +668,7 @@ int DiDisplayFunction::calculateMinMax()
     {
         MinValue = LODValue[0];
         MaxValue = LODValue[0];
-        register unsigned long i;
+        register unsigned int i;
         for (i = 1; i < ValueCount; ++i)
         {
             if (LODValue[i] < MinValue)
@@ -713,7 +713,7 @@ double DiDisplayFunction::getMaxLuminanceValue() const
 
 
 double *DiDisplayFunction::convertODtoLumTable(const double *od_tab,
-                                               const unsigned long count,
+                                               const unsigned int count,
                                                const OFBool useAmb)
 {
     double *lum_tab = NULL;

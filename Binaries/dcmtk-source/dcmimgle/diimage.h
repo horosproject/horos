@@ -252,7 +252,7 @@ class DiImage
      *
      ** @return number of bytes if successful, 0 otherwise
      */
-    virtual unsigned long getOutputDataSize(const int bits = 0) const = 0;
+    virtual unsigned int getOutputDataSize(const int bits = 0) const = 0;
 
     /** get pixel data with specified format (abstract).
      *  (memory is handled internally)
@@ -263,7 +263,7 @@ class DiImage
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
-    virtual const void *getOutputData(const unsigned long frame,
+    virtual const void *getOutputData(const unsigned int frame,
                                       const int bits,
                                       const int planar) = 0;
 
@@ -279,8 +279,8 @@ class DiImage
      ** @return status, true if successful, false otherwise
      */
     virtual int getOutputData(void *buffer,
-                              const unsigned long size,
-                              const unsigned long frame,
+                              const unsigned int size,
+                              const unsigned int frame,
                               const int bits,
                               const int planar) = 0;
 
@@ -324,8 +324,8 @@ class DiImage
      *
      ** @return pointer to new DiImage object (NULL if an error occurred)
      */
-    virtual DiImage *createImage(const unsigned long fstart,
-                                 const unsigned long fcount) const = 0;
+    virtual DiImage *createImage(const unsigned int fstart,
+                                 const unsigned int fcount) const = 0;
 
     /** create scaled copy of specified (clipping) area of the current image object (abstract).
      *
@@ -347,10 +347,10 @@ class DiImage
      */
     virtual DiImage *createScale(const signed long left_pos,
                                  const signed long top_pos,
-                                 const unsigned long clip_width,
-                                 const unsigned long clip_height,
-                                 const unsigned long scale_width,
-                                 const unsigned long scale_height,
+                                 const unsigned int clip_width,
+                                 const unsigned int clip_height,
+                                 const unsigned int scale_width,
+                                 const unsigned int scale_height,
                                  const int interpolate,
                                  const int aspect,
                                  const Uint16 pvalue) const = 0;
@@ -414,9 +414,9 @@ class DiImage
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    virtual unsigned long createDIB(void *&data,
-                                    const unsigned long size,
-                                    const unsigned long frame,
+    virtual unsigned int createDIB(void *&data,
+                                    const unsigned int size,
+                                    const unsigned int frame,
                                     const int bits,
                                     const int upsideDown,
                                     const int padding = 1) = 0;
@@ -429,8 +429,8 @@ class DiImage
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    virtual unsigned long createAWTBitmap(void *&data,
-                                          const unsigned long frame,
+    virtual unsigned int createAWTBitmap(void *&data,
+                                          const unsigned int frame,
                                           const int bits) = 0;
 
     /** render pixel data of given frame and write image related attributes to DICOM dataset.
@@ -443,7 +443,7 @@ class DiImage
      ** @return true if successful, false otherwise
      */
     int writeFrameToDataset(DcmItem &dataset,
-                            const unsigned long frame = 0,
+                            const unsigned int frame = 0,
                             const int bits = 0,
                             const int planar = 0);
 
@@ -467,7 +467,7 @@ class DiImage
      ** @return true if successful, false otherwise
      */
     virtual int writePPM(ostream &stream,
-                         const unsigned long frame,
+                         const unsigned int frame,
                          const int bits) = 0;
 
     /** write pixel data to PPM file (abstract).
@@ -480,7 +480,7 @@ class DiImage
      ** @return true if successful, false otherwise
      */
     virtual int writePPM(FILE *stream,
-                         const unsigned long frame,
+                         const unsigned int frame,
                          const int bits) = 0;
 
     /** write pixel data to raw PPM file (abstract)
@@ -492,7 +492,7 @@ class DiImage
      ** @return true if successful, false otherwise
      */
     virtual int writeRawPPM(FILE *stream,
-                            const unsigned long frame,
+                            const unsigned int frame,
                             const int bits) = 0;
 
     /** write pixel data to BMP file
@@ -504,7 +504,7 @@ class DiImage
      ** @return true if successful, false otherwise
      */
     virtual int writeBMP(FILE *stream,
-                         const unsigned long frame,
+                         const unsigned int frame,
                          const int bits);
 
 
@@ -525,8 +525,8 @@ class DiImage
      *  @param  fcount  number of frames
      */
     DiImage(const DiImage *image,
-            const unsigned long fstart,
-            const unsigned long fcount);
+            const unsigned int fstart,
+            const unsigned int fcount);
 
     /** constructor, scale/clip
      *
@@ -556,7 +556,7 @@ class DiImage
      *  @param  alloc   number of bits allocated
      */
     DiImage(const DiImage *image,
-            const unsigned long frame,
+            const unsigned int frame,
             const int stored,
             const int alloc);
 

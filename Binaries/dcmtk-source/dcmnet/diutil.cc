@@ -269,11 +269,11 @@ DU_findSOPClassAndInstanceInFile(
 }
 
 
-unsigned long
+unsigned int
 DU_fileSize(const char *fname)
 {
     struct stat s;
-    unsigned long nbytes = 0;
+    unsigned int nbytes = 0;
 
     if (stat(fname, &s) == 0) {
 	nbytes = s.st_size;
@@ -525,9 +525,9 @@ DU_cgetStatusString(Uint16 statusCode)
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

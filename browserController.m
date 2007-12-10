@@ -221,7 +221,6 @@ static NSArray*	statesArray = nil;
 	{
 		if( [[vc window] isVisible] && [[vc imageView] mouseDragging] == NO)
 		{
-			NSLog( @"******** reloadViewers");
 			[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [[[vc fileList] objectAtIndex: 0] valueForKey:@"series"]]] movie: NO viewer : vc keyImagesOnly: NO];
 		}
 	}

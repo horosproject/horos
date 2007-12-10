@@ -70,8 +70,8 @@ class DiColorOutputPixelTemplate
      */
     DiColorOutputPixelTemplate(void *buffer,
                                const DiColorPixel *pixel,
-                               const unsigned long count,
-                               const unsigned long frame,
+                               const unsigned int count,
+                               const unsigned int frame,
                                const int bits1, /* input depth */
                                const int bits2, /* output depth */
                                const int planar,
@@ -99,9 +99,9 @@ class DiColorOutputPixelTemplate
      */
     DiColorOutputPixelTemplate(void *buffer,
                                const DiPixel *pixel,
-                               const unsigned long count,
-                               const unsigned long frame,
-                               const unsigned long /*frames*/,
+                               const unsigned int count,
+                               const unsigned int frame,
+                               const unsigned int /*frames*/,
                                const int planar)
       : DiColorOutputPixel(pixel, count, frame),
         Data(NULL),
@@ -191,11 +191,11 @@ class DiColorOutputPixelTemplate
         if (Data != NULL)
         {
             register T2 *p = Data;
-            register unsigned long i;
+            register unsigned int i;
             register int j;
             for (i = FrameSize; i != 0; --i)
                 for (j = 3; j != 0; --j)
-                    stream << OFstatic_cast(unsigned long, *(p++)) << " ";     // typecast to resolve problems with 'char'
+                    stream << OFstatic_cast(unsigned int, *(p++)) << " ";     // typecast to resolve problems with 'char'
             return 1;
         }
         return 0;
@@ -212,11 +212,11 @@ class DiColorOutputPixelTemplate
         if (Data != NULL)
         {
             register T2 *p = Data;
-            register unsigned long i;
+            register unsigned int i;
             register int j;
             for (i = FrameSize; i != 0; --i)
                 for (j = 3; j != 0; --j)
-                    fprintf(stream, "%lu ", OFstatic_cast(unsigned long, *(p++)));
+                    fprintf(stream, "%lu ", OFstatic_cast(unsigned int, *(p++)));
             return 1;
         }
         return 0;
@@ -241,7 +241,7 @@ class DiColorOutputPixelTemplate
      *  @param  inverse  invert pixel data if true (0/0/0 = white)
      */
     void convert(const T1 *pixel[3],
-                 const unsigned long start,
+                 const unsigned int start,
                  const int bits1,
                  const int bits2,
                  const int planar,
@@ -254,7 +254,7 @@ class DiColorOutputPixelTemplate
             if (Data != NULL)
             {
                 register T2 *q = Data;
-                register unsigned long i;
+                register unsigned int i;
                 const T2 max2 = OFstatic_cast(T2, DicomImageClass::maxval(bits2));
                 if (planar)
                 {

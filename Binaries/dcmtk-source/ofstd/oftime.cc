@@ -464,7 +464,7 @@ double OFTime::getTimeInSeconds(const unsigned int hour,
     double result = ((OFstatic_cast(double, hour) - timeZone) * 60 + OFstatic_cast(double, minute)) * 60 + second;
     /* normalize the result to the range [0.0,86400.0[ */
     if (normalize)
-        result -= OFstatic_cast(unsigned long, result / 86400) * 86400;
+        result -= OFstatic_cast(unsigned int, result / 86400) * 86400;
     return result;
 }
 
@@ -479,7 +479,7 @@ double OFTime::getTimeInHours(const unsigned int hour,
     double result = OFstatic_cast(double, hour) - timeZone + (OFstatic_cast(double, minute) + second / 60) / 60;
     /* normalize the result to the range [0.0,24.0[ */
     if (normalize)
-        result -= OFstatic_cast(unsigned long, result / 24) * 24;
+        result -= OFstatic_cast(unsigned int, result / 24) * 24;
     return result;
 }
 

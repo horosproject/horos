@@ -32,7 +32,7 @@
 	
 	OFString name;
 	const Uint8 *buffer = 0L;
-	unsigned long length;
+	unsigned int length;
 	
 	if (fileformat.getDataset()->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good())	//DCM_EncapsulatedDocument   //DCM_OsirixROI
 	{

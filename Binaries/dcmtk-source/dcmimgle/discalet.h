@@ -251,17 +251,17 @@ class DiScaleTemplate
     void clipPixel(const T *src[],
                    T *dest[])
     {
-        const unsigned long x_feed = Columns - this->Src_X;
-        const unsigned long y_feed = OFstatic_cast(unsigned long, Rows - this->Src_Y) * OFstatic_cast(unsigned long, Columns);
+        const unsigned int x_feed = Columns - this->Src_X;
+        const unsigned int y_feed = OFstatic_cast(unsigned int, Rows - this->Src_Y) * OFstatic_cast(unsigned int, Columns);
         register Uint16 x;
         register Uint16 y;
         register const T *p;
         register T *q;
         for (int j = 0; j < this->Planes; ++j)
         {
-            p = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
+            p = src[j] + OFstatic_cast(unsigned int, Top) * OFstatic_cast(unsigned int, Columns) + Left;
             q = dest[j];
-            for (unsigned long f = this->Frames; f != 0; --f)
+            for (unsigned int f = this->Frames; f != 0; --f)
             {
                 for (y = this->Dest_Y; y != 0; --y)
                 {
@@ -289,19 +289,19 @@ class DiScaleTemplate
         const Uint16 s_top = (Top > 0) ? OFstatic_cast(Uint16, Top) : 0;
         const Uint16 d_left = (Left < 0 ? OFstatic_cast(Uint16, -Left) : 0);
         const Uint16 d_top = (Top < 0) ? OFstatic_cast(Uint16, -Top) : 0;
-        const Uint16 d_right = (OFstatic_cast(unsigned long, this->Src_X) + OFstatic_cast(unsigned long, s_left) <
-                                OFstatic_cast(unsigned long, Columns) + OFstatic_cast(unsigned long, d_left)) ?
+        const Uint16 d_right = (OFstatic_cast(unsigned int, this->Src_X) + OFstatic_cast(unsigned int, s_left) <
+                                OFstatic_cast(unsigned int, Columns) + OFstatic_cast(unsigned int, d_left)) ?
                                (this->Src_X - 1) : (Columns + d_left - s_left - 1);
-        const Uint16 d_bottom = (OFstatic_cast(unsigned long, this->Src_Y) + OFstatic_cast(unsigned long, s_top) <
-                                 OFstatic_cast(unsigned long, Rows) + OFstatic_cast(unsigned long, d_top)) ?
+        const Uint16 d_bottom = (OFstatic_cast(unsigned int, this->Src_Y) + OFstatic_cast(unsigned int, s_top) <
+                                 OFstatic_cast(unsigned int, Rows) + OFstatic_cast(unsigned int, d_top)) ?
                                 (this->Src_Y - 1) : (Rows + d_top - s_top - 1);
         const Uint16 x_count = d_right - d_left + 1;
         const Uint16 y_count = d_bottom - d_top + 1;
-        const unsigned long s_start = OFstatic_cast(unsigned long, s_top) * OFstatic_cast(unsigned long, Columns) + s_left;
-        const unsigned long x_feed = Columns - x_count;
-        const unsigned long y_feed = OFstatic_cast(unsigned long, Rows - y_count) * Columns;
-        const unsigned long t_feed = OFstatic_cast(unsigned long, d_top) * OFstatic_cast(unsigned long, this->Src_X);
-        const unsigned long b_feed = OFstatic_cast(unsigned long, this->Src_Y - d_bottom - 1) * OFstatic_cast(unsigned long, this->Src_X);
+        const unsigned int s_start = OFstatic_cast(unsigned int, s_top) * OFstatic_cast(unsigned int, Columns) + s_left;
+        const unsigned int x_feed = Columns - x_count;
+        const unsigned int y_feed = OFstatic_cast(unsigned int, Rows - y_count) * Columns;
+        const unsigned int t_feed = OFstatic_cast(unsigned int, d_top) * OFstatic_cast(unsigned int, this->Src_X);
+        const unsigned int b_feed = OFstatic_cast(unsigned int, this->Src_Y - d_bottom - 1) * OFstatic_cast(unsigned int, this->Src_X);
 
         /*
          *  The approach is to divide the destination image in up to four areas outside the source image
@@ -312,14 +312,14 @@ class DiScaleTemplate
          */
         register Uint16 x;
         register Uint16 y;
-        register unsigned long i;
+        register unsigned int i;
         register const T *p;
         register T *q;
         for (int j = 0; j < this->Planes; ++j)
         {
             p = src[j] + s_start;
             q = dest[j];
-            for (unsigned long f = this->Frames; f != 0; --f)
+            for (unsigned int f = this->Frames; f != 0; --f)
             {
                 for (i = t_feed; i != 0; --i)               // top
                     *(q++) = value;
@@ -361,8 +361,8 @@ class DiScaleTemplate
     {
         const Uint16 x_factor = this->Dest_X / this->Src_X;
         const Uint16 y_factor = this->Dest_Y / this->Src_Y;
-        const unsigned long x_feed = Columns;
-        const unsigned long y_feed = OFstatic_cast(unsigned long, Rows - this->Src_Y) * OFstatic_cast(unsigned long, Columns);
+        const unsigned int x_feed = Columns;
+        const unsigned int y_feed = OFstatic_cast(unsigned int, Rows - this->Src_Y) * OFstatic_cast(unsigned int, Columns);
         const T *sp;
         register Uint16 x;
         register Uint16 y;
@@ -373,7 +373,7 @@ class DiScaleTemplate
         register T value;
         for (int j = 0; j < this->Planes; ++j)
         {
-            sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
+            sp = src[j] + OFstatic_cast(unsigned int, Top) * OFstatic_cast(unsigned int, Columns) + Left;
             q = dest[j];
             for (Uint32 f = this->Frames; f != 0; --f)
             {
@@ -405,15 +405,15 @@ class DiScaleTemplate
                        T *dest[])
     {
         const unsigned int x_divisor = this->Src_X / this->Dest_X;
-        const unsigned long x_feed = OFstatic_cast(unsigned long, this->Src_Y / this->Dest_Y) * OFstatic_cast(unsigned long, Columns) - this->Src_X;
-        const unsigned long y_feed = OFstatic_cast(unsigned long, Rows - this->Src_Y) * OFstatic_cast(unsigned long, Columns);
+        const unsigned int x_feed = OFstatic_cast(unsigned int, this->Src_Y / this->Dest_Y) * OFstatic_cast(unsigned int, Columns) - this->Src_X;
+        const unsigned int y_feed = OFstatic_cast(unsigned int, Rows - this->Src_Y) * OFstatic_cast(unsigned int, Columns);
         register Uint16 x;
         register Uint16 y;
         register const T *p;
         register T *q;
         for (int j = 0; j < this->Planes; ++j)
         {
-            p = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
+            p = src[j] + OFstatic_cast(unsigned int, Top) * OFstatic_cast(unsigned int, Columns) + Left;
             q = dest[j];
             for (Uint32 f = this->Frames; f != 0; --f)
             {
@@ -482,7 +482,7 @@ class DiScaleTemplate
             register T value;
             for (int j = 0; j < this->Planes; ++j)
             {
-                sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
+                sp = src[j] + OFstatic_cast(unsigned int, Top) * OFstatic_cast(unsigned int, Columns) + Left;
                 q = dest[j];
                 for (Uint32 f = 0; f < this->Frames; ++f)
                 {
@@ -498,7 +498,7 @@ class DiScaleTemplate
                                 p += x_step[x];
                             }
                         }
-                        sp += OFstatic_cast(unsigned long, y_step[y]) * OFstatic_cast(unsigned long, Columns);
+                        sp += OFstatic_cast(unsigned int, y_step[y]) * OFstatic_cast(unsigned int, Columns);
                     }
                 }
             }
@@ -543,8 +543,8 @@ class DiScaleTemplate
         T const *fp;
         T *sq;
 
-        const unsigned long sxscale = OFstatic_cast(unsigned long, (OFstatic_cast(double, this->Dest_X) / OFstatic_cast(double, this->Src_X)) * SCALE_FACTOR);
-        const unsigned long syscale = OFstatic_cast(unsigned long, (OFstatic_cast(double, this->Dest_Y) / OFstatic_cast(double, this->Src_Y)) * SCALE_FACTOR);
+        const unsigned int sxscale = OFstatic_cast(unsigned int, (OFstatic_cast(double, this->Dest_X) / OFstatic_cast(double, this->Src_X)) * SCALE_FACTOR);
+        const unsigned int syscale = OFstatic_cast(unsigned int, (OFstatic_cast(double, this->Dest_Y) / OFstatic_cast(double, this->Src_Y)) * SCALE_FACTOR);
         DiPixelRepresentationTemplate<T> rep;
         const signed long maxvalue = DicomImageClass::maxval(this->Bits - rep.isSigned());
 
@@ -559,7 +559,7 @@ class DiScaleTemplate
                 ofConsole.unlockCerr();
             }
 
-            const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y) * this->Frames;
+            const unsigned int count = OFstatic_cast(unsigned int, this->Dest_X) * OFstatic_cast(unsigned int, this->Dest_Y) * this->Frames;
             for (int j = 0; j < this->Planes; ++j)
                 OFBitmanipTemplate<T>::zeroMem(dest[j], count);     // delete destination buffer
         }
@@ -573,8 +573,8 @@ class DiScaleTemplate
                 {
                     for (x = 0; x < this->Src_X; ++x)
                         xvalue[x] = HALFSCALE_FACTOR;
-                    register unsigned long yfill = SCALE_FACTOR;
-                    register unsigned long yleft = syscale;
+                    register unsigned int yfill = SCALE_FACTOR;
+                    register unsigned int yleft = syscale;
                     register int yneed = 1;
                     int ysrc = 0;
                     for (y = 0; y < this->Dest_Y; ++y)
@@ -633,8 +633,8 @@ class DiScaleTemplate
                         else
                         {
                             register signed long v = HALFSCALE_FACTOR;
-                            register unsigned long xfill = SCALE_FACTOR;
-                            register unsigned long xleft;
+                            register unsigned int xfill = SCALE_FACTOR;
+                            register unsigned int xleft;
                             register int xneed = 0;
                             q = sq;
                             for (x = 0, p = xtemp; x < this->Src_X; ++x, ++p)
@@ -701,13 +701,13 @@ class DiScaleTemplate
 #endif
         const double x_factor = OFstatic_cast(double, this->Src_X) / OFstatic_cast(double, this->Dest_X);
         const double y_factor = OFstatic_cast(double, this->Src_Y) / OFstatic_cast(double, this->Dest_Y);
-        const unsigned long f_size = OFstatic_cast(unsigned long, Rows) * OFstatic_cast(unsigned long, Columns);
+        const unsigned int f_size = OFstatic_cast(unsigned int, Rows) * OFstatic_cast(unsigned int, Columns);
         const T *sp;
         double bx, ex;
         double by, ey;
         int bxi, exi;
         int byi, eyi;
-        unsigned long offset;
+        unsigned int offset;
         double value, sum;
         double x_part, y_part;
         double l_factor, r_factor;
@@ -726,7 +726,7 @@ class DiScaleTemplate
 
         for (int j = 0; j < this->Planes; ++j)
         {
-            sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
+            sp = src[j] + OFstatic_cast(unsigned int, Top) * OFstatic_cast(unsigned int, Columns) + Left;
             q = dest[j];
             for (Uint32 f = 0; f < this->Frames; ++f)
             {
@@ -753,11 +753,11 @@ class DiScaleTemplate
                         x_part = OFstatic_cast(double, exi) / x_factor;
                         l_factor = x_part - OFstatic_cast(double, x);
                         r_factor = (OFstatic_cast(double, x) + 1.0) - x_part;
-                        offset = OFstatic_cast(unsigned long, byi - 1) * OFstatic_cast(unsigned long, Columns);
+                        offset = OFstatic_cast(unsigned int, byi - 1) * OFstatic_cast(unsigned int, Columns);
                         for (yi = byi; yi <= eyi; ++yi)
                         {
                             offset += Columns;
-                            p = sp + offset + OFstatic_cast(unsigned long, bxi);
+                            p = sp + offset + OFstatic_cast(unsigned int, bxi);
                             for (xi = bxi; xi <= exi; ++xi)
                             {
                                 sum = OFstatic_cast(double, *(p++));
@@ -805,13 +805,13 @@ class DiScaleTemplate
         const double x_factor = OFstatic_cast(double, this->Src_X) / OFstatic_cast(double, this->Dest_X);
         const double y_factor = OFstatic_cast(double, this->Src_Y) / OFstatic_cast(double, this->Dest_Y);
         const double xy_factor = x_factor * y_factor;
-        const unsigned long f_size = OFstatic_cast(unsigned long, Rows) * OFstatic_cast(unsigned long, Columns);
+        const unsigned int f_size = OFstatic_cast(unsigned int, Rows) * OFstatic_cast(unsigned int, Columns);
         const T *sp;
         double bx, ex;
         double by, ey;
         int bxi, exi;
         int byi, eyi;
-        unsigned long offset;
+        unsigned int offset;
         double value, sum;
         double l_factor, r_factor;
         double t_factor, b_factor;
@@ -829,7 +829,7 @@ class DiScaleTemplate
 
         for (int j = 0; j < this->Planes; ++j)
         {
-            sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
+            sp = src[j] + OFstatic_cast(unsigned int, Top) * OFstatic_cast(unsigned int, Columns) + Left;
             q = dest[j];
             for (Uint32 f = 0; f < this->Frames; ++f)
             {
@@ -854,11 +854,11 @@ class DiScaleTemplate
                             --exi;
                         l_factor = 1 + OFstatic_cast(double, bxi) - bx;
                         r_factor = ex - OFstatic_cast(double, exi);
-                        offset = OFstatic_cast(unsigned long, byi - 1) * OFstatic_cast(unsigned long, Columns);
+                        offset = OFstatic_cast(unsigned int, byi - 1) * OFstatic_cast(unsigned int, Columns);
                         for (yi = byi; yi <= eyi; ++yi)
                         {
                             offset += Columns;
-                            p = sp + offset + OFstatic_cast(unsigned long, bxi);
+                            p = sp + offset + OFstatic_cast(unsigned int, bxi);
                             for (xi = bxi; xi <= exi; ++xi)
                             {
                                 sum = OFstatic_cast(double, *(p++)) / xy_factor;

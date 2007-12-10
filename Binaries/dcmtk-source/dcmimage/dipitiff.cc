@@ -65,7 +65,7 @@ DiTIFFPlugin::~DiTIFFPlugin()
 int DiTIFFPlugin::write(
   DiImage *image,
   FILE *stream,
-  const unsigned long frame) const
+  const unsigned int frame) const
 {
   int result = 0;
   if ((image != NULL) && (stream != NULL))
@@ -96,7 +96,7 @@ int DiTIFFPlugin::write(
 
       short photometric = isMono ? PHOTOMETRIC_MINISBLACK : PHOTOMETRIC_RGB;
       short samplesperpixel = isMono ? 1 : 3;
-      unsigned long bytesperrow = cols * samplesperpixel;
+      unsigned int bytesperrow = cols * samplesperpixel;
       if (bytesperrow > 0)
       {
         short opt_predictor = 0;
@@ -154,7 +154,7 @@ int DiTIFFPlugin::write(
           TIFFSetField(tif, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
 
           /* Now write the TIFF data. */
-          unsigned long offset = 0;
+          unsigned int offset = 0;
           for (Uint16 i=0; (i < rows) && OK; i++)
           {
             if (TIFFWriteScanline(tif, bytedata + offset, i, 0) < 0) OK = OFFalse;
@@ -184,7 +184,7 @@ void DiTIFFPlugin::setLZWPredictor(DiTIFFLZWPredictor pred)
   predictor = pred;
 }
 
-void DiTIFFPlugin::setRowsPerStrip(unsigned long rows)
+void DiTIFFPlugin::setRowsPerStrip(unsigned int rows)
 {
   rowsPerStrip = rows;
 }

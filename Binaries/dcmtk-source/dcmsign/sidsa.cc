@@ -59,10 +59,10 @@ SiDSA::~SiDSA()
 
 OFCondition SiDSA::sign(
     const unsigned char *inputHash, 
-    unsigned long inputHashSize,
+    unsigned int inputHashSize,
     E_MACType inputHashAlgorithm,
     unsigned char *outputSignature,
-    unsigned long &outputSignatureSize)
+    unsigned int &outputSignatureSize)
 {
     if (dsa==NULL) return SI_EC_InitializationFailed;    
     int openSSLmac = 0;
@@ -88,10 +88,10 @@ OFCondition SiDSA::sign(
 
 OFCondition SiDSA::verify(
     const unsigned char *inputHash, 
-    unsigned long inputHashSize,
+    unsigned int inputHashSize,
     E_MACType inputHashAlgorithm,
     const unsigned char *inputSignature,
-    unsigned long inputSignatureSize,
+    unsigned int inputSignatureSize,
     OFBool &verified)
 {
     verified = OFFalse;
@@ -117,7 +117,7 @@ OFCondition SiDSA::verify(
 }
 
 
-unsigned long SiDSA::getSize() const
+unsigned int SiDSA::getSize() const
 {   
   if (dsa == NULL) return 0;
   return DSA_size(dsa);

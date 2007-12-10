@@ -186,7 +186,7 @@ DVPSGraphicObject *DVPSGraphicAnnotation::removeGraphicObject(size_t idx)
 OFCondition DVPSGraphicAnnotation::addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
-    unsigned long frame,
+    unsigned int frame,
     DVPSObjectApplicability applicability)
 {
   if ((sopclassUID==NULL)||(instanceUID==NULL)||(applicability==DVPSB_allImages)) return EC_IllegalCall;
@@ -202,7 +202,7 @@ OFCondition DVPSGraphicAnnotation::addImageReference(
 
 OFBool DVPSGraphicAnnotation::isApplicable(    
     const char *instanceUID, 
-    unsigned long frame,
+    unsigned int frame,
     DVPSObjectApplicability applicability)
 {
   if (referencedImageList.size() == 0) return OFTrue; // if no image references exist, the annotation is valid "globally".

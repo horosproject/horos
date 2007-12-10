@@ -219,7 +219,7 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
     if (pReport && debugMode)
         pReport->setLogStream(logstream);
 
-    referenceTime = OFstatic_cast(unsigned long, time(NULL));
+    referenceTime = OFstatic_cast(unsigned int, time(NULL));
     /* initialize printJobIdentifier with a string comprising the current time */
     char buf[20];
     sprintf(buf, "%lu", referenceTime);
@@ -1329,7 +1329,7 @@ void DVInterface::resetDatabaseReferenceTime()
       struct stat stat_buf;
       if (0 == stat(databaseIndexFile.c_str(), &stat_buf))
       {
-        referenceTime = OFstatic_cast(unsigned long, stat_buf.st_mtime);
+        referenceTime = OFstatic_cast(unsigned int, stat_buf.st_mtime);
       }
     }
 }
@@ -1351,7 +1351,7 @@ OFBool DVInterface::newInstancesReceived()
     struct stat stat_buf;
     if (0== stat(databaseIndexFile.c_str(), &stat_buf))
     {
-      if (OFstatic_cast(unsigned long, stat_buf.st_mtime) == referenceTime) return OFFalse;
+      if (OFstatic_cast(unsigned int, stat_buf.st_mtime) == referenceTime) return OFFalse;
     }
 
     resetDatabaseReferenceTime();
@@ -2462,7 +2462,7 @@ OFCondition DVInterface::startQueryRetrieveServer()
     if (timeout > 0)
     {
       char str_timeout[20];
-      sprintf(str_timeout, "%lu", OFstatic_cast(unsigned long, timeout));
+      sprintf(str_timeout, "%lu", OFstatic_cast(unsigned int, timeout));
       execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown",
         "--timeout", str_timeout, NULL);
     }
@@ -2493,7 +2493,7 @@ OFCondition DVInterface::startQueryRetrieveServer()
   if (timeout > 0)
   {
     sprintf(commandline, "%s -c %s --allow-shutdown --timeout %lu",
-      server_application, config_filename.c_str(), (unsigned long) timeout);
+      server_application, config_filename.c_str(), (unsigned int) timeout);
   }
   else
   {
@@ -2624,8 +2624,8 @@ OFCondition DVInterface::createQueryRetrieveServerConfigFile(const char *filenam
 OFCondition DVInterface::saveDICOMImage(
   const char *filename,
   const void *pixelData,
-  unsigned long width,
-  unsigned long height,
+  unsigned int width,
+  unsigned int height,
   double aspectRatio,
   OFBool explicitVR,
   const char *instanceUID)
@@ -2683,7 +2683,7 @@ OFCondition DVInterface::saveDICOMImage(
       DcmPolymorphOBOW *pxData = new DcmPolymorphOBOW(DCM_PixelData);
       if (pxData)
       {
-        status = pxData->putUint8Array(OFstatic_cast(Uint8 *, OFconst_cast(void *, pixelData)), OFstatic_cast(unsigned long, width*height));
+        status = pxData->putUint8Array(OFstatic_cast(Uint8 *, OFconst_cast(void *, pixelData)), OFstatic_cast(unsigned int, width*height));
         if (EC_Normal==status) status = dataset->insert(pxData, OFTrue /*replaceOld*/); else delete pxData;
       } else status = EC_MemoryExhausted;
 
@@ -2708,8 +2708,8 @@ OFCondition DVInterface::saveDICOMImage(
 
 OFCondition DVInterface::saveDICOMImage(
   const void *pixelData,
-  unsigned long width,
-  unsigned long height,
+  unsigned int width,
+  unsigned int height,
   double aspectRatio)
 {
   // release database lock since we are using the DB module directly
@@ -2755,8 +2755,8 @@ OFCondition DVInterface::saveDICOMImage(
 OFCondition DVInterface::saveHardcopyGrayscaleImage(
   const char *filename,
   const void *pixelData,
-  unsigned long width,
-  unsigned long height,
+  unsigned int width,
+  unsigned int height,
   double aspectRatio,
   OFBool explicitVR,
   const char *instanceUID)
@@ -2826,7 +2826,7 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
       DcmPolymorphOBOW *pxData = new DcmPolymorphOBOW(DCM_PixelData);
       if (pxData)
       {
-        status = pxData->putUint16Array(OFstatic_cast(Uint16 *, OFconst_cast(void *, pixelData)), OFstatic_cast(unsigned long, width*height));
+        status = pxData->putUint16Array(OFstatic_cast(Uint16 *, OFconst_cast(void *, pixelData)), OFstatic_cast(unsigned int, width*height));
         if (EC_Normal==status) status = dataset->insert(pxData, OFTrue /*replaceOld*/); else delete pxData;
       } else status = EC_MemoryExhausted;
 
@@ -2872,8 +2872,8 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
 
 OFCondition DVInterface::saveHardcopyGrayscaleImage(
   const void *pixelData,
-  unsigned long width,
-  unsigned long height,
+  unsigned int width,
+  unsigned int height,
   double aspectRatio)
 {
   // release database lock since we are using the DB module directly
@@ -3182,8 +3182,8 @@ OFCondition DVInterface::loadPrintPreview(size_t idx, OFBool printLUT, OFBool ch
         {
           if (image->getStatus() == EIS_Normal)
           {
-            unsigned long width = maximumPrintPreviewWidth;
-            unsigned long height = maximumPrintPreviewHeight;
+            unsigned int width = maximumPrintPreviewWidth;
+            unsigned int height = maximumPrintPreviewHeight;
             /* consider aspect ratio of the image and the display */
             double ratio = image->getWidthHeightRatio();
             const double mpWidth = getMonitorPixelWidth();
@@ -3246,17 +3246,17 @@ void DVInterface::unloadPrintPreview()
   pHardcopyImage = NULL;
 }
 
-unsigned long DVInterface::getPrintPreviewSize()
+unsigned int DVInterface::getPrintPreviewSize()
 {
-  unsigned long result = 0;
-  unsigned long width;
-  unsigned long height;
+  unsigned int result = 0;
+  unsigned int width;
+  unsigned int height;
   if (getPrintPreviewWidthHeight(width, height) == EC_Normal)
     result = width * height;
   return result;
 }
 
-void DVInterface::setMaxPrintPreviewWidthHeight(unsigned long width, unsigned long height)
+void DVInterface::setMaxPrintPreviewWidthHeight(unsigned int width, unsigned int height)
 {
   if ((width != maximumPrintPreviewWidth) || (height != maximumPrintPreviewHeight))
   {
@@ -3266,7 +3266,7 @@ void DVInterface::setMaxPrintPreviewWidthHeight(unsigned long width, unsigned lo
   }
 }
 
-OFCondition DVInterface::getPrintPreviewWidthHeight(unsigned long &width, unsigned long &height)
+OFCondition DVInterface::getPrintPreviewWidthHeight(unsigned int &width, unsigned int &height)
 {
   OFCondition result = EC_IllegalCall;
   if (pHardcopyImage != NULL)
@@ -3282,7 +3282,7 @@ OFCondition DVInterface::getPrintPreviewWidthHeight(unsigned long &width, unsign
   return result;
 }
 
-OFCondition DVInterface::getPrintPreviewBitmap(void *bitmap, unsigned long size)
+OFCondition DVInterface::getPrintPreviewBitmap(void *bitmap, unsigned int size)
 {
   OFCondition status = EC_IllegalCall;
   if ((pHardcopyImage != NULL) && (bitmap != NULL) && (size > 0))
@@ -3367,13 +3367,13 @@ const char *DVInterface::getPrinterOwnerID()
   return printerOwnerID.c_str();
 }
 
-OFCondition DVInterface::setPrinterNumberOfCopies(unsigned long value)
+OFCondition DVInterface::setPrinterNumberOfCopies(unsigned int value)
 {
   printerNumberOfCopies = value;
   return EC_Normal;
 }
 
-unsigned long DVInterface::getPrinterNumberOfCopies()
+unsigned int DVInterface::getPrinterNumberOfCopies()
 {
   return printerNumberOfCopies;
 }
@@ -3483,7 +3483,7 @@ OFCondition DVInterface::startPrintSpooler()
   if (configPath.length()==0) return EC_IllegalCall;
 
   const char *printer = NULL;
-  unsigned long sleepingTime = getSpoolerSleep();
+  unsigned int sleepingTime = getSpoolerSleep();
   if (sleepingTime==0) sleepingTime=1; // default
   char sleepStr[20];
   sprintf(sleepStr, "%lu", sleepingTime);
@@ -4364,17 +4364,17 @@ DVPSSignatureStatus DVInterface::getCombinedImagePStateSignatureStatus() const
   return pSignatureHandler->getCombinedImagePStateSignatureStatus();
 }
 
-unsigned long DVInterface::getNumberOfCorrectSignatures(DVPSObjectType objtype) const
+unsigned int DVInterface::getNumberOfCorrectSignatures(DVPSObjectType objtype) const
 {
   return pSignatureHandler->getNumberOfCorrectSignatures(objtype);
 }
 
-unsigned long DVInterface::getNumberOfUntrustworthySignatures(DVPSObjectType objtype) const
+unsigned int DVInterface::getNumberOfUntrustworthySignatures(DVPSObjectType objtype) const
 {
   return pSignatureHandler->getNumberOfUntrustworthySignatures(objtype);
 }
 
-unsigned long DVInterface::getNumberOfCorruptSignatures(DVPSObjectType objtype) const
+unsigned int DVInterface::getNumberOfCorruptSignatures(DVPSObjectType objtype) const
 {
   return pSignatureHandler->getNumberOfCorruptSignatures(objtype);
 }

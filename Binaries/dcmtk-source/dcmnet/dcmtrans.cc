@@ -229,12 +229,12 @@ void DcmTCPConnection::close()
 #endif
 }
 
-unsigned long DcmTCPConnection::getPeerCertificateLength()
+unsigned int DcmTCPConnection::getPeerCertificateLength()
 {
   return 0;
 }
 
-unsigned long DcmTCPConnection::getPeerCertificate(void * /* buf */ , unsigned long /* bufLen */ )
+unsigned int DcmTCPConnection::getPeerCertificate(void * /* buf */ , unsigned int /* bufLen */ )
 {
   return 0;
 }

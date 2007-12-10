@@ -90,7 +90,7 @@ class DcmDicomDir
                                               char *filename );            // in
     OFCondition resolveGivenOffsets( DcmObject *startPoint,         // inout
                                      ItemOffset *itOffsets,         // in
-                                     const unsigned long numOffsets,  // in
+                                     const unsigned int numOffsets,  // in
                                      const DcmTagKey &offsetTag );  // in
     OFCondition resolveAllOffsets(   DcmDataset &dset );            // inout
     OFCondition linkMRDRtoRecord(    DcmDirectoryRecord *dRec );    // inout
@@ -107,7 +107,7 @@ class DcmDicomDir
                                      E_EncodingType enctype );      // in
     OFCondition convertGivenPointer( DcmObject *startPoint,         // inout
                                      ItemOffset *itOffsets,         // in
-                                     const unsigned long numOffsets,  // in
+                                     const unsigned int numOffsets,  // in
                                      const DcmTagKey &offsetTag );  // in
     OFCondition convertAllPointer(   DcmDataset &dset,              // inout
                                      Uint32 beginOfFileSet,        // in
@@ -120,10 +120,10 @@ class DcmDicomDir
     OFCondition insertMediaSOPUID(   DcmMetaInfo &metaInfo );       // inout
     OFCondition countMRDRRefs(       DcmDirectoryRecord *startRec,  // in
                                      ItemOffset *refCounter,        // inout
-                                     const unsigned long numCounters );   // in
+                                     const unsigned int numCounters );   // in
     OFCondition checkMRDRRefCounter( DcmDirectoryRecord *startRec,  // in
                                      ItemOffset *refCounter,        // inout
-                                     const unsigned long numCounters );    // in
+                                     const unsigned int numCounters );    // in
 
     // komplette Reorganisation der verwalteten Directory Records (Seiteneffekt)
     OFCondition convertLinearToTree();

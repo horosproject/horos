@@ -104,9 +104,9 @@ OFCondition DSRReferencedSamplePositionList::read(DcmItem &dataset,
         /* clear internal list */
         clear();
         Uint32 value = 0;
-        const unsigned long count = delem.getVM();
+        const unsigned int count = delem.getVM();
         /* fill list with values from integer string */
-        for (unsigned long i = 0; i < count; i++)
+        for (unsigned int i = 0; i < count; i++)
         {
             if (delem.getUint32(value, i).good())
                 addItem(value);
@@ -120,7 +120,7 @@ OFCondition DSRReferencedSamplePositionList::write(DcmItem &dataset,
                                                    OFConsole * /*logStream*/) const
 {
     OFCondition result = EC_Normal;
-    unsigned long i = 0;
+    unsigned int i = 0;
     /* create element */
     DcmUnsignedLong delem(DCM_ReferencedSamplePositions);
     const OFListConstIterator(Uint32) endPos = ItemList.end();

@@ -154,7 +154,7 @@ DcmPolymorphOBOW::createUint16Array(
 OFCondition
 DcmPolymorphOBOW::putUint8Array(
     const Uint8 * byteValue,
-    const unsigned long numBytes)
+    const unsigned int numBytes)
 {
     errorFlag = EC_Normal;
     currentVR = Tag.getEVR();
@@ -184,7 +184,7 @@ DcmPolymorphOBOW::putUint8Array(
 OFCondition
 DcmPolymorphOBOW::putUint16Array(
     const Uint16 * wordValue,
-    const unsigned long numWords)
+    const unsigned int numWords)
 {
     errorFlag = EC_Normal;
     currentVR = Tag.getEVR();

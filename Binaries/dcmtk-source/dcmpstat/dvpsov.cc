@@ -264,7 +264,7 @@ OFCondition DVPSOverlay::write(DcmItem &dset)
 }
 
 
-OFBool DVPSOverlay::isSuitableAsShutter(unsigned long x, unsigned long y)
+OFBool DVPSOverlay::isSuitableAsShutter(unsigned int x, unsigned int y)
 {
   // check that overlay is Graphic, not ROI.
   if (isROI()) return OFFalse;

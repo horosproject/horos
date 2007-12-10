@@ -95,7 +95,7 @@ extern OFGlobal<const char *> dcmTCPWrapperDaemonName;   /* default NULL */
 /* Global option flag for compatibility with DCMTK releases prior to 3.0 
  * Default (0) is automatic handling, which should work in most cases.
  */
-extern OFGlobal<unsigned long> dcmEnableBackwardCompatibility;
+extern OFGlobal<unsigned int> dcmEnableBackwardCompatibility;
 
 #ifndef DUL_KEYS
 #define DUL_KEYS 1
@@ -142,7 +142,7 @@ public:
   /** callback method
    *  @param mode DUL compatibility mode passed in callback
    */
-  virtual void callback(unsigned long mode) = 0;
+  virtual void callback(unsigned int mode) = 0;
 };
 
 typedef struct {
@@ -150,7 +150,7 @@ typedef struct {
     char callingAPTitle[DUL_LEN_TITLE + 1];
     char calledAPTitle[DUL_LEN_TITLE + 1];
     char respondingAPTitle[DUL_LEN_TITLE + 1];
-    unsigned long maxPDU;
+    unsigned int maxPDU;
     unsigned short result;
     unsigned short resultSource;
     unsigned short diagnostic;
@@ -164,7 +164,7 @@ typedef struct {
     char callingImplementationVersionName[16 + 1];
     char calledImplementationClassUID[DICOM_UI_LENGTH + 1];
     char calledImplementationVersionName[16 + 1];
-    unsigned long peerMaxPDU;
+    unsigned int peerMaxPDU;
     SOPClassExtendedNegotiationSubItemList *requestedExtNegList;
     SOPClassExtendedNegotiationSubItemList *acceptedExtNegList;
     OFBool useSecureLayer;
@@ -220,7 +220,7 @@ typedef enum {
     DUL_BLOCKOPTIONS;
 
 typedef struct {
-    unsigned long fragmentLength;
+    unsigned int fragmentLength;
     unsigned char presentationContextID;
     DUL_DATAPDV pdvType;
     OFBool lastPDV;
@@ -228,9 +228,9 @@ typedef struct {
 }   DUL_PDV;
 
 typedef struct {
-    unsigned long count;
+    unsigned int count;
     void *scratch;
-    unsigned long scratchLength;
+    unsigned int scratchLength;
     DUL_ABORTITEMS abort;
     DUL_PDV *pdv;
 }   DUL_PDVLIST;
@@ -347,7 +347,7 @@ DUL_InitializeNetwork(
   const char *mode, 
   void *param,
   int timeout, 
-  unsigned long 
+  unsigned int 
   options, 
   DUL_NETWORKKEY ** network);
 
@@ -429,7 +429,7 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout);
  * functions allowing to retrieve raw A-ASSOCIATE PDUs from the DUL layer
  */
 void DUL_activateAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc);
-void DUL_returnAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc, void *& pdu, unsigned long& pdusize);
+void DUL_returnAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc, void *& pdu, unsigned int& pdusize);
 
 /* get pointer to transport connection from opaque association pointer */
 DcmTransportConnection *DUL_getTransportConnection(DUL_ASSOCIATIONKEY * callerAssociation);
@@ -438,14 +438,14 @@ DcmTransportConnection *DUL_getTransportConnection(DUL_ASSOCIATIONKEY * callerAs
 OFCondition DUL_setTransportLayer(DUL_NETWORKKEY *callerNetworkKey, DcmTransportLayer *newLayer, int takeoverOwnership);
 
 /* activate compatibility mode and callback */
-void DUL_activateCompatibilityMode(DUL_ASSOCIATIONKEY *dulassoc, unsigned long mode);
+void DUL_activateCompatibilityMode(DUL_ASSOCIATIONKEY *dulassoc, unsigned int mode);
 void DUL_activateCallback(DUL_ASSOCIATIONKEY *dulassoc, DUL_ModeCallback *cb);
 
 /*
  * function allowing to retrieve the peer certificate from the DUL layer
  */
-unsigned long DUL_getPeerCertificateLength(DUL_ASSOCIATIONKEY *dulassoc);
-unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, unsigned long bufLen);
+unsigned int DUL_getPeerCertificateLength(DUL_ASSOCIATIONKEY *dulassoc);
+unsigned int DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, unsigned int bufLen);
 
 /*
  * functions for multi-process servers

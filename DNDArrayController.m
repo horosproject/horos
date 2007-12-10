@@ -63,7 +63,6 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 				break;
 			}
 		}
-		else NSLog( @"no test");
 	}
 }
 

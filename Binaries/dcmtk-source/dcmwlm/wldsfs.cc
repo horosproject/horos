@@ -279,7 +279,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
 //                                      application.
 //                WLM_FAILED_IDENTIFIER_DOES_NOT_MATCH_SOP_CLASS - Error in the search mask encountered.
 {
-  unsigned long i, j;
+  unsigned int i, j;
   char msg[200];
   DcmElement *scheduledProcedureStepSequenceAttribute = NULL;
 
@@ -344,7 +344,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
     DumpMessage( "Determining matching records from worklist files." );
 
   // Determine records from worklist files which match the search mask
-  unsigned long numOfMatchingRecords = fileSystemInteractionManager->DetermineMatchingRecords( identifiers );
+  unsigned int numOfMatchingRecords = fileSystemInteractionManager->DetermineMatchingRecords( identifiers );
 
   // dump some information if required
   if( verbose )
@@ -382,7 +382,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
       matchingDatasets[i] = new DcmDataset( *identifiers );
 
       // Determine the number of elements in matchingDatasets[i].
-      unsigned long numOfElementsInDataset = matchingDatasets[i]->card();
+      unsigned int numOfElementsInDataset = matchingDatasets[i]->card();
 
       // Go through all the elements in matchingDatasets[i].
       for( j=0 ; j < numOfElementsInDataset ; j++ )
@@ -528,7 +528,7 @@ DcmDataset *WlmDataSourceFileSystem::NextFindResponse( WlmDataSourceStatusType &
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElement *element, unsigned long idx )
+void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElement *element, unsigned int idx )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function takes care of handling a certain non-sequence element within
@@ -579,7 +579,7 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *element, unsigned long idx )
+void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *element, unsigned int idx )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function takes care of handling a certain sequence element within the structure
@@ -592,7 +592,7 @@ void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *
 //                idx     - [in] Index of the matching record (identifies this record).
 // Return Value : none.
 {
-  unsigned long i, k, numOfItemsInResultSequence;
+  unsigned int i, k, numOfItemsInResultSequence;
   WlmSuperiorSequenceInfoType *tmp;
 
   // consider this element as a sequence of items.
@@ -653,7 +653,7 @@ void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *
       DcmItem *itemInSequence = sequenceOfItemsElement->getItem(i);
 
       // get its cardinality.
-      unsigned long numOfElementsInItem = itemInSequence->card();
+      unsigned int numOfElementsInItem = itemInSequence->card();
 
       // update current item indicator in superiorSequenceArray
       superiorSequenceArray[ numOfSuperiorSequences - 1 ].currentItem = i;

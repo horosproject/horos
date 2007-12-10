@@ -80,7 +80,7 @@ DcmEVR DcmDecimalString::ident() const
 
 
 OFCondition DcmDecimalString::getFloat64(Float64 &doubleVal,
-                                         const unsigned long pos)
+                                         const unsigned int pos)
 {
     /* get decimal string value */
     OFString str;
@@ -101,7 +101,7 @@ OFCondition DcmDecimalString::getFloat64(Float64 &doubleVal,
 
 
 OFCondition DcmDecimalString::getOFString(OFString &stringVal,
-                                          const unsigned long pos,
+                                          const unsigned int pos,
                                           OFBool normalize)
 {
     /* call inherited method */

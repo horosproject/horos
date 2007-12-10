@@ -61,7 +61,7 @@ public:
    *    Upon return, contains the array index of the last element moved + 1.
    *  @param numcolors number of elements in array
    */
-  void moveto(DcmQuantHistogramItemPointer *array, unsigned long& counter, unsigned long numcolors);
+  void moveto(DcmQuantHistogramItemPointer *array, unsigned int& counter, unsigned int numcolors);
 
   /** searches the list for an entry that equals the given pixel value.
    *  If found, the integer value assigned to that pixel is returned, otherwise returns -1.
@@ -86,7 +86,7 @@ public:
    *  @param colorP pixel to add to the list
    *  @return 0 if pixel was already in list, 1 otherwise.
    */
-  inline unsigned long add(const DcmQuantPixel& colorP)
+  inline unsigned int add(const DcmQuantPixel& colorP)
   {
     first = list_.begin();
     while (first != last)

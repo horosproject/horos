@@ -507,7 +507,7 @@ OFCondition DVPSImageBoxContent::prepareBasicImageBox(DcmItem &dset)
   return result;
 }
 
-OFCondition DVPSImageBoxContent::createDefaultValues(OFBool renumber, unsigned long number, OFBool ignoreEmptyImages)
+OFCondition DVPSImageBoxContent::createDefaultValues(OFBool renumber, unsigned int number, OFBool ignoreEmptyImages)
 {
   OFCondition result = EC_Normal;
   char uid[100];

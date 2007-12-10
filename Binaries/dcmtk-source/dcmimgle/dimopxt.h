@@ -67,7 +67,7 @@ class DiMonoPixelTemplate
      *
      ** @param  count  number of pixels
      */
-    DiMonoPixelTemplate(const unsigned long count)
+    DiMonoPixelTemplate(const unsigned int count)
       : DiMonoPixel(count),
         Data(NULL)
     {
@@ -212,13 +212,13 @@ class DiMonoPixelTemplate
      *
      ** @return status, true if successful, false otherwise
      */
-    virtual int getRoiWindow(const unsigned long left_pos,
-                             const unsigned long top_pos,
-                             const unsigned long width,
-                             const unsigned long height,
-                             const unsigned long columns,
-                             const unsigned long rows,
-                             const unsigned long frame,
+    virtual int getRoiWindow(const unsigned int left_pos,
+                             const unsigned int top_pos,
+                             const unsigned int width,
+                             const unsigned int height,
+                             const unsigned int columns,
+                             const unsigned int rows,
+                             const unsigned int frame,
                              double &voiCenter,
                              double &voiWidth)
     {
@@ -226,11 +226,11 @@ class DiMonoPixelTemplate
         if ((Data != NULL) && (left_pos < columns) && (top_pos < rows))
         {
             register T *p = Data + (columns * rows * frame) + (top_pos * columns) + left_pos;
-            const unsigned long right_pos = (left_pos + width < columns) ? left_pos + width : columns;
-            const unsigned long bottom = (top_pos + height < rows) ? top_pos + height : rows;
-            const unsigned long skip_x = left_pos + (columns - right_pos);
-            register unsigned long x;
-            register unsigned long y;
+            const unsigned int right_pos = (left_pos + width < columns) ? left_pos + width : columns;
+            const unsigned int bottom = (top_pos + height < rows) ? top_pos + height : rows;
+            const unsigned int skip_x = left_pos + (columns - right_pos);
+            register unsigned int x;
+            register unsigned int y;
             register T value = 0;
             register T min = *p;                    // get first pixel as initial value for min ...
             register T max = min;                   // ... and max
@@ -274,7 +274,7 @@ class DiMonoPixelTemplate
             Uint32 *quant = new Uint32[count];
             if (quant != NULL)
             {
-                register unsigned long i;
+                register unsigned int i;
                 OFBitmanipTemplate<Uint32>::zeroMem(quant, count);                  // initialize array
                 for (i = 0; i < Count; ++i)
                 {
@@ -340,7 +340,7 @@ class DiMonoPixelTemplate
      *  @param  count  number of pixels
      */
     DiMonoPixelTemplate(const DiMonoPixel *pixel,
-                        const unsigned long count)
+                        const unsigned int count)
       : DiMonoPixel(pixel, count),
         Data(NULL)
     {
@@ -369,7 +369,7 @@ class DiMonoPixelTemplate
                 {
                     register T *p = Data;
                     register T value = *p;
-                    register unsigned long i;
+                    register unsigned int i;
                     minvalue = value;
                     maxvalue = value;
                     for (i = Count; i > 1; --i)                 // could be optimized if necessary (see diinpxt.h) !
@@ -395,7 +395,7 @@ class DiMonoPixelTemplate
                 register T value;
                 register int firstmin = 1;
                 register int firstmax = 1;
-                register unsigned long i;
+                register unsigned int i;
                 for (i = Count; i != 0; --i)                    // could be optimized if necessary (see diinpxt.h) !
                 {
                     value = *(p++);

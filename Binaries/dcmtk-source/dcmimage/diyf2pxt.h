@@ -108,7 +108,7 @@ class DiYBR422PixelTemplate
         if (Init(pixel))
         {
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
-            register unsigned long i;
+            register unsigned int i;
             register const T1 *p = pixel;
             register T2 *r = this->Data[0];
             register T2 *g = this->Data[1];
@@ -119,7 +119,7 @@ class DiYBR422PixelTemplate
             register T2 cr;
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
-            const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
+            const unsigned int count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
             if (rgb)    /* convert to RGB model */
             {
                 const T2 maxvalue = OFstatic_cast(T2, DicomImageClass::maxval(bits));

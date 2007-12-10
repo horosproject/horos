@@ -94,9 +94,9 @@ class DcmItem
     /** get value multiplicity
      *  @return always returns 1 (according to the DICOM standard)
      */
-    virtual unsigned long getVM();
+    virtual unsigned int getVM();
 
-    virtual unsigned long card() const;
+    virtual unsigned int card() const;
 
     virtual OFBool isLeaf() const { return OFFalse; }
 
@@ -192,7 +192,7 @@ class DcmItem
                                OFBool replaceOld = OFFalse,
                                OFBool checkInsertOrder = OFFalse);
 
-    virtual DcmElement *getElement(const unsigned long num);
+    virtual DcmElement *getElement(const unsigned int num);
 
     // get next Object from position in stack. If stack empty
     // get next Object in this item. if intoSub true, scan
@@ -201,7 +201,7 @@ class DcmItem
     virtual OFCondition nextObject(DcmStack &stack,
                                    const OFBool intoSub);
     virtual DcmObject  *nextInContainer(const DcmObject *obj);
-    virtual DcmElement *remove(const unsigned long num);
+    virtual DcmElement *remove(const unsigned int num);
     virtual DcmElement *remove(DcmObject *elem);
     virtual DcmElement *remove(const DcmTagKey &tag);
     virtual OFCondition clear();
@@ -312,7 +312,7 @@ class DcmItem
      */
     OFCondition findAndGetOFString(const DcmTagKey &tagKey,
                                    OFString &value,
-                                   const unsigned long pos = 0,
+                                   const unsigned int pos = 0,
                                    const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a C++ string (all components).
@@ -343,7 +343,7 @@ class DcmItem
      */
     OFCondition findAndGetUint8(const DcmTagKey &tagKey,
                                 Uint8 &value,
-                                const unsigned long pos = 0,
+                                const unsigned int pos = 0,
                                 const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of unsigned 8-bit integers.
@@ -357,7 +357,7 @@ class DcmItem
      */
     OFCondition findAndGetUint8Array(const DcmTagKey &tagKey,
                                      const Uint8 *&value,
-                                     unsigned long *count = NULL,
+                                     unsigned int *count = NULL,
                                      const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an unsigned 16-bit integer.
@@ -371,7 +371,7 @@ class DcmItem
      */
     OFCondition findAndGetUint16(const DcmTagKey &tagKey,
                                  Uint16 &value,
-                                 const unsigned long pos = 0,
+                                 const unsigned int pos = 0,
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of unsigned 16-bit integers.
@@ -385,7 +385,7 @@ class DcmItem
      */
     OFCondition findAndGetUint16Array(const DcmTagKey &tagKey,
                                       const Uint16 *&value,
-                                      unsigned long *count = NULL,
+                                      unsigned int *count = NULL,
                                       const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a signed 16-bit integer.
@@ -399,7 +399,7 @@ class DcmItem
      */
     OFCondition findAndGetSint16(const DcmTagKey &tagKey,
                                  Sint16 &value,
-                                 const unsigned long pos = 0,
+                                 const unsigned int pos = 0,
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of signed 16-bit integers.
@@ -413,7 +413,7 @@ class DcmItem
      */
     OFCondition findAndGetSint16Array(const DcmTagKey &tagKey,
                                       const Sint16 *&value,
-                                      unsigned long *count = NULL,
+                                      unsigned int *count = NULL,
                                       const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an unsigned 32-bit integer.
@@ -427,7 +427,7 @@ class DcmItem
      */
     OFCondition findAndGetUint32(const DcmTagKey &tagKey,
                                  Uint32 &value,
-                                 const unsigned long pos = 0,
+                                 const unsigned int pos = 0,
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of unsigned 32-bit integers.
@@ -441,7 +441,7 @@ class DcmItem
      */
     OFCondition findAndGetUint32Array(const DcmTagKey &tagKey,
                                       const Uint32 *&value,
-                                      unsigned long *count = NULL,
+                                      unsigned int *count = NULL,
                                       const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a signed 32-bit integer.
@@ -455,7 +455,7 @@ class DcmItem
      */
     OFCondition findAndGetSint32(const DcmTagKey &tagKey,
                                  Sint32 &value,
-                                 const unsigned long pos = 0,
+                                 const unsigned int pos = 0,
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of signed 32-bit integers.
@@ -469,7 +469,7 @@ class DcmItem
      */
     OFCondition findAndGetSint32Array(const DcmTagKey &tagKey,
                                       const Sint32 *&value,
-                                      unsigned long *count = NULL,
+                                      unsigned int *count = NULL,
                                       const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a (signed) long integer.
@@ -483,7 +483,7 @@ class DcmItem
      */
     OFCondition findAndGetLongInt(const DcmTagKey &tagKey,
                                   long int &value,
-                                  const unsigned long pos = 0,
+                                  const unsigned int pos = 0,
                                   const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a 32-bit floating point.
@@ -497,7 +497,7 @@ class DcmItem
      */
     OFCondition findAndGetFloat32(const DcmTagKey &tagKey,
                                   Float32 &value,
-                                  const unsigned long pos = 0,
+                                  const unsigned int pos = 0,
                                   const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of 32-bit floating point values.
@@ -511,7 +511,7 @@ class DcmItem
      */
     OFCondition findAndGetFloat32Array(const DcmTagKey &tagKey,
                                        const Float32 *&value,
-                                       unsigned long *count = NULL,
+                                       unsigned int *count = NULL,
                                        const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a 64-bit floating point.
@@ -525,7 +525,7 @@ class DcmItem
      */
     OFCondition findAndGetFloat64(const DcmTagKey &tagKey,
                                   Float64 &value,
-                                  const unsigned long pos = 0,
+                                  const unsigned int pos = 0,
                                   const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of 64-bit floating point values.
@@ -539,7 +539,7 @@ class DcmItem
      */
     OFCondition findAndGetFloat64Array(const DcmTagKey &tagKey,
                                        const Float64 *&value,
-                                       unsigned long *count = NULL,
+                                       unsigned int *count = NULL,
                                        const OFBool searchIntoSub = OFFalse);
 
     /** looks up and returns a given sequence.
@@ -651,7 +651,7 @@ class DcmItem
      */
     OFCondition putAndInsertUint8Array(const DcmTag &tag,
                                        const Uint8 *value,
-                                       const unsigned long count,
+                                       const unsigned int count,
                                        const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
@@ -664,7 +664,7 @@ class DcmItem
      */
     OFCondition putAndInsertUint16(const DcmTag &tag,
                                    const Uint16 value,
-                                   const unsigned long pos = 0,
+                                   const unsigned int pos = 0,
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
@@ -677,7 +677,7 @@ class DcmItem
      */
     OFCondition putAndInsertUint16Array(const DcmTag &tag,
                                         const Uint16 *value,
-                                        const unsigned long count,
+                                        const unsigned int count,
                                         const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
@@ -690,7 +690,7 @@ class DcmItem
      */
     OFCondition putAndInsertSint16(const DcmTag &tag,
                                    const Sint16 value,
-                                   const unsigned long pos = 0,
+                                   const unsigned int pos = 0,
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
@@ -703,7 +703,7 @@ class DcmItem
      */
     OFCondition putAndInsertSint16Array(const DcmTag &tag,
                                         const Sint16 *value,
-                                        const unsigned long count,
+                                        const unsigned int count,
                                         const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
@@ -716,7 +716,7 @@ class DcmItem
      */
     OFCondition putAndInsertUint32(const DcmTag &tag,
                                    const Uint32 value,
-                                   const unsigned long pos = 0,
+                                   const unsigned int pos = 0,
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
@@ -729,7 +729,7 @@ class DcmItem
      */
     OFCondition putAndInsertSint32(const DcmTag &tag,
                                    const Sint32 value,
-                                   const unsigned long pos = 0,
+                                   const unsigned int pos = 0,
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
@@ -742,7 +742,7 @@ class DcmItem
      */
     OFCondition putAndInsertFloat32(const DcmTag &tag,
                                     const Float32 value,
-                                    const unsigned long pos = 0,
+                                    const unsigned int pos = 0,
                                     const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
@@ -755,7 +755,7 @@ class DcmItem
      */
     OFCondition putAndInsertFloat64(const DcmTag &tag,
                                     const Float64 value,
-                                    const unsigned long pos = 0,
+                                    const unsigned int pos = 0,
                                     const OFBool replaceOld = OFTrue);
 
     /** create a new element (with no value) and insert it into the dataset/item.

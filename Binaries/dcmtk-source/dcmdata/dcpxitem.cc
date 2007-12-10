@@ -116,7 +116,7 @@ OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList &offsetList)
 {
     OFCondition result = EC_Normal;
 
-    unsigned long numEntries = offsetList.size();
+    unsigned int numEntries = offsetList.size();
     if (numEntries > 0)
     {
         Uint32 current = 0;
@@ -125,7 +125,7 @@ OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList &offsetList)
         {
             OFListConstIterator(Uint32) first = offsetList.begin();
             OFListConstIterator(Uint32) last = offsetList.end();
-            unsigned long idx = 0;
+            unsigned int idx = 0;
             while (first != last)
             {
                 array[idx++] = current;

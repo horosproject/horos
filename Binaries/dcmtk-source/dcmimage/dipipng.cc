@@ -65,7 +65,7 @@ DiPNGPlugin::~DiPNGPlugin()
 int DiPNGPlugin::write(
   DiImage *image,
   FILE *stream,
-  const unsigned long frame) const
+  const unsigned int frame) const
 {
   volatile int result = 0;  // gcc -W requires volatile here because of longjmp
   if ((image != NULL) && (stream != NULL))

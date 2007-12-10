@@ -44,9 +44,9 @@
  *----------------*/
 
 DiDocument::DiDocument(const char *filename,
-                       const unsigned long flags,
-                       const unsigned long fstart,
-                       const unsigned long fcount)
+                       const unsigned int flags,
+                       const unsigned int fstart,
+                       const unsigned int fcount)
   : Object(NULL),
     FileFormat(new DcmFileFormat()),
     Xfer(EXS_Unknown),
@@ -80,9 +80,9 @@ DiDocument::DiDocument(const char *filename,
 
 DiDocument::DiDocument(DcmObject *object,
                        const E_TransferSyntax xfer,
-                       const unsigned long flags,
-                       const unsigned long fstart,
-                       const unsigned long fcount)
+                       const unsigned int flags,
+                       const unsigned int fstart,
+                       const unsigned int fcount)
   : Object(NULL),
     FileFormat(NULL),
     Xfer(xfer),
@@ -195,7 +195,7 @@ int DiDocument::search(const DcmTagKey &tag,
 /********************************************************************/
 
 
-unsigned long DiDocument::getVM(const DcmTagKey &tag) const
+unsigned int DiDocument::getVM(const DcmTagKey &tag) const
 {
     DcmElement *elem = search(tag);
     if (elem != NULL)
@@ -204,18 +204,18 @@ unsigned long DiDocument::getVM(const DcmTagKey &tag) const
 }
 
 
-unsigned long DiDocument::getValue(const DcmTagKey &tag,
+unsigned int DiDocument::getValue(const DcmTagKey &tag,
                                    Uint16 &returnVal,
-                                   const unsigned long pos,
+                                   const unsigned int pos,
                                    DcmObject *item) const
 {
     return getElemValue(search(tag, item), returnVal, pos);
 }
 
 
-unsigned long DiDocument::getValue(const DcmTagKey &tag,
+unsigned int DiDocument::getValue(const DcmTagKey &tag,
                                    Sint16 &returnVal,
-                                   const unsigned long pos) const
+                                   const unsigned int pos) const
 {
     DcmElement *elem = search(tag);
     if (elem != NULL)
@@ -227,9 +227,9 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
 }
 
 
-unsigned long DiDocument::getValue(const DcmTagKey &tag,
+unsigned int DiDocument::getValue(const DcmTagKey &tag,
                                    Uint32 &returnVal,
-                                   const unsigned long pos) const
+                                   const unsigned int pos) const
 {
     DcmElement *elem = search(tag);
     if (elem != NULL)
@@ -241,9 +241,9 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
 }
 
 
-unsigned long DiDocument::getValue(const DcmTagKey &tag,
+unsigned int DiDocument::getValue(const DcmTagKey &tag,
                                    Sint32 &returnVal,
-                                   const unsigned long pos) const
+                                   const unsigned int pos) const
 {
     DcmElement *elem = search(tag);
     if (elem != NULL)
@@ -255,9 +255,9 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
 }
 
 
-unsigned long DiDocument::getValue(const DcmTagKey &tag,
+unsigned int DiDocument::getValue(const DcmTagKey &tag,
                                    double &returnVal,
-                                   const unsigned long pos) const
+                                   const unsigned int pos) const
 {
     DcmElement *elem = search(tag);
     if (elem != NULL)
@@ -269,7 +269,7 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
 }
 
 
-unsigned long DiDocument::getValue(const DcmTagKey &tag,
+unsigned int DiDocument::getValue(const DcmTagKey &tag,
                                    const Uint16 *&returnVal,
                                    DcmObject *item) const
 {
@@ -287,7 +287,7 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
 }
 
 
-unsigned long DiDocument::getValue(const DcmTagKey &tag,
+unsigned int DiDocument::getValue(const DcmTagKey &tag,
                                    const char *&returnVal,
                                    DcmObject *item) const
 {
@@ -295,16 +295,16 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
 }
 
 
-unsigned long DiDocument::getValue(const DcmTagKey &tag,
+unsigned int DiDocument::getValue(const DcmTagKey &tag,
                                    OFString &returnVal,
-                                   const unsigned long pos,
+                                   const unsigned int pos,
                                    DcmObject *item) const
 {
     return getElemValue(search(tag, item), returnVal, pos);
 }
 
 
-unsigned long DiDocument::getSequence(const DcmTagKey &tag,
+unsigned int DiDocument::getSequence(const DcmTagKey &tag,
                                       DcmSequenceOfItems *&seq) const
 {
     DcmElement *elem = search(tag);
@@ -314,9 +314,9 @@ unsigned long DiDocument::getSequence(const DcmTagKey &tag,
 }
 
 
-unsigned long DiDocument::getElemValue(const DcmElement *elem,
+unsigned int DiDocument::getElemValue(const DcmElement *elem,
                                        Uint16 &returnVal,
-                                       const unsigned long pos)
+                                       const unsigned int pos)
 {
     if (elem != NULL)
     {
@@ -327,7 +327,7 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
 }
 
 
-unsigned long DiDocument::getElemValue(const DcmElement *elem,
+unsigned int DiDocument::getElemValue(const DcmElement *elem,
                                        const Uint16 *&returnVal)
 {
     if (elem != NULL)
@@ -343,7 +343,7 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
 }
 
 
-unsigned long DiDocument::getElemValue(const DcmElement *elem,
+unsigned int DiDocument::getElemValue(const DcmElement *elem,
                                        const char *&returnVal)
 {
     if (elem != NULL)
@@ -357,9 +357,9 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
 }
 
 
-unsigned long DiDocument::getElemValue(const DcmElement *elem,
+unsigned int DiDocument::getElemValue(const DcmElement *elem,
                                        OFString &returnVal,
-                                       const unsigned long pos)
+                                       const unsigned int pos)
 {
     if (elem != NULL)
     {

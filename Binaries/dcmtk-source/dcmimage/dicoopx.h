@@ -68,8 +68,8 @@ class DiColorOutputPixel
      *  @param  frame  frame to be rendered
      */
     DiColorOutputPixel(const DiPixel *pixel,
-                       const unsigned long size,
-                       const unsigned long frame);
+                       const unsigned int size,
+                       const unsigned int frame);
 
     /** destructor
      */
@@ -127,7 +127,7 @@ class DiColorOutputPixel
      *
      ** @return number of pixel per frame
      */
-    inline unsigned long getCount() const
+    inline unsigned int getCount() const
     {
         return FrameSize;
     }
@@ -136,9 +136,9 @@ class DiColorOutputPixel
  protected:
 
     /// number of pixels per frame (intermediate representation)
-    /*const*/ unsigned long Count;
+    /*const*/ unsigned int Count;
     /// number of pixels per frame (memory buffer size)
-    const unsigned long FrameSize;
+    const unsigned int FrameSize;
 };
 
 

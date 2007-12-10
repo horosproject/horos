@@ -88,7 +88,7 @@ DIMSE_parseCmdObject(T_DIMSE_Message *msg, DcmDataset *obj);
 OFBool
 DIMSE_isDataSetPresent(T_DIMSE_Message *msg);
 
-unsigned long
+unsigned int
 DIMSE_countElements(DcmDataset *obj);
 
 #endif

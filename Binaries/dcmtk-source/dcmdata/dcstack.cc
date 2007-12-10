@@ -169,9 +169,9 @@ DcmObject* DcmStack::pop()
 // ********************************
 
 
-DcmObject* DcmStack::elem(const unsigned long number) const
+DcmObject* DcmStack::elem(const unsigned int number) const
 {
-    unsigned long num = number;
+    unsigned int num = number;
     DcmObject *obj;
     DcmStackNode *node = topNode_;
     while ( num-- > 0 && node != NULL )
@@ -202,7 +202,7 @@ DcmObject* DcmStack::top() const
 // ********************************
 
 
-unsigned long DcmStack::card() const
+unsigned int DcmStack::card() const
 {
     return cardinality_;
 }

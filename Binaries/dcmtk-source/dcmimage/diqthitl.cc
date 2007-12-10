@@ -53,7 +53,7 @@ DcmQuantHistogramItemList::~DcmQuantHistogramItemList()
 }
 
 
-void DcmQuantHistogramItemList::moveto(DcmQuantHistogramItemPointer *array, unsigned long& counter, unsigned long numcolors)
+void DcmQuantHistogramItemList::moveto(DcmQuantHistogramItemPointer *array, unsigned int& counter, unsigned int numcolors)
 {
   first = list_.begin();
   while ((first != last) && (counter < numcolors))

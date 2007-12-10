@@ -82,12 +82,12 @@ class DiColorScaleTemplate
                          const Uint32 frames,
                          const int bits,
                          const int interpolate)
-      : DiColorPixelTemplate<T>(pixel, OFstatic_cast(unsigned long, dest_cols) * OFstatic_cast(unsigned long, dest_rows) * frames),
+      : DiColorPixelTemplate<T>(pixel, OFstatic_cast(unsigned int, dest_cols) * OFstatic_cast(unsigned int, dest_rows) * frames),
         DiScaleTemplate<T>(3, columns, rows, left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, frames, bits)
    {
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
-            if (pixel->getCount() == OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames)
+            if (pixel->getCount() == OFstatic_cast(unsigned int, columns) * OFstatic_cast(unsigned int, rows) * frames)
                 scale(OFstatic_cast(const T **, OFconst_cast(void *, pixel->getData())), interpolate);
             else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))

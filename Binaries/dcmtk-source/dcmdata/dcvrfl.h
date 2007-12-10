@@ -87,7 +87,7 @@ class DcmFloatingPointSingle
     /** get value multiplicity
      *  @return number of currently stored values
      */
-    virtual unsigned long getVM();
+    virtual unsigned int getVM();
 
     /** print element to a stream.
      *  The output format of the value is a backslash separated sequence of numbers.
@@ -111,7 +111,7 @@ class DcmFloatingPointSingle
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getFloat32(Float32 &floatVal,
-                                   const unsigned long pos = 0);
+                                   const unsigned int pos = 0);
 
     /** get reference to stored float data
      *  @param floatVals reference to result variable
@@ -128,7 +128,7 @@ class DcmFloatingPointSingle
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOFString(OFString &stringVal,
-                                    const unsigned long pos,
+                                    const unsigned int pos,
                                     OFBool normalize = OFTrue);
 
     /** set particular element value to given float
@@ -137,7 +137,7 @@ class DcmFloatingPointSingle
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition putFloat32(const Float32 floatVal,
-				                   const unsigned long pos = 0);
+				                   const unsigned int pos = 0);
 
     /** set element value to given float array data
      *  @param floatVals floating point data to be set
@@ -145,7 +145,7 @@ class DcmFloatingPointSingle
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition putFloat32Array(const Float32 *floatVals,
-                    					const unsigned long numFloats);
+                    					const unsigned int numFloats);
 
     /** set element value from the given character string.
      *  The input string is expected to be a backslash separated sequence of
@@ -225,9 +225,9 @@ class DcmFloatingPointSingle
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

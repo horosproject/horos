@@ -101,9 +101,9 @@ OFCondition DSRReferencedDatetimeList::read(DcmItem &dataset,
         /* clear internal list */
         clear();
         OFString value;
-        const unsigned long count = delem.getVM();
+        const unsigned int count = delem.getVM();
         /* fill list with values from string array */
-        for (unsigned long i = 0; i < count; i++)
+        for (unsigned int i = 0; i < count; i++)
         {
             if (delem.getOFString(value, i).good())
                 addItem(value);

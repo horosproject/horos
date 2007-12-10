@@ -57,7 +57,7 @@ const OFConditionBase *OFConditionConst::clone() const
   return this; // since we're not deletable, we just return a copy to ourselves
 }
 
-unsigned long OFConditionConst::codeAndModule() const
+unsigned int OFConditionConst::codeAndModule() const
 {
   return theCodeAndModule;
 }
@@ -86,7 +86,7 @@ const OFConditionBase *OFConditionString::clone() const
   return new OFConditionString(*this);
 }
 
-unsigned long OFConditionString::codeAndModule() const
+unsigned int OFConditionString::codeAndModule() const
 {
   return theCodeAndModule;
 }

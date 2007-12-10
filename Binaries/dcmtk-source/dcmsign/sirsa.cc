@@ -58,10 +58,10 @@ SiRSA::~SiRSA()
 
 OFCondition SiRSA::sign(
     const unsigned char *inputHash, 
-    unsigned long inputHashSize,
+    unsigned int inputHashSize,
     E_MACType inputHashAlgorithm,
     unsigned char *outputSignature,
-    unsigned long &outputSignatureSize)
+    unsigned int &outputSignatureSize)
 {
     if (rsa==NULL) return SI_EC_InitializationFailed;    
     int openSSLmac = 0;
@@ -88,10 +88,10 @@ OFCondition SiRSA::sign(
 
 OFCondition SiRSA::verify(
     const unsigned char *inputHash, 
-    unsigned long inputHashSize,
+    unsigned int inputHashSize,
     E_MACType inputHashAlgorithm,
     const unsigned char *inputSignature,
-    unsigned long inputSignatureSize,
+    unsigned int inputSignatureSize,
     OFBool &verified)
 {
     verified = OFFalse;
@@ -117,7 +117,7 @@ OFCondition SiRSA::verify(
     return EC_Normal;
 }
 
-unsigned long SiRSA::getSize() const
+unsigned int SiRSA::getSize() const
 {   
   if (rsa == NULL) return 0;
   return RSA_size(rsa);

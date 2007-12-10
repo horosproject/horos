@@ -272,8 +272,8 @@ DiImage::DiImage(const DiDocument *docu,
 
 
 DiImage::DiImage(const DiImage *image,
-                 const unsigned long fstart,
-                 const unsigned long fcount)
+                 const unsigned int fstart,
+                 const unsigned int fcount)
   : ImageStatus(image->ImageStatus),
     Document(image->Document),
     FirstFrame(image->FirstFrame + fstart),
@@ -383,7 +383,7 @@ DiImage::DiImage(const DiImage *image,
 
 
 DiImage::DiImage(const DiImage *image,
-                 const unsigned long frame,
+                 const unsigned int frame,
                  const int stored,
                  const int alloc)
   : ImageStatus(image->ImageStatus),
@@ -504,10 +504,10 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
     /* check for valid/supported pixel data encoding */
     if ((pixel->getVR() == EVR_OW) || ((pixel->getVR() == EVR_OB) && (BitsAllocated <= 16)))
     {
-        const unsigned long start = FirstFrame * OFstatic_cast(unsigned long, Rows) *
-            OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, spp);
-        const unsigned long count = NumberOfFrames * OFstatic_cast(unsigned long, Rows) *
-            OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, spp);
+        const unsigned int start = FirstFrame * OFstatic_cast(unsigned int, Rows) *
+            OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, spp);
+        const unsigned int count = NumberOfFrames * OFstatic_cast(unsigned int, Rows) *
+            OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, spp);
         if ((BitsAllocated < 1) || (BitsStored < 1) || (BitsAllocated < BitsStored) ||
             (BitsStored > OFstatic_cast(Uint16, HighBit + 1)))
         {
@@ -704,7 +704,7 @@ void DiImage::updateImagePixelModuleAttributes(DcmItem &dataset)
 // --- write given frame of the current image to DICOM dataset
 
 int DiImage::writeFrameToDataset(DcmItem &dataset,
-                                 const unsigned long frame,
+                                 const unsigned int frame,
                                  const int bits,
                                  const int planar)
 {
@@ -715,17 +715,17 @@ int DiImage::writeFrameToDataset(DcmItem &dataset,
     if (pixel != NULL)
     {
         char buffer[32];
-        unsigned long count;
+        unsigned int count;
         /* write color model dependent attributes */
         if ((getInternalColorModel() == EPI_Monochrome1) || (getInternalColorModel() == EPI_Monochrome2))
         {
             /* monochrome image */
-            count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
+            count = OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, Rows);
             dataset.putAndInsertString(DCM_PhotometricInterpretation, "MONOCHROME2");
             dataset.putAndInsertUint16(DCM_SamplesPerPixel, 1);
         } else {
             /* color image */
-            count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * 3 /*samples per pixel*/;
+            count = OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, Rows) * 3 /*samples per pixel*/;
             if (getInternalColorModel() == EPI_YBR_Full)
                 dataset.putAndInsertString(DCM_PhotometricInterpretation, "YBR_FULL");
             else
@@ -772,7 +772,7 @@ int DiImage::writeFrameToDataset(DcmItem &dataset,
 
 
 int DiImage::writeBMP(FILE *stream,
-                      const unsigned long frame,
+                      const unsigned int frame,
                       const int bits)
 {
     int result = 0;
@@ -780,7 +780,7 @@ int DiImage::writeBMP(FILE *stream,
     {
         /* create device independent bitmap: palette (8) or truecolor (24) */
         void *data = NULL;
-        const unsigned long bytes = createDIB(data, 0, frame, bits, 1 /*upsideDown*/);
+        const unsigned int bytes = createDIB(data, 0, frame, bits, 1 /*upsideDown*/);
         if ((data != NULL) && (bytes > 0))
         {
             /* number of bytes */

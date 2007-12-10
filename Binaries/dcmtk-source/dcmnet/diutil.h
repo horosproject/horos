@@ -96,7 +96,7 @@ OFBool DU_findSOPClassAndInstanceInFile(
   char* sopInstance,
   OFBool tolerateSpacePaddedUIDs = OFFalse);
  
-unsigned long DU_fileSize(const char *fname);
+unsigned int DU_fileSize(const char *fname);
 
 const char *DU_cstoreStatusString(Uint16 statusCode);
 const char *DU_cfindStatusString(Uint16 statusCode);

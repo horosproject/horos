@@ -79,15 +79,15 @@ public:
    */
   static void create(
     DicomImage& sourceImage,
-    unsigned long frameNumber,
-    unsigned long maxval,
+    unsigned int frameNumber,
+    unsigned int maxval,
     DcmQuantColorHashTable& cht,
     DcmQuantColorTable& colormap,
     T1& fs,
     T2 *tp)
   {
-    unsigned long cols = sourceImage.getWidth();
-    unsigned long rows = sourceImage.getHeight();
+    unsigned int cols = sourceImage.getWidth();
+    unsigned int rows = sourceImage.getHeight();
     const int bits = sizeof(DcmQuantComponent)*8;
     DcmQuantPixel px;
     long limitcol;
@@ -105,7 +105,7 @@ public:
     if (data)
     {
       const DcmQuantComponent *cp = OFstatic_cast(const DcmQuantComponent *, data);
-      for (unsigned long row = 0; row < rows; ++row)
+      for (unsigned int row = 0; row < rows; ++row)
       {
         fs.startRow(col, limitcol);
         do

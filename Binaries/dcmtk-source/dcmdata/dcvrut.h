@@ -74,7 +74,7 @@ class DcmUnlimitedText
      *  multiplicity is always 1.
      *  @return value multiplicity of the currently stored value
      */
-    virtual unsigned long getVM();
+    virtual unsigned int getVM();
 
     /** get a particular components of the string value
      *  @param stringVal string variable in which the result value is stored
@@ -83,7 +83,7 @@ class DcmUnlimitedText
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOFString(OFString &stringVal,
-                                    const unsigned long pos,
+                                    const unsigned int pos,
                                     OFBool normalize = OFTrue);
 
     /** get the string value (all compenents)

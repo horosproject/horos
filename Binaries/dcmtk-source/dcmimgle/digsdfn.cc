@@ -77,7 +77,7 @@ DiGSDFunction::DiGSDFunction(const char *filename,
 
 
 DiGSDFunction::DiGSDFunction(const double *val_tab,             // UNTESTED !!
-                             const unsigned long count,
+                             const unsigned int count,
                              const Uint16 max,
                              const E_DeviceType deviceType,
                              const signed int ord)
@@ -102,7 +102,7 @@ DiGSDFunction::DiGSDFunction(const double *val_tab,             // UNTESTED !!
 
 DiGSDFunction::DiGSDFunction(const Uint16 *ddl_tab,             // UNTESTED !!
                              const double *val_tab,
-                             const unsigned long count,
+                             const unsigned int count,
                              const Uint16 max,
                              const E_DeviceType deviceType,
                              const signed int ord)
@@ -127,7 +127,7 @@ DiGSDFunction::DiGSDFunction(const Uint16 *ddl_tab,             // UNTESTED !!
 
 DiGSDFunction::DiGSDFunction(const double val_min,
                              const double val_max,
-                             const unsigned long count,
+                             const unsigned int count,
                              const E_DeviceType deviceType,
                              const signed int ord)
   : DiDisplayFunction(val_min, val_max, count, deviceType, ord),
@@ -163,7 +163,7 @@ DiGSDFunction::~DiGSDFunction()
 /********************************************************************/
 
 
-DiDisplayLUT *DiGSDFunction::getDisplayLUT(unsigned long count)
+DiDisplayLUT *DiGSDFunction::getDisplayLUT(unsigned int count)
 {
     DiDisplayLUT *lut = NULL;
     if (count <= MAX_TABLE_ENTRY_COUNT)

@@ -77,7 +77,7 @@ DcmEVR DcmUnsignedShort::ident() const
 }
 
 
-unsigned long DcmUnsignedShort::getVM()
+unsigned int DcmUnsignedShort::getVM()
 {
     return Length / sizeof(Uint16);
 }
@@ -99,11 +99,11 @@ void DcmUnsignedShort::print(ostream &out,
         errorFlag = getUint16Array(uintVals);
         if (uintVals != NULL)
         {
-            const unsigned long count = getVM();
-            const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
-                DCM_OptPrintLineLength : OFstatic_cast(unsigned long, -1) /*unlimited*/;
-            unsigned long printedLength = 0;
-            unsigned long newLength = 0;
+            const unsigned int count = getVM();
+            const unsigned int maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
+                DCM_OptPrintLineLength : OFstatic_cast(unsigned int, -1) /*unlimited*/;
+            unsigned int printedLength = 0;
+            unsigned int newLength = 0;
             char buffer[32];
             /* print line start with tag and VR */
             printInfoLineStart(out, flags, level);
@@ -144,7 +144,7 @@ void DcmUnsignedShort::print(ostream &out,
 
 
 OFCondition DcmUnsignedShort::getUint16(Uint16 &uintVal,
-                                        const unsigned long pos)
+                                        const unsigned int pos)
 {
     /* get unsigned integer data */
     Uint16 *uintValues = NULL;
@@ -177,7 +177,7 @@ OFCondition DcmUnsignedShort::getUint16Array(Uint16 *&uintVals)
 
 
 OFCondition DcmUnsignedShort::getOFString(OFString &stringVal,
-                                          const unsigned long pos,
+                                          const unsigned int pos,
                                           OFBool /*normalize*/)
 {
     Uint16 uintVal;
@@ -199,7 +199,7 @@ OFCondition DcmUnsignedShort::getOFString(OFString &stringVal,
 
 
 OFCondition DcmUnsignedShort::putUint16(const Uint16 uintVal,
-                                        const unsigned long pos)
+                                        const unsigned int pos)
 {
     Uint16 val = uintVal;
     errorFlag = changeValue(&val, sizeof(Uint16) * pos, sizeof(Uint16));
@@ -208,7 +208,7 @@ OFCondition DcmUnsignedShort::putUint16(const Uint16 uintVal,
 
 
 OFCondition DcmUnsignedShort::putUint16Array(const Uint16 *uintVals,
-                                             const unsigned long numUints)
+                                             const unsigned int numUints)
 {
     errorFlag = EC_Normal;
     if (numUints > 0)
@@ -233,14 +233,14 @@ OFCondition DcmUnsignedShort::putString(const char *stringVal)
     /* check input string */
     if ((stringVal != NULL) && (strlen(stringVal) > 0))
     {
-        const unsigned long vm = getVMFromString(stringVal);
+        const unsigned int vm = getVMFromString(stringVal);
         if (vm > 0)
         {
             Uint16 *field = new Uint16[vm];
             const char *s = stringVal;
             char *value;
             /* retrieve unsigned integer data from character string */
-            for (unsigned long i = 0; (i < vm) && errorFlag.good(); i++)
+            for (unsigned int i = 0; (i < vm) && errorFlag.good(); i++)
             {
                 /* get first value stored in 's', set 's' to beginning of the next value */
                 value = getFirstValueFromString(s);
@@ -353,9 +353,9 @@ OFCondition DcmUnsignedShort::verify(const OFBool autocorrect)
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

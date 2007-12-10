@@ -38,9 +38,9 @@
 #include "ofstdinc.h"
 
 // get the number of values stored in string
-unsigned long getVMFromString(const char * val)
+unsigned int getVMFromString(const char * val)
 {
-    unsigned long vm = 1;
+    unsigned int vm = 1;
     if (val == NULL)
 	vm = 0; 
     else

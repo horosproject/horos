@@ -61,9 +61,9 @@ class DiColorCopyTemplate
      *  @param  fsize   size of one frame (in bytes)
      */
     DiColorCopyTemplate(const DiColorPixel *pixel,
-                        const unsigned long fstart,
-                        const unsigned long fcount,
-                        const unsigned long fsize)
+                        const unsigned int fstart,
+                        const unsigned int fcount,
+                        const unsigned int fsize)
       : DiColorPixelTemplate<T>(pixel, fcount * fsize)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
@@ -88,7 +88,7 @@ class DiColorCopyTemplate
      *  @param  offset  offset to the first pixel to be copied
      */
     inline void copy(const T *pixel[3],
-                     const unsigned long offset)
+                     const unsigned int offset)
     {
         if (Init(pixel))
         {

@@ -61,7 +61,7 @@ DiCIELABFunction::DiCIELABFunction(const char *filename,
 
 
 DiCIELABFunction::DiCIELABFunction(const double *val_tab,             // UNTESTED !!
-                                   const unsigned long count,
+                                   const unsigned int count,
                                    const Uint16 max,
                                    const E_DeviceType deviceType,
                                    const signed int ord)
@@ -80,7 +80,7 @@ DiCIELABFunction::DiCIELABFunction(const double *val_tab,             // UNTESTE
 
 DiCIELABFunction::DiCIELABFunction(const Uint16 *ddl_tab,             // UNTESTED !!
                                    const double *val_tab,
-                                   const unsigned long count,
+                                   const unsigned int count,
                                    const Uint16 max,
                                    const E_DeviceType deviceType,
                                    const signed int ord)
@@ -99,7 +99,7 @@ DiCIELABFunction::DiCIELABFunction(const Uint16 *ddl_tab,             // UNTESTE
 
 DiCIELABFunction::DiCIELABFunction(const double val_min,
                                    const double val_max,
-                                   const unsigned long count,
+                                   const unsigned int count,
                                    const E_DeviceType deviceType,
                                    const signed int ord)
   : DiDisplayFunction(val_min, val_max, count, deviceType, ord)
@@ -127,7 +127,7 @@ DiCIELABFunction::~DiCIELABFunction()
 /********************************************************************/
 
 
-DiDisplayLUT *DiCIELABFunction::getDisplayLUT(unsigned long count)
+DiDisplayLUT *DiCIELABFunction::getDisplayLUT(unsigned int count)
 {
     DiDisplayLUT *lut = NULL;
     if (count <= MAX_TABLE_ENTRY_COUNT)

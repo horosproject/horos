@@ -41,8 +41,8 @@
  *----------------*/
 
 DiInputPixel::DiInputPixel(const unsigned int bits,
-                           const unsigned long start,
-                           const unsigned long count)
+                           const unsigned int start,
+                           const unsigned int count)
   : Count(0),
     Bits(bits),
     PixelStart(start),

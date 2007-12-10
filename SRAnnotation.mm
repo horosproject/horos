@@ -173,7 +173,7 @@
 				status = document->read(*fileformat.getDataset());
 				
 			const Uint8 *buffer;
-			unsigned long length;
+			unsigned int length;
 			NSData *archiveData;
 			if (fileformat.getDataset()->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good())	//DCM_OsirixROI
 			{

@@ -192,7 +192,7 @@ class DcmObject
     inline void setGTag(Uint16 gtag) { Tag.setGroup(gtag); }
 
     virtual OFCondition setVR(DcmEVR /*vr*/) { return EC_IllegalCall; }
-    virtual unsigned long getVM() = 0;
+    virtual unsigned int getVM() = 0;
 
     // calculate length of Dicom element
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
@@ -303,7 +303,7 @@ class DcmObject
      */
     void printInfoLineEnd(ostream &out,
                           const size_t flags,
-                          const unsigned long printedLength = 0xffffffff /*no padding*/,
+                          const unsigned int printedLength = 0xffffffff /*no padding*/,
                           DcmTag *tag = NULL);
 
     /** print given text with element information.

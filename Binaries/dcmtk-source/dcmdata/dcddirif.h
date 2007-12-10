@@ -95,8 +95,8 @@ class DicomDirImagePlugin
      */
     virtual OFBool scaleImage(DcmItem *dataset,
                               Uint8 *pixel,
-                              const unsigned long count,
-                              const unsigned long frame,
+                              const unsigned int count,
+                              const unsigned int frame,
                               const unsigned int width,
                               const unsigned int height) const = 0;
 
@@ -887,7 +887,7 @@ class DicomDirInterface
      */
     OFBool getIconFromFile(const OFString &filename,
                            Uint8 *pixel,
-                           const unsigned long count,
+                           const unsigned int count,
                            const unsigned int width,
                            const unsigned int height);
 
@@ -902,7 +902,7 @@ class DicomDirInterface
      */
     OFBool getIconFromDataset(DcmItem *dataset,
                               Uint8 *pixel,
-                              const unsigned long count,
+                              const unsigned int count,
                               const unsigned int width,
                               const unsigned int height);
 
@@ -1216,7 +1216,7 @@ class DicomDirInterface
      */
     void setDefaultValue(DcmDirectoryRecord *record,
                          const DcmTagKey &key,
-                         const unsigned long number,
+                         const unsigned int number,
                          const char *prefix = NULL);
 
 
@@ -1275,19 +1275,19 @@ class DicomDirInterface
     OFBool RLESupport;
 
     /// current patient number used to invent missing attribute values
-    unsigned long AutoPatientNumber;
+    unsigned int AutoPatientNumber;
     /// current study number used to invent missing attribute values
-    unsigned long AutoStudyNumber;
+    unsigned int AutoStudyNumber;
     /// current series number used to invent missing attribute values
-    unsigned long AutoSeriesNumber;
+    unsigned int AutoSeriesNumber;
     /// current instance number used to invent missing attribute values
-    unsigned long AutoInstanceNumber;
+    unsigned int AutoInstanceNumber;
     /// current overlay number used to invent missing attribute values
-    unsigned long AutoOverlayNumber;
+    unsigned int AutoOverlayNumber;
     /// current LUT number used to invent missing attribute values
-    unsigned long AutoLutNumber;
+    unsigned int AutoLutNumber;
     /// current curve number used to invent missing attribute values
-    unsigned long AutoCurveNumber;
+    unsigned int AutoCurveNumber;
 
     /// private undefined copy constructor
     DicomDirInterface(const DicomDirInterface &obj);

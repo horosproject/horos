@@ -115,8 +115,8 @@ OFBool SiMACConstructor::inTagList(const DcmElement *element, DcmAttributeTag *t
 
   DcmTagKey key;
   const DcmTag &elementTag = element->getTag();
-  unsigned long vm = tagList->getVM();
-  for (unsigned long i=0; i < vm; i++)
+  unsigned int vm = tagList->getVM();
+  for (unsigned int i=0; i < vm; i++)
   {
     if ((tagList->getTagVal(key, i)).good() && (key == elementTag)) return OFTrue;
   }
@@ -131,10 +131,10 @@ OFCondition SiMACConstructor::encodeDigitalSignatureItem(
   if (! signatureItem.canWriteXfer(oxfer, EXS_Unknown)) return SI_EC_WrongTransferSyntax;  
   OFCondition result = EC_Normal;
   signatureItem.transferInit();
-  unsigned long numElements = signatureItem.card();
+  unsigned int numElements = signatureItem.card();
   DcmElement *element;
   DcmTagKey tagkey;
-  for (unsigned long i=0; i < numElements; i++)
+  for (unsigned int i=0; i < numElements; i++)
   {
     element = signatureItem.getElement(i);    
     if (result.good())
@@ -171,9 +171,9 @@ OFCondition SiMACConstructor::encodeDataset(
   if (! item.canWriteXfer(oxfer, EXS_Unknown)) return SI_EC_WrongTransferSyntax;  
   OFCondition result = EC_Normal;
   item.transferInit();
-  unsigned long numElements = item.card();
+  unsigned int numElements = item.card();
   DcmElement *element;
-  for (unsigned long i=0; i < numElements; i++)
+  for (unsigned int i=0; i < numElements; i++)
   {
     element = item.getElement(i);    
     if (result.good() && (inTagList(element, tagListIn))) 

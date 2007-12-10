@@ -236,7 +236,7 @@ struct T_ASC_Association
     T_ASC_Parameters *params;
 
     unsigned short nextMsgID;	        /* should be incremented by user */
-    unsigned long sendPDVLength;	/* max length of PDV to send out */
+    unsigned int sendPDVLength;	/* max length of PDV to send out */
     unsigned char *sendPDVBuffer;	/* buffer of size sendPDVLength */
 };
 
@@ -259,7 +259,7 @@ OFCondition ASC_initializeNetwork(
     int acceptorPort,
     int timeout,
     T_ASC_Network ** network,
-    unsigned long options = 0);
+    unsigned int options = 0);
 
 /** network instance destruction function (destructor)
  *  @param network T_ASC_Network will be freed by this routine
@@ -406,8 +406,8 @@ void ASC_setRequestedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegoti
 void ASC_setAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList* extNegList);
 
 /* get peer certificate from open association */
-unsigned long ASC_getPeerCertificateLength(T_ASC_Association *assoc);
-unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsigned long bufLen);
+unsigned int ASC_getPeerCertificateLength(T_ASC_Association *assoc);
+unsigned int ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsigned int bufLen);
 
 /* set new transport layer object */
 OFCondition
@@ -451,7 +451,7 @@ ASC_requestAssociation(
 				 * structure */
     T_ASC_Association ** association,
     void **associatePDU=NULL,
-    unsigned long *associatePDUlength=NULL);
+    unsigned int *associatePDUlength=NULL);
 
 OFCondition 
 ASC_receiveAssociation(
@@ -459,7 +459,7 @@ ASC_receiveAssociation(
     T_ASC_Association ** association,
     long maxReceivePDUSize,
     void **associatePDU=NULL,
-    unsigned long *associatePDUlength=NULL,
+    unsigned int *associatePDUlength=NULL,
     OFBool useSecureLayer=OFFalse,
     DUL_BLOCKOPTIONS block=DUL_BLOCK,
     int timeout=0);
@@ -468,14 +468,14 @@ OFCondition
 ASC_acknowledgeAssociation(
     T_ASC_Association * assoc,
     void **associatePDU=NULL,
-    unsigned long *associatePDUlength=NULL);
+    unsigned int *associatePDUlength=NULL);
 
 OFCondition
 ASC_rejectAssociation(
     T_ASC_Association * association,
     T_ASC_RejectParameters * rejectParameters,
     void **associatePDU=NULL,
-    unsigned long *associatePDUlength=NULL);
+    unsigned int *associatePDUlength=NULL);
 
 OFCondition 
 ASC_releaseAssociation(T_ASC_Association * association);
@@ -594,7 +594,7 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 ** PDUs. See CHANGES file for details.
 **
 ** Revision 1.2  1996/04/25 16:06:27  hewett
-** Replaced declarations of DIC_UL with unsigned long.
+** Replaced declarations of DIC_UL with unsigned int.
 **
 ** Revision 1.1.1.1  1996/03/26 18:38:44  hewett
 ** Initial Release.

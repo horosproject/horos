@@ -251,8 +251,8 @@ class DcmFileFormat
 // stubs are defined that create an error.
 
     virtual OFCondition insertItem(DcmItem *item,
-                                   const unsigned long where = DCM_EndOfListIndex);
-    virtual DcmItem *remove(const unsigned long num);
+                                   const unsigned int where = DCM_EndOfListIndex);
+    virtual DcmItem *remove(const unsigned int num);
     virtual DcmItem *remove(DcmItem *item);
     virtual OFCondition clear();
 

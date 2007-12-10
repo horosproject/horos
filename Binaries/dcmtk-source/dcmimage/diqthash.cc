@@ -43,7 +43,7 @@ DcmQuantColorHashTable::DcmQuantColorHashTable()
   table = new DcmQuantHistogramItemListPointer[DcmQuantHashSize];
   if (table)
   {
-    for (unsigned long i=0; i < DcmQuantHashSize; i++)
+    for (unsigned int i=0; i < DcmQuantHashSize; i++)
     {
       table[i] = new DcmQuantHistogramItemList();
     }  
@@ -55,16 +55,16 @@ DcmQuantColorHashTable::~DcmQuantColorHashTable()
 {
   if (table)
   {
-    for (unsigned long i=0; i < DcmQuantHashSize; i++) delete table[i];
+    for (unsigned int i=0; i < DcmQuantHashSize; i++) delete table[i];
     delete[] table;
   }
 }
 
 
-unsigned long DcmQuantColorHashTable::countEntries() const
+unsigned int DcmQuantColorHashTable::countEntries() const
 {
-  unsigned long result = 0;
-  for (unsigned long i=0; i < DcmQuantHashSize; i++)
+  unsigned int result = 0;
+  for (unsigned int i=0; i < DcmQuantHashSize; i++)
   {
     result += table[i]->size();
   }  
@@ -72,14 +72,14 @@ unsigned long DcmQuantColorHashTable::countEntries() const
 }
 
 
-unsigned long DcmQuantColorHashTable::createHistogram(DcmQuantHistogramItemPointer *& array)
+unsigned int DcmQuantColorHashTable::createHistogram(DcmQuantHistogramItemPointer *& array)
 {
-  unsigned long numcolors = countEntries();
+  unsigned int numcolors = countEntries();
   array = new DcmQuantHistogramItemPointer[numcolors];
   if (array)
   {
-    unsigned long counter = 0;
-    for (unsigned long i=0; i < DcmQuantHashSize; i++)
+    unsigned int counter = 0;
+    for (unsigned int i=0; i < DcmQuantHashSize; i++)
     {
       table[i]->moveto(array, counter, numcolors);
     }      
@@ -88,24 +88,24 @@ unsigned long DcmQuantColorHashTable::createHistogram(DcmQuantHistogramItemPoint
 }
 
 
-unsigned long DcmQuantColorHashTable::addToHashTable(
+unsigned int DcmQuantColorHashTable::addToHashTable(
   DicomImage& image, 
-  unsigned long newmaxval,
-  unsigned long maxcolors)
+  unsigned int newmaxval,
+  unsigned int maxcolors)
 {
-  const unsigned long cols = image.getWidth();
-  const unsigned long rows = image.getHeight();
-  const unsigned long frames = image.getFrameCount();
+  const unsigned int cols = image.getWidth();
+  const unsigned int rows = image.getHeight();
+  const unsigned int frames = image.getFrameCount();
   const int bits = sizeof(DcmQuantComponent)*8;
 
-  unsigned long numcolors = 0;
-  unsigned long j, k;
+  unsigned int numcolors = 0;
+  unsigned int j, k;
   const DcmQuantComponent *cp;
   DcmQuantPixel px;
   const void *data = NULL;
 
   // compute maxval
-  unsigned long maxval = 0;
+  unsigned int maxval = 0;
   for (int bb=0; bb < bits; bb++) maxval = (maxval << 1) | 1;
 
   DcmQuantScaleTable scaletable;
@@ -113,7 +113,7 @@ unsigned long DcmQuantColorHashTable::addToHashTable(
 
   register DcmQuantComponent r, g, b;
 
-  for (unsigned long ff=0; ff<frames; ff++)
+  for (unsigned int ff=0; ff<frames; ff++)
   {
     data = image.getOutputData(bits, ff, 0);
     if (data)

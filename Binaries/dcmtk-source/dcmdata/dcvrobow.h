@@ -87,7 +87,7 @@ class DcmOtherByteOtherWord
     /** get value multiplicity
      *  @return always returns 1 (according to the DICOM standard)
      */
-    virtual unsigned long getVM();
+    virtual unsigned int getVM();
 
     /** set/change the current value representation
      *  @param vr new value representation to be set.  All VRs except for OW (Other
@@ -155,7 +155,7 @@ class DcmOtherByteOtherWord
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getUint8(Uint8 &byteVal,
-                                 const unsigned long pos = 0);
+                                 const unsigned int pos = 0);
 
     /** get particular 16 bit value.
      *  This method is only applicable to OW data.
@@ -164,7 +164,7 @@ class DcmOtherByteOtherWord
      *  @return status status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getUint16(Uint16 &wordVal,
-                                  const unsigned long pos = 0);
+                                  const unsigned int pos = 0);
 
     /** get reference to stored 8 bit data.
      *  This method is only applicable to non-OW data, e.g. OB.
@@ -190,7 +190,7 @@ class DcmOtherByteOtherWord
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOFString(OFString &stringVal,
-                                    const unsigned long pos,
+                                    const unsigned int pos,
                                     OFBool normalize = OFTrue);
 
     /** get element value as a character string.
@@ -212,7 +212,7 @@ class DcmOtherByteOtherWord
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition putUint8Array(const Uint8 *byteValue,
-                                      const unsigned long numBytes);
+                                      const unsigned int numBytes);
 
     /** set element value to given 16 bit data.
      *  This method is only applicable to OW data.
@@ -222,7 +222,7 @@ class DcmOtherByteOtherWord
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition putUint16Array(const Uint16 *wordValue,
-                                       const unsigned long numWords);
+                                       const unsigned int numWords);
 
     /** set element value from the given character string.
      *  The input string is expected to have the same format as described for
@@ -363,9 +363,9 @@ class DcmOtherByteOtherWord
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

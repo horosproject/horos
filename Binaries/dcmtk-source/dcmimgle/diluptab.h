@@ -98,8 +98,8 @@ class DiLookupTable
                   const DcmTagKey &data,
                   const DcmTagKey &explanation,
                   const OFBool ignoreDepth = OFFalse,
-                  const unsigned long pos = 0,
-                  unsigned long *card = NULL);
+                  const unsigned int pos = 0,
+                  unsigned int *card = NULL);
 
     /** constructor
      *
@@ -224,7 +224,7 @@ class DiLookupTable
      *  @param  ignoreDepth  ignore 'bits' value, determine depth automatically
      *  @param  status       pointer to image status variable (optional)
      */
-    void checkTable(unsigned long count,
+    void checkTable(unsigned int count,
                     Uint16 bits,
                     const OFBool ignoreDepth = OFFalse,
                     EI_Status *status = NULL);

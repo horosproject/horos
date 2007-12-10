@@ -104,7 +104,7 @@ public:
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
-    virtual unsigned long getVM() { return 1L; }
+    virtual unsigned int getVM() { return 1L; }
 
     virtual OFCondition computeGroupLengthAndPadding
                             (const E_GrpLenEncoding glenc,
@@ -160,11 +160,11 @@ public:
      */
     virtual OFBool containsUnknownVR() const;
 
-    virtual unsigned long card();
+    virtual unsigned int card();
 
     virtual OFCondition prepend(DcmItem *item);
     virtual OFCondition insert(DcmItem *item,
-                               unsigned long where = DCM_EndOfListIndex,
+                               unsigned int where = DCM_EndOfListIndex,
                                OFBool before = OFFalse);
     virtual OFCondition append(DcmItem *item);
 
@@ -178,10 +178,10 @@ public:
     virtual OFCondition insertAtCurrentPos(DcmItem *item,
                                            OFBool before = OFFalse);
 
-    virtual DcmItem *getItem(const unsigned long num);
+    virtual DcmItem *getItem(const unsigned int num);
     virtual OFCondition nextObject(DcmStack &stack, const OFBool intoSub);
     virtual DcmObject *nextInContainer(const DcmObject *obj);
-    virtual DcmItem *remove(const unsigned long num);
+    virtual DcmItem *remove(const unsigned int num);
     virtual DcmItem *remove(DcmItem *item);
     virtual OFCondition clear();
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);

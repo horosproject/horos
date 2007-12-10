@@ -217,33 +217,33 @@ void DcmTLSConnection::close()
 #endif
 }
 
-unsigned long DcmTLSConnection::getPeerCertificateLength()
+unsigned int DcmTLSConnection::getPeerCertificateLength()
 {
-  unsigned long result = 0;
+  unsigned int result = 0;
   if (tlsConnection)
   {
     X509 *peerCert = SSL_get_peer_certificate(tlsConnection);
     if (peerCert)
     {
-      result = (unsigned long) i2d_X509(peerCert, NULL);
+      result = (unsigned int) i2d_X509(peerCert, NULL);
     }
   }
   return result;
 }
 
-unsigned long DcmTLSConnection::getPeerCertificate(void *buf, unsigned long bufLen)
+unsigned int DcmTLSConnection::getPeerCertificate(void *buf, unsigned int bufLen)
 {
-  unsigned long result = 0;
+  unsigned int result = 0;
   if (tlsConnection && buf)
   {
     X509 *peerCert = SSL_get_peer_certificate(tlsConnection);
     if (peerCert)
     {
-      unsigned long certSize = (unsigned long) i2d_X509(peerCert, NULL);
+      unsigned int certSize = (unsigned int) i2d_X509(peerCert, NULL);
       if (certSize <= bufLen)
       {
       	unsigned char *p = (unsigned char *)buf;
-        result = (unsigned long) i2d_X509(peerCert, &p);
+        result = (unsigned int) i2d_X509(peerCert, &p);
       }
     }
   }

@@ -55,7 +55,7 @@ struct DcmQuantPixelBox
   int colors;
 
   /// the number of pixels represented by this box
-  unsigned long sum;
+  unsigned int sum;
 };
 
 
@@ -75,7 +75,7 @@ public:
   /** constructor. Creates an array with the given number of pixel boxes.
    *  @param entries number of entries in array, must be > 0.
    */
-  DcmQuantPixelBoxArray(unsigned long entries);
+  DcmQuantPixelBoxArray(unsigned int entries);
 
   /// destructor
   ~DcmQuantPixelBoxArray();
@@ -98,7 +98,7 @@ public:
    *  The boxes are sorted in decreasing order of the "sum" member.
    *  @param boxes number of boxes to sort, must be <= entries.
    */
-  void sort(unsigned long boxes);
+  void sort(unsigned int boxes);
 
 private:
 
@@ -112,7 +112,7 @@ private:
   DcmQuantPixelBoxPointer *array;
 
   /// number of elements in array
-  unsigned long length;
+  unsigned int length;
 };
 
 

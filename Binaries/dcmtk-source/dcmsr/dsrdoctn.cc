@@ -711,9 +711,9 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
             /* important: NULL indicates first child node */
             DSRDocumentTreeNode *node = NULL;
             DcmItem *ditem = NULL;
-            const unsigned long count = dseq->card();
+            const unsigned int count = dseq->card();
             /* for all items in the sequence */
-            unsigned long i = 0;
+            unsigned int i = 0;
             while ((i < count) && result.good())
             {
                 ditem = dseq->getItem(i);

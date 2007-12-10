@@ -79,9 +79,9 @@ class DiDocument
      *  @param  fcount    number of frames (only stored for later use)
      */
     DiDocument(const char *filename,
-               const unsigned long flags = 0,
-               const unsigned long fstart = 0,
-               const unsigned long fcount = 0);
+               const unsigned int flags = 0,
+               const unsigned int fstart = 0,
+               const unsigned int fcount = 0);
 
     /** constructor, use a given DcmObject
      *
@@ -93,9 +93,9 @@ class DiDocument
      */
     DiDocument(DcmObject *object,
                const E_TransferSyntax xfer,
-               const unsigned long flags = 0,
-               const unsigned long fstart = 0,
-               const unsigned long fcount = 0);
+               const unsigned int flags = 0,
+               const unsigned int fstart = 0,
+               const unsigned int fcount = 0);
 
     /** destructor
      */
@@ -123,7 +123,7 @@ class DiDocument
      *
      ** @return first frame to be processed
      */
-    inline unsigned long getFrameStart() const
+    inline unsigned int getFrameStart() const
     {
         return FrameStart;
     }
@@ -132,7 +132,7 @@ class DiDocument
      *
      ** @return number of frames to be processed
      */
-    inline unsigned long getFrameCount() const
+    inline unsigned int getFrameCount() const
     {
         return FrameCount;
     }
@@ -141,7 +141,7 @@ class DiDocument
      *
      ** @return configuration flags
      */
-    inline unsigned long getFlags() const
+    inline unsigned int getFlags() const
     {
         return Flags;
     }
@@ -182,7 +182,7 @@ class DiDocument
      *
      ** @return VM if successful, 0 otherwise
      */
-    unsigned long getVM(const DcmTagKey &tag) const;
+    unsigned int getVM(const DcmTagKey &tag) const;
 
     /** get value of given tag (Uint16)
      *
@@ -193,9 +193,9 @@ class DiDocument
      *
      ** @return VM if successful, 0 otherwise
      */
-    unsigned long getValue(const DcmTagKey &tag,
+    unsigned int getValue(const DcmTagKey &tag,
                            Uint16 &returnVal,
-                           const unsigned long pos = 0,
+                           const unsigned int pos = 0,
                            DcmObject *item = NULL) const;
 
     /** get value of given tag (Sint16)
@@ -206,9 +206,9 @@ class DiDocument
      *
      ** @return VM if successful, 0 otherwise
      */
-    unsigned long getValue(const DcmTagKey &tag,
+    unsigned int getValue(const DcmTagKey &tag,
                            Sint16 &returnVal,
-                           const unsigned long pos = 0) const;
+                           const unsigned int pos = 0) const;
 
     /** get value of given tag (Uint32)
      *
@@ -218,9 +218,9 @@ class DiDocument
      *
      ** @return VM if successful, 0 otherwise
      */
-    unsigned long getValue(const DcmTagKey &tag,
+    unsigned int getValue(const DcmTagKey &tag,
                            Uint32 &returnVal,
-                           const unsigned long pos = 0) const;
+                           const unsigned int pos = 0) const;
 
     /** get value of given tag (Sint32)
      *
@@ -230,9 +230,9 @@ class DiDocument
      *
      ** @return VM if successful, 0 otherwise
      */
-    unsigned long getValue(const DcmTagKey &tag,
+    unsigned int getValue(const DcmTagKey &tag,
                            Sint32 &returnVal,
-                           const unsigned long pos = 0) const;
+                           const unsigned int pos = 0) const;
 
     /** get value of given tag (double)
      *
@@ -242,9 +242,9 @@ class DiDocument
      *
      ** @return VM if successful, 0 otherwise
      */
-    unsigned long getValue(const DcmTagKey &tag,
+    unsigned int getValue(const DcmTagKey &tag,
                            double &returnVal,
-                           const unsigned long pos = 0) const;
+                           const unsigned int pos = 0) const;
 
     /** get value of given tag (Uint16 array)
      *
@@ -254,7 +254,7 @@ class DiDocument
      *
      ** @return VM if successful, 0 otherwise
      */
-    unsigned long getValue(const DcmTagKey &tag,
+    unsigned int getValue(const DcmTagKey &tag,
                            const Uint16 *&returnVal,
                            DcmObject *item = NULL) const;
 
@@ -266,7 +266,7 @@ class DiDocument
      *
      ** @return VM if successful, 0 otherwise
      */
-    unsigned long getValue(const DcmTagKey &tag,
+    unsigned int getValue(const DcmTagKey &tag,
                            const char *&returnVal,
                            DcmObject *item = NULL) const;
 
@@ -279,9 +279,9 @@ class DiDocument
      *
      ** @return VM if successful, 0 otherwise
      */
-    unsigned long getValue(const DcmTagKey &tag,
+    unsigned int getValue(const DcmTagKey &tag,
                            OFString &returnVal,
-                           const unsigned long pos = 0,
+                           const unsigned int pos = 0,
                            DcmObject *item = NULL) const;
 
     /** get sequence of given tag
@@ -291,7 +291,7 @@ class DiDocument
      *
      ** @return cardinality if successful, 0 otherwise
      */
-    unsigned long getSequence(const DcmTagKey &tag,
+    unsigned int getSequence(const DcmTagKey &tag,
                               DcmSequenceOfItems *&seq) const;
 
     /** get value of given element (Uint16)
@@ -302,9 +302,9 @@ class DiDocument
      *
      ** @return VM if successful, 0 otherwise
      */
-    static unsigned long getElemValue(const DcmElement *elem,
+    static unsigned int getElemValue(const DcmElement *elem,
                                       Uint16 &returnVal,
-                                      const unsigned long pos = 0);
+                                      const unsigned int pos = 0);
 
     /** get value of given element (Uint16 array)
      *
@@ -313,7 +313,7 @@ class DiDocument
      *
      ** @return VM if successful, 0 otherwise
      */
-    static unsigned long getElemValue(const DcmElement *elem,
+    static unsigned int getElemValue(const DcmElement *elem,
                                       const Uint16 *&returnVal);
 
     /** get value of given element (const char *)
@@ -323,7 +323,7 @@ class DiDocument
      *
      ** @return VM if successful, 0 otherwise
      */
-    static unsigned long getElemValue(const DcmElement *elem,
+    static unsigned int getElemValue(const DcmElement *elem,
                                       const char *&returnVal);
 
     /** get value of given element (OFString)
@@ -334,9 +334,9 @@ class DiDocument
      *
      ** @return VM if successful, 0 otherwise
      */
-    static unsigned long getElemValue(const DcmElement *elem,
+    static unsigned int getElemValue(const DcmElement *elem,
                                       OFString &returnVal,
-                                      const unsigned long pos = 0);
+                                      const unsigned int pos = 0);
 
  protected:
 
@@ -355,12 +355,12 @@ class DiDocument
     E_TransferSyntax Xfer;
 
     /// first frame to be processed
-    unsigned long FrameStart;
+    unsigned int FrameStart;
     /// number of frames to be processed
-    unsigned long FrameCount;
+    unsigned int FrameCount;
 
     /// configuration flags
-    unsigned long Flags;
+    unsigned int Flags;
 
  // --- declarations to avoid compiler warnings
 

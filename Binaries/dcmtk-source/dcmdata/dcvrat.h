@@ -87,7 +87,7 @@ class DcmAttributeTag
     /** get value multiplicity
      *  @return number of tag value pairs (group,element)
      */
-    virtual unsigned long getVM();
+    virtual unsigned int getVM();
 
     /** print element to a stream.
      *  The output format of the value is a backslash separated sequence of group and
@@ -110,7 +110,7 @@ class DcmAttributeTag
      *  @return status status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getTagVal(DcmTagKey &tagVal,
-                                  const unsigned long pos = 0);
+                                  const unsigned int pos = 0);
 
     /** get reference to stored integer data.
      *  The array entries with an even-numbered index contain the group numbers
@@ -130,7 +130,7 @@ class DcmAttributeTag
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOFString(OFString &stringVal,
-                                    const unsigned long pos,
+                                    const unsigned int pos,
                                     OFBool normalize = OFTrue);
 
     /** set particular tag value
@@ -139,7 +139,7 @@ class DcmAttributeTag
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition putTagVal(const DcmTagKey &tagVal,
-                                  const unsigned long pos = 0);
+                                  const unsigned int pos = 0);
 
     /** set element value to given integer array data.
      *  The array entries with an even-numbered index are expected to contain the
@@ -151,7 +151,7 @@ class DcmAttributeTag
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition putUint16Array(const Uint16 *uintVals,
-                                       const unsigned long numUints);
+                                       const unsigned int numUints);
 
     /** set element value from the given character string.
      *  The input string is expected to be a backslash separated sequence of
@@ -235,9 +235,9 @@ class DcmAttributeTag
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

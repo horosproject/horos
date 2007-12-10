@@ -63,7 +63,7 @@ public:
    *  @param ptr pointer to raw data
    *  @param size length of raw data block in bytes
    */
-  void addBlock(const void *ptr, unsigned long size);
+  void addBlock(const void *ptr, unsigned int size);
 
   /// returns the current CRC as unsigned int
   unsigned int getCRC32() const
@@ -76,7 +76,7 @@ public:
    *  @param size length of raw data block in bytes
    *  @return CRC32 as unsigned int
    */
-  static unsigned int compute(const void *ptr, unsigned long size);
+  static unsigned int compute(const void *ptr, unsigned int size);
 
 private:
   /// CRC look-up table

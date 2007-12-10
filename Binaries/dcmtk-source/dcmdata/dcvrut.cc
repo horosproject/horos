@@ -75,7 +75,7 @@ DcmEVR DcmUnlimitedText::ident() const
 }
 
 
-unsigned long DcmUnlimitedText::getVM()
+unsigned int DcmUnlimitedText::getVM()
 {
     /* value multiplicity is 1 for non-empty string, 0 otherwise */
     return (getRealLength() > 0) ? 1 : 0;
@@ -86,7 +86,7 @@ unsigned long DcmUnlimitedText::getVM()
 
 
 OFCondition DcmUnlimitedText::getOFString(OFString &strValue,
-                                          const unsigned long /*pos*/,
+                                          const unsigned int /*pos*/,
                                           OFBool normalize)
 {
     /* treat backslash as a normal character */

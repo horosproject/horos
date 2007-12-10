@@ -56,17 +56,17 @@ OFBool SiSecurityProfile::isAllowableAlgorithm(const SiAlgorithm& algo) const
 OFCondition SiSecurityProfile::updateAttributeList(DcmItem &item, DcmAttributeTag& tagList)
 {
   OFCondition result = EC_Normal;
-  unsigned long card = item.card();
+  unsigned int card = item.card();
   if (card == 0)
   {
     // nothing to sign
     tagList.clear();
     return result;
   }
-  unsigned long maxArray = 2*card;
+  unsigned int maxArray = 2*card;
   Uint16 *array = new Uint16[maxArray];
   if (array == NULL) return EC_MemoryExhausted;
-  unsigned long i=0;  
+  unsigned int i=0;  
   for (i=0; i<maxArray; i++) array[i]=0;
   DcmElement *elem = NULL;
 
@@ -86,7 +86,7 @@ OFCondition SiSecurityProfile::updateAttributeList(DcmItem &item, DcmAttributeTa
   }
 
   // pack array
-  unsigned long j=0;
+  unsigned int j=0;
   i = 0;
   while (i < maxArray)
   {
@@ -110,8 +110,8 @@ OFCondition SiSecurityProfile::updateAttributeList(DcmItem &item, DcmAttributeTa
 OFBool SiSecurityProfile::checkAttributeList(DcmItem &item, DcmAttributeTag& tagList)
 {
   DcmElement *elem = NULL;
-  unsigned long card = item.card();
-  for (unsigned long i=0; i<card; i++)
+  unsigned int card = item.card();
+  for (unsigned int i=0; i<card; i++)
   {
     elem = item.getElement(i);
     const DcmTagKey& key = elem->getTag();
@@ -133,9 +133,9 @@ OFBool SiSecurityProfile::checkAttributeList(DcmItem &item, DcmAttributeTag& tag
 
 OFBool SiSecurityProfile::containsTag(DcmAttributeTag& tagList, const DcmTagKey& key)
 {
-  unsigned long vm = tagList.getVM();
+  unsigned int vm = tagList.getVM();
   DcmTagKey current;
-  for (unsigned long i=0; i<vm; ++i)
+  for (unsigned int i=0; i<vm; ++i)
   {
     if ((tagList.getTagVal(current, i)).good() && (key == current)) return OFTrue;
   }

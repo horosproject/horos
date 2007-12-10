@@ -50,8 +50,8 @@ DiMono1Image::DiMono1Image(const DiDocument *docu,
 
 
 DiMono1Image::DiMono1Image(const DiMonoImage *image,
-                           const unsigned long fstart,
-                           const unsigned long fcount)
+                           const unsigned int fstart,
+                           const unsigned int fcount)
   : DiMonoImage(image, fstart, fcount)
 {
 }
@@ -99,7 +99,7 @@ DiMono1Image::~DiMono1Image()
 /*********************************************************************/
 
 
-const void *DiMono1Image::getOutputData(const unsigned long frame,
+const void *DiMono1Image::getOutputData(const unsigned int frame,
                                         const int bits,
                                         const int planar)
 {
@@ -108,8 +108,8 @@ const void *DiMono1Image::getOutputData(const unsigned long frame,
 
 
 int DiMono1Image::getOutputData(void *buffer,
-                                const unsigned long size,
-                                const unsigned long frame,
+                                const unsigned int size,
+                                const unsigned int frame,
                                 const int bits,
                                 const int planar)
 {
@@ -117,8 +117,8 @@ int DiMono1Image::getOutputData(void *buffer,
 }
 
 
-DiImage *DiMono1Image::createImage(const unsigned long fstart,
-                                   const unsigned long fcount) const
+DiImage *DiMono1Image::createImage(const unsigned int fstart,
+                                   const unsigned int fcount) const
 {
     DiImage *image = new DiMono1Image(this, fstart, fcount);
     return image;
@@ -127,10 +127,10 @@ DiImage *DiMono1Image::createImage(const unsigned long fstart,
 
 DiImage *DiMono1Image::createScale(const signed long left_pos,
                                    const signed long top_pos,
-                                   const unsigned long src_cols,
-                                   const unsigned long src_rows,
-                                   const unsigned long dest_cols,
-                                   const unsigned long dest_rows,
+                                   const unsigned int src_cols,
+                                   const unsigned int src_rows,
+                                   const unsigned int dest_cols,
+                                   const unsigned int dest_rows,
                                    const int interpolate,
                                    const int aspect,
                                    const Uint16 pvalue) const

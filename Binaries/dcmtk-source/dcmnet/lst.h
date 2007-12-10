@@ -130,7 +130,7 @@ void *LST_Pop(LST_HEAD **lst);
 
 /** Returns the number of nodes in the list.
  */
-unsigned long LST_Count(LST_HEAD **lst);
+unsigned int LST_Count(LST_HEAD **lst);
 
 /** Returns a pointer to the node at the head of the list.
  *  It does NOT remove the node from the list.

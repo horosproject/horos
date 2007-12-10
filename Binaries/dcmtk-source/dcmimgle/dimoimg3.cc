@@ -42,7 +42,7 @@
 void DiMonoImage::getDataUint8(void *buffer,
                                DiDisplayFunction *disp,
                                const int samples,
-                               const unsigned long frame,
+                               const unsigned int frame,
                                const int bits,
                                const Uint32 low,
                                const Uint32 high)
@@ -78,7 +78,7 @@ void DiMonoImage::getDataUint8(void *buffer,
 void DiMonoImage::getDataSint8(void *buffer,
                                DiDisplayFunction *disp,
                                const int samples,
-                               const unsigned long frame,
+                               const unsigned int frame,
                                const int bits,
                                const Uint32 low,
                                const Uint32 high)

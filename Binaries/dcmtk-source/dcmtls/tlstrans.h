@@ -112,7 +112,7 @@ public:
   /** returns the size in bytes of the peer certificate of a secure connection.
    *  @return peer certificate length in bytes
    */
-  virtual unsigned long getPeerCertificateLength();
+  virtual unsigned int getPeerCertificateLength();
 
   /* copies the peer certificate of a secure connection into a buffer
    * specified by the caller. If the buffer is too small to hold the
@@ -121,7 +121,7 @@ public:
    * @param bufLen size of the buffer in bytes
    * @return number of bytes written, always less or equal bufLen.
    */
-  virtual unsigned long getPeerCertificate(void *buf, unsigned long bufLen);
+  virtual unsigned int getPeerCertificate(void *buf, unsigned int bufLen);
 
   /** checks if data is available to be read on the transport connection.
    *  @param timeout maximum number of seconds to wait if no data is available.
@@ -159,7 +159,7 @@ private:
   SSL *tlsConnection;
 
   /// last error code returned by the OpenSSL library
-  unsigned long lastError;
+  unsigned int lastError;
 };
 
 #endif /* WITH_OPENSSL */

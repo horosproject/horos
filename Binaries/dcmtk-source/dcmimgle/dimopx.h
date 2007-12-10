@@ -67,7 +67,7 @@ class DiMonoPixel
      *
      ** @param  count  number of pixels
      */
-    DiMonoPixel(const unsigned long count);
+    DiMonoPixel(const unsigned int count);
 
     /** constructor
      *
@@ -134,13 +134,13 @@ class DiMonoPixel
      *
      ** @return status, true if successful, false otherwise
      */
-    virtual int getRoiWindow(const unsigned long left_pos,
-                             const unsigned long top_pos,
-                             const unsigned long width,
-                             const unsigned long height,
-                             const unsigned long columns,
-                             const unsigned long rows,
-                             const unsigned long frame,
+    virtual int getRoiWindow(const unsigned int left_pos,
+                             const unsigned int top_pos,
+                             const unsigned int width,
+                             const unsigned int height,
+                             const unsigned int columns,
+                             const unsigned int rows,
+                             const unsigned int frame,
                              double &voiCenter,
                              double &voiWidth) = 0;
 
@@ -231,7 +231,7 @@ class DiMonoPixel
      *  @param  count  number of pixels
      */
     DiMonoPixel(const DiMonoPixel *pixel,
-                const unsigned long count);
+                const unsigned int count);
 
     /// pointer to modality transform object
     DiMonoModality *Modality;

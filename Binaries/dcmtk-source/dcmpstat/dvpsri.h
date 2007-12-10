@@ -132,14 +132,14 @@ public:
    *  @param frame frame number to be checked
    *  @return OFTrue if the image reference applies to the given frame number, OFFalse otherwise.
    */
-  OFBool appliesToFrame(unsigned long frame);
+  OFBool appliesToFrame(unsigned int frame);
 
   /** checks whether this image reference applies exactly to the given frame number.
    *  This is the case if the referencedFrameNumber only contains the given frame number.
    *  @param frame frame number to be checked
    *  @return OFTrue if the image reference applies only to the given frame number, OFFalse otherwise.
    */
-  OFBool appliesOnlyToFrame(unsigned long frame);
+  OFBool appliesOnlyToFrame(unsigned int frame);
 
   /** checks whether this image reference applies all frames
    *  because the referencedFrameNumber is empty.
@@ -151,7 +151,7 @@ public:
    *  @param frame the frame reference
    *  @param numberOfFrames the number of frames of the image reference
    */
-  void removeFrameReference(unsigned long frame, unsigned long numberOfFrames);
+  void removeFrameReference(unsigned int frame, unsigned int numberOfFrames);
 
   /** sets a new log stream
    *  @param stream new log stream, NULL for default logstream
@@ -182,7 +182,7 @@ private:
   /// if exists, contains binary representation of referencedFrameNumber
   Sint32 *frameCache;
   /// describes array size of frameCache
-  unsigned long frameCacheEntries;
+  unsigned int frameCacheEntries;
 
   /** output stream for error messages, never NULL
    */

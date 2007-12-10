@@ -51,7 +51,7 @@
 /// signed integer value
 typedef signed long OFCmdSignedInt;
 /// unsigned integer value
-typedef unsigned long OFCmdUnsignedInt;
+typedef unsigned int OFCmdUnsignedInt;
 /// floating point value
 typedef double OFCmdFloat;
 /// dynamic string value

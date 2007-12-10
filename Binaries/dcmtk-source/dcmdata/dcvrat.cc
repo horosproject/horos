@@ -78,10 +78,10 @@ DcmEVR DcmAttributeTag::ident() const
 }
 
 
-unsigned long DcmAttributeTag::getVM()
+unsigned int DcmAttributeTag::getVM()
 {
     /* attribute tags store pairs of 16 bit values */
-    return OFstatic_cast(unsigned long, Length / (2 * sizeof(Uint16)));
+    return OFstatic_cast(unsigned int, Length / (2 * sizeof(Uint16)));
 }
 
 
@@ -99,15 +99,15 @@ void DcmAttributeTag::print(ostream &out,
         /* get unsigned integer data */
         Uint16 *uintVals;
         errorFlag = getUint16Array(uintVals);
-        const unsigned long count = getVM();
+        const unsigned int count = getVM();
         if ((uintVals != NULL) && (count > 0))
         {
             /* determine number of values to be printed */
-            unsigned long expectedLength = count * (11 + 1) - 1;
-            const unsigned long printCount =
+            unsigned int expectedLength = count * (11 + 1) - 1;
+            const unsigned int printCount =
                 ((expectedLength > DCM_OptPrintLineLength) && (flags & DCMTypes::PF_shortenLongTagValues)) ?
                 (DCM_OptPrintLineLength - 3 /* for "..." */ + 1) / (11 /* (gggg,eeee) */ + 1 /* for "\" */) : count;
-            unsigned long printedLength = printCount * (11 + 1) - 1;
+            unsigned int printedLength = printCount * (11 + 1) - 1;
             /* print line start with tag and VR */
             printInfoLineStart(out, flags, level);
             /* print multiple values */
@@ -117,7 +117,7 @@ void DcmAttributeTag::print(ostream &out,
                 /* print tag values (group,element) in hex mode */
                 out << '(' << setw(4) << (*(uintVals++));
                 out << ',' << setw(4) << (*(uintVals++)) << ')';
-                for (unsigned long i = 1; i < printCount; i++)
+                for (unsigned int i = 1; i < printCount; i++)
                 {
                     out << "\\" << '(' << setw(4) << (*(uintVals++));
                     out << ',' << setw(4) << (*(uintVals++)) << ')';
@@ -144,7 +144,7 @@ void DcmAttributeTag::print(ostream &out,
 
 
 OFCondition DcmAttributeTag::getTagVal(DcmTagKey &tagVal,
-                                       const unsigned long pos)
+                                       const unsigned int pos)
 {
     /* get unsigned integer data */
     Uint16 *uintValues;
@@ -177,7 +177,7 @@ OFCondition DcmAttributeTag::getUint16Array(Uint16 *&uintVals)
 
 
 OFCondition DcmAttributeTag::getOFString(OFString &stringVal,
-                                         const unsigned long pos,
+                                         const unsigned int pos,
                                          OFBool /*normalize*/)
 {
     DcmTagKey tagVal;
@@ -199,7 +199,7 @@ OFCondition DcmAttributeTag::getOFString(OFString &stringVal,
 
 
 OFCondition DcmAttributeTag::putTagVal(const DcmTagKey &tagVal,
-                                       const unsigned long pos)
+                                       const unsigned int pos)
 {
     /* create tag data */
     Uint16 uintVals[2];
@@ -212,7 +212,7 @@ OFCondition DcmAttributeTag::putTagVal(const DcmTagKey &tagVal,
 
 
 OFCondition DcmAttributeTag::putUint16Array(const Uint16 *uintVals,
-                                            const unsigned long numUints)
+                                            const unsigned int numUints)
 {
     errorFlag = EC_Normal;
     if (numUints > 0)
@@ -237,14 +237,14 @@ OFCondition DcmAttributeTag::putString(const char *stringVal)
     /* check input string */
     if ((stringVal != NULL) && (strlen(stringVal) > 0))
     {
-        unsigned long vm = getVMFromString(stringVal);
+        unsigned int vm = getVMFromString(stringVal);
         if (vm > 0)
         {
             Uint16 * field = new Uint16[2 * vm];
             const char *s = stringVal;
             char *value;
             /* retrieve attribute tag data from character string */
-            for (unsigned long i = 0; (i < 2 * vm) && errorFlag.good(); i += 2)
+            for (unsigned int i = 0; (i < 2 * vm) && errorFlag.good(); i += 2)
             {
                 /* get first value stored in 's', set 's' to beginning of the next value */
                 value = getFirstValueFromString(s);
@@ -362,9 +362,9 @@ OFCondition DcmAttributeTag::verify(const OFBool autocorrect)
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

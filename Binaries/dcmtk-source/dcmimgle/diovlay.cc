@@ -206,12 +206,12 @@ Uint16 *DiOverlay::Init(const DiOverlay *overlay)
             Data = new DiOverlayData(overlay->Data->ArrayEntries);      // use same array size
         else
             Data = new DiOverlayData(overlay->Data->Count);             // shrink array size to minimal size
-        const unsigned long count = OFstatic_cast(unsigned long, overlay->Width) *
-            OFstatic_cast(unsigned long, overlay->Height) * overlay->Frames;
+        const unsigned int count = OFstatic_cast(unsigned int, overlay->Width) *
+            OFstatic_cast(unsigned int, overlay->Height) * overlay->Frames;
         if ((Data != NULL) && (Data->Planes != NULL) && (count > 0))
         {
             register unsigned int i;
-            Data->DataBuffer = new Uint16[OFstatic_cast(unsigned long, Width) * OFstatic_cast(unsigned long, Height) * Frames];
+            Data->DataBuffer = new Uint16[OFstatic_cast(unsigned int, Width) * OFstatic_cast(unsigned int, Height) * Frames];
             if (Data->DataBuffer != NULL)
             {
                 Uint16 *temp = NULL;
@@ -533,7 +533,7 @@ int DiOverlay::removePlane(const unsigned int group)
 }
 
 
-void *DiOverlay::getPlaneData(const unsigned long frame,
+void *DiOverlay::getPlaneData(const unsigned int frame,
                               unsigned int plane,
                               unsigned int &left_pos,
                               unsigned int &top_pos,
@@ -567,7 +567,7 @@ void *DiOverlay::getPlaneData(const unsigned long frame,
 }
 
 
-void *DiOverlay::getFullPlaneData(const unsigned long frame,
+void *DiOverlay::getFullPlaneData(const unsigned int frame,
                                   unsigned int plane,
                                   unsigned int &width,
                                   unsigned int &height,
@@ -589,11 +589,11 @@ void *DiOverlay::getFullPlaneData(const unsigned long frame,
 }
 
 
-unsigned long DiOverlay::create6xxx3000PlaneData(Uint8 *&buffer,
+unsigned int DiOverlay::create6xxx3000PlaneData(Uint8 *&buffer,
                                                  unsigned int plane,
                                                  unsigned int &width,
                                                  unsigned int &height,
-                                                 unsigned long &frames)
+                                                 unsigned int &frames)
 {
     if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)                    // plane does exist
     {

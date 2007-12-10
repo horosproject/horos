@@ -77,7 +77,7 @@ DcmEVR DcmShortString::ident() const
 
 
 OFCondition DcmShortString::getOFString(OFString &stringVal,
-                                        const unsigned long pos,
+                                        const unsigned int pos,
                                         OFBool normalize)
 {
     OFCondition l_error = DcmCharString::getOFString(stringVal, pos, normalize);

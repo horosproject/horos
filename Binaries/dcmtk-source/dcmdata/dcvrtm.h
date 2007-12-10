@@ -92,7 +92,7 @@ class DcmTime
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOFString(OFString &stringValue,
-                                    const unsigned long pos,
+                                    const unsigned int pos,
                                     OFBool normalize = OFTrue);
 
     /** set the element value to the current system time.
@@ -126,7 +126,7 @@ class DcmTime
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition getOFTime(OFTime &timeValue,
-                          const unsigned long pos = 0,
+                          const unsigned int pos = 0,
                           const OFBool supportOldFormat = OFTrue);
 
     /** get the current element value in ISO time format.
@@ -150,7 +150,7 @@ class DcmTime
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition getISOFormattedTime(OFString &formattedTime,
-                                    const unsigned long pos = 0,
+                                    const unsigned int pos = 0,
                                     const OFBool seconds = OFTrue,
                                     const OFBool fraction = OFFalse,
                                     const OFBool createMissingPart = OFFalse,

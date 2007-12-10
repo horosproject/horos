@@ -89,7 +89,7 @@ OFCondition DVPSDisplayedArea_PList::read(DcmItem &dset)
     dseq=(DcmSequenceOfItems *)stack.top();
     if (dseq)
     {
-      unsigned long numItems = dseq->card();
+      unsigned int numItems = dseq->card();
       for (unsigned int i=0; i<numItems; i++)
       {
         ditem = dseq->getItem(i);
@@ -136,7 +136,7 @@ OFCondition DVPSDisplayedArea_PList::write(DcmItem &dset)
   return result;
 }
 
-DVPSDisplayedArea *DVPSDisplayedArea_PList::findDisplayedArea(const char *instanceUID, unsigned long frame)
+DVPSDisplayedArea *DVPSDisplayedArea_PList::findDisplayedArea(const char *instanceUID, unsigned int frame)
 {
   OFListIterator(DVPSDisplayedArea *) first = list_.begin();
   OFListIterator(DVPSDisplayedArea *) last = list_.end();
@@ -167,8 +167,8 @@ DVPSDisplayedArea *DVPSDisplayedArea_PList::createDisplayedArea(
     DVPSReferencedSeries_PList& allReferences,
     const char *sopclassUID, 
     const char *instanceUID, 
-    unsigned long frame, 
-    unsigned long numberOfFrames, 
+    unsigned int frame, 
+    unsigned int numberOfFrames, 
     DVPSObjectApplicability applicability)
 {
   

@@ -75,7 +75,7 @@ class DiPluginFormat
      */
     virtual int write(DiImage *image,
                       FILE *stream,
-                      const unsigned long frame = 0) const = 0;
+                      const unsigned int frame = 0) const = 0;
 
   protected:
 

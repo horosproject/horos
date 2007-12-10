@@ -355,10 +355,10 @@ typedef unsigned char uchar;
 typedef unsigned int uint;
 #endif
 
-/* Define `ulong' to `unsigned long' if <sys/types.h> does not define. */
+/* Define `ulong' to `unsigned int' if <sys/types.h> does not define. */
 //#define HAVE_NO_TYPEDEF_ULONG 1
 #ifdef HAVE_NO_TYPEDEF_ULONG
-typedef unsigned long ulong;
+typedef unsigned int ulong;
 #endif
 
 /* Define `ushort' to `unsigned short' if <sys/types.h> does not define. */

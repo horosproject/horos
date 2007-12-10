@@ -56,7 +56,7 @@ SiRIPEMD160::~SiRIPEMD160()
   delete ctx;
 }
 
-unsigned long SiRIPEMD160::getSize() const
+unsigned int SiRIPEMD160::getSize() const
 {
   return RIPEMD160_DIGEST_LENGTH;
 }
@@ -67,7 +67,7 @@ OFCondition SiRIPEMD160::initialize()
   return EC_Normal;
 }
 
-OFCondition SiRIPEMD160::digest(const unsigned char *data, unsigned long length)
+OFCondition SiRIPEMD160::digest(const unsigned char *data, unsigned int length)
 {
   if (length == 0) return EC_Normal;
   if ((data == NULL)||(ctx == NULL)) return EC_IllegalCall;

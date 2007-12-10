@@ -64,7 +64,7 @@ public:
    */
   virtual OFCondition stamp(
     const unsigned char *inputData, 
-    unsigned long inputDataSize) = 0;
+    unsigned int inputDataSize) = 0;
 
   /** writes the current timestamp into an item of the Digital Signatures Sequence
    *  and creates the timestamp type information in the item.

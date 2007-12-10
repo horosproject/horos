@@ -370,11 +370,11 @@ public:
      */
     virtual OFCondition putUint8Array(
         const Uint8 * byteValue,
-        const unsigned long length);
+        const unsigned int length);
 
     virtual OFCondition putUint16Array(
         const Uint16 * wordValue,
-        const unsigned long length);
+        const unsigned int length);
 
     /** create an empty Uint8 array of given number of words and set it
      */

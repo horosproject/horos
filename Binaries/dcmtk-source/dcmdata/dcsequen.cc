@@ -792,7 +792,7 @@ void DcmSequenceOfItems::transferEnd()
 // ********************************
 
 
-unsigned long DcmSequenceOfItems::card()
+unsigned int DcmSequenceOfItems::card()
 {
     return itemList->card();
 }
@@ -816,7 +816,7 @@ OFCondition DcmSequenceOfItems::prepend(DcmItem *item)
 
 
 OFCondition DcmSequenceOfItems::insert(DcmItem *item,
-                                       unsigned long where,
+                                       unsigned int where,
                                        OFBool before)
 {
     errorFlag = EC_Normal;
@@ -873,7 +873,7 @@ OFCondition DcmSequenceOfItems::append(DcmItem *item)
 // ********************************
 
 
-DcmItem* DcmSequenceOfItems::getItem(const unsigned long num)
+DcmItem* DcmSequenceOfItems::getItem(const unsigned int num)
 {
     errorFlag = EC_Normal;
     DcmItem *item;
@@ -950,7 +950,7 @@ OFCondition DcmSequenceOfItems::nextObject(DcmStack &stack,
 // ********************************
 
 
-DcmItem *DcmSequenceOfItems::remove(const unsigned long num)
+DcmItem *DcmSequenceOfItems::remove(const unsigned int num)
 {
     errorFlag = EC_Normal;
     DcmItem *item;
@@ -1123,7 +1123,7 @@ OFCondition DcmSequenceOfItems::search(const DcmTagKey &tag,
             //   3. set own list to position of dnO
             //   4. restart search from dnO
 
-            unsigned long i = resultStack.card();
+            unsigned int i = resultStack.card();
             while ((i > 0) && ((dO = resultStack.elem(i-1)) != this))
             {
                 i--;

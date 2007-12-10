@@ -56,7 +56,7 @@ END_EXTERN_C
 OFFilenameCreator::OFFilenameCreator()
 : creation_time(0)
 {
-  creation_time = OFstatic_cast(unsigned long, time(NULL));
+  creation_time = OFstatic_cast(unsigned int, time(NULL));
 }
   
 OFFilenameCreator::OFFilenameCreator(const OFFilenameCreator& copy)
@@ -114,10 +114,10 @@ OFBool OFFilenameCreator::makeFilename(unsigned int seed, const char *dir, const
 }
   
 
-void OFFilenameCreator::addLongToString(unsigned long l, OFString &s)
+void OFFilenameCreator::addLongToString(unsigned int l, OFString &s)
 {
   l &= 0xFFFFFFFFL;
-  unsigned long m;
+  unsigned int m;
   int idx=7;
   char chr_array[9];
   strcpy(chr_array, "00000000");
@@ -150,9 +150,9 @@ unsigned int OFFilenameCreator::hashString(const char *str)
 
 int OFFilenameCreator::myrand_r(unsigned int *seed)
 {
-  unsigned long val = OFstatic_cast(unsigned long, *seed);  
+  unsigned int val = OFstatic_cast(unsigned int, *seed);  
   val = val * 1103515245 + 12345;
-  *seed = OFstatic_cast(unsigned int, val %(OFstatic_cast(unsigned long, 0x80000000)));
+  *seed = OFstatic_cast(unsigned int, val %(OFstatic_cast(unsigned int, 0x80000000)));
   return OFstatic_cast(int, *seed);
 }
 

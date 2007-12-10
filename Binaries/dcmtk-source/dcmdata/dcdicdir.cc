@@ -308,7 +308,7 @@ DCM_dcmdataDebug(4, ( "DcmDicomDir::lookForOffsetElem() Offset-Element(0x%4.4hx,
 
 OFCondition DcmDicomDir::resolveGivenOffsets( DcmObject *startPoint,
                                               ItemOffset *itOffsets,
-                                              const unsigned long numOffsets,
+                                              const unsigned int numOffsets,
                                               const DcmTagKey &offsetTag )
 {
   OFCondition l_error = EC_Normal;
@@ -321,7 +321,7 @@ OFCondition DcmDicomDir::resolveGivenOffsets( DcmObject *startPoint,
           if ( stack.top()->ident() != EVR_up )
               continue;
           DcmUnsignedLongOffset *offElem = OFstatic_cast(DcmUnsignedLongOffset *, stack.top());
-          for (unsigned long i = 0; i < numOffsets; i++ )
+          for (unsigned int i = 0; i < numOffsets; i++ )
           {
               l_error = offElem->getUint32(offset);
               if (offset == itOffsets[ i ].fileOffset )
@@ -347,10 +347,10 @@ OFCondition DcmDicomDir::resolveAllOffsets( DcmDataset &dset )   // inout
 {
     OFCondition l_error = EC_Normal;
     DcmSequenceOfItems &localDirRecSeq = getDirRecSeq( dset );
-    unsigned long maxitems = localDirRecSeq.card();
+    unsigned int maxitems = localDirRecSeq.card();
     ItemOffset *itOffsets = new ItemOffset[ maxitems + 1 ];
 
-    for (unsigned long i = 0; i < maxitems; i++ )
+    for (unsigned int i = 0; i < maxitems; i++ )
     {
         DcmDirectoryRecord *rec;
         rec = OFstatic_cast(DcmDirectoryRecord *, localDirRecSeq.getItem( i ));
@@ -457,8 +457,8 @@ OFCondition DcmDicomDir::moveMRDRbetweenSQs( DcmSequenceOfItems &fromSQ,
 {
     OFCondition l_error = EC_Normal;
 
-    unsigned long num = fromSQ.card();
-    for (unsigned long i = 0, j = 0; i < num; i++)
+    unsigned int num = fromSQ.card();
+    for (unsigned int i = 0, j = 0; i < num; i++)
     {
         DcmDirectoryRecord *dRec;
         dRec = OFstatic_cast(DcmDirectoryRecord *, fromSQ.getItem( j ));
@@ -496,7 +496,7 @@ OFCondition DcmDicomDir::convertLinearToTree()
     moveMRDRbetweenSQs( localDirRecSeq, getMRDRSequence() );
 
     // dissolve MRDR references for all remaining items
-    for (unsigned long i = localDirRecSeq.card(); i > 0; i-- )
+    for (unsigned int i = localDirRecSeq.card(); i > 0; i-- )
         linkMRDRtoRecord( OFstatic_cast(DcmDirectoryRecord *, localDirRecSeq.getItem(i-1)) );
 
     return l_error;
@@ -511,8 +511,8 @@ Uint32 DcmDicomDir::lengthUntilSQ(DcmDataset &dset,
                                   E_EncodingType enctype )
 {
     Uint32 templen = 0L;
-    unsigned long num = dset.card();
-    for (unsigned long i = 0; i < num; i++ )
+    unsigned int num = dset.card();
+    for (unsigned int i = 0; i < num; i++ )
     {
         DcmObject *dO = dset.getElement( i );
 
@@ -567,7 +567,7 @@ Uint32 DcmDicomDir::lengthOfRecord( DcmItem *item,
 
 OFCondition DcmDicomDir::convertGivenPointer( DcmObject *startPoint,
                                               ItemOffset *itOffsets,
-                                              const unsigned long numOffsets,
+                                              const unsigned int numOffsets,
                                               const DcmTagKey &offsetTag )
 {
     OFCondition l_error = EC_Normal;
@@ -580,7 +580,7 @@ OFCondition DcmDicomDir::convertGivenPointer( DcmObject *startPoint,
                 continue;
             DcmUnsignedLongOffset *offElem = OFstatic_cast(DcmUnsignedLongOffset *, stack.top());
 
-            for (unsigned long i = 0; i < numOffsets; i++ )
+            for (unsigned int i = 0; i < numOffsets; i++ )
             {
                 if ( offElem->getNextRecord() == itOffsets[i].item )
                 {
@@ -607,11 +607,11 @@ OFCondition DcmDicomDir::convertAllPointer( DcmDataset &dset,          // inout
     DcmSequenceOfItems &localDirRecSeq = getDirRecSeq( dset );
 
     Uint32 offs_Item1 =  beginOfDataSet + lengthUntilSQ( dset, oxfer, enctype );
-    unsigned long num = localDirRecSeq.card();
+    unsigned int num = localDirRecSeq.card();
     ItemOffset *itOffsets = new ItemOffset[ num ];
 
     Uint32 item_pos = offs_Item1;
-    for (unsigned long i = 0; i < num; i++ )
+    for (unsigned int i = 0; i < num; i++ )
     {
         DcmDirectoryRecord *rec;
         rec = OFstatic_cast(DcmDirectoryRecord *, localDirRecSeq.getItem( i ));
@@ -649,8 +649,8 @@ OFCondition DcmDicomDir::copyRecordPtrToSQ( DcmDirectoryRecord *record,
 
     if ( record != NULL )
     {
-        unsigned long lastIndex = record->cardSub();
-        for (unsigned long i = lastIndex; i > 0; i-- )
+        unsigned int lastIndex = record->cardSub();
+        for (unsigned int i = lastIndex; i > 0; i-- )
         {
             DCM_dcmdataDebug(3, ( "DcmDicomDir::copyRecordPtrToSQ() testing subRecord no %ld of %ld:", i, lastIndex ));
 
@@ -719,8 +719,8 @@ OFCondition DcmDicomDir::convertTreeToLinear(Uint32 beginOfDataSet,
     DcmSequenceOfItems &localDirRecSeq = getDirRecSeq( dset );
 
     // copy items to which no pointer exists to a temporary list
-    unsigned long numUnresItems = localDirRecSeq.card();
-    for (unsigned long i = numUnresItems; i > 0; i-- )
+    unsigned int numUnresItems = localDirRecSeq.card();
+    for (unsigned int i = numUnresItems; i > 0; i-- )
     {
 DCM_dcmdataDebug(2, ( "DcmDicomDir::convertTreeToLinear() copy pointer of unresolved Record no %ld of %ld to unresRecs-SQ:",
            i, numUnresItems ));
@@ -743,8 +743,8 @@ DCM_dcmdataDebug(2, ( "DcmDicomDir::convertTreeToLinear() copy pointer of unreso
         offElem->setNextRecord( *lastRootRecord );
 
     // copy MRDRs in localDirRecSeq
-    unsigned long numMRDRItems = getMRDRSequence().card();
-    for (unsigned long j = numMRDRItems; j > 0; j-- )
+    unsigned int numMRDRItems = getMRDRSequence().card();
+    for (unsigned int j = numMRDRItems; j > 0; j-- )
     {
 DCM_dcmdataDebug(2, ( "DcmDicomDir::convertTreeToLinear() copy pointer of MRDR no %ld of %ld to localDirRecSeq:",
            j, numUnresItems ));
@@ -870,8 +870,8 @@ DcmDirectoryRecord* DcmDicomDir::recurseMatchFile( DcmDirectoryRecord* startRec,
     DcmDirectoryRecord* retRec = NULL;
     if ( filename != NULL && *filename != '\0' && startRec != NULL)
     {
-        unsigned long lastIndex = startRec->cardSub();
-        for (unsigned long i = 0; i < lastIndex; i++ )
+        unsigned int lastIndex = startRec->cardSub();
+        for (unsigned int i = 0; i < lastIndex; i++ )
         {
             DcmDirectoryRecord *subRecord = startRec->getSub( i );
             const char* subName = subRecord->lookForReferencedFileID(); // friend
@@ -901,8 +901,8 @@ DcmDirectoryRecord* DcmDicomDir::searchMatchFile( DcmSequenceOfItems& recSeq,
     DcmDirectoryRecord* retRec = NULL;
     if ( filename != NULL && *filename != '\0' )
     {
-        unsigned long lastIndex = recSeq.card();
-        for (unsigned long i = 0; i < lastIndex; i++ )
+        unsigned int lastIndex = recSeq.card();
+        for (unsigned int i = 0; i < lastIndex; i++ )
         {
             DcmDirectoryRecord *record;
             record = OFstatic_cast(DcmDirectoryRecord *, recSeq.getItem( i ));
@@ -1139,13 +1139,13 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
     // remove all records from sequence localDirRecSeq
     while ( localDirRecSeq.card() > 0 )
-        localDirRecSeq.remove(OFstatic_cast(unsigned long, 0));
+        localDirRecSeq.remove(OFstatic_cast(unsigned int, 0));
 
     // move records to which no pointer exists back
     while ( localUnresRecs.card() > 0 )
     {
         DcmItem *unresRecord =
-            localUnresRecs.remove(OFstatic_cast(unsigned long, 0));
+            localUnresRecs.remove(OFstatic_cast(unsigned int, 0));
         localDirRecSeq.insert( unresRecord );
     }
     return errorFlag;
@@ -1158,22 +1158,22 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
 OFCondition DcmDicomDir::countMRDRRefs( DcmDirectoryRecord *startRec,
                                         ItemOffset *refCounter,
-                                        const unsigned long numCounters )
+                                        const unsigned int numCounters )
 {
     OFCondition l_error = EC_Normal;
     if ( refCounter == NULL )
         l_error = EC_IllegalCall;
     else if ( startRec != NULL )
     {
-        unsigned long lastIndex = startRec->cardSub();
-        for (unsigned long i = 0; i < lastIndex; i++ )
+        unsigned int lastIndex = startRec->cardSub();
+        for (unsigned int i = 0; i < lastIndex; i++ )
         {
             DcmDirectoryRecord *subRecord = startRec->getSub( i );
             DcmDirectoryRecord *refMRDR = subRecord->lookForReferencedMRDR();
                                                             // friend class
             if ( refMRDR != NULL )
             {
-                unsigned long j;
+                unsigned int j;
                 for ( j = 0; j < numCounters; j++ )
                     if ( refMRDR == refCounter[ j ].item )
                     {
@@ -1196,22 +1196,22 @@ DCM_dcmdataDebug(3, ( "DcmDicomDir::countMRDRRefs() MRDR p=%p found, which is %l
 
 OFCondition DcmDicomDir::checkMRDRRefCounter( DcmDirectoryRecord *startRec,
                                               ItemOffset *refCounter,
-                                              const unsigned long numCounters )
+                                              const unsigned int numCounters )
 {
     OFCondition l_error = EC_Normal;
     if ( refCounter == NULL )
         l_error = EC_IllegalCall;
     else if ( startRec != NULL )
     {
-        unsigned long lastIndex = startRec->cardSub();
-        for (unsigned long i = 0; i < lastIndex; i++ )
+        unsigned int lastIndex = startRec->cardSub();
+        for (unsigned int i = 0; i < lastIndex; i++ )
         {
             DcmDirectoryRecord *subRecord = startRec->getSub( i );
             DcmDirectoryRecord *refMRDR = subRecord->lookForReferencedMRDR();
                                                             // friend class
             if ( refMRDR != NULL )
             {
-                unsigned long j;
+                unsigned int j;
                 for ( j = 0; j < numCounters; j++ )
                     if ( refMRDR == refCounter[ j ].item )
                     {
@@ -1259,11 +1259,11 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 {
     errorFlag = EC_Normal;
     DcmSequenceOfItems &localDirRecSeq = getDirRecSeq(getDataset());
-    unsigned long maxMRDRs = localDirRecSeq.card() + getMRDRSequence().card();
+    unsigned int maxMRDRs = localDirRecSeq.card() + getMRDRSequence().card();
     ItemOffset *refCounter = new ItemOffset[ maxMRDRs ];
 
     // create MRDR table for MRDRs from MRDRSeq and from DirRecSeq:
-    unsigned long i;
+    unsigned int i;
     for ( i = 0; i < getMRDRSequence().card(); i++ )
     {
         DcmDirectoryRecord *rec;
@@ -1271,7 +1271,7 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
         refCounter[i].item = rec;
         refCounter[i].fileOffset = 0L;
     }
-    for (unsigned long j = 0; j < localDirRecSeq.card() && i < maxMRDRs; j++ )
+    for (unsigned int j = 0; j < localDirRecSeq.card() && i < maxMRDRs; j++ )
     {
         DcmDirectoryRecord *rec;
         rec = OFstatic_cast(DcmDirectoryRecord *, localDirRecSeq.getItem( j ));
@@ -1289,7 +1289,7 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 
     // check stored reference counters for correctness
     OFCondition err3 = EC_Normal;
-    for (unsigned long k = 0; k < maxMRDRs; k++ )
+    for (unsigned int k = 0; k < maxMRDRs; k++ )
     {
         DcmDirectoryRecord *refMRDR = OFstatic_cast(DcmDirectoryRecord *, refCounter[k].item);
         Uint32 refNum = refMRDR->lookForNumberOfReferences();   // friend
@@ -1494,9 +1494,9 @@ DCM_dcmdataCDebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

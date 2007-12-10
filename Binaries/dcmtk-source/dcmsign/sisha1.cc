@@ -57,7 +57,7 @@ SiSHA1::~SiSHA1()
   delete ctx;
 }
 
-unsigned long SiSHA1::getSize() const
+unsigned int SiSHA1::getSize() const
 {
   return SHA_DIGEST_LENGTH;
 }
@@ -68,7 +68,7 @@ OFCondition SiSHA1::initialize()
   return EC_Normal;
 }
 
-OFCondition SiSHA1::digest(const unsigned char *data, unsigned long length)
+OFCondition SiSHA1::digest(const unsigned char *data, unsigned int length)
 {
   if (length == 0) return EC_Normal;
   if ((data == NULL)||(ctx == NULL)) return EC_IllegalCall;

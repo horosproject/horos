@@ -112,11 +112,11 @@ OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
     OFCondition result = getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", logStream);
     if (result.good())
     {
-        /* create reference string from unsigned long values */
+        /* create reference string from unsigned int values */
         Uint32 value = 0;
         char buffer[20];
-        const unsigned long count = delem.getVM();
-        for (unsigned long i = 0; i < count; i++)
+        const unsigned int count = delem.getVM();
+        for (unsigned int i = 0; i < count; i++)
         {
             if (i > 0)
                 ReferencedContentItem += '.';
@@ -137,10 +137,10 @@ OFCondition DSRByReferenceTreeNode::writeContentItem(DcmItem &dataset,
     {
         result = EC_Normal;
         DcmUnsignedLong delem(DCM_ReferencedContentItemIdentifier);
-        /* create unsigned long values from reference string */
+        /* create unsigned int values from reference string */
         size_t posStart = 0;
         size_t posEnd = 0;
-        unsigned long i = 0;
+        unsigned int i = 0;
         do {
             /* search for next separator */
             posEnd = ReferencedContentItem.find('.', posStart);

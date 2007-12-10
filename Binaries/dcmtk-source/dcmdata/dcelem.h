@@ -166,20 +166,20 @@ class DcmElement
         // GET-Operations
 
     // get copies of individual components
-    virtual OFCondition getUint8(Uint8 &val, const unsigned long pos = 0);
-    virtual OFCondition getSint16(Sint16 &val, const unsigned long pos = 0);
-    virtual OFCondition getUint16(Uint16 &val, const unsigned long pos = 0);
-    virtual OFCondition getSint32(Sint32 &val, const unsigned long pos = 0);
-    virtual OFCondition getUint32(Uint32 &val, const unsigned long pos = 0);
-    virtual OFCondition getFloat32(Float32 &val, const unsigned long pos = 0);
-    virtual OFCondition getFloat64(Float64 &val, const unsigned long pos = 0);
-    virtual OFCondition getTagVal(DcmTagKey &val, const unsigned long pos = 0);
+    virtual OFCondition getUint8(Uint8 &val, const unsigned int pos = 0);
+    virtual OFCondition getSint16(Sint16 &val, const unsigned int pos = 0);
+    virtual OFCondition getUint16(Uint16 &val, const unsigned int pos = 0);
+    virtual OFCondition getSint32(Sint32 &val, const unsigned int pos = 0);
+    virtual OFCondition getUint32(Uint32 &val, const unsigned int pos = 0);
+    virtual OFCondition getFloat32(Float32 &val, const unsigned int pos = 0);
+    virtual OFCondition getFloat64(Float64 &val, const unsigned int pos = 0);
+    virtual OFCondition getTagVal(DcmTagKey &val, const unsigned int pos = 0);
 
     // Gets a copy of one string value component.  For multi-valued
     // string attributes (i.e those using \ separators),
     // this method extracts the pos component (counting from zero base).
     virtual OFCondition getOFString(OFString &str,
-                                    const unsigned long pos,
+                                    const unsigned int pos,
                                     OFBool normalize = OFTrue);
 
     /** get entire element value as a character string.
@@ -228,22 +228,22 @@ class DcmElement
     virtual OFCondition putString(const char *val);
 
     // One Value at a position pos
-    virtual OFCondition putSint16(const Sint16 val, const unsigned long pos = 0);
-    virtual OFCondition putUint16(const Uint16 val, const unsigned long pos = 0);
-    virtual OFCondition putSint32(const Sint32 val, const unsigned long pos = 0);
-    virtual OFCondition putUint32(const Uint32 val, const unsigned long pos = 0);
-    virtual OFCondition putFloat32(const Float32 val, const unsigned long pos = 0);
-    virtual OFCondition putFloat64(const Float64 val, const unsigned long pos = 0);
-    virtual OFCondition putTagVal(const DcmTagKey &attrTag, const unsigned long pos = 0);
+    virtual OFCondition putSint16(const Sint16 val, const unsigned int pos = 0);
+    virtual OFCondition putUint16(const Uint16 val, const unsigned int pos = 0);
+    virtual OFCondition putSint32(const Sint32 val, const unsigned int pos = 0);
+    virtual OFCondition putUint32(const Uint32 val, const unsigned int pos = 0);
+    virtual OFCondition putFloat32(const Float32 val, const unsigned int pos = 0);
+    virtual OFCondition putFloat64(const Float64 val, const unsigned int pos = 0);
+    virtual OFCondition putTagVal(const DcmTagKey &attrTag, const unsigned int pos = 0);
 
     // num Values
-    virtual OFCondition putUint8Array(const Uint8 *vals, const unsigned long num);
-    virtual OFCondition putSint16Array(const Sint16 *vals, const unsigned long num);
-    virtual OFCondition putUint16Array(const Uint16 *vals, const unsigned long num);
-    virtual OFCondition putSint32Array(const Sint32 *vals, const unsigned long num);
-    virtual OFCondition putUint32Array(const Uint32 *vals, const unsigned long num);
-    virtual OFCondition putFloat32Array(const Float32 *vals, const unsigned long num);
-    virtual OFCondition putFloat64Array(const Float64 *vals, const unsigned long num);
+    virtual OFCondition putUint8Array(const Uint8 *vals, const unsigned int num);
+    virtual OFCondition putSint16Array(const Sint16 *vals, const unsigned int num);
+    virtual OFCondition putUint16Array(const Uint16 *vals, const unsigned int num);
+    virtual OFCondition putSint32Array(const Sint32 *vals, const unsigned int num);
+    virtual OFCondition putUint32Array(const Uint32 *vals, const unsigned int num);
+    virtual OFCondition putFloat32Array(const Float32 *vals, const unsigned int num);
+    virtual OFCondition putFloat64Array(const Float64 *vals, const unsigned int num);
 
 
   protected:
@@ -448,9 +448,9 @@ class DcmElement
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

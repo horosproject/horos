@@ -330,7 +330,7 @@ public:
    *  @return OFTrue if successful, OFFalse otherwise.
    */
   OFBool printSCPCreate(
-    unsigned long numBoxes,
+    unsigned int numBoxes,
     DcmUniqueIdentifier& studyUID, 
     DcmUniqueIdentifier& seriesUID, 
     const char *aetitle);

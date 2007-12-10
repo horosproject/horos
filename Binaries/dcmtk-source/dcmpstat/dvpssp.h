@@ -138,7 +138,7 @@ class DVPSStoredPrint
    *  @param rows number of rows
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  OFCondition setImageDisplayFormat(unsigned long columns, unsigned long rows);
+  OFCondition setImageDisplayFormat(unsigned int columns, unsigned int rows);
 
   /** sets the (optional) film size ID.
    *  @param value new attribute value, may be NULL.
@@ -265,12 +265,12 @@ class DVPSStoredPrint
   /** gets the number of columns of the current image display format.
    *  @return number of columns.
    */
-  unsigned long getImageDisplayFormatColumns();
+  unsigned int getImageDisplayFormatColumns();
 
   /** gets the number of rows of the current image display format.
    *  @return number of rows.
    */
-  unsigned long getImageDisplayFormatRows();
+  unsigned int getImageDisplayFormatRows();
 
   /** gets the current film orientation.
    *  @return film orientation.
@@ -1095,9 +1095,9 @@ class DVPSStoredPrint
   /// flag indicating whether the currentXX values are up to date
   OFBool currentValuesValid;
   /// current number of columns
-  unsigned long currentNumCols;
+  unsigned int currentNumCols;
   /// current number of rows
-  unsigned long currentNumRows;
+  unsigned int currentNumRows;
 
   /// requested decimate/crop behaviour used in all image boxes
   DVPSDecimateCropBehaviour decimateCropBehaviour;

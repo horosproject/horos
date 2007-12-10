@@ -233,7 +233,7 @@ OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(
 
 // ----------------------------------------------------------------------------
 
-unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmDataset *searchMask )
+unsigned int WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmDataset *searchMask )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function determines the records from the worklist files which match
@@ -322,7 +322,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
             else
             {
               DcmDataset **tmp = new DcmDataset*[numOfMatchingRecords + 1];
-              for( unsigned long j=0 ; j<numOfMatchingRecords ; j++ )
+              for( unsigned int j=0 ; j<numOfMatchingRecords ; j++ )
                 tmp[j] = matchingRecords[j];
               tmp[numOfMatchingRecords] = new DcmDataset( *dataset );
               delete[] matchingRecords;
@@ -342,7 +342,7 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
 
 // ----------------------------------------------------------------------------
 
-unsigned long WlmFileSystemInteractionManager::GetNumberOfSequenceItemsForMatchingRecord( DcmTagKey sequenceTag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned long numOfSuperiorSequences, unsigned long idx )
+unsigned int WlmFileSystemInteractionManager::GetNumberOfSequenceItemsForMatchingRecord( DcmTagKey sequenceTag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned int numOfSuperiorSequences, unsigned int idx )
 // Date         : January 6, 2004
 // Author       : Thomas Wilkens
 // Task         : For the matching record that is identified through idx, this function returns the number
@@ -362,10 +362,10 @@ unsigned long WlmFileSystemInteractionManager::GetNumberOfSequenceItemsForMatchi
 {
   OFCondition cond;
   DcmSequenceOfItems *sequenceElement = NULL, *tmp = NULL;
-  unsigned long i;
+  unsigned int i;
 
   // initialize result variable
-  unsigned long numOfItems = 0;
+  unsigned int numOfItems = 0;
 
   // if the sequence in question is not contained in another sequence
   if( numOfSuperiorSequences == 0 )
@@ -402,7 +402,7 @@ unsigned long WlmFileSystemInteractionManager::GetNumberOfSequenceItemsForMatchi
 
 // ----------------------------------------------------------------------------
 
-void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKey tag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned long numOfSuperiorSequences, unsigned long idx, char *&value )
+void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKey tag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned int numOfSuperiorSequences, unsigned int idx, char *&value )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function determines an attribute value of a matching record
@@ -418,7 +418,7 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
 {
   OFCondition cond;
   DcmSequenceOfItems *sequenceElement = NULL, *tmp = NULL;
-  unsigned long i;
+  unsigned int i;
   const char *val = NULL;
   Uint16 v;
 
@@ -766,7 +766,7 @@ OFBool WlmFileSystemInteractionManager::ReferencedStudyOrPatientSequenceIsAbsent
       // if the sequence attribute is existent and non-empty, we need
       // to check every item in the sequence for completeness
       result = OFFalse;
-      for( unsigned long i=0 ; i<((DcmSequenceOfItems*)sequence)->card() && !result ; i++ )
+      for( unsigned int i=0 ; i<((DcmSequenceOfItems*)sequence)->card() && !result ; i++ )
       {
         if( AttributeIsAbsentOrEmpty( DCM_ReferencedSOPClassUID, ((DcmSequenceOfItems*)sequence)->getItem(i) ) ||
             AttributeIsAbsentOrEmpty( DCM_ReferencedSOPInstanceUID, ((DcmSequenceOfItems*)sequence)->getItem(i) ) )
@@ -802,7 +802,7 @@ OFBool WlmFileSystemInteractionManager::DescriptionAndCodeSequenceAttributesAreI
   else
   {
     // if it is existent and has items, check every item for completeness
-    for( unsigned long i=0 ; i<((DcmSequenceOfItems*)codeSequence)->card() && codeSequenceComplete ; i++ )
+    for( unsigned int i=0 ; i<((DcmSequenceOfItems*)codeSequence)->card() && codeSequenceComplete ; i++ )
     {
       if( AttributeIsAbsentOrEmpty( DCM_CodeValue, ((DcmSequenceOfItems*)codeSequence)->getItem(i) ) ||
           AttributeIsAbsentOrEmpty( DCM_CodingSchemeDesignator, ((DcmSequenceOfItems*)codeSequence)->getItem(i) ) )
@@ -861,7 +861,7 @@ OFBool WlmFileSystemInteractionManager::DatasetMatchesSearchMask( DcmDataset *da
   DetermineMatchingKeyAttributeValues( searchMask, mkaValuesSearchMask );
 
   // go through the arrays of matching key attribute values
-  for( unsigned long i=0 ; i<NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES && matchFound ; i++ )
+  for( unsigned int i=0 ; i<NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES && matchFound ; i++ )
   {
     // check if the current matching key attribute actually had a value in the search mask
     if( mkaValuesSearchMask[i] != NULL  )
@@ -972,7 +972,7 @@ void WlmFileSystemInteractionManager::DetermineMatchingKeyAttributeValues( DcmDa
   matchingKeyAttrValues = new const char*[ NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES ];
 
   // find matching key attributes in the dataset and remember their values.
-  for( unsigned long i=0 ; i<NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES ; i++ )
+  for( unsigned int i=0 ; i<NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES ; i++ )
   {
     // initialize array field
     matchingKeyAttrValues[i] = NULL;
@@ -2258,7 +2258,7 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 ** statement warning).
 **
 ** Revision 1.7  2002/12/12 16:49:40  wilkens
-** Added some code to avoid compiler warning (unsigned long passed as unsigned
+** Added some code to avoid compiler warning (unsigned int passed as unsigned
 ** int) on Sun CC 2.0.1.
 **
 ** Revision 1.6  2002/12/11 18:10:48  joergr

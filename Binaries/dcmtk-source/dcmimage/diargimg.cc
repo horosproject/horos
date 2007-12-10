@@ -69,7 +69,7 @@ DiARGBImage::DiARGBImage(const DiDocument *docu,
                         BitsPerSample = palette[jj]->getBits();
                 }
                 /* number of pixels per plane */
-                const unsigned long planeSize = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
+                const unsigned int planeSize = OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, Rows);
                 switch (InputData->getRepresentation())
                 {
                     case EPR_Uint8:

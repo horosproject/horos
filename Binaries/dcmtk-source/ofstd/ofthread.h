@@ -118,14 +118,14 @@ public:
    *  provided in this class.
    *  @return thread ID of target thread if started, 0 otherwise.
    */
-  unsigned long threadID();
+  unsigned int threadID();
 
   /** checks if the given thread ID matches the thread ID of the thread
    *  referenced by this object.
    *  @param tID thread ID to be compared
    *  @return OFTrue if equal, OFFalse otherwise.
    */
-  OFBool equal(unsigned long tID);
+  OFBool equal(unsigned int tID);
 
   /** converts any of the error codes returned by the methods of this class
    *  into a textual description, which is written into the string object.
@@ -158,7 +158,7 @@ protected:
    *  provided in this class.
    *  @return thread ID of the calling thread.
    */
-  static unsigned long self();
+  static unsigned int self();
 
 private:
 
@@ -173,14 +173,14 @@ private:
 
 #ifdef HAVE_WINDOWS_H
   /** thread handle (Win32 only) */
-  unsigned long theThreadHandle;
+  unsigned int theThreadHandle;
 #endif
 
   /** thread identifier */
 #ifdef HAVE_POINTER_TYPE_PTHREAD_T
   void *theThread;
 #else
-  unsigned long theThread;
+  unsigned int theThread;
 #endif
 
   /** unimplemented private copy constructor */

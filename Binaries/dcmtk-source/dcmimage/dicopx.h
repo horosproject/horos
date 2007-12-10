@@ -117,11 +117,11 @@ class DiColorPixel
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    virtual unsigned long createDIB(void *&data,
-                                    const unsigned long size,
+    virtual unsigned int createDIB(void *&data,
+                                    const unsigned int size,
                                     const Uint16 width,
                                     const Uint16 height,
-                                    const unsigned long frame,
+                                    const unsigned int frame,
                                     const int fromBits,
                                     const int toBits,
                                     const int mode,
@@ -139,10 +139,10 @@ class DiColorPixel
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    virtual unsigned long createAWTBitmap(void *&data,
+    virtual unsigned int createAWTBitmap(void *&data,
                                           const Uint16 width,
                                           const Uint16 height,
-                                          const unsigned long frame,
+                                          const unsigned int frame,
                                           const int fromBits,
                                           const int toBits) const = 0;
 
@@ -155,7 +155,7 @@ class DiColorPixel
      *  @param  count  number of pixels
      */
     DiColorPixel(const DiColorPixel *pixel,
-                 const unsigned long count);
+                 const unsigned int count);
 
     /// planar configuration of the original pixel data (0 = color-by-pixel, 1 = color-by-plane)
     int PlanarConfiguration;

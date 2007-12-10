@@ -207,7 +207,7 @@ OFBool WlmDataSource::CheckSearchMask( DcmDataset *searchMask )
   int invalidMatchingKeyAttributeCount = 0;
 
   // remember the number of data elements in the search mask
-  unsigned long numOfElementsInSearchMask = searchMask->card();
+  unsigned int numOfElementsInSearchMask = searchMask->card();
 
   // remember potentially specified specific character set
   searchMask->findAndGetOFString( DCM_SpecificCharacterSet, specificCharacterSet );
@@ -221,7 +221,7 @@ OFBool WlmDataSource::CheckSearchMask( DcmDataset *searchMask )
   foundUnsupportedOptionalKey = OFFalse;
 
   // start a loop; go through all data elements in the search mask, for each element, do some checking
-  unsigned long i = 0;
+  unsigned int i = 0;
   while( i < numOfElementsInSearchMask )
   {
     // determine current element
@@ -237,7 +237,7 @@ OFBool WlmDataSource::CheckSearchMask( DcmDataset *searchMask )
     // deleted in the above called function or not. In case the current element was deleted, we do not
     // need to increase counter i, we only need to update numOfElementsInSearchMask. If the current
     // element was not deleted, we need to increase i but don't have to update numOfElementsInSearchMask.
-    unsigned long currentNumOfElementsInSearchMask = searchMask->card();
+    unsigned int currentNumOfElementsInSearchMask = searchMask->card();
     if( currentNumOfElementsInSearchMask != numOfElementsInSearchMask )
       numOfElementsInSearchMask = currentNumOfElementsInSearchMask;
     else
@@ -400,8 +400,8 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
         invalidMatchingKeyAttributeCount++;
 
         // also, we want to delete all items except the first one
-        unsigned long numOfItems = sequenceElement->card();
-        for( unsigned long i=1 ; i<numOfItems ; i++ )
+        unsigned int numOfItems = sequenceElement->card();
+        for( unsigned int i=1 ; i<numOfItems ; i++ )
         {
           delete sequenceElement->remove( i );
         }
@@ -413,8 +413,8 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
       DcmItem *item = sequenceElement->getItem(0);
 
       // determine the cardinality of this item
-      unsigned long numOfElementsInItem = item->card();
-      unsigned long k = 0;
+      unsigned int numOfElementsInItem = item->card();
+      unsigned int k = 0;
 
       // go through all elements of this item
       while( k < numOfElementsInItem )
@@ -432,7 +432,7 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
         // deleted in the above called function or not. In case the current element was deleted, we do not
         // need to increase counter k, we only need to update numOfElementsInItem. If the current
         // element was not deleted, we need to increase k but don't have to update numOfElementsInItem.
-        unsigned long currentNumOfElementsInItem = item->card();
+        unsigned int currentNumOfElementsInItem = item->card();
         if( currentNumOfElementsInItem != numOfElementsInItem )
           numOfElementsInItem = currentNumOfElementsInItem;
         else
@@ -615,7 +615,7 @@ void WlmDataSource::PutOffendingElements( DcmTagKey &tag )
   DcmTagKey errortag;
 
   // determine how many offending elements there have been so far
-  unsigned long d = offendingElements->getVM();
+  unsigned int d = offendingElements->getVM();
 
   // if this is the first one, insert it at position 0
   if( d==0 )
@@ -627,7 +627,7 @@ void WlmDataSource::PutOffendingElements( DcmTagKey &tag )
   else
   {
     OFBool tagFound = OFFalse;
-    for( unsigned long j=0 ; j<d && !tagFound ; j++ )
+    for( unsigned int j=0 ; j<d && !tagFound ; j++ )
     {
       offendingElements->getTagVal( errortag, j );
       if( errortag == tag )
@@ -1295,7 +1295,7 @@ WlmDataSourceStatusType WlmDataSource::CancelFindRequest()
   // remove all remaining elements in the array and the array itself, if the array is not NULL
   if( matchingDatasets != NULL )
   {
-    for( unsigned long i=0 ; i<numOfMatchingDatasets ; i++ )
+    for( unsigned int i=0 ; i<numOfMatchingDatasets ; i++ )
       delete matchingDatasets[i];
     delete[] matchingDatasets;
     matchingDatasets = NULL;

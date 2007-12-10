@@ -91,7 +91,7 @@ OFCondition DVPSGraphicAnnotation_PList::read(DcmItem &dset)
     dseq=(DcmSequenceOfItems *)stack.top();
     if (dseq)
     {
-      unsigned long numItems = dseq->card();
+      unsigned int numItems = dseq->card();
       for (unsigned int i=0; i<numItems; i++)
       {
         ditem = dseq->getItem(i);
@@ -209,7 +209,7 @@ OFBool DVPSGraphicAnnotation_PList::usesLayerName(const char *name)
 }
 
 
-size_t DVPSGraphicAnnotation_PList::getNumberOfTextObjects(const char *layer, const char *instanceUID, unsigned long frame)
+size_t DVPSGraphicAnnotation_PList::getNumberOfTextObjects(const char *layer, const char *instanceUID, unsigned int frame)
 {
   if (layer==NULL) return 0;
 
@@ -228,7 +228,7 @@ size_t DVPSGraphicAnnotation_PList::getNumberOfTextObjects(const char *layer, co
   return result;
 }
 
-DVPSTextObject *DVPSGraphicAnnotation_PList::getTextObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx)
+DVPSTextObject *DVPSGraphicAnnotation_PList::getTextObject(const char *layer, const char *instanceUID, unsigned int frame, size_t idx)
 {
   if (layer==NULL) return NULL;
 
@@ -253,7 +253,7 @@ DVPSTextObject *DVPSGraphicAnnotation_PList::addTextObject(
     const char *layer,
     const char *sopclassUID,
     const char *instanceUID,
-    unsigned long frame,
+    unsigned int frame,
     DVPSObjectApplicability applicability,
     DVPSTextObject *text)
 {
@@ -301,7 +301,7 @@ DVPSTextObject *DVPSGraphicAnnotation_PList::addTextObject(
 }
 
 
-OFCondition DVPSGraphicAnnotation_PList::removeTextObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx)
+OFCondition DVPSGraphicAnnotation_PList::removeTextObject(const char *layer, const char *instanceUID, unsigned int frame, size_t idx)
 {
   if (layer==NULL) return EC_IllegalCall;
 
@@ -334,7 +334,7 @@ OFCondition DVPSGraphicAnnotation_PList::moveTextObject(
     const char *old_layer,
     const char *sopclassUID,
     const char *instanceUID,
-    unsigned long frame,
+    unsigned int frame,
     size_t idx,
     DVPSObjectApplicability applicability,
     const char *new_layer)
@@ -367,7 +367,7 @@ OFCondition DVPSGraphicAnnotation_PList::moveTextObject(
 }
 
 
-size_t DVPSGraphicAnnotation_PList::getNumberOfGraphicObjects(const char *layer, const char *instanceUID, unsigned long frame)
+size_t DVPSGraphicAnnotation_PList::getNumberOfGraphicObjects(const char *layer, const char *instanceUID, unsigned int frame)
 {
   if (layer==NULL) return 0;
 
@@ -386,7 +386,7 @@ size_t DVPSGraphicAnnotation_PList::getNumberOfGraphicObjects(const char *layer,
   return result;
 }
 
-DVPSGraphicObject *DVPSGraphicAnnotation_PList::getGraphicObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx)
+DVPSGraphicObject *DVPSGraphicAnnotation_PList::getGraphicObject(const char *layer, const char *instanceUID, unsigned int frame, size_t idx)
 {
   if (layer==NULL) return NULL;
 
@@ -411,7 +411,7 @@ DVPSGraphicObject *DVPSGraphicAnnotation_PList::addGraphicObject(
     const char *layer,
     const char *sopclassUID,
     const char *instanceUID,
-    unsigned long frame,
+    unsigned int frame,
     DVPSObjectApplicability applicability,
     DVPSGraphicObject *graphic)
 {
@@ -455,7 +455,7 @@ DVPSGraphicObject *DVPSGraphicAnnotation_PList::addGraphicObject(
 }
 
 
-OFCondition DVPSGraphicAnnotation_PList::removeGraphicObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx)
+OFCondition DVPSGraphicAnnotation_PList::removeGraphicObject(const char *layer, const char *instanceUID, unsigned int frame, size_t idx)
 {
   if (layer==NULL) return EC_IllegalCall;
 
@@ -488,7 +488,7 @@ OFCondition DVPSGraphicAnnotation_PList::moveGraphicObject(
     const char *old_layer,
     const char *sopclassUID,
     const char *instanceUID,
-    unsigned long frame,
+    unsigned int frame,
     size_t idx,
     DVPSObjectApplicability applicability,
     const char *new_layer)

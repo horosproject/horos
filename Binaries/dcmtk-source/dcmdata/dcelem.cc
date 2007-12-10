@@ -211,7 +211,7 @@ OFCondition DcmElement::detachValueField(OFBool copy)
 
 
 OFCondition DcmElement::getUint8(Uint8 & /*val*/,
-                                 const unsigned long /*pos*/)
+                                 const unsigned int /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -219,7 +219,7 @@ OFCondition DcmElement::getUint8(Uint8 & /*val*/,
 
 
 OFCondition DcmElement::getSint16(Sint16 & /*val*/,
-                                  const unsigned long /*pos*/)
+                                  const unsigned int /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -227,7 +227,7 @@ OFCondition DcmElement::getSint16(Sint16 & /*val*/,
 
 
 OFCondition DcmElement::getUint16(Uint16 & /*val*/,
-                                  const unsigned long /*pos*/)
+                                  const unsigned int /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -235,7 +235,7 @@ OFCondition DcmElement::getUint16(Uint16 & /*val*/,
 
 
 OFCondition DcmElement::getSint32(Sint32 & /*val*/,
-                                  const unsigned long /*pos*/)
+                                  const unsigned int /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -243,7 +243,7 @@ OFCondition DcmElement::getSint32(Sint32 & /*val*/,
 
 
 OFCondition DcmElement::getUint32(Uint32 & /*val*/,
-                                  const unsigned long /*pos*/)
+                                  const unsigned int /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -251,7 +251,7 @@ OFCondition DcmElement::getUint32(Uint32 & /*val*/,
 
 
 OFCondition DcmElement::getFloat32(Float32 & /*val*/,
-                                   const unsigned long /*pos*/)
+                                   const unsigned int /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -259,7 +259,7 @@ OFCondition DcmElement::getFloat32(Float32 & /*val*/,
 
 
 OFCondition DcmElement::getFloat64(Float64 & /*val*/,
-                                   const unsigned long /*pos*/)
+                                   const unsigned int /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -267,7 +267,7 @@ OFCondition DcmElement::getFloat64(Float64 & /*val*/,
 
 
 OFCondition DcmElement::getTagVal(DcmTagKey & /*val*/,
-                                  const unsigned long /*pos*/)
+                                  const unsigned int /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -275,7 +275,7 @@ OFCondition DcmElement::getTagVal(DcmTagKey & /*val*/,
 
 
 OFCondition DcmElement::getOFString(OFString &/*val*/,
-                                    const unsigned long /*pos*/,
+                                    const unsigned int /*pos*/,
                                     OFBool /*normalize*/)
 {
     errorFlag = EC_IllegalCall;
@@ -297,13 +297,13 @@ OFCondition DcmElement::getOFStringArray(OFString &value,
        VR class does not reimplement it
      */
     errorFlag = EC_Normal;
-    const unsigned long count = getVM();
+    const unsigned int count = getVM();
     /* intialize result string */
     value.clear();
     if (count > 0)
     {
         OFString string;
-        unsigned long i = 0;
+        unsigned int i = 0;
         /* reserve number of bytes expected (heuristic) */
         value.reserve(OFstatic_cast(unsigned int, getLength()));
         /* iterate over all values and convert them to a character string */
@@ -630,7 +630,7 @@ OFCondition DcmElement::putString(const char * /*val*/)
 
 
 OFCondition DcmElement::putSint16(const Sint16 /*val*/,
-                                  const unsigned long /*pos*/)
+                                  const unsigned int /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -638,7 +638,7 @@ OFCondition DcmElement::putSint16(const Sint16 /*val*/,
 
 
 OFCondition DcmElement::putUint16(const Uint16 /*val*/,
-                                  const unsigned long /*pos*/)
+                                  const unsigned int /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -646,7 +646,7 @@ OFCondition DcmElement::putUint16(const Uint16 /*val*/,
 
 
 OFCondition DcmElement::putSint32(const Sint32 /*val*/,
-                                  const unsigned long /*pos*/)
+                                  const unsigned int /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -654,7 +654,7 @@ OFCondition DcmElement::putSint32(const Sint32 /*val*/,
 
 
 OFCondition DcmElement::putUint32(const Uint32 /*val*/,
-                                  const unsigned long /*pos*/)
+                                  const unsigned int /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -662,7 +662,7 @@ OFCondition DcmElement::putUint32(const Uint32 /*val*/,
 
 
 OFCondition DcmElement::putFloat32(const Float32 /*val*/,
-                                   const unsigned long /*pos*/)
+                                   const unsigned int /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -670,7 +670,7 @@ OFCondition DcmElement::putFloat32(const Float32 /*val*/,
 
 
 OFCondition DcmElement::putFloat64(const Float64 /*val*/,
-                                   const unsigned long /*pos*/)
+                                   const unsigned int /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -678,7 +678,7 @@ OFCondition DcmElement::putFloat64(const Float64 /*val*/,
 
 
 OFCondition DcmElement::putTagVal(const DcmTagKey & /*val*/,
-                                  const unsigned long /*pos*/)
+                                  const unsigned int /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -686,7 +686,7 @@ OFCondition DcmElement::putTagVal(const DcmTagKey & /*val*/,
 
 
 OFCondition DcmElement::putUint8Array(const Uint8 * /*val*/,
-                                      const unsigned long /*num*/)
+                                      const unsigned int /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -694,7 +694,7 @@ OFCondition DcmElement::putUint8Array(const Uint8 * /*val*/,
 
 
 OFCondition DcmElement::putSint16Array(const Sint16 * /*val*/,
-                                       const unsigned long /*num*/)
+                                       const unsigned int /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -702,7 +702,7 @@ OFCondition DcmElement::putSint16Array(const Sint16 * /*val*/,
 
 
 OFCondition DcmElement::putUint16Array(const Uint16 * /*val*/,
-                                       const unsigned long /*num*/)
+                                       const unsigned int /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -710,7 +710,7 @@ OFCondition DcmElement::putUint16Array(const Uint16 * /*val*/,
 
 
 OFCondition DcmElement::putSint32Array(const Sint32 * /*val*/,
-                                       const unsigned long /*num*/)
+                                       const unsigned int /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -718,7 +718,7 @@ OFCondition DcmElement::putSint32Array(const Sint32 * /*val*/,
 
 
 OFCondition DcmElement::putUint32Array(const Uint32 * /*val*/,
-                                       const unsigned long /*num*/)
+                                       const unsigned int /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -726,7 +726,7 @@ OFCondition DcmElement::putUint32Array(const Uint32 * /*val*/,
 
 
 OFCondition DcmElement::putFloat32Array(const Float32 * /*val*/,
-                                        const unsigned long /*num*/)
+                                        const unsigned int /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -734,7 +734,7 @@ OFCondition DcmElement::putFloat32Array(const Float32 * /*val*/,
 
 
 OFCondition DcmElement::putFloat64Array(const Float64 * /*val*/,
-                                        const unsigned long /*num*/)
+                                        const unsigned int /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -1260,9 +1260,9 @@ OFCondition DcmElement::writeXML(ostream &out,
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

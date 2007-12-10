@@ -893,8 +893,8 @@ int main(int argc, char *argv[])
       if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
       {
         CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << endl;
-        unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
-        for (unsigned long cs=0; cs < numSuites; cs++)
+        unsigned int numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
+        for (unsigned int cs=0; cs < numSuites; cs++)
         {
           CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
         }

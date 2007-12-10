@@ -91,7 +91,7 @@ void DcmQuantColorTable::clear()
 {
   if (array)
   {
-  	for (unsigned long i=0; i < numColors; i++) delete array[i];
+  	for (unsigned int i=0; i < numColors; i++) delete array[i];
     delete[] array;
     array = NULL;
   }
@@ -102,7 +102,7 @@ void DcmQuantColorTable::clear()
 
 OFCondition DcmQuantColorTable::computeHistogram(
   DicomImage& image,
-  unsigned long maxcolors)
+  unsigned int maxcolors)
 {
   // reset object to initial state
   clear();
@@ -135,9 +135,9 @@ OFCondition DcmQuantColorTable::computeHistogram(
 
 OFCondition DcmQuantColorTable::medianCut(
   DcmQuantColorTable& histogram,
-  unsigned long sum,
-  unsigned long theMaxval,
-  unsigned long numberOfColors,
+  unsigned int sum,
+  unsigned int theMaxval,
+  unsigned int numberOfColors,
   DcmLargestDimensionType largeType,
   DcmRepresentativeColorType repType)
 {
@@ -166,9 +166,9 @@ OFCondition DcmQuantColorTable::medianCut(
   while ( boxes < numberOfColors )
   {
       register int indx, clrs;
-      unsigned long sm;
+      unsigned int sm;
       register int minr, maxr, ming, maxg, minb, maxb, v;
-      unsigned long halfsum, lowersum;
+      unsigned int halfsum, lowersum;
 
       // Find the first splittable box.
       for ( bi = 0; bi < boxes; ++bi )
@@ -318,7 +318,7 @@ OFCondition DcmQuantColorTable::medianCut(
       {
           register int indx = bv[bi].ind;
           register int clrs = bv[bi].colors;
-          register unsigned long r = 0, g = 0, b = 0, sumVal = 0;
+          register unsigned int r = 0, g = 0, b = 0, sumVal = 0;
 
           for ( i = 0; i < clrs; ++i )
           {
@@ -345,9 +345,9 @@ OFCondition DcmQuantColorTable::medianCut(
 
 void DcmQuantColorTable::computeClusters()
 {
-  unsigned long i;
-  unsigned long j;
-  unsigned long k=0;
+  unsigned int i;
+  unsigned int j;
+  unsigned int k=0;
   int cluster;
   int newdist;
   int r1, g1, b1;
@@ -445,7 +445,7 @@ OFCondition DcmQuantColorTable::write(
       Uint16* rLUT = NULL;
       Uint16* gLUT = NULL;
       Uint16* bLUT = NULL;
-      unsigned long numWords = 0;
+      unsigned int numWords = 0;
       double factor = 1.0;
       if (write16BitEntries)
       {
@@ -456,7 +456,7 @@ OFCondition DcmQuantColorTable::write(
         factor = 65535.0 / maxval;
         if (rLUT && gLUT && bLUT)
         {
-          for (unsigned long i=0; i<numColors; i++)
+          for (unsigned int i=0; i<numColors; i++)
           {
             rLUT[i] = OFstatic_cast(Uint16, OFstatic_cast(double, array[i]->getRed()) * factor);
             gLUT[i] = OFstatic_cast(Uint16, OFstatic_cast(double, array[i]->getGreen()) * factor);
@@ -488,7 +488,7 @@ OFCondition DcmQuantColorTable::write(
           Uint8 *rLUT8 = OFreinterpret_cast(Uint8 *, rLUT);
           Uint8 *gLUT8 = OFreinterpret_cast(Uint8 *, gLUT);
           Uint8 *bLUT8 = OFreinterpret_cast(Uint8 *, bLUT);
-          for (unsigned long i=0; i<numColors; i++)
+          for (unsigned int i=0; i<numColors; i++)
           {
             rLUT8[i] = OFstatic_cast(Uint8, OFstatic_cast(double, array[i]->getRed()) * factor);
             gLUT8[i] = OFstatic_cast(Uint8, OFstatic_cast(double, array[i]->getGreen()) * factor);

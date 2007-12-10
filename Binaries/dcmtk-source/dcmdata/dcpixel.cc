@@ -606,7 +606,7 @@ DcmPixelData::print(ostream &out,
 OFCondition
 DcmPixelData::putUint8Array(
     const Uint8 * byteValue,
-    const unsigned long length)
+    const unsigned int length)
 {
     // clear RepresentationList
     clearRepresentationList(repListEnd);
@@ -620,7 +620,7 @@ DcmPixelData::putUint8Array(
 OFCondition
 DcmPixelData::putUint16Array(
     const Uint16 * wordValue,
-    const unsigned long length)
+    const unsigned int length)
 {
     // clear RepresentationList
     clearRepresentationList(repListEnd);

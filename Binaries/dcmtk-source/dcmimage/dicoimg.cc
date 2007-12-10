@@ -65,8 +65,8 @@ DiColorImage::DiColorImage(const DiDocument *docu,
 
 
 DiColorImage::DiColorImage(const DiColorImage *image,
-                           const unsigned long fstart,
-                           const unsigned long fcount)
+                           const unsigned int fstart,
+                           const unsigned int fcount)
   : DiImage(image, fstart, fcount),
     RGBColorModel(image->RGBColorModel),
     InterData(NULL),
@@ -74,7 +74,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
 {
     if (image->InterData != NULL)
     {
-        const unsigned long fsize = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
+        const unsigned int fsize = OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, Rows);
         switch (image->InterData->getRepresentation())
         {
             case EPR_Uint8:
@@ -244,7 +244,7 @@ int DiColorImage::checkInterData(const int mode)
         ImageStatus = EIS_InvalidImage;
     else if (mode && (ImageStatus == EIS_Normal))
     {
-        const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * TotalNumberOfFrames;
+        const unsigned int count = OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, Rows) * TotalNumberOfFrames;
         if ((InterData->getInputCount() != count) && ((InterData->getInputCount() >> 1) != ((count + 1) >> 1)))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
@@ -267,9 +267,9 @@ void DiColorImage::deleteOutputData()
 }
 
 
-unsigned long DiColorImage::getOutputDataSize(const int bits) const
+unsigned int DiColorImage::getOutputDataSize(const int bits) const
 {
-    unsigned long result = 0;
+    unsigned int result = 0;
     if ((ImageStatus == EIS_Normal) && (bits > 0) && (bits <= MAX_BITS))
     {
         int bytesPerPixel = 1;
@@ -278,13 +278,13 @@ unsigned long DiColorImage::getOutputDataSize(const int bits) const
         else if (bits > 8)
             bytesPerPixel = 2;
         /* compute number of bytes required to store a rendered frame */
-        result = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * 3 /*samples*/ * bytesPerPixel;
+        result = OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, Rows) * 3 /*samples*/ * bytesPerPixel;
     }
     return result;
 }
 
 
-const void *DiColorImage::getOutputData(const unsigned long frame,
+const void *DiColorImage::getOutputData(const unsigned int frame,
                                         const int bits,
                                         const int planar)
 {
@@ -293,8 +293,8 @@ const void *DiColorImage::getOutputData(const unsigned long frame,
 
 
 int DiColorImage::getOutputData(void *buffer,
-                                const unsigned long size,
-                                const unsigned long frame,
+                                const unsigned int size,
+                                const unsigned int frame,
                                 const int bits,
                                 const int planar)
 {
@@ -303,8 +303,8 @@ int DiColorImage::getOutputData(void *buffer,
 
 
 const void *DiColorImage::getData(void *buffer,
-                                  const unsigned long size,
-                                  const unsigned long frame,
+                                  const unsigned int size,
+                                  const unsigned int frame,
                                   const int bits,
                                   const int planar)
 {
@@ -313,7 +313,7 @@ const void *DiColorImage::getData(void *buffer,
         if ((buffer == NULL) || (size >= getOutputDataSize(bits)))
         {
             deleteOutputData();                             // delete old image data
-            const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
+            const unsigned int count = OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, Rows);
             const int inverse = (Polarity == EPP_Reverse);
             switch (InterData->getRepresentation())
             {
@@ -388,8 +388,8 @@ const void *DiColorImage::getOutputPlane(const int plane) const
 }
 
 
-DiImage *DiColorImage::createImage(const unsigned long fstart,
-                                   const unsigned long fcount) const
+DiImage *DiColorImage::createImage(const unsigned int fstart,
+                                   const unsigned int fcount) const
 {
     DiImage *image = new DiColorImage(this, fstart, fcount);
     return image;
@@ -398,10 +398,10 @@ DiImage *DiColorImage::createImage(const unsigned long fstart,
 
 DiImage *DiColorImage::createScale(const signed long left_pos,
                                    const signed long top_pos,
-                                   const unsigned long src_cols,
-                                   const unsigned long src_rows,
-                                   const unsigned long dest_cols,
-                                   const unsigned long dest_rows,
+                                   const unsigned int src_cols,
+                                   const unsigned int src_rows,
+                                   const unsigned int dest_cols,
+                                   const unsigned int dest_rows,
                                    const int interpolate,
                                    const int aspect,
                                    const Uint16 /*pvalue*/) const
@@ -508,9 +508,9 @@ DiImage *DiColorImage::createMono(const double red,
 }
 
 
-unsigned long DiColorImage::createDIB(void *&data,
-                                      const unsigned long size,
-                                      const unsigned long frame,
+unsigned int DiColorImage::createDIB(void *&data,
+                                      const unsigned int size,
+                                      const unsigned int frame,
                                       const int bits,
                                       const int upsideDown,
                                       const int padding)
@@ -526,8 +526,8 @@ unsigned long DiColorImage::createDIB(void *&data,
 }
 
 
-unsigned long DiColorImage::createAWTBitmap(void *&data,
-                                            const unsigned long frame,
+unsigned int DiColorImage::createAWTBitmap(void *&data,
+                                            const unsigned int frame,
                                             const int bits)
 {
     if (RGBColorModel && (InterData != NULL) && (bits == 32))
@@ -567,7 +567,7 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset,
         {
             OFBool ok = OFFalse;
             /* number of samples */
-            const unsigned long count = InterData->getCount() * 3 /*planes*/;
+            const unsigned int count = InterData->getCount() * 3 /*planes*/;
             switch (InterData->getRepresentation())
             {
                 case EPR_Uint8:
@@ -665,7 +665,7 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset,
 
 
 int DiColorImage::writePPM(ostream &stream,
-                           const unsigned long frame,
+                           const unsigned int frame,
                            const int bits)
 {
     if (RGBColorModel)
@@ -686,7 +686,7 @@ int DiColorImage::writePPM(ostream &stream,
 
 
 int DiColorImage::writePPM(FILE *stream,
-                           const unsigned long frame,
+                           const unsigned int frame,
                            const int bits)
 {
     if (RGBColorModel)
@@ -708,7 +708,7 @@ int DiColorImage::writePPM(FILE *stream,
 
 
 int DiColorImage::writeRawPPM(FILE *stream,
-                              const unsigned long frame,
+                              const unsigned int frame,
                               const int bits)
 {
     if (RGBColorModel)
@@ -729,7 +729,7 @@ int DiColorImage::writeRawPPM(FILE *stream,
 
 
 int DiColorImage::writeBMP(FILE *stream,
-                           const unsigned long frame,
+                           const unsigned int frame,
                            const int bits)
 {
     if (RGBColorModel && ((bits == 0) || (bits == 24)))

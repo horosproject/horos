@@ -931,8 +931,8 @@ class DVInterface: public DVConfiguration
     OFCondition saveDICOMImage(
       const char *filename,
       const void *pixelData,
-      unsigned long width,
-      unsigned long height,
+      unsigned int width,
+      unsigned int height,
       double aspectRatio=1.0,
       OFBool explicitVR=OFTrue,
       const char *instanceUID=NULL);
@@ -953,8 +953,8 @@ class DVInterface: public DVConfiguration
      */
     OFCondition saveDICOMImage(
       const void *pixelData,
-      unsigned long width,
-      unsigned long height,
+      unsigned int width,
+      unsigned int height,
       double aspectRatio=1.0);
 
     /** saves a monochrome bitmap as a DICOM Hardcopy Grayscale image.
@@ -977,8 +977,8 @@ class DVInterface: public DVConfiguration
     OFCondition saveHardcopyGrayscaleImage(
       const char *filename,
       const void *pixelData,
-      unsigned long width,
-      unsigned long height,
+      unsigned int width,
+      unsigned int height,
       double aspectRatio=1.0,
       OFBool explicitVR=OFTrue,
       const char *instanceUID=NULL);
@@ -999,8 +999,8 @@ class DVInterface: public DVConfiguration
      */
     OFCondition saveHardcopyGrayscaleImage(
       const void *pixelData,
-      unsigned long width,
-      unsigned long height,
+      unsigned int width,
+      unsigned int height,
       double aspectRatio=1.0);
 
     /** saves a DICOM object into a file in the same directory in which the
@@ -1088,7 +1088,7 @@ class DVInterface: public DVConfiguration
      *  (depends on width, height and depth)
      *  @return number of bytes used for the preview bitmap
      */
-    unsigned long getPrintPreviewSize();
+    unsigned int getPrintPreviewSize();
 
     /** sets the maximum print preview bitmap width and height.
      *  Larger images are scaled down (according to the pixel aspect ratio) to fit into
@@ -1098,7 +1098,7 @@ class DVInterface: public DVConfiguration
      *  @param width maximum width of preview bitmap (in pixels)
      *  @param height maximum height of preview bitmap (in pixels)
      */
-    void setMaxPrintPreviewWidthHeight(unsigned long width, unsigned long height);
+    void setMaxPrintPreviewWidthHeight(unsigned int width, unsigned int height);
 
     /** gets width and height of print preview bitmap.
      *  The return values depend on the current maximum preview bitmap width/height values!
@@ -1106,7 +1106,7 @@ class DVInterface: public DVConfiguration
      *  @param height upon success, the bitmap height (in pixels) is returned in this parameter
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getPrintPreviewWidthHeight(unsigned long &width, unsigned long &height);
+    OFCondition getPrintPreviewWidthHeight(unsigned int &width, unsigned int &height);
 
     /** writes the bitmap data of the print preview image into the given buffer.
      *  The storage area must be allocated and deleted from the calling method.
@@ -1114,7 +1114,7 @@ class DVInterface: public DVConfiguration
      *  @param size specifies size of the storage area in bytes
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getPrintPreviewBitmap(void *bitmap, unsigned long size);
+    OFCondition getPrintPreviewBitmap(void *bitmap, unsigned int size);
 
     /** stores the current presentation state in a temporary place
      *  and creates a new presentation state that corresponds with an
@@ -1267,12 +1267,12 @@ class DVInterface: public DVConfiguration
      *    that the value is valid for the selected printer.
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    OFCondition setPrinterNumberOfCopies(unsigned long value);
+    OFCondition setPrinterNumberOfCopies(unsigned int value);
 
     /** gets the (optional) print number of copies.
      *  @return print number of copies, 0 if absent.
      */
-    unsigned long getPrinterNumberOfCopies();
+    unsigned int getPrinterNumberOfCopies();
 
     /** resets the settings for basic film session (everything that
      *  is not managed by the Stored Print object) to initial state.
@@ -1551,19 +1551,19 @@ class DVInterface: public DVConfiguration
      *  @param objtype object type
      *  @return number of digital signatures
      */
-    unsigned long getNumberOfCorrectSignatures(DVPSObjectType objtype) const;
+    unsigned int getNumberOfCorrectSignatures(DVPSObjectType objtype) const;
 
     /** returns number of untrustworthy signatures for given object type.
      *  @param objtype object type
      *  @return number of digital signatures
      */
-    unsigned long getNumberOfUntrustworthySignatures(DVPSObjectType objtype) const;
+    unsigned int getNumberOfUntrustworthySignatures(DVPSObjectType objtype) const;
 
     /** returns number of corrupt signatures for given object type.
      *  @param objtype object type
      *  @return number of digital signatures
      */
-    unsigned long getNumberOfCorruptSignatures(DVPSObjectType objtype) const;
+    unsigned int getNumberOfCorruptSignatures(DVPSObjectType objtype) const;
 
     /** disables internal settings for image and presentation state.
      *  Called when a new SR object is loaded and the current
@@ -1675,7 +1675,7 @@ private:
 
     /** a counter used for generating print job names.
      */
-    unsigned long printJobCounter;
+    unsigned int printJobCounter;
 
     /** string containing the path name of the config file as passed to the ctor.
      */
@@ -1689,7 +1689,7 @@ private:
     /** initialized with construction time of the interface object
      *  minus one day. Used to check modifications of the database index file.
      */
-    unsigned long referenceTime;
+    unsigned int referenceTime;
 
     /** list of display function object
      */
@@ -1788,35 +1788,35 @@ private:
 
     /** minimum width of print bitmap (used for implicit scaling)
      */
-    unsigned long minimumPrintBitmapWidth;
+    unsigned int minimumPrintBitmapWidth;
 
     /** minimum height of print bitmap (used for implicit scaling)
      */
-    unsigned long minimumPrintBitmapHeight;
+    unsigned int minimumPrintBitmapHeight;
 
     /** maximum width of print bitmap (used for implicit scaling)
      */
-    unsigned long maximumPrintBitmapWidth;
+    unsigned int maximumPrintBitmapWidth;
 
     /** maximum height of print bitmap (used for implicit scaling)
      */
-    unsigned long maximumPrintBitmapHeight;
+    unsigned int maximumPrintBitmapHeight;
 
     /** maximum width of print preview bitmap
      */
-    unsigned long maximumPrintPreviewWidth;
+    unsigned int maximumPrintPreviewWidth;
 
     /** maximum height of print preview bitmap
      */
-    unsigned long maximumPrintPreviewHeight;
+    unsigned int maximumPrintPreviewHeight;
 
     /** maximum width of (optional) preview image
      */
-    unsigned long maximumPreviewImageWidth;
+    unsigned int maximumPreviewImageWidth;
 
     /** maximum height of (optional) preview image
      */
-    unsigned long maximumPreviewImageHeight;
+    unsigned int maximumPreviewImageHeight;
 
     /** target ID of current printer, empty if no printer exists in config file
      */
@@ -1844,7 +1844,7 @@ private:
 
     /** printer number of copies
      */
-    unsigned long printerNumberOfCopies;
+    unsigned int printerNumberOfCopies;
 
     /** printer print priority, may be empty. VR=CS, VM=1,
      *  enumerated values: HIGH, MED, LOW

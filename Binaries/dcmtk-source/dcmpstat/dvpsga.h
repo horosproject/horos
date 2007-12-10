@@ -107,7 +107,7 @@ public:
   OFCondition addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
-    unsigned long frame,
+    unsigned int frame,
     DVPSObjectApplicability applicability);
     
   /** checks if this annotation layer is empty.
@@ -125,7 +125,7 @@ public:
    */
   OFBool isApplicable(    
     const char *instanceUID, 
-    unsigned long frame,
+    unsigned int frame,
     DVPSObjectApplicability applicability=DVPSB_currentFrame);
     
   /** returns the number of text objects in this annotation.

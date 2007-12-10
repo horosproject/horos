@@ -108,7 +108,7 @@ class DiMono2Image
      */
     DiMono2Image(const DiMonoImage *image,
                  DiMonoOutputPixel *pixel,
-                 const unsigned long frame,
+                 const unsigned int frame,
                  const int stored,
                  const int alloc);
 
@@ -133,7 +133,7 @@ class DiMono2Image
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
-    virtual const void *getOutputData(const unsigned long frame,
+    virtual const void *getOutputData(const unsigned int frame,
                                       const int bits,
                                       const int planar = 0);
 
@@ -149,8 +149,8 @@ class DiMono2Image
      ** @return status, true if successful, false otherwise
      */
     virtual int getOutputData(void *buffer,
-                              const unsigned long size,
-                              const unsigned long frame,
+                              const unsigned int size,
+                              const unsigned int frame,
                               const int bits,
                               const int planar = 0);
 
@@ -161,8 +161,8 @@ class DiMono2Image
      *
      ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
-    DiImage *createImage(const unsigned long fstart,
-                         const unsigned long fcount) const;
+    DiImage *createImage(const unsigned int fstart,
+                         const unsigned int fcount) const;
 
     /** create scaled copy of specified (clipping) area of the current image object.
      *
@@ -184,10 +184,10 @@ class DiMono2Image
      */
     DiImage *createScale(const signed long left_pos,
                          const signed long top_pos,
-                         const unsigned long clip_width,
-                         const unsigned long clip_height,
-                         const unsigned long scale_width,
-                         const unsigned long scale_height,
+                         const unsigned int clip_width,
+                         const unsigned int clip_height,
+                         const unsigned int scale_width,
+                         const unsigned int scale_height,
                          const int interpolate,
                          const int aspect,
                          const Uint16 pvalue) const;
@@ -243,8 +243,8 @@ class DiMono2Image
      *  @param  fcount  number of frames
      */
     DiMono2Image(const DiMonoImage *image,
-                 const unsigned long fstart,
-                 const unsigned long fcount);
+                 const unsigned int fstart,
+                 const unsigned int fcount);
 
     /** constructor, scale/clip
      *

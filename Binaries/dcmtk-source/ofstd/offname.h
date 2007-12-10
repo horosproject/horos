@@ -83,14 +83,14 @@ public:
 private:
 
   /// date/time of creation of this object
-  unsigned long creation_time;
+  unsigned int creation_time;
 
    /** appends the lower 32 bit of the given number to the given string.
     *  Always appends exactly 8 digits (padded with leading zeroes).
     *  @param l number to be appended to string
     *  @param s string to be added to
     */
-  static void addLongToString(unsigned long l, OFString& s);
+  static void addLongToString(unsigned int l, OFString& s);
 };
 
 #endif

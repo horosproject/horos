@@ -74,7 +74,7 @@ class WlmFileSystemInteractionManager
     /// array of matching records
     DcmDataset **matchingRecords;
     /// number of array fields
-    unsigned long numOfMatchingRecords;
+    unsigned int numOfMatchingRecords;
 
       /** This function dumps the given information on a stream.
        *  Used for dumping information in normal, debug and verbose mode.
@@ -437,7 +437,7 @@ class WlmFileSystemInteractionManager
        *  @param searchMask - [in] The search mask.
        *  @return Number of matching records.
        */
-    unsigned long DetermineMatchingRecords( DcmDataset *searchMask );
+    unsigned int DetermineMatchingRecords( DcmDataset *searchMask );
 
       /** For the matching record that is identified through idx, this function returns the number
        *  of items that are contained in the sequence element that is referred to by sequenceTag.
@@ -454,7 +454,7 @@ class WlmFileSystemInteractionManager
        *  @return The number of items that are contained in the sequence element that is referred to by
        *          sequenceTag and that can be found in sequence items which are specified in superiorSequenceArray.
        */
-    unsigned long GetNumberOfSequenceItemsForMatchingRecord( DcmTagKey sequenceTag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned long numOfSuperiorSequences, unsigned long idx );
+    unsigned int GetNumberOfSequenceItemsForMatchingRecord( DcmTagKey sequenceTag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned int numOfSuperiorSequences, unsigned int idx );
 
       /** This function determines an attribute value of a matching record
        *  and returns this value in a newly created string to the caller.
@@ -466,7 +466,7 @@ class WlmFileSystemInteractionManager
        *  @param value                  Pointer to a newly created string that contains the requested value.
        *                                If value was not found an emtpy string will be returned.
        */
-    void GetAttributeValueForMatchingRecord( DcmTagKey tag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned long numOfSuperiorSequences, unsigned long idx, char *&value );
+    void GetAttributeValueForMatchingRecord( DcmTagKey tag, WlmSuperiorSequenceInfoType *superiorSequenceArray, unsigned int numOfSuperiorSequences, unsigned int idx, char *&value );
 
       /** This function frees the memory which was occupied by matchingRecords.
        *  It shall be called when the matching records are no longer needed.

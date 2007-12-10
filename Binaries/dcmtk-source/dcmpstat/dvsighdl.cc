@@ -76,7 +76,7 @@ public:
   {  
     DcmAttributeTag tempList(notToSign); // required because getTagVal() is not const
     DcmTagKey tagkey;
-    for (unsigned long n=0; n<vmNotToSign; n++)
+    for (unsigned int n=0; n<vmNotToSign; n++)
     {
       if ((EC_Normal == tempList.getTagVal(tagkey, n)) && (tag == tagkey)) return OFTrue;
     }
@@ -99,7 +99,7 @@ private:
   DcmAttributeTag& notToSign;
 
   /// number of entries in notToSign
-  unsigned long vmNotToSign;
+  unsigned int vmNotToSign;
 };
 
 #endif
@@ -158,16 +158,16 @@ void DVSignatureHandler::printSignatureItemPosition(DcmStack& stack, ostream& os
 {
   DcmObject *elem = NULL;
   DcmSequenceOfItems *sq = NULL;
-  unsigned long sqCard=0;
+  unsigned int sqCard=0;
   const char *tagname = NULL;
-  unsigned long m=0;
+  unsigned int m=0;
   char buf[20];
   OFBool printed = OFFalse;
   
   if (stack.card() > 2)
   {      
     // signature is located within a sequence
-    for (unsigned long l=stack.card()-2; l>0; --l) // loop over all elements except the stack top and bottom
+    for (unsigned int l=stack.card()-2; l>0; --l) // loop over all elements except the stack top and bottom
     {
       elem = stack.elem(l);
       if (elem)
@@ -214,9 +214,9 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/,
 #endif
 {
   OFOStringStream os;
-  unsigned long counter = 0;
-  unsigned long corrupt_counter = 0;
-  unsigned long untrustworthy_counter = 0;
+  unsigned int counter = 0;
+  unsigned int corrupt_counter = 0;
+  unsigned int untrustworthy_counter = 0;
   const char *htmlHead     = NULL;
   const char *htmlFoot     = "</body></html>\n\n";
 
@@ -239,8 +239,8 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/,
   OFString aString;
   DcmAttributeTag at(DCM_DataElementsSigned);  
   DcmTag tag;
-  unsigned long numSignatures = 0;
-  unsigned long l=0;
+  unsigned int numSignatures = 0;
+  unsigned int l=0;
   Uint16 macID = 0;
   DcmTagKey tagkey;
   const char *tagName = NULL;
@@ -310,8 +310,8 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/,
         nextline = OFFalse;
         if (EC_Normal == signer.getCurrentDataElementsSigned(at))
         {
-          unsigned long atVM = at.getVM();
-          for (unsigned long n=0; n<atVM; n++)
+          unsigned int atVM = at.getVM();
+          for (unsigned int n=0; n<atVM; n++)
           {
             if (EC_Normal == at.getTagVal(tagkey, n))
             {
@@ -654,9 +654,9 @@ const char *DVSignatureHandler::getCurrentSignatureValidationOverview() const
   return htmlOverview.c_str();
 }
 
-unsigned long DVSignatureHandler::getNumberOfCorrectSignatures(DVPSObjectType objtype) const
+unsigned int DVSignatureHandler::getNumberOfCorrectSignatures(DVPSObjectType objtype) const
 {
-  unsigned long result = 0;
+  unsigned int result = 0;
   switch (objtype)
   {
     case DVPSS_structuredReport:
@@ -673,9 +673,9 @@ unsigned long DVSignatureHandler::getNumberOfCorrectSignatures(DVPSObjectType ob
 }
 
 
-unsigned long DVSignatureHandler::getNumberOfUntrustworthySignatures(DVPSObjectType objtype) const
+unsigned int DVSignatureHandler::getNumberOfUntrustworthySignatures(DVPSObjectType objtype) const
 {
-  unsigned long result = 0;
+  unsigned int result = 0;
   switch (objtype)
   {
     case DVPSS_structuredReport:
@@ -692,9 +692,9 @@ unsigned long DVSignatureHandler::getNumberOfUntrustworthySignatures(DVPSObjectT
 }
 
 
-unsigned long DVSignatureHandler::getNumberOfCorruptSignatures(DVPSObjectType objtype) const
+unsigned int DVSignatureHandler::getNumberOfCorruptSignatures(DVPSObjectType objtype) const
 {
-  unsigned long result = 0;
+  unsigned int result = 0;
   switch (objtype)
   {
     case DVPSS_structuredReport:
@@ -718,8 +718,8 @@ OFBool DVSignatureHandler::attributesSigned(DcmItem& item, DcmAttributeTag& tagL
   DcmAttributeTag at(DCM_DataElementsSigned);  
   DcmTagKey tagkey;
   DcmSignature signer;
-  unsigned long numSignatures;
-  unsigned long l;
+  unsigned int numSignatures;
+  unsigned int l;
   DVSignatureHandlerSignatureProfile sigProfile(tagList);
   DcmItem *sigItem = DcmSignature::findFirstSignatureItem(item, stack);
   while (sigItem)
@@ -736,8 +736,8 @@ OFBool DVSignatureHandler::attributesSigned(DcmItem& item, DcmAttributeTag& tagL
           // printSignatureItemPosition(stack, os);        
           if (EC_Normal == signer.getCurrentDataElementsSigned(at))
           {
-            unsigned long atVM = at.getVM();
-            for (unsigned long n=0; n<atVM; n++)
+            unsigned int atVM = at.getVM();
+            for (unsigned int n=0; n<atVM; n++)
             {
               if (EC_Normal == at.getTagVal(tagkey, n))
               {
@@ -752,7 +752,7 @@ OFBool DVSignatureHandler::attributesSigned(DcmItem& item, DcmAttributeTag& tagL
     else
     {
       // signatures on lower level - check whether attribute on main level is in list
-      unsigned long scard = stack.card();
+      unsigned int scard = stack.card();
       if (scard > 1) // should always be true
       {
         DcmObject *obj = stack.elem(scard-2);
@@ -841,8 +841,8 @@ OFCondition DVSignatureHandler::createSignature(
       // we're creating a signature in the main dataset
       // we have to establish an explicit tag list, otherwise the profile does not work!
       DcmAttributeTag tagList(DCM_DataElementsSigned);
-      unsigned long numAttributes = currentItem->card();
-      for (unsigned long l=0; l<numAttributes; l++)
+      unsigned int numAttributes = currentItem->card();
+      for (unsigned int l=0; l<numAttributes; l++)
       {
         tagList.putTagVal(currentItem->getElement(l)->getTag(),l);
       }

@@ -65,7 +65,7 @@ class DiHSVPixelTemplate
     DiHSVPixelTemplate(const DiDocument *docu,
                        const DiInputPixel *pixel,
                        EI_Status &status,
-                       const unsigned long planeSize,
+                       const unsigned int planeSize,
                        const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
@@ -89,7 +89,7 @@ class DiHSVPixelTemplate
      *  @param  bits       number of bits per sample
      */
     void convert(const T1 *pixel,
-                 const unsigned long planeSize,
+                 const unsigned int planeSize,
                  const int bits)
     {
         if (Init(pixel))
@@ -101,7 +101,7 @@ class DiHSVPixelTemplate
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
-            const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
+            const unsigned int count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
             if (this->PlanarConfiguration)
             {
 /*
@@ -112,8 +112,8 @@ class DiHSVPixelTemplate
                     convertValue(*(r++), *(g++), *(b++), removeSign(*(h++), offset), removeSign(*(s++), offset),
                         removeSign(*(v++), offset), maxvalue);
 */
-                register unsigned long l;
-                register unsigned long i = count;
+                register unsigned int l;
+                register unsigned int i = count;
                 register const T1 *h = pixel;
                 register const T1 *s = h + planeSize;
                 register const T1 *v = s + planeSize;
@@ -137,7 +137,7 @@ class DiHSVPixelTemplate
                 register T2 h;
                 register T2 s;
                 register T2 v;
-                register unsigned long i;
+                register unsigned int i;
                 for (i = count; i != 0; --i)
                 {
                     h = removeSign(*(p++), offset);

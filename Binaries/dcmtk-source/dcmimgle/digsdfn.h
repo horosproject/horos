@@ -79,7 +79,7 @@ class DiGSDFunction
      *                      the given base points (0 or negative = use cubic spline interpolation)
      */
     DiGSDFunction(const double *val_tab,
-                  const unsigned long count,
+                  const unsigned int count,
                   const Uint16 max = 255,
                   const E_DeviceType deviceType = EDT_Monitor,
                   const signed int ord = 0);
@@ -98,7 +98,7 @@ class DiGSDFunction
      */
     DiGSDFunction(const Uint16 *ddl_tab,
                   const double *val_tab,
-                  const unsigned long count,
+                  const unsigned int count,
                   const Uint16 max = 255,
                   const E_DeviceType deviceType = EDT_Monitor,
                   const signed int ord = 0);
@@ -114,7 +114,7 @@ class DiGSDFunction
      */
     DiGSDFunction(const double val_min,
                   const double val_max,
-                  const unsigned long count = 256,
+                  const unsigned int count = 256,
                   const E_DeviceType deviceType = EDT_Monitor,
                   const signed int ord = 0);
 
@@ -191,7 +191,7 @@ class DiGSDFunction
      *
      ** @return pointer to created LUT if successful, NULL otherwise
      */
-    DiDisplayLUT *getDisplayLUT(unsigned long count);
+    DiDisplayLUT *getDisplayLUT(unsigned int count);
 
     /** calculate GSDF (array of 1023 luminance/OD values)
      *

@@ -210,8 +210,8 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
  */
 
 DiMonoImage::DiMonoImage(const DiMonoImage *image,
-                         const unsigned long fstart,
-                         const unsigned long fcount)
+                         const unsigned int fstart,
+                         const unsigned int fcount)
   : DiImage(image, fstart, fcount),
     WindowCenter(image->WindowCenter),
     WindowWidth(image->WindowWidth),
@@ -235,7 +235,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     Overlays[1] = image->Overlays[1];
     if (image->InterData != NULL)
     {
-        const unsigned long fsize = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
+        const unsigned int fsize = OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, Rows);
         switch (image->InterData->getRepresentation())
         {
             case EPR_Uint8:
@@ -571,7 +571,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
 
 DiMonoImage::DiMonoImage(const DiMonoImage *image,
                          DiMonoOutputPixel *pixel,
-                         const unsigned long frame,
+                         const unsigned int frame,
                          const int stored,
                          const int alloc)
   : DiImage(image, frame, stored, alloc),
@@ -681,7 +681,7 @@ void DiMonoImage::Init(DiMonoModality *modality)
         {
             /* VOI windows */
             WindowCount = Document->getVM(DCM_WindowCenter);
-            const unsigned long count = Document->getVM(DCM_WindowWidth);
+            const unsigned int count = Document->getVM(DCM_WindowWidth);
             if (count < WindowCount)                        // determine number of VOI windows
                 WindowCount = count;
             /* VOI LUT */
@@ -905,7 +905,7 @@ int DiMonoImage::checkInterData(const int mode)
         ImageStatus = EIS_InvalidImage;
     else if (mode && (ImageStatus == EIS_Normal))
     {
-        const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * TotalNumberOfFrames;
+        const unsigned int count = OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, Rows) * TotalNumberOfFrames;
         if ((InterData->getInputCount() != count) && ((InterData->getInputCount() >> 1) != ((count + 1) >> 1)))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
@@ -928,9 +928,9 @@ void DiMonoImage::deleteOutputData()
 }
 
 
-unsigned long DiMonoImage::getOutputDataSize(const int bits) const
+unsigned int DiMonoImage::getOutputDataSize(const int bits) const
 {
-    unsigned long result = 0;
+    unsigned int result = 0;
     if ((ImageStatus == EIS_Normal) && (((bits > 0) && (bits <= MAX_BITS)) || (bits == MI_PastelColor)))
     {
         int samples = 1;
@@ -942,7 +942,7 @@ unsigned long DiMonoImage::getOutputDataSize(const int bits) const
         else if (bits > 8)
             bytesPerPixel = 2;
         /* compute number of bytes required to store a rendered frame */
-        result = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * samples * bytesPerPixel;
+        result = OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, Rows) * samples * bytesPerPixel;
     }
     return result;
 }
@@ -1006,7 +1006,7 @@ int DiMonoImage::convertPValueToDDL(const Uint16 pvalue,
                                     Uint16 &ddl,
                                     const int bits)
 {
-    const unsigned long maxvalue = DicomImageClass::maxval(bits);
+    const unsigned int maxvalue = DicomImageClass::maxval(bits);
     if ((DisplayFunction != NULL) && (DisplayFunction->isValid()) && (DisplayFunction->getMaxDDLValue() == maxvalue))
     {
         const DiDisplayLUT *dlut = DisplayFunction->getLookupTable(WIDTH_OF_PVALUES);
@@ -1057,11 +1057,11 @@ int DiMonoImage::setMinMaxWindow(const int idx)
 }
 
 
-int DiMonoImage::setRoiWindow(const unsigned long left_pos,
-                              const unsigned long top_pos,
-                              const unsigned long width,
-                              const unsigned long height,
-                              const unsigned long frame)
+int DiMonoImage::setRoiWindow(const unsigned int left_pos,
+                              const unsigned int top_pos,
+                              const unsigned int width,
+                              const unsigned int height,
+                              const unsigned int frame)
 {
     if ((InterData != NULL) && (frame < NumberOfFrames))
     {
@@ -1087,14 +1087,14 @@ int DiMonoImage::setHistogramWindow(const double thresh)
 }
 
 
-int DiMonoImage::setWindow(const unsigned long pos)
+int DiMonoImage::setWindow(const unsigned int pos)
 {
     if (!(Document->getFlags() & CIF_UsePresentationState))
     {
         double center;
         double width;
         WindowCount = Document->getValue(DCM_WindowCenter, center, pos);
-        unsigned long count = Document->getValue(DCM_WindowWidth, width, pos);
+        unsigned int count = Document->getValue(DCM_WindowWidth, width, pos);
         if (count < WindowCount)
             WindowCount = count;
         if (pos < WindowCount)
@@ -1163,7 +1163,7 @@ int DiMonoImage::setVoiLut(const DcmUnsignedShort &data,
 }
 
 
-int DiMonoImage::setVoiLut(const unsigned long pos,
+int DiMonoImage::setVoiLut(const unsigned int pos,
                            const OFBool ignoreDepth)
 {
     if (!(Document->getFlags() & CIF_UsePresentationState))
@@ -1183,7 +1183,7 @@ int DiMonoImage::setVoiLut(const unsigned long pos,
 }
 
 
-const char *DiMonoImage::getVoiWindowExplanation(const unsigned long pos,
+const char *DiMonoImage::getVoiWindowExplanation(const unsigned int pos,
                                                  OFString &explanation) const
 {
     const char *result = NULL;
@@ -1194,7 +1194,7 @@ const char *DiMonoImage::getVoiWindowExplanation(const unsigned long pos,
 }
 
 
-const char *DiMonoImage::getVoiLutExplanation(const unsigned long pos,
+const char *DiMonoImage::getVoiLutExplanation(const unsigned int pos,
                                               OFString &explanation) const
 {
     const char *result = NULL;
@@ -1447,8 +1447,8 @@ int DiMonoImage::rotate(const int degree)
  */
 
 const void *DiMonoImage::getData(void *buffer,
-                                 const unsigned long size,
-                                 const unsigned long frame,
+                                 const unsigned int size,
+                                 const unsigned int frame,
                                  int bits,
                                  const int /*planar*/,            /* not yet supported, needed for pastel color images !! */
                                  const int negative)
@@ -1550,7 +1550,7 @@ const void *DiMonoImage::getData(void *buffer,
  *   create 1/8/16-bit (bi-level) bitmap with overlay 'plane' data
  */
 
-const void *DiMonoImage::getOverlayData(const unsigned long frame,
+const void *DiMonoImage::getOverlayData(const unsigned int frame,
                                         const unsigned int plane,
                                         unsigned int &left_pos,
                                         unsigned int &top_pos,
@@ -1587,7 +1587,7 @@ const void *DiMonoImage::getOverlayData(const unsigned long frame,
  *   create 1/8/16-bit (bi-level) bitmap with overlay 'plane' data
  */
 
-const void *DiMonoImage::getFullOverlayData(const unsigned long frame,
+const void *DiMonoImage::getFullOverlayData(const unsigned int frame,
                                             const unsigned int plane,
                                             unsigned int &width,
                                             unsigned int &height,
@@ -1614,11 +1614,11 @@ const void *DiMonoImage::getFullOverlayData(const unsigned long frame,
  *   as required for the (6xxx,3000) OverlayData format
  */
 
-unsigned long DiMonoImage::create6xxx3000OverlayData(Uint8 *&buffer,
+unsigned int DiMonoImage::create6xxx3000OverlayData(Uint8 *&buffer,
                                                      const unsigned int plane,
                                                      unsigned int &width,
                                                      unsigned int &height,
-                                                     unsigned long &frames,
+                                                     unsigned int &frames,
                                                      const unsigned int idx)
 {
     if (ImageStatus == EIS_Normal)
@@ -1634,14 +1634,14 @@ unsigned long DiMonoImage::create6xxx3000OverlayData(Uint8 *&buffer,
  *   create 8-bit palette/monochrome or 24/32-bit true color device independent bitmap (DIB) as needed by MS-Windows
  */
 
-unsigned long DiMonoImage::createDIB(void *&data,
-                                     const unsigned long size,
-                                     const unsigned long frame,
+unsigned int DiMonoImage::createDIB(void *&data,
+                                     const unsigned int size,
+                                     const unsigned int frame,
                                      const int bits,
                                      const int upsideDown,
                                      const int padding)
 {
-    unsigned long bytes = 0;
+    unsigned int bytes = 0;
     if (size == 0)
         data = NULL;
     if ((bits == 8) || (bits == 24) || (bits == 32))
@@ -1651,12 +1651,12 @@ unsigned long DiMonoImage::createDIB(void *&data,
         {
             const signed long nextRow = (upsideDown) ? -2 * OFstatic_cast(signed long, Columns) : 0;
             register const Uint8 *p = OFstatic_cast(const Uint8 *, OutputData->getData()) + ((upsideDown) ?
-                OFstatic_cast(unsigned long, Rows - 1) * OFstatic_cast(unsigned long, Columns) : 0);
+                OFstatic_cast(unsigned int, Rows - 1) * OFstatic_cast(unsigned int, Columns) : 0);
             if (bits == 8)                                  // -- for idx color model (byte)
             {
                 // each line has to start at 32-bit-address, if 'padding' is true
                 const int gap = (padding) ? (4 - Columns & 0x3) & 0x3 : 0;
-                const unsigned long count = OFstatic_cast(unsigned long, Columns + gap) * OFstatic_cast(unsigned long, Rows);
+                const unsigned int count = OFstatic_cast(unsigned int, Columns + gap) * OFstatic_cast(unsigned int, Rows);
                 if ((gap > 0) || (nextRow != 0) || (data != NULL))
                 {
                     if ((data == NULL) || (size >= count))
@@ -1686,10 +1686,10 @@ unsigned long DiMonoImage::createDIB(void *&data,
             }
             else if (bits == 24)                            // -- for direct color model (24 bits/pixel)
             {
-                const unsigned long col3 = OFstatic_cast(unsigned long, Columns) * 3;
+                const unsigned int col3 = OFstatic_cast(unsigned int, Columns) * 3;
                 // each line has to start at 32-bit-address, if 'padding' is true
                 const int gap = (padding) ? OFstatic_cast(int, (4 - col3 & 0x3) & 0x3) : 0;
-                const unsigned long count = (col3 + gap) * OFstatic_cast(unsigned long, Rows);
+                const unsigned int count = (col3 + gap) * OFstatic_cast(unsigned int, Rows);
                 if ((data == NULL) || (size >= count))
                 {
                     if (data == NULL)
@@ -1718,7 +1718,7 @@ unsigned long DiMonoImage::createDIB(void *&data,
             }
             else if (bits == 32)                            // -- for direct color model (32 bits/pixel)
             {
-                const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
+                const unsigned int count = OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, Rows);
                 if ((data == NULL) || (size >= count * 4))
                 {
                     if (data == NULL)
@@ -1755,18 +1755,18 @@ unsigned long DiMonoImage::createDIB(void *&data,
  *   create 8-bit palette/monochrome or 32-bit true color bitmap as needed for Java/AWT
  */
 
-unsigned long DiMonoImage::createAWTBitmap(void *&data,
-                                           const unsigned long frame,
+unsigned int DiMonoImage::createAWTBitmap(void *&data,
+                                           const unsigned int frame,
                                            const int bits)
 {
     data = NULL;
-    unsigned long bytes = 0;
+    unsigned int bytes = 0;
     if (bits == 8)                                      // for idx color model (byte)
     {
         getOutputData(frame, 8);                        // create output data with 8 bit depth
         if ((OutputData != NULL) && (OutputData->getData() != NULL))
         {
-            bytes = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
+            bytes = OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, Rows);
             data = OutputData->getDataPtr();
             OutputData = NULL;                          // remove reference to internal memory
         }
@@ -1776,14 +1776,14 @@ unsigned long DiMonoImage::createAWTBitmap(void *&data,
         getOutputData(frame, 8);                        // create output data with 8 bit depth
         if ((OutputData != NULL) && (OutputData->getData() != NULL))
         {
-            const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
+            const unsigned int count = OFstatic_cast(unsigned int, Columns) * OFstatic_cast(unsigned int, Rows);
             data = new Uint32[count];
             if (data != NULL)
             {
                 register const Uint8 *p = OFstatic_cast(const Uint8 *, OutputData->getData());
                 register Uint32 *q = OFstatic_cast(Uint32 *, data);
                 register Uint32 value;
-                register unsigned long i;
+                register unsigned int i;
                 for (i = count; i != 0; --i)
                 {
                     value = *(p++);                 // store gray value
@@ -1805,8 +1805,8 @@ unsigned long DiMonoImage::createAWTBitmap(void *&data,
  */
 
 void *DiMonoImage::createPackedBitmap(const void *buffer,
-                                      const unsigned long size,
-                                      const unsigned long count,
+                                      const unsigned int size,
+                                      const unsigned int count,
                                       const int alloc,              // number of bits allocated in buffer
                                       const int stored)             // number of bits stored in buffer
 {
@@ -1820,7 +1820,7 @@ void *DiMonoImage::createPackedBitmap(const void *buffer,
             {
                 register const Uint16 *p = OFstatic_cast(const Uint16 *, buffer);
                 register Uint16 *q = data;
-                register unsigned long i;
+                register unsigned int i;
                 register Uint16 value1;
                 register Uint16 value2;
                 for (i = 0; i < count - 3; i += 4)                  // make 3 items out of 4
@@ -1863,7 +1863,7 @@ void *DiMonoImage::createPackedBitmap(const void *buffer,
 }
 
 
-DiImage *DiMonoImage::createOutputImage(const unsigned long frame,
+DiImage *DiMonoImage::createOutputImage(const unsigned int frame,
                                         const int bits)
 {
     getOutputData(frame, bits);
@@ -1879,7 +1879,7 @@ DiImage *DiMonoImage::createOutputImage(const unsigned long frame,
 }
 
 
-int DiMonoImage::createLinODPresentationLut(const unsigned long count, const int bits)
+int DiMonoImage::createLinODPresentationLut(const unsigned int count, const int bits)
 {
     if ((PresLutData == NULL) && (MinDensity < MaxDensity) &&
         (count > 1) && (count <= MAX_TABLE_ENTRY_COUNT) &&
@@ -1899,7 +1899,7 @@ int DiMonoImage::createLinODPresentationLut(const unsigned long count, const int
             const double factor = OFstatic_cast(double, DicomImageClass::maxval(bits)) / (jmax - jmin);
             const double density = (dmax - dmin) / OFstatic_cast(double, count - 1);
             Uint16 *p = data;
-            for (unsigned long i = 0; i < count; ++i)
+            for (unsigned int i = 0; i < count; ++i)
             {
                 *(p++) = OFstatic_cast(Uint16, (DiGSDFunction::getJNDIndex(la + l0 *
                     pow(OFstatic_cast(double, 10), -(dmin + OFstatic_cast(double, i) * density))) - jmin) * factor);
@@ -1959,7 +1959,7 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset,
     if (InterData != NULL)
     {
         const void *pixel = InterData->getData();
-        const unsigned long count = InterData->getCount();
+        const unsigned int count = InterData->getCount();
         if ((BitsPerSample > 0) && (pixel != NULL) && (count > 0))
         {
             unsigned int bits = BitsPerSample;
@@ -2030,7 +2030,7 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset,
  */
 
 int DiMonoImage::writePPM(ostream &stream,
-                          const unsigned long frame,
+                          const unsigned int frame,
                           const int bits)
 {
     getOutputData(frame, bits);
@@ -2059,7 +2059,7 @@ int DiMonoImage::writePPM(ostream &stream,
  */
 
 int DiMonoImage::writePPM(FILE *stream,
-                          const unsigned long frame,
+                          const unsigned int frame,
                           const int bits)
 {
     if (stream != NULL)
@@ -2085,7 +2085,7 @@ int DiMonoImage::writePPM(FILE *stream,
  */
 
 int DiMonoImage::writeRawPPM(FILE *stream,
-                             const unsigned long frame,
+                             const unsigned int frame,
                              const int bits)
 {
     if ((stream != NULL) && (bits <= MAX_RAWPPM_BITS))
@@ -2111,7 +2111,7 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  */
 
 int DiMonoImage::writeBMP(FILE *stream,
-                          const unsigned long frame,
+                          const unsigned int frame,
                           const int bits)
 {
     if ((bits == 0) || (bits == 8) || (bits == 24))

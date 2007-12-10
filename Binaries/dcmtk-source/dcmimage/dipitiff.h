@@ -111,7 +111,7 @@ class DiTIFFPlugin
      */
     virtual int write(DiImage *image,
                       FILE *stream,
-                      const unsigned long frame = 0) const;
+                      const unsigned int frame = 0) const;
 
     /** set compression type for TIFF creation
      *  @param ctype compression type
@@ -128,7 +128,7 @@ class DiTIFFPlugin
      *    rows per strip is calculated automatically such that
      *    each strip contains about 8 kByte of data.
      */
-    void setRowsPerStrip(unsigned long rows = 0);
+    void setRowsPerStrip(unsigned int rows = 0);
 
     /** get version information of the TIFF library.
      *  Typical output format: "LIBTIFF, Version 3.5.7"
@@ -146,7 +146,7 @@ class DiTIFFPlugin
     DiTIFFLZWPredictor predictor;
 
     /// TIFF rows per strip
-    unsigned long rowsPerStrip;
+    unsigned int rowsPerStrip;
 };
 
 #endif

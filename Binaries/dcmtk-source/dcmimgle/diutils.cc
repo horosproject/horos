@@ -78,11 +78,11 @@ unsigned int DicomImageClass::rangeToBits(double minvalue,
     if (minvalue < 0)
     {
         if (fabs(minvalue) > fabs(maxvalue))
-            return tobits(OFstatic_cast(unsigned long, fabs(minvalue)), 0) + 1;
+            return tobits(OFstatic_cast(unsigned int, fabs(minvalue)), 0) + 1;
         else
-            return tobits(OFstatic_cast(unsigned long, fabs(maxvalue)), 0) + 1;
+            return tobits(OFstatic_cast(unsigned int, fabs(maxvalue)), 0) + 1;
     }
-    return tobits(OFstatic_cast(unsigned long, maxvalue), 0);
+    return tobits(OFstatic_cast(unsigned int, maxvalue), 0);
 }
 
 

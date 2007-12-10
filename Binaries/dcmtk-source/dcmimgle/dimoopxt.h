@@ -99,15 +99,15 @@ class DiMonoOutputPixelTemplate
                               const Uint32 high,
                               const Uint16 columns,
                               const Uint16 rows,
-                              const unsigned long frame,
+                              const unsigned int frame,
 #ifdef PASTEL_COLOR_OUTPUT
-                              const unsigned long frames,
+                              const unsigned int frames,
 #else
-                              const unsigned long /*frames*/,
+                              const unsigned int /*frames*/,
 #endif
                               const int pastel = 0)
-      : DiMonoOutputPixel(pixel, OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows), frame,
-                          OFstatic_cast(unsigned long, fabs(OFstatic_cast(double, high - low)))),
+      : DiMonoOutputPixel(pixel, OFstatic_cast(unsigned int, columns) * OFstatic_cast(unsigned int, rows), frame,
+                          OFstatic_cast(unsigned int, fabs(OFstatic_cast(double, high - low)))),
         Data(NULL),
         DeleteData(buffer == NULL),
         ColorData(NULL)
@@ -203,9 +203,9 @@ class DiMonoOutputPixelTemplate
     {
         if (Data != NULL)
         {
-            register unsigned long i;
+            register unsigned int i;
             for (i = 0; i < FrameSize; ++i)
-                stream << OFstatic_cast(unsigned long, Data[i]) << " ";    // typecast to resolve problems with 'char'
+                stream << OFstatic_cast(unsigned int, Data[i]) << " ";    // typecast to resolve problems with 'char'
             return 1;
         }
         if (ColorData != NULL)
@@ -223,9 +223,9 @@ class DiMonoOutputPixelTemplate
     {
         if (Data != NULL)
         {
-            register unsigned long i;
+            register unsigned int i;
             for (i = 0; i < FrameSize; ++i)
-                fprintf(stream, "%lu ", OFstatic_cast(unsigned long, Data[i]));
+                fprintf(stream, "%lu ", OFstatic_cast(unsigned int, Data[i]));
             return 1;
         }
         if (ColorData != NULL)
@@ -248,7 +248,7 @@ class DiMonoOutputPixelTemplate
                 OFBitmanipTemplate<Uint8>::zeroMem(UsedValues, MaxValue + 1); // initialize array
                 register const T3 *p = Data;
                 register Uint8 *q = UsedValues;
-                register unsigned long i;
+                register unsigned int i;
                 for (i = Count; i != 0; --i)
                     *(q + *(p++)) = 1;                                        // mark used entries
             }
@@ -297,7 +297,7 @@ class DiMonoOutputPixelTemplate
      *  @param  ocnt  number of entries for the optimization LUT
      */
     inline int initOptimizationLUT(T3 *&lut,
-                                   const unsigned long ocnt)
+                                   const unsigned int ocnt)
     {
         int result = 0;
         if ((sizeof(T1) <= 2) && (Count > 3 * ocnt))                          // optimization criteria
@@ -321,8 +321,8 @@ class DiMonoOutputPixelTemplate
 #ifdef PASTEL_COLOR_OUTPUT
     void color(void *buffer,                               // create true color pastel image
                const DiMonoPixel *inter,
-               const unsigned long frame,
-               const unsigned long frames)
+               const unsigned int frame,
+               const unsigned int frames)
     {
         ColorData = new DiMonoColorOutputPixelTemplate<T1, T3>(buffer, inter, frame, frames);
         if (ColorData != NULL)
@@ -368,7 +368,7 @@ class DiMonoOutputPixelTemplate
                 const DiDisplayLUT *dlut = NULL;
                 const double minvalue = vlut->getMinValue();
                 const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low) + 1;
-                register unsigned long i;
+                register unsigned int i;
                 if (minvalue == vlut->getMaxValue())                                    // LUT has only one entry or all entries are equal
                 {
                     T3 value;
@@ -411,7 +411,7 @@ class DiMonoOutputPixelTemplate
                     const T2 absmin = OFstatic_cast(T2, inter->getAbsMinimum());
                     const T2 firstentry = vlut->getFirstEntry(value);                   // choose signed/unsigned method
                     const T2 lastentry = vlut->getLastEntry(value);
-                    const unsigned long ocnt = OFstatic_cast(unsigned long, inter->getAbsMaxRange());  // number of LUT entries
+                    const unsigned int ocnt = OFstatic_cast(unsigned int, inter->getAbsMaxRange());  // number of LUT entries
                     register const T1 *p = pixel + start;
                     register T3 *q = Data;
                     T3 *lut = NULL;
@@ -661,10 +661,10 @@ class DiMonoOutputPixelTemplate
                 const double absmin = inter->getAbsMinimum();
                 const double absmax = inter->getAbsMaximum();
                 const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low) + 1;
-                const unsigned long ocnt = OFstatic_cast(unsigned long, inter->getAbsMaxRange());  // number of LUT entries
+                const unsigned int ocnt = OFstatic_cast(unsigned int, inter->getAbsMaxRange());  // number of LUT entries
                 register const T1 *p = pixel + start;
                 register T3 *q = Data;
-                register unsigned long i;
+                register unsigned int i;
                 T3 *lut = NULL;
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
                 {
@@ -830,10 +830,10 @@ class DiMonoOutputPixelTemplate
                 const double leftBorder = center - 0.5 - width_1 / 2;                 // window borders, according to supplement 33
                 const double rightBorder = center - 0.5 + width_1 / 2;
                 const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low);  // output range
-                const unsigned long ocnt = OFstatic_cast(unsigned long, inter->getAbsMaxRange());  // number of LUT entries
+                const unsigned int ocnt = OFstatic_cast(unsigned int, inter->getAbsMaxRange());  // number of LUT entries
                 register const T1 *p = pixel + start;
                 register T3 *q = Data;
-                register unsigned long i;
+                register unsigned int i;
                 register double value;
                 T3 *lut = NULL;
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
@@ -1012,7 +1012,7 @@ class DiMonoOutputPixelTemplate
                  DiDisplayFunction *disp,
                  const Uint16 columns,
                  const Uint16 rows,
-                 const unsigned long frame)
+                 const unsigned int frame)
     {
         if ((Data != NULL) && (overlays != NULL))
         {
@@ -1044,7 +1044,7 @@ class DiMonoOutputPixelTemplate
                                     for (y = ymin; y < ymax; ++y)
                                     {
                                         plane->setStart(OFstatic_cast(Uint16, left_pos + xmin), OFstatic_cast(Uint16, top_pos + y));
-                                        q = Data + OFstatic_cast(unsigned long, y) * OFstatic_cast(unsigned long, columns) + OFstatic_cast(unsigned long, xmin);
+                                        q = Data + OFstatic_cast(unsigned int, y) * OFstatic_cast(unsigned int, columns) + OFstatic_cast(unsigned int, xmin);
                                         for (x = xmin; x < xmax; ++x, ++q)
                                         {
                                             if (plane->getNextBit())
@@ -1060,7 +1060,7 @@ class DiMonoOutputPixelTemplate
                                     for (y = ymin; y < ymax; ++y)
                                     {
                                         plane->setStart(OFstatic_cast(Uint16, left_pos + xmin), OFstatic_cast(Uint16, top_pos + y));
-                                        q = Data + OFstatic_cast(unsigned long, y) * OFstatic_cast(unsigned long, columns) + OFstatic_cast(unsigned long, xmin);
+                                        q = Data + OFstatic_cast(unsigned int, y) * OFstatic_cast(unsigned int, columns) + OFstatic_cast(unsigned int, xmin);
                                         for (x = xmin; x < xmax; ++x, ++q)
                                         {
                                             if (plane->getNextBit())
@@ -1075,7 +1075,7 @@ class DiMonoOutputPixelTemplate
                                     for (y = ymin; y < ymax; ++y)
                                     {
                                         plane->setStart(OFstatic_cast(Uint16, left_pos + xmin), OFstatic_cast(Uint16, top_pos + y));
-                                        q = Data + OFstatic_cast(unsigned long, y) * OFstatic_cast(unsigned long, columns) + OFstatic_cast(unsigned long, xmin);
+                                        q = Data + OFstatic_cast(unsigned int, y) * OFstatic_cast(unsigned int, columns) + OFstatic_cast(unsigned int, xmin);
                                         for (x = xmin; x < xmax; ++x, ++q)
                                         {
                                             if (plane->getNextBit())
@@ -1090,7 +1090,7 @@ class DiMonoOutputPixelTemplate
                                     for (y = ymin; y < ymax; ++y)
                                     {
                                         plane->setStart(OFstatic_cast(Uint16, left_pos + xmin), OFstatic_cast(Uint16, top_pos + y));
-                                        q = Data + OFstatic_cast(unsigned long, y) * OFstatic_cast(unsigned long, columns) + OFstatic_cast(unsigned long, xmin);
+                                        q = Data + OFstatic_cast(unsigned int, y) * OFstatic_cast(unsigned int, columns) + OFstatic_cast(unsigned int, xmin);
                                         for (x = xmin; x < xmax; ++x, ++q)
                                         {
                                             if (!plane->getNextBit())
@@ -1105,7 +1105,7 @@ class DiMonoOutputPixelTemplate
                                     for (y = ymin; y < ymax; ++y)
                                     {
                                         plane->setStart(OFstatic_cast(Uint16, left_pos + xmin), OFstatic_cast(Uint16, top_pos + y));
-                                        q = Data + OFstatic_cast(unsigned long, y) * OFstatic_cast(unsigned long, columns) + OFstatic_cast(unsigned long, xmin);
+                                        q = Data + OFstatic_cast(unsigned int, y) * OFstatic_cast(unsigned int, columns) + OFstatic_cast(unsigned int, xmin);
                                         for (x = xmin; x < xmax; ++x, ++q)
                                         {
                                             if (!plane->getNextBit())
@@ -1126,7 +1126,7 @@ class DiMonoOutputPixelTemplate
                                     for (y = ymin; y < ymax; ++y)
                                     {
                                         plane->setStart(OFstatic_cast(Uint16, left_pos + xmin), OFstatic_cast(Uint16, top_pos + y));
-                                        q = Data + OFstatic_cast(unsigned long, y) * OFstatic_cast(unsigned long, columns) + OFstatic_cast(unsigned long, xmin);
+                                        q = Data + OFstatic_cast(unsigned int, y) * OFstatic_cast(unsigned int, columns) + OFstatic_cast(unsigned int, xmin);
                                         for (x = xmin; x < xmax; ++x, ++q)
                                         {
                                             if (plane->getNextBit())

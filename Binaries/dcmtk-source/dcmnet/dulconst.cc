@@ -73,55 +73,55 @@
 
 static OFCondition
 constructSubItem(char *name, unsigned char type,
-		 DUL_SUBITEM * applicationContext, unsigned long *rtnlen);
+		 DUL_SUBITEM * applicationContext, unsigned int *rtnlen);
 static OFCondition
 constructPresentationContext(unsigned char associateType,
 			     unsigned char contextID,
 			     unsigned char reason, char *abstractSyntax,
 	   LST_HEAD ** proposedTransferSyntax, char *acceptedTransferSyntax,
-	   PRV_PRESENTATIONCONTEXTITEM * context, unsigned long *rtnLength);
+	   PRV_PRESENTATIONCONTEXTITEM * context, unsigned int *rtnLength);
 static OFCondition
 constructUserInfo(unsigned char type, DUL_ASSOCIATESERVICEPARAMETERS * params,
-		  DUL_USERINFO * userInfo, unsigned long *rtnLen);
+		  DUL_USERINFO * userInfo, unsigned int *rtnLen);
 static OFCondition
-constructMaxLength(unsigned long maxPDU, DUL_MAXLENGTH * max,
-		   unsigned long *rtnLen);
+constructMaxLength(unsigned int maxPDU, DUL_MAXLENGTH * max,
+		   unsigned int *rtnLen);
 static OFCondition
 constructSCUSCPRoles(unsigned char type,
 		  DUL_ASSOCIATESERVICEPARAMETERS * params, LST_HEAD ** lst,
-		     unsigned long *rtnLength);
+		     unsigned int *rtnLength);
 static OFCondition
 constructSCUSCPSubItem(char *name, unsigned char type, unsigned char scuRole,
 		       unsigned char scpRole, PRV_SCUSCPROLE * scuscpItem,
-		       unsigned long *length);
+		       unsigned int *length);
 static OFCondition
 streamSubItem(DUL_SUBITEM * item, unsigned char *b,
-	      unsigned long *len);
+	      unsigned int *len);
 static OFCondition
 streamPresentationContext(
 		      LST_HEAD ** presentationContextList, unsigned char *b,
-			  unsigned long *length);
+			  unsigned int *length);
 static OFCondition
 streamUserInfo(DUL_USERINFO * userInfo, unsigned char *b,
-	       unsigned long *length);
+	       unsigned int *length);
 static OFCondition
 streamMaxLength(DUL_MAXLENGTH * max, unsigned char *b,
-		unsigned long *length);
+		unsigned int *length);
 static OFCondition
-    streamSCUSCPList(LST_HEAD ** lst, unsigned char *b, unsigned long *length);
+    streamSCUSCPList(LST_HEAD ** lst, unsigned char *b, unsigned int *length);
 static OFCondition
 streamSCUSCPRole(PRV_SCUSCPROLE * scuscpRole, unsigned char *b,
-		 unsigned long *len);
+		 unsigned int *len);
 static OFCondition
 constructExtNeg(unsigned char type,
     DUL_ASSOCIATESERVICEPARAMETERS * params, SOPClassExtendedNegotiationSubItemList **lst,
-    unsigned long *rtnLength);
+    unsigned int *rtnLength);
 
 static OFCondition
-streamExtNegList(SOPClassExtendedNegotiationSubItemList *lst, unsigned char *b, unsigned long *length);
+streamExtNegList(SOPClassExtendedNegotiationSubItemList *lst, unsigned char *b, unsigned int *length);
 
 static OFCondition
-streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsigned long *len);
+streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsigned int *len);
 
 static OFBool debug = OFFalse;
 
@@ -146,7 +146,7 @@ OFCondition
 constructAssociatePDU(DUL_ASSOCIATESERVICEPARAMETERS * params,
 		      unsigned char type, PRV_ASSOCIATEPDU * pdu)
 {
-    unsigned long
+    unsigned int
         itemLength;		/* Holds length of an item computed by a
 				 * lower level routine. */
     DUL_PRESENTATIONCONTEXT
@@ -301,7 +301,7 @@ constructAssociateRejectPDU(unsigned char result,
 **	Description of the algorithm (optional) and any other notes.
 */
 OFCondition
-constructReleaseRQPDU(DUL_REJECTRELEASEABORTPDU * pdu, unsigned long mode)
+constructReleaseRQPDU(DUL_REJECTRELEASEABORTPDU * pdu, unsigned int mode)
 {
     pdu->type = DUL_TYPERELEASERQ;
     pdu->rsv1 = 0;
@@ -370,7 +370,7 @@ constructReleaseRPPDU(DUL_REJECTRELEASEABORTPDU * pdu)
 OFCondition
 constructAbortPDU(unsigned char src, unsigned char reason,
 		  DUL_REJECTRELEASEABORTPDU * pdu,
-		  unsigned long mode)
+		  unsigned int mode)
 {
     pdu->type = DUL_TYPEABORT;
     pdu->rsv1 = 0;
@@ -415,7 +415,7 @@ constructAbortPDU(unsigned char src, unsigned char reason,
 */
 
 OFCondition
-constructDataPDU(void *buf, unsigned long length,
+constructDataPDU(void *buf, unsigned int length,
 	  DUL_DATAPDV type, DUL_PRESENTATIONCONTEXTID presentationContextID,
 		 OFBool last, DUL_DATAPDU * pdu)
 {
@@ -468,9 +468,9 @@ constructDataPDU(void *buf, unsigned long length,
 
 OFCondition
 streamAssociatePDU(PRV_ASSOCIATEPDU * assoc, unsigned char *b,
-		   unsigned long /*maxLength*/, unsigned long *rtnLen)
+		   unsigned int /*maxLength*/, unsigned int *rtnLen)
 {
-    unsigned long
+    unsigned int
         subLength;
 
     *b++ = assoc->type;
@@ -536,7 +536,7 @@ streamAssociatePDU(PRV_ASSOCIATEPDU * assoc, unsigned char *b,
 
 OFCondition
 streamRejectReleaseAbortPDU(DUL_REJECTRELEASEABORTPDU * pdu,
-	   unsigned char *b, unsigned long maxLength, unsigned long *rtnLen)
+	   unsigned char *b, unsigned int maxLength, unsigned int *rtnLen)
 {
     if (maxLength < 2 + 2 + 4)
     {
@@ -577,9 +577,9 @@ streamRejectReleaseAbortPDU(DUL_REJECTRELEASEABORTPDU * pdu,
 
 OFCondition
 streamDataPDUHead(DUL_DATAPDU * pdu, unsigned char *buf,
-		  unsigned long maxLength, unsigned long *rtnLen)
+		  unsigned int maxLength, unsigned int *rtnLen)
 {
-    unsigned long l;
+    unsigned int l;
 
 #ifdef PDV_TEST
     if (maxLength < 18)
@@ -680,7 +680,7 @@ constructDebug(OFBool flag)
 */
 static OFCondition
 constructSubItem(char *name, unsigned char type,
-		 DUL_SUBITEM * subItem, unsigned long *rtnLength)
+		 DUL_SUBITEM * subItem, unsigned int *rtnLength)
 {
     if (strlen(name) < 1 || strlen(name) > 64)
     {
@@ -730,10 +730,10 @@ constructPresentationContext(unsigned char associateType,
 			     unsigned char contextID,
 			     unsigned char reason, char *abstractSyntax,
 	   LST_HEAD ** proposedTransferSyntax, char *acceptedTransferSyntax,
-	       PRV_PRESENTATIONCONTEXTITEM * context, unsigned long *rtnLen)
+	       PRV_PRESENTATIONCONTEXTITEM * context, unsigned int *rtnLen)
 {
     OFCondition cond = EC_Normal;
-    unsigned long
+    unsigned int
         length;
     DUL_SUBITEM
 	* subItem;		/* Subitem pointer created for transfer
@@ -828,13 +828,13 @@ constructPresentationContext(unsigned char associateType,
 */
 static OFCondition
 constructUserInfo(unsigned char type, DUL_ASSOCIATESERVICEPARAMETERS * params,
-		  DUL_USERINFO * userInfo, unsigned long *rtnLen)
+		  DUL_USERINFO * userInfo, unsigned int *rtnLen)
 {
     // the order in which the user info sub-items are constructed in this
     // function is not significant. The final transmission order is determined
     // by streamUserInfo().
 
-    unsigned long length;
+    unsigned int length;
 
     userInfo->type = DUL_TYPEUSERINFO;
     userInfo->rsv1 = 0;
@@ -916,10 +916,10 @@ constructUserInfo(unsigned char type, DUL_ASSOCIATESERVICEPARAMETERS * params,
 */
 
 static OFCondition
-constructMaxLength(unsigned long maxPDU, DUL_MAXLENGTH * max,
-		   unsigned long *rtnLen)
+constructMaxLength(unsigned int maxPDU, DUL_MAXLENGTH * max,
+		   unsigned int *rtnLen)
 {
-    unsigned long compatMode = dcmEnableBackwardCompatibility.get();
+    unsigned int compatMode = dcmEnableBackwardCompatibility.get();
     max->type = DUL_TYPEMAXLENGTH;
     max->rsv1 = 0;
     max->length = 4;
@@ -953,7 +953,7 @@ constructMaxLength(unsigned long maxPDU, DUL_MAXLENGTH * max,
 static OFCondition
 constructSCUSCPRoles(unsigned char type,
 		  DUL_ASSOCIATESERVICEPARAMETERS * params, LST_HEAD ** lst,
-		     unsigned long *rtnLength)
+		     unsigned int *rtnLength)
 {
     DUL_PRESENTATIONCONTEXT
 	* presentationCtx;	/* Pointer to loop through presentation ctx */
@@ -962,7 +962,7 @@ constructSCUSCPRoles(unsigned char type,
     unsigned char
         scuRole = 0,
         scpRole = 0;
-    unsigned long
+    unsigned int
         length;
 
     *rtnLength = 0;
@@ -1038,9 +1038,9 @@ constructSCUSCPRoles(unsigned char type,
 static OFCondition
 constructExtNeg(unsigned char type,
     DUL_ASSOCIATESERVICEPARAMETERS * params, SOPClassExtendedNegotiationSubItemList **lst,
-    unsigned long *rtnLength)
+    unsigned int *rtnLength)
 {
-    unsigned long length;
+    unsigned int length;
     *rtnLength = 0;
 
     if (type == DUL_TYPEASSOCIATERQ && params->requestedExtNegList != NULL) {
@@ -1094,7 +1094,7 @@ constructExtNeg(unsigned char type,
 static OFCondition
 constructSCUSCPSubItem(char *name, unsigned char type, unsigned char scuRole,
 		       unsigned char scpRole, PRV_SCUSCPROLE * scuscpItem,
-		       unsigned long *length)
+		       unsigned int *length)
 {
     if (strlen(name) < 1 || strlen(name) > 64)
     {
@@ -1132,7 +1132,7 @@ constructSCUSCPSubItem(char *name, unsigned char type, unsigned char scuRole,
 
 static OFCondition
 streamSubItem(DUL_SUBITEM * item, unsigned char *b,
-	      unsigned long *len)
+	      unsigned int *len)
 {
     unsigned short
         length;
@@ -1169,14 +1169,14 @@ streamSubItem(DUL_SUBITEM * item, unsigned char *b,
 
 static OFCondition
 streamPresentationContext(LST_HEAD ** presentationContextList,
-			  unsigned char *b, unsigned long *length)
+			  unsigned char *b, unsigned int *length)
 {
     PRV_PRESENTATIONCONTEXTITEM
     * presentation;
     DUL_SUBITEM
 	* transfer;
     OFCondition cond = EC_Normal;
-    unsigned long
+    unsigned int
         subLength;
 
     *length = 0;
@@ -1241,9 +1241,9 @@ streamPresentationContext(LST_HEAD ** presentationContextList,
 
 static OFCondition
 streamUserInfo(DUL_USERINFO * userInfo, unsigned char *b,
-	       unsigned long *length)
+	       unsigned int *length)
 {
-    unsigned long
+    unsigned int
         subLength;
 
     *length = 0;
@@ -1337,7 +1337,7 @@ streamUserInfo(DUL_USERINFO * userInfo, unsigned char *b,
 */
 static OFCondition
 streamMaxLength(DUL_MAXLENGTH * max, unsigned char *b,
-		unsigned long *length)
+		unsigned int *length)
 {
 
     *b++ = max->type;
@@ -1368,12 +1368,12 @@ streamMaxLength(DUL_MAXLENGTH * max, unsigned char *b,
 **	Description of the algorithm (optional) and any other notes.
 */
 static OFCondition
-streamSCUSCPList(LST_HEAD ** lst, unsigned char *b, unsigned long *length)
+streamSCUSCPList(LST_HEAD ** lst, unsigned char *b, unsigned int *length)
 {
     PRV_SCUSCPROLE
     * scuscpRole;
     OFCondition cond = EC_Normal;
-    unsigned long
+    unsigned int
         localLength;
 
     *length = 0;
@@ -1412,7 +1412,7 @@ streamSCUSCPList(LST_HEAD ** lst, unsigned char *b, unsigned long *length)
 */
 static OFCondition
 streamSCUSCPRole(PRV_SCUSCPROLE * scuscpRole, unsigned char *b,
-		 unsigned long *len)
+		 unsigned int *len)
 {
     unsigned short
         length;
@@ -1438,10 +1438,10 @@ streamSCUSCPRole(PRV_SCUSCPROLE * scuscpRole, unsigned char *b,
 }
 
 static OFCondition
-streamExtNegList(SOPClassExtendedNegotiationSubItemList *lst, unsigned char *b, unsigned long *length)
+streamExtNegList(SOPClassExtendedNegotiationSubItemList *lst, unsigned char *b, unsigned int *length)
 {
     OFCondition cond = EC_Normal;
-    unsigned long localLength;
+    unsigned int localLength;
 
     *length = 0;
 
@@ -1462,7 +1462,7 @@ streamExtNegList(SOPClassExtendedNegotiationSubItemList *lst, unsigned char *b, 
 }
 
 static OFCondition
-streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsigned long *len)
+streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsigned int *len)
 {
 
     if (extNeg == NULL)

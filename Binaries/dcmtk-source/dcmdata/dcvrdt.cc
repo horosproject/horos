@@ -82,7 +82,7 @@ DcmEVR DcmDateTime::ident() const
 
 
 OFCondition DcmDateTime::getOFString(OFString &stringVal,
-                                     const unsigned long pos,
+                                     const unsigned int pos,
                                      OFBool normalize)
 {
     OFCondition l_error = DcmByteString::getOFString(stringVal, pos, normalize);
@@ -96,7 +96,7 @@ OFCondition DcmDateTime::getOFString(OFString &stringVal,
 
 
 OFCondition DcmDateTime::getOFDateTime(OFDateTime &dateTimeValue,
-                                       const unsigned long pos)
+                                       const unsigned int pos)
 {
     OFString dicomDateTime;
     /* convert the current element value to OFDateTime format */
@@ -110,7 +110,7 @@ OFCondition DcmDateTime::getOFDateTime(OFDateTime &dateTimeValue,
 
 
 OFCondition DcmDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
-                                                 const unsigned long pos,
+                                                 const unsigned int pos,
                                                  const OFBool seconds,
                                                  const OFBool fraction,
                                                  const OFBool timeZone,
@@ -123,7 +123,7 @@ OFCondition DcmDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
 
 
 OFCondition DcmDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
-                                                 const unsigned long pos,
+                                                 const unsigned int pos,
                                                  const OFBool seconds,
                                                  const OFBool fraction,
                                                  const OFBool timeZone,

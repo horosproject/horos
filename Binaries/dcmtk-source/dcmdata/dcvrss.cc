@@ -78,7 +78,7 @@ DcmEVR DcmSignedShort::ident() const
 }
 
 
-unsigned long DcmSignedShort::getVM()
+unsigned int DcmSignedShort::getVM()
 {
     return Length / sizeof(Sint16);
 }
@@ -100,11 +100,11 @@ void DcmSignedShort::print(ostream &out,
         errorFlag = getSint16Array(sintVals);
         if (sintVals != NULL)
         {
-            const unsigned long count = getVM();
-            const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
-                DCM_OptPrintLineLength : OFstatic_cast(unsigned long, -1) /*unlimited*/;
-            unsigned long printedLength = 0;
-            unsigned long newLength = 0;
+            const unsigned int count = getVM();
+            const unsigned int maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
+                DCM_OptPrintLineLength : OFstatic_cast(unsigned int, -1) /*unlimited*/;
+            unsigned int printedLength = 0;
+            unsigned int newLength = 0;
             char buffer[32];
             /* print line start with tag and VR */
             printInfoLineStart(out, flags, level);
@@ -145,7 +145,7 @@ void DcmSignedShort::print(ostream &out,
 
 
 OFCondition DcmSignedShort::getSint16(Sint16 &sintVal,
-                                      const unsigned long pos)
+                                      const unsigned int pos)
 {
     /* get signed integer data */
     Sint16 *sintValues = NULL;
@@ -178,7 +178,7 @@ OFCondition DcmSignedShort::getSint16Array(Sint16 *&sintVals)
 
 
 OFCondition DcmSignedShort::getOFString(OFString &stringVal,
-                                        const unsigned long pos,
+                                        const unsigned int pos,
                                         OFBool /*normalize*/)
 {
     Sint16 sintVal;
@@ -200,7 +200,7 @@ OFCondition DcmSignedShort::getOFString(OFString &stringVal,
 
 
 OFCondition DcmSignedShort::putSint16(const Sint16 sintVal,
-                                      const unsigned long pos)
+                                      const unsigned int pos)
 {
     Sint16 val = sintVal;
     errorFlag = changeValue(&val, sizeof(Sint16) * pos, sizeof(Sint16));
@@ -209,7 +209,7 @@ OFCondition DcmSignedShort::putSint16(const Sint16 sintVal,
 
 
 OFCondition DcmSignedShort::putSint16Array(const Sint16 *sintVals,
-                                           const unsigned long numSints)
+                                           const unsigned int numSints)
 {
     errorFlag = EC_Normal;
     if (numSints > 0)
@@ -234,14 +234,14 @@ OFCondition DcmSignedShort::putString(const char *stringVal)
     /* check input string */
     if ((stringVal != NULL) && (strlen(stringVal) > 0))
     {
-        const unsigned long vm = getVMFromString(stringVal);
+        const unsigned int vm = getVMFromString(stringVal);
         if (vm > 0)
         {
             Sint16 *field = new Sint16[vm];
             const char *s = stringVal;
             char *value;
             /* retrieve signed integer data from character string */
-            for (unsigned long i = 0; (i < vm) && errorFlag.good(); i++)
+            for (unsigned int i = 0; (i < vm) && errorFlag.good(); i++)
             {
                 /* get first value stored in 's', set 's' to beginning of the next value */
                 value = getFirstValueFromString(s);
@@ -354,9 +354,9 @@ OFCondition DcmSignedShort::verify(const OFBool autocorrect)
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

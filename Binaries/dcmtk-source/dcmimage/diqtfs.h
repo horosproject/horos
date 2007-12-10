@@ -64,7 +64,7 @@ public:
    *  @param cols number of columns in image
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  OFCondition initialize(unsigned long cols);
+  OFCondition initialize(unsigned int cols);
   
   /** uses the Floyd-Steinberg error vectors to adjust the color of the current image pixel.
    *  @param px the original image pixel is passed in this parameter. Upon return, the pixel
@@ -143,7 +143,7 @@ public:
    */
   inline void startRow(long& col, long& limitcol)
   {
-    for (unsigned long c = 0; c < columns + 2; ++c)
+    for (unsigned int c = 0; c < columns + 2; ++c)
       nextrerr[c] = nextgerr[c] = nextberr[c] = 0;
   
     if (fs_direction)
@@ -223,7 +223,7 @@ private:
   int fs_direction;
   
   /// number of columns in image
-  unsigned long columns;
+  unsigned int columns;
 
 };
 

@@ -90,7 +90,7 @@ class DcmIntegerString
      *  @return status status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getSint32(Sint32 &sintVal,
-                                  const unsigned long pos = 0);
+                                  const unsigned int pos = 0);
 
     /** get a particular value as a character string
      *  @param stringVal variable in which the result value is stored
@@ -99,7 +99,7 @@ class DcmIntegerString
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOFString(OFString &stringVal,
-                                    const unsigned long pos,
+                                    const unsigned int pos,
                                     OFBool normalize = OFTrue);
 };
 

@@ -109,7 +109,7 @@ public:
    *  May return 0 if connection is transparent TCP/IP.
    *  @return peer certificate length in bytes
    */
-  virtual unsigned long getPeerCertificateLength() = 0;
+  virtual unsigned int getPeerCertificateLength() = 0;
 
   /* copies the peer certificate of a secure connection into a buffer
    * specified by the caller. If the buffer is too small to hold the
@@ -118,7 +118,7 @@ public:
    * @param bufLen size of the buffer in bytes
    * @return number of bytes written, always less or equal bufLen.
    */
-  virtual unsigned long getPeerCertificate(void *buf, unsigned long bufLen) = 0;
+  virtual unsigned int getPeerCertificate(void *buf, unsigned int bufLen) = 0;
 
   /** checks if data is available to be read on the transport connection.
    *  Abstract method.
@@ -282,7 +282,7 @@ public:
    *  May return 0 if connection is transparent TCP/IP.
    *  @return peer certificate length in bytes
    */
-  virtual unsigned long getPeerCertificateLength();
+  virtual unsigned int getPeerCertificateLength();
 
   /* copies the peer certificate of a secure connection into a buffer
    * specified by the caller. If the buffer is too small to hold the
@@ -291,7 +291,7 @@ public:
    * @param bufLen size of the buffer in bytes
    * @return number of bytes written, always less or equal bufLen.
    */
-  virtual unsigned long getPeerCertificate(void *buf, unsigned long bufLen);
+  virtual unsigned int getPeerCertificate(void *buf, unsigned int bufLen);
 
   /** checks if data is available to be read on the transport connection.
    *  @param timeout maximum number of seconds to wait if no data is available.

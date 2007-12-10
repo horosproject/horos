@@ -82,7 +82,7 @@ DcmEVR DcmTime::ident() const
 
 
 OFCondition DcmTime::getOFString(OFString &stringVal,
-                                 const unsigned long pos,
+                                 const unsigned int pos,
                                  OFBool normalize)
 {
     OFCondition l_error = DcmByteString::getOFString(stringVal, pos, normalize);
@@ -96,7 +96,7 @@ OFCondition DcmTime::getOFString(OFString &stringVal,
 
 
 OFCondition DcmTime::getOFTime(OFTime &timeValue,
-                               const unsigned long pos,
+                               const unsigned int pos,
                                const OFBool supportOldFormat)
 {
     OFString dicomTime;
@@ -111,7 +111,7 @@ OFCondition DcmTime::getOFTime(OFTime &timeValue,
 
 
 OFCondition DcmTime::getISOFormattedTime(OFString &formattedTime,
-                                         const unsigned long pos,
+                                         const unsigned int pos,
                                          const OFBool seconds,
                                          const OFBool fraction,
                                          const OFBool createMissingPart,

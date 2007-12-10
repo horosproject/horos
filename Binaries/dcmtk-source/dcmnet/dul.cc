@@ -144,16 +144,16 @@ OFGlobal<OFBool> dcmDisableGethostbyaddr(OFFalse);
 OFGlobal<Sint32> dcmConnectionTimeout(-1);
 OFGlobal<int>    dcmExternalSocketHandle(-1);
 OFGlobal<const char *> dcmTCPWrapperDaemonName((const char *)NULL);
-OFGlobal<unsigned long> dcmEnableBackwardCompatibility(0);
+OFGlobal<unsigned int> dcmEnableBackwardCompatibility(0);
 
 static int networkInitialized = 0;
 
 static OFCondition
-createNetworkKey(const char *mode, int timeout, unsigned long opt,
+createNetworkKey(const char *mode, int timeout, unsigned int opt,
                  PRIVATE_NETWORKKEY ** k);
 static OFCondition
 createAssociationKey(PRIVATE_NETWORKKEY ** net, const char *node,
-                     unsigned long maxPDU,
+                     unsigned int maxPDU,
                      PRIVATE_ASSOCIATIONKEY ** assoc);
 static OFCondition initializeNetworkTCP(PRIVATE_NETWORKKEY ** k, void *p);
 static OFCondition
@@ -173,7 +173,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 static void destroyAssociationKey(PRIVATE_ASSOCIATIONKEY ** key);
 #if 0
 static OFCondition writeDataPDU(PRIVATE_ASSOCIATIONKEY ** key, DUL_DATAPDU * pdu);
-static OFCondition dropPDU(PRIVATE_ASSOCIATIONKEY ** association, unsigned long l);
+static OFCondition dropPDU(PRIVATE_ASSOCIATIONKEY ** association, unsigned int l);
 #endif
 static OFCondition
 get_association_parameter(void *paramAddress,
@@ -226,7 +226,7 @@ void DUL_activateAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc)
   }
 }
 
-void DUL_activateCompatibilityMode(DUL_ASSOCIATIONKEY *dulassoc, unsigned long mode)
+void DUL_activateCompatibilityMode(DUL_ASSOCIATIONKEY *dulassoc, unsigned int mode)
 {
   if (dulassoc)
   {
@@ -244,7 +244,7 @@ void DUL_activateCallback(DUL_ASSOCIATIONKEY *dulassoc, DUL_ModeCallback *cb)
   }
 }
 
-void DUL_returnAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc, void *& pdu, unsigned long& pdusize)
+void DUL_returnAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc, void *& pdu, unsigned int& pdusize)
 {
   if (dulassoc)
   {
@@ -260,7 +260,7 @@ void DUL_returnAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc, void *& pdu, un
   }
 }
 
-unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, unsigned long bufLen)
+unsigned int DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, unsigned int bufLen)
 {
   PRIVATE_ASSOCIATIONKEY *assoc = (PRIVATE_ASSOCIATIONKEY *)dulassoc;
   if (assoc && assoc->connection)
@@ -270,7 +270,7 @@ unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, un
   return 0;
 }
 
-unsigned long DUL_getPeerCertificateLength(DUL_ASSOCIATIONKEY *dulassoc)
+unsigned int DUL_getPeerCertificateLength(DUL_ASSOCIATIONKEY *dulassoc)
 {
   PRIVATE_ASSOCIATIONKEY *assoc = (PRIVATE_ASSOCIATIONKEY *)dulassoc;
   if (assoc && assoc->connection)
@@ -311,7 +311,7 @@ unsigned long DUL_getPeerCertificateLength(DUL_ASSOCIATIONKEY *dulassoc)
 
 OFCondition
 DUL_InitializeNetwork(const char *mode,
-                      void *networkParameter, int timeout, unsigned long opt,
+                      void *networkParameter, int timeout, unsigned int opt,
                       DUL_NETWORKKEY ** networkKey)
 {
     // default return value if something goes wrong
@@ -1245,7 +1245,7 @@ DUL_NextPDV(DUL_ASSOCIATIONKEY ** callerAssociation, DUL_PDV * pdv)
         ** association;
     unsigned char
        *p;
-    unsigned long
+    unsigned int
         pdvLength;
 
     /* assign the association to local variable */
@@ -1900,7 +1900,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 */
 static OFCondition
 createNetworkKey(const char *mode,
-                 int timeout, unsigned long opt, PRIVATE_NETWORKKEY ** key)
+                 int timeout, unsigned int opt, PRIVATE_NETWORKKEY ** key)
 {
     if (strcmp(mode, AE_REQUESTOR) != 0 &&
         strcmp(mode, AE_ACCEPTOR) != 0 &&
@@ -2083,7 +2083,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 */
 static OFCondition
 createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
-                     const char *remoteNode, unsigned long maxPDU,
+                     const char *remoteNode, unsigned int maxPDU,
                      PRIVATE_ASSOCIATIONKEY ** associationKey)
 {
     PRIVATE_ASSOCIATIONKEY *key;
@@ -2877,7 +2877,7 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 **
 ** Revision 1.2  1996/04/25 16:11:18  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
-** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
+** of DIC_UL with unsigned int (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due
 ** to MIPS/Ultrix).
 **

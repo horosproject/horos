@@ -65,7 +65,7 @@ public:
   /** returns the number of colors in the color table
    *  @return number of colors in color table
    */
-  inline unsigned long getColors() const
+  inline unsigned int getColors() const
   {
     return numColors;
   }
@@ -85,13 +85,13 @@ public:
    *    this maximum.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  OFCondition computeHistogram(DicomImage& image, unsigned long maxcolors);
+  OFCondition computeHistogram(DicomImage& image, unsigned int maxcolors);
 
   /** after a call to computeHistogram(), this method
    *  returns the maximum pixel value to which all color samples
    *  were down-sampled during computation of the histogram.
    */
-  inline unsigned long getMaxVal() const
+  inline unsigned int getMaxVal() const
   {
     return maxval;
   }
@@ -100,7 +100,7 @@ public:
    *  @param idx index, must be < getColors()
    *  @return const reference to color
    */
-  inline const DcmQuantPixel& getPixel(unsigned long idx) const
+  inline const DcmQuantPixel& getPixel(unsigned int idx) const
   {
 #ifdef DEBUG
     assert(array && idx < numColors);
@@ -112,7 +112,7 @@ public:
    *  @param idx index, must be < getColors()
    *  @return red color component
    */
-  inline DcmQuantComponent getRed(unsigned long idx) const
+  inline DcmQuantComponent getRed(unsigned int idx) const
   {
 #ifdef DEBUG
     assert(array && idx < numColors);
@@ -124,7 +124,7 @@ public:
    *  @param idx index, must be < getColors()
    *  @return green color component
    */
-  inline DcmQuantComponent getGreen(unsigned long idx) const
+  inline DcmQuantComponent getGreen(unsigned int idx) const
   {
 #ifdef DEBUG
     assert(array && idx < numColors);
@@ -136,7 +136,7 @@ public:
    *  @param idx index, must be < getColors()
    *  @return blue color component
    */
-  inline DcmQuantComponent getBlue(unsigned long idx) const
+  inline DcmQuantComponent getBlue(unsigned int idx) const
   {
 #ifdef DEBUG
     assert(array && idx < numColors);
@@ -161,9 +161,9 @@ public:
    */
   OFCondition medianCut(
     DcmQuantColorTable& histogram,
-    unsigned long sum,
-    unsigned long theMaxval,
-    unsigned long numberOfColors,
+    unsigned int sum,
+    unsigned int theMaxval,
+    unsigned int numberOfColors,
     DcmLargestDimensionType largeType,
     DcmRepresentativeColorType repType);
 
@@ -180,7 +180,7 @@ public:
     register int g1 = OFstatic_cast(int, px.getGreen());
     register int b1 = OFstatic_cast(int, px.getBlue());
     register long dist = 2000000000;
-    for (unsigned long i = 0; i < numColors; ++i)
+    for (unsigned int i = 0; i < numColors; ++i)
     {
         r2 = r1 - OFstatic_cast(int, array[i]->getRed());
         g2 = g1 - OFstatic_cast(int, array[i]->getGreen());
@@ -231,12 +231,12 @@ private:
   DcmQuantHistogramItemPointer *array;
 
   /// number of entries in color table
-  unsigned long numColors;
+  unsigned int numColors;
 
   /** maximum pixel value to which all color samples
    *  were down-sampled during computation of the histogram.
    */
-  unsigned long maxval;
+  unsigned int maxval;
 
 };
 

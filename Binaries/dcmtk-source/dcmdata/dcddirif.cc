@@ -290,7 +290,7 @@ static OFString &constructTagName(DcmObject *object,
 // contruct tag name from given object and sequence
 static OFString &constructTagNameWithSQ(DcmObject *object,
                                         DcmSequenceOfItems *fromSequence,
-                                        const unsigned long itemNumber,
+                                        const unsigned int itemNumber,
                                         OFString &tagName)
 {
     OFString tempStr;
@@ -316,8 +316,8 @@ static OFString &constructTagNameWithSQ(DcmObject *object,
 
 
 // construct text message of two differing numerical values
-static OFString &constructDifferentNumbersText(const unsigned long number1,
-                                               const unsigned long number2,
+static OFString &constructDifferentNumbersText(const unsigned int number1,
+                                               const unsigned int number2,
                                                OFString &textValue)
 {
     textValue.clear();
@@ -335,7 +335,7 @@ static OFString &constructDifferentNumbersText(const unsigned long number1,
 static OFBool compareAttributes(DcmElement *elem1,
                                 DcmElement *elem2,
                                 DcmSequenceOfItems *fromSequence,
-                                unsigned long itemNumber,
+                                unsigned int itemNumber,
                                 OFString &reason)
 {
     reason.clear();
@@ -353,8 +353,8 @@ static OFBool compareAttributes(DcmElement *elem1,
                 /* are the VRs the same? */
                 if (vr1.getEVR() == vr2.getEVR())
                 {
-                    const unsigned long length1 = elem1->getLength();
-                    const unsigned long length2 = elem2->getLength();
+                    const unsigned int length1 = elem1->getLength();
+                    const unsigned int length2 = elem2->getLength();
                     /* are the lengths the same? */
                     if (length1 == length2)
                     {
@@ -407,7 +407,7 @@ static OFBool compareAttributes(DcmElement *elem1,
 static OFBool compareItems(DcmItem *item1,
                            DcmItem *item2,
                            DcmSequenceOfItems *fromSequence,
-                           const unsigned long itemNumber,
+                           const unsigned int itemNumber,
                            OFString &reason)
 {
     reason.clear();
@@ -415,12 +415,12 @@ static OFBool compareItems(DcmItem *item1,
     /* check whether items are valid */
     if ((item1 != NULL) && (item2 != NULL))
     {
-        const unsigned long card1 = item1->card();
-        const unsigned long card2 = item2->card();
+        const unsigned int card1 = item1->card();
+        const unsigned int card2 = item2->card();
         /* check whether number of attributes is identical */
         if (card1 == card2)
         {
-            unsigned long i = 0;
+            unsigned int i = 0;
             OFBool first = OFTrue;
             DcmStack stack1, stack2;
             /* check whether attributes are equal */
@@ -456,12 +456,12 @@ static OFBool compareSQAttributes(DcmSequenceOfItems *seq1,
             /* check whether tags are equal */
             if (seq1->getTag().getXTag() == seq2->getTag().getXTag())
             {
-                const unsigned long card1 = seq1->card();
-                const unsigned long card2 = seq2->card();
+                const unsigned int card1 = seq1->card();
+                const unsigned int card2 = seq2->card();
                 /* check whether number of items is identical */
                 if (card1 == card2)
                 {
-                    unsigned long i = 0;
+                    unsigned int i = 0;
                     OFBool first = OFTrue;
                     DcmStack stack1, stack2;
                     /* check whether items are equal */
@@ -1898,7 +1898,7 @@ OFCondition DicomDirInterface::checkUltrasoundAttributes(DcmItem *dataset,
     {
         /* check for US region calibration module (SC and CC profiles) */
         OFBool ok = OFTrue;
-        unsigned long i = 0;
+        unsigned int i = 0;
         /* iterate over all sequence items */
         DcmItem *ditem = NULL;
         while (ok && dataset->findAndGetSequenceItem(DCM_SequenceOfUltrasoundRegions, ditem, i).good())
@@ -3352,7 +3352,7 @@ DcmDirectoryRecord *DicomDirInterface::buildHangingProtocolRecord(DcmItem *datas
 // create icon image from PGM file
 OFBool DicomDirInterface::getIconFromFile(const OFString &filename,
                                           Uint8 *pixel,
-                                          const unsigned long count,
+                                          const unsigned int count,
                                           const unsigned int width,
                                           const unsigned int height)
 {
@@ -3382,7 +3382,7 @@ OFBool DicomDirInterface::getIconFromFile(const OFString &filename,
                         /* get maximum gray value */
                         if ((fgets(line, maxline, file) != NULL) && (sscanf(line, "%u", &pgmMax) > 0) && (pgmMax == 255))
                         {
-                            const unsigned long pgmSize = pgmWidth * pgmHeight;
+                            const unsigned int pgmSize = pgmWidth * pgmHeight;
                             Uint8 *pgmData = new Uint8[pgmSize];
                             if (pgmData != NULL)
                             {
@@ -3429,7 +3429,7 @@ OFBool DicomDirInterface::getIconFromFile(const OFString &filename,
 // create icon image from DICOM dataset
 OFBool DicomDirInterface::getIconFromDataset(DcmItem *dataset,
                                              Uint8 *pixel,
-                                             const unsigned long count,
+                                             const unsigned int count,
                                              const unsigned int width,
                                              const unsigned int height)
 {
@@ -3469,7 +3469,7 @@ OFBool DicomDirInterface::getIconFromDataset(DcmItem *dataset,
                     if (dpix->getEncapsulatedRepresentation(xfer, param, pixSeq).good() && (pixSeq != NULL))
                     {
                         /* check whether each frame is stored in a separate pixel item */
-                        if (pixSeq->card() == OFstatic_cast(unsigned long, fCount + 1))
+                        if (pixSeq->card() == OFstatic_cast(unsigned int, fCount + 1))
                         {
                             DcmPixelItem *pixItem = NULL;
                             long i;
@@ -3497,7 +3497,7 @@ OFBool DicomDirInterface::getIconFromDataset(DcmItem *dataset,
             }
         }
         /* scale image (if required) and retrieve pixel data from dataset */
-        result = ImagePlugin->scaleImage(dataset, pixel, count, OFstatic_cast(unsigned long, frame), width, height);
+        result = ImagePlugin->scaleImage(dataset, pixel, count, OFstatic_cast(unsigned int, frame), width, height);
     }
     return result;
 }
@@ -3520,7 +3520,7 @@ OFCondition DicomDirInterface::addIconImage(DcmDirectoryRecord *record,
         {
             const unsigned int width = size;
             const unsigned int height = size;
-            const unsigned long count = width * height;
+            const unsigned int count = width * height;
             /* Image Pixel Module */
             ditem->putAndInsertUint16(DCM_SamplesPerPixel, 1);
             ditem->putAndInsertString(DCM_PhotometricInterpretation, "MONOCHROME2");
@@ -4752,7 +4752,7 @@ OFBool DicomDirInterface::compareSequenceAttributes(DcmItem *dataset,
 // set the specified default value (number or prefix and number) to the given tag
 void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
                                         const DcmTagKey &key,
-                                        const unsigned long number,
+                                        const unsigned int number,
                                         const char *prefix)
 {
     if (record != NULL)

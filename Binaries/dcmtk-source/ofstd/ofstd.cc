@@ -606,7 +606,7 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
             if (convertNonASCII && (charValue > 127))
             {
                 char buffer[16];
-                sprintf(buffer, "%lu", OFstatic_cast(unsigned long, charValue));
+                sprintf(buffer, "%lu", OFstatic_cast(unsigned int, charValue));
                 /* convert > #127 to Unicode (ISO Latin-1), what is about < #32 ? */
                 markupString += "&#";
                 markupString += buffer;
@@ -1089,7 +1089,7 @@ public:
   /** constructor
    *  @param theSize desired size of string buffer, in bytes
    */
-  FTOAStringBuffer(unsigned long theSize)
+  FTOAStringBuffer(unsigned int theSize)
   : buf_(NULL)
   , offset_(0)
   , size_(theSize)
@@ -1123,10 +1123,10 @@ private:
   char *buf_;
 
   /// current offset within buffer
-  unsigned long offset_;
+  unsigned int offset_;
 
   /// size of buffer
-  unsigned long size_;
+  unsigned int size_;
 
   /// private undefined copy constructor
   FTOAStringBuffer(const FTOAStringBuffer &old);
@@ -1613,7 +1613,7 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
   return sleep(seconds);
 #elif defined(HAVE_USLEEP)
   // usleep() expects microseconds
-  (void) usleep(((unsigned long)seconds)*1000000UL);
+  (void) usleep(((unsigned int)seconds)*1000000UL);
   return 0;
 #else
   // don't know how to sleep

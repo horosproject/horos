@@ -287,7 +287,7 @@ class DiOverlayPlane
      *
      ** @return number of frames
      */
-    inline unsigned long getNumberOfFrames() const
+    inline unsigned int getNumberOfFrames() const
     {
         return NumberOfFrames;
     }
@@ -380,7 +380,7 @@ class DiOverlayPlane
      *
      ** @return pointer to pixel data if successful, NULL otherwise
      */
-    void *getData(const unsigned long frame,
+    void *getData(const unsigned int frame,
                   const Uint16 xmin,
                   const Uint16 ymin,
                   const Uint16 xmax,
@@ -401,10 +401,10 @@ class DiOverlayPlane
      *
      ** @return number of bytes allocated for the 'buffer' if successful, 0 otherwise
      */
-    unsigned long create6xxx3000Data(Uint8 *&buffer,
+    unsigned int create6xxx3000Data(Uint8 *&buffer,
                                      unsigned int &width,
                                      unsigned int &height,
-                                     unsigned long &frames);
+                                     unsigned int &frames);
 
     /** reset internal 'cursor' to the beginning of the specified frame
      *
@@ -412,7 +412,7 @@ class DiOverlayPlane
      *
      ** @return status, true if successful, false otherwise
      */
-    inline int reset(const unsigned long frame);
+    inline int reset(const unsigned int frame);
 
     /** get value of the current overlay plane bit and move 'cursor' to the next position
      *
@@ -482,9 +482,9 @@ class DiOverlayPlane
  private:
 
     /// current bit position
-    unsigned long BitPos;
+    unsigned int BitPos;
     /// starting bit position of current frame
-    unsigned long StartBitPos;
+    unsigned int StartBitPos;
 
     /// x-coordinate of first pixel in surrounding memory buffer
     unsigned int StartLeft;
@@ -511,15 +511,15 @@ class DiOverlayPlane
 /********************************************************************/
 
 
-inline int DiOverlayPlane::reset(const unsigned long frame)
+inline int DiOverlayPlane::reset(const unsigned int frame)
 {
     int result = 0;
     if (Valid && (Data != NULL) && (frame >= ImageFrameOrigin) && (frame < ImageFrameOrigin + NumberOfFrames))
     {
-        const unsigned long bits = (OFstatic_cast(unsigned long, StartLeft) + OFstatic_cast(unsigned long, StartTop) *
-            OFstatic_cast(unsigned long, Columns) + frame * OFstatic_cast(unsigned long, Rows) *
-            OFstatic_cast(unsigned long, Columns)) * OFstatic_cast(unsigned long, BitsAllocated);
-        StartBitPos = BitPos = OFstatic_cast(unsigned long, BitPosition) + bits;
+        const unsigned int bits = (OFstatic_cast(unsigned int, StartLeft) + OFstatic_cast(unsigned int, StartTop) *
+            OFstatic_cast(unsigned int, Columns) + frame * OFstatic_cast(unsigned int, Rows) *
+            OFstatic_cast(unsigned int, Columns)) * OFstatic_cast(unsigned int, BitsAllocated);
+        StartBitPos = BitPos = OFstatic_cast(unsigned int, BitPosition) + bits;
         StartPtr = Ptr = Data + (bits >> 4);
         result = (getRight() > 0) && (getBottom() > 0);
     }
@@ -546,11 +546,11 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
                                      const Uint16 y)
 {
     if (BitsAllocated == 16)
-        Ptr = StartPtr + OFstatic_cast(unsigned long, y - Top) * OFstatic_cast(unsigned long, Columns) +
-            OFstatic_cast(unsigned long, x - Left);
+        Ptr = StartPtr + OFstatic_cast(unsigned int, y - Top) * OFstatic_cast(unsigned int, Columns) +
+            OFstatic_cast(unsigned int, x - Left);
     else
-        BitPos = StartBitPos + (OFstatic_cast(unsigned long, y - Top) * OFstatic_cast(unsigned long, Columns) +
-            OFstatic_cast(unsigned long, x - Left)) * OFstatic_cast(unsigned long, BitsAllocated);
+        BitPos = StartBitPos + (OFstatic_cast(unsigned int, y - Top) * OFstatic_cast(unsigned int, Columns) +
+            OFstatic_cast(unsigned int, x - Left)) * OFstatic_cast(unsigned int, BitsAllocated);
 }
 
 

@@ -104,7 +104,7 @@ class DiMonoInputPixelTemplate
      ** @return status, true if successful (LUT has been created), false otherwise
      */
     inline int initOptimizationLUT(T3 *&lut,
-                                   const unsigned long ocnt)
+                                   const unsigned int ocnt)
     {
         int result = 0;
         if ((sizeof(T1) <= 2) && (this->InputCount > 3 * ocnt))                     // optimization criteria
@@ -160,9 +160,9 @@ class DiMonoInputPixelTemplate
                     const T3 lastvalue = OFstatic_cast(T3, mlut->getLastValue());
                     register const T1 *p = pixel + input->getPixelStart();
                     register T3 *q = this->Data;
-                    register unsigned long i;
+                    register unsigned int i;
                     T3 *lut = NULL;
-                    const unsigned long ocnt = OFstatic_cast(unsigned long, input->getAbsMaxRange());  // number of LUT entries
+                    const unsigned int ocnt = OFstatic_cast(unsigned int, input->getAbsMaxRange());  // number of LUT entries
                     if (initOptimizationLUT(lut, ocnt))
                     {                                                                     // use LUT for optimization
                         const T2 absmin = OFstatic_cast(T2, input->getAbsMinimum());
@@ -224,7 +224,7 @@ class DiMonoInputPixelTemplate
             if (this->Data != NULL)
             {
                 register T3 *q = this->Data;
-                register unsigned long i;
+                register unsigned int i;
                 if ((slope == 1.0) && (intercept == 0.0))
                 {
                     if (!useInputBuffer)
@@ -243,7 +243,7 @@ class DiMonoInputPixelTemplate
 #endif
                     T3 *lut = NULL;
                     register const T1 *p = pixel + input->getPixelStart();
-                    const unsigned long ocnt = OFstatic_cast(unsigned long, input->getAbsMaxRange());  // number of LUT entries
+                    const unsigned int ocnt = OFstatic_cast(unsigned int, input->getAbsMaxRange());  // number of LUT entries
                     if (initOptimizationLUT(lut, ocnt))
                     {                                                                     // use LUT for optimization
                         const double absmin = input->getAbsMinimum();

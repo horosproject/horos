@@ -127,7 +127,7 @@ class DVConfiguration
    *    identifiers returned by getTargetID().
    *  @return entry if present and parsable in the config file, 0 otherwise.
    */
-  unsigned long getTargetMaxPDU(const char *targetID);
+  unsigned int getTargetMaxPDU(const char *targetID);
 
   /** returns the TIMEOUT entry for the communication partner with the given
    *  target ID from the configuration file.
@@ -662,7 +662,7 @@ class DVConfiguration
    *  from the section GENERAL/QUERY_RETRIEVE in the config file.
    *  @return entry if present and parsable in the config file, 0 otherwise.
    */
-  unsigned long getQueryRetrieveMaxPDU();
+  unsigned int getQueryRetrieveMaxPDU();
 
   /** returns the TIMEOUT entry for the the Q/R server
    *  from the section GENERAL/QUERY_RETRIEVE in the config file.
@@ -674,7 +674,7 @@ class DVConfiguration
    *  from the section GENERAL/QUERY_RETRIEVE in the config file.
    *  @return entry if present and parsable in the config file, 0 otherwise.
    */
-  unsigned long getQueryRetrieveMaxAssociations();
+  unsigned int getQueryRetrieveMaxAssociations();
 
   /** returns the database folder to be used for sending/receiving/browsing.
    *  Value is taken from the section GENERAL/DATABASE/DIRECTORY
@@ -754,7 +754,7 @@ class DVConfiguration
    *  as configured in section GENERAL/PRINT/SLEEP in the config file.
    *  @return sleep delay, 0 if absent.
    */
-  unsigned long getSpoolerSleep();
+  unsigned int getSpoolerSleep();
 
   /** returns the DELETEPRINTJOBS entry for the print spooler
    *  from the section GENERAL/PRINT in the config file.

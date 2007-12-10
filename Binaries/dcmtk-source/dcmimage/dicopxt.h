@@ -222,23 +222,23 @@ class DiColorPixelTemplate
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    unsigned long createDIB(void *&data,
-                            const unsigned long size,
+    unsigned int createDIB(void *&data,
+                            const unsigned int size,
                             const Uint16 width,
                             const Uint16 height,
-                            const unsigned long frame,
+                            const unsigned int frame,
                             const int fromBits,
                             const int toBits,
                             const int mode,
                             const int upsideDown,
                             const int padding) const
     {
-        unsigned long bytes = 0;
+        unsigned int bytes = 0;
         if ((Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL) && (toBits <= 8))
         {
-            const unsigned long count = OFstatic_cast(unsigned long, width) * OFstatic_cast(unsigned long, height);
-            const unsigned long start = count * frame + ((upsideDown) ?
-                OFstatic_cast(unsigned long, height - 1) * OFstatic_cast(unsigned long, width) : 0);
+            const unsigned int count = OFstatic_cast(unsigned int, width) * OFstatic_cast(unsigned int, height);
+            const unsigned int start = count * frame + ((upsideDown) ?
+                OFstatic_cast(unsigned int, height - 1) * OFstatic_cast(unsigned int, width) : 0);
             const signed long nextRow = (upsideDown) ? -2 * OFstatic_cast(signed long, width) : 0;
             register const T *r = Data[0] + start;
             register const T *g = Data[1] + start;
@@ -247,10 +247,10 @@ class DiColorPixelTemplate
             register Uint16 y;
             if (mode == 24)     // 24 bits per pixel
             {
-                const unsigned long wid3 = OFstatic_cast(unsigned long, width) * 3;
+                const unsigned int wid3 = OFstatic_cast(unsigned int, width) * 3;
                 // each line has to start at 32-bit-address, if 'padding' is true
                 const int gap = (padding) ? OFstatic_cast(int, (4 - wid3 & 0x3) & 0x3) : 0;
-                unsigned long fsize = (wid3 + gap) * OFstatic_cast(unsigned long, height);
+                unsigned int fsize = (wid3 + gap) * OFstatic_cast(unsigned int, height);
                 if ((data == NULL) || (size >= fsize))
                 {
                     if (data == NULL)
@@ -332,7 +332,7 @@ class DiColorPixelTemplate
             }
             else if (mode == 32)     // 32 bits per pixel
             {
-                const unsigned long fsize = count * 4;
+                const unsigned int fsize = count * 4;
                 if ((data == NULL) || (size >= fsize))
                 {
                     if (data == NULL)
@@ -423,27 +423,27 @@ class DiColorPixelTemplate
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    unsigned long createAWTBitmap(void *&data,
+    unsigned int createAWTBitmap(void *&data,
                                   const Uint16 width,
                                   const Uint16 height,
-                                  const unsigned long frame,
+                                  const unsigned int frame,
                                   const int fromBits,
                                   const int toBits) const
     {
         data = NULL;
-        unsigned long bytes = 0;
+        unsigned int bytes = 0;
         if ((Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL) && (toBits <= 8))
         {
-            const unsigned long count = OFstatic_cast(unsigned long, width) * OFstatic_cast(unsigned long, height);
+            const unsigned int count = OFstatic_cast(unsigned int, width) * OFstatic_cast(unsigned int, height);
             data = new Uint32[count];
             if (data != NULL)
             {
-                const unsigned long start = count * frame;
+                const unsigned int start = count * frame;
                 register const T *r = Data[0] + start;
                 register const T *g = Data[1] + start;
                 register const T *b = Data[2] + start;
                 register Uint32 *q = OFstatic_cast(Uint32 *, data);
-                register unsigned long i;
+                register unsigned int i;
                 if (fromBits == toBits)
                 {
                     /* copy pixel data as is */
@@ -507,7 +507,7 @@ class DiColorPixelTemplate
      *  @param  count  number of pixels
      */
     DiColorPixelTemplate(const DiColorPixel *pixel,
-                         const unsigned long count)
+                         const unsigned int count)
       : DiColorPixel(pixel, count)
     {
         Data[0] = NULL;

@@ -82,7 +82,7 @@ DcmEVR DcmOtherByteOtherWord::ident() const
 }
 
 
-unsigned long DcmOtherByteOtherWord::getVM()
+unsigned int DcmOtherByteOtherWord::getVM()
 {
     /* value multiplicity for OB/OW is defined as 1 */
     return 1;
@@ -120,12 +120,12 @@ void DcmOtherByteOtherWord::print(ostream &out,
         {
             /* determine number of values to be printed */
             const unsigned int vrSize = (evr == EVR_OW || evr == EVR_lt) ? 4 : 2;
-            const unsigned long count = (evr == EVR_OW || evr == EVR_lt) ? (Length / 2) : Length;
-            unsigned long expectedLength = count * (vrSize + 1) - 1;
-            const unsigned long printCount =
+            const unsigned int count = (evr == EVR_OW || evr == EVR_lt) ? (Length / 2) : Length;
+            unsigned int expectedLength = count * (vrSize + 1) - 1;
+            const unsigned int printCount =
                 ((expectedLength > DCM_OptPrintLineLength) && (flags & DCMTypes::PF_shortenLongTagValues)) ?
                 (DCM_OptPrintLineLength - 3 /* for "..." */ + 1 /* for last "\" */) / (vrSize + 1) : count;
-            unsigned long printedLength = printCount * (vrSize + 1) - 1;
+            unsigned int printedLength = printCount * (vrSize + 1) - 1;
             /* print line start with tag and VR */
             printInfoLineStart(out, flags, level);
             /* print multiple values */
@@ -136,12 +136,12 @@ void DcmOtherByteOtherWord::print(ostream &out,
                 {
                     /* print word values in hex mode */
                     out << setw(vrSize) << (*(wordValues++));
-                    for (unsigned long i = 1; i < printCount; i++)
+                    for (unsigned int i = 1; i < printCount; i++)
                         out << "\\" << setw(vrSize) << (*(wordValues++));
                 } else {
                     /* print byte values in hex mode */
                     out << setw(vrSize) << OFstatic_cast(int, *(byteValues++));
-                    for (unsigned long i = 1; i < printCount; i++)
+                    for (unsigned int i = 1; i < printCount; i++)
                         out << "\\" << setw(vrSize) << OFstatic_cast(int, *(byteValues++));
                 }
                 /* reset i/o manipulators */
@@ -255,7 +255,7 @@ void DcmOtherByteOtherWord::postLoadValue()
 
 
 OFCondition DcmOtherByteOtherWord::putUint8Array(const Uint8 *byteValue,
-                                                 const unsigned long numBytes)
+                                                 const unsigned int numBytes)
 {
     errorFlag = EC_Normal;
     if (numBytes > 0)
@@ -274,7 +274,7 @@ OFCondition DcmOtherByteOtherWord::putUint8Array(const Uint8 *byteValue,
 
 
 OFCondition DcmOtherByteOtherWord::putUint16Array(const Uint16 *wordValue,
-                                                  const unsigned long numWords)
+                                                  const unsigned int numWords)
 {
     errorFlag = EC_Normal;
     if (numWords > 0)
@@ -300,7 +300,7 @@ OFCondition DcmOtherByteOtherWord::putString(const char *stringVal)
     /* check input string */
     if ((stringVal != NULL) && (strlen(stringVal) > 0))
     {
-        unsigned long vm = getVMFromString(stringVal);
+        unsigned int vm = getVMFromString(stringVal);
         if (vm > 0)
         {
             const DcmEVR evr = Tag.getEVR();
@@ -315,7 +315,7 @@ OFCondition DcmOtherByteOtherWord::putString(const char *stringVal)
             Uint16 intVal = 0;
             char *value;
             /* retrieve binary data from hexa-decimal string */
-            for (unsigned long i = 0; (i < vm) && errorFlag.good(); i++)
+            for (unsigned int i = 0; (i < vm) && errorFlag.good(); i++)
             {
                 /* get first value stored in 's', set 's' to beginning of the next value */
                 value = getFirstValueFromString(s);
@@ -355,7 +355,7 @@ OFCondition DcmOtherByteOtherWord::putString(const char *stringVal)
 
 
 OFCondition DcmOtherByteOtherWord::getUint8(Uint8 &byteVal,
-                                            const unsigned long pos)
+                                            const unsigned int pos)
 {
     /* get 8 bit data */
     Uint8 *uintValues = NULL;
@@ -392,7 +392,7 @@ OFCondition DcmOtherByteOtherWord::getUint8Array(Uint8 *&byteVals)
 
 
 OFCondition DcmOtherByteOtherWord::getUint16(Uint16 &wordVal,
-                                             const unsigned long pos)
+                                             const unsigned int pos)
 {
     Uint16 *uintValues = NULL;
     errorFlag = getUint16Array(uintValues);
@@ -428,7 +428,7 @@ OFCondition DcmOtherByteOtherWord::getUint16Array(Uint16 *&wordVals)
 
 
 OFCondition DcmOtherByteOtherWord::getOFString(OFString &stringVal,
-                                               const unsigned long pos,
+                                               const unsigned int pos,
                                                OFBool /*normalize*/)
 {
     if (Tag.getEVR() == EVR_OW || Tag.getEVR() == EVR_lt)
@@ -767,9 +767,9 @@ OFCondition DcmOtherByteOtherWord::writeXML(ostream &out,
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

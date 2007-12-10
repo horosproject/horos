@@ -141,8 +141,8 @@ class DiInputPixelTemplate
                          const Uint16 alloc,
                          const Uint16 stored,
                          const Uint16 high,
-                         const unsigned long start,
-                         const unsigned long count)
+                         const unsigned int start,
+                         const unsigned int count)
       : DiInputPixel(stored, start, count),
         Data(NULL)
     {
@@ -180,8 +180,8 @@ class DiInputPixelTemplate
         if (Data != NULL)
         {
             register T2 *p = Data;
-            register unsigned long i;
-            const unsigned long ocnt = OFstatic_cast(unsigned long, getAbsMaxRange());
+            register unsigned int i;
+            const unsigned int ocnt = OFstatic_cast(unsigned int, getAbsMaxRange());
             Uint8 *lut = NULL;
             if ((sizeof(T2) <= 2) && (Count > 3 * ocnt))               // optimization criteria
             {
@@ -358,7 +358,7 @@ class DiInputPixelTemplate
         const Uint32 length_Bytes = getPixelData(pixelData, pixel);
         const Uint32 length_T1 = length_Bytes / sizeof(T1);
         Count = ((length_Bytes * 8) + bitsAllocated - 1) / bitsAllocated;
-        register unsigned long i;
+        register unsigned int i;
         Data = new T2[Count];
         if (Data != NULL)
         {

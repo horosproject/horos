@@ -215,7 +215,7 @@ OFBool DVPSReferencedImage::appliesToAllFrames()
 void DVPSReferencedImage::updateCache()
 {
   Sint32 val=0;
-  unsigned long i;
+  unsigned int i;
   if (frameCache==NULL)
   {
     frameCacheEntries = (Uint32) referencedFrameNumber.getVM();
@@ -233,11 +233,11 @@ void DVPSReferencedImage::updateCache()
   }
 }
 
-OFBool DVPSReferencedImage::appliesToFrame(unsigned long frame)
+OFBool DVPSReferencedImage::appliesToFrame(unsigned int frame)
 {
   if (referencedFrameNumber.getLength()==0) return OFTrue;
   Sint32 val=0;
-  unsigned long i;
+  unsigned int i;
   updateCache();
   if (frameCache)
   {
@@ -248,22 +248,22 @@ OFBool DVPSReferencedImage::appliesToFrame(unsigned long frame)
   return OFTrue; // referencedFrameNumber seems to contain garbage.
 }
 
-OFBool DVPSReferencedImage::appliesOnlyToFrame(unsigned long frame)
+OFBool DVPSReferencedImage::appliesOnlyToFrame(unsigned int frame)
 {
   Sint32 val=0;
   if (referencedFrameNumber.getVM() == 1)
   {
     if (EC_Normal == referencedFrameNumber.getSint32(val, 0))
     {
-      if (frame == (unsigned long)val) return OFTrue;
+      if (frame == (unsigned int)val) return OFTrue;
     }
   }
   return OFFalse;
 }
 
-void DVPSReferencedImage::removeFrameReference(unsigned long frame, unsigned long numberOfFrames)
+void DVPSReferencedImage::removeFrameReference(unsigned int frame, unsigned int numberOfFrames)
 {
-  unsigned long i;
+  unsigned int i;
   char str[20];
   OFString aString;
   

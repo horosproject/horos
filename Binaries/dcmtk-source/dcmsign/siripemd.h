@@ -65,7 +65,7 @@ public:
    *  @param length number of bytes in raw data array
    *  @return status code
    */
-  virtual OFCondition digest(const unsigned char *data, unsigned long length);
+  virtual OFCondition digest(const unsigned char *data, unsigned int length);
   
   /** finalizes the MAC and writes it to the given output array,
    *  which must be at least getSize() bytes large.
@@ -79,7 +79,7 @@ public:
   /** returns the size of a MAC in bytes.
    *  @return block size for this MAC algorithm
    */
-  virtual unsigned long getSize() const;
+  virtual unsigned int getSize() const;
 
   /** returns the type of MAC algorithm computed by this object
    *  @return type of MAC algorithm

@@ -148,13 +148,13 @@ int OFThread::start()
 #ifdef HAVE_POINTER_TYPE_PTHREAD_T
   if (0 == result) theThread = tid; else theThread = 0;
 #else
-  if (0 == result) theThread = OFstatic_cast(unsigned long, tid); else theThread = 0;
+  if (0 == result) theThread = OFstatic_cast(unsigned int, tid); else theThread = 0;
 #endif
   return result;
 #elif defined(SOLARIS_INTERFACE)
   thread_t tid=0;
   int result = thr_create(NULL, 0, thread_stub, OFstatic_cast(void *, this), 0, &tid);
-  if (0 == result) theThread = OFstatic_cast(unsigned long, tid); else theThread = 0;
+  if (0 == result) theThread = OFstatic_cast(unsigned int, tid); else theThread = 0;
   return result;
 #else
   return -1;
@@ -177,10 +177,10 @@ int OFThread::join()
 #endif
 }
 
-unsigned long OFThread::threadID()
+unsigned int OFThread::threadID()
 {
 #ifdef HAVE_POINTER_TYPE_PTHREAD_T
-  // dangerous - we cast a pointer type to unsigned long and hope that it
+  // dangerous - we cast a pointer type to unsigned int and hope that it
   // remains valid after casting back to a pointer type.
   return OFreinterpret_cast(unsigned long, theThread);
 #else
@@ -189,16 +189,16 @@ unsigned long OFThread::threadID()
 }
 
 #if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
-OFBool OFThread::equal(unsigned long tID)
+OFBool OFThread::equal(unsigned int tID)
 #else
-OFBool OFThread::equal(unsigned long /* tID */ )
+OFBool OFThread::equal(unsigned int /* tID */ )
 #endif
 {
 #ifdef WINDOWS_INTERFACE
   if (theThread == tID) return OFTrue; else return OFFalse;
 #elif defined(POSIX_INTERFACE)
 #ifdef HAVE_POINTER_TYPE_PTHREAD_T
-  // dangerous - we cast an unsigned long back to a pointer type and hope that it is still valid
+  // dangerous - we cast an unsigned int back to a pointer type and hope that it is still valid
   if (pthread_equal(OFstatic_cast(pthread_t, theThread), OFreinterpret_cast(pthread_t, tID))) return OFTrue; else return OFFalse;
 #else
   if (pthread_equal(OFstatic_cast(pthread_t, theThread), OFstatic_cast(pthread_t, tID))) return OFTrue; else return OFFalse;
@@ -223,18 +223,18 @@ void OFThread::thread_exit()
   return; // will never be reached
 }
 
-unsigned long OFThread::self()
+unsigned int OFThread::self()
 {
 #ifdef WINDOWS_INTERFACE
-  return OFstatic_cast(unsigned long, GetCurrentThreadId());
+  return OFstatic_cast(unsigned int, GetCurrentThreadId());
 #elif defined(POSIX_INTERFACE)
 #ifdef HAVE_POINTER_TYPE_PTHREAD_T
   return OFreinterpret_cast(unsigned long, pthread_self());
 #else
-  return OFstatic_cast(unsigned long, pthread_self());
+  return OFstatic_cast(unsigned int, pthread_self());
 #endif
 #elif defined(SOLARIS_INTERFACE)
-  return OFstatic_cast(unsigned long, thr_self());
+  return OFstatic_cast(unsigned int, thr_self());
 #else
   return 0;
 #endif

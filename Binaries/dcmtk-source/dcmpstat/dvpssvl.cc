@@ -92,7 +92,7 @@ OFCondition DVPSSoftcopyVOI_PList::read(DcmItem &dset)
     dseq=(DcmSequenceOfItems *)stack.top();
     if (dseq)
     {
-      unsigned long numItems = dseq->card();
+      unsigned int numItems = dseq->card();
       for (unsigned int i=0; i<numItems; i++)
       {
         ditem = dseq->getItem(i);
@@ -141,7 +141,7 @@ OFCondition DVPSSoftcopyVOI_PList::write(DcmItem &dset)
   return result;
 }
 
-DVPSSoftcopyVOI *DVPSSoftcopyVOI_PList::findSoftcopyVOI(const char *instanceUID, unsigned long frame)
+DVPSSoftcopyVOI *DVPSSoftcopyVOI_PList::findSoftcopyVOI(const char *instanceUID, unsigned int frame)
 {
   OFListIterator(DVPSSoftcopyVOI *) first = list_.begin();
   OFListIterator(DVPSSoftcopyVOI *) last = list_.end();
@@ -158,8 +158,8 @@ DVPSSoftcopyVOI *DVPSSoftcopyVOI_PList::createSoftcopyVOI(
     DVPSReferencedSeries_PList& allReferences,
     const char *sopclassUID, 
     const char *instanceUID, 
-    unsigned long frame, 
-    unsigned long numberOfFrames, 
+    unsigned int frame, 
+    unsigned int numberOfFrames, 
     DVPSObjectApplicability applicability)
 {
   
@@ -210,8 +210,8 @@ DVPSSoftcopyVOI *DVPSSoftcopyVOI_PList::createSoftcopyVOI(
 void DVPSSoftcopyVOI_PList::removeSoftcopyVOI(
     DVPSReferencedSeries_PList& allReferences,
     const char *instanceUID, 
-    unsigned long frame, 
-    unsigned long numberOfFrames, 
+    unsigned int frame, 
+    unsigned int numberOfFrames, 
     DVPSObjectApplicability applicability)
 {
   OFListIterator(DVPSSoftcopyVOI *) first = list_.begin();

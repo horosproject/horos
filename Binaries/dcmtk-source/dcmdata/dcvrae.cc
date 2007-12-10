@@ -77,7 +77,7 @@ DcmEVR DcmApplicationEntity::ident() const
 
 
 OFCondition DcmApplicationEntity::getOFString(OFString &stringVal,
-                                              const unsigned long pos,
+                                              const unsigned int pos,
                                               OFBool normalize)
 {
     /* call inherited method */

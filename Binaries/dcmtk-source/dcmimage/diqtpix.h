@@ -86,15 +86,15 @@ public:
     return 0.299 * red + 0.587 * green + 0.114 * blue;
   }
 
-  /** this method computes an unsigned long hash value for the current pixel.
+  /** this method computes an unsigned int hash value for the current pixel.
    *  The hash algorithm is taken from Jef Poskanzer's ppm utility library.
    *  The return value is guaranteed to be < DcmQuantHashSize.
    *  @return hash value for current pixel
    */
-  inline unsigned long hash() const
+  inline unsigned int hash() const
   {
-    return ((OFstatic_cast(unsigned long, red) * 33023UL + OFstatic_cast(unsigned long, green) * 30013UL +
-            OFstatic_cast(unsigned long, blue) * 27011UL) & 0x7fffffffUL) % DcmQuantHashSize;
+    return ((OFstatic_cast(unsigned int, red) * 33023UL + OFstatic_cast(unsigned int, green) * 30013UL +
+            OFstatic_cast(unsigned int, blue) * 27011UL) & 0x7fffffffUL) % DcmQuantHashSize;
   }
 
   /** returns the red component

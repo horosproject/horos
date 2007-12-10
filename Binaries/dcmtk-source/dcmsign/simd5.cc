@@ -57,7 +57,7 @@ SiMD5::~SiMD5()
   delete ctx;
 }
 
-unsigned long SiMD5::getSize() const
+unsigned int SiMD5::getSize() const
 {
   return MD5_DIGEST_LENGTH;
 }
@@ -68,7 +68,7 @@ OFCondition SiMD5::initialize()
   return EC_Normal;
 }
 
-OFCondition SiMD5::digest(const unsigned char *data, unsigned long length)
+OFCondition SiMD5::digest(const unsigned char *data, unsigned int length)
 {
   if (length == 0) return EC_Normal;
   if ((data == NULL)||(ctx == NULL)) return EC_IllegalCall;

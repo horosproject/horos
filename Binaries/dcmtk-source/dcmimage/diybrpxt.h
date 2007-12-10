@@ -66,7 +66,7 @@ class DiYBRPixelTemplate
     DiYBRPixelTemplate(const DiDocument *docu,
                        const DiInputPixel *pixel,
                        EI_Status &status,
-                       const unsigned long planeSize,
+                       const unsigned int planeSize,
                        const int bits,
                        const OFBool rgb)
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
@@ -92,7 +92,7 @@ class DiYBRPixelTemplate
      *  @param  rgb        flag, convert color model to RGB only if true
      */
     void convert(const T1 *pixel,
-                 const unsigned long planeSize,
+                 const unsigned int planeSize,
                  const int bits,
                  const OFBool rgb)
     {
@@ -101,7 +101,7 @@ class DiYBRPixelTemplate
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
-            const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
+            const unsigned int count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
             if (rgb)    /* convert to RGB model */
             {
                 register T2 *r = this->Data[0];
@@ -118,7 +118,7 @@ class DiYBRPixelTemplate
                     const double r_const = 0.7010 * OFstatic_cast(double, maxvalue);
                     const double g_const = 0.5291 * OFstatic_cast(double, maxvalue);
                     const double b_const = 0.8859 * OFstatic_cast(double, maxvalue);
-                    register unsigned long l;
+                    register unsigned int l;
                     for (l = 0; l < 256; ++l)
                     {
                         rcr_tab[l] = OFstatic_cast(Sint16, 1.4020 * OFstatic_cast(double, l) - r_const);
@@ -148,7 +148,7 @@ class DiYBRPixelTemplate
                         register const T1 *y = pixel;
                         register const T1 *cb = y + planeSize;
                         register const T1 *cr = cb + planeSize;
-                        register unsigned long i = count;
+                        register unsigned int i = count;
                         while (i != 0)
                         {
                             /* convert a single frame */
@@ -173,7 +173,7 @@ class DiYBRPixelTemplate
                         register T1 y;
                         register T1 cb;
                         register T1 cr;
-                        register unsigned long i;
+                        register unsigned int i;
                         for (i = count; i != 0; --i)
                         {
                             y  = *(p++);
@@ -200,8 +200,8 @@ class DiYBRPixelTemplate
                             convertValue(*(r++), *(g++), *(b++), removeSign(*(y++), offset), removeSign(*(cb++), offset),
                                 removeSign(*(cr++), offset), maxvalue);
 */
-                        register unsigned long l;
-                        register unsigned long i = count;
+                        register unsigned int l;
+                        register unsigned int i = count;
                         register const T1 *y = pixel;
                         register const T1 *cb = y + planeSize;
                         register const T1 *cr = cb + planeSize;
@@ -225,7 +225,7 @@ class DiYBRPixelTemplate
                         register T2 y;
                         register T2 cb;
                         register T2 cr;
-                        register unsigned long i;
+                        register unsigned int i;
                         for (i = count; i != 0; --i)
                         {
                             y = removeSign(*(p++), offset);
@@ -243,7 +243,7 @@ class DiYBRPixelTemplate
                     register T2 *q;
                     // number of pixels to be skipped (only applicable if 'PixelData' contains more
                     // pixels than expected)
-                    const unsigned long skip = (this->InputCount > this->Count) ? (this->InputCount - this->Count) : 0;
+                    const unsigned int skip = (this->InputCount > this->Count) ? (this->InputCount - this->Count) : 0;
                     for (int j = 0; j < 3; ++j)
                     {
                         q = this->Data[j];
@@ -253,12 +253,12 @@ class DiYBRPixelTemplate
                         p += skip;
                     }
 */
-                    register unsigned long l;
-                    register unsigned long i = 0;
+                    register unsigned int l;
+                    register unsigned int i = 0;
                     while (i < count)
                     {
                         /* store current pixel index */
-                        const unsigned long iStart = i;
+                        const unsigned int iStart = i;
                         for (int j = 0; j < 3; ++j)
                         {
                             /* convert a single plane */
@@ -270,7 +270,7 @@ class DiYBRPixelTemplate
                 else
                 {
                     register int j;
-                    register unsigned long i;
+                    register unsigned int i;
                     for (i = 0; i < count; ++i)                         /* for all pixel ... */
                         for (j = 0; j < 3; ++j)
                             this->Data[j][i] = removeSign(*(p++), offset);    /* ... copy planes */

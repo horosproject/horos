@@ -107,11 +107,11 @@ class DiPalettePixelTemplate
         {
             register const T1 *p = pixel;
             register T2 value = 0;
-            register unsigned long i;
+            register unsigned int i;
             register int j;
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
-            const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
+            const unsigned int count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
             for (i = 0; i < count; ++i)
             {
                 value = OFstatic_cast(T2, *(p++));

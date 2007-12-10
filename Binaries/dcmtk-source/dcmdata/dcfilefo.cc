@@ -781,7 +781,7 @@ OFCondition DcmFileFormat::saveFile(const char *fileName,
 
 
 OFCondition DcmFileFormat::insertItem(DcmItem * /*item*/,
-                                      const unsigned long /*where*/)
+                                      const unsigned int /*where*/)
 {
     ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::insert(DcmItem*,Uin32)" << endl;
     ofConsole.unlockCerr();
@@ -793,7 +793,7 @@ OFCondition DcmFileFormat::insertItem(DcmItem * /*item*/,
 // ********************************
 
 
-DcmItem *DcmFileFormat::remove(const unsigned long /*num*/)
+DcmItem *DcmFileFormat::remove(const unsigned int /*num*/)
 {
     ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::remove(Uint32)" << endl;
     ofConsole.unlockCerr();
@@ -1025,9 +1025,9 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

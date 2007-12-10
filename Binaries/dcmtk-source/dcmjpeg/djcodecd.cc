@@ -286,7 +286,7 @@ OFCondition DJCodecDecoder::decode(
                 }
 
                 // High Bit cannot be larger than precision - 1
-                if ((result.good()) && ((unsigned long)(imageHighBit+1) > (unsigned long)precision))
+                if ((result.good()) && ((unsigned int)(imageHighBit+1) > (unsigned int)precision))
                 {
                   result = ((DcmItem *)dataset)->putAndInsertUint16(DCM_HighBit, precision-1);
                 }
@@ -499,7 +499,7 @@ OFCondition DJCodecDecoder::createPlanarConfigurationByte(
 {
   if (imageFrame == NULL) return EC_IllegalCall;
 
-  unsigned long numPixels = columns * rows;
+  unsigned int numPixels = columns * rows;
   if (numPixels == 0) return EC_IllegalCall;
 
   Uint8 *buf = new Uint8[3*numPixels + 3];
@@ -510,7 +510,7 @@ OFCondition DJCodecDecoder::createPlanarConfigurationByte(
     register Uint8 *r = imageFrame;                 // red plane
     register Uint8 *g = imageFrame + numPixels;     // green plane
     register Uint8 *b = imageFrame + (2*numPixels); // blue plane
-    for (register unsigned long i=numPixels; i; i--)
+    for (register unsigned int i=numPixels; i; i--)
     {
       *r++ = *s++;
       *g++ = *s++;
@@ -528,7 +528,7 @@ OFCondition DJCodecDecoder::createPlanarConfigurationWord(
 {
   if (imageFrame == NULL) return EC_IllegalCall;
 
-  unsigned long numPixels = columns * rows;
+  unsigned int numPixels = columns * rows;
   if (numPixels == 0) return EC_IllegalCall;
 
   Uint16 *buf = new Uint16[3*numPixels + 3];
@@ -539,7 +539,7 @@ OFCondition DJCodecDecoder::createPlanarConfigurationWord(
     register Uint16 *r = imageFrame;                 // red plane
     register Uint16 *g = imageFrame + numPixels;     // green plane
     register Uint16 *b = imageFrame + (2*numPixels); // blue plane
-    for (register unsigned long i=numPixels; i; i--)
+    for (register unsigned int i=numPixels; i; i--)
     {
       *r++ = *s++;
       *g++ = *s++;

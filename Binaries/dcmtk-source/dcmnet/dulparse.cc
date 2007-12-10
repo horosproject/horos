@@ -70,27 +70,27 @@
 
 static OFCondition
 parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
-             unsigned long *itemLength);
+             unsigned int *itemLength);
 static OFCondition
 parsePresentationContext(unsigned char type,
                          PRV_PRESENTATIONCONTEXTITEM * context,
-                         unsigned char *buf, unsigned long *itemLength);
+                         unsigned char *buf, unsigned int *itemLength);
 static OFCondition
 parseUserInfo(DUL_USERINFO * userInfo,
-              unsigned char *buf, unsigned long *itemLength);
+              unsigned char *buf, unsigned int *itemLength);
 static OFCondition
 parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
-            unsigned long *itemLength);
+            unsigned int *itemLength);
 static OFCondition
-    parseDummy(unsigned char *buf, unsigned long *itemLength);
+    parseDummy(unsigned char *buf, unsigned int *itemLength);
 static OFCondition
 parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
-                unsigned long *length);
+                unsigned int *length);
 static void trim_trailing_spaces(char *s);
 
 static OFCondition
 parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
-            unsigned long *length);
+            unsigned int *length);
 
 #ifdef DEBUG
 static OFBool debug = OFFalse;
@@ -118,13 +118,13 @@ static OFBool debug = OFFalse;
 */
 
 OFCondition
-parseAssociate(unsigned char *buf, unsigned long pduLength,
+parseAssociate(unsigned char *buf, unsigned int pduLength,
                PRV_ASSOCIATEPDU * assoc)
 {
     OFCondition cond = EC_Normal;
     unsigned char
         type;
-    unsigned long
+    unsigned int
         itemLength;
     PRV_PRESENTATIONCONTEXTITEM
         * context;
@@ -297,7 +297,7 @@ parseDebug(OFBool /*flag*/)
 
 static OFCondition
 parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
-             unsigned long *itemLength)
+             unsigned int *itemLength)
 {
     subItem->type = *buf++;
     subItem->rsv1 = *buf++;
@@ -341,11 +341,11 @@ parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
 static OFCondition
 parsePresentationContext(unsigned char type,
                   PRV_PRESENTATIONCONTEXTITEM * context, unsigned char *buf,
-                         unsigned long *itemLength)
+                         unsigned int *itemLength)
 {
-    unsigned long
+    unsigned int
         length;
-    unsigned long
+    unsigned int
         presentationLength;
     OFCondition cond = EC_Normal;
     DUL_SUBITEM
@@ -370,7 +370,7 @@ parsePresentationContext(unsigned char type,
     if (debug) {
         DEBUG_DEVICE << "Parsing Presentation Context: ("
             << hex << setfill('0') << setw(2) << (unsigned int)context->type << dec
-            << "), Length: " << (unsigned long)context->length << endl
+            << "), Length: " << (unsigned int)context->length << endl
             << "Presentation Context ID: ";
         DEBUG_DEVICE << hex << setfill('0') << setw(2) << (unsigned int)context->contextID << dec << endl;
     }
@@ -450,10 +450,10 @@ parsePresentationContext(unsigned char type,
 
 static OFCondition
 parseUserInfo(DUL_USERINFO * userInfo,
-              unsigned char *buf, unsigned long *itemLength)
+              unsigned char *buf, unsigned int *itemLength)
 {
     unsigned short userLength;
-    unsigned long length;
+    unsigned int length;
     OFCondition cond = EC_Normal;
     PRV_SCUSCPROLE *role;
     SOPClassExtendedNegotiationSubItem *extNeg = NULL;
@@ -470,7 +470,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
     if (debug) {
         DEBUG_DEVICE << "Parsing user info field ("
             << hex << setfill('0') << setw(2) << (unsigned int)userInfo->type << dec << "), Length: "
-            << (unsigned long)userInfo->length << endl;
+            << (unsigned int)userInfo->length << endl;
     }
 #endif
     while (userLength > 0) {
@@ -574,7 +574,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
 */
 static OFCondition
 parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
-            unsigned long *itemLength)
+            unsigned int *itemLength)
 {
     max->type = *buf++;
     max->rsv1 = *buf++;
@@ -585,7 +585,7 @@ parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
 
 #ifdef DEBUG
     if (debug) {
-            DEBUG_DEVICE << "Maximum PDU Length: " << (unsigned long)max->maxLength << endl;
+            DEBUG_DEVICE << "Maximum PDU Length: " << (unsigned int)max->maxLength << endl;
     }
 #endif
 
@@ -610,7 +610,7 @@ parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
 **      Description of the algorithm (optional) and any other notes.
 */
 static OFCondition
-parseDummy(unsigned char *buf, unsigned long *itemLength)
+parseDummy(unsigned char *buf, unsigned int *itemLength)
 {
     unsigned short
         userLength;
@@ -643,7 +643,7 @@ parseDummy(unsigned char *buf, unsigned long *itemLength)
 */
 static OFCondition
 parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
-                unsigned long *length)
+                unsigned int *length)
 {
     unsigned short
         UIDLength;
@@ -686,7 +686,7 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 
 static OFCondition
 parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
-                unsigned long *length)
+                unsigned int *length)
 {
     unsigned char *bufStart = buf;
     extNeg->itemType = *buf++;

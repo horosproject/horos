@@ -2044,10 +2044,10 @@ DIMSE_isDataSetPresent(T_DIMSE_Message *msg)
     return present;
 }
 
-unsigned long
+unsigned int
 DIMSE_countElements(DcmDataset *obj)
 {
-    unsigned long n = 0;
+    unsigned int n = 0;
 
     n = obj->card();
 
@@ -2129,15 +2129,15 @@ DIMSE_countElements(DcmDataset *obj)
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **
 ** Revision 1.2  1996/04/25 16:11:13  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
-** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
+** of DIC_UL with unsigned int (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due
 ** to MIPS/Ultrix).
 **

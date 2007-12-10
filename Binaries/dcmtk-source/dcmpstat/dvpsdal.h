@@ -99,7 +99,7 @@ public:
    *  @param frame number of the current frame
    *  @return pointer to the displayed area if it exists, NULL otherwise.
    */
-  DVPSDisplayedArea *findDisplayedArea(const char *instanceUID, unsigned long frame);
+  DVPSDisplayedArea *findDisplayedArea(const char *instanceUID, unsigned int frame);
 
   /** finds or creates a displayed area selection SQ item
    *  with an applicability controlled by the applicability, instanceUID and frame
@@ -120,8 +120,8 @@ public:
     DVPSReferencedSeries_PList& allReferences,
     const char *sopclassUID, 
     const char *instanceUID, 
-    unsigned long frame, 
-    unsigned long numberOfFrames, 
+    unsigned int frame, 
+    unsigned int numberOfFrames, 
     DVPSObjectApplicability applicability);
 
   /** sets a new log stream

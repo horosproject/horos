@@ -61,12 +61,12 @@ public:
    */
   DVPresentationState(
     DiDisplayFunction **dispFunction=NULL,
-    unsigned long minPrintBitmapX=0,
-    unsigned long minPrintBitmapY=0,
-    unsigned long maxPrintBitmapX=0,
-    unsigned long maxPrintBitmapY=0,
-    unsigned long maxPreviewImageX=0,
-    unsigned long maxPreviewImageY=0);
+    unsigned int minPrintBitmapX=0,
+    unsigned int minPrintBitmapY=0,
+    unsigned int maxPrintBitmapX=0,
+    unsigned int maxPrintBitmapY=0,
+    unsigned int maxPreviewImageX=0,
+    unsigned int maxPreviewImageY=0);
 
   /// destructor
   virtual ~DVPresentationState();
@@ -876,8 +876,8 @@ public:
     */
     OFCondition getPixelData(
       const void *&pixelData,
-      unsigned long &width,
-      unsigned long &height);
+      unsigned int &width,
+      unsigned int &height);
  
    /** same as method above apart from the fact that the storage area is handled
     *  externally.
@@ -889,7 +889,7 @@ public:
     */
     OFCondition getPixelData(
       void *pixelData,
-      unsigned long size);
+      unsigned int size);
  
     /** returns the SOP Class UID of the currently attached image.
      *  @return SOP class UID of current image, NULL if absent
@@ -909,7 +909,7 @@ public:
      *  @param width upon success, the image width (pixels) is returned in this parameter.
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getImageWidth(unsigned long &width);
+    OFCondition getImageWidth(unsigned int &width);
  
     /** gets the height of the attached image.
      *  The rotation status of the presentation state is not taken
@@ -919,13 +919,13 @@ public:
      *  @param height upon success, the image height (pixels) is returned in this parameter.
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getImageHeight(unsigned long &height);
+    OFCondition getImageHeight(unsigned int &height);
  
     /** gets number of bytes used for the print bitmap.
      *  (depends on width, height and depth)
      *  @return number of bytes used for the print bitmap
      */
-    unsigned long getPrintBitmapSize();
+    unsigned int getPrintBitmapSize();
  
     /** sets the minimum print bitmap width and height.
      *  Smaller images are scaled up by an appropriate integer factor. Both maximum
@@ -934,8 +934,8 @@ public:
      *  @param height minimum height of print bitmap (in pixels)
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition setMinimumPrintBitmapWidthHeight(unsigned long width,
-                                                 unsigned long height);
+    OFCondition setMinimumPrintBitmapWidthHeight(unsigned int width,
+                                                 unsigned int height);
  
     /** sets the maximum print bitmap width and height.
      *  Larger images are scaled down by an appropriate integer factor. Both maximum
@@ -944,8 +944,8 @@ public:
      *  @param height maximum height of print bitmap (in pixels)
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition setMaximumPrintBitmapWidthHeight(unsigned long width,
-                                                 unsigned long height);
+    OFCondition setMaximumPrintBitmapWidthHeight(unsigned int width,
+                                                 unsigned int height);
  
     /** gets width and height of print bitmap.
      *  Bitmap size depends on implicit scaling, a heuristic is used for very small images.
@@ -954,8 +954,8 @@ public:
      *  @param height upon success, the bitmap height (in pixels) is returned in this parameter
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getPrintBitmapWidthHeight(unsigned long &width,
-                                          unsigned long &height);
+    OFCondition getPrintBitmapWidthHeight(unsigned int &width,
+                                          unsigned int &height);
  
     /** gets width of print bitmap.
      *  Bitmap size depends on implicit scaling, a heuristic is used for very small images.
@@ -963,7 +963,7 @@ public:
      *  @param width upon success, the image width (in pixels) is returned in this parameter
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getPrintBitmapWidth(unsigned long &width);
+    OFCondition getPrintBitmapWidth(unsigned int &width);
  
     /** gets height of print bitmap.
      *  bitmap size depends on implicit scaling, a heuristic is used for very small images
@@ -971,7 +971,7 @@ public:
      *  @param height upon success, the image height (in pixels) is returned in this parameter
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getPrintBitmapHeight(unsigned long &height);
+    OFCondition getPrintBitmapHeight(unsigned int &height);
  
     /** gets the presentation pixel aspect ratio for the print bitmap.
      *  Pixel aspect ratio is defined here as the width of a pixel divided
@@ -1001,7 +1001,7 @@ public:
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition getPrintBitmap(void *bitmap,
-                               unsigned long size,
+                               unsigned int size,
                                OFBool inversePLUT = OFFalse);
  
     /** creates a new preview image based on the current image and pstate.
@@ -1017,8 +1017,8 @@ public:
      *  @param clipMode specifies whether to clip the preview image to the displayed area (not implemented!)
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition createPreviewImage(unsigned long maxWidth,
-                                   unsigned long maxHeight,
+    OFCondition createPreviewImage(unsigned int maxWidth,
+                                   unsigned int maxHeight,
                                    OFBool clipMode = OFFalse);
  
     /** deletes and disables the current preview image.
@@ -1029,27 +1029,27 @@ public:
      *  (depends on width and height)
      *  @return number of bytes used for the preview image bitmap
      */
-    unsigned long getPreviewImageSize();
+    unsigned int getPreviewImageSize();
  
     /** gets current width and height of the preview image.
      *  @param width upon success, the image width (in pixels) is returned in this parameter
      *  @param height upon success, the image height (in pixels) is returned in this parameter
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getPreviewImageWidthHeight(unsigned long &width,
-                                           unsigned long &height);
+    OFCondition getPreviewImageWidthHeight(unsigned int &width,
+                                           unsigned int &height);
  
     /** gets current width of the preview image.
      *  @param width upon success, the image width (in pixels) is returned in this parameter
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getPreviewImageWidth(unsigned long &width);
+    OFCondition getPreviewImageWidth(unsigned int &width);
  
     /** gets current height of the preview image.
      *  @param height upon success, the image height (in pixels) is returned in this parameter
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getPreviewImageHeight(unsigned long &height);
+    OFCondition getPreviewImageHeight(unsigned int &height);
  
     /** writes the bitmap data of the preview image into the given buffer.
      *  The storage area must be allocated and deleted from the calling method.
@@ -1058,7 +1058,7 @@ public:
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition getPreviewImageBitmap(void *bitmap,
-                                      unsigned long size);
+                                      unsigned int size);
  
     /** gets smallest and biggest possible pixel value in the attached image.
      *  These values are defined as the smallest and biggest number that
@@ -1090,7 +1090,7 @@ public:
      *  @param frames upon success, the number of frames is returned in this parameter.
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getImageNumberOfFrames(unsigned long &frames);
+    OFCondition getImageNumberOfFrames(unsigned int &frames);
  
     /** selects one frame of a multiframe image. This affects the image bitmap
      *  that is rendered, the overlay bitmaps and the visibility of graphic and text objects.
@@ -1099,12 +1099,12 @@ public:
      *  @param frame frame number in the range [1..getImageNumberOfFrames()]
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition selectImageFrameNumber(unsigned long frame);
+    OFCondition selectImageFrameNumber(unsigned int frame);
  
    /** gets the index of the currently selected frame in a multi-frame image.
     *  @return index of the currently selected frame, 0 if an error occurred
     */
-    unsigned long getSelectedImageFrameNumber();
+    unsigned int getSelectedImageFrameNumber();
  
     /** gets the currently selected display transform.
      *  Display transform will only be performed if switched on _and_
@@ -1222,16 +1222,16 @@ private:
    DicomImage *previewImage;
    /** contains the width of the attached image without consideration of rotation.
     */
-   unsigned long currentImageWidth;
+   unsigned int currentImageWidth;
    /** contains the height of the attached image without consideration of rotation.
     */
-   unsigned long currentImageHeight;
+   unsigned int currentImageHeight;
    /** contains the width of the attached image after pixel data have been rendered (w/o clipping).
     */
-   unsigned long renderedImageWidth;
+   unsigned int renderedImageWidth;
    /** contains the height of the attached image after pixel data have been rendered (w/o clipping).
     */
-   unsigned long renderedImageHeight;
+   unsigned int renderedImageHeight;
    /** contains the top hand corner of the attached image after pixel data have been rendered.
     */
    signed long renderedImageTop;
@@ -1255,7 +1255,7 @@ private:
    /** contains the current selected frame number of the attached image.
     *  Frame numbers are counted from 1 (like in DICOM, unlike dcmimgle).
     */
-   unsigned long currentImageSelectedFrame;
+   unsigned int currentImageSelectedFrame;
    /** a flag describing whether the presentation state is owner of
     *  the DICOM dataset in currentImageDataset/currentImageFileformat.
     *  If the presentation state is owner, it will delete the dataset
@@ -1315,27 +1315,27 @@ private:
  
    /** minimum width of print bitmap (used for implicit scaling)
     */
-   unsigned long minimumPrintBitmapWidth;
+   unsigned int minimumPrintBitmapWidth;
  
    /** minimum height of print bitmap (used for implicit scaling)
     */
-   unsigned long minimumPrintBitmapHeight;
+   unsigned int minimumPrintBitmapHeight;
  
    /** maximum width of print bitmap (used for implicit scaling)
     */
-   unsigned long maximumPrintBitmapWidth;
+   unsigned int maximumPrintBitmapWidth;
  
    /** maximum height of print bitmap (used for implicit scaling)
     */
-   unsigned long maximumPrintBitmapHeight;
+   unsigned int maximumPrintBitmapHeight;
  
    /** maximum width of (optional) preview image
     */
-   unsigned long maximumPreviewImageWidth;
+   unsigned int maximumPreviewImageWidth;
  
    /** maximum height of (optional) preview image
     */
-   unsigned long maximumPreviewImageHeight;
+   unsigned int maximumPreviewImageHeight;
  
 };
 

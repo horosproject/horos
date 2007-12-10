@@ -144,9 +144,9 @@ struct WlmSuperiorSequenceInfoType
   /// pointer to sequence element
   DcmTagKey sequenceTag;
   /// number of items within this sequence element
-  unsigned long numOfItems;
+  unsigned int numOfItems;
   /// currently processed item
-  unsigned long currentItem;
+  unsigned int currentItem;
 };
 
 

@@ -1081,7 +1081,7 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
       lo = new DcmLongString( *((DcmLongString*)elem) );
       if( lo->getLength() > vr.getMaxValueLength() && logStream != NULL )
       {
-        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", (unsigned long)(vr.getMaxValueLength()), vr.getVRName() );
+        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", (unsigned int)(vr.getMaxValueLength()), vr.getVRName() );
         logStream->lockCout();
         logStream->getCout() << msg << endl;
         logStream->unlockCout();
@@ -1098,7 +1098,7 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
       at = new DcmAttributeTag( *((DcmAttributeTag*)elem) );
       if( at->getLength() > vr.getMaxValueLength() )
       {
-        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", (unsigned long)(vr.getMaxValueLength()), vr.getVRName() );
+        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", (unsigned int)(vr.getMaxValueLength()), vr.getVRName() );
         logStream->lockCout();
         logStream->getCout() << msg << endl;
         logStream->unlockCout();

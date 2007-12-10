@@ -111,7 +111,7 @@ public:
    *  @param frame the frame reference
    *  @param numberOfFrames the number of frames of the image reference
    */
-  void removeFrameReference(const char *sopinstanceuid, unsigned long frame, unsigned long numberOfFrames);
+  void removeFrameReference(const char *sopinstanceuid, unsigned int frame, unsigned int numberOfFrames);
   
   /** checks if an image reference with the given SOP instance UID exists
    *  in this ReferencedImageSequence and deletes it.
@@ -147,7 +147,7 @@ public:
   OFCondition addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
-    unsigned long frame,
+    unsigned int frame,
     DVPSObjectApplicability applicability);
 
   /** removes a reference to an image or frame. If the current reference is empty ("global"), an
@@ -165,8 +165,8 @@ public:
   void removeImageReference(
     DVPSReferencedSeries_PList& allReferences,
     const char *instanceUID,
-    unsigned long frame, 
-    unsigned long numberOfFrames, 
+    unsigned int frame, 
+    unsigned int numberOfFrames, 
     DVPSObjectApplicability applicability);
     
   /** gets the number of image references in this list.
@@ -193,7 +193,7 @@ public:
    *  @param frame number of the current frame
    *  @return OFTrue if applicable.
    */
-  OFBool isApplicable(const char *instanceUID, unsigned long frame);
+  OFBool isApplicable(const char *instanceUID, unsigned int frame);
 
   /** checks if the object containing this list of image references 
    *  matches exactly the applicability
@@ -202,7 +202,7 @@ public:
    *  @param frame number of the current frame
    *  @return OFTrue if matching.
    */
-  OFBool matchesApplicability(const char *instanceUID, unsigned long frame, DVPSObjectApplicability applicability);
+  OFBool matchesApplicability(const char *instanceUID, unsigned int frame, DVPSObjectApplicability applicability);
 
   /** sets a new log stream
    *  @param stream new log stream, NULL for default logstream

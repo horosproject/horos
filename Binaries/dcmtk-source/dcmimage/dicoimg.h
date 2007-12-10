@@ -92,7 +92,7 @@ class DiColorImage
      *
      ** @return number of bytes if successful, 0 otherwise
      */
-    virtual unsigned long getOutputDataSize(const int bits = 0) const;
+    virtual unsigned int getOutputDataSize(const int bits = 0) const;
 
     /** get pixel data with specified format.
      *  (memory is handled internally)
@@ -106,7 +106,7 @@ class DiColorImage
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
-    const void *getOutputData(const unsigned long frame,
+    const void *getOutputData(const unsigned int frame,
                               const int bits,
                               const int planar = 0);
 
@@ -125,8 +125,8 @@ class DiColorImage
      ** @return status, true if successful, false otherwise
      */
     int getOutputData(void *buffer,
-                      const unsigned long size,
-                      const unsigned long frame,
+                      const unsigned int size,
+                      const unsigned int frame,
                       const int bits,
                       const int planar = 0);
 
@@ -151,8 +151,8 @@ class DiColorImage
      *
      ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
-    DiImage *createImage(const unsigned long fstart,
-                         const unsigned long fcount) const;
+    DiImage *createImage(const unsigned int fstart,
+                         const unsigned int fcount) const;
 
     /** create scaled copy of specified (clipping) area of the current image object.
      *
@@ -174,10 +174,10 @@ class DiColorImage
      */
     DiImage *createScale(const signed long left_pos,
                          const signed long top_pos,
-                         const unsigned long src_cols,
-                         const unsigned long src_rows,
-                         const unsigned long dest_cols,
-                         const unsigned long dest_rows,
+                         const unsigned int src_cols,
+                         const unsigned int src_rows,
+                         const unsigned int dest_cols,
+                         const unsigned int dest_rows,
                          const int interpolate,
                          const int aspect,
                          const Uint16 pvalue) const;
@@ -264,9 +264,9 @@ class DiColorImage
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    unsigned long createDIB(void *&data,
-                            const unsigned long size,
-                            const unsigned long frame,
+    unsigned int createDIB(void *&data,
+                            const unsigned int size,
+                            const unsigned int frame,
                             const int bits,
                             const int upsideDown,
                             const int padding = 1);
@@ -280,8 +280,8 @@ class DiColorImage
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    unsigned long createAWTBitmap(void *&data,
-                                  const unsigned long frame,
+    unsigned int createAWTBitmap(void *&data,
+                                  const unsigned int frame,
                                   const int bits);
 
     /** write current image and related attributes to DICOM dataset.
@@ -304,7 +304,7 @@ class DiColorImage
      ** @return true if successful, false otherwise
      */
     int writePPM(ostream &stream,
-                 const unsigned long frame,
+                 const unsigned int frame,
                  const int bits);
 
     /** write pixel data to PPM file.
@@ -317,7 +317,7 @@ class DiColorImage
      ** @return true if successful, false otherwise
      */
     int writePPM(FILE *stream,
-                 const unsigned long frame,
+                 const unsigned int frame,
                  const int bits);
 
     /** write pixel data to raw PPM file
@@ -329,7 +329,7 @@ class DiColorImage
      ** @return true if successful, false otherwise
      */
     int writeRawPPM(FILE *stream,
-                    const unsigned long frame,
+                    const unsigned int frame,
                     const int bits);
 
     /** write pixel data to BMP file
@@ -341,7 +341,7 @@ class DiColorImage
      ** @return true if successful, false otherwise
      */
     int writeBMP(FILE *stream,
-                 const unsigned long frame,
+                 const unsigned int frame,
                  const int bits);
 
 
@@ -354,8 +354,8 @@ class DiColorImage
      *  @param  fcount  number of frames
      */
     DiColorImage(const DiColorImage *image,
-                 const unsigned long fstart,
-                 const unsigned long fcount);
+                 const unsigned int fstart,
+                 const unsigned int fcount);
 
     /** constructor, scale/clip
      *
@@ -419,8 +419,8 @@ class DiColorImage
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
     const void *getData(void *buffer,
-                        const unsigned long size,
-                        const unsigned long frame,
+                        const unsigned int size,
+                        const unsigned int frame,
                         const int bits,
                         const int planar);
 

@@ -68,8 +68,8 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
                              const DcmTagKey &data,
                              const DcmTagKey &explanation,
                              const OFBool ignoreDepth,
-                             const unsigned long pos,
-                             unsigned long *card)
+                             const unsigned int pos,
+                             unsigned int *card)
   : DiBaseLUT(),
     OriginalBitsAllocated(16),
     OriginalData(NULL)
@@ -77,7 +77,7 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
     if (docu != NULL)
     {
         DcmSequenceOfItems *seq = NULL;
-        const unsigned long count = docu->getSequence(sequence, seq);
+        const unsigned int count = docu->getSequence(sequence, seq);
         /* store number of items in the option return variable */
         if (card != NULL)
             *card = count;
@@ -116,7 +116,7 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
             FirstEntry = OFstatic_cast(Uint16, first);
         }
         DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &descriptor), us, 2);           // bits per entry (only informational)
-        unsigned long count = DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &data), Data);
+        unsigned int count = DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &data), Data);
         OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));                             // store pointer to original data
         if (explanation != NULL)
             DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, explanation), Explanation); // explanation (free form text)
@@ -178,7 +178,7 @@ void DiLookupTable::Init(const DiDocument *docu,
         Count = (us == 0) ? MAX_TABLE_ENTRY_COUNT : us;                      // see DICOM supplement 5: "0" => 65536
         docu->getValue(descriptor, FirstEntry, 1, obj);                      // can be SS or US (will be type casted later)
         docu->getValue(descriptor, us, 2, obj);                              // bits per entry (only informational)
-        unsigned long count = docu->getValue(data, Data, obj);
+        unsigned int count = docu->getValue(data, Data, obj);
         OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));  // store pointer to original data
         if (explanation != DcmTagKey(0, 0))
             docu->getValue(explanation, Explanation, 0 /*vm pos*/, obj);     // explanation (free form text)
@@ -203,14 +203,14 @@ void DiLookupTable::Init(const DiDocument *docu,
 }
 
 
-void DiLookupTable::checkTable(unsigned long count,
+void DiLookupTable::checkTable(unsigned int count,
                                Uint16 bits,
                                const OFBool ignoreDepth,
                                EI_Status *status)
 {
     if (count > 0)                                                            // valid LUT
     {
-        register unsigned long i;
+        register unsigned int i;
         if (count > MAX_TABLE_ENTRY_COUNT)                                    // cut LUT length to maximum
             count = MAX_TABLE_ENTRY_COUNT;
         if (count != Count)                                                   // length of LUT differs from number of LUT entries
@@ -465,7 +465,7 @@ int DiLookupTable::mirrorTable(const int flag)
                         register Uint8 *p = OFstatic_cast(Uint8 *, OriginalData) + (Count - 1);
                         register Uint8 *q = OFstatic_cast(Uint8 *, OriginalData);
                         register Uint8 val;
-                        const unsigned long mid = Count / 2;
+                        const unsigned int mid = Count / 2;
                         for (i = mid; i != 0; --i)
                         {
                             val = *q;
@@ -478,7 +478,7 @@ int DiLookupTable::mirrorTable(const int flag)
                     register Uint16 *p = OFstatic_cast(Uint16 *, OriginalData) + (Count - 1);
                     register Uint16 *q = OFstatic_cast(Uint16 *, OriginalData);
                     register Uint16 val;
-                    const unsigned long mid = Count / 2;
+                    const unsigned int mid = Count / 2;
                     for (i = mid; i != 0; --i)
                     {
                         val = *q;
@@ -496,7 +496,7 @@ int DiLookupTable::mirrorTable(const int flag)
                 register Uint16 *p = DataBuffer + (Count - 1);
                 register Uint16 *q = DataBuffer;
                 register Uint16 val;
-                const unsigned long mid = Count / 2;
+                const unsigned int mid = Count / 2;
                 for (i = mid; i != 0; --i)
                 {
                     val = *q;
@@ -513,7 +513,7 @@ int DiLookupTable::mirrorTable(const int flag)
                     register Uint16 *p = OFconst_cast(Uint16 *, Data) + (Count - 1);
                     register Uint16 *q = DataBuffer;
                     register Uint16 val;
-                    const unsigned long mid = Count / 2;
+                    const unsigned int mid = Count / 2;
                     for (i = mid; i != 0; --i)
                     {
                         val = *q;

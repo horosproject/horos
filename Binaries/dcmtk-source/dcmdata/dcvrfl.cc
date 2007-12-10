@@ -80,7 +80,7 @@ DcmEVR DcmFloatingPointSingle::ident() const
 }
 
 
-unsigned long DcmFloatingPointSingle::getVM()
+unsigned int DcmFloatingPointSingle::getVM()
 {
     return Length / sizeof(Float32);
 }
@@ -102,11 +102,11 @@ void DcmFloatingPointSingle::print(ostream &out,
         errorFlag = getFloat32Array(floatVals);
         if (floatVals != NULL)
         {
-            const unsigned long count = Length / sizeof(Float32) /* do not use getVM()! */;
-            const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
-                DCM_OptPrintLineLength : OFstatic_cast(unsigned long, -1);
-            unsigned long printedLength = 0;
-            unsigned long newLength = 0;
+            const unsigned int count = Length / sizeof(Float32) /* do not use getVM()! */;
+            const unsigned int maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
+                DCM_OptPrintLineLength : OFstatic_cast(unsigned int, -1);
+            unsigned int printedLength = 0;
+            unsigned int newLength = 0;
             char buffer[64];
             /* print line start with tag and VR */
             printInfoLineStart(out, flags, level);
@@ -150,7 +150,7 @@ void DcmFloatingPointSingle::print(ostream &out,
 
 
 OFCondition DcmFloatingPointSingle::getFloat32(Float32 &floatVal,
-                                               const unsigned long pos)
+                                               const unsigned int pos)
 {
     /* get float data */
     Float32 *floatValues = NULL;
@@ -183,7 +183,7 @@ OFCondition DcmFloatingPointSingle::getFloat32Array(Float32 *&floatVals)
 
 
 OFCondition DcmFloatingPointSingle::getOFString(OFString &value,
-                                                const unsigned long pos,
+                                                const unsigned int pos,
                                                 OFBool /*normalize*/)
 {
     Float32 floatVal;
@@ -205,7 +205,7 @@ OFCondition DcmFloatingPointSingle::getOFString(OFString &value,
 
 
 OFCondition DcmFloatingPointSingle::putFloat32(const Float32 floatVal,
-                                               const unsigned long pos)
+                                               const unsigned int pos)
 {
     Float32 val = floatVal;
     errorFlag = changeValue(&val, sizeof(Float32) * pos, sizeof(Float32));
@@ -214,7 +214,7 @@ OFCondition DcmFloatingPointSingle::putFloat32(const Float32 floatVal,
 
 
 OFCondition DcmFloatingPointSingle::putFloat32Array(const Float32 *floatVals,
-                                                    const unsigned long numFloats)
+                                                    const unsigned int numFloats)
 {
     errorFlag = EC_Normal;
     if (numFloats > 0)
@@ -240,7 +240,7 @@ OFCondition DcmFloatingPointSingle::putString(const char *stringVal)
     /* check input string */
     if ((stringVal != NULL) && (strlen(stringVal) > 0))
     {
-        const unsigned long vm = getVMFromString(stringVal);
+        const unsigned int vm = getVMFromString(stringVal);
         if (vm > 0)
         {
             Float32 *field = new Float32[vm];
@@ -248,7 +248,7 @@ OFCondition DcmFloatingPointSingle::putString(const char *stringVal)
             const char *s = stringVal;
             char *value;
             /* retrieve float data from character string */
-            for (unsigned long i = 0; (i < vm) && errorFlag.good(); i++)
+            for (unsigned int i = 0; (i < vm) && errorFlag.good(); i++)
             {
                 /* get first value stored in 's', set 's' to beginning of the next value */
                 value = getFirstValueFromString(s);
@@ -378,9 +378,9 @@ OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

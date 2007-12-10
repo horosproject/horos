@@ -90,7 +90,7 @@ OFCondition DVPSImageBoxContent_PList::read(DcmItem &dset, DVPSPresentationLUT_P
     dseq=(DcmSequenceOfItems *)stack.top();
     if (dseq)
     {
-      unsigned long numItems = dseq->card();
+      unsigned int numItems = dseq->card();
       for (unsigned int i=0; i<numItems; i++)
       {
         ditem = dseq->getItem(i);
@@ -121,7 +121,7 @@ OFCondition DVPSImageBoxContent_PList::write(
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
   OFBool working = OFTrue;
-  unsigned long numWritten = 0;
+  unsigned int numWritten = 0;
   
   dseq = new DcmSequenceOfItems(DCM_ImageBoxContentSequence);
   if (dseq)
@@ -156,7 +156,7 @@ OFCondition DVPSImageBoxContent_PList::createDefaultValues(OFBool renumber, OFBo
 {
   if (size()==0) return EC_IllegalCall; // can't write if sequence is empty
   OFCondition result = EC_Normal;
-  unsigned long counter = 1;
+  unsigned int counter = 1;
   
   OFListIterator(DVPSImageBoxContent *) first = list_.begin();
   OFListIterator(DVPSImageBoxContent *) last = list_.end();
@@ -468,7 +468,7 @@ const char *DVPSImageBoxContent_PList::haveSinglePresentationLUTUsed(const char 
 
 
 OFBool DVPSImageBoxContent_PList::printSCPCreate(
-  unsigned long numBoxes,
+  unsigned int numBoxes,
   DcmUniqueIdentifier& studyUID, 
   DcmUniqueIdentifier& seriesUID, 
   const char *aetitle)
@@ -476,7 +476,7 @@ OFBool DVPSImageBoxContent_PList::printSCPCreate(
   clear();
   DVPSImageBoxContent *box = NULL;
   char uid[100];
-  for (unsigned long i=0; i<numBoxes; i++)
+  for (unsigned int i=0; i<numBoxes; i++)
   {
     box = new DVPSImageBoxContent();
     if (box)

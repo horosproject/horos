@@ -64,7 +64,7 @@ class DiRGBPixelTemplate
     DiRGBPixelTemplate(const DiDocument *docu,
                        const DiInputPixel *pixel,
                        EI_Status &status,
-                       const unsigned long planeSize,
+                       const unsigned int planeSize,
                        const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
@@ -88,14 +88,14 @@ class DiRGBPixelTemplate
      *  @param  bits       number of bits per sample
      */
     void convert(const T1 *pixel,
-                 const unsigned long planeSize,
+                 const unsigned int planeSize,
                  const int bits)
     {
         if (Init(pixel))
         {
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
-            const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
+            const unsigned int count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             register const T1 *p = pixel;
             if (this->PlanarConfiguration)
@@ -104,7 +104,7 @@ class DiRGBPixelTemplate
                 register T2 *q;
                 // number of pixels to be skipped (only applicable if 'PixelData' contains more
                 // pixels than expected)
-                const unsigned long skip = (this->InputCount > this->Count) ? (this->InputCount - this->Count) : 0;
+                const unsigned int skip = (this->InputCount > this->Count) ? (this->InputCount - this->Count) : 0;
                 for (int j = 0; j < 3; ++j)
                 {
                     q = this->Data[j];
@@ -114,12 +114,12 @@ class DiRGBPixelTemplate
                     p += skip;
                 }
 */
-                register unsigned long l;
-                register unsigned long i = 0;
+                register unsigned int l;
+                register unsigned int i = 0;
                 while (i < count)
                 {
                     /* store current pixel index */
-                    const unsigned long iStart = i;
+                    const unsigned int iStart = i;
                     /* for all planes ... */
                     for (int j = 0; j < 3; ++j)
                     {
@@ -132,7 +132,7 @@ class DiRGBPixelTemplate
             else
             {
                 register int j;
-                register unsigned long i;
+                register unsigned int i;
                 for (i = 0; i < count; ++i)                         /* for all pixel ... */
                     for (j = 0; j < 3; ++j)
                         this->Data[j][i] = removeSign(*(p++), offset);    /* ... copy planes */

@@ -81,13 +81,13 @@ class WlmDataSource
     /// array of matching datasets
     DcmDataset **matchingDatasets;
     /// number of array fields
-    unsigned long numOfMatchingDatasets;
+    unsigned int numOfMatchingDatasets;
     /// potentially specified specific character set (in search mask)
     OFString specificCharacterSet;
     /// information about superior sequence elements; necessary for inserting values into resultDataset
     WlmSuperiorSequenceInfoType *superiorSequenceArray;
     /// number of elements in above array
-    unsigned long numOfSuperiorSequences;
+    unsigned int numOfSuperiorSequences;
 
       /** This function checks if the search mask has a correct format. It returns OFTrue if this
        *  is the case, OFFalse if this is not the case.

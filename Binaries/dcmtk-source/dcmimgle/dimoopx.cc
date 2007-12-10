@@ -42,9 +42,9 @@
  *----------------*/
 
 DiMonoOutputPixel::DiMonoOutputPixel(const DiMonoPixel *pixel,
-                                     const unsigned long size,
-                                     const unsigned long frame,
-                                     const unsigned long max)
+                                     const unsigned int size,
+                                     const unsigned int frame,
+                                     const unsigned int max)
   : Count(0),
     FrameSize(size),
     UsedValues(NULL),
@@ -73,7 +73,7 @@ DiMonoOutputPixel::~DiMonoOutputPixel()
 /**********************************/
 
 
-int DiMonoOutputPixel::isUnused(const unsigned long value)
+int DiMonoOutputPixel::isUnused(const unsigned int value)
 {
     if (UsedValues == NULL)
         determineUsedValues();                  // create on demand

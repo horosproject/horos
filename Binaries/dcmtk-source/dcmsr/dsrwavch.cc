@@ -111,9 +111,9 @@ OFCondition DSRWaveformChannelList::read(DcmItem &dataset,
         clear();
         Uint16 group = 0;
         Uint16 channel = 0;
-        const unsigned long count = delem.getVM();
+        const unsigned int count = delem.getVM();
         /* fill list with values from integer string */
-        unsigned long i = 0;
+        unsigned int i = 0;
         while ((i < count) && result.good())
         {
             result = delem.getUint16(group, i++);
@@ -137,7 +137,7 @@ OFCondition DSRWaveformChannelList::write(DcmItem &dataset,
     DcmUnsignedShort delem(DCM_ReferencedWaveformChannels);
     const OFListConstIterator(DSRWaveformChannelItem) endPos = ItemList.end();
     OFListConstIterator(DSRWaveformChannelItem) iterator = ItemList.begin();
-    unsigned long i = 0;
+    unsigned int i = 0;
     while ((iterator != endPos) && result.good())
     {
         result = delem.putUint16((*iterator).MultiplexGroupNumber, i++);

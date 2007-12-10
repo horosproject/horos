@@ -56,8 +56,8 @@ class DiPixel
      ** @param  count       number of pixels stored in the buffer
      *  @param  inputCount  number of pixels read from 'PixelData' attribute
      */
-    DiPixel(const unsigned long count,
-            const unsigned long inputCount = 0)
+    DiPixel(const unsigned int count,
+            const unsigned int inputCount = 0)
       : Count(count),
         InputCount(inputCount)
     {
@@ -106,7 +106,7 @@ class DiPixel
      *
      ** @return number of pixels
      */
-    inline unsigned long getCount() const
+    inline unsigned int getCount() const
     {
         return Count;
     }
@@ -115,7 +115,7 @@ class DiPixel
      *
      ** @return number pixels read from the input buffer
      */
-    inline unsigned long getInputCount() const
+    inline unsigned int getInputCount() const
     {
         return InputCount;
     }
@@ -124,10 +124,10 @@ class DiPixel
  protected:
 
     /// number of pixels
-    /*const*/ unsigned long Count;
+    /*const*/ unsigned int Count;
 
     /// number of pixels in the input buffer
-    unsigned long InputCount;
+    unsigned int InputCount;
 };
 
 

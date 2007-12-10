@@ -80,8 +80,8 @@ OFBool DicomDirImageImplementation::scaleData(const Uint8 *srcData,
 // get scaled pixel data from DICOM image (monochrome only)
 OFBool DicomDirImageImplementation::scaleImage(DcmItem *dataset,
                                                Uint8 *pixel,
-                                               const unsigned long count,
-                                               const unsigned long frame,
+                                               const unsigned int count,
+                                               const unsigned int frame,
                                                const unsigned int width,
                                                const unsigned int height) const
 {
@@ -105,8 +105,8 @@ OFBool DicomDirImageImplementation::scaleImage(DcmItem *dataset,
             if (image != NULL)
             {
                 /* create icon */
-                DicomImage *scaled = image->createScaledImage(OFstatic_cast(unsigned long, width),
-                                                              OFstatic_cast(unsigned long, height), 1 /*interpolate*/);
+                DicomImage *scaled = image->createScaledImage(OFstatic_cast(unsigned int, width),
+                                                              OFstatic_cast(unsigned int, height), 1 /*interpolate*/);
                 if (scaled != NULL)
                 {
                     /* set VOI window */

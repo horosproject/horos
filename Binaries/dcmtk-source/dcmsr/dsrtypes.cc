@@ -795,7 +795,7 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
     OFString message = tag.getTagName();
     OFString module = (moduleName == NULL) ? "SR document" : moduleName;
     Uint32 lenNum;
-    unsigned long vmNum;
+    unsigned int vmNum;
     OFString vmText;
     /* special case: sequence of items */
     if (delem.getVR() == EVR_SQ)
@@ -1049,8 +1049,8 @@ const char *DSRTypes::numberToString(const size_t number,
 {
     if (stringValue != NULL)
     {
-        /* unsigned long */
-        sprintf(stringValue, "%lu", OFstatic_cast(unsigned long, number));
+        /* unsigned int */
+        sprintf(stringValue, "%lu", OFstatic_cast(unsigned int, number));
     }
     return stringValue;
 }
@@ -1061,8 +1061,8 @@ size_t DSRTypes::stringToNumber(const char *stringValue)
     size_t result = 0;
     if (stringValue != NULL)
     {
-        unsigned long lu_value = 0;
-        /* unsigned long */
+        unsigned int lu_value = 0;
+        /* unsigned int */
         if (sscanf(stringValue, "%lu", &lu_value) == 1)
             result = OFstatic_cast(size_t, lu_value);
     }

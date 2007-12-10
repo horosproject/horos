@@ -144,19 +144,19 @@ public:
   /** returns the number of known ciphersuites.
    *  @return number of known ciphersuites
    */
-  static unsigned long getNumberOfCipherSuites();
+  static unsigned int getNumberOfCipherSuites();
 
   /** returns a ciphersuite name in RFC 2246 (TLS) form
    *  @param idx index, must be < getNumberOfCipherSuites()
    *  @return ciphersuite name
    */
-  static const char *getTLSCipherSuiteName(unsigned long idx);
+  static const char *getTLSCipherSuiteName(unsigned int idx);
 
   /** returns a ciphersuite name in OpenSSL form
    *  @param idx index, must be < getNumberOfCipherSuites()
    *  @return ciphersuite name
    */
-  static const char *getOpenSSLCipherSuiteName(unsigned long idx);
+  static const char *getOpenSSLCipherSuiteName(unsigned int idx);
 
   /** finds the OpenSSL ciphersuite name for a given RFC 2246 ciphersuite name.
    *  @param tlsCipherSuiteName ciphersuite name in RFC 2246 form

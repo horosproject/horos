@@ -101,7 +101,7 @@ public:
    *  @param ignoreEmptyImages if true, an empty image box position does not cause an error.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  OFCondition createDefaultValues(OFBool renumber, unsigned long number, OFBool ignoreEmptyImages);
+  OFCondition createDefaultValues(OFBool renumber, unsigned int number, OFBool ignoreEmptyImages);
   
   /** returns the referencedSOPClassUID from the ReferencedImageSequence
    *  @return referencedSOPClassUID string

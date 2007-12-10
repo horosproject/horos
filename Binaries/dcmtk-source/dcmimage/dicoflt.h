@@ -71,12 +71,12 @@ class DiColorFlipTemplate
                         const Uint32 frames,
                         const int horz,
                         const int vert)
-      : DiColorPixelTemplate<T>(pixel, OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames),
+      : DiColorPixelTemplate<T>(pixel, OFstatic_cast(unsigned int, columns) * OFstatic_cast(unsigned int, rows) * frames),
         DiFlipTemplate<T>(3, columns, rows, frames)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
-            if (pixel->getCount() == OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames)
+            if (pixel->getCount() == OFstatic_cast(unsigned int, columns) * OFstatic_cast(unsigned int, rows) * frames)
                 flip(OFstatic_cast(const T **, OFconst_cast(void *, pixel->getData())), horz, vert);
             else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))

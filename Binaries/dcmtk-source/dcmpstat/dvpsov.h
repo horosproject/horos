@@ -105,7 +105,7 @@ public:
    *  @param y image height in pixels
    *  @return OFTrue if the specified overlay group matches the image size.
    */
-  OFBool isSuitableAsShutter(unsigned long x, unsigned long y);
+  OFBool isSuitableAsShutter(unsigned int x, unsigned int y);
 
   /** gets the overlay label if present.
    *  If the label string is absent, this method returns NULL.

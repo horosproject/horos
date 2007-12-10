@@ -224,11 +224,11 @@ void DcmObject::printInfoLineStart(ostream &out,
 
 void DcmObject::printInfoLineEnd(ostream &out,
                                  const size_t flags,
-                                 const unsigned long printedLength,
+                                 const unsigned int printedLength,
                                  DcmTag *tag)
 {
-    unsigned long vm = 0;
-    unsigned long length = 0;
+    unsigned int vm = 0;
+    unsigned int length = 0;
     /* default: use object's tag, VM and length */
     if (tag == NULL)
     {
@@ -266,7 +266,7 @@ void DcmObject::printInfoLine(ostream &out,
     /* print tag and VR */
     printInfoLineStart(out, flags, level, tag);
     /* check whether info text fits into the limit */
-    unsigned long printedLength = 0;
+    unsigned int printedLength = 0;
     /* check for valid info text */
     if (info != NULL)
     {

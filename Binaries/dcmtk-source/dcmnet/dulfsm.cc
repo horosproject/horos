@@ -231,38 +231,38 @@ static void closeTransport(PRIVATE_ASSOCIATIONKEY ** association);
 static void closeTransportTCP(PRIVATE_ASSOCIATIONKEY ** association);
 static OFCondition
 readPDUHead(PRIVATE_ASSOCIATIONKEY ** association,
-            unsigned char *buffer, unsigned long maxlength,
+            unsigned char *buffer, unsigned int maxlength,
             DUL_BLOCKOPTIONS block, int timeout,
             unsigned char *PDUtype, unsigned char *PDUreserved,
-            unsigned long *PDULength);
+            unsigned int *PDULength);
 static OFCondition
 readPDU(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
         int timeout, unsigned char **buffer,
         unsigned char *pduType, unsigned char *pduReserved,
-        unsigned long *pduLength);
+        unsigned int *pduLength);
 static OFCondition
 readPDUBody(PRIVATE_ASSOCIATIONKEY ** association,
             DUL_BLOCKOPTIONS block, int timeout,
-            unsigned char *buffer, unsigned long maxLength,
+            unsigned char *buffer, unsigned int maxLength,
             unsigned char *pduType, unsigned char *pduReserved,
-            unsigned long *pduLength);
+            unsigned int *pduLength);
 static OFCondition
 readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
-               unsigned char *buffer, unsigned long maxLength,
+               unsigned char *buffer, unsigned int maxLength,
                DUL_BLOCKOPTIONS block, int timeout,
                unsigned char *PDUtype, unsigned char *PDUreserved,
-               unsigned long *PDULength);
+               unsigned int *PDULength);
 static OFCondition
 readPDUBodyTCP(PRIVATE_ASSOCIATIONKEY ** association,
                DUL_BLOCKOPTIONS block, int timeout,
-               unsigned char *buffer, unsigned long maxLength,
+               unsigned char *buffer, unsigned int maxLength,
                unsigned char *pduType, unsigned char *pduReserved,
-               unsigned long *pduLength);
+               unsigned int *pduLength);
 static OFCondition
 defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t timerStart,
-              int timeout, void *b, unsigned long l, unsigned long *rtnLen);
+              int timeout, void *b, unsigned int l, unsigned int *rtnLen);
 
-static void dump_pdu(const char *type, void *buffer, unsigned long length);
+static void dump_pdu(const char *type, void *buffer, unsigned int length);
 
 static void setTCPBufferLength(int sock);
 OFCondition
@@ -650,7 +650,7 @@ static FSM_ENTRY StateTable[DUL_NUMBER_OF_EVENTS][DUL_NUMBER_OF_STATES] = {
 OFCondition
 DUL_InitializeFSM()
 {
-    unsigned long
+    unsigned int
         l_index,
         idx2;
     FSM_ENTRY
@@ -884,7 +884,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
         *buffer=NULL,
         pduType,
         pduReserve;
-    unsigned long
+    unsigned int
         pduLength;
     PRV_ASSOCIATEPDU
         assoc;
@@ -1051,7 +1051,7 @@ AE_4_AssociateConfirmationReject(PRIVATE_NETWORKKEY ** /*network*/,
         buffer[128],
         pduType,
         pduReserve;
-    unsigned long
+    unsigned int
         pduLength;
 
     service = (DUL_ASSOCIATESERVICEPARAMETERS *) params;
@@ -1140,7 +1140,7 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
         *buffer=NULL,
         pduType,
         pduReserve;
-    unsigned long
+    unsigned int
         pduLength;
     PRV_ASSOCIATEPDU
         assoc;
@@ -1366,7 +1366,7 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
     unsigned char
         pduType,
         pduReserved;
-    unsigned long
+    unsigned int
         pduLength,
         pdvLength,
         pdvCount;
@@ -1539,7 +1539,7 @@ AR_2_IndicateRelease(PRIVATE_NETWORKKEY ** /*network*/,
         buffer[128],
         pduType,
         pduReserve;
-    unsigned long
+    unsigned int
         pduLength;
 
     /* Read remaining unimportant bytes of the A-RELEASE-RQ PDU */
@@ -1550,7 +1550,7 @@ AR_2_IndicateRelease(PRIVATE_NETWORKKEY ** /*network*/,
 
     if (pduLength == 4)
     {
-      unsigned long mode = buffer[0] << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3];
+      unsigned int mode = buffer[0] << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3];
       if ((*association)->modeCallback && !((mode & DUL_MAXPDUCOMPAT) ^ DUL_DULCOMPAT))
       {
         (*association)->modeCallback->callback(mode);
@@ -1589,7 +1589,7 @@ AR_3_ConfirmRelease(PRIVATE_NETWORKKEY ** /*network*/,
         buffer[128],
         pduType,
         pduReserve;
-    unsigned long
+    unsigned int
         pduLength;
 
     /* Read remaining unimportant bytes of the A-RELEASE-RSP PDU */
@@ -1752,7 +1752,7 @@ AR_8_IndicateARelease(PRIVATE_NETWORKKEY ** /*network*/,
         buffer[128],
         pduType,
         pduReserve;
-    unsigned long
+    unsigned int
         pduLength;
 
     /* Read remaining unimportant bytes of the A-RELEASE-RQ PDU */
@@ -1953,7 +1953,7 @@ AA_3_IndicatePeerAborted(PRIVATE_NETWORKKEY ** /*network*/,
         buffer[128],
         pduType,
         pduReserve;
-    unsigned long
+    unsigned int
         pduLength;
 
     /* Read remaining unimportant bytes of the A-ABORT PDU */
@@ -1963,7 +1963,7 @@ AA_3_IndicatePeerAborted(PRIVATE_NETWORKKEY ** /*network*/,
 
     if (pduLength == 4)
     {
-      unsigned long mode = pduReserve << 24 | buffer[0] << 16 | buffer[1] << 8 | buffer[3];
+      unsigned int mode = pduReserve << 24 | buffer[0] << 16 | buffer[1] << 8 | buffer[3];
       if ((*association)->modeCallback && !((mode & DUL_MAXPDUCOMPAT) ^ DUL_DULCOMPAT))
       {
         (*association)->modeCallback->callback(mode);
@@ -2067,7 +2067,7 @@ AA_6_IgnorePDU(PRIVATE_NETWORKKEY ** /*network*/,
         PDUReserved;
     long
         PDULength;
-    unsigned long
+    unsigned int
         l;
 
     (*association)->protocolState = nextState;
@@ -2228,7 +2228,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
      * and several Unix variants.
      * Workaround is to explicitly handle the IP address case.
      */
-    unsigned long addr = 0;
+    unsigned int addr = 0;
     if ((int)(addr = inet_addr(node)) != -1) {
         // it is an IP address
         (void) memcpy(&server.sin_addr, &addr, (size_t) sizeof(addr));
@@ -2494,7 +2494,7 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
     unsigned char
         buffer[4096],
        *b;
-    unsigned long
+    unsigned int
         length;
     int
         nbytes;
@@ -2533,7 +2533,7 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
     do {
       nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(associateRequest.length + 6)) : 0;
     } while (nbytes == -1 && errno == EINTR);
-    if ((unsigned long) nbytes != associateRequest.length + 6)
+    if ((unsigned int) nbytes != associateRequest.length + 6)
     {
       char buf1[256];
       sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "sendAssociationRQTCP");
@@ -2571,7 +2571,7 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     unsigned char
         buffer[4096],
        *b;
-    unsigned long length = 0;
+    unsigned int length = 0;
     int nbytes;
     DUL_ASSOCIATESERVICEPARAMETERS localService;
 
@@ -2611,7 +2611,7 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     do {
       nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(associateReply.length + 6)) : 0;
     } while (nbytes == -1 && errno == EINTR);
-    if ((unsigned long) nbytes != associateReply.length + 6)
+    if ((unsigned int) nbytes != associateReply.length + 6)
     {
       char buf1[256];
       sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "ReplyAssociationTCP");
@@ -2652,7 +2652,7 @@ sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
     unsigned char
         buffer[64],
        *b;
-    unsigned long
+    unsigned int
         length;
     int
         nbytes;
@@ -2685,7 +2685,7 @@ sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
         do {
           nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(pdu.length + 6)) : 0;
         } while (nbytes == -1 && errno == EINTR);
-        if ((unsigned long) nbytes != pdu.length + 6)
+        if ((unsigned int) nbytes != pdu.length + 6)
         {
           char buf1[256];
           sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "sendAssociationRJTCP");
@@ -2724,7 +2724,7 @@ sendAbortTCP(DUL_ABORTITEMS * abortItems,
     unsigned char
         buffer[64],
        *b;
-    unsigned long
+    unsigned int
         length;
     int
         nbytes;
@@ -2744,7 +2744,7 @@ sendAbortTCP(DUL_ABORTITEMS * abortItems,
         do {
           nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(pdu.length + 6)) : 0;
         } while (nbytes == -1 && errno == EINTR);
-        if ((unsigned long) nbytes != pdu.length + 6)
+        if ((unsigned int) nbytes != pdu.length + 6)
         {
           char buf1[256];
           sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "sendAbortTCP");
@@ -2783,7 +2783,7 @@ sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association)
     unsigned char
         buffer[64],
        *b;
-    unsigned long
+    unsigned int
         length;
     int
         nbytes;
@@ -2803,7 +2803,7 @@ sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association)
         do {
           nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(pdu.length + 6)) : 0;
         } while (nbytes == -1 && errno == EINTR);
-        if ((unsigned long) nbytes != pdu.length + 6)
+        if ((unsigned int) nbytes != pdu.length + 6)
         {
           char buf1[256];
           sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "sendReleaseRQTCP");
@@ -2843,7 +2843,7 @@ sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association)
     pdu;
     unsigned char buffer[64],
        *b;
-    unsigned long
+    unsigned int
         length;
     int
         nbytes;
@@ -2863,7 +2863,7 @@ sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association)
         do {
           nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(pdu.length + 6)) : 0;
         } while (nbytes == -1 && errno == EINTR);
-        if ((unsigned long) nbytes != pdu.length + 6)
+        if ((unsigned int) nbytes != pdu.length + 6)
         {
           char buf1[256];
           sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "sendReleaseRPTCP");
@@ -2900,7 +2900,7 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
              DUL_PDVLIST * pdvList)
 {
     DUL_PDV *pdv;
-    unsigned long
+    unsigned int
         count,
         length,
         pdvLength,
@@ -2997,7 +2997,7 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
 {
     unsigned char
         head[24];
-    unsigned long
+    unsigned int
         length;
     int
         nbytes;
@@ -3016,7 +3016,7 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
     } while (nbytes == -1 && errno == EINTR);
 
     /* if not all head information was sent, return an error */
-    if ((unsigned long) nbytes != length)
+    if ((unsigned int) nbytes != length)
     {
         char buf1[256];
         sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "writeDataPDU");
@@ -3031,7 +3031,7 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
     } while (nbytes == -1 && errno == EINTR);
 
         /* if not all head information was sent, return an error */
-    if ((unsigned long) nbytes != pdu->presentationDataValue.length - 2)
+    if ((unsigned int) nbytes != pdu->presentationDataValue.length - 2)
     {
         char buf2[256];
         sprintf(buf2, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "writeDataPDU");
@@ -3200,10 +3200,10 @@ static OFCondition
 readPDU(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
         int timeout, unsigned char **buffer,
         unsigned char *pduType, unsigned char *pduReserved,
-        unsigned long *pduLength)
+        unsigned int *pduLength)
 {
     OFCondition cond = EC_Normal;
-    unsigned long maxLength;
+    unsigned int maxLength;
 
     *buffer = NULL;
     if ((*association)->inputPDU == NO_PDU) {
@@ -3257,10 +3257,10 @@ readPDU(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
 */
 static OFCondition
 readPDUHead(PRIVATE_ASSOCIATIONKEY ** association,
-            unsigned char *buffer, unsigned long maxLength,
+            unsigned char *buffer, unsigned int maxLength,
             DUL_BLOCKOPTIONS block, int timeout,
             unsigned char *PDUType, unsigned char *PDUReserved,
-            unsigned long *PDULength)
+            unsigned int *PDULength)
 {
     /* initialize return value */
     OFCondition cond = EC_Normal;
@@ -3329,9 +3329,9 @@ readPDUHead(PRIVATE_ASSOCIATIONKEY ** association,
 static OFCondition
 readPDUBody(PRIVATE_ASSOCIATIONKEY ** association,
             DUL_BLOCKOPTIONS block, int timeout,
-            unsigned char *buffer, unsigned long maxLength,
+            unsigned char *buffer, unsigned int maxLength,
             unsigned char *pduType, unsigned char *pduReserved,
-            unsigned long *pduLength)
+            unsigned int *pduLength)
 {
     OFCondition cond = EC_Normal;
 
@@ -3376,11 +3376,11 @@ readPDUBody(PRIVATE_ASSOCIATIONKEY ** association,
 
 static OFCondition
 readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
-               unsigned char *buffer, unsigned long maxLength,
+               unsigned char *buffer, unsigned int maxLength,
                DUL_BLOCKOPTIONS block, int timeout,
-     unsigned char *type, unsigned char *reserved, unsigned long *pduLength)
+     unsigned char *type, unsigned char *reserved, unsigned int *pduLength)
 {
-    unsigned long
+    unsigned int
         length;
     static unsigned char
         legalPDUTypes[] = {
@@ -3391,7 +3391,7 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     };
     int
         found;
-    unsigned long
+    unsigned int
         idx;
 
     /* check if the buffer is too small to capture the PDU head we are about to receive */
@@ -3492,12 +3492,12 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
 static OFCondition
 readPDUBodyTCP(PRIVATE_ASSOCIATIONKEY ** association,
                DUL_BLOCKOPTIONS block, int timeout,
-               unsigned char *buffer, unsigned long maxLength,
+               unsigned char *buffer, unsigned int maxLength,
                unsigned char *pduType, unsigned char *pduReserved,
-               unsigned long *pduLength)
+               unsigned int *pduLength)
 {
     OFCondition cond = EC_Normal;
-    unsigned long
+    unsigned int
         length;
 
     /* check if the association does not already contain PDU head information. */
@@ -3571,7 +3571,7 @@ readPDUBodyTCP(PRIVATE_ASSOCIATIONKEY ** association,
 
 static OFCondition
 defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t timerStart,
-              int timeout, void *p, unsigned long l, unsigned long *rtnLen)
+              int timeout, void *p, unsigned int l, unsigned int *rtnLen)
 {
     unsigned char *b;
     int bytesRead;
@@ -3629,9 +3629,9 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
         /* that determines the end of the first loop, and update the reference parameter return variable */
         if (bytesRead > 0) {
             b += bytesRead;
-            l -= (unsigned long) bytesRead;
+            l -= (unsigned int) bytesRead;
             if (rtnLen != NULL)
-                *rtnLen += (unsigned long) bytesRead;
+                *rtnLen += (unsigned int) bytesRead;
         } else {
             /* in case we did not receive any data, an error must have occured; return a corresponding result value */
             return DUL_NETWORKCLOSED;
@@ -3660,7 +3660,7 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
 */
 
 static void
-dump_pdu(const char *type, void *buffer, unsigned long length)
+dump_pdu(const char *type, void *buffer, unsigned int length)
 {
     unsigned char
        *p;
@@ -4185,7 +4185,7 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 **
 ** Revision 1.2  1996/04/25 16:11:20  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
-** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
+** of DIC_UL with unsigned int (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due
 ** to MIPS/Ultrix).
 **

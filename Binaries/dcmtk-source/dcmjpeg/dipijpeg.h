@@ -75,7 +75,7 @@ class DiJPEGPlugin
      */
     virtual int write(DiImage *image,
                       FILE *stream,
-                      const unsigned long frame = 0) const;
+                      const unsigned int frame = 0) const;
 
     /** set quality value for JPEG compression
      *  @param quality quality value (0..100, in percent)

@@ -83,9 +83,9 @@ class DicomImage
      *  @param  fcount    number of frames (optional, 0 = all frames)
      */
     DicomImage(const char *filename,
-               const unsigned long flags = 0,
-               const unsigned long fstart = 0,
-               const unsigned long fcount = 0);
+               const unsigned int flags = 0,
+               const unsigned int fstart = 0,
+               const unsigned int fcount = 0);
 
 #ifndef STARVIEW
     /** constructor, use a given DcmObject
@@ -102,9 +102,9 @@ class DicomImage
      */
     DicomImage(DcmObject *object,
                const E_TransferSyntax xfer,
-               const unsigned long flags = 0,
-               const unsigned long fstart = 0,
-               const unsigned long fcount = 0);
+               const unsigned int flags = 0,
+               const unsigned int fstart = 0,
+               const unsigned int fcount = 0);
 
     /** constructor, use a given DcmObject with specified rescale/slope.
      *  NB: This constructor ignores the Photometric Interpretation stored in the DICOM dataset
@@ -126,9 +126,9 @@ class DicomImage
                const E_TransferSyntax xfer,
                const double slope,
                const double intercept,
-               const unsigned long flags = 0,
-               const unsigned long fstart = 0,
-               const unsigned long fcount = 0);
+               const unsigned int flags = 0,
+               const unsigned int fstart = 0,
+               const unsigned int fcount = 0);
 
     /** constructor, use a given DcmObject with specified modality LUT.
      *  NB: This constructor ignores the Photometric Interpretation stored in the DICOM dataset
@@ -152,9 +152,9 @@ class DicomImage
                const DcmUnsignedShort &data,
                const DcmUnsignedShort &descriptor,
                const DcmLongString *explanation = NULL,
-               const unsigned long flags = 0,
-               const unsigned long fstart = 0,
-               const unsigned long fcount = 0);
+               const unsigned int flags = 0,
+               const unsigned int fstart = 0,
+               const unsigned int fcount = 0);
 #endif
 
     /** destructor
@@ -197,7 +197,7 @@ class DicomImage
      *
      ** @return number of frames
      */
-    inline unsigned long getFrameCount() const
+    inline unsigned int getFrameCount() const
     {
         return (Image != NULL) ?
             Image->getNumberOfFrames() : 0;
@@ -209,7 +209,7 @@ class DicomImage
      *
      ** @return index of first frame (0..n-1)
      */
-    inline unsigned long getFirstFrame() const
+    inline unsigned int getFirstFrame() const
     {
         return (Image != NULL) ?
             Image->getFirstFrame() : 0;
@@ -220,7 +220,7 @@ class DicomImage
      *
      ** @return index of representative frame (0..n-1)
      */
-    inline unsigned long getRepresentativeFrame() const
+    inline unsigned int getRepresentativeFrame() const
     {
         return (Image != NULL) ?
             Image->getRepresentativeFrame() : 0;
@@ -230,7 +230,7 @@ class DicomImage
      *
      ** @return number of pixels in one row
      */
-    inline unsigned long getWidth() const
+    inline unsigned int getWidth() const
     {
         return (Image != NULL) ?
             Image->getColumns() : 0;
@@ -240,7 +240,7 @@ class DicomImage
      *
      ** @return number of pixels in one column
      */
-    inline unsigned long getHeight() const
+    inline unsigned int getHeight() const
     {
         return (Image != NULL) ?
             Image->getRows() : 0;
@@ -327,7 +327,7 @@ class DicomImage
      *
      ** @return status, true if unused (1 = within output range, 2 = out of range), false otherwise
      */
-    inline int isOutputValueUnused(const unsigned long value)
+    inline int isOutputValueUnused(const unsigned int value)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->isValueUnused(value) : 0;
@@ -346,7 +346,7 @@ class DicomImage
      *
      ** @return number of bytes if successful, 0 otherwise
      */
-    inline unsigned long getOutputDataSize(const int bits = 0) const
+    inline unsigned int getOutputDataSize(const int bits = 0) const
     {
         return (Image != NULL) ?
             Image->getOutputDataSize(Image->getBits(bits)) : 0;
@@ -371,7 +371,7 @@ class DicomImage
      *          (if successful, NULL otherwise)
      */
     inline const void *getOutputData(const int bits = 0,
-                                     const unsigned long frame = 0,
+                                     const unsigned int frame = 0,
                                      const int planar = 0)
     {
         return (Image != NULL) ?
@@ -397,9 +397,9 @@ class DicomImage
      ** @return status code (true if successful)
      */
     inline int getOutputData(void *buffer,
-                             const unsigned long size,
+                             const unsigned int size,
                              const int bits = 0,
-                             const unsigned long frame = 0,
+                             const unsigned int frame = 0,
                              const int planar = 0)
     {
         return (Image != NULL) ?
@@ -605,11 +605,11 @@ class DicomImage
      *                             2 = new window is the same as previous one),
      *          false otherwise
      */
-    inline int setRoiWindow(const unsigned long left_pos,
-                            const unsigned long top_pos,
-                            const unsigned long width,
-                            const unsigned long height,
-                            const unsigned long frame = 0)
+    inline int setRoiWindow(const unsigned int left_pos,
+                            const unsigned int top_pos,
+                            const unsigned int width,
+                            const unsigned int height,
+                            const unsigned int frame = 0)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->setRoiWindow(left_pos, top_pos, width, height, frame) : 0;
@@ -623,7 +623,7 @@ class DicomImage
      *
      ** @return true if successful, false otherwise (none monochrome or invalid index)
      */
-    inline int setWindow(const unsigned long window)
+    inline int setWindow(const unsigned int window)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->setWindow(window) : 0;
@@ -665,7 +665,7 @@ class DicomImage
      *
      ** @return number of VOI windows
      */
-    inline unsigned long getWindowCount() const
+    inline unsigned int getWindowCount() const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->getWindowCount() : 0;
@@ -703,7 +703,7 @@ class DicomImage
      *
      ** @return true if successful, false otherwise (none monochrome or invalid index)
      */
-    inline int setVoiLut(const unsigned long table,
+    inline int setVoiLut(const unsigned int table,
                          const OFBool ignoreDepth = OFFalse)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
@@ -714,7 +714,7 @@ class DicomImage
      *
      ** @return number of VOI LUTs
      */
-    inline unsigned long getVoiLutCount() const
+    inline unsigned int getVoiLutCount() const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->getVoiLutCount() : 0;
@@ -737,7 +737,7 @@ class DicomImage
      *
      ** @return pointer to description text (NULL if absent or index invalid)
      */
-    inline const char *getVoiWindowExplanation(const unsigned long window,
+    inline const char *getVoiWindowExplanation(const unsigned int window,
                                                OFString &explanation) const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
@@ -751,7 +751,7 @@ class DicomImage
      *
      ** @return pointer to description text (NULL if absent or index invalid)
      */
-    inline const char *getVoiLutExplanation(const unsigned long table,
+    inline const char *getVoiLutExplanation(const unsigned int table,
                                             OFString &explanation) const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
@@ -1198,7 +1198,7 @@ class DicomImage
                                unsigned int &width,
                                unsigned int &height,
                                EM_Overlay &mode,
-                               const unsigned long frame = 0,
+                               const unsigned int frame = 0,
                                const int bits = 8,
                                const Uint16 fore = 0xff,
                                const Uint16 back = 0x0,
@@ -1231,7 +1231,7 @@ class DicomImage
     const void *getFullOverlayData(const unsigned int plane,
                                    unsigned int &width,
                                    unsigned int &height,
-                                   const unsigned long frame = 0,
+                                   const unsigned int frame = 0,
                                    const int bits = 8,
                                    const Uint16 fore = 0xff,
                                    const Uint16 back = 0x0,
@@ -1266,11 +1266,11 @@ class DicomImage
      *
      ** @return number of bytes allocated for the 'buffer' if successful, 0 otherwise
      */
-    unsigned long create6xxx3000OverlayData(Uint8 *&buffer,
+    unsigned int create6xxx3000OverlayData(Uint8 *&buffer,
                                             const unsigned int plane,
                                             unsigned int &width,
                                             unsigned int &height,
-                                            unsigned long &frames,
+                                            unsigned int &frames,
                                             const unsigned int idx = 0) const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
@@ -1288,8 +1288,8 @@ class DicomImage
      *
      ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
-    DicomImage *createDicomImage(unsigned long fstart = 0,
-                                 unsigned long fcount = 0) const;
+    DicomImage *createDicomImage(unsigned int fstart = 0,
+                                 unsigned int fcount = 0) const;
 
     /** create scaled copy of current image object (given by exact size).
      *  memory is not handled internally - must be deleted from calling program.
@@ -1304,8 +1304,8 @@ class DicomImage
      *
      ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
-    DicomImage *createScaledImage(const unsigned long width,
-                                  const unsigned long height = 0,
+    DicomImage *createScaledImage(const unsigned int width,
+                                  const unsigned int height = 0,
                                   const int interpolate = 0,
                                   int aspect = 0) const;
 
@@ -1349,10 +1349,10 @@ class DicomImage
      */
     DicomImage *createScaledImage(const signed long left_pos,
                                   const signed long top_pos,
-                                  unsigned long clip_width,
-                                  unsigned long clip_height,
-                                  unsigned long scale_width = 0,
-                                  unsigned long scale_height = 0,
+                                  unsigned int clip_width,
+                                  unsigned int clip_height,
+                                  unsigned int scale_width = 0,
+                                  unsigned int scale_height = 0,
                                   const int interpolate = 0,
                                   int aspect = 0,
                                   const Uint16 pvalue = 0) const;
@@ -1379,8 +1379,8 @@ class DicomImage
      */
     DicomImage *createScaledImage(const signed long left_pos,
                                   const signed long top_pos,
-                                  unsigned long width,
-                                  unsigned long height,
+                                  unsigned int width,
+                                  unsigned int height,
                                   const double xfactor,
                                   const double yfactor = 0,
                                   const int interpolate = 0,
@@ -1401,8 +1401,8 @@ class DicomImage
      */
     DicomImage *createClippedImage(const signed long left_pos,
                                    const signed long top_pos,
-                                   unsigned long width = 0,
-                                   unsigned long height = 0,
+                                   unsigned int width = 0,
+                                   unsigned int height = 0,
                                    const Uint16 pvalue = 0) const;
 
     /** flip current image (horizontally and/or vertically)
@@ -1486,9 +1486,9 @@ class DicomImage
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    unsigned long createWindowsDIB(void *&data,
-                                   const unsigned long size,
-                                   const unsigned long frame = 0,
+    unsigned int createWindowsDIB(void *&data,
+                                   const unsigned int size,
+                                   const unsigned int frame = 0,
                                    const int bits = 24,
                                    const int upsideDown = 0,
                                    const int padding = 1)
@@ -1509,8 +1509,8 @@ class DicomImage
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    unsigned long createJavaAWTBitmap(void *&data,
-                                      const unsigned long frame = 0,
+    unsigned int createJavaAWTBitmap(void *&data,
+                                      const unsigned int frame = 0,
                                       const int bits = 32)
     {
         return (Image != NULL) ?
@@ -1527,8 +1527,8 @@ class DicomImage
      ** @return pointer to memory buffer containing the packed output bitmap data (NULL if an error occurred)
      */
     static void *create12BitPackedBitmap(const void *buffer,
-                                         const unsigned long size,
-                                         const unsigned long count)
+                                         const unsigned int size,
+                                         const unsigned int count)
     {
         return DiMonoImage::createPackedBitmap(buffer, size, count, 16, 12);
     }
@@ -1542,7 +1542,7 @@ class DicomImage
      *
      ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
-    DicomImage *createMonoOutputImage(const unsigned long frame,
+    DicomImage *createMonoOutputImage(const unsigned int frame,
                                       const int bits);
 
  // --- output image file: return true ('1') if successful
@@ -1576,7 +1576,7 @@ class DicomImage
      */
     inline int writeFrameToDataset(DcmItem &dataset,
                                    const int bits = 0,
-                                   const unsigned long frame = 0,
+                                   const unsigned int frame = 0,
                                    const int planar = 0)
     {
         return (Image != NULL) ?
@@ -1629,7 +1629,7 @@ class DicomImage
      */
     int writePPM(const char *filename,
                  const int bits = 0,
-                 const unsigned long frame = 0);
+                 const unsigned int frame = 0);
 
     /** write pixel data to PPM file (specified by open C++ stream).
      *  pixel data is written in ASCII format.
@@ -1646,7 +1646,7 @@ class DicomImage
      */
     int writePPM(ostream &stream,
                  const int bits = 0,
-                 const unsigned long frame = 0);
+                 const unsigned int frame = 0);
 
     /** write pixel data to PPM file (specified by open C stream).
      *  pixel data is written in ASCII format.
@@ -1663,7 +1663,7 @@ class DicomImage
      */
     int writePPM(FILE *stream,
                  const int bits = 0,
-                 const unsigned long frame = 0);
+                 const unsigned int frame = 0);
 
     /** write pixel data to raw PPM file (specified by filename).
      *  pixel data is written in binary format.
@@ -1680,7 +1680,7 @@ class DicomImage
      */
     int writeRawPPM(const char *filename,
                     const int bits = 0,
-                    const unsigned long frame= 0);
+                    const unsigned int frame= 0);
 
     /** write pixel data to raw PPM file (specified by open C stream).
      *  pixel data is written in binary format.
@@ -1697,7 +1697,7 @@ class DicomImage
      */
     int writeRawPPM(FILE *stream,
                     const int bits = 0,
-                    const unsigned long frame = 0);
+                    const unsigned int frame = 0);
 
     /** write pixel data to BMP file (specified by open C stream).
      *  pixel data is written in palette or truecolor mode.
@@ -1713,7 +1713,7 @@ class DicomImage
      */
     int writeBMP(FILE *stream,
                  const int bits = 0,
-                 const unsigned long frame = 0);
+                 const unsigned int frame = 0);
 
     /** write pixel data to BMP file (specified by filename).
      *  pixel data is written in palette or truecolor mode.
@@ -1729,7 +1729,7 @@ class DicomImage
      */
     int writeBMP(const char *filename,
                  const int bits = 0,
-                 const unsigned long frame = 0);
+                 const unsigned int frame = 0);
 
     /** write pixel data to plugable image format file (specified by open C stream).
      *  Format specific parameters may be set directly in the instantiated 'plugin' class.
@@ -1742,7 +1742,7 @@ class DicomImage
      */
     int writePluginFormat(const DiPluginFormat *plugin,
                           FILE *stream,
-                          const unsigned long frame = 0);
+                          const unsigned int frame = 0);
 
     /** write pixel data to plugable image format file (specified by filename).
      *  Format specific parameters may be set directly in the instantiated 'plugin' class.
@@ -1755,7 +1755,7 @@ class DicomImage
      */
     int writePluginFormat(const DiPluginFormat *plugin,
                           const char *filename,
-                          const unsigned long frame = 0);
+                          const unsigned int frame = 0);
 
 
  protected:

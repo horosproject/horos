@@ -113,7 +113,7 @@ typedef struct {
 
 
 static void 
-privateUserCallback(void *callbackData, unsigned long bytes)
+privateUserCallback(void *callbackData, unsigned int bytes)
 {
     DIMSE_PrivateUserContext *ctx;
     ctx = (DIMSE_PrivateUserContext*)callbackData;
@@ -341,7 +341,7 @@ typedef struct {
 } DIMSE_PrivateProviderContext;
 
 static void 
-privateProviderCallback(void *callbackData, unsigned long bytes)
+privateProviderCallback(void *callbackData, unsigned int bytes)
 {
     DIMSE_PrivateProviderContext *ctx;
     ctx = (DIMSE_PrivateProviderContext*)callbackData;
@@ -589,7 +589,7 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
 **
 ** Revision 1.2  1996/04/25 16:11:17  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
-** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
+** of DIC_UL with unsigned int (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due
 ** to MIPS/Ultrix).
 **

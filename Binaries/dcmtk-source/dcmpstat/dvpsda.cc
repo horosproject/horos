@@ -247,12 +247,12 @@ OFCondition DVPSDisplayedArea::write(DcmItem &dset)
   return result;
 }
 
-OFBool DVPSDisplayedArea::isApplicable(const char *instanceUID, unsigned long frame)
+OFBool DVPSDisplayedArea::isApplicable(const char *instanceUID, unsigned int frame)
 {
   return referencedImageList.isApplicable(instanceUID, frame);
 }
 
-OFBool DVPSDisplayedArea::matchesApplicability(const char *instanceUID, unsigned long frame, DVPSObjectApplicability applicability)
+OFBool DVPSDisplayedArea::matchesApplicability(const char *instanceUID, unsigned int frame, DVPSObjectApplicability applicability)
 {
   return referencedImageList.matchesApplicability(instanceUID, frame, applicability);
 }
@@ -260,8 +260,8 @@ OFBool DVPSDisplayedArea::matchesApplicability(const char *instanceUID, unsigned
 void DVPSDisplayedArea::removeImageReference(
     DVPSReferencedSeries_PList& allReferences,
     const char *instanceUID,
-    unsigned long frame, 
-    unsigned long numberOfFrames, 
+    unsigned int frame, 
+    unsigned int numberOfFrames, 
     DVPSObjectApplicability applicability)
 {
   referencedImageList.removeImageReference(allReferences, instanceUID, frame, numberOfFrames, applicability);
@@ -339,7 +339,7 @@ OFCondition DVPSDisplayedArea::getPresentationPixelMagnificationRatio(double& ma
 OFCondition DVPSDisplayedArea::addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
-    unsigned long frame,
+    unsigned int frame,
     DVPSObjectApplicability applicability)
 {
   return referencedImageList.addImageReference(sopclassUID, instanceUID, frame, applicability);

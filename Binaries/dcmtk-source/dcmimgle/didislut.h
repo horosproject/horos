@@ -58,7 +58,7 @@ class DiDisplayLUT
      *  @param  amb    ambient light value
      *  @param  illum  illumination value (optional)
      */
-    DiDisplayLUT(const unsigned long count,
+    DiDisplayLUT(const unsigned int count,
                  const Uint16 max,
                  const double amb,
                  const double illum = 0);

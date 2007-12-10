@@ -146,18 +146,18 @@ static const DcmCipherSuiteList cipherSuiteList[] =
 
 };
 
-unsigned long DcmTLSTransportLayer::getNumberOfCipherSuites()
+unsigned int DcmTLSTransportLayer::getNumberOfCipherSuites()
 {
   return sizeof(cipherSuiteList)/sizeof(DcmCipherSuiteList);
 }
 
-const char *DcmTLSTransportLayer::getTLSCipherSuiteName(unsigned long idx)
+const char *DcmTLSTransportLayer::getTLSCipherSuiteName(unsigned int idx)
 {
   if (idx < sizeof(cipherSuiteList)/sizeof(DcmCipherSuiteList)) return cipherSuiteList[idx].TLSname;
   return NULL;  
 }
 
-const char *DcmTLSTransportLayer::getOpenSSLCipherSuiteName(unsigned long idx)
+const char *DcmTLSTransportLayer::getOpenSSLCipherSuiteName(unsigned int idx)
 {
   if (idx < sizeof(cipherSuiteList)/sizeof(DcmCipherSuiteList)) return cipherSuiteList[idx].openSSLName;
   return NULL;  
@@ -167,8 +167,8 @@ const char *DcmTLSTransportLayer::findOpenSSLCipherSuiteName(const char *tlsCiph
 {
   if (tlsCipherSuiteName == NULL) return NULL;
   OFString aString(tlsCipherSuiteName);
-  unsigned long numEntries = sizeof(cipherSuiteList)/sizeof(DcmCipherSuiteList);
-  for (unsigned long i = 0; i < numEntries; i++)
+  unsigned int numEntries = sizeof(cipherSuiteList)/sizeof(DcmCipherSuiteList);
+  for (unsigned int i = 0; i < numEntries; i++)
   {
     if (aString == cipherSuiteList[i].TLSname) return cipherSuiteList[i].openSSLName;
   }

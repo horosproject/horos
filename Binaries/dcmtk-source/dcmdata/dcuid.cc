@@ -748,7 +748,7 @@ const int numberOfDcmImageSOPClassUIDs = (sizeof(dcmImageSOPClassUIDs) / sizeof(
 typedef struct {
     const char *sopClass;
     const char *modality;
-    unsigned long averageSize;  /* can be way, way out */
+    unsigned int averageSize;  /* can be way, way out */
 } DcmModalityTable;
 
 /*
@@ -864,9 +864,9 @@ const char *dcmSOPClassUIDToModality(const char *sopClassUID)
     return NULL;
 }
 
-unsigned long dcmGuessModalityBytes(const char *sopClassUID)
+unsigned int dcmGuessModalityBytes(const char *sopClassUID)
 {
-    unsigned long nbytes = 1048576; /* default: 1 MByte */
+    unsigned int nbytes = 1048576; /* default: 1 MByte */
 
     if (sopClassUID == NULL) return nbytes;
 
@@ -1302,7 +1302,7 @@ static int getpid(void) { return 0; }   // workaround for MAC
  * protected by a mutex (see dcmGenerateUniqueIdentifier()).
  */
 
-static unsigned long hostIdentifier = 0;
+static unsigned int hostIdentifier = 0;
 
 
 /*
@@ -1349,10 +1349,10 @@ addUIDComponent(char* uid, const char* s)
     stripTrailing(uid, '.');
 }
 
-inline static unsigned long
+inline static unsigned int
 forcePositive(long i)
 {
-    return (i < 0) ? OFstatic_cast(unsigned long, -i) : OFstatic_cast(unsigned long, i);
+    return (i < 0) ? OFstatic_cast(unsigned int, -i) : OFstatic_cast(unsigned int, i);
 }
 
 char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
@@ -1365,7 +1365,7 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
     uidCounterMutex.lock();
 #endif
     if (hostIdentifier == 0)
-        hostIdentifier = OFstatic_cast(unsigned long, gethostid());
+        hostIdentifier = OFstatic_cast(unsigned int, gethostid());
     unsigned int counter = counterOfCurrentUID++;
 #ifdef _REENTRANT
     uidCounterMutex.unlock();

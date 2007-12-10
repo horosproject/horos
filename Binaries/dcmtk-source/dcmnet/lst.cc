@@ -134,9 +134,9 @@ void *LST_Pop(LST_HEAD **lst)
   return (*lst)->dequeue();
 }
 
-unsigned long LST_Count(LST_HEAD **lst)
+unsigned int LST_Count(LST_HEAD **lst)
 {
-  return (unsigned long)((*lst)->size());
+  return (unsigned int)((*lst)->size());
 }
 
 void *LST_Head(LST_HEAD ** lst)

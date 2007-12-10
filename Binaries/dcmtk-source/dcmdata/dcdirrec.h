@@ -134,7 +134,7 @@ protected:
     OFCondition         fillElementsAndReadSOP(const char *referencedFileID,
                                                const char *sourceFileName);
     OFCondition         masterInsertSub(DcmDirectoryRecord *dirRec,
-                                        const unsigned long where = DCM_EndOfListIndex);
+                                        const unsigned int where = DCM_EndOfListIndex);
     OFCondition         purgeReferencedFile();
 
 public:
@@ -187,10 +187,10 @@ public:
                                         const char *sourceFileName);
 
     // manipulation of the lower-level Directory Entities:
-    virtual unsigned long cardSub();
+    virtual unsigned int cardSub();
 
     virtual OFCondition insertSub(DcmDirectoryRecord* dirRec,
-                                  unsigned long where = DCM_EndOfListIndex,
+                                  unsigned int where = DCM_EndOfListIndex,
                                   OFBool before = OFFalse);
 
     /** insert new directory child record at the current position.
@@ -203,7 +203,7 @@ public:
     virtual OFCondition insertSubAtCurrentPos(DcmDirectoryRecord *dirRec,
                                               OFBool before = OFFalse);
 
-    virtual DcmDirectoryRecord* getSub(const unsigned long num);
+    virtual DcmDirectoryRecord* getSub(const unsigned int num);
 
     /** get next directory child record starting at a given record
      *  @param dirRec record to start from (goto first record if NULL)
@@ -211,9 +211,9 @@ public:
      */
     virtual DcmDirectoryRecord* nextSub(const DcmDirectoryRecord *dirRec);
 
-    virtual DcmDirectoryRecord* removeSub(const unsigned long num);
+    virtual DcmDirectoryRecord* removeSub(const unsigned int num);
     virtual DcmDirectoryRecord* removeSub(DcmDirectoryRecord *dirRec);
-    virtual OFCondition deleteSubAndPurgeFile(const unsigned long num);
+    virtual OFCondition deleteSubAndPurgeFile(const unsigned int num);
     virtual OFCondition deleteSubAndPurgeFile(DcmDirectoryRecord *dirRec);
     virtual OFCondition clearSub();
 

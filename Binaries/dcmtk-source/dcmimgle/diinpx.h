@@ -59,8 +59,8 @@ class DiInputPixel
      *  @param  count  number of pixels to be processed
      */
     DiInputPixel(const unsigned int bits,
-                 const unsigned long start,
-                 const unsigned long count);
+                 const unsigned int start,
+                 const unsigned int count);
 
     /** destructor
      */
@@ -154,7 +154,7 @@ class DiInputPixel
      *
      ** @return number of pixels stored
      */
-    inline unsigned long getCount() const
+    inline unsigned int getCount() const
     {
         return Count;
     }
@@ -163,7 +163,7 @@ class DiInputPixel
      *
      ** @return first pixel to be processed
      */
-    inline unsigned long getPixelStart() const
+    inline unsigned int getPixelStart() const
     {
         return PixelStart;
     }
@@ -172,7 +172,7 @@ class DiInputPixel
      *
      ** @return number of pixels to be processed
      */
-    inline unsigned long getPixelCount() const
+    inline unsigned int getPixelCount() const
     {
         return PixelCount;
     }
@@ -181,7 +181,7 @@ class DiInputPixel
      *
      ** @return number of pixels computed
      */
-    inline unsigned long getComputedCount() const
+    inline unsigned int getComputedCount() const
     {
         return ComputedCount;
     }
@@ -190,17 +190,17 @@ class DiInputPixel
  protected:
 
     /// number of pixels stored
-    unsigned long Count;
+    unsigned int Count;
     /// bits per pixel/sample
     unsigned int Bits;
 
     /// first pixel to be processed
-    unsigned long PixelStart;
+    unsigned int PixelStart;
     /// number of pixels to be processed
-    unsigned long PixelCount;
+    unsigned int PixelCount;
 
     /// number of pixels computed from the image resolution
-    unsigned long ComputedCount;
+    unsigned int ComputedCount;
 
     /// absolute minimum (possible) pixel value
     double AbsMinimum;

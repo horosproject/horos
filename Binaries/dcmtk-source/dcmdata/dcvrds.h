@@ -91,7 +91,7 @@ class DcmDecimalString
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getFloat64(Float64 &doubleVal,
-                                   const unsigned long pos = 0);
+                                   const unsigned int pos = 0);
 
     /** get a particular value as a character string
      *  @param stringVal variable in which the result value is stored
@@ -100,7 +100,7 @@ class DcmDecimalString
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOFString(OFString &stringVal,
-                                    const unsigned long pos,
+                                    const unsigned int pos,
                                     OFBool normalize = OFTrue);
 };
 

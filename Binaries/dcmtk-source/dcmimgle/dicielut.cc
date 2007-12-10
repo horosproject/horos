@@ -44,11 +44,11 @@
  *  constructors  *
  *----------------*/
 
-DiCIELABLUT::DiCIELABLUT(const unsigned long count,
+DiCIELABLUT::DiCIELABLUT(const unsigned int count,
                          const Uint16 max,
                          const Uint16 *ddl_tab,
                          const double *val_tab,
-                         const unsigned long ddl_cnt,
+                         const unsigned int ddl_cnt,
                          const double val_min,
                          const double val_max,
                          const double lum_min,
@@ -99,7 +99,7 @@ DiCIELABLUT::~DiCIELABLUT()
 
 int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                            const double *val_tab,
-                           const unsigned long ddl_cnt,
+                           const unsigned int ddl_cnt,
                            const double val_min,
                            const double val_max,
                            const double lum_min,
@@ -111,11 +111,11 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
     int status = 0;
     if ((ddl_tab != NULL) && (val_tab != NULL) && (ddl_cnt > 0) && (val_max > 0) && (val_min < val_max))
     {
-        const unsigned long cin_ctn = (inverse) ? ddl_cnt : Count;      // number of points to be interpolated
+        const unsigned int cin_ctn = (inverse) ? ddl_cnt : Count;      // number of points to be interpolated
         double *cielab = new double[cin_ctn];
         if (cielab != NULL)
         {
-            register unsigned long i;
+            register unsigned int i;
             register double llin = 0;
             register double cub = 0;
             const double amb = getAmbientLightValue();
@@ -138,7 +138,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
             if (DataBuffer != NULL)                         // create look-up table
             {
                 register Uint16 *q = DataBuffer;
-                register unsigned long j = 0;
+                register unsigned int j = 0;
                 /* check whether to apply the inverse transformation */
                 if (inverse)
                 {
@@ -156,8 +156,8 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                     }
                 } else {
                     /* initial DDL boundaries */
-                    unsigned long ddl_min = 0;
-                    unsigned long ddl_max= ddl_cnt - 1;
+                    unsigned int ddl_min = 0;
+                    unsigned int ddl_max= ddl_cnt - 1;
                     /* check whether minimum luminance is specified */
                     if (lum_min >= 0)
                     {

@@ -42,8 +42,8 @@
  *----------------*/
 
 DiColorOutputPixel::DiColorOutputPixel(const DiPixel *pixel,
-                                       const unsigned long size,
-                                       const unsigned long frame)
+                                       const unsigned int size,
+                                       const unsigned int frame)
   : Count(0),
     FrameSize(size)
 {

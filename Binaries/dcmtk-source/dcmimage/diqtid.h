@@ -56,7 +56,7 @@ class DcmQuantIdent
 public:
 
   /// constructor
-  DcmQuantIdent(unsigned long cols)
+  DcmQuantIdent(unsigned int cols)
   : columns(cols)
   {
   }
@@ -103,7 +103,7 @@ public:
 private:
 
   /// number of columns in image
-  unsigned long columns;
+  unsigned int columns;
 
 };
 

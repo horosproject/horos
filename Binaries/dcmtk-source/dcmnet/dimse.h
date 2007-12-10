@@ -926,7 +926,7 @@ DIMSE_checkForCancelRQ(T_ASC_Association * assoc,
 
 
 typedef void (*DIMSE_ProgressCallback)(void *callbackContext, 
-    unsigned long byteCount);
+    unsigned int byteCount);
 
 
 OFCondition 
@@ -1104,7 +1104,7 @@ void DIMSE_printMessage(ostream& outstream, T_DIMSE_Message &msg, DcmItem *datas
 ** Changes required to interfaces of some DIMSE functions.
 **
 ** Revision 1.2  1996/04/25 16:06:28  hewett
-** Replaced declarations of DIC_UL with unsigned long.
+** Replaced declarations of DIC_UL with unsigned int.
 **
 ** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
 ** Initial Release.

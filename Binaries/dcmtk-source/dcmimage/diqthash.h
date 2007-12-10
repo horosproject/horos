@@ -90,15 +90,15 @@ public:
    *    the method immediately returns with a return value of zero.
    *  @return number of colors found, 0 if too many colors.
    */
-  unsigned long addToHashTable(
+  unsigned int addToHashTable(
     DicomImage& image, 
-    unsigned long newmaxval,
-    unsigned long maxcolors);
+    unsigned int newmaxval,
+    unsigned int maxcolors);
 
   /** counts the number of entries in the hash table
    *  @return number of entries in hash table
    */
-  unsigned long countEntries() const;
+  unsigned int countEntries() const;
 
   /** converts the contents of this hash table into a histogram array.
    *  After a successful call to addToHashTable(), this object contains
@@ -108,7 +108,7 @@ public:
    *  @param array the hash table array is returned in this parameter
    *  @return number of elements in array
    */
-  unsigned long createHistogram(DcmQuantHistogramItemPointer *& array);
+  unsigned int createHistogram(DcmQuantHistogramItemPointer *& array);
 
 private:
 

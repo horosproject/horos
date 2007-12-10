@@ -89,8 +89,8 @@ class DicomDirImageImplementation
      */
     virtual OFBool scaleImage(DcmItem *dataset,
                               Uint8 *pixel,
-                              const unsigned long count,
-                              const unsigned long frame,
+                              const unsigned int count,
+                              const unsigned int frame,
                               const unsigned int width,
                               const unsigned int height) const;
 };

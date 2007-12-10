@@ -83,7 +83,7 @@ typedef struct {
     int networkState;
     int protocolState;
     int timeout;
-    unsigned long options;
+    unsigned int options;
     union {
 	struct {
 	    int port;
@@ -103,12 +103,12 @@ typedef struct {
     int networkState;
     int timeout;
     time_t timerStart;
-    unsigned long maxPDVRequestor;
-    unsigned long maxPDVAcceptor;
-    unsigned long maxPDV;
-    unsigned long maxPDVInput;
-    unsigned long receiveQp1;
-    unsigned long receiveQp2;
+    unsigned int maxPDVRequestor;
+    unsigned int maxPDVAcceptor;
+    unsigned int maxPDV;
+    unsigned int maxPDVInput;
+    unsigned int receiveQp1;
+    unsigned int receiveQp2;
     char calledAPTitle[20];
     char callingAPTitle[20];
     char applicationContextName[68];
@@ -121,17 +121,17 @@ typedef struct {
     unsigned char pduHead[6];
     unsigned char nextPDUType;
     unsigned char nextPDUReserved;
-    unsigned long nextPDULength;
-    unsigned long compatibilityMode;
+    unsigned int nextPDULength;
+    unsigned int compatibilityMode;
     int pdvCount;
     int pdvIndex;
     void *logHandle;
     int associatePDUFlag;
     void *associatePDU;
-    unsigned long associatePDULength;
+    unsigned int associatePDULength;
     DUL_PDV currentPDV;
     unsigned char *pdvPointer;
-    unsigned long fragmentBufferLength;
+    unsigned int fragmentBufferLength;
     unsigned char *fragmentBuffer;
     DUL_ModeCallback *modeCallback;
 }   PRIVATE_ASSOCIATIONKEY;
@@ -169,7 +169,7 @@ typedef struct dul_maxlength {
     unsigned char type;
     unsigned char rsv1;
     unsigned short length;
-    unsigned long maxLength;
+    unsigned int maxLength;
 }   DUL_MAXLENGTH;
 
 typedef struct {
@@ -236,7 +236,7 @@ typedef struct dul_associatepdu {
     void *reserved[2]; 
     unsigned char type;
     unsigned char rsv1;
-    unsigned long length;
+    unsigned int length;
     unsigned short protocol;
     unsigned char rsv2[2];
     char calledAPTitle[18];
@@ -252,7 +252,7 @@ typedef struct dul_rejectreleaseabortpdu {
     void *reserved[2]; 
     unsigned char type;
     unsigned char rsv1;
-    unsigned long length;
+    unsigned int length;
     unsigned char rsv2;
     unsigned char result;
     unsigned char source;
@@ -261,7 +261,7 @@ typedef struct dul_rejectreleaseabortpdu {
 
 typedef struct dul_presentationdatavalue {
     void *reserved[2]; 
-    unsigned long length;
+    unsigned int length;
     unsigned char presentationContextID;
     unsigned char messageControlHeader;
     void *data;
@@ -271,7 +271,7 @@ typedef struct dul_datapdu {
     void *reserved[2]; 
     unsigned char type;
     unsigned char rsv1;
-    unsigned long length;
+    unsigned int length;
     DUL_PRESENTATIONDATAVALUE presentationDataValue;
 }   DUL_DATAPDU;
 
@@ -299,10 +299,10 @@ typedef struct dul_datapdu {
 	(B)[1] = (unsigned char)(A) ;	}
 
 #define EXTRACT_LONG_BIG(A,B)	{			\
-	(B) = (unsigned long)(A)[3]				\
-	  | (((unsigned long)(A)[2]) << 8)		\
-	  | (((unsigned long)(A)[1]) << 16)		\
-	  | (((unsigned long)(A)[0]) << 24);	\
+	(B) = (unsigned int)(A)[3]				\
+	  | (((unsigned int)(A)[2]) << 8)		\
+	  | (((unsigned int)(A)[1]) << 16)		\
+	  | (((unsigned int)(A)[0]) << 24);	\
 	}
 
 #define EXTRACT_SHORT_BIG(A,B)  { (B) = (unsigned short)(A)[1] | (((unsigned short)(A)[0]) << 8); }

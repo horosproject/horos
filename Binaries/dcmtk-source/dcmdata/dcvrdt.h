@@ -91,7 +91,7 @@ class DcmDateTime
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOFString(OFString &stringValue,
-                                    const unsigned long pos,
+                                    const unsigned int pos,
                                     OFBool normalize = OFTrue);
 
     /** set the element value to the current system date and time.
@@ -127,7 +127,7 @@ class DcmDateTime
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition getOFDateTime(OFDateTime &dateTimeValue,
-                              const unsigned long pos = 0);
+                              const unsigned int pos = 0);
 
     /** get the current element value in ISO date/time format.
      *  The ISO date/time format supported by this function is "YYYY-MM-DD HH:MM[:SS[.FFFFFF]]
@@ -148,7 +148,7 @@ class DcmDateTime
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition getISOFormattedDateTime(OFString &formattedDateTime,
-                                        const unsigned long pos = 0,
+                                        const unsigned int pos = 0,
                                         const OFBool seconds = OFTrue,
                                         const OFBool fraction = OFFalse,
                                         const OFBool timeZone = OFTrue,
@@ -173,7 +173,7 @@ class DcmDateTime
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition getISOFormattedDateTime(OFString &formattedDateTime,
-                                        const unsigned long pos /*= 0*/,
+                                        const unsigned int pos /*= 0*/,
                                         const OFBool seconds /*= OFTrue*/,
                                         const OFBool fraction /*= OFFalse*/,
                                         const OFBool timeZone /*= OFTrue*/,

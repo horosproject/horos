@@ -342,7 +342,7 @@ class DiOverlay
      *
      ** @return pointer to pixel data if successful, NULL otherwise
      */
-    void *getPlaneData(const unsigned long frame,
+    void *getPlaneData(const unsigned int frame,
                        unsigned int plane,
                        unsigned int &left_pos,
                        unsigned int &top_pos,
@@ -368,7 +368,7 @@ class DiOverlay
      *
      ** @return pointer to pixel data if successful, NULL otherwise
      */
-    void *getFullPlaneData(const unsigned long frame,
+    void *getFullPlaneData(const unsigned int frame,
                            unsigned int plane,
                            unsigned int &width,
                            unsigned int &height,
@@ -389,11 +389,11 @@ class DiOverlay
      *
      ** @return number of bytes allocated for the 'buffer' if successful, 0 otherwise
      */
-    unsigned long create6xxx3000PlaneData(Uint8 *&buffer,
+    unsigned int create6xxx3000PlaneData(Uint8 *&buffer,
                                           unsigned int plane,
                                           unsigned int &width,
                                           unsigned int &height,
-                                          unsigned long &frames);
+                                          unsigned int &frames);
 
     /// constant defining the maximum number of overlay planes (16)
     static const unsigned int MaxOverlayCount;
@@ -467,7 +467,7 @@ class DiOverlay
     /// maximum height of all planes
     Uint16 Height;
     /// maximum number of frames
-    unsigned long Frames;
+    unsigned int Frames;
 
     /// status, if true planes are added later with addPlane()
     int AdditionalPlanes;

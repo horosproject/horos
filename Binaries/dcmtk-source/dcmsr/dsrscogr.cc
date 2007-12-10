@@ -111,9 +111,9 @@ OFCondition DSRGraphicDataList::read(DcmItem &dataset,
         clear();
         Float32 column = 0;
         Float32 row = 0;
-        const unsigned long count = delem.getVM();
+        const unsigned int count = delem.getVM();
         /* fill list with values from floating point string */
-        unsigned long i = 0;
+        unsigned int i = 0;
         while ((i < count) && result.good())
         {
             result = delem.getFloat32(column, i++);
@@ -137,7 +137,7 @@ OFCondition DSRGraphicDataList::write(DcmItem &dataset,
     DcmFloatingPointSingle delem(DCM_GraphicData);
     const OFListConstIterator(DSRGraphicDataItem) endPos = ItemList.end();
     OFListConstIterator(DSRGraphicDataItem) iterator = ItemList.begin();
-    unsigned long i = 0;
+    unsigned int i = 0;
     while ((iterator != endPos) && result.good())
     {
         result = delem.putFloat32((*iterator).Column, i++);

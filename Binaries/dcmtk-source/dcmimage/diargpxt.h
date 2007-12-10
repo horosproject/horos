@@ -66,7 +66,7 @@ class DiARGBPixelTemplate
                         const DiInputPixel *pixel,
                         DiLookupTable *palette[3],
                         EI_Status &status,
-                        const unsigned long planeSize,
+                        const unsigned int planeSize,
                         const int bits)
       : DiColorPixelTemplate<T3>(docu, pixel, 4, status)
     {
@@ -92,7 +92,7 @@ class DiARGBPixelTemplate
      */
     void convert(const T1 *pixel,
                  DiLookupTable *palette[3],
-                 const unsigned long planeSize,
+                 const unsigned int planeSize,
                  const int bits)
     {                                             // not very much optimized, but no one really uses ARGB !!
         if (Init(pixel))
@@ -101,7 +101,7 @@ class DiARGBPixelTemplate
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
-            const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
+            const unsigned int count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
             if (this->PlanarConfiguration)
             {
 /*
@@ -133,8 +133,8 @@ class DiARGBPixelTemplate
                     }
                 }
 */
-                register unsigned long l;
-                register unsigned long i = 0;
+                register unsigned int l;
+                register unsigned int i = 0;
                 register const T1 *a = pixel;                                   // points to alpha plane
                 const T1 *rgb[3];
                 rgb[0] = a + planeSize;                                         // points to red plane
@@ -171,7 +171,7 @@ class DiARGBPixelTemplate
                        rgb[j] += 2 * planeSize;
                 }
             } else {
-                register unsigned long i;
+                register unsigned int i;
                 register const T1 *p = pixel;
                 for (i = 0; i < count; ++i)
                 {

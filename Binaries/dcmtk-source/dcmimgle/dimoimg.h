@@ -170,7 +170,7 @@ class DiMonoImage
      *
      ** @return status, true if unused (1 = within output range, 2 = out of range), false otherwise
      */
-    inline int isValueUnused(const unsigned long value)
+    inline int isValueUnused(const unsigned int value)
     {
         return (OutputData != NULL) ? OutputData->isUnused(value) : 0;
     }
@@ -215,11 +215,11 @@ class DiMonoImage
      *                             2 = new window is the same as previous one),
      *          false otherwise
      */
-    int setRoiWindow(const unsigned long left_pos,
-                     const unsigned long top_pos,
-                     const unsigned long width,
-                     const unsigned long height,
-                     const unsigned long frame);
+    int setRoiWindow(const unsigned int left_pos,
+                     const unsigned int top_pos,
+                     const unsigned int width,
+                     const unsigned int height,
+                     const unsigned int frame);
 
     /** set automatically calculated histogram window.
      *  possibly active VOI LUT is implicitly disabled.
@@ -237,7 +237,7 @@ class DiMonoImage
      *
      ** @return true if successful, false otherwise
      */
-    int setWindow(const unsigned long pos = 0);
+    int setWindow(const unsigned int pos = 0);
 
     /** set specified window (given by window width and center).
      *  possibly active VOI LUT is implicitly disabled.
@@ -268,7 +268,7 @@ class DiMonoImage
      *
      ** @return number of VOI windows
      */
-    inline unsigned long getWindowCount() const
+    inline unsigned int getWindowCount() const
     {
         return WindowCount;
     }
@@ -298,14 +298,14 @@ class DiMonoImage
      *
      ** @return true if successful, false otherwise
      */
-    int setVoiLut(const unsigned long pos,
+    int setVoiLut(const unsigned int pos,
                   const OFBool ignoreDepth = OFFalse);
 
     /** get number of VOI LUTs (stored in image file)
      *
      ** @return number of VOI LUTs
      */
-    inline unsigned long getVoiLutCount() const
+    inline unsigned int getVoiLutCount() const
     {
         return VoiLutCount;
     }
@@ -326,7 +326,7 @@ class DiMonoImage
      *
      ** @return pointer to description text (NULL if absent or index invalid)
      */
-    const char *getVoiWindowExplanation(const unsigned long pos,
+    const char *getVoiWindowExplanation(const unsigned int pos,
                                         OFString &explanation) const;
 
     /** get description of specified VOI LUT (stored in the image file)
@@ -336,7 +336,7 @@ class DiMonoImage
      *
      ** @return pointer to description text (NULL if absent or index invalid)
      */
-    const char *getVoiLutExplanation(const unsigned long pos,
+    const char *getVoiLutExplanation(const unsigned int pos,
                                      OFString &explanation) const;
 
     /** get description of performed modality LUT transformation
@@ -520,7 +520,7 @@ class DiMonoImage
      *
      ** @return number of bytes if successful, 0 otherwise
      */
-    virtual unsigned long getOutputDataSize(const int bits = 0) const;
+    virtual unsigned int getOutputDataSize(const int bits = 0) const;
 
     /** get pixel data with specified format.
      *  (memory is handled internally)
@@ -531,7 +531,7 @@ class DiMonoImage
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
-    virtual const void *getOutputData(const unsigned long frame,
+    virtual const void *getOutputData(const unsigned int frame,
                                       const int bits,
                                       const int planar = 0) = 0;
 
@@ -547,8 +547,8 @@ class DiMonoImage
      ** @return status, true if successful, false otherwise
      */
     virtual int getOutputData(void *buffer,
-                              const unsigned long size,
-                              const unsigned long frame,
+                              const unsigned int size,
+                              const unsigned int frame,
                               const int bits,
                               const int planar = 0) = 0;
 
@@ -583,7 +583,7 @@ class DiMonoImage
      *
      ** @return pointer to overlay plane data (internal memory buffer)
      */
-    const void *getOverlayData(const unsigned long frame,
+    const void *getOverlayData(const unsigned int frame,
                                 const unsigned int plane,
                                 unsigned int &left_pos,
                                 unsigned int &top_pos,
@@ -609,7 +609,7 @@ class DiMonoImage
      *
      ** @return pointer to overlay plane data (internal memory buffer)
      */
-    const void *getFullOverlayData(const unsigned long frame,
+    const void *getFullOverlayData(const unsigned int frame,
                                    const unsigned int plane,
                                    unsigned int &width,
                                    unsigned int &height,
@@ -639,11 +639,11 @@ class DiMonoImage
      *
      ** @return number of bytes allocated for the 'buffer' if successful, 0 otherwise
      */
-    unsigned long create6xxx3000OverlayData(Uint8 *&buffer,
+    unsigned int create6xxx3000OverlayData(Uint8 *&buffer,
                                             const unsigned int plane,
                                             unsigned int &width,
                                             unsigned int &height,
-                                            unsigned long &frames,
+                                            unsigned int &frames,
                                             const unsigned int idx = 0);
 
     /** get pointer to intermediate pixel data representation
@@ -676,9 +676,9 @@ class DiMonoImage
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    unsigned long createDIB(void *&data,
-                            const unsigned long size,
-                            const unsigned long frame,
+    unsigned int createDIB(void *&data,
+                            const unsigned int size,
+                            const unsigned int frame,
                             const int bits,
                             const int upsideDown,
                             const int padding = 1);
@@ -692,8 +692,8 @@ class DiMonoImage
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    unsigned long createAWTBitmap(void *&data,
-                                  const unsigned long frame,
+    unsigned int createAWTBitmap(void *&data,
+                                  const unsigned int frame,
                                   const int bits);
 
     /** create packed bitmap (e.g. 12/16 bit -> 12/12 bit for DICOM printers).
@@ -708,8 +708,8 @@ class DiMonoImage
      ** @return pointer to memory buffer containing the packed output bitmap data (NULL if an error occurred)
      */
     static void *createPackedBitmap(const void *buffer,
-                                    const unsigned long size,
-                                    const unsigned long count,
+                                    const unsigned int size,
+                                    const unsigned int count,
                                     const int alloc,
                                     const int stored);
 
@@ -721,7 +721,7 @@ class DiMonoImage
      *
      ** @return pointer to new DiImage object (NULL if an error occurred)
      */
-    DiImage *createOutputImage(const unsigned long frame,
+    DiImage *createOutputImage(const unsigned int frame,
                                const int bits);
 
     /** write current image and related attributes to DICOM dataset.
@@ -745,7 +745,7 @@ class DiMonoImage
      ** @return true if successful, false otherwise
      */
     int writePPM(ostream &stream,
-                 const unsigned long frame,
+                 const unsigned int frame,
                  const int bits);
 
     /** write pixel data to PPM file.
@@ -758,7 +758,7 @@ class DiMonoImage
      ** @return true if successful, false otherwise
      */
     int writePPM(FILE *stream,
-                 const unsigned long frame,
+                 const unsigned int frame,
                  const int bits);
 
     /** write pixel data to raw PPM file
@@ -770,7 +770,7 @@ class DiMonoImage
      ** @return true if successful, false otherwise
      */
     int writeRawPPM(FILE *stream,
-                    const unsigned long frame,
+                    const unsigned int frame,
                     const int bits);
 
     /** write pixel data to BMP file
@@ -782,7 +782,7 @@ class DiMonoImage
      ** @return true if successful, false otherwise
      */
     int writeBMP(FILE *stream,
-                 const unsigned long frame,
+                 const unsigned int frame,
                  const int bits);
 
 
@@ -805,8 +805,8 @@ class DiMonoImage
      *  @param  fcount  number of frames
      */
     DiMonoImage(const DiMonoImage *image,
-                const unsigned long fstart,
-                const unsigned long fcount);
+                const unsigned int fstart,
+                const unsigned int fcount);
 
     /** constructor, convert color images to monochrome
      *
@@ -878,7 +878,7 @@ class DiMonoImage
      */
      DiMonoImage(const DiMonoImage *image,
                  DiMonoOutputPixel *pixel,
-                 const unsigned long frame,
+                 const unsigned int frame,
                  const int stored,
                  const int alloc);
 
@@ -952,8 +952,8 @@ class DiMonoImage
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
     const void *getData(void *buffer,
-                        const unsigned long size,
-                        const unsigned long frame,
+                        const unsigned int size,
+                        const unsigned int frame,
                         int bits,
                         const int planar,
                         const int negative);
@@ -972,7 +972,7 @@ class DiMonoImage
     void getDataUint8(void *buffer,
                       DiDisplayFunction *disp,
                       const int samples,
-                      const unsigned long frame,
+                      const unsigned int frame,
                       const int bits,
                       const Uint32 low,
                       const Uint32 high);
@@ -991,7 +991,7 @@ class DiMonoImage
     void getDataSint8(void *buffer,
                       DiDisplayFunction *disp,
                       const int samples,
-                      const unsigned long frame,
+                      const unsigned int frame,
                       const int bits,
                       const Uint32 low,
                       const Uint32 high);
@@ -1010,7 +1010,7 @@ class DiMonoImage
     void getDataUint16(void *buffer,
                        DiDisplayFunction *disp,
                        const int samples,
-                       const unsigned long frame,
+                       const unsigned int frame,
                        const int bits,
                        const Uint32 low,
                        const Uint32 high);
@@ -1029,7 +1029,7 @@ class DiMonoImage
     void getDataSint16(void *buffer,
                        DiDisplayFunction *disp,
                        const int samples,
-                       const unsigned long frame,
+                       const unsigned int frame,
                        const int bits,
                        const Uint32 low,
                        const Uint32 high);
@@ -1048,7 +1048,7 @@ class DiMonoImage
     void getDataUint32(void *buffer,
                        DiDisplayFunction *disp,
                        const int samples,
-                       const unsigned long frame,
+                       const unsigned int frame,
                        const int bits,
                        const Uint32 low,
                        const Uint32 high);
@@ -1067,7 +1067,7 @@ class DiMonoImage
     void getDataSint32(void *buffer,
                        DiDisplayFunction *disp,
                        const int samples,
-                       const unsigned long frame,
+                       const unsigned int frame,
                        const int bits,
                        const Uint32 low,
                        const Uint32 high);
@@ -1080,16 +1080,16 @@ class DiMonoImage
      *
      ** @return true if successful, false otherwise
      */
-    int createLinODPresentationLut(const unsigned long count, const int bits);
+    int createLinODPresentationLut(const unsigned int count, const int bits);
 
     /// center of current VOI-window
     double WindowCenter;
     /// width of current VOI-window
     double WindowWidth;
     /// number of stored VOI-windows
-    unsigned long WindowCount;
+    unsigned int WindowCount;
     /// number of stored VOU-LUTs
-    unsigned long VoiLutCount;
+    unsigned int VoiLutCount;
 
     /// true, if current VOI-window is valid
     int ValidWindow;

@@ -106,7 +106,7 @@ class DiColorMonoTemplate
                 register const T *g = pixel[1];
                 register const T *b = pixel[2];
                 register T *q = this->Data;
-                register unsigned long i;
+                register unsigned int i;
                 for (i = this->Count; i != 0; i--)
                 {
                     *(q++) = OFstatic_cast(T, OFstatic_cast(double, *(r++)) * red +

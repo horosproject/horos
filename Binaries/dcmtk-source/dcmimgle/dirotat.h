@@ -80,7 +80,7 @@ class DiRotateTemplate
         {
             this->Planes = pixel->getPlanes();
             if ((pixel->getCount() > 0) && (this->Planes > 0) &&
-                (pixel->getCount() == OFstatic_cast(unsigned long, src_cols) * OFstatic_cast(unsigned long, src_rows) * frames))
+                (pixel->getCount() == OFstatic_cast(unsigned int, src_cols) * OFstatic_cast(unsigned int, src_rows) * frames))
             {
                 if (degree == 90)
                     rotateRight(OFstatic_cast(T **, pixel->getDataArrayPtr()));
@@ -162,12 +162,12 @@ class DiRotateTemplate
             register const T *p;
             register T *q;
             register T *r;
-            const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
+            const unsigned int count = OFstatic_cast(unsigned int, this->Dest_X) * OFstatic_cast(unsigned int, this->Dest_Y);
             for (int j = 0; j < this->Planes; ++j)
             {
                 p = src[j];
                 r = dest[j];
-                for (unsigned long f = this->Frames; f != 0; --f)
+                for (unsigned int f = this->Frames; f != 0; --f)
                 {
                     r += count;
                     for (x = this->Dest_X; x != 0; --x)
@@ -199,12 +199,12 @@ class DiRotateTemplate
             register const T *p;
             register T *q;
             register T *r;
-            const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
+            const unsigned int count = OFstatic_cast(unsigned int, this->Dest_X) * OFstatic_cast(unsigned int, this->Dest_Y);
             for (int j = 0; j < this->Planes; ++j)
             {
                 p = src[j];
                 r = dest[j];
-                for (unsigned long f = this->Frames; f != 0; --f)
+                for (unsigned int f = this->Frames; f != 0; --f)
                 {
                     for (x = this->Dest_X; x != 0; --x)
                     {
@@ -231,15 +231,15 @@ class DiRotateTemplate
     {
         if ((src != NULL) && (dest != NULL))
         {
-            register unsigned long i;
+            register unsigned int i;
             register const T *p;
             register T *q;
-            const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
+            const unsigned int count = OFstatic_cast(unsigned int, this->Dest_X) * OFstatic_cast(unsigned int, this->Dest_Y);
             for (int j = 0; j < this->Planes; ++j)
             {
                 p = src[j];
                 q = dest[j];
-                for (unsigned long f = this->Frames; f != 0; --f)
+                for (unsigned int f = this->Frames; f != 0; --f)
                 {
                     q += count;
                     for (i = count; i != 0; --i)
@@ -258,7 +258,7 @@ class DiRotateTemplate
     */
     inline void rotateLeft(T *data[])
     {
-        const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
+        const unsigned int count = OFstatic_cast(unsigned int, this->Dest_X) * OFstatic_cast(unsigned int, this->Dest_Y);
         T *temp = new T[count];
         if (temp != NULL)
         {
@@ -270,7 +270,7 @@ class DiRotateTemplate
             for (int j = 0; j < this->Planes; ++j)
             {
                 r = data[j];
-                for (unsigned long f = this->Frames; f != 0; --f)
+                for (unsigned int f = this->Frames; f != 0; --f)
                 {
                     OFBitmanipTemplate<T>::copyMem(OFstatic_cast(const T *, r), temp, count);  // create temporary copy of current frame
                     p = temp;
@@ -296,7 +296,7 @@ class DiRotateTemplate
     */
     inline void rotateRight(T *data[])
     {
-        const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
+        const unsigned int count = OFstatic_cast(unsigned int, this->Dest_X) * OFstatic_cast(unsigned int, this->Dest_Y);
         T *temp = new T[count];
         if (temp != NULL)
         {
@@ -308,7 +308,7 @@ class DiRotateTemplate
             for (int j = 0; j < this->Planes; ++j)
             {
                 r = data[j];
-                for (unsigned long f = this->Frames; f != 0; --f)
+                for (unsigned int f = this->Frames; f != 0; --f)
                 {
                     OFBitmanipTemplate<T>::copyMem(OFstatic_cast(const T *, r), temp, count);  // create temporary copy of current frame
                     p = temp;
@@ -334,16 +334,16 @@ class DiRotateTemplate
     */
     inline void rotateTopDown(T *data[])
     {
-        register unsigned long i;
+        register unsigned int i;
         register T *p;
         register T *q;
         register T t;
         T *s;
-        const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y);
+        const unsigned int count = OFstatic_cast(unsigned int, this->Dest_X) * OFstatic_cast(unsigned int, this->Dest_Y);
         for (int j = 0; j < this->Planes; ++j)
         {
             s = data[j];
-            for (unsigned long f = this->Frames; f != 0; --f)
+            for (unsigned int f = this->Frames; f != 0; --f)
             {
                 p = s;
                 q = s + count;

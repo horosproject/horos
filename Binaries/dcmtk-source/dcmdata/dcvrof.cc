@@ -75,7 +75,7 @@ DcmEVR DcmOtherFloat::ident() const
 }
 
 
-unsigned long DcmOtherFloat::getVM()
+unsigned int DcmOtherFloat::getVM()
 {
     /* value multiplicity for OF is defined as 1 */
     return 1;

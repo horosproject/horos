@@ -64,7 +64,7 @@ class DiCMYKPixelTemplate
     DiCMYKPixelTemplate(const DiDocument *docu,
                         const DiInputPixel *pixel,
                         EI_Status &status,
-                        const unsigned long planeSize,
+                        const unsigned int planeSize,
                         const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 4, status)
     {
@@ -88,14 +88,14 @@ class DiCMYKPixelTemplate
      *  @param  bits       number of bits per sample
      */
     void convert(const T1 *pixel,
-                 const unsigned long planeSize,
+                 const unsigned int planeSize,
                  const int bits)
     {
         if (Init(pixel))
         {
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
-            const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
+            const unsigned int count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
             const T2 maxvalue = OFstatic_cast(T2, DicomImageClass::maxval(bits));
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             register const T1 *p = pixel;
@@ -114,12 +114,12 @@ class DiCMYKPixelTemplate
 */
                 register const T1 *k;
                 register T2 *q;
-                register unsigned long l;
-                register unsigned long i = 0;
+                register unsigned int l;
+                register unsigned int i = 0;
                 while (i < count)
                 {
                     /* store current pixel index */
-                    const unsigned long iStart = i;
+                    const unsigned int iStart = i;
                     /* beginning of 'black' plane */
                     const T1 *kStart = p + 3 * planeSize;
                     /* for all planes ... */
@@ -140,7 +140,7 @@ class DiCMYKPixelTemplate
             {
                 register T1 k;
                 register int j;
-                register unsigned long i;
+                register unsigned int i;
                 for (i = 0; i < count; ++i)
                 {
                     k = *(p + 3);

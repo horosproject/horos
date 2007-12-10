@@ -112,7 +112,7 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
   if (aetitle==NULL) aetitle = dviface.getNetworkAETitle(); // default if AETITLE is missing
 
   // get MaxPDU from config file
-  unsigned long maxPDU = dviface.getTargetMaxPDU(cfgname);
+  unsigned int maxPDU = dviface.getTargetMaxPDU(cfgname);
   if (maxPDU == 0) maxPDU = DEFAULT_MAXPDU;
   else if (maxPDU > ASC_MAXIMUMPDUSIZE)
   {
@@ -143,7 +143,7 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
   OFBool useTLS = dviface.getTargetUseTLS(cfgname);
 
   void *associatePDU=NULL;
-  unsigned long associatePDUlength=0;
+  unsigned int associatePDUlength=0;
   
   OFCondition cond = ASC_receiveAssociation(&net, &assoc, maxPDU, &associatePDU, &associatePDUlength, useTLS);
   if (errorCond(cond, "Failed to receive association:"))
@@ -275,7 +275,7 @@ OFCondition DVPSPrintSCP::refuseAssociation(OFBool isBadContext)
   }
 
   void *associatePDU=NULL;
-  unsigned long associatePDUlength=0;
+  unsigned int associatePDUlength=0;
 
   OFCondition cond = ASC_rejectAssociation(assoc, &rej, &associatePDU, &associatePDUlength);
 
@@ -324,7 +324,7 @@ void DVPSPrintSCP::dropAssociation()
 void DVPSPrintSCP::handleClient()
 {
   void *associatePDU=NULL;
-  unsigned long associatePDUlength=0;
+  unsigned int associatePDUlength=0;
 
   OFCondition cond = ASC_acknowledgeAssociation(assoc, &associatePDU, &associatePDUlength);
   if (dumpMode)

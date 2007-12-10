@@ -94,7 +94,7 @@ OFCondition DSRCodingSchemeIdentificationList::read(DcmItem &dataset,
         ItemStruct *item = NULL;
         OFString codingSchemeDesignator;
         /* iterate over all sequence items */
-        for (unsigned long i = 0; i < sequence.card(); i++)
+        for (unsigned int i = 0; i < sequence.card(); i++)
         {
             DcmItem *ditem = sequence.getItem(i);
             if (ditem != NULL)

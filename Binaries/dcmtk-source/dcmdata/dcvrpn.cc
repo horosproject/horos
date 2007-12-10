@@ -77,7 +77,7 @@ DcmEVR DcmPersonName::ident() const
 
 
 OFCondition DcmPersonName::getOFString(OFString &stringVal,
-                                       const unsigned long pos,
+                                       const unsigned int pos,
                                        OFBool normalize)
 {
     OFCondition l_error = DcmCharString::getOFString(stringVal, pos, normalize);
@@ -95,7 +95,7 @@ OFCondition DcmPersonName::getNameComponents(OFString &lastName,
                                              OFString &middleName,
                                              OFString &namePrefix,
                                              OFString &nameSuffix,
-                                             const unsigned long pos,
+                                             const unsigned int pos,
                                              const unsigned int componentGroup)
 {
     OFString dicomName;
@@ -199,7 +199,7 @@ OFCondition DcmPersonName::getNameComponentsFromString(const OFString &dicomName
 
 
 OFCondition DcmPersonName::getFormattedName(OFString &formattedName,
-                                            const unsigned long pos,
+                                            const unsigned int pos,
                                             const unsigned int componentGroup)
 {
     OFString dicomName;

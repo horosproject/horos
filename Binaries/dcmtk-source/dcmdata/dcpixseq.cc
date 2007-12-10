@@ -186,7 +186,7 @@ OFCondition DcmPixelSequence::makeSubObject(DcmObject *&subObject,
 
 
 OFCondition DcmPixelSequence::insert(DcmPixelItem *item,
-                                     unsigned long where)
+                                     unsigned int where)
 {
     errorFlag = EC_Normal;
     if (item != NULL)
@@ -205,7 +205,7 @@ OFCondition DcmPixelSequence::insert(DcmPixelItem *item,
 
 
 OFCondition DcmPixelSequence::getItem(DcmPixelItem *&item,
-                                      const unsigned long num)
+                                      const unsigned int num)
 {
     errorFlag = EC_Normal;
     item = OFstatic_cast(DcmPixelItem*, itemList->seek_to(num));  // read item from list
@@ -219,7 +219,7 @@ OFCondition DcmPixelSequence::getItem(DcmPixelItem *&item,
 
 
 OFCondition DcmPixelSequence::remove(DcmPixelItem *&item,
-                                     const unsigned long num)
+                                     const unsigned int num)
 {
     errorFlag = EC_Normal;
     item = OFstatic_cast(DcmPixelItem*, itemList->seek_to(num));  // read item from list

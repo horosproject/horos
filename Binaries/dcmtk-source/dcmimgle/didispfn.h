@@ -101,7 +101,7 @@ class DiDisplayFunction
      *                      the given base points (0 or negative = use cubic spline interpolation)
      */
     DiDisplayFunction(const double *val_tab,
-                      const unsigned long count,
+                      const unsigned int count,
                       const Uint16 max = 255,
                       const E_DeviceType deviceType = EDT_Monitor,
                       const signed int ord = 0);
@@ -120,7 +120,7 @@ class DiDisplayFunction
      */
     DiDisplayFunction(const Uint16 *ddl_tab,
                       const double *val_tab,
-                      const unsigned long count,
+                      const unsigned int count,
                       const Uint16 max = 255,
                       const E_DeviceType deviceType = EDT_Monitor,
                       const signed int ord = 0);
@@ -137,7 +137,7 @@ class DiDisplayFunction
      */
     DiDisplayFunction(const double val_min,
                       const double val_max,
-                      const unsigned long count = 256,
+                      const unsigned int count = 256,
                       const E_DeviceType deviceType = EDT_Monitor,
                       const signed int ord = 0);
 
@@ -226,7 +226,7 @@ class DiDisplayFunction
      ** @return pointer to created LUT if successful, NULL otherwise
      */
     const DiDisplayLUT *getLookupTable(const int bits,
-                                       unsigned long count = 0);
+                                       unsigned int count = 0);
 
     /** delete specified LUT
      *
@@ -385,7 +385,7 @@ class DiDisplayFunction
      *
      ** @return pointer to created LUT if successful, NULL otherwise
      */
-    virtual DiDisplayLUT *getDisplayLUT(unsigned long count) = 0;
+    virtual DiDisplayLUT *getDisplayLUT(unsigned int count) = 0;
 
     /** read the given device characteristics file
      *
@@ -416,7 +416,7 @@ class DiDisplayFunction
      ** @return pointer to luminance table if successful, NULL otherwise
      */
     double *convertODtoLumTable(const double *od_tab,
-                                const unsigned long count,
+                                const unsigned int count,
                                 const OFBool useAmb);
 
     /** interpolate device characteristic curve by means of a cubic spline interpolation
@@ -443,7 +443,7 @@ class DiDisplayFunction
     const E_DeviceType DeviceType;
 
     /// number of DDL and luminance/OD values
-    unsigned long ValueCount;
+    unsigned int ValueCount;
     /// maximum DDL value (usually 255)
     Uint16 MaxDDLValue;
     /// order of the polynomial curve fitting algorithm

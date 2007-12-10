@@ -152,7 +152,7 @@ const char *dcmSOPClassUIDToModality(const char *sopClassUID);
  * file size for the given SOP class.
  * Average sizes are defined for all storage SOP classes.
  */
-unsigned long dcmGuessModalityBytes(const char *sopClassUID);
+unsigned int dcmGuessModalityBytes(const char *sopClassUID);
 
 /*
 ** String Constants

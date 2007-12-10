@@ -96,7 +96,7 @@ class DiTransTemplate
     inline void copyPixel(const T *src[],
                           T *dest[])
     {
-        const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y) * Frames;
+        const unsigned int count = OFstatic_cast(unsigned int, Dest_X) * OFstatic_cast(unsigned int, Dest_Y) * Frames;
         for (int j = 0; j < Planes; ++j)
             OFBitmanipTemplate<T>::copyMem(src[j], dest[j], count);
     }
@@ -109,7 +109,7 @@ class DiTransTemplate
     inline void fillPixel(T *dest[],
                           const T value)
     {
-        const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y) * Frames;
+        const unsigned int count = OFstatic_cast(unsigned int, Dest_X) * OFstatic_cast(unsigned int, Dest_Y) * Frames;
         for (int j = 0; j < Planes; ++j)
             OFBitmanipTemplate<T>::setMem(dest[j], value, count);
     }

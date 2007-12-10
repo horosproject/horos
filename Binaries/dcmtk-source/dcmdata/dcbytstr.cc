@@ -97,12 +97,12 @@ DcmEVR DcmByteString::ident() const
 }
 
 
-unsigned long DcmByteString::getVM()
+unsigned int DcmByteString::getVM()
 {
     char *s = NULL;
     /* get stored string value */
     getString(s);
-    unsigned long vm = 0;
+    unsigned int vm = 0;
     /*  check for empty string */
     if ((s == NULL) || (Length == 0))
         vm = 0;
@@ -170,7 +170,7 @@ void DcmByteString::print(ostream &out,
         getString(string);
         if (string != NULL)
         {
-            unsigned long printedLength = strlen(string) + 2 /* for enclosing brackets */;
+            unsigned int printedLength = strlen(string) + 2 /* for enclosing brackets */;
             /* print line start with tag and VR */
             printInfoLineStart(out, flags, level);
             out << '[';
@@ -235,7 +235,7 @@ OFCondition DcmByteString::writeSignatureFormat(DcmOutputStream &outStream,
 
 
 OFCondition DcmByteString::getOFString(OFString &stringVal,
-                                       const unsigned long pos,
+                                       const unsigned int pos,
                                        OFBool /*normalize*/)
 {
     errorFlag = EC_Normal;
@@ -443,15 +443,15 @@ OFCondition DcmByteString::verify(const OFBool autocorrect)
     {
         /* create a temporary buffer for the string value */
         char *tempstr = new char[realLength + 1];
-        unsigned long field = 0;
-        unsigned long num = getVM();
-        unsigned long pos = 0;
-        unsigned long temppos = 0;
+        unsigned int field = 0;
+        unsigned int num = getVM();
+        unsigned int pos = 0;
+        unsigned int temppos = 0;
         char c;
         /* check all string components */
         while (field < num )
         {
-            unsigned long fieldlen = 0;
+            unsigned int fieldlen = 0;
             /* check size limit for each string component */
             while (((c = value[pos++]) != 0) && (c != '\\'))
             {
@@ -487,14 +487,14 @@ OFCondition DcmByteString::verify(const OFBool autocorrect)
 // global function to get a particular component of a DICOM string
 OFCondition getStringPart(OFString &result,
                           const char *orgStr,
-                          const unsigned long pos)
+                          const unsigned int pos)
 {
     OFCondition l_error = EC_Normal;
     /* check string parameter */
     if (orgStr != NULL)
     {
         /* search for beginning of specified string component  */
-        unsigned long i = 0;
+        unsigned int i = 0;
         while ((i < pos) && (*orgStr != '\0'))
         {
             if (*orgStr++ == '\\')
@@ -724,9 +724,9 @@ void normalizeString(OFString &string,
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

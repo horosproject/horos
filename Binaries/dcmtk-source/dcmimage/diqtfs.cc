@@ -74,7 +74,7 @@ void DcmQuantFloydSteinberg::cleanup()
 }
 
 
-OFCondition DcmQuantFloydSteinberg::initialize(unsigned long cols)
+OFCondition DcmQuantFloydSteinberg::initialize(unsigned int cols)
 {
   columns = cols;
   cleanup();
@@ -99,7 +99,7 @@ OFCondition DcmQuantFloydSteinberg::initialize(unsigned long cols)
   nextberr = new long[columns+2];
   if (! nextberr) return EC_MemoryExhausted;
 
-  for (unsigned long col = 0; col < columns + 2; ++col)
+  for (unsigned int col = 0; col < columns + 2; ++col)
   {
       thisrerr[col] = OFFilenameCreator::myrand_r(&now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;
       thisgerr[col] = OFFilenameCreator::myrand_r(&now) % ( DcmQuantFloydSteinbergScale * 2 ) - DcmQuantFloydSteinbergScale;

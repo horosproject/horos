@@ -264,8 +264,8 @@ void DVPSStoredPrint::updateCache()
   imageDisplayFormat.getOFStringArray(aString,OFTrue);
   if (aString.substr(0,9) == "STANDARD\\")
   {
-    unsigned long columns=0;
-    unsigned long rows=0;
+    unsigned int columns=0;
+    unsigned int rows=0;
     char format[30];
     aString.copy(format,OFString_npos,9);
     if (2==sscanf(format, "%lu,%lu", &columns, &rows))
@@ -520,8 +520,8 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
       OFBool haveImageStorage = OFFalse;
       
       seq=(DcmSequenceOfItems *)stack.top();
-      unsigned long numItems = seq->card();
-      for (unsigned long i=0; i<numItems; i++)
+      unsigned int numItems = seq->card();
+      for (unsigned int i=0; i<numItems; i++)
       {
          item = seq->getItem(i);
          stack.clear();
@@ -767,7 +767,7 @@ OFCondition DVPSStoredPrint::write(
 
   // compute number of image boxes to write
   updateCache();
-  unsigned long writeImageBoxes=0; // default: write all
+  unsigned int writeImageBoxes=0; // default: write all
   if (limitImages && currentValuesValid) writeImageBoxes = currentNumCols * currentNumRows;
  
   // write PresentationLUTContentSequence
@@ -1015,7 +1015,7 @@ OFCondition DVPSStoredPrint::setInstanceUID(const char *uid)
   return sOPInstanceUID.putString(uid);
 }
 
-OFCondition DVPSStoredPrint::setImageDisplayFormat(unsigned long columns, unsigned long rows)
+OFCondition DVPSStoredPrint::setImageDisplayFormat(unsigned int columns, unsigned int rows)
 {
   if ((columns==0)||(rows==0)) return EC_IllegalCall;
   char newFormat[80];
@@ -1163,13 +1163,13 @@ const char *DVPSStoredPrint::getPrinterName()
   if (EC_Normal == printerName.getString(c)) return c; else return NULL;
 }
 
-unsigned long DVPSStoredPrint::getImageDisplayFormatColumns()
+unsigned int DVPSStoredPrint::getImageDisplayFormatColumns()
 {
   updateCache();
   return currentNumCols;
 }
 
-unsigned long DVPSStoredPrint::getImageDisplayFormatRows()
+unsigned int DVPSStoredPrint::getImageDisplayFormatRows()
 {
   updateCache();
   return currentNumRows;
@@ -1325,7 +1325,7 @@ OFCondition DVPSStoredPrint::deleteSpooledImages()
 {
   OFCondition result = EC_IllegalCall;
   char *c = NULL;
-  unsigned long deleteImageBoxes=0;
+  unsigned int deleteImageBoxes=0;
 
   updateCache();
   if (currentValuesValid) 
@@ -1741,8 +1741,8 @@ OFCondition DVPSStoredPrint::printSCUsetBasicImageBox(
   char str[100];
   DcmPolymorphOBOW *pxData = NULL;
   const void *pxDataVoid;
-  unsigned long width = image.getWidth();
-  unsigned long height = image.getHeight();
+  unsigned int width = image.getWidth();
+  unsigned int height = image.getHeight();
   DcmDataset *attributeListOut=NULL; 
   Uint16 status=0;
   
@@ -2308,7 +2308,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
         OFString aString;
         OFBool found = OFFalse;
         OFBool supportsNumericDensity = OFFalse;
-        unsigned long l;
+        unsigned int l;
         borderDensity.getOFString(theBorderDensity, 0, OFTrue);
         for (Uint32 i=0; i<numBorderDensities; i++)
         {
@@ -2370,7 +2370,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
         OFString aString;
         OFBool found = OFFalse;
         OFBool supportsNumericDensity = OFFalse;
-        unsigned long l;
+        unsigned int l;
         emptyImageDensity.getOFString(theEIDensity, 0, OFTrue);
         for (Uint32 i=0; i<numEmptyImageDensities; i++)
         {
@@ -3060,7 +3060,7 @@ OFBool DVPSStoredPrint::printSCPSet(
         OFString aString;
         OFBool found = OFFalse;
         OFBool supportsNumericDensity = OFFalse;
-        unsigned long l;
+        unsigned int l;
         borderDensity.getOFString(theBorderDensity, 0, OFTrue);
         for (Uint32 i=0; i<numBorderDensities; i++)
         {
@@ -3119,7 +3119,7 @@ OFBool DVPSStoredPrint::printSCPSet(
         OFString aString;
         OFBool found = OFFalse;
         OFBool supportsNumericDensity = OFFalse;
-        unsigned long l;
+        unsigned int l;
         emptyImageDensity.getOFString(theEIDensity, 0, OFTrue);
         for (Uint32 i=0; i<numEmptyImageDensities; i++)
         {

@@ -68,12 +68,12 @@
 
 DVPresentationState::DVPresentationState(
     DiDisplayFunction **dispFunction,
-    unsigned long minPrintBitmapX,
-    unsigned long minPrintBitmapY,
-    unsigned long maxPrintBitmapX,
-    unsigned long maxPrintBitmapY,
-    unsigned long maxPreviewImageX,
-    unsigned long maxPreviewImageY)
+    unsigned int minPrintBitmapX,
+    unsigned int minPrintBitmapY,
+    unsigned int maxPrintBitmapX,
+    unsigned int maxPrintBitmapY,
+    unsigned int maxPreviewImageX,
+    unsigned int maxPreviewImageY)
 : DcmPresentationState()
 , currentImageDataset(NULL)
 , currentImageFileformat(NULL)
@@ -231,22 +231,22 @@ OFCondition DVPresentationState::writeHardcopyImageAttributes(DcmItem &dset)
   return result;
 }
 
-unsigned long DVPresentationState::getPrintBitmapSize()
+unsigned int DVPresentationState::getPrintBitmapSize()
 {
-  unsigned long result = 0;
-  unsigned long width;
-  unsigned long height;
+  unsigned int result = 0;
+  unsigned int width;
+  unsigned int height;
   if (getPrintBitmapWidthHeight(width, height) == EC_Normal)
     result = width * height * 2;       // print bitmap: 12 bit stored, 16 bit allocated (2 bytes per pixel)
   return result;
 }
 
 
-OFCondition DVPresentationState::setMinimumPrintBitmapWidthHeight(unsigned long width,
-                                                                  unsigned long height)
+OFCondition DVPresentationState::setMinimumPrintBitmapWidthHeight(unsigned int width,
+                                                                  unsigned int height)
 {
   OFCondition result = EC_IllegalCall;
-  const unsigned long max = (width > height) ? width : height;
+  const unsigned int max = (width > height) ? width : height;
   if (((maximumPrintBitmapWidth == 0) || (maximumPrintBitmapWidth >= 2 * max)) &&
       ((maximumPrintBitmapHeight == 0) || (maximumPrintBitmapHeight >= 2 * max)))
   {
@@ -258,11 +258,11 @@ OFCondition DVPresentationState::setMinimumPrintBitmapWidthHeight(unsigned long 
 }
 
 
-OFCondition DVPresentationState::setMaximumPrintBitmapWidthHeight(unsigned long width,
-                                                                  unsigned long height)
+OFCondition DVPresentationState::setMaximumPrintBitmapWidthHeight(unsigned int width,
+                                                                  unsigned int height)
 {
   OFCondition result = EC_IllegalCall;
-  const unsigned long min = (width < height) ? width : height;
+  const unsigned int min = (width < height) ? width : height;
   if (((minimumPrintBitmapWidth == 0) || (min >= 2 * minimumPrintBitmapWidth)) &&
       ((minimumPrintBitmapHeight == 0) || (min >= 2 * minimumPrintBitmapHeight)))
   {
@@ -274,8 +274,8 @@ OFCondition DVPresentationState::setMaximumPrintBitmapWidthHeight(unsigned long 
 }
 
 
-OFCondition DVPresentationState::getPrintBitmapWidthHeight(unsigned long &width,
-                                                           unsigned long &height)
+OFCondition DVPresentationState::getPrintBitmapWidthHeight(unsigned int &width,
+                                                           unsigned int &height)
 {
   OFCondition result = EC_Normal;
   if (currentImage)
@@ -285,15 +285,15 @@ OFCondition DVPresentationState::getPrintBitmapWidthHeight(unsigned long &width,
     height = renderedImageHeight;
     if ((width > 0) && (height > 0))
     {
-      width = (unsigned long)(renderedImageRight - renderedImageLeft + 1);
-      height = (unsigned long)(renderedImageBottom - renderedImageTop + 1);
+      width = (unsigned int)(renderedImageRight - renderedImageLeft + 1);
+      height = (unsigned int)(renderedImageBottom - renderedImageTop + 1);
 
       if ((minimumPrintBitmapWidth > 0) && (width < minimumPrintBitmapWidth))
       {
         if ((minimumPrintBitmapHeight > 0) && (height < minimumPrintBitmapHeight))
         {
-          const unsigned long xfactor = (unsigned long)((double)(minimumPrintBitmapWidth - 1) / (double)width) + 1;
-          const unsigned long yfactor = (unsigned long)((double)(minimumPrintBitmapHeight - 1) / (double)height) + 1;
+          const unsigned int xfactor = (unsigned int)((double)(minimumPrintBitmapWidth - 1) / (double)width) + 1;
+          const unsigned int yfactor = (unsigned int)((double)(minimumPrintBitmapHeight - 1) / (double)height) + 1;
           if (xfactor > yfactor)
           {
             width *= xfactor;
@@ -303,14 +303,14 @@ OFCondition DVPresentationState::getPrintBitmapWidthHeight(unsigned long &width,
             height *= yfactor;
           }
         } else {
-          const unsigned long factor = (unsigned long)((double)(minimumPrintBitmapWidth - 1) / (double)width) + 1;
+          const unsigned int factor = (unsigned int)((double)(minimumPrintBitmapWidth - 1) / (double)width) + 1;
           width *= factor;
           height *= factor;
         }
       }
       else if ((minimumPrintBitmapHeight > 0) && (height < minimumPrintBitmapHeight))
       {
-        const unsigned long factor = (unsigned long)((double)(minimumPrintBitmapHeight - 1) / (double)height) + 1;
+        const unsigned int factor = (unsigned int)((double)(minimumPrintBitmapHeight - 1) / (double)height) + 1;
         width *= factor;
         height *= factor;
       }
@@ -319,8 +319,8 @@ OFCondition DVPresentationState::getPrintBitmapWidthHeight(unsigned long &width,
       {
         if ((maximumPrintBitmapHeight > 0) && (height > maximumPrintBitmapHeight))
         {
-          const unsigned long xdivisor = (unsigned long)((double)(width - 1) / (double)maximumPrintBitmapWidth) + 1;
-          const unsigned long ydivisor = (unsigned long)((double)(height - 1) / (double)maximumPrintBitmapHeight) + 1;
+          const unsigned int xdivisor = (unsigned int)((double)(width - 1) / (double)maximumPrintBitmapWidth) + 1;
+          const unsigned int ydivisor = (unsigned int)((double)(height - 1) / (double)maximumPrintBitmapHeight) + 1;
           if (xdivisor > ydivisor)
           {
             width /= xdivisor;
@@ -330,14 +330,14 @@ OFCondition DVPresentationState::getPrintBitmapWidthHeight(unsigned long &width,
             height /= ydivisor;
           }
         } else {
-          const unsigned long divisor = (unsigned long)((double)(width - 1) / (double)maximumPrintBitmapWidth) + 1;
+          const unsigned int divisor = (unsigned int)((double)(width - 1) / (double)maximumPrintBitmapWidth) + 1;
           width /= divisor;
           height /= divisor;
         }
       }
       else if ((maximumPrintBitmapHeight > 0) && (height > maximumPrintBitmapHeight))
       {
-        const unsigned long divisor = (unsigned long)((double)(height - 1) / (double)maximumPrintBitmapHeight) + 1;
+        const unsigned int divisor = (unsigned int)((double)(height - 1) / (double)maximumPrintBitmapHeight) + 1;
         width /= divisor;
         height /= divisor;
       }
@@ -351,16 +351,16 @@ OFCondition DVPresentationState::getPrintBitmapWidthHeight(unsigned long &width,
 }
 
 
-OFCondition DVPresentationState::getPrintBitmapWidth(unsigned long &width)
+OFCondition DVPresentationState::getPrintBitmapWidth(unsigned int &width)
 {
-  unsigned long dummy;
+  unsigned int dummy;
   return getPrintBitmapWidthHeight(width, dummy);
 }
 
 
-OFCondition DVPresentationState::getPrintBitmapHeight(unsigned long &height)
+OFCondition DVPresentationState::getPrintBitmapHeight(unsigned int &height)
 {
-  unsigned long dummy;
+  unsigned int dummy;
   return getPrintBitmapWidthHeight(dummy, height);
 }
 
@@ -378,7 +378,7 @@ double DVPresentationState::getPrintBitmapPixelAspectRatio()
 
 
 OFCondition DVPresentationState::getPrintBitmap(void *bitmap,
-                                                unsigned long size,
+                                                unsigned int size,
                                                 OFBool inversePLUT)
 {
   OFCondition result = EC_IllegalCall;
@@ -387,8 +387,8 @@ OFCondition DVPresentationState::getPrintBitmap(void *bitmap,
     if (currentImage)
     {
       renderPixelData(OFFalse);                                 // don't use current display function
-      unsigned long width;
-      unsigned long height;
+      unsigned int width;
+      unsigned int height;
       if (getPrintBitmapWidthHeight(width, height) == EC_Normal)
       {
         DicomImage *image = currentImage;
@@ -444,8 +444,8 @@ OFCondition DVPresentationState::getPrintBitmap(void *bitmap,
 }
 
 
-OFCondition DVPresentationState::createPreviewImage(unsigned long maxWidth,
-                                                    unsigned long maxHeight,
+OFCondition DVPresentationState::createPreviewImage(unsigned int maxWidth,
+                                                    unsigned int maxHeight,
                                                     OFBool clipMode)
 {
   OFCondition result = EC_IllegalCall;
@@ -453,8 +453,8 @@ OFCondition DVPresentationState::createPreviewImage(unsigned long maxWidth,
   {
     deletePreviewImage();
     renderPixelData();
-    unsigned long width = maxWidth;
-    unsigned long height = maxHeight;
+    unsigned int width = maxWidth;
+    unsigned int height = maxHeight;
     double ratio = getPrintBitmapPixelAspectRatio();    // never 0 !
     if ((double)renderedImageWidth / (double)maxWidth * ratio < (double)renderedImageHeight / (double)maxHeight)
       width = 0;
@@ -490,19 +490,19 @@ void DVPresentationState::deletePreviewImage()
 }
 
 
-unsigned long DVPresentationState::getPreviewImageSize()
+unsigned int DVPresentationState::getPreviewImageSize()
 {
-  unsigned long result = 0;
-  unsigned long width;
-  unsigned long height;
+  unsigned int result = 0;
+  unsigned int width;
+  unsigned int height;
   if (getPreviewImageWidthHeight(width, height) == EC_Normal)
       result = width * height;
   return result;
 }
 
 
-OFCondition DVPresentationState::getPreviewImageWidthHeight(unsigned long &width,
-                                                            unsigned long &height)
+OFCondition DVPresentationState::getPreviewImageWidthHeight(unsigned int &width,
+                                                            unsigned int &height)
 {
   OFCondition result = EC_IllegalCall;
   if (previewImage != NULL)
@@ -519,22 +519,22 @@ OFCondition DVPresentationState::getPreviewImageWidthHeight(unsigned long &width
 }
 
 
-OFCondition DVPresentationState::getPreviewImageWidth(unsigned long &width)
+OFCondition DVPresentationState::getPreviewImageWidth(unsigned int &width)
 {
-  unsigned long dummy;
+  unsigned int dummy;
   return getPreviewImageWidthHeight(width, dummy);
 }
 
 
-OFCondition DVPresentationState::getPreviewImageHeight(unsigned long &height)
+OFCondition DVPresentationState::getPreviewImageHeight(unsigned int &height)
 {
-  unsigned long dummy;
+  unsigned int dummy;
   return getPreviewImageWidthHeight(dummy, height);
 }
 
 
 OFCondition DVPresentationState::getPreviewImageBitmap(void *bitmap,
-                                                       unsigned long size)
+                                                       unsigned int size)
 {
   OFCondition result = EC_IllegalCall;
   if ((previewImage != NULL) && (bitmap != NULL) && (size > 0))
@@ -647,7 +647,7 @@ OFCondition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
   return result;
 }
 
-OFCondition DVPresentationState::getImageWidth(unsigned long &width)
+OFCondition DVPresentationState::getImageWidth(unsigned int &width)
 {
   OFCondition result=EC_Normal;
   if (currentImage) width = currentImageWidth;
@@ -659,7 +659,7 @@ OFCondition DVPresentationState::getImageWidth(unsigned long &width)
   return result;
 }
 
-OFCondition DVPresentationState::getImageHeight(unsigned long &height)
+OFCondition DVPresentationState::getImageHeight(unsigned int &height)
 {
   OFCondition result=EC_Normal;
   if (currentImage) height = currentImageHeight;
@@ -1103,7 +1103,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
 
   OFCondition status = EC_IllegalCall;
   const unsigned int numberOfBits = 16;
-  unsigned long numberOfEntries = 0;
+  unsigned int numberOfEntries = 0;
   signed long firstMapped = 0;
   if (haveActiveVOIWindow())    // use active VOI window to specify the LUT descriptor
   {
@@ -1112,7 +1112,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
     {
       if (ww <= 65536)
       {
-        numberOfEntries = (unsigned long)ww;
+        numberOfEntries = (unsigned int)ww;
         firstMapped = (signed long)(wc - ww / 2);
       }
     }
@@ -1124,7 +1124,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
     {
       if (max - min < 65536.0)
       {
-        numberOfEntries = (unsigned long)(max - min + 1.0);
+        numberOfEntries = (unsigned int)(max - min + 1.0);
         firstMapped = (signed long)min;
       }
     }
@@ -1141,7 +1141,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
       double step = (double)maxValue / ((double)numberOfEntries - 1.0);
       double gammaExp = 1.0 / gammaValue;
       double factor = (double)maxValue / pow((double)maxValue, gammaExp);
-      unsigned long i;
+      unsigned int i;
       for (i = 0; i < numberOfEntries; i++)
         data[i]= (Uint16)(factor * pow(i * step, gammaExp));
 
@@ -1875,8 +1875,8 @@ OFCondition DVPresentationState::invertImage()
 
 OFCondition DVPresentationState::getPixelData(
      const void *&pixelData,
-     unsigned long &width,
-     unsigned long &height)
+     unsigned int &width,
+     unsigned int &height)
 {
    if (currentImage)
    {
@@ -1895,7 +1895,7 @@ OFCondition DVPresentationState::getPixelData(
 
 OFCondition DVPresentationState::getPixelData(
      void *pixelData,
-     unsigned long size)
+     unsigned int size)
 {
    if (currentImage)
    {
@@ -1926,17 +1926,17 @@ OFCondition DVPresentationState::getImageMinMaxPixelValue(double &minValue, doub
   return result;
 }
 
-OFCondition DVPresentationState::getImageNumberOfFrames(unsigned long &frames)
+OFCondition DVPresentationState::getImageNumberOfFrames(unsigned int &frames)
 {
   if (currentImage)
   {
-    frames = (unsigned long)(currentImage->getFrameCount());
+    frames = (unsigned int)(currentImage->getFrameCount());
     return EC_Normal;
   }
   return EC_IllegalCall;
 }
 
-OFCondition DVPresentationState::selectImageFrameNumber(unsigned long frame)
+OFCondition DVPresentationState::selectImageFrameNumber(unsigned int frame)
 {
   if ((frame > 0) && currentImage && (frame <= currentImage->getFrameCount()))
   {
@@ -1948,7 +1948,7 @@ OFCondition DVPresentationState::selectImageFrameNumber(unsigned long frame)
   return EC_IllegalCall;
 }
 
-unsigned long DVPresentationState::getSelectedImageFrameNumber()
+unsigned int DVPresentationState::getSelectedImageFrameNumber()
 {
   if (currentImage)
   {

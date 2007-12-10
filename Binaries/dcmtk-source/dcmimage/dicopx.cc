@@ -120,7 +120,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
 }
 
 DiColorPixel::DiColorPixel(const DiColorPixel *pixel,
-                           const unsigned long count)
+                           const unsigned int count)
   : DiPixel(count, pixel->InputCount),
     PlanarConfiguration(pixel->PlanarConfiguration)
 {

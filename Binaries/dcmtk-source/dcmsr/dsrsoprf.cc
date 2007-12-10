@@ -100,7 +100,7 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::read(DcmItem &dataset,
     if (result.good())
     {
         /* iterate over all sequence items */
-        for (unsigned long i = 0; i < sequence.card(); i++)
+        for (unsigned int i = 0; i < sequence.card(); i++)
         {
             DcmItem *item = sequence.getItem(i);
             if (item != NULL)
@@ -443,7 +443,7 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::read(DcmItem &dataset,
     if (result.good())
     {
         /* iterate over all sequence items */
-        for (unsigned long i = 0; i < sequence.card(); i++)
+        for (unsigned int i = 0; i < sequence.card(); i++)
         {
             DcmItem *item = sequence.getItem(i);
             if (item != NULL)
@@ -838,7 +838,7 @@ OFCondition DSRSOPInstanceReferenceList::read(DcmItem &dataset,
     if (result.good())
     {
         /* iterate over all sequence items */
-        for (unsigned long i = 0; i < sequence.card(); i++)
+        for (unsigned int i = 0; i < sequence.card(); i++)
         {
             DcmItem *item = sequence.getItem(i);
             if (item != NULL)

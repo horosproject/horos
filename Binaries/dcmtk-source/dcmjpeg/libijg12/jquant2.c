@@ -107,7 +107,7 @@
  * better results; if you are short of memory, 5 bits all around will save
  * some space but degrade the results.
  * To maintain a fully accurate histogram, we'd need to allocate a "long"
- * (preferably unsigned long) for each cell.  In practice this is overkill;
+ * (preferably unsigned int) for each cell.  In practice this is overkill;
  * we can get by with 16 bits per cell.  Few of the cell counts will overflow,
  * and clamping those that do overflow to the maximum value will give close-
  * enough results.  This reduces the recommended histogram size from 256Kb

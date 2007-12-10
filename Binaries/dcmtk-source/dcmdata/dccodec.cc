@@ -213,7 +213,7 @@ OFCondition DcmCodec::updateImageType(DcmItem *dataset)
   if (status.good())
   {
     DcmElement *elem = OFstatic_cast(DcmElement *, stack.top());
-    unsigned long pos = 1;
+    unsigned int pos = 1;
 
     // append old image type information beginning with second entry
     while ((elem->getOFString(a, pos++)).good())

@@ -71,11 +71,11 @@ class DiGSDFLUT
      *  @param  stream     output stream (used to write curve data to a file)
      *  @param  printMode  write CC and PSC to stream if OFTrue
      */
-    DiGSDFLUT(const unsigned long count,
+    DiGSDFLUT(const unsigned int count,
               const Uint16 max,
               const Uint16 *ddl_tab,
               const double *val_tab,
-              const unsigned long ddl_cnt,
+              const unsigned int ddl_cnt,
               const double *gsdf_tab,
               const double *gsdf_spl,
               const unsigned int gsdf_cnt,
@@ -116,7 +116,7 @@ class DiGSDFLUT
      */
     int createLUT(const Uint16 *ddl_tab,
                   const double *val_tab,
-                  const unsigned long ddl_cnt,
+                  const unsigned int ddl_cnt,
                   const double *gsdf_tab,
                   const double *gsdf_spl,
                   const unsigned int gsdf_cnt,

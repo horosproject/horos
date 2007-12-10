@@ -73,12 +73,12 @@ class DiColorRotateTemplate
                           const Uint16 dest_rows,
                           const Uint32 frames,
                           const int degree)
-      : DiColorPixelTemplate<T>(pixel, OFstatic_cast(unsigned long, dest_cols) * OFstatic_cast(unsigned long, dest_rows) * frames),
+      : DiColorPixelTemplate<T>(pixel, OFstatic_cast(unsigned int, dest_cols) * OFstatic_cast(unsigned int, dest_rows) * frames),
         DiRotateTemplate<T>(3, src_cols, src_rows, dest_cols, dest_rows, frames)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
-            if (pixel->getCount() == OFstatic_cast(unsigned long, src_cols) * OFstatic_cast(unsigned long, src_rows) * frames)
+            if (pixel->getCount() == OFstatic_cast(unsigned int, src_cols) * OFstatic_cast(unsigned int, src_rows) * frames)
                 rotate(OFstatic_cast(const T **, OFconst_cast(void *, pixel->getData())), degree);
             else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))

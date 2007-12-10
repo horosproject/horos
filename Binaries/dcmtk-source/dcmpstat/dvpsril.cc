@@ -91,7 +91,7 @@ OFCondition DVPSReferencedImage_PList::read(DcmItem &dset)
     dseq=(DcmSequenceOfItems *)stack.top();
     if (dseq)
     {
-      unsigned long numItems = dseq->card();
+      unsigned int numItems = dseq->card();
       for (unsigned int i=0; i<numItems; i++)
       {
         ditem = dseq->getItem(i);
@@ -172,7 +172,7 @@ DVPSReferencedImage *DVPSReferencedImage_PList::findImageReference(const char *s
   return NULL;
 }
 
-void DVPSReferencedImage_PList::removeFrameReference(const char *sopinstanceuid, unsigned long frame, unsigned long numberOfFrames)
+void DVPSReferencedImage_PList::removeFrameReference(const char *sopinstanceuid, unsigned int frame, unsigned int numberOfFrames)
 {
   if ((frame<1)||(numberOfFrames<frame)) return;
   OFListIterator(DVPSReferencedImage *) first = list_.begin();
@@ -233,7 +233,7 @@ OFCondition DVPSReferencedImage_PList::addImageReference(
 OFCondition DVPSReferencedImage_PList::addImageReference(
     const char *sopclassUID,
     const char *instanceUID,
-    unsigned long frame,
+    unsigned int frame,
     DVPSObjectApplicability applicability)
 {
   if ((sopclassUID==NULL)||(instanceUID==NULL)||(applicability==DVPSB_allImages)) return EC_IllegalCall;
@@ -271,8 +271,8 @@ OFCondition DVPSReferencedImage_PList::getImageReference(
 void DVPSReferencedImage_PList::removeImageReference(
     DVPSReferencedSeries_PList& allReferences,
     const char *instanceUID,
-    unsigned long frame,
-    unsigned long numberOfFrames,
+    unsigned int frame,
+    unsigned int numberOfFrames,
     DVPSObjectApplicability applicability)
 {
 
@@ -313,7 +313,7 @@ void DVPSReferencedImage_PList::removeImageReference(
   return;
 }
 
-OFBool DVPSReferencedImage_PList::isApplicable(const char *instanceUID, unsigned long frame)
+OFBool DVPSReferencedImage_PList::isApplicable(const char *instanceUID, unsigned int frame)
 {
   if (size() == 0) return OFTrue; // if no image references exist, the object is valid "globally".
   DVPSReferencedImage *imageRef = findImageReference(instanceUID);
@@ -321,7 +321,7 @@ OFBool DVPSReferencedImage_PList::isApplicable(const char *instanceUID, unsigned
   return OFFalse;
 }
 
-OFBool DVPSReferencedImage_PList::matchesApplicability(const char *instanceUID, unsigned long frame, DVPSObjectApplicability applicability)
+OFBool DVPSReferencedImage_PList::matchesApplicability(const char *instanceUID, unsigned int frame, DVPSObjectApplicability applicability)
 {
   DVPSReferencedImage *imageRef = NULL;
   switch (applicability)

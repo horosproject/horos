@@ -71,14 +71,14 @@ class OFBitmanipTemplate
      */
     static void copyMem(const T *src,
                         T *dest,
-                        const unsigned long count)
+                        const unsigned int count)
     {
 #ifdef HAVE_MEMCPY
         memcpy(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), OFstatic_cast(size_t, count) * sizeof(T));
 #elif HAVE_BCOPY
         bcopy(OFstatic_cast(const void *, src), OFstatic_cast(void *, dest), OFstatic_cast(size_t, count) * sizeof(T));
 #else
-        register unsigned long i;
+        register unsigned int i;
         register const T *p = src;
         register T *q = dest;
         for (i = count; i != 0; --i)
@@ -95,7 +95,7 @@ class OFBitmanipTemplate
      */
     static void setMem(T *dest,
                        const T value,
-                       const unsigned long count)
+                       const unsigned int count)
     {
 #ifdef HAVE_MEMSET
         if ((value == 0) || (sizeof(T) == sizeof(unsigned char)))
@@ -103,7 +103,7 @@ class OFBitmanipTemplate
         else
 #endif
         {
-            register unsigned long i;
+            register unsigned int i;
             register T *q = dest;
             for (i = count; i != 0; --i)
                 *q++ = value;
@@ -117,7 +117,7 @@ class OFBitmanipTemplate
      *  @param  count  number of elements to be set to zero
      */
     static void zeroMem(T *dest,
-                        const unsigned long count)
+                        const unsigned int count)
     {
 #ifdef HAVE_BZERO
         // some platforms, e.g. OSF1, require the first parameter to be char *.
@@ -126,7 +126,7 @@ class OFBitmanipTemplate
 #ifdef HAVE_MEMSET
         memset(OFstatic_cast(void *, dest), 0, OFstatic_cast(size_t, count) * sizeof(T));
 #else
-        register unsigned long i;
+        register unsigned int i;
         register T *q = dest;
         for (i = count; i != 0; --i)
             *q++ = 0;

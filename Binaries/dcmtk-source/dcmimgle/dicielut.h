@@ -67,11 +67,11 @@ class DiCIELABLUT
      *  @param  stream     output stream (used to write curve data to a file)
      *  @param  printMode  write CC and PSC to stream if OFTrue
      */
-    DiCIELABLUT(const unsigned long count,
+    DiCIELABLUT(const unsigned int count,
                 const Uint16 max,
                 const Uint16 *ddl_tab,
                 const double *val_tab,
-                const unsigned long ddl_cnt,
+                const unsigned int ddl_cnt,
                 const double val_min,
                 const double val_max,
                 const double lum_min,
@@ -105,7 +105,7 @@ class DiCIELABLUT
      */
     int createLUT(const Uint16 *ddl_tab,
                   const double *val_tab,
-                  const unsigned long ddl_cnt,
+                  const unsigned int ddl_cnt,
                   const double val_min,
                   const double val_max,
                   const double lum_min,

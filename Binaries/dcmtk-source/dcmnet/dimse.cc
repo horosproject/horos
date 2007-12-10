@@ -147,8 +147,8 @@ E_EncodingType    g_dimse_send_sequenceType_encoding = EET_ExplicitLength;
  */
 
 OFBool g_dimse_save_dimse_data = OFFalse;
-static unsigned long g_dimse_commandCounter = 0;
-static unsigned long g_dimse_dataCounter = 0;
+static unsigned int g_dimse_commandCounter = 0;
+static unsigned int g_dimse_dataCounter = 0;
 
 /*
 ** Private Functions Prototypes
@@ -579,15 +579,15 @@ sendStraightFileData(T_ASC_Association * assoc, const char *dataFileName,
 {
     /* we assume that the file contains transfer syntax compatible data */
     unsigned char *buf;
-    unsigned long bufLen;
+    unsigned int bufLen;
     FILE *f;
     long nbytes;
     OFBool last;
-    unsigned long bytesTransmitted = 0;
+    unsigned int bytesTransmitted = 0;
     OFCondition dulCond = EC_Normal;
     DUL_PDVLIST pdvList;
     DUL_PDV pdv;
-    unsigned long pdvCount = 0;
+    unsigned int pdvCount = 0;
 
     buf = assoc->sendPDVBuffer;
     bufLen = assoc->sendPDVLength;
@@ -603,7 +603,7 @@ sendStraightFileData(T_ASC_Association * assoc, const char *dataFileName,
     }
     
     while (cond.good() && ((nbytes = fread(buf, 1, bufLen, f)) > 0)) {
-        last = ((unsigned long)nbytes != bufLen);
+        last = ((unsigned int)nbytes != bufLen);
         pdv.fragmentLength = nbytes;
         pdv.presentationContextID = presID;
         pdv.pdvType = DUL_DATASETPDV;
@@ -664,14 +664,14 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     OFCondition dulCond = EC_Normal;
     OFCondition econd = EC_Normal;
     unsigned char *buf;
-    unsigned long bufLen;
+    unsigned int bufLen;
     OFBool last = OFFalse;
     OFBool written = OFFalse;
     Uint32 rtnLength;
     Uint32 bytesTransmitted = 0;
     DUL_PDVLIST pdvList;
     DUL_PDV pdv;
-    unsigned long pdvCount = 0;
+    unsigned int pdvCount = 0;
 
     /* initialize some local variables (we want to use the association's send buffer */
     /* to store data) this buffer can only take a certain number of elements */
@@ -882,7 +882,7 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
     {
       /* move the status detail to the command */
       DcmElement* e;
-      while ((e = statusDetail->remove((unsigned long)0)) != NULL) cmdObj->insert(e, OFTrue);
+      while ((e = statusDetail->remove((unsigned int)0)) != NULL) cmdObj->insert(e, OFTrue);
     }
     
     /* if the command object has been created successfully and the data set is present */
@@ -1112,8 +1112,8 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
      */
 {
     OFCondition cond = EC_Normal;
-    unsigned long bytesRead;
-    unsigned long pdvCount;
+    unsigned int bytesRead;
+    unsigned int pdvCount;
 
     DUL_DATAPDV type;
     OFBool last;
@@ -1947,7 +1947,7 @@ void DIMSE_warning(T_ASC_Association *assoc,
 **
 ** Revision 1.2  1996/04/25 16:11:16  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
-** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
+** of DIC_UL with unsigned int (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due
 ** to MIPS/Ultrix).
 **

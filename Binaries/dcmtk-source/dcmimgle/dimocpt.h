@@ -63,9 +63,9 @@ class DiMonoCopyTemplate
      *  @param  fsize   size of one frame (in bytes)
      */
     DiMonoCopyTemplate(const DiMonoPixel *pixel,
-                       const unsigned long fstart,
-                       const unsigned long fcount,
-                       const unsigned long fsize)
+                       const unsigned int fstart,
+                       const unsigned int fcount,
+                       const unsigned int fsize)
       : DiMonoPixelTemplate<T>(pixel, fcount * fsize)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))

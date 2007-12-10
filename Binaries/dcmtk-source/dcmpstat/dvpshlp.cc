@@ -190,10 +190,10 @@ OFBool DVPSHelper::haveReferencedUIDItem(DcmSequenceOfItems& seq, const char *ui
 
   DcmItem *item = NULL;
   DcmUniqueIdentifier *refuid = NULL;
-  unsigned long numItems = seq.card();
+  unsigned int numItems = seq.card();
   DcmStack stack;
   OFString aString;
-  for (unsigned long i=0; i<numItems; i++)
+  for (unsigned int i=0; i<numItems; i++)
   {
     item = seq.getItem(i);
     stack.clear();

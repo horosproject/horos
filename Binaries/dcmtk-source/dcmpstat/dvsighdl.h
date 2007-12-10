@@ -101,19 +101,19 @@ public:
    *  @param objtype object type
    *  @return number of digital signatures
    */
-  unsigned long getNumberOfCorrectSignatures(DVPSObjectType objtype) const;
+  unsigned int getNumberOfCorrectSignatures(DVPSObjectType objtype) const;
 
   /** returns number of untrustworthy signatures for given object type.
    *  @param objtype object type
    *  @return number of digital signatures
    */
-  unsigned long getNumberOfUntrustworthySignatures(DVPSObjectType objtype) const;
+  unsigned int getNumberOfUntrustworthySignatures(DVPSObjectType objtype) const;
 
   /** returns number of corrupt signatures for given object type.
    *  @param objtype object type
    *  @return number of digital signatures
    */
-  unsigned long getNumberOfCorruptSignatures(DVPSObjectType objtype) const;
+  unsigned int getNumberOfCorruptSignatures(DVPSObjectType objtype) const;
   
   /** returns the combined status flag for the current image and presentation state.
    *  @return digital signature status for image and presentation state
@@ -196,31 +196,31 @@ private:
   OFString htmlOverview;
 
   /// number of correct signatures in current SR 
-  unsigned long correctSignaturesSR;
+  unsigned int correctSignaturesSR;
 
   /// number of corrupt signatures in current SR 
-  unsigned long corruptSignaturesSR;
+  unsigned int corruptSignaturesSR;
 
   /// number of untrustworthy signatures in current SR 
-  unsigned long untrustSignaturesSR;
+  unsigned int untrustSignaturesSR;
 
   /// number of correct signatures in current Image 
-  unsigned long correctSignaturesImage;
+  unsigned int correctSignaturesImage;
 
   /// number of corrupt signatures in current Image 
-  unsigned long corruptSignaturesImage;
+  unsigned int corruptSignaturesImage;
 
   /// number of untrustworthy signatures in current Image 
-  unsigned long untrustSignaturesImage;
+  unsigned int untrustSignaturesImage;
 
   /// number of correct signatures in current PState 
-  unsigned long correctSignaturesPState;
+  unsigned int correctSignaturesPState;
 
   /// number of corrupt signatures in current PState 
-  unsigned long corruptSignaturesPState;
+  unsigned int corruptSignaturesPState;
 
   /// number of untrustworthy signatures in current PState 
-  unsigned long untrustSignaturesPState;
+  unsigned int untrustSignaturesPState;
 
 #ifdef WITH_OPENSSL  
   /// the certificate verifier, available only if compiled with OpenSSL support

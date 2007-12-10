@@ -160,16 +160,16 @@ void DcmSignature::detach()
 }
 
 
-unsigned long DcmSignature::numberOfSignatures()
+unsigned int DcmSignature::numberOfSignatures()
 {
   if (signatureSq) return signatureSq->card(); else return 0;
 }
 
 
-OFCondition DcmSignature::removeSignature(unsigned long i)
+OFCondition DcmSignature::removeSignature(unsigned int i)
 {
   if (signatureSq == NULL) return EC_IllegalCall;
-  unsigned long seqCard = signatureSq->card();
+  unsigned int seqCard = signatureSq->card();
   if (i >= seqCard) return EC_IllegalCall;
   DcmItem *removalItem = signatureSq->getItem(i);
   if (removalItem == NULL) return EC_IllegalCall; // should never happen
@@ -178,7 +178,7 @@ OFCondition DcmSignature::removeSignature(unsigned long i)
   Uint16 macIDnumber = getMACIDnumber(*removalItem);
   OFBool macIDunique = OFTrue;
   DcmItem *tmpItem=NULL;
-  unsigned long j=0;
+  unsigned int j=0;
   for (j=0; j < seqCard; ++j)
   {
     tmpItem = signatureSq->getItem(j);
@@ -225,7 +225,7 @@ OFCondition DcmSignature::allocateMACID(Uint16& newID)
     return EC_Normal; 
   }
 
-  unsigned long i;
+  unsigned int i;
   DcmItem *tmpItem = NULL;
   char *isAllocated = new char[65536];
   if (isAllocated==NULL) return EC_MemoryExhausted;
@@ -235,7 +235,7 @@ OFCondition DcmSignature::allocateMACID(Uint16& newID)
   for (i=0; i < 65536; ++i) isAllocated[i]=0;
   if (signatureSq)
   {
-    unsigned long sqCard = signatureSq->card();
+    unsigned int sqCard = signatureSq->card();
     for (i=0; i < sqCard; ++i)
     {
       tmpItem = signatureSq->getItem(i);
@@ -244,7 +244,7 @@ OFCondition DcmSignature::allocateMACID(Uint16& newID)
   }
   if (macParametersSq)
   {
-    unsigned long macCard = macParametersSq->card();
+    unsigned int macCard = macParametersSq->card();
     for (i=0; i < macCard; ++i)
     {
       tmpItem = macParametersSq->getItem(i);
@@ -391,7 +391,7 @@ OFCondition DcmSignature::createSignature(
   if (dumpFile) constructor.setDumpFile(dumpFile);
   DcmAttributeTag *tagListOut = new DcmAttributeTag(DCM_DataElementsSigned);
   if (tagListOut == NULL) result = EC_MemoryExhausted;
-  unsigned long sigLength = 0;
+  unsigned int sigLength = 0;
   unsigned char *signature = NULL;
 
   if (result.good())
@@ -418,7 +418,7 @@ OFCondition DcmSignature::createSignature(
   // sign MAC
   if (result.good())
   {      
-    unsigned long digestLength = mac.getSize();
+    unsigned int digestLength = mac.getSize();
     unsigned char *digest = new unsigned char[digestLength];
     if (digest == NULL) result = EC_MemoryExhausted;
     else
@@ -557,7 +557,7 @@ OFCondition DcmSignature::createSignature(
 }
 
 
-OFCondition DcmSignature::selectSignature(unsigned long i)
+OFCondition DcmSignature::selectSignature(unsigned int i)
 {
   deselect();
   if ((signatureSq == NULL) || (i >= signatureSq->card())) return EC_IllegalCall;
@@ -568,8 +568,8 @@ OFCondition DcmSignature::selectSignature(unsigned long i)
   if (macParametersSq)
   {
     DcmItem *tmpItem=NULL;
-    unsigned long cardMac = macParametersSq->card();
-    for (unsigned long j=0; j<cardMac; j++)
+    unsigned int cardMac = macParametersSq->card();
+    for (unsigned int j=0; j<cardMac; j++)
     {
       tmpItem = macParametersSq->getItem(j);
       if (macID == getMACIDnumber(*tmpItem))
@@ -681,7 +681,7 @@ OFCondition DcmSignature::verifyCurrent()
       if ((signature->getUint8Array(sigData)).bad() || (sigData == NULL)) result = SI_EC_VerificationFailed_NoSignature;
       else 
       {
-        unsigned long digestLength = mac->getSize();
+        unsigned int digestLength = mac->getSize();
         unsigned char *digest = new unsigned char[digestLength];
         if (digest == NULL) result =  EC_MemoryExhausted;
         else

@@ -69,9 +69,9 @@ DiRegisterBase *DiRegisterBase::Pointer = NULL;
 // --- create 'DicomImage' from 'filename', for valid 'flags' see 'diutils.h'
 
 DicomImage::DicomImage(const char *filename,
-                       const unsigned long flags,
-                       const unsigned long fstart,
-                       const unsigned long fcount)
+                       const unsigned int flags,
+                       const unsigned int fstart,
+                       const unsigned int fcount)
   : ImageStatus(EIS_Normal),
     PhotometricInterpretation(EPI_Unknown),
     Document(NULL),
@@ -89,9 +89,9 @@ DicomImage::DicomImage(const char *filename,
 
 DicomImage::DicomImage(DcmObject *object,
                        const E_TransferSyntax xfer,
-                       const unsigned long flags,
-                       const unsigned long fstart,
-                       const unsigned long fcount)
+                       const unsigned int flags,
+                       const unsigned int fstart,
+                       const unsigned int fcount)
   : ImageStatus(EIS_Normal),
     PhotometricInterpretation(EPI_Unknown),
     Document(NULL),
@@ -111,9 +111,9 @@ DicomImage::DicomImage(DcmObject *object,
                        const E_TransferSyntax xfer,
                        const double slope,
                        const double intercept,
-                       const unsigned long flags,
-                       const unsigned long fstart,
-                       const unsigned long fcount)
+                       const unsigned int flags,
+                       const unsigned int fstart,
+                       const unsigned int fcount)
   : ImageStatus(EIS_Normal),
     PhotometricInterpretation(EPI_Unknown),
     Document(NULL),
@@ -138,9 +138,9 @@ DicomImage::DicomImage(DcmObject *object,
                        const DcmUnsignedShort &data,
                        const DcmUnsignedShort &descriptor,
                        const DcmLongString *explanation,
-                       const unsigned long flags,
-                       const unsigned long fstart,
-                       const unsigned long fcount)
+                       const unsigned int flags,
+                       const unsigned int fstart,
+                       const unsigned int fcount)
   : ImageStatus(EIS_Normal),
     PhotometricInterpretation(EPI_Unknown),
     Document(NULL),
@@ -364,8 +364,8 @@ int DicomImage::hasSOPclassUID(const char *uid) const
 
 // --- create new 'DicomImage' with 'fcount' frames starting with frame 'fstart'
 
-DicomImage *DicomImage::createDicomImage(unsigned long fstart,
-                                         unsigned long fcount) const
+DicomImage *DicomImage::createDicomImage(unsigned int fstart,
+                                         unsigned int fcount) const
 {
     if ((Image != NULL) && (fstart < getFrameCount()))
     {
@@ -385,8 +385,8 @@ DicomImage *DicomImage::createDicomImage(unsigned long fstart,
 // --- create scaled to given size ('width' and 'height') image, memory isn't handled internally !
 // --- if one dimension ist '0' the other is automatically adjusted (with respect to pixel aspect ratio)
 
-DicomImage *DicomImage::createScaledImage(const unsigned long width,
-                                          const unsigned long height,
+DicomImage *DicomImage::createScaledImage(const unsigned int width,
+                                          const unsigned int height,
                                           const int interpolate,
                                           int aspect) const
 {
@@ -401,8 +401,8 @@ DicomImage *DicomImage::createScaledImage(const double xfactor,
                                           const int interpolate,
                                           const int aspect) const
 {
-    return createScaledImage(0, 0, getWidth(), getHeight(), OFstatic_cast(unsigned long, xfactor * getWidth()),
-        OFstatic_cast(unsigned long, yfactor * getHeight()), interpolate, aspect);
+    return createScaledImage(0, 0, getWidth(), getHeight(), OFstatic_cast(unsigned int, xfactor * getWidth()),
+        OFstatic_cast(unsigned int, yfactor * getHeight()), interpolate, aspect);
 }
 
 
@@ -410,16 +410,16 @@ DicomImage *DicomImage::createScaledImage(const double xfactor,
 
 DicomImage *DicomImage::createScaledImage(const signed long left_pos,
                                           const signed long top_pos,
-                                          unsigned long clip_width,
-                                          unsigned long clip_height,
-                                          unsigned long scale_width,
-                                          unsigned long scale_height,
+                                          unsigned int clip_width,
+                                          unsigned int clip_height,
+                                          unsigned int scale_width,
+                                          unsigned int scale_height,
                                           const int interpolate,
                                           int aspect,
                                           const Uint16 pvalue) const
 {
-    const unsigned long gw = getWidth();
-    const unsigned long gh = getHeight();
+    const unsigned int gw = getWidth();
+    const unsigned int gh = getHeight();
     if ((Image != NULL) && (gw > 0) && (gh > 0))
     {
         if (clip_width == 0)                                         // set 'width' if parameter is missing
@@ -434,20 +434,20 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
         if (aspect)                                                  // maintain pixel aspect ratio
         {
             if (scale_width == 0)
-                scale_width = OFstatic_cast(unsigned long, getWidthHeightRatio() * OFstatic_cast(double, scale_height * gw) / gh);
+                scale_width = OFstatic_cast(unsigned int, getWidthHeightRatio() * OFstatic_cast(double, scale_height * gw) / gh);
             else if (scale_height == 0)
-                scale_height = OFstatic_cast(unsigned long, getHeightWidthRatio() * OFstatic_cast(double, scale_width * gh) / gw);
+                scale_height = OFstatic_cast(unsigned int, getHeightWidthRatio() * OFstatic_cast(double, scale_width * gh) / gw);
             else
                 aspect = 0;                                           // ignore pixel aspect ratio
         }
         else                                                          // ignore pixel aspect ratio
         {
             if (scale_width == 0)
-                scale_width = OFstatic_cast(unsigned long, OFstatic_cast(double, scale_height * gw) / gh);
+                scale_width = OFstatic_cast(unsigned int, OFstatic_cast(double, scale_height * gw) / gh);
             else if (scale_height == 0)
-                scale_height = OFstatic_cast(unsigned long, OFstatic_cast(double, scale_width * gh) / gw);
+                scale_height = OFstatic_cast(unsigned int, OFstatic_cast(double, scale_width * gh) / gw);
         }
-        const unsigned long maxvalue = DicomImageClass::maxval(bitsof(Uint16));
+        const unsigned int maxvalue = DicomImageClass::maxval(bitsof(Uint16));
         if (scale_width > maxvalue)
             scale_width = maxvalue;                                   // limit 'width' to maximum value (65535)
         if (scale_height > maxvalue)
@@ -455,8 +455,8 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
 
         /* need to limit clipping region ... !? */
 
-        if (((left_pos < 0) || (top_pos < 0) || (OFstatic_cast(unsigned long, left_pos + clip_width) > gw) ||
-            (OFstatic_cast(unsigned long, top_pos + clip_height) > gh)) &&
+        if (((left_pos < 0) || (top_pos < 0) || (OFstatic_cast(unsigned int, left_pos + clip_width) > gw) ||
+            (OFstatic_cast(unsigned int, top_pos + clip_height) > gh)) &&
             ((clip_width != scale_width) || (clip_height != scale_height)))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
@@ -484,8 +484,8 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
 
 DicomImage *DicomImage::createScaledImage(const signed long left_pos,
                                           const signed long top_pos,
-                                          unsigned long width,
-                                          unsigned long height,
+                                          unsigned int width,
+                                          unsigned int height,
                                           const double xfactor,
                                           const double yfactor,
                                           const int interpolate,
@@ -494,14 +494,14 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
 {
     if ((xfactor >= 0) && (yfactor >= 0))
     {
-        const unsigned long gw = getWidth();
-        const unsigned long gh = getHeight();
+        const unsigned int gw = getWidth();
+        const unsigned int gh = getHeight();
         if (width == 0)                                     // set 'width' if parameter is missing (0)
             width = gw - left_pos;
         if (height == 0)                                    // same for 'height'
             height = gh - top_pos;
-        return createScaledImage(left_pos, top_pos, width, height, OFstatic_cast(unsigned long, xfactor * width),
-            OFstatic_cast(unsigned long, yfactor * height), interpolate, aspect, pvalue);
+        return createScaledImage(left_pos, top_pos, width, height, OFstatic_cast(unsigned int, xfactor * width),
+            OFstatic_cast(unsigned int, yfactor * height), interpolate, aspect, pvalue);
     }
     return NULL;
 }
@@ -512,12 +512,12 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
 
 DicomImage *DicomImage::createClippedImage(const signed long left_pos,
                                            const signed long top_pos,
-                                           unsigned long width,
-                                           unsigned long height,
+                                           unsigned int width,
+                                           unsigned int height,
                                            const Uint16 pvalue) const
 {
-    return createScaledImage(left_pos, top_pos, width, height, OFstatic_cast(unsigned long, 0),
-        OFstatic_cast(unsigned long, 0), 0, 0, pvalue);
+    return createScaledImage(left_pos, top_pos, width, height, OFstatic_cast(unsigned int, 0),
+        OFstatic_cast(unsigned int, 0), 0, 0, pvalue);
 }
 
 
@@ -649,7 +649,7 @@ DicomImage *DicomImage::createMonochromeImage(const double red,
 
 // --- create monochrome output image of specified frame (incl. windowing)
 
-DicomImage *DicomImage::createMonoOutputImage(const unsigned long frame,
+DicomImage *DicomImage::createMonoOutputImage(const unsigned int frame,
                                               const int bits)
 {
     if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
@@ -672,7 +672,7 @@ DicomImage *DicomImage::createMonoOutputImage(const unsigned long frame,
 
 int DicomImage::writePPM(const char *filename,
                          const int bits,
-                         const unsigned long frame)
+                         const unsigned int frame)
 {
     if ((filename != NULL) && (Image != NULL))
     {
@@ -692,7 +692,7 @@ int DicomImage::writePPM(const char *filename,
 
 int DicomImage::writePPM(ostream &stream,
                          const int bits,
-                         const unsigned long frame)
+                         const unsigned int frame)
 {
     if ((stream.good()) && (Image != NULL))
         return Image->writePPM(stream, frame, Image->getBits(bits));
@@ -704,7 +704,7 @@ int DicomImage::writePPM(ostream &stream,
 
 int DicomImage::writePPM(FILE *stream,
                          const int bits,
-                         const unsigned long frame)
+                         const unsigned int frame)
 {
     if ((stream != NULL) && (Image != NULL))
         return Image->writePPM(stream, frame, Image->getBits(bits));
@@ -716,7 +716,7 @@ int DicomImage::writePPM(FILE *stream,
 
 int DicomImage::writeRawPPM(const char *filename,
                             const int bits,
-                            const unsigned long frame)
+                            const unsigned int frame)
 {
     if ((filename != NULL) && (Image != NULL) && (Image->getBits(bits) <= MAX_RAWPPM_BITS))
     {
@@ -738,7 +738,7 @@ int DicomImage::writeRawPPM(const char *filename,
 
 int DicomImage::writeRawPPM(FILE *stream,
                             const int bits,
-                            const unsigned long frame)
+                            const unsigned int frame)
 {
     if ((stream != NULL) && (Image != NULL))
         return Image->writeRawPPM(stream, frame, Image->getBits(bits));
@@ -750,7 +750,7 @@ int DicomImage::writeRawPPM(FILE *stream,
 
 int DicomImage::writeBMP(const char *filename,
                          const int bits,
-                         const unsigned long frame)
+                         const unsigned int frame)
 {
     if ((filename != NULL) && (Image != NULL) && ((bits == 0) || ((bits == 8) && isMonochrome()) || (bits == 24)))
     {
@@ -773,7 +773,7 @@ int DicomImage::writeBMP(const char *filename,
 
 int DicomImage::writeBMP(FILE *stream,
                          const int bits,
-                         const unsigned long frame)
+                         const unsigned int frame)
 {
     if ((stream != NULL) && (Image != NULL) && ((bits == 0) || ((bits == 8) && isMonochrome()) || (bits == 24)))
         return Image->writeBMP(stream, frame, bits);
@@ -785,7 +785,7 @@ int DicomImage::writeBMP(FILE *stream,
 
 int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
                                   const char *filename,
-                                  const unsigned long frame)
+                                  const unsigned int frame)
 {
     if ((plugin != NULL) && (filename != NULL) && (Image != NULL))
     {
@@ -808,7 +808,7 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
 
 int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
                                   FILE *stream,
-                                  const unsigned long frame)
+                                  const unsigned int frame)
 {
     if ((plugin != NULL) && (stream != NULL) && (Image != NULL))
         return plugin->write(Image, stream, frame);

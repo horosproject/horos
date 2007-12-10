@@ -72,10 +72,10 @@ public:
    */
   virtual OFCondition sign(
     const unsigned char *inputHash, 
-    unsigned long inputHashSize,
+    unsigned int inputHashSize,
     E_MACType inputHashAlgorithm,
     unsigned char *outputSignature,
-    unsigned long &outputSignatureSize);
+    unsigned int &outputSignatureSize);
 
   /** verifies a signature.
    *  @param inputHash array of bytes containing hash key to be verified against signature
@@ -88,10 +88,10 @@ public:
    */
   virtual OFCondition verify(
     const unsigned char *inputHash, 
-    unsigned long inputHashSize,
+    unsigned int inputHashSize,
     E_MACType inputHashAlgorithm,
     const unsigned char *inputSignature,
-    unsigned long inputSignatureSize,
+    unsigned int inputSignatureSize,
     OFBool &verified);
 
   /** returns the size of a block of encrypted/decrypted ciphertext in bytes.
@@ -101,7 +101,7 @@ public:
    *  to this block size.
    *  @return block size for this public key cryptosystem and key
    */
-  virtual unsigned long getSize() const;
+  virtual unsigned int getSize() const;
 
   /** returns the type of public key algorithm computed by this object
    *  @return type of public key algorithm

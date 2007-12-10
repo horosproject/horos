@@ -78,7 +78,7 @@ class WlmDataSourceFileSystem : public WlmDataSource
        *  @param element Pointer to the currently processed element.
        *  @param idx     Index of the matching record (identifies this record).
        */
-    void HandleNonSequenceElementInResultDataset( DcmElement *element, unsigned long idx );
+    void HandleNonSequenceElementInResultDataset( DcmElement *element, unsigned int idx );
 
       /** This function takes care of handling a certain sequence element within the structure
        *  of a certain result dataset. On the basis of the matching record from the data source,
@@ -89,7 +89,7 @@ class WlmDataSourceFileSystem : public WlmDataSource
        *  @param element Pointer to the currently processed element.
        *  @param idx     Index of the matching record (identifies this record).
        */
-    void HandleSequenceElementInResultDataset( DcmElement *element, unsigned long idx );
+    void HandleSequenceElementInResultDataset( DcmElement *element, unsigned int idx );
 
       /** Protected undefined copy-constructor. Shall never be called.
        *  @param Src Source object.

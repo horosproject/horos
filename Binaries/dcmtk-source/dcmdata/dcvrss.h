@@ -88,7 +88,7 @@ class DcmSignedShort
      *  The number of entries can be determined by "getVM()".
      *  @return number of currently stored values
      */
-    virtual unsigned long getVM();
+    virtual unsigned int getVM();
 
     /** print element to a stream.
      *  The output format of the value is a backslash separated sequence of numbers.
@@ -110,7 +110,7 @@ class DcmSignedShort
      *  @return status status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getSint16(Sint16 &sintVal,
-                                  const unsigned long pos = 0);
+                                  const unsigned int pos = 0);
 
     /** get reference to stored integer data
      *  @param sintVals reference to result variable
@@ -125,7 +125,7 @@ class DcmSignedShort
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOFString(OFString &stringVal,
-                                    const unsigned long pos,
+                                    const unsigned int pos,
                                     OFBool normalize = OFTrue);
 
     /** set particular element value to given integer
@@ -134,7 +134,7 @@ class DcmSignedShort
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition putSint16(const Sint16 sintVal,
-                                  const unsigned long pos = 0);
+                                  const unsigned int pos = 0);
 
     /** set element value to given integer array data
      *  @param sintVals signed integer data to be set
@@ -142,7 +142,7 @@ class DcmSignedShort
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition putSint16Array(const Sint16 *sintVals,
-                                       const unsigned long numSints);
+                                       const unsigned int numSints);
 
     /** set element value from the given character string.
      *  The input string is expected to be a backslash separated sequence of
@@ -222,9 +222,9 @@ class DcmSignedShort
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned int pos);
 **   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned int pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

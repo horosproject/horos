@@ -212,7 +212,7 @@ ASC_initializeNetwork(T_ASC_NetworkRole role,
                       int acceptorPort,
                       int timeout,
                       T_ASC_Network ** network,
-                      unsigned long options)
+                      unsigned int options)
 {
     const char *mode;
 
@@ -1530,7 +1530,7 @@ ASC_receiveAssociation(T_ASC_Network * network,
                        T_ASC_Association ** assoc,
                        long maxReceivePDUSize,
                        void **associatePDU,
-                       unsigned long *associatePDUlength,
+                       unsigned int *associatePDUlength,
                        OFBool useSecureLayer,
                        DUL_BLOCKOPTIONS block,
                        int timeout)
@@ -1665,7 +1665,7 @@ ASC_requestAssociation(T_ASC_Network * network,
                        T_ASC_Parameters * params,
                        T_ASC_Association ** assoc,
                        void **associatePDU,
-                       unsigned long *associatePDUlength)
+                       unsigned int *associatePDUlength)
 {
     OFCondition cond = EC_Normal;
     long sendLen;
@@ -1775,7 +1775,7 @@ OFCondition
 ASC_acknowledgeAssociation(
     T_ASC_Association * assoc,
     void **associatePDU,
-    unsigned long *associatePDUlength)
+    unsigned int *associatePDUlength)
 {
     long sendLen;
 
@@ -1855,7 +1855,7 @@ ASC_rejectAssociation(
     T_ASC_Association * association,
     T_ASC_RejectParameters * rejectParameters,
     void **associatePDU,
-    unsigned long *associatePDUlength)
+    unsigned int *associatePDUlength)
 {
     DUL_ABORTITEMS l_abort;
 
@@ -1959,13 +1959,13 @@ ASC_setTransportLayer(T_ASC_Network *network, DcmTransportLayer *newLayer, int t
   return DUL_setTransportLayer(network->network, newLayer, takeoverOwnership);
 }
 
-unsigned long ASC_getPeerCertificateLength(T_ASC_Association *assoc)
+unsigned int ASC_getPeerCertificateLength(T_ASC_Association *assoc)
 {
   if (assoc==NULL) return 0;
   return DUL_getPeerCertificateLength(assoc->DULassociation);
 }
 
-unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsigned long bufLen)
+unsigned int ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsigned int bufLen)
 {
   if (assoc==NULL) return 0;
   return DUL_getPeerCertificate(assoc->DULassociation, buf, bufLen);
@@ -2157,7 +2157,7 @@ void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb)
 **
 ** Revision 1.3  1996/04/25 16:11:11  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
-** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
+** of DIC_UL with unsigned int (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due
 ** to MIPS/Ultrix).
 **

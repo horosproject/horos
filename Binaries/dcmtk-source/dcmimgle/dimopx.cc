@@ -43,7 +43,7 @@
  *  constructors  *
  *----------------*/
 
-DiMonoPixel::DiMonoPixel(const unsigned long count)
+DiMonoPixel::DiMonoPixel(const unsigned int count)
   : DiPixel(count),
     Modality(NULL)
 {
@@ -68,7 +68,7 @@ DiMonoPixel::DiMonoPixel(const DiPixel *pixel,
 
 
 DiMonoPixel::DiMonoPixel(const DiMonoPixel *pixel,
-                         const unsigned long count)
+                         const unsigned int count)
   : DiPixel(count, pixel->getInputCount()),
     Modality(pixel->Modality)
 {

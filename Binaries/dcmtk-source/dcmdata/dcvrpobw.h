@@ -99,12 +99,12 @@ public:
     // put an Unit8 array. It is converted to OW if VR == OW
     virtual OFCondition putUint8Array(
         const Uint8 * byteValue,
-        const unsigned long length);
+        const unsigned int length);
 
     // put an Unit16 array. It is converted to OB if VR == OB
     virtual OFCondition putUint16Array(
         const Uint16 * wordValue,
-        const unsigned long length );
+        const unsigned int length );
 
     // create an empty Uint8 array of given number of words and set it
     virtual OFCondition createUint8Array(

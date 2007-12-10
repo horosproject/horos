@@ -52,16 +52,16 @@ private:
 // These methods are not sensible for a pix-sequence
 
     virtual OFCondition insert(DcmItem* /*item*/,
-                               unsigned long /*where*/ = DCM_EndOfListIndex,
+                               unsigned int /*where*/ = DCM_EndOfListIndex,
                                OFBool /*before*/ = OFFalse)
     {
         return EC_IllegalCall;
     }
-    virtual DcmItem* getItem(const unsigned long /*num*/)
+    virtual DcmItem* getItem(const unsigned int /*num*/)
     {
         return NULL;
     }
-    virtual DcmItem* remove(const unsigned long /*num*/)
+    virtual DcmItem* remove(const unsigned int /*num*/)
     {
         return NULL;
     }
@@ -102,10 +102,10 @@ public:
                                      const E_EncodingType enctype);
 
     virtual OFCondition insert(DcmPixelItem* item,
-                               unsigned long where = DCM_EndOfListIndex);
+                               unsigned int where = DCM_EndOfListIndex);
 
-    virtual OFCondition getItem(DcmPixelItem * & item, const unsigned long num);
-    virtual OFCondition remove(DcmPixelItem * & item, const unsigned long num);
+    virtual OFCondition getItem(DcmPixelItem * & item, const unsigned int num);
+    virtual OFCondition remove(DcmPixelItem * & item, const unsigned int num);
     virtual OFCondition remove(DcmPixelItem* item);
 
 

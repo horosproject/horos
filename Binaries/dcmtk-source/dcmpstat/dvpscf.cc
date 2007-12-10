@@ -414,10 +414,10 @@ const char *DVConfiguration::getTargetAETitle(const char *targetID)
   return getConfigEntry(L2_COMMUNICATION, targetID, L0_AETITLE);
 }
 
-unsigned long DVConfiguration::getTargetMaxPDU(const char *targetID)
+unsigned int DVConfiguration::getTargetMaxPDU(const char *targetID)
 {
   const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_MAXPDU);
-  unsigned long result = 0;
+  unsigned int result = 0;
   if (c)
   {
     if (1 != sscanf(c, "%lu", &result)) result=0;
@@ -525,10 +525,10 @@ unsigned short DVConfiguration::getQueryRetrievePort()
   return result;
 }
 
-unsigned long DVConfiguration::getQueryRetrieveMaxPDU()
+unsigned int DVConfiguration::getQueryRetrieveMaxPDU()
 {
   const char *c = getConfigEntry(L2_GENERAL, L1_QUERY_RETRIEVE, L0_MAXPDU);
-  unsigned long result = 0;
+  unsigned int result = 0;
   if (c)
   {
     if (1 != sscanf(c, "%lu", &result)) result=0;
@@ -547,10 +547,10 @@ Sint32 DVConfiguration::getQueryRetrieveTimeout()
   return (Sint32) result;
 }
 
-unsigned long DVConfiguration::getQueryRetrieveMaxAssociations()
+unsigned int DVConfiguration::getQueryRetrieveMaxAssociations()
 {
   const char *c = getConfigEntry(L2_GENERAL, L1_QUERY_RETRIEVE, L0_MAXASSOCIATIONS);
-  unsigned long result = 0;
+  unsigned int result = 0;
   if (c)
   {
     if (1 != sscanf(c, "%lu", &result)) result=0;
@@ -582,10 +582,10 @@ OFBool DVConfiguration::getBinaryLog()
   return getConfigBoolEntry(L2_GENERAL, L1_PRINT, L0_BINARYLOG, OFFalse);
 }
 
-unsigned long DVConfiguration::getSpoolerSleep()
+unsigned int DVConfiguration::getSpoolerSleep()
 {
   const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_SLEEP);
-  unsigned long result = 0;
+  unsigned int result = 0;
   if (c)
   {
     if (1 != sscanf(c, "%lu", &result)) result=0;
@@ -750,8 +750,8 @@ Uint32 DVConfiguration::getMaxPreviewResolutionX()
   const char *c = getConfigEntry(L2_GENERAL, L1_MONITOR, L0_PREVIEW);
   if (c)
   {
-    unsigned long result = 0;
-    unsigned long dummy = 0;
+    unsigned int result = 0;
+    unsigned int dummy = 0;
     if (2 == sscanf(c, "%lu\\%lu", &result, &dummy)) return (Uint32) result;
   }
   return 0;
@@ -762,8 +762,8 @@ Uint32 DVConfiguration::getMaxPreviewResolutionY()
   const char *c = getConfigEntry(L2_GENERAL, L1_MONITOR, L0_PREVIEW);
   if (c)
   {
-    unsigned long result = 0;
-    unsigned long dummy = 0;
+    unsigned int result = 0;
+    unsigned int dummy = 0;
     if (2 == sscanf(c, "%lu\\%lu", &dummy, &result)) return (Uint32) result;
   }
   return 0;
@@ -1077,8 +1077,8 @@ Uint32 DVConfiguration::getMinPrintResolutionX()
   const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_MINPRINTRESOLUTION);
   if (c)
   {
-    unsigned long result = 0;
-    unsigned long dummy = 0;
+    unsigned int result = 0;
+    unsigned int dummy = 0;
     if (2 == sscanf(c, "%lu\\%lu", &result, &dummy)) return (Uint32) result;
   }
   return 0;
@@ -1089,8 +1089,8 @@ Uint32 DVConfiguration::getMinPrintResolutionY()
   const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_MINPRINTRESOLUTION);
   if (c)
   {
-    unsigned long result = 0;
-    unsigned long dummy = 0;
+    unsigned int result = 0;
+    unsigned int dummy = 0;
     if (2 == sscanf(c, "%lu\\%lu", &dummy, &result)) return (Uint32) result;
   }
   return 0;
@@ -1101,8 +1101,8 @@ Uint32 DVConfiguration::getMaxPrintResolutionX()
   const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_MAXPRINTRESOLUTION);
   if (c)
   {
-    unsigned long result = 0;
-    unsigned long dummy = 0;
+    unsigned int result = 0;
+    unsigned int dummy = 0;
     if (2 == sscanf(c, "%lu\\%lu", &result, &dummy)) return (Uint32) result;
   }
   return 0;
@@ -1113,8 +1113,8 @@ Uint32 DVConfiguration::getMaxPrintResolutionY()
   const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_MAXPRINTRESOLUTION);
   if (c)
   {
-    unsigned long result = 0;
-    unsigned long dummy = 0;
+    unsigned int result = 0;
+    unsigned int dummy = 0;
     if (2 == sscanf(c, "%lu\\%lu", &dummy, &result)) return (Uint32) result;
   }
   return 0;
@@ -1260,8 +1260,8 @@ Uint32 DVConfiguration::getTargetPrinterNumberOfPortraitDisplayFormats(const cha
 Uint32 DVConfiguration::getTargetPrinterPortraitDisplayFormatRows(const char *targetID, Uint32 idx)
 {
   OFString value;
-  unsigned long rows=0;
-  unsigned long columns=0;
+  unsigned int rows=0;
+  unsigned int columns=0;
   copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_DISPLAYFORMAT), idx, value);
   if (2==sscanf(value.c_str(), "%lu,%lu", &columns, &rows)) return rows;
   return 0;
@@ -1270,8 +1270,8 @@ Uint32 DVConfiguration::getTargetPrinterPortraitDisplayFormatRows(const char *ta
 Uint32 DVConfiguration::getTargetPrinterPortraitDisplayFormatColumns(const char *targetID, Uint32 idx)
 {
   OFString value;
-  unsigned long rows=0;
-  unsigned long columns=0;
+  unsigned int rows=0;
+  unsigned int columns=0;
   copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_DISPLAYFORMAT), idx, value);
   if (2==sscanf(value.c_str(), "%lu,%lu", &columns, &rows)) return columns;
   return 0;

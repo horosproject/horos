@@ -85,8 +85,8 @@ public:
    *  @param newmaxval new desired maximum value, should be < oldmaxval
    */
   void createTable(
-    unsigned long oldmaxval,
-    unsigned long newmaxval)
+    unsigned int oldmaxval,
+    unsigned int newmaxval)
   {
     cleanup();
 
@@ -95,7 +95,7 @@ public:
     {
       numEntries = OFstatic_cast(unsigned int, oldmaxval) + 1;
       for (unsigned int i=0; i < numEntries; i++)
-        table[i] = OFstatic_cast(DcmQuantComponent, (OFstatic_cast(unsigned long, i) * newmaxval + oldmaxval/2) / oldmaxval);
+        table[i] = OFstatic_cast(DcmQuantComponent, (OFstatic_cast(unsigned int, i) * newmaxval + oldmaxval/2) / oldmaxval);
     }
   }
 
