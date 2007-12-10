@@ -1517,33 +1517,33 @@ static BOOL initialized = NO;
 	{
 		if ( self == [AppController class] && initialized == NO)
 		{
-			#if __LP64__
-			if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2007 month:12 day:20 hour:1 minute:1 second:1 timeZone:0L]] > 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"Outdated"])
-			{
-				NSRunCriticalAlertPanel(NSLocalizedString(@"Outdated Version", 0L), NSLocalizedString(@"Please update your application. Available on the web site.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
-				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Outdated"];
-				exit( 0);
-			}
-			else
-			{
-				NSString *exampleAlertSuppress = @"OsiriX 64-bit Warning";
-				NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-				if ([defaults boolForKey:exampleAlertSuppress])
-				{
-				}
-				else {
-					NSAlert* alert = [NSAlert new];
-					[alert setMessageText: NSLocalizedString(@"OsiriX 64-bit Warning", 0L)];
-					[alert setInformativeText:     NSLocalizedString(@"This is a preview version of OsiriX 64-bit. You SHOULD NOT use it for any scientific or clinical activities.", 0L)];
-					[alert setShowsSuppressionButton:YES];
-					[alert runModal];
-					if ([[alert suppressionButton] state] == NSOnState)
-					{
-						[defaults setBool:YES forKey:exampleAlertSuppress];
-					}
-				}
-			}
-			#endif
+//			#if __LP64__
+//			if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2007 month:12 day:20 hour:1 minute:1 second:1 timeZone:0L]] > 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"Outdated"])
+//			{
+//				NSRunCriticalAlertPanel(NSLocalizedString(@"Outdated Version", 0L), NSLocalizedString(@"Please update your application. Available on the web site.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+//				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Outdated"];
+//				exit( 0);
+//			}
+//			else
+//			{
+//				NSString *exampleAlertSuppress = @"OsiriX 64-bit Warning";
+//				NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//				if ([defaults boolForKey:exampleAlertSuppress])
+//				{
+//				}
+//				else {
+//					NSAlert* alert = [NSAlert new];
+//					[alert setMessageText: NSLocalizedString(@"OsiriX 64-bit Warning", 0L)];
+//					[alert setInformativeText:     NSLocalizedString(@"This is a preview version of OsiriX 64-bit. You SHOULD NOT use it for any scientific or clinical activities.", 0L)];
+//					[alert setShowsSuppressionButton:YES];
+//					[alert runModal];
+//					if ([[alert suppressionButton] state] == NSOnState)
+//					{
+//						[defaults setBool:YES forKey:exampleAlertSuppress];
+//					}
+//				}
+//			}
+//			#endif
 						
 			if( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundlePackageType"] isEqualToString: @"APPL"])
 			{

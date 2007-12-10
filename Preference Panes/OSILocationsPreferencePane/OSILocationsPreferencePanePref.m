@@ -410,7 +410,7 @@
 		{
 			NSDictionary	*dict;
 			
-			if( isDirectory) dict = [NSDictionary dictionaryWithObjectsAndKeys: location, @"Path", [[location lastPathComponent] stringByAppendingString:@" DB"], @"Description", 0];
+			if( isDirectory) dict = [NSDictionary dictionaryWithObjectsAndKeys: location, @"Path", [[location lastPathComponent] stringByAppendingString:@" DB"], @"Description", 0L];
 				
 			[localPaths addObject: dict];
 			

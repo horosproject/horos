@@ -1943,8 +1943,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		rect.origin.x = pt.x;// - rect.size.width/2;
 		rect.origin.y = pt.y;// - rect.size.height/2;
 		
-		rect.size.height *= pixelSpacingX/pixelSpacingY;
-		
+		if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+			rect.size.height *= pixelSpacingX/pixelSpacingY;
+			
 		if( type == t2DPoint)
 		{
 			rect.size.height = 0;// - rect.size.width/2;
@@ -2713,7 +2714,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		}
 		
 		rect.size = [stringTex frameSize];
-		rect.size.height *= pixelSpacingX/pixelSpacingY;
+		if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+			rect.size.height *= pixelSpacingX/pixelSpacingY;
 	}	
 }
 
@@ -3438,7 +3440,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 			  angle = i * 2 * M_PI /CIRCLERESOLUTION;
 			  
-			  glVertex2f( (rect.origin.x - offsetx)*scaleValue + 8*cos(angle), (rect.origin.y - offsety)*scaleValue + 8*sin(angle)*pixelSpacingX/pixelSpacingY);
+			  if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+				glVertex2f( (rect.origin.x - offsetx)*scaleValue + 8*cos(angle), (rect.origin.y - offsety)*scaleValue + 8*sin(angle)*pixelSpacingX/pixelSpacingY);
+			  else
+				glVertex2f( (rect.origin.x - offsetx)*scaleValue + 8*cos(angle), (rect.origin.y - offsety)*scaleValue + 8*sin(angle));
 			}
 			glEnd();
 			
@@ -3527,11 +3532,18 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			[stringTex setFlippedX: [curView xFlipped] Y:[curView yFlipped]];
 			
 			glColor4f (0, 0, 0, opacity);
-			[stringTex drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+ (1.0*pixelSpacingX / pixelSpacingY)) ratio: pixelSpacingX / pixelSpacingY];
-			
+			if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+				[stringTex drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+ (1.0*pixelSpacingX / pixelSpacingY)) ratio: pixelSpacingX / pixelSpacingY];
+			else
+				[stringTex drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+ 1.0) ratio: 1.0];
+				
 			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-			[stringTex drawAtPoint:tPt ratio: pixelSpacingX / pixelSpacingY];
 			
+			if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+				[stringTex drawAtPoint:tPt ratio: pixelSpacingX / pixelSpacingY];
+			else
+				[stringTex drawAtPoint:tPt ratio: 1.0];
+				
 			glDisable (GL_TEXTURE_RECTANGLE_EXT);
 			
 			glColor3f (1.0f, 1.0f, 1.0f);
@@ -3555,8 +3567,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				b.y = ([[points objectAtIndex: 1] y]- offsety) * scaleValue;
 				
 				if( (b.y-a.y) == 0) slide = (b.x-a.x)/-0.001;
-				else slide = (b.x-a.x)/((b.y-a.y) * (pixelSpacingY / pixelSpacingX));
-				
+				else
+				{
+					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+						slide = (b.x-a.x)/((b.y-a.y) * (pixelSpacingY / pixelSpacingX));
+					else
+						slide = (b.x-a.x)/((b.y-a.y));
+				}
 				#define ARROWSIZE 30.0
 				
 				// LINE
@@ -3564,8 +3581,20 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				adj = (ARROWSIZE + thickness * 13)  * cos( angle*deg2rad);
 				op = (ARROWSIZE + thickness * 13) * sin( angle*deg2rad);
 				glBegin(GL_LINE_STRIP);
-					if(b.y-a.y > 0) glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
-					else glVertex2f( a.x - adj, a.y - (op*pixelSpacingX / pixelSpacingY));
+					if(b.y-a.y > 0)
+					{	
+						if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+							glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+						else
+							glVertex2f( a.x + adj, a.y + (op));
+					}
+					else
+					{
+						if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+							glVertex2f( a.x - adj, a.y - (op*pixelSpacingX / pixelSpacingY));
+						else
+							glVertex2f( a.x - adj, a.y - (op));
+					}
 					glVertex2f( b.x, b.y);
 				glEnd();
 				
@@ -3579,13 +3608,21 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					angle = 80 - angle - thickness;
 					adj = (ARROWSIZE + thickness * 15)  * cos( angle*deg2rad);
 					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
-					glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
 					
+					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+					else
+						glVertex2f( a.x + adj, a.y + (op));
+						
 					angle = atan( slide)/deg2rad;
 					angle = 100 - angle + thickness;
 					adj = (ARROWSIZE + thickness * 15) * cos( angle*deg2rad);
 					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
-					glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+					
+					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+					else
+						glVertex2f( a.x + adj, a.y + (op));
 				}
 				else
 				{
@@ -3594,13 +3631,21 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					angle = 180 + 80 - angle - thickness;
 					adj = (ARROWSIZE + thickness * 15) * cos( angle*deg2rad);
 					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
-					glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
-
+					
+					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+					else
+						glVertex2f( a.x + adj, a.y + (op));
+						
 					angle = atan( slide)/deg2rad;
 					angle = 180 + 100 - angle + thickness;
 					adj = (ARROWSIZE + thickness * 15) * cos( angle*deg2rad);
 					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
-					glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+					
+					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+					else
+						glVertex2f( a.x + adj, a.y + (op));
 				}
 				glVertex2f( a.x , a.y );
 				glEnd();
@@ -4660,8 +4705,19 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	float imageWidth = imageSize.width;
 	float imageHeight = imageSize.height;
 	
-	float scaleFactorX = layerPixelSpacingX / pixelSpacingX;
-	float scaleFactorY = layerPixelSpacingY / pixelSpacingY;
+	float scaleFactorX;
+	float scaleFactorY;
+
+	if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+	{
+		scaleFactorX = layerPixelSpacingX / pixelSpacingX;
+		scaleFactorY = layerPixelSpacingY / pixelSpacingY;
+	}
+	else
+	{
+		scaleFactorX = 1.0;
+		scaleFactorY = 1.0;
+	}
 	
 	NSPoint p1, p2, p3, p4;
 	p1 = NSMakePoint(0.0, 0.0);
