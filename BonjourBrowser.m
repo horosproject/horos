@@ -1503,8 +1503,6 @@ static char *GetPrivateIP()
 			resolved = YES;
 		}
 		
-		
-		
 		if( resolved == YES)
 		{
 			if( isPasswordProtected)

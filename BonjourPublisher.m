@@ -184,8 +184,8 @@ static char *GetPrivateIP()
             [netService stop];
             [[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleConnectionAcceptedNotification object:listeningSocket];
             // There is at present no way to get an NSFileHandle to -stop- listening for events, so we'll just have to tear it down and recreate it the next time we need it.
-            [listeningSocket release];
-            listeningSocket = nil;
+//            [listeningSocket release];
+//            listeningSocket = nil;
         }
     }
 }
@@ -903,9 +903,10 @@ while ( [data length] < pos + 4 && (readData = [incomingConnection availableData
 {
 	[interfaceOsiriX bonjourDidStop];
 	
+	[listeningSocket release];
+    listeningSocket = nil;
 	[netService release];
 	netService = 0L;
-
 }
 
 - (NSNetService*) netService

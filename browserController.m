@@ -4064,7 +4064,8 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (IBAction)delItem: (id)sender {
+- (IBAction)delItem: (id)sender
+{
 	NSInteger				result;
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	NSManagedObjectModel    *model = self.managedObjectModel;
@@ -9537,6 +9538,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	
+	[bonjourSharingCheck setState: NSOffState];
 	[bonjourPublisher toggleSharing:NO];
 	
 	[self removeAllMounted];
@@ -12712,6 +12714,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)bonjourDidStop {
 	[bonjourServiceName setEnabled:YES];
+	
+	if( [bonjourSharingCheck state] == NSOnState)
+	{
+		NSLog(@"**** Bonjour did stop ! Restarting it!");
+		[self setBonjourSharingEnabled: YES];
+	}
 }
 
 - (void)displayBonjourServices {
