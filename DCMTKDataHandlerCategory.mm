@@ -443,8 +443,6 @@
 		dataset->print(COUT);
 	NS_ENDHANDLER
 	return compoundPredicate;
-
-		
 }
 	
 

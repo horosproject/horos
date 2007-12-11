@@ -9519,8 +9519,9 @@ static NSArray*	openSubSeriesArray = 0L;
 	[checkIncomingLock unlock];
 }
 
-- (void)windowWillClose: (NSNotification *)notification {
-	NSLog( @"windowWillClose");
+- (void)browserPrepareForClose
+{
+	NSLog( @"browserPrepareForClose");
 	
 	[self waitForRunningProcesses];
 	
@@ -9568,6 +9569,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	if( [SendController sendControllerObjects] > 0 ) {
 		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Sending - STORE", nil), NSLocalizedString(@"Files are currently being sent to a DICOM node. Are you sure you want to quit now? The sending will be stopped.", nil), NSLocalizedString(@"No", nil), NSLocalizedString(@"Quit", nil), 0L) == NSAlertDefaultReturn) return NO;
 	}
+	
+	[self browserPrepareForClose];
 	
 	return YES;
 }
