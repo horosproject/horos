@@ -436,7 +436,7 @@
 			compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
 	}
 
-	NSLog(@"predicate: %@", [compoundPredicate description]);
+//	NSLog(@"predicate: %@", [compoundPredicate description]);
 	
 	NS_HANDLER
 		NSLog(@"Exception getting predicate: %@ for dataset\n", [localException description]);
@@ -822,7 +822,7 @@
 			
 			[moveArray release];
 			moveArray = [tempMoveArray retain];
-			NSLog( @"will move: %d dicom files", [moveArray count]);
+//			NSLog( @"will move: %d dicom files", [moveArray count]);
 			
 			[self updateLog: array];
 			
