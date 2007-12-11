@@ -2577,7 +2577,7 @@ static BOOL initialized = NO;
 		count--;
 	}
 	
-	NSLog( [cResult description]);
+//	NSLog( [cResult description]);
 	
 	// Add the hidden windows
 	for( i = 0; i < [viewersList count]; i++)
@@ -2591,7 +2591,25 @@ static BOOL initialized = NO;
 		if( [[[viewersList objectAtIndex: i] window] isKeyWindow]) keyWindow = i;
 	}
 	
+	BOOL identical = YES;
+	
 	if( keepSameStudyOnSameScreen)
+	{
+		// Are there different studies
+		if( [viewersList count])
+		{
+			NSString	*studyUID = [[[[viewersList objectAtIndex: 0] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.studyInstanceUID"];
+			
+			//get 2D viewer study arrays
+			for( i = 0; i < [viewersList count]; i++)
+			{
+				if( [[[[[viewersList objectAtIndex: i] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: studyUID] == NO)
+					identical = NO;
+			}
+		}
+	}
+	
+	if( keepSameStudyOnSameScreen == YES && identical == NO)
 	{
 		//get 2D viewer study arrays
 		for( i = 0; i < [viewersList count]; i++)
@@ -2616,9 +2634,7 @@ static BOOL initialized = NO;
 			}
 		}
 	}
-	
-//	if( [studyList count])
-//		NSLog( [studyList description]);
+	else keepSameStudyOnSameScreen = NO;
 	
 	int viewerCount = [viewersList count];
 	
@@ -2655,6 +2671,8 @@ static BOOL initialized = NO;
 	
 	if( keepSameStudyOnSameScreen && numberOfMonitors > 1)
 	{
+		NSLog(@"Tile Windows with keepSameStudyOnSameScreen == YES");
+		
 		for( i = 0; i < numberOfMonitors && i < [studyList count]; i++)
 		{
 			NSMutableArray	*viewersForThisScreen = [studyList objectAtIndex:i];
