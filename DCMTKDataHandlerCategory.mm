@@ -551,9 +551,10 @@
 	//return dataset;
 
 }
-- (void)seriesDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset{
+- (void)seriesDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset
+{
 	//DcmDataset dataset;
-	NSLog(@"uid: %@",[fetchedObject valueForKey:@"dicomSeriesInstanceUID"]);
+//	NSLog(@"uid: %@",[fetchedObject valueForKey:@"dicomSeriesInstanceUID"]);
 	if ([fetchedObject valueForKey:@"name"])	
 		dataset ->putAndInsertString(DCM_SeriesDescription, [[fetchedObject valueForKey:@"name"]   cStringUsingEncoding:NSUTF8StringEncoding]);
 	else

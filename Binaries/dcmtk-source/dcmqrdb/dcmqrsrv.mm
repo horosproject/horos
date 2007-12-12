@@ -1163,18 +1163,16 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 ASC_dumpParameters(assoc->params, COUT);
         }
 		
-//		for (int i=0; i<ASC_countPresentationContexts(assoc->params); i++)
-//		{
-//			T_ASC_PresentationContext pc;
-//			
-//			ASC_getPresentationContext(assoc->params, i, &pc);
-//			const char* l_as = dcmFindNameOfUID(pc.abstractSyntax);
-//			
-//			if( strcmp( pc.abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0)
-//			{
-//				singleProcess = false;
-//			}
-//		}
+		for (int i=0; i<ASC_countPresentationContexts(assoc->params); i++)
+		{
+			T_ASC_PresentationContext pc;
+			
+			ASC_getPresentationContext(assoc->params, i, &pc);
+			const char* l_as = dcmFindNameOfUID(pc.abstractSyntax);
+			
+			if( strcmp( pc.abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0)
+				singleProcess = true;	// switch to singleprocess for find - fork() deadlock problem
+		}
 		
 		if (singleProcess)
         {
@@ -1186,7 +1184,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         else
         {
             /* spawn a sub-process to handle the association */
-			printf("spawn new process");
             pid = (int)(fork());
             if (pid < 0)
             {
