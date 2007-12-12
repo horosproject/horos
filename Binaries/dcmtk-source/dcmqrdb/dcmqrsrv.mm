@@ -1161,7 +1161,22 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 ASC_dumpParameters(assoc->params, COUT);
         }
 		
-		if (options_.singleProcess_)
+		Boolean singleProcess = options_.singleProcess_;
+		
+//		for (int i=0; i<ASC_countPresentationContexts(assoc->params); i++)
+//		{
+//			T_ASC_PresentationContext pc;
+//			
+//			ASC_getPresentationContext(assoc->params, i, &pc);
+//			const char* l_as = dcmFindNameOfUID(pc.abstractSyntax);
+//			
+//			if( strcmp( pc.abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0)
+//			{
+//				singleProcess = false;
+//			}
+//		}
+		
+		if (singleProcess)
         {
             /* don't spawn a sub-process to handle the association */
             cond = handleAssociation(assoc, options_.correctUIDPadding_);
@@ -1207,7 +1222,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 
     // cleanup code
     OFCondition oldcond = cond;    /* store condition flag for later use */
-    if (!options_.singleProcess_ && (cond != ASC_SHUTDOWNAPPLICATION))
+    if (!singleProcess && (cond != ASC_SHUTDOWNAPPLICATION))
     {
         /* the child will handle the association, we can drop it */
         cond = ASC_dropAssociation(assoc);
