@@ -39,11 +39,12 @@
 	NSString *specificCharacterSet;
 	NSStringEncoding encoding;
 	NSArray *findArray;
-	NSArray *moveArray;
 	NSEnumerator *findEnumerator;
-	NSEnumerator *moveEnumerator;
 	NSString *tempMoveFolder;
 
+	int moveArrayEnumerator;
+	int moveArraySize;
+	char **moveArray;
 }
 
 + (id)requestDataHandlerWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug;

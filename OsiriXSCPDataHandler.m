@@ -34,24 +34,20 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 {
 	[specificCharacterSet release];
 	[findArray release];
-	[moveArray release];
+	
+	for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
+	free( moveArray);
+	moveArray = 0L;
+	moveArraySize = 0;
+	
 	[logEntry setValue:@"Complete" forKey:@"message"];
 	if (tempMoveFolder && [[NSFileManager defaultManager] fileExistsAtPath:tempMoveFolder])
 		[[NSFileManager defaultManager] removeFileAtPath:tempMoveFolder handler:nil];
 	[tempMoveFolder release];
 	[findEnumerator release];
-	[moveEnumerator release];
 	[logEntry release];
 	[super dealloc];
 }
-
-
-- (void) finalize {
-	if (tempMoveFolder && [[NSFileManager defaultManager] fileExistsAtPath:tempMoveFolder])
-		[[NSFileManager defaultManager] removeFileAtPath:tempMoveFolder handler:nil];
-	[super finalize];
-}
-
 
 + (id)requestDataHandlerWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug{
 	return [[[OsiriXSCPDataHandler alloc] initWithDestinationFolder:(NSString *)destination

@@ -778,8 +778,10 @@
 		
 		if (error)
 		{
-			[moveArray release];
-			moveArray = [[NSArray array] retain];
+			for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
+			free( moveArray);
+			moveArray = 0L;
+			moveArraySize = 0;
 			
 			cond = EC_IllegalParameter;
 		}
@@ -821,9 +823,20 @@
 			
 			tempMoveArray = [tempMoveArray sortedArrayUsingSelector:@selector(compare:)];
 			
-			[moveArray release];
-			moveArray = [tempMoveArray retain];
-//			NSLog( @"will move: %d dicom files", [moveArray count]);
+			for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
+			free( moveArray);
+			moveArray = 0L;
+			moveArraySize = 0;
+			
+			moveArraySize = [tempMoveArray count];
+			moveArray = (char**) malloc( sizeof( char*) * moveArraySize);
+			for( int i = 0 ; i < moveArraySize; i++)
+			{
+				const char *str = [[tempMoveArray objectAtIndex: i] UTF8String];
+				
+				moveArray[ i] = (char*) malloc( strlen( str) + 1);
+				strcpy( moveArray[ i], str);
+			}
 			
 			[self updateLog: array];
 			
@@ -840,9 +853,6 @@
 	[context unlock];
 	[context release];
 	
-	[moveEnumerator release];
-	moveEnumerator = [[moveArray objectEnumerator] retain];
-	
 	[pool release];
 	return cond;
 }
@@ -853,7 +863,7 @@
 }
 	
 - (int)moveMatchFound{
-	return [moveArray count];
+	return moveArraySize;
 }
 
 - (OFCondition)nextFindObject:(DcmDataset *)dataset  isComplete:(BOOL *)isComplete{
@@ -875,20 +885,26 @@
 	return EC_Normal;
 }
 
-- (OFCondition)nextMoveObject:(char *)imageFileName{
-	NSString *path;
-	//NSLog(@"nextMOveObject: %@", [moveEnumerator description]);
-	if (path = [moveEnumerator nextObject])
+- (OFCondition)nextMoveObject:(char *)imageFileName
+{
+	OFCondition ret = EC_Normal;
+	
+	if( moveArrayEnumerator >= moveArraySize)
 	{
-		//NSLog(@"move path: %@", path);
-		strcpy(imageFileName, [path UTF8String]);
+		return EC_IllegalParameter;
 	}
+	
+	if( moveArray[ moveArrayEnumerator])
+		strcpy(imageFileName, moveArray[ moveArrayEnumerator]);
 	else
 	{
 		NSLog(@"No path");
-		return EC_IllegalParameter;
+		ret = EC_IllegalParameter;
 	}
-	return EC_Normal;
+	
+	moveArrayEnumerator++;
+	
+	return ret;
 }
 
 @end
