@@ -9023,6 +9023,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		if( [[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath] == NO ) {
 			// Switch back to default location
 			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
+			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
 			
 			[currentDatabasePath release];
 			currentDatabasePath = [[documentsDirectory() stringByAppendingPathComponent:DATAFILEPATH] retain];

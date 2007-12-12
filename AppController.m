@@ -392,6 +392,7 @@ NSString * documentsDirectory()
 	{   // Use the default folder.. and reset this strange URL..
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
+		[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
 		
 		return documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
 	}

@@ -267,7 +267,6 @@ Version 2.4
 		[item setRepresentedObject:[DICOMFieldsArray objectAtIndex:i]];
 		[DICOMFieldsMenu addItem:item];
 	}
-	NSLog(@"DICOMFieldsArray : %@", DICOMFieldsArray);
 	[dicomFieldsMenu setMenu:DICOMFieldsMenu];
 }
 
