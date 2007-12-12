@@ -1183,6 +1183,10 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 #ifdef HAVE_FORK
         else
         {
+			NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+			[context lock]; //Try to avoid deadlock
+			[context unlock];
+				
             /* spawn a sub-process to handle the association */
             pid = (int)(fork());
             if (pid < 0)
@@ -1195,9 +1199,14 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             }
             else if (pid > 0)
             {
+				 
                 /* parent process, note process in table */
 				printf("parent process: %d\n", pid);
                 processtable_.addProcessToTable(pid, assoc);
+				
+				[context lock];
+				sleep( 1);	//Try to avoid deadlock
+				[context unlock];
             }
             else
             {
