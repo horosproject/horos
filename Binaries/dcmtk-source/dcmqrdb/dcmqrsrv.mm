@@ -1018,8 +1018,10 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
     char                buf[BUFSIZ];
     int timeout;
     OFBool go_cleanup = OFFalse;
-
-    if (options_.singleProcess_) timeout = 30000;
+	
+	Boolean singleProcess = options_.singleProcess_;
+	
+    if (singleProcess) timeout = 30000;
     else
     {
       if (processtable_.countChildProcesses() > 0)
@@ -1160,8 +1162,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             if (options_.debug_)
                 ASC_dumpParameters(assoc->params, COUT);
         }
-		
-		Boolean singleProcess = options_.singleProcess_;
 		
 //		for (int i=0; i<ASC_countPresentationContexts(assoc->params); i++)
 //		{
