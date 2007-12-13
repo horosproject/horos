@@ -39,6 +39,10 @@
 	NSNumber	*scale;
 	NSNumber	*rotationAngle;
 	NSNumber	*displayStyle;
+	NSNumber	*windowLevel;
+	NSNumber	*windowWidth;
+	
+	NSNumber	*yFlipped, *xFlipped;
 }
 
 - (NSString*) uniqueFilename;

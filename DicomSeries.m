@@ -27,7 +27,15 @@
 		[self setPrimitiveValue: scale forKey:@"scale"];
 		[self setPrimitiveValue: rotationAngle forKey:@"rotationAngle"];
 		[self setPrimitiveValue: displayStyle forKey:@"displayStyle"];
+		[self setPrimitiveValue: windowLevel forKey:@"windowLevel"];
+		[self setPrimitiveValue: windowWidth forKey:@"windowWidth"];
+		[self setPrimitiveValue: xFlipped forKey:@"xFlipped"];
+		[self setPrimitiveValue: yFlipped forKey:@"yFlipped"];
 	}
+	[xFlipped release];
+	[yFlipped release];
+	[windowLevel release];
+	[windowWidth release];
 	[scale release];
 	[rotationAngle release];
 	[xOffset release];
@@ -38,6 +46,73 @@
 }
 
 #pragma mark-
+- (NSNumber*) xFlipped
+{
+	if( xFlipped) return xFlipped;
+	
+	xFlipped = [[self primitiveValueForKey:@"xFlipped"] retain];
+	return xFlipped;
+}
+
+- (void) setXFlipped:(NSNumber*) f
+{
+	if( f != xFlipped)
+	{
+		[xFlipped release];
+		xFlipped = [f retain];
+	}
+}
+
+- (NSNumber*) yFlipped
+{
+	if( yFlipped) return yFlipped;
+	
+	yFlipped = [[self primitiveValueForKey:@"yFlipped"] retain];
+	return yFlipped;
+}
+
+- (void) setYFlipped:(NSNumber*) f
+{
+	if( f != yFlipped)
+	{
+		[yFlipped release];
+		yFlipped = [f retain];
+	}
+}
+
+- (NSNumber*) windowLevel
+{
+	if( windowLevel) return windowLevel;
+	
+	windowLevel = [[self primitiveValueForKey:@"windowLevel"] retain];
+	return windowLevel;
+}
+
+- (void) setWindowLevel:(NSNumber*) f
+{
+	if( f != windowLevel)
+	{
+		[windowLevel release];
+		windowLevel = [f retain];
+	}
+}
+
+- (NSNumber*) windowWidth
+{
+	if( windowWidth) return windowWidth;
+	
+	windowWidth = [[self primitiveValueForKey:@"windowWidth"] retain];
+	return windowWidth;
+}
+
+- (void) setWindowWidth:(NSNumber*) f
+{
+	if( f != windowWidth)
+	{
+		[windowWidth release];
+		windowWidth = [f retain];
+	}
+}
 
 - (NSNumber*) xOffset
 {

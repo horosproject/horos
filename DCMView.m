@@ -1238,7 +1238,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	xFlipped = v;
 	[[self seriesObj]  setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
-
+	
 	// Image Level
 	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
 		[[self imageObj] setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
