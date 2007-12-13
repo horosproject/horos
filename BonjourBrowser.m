@@ -156,14 +156,15 @@ static char *GetPrivateIP()
 		
 		[browser setDelegate:self];
 		
-		[browser searchForServicesOfType:@"_osirixdbsharing._tcp." inDomain:@""];
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DoNotSearchForBonjourServices"] == NO)
+			[browser searchForServicesOfType:@"_osirixdbsharing._tcp." inDomain:@""];
 		
 //		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
-															  selector: @selector(updateFixedList:)
-																  name: @"OsiriXServerArray has changed"
-																object: nil];
+												selector: @selector(updateFixedList:)
+												name: @"OsiriXServerArray has changed"
+												object: nil];
 	}
 	return self;
 }

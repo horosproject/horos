@@ -1178,7 +1178,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         {
             /* don't spawn a sub-process to handle the association */
             cond = handleAssociation(assoc, options_.correctUIDPadding_);
-			printf("handleAssociation single process\n");
+//			printf("handleAssociation single process\n");
         }
 #ifdef HAVE_FORK
         else
@@ -1201,7 +1201,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             {
 				 
                 /* parent process, note process in table */
-				printf("parent process: %d\n", pid);
+//				printf("parent process: %d\n", pid);
                 processtable_.addProcessToTable(pid, assoc);
 				
 				[context lock];
@@ -1211,7 +1211,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             else
             {
                 /* child process, handle the association */
-				printf("child process handle association\n");
+//				printf("child process handle association\n");
                 cond = handleAssociation(assoc, options_.correctUIDPadding_);
                 /* the child process is done so exit */
                 _Exit(3);	//to avoid spin_lock

@@ -62,7 +62,8 @@ static NSHost *currentHost = 0L;
 
 - (void)update
 {
-	[_dicomNetBrowser searchForServicesOfType:@"_dicom._tcp." inDomain:@""];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DoNotSearchForBonjourServices"] == NO)
+		[_dicomNetBrowser searchForServicesOfType:@"_dicom._tcp." inDomain:@""];
 }
 
 - (void)dealloc

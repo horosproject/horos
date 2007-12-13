@@ -1149,13 +1149,22 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (void)showErrorMessage: (NSDictionary*)dict {
+- (void)showErrorMessage: (NSDictionary*)dict
+{
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ShowErrorMessagesForAutorouting"] == NO) return;
 	
 	NSException	*ne = [dict objectForKey: @"exception"];
 	NSDictionary *server = [dict objectForKey:@"server"];
 	
 	NSString	*message = [NSString stringWithFormat:@"%@\r\r%@\r%@\r\rServer:%@-%@:%@", NSLocalizedString( @"Autorouting DICOM StoreSCU operation failed.\rI will try again in 30 secs.", nil), [ne name], [ne reason], [server objectForKey:@"AETitle"], [server objectForKey:@"Address"], [server objectForKey:@"Port"]];
+	
+	NSAlert* alert = [NSAlert new];
+	[alert setMessageText: NSLocalizedString(@"Autorouting Error",nil)];
+	[alert setInformativeText: message];
+	[alert setShowsSuppressionButton:YES];
+	[alert runModal];
+	if ([[alert suppressionButton] state] == NSOnState)
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"ShowErrorMessagesForAutorouting"];
 	
 	NSRunCriticalAlertPanel(NSLocalizedString(@"Autorouting Error",nil), message, NSLocalizedString( @"OK",nil), nil, nil);
 }
