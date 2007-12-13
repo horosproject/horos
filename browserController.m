@@ -9476,8 +9476,6 @@ static NSArray*	openSubSeriesArray = 0L;
 	[self.window makeKeyAndOrderFront: self];
 	
 	[self refreshMatrix: self];
-	
-	[self performSelector: @selector( drawer:) withObject: 0L afterDelay: 1.0];
 }
 
 - (IBAction)customize:(id)sender {
@@ -9564,8 +9562,6 @@ static NSArray*	openSubSeriesArray = 0L;
 	[bonjourPublisher toggleSharing:NO];
 	
 	[self removeAllMounted];
-	
-    [self release];
 }
 
 - (BOOL)shouldTerminate: (id)sender {
