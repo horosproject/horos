@@ -9150,7 +9150,6 @@ static NSArray*	openSubSeriesArray = 0L;
 		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting 32-bit version", nil)];
 	}
 	
-	
 	if( autoroutingQueueArray == 0L) autoroutingQueueArray = [[NSMutableArray array] retain];
 	if( autoroutingQueue == 0L) autoroutingQueue = [[NSLock alloc] init];
 	if( autoroutingInProgress == 0L) autoroutingInProgress = [[NSLock alloc] init];
@@ -9203,9 +9202,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		
 		[self setupToolbar];
 		
-		
 		[toolbar setVisible:YES];
-		[self showDatabase: self];
 		
 		// NSMenu for DatabaseOutline
 		NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Tools"];
@@ -9364,13 +9361,6 @@ static NSArray*	openSubSeriesArray = 0L;
 		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseColumns2"])
 			[databaseOutline restoreColumnState: [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseColumns2"]];
 		
-		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] ) {
-			if( [[[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] intValue] == NSDrawerOpenState)
-				[albumDrawer open]; 
-			else
-				[albumDrawer close];
-		}
-		
 		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseSortDescriptor"] ) {
 			NSDictionary	*sort = [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseSortDescriptor"]; {
 				if( [databaseOutline isColumnWithIdentifierVisible: [sort objectForKey:@"key"]] ) {
@@ -9475,9 +9465,19 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	[self setDBWindowTitle];
 	
+	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] )
+	{
+		if( [[[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] intValue] == NSDrawerOpenState)
+			[albumDrawer open]; 
+		else
+			[albumDrawer close];
+	}
+	
 	[self.window makeKeyAndOrderFront: self];
 	
 	[self refreshMatrix: self];
+	
+	[self performSelector: @selector( drawer:) withObject: 0L afterDelay: 1.0];
 }
 
 - (IBAction)customize:(id)sender {
@@ -9582,7 +9582,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	return YES;
 }
 
-- (void)showDatabase: (id)sender {
+- (void)showDatabase: (id)sender
+{
     [self.window makeKeyAndOrderFront:sender];
 	[self outlineViewRefresh];
 }
