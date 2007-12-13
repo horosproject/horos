@@ -1417,6 +1417,8 @@ NSRect screenFrame()
 
 - (void) applicationWillTerminate: (NSNotification*) aNotification
 {
+	[[BrowserController currentBrowser] browserPrepareForClose];
+
 	[ROI saveDefaultSettings];
 	
 	[BonjourDICOMService stop];
