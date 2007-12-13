@@ -202,6 +202,93 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 
 #pragma mark-
 
+- (NSNumber*) xOffset
+{
+	if( xOffset) return xOffset;
+	
+	xOffset = [[self primitiveValueForKey:@"xOffset"] retain];
+	return xOffset;
+}
+
+- (void) setXOffset:(NSNumber*) f
+{
+	if( f != xOffset)
+	{
+		[xOffset release];
+		xOffset = [f retain];
+	}
+}
+
+- (NSNumber*) yOffset
+{
+	if( yOffset) return yOffset;
+	
+	yOffset = [[self primitiveValueForKey:@"yOffset"] retain];
+	return yOffset;
+}
+
+- (void) setYOffset:(NSNumber*) f
+{
+	if( f != yOffset)
+	{
+		[yOffset release];
+		yOffset = [f retain];
+	}
+}
+
+- (NSNumber*) scale
+{
+	if( scale) return scale;
+	
+	scale = [[self primitiveValueForKey:@"scale"] retain];
+	return scale;
+}
+
+- (void) setScale:(NSNumber*) f
+{
+	if( f != scale)
+	{
+		[scale release];
+		scale = [f retain];
+	}
+}
+
+- (NSNumber*) rotationAngle
+{
+	if( rotationAngle) return rotationAngle;
+	
+	rotationAngle = [[self primitiveValueForKey:@"rotationAngle"] retain];
+	return rotationAngle;
+}
+
+- (void) setRotationAngle:(NSNumber*) f
+{
+	if( f != rotationAngle)
+	{
+		[rotationAngle release];
+		rotationAngle = [f retain];
+	}
+}
+
+- (NSNumber*) displayStyle
+{
+	if( displayStyle) return displayStyle;
+	
+	displayStyle = [[self primitiveValueForKey:@"displayStyle"] retain];
+	return displayStyle;
+}
+
+- (void) setDdisplayStyle:(NSNumber*) f
+{
+	if( f != displayStyle)
+	{
+		[displayStyle release];
+		displayStyle = [f retain];
+	}
+}
+
+#pragma mark-
+
 - (NSNumber*) inDatabaseFolder
 {
 	if( inDatabaseFolder) return inDatabaseFolder;
@@ -519,6 +606,21 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	[fileType release];
 	
 	[completePathCache release];
+	
+	[dicomTime release];
+	
+	if( [self isDeleted] == NO)
+	{
+		[self setPrimitiveValue: xOffset forKey:@"xOffset"];
+		[self setPrimitiveValue: yOffset forKey:@"yOffset"];
+		[self setPrimitiveValue: scale forKey:@"scale"];
+		[self setPrimitiveValue: rotationAngle forKey:@"rotationAngle"];
+	}
+	[scale release];
+	[rotationAngle release];
+	[xOffset release];
+	[yOffset release];
+	
 	[super dealloc];
 }
 

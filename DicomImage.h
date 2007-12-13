@@ -33,6 +33,12 @@
 	NSString	*extension;
 	NSString	*modality;
 	NSString	*fileType;
+
+	NSNumber	*xOffset;
+	NSNumber	*yOffset;
+	NSNumber	*scale;
+	NSNumber	*rotationAngle;
+	NSNumber	*displayStyle;
 }
 
 - (NSString*) uniqueFilename;

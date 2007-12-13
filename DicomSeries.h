@@ -23,6 +23,12 @@
 @interface DicomSeries : NSManagedObject
 {
 	NSNumber	*dicomTime;
+	
+	NSNumber	*xOffset;
+	NSNumber	*yOffset;
+	NSNumber	*scale;
+	NSNumber	*rotationAngle;
+	NSNumber	*displayStyle;
 }
 
 - (NSSet *)paths;
