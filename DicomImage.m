@@ -214,6 +214,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 {
 	if( f != xFlipped)
 	{
+		mxFlipped = YES;
 		[xFlipped release];
 		xFlipped = [f retain];
 	}
@@ -231,6 +232,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 {
 	if( f != yFlipped)
 	{
+		myFlipped = YES;
 		[yFlipped release];
 		yFlipped = [f retain];
 	}
@@ -248,6 +250,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 {
 	if( f != windowLevel)
 	{
+		mwindowLevel = YES;
 		[windowLevel release];
 		windowLevel = [f retain];
 	}
@@ -265,6 +268,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 {
 	if( f != windowWidth)
 	{
+		mwindowWidth = YES;
 		[windowWidth release];
 		windowWidth = [f retain];
 	}
@@ -282,6 +286,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 {
 	if( f != xOffset)
 	{
+		mxOffset = YES;
 		[xOffset release];
 		xOffset = [f retain];
 	}
@@ -299,6 +304,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 {
 	if( f != yOffset)
 	{
+		myOffset = YES;
 		[yOffset release];
 		yOffset = [f retain];
 	}
@@ -316,6 +322,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 {
 	if( f != scale)
 	{
+		mscale = YES;
 		[scale release];
 		scale = [f retain];
 	}
@@ -333,25 +340,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 {
 	if( f != rotationAngle)
 	{
+		mrotationAngle = YES;
 		[rotationAngle release];
 		rotationAngle = [f retain];
-	}
-}
-
-- (NSNumber*) displayStyle
-{
-	if( displayStyle) return displayStyle;
-	
-	displayStyle = [[self primitiveValueForKey:@"displayStyle"] retain];
-	return displayStyle;
-}
-
-- (void) setDdisplayStyle:(NSNumber*) f
-{
-	if( f != displayStyle)
-	{
-		[displayStyle release];
-		displayStyle = [f retain];
 	}
 }
 
@@ -658,6 +649,30 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	return  [NSString stringWithString: @"Image"];
 }
 
+- (void)willSave
+{
+	if( [self isDeleted] == NO)
+	{
+		if( mxOffset) [self setPrimitiveValue: xOffset forKey:@"xOffset"];
+		if( myOffset) [self setPrimitiveValue: yOffset forKey:@"yOffset"];
+		if( mscale) [self setPrimitiveValue: scale forKey:@"scale"];
+		if( mrotationAngle) [self setPrimitiveValue: rotationAngle forKey:@"rotationAngle"];
+		if( mwindowLevel) [self setPrimitiveValue: windowLevel forKey:@"windowLevel"];
+		if( mwindowWidth) [self setPrimitiveValue: windowWidth forKey:@"windowWidth"];
+		if( mxFlipped) [self setPrimitiveValue: xFlipped forKey:@"xFlipped"];
+		if( myFlipped) [self setPrimitiveValue: yFlipped forKey:@"yFlipped"];
+		
+		mxOffset = NO;
+		myOffset = NO;
+		mscale = NO;
+		mrotationAngle = NO;
+		mwindowLevel = NO;
+		mwindowWidth = NO;
+		myFlipped = NO;
+		mxFlipped = NO;
+	}
+}
+
 - (void) dealloc
 {
 	[dicomTime release];
@@ -675,19 +690,6 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	
 	[completePathCache release];
 	
-	[dicomTime release];
-	
-	if( [self isDeleted] == NO)
-	{
-		[self setPrimitiveValue: xOffset forKey:@"xOffset"];
-		[self setPrimitiveValue: yOffset forKey:@"yOffset"];
-		[self setPrimitiveValue: scale forKey:@"scale"];
-		[self setPrimitiveValue: rotationAngle forKey:@"rotationAngle"];
-		[self setPrimitiveValue: windowLevel forKey:@"windowLevel"];
-		[self setPrimitiveValue: windowWidth forKey:@"windowWidth"];
-		[self setPrimitiveValue: xFlipped forKey:@"xFlipped"];
-		[self setPrimitiveValue: yFlipped forKey:@"yFlipped"];
-	}
 	[xFlipped release];
 	[yFlipped release];
 	[windowLevel release];

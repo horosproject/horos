@@ -18,20 +18,34 @@
 
 @implementation DicomSeries
 
-- (void) dealloc
+- (void)willSave
 {
 	if( [self isDeleted] == NO)
 	{
-		[self setPrimitiveValue: xOffset forKey:@"xOffset"];
-		[self setPrimitiveValue: yOffset forKey:@"yOffset"];
-		[self setPrimitiveValue: scale forKey:@"scale"];
-		[self setPrimitiveValue: rotationAngle forKey:@"rotationAngle"];
-		[self setPrimitiveValue: displayStyle forKey:@"displayStyle"];
-		[self setPrimitiveValue: windowLevel forKey:@"windowLevel"];
-		[self setPrimitiveValue: windowWidth forKey:@"windowWidth"];
-		[self setPrimitiveValue: xFlipped forKey:@"xFlipped"];
-		[self setPrimitiveValue: yFlipped forKey:@"yFlipped"];
+		if( mxOffset) [self setPrimitiveValue: xOffset forKey:@"xOffset"];
+		if( myOffset) [self setPrimitiveValue: yOffset forKey:@"yOffset"];
+		if( mscale) [self setPrimitiveValue: scale forKey:@"scale"];
+		if( mrotationAngle) [self setPrimitiveValue: rotationAngle forKey:@"rotationAngle"];
+		if( mdisplayStyle) [self setPrimitiveValue: displayStyle forKey:@"displayStyle"];
+		if( mwindowLevel) [self setPrimitiveValue: windowLevel forKey:@"windowLevel"];
+		if( mwindowWidth) [self setPrimitiveValue: windowWidth forKey:@"windowWidth"];
+		if( mxFlipped) [self setPrimitiveValue: xFlipped forKey:@"xFlipped"];
+		if( myFlipped) [self setPrimitiveValue: yFlipped forKey:@"yFlipped"];
+
+		mxOffset = NO;
+		myOffset = NO;
+		mscale = NO;
+		mrotationAngle = NO;
+		mdisplayStyle = NO;
+		mwindowLevel = NO;
+		mwindowWidth = NO;
+		myFlipped = NO;
+		mxFlipped = NO;
 	}
+}
+
+- (void) dealloc
+{
 	[xFlipped release];
 	[yFlipped release];
 	[windowLevel release];
@@ -41,6 +55,7 @@
 	[xOffset release];
 	[yOffset release];
 	[displayStyle release];
+	[dicomTime release];
 	
 	[super dealloc];
 }
@@ -58,6 +73,7 @@
 {
 	if( f != xFlipped)
 	{
+		mxFlipped = YES;
 		[xFlipped release];
 		xFlipped = [f retain];
 	}
@@ -75,6 +91,7 @@
 {
 	if( f != yFlipped)
 	{
+		myFlipped = YES;
 		[yFlipped release];
 		yFlipped = [f retain];
 	}
@@ -92,6 +109,7 @@
 {
 	if( f != windowLevel)
 	{
+		mwindowLevel = YES;
 		[windowLevel release];
 		windowLevel = [f retain];
 	}
@@ -109,6 +127,7 @@
 {
 	if( f != windowWidth)
 	{
+		mwindowWidth = YES;
 		[windowWidth release];
 		windowWidth = [f retain];
 	}
@@ -126,6 +145,7 @@
 {
 	if( f != xOffset)
 	{
+		mxOffset = YES;
 		[xOffset release];
 		xOffset = [f retain];
 	}
@@ -143,6 +163,7 @@
 {
 	if( f != yOffset)
 	{
+		myOffset = YES;
 		[yOffset release];
 		yOffset = [f retain];
 	}
@@ -160,6 +181,7 @@
 {
 	if( f != scale)
 	{
+		mscale = YES;
 		[scale release];
 		scale = [f retain];
 	}
@@ -177,6 +199,7 @@
 {
 	if( f != rotationAngle)
 	{
+		mrotationAngle = YES;
 		[rotationAngle release];
 		rotationAngle = [f retain];
 	}
@@ -194,6 +217,7 @@
 {
 	if( f != displayStyle)
 	{
+		mdisplayStyle = YES;
 		[displayStyle release];
 		displayStyle = [f retain];
 	}
