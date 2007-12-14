@@ -1714,7 +1714,7 @@ static NSArray*	statesArray = nil;
 							[name isEqualToString: @"yFlipped"] || 
 							[name isEqualToString: @"xFlipped"])
 						{
-						
+							
 						}
 						else [currentSeriesTable setValue: [previousSeries primitiveValueForKey: name] forKey: name];
 					}
@@ -1737,7 +1737,7 @@ static NSArray*	statesArray = nil;
 								[name isEqualToString: @"yFlipped"] || 
 								[name isEqualToString: @"xFlipped"])
 							{
-						
+								
 							}
 							else [currentImageTable setValue: [previousImage primitiveValueForKey: name] forKey: name];
 						}
@@ -1809,6 +1809,10 @@ static NSArray*	statesArray = nil;
 		[currentModel release];
 		[previousSC release];
 		[currentSC release];
+		
+		[currentContext reset];
+		[previousContext reset];
+		
 		[currentContext release];
 		[previousContext release];
 		
