@@ -1344,6 +1344,9 @@ static NSArray*	statesArray = nil;
 	
 	if( currentDatabasePath == 0L) return 0L;
 	
+	[[managedObjectContext undoManager] setLevelsOfUndo: 1];
+	[[managedObjectContext undoManager] disableUndoRegistration];
+	
     if (managedObjectContext) return managedObjectContext;
 	
 	if( loadIfNecessary == NO) return 0L;
@@ -1357,7 +1360,6 @@ static NSArray*	statesArray = nil;
     managedObjectContext = [[NSManagedObjectContext alloc] init];
     [managedObjectContext setPersistentStoreCoordinator: persistentStoreCoordinator];
 	
-	
     NSURL *url = [NSURL fileURLWithPath: currentDatabasePath];
 	
 	if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
@@ -1367,7 +1369,10 @@ static NSArray*	statesArray = nil;
     }
 	
 	[managedObjectContext setStalenessInterval: 1200];
-	
+
+	[[managedObjectContext undoManager] setLevelsOfUndo: 1];
+	[[managedObjectContext undoManager] disableUndoRegistration];
+
 	// This line is very important, if there is NO database.sql file
 	[self saveDatabase: currentDatabasePath];
 	
@@ -1610,6 +1615,12 @@ static NSArray*	statesArray = nil;
 			[currentContext setStalenessInterval: 1];
 			[previousContext setStalenessInterval: 1];
 			
+			[[currentContext undoManager] setLevelsOfUndo: 1];
+			[[currentContext undoManager] disableUndoRegistration];
+				
+			[[previousContext undoManager] setLevelsOfUndo: 1];
+			[[previousContext undoManager] disableUndoRegistration];
+				
 			// ALBUMS
 			NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 			[dbRequest setEntity: [[previousModel entitiesByName] objectForKey:@"Album"]];
@@ -1653,7 +1664,13 @@ static NSArray*	statesArray = nil;
 			imageProperties = [[[[previousModel entitiesByName] objectForKey:@"Image"] attributesByName] allKeys];
 			
 			int counter = 0;
-			
+
+			[[currentContext undoManager] setLevelsOfUndo: 1];
+			[[currentContext undoManager] disableUndoRegistration];
+				
+			[[previousContext undoManager] setLevelsOfUndo: 1];
+			[[previousContext undoManager] disableUndoRegistration];
+
 			for( NSManagedObject *previousStudy in studies ) {
 				
 				currentStudyTable = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext: currentContext];
@@ -1661,6 +1678,9 @@ static NSArray*	statesArray = nil;
 				for ( NSString *name in studyProperties ) {
 					[currentStudyTable setValue: [previousStudy primitiveValueForKey: name] forKey: name];
 				}
+				
+				
+
 				
 				// SERIES
 				NSArray *series = [[previousStudy valueForKey:@"series"] allObjects];
@@ -1670,9 +1690,20 @@ static NSArray*	statesArray = nil;
 					currentSeriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext: currentContext];
 					
 					for ( NSString *name in seriesProperties ) {
-						//	NSLog( @"Series: %@ : %@", name, [previousSeries valueForKey: name]);
 						
-						[currentSeriesTable setValue: [previousSeries primitiveValueForKey: name] forKey: name];
+						if( [name isEqualToString: @"xOffset"] || 
+							[name isEqualToString: @"yOffset"] || 
+							[name isEqualToString: @"scale"] || 
+							[name isEqualToString: @"rotationAngle"] || 
+							[name isEqualToString: @"displayStyle"] || 
+							[name isEqualToString: @"windowLevel"] || 
+							[name isEqualToString: @"windowWidth"] || 
+							[name isEqualToString: @"yFlipped"] || 
+							[name isEqualToString: @"xFlipped"])
+						{
+						
+						}
+						else [currentSeriesTable setValue: [previousSeries primitiveValueForKey: name] forKey: name];
 					}
 					[currentSeriesTable setValue: currentStudyTable forKey: @"study"];
 					
@@ -1682,8 +1713,20 @@ static NSArray*	statesArray = nil;
 						
 						currentImageTable = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext: currentContext];
 						
-						for( NSString *name in imageProperties ) {
-							[currentImageTable setValue: [previousImage primitiveValueForKey: name] forKey: name];
+						for( NSString *name in imageProperties )
+						{
+							if( [name isEqualToString: @"xOffset"] || 
+								[name isEqualToString: @"yOffset"] || 
+								[name isEqualToString: @"scale"] || 
+								[name isEqualToString: @"rotationAngle"] || 
+								[name isEqualToString: @"windowLevel"] || 
+								[name isEqualToString: @"windowWidth"] || 
+								[name isEqualToString: @"yFlipped"] || 
+								[name isEqualToString: @"xFlipped"])
+							{
+						
+							}
+							else [currentImageTable setValue: [previousImage primitiveValueForKey: name] forKey: name];
 						}
 						[currentImageTable setValue: currentSeriesTable forKey: @"series"];
 					}
@@ -7491,6 +7534,11 @@ static BOOL needToRezoom;
 					
 					[sqlContext setPersistentStoreCoordinator: sc];
 					
+					if( [[sqlContext undoManager] isUndoRegistrationEnabled])
+					{
+						[[sqlContext undoManager] setLevelsOfUndo: 1];
+						[[sqlContext undoManager] disableUndoRegistration];
+					}
 					NSError	*error = nil;
 					[sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options:nil error:&error];
 					
@@ -8930,6 +8978,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	self = [super initWithWindow: window];
 	if( self )
 	{
+		displayEmptyDatabase = YES;
+		
 		// Remove identical local sources
 		
 		NSArray *dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
@@ -9080,6 +9130,8 @@ static NSArray*	openSubSeriesArray = 0L;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rtstructNotification:) name:@"RTSTRUCTNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AlternateButtonPressed:) name:@"AlternateButtonPressed" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
+	
+		displayEmptyDatabase = NO;
 	}
 	return self;
 }
@@ -9203,6 +9255,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[self setupToolbar];
 		
 		[toolbar setVisible:YES];
+//		[self showDatabase: self];
 		
 		// NSMenu for DatabaseOutline
 		NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Tools"];

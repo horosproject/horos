@@ -463,6 +463,11 @@ int main(int argc, const char *argv[])
 		}
 		[coordinator release];
 		
+		if( [[context undoManager] isUndoRegistrationEnabled])
+		{
+			[[context undoManager] setLevelsOfUndo: 1];
+			[[context undoManager] disableUndoRegistration];
+		}
 		addFilesToDatabaseSafe( newFilesArray ,context ,model ,INpath ,COMMENTSAUTOFILL);
 //		[BrowserController addFilesToDatabaseSafe: newFilesArray context: context model: model databasePath:INpath COMMENTSAUTOFILL: COMMENTSAUTOFILL];
 		

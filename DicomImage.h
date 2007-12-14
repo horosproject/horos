@@ -34,22 +34,22 @@
 	NSString	*modality;
 	NSString	*fileType;
 
-	BOOL		mxOffset;
-	BOOL		myOffset;
-	BOOL		mscale;
-	BOOL		mrotationAngle;
-	BOOL		mwindowLevel;
-	BOOL		mwindowWidth;
-	BOOL		myFlipped, mxFlipped;
-
-	NSNumber	*xOffset;
-	NSNumber	*yOffset;
-	NSNumber	*scale;
-	NSNumber	*rotationAngle;
-	NSNumber	*windowLevel;
-	NSNumber	*windowWidth;
-	
-	NSNumber	*yFlipped, *xFlipped;
+//	BOOL		mxOffset;
+//	BOOL		myOffset;
+//	BOOL		mscale;
+//	BOOL		mrotationAngle;
+//	BOOL		mwindowLevel;
+//	BOOL		mwindowWidth;
+//	BOOL		myFlipped, mxFlipped;
+//
+//	NSNumber	*xOffset;
+//	NSNumber	*yOffset;
+//	NSNumber	*scale;
+//	NSNumber	*rotationAngle;
+//	NSNumber	*windowLevel;
+//	NSNumber	*windowWidth;
+//	
+//	NSNumber	*yFlipped, *xFlipped;
 }
 
 - (NSString*) uniqueFilename;
