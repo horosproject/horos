@@ -1611,10 +1611,7 @@ static NSArray*	statesArray = nil;
 			NSArray	*previousEntities = [previousModel entities];
 			NSEntityDescription		*currentStudyTable, *currentSeriesTable, *currentImageTable, *currentAlbumTable;
 			NSArray					*albumProperties, *studyProperties, *seriesProperties, *imageProperties;
-			
-			[currentContext setStalenessInterval: 1];
-			[previousContext setStalenessInterval: 1];
-			
+						
 			[[currentContext undoManager] setLevelsOfUndo: 1];
 			[[currentContext undoManager] disableUndoRegistration];
 				
@@ -1656,8 +1653,21 @@ static NSArray*	statesArray = nil;
 			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 			
 			error = nil;
-			NSArray *studies = [previousContext executeFetchRequest:dbRequest error:&error];
+			NSMutableArray *studies = [NSMutableArray arrayWithArray: [previousContext executeFetchRequest:dbRequest error:&error]];
+			
 			[[splash progress] setMaxValue:[studies count]];
+			
+			int chunk = 0;
+			
+			studies = [NSMutableArray arrayWithArray: [studies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease]]]];
+			if( [studies count] > 100)
+			{
+				int max = [studies count] - chunk*100;
+				if( max > 100) max = 100;
+				studies = [NSMutableArray arrayWithArray: [studies subarrayWithRange: NSMakeRange( chunk*100, max)]];
+				chunk++;
+			}
+			[studies retain];
 			
 			studyProperties = [[[[previousModel entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
 			seriesProperties = [[[[previousModel entitiesByName] objectForKey:@"Series"] attributesByName] allKeys];
@@ -1670,17 +1680,20 @@ static NSArray*	statesArray = nil;
 				
 			[[previousContext undoManager] setLevelsOfUndo: 1];
 			[[previousContext undoManager] disableUndoRegistration];
-
-			for( NSManagedObject *previousStudy in studies ) {
+			
+			while( [studies count] > 0 )
+			{
+				NSAutoreleasePool	*poolLoop = [[NSAutoreleasePool alloc] init];
+				
+				NSManagedObject *previousStudy = [studies lastObject];
+				
+				[studies removeLastObject];
 				
 				currentStudyTable = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext: currentContext];
 				
 				for ( NSString *name in studyProperties ) {
 					[currentStudyTable setValue: [previousStudy primitiveValueForKey: name] forKey: name];
 				}
-				
-				
-
 				
 				// SERIES
 				NSArray *series = [[previousStudy valueForKey:@"series"] allObjects];
@@ -1709,8 +1722,8 @@ static NSArray*	statesArray = nil;
 					
 					// IMAGES
 					NSArray *images = [[previousSeries valueForKey:@"images"] allObjects];
-					for ( NSManagedObject *previousImage in images ) {
-						
+					for ( NSManagedObject *previousImage in images )
+					{
 						currentImageTable = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext: currentContext];
 						
 						for( NSString *name in imageProperties )
@@ -1742,12 +1755,37 @@ static NSArray*	statesArray = nil;
 				}
 				
 				[splash incrementBy:1];
+				counter++;
 				
-				if( counter % 100 == 0) {
+				NSLog(@"%d", counter);
+				
+				if( counter % 100 == 0)
+				{
 					error = nil;
 					[currentContext save: &error];
+					
+					[currentContext reset];
+					[previousContext reset];
+					
+					[studies release];
+					
+					studies = [NSMutableArray arrayWithArray: [previousContext executeFetchRequest:dbRequest error:&error]];
+					
+					[[splash progress] setMaxValue:[studies count]];
+					
+					studies = [NSMutableArray arrayWithArray: [studies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease]]]];
+					if( [studies count] > 100)
+					{
+						int max = [studies count] - chunk*100;
+						if( max>100) max = 100;
+						studies = [NSMutableArray arrayWithArray: [studies subarrayWithRange: NSMakeRange( chunk*100, max)]];
+						chunk++;
+					}
+					
+					[studies retain];
 				}
-				counter++;
+				
+				[poolLoop release];
 			}
 			
 			error = nil;
@@ -1755,6 +1793,8 @@ static NSArray*	statesArray = nil;
 			
 			[[NSFileManager defaultManager] removeFileAtPath:currentDatabasePath handler:nil];
 			[[NSFileManager defaultManager] movePath:[documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql"] toPath:currentDatabasePath handler:nil];
+			
+			[studies release];
 			
 		}
 		@catch (NSException *e)
