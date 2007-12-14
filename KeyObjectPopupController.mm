@@ -71,17 +71,15 @@
 
 - (void)willPopUp:(NSNotification *)note{
 	//update menu
-	NSLog(@"will Popup");
-	NSLog(@"[_menu numberOfItems]:  %d", [_menu numberOfItems]);
 	// Remove old Report Type Menu Items
 	if ([_menu numberOfItems] > 4) {
 		int i = [_menu numberOfItems] - 1;
 		while (i >= 4)
 		{
-			NSLog(@"menu itemAtIndex %d: %@", i, [[_menu itemAtIndex:i] title]);
 			[_menu removeItemAtIndex:i--];
 		}
 	}
+	series = [[_viewerController imageView] seriesObj];
 	id study = [[[_viewerController imageView] seriesObj] valueForKey:@"study"];
 	[_reports release];
 	_reports = [[study valueForKey:@"keyObjects"] retain];
@@ -97,14 +95,13 @@
 }
 
 - (IBAction)useKeyObjectNote:(id)sender{
-	NSInteger index = [_popupButton indexOfSelectedItem] - 8;
+
+	NSInteger index = [_popupButton indexOfSelectedItem] - 5;
 	[_popupButton selectItemAtIndex:[_viewerController displayOnlyKeyImages]];
 	if (index > -1) {
+		NSArray *imageInSeries = [[series valueForKey:@"images"] allObjects];
 		NSArray *references = [[_reports objectAtIndex:index] referencedObjects];
-		NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
-		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Image"]];
+
 		NSPredicate *predicate = [NSPredicate predicateWithValue:NO];
 		NSError *error = 0L;
 		NSArray *imagesArray = nil;
@@ -113,11 +110,10 @@
 		while (reference = [enumerator nextObject]){
 			predicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:predicate, [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", reference], nil]]; 
 		}
-		[dbRequest setPredicate:predicate];
-		imagesArray = [[context executeFetchRequest:dbRequest error:&error] retain];
+		imagesArray = [[imageInSeries filteredArrayUsingPredicate:predicate] retain];
 		[[BrowserController currentBrowser] openViewerFromImages:[NSArray arrayWithObject: imagesArray] movie:NO viewer :_viewerController keyImagesOnly:NO];
 	}
-	NSLog(@"Load key Object reference images: %d", index);
+	
 }
 
 

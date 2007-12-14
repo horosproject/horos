@@ -28,6 +28,7 @@
 	NSMenu *_menu;
 	ViewerController *_viewerController;
 	NSPopUpButton *_popupButton;
+	id series;
 }
 
 - (id)initWithViewerController:(ViewerController *)controller popup:(NSPopUpButton *)popupButton;

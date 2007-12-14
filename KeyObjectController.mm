@@ -31,9 +31,7 @@
 		NSLog(@"init Key Object controller");
 		NSArray *series = [study keyObjectSeries];
 		
-		// Lance, you should check following lines... There was a crash here before.
-		
-		if( [series count] > 0)
+		if([series count] > 0)
 			_seriesUID = [[[series objectAtIndex: 0] valueForKey:@"seriesDICOMUID"] retain];
 	}
 	return self;

@@ -67,4 +67,5 @@
 - (NSString*) SRPathForFrame: (int) frameNo;
 - (NSArray*) SRFilenames;
 - (NSArray*) SRPaths;
+- (NSString	*)sopInstanceUID;
 @end

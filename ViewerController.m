@@ -16576,10 +16576,7 @@ long i;
 	{
 		if(!displayOnlyKeyImages)
 		{
-			// ALL IMAGES ARE DISPLAYED
-			//[keyImageDisplay setTag: 0];
-			//[keyImageDisplay setTitle: NSLocalizedString(@"Key Images", nil)];
-			
+			// ALL IMAGES ARE DISPLAYED			
 			NSArray	*images = [[BrowserController currentBrowser] childrenArray: series];
 			[[BrowserController currentBrowser] openViewerFromImages :[NSArray arrayWithObject: images] movie: NO viewer :self keyImagesOnly: displayOnlyKeyImages];
 			//[[BrowserController currentBrowser] openViewerFromImages :[NSArray arrayWithObject: images] movie: NO viewer :self keyImagesOnly: tag];
@@ -16603,10 +16600,8 @@ long i;
 			}
 			else
 			{
-				//[keyImageDisplay setTag: 1];
-				//[keyImageDisplay setTitle: NSLocalizedString(@"All images", nil)];
 				[[BrowserController currentBrowser] openViewerFromImages :[NSArray arrayWithObject: keyImagesArray] movie: NO viewer :self keyImagesOnly: displayOnlyKeyImages];
-				//[[BrowserController currentBrowser] openViewerFromImages :[NSArray arrayWithObject: keyImagesArray] movie: NO viewer :self keyImagesOnly: tag];
+
 			}
 		}
 	}
