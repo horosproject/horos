@@ -2666,6 +2666,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSRect	frameRight, previous, frame;
 	BOOL	visible = NO;
 	
+	stopViewFrameDidChangeNotification = YES;
+	
 	frame = previous = [[[splitView subviews] objectAtIndex: 0] frame];
 	
 	if( frame.size.width > 0)
@@ -2681,6 +2683,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[[[splitView subviews] objectAtIndex: 1] setFrame: frameRight];
 	
 	[splitView adjustSubviews];
+	
+	stopViewFrameDidChangeNotification = NO;
 	
 	return visible;
 }
@@ -2735,7 +2739,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) ViewFrameDidChange:(NSNotification*) note
 {
-	if( [note object] == [[splitView subviews] objectAtIndex: 1])
+	if( [note object] == [[splitView subviews] objectAtIndex: 1] && stopViewFrameDidChangeNotification == NO)
 	{
 		BOOL visible = [self checkFrameSize];
 		
