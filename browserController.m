@@ -1586,6 +1586,10 @@ static NSArray*	statesArray = nil;
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: model]] )
 	{
+		displayEmptyDatabase = YES;
+		[self outlineViewRefresh];
+		[self refreshMatrix: self];
+		
 		Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Updating database model...", nil)];
 		[splash showWindow:self];
 		
@@ -1819,6 +1823,7 @@ static NSArray*	statesArray = nil;
 		[splash close];
 		[splash release];
 		
+		displayEmptyDatabase = NO;
 		needDBRefresh = YES;
 	}
 	else
@@ -2465,6 +2470,8 @@ static NSArray*	statesArray = nil;
 	
 	[self waitForRunningProcesses];
 	
+	[[AppController sharedAppController] closeAllViewers: self];
+	
 	BOOL REBUILDEXTERNALPROCESS = YES;
 	
 	if( COMPLETEREBUILD)	// Delete the database file
@@ -2478,6 +2485,10 @@ static NSArray*	statesArray = nil;
 	else {
 		[self saveDatabase:currentDatabasePath];
 	}
+	
+	displayEmptyDatabase = YES;
+	[self outlineViewRefresh];
+	[self refreshMatrix: self];
 	
 	[checkIncomingLock lock];
 	
@@ -2618,23 +2629,10 @@ static NSArray*	statesArray = nil;
 			if( fp ) {
 				fclose( fp);
 			}
-			else [context deleteObject: aFile];
+			else
+				[context deleteObject: aFile];
 			
 			if( counter++ % 50 == 0) [splash incrementBy:1];
-		}
-	}
-	
-	dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
-	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-	error = 0L;
-	NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
-	
-	if ( [seriesArray count] > 0 ) {
-		for( NSManagedObject *series in seriesArray ) {
-			if( [[series valueForKey:@"noFiles"] intValue] == 0 ) {
-				[context deleteObject: series];
-			}
 		}
 	}
 	
@@ -2673,6 +2671,8 @@ static NSArray*	statesArray = nil;
 	
 	[splash close];
 	[splash release];
+	
+	displayEmptyDatabase = NO;
 	
 	[self outlineViewRefresh];
 	
@@ -2743,6 +2743,8 @@ static NSArray*	statesArray = nil;
 	if( hours) [estimatedTime setStringValue:[NSString stringWithFormat:@"%i hour(s), %i minutes", hours, minutes]];
 	else [estimatedTime setStringValue:[NSString stringWithFormat:@"%i minutes", minutes]];
 	
+	[[AppController sharedAppController] closeAllViewers: self];
+	
 	[NSApp beginSheet: rebuildWindow
 	   modalForWindow: self.window
 		modalDelegate: nil
@@ -2760,6 +2762,8 @@ static NSArray*	statesArray = nil;
 											 NSLocalizedString(@"Cancel",nil),
 											 0L) == NSAlertDefaultReturn)
 	{
+		[[AppController sharedAppController] closeAllViewers: self];
+		
 		[checkIncomingLock lock];
 		
 		[self saveDatabase: currentDatabasePath];
