@@ -525,7 +525,6 @@ BOOL hasMacOSXLeopard()
 	err = Gestalt ( gestaltSystemVersion, &osVersion );       
 	if ( err == noErr)       
 	{
-		NSLog( @"OS: %X", osVersion);
 		if ( osVersion < 0x1050UL )
 		{
 			return NO;
@@ -543,7 +542,6 @@ BOOL hasMacOSXTiger()
 	err = Gestalt ( gestaltSystemVersion, &osVersion );       
 	if ( err == noErr)       
 	{
-		NSLog( @"OS: %X", osVersion);
 		if ( osVersion < 0x1040UL )
 		{
 			return NO;
@@ -1567,9 +1565,9 @@ static BOOL initialized = NO;
 				//		exit(0);
 				//	}
 				
-				if (hasMacOSXTiger() == NO)
+				if (hasMacOSXLeopard() == NO)
 				{
-					NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", 0L), NSLocalizedString(@"This application requires MacOS X 10.4 or higher. Please upgrade your operating system.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+					NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", 0L), NSLocalizedString(@"This application requires MacOS X 10.5 or higher. Please upgrade your operating system.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
 					exit(0);
 				}
 				

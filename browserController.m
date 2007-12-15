@@ -100,6 +100,7 @@ static NSMenu *contextualRT = nil;  // Alternate menu for RT objects (which usua
 
 extern void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome);
 extern BOOL hasMacOSXTiger();
+extern BOOL hasMacOSXLeopard();
 extern NSString					*documentsDirectory();
 
 extern AppController			*appController;
@@ -9026,8 +9027,8 @@ static NSArray*	openSubSeriesArray = 0L;
 {
 	[AppController initialize];
 	
-	if (hasMacOSXTiger() == NO)	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", nil), NSLocalizedString(@"This application requires MacOS X 10.4 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+	if (hasMacOSXLeopard() == NO)	{
+		NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", nil), NSLocalizedString(@"This application requires MacOS X 10.5 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		exit(0);
 	}
 	
@@ -9278,8 +9279,8 @@ static NSArray*	openSubSeriesArray = 0L;
 		[thumbnailsScrollView setDrawsBackground:NO];
 		[[thumbnailsScrollView contentView] setDrawsBackground:NO];
 		
-		if (hasMacOSXTiger() == NO)	{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", nil), NSLocalizedString(@"This application requires MacOS X 10.4 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		if (hasMacOSXLeopard() == NO)	{
+			NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", nil), NSLocalizedString(@"This application requires MacOS X 10.5 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 			exit(0);
 		}
 		
