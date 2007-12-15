@@ -2012,6 +2012,10 @@ static NSArray*	statesArray = nil;
 	
 	[[AppController sharedAppController] closeAllViewers: self];
 	
+	displayEmptyDatabase = YES;
+	[self outlineViewRefresh];
+	[self refreshMatrix: self];
+	
 	shouldDie = YES;
 	[matrixLoadIconsLock lock];
 	[matrixLoadIconsLock unlock];
@@ -2107,7 +2111,7 @@ static NSArray*	statesArray = nil;
 	
 	[managedObjectContext lock];
 	[managedObjectContext unlock];
-	//	NSLog( @"retainCount %d", [managedObjectContext retainCount]);
+	[managedObjectContext reset];
 	[managedObjectContext release];
 	managedObjectContext = 0L;
 	[self setFixedDocumentsDirectory];
@@ -2160,6 +2164,10 @@ static NSArray*	statesArray = nil;
 	[self setDBWindowTitle];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:0L];
+	
+	displayEmptyDatabase = NO;
+	[self outlineViewRefresh];
+	[self refreshMatrix: self];
 }
 
 -(long)saveDatabase: (NSString*)path {
