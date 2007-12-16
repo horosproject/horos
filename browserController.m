@@ -1591,6 +1591,11 @@ static NSArray*	statesArray = nil;
 		[self outlineViewRefresh];
 		[self refreshMatrix: self];
 		
+		[managedObjectContext lock];
+		[managedObjectContext unlock];
+		[managedObjectContext release];
+		managedObjectContext = nil;
+		
 		Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Updating database model...", nil)];
 		[splash showWindow:self];
 		
