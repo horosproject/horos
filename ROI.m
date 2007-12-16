@@ -2752,7 +2752,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (void) setThickness:(float) a
 {
-	thickness = a;
+	int v = a ;	// To reduce the Opengl memory leak - PointSize LineWidth
+	
+	thickness = (float) v;
 	
 	if( type == tPlain)
 	{
