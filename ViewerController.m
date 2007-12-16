@@ -12777,6 +12777,16 @@ int i,j,l;
 
 - (void) print:(id) sender
 {
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
+	{
+		NSRect newFrame = [[self window] frame];
+		
+		if( newFrame.size.width < newFrame.size.height) newFrame.size.height = newFrame.size.width;
+		else newFrame.size.width = newFrame.size.height;
+		
+		[[self window] setFrame: newFrame display: YES animate:YES];
+	}
+	
 	NSDictionary	*p = [[NSUserDefaults standardUserDefaults] objectForKey: @"previousPrintSettings"];
 	
 	if( p)
@@ -12839,6 +12849,16 @@ int i,j,l;
 - (void) printDICOM:(id) sender
 {
 	[self checkEverythingLoaded];
+
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SquareWindowForPrinting"])
+	{
+		NSRect newFrame = [[self window] frame];
+		
+		if( newFrame.size.width < newFrame.size.height) newFrame.size.height = newFrame.size.width;
+		else newFrame.size.width = newFrame.size.height;
+		
+		[[self window] setFrame: newFrame display: YES animate:YES];
+	}
 	
 	[[[AYDicomPrintWindowController alloc] init] autorelease];
 }

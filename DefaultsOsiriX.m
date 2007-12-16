@@ -699,6 +699,8 @@ static NSHost *currentHost = 0L;
 	// ** USEALWAYSTOOLBARPANEL
 	[defaultValues setObject:@"1" forKey: @"USEALWAYSTOOLBARPANEL2"];
 	
+	[defaultValues setObject:@"1" forKey: @"SquareWindowForPrinting"];
+	
 	[defaultValues setObject:@"Softw Tissue CT" forKey: @"LAST_3D_PRESET"];
 	
 	// ** HIDEPATIENTNAME
