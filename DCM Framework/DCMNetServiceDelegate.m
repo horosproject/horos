@@ -63,7 +63,10 @@ static NSHost *currentHost = 0L;
 - (void)update
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DoNotSearchForBonjourServices"] == NO)
+	{
+		NSLog(@"searchForServicesOfType");
 		[_dicomNetBrowser searchForServicesOfType:@"_dicom._tcp." inDomain:@""];
+	}
 }
 
 - (void)dealloc
@@ -111,7 +114,6 @@ static NSHost *currentHost = 0L;
 	else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
 	{
 		#if !__LP64__
-		[aNetService retain];
 		[aNetService resolveWithTimeout: 5];
 		[aNetService setDelegate:self];
 		#endif
@@ -128,7 +130,9 @@ static NSHost *currentHost = 0L;
 }
 
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveService:(NSNetService *)aNetService moreComing:(BOOL)moreComing{
-	[_dicomServices removeObject:aNetService];
+	if( [_dicomServices containsObject: aNetService])
+		[_dicomServices removeObject: aNetService];
+		
 	[[NSNotificationCenter defaultCenter] 	postNotificationName:@"DCMNetServicesDidChange" object:nil];
 }
 
@@ -147,8 +151,7 @@ static NSHost *currentHost = 0L;
 //NetService delegate
 - (void)netService:(NSNetService *)sender didNotResolve:(NSDictionary *)errorDict
 {
-    NSLog( @"There was an error while attempting to resolve address for %@", [sender name] );
-	[_dicomServices removeObject:sender];
+    NSLog( @"There was an error while attempting to resolve address for %@", [sender name]);
 }
 
 + (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR
@@ -246,15 +249,12 @@ static NSHost *currentHost = 0L;
 
 - (void)netServiceDidResolveAddress:(NSNetService *)sender
 {
-	NSLog( @"netServiceDidResolveAddress:");
-	NSLog( [sender description]);
+	NSLog( @"netServiceDidResolveAddress: %@", [sender description]);
 	
 	if( [[sender name] isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]] == NO || [[[DCMNetServiceDelegate currentHost] name] isEqualToString: [sender hostName]] == NO)
 	{
 		[_dicomServices addObject: sender];
 		[[NSNotificationCenter defaultCenter] 	postNotificationName:@"DCMNetServicesDidChange" object:nil];
 	}
-	
-	[sender release];	// <- We did a retain in the didFindService
 }
 @end
