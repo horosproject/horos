@@ -1401,6 +1401,16 @@
 		ABDE6E2206398E3400F0C5DD /* tiffiop.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E1406398E3400F0C5DD /* tiffiop.h */; };
 		ABDE6E2306398E3400F0C5DD /* tiffvers.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E1506398E3400F0C5DD /* tiffvers.h */; };
 		ABDE6E2406398E3400F0C5DD /* uvcode.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDE6E1606398E3400F0C5DD /* uvcode.h */; };
+		ABDEB38D0D1827440079C938 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
+		ABDEB38E0D1827440079C938 /* openjpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDEB38C0D1827440079C938 /* openjpeg.h */; };
+		ABDEB38F0D1827440079C938 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
+		ABDEB3900D1827440079C938 /* openjpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDEB38C0D1827440079C938 /* openjpeg.h */; };
+		ABDEB3910D1827440079C938 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
+		ABDEB3920D1827440079C938 /* openjpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDEB38C0D1827440079C938 /* openjpeg.h */; };
+		ABDEB3930D1827440079C938 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
+		ABDEB3940D1827440079C938 /* openjpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDEB38C0D1827440079C938 /* openjpeg.h */; };
+		ABDEB3950D1827440079C938 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
+		ABDEB3970D1827640079C938 /* libopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDEB38B0D1827440079C938 /* libopenjpeg.a */; };
 		ABDEBD6C063D693F005B99B4 /* add.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABDEBD51063D6938005B99B4 /* add.tif */; };
 		ABDEBD6D063D693F005B99B4 /* minus.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABDEBD52063D6938005B99B4 /* minus.tif */; };
 		ABDF5A1C0A1B6406002A353A /* BonesRemovalCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9E7042609B89E1C00971B6E /* BonesRemovalCursor.tif */; };
@@ -8897,6 +8907,8 @@
 		ABDE6E1406398E3400F0C5DD /* tiffiop.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = tiffiop.h; sourceTree = "<group>"; };
 		ABDE6E1506398E3400F0C5DD /* tiffvers.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = tiffvers.h; sourceTree = "<group>"; };
 		ABDE6E1606398E3400F0C5DD /* uvcode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = uvcode.h; sourceTree = "<group>"; };
+		ABDEB38B0D1827440079C938 /* libopenjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopenjpeg.a; path = Binaries/openjpeg/libopenjpeg.a; sourceTree = "<group>"; };
+		ABDEB38C0D1827440079C938 /* openjpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = openjpeg.h; path = Binaries/openjpeg/openjpeg.h; sourceTree = "<group>"; };
 		ABDEBD51063D6938005B99B4 /* add.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = add.tif; sourceTree = "<group>"; };
 		ABDEBD52063D6938005B99B4 /* minus.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = minus.tif; sourceTree = "<group>"; };
 		ABDF6E2D0BE0904D00793094 /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = Binaries/Growl.framework; sourceTree = "<group>"; };
@@ -11747,6 +11759,7 @@
 				7E47658007428C80000C9A74 /* Accelerate.framework in Frameworks */,
 				BFB8F7F7087B805F007ABE20 /* libjasper2.a in Frameworks */,
 				BFEA82E00940F1D500B90699 /* Quartz.framework in Frameworks */,
+				ABDEB3910D1827440079C938 /* libopenjpeg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11837,6 +11850,7 @@
 				CE7BBFDF0C82DCC1000AD12F /* libITKNrrdIO.a in Frameworks */,
 				CE9D06DE0CACE20A00D7636A /* Growl.framework in Frameworks */,
 				A97E19EF0CDF55E50065EE29 /* 3DconnexionClient.framework in Frameworks */,
+				ABDEB38D0D1827440079C938 /* libopenjpeg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11852,6 +11866,7 @@
 				AB724FF20ADE6ECB00A212A0 /* libz.dylib in Frameworks */,
 				CE7BBFDB0C82DCA5000AD12F /* libtiff.dylib in Frameworks */,
 				CE7BBFDC0C82DCA5000AD12F /* libtiff.a in Frameworks */,
+				ABDEB3950D1827440079C938 /* libopenjpeg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11870,6 +11885,7 @@
 				CE7BBFD90C82DCA5000AD12F /* libtiff.dylib in Frameworks */,
 				CE7BBFDA0C82DCA5000AD12F /* libtiff.a in Frameworks */,
 				CE7BBFE10C82DCC1000AD12F /* libITKNrrdIO.a in Frameworks */,
+				ABDEB3970D1827640079C938 /* libopenjpeg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11877,6 +11893,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABDEB3930D1827440079C938 /* libopenjpeg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11966,6 +11983,7 @@
 				CE7BBFD80C82DCA5000AD12F /* libtiff.a in Frameworks */,
 				CE7BBFE00C82DCC1000AD12F /* libITKNrrdIO.a in Frameworks */,
 				A97E19F00CDF55E50065EE29 /* 3DconnexionClient.framework in Frameworks */,
+				ABDEB38F0D1827440079C938 /* libopenjpeg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12270,6 +12288,7 @@
 				CE11138608EDD5E2005B15E1 /* ITKLibs */,
 				CE11138108EDD5CE005B15E1 /* VTKLibs */,
 				CEB7179706CE7CBD00084CA5 /* libjasper2.a */,
+				AB11ED140D1826FA00EF109B /* openJpeg */,
 				ABDE6E0806398E3400F0C5DD /* LibTiff */,
 				CE3F768E08ED63DB00F4E202 /* VTKHeaders */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
@@ -12740,6 +12759,15 @@
 				AB0BD5E205646BE500BED927 /* DicomDirInitRecords.c */,
 			);
 			name = DicomDir;
+			sourceTree = "<group>";
+		};
+		AB11ED140D1826FA00EF109B /* openJpeg */ = {
+			isa = PBXGroup;
+			children = (
+				ABDEB38B0D1827440079C938 /* libopenjpeg.a */,
+				ABDEB38C0D1827440079C938 /* openjpeg.h */,
+			);
+			name = openJpeg;
 			sourceTree = "<group>";
 		};
 		AB154F8A0627414000BD57AF /* SR 3D */ = {
@@ -16586,6 +16614,7 @@
 				BF7DEB9009D1FC4D00A332B8 /* jdct16.h in Headers */,
 				BF7DEBA009D1FC5C00A332B8 /* jconfig16.h in Headers */,
 				BF7DEBAA09D1FC6700A332B8 /* jchuff16.h in Headers */,
+				ABDEB3920D1827440079C938 /* openjpeg.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18513,6 +18542,7 @@
 				A97D4C610CE3459D003FE2E6 /* PieChartImage.h in Headers */,
 				CE6CD06D0CFB0462001DF429 /* OsiriXToolbar.h in Headers */,
 				CEE8CED10D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h in Headers */,
+				ABDEB38E0D1827440079C938 /* openjpeg.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18657,6 +18687,7 @@
 				CE9CEF290C75BE3A00752D4B /* DCMReleasePDU.h in Headers */,
 				CE9CEF2B0C75BE3A00752D4B /* DCMAbortPDU.h in Headers */,
 				CE9CEF2D0C75BE3A00752D4B /* DCMSocket.h in Headers */,
+				ABDEB3940D1827440079C938 /* openjpeg.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20579,6 +20610,7 @@
 				CE4700FD0CC51A6600ECF78A /* WindowLayoutManager.h in Headers */,
 				A97D4C630CE3459D003FE2E6 /* PieChartImage.h in Headers */,
 				CEE8CED30D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h in Headers */,
+				ABDEB3900D1827440079C938 /* openjpeg.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21743,7 +21775,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
+			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
 		};
 		A9EDB1D50ACBC39700D8B534 /* SVN Revision number */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -25100,6 +25132,8 @@
 					Binaries,
 					Binaries/Jasper,
 					"$(SRCROOT)/Binaries/Jasper",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
@@ -25188,6 +25222,8 @@
 					Binaries/Jasper,
 					ITK180/bin,
 					AYDicomPrint,
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
@@ -25258,6 +25294,8 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"\"$(SRCROOT)/Binaries/LibTiff\"",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
@@ -25358,6 +25396,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/LibTiff,
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -25394,6 +25434,8 @@
 					"$(inherited)",
 					Binaries/LibTiff,
 					ITK180/bin,
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -25506,6 +25548,8 @@
 					Binaries/Jasper,
 					ITK180/bin,
 					AYDicomPrint,
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
@@ -25576,6 +25620,8 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"\"$(SRCROOT)/Binaries/LibTiff\"",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
@@ -25635,6 +25681,8 @@
 					Binaries,
 					Binaries/Jasper,
 					"$(SRCROOT)/Binaries/Jasper",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
@@ -25739,6 +25787,8 @@
 					"$(inherited)",
 					Binaries/LibTiff,
 					ITK180/bin,
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -25774,6 +25824,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/LibTiff,
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -25891,6 +25943,8 @@
 					Binaries/Jasper,
 					ITK180/bin,
 					AYDicomPrint,
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
@@ -25961,6 +26015,8 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"\"$(SRCROOT)/Binaries/LibTiff\"",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
@@ -26021,6 +26077,8 @@
 					Binaries,
 					Binaries/Jasper,
 					"$(SRCROOT)/Binaries/Jasper",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
@@ -26126,6 +26184,8 @@
 					"$(inherited)",
 					Binaries/LibTiff,
 					ITK180/bin,
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -26161,6 +26221,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/LibTiff,
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -26281,6 +26343,8 @@
 					Binaries/Jasper,
 					ITK180/bin,
 					AYDicomPrint,
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
@@ -26351,6 +26415,8 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"\"$(SRCROOT)/Binaries/LibTiff\"",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/AYDicomPrint\"";
@@ -26413,6 +26479,8 @@
 					Binaries,
 					Binaries/Jasper,
 					"$(SRCROOT)/Binaries/Jasper",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
@@ -26497,6 +26565,8 @@
 					"$(inherited)",
 					Binaries/LibTiff,
 					ITK180/bin,
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -26532,6 +26602,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/LibTiff,
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -26587,6 +26659,11 @@
 			buildSettings = {
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
+				);
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
 			};
@@ -26597,6 +26674,11 @@
 			buildSettings = {
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
+				);
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
 			};
@@ -26607,6 +26689,11 @@
 			buildSettings = {
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
+				);
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
 			};
@@ -26617,6 +26704,11 @@
 			buildSettings = {
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+					"\"$(SRCROOT)/Binaries/openjpeg\"",
+				);
 				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
 			};
@@ -26639,6 +26731,10 @@
 				IBC_FLATTEN_NIBS = NO;
 				INFOPLIST_FILE = "32bit shell-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -26671,6 +26767,10 @@
 				IBC_FLATTEN_NIBS = NO;
 				INFOPLIST_FILE = "32bit shell-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -26699,6 +26799,10 @@
 				IBC_FLATTEN_NIBS = NO;
 				INFOPLIST_FILE = "32bit shell-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -26726,6 +26830,10 @@
 				IBC_FLATTEN_NIBS = NO;
 				INFOPLIST_FILE = "32bit shell-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Desktop/trunk\"",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,

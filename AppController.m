@@ -84,7 +84,7 @@ NSThread				*mainThread;
 BOOL					NEEDTOREBUILD = NO;
 BOOL					COMPLETEREBUILD = NO;
 BOOL					USETOOLBARPANEL = NO;
-short					Altivec;
+short					Altivec = 1, UseOpenJpeg = 1;
 AppController			*appController = 0L;
 DCMTKQueryRetrieveSCP   *dcmtkQRSCP = 0L;
 NSLock					*PapyrusLock = 0L;			// Papyrus is NOT thread-safe
@@ -1754,6 +1754,8 @@ static BOOL initialized = NO;
 				
 				[AppController checkForHTMLTemplates];
 				[AppController checkForPagesTemplate];
+				
+				UseOpenJpeg = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseOpenJpegForJPEG2000"];
 				
 				// CHECK FOR THE HTML TEMPLATES DIRECTORY
 //				

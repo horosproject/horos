@@ -825,6 +825,8 @@ static NSHost *currentHost = 0L;
 	// ** WINDOWSIZEVIEWER
 	[defaultValues setObject: @"0" forKey: @"WINDOWSIZEVIEWER"];
 	
+	[defaultValues setObject: @"0" forKey: @"UseOpenJpegForJPEG2000"];
+	
 	[defaultValues setObject: @"0" forKey: @"KeepStudiesTogetherOnSameScreen"];
 	[defaultValues setObject: @"1" forKey: @"ShowErrorMessagesForAutorouting"];
 	

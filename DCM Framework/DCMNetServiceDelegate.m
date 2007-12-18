@@ -62,9 +62,9 @@ static NSHost *currentHost = 0L;
 
 - (void)update
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DoNotSearchForBonjourServices"] == NO)
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
 	{
-		NSLog(@"searchForServicesOfType");
+		NSLog(@"searchDICOMBonjour - searchForServicesOfType : _dicom._tcp");
 		[_dicomNetBrowser searchForServicesOfType:@"_dicom._tcp." inDomain:@""];
 	}
 }
