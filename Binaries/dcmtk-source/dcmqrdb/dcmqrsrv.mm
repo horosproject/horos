@@ -143,7 +143,9 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
     T_DIMSE_Message msg;
     T_ASC_PresentationContextID presID;
     OFBool firstLoop = OFTrue;
-	printf("dispatch\n");
+	
+//	printf("dispatch\n");
+
     // this while loop is executed exactly once unless the "keepDBHandleDuringAssociation_"
     // flag is not set, in which case the inner loop is executed only once and this loop
     // repeats for each incoming DIMSE command. In this case, the DB handle is created
@@ -197,7 +199,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                     break;
 									
                 case DIMSE_C_MOVE_RQ:
-					printf("DIMSE_C_MOVE_RQ\n");
+//					printf("DIMSE_C_MOVE_RQ\n");
                     cond = moveSCP(assoc, &msg.msg.CMoveRQ, presID, *dbHandle);
                     break;
 				
@@ -247,11 +249,11 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
 	//printf("handle association\n");
     ASC_getPresentationAddresses(assoc->params, peerHostName, NULL);
     ASC_getAPTitles(assoc->params, peerAETitle, myAETitle, NULL);
-	printf("peerAET: %s\n  myAET: %s\n  peerhostname: %s%\n", peerAETitle, myAETitle, peerHostName);
+//	printf("peerAET: %s\n  myAET: %s\n  peerhostname: %s%\n", peerAETitle, myAETitle, peerHostName);
 
  /* now do the real work */
     cond = dispatch(assoc, correctUIDPadding);
-	printf("dispatched\n");
+//	printf("dispatched\n");
  /* clean up on association termination */
     if (cond == DUL_PEERREQUESTEDRELEASE) {
         if (options_.verbose_)
@@ -1135,14 +1137,14 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
     if (! go_cleanup)
     {
         cond = negotiateAssociation(assoc);
-		printf("negotiateAssociation");
+		//printf("negotiateAssociation\n");
         if (cond.bad()) go_cleanup = OFTrue;
     }
 
     if (! go_cleanup)
     {
         cond = ASC_acknowledgeAssociation(assoc);
-		printf("acknowledgeAssociation");
+		//printf("acknowledgeAssociation\n");
         if (cond.bad())
         {
             DimseCondition::dump(cond);
