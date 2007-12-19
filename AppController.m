@@ -800,6 +800,9 @@ NSRect screenFrame()
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:0L];
 	}
 	
+	UseOpenJpeg = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseOpenJpegForJPEG2000"];
+	[DCMPixelDataAttribute setUseOpenJpeg: UseOpenJpeg];
+	
 	[[BrowserController currentBrowser] setNetworkLogs];
 	[DicomFile resetDefaults];
 	[DCMPix checkUserDefaults: YES];
@@ -1756,6 +1759,7 @@ static BOOL initialized = NO;
 				[AppController checkForPagesTemplate];
 				
 				UseOpenJpeg = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseOpenJpegForJPEG2000"];
+				[DCMPixelDataAttribute setUseOpenJpeg: UseOpenJpeg];
 				
 				// CHECK FOR THE HTML TEMPLATES DIRECTORY
 //				

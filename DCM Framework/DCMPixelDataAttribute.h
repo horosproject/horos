@@ -60,7 +60,9 @@ enum photometricmode{DCM_UNKNOWN_PHOTOMETRIC, DCM_MONOCHROME1,  DCM_MONOCHROME2,
 @property BOOL isShort;
 @property float compression;
 @property BOOL isDecoded;
-			
+
++ (void) setUseOpenJpeg:(int) b;
+
 - (id) initWithAttributeTag:(DCMAttributeTag *)tag 
 			vr:(NSString *)vr 
 			length:(long) vl 

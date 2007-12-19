@@ -61,8 +61,7 @@ extern PapyShort ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, P
 extern PapyShort ExtractJPEGlossy16 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode);
 		  
 extern short Altivec;
-
-extern int UseOpenJpeg;
+extern short UseOpenJpeg;
 
 /********************************************************************************/
 /*										*/
@@ -659,32 +658,31 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 		
 	} /* while */
 	
-	if( UseOpenJpeg)
+	if( UseOpenJpeg == 1)
 	{
 		read_JPEG2000_file( ioImage8P, (char*) theCompressedP, theLength);
 		free( theCompressedP);
 		return 0;
 	}
 	else
-	{
-	
-	jas_image_t *jasImage;
-	jas_matrix_t *pixels[4];
-	char *fmtname;
-	
-	jas_init();
-	jas_stream_t *jasStream = jas_stream_memopen((char *)theCompressedP, theLength);
+	{	
+		jas_image_t *jasImage;
+		jas_matrix_t *pixels[4];
+		char *fmtname;
 		
-	if ((fmtid = jas_image_getfmt(jasStream)) < 0)
-	{
-		RETURN( -32);
-	}
-		// Decode the image. 
-	if (!(jasImage = jas_image_decode(jasStream, fmtid, 0)))
-	{
-		RETURN( -35);
-	}
-
+		jas_init();
+		jas_stream_t *jasStream = jas_stream_memopen((char *)theCompressedP, theLength);
+		
+		if ((fmtid = jas_image_getfmt(jasStream)) < 0)
+		{
+			RETURN( -32);
+		}
+			// Decode the image. 
+		if (!(jasImage = jas_image_decode(jasStream, fmtid, 0)))
+		{
+			RETURN( -35);
+		}
+		
 		// Close the image file. 
 		jas_stream_close(jasStream);
 		int numcmpts = jas_image_numcmpts(jasImage);

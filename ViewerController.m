@@ -12923,7 +12923,7 @@ int i,j,l;
 
 -(void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :(BOOL) allViewers
 {
-	[self exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :NO mode: 0L];
+	[self exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :allViewers mode: 0L];
 }
 
 -(void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :(BOOL) allViewers mode:(NSString*) mode
