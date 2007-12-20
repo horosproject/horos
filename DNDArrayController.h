@@ -8,6 +8,8 @@
 {
     IBOutlet NSTableView			*tableView;
 	IBOutlet SFAuthorizationView	*_authView;
+	
+	NSTableColumn *sortedColumn;
 }
 
 // table view drag and drop support

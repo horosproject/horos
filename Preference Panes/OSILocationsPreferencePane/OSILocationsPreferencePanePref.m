@@ -206,6 +206,8 @@
 	[dicomNodes addObject:aServer];
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 	
+	[[dicomNodes tableView] scrollRowToVisible: [[dicomNodes tableView] selectedRow]];
+	
 	[self resetTest];
 }
 
@@ -217,6 +219,8 @@
     
     [osiriXServers addObject: aServer];
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+	
+	[[osiriXServers tableView] scrollRowToVisible: [[osiriXServers tableView] selectedRow]];
 	
 	[[[self mainView] window] makeKeyAndOrderFront: self];
 }
@@ -413,6 +417,8 @@
 			if( isDirectory) dict = [NSDictionary dictionaryWithObjectsAndKeys: location, @"Path", [[location lastPathComponent] stringByAppendingString:@" DB"], @"Description", 0L];
 				
 			[localPaths addObject: dict];
+			
+			[[localPaths tableView] scrollRowToVisible: [[localPaths tableView] selectedRow]];
 			
 			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 		}

@@ -150,6 +150,24 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 	return YES;
 }
 
+- (void)tableView:(NSTableView *)tb didClickTableColumn:(NSTableColumn *)tableColumn
+{
+	if( _authView)
+	{
+		if( [_authView authorizationState] != SFAuthorizationViewUnlockedState) return;
+	}
+	
+	
+	[self setSortDescriptors: [tb sortDescriptors]];
+	[self rearrangeObjects];
+	
+	NSArray *a = [[self arrangedObjects] copy];
+	
+	[self removeObjects: [self arrangedObjects]];
+	[self addObjects: a];
+	[a release];
+}
+
 - (BOOL)tableView:(NSTableView*)tv
 	   acceptDrop:(id <NSDraggingInfo>)info
 			  row:(NSInteger)row
@@ -169,6 +187,8 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
     
     // if drag source is self, it's a move
     if ([info draggingSource] == tableView) {
+		
+		[self setSortDescriptors: 0L];
 		
 		NSArray *rows = [[info draggingPasteboard] propertyListForType:MovedRowsType];
 		NSIndexSet  *indexSet = [self indexSetFromRows:rows];

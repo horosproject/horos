@@ -3573,7 +3573,6 @@ static NSArray*	statesArray = nil;
 	
 	@catch (NSException * e)
 	{
-
 		NSLog( @"checkBonjourUpToDateThread");
 		NSLog( [e description]);
 	}
@@ -3625,8 +3624,10 @@ static NSArray*	statesArray = nil;
  	NSArray	*a = self.albumArray;
 	
 	if( self.albumArray.count == albumNoOfStudiesCache.count ) {
-		for ( unsigned int i = 0; i < [a count]; i++ ) {
-			if( [[[a objectAtIndex: i] valueForKey:@"smartAlbum"] boolValue] == YES) [albumNoOfStudiesCache replaceObjectAtIndex:i withObject:@""];
+		for ( unsigned int i = 0; i < [a count]; i++ )
+		{
+			if( [albumNoOfStudiesCache count] > i)
+				if( [[[a objectAtIndex: i] valueForKey:@"smartAlbum"] boolValue] == YES) [albumNoOfStudiesCache replaceObjectAtIndex:i withObject:@""];
 		}
 	}
 	
@@ -7260,7 +7261,8 @@ static BOOL needToRezoom;
 					[context unlock];
 					[context release];
 					
-					[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
+					if( [albumNoOfStudiesCache count] > rowIndex)
+						[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
 				}
 				else {
 					NSManagedObject	*object = [self.albumArray  objectAtIndex: rowIndex];
@@ -7281,18 +7283,24 @@ static BOOL needToRezoom;
 							error = nil;
 							NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
 							
-							[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
+							if( [albumNoOfStudiesCache count] > rowIndex)
+								[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
 						}
 						
 						@catch( NSException *ne) {
 							NSLog(@"TableView exception: %@", ne.description );
-							[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject:@"err"];
+							if( [albumNoOfStudiesCache count] > rowIndex)
+								[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject:@"err"];
 						}
 						
 						[context unlock];
 						[context release];
 					}
-					else [albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]]];
+					else
+					{
+						if( [albumNoOfStudiesCache count] > rowIndex)
+							[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]]];
+					}
 				}
 			}
 			
@@ -7507,7 +7515,8 @@ static BOOL needToRezoom;
 			
 			[self saveDatabase: currentDatabasePath];
 			
-			[albumNoOfStudiesCache replaceObjectAtIndex:row withObject:@""];
+			if( [albumNoOfStudiesCache count] > row)
+				[albumNoOfStudiesCache replaceObjectAtIndex:row withObject:@""];
 			[tableView reloadData];
 		}
 		
