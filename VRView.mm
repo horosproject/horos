@@ -1223,6 +1223,8 @@ public:
 
 -(IBAction) switchProjection:(id) sender
 {
+	if( sender == 0L) return;
+	
 //	projectionMode = [[sender selectedCell] tag];
 //	switch( [[sender selectedCell] tag])
 //	{
@@ -1246,18 +1248,15 @@ public:
 	
 	if( aCamera->GetParallelProjection())
 	{
-//		[[[[[self window] windowController] toolsMatrix] cellWithTag: tMesure] setEnabled: YES];
 		[[[controller toolsMatrix] cellWithTag: tMesure] setEnabled: YES];
 	}
 	else
 	{
-//		[[[[[self window] windowController] toolsMatrix] cellWithTag: tMesure] setEnabled: NO];
 		[[[controller toolsMatrix] cellWithTag: tMesure] setEnabled: NO];
 				
 		if( currentTool == tMesure)
 		{
 			[self setCurrentTool: t3DRotate];
-//			[[[[self window] windowController] toolsMatrix] selectCellWithTag: t3DRotate];
 			[[controller toolsMatrix] selectCellWithTag: t3DRotate];
 		}
 	}

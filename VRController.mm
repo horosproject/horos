@@ -782,16 +782,16 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	}
 	
 	presetNameArray = [[NSMutableArray alloc] initWithCapacity:0];
-	if(presetName1)[presetNameArray addObject:presetName1];
-	if(presetName2)[presetNameArray addObject:presetName2];
-	if(presetName3)[presetNameArray addObject:presetName3];
-	if(presetName4)[presetNameArray addObject:presetName4];
-	if(presetName5)[presetNameArray addObject:presetName5];
-	if(presetName6)[presetNameArray addObject:presetName6];
-	if(presetName7)[presetNameArray addObject:presetName7];
-	if(presetName8)[presetNameArray addObject:presetName8];
-	if(presetName9)[presetNameArray addObject:presetName9];
-		
+	if(presetName1) [presetNameArray addObject:presetName1];
+	if(presetName2) [presetNameArray addObject:presetName2];
+	if(presetName3) [presetNameArray addObject:presetName3];
+	if(presetName4) [presetNameArray addObject:presetName4];
+	if(presetName5) [presetNameArray addObject:presetName5];
+	if(presetName6) [presetNameArray addObject:presetName6];
+	if(presetName7) [presetNameArray addObject:presetName7];
+	if(presetName8) [presetNameArray addObject:presetName8];
+	if(presetName9) [presetNameArray addObject:presetName9];
+	
 	[nc addObserver:self selector:@selector(windowWillCloseNotification:) name:@"NSWindowWillCloseNotification" object:nil];
 	[nc addObserver:self selector:@selector(windowWillMoveNotification:) name:@"NSWindowWillMoveNotification" object:nil];
 	
@@ -3270,8 +3270,8 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		int projection = [[preset objectForKey:@"projection"] intValue];
 		if([perspectiveMatrix selectedTag]!=projection)
 		{
-			[perspectiveMatrix selectCellWithTag:projection];
-			[view switchProjection:perspectiveMatrix];
+			[perspectiveMatrix selectCellWithTag: projection];
+			[view switchProjection: perspectiveMatrix];
 		}
 					
 		// background color
