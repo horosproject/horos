@@ -6356,7 +6356,6 @@
 		CE3F99610C84724B00CB38F1 /* ROIVolume.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991E0C84724B00CB38F1 /* ROIVolume.xib */; };
 		CE3F99620C84724B00CB38F1 /* VRPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99200C84724B00CB38F1 /* VRPanel.xib */; };
 		CE3F99630C84724B00CB38F1 /* VRVPRO.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99220C84724B00CB38F1 /* VRVPRO.xib */; };
-		CE3F99640C84724B00CB38F1 /* MIP.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99240C84724B00CB38F1 /* MIP.xib */; };
 		CE3F99650C84724B00CB38F1 /* PaletteBrush.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99260C84724B00CB38F1 /* PaletteBrush.xib */; };
 		CE3F99660C84724B00CB38F1 /* Anonymize.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99280C84724B00CB38F1 /* Anonymize.xib */; };
 		CE3F99670C84724B00CB38F1 /* LLScoutView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F992A0C84724B00CB38F1 /* LLScoutView.xib */; };
@@ -6402,7 +6401,6 @@
 		CE3F99920C84724B00CB38F1 /* ROIVolume.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F991E0C84724B00CB38F1 /* ROIVolume.xib */; };
 		CE3F99930C84724B00CB38F1 /* VRPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99200C84724B00CB38F1 /* VRPanel.xib */; };
 		CE3F99940C84724B00CB38F1 /* VRVPRO.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99220C84724B00CB38F1 /* VRVPRO.xib */; };
-		CE3F99950C84724B00CB38F1 /* MIP.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99240C84724B00CB38F1 /* MIP.xib */; };
 		CE3F99960C84724B00CB38F1 /* PaletteBrush.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99260C84724B00CB38F1 /* PaletteBrush.xib */; };
 		CE3F99970C84724B00CB38F1 /* Anonymize.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99280C84724B00CB38F1 /* Anonymize.xib */; };
 		CE3F99980C84724B00CB38F1 /* LLScoutView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F992A0C84724B00CB38F1 /* LLScoutView.xib */; };
@@ -11495,7 +11493,6 @@
 		CE3F991F0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ROIVolume.xib; sourceTree = "<group>"; };
 		CE3F99210C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VRPanel.xib; sourceTree = "<group>"; };
 		CE3F99230C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VRVPRO.xib; sourceTree = "<group>"; };
-		CE3F99250C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MIP.xib; sourceTree = "<group>"; };
 		CE3F99270C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PaletteBrush.xib; sourceTree = "<group>"; };
 		CE3F99290C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Anonymize.xib; sourceTree = "<group>"; };
 		CE3F992B0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/LLScoutView.xib; sourceTree = "<group>"; };
@@ -12224,7 +12221,6 @@
 				CE3F991E0C84724B00CB38F1 /* ROIVolume.xib */,
 				CE3F99200C84724B00CB38F1 /* VRPanel.xib */,
 				CE3F99220C84724B00CB38F1 /* VRVPRO.xib */,
-				CE3F99240C84724B00CB38F1 /* MIP.xib */,
 				CE3F99260C84724B00CB38F1 /* PaletteBrush.xib */,
 				CE3F99280C84724B00CB38F1 /* Anonymize.xib */,
 				CE3F992A0C84724B00CB38F1 /* LLScoutView.xib */,
@@ -21331,7 +21327,6 @@
 				CE3F99610C84724B00CB38F1 /* ROIVolume.xib in Resources */,
 				CE3F99620C84724B00CB38F1 /* VRPanel.xib in Resources */,
 				CE3F99630C84724B00CB38F1 /* VRVPRO.xib in Resources */,
-				CE3F99640C84724B00CB38F1 /* MIP.xib in Resources */,
 				CE3F99650C84724B00CB38F1 /* PaletteBrush.xib in Resources */,
 				CE3F99660C84724B00CB38F1 /* Anonymize.xib in Resources */,
 				CE3F99670C84724B00CB38F1 /* LLScoutView.xib in Resources */,
@@ -21717,7 +21712,6 @@
 				CE3F99920C84724B00CB38F1 /* ROIVolume.xib in Resources */,
 				CE3F99930C84724B00CB38F1 /* VRPanel.xib in Resources */,
 				CE3F99940C84724B00CB38F1 /* VRVPRO.xib in Resources */,
-				CE3F99950C84724B00CB38F1 /* MIP.xib in Resources */,
 				CE3F99960C84724B00CB38F1 /* PaletteBrush.xib in Resources */,
 				CE3F99970C84724B00CB38F1 /* Anonymize.xib in Resources */,
 				CE3F99980C84724B00CB38F1 /* LLScoutView.xib in Resources */,
@@ -24958,14 +24952,6 @@
 				CE3F99230C84724B00CB38F1 /* English */,
 			);
 			name = VRVPRO.xib;
-			sourceTree = "<group>";
-		};
-		CE3F99240C84724B00CB38F1 /* MIP.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3F99250C84724B00CB38F1 /* English */,
-			);
-			name = MIP.xib;
 			sourceTree = "<group>";
 		};
 		CE3F99260C84724B00CB38F1 /* PaletteBrush.xib */ = {

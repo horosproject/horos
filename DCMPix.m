@@ -10257,7 +10257,7 @@ END_CREATE_ROIS:
 					else if([type isEqualToString:@"Special"])
 					{
 						value = [field objectForKey:@"field"];
-						if ([value isEqualToString: NSLocalizedString(@"Patient's Actual Age", 0L)])
+						if ([value isEqualToString: NSLocalizedString(@"Patient's Actual Age", 0L)] || [value isEqualToString: (@"Patient's Actual Age")])
 						{
 							NSDate *date = [imageObj valueForKeyPath: @"series.study.dateOfBirth"];
 							
@@ -10269,7 +10269,7 @@ END_CREATE_ROIS:
 							else value = 0L;
 						}
 						
-						if ([value isEqualToString: NSLocalizedString(@"Patient's Age At Acquisition", 0L)])
+						if ([value isEqualToString: NSLocalizedString(@"Patient's Age At Acquisition", 0L)] || [value isEqualToString: (@"Patient's Age At Acquisition")])
 						{
 							NSDate *date1 = [imageObj valueForKeyPath: @"series.study.dateOfBirth"];
 							NSDate *date2 = [imageObj valueForKeyPath: @"series.study.date"];
