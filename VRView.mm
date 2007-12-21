@@ -987,6 +987,8 @@ public:
 				
 				[progress incrementBy: 1];
 				
+				[self resetAutorotate: self];
+				
 				[pool release];
 			}
 			
