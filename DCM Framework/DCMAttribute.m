@@ -520,31 +520,58 @@
                 break;
 			case AT:	//Attribute Tag 16bit unsigned integer
             case UL:	//unsigned Long
-
-				count = length/4;
-				values = [NSMutableArray array];
-				for (i = 0; i < count; i ++) 
-					[(NSMutableArray *)values addObject:[NSNumber numberWithInt:[dicomData nextUnsignedLong]]];
-                break;
+				{
+					int p = 0;
+					count = length/4;
+					values = [NSMutableArray array];
+					for (i = 0; i < count; i ++)
+					{
+						[(NSMutableArray *)values addObject:[NSNumber numberWithInt:[dicomData nextUnsignedLong]]];
+						p += 4;
+					}
+					if( length - p > 0) [dicomData skipLength: length - p];
+				}
+				break;
             
             case SL:	//signed long
-				count = length/4;
-				values = [NSMutableArray array];
-				for (i = 0; i < count; i ++) 
-					[(NSMutableArray *)values addObject:[NSNumber numberWithInt:[dicomData nextSignedLong]]];
+				{
+					int p = 0;
+					count = length/4;
+					values = [NSMutableArray array];
+					for (i = 0; i < count; i ++)
+					{
+						[(NSMutableArray *)values addObject:[NSNumber numberWithInt:[dicomData nextSignedLong]]];
+						p += 4;
+					}
+					if( length - p > 0) [dicomData skipLength: length - p];
+				}
                 break;
             case FL:	//floating point Single 4 bytes fixed
-				count = length/4;
-				values = [NSMutableArray array];
-				for (i = 0; i < count; i ++) 
-					[(NSMutableArray *)values addObject:[NSNumber numberWithFloat:[dicomData nextFloat]]];
-                break;
+				{
+					int p = 0;
+					count = length/4;
+					values = [NSMutableArray array];
+					for (i = 0; i < count; i ++) 
+					{
+						[(NSMutableArray *)values addObject:[NSNumber numberWithFloat:[dicomData nextFloat]]];
+						p += 4;
+					}
+					if( length - p > 0) [dicomData skipLength: length - p];
+				}
+				break;
             case FD:	//double floating point 8 bytes fixed
-				count = length/8;
-				values = [NSMutableArray array];
-				for (i = 0; i < count; i ++) 
-					[(NSMutableArray *)values addObject:[NSNumber numberWithDouble:[dicomData nextDouble]]];
-                break;           
+				{
+					int p = 0;
+					count = length/8;
+					values = [NSMutableArray array];
+					for (i = 0; i < count; i ++)
+					{
+						[(NSMutableArray *)values addObject:[NSNumber numberWithDouble:[dicomData nextDouble]]];
+						p += 8;
+					}
+					if( length - p > 0) [dicomData skipLength: length - p];
+				}
+			break;           
 			
             case AE:	//Application Entity  String 16bytes max
             case AS:	//Age String Format mmmM,dddD,nnnY ie 018Y

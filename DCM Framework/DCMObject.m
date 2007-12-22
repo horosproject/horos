@@ -507,8 +507,7 @@ PixelRepresentation
 		*byteOffset+=4;
 		
 		const char *tagUTF8 = [tag.stringValue UTF8String];
-
-
+		
 		if (DEBUG)
 			NSLog(@"Tag: %@  group: 0x%4000x  word 0x%4000x", tag.description, group, element);
 			// "FFFE,E00D" == Item Delimitation Item
@@ -537,9 +536,10 @@ PixelRepresentation
 		else {
 		// get vr
 
-			NSString *vr;
+			NSString *vr = 0L;
 			long vl = 0;
-			if (isExplicit) {
+			if (isExplicit) 
+			{
 				vr = [dicomData nextStringWithLength:2];
 				if (DEBUG)
 					NSLog(@"Explicit VR %@", vr);
@@ -549,7 +549,8 @@ PixelRepresentation
 			}
 			
 			//implicit
-			else {
+			else
+			{
 				vr = tag.vr;
 				if (!vr)
 					vr = @"UN";
@@ -623,7 +624,8 @@ PixelRepresentation
 						specificCharacterSet:specificCharacterSet
 						isExplicit:[dicomData isExplicitTS]
 						forImplicitUseOW:forImplicitUseOW] autorelease];
-				else {
+				else
+				{
 					attr = nil;
 					[dicomData skipLength:vl];
 				}

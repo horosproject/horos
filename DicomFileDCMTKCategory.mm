@@ -682,6 +682,7 @@ extern NSLock	*PapyrusLock;
 			NSRange range = [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch];
 			if( range.location != NSNotFound)
 			{
+				NSLog(@"localizer image - remove it");
 				return -1;
 			}
 		}
