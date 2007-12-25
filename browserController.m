@@ -8751,11 +8751,17 @@ static BOOL needToRezoom;
 			
 			if( [array count] > 1)
 			{
+				ViewerController *kV = 0L;
+				
 				for( ViewerController *v in array)
 				{
 					[[v imageView] scaleToFit];
 					[[v imageView] setOriginX:0 Y:0];
+					
+					if( [[v window] isKeyWindow]) kV = v;
 				}
+				
+				[kV propagateSettings];
 			}
 		}
 		else
@@ -9648,7 +9654,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	[checkIncomingLock unlock];
 }
 
-- (void)browserPrepareForClose
+- (void) browserPrepareForClose
 {
 	NSLog( @"browserPrepareForClose");
 	

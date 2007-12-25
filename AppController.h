@@ -104,7 +104,7 @@ extern "C"
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
 
-
++ (void) displayImportantNotice:(id) sender;
 + (id) sharedAppController; /**< Return the shared AppController instance */
 + (void)checkForPagesTemplate; /**< Check for Pages report template */
 + (NSString*) currentHostName; /**< Return Network hostname */

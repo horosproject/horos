@@ -2669,7 +2669,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 }
 
 - (void)mouseDown:(NSEvent *)event
-{
+{	
 	currentMouseEventTool = -1;
 	
 	if( !drawing) return;
@@ -2723,6 +2723,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		blendingFactorStart = blendingFactor;
 		scrollMode = 0;
 		resizeTotal = 1;
+		
+		[AppController displayImportantNotice: self];
 		
         originStart = origin;
 		originOffsetStart = originOffset;

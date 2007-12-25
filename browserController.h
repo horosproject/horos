@@ -371,7 +371,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction) openDatabase:(id) sender;
 - (IBAction) createDatabase:(id) sender;
 - (void) openDatabaseIn:(NSString*) a Bonjour:(BOOL) isBonjour;
-
+- (void) browserPrepareForClose;
 - (IBAction) endReBuildDatabase:(id) sender;
 - (IBAction) ReBuildDatabase:(id) sender;
 - (IBAction) ReBuildDatabaseSheet: (id)sender;

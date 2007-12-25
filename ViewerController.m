@@ -4501,6 +4501,8 @@ static ViewerController *draggedController = 0L;
 
 - (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
 {
+	[AppController displayImportantNotice: self];
+	
 	self = [super initWithWindowNibName:@"Viewer"];
 	
 	retainedToolbarItems = [[NSMutableArray alloc] initWithCapacity: 0];
@@ -5061,6 +5063,8 @@ static ViewerController *draggedController = 0L;
 		[self setImageRows: previousRows columns: previousColumns];
 	
 	[self selectFirstTilingView];
+	
+	nonContinuousWarningDisplayed = NO;
 }
 
 - (void) showWindowTransition
@@ -6439,7 +6443,8 @@ static ViewerController *draggedController = 0L;
 		long				i, x;
 		BOOL				flipNow = [flipNowNumber boolValue];
 		
-		if( interval < 0 && [pixList[ z] count] > 1)
+//		if( interval < 0 && [pixList[ z] count] > 1)
+		if( [pixList[ z] count] > 1)
 		{
 			if( flipNow)
 			{
@@ -6686,7 +6691,47 @@ static ViewerController *draggedController = 0L;
 
 -(float) computeInterval
 {
-	return [self computeIntervalFlipNow: [NSNumber numberWithBool: YES]];
+	float s = [self computeIntervalFlipNow: [NSNumber numberWithBool: YES]];
+	
+	if( nonContinuousWarningDisplayed == NO)
+	{
+		double previousInterval3d = 0;
+		
+		BOOL nonContinuous = NO;
+		
+		for( int i = 0 ; i < [pixList[ 0] count] -1; i++)
+		{
+			double xd = [[pixList[ 0] objectAtIndex: i+1] originX] - [[pixList[ 0] objectAtIndex: i] originX];
+			double yd = [[pixList[ 0] objectAtIndex: i+1] originY] - [[pixList[ 0] objectAtIndex: i] originY];
+			double zd = [[pixList[ 0] objectAtIndex: i+1] originZ] - [[pixList[ 0] objectAtIndex: i] originZ];
+			
+			double interval3d = sqrt(xd*xd + yd*yd + zd*zd);
+			
+			xd /= interval3d;
+			yd /= interval3d;
+			zd /= interval3d;
+			
+			int sss = fabs( previousInterval3d - interval3d) * 1000.;
+			
+			if( sss != 0 && previousInterval3d != 0)
+			{
+				nonContinuous = YES;
+				
+				NSLog(@"%f", previousInterval3d - interval3d);
+			}
+			
+			previousInterval3d = interval3d;
+		}
+		
+		if( nonContinuous)
+		{
+			NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), NSLocalizedString(@"These slices have a non regular slice interval. This can produce distortion in 3D representations.", nil), NSLocalizedString(@"OK", nil), 0L, 0L);
+		}
+		
+		nonContinuousWarningDisplayed = YES;
+	}
+	
+	return s;
 }
 
 - (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(id)contextInfo;

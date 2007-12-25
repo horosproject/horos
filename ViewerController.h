@@ -309,6 +309,8 @@ enum
 	ViewerController		*registeredViewer;
 	
 	NSMutableArray			*retainedToolbarItems;
+	
+	BOOL					nonContinuousWarningDisplayed;
 }
 
 @property(readonly) short currentOrientationTool;
