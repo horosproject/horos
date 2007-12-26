@@ -3588,7 +3588,6 @@ static NSArray*	statesArray = nil;
 	[pool release];
 }
 
-
 -(void)checkBonjourUpToDate: (id)sender
 {
 	[self testAutorouting];
@@ -9328,6 +9327,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[databaseOutline setAllowsMultipleSelection:YES];
 		[databaseOutline setAutosaveName: 0L];
 		[databaseOutline setAutosaveTableColumns: NO];
+		[databaseOutline setAllowsTypeSelect: NO];
 		
 		[self setupToolbar];
 		
@@ -9712,27 +9712,36 @@ static NSArray*	openSubSeriesArray = 0L;
 	[self outlineViewRefresh];
 }
 
-- (void)keyDown:(NSEvent *)event {
+- (void)keyDown:(NSEvent *)event
+{
+
     unichar c = [[event characters] characterAtIndex:0];
+	
     if (c == NSDeleteCharacter ||
-        c == NSBackspaceCharacter) {
+        c == NSBackspaceCharacter)
         [self delItem:nil];
-    }else if(c == NSNewlineCharacter ||
+    
+	else if(c == NSNewlineCharacter ||
              c == NSEnterCharacter ||
-             c == NSCarriageReturnCharacter){
+             c == NSCarriageReturnCharacter)
         [self viewerDICOM:nil];
-    }
-	else if(c == ' ') {
+		
+	else if(c == ' ')
 		[animationCheck setState: ![animationCheck state]];
-	}
-    else {
+	
+    else
+	{
 		[pressedKeys appendString: [event characters]];
+		
+		NSLog(@"%@", pressedKeys);
 		
 		NSArray		*result = [outlineViewArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", [NSString stringWithFormat:@"%@*", pressedKeys]]];
 		
+		[NSObject cancelPreviousPerformRequestsWithTarget: pressedKeys selector:@selector(setString:) object:@""];
 		[pressedKeys performSelector:@selector(setString:) withObject:@"" afterDelay:0.5];
 		
-		if( [result count] ) {
+		if( [result count] )
+		{
 			[databaseOutline selectRow: [databaseOutline rowForItem: [result objectAtIndex: 0]] byExtendingSelection: NO];
 			[databaseOutline scrollRowToVisible: databaseOutline.selectedRow];
 		}
