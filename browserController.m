@@ -8769,6 +8769,10 @@ static BOOL needToRezoom;
 			[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
     }
 	
+	
+	[wait close];
+	[wait release];
+
 	if( tileWindows ) {
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 		{
@@ -8794,9 +8798,6 @@ static BOOL needToRezoom;
 		else
 			[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 	}
-	
-	[wait close];
-	[wait release];
 }
 
 - (void)viewerDICOM: (id)sender {
