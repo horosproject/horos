@@ -1609,6 +1609,8 @@ static NSArray*	statesArray = nil;
 
 		@try
 		{
+			NSMutableString *updatingProblems = 0L;
+			
 			[currentContext setPersistentStoreCoordinator: currentSC];
 			[previousContext setPersistentStoreCoordinator: previousSC];
 			
@@ -1695,53 +1697,32 @@ static NSArray*	statesArray = nil;
 			{
 				NSAutoreleasePool	*poolLoop = [[NSAutoreleasePool alloc] init];
 				
-				NSManagedObject *previousStudy = [studies lastObject];
-				
-				[studies removeLastObject];
-				
-				currentStudyTable = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext: currentContext];
-				
-				for ( NSString *name in studyProperties ) {
-					[currentStudyTable setValue: [previousStudy primitiveValueForKey: name] forKey: name];
-				}
-				
-				// SERIES
-				NSArray *series = [[previousStudy valueForKey:@"series"] allObjects];
-				for( NSManagedObject *previousSeries in series ) {
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+				@try
+				{
+					NSManagedObject *previousStudy = [studies lastObject];
 					
-					currentSeriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext: currentContext];
+					[studies removeLastObject];
 					
-					for ( NSString *name in seriesProperties ) {
-						
-						if( [name isEqualToString: @"xOffset"] || 
-							[name isEqualToString: @"yOffset"] || 
-							[name isEqualToString: @"scale"] || 
-							[name isEqualToString: @"rotationAngle"] || 
-							[name isEqualToString: @"displayStyle"] || 
-							[name isEqualToString: @"windowLevel"] || 
-							[name isEqualToString: @"windowWidth"] || 
-							[name isEqualToString: @"yFlipped"] || 
-							[name isEqualToString: @"xFlipped"])
-						{
-							
-						}
-						else [currentSeriesTable setValue: [previousSeries primitiveValueForKey: name] forKey: name];
+					currentStudyTable = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext: currentContext];
+					
+					for ( NSString *name in studyProperties ) {
+						[currentStudyTable setValue: [previousStudy primitiveValueForKey: name] forKey: name];
 					}
-					[currentSeriesTable setValue: currentStudyTable forKey: @"study"];
 					
-					// IMAGES
-					NSArray *images = [[previousSeries valueForKey:@"images"] allObjects];
-					for ( NSManagedObject *previousImage in images )
-					{
-						currentImageTable = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext: currentContext];
+					// SERIES
+					NSArray *series = [[previousStudy valueForKey:@"series"] allObjects];
+					for( NSManagedObject *previousSeries in series ) {
+						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 						
-						for( NSString *name in imageProperties )
-						{
+						currentSeriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext: currentContext];
+						
+						for ( NSString *name in seriesProperties ) {
+							
 							if( [name isEqualToString: @"xOffset"] || 
 								[name isEqualToString: @"yOffset"] || 
 								[name isEqualToString: @"scale"] || 
 								[name isEqualToString: @"rotationAngle"] || 
+								[name isEqualToString: @"displayStyle"] || 
 								[name isEqualToString: @"windowLevel"] || 
 								[name isEqualToString: @"windowWidth"] || 
 								[name isEqualToString: @"yFlipped"] || 
@@ -1749,21 +1730,55 @@ static NSArray*	statesArray = nil;
 							{
 								
 							}
-							else [currentImageTable setValue: [previousImage primitiveValueForKey: name] forKey: name];
+							else [currentSeriesTable setValue: [previousSeries primitiveValueForKey: name] forKey: name];
 						}
-						[currentImageTable setValue: currentSeriesTable forKey: @"series"];
+						[currentSeriesTable setValue: currentStudyTable forKey: @"study"];
+						
+						// IMAGES
+						NSArray *images = [[previousSeries valueForKey:@"images"] allObjects];
+						for ( NSManagedObject *previousImage in images )
+						{
+							currentImageTable = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext: currentContext];
+							
+							for( NSString *name in imageProperties )
+							{
+								if( [name isEqualToString: @"xOffset"] || 
+									[name isEqualToString: @"yOffset"] || 
+									[name isEqualToString: @"scale"] || 
+									[name isEqualToString: @"rotationAngle"] || 
+									[name isEqualToString: @"windowLevel"] || 
+									[name isEqualToString: @"windowWidth"] || 
+									[name isEqualToString: @"yFlipped"] || 
+									[name isEqualToString: @"xFlipped"])
+								{
+									
+								}
+								else [currentImageTable setValue: [previousImage primitiveValueForKey: name] forKey: name];
+							}
+							[currentImageTable setValue: currentSeriesTable forKey: @"series"];
+						}
+						
+						[pool release];
 					}
 					
-					[pool release];
+					NSArray		*storedInAlbums = [[previousStudy valueForKey: @"albums"] allObjects];
+					for( NSString *sa in storedInAlbums ) {
+						NSString		*name = [sa valueForKey:@"name"];
+						NSMutableSet	*studiesStoredInAlbum = [[currentAlbums objectAtIndex: [currentAlbumsNames indexOfObject: name]] mutableSetValueForKey:@"studies"];
+						[studiesStoredInAlbum addObject: currentStudyTable];
+					}
+					
 				}
 				
-				NSArray		*storedInAlbums = [[previousStudy valueForKey: @"albums"] allObjects];
-				for( NSString *sa in storedInAlbums ) {
-					NSString		*name = [sa valueForKey:@"name"];
-					NSMutableSet	*studiesStoredInAlbum = [[currentAlbums objectAtIndex: [currentAlbumsNames indexOfObject: name]] mutableSetValueForKey:@"studies"];
-					[studiesStoredInAlbum addObject: currentStudyTable];
+				@catch (NSException * e)
+				{
+					NSLog(@"Problems during updating: %@", e);
+					
+					if( updatingProblems == 0L) updatingProblems = [[NSMutableString stringWithString:@""] retain];
+					
+					[updatingProblems appendFormat:@"%@\r", [e description]];
 				}
-				
+					
 				[splash incrementBy:1];
 				counter++;
 				
@@ -1806,13 +1821,24 @@ static NSArray*	statesArray = nil;
 			
 			[studies release];
 			
+			if( updatingProblems)
+			{
+				NSRunAlertPanel( NSLocalizedString(@"Database Update", nil), NSLocalizedString(@"Database updating generated errors... The corrupted studies have been removed.", nil), nil, nil, nil);
+				
+				[updatingProblems release];
+				updatingProblems = 0L;
+			}
 		}
+		
 		@catch (NSException *e)
 		{
 			NSLog( @"updateDatabaseModel failed...");
 			NSLog( [e description]);
 			
-			NSRunAlertPanel( NSLocalizedString(@"Database Update", nil), NSLocalizedString(@"Database updating failed... The database SQL index file is probably corrupted...", nil), nil, nil, nil);
+			NEEDTOREBUILD = YES;
+			COMPLETEREBUILD = YES;
+			
+			NSRunAlertPanel( NSLocalizedString(@"Database Update", nil), NSLocalizedString(@"Database updating failed... The database SQL index file is probably corrupted... The database will be reconstructed.", nil), nil, nil, nil);
 		}
 		
 		[previousModel release];
