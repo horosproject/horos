@@ -58,7 +58,7 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 	
 //	NSLog(@"X: %2.2f Y:%2.2f", dstframe.origin.x, dstframe.origin.y);
 	
-	[[self window] setFrame: dstframe display: YES];
+	[[self window] setFrame: dstframe display: NO];
 }
 
 - (id)initForScreen: (long) s

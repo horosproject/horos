@@ -636,7 +636,7 @@ static NSDate *lastWarningDate = 0L;
 {
 	if( lastWarningDate == 0L || [lastWarningDate timeIntervalSinceNow] < -30*60)	// each 30 minutes of non-activity
 	{
-		int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", 0L), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device and as a primary diagnostic tool. You can only use this version of OsiriX as a reviewing, research or teaching software, not as a primary diagnostic tool. You cannot use it in clinical worklfow involving patient care.\r\rFor a FDA / CE-1 certified version, please check our partners web page:\r http://www.osirix-viewer.com/Partners.html\r", 0L), NSLocalizedString( @"I agree", 0L), NSLocalizedString( @"Quit", 0L), nil);
+		int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", 0L), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device and as a primary diagnostic tool. You can only use this version of OsiriX as a reviewing, research or teaching software, not as a primary diagnostic tool. You cannot use it in clinical worklfow involving patient care.\r\rFor a FDA / CE-1 certified version, please check our partners web page:\r\rhttp://www.osirix-viewer.com/Partners.html\r", 0L), NSLocalizedString( @"I agree", 0L), NSLocalizedString( @"Quit", 0L), nil);
 		
 		if( result != NSAlertDefaultReturn)
 			[[AppController sharedAppController] terminate: self];

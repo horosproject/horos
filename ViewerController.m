@@ -2135,8 +2135,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[[toolbarPanel[ i] window] orderOut:self];
 	}
 	
-	if( fileList[ curMovieIndex] && [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
-		[[BrowserController currentBrowser] findAndSelectFile: 0L image:[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] shouldExpand:NO];
+	if( [[self window] isVisible])
+	{
+		if( fileList[ curMovieIndex] && [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
+		{
+			[[BrowserController currentBrowser] findAndSelectFile: 0L image:[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] shouldExpand:NO];
+		}
+	}
 	
 	[self SetSyncButtonBehavior: self];
 }
