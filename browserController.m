@@ -5074,8 +5074,10 @@ static NSArray*	statesArray = nil;
 				if( [seriesArray count] != 1 )	{
 					NSLog( @"****** number of series corresponding to these UID is not unique?: %d", [seriesArray count]);
 				}
-				else {
-					[seriesToOpen addObject: [seriesArray objectAtIndex: 0]];
+				else
+				{
+					if( [[[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"] isEqualToString: [item valueForKey: @"patientUID"]])
+						[seriesToOpen addObject: [seriesArray objectAtIndex: 0]];
 				}
 				
 				[context unlock];

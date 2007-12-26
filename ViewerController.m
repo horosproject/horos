@@ -2908,7 +2908,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if( [curStudy isHidden]) action = @"Show Series";
 			else action = @"Hide Series";
 			
-			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@ : %d %@\r%@\r%@\r\r%@", name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, [series count], @"series", stateText, comment, action]];
+			NSString *patName = @"";
+			
+			if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
+				patName = [NSString stringWithFormat: @"%@ %@", [curStudy valueForKey:@"name"], [BrowserController DateOfBirthFormat: [curStudy valueForKey:@"dateOfBirth"]]];
+				
+			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r%@\r%@\r\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, [series count], @"series", stateText, comment, action]];
 			[cell setBackgroundColor: [NSColor whiteColor]];
 			
 			index++;
@@ -4755,7 +4760,7 @@ static ViewerController *draggedController = 0L;
 		NSLog( @"changeImageData not possible with other post-processing windows opened");
 		return;
 	}
-
+	
 	[self setFusionMode: 0];
 	[imageView setIndex: 0];
 
@@ -7912,10 +7917,13 @@ NSMutableArray		*array;
 	long moviePixWidth = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth];
 	long moviePixHeight = [[pixList[ curMovieIndex] objectAtIndex: 0] pheight];
 	
-	for( int j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
+	if( m != 0)
 	{
-		if ( moviePixWidth != [[pixList[ curMovieIndex] objectAtIndex: j] pwidth]) volumicData = NO;
-		if ( moviePixHeight != [[pixList[ curMovieIndex] objectAtIndex: j] pheight]) volumicData = NO;
+		for( int j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
+		{
+			if ( moviePixWidth != [[pixList[ curMovieIndex] objectAtIndex: j] pwidth]) volumicData = NO;
+			if ( moviePixHeight != [[pixList[ curMovieIndex] objectAtIndex: j] pheight]) volumicData = NO;
+		}
 	}
 	
 	if( volumicData == NO)
