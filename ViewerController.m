@@ -1788,7 +1788,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		float scaleValue = [imageView scaleValue];
 		float previousHeight = [imageView frame].size.width;
 		
-		[[self window] setFrame:rect display:YES];
+		[[self window] setFrame:rect display:NO];
 		if( showWindow) [[self window] orderFront:self];
 		
 		[imageView setScaleValue: scaleValue * [imageView frame].size.width / previousHeight];
