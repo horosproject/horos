@@ -31,6 +31,15 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 	return 88;
 }
 
+- (void) checkPosition
+{
+	NSRect frame = [[self window] frame];
+	NSPoint o = NSMakePoint([[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.x, [[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.y+[[[NSScreen screens] objectAtIndex: screen] visibleFrame].size.height);
+	
+	[[self window] setFrameTopLeftPoint: o];		// fixSize will be called by this function
+	[self fixSize];
+}
+
 - (void) fixSize
 {
 	NSRect  dstframe;
@@ -49,7 +58,7 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 	
 //	NSLog(@"X: %2.2f Y:%2.2f", dstframe.origin.x, dstframe.origin.y);
 	
-	[[self window] setFrame:dstframe display: YES];
+	[[self window] setFrame: dstframe display: YES];
 }
 
 - (id)initForScreen: (long) s
@@ -76,8 +85,7 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 {
 	if( [aNotification object] == [self window])
 	{
-		[self fixSize];
-		[[self window] setFrameTopLeftPoint: NSMakePoint([[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.x, [[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.y+[[[NSScreen screens] objectAtIndex: screen] visibleFrame].size.height)];
+		[self checkPosition];
 	}
 }
 
@@ -126,8 +134,7 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 		return;
 	}
 	
-	[[self window] setFrameTopLeftPoint: NSMakePoint([[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.x, [[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.y+[[[NSScreen screens] objectAtIndex: screen] visibleFrame].size.height)];
-	[self fixSize];
+	[self checkPosition];
 	
 	if( [[[aNotification object] windowController] isKindOfClass:[ViewerController class]])
 	{
@@ -197,8 +204,8 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 		[associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
 		
 		[toolbar release];
-
 		toolbar = 0;
+		
 		viewer = 0;
 	}
 }
@@ -209,7 +216,8 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 
 	if( tb == toolbar)
 	{
-		[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+		if( viewer != 0L)
+			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	
 		if( toolbar)
 		{
@@ -239,22 +247,23 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 			[[self window] setToolbar: 0L];
 			[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
 		}
-			
-		[[self window] setToolbar: toolbar];
 		
+		[[self window] setToolbar: toolbar];
+			
 		[[self window] setShowsToolbarButton:NO];
 		[[[self window] toolbar] setVisible: YES];
 		
-		[[self window] orderBack: self];
+		if( [[viewer window] isKeyWindow])
+			[[self window] orderBack: self];
 	}
 	else [[self window] orderOut: self];
 	
 	if( toolbar)
 	{
-		[[self window] setFrameTopLeftPoint: NSMakePoint([[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.x, [[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.y+[[[NSScreen screens] objectAtIndex: screen] visibleFrame].size.height)];
-		[self fixSize];
+		[self checkPosition];
 		
-		[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
+		if( [[viewer window] isKeyWindow])
+			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	}
 }
 

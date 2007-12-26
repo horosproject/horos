@@ -1754,8 +1754,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	[self stopROIEditing];
 		
-	if( [self is2DViewer] == YES)
-		[[self windowController] setLoadingPause: YES];
+//	if( [self is2DViewer] == YES)
+//		[[self windowController] setLoadingPause: YES];
 		
 	[[self window] setAcceptsMouseMovedEvents: YES];
 
@@ -1829,8 +1829,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[self loadTextures];
 	}
 	
-	if( [self is2DViewer] == YES)
-		[[self windowController] setLoadingPause: NO];
+//	if( [self is2DViewer] == YES)
+//		[[self windowController] setLoadingPause: NO];
 	
 	NSEvent *event = [[NSApplication sharedApplication] currentEvent];
 	

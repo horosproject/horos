@@ -88,6 +88,7 @@ extern  AppController			*appController;
 extern  BOOL					USETOOLBARPANEL;
 
 static	BOOL					SYNCSERIES = NO;
+static	NSLock					*globalLoadImageLock = 0L;
 
 		
 static NSString* 	ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
@@ -2273,7 +2274,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 					[theWindow setFrame: frame display: YES animate:YES];
 					dontEnterMagneticFunctions = NO;
 					
-					[theWindow makeKeyAndOrderFront: self];
+					[window makeKeyAndOrderFront: self];
 					[theWindow makeKeyAndOrderFront: self];
 					[self refreshToolbar];
 					
@@ -5215,16 +5216,19 @@ static ViewerController *draggedController = 0L;
 		[pool release];
 		return;
 	}
-	
+		
 	[ThreadLoadImageLock lock];
 	ThreadLoadImage = YES;
 	
 	NSLog(@"LOADING: Start loading images");
 	
 	loadingPercentage = 0;
-	
+		
 	if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
 	
+//	if( globalLoadImageLock == 0L) globalLoadImageLock = [[NSLock alloc] init]; 
+//	[globalLoadImageLock lock];
+
 	for( x = 0; x < maxMovieIndex; x++)
 	{
 		for( i = 0 ; i < [pixList[ x] count]; i++)
@@ -5253,6 +5257,8 @@ static ViewerController *draggedController = 0L;
 			}
 		}
 	}
+	
+//	[globalLoadImageLock unlock];
 	
 //	BOOL finished = NO;
 //	do
