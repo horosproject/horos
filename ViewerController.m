@@ -5229,11 +5229,6 @@ static ViewerController *draggedController = 0L;
 		
 	if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
 	
-	while( [[self window] isVisible] == NO)
-	{
-		[NSThread sleepForTimeInterval: 0.01];
-	}
-	
 	NSLog(@"LOADING: Start loading images");
 	
 	for( x = 0; x < maxMovieIndex; x++)
