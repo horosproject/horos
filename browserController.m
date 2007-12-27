@@ -5050,6 +5050,7 @@ static NSArray*	statesArray = nil;
 			[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
 			
 			NSMutableArray *seriesToOpen =  [NSMutableArray array];
+			NSMutableArray *viewersToLoad = [NSMutableArray array];
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:0L userInfo: 0L];
 			
@@ -5077,7 +5078,12 @@ static NSArray*	statesArray = nil;
 				else
 				{
 					if( [[[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"] isEqualToString: [item valueForKey: @"patientUID"]])
+					{
 						[seriesToOpen addObject: [seriesArray objectAtIndex: 0]];
+						[viewersToLoad addObject: dict];
+					}
+					else
+						NSLog(@"%@ versus %@", [[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"], [item valueForKey: @"patientUID"]);
 				}
 				
 				[context unlock];
@@ -5089,48 +5095,54 @@ static NSArray*	statesArray = nil;
 				
 				NSArray	*displayedViewers = [ViewerController getDisplayed2DViewers];
 				
-				for( unsigned long i = 0 ; i < [viewers count]; i++ ) {
-					NSDictionary		*dict = [viewers objectAtIndex: i];
-					ViewerController	*v = [displayedViewers objectAtIndex: i];
+				for( int i = 0 ; i < [viewersToLoad count]; i++ )
+				{
+					NSDictionary		*dict = [viewersToLoad objectAtIndex: i];
 					
-					NSRect r;
-					NSScanner* s = [NSScanner scannerWithString: [dict valueForKey:@"window position"]];
-					
-					float a;
-					[s scanFloat: &a];	r.origin.x = a;		[s scanFloat: &a];	r.origin.y = a;
-					[s scanFloat: &a];	r.size.width = a;	[s scanFloat: &a];	r.size.height = a;
-					
-					int index = [[dict valueForKey:@"index"] intValue];
-					int rows = [[dict valueForKey:@"rows"] intValue];
-					int columns = [[dict valueForKey:@"columns"] intValue];
-					float wl = [[dict valueForKey:@"wl"] floatValue];
-					float ww = [[dict valueForKey:@"ww"] floatValue];
-					float x = [[dict valueForKey:@"x"] floatValue];
-					float y = [[dict valueForKey:@"y"] floatValue];
-					float rotation = [[dict valueForKey:@"rotation"] floatValue];
-					float scale = [[dict valueForKey:@"scale"] floatValue];
-					BOOL xF = [[dict valueForKey:@"xFlipped"] boolValue];
-					BOOL yF = [[dict valueForKey:@"yFlipped"] boolValue];
-					BOOL fD = [[dict valueForKey:@"flippedData"] boolValue];
-					
-					NSString	*studyUID = [dict valueForKey:@"studyInstanceUID"];
-					NSString	*seriesUID = [dict valueForKey:@"seriesInstanceUID"];
-					
-					[v setWindowFrame: r showWindow: NO];
-					[v setImageRows: rows columns: columns];
-					
-					if( fD) [v setImageIndex: [v getNumberOfImages] -1 -index];
-					else [v setImageIndex: index];
-					
-					if( [[[v imageView] curDCM] SUVConverted]) [v setWL: wl*[v factorPET2SUV] WW: ww*[v factorPET2SUV]];
-					else [v setWL: wl WW: ww];
-					
-					[v setScaleValue: scale];
-					[v setRotation: rotation];
-					[v setOrigin: NSMakePoint( x, y)];
-					
-					[[v window] makeKeyAndOrderFront: self];
+					if( i < [displayedViewers count])
+					{
+						ViewerController	*v = [displayedViewers objectAtIndex: i];
+						
+						NSRect r;
+						NSScanner* s = [NSScanner scannerWithString: [dict valueForKey:@"window position"]];
+						
+						float a;
+						[s scanFloat: &a];	r.origin.x = a;		[s scanFloat: &a];	r.origin.y = a;
+						[s scanFloat: &a];	r.size.width = a;	[s scanFloat: &a];	r.size.height = a;
+						
+						int index = [[dict valueForKey:@"index"] intValue];
+						int rows = [[dict valueForKey:@"rows"] intValue];
+						int columns = [[dict valueForKey:@"columns"] intValue];
+						float wl = [[dict valueForKey:@"wl"] floatValue];
+						float ww = [[dict valueForKey:@"ww"] floatValue];
+						float x = [[dict valueForKey:@"x"] floatValue];
+						float y = [[dict valueForKey:@"y"] floatValue];
+						float rotation = [[dict valueForKey:@"rotation"] floatValue];
+						float scale = [[dict valueForKey:@"scale"] floatValue];
+						BOOL xF = [[dict valueForKey:@"xFlipped"] boolValue];
+						BOOL yF = [[dict valueForKey:@"yFlipped"] boolValue];
+						BOOL fD = [[dict valueForKey:@"flippedData"] boolValue];
+						
+						NSString	*studyUID = [dict valueForKey:@"studyInstanceUID"];
+						NSString	*seriesUID = [dict valueForKey:@"seriesInstanceUID"];
+						
+						[v setWindowFrame: r showWindow: NO];
+						[v setImageRows: rows columns: columns];
+						
+						if( fD) [v setImageIndex: [v getNumberOfImages] -1 -index];
+						else [v setImageIndex: index];
+						
+						if( [[[v imageView] curDCM] SUVConverted]) [v setWL: wl*[v factorPET2SUV] WW: ww*[v factorPET2SUV]];
+						else [v setWL: wl WW: ww];
+						
+						[v setScaleValue: scale];
+						[v setRotation: rotation];
+						[v setOrigin: NSMakePoint( x, y)];
+					}
 				}
+				
+				for( ViewerController *v in displayedViewers)
+					[[v window] orderBack: self];
 				
 				if( [displayedViewers count] > 0)
 					[[[displayedViewers objectAtIndex: 0] window] makeKeyAndOrderFront: self];
@@ -9654,9 +9666,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	[checkBonjourUpToDateThreadLock lock];
 	[checkBonjourUpToDateThreadLock unlock];
 	
-	while( [SendController sendControllerObjects] > 0 )	{
-		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.04]];
-	}
+	while( [SendController sendControllerObjects] > 0 )
+		[NSThread sleepForTimeInterval: 0.04];
 	
 	[decompressThreadRunning lock];
 	[decompressThreadRunning unlock];

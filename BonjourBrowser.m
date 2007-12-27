@@ -323,7 +323,7 @@ static char *GetPrivateIP()
 					[unzipTask setCurrentDirectoryPath:[[destPath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
 					[unzipTask setArguments:[NSArray arrayWithObjects:@"-o", destPath, nil]]; // -o to override existing report w/ same name
 					[unzipTask launch];
-					while( [unzipTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+					while( [unzipTask isRunning]) [NSThread sleepForTimeInterval: 0.002];
 					int result = [unzipTask terminationStatus];
 					[unzipTask release];
 					
@@ -577,7 +577,7 @@ static char *GetPrivateIP()
 		{
 			 if(connect(socketToRemoteServer, (struct sockaddr *)socketAddress, sizeof(*socketAddress)) == 0)
 			 {
-				NSLog( @"socket connected: %d", socketToRemoteServer);
+//				NSLog( @"socket connected: %d", socketToRemoteServer);
 			 
 				// transfering the type of data we need
 				NSMutableData	*toTransfer = [NSMutableData dataWithCapacity:0];
@@ -655,7 +655,7 @@ static char *GetPrivateIP()
 						[zipTask setCurrentDirectoryPath:[[filePathToLoad stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
 						[zipTask setArguments:[NSArray arrayWithObjects:@"-r" , zipFileName, [filePathToLoad lastPathComponent], nil]];
 						[zipTask launch];
-						while( [zipTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+						while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.002];
 						int result = [zipTask terminationStatus];
 						[zipTask release];
 
@@ -1249,7 +1249,7 @@ static char *GetPrivateIP()
 	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: dict];
 	while( threadIsRunning == YES  && connectToServerAborted == NO && [currentTimeOut timeIntervalSinceNow] >= 0)
 	{
-		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow: 0.01]];
+		[NSThread sleepForTimeInterval: 0.01];
 		
 		if( w)
 		{
@@ -1286,9 +1286,7 @@ static char *GetPrivateIP()
 		[currentConnection closeFile];
 
 		while( threadIsRunning == YES)
-		{
-			[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-		}
+			[NSThread sleepForTimeInterval: 0.002];
 		
 		[currentConnection release];
 		currentConnection = 0L;
@@ -1363,7 +1361,7 @@ static char *GetPrivateIP()
 	
 	[self connectToServer: index message:@"SETVA"];
 	
-	[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];  // for rock stable opening/closing socket
+	[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
 	
 	[self connectToServer: index message:@"VERSI"];
 	localVersion = BonjourDatabaseVersion;
@@ -1482,7 +1480,7 @@ static char *GetPrivateIP()
 	
 	if( [self connectToServer: index message:@"DBVER"])
 	{
-		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]]; // for rock stable opening/closing socket
+		[NSThread sleepForTimeInterval: 0.1]; // for rock stable opening/closing socket
 		
 		if( [modelVersion isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"]] == NO)
 		{
@@ -1500,7 +1498,7 @@ static char *GetPrivateIP()
 		{
 			[self connectToServer: index message:@"ISPWD"];
 			
-			[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];  // for rock stable opening/closing socket
+			[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
 		}
 		else
 		{
@@ -1518,7 +1516,7 @@ static char *GetPrivateIP()
 				
 				wrongPassword = YES;
 				[self connectToServer: index message:@"PASWD"];
-				[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]]; // for rock stable opening/closing socket
+				[NSThread sleepForTimeInterval: 0.1]; // for rock stable opening/closing socket
 				
 				if( resolved == NO || wrongPassword == YES)
 				{
@@ -1536,7 +1534,7 @@ static char *GetPrivateIP()
 			
 			if( [self connectToServer: index message: @"DBSIZ"] == YES)
 			{
-				[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]]; // for rock stable opening/closing socket
+				[NSThread sleepForTimeInterval: 0.1]; // for rock stable opening/closing socket
 				
 				if( BonjourDatabaseIndexFileSize)
 				{
@@ -1561,7 +1559,7 @@ static char *GetPrivateIP()
 					
 					if( [self connectToServer: index message: @"DATAB"] == YES)
 					{
-						[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]]; // for rock stable opening/closing socket
+						[NSThread sleepForTimeInterval: 0.1]; // for rock stable opening/closing socket
 						
 						[self connectToServer: index message: @"VERSI"];
 						

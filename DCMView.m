@@ -1746,6 +1746,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
+- (void) resetLoadingPause:(id) sender
+{
+	[[self windowController] setLoadingPause: NO];
+}
+
 - (void) setIndex:(short) index
 {
 	[drawLock lock];
@@ -1754,8 +1759,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	[self stopROIEditing];
 		
-//	if( [self is2DViewer] == YES)
-//		[[self windowController] setLoadingPause: YES];
+	if( [self is2DViewer] == YES)
+		[[self windowController] setLoadingPause: YES];
 		
 	[[self window] setAcceptsMouseMovedEvents: YES];
 
@@ -1829,8 +1834,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[self loadTextures];
 	}
 	
-//	if( [self is2DViewer] == YES)
-//		[[self windowController] setLoadingPause: NO];
+	if( [self is2DViewer] == YES)
+	{
+		[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( resetLoadingPause:) object: 0L];
+		[self performSelector: @selector( resetLoadingPause:) withObject:0L afterDelay: 0.5];
+	}
 	
 	NSEvent *event = [[NSApplication sharedApplication] currentEvent];
 	
@@ -8886,7 +8894,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	if( _imageRows == 1 && _imageColumns == 1 && rows == 1 && columns == 1)
 	{
-		NSLog(@"No Resize");
+//		NSLog(@"No Resize");
 		return;
 	}
 	_imageRows = rows;

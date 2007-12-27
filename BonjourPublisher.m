@@ -546,7 +546,7 @@ static char *GetPrivateIP()
 					[zipTask setCurrentDirectoryPath:[[path stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
 					[zipTask setArguments:[NSArray arrayWithObjects:@"-r" , zipFileName, [path lastPathComponent], nil]];
 					[zipTask launch];
-					while( [zipTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+					while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 					int result = [zipTask terminationStatus];
 					[zipTask release];
 
@@ -619,7 +619,7 @@ static char *GetPrivateIP()
 					[unzipTask setCurrentDirectoryPath:[[localpath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
 					[unzipTask setArguments:[NSArray arrayWithObjects:@"-o", localpath, nil]]; // -o to override existing report w/ same name
 					[unzipTask launch];
-					while( [unzipTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+					while( [unzipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 					int result = [unzipTask terminationStatus];
 					[unzipTask release];
 					

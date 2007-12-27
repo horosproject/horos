@@ -459,7 +459,7 @@
 	[theTask setArguments: [NSArray arrayWithObjects: logPath, baseName, xmlPath, 0L]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/DICOMPrint"]];
 	[theTask launch];
-	while( [theTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 //	[theTask waitUntilExit];	<- The problem with this: it calls the current running loop.... problems with current Lock !
 	
 	int status = [theTask terminationStatus];

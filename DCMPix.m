@@ -5424,7 +5424,7 @@ END_CREATE_ROIS:
 	
 	//	if( pixArray != 0L && frameNo > 0)
 	//	{
-	//		while( fImage == 0L) [NSThread  sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
+	//		while( fImage == 0L) [NSThread  sleepForTimeInterval:0.05];
 	//		return YES;
 	//	}
 	

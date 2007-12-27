@@ -243,7 +243,8 @@ enum
 	
 	volatile float			loadingPercentage;
     
-	volatile BOOL			ThreadLoadImage, stopThreadLoadImage, loadingPause;
+	volatile BOOL			ThreadLoadImage, stopThreadLoadImage;
+	NSTimeInterval			loadingPauseDelay;
     BOOL                    FullScreenOn;
     NSWindow                *FullScreenWindow;
     NSWindow                *StartingWindow;

@@ -5225,19 +5225,28 @@ static ViewerController *draggedController = 0L;
 	[ThreadLoadImageLock lock];
 	ThreadLoadImage = YES;
 	
-	NSLog(@"LOADING: Start loading images");
-	
 	loadingPercentage = 0;
 		
 	if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
 	
-//	if( globalLoadImageLock == 0L) globalLoadImageLock = [[NSLock alloc] init]; 
-//	[globalLoadImageLock lock];
-
+	while( [[self window] isVisible] == NO)
+	{
+		[NSThread sleepForTimeInterval: 0.01];
+	}
+	
+	NSLog(@"LOADING: Start loading images");
+	
 	for( x = 0; x < maxMovieIndex; x++)
 	{
 		for( i = 0 ; i < [pixList[ x] count]; i++)
 		{
+			if( loadingPauseDelay)
+			{
+				while( loadingPauseDelay > [NSDate timeIntervalSinceReferenceDate])
+					[NSThread sleepForTimeInterval: 0.01];
+				NSLog(@"loadingPause is over...");
+			}
+			
 			if( stopThreadLoadImage == NO) //there is no interrruption
 			{
 				if ([fileList[ x] count] == [pixList[ x] count]) // I'm not quite sure what this line does, but I'm afraid to take it out. 
@@ -5248,18 +5257,10 @@ static ViewerController *draggedController = 0L;
 				
 				DCMPix* pix = [pixList[ x] objectAtIndex: i];
 				
-//				[self waitForAProcessor];
-//				[NSThread detachNewThreadSelector: @selector( loadThread:) toTarget:self withObject:  pix];
-				
 				[pix CheckLoad];
 			}
 			
 			loadingPercentage = (float) ((x*[pixList[ x] count]) + i) / (float) (maxMovieIndex * [pixList[ x] count]);
-			
-			while(loadingPause)
-			{
-				[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-			}
 		}
 	}
 	
@@ -5393,14 +5394,14 @@ static ViewerController *draggedController = 0L;
     [pool release];
 }
 
-//static volatile BOOL someoneIsLoading = NO;
-
 -(void) setLoadingPause:(BOOL) lp
 {
-	loadingPause = lp;
+	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour] == NO) return;
+	
+	if( lp)
+		loadingPauseDelay = [NSDate timeIntervalSinceReferenceDate] + 4;
+	else loadingPauseDelay = 0;
 }
-
-
 
 - (long) indexForPix: (long) pixIndex
 {
@@ -6285,6 +6286,8 @@ static ViewerController *draggedController = 0L;
 	[imageView setRotation: 0];
 	
 	[imageView setWLWW:[[imageView curDCM] savedWL] :[[imageView curDCM] savedWW]];
+	
+	[self propagateSettings];
 }
 
 -(IBAction) ConvertToRGBMenu:(id) sender
@@ -11667,6 +11670,8 @@ int i,j,l;
 	
 	if( [[[[fileList[0] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == YES) return;
 	
+	if( [[self window] isVisible] == NO) return;
+	
 	// *** 2D Viewers ***
 	viewersList = [ViewerController getDisplayed2DViewers];
 	[viewersList removeObject: self];
@@ -15223,7 +15228,6 @@ int i,j,l;
 	
 	factorPET2SUV = 1.0;
 	windowWillClose = NO;
-	loadingPause = NO;
 	loadingPercentage = 0;
 	exportDCM = 0L;
 	curvedController = 0L;

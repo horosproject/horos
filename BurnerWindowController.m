@@ -940,7 +940,7 @@ NSString* asciiString (NSString* name);
 		if (burnAnimationIndex > 11)
 			burnAnimationIndex = 0;
 		
-		[NSThread  sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
+		[NSThread  sleepForTimeInterval:0.05];
 		[pool release];
 	}
 }
@@ -955,7 +955,7 @@ NSString* asciiString (NSString* name);
 		NSString *path = [[NSBundle mainBundle] pathForResource:animation ofType:@"tif"];
 		NSImage *image = [ [[NSImage alloc]  initWithContentsOfFile:path] autorelease];
 		[burnButton setImage:image];
-		[NSThread  sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.075]];		
+		[NSThread  sleepForTimeInterval:0.075];		
 	}
 	
 	if( isIrisAnimation)
@@ -974,12 +974,12 @@ NSString* asciiString (NSString* name);
 		NSString *path1 = [[NSBundle mainBundle] pathForResource:@"burn_anim00" ofType:@"tif"];
 		NSImage *image = [ [[NSImage alloc]  initWithContentsOfFile:path1] autorelease];
 		[burnButton setImage:image];
-		[NSThread  sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.6]];
+		[NSThread  sleepForTimeInterval:0.6];
 		NSString *path2 = [[NSBundle mainBundle] pathForResource:@"burn_throb" ofType:@"tif"];
 		NSImage *image2 = [[[NSImage alloc]  initWithContentsOfFile:path2] autorelease];
 		
 		[burnButton setImage:image2];
-		[NSThread  sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.4]];
+		[NSThread  sleepForTimeInterval:0.4];
 		[subpool release];
 	}
 	[pool release];

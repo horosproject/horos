@@ -437,7 +437,7 @@ NSString* convertDICOM( NSString *inputfile)
 //	
 //	while( converting)
 //	{
-//		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+//		[NSThread sleepForTimeInterval:0.002];
 //	}
 //	
 //	NSLog(inputfile);
@@ -471,7 +471,7 @@ NSString* convertDICOM( NSString *inputfile)
 //		while( [convertTask isRunning] == YES)
 //		{
 //			//	NSLog(@"CONVERSION WORK");
-//			[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+//			[NSThread sleepForTimeInterval:0.002];
 //		}
 //		
 //		[convertTask interrupt];
@@ -1874,7 +1874,7 @@ static BOOL initialized = NO;
 			while( [dcmtkQRSCP running])
 			{
 				NSLog( @"waiting for listener to stop...");
-				[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+				[NSThread sleepForTimeInterval: 0.1];
 			}
 			
 			[dcmtkQRSCP release];
@@ -1883,7 +1883,7 @@ static BOOL initialized = NO;
     }
     else
     {
-		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow: 2]];
+		[NSThread sleepForTimeInterval: 2];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"RunListenerOnlyIfActive"])
 		{

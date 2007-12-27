@@ -339,7 +339,8 @@ static int defaultTimeout = 5000; // in milliseconds
 					[self send:[abortPDU pdu]];
 					isLoop = NO;
 				}
-				[NSThread  sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+				[NSThread  sleepForTimeInterval: 0.002];
+				
 			}
 		
 		NS_HANDLER 
@@ -408,8 +409,9 @@ static int defaultTimeout = 5000; // in milliseconds
 	 *
 	 */
 	 
-- (void)waitForARTIMBeforeTransportConnectionClose{
-	[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:timeout/1000]];
+- (void)waitForARTIMBeforeTransportConnectionClose
+{
+	[NSThread sleepForTimeInterval: timeout/1000.];
 }
 
 

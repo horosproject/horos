@@ -38,7 +38,7 @@
 //		[current display];
 //		[current unlockFocus];
 //		NSLog(@"go %0.0f s", (float) ([NSDate timeIntervalSinceReferenceDate] - starttime));
-//		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];
+//		[NSThread sleepForTimeInterval:0.2];
 
 	//	[NSApp runModalSession:session];
 	}
