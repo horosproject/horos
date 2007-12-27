@@ -15196,6 +15196,9 @@ int i,j,l;
 {
 	long i;
 	
+//	[[self window] setFrame: [[[[AppController sharedAppController] viewerScreens] objectAtIndex:0] visibleFrame] display: NO];
+	[[self window] zoom: self];
+	
 	numberOf2DViewer++;
 	if( numberOf2DViewer > 1 || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{
@@ -15274,8 +15277,6 @@ int i,j,l;
 	[self loadROI: 0];
 	
 	[self setupToolbar];
-	
-    [[self window] performZoom:self];
 	
 	[stacksFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
 	[sliderFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];

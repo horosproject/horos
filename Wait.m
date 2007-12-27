@@ -17,6 +17,12 @@
 
 @implementation Wait
 
+- (void) showWindow: (id) sender
+{
+	[[self window] makeKeyAndOrderFront: sender];
+	[super showWindow: sender];
+}
+
 - (void) dealloc
 {
 	[startTime release];

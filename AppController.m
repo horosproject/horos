@@ -2379,9 +2379,9 @@ static BOOL initialized = NO;
 		//return array;
 		viewers =  array;
 	}
-	else
-		viewers =  [NSScreen screens] ; 
+	else viewers = [NSScreen screens]; 
 	
+	if( [viewers count] == 1) return viewers;
 	
 	//once we have the list of viewers we need to arrange them left to right
 	int count = [viewers count];
