@@ -5242,17 +5242,20 @@ static ViewerController *draggedController = 0L;
 		{
 			if( loadingPauseDelay)
 			{
+				NSLog(@"loadingPause is starting...");
+				
 				while( loadingPauseDelay > [NSDate timeIntervalSinceReferenceDate])
-					[NSThread sleepForTimeInterval: 0.01];
+					[NSThread sleepForTimeInterval: 0.1];
+				
 				NSLog(@"loadingPause is over...");
 			}
 			
 			if( stopThreadLoadImage == NO) //there is no interrruption
 			{
 				if ([fileList[ x] count] == [pixList[ x] count]) // I'm not quite sure what this line does, but I'm afraid to take it out. 
-					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: i] : 3]; // Anyway, we are not guarantied to have as many files as pixs, so that is why I put in the if() - Joel
+					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: i] : 10]; // Anyway, we are not guarantied to have as many files as pixs, so that is why I put in the if() - Joel
 				else
-					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: 0] : 3]; 
+					[[BrowserController currentBrowser] getLocalDCMPath:[fileList[ x] objectAtIndex: 0] : 10]; 
 				
 				
 				DCMPix* pix = [pixList[ x] objectAtIndex: i];
