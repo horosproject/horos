@@ -535,7 +535,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	if( pix )
 	{
-		if( wl == pix.fullwl && ww == pix.fullww ) return NSLocalizedString( @"Full Dynamic", 0L);
+		if( wl == pix.fullwl && ww == pix.fullww ) return NSLocalizedString( @"Full dynamic", 0L);
 		if( wl == pix.savedWL && ww == pix.savedWW ) return NSLocalizedString(@"Default WL & WW", nil);
 	}
 	

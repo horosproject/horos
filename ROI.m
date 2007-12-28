@@ -34,7 +34,7 @@ Version 2.3
 #import "DCMPix.h"
 #import "ITKSegmentation3D.h"
 
-#define CIRCLERESOLUTION 80
+#define CIRCLERESOLUTION 200
 #define ROIVERSION		8
 
 static		float					deg2rad = M_PI / 180.0f; 
@@ -3809,10 +3809,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 			glLineWidth(thickness);
 			
+			int resol = (rect.size.height + rect.size.width) * 1.5 * scaleValue;
+			
 			glBegin(GL_LINE_LOOP);
-			for( long i = 0; i < CIRCLERESOLUTION ; i++ ) {
+			for( long i = 0; i < resol ; i++ ) {
 
-				angle = i * 2 * M_PI /CIRCLERESOLUTION;
+				angle = i * 2 * M_PI /resol;
 			  
 			  glVertex2f( (rect.origin.x + rect.size.width*cos(angle) - offsetx)*scaleValue, (rect.origin.y + rect.size.height*sin(angle)- offsety)*scaleValue);
 			}
@@ -3820,9 +3822,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			glPointSize( thickness);
 			glBegin( GL_POINTS);
-			for( long i = 0; i < CIRCLERESOLUTION ; i++ ) {
+			for( long i = 0; i < resol ; i++ ) {
 
-				angle = i * 2 * M_PI /CIRCLERESOLUTION;
+				angle = i * 2 * M_PI /resol;
 			  
 			  glVertex2f( (rect.origin.x + rect.size.width*cos(angle) - offsetx)*scaleValue, (rect.origin.y + rect.size.height*sin(angle)- offsety)*scaleValue);
 			}

@@ -543,21 +543,26 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 - (void) refreshMenus
 {
 	if( wlwwPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
-	else if( [wlwwPopup menu] != wlwwPresetsMenu) [wlwwPopup setMenu: wlwwPresetsMenu];
+	else [wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
 	
 	if( clutPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curWLWWMenu userInfo: 0L];
-	else if( [clutPopup menu] != clutPresetsMenu) [clutPopup setMenu: clutPresetsMenu];
+	else [clutPopup setMenu: [[clutPresetsMenu copy] autorelease]];
 	
 	if( convolutionPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curWLWWMenu userInfo: 0L];
-	else if( [convPopup menu] != convolutionPresetsMenu) [convPopup setMenu: convolutionPresetsMenu];
+	else [convPopup setMenu: [[convolutionPresetsMenu copy] autorelease]];
 	
 	if( opacityPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curWLWWMenu userInfo: 0L];
-	else if( [OpacityPopup menu] != opacityPresetsMenu) [OpacityPopup setMenu: opacityPresetsMenu];
+	else [OpacityPopup setMenu: [[opacityPresetsMenu copy] autorelease]];
 
 	[clutPopup setTitle:curCLUTMenu];
 	[convPopup setTitle:curConvMenu];
 	[wlwwPopup setTitle:curWLWWMenu];
 	[OpacityPopup setTitle:curOpacityMenu];
+
+	[clutPopup display];
+	[convPopup display];
+	[wlwwPopup display];
+	[OpacityPopup display];
 }
 
 - (void) refresh
@@ -2485,7 +2490,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if( lastMenuNotification == note)
 	{
-		[convPopup setMenu: convolutionPresetsMenu];
+		[convPopup setMenu: [[convolutionPresetsMenu copy] autorelease]];
 		[convPopup setTitle: curConvMenu];
 	}
 	else
@@ -2524,8 +2529,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if( lastMenuNotification == note)
 	{
-		[wlwwPopup setMenu: wlwwPresetsMenu];
-		[imageView setMenu: contextualMenu];
+		[wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
+		[imageView setMenu: [[contextualMenu copy] autorelease]];
 		[wlwwPopup setTitle: curWLWWMenu];
 	}
 	else
@@ -2614,7 +2619,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if( lastMenuNotification == note)
 	{
-		[OpacityPopup setMenu: opacityPresetsMenu];
+		[OpacityPopup setMenu: [[opacityPresetsMenu copy] autorelease]];
 		[OpacityPopup setTitle: curOpacityMenu];
 	}
 	else
@@ -4522,7 +4527,7 @@ static ViewerController *draggedController = 0L;
 {
 	if( lastMenuNotification == note)
 	{
-		[clutPopup setMenu: clutPresetsMenu];
+		[clutPopup setMenu: [[clutPresetsMenu copy] autorelease]];
 		[clutPopup setTitle: curCLUTMenu];
 	}
 	else
@@ -7017,6 +7022,9 @@ static ViewerController *draggedController = 0L;
 		[curWLWWMenu release];
 		curWLWWMenu = [name retain];
 	}
+	
+	[wlwwPopup setTitle: curWLWWMenu];
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
@@ -15419,6 +15427,7 @@ int i,j,l;
     [[self window] setDelegate:self];
 	
 	[wlwwPopup setTitle:NSLocalizedString(@"Default WL & WW", nil)];
+	
 	[convPopup setTitle:NSLocalizedString(@"No Filter", nil)];
 	
 	NSNotificationCenter *nc;
