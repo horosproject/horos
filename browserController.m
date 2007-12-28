@@ -8511,7 +8511,8 @@ static BOOL needToRezoom;
 		}
 		else if( [toOpenArray count] == 1)	// Just one thumbnail is selected,
 		{
-			if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask ) {
+			if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
+			{
 				NSArray			*singleSeries = [toOpenArray objectAtIndex: 0];
 				NSMutableArray	*splittedSeries = [NSMutableArray array];
 				
@@ -8524,9 +8525,11 @@ static BOOL needToRezoom;
 					
 					interval = [[[singleSeries objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: 1] valueForKey:@"sliceLocation"] floatValue];
 					
-					if( interval == 0 )	{ // 4D - 3D
+					if( interval == 0)
+					{ // 4D - 3D
 						int pos3Dindex = 1;
-						for( x = 1; x < [singleSeries count]; x++ )	{
+						for( x = 1; x < [singleSeries count]; x++)
+						{
 							interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
 							
 							if( interval != 0) pos3Dindex = 0;
@@ -8538,7 +8541,8 @@ static BOOL needToRezoom;
 							pos3Dindex++;
 						}
 					}
-					else {	// 3D - 4D
+					else
+					{	// 3D - 4D
 						BOOL	fixedRepetition = YES;
 						int		repetition = 0, previousPos = 0;
 						float	previousLocation;
@@ -8556,11 +8560,14 @@ static BOOL needToRezoom;
 							}
 						}
 						
-						if( fixedRepetition && repetition != 0 ) {
+						if( fixedRepetition && repetition != 0)
+						{
 							NSLog( @"repetition = %d", repetition);
 							
-							for( int x = 1; x < [singleSeries count]; x++ )	{
-								if( x % repetition == 0 ) {
+							for( int x = 1; x < [singleSeries count]; x++)
+							{
+								if( x % repetition == 0)
+								{
 									[splittedSeries addObject: [NSMutableArray array]];
 									NSLog(@"split at: %d", x);
 								}
@@ -8568,18 +8575,24 @@ static BOOL needToRezoom;
 								[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
 							}
 						}
-						else {
-							for( int x = 1; x < [singleSeries count]; x++ ) {
+						else
+						{
+							for( int x = 1; x < [singleSeries count]; x++)
+							{
 								interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
 								
-								if( [[splittedSeries lastObject] count] > 2 ) {
-									if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0) ) {
+								if( [[splittedSeries lastObject] count] > 2)
+								{
+									if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
+									{
 										[splittedSeries addObject: [NSMutableArray array]];
 										NSLog(@"split at: %d", x);
 										previousinterval = 0;
 									}
-									else if( previousinterval )	{
-										if( fabs(interval/previousinterval) > 1.2f || fabs(interval/previousinterval) < 0.8f ) {
+									else if( previousinterval)
+									{
+										if( fabs(interval/previousinterval) > 1.2f || fabs(interval/previousinterval) < 0.8f)
+										{
 											[splittedSeries addObject: [NSMutableArray array]];
 											NSLog(@"split at: %d", x);
 											previousinterval = 0;
@@ -8596,7 +8609,8 @@ static BOOL needToRezoom;
 					}
 				}
 				
-				if( [splittedSeries count] > 1 ) {
+				if( [splittedSeries count] > 1)
+				{
 					[wait close];
 					[wait release];
 					wait = nil;
@@ -8617,14 +8631,17 @@ static BOOL needToRezoom;
 					
 					NSArray *array0 = [splittedSeries objectAtIndex: 0];
 					
-					for( NSArray *array in splittedSeries ) {
-						if( [array0 count] != [array count] ) {
+					for( NSArray *array in splittedSeries)
+					{
+						if( [array0 count] != [array count])
+						{
 							[[supOpenButtons cellWithTag: 3] setEnabled: NO];
 							areData4D = NO;
 						}
 					}
 					
-					for( int i = 0 ; i < [splittedSeries count]; i++ ) {
+					for( int i = 0 ; i < [splittedSeries count]; i++)
+					{
 						NSManagedObject	*oob = [[splittedSeries objectAtIndex:i] objectAtIndex: [[splittedSeries objectAtIndex:i] count] / 2];
 						
 						DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :0L :0 :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
@@ -8645,13 +8662,16 @@ static BOOL needToRezoom;
 						}
 					}
 					
-					if( areData4D ) {
-						for( int i = 0 ; i < [[splittedSeries objectAtIndex: 0] count]; i++ ) {
+					if( areData4D )
+					{
+						for( int i = 0 ; i < [[splittedSeries objectAtIndex: 0] count]; i++)
+						{
 							NSManagedObject	*oob = [[splittedSeries objectAtIndex: 0] objectAtIndex: i];
 							
 							DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :0L :0 :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
 							
-							if( dcmPix ) {
+							if( dcmPix)
+							{
 								[dcmPix computeWImage:YES :0 :0];
 								
 								NSImage	 *img = [dcmPix getImage];
@@ -8667,7 +8687,8 @@ static BOOL needToRezoom;
 							}
 						}
 					}
-					else {
+					else
+					{
 						[subOpenMatrix4D renewRows: 0 columns: 0];
 						[subOpenMatrix4D sizeToCells];
 						[subOpenMatrix4D setEnabled: NO];
@@ -8683,15 +8704,18 @@ static BOOL needToRezoom;
 					if( result == 2 ) {
 						[supOpenButtons selectCellWithTag: 2];
 						
-						if( [subOpenMatrix3D selectedColumn] < 0 ) {
+						if( [subOpenMatrix3D selectedColumn] < 0)
+						{
 							if( [subOpenMatrix4D selectedColumn] < 0) result = 0;
 							else result = 5;
 						}
 					}
-					else if( result == 6 ) {
+					else if( result == 6 )
+					{
 						NSLog( @"Open all 3D");
 					}
-					else if( result == 7) {
+					else if( result == 7)
+					{
 						NSLog( @"Open all 4D");
 					}
 					else {
@@ -8701,7 +8725,8 @@ static BOOL needToRezoom;
 					[NSApp endSheet: subOpenWindow];
 					[subOpenWindow orderOut: self];
 					
-					switch( result ) {
+					switch( result)
+					{
 						case 0:	// Cancel
 							movieError = YES;
 							break;
@@ -8720,47 +8745,54 @@ static BOOL needToRezoom;
 							break;
 							
 						case 5: // selected 4D
-					{
-						NSMutableArray	*array4D = [NSMutableArray array];
-						
-						for( NSArray *array in splittedSeries )	{
-							[array4D addObject: [array objectAtIndex: [subOpenMatrix4D selectedColumn]]];
+						{
+							NSMutableArray	*array4D = [NSMutableArray array];
+							
+							for( NSArray *array in splittedSeries)
+							{
+								[array4D addObject: [array objectAtIndex: [subOpenMatrix4D selectedColumn]]];
+							}
+							
+							toOpenArray = [NSMutableArray arrayWithObject: array4D];
 						}
-						
-						toOpenArray = [NSMutableArray arrayWithObject: array4D];
-					}
-							break;
+						break;
 							
 						case 6:
 							
 							wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
 							[wait showWindow:self];
 							
-							for( NSArray *array in splittedSeries )	{
+							for( NSArray *array in splittedSeries)
+							{
 								toOpenArray = [NSMutableArray arrayWithObject: array];
 								[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
 							}
 							toOpenArray = 0;
-							break;
+						break;
 							
-							case 7:	{
+						case 7:
+						{
 								BOOL openAllWindows = YES;
 								
-								if( [[splittedSeries objectAtIndex: 0] count] > 25 ) {
+								if( [[splittedSeries objectAtIndex: 0] count] > 25)
+								{
 									openAllWindows = NO;
 									
 									if( NSRunInformationalAlertPanel( NSLocalizedString(@"Series Opening", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to open %d windows? It's a lot of windows for this screen...", nil), [[splittedSeries objectAtIndex: 0] count]], NSLocalizedString(@"Yes", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
 										openAllWindows = YES;
 								}
 								
-								if( openAllWindows ) {
+								if( openAllWindows)
+								{
 									wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
 									[wait showWindow:self];
 									
-									for( int i = 0; i < [[splittedSeries objectAtIndex: 0] count]; i++ ) {
+									for( int i = 0; i < [[splittedSeries objectAtIndex: 0] count]; i++)
+									{
 										NSMutableArray	*array4D = [NSMutableArray array];
 										
-										for ( NSArray *array in splittedSeries ) {
+										for ( NSArray *array in splittedSeries)
+										{
 											[array4D addObject: [array objectAtIndex: i]];
 										}
 										
@@ -8770,8 +8802,8 @@ static BOOL needToRezoom;
 									}
 								}
 								toOpenArray = nil;
-							}
-							break;
+						}
+						break;
 					}
 				}
 			}
