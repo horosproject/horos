@@ -303,6 +303,8 @@ enum
 	
 	BOOL					SyncButtonBehaviorIsBetweenStudies, titledGantry, updateTilingViews, stopViewFrameDidChangeNotification;
 	
+	volatile BOOL			checkEverythingLoaded;
+	
 	float					resampleRatio;
 	
 	NSRect					savedWindowsFrame;

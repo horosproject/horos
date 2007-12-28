@@ -533,7 +533,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [[value objectAtIndex: 0] floatValue] == wl && [[value objectAtIndex: 1] floatValue] == ww) return loopItem;
 	}
 	
-	if( pix ) {
+	if( pix )
+	{
 		if( wl == pix.fullwl && ww == pix.fullww ) return NSLocalizedString( @"Full Dynamic", 0L);
 		if( wl == pix.savedWL && ww == pix.savedWW ) return NSLocalizedString(@"Default WL & WW", nil);
 	}

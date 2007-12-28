@@ -141,6 +141,13 @@ static	float	deg2rad									= 3.14159265358979/180.0;
 static	BOOL dontEnterMagneticFunctions = NO;
 static  BOOL  toolbarDidChanged = NO;
 
+static NSMenu *wlwwPresetsMenu = 0L;
+static NSMenu *contextualMenu = 0L;
+static NSMenu *clutPresetsMenu = 0L;
+static NSMenu *convolutionPresetsMenu = 0L;
+static NSMenu *opacityPresetsMenu = 0L;
+static NSNotification *lastMenuNotification = 0L;
+
 long numberOf2DViewer = 0;
 
 NSString * documentsDirectory();
@@ -532,6 +539,26 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 
 #pragma mark-
 #pragma mark 1. window and workplace
+
+- (void) refreshMenus
+{
+	if( wlwwPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	else if( [wlwwPopup menu] != wlwwPresetsMenu) [wlwwPopup setMenu: wlwwPresetsMenu];
+	
+	if( clutPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curWLWWMenu userInfo: 0L];
+	else if( [clutPopup menu] != clutPresetsMenu) [clutPopup setMenu: clutPresetsMenu];
+	
+	if( convolutionPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curWLWWMenu userInfo: 0L];
+	else if( [convPopup menu] != convolutionPresetsMenu) [convPopup setMenu: convolutionPresetsMenu];
+	
+	if( opacityPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curWLWWMenu userInfo: 0L];
+	else if( [OpacityPopup menu] != opacityPresetsMenu) [OpacityPopup setMenu: opacityPresetsMenu];
+
+	[clutPopup setTitle:curCLUTMenu];
+	[convPopup setTitle:curConvMenu];
+	[wlwwPopup setTitle:curWLWWMenu];
+	[OpacityPopup setTitle:curOpacityMenu];
+}
 
 - (void) refresh
 {
@@ -1501,154 +1528,156 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (NSString *) contextualDictionaryPath {return contextualDictionaryPath;}
 
-- (NSMenu *)contextualMenu{
+- (NSMenu*) contextualMenu
+{
 
 // if contextualMenuPath says @"default", recreate the default menu once and again
 // if contextualMenuPath contains a path, create the new contextual menu
 // if contextualMenuPath says @"custom", don't do anything
-
-	NSMenu *contextual;
-		if([contextualDictionaryPath isEqualToString:@"default"]) // JF20070102
+	
+	[contextualMenu release];
+	contextualMenu = 0L;
+	
+	if([contextualDictionaryPath isEqualToString:@"default"]) // JF20070102
+	{
+		/******************* Tools menu ***************************/
+		contextualMenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
+		NSMenu *submenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)];
+		NSMenuItem *item;
+		NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil), NSLocalizedString(@"Move", nil), NSLocalizedString(@"Magnify", nil), 
+													NSLocalizedString(@"Rotate", nil), NSLocalizedString(@"Scroll", nil), NSLocalizedString(@"ROI", nil), nil];
+		NSArray *images = [NSArray arrayWithObjects: @"WLWW", @"Move", @"Zoom",  @"Rotate",  @"Stack", @"Length", nil];	// DO NOT LOCALIZE THIS LINE ! -> filenames !
+		NSEnumerator *enumerator2 = [images objectEnumerator];
+		NSEnumerator *enumerator3 = [[popupRoi itemArray] objectEnumerator];
+		NSString *title;
+		NSString *image;
+		NSMenuItem *subItem;
+		int i = 0;
+		
+		[enumerator3 nextObject];	// First item is pop main menu
+		while (subItem = [enumerator3 nextObject])
 		{
-			/******************* Tools menu ***************************/
-			contextual =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
-			NSMenu *submenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)];
-			NSMenuItem *item;
-			NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil), NSLocalizedString(@"Move", nil), NSLocalizedString(@"Magnify", nil), 
-														NSLocalizedString(@"Rotate", nil), NSLocalizedString(@"Scroll", nil), NSLocalizedString(@"ROI", nil), nil];
-			NSArray *images = [NSArray arrayWithObjects: @"WLWW", @"Move", @"Zoom",  @"Rotate",  @"Stack", @"Length", nil];	// DO NOT LOCALIZE THIS LINE ! -> filenames !
-			NSEnumerator *enumerator2 = [images objectEnumerator];
-			NSEnumerator *enumerator3 = [[popupRoi itemArray] objectEnumerator];
-			NSString *title;
-			NSString *image;
-			NSMenuItem *subItem;
-			int i = 0;
-			
-			[enumerator3 nextObject];	// First item is pop main menu
-			while (subItem = [enumerator3 nextObject])
+			int tag = [subItem tag];
+			if( tag)
 			{
-				int tag = [subItem tag];
-				if( tag)
-				{
-					item = [[NSMenuItem alloc] initWithTitle: [subItem title] action: @selector(setROITool:) keyEquivalent:@""];
-					[item setTag:tag];
-					[item setImage: [self imageForROI: tag]];
-					[item setTarget:self];
-					[submenu addItem:item];
-					[item release];
-				}
-				else [submenu addItem: [NSMenuItem separatorItem]];
-			}
-
-			for (title in titles)
-			{
-				image = [enumerator2 nextObject];
-				item = [[NSMenuItem alloc] initWithTitle: title action: @selector(setDefaultTool:) keyEquivalent:@""];
-				[item setTag:i++];
-				[item setTarget:self];
-				[item setImage:[NSImage imageNamed:image]];
-				[contextual addItem:item];
-				[item release];
-			}
-			[[contextual itemAtIndex:5] setSubmenu:submenu];
-			
-			[contextual addItem:[NSMenuItem separatorItem]];
-			
-			/******************* WW/WL menu items **********************/
-			NSMenu *mainMenu = [NSApp mainMenu];
-			NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
-			NSMenu *fileMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"File", nil)] submenu];
-			NSMenu *presetsMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
-			NSMenu *menu = [presetsMenu copy];
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""];
-			[item setSubmenu:menu];
-			[contextual addItem:item];
-			[item release];
-			[menu release];
-			
-			[contextual addItem:[NSMenuItem separatorItem]];
-			
-			/************* window resize Menu ****************/
-			
-			[submenu release];
-			submenu =  [[NSMenu alloc] initWithTitle:@"Resize window"];
-			
-			NSArray *resizeWindowArray = [NSArray arrayWithObjects:@"25%", @"50%", @"100%", @"200%", @"300%", @"iPod Video", nil];
-			i = 0;
-			NSString	*titleMenu;
-			for (titleMenu in resizeWindowArray) {
-				int tag = i++;
-				item = [[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""];
+				item = [[NSMenuItem alloc] initWithTitle: [subItem title] action: @selector(setROITool:) keyEquivalent:@""];
 				[item setTag:tag];
-				[item setTarget:imageView];
+				[item setImage: [self imageForROI: tag]];
+				[item setTarget:self];
 				[submenu addItem:item];
 				[item release];
 			}
-			
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Resize window", nil) action: nil keyEquivalent:@""];
-			[item setSubmenu:submenu];
-			[contextual addItem:item];
-			[item release];
-			
-			[contextual addItem:[NSMenuItem separatorItem]];
-			
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(actualSize:) keyEquivalent:@""];
-			[contextual addItem:item];
-			[item release];
-			
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Key image", nil) action: @selector(setKeyImage:) keyEquivalent:@""];
-			[contextual addItem:item];
-			[item release];
-			
-			// Tiling
-			NSMenu *tilingMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Image Tiling", nil)] submenu];
-			menu = [tilingMenu copy];
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Image Tiling", nil) action: nil keyEquivalent:@""];
-			[item setSubmenu:menu];
-			[contextual addItem:item];
-			[item release];
-			[menu release];
+			else [submenu addItem: [NSMenuItem separatorItem]];
+		}
 
-			/********** Orientation submenu ************/ 
-			
-			NSMenu *orientationMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Orientation", nil)] submenu];
-			menu = [orientationMenu copy];
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Orientation", nil) action: nil keyEquivalent:@""];
-			[item setSubmenu:menu];
-			[contextual addItem:item];
-			[item release];
-			[menu release];
-
-			//Export Added 12/5/05
-			/*************Export submenu**************/
-			NSMenu *exportMenu = [[fileMenu itemWithTitle:NSLocalizedString(@"Export", nil)] submenu];
-			menu = [exportMenu copy];
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil keyEquivalent:@""];
-			[item setSubmenu:menu];
-			[contextual addItem:item];
-			[item release];
-			[menu release];
-			
-			[contextual addItem:[NSMenuItem separatorItem]];
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open database", nil) action: @selector(databaseWindow:)  keyEquivalent:@""];
+		for (title in titles)
+		{
+			image = [enumerator2 nextObject];
+			item = [[NSMenuItem alloc] initWithTitle: title action: @selector(setDefaultTool:) keyEquivalent:@""];
+			[item setTag:i++];
 			[item setTarget:self];
-			[contextual addItem:item];
+			[item setImage:[NSImage imageNamed:image]];
+			[contextualMenu addItem:item];
 			[item release];
+		}
+		[[contextualMenu itemAtIndex:5] setSubmenu:submenu];
+		
+		[contextualMenu addItem:[NSMenuItem separatorItem]];
+		
+		/******************* WW/WL menu items **********************/
+		NSMenu *mainMenu = [NSApp mainMenu];
+		NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
+		NSMenu *fileMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"File", nil)] submenu];
+		NSMenu *presetsMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
+		NSMenu *menu = [presetsMenu copy];
+		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""];
+		[item setSubmenu:menu];
+		[contextualMenu addItem:item];
+		[item release];
+		[menu release];
+		
+		[contextualMenu addItem:[NSMenuItem separatorItem]];
+		
+		/************* window resize Menu ****************/
+		
+		[submenu release];
+		submenu =  [[NSMenu alloc] initWithTitle:@"Resize window"];
+		
+		NSArray *resizeWindowArray = [NSArray arrayWithObjects:@"25%", @"50%", @"100%", @"200%", @"300%", @"iPod Video", nil];
+		i = 0;
+		NSString	*titleMenu;
+		for (titleMenu in resizeWindowArray) {
+			int tag = i++;
+			item = [[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""];
+			[item setTag:tag];
+			[item setTarget:imageView];
+			[submenu addItem:item];
+			[item release];
+		}
+		
+		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Resize window", nil) action: nil keyEquivalent:@""];
+		[item setSubmenu:submenu];
+		[contextualMenu addItem:item];
+		[item release];
+		
+		[contextualMenu addItem:[NSMenuItem separatorItem]];
+		
+		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(actualSize:) keyEquivalent:@""];
+		[contextualMenu addItem:item];
+		[item release];
+		
+		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Key image", nil) action: @selector(setKeyImage:) keyEquivalent:@""];
+		[contextualMenu addItem:item];
+		[item release];
+		
+		// Tiling
+		NSMenu *tilingMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Image Tiling", nil)] submenu];
+		menu = [tilingMenu copy];
+		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Image Tiling", nil) action: nil keyEquivalent:@""];
+		[item setSubmenu:menu];
+		[contextualMenu addItem:item];
+		[item release];
+		[menu release];
 
-			[submenu release];
+		/********** Orientation submenu ************/ 
+		
+		NSMenu *orientationMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Orientation", nil)] submenu];
+		menu = [orientationMenu copy];
+		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Orientation", nil) action: nil keyEquivalent:@""];
+		[item setSubmenu:menu];
+		[contextualMenu addItem:item];
+		[item release];
+		[menu release];
+
+		//Export Added 12/5/05
+		/*************Export submenu**************/
+		NSMenu *exportMenu = [[fileMenu itemWithTitle:NSLocalizedString(@"Export", nil)] submenu];
+		menu = [exportMenu copy];
+		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil keyEquivalent:@""];
+		[item setSubmenu:menu];
+		[contextualMenu addItem:item];
+		[item release];
+		[menu release];
+		
+		[contextualMenu addItem:[NSMenuItem separatorItem]];
+		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open database", nil) action: @selector(databaseWindow:)  keyEquivalent:@""];
+		[item setTarget:self];
+		[contextualMenu addItem:item];
+		[item release];
+
+		[submenu release];
 	}
 	else //use the menuDictionary of the path JF20070102
 	{
 		   NSArray *pathComponents = [[self contextualDictionaryPath] pathComponents];
 		   NSString *plistTitle = [[pathComponents objectAtIndex:([pathComponents count]-1)] stringByDeletingPathExtension];
-		   contextual = [[NSMenu alloc] initWithTitle:plistTitle
+		   contextualMenu = [[NSMenu alloc] initWithTitle:plistTitle
 											   withDictionary:[NSDictionary dictionaryWithContentsOfFile:[self contextualDictionaryPath]]
 										  forWindowController:self ];
 		   
 	}
 	
-	
-	return [contextual autorelease];
+	return contextualMenu;
 }
 
 - (void) setWindowTitle:(id) sender
@@ -2151,6 +2180,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	
 	[self SetSyncButtonBehavior: self];
+	[self refreshMenus];
 }
 
 - (void) windowDidBecomeMain:(NSNotification *)aNotification
@@ -2453,67 +2483,86 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) UpdateConvolutionMenu: (NSNotification*) note
 {
-    //*** Build the menu
-    NSMenu      *mainMenu;
-    NSMenu      *viewerMenu, *convMenu;
-    short       i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
-    
-    keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] allKeys];
-    sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-	
-    // Popup Menu
+	if( lastMenuNotification == note)
+	{
+		[convPopup setMenu: convolutionPresetsMenu];
+		[convPopup setTitle: curConvMenu];
+	}
+	else
+	{
+		//*** Build the menu
+		NSMenu      *mainMenu;
+		NSMenu      *viewerMenu, *convMenu;
+		short       i;
+		NSArray     *keys;
+		NSArray     *sortedKeys;
+		
+		keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] allKeys];
+		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+		
+		// Popup Menu
 
-    i = [[convPopup menu] numberOfItems];
-    while(i-- > 0) [[convPopup menu] removeItemAtIndex:0];
-    
-	[[convPopup menu] addItemWithTitle:NSLocalizedString(@"No Filter", nil) action:nil keyEquivalent:@""];
-    [[convPopup menu] addItemWithTitle:NSLocalizedString(@"No Filter", nil) action:@selector (ApplyConv:) keyEquivalent:@""];
-	[[convPopup menu] addItem: [NSMenuItem separatorItem]];
-	
-    for( i = 0; i < [sortedKeys count]; i++)
-    {
-        [[convPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyConv:) keyEquivalent:@""];
-    }
-    [[convPopup menu] addItem: [NSMenuItem separatorItem]];
-    [[convPopup menu] addItemWithTitle:NSLocalizedString(@"Add a Filter", nil) action:@selector (AddConv:) keyEquivalent:@""];
+		[convolutionPresetsMenu release];
+		convolutionPresetsMenu = [[NSMenu alloc] init];
+		
+		[convolutionPresetsMenu addItemWithTitle:NSLocalizedString(@"No Filter", nil) action:nil keyEquivalent:@""];
+		[convolutionPresetsMenu addItemWithTitle:NSLocalizedString(@"No Filter", nil) action:@selector (ApplyConv:) keyEquivalent:@""];
+		[convolutionPresetsMenu addItem: [NSMenuItem separatorItem]];
+		
+		for( i = 0; i < [sortedKeys count]; i++)
+		{
+			[convolutionPresetsMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyConv:) keyEquivalent:@""];
+		}
+		[convolutionPresetsMenu addItem: [NSMenuItem separatorItem]];
+		[convolutionPresetsMenu addItemWithTitle:NSLocalizedString(@"Add a Filter", nil) action:@selector (AddConv:) keyEquivalent:@""];
 
-	[[[convPopup menu] itemAtIndex:0] setTitle:curConvMenu];
+		[convPopup setTitle: curConvMenu];
+	}
 }
 
 -(void) UpdateWLWWMenu: (NSNotification*) note
 {
-    //*** Build the menu
-    short       i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
+	if( lastMenuNotification == note)
+	{
+		[wlwwPopup setMenu: wlwwPresetsMenu];
+		[imageView setMenu: contextualMenu];
+		[wlwwPopup setTitle: curWLWWMenu];
+	}
+	else
+	{
+		//*** Build the menu
+		short       i;
+		NSArray     *keys;
+		NSArray     *sortedKeys;
 
-    // Presets VIEWER Menu
-	
-	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] allKeys];
-    sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-
-    i = [[wlwwPopup menu] numberOfItems];
-    while(i-- > 0) [[wlwwPopup menu] removeItemAtIndex:0];
-    
-    [[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:nil keyEquivalent:@""];
-	[[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Other", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
-	[[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
-	[[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Full dynamic", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
-	[[wlwwPopup menu] addItem: [NSMenuItem separatorItem]];
-    
-    for( i = 0; i < [sortedKeys count]; i++)
-    {
-        [[wlwwPopup menu] addItemWithTitle:[NSString stringWithFormat:@"%d - %@", i+1, [sortedKeys objectAtIndex:i]] action:@selector (ApplyWLWW:) keyEquivalent:@""];
-    }
-    [[wlwwPopup menu] addItem: [NSMenuItem separatorItem]];
-    [[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Add Current WL/WW", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
-	[[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Set WL/WW Manually", nil) action:@selector (SetWLWW:) keyEquivalent:@""];
-	
-	[[[wlwwPopup menu] itemAtIndex:0] setTitle:curWLWWMenu];
-	
-	[imageView setMenu:[self contextualMenu]];
+		// Presets VIEWER Menu
+		
+		keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] allKeys];
+		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+		
+		[wlwwPresetsMenu release];
+		wlwwPresetsMenu = [[NSMenu alloc] init];
+		
+		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:nil keyEquivalent:@""];
+		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Other", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
+		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Default WL & WW", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
+		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Full dynamic", nil) action:@selector (ApplyWLWW:) keyEquivalent:@""];
+		[wlwwPresetsMenu addItem: [NSMenuItem separatorItem]];
+		
+		for( i = 0; i < [sortedKeys count]; i++)
+		{
+			[wlwwPresetsMenu addItemWithTitle:[NSString stringWithFormat:@"%d - %@", i+1, [sortedKeys objectAtIndex:i]] action:@selector (ApplyWLWW:) keyEquivalent:@""];
+		}
+		[wlwwPresetsMenu addItem: [NSMenuItem separatorItem]];
+		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Add Current WL/WW", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
+		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Set WL/WW Manually", nil) action:@selector (SetWLWW:) keyEquivalent:@""];
+		
+		[wlwwPopup setTitle:curWLWWMenu];
+		
+		[imageView setMenu: [self contextualMenu]];
+		
+		lastMenuNotification = note;
+	}
 }
 
 - (void) AddCurrentWLWW:(id) sender
@@ -2563,29 +2612,37 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) UpdateOpacityMenu: (NSNotification*) note
 {
-    //*** Build the menu
-    short       i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
+	if( lastMenuNotification == note)
+	{
+		[OpacityPopup setMenu: opacityPresetsMenu];
+		[OpacityPopup setTitle: curOpacityMenu];
+	}
+	else
+	{
+		//*** Build the menu
+		short       i;
+		NSArray     *keys;
+		NSArray     *sortedKeys;
 
-    // Presets VIEWER Menu
-	
-	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] allKeys];
-    sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-	
-    i = [[OpacityPopup menu] numberOfItems];
-    while(i-- > 0) [[OpacityPopup menu] removeItemAtIndex:0];
-	
-    [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
-	[[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
-    for( i = 0; i < [sortedKeys count]; i++)
-    {
-        [[OpacityPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyOpacity:) keyEquivalent:@""];
-    }
-    [[OpacityPopup menu] addItem: [NSMenuItem separatorItem]];
-    [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Add an Opacity Table", nil) action:@selector (AddOpacity:) keyEquivalent:@""];
+		// Presets VIEWER Menu
+		
+		keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] allKeys];
+		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+		
+		[opacityPresetsMenu release];
+		opacityPresetsMenu = [[NSMenu alloc] init];
+		
+		[opacityPresetsMenu addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
+		[opacityPresetsMenu addItemWithTitle:NSLocalizedString(@"Linear Table", nil) action:@selector (ApplyOpacity:) keyEquivalent:@""];
+		for( i = 0; i < [sortedKeys count]; i++)
+		{
+			[opacityPresetsMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyOpacity:) keyEquivalent:@""];
+		}
+		[opacityPresetsMenu addItem: [NSMenuItem separatorItem]];
+		[opacityPresetsMenu addItemWithTitle:NSLocalizedString(@"Add an Opacity Table", nil) action:@selector (AddOpacity:) keyEquivalent:@""];
 
-	[[[OpacityPopup menu] itemAtIndex:0] setTitle:curOpacityMenu];
+		[OpacityPopup setTitle: curOpacityMenu];
+	}
 }
 
 - (DCMView*) imageView
@@ -4463,31 +4520,39 @@ static ViewerController *draggedController = 0L;
 
 -(void) UpdateCLUTMenu: (NSNotification*) note
 {
-    //*** Build the menu
-    short       i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
+	if( lastMenuNotification == note)
+	{
+		[clutPopup setMenu: clutPresetsMenu];
+		[clutPopup setTitle: curCLUTMenu];
+	}
+	else
+	{
+		//*** Build the menu
+		short       i;
+		NSArray     *keys;
+		NSArray     *sortedKeys;
 
-    // Presets VIEWER Menu
-	
-	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] allKeys];
-    sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-	
-    i = [[clutPopup menu] numberOfItems];
-    while(i-- > 0) [[clutPopup menu] removeItemAtIndex:0];
-	
-	[[clutPopup menu] addItemWithTitle: NSLocalizedString(@"No CLUT", nil) action:nil keyEquivalent:@""];
-    [[clutPopup menu] addItemWithTitle: NSLocalizedString(@"No CLUT", nil) action:@selector (ApplyCLUT:) keyEquivalent:@""];
-	[[clutPopup menu] addItem: [NSMenuItem separatorItem]];
-	
-    for( i = 0; i < [sortedKeys count]; i++)
-    {
-        [[clutPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyCLUT:) keyEquivalent:@""];
-    }
-    [[clutPopup menu] addItem: [NSMenuItem separatorItem]];
-    [[clutPopup menu] addItemWithTitle: NSLocalizedString(@"8-bit CLUT Editor", nil) action:@selector (AddCLUT:) keyEquivalent:@""];
+		// Presets VIEWER Menu
+		
+		keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] allKeys];
+		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+		
+		[clutPresetsMenu release];
+		clutPresetsMenu = [[NSMenu alloc] init];
+		
+		[clutPresetsMenu addItemWithTitle: NSLocalizedString(@"No CLUT", nil) action:nil keyEquivalent:@""];
+		[clutPresetsMenu addItemWithTitle: NSLocalizedString(@"No CLUT", nil) action:@selector (ApplyCLUT:) keyEquivalent:@""];
+		[clutPresetsMenu addItem: [NSMenuItem separatorItem]];
+		
+		for( i = 0; i < [sortedKeys count]; i++)
+		{
+			[clutPresetsMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyCLUT:) keyEquivalent:@""];
+		}
+		[clutPresetsMenu addItem: [NSMenuItem separatorItem]];
+		[clutPresetsMenu addItemWithTitle: NSLocalizedString(@"8-bit CLUT Editor", nil) action:@selector (AddCLUT:) keyEquivalent:@""];
 
-	[[[clutPopup menu] itemAtIndex:0] setTitle:curCLUTMenu];
+		[clutPopup setTitle: curCLUTMenu];
+	}
 }
 
 // ============================================================
@@ -4645,7 +4710,6 @@ static ViewerController *draggedController = 0L;
 	[curOpacityMenu release];
 
 	[imageView release];
-	
 	[seriesView release];
 	
 	[exportDCM release];
@@ -5069,10 +5133,8 @@ static ViewerController *draggedController = 0L;
 
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOMATIC FUSE"])
 		[self blendWindows: 0L];
-			
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	
+	[self refreshMenus];
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
@@ -5235,6 +5297,9 @@ static ViewerController *draggedController = 0L;
 	loadingPercentage = 0;
 		
 	if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
+	
+	while( [[self window] isVisible] == NO && checkEverythingLoaded == NO)
+		[NSThread sleepForTimeInterval: 0.1];
 	
 	NSLog(@"LOADING: Start loading images");
 	
@@ -6280,6 +6345,7 @@ static ViewerController *draggedController = 0L;
 	{
 		[curWLWWMenu release];
 		curWLWWMenu = [s retain];
+		[wlwwPopup setTitle: curWLWWMenu];
 	}
 }
 
@@ -15352,8 +15418,8 @@ int i,j,l;
     
     [[self window] setDelegate:self];
 	
-	[[[wlwwPopup menu] itemAtIndex:0] setTitle:NSLocalizedString(@"Default WL & WW", nil)];
-	[[[convPopup menu] itemAtIndex:0] setTitle:NSLocalizedString(@"No Filter", nil)];
+	[wlwwPopup setTitle:NSLocalizedString(@"Default WL & WW", nil)];
+	[convPopup setTitle:NSLocalizedString(@"No Filter", nil)];
 	
 	NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
@@ -15384,9 +15450,7 @@ int i,j,l;
 	[nc addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"OsirixDeletedReport" object:nil];
 	[nc addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curCLUTMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curCLUTMenu userInfo: 0L];
+	[self refreshMenus];
 	
 	[[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, pasteBoardOsiriX, pasteBoardOsiriXPlugin, nil]];
 	
@@ -15484,9 +15548,7 @@ int i,j,l;
 	
 	[self matrixPreviewSelectCurrentSeries];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	[self refreshMenus];
 }
 
 - (IBAction) Panel3D:(id) sender
@@ -16562,6 +16624,8 @@ long i;
 {
 	if( ThreadLoadImage == YES)
 	{
+		checkEverythingLoaded = YES;
+		
 		WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Data loading...", nil)];
 		[splash showWindow:self];
 		
@@ -16576,6 +16640,8 @@ long i;
 		[splash release];
 		
 		[self setWindowTitle: self];
+		
+		checkEverythingLoaded = NO;
 	}
 	
 	[self computeInterval];
