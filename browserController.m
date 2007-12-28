@@ -5142,7 +5142,7 @@ static NSArray*	statesArray = nil;
 				}
 				
 				for( ViewerController *v in displayedViewers)
-					[[v window] orderBack: self];
+					[[v window] orderFront: self];
 				
 				if( [displayedViewers count] > 0)
 					[[[displayedViewers objectAtIndex: 0] window] makeKeyAndOrderFront: self];

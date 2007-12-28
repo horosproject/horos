@@ -235,7 +235,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	
 	char			*resampledBaseAddr, *blendingResampledBaseAddr;
 	char			*resampledTempAddr;
-	BOOL			zoomIsSoftwareInterpolated;
+	BOOL			zoomIsSoftwareInterpolated, firstTimeDisplay;
 	
 	int				resampledBaseAddrSize, blendingResampledBaseAddrSize;
 		

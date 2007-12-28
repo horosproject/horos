@@ -4910,7 +4910,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 }
 
 -(void) sync:(NSNotification*)note
-{
+{	
 	if (![[[note object] superview] isEqual:[self superview]] && [self is2DViewer])
 	{
 		BOOL	stringOK = NO;
@@ -4976,14 +4976,26 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			{
 				if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer)
 				{
-					if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer)
+					if( [[self window] isMainWindow] == NO && [[otherView window] isMainWindow] == YES)
 					{
-						[self computeSlice: oPix :oPix2];
+						if( ([oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewer))
+						{
+							[self computeSlice: oPix :oPix2];
+						}
+						else
+						{
+							sliceVector[0] = sliceVector[1] = sliceVector[2] = 0; 
+							slicePoint[0] = slicePoint[1] = slicePoint[2] = 0;
+							sliceVector2[0] = sliceVector2[1] = sliceVector2[2] = 0; 
+							slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 		
+						}
 					}
-					else
+					else if( [[otherView window] isMainWindow] == NO)
 					{
+						sliceVector[0] = sliceVector[1] = sliceVector[2] = 0; 
+						slicePoint[0] = slicePoint[1] = slicePoint[2] = 0;
 						sliceVector2[0] = sliceVector2[1] = sliceVector2[2] = 0; 
-						slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 
+						slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 		
 					}
 					
 					// Double-Click -> find the nearest point on our plane, go to this plane and draw the intersection!
@@ -5146,16 +5158,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				if( [self is2DViewer] == YES)
 					[[self windowController] adjustSlider];
 				
-				if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]])
-					{
-						[self computeSlice: oPix :oPix2];
-					}
-					else
-					{
-						sliceVector2[0] = sliceVector2[1] = sliceVector2[2] = 0; 
-						slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 
-					}
-					
 				[self setNeedsDisplay:YES];
 			}
 			else
@@ -5166,6 +5168,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 
 			}
 		}
+		
+		if( [[self window] isMainWindow])
+			[self sendSyncMessage: 1];
 	}
 }
 
@@ -6590,8 +6595,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	long		clutBars	= CLUTBARS;
 	long		annotations	= ANNOTATIONS;
+	BOOL		iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
 	
-	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
+	if( firstTimeDisplay == NO && [self is2DViewer])
+	{
+		firstTimeDisplay = YES;
+		[self updatePresentationStateFromSeries];
+	}
 	
 	if( iChatRunning)
 	{
@@ -7014,6 +7024,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					float heighthalf = drawingFrameRect.size.height/2;
 					float widthhalf = drawingFrameRect.size.width/2;
 					
+					// red square
+					
 					glEnable(GL_BLEND);
 					glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
 					glLineWidth(8.0);
@@ -7119,7 +7131,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			//** SLICE CUT BETWEEN SERIES
 			
-			if( stringID == 0L) {
+			if( stringID == 0L && [[self window] isMainWindow] == NO)
+			{
 				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 				glEnable(GL_BLEND);
 				glEnable(GL_POINT_SMOOTH);
@@ -7972,8 +7985,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( [self is2DViewer]) {
 			// Series Level
-			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / [self frame].size.height] forKey:@"scale"];
-			[[self seriesObj] setValue:[NSNumber numberWithInt: 2] forKey: @"displayStyle"];	//displayStyle = 2  -> scaleValue is proportional to view height
+			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / [self frame].size.width] forKey:@"scale"];
+			[[self seriesObj] setValue:[NSNumber numberWithInt: 2] forKey: @"displayStyle"];	//displayStyle = 2  -> scaleValue is proportional to view width
 			
 			// Image Level
 			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
@@ -7990,22 +8003,23 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) setScaleValue:(float) x
 {
-	if( x <= 0 ) return;
+	if( x < 0.01 ) x = 0.01;
+	if( x > 100) x = 100;
 	
-	if( scaleValue != x ) {
+	if( scaleValue != x )
+	{
 		scaleValue = x;
-		if( scaleValue < 0.01) scaleValue = 0.01;
-		if( scaleValue > 100) scaleValue = 100;
 		
 		if( [self softwareInterpolation] || [blendingView softwareInterpolation])
 			[self loadTextures];
 		else if( zoomIsSoftwareInterpolated || [blendingView zoomIsSoftwareInterpolated])
 			[self loadTextures];
 		
-		if( [self is2DViewer]) {
+		if( [self is2DViewer] && firstTimeDisplay)
+		{
 			// Series Level
-			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / [self frame].size.height] forKey:@"scale"];
-			[[self seriesObj] setValue:[NSNumber numberWithInt: 2] forKey: @"displayStyle"];	//displayStyle = 2  -> scaleValue is proportional to view height
+			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / [self frame].size.width] forKey:@"scale"];
+			[[self seriesObj] setValue:[NSNumber numberWithInt: 2] forKey: @"displayStyle"];	//displayStyle = 2  -> scaleValue is proportional to view width
 			
 			// Image Level
 			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
@@ -8981,9 +8995,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (BOOL)resignFirstResponder{
+- (BOOL)resignFirstResponder
+{
 	isKeyView = NO;
 	[self setNeedsDisplay:YES];
+	[self sendSyncMessage:1];
+	
 	return [super resignFirstResponder];
 }
 
@@ -9124,14 +9141,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [image valueForKey:@"yFlipped"]) self.yFlipped = [[image valueForKey:@"yFlipped"] boolValue];
 		else if( !onlyImage) self.yFlipped = [[series valueForKey:@"yFlipped"] boolValue];
 		
-		if( [self is2DViewer] ) {
+		if( [self is2DViewer] && firstTimeDisplay)
+		{
 			if( [image valueForKey:@"scale"]) [self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
 			else if( !onlyImage) {
 				if( [series valueForKey:@"scale"]) {
 					if( [[series valueForKey:@"scale"] floatValue] != 0) {
 						//displayStyle = 2  -> scaleValue is proportional to view height
 						if( [[series valueForKey:@"displayStyle"] intValue] == 2)
-							[self setScaleValue: [[series valueForKey:@"scale"] floatValue] * [self frame].size.height];
+							[self setScaleValue: [[series valueForKey:@"scale"] floatValue] * [self frame].size.width];
 						else
 							[self setScaleValue: [[series valueForKey:@"scale"] floatValue]];
 					}
@@ -9862,12 +9880,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	return [[self window] windowController];
 }
 
-- (BOOL)is2DViewer{
-	// if DCMView was subclassed for the non 2D Viewers. We could just override this method rather than checking to see if the WindowController is 2D
+- (BOOL)is2DViewer
+{
 	return [[self windowController] is2DViewer];
-	// probably it would  better to check for the class rather than the 2D method in the long run. It just adds an extra method to any controller;
-	//if ([[self windowController] isMemberOfClass:[ViewerController class]])
-	//	return YES;
-	//return NO;
 }
 @end

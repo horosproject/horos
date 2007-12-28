@@ -1777,6 +1777,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow
 {
 	NSRect	curRect = [[self window] frame];
+	BOOL wasAlreadyVisible = [[self window] isVisible];
 	
 	//To avoid the use of WindowDidMove function - Magnetic windows
 	dontEnterMagneticFunctions = YES;
@@ -1789,9 +1790,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 		float previousHeight = [imageView frame].size.width;
 		
 		[[self window] setFrame:rect display:NO];
-		if( showWindow) [[self window] orderFront:self];
+		if( showWindow)
+		{
+			[[self window] orderFront:self];
 		
-		[imageView setScaleValue: scaleValue * [imageView frame].size.width / previousHeight];
+			if( wasAlreadyVisible)
+				[imageView setScaleValue: scaleValue * [imageView frame].size.width / previousHeight];
+		}
 	}
 	else
 	{
@@ -2038,6 +2043,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) windowDidResignMain:(NSNotification *)aNotification
 {
 	[imageView stopROIEditingForce: YES];
+	
+	[imageView sendSyncMessage: 1];
 	
 	if (AUTOHIDEMATRIX) [self autoHideMatrix];
 }
@@ -11681,6 +11688,7 @@ int i,j,l;
 		if( [[vC imageView] shouldPropagate] == YES)
 		{
 			float   iwl, iww;
+			float   dwl, dww;
 			
 			// 4D data
 			if( curMovieIndex != [vC curMovieIndex] && maxMovieIndex ==  [vC maxMovieIndex])
@@ -11725,7 +11733,10 @@ int i,j,l;
 					if( propagate)
 					{
 						[imageView getWLWW:&iwl :&iww];
-						[[vC imageView] setWLWW:iwl :iww];
+						[[vC imageView] getWLWW:&dwl :&dww];
+						
+						if( iwl != dwl || iww != dww)
+							[[vC imageView] setWLWW:iwl :iww];
 					}
 				}
 
