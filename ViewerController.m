@@ -2987,7 +2987,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
 				patName = [NSString stringWithFormat: @"%@ %@", [curStudy valueForKey:@"name"], [BrowserController DateOfBirthFormat: [curStudy valueForKey:@"dateOfBirth"]]];
-				
+			
 			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r%@\r%@\r\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, [series count], @"series", stateText, comment, action]];
 			[cell setBackgroundColor: [NSColor whiteColor]];
 			
@@ -8662,7 +8662,6 @@ extern NSString * documentsDirectory();
 		{
 			DicomImage	*image = [fileList[mIndex] objectAtIndex:i];
 			
-			if( [image isFault] == NO)
 			{
 				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 				

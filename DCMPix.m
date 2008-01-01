@@ -10194,107 +10194,115 @@ END_CREATE_ROIS:
 				BOOL contentForLine = NO;
 				for ( int f=0; f<[content count]; f++ )
 				{
-					
-					NSDictionary *field = [content objectAtIndex:f];
-					NSString *type = [field objectForKey:@"type"];
-					NSString *value;
-					
-					if( [type isEqualToString:@"DICOM"] )
+					@try
 					{
-						if(fileNb>=0)
-							value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] papyLink:fileNb];
-						else if(dcmObject)
-							value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] DCMLink:dcmObject];
-						else
-							value = nil;
-							
-						if( anonymizedAnnotations)
-						{
-							if( [[field objectForKey:@"group"] intValue] == 0x0010 && [[field objectForKey:@"element"] intValue] == 0x0010) value = @" ";
-						}
+						NSDictionary *field = [content objectAtIndex:f];
+						NSString *type = [field objectForKey:@"type"];
+						NSString *value = 0L;
 						
-						if(value==nil || [value length] == 0) value = @"-";
-						else contentForLine = YES;
-					}
-					else if([type isEqualToString:@"DB"])
-					{
-						NSString *fieldName = [field objectForKey:@"field"];
-						NSString *level = [field objectForKey:@"level"];
-						if([level isEqualToString:@"image"])
+						if( [type isEqualToString:@"DICOM"] )
 						{
-							value = [imageObj valueForKey:fieldName];
-						}
-						else if([level isEqualToString:@"series"])
-						{
-							value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.%@", fieldName]];
-						}
-						else if([level isEqualToString:@"study"])
-						{
-							value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
-							
+							if(fileNb>=0)
+								value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] papyLink:fileNb];
+							else if(dcmObject)
+								value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] DCMLink:dcmObject];
+							else
+								value = nil;
+								
 							if( anonymizedAnnotations)
 							{
-								if( [fieldName isEqualToString:@"name"]) value = @" ";
+								if( [[field objectForKey:@"group"] intValue] == 0x0010 && [[field objectForKey:@"element"] intValue] == 0x0010) value = @" ";
 							}
+							
+							if(value==nil || [value length] == 0) value = @"-";
+							else contentForLine = YES;
 						}
-						
-						if(value==nil) value = @"-";
-						else contentForLine = YES;
-						
-						if( [value isKindOfClass: [NSDate class]])
+						else if([type isEqualToString:@"DB"])
 						{
-							if([fieldName isEqualToString:@"dateOfBirth"])
-								value = [BrowserController DateOfBirthFormat: (NSDate *) value];
+							NSString *fieldName = [field objectForKey:@"field"];
+							NSString *level = [field objectForKey:@"level"];
+							if([level isEqualToString:@"image"])
+							{
+								value = [imageObj valueForKey:fieldName];
+							}
+							else if([level isEqualToString:@"series"])
+							{
+								value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.%@", fieldName]];
+							}
+							else if([level isEqualToString:@"study"])
+							{
+								value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
+								
+								if( anonymizedAnnotations)
+								{
+									if( [fieldName isEqualToString:@"name"]) value = @" ";
+								}
+							}
+							
+							if(value==nil) value = @"-";
+							else contentForLine = YES;
+							
+							if( [value isKindOfClass: [NSDate class]])
+							{
+								if([fieldName isEqualToString:@"dateOfBirth"])
+									value = [BrowserController DateOfBirthFormat: (NSDate *) value];
+								else
+									value = [BrowserController DateTimeWithSecondsFormat: (NSDate *) value];
+							}
 							else
-								value = [BrowserController DateTimeWithSecondsFormat: (NSDate *) value];
-						}
-						else
-						{
-							value = [value description];
-							if( [value length] == 0) value = @"-";
-						}
-					}
-					else if([type isEqualToString:@"Special"])
-					{
-						value = [field objectForKey:@"field"];
-						if ([value isEqualToString: NSLocalizedString(@"Patient's Actual Age", 0L)] || [value isEqualToString: (@"Patient's Actual Age")])
-						{
-							NSDate *date = [imageObj valueForKeyPath: @"series.study.dateOfBirth"];
-							
-							if(date)
 							{
-								int age = -[date timeIntervalSinceNow]/(60*60*24*365);
-								value = [NSString stringWithFormat:@"%d y", age];
+								value = [value description];
+								if( [value length] == 0) value = @"-";
 							}
-							else value = 0L;
 						}
-						
-						if ([value isEqualToString: NSLocalizedString(@"Patient's Age At Acquisition", 0L)] || [value isEqualToString: (@"Patient's Age At Acquisition")])
+						else if([type isEqualToString:@"Special"])
 						{
-							NSDate *date1 = [imageObj valueForKeyPath: @"series.study.dateOfBirth"];
-							NSDate *date2 = [imageObj valueForKeyPath: @"series.study.date"];
-							
-							if(date1 && date2)
+							value = [field objectForKey:@"field"];
+							if ([value isEqualToString: NSLocalizedString(@"Patient's Actual Age", 0L)] || [value isEqualToString: (@"Patient's Actual Age")])
 							{
-								int age = -[date1 timeIntervalSinceDate: date2]/(60*60*24*365);
-								value = [NSString stringWithFormat:@"%d y", age];
+								NSDate *date = [imageObj valueForKeyPath: @"series.study.dateOfBirth"];
+								
+								if(date)
+								{
+									int age = -[date timeIntervalSinceNow]/(60*60*24*365);
+									value = [NSString stringWithFormat:@"%d y", age];
+								}
+								else value = 0L;
 							}
-							else value = 0L;
+							
+							if ([value isEqualToString: NSLocalizedString(@"Patient's Age At Acquisition", 0L)] || [value isEqualToString: (@"Patient's Age At Acquisition")])
+							{
+								NSDate *date1 = [imageObj valueForKeyPath: @"series.study.dateOfBirth"];
+								NSDate *date2 = [imageObj valueForKeyPath: @"series.study.date"];
+								
+								if(date1 && date2)
+								{
+									int age = -[date1 timeIntervalSinceDate: date2]/(60*60*24*365);
+									value = [NSString stringWithFormat:@"%d y", age];
+								}
+								else value = 0L;
+							}
+							
+							if(value==nil || [value length] == 0) value = @"-";
+							else contentForLine = YES;
+						}
+						else if([type isEqualToString:@"Manual"])
+						{
+							value = [field objectForKey:@"field"];
+							if(value==nil || [value length] == 0) value = @"-";
+							
+							if(![value isEqualToString:@""]) value = [value stringByAppendingString:@" "];
 						}
 						
-						if(value==nil || [value length] == 0) value = @"-";
-						else contentForLine = YES;
-					}
-					else if([type isEqualToString:@"Manual"])
-					{
-						value = [field objectForKey:@"field"];
-						if(value==nil || [value length] == 0) value = @"-";
-						
-						if(![value isEqualToString:@""]) value = [value stringByAppendingString:@" "];
+						if( value) [contentOUT addObject:value];
 					}
 					
-					if( value) [contentOUT addObject:value];
+					@catch (NSException *e)
+					{
+						NSLog(@"CustomImageAnnotations Exception: %@", e);
+					}
 				}
+				
 				if( contentForLine)
 				{
 					if( contentOUT)

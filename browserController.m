@@ -1172,15 +1172,9 @@ static NSArray*	statesArray = nil;
 
 - (void) executeSend :(NSArray*) samePatientArray server:(NSDictionary*) server
 {
-	BOOL	isFault = NO;
-	
-	for( NSManagedObject *samePat in samePatientArray ) if( [samePat isFault]) isFault = YES;
-	
-	if( isFault) NSLog( @"Fault on objects: not available for sending");
-	else {
-		NSLog( @"%@", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"]);
+	NSLog( @"%@", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"]);
 		
-		DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
 																  calledAET: [server objectForKey:@"AETitle"] 
 																   hostname: [server objectForKey:@"Address"] 
 																	   port: [[server objectForKey:@"Port"] intValue] 
@@ -1189,12 +1183,12 @@ static NSArray*	statesArray = nil;
 																compression: 1.0
 															extraParameters: nil];
 		
-		@try
+	@try
 	{
 		[storeSCU run:self];
 	}
 		
-		@catch (NSException *ne)
+	@catch (NSException *ne)
 	{
 		NSLog( @"Autorouting FAILED");
 		NSLog( [ne name]);
@@ -1208,9 +1202,8 @@ static NSArray*	statesArray = nil;
 		[autoroutingQueue unlock];
 	}
 		
-		[storeSCU release];
-		storeSCU = 0L;
-	}
+	[storeSCU release];
+	storeSCU = 0L;
 }
 
 - (void) processAutorouting

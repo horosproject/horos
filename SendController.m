@@ -309,11 +309,7 @@ static volatile int sendControllerObjects = 0;
 
 - (void) executeSend :(NSArray*) samePatientArray
 {
-	BOOL	isFault = NO;
-	
 	if( _abort) return;
-	
-	for( id loopItem1 in samePatientArray) if( [loopItem1 isFault]) isFault = YES;
 	
 	NSArray	*files = [samePatientArray valueForKey: @"completePathResolved"];
 	
@@ -330,40 +326,36 @@ static volatile int sendControllerObjects = 0;
 		files = [files arrayByAddingObjectsFromArray: roiFiles];
 	}
 	
-	if( isFault) NSLog( @"Fault on objects: not available for sending");
-	else
+	// Send the collected files from the same patient
+	
+	NSString *calledAET = [[self server] objectForKey:@"AETitle"];
+	NSString *hostname = [[self server] objectForKey:@"Address"];
+	NSString *destPort = [[self server] objectForKey:@"Port"];
+	
+	storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+			calledAET:calledAET 
+			hostname:hostname 
+			port:[destPort intValue] 
+			filesToSend:files
+			transferSyntax:_offisTS
+			compression: 1.0
+			extraParameters:nil];
+	
+	@try
 	{
-		// Send the collected files from the same patient
-		
-		NSString *calledAET = [[self server] objectForKey:@"AETitle"];
-		NSString *hostname = [[self server] objectForKey:@"Address"];
-		NSString *destPort = [[self server] objectForKey:@"Port"];
-		
-		storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
-				calledAET:calledAET 
-				hostname:hostname 
-				port:[destPort intValue] 
-				filesToSend:files
-				transferSyntax:_offisTS
-				compression: 1.0
-				extraParameters:nil];
-		
-		@try
-		{
-			[storeSCU run:self];
-		}
-		
-		@catch( NSException *ne)
-		{
-			if( _waitSendWindow)
-			{
-				[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone: NO];
-			}
-		}
-		
-		[storeSCU release];
-		storeSCU = 0L;
+		[storeSCU run:self];
 	}
+	
+	@catch( NSException *ne)
+	{
+		if( _waitSendWindow)
+		{
+			[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone: NO];
+		}
+	}
+	
+	[storeSCU release];
+	storeSCU = 0L;
 }
 
 - (void) sendDICOMFilesOffis:(NSArray *) objectsToSend

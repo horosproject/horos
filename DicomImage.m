@@ -658,7 +658,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 
 //- (void)willSave
 //{
-//	if( [self isDeleted] == NO && [self isFault] == NO)
+//	if( [self isDeleted] == NO)
 //	{
 //		if( mxOffset) [self setPrimitiveValue: xOffset forKey:@"xOffset"];
 //		if( myOffset) [self setPrimitiveValue: yOffset forKey:@"yOffset"];
