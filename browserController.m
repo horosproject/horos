@@ -2085,7 +2085,9 @@ static NSArray*	statesArray = nil;
 	{
 		if( [self.documentsDirectory isEqualToString: [path stringByDeletingLastPathComponent]] == NO)
 			[[self.documentsDirectory stringByDeletingLastPathComponent] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] atomically:YES encoding : NSUTF8StringEncoding error: 0L];
-		
+		else
+			[[NSFileManager defaultManager] removeFileAtPath: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] handler: 0L];
+			
 		i = [self findDBPath: path dbFolder: DBFolderLocation];
 		if( i == -1 )
 		{
