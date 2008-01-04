@@ -1946,19 +1946,20 @@ static NSArray*	statesArray = nil;
 	BOOL isDirectory;
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] )	{
-		if( isDirectory ) {
+		if( isDirectory )
+		{
 			// Default SQL file
 			NSString	*index = [[path stringByAppendingPathComponent:@"OsiriX Data"] stringByAppendingPathComponent:@"Database.sql"];
 			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: index] ) {
-				[path writeToFile: [[path stringByAppendingPathComponent:@"OsiriX Data"] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] atomically:YES encoding : NSUTF8StringEncoding error: 0L];
-				
+			if( [[NSFileManager defaultManager] fileExistsAtPath: index] )
+			{
 				return index;
 			}
 			
 			return nil;
 		}
-		else {
+		else
+		{
 			return path;
 		}
 	}
@@ -2082,7 +2083,8 @@ static NSArray*	statesArray = nil;
 	
 	if( isCurrentDatabaseBonjour == NO)
 	{
-		[[self.documentsDirectory stringByDeletingLastPathComponent] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] atomically:YES encoding : NSUTF8StringEncoding error: 0L];
+		if( [self.documentsDirectory isEqualToString: [path stringByDeletingLastPathComponent]] == NO)
+			[[self.documentsDirectory stringByDeletingLastPathComponent] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] atomically:YES encoding : NSUTF8StringEncoding error: 0L];
 		
 		i = [self findDBPath: path dbFolder: DBFolderLocation];
 		if( i == -1 )
