@@ -883,6 +883,8 @@ static NSHost *currentHost = 0L;
 	// ** COMMENTSAUTOFILL
 	[defaultValues setObject: @"0" forKey: @"COMMENTSAUTOFILL"];
 	
+	[defaultValues setObject: @"http://list.dicom.dcm/list.plist" forKey: @"syncDICOMNodesURL"];
+	
 	// ** COMMENTSGROUP
 	[defaultValues setObject: @"0008" forKey: @"COMMENTSGROUP"];
 	

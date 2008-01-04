@@ -28,6 +28,7 @@
 	IBOutlet SFAuthorizationView	*_authView;
 }
 
+- (IBAction) refreshNodesListURL: (id) sender;
 - (void) mainViewDidLoad;
 - (IBAction) newServer:(id)sender;
 - (IBAction) osirixNewServer:(id)sender;

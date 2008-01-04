@@ -97,6 +97,8 @@
 	[searchDICOMBonjourNodes setEnabled: val];
 	[addLocalPath setEnabled: val];
 	[loadNodes setEnabled: val];
+	
+	[[NSUserDefaults standardUserDefaults] setBool: [[NSUserDefaults standardUserDefaults] boolForKey:@"syncDICOMNodes"] forKey: @"syncDICOMNodes"];
 }
 
 - (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
@@ -249,6 +251,29 @@
 	if ([sPanel runModalForDirectory:0L file:NSLocalizedString(@"OsiriX Locations.plist", nil)] == NSFileHandlingPanelOKButton)
 	{
 		[[dicomNodes arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
+	}
+}
+
+- (IBAction) refreshNodesListURL: (id) sender
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncDICOMNodes"])
+	{
+		NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncDICOMNodesURL"]];
+		
+		if( url)
+		{
+			NSArray	*r = [NSArray arrayWithContentsOfURL: url];
+			
+			if( r)
+			{
+				[dicomNodes removeObjects: [dicomNodes arrangedObjects]];
+				[dicomNodes addObjects: r];
+				
+				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+			}
+			else NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L), NSLocalizedString(@"Cannot download data from this URL.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+		}
+		else NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L), NSLocalizedString(@"This URL is invalid. Check syntax.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
 	}
 }
 

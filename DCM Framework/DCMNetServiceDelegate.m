@@ -155,8 +155,20 @@ static NSHost *currentHost = 0L;
 }
 
 + (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR
-
 {
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncDICOMNodes"])
+	{
+		NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncDICOMNodesURL"]];
+		
+		if( url)
+		{
+			NSArray	*r = [NSArray arrayWithContentsOfURL: url];
+			
+			if( r)
+				[[NSUserDefaults standardUserDefaults] setObject: r forKey:@"SERVERS"];
+		}
+	}
+	
 	NSMutableArray			*serversArray		= [NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"]];
 	NSArray					*dicomServices		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
 		
