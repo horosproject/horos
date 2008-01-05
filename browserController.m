@@ -1635,7 +1635,8 @@ static NSArray*	statesArray = nil;
 				
 				currentAlbumTable = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: currentContext];
 				
-				for ( NSString *name in albumProperties ) {
+				for ( NSString *name in albumProperties )
+				{
 					[currentAlbumTable setValue: [previousAlbum valueForKey: name] forKey: name];
 				}
 			}
@@ -1777,12 +1778,35 @@ static NSArray*	statesArray = nil;
 					}
 					
 					NSArray		*storedInAlbums = [[previousStudy valueForKey: @"albums"] allObjects];
-					for( NSString *sa in storedInAlbums ) {
-						NSString		*name = [sa valueForKey:@"name"];
-						NSMutableSet	*studiesStoredInAlbum = [[currentAlbums objectAtIndex: [currentAlbumsNames indexOfObject: name]] mutableSetValueForKey:@"studies"];
-						[studiesStoredInAlbum addObject: currentStudyTable];
-					}
 					
+					if( [storedInAlbums count])
+					{
+						@try
+						{
+							// Find all current albums
+							NSFetchRequest *r = [[[NSFetchRequest alloc] init] autorelease];
+							[r setEntity: [[currentModel entitiesByName] objectForKey:@"Album"]];
+							[r setPredicate: [NSPredicate predicateWithValue:YES]];
+							
+							error = 0L;
+							NSArray *currentAlbums = [currentContext executeFetchRequest:r error:&error];
+							NSArray *currentAlbumsNames = [currentAlbums valueForKey:@"name"];
+							
+							for( NSManagedObject *sa in storedInAlbums )
+							{
+								NSString		*name = [sa valueForKey:@"name"];
+								
+								NSMutableSet	*studiesStoredInAlbum = [[currentAlbums objectAtIndex: [currentAlbumsNames indexOfObject: name]] mutableSetValueForKey:@"studies"];
+								
+								[studiesStoredInAlbum addObject: currentStudyTable];
+							}
+						}
+						
+						@catch (NSException *e)
+						{
+							NSLog(@"ALBUM : %@", e);
+						}
+					}
 				}
 				
 				@catch (NSException * e)
@@ -1838,9 +1862,9 @@ static NSArray*	statesArray = nil;
 			
 			if( updatingProblems)
 			{
-//							NSRunAlertPanel( NSLocalizedString(@"Database Update", nil), [NSString stringWithFormat:NSLocalizedString(@"Database updating generated errors//... The corrupted studies have been removed:\r\r%@", nil), updatingProblems], nil, nil, nil);
+				NSRunAlertPanel( NSLocalizedString(@"Database Update", nil), [NSString stringWithFormat:NSLocalizedString(@"Database updating generated errors//... The corrupted studies have been removed:\r\r%@", nil), updatingProblems], nil, nil, nil);
 
-				NSRunAlertPanel( NSLocalizedString(@"Database Update", nil), NSLocalizedString(@"Database updating generated errors... The corrupted studies have been removed.", nil), nil, nil, nil);
+//				NSRunAlertPanel( NSLocalizedString(@"Database Update", nil), NSLocalizedString(@"Database updating generated errors... The corrupted studies have been removed.", nil), nil, nil, nil);
 				
 				[updatingProblems release];
 				updatingProblems = 0L;
