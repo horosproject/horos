@@ -1644,15 +1644,6 @@ static NSArray*	statesArray = nil;
 			error = nil;
 			[currentContext save: &error];
 			
-			// Find all current albums
-			dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[currentModel entitiesByName] objectForKey:@"Album"]];
-			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-			
-			error = 0L;
-			NSArray *currentAlbums = [currentContext executeFetchRequest:dbRequest error:&error];
-			NSArray *currentAlbumsNames = [currentAlbums valueForKey:@"name"];
-			
 			// STUDIES
 			dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 			[dbRequest setEntity: [[previousModel entitiesByName] objectForKey:@"Study"]];
@@ -1687,9 +1678,13 @@ static NSArray*	statesArray = nil;
 			[[previousContext undoManager] setLevelsOfUndo: 1];
 			[[previousContext undoManager] disableUndoRegistration];
 			
+			NSArray *currentAlbums = 0L;
+			NSArray *currentAlbumsNames = 0L;
+			
 			while( [studies count] > 0 )
 			{
 				NSAutoreleasePool	*poolLoop = [[NSAutoreleasePool alloc] init];
+				
 				
 				NSString *studyName = 0L;
 				
@@ -1781,17 +1776,17 @@ static NSArray*	statesArray = nil;
 					
 					if( [storedInAlbums count])
 					{
+						// Find all current albums
+						NSFetchRequest *r = [[[NSFetchRequest alloc] init] autorelease];
+						[r setEntity: [[currentModel entitiesByName] objectForKey:@"Album"]];
+						[r setPredicate: [NSPredicate predicateWithValue:YES]];
+					
+						error = 0L;
+						currentAlbums = [currentContext executeFetchRequest:r error:&error];
+						currentAlbumsNames = [currentAlbums valueForKey:@"name"];
+					
 						@try
 						{
-							// Find all current albums
-							NSFetchRequest *r = [[[NSFetchRequest alloc] init] autorelease];
-							[r setEntity: [[currentModel entitiesByName] objectForKey:@"Album"]];
-							[r setPredicate: [NSPredicate predicateWithValue:YES]];
-							
-							error = 0L;
-							NSArray *currentAlbums = [currentContext executeFetchRequest:r error:&error];
-							NSArray *currentAlbumsNames = [currentAlbums valueForKey:@"name"];
-							
 							for( NSManagedObject *sa in storedInAlbums )
 							{
 								NSString		*name = [sa valueForKey:@"name"];
@@ -1830,7 +1825,7 @@ static NSArray*	statesArray = nil;
 					
 					[currentContext reset];
 					[previousContext reset];
-					
+
 					[studies release];
 					
 					studies = [NSMutableArray arrayWithArray: [previousContext executeFetchRequest:dbRequest error:&error]];
