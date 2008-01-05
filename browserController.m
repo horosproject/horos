@@ -3688,6 +3688,11 @@ static NSArray*	statesArray = nil;
 		
 		[self syncReportsIfNecessary: [bonjourServicesList selectedRow]-1];
 	}
+	else
+	{
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"syncOsiriXDB"])
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:0L];
+	}
 }
 
 - (void)refreshSmartAlbums {
