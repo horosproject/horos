@@ -6792,6 +6792,8 @@ static ViewerController *draggedController = 0L;
 	{
 		double previousInterval3d = 0;
 		
+		double minInterval = 0, maxInterval = 0;
+		
 		BOOL nonContinuous = NO;
 		
 		for( int i = 0 ; i < [pixList[ 0] count] -1; i++)
@@ -6808,6 +6810,17 @@ static ViewerController *draggedController = 0L;
 			
 			int sss = fabs( previousInterval3d - interval3d) * 1000.;
 			
+			if( i == 0)
+			{
+				maxInterval = fabs( interval3d);
+				minInterval = fabs( interval3d);
+			}
+			else
+			{
+				if( fabs( interval3d) > maxInterval) maxInterval = fabs( interval3d);
+				if( fabs( interval3d) < minInterval) minInterval = fabs( interval3d);
+			}
+			
 			if( sss != 0 && previousInterval3d != 0)
 			{
 				nonContinuous = YES;
@@ -6820,7 +6833,7 @@ static ViewerController *draggedController = 0L;
 		
 		if( nonContinuous)
 		{
-			NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), NSLocalizedString(@"These slices have a non regular slice interval. This can produce distortion in 3D representations.", nil), NSLocalizedString(@"OK", nil), 0L, 0L);
+			NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), [NSString stringWithFormat: NSLocalizedString(@"These slices have a non regular slice interval, varying from %.3f mm to %.3f mm. This will produce distortion in 3D representations, and in measurements.", nil), minInterval, maxInterval], NSLocalizedString(@"OK", nil), 0L, 0L);
 		}
 		
 		nonContinuousWarningDisplayed = YES;
