@@ -1690,6 +1690,8 @@ static NSArray*	statesArray = nil;
 			{
 				NSAutoreleasePool	*poolLoop = [[NSAutoreleasePool alloc] init];
 				
+				NSString *studyName = 0L;
+				
 				@try
 				{
 					NSManagedObject *previousStudy = [studies lastObject];
@@ -1700,6 +1702,9 @@ static NSArray*	statesArray = nil;
 					
 					for ( NSString *name in studyProperties ) {
 						[currentStudyTable setValue: [previousStudy primitiveValueForKey: name] forKey: name];
+						
+						if( [name isEqualToString: @"name"])
+							studyName = [previousStudy primitiveValueForKey: name];
 					}
 					
 					// SERIES
@@ -1766,10 +1771,10 @@ static NSArray*	statesArray = nil;
 				@catch (NSException * e)
 				{
 					NSLog(@"Problems during updating: %@", e);
-					
+					NSLog(@"Patient Name: %@", studyName);
 					if( updatingProblems == 0L) updatingProblems = [[NSMutableString stringWithString:@""] retain];
 					
-					[updatingProblems appendFormat:@"%@\r", [e description]];
+					[updatingProblems appendFormat:@"%@\r", studyName];
 				}
 					
 				[splash incrementBy:1];
@@ -1816,6 +1821,8 @@ static NSArray*	statesArray = nil;
 			
 			if( updatingProblems)
 			{
+//							NSRunAlertPanel( NSLocalizedString(@"Database Update", nil), [NSString stringWithFormat:NSLocalizedString(@"Database updating generated errors//... The corrupted studies have been removed:\r\r%@", nil), updatingProblems], nil, nil, nil);
+
 				NSRunAlertPanel( NSLocalizedString(@"Database Update", nil), NSLocalizedString(@"Database updating generated errors... The corrupted studies have been removed.", nil), nil, nil, nil);
 				
 				[updatingProblems release];
