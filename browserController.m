@@ -1700,7 +1700,8 @@ static NSArray*	statesArray = nil;
 					
 					currentStudyTable = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext: currentContext];
 					
-					for ( NSString *name in studyProperties ) {
+					for ( NSString *name in studyProperties )
+					{
 						[currentStudyTable setValue: [previousStudy primitiveValueForKey: name] forKey: name];
 						
 						if( [name isEqualToString: @"name"])
@@ -1709,41 +1710,21 @@ static NSArray*	statesArray = nil;
 					
 					// SERIES
 					NSArray *series = [[previousStudy valueForKey:@"series"] allObjects];
-					for( NSManagedObject *previousSeries in series ) {
+					for( NSManagedObject *previousSeries in series )
+					{
 						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 						
-						currentSeriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext: currentContext];
-						
-						for ( NSString *name in seriesProperties ) {
-							
-							if( [name isEqualToString: @"xOffset"] || 
-								[name isEqualToString: @"yOffset"] || 
-								[name isEqualToString: @"scale"] || 
-								[name isEqualToString: @"rotationAngle"] || 
-								[name isEqualToString: @"displayStyle"] || 
-								[name isEqualToString: @"windowLevel"] || 
-								[name isEqualToString: @"windowWidth"] || 
-								[name isEqualToString: @"yFlipped"] || 
-								[name isEqualToString: @"xFlipped"])
-							{
-								
-							}
-							else [currentSeriesTable setValue: [previousSeries primitiveValueForKey: name] forKey: name];
-						}
-						[currentSeriesTable setValue: currentStudyTable forKey: @"study"];
-						
-						// IMAGES
-						NSArray *images = [[previousSeries valueForKey:@"images"] allObjects];
-						for ( NSManagedObject *previousImage in images )
+						@try
 						{
-							currentImageTable = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext: currentContext];
+							currentSeriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext: currentContext];
 							
-							for( NSString *name in imageProperties )
+							for ( NSString *name in seriesProperties )
 							{
 								if( [name isEqualToString: @"xOffset"] || 
 									[name isEqualToString: @"yOffset"] || 
 									[name isEqualToString: @"scale"] || 
 									[name isEqualToString: @"rotationAngle"] || 
+									[name isEqualToString: @"displayStyle"] || 
 									[name isEqualToString: @"windowLevel"] || 
 									[name isEqualToString: @"windowWidth"] || 
 									[name isEqualToString: @"yFlipped"] || 
@@ -1751,11 +1732,47 @@ static NSArray*	statesArray = nil;
 								{
 									
 								}
-								else [currentImageTable setValue: [previousImage primitiveValueForKey: name] forKey: name];
+								else [currentSeriesTable setValue: [previousSeries primitiveValueForKey: name] forKey: name];
 							}
-							[currentImageTable setValue: currentSeriesTable forKey: @"series"];
+							[currentSeriesTable setValue: currentStudyTable forKey: @"study"];
+							
+							// IMAGES
+							NSArray *images = [[previousSeries valueForKey:@"images"] allObjects];
+							for ( NSManagedObject *previousImage in images )
+							{
+								@try
+								{
+									currentImageTable = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext: currentContext];
+									
+									for( NSString *name in imageProperties )
+									{
+										if( [name isEqualToString: @"xOffset"] || 
+											[name isEqualToString: @"yOffset"] || 
+											[name isEqualToString: @"scale"] || 
+											[name isEqualToString: @"rotationAngle"] || 
+											[name isEqualToString: @"windowLevel"] || 
+											[name isEqualToString: @"windowWidth"] || 
+											[name isEqualToString: @"yFlipped"] || 
+											[name isEqualToString: @"xFlipped"])
+										{
+											
+										}
+										else [currentImageTable setValue: [previousImage primitiveValueForKey: name] forKey: name];
+									}
+									[currentImageTable setValue: currentSeriesTable forKey: @"series"];
+								}
+								
+								@catch (NSException *e)
+								{
+									NSLog(@"IMAGE LEVEL: Problems during updating: %@", e);
+								}
+							}
 						}
 						
+						@catch (NSException *e)
+						{
+							NSLog(@"SERIES LEVEL: Problems during updating: %@", e);
+						}
 						[pool release];
 					}
 					
@@ -1770,7 +1787,7 @@ static NSArray*	statesArray = nil;
 				
 				@catch (NSException * e)
 				{
-					NSLog(@"Problems during updating: %@", e);
+					NSLog(@"STUDY LEVEL: Problems during updating: %@", e);
 					NSLog(@"Patient Name: %@", studyName);
 					if( updatingProblems == 0L) updatingProblems = [[NSMutableString stringWithString:@""] retain];
 					
