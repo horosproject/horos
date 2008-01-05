@@ -3883,7 +3883,14 @@ static NSArray*	statesArray = nil;
 			}
 			else [selectedFiles addObjectsFromArray: [imagesArray valueForKey: @"completePath"]];
 			
-			if( correspondingManagedObjects) [correspondingManagedObjects addObjectsFromArray: imagesArray];
+			if( correspondingManagedObjects)
+			{
+				for( NSManagedObject *o in imagesArray)
+				{
+					if( [correspondingManagedObjects containsObject: o] == NO)
+						[correspondingManagedObjects addObject: o];
+				}
+			}
 		}
 		
 		if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"] )
@@ -3905,7 +3912,14 @@ static NSArray*	statesArray = nil;
 				}
 				else [selectedFiles addObjectsFromArray: [imagesArray valueForKey: @"completePath"]];
 				
-				if( correspondingManagedObjects) [correspondingManagedObjects addObjectsFromArray: imagesArray];
+				if( correspondingManagedObjects)
+				{
+					for( NSManagedObject *o in imagesArray)
+					{
+						if( [correspondingManagedObjects containsObject: o] == NO)
+							[correspondingManagedObjects addObject: o];
+					}
+				}
 			}
 			
 			if( onlyImages == NO && totImage == 0)							// We don't want empty studies
@@ -6735,7 +6749,11 @@ static BOOL withReset = NO;
 					}
 					else [selectedFiles addObject: [curObj valueForKey: @"completePath"]];
 					
-					if( correspondingManagedObjects) [correspondingManagedObjects addObject: curObj];
+					if( correspondingManagedObjects)
+					{
+						if( [correspondingManagedObjects containsObject: curObj] == NO)
+							[correspondingManagedObjects addObject: curObj];
+					}
 				}
 				
 				if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"] ) {
@@ -6748,7 +6766,11 @@ static BOOL withReset = NO;
 					}
 					else [selectedFiles addObjectsFromArray: [imagesArray valueForKey: @"completePath"]];
 					
-					if( correspondingManagedObjects) [correspondingManagedObjects addObjectsFromArray: imagesArray];
+					for( NSManagedObject *o in imagesArray)
+					{
+						if( [correspondingManagedObjects containsObject: o] == NO)
+							[correspondingManagedObjects addObject: o];
+					}
 				}
 			}
 		}
