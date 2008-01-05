@@ -240,6 +240,92 @@
 	}
 }
 
+- (IBAction) OsiriXDBsaveAs:(id) sender;
+{
+	NSSavePanel		*sPanel		= [NSSavePanel savePanel];
+
+	[sPanel setRequiredFileType:@"plist"];
+	
+	if ([sPanel runModalForDirectory:0L file:NSLocalizedString(@"OsiriX shared DB.plist", nil)] == NSFileHandlingPanelOKButton)
+	{
+		[[osiriXServers arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
+	}
+}
+
+- (IBAction) refreshNodesOsiriXDB: (id) sender
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncOsiriXDB"])
+	{
+		NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncOsiriXDBURL"]];
+		
+		if( url)
+		{
+			NSArray	*r = [NSArray arrayWithContentsOfURL: url];
+			
+			if( r)
+			{
+				[osiriXServers removeObjects: [osiriXServers arrangedObjects]];
+				[osiriXServers addObjects: r];
+				
+				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+			}
+			else NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L), NSLocalizedString(@"Cannot download data from this URL.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+		}
+		else NSRunInformationalAlertPanel(NSLocalizedString(@"URL Invalid", 0L), NSLocalizedString(@"This URL is invalid. Check syntax.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+	}
+}
+
+- (IBAction) OsiriXDBloadFrom:(id) sender;
+{
+	NSOpenPanel		*sPanel		= [NSOpenPanel openPanel];
+	
+	[self resetTest];
+	
+	[sPanel setRequiredFileType:@"plist"];
+	
+	if ([sPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"plist"]] == NSFileHandlingPanelOKButton)
+	{
+		NSArray	*r = [NSArray arrayWithContentsOfFile: [sPanel filename]];
+		
+		if( r)
+		{
+			if( NSRunInformationalAlertPanel(NSLocalizedString(@"Load locations", 0L), NSLocalizedString(@"Should I add or replace this locations list to the current list?", 0L), NSLocalizedString(@"Add",nil), NSLocalizedString(@"Replace",nil), nil) == NSAlertDefaultReturn)
+			{
+				
+			}
+			else [osiriXServers removeObjects: [osiriXServers arrangedObjects]];
+			
+			[osiriXServers addObjects: r];
+			
+			int i, x;
+			
+			for( i = 0; i < [[osiriXServers arrangedObjects] count]; i++)
+			{
+				NSDictionary	*server = [[osiriXServers arrangedObjects] objectAtIndex: i];
+				
+				for( x = 0; x < [[osiriXServers arrangedObjects] count]; x++)
+				{
+					NSDictionary	*c = [[osiriXServers arrangedObjects] objectAtIndex: x];
+					
+					if( c != server)
+					{
+						if( [[server valueForKey:@"Address"] isEqualToString: [c valueForKey:@"Address"]] &&
+							[[server valueForKey:@"Description"] isEqualToString: [c valueForKey:@"Description"]])
+							{
+								[osiriXServers removeObjectAtArrangedObjectIndex: i];
+								i--;
+								x = [[osiriXServers arrangedObjects] count];
+							}
+					}
+				}
+			}
+			
+			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+		}
+	}
+}
+
+
 - (IBAction) saveAs:(id) sender;
 {
 	NSSavePanel		*sPanel		= [NSSavePanel savePanel];

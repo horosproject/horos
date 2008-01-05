@@ -39,5 +39,7 @@
 - (IBAction) saveAs:(id) sender;
 - (IBAction) loadFrom:(id) sender;
 - (IBAction) addPath:(id) sender;
-
+- (IBAction) OsiriXDBsaveAs:(id) sender;
+- (IBAction) refreshNodesOsiriXDB: (id) sender;
+- (IBAction) OsiriXDBloadFrom:(id) sender;
 @end
