@@ -27,6 +27,13 @@ Version 2.3
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import <OsiriX/DCM.h>
 
+#ifdef OSIRIX_VIEWER
+#import "DCMPix.h"
+#import "VRController.h"
+#import "browserController.h"
+#import "BonjourBrowser.h"
+#endif
+
 @implementation DicomStudy
 
 - (void) dealloc
@@ -53,6 +60,47 @@ Version 2.3
 - (NSString*) type
 {
 	return @"Study";
+}
+
+- (void) setReportURL: (NSString*) url
+{
+	#ifdef OSIRIX_VIEWER
+	BrowserController	*cB = [BrowserController currentBrowser];
+	
+	if( url && [cB isCurrentDatabaseBonjour] == NO)
+	{
+		NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
+		
+		if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
+		{
+			url = [url substringFromIndex: [[cB fixedDocumentsDirectory] length]];
+			
+			if( [url characterAtIndex: 0] == '/') url = [url substringFromIndex: 1];
+		}
+	}
+	#endif
+	
+	[self setPrimitiveValue: url forKey: @"reportURL"];
+}
+
+- (NSString*) reportURL
+{
+	NSString *url = [self primitiveValueForKey: @"reportURL"];
+	
+	#ifdef OSIRIX_VIEWER
+	if( url && [url length])
+	{
+		BrowserController	*cB = [BrowserController currentBrowser];
+		
+		if( [cB isCurrentDatabaseBonjour] == NO)
+		{
+			if( [url characterAtIndex: 0] != '/')
+				url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
+		}
+	}
+	#endif
+	
+	return url;
 }
 
 - (NSString *) localstring

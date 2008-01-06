@@ -508,16 +508,20 @@ static char *GetPrivateIP()
 				
 				// We read the string
 				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				NSString *path = [[NSString alloc] initWithData: [data subdataWithRange: NSMakeRange(pos,stringSize)] encoding: NSUnicodeStringEncoding];
+				NSString *path = [[[NSString alloc] initWithData: [data subdataWithRange: NSMakeRange(pos,stringSize)] encoding: NSUnicodeStringEncoding] autorelease];
 				pos += stringSize;
+				
+				if( [path length])
+				{
+					if( [path characterAtIndex: 0] != '/')
+						path = [[interfaceOsiriX fixedDocumentsDirectory] stringByAppendingPathComponent: path];
+				}
 				
 				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:YES];
 				
 				NSData	*content = [[[fattrs objectForKey:NSFileModificationDate] description] dataUsingEncoding: NSUnicodeStringEncoding];
 				
 				representationToSend = [NSMutableData dataWithData: content];
-				
-				[path release];
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"RFILE" length: 6]])
 			{
@@ -531,8 +535,14 @@ static char *GetPrivateIP()
 				
 				// We read the string
 				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				NSMutableString *path = [[NSMutableString alloc] initWithData: [data subdataWithRange: NSMakeRange(pos,stringSize)] encoding: NSUnicodeStringEncoding];
+				NSString *path = [[[NSString alloc] initWithData: [data subdataWithRange: NSMakeRange(pos,stringSize)] encoding: NSUnicodeStringEncoding] autorelease];
 				pos += stringSize;
+				
+				if( [path length])
+				{
+					if( [path characterAtIndex: 0] != '/')
+						path = [[interfaceOsiriX fixedDocumentsDirectory] stringByAppendingPathComponent: path];
+				}
 				
 				BOOL isDirectory = NO;
 				NSString *zipFileName;
@@ -552,9 +562,7 @@ static char *GetPrivateIP()
 
 					if(result==0)
 					{
-						NSMutableString *path2 = (NSMutableString*)[[path stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
-						[path release];
-						path = [path2 retain];
+						path = [[path stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
 						NSLog(@"path : %@", path);
 					}
 				}
@@ -577,7 +585,6 @@ static char *GetPrivateIP()
 				
 				if(isDirectory)
 					[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-				[path release];
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"WFILE" length: 6]])
 			{

@@ -1776,15 +1776,21 @@ static NSArray*	statesArray = nil;
 					
 					if( [storedInAlbums count])
 					{
-						// Find all current albums
-						NSFetchRequest *r = [[[NSFetchRequest alloc] init] autorelease];
-						[r setEntity: [[currentModel entitiesByName] objectForKey:@"Album"]];
-						[r setPredicate: [NSPredicate predicateWithValue:YES]];
-					
-						error = 0L;
-						currentAlbums = [currentContext executeFetchRequest:r error:&error];
-						currentAlbumsNames = [currentAlbums valueForKey:@"name"];
-					
+						if( currentAlbums == 0L)
+						{
+							// Find all current albums
+							NSFetchRequest *r = [[[NSFetchRequest alloc] init] autorelease];
+							[r setEntity: [[currentModel entitiesByName] objectForKey:@"Album"]];
+							[r setPredicate: [NSPredicate predicateWithValue:YES]];
+						
+							error = 0L;
+							currentAlbums = [currentContext executeFetchRequest:r error:&error];
+							currentAlbumsNames = [currentAlbums valueForKey:@"name"];
+							
+							[currentAlbums retain];
+							[currentAlbumsNames retain];
+						}
+						
 						@try
 						{
 							for( NSManagedObject *sa in storedInAlbums )
@@ -1825,7 +1831,10 @@ static NSArray*	statesArray = nil;
 					
 					[currentContext reset];
 					[previousContext reset];
-
+					
+					[currentAlbums release];			currentAlbums = 0L;
+					[currentAlbumsNames release];		currentAlbumsNames = 0L;
+					
 					[studies release];
 					
 					studies = [NSMutableArray arrayWithArray: [previousContext executeFetchRequest:dbRequest error:&error]];
@@ -1853,11 +1862,13 @@ static NSArray*	statesArray = nil;
 			[[NSFileManager defaultManager] removeFileAtPath:currentDatabasePath handler:nil];
 			[[NSFileManager defaultManager] movePath:[documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql"] toPath:currentDatabasePath handler:nil];
 			
-			[studies release];
+			[studies release];					studies = 0L;
+			[currentAlbums release];			currentAlbums = 0L;
+			[currentAlbumsNames release];		currentAlbumsNames = 0L;
 			
 			if( updatingProblems)
 			{
-				NSRunAlertPanel( NSLocalizedString(@"Database Update", nil), [NSString stringWithFormat:NSLocalizedString(@"Database updating generated errors//... The corrupted studies have been removed:\r\r%@", nil), updatingProblems], nil, nil, nil);
+				NSRunAlertPanel( NSLocalizedString(@"Database Update", nil), [NSString stringWithFormat:NSLocalizedString(@"Database updating generated errors. The corrupted studies have been removed:\r\r%@", nil), updatingProblems], nil, nil, nil);
 
 //				NSRunAlertPanel( NSLocalizedString(@"Database Update", nil), NSLocalizedString(@"Database updating generated errors... The corrupted studies have been removed.", nil), nil, nil, nil);
 				
@@ -4925,7 +4936,7 @@ static NSArray*	statesArray = nil;
 			
 			if( [[tableColumn identifier] isEqualToString:@"reportURL"] ) {
 				if( [item valueForKey:@"reportURL"] ) {
-					if( isCurrentDatabaseBonjour || [[NSFileManager defaultManager] fileExistsAtPath:[item valueForKey:@"reportURL"]] == YES)
+					if( isCurrentDatabaseBonjour || [[NSFileManager defaultManager] fileExistsAtPath: [item valueForKey:@"reportURL"]] == YES)
 					{
 						NSImage	*reportIcon = [NSImage imageNamed:@"Report.icns"];
 						//NSImage	*reportIcon = [self reportIcon];
