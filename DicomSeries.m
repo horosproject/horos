@@ -243,7 +243,9 @@
 	[dicomTime release];
 	dicomTime = 0L;
 	
+	[self willChangeValueForKey: @"date"];
 	[self setPrimitiveValue: date forKey:@"date"];
+	[self didChangeValueForKey: @"date"];
 }
 
 - (NSNumber*) dicomTime
@@ -280,7 +282,10 @@
 		if( [DCMAbstractSyntaxUID isStructuredReport: [self valueForKey: @"seriesSOPClassUID"]] == NO)
 		{
 			no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count]];
+			
+			[self willChangeValueForKey: @"numberOfImages"];
 			[self setPrimitiveValue:no forKey:@"numberOfImages"];
+			[self didChangeValueForKey: @"numberOfImages"];
 		}
 		else no = [NSNumber numberWithInt: 0];
 		

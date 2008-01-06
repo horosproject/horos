@@ -80,7 +80,9 @@ Version 2.3
 	}
 	#endif
 	
+	[self willChangeValueForKey: @"reportURL"];
 	[self setPrimitiveValue: url forKey: @"reportURL"];
+	[self didChangeValueForKey: @"reportURL"];
 }
 
 - (NSString*) reportURL
@@ -127,7 +129,9 @@ Version 2.3
 	[dicomTime release];
 	dicomTime = 0L;
 	
+	[self willChangeValueForKey: @"date"];
 	[self setPrimitiveValue: date forKey:@"date"];
+	[self didChangeValueForKey: @"date"];
 }
 
 - (NSNumber*) dicomTime
@@ -227,7 +231,11 @@ Version 2.3
 		}
 		
 		NSNumber	*no = [NSNumber numberWithInt:sum];
+		
+		[self willChangeValueForKey: @"numberOfImages"];
 		[self setPrimitiveValue:no forKey:@"numberOfImages"];
+		[self didChangeValueForKey: @"numberOfImages"];
+		
 		return no;
 	}
 	else return [self primitiveValueForKey:@"numberOfImages"];

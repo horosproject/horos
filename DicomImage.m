@@ -374,10 +374,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	[inDatabaseFolder release];
 	inDatabaseFolder = 0L;
 	
+	[self willChangeValueForKey:@"storedInDatabaseFolder"];
 	if( [f boolValue] == YES)	
 		[self setPrimitiveValue: 0L forKey:@"storedInDatabaseFolder"];
 	else
 		[self setPrimitiveValue: f forKey:@"storedInDatabaseFolder"];
+	[self didChangeValueForKey:@"storedInDatabaseFolder"];
 }
 
 #pragma mark-
@@ -401,10 +403,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	[height release];
 	height = 0L;
 	
+	[self willChangeValueForKey:@"storedHeight"];
 	if( [f intValue] == 512)	
 		[self setPrimitiveValue: 0L forKey:@"storedHeight"];
 	else
 		[self setPrimitiveValue: f forKey:@"storedHeight"];
+	[self didChangeValueForKey:@"storedHeight"];
 }
 
 #pragma mark-
@@ -428,10 +432,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	[width release];
 	width = 0L;
 	
+	[self willChangeValueForKey:@"storedWidth"];
 	if( [f intValue] == 512)	
 		[self setPrimitiveValue: 0L forKey:@"storedWidth"];
 	else
 		[self setPrimitiveValue: f forKey:@"storedWidth"];
+	[self didChangeValueForKey:@"storedWidth"];
 }
 
 #pragma mark-
@@ -455,10 +461,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	[numberOfFrames release];
 	numberOfFrames = 0L;
 	
+	[self willChangeValueForKey:@"storedNumberOfFrames"];
 	if( [f intValue] == 1)	
 		[self setPrimitiveValue: 0L forKey:@"storedNumberOfFrames"];
 	else
 		[self setPrimitiveValue: f forKey:@"storedNumberOfFrames"];
+	[self didChangeValueForKey:@"storedNumberOfFrames"];
 }
 
 #pragma mark-
@@ -482,10 +490,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	[numberOfSeries release];
 	numberOfSeries = 0L;
 	
+	[self willChangeValueForKey:@"storedNumberOfSeries"];
 	if( [f intValue] == 1)	
 		[self setPrimitiveValue: 0L forKey:@"storedNumberOfSeries"];
 	else
 		[self setPrimitiveValue: f forKey:@"storedNumberOfSeries"];
+	[self didChangeValueForKey:@"storedNumberOfSeries"];
 }
 
 #pragma mark-
@@ -509,10 +519,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	[mountedVolume release];
 	mountedVolume = 0L;
 	
+	[self willChangeValueForKey:@"storedMountedVolume"];
 	if( [f boolValue] == NO)
 		[self setPrimitiveValue: 0L forKey:@"storedMountedVolume"];
 	else
 		[self setPrimitiveValue: f forKey:@"storedMountedVolume"];
+	[self didChangeValueForKey:@"storedMountedVolume"];
 }
 
 #pragma mark-
@@ -536,10 +548,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	[isKeyImage release];
 	isKeyImage = 0L;
 	
+	[self willChangeValueForKey:@"storedIsKeyImage"];
 	if( [f boolValue] == NO)
 		[self setPrimitiveValue: 0L forKey:@"storedIsKeyImage"];
 	else
 		[self setPrimitiveValue: f forKey:@"storedIsKeyImage"];
+	[self didChangeValueForKey:@"storedIsKeyImage"];
 }
 
 #pragma mark-
@@ -563,10 +577,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	[extension release];
 	extension = 0L;
 	
+	[self willChangeValueForKey:@"storedExtension"];
 	if( [f isEqualToString:@"dcm"])
 		[self setPrimitiveValue: 0L forKey:@"storedExtension"];
 	else
 		[self setPrimitiveValue: f forKey:@"storedExtension"];
+	[self didChangeValueForKey:@"storedExtension"];
 }
 
 #pragma mark-
@@ -590,10 +606,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	[modality release];
 	modality = 0L;
 	
+	[self willChangeValueForKey:@"storedModality"];
 	if( [f isEqualToString:@"CT"])
 		[self setPrimitiveValue: 0L forKey:@"storedModality"];
 	else
 		[self setPrimitiveValue: f forKey:@"storedModality"];
+	[self didChangeValueForKey:@"storedModality"];
 }
 
 #pragma mark-
@@ -616,11 +634,13 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 {
 	[fileType release];
 	fileType = 0L;
-
+	
+	[self willChangeValueForKey:@"storedFileType"];
 	if( [f isEqualToString:@"DICOM"])
 		[self setPrimitiveValue: 0L forKey:@"storedFileType"];
 	else
 		[self setPrimitiveValue: f forKey:@"storedFileType"];
+	[self didChangeValueForKey:@"storedFileType"];
 }
 
 #pragma mark-
@@ -639,7 +659,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	[dicomTime release];
 	dicomTime = 0L;
 	
+	[self willChangeValueForKey:@"date"];
 	[self setPrimitiveValue: date forKey:@"date"];
+	[self didChangeValueForKey:@"date"];
 }
 
 - (NSNumber*) dicomTime
@@ -754,15 +776,24 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	{
 		if( [[p pathExtension] isEqualToString:@"dcm"])
 		{
+			[self willChangeValueForKey: @"pathNumber"];
 			[self setPrimitiveValue: [NSNumber numberWithInt: [p intValue]] forKey:@"pathNumber"];
+			[self didChangeValueForKey: @"pathNumber"];
+			
+			[self willChangeValueForKey: @"pathString"];
 			[self setPrimitiveValue: 0L forKey:@"pathString"];
+			[self didChangeValueForKey: @"pathString"];
 			
 			return;
 		}
 	}
-	
+	[self willChangeValueForKey: @"pathNumber"];
 	[self setPrimitiveValue: 0L forKey:@"pathNumber"];
+	[self didChangeValueForKey: @"pathNumber"];
+	
+	[self willChangeValueForKey: @"pathString"];
 	[self setPrimitiveValue: p forKey:@"pathString"];
+	[self didChangeValueForKey: @"pathString"];
 }
 
 -(NSString*) completePathWithDownload:(BOOL) download

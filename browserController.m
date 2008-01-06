@@ -13139,6 +13139,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	if( [bonjourServicesList selectedRow] == -1) return;
 	
+	[self saveDatabase:currentDatabasePath];
+	
     int index = [bonjourServicesList selectedRow]-1;
 	
 	[bonjourReportFilesToCheck removeAllObjects];
