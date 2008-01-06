@@ -9871,7 +9871,11 @@ static NSArray*	openSubSeriesArray = 0L;
 {
 	NSLog( @"browserPrepareForClose");
 	
+	[self saveDatabase: currentDatabasePath];
+	
 	[self waitForRunningProcesses];
+
+	[self saveDatabase: currentDatabasePath];
 	
 	[self removeAllMounted];
 	
@@ -9890,7 +9894,6 @@ static NSArray*	openSubSeriesArray = 0L;
 	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt: [albumDrawer state]] forKey: @"drawerState"];
 	
     [self.window setDelegate:nil];
-    [self saveDatabase: currentDatabasePath];
 	
 	[[NSUserDefaults standardUserDefaults] setBool: [animationCheck state] forKey: @"AutoPlayAnimation"];
 	
@@ -9907,8 +9910,12 @@ static NSArray*	openSubSeriesArray = 0L;
 	[bonjourPublisher toggleSharing:NO];
 }
 
-- (BOOL)shouldTerminate: (id)sender {
-	if( newFilesInIncoming)	{
+- (BOOL)shouldTerminate: (id)sender
+{
+	[self saveDatabase: currentDatabasePath];
+	
+	if( newFilesInIncoming)
+	{
 		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Listener - STORE", nil), NSLocalizedString(@"New files are arriving in the DICOM Database. Are you sure you want to quit now? The DICOM Listener will be stopped.", nil), NSLocalizedString(@"No", nil), NSLocalizedString(@"Quit", nil), 0L) == NSAlertDefaultReturn) return NO;
 	}
 	
