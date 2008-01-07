@@ -246,7 +246,7 @@
 
 	[sPanel setRequiredFileType:@"plist"];
 	
-	if ([sPanel runModalForDirectory:0L file:NSLocalizedString(@"OsiriX shared DB.plist", nil)] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModalForDirectory:0L file:NSLocalizedString(@"OsiriXDB.plist", nil)] == NSFileHandlingPanelOKButton)
 	{
 		[[osiriXServers arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
 	}
@@ -334,7 +334,7 @@
 	
 	[self resetTest];
 	
-	if ([sPanel runModalForDirectory:0L file:NSLocalizedString(@"OsiriX Locations.plist", nil)] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModalForDirectory:0L file:NSLocalizedString(@"DICOMNodes.plist", nil)] == NSFileHandlingPanelOKButton)
 	{
 		[[dicomNodes arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
 	}
