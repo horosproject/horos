@@ -867,8 +867,20 @@ static char *GetPrivateIP()
 
 - (void) buildFixedIPList
 {
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncOsiriXDB"])
+	{
+		NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncOsiriXDBURL"]];
+		
+		if( url)
+		{
+			NSArray	*r = [NSArray arrayWithContentsOfURL: url];
+			if( r)
+				[[NSUserDefaults standardUserDefaults] setObject: r forKey: @"OSIRIXSERVERS"];
+		}
+	}
+
 	int			i;
-	NSArray			*osirixServersArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"OSIRIXSERVERS"];
+	NSArray		*osirixServersArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"OSIRIXSERVERS"];
 	
 	for( i = 0; i < [services count]; i++)
 	{

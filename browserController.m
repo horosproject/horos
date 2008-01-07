@@ -3697,7 +3697,7 @@ static NSArray*	statesArray = nil;
 	else
 	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"syncOsiriXDB"])
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"OsiriXServerArray has changed" object:0L];
 	}
 }
 
