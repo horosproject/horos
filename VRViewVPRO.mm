@@ -548,48 +548,89 @@ public:
 	[self get3DPixelUnder2DPositionX:(float) x Y:(float) y pixel: (long*) pix position:(float*) position value:(float*) val maxOpacity: 1.1 minValue: 0];
 }
 
-- (void) getOrientationText:(char *) string : (float *) vector :(BOOL) inv
-{
-	char orientationX;
-	char orientationY;
-	char orientationZ;
+- (void)getOrientationText:(char *) orientation : (float *) vector :(BOOL) inv {
+	
+	NSString *orientationX;
+	NSString *orientationY;
+	NSString *orientationZ;
 
-	char *optr = string;
-	*optr = 0;
+	NSMutableString *optr = [NSMutableString string];
 	
 	if( inv)
 	{
-		orientationX = -vector[ 0] < 0 ? 'R' : 'L';
-		orientationY = -vector[ 1] < 0 ? 'A' : 'P';
-		orientationZ = -vector[ 2] < 0 ? 'I' : 'S';
+		orientationX = -vector[ 0] < 0 ? NSLocalizedString( @"R", @"R: Right") : NSLocalizedString( @"L", @"L: Left");
+		orientationY = -vector[ 1] < 0 ? NSLocalizedString( @"A", @"A: Anterior") : NSLocalizedString( @"P", @"P: Posterior");
+		orientationZ = -vector[ 2] < 0 ? NSLocalizedString( @"I", @"I: Inferior") : NSLocalizedString( @"S", @"S: Superior");
 	}
 	else
 	{
-		orientationX = vector[ 0] < 0 ? 'R' : 'L';
-		orientationY = vector[ 1] < 0 ? 'A' : 'P';
-		orientationZ = vector[ 2] < 0 ? 'I' : 'S';
+		orientationX = vector[ 0] < 0 ? NSLocalizedString( @"R", @"R: Right") : NSLocalizedString( @"L", @"L: Left");
+		orientationY = vector[ 1] < 0 ? NSLocalizedString( @"A", @"A: Anterior") : NSLocalizedString( @"P", @"P: Posterior");
+		orientationZ = vector[ 2] < 0 ? NSLocalizedString( @"I", @"I: Inferior") : NSLocalizedString( @"S", @"S: Superior");
 	}
 	
 	float absX = fabs( vector[ 0]);
 	float absY = fabs( vector[ 1]);
 	float absZ = fabs( vector[ 2]);
 	
-	int i; 
-	for (i=0; i<1; ++i)
-	{
-		if (absX>.0001 && absX>absY && absX>absZ)
+	// get first 3 AXIS
+	for ( int i=0; i < 3; ++i) {
+		if (absX>.2 && absX>absY && absX>absZ)
 		{
-			*optr++=orientationX; absX=0;
+			[optr appendString: orientationX]; absX=0;
 		}
-		else if (absY>.0001 && absY>absX && absY>absZ)
-		{
-			*optr++=orientationY; absY=0;
-		} else if (absZ>.0001 && absZ>absX && absZ>absY)
-		{
-			*optr++=orientationZ; absZ=0;
+		else if (absY>.2 && absY>absX && absY>absZ)	{
+			[optr appendString: orientationY]; absY=0;
+		} else if (absZ>.2 && absZ>absX && absZ>absY) {
+			[optr appendString: orientationZ]; absZ=0;
 		} else break; *optr='\0';
 	}
+	
+	strcpy( orientation, [optr UTF8String]);
 }
+
+//- (void) getOrientationText:(char *) string : (float *) vector :(BOOL) inv
+//{
+//	char orientationX;
+//	char orientationY;
+//	char orientationZ;
+//
+//	char *optr = string;
+//	*optr = 0;
+//	
+//	if( inv)
+//	{
+//		orientationX = -vector[ 0] < 0 ? 'R' : 'L';
+//		orientationY = -vector[ 1] < 0 ? 'A' : 'P';
+//		orientationZ = -vector[ 2] < 0 ? 'I' : 'S';
+//	}
+//	else
+//	{
+//		orientationX = vector[ 0] < 0 ? 'R' : 'L';
+//		orientationY = vector[ 1] < 0 ? 'A' : 'P';
+//		orientationZ = vector[ 2] < 0 ? 'I' : 'S';
+//	}
+//	
+//	float absX = fabs( vector[ 0]);
+//	float absY = fabs( vector[ 1]);
+//	float absZ = fabs( vector[ 2]);
+//	
+//	int i; 
+//	for (i=0; i<1; ++i)
+//	{
+//		if (absX>.0001 && absX>absY && absX>absZ)
+//		{
+//			*optr++=orientationX; absX=0;
+//		}
+//		else if (absY>.0001 && absY>absX && absY>absZ)
+//		{
+//			*optr++=orientationY; absY=0;
+//		} else if (absZ>.0001 && absZ>absX && absZ>absY)
+//		{
+//			*optr++=orientationZ; absZ=0;
+//		} else break; *optr='\0';
+//	}
+//}
 
 - (void) flipData:(char*) ptr :(long) no :(long) size
 {

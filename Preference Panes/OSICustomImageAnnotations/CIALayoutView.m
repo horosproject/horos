@@ -72,6 +72,7 @@
 		placeHolderArray = [[NSArray arrayWithArray:placeHolderMutableArray] retain];
 		isEnabled = YES;
 		[self setDefaultDisabledText];
+		[self setDefaultEnabledText];
     }
     return self;
 }
@@ -79,6 +80,8 @@
 - (void)dealloc
 {
 	[placeHolderArray release];
+	[disabledText release];
+	[enabledText release];
 	[super dealloc];
 }
 
@@ -156,7 +159,7 @@
 	float textWidth, textHeight;
 	if(isEnabled)
 	{
-		contentText = [[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Drag Annotations in the place holders", @"") attributes:attrsDictionary] autorelease];
+		contentText = [[[NSAttributedString alloc] initWithString:enabledText attributes:attrsDictionary] autorelease];
 		textWidth = [contentText size].width/2.0;//rect.size.width / 2.0;
 		textHeight = [contentText size].height*3.0;//rect.size.height / 2.0;
 	}
@@ -192,12 +195,22 @@
 
 - (void)setDisabledText:(NSString*)text;
 {
-	disabledText = text;
+	[disabledText release];
+	disabledText = [text retain];
+}
+
+- (void)setDefaultEnabledText;
+{
+	[disabledText release];
+	disabledText = NSLocalizedString(@"Drag Annotations in the place holders", @"");
+	[disabledText retain];
 }
 
 - (void)setDefaultDisabledText;
 {
+	[disabledText release];
 	disabledText = NSLocalizedString(@"Same as Default Settings...", @"");
+	[disabledText retain];
 }
 
 @end

@@ -4801,7 +4801,7 @@ static NSArray*	statesArray = nil;
 				name = [item valueForKey:@"name"];
 			
 			//return [NSString stringWithFormat:@"%@ (%d series)", name, [[item valueForKey:@"series"] count]];
-			return [NSString stringWithFormat:@"%@ (%d series)", name, [[item valueForKey:@"imageSeries"] count]];
+			return [NSString stringWithFormat: NSLocalizedString( @"%@ (%d series)", @"patient name, number of series: helmut la moumoute (4 series)"), name, [[item valueForKey:@"imageSeries"] count]];
 		}
 	}
 	

@@ -2980,15 +2980,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if( modality == 0L) modality = @"OT:";
 			
 			NSString *action;
-			if( [curStudy isHidden]) action = @"Show Series";
-			else action = @"Hide Series";
+			if( [curStudy isHidden]) action = NSLocalizedString( @"Show Series", 0L);
+			else action = NSLocalizedString( @"Hide Series", 0L);
 			
 			NSString *patName = @"";
 			
 			if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
 				patName = [NSString stringWithFormat: @"%@ %@", [curStudy valueForKey:@"name"], [BrowserController DateOfBirthFormat: [curStudy valueForKey:@"dateOfBirth"]]];
 			
-			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r%@\r%@\r\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, [series count], @"series", stateText, comment, action]];
+			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r%@\r%@\r\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, [series count], NSLocalizedString( @"series", 0L), stateText, comment, action]];
 			[cell setBackgroundColor: [NSColor whiteColor]];
 			
 			index++;
@@ -3021,18 +3021,19 @@ static volatile int numberOfThreadsForRelisce = 0;
 					NSString	*name = [curSeries valueForKey:@"name"];
 					if( [name length] > 15) name = [name substringToIndex: 15];
 					
-					NSString	*type = @"Image";
+					NSString	*type = 0L;
 					long count = [[curSeries valueForKey:@"noFiles"] intValue];
 					if( count == 1)
 					{
+						type = NSLocalizedString( @"Image", 0L);
 						long frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
 						if( frames > 1)
 						{
 							count = frames;
-							type = @"Frames";
+							type = NSLocalizedString( @"Frames", @"Frames: for example, 50 Frames in a series");
 						}
 					}
-					else type=[type stringByAppendingString: @"s"];
+					else type = NSLocalizedString( @"Images", 0L);
 					
 					if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], keyImagesNumber, count, type]];
 					else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], count, type]];

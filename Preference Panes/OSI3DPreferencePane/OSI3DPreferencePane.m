@@ -135,7 +135,7 @@
 		with = 32;
 	}
 	
-	[recommandations setStringValue: [NSString stringWithFormat: NSLocalizedString( @"Recommended for your video board (%d MB): %d without shading / %d with shading", 0L) , vram, without, with]];
+	[recommandations setStringValue: [NSString stringWithFormat: @"%@ (%d MB): %d %@ / %d %@" , NSLocalizedString( @"Recommended for your video board", 0L), vram, without, NSLocalizedString( @"without shading", 0L), with, NSLocalizedString( @"with shading", 0L)]];
 
 	
 	[bestRenderingSlider setFloatValue: 2.0 - [defaults floatForKey: @"BESTRENDERING"]];

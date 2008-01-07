@@ -5598,26 +5598,23 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void)getOrientationText:(char *) orientation : (float *) vector :(BOOL) inv {
 	
-	char orientationX;
-	char orientationY;
-	char orientationZ;
+	NSString *orientationX;
+	NSString *orientationY;
+	NSString *orientationZ;
 
-	char *optr = orientation;
-	*optr = 0;
+	NSMutableString *optr = [NSMutableString string];
 	
 	if( inv)
 	{
-		orientationX = -vector[ 0] < 0 ? 'R' : 'L';
-		orientationY = -vector[ 1] < 0 ? 'A' : 'P';
-		orientationZ = -vector[ 2] < 0 ? 'I' : 'S';
-		//orientationZ = -vector[ 2] < 0 ? 'F' : 'H';
+		orientationX = -vector[ 0] < 0 ? NSLocalizedString( @"R", @"R: Right") : NSLocalizedString( @"L", @"L: Left");
+		orientationY = -vector[ 1] < 0 ? NSLocalizedString( @"A", @"A: Anterior") : NSLocalizedString( @"P", @"P: Posterior");
+		orientationZ = -vector[ 2] < 0 ? NSLocalizedString( @"I", @"I: Inferior") : NSLocalizedString( @"S", @"S: Superior");
 	}
 	else
 	{
-		orientationX = vector[ 0] < 0 ? 'R' : 'L';
-		orientationY = vector[ 1] < 0 ? 'A' : 'P';
-		orientationZ = vector[ 2] < 0 ? 'I' : 'S';
-		//orientationZ = vector[ 2] < 0 ? 'F' : 'H';
+		orientationX = vector[ 0] < 0 ? NSLocalizedString( @"R", @"R: Right") : NSLocalizedString( @"L", @"L: Left");
+		orientationY = vector[ 1] < 0 ? NSLocalizedString( @"A", @"A: Anterior") : NSLocalizedString( @"P", @"P: Posterior");
+		orientationZ = vector[ 2] < 0 ? NSLocalizedString( @"I", @"I: Inferior") : NSLocalizedString( @"S", @"S: Superior");
 	}
 	
 	float absX = fabs( vector[ 0]);
@@ -5626,15 +5623,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	// get first 3 AXIS
 	for ( int i=0; i < 3; ++i) {
-		if (absX>.2 && absX>absY && absX>absZ) {
-			*optr++=orientationX; absX=0;
+		if (absX>.2 && absX>absY && absX>absZ)
+		{
+			[optr appendString: orientationX]; absX=0;
 		}
 		else if (absY>.2 && absY>absX && absY>absZ)	{
-			*optr++=orientationY; absY=0;
+			[optr appendString: orientationY]; absY=0;
 		} else if (absZ>.2 && absZ>absX && absZ>absY) {
-			*optr++=orientationZ; absZ=0;
-		} else break; *optr='\0';
+			[optr appendString: orientationZ]; absZ=0;
+		} else break;
 	}
+	
+	strcpy( orientation, [optr UTF8String]);
 }
 
 -(void) setSlab:(float)s {
@@ -5977,38 +5977,38 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				{
 					if([[annot objectAtIndex:j] isEqualToString:@"Image Size"])
 					{
-						[tempString appendFormat: @"Image size: %ld x %ld", (long) curDCM.pwidth, (long) curDCM.pheight];
+						[tempString appendFormat: NSLocalizedString( @"Image size: %ld x %ld", 0L), (long) curDCM.pwidth, (long) curDCM.pheight];
 						useStringTexture = YES;
 					}
 					else if([[annot objectAtIndex:j] isEqualToString:@"View Size"])
 					{
-						[tempString appendFormat: @"View size: %ld x %ld", (long) size.size.width, (long) size.size.height];
+						[tempString appendFormat: NSLocalizedString( @"View size: %ld x %ld", 0L), (long) size.size.width, (long) size.size.height];
 						useStringTexture = NO;
 					}
 					else if([[annot objectAtIndex:j] isEqualToString:@"Mouse Position (px)"])
 					{
 						if(mouseXPos!=0 && mouseYPos!=0)
 						{
-							if( curDCM.isRGB ) [tempString appendFormat: @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
-							else [tempString appendFormat: @"X: %d px Y: %d px Value: %2.2f", (int)mouseXPos, (int)mouseYPos, pixelMouseValue];
+							if( curDCM.isRGB ) [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", 0L), (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
+							else [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: %2.2f", 0L), (int)mouseXPos, (int)mouseYPos, pixelMouseValue];
 														
 							if( blendingView)
 							{
 								if( [blendingView curDCM].isRGB )
-									[tempString2 appendFormat: @"Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB];
-								else [tempString2 appendFormat: @"Fused Image : X: %d px Y: %d px Value: %2.2f", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue];
+									[tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", 0L), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB];
+								else [tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: %2.2f", 0L), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue];
 							}
 							
 							if( curDCM.displaySUVValue ) {
 								if( [curDCM hasSUV] == YES && curDCM.SUVConverted == NO) {
-									[tempString3 appendFormat: @"SUV: %.2f", [self getSUV]];
+									[tempString3 appendFormat: NSLocalizedString( @"SUV: %.2f", @"SUV: Standard Uptake Value"), [self getSUV]];
 								}
 							}
 							
 							if( blendingView ) {
 								if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
 								{
-									[tempString4 appendFormat: @"SUV (fused image): %.2f", [self getBlendedSUV]];
+									[tempString4 appendFormat: NSLocalizedString( @"SUV (fused image): %.2f", @"SUV: Standard Uptake Value"), [self getBlendedSUV]];
 								}
 							}
 							
@@ -6016,11 +6016,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						}
 					}
 					else if([[annot objectAtIndex:j] isEqualToString:@"Zoom"] && fullText) {
-						[tempString appendFormat: @"Zoom: %0.0f%%", (float) scaleValue*100.0];
+						[tempString appendFormat: NSLocalizedString( @"Zoom: %0.0f%%", 0L), (float) scaleValue*100.0];
 						useStringTexture = NO;
 					}
 					else if([[annot objectAtIndex:j] isEqualToString:@"Rotation Angle"] && fullText) {
-						[tempString appendFormat: @" Angle: %0.0f", (float) ((long) rotation % 360)];
+						[tempString appendFormat: NSLocalizedString( @" Angle: %0.0f", 0L), (float) ((long) rotation % 360)];
 						useStringTexture = NO;
 					}
 					else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText) {
@@ -6033,13 +6033,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							if(maxVal < 0) maxVal = 0;
 							if(maxVal > [dcmPixList count]) maxVal = [dcmPixList count];
 							
-							if( flippedData) [tempString appendFormat: @"Im: %ld-%ld/%ld", (long) [dcmPixList count] - curImage, [dcmPixList count] - maxVal, (long) [dcmPixList count]];
-							else [tempString appendFormat: @"Im: %ld-%ld/%ld", (long) curImage+1, maxVal, (long) [dcmPixList count]];
+							if( flippedData) [tempString appendFormat: NSLocalizedString( @"Im: %ld-%ld/%ld", 0L), (long) [dcmPixList count] - curImage, [dcmPixList count] - maxVal, (long) [dcmPixList count]];
+							else [tempString appendFormat: NSLocalizedString( @"Im: %ld-%ld/%ld", 0L), (long) curImage+1, maxVal, (long) [dcmPixList count]];
 						} 
 						else if( fullText)
 						{
-							if( flippedData) [tempString appendFormat: @"Im: %ld/%ld", (long) [dcmPixList count] - curImage, (long) [dcmPixList count]];
-							else [tempString appendFormat: @"Im: %ld/%ld", (long) curImage+1, (long) [dcmPixList count]];
+							if( flippedData) [tempString appendFormat: NSLocalizedString( @"Im: %ld/%ld", 0L), (long) [dcmPixList count] - curImage, (long) [dcmPixList count]];
+							else [tempString appendFormat: NSLocalizedString( @"Im: %ld/%ld", 0L), (long) curImage+1, (long) [dcmPixList count]];
 						}
 
 						useStringTexture = NO;
@@ -6092,7 +6092,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 								{
 									float min = lwl - lww/2, max = lwl + lww/2;
 									
-									[tempString2 appendFormat: @"From: %d %% (%0.2f) to: %d %% (%0.2f)", (long) (min * 100. / curDCM.maxValueOfSeries), lwl - lww/2, (long) (max * 100. / curDCM.maxValueOfSeries), lwl + lww/2];
+									[tempString2 appendFormat: NSLocalizedString( @"From: %d %% (%0.2f) to: %d %% (%0.2f)", 0L), (long) (min * 100. / curDCM.maxValueOfSeries), lwl - lww/2, (long) (max * 100. / curDCM.maxValueOfSeries), lwl + lww/2];
 								}
 							}	
 						}
@@ -6112,31 +6112,31 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 								if( vv < 1.0 && vv != 0.0)
 								{
 									if( fabs( pp) < 1.0 && pp != 0.0)
-										[tempString appendFormat: @"Thickness: %0.2f %cm Location: %0.2f %cm", fabs( vv * 1000.0), 0xB5, pp * 1000.0, 0xB5];
+										[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f %cm Location: %0.2f %cm", 0L), fabs( vv * 1000.0), 0xB5, pp * 1000.0, 0xB5];
 									else
-										[tempString appendFormat: @"Thickness: %0.2f %cm Location: %0.2f mm", fabs( vv * 1000.0), 0xB5, pp];
+										[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f %cm Location: %0.2f mm", 0L), fabs( vv * 1000.0), 0xB5, pp];
 								}
 								else
-									[tempString appendFormat: @"Thickness: %0.2f mm Location: %0.2f mm", fabs( vv), pp];								
+									[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f mm Location: %0.2f mm", 0L), fabs( vv), pp];								
 							}
 							else if( fullText) {
 								if (curDCM.sliceThickness < 1.0 && curDCM.sliceThickness != 0.0) {
 									if( fabs( curDCM.sliceLocation) < 1.0 && curDCM.sliceLocation != 0.0)
-										[tempString appendFormat: @"Thickness: %0.2f %cm Location: %0.2f %cm", curDCM.sliceThickness * 1000.0, 0xB5, curDCM.sliceLocation * 1000.0, 0xB5];
+										[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f %cm Location: %0.2f %cm", 0L), curDCM.sliceThickness * 1000.0, 0xB5, curDCM.sliceLocation * 1000.0, 0xB5];
 									else
-										[tempString appendFormat: @"Thickness: %0.2f %cm Location: %0.2f mm", curDCM.sliceThickness * 1000.0, 0xB5, curDCM.sliceLocation];
+										[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f %cm Location: %0.2f mm", 0L), curDCM.sliceThickness * 1000.0, 0xB5, curDCM.sliceLocation];
 								}
 								else
-									[tempString appendFormat: @"Thickness: %0.2f mm Location: %0.2f mm", curDCM.sliceThickness, curDCM.sliceLocation];
+									[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f mm Location: %0.2f mm", 0L), curDCM.sliceThickness, curDCM.sliceLocation];
 							}
 						} 
 						else if( curDCM.viewPosition || curDCM.patientPosition ) {	 
 							 NSString        *nsstring = 0L;	 
 
-							 if ( curDCM.viewPosition ) [tempString appendFormat: @"Position: %@ ", curDCM.viewPosition];	 
+							 if ( curDCM.viewPosition ) [tempString appendFormat: NSLocalizedString( @"Position: %@ ", 0L), curDCM.viewPosition];	 
 							 if ( curDCM.patientPosition ) {	 
 								if(curDCM.viewPosition) [tempString appendString: curDCM.patientPosition];	 
-								else [tempString appendFormat: @"Position: %@ ", curDCM.patientPosition];	 
+								else [tempString appendFormat: NSLocalizedString( @"Position: %@ ", 0L), curDCM.patientPosition];	 
 							 }	 
 						}
 					}

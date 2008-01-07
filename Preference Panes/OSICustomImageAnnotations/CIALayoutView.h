@@ -18,6 +18,7 @@
 	NSArray *placeHolderArray;
 	BOOL isEnabled;
 	NSString *disabledText;
+	NSString *enabledText;
 }
 
 - (void)updatePlaceHolderOrigins;
