@@ -437,7 +437,9 @@
 	NSException *exception = [self testForLength:length];
 	if (!exception) {
 		NSString *format;
-		if (length == 6)
+		if (length == 4)
+			format = @"%H%M";
+		else if (length == 6)
 			format = @"%H%M%S";
 		else
 			format = @"%H%M%S.%F";
@@ -487,7 +489,9 @@
 	NSException *exception = [self testForLength:length];
 	if (!exception) {
 		NSString *format;
-		if (length == 14)
+		if (length == 12)
+			format = @"%Y%m%d%H%M";
+		else if (length == 14)
 			format = @"%Y%m%d%H%M%S";
 		else if (length == 18)
 			format = @"%Y%m%d%H%M%S.%F";

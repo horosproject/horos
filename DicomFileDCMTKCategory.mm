@@ -366,7 +366,10 @@ extern NSLock	*PapyrusLock;
 				NSString*   completeDate;
 				NSString*   studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 				completeDate = [studyDate stringByAppendingString:studyTime];
-				date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+				if( [studyTime length] == 6)
+					date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+				else
+					date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
 			}
 			else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
 		}
@@ -377,7 +380,10 @@ extern NSLock	*PapyrusLock;
 				NSString*   completeDate;
 				NSString*   studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 				completeDate = [studyDate stringByAppendingString:studyTime];
-				date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+				if( [studyTime length] == 6)
+					date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+				else
+					date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
 			}
 			else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
 		}
@@ -388,7 +394,10 @@ extern NSLock	*PapyrusLock;
 				NSString*   completeDate;
 				NSString*   studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 				completeDate = [studyDate stringByAppendingString:studyTime];
-				date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+				if( [studyTime length] == 6)
+					date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+				else
+					date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
 			}
 			else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
 		}
@@ -400,7 +409,10 @@ extern NSLock	*PapyrusLock;
 				NSString*   completeDate;
 				NSString*   studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 				completeDate = [studyDate stringByAppendingString:studyTime];
-				date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+				if( [studyTime length] == 6)
+					date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+				else
+					date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
 			}
 			else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
 		}

@@ -2988,7 +2988,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
 				patName = [NSString stringWithFormat: @"%@ %@", [curStudy valueForKey:@"name"], [BrowserController DateOfBirthFormat: [curStudy valueForKey:@"dateOfBirth"]]];
 			
-			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r%@\r%@\r\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, [series count], NSLocalizedString( @"series", 0L), stateText, comment, action]];
+			if( [stateText length] == 0 && [comment length] == 0)
+				[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, [series count], NSLocalizedString( @"series", 0L), action]];
+			else 
+				[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r%@\r%@\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, [series count], NSLocalizedString( @"series", 0L), stateText, comment, action]];
+			
 			[cell setBackgroundColor: [NSColor whiteColor]];
 			
 			index++;

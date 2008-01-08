@@ -444,17 +444,17 @@ Papy3GetElement (SElement *inGrOrModP, int inElement, PapyULong *outNbValueP, in
 /**
 sample error callback expecting a FILE* client object
 */
-void error_callback(const char *msg, void *a) {
+static void error_callback(const char *msg, void *a) {
 }
 /**
 sample warning callback expecting a FILE* client object
 */
-void warning_callback(const char *msg, void *a) {
+static void warning_callback(const char *msg, void *a) {
 }
 /**
 sample debug callback expecting no client object
 */
-void info_callback(const char *msg, void *a) {
+static void info_callback(const char *msg, void *a) {
 }
 
 static inline int int_ceildivpow2(int a, int b) {

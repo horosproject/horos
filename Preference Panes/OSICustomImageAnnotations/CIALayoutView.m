@@ -201,9 +201,9 @@
 
 - (void)setDefaultEnabledText;
 {
-	[disabledText release];
-	disabledText = NSLocalizedString(@"Drag Annotations in the place holders", @"");
-	[disabledText retain];
+	[enabledText release];
+	enabledText = NSLocalizedString(@"Drag Annotations in the place holders", @"");
+	[enabledText retain];
 }
 
 - (void)setDefaultDisabledText;

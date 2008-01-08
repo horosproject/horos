@@ -28,5 +28,5 @@
 - (void)setEnabled:(BOOL)enabled;
 - (void)setDisabledText:(NSString*)text;
 - (void)setDefaultDisabledText;
-
+- (void)setDefaultEnabledText;
 @end

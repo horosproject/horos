@@ -5497,7 +5497,10 @@ END_CREATE_ROIS:
 				NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 				NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
 				
-				acquisitionTime = [[NSCalendarDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+				if( cd == 0L) cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M"];
+				
+				if( cd)
+					acquisitionTime = [[NSCalendarDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
 				
 				[cd release];
 				[cc release];
@@ -6292,6 +6295,7 @@ END_CREATE_ROIS:
 								if( val ) {
 									NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 									NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
+									if( cd == 0L) cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M"];
 									
 									radiopharmaceuticalStartTime = [[NSCalendarDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
 									

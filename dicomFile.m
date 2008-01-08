@@ -1913,7 +1913,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						
 						completeDate = [studyDate stringByAppendingString:studyTime];
 						
-						date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+						if( [studyTime length] == 6)
+							date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+						else
+							date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
 					}
 					else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
 				}
@@ -1933,7 +1936,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 							
 							completeDate = [studyDate stringByAppendingString:studyTime];
 							
-							date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+							if( [studyTime length] == 6)
+								date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+							else
+								date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
 						}
 						else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
 					}
@@ -1953,7 +1959,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 								
 								completeDate = [studyDate stringByAppendingString:studyTime];
 								
-								date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+								if( [studyTime length] == 6)
+									date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+								else
+									date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
 							}
 							else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
 						}
@@ -1973,7 +1982,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 									
 									completeDate = [studyDate stringByAppendingString:studyTime];
 									
-									date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+									if( [studyTime length] == 6)
+										date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+									else
+										date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
 								}
 								else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
 							}
@@ -2552,15 +2564,37 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		//NSString *date;
 		if (contDate && contTime)
-			date = [[NSCalendarDate alloc] initWithString:[contDate stringByAppendingString:contTime] calendarFormat:@"%Y%m%d%H%M%S"];
+		{
+			if( [contTime length] == 6)
+				date = [[NSCalendarDate alloc] initWithString:[contDate stringByAppendingString:contTime] calendarFormat:@"%Y%m%d%H%M%S"];
+			else
+				date = [[NSCalendarDate alloc] initWithString:[contDate stringByAppendingString:contTime] calendarFormat:@"%Y%m%d%H%M"];
+		}
 		else if (acqDate && acqTime)
-			date = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:acqTime] calendarFormat:@"%Y%m%d%H%M%S"];
+		{
+			if( [acqTime length] == 6)
+				date = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:acqTime] calendarFormat:@"%Y%m%d%H%M%S"];
+			else
+				date = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:acqTime] calendarFormat:@"%Y%m%d%H%M"];
+		}
 		else if (seriesDate && seriesTime)
-			date = [[NSCalendarDate alloc] initWithString:[seriesDate stringByAppendingString:seriesTime] calendarFormat:@"%Y%m%d%H%M%S"];
+		{
+			if( [seriesTime length] == 6)
+				date = [[NSCalendarDate alloc] initWithString:[seriesDate stringByAppendingString:seriesTime] calendarFormat:@"%Y%m%d%H%M%S"];
+			else
+				date = [[NSCalendarDate alloc] initWithString:[seriesDate stringByAppendingString:seriesTime] calendarFormat:@"%Y%m%d%H%M"];
+		}
 		else if (studyDate && studyTime)
-			date = [[NSCalendarDate alloc] initWithString:[studyDate stringByAppendingString:studyTime] calendarFormat:@"%Y%m%d%H%M%S"];
+		{
+			if( [studyTime length] == 6)
+				date = [[NSCalendarDate alloc] initWithString:[studyDate stringByAppendingString:studyTime] calendarFormat:@"%Y%m%d%H%M%S"];
+			else
+				date = [[NSCalendarDate alloc] initWithString:[studyDate stringByAppendingString:studyTime] calendarFormat:@"%Y%m%d%H%M"];
+		}
 		else
+		{
 			date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:0L] retain];
+		}
 		
 		[dicomElements setObject:date forKey:@"studyDate"];
 		
