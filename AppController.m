@@ -819,6 +819,13 @@ static NSDate *lastWarningDate = 0L;
 	}
 	
 	UseOpenJpeg = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseOpenJpegForJPEG2000"];
+	#if __LP64__
+	if( UseOpenJpeg)
+	{
+		UseOpenJpeg = NO;	// Crash in 64 bit
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey :@"UseOpenJpegForJPEG2000"];
+	}
+	#endif
 	[DCMPixelDataAttribute setUseOpenJpeg: UseOpenJpeg];
 	
 	[[BrowserController currentBrowser] setNetworkLogs];
@@ -1777,6 +1784,13 @@ static BOOL initialized = NO;
 				[AppController checkForPagesTemplate];
 				
 				UseOpenJpeg = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseOpenJpegForJPEG2000"];
+				#if __LP64__
+				if( UseOpenJpeg)
+				{
+					UseOpenJpeg = NO;	// Crash in 64 bit
+					[[NSUserDefaults standardUserDefaults] setBool: NO forKey :@"UseOpenJpegForJPEG2000"];
+				}
+				#endif
 				[DCMPixelDataAttribute setUseOpenJpeg: UseOpenJpeg];
 				
 				// CHECK FOR THE HTML TEMPLATES DIRECTORY
