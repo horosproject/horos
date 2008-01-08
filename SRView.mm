@@ -2137,13 +2137,14 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	outlineRect->PickableOff();
 	
 	vtkAnnotatedCubeActor* cube = vtkAnnotatedCubeActor::New();
-	cube->SetXPlusFaceText ( "L" );
-	cube->SetXMinusFaceText( "R" );
-	cube->SetYPlusFaceText ( "P" );
-	cube->SetYMinusFaceText( "A" );
-	cube->SetZPlusFaceText ( "S" );
-	cube->SetZMinusFaceText( "I" );
+	cube->SetXPlusFaceText ( [NSLocalizedString( @"L", @"L: Left") UTF8String] );		
+	cube->SetXMinusFaceText( [NSLocalizedString( @"R", @"R: Right") UTF8String] );
+	cube->SetYPlusFaceText ( [NSLocalizedString( @"P", @"P: Posterior") UTF8String] );
+	cube->SetYMinusFaceText( [NSLocalizedString( @"A", @"A: Anterior") UTF8String] );
+	cube->SetZPlusFaceText ( [NSLocalizedString( @"S", @"S: Superior") UTF8String] );
+	cube->SetZMinusFaceText( [NSLocalizedString( @"I", @"I: Inferior") UTF8String] );
 	cube->SetFaceTextScale( 0.67 );
+
 
 	vtkProperty* property = cube->GetXPlusFaceProperty();
 	property->SetColor(0, 0, 1);
