@@ -4624,10 +4624,10 @@ END_CREATE_ROIS:
 #pragma mark *pixel and image
 	
 	//angles
-	NSNumber *multiframePrimaryAngle = [dcmObject attributeValueWithName:@"PositionerPrimaryAngle"] ;
-	NSNumber  *multiframeSecondaryAngle = [dcmObject attributeValueWithName:@"PositionerSecondaryAngle"] ;
-	//orientation
+	NSNumber *multiframePrimaryAngle = [dcmObject attributeValueWithName:@"PositionerPrimaryAngle"];
+	NSNumber  *multiframeSecondaryAngle = [dcmObject attributeValueWithName:@"PositionerSecondaryAngle"];
 	
+	//orientation
 	originX = 0;	originY = 0;	originZ = 0;
 	NSArray *ipp = [dcmObject attributeArrayWithName:@"ImagePositionPatient"];
 	if( ipp ) {
@@ -4879,14 +4879,9 @@ END_CREATE_ROIS:
 			//RescaleIntercept
 			offset = [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleIntercept"] floatValue]; 
 			//Rescale Slope
-			slope = [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleSlope"] floatValue]; 
-			//				if( slope != 0 && fabs( slope) < 0.01)
-			//				{
-			//					while( slope < 0.01)
-			//					{
-			//						slope *= 100.;
-			//					}
-			//				}
+			
+			if( [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleSlope"] floatValue])
+				slope = [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleSlope"] floatValue];
 		}
 	}
 	
@@ -6465,15 +6460,9 @@ END_CREATE_ROIS:
 															tmpVal3 = val3;
 															// get the last slope
 															for ( int j = 1; j < nbVal; j++ ) tmpVal3++;
-															slope  = [[NSString stringWithCString:tmpVal3->a] floatValue];  //CharToFloat (tmpVal3->a);
 															
-															//															if( slope != 0 && fabs( slope) < 0.01)
-															//															{
-															//																while( slope < 0.01)
-															//																{
-															//																	slope *= 100.;
-															//																}
-															//															}
+															if( [[NSString stringWithCString:tmpVal3->a] floatValue])
+																slope  = [[NSString stringWithCString:tmpVal3->a] floatValue];
 														}
 														break;
 												}
