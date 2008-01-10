@@ -69,6 +69,7 @@ static char *GetPrivateIP()
 
 - (void) dealloc
 {
+	[dicomSendLock release];
 	[serviceName release];
 	[connectionLock release];
 	
@@ -225,6 +226,9 @@ static char *GetPrivateIP()
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
+	if( dicomSendLock == 0L) dicomSendLock = [[NSLock alloc] init];
+	[dicomSendLock lock];
+	
 	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
 																calledAET: [todo objectForKey:@"AETitle"] 
 																hostname: [todo objectForKey:@"Address"] 
@@ -248,6 +252,8 @@ static char *GetPrivateIP()
 	
 	[storeSCU release];
 	storeSCU = 0L;
+	
+	[dicomSendLock unlock];
 	
 	[pool release];
 }
@@ -687,7 +693,7 @@ static char *GetPrivateIP()
 				NSString *TransferSyntax = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
 				pos += stringSize;
 				
-while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 				
 				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &noOfFiles];	noOfFiles = NSSwapBigIntToHost( noOfFiles);
 				pos += 4;

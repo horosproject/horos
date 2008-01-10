@@ -8192,6 +8192,8 @@ static BOOL needToRezoom;
 					long h = [[curFile valueForKey:@"height"] intValue];
 					long w = [[curFile valueForKey:@"width"] intValue];
 					
+					w += 2;
+					
 					if( w*h < 256*256)
 					{
 						w = 256;

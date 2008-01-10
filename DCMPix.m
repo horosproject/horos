@@ -5245,7 +5245,7 @@ END_CREATE_ROIS:
 		if( isRGB )	{
 			if( imPix->fVolImage) {
 				imPix->fImage = imPix->fVolImage;
-				memcpy( imPix->fImage, oImage, realwidth*height*sizeof(float));
+				memcpy( imPix->fImage, oImage, width*height*sizeof(float));
 				free(oImage);
 			}
 			else imPix->fImage = (float*) oImage;

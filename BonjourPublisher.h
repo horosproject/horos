@@ -27,7 +27,7 @@
 	int					numberOfConnectedUsers;
 	BrowserController	*interfaceOsiriX;
 	
-	NSLock				*connectionLock;
+	NSLock				*connectionLock, *dicomSendLock;
 	NSRecursiveLock		*subConnectionLock;
 }
 
