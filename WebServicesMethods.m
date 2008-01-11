@@ -848,7 +848,7 @@
 	NSManagedObject *album = [albumArray lastObject];
 	if([[album valueForKey:@"smartAlbum"] intValue]==1)
 	{
-		studiesArray = [self studiesForPredicate:[NSPredicate predicateWithFormat:[album valueForKey:@"predicateString"]]];
+		studiesArray = [self studiesForPredicate:[[BrowserController currentBrowser] smartAlbumPredicateString: [album valueForKey:@"predicateString"]]];
 	}
 	else
 	{

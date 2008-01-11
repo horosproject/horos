@@ -8768,7 +8768,8 @@ extern NSString * documentsDirectory();
 {
 	[ROINamesArray release];	
 	ROINamesArray = [[NSMutableArray alloc] initWithCapacity:0];	
-	[ROINamesArray addObjectsFromArray: DefaultROINames];	
+	[ROINamesArray addObjectsFromArray: DefaultROINames];
+	
 	// Scan all ROIs of current series to find other names!
 	long	y, x, z, i;
 	BOOL	first = YES, found;	
@@ -9440,6 +9441,9 @@ int i,j,l;
 
 - (IBAction) roiVolumeEraseRestore:(id) sender
 {
+	for( int i = 0; i < maxMovieIndex; i++)
+		[self saveROI: i];
+		
 	[self computeInterval];
 	
 	ROI *selectedRoi = [self selectedROI];
@@ -9537,7 +9541,10 @@ int i,j,l;
 - (int) roiIntDeleteGeneratedROIsForName:(NSString*) name
 {
 	int x, i, no = 0;
-	
+
+	for( i = 0; i < maxMovieIndex; i++)
+		[self saveROI: i];
+		
 	[name retain];
 	
 	[self addToUndoQueue: @"roi"];
@@ -9591,6 +9598,9 @@ int i,j,l;
 	NSMutableArray		*pts;
 	
 	[self computeInterval];
+	
+	for( i = 0; i < maxMovieIndex; i++)
+		[self saveROI: i];
 	
 	selectedRoi = [self selectedROI];
 	
@@ -9796,6 +9806,9 @@ int i,j,l;
 
 - (IBAction) roiSetPixels:(id) sender
 {
+	for( int i = 0; i < maxMovieIndex; i++)
+		[self saveROI: i];
+		
 	// end sheet
     [roiSetPixWindow orderOut:sender];
     [NSApp endSheet:roiSetPixWindow returnCode:[sender tag]];
@@ -11172,6 +11185,9 @@ int i,j,l;
 {
 	[self addToUndoQueue: @"roi"];
 	[imageView stopROIEditingForce: YES];
+
+	for( int i = 0; i < maxMovieIndex; i++)
+		[self saveROI: i];
 	
 	NSArray *selectedROIs = [self roiApplyWindow: self];
 	
