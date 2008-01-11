@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>OsiriX</title>
+	<meta http-equiv=content-type content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+	<link rel="stylesheet" type="text/css" href="style.css" title="standard" />
+	<link rel="alternate stylesheet" type="text/css" href="iPhoneStyle.css" title="iPhone" />
+	<script type="text/javascript" language="javascript" src="styleswitcher.js"></script>
+</head> 
+
+<body>
+    <h1 id="pageTitle">OsiriX</h1>
+
+	<div id="Home" class="panel">
+		<h2 style="padding-top:10px">%LocalizedLabel_SearchPatient%</h2>
+		<form action="/studyList" method="get">
+			<input type="text" id="searchField" id="search" name="search"/>
+			<input type="submit" id="searchButton" value="%LocalizedLabel_SearchButton%"/>
+		</form>	
+		
+		<h2 style="padding-top:10px">%LocalizedLabel_Browse%</h2>
+		<ul>
+			<li class="index"><a href="studyList?browse=6hours">%LocalizedLabel_Last6Hours%</a></li>
+			<li class="index"><a href="studyList?browse=today">%LocalizedLabel_Today%</a></li>
+			<li class="index"><a href="studyList?browse=all">%LocalizedLabel_StudyList%</a></li>
+		</ul>
+
+		<h2 style="padding-top:10px">%LocalizedLabel_Albums%</h2>
+		<ul>
+			%AlbumListItem%
+			<li class="index"><a href="studyList?album=%AlbumNameURL%">%AlbumName%</a></li>
+			%/AlbumListItem%
+		</ul>
+
+	</div>
+</body>
+</html>

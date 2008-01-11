@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>%PageTitle%</title>
+	<meta http-equiv=content-type content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+	<link rel="stylesheet" type="text/css" href="style.css" title="standard" />
+	<link rel="alternate stylesheet" type="text/css" href="iPhoneStyle.css" title="iPhone" />
+	<script type="text/javascript" language="javascript" src="styleswitcher.js"></script>
+</head>
+
+<body onorientationchange="updateOrientation()">
+    <h1 id="pageTitle">%PageTitle%</h1>
+    <a id="backButton" class="button" href="/">%LocalizedLabel_Home%</a>
+
+	<ul id="studyList" title="Study List" class="studyList">
+        %StudyListItem%
+		<li title="%StudyListItemName%" class="studyListItem">
+			<a href="study?id=%StudyListItemID%%browse%%search%%album%">
+				<span class="StudyListItemName">%StudyListItemName%</span>
+			</a>
+
+			<ul class="StudyListItemDetails">
+				<li class="StudyListItemDate">%StudyDate%</li>
+				<li class="StudyListItemSeriesSeparator">-</li>
+				<li class="StudyListItemSeriesCount">%SeriesCount%</li>
+			</ul>
+			
+		</li>
+		%/StudyListItem%
+    </ul>
+
+  </body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>%PageTitle%</title>
+	<meta http-equiv=content-type content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+
+	<link rel="stylesheet" type="text/css" href="style.css" title="standard" />
+	<link rel="alternate stylesheet" type="text/css" href="iPhoneStyle.css" title="iPhone" />
+
+	<script type="text/javascript" language="javascript">
+		function checkAll(field)
+		{
+			for (i = 0; i < field.length; i++)
+				field[i].checked = true ;
+			document.getElementById('CheckAllLabel').innerHTML = "Uncheck All";
+		}
+
+		function uncheckAll(field)
+		{
+			for (i = 0; i < field.length; i++)
+				field[i].checked = false ;
+			document.getElementById('CheckAllLabel').innerHTML = "Check All";
+		}
+	</script>
+
+	<script type="text/javascript" language="javascript" src="styleswitcher.js"></script>
+
+</head> 
+
+<body>
+    <h1 id="pageTitle">%PageTitle%</h1>
+    <a id="backButton" class="button" href="studyList?browse=%browse%&search=%search%&album=%album%">%LocalizedLabel_StudyList%</a>
+	<div id="Home" class="panel">
+		<h2>%LocalizedLabel_PatientInfo%</h2>
+		<ul>
+			<li>%LocalizedLabel_PatientID%: %PatientID%</li>
+			<li>%LocalizedLabel_PatientName%: %PatientName%</li>
+			<li>%LocalizedLabel_PatientDateOfBirth%: %PatientDOB%</li>
+			<li>%LocalizedLabel_StudyDate%: %StudyDate%</li>
+		</ul>
+		<form id="selectDicomDestination" name="selectDicomDestination">
+		<h2 style="padding-top:10px">%LocalizedLabel_Series%</h2>
+		<ul id="imageList" class="images">
+			%SeriesListItem%
+				<li class="image">
+					<table>
+						<tr>
+							<td rowspan="2">
+								<input type="checkbox" class="checkbox" name="selected" value="%SeriesID%" %checked% />
+							</td>
+							<td rowspan="2">
+								<a class="series" href="series?id=%SeriesID%&studyID=%StudyID%&browse=%browse%&search=%search%&album=%album%">
+									<img src="%thumbnail%" class="thumbnail">
+								</a>
+							</td>
+							<td class="tdSeriesName">
+								<a class="series" href="series?id=%SeriesID%&studyID=%StudyID%&browse=%browse%&search=%search%&album=%album%">
+									<span class="SeriesName">%SeriesName%</span>
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td class="tdSeriesImageNumber">
+								<a class="series" href="series?id=%SeriesID%&studyID=%StudyID%&browse=%browse%&search=%search%&album=%album%">
+									<span class="SeriesImageNumber">%SeriesImageNumber%</span>
+								</a>
+							</td>
+						</tr>
+					</table>
+				</li>
+			%/SeriesListItem%
+				<li class="image" id="CheckAll" %CheckAllStyle% >
+					<table><tr>
+						<td><input type="checkbox" class="checkbox" name="CheckAll" onClick="if(document.selectDicomDestination.CheckAll.checked == true){checkAll(document.selectDicomDestination.selected);} else {uncheckAll(document.selectDicomDestination.selected);}" %CheckAllChecked% /></td>
+						<td><span id="CheckAllLabel" class="SeriesName" >%CheckAllLabel%</span></td>
+					</tr></table>
+				</li>
+		</ul>
+		<h2 style="padding-top:10px">%LocalizedLabel_DICOMTransfert%</h2>
+		
+			%LocalizedLabel_SendSelectedSeriesTo%:
+			<select name="dicomDestination" id="dicomDestination">
+				%dicomNodesListItem%
+				<option value="%dicomNodeAddress%:%dicomNodePort%:%dicomNodeAETitle%:%dicomNodeSyntax%" %selected% >%dicomNodeDescription% [%dicomNodeAddress%:%dicomNodePort%]</option>
+				%/dicomNodesListItem%
+			</select>
+			<input type="hidden" name="id" value="%StudyID%"/>
+			<input type="hidden" name="search" value="%search%"/>
+			<input type="hidden" name="browse" value="%browse%"/>
+			<input type="hidden" name="album" value="%album%"/>
+			<input type="submit" name="dicomSend" id="dicomSend" value="%LocalizedLabel_Send%"/>
+		</form>
+    </div>
+  </body>
+</html>
