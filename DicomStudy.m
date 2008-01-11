@@ -403,7 +403,10 @@ Version 2.3
 	return dict;
 }
 
-	
 
+- (NSComparisonResult)compareName:(DicomStudy*)study;
+{
+	return [[self valueForKey:@"name"] caseInsensitiveCompare:[study valueForKey:@"name"]];
+}
 
 @end

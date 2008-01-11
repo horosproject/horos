@@ -769,6 +769,9 @@ static NSHost *currentHost = 0L;
 	
 	[defaultValues setObject:@"0" forKey:@"httpXMLRPCServer"];
 	[defaultValues setObject:@"8080" forKey:@"httpXMLRPCServerPort"];
+
+	[defaultValues setObject:@"0" forKey:@"httpWebServer"];
+	[defaultValues setObject:@"3333" forKey:@"httpWebServerPort"];
 	
 	[defaultValues setObject:@"1" forKey:@"StrechWindows"];
 	

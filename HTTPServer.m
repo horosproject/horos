@@ -125,6 +125,7 @@
 }
 
 - (void)invalidate {
+NSLog(@"HTTPConnection invalidate");
     if (isValid) {
         isValid = NO;
         [istream close];
@@ -293,7 +294,7 @@
             buffer = buf;
             len = amount;
         }
-        if (0 < len) {
+        if (0 < len && len < 0xffffffff) {
             if (!ibuffer) {
                 ibuffer = [[NSMutableData alloc] init];
             }

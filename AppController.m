@@ -748,6 +748,14 @@ static NSDate *lastWarningDate = 0L;
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"acceptOnlyExplicitLittleEndian"]intValue]		!=		[defaults integerForKey: @"acceptOnlyExplicitLittleEndian"])
 		restartListener = YES;
+	if ([[previousDefaults valueForKey: @"httpXMLRPCServer"]intValue]		!=		[defaults integerForKey: @"httpXMLRPCServer"])
+		restartListener = YES;
+	if ([[previousDefaults valueForKey: @"httpXMLRPCServerPort"]intValue]		!=		[defaults integerForKey: @"httpXMLRPCServerPort"])
+		restartListener = YES;
+	if ([[previousDefaults valueForKey: @"httpWebServer"]intValue]		!=		[defaults integerForKey: @"httpWebServer"])
+		restartListener = YES;
+	if ([[previousDefaults valueForKey: @"httpWebServerPort"]intValue]		!=		[defaults integerForKey: @"httpWebServerPort"])
+		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"LISTENERCHECKINTERVAL"]intValue]		!=		[defaults integerForKey: @"LISTENERCHECKINTERVAL"])
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"SINGLEPROCESS"]intValue]				!=		[defaults integerForKey: @"SINGLEPROCESS"])
@@ -1017,6 +1025,10 @@ static NSDate *lastWarningDate = 0L;
 		NSLog(@"Exception restarting storeSCP");
 	NS_ENDHANDLER
 	
+	[BonjourDICOMService stop];
+	[BonjourDICOMService release];
+	BonjourDICOMService = 0L;
+
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"publishDICOMBonjour"])
 	{
 		//Start DICOM Bonjour 
@@ -1026,11 +1038,15 @@ static NSDate *lastWarningDate = 0L;
 		
 		[[DCMNetServiceDelegate sharedNetServiceDelegate] setPublisher: BonjourDICOMService];
 	}
-	else BonjourDICOMService = 0L;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"])
 	{
-		XMLRPCServer = [[XMLRPCMethods alloc] init];
+		if(XMLRPCServer == 0L) XMLRPCServer = [[XMLRPCMethods alloc] init];
+	}
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpWebServer"])
+	{
+		if(webServer == 0L) webServer = [[WebServicesMethods alloc] init];
 	}
 }
 
@@ -1446,6 +1462,8 @@ static NSDate *lastWarningDate = 0L;
 	[[BrowserController currentBrowser] browserPrepareForClose];
 
 	[ROI saveDefaultSettings];
+	
+	[webServer release];
 	
 	[BonjourDICOMService stop];
 	[BonjourDICOMService release];

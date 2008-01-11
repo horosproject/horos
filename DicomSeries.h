@@ -48,4 +48,6 @@
 - (NSArray *)sortedImages;
 - (NSString *)dicomSeriesInstanceUID;
 - (NSDictionary *)dictionary;
+- (NSComparisonResult)compareName:(DicomSeries*)series;
+
 @end

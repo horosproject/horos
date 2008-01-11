@@ -39,4 +39,6 @@
 - (BOOL) isHidden;
 - (void) setHidden: (BOOL) h;
 
+- (NSComparisonResult)compareName:(DicomStudy*)study;
+
 @end

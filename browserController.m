@@ -1549,13 +1549,13 @@ static NSArray*	statesArray = nil;
 	
 	if( [sender tag] == 1)
 	{
-		[oPanel setPrompt: @"Create"];
-		[oPanel setTitle: @"Create a Database Folder"];
+		[oPanel setPrompt: NSLocalizedString(@"Create", 0L)];
+		[oPanel setTitle: NSLocalizedString(@"Create a Database Folder", 0L)];
 	}
 	else
 	{
-		[oPanel setPrompt: @"Open"];
-		[oPanel setTitle: @"Open a Database Folder"];
+		[oPanel setPrompt: NSLocalizedString(@"Open", 0L)];
+		[oPanel setTitle: NSLocalizedString(@"Open a Database Folder", 0L)];
 	}
 	
 	if ([oPanel runModalForDirectory:documentsDirectory() file:nil types:nil] == NSFileHandlingPanelOKButton)
@@ -10884,7 +10884,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	QTTime curTime = QTMakeTime(timeValue, timeScale);
 	
-	NSDictionary *myDict = [NSDictionary dictionaryWithObject: @"jpeg" forKey: QTAddImageCodecType];
+	NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObject: @"jpeg" forKey: QTAddImageCodecType];
 	
 	for ( id img in imagesArray ) {
 		NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];

@@ -352,5 +352,9 @@
 	return dict;
 }
 
+- (NSComparisonResult)compareName:(DicomSeries*)series;
+{
+	return [[self valueForKey:@"name"] caseInsensitiveCompare:[series valueForKey:@"name"]];
+}
 
 @end

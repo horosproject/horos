@@ -473,6 +473,12 @@
 		A978DEA80CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE7F0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h */; };
 		A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE870CB0D4BE00FB2C3D /* NFHUDPopUpButton.m */; };
 		A978DEB10CB0D4BE00FB2C3D /* NFHUDPopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE880CB0D4BE00FB2C3D /* NFHUDPopUpButton.h */; };
+		A979EF7B0D19023E00F4F8F2 /* WebServicesMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = A979EF790D19023E00F4F8F2 /* WebServicesMethods.h */; };
+		A979EF7C0D19023E00F4F8F2 /* WebServicesMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = A979EF7A0D19023E00F4F8F2 /* WebServicesMethods.m */; };
+		A979EF7D0D19023E00F4F8F2 /* WebServicesMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = A979EF790D19023E00F4F8F2 /* WebServicesMethods.h */; };
+		A979EF7E0D19023E00F4F8F2 /* WebServicesMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = A979EF7A0D19023E00F4F8F2 /* WebServicesMethods.m */; };
+		A979EF800D19025200F4F8F2 /* WebServicesHTML in Resources */ = {isa = PBXBuildFile; fileRef = A979EF7F0D19025200F4F8F2 /* WebServicesHTML */; };
+		A979EF810D19025200F4F8F2 /* WebServicesHTML in Resources */ = {isa = PBXBuildFile; fileRef = A979EF7F0D19025200F4F8F2 /* WebServicesHTML */; };
 		A97B73980CB380EF00E5348D /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = A97B73970CB380EF00E5348D /* osirixplugin.icns */; };
 		A97B73990CB380F600E5348D /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = A97B73970CB380EF00E5348D /* osirixplugin.icns */; };
 		A97D4C610CE3459D003FE2E6 /* PieChartImage.h in Headers */ = {isa = PBXBuildFile; fileRef = A97D4C5F0CE3459D003FE2E6 /* PieChartImage.h */; };
@@ -8541,6 +8547,9 @@
 		A978DE7F0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+FrameworkImage.h"; sourceTree = "<group>"; };
 		A978DE870CB0D4BE00FB2C3D /* NFHUDPopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDPopUpButton.m; sourceTree = "<group>"; };
 		A978DE880CB0D4BE00FB2C3D /* NFHUDPopUpButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDPopUpButton.h; sourceTree = "<group>"; };
+		A979EF790D19023E00F4F8F2 /* WebServicesMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebServicesMethods.h; sourceTree = "<group>"; };
+		A979EF7A0D19023E00F4F8F2 /* WebServicesMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebServicesMethods.m; sourceTree = "<group>"; };
+		A979EF7F0D19025200F4F8F2 /* WebServicesHTML */ = {isa = PBXFileReference; lastKnownFileType = folder; path = WebServicesHTML; sourceTree = "<group>"; };
 		A97B73970CB380EF00E5348D /* osirixplugin.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = osirixplugin.icns; sourceTree = "<group>"; };
 		A97D4C5F0CE3459D003FE2E6 /* PieChartImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PieChartImage.h; sourceTree = "<group>"; };
 		A97D4C600CE3459D003FE2E6 /* PieChartImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PieChartImage.m; sourceTree = "<group>"; };
@@ -12166,6 +12175,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A979EF7F0D19025200F4F8F2 /* WebServicesHTML */,
 				CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */,
 				ABE0D69A0CDB1B9E00F0494B /* iChatTheatreHelp */,
 				ABE0D6920CDB1A4400F0494B /* iChatHelper.xib */,
@@ -16305,6 +16315,8 @@
 				CE882B2D0C889E0200D4F982 /* TCPServer.m */,
 				CE882B2F0C889E0200D4F982 /* HTTPServer.h */,
 				CE882B2E0C889E0200D4F982 /* HTTPServer.m */,
+				A979EF790D19023E00F4F8F2 /* WebServicesMethods.h */,
+				A979EF7A0D19023E00F4F8F2 /* WebServicesMethods.m */,
 			);
 			name = "XML-XPC HTTP Server";
 			sourceTree = "<group>";
@@ -18539,6 +18551,7 @@
 				CE6CD06D0CFB0462001DF429 /* OsiriXToolbar.h in Headers */,
 				CEE8CED10D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h in Headers */,
 				ABDEB38E0D1827440079C938 /* openjpeg.h in Headers */,
+				A979EF7B0D19023E00F4F8F2 /* WebServicesMethods.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20607,6 +20620,7 @@
 				A97D4C630CE3459D003FE2E6 /* PieChartImage.h in Headers */,
 				CEE8CED30D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h in Headers */,
 				ABDEB3900D1827440079C938 /* openjpeg.h in Headers */,
+				A979EF7D0D19023E00F4F8F2 /* WebServicesMethods.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21357,6 +21371,7 @@
 				CEDEF7D60D020E9100CADB15 /* TIFFSmall.tiff in Resources */,
 				CEDEF7D70D020E9100CADB15 /* MailSmall.tiff in Resources */,
 				CEDEF7D80D020E9100CADB15 /* JPEGSmall.tiff in Resources */,
+				A979EF800D19025200F4F8F2 /* WebServicesHTML in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21742,6 +21757,7 @@
 				CEDEF7D90D020E9100CADB15 /* TIFFSmall.tiff in Resources */,
 				CEDEF7DA0D020E9100CADB15 /* MailSmall.tiff in Resources */,
 				CEDEF7DB0D020E9100CADB15 /* JPEGSmall.tiff in Resources */,
+				A979EF810D19025200F4F8F2 /* WebServicesHTML in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22881,6 +22897,7 @@
 				A97D4C620CE3459D003FE2E6 /* PieChartImage.m in Sources */,
 				CE6CD06E0CFB0462001DF429 /* OsiriXToolbar.m in Sources */,
 				CEE8CED00D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m in Sources */,
+				A979EF7C0D19023E00F4F8F2 /* WebServicesMethods.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24555,6 +24572,7 @@
 				CE4700FE0CC51A6600ECF78A /* WindowLayoutManager.m in Sources */,
 				A97D4C640CE3459D003FE2E6 /* PieChartImage.m in Sources */,
 				CEE8CED20D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m in Sources */,
+				A979EF7E0D19023E00F4F8F2 /* WebServicesMethods.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

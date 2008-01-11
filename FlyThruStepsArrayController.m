@@ -78,6 +78,9 @@
 			
 			flyThruController.hidePlayBox = YES;
 			flyThruController.hideExportBox = YES;
+
+//			[self setSelectedObjects: [NSArray arrayWithObject:[[self arrangedObjects] lastObject]]];
+//			if([tableview selectedRow]>=0)[tableview scrollRowToVisible:[tableview selectedRow]];
 		}
 		break;
 		

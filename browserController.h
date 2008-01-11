@@ -494,6 +494,10 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute elements:(NSString**) elements;
 
+- (void) executeSend :(NSArray*) samePatientArray server:(NSDictionary*) server;
+
+- (void)writeMovie:(NSArray*)imagesArray name:(NSString*)fileName;
+
 /******Notifactions posted by browserController***********
 @"NewStudySelectedNotification" with userinfo key @"Selected Study" posted when a newStudy is selected in the browser
 @"Close All Viewers" posted when close open windows if option key pressed.	

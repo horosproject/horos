@@ -34,6 +34,7 @@
 
 #import <AppKit/AppKit.h>
 #import "XMLRPCMethods.h"
+#import "WebServicesMethods.h"
 
 #import "IChatTheatreDelegate.h"
 
@@ -100,6 +101,7 @@ extern "C"
 	NSTimer							*updateTimer;
 	DCMNetServiceDelegate			*dicomNetServiceDelegate;
 	XMLRPCMethods					*XMLRPCServer;
+	WebServicesMethods				*webServer;
 }
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
