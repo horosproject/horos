@@ -1533,6 +1533,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (NSString *) contextualDictionaryPath {return contextualDictionaryPath;}
 
+- (void) computeContextualMenu
+{
+	NSLog(@"2D Viewer Contextual Menu - Generate");
+	[imageView setMenu: [[[self contextualMenu] copy] autorelease]];
+}
+
 - (NSMenu*) contextualMenu
 {
 
@@ -2564,7 +2570,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[wlwwPopup setTitle:curWLWWMenu];
 		
-		[imageView setMenu: [[[self contextualMenu] copy] autorelease]];
+		[contextualMenu release];
+		contextualMenu = 0L;
+		[imageView setMenu: 0L];	// Will force recomputing, when neaded
 		
 		lastMenuNotification = note;
 	}
@@ -4642,8 +4650,6 @@ static ViewerController *draggedController = 0L;
 	[OpacityPopup setEnabled:YES];
 	
 	[self refreshToolbar];
-	
-	[imageView setMenu: [[[self contextualMenu] copy] autorelease]];
 	
 	return self;
 }

@@ -595,6 +595,7 @@ enum
 - (void) blendingMode:(id) sender;
 - (ViewerController*) blendingController;
 - (void)blendWithViewer:(ViewerController *)bc blendingType:(int)blendingType;
+- (void) computeContextualMenu;
 
 /** Modality of the study */
 - (NSString*) modality;

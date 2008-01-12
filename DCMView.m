@@ -3417,6 +3417,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
 		if ([event clickCount] == 1)
 		{
+			if( [self is2DViewer] && [self menu] == 0L)
+				[[self windowController] computeContextualMenu];
 			[NSMenu popUpContextMenu:[self menu] withEvent:event forView:self];
 		}
 	}
