@@ -419,7 +419,8 @@
 			else
 				browsePredicate = [NSPredicate predicateWithValue:NO];
 			NSArray *series = [self seriesForPredicate:browsePredicate];
-			if([[[[series lastObject] valueForKey:@"images"] allObjects] count]==1)
+			NSArray *imagesArray = [[[series lastObject] valueForKey:@"images"] allObjects];
+			if([imagesArray count] == 1 && [[[imagesArray lastObject] valueForKey: @"numberOfFrames"] intValue] <= 1)
 			{
 				[templateString replaceOccurrencesOfString:@"<!--[if !IE]>-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				[templateString replaceOccurrencesOfString:@"<!--<![endif]-->" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
@@ -437,7 +438,7 @@
 				[templateString replaceOccurrencesOfString:@"%movie%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 				[templateString replaceOccurrencesOfString:@"%/movie%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 
-				DicomImage *lastImage = [[[[series lastObject] valueForKey:@"images"] allObjects] lastObject];
+				DicomImage *lastImage = [imagesArray lastObject];
 				int width = [[lastImage valueForKey:@"width"] intValue];
 				int height = [[lastImage valueForKey:@"height"] intValue];
 				//NSLog(@"w: %d, h: %d", width, height);
@@ -491,7 +492,7 @@
 				NSMutableArray *imagesArray = [NSMutableArray array];
 				NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
 				DicomImage *im;
-				if([dicomImageArray count]==1)
+				if([dicomImageArray count] == 1 && [[[dicomImageArray lastObject] valueForKey: @"numberOfFrames"] intValue] <= 1)
 				{
 					im = [dicomImageArray lastObject];
 				}
@@ -500,7 +501,7 @@
 					im = [dicomImageArray objectAtIndex:[dicomImageArray count]/2];
 				}
 				
-				DCMPix* dcmPix = [[DCMPix alloc] myinit:[im valueForKey:@"completePathResolved"] :0 :1 :0L :0 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
+				DCMPix* dcmPix = [[DCMPix alloc] myinit:[im valueForKey:@"completePathResolved"] :0 :1 :0L :[[[dicomImageArray lastObject] valueForKey: @"numberOfFrames"] intValue]/2 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
 				  
 				if(dcmPix)
 				{
@@ -574,7 +575,7 @@
 					NSLog( [e description]);
 				}
 				
-				if([dicomImageArray count] > 1)
+				if([dicomImageArray count] > 1 || [[[dicomImageArray lastObject] valueForKey: @"numberOfFrames"] intValue] > 1)
 				{
 					NSString *path = @"/tmp/osirixwebservices";
 					[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
@@ -597,27 +598,30 @@
 						
 						for (DicomImage *im in dicomImageArray)
 						{
-							DCMPix* dcmPix = [[DCMPix alloc] myinit:[im valueForKey:@"completePathResolved"] :0 :1 :0L :0 :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
-						  
-							if(dcmPix)
+							for (int x = 0; x < [[im valueForKey:@"numberOfFrames"] intValue]; x++)
 							{
-								float curWW = 0;
-								float curWL = 0;
-								
-								if([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
+								DCMPix* dcmPix = [[DCMPix alloc] myinit:[im valueForKey:@"completePathResolved"] :0 :1 :0L :x :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
+							  
+								if(dcmPix)
 								{
-									curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-									curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+									float curWW = 0;
+									float curWL = 0;
+									
+									if([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
+									{
+										curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+										curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+									}
+									
+									if(curWW!=0 && curWW!=curWL)
+										[dcmPix checkImageAvailble:curWW :curWL];
+									else
+										[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
+									
+									NSImage *im = [dcmPix image];
+									[imagesArray addObject: im];
+									[dcmPix release];
 								}
-								
-								if(curWW!=0 && curWW!=curWL)
-									[dcmPix checkImageAvailble:curWW :curWL];
-								else
-									[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
-								
-								NSImage *im = [dcmPix image];
-								[imagesArray addObject: im];
-								[dcmPix release];
 							}
 						}
 						[[BrowserController currentBrowser] writeMovie:imagesArray name:fileName];

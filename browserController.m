@@ -10967,23 +10967,28 @@ static volatile int numberOfThreadsForJPEG = 0;
 		tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
 		tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
 		
-		if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue] )	{
-			if( [imagesArray count] > 1 ) {
+		if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue] )
+		{
+			if( [imagesArray count] > 1 )
+			{
 				[self writeMovie: imagesArray name: [previousPath stringByAppendingString:@".mov"]];
 			}
-			else if( [imagesArray count] == 1 )	{
+			else if( [imagesArray count] == 1 )
+			{
 				NSArray *representations = [[imagesArray objectAtIndex: 0] representations];
 				NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 				[bitmapData writeToFile:[previousPath stringByAppendingString:@".jpg"] atomically:YES];
 			}
 			
 			//
-			if(createHTML) {
+			if(createHTML)
+			{
 				NSImage	*thumbnail = [[[NSImage alloc] initWithData: [curImage valueForKeyPath: @"series.thumbnail"]] autorelease];
 				if(!thumbnail)
 					thumbnail = [[NSImage alloc] initWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Empty.tif"]];
 				
-				if( thumbnail) {
+				if( thumbnail)
+				{
 					NSData *bitmapData = nil;
 					NSArray *representations = [thumbnail representations];
 					bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
@@ -10997,24 +11002,28 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		previousPath = [NSString stringWithString: tempPath];
 		
-		DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePathResolved"] :0 :1 :0L :0 :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
-		
-		if( dcmPix ) {
-			float curWW = 0;
-			float curWL = 0;
+		for (int x = 0; x < [[curImage valueForKey:@"numberOfFrames"] intValue]; x++)
+		{
+			DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePathResolved"] :0 :1 :0L :x :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
 			
-			if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] ) {
-				curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-				curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+			if( dcmPix )
+			{
+				float curWW = 0;
+				float curWL = 0;
+				
+				if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] ) {
+					curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+					curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+				}
+				
+				if( curWW != 0 && curWW !=curWL)
+					[dcmPix checkImageAvailble :curWW :curWL];
+				else
+					[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
+				
+				[imagesArray addObject: [dcmPix image]];
+				[dcmPix release];
 			}
-			
-			if( curWW != 0 && curWW !=curWL)
-				[dcmPix checkImageAvailble :curWW :curWL];
-			else
-				[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
-			
-			[imagesArray addObject: [dcmPix image]];
-			[dcmPix release];
 		}
 		
 		[splash incrementBy:1];
