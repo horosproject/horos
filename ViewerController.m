@@ -2564,7 +2564,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[wlwwPopup setTitle:curWLWWMenu];
 		
-		[imageView setMenu: [self contextualMenu]];
+		[imageView setMenu: [[[self contextualMenu] copy] autorelease]];
 		
 		lastMenuNotification = note;
 	}
@@ -4642,6 +4642,8 @@ static ViewerController *draggedController = 0L;
 	[OpacityPopup setEnabled:YES];
 	
 	[self refreshToolbar];
+	
+	[imageView setMenu: [[[self contextualMenu] copy] autorelease]];
 	
 	return self;
 }

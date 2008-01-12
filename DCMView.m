@@ -3415,8 +3415,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	else 
 	{
-		 if ([event clickCount] == 1)
-				[NSMenu popUpContextMenu:[self menu] withEvent:event forView:self];
+		if ([event clickCount] == 1)
+		{
+			[NSMenu popUpContextMenu:[self menu] withEvent:event forView:self];
+		}
 	}
 }
 
