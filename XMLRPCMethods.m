@@ -40,8 +40,11 @@
 		[httpServ setPort: [[NSUserDefaults standardUserDefaults] integerForKey:@"httpXMLRPCServerPort"]];
 		[httpServ setDelegate:self];
 		NSError *error = nil;
-		if (![httpServ start:&error]) {
-			NSLog(@"Error starting server: %@", error);
+		if (![httpServ start:&error])
+		{
+			NSLog(@"Error starting HTTP XMLRPC Server: %@", error);
+			NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP XMLRPC Server Error", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP XMLRPC Server: %@", 0L), error], NSLocalizedString(@"OK",nil), nil, nil);
+			httpServ = 0L;
 		} else {
 			NSLog(@"******** Starting HTTP XMLRPC server on port %d", [httpServ port]);
 		}

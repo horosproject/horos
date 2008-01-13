@@ -107,9 +107,14 @@
 		webDirectory = [[bundlePath stringByAppendingPathComponent:@"WebServicesHTML"] retain];
 
 		NSError *error = nil;
-		if (![httpServ start:&error]) {
+		if (![httpServ start:&error])
+		{
 			NSLog(@"Error starting HTTP Web Server: %@", error);
-		} else {
+			NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP Web Server Error", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP Web Server: %@", 0L), error], NSLocalizedString(@"OK",nil), nil, nil);
+			httpServ = 0L;
+		}
+		else
+		{
 			NSLog(@"******** Starting HTTP Web Server on port %d", [httpServ port]);
 		}
 	}
