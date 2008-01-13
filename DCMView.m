@@ -4276,7 +4276,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (void) setWLWW:(float) wl :(float) ww {
+- (void) setWLWW:(float) wl :(float) ww
+{
 	[curDCM changeWLWW :wl : ww];
 	
 	if( curDCM) {

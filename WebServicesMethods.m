@@ -982,6 +982,11 @@
 		[tempHTML replaceOccurrencesOfString:@"%thumbnail%" withString:[NSString stringWithFormat:@"thumbnail?id=%@", [WebServicesMethods nonNilString:[series valueForKeyPath:@"seriesInstanceUID"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%SeriesID%" withString:[WebServicesMethods nonNilString:[series valueForKeyPath:@"seriesInstanceUID"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		int nbFiles = [[series valueForKey:@"noFiles"] intValue];
+		if( nbFiles <= 1)
+		{
+			nbFiles = [[[[series valueForKey: @"images"] anyObject] valueForKey: @"numberOfFrames"] intValue];
+			if( nbFiles == 0) nbFiles = 1;
+		}
 		NSString *imagesLabel = (nbFiles>1)? NSLocalizedString(@"Images", @"") : NSLocalizedString(@"Image", @"");
 		[tempHTML replaceOccurrencesOfString:@"%SeriesImageNumber%" withString:[NSString stringWithFormat:@"%d %@", nbFiles, imagesLabel] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 

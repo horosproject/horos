@@ -8833,8 +8833,13 @@ END_CREATE_ROIS:
 	
 }
 
-- (void)computeMaxThread: (NSDictionary*)dict {
+- (void)computeMaxThread: (NSDictionary*)dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	[self computeMax: [[dict valueForKey:@"fResult"] pointerValue] pos: [[dict valueForKey:@"pos"] intValue] threads: MPProcessors ()];
+	
+	[pool release];
 }
 
 #pragma mark-

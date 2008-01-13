@@ -8035,17 +8035,29 @@ NSMutableArray		*array;
 
 	BOOL volumicData = YES;
 
-	long moviePixWidth = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth];
-	long moviePixHeight = [[pixList[ curMovieIndex] objectAtIndex: 0] pheight];
+	int moviePixWidth = [[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"width"] intValue];
+	int moviePixHeight = [[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"height"] intValue];
 	
 	if( m != 0)
 	{
 		for( int j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
 		{
-			if ( moviePixWidth != [[pixList[ curMovieIndex] objectAtIndex: j] pwidth]) volumicData = NO;
-			if ( moviePixHeight != [[pixList[ curMovieIndex] objectAtIndex: j] pheight]) volumicData = NO;
+			if ( moviePixWidth != [[[fileList[ curMovieIndex] objectAtIndex: j] valueForKey:@"width"] intValue]) volumicData = NO;
+			if ( moviePixHeight != [[[fileList[ curMovieIndex] objectAtIndex: j] valueForKey:@"height"] intValue]) volumicData = NO;
 		}
 	}
+
+//	int moviePixWidth = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth];
+//	int moviePixHeight = [[pixList[ curMovieIndex] objectAtIndex: 0] pheight];
+//	
+//	if( m != 0)
+//	{
+//		for( int j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
+//		{
+//			if ( moviePixWidth != [[pixList[ curMovieIndex] objectAtIndex: j] pwidth]) volumicData = NO;
+//			if ( moviePixHeight != [[pixList[ curMovieIndex] objectAtIndex: j] pheight]) volumicData = NO;
+//		}
+//	}
 	
 	if( volumicData == NO)
 		m = 0;

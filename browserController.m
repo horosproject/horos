@@ -10873,7 +10873,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self setDockIcon];
 }
 
-- (void)writeMovie: (NSArray*)imagesArray name: (NSString*)fileName {
+- (void)writeMovie: (NSArray*)imagesArray name: (NSString*)fileName
+{
 	[[QTMovie movie] writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: 0L];
 	
 	QTMovie *mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
@@ -10886,7 +10887,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObject: @"jpeg" forKey: QTAddImageCodecType];
 	
-	for ( id img in imagesArray ) {
+	for ( id img in imagesArray )
+	{
 		NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 		
 		[mMovie addImage: img forDuration:curTime withAttributes: myDict];
