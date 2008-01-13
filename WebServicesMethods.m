@@ -97,6 +97,9 @@
 	self = [super init];
 	if (self != nil)
 	{
+		NSString *path = @"/tmp/osirixwebservices";
+		[[NSFileManager defaultManager] removeFileAtPath: path handler:nil];
+		
 		httpServ = [[HTTPServer alloc] init];
 		[httpServ setType:@"_http._tcp."];
 		[httpServ setName:@"OsiriXWebServer"];
@@ -491,6 +494,7 @@
 			}
 			else
 				browsePredicate = [NSPredicate predicateWithValue:NO];
+			
 			NSArray *series = [self seriesForPredicate:browsePredicate];
 			if([series count]==1)
 			{
@@ -599,8 +603,6 @@
 					
 					if(![[NSFileManager defaultManager] fileExistsAtPath:outFile])
 					{
-						//NSLog(@"create MOVIE");
-						
 						for (DicomImage *im in dicomImageArray)
 						{
 							for (int x = 0; x < [[im valueForKey:@"numberOfFrames"] intValue]; x++)
@@ -647,8 +649,6 @@
 						NSRange range = NSMakeRange(rangeStart, rangeLength);
 						data = [data subdataWithRange:range];
 					}
-					
-					//NSLog(@"[data length]: %d", [data length]);
 				}
 			}
 			
