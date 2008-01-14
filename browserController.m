@@ -9814,7 +9814,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] )
 	{
 		if( [[[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] intValue] == NSDrawerOpenState)
-			[albumDrawer open]; 
+			[albumDrawer openOnEdge:NSMinXEdge];
 		else
 			[albumDrawer close];
 	}

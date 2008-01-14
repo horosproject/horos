@@ -1369,6 +1369,7 @@
 		ABCB20C60A220349008EB2E8 /* DICOMToNSString.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */; };
 		ABCB2D520655B19A006C5630 /* SearchWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCB2D4E0655B19A006C5630 /* SearchWindowController.m */; };
 		ABCB2D530655B19A006C5630 /* SearchWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCB2D4F0655B19A006C5630 /* SearchWindowController.h */; };
+		ABD00CB90D37B468006B914E /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
 		ABD1A8700619E68B00C5B670 /* ROIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD1A86E0619E68B00C5B670 /* ROIWindow.h */; };
 		ABD1A8710619E68B00C5B670 /* ROIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD1A86F0619E68B00C5B670 /* ROIWindow.m */; };
 		ABD559F80AEE146900108895 /* SagSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABD559F50AEE146900108895 /* SagSmall.tif */; };
@@ -1421,7 +1422,6 @@
 		ABDEBD6D063D693F005B99B4 /* minus.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABDEBD52063D6938005B99B4 /* minus.tif */; };
 		ABDF5A1C0A1B6406002A353A /* BonesRemovalCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9E7042609B89E1C00971B6E /* BonesRemovalCursor.tif */; };
 		ABDF5A1D0A1B641F002A353A /* small_sharedSmartAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B411C10890496400913770 /* small_sharedSmartAlbum.tiff */; };
-		ABDF6E2E0BE0904D00793094 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
 		ABDF6E300BE0904D00793094 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
 		ABDF6E980BE0929100793094 /* Growl.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
 		ABE0D6940CDB1A4400F0494B /* iChatHelper.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABE0D6920CDB1A4400F0494B /* iChatHelper.xib */; };
@@ -7048,7 +7048,6 @@
 		CE9CEF2C0C75BE3A00752D4B /* DCMAbortPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = BF6DB809075A516500EBC60E /* DCMAbortPDU.m */; };
 		CE9CEF2D0C75BE3A00752D4B /* DCMSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E76BEDD085757E20073649A /* DCMSocket.h */; };
 		CE9CEF2E0C75BE3A00752D4B /* DCMSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E76BEDE085757E20073649A /* DCMSocket.m */; };
-		CE9D06DE0CACE20A00D7636A /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
 		CE9DD284086B35050058DD2A /* DicomStudy.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9DD280086B35050058DD2A /* DicomStudy.m */; };
 		CE9DD285086B35050058DD2A /* DicomStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD281086B35050058DD2A /* DicomStudy.h */; };
 		CE9DD286086B35050058DD2A /* DicomSeries.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD282086B35050058DD2A /* DicomSeries.h */; };
@@ -11794,9 +11793,10 @@
 				BF6290B10A2B80A800BB0B62 /* AddressBook.framework in Frameworks */,
 				BF47CC240A2E3BC500700AA9 /* WebKit.framework in Frameworks */,
 				AB6B75EC0A53F60600F0CA8F /* QTKit.framework in Frameworks */,
-				ABDF6E2E0BE0904D00793094 /* Growl.framework in Frameworks */,
 				CE2C82E30C708B310093C162 /* InstantMessage.framework in Frameworks */,
 				CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */,
+				A97E19EF0CDF55E50065EE29 /* 3DconnexionClient.framework in Frameworks */,
+				ABDEB38D0D1827440079C938 /* libopenjpeg.a in Frameworks */,
 				ABE4692F0A7627FD00327466 /* libvtkjpeg.a in Frameworks */,
 				CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
 				CEB7179906CE7CBD00084CA5 /* libjasper2.a in Frameworks */,
@@ -11854,9 +11854,7 @@
 				CE7BBFD50C82DCA5000AD12F /* libtiff.dylib in Frameworks */,
 				CE7BBFD60C82DCA5000AD12F /* libtiff.a in Frameworks */,
 				CE7BBFDF0C82DCC1000AD12F /* libITKNrrdIO.a in Frameworks */,
-				CE9D06DE0CACE20A00D7636A /* Growl.framework in Frameworks */,
-				A97E19EF0CDF55E50065EE29 /* 3DconnexionClient.framework in Frameworks */,
-				ABDEB38D0D1827440079C938 /* libopenjpeg.a in Frameworks */,
+				ABD00CB90D37B468006B914E /* Growl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26328,7 +26326,7 @@
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_MODEL_PPC64 = NO;
 				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = OsiriX_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -26351,6 +26349,7 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -26472,7 +26471,7 @@
 				GCC_MODEL_CPU = "";
 				GCC_MODEL_PPC64 = NO;
 				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
 				GCC_USE_GCC3_PFE_SUPPORT = YES;
@@ -26487,6 +26486,7 @@
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x20000000,
