@@ -399,7 +399,10 @@
 			NSArray *series = [self seriesForPredicate:browsePredicate];
 			if([series count]==1)
 			{
-				NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[[series lastObject] valueForKey:@"thumbnail"]];
+				if(![[series lastObject] valueForKey:@"thumbnail"])
+					[[BrowserController currentBrowser] buildThumbnail:[series lastObject]];
+				
+				NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[[series lastObject] valueForKey:@"thumbnail"]];				
 				NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
 				data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
 			}

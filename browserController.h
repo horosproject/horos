@@ -497,6 +497,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) executeSend :(NSArray*) samePatientArray server:(NSDictionary*) server;
 
 - (void)writeMovie:(NSArray*)imagesArray name:(NSString*)fileName;
+- (void) buildThumbnail:(NSManagedObject*) series;
 
 /******Notifactions posted by browserController***********
 @"NewStudySelectedNotification" with userinfo key @"Selected Study" posted when a newStudy is selected in the browser
