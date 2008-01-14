@@ -292,8 +292,20 @@
 			else if([parameters objectForKey:@"search"])
 			{
 				NSMutableString *search = [NSMutableString string];
-				NSMutableString *searchString = [NSMutableString stringWithString:[[parameters objectForKey:@"search"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-				[search appendFormat:@"name like[cd] '*%@*'", [WebServicesMethods decodeURLString:searchString]]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
+				NSString *searchString = [NSString stringWithString:[[parameters objectForKey:@"search"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				searchString = [WebServicesMethods decodeURLString:searchString];
+				
+				NSArray *components = [searchString componentsSeparatedByString:@" "];
+				NSMutableArray *newComponents = [NSMutableArray array];
+				for (NSString *comp in components)
+				{
+					if(![comp isEqualToString:@""])
+						[newComponents addObject:comp];
+				}
+				
+				searchString = [newComponents componentsJoinedByString:@" "];
+				
+				[search appendFormat:@"name like[cd] '*%@*'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
 				browsePredicate = [NSPredicate predicateWithFormat:search];
 				pageTitle = NSLocalizedString(@"Search Result", @"");
 			}
