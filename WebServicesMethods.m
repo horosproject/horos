@@ -1056,7 +1056,7 @@
 	else
 	{
 		[returnHTML replaceOccurrencesOfString:@"%CheckAllLabel%" withString:NSLocalizedString(@"Check All", @"") options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
-		[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString:NSLocalizedString(@"", @"") options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+		[returnHTML replaceOccurrencesOfString:@"%CheckAllChecked%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	}
 	
 	return returnHTML;
