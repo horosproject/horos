@@ -477,8 +477,6 @@
 		A979EF7C0D19023E00F4F8F2 /* WebServicesMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = A979EF7A0D19023E00F4F8F2 /* WebServicesMethods.m */; };
 		A979EF7D0D19023E00F4F8F2 /* WebServicesMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = A979EF790D19023E00F4F8F2 /* WebServicesMethods.h */; };
 		A979EF7E0D19023E00F4F8F2 /* WebServicesMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = A979EF7A0D19023E00F4F8F2 /* WebServicesMethods.m */; };
-		A979EF800D19025200F4F8F2 /* WebServicesHTML in Resources */ = {isa = PBXBuildFile; fileRef = A979EF7F0D19025200F4F8F2 /* WebServicesHTML */; };
-		A979EF810D19025200F4F8F2 /* WebServicesHTML in Resources */ = {isa = PBXBuildFile; fileRef = A979EF7F0D19025200F4F8F2 /* WebServicesHTML */; };
 		A97B73980CB380EF00E5348D /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = A97B73970CB380EF00E5348D /* osirixplugin.icns */; };
 		A97B73990CB380F600E5348D /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = A97B73970CB380EF00E5348D /* osirixplugin.icns */; };
 		A97D4C610CE3459D003FE2E6 /* PieChartImage.h in Headers */ = {isa = PBXBuildFile; fileRef = A97D4C5F0CE3459D003FE2E6 /* PieChartImage.h */; };
@@ -1199,6 +1197,8 @@
 		AB73E14A0649839300545980 /* Studies.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB73E1480649839300545980 /* Studies.tif */; };
 		AB746744065938DB005838D5 /* Pencil.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB746742065938DB005838D5 /* Pencil.tiff */; };
 		AB7598290AEE62CE005EE3A9 /* SagSmallOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB7598280AEE62CE005EE3A9 /* SagSmallOpposite.tif */; };
+		AB7824680D3BACC700460DCE /* WebServicesHTML in Resources */ = {isa = PBXBuildFile; fileRef = AB78245B0D3BACC700460DCE /* WebServicesHTML */; };
+		AB7824690D3BACC700460DCE /* WebServicesHTML in Resources */ = {isa = PBXBuildFile; fileRef = AB78245B0D3BACC700460DCE /* WebServicesHTML */; };
 		AB785FBA061A3C0700EC48D3 /* MyNSTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB785FB6061A3C0700EC48D3 /* MyNSTextView.h */; };
 		AB785FBB061A3C0700EC48D3 /* MyNSTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB785FB7061A3C0700EC48D3 /* MyNSTextView.m */; };
 		AB7CB7B00A6E3886008DFCC9 /* error.png in Resources */ = {isa = PBXBuildFile; fileRef = AB7CB7AF0A6E3886008DFCC9 /* error.png */; };
@@ -8548,7 +8548,6 @@
 		A978DE880CB0D4BE00FB2C3D /* NFHUDPopUpButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDPopUpButton.h; sourceTree = "<group>"; };
 		A979EF790D19023E00F4F8F2 /* WebServicesMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebServicesMethods.h; sourceTree = "<group>"; };
 		A979EF7A0D19023E00F4F8F2 /* WebServicesMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebServicesMethods.m; sourceTree = "<group>"; };
-		A979EF7F0D19025200F4F8F2 /* WebServicesHTML */ = {isa = PBXFileReference; lastKnownFileType = folder; path = WebServicesHTML; sourceTree = "<group>"; };
 		A97B73970CB380EF00E5348D /* osirixplugin.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = osirixplugin.icns; sourceTree = "<group>"; };
 		A97D4C5F0CE3459D003FE2E6 /* PieChartImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PieChartImage.h; sourceTree = "<group>"; };
 		A97D4C600CE3459D003FE2E6 /* PieChartImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PieChartImage.m; sourceTree = "<group>"; };
@@ -8736,6 +8735,7 @@
 		AB73E1480649839300545980 /* Studies.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Studies.tif; sourceTree = "<group>"; };
 		AB746742065938DB005838D5 /* Pencil.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Pencil.tiff; sourceTree = "<group>"; };
 		AB7598280AEE62CE005EE3A9 /* SagSmallOpposite.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SagSmallOpposite.tif; sourceTree = "<group>"; };
+		AB78245B0D3BACC700460DCE /* WebServicesHTML */ = {isa = PBXFileReference; lastKnownFileType = folder; path = WebServicesHTML; sourceTree = "<group>"; };
 		AB785FB6061A3C0700EC48D3 /* MyNSTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyNSTextView.h; sourceTree = "<group>"; };
 		AB785FB7061A3C0700EC48D3 /* MyNSTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyNSTextView.m; sourceTree = "<group>"; };
 		AB7CB7AF0A6E3886008DFCC9 /* error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = error.png; sourceTree = "<group>"; };
@@ -12173,7 +12173,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				A979EF7F0D19025200F4F8F2 /* WebServicesHTML */,
+				AB78245B0D3BACC700460DCE /* WebServicesHTML */,
 				CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */,
 				ABE0D69A0CDB1B9E00F0494B /* iChatTheatreHelp */,
 				ABE0D6920CDB1A4400F0494B /* iChatHelper.xib */,
@@ -21369,7 +21369,7 @@
 				CEDEF7D60D020E9100CADB15 /* TIFFSmall.tiff in Resources */,
 				CEDEF7D70D020E9100CADB15 /* MailSmall.tiff in Resources */,
 				CEDEF7D80D020E9100CADB15 /* JPEGSmall.tiff in Resources */,
-				A979EF800D19025200F4F8F2 /* WebServicesHTML in Resources */,
+				AB7824680D3BACC700460DCE /* WebServicesHTML in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21755,7 +21755,7 @@
 				CEDEF7D90D020E9100CADB15 /* TIFFSmall.tiff in Resources */,
 				CEDEF7DA0D020E9100CADB15 /* MailSmall.tiff in Resources */,
 				CEDEF7DB0D020E9100CADB15 /* JPEGSmall.tiff in Resources */,
-				A979EF810D19025200F4F8F2 /* WebServicesHTML in Resources */,
+				AB7824690D3BACC700460DCE /* WebServicesHTML in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
