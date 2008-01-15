@@ -139,3 +139,10 @@ a.series:hover
 {
 	text-decoration:none;
 }
+
+a.report
+{
+	background:url(images/mail-attachment24.png) no-repeat left center;
+	padding-left:24px;
+	padding-top:2px;
+}

@@ -433,6 +433,11 @@ CHECK;
 						[aString replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+secondChar.length)  withString:@""];
 					}
 				}
+				else
+					{
+						NSLog( @"**** Dicom field not found: %@ in %@", dicomField, [imagePathsArray objectAtIndex: 0]);
+						[aString replaceCharactersInRange:NSMakeRange(firstChar.location, secondChar.location-firstChar.location+secondChar.length)  withString:@""];
+					}
 				moreFields = YES;
 			}
 			else moreFields = NO;

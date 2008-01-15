@@ -217,7 +217,7 @@
 		NSString *fileURL = [urlComponenents objectAtIndex:0];
 		//NSLog(@"fileURL : %@", fileURL);
 		
-		NSString *requestedFile;
+		NSString *requestedFile, *reportType;
 		NSData *data;
 		BOOL err = YES;
 		
@@ -669,6 +669,51 @@
 			
 			err = NO;
 		}
+		else if([fileURL isEqualToString:@"/report"])
+		{
+			NSPredicate *browsePredicate;
+			if([[parameters allKeys] containsObject:@"id"])
+			{
+				browsePredicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [parameters objectForKey:@"id"]];
+			}
+			else
+				browsePredicate = [NSPredicate predicateWithValue:NO];
+			NSArray *studies = [self studiesForPredicate:browsePredicate];
+			if([studies count]==1)
+			{
+				NSString *reportFilePath = [[studies lastObject] valueForKeyPath:@"reportURL"];
+				//NSLog(@"reportFilePath: %@", reportFilePath);
+				
+				reportType = [reportFilePath pathExtension];
+				
+				if(reportFilePath)
+				{
+					NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [reportFilePath lastPathComponent]];
+					// zip the directory into a single archive file
+					NSTask *zipTask   = [[NSTask alloc] init];
+					[zipTask setLaunchPath:@"/usr/bin/zip"];
+					[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
+					if([reportType isEqualToString:@"pages"])
+						[zipTask setArguments:[NSArray arrayWithObjects:@"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
+					else
+						[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
+					[zipTask launch];
+					while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+					int result = [zipTask terminationStatus];
+					[zipTask release];
+
+					if(result==0)
+					{
+						reportFilePath = [[reportFilePath stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
+					}
+					
+					data = [NSData dataWithContentsOfFile:reportFilePath];
+					err = NO;
+				}
+				else
+					err = YES;
+			}
+		}
 		else if([fileURL hasSuffix:@".m4v"])
 		{
 			data = [NSData dataWithContentsOfFile:requestedFile];
@@ -684,9 +729,10 @@
 				NSRange range = NSMakeRange(rangeStart, rangeLength);
 				data = [data subdataWithRange:range];
 			}
-			//NSLog(@"[data length]: %d", [data length]);
 			err = NO;
 		}
+		
+		//NSLog(@"[data length]: %d", [data length]);
 		
 		if(err)
 		{
@@ -750,6 +796,10 @@
 			
 			//NSLog(@"response : %@", [(id)CFHTTPMessageCopyAllHeaderFields(response) autorelease]);
 			//NSLog(@"movie");
+		}
+		else if([fileURL isEqualToString:@"/report"])
+		{
+			CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("application/zip"));
 		}
 		
 		CFHTTPMessageSetBody(response, (CFDataRef)data);
@@ -963,7 +1013,22 @@
 		
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyList%" withString:LocalizedLabel_StudyList options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	
-	NSArray *tempArray = [templateString componentsSeparatedByString:@"%SeriesListItem%"];
+	NSArray *tempArray, *tempArray2;
+	
+	if([study valueForKeyPath:@"reportURL"] && !isiPhone)
+	{
+		[templateString replaceOccurrencesOfString:@"%LocalizedLabel_GetReport%" withString:NSLocalizedString(@"Download Report", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%Report%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+		[templateString replaceOccurrencesOfString:@"%/Report%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	}
+	else
+	{
+		tempArray = [templateString componentsSeparatedByString:@"%Report%"];
+		tempArray2 = [[tempArray lastObject] componentsSeparatedByString:@"%/Report%"];
+		templateString = [NSMutableString stringWithFormat:@"%@%@",[tempArray objectAtIndex:0], [tempArray2 lastObject]];
+	}
+	
+	tempArray = [templateString componentsSeparatedByString:@"%SeriesListItem%"];
 	NSString *templateStringStart = [tempArray objectAtIndex:0];
 	tempArray = [[tempArray lastObject] componentsSeparatedByString:@"%/SeriesListItem%"];
 	NSString *seriesListItemString = [tempArray objectAtIndex:0];
