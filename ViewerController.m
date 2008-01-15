@@ -5533,7 +5533,7 @@ static ViewerController *draggedController = 0L;
 
 -(IBAction) calibrate:(id) sender
 {
-	NSRunCriticalAlertPanel( NSLocalizedString( @"Warning !", 0L), NSLocalizedString( @"Modyfing these parameters will:\r\r- Change the measurements results (length, surface, volume, ...)\r-Change the orientation of the slices and of the 3D objects (Left, Right, ...)\r-Change the aspect of the 3D images. It can introduce distorstions.\r\rONLY change these parameters if you know WHAT and WHY you are doing it.", 0L), NSLocalizedString( @"I agree", 0L), NSLocalizedString( @"Quit", 0L), nil);
+	NSRunCriticalAlertPanel( NSLocalizedString( @"Warning !", 0L), NSLocalizedString( @"Modifying these parameters will:\r\r- Change the measurements results (length, surface, volume, ...)\r-Change the orientation of the slices and of the 3D objects (Left, Right, ...)\r-Change the aspect of the 3D images. It can introduce distortions.\r\rONLY change these parameters if you know WHAT and WHY you are doing it.", 0L), NSLocalizedString( @"I agree", 0L), NSLocalizedString( @"Quit", 0L), nil);
 
 	[self computeInterval];
 	[self SetThicknessInterval:sender];
