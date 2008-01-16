@@ -570,7 +570,7 @@ extern NSLock	*PapyrusLock;
 		
 		[dicomElements setObject:[NSNumber numberWithDouble: (double)location] forKey:@"sliceLocation"];
 		
-		if( imageID == 0L)
+		if( imageID == 0L || [imageID intValue] >= 99999)
 		{
 			int val = 10000 + location*10.;
 			imageID = [[NSString alloc] initWithFormat:@"%5d", val];

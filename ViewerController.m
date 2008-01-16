@@ -13892,6 +13892,8 @@ int i,j,l;
 
 - (void) exportImage:(id) sender
 {
+	[imageView flagsChanged: 0L];	// If shift key was pressed, hiding the ROI data	apple-shift-E
+
 	[imageAllViewers setState: NSOffState];
 	
 	if( [[ViewerController getDisplayed2DViewers] count] > 1) [imageAllViewers setEnabled: YES];

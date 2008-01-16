@@ -2206,7 +2206,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				[dicomElements setObject:[NSNumber numberWithFloat: location] forKey:@"sliceLocation"];
 				
-				if( imageID == 0L)
+				if( imageID == 0L || [imageID intValue] >= 99999)
 				{
 					int val = 10000 + location*10.;
 					imageID = [[NSString alloc] initWithFormat:@"%5d", val];
@@ -2663,10 +2663,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		*/	
 		NSString *instanceNumber;
 //		NSLog(@"get Instance Number");
-		if (imageID = [dcmObject attributeValueWithName:@"InstanceNumber"]) {
-//			NSLog(@"imageID; %@", [dcmObject attributeValueWithName:@"InstanceNumber"]);
+		if (imageID = [dcmObject attributeValueWithName:@"InstanceNumber"])
+		{
 			int val = [imageID intValue];
-//			NSLog(@"val: %d", val);
 			imageID = [[NSString alloc] initWithFormat:@"%5d", val];		
 		}
 		else
@@ -2709,7 +2708,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		[dicomElements setObject:[NSNumber numberWithFloat: location] forKey:@"sliceLocation"];
 		
-		if( imageID == 0L)
+		if( imageID == 0L || [imageID intValue] >= 99999)
 		{
 			int val = 10000 + location*10.;
 			imageID = [[NSString alloc] initWithFormat:@"%5d", val];
