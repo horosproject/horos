@@ -708,6 +708,9 @@
 					}
 					
 					data = [NSData dataWithContentsOfFile:reportFilePath];
+					
+					[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
+					
 					err = NO;
 				}
 				else
