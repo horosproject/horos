@@ -1164,11 +1164,11 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		First elements is number of segments.  The next are length of the segments.
 	*/
 	NSLog(@"convertRLEToHost");
-	unsigned long offsetTable[16];
+	unsigned int offsetTable[16];
 	[rleData getBytes:offsetTable  range:NSMakeRange(0, 64)];
 	int i;
 	for (i = 0; i < 16; i++)
-		offsetTable[i] = NSSwapLittleLongToHost(offsetTable[i]);
+		offsetTable[i] = NSSwapLittleIntToHost(offsetTable[i]);
 	int segmentCount = offsetTable[0];
 	i = 0;
 	/*
@@ -3137,13 +3137,20 @@ NS_ENDHANDLER
 				if( singleThread == 0L) singleThread = [[NSLock alloc] init];
 				[singleThread lock];	// These JPEG decompressors are NOT thread-safe....
 				
-				short depth = scanJpegDataForBitDepth( (unsigned char *) [subData bytes], [subData length]);
-				if( depth == 0)
+				short depth = 0;
+				
+				if( [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax]] == NO &&
+					[transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax]]  == NO && 
+					[transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax RLETransferSyntax]] == NO)
 				{
-					NSLog( @"depth not found (scanJpegDataForBitDepth), will use : %d", _pixelDepth);
-					depth = _pixelDepth;
+					short depth = scanJpegDataForBitDepth( (unsigned char *) [subData bytes], [subData length]);
+					if( depth == 0)
+					{
+						NSLog( @"depth not found (scanJpegDataForBitDepth), will use : %d", _pixelDepth);
+						depth = _pixelDepth;
+					}
+					else NSLog( @"scanJpegDataForBitDepth : %d", depth);
 				}
-				else NSLog( @"scanJpegDataForBitDepth : %d", depth);
 				
 				//NSLog(@"Encapsulated: %@", [DCMTransferSyntax description]);
 				if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGBaselineTransferSyntax]]) {
