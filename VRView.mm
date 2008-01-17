@@ -5234,12 +5234,15 @@ public:
 	*bpp = 8;
 	
 	[self getVTKRenderWindow]->MakeCurrent();
-	[[NSOpenGLContext currentContext] flushBuffer];
+//	[[NSOpenGLContext currentContext] flushBuffer];
 	
 	buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
 	if( buf)
 	{
 		CGLContextObj cgl_ctx = (CGLContextObj) [[NSOpenGLContext currentContext] CGLContextObj];
+		
+		glReadBuffer(GL_FRONT);
+		
 		#if __BIG_ENDIAN__
 			glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 		#else
@@ -5292,7 +5295,7 @@ public:
 		
 		[TIFFRep release];
 	}
-	[[NSOpenGLContext currentContext] flushBuffer];
+//	[[NSOpenGLContext currentContext] flushBuffer];
 	[NSOpenGLContext clearCurrentContext];
 	
 	[drawLock unlock];

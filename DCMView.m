@@ -4553,10 +4553,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	suppress_labels = NO;
 	
     NSLog(@"DCMView alloc");
-
-	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, NSOpenGLPFABackingStore, (NSOpenGLPixelFormatAttribute)32, 0};
 	
-	//NSOpenGLPFABackingStore is important for screen capture - flushbuffer
+	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
 	
 //	NSOpenGLPixelFormatAttribute attrs[] =
 //    {
@@ -7544,11 +7542,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 				else [self display];
 				
-				[[self openGLContext] flushBuffer];	// <- Very important! Keep this line
+//				[[self openGLContext] flushBuffer];	// <- Very important! Keep this line
 				
 				[[self openGLContext] makeCurrentContext];
 				
 				CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+				
+				glReadBuffer(GL_FRONT);
 				
 				#if __BIG_ENDIAN__
 					glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
@@ -7605,7 +7605,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( isRGB == YES)
 		{
 			[self display];
-			[[self openGLContext] flushBuffer];
+//			[[self openGLContext] flushBuffer];
 			
 			*spp = 3;
 			*bpp = 8;
@@ -7628,7 +7628,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		else if( colorBuf != 0L)		// A CLUT is applied
 		{
 			[self display];
-			[[self openGLContext] flushBuffer];
+//			[[self openGLContext] flushBuffer];
 			
 			*spp = 3;
 			*bpp = 8;
@@ -7654,7 +7654,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( force8bits)	// I don't want 16 bits data, only 8 bits data
 			{
 				[self display];
-				[[self openGLContext] flushBuffer];
+//				[[self openGLContext] flushBuffer];
 				
 				*spp = 1;
 				*bpp = 8;

@@ -2373,7 +2373,9 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		if( buf)
 		{
 			[self getVTKRenderWindow]->MakeCurrent();
-			[[NSOpenGLContext currentContext] flushBuffer];
+//			[[NSOpenGLContext currentContext] flushBuffer];
+			
+			glReadBuffer(GL_FRONT);
 			
 			#if __BIG_ENDIAN__
 				glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
@@ -2401,7 +2403,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 				memcpy( buf + i*rowBytes, tempBuf, rowBytes);
 			}
 			
-			[[NSOpenGLContext currentContext] flushBuffer];
+//			[[NSOpenGLContext currentContext] flushBuffer];
 			[NSOpenGLContext clearCurrentContext];
 		}
 	}
