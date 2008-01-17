@@ -7630,7 +7630,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				unsigned char *dst = buf, *src = colorBuf;
 				i = *width * *height;
 				
-				#if __BIG_ENDIAN__
 				// CONVERT ARGB TO RGB
 				while( i-- > 0)
 				{
@@ -7639,15 +7638,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					*dst++ = *src++;
 					*dst++ = *src++;
 				}
-				#else
-				while( i-- > 0) {
-					dst[2] = src[0];
-					dst[1] = src[1];
-					dst[0] = src[2];
-					src+=4;
-					dst+=3;
-				}
-				#endif
 			}
 		}
 		else {
