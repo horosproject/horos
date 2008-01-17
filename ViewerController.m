@@ -11292,7 +11292,7 @@ int i,j,l;
 		if( [[[imageView curDCM] units] isEqualToString:@"CNTS"]) updatefactor = [[imageView curDCM] philipsFactor];
 		else updatefactor = [[imageView curDCM] patientsWeight] * 1000. / [[imageView curDCM] radionuclideTotalDoseCorrected];
 	}
-	
+		
 	for( y = 0; y < maxMovieIndex; y++)
 	{
 		for( x = 0; x < [pixList[y] count]; x++)
@@ -11324,6 +11324,8 @@ int i,j,l;
 			if( minValueOfSeries > [pix fullwl] - [pix fullww]/2) minValueOfSeries = [pix fullwl] - [pix fullww]/2;
 		}
 	}
+	
+	NSLog(@"Convert to SUV - factor: %f", factorPET2SUV);
 	
 	for( y = 0; y < maxMovieIndex; y++)
 	{

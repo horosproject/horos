@@ -7605,7 +7605,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( isRGB == YES)
 		{
 			[self display];
-//			[[self openGLContext] flushBuffer];
 			
 			*spp = 3;
 			*bpp = 8;
@@ -7627,34 +7626,45 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		else if( colorBuf != 0L)		// A CLUT is applied
 		{
-			[self display];
-//			[[self openGLContext] flushBuffer];
-			
-			*spp = 3;
-			*bpp = 8;
-			
-			long i = *width * *height * *spp * *bpp / 8;
-			buf = malloc( i );
-			if( buf) {
-				unsigned char *dst = buf, *src = colorBuf;
-				i = *width * *height;
+//			BOOL BWInverse = YES;
+//			
+//			// Is it inverse BW? We consider an inverse BW as a mono-channel image.
+//			for( int i = 0; i < 256 && BWInverse == YES; i++)
+//			{
+//				if( redTable[i] != 255-i || greenTable[i] != 255 -i || blueTable[i] != 255-i) BWInverse = NO;
+//			}
+//			
+//			if( BWInverse == NO)
+//			{
+				[self display];
 				
-				// CONVERT ARGB TO RGB
-				while( i-- > 0)
+				*spp = 3;
+				*bpp = 8;
+				
+				long i = *width * *height * *spp * *bpp / 8;
+				buf = malloc( i );
+				if( buf)
 				{
-					src++;
-					*dst++ = *src++;
-					*dst++ = *src++;
-					*dst++ = *src++;
+					unsigned char *dst = buf, *src = colorBuf;
+					i = *width * *height;
+					
+					// CONVERT ARGB TO RGB
+					while( i-- > 0)
+					{
+						src++;
+						*dst++ = *src++;
+						*dst++ = *src++;
+						*dst++ = *src++;
+					}
 				}
-			}
+//			}
+//			else processed = NO;
 		}
 		else
 		{
 			if( force8bits)	// I don't want 16 bits data, only 8 bits data
 			{
 				[self display];
-//				[[self openGLContext] flushBuffer];
 				
 				*spp = 1;
 				*bpp = 8;
@@ -7682,9 +7692,34 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 				long i = *width * *height * *spp * *bpp / 8;
 				buf = malloc( i);
-				if( buf ) {
-					dst8.data = buf;
-					vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);	//By default, we use a 1024 rescale intercept !!
+				if( buf)
+				{
+//					float *tempPETBuf = 0L;
+//					if( [self is2DViewer] && [curDCM SUVConverted])
+//					{
+//						float * copySrcfData = srcf.data;
+//						
+//						tempPETBuf = malloc( *width * *height * sizeof( float));
+//						
+//						NSLog( @"getRawPixelsView - convert PET SUV: %f", [[self windowController] factorPET2SUV]);
+//						
+//						float f = 1./[[self windowController] factorPET2SUV];
+//						vDSP_vsmul( srcf.data, 1, &f, tempPETBuf, 1, *width * *height);
+//						
+//						srcf.data = tempPETBuf;
+//						dst8.data = buf;
+//						vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);	//By default, we use a 1024 rescale intercept !!
+//						
+//						free( tempPETBuf);
+//						tempPETBuf = 0L;
+//						
+//						srcf.data = copySrcfData;
+//					}
+//					else
+					{
+						dst8.data = buf;
+						vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);	//By default, we use a 1024 rescale intercept !!
+					}
 				}
 				
 				if( srcf.data != curDCM.fImage ) free( srcf.data );

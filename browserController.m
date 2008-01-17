@@ -988,8 +988,11 @@ static NSArray*	statesArray = nil;
 		
 		for( ViewerController *v in cRebuild)
 		{
-			[viewersListToRebuild removeObject: v];
-			[vRebuild addObject: v];
+			if( [[v imageView] mouseDragging] == NO)
+			{
+				[viewersListToRebuild removeObject: v];
+				[vRebuild addObject: v];
+			}
 		}
 		
 		int condition = [newFilesConditionLock condition];
