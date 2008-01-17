@@ -4554,7 +4554,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
     NSLog(@"DCMView alloc");
 
-	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFABackingStore, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
+	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, NSOpenGLPFABackingStore, (NSOpenGLPixelFormatAttribute)32, 0};
 	
 	//NSOpenGLPFABackingStore is important for screen capture - flushbuffer
 	

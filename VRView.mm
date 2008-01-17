@@ -5220,7 +5220,7 @@ public:
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
 {
 	[drawLock lock];
-
+	
 	unsigned char	*buf = 0L;
 	int				i;
 	
@@ -5235,7 +5235,7 @@ public:
 	
 	[self getVTKRenderWindow]->MakeCurrent();
 	[[NSOpenGLContext currentContext] flushBuffer];
-
+	
 	buf = (unsigned char*) malloc( *width * *height * 4 * *bpp/8);
 	if( buf)
 	{
