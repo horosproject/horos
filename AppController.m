@@ -1953,7 +1953,7 @@ static BOOL initialized = NO;
 //	[[[NSApplication sharedApplication] dockTile] display];
 //	#endif
 
-	[AppController displayImportantNotice: self];
+//	[AppController displayImportantNotice: self];
 }
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
