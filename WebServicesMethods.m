@@ -143,6 +143,68 @@
 	[super dealloc];
 }
 
+- (CFHTTPMessageRef) prepareResponse: (NSData*) data fileURL: (NSString*) fileURL contentRange:(NSString*) contentRange totalLength:(int) totalLength mess:(HTTPServerRequest*) mess parameters:(NSMutableDictionary*) parameters
+{
+	CFHTTPMessageRef request = [mess request];
+	
+	CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, kCFHTTPVersion1_1); // OK
+	CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
+	if([fileURL isEqualToString:@"/thumbnail"]) CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("image/png"));
+	else if([fileURL isEqualToString:@"/image"]) CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("image/png"));
+	else if([fileURL isEqualToString:@"/movie"] || [fileURL hasSuffix:@".m4v"])
+	{
+		if([contentRange hasPrefix:@"bytes="])
+		{
+			NSString *rangeString = [contentRange stringByReplacingOccurrencesOfString:@"bytes=" withString:@""];
+			NSArray *rangeComponents = [rangeString componentsSeparatedByString:@"-"];
+			int rangeStart = [[rangeComponents objectAtIndex:0] intValue];
+			int rangeStop = [[rangeComponents objectAtIndex:1] intValue];
+			if(rangeStop-rangeStart+1<=totalLength)
+			{
+				CFRelease(response);
+				response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 206, NULL, kCFHTTPVersion1_1); //Partial Content
+				CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
+				CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Range"), (CFStringRef)[NSString stringWithFormat:@"bytes %d-%d/%d", rangeStart, rangeStop, totalLength]);
+			}
+		}
+		
+		//CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("video/x-m4v")); // doesn't work with safari...
+		CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("video/mp4"));
+		CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Accept-Ranges"), CFSTR("bytes"));
+		CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Last-Modified"), CFSTR("Fri, 21 Dec 2007 16:00:00 GMT"));
+
+		NSString *ifModifiedSince = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"If-Modified-Since") autorelease];
+		//NSLog(@"ifModifiedSince : %@", ifModifiedSince);
+		if(ifModifiedSince && ![contentRange hasPrefix:@"bytes="])
+		{
+			CFRelease(response);
+			response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 304, NULL, kCFHTTPVersion1_1); 
+		}
+		NSDate *now = [NSDate date];
+		NSString *currentDate = [now descriptionWithCalendarFormat:@"%a, %d %b %Y %H:%M:%S GMT" timeZone:nil locale:nil];
+		CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Date"), (CFStringRef) currentDate);
+		
+		
+		CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Keep-Alive"), CFSTR("timeout=5, max=100"));
+		CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Connection"), CFSTR("Keep-Alive"));
+	
+		if([[parameters allKeys] containsObject:@"id"])
+		{
+			CFHTTPMessageSetHeaderFieldValue(response, CFSTR("ETag"), (CFStringRef)[parameters objectForKey:@"id"]);
+		}
+		else
+		{
+			CFHTTPMessageSetHeaderFieldValue(response, CFSTR("ETag"), CFSTR("xyzzy"));
+		}
+	}
+	else if([fileURL isEqualToString:@"/report"])
+	{
+		CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("application/zip"));
+	}
+	
+	return response;
+}
+
 - (void)HTTPConnection:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
 {
 //	NSLog(@"HTTPConnection");
@@ -752,64 +814,8 @@
 			CFRelease(response);
 			return;
 		}
-		
-		CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, kCFHTTPVersion1_1); // OK
-		CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
-		if([fileURL isEqualToString:@"/thumbnail"]) CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("image/png"));
-		else if([fileURL isEqualToString:@"/image"]) CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("image/png"));
-		else if([fileURL isEqualToString:@"/movie"] || [fileURL hasSuffix:@".m4v"])
-		{
-			if([contentRange hasPrefix:@"bytes="])
-			{
-				NSString *rangeString = [contentRange stringByReplacingOccurrencesOfString:@"bytes=" withString:@""];
-				NSArray *rangeComponents = [rangeString componentsSeparatedByString:@"-"];
-				int rangeStart = [[rangeComponents objectAtIndex:0] intValue];
-				int rangeStop = [[rangeComponents objectAtIndex:1] intValue];
-				if(rangeStop-rangeStart+1<=totalLength)
-				{
-					CFRelease(response);
-					response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 206, NULL, kCFHTTPVersion1_1); //Partial Content
-					CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
-					CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Range"), (CFStringRef)[NSString stringWithFormat:@"bytes %d-%d/%d", rangeStart, rangeStop, totalLength]);
-				}
-			}
-			
-			//CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("video/x-m4v")); // doesn't work with safari...
-			CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("video/mp4"));
-			CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Accept-Ranges"), CFSTR("bytes"));
-			CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Last-Modified"), CFSTR("Fri, 21 Dec 2007 16:00:00 GMT"));
 
-			NSString *ifModifiedSince = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"If-Modified-Since") autorelease];
-			//NSLog(@"ifModifiedSince : %@", ifModifiedSince);
-			if(ifModifiedSince && ![contentRange hasPrefix:@"bytes="])
-			{
-				CFRelease(response);
-				response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 304, NULL, kCFHTTPVersion1_1); 
-			}
-			NSDate *now = [NSDate date];
-			NSString *currentDate = [now descriptionWithCalendarFormat:@"%a, %d %b %Y %H:%M:%S GMT" timeZone:nil locale:nil];
-			CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Date"), (CFStringRef) currentDate);
-			
-			
-			CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Keep-Alive"), CFSTR("timeout=5, max=100"));
-			CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Connection"), CFSTR("Keep-Alive"));
-		
-			if([[parameters allKeys] containsObject:@"id"])
-			{
-				CFHTTPMessageSetHeaderFieldValue(response, CFSTR("ETag"), (CFStringRef)[parameters objectForKey:@"id"]);
-			}
-			else
-			{
-				CFHTTPMessageSetHeaderFieldValue(response, CFSTR("ETag"), CFSTR("xyzzy"));
-			}
-			
-			//NSLog(@"response : %@", [(id)CFHTTPMessageCopyAllHeaderFields(response) autorelease]);
-			//NSLog(@"movie");
-		}
-		else if([fileURL isEqualToString:@"/report"])
-		{
-			CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Type"), CFSTR("application/zip"));
-		}
+		CFHTTPMessageRef response = [self prepareResponse:  data fileURL:  fileURL contentRange: contentRange totalLength: totalLength mess: mess parameters: parameters];
 		
 		CFHTTPMessageSetBody(response, (CFDataRef)data);
 		[mess setResponse:response];
