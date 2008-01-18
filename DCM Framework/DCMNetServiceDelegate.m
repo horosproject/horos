@@ -26,6 +26,7 @@
 
 static DCMNetServiceDelegate *_netServiceDelegate = 0L;
 static NSHost *currentHost = 0L;
+static BOOL bugFixedForDNSResolve = NO;
 
 @implementation DCMNetServiceDelegate
 
@@ -52,7 +53,21 @@ static NSHost *currentHost = 0L;
 
 - (id)init{
 
-	if (self = [super init]){
+	if (self = [super init])
+	{
+		OSErr err;
+		SInt32 osVersion;
+		
+		err = Gestalt ( gestaltSystemVersion, &osVersion );       
+		if ( err == noErr)       
+		{
+			if ( osVersion >= 0x1052UL ) bugFixedForDNSResolve = YES;
+		}
+		
+		#if !__LP64__
+			bugFixedForDNSResolve = YES;
+		#endif
+		
 		_dicomNetBrowser = [[NSNetServiceBrowser alloc] init];
 		[_dicomNetBrowser setDelegate:self];
 		[self update];
@@ -113,10 +128,12 @@ static NSHost *currentHost = 0L;
 	}
 	else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
 	{
-		#if !__LP64__
-		[aNetService resolveWithTimeout: 5];
-		[aNetService setDelegate:self];
-		#endif
+		if( bugFixedForDNSResolve)
+		{
+			[aNetService resolveWithTimeout: 5];
+			[aNetService setDelegate:self];
+			[aNetService retain];
+		}
 	}
 }
 
@@ -152,6 +169,8 @@ static NSHost *currentHost = 0L;
 - (void)netService:(NSNetService *)sender didNotResolve:(NSDictionary *)errorDict
 {
     NSLog( @"There was an error while attempting to resolve address for %@", [sender name]);
+	
+	[sender release];
 }
 
 + (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR
@@ -261,12 +280,14 @@ static NSHost *currentHost = 0L;
 
 - (void)netServiceDidResolveAddress:(NSNetService *)sender
 {
-	NSLog( @"netServiceDidResolveAddress: %@", [sender description]);
+	NSLog( @"DCMNetServiceDelegate netServiceDidResolveAddress: %@", [sender description]);
 	
 	if( [[sender name] isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]] == NO || [[[DCMNetServiceDelegate currentHost] name] isEqualToString: [sender hostName]] == NO)
 	{
 		[_dicomServices addObject: sender];
 		[[NSNotificationCenter defaultCenter] 	postNotificationName:@"DCMNetServicesDidChange" object:nil];
 	}
+	
+	[sender release];
 }
 @end
