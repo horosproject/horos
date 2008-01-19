@@ -20,6 +20,8 @@
 #import "DCMPix.h"
 #import <QTKit/QTKit.h>
 
+extern NSThread					*mainThread;
+
 @interface NSImage (ProportionalScaling)
 - (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize;
 @end
@@ -98,34 +100,72 @@
 	return (!aString)? @"" : aString;
 }
 
+- (void) serverThread
+{
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+
+	httpServ = [[HTTPServer alloc] init];
+	[httpServ setType:@"_http._tcp."];
+	[httpServ setName:@"OsiriXWebServer"];
+	[httpServ setPort:[[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
+	[httpServ setDelegate:self];
+
+	NSString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
+	webDirectory = [[bundlePath stringByAppendingPathComponent:@"WebServicesHTML"] retain];
+
+	NSError *error = nil;
+	if (![httpServ start:&error])
+	{
+		NSLog(@"Error starting HTTP Web Server: %@", error);
+		NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP Web Server Error", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP Web Server: %@", 0L), error], NSLocalizedString(@"OK",nil), nil, nil);
+		httpServ = 0L;
+	}
+	else
+	{
+		NSLog(@"******** Starting HTTP Web Server on port %d", [httpServ port]);
+	}
+	
+	shouldKeepRunning = YES;
+	
+	NSRunLoop *theRL = [NSRunLoop currentRunLoop];
+	
+	while (shouldKeepRunning && [theRL runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+	
+	[pool release];
+}
+
 - (id)init
 {
 	self = [super init];
 	if (self != nil)
 	{
+		[QTMovie movie];	//Force QT init on the main thread
+		
 		NSString *path = @"/tmp/osirixwebservices";
 		[[NSFileManager defaultManager] removeFileAtPath: path handler:nil];
 		
-		httpServ = [[HTTPServer alloc] init];
-		[httpServ setType:@"_http._tcp."];
-		[httpServ setName:@"OsiriXWebServer"];
-		[httpServ setPort:[[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
-		[httpServ setDelegate:self];
-
-		NSString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
-		webDirectory = [[bundlePath stringByAppendingPathComponent:@"WebServicesHTML"] retain];
-
-		NSError *error = nil;
-		if (![httpServ start:&error])
-		{
-			NSLog(@"Error starting HTTP Web Server: %@", error);
-			NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP Web Server Error", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP Web Server: %@", 0L), error], NSLocalizedString(@"OK",nil), nil, nil);
-			httpServ = 0L;
-		}
-		else
-		{
-			NSLog(@"******** Starting HTTP Web Server on port %d", [httpServ port]);
-		}
+		[NSThread detachNewThreadSelector:@selector(serverThread) toTarget:self withObject:0L];
+		
+//		httpServ = [[HTTPServer alloc] init];
+//		[httpServ setType:@"_http._tcp."];
+//		[httpServ setName:@"OsiriXWebServer"];
+//		[httpServ setPort:[[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
+//		[httpServ setDelegate:self];
+//
+//		NSString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
+//		webDirectory = [[bundlePath stringByAppendingPathComponent:@"WebServicesHTML"] retain];
+//
+//		NSError *error = nil;
+//		if (![httpServ start:&error])
+//		{
+//			NSLog(@"Error starting HTTP Web Server: %@", error);
+//			NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP Web Server Error", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP Web Server: %@", 0L), error], NSLocalizedString(@"OK",nil), nil, nil);
+//			httpServ = 0L;
+//		}
+//		else
+//		{
+//			NSLog(@"******** Starting HTTP Web Server on port %d", [httpServ port]);
+//		}
 	}
 	return self;
 }
@@ -141,6 +181,48 @@
 	[selectedDICOMNode release];
 	[selectedImages release];
 	[super dealloc];
+}
+
+- (void) generateMovie: (NSMutableDictionary*) dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+	NSString* fileURL  = [dict objectForKey: @"fileURL"];
+	NSString* contentRange = [dict objectForKey: @"contentRange"];
+	HTTPServerRequest* mess = [dict objectForKey: @"mess"];
+	NSMutableDictionary* parameters = [dict objectForKey: @"parameters"];
+	NSArray *imagesArray = [dict objectForKey: @"imagesArray"];
+	NSString *outFile = [dict objectForKey: @"outFile"];
+	NSString *fileName = [dict objectForKey: @"fileName"];
+	
+	if(![[NSFileManager defaultManager] fileExistsAtPath:outFile])
+	{
+		[[BrowserController currentBrowser] writeMovie:imagesArray name:fileName];
+		[self exportMovieToiPhone:fileName newFileName:outFile];
+		[[NSFileManager defaultManager] removeFileAtPath:fileName handler:nil];
+	}
+	
+	NSData *data = [NSData dataWithContentsOfFile:outFile];
+	int totalLength = [data length];
+	
+	if([contentRange hasPrefix:@"bytes="])
+	{
+		NSString *rangeString = [contentRange stringByReplacingOccurrencesOfString:@"bytes=" withString:@""];
+		NSArray *rangeComponents = [rangeString componentsSeparatedByString:@"-"];
+		int rangeStart = [[rangeComponents objectAtIndex:0] intValue];
+		int rangeStop = [[rangeComponents objectAtIndex:1] intValue];
+		int rangeLength = rangeStop - rangeStart + 1;
+		NSRange range = NSMakeRange(rangeStart, rangeLength);
+		data = [data subdataWithRange:range];
+	}
+
+	CFHTTPMessageRef response = [self prepareResponse:  data fileURL:  fileURL contentRange: contentRange totalLength: totalLength mess: mess parameters: parameters];
+	CFHTTPMessageSetBody(response, (CFDataRef)data);
+	[mess setResponse:response];
+	CFRelease(response);
+	return;
+
+	[pool release];
 }
 
 - (CFHTTPMessageRef) prepareResponse: (NSData*) data fileURL: (NSString*) fileURL contentRange:(NSString*) contentRange totalLength:(int) totalLength mess:(HTTPServerRequest*) mess parameters:(NSMutableDictionary*) parameters
@@ -651,7 +733,6 @@
 			NSArray *series = [self seriesForPredicate:browsePredicate];
 			if([series count]==1)
 			{
-				NSMutableArray *imagesArray = [NSMutableArray array];
 				NSArray *dicomImageArray = [[[series lastObject] valueForKey:@"images"] allObjects];
 				
 				@try
@@ -663,7 +744,8 @@
 					dicomImageArray = [dicomImageArray sortedArrayUsingDescriptors:sortDescriptors];
 					
 				}
-				@catch (NSException * e) {
+				@catch (NSException * e)
+				{
 					NSLog( [e description]);
 				}
 				
@@ -671,18 +753,16 @@
 				{
 					NSString *path = @"/tmp/osirixwebservices";
 					[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-					//path = [path stringByAppendingPathComponent:[[series lastObject] valueForKey:@"name"]];
 					
 					NSString *name = [NSString stringWithFormat:@"%@",[parameters objectForKey:@"id"]];//[[series lastObject] valueForKey:@"id"];
 					name = [name stringByAppendingFormat:@"-NBIM-%d", [dicomImageArray count]];
-					//NSLog(@"name : %@", name);
 					
 					NSString *fileName = [path stringByAppendingPathComponent:name];
 					fileName = [fileName stringByAppendingString:@".mov"];
-					//NSLog(@"fileName : %@", fileName);
 					NSString *outFile;
 					outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
-					//NSLog(@"outFile : %@", outFile);
+					
+					NSMutableArray *imagesArray = [NSMutableArray array];
 					
 					if(![[NSFileManager defaultManager] fileExistsAtPath:outFile])
 					{
@@ -714,24 +794,14 @@
 								}
 							}
 						}
-						[[BrowserController currentBrowser] writeMovie:imagesArray name:fileName];
-						[WebServicesMethods exportMovieToiPhone:fileName newFileName:outFile];
-						[[NSFileManager defaultManager] removeFileAtPath:fileName handler:nil];
 					}
 					
-					data = [NSData dataWithContentsOfFile:outFile];
-					totalLength = [data length];
+					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", mess, @"mess", parameters, @"parameters", imagesArray, @"imagesArray", contentRange, @"contentRange", 0L];
 					
-					if([contentRange hasPrefix:@"bytes="])
-					{
-						NSString *rangeString = [contentRange stringByReplacingOccurrencesOfString:@"bytes=" withString:@""];
-						NSArray *rangeComponents = [rangeString componentsSeparatedByString:@"-"];
-						int rangeStart = [[rangeComponents objectAtIndex:0] intValue];
-						int rangeStop = [[rangeComponents objectAtIndex:1] intValue];
-						int rangeLength = rangeStop - rangeStart + 1;
-						NSRange range = NSMakeRange(rangeStart, rangeLength);
-						data = [data subdataWithRange:range];
-					}
+					[self generateMovie: dict];
+					
+//					[NSThread detachNewThreadSelector:@selector( generateMovie:) toTarget: self withObject: dict];	<- doesn't work.... errors with the stream, http messages......
+					return;
 				}
 			}
 			
@@ -803,9 +873,7 @@
 			err = NO;
 		}
 		
-		//NSLog(@"[data length]: %d", [data length]);
-		
-		if(err)
+		if( err)
 		{
 			NSLog(@"404 - Not Found : %@", requestedFile);
 			CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 404, NULL, kCFHTTPVersion1_1); // Not found
@@ -827,7 +895,6 @@
 	CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", 0]);
     [mess setResponse:response];
     CFRelease(response);
-	return;
 }
 
 - (NSArray*)studiesForPredicate:(NSPredicate *)predicate;
@@ -1338,7 +1405,15 @@
 	return newString;
 }
 
-+ (void)exportMovieToiPhone:(NSString *)inFile newFileName:(NSString *)outFile;
+- (void) movieWithFile:(NSMutableDictionary*) dict
+{
+	QTMovie *e = [QTMovie movieWithFile:[dict objectForKey:@"file"] error:nil];
+	[dict setObject: e forKey:@"movie"];
+	
+	[e detachFromCurrentThread];
+}
+
+- (void)exportMovieToiPhone:(NSString *)inFile newFileName:(NSString *)outFile;
 {
     NSError *error = nil;
 
@@ -1350,56 +1425,56 @@
                               [NSNumber numberWithBool:YES], QTMovieIsActiveAttribute,
                               nil];
 
+	QTMovie *aMovie = 0L;
+	
     // create a QTMovie from the file
-    //QTMovie *aMovie = [QTMovie movieWithAttributes:attrs error:&error];
-	QTMovie *aMovie = [QTMovie movieWithFile:inFile error:&error];
-
-    if (aMovie && nil == error) {
+	if( mainThread != [NSThread currentThread])
+	{
+		[QTMovie enterQTKitOnThread];
+		
+		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: inFile, @"file", 0L];
+		[self performSelectorOnMainThread: @selector( movieWithFile:) withObject: dict waitUntilDone: YES];
+		aMovie = [dict objectForKey:@"movie"];
+		[aMovie attachToCurrentThread];
+	}
+	else
+	{
+		aMovie = [QTMovie movieWithFile: inFile error:nil];
+	}
 	
-	
-	if (NO == [aMovie attributeForKey:QTMovieHasApertureModeDimensionsAttribute]) {
-				[aMovie generateApertureModeDimensions];
-			}
+    if (aMovie && nil == error)
+	{
+		if (NO == [aMovie attributeForKey:QTMovieHasApertureModeDimensionsAttribute])
+		{
+			[aMovie generateApertureModeDimensions];
+		}
 			
-			[aMovie setAttribute:QTMovieApertureModeClean forKey:QTMovieApertureModeAttribute];
+		[aMovie setAttribute:QTMovieApertureModeClean forKey:QTMovieApertureModeAttribute];
 	
-	
-        // do export
-        //'M4VP' is the FourCC for the iPhone export component
- //       NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-//									  [NSNumber numberWithBool:YES],	QTMovieFlatten,
-//                                      [NSNumber numberWithBool:YES],    QTMovieExport,
-//                                      [NSNumber numberWithUnsignedInt:'M4VP'], QTMovieExportType,
-//									  [NSNumber numberWithUnsignedInt: kAppleManufacturer], QTMovieExportManufacturer,
-//                                      nil];
-    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+		NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                                  [NSNumber numberWithBool:YES], QTMovieExport,
                                                  [NSNumber numberWithLong:'M4VP'], QTMovieExportType, nil];
-        // export the movie using the specified exporter
-        //BOOL status = [aMovie writeToFile:@"/Users/Shared/myiPhoneMovie.m4v" withAttributes:dictionary];
-//		NSString *outFile;
-//		outFile = [NSString stringWithFormat:@"%@2.m4v", [inFile stringByDeletingPathExtension]];
-		
-		 [QTMovie enterQTKitOnThread];
-//    [aMovie attachToCurrentThread];
 		
 		BOOL status = [aMovie writeToFile:outFile withAttributes:dictionary];
-		
-//		   [aMovie detachFromCurrentThread];
-    [QTMovie exitQTKitOnThread];
-
-		
-        if (NO == status) {
+	
+		if (NO == status)
+		{
             // something didn't go right during the export process
             NSLog(@"%@ encountered a problem when exporting.\n", [outFile lastPathComponent]);
         }
-    } else {
+    }
+	else
+	{
         // couldn't open the movie
         //NSAlert *alert = [NSAlert alertWithError:error];
         //[alert runModal];
 		NSLog(@"exportMovieToiPhone Error : %@", error);
     }
+	
+	if( mainThread != [NSThread currentThread])
+	{
+		[aMovie detachFromCurrentThread];
+		[QTMovie exitQTKitOnThread];
+	}
 }
-
-
 @end

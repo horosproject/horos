@@ -22,6 +22,7 @@
 	NSMutableArray *selectedImages;
 	NSMutableDictionary *selectedDICOMNode;
 	NSLock *sendLock;
+	BOOL shouldKeepRunning;
 }
 
 - (NSArray*)studiesForPredicate:(NSPredicate *)predicate;
@@ -40,6 +41,6 @@
 + (NSString *)encodeCharacterEntitiesIn:(NSString *)source;
 + (NSString *)decodeCharacterEntitiesIn:(NSString *)source;
 + (NSString*)iPhoneCompatibleNumericalFormat:(NSString*)aString;
-+ (void)exportMovieToiPhone:(NSString *)inFile newFileName:(NSString *)outFile;
-
+- (void)exportMovieToiPhone:(NSString *)inFile newFileName:(NSString *)outFile;
+- (CFHTTPMessageRef) prepareResponse: (NSData*) data fileURL: (NSString*) fileURL contentRange:(NSString*) contentRange totalLength:(int) totalLength mess:(HTTPServerRequest*) mess parameters:(NSMutableDictionary*) parameters;
 @end

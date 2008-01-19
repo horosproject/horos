@@ -10920,19 +10920,50 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	QTMovie	* e = [QTMovie movie];
 	[dict setObject: e forKey:@"movie"];
+	
+	[e detachFromCurrentThread];
 }
 
 - (void) movieWithFile:(NSMutableDictionary*) dict
 {
 	QTMovie *e = [QTMovie movieWithFile:[dict objectForKey:@"file"] error:nil];
 	[dict setObject: e forKey:@"movie"];
+	
+	[e detachFromCurrentThread];
 }
 
 - (void)writeMovie: (NSArray*)imagesArray name: (NSString*)fileName
 {
-	[[QTMovie movie] writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: 0L];
+	QTMovie *mMovie = 0L;
 	
-	QTMovie *mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
+	if( mainThread != [NSThread currentThread])
+	{
+		[QTMovie enterQTKitOnThread];
+		
+		NSMutableDictionary *dict;
+		
+		dict = [NSMutableDictionary dictionary];
+		[self performSelectorOnMainThread: @selector( createEmptyMovie:) withObject: dict waitUntilDone: YES];
+		QTMovie *empty = [dict objectForKey:@"movie"];
+		
+		[empty attachToCurrentThread];
+		[empty writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: 0L];
+		[empty detachFromCurrentThread];
+		
+		dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [fileName stringByAppendingString:@"temp"], @"file", 0L];
+		[self performSelectorOnMainThread: @selector( movieWithFile:) withObject: dict waitUntilDone: YES];
+		mMovie = [dict objectForKey:@"movie"];
+		
+		[mMovie attachToCurrentThread];
+	}
+	else
+	{
+		// Life is so much simplier in a single thread application...
+		
+		[[QTMovie movie] writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: 0L];
+		mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
+	}
+	
 	[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
 	
 	long long timeValue = 60;
@@ -10953,6 +10984,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[mMovie writeToFile: fileName withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
 	[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler: nil];
+
+	if( mainThread != [NSThread currentThread])
+	{
+		[mMovie detachFromCurrentThread];
+		[QTMovie exitQTKitOnThread];
+	}
 }
 
 -(void) exportQuicktimeInt:(NSArray*) dicomFiles2Export :(NSString*) path :(BOOL) html {
