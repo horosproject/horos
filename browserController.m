@@ -10916,6 +10916,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self setDockIcon];
 }
 
+- (void) createEmptyMovie:(NSMutableDictionary*) dict
+{
+	QTMovie	* e = [QTMovie movie];
+	[dict setObject: e forKey:@"movie"];
+}
+
+- (void) movieWithFile:(NSMutableDictionary*) dict
+{
+	QTMovie *e = [QTMovie movieWithFile:[dict objectForKey:@"file"] error:nil];
+	[dict setObject: e forKey:@"movie"];
+}
+
 - (void)writeMovie: (NSArray*)imagesArray name: (NSString*)fileName
 {
 	[[QTMovie movie] writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: 0L];
