@@ -183,20 +183,69 @@ extern NSThread					*mainThread;
 	[super dealloc];
 }
 
+- (void) sendResponse:(NSMutableDictionary*) dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+	NSData* data  = [dict objectForKey: @"data"];
+	NSString* fileURL = [dict objectForKey: @"fileURL"];
+	NSString *contentRange = [dict objectForKey: @"contentRange"];
+	int totalLength = [[dict objectForKey: @"totalLength"] intValue];
+	HTTPServerRequest* mess = [dict objectForKey: @"mess"];
+	NSMutableDictionary *parameters = [dict objectForKey: @"parameters"];
+	
+	CFHTTPMessageRef response = [self prepareResponse:  data fileURL:  fileURL contentRange: contentRange totalLength: totalLength mess: mess parameters: parameters];
+	CFHTTPMessageSetBody(response, (CFDataRef)data);
+	[mess setResponse:response];
+	CFRelease(response);
+	
+	[pool release];
+}
+
 - (void) generateMovie: (NSMutableDictionary*) dict
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
 	NSString* fileURL  = [dict objectForKey: @"fileURL"];
 	NSString* contentRange = [dict objectForKey: @"contentRange"];
-	HTTPServerRequest* mess = [dict objectForKey: @"mess"];
-	NSMutableDictionary* parameters = [dict objectForKey: @"parameters"];
-	NSArray *imagesArray = [dict objectForKey: @"imagesArray"];
 	NSString *outFile = [dict objectForKey: @"outFile"];
 	NSString *fileName = [dict objectForKey: @"fileName"];
+	NSThread *httpServerThread = [dict objectForKey: @"thread"];
+	NSArray *dicomImageArray = [dict objectForKey: @"dicomImageArray"];
+	
+	NSMutableArray *imagesArray = [NSMutableArray array];
 	
 	if(![[NSFileManager defaultManager] fileExistsAtPath:outFile])
 	{
+		for (DicomImage *im in dicomImageArray)
+		{
+			for (int x = 0; x < [[im valueForKey:@"numberOfFrames"] intValue]; x++)
+			{
+				DCMPix* dcmPix = [[DCMPix alloc] myinit:[im valueForKey:@"completePathResolved"] :0 :1 :0L :x :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
+			  
+				if(dcmPix)
+				{
+					float curWW = 0;
+					float curWL = 0;
+					
+					if([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
+					{
+						curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+						curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+					}
+					
+					if(curWW!=0 && curWW!=curWL)
+						[dcmPix checkImageAvailble:curWW :curWL];
+					else
+						[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
+					
+					NSImage *im = [dcmPix image];
+					[imagesArray addObject: im];
+					[dcmPix release];
+				}
+			}
+		}
+		
 		[[BrowserController currentBrowser] writeMovie:imagesArray name:fileName];
 		[self exportMovieToiPhone:fileName newFileName:outFile];
 		[[NSFileManager defaultManager] removeFileAtPath:fileName handler:nil];
@@ -215,13 +264,14 @@ extern NSThread					*mainThread;
 		NSRange range = NSMakeRange(rangeStart, rangeLength);
 		data = [data subdataWithRange:range];
 	}
-
-	CFHTTPMessageRef response = [self prepareResponse:  data fileURL:  fileURL contentRange: contentRange totalLength: totalLength mess: mess parameters: parameters];
-	CFHTTPMessageSetBody(response, (CFDataRef)data);
-	[mess setResponse:response];
-	CFRelease(response);
-	return;
-
+	
+	[dict setObject: data forKey: @"data"];
+	[dict setObject: [NSNumber numberWithInt: totalLength] forKey: @"totalLength"];
+	
+	// The answer HAS to be performed on the same thread as the http server
+	
+	[self performSelector:@selector( sendResponse:) onThread: httpServerThread withObject:dict waitUntilDone: YES];
+	
 	[pool release];
 }
 
@@ -762,45 +812,12 @@ extern NSThread					*mainThread;
 					NSString *outFile;
 					outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
 					
-					NSMutableArray *imagesArray = [NSMutableArray array];
-					
-					if(![[NSFileManager defaultManager] fileExistsAtPath:outFile])
-					{
-						for (DicomImage *im in dicomImageArray)
-						{
-							for (int x = 0; x < [[im valueForKey:@"numberOfFrames"] intValue]; x++)
-							{
-								DCMPix* dcmPix = [[DCMPix alloc] myinit:[im valueForKey:@"completePathResolved"] :0 :1 :0L :x :[[im valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:im];
-							  
-								if(dcmPix)
-								{
-									float curWW = 0;
-									float curWL = 0;
-									
-									if([[im valueForKey:@"series"] valueForKey:@"windowWidth"])
-									{
-										curWW = [[[im valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-										curWL = [[[im valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
-									}
-									
-									if(curWW!=0 && curWW!=curWL)
-										[dcmPix checkImageAvailble:curWW :curWL];
-									else
-										[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
-									
-									NSImage *im = [dcmPix image];
-									[imagesArray addObject: im];
-									[dcmPix release];
-								}
-							}
-						}
-					}
-					
-					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", mess, @"mess", parameters, @"parameters", imagesArray, @"imagesArray", contentRange, @"contentRange", 0L];
+					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", mess, @"mess", parameters, @"parameters", dicomImageArray, @"dicomImageArray", [NSThread currentThread], @"thread", contentRange, @"contentRange", 0L];
 					
 					[self generateMovie: dict];
 					
-//					[NSThread detachNewThreadSelector:@selector( generateMovie:) toTarget: self withObject: dict];	<- doesn't work.... errors with the stream, http messages......
+//					[NSThread detachNewThreadSelector:@selector( generateMovie:) toTarget: self withObject: dict];		// <- not very stable......
+					
 					return;
 				}
 			}
