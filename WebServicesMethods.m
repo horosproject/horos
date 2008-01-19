@@ -141,6 +141,8 @@ extern NSThread					*mainThread;
 	{
 		[QTMovie movie];	//Force QT init on the main thread
 		
+		lockArray = [[NSMutableDictionary dictionary] retain];
+		
 		NSString *path = @"/tmp/osirixwebservices";
 		[[NSFileManager defaultManager] removeFileAtPath: path handler:nil];
 		
@@ -180,6 +182,7 @@ extern NSThread					*mainThread;
 	[webDirectory release];
 	[selectedDICOMNode release];
 	[selectedImages release];
+	[lockArray release];
 	[super dealloc];
 }
 
@@ -205,17 +208,20 @@ extern NSThread					*mainThread;
 - (void) generateMovie: (NSMutableDictionary*) dict
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
+	
 	NSString* fileURL  = [dict objectForKey: @"fileURL"];
 	NSString* contentRange = [dict objectForKey: @"contentRange"];
 	NSString *outFile = [dict objectForKey: @"outFile"];
 	NSString *fileName = [dict objectForKey: @"fileName"];
 	NSThread *httpServerThread = [dict objectForKey: @"thread"];
 	NSArray *dicomImageArray = [dict objectForKey: @"dicomImageArray"];
-	
+
+//	if( [lockArray objectForKey: [outFile lastPathComponent]] == 0L) [lockArray setObject: [[[NSLock alloc] init] autorelease] forKey: [outFile lastPathComponent]];
+//	[[lockArray objectForKey: [outFile lastPathComponent]] lock];
+
 	NSMutableArray *imagesArray = [NSMutableArray array];
 	
-	if(![[NSFileManager defaultManager] fileExistsAtPath:outFile])
+	if(![[NSFileManager defaultManager] fileExistsAtPath: outFile])
 	{
 		for (DicomImage *im in dicomImageArray)
 		{
@@ -250,6 +256,8 @@ extern NSThread					*mainThread;
 		[self exportMovieToiPhone:fileName newFileName:outFile];
 		[[NSFileManager defaultManager] removeFileAtPath:fileName handler:nil];
 	}
+	
+//	[[lockArray objectForKey: [outFile lastPathComponent]] unlock];
 	
 	NSData *data = [NSData dataWithContentsOfFile:outFile];
 	int totalLength = [data length];

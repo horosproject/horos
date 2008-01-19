@@ -21,6 +21,7 @@
 	NSString *webDirectory;
 	NSMutableArray *selectedImages;
 	NSMutableDictionary *selectedDICOMNode;
+	NSMutableDictionary *lockArray;
 	NSLock *sendLock;
 	BOOL shouldKeepRunning;
 }
