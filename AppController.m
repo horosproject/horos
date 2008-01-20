@@ -1959,7 +1959,7 @@ static BOOL initialized = NO;
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
 	long i;
-	
+
 //	#if !__LP64__
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"] == NO)
 		[GrowlApplicationBridge setGrowlDelegate:self];

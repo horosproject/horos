@@ -204,6 +204,7 @@ extern NSThread					*mainThread;
 	NSString *fileName = [dict objectForKey: @"fileName"];
 	NSThread *httpServerThread = [dict objectForKey: @"thread"];
 	NSArray *dicomImageArray = [dict objectForKey: @"dicomImageArray"];
+	BOOL isiPhone = [[dict objectForKey:@"isiPhone"] boolValue];
 
 //	if( [lockArray objectForKey: [outFile lastPathComponent]] == 0L) [lockArray setObject: [[[NSLock alloc] init] autorelease] forKey: [outFile lastPathComponent]];
 //	[[lockArray objectForKey: [outFile lastPathComponent]] lock];
@@ -242,8 +243,12 @@ extern NSThread					*mainThread;
 		}
 		
 		[[BrowserController currentBrowser] writeMovie:imagesArray name:fileName];
-		[self exportMovieToiPhone:fileName newFileName:outFile];
-		[[NSFileManager defaultManager] removeFileAtPath:fileName handler:nil];
+		
+		if( isiPhone)
+		{
+			[self exportMovieToiPhone:fileName newFileName:outFile];
+			[[NSFileManager defaultManager] removeFileAtPath:fileName handler:nil];
+		}
 	}
 	
 //	[[lockArray objectForKey: [outFile lastPathComponent]] unlock];
@@ -807,9 +812,12 @@ extern NSThread					*mainThread;
 					NSString *fileName = [path stringByAppendingPathComponent:name];
 					fileName = [fileName stringByAppendingString:@".mov"];
 					NSString *outFile;
-					outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
-					
-					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", mess, @"mess", parameters, @"parameters", dicomImageArray, @"dicomImageArray", [NSThread currentThread], @"thread", contentRange, @"contentRange", 0L];
+					if( isiPhone)
+						outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
+					else
+						outFile = fileName;
+						
+					NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: isiPhone], @"isiPhone", fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", mess, @"mess", parameters, @"parameters", dicomImageArray, @"dicomImageArray", [NSThread currentThread], @"thread", contentRange, @"contentRange", 0L];
 					
 					[self generateMovie: dict];
 					
