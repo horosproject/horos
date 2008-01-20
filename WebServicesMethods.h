@@ -22,8 +22,8 @@
 	NSMutableArray *selectedImages;
 	NSMutableDictionary *selectedDICOMNode;
 	NSMutableDictionary *lockArray;
-	NSLock *sendLock;
-	BOOL shouldKeepRunning;
+	NSLock *sendLock, *running;
+	volatile BOOL shouldKeepRunning;
 }
 
 - (NSArray*)studiesForPredicate:(NSPredicate *)predicate;

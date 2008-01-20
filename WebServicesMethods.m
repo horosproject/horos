@@ -129,7 +129,11 @@ extern NSThread					*mainThread;
 	
 	NSRunLoop *theRL = [NSRunLoop currentRunLoop];
 	
+	[running lock];
+	
 	while (shouldKeepRunning && [theRL runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+	
+	[running unlock];
 	
 	[pool release];
 }
@@ -142,38 +146,23 @@ extern NSThread					*mainThread;
 		[QTMovie movie];	//Force QT init on the main thread
 		
 		lockArray = [[NSMutableDictionary dictionary] retain];
+		running = [[NSLock alloc] init];
 		
 		NSString *path = @"/tmp/osirixwebservices";
 		[[NSFileManager defaultManager] removeFileAtPath: path handler:nil];
 		
 		[NSThread detachNewThreadSelector:@selector(serverThread) toTarget:self withObject:0L];
-		
-//		httpServ = [[HTTPServer alloc] init];
-//		[httpServ setType:@"_http._tcp."];
-//		[httpServ setName:@"OsiriXWebServer"];
-//		[httpServ setPort:[[NSUserDefaults standardUserDefaults] integerForKey:@"httpWebServerPort"]];
-//		[httpServ setDelegate:self];
-//
-//		NSString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
-//		webDirectory = [[bundlePath stringByAppendingPathComponent:@"WebServicesHTML"] retain];
-//
-//		NSError *error = nil;
-//		if (![httpServ start:&error])
-//		{
-//			NSLog(@"Error starting HTTP Web Server: %@", error);
-//			NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP Web Server Error", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP Web Server: %@", 0L), error], NSLocalizedString(@"OK",nil), nil, nil);
-//			httpServ = 0L;
-//		}
-//		else
-//		{
-//			NSLog(@"******** Starting HTTP Web Server on port %d", [httpServ port]);
-//		}
 	}
 	return self;
 }
 
 - (void)dealloc
 {
+	shouldKeepRunning = NO;
+	[running lock];
+	[running unlock];
+	[running release];
+	
 	[sendLock lock];
 	[sendLock unlock];
 	[sendLock release];
