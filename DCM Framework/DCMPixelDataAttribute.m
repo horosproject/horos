@@ -474,16 +474,10 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	
 	_pixelDepth = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"BitsStored"]] value] intValue];
 	_bitsStored = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"BitsAllocated"]] value] intValue];
-	
-//	if( _pixelDepth == 8 && _bitsStored == 16 && [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"PhotometricInterpretation"]]value] isEqualToString:@"RGB"] == YES)
-//	{
-//		_bitsStored = 8;
-//		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsStored"];
-//	}
-	
-	if ([ts isExplicit] && ([vr isEqualToString:@"OB"] || [vr isEqualToString:@"OW"]))
+		
+	if ( ts.isExplicit && ([vr isEqualToString:@"OB"] || [vr isEqualToString:@"OW"]))
 		theVR = vr;	
-	else if (_bitsStored <= 8 || [dicomData isEncapsulated]) 
+	else if ( _bitsStored <= 8 || dicomData.isEncapsulated ) 
 		theVR = @"OB";
 	else {
 		forImplicitUseOW = YES;
@@ -493,7 +487,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		NSLog(@"init Pixel Data");
 	// may may an ImageIconSequence in an encapsualted file. The icon is not encapsulated so don't de-encapsulate
 	
-	if ([dicomData isEncapsulated] && vl == 0xffffffffl ) {
+	if ( dicomData.isEncapsulated && vl == 0xffffffffl ) {
 		self = [super initWithAttributeTag:tag  vr:theVR];
 		[self deencapsulateData:dicomData];
 		
@@ -514,7 +508,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 			_values = [[NSMutableArray array] retain];
 			
 		if (DEBUG) 
-			NSLog([self description]);
+			NSLog( self.description );
 
 	}
 
@@ -555,8 +549,8 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		int  vl = [dicomData nextUnsignedLong];
 		DCMAttributeTag *attrTag = [[[DCMAttributeTag alloc]  initWithGroup:group element:element] autorelease];
 		if (DEBUG)
-			NSLog(@"Attr tag: %@", [attrTag description]);
-		if ([[attrTag stringValue]  isEqualToString:[(NSDictionary *)[DCMTagForNameDictionary sharedTagForNameDictionary] objectForKey:@"Item"]]) {
+			NSLog(@"Attr tag: %@", attrTag.description );
+		if ([ attrTag.stringValue isEqualToString:[(NSDictionary *)[DCMTagForNameDictionary sharedTagForNameDictionary] objectForKey:@"Item"]]) {
 			[_values addObject:[dicomData nextDataWithLength:vl]];
 			if (DEBUG)
 				NSLog(@"add Frame %d with length: %d", [_values count],  vl);
@@ -584,14 +578,14 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	NSException *exception;
 	//NS_DURING
 	if (DEBUG)
-		NSLog(@"Write Pixel Data %@", [transferSyntax description]);
-	//if ([ts isEncapsulated] && [transferSyntax isEqualToTransferSyntax:ts] ) {
-	if ([ts isEncapsulated]) {		
+		NSLog(@"Write Pixel Data %@", transferSyntax.description );
+
+	if ( ts.isEncapsulated ) {		
 		[dcmData addUnsignedShort:[self group]];
 		[dcmData addUnsignedShort:[self element]];
 		if (DEBUG)
 			NSLog(@"Write Sequence Base Length:%d", 0xffffffffl);
-		if ([ts isExplicit]) {
+		if ( ts.isExplicit ) {
 			[dcmData addString:_vr];
 			[dcmData  addUnsignedShort:0];		// reserved bytes
 			[dcmData  addUnsignedLong:(0xffffffffl)];
@@ -601,19 +595,13 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		}
 	}
 	//can do unencapsualated Syntaxes
-	else if (![ts isEncapsulated])
+	else if ( !ts.isEncapsulated )
 		[super writeBaseToData:dcmData transferSyntax:ts];
 		
 	else {
-		exception = [NSException exceptionWithName:@"DCMTransferSyntaxConversionError" reason:[NSString stringWithFormat:@"Cannot convert %@ to %@", [transferSyntax name], [ts name]] userInfo:nil];
+		exception = [NSException exceptionWithName:@"DCMTransferSyntaxConversionError" reason:[NSString stringWithFormat:@"Cannot convert %@ to %@", transferSyntax.name, ts.name] userInfo:nil];
 		[exception raise];
 	}
-	/* 
-	NS_HANDLER
-		NSLog(@"Exception:%@	reason:%@", [exception name], [exception reason]);
-		[exception raise];
-	NS_ENDHANDLER
-	*/	
 
 }
 
@@ -621,9 +609,9 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	// valueLength should be 0xffffffff from constructor
 	BOOL status = NO;
 	if (DEBUG) 
-		NSLog(@"Write PixelData with TS:%@  vr: %@ encapsulated: %d", [ts description], _vr, [ts isEncapsulated] );
+		NSLog(@"Write PixelData with TS:%@  vr: %@ encapsulated: %d", ts.description, _vr, ts.isEncapsulated );
 	//NS_DURING
-	if ([ts isEncapsulated] && [transferSyntax isEqualToTransferSyntax:ts]) {
+	if ( ts.isEncapsulated && [transferSyntax isEqualToTransferSyntax:ts]) {
 		[self writeBaseToData:container transferSyntax:ts];
 		for ( id object in _values ) {
 			if (DEBUG)
@@ -661,14 +649,14 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 }
 
 - (NSString *)description{
-	return  [NSString stringWithFormat:@"%@\t %@\t vl:%d\t vm:%d", [_tag description], _vr, [self valueLength], [self valueMultiplicity]];
+	return  [NSString stringWithFormat:@"%@\t %@\t vl:%d\t vm:%d", _tag.description, _vr, self.valueLength, self.valueMultiplicity];
 }
 
 - (BOOL)convertToTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality{
 	BOOL status = NO;
 	NS_DURING
 	if (DEBUG)
-		NSLog(@"Convert Syntax %@ to %@", [transferSyntax description], [ts description]);
+		NSLog(@"Convert Syntax %@ to %@", transferSyntax.description, ts.description );
 		//already there do nothing
 	if ([transferSyntax isEqualToTransferSyntax:ts])  {
 		status = YES;
@@ -750,7 +738,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		[self createOffsetTable];
 		self.transferSyntax = ts;
 		if (DEBUG)
-			NSLog(@"Converted to Syntax %@", [transferSyntax description]);
+			NSLog(@"Converted to Syntax %@", transferSyntax.description );
 		status = YES;
 		goto finishedConversion;
 		//return YES;
@@ -816,7 +804,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		status = NO;
 	NS_ENDHANDLER
 	if (DEBUG)
-		NSLog(@"Converted to Syntax %@ status:%d", [transferSyntax description], status);
+		NSLog(@"Converted to Syntax %@ status:%d", transferSyntax.description, status);
 	return status;
 }
 
@@ -2332,7 +2320,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 		// if ...the palette has 256 entries and thus we extract the clut datas
 	
 		else if (clutDepthR == 8  && clutDepthG == 8  && clutDepthB == 8) {
-			NSLog(@"Converting 8 bit LUT. Red LUT: %@", [[_dcmObject attributeWithName:@"RedPaletteColorLookupTableData"] description]);
+			NSLog(@"Converting 8 bit LUT. Red LUT: %@", [_dcmObject attributeWithName:@"RedPaletteColorLookupTableData"].description );
 			DCMAttribute *redCLUT = [_dcmObject attributeWithName:@"RedPaletteColorLookupTableData"];
 			//NSData *redCLUT = [_dcmObject attributeValueWithName:@"RedPaletteColorLookupTableData"];
 			if (redCLUT) {
@@ -2483,7 +2471,7 @@ bool dcm_read_JPEG2000_file (void* raw, char *inputdata, size_t inputlength)
 	} //done converting Palette
 NS_HANDLER
 	rgbData = nil;
-	NSLog(@"Exception converting Palette to RGB: %@", [localException name]);
+	NSLog(@"Exception converting Palette to RGB: %@", localException.name);
 NS_ENDHANDLER
 	if( clutRed != 0L)
 		free(clutRed);
@@ -2875,7 +2863,7 @@ NS_ENDHANDLER
 	NSMutableData *subData = nil;
 	if (!_framesCreated){	
 		//NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		if ([transferSyntax isEncapsulated])	{
+		if ( transferSyntax.isEncapsulated )	{
 			//NSLog(@"encapsulated");
 			NSMutableArray *offsetTable = [NSMutableArray array];
 			/*offset table will be first fragment
@@ -2895,7 +2883,7 @@ NS_ENDHANDLER
 				unsigned long *offsets = (unsigned long *)[offsetData bytes];
 				int numberOfOffsets = [offsetData length]/4;
 				for ( i = 0; i < numberOfOffsets; i++) {
-					if ([transferSyntax isLittleEndian]) 
+					if ( transferSyntax.isLittleEndian ) 
 						offset = NSSwapLittleLongToHost(offsets[i]);
 					else
 						offset = offsets[i];
@@ -2983,7 +2971,7 @@ NS_ENDHANDLER
 		if (DEBUG)
 			NSLog(@"Decode Data");
 		// if encapsulated we need to use offset table to create frames
-		if ([transferSyntax isEncapsulated]) {
+		if ( transferSyntax.isEncapsulated ) {
 			if (DEBUG)
 				NSLog(@"Data is encapsulated");
 			NSMutableArray *offsetTable = [NSMutableArray array];
@@ -3007,7 +2995,7 @@ NS_ENDHANDLER
 				unsigned long *offsets = (unsigned long *)[offsetData bytes];
 				int numberOfOffsets = [offsetData length]/4;
 				for ( i = 0; i < numberOfOffsets; i++) {
-					if ([transferSyntax isLittleEndian]) 
+					if ( transferSyntax.isLittleEndian ) 
 						offset = NSSwapLittleLongToHost(offsets[i]);
 					else
 						offset = offsets[i];
@@ -3128,12 +3116,11 @@ NS_ENDHANDLER
 		
 			
 		if (DEBUG)
-				NSLog(@"to decoders:%@", [transferSyntax description]);
+				NSLog(@"to decoders:%@", transferSyntax.description );
 			// data to decoders
 		NSMutableData *data = nil;
 		if (!_isDecoded){
-			if ([transferSyntax isEncapsulated])
-			{
+			if ( transferSyntax.isEncapsulated ) {
 				if( singleThread == 0L) singleThread = [[NSLock alloc] init];
 				[singleThread lock];	// These JPEG decompressors are NOT thread-safe....
 				
@@ -3143,7 +3130,7 @@ NS_ENDHANDLER
 					[transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax]]  == NO && 
 					[transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax RLETransferSyntax]] == NO)
 				{
-					short depth = scanJpegDataForBitDepth( (unsigned char *) [subData bytes], [subData length]);
+					depth = scanJpegDataForBitDepth( (unsigned char *) [subData bytes], [subData length]);
 					if( depth == 0)
 					{
 						NSLog( @"depth not found (scanJpegDataForBitDepth), will use : %d", _pixelDepth);
@@ -3152,7 +3139,6 @@ NS_ENDHANDLER
 					else NSLog( @"scanJpegDataForBitDepth : %d", depth);
 				}
 				
-				//NSLog(@"Encapsulated: %@", [DCMTransferSyntax description]);
 				if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGBaselineTransferSyntax]]) {
 					data = [[[self convertJPEG8ToHost:subData] mutableCopy] autorelease];
 					colorspaceIsConverted = YES;
@@ -3212,7 +3198,7 @@ NS_ENDHANDLER
 
 				}
 				else {
-					NSLog(@"Unknown compressed transfer syntax: %@", [transferSyntax  description]);
+					NSLog(@"Unknown compressed transfer syntax: %@", transferSyntax.description);
 
 				}
 				
