@@ -115,35 +115,42 @@ double MySubtractTime( uint64_t endTime, uint64_t startTime )
 unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height, int width, int rowBytes, long wl, long ww, BOOL isRGB)
 // create an icon from an 12 or 16 bit image
 {
-	long min = wl - ww / 2; //if (min < 0 ) min = 0;
-	long max = wl + ww / 2;
-	long diff = max - min;
+	unsigned char		*iconPtr;
+	float				ratio;
+	long				i, j;
+	long				line, destWidth, destHeight;
+	long				value;
+	long				min, max, diff;
 	
-	float ratio = ((float)width / PREVIEWSIZE > (float)height / PREVIEWSIZE) ?
-		(float)width / PREVIEWSIZE :
-		(float)height / PREVIEWSIZE;
+	min = wl - ww / 2; //if (min < 0 ) min = 0;
+	max = wl + ww / 2;
+	diff = max - min;
 	
-	long destWidth = (float) width / ratio;
-	long destHeight = (float) height / ratio;
+	if( (float) width / PREVIEWSIZE > (float) height / PREVIEWSIZE) ratio = (float) width / PREVIEWSIZE;
+	else ratio = (float) height / PREVIEWSIZE;
+	
+	destWidth = (float) width / ratio;
+	destHeight = (float) height / ratio;
 	
 	// allocate the memory for the icon 
-	unsigned char *iconPtr = icon;
+	iconPtr = icon;
 	
 	if( diff)
 	{
 		if( isRGB)
 		{
+			long	x;
 			unsigned char   *rgbImage = (unsigned char*) image;
 			
-			for ( long i = 0; i < destHeight; i++ )  // lines
+			for (i = 0; i < destHeight; i++)  // lines
 			{
-				long line = width * (long) (ratio * i)*4 ;   //ARGB
+				line = width * (long) (ratio * i)*4 ;   //ARGB
 				iconPtr = icon + rowBytes*i;
-				for ( long j = 0; j < destWidth; j++ )         // columns 
+				for (j = 0; j < destWidth; j++)         // columns 
 				{
-					for ( long x = 1; x< 4;x++, iconPtr++ )		// Dont take alpha channel
+					for (x =1; x< 4;x++, iconPtr++)		// Dont take alpha channel
 					{
-						long value = *( rgbImage + line + x + (long) (j * ratio)*4); //ARGB
+						value = *( rgbImage + line + x + (long) (j * ratio)*4); //ARGB
 						
 						if( value > max) value = max;
 						else if( value < min) value = min;
@@ -155,13 +162,13 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 		}
 		else
 		{
-			for ( long i = 0; i < destHeight; i++ )  // lines
+			for (i = 0; i < destHeight; i++)  // lines
 			{
-				long line = width * (long) (ratio * i) ;
+				line = width * (long) (ratio * i) ;
 				iconPtr = icon + rowBytes*i;
-				for ( long j = 0; j < destWidth; j++, iconPtr++ )         // columns 
+				for (j = 0; j < destWidth; j++, iconPtr++)         // columns 
 				{ 
-					long value = *( image + line + (long) (j * ratio));
+					value = *( image + line + (long) (j * ratio));
 					
 					if( value > max) value = max;
 					else if( value < min) value = min;
@@ -178,11 +185,12 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 // POLY CLIP
 
 
+
 #define INIT_DELTAS dx=V2.x-V1.x;  dy=V2.y-V1.y;
 #define INIT_CLIP INIT_DELTAS if(dx)m=dy/dx;
 
 static inline void CLIP_Left(NSPointInt *Polygon, long *count, NSPointInt V1,NSPointInt V2) {
-	float dx, dy, m=1;
+	float   dx,dy, m=1;
 	INIT_CLIP
 	
 	// ************OK************
@@ -202,7 +210,7 @@ static inline void CLIP_Left(NSPointInt *Polygon, long *count, NSPointInt V1,NSP
 }
 
 static inline void CLIP_Right(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2, NSPointInt DownRight) {
-	float dx, dy, m=1;
+	float dx,dy, m=1;
 	INIT_CLIP
 	// ************OK************
 	if ( (V1.x<=DownRight.x) && (V2.x<=DownRight.x) )
@@ -225,7 +233,7 @@ static inline void CLIP_Right(NSPointInt *Polygon,long *count, NSPointInt V1,NSP
  =================
  */
 static inline void CLIP_Top(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2) {
-	float dx, dy, m=1;
+	float   dx,dy, m=1;
 	INIT_CLIP
 	// ************OK************
 	if ( (V1.y>=0) && (V2.y>=0) )
@@ -249,7 +257,7 @@ static inline void CLIP_Top(NSPointInt *Polygon,long *count, NSPointInt V1,NSPoi
 	}
 }
 static inline void CLIP_Bottom(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2, NSPointInt DownRight) {
-	float dx, dy, m=1;
+	float dx,dy, m=1;
 	INIT_CLIP
 	// ************OK************
 	if ( (V1.y<=DownRight.y) && (V2.y<=DownRight.y) )
@@ -276,10 +284,14 @@ static inline void CLIP_Bottom(NSPointInt *Polygon,long *count, NSPointInt V1,NS
 void CLIP_Polygon(NSPointInt *inPoly, long inCount, NSPointInt *outPoly, long *outCount, long w, long h) {
 	int				d;
 	NSPointInt		TmpPoly[ 10000];
-	NSPointInt		DownRight = { w-1, h-1 };
+	long			TmpCount;	
+	NSPointInt		DownRight;
+	
+	DownRight.x = w-1;
+	DownRight.y = h-1;
 	
 	*outCount = 0;
-	long TmpCount=0;
+	TmpCount=0;
 	
 	for ( int v=0; v<inCount; v++ ) {
 		d=v+1;
@@ -828,6 +840,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int rad, char blackIndex)
 {
+	int		x,y;
+	int		xsqr;
 	int		inw = rad*2;
 	int		radsqr = (inw*inw)/4;
 	
@@ -838,28 +852,42 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	cy -= rad;
 	
 	// top
-	for ( int y = 0; y <= cy; y++ ) {
-		for ( int x = 0; x < width; x++ ) buf[ x + y*width] = blackIndex;
+	for(y = 0; y <= cy; y++)
+	{
+		for(x = 0; x < width; x++) buf[ x + y*width] = blackIndex;
 	}
 	
 	// bottom
-	for ( int y = cy+inw; y < height; y++ ) {
-		for ( int x = 0; x < width; x++ ) buf[ x + y*width] = blackIndex;
+	for(y = cy+inw; y < height; y++)
+	{
+		for(x = 0; x < width; x++) buf[ x + y*width] = blackIndex;
 	}
 	
 	// left + right
-	for( int y = cy; y < cy+inw; y++ ) {
-		for( int x = 0; x <= cx; x++) buf[ x + y*width] = blackIndex;
-		for( int x = cx+inw; x < width; x++) buf[ x + y*width] = blackIndex;
+	for(y = cy; y < cy+inw; y++)
+	{
+		for(x = 0; x <= cx; x++) buf[ x + y*width] = blackIndex;
+		for(x = cx+inw; x < width; x++) buf[ x + y*width] = blackIndex;
 	}
 	
-	for( int x = 0; x < rad; x++ ) {
-		int xsqr = x*x;
-		for( int y = 0 ; y < rad; y++ ) {
+	for(x = 0; x < rad; x++)
+	{
+		xsqr = x*x;
+		for( y = 0 ; y < rad; y++)
+		{
+			char draw;
 			
-			char draw = ((xsqr + y*y) < radsqr) ? 0 : 1;
+			if((xsqr + y*y) < radsqr)
+			{
+				draw = 0;
+			}
+			else
+			{
+				draw = 1;
+			}
 			
-			if( draw ) {
+			if( draw)
+			{
 				int xx, yy;
 				
 				xx = rad+x+cx;	yy = rad+y+cy;
@@ -2825,7 +2853,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		viewPosition = 0L;
 		patientPosition = 0L;
 		
-		//---------------------------------PET
+		//---------------------------------radiotherapy
 		generated = NO;
 		displaySUVValue = NO;
 		acquisitionTime = 0L;
@@ -4994,7 +5022,7 @@ END_CREATE_ROIS:
 	orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
 	orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
 	orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
-
+	
 	if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]) ) {
 		sliceLocation = originX;
 	}
@@ -5030,6 +5058,13 @@ END_CREATE_ROIS:
 		
 		DCMPix	*imPix = nil;
 		
+		//		if( maxFrame > 1)
+		//		{
+		//			imPix = [pixArray objectAtIndex: ee];
+		//			[imPix copyFromOther: self]; // duplicates the class fields
+		//		}
+		//		else
+		
 		imPix = self;
 		ee = imageNb;
 		
@@ -5048,7 +5083,7 @@ END_CREATE_ROIS:
 				sliceLocation = originZ;
 			}	
 		}
-				
+		
 		if( gUseShutter && ee != frameNo && maxFrame > 1 ) {
 			imPix->shutterRect_x = shutterRect_x;
 			imPix->shutterRect_y = shutterRect_y;
@@ -5076,11 +5111,18 @@ END_CREATE_ROIS:
 		//angles
 		[[pixArray objectAtIndex: ee] positionerPrimaryAngle:multiframePrimaryAngle];
 		[[pixArray objectAtIndex: ee] positionerSecondaryAngle:multiframeSecondaryAngle];
+		//NSLog(@"primary angle:%f",[positionerPrimaryAngle floatValue]);
+		//NSLog(@"secondary angle:%f",[positionerSecondaryAngle floatValue]);
 		
 		//get PixelData
 		NSData *pixData = [pixelAttr decodeFrameAtIndex:ee];
 		oImage =  malloc([pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
 		[pixData getBytes:oImage];
+		//NSLog(@"image size: %d", ( height * width * 2));
+		//NSLog(@"Data size: %d", [pixData length]);
+		//		}
+		
+		
 		
 		if( oImage == nil ) //there was no data for this frame
 			//create empty image
@@ -5091,9 +5133,9 @@ END_CREATE_ROIS:
 			//gArrPhotoInterpret [fileNb] = MONOCHROME2;
 			
 			long yo = 0;
-			for( unsigned long i = 0; i < height * width; i++ ) {
+			for( unsigned long i = 0 ; i < height * width; i++ ) {
 				oImage[ i] = yo++;
-				if( yo>= width ) yo = 0;
+				if( yo>= width) yo = 0;
 			}
 		}
 		
@@ -8385,7 +8427,7 @@ END_CREATE_ROIS:
 					fImage = fVolImage;
 				}
 				else {
-					fImage = malloc( 128 * 128 * sizeof *fImage );
+					fImage = malloc( 128 * 128 * 4);
 				}
 				
 				height = 128;
