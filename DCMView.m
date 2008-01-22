@@ -5988,32 +5988,32 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					else if([[annot objectAtIndex:j] isEqualToString:@"View Size"])
 					{
 						[tempString appendFormat: NSLocalizedString( @"View size: %ld x %ld", 0L), (long) size.size.width, (long) size.size.height];
-						useStringTexture = NO;
+						useStringTexture = YES;
 					}
 					else if([[annot objectAtIndex:j] isEqualToString:@"Mouse Position (px)"])
 					{
 						if(mouseXPos!=0 && mouseYPos!=0)
 						{
-							if( curDCM.isRGB ) [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", 0L), (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
-							else [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: %2.2f", 0L), (int)mouseXPos, (int)mouseYPos, pixelMouseValue];
-														
+							if( curDCM.isRGB ) [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
+							else [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: %2.2f", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValue];
+							
 							if( blendingView)
 							{
 								if( [blendingView curDCM].isRGB )
-									[tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", 0L), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB];
-								else [tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: %2.2f", 0L), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue];
+									[tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", @"No special characters for this string, only ASCII characters."), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB];
+								else [tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: %2.2f", @"No special characters for this string, only ASCII characters."), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue];
 							}
 							
 							if( curDCM.displaySUVValue ) {
 								if( [curDCM hasSUV] == YES && curDCM.SUVConverted == NO) {
-									[tempString3 appendFormat: NSLocalizedString( @"SUV: %.2f", @"SUV: Standard Uptake Value"), [self getSUV]];
+									[tempString3 appendFormat: NSLocalizedString( @"SUV: %.2f", @"SUV: Standard Uptake Value - No special characters for this string, only ASCII characters."), [self getSUV]];
 								}
 							}
 							
 							if( blendingView ) {
 								if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
 								{
-									[tempString4 appendFormat: NSLocalizedString( @"SUV (fused image): %.2f", @"SUV: Standard Uptake Value"), [self getBlendedSUV]];
+									[tempString4 appendFormat: NSLocalizedString( @"SUV (fused image): %.2f", @"SUV: Standard Uptake Value - No special characters for this string, only ASCII characters."), [self getBlendedSUV]];
 								}
 							}
 							
@@ -6021,11 +6021,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						}
 					}
 					else if([[annot objectAtIndex:j] isEqualToString:@"Zoom"] && fullText) {
-						[tempString appendFormat: NSLocalizedString( @"Zoom: %0.0f%%", 0L), (float) scaleValue*100.0];
+						[tempString appendFormat: NSLocalizedString( @"Zoom: %0.0f%%", @"No special characters for this string, only ASCII characters."), (float) scaleValue*100.0];
 						useStringTexture = NO;
 					}
 					else if([[annot objectAtIndex:j] isEqualToString:@"Rotation Angle"] && fullText) {
-						[tempString appendFormat: NSLocalizedString( @" Angle: %0.0f", 0L), (float) ((long) rotation % 360)];
+						[tempString appendFormat: NSLocalizedString( @" Angle: %0.0f", @"No special characters for this string, only ASCII characters."), (float) ((long) rotation % 360)];
 						useStringTexture = NO;
 					}
 					else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText) {
@@ -6038,13 +6038,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							if(maxVal < 0) maxVal = 0;
 							if(maxVal > [dcmPixList count]) maxVal = [dcmPixList count];
 							
-							if( flippedData) [tempString appendFormat: NSLocalizedString( @"Im: %ld-%ld/%ld", 0L), (long) [dcmPixList count] - curImage, [dcmPixList count] - maxVal, (long) [dcmPixList count]];
-							else [tempString appendFormat: NSLocalizedString( @"Im: %ld-%ld/%ld", 0L), (long) curImage+1, maxVal, (long) [dcmPixList count]];
+							if( flippedData) [tempString appendFormat: NSLocalizedString( @"Im: %ld-%ld/%ld", @"No special characters for this string, only ASCII characters."), (long) [dcmPixList count] - curImage, [dcmPixList count] - maxVal, (long) [dcmPixList count]];
+							else [tempString appendFormat: NSLocalizedString( @"Im: %ld-%ld/%ld", @"No special characters for this string, only ASCII characters."), (long) curImage+1, maxVal, (long) [dcmPixList count]];
 						} 
 						else if( fullText)
 						{
-							if( flippedData) [tempString appendFormat: NSLocalizedString( @"Im: %ld/%ld", 0L), (long) [dcmPixList count] - curImage, (long) [dcmPixList count]];
-							else [tempString appendFormat: NSLocalizedString( @"Im: %ld/%ld", 0L), (long) curImage+1, (long) [dcmPixList count]];
+							if( flippedData) [tempString appendFormat: NSLocalizedString( @"Im: %ld/%ld", @"No special characters for this string, only ASCII characters."), (long) [dcmPixList count] - curImage, (long) [dcmPixList count]];
+							else [tempString appendFormat: NSLocalizedString( @"Im: %ld/%ld", @"No special characters for this string, only ASCII characters."), (long) curImage+1, (long) [dcmPixList count]];
 						}
 
 						useStringTexture = NO;
