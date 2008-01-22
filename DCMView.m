@@ -1270,8 +1270,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	if( stringTex)
 	{
-		if( stringTextureCache == 0L) stringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: 0];
-		if( iChatStringTextureCache == 0L) iChatStringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: 0];
+		#define STRCAPACITY 500
+	
+		if( stringTextureCache == 0L) stringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: STRCAPACITY];
+		if( iChatStringTextureCache == 0L) iChatStringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: STRCAPACITY];
 		
 		NSMutableDictionary *_stringTextureCache;
 		if (fontL == iChatFontListGL)
@@ -1282,8 +1284,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		StringTexture *stringTex = [_stringTextureCache objectForKey: str];
 		if( stringTex == 0L)
 		{
-			if( [_stringTextureCache count] > 100) [_stringTextureCache removeAllObjects];
-			
+			if( [_stringTextureCache count] > STRCAPACITY)
+			{
+				[_stringTextureCache removeAllObjects];
+				NSLog(@"String texture cache purged.");
+			}
 			NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
 			
 			if( fontL == labelFontListGL) [stanStringAttrib setObject:labelFont forKey:NSFontAttributeName];
@@ -5744,7 +5749,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self orientationCorrectedToView: vectors];
 	// Left
 	[self getOrientationText:string :vectors :YES];
-	[self DrawCStringGL: string : labelFontListGL :6 :2+size.size.height/2];
+	[self DrawCStringGL: string : labelFontListGL :6 :2+size.size.height/2 rightAlignment: NO useStringTexture: YES];
 	
 	// Right
 	float offset = 28;
@@ -5755,15 +5760,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		offset = 16;
 	else if (strlen(string) == 2)
 		offset = 22;
-	[self DrawCStringGL: string : labelFontListGL :size.size.width - offset :2+size.size.height/2];
+	[self DrawCStringGL: string : labelFontListGL :size.size.width - offset :2+size.size.height/2 rightAlignment: NO useStringTexture: YES];
 	//Top 
 	[self getOrientationText:string :vectors+3 :YES];
-	[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :15];
+	[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :15 rightAlignment: NO useStringTexture: YES];
 	
 	if( curDCM.laterality ) [self DrawNSStringGL: curDCM.laterality : fontListGL :size.size.width/2 :12 + stringSize.height];
 	//Bottom
 	[self getOrientationText:string :vectors+3 :NO];
-	[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height - 6];
+	[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height - 6 rightAlignment: NO useStringTexture: YES];
 }
 
 -(void) getThickSlabThickness:(float*) thickness location:(float*) location
@@ -5992,6 +5997,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					}
 					else if([[annot objectAtIndex:j] isEqualToString:@"Mouse Position (px)"])
 					{
+						useStringTexture = NO;
+						
 						if(mouseXPos!=0 && mouseYPos!=0)
 						{
 							if( curDCM.isRGB ) [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
@@ -6016,19 +6023,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 									[tempString4 appendFormat: NSLocalizedString( @"SUV (fused image): %.2f", @"SUV: Standard Uptake Value - No special characters for this string, only ASCII characters."), [self getBlendedSUV]];
 								}
 							}
-							
-							useStringTexture = NO;
 						}
 					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Zoom"] && fullText) {
+					else if([[annot objectAtIndex:j] isEqualToString:@"Zoom"] && fullText)
+					{
 						[tempString appendFormat: NSLocalizedString( @"Zoom: %0.0f%%", @"No special characters for this string, only ASCII characters."), (float) scaleValue*100.0];
 						useStringTexture = NO;
 					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Rotation Angle"] && fullText) {
+					else if([[annot objectAtIndex:j] isEqualToString:@"Rotation Angle"] && fullText)
+					{
 						[tempString appendFormat: NSLocalizedString( @" Angle: %0.0f", @"No special characters for this string, only ASCII characters."), (float) ((long) rotation % 360)];
 						useStringTexture = NO;
 					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText) {
+					else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText)
+					{
 						if( curDCM.stack > 1) {
 							long maxVal;
 							
@@ -6051,6 +6059,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					}
 					else if([[annot objectAtIndex:j] isEqualToString:@"Mouse Position (mm)"])
 					{
+						useStringTexture = NO;
+						
 						if( stringID == 0L || [stringID isEqualToString:@"OrthogonalMPRVIEW"] || [stringID isEqualToString:@"FinalView"])
 						{
 							if( mouseXPos != 0 && mouseYPos != 0)
@@ -6079,8 +6089,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							}
 						}
 					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Window Level / Window Width"]) {
-			
+					else if([[annot objectAtIndex:j] isEqualToString:@"Window Level / Window Width"])
+					{
+						useStringTexture = NO;
+						
 						float lwl = curDCM.wl;
 						float lww = curDCM.ww;
 
@@ -6097,18 +6109,23 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 								{
 									float min = lwl - lww/2, max = lwl + lww/2;
 									
-									[tempString2 appendFormat: NSLocalizedString( @"From: %d %% (%0.2f) to: %d %% (%0.2f)", 0L), (long) (min * 100. / curDCM.maxValueOfSeries), lwl - lww/2, (long) (max * 100. / curDCM.maxValueOfSeries), lwl + lww/2];
+									[tempString2 appendFormat: NSLocalizedString( @"From: %d %% (%0.2f) to: %d %% (%0.2f)", @"No special characters for this string, only ASCII characters."), (long) (min * 100. / curDCM.maxValueOfSeries), lwl - lww/2, (long) (max * 100. / curDCM.maxValueOfSeries), lwl + lww/2];
 								}
 							}	
 						}
 					}
 					else if([[annot objectAtIndex:j] isEqualToString:@"Orientation"])
 					{
-						if(!orientationDrawn)[self drawOrientation: size];
+						if(!orientationDrawn) [self drawOrientation: size];
 						orientationDrawn = YES;
+						useStringTexture = YES;
 					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Thickness / Location / Position"]) {
-						if( curDCM.sliceThickness != 0 && curDCM.sliceLocation != 0) {
+					else if([[annot objectAtIndex:j] isEqualToString:@"Thickness / Location / Position"])
+					{
+						useStringTexture = YES;
+						
+						if( curDCM.sliceThickness != 0 && curDCM.sliceLocation != 0)
+						{
 							if( curDCM.stack > 1) {
 								float vv, pp;
 								
@@ -6135,7 +6152,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 									[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f mm Location: %0.2f mm", 0L), curDCM.sliceThickness, curDCM.sliceLocation];
 							}
 						} 
-						else if( curDCM.viewPosition || curDCM.patientPosition ) {	 
+						else if( curDCM.viewPosition || curDCM.patientPosition )
+						{
 							 NSString        *nsstring = 0L;	 
 
 							 if ( curDCM.viewPosition ) [tempString appendFormat: NSLocalizedString( @"Position: %@ ", 0L), curDCM.viewPosition];	 
@@ -6145,7 +6163,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							 }	 
 						}
 					}
-					else if(fullText) {
+					else if(fullText)
+					{
 						[tempString appendFormat:@" %@", [annot objectAtIndex:j]];
 						useStringTexture = YES;
 					}					
@@ -8188,7 +8207,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (void) orientationCorrectedToView:(float*) correctedOrientation {
+- (void) orientationCorrectedToView:(float*) correctedOrientation
+{
 	float	o[ 9];
 	float   yRot = -1, xRot = -1;
 	float	rot = rotation;
