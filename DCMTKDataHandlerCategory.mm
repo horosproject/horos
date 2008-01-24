@@ -250,17 +250,19 @@
 					{
 						NSString *curString = [uids objectAtIndex: x];
 						
-						NSString *format = @"*%@*" ;
-						if ([curString hasPrefix:@"*"] && [curString hasSuffix:@"*"])
-							format = @"";
-						else if ([curString hasPrefix:@"*"])
-							format = @"%@*";
-						else if ([curString hasSuffix:@"*"])
-							format = @"*%@";
+						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", curString]];
 						
-						NSString *suid = [NSString stringWithFormat:format, curString];
-						
-						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"seriesInstanceUID like %@", suid]];
+//						NSString *format = @"*%@*" ;
+//						if ([curString hasPrefix:@"*"] && [curString hasSuffix:@"*"])
+//							format = @"";
+//						else if ([curString hasPrefix:@"*"])
+//							format = @"%@*";
+//						else if ([curString hasSuffix:@"*"])
+//							format = @"*%@";
+//						
+//						NSString *suid = [NSString stringWithFormat:format, curString];
+//						
+//						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"seriesInstanceUID like %@", suid]];
 					}
 					
 					predicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
@@ -383,21 +385,23 @@
 			}
 			else if (key == DCM_SeriesInstanceUID) {
 				char *string;
-				if (dcelem->getString(string).good() && string != NULL) {
-					NSString *u = [NSString stringWithCString:string  DICOMEncoding:nil];
-					NSString *format = @"*%@*" ;
-					if ([u hasPrefix:@"*"] && [u hasSuffix:@"*"])
-						format = @"";
-					else if ([u hasPrefix:@"*"])
-						format = @"%@*";
-					else if ([u hasSuffix:@"*"])
-						format = @"*%@";
-					NSString *suid = [NSString stringWithFormat:format, u];
-					predicate = [NSPredicate predicateWithFormat:@"series.seriesInstanceUID like %@", suid];
+				if (dcelem->getString(string).good() && string != NULL)
+				{
+					predicate = [NSPredicate predicateWithFormat:@"series.seriesInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+
+//					NSString *u = [NSString stringWithCString:string  DICOMEncoding:nil];
+//					NSString *format = @"*%@*" ;
+//					if ([u hasPrefix:@"*"] && [u hasSuffix:@"*"])
+//						format = @"";
+//					else if ([u hasPrefix:@"*"])
+//						format = @"%@*";
+//					else if ([u hasSuffix:@"*"])
+//						format = @"*%@";
+//					NSString *suid = [NSString stringWithFormat:format, u];
+//					predicate = [NSPredicate predicateWithFormat:@"series.seriesInstanceUID like %@", suid];
 				}
 			} 
 			else if (key == DCM_SOPInstanceUID) {
-				NSLog(@"sop Instance");
 				char *string;
 //				if (dcelem->getString(string).good() && string != NULL)
 //					predicate = [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
