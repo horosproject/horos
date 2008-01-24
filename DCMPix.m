@@ -8857,6 +8857,42 @@ END_CREATE_ROIS:
 	[pool release];
 }
 
+- (void)applyNonLinearWLWWThread: (NSDictionary*)dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	int startLine = [[dict valueForKey:@"start"] intValue];
+	int endLine = [[dict valueForKey:@"end"] intValue];
+	
+	register int			ii = (endLine - startLine) * width;
+	register unsigned char	*dst8Ptr = (unsigned char*) baseAddr + startLine * width;
+	register float			*src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
+	register float			from = wl -ww/2.;
+	
+	src32Ptr += startLine * width;
+	
+	while( ii-- > 0 )
+	{
+		int value = 4096 * (*src32Ptr - from)/ww;
+		
+		if( value < 0) value = 0;
+		else if( value >= 4095) value = 4095;
+		
+		value = 255.*transferFunctionPtr[ value];
+		
+		*dst8Ptr = value;
+		
+		dst8Ptr++;
+		src32Ptr++;
+	}
+	
+	[processorsLock lock];
+	numberOfThreadsForCompute--;
+	[processorsLock unlock];
+	
+	[pool release];
+}
+
 #pragma mark-
 #pragma mark subtraction and changeWLWW
 
@@ -9566,24 +9602,42 @@ END_CREATE_ROIS:
 					{
 						vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
 					}
-					else {
-						register int			ii = height*width;
-						register unsigned char	*dst8Ptr = (unsigned char*)baseAddr;
-						register float			*src32Ptr = srcf.data;
-						register float			from = wl -ww/2.;
-						
-						while( ii-- > 0 ) {
-							int value = 4096 * (*src32Ptr - from)/ww;
+					else
+					{
+						if( height > 1000)	// multi-threading
+						{
+							if( processorsLock == nil )
+								processorsLock = [[NSLock alloc] init];
 							
-							if( value < 0) value = 0;
-							else if( value >= 4095) value = 4095;
+							numberOfThreadsForCompute = MPProcessors ();
+							int processors = numberOfThreadsForCompute;
 							
-							value = 255.*transferFunctionPtr[ value];
+							NSValue *srcNSValue = [NSValue valueWithPointer: srcf.data];
 							
-							*dst8Ptr = value;
+							int start;
+							int end;
 							
-							dst8Ptr++;
-							src32Ptr++;
+							for( int i = 0; i < MPProcessors()-1; i++ )
+							{
+								start = i * (int) (height / processors);
+								end = (i+1) * (int) (height / processors);
+								[NSThread detachNewThreadSelector: @selector( applyNonLinearWLWWThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: start], @"start", [NSNumber numberWithInt: end], @"end", srcNSValue, @"src",0L]];
+							}
+							
+							start = (processors-1) * (int) (height / processors);
+							end = processors * (int) (height / processors);
+							[self applyNonLinearWLWWThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: start], @"start", [NSNumber numberWithInt: end], @"end", srcNSValue, @"src", 0L]];
+							
+							BOOL done = NO;
+							while( done == NO )	{
+								[processorsLock lock];
+								if( numberOfThreadsForCompute <= 0) done = YES;
+								[processorsLock unlock];
+							}
+						}
+						else
+						{
+							[self applyNonLinearWLWWThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: 0], @"start", [NSNumber numberWithInt: height], @"end", [NSValue valueWithPointer: srcf.data], @"src", 0L]];
 						}
 					}
 				}
@@ -10026,7 +10080,14 @@ END_CREATE_ROIS:
 	
 	SElement *inGrOrModP = [self getPapyGroup: group fileNb: fileNb];
 	
-	if( inGrOrModP ) {
+	if( inGrOrModP == 0L) // Papyrus failed... unknown group? Try DCM Framework
+	{
+		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+		
+		return [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
+	}
+	else if( inGrOrModP )
+	{
 		int theEnumGrNb = Papy3ToEnumGroup(group);
 		int theMaxElem = gArrGroup [theEnumGrNb].size;
 		

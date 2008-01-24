@@ -2711,7 +2711,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		[self deleteMouseDownTimer];
 	
 	if ([event type] == NSLeftMouseDown)
-		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo: event  repeats:NO] retain];
+		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(startDrag:) userInfo: event  repeats:NO] retain];
 	
     if( dcmPixList)
 	{
