@@ -2707,9 +2707,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [[dict valueForKey:@"stopMouseDown"] boolValue]) return;
 	}
 	
-	if (_mouseDownTimer) {
+	if (_mouseDownTimer)
 		[self deleteMouseDownTimer];
-	}
+	
 	if ([event type] == NSLeftMouseDown)
 		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo: event  repeats:NO] retain];
 	
@@ -2737,8 +2737,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		blendingFactorStart = blendingFactor;
 		scrollMode = 0;
 		resizeTotal = 1;
-		
-		[AppController displayImportantNotice: self];
 		
         originStart = origin;
 		originOffsetStart = originOffset;
