@@ -3013,7 +3013,7 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
 			
 			if( *ioBufPosP - theInitialBufPos + theElemLength > inBytesToRead)
 			{
-				printf("err length : *ioBufPosP - theInitialBufPos + theElemLength > inBytesToRead \n");
+				printf("err length : *ioBufPosP - theInitialBufPos + theElemLength > inBytesToRead -- BAD GROUP LENGTH - CORRUPTED DICOM FILE\n");
 				RETURN (papReadGroup);
 			}
 			

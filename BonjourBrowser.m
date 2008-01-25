@@ -1224,7 +1224,15 @@ static char *GetPrivateIP()
 	
 	resolved = NO;
 	
-	[self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: (char*) [[object valueForKey:@"msg"] UTF8String]];
+	@try
+	{
+		[self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: (char*) [[object valueForKey:@"msg"] UTF8String]];
+	}
+	
+	@catch (NSException * e)
+	{
+		NSLog(@"resolveServiceThread exception: %@", e);
+	}
 
 	[pool release];
 	
