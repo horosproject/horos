@@ -357,7 +357,8 @@ extern NSThread					*mainThread;
 	BOOL isiPhone = NO;
 	while(![scan isAtEnd] && !isiPhone)
 	{
-		isiPhone = [scan scanString:@"iPhone" intoString:nil];
+		isiPhone = [scan scanString:@"Safari/" intoString:nil];
+		isiPhone = isiPhone && [scan scanString:@"Mobile/" intoString:nil];
 		[scan setScanLocation:[scan scanLocation]+1];
 	}
 	//NSLog(@"isiPhone : %d", isiPhone);

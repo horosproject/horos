@@ -21,7 +21,8 @@
 											*autoHideMatrix,
 											*openViewerCheck,
 											*reverseScrollWheelCheck,
-											*tilingCheck;
+											*tilingCheck,
+											*totoku12Bit;
 	
 	IBOutlet NSMatrix						*sizeMatrix,
 											*multipleScreensMatrix,

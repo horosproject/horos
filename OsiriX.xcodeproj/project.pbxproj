@@ -487,6 +487,10 @@
 		A97E19F00CDF55E50065EE29 /* 3DconnexionClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97E19EE0CDF55E50065EE29 /* 3DconnexionClient.framework */; };
 		A98159A009AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
 		A98159A109AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
+		A9897D990D4A142200BAC447 /* displayRGB.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9897D970D4A142200BAC447 /* displayRGB.tif */; };
+		A9897D9A0D4A142200BAC447 /* displayTotoku.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9897D980D4A142200BAC447 /* displayTotoku.tif */; };
+		A9897D9B0D4A142200BAC447 /* displayRGB.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9897D970D4A142200BAC447 /* displayRGB.tif */; };
+		A9897D9C0D4A142200BAC447 /* displayTotoku.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9897D980D4A142200BAC447 /* displayTotoku.tif */; };
 		A98FFBE50CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
 		A98FFBE60CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
 		A98FFBE70CA92B58000291C8 /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = A98FFBE40CA92B58000291C8 /* altivecFunctions.h */; };
@@ -8553,6 +8557,8 @@
 		A97D4C600CE3459D003FE2E6 /* PieChartImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PieChartImage.m; sourceTree = "<group>"; };
 		A97E19EE0CDF55E50065EE29 /* 3DconnexionClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = 3DconnexionClient.framework; path = Binaries/3DconnexionClient.framework; sourceTree = "<group>"; };
 		A981599E09AC6B25003FF1FB /* bonesRemoval.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = bonesRemoval.tif; sourceTree = "<group>"; };
+		A9897D970D4A142200BAC447 /* displayRGB.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = displayRGB.tif; sourceTree = "<group>"; };
+		A9897D980D4A142200BAC447 /* displayTotoku.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = displayTotoku.tif; sourceTree = "<group>"; };
 		A98FFBE30CA92B58000291C8 /* altivecFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = altivecFunctions.c; sourceTree = "<group>"; };
 		A98FFBE40CA92B58000291C8 /* altivecFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = altivecFunctions.h; sourceTree = "<group>"; };
 		A9944C0D0A52A54C004C5E0A /* LLDCMView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLDCMView.h; sourceTree = "<group>"; };
@@ -13115,6 +13121,8 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				A9897D970D4A142200BAC447 /* displayRGB.tif */,
+				A9897D980D4A142200BAC447 /* displayTotoku.tif */,
 				CEDEF7D30D020E9100CADB15 /* TIFFSmall.tiff */,
 				CEDEF7D40D020E9100CADB15 /* MailSmall.tiff */,
 				CEDEF7D50D020E9100CADB15 /* JPEGSmall.tiff */,
@@ -21370,6 +21378,8 @@
 				CEDEF7D70D020E9100CADB15 /* MailSmall.tiff in Resources */,
 				CEDEF7D80D020E9100CADB15 /* JPEGSmall.tiff in Resources */,
 				AB7824680D3BACC700460DCE /* WebServicesHTML in Resources */,
+				A9897D9B0D4A142200BAC447 /* displayRGB.tif in Resources */,
+				A9897D9C0D4A142200BAC447 /* displayTotoku.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21756,6 +21766,8 @@
 				CEDEF7DA0D020E9100CADB15 /* MailSmall.tiff in Resources */,
 				CEDEF7DB0D020E9100CADB15 /* JPEGSmall.tiff in Resources */,
 				AB7824690D3BACC700460DCE /* WebServicesHTML in Resources */,
+				A9897D990D4A142200BAC447 /* displayRGB.tif in Resources */,
+				A9897D9A0D4A142200BAC447 /* displayTotoku.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

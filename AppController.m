@@ -1641,14 +1641,18 @@ static BOOL initialized = NO;
 				//		break;
 				//	}
 				
-				[[PluginManager alloc] init];
-				
 				// ** REGISTER DEFAULTS DICTIONARY
 
 				[[NSUserDefaults standardUserDefaults] registerDefaults: [DefaultsOsiriX getDefaults]];
+				
 				[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
 				[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+				
+				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"is12bitPluginAvailable"];
 
+				[[PluginManager alloc] init];
+				
+				
 				//Add Endoscopy LUT, WL/WW, shading to existing prefs
 				// Shading Preset
 				NSMutableArray *shadingArray = [[[NSUserDefaults standardUserDefaults] objectForKey:@"shadingsPresets"] mutableCopy];
@@ -3023,6 +3027,30 @@ static BOOL initialized = NO;
 	NSString *templateDirectoryInOsiriXData = [NSString pathWithComponents:templateDirectoryInOsiriXDataPathArray];
 	if(![[NSFileManager defaultManager] fileExistsAtPath:templateDirectoryInOsiriXData])
 		[[NSFileManager defaultManager] createSymbolicLinkAtPath:templateDirectoryInOsiriXData pathContent:templateDirectory];
+}
+
+#pragma mark-
+#pragma mark 12 Bit Display support.
+
++ (BOOL)canDisplay12Bit;
+{
+	return canDisplay12Bit;
+}
+
++ (void)setCanDisplay12Bit:(BOOL)boo;
+{
+	canDisplay12Bit = boo;
+	[[NSUserDefaults standardUserDefaults] setBool:boo forKey:@"is12bitPluginAvailable"];
+}
+
++ (void) setLUT12toRGB:(unsigned char*)lut;
+{
+	LUT12toRGB = lut;
+}
+
++ (unsigned char*) LUT12toRGB;
+{
+	return LUT12toRGB;
 }
 
 @end

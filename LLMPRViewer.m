@@ -439,7 +439,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		maxI = minI + 1;
 	}
 
-	axialPixList = [[NSMutableArray alloc] initWithCapacity:maxI-minI];
+	axialPixList = [NSMutableArray array];//[[NSMutableArray alloc] initWithCapacity:maxI-minI];
 	DCMPix *newAxialPix;
 	
 	width = [[[[injectedMPRController originalView] dcmPixList] objectAtIndex:0] pwidth];
@@ -517,7 +517,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	}
 	//[tempPool release];
 
-	[subtractedOriginalView setDCM:axialPixList :nil :nil :0 :'i' :YES];
+	[subtractedOriginalView setDCM:axialPixList :nil :nil :0 :'i' :NO];
 	
 	for( i = 0; i < [axialPixList count]; i++)
 	{
@@ -531,7 +531,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[subtractedOriginalView setOrigin: [[controller originalView] origin]];
 	[subtractedOriginalView setOriginOffset: [[controller originalView] originOffset]];
 	
-	[axialPixList release];
+	//[axialPixList release];
 //	[newAxialPix release];
 
 	// coronal
@@ -549,7 +549,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		maxI = 1;
 	}
 
-	coronalPixList = [[NSMutableArray alloc] initWithCapacity:maxI-minI];
+	coronalPixList = [NSMutableArray array];// [[NSMutableArray alloc] initWithCapacity:maxI-minI];
 	DCMPix *newCoronalPix;
 	
 	width = [[[[injectedMPRController xReslicedView] dcmPixList] objectAtIndex:0] pwidth];
@@ -628,7 +628,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	}
 	//[tempPool release];
 
-	[subtractedXReslicedView setDCM:coronalPixList :nil :nil :[[injectedMPRController xReslicedView] curImage] :'i' :YES];
+	[subtractedXReslicedView setDCM:coronalPixList :nil :nil :[[injectedMPRController xReslicedView] curImage] :'i' :NO];
 	
 	for( i = 0; i < [coronalPixList count]; i++)
 	{
@@ -642,7 +642,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[subtractedXReslicedView setOrigin: [[controller xReslicedView] origin]];
 	[subtractedXReslicedView setOriginOffset: [[controller xReslicedView] originOffset]];
 		
-	[coronalPixList release];
+	//[coronalPixList release];
 //	[newCoronalPix release];
 
 	// sagital
@@ -661,7 +661,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		maxI = 1;
 	}
 	
-	sagitalPixList = [[NSMutableArray alloc] initWithCapacity:maxI-minI];
+	sagitalPixList = [NSMutableArray array];//[[NSMutableArray alloc] initWithCapacity:maxI-minI];
 	DCMPix *newSagitalPix;
 
 	width = [[[[injectedMPRController yReslicedView] dcmPixList] objectAtIndex:0] pwidth];
@@ -740,7 +740,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	}
 	//[tempPool release];
 
-	[subtractedYReslicedView setDCM:sagitalPixList :nil :nil :[[injectedMPRController yReslicedView] curImage] :'i' :YES];
+	[subtractedYReslicedView setDCM:sagitalPixList :nil :nil :[[injectedMPRController yReslicedView] curImage] :'i' :NO];
 
 	for( i = 0; i < [sagitalPixList count]; i++)
 	{
@@ -754,7 +754,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[subtractedYReslicedView setOrigin: [[controller yReslicedView] origin]];
 	[subtractedYReslicedView setOriginOffset: [[controller yReslicedView] originOffset]];
 
-	[sagitalPixList release];
+	//[sagitalPixList release];
 //	[newSagitalPix release];
 	
 	float iwl, iww;

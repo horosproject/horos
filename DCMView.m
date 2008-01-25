@@ -8377,10 +8377,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		return texture;		// == 0L
 	}
 
+	BOOL isRGB = curDCM.isRGB;
 	
-	if( curDCM.isRGB == YES)
+	if( curDCM.isLUT12Bit) isRGB = YES;
+	
+	if( isRGB == YES)
 	{
-		if((colorTransfer == YES) || (blending == YES))
+		if( curDCM.isLUT12Bit)
+		{
+		}
+		else if((colorTransfer == YES) || (blending == YES))
 		{
 			vImage_Buffer src, dest;
 			
@@ -8483,17 +8489,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 
 
-   glEnable(TEXTRECTMODE);
-
-	char*			baseAddr = 0L;
-	int				rowBytes = 0;
+	glEnable(TEXTRECTMODE);
+    
+	char *baseAddr = 0L;
+	int rowBytes = 0;
 	
 	*tH = curDCM.pheight;
 	
-	if( curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES ) {
+	if( isRGB == YES || [curDCM thickSlabVRActivated] == YES )
+	{
 		*tW = curDCM.rowBytes/4;
 		rowBytes = curDCM.rowBytes;
 		baseAddr = curDCM.baseAddr;
+		
+		if( curDCM.isLUT12Bit)
+		{
+			baseAddr = (char*) curDCM.LUT12baseAddr;
+			rowBytes = curDCM.rowBytes*4;
+			*tW = curDCM.rowBytes;
+		}
 	}
     else {
 		zoomIsSoftwareInterpolated = NO;
@@ -8618,7 +8632,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				{
 					unsigned char *pBuffer;
 					
-					if( curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES) {
+					if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) {
 						pBuffer =   (unsigned char*) baseAddr +			
 									offsetY * rowBytes +				
 									offsetX * 4;						
@@ -8670,9 +8684,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					if( FULL32BITPIPELINE ) {					
 						#if __BIG_ENDIAN__
-						if( curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
 						#else
-						if( curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 						#endif
 						else if( (colorTransfer == YES) | (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 						else {
@@ -8699,10 +8713,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					}
 					else {
 						#if __BIG_ENDIAN__
-						if( curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
 						else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
 						#else
-						if( curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 						else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 						#endif
 						else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
@@ -9946,4 +9960,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	return [[self windowController] is2DViewer];
 }
+
+#pragma mark -
+#pragma mark 12 bit
+- (void)setIsLUT12Bit:(BOOL)boo;
+{
+	for (DCMPix* pix in dcmPixList)
+	{
+		pix.isLUT12Bit = boo;
+	}
+}
+
 @end

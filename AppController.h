@@ -51,6 +51,9 @@ enum
 	ask = 3
 };
 
+static unsigned char *LUT12toRGB;
+static BOOL canDisplay12Bit;
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -103,6 +106,7 @@ extern "C"
 	XMLRPCMethods					*XMLRPCServer;
 	WebServicesMethods				*webServer;
 }
+
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
 
@@ -177,6 +181,13 @@ extern "C"
 #pragma mark Geneva University Hospital (HUG) specific function
 - (void) HUGVerifyComPACSPlugin;
 - (void) HUGDisableBonjourFeature;
+
+#pragma mark-
+#pragma mark 12 Bit Display support.
++ (BOOL)canDisplay12Bit;
++ (void)setCanDisplay12Bit:(BOOL)boo;
++ (void)setLUT12toRGB:(unsigned char*)lut;
++ (unsigned char*)LUT12toRGB;
 
 @end
 

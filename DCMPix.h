@@ -183,6 +183,10 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 /** custom annotations */
 	NSMutableDictionary *annotationsDictionary;
 	NSMutableDictionary *cachedPapyGroups;
+	
+/** 12 bit monitors */
+	BOOL				isLUT12Bit;
+	unsigned char		*LUT12baseAddr;
 }
 
 @property long frameNo;
@@ -250,6 +254,7 @@ Note setter is different to not break existing usage. :-( */
 @property(readonly) NSString *patientPosition;
 
 @property char* baseAddr;
+@property(readonly) unsigned char* LUT12baseAddr;
 
 @property long rowBytes;
 @property(readonly) long serieNo;
@@ -278,6 +283,8 @@ Note setter is different to not break existing usage. :-( */
 @property float decayFactor;
 @property(retain) NSString *units, *decayCorrection;
 @property BOOL displaySUVValue;
+
+@property BOOL isLUT12Bit;
 
 - (void) copySUVfrom: (DCMPix*) from;  /**< Copy the SUV from another DCMPic */
 - (float) getPixelValueX: (long) x Y:(long) y;  /**< Get the pixel for a point with x,y coordinates */

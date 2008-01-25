@@ -314,6 +314,9 @@ enum
 	NSMutableArray			*retainedToolbarItems;
 	
 	BOOL					nonContinuousWarningDisplayed;
+	
+	IBOutlet NSView			*display12bitToolbarItemView;
+	IBOutlet NSButton		*display12bitToolbarItemCheckBox;
 }
 
 @property(readonly) short currentOrientationTool;
@@ -374,6 +377,7 @@ enum
 /** Return the memory pointer that contains the ENTIRE series (a unique memory block for all images)  */
 - (float*) volumePtr;
 - (float*) volumePtr: (long) i;
+- (NSData*)volumeData;
 
 /** Return the index into fileList that coresponds to the index in pixList */
 - (long) indexForPix: (long) pixIndex;
@@ -954,5 +958,7 @@ enum
 - (void) turnOffSyncSeriesBetweenStudies:(id) sender;
 - (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name;
 - (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers;
+
+- (IBAction)enable12Bit:(id)sender;
 
 @end

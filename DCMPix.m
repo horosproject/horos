@@ -37,6 +37,8 @@
 #include "nifti1.h"
 #include "nifti1_io.h"
 #include <Accelerate/Accelerate.h>
+#include "AppController.h"
+
 #import <QTKit/QTKit.h>
 #import "Point3D.h"
 
@@ -949,6 +951,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize units;
 @synthesize decayCorrection;
 @synthesize displaySUVValue;
+
+@synthesize isLUT12Bit;
 
 + (BOOL) IsPoint:(NSPoint) x inPolygon:(NSPoint*) pts size:(int) no
 {
@@ -8481,6 +8485,13 @@ END_CREATE_ROIS:
     return baseAddr;
 }
 
+- (unsigned char*)LUT12baseAddr;
+{
+    [self CheckLoad];
+	if( LUT12baseAddr == nil ) [self computeWImage: NO: ww :wl];
+    return LUT12baseAddr;
+}
+
 # pragma mark-
 
 -(void) orientationDouble:(double*) c
@@ -8853,6 +8864,48 @@ END_CREATE_ROIS:
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	[self computeMax: [[dict valueForKey:@"fResult"] pointerValue] pos: [[dict valueForKey:@"pos"] intValue] threads: MPProcessors ()];
+	
+	[pool release];
+}
+
+- (void)apply12bitWLWWThread: (NSDictionary*)dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	int startLine = [[dict valueForKey:@"start"] intValue];
+	int endLine = [[dict valueForKey:@"end"] intValue];
+	
+
+	register int			ii = (endLine - startLine) * width;
+	register unsigned char	*dst8Ptr = LUT12baseAddr + startLine * width*4;
+	register float			*src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
+	register float			from = wl -ww/2.;
+	
+	src32Ptr += startLine * width;
+	
+	unsigned char *LUT12toRGB = [AppController LUT12toRGB];
+	
+	while( ii-- > 0 )
+	{
+		int value = 2048 * (*src32Ptr - from)/ww;
+		
+		if( value < 0) value = 0;
+		else if( value >= 2047) value = 2047;
+		
+		value *= 3;
+		
+		*dst8Ptr = 0xFF;		dst8Ptr++;
+		*dst8Ptr = *(LUT12toRGB+value);		dst8Ptr++;
+		*dst8Ptr = *(LUT12toRGB+value+1);		dst8Ptr++;
+		*dst8Ptr = *(LUT12toRGB+value+2);
+		
+		dst8Ptr++;
+		src32Ptr++;
+	}
+	
+	[processorsLock lock];
+	numberOfThreadsForCompute--;
+	[processorsLock unlock];
 	
 	[pool release];
 }
@@ -9559,6 +9612,18 @@ END_CREATE_ROIS:
 		{
 			vImage_Buffer	srcf, dst8;
 			
+//			float *s = [self computefImage];
+//			float v = 0;
+//			for( int y = 0; y < height; y++)
+//			{
+//				for( int x = 0 ; x < width; x++)
+//				{
+//					*s = v;
+//					s++;
+//				}
+//				v++;
+//			}
+			
 			srcf.data = [self computefImage];
 			
 			if( srcf.data == 0L) return;
@@ -9601,6 +9666,47 @@ END_CREATE_ROIS:
 					if( transferFunctionPtr == 0L)	// LINEAR
 					{
 						vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
+						
+						if(isLUT12Bit && [AppController canDisplay12Bit])
+						{
+							if(LUT12baseAddr==0) LUT12baseAddr = malloc(height*width*4*sizeof(unsigned char));
+							
+							if( height > 1000)	// multi-threading
+							{
+								if( processorsLock == nil )
+									processorsLock = [[NSLock alloc] init];
+								
+								numberOfThreadsForCompute = MPProcessors ();
+								int processors = numberOfThreadsForCompute;
+								
+								NSValue *srcNSValue = [NSValue valueWithPointer: srcf.data];
+								
+								int start;
+								int end;
+								
+								for( int i = 0; i < MPProcessors()-1; i++ )
+								{
+									start = i * (int) (height / processors);
+									end = (i+1) * (int) (height / processors);
+									[NSThread detachNewThreadSelector: @selector( apply12bitWLWWThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: start], @"start", [NSNumber numberWithInt: end], @"end", srcNSValue, @"src",0L]];
+								}
+								
+								start = (processors-1) * (int) (height / processors);
+								end = processors * (int) (height / processors);
+								[self apply12bitWLWWThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: start], @"start", [NSNumber numberWithInt: end], @"end", srcNSValue, @"src", 0L]];
+								
+								BOOL done = NO;
+								while( done == NO )	{
+									[processorsLock lock];
+									if( numberOfThreadsForCompute <= 0) done = YES;
+									[processorsLock unlock];
+								}
+							}
+							else
+							{
+								[self apply12bitWLWWThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: 0], @"start", [NSNumber numberWithInt: height], @"end", [NSValue valueWithPointer: srcf.data], @"src", 0L]];
+							}
+						}
 					}
 					else
 					{
@@ -9742,9 +9848,8 @@ END_CREATE_ROIS:
     }
     
 	if( isRGB) rowBytes = destWidth * 4;
-	else {
+	else
 		rowBytes = destWidth;
-	}
 	
     unsigned char *bitmapData = malloc( (rowBytes + 4) * (destHeight+4));
 	memset( bitmapData, 0, (rowBytes + 4) * (destHeight+4));
@@ -9969,6 +10074,8 @@ END_CREATE_ROIS:
 	
 //	NSLog(@"retainCount:%d", [annotationsDictionary retainCount]);
 	[annotationsDictionary release];
+	
+	if(LUT12baseAddr) free(LUT12baseAddr);
 	
     [super dealloc];
 }

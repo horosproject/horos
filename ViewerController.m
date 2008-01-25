@@ -132,6 +132,7 @@ static NSString*	ShutterToolbarItemIdentifier		= @"Shutter";
 static NSString*	PropagateSettingsToolbarItemIdentifier		= @"PropagateSettings";
 static NSString*	OrientationToolbarItemIdentifier	= @"Orientation";
 static NSString*	PrintToolbarItemIdentifier			= @"Print.icns";
+static NSString*	LUT12BitToolbarItemIdentifier		= @"LUT12Bit";
 
 static NSArray*		DefaultROINames;
 
@@ -4075,6 +4076,16 @@ static ViewerController *draggedController = 0L;
 	[toolbarItem setTarget: nil];
 	[toolbarItem setAction: @selector(flipHorizontal:)];
     }
+	else if([itemIdent isEqualToString: LUT12BitToolbarItemIdentifier] && [AppController canDisplay12Bit])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Display", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Display type", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Display type", nil)];
+		
+		[toolbarItem setView: display12bitToolbarItemView];
+		[toolbarItem setMinSize:NSMakeSize(NSWidth([display12bitToolbarItemView frame]), NSHeight([display12bitToolbarItemView frame]))];
+		[toolbarItem setMaxSize:NSMakeSize(NSWidth([display12bitToolbarItemView frame]),NSHeight([display12bitToolbarItemView frame]))];
+    }
     else
 	{
 		// Is it a plugin menu item?
@@ -4174,6 +4185,8 @@ static ViewerController *draggedController = 0L;
 														VRPanelToolbarItemIdentifier,
 														nil];
 	
+	if([AppController canDisplay12Bit]) array = [array arrayByAddingObject: LUT12BitToolbarItemIdentifier];
+	
 	NSArray*	allPlugins = [[PluginManager pluginsDict] allKeys];
 	
 	for( id loopItem in allPlugins)
@@ -4268,6 +4281,9 @@ static ViewerController *draggedController = 0L;
 	{
 		enable = [[imageView curDCM] hasSUV];
 	}
+
+	if([[toolbarItem itemIdentifier] isEqualToString: LUT12BitToolbarItemIdentifier])
+		enable = [AppController canDisplay12Bit];
 	
     return enable;
 }
@@ -8531,6 +8547,7 @@ NSMutableArray		*array;
 				[llScoutViewer showWindow:self];
 			}
 		}
+		break;
 		
 		case 10:	// Copy ROIs
 		{
@@ -14918,6 +14935,11 @@ int i,j,l;
 	return  (float*) [volumeData[ i] bytes];
 }
 
+- (NSData*)volumeData;
+{
+	return volumeData[ curMovieIndex];
+}
+
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts error:(NSString**) error
 {
 	return [self computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs: NO generatedROIs: 0L computeData: 0L error:(NSString**) error];
@@ -15536,6 +15558,12 @@ int i,j,l;
 		{
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"PETOpacityTable"])
 				[self ApplyOpacityString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default Opacity Table"]];
+		}
+		
+		if([[self modality] isEqualToString:@"CR"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"automatic12BitTotoku"] && [AppController canDisplay12Bit])
+		{
+			[imageView setIsLUT12Bit:YES];
+			[display12bitToolbarItemCheckBox setState:NSOnState];
 		}
 	}
 		
@@ -17239,4 +17267,14 @@ sourceRef);
 		[endoscopySegmentationController showWindow:self];
 	}
 }
+
+-(IBAction)enable12Bit:(id)sender;
+{
+	BOOL t12Bit = ([sender state]==NSOnState);
+//	if(t12Bit) [sender setTitle:@"12 Bit\nTotoku"];
+//	else [sender setTitle:@"RGB"];
+	[imageView setIsLUT12Bit:t12Bit];
+	[imageView updateImage];
+}
+
 @end
