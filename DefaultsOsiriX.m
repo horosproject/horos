@@ -963,7 +963,7 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject: @"0" forKey: @"MAPPERMODEVR"];
 	
 	// ** STARTCOUNT
-	[defaultValues setObject: @"0" forKey: @"STARTCOUNT"];
+	[defaultValues setObject: @"1" forKey: @"STARTCOUNT"];
 	
 	[defaultValues setObject: @"1" forKey: @"publishDICOMBonjour"];
 	[defaultValues setObject: @"1" forKey: @"searchDICOMBonjour"];
