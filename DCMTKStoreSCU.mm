@@ -1634,27 +1634,26 @@ NS_ENDHANDLER
 	[context retain];
 	[context lock];
 	
-	@try {
-
-	if (!_logEntry) {		
+	@try
+	{
+		if (!_logEntry)
+		{
+			_logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
+			[_logEntry setValue:[NSDate date] forKey:@"startTime"];
+			[_logEntry setValue:@"Send" forKey:@"type"];
+			[_logEntry setValue:_calledAET forKey:@"destinationName"];
+			[_logEntry setValue:_callingAET forKey:@"originName"];
+			if (_patientName)
+				[_logEntry setValue:_patientName forKey:@"patientName"];
+			if (_studyDescription)
+				[_logEntry setValue:_studyDescription forKey:@"studyName"];
+		}
 		
-		_logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
-		[_logEntry setValue:[NSDate date] forKey:@"startTime"];
-		[_logEntry setValue:@"Send" forKey:@"type"];
-		[_logEntry setValue:_calledAET forKey:@"destinationName"];
-		[_logEntry setValue:_callingAET forKey:@"originName"];
-		if (_patientName)
-			[_logEntry setValue:_patientName forKey:@"patientName"];
-		if (_studyDescription)
-			[_logEntry setValue:_studyDescription forKey:@"studyName"];
-	
-	}	
-	[_logEntry setValue:[NSNumber numberWithInt:_numberOfFiles] forKey:@"numberImages"];
-	[_logEntry setValue:[NSNumber numberWithInt:_numberSent] forKey:@"numberSent"];
-	[_logEntry setValue:[NSNumber numberWithInt:_numberErrors] forKey:@"numberError"];
-	[_logEntry setValue:[NSDate date] forKey:@"endTime"];
-	[_logEntry setValue:[userInfo valueForKey:@"Message"] forKey:@"message"];
-		
+		[_logEntry setValue:[NSNumber numberWithInt:_numberOfFiles] forKey:@"numberImages"];
+		[_logEntry setValue:[NSNumber numberWithInt:_numberSent] forKey:@"numberSent"];
+		[_logEntry setValue:[NSNumber numberWithInt:_numberErrors] forKey:@"numberError"];
+		[_logEntry setValue:[NSDate date] forKey:@"endTime"];
+		[_logEntry setValue:[userInfo valueForKey:@"Message"] forKey:@"message"];
 	}
 	@catch (NSException * e) {
 		NSLog( @"updateLogEntry exception");
