@@ -9630,15 +9630,6 @@ END_CREATE_ROIS:
 					if( transferFunctionPtr == 0L)	// LINEAR
 					{
 						vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
-						
-						if(isLUT12Bit && [AppController canDisplay12Bit])
-						{
-							NSInvocation *fill12BitBufferInvocation = [AppController fill12BitBufferInvocation];
-							[fill12BitBufferInvocation setArgument:&self atIndex:2];
-							NSValue *srcNSValue = [NSValue valueWithPointer: srcf.data];
-							[fill12BitBufferInvocation setArgument:&srcNSValue atIndex:3];
-							[fill12BitBufferInvocation invoke];
-						}
 					}
 					else
 					{
@@ -9677,6 +9668,16 @@ END_CREATE_ROIS:
 						{
 							[self applyNonLinearWLWWThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: 0], @"start", [NSNumber numberWithInt: height], @"end", [NSValue valueWithPointer: srcf.data], @"src", 0L]];
 						}
+					}
+					
+					if(isLUT12Bit && [AppController canDisplay12Bit])
+					{
+						NSInvocation *fill12BitBufferInvocation = [AppController fill12BitBufferInvocation];
+						[fill12BitBufferInvocation setArgument:&self atIndex:2];
+						NSValue *srcNSValue = [NSValue valueWithPointer: srcf.data];
+						[fill12BitBufferInvocation setArgument:&srcNSValue atIndex:3];
+						[fill12BitBufferInvocation setArgument:&transferFunctionPtr atIndex:4];
+						[fill12BitBufferInvocation invoke];
 					}
 				}
 				
