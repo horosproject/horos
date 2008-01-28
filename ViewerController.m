@@ -15558,7 +15558,7 @@ int i,j,l;
 				[self ApplyOpacityString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default Opacity Table"]];
 		}
 		
-		if([[self modality] isEqualToString:@"CR"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"automatic12BitTotoku"] && [AppController canDisplay12Bit])
+		if(([[self modality] isEqualToString:@"CR"] || [[self modality] isEqualToString:@"MG"] || [[self modality] isEqualToString:@"XA"] || [[self modality] isEqualToString:@"RF"]) && [[NSUserDefaults standardUserDefaults] boolForKey:@"automatic12BitTotoku"] && [AppController canDisplay12Bit])
 		{
 			[imageView setIsLUT12Bit:YES];
 			[display12bitToolbarItemCheckBox setState:NSOnState];
