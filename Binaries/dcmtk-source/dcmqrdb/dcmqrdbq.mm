@@ -451,7 +451,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 		strcpy( studyDescription, "");
 	}
 	
-	if (dataset->findAndGetString (DCM_SeriesDescription, sss, OFFalse).good() && sd != NULL)
+	if (dataset->findAndGetString (DCM_SeriesDescription, sss, OFFalse).good() && sss != NULL)
 	{
 		strcat( studyDescription, " ");
 		strcat( studyDescription, sss);
