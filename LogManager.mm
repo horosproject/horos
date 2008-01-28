@@ -163,7 +163,7 @@ LogManager *currentLogManager;
 							[logEntry setValue:[NSString stringWithUTF8String: logStudyDescription] forKey:@"studyName"];
 							[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberImages"];
 							[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberSent"];
-							[logEntry setValue:0 forKey:@"numberError"];
+							[logEntry setValue:[NSNumber numberWithInt: 0] forKey:@"numberError"];
 							[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logEndTime] intValue]] forKey:@"endTime"];
 							[logEntry setValue:[NSString stringWithUTF8String: logMessage] forKey:@"message"];
 						}
@@ -180,21 +180,27 @@ LogManager *currentLogManager;
 								[logEntry setValue:[NSString stringWithUTF8String: logCallingAET] forKey:@"originName"];
 								[logEntry setValue:[NSString stringWithUTF8String: logPatientName] forKey:@"patientName"];
 								[logEntry setValue:[NSString stringWithUTF8String: logStudyDescription] forKey:@"studyName"];
+								
 								[_currentLogs setObject:logEntry forKey:uid];
 							}
-							else if( [logEntry isDeleted] == NO)
+							
+							if( logEntry != 0L && [logEntry isDeleted] == NO)
 							{
 								[logEntry setValue:[NSString stringWithUTF8String: logMessage] forKey:@"message"];
 								[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberImages"];
 								[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberSent"];
-								[logEntry setValue:0 forKey:@"numberError"];
-								[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logEndTime] intValue]] forKey:@"endTime"];
 								
 								if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
 								{
+									if( [[NSString stringWithUTF8String: logEndTime] intValue] == 0)
+										strcpy( logEndTime, [[NSString stringWithFormat:@"%d", time (NULL)] UTF8String]);
+									
 									NSLog(@"LogManager transfer Complete");
 									[_currentLogs removeObjectForKey: uid];
 								}
+								
+								if( [[NSString stringWithUTF8String: logEndTime] intValue] != 0)
+									[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logEndTime] intValue]] forKey:@"endTime"];
 							}
 						}
 					}

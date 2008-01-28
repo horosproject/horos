@@ -422,8 +422,10 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	const char *scs = 0L;
 	const char *pn = 0L;
 	const char *sd = 0L;
+	const char *sss = 0L;
 	char patientName[ 256];
 	char studyDescription[ 256];
+	char seriesDescription[ 256];
 	char specificCharacterSet[ 256];
 	
 	// ************
@@ -448,6 +450,12 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	else {
 		strcpy( studyDescription, "");
 	}
+	
+	if (dataset->findAndGetString (DCM_SeriesDescription, sss, OFFalse).good() && sd != NULL)
+	{
+		strcat( studyDescription, " ");
+		strcat( studyDescription, sss);
+	}
 
 	if( handle->logCreated == NO)
 	{
@@ -464,7 +472,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	}
 	
 	handle->logNumberReceived = ++(handle->imageCount);
-	handle->logEndTime = time (NULL);
+	handle->logEndTime = 0L;
 	
 	FILE * pFile;
 	char dir[ 1024], newdir[1024];
@@ -476,6 +484,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 		fclose (pFile);
 		strcpy( newdir, dir);
 		strcat( newdir, ".log");
+		unlink( newdir);
 		rename( dir, newdir);
 	}
 	
@@ -1260,6 +1269,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 				fclose (pFile);
 				strcpy( newdir, dir);
 				strcat( newdir, ".log");
+				unlink( newdir);
 				rename( dir, newdir);
 			}
 		}
