@@ -59,7 +59,6 @@ NSLock	*quicktimeThreadLock = 0L;
 static NSMutableArray *nonLinearWLWWThreads = 0L;
 static NSMutableArray *minmaxThreads = 0L;
 static NSConditionLock *processorsLock = 0L;
-static volatile int numberOfThreadsForCompute = 0;
 
 struct NSPointInt
 {
@@ -9475,12 +9474,12 @@ END_CREATE_ROIS:
 				}
 			}
 			
-			numberOfThreadsForCompute = MPProcessors ();
+			int numberOfThreadsForCompute = MPProcessors ();
 			
 			[processorsLock lock];
 			[processorsLock unlockWithCondition: numberOfThreadsForCompute];
 			
-			for( int i = 0; i < MPProcessors (); i++ )
+			for( int i = 0; i < numberOfThreadsForCompute; i++ )
 			{
 				NSMutableDictionary *d = [minmaxThreads objectAtIndex: i];
 				
@@ -9701,8 +9700,7 @@ END_CREATE_ROIS:
 							}
 						} 
 						
-						numberOfThreadsForCompute = MPProcessors ();
-						int processors = numberOfThreadsForCompute;
+						int numberOfThreadsForCompute = MPProcessors ();
 						
 						NSValue *srcNSValue = [NSValue valueWithPointer: srcf.data];
 						
@@ -9712,10 +9710,10 @@ END_CREATE_ROIS:
 						[processorsLock lock];
 						[processorsLock unlockWithCondition: numberOfThreadsForCompute];
 						
-						for( int i = 0; i < MPProcessors(); i++ )
+						for( int i = 0; i < numberOfThreadsForCompute; i++ )
 						{
-							start = i * (int) (height / processors);
-							end = (i+1) * (int) (height / processors);
+							start = i * (int) (height / numberOfThreadsForCompute);
+							end = (i+1) * (int) (height / numberOfThreadsForCompute);
 							
 							NSMutableDictionary *d = [nonLinearWLWWThreads objectAtIndex: i];
 							
