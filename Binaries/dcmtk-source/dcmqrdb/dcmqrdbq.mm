@@ -430,24 +430,30 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	
 	// ************
 
-	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL) {
+	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL)
+	{
 		strcpy( specificCharacterSet, scs);
 	}
-	else {
+	else
+	{
 		strcpy( specificCharacterSet, "ISO_IR 100");
 	}
 	
-	if (dataset->findAndGetString (DCM_PatientsName, pn, OFFalse).good() && pn != NULL) {
+	if (dataset->findAndGetString (DCM_PatientsName, pn, OFFalse).good() && pn != NULL)
+	{
 		strcpy( patientName, pn);
 	}
-	else {
+	else
+	{
 		strcpy( patientName, "");
 	}
 	
-	if (dataset->findAndGetString (DCM_StudyDescription, sd, OFFalse).good() && sd != NULL) {
+	if (dataset->findAndGetString (DCM_StudyDescription, sd, OFFalse).good() && sd != NULL)
+	{
 		strcpy( studyDescription, sd);
 	}
-	else {
+	else
+	{
 		strcpy( studyDescription, "");
 	}
 	
@@ -461,6 +467,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	{
 		handle->logCreated = YES;
 		
+		strcpy( handle->logSpecificCharacterSet, specificCharacterSet);
 		strcpy( handle->logPatientName, patientName);
 		strcpy( handle->logStudyDescription, studyDescription);
 		strcpy( handle->logCallingAET, handle->callingAET);
@@ -480,7 +487,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	pFile = fopen (dir,"w+");
 	if( pFile)
 	{
-		fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive");
+		fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive", handle->logSpecificCharacterSet);
 		fclose (pFile);
 		strcpy( newdir, dir);
 		strcat( newdir, ".log");
@@ -1265,7 +1272,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
-				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive");
+				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive", handle->logSpecificCharacterSet);
 				fclose (pFile);
 				strcpy( newdir, dir);
 				strcat( newdir, ".log");

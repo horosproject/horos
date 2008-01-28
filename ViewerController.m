@@ -4421,8 +4421,6 @@ static ViewerController *draggedController = 0L;
 //		
 //		[imageView display];
 //		
-//		Delay(1, 0L);
-//		
 //		[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] removeObject: c];
 //	}
 //	[imageView display];

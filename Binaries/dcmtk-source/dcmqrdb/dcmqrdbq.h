@@ -67,6 +67,7 @@ struct DB_OsiriX_Handle
 	long logStartTime;
 	char logMessage[1024];
 	char logUID[1024];
+	char logSpecificCharacterSet[1024];
 	long logNumberReceived;
 	long logEndTime;
 };

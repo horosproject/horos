@@ -39,6 +39,7 @@
 #import "AppController.h"
 #import "DCMTKStoreSCU.h"
 #import "browserController.h"
+#import "DicomFile.h"
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
@@ -892,7 +893,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			compression: (float)compression
 			extraParameters:(NSDictionary *)extraParameters{
 	
-	if (self = [super init]) {
+	if (self = [super init])
+	{
 		//NSLog(@"init hostname: %@", hostname);
 		//NSLog(@"calling AET: %@", myAET);
 		_callingAET = [myAET retain];
@@ -911,28 +913,33 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		_logEntry = nil;
 		
 		DcmFileFormat fileformat;
-		if ([_filesToSend count]) {
+		if ([_filesToSend count])
+		{
 			OFCondition status = fileformat.loadFile([[filesToSend objectAtIndex:0] UTF8String]);
 			if (status.good())
 			{
-			  OFString patientsName;
-			  OFString charset;
-			  OFString studyDescription;
-			  NSString *characterSet = nil;
-			  if (fileformat.getDataset()->findAndGetOFString(DCM_SpecificCharacterSet, charset).good()) {
-				characterSet = [[[NSString alloc] initWithCString:charset.c_str()  DICOMEncoding:nil] autorelease];
-				//NSLog(@"scs %@", characterSet);
-			  }
-			  
-			  if (fileformat.getDataset()->findAndGetOFString(DCM_PatientsName, patientsName).good()) {
-				_patientName = [[NSString alloc] initWithCString:patientsName.c_str()  DICOMEncoding:characterSet];
-				//NSLog(@"pt name: %@", _patientName);
+				const char *string = NULL;
+				NSStringEncoding	encoding[ 10];
+				for( int i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
+
+				if (fileformat.getDataset()->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good())
+				{
+					NSArray	*c = [[NSString stringWithCString:string] componentsSeparatedByString:@"\\"];
+
+					if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
+
+					if( [c count] < 10)
+					{
+						for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+						for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+					}
 				}
-				
-				if (fileformat.getDataset()->findAndGetOFString(DCM_StudyDescription, studyDescription).good()) {
-				_studyDescription = [[NSString alloc] initWithCString:studyDescription.c_str()  DICOMEncoding:characterSet];
-				//NSLog (@"study: %@", _studyDescription);
-				}
+
+				if (fileformat.getDataset()->findAndGetString(DCM_PatientsName, string, OFFalse).good())
+					_patientName = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
+
+				if (fileformat.getDataset()->findAndGetString(DCM_StudyDescription, string, OFFalse).good())
+					_studyDescription = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
 			}
 		}
 	}

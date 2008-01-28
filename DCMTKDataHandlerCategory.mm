@@ -716,7 +716,7 @@
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
-				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r", [[object valueForKeyPath:@"study.name"] UTF8String], [[object valueForKeyPath:@"study.studyName"] UTF8String], [[self callingAET] UTF8String], time (NULL), "Complete", "unused", [[object valueForKey:@"noFiles"] intValue], time (NULL), "Move");
+				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r", [[object valueForKeyPath:@"study.name"] UTF8String], [[object valueForKeyPath:@"study.studyName"] UTF8String], [[self callingAET] UTF8String], time (NULL), "Complete", "unused", [[object valueForKey:@"noFiles"] intValue], time (NULL), "Move", "UTF-8");
 				fclose (pFile);
 				strcpy( newdir, dir);
 				strcat( newdir, ".log");
@@ -732,7 +732,7 @@
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
-				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r", [[object valueForKey:@"name"] UTF8String], [[object valueForKey:@"studyName"] UTF8String], [[self callingAET] UTF8String], time (NULL), "Complete", "unused", [[object valueForKey:@"noFiles"] intValue], time (NULL), "Move");
+				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r", [[object valueForKey:@"name"] UTF8String], [[object valueForKey:@"studyName"] UTF8String], [[self callingAET] UTF8String], time (NULL), "Complete", "unused", [[object valueForKey:@"noFiles"] intValue], time (NULL), "Move", "UTF-8");
 				fclose (pFile);
 				strcpy( newdir, dir);
 				strcat( newdir, ".log");

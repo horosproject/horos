@@ -883,7 +883,8 @@ static char *GetPrivateIP()
 				checkAndViewTry = -1;
 				[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject: selectedItems];
 				
-				Delay( 30, 0L);
+				unsigned long finalTicks;
+				Delay( 30, &finalTicks);
 				
 				[wait close];
 				[wait release];

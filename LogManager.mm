@@ -20,6 +20,8 @@
 
 #import "LogManager.h"
 #import "browserController.h"
+#import "DICOMToNSString.h"
+#import "DicomFile.h"
 
 LogManager *currentLogManager;
 
@@ -103,6 +105,7 @@ LogManager *currentLogManager;
 		char logNumberReceived[ 1024];
 		char logEndTime[ 1024];
 		char logType[ 1024];
+		char logEncoding[ 1024];
 
 		logPatientName[ 0] = 0;
 		logStudyDescription[ 0] = 0;
@@ -113,6 +116,7 @@ LogManager *currentLogManager;
 		logNumberReceived[ 0] = 0;
 		logEndTime[ 0] = 0;
 		logType[ 0] = 0;
+		logEncoding[ 0] = 0;
 		
 		[context retain];
 		[context lock];
@@ -146,9 +150,23 @@ LogManager *currentLogManager;
 					if(curData) strcpy( logNumberReceived, strsep( &curData, "\r"));
 					if(curData) strcpy( logEndTime, strsep( &curData, "\r"));
 					if(curData) strcpy( logType, strsep( &curData, "\r"));
+					if(curData) strcpy( logEncoding, strsep( &curData, "\r"));
 					
 					fclose (pFile);
 					remove( [newfile UTF8String]);
+					
+					// Encoding
+					
+					NSStringEncoding	encoding[ 10];
+					for( int i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
+					NSArray	*c = [[NSString stringWithCString: logEncoding] componentsSeparatedByString:@"\\"];
+					
+					if( [c count] < 10)
+					{
+						for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+						for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+					}
+					//
 					
 					if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"In Progress"] || [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
 					{
@@ -159,8 +177,8 @@ LogManager *currentLogManager;
 							[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logStartTime] intValue]]  forKey:@"startTime"];
 							[logEntry setValue:[NSString stringWithUTF8String: logType] forKey:@"type"];
 							[logEntry setValue:[NSString stringWithUTF8String: logCallingAET] forKey:@"originName"];
-							[logEntry setValue:[NSString stringWithUTF8String: logPatientName] forKey:@"patientName"];
-							[logEntry setValue:[NSString stringWithUTF8String: logStudyDescription] forKey:@"studyName"];
+							[logEntry setValue:[DicomFile stringWithBytes: (char*) logPatientName encodings: encoding] forKey:@"patientName"];
+							[logEntry setValue:[DicomFile stringWithBytes: (char*) logStudyDescription encodings: encoding] forKey:@"studyName"];
 							[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberImages"];
 							[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberSent"];
 							[logEntry setValue:[NSNumber numberWithInt: 0] forKey:@"numberError"];
@@ -178,8 +196,8 @@ LogManager *currentLogManager;
 								[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logStartTime] intValue]]  forKey:@"startTime"];
 								[logEntry setValue:[NSString stringWithUTF8String: logType] forKey:@"type"];
 								[logEntry setValue:[NSString stringWithUTF8String: logCallingAET] forKey:@"originName"];
-								[logEntry setValue:[NSString stringWithUTF8String: logPatientName] forKey:@"patientName"];
-								[logEntry setValue:[NSString stringWithUTF8String: logStudyDescription] forKey:@"studyName"];
+								[logEntry setValue:[DicomFile stringWithBytes: (char*) logPatientName encodings: encoding] forKey:@"patientName"];
+								[logEntry setValue:[DicomFile stringWithBytes: (char*) logStudyDescription encodings: encoding] forKey:@"studyName"];
 								
 								[_currentLogs setObject:logEntry forKey:uid];
 							}

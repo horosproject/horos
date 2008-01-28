@@ -6698,8 +6698,6 @@ static BOOL withReset = NO;
 				[previewPixThumbnails replaceObjectAtIndex: i withObject: notFoundImage];
 				[dcmPix release];
 			}
-			
-			//			Delay( 10, 0L);
 		}
 		
 		shouldDie = NO;
@@ -7986,7 +7984,8 @@ static BOOL needToRezoom;
 					
 					[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
 					
-					Delay( 60, 0L);
+					unsigned long finalTicks;
+					Delay( 60, &finalTicks);
 					
 					[wait close];
 					[wait release];
@@ -11747,7 +11746,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			attempts++;
 			if( attempts < 5)
-				Delay( 60, 0L);
+			{
+				unsigned long finalTicks;
+				Delay( 60, &finalTicks);
+			}
 			else success = YES;
 		}
 	}

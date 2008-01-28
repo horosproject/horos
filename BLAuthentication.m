@@ -287,8 +287,9 @@
 												[pathToCommand UTF8String],
 												0, args, NULL);
 	}
-
-	Delay(30, 0L); // do not delete this line... [joris/antoine]
+	
+	unsigned long finalTicks;
+	Delay(30, &finalTicks); // do not delete this line... [joris/antoine]
 
     if(err!=0) {
 		NSBeep();
