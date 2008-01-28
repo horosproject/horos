@@ -256,6 +256,9 @@ Note setter is different to not break existing usage. :-( */
 
 @property long rowBytes;
 @property(readonly) long serieNo;
+@property(readonly) NSArray *pixArray;
+@property(readonly) float *transferFunctionPtr;
+@property short pixPos;
 
 @property(getter=Tot, setter=setTot:) long Tot;
 

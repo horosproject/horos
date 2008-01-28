@@ -57,6 +57,7 @@ BOOL	quicktimeRunning = NO;
 NSLock	*quicktimeThreadLock = 0L;
 
 static NSMutableArray *nonLinearWLWWThreads = 0L;
+static NSMutableArray *minmaxThreads = 0L;
 static NSLock *processorsLock = 0L;
 static volatile int numberOfThreadsForCompute = 0;
 
@@ -933,7 +934,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 @synthesize rowBytes;
 @synthesize serieNo;
-
+@synthesize pixArray;
+@synthesize pixPos;
+@synthesize transferFunctionPtr;
 @synthesize stackMode;
 @synthesize generated;
 @synthesize sourceFile;
@@ -8489,10 +8492,13 @@ END_CREATE_ROIS:
     return baseAddr;
 }
 
-- (void)setLUT12baseAddr: (char*) ptr
+- (void)setLUT12baseAddr: (unsigned char*) ptr
 {
-	if(LUT12baseAddr) free(LUT12baseAddr);
-	LUT12baseAddr = ptr;
+	if( ptr != LUT12baseAddr)
+	{
+		if(LUT12baseAddr) free(LUT12baseAddr);
+		LUT12baseAddr = ptr;
+	}
 }
 
 - (unsigned char*)LUT12baseAddr;
@@ -8835,7 +8841,7 @@ END_CREATE_ROIS:
 	return val;
 }
 
-- (void) computeMax:(float*) fResult pos:(int) pos threads:(int) threads
+- (void) computeMax:(float*) fResult pos:(int) pos threads:(int) threads object: (DCMPix*) o
 {
 	float				*fNext = NULL;
 	long				from, to, size = height * width;
@@ -8844,13 +8850,17 @@ END_CREATE_ROIS:
 	to = ((pos+1) * size) / threads;
 	size = to - from;
 	
-	for( long i = 1; i < stack; i++ ) {
+	NSArray *p = [o pixArray];
+	int ppos = [o pixPos];
+	
+	for( long i = 1; i < stack; i++ )
+	{
 		long res;
-		if( stackDirection) res = pixPos-i;
-		else res = pixPos+i;
+		if( stackDirection) res = ppos-i;
+		else res = ppos+i;
 		
-		if( res < pixArray.count && res >= 0 ) {
-			fNext = [[pixArray objectAtIndex: res] fImage];
+		if( res < p.count && res >= 0 ) {
+			fNext = [[p objectAtIndex: res] fImage];
 			if( fNext )	{
 				if( stackMode == 2) vDSP_vmax( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
 				else if( stackMode == 1) 
@@ -8877,7 +8887,15 @@ END_CREATE_ROIS:
 	
 	int p = MPProcessors ();
 	
-	[self computeMax: [[dict valueForKey:@"fResult"] pointerValue] pos: [[dict valueForKey:@"pos"] intValue] threads: p];
+	do
+	{
+		[threadLock lockWhenCondition: 1];
+		
+		[self computeMax: [[dict valueForKey:@"fResult"] pointerValue] pos: [[dict valueForKey:@"pos"] intValue] threads: p object: [dict valueForKey:@"self"]];
+		
+		[threadLock unlockWithCondition: 0];
+	}
+	while( 1);
 	
 	[pool release];
 }
@@ -8892,29 +8910,27 @@ END_CREATE_ROIS:
 	{
 		[threadLock lockWhenCondition: 1];
 		
+		DCMPix *o = [dict valueForKey:@"self"];
 		int startLine = [[dict valueForKey:@"start"] intValue];
 		int endLine = [[dict valueForKey:@"end"] intValue];
 		
-		register int			ii = (endLine - startLine) * width;
-		register unsigned char	*dst8Ptr = (unsigned char*) baseAddr + startLine * width;
+		register int			ii = (endLine - startLine) * [o pwidth];
+		register unsigned char	*dst8Ptr = (unsigned char*) [o baseAddr] + startLine * [o pwidth];
 		register float			*src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
-		register float			from = wl -ww/2.;
+		register float			from = [o wl] - [o ww]/2.;
+		register float			ratio = 4096. / [o ww];
+		register float			*tfPtr = [o transferFunctionPtr];
 		
-		src32Ptr += startLine * width;
+		src32Ptr += startLine * [o pwidth];
 		
 		while( ii-- > 0 )
 		{
-			int value = 4096 * (*src32Ptr - from)/ww;
+			int value = ratio * (*src32Ptr++ - from);
 			
 			if( value < 0) value = 0;
 			else if( value >= 4095) value = 4095;
 			
-			value = 255.*transferFunctionPtr[ value];
-			
-			*dst8Ptr = value;
-			
-			dst8Ptr++;
-			src32Ptr++;
+			*dst8Ptr++ = 255.*tfPtr[ value];
 		}
 		
 		[processorsLock lock];
@@ -9447,11 +9463,29 @@ END_CREATE_ROIS:
 			if( processorsLock == nil )
 				processorsLock = [[NSLock alloc] init];
 			
+			if( minmaxThreads == 0L)
+			{
+				minmaxThreads = [[NSMutableArray array] retain];
+				
+				for( int i = 0; i < MPProcessors(); i++ )
+				{
+					[minmaxThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[[NSConditionLock alloc] initWithCondition: 0] autorelease], @"threadLock", 0L]];
+					[NSThread detachNewThreadSelector: @selector( computeMaxThread:) toTarget:self withObject: [minmaxThreads lastObject]];
+				}
+			}
+			
 			numberOfThreadsForCompute = MPProcessors ();
 			long i;
 			for( i = 0; i < MPProcessors (); i++ )
 			{
-				[NSThread detachNewThreadSelector: @selector( computeMaxThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: fResult], @"fResult", [NSNumber numberWithInt: i], @"pos", nil]];
+				NSMutableDictionary *d = [minmaxThreads objectAtIndex: i];
+				
+				[d setObject: [NSValue valueWithPointer: fResult] forKey: @"fResult"];
+				[d setObject: [NSNumber numberWithInt: i] forKey: @"pos"];
+				[d setObject: self forKey: @"self"];
+				
+				[[d objectForKey: @"threadLock"] lock];
+				[[d objectForKey: @"threadLock"] unlockWithCondition: 1];
 			}
 			
 			BOOL done = NO;
@@ -9487,7 +9521,8 @@ END_CREATE_ROIS:
 	return result;
 }
 
-- (void)setTransferFunction:(NSData*) tf {
+- (void)setTransferFunction:(NSData*) tf
+{
 	if( transferFunction != tf) {
 		[transferFunction release];
 		transferFunction = [tf retain];
@@ -9650,56 +9685,50 @@ END_CREATE_ROIS:
 					}
 					else
 					{
-						if( height > 1000)	// multi-threading
+						if( processorsLock == nil )
+							processorsLock = [[NSLock alloc] init];
+						
+						if( nonLinearWLWWThreads == 0L)
 						{
-							if( processorsLock == nil )
-								processorsLock = [[NSLock alloc] init];
-							
-							if( nonLinearWLWWThreads == 0L)
-							{
-								nonLinearWLWWThreads = [[NSMutableArray array] retain];
-								
-								for( int i = 0; i < MPProcessors(); i++ )
-								{
-									[nonLinearWLWWThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[[NSConditionLock alloc] initWithCondition: 0] autorelease], @"threadLock", 0L]];
-									[NSThread detachNewThreadSelector: @selector( applyNonLinearWLWWThread:) toTarget:self withObject: [nonLinearWLWWThreads lastObject]];
-								}
-							} 
-							
-							numberOfThreadsForCompute = MPProcessors ();
-							int processors = numberOfThreadsForCompute;
-							
-							NSValue *srcNSValue = [NSValue valueWithPointer: srcf.data];
-							
-							int start;
-							int end;
+							nonLinearWLWWThreads = [[NSMutableArray array] retain];
 							
 							for( int i = 0; i < MPProcessors(); i++ )
 							{
-								start = i * (int) (height / processors);
-								end = (i+1) * (int) (height / processors);
-								
-								NSMutableDictionary *d = [nonLinearWLWWThreads objectAtIndex: i];
-								
-								[d setObject: [NSNumber numberWithInt: start] forKey: @"start"];
-								[d setObject: [NSNumber numberWithInt: end] forKey: @"end"];
-								[d setObject: srcNSValue forKey: @"src"];
-								
-								[[d objectForKey: @"threadLock"] lock];
-								[[d objectForKey: @"threadLock"] unlockWithCondition: 1];
+								[nonLinearWLWWThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[[NSConditionLock alloc] initWithCondition: 0] autorelease], @"threadLock", 0L]];
+								[NSThread detachNewThreadSelector: @selector( applyNonLinearWLWWThread:) toTarget:self withObject: [nonLinearWLWWThreads lastObject]];
 							}
-							
-							BOOL done = NO;
-							while( done == NO )	
-							{
-								[processorsLock lock];
-								if( numberOfThreadsForCompute <= 0) done = YES;
-								[processorsLock unlock];
-							}
-						}
-						else
+						} 
+						
+						numberOfThreadsForCompute = MPProcessors ();
+						int processors = numberOfThreadsForCompute;
+						
+						NSValue *srcNSValue = [NSValue valueWithPointer: srcf.data];
+						
+						int start;
+						int end;
+						
+						for( int i = 0; i < MPProcessors(); i++ )
 						{
-							[self applyNonLinearWLWWThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: 0], @"start", [NSNumber numberWithInt: height], @"end", [NSValue valueWithPointer: srcf.data], @"src", 0L]];
+							start = i * (int) (height / processors);
+							end = (i+1) * (int) (height / processors);
+							
+							NSMutableDictionary *d = [nonLinearWLWWThreads objectAtIndex: i];
+							
+							[d setObject: [NSNumber numberWithInt: start] forKey: @"start"];
+							[d setObject: [NSNumber numberWithInt: end] forKey: @"end"];
+							[d setObject: self forKey: @"self"];
+							[d setObject: srcNSValue forKey: @"src"];
+							
+							[[d objectForKey: @"threadLock"] lock];
+							[[d objectForKey: @"threadLock"] unlockWithCondition: 1];
+						}
+						
+						BOOL done = NO;
+						while( done == NO )	
+						{
+							[processorsLock lock];
+							if( numberOfThreadsForCompute <= 0) done = YES;
+							[processorsLock unlock];
 						}
 					}
 					
