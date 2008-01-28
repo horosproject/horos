@@ -254,7 +254,7 @@ Note setter is different to not break existing usage. :-( */
 @property(readonly) NSString *patientPosition;
 
 @property char* baseAddr;
-@property(readonly) unsigned char* LUT12baseAddr;
+@property unsigned char* LUT12baseAddr;
 
 @property long rowBytes;
 @property(readonly) long serieNo;

@@ -53,6 +53,9 @@ enum
 
 static unsigned char *LUT12toRGB;
 static BOOL canDisplay12Bit;
+static NSInvocation *fill12BitBufferInvocation;
+@class PluginFilter;
+static PluginFilter *totokuPlugin;
 
 #ifdef __cplusplus
 extern "C"
@@ -188,6 +191,8 @@ extern "C"
 + (void)setCanDisplay12Bit:(BOOL)boo;
 + (void)setLUT12toRGB:(unsigned char*)lut;
 + (unsigned char*)LUT12toRGB;
++ (void)set12BitInvocation:(NSInvocation*)invocation;
++ (NSInvocation*)fill12BitBufferInvocation;
 
 @end
 

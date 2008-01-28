@@ -112,31 +112,31 @@ ExtractGroup28Information (PapyShort inFileNb)
   theErr = Papy3GroupFree (&theGroup28P, TRUE);
   
   /* set the PAPYRUS global var according to the extracted value */
-  if (strcmp (thePhotoInterpret, "MONOCHROME1") == 0) 
+  if (strncmp (thePhotoInterpret, "MONOCHROME1", strlen( "MONOCHROME1")) == 0) 
     gArrPhotoInterpret [inFileNb] = MONOCHROME1;
-  else if (strcmp (thePhotoInterpret, "MONOCHROME2") == 0) 
+  else if (strncmp (thePhotoInterpret, "MONOCHROME2", strlen( "MONOCHROME2")) == 0) 
     gArrPhotoInterpret [inFileNb] = MONOCHROME2;
-  else if (strcmp (thePhotoInterpret, "PALETTE COLOR") == 0) 
+  else if (strncmp (thePhotoInterpret, "PALETTE COLOR", strlen( "PALETTE COLOR")) == 0) 
     gArrPhotoInterpret [inFileNb] = PALETTE;
-  else if (strcmp (thePhotoInterpret, "RGB") == 0) 
+  else if (strncmp (thePhotoInterpret, "RGB", strlen( "RGB")) == 0) 
     gArrPhotoInterpret [inFileNb] = RGB;
-  else if (strcmp (thePhotoInterpret, "HSV") == 0) 
+  else if (strncmp (thePhotoInterpret, "HSV", strlen( "HSV")) == 0) 
     gArrPhotoInterpret [inFileNb] = HSV;
-  else if (strcmp (thePhotoInterpret, "ARGB") == 0) 
+  else if (strncmp (thePhotoInterpret, "ARGB", strlen( "ARGB")) == 0) 
     gArrPhotoInterpret [inFileNb] = ARGB;
-  else if (strcmp (thePhotoInterpret, "CMYK") == 0) 
+  else if (strncmp (thePhotoInterpret, "CMYK", strlen( "CMYK")) == 0) 
     gArrPhotoInterpret [inFileNb] = CMYK;
-  else if (strcmp (thePhotoInterpret, "YBR_FULL") == 0) 
-    gArrPhotoInterpret [inFileNb] = YBR_FULL;
-  else if (strcmp (thePhotoInterpret, "YBR_FULL_422") == 0) 
+  else if (strncmp (thePhotoInterpret, "YBR_FULL_422", strlen( "YBR_FULL_422")) == 0) 
     gArrPhotoInterpret [inFileNb] = YBR_FULL_422;
-  else if (strcmp (thePhotoInterpret, "YBR_PARTIAL_422") == 0) 
+  else if (strncmp (thePhotoInterpret, "YBR_FULL", strlen( "YBR_FULL")) == 0) 
+    gArrPhotoInterpret [inFileNb] = YBR_FULL;
+  else if (strncmp (thePhotoInterpret, "YBR_PARTIAL_422", strlen( "YBR_PARTIAL_422")) == 0) 
     gArrPhotoInterpret [inFileNb] = YBR_PARTIAL_422;
-  else if (strcmp (thePhotoInterpret, "YBR_RCT") == 0) 
+  else if (strncmp (thePhotoInterpret, "YBR_RCT", strlen( "YBR_RCT")) == 0) 
     gArrPhotoInterpret [inFileNb] = YBR_RCT;
-  else if (strcmp (thePhotoInterpret, "YBR_ICT") == 0) 
+  else if (strncmp (thePhotoInterpret, "YBR_ICT", strlen( "YBR_ICT")) == 0) 
     gArrPhotoInterpret [inFileNb] = YBR_ICT;
-   else if (strcmp (thePhotoInterpret, "YUV_RCT") == 0) 
+   else if (strncmp (thePhotoInterpret, "YUV_RCT", strlen( "YUV_RCT")) == 0) 
     gArrPhotoInterpret [inFileNb] = YUV_RCT;
 
   RETURN (papNoError);

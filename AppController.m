@@ -3043,14 +3043,25 @@ static BOOL initialized = NO;
 	[[NSUserDefaults standardUserDefaults] setBool:boo forKey:@"is12bitPluginAvailable"];
 }
 
-+ (void) setLUT12toRGB:(unsigned char*)lut;
++ (void)setLUT12toRGB:(unsigned char*)lut;
 {
 	LUT12toRGB = lut;
 }
 
-+ (unsigned char*) LUT12toRGB;
++ (unsigned char*)LUT12toRGB;
 {
 	return LUT12toRGB;
+}
+
++ (void)set12BitInvocation:(NSInvocation*)invocation;
+{
+	[fill12BitBufferInvocation release];
+	fill12BitBufferInvocation = [invocation retain];
+}
+
++ (NSInvocation*)fill12BitBufferInvocation;
+{
+	return fill12BitBufferInvocation;
 }
 
 @end

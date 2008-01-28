@@ -8485,6 +8485,12 @@ END_CREATE_ROIS:
     return baseAddr;
 }
 
+- (void)setLUT12baseAddr: (char*) ptr
+{
+	if(LUT12baseAddr) free(LUT12baseAddr);
+	LUT12baseAddr = ptr;
+}
+
 - (unsigned char*)LUT12baseAddr;
 {
     [self CheckLoad];
@@ -8864,48 +8870,6 @@ END_CREATE_ROIS:
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	[self computeMax: [[dict valueForKey:@"fResult"] pointerValue] pos: [[dict valueForKey:@"pos"] intValue] threads: MPProcessors ()];
-	
-	[pool release];
-}
-
-- (void)apply12bitWLWWThread: (NSDictionary*)dict
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	int startLine = [[dict valueForKey:@"start"] intValue];
-	int endLine = [[dict valueForKey:@"end"] intValue];
-	
-
-	register int			ii = (endLine - startLine) * width;
-	register unsigned char	*dst8Ptr = LUT12baseAddr + startLine * width*4;
-	register float			*src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
-	register float			from = wl -ww/2.;
-	
-	src32Ptr += startLine * width;
-	
-	unsigned char *LUT12toRGB = [AppController LUT12toRGB];
-	
-	while( ii-- > 0 )
-	{
-		int value = 2048 * (*src32Ptr - from)/ww;
-		
-		if( value < 0) value = 0;
-		else if( value >= 2047) value = 2047;
-		
-		value *= 3;
-		
-		*dst8Ptr = 0xFF;		dst8Ptr++;
-		*dst8Ptr = *(LUT12toRGB+value);		dst8Ptr++;
-		*dst8Ptr = *(LUT12toRGB+value+1);		dst8Ptr++;
-		*dst8Ptr = *(LUT12toRGB+value+2);
-		
-		dst8Ptr++;
-		src32Ptr++;
-	}
-	
-	[processorsLock lock];
-	numberOfThreadsForCompute--;
-	[processorsLock unlock];
 	
 	[pool release];
 }
@@ -9669,43 +9633,11 @@ END_CREATE_ROIS:
 						
 						if(isLUT12Bit && [AppController canDisplay12Bit])
 						{
-							if(LUT12baseAddr==0) LUT12baseAddr = malloc(height*width*4*sizeof(unsigned char));
-							
-							if( height > 1000)	// multi-threading
-							{
-								if( processorsLock == nil )
-									processorsLock = [[NSLock alloc] init];
-								
-								numberOfThreadsForCompute = MPProcessors ();
-								int processors = numberOfThreadsForCompute;
-								
-								NSValue *srcNSValue = [NSValue valueWithPointer: srcf.data];
-								
-								int start;
-								int end;
-								
-								for( int i = 0; i < MPProcessors()-1; i++ )
-								{
-									start = i * (int) (height / processors);
-									end = (i+1) * (int) (height / processors);
-									[NSThread detachNewThreadSelector: @selector( apply12bitWLWWThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: start], @"start", [NSNumber numberWithInt: end], @"end", srcNSValue, @"src",0L]];
-								}
-								
-								start = (processors-1) * (int) (height / processors);
-								end = processors * (int) (height / processors);
-								[self apply12bitWLWWThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: start], @"start", [NSNumber numberWithInt: end], @"end", srcNSValue, @"src", 0L]];
-								
-								BOOL done = NO;
-								while( done == NO )	{
-									[processorsLock lock];
-									if( numberOfThreadsForCompute <= 0) done = YES;
-									[processorsLock unlock];
-								}
-							}
-							else
-							{
-								[self apply12bitWLWWThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: 0], @"start", [NSNumber numberWithInt: height], @"end", [NSValue valueWithPointer: srcf.data], @"src", 0L]];
-							}
+							NSInvocation *fill12BitBufferInvocation = [AppController fill12BitBufferInvocation];
+							[fill12BitBufferInvocation setArgument:&self atIndex:2];
+							NSValue *srcNSValue = [NSValue valueWithPointer: srcf.data];
+							[fill12BitBufferInvocation setArgument:&srcNSValue atIndex:3];
+							[fill12BitBufferInvocation invoke];
 						}
 					}
 					else
