@@ -9696,7 +9696,7 @@ END_CREATE_ROIS:
 							for( int i = 0; i < MPProcessors(); i++ )
 							{
 								[nonLinearWLWWThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[[NSConditionLock alloc] initWithCondition: 0] autorelease], @"threadLock", 0L]];
-								[NSThread detachNewThreadSelector: @selector( applyNonLinearWLWWThread:) toTarget:self withObject: [nonLinearWLWWThreads lastObject]];
+								[NSThread detachNewThreadSelector: @selector( applyNonLinearWLWWThread:) toTarget:[[PixThread alloc] init] withObject: [nonLinearWLWWThreads lastObject]];
 							}
 						} 
 						
