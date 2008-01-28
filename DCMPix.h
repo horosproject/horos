@@ -259,6 +259,8 @@ Note setter is different to not break existing usage. :-( */
 @property(readonly) NSArray *pixArray;
 @property(readonly) float *transferFunctionPtr;
 @property short pixPos;
+@property short stackDirection;
+@property float countstackMean;
 
 @property(getter=Tot, setter=setTot:) long Tot;
 

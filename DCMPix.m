@@ -58,7 +58,7 @@ NSLock	*quicktimeThreadLock = 0L;
 
 static NSMutableArray *nonLinearWLWWThreads = 0L;
 static NSMutableArray *minmaxThreads = 0L;
-static NSLock *processorsLock = 0L;
+static NSConditionLock *processorsLock = 0L;
 static volatile int numberOfThreadsForCompute = 0;
 
 struct NSPointInt
@@ -913,15 +913,129 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 }
 
+@interface PixThread : NSObject
+{
+}
+@end
+
+@implementation PixThread
+
+- (void) computeMax:(float*) fResult pos:(int) pos threads:(int) threads object: (DCMPix*) o
+{
+	float				*fNext = NULL;
+	long				from, to, size = [o pheight] * [o pwidth];
+	
+	from = (pos * size) / threads;
+	to = ((pos+1) * size) / threads;
+	size = to - from;
+	
+	NSArray *p = o.pixArray;
+	int ppos = o.pixPos;
+	int stack = o.stack;
+	int stackDirection = o.stackDirection;
+	int stackMode = o.stackMode;
+	
+	for( int i = 1; i < stack; i++ )
+	{
+		int res;
+		if( stackDirection) res = ppos-i;
+		else res = ppos+i;
+		
+		if( res < p.count && res >= 0 )
+		{
+			fNext = [[p objectAtIndex: res] fImage];
+			if( fNext )	{
+				if( stackMode == 2) vDSP_vmax( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
+				else if( stackMode == 1) 
+				{
+					vDSP_vadd( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
+					if( from == 0) o.countstackMean++;
+				}
+				else vDSP_vmin( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
+			}
+		}
+	}
+	
+	[processorsLock lock];
+	[processorsLock unlockWithCondition: [processorsLock condition]-1];
+}
+
+- (void)computeMaxThread: (NSDictionary*)dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSConditionLock *threadLock = [dict valueForKey:@"threadLock"];
+	
+	int p = MPProcessors ();
+	
+	do
+	{
+		[threadLock lockWhenCondition: 1];
+		
+		[self computeMax: [[dict valueForKey:@"fResult"] pointerValue] pos: [[dict valueForKey:@"pos"] intValue] threads: p object: [dict valueForKey:@"self"]];
+		
+		[threadLock unlockWithCondition: 0];
+	}
+	while( 1);
+	
+	[pool release];
+}
+
+- (void)applyNonLinearWLWWThread: (NSDictionary*)dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSConditionLock *threadLock = [dict valueForKey:@"threadLock"];
+	
+	do
+	{
+		[threadLock lockWhenCondition: 1];
+		
+		DCMPix *o = [dict valueForKey:@"self"];
+		int startLine = [[dict valueForKey:@"start"] intValue];
+		int endLine = [[dict valueForKey:@"end"] intValue];
+		
+		register int			ii = (endLine - startLine) * [o pwidth];
+		register unsigned char	*dst8Ptr = (unsigned char*) [o baseAddr] + startLine * [o pwidth];
+		register float			*src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
+		register float			from = [o wl] - [o ww]/2.;
+		register float			ratio = 4096. / [o ww];
+		register float			*tfPtr = [o transferFunctionPtr];
+		
+		src32Ptr += startLine * [o pwidth];
+		
+		if( tfPtr)
+		{
+			while( ii-- > 0 )
+			{
+				int value = ratio * (*src32Ptr++ - from);
+				
+				if( value < 0) value = 0;
+				else if( value >= 4095) value = 4095;
+				
+				*dst8Ptr++ = 255.*tfPtr[ value];
+			}
+		}
+		
+		[processorsLock lock];
+		[processorsLock unlockWithCondition: [processorsLock condition]-1];
+		
+		[threadLock unlockWithCondition: 0];
+	}
+	while( 1);
+
+	[pool release];
+}
+
+@end
+
 @implementation DCMPix
 
+@synthesize countstackMean, stackDirection;
 @synthesize frameNo;
 @synthesize minValueOfSeries, maxValueOfSeries;
-@synthesize isRGB;
-@synthesize pwidth = width, pheight = height;
-@synthesize pixelRatio;
-@synthesize transferFunction;
-@synthesize subPixOffset;
+@synthesize isRGB, pwidth = width, pheight = height;
+@synthesize pixelRatio, transferFunction, subPixOffset;
 
 @synthesize DCMPixShutterRectWidth = shutterRect_w;
 @synthesize DCMPixShutterRectHeight = shutterRect_h;
@@ -933,30 +1047,19 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize protocolName, viewPosition, patientPosition;
 
 @synthesize rowBytes;
-@synthesize serieNo;
-@synthesize pixArray;
-@synthesize pixPos;
-@synthesize transferFunctionPtr;
-@synthesize stackMode;
-@synthesize generated;
-@synthesize sourceFile;
-@synthesize imageObj;
-@synthesize srcFile;
-@synthesize annotationsDictionary;
+@synthesize serieNo, pixArray;
+@synthesize pixPos, transferFunctionPtr;
+@synthesize stackMode, generated;
+@synthesize sourceFile, imageObj;
+@synthesize srcFile, annotationsDictionary;
 
 // SUV properties
-@synthesize philipsFactor;
-@synthesize patientsWeight;
-@synthesize halflife;
-@synthesize radionuclideTotalDose;
-@synthesize radionuclideTotalDoseCorrected;
-@synthesize acquisitionTime;
-@synthesize radiopharmaceuticalStartTime;
-@synthesize SUVConverted;
-@synthesize hasSUV;
-@synthesize decayFactor;
-@synthesize units;
-@synthesize decayCorrection;
+@synthesize philipsFactor, patientsWeight;
+@synthesize halflife, radionuclideTotalDose;
+@synthesize radionuclideTotalDoseCorrected, acquisitionTime;
+@synthesize radiopharmaceuticalStartTime, SUVConverted;
+@synthesize hasSUV, decayFactor;
+@synthesize units, decayCorrection;
 @synthesize displaySUVValue;
 
 @synthesize isLUT12Bit;
@@ -8841,109 +8944,6 @@ END_CREATE_ROIS:
 	return val;
 }
 
-- (void) computeMax:(float*) fResult pos:(int) pos threads:(int) threads object: (DCMPix*) o
-{
-	float				*fNext = NULL;
-	long				from, to, size = height * width;
-	
-	from = (pos * size) / threads;
-	to = ((pos+1) * size) / threads;
-	size = to - from;
-	
-	NSArray *p = [o pixArray];
-	int ppos = [o pixPos];
-	
-	for( long i = 1; i < stack; i++ )
-	{
-		long res;
-		if( stackDirection) res = ppos-i;
-		else res = ppos+i;
-		
-		if( res < p.count && res >= 0 ) {
-			fNext = [[p objectAtIndex: res] fImage];
-			if( fNext )	{
-				if( stackMode == 2) vDSP_vmax( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
-				else if( stackMode == 1) 
-				{
-					vDSP_vadd( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
-					if( from == 0) countstackMean++;
-				}
-				else vDSP_vmin( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
-			}
-		}
-	}
-	
-	[processorsLock lock];
-	numberOfThreadsForCompute--;
-	[processorsLock unlock];
-	
-}
-
-- (void)computeMaxThread: (NSDictionary*)dict
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSConditionLock *threadLock = [dict valueForKey:@"threadLock"];
-	
-	int p = MPProcessors ();
-	
-	do
-	{
-		[threadLock lockWhenCondition: 1];
-		
-		[self computeMax: [[dict valueForKey:@"fResult"] pointerValue] pos: [[dict valueForKey:@"pos"] intValue] threads: p object: [dict valueForKey:@"self"]];
-		
-		[threadLock unlockWithCondition: 0];
-	}
-	while( 1);
-	
-	[pool release];
-}
-
-- (void)applyNonLinearWLWWThread: (NSDictionary*)dict
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSConditionLock *threadLock = [dict valueForKey:@"threadLock"];
-	
-	do
-	{
-		[threadLock lockWhenCondition: 1];
-		
-		DCMPix *o = [dict valueForKey:@"self"];
-		int startLine = [[dict valueForKey:@"start"] intValue];
-		int endLine = [[dict valueForKey:@"end"] intValue];
-		
-		register int			ii = (endLine - startLine) * [o pwidth];
-		register unsigned char	*dst8Ptr = (unsigned char*) [o baseAddr] + startLine * [o pwidth];
-		register float			*src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
-		register float			from = [o wl] - [o ww]/2.;
-		register float			ratio = 4096. / [o ww];
-		register float			*tfPtr = [o transferFunctionPtr];
-		
-		src32Ptr += startLine * [o pwidth];
-		
-		while( ii-- > 0 )
-		{
-			int value = ratio * (*src32Ptr++ - from);
-			
-			if( value < 0) value = 0;
-			else if( value >= 4095) value = 4095;
-			
-			*dst8Ptr++ = 255.*tfPtr[ value];
-		}
-		
-		[processorsLock lock];
-		numberOfThreadsForCompute--;
-		[processorsLock unlock];
-	
-		[threadLock unlockWithCondition: 0];
-	}
-	while( 1);
-
-	[pool release];
-}
-
 #pragma mark-
 #pragma mark subtraction and changeWLWW
 
@@ -9461,7 +9461,7 @@ END_CREATE_ROIS:
 			memcpy( fResult, fImage, height * width * sizeof(float));
 			
 			if( processorsLock == nil )
-				processorsLock = [[NSLock alloc] init];
+				processorsLock = [[NSConditionLock alloc] init];
 			
 			if( minmaxThreads == 0L)
 			{
@@ -9470,13 +9470,17 @@ END_CREATE_ROIS:
 				for( int i = 0; i < MPProcessors(); i++ )
 				{
 					[minmaxThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[[NSConditionLock alloc] initWithCondition: 0] autorelease], @"threadLock", 0L]];
-					[NSThread detachNewThreadSelector: @selector( computeMaxThread:) toTarget:self withObject: [minmaxThreads lastObject]];
+					
+					[NSThread detachNewThreadSelector: @selector( computeMaxThread:) toTarget: [[PixThread alloc] init] withObject: [minmaxThreads lastObject]];
 				}
 			}
 			
 			numberOfThreadsForCompute = MPProcessors ();
-			long i;
-			for( i = 0; i < MPProcessors (); i++ )
+			
+			[processorsLock lock];
+			[processorsLock unlockWithCondition: numberOfThreadsForCompute];
+			
+			for( int i = 0; i < MPProcessors (); i++ )
 			{
 				NSMutableDictionary *d = [minmaxThreads objectAtIndex: i];
 				
@@ -9488,16 +9492,14 @@ END_CREATE_ROIS:
 				[[d objectForKey: @"threadLock"] unlockWithCondition: 1];
 			}
 			
-			BOOL done = NO;
-			while( done == NO )	{
-				[processorsLock lock];
-				if( numberOfThreadsForCompute <= 0) done = YES;
-				[processorsLock unlock];
-			}
+			[processorsLock lockWhenCondition: 0];
+			[processorsLock unlock];
 			
-			if( countstackMean > 1 ) {
-				i = height * width;
-				while( i-- > 0) fResult[ i] /= countstackMean;
+			if( countstackMean > 1 )
+			{
+				float   invCount = 1.0f / countstackMean;
+				
+				vDSP_vsmul( fResult, 1, &invCount, fResult, 1, height * width);
 			}
 			//-----------------------------------
 			break;
@@ -9686,7 +9688,7 @@ END_CREATE_ROIS:
 					else
 					{
 						if( processorsLock == nil )
-							processorsLock = [[NSLock alloc] init];
+							processorsLock = [[NSConditionLock alloc] init];
 						
 						if( nonLinearWLWWThreads == 0L)
 						{
@@ -9707,6 +9709,9 @@ END_CREATE_ROIS:
 						int start;
 						int end;
 						
+						[processorsLock lock];
+						[processorsLock unlockWithCondition: numberOfThreadsForCompute];
+						
 						for( int i = 0; i < MPProcessors(); i++ )
 						{
 							start = i * (int) (height / processors);
@@ -9723,13 +9728,8 @@ END_CREATE_ROIS:
 							[[d objectForKey: @"threadLock"] unlockWithCondition: 1];
 						}
 						
-						BOOL done = NO;
-						while( done == NO )	
-						{
-							[processorsLock lock];
-							if( numberOfThreadsForCompute <= 0) done = YES;
-							[processorsLock unlock];
-						}
+						[processorsLock lockWhenCondition: 0];
+						[processorsLock unlock];
 					}
 					
 					if(isLUT12Bit && [AppController canDisplay12Bit])
