@@ -168,8 +168,6 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	NSString			*convertedDICOM;	
 	BOOL				generated;	
 	NSLock				*checking;
-	NSLock				*processorsLock;
-	volatile int		numberOfThreadsForCompute;
 	
 	BOOL				useVOILUT;
 	int					VOILUT_first;
