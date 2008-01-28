@@ -47,7 +47,7 @@ struct DB_OsiriX_Handle
     DB_ElementList *findRequestList ;
     DB_ElementList *findResponseList ;
     DB_LEVEL queryLevel ;
-    char storageArea[256] ;
+    char storageArea[1024] ;
     long maxBytesPerStudy ;
     long maxStudiesAllowed ;
     int idxCounter ;
@@ -57,16 +57,16 @@ struct DB_OsiriX_Handle
     DB_UidList *uidList ;
 	OsiriXSCPDataHandler *dataHandler;
 	NSMutableDictionary *logEntry;
-	const char callingAET[256];
+	const char callingAET[1024];
 	int imageCount;
 	
 	BOOL logCreated;
-	char logPatientName[256];
-	char logStudyDescription[256];
-	char logCallingAET[256];
+	char logPatientName[1024];
+	char logStudyDescription[1024];
+	char logCallingAET[1024];
 	long logStartTime;
-	char logMessage[256];
-	char logUID[256];
+	char logMessage[1024];
+	char logUID[1024];
 	long logNumberReceived;
 	long logEndTime;
 };

@@ -423,10 +423,10 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	const char *pn = 0L;
 	const char *sd = 0L;
 	const char *sss = 0L;
-	char patientName[ 256];
-	char studyDescription[ 256];
-	char seriesDescription[ 256];
-	char specificCharacterSet[ 256];
+	char patientName[ 1024];
+	char studyDescription[ 1024];
+	char seriesDescription[ 1024];
+	char specificCharacterSet[ 1024];
 	
 	// ************
 
