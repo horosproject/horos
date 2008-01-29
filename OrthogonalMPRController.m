@@ -753,7 +753,7 @@
 	yReslicedThickSlab = ((float)thickSlab * [self thickSlabDistance] / [[originalView curDCM] pixelSpacingX]);
 	
 	[originalView setFusion:thickSlabMode :originalThickSlab];
-	[originalView setThickSlabXY : xReslicedThickSlab : yReslicedThickSlab];
+	[originalView setThickSlabXY : xReslicedThickSlab : yReslicedThickSlab / [[originalView curDCM] pixelRatio]];
 	
 	[reslicer setThickSlab : xReslicedThickSlab];
 	

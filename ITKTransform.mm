@@ -145,7 +145,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	
 	[splash close];
 	[splash release];
-		
+	
 	return [self createNewViewerWithBuffer:resultBuff resampleOnViewer:referenceViewer];
 }
 
@@ -214,7 +214,24 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 			[newFileList addObject:[[originalViewer fileList] objectAtIndex:0]];
 		}
 		
-		new2DViewer = [originalViewer newWindow:newPixList :newFileList :volumeData];
+		if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
+		{
+			new2DViewer = [ViewerController newWindow:newPixList :newFileList :volumeData];
+		}
+		else
+		{
+			// Close original viewer
+			BOOL prefTileWindows = [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"];
+		
+			[[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"AUTOTILING"];
+		
+			NSRect f = [[originalViewer window] frame];
+			[[originalViewer window] close]; 
+			
+			new2DViewer = [ViewerController newWindow:newPixList :newFileList :volumeData frame: f];
+			
+			[[NSUserDefaults standardUserDefaults] setBool:prefTileWindows forKey: @"AUTOTILING"];
+		}
 		
 		[[new2DViewer window] makeKeyAndOrderFront: self];
 		[new2DViewer setWL: wl WW: ww];

@@ -330,6 +330,7 @@ enum
 * @param volumeData NSData object containing the volume data 
 */
 + (ViewerController *) newWindow:(NSMutableArray*)pixList :(NSMutableArray*)fileList :(NSData*) volumeData;
++ (ViewerController *) newWindow:(NSMutableArray*)pixList :(NSMutableArray*)fileList :(NSData*) volumeData frame: (NSRect) frame;
 
 /**  Create a new 2D Viewer
 * @param pixList Array of DCMPix objects

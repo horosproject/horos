@@ -1776,18 +1776,27 @@ static volatile int numberOfThreadsForRelisce = 0;
 	imageView = [[[seriesView imageViews] objectAtIndex:0] retain];
 }
 
-+ (ViewerController *) newWindow:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
++ (ViewerController *) newWindow:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v frame: (NSRect) frame
 {
     ViewerController *win = [[ViewerController alloc] viewCinit:f :d :v];
-	
+		
 	[win showWindowTransition];
 	[win startLoadImageThread]; // Start async reading of all images
+
+	if( NSIsEmptyRect( frame) == NO)
+		[[win window] setFrame: frame display: NO];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 		[appController tileWindows: self];
 	else
 		[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
+	
 	return win;
+}
+
++ (ViewerController *) newWindow:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
+{
+	return [ViewerController newWindow:f :d : v frame: NSMakeRect(0, 0, 0, 0)];
 }
 
 - (ViewerController *) newWindow:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v

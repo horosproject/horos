@@ -293,16 +293,16 @@
 		glBegin(GL_LINES);
 		// vertical axis
 		glVertex2f(xCrossCenter,-4000);
-		glVertex2f(xCrossCenter,yCrossCenter -50.0*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
+		glVertex2f(xCrossCenter,yCrossCenter -50.0/curDCM.pixelRatio);
 	
 		if (displayResliceAxes == 2)
 		{
-			glVertex2f(xCrossCenter,yCrossCenter -10.0*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
-			glVertex2f(xCrossCenter,yCrossCenter +10.0*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
+			glVertex2f(xCrossCenter,yCrossCenter -10.0/curDCM.pixelRatio);
+			glVertex2f(xCrossCenter,yCrossCenter +10.0/curDCM.pixelRatio);
 		}
 		
 		glColor3f (0.0f, 1.0f, 0.0f);
-		glVertex2f(xCrossCenter,yCrossCenter +50.0*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
+		glVertex2f(xCrossCenter,yCrossCenter +50.0/curDCM.pixelRatio);
 		glVertex2f(xCrossCenter,4000);
 		
 		// horizontal axis
@@ -325,15 +325,15 @@
 			shift =  (float)thickSlabX / 2.0 * scaleValue;
 			glColor3f (0.0f, 0.0f, 1.0f);
 			glVertex2f(xCrossCenter-shift,-4000);
-			glVertex2f(xCrossCenter-shift,yCrossCenter -50.0*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
+			glVertex2f(xCrossCenter-shift,yCrossCenter -50.0/curDCM.pixelRatio);
 			
-			glVertex2f(xCrossCenter-shift,yCrossCenter +50.0*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
+			glVertex2f(xCrossCenter-shift,yCrossCenter +50.0/curDCM.pixelRatio);
 			glVertex2f(xCrossCenter-shift,4000);
 			
 			glVertex2f(xCrossCenter+shift,-4000);
-			glVertex2f(xCrossCenter+shift,yCrossCenter -50.0*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
+			glVertex2f(xCrossCenter+shift,yCrossCenter -50.0/curDCM.pixelRatio);
 			
-			glVertex2f(xCrossCenter+shift,yCrossCenter +50.0*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
+			glVertex2f(xCrossCenter+shift,yCrossCenter +50.0/curDCM.pixelRatio);
 			glVertex2f(xCrossCenter+shift,4000);
 		}
 		

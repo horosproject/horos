@@ -7145,7 +7145,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawObjects" object: self userInfo: userInfo];
 			
 			//**SLICE CUR FOR 3D MPR
-			if( stringID ) {
+//			glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f);
+			if( stringID )
+			{
 				if( [stringID isEqualToString:@"OrthogonalMPRVIEW"]) {
 					[self subDrawRect: aRect];
 					self.scaleValue = scaleValue;
