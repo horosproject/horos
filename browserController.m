@@ -10153,15 +10153,38 @@ static NSArray*	openSubSeriesArray = 0L;
 	[pool release];
 }
 
-- (void)emptyDeleteQueue: (id)sender {
-	if( deleteQueueArray != nil && deleteQueue != nil )	{
-		if( [deleteQueueArray count] > 0 ) {
-			if( [deleteInProgress tryLock] ) {
+- (void)emptyDeleteQueue: (id)sender
+{
+	if( deleteQueueArray != nil && deleteQueue != nil )
+	{
+		if( [deleteQueueArray count] > 0 )
+		{
+			if( [deleteInProgress tryLock] )
+			{
 				[deleteInProgress unlock];
 				[NSThread detachNewThreadSelector:@selector(emptyDeleteQueueThread) toTarget:self withObject:0L];
 			}
 		}
 	}
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"checkDICOMListenerWithEcho"] && newFilesInIncoming == NO)
+	{
+		// Send a c-echo on our ip
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
+		{
+			if( [[AppController sharedAppController] echoTest] == NO)
+			{
+				NSLog(@"********");
+				NSLog(@"******** C-ECHO FAILED ON OUR IP ADDRESS - RESTART DICOM LISTENER ************");
+				NSLog(@"********");
+				
+				[[AppController sharedAppController] killDICOMListenerWait: NO];
+				[[AppController sharedAppController] restartSTORESCP];
+			}
+			else NSLog(@"C-ECHO TEST: SUCCEEDED");
+		}
+	}
+
 }
 
 - (void)addFileToDeleteQueue: (NSString*)file {

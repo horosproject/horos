@@ -87,6 +87,7 @@ BOOL					USETOOLBARPANEL = NO;
 short					Altivec = 1, UseOpenJpeg = 1;
 AppController			*appController = 0L;
 DCMTKQueryRetrieveSCP   *dcmtkQRSCP = 0L;
+NSString				*dicomListenerIP = 0L;
 NSLock					*PapyrusLock = 0L;			// Papyrus is NOT thread-safe
 
 
@@ -646,6 +647,11 @@ static NSDate *lastWarningDate = 0L;
 	lastWarningDate = [[NSDate date] retain];
 }
 
+- (NSString*) privateIP
+{
+	return [NSString stringWithCString: GetPrivateIP()];
+}
+
 - (IBAction)cancelModal:(id)sender
 {
     [NSApp abortModal];
@@ -1104,8 +1110,12 @@ static NSDate *lastWarningDate = 0L;
 		int port = [[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue];
 		NSDictionary *params = nil;
 		
+		if( dicomListenerIP == 0L)
+			dicomListenerIP = [[self privateIP] retain];
+
 		dcmtkQRSCP = [[DCMTKQueryRetrieveSCP alloc] initWithPort:port  aeTitle:(NSString *)aeTitle  extraParamaters:(NSDictionary *)params];
 		[dcmtkQRSCP run];
+		
 		
 		[pool release];
 		
@@ -1894,6 +1904,32 @@ static BOOL initialized = NO;
 
 #pragma mark-
 
+- (void) killDICOMListenerWait: (BOOL) wait
+{
+	[dcmtkQRSCP abort];
+	[QueryController echo: [NSString stringWithCString:GetPrivateIP()] port:[dcmtkQRSCP port] AET: [dcmtkQRSCP aeTitle]];
+	
+	[NSThread sleepForTimeInterval: 1.0];
+	
+	if( wait)
+	{
+		while( [dcmtkQRSCP running])
+		{
+			NSLog( @"waiting for listener to stop...");
+			[NSThread sleepForTimeInterval: 0.1];
+		}
+	}
+	
+	[dcmtkQRSCP release];
+	dcmtkQRSCP = nil;
+}
+
+- (BOOL) echoTest
+{
+	NSLog(@"C-ECHO TO THIS IP: %@", dicomListenerIP);
+	return [QueryController echo: dicomListenerIP port:[dcmtkQRSCP port] AET: [dcmtkQRSCP aeTitle]];
+}
+
 - (void) switchHandler:(NSNotification*) notification
 {
     if ([[notification name] isEqualToString:
@@ -1903,18 +1939,7 @@ static BOOL initialized = NO;
 		{
 			NSLog( @"***** OsiriX : session deactivation: STOP DICOM LISTENER FOR THIS SESSION");
 			
-			[dcmtkQRSCP abort];
-			
-			[QueryController echo: [NSString stringWithCString:GetPrivateIP()] port:[dcmtkQRSCP port] AET: [dcmtkQRSCP aeTitle]];
-			
-			while( [dcmtkQRSCP running])
-			{
-				NSLog( @"waiting for listener to stop...");
-				[NSThread sleepForTimeInterval: 0.1];
-			}
-			
-			[dcmtkQRSCP release];
-			dcmtkQRSCP = nil;
+			[self killDICOMListenerWait: YES];
 		}
     }
     else

@@ -827,6 +827,7 @@ static NSHost *currentHost = 0L;
 	
 	// ** TRANSITIONEFFECT
 	[defaultValues setObject: @"0" forKey: @"TRANSITIONEFFECT"];
+	[defaultValues setObject: @"0" forKey: @"checkDICOMListenerWithEcho"];
 	
 	// ** NOINTERPOLATION
 	[defaultValues setObject:@"0" forKey:@"NOINTERPOLATION"];

@@ -170,6 +170,9 @@ extern "C"
 - (NSArray*) FindRelatedViewers:(NSMutableArray*) pixList; /**< Return an array of all WindowControllers using the pixList */
 - (IBAction) cancelModal: (id) sender;
 - (IBAction) okModal: (id) sender;
+- (NSString*) privateIP;
+- (void) killDICOMListenerWait:(BOOL) w;
+- (BOOL) echoTest;
 
 #pragma mark-
 #pragma mark growl
