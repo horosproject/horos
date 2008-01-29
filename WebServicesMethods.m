@@ -353,14 +353,25 @@ extern NSThread					*mainThread;
 	//NSLog(@"contentRange : %@", contentRange);
 	
 	NSString *userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
+	//NSLog(@"userAgent : %@", userAgent);
 	NSScanner *scan = [NSScanner scannerWithString:userAgent];
-	BOOL isiPhone = NO;
-	while(![scan isAtEnd] && !isiPhone)
+	BOOL isSafari = NO;
+	while(![scan isAtEnd] && !isSafari)
 	{
-		isiPhone = [scan scanString:@"Safari/" intoString:nil];
-		isiPhone = isiPhone && [scan scanString:@"Mobile/" intoString:nil];
+		isSafari = [scan scanString:@"Safari/" intoString:nil];
 		[scan setScanLocation:[scan scanLocation]+1];
 	}
+
+	scan = [NSScanner scannerWithString:userAgent];
+	BOOL isMobile = NO;
+	while(![scan isAtEnd] && !isMobile)
+	{
+		isMobile = [scan scanString:@"Mobile/" intoString:nil];
+		[scan setScanLocation:[scan scanLocation]+1];
+	}
+	
+	BOOL isiPhone = isSafari && isMobile;
+	
 	//NSLog(@"isiPhone : %d", isiPhone);
 	
     NSString *vers = [(id)CFHTTPMessageCopyVersion(request) autorelease];
