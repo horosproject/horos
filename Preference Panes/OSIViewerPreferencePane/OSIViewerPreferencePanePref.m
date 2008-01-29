@@ -45,7 +45,7 @@
 		[[NSUserDefaults standardUserDefaults] setBool:[[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] forKey: @"AUTOTILING"];
 		[totoku12Bit setEnabled: [[NSUserDefaults standardUserDefaults] boolForKey:@"is12bitPluginAvailable"]];
 	}
-	
+	NSLog(@"%@", totoku12Bit);
 //	[characterSetPopup setEnabled: val];
 //	[addServerDICOM setEnabled: val];
 //	[addServerSharing setEnabled: val];
@@ -77,6 +77,12 @@
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
+	[totoku12Bit setEnabled: [[NSUserDefaults standardUserDefaults] boolForKey:@"is12bitPluginAvailable"]];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"is12bitPluginAvailable"] == NO)
+	{
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"automatic12BitTotoku"];
+	}
+
 	[_authView setDelegate:self];
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
@@ -102,12 +108,6 @@
 	[toolbarPanelMatrix selectCellWithTag:[defaults boolForKey: @"USEALWAYSTOOLBARPANEL2"]];
 	[autoHideMatrix setState: [defaults boolForKey: @"AUTOHIDEMATRIX"]];
 	[tilingCheck setState: [defaults boolForKey: @"AUTOTILING"]];
-	
-	[totoku12Bit setEnabled: [[NSUserDefaults standardUserDefaults] boolForKey:@"is12bitPluginAvailable"]];
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"is12bitPluginAvailable"] == NO)
-	{
-		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"automatic12BitTotoku"];
-	}
 	
 	[windowSizeMatrix selectCellWithTag: [defaults integerForKey: @"WINDOWSIZEVIEWER"]];
 	
