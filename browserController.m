@@ -3314,7 +3314,12 @@ static NSArray*	statesArray = nil;
 }
 
 - (IBAction)setSearchType: (id)sender {
-	
+
+	if( searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
+		[searchField setTextColor: [NSColor whiteColor]];
+	else
+		[searchField setTextColor: [NSColor blackColor]];
+
 	for( long i = 0; i < [[sender menu] numberOfItems]; i++) [[[sender menu] itemAtIndex: i] setState: NSOffState];
 	
 	[[[sender menu] itemWithTag: [sender tag]] setState: NSOnState];
@@ -13539,7 +13544,13 @@ static volatile int numberOfThreadsForJPEG = 0;
     [logWindowController showWindow:self];
 }
 
-- (void)setSearchString: (NSString *)searchString {
+- (void)setSearchString: (NSString *)searchString
+{
+	if( searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
+		[searchField setTextColor: [NSColor whiteColor]];
+	else
+		[searchField setTextColor: [NSColor blackColor]];
+	
 	[_searchString release];
 	_searchString = [searchString retain];
 	[self setFilterPredicate:[self createFilterPredicate] description:[self createFilterDescription]];
