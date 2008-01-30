@@ -40,6 +40,9 @@
 	NSString			*path;
 	BOOL				isPasswordProtected, wrongPassword;
 	
+	NSMutableArray		*albumStudies;
+	NSString			*albumUID;
+	
 	NSString			*setValueObject, *setValueKey;
 	id					setValueValue;
 	
@@ -78,6 +81,9 @@
 
 - (NSMutableArray*) services;
 - (NSString *) databaseFilePathForService:(NSString*) service;
+
+- (void) removeStudies: (NSArray*) studies fromAlbum: (NSManagedObject*) album bonjourIndex:(int) index;
+- (void) addStudies: (NSArray*) studies toAlbum: (NSManagedObject*) album bonjourIndex:(int) index;
 
 - (void) getDICOMROIFiles:(int) index roisPaths:(NSArray*) roisPaths;
 - (NSString*) getDICOMFile:(int) index forObject:(NSManagedObject*) image noOfImages: (int) noOfImages;

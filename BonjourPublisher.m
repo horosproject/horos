@@ -429,6 +429,110 @@ static char *GetPrivateIP()
 				
 				representationToSend = 0L;
 			}
+			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"ADDAL" length: 6]])
+			{
+				int pos = 6, size, noOfFiles = 0, stringSize, i;
+				
+				// We read 4 bytes that contain the string size
+				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+				pos += 4;
+				
+				// We read the string
+				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				NSString *object = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+				pos += stringSize;
+				
+				if( [object writeToFile:@"/tmp/ADDAL" atomically: YES])
+				{
+					NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: @"/tmp/ADDAL"];
+					
+					NSArray *studies = [d objectForKey:@"albumStudies"];
+					NSString *albumUID = [d objectForKey:@"albumUID"];
+					
+					NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
+					[context retain];
+					[context lock];
+					
+					@try
+					{
+						NSManagedObject *albumObject = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
+						NSMutableSet	*studiesOfTheAlbum = [albumObject mutableSetValueForKey: @"studies"];
+						
+						for( NSString *uri in studies)
+						{
+							[studiesOfTheAlbum addObject: [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]]];
+						}
+						
+						refreshDB = YES;
+						saveDB = YES;
+					}
+					
+					@catch (NSException * e)
+					{
+						NSLog(@"Exception in BonjourPublisher ADDAL: %@");
+					}
+					
+					NSError *error = nil;
+					[context save: &error];
+					[context unlock];
+					[context release];
+				}
+				
+				representationToSend = 0L;
+			}
+			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"REMAL" length: 6]])
+			{
+				int pos = 6, size, noOfFiles = 0, stringSize, i;
+				
+				// We read 4 bytes that contain the string size
+				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+				pos += 4;
+				
+				// We read the string
+				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				NSString *object = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+				pos += stringSize;
+				
+				if( [object writeToFile:@"/tmp/REMAL" atomically: YES])
+				{
+					NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: @"/tmp/REMAL"];
+					
+					NSArray *studies = [d objectForKey:@"albumStudies"];
+					NSString *albumUID = [d objectForKey:@"albumUID"];
+					
+					NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
+					[context retain];
+					[context lock];
+					
+					@try
+					{
+						NSManagedObject *albumObject = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
+						NSMutableSet	*studiesOfTheAlbum = [albumObject mutableSetValueForKey: @"studies"];
+						
+						for( NSString *uri in studies)
+						{
+							[studiesOfTheAlbum removeObject: [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]]];
+						}
+						
+						refreshDB = YES;
+						saveDB = YES;
+					}
+					
+					@catch (NSException * e)
+					{
+						NSLog(@"Exception in BonjourPublisher REMAL: %@");
+					}
+					
+					NSError *error = nil;
+					[context save: &error];
+					[context unlock];
+					[context release];
+				}
+				
+				representationToSend = 0L;
+			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SETVA" length: 6]])
 			{
 				int pos = 6, size, noOfFiles = 0, stringSize, i;
@@ -471,34 +575,46 @@ static char *GetPrivateIP()
 				NSString *key = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
 				pos += stringSize;
 				
-				NSManagedObjectContext *context = [interfaceOsiriX managedObjectContext];
+				NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
 				[context retain];
 				[context lock];
-				NSManagedObject	*item = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: object]]];
-				[context unlock];
-				[context release];
 				
-				//NSLog(@"URL:%@", object);
-				if( item)
-				{
-					if( [[item valueForKeyPath: key] isKindOfClass: [NSNumber class]]) [item setValue: [NSNumber numberWithInt: [value intValue]] forKeyPath: key];
-					else
+				@try
+				{					
+					NSManagedObject	*item = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: object]]];
+					
+					//NSLog(@"URL:%@", object);
+					if( item)
 					{
-						if( [key isEqualToString: @"reportURL"] == YES)
+						if( [[item valueForKeyPath: key] isKindOfClass: [NSNumber class]]) [item setValue: [NSNumber numberWithInt: [value intValue]] forKeyPath: key];
+						else
 						{
-							if( value == 0L)
+							if( [key isEqualToString: @"reportURL"] == YES)
 							{
-								[[NSFileManager defaultManager] removeFileAtPath:[item valueForKeyPath: key] handler:0L];
+								if( value == 0L)
+								{
+									[[NSFileManager defaultManager] removeFileAtPath:[item valueForKeyPath: key] handler:0L];
+								}
+								else if( [[key pathComponents] count] == 1)
+								{
+									value = [[documentsDirectory() stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [value lastPathComponent]];
+								}
 							}
-							else if( [[key pathComponents] count] == 1)
-							{
-								value = [[documentsDirectory() stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [value lastPathComponent]];
-							}
+							
+							[item setValue: value forKeyPath: key];
 						}
-						
-						[item setValue: value forKeyPath: key];
 					}
 				}
+				
+				@catch (NSException *e)
+				{
+					NSLog(@"***** BonjourPublisher Exception: %@", e);
+				}
+				
+				NSError *error = nil;
+				[context save: &error];
+				[context unlock];
+				[context release];
 				
 				refreshDB = YES;
 				saveDB = YES;

@@ -1397,6 +1397,36 @@ static NSArray*	statesArray = nil;
     return managedObjectContext;
 }
 
+- (NSManagedObjectContext *) defaultManagerObjectContext
+{
+	if( [currentDatabasePath isEqualToString: [self localDatabasePath]])
+	{
+		return [self managedObjectContext];
+	}
+	else
+	{
+		NSError *error = nil;
+		
+		NSPersistentStoreCoordinator *pSC = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel] autorelease];
+		
+		NSManagedObjectContext *mOC = [[[NSManagedObjectContext alloc] init] autorelease];
+		[mOC setPersistentStoreCoordinator: pSC];
+		
+		NSURL *url = [NSURL fileURLWithPath: [self localDatabasePath]];
+		
+		if (![pSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
+		{
+			NSLog(@"********** defaultManagerObjectContext FAILED");
+		}
+		
+		[mOC setStalenessInterval: 1200];
+		[[mOC undoManager] setLevelsOfUndo: 1];
+		[[mOC undoManager] disableUndoRegistration];
+		
+		return mOC;
+	}
+}
+
 - (NSManagedObjectContext *) managedObjectContext
 {
 	return [self managedObjectContextLoadIfNecessary: YES];
@@ -3725,21 +3755,31 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (void)refreshSmartAlbums {
+- (void)refreshSmartAlbums
+{
  	NSArray	*a = self.albumArray;
 	
-	if( self.albumArray.count == albumNoOfStudiesCache.count ) {
+	if( self.albumArray.count == albumNoOfStudiesCache.count )
+	{
 		for ( unsigned int i = 0; i < [a count]; i++ )
 		{
 			if( [albumNoOfStudiesCache count] > i)
 				if( [[[a objectAtIndex: i] valueForKey:@"smartAlbum"] boolValue] == YES) [albumNoOfStudiesCache replaceObjectAtIndex:i withObject:@""];
 		}
 	}
+	else [albumNoOfStudiesCache removeAllObjects];
 	
 	[albumTable reloadData];
 }
 
-- (void)refreshDatabase: (id)sender {
+- (void)refreshAlbums
+{
+	[albumNoOfStudiesCache removeAllObjects];
+	[albumTable reloadData];
+}
+
+- (void)refreshDatabase: (id)sender
+{
 	if( managedObjectContext == nil ) return;
 	if( bonjourDownloading) return;
 	if( DatabaseIsEdited) return;
@@ -3761,8 +3801,9 @@ static NSArray*	statesArray = nil;
 		}
 		else NSLog(@"refreshDatabase locked...");
 	}
-	else {
-		[self refreshSmartAlbums];
+	else
+	{
+		[self refreshAlbums];
 		[databaseOutline reloadData];
 	}
 }
@@ -4351,16 +4392,11 @@ static NSArray*	statesArray = nil;
 	NSError					*error = 0L;
 	BOOL					matrixThumbnails = NO;
 	int						animState = [animationCheck state];
-	NSMutableArray			*objectsToDelete = [NSMutableArray arrayWithCapacity: 0];
+
 	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] ) {
 		matrixThumbnails = YES;
 		NSLog( @"Delete from matrix");
-	}
-	
-	if( isCurrentDatabaseBonjour ) {
-		NSRunAlertPanel( NSLocalizedString(@"Bonjour Database", nil),  NSLocalizedString(@"You cannot modify a Bonjour shared database.", nil), nil, nil, nil);
-		return;
 	}
 	
 	needDBRefresh = YES;
@@ -4370,15 +4406,8 @@ static NSArray*	statesArray = nil;
 	[context retain];
 	[context lock];
 	
-	if( matrixThumbnails) {
-		[self filesForDatabaseMatrixSelection: objectsToDelete onlyImages: NO];
-	}
-	else {
-		[self deleteEmptyFoldersForDatabaseOutlineSelection];
-		[self filesForDatabaseOutlineSelection: objectsToDelete onlyImages: NO];
-	}
-	
-	if( albumTable.selectedRow > 0 && matrixThumbnails == NO)	{
+	if( albumTable.selectedRow > 0 && matrixThumbnails == NO)
+	{
 		NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
 		
 		if( [[album valueForKey:@"smartAlbum"] boolValue] == NO)
@@ -4395,26 +4424,36 @@ static NSArray*	statesArray = nil;
 	{
 		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
 		
-		if( [databaseOutline selectedRow] >= 0 ) {
+		if( [databaseOutline selectedRow] >= 0 )
+		{
 			shouldDie = YES;
 			[matrixLoadIconsLock lock];
 			[matrixLoadIconsLock unlock];
 			shouldDie = NO;
 			
-			for( NSInteger x = 0; x < [selectedRows count] ; x++ ) {
+			NSMutableArray *studiesToRemove = [NSMutableArray array];
+			NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
+			
+			for( NSInteger x = 0; x < [selectedRows count] ; x++ )
+			{
 				NSInteger row = ( x == 0 ) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
 				
 				NSManagedObject	*study = [databaseOutline itemAtRow: row];
 				
-				if( [[study valueForKey:@"type"] isEqualToString: @"Study"] ) {
-					NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
+				if( [[study valueForKey:@"type"] isEqualToString: @"Study"] )
+				{
+					[studiesToRemove addObject: study];
 					
-					NSMutableSet	*studies = [NSMutableSet setWithCapacity:0 ];
-					[studies setSet: [album valueForKey:@"studies"]];
+					NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
 					[studies removeObject: study];
-					
-					[album setValue: studies forKey:@"studies"];
 				}
+			}
+			
+			if( isCurrentDatabaseBonjour)
+			{
+				// Do it remotely
+				
+				[bonjourBrowser removeStudies: studiesToRemove fromAlbum: album bonjourIndex:[bonjourServicesList selectedRow]-1];
 			}
 			
 			[databaseOutline selectRow:[selectedRows firstIndex] byExtendingSelection:NO];
@@ -4424,13 +4463,37 @@ static NSArray*	statesArray = nil;
 		[wait showWindow:self];
 		
 		[self saveDatabase: currentDatabasePath];
+		[self refreshDatabase: self];
 		
 		[wait close];
 		[wait release];
 	}
+	else if( isCurrentDatabaseBonjour)
+	{
+		NSRunAlertPanel( NSLocalizedString(@"Bonjour Database", nil),  NSLocalizedString(@"You cannot modify a Bonjour shared database.", nil), nil, nil, nil);
+		
+		[context release];
+		[context unlock];
+		
+		[animationCheck setState: animState];
+		
+		return;
+	}
 	
 	if( result == NSAlertDefaultReturn)	// REMOVE AND DELETE IT FROM THE DATABASE
 	{
+		NSMutableArray			*objectsToDelete = [NSMutableArray arrayWithCapacity: 0];
+		
+		if( matrixThumbnails)
+		{
+			[self filesForDatabaseMatrixSelection: objectsToDelete onlyImages: NO];
+		}
+		else
+		{
+			[self deleteEmptyFoldersForDatabaseOutlineSelection];
+			[self filesForDatabaseOutlineSelection: objectsToDelete onlyImages: NO];
+		}
+
 		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
 		
 		if( [databaseOutline selectedRow] >= 0 ) {
@@ -7175,9 +7238,12 @@ static BOOL withReset = NO;
 	[smartWindowController release];
 }
 
-- (IBAction) albumButtons: (id)sender {
-	switch( [sender selectedSegment] ) {
-		case 0:	{ // Add album
+- (IBAction) albumButtons: (id)sender
+{
+	switch( [sender selectedSegment] )
+	{
+		case 0:
+		{ // Add album
 			
 			[NSApp beginSheet: newAlbum
 			   modalForWindow: self.window
@@ -7190,7 +7256,8 @@ static BOOL withReset = NO;
 			[NSApp endSheet: newAlbum];
 			[newAlbum orderOut: self];
 			
-			if( result == NSRunStoppedResponse ) {
+			if( result == NSRunStoppedResponse)
+			{
 				NSString			*name;
 				long				i = 2;
 				
@@ -7224,50 +7291,53 @@ static BOOL withReset = NO;
 				[self outlineViewRefresh];
 			}
 		}
-			break;
+		break;
 			
-		case 1:	{ // Add smart album
+		case 1:
+		{ // Add smart album
 			
 			[self addSmartAlbum: self];
 		}
-			break;
+		break;
 			
 		case 2:	// Remove
 			if( albumTable.selectedRow > 0)
 			{
-			if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete an album", 0L),
-											 NSLocalizedString(@"Are you sure you want to delete this album?", 0L),
-											 NSLocalizedString(@"OK",nil),
-											 NSLocalizedString(@"Cancel",nil),
-											 0L) == NSAlertDefaultReturn) {
-				long					i, x, row;
-				NSManagedObjectContext	*context = self.managedObjectContext;
-				
-				[context retain];
-				[context lock];
-				
-				if( albumTable.selectedRow > 0)	// We cannot delete the first item !
+				if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete an album", 0L),
+												 NSLocalizedString(@"Are you sure you want to delete this album?", 0L),
+												 NSLocalizedString(@"OK",nil),
+												 NSLocalizedString(@"Cancel",nil),
+												 0L) == NSAlertDefaultReturn)
 				{
-					shouldDie = YES;
-					[matrixLoadIconsLock lock];
-					[matrixLoadIconsLock unlock];
-					shouldDie = NO;
+					long					i, x, row;
 					
-					[context deleteObject: [self.albumArray  objectAtIndex: albumTable.selectedRow]];
+					NSManagedObjectContext	*context = self.managedObjectContext;
+					
+					[context retain];
+					[context lock];
+					
+					if( albumTable.selectedRow > 0)	// We cannot delete the first item !
+					{
+						shouldDie = YES;
+						[matrixLoadIconsLock lock];
+						[matrixLoadIconsLock unlock];
+						shouldDie = NO;
+						
+						[context deleteObject: [self.albumArray  objectAtIndex: albumTable.selectedRow]];
+					}
+					
+					[self saveDatabase: currentDatabasePath];
+					
+					[albumNoOfStudiesCache removeAllObjects];
+					[albumTable reloadData];
+					
+					[context unlock];
+					[context release];
+					
+					[self outlineViewRefresh];
 				}
-				
-				[self saveDatabase: currentDatabasePath];
-				
-				[albumNoOfStudiesCache removeAllObjects];
-				[albumTable reloadData];
-				
-				[context unlock];
-				[context release];
-				
-				[self outlineViewRefresh];
 			}
-			}
-			break;
+		break;
 	}
 }
 
@@ -7728,7 +7798,8 @@ static BOOL needToRezoom;
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
 {
 	
-	if ([tableView isEqual:albumTable] && !isCurrentDatabaseBonjour ) {
+	if ([tableView isEqual:albumTable])
+	{
 		NSArray	*albumArray = self.albumArray;
 		
 		if (row >= [albumArray count] || row  == 0)
@@ -7739,18 +7810,19 @@ static BOOL needToRezoom;
 		
 		NSManagedObject *album = [albumArray objectAtIndex: row];
 		
-		if( draggedItems ) {
-			for( NSManagedObject *object in draggedItems ) {
-				
-				if( [[object valueForKey:@"type"] isEqualToString:@"Study"] ) {
+		if( draggedItems)
+		{
+			for( NSManagedObject *object in draggedItems)
+			{
+				if( [[object valueForKey:@"type"] isEqualToString:@"Study"])
+				{
 					NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
-					
 					[studies addObject: object];
 				}
 				
-				if( [[object valueForKey:@"type"] isEqualToString:@"Series"] ) {
+				if( [[object valueForKey:@"type"] isEqualToString:@"Series"])
+				{
 					NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
-					
 					[studies addObject: [object valueForKey:@"study"]];
 				}
 			}
@@ -7759,13 +7831,32 @@ static BOOL needToRezoom;
 			
 			if( [albumNoOfStudiesCache count] > row)
 				[albumNoOfStudiesCache replaceObjectAtIndex:row withObject:@""];
+			
 			[tableView reloadData];
+			
+			if( isCurrentDatabaseBonjour)
+			{
+				// Do it remotely
+				NSMutableArray *studiesToAdd = [NSMutableArray array];
+				
+				for( NSManagedObject *object in draggedItems)
+				{
+					if( [[object valueForKey:@"type"] isEqualToString:@"Study"])
+						[studiesToAdd addObject: object];
+					
+					if( [[object valueForKey:@"type"] isEqualToString:@"Series"])
+						[studiesToAdd addObject: [object valueForKey:@"study"]];
+				}
+				
+				[bonjourBrowser addStudies: studiesToAdd toAlbum: album bonjourIndex:[bonjourServicesList selectedRow]-1];
+			}
 		}
 		
 		return YES;
 	}
 	
-	if ([tableView isEqual:bonjourServicesList] ) {
+	if ([tableView isEqual:bonjourServicesList] )
+	{
 		if(draggedItems ) {
 			NSManagedObject *curStudy, *curImage;
 			NSString		*filePath, *destPath;
@@ -8065,7 +8156,8 @@ static BOOL needToRezoom;
 
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation
 {
-	if ([tableView isEqual:albumTable] && !isCurrentDatabaseBonjour ) {
+	if ([tableView isEqual:albumTable])
+	{
 		NSArray	*array = self.albumArray;
 		
 		if ((row >= [array count]) || [[[array objectAtIndex:row] valueForKey:@"smartAlbum"] boolValue] || row == 0) return NSDragOperationNone;
@@ -8096,25 +8188,30 @@ static BOOL needToRezoom;
 
 - (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation
 {
-	if( [tv isEqual: bonjourServicesList] )	{
+	if( [tv isEqual: bonjourServicesList])
+	{
 		if( row > 0 ) {
 			NSString		*result = nil;
 			NSDictionary	*dcmNode = [[bonjourBrowser services] objectAtIndex: row-1];
 			
-			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"localPath"] )	{
+			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"localPath"])
+			{
 				if( [[[dcmNode valueForKey:@"Path"] pathExtension] isEqualToString:@"sql"]) return [dcmNode valueForKey:@"Path"];
 				else return [[dcmNode valueForKey:@"Path"] stringByAppendingPathComponent:@"OsiriX Data/"];
 			}
 			
-			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"fixedIP"] ) {
+			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"fixedIP"])
+			{
 				return [dcmNode valueForKey:@"Address"];
 			}
 			
-			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"bonjour"] ) {
+			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"bonjour"])
+			{
 				return [dcmNode valueForKey:@"Address"];
 			}
 		}
-		else {
+		else
+		{
 			return  [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
 		}
 	}
@@ -8122,7 +8219,8 @@ static BOOL needToRezoom;
 	return nil;
 }
 
-- (void)tableViewSelectionDidChange: (NSNotification *)aNotification {
+- (void)tableViewSelectionDidChange: (NSNotification *)aNotification
+{
 	if( [[aNotification object] isEqual: albumTable] ) {
 		// Clear search field
 		[self setSearchString:nil];
@@ -8365,8 +8463,10 @@ static BOOL needToRezoom;
 				if( memBlockTestPtr[ x] != 0L) free( memBlockTestPtr[ x]);
 			}
 			
-			if( notEnoughMemory ) {
-				NSRunCriticalAlertPanel( NSLocalizedString(@"Not enough memory",@"Not enough memory"),  NSLocalizedString(@"Your computer doesn't have enough RAM to load this series",@"Your computer doesn't have enough RAM to load this series"), NSLocalizedString(@"OK",nil), nil, nil);
+			if( notEnoughMemory )
+			{
+				if( NSRunCriticalAlertPanel( NSLocalizedString(@"Not enough memory",@"Not enough memory"),  NSLocalizedString(@"Your computer doesn't have enough RAM to load this series.\r\rUpgrade to OsiriX 64-bit to solve this issue.", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+				[[AppController sharedAppController] osirix64bit: self];
 			}
 			
 			free( memBlockTestPtr);

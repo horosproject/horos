@@ -23,6 +23,7 @@
 #import "ITKTransform.h"
 #import "DCMPix.h"
 #import "WaitRendering.h"
+#import "AppController.h"
 
 typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 
@@ -239,9 +240,12 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		[new2DViewer setRegisteredViewer: referenceViewer];
 	}
 	else
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Memory", nil),
-								NSLocalizedString(@"Not enough memory to complete the operation.", nil),
-								NSLocalizedString(@"OK", nil), nil, nil);
+	{
+		if( NSRunCriticalAlertPanel(NSLocalizedString(@"Memory", nil),
+								NSLocalizedString(@"Not enough memory to complete the operation.\r\rUpgrade to OsiriX 64-bit to solve this issue.", nil),
+								NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+									[[AppController sharedAppController] osirix64bit: self];
+	}
 	
 	return new2DViewer;
 }

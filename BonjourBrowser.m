@@ -424,6 +424,14 @@ static char *GetPrivateIP()
 			{
 				
 			}
+			else if (strcmp( messageToRemoteService, "REMAL") == 0)
+			{
+				
+			}
+			else if (strcmp( messageToRemoteService, "ADDAL") == 0)
+			{
+				
+			}
 
 			if( success == NO)
 			{
@@ -583,6 +591,30 @@ static char *GetPrivateIP()
 				NSMutableData	*toTransfer = [NSMutableData dataWithCapacity:0];
 				
 				[toTransfer appendBytes:messageToRemoteService length: 6];
+
+				if (strcmp( messageToRemoteService, "ADDAL") == 0)
+				{
+					const char* string;
+					int stringSize;
+					
+					string = [[[NSDictionary dictionaryWithObjectsAndKeys: albumStudies, @"albumStudies", albumUID, @"albumUID", nil] description] UTF8String];
+					stringSize  = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
+					
+					[toTransfer appendBytes:&stringSize length: 4];
+					[toTransfer appendBytes:string length: strlen( string)+1];
+				}
+				
+				if (strcmp( messageToRemoteService, "REMAL") == 0)
+				{
+					const char* string;
+					int stringSize;
+					
+					string = [[[NSDictionary dictionaryWithObjectsAndKeys: albumStudies, @"albumStudies", albumUID, @"albumUID", nil] description] UTF8String];
+					stringSize  = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
+					
+					[toTransfer appendBytes:&stringSize length: 4];
+					[toTransfer appendBytes:string length: strlen( string)+1];
+				}
 				
 				if (strcmp( messageToRemoteService, "SETVA") == 0)
 				{
@@ -1365,6 +1397,52 @@ static char *GetPrivateIP()
 	[lock unlock];
 	
 	return result;
+}
+
+- (void) removeStudies: (NSArray*) studies fromAlbum: (NSManagedObject*) album bonjourIndex:(int) index
+{
+	[BonjourBrowser waitForLock: lock];
+	
+	[albumStudies release];
+	[albumUID release];
+	
+	albumStudies = [[NSMutableArray array] retain];
+	for( NSManagedObject *s in studies)
+		[albumStudies addObject: [[[s objectID] URIRepresentation] absoluteString]];
+	
+	albumUID = [[[[album objectID] URIRepresentation] absoluteString] retain];
+	
+	[self connectToServer: index message:@"REMAL"];
+	
+	[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
+	
+	[self connectToServer: index message:@"VERSI"];
+	localVersion = BonjourDatabaseVersion;
+	
+	[lock unlock];
+}
+
+- (void) addStudies: (NSArray*) studies toAlbum: (NSManagedObject*) album bonjourIndex:(int) index
+{
+	[BonjourBrowser waitForLock: lock];
+	
+	[albumStudies release];
+	[albumUID release];
+	
+	albumStudies = [[NSMutableArray array] retain];
+	for( NSManagedObject *s in studies)
+		[albumStudies addObject: [[[s objectID] URIRepresentation] absoluteString]];
+	
+	albumUID = [[[[album objectID] URIRepresentation] absoluteString] retain];
+	
+	[self connectToServer: index message:@"ADDAL"];
+	
+	[NSThread sleepForTimeInterval: 0.1];  // for rock stable opening/closing socket
+	
+	[self connectToServer: index message:@"VERSI"];
+	localVersion = BonjourDatabaseVersion;
+	
+	[lock unlock];
 }
 
 - (void) setBonjourDatabaseValue:(int) index item:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key
