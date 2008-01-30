@@ -19,6 +19,7 @@
 =========================================================================*/
 
 #import "DicomFileDCMTKCategory.h"
+#import <OsiriX/DCMAbstractSyntaxUID.h>
 #import "Papyrus3/Papyrus3.h"
 #import "DICOMToNSString.h"
 //#import "browserController.h"
@@ -305,9 +306,23 @@ extern NSLock	*PapyrusLock;
 		} //check autofill and album
 		
 		//SOPClass
+		NSString *sopClassUID = nil;
 		if (dataset->findAndGetString(DCM_SOPClassUID, string, OFFalse).good() && string != NULL){
 			[dicomElements setObject:[NSString stringWithCString:string] forKey:@"SOPClassUID"];
+			sopClassUID = [NSString stringWithCString:string] ;
 		}
+		
+		if ([sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]]){
+			const Uint8 *buffer = 0L;
+			unsigned int length;
+			if (dataset->findAndGetUint8Array(DCM_EncapsulatedDocument, buffer, &length, OFFalse).good() && string != NULL){
+				NSData *pdfData = [NSData dataWithBytes:buffer length:(unsigned)length];;
+				NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];						
+				NoOfFrames = [rep pageCount];
+			}							
+		}
+		
+		
 		
 		//Character Set
 		if (dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)

@@ -6353,8 +6353,8 @@ static BOOL withReset = NO;
 			}
 			else if ([seriesSOPClassUID isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]])
 			{
-				[cell setAction: @selector(pdfPreview:)];
-				[cell setTitle: @"Open PDF"];
+				//[cell setAction: @selector(pdfPreview:)];
+				//[cell setTitle: @"Open PDF"];
 				img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"pdf"]];
 			}
 			else if ([fileType isEqualToString: @"DICOMMPEG2"])

@@ -1668,6 +1668,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	NSString			*converted = 0L;
 	NSStringEncoding	encoding;//NSStringEncoding
 	NSString *echoTime = nil;
+	NSString *sopClassUID = nil;
 	
 	[PapyrusLock lock];
 	
@@ -1845,13 +1846,17 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 			
 			theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0008);
+			
 			if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 			{
 				val = Papy3GetElement (theGroupP, papSOPClassUIDGr, &nbVal, &itemType);
 				if (val != NULL)
 				{
-					[dicomElements setObject:[NSString stringWithCString:val->a] forKey:@"SOPClassUID"];
+					sopClassUID = [NSString stringWithCString:val->a];
+					[dicomElements setObject:sopClassUID forKey:@"SOPClassUID"];					
 				}
+				
+				
 				
 				val = Papy3GetElement (theGroupP, papSpecificCharacterSetGr, &nbVal, &itemType);
 				if (val != NULL)
@@ -2337,7 +2342,17 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			if( patientID == 0L) patientID = [[NSString alloc] initWithString:@""];
 		}
-		
+		/*
+		// Go to groups 0s0042 for Encapsulated Document Possible PDF
+		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0042);
+		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+		{
+			val = Papy3GetElement (theGroupP, 0x0011, &nbVal, &itemType);
+			if (val != NULL) {
+				NSLog(@"Encapsulated PDF decode with Papyrus");
+			}
+		}
+		*/
 		[PapyrusLock lock];
 		
 		// close and free the file and the associated allocated memory 
@@ -2413,6 +2428,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		}
 	}
 	
+	if ([sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]]) return [self getDicomFileDCMTK];
+	
 	if( converted)
 	{
 		if ([[NSFileManager defaultManager] fileExistsAtPath:converted])
@@ -2427,6 +2444,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			return [self getDicomFilePapyrus: YES];
 		}
 	}
+	
+	
+
 	
 	return -1;			// failed
 }
@@ -2853,6 +2873,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	}
 	
 	[pool release];
+	
+
 	
 	return returnValue;
 }
