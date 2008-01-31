@@ -1423,7 +1423,7 @@ extern NSThread					*mainThread;
 	}
 }
 
-+ (NSString*)iPhoneCompatibleNumericalFormat:(NSString*)aString;
++ (NSString*)iPhoneCompatibleNumericalFormat:(NSString*)aString; // this is to avoid numbers to be interpreted as phone numbers
 {
 	NSMutableString* newString = [NSMutableString string];
 	NSString *spanStart = @"<span>";
