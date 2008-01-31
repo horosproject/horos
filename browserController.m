@@ -5798,7 +5798,7 @@ static NSArray*	statesArray = nil;
 		
 		[self loadNextSeries:[[self childrenArray: series] objectAtIndex: 0] :0 :viewer :YES keyImagesOnly:keyImages];
 	}
-	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriX Did Load New Object" object:study userInfo:nil];
 	[viewersList release];
 }
 
@@ -9191,6 +9191,7 @@ static BOOL needToRezoom;
 			[self viewerDICOMInt:NO	dcmFile: [self databaseSelection] viewer: nil];
 		}
 	}
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriX Did Load New Object" object:item userInfo:nil];
 }
 
 
