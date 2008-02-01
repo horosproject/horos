@@ -44,27 +44,28 @@
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"9th WW/WL preset", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Flip Vertical", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Flip Horizontal", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select WW/WL Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Move Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Zoom Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Rotate Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Scroll Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Measure Length Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Measure Angle Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Rectangle ROI Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Oval ROI Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Text Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Arrow Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Open Polygon Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Closed Polygon Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Pencil Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select 3D Point Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Plain Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Bone Removal Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select 3D Rotate Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Camera Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Scissors Tool", nil), @"action", nil],
-											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Repulsor Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"WW/WL Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Move Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Zoom Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Rotate Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Scroll Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Measure Length Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Measure Angle Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Rectangle ROI Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Oval ROI Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Text Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Arrow Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Open Polygon Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Closed Polygon Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Pencil Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"3D Point Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Plain Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Bone Removal Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"3D Rotate Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Camera Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Scissors Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Repulsor Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Selector Tool", nil), @"action", nil],
 											nil];
 	
 	NSDictionary *keys = [[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"];
@@ -124,7 +125,7 @@
 	[_actions release];
 	_actions = [actions retain];	
 
-	
+	NSLog(@"setActions");
 }
 
 - (NSPreferencePaneUnselectReply)shouldUnselect{

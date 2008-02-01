@@ -40,9 +40,9 @@
 		NSArray *wwwl = nil;
 		unichar key = [hotKey characterAtIndex:0];
 
-		if( [_hotKeyDictionary objectForKey:hotKey])
+		if( [[DCMView _hotKeyDictionary] objectForKey:hotKey])
 		{
-			key = [[_hotKeyDictionary objectForKey:hotKey] intValue];
+			key = [[[DCMView _hotKeyDictionary] objectForKey:hotKey] intValue];
 			MPR2DController *windowController = (MPR2DController *)[self  windowController];
 			NSString *wwwlMenuString;
 		

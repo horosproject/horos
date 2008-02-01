@@ -12,6 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
+#import "DefaultsOsiriX.h"
 #import "NSAppleScript+HandlerCalls.h"
 #import "AYDicomPrintWindowController.h"
 #import "ViewerControllerWindow.h"
@@ -80,6 +81,44 @@
 #import "PluginManager.h"
 #import <InstantMessage/IMService.h>
 #import <InstantMessage/IMAVManager.h>
+
+
+
+#import "DefaultsOsiriX.h"
+
+static int hotKeyToolCrossTable[] =
+{
+	WWWLToolHotKeyAction,		//tWL
+	MoveHotKeyAction,			//tTranslate
+	ZoomHotKeyAction,			//tZoom
+	RotateHotKeyAction,			//tRotate
+	-1,							//tNext
+	LengthHotKeyAction,			//tMesure
+	RectangleHotKeyAction,		//tROI
+	Rotate3DHotKeyAction,		//t3DRotate
+ 	-1,							//tCross
+ 	OvalHotKeyAction,			//tOval
+ 	OpenPolygonHotKeyAction,	//tOPolygon
+ 	ClosedPolygonHotKeyAction, //tCPolygon
+ 	AngleHotKeyAction,			//tAngle
+ 	TextHotKeyAction,			//tText
+ 	ArrowHotKeyAction,			//tArrow
+ 	PencilHotKeyAction,			//tPencil
+ 	ThreeDPointHotKeyAction,	//t3Dpoint
+ 	scissors3DHotKeyAction,		//t3DCut
+ 	Camera3DotKeyAction,		//tCamera3D
+ 	-1,							//t2DPoint
+ 	PlainToolHotKeyAction,		//tPlain
+ 	BoneRemovalHotKeyAction,	//tBonesRemoval
+ 	-1,							//tWLBlended
+ 	RepulsorHotKeyAction		//tRepulsor
+ 	-1,							//tLayerROI
+ 	SelectorHotKeyAction,		//tROISelector
+ 	-1,							//tAxis
+ 	-1,							//tDynAngle
+};
+
+
 
 @class VRPROController;
 
@@ -306,6 +345,23 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 	else if( [item action] == @selector( setROITool:) || [item action] == @selector( setDefaultTool:) || [item action] == @selector( setDefaultToolMenu:))
 	{
 		valid = YES;
+		
+		NSArray *allKeys = [[DCMView _hotKeyDictionary] allKeys];
+		
+		[item setKeyEquivalentModifierMask: 0];
+		[item setKeyEquivalent: @""];
+		
+		for( NSString *k in allKeys)
+		{
+			if( [item tag] <= sizeof( hotKeyToolCrossTable) / sizeof( hotKeyToolCrossTable[ 0]))
+			{
+				if( [[[DCMView _hotKeyDictionary] objectForKey: k] intValue] == hotKeyToolCrossTable[[item tag]])
+				{
+					[item setKeyEquivalentModifierMask: 0];
+					[item setKeyEquivalent: k];
+				}
+			}
+		}
 		
 		if( [item tag] == [imageView currentTool]) [item setState:NSOnState];
 		else [item setState:NSOffState];
@@ -1557,7 +1613,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		NSMenu *submenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)];
 		NSMenuItem *item;
 		NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil), NSLocalizedString(@"Move", nil), NSLocalizedString(@"Magnify", nil), 
-													NSLocalizedString(@"Rotate", nil), NSLocalizedString(@"Scroll", nil), NSLocalizedString(@"ROI", nil), nil];
+													NSLocalizedString(@"Rotate", nil), NSLocalizedString(@"Scroll", nil), nil];
 		NSArray *images = [NSArray arrayWithObjects: @"WLWW", @"Move", @"Zoom",  @"Rotate",  @"Stack", @"Length", nil];	// DO NOT LOCALIZE THIS LINE ! -> filenames !
 		NSEnumerator *enumerator2 = [images objectEnumerator];
 		NSEnumerator *enumerator3 = [[popupRoi itemArray] objectEnumerator];
@@ -1592,6 +1648,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[contextualMenu addItem:item];
 			[item release];
 		}
+		
+		image = [enumerator2 nextObject];
+		item = [[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"ROI", nil) action: 0L keyEquivalent:@""];
+		[item setTag: -1];
+		[item setTarget: self];
+		[item setImage: [NSImage imageNamed:image]];
+		[contextualMenu addItem:item];
+		[item release];
+		
 		[[contextualMenu itemAtIndex:5] setSubmenu:submenu];
 		
 		[contextualMenu addItem:[NSMenuItem separatorItem]];
@@ -10621,7 +10686,7 @@ int i,j,l;
 	//change Image in contextual menu 4/22/04
 	NSMenu *menu = [imageView menu];
 	[[menu itemAtIndex:5] setImage: [self imageForROI: roitype]];
-	[[menu itemAtIndex:5] setTag:roitype];
+	[[menu itemAtIndex:5] setTag: -1];
 }
 
 -(void) setROITool:(id) sender

@@ -711,9 +711,9 @@
 	
 		NSArray *wwwl = nil;
 		unichar key = [hotKey characterAtIndex:0];
-		if( [_hotKeyDictionary objectForKey:hotKey])
+		if( [[DCMView _hotKeyDictionary] objectForKey:hotKey])
 		{
-			key = [[_hotKeyDictionary objectForKey:hotKey] intValue];
+			key = [[[DCMView _hotKeyDictionary] objectForKey:hotKey] intValue];
 			OrthogonalMPRViewer *windowController = (OrthogonalMPRViewer *)[self  windowController];
 			NSString *wwwlMenuString;
 		

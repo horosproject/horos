@@ -19,7 +19,7 @@
 
 #import <PreferencePanes/PreferencePanes.h>
 #import <SecurityInterface/SFAuthorizationView.h>
-
+#import "HotKeyArrayController.h"
 
 @interface OSIHotKeysPref : NSPreferencePane 
 {
@@ -27,7 +27,7 @@
 	IBOutlet SFAuthorizationView *_authView;
 	IBOutlet NSTextFieldCell *keyTextFieldCell;
 	BOOL _enableControls;
-	IBOutlet NSArrayController *arrayController;
+	IBOutlet HotKeyArrayController *arrayController;
 }
 
 - (void) mainViewDidLoad;
@@ -36,7 +36,7 @@
 
 - (void) setEnableControls: (BOOL) val;
 - (BOOL)enableControls;
-
+- (IBAction) update;
 
 
 @end

@@ -62,6 +62,7 @@ enum
 	tDynAngle					//	27 //JJCP
 };
 
+
 extern NSString *pasteBoardOsiriX;
 extern NSString *pasteBoardOsiriXPlugin;
 
@@ -216,7 +217,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	
 	//Context for rendering to iChat
 	NSOpenGLContext *_alternateContext;
-	NSDictionary *_hotKeyDictionary;
 	
 	BOOL			drawing;
 	
@@ -426,6 +426,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 
 //Hot key action
 -(BOOL)actionForHotKey:(NSString *)hotKey;
++(NSDictionary*) _hotKeyDictionary;
 
 //iChat
 // New Draw method to allow for IChat Theater

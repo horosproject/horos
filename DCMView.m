@@ -73,6 +73,10 @@ Version 2.3
 //#define RECTANGLE false
 //GL_TEXTURE_RECTANGLE_EXT - GL_TEXTURE_2D
 
+
+
+
+
 extern		NSThread					*mainThread;
 extern		BOOL						USETOOLBARPANEL;
 extern		ToolbarPanelController		*toolbarPanel[10];
@@ -90,6 +94,7 @@ static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, SOFTWAREINTERPOL
 static		int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX;
 static		BOOL						gClickCountSet = NO;
 static		float						margin = 2;
+static		 NSDictionary				*_hotKeyDictionary = 0L;
 
 static			NSRecursiveLock			*drawLock = 0L;
 
@@ -556,6 +561,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 +(void) setDefaults
 {
+	[_hotKeyDictionary release];
+	_hotKeyDictionary = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] retain];
+
 	NOINTERPOLATION = [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"];
 	FULL32BITPIPELINE = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
 	FULL32BITPIPELINE = NO;
@@ -1406,8 +1414,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) setCurrentTool:(short) i
 {
-    currentTool = i;
+	BOOL keepROITool = (i == tROISelector || i == tRepulsor || currentTool == tROISelector || currentTool == tRepulsor);
 
+	keepROITool = keepROITool || [self roiTool:currentTool] || [self roiTool:i];
+    currentTool = i;
+	
 //  Not activated by default    
 //	[[NSUserDefaults standardUserDefaults] setInteger:currentTool forKey: @"DEFAULTLEFTTOOL"];
 	
@@ -1416,8 +1427,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     mesureA.x = mesureA.y = mesureB.x = mesureB.y = 0;
     roiRect.origin.x = roiRect.origin.y = roiRect.size.width = roiRect.size.height = 0;
 	
-	// Unselect previous ROIs
-	for( i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
+	if( keepROITool == NO)
+	{
+		// Unselect previous ROIs
+		for( i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
+	}
 	
 	NSEvent *event = [[NSApplication sharedApplication] currentEvent];
 	
@@ -1723,8 +1737,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[destinationImage release];
 	
 	[_alternateContext release];
-	
-	[_hotKeyDictionary release];
 	
 	if(repulsorColorTimer)
 	{
@@ -4710,8 +4722,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	_alternateContext = [[NSOpenGLContext alloc] initWithFormat:pixFmt shareContext:[self openGLContext]];
 
-	_hotKeyDictionary = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] retain];
-	
 	repulsorRadius = 0;
 	
     return self;
@@ -9639,7 +9649,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 }
 
 #pragma mark -
-#pragma mark Hot Keys.
+#pragma mark Hot Keys
+
++(NSDictionary*) _hotKeyDictionary
+{
+	return _hotKeyDictionary;
+}
+
 //Hot key action
 -(BOOL)actionForHotKey:(NSString *)hotKey
 {
@@ -9804,7 +9820,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tRepulsor], @"toolIndex", nil];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
 					break;
-				
+				case SelectorHotKeyAction:		
+					userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tROISelector], @"toolIndex", nil];
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+					break;
 				default:
 					returnedVal = NO;
 				break;

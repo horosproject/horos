@@ -1050,43 +1050,43 @@ static NSHost *currentHost = 0L;
 	NSMutableDictionary *hotkeys = [NSMutableDictionary dictionary];
 	NSString *stringValue;
 	NSArray *array = [NSArray arrayWithObjects:
-						@"~",
-						@"0", 
-						@"1", 
-						@"2",
-						@"3",
-						@"4", 
-						@"5", 
-						@"6", 
-						@"7", 
-						@"8", 
-						@"9", 
-						@"v", 
-						@"h", 
-						@"w", 
-						@"m", 
-						@"z", 
-						@"i", 
-						@"s", 
-						@"l", 
-						@"a", 
-						@"r", 
-						@"e", 
-						@"t", 
-						@"q", 
-						@"o", 
-						@"c", 
-						@"d", 
-						@"p", 
-						@"b", 
-						@"x", 
-						//Rotate3DHotKeyAction, Camera3DotKeyAction, scissors3DHotKeyAction, repulsorHotKey
-						@"[",
-						@"]",
-						@"\\",
-						@"n",
-						nil];
-						
+						@"~",	//DefaultWWWLHotKeyAction
+						@"0",	//FullDynamicWWWLHotKeyAction
+						@"1",	//Preset1WWWLHotKeyAction
+						@"2",	//Preset2WWWLHotKeyAction
+						@"3",	//Preset3WWWLHotKeyAction
+						@"4",	//Preset4WWWLHotKeyAction
+						@"5",	//Preset5WWWLHotKeyAction
+						@"6",	//Preset6WWWLHotKeyAction
+						@"7",	//Preset7WWWLHotKeyAction
+						@"8",	//Preset8WWWLHotKeyAction
+						@"9",	//Preset9WWWLHotKeyAction
+						@"v",	//FlipVerticalHotKeyAction
+						@"h",	//FlipHorizontalHotKeyAction
+						@"w",	//WWWLToolHotKeyAction
+						@"m",	//MoveHotKeyAction
+						@"z",	//ZoomHotKeyAction
+						@"i",	//RotateHotKeyAction
+						@"",	//ScrollHotKeyAction
+						@"l",	//LengthHotKeyAction
+						@"a",	//AngleHotKeyAction
+						@"",	//RectangleHotKeyAction
+						@"e",	//OvalHotKeyAction
+						@"t",	//TextHotKeyAction
+						@"q",	//ArrowHotKeyAction
+						@"o",	//OpenPolygonHotKeyAction
+						@"c",	//ClosedPolygonHotKeyAction
+						@"d",	//PencilHotKeyAction
+						@"p",	//ThreeDPointHotKeyAction
+						@"b",	//PlainToolHotKeyAction
+						@"x",	//BoneRemovalHotKeyAction
+						@"[",	//Rotate3DHotKeyAction
+						@"]",	//Camera3DotKeyAction
+						@"\\",	//scissors3DHotKeyAction
+						@"r",	//RepulsorHotKeyAction
+						@"s",	//SelectorHotKeyAction
+						nil];						
+																						
 	int x = DefaultWWWLHotKeyAction;
 	int count = BoneRemovalHotKeyAction + 1;
 	for (x = DefaultWWWLHotKeyAction; x < count; x++) {
