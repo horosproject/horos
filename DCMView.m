@@ -2962,7 +2962,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		
 		// ROI TOOLS
-		if( [self roiTool:tool] == YES && crossMove == -1 ) {
+		if( [self roiTool:tool] == YES && crossMove == -1 )
+		{
 			[self deleteMouseDownTimer];
 			
 			[[self windowController] addToUndoQueue:@"roi"];
@@ -3020,8 +3021,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 			}
 					
-			if( DoNothing == NO) {
-				if( selected >= 0 && drawingROI == NO) {
+			if( DoNothing == NO)
+			{
+				if( selected >= 0 && drawingROI == NO)
+				{
 					curROI = 0L;
 					
 					// Bring the selected ROI to the first position in array
@@ -3039,14 +3042,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					NSArray *winList = [[NSApplication sharedApplication] windows];
 					BOOL	found = NO;
 					
-					for( int i = 0; i < [winList count]; i++ ) {
-						if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROI"]) {
+					for( int i = 0; i < [winList count]; i++)
+					{
+						if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROI"])
+						{
 							found = YES;
-							[[[winList objectAtIndex:i] windowController] setROI: [curRoiList objectAtIndex: selected] :[self windowController]];
+							if( [self is2DViewer])
+								[[[winList objectAtIndex:i] windowController] setROI: [curRoiList objectAtIndex: selected] :[self windowController]];
 						}
 					}
 					
-					if( [event clickCount] > 1 && [self is2DViewer] == YES) {
+					if( [event clickCount] > 1 && [self is2DViewer] == YES)
+					{
 						if( found == NO) {
 							ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: [curRoiList objectAtIndex: selected] :[self windowController]];
 							[roiWin showWindow:self];
@@ -3992,6 +3999,24 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
+- (NSMutableArray*) selectedROIs
+{
+	NSMutableArray *selectedRois = [NSMutableArray array];
+	int i;
+	
+	for( i = 0; i < [curRoiList count]; i++)
+	{
+		long mode = [[curRoiList objectAtIndex: i] ROImode];
+			
+		if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+		{
+			[selectedRois addObject: [curRoiList objectAtIndex: i]];
+		}
+	}
+	
+	return selectedRois;
+}
+
 - (void)mouseDraggedRepulsor:(NSEvent *)event
 {
 	NSRect frame = [self frame];
@@ -4014,11 +4039,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	NSMutableArray *points;
 		
 	NSRect repulsorRect = NSMakeRect(tempPt.x-repulsorRadius, tempPt.y-repulsorRadius, repulsorRadius*2.0 , repulsorRadius*2.0);
-		
-	for( int i=0; i<[curRoiList count]; i++ ) {	
-		if([(ROI*)[curRoiList objectAtIndex:i] type] != tAxis && [(ROI*)[curRoiList objectAtIndex:i] type] != tDynAngle) //JJCP
+	
+	NSArray *roiArray = [self selectedROIs];
+	if( [roiArray count] == 0) roiArray = curRoiList;
+	
+	for( int i=0; i<[roiArray count]; i++ )
+	{
+		if([(ROI*)[roiArray objectAtIndex:i] type] != tAxis && [(ROI*)[roiArray objectAtIndex:i] type] != tDynAngle) //JJCP
 		{		
-			points = [[curRoiList objectAtIndex:i] points];
+			points = [[roiArray objectAtIndex:i] points];
 			int n = 0;
 			for( int j=0; j<[points count]; j++ ) {
 				NSPoint pt = [[points objectAtIndex:j] point];
@@ -4030,8 +4059,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					float d = sqrt(dx2 + dy2);
 					
 					if( d < repulsorRadius ) {
-						if([(ROI*)[curRoiList objectAtIndex:i] type] == t2DPoint)
-							[[curRoiList objectAtIndex:i] setROIRect:NSOffsetRect([[curRoiList objectAtIndex:i] rect],dx/d*repulsorRadius-dx,dy/d*repulsorRadius-dy)];
+						if([(ROI*)[roiArray objectAtIndex:i] type] == t2DPoint)
+							[[roiArray objectAtIndex:i] setROIRect:NSOffsetRect([[roiArray objectAtIndex:i] rect],dx/d*repulsorRadius-dx,dy/d*repulsorRadius-dy)];
 						else
 							[[points objectAtIndex:j] move:dx/d*repulsorRadius-dx :dy/d*repulsorRadius-dy];
 						
@@ -4040,7 +4069,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						
 						for( int delta = -1; delta <= 1; delta++ ) {
 							int k = j+delta;
-							if([(ROI*)[curRoiList objectAtIndex:i] type] == tCPolygon || [(ROI*)[curRoiList objectAtIndex:i] type] == tPencil) {
+							if([(ROI*)[roiArray objectAtIndex:i] type] == tCPolygon || [(ROI*)[roiArray objectAtIndex:i] type] == tPencil) {
 								if(k==-1)
 									k = [points count]-1;
 								else if(k==[points count])
@@ -4072,11 +4101,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							}
 						}
 						
-						[[curRoiList objectAtIndex:i] recompute];
+						[[roiArray objectAtIndex:i] recompute];
 						
-						if( [[[curRoiList objectAtIndex:i] comments] isEqualToString: @"morphing generated"])
-							[[curRoiList objectAtIndex:i] setComments:@""];
-						[[NSNotificationCenter defaultCenter] postNotificationName:@"roiChange" object:[curRoiList objectAtIndex:i] userInfo: 0L];
+						if( [[[roiArray objectAtIndex:i] comments] isEqualToString: @"morphing generated"])
+							[[roiArray objectAtIndex:i] setComments:@""];
+						[[NSNotificationCenter defaultCenter] postNotificationName:@"roiChange" object:[roiArray objectAtIndex:i] userInfo: 0L];
 					}
 				}
 			}
@@ -5191,7 +5220,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
 		if( [[[loopItem windowController] windowNibName] isEqualToString:@"ROI"])
 		{
-			[[loopItem windowController] setROI: [note object] :[self windowController]];
+			if( [self is2DViewer])
+				[[loopItem windowController] setROI: [note object] :[self windowController]];
 		}
 	}
 }

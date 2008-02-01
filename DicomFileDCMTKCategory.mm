@@ -322,8 +322,6 @@ extern NSLock	*PapyrusLock;
 			}							
 		}
 		
-		
-		
 		//Character Set
 		if (dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
 		{
