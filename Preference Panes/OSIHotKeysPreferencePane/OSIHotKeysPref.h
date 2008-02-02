@@ -1,8 +1,3 @@
-//
-//  OSIHotKeysPref.h
-//  OSIHotKeys
-//
-//  Created by Lance Pysher on 11/28/06.
 /*=========================================================================
   Program:   OsiriX
 

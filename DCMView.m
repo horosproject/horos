@@ -1479,6 +1479,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	
 	[self setCursorForView : currentTool];
+	[self checkCursor];
 	[self setNeedsDisplay:YES];
 }
 

@@ -1,8 +1,3 @@
-//
-//  HotKeyFormatter.m
-//  OSIHotKeysPreferencePane
-//
-//  Created by Lance Pysher on 11/30/06.
 /*=========================================================================
   Program:   OsiriX
 

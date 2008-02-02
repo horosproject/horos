@@ -14,7 +14,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-enum HotKeyActions {DefaultWWWLHotKeyAction, FullDynamicWWWLHotKeyAction, 
+// WARNING: If you add or modify this list, check ViewerController.m, DCMView.h and HotKey Pref Pane
+
+enum HotKeyActions {DefaultWWWLHotKeyAction = 0, FullDynamicWWWLHotKeyAction, 
 	Preset1WWWLHotKeyAction, Preset2WWWLHotKeyAction, Preset3WWWLHotKeyAction, 
 	Preset4WWWLHotKeyAction, Preset5WWWLHotKeyAction, Preset6WWWLHotKeyAction, 
 	Preset7WWWLHotKeyAction, Preset8WWWLHotKeyAction, Preset9WWWLHotKeyAction,
