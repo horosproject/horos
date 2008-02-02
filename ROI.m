@@ -573,7 +573,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	else {
 		NSLog( @"***** warning pix == [curView curDCM]");
 		
-		return pix = curView.curDCM;
+		return pix = [curView.curDCM retain];
 	}
 }
 
