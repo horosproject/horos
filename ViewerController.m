@@ -213,6 +213,16 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 
 #define UNDOQUEUESIZE 40
 
++ (int) getToolEquivalentToHotKey:(int) h
+{
+	if( h <= sizeof( hotKeyToolCrossTable) / sizeof( hotKeyToolCrossTable[ 0]))
+	{
+		return hotKeyToolCrossTable[ h];
+	}
+	
+	return -1;
+}
+
 + (NSMutableArray*) getDisplayed2DViewers
 {
 	NSArray				*winList = [NSApp windows];
@@ -355,9 +365,9 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 		
 		for( NSString *k in allKeys)
 		{
-			if( [item tag] <= sizeof( hotKeyToolCrossTable) / sizeof( hotKeyToolCrossTable[ 0]))
+			if( [ViewerController getToolEquivalentToHotKey: [item tag]] >= 0)
 			{
-				if( [[[DCMView _hotKeyDictionary] objectForKey: k] intValue] == hotKeyToolCrossTable[ [item tag]])
+				if( [[[DCMView _hotKeyDictionary] objectForKey: k] intValue] == [ViewerController getToolEquivalentToHotKey: [item tag]])
 				{
 					[item setKeyEquivalentModifierMask: 0];
 					[item setKeyEquivalent: k];

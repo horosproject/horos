@@ -14,8 +14,20 @@
 
 #import "OSIHotKeysPref.h"
 
+static OSIHotKeysPref *currentKeysPref = 0L;
 
 @implementation OSIHotKeysPref
+
++ (OSIHotKeysPref*) currentKeysPref
+{
+	return currentKeysPref;
+}
+
+- (void) keyDown:(NSEvent *)theEvent
+{
+	NSMutableDictionary *dict = [[arrayController selectedObjects] lastObject];
+	[dict setObject: [NSString stringWithFormat: @"%c", [[[theEvent charactersIgnoringModifiers] uppercaseString] characterAtIndex: 0]] forKey:@"key"];
+}
 
 - (void)dealloc{	
 	NSLog(@"dealloc Hot Key Pref PAne");
@@ -25,6 +37,8 @@
 
 - (void) mainViewDidLoad
 {
+	currentKeysPref = self;
+	
 	// create array of MutableDictionaries containing names of actions
 		NSArray *actions = [NSArray arrayWithObjects:[NSMutableDictionary dictionaryWithObjectsAndKeys:	NSLocalizedString(@"Default WW/WL", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Full Dynamic WW/WL", nil), @"action", nil],

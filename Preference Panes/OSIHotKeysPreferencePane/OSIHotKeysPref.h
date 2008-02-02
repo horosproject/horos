@@ -25,6 +25,8 @@
 	IBOutlet HotKeyArrayController *arrayController;
 }
 
++ (OSIHotKeysPref*) currentKeysPref;
+- (void) keyDown:(NSEvent *)theEvent;
 - (void) mainViewDidLoad;
 - (NSArray *)actions;
 - (void)setActions:(NSArray *)actions;

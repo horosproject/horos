@@ -477,7 +477,7 @@ enum
 /** Action to start printing.  Called when print window is ordered out */
 - (IBAction) endPrint:(id) sender;
 
-
++ (int) getToolEquivalentToHotKey:(int) h;
 - (IBAction) startMSRG:(id) sender;
 - (IBAction) startMSRGWithAutomaticBounding:(id) sender;
 //arg: this function will automatically scan the buffer to create a textured ROI (tPlain) for all slices
