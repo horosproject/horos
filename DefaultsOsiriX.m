@@ -1086,14 +1086,11 @@ static NSHost *currentHost = 0L;
 						@"r",	//RepulsorHotKeyAction
 						@"s",	//SelectorHotKeyAction
 						nil];						
-																						
-	int x = DefaultWWWLHotKeyAction;
-	int count = BoneRemovalHotKeyAction + 1;
-	for (x = DefaultWWWLHotKeyAction; x < count; x++) {
-		if  ( x < [array count]) {
-			stringValue = [array objectAtIndex:x];
-			[hotkeys setObject:[NSNumber numberWithInt:x] forKey:stringValue];
-		}
+	
+	for( int x = 0; x < [array count]; x++)
+	{
+		stringValue = [array objectAtIndex:x];
+		[hotkeys setObject:[NSNumber numberWithInt:x] forKey:stringValue];
 	}
 	[defaultValues setObject:hotkeys forKey:@"HOTKEYS"];
 	

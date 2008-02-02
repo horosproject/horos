@@ -86,41 +86,6 @@
 
 #import "DefaultsOsiriX.h"
 
-// WARNING: If you add or modify this list, check ViewerController.m, DCMView.h and HotKey Pref Pane
-
-static int hotKeyToolCrossTable[] =
-{
-	WWWLToolHotKeyAction,		//tWL				0
-	MoveHotKeyAction,			//tTranslate		1
-	ZoomHotKeyAction,			//tZoom				2
-	RotateHotKeyAction,			//tRotate			3
-	-1,							//tNext				4
-	LengthHotKeyAction,			//tMesure			5
-	RectangleHotKeyAction,		//tROI				6
-	Rotate3DHotKeyAction,		//t3DRotate			7
- 	-1,							//tCross			8
- 	OvalHotKeyAction,			//tOval				9
- 	OpenPolygonHotKeyAction,	//tOPolygon			10
- 	ClosedPolygonHotKeyAction, //tCPolygon			11
- 	AngleHotKeyAction,			//tAngle			12
- 	TextHotKeyAction,			//tText				13
- 	ArrowHotKeyAction,			//tArrow			14
- 	PencilHotKeyAction,			//tPencil			15
- 	ThreeDPointHotKeyAction,	//t3Dpoint			16
- 	scissors3DHotKeyAction,		//t3DCut			17
- 	Camera3DotKeyAction,		//tCamera3D			18
- 	-1,							//t2DPoint			19
- 	PlainToolHotKeyAction,		//tPlain			20
- 	BoneRemovalHotKeyAction,	//tBonesRemoval		21
- 	-1,							//tWLBlended		22
- 	RepulsorHotKeyAction,		//tRepulsor			23
- 	-1,							//tLayerROI			24
- 	SelectorHotKeyAction,		//tROISelector		25
- 	-1,							//tAxis				26
- 	-1,							//tDynAngle			27
-};
-
-
 
 @class VRPROController;
 
@@ -215,6 +180,40 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 
 + (int) getToolEquivalentToHotKey:(int) h
 {
+	// WARNING: If you add or modify this list, check ViewerController.m, DCMView.h and HotKey Pref Pane
+
+	static int hotKeyToolCrossTable[] =
+	{
+		WWWLToolHotKeyAction,		//tWL				0
+		MoveHotKeyAction,			//tTranslate		1
+		ZoomHotKeyAction,			//tZoom				2
+		RotateHotKeyAction,			//tRotate			3
+		-1,							//tNext				4
+		LengthHotKeyAction,			//tMesure			5
+		RectangleHotKeyAction,		//tROI				6
+		Rotate3DHotKeyAction,		//t3DRotate			7
+		-1,							//tCross			8
+		OvalHotKeyAction,			//tOval				9
+		OpenPolygonHotKeyAction,	//tOPolygon			10
+		ClosedPolygonHotKeyAction, //tCPolygon			11
+		AngleHotKeyAction,			//tAngle			12
+		TextHotKeyAction,			//tText				13
+		ArrowHotKeyAction,			//tArrow			14
+		PencilHotKeyAction,			//tPencil			15
+		ThreeDPointHotKeyAction,	//t3Dpoint			16
+		scissors3DHotKeyAction,		//t3DCut			17
+		Camera3DotKeyAction,		//tCamera3D			18
+		-1,							//t2DPoint			19
+		PlainToolHotKeyAction,		//tPlain			20
+		BoneRemovalHotKeyAction,	//tBonesRemoval		21
+		-1,							//tWLBlended		22
+		RepulsorHotKeyAction,		//tRepulsor			23
+		-1,							//tLayerROI			24
+		SelectorHotKeyAction,		//tROISelector		25
+		-1,							//tAxis				26
+		-1,							//tDynAngle			27
+	};
+
 	if( h <= sizeof( hotKeyToolCrossTable) / sizeof( hotKeyToolCrossTable[ 0]))
 	{
 		return hotKeyToolCrossTable[ h];

@@ -26,7 +26,7 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 - (void) keyDown:(NSEvent *)theEvent
 {
 	NSMutableDictionary *dict = [[arrayController selectedObjects] lastObject];
-	[dict setObject: [NSString stringWithFormat: @"%c", [[[theEvent charactersIgnoringModifiers] uppercaseString] characterAtIndex: 0]] forKey:@"key"];
+	[dict setObject: [NSString stringWithFormat: @"%c", [[[theEvent charactersIgnoringModifiers] lowercaseString] characterAtIndex: 0]] forKey:@"key"];
 }
 
 - (void)dealloc{	

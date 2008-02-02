@@ -25,7 +25,7 @@
 }
 
 - (NSString *)stringForObjectValue:(id)anObject{
-	return anObject;
+	 return [anObject  uppercaseString];
 }
 
 - (NSString *)editingStringForObjectValue:(id)anObject{
