@@ -14,7 +14,6 @@
 		8D202CF10486D31800D8A456 /* OSIHotKeysPref.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
-		A98380050D536DE2000B0DE3 /* HotKeyArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = A98380030D536DE2000B0DE3 /* HotKeyArrayController.h */; };
 		A98380060D536DE2000B0DE3 /* HotKeyArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = A98380040D536DE2000B0DE3 /* HotKeyArrayController.m */; };
 		BF2EEC9D0B1F8B5C007E9088 /* HotKeyFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2EEC9B0B1F8B5C007E9088 /* HotKeyFormatter.h */; };
 		BF2EEC9E0B1F8B5C007E9088 /* HotKeyFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2EEC9C0B1F8B5C007E9088 /* HotKeyFormatter.m */; };
@@ -23,6 +22,7 @@
 		BF92A1CD0B1D4433001DB893 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF92A1CC0B1D4433001DB893 /* Security.framework */; };
 		CE24147C0CD2A05C009D0877 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE24147A0CD2A05C009D0877 /* Localizable.strings */; };
 		CE5C6D020CAD9B2900597FEF /* OSIHotKeysPref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE5C6D000CAD9B2900597FEF /* OSIHotKeysPref.xib */; };
+		CEB157C70D545D7D00941790 /* HotKeyArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB157C50D545D7D00941790 /* HotKeyArrayController.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,7 +33,6 @@
 		32DBCFA20370C41700C91783 /* OSIHotKeys_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIHotKeys_Prefix.pch; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSIHotKeys.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSIHotKeys.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
-		A98380030D536DE2000B0DE3 /* HotKeyArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyArrayController.h; sourceTree = "<group>"; };
 		A98380040D536DE2000B0DE3 /* HotKeyArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyArrayController.m; sourceTree = "<group>"; };
 		BF2EEC9B0B1F8B5C007E9088 /* HotKeyFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyFormatter.h; sourceTree = "<group>"; };
 		BF2EEC9C0B1F8B5C007E9088 /* HotKeyFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyFormatter.m; sourceTree = "<group>"; };
@@ -42,6 +41,7 @@
 		BF92A1CC0B1D4433001DB893 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		CE24147B0CD2A05C009D0877 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE5C6D010CAD9B2900597FEF /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIHotKeysPref.xib; sourceTree = "<group>"; };
+		CEB157C50D545D7D00941790 /* HotKeyArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyArrayController.h; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIHotKeysPref.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIHotKeysPref.m; sourceTree = "<group>"; };
@@ -105,7 +105,7 @@
 				BF2EECA60B1F8DDE007E9088 /* HotKeyTextFieldCell.m */,
 				BF2EEC9B0B1F8B5C007E9088 /* HotKeyFormatter.h */,
 				BF2EEC9C0B1F8B5C007E9088 /* HotKeyFormatter.m */,
-				A98380030D536DE2000B0DE3 /* HotKeyArrayController.h */,
+				CEB157C50D545D7D00941790 /* HotKeyArrayController.h */,
 				A98380040D536DE2000B0DE3 /* HotKeyArrayController.m */,
 			);
 			name = Classes;
@@ -156,7 +156,7 @@
 				8D202CEB0486D31800D8A456 /* OSIHotKeysPref.h in Headers */,
 				BF2EEC9D0B1F8B5C007E9088 /* HotKeyFormatter.h in Headers */,
 				BF2EECA70B1F8DDE007E9088 /* HotKeyTextFieldCell.h in Headers */,
-				A98380050D536DE2000B0DE3 /* HotKeyArrayController.h in Headers */,
+				CEB157C70D545D7D00941790 /* HotKeyArrayController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
