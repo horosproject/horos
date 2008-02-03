@@ -326,7 +326,16 @@ static int hotKeyToolCrossTable[] =
 	}
 	else if( [item action] == @selector( mergeBrushROI:))
 	{
-		if( [[self selectedROIs] count] > 0) valid = YES;
+		if( [[self selectedROIs] count] > 0)
+		{
+			for( ROI *i in [self selectedROIs])
+			{
+				if( i.type == tPlain)
+					valid = YES;
+				else
+					valid = NO;
+			}
+		}
 	}
 	else if( [item action] == @selector( roiPropagateSetup:))
 	{
