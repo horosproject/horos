@@ -94,7 +94,7 @@ static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, SOFTWAREINTERPOL
 static		int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX;
 static		BOOL						gClickCountSet = NO;
 static		float						margin = 2;
-static		 NSDictionary				*_hotKeyDictionary = 0L;
+static		 NSDictionary				*_hotKeyDictionary = 0L, *_hotKeyModifiersDictionary = 0L;
 
 static			NSRecursiveLock			*drawLock = 0L;
 
@@ -561,6 +561,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 +(void) setDefaults
 {
+	
+//	[_hotKeyModifiersDictionary release];
+//	_hotKeyModifiersDictionary = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYSMODIFIERS"] retain];
+	
 	[_hotKeyDictionary release];
 	_hotKeyDictionary = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] retain];
 
@@ -9652,7 +9656,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 #pragma mark -
 #pragma mark Hot Keys
 
-+(NSDictionary*) _hotKeyDictionary
++(NSDictionary*) hotKeyModifiersDictionary
+{
+	return _hotKeyModifiersDictionary;
+}
+
++(NSDictionary*) hotKeyDictionary
 {
 	return _hotKeyDictionary;
 }
@@ -9670,9 +9679,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 		NSArray *wwwl = nil;
 		unichar key = [hotKey characterAtIndex:0];
-		if( [_hotKeyDictionary objectForKey:hotKey])
+		if( [[DCMView hotKeyDictionary] objectForKey:hotKey])
 		{
-			key = [[_hotKeyDictionary objectForKey:hotKey] intValue];
+			key = [[[DCMView hotKeyDictionary] objectForKey:hotKey] intValue];
 			
 			int index = 1;
 			switch (key){

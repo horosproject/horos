@@ -428,7 +428,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 
 //Hot key action
 -(BOOL)actionForHotKey:(NSString *)hotKey;
-+(NSDictionary*) _hotKeyDictionary;
++(NSDictionary*) hotKeyDictionary;
++(NSDictionary*) hotKeyModifiersDictionary;
 
 //iChat
 // New Draw method to allow for IChat Theater

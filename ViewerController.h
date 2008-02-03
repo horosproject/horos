@@ -478,6 +478,7 @@ enum
 - (IBAction) endPrint:(id) sender;
 
 + (int) getToolEquivalentToHotKey:(int) h;
++ (int) getHotKeyEquivalentToTool:(int) h;
 - (IBAction) startMSRG:(id) sender;
 - (IBAction) startMSRGWithAutomaticBounding:(id) sender;
 //arg: this function will automatically scan the buffer to create a textured ROI (tPlain) for all slices

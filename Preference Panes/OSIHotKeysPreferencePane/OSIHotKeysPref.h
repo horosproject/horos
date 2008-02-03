@@ -33,7 +33,5 @@
 
 - (void) setEnableControls: (BOOL) val;
 - (BOOL)enableControls;
-- (IBAction) update;
-
 
 @end

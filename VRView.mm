@@ -1918,7 +1918,6 @@ public:
 	
 	[destinationImage release];
 	
-	[_hotKeyDictionary release];
 	[appliedCurves release];
 
 	// 3D Connexion SpaceNavigator: Make sure the framework is installed
@@ -6594,9 +6593,6 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 {
 	BOOL returnedVal = YES;
 	
-	if (!_hotKeyDictionary)
-		_hotKeyDictionary = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] retain];
-	
 	if ([hotKey length] > 0)
 	{
 		NSDictionary *userInfo = nil;
@@ -6607,9 +6603,9 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 		NSString *wwwlMenuString = nil;
 		unichar key = [hotKey characterAtIndex:0];
 		
-		if( [_hotKeyDictionary objectForKey:hotKey])
+		if( [[DCMView hotKeyDictionary] objectForKey:hotKey])
 		{
-			key = [[_hotKeyDictionary objectForKey:hotKey] intValue];
+			key = [[[DCMView hotKeyDictionary] objectForKey:hotKey] intValue];
 			id windowController = [[self window] windowController];
 			NSLog( @"hot key: %d", key);
 			

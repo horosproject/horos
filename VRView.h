@@ -307,8 +307,6 @@ typedef char* vtkMyCallbackVR;
 	
 	float						firstPixel, secondPixel;
 	
-	NSDictionary				*_hotKeyDictionary;
-	
 	NSLock						*deleteRegion;
 	
 	IBOutlet CLUTOpacityView	*clutOpacityView;

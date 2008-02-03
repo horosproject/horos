@@ -1048,6 +1048,7 @@ static NSHost *currentHost = 0L;
 	
 	//hot key prefs
 	NSMutableDictionary *hotkeys = [NSMutableDictionary dictionary];
+	NSMutableDictionary *hotkeysModifiers = [NSMutableDictionary dictionary];
 	NSString *stringValue;
 	NSArray *array = [NSArray arrayWithObjects:
 						@"~",	//DefaultWWWLHotKeyAction
@@ -1091,8 +1092,10 @@ static NSHost *currentHost = 0L;
 	{
 		stringValue = [array objectAtIndex:x];
 		[hotkeys setObject:[NSNumber numberWithInt:x] forKey:stringValue];
+//		[hotkeysModifiers setObject:[NSNumber numberWithInt:0] forKey:stringValue];
 	}
 	[defaultValues setObject:hotkeys forKey:@"HOTKEYS"];
+//	[defaultValues setObject:hotkeys forKey:@"HOTKEYSMODIFIERS"];
 	
 	// Comparison Body Regions
 	NSArray *headRegions = [NSArray arrayWithObjects: 

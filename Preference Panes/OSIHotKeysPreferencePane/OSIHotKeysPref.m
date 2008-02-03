@@ -27,6 +27,7 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 {
 	NSMutableDictionary *dict = [[arrayController selectedObjects] lastObject];
 	[dict setObject: [NSString stringWithFormat: @"%c", [[[theEvent charactersIgnoringModifiers] lowercaseString] characterAtIndex: 0]] forKey:@"key"];
+//	[dict setObject: [NSNumber numberWithInt: [theEvent modifierFlags]] forKey:@"modifiers"];
 }
 
 - (void)dealloc{	
@@ -78,14 +79,21 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 											nil];
 	
 	NSDictionary *keys = [[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"];
+//	NSDictionary *keysModifiers = [[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYSMODIFIERS"];
+	
 	NSEnumerator *enumerator = [keys objectEnumerator];
 	id index;
 	// the indes will be the position in the Actions Array. The key is the hotkey.
-	while (index = [enumerator nextObject]) {
+	while (index = [enumerator nextObject])
+	{
 		NSArray *allKeys = [keys allKeysForObject:index];
-		if ([allKeys count] > 0) {
+		if ([allKeys count] > 0)
+		{
 			NSString *key = [allKeys objectAtIndex:0];
-			[[actions objectAtIndex:[index intValue]] setObject:key forKey:@"key"];
+			
+			[[actions objectAtIndex:[index intValue]] setObject: key forKey:@"key"];
+			
+//			[[actions objectAtIndex:[index intValue]] setObject: [keysModifiers objectForKey: key] forKey:@"modifiers"];
 		}
 	}
 	[self setActions:actions];
@@ -132,27 +140,26 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 
 - (void)setActions:(NSArray *)actions{
 	[_actions release];
-	_actions = [actions retain];	
-
-	NSLog(@"setActions");
+	_actions = [actions retain];
 }
 
-- (NSPreferencePaneUnselectReply)shouldUnselect{
+- (NSPreferencePaneUnselectReply)shouldUnselect
+{
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-	int count = [_actions count];
-	int i;
-	for (i = 0; i < count; i++)
+	
+	for(int i = 0; i < [_actions count]; i++)
 	{
 		if( [[_actions objectAtIndex:i] objectForKey:@"key"])
+		{
 			[dict setObject:[NSNumber numberWithInt:i] forKey:[[_actions objectAtIndex:i] objectForKey:@"key"]];
+		}
 	}
 	[[NSUserDefaults standardUserDefaults] setObject:dict forKey:@"HOTKEYS"];
+	
 	return [super shouldUnselect];
 }
 
-- (void)didUnselect{
+- (void)didUnselect
+{
 }
-
-
-
 @end
