@@ -2271,6 +2271,69 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	return YES;
 }
 
+- (void) mergeWithTexture: (ROI*) r
+{
+	if( type != tPlain) return;
+	if( r.type != tPlain) return;
+	if( self == r) return;
+	
+	#define min(x,y) ((x<y)? x:y)
+	#define max(x,y) ((x>y)? x:y)
+	
+	int	newTextureUpLeftCornerX = min( textureUpLeftCornerX, r.textureUpLeftCornerX);
+	int	newTextureDownRightCornerX = max( textureDownRightCornerX, r.textureDownRightCornerX);
+	
+	int	newTextureUpLeftCornerY = min( textureUpLeftCornerY, r.textureUpLeftCornerY);
+	int	newTextureDownRightCornerY = max( textureDownRightCornerY, r.textureDownRightCornerY);
+	
+	int newTextureWidth = newTextureDownRightCornerX - newTextureUpLeftCornerX;
+	int newTextureHeight = newTextureDownRightCornerY - newTextureUpLeftCornerY;
+	
+	NSRect aRect = NSMakeRect( textureUpLeftCornerX, textureUpLeftCornerY, textureWidth, textureHeight);
+	NSRect bRect = NSMakeRect( r.textureUpLeftCornerX, r.textureUpLeftCornerY, r.textureWidth, r.textureHeight);
+	
+	unsigned char	*tempBuf = malloc( newTextureWidth * newTextureHeight * sizeof(unsigned char));
+	
+	for( int y = 0; y < newTextureHeight ; y++)
+	{
+		for( int x = 0; x < newTextureWidth; x++)
+		{
+			NSPoint p = NSMakePoint( x + newTextureUpLeftCornerX, y + newTextureUpLeftCornerY);
+			
+			if( NSPointInRect( p, aRect))
+			{
+				unsigned char v = *(textureBuffer +  x + newTextureUpLeftCornerX - textureUpLeftCornerX + textureWidth * ( y + newTextureUpLeftCornerY - textureUpLeftCornerY));
+				
+				if( v)
+				{
+					*(tempBuf + x + ( y * newTextureWidth)) = v;
+				}
+			}
+			
+			if( NSPointInRect( p, bRect))
+			{
+				unsigned char v = *(r.textureBuffer +  x + newTextureUpLeftCornerX - r.textureUpLeftCornerX + r.textureWidth * ( y + newTextureUpLeftCornerY - r.textureUpLeftCornerY));
+				
+				if( v)
+				{
+					*(tempBuf + x + ( y * newTextureWidth)) = v;
+				}
+			}
+		}
+	}
+	
+	textureUpLeftCornerX = newTextureUpLeftCornerX;
+	textureDownRightCornerY = newTextureDownRightCornerY;
+	textureUpLeftCornerX = newTextureUpLeftCornerX;
+	textureDownRightCornerY = newTextureDownRightCornerY;
+	
+	textureWidth = newTextureWidth;
+	textureHeight = newTextureHeight;
+	
+	free( textureBuffer);
+	textureBuffer = tempBuf;
+}
+
 - (BOOL) reduceTextureIfPossible
 {
 	if( type != tPlain) return YES;
@@ -2283,9 +2346,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	minY = textureHeight;
 	maxY = 0;
 	
-	for( long y = 0; y < textureHeight ; y++)
+	for( int y = 0; y < textureHeight ; y++)
 	{
-		for( long x = 0; x < textureWidth; x++)
+		for( int x = 0; x < textureWidth; x++)
 		{                      
 			if( *tempBuf++ != 0)
 			{

@@ -324,6 +324,10 @@ static int hotKeyToolCrossTable[] =
 	{
 		if( [self selectedROI]) valid = YES;
 	}
+	else if( [item action] == @selector( mergeBrushROI:))
+	{
+		if( [[self selectedROIs] count] > 0) valid = YES;
+	}
 	else if( [item action] == @selector( roiPropagateSetup:))
 	{
 		if( [self selectedROI]) valid = YES;
@@ -11313,6 +11317,27 @@ int i,j,l;
 	}
 	
 	return -1;
+}
+
+- (IBAction) mergeBrushROI: (id) sender
+{
+	NSMutableArray *rois = [self selectedROIs];
+	
+	ROI *f = [rois lastObject];
+	
+	[rois removeLastObject];
+	
+	for( ROI *r in rois)
+	{
+		[r mergeWithTexture: r];
+	}
+	
+	
+	for( ROI *r in rois)
+	{
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: r userInfo: 0L];
+		[[roiList[ curMovieIndex] objectAtIndex: [imageView curImage]] removeObject: r];
+	}
 }
 
 - (IBAction) convertBrushPolygon: (id) sender

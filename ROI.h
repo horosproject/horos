@@ -302,6 +302,9 @@ enum
 /** Test to see if texture can be reduced */
 - (BOOL) reduceTextureIfPossible;
 
+/** Merge two brush ROI together */
+- (void) mergeWithTexture: (ROI*) r;
+
 /** Add a margin to the buffer */
 - (void) addMarginToBuffer: (int) margin;
 
