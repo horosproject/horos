@@ -2292,7 +2292,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	NSRect aRect = NSMakeRect( textureUpLeftCornerX, textureUpLeftCornerY, textureWidth, textureHeight);
 	NSRect bRect = NSMakeRect( r.textureUpLeftCornerX, r.textureUpLeftCornerY, r.textureWidth, r.textureHeight);
 	
-	unsigned char	*tempBuf = malloc( newTextureWidth * newTextureHeight * sizeof(unsigned char));
+	unsigned char	*tempBuf = calloc( newTextureWidth * newTextureHeight, sizeof(unsigned char));
 	
 	for( int y = 0; y < newTextureHeight ; y++)
 	{
