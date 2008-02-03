@@ -11329,9 +11329,8 @@ int i,j,l;
 	
 	for( ROI *r in rois)
 	{
-		[r mergeWithTexture: r];
+		[f mergeWithTexture: r];
 	}
-	
 	
 	for( ROI *r in rois)
 	{

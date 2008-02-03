@@ -2323,8 +2323,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	}
 	
 	textureUpLeftCornerX = newTextureUpLeftCornerX;
-	textureDownRightCornerY = newTextureDownRightCornerY;
-	textureUpLeftCornerX = newTextureUpLeftCornerX;
+	textureDownRightCornerX = newTextureDownRightCornerX;
+	textureUpLeftCornerY = newTextureUpLeftCornerY;
 	textureDownRightCornerY = newTextureDownRightCornerY;
 	
 	textureWidth = newTextureWidth;
