@@ -54,15 +54,9 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
 - (void)windowWillClose:(NSNotification *)notification
 {
-	[viewer roiDeleteWithName:@"Segmentation Preview"];
+	[viewer roiDeleteWithName: NSLocalizedString( @"Segmentation Preview", 0L)];
 	
 	NSLog(@"windowWillClose");
 	
@@ -207,7 +201,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 		[startingPointValue setStringValue:[NSString stringWithFormat:NSLocalizedString(@"value:\t%2.2f", 0L), [[[viewer imageView] curDCM] getPixelValueX: xpx Y:ypx]]];
 		startingPoint = NSMakePoint(xpx, ypx);
 		
-		[self preview: self];
+		[self preview: viewer];
 		
 		[[note userInfo] setValue: [NSNumber numberWithBool: YES] forKey: @"stopMouseDown"];
 	}
@@ -278,7 +272,15 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	BOOL parametersProvided = YES;
 	int p;
 	
-	[viewer roiDeleteWithName:@"Segmentation Preview"];
+	NSString *name = NSLocalizedString( @"Segmentation Preview", 0L);
+	
+	[viewer roiDeleteWithName: name];
+	
+	if( sender == viewer)
+	{
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"segmentationDirectlyGenerate"])
+			name = [newName stringValue];
+	}
 	
 	if( [previewCheck state] != NSOnState) return;
 	
@@ -326,7 +328,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 								: [[pixelsValue cellWithTag:1] floatValue]
 								: [[outputROIType selectedCell] tag]
 								: ((long)[roiResolution maxValue] + 1) - [roiResolution intValue]
-								: @"Segmentation Preview"];
+								: name];
 		
 		[itk release];
 	}
@@ -354,7 +356,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 		return;
 	}
 	
-	[viewer roiDeleteWithName:@"Segmentation Preview"];
+	[viewer roiDeleteWithName: NSLocalizedString( @"Segmentation Preview", 0L)];
 	
 	long				slice;
 	

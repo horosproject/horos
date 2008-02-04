@@ -303,7 +303,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 }
 
 -(IBAction) preview:(id) sender {
-	[self computeROIsWithName:@"Segmentation Preview" addROIs:NO];
+	[self computeROIsWithName:NSLocalizedString( @"Segmentation Preview", 0L) addROIs:NO];
 }
 
 -(IBAction) compute:(id) sender {
@@ -392,7 +392,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 {
 
 	int p;	
-	[_viewer roiDeleteWithName:@"Segmentation Preview"];
+	[_viewer roiDeleteWithName: NSLocalizedString( @"Segmentation Preview", 0L)];
 	
 	if ( _startingPoint.x == 0 && _startingPoint.y == 0)
 	{

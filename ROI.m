@@ -1008,12 +1008,16 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 //		}
 		
 		memcpy( textureBuffer, tBuff, tHeight*tWidth);
-				
-		color.red = 0.67*65535.;
-		color.green = 0.90*65535.;
-		color.blue = 0.58*65535.;
+
 		name = [[NSString alloc] initWithString:tName];
 		displayTextualData = YES;
+		
+		thickness = ROIRegionThickness;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionThickness"];
+		color.red = ROIRegionColorR;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorR"];
+		color.green = ROIRegionColorG;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorG"];
+		color.blue = ROIRegionColorB;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorB"];
+		opacity = ROIRegionOpacity;		//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionOpacity"];
+
 	}
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 	return self;

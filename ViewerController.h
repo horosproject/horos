@@ -527,6 +527,7 @@ enum
 - (IBAction) subCtrlSliders:(id) sender;
 - (int) threeTestsFivePosibilities: (int) f;
 - (void) offsetMatrixSetting: (int) twentyFiveCodes;
+- (IBAction) mergeBrushROI: (id) sender;
 - (IBAction) subSumSlider:(id) sender;
 - (IBAction) subSharpen:(id) sender;
 - (void) displayWarningIfGantryTitled;

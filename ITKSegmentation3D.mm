@@ -689,6 +689,19 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 				{
 					[[[srcViewer roiList] objectAtIndex:i] addObject:theNewROI];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];	
+					
+					if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", 0L)])
+					{
+						RGBColor color;
+						
+						color.red = 0.67*65535.;
+						color.green = 0.90*65535.;
+						color.blue = 0.58*65535.;
+						
+						[theNewROI setColor: color];
+					}
+					
+
 					[theNewROI setROIMode: ROI_selected];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object:theNewROI userInfo: nil];
 				}
@@ -719,6 +732,23 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			[theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
 			[[[srcViewer roiList] objectAtIndex:slice] addObject:theNewROI];
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];	
+			
+			if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", 0L)])
+			{
+				RGBColor color;
+				
+				color.red = 0.67*65535.;
+				color.green = 0.90*65535.;
+				color.blue = 0.58*65535.;
+				
+				[theNewROI setColor: color];
+			}
+			else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"mergeWithExistingROIs"])
+			{
+				[[srcViewer imageView] selectAll: self];
+				[srcViewer mergeBrushROI: self];
+			}
+			
 			[theNewROI setROIMode: ROI_selected];
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object:theNewROI userInfo: nil];
 			
