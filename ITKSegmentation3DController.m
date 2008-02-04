@@ -278,8 +278,11 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	
 	if( sender == viewer)
 	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"segmentationDirectlyGenerate"])
-			name = [newName stringValue];
+		if( [[growingMode selectedCell] tag] != 1)
+		{
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"segmentationDirectlyGenerate"])
+				name = [newName stringValue];
+		}
 	}
 	
 	if( [previewCheck state] != NSOnState) return;
