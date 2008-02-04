@@ -1,20 +1,24 @@
-/*=========================================================================
-  Program:   OsiriX
-
-  Copyright (c) OsiriX Team
-  All rights reserved.
-  Distributed under GNU - GPL
-  
-  See http://www.osirix-viewer.com/copyright.html for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.
-=========================================================================*/
+//
+//  HotKeyTableView.m
+//  OSIHotKeysPreferencePane
+//
+//  Created by antoinerosset on 02.02.08.
+//  Copyright 2008 __MyCompanyName__. All rights reserved.
+//
 
 #import "HotKeyTableView.h"
-
+#import "OSIHotKeysPref.h"
 
 @implementation HotKeyTableView
+
+- (void) keyDown:(NSEvent *)theEvent
+{
+	unichar		c = [[theEvent characters] characterAtIndex:0];
+	
+	if (c == NSUpArrowFunctionKey || c == NSDownArrowFunctionKey || c == NSLeftArrowFunctionKey || c == NSRightArrowFunctionKey || c == NSEnterCharacter || c == NSCarriageReturnCharacter || c == 27)
+		return [super keyDown: theEvent];
+	else
+		[[OSIHotKeysPref currentKeysPref] keyDown: theEvent];
+}
 
 @end
