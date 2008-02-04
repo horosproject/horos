@@ -15,13 +15,13 @@
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
 		A98380060D536DE2000B0DE3 /* HotKeyArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = A98380040D536DE2000B0DE3 /* HotKeyArrayController.m */; };
+		ABAEDBA10D5711BD00CA870F /* HotKeyTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABAEDB9F0D5711BD00CA870F /* HotKeyTableView.h */; };
+		ABAEDBA20D5711BD00CA870F /* HotKeyTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAEDBA00D5711BD00CA870F /* HotKeyTableView.m */; };
 		BF2EEC9D0B1F8B5C007E9088 /* HotKeyFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2EEC9B0B1F8B5C007E9088 /* HotKeyFormatter.h */; };
 		BF2EEC9E0B1F8B5C007E9088 /* HotKeyFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2EEC9C0B1F8B5C007E9088 /* HotKeyFormatter.m */; };
 		BF2EECA70B1F8DDE007E9088 /* HotKeyTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2EECA50B1F8DDE007E9088 /* HotKeyTextFieldCell.h */; };
 		BF2EECA80B1F8DDE007E9088 /* HotKeyTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2EECA60B1F8DDE007E9088 /* HotKeyTextFieldCell.m */; };
 		BF92A1CD0B1D4433001DB893 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF92A1CC0B1D4433001DB893 /* Security.framework */; };
-		CE1DF9750D54CE6D0070EE30 /* HotKeyTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE1DF9730D54CE6D0070EE30 /* HotKeyTableView.h */; };
-		CE1DF9760D54CE6D0070EE30 /* HotKeyTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1DF9740D54CE6D0070EE30 /* HotKeyTableView.m */; };
 		CE24147C0CD2A05C009D0877 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE24147A0CD2A05C009D0877 /* Localizable.strings */; };
 		CE5C6D020CAD9B2900597FEF /* OSIHotKeysPref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE5C6D000CAD9B2900597FEF /* OSIHotKeysPref.xib */; };
 		CEB157C70D545D7D00941790 /* HotKeyArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB157C50D545D7D00941790 /* HotKeyArrayController.h */; };
@@ -36,13 +36,13 @@
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSIHotKeys.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSIHotKeys.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		A98380040D536DE2000B0DE3 /* HotKeyArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyArrayController.m; sourceTree = "<group>"; };
+		ABAEDB9F0D5711BD00CA870F /* HotKeyTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyTableView.h; sourceTree = "<group>"; };
+		ABAEDBA00D5711BD00CA870F /* HotKeyTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyTableView.m; sourceTree = "<group>"; };
 		BF2EEC9B0B1F8B5C007E9088 /* HotKeyFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyFormatter.h; sourceTree = "<group>"; };
 		BF2EEC9C0B1F8B5C007E9088 /* HotKeyFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyFormatter.m; sourceTree = "<group>"; };
 		BF2EECA50B1F8DDE007E9088 /* HotKeyTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyTextFieldCell.h; sourceTree = "<group>"; };
 		BF2EECA60B1F8DDE007E9088 /* HotKeyTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyTextFieldCell.m; sourceTree = "<group>"; };
 		BF92A1CC0B1D4433001DB893 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
-		CE1DF9730D54CE6D0070EE30 /* HotKeyTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyTableView.h; sourceTree = "<group>"; };
-		CE1DF9740D54CE6D0070EE30 /* HotKeyTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyTableView.m; sourceTree = "<group>"; };
 		CE24147B0CD2A05C009D0877 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE5C6D010CAD9B2900597FEF /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIHotKeysPref.xib; sourceTree = "<group>"; };
 		CEB157C50D545D7D00941790 /* HotKeyArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyArrayController.h; sourceTree = "<group>"; };
@@ -111,8 +111,8 @@
 				BF2EEC9C0B1F8B5C007E9088 /* HotKeyFormatter.m */,
 				CEB157C50D545D7D00941790 /* HotKeyArrayController.h */,
 				A98380040D536DE2000B0DE3 /* HotKeyArrayController.m */,
-				CE1DF9730D54CE6D0070EE30 /* HotKeyTableView.h */,
-				CE1DF9740D54CE6D0070EE30 /* HotKeyTableView.m */,
+				ABAEDB9F0D5711BD00CA870F /* HotKeyTableView.h */,
+				ABAEDBA00D5711BD00CA870F /* HotKeyTableView.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -163,7 +163,7 @@
 				BF2EEC9D0B1F8B5C007E9088 /* HotKeyFormatter.h in Headers */,
 				BF2EECA70B1F8DDE007E9088 /* HotKeyTextFieldCell.h in Headers */,
 				CEB157C70D545D7D00941790 /* HotKeyArrayController.h in Headers */,
-				CE1DF9750D54CE6D0070EE30 /* HotKeyTableView.h in Headers */,
+				ABAEDBA10D5711BD00CA870F /* HotKeyTableView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,7 +240,7 @@
 				BF2EEC9E0B1F8B5C007E9088 /* HotKeyFormatter.m in Sources */,
 				BF2EECA80B1F8DDE007E9088 /* HotKeyTextFieldCell.m in Sources */,
 				A98380060D536DE2000B0DE3 /* HotKeyArrayController.m in Sources */,
-				CE1DF9760D54CE6D0070EE30 /* HotKeyTableView.m in Sources */,
+				ABAEDBA20D5711BD00CA870F /* HotKeyTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

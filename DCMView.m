@@ -3432,7 +3432,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 }
 
 
-- (void) rightMouseUp:(NSEvent *)event {
+- (void) rightMouseUp:(NSEvent *)event
+{
+	mouseDragging = NO;
+	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 					   [NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];

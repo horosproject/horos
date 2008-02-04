@@ -28,6 +28,27 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 	NSMutableDictionary *dict = [[arrayController selectedObjects] lastObject];
 	[dict setObject: [NSString stringWithFormat: @"%c", [[[theEvent charactersIgnoringModifiers] lowercaseString] characterAtIndex: 0]] forKey:@"key"];
 //	[dict setObject: [NSNumber numberWithInt: [theEvent modifierFlags]] forKey:@"modifiers"];
+
+	NSArray *a = [arrayController content];
+	
+	for( NSMutableDictionary *d in a)
+	{
+		for( NSMutableDictionary *c in a)
+		{
+			if( c != d)
+			{
+				if( [[c valueForKey:@"key"] isEqualToString: [d valueForKey:@"key"]])
+				{
+					NSMutableDictionary *e;
+					if( [[arrayController selectedObjects] containsObject: c])
+						e = d;
+					else
+						e = c;
+					[e setValue:@"" forKey:@"key"];
+				}
+			}
+		}
+	}
 }
 
 - (void)dealloc{	

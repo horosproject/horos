@@ -12,11 +12,9 @@
      PURPOSE.
 =========================================================================*/
 
-#import <Cocoa/Cocoa.h>
+#import "HotKeyTableView.h"
 
 
-@interface HotKeyArrayController : NSArrayController {
-
-}
+@implementation HotKeyTableView
 
 @end
