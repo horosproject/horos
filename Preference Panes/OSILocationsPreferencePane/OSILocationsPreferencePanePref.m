@@ -525,7 +525,7 @@
 		{
 			NSDictionary	*dict;
 			
-			if( isDirectory) dict = [NSDictionary dictionaryWithObjectsAndKeys: location, @"Path", [[location lastPathComponent] stringByAppendingString:@" DB"], @"Description", 0L];
+			if( isDirectory) dict = [NSDictionary dictionaryWithObjectsAndKeys: location, @"Path", [[location lastPathComponent] stringByAppendingString:@" DB"], @"Description", nil];
 				
 			[localPaths addObject: dict];
 			

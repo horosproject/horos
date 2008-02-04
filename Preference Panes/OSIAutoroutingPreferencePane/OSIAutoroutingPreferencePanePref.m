@@ -156,7 +156,7 @@ static BOOL newRouteMode = NO;
 	{
 		NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
 		
-		[routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", [NSNumber numberWithBool:YES], @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", 0L]];
+		[routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", [NSNumber numberWithBool:YES], @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", nil]];
 	}
 	else
 	{
@@ -233,7 +233,7 @@ static BOOL newRouteMode = NO;
 	{
 		NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
 		
-		[routesArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"new route", @"name", @"", @"description", @"(modality like[c] \"CT\")", @"filter", [[serversArray objectAtIndex: 0] objectForKey:@"Description"], @"server", 0L]];
+		[routesArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"new route", @"name", @"", @"description", @"(modality like[c] \"CT\")", @"filter", [[serversArray objectAtIndex: 0] objectForKey:@"Description"], @"server", nil]];
 		
 		[routesTable reloadData];
 		
