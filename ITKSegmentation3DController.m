@@ -329,7 +329,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 								: [[pixelsValue cellWithTag:0] floatValue]
 								: [[pixelsSet cellWithTag:1] state]==NSOnState
 								: [[pixelsValue cellWithTag:1] floatValue]
-								: [[outputROIType selectedCell] tag]
+								: [[NSUserDefaults standardUserDefaults] integerForKey: @"growingRegionROIType"]
 								: ((long)[roiResolution maxValue] + 1) - [roiResolution intValue]
 								: name];
 		
@@ -424,7 +424,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 								: [[pixelsValue cellWithTag:0] floatValue]
 								: [[pixelsSet cellWithTag:1] state]==NSOnState
 								: [[pixelsValue cellWithTag:1] floatValue]
-								: [[outputROIType selectedCell] tag]
+								: [[NSUserDefaults standardUserDefaults] integerForKey: @"growingRegionROIType"]
 								: ((long)[roiResolution maxValue] + 1) - [roiResolution intValue]
 								: [newName stringValue]];
 				
@@ -587,21 +587,6 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	[computeButton setFrame:computeButtonFrame];
 	
 	[[self window] display];
-}
-
-- (IBAction) changeROItype: (id) sender
-{
-	if ([[outputROIType selectedCell] tag]==18)
-	{
-		// if the user choose the Brush ROI type, then the number of point slider should be deactivated
-		[numberOfPointsSlider setEnabled:NO];
-	}
-	else if ([[outputROIType selectedCell] tag]==11)
-	{
-		[numberOfPointsSlider setEnabled:YES];
-	}
-	
-	[self preview: self];
 }
 
 - (IBAction) algorithmGetHelp:(id) sender

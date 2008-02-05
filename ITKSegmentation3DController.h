@@ -37,8 +37,6 @@
 	// results
 	IBOutlet	NSBox					*resultsBox;
 	IBOutlet	NSMatrix				*outputResult;
-	IBOutlet	NSMatrix				*outputROIType;
-	IBOutlet	NSSlider				*numberOfPointsSlider;
 	IBOutlet	NSMatrix				*pixelsSet;
 	IBOutlet	NSMatrix				*pixelsValue;
 	IBOutlet	NSSlider				*roiResolution;
@@ -61,7 +59,6 @@
 - (ViewerController*) viewer;
 - (IBAction) changeAlgorithm: (id) sender;
 - (void) setNumberOfParameters: (int) n;
-- (IBAction) changeROItype: (id) sender;
 
 - (IBAction) algorithmGetHelp:(id) sender;
 - (void) fillAlgorithmPopup;

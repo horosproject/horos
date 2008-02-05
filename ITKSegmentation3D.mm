@@ -662,7 +662,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	}
 	// PRODUCE A ROI ON THE ORIGINAL SERIES
 	// ROI type = tPlain
-	else if (roiType == tPlain)
+	else if (roiType == 0)
 	{
 		if( slice == -1)
 		{			
