@@ -168,6 +168,10 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 {
 	if( sopInstanceUID) return sopInstanceUID;
 	
+//	char *ss = sopInstanceUIDEncode( @"1.3.6.1.4.1.19291.2.1.3.4214185015613178564241742949672953387242");
+//	NSString* uid =  sopInstanceUIDDecode( [[NSData dataWithBytes: ss length: strlen( ss)+1] bytes]);
+//	free( ss);
+	
 	unsigned char* src =  (unsigned char*) [[self primitiveValueForKey:@"compressedSopInstanceUID"] bytes];
 	
 	if( src)
@@ -194,8 +198,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	if( s)
 	{
 		char *ss = sopInstanceUIDEncode( s);
-		[self setValue: [NSData dataWithBytes: ss length: strlen( ss)] forKey:@"compressedSopInstanceUID"];
+		[self setValue: [NSData dataWithBytes: ss length: strlen( ss)+1] forKey:@"compressedSopInstanceUID"];
 		free( ss);
+		
+//		if( [[self sopInstanceUID] isEqualToString: s] == NO)
+//			NSLog(@"******** ERROR sopInstanceUID : %@ %@", s, [self sopInstanceUID]);
 	}
 	else [self setValue: 0L forKey:@"compressedSopInstanceUID"];
 }

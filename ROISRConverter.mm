@@ -21,6 +21,9 @@
 #include "dsrtypes.h"
 #include "dsrdoc.h"
 
+extern NSString* sopInstanceUIDDecode( unsigned char *r);
+extern void* sopInstanceUIDEncode( NSString *sopuid);
+
 @implementation ROISRConverter
 
 + (NSData *)roiFromDICOM:(NSString *)path
@@ -66,6 +69,9 @@
 	{
 		//Check to see if there is already this ROI-image
 		NSString		*sopInstanceUID = [sr sopInstanceUID];
+		
+		
+		
 		NSArray			*srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
 		NSPredicate		*predicate = [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", sopInstanceUID];
 		NSArray			*found = [srs filteredArrayUsingPredicate:predicate];

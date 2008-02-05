@@ -15,6 +15,9 @@
 #import <Cocoa/Cocoa.h>
 #import "DicomImage.h"
 
+NSString* sopInstanceUIDDecode( unsigned char *r);
+void* sopInstanceUIDEncode( NSString *sopuid);
+
 @class DCMSequenceAttribute;
 
 /** \brief  Core Data Entity for an image (frame) */
