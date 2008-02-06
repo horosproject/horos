@@ -3760,7 +3760,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 - (void)mouseDraggedZoom:(NSEvent *)event
 {
 	NSPoint current = [self currentPointInView:event];
-	[self setScaleValue: (startScaleValue + (current.y - start.y) / (80.))];
+	[self setScaleValue: (startScaleValue + (current.y - start.y) / (80. * [curDCM pwidth] / 512.))];
 	
 	[self setOriginX: ((originStart.x * scaleValue) / startScaleValue) Y: ((originStart.y * scaleValue) / startScaleValue)];
 	
