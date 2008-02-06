@@ -3020,7 +3020,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	NSString	*searchString = [study valueForKey:@"patientID"];
 	
-	if( [searchString length] == 0)
+	if( [searchString length] == 0 || [searchString isEqualToString:@"0"])
 	{
 		searchString = [study valueForKey:@"name"];
 		predicate = [NSPredicate predicateWithFormat: @"(name == %@)", searchString];
