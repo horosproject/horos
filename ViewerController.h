@@ -962,6 +962,12 @@ enum
 - (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name;
 - (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers;
 
+#pragma mark-
+#pragma mark 12 Bit
 - (IBAction)enable12Bit:(id)sender;
+
+#pragma mark-
+#pragma mark Navigator
+- (IBAction)navigator:(id)sender;
 
 @end

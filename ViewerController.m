@@ -82,6 +82,7 @@
 #import <InstantMessage/IMService.h>
 #import <InstantMessage/IMAVManager.h>
 
+#import "NavigatorWindowController.h"
 
 
 #import "DefaultsOsiriX.h"
@@ -139,6 +140,7 @@ static NSString*	PropagateSettingsToolbarItemIdentifier		= @"PropagateSettings";
 static NSString*	OrientationToolbarItemIdentifier	= @"Orientation";
 static NSString*	PrintToolbarItemIdentifier			= @"Print.icns";
 static NSString*	LUT12BitToolbarItemIdentifier		= @"LUT12Bit";
+static NSString*	NavigatorToolbarItemIdentifier		= @"Navigator";
 
 static NSArray*		DefaultROINames;
 
@@ -4198,6 +4200,15 @@ static ViewerController *draggedController = 0L;
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([display12bitToolbarItemView frame]), NSHeight([display12bitToolbarItemView frame]))];
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([display12bitToolbarItemView frame]),NSHeight([display12bitToolbarItemView frame]))];
     }
+	else if([itemIdent isEqualToString:NavigatorToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel:NSLocalizedString(@"Navigator", nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Series Navigator", nil)];
+		[toolbarItem setToolTip:NSLocalizedString(@"Series Navigator", nil)];
+		[toolbarItem setImage:[NSImage imageNamed:NavigatorToolbarItemIdentifier]];
+		[toolbarItem setTarget:nil];
+		[toolbarItem setAction:@selector(navigator:)];
+    }
     else
 	{
 		// Is it a plugin menu item?
@@ -4295,6 +4306,7 @@ static ViewerController *draggedController = 0L;
 														FlipVerticalToolbarItemIdentifier,
 														FlipHorizontalToolbarItemIdentifier,
 														VRPanelToolbarItemIdentifier,
+														NavigatorToolbarItemIdentifier,
 														nil];
 	
 	if([AppController canDisplay12Bit]) array = [array arrayByAddingObject: LUT12BitToolbarItemIdentifier];
@@ -17398,13 +17410,37 @@ sourceRef);
 	}
 }
 
+#pragma mark-
+#pragma mark 12 Bit
+
 -(IBAction)enable12Bit:(id)sender;
 {
 	BOOL t12Bit = ([sender state]==NSOnState);
-//	if(t12Bit) [sender setTitle:@"12 Bit\nTotoku"];
-//	else [sender setTitle:@"RGB"];
 	[imageView setIsLUT12Bit:t12Bit];
 	[imageView updateImage];
 }
+
+#pragma mark-
+#pragma mark Navigator
+
+- (IBAction)navigator:(id)sender;
+{
+	BOOL found = NO;
+	NSArray *windowList = [NSApp windows];
+	
+	for(NSWindow *window in windowList)
+	{
+		//if([[[window windowController] windowNibName] isEqualToString:@"Navigator"]) found = YES;
+		if([[window windowController] isKindOfClass:[NavigatorWindowController class]]) found = YES;
+	}
+	
+	if(!found)
+	{
+		[self checkEverythingLoaded];
+		NavigatorWindowController *navigatorWindowController = [[NavigatorWindowController alloc] initWithViewer:self];
+		[navigatorWindowController showWindow:self];
+	}
+}
+
 
 @end

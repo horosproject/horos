@@ -9845,69 +9845,74 @@ END_CREATE_ROIS:
 		rowBytes = destWidth;
 	
     unsigned char *bitmapData = malloc( (rowBytes + 4) * (destHeight+4));
-	memset( bitmapData, 0, (rowBytes + 4) * (destHeight+4));
 	
-	NSBitmapImageRep *bitmapRep = 0L;
-	
-	baseAddr = (char*) bitmapData;
-	
-	if( smallIcon) {
-		if( isRGB ) {
-			bitmapRep = [[NSBitmapImageRep alloc] 
-						 initWithBitmapDataPlanes:&bitmapData
-						 pixelsWide:destWidth
-						 pixelsHigh:destHeight
-						 bitsPerSample:8
-						 samplesPerPixel:3
-						 hasAlpha:NO
-						 isPlanar:NO
-						 colorSpaceName:NSCalibratedRGBColorSpace
-						 bytesPerRow:rowBytes
-						 bitsPerPixel:24
-						 ];
-		}
-		else {
-			bitmapRep = [[NSBitmapImageRep alloc] 
-						 initWithBitmapDataPlanes:&bitmapData
-						 pixelsWide:destWidth
-						 pixelsHigh:destHeight
-						 bitsPerSample:8
-						 samplesPerPixel:1  // 1-3 // RGB
-						 hasAlpha:NO
-						 isPlanar:NO
-						 colorSpaceName:NSCalibratedWhiteColorSpace
-						 bytesPerRow:rowBytes
-						 bitsPerPixel:8 // 8 - 24 -32
-						 ];
-		}
+	if( bitmapData)
+	{
+		memset( bitmapData, 0, (rowBytes + 4) * (destHeight+4));
 		
-		if( bitmapRep ) {
-			if( newWW == 0 && newWL == 0 ) {
-				if( ww == 0 & wl == 0 ) {
-					[self computePixMinPixMax];
-					ww = fullww;
-					wl = fullwl;
-				}
-				newWW = ww;
-				newWL = wl;
+		NSBitmapImageRep *bitmapRep = 0L;
+		
+		baseAddr = (char*) bitmapData;
+		
+		if( smallIcon) {
+			if( isRGB ) {
+				bitmapRep = [[NSBitmapImageRep alloc] 
+							 initWithBitmapDataPlanes:&bitmapData
+							 pixelsWide:destWidth
+							 pixelsHigh:destHeight
+							 bitsPerSample:8
+							 samplesPerPixel:3
+							 hasAlpha:NO
+							 isPlanar:NO
+							 colorSpaceName:NSCalibratedRGBColorSpace
+							 bytesPerRow:rowBytes
+							 bitsPerPixel:24
+							 ];
+			}
+			else {
+				bitmapRep = [[NSBitmapImageRep alloc] 
+							 initWithBitmapDataPlanes:&bitmapData
+							 pixelsWide:destWidth
+							 pixelsHigh:destHeight
+							 bitsPerSample:8
+							 samplesPerPixel:1  // 1-3 // RGB
+							 hasAlpha:NO
+							 isPlanar:NO
+							 colorSpaceName:NSCalibratedWhiteColorSpace
+							 bytesPerRow:rowBytes
+							 bitsPerPixel:8 // 8 - 24 -32
+							 ];
 			}
 			
-			CreateIconFrom16( fImage, bitmapData, height, width, rowBytes, newWL, newWW, isRGB);
+			if( bitmapRep ) {
+				if( newWW == 0 && newWL == 0 ) {
+					if( ww == 0 & wl == 0 ) {
+						[self computePixMinPixMax];
+						ww = fullww;
+						wl = fullwl;
+					}
+					newWW = ww;
+					newWL = wl;
+				}
+				
+				CreateIconFrom16( fImage, bitmapData, height, width, rowBytes, newWL, newWW, isRGB);
+				
+				image = [[xNSImage alloc] initWithSize:NSMakeSize(destWidth,  destHeight)]; 
+				[image addRepresentation:bitmapRep];
+				[bitmapRep release];
+			}
+			else NSLog(@"Memory error... not enough RAM");
 			
-			image = [[xNSImage alloc] initWithSize:NSMakeSize(destWidth,  destHeight)]; 
-			[image addRepresentation:bitmapRep];
-			[bitmapRep release];
+			baseAddr = nil;		// We dont keep this information, will be deleted when xNSImage released!
 		}
-		else NSLog(@"Memory error... not enough RAM");
-		
-		baseAddr = nil;		// We dont keep this information, will be deleted when xNSImage released!
+		else {
+			// necesary to refresh DCMView of the browser
+			[self changeWLWW: newWL : newWW];
+			
+			image = [[xNSImage alloc] init];
+		}
 	}
-	else {
-		// necesary to refresh DCMView of the browser
-		[self changeWLWW: newWL : newWW];
-		
-		image = [[xNSImage alloc] init];
-	}
+	else NSLog(@"Memory error... not enough RAM");
 	
 	if( image) [image SetxNSImage :bitmapData];
 	
