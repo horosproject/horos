@@ -30,6 +30,8 @@
 
 @implementation NavigatorView
 
+@synthesize thumbnailWidth, thumbnailHeight;
+
 - (id)initWithFrame:(NSRect)frame
 {
 	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
@@ -37,9 +39,13 @@
 	  
 	self = [super initWithFrame:frame pixelFormat:pixFmt];
 	
-    if (self)
+    if(self)
 	{
-		scroll = NSMakePoint(0., 0.);
+		userAction = idle;
+		translation = NSMakePoint(0., 0.);
+		GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
+		[[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
+		
     }
     return self;
 }
@@ -57,7 +63,6 @@
 	//[self generateTextures];
 	[self initTextureArray];
 	[self computeThumbnailSize];
-	//[self computeMaxScroll];
 	[self setFrameSize:NSMakeSize([[viewer pixList] count]*thumbnailWidth, [viewer maxMovieIndex]*thumbnailHeight)];
 }
 
@@ -150,10 +155,7 @@
 	[[self openGLContext] makeCurrentContext];
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
-	glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	
+
 	NSMutableArray *pixList = [viewer pixList:t];
 	DCMPix *pix = [pixList objectAtIndex:z];
 	char* textureBuffer = [pix baseAddr];
@@ -168,6 +170,15 @@
 		glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
 		glPixelStorei(GL_UNPACK_ROW_LENGTH, [pix pwidth]);
 		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+
+		GLfloat borderColor[4] = {0., 0., 0., 1.0};
+		glTexParameterfv(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+		glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 		glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_INTENSITY8, [pix pwidth], [pix pheight], 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, textureBuffer);
 		
 		//[thumbnailsTextureArray addObject:[NSNumber numberWithInt:textureName]];
@@ -215,6 +226,9 @@
 	glLoadIdentity();
 	glEnable(GL_TEXTURE_RECTANGLE_EXT);
 	
+	glDepthMask (GL_TRUE);
+	glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+		
 	glScalef(2.0f/(viewSize.width), -2.0f/(viewSize.height), 1.0f);
 	glTranslatef(-(viewSize.width)/2.0, -(viewSize.height)/2.0, 0.0);
 	
@@ -242,22 +256,22 @@
 					DCMPix *pix = [pixList objectAtIndex:z];
 
 					glBegin(GL_QUAD_STRIP);
-						glTexCoord2f(0., 0.);
+						glTexCoord2f(0.+translation.x, 0.+translation.y);
 						glVertex2f(upperLeft.x, upperLeft.y);
 						
-						glTexCoord2f(pix.pwidth, 0.);
+						glTexCoord2f(pix.pwidth+translation.x, 0.+translation.y);
 						glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y);
 						
-						glTexCoord2f(0., pix.pheight);
+						glTexCoord2f(0.+translation.x, pix.pheight+translation.y);
 						glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
 						
-						glTexCoord2f(pix.pwidth, pix.pheight);
+						glTexCoord2f(pix.pwidth+translation.x, pix.pheight+translation.y);
 						glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight);
 					glEnd();
 				}
 				else
 				{
-					if([[thumbnailsTextureArray objectAtIndex:i] intValue]>=0)
+//					if([[thumbnailsTextureArray objectAtIndex:i] intValue]>=0)
 					{
 						GLuint oldTextureName = [[thumbnailsTextureArray objectAtIndex:i] intValue];
 						glDeleteTextures(1, &oldTextureName);
@@ -269,9 +283,56 @@
 		}
 	}
 
+//	int count = 0;
+//	for (int j = 0; j<[thumbnailsTextureArray count]; j++)
+//	{
+//		if([[thumbnailsTextureArray objectAtIndex:j] intValue]>=0) count++;
+//	}
+//	NSLog(@"count : %d", count);
+
 	glDisable(GL_TEXTURE_RECTANGLE_EXT);
 
 	[[self openGLContext] flushBuffer];//[cgl_ctx  flushBuffer];
+}
+
+#pragma mark-
+#pragma mark Mouse functions
+
+- (NSPoint)convertPointFromWindowToOpenGL:(NSPoint)pointInWindow;
+{
+	NSPoint pointInView = [self convertPoint:pointInWindow fromView:nil];
+	pointInView.y = [[[self enclosingScrollView] contentView] documentVisibleRect].size.height-pointInView.y;
+	return pointInView;
+}
+
+- (void)mouseDown:(NSEvent *)theEvent;
+{
+	NSPoint event_location = [theEvent locationInWindow];
+	mouseDownPosition = [self convertPointFromWindowToOpenGL:event_location];	
+	userAction = [viewer imageView].currentTool;
+}
+
+- (void)mouseDragged:(NSEvent *)theEvent;
+{
+	NSPoint event_location = [theEvent locationInWindow];
+	mouseDraggedPosition = [self convertPointFromWindowToOpenGL:event_location];
+	
+	if(userAction==pan)
+	{
+		[self translationFrom:mouseDownPosition to:mouseDraggedPosition];
+		[self setNeedsDisplay:YES];
+	}
+}
+
+- (void)mouseUp:(NSEvent *)theEvent;
+{
+	userAction = idle;
+}
+
+- (void)translationFrom:(NSPoint)start to:(NSPoint)stop;
+{
+	translation.x = start.x - stop.x;
+	translation.y = start.y - stop.y;
 }
 
 @end

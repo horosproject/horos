@@ -34,6 +34,11 @@
 	size.height += 27;
 	[[self window] setMaxSize:size];
 	[[self window] setFrame:NSMakeRect([[self window] frame].origin.x, [[self window] frame].origin.x, [[self window] frame].size.width, size.height) display:YES];
+	
+	NSSize minSize = NSMakeSize(navigatorView.thumbnailWidth, navigatorView.thumbnailHeight);
+	minSize.height += 27;
+	[[self window] setMinSize:minSize];
+
 }
 
 - (void)windowWillClose:(NSNotification *)notification
