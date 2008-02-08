@@ -514,8 +514,33 @@ static int hotKeyToolCrossTable[] =
 			[dict setObject: [NSNumber numberWithBool: [[win imageView] flippedData]] forKey:@"flippedData"];
 			
 			[dict setObject: [win studyInstanceUID] forKey:@"studyInstanceUID"];
-			[dict setObject: [[[win imageView] seriesObj] valueForKey:@"seriesInstanceUID"] forKey:@"seriesInstanceUID"];
 			
+			NSMutableArray *seriesUIDs = [NSMutableArray array];
+			for( int x = 0 ; x <  [win maxMovieIndex] ; x++)
+			{
+				DCMPix *dcmPix = [[win pixList: x] objectAtIndex: 0];
+				
+				if( dcmPix.seriesObj)
+					[seriesUIDs addObject: [dcmPix.seriesObj valueForKey:@"seriesInstanceUID"]];
+			}
+			
+			BOOL allSeriesUIDidentical = YES;
+			
+			for( NSString *uid in seriesUIDs)
+			{
+				if( [uid isEqualToString: [seriesUIDs lastObject]] == NO) allSeriesUIDidentical = NO;
+			}
+			
+			if( allSeriesUIDidentical == NO)
+				[dict setObject: [seriesUIDs componentsJoinedByString:@"\\**\\"] forKey:@"seriesInstanceUID"];
+			else
+				[dict setObject: [seriesUIDs lastObject] forKey:@"seriesInstanceUID"];
+			
+			if( [win maxMovieIndex] > 1)
+				[dict setObject: [NSNumber numberWithBool: YES] forKey:@"4DData"];
+			else
+				[dict setObject: [NSNumber numberWithBool: NO] forKey:@"4DData"];
+				
 			[state addObject: dict];
 		}
 	}

@@ -5288,44 +5288,76 @@ static NSArray*	statesArray = nil;
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:0L userInfo: 0L];
 			
-			for( NSDictionary *dict in viewers ) {
-				
+			for( NSDictionary *dict in viewers)
+			{
 				NSString	*studyUID = [dict valueForKey:@"studyInstanceUID"];
 				NSString	*seriesUID = [dict valueForKey:@"seriesInstanceUID"];
 				
-				// Find the corresponding study & series
+				NSArray		*series4D = [seriesUID componentsSeparatedByString:@"\\**\\"];
+				// Find the corresponding study & 4D series
 				
 				NSError					*error = nil;
-				NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
 				NSManagedObjectContext	*context = self.managedObjectContext;
 				
 				[context retain];
 				[context lock];
-				[request setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Series"]];
-				[request setPredicate: [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyUID, seriesUID]];
-				
-				NSArray	*seriesArray = [context executeFetchRequest:request error:&error];
-				
-				if( [seriesArray count] != 1 )	{
-					NSLog( @"****** number of series corresponding to these UID is not unique?: %d", [seriesArray count]);
-				}
-				else
+
+				NSMutableArray *seriesForThisViewer =  0L;
+
+				for( NSString *curSeriesUID in series4D)
 				{
-					if( [[[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"] isEqualToString: [item valueForKey: @"patientUID"]])
+					NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
+					[request setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Series"]];
+					[request setPredicate: [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@ AND seriesInstanceUID == %@", studyUID, curSeriesUID]];
+					
+					NSArray	*seriesArray = [context executeFetchRequest:request error:&error];
+					
+					if( [seriesArray count] != 1)
 					{
-						[seriesToOpen addObject: [seriesArray objectAtIndex: 0]];
-						[viewersToLoad addObject: dict];
+						NSLog( @"****** number of series corresponding to these UID (%@) is not unique?: %d", curSeriesUID, [seriesArray count]);
 					}
 					else
-						NSLog(@"%@ versus %@", [[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"], [item valueForKey: @"patientUID"]);
+					{
+						if( [[[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"] isEqualToString: [item valueForKey: @"patientUID"]])
+						{
+							if( seriesForThisViewer == 0L)
+							{
+								seriesForThisViewer = [NSMutableArray array];
+								
+								[seriesToOpen addObject: seriesForThisViewer];
+								[viewersToLoad addObject: dict];
+							}
+							
+							[seriesForThisViewer addObject: [seriesArray objectAtIndex: 0]];
+						}
+						else
+							NSLog(@"%@ versus %@", [[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"], [item valueForKey: @"patientUID"]);
+					}
 				}
 				
 				[context unlock];
 				[context release];
 			}
 			
-			if( [seriesToOpen count] > 0 ) {
-				[self viewerDICOMInt: NO  dcmFile: seriesToOpen viewer: 0L tileWindows: NO];
+			if( [seriesToOpen count] > 0 && [viewersToLoad count] == [seriesToOpen count])
+			{
+				for( int i = 0 ; i < [seriesToOpen count]; i++ )
+				{
+					NSMutableArray * toOpenArray = [NSMutableArray array];
+					
+					NSDictionary *dict = [viewersToLoad objectAtIndex: i];
+					
+					for( NSManagedObject* curFile in [seriesToOpen objectAtIndex: i])
+					{
+						NSArray *loadList = [self childrenArray: curFile];
+						if( loadList) [toOpenArray addObject: loadList];
+					}
+					
+					if( [[dict valueForKey: @"4DData"] boolValue])
+						[self processOpenViewerDICOMFromArray: toOpenArray movie: YES viewer: 0L];
+					else
+						[self processOpenViewerDICOMFromArray: toOpenArray movie: NO viewer: 0L];
+				}
 				
 				NSArray	*displayedViewers = [ViewerController getDisplayed2DViewers];
 				
@@ -8636,6 +8668,410 @@ static BOOL needToRezoom;
 		[NSApp stopModalWithCode: 7];
 }
 
+- (void) processOpenViewerDICOMFromArray:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer: (ViewerController*) viewer
+{
+	NSInteger			row, column;
+	NSMutableArray		*selectedFilesList;
+	NSArray				*loadList;
+	long				numberImages, multiSeries = 1;
+	BOOL				movieError = NO, multiFrame = NO;
+
+	WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+	[wait showWindow:self];
+
+	numberImages = 0;
+	if( movieViewer == YES) // First check if all series contain same amount of images
+	{
+		if( [toOpenArray count] == 1)	// Just one thumbnail is selected, check if multiples lines are selected
+		{
+			NSArray			*singleSeries = [toOpenArray objectAtIndex: 0];
+			NSMutableArray	*splittedSeries = [NSMutableArray array];
+			
+			float interval, previousinterval = 0;
+			
+			[splittedSeries addObject: [NSMutableArray array]];
+			
+			if( [singleSeries count] > 1 ) {
+				[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
+				
+				interval = [[[singleSeries objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: 1] valueForKey:@"sliceLocation"] floatValue];
+				
+				if( interval == 0)	// 4D - 3D
+				{
+					int pos3Dindex = 1;
+					for( int x = 1; x < [singleSeries count]; x++ )	{
+						interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
+						
+						if( interval != 0) pos3Dindex = 0;
+						
+						if( [splittedSeries count] <= pos3Dindex) [splittedSeries addObject: [NSMutableArray array]];
+						
+						[[splittedSeries objectAtIndex: pos3Dindex] addObject: [singleSeries objectAtIndex: x]];
+						
+						pos3Dindex++;
+					}
+				}
+				else	// 3D - 4D
+				{				
+					for( int x = 1; x < [singleSeries count]; x++ )	{
+						interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
+						
+						if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0) ) {
+							[splittedSeries addObject: [NSMutableArray array]];
+							NSLog(@"split at: %d", x);
+							
+							previousinterval = 0;
+						}
+						else if( previousinterval )	{
+							if( fabs(interval/previousinterval) > 2.0f || fabs(interval/previousinterval) < 0.5f ) {
+								[splittedSeries addObject: [NSMutableArray array]];
+								NSLog(@"split at: %d", x);
+								previousinterval = 0;
+							}
+							else previousinterval = interval;
+						}
+						else previousinterval = interval;
+						
+						[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
+					}
+				}
+			}
+			
+			toOpenArray = splittedSeries;
+		}
+		
+		if( [toOpenArray count] == 1 ) {
+			NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), NSLocalizedString(@"To see an animated series, you have to select multiple series of the same area at different times: e.g. a cardiac CT", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+			movieError = YES;
+		}
+		else if( [toOpenArray count] >= 200 ) {
+			NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), NSLocalizedString(@"4D Player is limited to a maximum number of 200 series.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+			movieError = YES;
+		}
+		else {
+			numberImages = -1;
+			
+			for( unsigned long x = 0; x < [toOpenArray count]; x++ ) {
+				NSLog( @"%d", [[toOpenArray objectAtIndex: x] count]);
+				
+				if( numberImages == -1 ) {
+					numberImages = [[toOpenArray objectAtIndex: x] count];
+				}
+				else if( [[toOpenArray objectAtIndex: x] count] != numberImages ) {
+					NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"),  NSLocalizedString(@"In the current version, all series must contain the same number of images.",@"In the current version, all series must contain the same number of images."), NSLocalizedString(@"OK",nil), nil, nil);
+					movieError = YES;
+					x = [toOpenArray count];
+				}
+			}
+		}
+	}
+	else if( [toOpenArray count] == 1)	// Just one thumbnail is selected,
+	{
+		if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
+		{
+			NSArray			*singleSeries = [toOpenArray objectAtIndex: 0];
+			NSMutableArray	*splittedSeries = [NSMutableArray array];
+			
+			float interval, previousinterval = 0;
+			
+			[splittedSeries addObject: [NSMutableArray array]];
+			
+			if( [singleSeries count] > 1 ) {
+				[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
+				
+				interval = [[[singleSeries objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: 1] valueForKey:@"sliceLocation"] floatValue];
+				
+				if( interval == 0)
+				{ // 4D - 3D
+					int pos3Dindex = 1;
+					for( int x = 1; x < [singleSeries count]; x++)
+					{
+						interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
+						
+						if( interval != 0) pos3Dindex = 0;
+						
+						if( [splittedSeries count] <= pos3Dindex) [splittedSeries addObject: [NSMutableArray array]];
+						
+						[[splittedSeries objectAtIndex: pos3Dindex] addObject: [singleSeries objectAtIndex: x]];
+						
+						pos3Dindex++;
+					}
+				}
+				else
+				{	// 3D - 4D
+					BOOL	fixedRepetition = YES;
+					int		repetition = 0, previousPos = 0;
+					float	previousLocation;
+					
+					previousLocation = [[[singleSeries objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
+					
+					for( int x = 1; x < [singleSeries count]; x++ )	{
+						if( [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue] - previousLocation == 0 ) {
+							if( repetition)
+								if( repetition != x - previousPos)
+									fixedRepetition = NO;
+							
+							repetition = x - previousPos;
+							previousPos = x;
+						}
+					}
+					
+					if( fixedRepetition && repetition != 0)
+					{
+						NSLog( @"repetition = %d", repetition);
+						
+						for( int x = 1; x < [singleSeries count]; x++)
+						{
+							if( x % repetition == 0)
+							{
+								[splittedSeries addObject: [NSMutableArray array]];
+								NSLog(@"split at: %d", x);
+							}
+							
+							[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
+						}
+					}
+					else
+					{
+						for( int x = 1; x < [singleSeries count]; x++)
+						{
+							interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
+							
+							if( [[splittedSeries lastObject] count] > 2)
+							{
+								if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
+								{
+									[splittedSeries addObject: [NSMutableArray array]];
+									NSLog(@"split at: %d", x);
+									previousinterval = 0;
+								}
+								else if( previousinterval)
+								{
+									if( fabs(interval/previousinterval) > 1.2f || fabs(interval/previousinterval) < 0.8f)
+									{
+										[splittedSeries addObject: [NSMutableArray array]];
+										NSLog(@"split at: %d", x);
+										previousinterval = 0;
+									}
+									else previousinterval = interval;
+								}
+								else previousinterval = interval;
+							}
+							else previousinterval = interval;
+							
+							[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
+						}
+					}
+				}
+			}
+			
+			if( [splittedSeries count] > 1)
+			{
+				[wait close];
+				[wait release];
+				wait = nil;
+				
+				[subOpenMatrix3D renewRows: 1 columns: [splittedSeries count]];
+				[subOpenMatrix3D sizeToCells];
+				[subOpenMatrix3D setTarget:self];
+				[subOpenMatrix3D setAction: @selector( selectSubSeriesAndOpen:)];
+				
+				[subOpenMatrix4D renewRows: 1 columns: [[splittedSeries objectAtIndex: 0] count]];
+				[subOpenMatrix4D sizeToCells];
+				[subOpenMatrix4D setTarget:self];
+				[subOpenMatrix4D setAction: @selector( selectSubSeriesAndOpen:)];
+				
+				[[supOpenButtons cellWithTag: 3] setEnabled: YES];
+				
+				BOOL areData4D = YES;
+				
+				NSArray *array0 = [splittedSeries objectAtIndex: 0];
+				
+				for( NSArray *array in splittedSeries)
+				{
+					if( [array0 count] != [array count])
+					{
+						[[supOpenButtons cellWithTag: 3] setEnabled: NO];
+						areData4D = NO;
+					}
+				}
+				
+				for( int i = 0 ; i < [splittedSeries count]; i++)
+				{
+					NSManagedObject	*oob = [[splittedSeries objectAtIndex:i] objectAtIndex: [[splittedSeries objectAtIndex:i] count] / 2];
+					
+					DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :0L :0 :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
+					
+					if( dcmPix ) {
+						[dcmPix computeWImage:YES :0 :0];
+						
+						NSImage	 *img = [dcmPix getImage];
+						
+						NSButtonCell *cell = [subOpenMatrix3D cellAtRow:0 column: i];
+						[cell setTransparent:NO];
+						[cell setEnabled:YES];
+						[cell setFont:[NSFont systemFontOfSize:10]];
+						[cell setImagePosition: NSImageBelow];
+						[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d/%d Images", nil), i+1, [[splittedSeries objectAtIndex:i] count]]];
+						[cell setImage: img];
+						[dcmPix release];
+					}
+				}
+				
+				if( areData4D )
+				{
+					for( int i = 0 ; i < [[splittedSeries objectAtIndex: 0] count]; i++)
+					{
+						NSManagedObject	*oob = [[splittedSeries objectAtIndex: 0] objectAtIndex: i];
+						
+						DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :0L :0 :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
+						
+						if( dcmPix)
+						{
+							[dcmPix computeWImage:YES :0 :0];
+							
+							NSImage	 *img = [dcmPix getImage];
+							
+							NSButtonCell *cell = [subOpenMatrix4D cellAtRow:0 column: i];
+							[cell setTransparent:NO];
+							[cell setEnabled:YES];
+							[cell setFont:[NSFont systemFontOfSize:10]];
+							[cell setImagePosition: NSImageBelow];
+							[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d/%d Images", nil), i+1, [splittedSeries count]]];
+							[cell setImage: img];
+							[dcmPix release];
+						}
+					}
+				}
+				else
+				{
+					[subOpenMatrix4D renewRows: 0 columns: 0];
+					[subOpenMatrix4D sizeToCells];
+					[subOpenMatrix4D setEnabled: NO];
+				}
+				
+				[NSApp beginSheet: subOpenWindow
+				   modalForWindow:	[NSApp mainWindow]
+					modalDelegate: nil
+				   didEndSelector: nil
+					  contextInfo: nil];
+				
+				int result = [NSApp runModalForWindow: subOpenWindow];
+				if( result == 2 ) {
+					[supOpenButtons selectCellWithTag: 2];
+					
+					if( [subOpenMatrix3D selectedColumn] < 0)
+					{
+						if( [subOpenMatrix4D selectedColumn] < 0) result = 0;
+						else result = 5;
+					}
+				}
+				else if( result == 6 )
+				{
+					NSLog( @"Open all 3D");
+				}
+				else if( result == 7)
+				{
+					NSLog( @"Open all 4D");
+				}
+				else {
+					result = [supOpenButtons selectedTag];
+				}
+				
+				[NSApp endSheet: subOpenWindow];
+				[subOpenWindow orderOut: self];
+				
+				switch( result)
+				{
+					case 0:	// Cancel
+						movieError = YES;
+						break;
+						
+					case 1: // Entire
+						
+						break;
+						
+					case 2: // selected 3D
+						toOpenArray = [NSMutableArray arrayWithObject: [splittedSeries objectAtIndex: [subOpenMatrix3D selectedColumn]]];
+						break;
+						
+					case 3:	// 4D Viewer
+						toOpenArray = splittedSeries;
+						movieViewer = YES;
+						break;
+						
+					case 5: // selected 4D
+					{
+						NSMutableArray	*array4D = [NSMutableArray array];
+						
+						for( NSArray *array in splittedSeries)
+						{
+							[array4D addObject: [array objectAtIndex: [subOpenMatrix4D selectedColumn]]];
+						}
+						
+						toOpenArray = [NSMutableArray arrayWithObject: array4D];
+					}
+					break;
+						
+					case 6:
+						
+						wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+						[wait showWindow:self];
+						
+						for( NSArray *array in splittedSeries)
+						{
+							toOpenArray = [NSMutableArray arrayWithObject: array];
+							[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
+						}
+						toOpenArray = 0;
+					break;
+						
+					case 7:
+					{
+							BOOL openAllWindows = YES;
+							
+							if( [[splittedSeries objectAtIndex: 0] count] > 25)
+							{
+								openAllWindows = NO;
+								
+								if( NSRunInformationalAlertPanel( NSLocalizedString(@"Series Opening", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to open %d windows? It's a lot of windows for this screen...", nil), [[splittedSeries objectAtIndex: 0] count]], NSLocalizedString(@"Yes", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+									openAllWindows = YES;
+							}
+							
+							if( openAllWindows)
+							{
+								wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+								[wait showWindow:self];
+								
+								for( int i = 0; i < [[splittedSeries objectAtIndex: 0] count]; i++)
+								{
+									NSMutableArray	*array4D = [NSMutableArray array];
+									
+									for ( NSArray *array in splittedSeries)
+									{
+										[array4D addObject: [array objectAtIndex: i]];
+									}
+									
+									toOpenArray = [NSMutableArray arrayWithObject: array4D];
+									
+									[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
+								}
+							}
+							toOpenArray = nil;
+					}
+					break;
+				}
+			}
+		}
+	}
+	
+	if( movieError == NO && toOpenArray != nil )
+		[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
+		
+	[wait close];
+	[wait release];
+}
+
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer
 {
 	return [self viewerDICOMInt:  movieViewer dcmFile: selectedLines viewer: viewer tileWindows: YES];
@@ -8647,16 +9083,13 @@ static BOOL needToRezoom;
 	NSInteger			row, column;
 	NSMutableArray		*selectedFilesList;
 	NSArray				*loadList;
-    NSArray				*cells;
 	long				numberImages, multiSeries = 1;
 	BOOL				movieError = NO, multiFrame = NO;
+		
+    NSArray				*cells = [oMatrix selectedCells];
 	
-	WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
-	[wait showWindow:self];
-	
-    cells = [oMatrix selectedCells];
-	
-	if( [cells count] == 0 && [[oMatrix cells] count] > 0 )	{
+	if( [cells count] == 0 && [[oMatrix cells] count] > 0 )
+	{
 		cells = [NSArray arrayWithObject: [[oMatrix cells] objectAtIndex: 0]];
 	}
 	
@@ -8664,7 +9097,8 @@ static BOOL needToRezoom;
 	// Open selected images only !!!
 	//////////////////////////////////////
 	
-    if( [cells count] > 1 && [[selectedLine valueForKey:@"type"] isEqualToString: @"Series"] ) {
+    if( [cells count] > 1 && [[selectedLine valueForKey:@"type"] isEqualToString: @"Series"])
+	{
 		NSArray  *curList = [self childrenArray: selectedLine];
 		
 		selectedFilesList = [[NSMutableArray alloc] initWithCapacity:0];
@@ -8679,7 +9113,8 @@ static BOOL needToRezoom;
 		
 		[selectedFilesList release];
     }
-    else {
+    else
+	{
 		BOOL			multipleLines = NO;
 		//////////////////////////////////////
 		// Open series !!!
@@ -8694,7 +9129,8 @@ static BOOL needToRezoom;
 		int x = 0;
 		if( [cells count] == 1 && [selectedLines count] > 1 )	// Just one thumbnail is selected, but multiples lines are selected
 		{
-			for( NSManagedObject* curFile in selectedLines ) {
+			for( NSManagedObject* curFile in selectedLines )
+			{
 				x++;
 				loadList = nil;
 				
@@ -8708,17 +9144,21 @@ static BOOL needToRezoom;
 					}
 				}
 				
-				if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"] ) {
+				if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"] )
+				{
 					loadList = [self childrenArray: curFile];
 				}
 				
 				if( loadList) [toOpenArray addObject: loadList];
 			}
 		}
-		else {
-			for( NSButtonCell *cell in cells ) {
+		else
+		{
+			for( NSButtonCell *cell in cells )
+			{
 				x++;
-				if( [oMatrix getRow: &row column: &column ofCell: cell] == NO ) {
+				if( [oMatrix getRow: &row column: &column ofCell: cell] == NO )
+				{
 					row = 0;
 					column = 0;
 				}
@@ -8734,401 +9174,11 @@ static BOOL needToRezoom;
 			}
 		}
 		
-		numberImages = 0;
-		if( movieViewer == YES) // First check if all series contain same amount of images
-		{
-			if( [toOpenArray count] == 1)	// Just one thumbnail is selected, check if multiples lines are selected
-			{
-				NSArray			*singleSeries = [toOpenArray objectAtIndex: 0];
-				NSMutableArray	*splittedSeries = [NSMutableArray array];
-				
-				float interval, previousinterval = 0;
-				
-				[splittedSeries addObject: [NSMutableArray array]];
-				
-				if( [singleSeries count] > 1 ) {
-					[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
-					
-					interval = [[[singleSeries objectAtIndex: x -1 ] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
-					
-					if( interval == 0)	// 4D - 3D
-					{
-						int pos3Dindex = 1;
-						for( int x = 1; x < [singleSeries count]; x++ )	{
-							interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
-							
-							if( interval != 0) pos3Dindex = 0;
-							
-							if( [splittedSeries count] <= pos3Dindex) [splittedSeries addObject: [NSMutableArray array]];
-							
-							[[splittedSeries objectAtIndex: pos3Dindex] addObject: [singleSeries objectAtIndex: x]];
-							
-							pos3Dindex++;
-						}
-					}
-					else	// 3D - 4D
-					{				
-						for( int x = 1; x < [singleSeries count]; x++ )	{
-							interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
-							
-							if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0) ) {
-								[splittedSeries addObject: [NSMutableArray array]];
-								NSLog(@"split at: %d", x);
-								
-								previousinterval = 0;
-							}
-							else if( previousinterval )	{
-								if( fabs(interval/previousinterval) > 2.0f || fabs(interval/previousinterval) < 0.5f ) {
-									[splittedSeries addObject: [NSMutableArray array]];
-									NSLog(@"split at: %d", x);
-									previousinterval = 0;
-								}
-								else previousinterval = interval;
-							}
-							else previousinterval = interval;
-							
-							[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
-						}
-					}
-				}
-				
-				toOpenArray = splittedSeries;
-			}
-			
-			if( [toOpenArray count] == 1 ) {
-				NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), NSLocalizedString(@"To see an animated series, you have to select multiple series of the same area at different times: e.g. a cardiac CT", 0L), NSLocalizedString(@"OK",nil), nil, nil);
-				movieError = YES;
-			}
-			else if( [toOpenArray count] >= 200 ) {
-				NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), NSLocalizedString(@"4D Player is limited to a maximum number of 200 series.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
-				movieError = YES;
-			}
-			else {
-				numberImages = -1;
-				
-				for( unsigned long x = 0; x < [toOpenArray count]; x++ ) {
-					NSLog( @"%d", [[toOpenArray objectAtIndex: x] count]);
-					
-					if( numberImages == -1 ) {
-						numberImages = [[toOpenArray objectAtIndex: x] count];
-					}
-					else if( [[toOpenArray objectAtIndex: x] count] != numberImages ) {
-						NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"),  NSLocalizedString(@"In the current version, all series must contain the same number of images.",@"In the current version, all series must contain the same number of images."), NSLocalizedString(@"OK",nil), nil, nil);
-						movieError = YES;
-						x = [toOpenArray count];
-					}
-				}
-			}
-		}
-		else if( [toOpenArray count] == 1)	// Just one thumbnail is selected,
-		{
-			if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
-			{
-				NSArray			*singleSeries = [toOpenArray objectAtIndex: 0];
-				NSMutableArray	*splittedSeries = [NSMutableArray array];
-				
-				float interval, previousinterval = 0;
-				
-				[splittedSeries addObject: [NSMutableArray array]];
-				
-				if( [singleSeries count] > 1 ) {
-					[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
-					
-					interval = [[[singleSeries objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: 1] valueForKey:@"sliceLocation"] floatValue];
-					
-					if( interval == 0)
-					{ // 4D - 3D
-						int pos3Dindex = 1;
-						for( x = 1; x < [singleSeries count]; x++)
-						{
-							interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
-							
-							if( interval != 0) pos3Dindex = 0;
-							
-							if( [splittedSeries count] <= pos3Dindex) [splittedSeries addObject: [NSMutableArray array]];
-							
-							[[splittedSeries objectAtIndex: pos3Dindex] addObject: [singleSeries objectAtIndex: x]];
-							
-							pos3Dindex++;
-						}
-					}
-					else
-					{	// 3D - 4D
-						BOOL	fixedRepetition = YES;
-						int		repetition = 0, previousPos = 0;
-						float	previousLocation;
-						
-						previousLocation = [[[singleSeries objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
-						
-						for( int x = 1; x < [singleSeries count]; x++ )	{
-							if( [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue] - previousLocation == 0 ) {
-								if( repetition)
-									if( repetition != x - previousPos)
-										fixedRepetition = NO;
-								
-								repetition = x - previousPos;
-								previousPos = x;
-							}
-						}
-						
-						if( fixedRepetition && repetition != 0)
-						{
-							NSLog( @"repetition = %d", repetition);
-							
-							for( int x = 1; x < [singleSeries count]; x++)
-							{
-								if( x % repetition == 0)
-								{
-									[splittedSeries addObject: [NSMutableArray array]];
-									NSLog(@"split at: %d", x);
-								}
-								
-								[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
-							}
-						}
-						else
-						{
-							for( int x = 1; x < [singleSeries count]; x++)
-							{
-								interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
-								
-								if( [[splittedSeries lastObject] count] > 2)
-								{
-									if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
-									{
-										[splittedSeries addObject: [NSMutableArray array]];
-										NSLog(@"split at: %d", x);
-										previousinterval = 0;
-									}
-									else if( previousinterval)
-									{
-										if( fabs(interval/previousinterval) > 1.2f || fabs(interval/previousinterval) < 0.8f)
-										{
-											[splittedSeries addObject: [NSMutableArray array]];
-											NSLog(@"split at: %d", x);
-											previousinterval = 0;
-										}
-										else previousinterval = interval;
-									}
-									else previousinterval = interval;
-								}
-								else previousinterval = interval;
-								
-								[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
-							}
-						}
-					}
-				}
-				
-				if( [splittedSeries count] > 1)
-				{
-					[wait close];
-					[wait release];
-					wait = nil;
-					
-					[subOpenMatrix3D renewRows: 1 columns: [splittedSeries count]];
-					[subOpenMatrix3D sizeToCells];
-					[subOpenMatrix3D setTarget:self];
-					[subOpenMatrix3D setAction: @selector( selectSubSeriesAndOpen:)];
-					
-					[subOpenMatrix4D renewRows: 1 columns: [[splittedSeries objectAtIndex: 0] count]];
-					[subOpenMatrix4D sizeToCells];
-					[subOpenMatrix4D setTarget:self];
-					[subOpenMatrix4D setAction: @selector( selectSubSeriesAndOpen:)];
-					
-					[[supOpenButtons cellWithTag: 3] setEnabled: YES];
-					
-					BOOL areData4D = YES;
-					
-					NSArray *array0 = [splittedSeries objectAtIndex: 0];
-					
-					for( NSArray *array in splittedSeries)
-					{
-						if( [array0 count] != [array count])
-						{
-							[[supOpenButtons cellWithTag: 3] setEnabled: NO];
-							areData4D = NO;
-						}
-					}
-					
-					for( int i = 0 ; i < [splittedSeries count]; i++)
-					{
-						NSManagedObject	*oob = [[splittedSeries objectAtIndex:i] objectAtIndex: [[splittedSeries objectAtIndex:i] count] / 2];
-						
-						DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :0L :0 :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
-						
-						if( dcmPix ) {
-							[dcmPix computeWImage:YES :0 :0];
-							
-							NSImage	 *img = [dcmPix getImage];
-							
-							NSButtonCell *cell = [subOpenMatrix3D cellAtRow:0 column: i];
-							[cell setTransparent:NO];
-							[cell setEnabled:YES];
-							[cell setFont:[NSFont systemFontOfSize:10]];
-							[cell setImagePosition: NSImageBelow];
-							[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d/%d Images", nil), i+1, [[splittedSeries objectAtIndex:i] count]]];
-							[cell setImage: img];
-							[dcmPix release];
-						}
-					}
-					
-					if( areData4D )
-					{
-						for( int i = 0 ; i < [[splittedSeries objectAtIndex: 0] count]; i++)
-						{
-							NSManagedObject	*oob = [[splittedSeries objectAtIndex: 0] objectAtIndex: i];
-							
-							DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :0L :0 :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
-							
-							if( dcmPix)
-							{
-								[dcmPix computeWImage:YES :0 :0];
-								
-								NSImage	 *img = [dcmPix getImage];
-								
-								NSButtonCell *cell = [subOpenMatrix4D cellAtRow:0 column: i];
-								[cell setTransparent:NO];
-								[cell setEnabled:YES];
-								[cell setFont:[NSFont systemFontOfSize:10]];
-								[cell setImagePosition: NSImageBelow];
-								[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d/%d Images", nil), i+1, [splittedSeries count]]];
-								[cell setImage: img];
-								[dcmPix release];
-							}
-						}
-					}
-					else
-					{
-						[subOpenMatrix4D renewRows: 0 columns: 0];
-						[subOpenMatrix4D sizeToCells];
-						[subOpenMatrix4D setEnabled: NO];
-					}
-					
-					[NSApp beginSheet: subOpenWindow
-					   modalForWindow:	[NSApp mainWindow]
-						modalDelegate: nil
-					   didEndSelector: nil
-						  contextInfo: nil];
-					
-					int result = [NSApp runModalForWindow: subOpenWindow];
-					if( result == 2 ) {
-						[supOpenButtons selectCellWithTag: 2];
-						
-						if( [subOpenMatrix3D selectedColumn] < 0)
-						{
-							if( [subOpenMatrix4D selectedColumn] < 0) result = 0;
-							else result = 5;
-						}
-					}
-					else if( result == 6 )
-					{
-						NSLog( @"Open all 3D");
-					}
-					else if( result == 7)
-					{
-						NSLog( @"Open all 4D");
-					}
-					else {
-						result = [supOpenButtons selectedTag];
-					}
-					
-					[NSApp endSheet: subOpenWindow];
-					[subOpenWindow orderOut: self];
-					
-					switch( result)
-					{
-						case 0:	// Cancel
-							movieError = YES;
-							break;
-							
-						case 1: // Entire
-							
-							break;
-							
-						case 2: // selected 3D
-							toOpenArray = [NSMutableArray arrayWithObject: [splittedSeries objectAtIndex: [subOpenMatrix3D selectedColumn]]];
-							break;
-							
-						case 3:	// 4D Viewer
-							toOpenArray = splittedSeries;
-							movieViewer = YES;
-							break;
-							
-						case 5: // selected 4D
-						{
-							NSMutableArray	*array4D = [NSMutableArray array];
-							
-							for( NSArray *array in splittedSeries)
-							{
-								[array4D addObject: [array objectAtIndex: [subOpenMatrix4D selectedColumn]]];
-							}
-							
-							toOpenArray = [NSMutableArray arrayWithObject: array4D];
-						}
-						break;
-							
-						case 6:
-							
-							wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
-							[wait showWindow:self];
-							
-							for( NSArray *array in splittedSeries)
-							{
-								toOpenArray = [NSMutableArray arrayWithObject: array];
-								[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
-							}
-							toOpenArray = 0;
-						break;
-							
-						case 7:
-						{
-								BOOL openAllWindows = YES;
-								
-								if( [[splittedSeries objectAtIndex: 0] count] > 25)
-								{
-									openAllWindows = NO;
-									
-									if( NSRunInformationalAlertPanel( NSLocalizedString(@"Series Opening", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to open %d windows? It's a lot of windows for this screen...", nil), [[splittedSeries objectAtIndex: 0] count]], NSLocalizedString(@"Yes", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
-										openAllWindows = YES;
-								}
-								
-								if( openAllWindows)
-								{
-									wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
-									[wait showWindow:self];
-									
-									for( int i = 0; i < [[splittedSeries objectAtIndex: 0] count]; i++)
-									{
-										NSMutableArray	*array4D = [NSMutableArray array];
-										
-										for ( NSArray *array in splittedSeries)
-										{
-											[array4D addObject: [array objectAtIndex: i]];
-										}
-										
-										toOpenArray = [NSMutableArray arrayWithObject: array4D];
-										
-										[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
-									}
-								}
-								toOpenArray = nil;
-						}
-						break;
-					}
-				}
-			}
-		}
-		
-		if( movieError == NO && toOpenArray != nil )
-			[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
+		[self processOpenViewerDICOMFromArray: toOpenArray movie: movieViewer viewer: viewer];
     }
 	
-	
-	[wait close];
-	[wait release];
-
-	if( tileWindows ) {
+	if( tileWindows )
+	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 		{
 			[[AppController sharedAppController] tileWindows: self];

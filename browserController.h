@@ -344,6 +344,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar*)toolbar;
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem;
 - (NSArray*) exportDICOMFileInt:(NSString*) location files:(NSArray*) filesToExport objects:(NSArray*) dicomFiles2Export;
+- (void) processOpenViewerDICOMFromArray:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer: (ViewerController*) viewer;
 
 - (void) setupToolbar;
 
