@@ -42,7 +42,14 @@
     if(self)
 	{
 		userAction = idle;
-		translation = NSMakePoint(0., 0.);
+		translation = NSMakePoint(0, 0);
+		offset = NSMakePoint(0, 0);
+		offsetRotationAngle = 0.0;
+		offsetZoomFactor = 0.0;
+		zoomFactor = 0.0;
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:@"changeWLWW" object:nil];
+		
 		GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 		[[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
 		
@@ -53,6 +60,7 @@
 - (void)dealloc
 {
 	NSLog(@"NavigatorView dealloc");
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[thumbnailsTextureArray release];
 	[super dealloc];
 }
@@ -60,7 +68,6 @@
 - (void)setViewer:(ViewerController*)v;
 {
 	viewer = v;
-	//[self generateTextures];
 	[self initTextureArray];
 	[self computeThumbnailSize];
 	[self setFrameSize:NSMakeSize([[viewer pixList] count]*thumbnailWidth, [viewer maxMovieIndex]*thumbnailHeight)];
@@ -158,6 +165,9 @@
 
 	NSMutableArray *pixList = [viewer pixList:t];
 	DCMPix *pix = [pixList objectAtIndex:z];
+	
+	if(changeWLWW) [pix changeWLWW:wl :ww];
+	
 	char* textureBuffer = [pix baseAddr];
 			
 	if( textureBuffer)
@@ -202,10 +212,10 @@
 	
 	float wFactor = (float)width / (float)thumbnailMaxWidth;
 	float hFactor = (float)height / (float)thumbnailMaxHeight;
-	float factor = (wFactor>hFactor)? wFactor : hFactor;
+	sizeFactor = (wFactor>hFactor)? wFactor : hFactor;
 	
-	thumbnailWidth = width / factor;
-	thumbnailHeight = height / factor;
+	thumbnailWidth = width / sizeFactor;
+	thumbnailHeight = height / sizeFactor;
 }
 
 - (void)drawRect:(NSRect)rect
@@ -254,19 +264,58 @@
 					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, [(NSNumber*)[thumbnailsTextureArray objectAtIndex:i] intValue]);
 				
 					DCMPix *pix = [pixList objectAtIndex:z];
-
+					
+					NSPoint texUpperLeft, texUpperRight, texLowerLeft, texLowerRight;
+					texUpperLeft.x = 0.0;//offset.x+translation.x;
+					texUpperLeft.y = 0.0;//offset.y+translation.y;
+					texUpperRight.x = pix.pwidth;//+offset.x+translation.x;
+					texUpperRight.y = 0.0;//offset.y+translation.y;
+					texLowerLeft.x = 0.0;//offset.x+translation.x;
+					texLowerLeft.y = pix.pheight;//+offset.y+translation.y;
+					texLowerRight.x = pix.pwidth;//+offset.x+translation.x;
+					texLowerRight.y = pix.pheight;//+offset.y+translation.y;
+					
+					NSPoint centerPoint;
+					centerPoint.x = (texUpperLeft.x+texLowerRight.x)/2.0;
+					centerPoint.y = (texUpperLeft.y+texLowerRight.y)/2.0;
+					
+					float f = exp2f(offsetZoomFactor+zoomFactor);
+					texUpperLeft = [self zoomPoint:texUpperLeft withCenter:centerPoint factor:f];
+					texUpperRight = [self zoomPoint:texUpperRight withCenter:centerPoint factor:f];
+					texLowerLeft = [self zoomPoint:texLowerLeft withCenter:centerPoint factor:f];
+					texLowerRight = [self zoomPoint:texLowerRight withCenter:centerPoint factor:f];
+					
+					NSPoint pt, rotPt;
+					
+					NSPoint translate;
+					translate.x = (offset.x+translation.x)*f;
+					translate.y = (offset.y+translation.y)*f;
+					translate = [self rotatePoint:translate aroundPoint:NSMakePoint(0, 0) angle:offsetRotationAngle+rotationAngle];
+					
+					float angle = offsetRotationAngle+rotationAngle;
+					
 					glBegin(GL_QUAD_STRIP);
-						glTexCoord2f(0.+translation.x, 0.+translation.y);
+
+						pt = texUpperLeft;
+						rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];
+						glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);//glTexCoord2f(0+offset.x+translation.x, 0+offset.y+translation.y);
 						glVertex2f(upperLeft.x, upperLeft.y);
 						
-						glTexCoord2f(pix.pwidth+translation.x, 0.+translation.y);
+						pt = texUpperRight;
+						rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];
+						glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);//glTexCoord2f(pix.pwidth+offset.x+translation.x, 0+offset.y+translation.y);
 						glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y);
-						
-						glTexCoord2f(0.+translation.x, pix.pheight+translation.y);
+
+						pt = texLowerLeft;
+						rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];
+						glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);//glTexCoord2f(0+offset.x+translation.x, pix.pheight+offset.y+translation.y);
 						glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
-						
-						glTexCoord2f(pix.pwidth+translation.x, pix.pheight+translation.y);
+
+						pt = texLowerRight;
+						rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];						
+						glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);//glTexCoord2f(pix.pwidth+offset.x+translation.x, pix.pheight+offset.y+translation.y);
 						glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight);
+						
 					glEnd();
 				}
 				else
@@ -309,7 +358,27 @@
 {
 	NSPoint event_location = [theEvent locationInWindow];
 	mouseDownPosition = [self convertPointFromWindowToOpenGL:event_location];	
-	userAction = [viewer imageView].currentTool;
+
+	if([theEvent modifierFlags] & NSShiftKeyMask) userAction=zoom;
+	else if([theEvent modifierFlags] & NSCommandKeyMask) userAction=translate;
+	else if([theEvent modifierFlags] & NSControlKeyMask) userAction=rotate;
+	else if([theEvent modifierFlags] & NSAlternateKeyMask) userAction=wlww;
+	else userAction = [viewer imageView].currentTool;
+	
+	startWW = ww;
+	startWL = wl;
+
+	changeWLWW = NO;
+}
+
+- (void)rightMouseDown:(NSEvent *)theEvent
+{
+	NSPoint event_location = [theEvent locationInWindow];
+	mouseDownPosition = [self convertPointFromWindowToOpenGL:event_location];	
+
+	userAction = [viewer imageView].currentToolRight;
+
+	changeWLWW = NO;
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent;
@@ -317,22 +386,125 @@
 	NSPoint event_location = [theEvent locationInWindow];
 	mouseDraggedPosition = [self convertPointFromWindowToOpenGL:event_location];
 	
-	if(userAction==pan)
-	{
+	if(userAction==translate)
 		[self translationFrom:mouseDownPosition to:mouseDraggedPosition];
-		[self setNeedsDisplay:YES];
-	}
+	else if(userAction==rotate)
+		[self rotateFrom:mouseDownPosition to:mouseDraggedPosition];
+	else if(userAction==zoom)
+		[self zoomFrom:mouseDownPosition to:mouseDraggedPosition];
+	else if(userAction==wlww)
+		[self wlwwFrom:mouseDownPosition to:mouseDraggedPosition];
+	[self setNeedsDisplay:YES];
+}
+
+- (void)rightMouseDragged:(NSEvent *)theEvent;
+{
+	[self mouseDragged:theEvent];
 }
 
 - (void)mouseUp:(NSEvent *)theEvent;
 {
+	offset.x += translation.x;
+	offset.y += translation.y;
+	translation.x = 0.0;
+	translation.y = 0.0;
+	
+	offsetRotationAngle += rotationAngle;
+	rotationAngle = 0.0;
+	
+	offsetZoomFactor += zoomFactor;
+	zoomFactor = 0.0;
+
+	changeWLWW = NO;
+	
 	userAction = idle;
+}
+
+- (void)rightMouseUp:(NSEvent *)theEvent;
+{
+	[self mouseUp:theEvent];
 }
 
 - (void)translationFrom:(NSPoint)start to:(NSPoint)stop;
 {
 	translation.x = start.x - stop.x;
 	translation.y = start.y - stop.y;
+
+	translation.x *= sizeFactor;
+	translation.y *= sizeFactor;
+}
+
+- (void)rotateFrom:(NSPoint)start to:(NSPoint)stop;
+{
+	rotationAngle = stop.x-start.x;
+	rotationAngle /= sizeFactor;
+	rotationAngle /= 10.;
+}
+
+- (NSPoint)rotatePoint:(NSPoint)pt aroundPoint:(NSPoint)c angle:(float)a;
+{
+	NSPoint rot;
+	
+	pt.x -= c.x;
+	pt.y -= c.y;
+	
+	rot.x = cos(a)*pt.x - sin(a)*pt.y;
+	rot.y = sin(a)*pt.x + cos(a)*pt.y;
+
+	rot.x += c.x;
+	rot.y += c.y;
+	
+	return rot;
+}
+
+- (void)zoomFrom:(NSPoint)start to:(NSPoint)stop;
+{
+	zoomFactor = stop.y - start.y;
+	zoomFactor /= sizeFactor;
+	zoomFactor /= 10.;
+}
+
+- (NSPoint)zoomPoint:(NSPoint)pt withCenter:(NSPoint)c factor:(float)f;
+{
+	pt.x -= c.x;
+	pt.y -= c.y;
+	
+	pt.x *= f;
+	pt.y *= f;
+
+	pt.x += c.x;
+	pt.y += c.y;
+	
+	return pt;
+}
+
+- (void)changeWLWW:(NSNotification*)notif;
+{
+	NSLog(@"changeWLWW");
+	DCMPix *pix = [notif object];
+	if(pix.ww!=ww || pix.wl!=wl)
+	{
+		ww = pix.ww;
+		wl = pix.wl;
+		changeWLWW = YES;
+		[self display];
+	}
+	else
+	{
+		changeWLWW = NO;
+	}
+}
+
+- (void)wlwwFrom:(NSPoint)start to:(NSPoint)stop;
+{
+	float WWAdapter = startWW / 100.0;
+	if( WWAdapter < 0.001) WWAdapter = 0.001;
+	
+	wl = startWL + (stop.y -  start.y)*WWAdapter;
+	ww = startWW + (stop.x -  start.x)*WWAdapter;
+	
+	[[viewer imageView] setWLWW:wl :ww];
+	changeWLWW = YES;
 }
 
 @end

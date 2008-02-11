@@ -18,7 +18,7 @@
 
 typedef enum {
 	zoom = tZoom,
-	pan = tTranslate,
+	translate = tTranslate,
 	wlww = tWL,
 	rotate = tRotate,
 	idle = -1
@@ -28,10 +28,16 @@ typedef enum {
 	ViewerController *viewer;
 	NSMutableArray *thumbnailsTextureArray;
 	int thumbnailWidth, thumbnailHeight;
+	float sizeFactor;
 
 	NSPoint mouseDownPosition, mouseDraggedPosition;
 	mouseEventType userAction;
-	NSPoint translation;
+	NSPoint offset, translation;
+	float offsetRotationAngle, rotationAngle;
+	float offsetZoomFactor, zoomFactor;
+	
+	BOOL changeWLWW;
+	float wl, ww, startWL, startWW;
 }
 
 @property(readonly) int thumbnailWidth, thumbnailHeight;
@@ -44,5 +50,11 @@ typedef enum {
 
 - (NSPoint)convertPointFromWindowToOpenGL:(NSPoint)pointInWindow;
 - (void)translationFrom:(NSPoint)start to:(NSPoint)stop;
+- (void)rotateFrom:(NSPoint)start to:(NSPoint)stop;
+- (NSPoint)rotatePoint:(NSPoint)pt aroundPoint:(NSPoint)c angle:(float)a;
+- (void)zoomFrom:(NSPoint)start to:(NSPoint)stop;
+- (NSPoint)zoomPoint:(NSPoint)pt withCenter:(NSPoint)c factor:(float)f;
+- (void)changeWLWW:(NSNotification*)notif;
+- (void)wlwwFrom:(NSPoint)start to:(NSPoint)stop;
 
 @end
