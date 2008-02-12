@@ -38,7 +38,6 @@
 	NSSize minSize = NSMakeSize(navigatorView.thumbnailWidth, navigatorView.thumbnailHeight);
 	minSize.height += 27;
 	[[self window] setMinSize:minSize];
-
 }
 
 - (void)windowWillClose:(NSNotification *)notification

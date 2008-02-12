@@ -38,6 +38,7 @@ typedef enum {
 	
 	BOOL changeWLWW;
 	float wl, ww, startWL, startWW;
+	NSMutableArray *isTextureWLWWUpdated;
 }
 
 @property(readonly) int thumbnailWidth, thumbnailHeight;

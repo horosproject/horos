@@ -62,6 +62,7 @@
 	NSLog(@"NavigatorView dealloc");
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[thumbnailsTextureArray release];
+	[isTextureWLWWUpdated release];
 	[super dealloc];
 }
 
@@ -71,6 +72,8 @@
 	[self initTextureArray];
 	[self computeThumbnailSize];
 	[self setFrameSize:NSMakeSize([[viewer pixList] count]*thumbnailWidth, [viewer maxMovieIndex]*thumbnailHeight)];
+	wl = [viewer imageView].curWL;
+	ww = [viewer imageView].curWW;
 }
 
 // generates a texture for each slice and each time frame
@@ -143,20 +146,25 @@
 		}
 		[thumbnailsTextureArray removeAllObjects];
 	}
-	
+
+	if(!isTextureWLWWUpdated)
+		isTextureWLWWUpdated = [[NSMutableArray array] retain];
+	else
+		[isTextureWLWWUpdated removeAllObjects];
+		
 	for(int t=0; t<[viewer maxMovieIndex]; t++)
 	{
 		NSMutableArray *pixList = [viewer pixList:t];
 		for(int z=0; z<[pixList count]; z++)
+		{
 			[thumbnailsTextureArray addObject:[NSNumber numberWithInt:-1]];
+			[isTextureWLWWUpdated addObject:[NSNumber numberWithBool:NO]];
+		}
 	}
-	NSLog(@"[thumbnailsTextureArray count] : %d", [thumbnailsTextureArray count]);
 }
 
 - (void)generateTextureForSlice:(int)z movieIndex:(int)t arrayIndex:(int)i;
 {
-	//NSLog(@"generateTextureForSlice:%d movieIndex:%d", z, t);
-	
 	if(!thumbnailsTextureArray) [self initTextureArray];
 	
 	[[self openGLContext] makeCurrentContext];
@@ -167,6 +175,9 @@
 	DCMPix *pix = [pixList objectAtIndex:z];
 	
 	if(changeWLWW) [pix changeWLWW:wl :ww];
+	else if(![[isTextureWLWWUpdated objectAtIndex:i] boolValue]) [pix changeWLWW:wl :ww];
+
+	[isTextureWLWWUpdated replaceObjectAtIndex:i withObject:[NSNumber numberWithBool:YES]];	
 	
 	char* textureBuffer = [pix baseAddr];
 			
@@ -344,6 +355,11 @@
 	[[self openGLContext] flushBuffer];//[cgl_ctx  flushBuffer];
 }
 
+- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
+{
+	return YES;
+}
+
 #pragma mark-
 #pragma mark Mouse functions
 
@@ -480,13 +496,14 @@
 
 - (void)changeWLWW:(NSNotification*)notif;
 {
-	NSLog(@"changeWLWW");
 	DCMPix *pix = [notif object];
 	if(pix.ww!=ww || pix.wl!=wl)
 	{
 		ww = pix.ww;
 		wl = pix.wl;
 		changeWLWW = YES;
+		for(int i=0; i<[isTextureWLWWUpdated count]; i++)
+			[isTextureWLWWUpdated replaceObjectAtIndex:i withObject:[NSNumber numberWithBool:NO]];
 		[self display];
 	}
 	else
@@ -505,6 +522,8 @@
 	
 	[[viewer imageView] setWLWW:wl :ww];
 	changeWLWW = YES;
+	for (int i=0; i<[isTextureWLWWUpdated count]; i++)
+		[isTextureWLWWUpdated replaceObjectAtIndex:i withObject:[NSNumber numberWithBool:NO]];
 }
 
 @end
