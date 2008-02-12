@@ -23,5 +23,7 @@
 }
 
 - (id)initWithViewer:(ViewerController*)viewer;
+- (void)setViewer:(ViewerController*)viewer;
+- (void)initView;
 
 @end

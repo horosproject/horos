@@ -969,5 +969,6 @@ enum
 #pragma mark-
 #pragma mark Navigator
 - (IBAction)navigator:(id)sender;
+- (void)updateNavigator;
 
 @end

@@ -97,6 +97,7 @@ extern  BOOL					USETOOLBARPANEL;
 static	BOOL					SYNCSERIES = NO;
 static	NSLock					*globalLoadImageLock = 0L;
 
+static NavigatorWindowController *navigatorWindowController = 0L;
 		
 static NSString* 	ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
 static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.icns";
@@ -2335,11 +2336,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) windowDidBecomeMain:(NSNotification *)aNotification
 {
 	[self refreshToolbar];
+	[self updateNavigator];
 }
 
 - (void) windowDidBecomeKey:(NSNotification *)aNotification
 {
 	[self refreshToolbar];
+	[self updateNavigator];
 }
 
 - (void)windowWillMove:(NSNotification *)notification
@@ -17456,16 +17459,34 @@ sourceRef);
 	for(NSWindow *window in windowList)
 	{
 		//if([[[window windowController] windowNibName] isEqualToString:@"Navigator"]) found = YES;
-		if([[window windowController] isKindOfClass:[NavigatorWindowController class]]) found = YES;
+		if([[window windowController] isKindOfClass:[NavigatorWindowController class]])
+		{
+			found = YES;
+			[(NavigatorWindowController*)[window windowController] setViewer:self];
+		}
 	}
 	
 	if(!found)
 	{
 		[self checkEverythingLoaded];
-		NavigatorWindowController *navigatorWindowController = [[NavigatorWindowController alloc] initWithViewer:self];
+		navigatorWindowController = [[NavigatorWindowController alloc] initWithViewer:self];
 		[navigatorWindowController showWindow:self];
 	}
 }
 
+- (void)updateNavigator;
+{
+	if(!navigatorWindowController) return;
+
+	NSArray *windowList = [NSApp windows];
+	for(NSWindow *window in windowList)
+	{
+		if([[window windowController] isKindOfClass:[NavigatorWindowController class]])
+		{
+			[(NavigatorWindowController*)[window windowController] setViewer:self];
+			[[window windowController] showWindow:self];
+		}
+	}
+}
 
 @end

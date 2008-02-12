@@ -26,9 +26,19 @@
 	return self;
 }
 
-- (IBAction)showWindow:(id)sender
+- (void)awakeFromNib; 
 {
-	[super showWindow:sender];
+	[[self window] setAcceptsMouseMovedEvents:YES];
+}
+
+- (void)setViewer:(ViewerController*)viewer;
+{
+	viewerController = viewer;
+//	[self initView];
+}
+
+- (void)initView;
+{
 	[navigatorView setViewer:viewerController];
 	NSSize size = [navigatorView frame].size;
 	size.height += 27;
@@ -38,6 +48,14 @@
 	NSSize minSize = NSMakeSize(navigatorView.thumbnailWidth, navigatorView.thumbnailHeight);
 	minSize.height += 27;
 	[[self window] setMinSize:minSize];
+	[[self window] setAcceptsMouseMovedEvents:YES];
+	[[self window] makeFirstResponder:navigatorView];
+}
+
+- (IBAction)showWindow:(id)sender
+{
+	[super showWindow:sender];
+	[self initView];
 }
 
 - (void)windowWillClose:(NSNotification *)notification

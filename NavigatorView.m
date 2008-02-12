@@ -48,6 +48,9 @@
 		offsetZoomFactor = 0.0;
 		zoomFactor = 0.0;
 		
+		drawLeftLateralScrollBar = NO;
+		drawRightLateralScrollBar = NO;
+		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:@"changeWLWW" object:nil];
 		
 		GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
@@ -65,6 +68,11 @@
 	[isTextureWLWWUpdated release];
 	[super dealloc];
 }
+
+//- (void)awakeFromNib; 
+//{
+//	[[self window] setAcceptsMouseMovedEvents:YES];
+//}
 
 - (void)setViewer:(ViewerController*)v;
 {
@@ -254,7 +262,9 @@
 	glTranslatef(-(viewSize.width)/2.0, -(viewSize.height)/2.0, 0.0);
 	
 	int i=0;
-
+	NSPoint upperLeft;
+	NSRect thumbRect;
+	
 	for(int t=0; t<[viewer maxMovieIndex]; t++)
 	{
 		NSMutableArray *pixList = [viewer pixList:t];
@@ -265,8 +275,8 @@
 //
 //			if([(NSNumber*)[thumbnailsTextureArray objectAtIndex:i] intValue]>=0)
 //			{
-				NSPoint upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
-				NSRect thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
+				upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
+				thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
 
 				if(NSIntersectsRect(thumbRect, viewFrame))
 				{
@@ -305,8 +315,8 @@
 					
 					float angle = offsetRotationAngle+rotationAngle;
 					
+					// draw texture
 					glBegin(GL_QUAD_STRIP);
-
 						pt = texUpperLeft;
 						rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];
 						glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);//glTexCoord2f(0+offset.x+translation.x, 0+offset.y+translation.y);
@@ -326,7 +336,6 @@
 						rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];						
 						glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);//glTexCoord2f(pix.pwidth+offset.x+translation.x, pix.pheight+offset.y+translation.y);
 						glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight);
-						
 					glEnd();
 				}
 				else
@@ -352,6 +361,64 @@
 
 	glDisable(GL_TEXTURE_RECTANGLE_EXT);
 
+	// draw selection
+	glEnable(GL_LINE_SMOOTH);
+	
+	// selected time line
+	int t = [viewer curMovieIndex];
+	upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
+	upperLeft.x = 0.0;
+	
+	glLineWidth(2.0);
+	glColor3f(1.0f, 1.0f, 0.0f);
+	glBegin(GL_LINE_LOOP);
+		glVertex2f(upperLeft.x, upperLeft.y);
+		glVertex2f(upperLeft.x+viewSize.width, upperLeft.y);
+		glVertex2f(upperLeft.x+viewSize.width, upperLeft.y+thumbnailHeight);
+		glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
+	glEnd();
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glLineWidth(1.0);	
+	
+	// selected image
+	int z = [viewer imageIndex];
+	upperLeft.x = z*thumbnailWidth-viewBounds.origin.x;
+	thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
+
+	if(NSIntersectsRect(thumbRect, viewFrame))
+	{
+		glLineWidth(2.0);
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glBegin(GL_LINE_LOOP);
+			glVertex2f(upperLeft.x, upperLeft.y);
+			glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y);
+			glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight);
+			glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
+		glEnd();
+		glColor3f(0.0f, 0.0f, 0.0f);
+		glLineWidth(1.0);	
+	}
+	
+	glDisable(GL_LINE_SMOOTH);
+	
+	// lateral scroll bar
+	if(drawLeftLateralScrollBar)
+	{
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glEnable(GL_POLYGON_SMOOTH);
+		glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
+		glBegin(GL_POLYGON);
+			glVertex2f(0.0, 0.0);
+			glVertex2f(20.0, 0.0);
+			glVertex2f(20.0, viewSize.height);
+			glVertex2f(0.0, viewSize.height);
+		glEnd();
+		glColor3f(0.0f, 0.0f, 0.0f);
+		glDisable(GL_BLEND);
+		glDisable(GL_POLYGON_SMOOTH);
+	}
+	
 	[[self openGLContext] flushBuffer];//[cgl_ctx  flushBuffer];
 }
 
@@ -524,6 +591,20 @@
 	changeWLWW = YES;
 	for (int i=0; i<[isTextureWLWWUpdated count]; i++)
 		[isTextureWLWWUpdated replaceObjectAtIndex:i withObject:[NSNumber numberWithBool:NO]];
+}
+
+- (void)mouseMoved:(NSEvent *)theEvent
+{
+	NSPoint event_location = [theEvent locationInWindow];
+	mouseDownPosition = [self convertPointFromWindowToOpenGL:event_location];	
+
+	BOOL leftLateralScrollBarAlreadyDrawn = drawLeftLateralScrollBar;
+	if(mouseDownPosition.x<=20.0)
+		drawLeftLateralScrollBar = YES;
+	else
+		drawLeftLateralScrollBar = NO;
+	
+	if(leftLateralScrollBarAlreadyDrawn != drawLeftLateralScrollBar) [self setNeedsDisplay:YES];
 }
 
 @end

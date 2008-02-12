@@ -39,6 +39,8 @@ typedef enum {
 	BOOL changeWLWW;
 	float wl, ww, startWL, startWW;
 	NSMutableArray *isTextureWLWWUpdated;
+	
+	BOOL drawLeftLateralScrollBar, drawRightLateralScrollBar;
 }
 
 @property(readonly) int thumbnailWidth, thumbnailHeight;
