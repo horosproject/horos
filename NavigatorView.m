@@ -89,60 +89,6 @@
 	ww = [viewer imageView].curWW;
 }
 
-// generates a texture for each slice and each time frame
-- (void)generateTextures;
-{
-	NSLog(@"generateTextures");
-	
-	[[self openGLContext] makeCurrentContext];
-	
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
-	glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	
-	if(!thumbnailsTextureArray)
-		thumbnailsTextureArray = [[NSMutableArray array] retain];
-	else
-	{
-		for (NSNumber *n in thumbnailsTextureArray)
-		{
-			GLuint textureName = [n intValue];
-			glDeleteTextures(1, &textureName);
-		}
-		[thumbnailsTextureArray removeAllObjects];
-	}
-		
-
-	for(int t=0; t<[viewer maxMovieIndex]; t++)
-	{
-		NSMutableArray *pixList = [viewer pixList:t];
-		for(int z=0; z<[pixList count]; z++)
-		{
-			DCMPix *pix = [pixList objectAtIndex:z];
-			char* textureBuffer = [pix baseAddr];
-			
-			if( textureBuffer)
-			{
-				GLuint textureName = 0L;
-				
-				glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, [pix pwidth]*[pix pheight]*4, textureBuffer);
-				
-				glGenTextures(1, &textureName);
-				glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
-				glPixelStorei(GL_UNPACK_ROW_LENGTH, [pix pwidth]);
-				glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-				glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_INTENSITY8, [pix pwidth], [pix pheight], 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, textureBuffer);
-				
-				[thumbnailsTextureArray addObject:[NSNumber numberWithInt:textureName]];
-			}
-			else
-				[thumbnailsTextureArray addObject:[NSNumber numberWithInt:-1]];
-		}
-	}
-	[self setNeedsDisplay:YES];
-}
-
 - (void)initTextureArray;
 {
 	if(!thumbnailsTextureArray)
@@ -277,84 +223,76 @@
 		NSMutableArray *pixList = [viewer pixList:t];
 		for(int z=0; z<[pixList count]; z++)
 		{
-			//if([(NSNumber*)[thumbnailsTextureArray objectAtIndex:i] intValue]<0)
-//				[self generateTextureForSlice:z movieIndex:t arrayIndex:i];
-//
-//			if([(NSNumber*)[thumbnailsTextureArray objectAtIndex:i] intValue]>=0)
-//			{
-				upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
-				thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
+			upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
+			thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
 
-				if(NSIntersectsRect(thumbRect, viewFrame))
-				{
-					[self generateTextureForSlice:z movieIndex:t arrayIndex:i];
-					
-					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, [(NSNumber*)[thumbnailsTextureArray objectAtIndex:i] intValue]);
+			if(NSIntersectsRect(thumbRect, viewFrame))
+			{
+				[self generateTextureForSlice:z movieIndex:t arrayIndex:i];
 				
-					DCMPix *pix = [pixList objectAtIndex:z];
+				glBindTexture(GL_TEXTURE_RECTANGLE_EXT, [(NSNumber*)[thumbnailsTextureArray objectAtIndex:i] intValue]);
+			
+				DCMPix *pix = [pixList objectAtIndex:z];
+				
+				NSPoint texUpperLeft, texUpperRight, texLowerLeft, texLowerRight;
+				texUpperLeft.x = 0.0;
+				texUpperLeft.y = 0.0;
+				texUpperRight.x = pix.pwidth;
+				texUpperRight.y = 0.0;
+				texLowerLeft.x = 0.0;
+				texLowerLeft.y = pix.pheight;
+				texLowerRight.x = pix.pwidth;
+				texLowerRight.y = pix.pheight;
+				
+				NSPoint centerPoint;
+				centerPoint.x = (texUpperLeft.x+texLowerRight.x)/2.0;
+				centerPoint.y = (texUpperLeft.y+texLowerRight.y)/2.0;
+				
+				float f = exp2f(offsetZoomFactor+zoomFactor);
+				texUpperLeft = [self zoomPoint:texUpperLeft withCenter:centerPoint factor:f];
+				texUpperRight = [self zoomPoint:texUpperRight withCenter:centerPoint factor:f];
+				texLowerLeft = [self zoomPoint:texLowerLeft withCenter:centerPoint factor:f];
+				texLowerRight = [self zoomPoint:texLowerRight withCenter:centerPoint factor:f];
+				
+				NSPoint pt, rotPt;
+				
+				NSPoint translate;
+				translate.x = (offset.x+translation.x)*f;
+				translate.y = (offset.y+translation.y)*f;
+				translate = [self rotatePoint:translate aroundPoint:NSMakePoint(0, 0) angle:offsetRotationAngle+rotationAngle];
+				
+				float angle = offsetRotationAngle+rotationAngle;
+				
+				// draw texture
+				glBegin(GL_QUAD_STRIP);
+					pt = texUpperLeft;
+					rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];
+					glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);
+					glVertex2f(upperLeft.x, upperLeft.y);
 					
-					NSPoint texUpperLeft, texUpperRight, texLowerLeft, texLowerRight;
-					texUpperLeft.x = 0.0;//offset.x+translation.x;
-					texUpperLeft.y = 0.0;//offset.y+translation.y;
-					texUpperRight.x = pix.pwidth;//+offset.x+translation.x;
-					texUpperRight.y = 0.0;//offset.y+translation.y;
-					texLowerLeft.x = 0.0;//offset.x+translation.x;
-					texLowerLeft.y = pix.pheight;//+offset.y+translation.y;
-					texLowerRight.x = pix.pwidth;//+offset.x+translation.x;
-					texLowerRight.y = pix.pheight;//+offset.y+translation.y;
-					
-					NSPoint centerPoint;
-					centerPoint.x = (texUpperLeft.x+texLowerRight.x)/2.0;
-					centerPoint.y = (texUpperLeft.y+texLowerRight.y)/2.0;
-					
-					float f = exp2f(offsetZoomFactor+zoomFactor);
-					texUpperLeft = [self zoomPoint:texUpperLeft withCenter:centerPoint factor:f];
-					texUpperRight = [self zoomPoint:texUpperRight withCenter:centerPoint factor:f];
-					texLowerLeft = [self zoomPoint:texLowerLeft withCenter:centerPoint factor:f];
-					texLowerRight = [self zoomPoint:texLowerRight withCenter:centerPoint factor:f];
-					
-					NSPoint pt, rotPt;
-					
-					NSPoint translate;
-					translate.x = (offset.x+translation.x)*f;
-					translate.y = (offset.y+translation.y)*f;
-					translate = [self rotatePoint:translate aroundPoint:NSMakePoint(0, 0) angle:offsetRotationAngle+rotationAngle];
-					
-					float angle = offsetRotationAngle+rotationAngle;
-					
-					// draw texture
-					glBegin(GL_QUAD_STRIP);
-						pt = texUpperLeft;
-						rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];
-						glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);//glTexCoord2f(0+offset.x+translation.x, 0+offset.y+translation.y);
-						glVertex2f(upperLeft.x, upperLeft.y);
-						
-						pt = texUpperRight;
-						rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];
-						glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);//glTexCoord2f(pix.pwidth+offset.x+translation.x, 0+offset.y+translation.y);
-						glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y);
+					pt = texUpperRight;
+					rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];
+					glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);
+					glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y);
 
-						pt = texLowerLeft;
-						rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];
-						glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);//glTexCoord2f(0+offset.x+translation.x, pix.pheight+offset.y+translation.y);
-						glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
+					pt = texLowerLeft;
+					rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];
+					glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);
+					glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
 
-						pt = texLowerRight;
-						rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];						
-						glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);//glTexCoord2f(pix.pwidth+offset.x+translation.x, pix.pheight+offset.y+translation.y);
-						glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight);
-					glEnd();
-				}
-				else
-				{
-//					if([[thumbnailsTextureArray objectAtIndex:i] intValue]>=0)
-					{
-						GLuint oldTextureName = [[thumbnailsTextureArray objectAtIndex:i] intValue];
-						glDeleteTextures(1, &oldTextureName);
-						[thumbnailsTextureArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInt:-1]];
-					}
-				}
-			//}
+					pt = texLowerRight;
+					rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];						
+					glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);
+					glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight);
+				glEnd();
+			}
+			else
+			{
+				GLuint oldTextureName = [[thumbnailsTextureArray objectAtIndex:i] intValue];
+				glDeleteTextures(1, &oldTextureName);
+				[thumbnailsTextureArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInt:-1]];
+			}
+
 			i++;
 		}
 	}
@@ -443,8 +381,7 @@
 			glVertex2f(viewBounds.size.width, viewSize.height);
 			glVertex2f(viewBounds.size.width-lateralScrollBarSize, viewSize.height);
 		glEnd();
-		//glColor3f(0.0f, 0.0f, 0.0f);
-		
+				
 		// draw the triangle
 		glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
 		glBegin(GL_POLYGON);
@@ -467,7 +404,7 @@
 //	glColor3f(0.0f, 0.0f, 0.0f);
 //	glPointSize(1.0);
 
-	[[self openGLContext] flushBuffer];//[cgl_ctx  flushBuffer];
+	[[self openGLContext] flushBuffer];
 }
 
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
