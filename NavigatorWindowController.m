@@ -64,4 +64,10 @@
 	[self release];
 }
 
+- (void)dealloc
+{
+	NSLog(@"NavigatorWindowController dealloc");
+	[super dealloc];
+}
+
 @end

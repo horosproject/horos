@@ -30,7 +30,7 @@ typedef enum {
 	int thumbnailWidth, thumbnailHeight;
 	float sizeFactor;
 
-	NSPoint mouseDownPosition, mouseDraggedPosition;
+	NSPoint mouseDownPosition, mouseDraggedPosition, mouseMovedPosition;
 	mouseEventType userAction;
 	NSPoint offset, translation;
 	float offsetRotationAngle, rotationAngle;
@@ -41,6 +41,7 @@ typedef enum {
 	NSMutableArray *isTextureWLWWUpdated;
 	
 	BOOL drawLeftLateralScrollBar, drawRightLateralScrollBar;
+	NSTimer *scrollTimer;
 }
 
 @property(readonly) int thumbnailWidth, thumbnailHeight;
@@ -59,5 +60,13 @@ typedef enum {
 - (NSPoint)zoomPoint:(NSPoint)pt withCenter:(NSPoint)c factor:(float)f;
 - (void)changeWLWW:(NSNotification*)notif;
 - (void)wlwwFrom:(NSPoint)start to:(NSPoint)stop;
+- (BOOL)isMouseOnLeftLateralScrollBar:(NSPoint)mousePos;
+- (BOOL)isMouseOnRightLateralScrollBar:(NSPoint)mousePos;
+
+- (void)scrollHorizontallyOfAmount:(float)amount;
+- (void)scrollLeft;
+- (void)scrollRight;
+- (void)scrollLeft:(NSTimer*)theTimer;
+- (void)scrollRight:(NSTimer*)theTimer;
 
 @end

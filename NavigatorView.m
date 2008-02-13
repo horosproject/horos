@@ -28,6 +28,9 @@
 #define maxThumbRow 10
 #define maxThumbColumn 20
 
+// lateral scroll bar size
+#define lateralScrollBarSize 20
+
 @implementation NavigatorView
 
 @synthesize thumbnailWidth, thumbnailHeight;
@@ -55,7 +58,6 @@
 		
 		GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 		[[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
-		
     }
     return self;
 }
@@ -66,13 +68,16 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[thumbnailsTextureArray release];
 	[isTextureWLWWUpdated release];
+	
+	if(scrollTimer)
+	{
+		[scrollTimer invalidate];
+		[scrollTimer release];
+		scrollTimer = nil;
+	}
+	
 	[super dealloc];
 }
-
-//- (void)awakeFromNib; 
-//{
-//	[[self window] setAcceptsMouseMovedEvents:YES];
-//}
 
 - (void)setViewer:(ViewerController*)v;
 {
@@ -235,6 +240,8 @@
 	
 	thumbnailWidth = width / sizeFactor;
 	thumbnailHeight = height / sizeFactor;
+	
+	[[self enclosingScrollView] setHorizontalPageScroll:thumbnailWidth];
 }
 
 - (void)drawRect:(NSRect)rect
@@ -352,13 +359,6 @@
 		}
 	}
 
-//	int count = 0;
-//	for (int j = 0; j<[thumbnailsTextureArray count]; j++)
-//	{
-//		if([[thumbnailsTextureArray objectAtIndex:j] intValue]>=0) count++;
-//	}
-//	NSLog(@"count : %d", count);
-
 	glDisable(GL_TEXTURE_RECTANGLE_EXT);
 
 	// draw selection
@@ -401,24 +401,72 @@
 	
 	glDisable(GL_LINE_SMOOTH);
 	
-	// lateral scroll bar
+	// lateral scroll bar	
 	if(drawLeftLateralScrollBar)
 	{
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		// draw the dark part
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_BLEND);
 		glEnable(GL_POLYGON_SMOOTH);
 		glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
 		glBegin(GL_POLYGON);
 			glVertex2f(0.0, 0.0);
-			glVertex2f(20.0, 0.0);
-			glVertex2f(20.0, viewSize.height);
+			glVertex2f(lateralScrollBarSize, 0.0);
+			glVertex2f(lateralScrollBarSize, viewSize.height);
 			glVertex2f(0.0, viewSize.height);
 		glEnd();
+		//glColor3f(0.0f, 0.0f, 0.0f);
+		
+		// draw the triangle
+		glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
+		glBegin(GL_POLYGON);
+			glVertex2f(lateralScrollBarSize-7.0, viewBounds.size.height/2.0-6.0);
+			glVertex2f(lateralScrollBarSize-7.0, viewBounds.size.height/2.0+6.0);
+			glVertex2f(3.0, viewBounds.size.height/2.0);
+		glEnd();
 		glColor3f(0.0f, 0.0f, 0.0f);
+		
 		glDisable(GL_BLEND);
 		glDisable(GL_POLYGON_SMOOTH);
 	}
 	
+	if(drawRightLateralScrollBar)
+	{
+		// draw the dark part
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glEnable(GL_POLYGON_SMOOTH);
+		glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
+		glBegin(GL_POLYGON);
+			glVertex2f(viewBounds.size.width-lateralScrollBarSize, 0.0);
+			glVertex2f(viewBounds.size.width, 0.0);
+			glVertex2f(viewBounds.size.width, viewSize.height);
+			glVertex2f(viewBounds.size.width-lateralScrollBarSize, viewSize.height);
+		glEnd();
+		//glColor3f(0.0f, 0.0f, 0.0f);
+		
+		// draw the triangle
+		glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
+		glBegin(GL_POLYGON);
+			glVertex2f(viewBounds.size.width-lateralScrollBarSize+6.0, viewBounds.size.height/2.0-6.0);
+			glVertex2f(viewBounds.size.width-lateralScrollBarSize+6.0, viewBounds.size.height/2.0+6.0);
+			glVertex2f(viewBounds.size.width-4.0, viewBounds.size.height/2.0);
+		glEnd();
+		glColor3f(0.0f, 0.0f, 0.0f);
+		
+		glDisable(GL_BLEND);
+		glDisable(GL_POLYGON_SMOOTH);
+	}
+	
+// mouse position (for debug purpose)	
+//	glPointSize(10.0);
+//	glColor3f(0.0f, 1.0f, 1.0f);
+//	glBegin(GL_POINTS);
+//		glVertex2f(mouseMovedPosition.x, mouseMovedPosition.y);
+//	glEnd();
+//	glColor3f(0.0f, 0.0f, 0.0f);
+//	glPointSize(1.0);
+
 	[[self openGLContext] flushBuffer];//[cgl_ctx  flushBuffer];
 }
 
@@ -434,6 +482,7 @@
 {
 	NSPoint pointInView = [self convertPoint:pointInWindow fromView:nil];
 	pointInView.y = [[[self enclosingScrollView] contentView] documentVisibleRect].size.height-pointInView.y;
+	pointInView.x -= [[[self enclosingScrollView] contentView] documentVisibleRect].origin.x;
 	return pointInView;
 }
 
@@ -452,6 +501,16 @@
 	startWL = wl;
 
 	changeWLWW = NO;
+	
+	BOOL scrollLeft = [self isMouseOnLeftLateralScrollBar:mouseDownPosition];
+	BOOL scrollRight = [self isMouseOnRightLateralScrollBar:mouseDownPosition];
+	if(scrollLeft && !scrollTimer) scrollTimer = [[NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(scrollLeft:) userInfo:nil repeats:YES] retain];
+	else if(scrollRight && !scrollTimer) scrollTimer = [[NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(scrollRight:) userInfo:nil repeats:YES] retain];
+
+	if(scrollLeft || scrollRight)
+	{
+		userAction = idle;
+	}
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent
@@ -501,6 +560,12 @@
 	changeWLWW = NO;
 	
 	userAction = idle;
+	if(scrollTimer)
+	{
+		[scrollTimer invalidate];
+		[scrollTimer release];
+		scrollTimer = nil;
+	}
 }
 
 - (void)rightMouseUp:(NSEvent *)theEvent;
@@ -596,15 +661,99 @@
 - (void)mouseMoved:(NSEvent *)theEvent
 {
 	NSPoint event_location = [theEvent locationInWindow];
-	mouseDownPosition = [self convertPointFromWindowToOpenGL:event_location];	
-
-	BOOL leftLateralScrollBarAlreadyDrawn = drawLeftLateralScrollBar;
-	if(mouseDownPosition.x<=20.0)
-		drawLeftLateralScrollBar = YES;
-	else
-		drawLeftLateralScrollBar = NO;
+	mouseMovedPosition = [self convertPointFromWindowToOpenGL:event_location];	
 	
-	if(leftLateralScrollBarAlreadyDrawn != drawLeftLateralScrollBar) [self setNeedsDisplay:YES];
+	BOOL leftLateralScrollBarAlreadyDrawn = drawLeftLateralScrollBar;
+	BOOL rightLateralScrollBarAlreadyDrawn = drawRightLateralScrollBar;
+
+	drawLeftLateralScrollBar = NO;
+	drawRightLateralScrollBar = NO;
+	
+	if([self isMouseOnLeftLateralScrollBar:mouseMovedPosition])
+	{
+		drawLeftLateralScrollBar = YES;
+	}
+	else if([self isMouseOnRightLateralScrollBar:mouseMovedPosition])
+	{
+		drawRightLateralScrollBar = YES;
+	}
+	
+	if(leftLateralScrollBarAlreadyDrawn != drawLeftLateralScrollBar || rightLateralScrollBarAlreadyDrawn != drawRightLateralScrollBar)
+		[self setNeedsDisplay:YES];
+		
+//	BOOL scrollLeft = [self isMouseOnLeftLateralScrollBar:mouseMovedPosition];
+//	BOOL scrollRight = [self isMouseOnRightLateralScrollBar:mouseMovedPosition];
+//	if(scrollLeft && !scrollTimer) scrollTimer = [[NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(scrollLeft:) userInfo:nil repeats:YES] retain];
+//	else if(scrollRight && !scrollTimer) scrollTimer = [[NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(scrollRight:) userInfo:nil repeats:YES] retain];
+//
+//	if(scrollLeft || scrollRight)
+//	{
+//		//[scrollTimer fire];
+//		userAction = idle;
+//	}
+//	else if(scrollTimer)
+//	{
+//		[scrollTimer invalidate];
+//		[scrollTimer release];
+//		scrollTimer = nil;
+//	}
+}
+
+- (BOOL)isMouseOnLeftLateralScrollBar:(NSPoint)mousePos;
+{
+	NSClipView *clipView = [[self enclosingScrollView] contentView];
+	NSRect viewBounds = [clipView documentVisibleRect];
+	BOOL inZone = mousePos.x<=lateralScrollBarSize;
+	inZone = inZone && mousePos.x>=0;
+	inZone = inZone && mousePos.y+viewBounds.origin.y<=viewBounds.size.height;
+	inZone = inZone && mousePos.y+viewBounds.origin.y>=0;
+	return inZone;
+}
+
+- (BOOL)isMouseOnRightLateralScrollBar:(NSPoint)mousePos;
+{
+	NSClipView *clipView = [[self enclosingScrollView] contentView];
+	NSRect viewBounds = [clipView documentVisibleRect];
+	BOOL inZone = mousePos.x>=viewBounds.size.width - lateralScrollBarSize;
+	inZone = inZone && mousePos.x<=viewBounds.size.width;
+	inZone = inZone && mousePos.y+viewBounds.origin.y<=viewBounds.size.height;
+	inZone = inZone && mousePos.y+viewBounds.origin.y>=0;
+	return inZone;
+}
+
+- (void)scrollHorizontallyOfAmount:(float)amount;
+{
+	NSClipView *clipView = [[self enclosingScrollView] contentView];
+	NSRect viewBounds = [clipView documentVisibleRect];
+	NSPoint newOrigin = viewBounds.origin;
+	newOrigin.x += amount;
+	newOrigin.y += 20; // ... ?? don't know why but it works.. size of the horizontal ruler?
+		
+	if(newOrigin.x<0) newOrigin.x = 0.0;
+	if(newOrigin.x+viewBounds.size.width>[self frame].size.width) newOrigin.x = [self frame].size.width - viewBounds.size.width;
+
+	if(newOrigin.x!=viewBounds.origin.x)
+		[clipView setBoundsOrigin:newOrigin];
+}
+
+- (void)scrollLeft;
+{
+	[self scrollHorizontallyOfAmount:-[[self enclosingScrollView] horizontalPageScroll]];
+}
+
+- (void)scrollRight;
+{
+	[self scrollHorizontallyOfAmount:[[self enclosingScrollView] horizontalPageScroll]];
+}
+
+- (void)scrollLeft:(NSTimer*)theTimer;
+{
+	[self scrollLeft];
+}
+
+- (void)scrollRight:(NSTimer*)theTimer;
+{
+	[self scrollRight];
 }
 
 @end
