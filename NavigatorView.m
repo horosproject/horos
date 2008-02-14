@@ -55,7 +55,8 @@
 		drawRightLateralScrollBar = NO;
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:@"changeWLWW" object:nil];
-		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name:@"DCMViewIndexChanged" object:nil];
+
 		GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 		[[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
     }
@@ -188,6 +189,10 @@
 	thumbnailHeight = height / sizeFactor;
 	
 	[[self enclosingScrollView] setHorizontalPageScroll:thumbnailWidth];
+	[[self enclosingScrollView] setHorizontalLineScroll:thumbnailWidth];
+	
+	[[self enclosingScrollView] setVerticalPageScroll:thumbnailHeight];
+	[[self enclosingScrollView] setVerticalLineScroll:thumbnailHeight];
 }
 
 - (void)drawRect:(NSRect)rect
@@ -340,20 +345,19 @@
 	glDisable(GL_LINE_SMOOTH);
 	
 	// lateral scroll bar	
-	if(drawLeftLateralScrollBar)
+	if(drawLeftLateralScrollBar && [self canScrollHorizontallyOfAmount:-[[self enclosingScrollView] horizontalPageScroll]])
 	{
 		// draw the dark part
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_BLEND);
 		glEnable(GL_POLYGON_SMOOTH);
-		glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
+		glColor4f(0.0f, 0.0f, 0.0f, 0.75f);
 		glBegin(GL_POLYGON);
 			glVertex2f(0.0, 0.0);
 			glVertex2f(lateralScrollBarSize, 0.0);
 			glVertex2f(lateralScrollBarSize, viewSize.height);
 			glVertex2f(0.0, viewSize.height);
 		glEnd();
-		//glColor3f(0.0f, 0.0f, 0.0f);
 		
 		// draw the triangle
 		glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
@@ -368,13 +372,13 @@
 		glDisable(GL_POLYGON_SMOOTH);
 	}
 	
-	if(drawRightLateralScrollBar)
+	if(drawRightLateralScrollBar && [self canScrollHorizontallyOfAmount:[[self enclosingScrollView] horizontalPageScroll]])
 	{
 		// draw the dark part
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_BLEND);
 		glEnable(GL_POLYGON_SMOOTH);
-		glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
+		glColor4f(0.0f, 0.0f, 0.0f, 0.75f);
 		glBegin(GL_POLYGON);
 			glVertex2f(viewBounds.size.width-lateralScrollBarSize, 0.0);
 			glVertex2f(viewBounds.size.width, 0.0);
@@ -581,6 +585,11 @@
 	}
 }
 
+- (void)refresh:(NSNotification*)notif;
+{
+	[self setNeedsDisplay:YES];
+}
+
 - (void)wlwwFrom:(NSPoint)start to:(NSPoint)stop;
 {
 	float WWAdapter = startWW / 100.0;
@@ -658,13 +667,28 @@
 	return inZone;
 }
 
+- (BOOL)canScrollHorizontallyOfAmount:(float)amount;
+{
+	NSClipView *clipView = [[self enclosingScrollView] contentView];
+	NSRect viewBounds = [clipView documentVisibleRect];
+	NSPoint newOrigin = viewBounds.origin;
+	newOrigin.x += amount;
+	
+	BOOL canScroll = YES;
+	
+	canScroll = canScroll && (newOrigin.x>=0);
+	canScroll = canScroll && (newOrigin.x+viewBounds.size.width<=[self frame].size.width);
+
+	return canScroll;
+}
+
 - (void)scrollHorizontallyOfAmount:(float)amount;
 {
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
 	NSRect viewBounds = [clipView documentVisibleRect];
 	NSPoint newOrigin = viewBounds.origin;
 	newOrigin.x += amount;
-	newOrigin.y += 20; // ... ?? don't know why but it works.. size of the horizontal ruler?
+	newOrigin.y += 20; // ... ?? don't know why, but it works.. size of the horizontal ruler?
 		
 	if(newOrigin.x<0) newOrigin.x = 0.0;
 	if(newOrigin.x+viewBounds.size.width>[self frame].size.width) newOrigin.x = [self frame].size.width - viewBounds.size.width;

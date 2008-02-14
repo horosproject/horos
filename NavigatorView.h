@@ -62,6 +62,7 @@ typedef enum {
 - (BOOL)isMouseOnLeftLateralScrollBar:(NSPoint)mousePos;
 - (BOOL)isMouseOnRightLateralScrollBar:(NSPoint)mousePos;
 
+- (BOOL)canScrollHorizontallyOfAmount:(float)amount;
 - (void)scrollHorizontallyOfAmount:(float)amount;
 - (void)scrollLeft;
 - (void)scrollRight;

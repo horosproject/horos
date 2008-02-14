@@ -1787,7 +1787,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 	[[self window] setAcceptsMouseMovedEvents: YES];
 
-	if( dcmPixList && index > -1) {
+	if( dcmPixList && index > -1)
+	{
 		if( [[[[dcmFilesList objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"]) noScale = YES;
 		else noScale = NO;
 			
@@ -1846,8 +1847,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			yearOld = [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] retain];
 		else
 			yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
-    }
-	else {
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMViewIndexChanged" object:self];
+	}
+	else
+	{
 		[curDCM release];
 		curDCM = 0L;
 		curImage = -1;
