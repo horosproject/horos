@@ -302,6 +302,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[moviePosSlider setIntValue: curMovieIndex];
 	
 	[view movieChangeSource: (float*) [volumeData[ curMovieIndex] bytes] showWait: NO];
+	[self displayROIVolumes];
 }
 
 -(void) updateVolumeData: (NSNotification*) note
@@ -388,6 +389,9 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[moviePlayStop setEnabled: YES];
 	
 	[self computeMinMax];
+	
+	roiVolumes[maxMovieIndex-1] = [[NSMutableArray alloc] initWithCapacity:0];
+	[self computeROIVolumes];
 }
 
 - (float) blendingMinimumValue;
@@ -717,7 +721,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
            selector: @selector(CloseViewerNotification:)
                name: @"CloseViewerNotification"
              object: nil];
-
+	
 	//should we always zoom the Window?
 	//if( [style isEqualToString:@"standard"])
 	//	[[self window] performZoom:self];
@@ -734,10 +738,14 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	
 	[view updateScissorStateButtons];
 	
-	roiVolumes = [[NSMutableArray alloc] initWithCapacity:0];
+	for(int m=0; m<maxMovieIndex; m++)
+	{
+		roiVolumes[m] = [[NSMutableArray alloc] initWithCapacity:0];
+	}
 #ifdef roi3Dvolume
 	[self computeROIVolumes];
 	[self displayROIVolumes];
+	[nc addObserver:self selector:@selector(updateROIVolume:) name:@"ROIVolumePropertiesChanged" object:nil];
 #endif
 
 	// allow bones removal only for CT scans
@@ -1090,7 +1098,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[y2DPointsArray release];
 	[z2DPointsArray release];
 	[viewer2D release];
-	[roiVolumes release];
+	for(int m=0; m<maxMovieIndex; m++) [roiVolumes[m] release];
 	[_renderingMode release];
 	
 	[appliedConvolutionFilters release];
@@ -2562,24 +2570,29 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 #ifdef roi3Dvolume
 - (void) computeROIVolumes
 {
-	int i;
 	NSArray *roiNames = [viewer2D roiNames];
-	[roiVolumes removeAllObjects];
-	
-	for(i=0; i<[roiNames count]; i++)
-	{
-		NSArray *roisWithCurrentName = [viewer2D roisWithName:[roiNames objectAtIndex:i]];
-		ROIVolume *volume = [[[ROIVolume alloc] init] autorelease];
-		[volume setFactor:[self factor]];
-		[volume setROIList:roisWithCurrentName];
-		if ([volume isVolume])
-			[roiVolumes addObject:volume];
+
+	for(int m=0; m<maxMovieIndex; m++)
+	{	
+		[roiVolumes[m] removeAllObjects];
+
+		for(int i=0; i<[roiNames count]; i++)
+		{
+			NSArray *roisWithCurrentName = [viewer2D roisWithName:[roiNames objectAtIndex:i] forMovieIndex:m];
+			ROIVolume *volume = [[[ROIVolume alloc] init] autorelease];
+			[volume setFactor:[self factor]];
+			[volume setROIList:roisWithCurrentName];
+			if ([volume isVolume])
+			{
+				[roiVolumes[m] addObject:volume];
+			}
+		}
 	}
 }
 
 - (NSMutableArray*) roiVolumes
 {
-	return roiVolumes;
+	return roiVolumes[curMovieIndex];
 }
 
 //- (void) displayROIVolumeAtIndex: (int) index
@@ -2608,12 +2621,23 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 - (void) displayROIVolumes
 {
-	int i;
-	for(i=0; i<[roiVolumes count]; i++)
+	for(int m=0; m<maxMovieIndex; m++)
+	{	
+		for(int i=0; i<[roiVolumes[m] count]; i++)
+		{			
+			[self hideROIVolume:[roiVolumes[m] objectAtIndex:i]];
+		}
+	}
+
+	for(int i=0; i<[roiVolumes[curMovieIndex] count]; i++)
 	{
-		if([[roiVolumes objectAtIndex:i] visible])
+//		BOOL visible = NO;
+//		for(int n=0; n<maxMovieIndex; n++)
+//			if([roiVolumes[n] objectAtIndex:i])
+//				visible = visible || [[roiVolumes[n] objectAtIndex:i] visible];
+		if([[roiVolumes[curMovieIndex] objectAtIndex:i] visible])
 		{
-			[self displayROIVolume:[roiVolumes objectAtIndex:i]];
+			[self displayROIVolume:[roiVolumes[curMovieIndex] objectAtIndex:i]];
 		}
 	}
 }
@@ -2643,6 +2667,33 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 		}
 	}
 }
+
+- (void)updateROIVolume:(NSNotification*)notification;
+{
+	ROIVolume* changedROIVolume = [notification object];
+	for(int m=0; m<maxMovieIndex; m++)
+	{
+		BOOL found = NO;
+		int index;
+		for(int i=0; i<[roiVolumes[m] count] && !found; i++)
+		{
+			found = changedROIVolume==[roiVolumes[m] objectAtIndex:i];
+			index = i;
+		}
+		
+		if(found)
+		{
+			for(int n=0; n<maxMovieIndex; n++)
+			{
+				if(![[[[roiVolumes[n] objectAtIndex:index] displayProperties] objectForKey:[[notification userInfo] objectForKey:@"key"]] isEqualTo:[[changedROIVolume displayProperties] objectForKey:[[notification userInfo] objectForKey:@"key"]]])
+				{
+					[(ROIVolume*)[roiVolumes[n] objectAtIndex:index] setDisplayProperties:[changedROIVolume displayProperties]];
+				}
+			}
+		}
+	}
+}
+
 #endif
 
 - (ViewerController*) viewer2D {return viewer2D;}

@@ -146,4 +146,7 @@
 
 - (NSDictionary*) properties;
 
+- (NSMutableDictionary*)displayProperties;
+- (void)setDisplayProperties:(NSDictionary*)newProperties;
+
 @end

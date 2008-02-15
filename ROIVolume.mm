@@ -419,6 +419,7 @@
 	blue = [c blueComponent];
 	opacity = [c alphaComponent];
 	[properties setValue:color forKey:@"color"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"ROIVolumePropertiesChanged" object:self userInfo:[NSDictionary dictionaryWithObject:@"color" forKey:@"key"]];
 }
 
 - (float) red
@@ -432,6 +433,7 @@
 	color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:opacity];
 	if( roiVolumeActor) roiVolumeActor->GetProperty()->SetColor(red, green, blue);
 	[properties setValue:[NSNumber numberWithFloat:red] forKey:@"red"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"ROIVolumePropertiesChanged" object:self userInfo:[NSDictionary dictionaryWithObject:@"red" forKey:@"key"]];
 }
 
 - (float) green
@@ -445,6 +447,7 @@
 	color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:opacity];
 	if( roiVolumeActor) roiVolumeActor->GetProperty()->SetColor(red, green, blue);
 	[properties setValue:[NSNumber numberWithFloat:green] forKey:@"green"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"ROIVolumePropertiesChanged" object:self userInfo:[NSDictionary dictionaryWithObject:@"green" forKey:@"key"]];
 }
 
 - (float) blue
@@ -458,6 +461,7 @@
 	color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:opacity];
 	if( roiVolumeActor) roiVolumeActor->GetProperty()->SetColor(red, green, blue);
 	[properties setValue:[NSNumber numberWithFloat:blue] forKey:@"blue"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"ROIVolumePropertiesChanged" object:self userInfo:[NSDictionary dictionaryWithObject:@"blue" forKey:@"key"]];
 }
 
 - (float) opacity
@@ -471,6 +475,7 @@
 	color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:opacity];
 	if( roiVolumeActor) roiVolumeActor->GetProperty()->SetOpacity(opacity);
 	[properties setValue:[NSNumber numberWithFloat:opacity] forKey:@"opacity"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"ROIVolumePropertiesChanged" object:self userInfo:[NSDictionary dictionaryWithObject:@"opacity" forKey:@"key"]];
 }
 
 - (BOOL) texture
@@ -488,6 +493,7 @@
 		else roiVolumeActor->SetTexture( 0L);
 	}
 	[properties setValue:[NSNumber numberWithBool: textured] forKey:@"texture"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"ROIVolumePropertiesChanged" object:self userInfo:[NSDictionary dictionaryWithObject:@"texture" forKey:@"key"]];
 }
 
 - (float) factor
@@ -506,9 +512,10 @@
 }
 
 - (void) setVisible: (BOOL) d
-{
+{	
 	visible = d;
 	[properties setValue:[NSNumber numberWithBool:visible] forKey:@"visible"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"ROIVolumePropertiesChanged" object:self userInfo:[NSDictionary dictionaryWithObject:@"visible" forKey:@"key"]];
 }
 
 - (NSString*) name
@@ -519,6 +526,31 @@
 - (NSDictionary*) properties
 {
 	return properties;
+}
+
+- (NSMutableDictionary*)displayProperties;
+{
+	NSMutableDictionary *displayProperties = [NSMutableDictionary dictionary];
+	[displayProperties setValue:[properties valueForKey:@"color"] forKey:@"color"];
+	[displayProperties setValue:[properties valueForKey:@"red"] forKey:@"red"];
+	[displayProperties setValue:[properties valueForKey:@"green"] forKey:@"green"];
+	[displayProperties setValue:[properties valueForKey:@"blue"] forKey:@"blue"];
+	[displayProperties setValue:[properties valueForKey:@"opacity"] forKey:@"opacity"];
+	[displayProperties setValue:[properties valueForKey:@"texture"] forKey:@"texture"];
+	[displayProperties setValue:[properties valueForKey:@"visible"] forKey:@"visible"];
+
+	return displayProperties;
+}
+
+- (void)setDisplayProperties:(NSDictionary*)newProperties;
+{
+	[self setColor:[newProperties valueForKey:@"color"]];
+	[self setRed:[[newProperties valueForKey:@"red"] floatValue]];
+	[self setGreen:[[newProperties valueForKey:@"green"] floatValue]];
+	[self setBlue:[[newProperties valueForKey:@"blue"] floatValue]];
+	[self setOpacity:[[newProperties valueForKey:@"opacity"] floatValue]];
+	[self setTexture:[[newProperties valueForKey:@"texture"] boolValue]];
+	[self setVisible:[[newProperties valueForKey:@"visible"] boolValue]];
 }
 
 @end
