@@ -703,7 +703,11 @@ enum
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts error:(NSString**) error;
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs error:(NSString**) error;
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs:(BOOL) generateMissingROIs generatedROIs:(NSMutableArray*) generatedROIs computeData:(NSMutableDictionary*) data error:(NSString**) error;
-- (NSArray*) roisWithName: (NSString*) name;
+
+- (NSArray*)roisWithName:(NSString*)name;
+- (NSArray*)roisWithName:(NSString*)name in4D:(BOOL)in4D;
+- (NSArray*)roisWithName:(NSString*)name forMovieIndex:(int)m;
+
 - (NSArray*) roisWithComment: (NSString*) comment;
 - (NSArray*) roiNames;
 - (void) deleteSeriesROIwithName: (NSString*) name;

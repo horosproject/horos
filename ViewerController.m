@@ -10827,20 +10827,40 @@ int i,j,l;
 	return rois;
 }
 
-- (NSArray*) roisWithName: (NSString*) name
+- (NSArray*)roisWithName:(NSString*)name;
 {
-	int x, i;
-	
+	return [self roisWithName:name in4D:NO];
+}
+
+- (NSArray*)roisWithName:(NSString*)name in4D:(BOOL)in4D;
+{
 	NSMutableArray *rois = [NSMutableArray array];
 	
-	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
+	if(in4D)
 	{
-		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
+		for (int m = 0; m<maxMovieIndex; m++)
 		{
-			ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
+			[rois addObjectsFromArray:[self roisWithName:name forMovieIndex:m]];
+		}
+	}
+	else
+		[rois addObjectsFromArray:[self roisWithName:name forMovieIndex:curMovieIndex]];
+		
+	return rois;
+}
+
+- (NSArray*)roisWithName:(NSString*)name forMovieIndex:(int)m;
+{
+	NSMutableArray *rois = [NSMutableArray array];
+
+	for(int x = 0; x < [pixList[m] count]; x++)
+	{
+		for(int i = 0; i < [[roiList[m] objectAtIndex: x] count]; i++)
+		{
+			ROI	*curROI = [[roiList[m] objectAtIndex: x] objectAtIndex: i];
 			if( [[curROI name] isEqualToString: name])
 			{
-				[curROI setPix:[pixList[curMovieIndex] objectAtIndex: x]];
+				[curROI setPix:[pixList[m] objectAtIndex: x]];
 				[rois addObject: curROI];
 			}
 		}
@@ -11242,7 +11262,7 @@ int i,j,l;
 		}
 		else
 		{
-			[self applyMorphology: [self roisWithName:[selectedROI name]] action:morphoFunction radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
+			[self applyMorphology: [self roisWithName:[selectedROI name] in4D:YES] action:morphoFunction radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
 		}
 		[filter release];
 		[wait close];
