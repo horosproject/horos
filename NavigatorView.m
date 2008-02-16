@@ -132,7 +132,10 @@
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 	NSMutableArray *pixList = [viewer pixList:t];
-	DCMPix *pix = [pixList objectAtIndex:z];
+	
+	DCMPix *pix;
+	if( [[viewer imageView] flippedData]) pix = [pixList objectAtIndex: [pixList count] -z -1];
+	else pix = [pixList objectAtIndex:z];
 	
 	if(changeWLWW) [pix changeWLWW:wl :ww];
 	else if(![[isTextureWLWWUpdated objectAtIndex:i] boolValue]) [pix changeWLWW:wl :ww];
@@ -427,6 +430,11 @@
 	return pointInView;
 }
 
+- (void)scrollWheel:(NSEvent *)theEvent
+{
+	[self scrollHorizontallyOfAmount: - [theEvent deltaY] * [[self enclosingScrollView] horizontalPageScroll]];
+}
+
 - (void)mouseDown:(NSEvent *)theEvent;
 {
 	NSPoint event_location = [theEvent locationInWindow];
@@ -595,7 +603,7 @@
 	float WWAdapter = startWW / 100.0;
 	if( WWAdapter < 0.001) WWAdapter = 0.001;
 	
-	wl = startWL + (stop.y -  start.y)*WWAdapter;
+	wl = startWL + -(stop.y -  start.y)*WWAdapter;
 	ww = startWW + (stop.x -  start.x)*WWAdapter;
 	
 	[[viewer imageView] setWLWW:wl :ww];
