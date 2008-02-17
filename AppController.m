@@ -633,6 +633,55 @@ static NSDate *lastWarningDate = 0L;
 
 @implementation AppController
 
+
+
+
+//
+//NSRect newWindowFrame = ... the new window size;
+//
+//    NSDictionary *windowResize;
+//    windowResize = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                 window, NSViewAnimationTargetKey,
+//                                 [NSValue valueWithRect: newWindowFrame],
+//                                 NSViewAnimationEndFrameKey,
+//                                 nil];
+//
+//    NSDictionary *oldFadeOut = nil;
+//    if (oldView != nil) {
+//        oldFadeOut = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                   oldView, NSViewAnimationTargetKey,
+//                                   NSViewAnimationFadeOutEffect,
+//                                   NSViewAnimationEffectKey, nil];
+//    }
+//
+//    NSDictionary *newFadeIn;
+//    newFadeIn = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                  newView, NSViewAnimationTargetKey,
+//                              NSViewAnimationFadeInEffect,
+//                              NSViewAnimationEffectKey, nil];
+//
+//    NSArray *animations;
+//    animations = [NSArray arrayWithObjects:
+//                              windowResize, newFadeIn, oldFadeOut, nil];
+//
+//    NSViewAnimation *animation;
+//    animation = [[NSViewAnimation alloc]
+//                    initWithViewAnimations: animations];
+//
+//    [animation setAnimationBlockingMode: NSAnimationBlocking];
+//    [animation setDuration: 0.5]; // or however long you want it for
+//
+//    [animation startAnimation]; // because it's blocking, once it returns, we're done
+//
+//    [animation release];
+//
+
+
+
+
+
+
+
 + (void) displayImportantNotice:(id) sender
 {
 	return;

@@ -177,7 +177,7 @@ extern OSStatus SetupAuthorization(void)
 			NSLog(@"old origin x:%f  y:%f   width:%f height %f", frameRect.origin.x, frameRect.origin.y, frameRect.size.width,frameRect.size.height);
 			NSLog(@"new origin x:%f  y:%f   width:%f height %f",  newWindowFrame.origin.x,  newWindowFrame.origin.y,  newWindowFrame.size.width, newWindowFrame.size.height);
 			*/
-		//	[[self window] setFrame:newWindowFrame display:YES animate:YES];
+		//	[[self window] setFrame:newWindowFrame display:YES animate:[[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
 		
 			[pane willUnselect];
 			[[pane mainView] removeFromSuperview];
@@ -188,10 +188,10 @@ extern OSStatus SetupAuthorization(void)
 			[[aPane mainView] setAutoresizesSubviews: YES];
 			[[aPane mainView] setAutoresizingMask: NSViewWidthSizable + NSViewHeightSizable];
 			
-			[[self window] setFrame:newWindowFrame display:YES animate:YES];
+			[[self window] setFrame:newWindowFrame display:YES animate:[[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
 			
 			[[self window] setContentMinSize: newRect.size];
-			[[self window] setFrame:newWindowFrame display:YES animate:YES];
+			[[self window] setFrame:newWindowFrame display:YES animate:[[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
 			
 			
 			[destView addSubview:[aPane mainView]];
@@ -358,10 +358,10 @@ extern OSStatus SetupAuthorization(void)
 	
 	[[pane mainView] removeFromSuperview];
 	
-	[[self window] setFrame:newWindowFrame display:YES animate:YES];
+	[[self window] setFrame:newWindowFrame display:YES animate:[[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
 	
 	[[self window] setContentMinSize: newRect.size];
-	[[self window] setFrame:newWindowFrame display:YES animate:YES];
+	[[self window] setFrame:newWindowFrame display:YES animate:[[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
 
 	[destView addSubview:allView];
 	[allView setNeedsDisplay:YES];

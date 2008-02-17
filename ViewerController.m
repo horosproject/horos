@@ -2445,7 +2445,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		myFrame = dstFrame;
 		
 		dontEnterMagneticFunctions = YES;
-		[theWindow setFrame:myFrame display:YES animate:YES];
+		[theWindow setFrame:myFrame display:YES animate: [[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
 		dontEnterMagneticFunctions = NO;
 		
 		// Is the Origin identical? If yes, switch both windows
@@ -2461,11 +2461,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 					dontEnterMagneticFunctions = YES;
 					
 					[window orderWindow: NSWindowBelow relativeTo: [theWindow windowNumber]];
-					[window setFrame: savedWindowsFrame display: YES animate: YES];
+					[window setFrame: savedWindowsFrame display: YES animate: [[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
 					
 					savedWindowsFrame = frame;
 					
-					[theWindow setFrame: frame display: YES animate:YES];
+					[theWindow setFrame: frame display: YES animate:[[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
 					dontEnterMagneticFunctions = NO;
 					
 					[window makeKeyAndOrderFront: self];
@@ -13200,7 +13200,7 @@ int i,j,l;
 		if( newFrame.size.width < newFrame.size.height) newFrame.size.height = newFrame.size.width;
 		else newFrame.size.width = newFrame.size.height;
 		
-		[[self window] setFrame: newFrame display: YES animate:YES];
+		[[self window] setFrame: newFrame display: YES animate:[[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
 	}
 	
 	NSDictionary	*p = [[NSUserDefaults standardUserDefaults] objectForKey: @"previousPrintSettings"];
@@ -13273,7 +13273,7 @@ int i,j,l;
 		if( newFrame.size.width < newFrame.size.height) newFrame.size.height = newFrame.size.width;
 		else newFrame.size.width = newFrame.size.height;
 		
-		[[self window] setFrame: newFrame display: YES animate:YES];
+		[[self window] setFrame: newFrame display: YES animate:[[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
 	}
 	
 	[[[AYDicomPrintWindowController alloc] init] autorelease];

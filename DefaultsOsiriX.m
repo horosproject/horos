@@ -868,6 +868,7 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject:@"0" forKey:@"SERIESORDER"];
 	
 	[defaultValues setObject:@"5" forKey:@"DICOMTimeout"];
+	[defaultValues setObject:@"1" forKey:@"NSWindowsSetFrameAnimate"];
 	
 	// ** TRANSITIONTYPE
 	[defaultValues setObject: @"0" forKey: @"TRANSITIONTYPE"];
