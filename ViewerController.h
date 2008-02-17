@@ -715,6 +715,7 @@ enum
 - (void)setStandardRect:(NSRect)rect;
 - (void)setWindowFrame:(NSRect)rect;
 - (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow;
+- (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow animate: (BOOL) animate;
 - (IBAction) Panel3D:(id) sender;
 - (void) revertSeries:(id) sender;
 - (void) executeRevert;

@@ -1953,7 +1953,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		return screenRect;
 }
 
-- (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow
+- (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow animate: (BOOL) animate
 {
 	NSRect	curRect = [[self window] frame];
 	BOOL wasAlreadyVisible = [[self window] isVisible];
@@ -1968,11 +1968,20 @@ static volatile int numberOfThreadsForRelisce = 0;
 		float scaleValue = [imageView scaleValue];
 		float previousHeight = [imageView frame].size.width;
 		
-		[[self window] setFrame:rect display:NO];
+		if( showWindow == YES && wasAlreadyVisible == YES)
+			[[self window] orderFront:self];
+			
+		if( animate == YES && wasAlreadyVisible == YES)
+		{
+			[AppController resizeWindowWithAnimation: [self window] newSize: rect];
+		}
+		else [[self window] setFrame: rect display:NO];
+		
+		if( showWindow == YES && wasAlreadyVisible == NO)
+			[[self window] orderFront:self];
+			
 		if( showWindow)
 		{
-			[[self window] orderFront:self];
-		
 			if( wasAlreadyVisible)
 				[imageView setScaleValue: scaleValue * [imageView frame].size.width / previousHeight];
 		}
@@ -1983,6 +1992,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	
 	dontEnterMagneticFunctions = NO;
+}
+
+- (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow
+{
+	[self setWindowFrame: rect showWindow: showWindow animate: NO];
 }
 
 - (void)setWindowFrame:(NSRect)rect

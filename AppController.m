@@ -633,30 +633,22 @@ static NSDate *lastWarningDate = 0L;
 
 @implementation AppController
 
-
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"])
 	{
-		NSDictionary *windowResize;
-		windowResize = [NSDictionary dictionaryWithObjectsAndKeys:
+		NSDictionary *windowResize = [NSDictionary dictionaryWithObjectsAndKeys:
 									 window, NSViewAnimationTargetKey,
 									 [NSValue valueWithRect: newWindowFrame],
 									 NSViewAnimationEndFrameKey,
 									 nil];
-
-		NSArray *animations;
-		animations = [NSArray arrayWithObjects: windowResize, nil];
-
-		NSViewAnimation *animation;
-		animation = [[NSViewAnimation alloc]  initWithViewAnimations: animations];
-
+		
+		NSViewAnimation * animation = [[[NSViewAnimation alloc]  initWithViewAnimations: [NSArray arrayWithObjects: windowResize, nil]] autorelease];
+		
 		[animation setAnimationBlockingMode: NSAnimationBlocking];
-		[animation setDuration: 0.2];
-
+		[animation setDuration: 0.15];
+		
 		[animation startAnimation];
-
-		[animation release];
 	}
 	else
 	{
@@ -2602,7 +2594,7 @@ static BOOL initialized = NO;
 		frame.size.height /= rows;
 		frame.origin.y += frame.size.height * ((rows - 1) - row);
 		
-		[[viewers objectAtIndex:i] setWindowFrame:frame];
+		[[viewers objectAtIndex:i] setWindowFrame:frame showWindow:YES animate: YES];
 	}
 }
 
@@ -2823,7 +2815,7 @@ static BOOL initialized = NO;
 			NSRect frame = [screen visibleFrame];
 			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
 			
-			[[viewersList objectAtIndex:i] setWindowFrame: frame];				
+			[[viewersList objectAtIndex:i] setWindowFrame: frame showWindow:YES animate: YES];			
 		}
 	}
 	
@@ -2847,7 +2839,7 @@ static BOOL initialized = NO;
 			frame.size.width /= viewersPerScreen;
 			frame.origin.x += (frame.size.width * viewerPosition);
 			
-			[[viewersList objectAtIndex:i] setWindowFrame: frame];
+			[[viewersList objectAtIndex:i] setWindowFrame: frame showWindow:YES animate: YES];
 		}
 	} 
 	//have different number of columns in each window
@@ -2870,7 +2862,7 @@ static BOOL initialized = NO;
 				
 			frame.origin.x += (frame.size.width * viewerPosition);
 			
-			[[viewersList objectAtIndex:i] setWindowFrame:frame];
+			[[viewersList objectAtIndex:i] setWindowFrame:frame showWindow:YES animate: YES];
 		}
 	}
 	//adjust for actual number of rows needed
@@ -2915,7 +2907,7 @@ static BOOL initialized = NO;
 				}
 			}
 			
-			[[viewersList objectAtIndex:i] setWindowFrame:frame];
+			[[viewersList objectAtIndex:i] setWindowFrame:frame showWindow:YES animate: YES];
 		}
 	}
 	else
