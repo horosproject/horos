@@ -28,7 +28,7 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 
 + (long) fixedHeight
 {
-	return 88;
+	return 90;
 }
 
 - (void) checkPosition
@@ -238,6 +238,7 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 	{
 		[toolbar release];
 		toolbar = [tb retain];
+		[toolbar setShowsBaselineSeparator: NO];
 	}
 	
 	if( toolbar)
@@ -249,7 +250,7 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 		}
 		
 		[[self window] setToolbar: toolbar];
-			
+		
 		[[self window] setShowsToolbarButton:NO];
 		[[[self window] toolbar] setVisible: YES];
 		

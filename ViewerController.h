@@ -677,6 +677,7 @@ enum
 - (IBAction) setCurvedMPRslider:(id) sender;
 - (IBAction) endCurvedMPR:(id) sender;
 - (IBAction) resetImage:(id) sender;
++ (void) setDontEnterMagneticFunctions:(BOOL) a;
 + (NSArray*) defaultROINames;
 + (void) setDefaultROINames: (NSArray*) names;
 - (IBAction) endExportDICOMFileSettings:(id) sender;

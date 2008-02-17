@@ -227,14 +227,17 @@ static int hotKeyToolCrossTable[] =
 
 + (int) getHotKeyEquivalentToTool:(int) h
 {
-	
-
 	if( h <= sizeof( hotKeyToolCrossTable) / sizeof( hotKeyToolCrossTable[ 0]))
 	{
 		return hotKeyToolCrossTable[ h];
 	}
 	
 	return -1;
+}
+
++ (void) setDontEnterMagneticFunctions:(BOOL) a
+{
+	dontEnterMagneticFunctions = a;
 }
 
 + (NSMutableArray*) getDisplayed2DViewers
@@ -2303,7 +2306,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) refreshToolbar
 {
-	long i;
+	int i;
 	
 	if (AUTOHIDEMATRIX) [self autoHideMatrix];
 	
