@@ -2445,7 +2445,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		myFrame = dstFrame;
 		
 		dontEnterMagneticFunctions = YES;
-		[theWindow setFrame:myFrame display:YES animate: [[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
+		[AppController resizeWindowWithAnimation: theWindow newSize: myFrame];
 		dontEnterMagneticFunctions = NO;
 		
 		// Is the Origin identical? If yes, switch both windows
@@ -2461,16 +2461,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 					dontEnterMagneticFunctions = YES;
 					
 					[window orderWindow: NSWindowBelow relativeTo: [theWindow windowNumber]];
-					[window setFrame: savedWindowsFrame display: YES animate: [[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
+					[AppController resizeWindowWithAnimation: window newSize: savedWindowsFrame];
 					
 					savedWindowsFrame = frame;
 					
-					[theWindow setFrame: frame display: YES animate:[[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
+					[AppController resizeWindowWithAnimation: theWindow newSize: frame];
+					
 					dontEnterMagneticFunctions = NO;
 					
-					[window makeKeyAndOrderFront: self];
-					[theWindow makeKeyAndOrderFront: self];
-					[self refreshToolbar];
+//					[window makeKeyAndOrderFront: self];
+//					[theWindow makeKeyAndOrderFront: self];
+//					[self refreshToolbar];
 					
 					return;
 				}
@@ -13200,7 +13201,7 @@ int i,j,l;
 		if( newFrame.size.width < newFrame.size.height) newFrame.size.height = newFrame.size.width;
 		else newFrame.size.width = newFrame.size.height;
 		
-		[[self window] setFrame: newFrame display: YES animate:[[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
+		[AppController resizeWindowWithAnimation: [self window] newSize: newFrame];
 	}
 	
 	NSDictionary	*p = [[NSUserDefaults standardUserDefaults] objectForKey: @"previousPrintSettings"];
@@ -13273,7 +13274,7 @@ int i,j,l;
 		if( newFrame.size.width < newFrame.size.height) newFrame.size.height = newFrame.size.width;
 		else newFrame.size.width = newFrame.size.height;
 		
-		[[self window] setFrame: newFrame display: YES animate:[[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
+		[AppController resizeWindowWithAnimation: [self window] newSize: newFrame];
 	}
 	
 	[[[AYDicomPrintWindowController alloc] init] autorelease];

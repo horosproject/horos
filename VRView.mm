@@ -2983,7 +2983,7 @@ public:
 																mouseLocationOnScreen.y-[point3DInfoPanel frame].size.height-20.0,
 																[point3DInfoPanel frame].size.width,
 																[point3DInfoPanel frame].size.height)
-										display:YES animate:[[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"]];
+										display:YES animate: NO];
 					[point3DInfoPanel orderFront:self];
 					
 					
