@@ -2813,12 +2813,15 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 			NSArray *content = [[NSFileManager defaultManager] directoryContentsAtPath:[paths objectAtIndex:j]];
 			for (i=0; i<[content count]; i++)
 			{
-				if(![[content objectAtIndex:i] isEqualToString:@".DS_Store"])
+				if( [[content objectAtIndex:i] length] > 0)
 				{
-					NSDictionary* clut = [CLUTOpacityView presetFromFileWithName:[[content objectAtIndex:i] stringByDeletingPathExtension]];
-					if(clut)
+					if( [[content objectAtIndex:i] characterAtIndex: 0] != '.')
 					{
-						[clutArray addObject:[[content objectAtIndex:i] stringByDeletingPathExtension]];
+						NSDictionary* clut = [CLUTOpacityView presetFromFileWithName:[[content objectAtIndex:i] stringByDeletingPathExtension]];
+						if(clut)
+						{
+							[clutArray addObject:[[content objectAtIndex:i] stringByDeletingPathExtension]];
+						}
 					}
 				}
 			}

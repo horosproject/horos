@@ -1043,8 +1043,10 @@ static NSArray*	statesArray = nil;
 	
 	filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	
-	for( NSString *filename in filenames ) {
-		if( [[filename lastPathComponent] characterAtIndex: 0] != '.') {
+	for( NSString *filename in filenames )
+	{
+		if( [[filename lastPathComponent] characterAtIndex: 0] != '.')
+		{
 			if([defaultManager fileExistsAtPath: filename isDirectory:&isDirectory])     // A directory
 			{
 				if( isDirectory == YES)	{
@@ -10495,6 +10497,9 @@ static NSArray*	openSubSeriesArray = 0L;
 						if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@".DS_STORE"] == YES)
 							addFile = NO;
 						
+						if( [[itemPath lastPathComponent] length] > 0 && [[itemPath lastPathComponent] characterAtIndex: 0] == '.')
+							addFile = NO;
+							
 						if( addFile) [filesArray addObject:itemPath];
 					}
 				}
@@ -10909,6 +10914,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				NSString *originalPath = srcPath;
 				//NSLog(@"Incoming path: %@", srcPath);
 				if ([[[srcPath lastPathComponent] uppercaseString] isEqualToString:@".DS_STORE"])
+					continue;
+				
+				if ( [[srcPath lastPathComponent] length] > 0 && [[srcPath lastPathComponent] characterAtIndex: 0] == '.')
 					continue;
 				
 				BOOL result, isAlias = [self isAliasPath: srcPath];
