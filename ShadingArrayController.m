@@ -1,8 +1,3 @@
-//
-//  ShadingArrayController.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 4/24/07.
 /*=========================================================================
   Program:   OsiriX
 

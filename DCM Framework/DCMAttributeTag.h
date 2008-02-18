@@ -1,9 +1,3 @@
-//
-//  DCMAttributeTag.h
-//  DCM Framework
-//
-//  Created by Lance Pysher on Thu Jun 03 2004.
-
 /*=========================================================================
   Program:   OsiriX
 

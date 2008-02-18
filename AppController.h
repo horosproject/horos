@@ -118,6 +118,7 @@ extern "C"
 + (void)checkForPagesTemplate; /**< Check for Pages report template */
 + (NSString*) currentHostName; /**< Return Network hostname */
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame;
++ (NSThread*) mainThread;
 
 #pragma mark-
 #pragma mark HTML Templates

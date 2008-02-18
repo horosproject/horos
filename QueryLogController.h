@@ -1,8 +1,3 @@
-//
-//  QueryLogController.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 8/16/05.
 /*=========================================================================
   Program:   OsiriX
 
@@ -16,6 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
+
 
 //
 

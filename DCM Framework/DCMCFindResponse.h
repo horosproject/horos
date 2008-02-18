@@ -1,9 +1,3 @@
-//
-//  DCMCFindResponse.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 2/12/05.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -17,7 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-//
+
 
 
 /*************

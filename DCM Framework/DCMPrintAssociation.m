@@ -1,9 +1,3 @@
-//
-//  DCMPrintAssociation.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 9/4/05.
-
 /*=========================================================================
   Program:   OsiriX
 

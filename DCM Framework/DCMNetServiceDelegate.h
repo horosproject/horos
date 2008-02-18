@@ -1,8 +1,3 @@
-//
-//  DCMNetServiceDelegate.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 7/13/05.
 /*=========================================================================
   Program:   OsiriX
 

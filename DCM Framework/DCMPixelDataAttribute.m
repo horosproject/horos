@@ -1,8 +1,3 @@
-//
-//  DCMPixelDataAttribute.m
-//  DCMSampleApp
-//
-//  Created by Lance Pysher on Fri Jun 18 2004.
 /*=========================================================================
   Program:   OsiriX
 

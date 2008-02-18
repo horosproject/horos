@@ -1,9 +1,3 @@
-//
-//  LogTableView.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 6/8/05.
-
 /*=========================================================================
   Program:   OsiriX
 

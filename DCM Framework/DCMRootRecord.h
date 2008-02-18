@@ -1,9 +1,3 @@
-//
-//  DCMRootRecord.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 2/23/05.
-
 /*=========================================================================
   Program:   OsiriX
 

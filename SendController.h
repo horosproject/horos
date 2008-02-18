@@ -1,9 +1,3 @@
-//
-//  SendController.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 12/14/05.
-
 /*=========================================================================
   Program:   OsiriX
 

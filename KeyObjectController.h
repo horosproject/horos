@@ -1,8 +1,3 @@
-//
-//  KeyObjectController.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 6/13/06.
 /*=========================================================================
   Program:   OsiriX
 

@@ -1,9 +1,3 @@
-//
-//  NetworkReceiveDataHandler.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 5/31/05.
-
 /*=========================================================================
   Program:   OsiriX
 

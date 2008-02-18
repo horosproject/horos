@@ -1,9 +1,3 @@
-//
-//  DCMPrintSCU.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 9/2/05.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -17,7 +11,6 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-//
 
 #import "DCMPrintSCU.h"
 #import "DCM.h"

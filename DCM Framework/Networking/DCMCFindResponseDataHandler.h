@@ -1,9 +1,3 @@
-//
-//  DCMCFindResponseDataHandler.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 1/1/05.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -17,7 +11,6 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-//
 
 #import <Cocoa/Cocoa.h>
 #import "DCMCompositeResponseHandler.h"

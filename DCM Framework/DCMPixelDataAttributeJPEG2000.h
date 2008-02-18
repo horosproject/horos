@@ -1,8 +1,3 @@
-//
-//  DCMPixelDataAttributeJPEG2000.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 9/9/04.
 /*=========================================================================
   Program:   OsiriX
 
@@ -16,7 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-//
+
 
 #import <Cocoa/Cocoa.h>
 #import "DCMPixelDataAttribute.h"

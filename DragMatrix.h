@@ -1,8 +1,3 @@
-//
-//  DragMatrix.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 8/13/06.
 /*=========================================================================
   Program:   OsiriX
 

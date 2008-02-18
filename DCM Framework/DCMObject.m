@@ -1,9 +1,3 @@
-//
-//  DCMObject.m
-//  DCM Framework
-//
-//  Created by Lance Pysher on Mon Jun 07 2004.
-
 /*=========================================================================
   Program:   OsiriX
 

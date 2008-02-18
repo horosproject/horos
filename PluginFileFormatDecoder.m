@@ -1,9 +1,3 @@
-//
-//  PluginFileFormatDecoder.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 10/2/05.
-
 /*=========================================================================
   Program:   OsiriX
 

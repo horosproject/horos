@@ -1,9 +1,3 @@
-//
-//  DCMPixelDataAttributeJPEG8.m
-//  OsiriX
-//
-//  Created by Lance Pysher on Mon Aug 02 2004.
-
 /*=========================================================================
   Program:   OsiriX
 

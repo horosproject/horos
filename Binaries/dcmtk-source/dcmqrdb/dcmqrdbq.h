@@ -1,9 +1,3 @@
-//
-//  dcmqrdbq.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 3/19/06.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -11,7 +5,7 @@
   All rights reserved.
   Distributed under GNU - GPL
   
-  See http://http://www.osirix-viewer.com/copyright.html for details.
+  See http://www.osirix-viewer.com/copyright.html for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR

@@ -1,9 +1,3 @@
-//
-//  DCMCharacterSet.m
-//  OsiriX
-//
-//  Created by Lance Pysher on Fri Jun 11 2004.
-
 /*=========================================================================
   Program:   OsiriX
 

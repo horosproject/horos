@@ -1,9 +1,3 @@
-//
-//  DCMCalendarDate.m
-//  OsiriX
-//
-//  Created by Lance Pysher on Wed Jul 14 2004.
-
 /*=========================================================================
   Program:   OsiriX
 

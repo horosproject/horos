@@ -1,9 +1,3 @@
-//
-//  ReportPluginFilter.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 3/12/06.
-
 /*=========================================================================
   Program:   OsiriX
 

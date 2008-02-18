@@ -1,9 +1,3 @@
-//
-//  DicomFileDCMTKCategory.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 6/27/06.
-
 /*=========================================================================
   Program:   OsiriX
 

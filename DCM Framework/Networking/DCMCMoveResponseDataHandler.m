@@ -1,9 +1,3 @@
-//
-//  DCMCMoveResponseDataHandler.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 1/5/05.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -17,7 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-//
+
 
 #import "DCMCMoveResponseDataHandler.h"
 #import "DCM.h"

@@ -1,9 +1,3 @@
-//
-//  BrowserControllerDCMTKCategory.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 6/27/06.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -21,6 +15,7 @@
 #import "BrowserControllerDCMTKCategory.h"
 #import <OsiriX/DCMObject.h>
 #import <OsiriX/DCMTransferSyntax.h>
+#import "AppController.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -50,8 +45,8 @@
 	[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", 0L]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 	[theTask launch];
-	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-//	[theTask waitUntilExit]; <- The problem with this: it calls the current running loop.... problems with current Lock !
+	if( [NSThread currentThread] == [AppController mainThread]) [theTask waitUntilExit];	//<- The problem with this: it calls the current running loop.... problems with current Lock !
+	else while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 	[theTask release];
 
 	return YES;
@@ -65,8 +60,8 @@
 	[theTask setArguments: [NSArray arrayWithObjects:path, @"decompress", dest,  0L]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 	[theTask launch];
-	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-//	[theTask waitUntilExit];	<- The problem with this: it calls the current running loop.... problems with current Lock !
+	if( [NSThread currentThread] == [AppController mainThread]) [theTask waitUntilExit];	//<- The problem with this: it calls the current running loop.... problems with current Lock !
+	else while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 	[theTask release];
 
 	if( dest && [dest isEqualToString:path] == NO)

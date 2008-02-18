@@ -1,8 +1,3 @@
-//
-//  OSIVoxel.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 4/26/07.
 /*=========================================================================
   Program:   OsiriX
 

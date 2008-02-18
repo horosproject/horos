@@ -1,9 +1,3 @@
-//
-//  DCMTKQueryRetrieveSCP.mm
-//  OsiriX
-//
-//  Created by Lance Pysher on 3/16/06.
-
 /*=========================================================================
   Program:   OsiriX
 

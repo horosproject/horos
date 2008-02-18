@@ -1,9 +1,3 @@
-//
-//  DCMFindSCU.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 12/31/04.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -17,7 +11,6 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-//
 
 
 /*************

@@ -1,9 +1,3 @@
-//
-//  LogWindowController.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 9/20/05.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -17,6 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
+
 
 
 #import "LogWindowController.h"

@@ -1,9 +1,3 @@
-//
-//  DCMObject.h
-//  DCM Framework
-//
-//  Created by Lance Pysher on Mon Jun 07 2004.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -17,7 +11,6 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-
 
 
 #import <Foundation/Foundation.h>

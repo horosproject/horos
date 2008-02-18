@@ -1,9 +1,3 @@
-//
-//  WindowLayoutManager.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 12/11/06.
-
 /*=========================================================================
   Program:   OsiriX
 

@@ -1,8 +1,3 @@
-//
-//  DragMatrixWithDelete.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 8/21/06.
 /*=========================================================================
   Program:   OsiriX
 

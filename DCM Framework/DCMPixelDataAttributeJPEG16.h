@@ -1,9 +1,3 @@
-//
-//  DCMPixelDataAttributeJPEG16.h
-//  OsiriX
-//
-//  Created by Lance Pysher on Mon Aug 02 2004.
-
 /*=========================================================================
   Program:   OsiriX
 

@@ -10489,9 +10489,11 @@ static NSArray*	openSubSeriesArray = 0L;
 							break;
 						}
 						
-						if( [[itemPath lastPathComponent] isEqualToString:@"DICOMDIR"] == YES) {
+						if( [[itemPath lastPathComponent] isEqualToString:@"DICOMDIR"] == YES)
 							addFile = NO;
-						}
+						
+						if( [[itemPath lastPathComponent] isEqualToString:@".DS_Store"] == YES)
+							addFile = NO;
 						
 						if( addFile) [filesArray addObject:itemPath];
 					}

@@ -1,9 +1,3 @@
-//
-//  DCMAttribute.m
-//  DCM Framework
-//
-//  Created by Lance Pysher on Fri Jun 04 2004.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -17,6 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
+
 #import "DCMAttribute.h"
 #import "DCM.h"
 

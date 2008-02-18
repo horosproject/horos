@@ -1,8 +1,3 @@
-//
-//  stringNumericCompare.h
-//  OsiriX
-//
-//  Created by Joël Spaltenstein on 9/29/05.
 /*=========================================================================
   Program:   OsiriX
 

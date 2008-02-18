@@ -1,5 +1,5 @@
 /*=========================================================================
-  Program:   ;
+  Program:   OsiriX
 
   Copyright (c) OsiriX Team
   All rights reserved.
@@ -11,7 +11,6 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-//  Created by joris on 12/12/05.
 
 
 

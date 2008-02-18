@@ -1,9 +1,3 @@
-//
-//  SelectedKeyImagesArrayController.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 8/14/06.
-
 /*=========================================================================
   Program:   OsiriX
 

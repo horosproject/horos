@@ -1,9 +1,3 @@
-//
-//  Centerline.mm
-//  OsiriX
-//
-//  Created by Lance Pysher on 9/17/07.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -16,11 +10,8 @@
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
-	 
-	 
-	Centerline extracts the centerline from a volume using thinning of the extracted surface
-	Used to created automated fly through for virtual endoscopy
 =========================================================================*/
+
 
 #import "Centerline.h"
 #import "OSIVoxel.h"

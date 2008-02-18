@@ -1,24 +1,4 @@
-//
-//  DCMTKStoreSCU.mm
-//  OsiriX
-//
-//  Created by Lance Pysher on 3/3/06.
-
-/*
-
- *  Purpose: Storage Service Class User (C-STORE operation)
- *
- *  Last Update:      $Author: Lance $
- *  Update Date:      $Date: 2005/12/08 15:44:22 $
- *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.64 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
- */
- 
- /*=========================================================================
+/*=========================================================================
   Program:   OsiriX
 
   Copyright (c) OsiriX Team
@@ -31,6 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
+
 /*
 ** svn Log
 ** $Log: DCMTKStoreSCU.mm,v $

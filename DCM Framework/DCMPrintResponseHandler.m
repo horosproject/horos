@@ -1,10 +1,3 @@
-//
-//  DCMPrintResponseHandler.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 9/4/05.
-
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -18,7 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-//
+
 
 #import "DCMPrintResponseHandler.h"
 

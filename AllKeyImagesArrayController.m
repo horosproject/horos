@@ -1,9 +1,3 @@
-//
-//  AllKeyImagesArrayController.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 8/11/06.
-
 /*=========================================================================
   Program:   OsiriX
 

@@ -1,9 +1,3 @@
-//
-//  DCMTKImageQueryNode.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 4/4/06.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -17,6 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
+
 
 #import <Cocoa/Cocoa.h>
 #import "DCMTKQueryNode.h"

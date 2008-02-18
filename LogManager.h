@@ -1,8 +1,3 @@
-//
-//  LogManager.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 4/21/06.
 /*=========================================================================
   Program:   OsiriX
 

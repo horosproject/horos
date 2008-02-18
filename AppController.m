@@ -633,6 +633,11 @@ static NSDate *lastWarningDate = 0L;
 
 @implementation AppController
 
++ (NSThread*) mainThread
+{
+	return mainThread;
+}
+
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"])
@@ -658,7 +663,7 @@ static NSDate *lastWarningDate = 0L;
 
 + (void) displayImportantNotice:(id) sender
 {
-	return;
+//	return;
 	
 	if( lastWarningDate == 0L || [lastWarningDate timeIntervalSinceNow] < -60*60*3)	// each 3*60 minutes of non-activity
 	{

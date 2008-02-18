@@ -1,9 +1,3 @@
-//
-//  dcmqrdbq.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 3/19/06.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -17,6 +11,8 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
+
+
 #import "browserController.h"
 #import "DICOMToNSString.h"
 #import "LogManager.h"

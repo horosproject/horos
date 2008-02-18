@@ -1,9 +1,3 @@
-//
-//  MPRPreviewView.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 12/28/06.
-
 /*=========================================================================
   Program:   OsiriX
 

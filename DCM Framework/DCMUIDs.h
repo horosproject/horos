@@ -1,8 +1,3 @@
-"DCMUIDS.h"
-
-//
-//  Created by Lance Pysher on Fri Mar 05 2004.
-
 /*=========================================================================
   Program:   OsiriX
 

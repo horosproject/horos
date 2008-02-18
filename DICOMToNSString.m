@@ -1,9 +1,3 @@
-//
-//  DICOMToNSString.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 3/3/06.
-
 /*=========================================================================
   Program:   OsiriX
 

@@ -1,9 +1,3 @@
-//
-//  DCMEncapsulatedPDF.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 10/31/05.
-
 /*=========================================================================
   Program:   OsiriX
 

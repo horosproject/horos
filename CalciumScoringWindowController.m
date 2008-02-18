@@ -1,8 +1,3 @@
-//
-//  CalciumScoringWindowController.mm
-//  OsiriX
-//
-//  Created by Lance Pysher on 1/25/07.
 /*=========================================================================
   Program:   OsiriX
 

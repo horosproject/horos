@@ -1,9 +1,3 @@
-//
-//  DCMTransferSyntax.m
-//  OsiriX
-//
-//  Created by Lance Pysher on Wed Jun 09 2004.
-
 /*=========================================================================
   Program:   OsiriX
 

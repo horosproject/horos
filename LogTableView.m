@@ -1,9 +1,3 @@
-//
-//  LogTableView.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 6/8/05.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -17,6 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
+
 
 
 #import "LogTableView.h"

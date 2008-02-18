@@ -1,9 +1,3 @@
-//
-//  MPRPerpendicularView.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 4/6/07.
-
 /*=========================================================================
   Program:   OsiriX
 

@@ -1,8 +1,3 @@
-//
-//  DCMObjectPixelDataImport.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 11/22/05.
 /*=========================================================================
   Program:   OsiriX
 

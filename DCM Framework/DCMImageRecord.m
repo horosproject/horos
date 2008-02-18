@@ -1,9 +1,3 @@
-//
-//  DCMImageRecord.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 2/21/05.
-
 /*=========================================================================
   Program:   OsiriX
 

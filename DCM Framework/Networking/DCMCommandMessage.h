@@ -1,8 +1,3 @@
-//
-//  DCMCommandMessage.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 12/13/04.
 /*=========================================================================
   Program:   OsiriX
 
@@ -16,7 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-//
+
 
 
 /*************

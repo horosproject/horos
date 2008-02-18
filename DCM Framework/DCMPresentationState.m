@@ -1,9 +1,3 @@
-//
-//  DCMPresentationState.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 9/27/05.
-
 /*=========================================================================
   Program:   OsiriX
 

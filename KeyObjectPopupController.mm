@@ -1,9 +1,3 @@
-//
-//  KeyObjectPopupController.mm
-//  OsiriX
-//
-//  Created by Lance Pysher on 7/16/06.
-
 /*=========================================================================
   Program:   OsiriX
 

@@ -1,9 +1,3 @@
-//
-//  StructuredReport.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 5/31/06.
-
 /*=========================================================================
   Program:   OsiriX
 

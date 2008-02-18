@@ -1,9 +1,3 @@
-//
-//  DCMNGetResponse.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 9/2/05.
-
 /*=========================================================================
   Program:   OsiriX
 

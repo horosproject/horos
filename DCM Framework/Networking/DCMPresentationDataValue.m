@@ -1,9 +1,3 @@
-//
-//  DCMPresentationDataValue.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 12/7/04.
-
 /*=========================================================================
   Program:   OsiriX
 

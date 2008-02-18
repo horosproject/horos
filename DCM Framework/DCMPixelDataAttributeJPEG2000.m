@@ -1,9 +1,3 @@
-//
-//  DCMPixelDataAttributeJPEG2000.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 9/9/04.
-
 /*=========================================================================
   Program:   OsiriX
 

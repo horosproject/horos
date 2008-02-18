@@ -1,9 +1,3 @@
-//
-//  MoveManager.m
-//  OsiriX
-//
-//  Created by Lance Pysher on 4/10/06.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -17,6 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
+
 
 #import "MoveManager.h"
 

@@ -1,8 +1,3 @@
-//
-//  DCMObjectPixelDataImport.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 11/22/05.
 /*=========================================================================
   Program:   OsiriX
 
@@ -16,7 +11,7 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-//
+
 
 #import <Cocoa/Cocoa.h>
 #import <OsiriX/DCMObject.h>

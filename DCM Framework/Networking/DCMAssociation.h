@@ -1,13 +1,7 @@
-//
-//  DCMAssociation.h
-//  OsiriX
-//
-//  Created by Lance Pysher on 12/3/04.
-
 /*=========================================================================
   Program:   OsiriX
 
-  Copyright c  OsiriX Team
+  Copyright (c) OsiriX Team
   All rights reserved.
   Distributed under GNU - GPL
   
@@ -17,7 +11,6 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
-//
 
 /*************
 The networking code of the DCMFramework is predominantly a port of the 11/4/04 version of the java pixelmed toolkit by David Clunie.

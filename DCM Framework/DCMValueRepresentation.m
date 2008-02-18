@@ -1,9 +1,3 @@
-//
-//  DCMValueRepresentation.m
-//  DCM Framework
-//
-//  Created by Lance Pysher on Fri Jun 04 2004.
-
 /*=========================================================================
   Program:   OsiriX
 
