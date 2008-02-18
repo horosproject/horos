@@ -45,8 +45,9 @@
 	[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", 0L]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 	[theTask launch];
-	if( [NSThread currentThread] == [AppController mainThread]) [theTask waitUntilExit];	//<- The problem with this: it calls the current running loop.... problems with current Lock !
-	else while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+//	if( [NSThread currentThread] == [AppController mainThread]) [theTask waitUntilExit];	//<- The problem with this: it calls the current running loop.... problems with current Lock !
+//	else
+	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 	[theTask release];
 
 	return YES;
@@ -60,8 +61,9 @@
 	[theTask setArguments: [NSArray arrayWithObjects:path, @"decompress", dest,  0L]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 	[theTask launch];
-	if( [NSThread currentThread] == [AppController mainThread]) [theTask waitUntilExit];	//<- The problem with this: it calls the current running loop.... problems with current Lock !
-	else while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+//	if( [NSThread currentThread] == [AppController mainThread]) [theTask waitUntilExit];	//<- The problem with this: it calls the current running loop.... problems with current Lock !
+//	else
+	while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
 	[theTask release];
 
 	if( dest && [dest isEqualToString:path] == NO)
