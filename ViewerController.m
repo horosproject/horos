@@ -1966,7 +1966,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[self setStandardRect:rect];
 	
-	if( NSEqualRects( curRect, rect) == NO)
+	BOOL rectIdentical = YES;
+	
+	if( fabs( curRect.origin.y - rect.origin.y) >= 1.0) rectIdentical = NO;
+	if( fabs( curRect.origin.x - rect.origin.x) >= 1.0) rectIdentical = NO;
+	if( fabs( curRect.size.height - rect.size.height) >= 1.0) rectIdentical = NO;
+	if( fabs( curRect.size.width - rect.size.width) >= 1.0) rectIdentical = NO;
+	
+	if( rectIdentical == NO)
 	{
 		float scaleValue = [imageView scaleValue];
 		float previousHeight = [imageView frame].size.width;
@@ -1991,6 +1998,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	else
 	{
+		if( NSEqualRects( curRect, rect) == NO)
+			[[self window] setFrame: rect display:NO];
+			
 		if( showWindow) [[self window] orderFront:self];
 	}
 	
