@@ -625,6 +625,8 @@ enum
 - (IBAction) roiPropagate:(id) sender;
 - (void) showWindowTransition;
 - (float) computeInterval;
+- (float) computeIntervalFlipNow: (NSNumber*) flipNowNumber;
+- (void) computeIntervalAsync;
 - (IBAction) endThicknessInterval:(id) sender;
 - (void) SetThicknessInterval:(id) constructionType;
 //- (IBAction) MPRViewer:(id) sender;

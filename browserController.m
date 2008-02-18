@@ -8611,7 +8611,7 @@ static BOOL needToRezoom;
 								//creation of new viewer
 								createdViewer = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
 								[createdViewer showWindowTransition];
-								[createdViewer startLoadImageThread];
+ 								[createdViewer startLoadImageThread];
 							}
 						}
 					}

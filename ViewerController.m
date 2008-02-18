@@ -147,9 +147,8 @@ static NSArray*		DefaultROINames;
 
 static  BOOL AUTOHIDEMATRIX								= NO;
 static	ViewerController *blendedwin					= 0L;
-static	float	deg2rad									= 3.14159265358979/180.0; 
+static	float deg2rad									= 3.14159265358979/180.0; 
 static	BOOL dontEnterMagneticFunctions = NO;
-static  BOOL  toolbarDidChanged = NO;
 
 static NSMenu *wlwwPresetsMenu = 0L;
 static NSMenu *contextualMenu = 0L;
@@ -4399,8 +4398,6 @@ static ViewerController *draggedController = 0L;
 	NSToolbarItem *item = [[notif userInfo] objectForKey: @"item"];
 	if( [retainedToolbarItems containsObject: item] == NO) [retainedToolbarItems addObject: item];
 	
-	
-	
 	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{		
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
@@ -4779,7 +4776,7 @@ static ViewerController *draggedController = 0L;
 	// Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
 	[toolbar setAllowsUserCustomization: YES];
 	[toolbar setAutosavesConfiguration: YES];
-//		[toolbar setDisplayMode: NSToolbarDisplayModeIconOnly];
+	[toolbar setShowsBaselineSeparator: NO];
 	
 	// We are the delegate
 	[toolbar setDelegate: self];
@@ -4801,6 +4798,7 @@ static ViewerController *draggedController = 0L;
 	self = [super initWithWindowNibName:@"Viewer"];
 	
 	retainedToolbarItems = [[NSMutableArray alloc] initWithCapacity: 0];
+	[self setupToolbar];
 	
 	[ROI loadDefaultSettings];
 	
@@ -4970,8 +4968,8 @@ static ViewerController *draggedController = 0L;
 //		[volumeData[ i] release];
 //	}
 	
-	[toolbar setDelegate: 0L];
-	[toolbar release];
+//	[toolbar setDelegate: 0L];
+	
 	
 	[ROINamesArray release];
 	
@@ -5005,6 +5003,8 @@ static ViewerController *draggedController = 0L;
 	
 //	[[IMAVManager sharedAVManager] setVideoDataSource:nil];
 //	[[IMService notificationCenter] removeObserver:self];
+
+	[toolbar release];
 }
 
 - (void) selectFirstTilingView
@@ -5070,6 +5070,9 @@ static ViewerController *draggedController = 0L;
 		[imageView setRotation: 0];
 	}
 	
+	originalOrientation = -1;
+	[orientationMatrix setEnabled: NO];
+
 	// Release previous data
 	[self finalizeSeriesViewing];
 	
@@ -5649,26 +5652,10 @@ static ViewerController *draggedController = 0L;
 	
 	if( stopThreadLoadImage == NO)
 	{
-		[self performSelectorOnMainThread:@selector( computeIntervalFlipNow:) withObject:[NSNumber numberWithBool: NO] waitUntilDone: NO];
 		[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: NO];
 		
-		switch( orientationVector)
-		{
-			case eAxialPos:
-			case eAxialNeg:
-				originalOrientation = 0;
-			break;
-			
-			case eCoronalNeg:
-			case eCoronalPos:
-				originalOrientation = 1;
-			break;
-			
-			case eSagittalNeg:
-			case eSagittalPos:
-				originalOrientation = 2;
-			break;
-		}
+		originalOrientation = -1;
+		[self performSelectorOnMainThread:@selector( computeIntervalAsync) withObject: 0L waitUntilDone: NO];
 	}
 	
 	ThreadLoadImage = NO;
@@ -6737,6 +6724,11 @@ static ViewerController *draggedController = 0L;
 		NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), NSLocalizedString(@"These images were acquired with a gantry tilt. This gantry tilt will produce a distortion in 3D post-processing.", nil), NSLocalizedString(@"OK", nil), 0L, 0L);
 }
 
+- (void) computeIntervalAsync
+{
+	[self computeIntervalFlipNow: [NSNumber numberWithBool: NO]];
+}
+
 -(float) computeIntervalFlipNow: (NSNumber*) flipNowNumber
 {
 	[self selectFirstTilingView];
@@ -6747,20 +6739,15 @@ static ViewerController *draggedController = 0L;
 		long				i, x;
 		BOOL				flipNow = [flipNowNumber boolValue];
 		
-//		if( interval < 0 && [pixList[ z] count] > 1)
 		if( [pixList[ z] count] > 1)
 		{
 			if( flipNow)
-			{
 				interval = 0;
-			}
 		}
 		
 		if( interval == 0 && [pixList[ z] count] > 1)
 		{
 			titledGantry = NO;
-			
-			[orientationMatrix setEnabled: NO];
 			
 			double		vectors[ 9], vectorsB[ 9];
 			BOOL		equalVector = YES;
@@ -6773,7 +6760,15 @@ static ViewerController *draggedController = 0L;
 				if( vectors[ i] != vectorsB[ i]) equalVector = NO;
 			}
 			
-			if( equalVector)
+			BOOL		equalZero = YES;
+			
+			for( i = 0; i < 9; i++)
+			{
+				if( vectors[ i] != 0) equalZero = NO;
+				if( vectorsB[ i] != 0) equalZero = NO;
+			}
+			
+			if( equalVector == YES && equalZero == NO)
 			{
 				if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
 				{
@@ -6821,6 +6816,27 @@ static ViewerController *draggedController = 0L;
 					[orientationMatrix selectCellWithTag: 0];
 					if( interval != 0) [orientationMatrix setEnabled: YES];
 					currentOrientationTool = 0;
+				}
+				
+				if( originalOrientation == -1)
+				{
+					switch( orientationVector)
+					{
+						case eAxialPos:
+						case eAxialNeg:
+							originalOrientation = 0;
+						break;
+						
+						case eCoronalNeg:
+						case eCoronalPos:
+							originalOrientation = 1;
+						break;
+						
+						case eSagittalNeg:
+						case eSagittalPos:
+							originalOrientation = 2;
+						break;
+					}
 				}
 				
 				double interval3d;
@@ -6985,12 +7001,13 @@ static ViewerController *draggedController = 0L;
 				}
 			}
 		}
-		else if( interval == 0) [orientationMatrix setEnabled: NO];
 	}
 	
 	[blendingController computeInterval];
 	
-	return [[pixList[ curMovieIndex] objectAtIndex:0] sliceInterval];
+	float val = [[pixList[ curMovieIndex] objectAtIndex:0] sliceInterval];
+	
+	return val;
 }
 
 -(float) computeInterval
@@ -15578,7 +15595,7 @@ int i,j,l;
 
 - (void) setPixelList:(NSMutableArray*)f fileList:(NSMutableArray*)d volumeData:(NSData*) v
 {
-	long i;
+	int i;
 	
 //	[[self window] setFrame: [[[[AppController sharedAppController] viewerScreens] objectAtIndex:0] visibleFrame] display: NO];
 	[[self window] zoom: self];
@@ -15660,8 +15677,6 @@ int i,j,l;
 	//
 	[self loadROI: 0];
 	
-	[self setupToolbar];
-	
 	[stacksFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
 	[sliderFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
 	[sliderFusion setEnabled:NO];
@@ -15670,7 +15685,6 @@ int i,j,l;
 	[imageView setDCM:pixList[0] :fileList[0] :roiList[0] :0 :'i' :YES];	//[pixList[0] count]/2
 	[imageView setIndexWithReset: 0 :YES];	//[pixList[0] count]/2
 	
-
 	NSRect  rect;
 	NSRect  visibleRect;
 	DCMPix *curDCM = [pixList[0] objectAtIndex: 0];	//[pixList[0] count]/2
@@ -15732,6 +15746,11 @@ int i,j,l;
 	NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
 	
+	
+	curOpacityMenu = [@"Linear Table" retain];
+	
+	[self refreshMenus];
+
 	[nc addObserver:self selector:@selector(applicationDidResignActive:) name:NSApplicationDidResignActiveNotification object:0L];
     [nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
 	[nc	addObserver:self selector:@selector(Display3DPoint:) name:@"Display3DPoint" object:nil];
@@ -15745,7 +15764,6 @@ int i,j,l;
     [nc addObserver:self selector:@selector(UpdateConvolutionMenu:) name:@"UpdateConvolutionMenu" object:nil];
 	[nc addObserver:self selector:@selector(CLUTChanged:) name:@"CLUTChanged" object:nil];
     [nc addObserver:self selector:@selector(UpdateCLUTMenu:) name:@"UpdateCLUTMenu" object:nil];
-	curOpacityMenu = [@"Linear Table" retain];
     [nc addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
     [nc addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
 	[nc addObserver:self selector:@selector(recomputeROI:) name:@"recomputeROI" object:nil];
@@ -15757,8 +15775,7 @@ int i,j,l;
 	[nc addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"reportModeChanged" object:nil];
 	[nc addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"OsirixDeletedReport" object:nil];
 	[nc addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
-	
-	[self refreshMenus];
+
 	
 	[[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, pasteBoardOsiriX, pasteBoardOsiriXPlugin, nil]];
 	
@@ -15841,7 +15858,7 @@ int i,j,l;
 //			}
 //		}
 //	}
-	
+
 	[[self window] setInitialFirstResponder: imageView];
 	
 	NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.stateText"];
@@ -15863,6 +15880,9 @@ int i,j,l;
 	[self matrixPreviewSelectCurrentSeries];
 	
 	[self refreshMenus];
+	
+	originalOrientation = -1;
+	[orientationMatrix setEnabled: NO];
 }
 
 - (IBAction) Panel3D:(id) sender
