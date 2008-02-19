@@ -47,9 +47,8 @@
 		userAction = idle;
 		translation = NSMakePoint(0, 0);
 		offset = NSMakePoint(0, 0);
-		offsetRotationAngle = 0.0;
-		offsetZoomFactor = 0.0;
-		zoomFactor = 0.0;
+		sizeFactor = 1.0;
+		zoomFactor = 1.0;
 		
 		drawLeftLateralScrollBar = NO;
 		drawRightLateralScrollBar = NO;
@@ -255,42 +254,49 @@
 				NSPoint centerPoint;
 				centerPoint.x = (texUpperLeft.x+texLowerRight.x)/2.0;
 				centerPoint.y = (texUpperLeft.y+texLowerRight.y)/2.0;
+								
+				NSPoint translate;
+				translate.x = (offset.x);
+				translate.y = (offset.y);
+				translate = [self rotatePoint:translate aroundPoint:NSMakePoint(0, 0) angle:rotationAngle];
+
+				// zoomed texture
+				texUpperLeft = [self zoomPoint:texUpperLeft withCenter:centerPoint factor:zoomFactor];
+				texUpperRight = [self zoomPoint:texUpperRight withCenter:centerPoint factor:zoomFactor];
+				texLowerLeft = [self zoomPoint:texLowerLeft withCenter:centerPoint factor:zoomFactor];
+				texLowerRight = [self zoomPoint:texLowerRight withCenter:centerPoint factor:zoomFactor];
 				
-				float f = exp2f(offsetZoomFactor+zoomFactor);
-				texUpperLeft = [self zoomPoint:texUpperLeft withCenter:centerPoint factor:f];
-				texUpperRight = [self zoomPoint:texUpperRight withCenter:centerPoint factor:f];
-				texLowerLeft = [self zoomPoint:texLowerLeft withCenter:centerPoint factor:f];
-				texLowerRight = [self zoomPoint:texLowerRight withCenter:centerPoint factor:f];
+				centerPoint.x = (texUpperLeft.x+texLowerRight.x)/2.0;
+				centerPoint.y = (texUpperLeft.y+texLowerRight.y)/2.0;
+				NSPoint modifiedCenter;
+				modifiedCenter.x = centerPoint.x + offset.x;
+				modifiedCenter.y = centerPoint.y + offset.y;
 				
 				NSPoint pt, rotPt;
-				
-				NSPoint translate;
-				translate.x = (offset.x+translation.x)*f;
-				translate.y = (offset.y+translation.y)*f;
-				translate = [self rotatePoint:translate aroundPoint:NSMakePoint(0, 0) angle:offsetRotationAngle+rotationAngle];
-				
-				float angle = offsetRotationAngle+rotationAngle;
-				
 				// draw texture
 				glBegin(GL_QUAD_STRIP);
 					pt = texUpperLeft;
-					rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];
-					glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);
+					pt.x += offset.x;	pt.y += offset.y;
+					rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
+					glTexCoord2f(rotPt.x, rotPt.y);
 					glVertex2f(upperLeft.x, upperLeft.y);
 					
 					pt = texUpperRight;
-					rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];
-					glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);
+					pt.x += offset.x;	pt.y += offset.y;
+					rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
+					glTexCoord2f(rotPt.x, rotPt.y);
 					glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y);
 
 					pt = texLowerLeft;
-					rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];
-					glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);
+					pt.x += offset.x;	pt.y += offset.y;
+					rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
+					glTexCoord2f(rotPt.x, rotPt.y);
 					glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
 
 					pt = texLowerRight;
-					rotPt = [self rotatePoint:pt aroundPoint:centerPoint angle:angle];						
-					glTexCoord2f(rotPt.x+translate.x, rotPt.y+translate.y);
+					pt.x += offset.x;	pt.y += offset.y;
+					rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
+					glTexCoord2f(rotPt.x, rotPt.y);
 					glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight);
 				glEnd();
 			}
@@ -300,7 +306,6 @@
 				glDeleteTextures(1, &oldTextureName);
 				[thumbnailsTextureArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInt:-1]];
 			}
-
 			i++;
 		}
 	}
@@ -419,6 +424,11 @@
 	return YES;
 }
 
+- (BOOL)acceptsFirstResponder
+{
+	return NO;
+}
+
 #pragma mark-
 #pragma mark Mouse functions
 
@@ -432,7 +442,13 @@
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
-	[self scrollHorizontallyOfAmount: - [theEvent deltaY] * [[self enclosingScrollView] horizontalPageScroll]];
+	float d = [theEvent deltaY];
+	
+	if( d == 0) return;
+		
+	if( fabs( d) < 1.0) d = 1.0 * fabs( d) / d;
+	
+	[self scrollHorizontallyOfAmount: - (int)d * [[self enclosingScrollView] horizontalPageScroll]];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent;
@@ -440,12 +456,13 @@
 	NSPoint event_location = [theEvent locationInWindow];
 	mouseDownPosition = [self convertPointFromWindowToOpenGL:event_location];	
 
+
 	if([theEvent modifierFlags] & NSShiftKeyMask) userAction=zoom;
 	else if([theEvent modifierFlags] & NSCommandKeyMask) userAction=translate;
 	else if([theEvent modifierFlags] & NSControlKeyMask) userAction=rotate;
 	else if([theEvent modifierFlags] & NSAlternateKeyMask) userAction=wlww;
 	else userAction = [viewer imageView].currentTool;
-	
+
 	startWW = ww;
 	startWL = wl;
 
@@ -460,6 +477,7 @@
 	{
 		userAction = idle;
 	}
+	
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent
@@ -485,6 +503,9 @@
 		[self zoomFrom:mouseDownPosition to:mouseDraggedPosition];
 	else if(userAction==wlww)
 		[self wlwwFrom:mouseDownPosition to:mouseDraggedPosition];
+		
+	if(userAction!=wlww) mouseDownPosition = mouseDraggedPosition;
+	
 	[self setNeedsDisplay:YES];
 }
 
@@ -495,17 +516,6 @@
 
 - (void)mouseUp:(NSEvent *)theEvent;
 {
-	offset.x += translation.x;
-	offset.y += translation.y;
-	translation.x = 0.0;
-	translation.y = 0.0;
-	
-	offsetRotationAngle += rotationAngle;
-	rotationAngle = 0.0;
-	
-	offsetZoomFactor += zoomFactor;
-	zoomFactor = 0.0;
-
 	changeWLWW = NO;
 	
 	userAction = idle;
@@ -527,15 +537,15 @@
 	translation.x = start.x - stop.x;
 	translation.y = start.y - stop.y;
 
-	translation.x *= sizeFactor;
-	translation.y *= sizeFactor;
+	translation = [self rotatePoint:translation aroundPoint:NSMakePoint(0, 0) angle:rotationAngle];
+
+	offset.x += translation.x*zoomFactor*sizeFactor;
+	offset.y += translation.y*zoomFactor*sizeFactor;
 }
 
 - (void)rotateFrom:(NSPoint)start to:(NSPoint)stop;
 {
-	rotationAngle = stop.x-start.x;
-	rotationAngle /= sizeFactor;
-	rotationAngle /= 10.;
+	rotationAngle += (stop.x-start.x) / (sizeFactor * 10.);
 }
 
 - (NSPoint)rotatePoint:(NSPoint)pt aroundPoint:(NSPoint)c angle:(float)a;
@@ -556,9 +566,13 @@
 
 - (void)zoomFrom:(NSPoint)start to:(NSPoint)stop;
 {
-	zoomFactor = stop.y - start.y;
-	zoomFactor /= sizeFactor;
-	zoomFactor /= 10.;
+	float zoom = stop.y - start.y;
+ 	zoom *= zoomFactor;
+ 	zoom /= 50.;
+	
+	zoomFactor += zoom;
+	
+	if( zoomFactor < 0) zoomFactor = 0.001;
 }
 
 - (NSPoint)zoomPoint:(NSPoint)pt withCenter:(NSPoint)c factor:(float)f;

@@ -22,7 +22,7 @@ typedef enum {
 	wlww = tWL,
 	rotate = tRotate,
 	idle = -1
-} mouseEventType;
+} MouseEventType;
 
 @interface NavigatorView : NSOpenGLView {
 	ViewerController *viewer;
@@ -31,10 +31,9 @@ typedef enum {
 	float sizeFactor;
 
 	NSPoint mouseDownPosition, mouseDraggedPosition, mouseMovedPosition;
-	mouseEventType userAction;
+	MouseEventType userAction;
 	NSPoint offset, translation;
-	float offsetRotationAngle, rotationAngle;
-	float offsetZoomFactor, zoomFactor;
+	float rotationAngle, zoomFactor;
 	
 	BOOL changeWLWW;
 	float wl, ww, startWL, startWW;

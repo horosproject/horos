@@ -17552,7 +17552,7 @@ sourceRef);
 		if([[window windowController] isKindOfClass:[NavigatorWindowController class]])
 		{
 			[(NavigatorWindowController*)[window windowController] setViewer:self];
-			[[window windowController] showWindow:self];
+			//[[window windowController] showWindow:self];
 		}
 	}
 }
