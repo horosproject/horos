@@ -440,17 +440,6 @@
 	return pointInView;
 }
 
-- (void)scrollWheel:(NSEvent *)theEvent
-{
-	float d = [theEvent deltaY];
-	
-	if( d == 0) return;
-		
-	if( fabs( d) < 1.0) d = 1.0 * fabs( d) / d;
-	
-	[self scrollHorizontallyOfAmount: - (int)d * [[self enclosingScrollView] horizontalPageScroll]];
-}
-
 - (void)mouseDown:(NSEvent *)theEvent;
 {
 	NSPoint event_location = [theEvent locationInWindow];
@@ -737,6 +726,21 @@
 - (void)scrollRight:(NSTimer*)theTimer;
 {
 	[self scrollRight];
+}
+
+- (void)scrollWheel:(NSEvent *)theEvent
+{
+	[[viewer imageView] scrollWheel:theEvent];
+	float d = [theEvent deltaY];
+	
+	if( d == 0) return;
+		
+	if( fabs( d) < 1.0) d = 1.0 * fabs( d) / d;
+	
+//	if([self canScrollHorizontallyOfAmount:- (int)d * [[self enclosingScrollView] horizontalPageScroll]])
+		[self scrollHorizontallyOfAmount: - (int)d * [[self enclosingScrollView] horizontalPageScroll]];
+//	else
+//		[self scrollHorizontallyOfAmount: (int)(fabs(d)/d) * 99999999];
 }
 
 @end
