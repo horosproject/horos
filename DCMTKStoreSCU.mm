@@ -916,11 +916,13 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 					}
 				}
 
-				if (fileformat.getDataset()->findAndGetString(DCM_PatientsName, string, OFFalse).good())
+				if (fileformat.getDataset()->findAndGetString(DCM_PatientsName, string, OFFalse).good() && string != 0L)
 					_patientName = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
-
+				else _patientName = [[NSString stringWithString:@"Unamed"] retain];
+				
 				if (fileformat.getDataset()->findAndGetString(DCM_StudyDescription, string, OFFalse).good())
 					_studyDescription = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
+				else _studyDescription = [[NSString stringWithString:@"Unamed"] retain];
 			}
 		}
 	}

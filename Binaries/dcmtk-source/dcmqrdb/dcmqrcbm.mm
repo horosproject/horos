@@ -520,54 +520,29 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
  // use AETitle to get port and hostname
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *moveDestination = [NSString stringWithCString:dstAE encoding:NSISOLatin1StringEncoding];
-	id server;
-	
-	//find server info
-//	NSArray					*bonjourServers		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
-	NSArray					*serversArray		= [DCMNetServiceDelegate DICOMServersList];	//[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];			
-	NSArray *servers;
-			
-//	if ([serversArray count] > 0)
-//		servers = [serversArray arrayByAddingObjectsFromArray:bonjourServers];
-//	else
-//		servers = bonjourServers;
-	
-	servers = serversArray;
+	NSArray *serversArray = [DCMNetServiceDelegate DICOMServersListSendOnly:NO QROnly:NO forked: YES];		
 	
 //	NSLog( @"***** C-MOVE SCP: Map Move Destination: %@", moveDestination);
 	
-	//NSString *theirAET;
 	NSString *hostname;
 	NSString *port;
-	//NSLog(@"Search Locations for : %@" , moveDestination);
+	
 	NSPredicate *serverPredicate = [NSPredicate predicateWithFormat: @"AETitle == %@", moveDestination];
 	NSArray *serverSelection = [serversArray filteredArrayUsingPredicate:serverPredicate];
-	//NSLog(@"Servers count: %d", [serverSelection count]);		
+	
 	//if empty. Try NSNetService
-	if ([serverSelection count] == 0) {
-		//NSLog(@"try Netservice");
+	if ([serverSelection count] == 0)
+	{
 		serverPredicate = [NSPredicate predicateWithFormat:@"name == %@", moveDestination];
 		serverSelection = [serversArray filteredArrayUsingPredicate:serverPredicate];
 	}
-	//NSLog(@"Servers count after net service: %d", [serverSelection count]);
 	NSNetService *netService = nil;
 			
 	if ([serverSelection count] > 0) {
 		id server = [serverSelection objectAtIndex:0];
-//		if ([server isMemberOfClass:[NSNetService class]]) {
-//					
-//			netService = server;
-//			//theirAET = [server name];
-//			hostname = [server hostName];
-//			port = [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:netService]];
-//			preferredTS = EXS_LittleEndianExplicit;
-//			
-//		}
-//		else
 		{
 			preferredTS = EXS_LittleEndianExplicit;
 			
-			//theirAET = [server objectForKey:@"AETitle"];
 			hostname = [server objectForKey:@"Address"];
 			port = [server objectForKey:@"Port"];
 			//set preferred Syntax
@@ -600,19 +575,14 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 			}
 			else
 				preferredTS = EXS_LittleEndianExplicit;
-
-		}	
+		}
 		
 		*dstPort = [port intValue];
 		strcpy(dstPeer, [hostname cStringUsingEncoding:NSISOLatin1StringEncoding]);
-		
-		
-				
-
 	}
 	else
 		return OFFalse;
-		
+	
 	[pool release];
     return OFTrue;
 }

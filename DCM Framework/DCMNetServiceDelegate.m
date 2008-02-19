@@ -168,26 +168,30 @@ static BOOL bugFixedForDNSResolve = NO;
 	[sender release];
 }
 
-+ (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR
++ (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR forked:(BOOL) forked
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncDICOMNodes"])
+	if( forked == NO)	// Important - forked processes will fail here
 	{
-		NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncDICOMNodesURL"]];
-		
-		if( url)
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncDICOMNodes"])
 		{
-			NSArray	*r = [NSArray arrayWithContentsOfURL: url];
+			NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncDICOMNodesURL"]];
 			
-			if( r)
-				[[NSUserDefaults standardUserDefaults] setObject: r forKey:@"SERVERS"];
+			if( url)
+			{
+				NSArray	*r = [NSArray arrayWithContentsOfURL: url];
+				
+				if( r)
+					[[NSUserDefaults standardUserDefaults] setObject: r forKey:@"SERVERS"];
+			}
 		}
 	}
 	
 	NSMutableArray			*serversArray		= [NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"]];
-	NSArray					*dicomServices		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
-		
+	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
 	{
+		NSArray					*dicomServices		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
+		
 		for( int i = 0 ; i < [dicomServices count] ; i++) {
 			NSNetService*	aServer = [dicomServices objectAtIndex: i];
 			
@@ -230,6 +234,11 @@ static BOOL bugFixedForDNSResolve = NO;
 	}
 	
 	return serversArray;
+}
+
++ (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR
+{
+	return [DCMNetServiceDelegate DICOMServersListSendOnly:NO QROnly:NO forked:NO];
 }
 
 + (NSArray *) DICOMServersList
