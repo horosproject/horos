@@ -26,7 +26,7 @@
 + (NSHost*) currentHost;
 + (NSArray *) DICOMServersList;
 + (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR;
-+ (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR forked:(BOOL) forked;
++ (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR cached:(BOOL) cached;
 + (id)sharedNetServiceDelegate;
 - (void) setPublisher: (NSNetService*) p;
 - (void)update;

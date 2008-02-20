@@ -1188,6 +1188,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 			[context lock]; //Try to avoid deadlock
 			[context unlock];
+			
+			[DCMNetServiceDelegate DICOMServersList];
 				
             /* spawn a sub-process to handle the association */
             pid = (int)(fork());

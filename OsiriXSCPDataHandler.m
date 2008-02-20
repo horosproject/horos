@@ -94,15 +94,8 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			
 			NSLog( @"C-MOVE : MoveDestination : %@", moveDestination);
 			
-//			NSArray *servers = serversArray;
-//			NSArray					*bonjourServers		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
 			NSArray					*serversArray		= [DCMNetServiceDelegate DICOMServersList];			
 			NSArray					*servers;
-			
-//			if ([serversArray count] > 0)
-//				servers = [serversArray arrayByAddingObjectsFromArray:bonjourServers];
-//			else
-//				servers = bonjourServers;
 			
 			servers = serversArray;
 			

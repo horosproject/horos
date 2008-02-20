@@ -520,7 +520,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
  // use AETitle to get port and hostname
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSString *moveDestination = [NSString stringWithCString:dstAE encoding:NSISOLatin1StringEncoding];
-	NSArray *serversArray = [DCMNetServiceDelegate DICOMServersListSendOnly:NO QROnly:NO forked: YES];		
+	NSArray *serversArray = [DCMNetServiceDelegate DICOMServersListSendOnly:NO QROnly:NO cached: YES];		
 	
 //	NSLog( @"***** C-MOVE SCP: Map Move Destination: %@", moveDestination);
 	
@@ -536,6 +536,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 		serverPredicate = [NSPredicate predicateWithFormat:@"name == %@", moveDestination];
 		serverSelection = [serversArray filteredArrayUsingPredicate:serverPredicate];
 	}
+	
 	NSNetService *netService = nil;
 			
 	if ([serverSelection count] > 0) {
