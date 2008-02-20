@@ -730,17 +730,34 @@
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
-	[[viewer imageView] scrollWheel:theEvent];
 	float d = [theEvent deltaY];
-	
 	if( d == 0) return;
-		
 	if( fabs( d) < 1.0) d = 1.0 * fabs( d) / d;
+
+	[[viewer imageView] scrollWheel:theEvent];
 	
-//	if([self canScrollHorizontallyOfAmount:- (int)d * [[self enclosingScrollView] horizontalPageScroll]])
-		[self scrollHorizontallyOfAmount: - (int)d * [[self enclosingScrollView] horizontalPageScroll]];
-//	else
-//		[self scrollHorizontallyOfAmount: (int)(fabs(d)/d) * 99999999];
+	//[self scrollHorizontallyOfAmount: - (int)d * [[self enclosingScrollView] horizontalPageScroll]];
+
+	NSClipView *clipView = [[self enclosingScrollView] contentView];
+	NSRect viewBounds = [clipView documentVisibleRect];
+	NSRect viewFrame = [clipView frame];
+	NSSize viewSize = viewFrame.size;
+	int t = [viewer curMovieIndex];
+	int z = [viewer imageIndex];
+	NSPoint upperLeft;
+	upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
+	upperLeft.x = z*thumbnailWidth;
+	NSRect thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
+	
+	NSRect intersectionRect = NSIntersectionRect(thumbRect, viewBounds);
+
+	if(intersectionRect.size.width<2.0)
+	{
+		if(thumbRect.origin.x < viewBounds.origin.x)
+			[clipView setBoundsOrigin:NSMakePoint(thumbRect.origin.x, viewBounds.origin.y+20.0)];
+		else
+			[clipView setBoundsOrigin:NSMakePoint(thumbRect.origin.x+thumbRect.size.width-viewFrame.size.width, viewBounds.origin.y+20.0)];
+	}
 }
 
 @end
