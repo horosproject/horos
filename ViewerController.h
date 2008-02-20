@@ -379,6 +379,7 @@ enum
 - (float*) volumePtr;
 - (float*) volumePtr: (long) i;
 - (NSData*)volumeData;
+- (NSData*)volumeData:(long)i;
 
 /** Return the index into fileList that coresponds to the index in pixList */
 - (long) indexForPix: (long) pixIndex;

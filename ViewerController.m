@@ -15175,6 +15175,14 @@ int i,j,l;
 	return volumeData[ curMovieIndex];
 }
 
+- (NSData*)volumeData:(long)i;
+{
+	if( i < 0) i = 0;
+	if( i>= maxMovieIndex) i = maxMovieIndex-1;
+	
+	return volumeData[ i];
+}
+
 - (float) computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts error:(NSString**) error
 {
 	return [self computeVolume:(ROI*) selectedRoi points:(NSMutableArray**) pts generateMissingROIs: NO generatedROIs: 0L computeData: 0L error:(NSString**) error];

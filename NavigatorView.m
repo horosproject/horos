@@ -450,6 +450,10 @@
 	else if([theEvent modifierFlags] & NSCommandKeyMask) userAction=translate;
 	else if([theEvent modifierFlags] & NSControlKeyMask) userAction=rotate;
 	else if([theEvent modifierFlags] & NSAlternateKeyMask) userAction=wlww;
+	else if([theEvent clickCount]==2)
+	{
+		[self doubleClick];
+	}
 	else userAction = [viewer imageView].currentTool;
 
 	startWW = ww;
@@ -656,6 +660,9 @@
 //	}
 }
 
+#pragma mark-
+#pragma mark Scroll functions
+
 - (BOOL)isMouseOnLeftLateralScrollBar:(NSPoint)mousePos;
 {
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
@@ -765,12 +772,37 @@
 	
 	NSRect intersectionRect = NSIntersectionRect(thumbRect, viewBounds);
 
-	if(intersectionRect.size.width<2.0)
+	if(intersectionRect.size.width < 2.0)
 	{
 		if(thumbRect.origin.x < viewBounds.origin.x)
 			[clipView setBoundsOrigin:NSMakePoint(thumbRect.origin.x, viewBounds.origin.y+20.0)];
 		else
 			[clipView setBoundsOrigin:NSMakePoint(thumbRect.origin.x+thumbRect.size.width-viewFrame.size.width, viewBounds.origin.y+20.0)];
+	}
+}
+
+#pragma mark-
+#pragma mark New Viewers
+
+- (void)doubleClick;
+{
+	NSClipView *clipView = [[self enclosingScrollView] contentView];
+	NSRect viewBounds = [clipView documentVisibleRect];
+	NSRect viewFrame = [clipView frame];
+	NSSize viewSize = viewFrame.size;
+
+	int z = (mouseDownPosition.x + viewBounds.origin.x) / thumbnailWidth;
+	int t = (mouseDownPosition.y - viewBounds.origin.y - viewSize.height + [self frame].size.height) / thumbnailHeight;
+		
+	[self openNewViewerAtSlice:z movieFrame:t];
+}
+
+- (void)openNewViewerAtSlice:(int)z movieFrame:(int)t;
+{
+	ViewerController *newViewer = [ViewerController newWindow:[viewer pixList:t] :[viewer fileList:t] :[viewer volumeData:t]];
+	for (int i=0; i<[viewer maxMovieIndex]; i++)
+	{
+		if(i!=t) [newViewer addMovieSerie:[viewer pixList:i] :[viewer fileList:i] :[viewer volumeData:i]];
 	}
 }
 

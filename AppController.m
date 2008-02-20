@@ -663,7 +663,7 @@ static NSDate *lastWarningDate = 0L;
 
 + (void) displayImportantNotice:(id) sender
 {
-//	return;
+	return;
 	
 	if( lastWarningDate == 0L || [lastWarningDate timeIntervalSinceNow] < -60*60*3)	// each 3*60 minutes of non-activity
 	{
