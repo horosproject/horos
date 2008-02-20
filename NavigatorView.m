@@ -730,10 +730,24 @@
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
+	if([theEvent modifierFlags] & NSShiftKeyMask)
+	{
+		float x = -[theEvent deltaX];
+		if(x>0) x=1.0;
+		else if(x<0) x=-1.0;
+		
+		int newIndex = [viewer curMovieIndex]+(int)x;
+		if(newIndex>[viewer maxMovieIndex]) newIndex -= [viewer maxMovieIndex];
+		else if(newIndex<0) newIndex = [viewer maxMovieIndex] + newIndex;
+		
+		[viewer setMovieIndex:newIndex];
+		return;
+	}
+
 	float d = [theEvent deltaY];
 	if( d == 0) return;
 	if( fabs( d) < 1.0) d = 1.0 * fabs( d) / d;
-
+	
 	[[viewer imageView] scrollWheel:theEvent];
 	
 	//[self scrollHorizontallyOfAmount: - (int)d * [[self enclosingScrollView] horizontalPageScroll]];
