@@ -8270,7 +8270,8 @@ static BOOL needToRezoom;
 		[albumTable reloadData];
 	}
 	
-	if( [[aNotification object] isEqual: bonjourServicesList] )	{
+	if( [[aNotification object] isEqual: bonjourServicesList] )
+	{
 		if( dontLoadSelectionSource == NO )
 		{
 			[self bonjourServiceClicked: bonjourServicesList];
@@ -13457,6 +13458,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	if( [bonjourServicesList selectedRow] == -1) return;
 	
+	dontLoadSelectionSource = YES;
+	
 	[self saveDatabase:currentDatabasePath];
 	
     int index = [bonjourServicesList selectedRow]-1;
@@ -13514,6 +13517,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[self setSearchString:nil];
 	previousBonjourIndex = [bonjourServicesList selectedRow]-1;
+	
+	dontLoadSelectionSource = NO;
 }
 
 - (IBAction)bonjourServiceClicked: (id)sender
@@ -13525,7 +13530,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[self waitForRunningProcesses];
 	[bonjourBrowser waitTheLock];
-
+	
 	[self performSelector:@selector( bonjourServiceClickedProceed:) withObject: sender afterDelay: 0.1];
 }
 
