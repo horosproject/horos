@@ -1019,7 +1019,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	float		temp[ 3];
 	NSArray		*tempArray;
 	DCMView		*oView = [[[self window] windowController] originalView];
-	NSLog(@"set 3D State:\n%d", dict);
+	
 	if( dict)
 	{
 		[self adjustWLWW: [[dict objectForKey:@"WL"] floatValue] :[[dict objectForKey:@"WW"] floatValue] :@"set"];
@@ -1179,8 +1179,28 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 		}
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: @"Original" userInfo: [NSDictionary dictionaryWithObject:@"set" forKey:@"action"]];
+	}
+	else
+	{
+		[oView setMPRAngle: 0];
+		[perpendicularView setMPRAngle: 0];
+		[oView setOrigin: NSMakePoint( 0, 0)];
 		
-		NSLog( @"oView.cross.x: %f oView.cross.y: %f", oView.cross.x, oView.cross.y);
+		[oView setScaleValue: 1.0];
+		[oView setRotation: 0];
+		[oView setIndex: [[oView dcmPixList] count] /2];
+		[[[self window] windowController] adjustSlider];
+		[oView setCrossCoordinates: [firstObject pwidth]/2 : -[firstObject pheight]/2 :NO];
+		
+		[perpendicularView setOrigin: NSMakePoint( 0, 0)];
+		[perpendicularView setScaleValue: 1.0];
+		[perpendicularView setRotation: 90];
+
+		[finalView setOrigin: NSMakePoint( 0, 0)];
+		[finalView setScaleValue: 1.0];
+		[finalView setRotation: 0];
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: @"Original" userInfo: [NSDictionary dictionaryWithObject:@"set" forKey:@"action"]];
 	}
 }
 

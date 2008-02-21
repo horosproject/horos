@@ -588,6 +588,11 @@ extern NSString * documentsDirectory();
 	[self ApplyCLUTString: [dict objectForKey:@"CLUTName"]];
 }
 
+- (IBAction) resetImage:(id) sender
+{
+	[view set3DStateDictionary: 0L];
+}
+
 -(void) dealloc
 {
 	long i;
