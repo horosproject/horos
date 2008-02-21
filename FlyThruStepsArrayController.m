@@ -26,11 +26,15 @@
 	// add the current Camera from flythuController
 	[super addObject:flyThruController.currentCamera];
 	[self resetCameraIndexes];
+	
+	[tableview scrollRowToVisible: [tableview selectedRow]];
 }
 
 - (void)addObjects:(NSArray *)objects{
 	[super addObjects:objects];
 	[self resetCameraIndexes];
+	
+	[tableview scrollRowToVisible: [tableview selectedRow]];
 }
 	
 

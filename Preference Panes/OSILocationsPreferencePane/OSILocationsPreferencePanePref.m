@@ -98,6 +98,8 @@
 	[addLocalPath setEnabled: val];
 	[loadNodes setEnabled: val];
 	
+	[[NSUserDefaults standardUserDefaults] setBool: val forKey: @"preferencesModificationsEnabled"];
+	
 	[[NSUserDefaults standardUserDefaults] setBool: [[NSUserDefaults standardUserDefaults] boolForKey:@"syncDICOMNodes"] forKey: @"syncDICOMNodes"];
 }
 
@@ -196,6 +198,7 @@
 
 - (IBAction) newServer:(id)sender
 {
+	
     NSMutableDictionary *aServer = [NSMutableDictionary dictionary];
     [aServer setObject:@"127.0.0.1" forKey:@"Address"];
     [aServer setObject:@"AETITLE" forKey:@"AETitle"];
