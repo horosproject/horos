@@ -706,7 +706,8 @@
 	NSRect viewBounds = [clipView documentVisibleRect];
 	NSPoint newOrigin = viewBounds.origin;
 	newOrigin.x += amount;
-	newOrigin.y += 20; // ... ?? don't know why, but it works.. size of the horizontal ruler?
+	if([self needsHorizontalScroller])
+		newOrigin.y += 20.0; // ... ?? don't know why, but it works...
 		
 	if(newOrigin.x<0) newOrigin.x = 0.0;
 	if(newOrigin.x+viewBounds.size.width>[self frame].size.width) newOrigin.x = [self frame].size.width - viewBounds.size.width;
@@ -760,11 +761,19 @@
 
 	if(intersectionRect.size.width < 2.0)
 	{
+		float horizontalRulerHeight = 0.0;
+		if([self needsHorizontalScroller]) horizontalRulerHeight = 20.0;
+		
 		if(thumbRect.origin.x < viewBounds.origin.x)
-			[clipView setBoundsOrigin:NSMakePoint(thumbRect.origin.x, viewBounds.origin.y+20.0)];
+			[clipView setBoundsOrigin:NSMakePoint(thumbRect.origin.x, viewBounds.origin.y+horizontalRulerHeight)];
 		else
-			[clipView setBoundsOrigin:NSMakePoint(thumbRect.origin.x+thumbRect.size.width-viewFrame.size.width, viewBounds.origin.y+20.0)];
+			[clipView setBoundsOrigin:NSMakePoint(thumbRect.origin.x+thumbRect.size.width-viewFrame.size.width, viewBounds.origin.y+horizontalRulerHeight)];
 	}
+}
+
+- (BOOL)needsHorizontalScroller;
+{
+	return [[viewer pixList] count]*thumbnailWidth > [[[self enclosingScrollView] contentView] frame].size.width;
 }
 
 #pragma mark-

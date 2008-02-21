@@ -34,19 +34,21 @@
 - (void)setViewer:(ViewerController*)viewer;
 {
 	viewerController = viewer;
-//	[self initView];
+	[self initView];
 }
 
 - (void)initView;
 {
 	[navigatorView setViewer:viewerController];
-	NSSize size = [navigatorView frame].size;
-	size.height += 27;
-	[[self window] setMaxSize:size];
-	[[self window] setFrame:NSMakeRect([[self window] frame].origin.x, [[self window] frame].origin.x, [[self window] frame].size.width, size.height) display:YES];
+	NSSize maxSize = [navigatorView frame].size;
+	maxSize.height += 16 + 11; // 16px for the title bar, 11px for the horizontal scroller
+	[[self window] setMaxSize:maxSize];
+	NSSize size = maxSize;
+	if(![navigatorView needsHorizontalScroller]) size.height -= 11; // no horizontal scroller
+	[[self window] setFrame:NSMakeRect([[self window] frame].origin.x, [[self window] frame].origin.y, [[self window] frame].size.width, size.height) display:YES];
 	
 	NSSize minSize = NSMakeSize(navigatorView.thumbnailWidth, navigatorView.thumbnailHeight);
-	minSize.height += 27;
+	if([navigatorView needsHorizontalScroller]) minSize.height += 16 + 11; // 16px for the title bar, 11px for the horizontal scroller
 	[[self window] setMinSize:minSize];
 	[[self window] setAcceptsMouseMovedEvents:YES];
 	[[self window] makeFirstResponder:navigatorView];
