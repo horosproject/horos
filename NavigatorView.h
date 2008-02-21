@@ -25,7 +25,6 @@ typedef enum {
 } MouseEventType;
 
 @interface NavigatorView : NSOpenGLView {
-	ViewerController *viewer;
 	NSMutableArray *thumbnailsTextureArray;
 	int thumbnailWidth, thumbnailHeight;
 	float sizeFactor;

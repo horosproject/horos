@@ -81,7 +81,6 @@
 
 - (void)setViewer:(ViewerController*)v;
 {
-	viewer = v;
 	[self initTextureArray];
 	[self computeThumbnailSize];
 	[self setFrameSize:NSMakeSize([[[self viewer] pixList] count]*thumbnailWidth, [[self viewer] maxMovieIndex]*thumbnailHeight)];
@@ -807,6 +806,8 @@
 		if([[[v imageView] window] isMainWindow] && [v imageView].isKeyView)
 			return v;
 	}
+	
+	return nil;
 }
 
 // associatedViewers are all the opened viewers that share the same NSData, i.e. same stack
