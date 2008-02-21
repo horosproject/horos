@@ -3243,66 +3243,85 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	if( flippedData) reverseScrollWheel *= -1.0;
 	
-    if( dcmPixList ) {
+    if( dcmPixList )
+	{
         short inc;
         
-		if( [stringID isEqualToString:@"OrthogonalMPRVIEW"] ) {
-
+		if( [stringID isEqualToString:@"OrthogonalMPRVIEW"] )
+		{
 			[[self controller] saveCrossPositions];
 			float change;
-			if( fabs( [theEvent deltaY]) >  fabs( deltaX) ) {
+			
+			if( fabs( [theEvent deltaY]) >  fabs( deltaX) )
+			{
 				change = reverseScrollWheel * [theEvent deltaY];
-				if( change > 0) {
+				if( change > 0)
+				{
 					change = ceil( change);
 					if( change < 1) change = 1;
 				}
-				else {
+				else
+				{
 					change = floor( change);
 					if( change > -1) change = -1;		
 				}
-				if ( [self isKindOfClass: [OrthogonalMPRView class]] ) {
+				
+				if ( [self isKindOfClass: [OrthogonalMPRView class]] )
+				{
 					[(OrthogonalMPRView*)self scrollTool: 0 : (long)change];
 				}
 			}
-			else {
+			else
+			{
 				change = reverseScrollWheel * deltaX;
-				if( change > 0) {
+				if( change > 0)
+				{
 					change = ceil( change);
 					if( change < 1) change = 1;
 				}
-				else {
+				else
+				{
 					change = floor( change);
 					if( change > -1) change = -1;		
 				}
-				if ( [self isKindOfClass: [OrthogonalMPRView class]] ) {
+				
+				if ( [self isKindOfClass: [OrthogonalMPRView class]] )
+				{
 					[(OrthogonalMPRView*)self scrollTool: 0 : (long)change];
 				}
 			}
 			
 			[self mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 		}
-		else if( [stringID isEqualToString:@"previewDatabase"]) {
+		else if( [stringID isEqualToString:@"previewDatabase"])
+		{
 			[super scrollWheel: theEvent];
 		}
-		else if( [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Perpendicular"] ) {
+		else if( [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Perpendicular"] )
+		{
 			[super scrollWheel: theEvent];
 		}
-		else {
-			if( fabs( [theEvent deltaY]) * 2.0f >  fabs( deltaX) ) {
-				if( [theEvent modifierFlags]  & NSAlternateKeyMask) {
-					if( [self is2DViewer] ) {
-						// 4D Direction scroll - Cardiac CT eg
-						
+		else
+		{
+			if( fabs( [theEvent deltaY]) * 2.0f >  fabs( deltaX) )
+			{
+				if( [theEvent modifierFlags]  & NSAlternateKeyMask)
+				{
+					if( [self is2DViewer] )
+					{
+						// 4D Direction scroll - Cardiac CT eg	
 						float change = reverseScrollWheel * [theEvent deltaY] / 2.5f;
 						
-						if( change > 0) {
+						if( change > 0)
+						{
 							change = ceil( change);
 							if( change < 1) change = 1;
 							
 							change += [[self windowController] curMovieIndex];
 							while( change >= [[self windowController] maxMovieIndex]) change -= [[self windowController] maxMovieIndex];
 						}
-						else {
+						else
+						{
 							change = floor( change);
 							if( change > -1) change = -1;
 							
@@ -3313,7 +3332,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						[[self windowController] setMovieIndex: change];
 					}
 				}
-				else if( [theEvent modifierFlags]  & NSShiftKeyMask) {
+				else if( [theEvent modifierFlags]  & NSShiftKeyMask)
+				{
 					float change = reverseScrollWheel * [theEvent deltaY] / 2.5f;
 					
 					if( change > 0) {
@@ -3331,7 +3351,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						curImage += inc;
 					}
 				}
-				else {
+				else
+				{
 					float change = reverseScrollWheel * [theEvent deltaY] / 2.5f;
 					
 					if( change > 0)

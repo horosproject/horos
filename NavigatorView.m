@@ -737,20 +737,6 @@
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
-	if([theEvent modifierFlags] & NSShiftKeyMask)
-	{
-		float x = -[theEvent deltaX];
-		if(x>0) x=1.0;
-		else if(x<0) x=-1.0;
-		
-		int newIndex = [viewer curMovieIndex]+(int)x;
-		if(newIndex>[viewer maxMovieIndex]) newIndex -= [viewer maxMovieIndex];
-		else if(newIndex<0) newIndex = [viewer maxMovieIndex] + newIndex;
-		
-		[viewer setMovieIndex:newIndex];
-		return;
-	}
-
 	float d = [theEvent deltaY];
 	if( d == 0) return;
 	if( fabs( d) < 1.0) d = 1.0 * fabs( d) / d;
@@ -793,8 +779,15 @@
 
 	int z = (mouseDownPosition.x + viewBounds.origin.x) / thumbnailWidth;
 	int t = (mouseDownPosition.y - viewBounds.origin.y - viewSize.height + [self frame].size.height) / thumbnailHeight;
-		
-	[self openNewViewerAtSlice:z movieFrame:t];
+	
+	if(t == [viewer curMovieIndex])
+	{
+		DCMView *view = [viewer imageView];
+		if([view flippedData]) [view setIndex:[[viewer pixList] count]-z-1];
+		else [view setIndex:z];
+	}
+	else
+		[self openNewViewerAtSlice:z movieFrame:t];
 }
 
 - (void)openNewViewerAtSlice:(int)z movieFrame:(int)t;
