@@ -9615,6 +9615,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		previewPix = [[NSMutableArray alloc] initWithCapacity:0];
 		
 		timer = [[NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(previewPerformAnimation:) userInfo:self repeats:YES] retain];
+		if([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] < 1) [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"LISTENERCHECKINTERVAL"];
 		IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
 		refreshTimer = [[NSTimer scheduledTimerWithTimeInterval:63.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval:5*60 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];
