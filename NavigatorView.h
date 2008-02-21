@@ -69,6 +69,8 @@ typedef enum {
 - (void)scrollRight:(NSTimer*)theTimer;
 - (BOOL)needsHorizontalScroller;
 
+- (ViewerController*)viewer;
+- (NSArray*)associatedViewers;
 - (void)doubleClick;
 - (void)openNewViewerAtSlice:(int)z movieFrame:(int)t;
 

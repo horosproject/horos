@@ -84,9 +84,9 @@
 	viewer = v;
 	[self initTextureArray];
 	[self computeThumbnailSize];
-	[self setFrameSize:NSMakeSize([[viewer pixList] count]*thumbnailWidth, [viewer maxMovieIndex]*thumbnailHeight)];
-	wl = [viewer imageView].curWL;
-	ww = [viewer imageView].curWW;
+	[self setFrameSize:NSMakeSize([[[self viewer] pixList] count]*thumbnailWidth, [[self viewer] maxMovieIndex]*thumbnailHeight)];
+	wl = [[self viewer] imageView].curWL;
+	ww = [[self viewer] imageView].curWW;
 }
 
 - (void)initTextureArray;
@@ -111,9 +111,9 @@
 	else
 		[isTextureWLWWUpdated removeAllObjects];
 		
-	for(int t=0; t<[viewer maxMovieIndex]; t++)
+	for(int t=0; t<[[self viewer] maxMovieIndex]; t++)
 	{
-		NSMutableArray *pixList = [viewer pixList:t];
+		NSMutableArray *pixList = [[self viewer] pixList:t];
 		for(int z=0; z<[pixList count]; z++)
 		{
 			[thumbnailsTextureArray addObject:[NSNumber numberWithInt:-1]];
@@ -130,10 +130,10 @@
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
-	NSMutableArray *pixList = [viewer pixList:t];
+	NSMutableArray *pixList = [[self viewer] pixList:t];
 	
 	DCMPix *pix;
-	if( [[viewer imageView] flippedData]) pix = [pixList objectAtIndex: [pixList count] -z -1];
+	if( [[[self viewer] imageView] flippedData]) pix = [pixList objectAtIndex: [pixList count] -z -1];
 	else pix = [pixList objectAtIndex:z];
 	
 	if(changeWLWW) [pix changeWLWW:wl :ww];
@@ -179,7 +179,7 @@
 - (void)computeThumbnailSize;
 {
 	// we consider that every image has the same size
-	DCMPix *aPix = [[viewer pixList] objectAtIndex:0];
+	DCMPix *aPix = [[[self viewer] pixList] objectAtIndex:0];
 	int width = [aPix pwidth];
 	int height = [aPix pheight];
 	
@@ -225,9 +225,9 @@
 	NSPoint upperLeft;
 	NSRect thumbRect;
 	
-	for(int t=0; t<[viewer maxMovieIndex]; t++)
+	for(int t=0; t<[[self viewer] maxMovieIndex]; t++)
 	{
-		NSMutableArray *pixList = [viewer pixList:t];
+		NSMutableArray *pixList = [[self viewer] pixList:t];
 		for(int z=0; z<[pixList count]; z++)
 		{
 			upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
@@ -316,7 +316,7 @@
 	glEnable(GL_LINE_SMOOTH);
 	
 	// selected time line
-	int t = [viewer curMovieIndex];
+	int t = [[self viewer] curMovieIndex];
 	upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
 	upperLeft.x = 0.0;
 	
@@ -332,7 +332,7 @@
 	glLineWidth(1.0);	
 	
 	// selected image
-	int z = [viewer imageIndex];
+	int z = [[self viewer] imageIndex];
 	upperLeft.x = z*thumbnailWidth-viewBounds.origin.x;
 	thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
 
@@ -344,6 +344,26 @@
 			glVertex2f(upperLeft.x, upperLeft.y);
 			glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y);
 			glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight);
+			glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
+		glEnd();
+		glColor3f(0.0f, 0.0f, 0.0f);
+		glLineWidth(1.0);	
+	}
+	
+	// associated Viewers	
+	// selected time line
+	for (ViewerController *v in [self associatedViewers])
+	{
+		int t = [v curMovieIndex];
+		upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
+		upperLeft.x = 0.0;
+		
+		glLineWidth(2.0);
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glBegin(GL_LINE_LOOP);
+			glVertex2f(upperLeft.x, upperLeft.y);
+			glVertex2f(upperLeft.x+viewSize.width, upperLeft.y);
+			glVertex2f(upperLeft.x+viewSize.width, upperLeft.y+thumbnailHeight);
 			glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
 		glEnd();
 		glColor3f(0.0f, 0.0f, 0.0f);
@@ -454,7 +474,7 @@
 	{
 		[self doubleClick];
 	}
-	else userAction = [viewer imageView].currentTool;
+	else userAction = [[self viewer] imageView].currentTool;
 
 	startWW = ww;
 	startWL = wl;
@@ -478,7 +498,7 @@
 	NSPoint event_location = [theEvent locationInWindow];
 	mouseDownPosition = [self convertPointFromWindowToOpenGL:event_location];	
 
-	userAction = [viewer imageView].currentToolRight;
+	userAction = [[self viewer] imageView].currentToolRight;
 
 	changeWLWW = NO;
 }
@@ -613,7 +633,7 @@
 	wl = startWL + -(stop.y -  start.y)*WWAdapter;
 	ww = startWW + (stop.x -  start.x)*WWAdapter;
 	
-	[[viewer imageView] setWLWW:wl :ww];
+	[[[self viewer] imageView] setWLWW:wl :ww];
 	changeWLWW = YES;
 	for (int i=0; i<[isTextureWLWWUpdated count]; i++)
 		[isTextureWLWWUpdated replaceObjectAtIndex:i withObject:[NSNumber numberWithBool:NO]];
@@ -742,16 +762,14 @@
 	if( d == 0) return;
 	if( fabs( d) < 1.0) d = 1.0 * fabs( d) / d;
 	
-	[[viewer imageView] scrollWheel:theEvent];
+	[[[self viewer] imageView] scrollWheel:theEvent];
 	
-	//[self scrollHorizontallyOfAmount: - (int)d * [[self enclosingScrollView] horizontalPageScroll]];
-
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
 	NSRect viewBounds = [clipView documentVisibleRect];
 	NSRect viewFrame = [clipView frame];
 	NSSize viewSize = viewFrame.size;
-	int t = [viewer curMovieIndex];
-	int z = [viewer imageIndex];
+	int t = [[self viewer] curMovieIndex];
+	int z = [[self viewer] imageIndex];
 	NSPoint upperLeft;
 	upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
 	upperLeft.x = z*thumbnailWidth;
@@ -773,11 +791,47 @@
 
 - (BOOL)needsHorizontalScroller;
 {
-	return [[viewer pixList] count]*thumbnailWidth > [[[self enclosingScrollView] contentView] frame].size.width;
+	return [[[self viewer] pixList] count]*thumbnailWidth > [[[self enclosingScrollView] contentView] frame].size.width;
 }
 
 #pragma mark-
 #pragma mark New Viewers
+
+// current selected viewer
+- (ViewerController*)viewer;
+{
+	NSArray *displayed2DViewers = [ViewerController getDisplayed2DViewers];
+	
+	for (ViewerController *v in displayed2DViewers)
+	{
+		if([[[v imageView] window] isMainWindow] && [v imageView].isKeyView)
+			return v;
+	}
+}
+
+// associatedViewers are all the opened viewers that share the same NSData, i.e. same stack
+- (NSArray*)associatedViewers;
+{
+	NSMutableArray *associatedViewers = [NSMutableArray array];
+	
+	NSArray *displayed2DViewers = [ViewerController getDisplayed2DViewers];
+	ViewerController *mainViewer = [self viewer];
+	
+	for (ViewerController *v in displayed2DViewers)
+	{		
+		if([v maxMovieIndex]==[mainViewer maxMovieIndex] && v!=mainViewer)
+		{
+			BOOL sameVolumeData = YES;
+			for (int i=0; i<[v maxMovieIndex]; i++)
+			{
+				sameVolumeData = sameVolumeData && ([v volumeData:i] == [mainViewer volumeData:i]);
+			}
+			if(sameVolumeData) [associatedViewers addObject:v];
+		}
+	}
+	
+	return [NSArray arrayWithArray:associatedViewers];
+}
 
 - (void)doubleClick;
 {
@@ -789,10 +843,10 @@
 	int z = (mouseDownPosition.x + viewBounds.origin.x) / thumbnailWidth;
 	int t = (mouseDownPosition.y - viewBounds.origin.y - viewSize.height + [self frame].size.height) / thumbnailHeight;
 	
-	if(t == [viewer curMovieIndex])
+	if(t == [[self viewer] curMovieIndex])
 	{
-		DCMView *view = [viewer imageView];
-		if([view flippedData]) [view setIndex:[[viewer pixList] count]-z-1];
+		DCMView *view = [[self viewer] imageView];
+		if([view flippedData]) [view setIndex:[[[self viewer] pixList] count]-z-1];
 		else [view setIndex:z];
 	}
 	else
@@ -801,11 +855,25 @@
 
 - (void)openNewViewerAtSlice:(int)z movieFrame:(int)t;
 {
-	ViewerController *newViewer = [ViewerController newWindow:[viewer pixList:t] :[viewer fileList:t] :[viewer volumeData:t]];
-	for (int i=0; i<[viewer maxMovieIndex]; i++)
+	// create the new viewer
+	ViewerController *newViewer = [ViewerController newWindow:[[self viewer] pixList:0] :[[self viewer] fileList:0] :[[self viewer] volumeData:0]];
+	// add all the 4D frames
+	for (int i=1; i<[[self viewer] maxMovieIndex]; i++)
 	{
-		if(i!=t) [newViewer addMovieSerie:[viewer pixList:i] :[viewer fileList:i] :[viewer volumeData:i]];
+		[newViewer addMovieSerie:[[self viewer] pixList:i] :[[self viewer] fileList:i] :[[self viewer] volumeData:i]];
 	}
+	[newViewer setMovieIndex:t];
+
+	// select the correct slice
+	DCMView *view = [newViewer imageView];
+	if([[[self viewer] imageView] flippedData]) [view setIndex:[[[self viewer] pixList] count]-z-1];
+	else [view setIndex:z];
+	
+	// flippedData must be the same on all viewers
+	view.flippedData = [[self viewer] imageView].flippedData;
+	
+	[newViewer adjustSlider];
+	[view sendSyncMessage:1];
 }
 
 @end

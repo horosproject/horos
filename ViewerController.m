@@ -12074,7 +12074,7 @@ int i,j,l;
 			float   dwl, dww;
 			
 			// 4D data
-			if( curMovieIndex != [vC curMovieIndex] && maxMovieIndex ==  [vC maxMovieIndex])
+			if( curMovieIndex != [vC curMovieIndex] && maxMovieIndex ==  [vC maxMovieIndex] && !navigatorWindowController)
 			{
 				[vC setMovieIndex: curMovieIndex];
 			}
