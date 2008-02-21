@@ -263,7 +263,7 @@ typedef char* vtkMyCallbackVR;
 	
 	double						camPosition[ 3], camFocal[ 3];
 	
-	NSDate						*startRenderingTime;
+//	NSDate						*startRenderingTime;
 	
 	NSMutableArray				*ROIPoints;
 	
@@ -275,7 +275,7 @@ typedef char* vtkMyCallbackVR;
 	vtkPolyDataMapper2D			*Line2D;
 	vtkActor2D					*Line2DActor;
 	vtkTextActor				*Line2DText;
-	vtkCallbackCommand			*cbStart;
+//	vtkCallbackCommand			*cbStart;
 	
 	BOOL						clamping;
 	
@@ -356,13 +356,13 @@ typedef char* vtkMyCallbackVR;
 -(void) setBlendingWLWW:(float) iwl :(float) iww;
 -(void) setBlendingCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b;
 -(void) setBlendingFactor:(float) a;
--(NSDate*) startRenderingTime;
--(void) newStartRenderingTime;
--(void) deleteStartRenderingTime;
+//-(NSDate*) startRenderingTime;
+//-(void) newStartRenderingTime;
+//-(void) deleteStartRenderingTime;
 -(void) setOpacity:(NSArray*) array;
--(void) runRendering;
--(void) startRendering;
--(void) stopRendering;
+//-(void) runRendering;
+//-(void) startRendering;
+//-(void) stopRendering;
 -(void) setLOD:(float)f;
 -(void) setCurrentTool:(short) i;
 - (int) currentTool;

@@ -181,32 +181,32 @@ public:
 	}
 };*/
 
-static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
-{
-	VRView* mipv = (VRView*) ptr;
-	
-	//vtkRenderWindow
-	//[self renderWindow] SetAbortRender( true);
-	if( c == vtkCommand::StartEvent)
-	{
-		[mipv newStartRenderingTime];
-	}
-	
-	if( c == vtkCommand::EndEvent)
-	{
-		[mipv stopRendering];
-		[mipv deleteStartRenderingTime];
-	}
-	
-	if( c == vtkCommand::AbortCheckEvent)
-	{
-		if( [[NSDate date] timeIntervalSinceDate:[mipv startRenderingTime]] > 2.0)
-		{
-			[mipv startRendering];
-			[mipv runRendering];
-		}
-	}
-}
+//static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
+//{
+//	VRView* mipv = (VRView*) ptr;
+//	
+//	//vtkRenderWindow
+//	//[self renderWindow] SetAbortRender( true);
+//	if( c == vtkCommand::StartEvent)
+//	{
+//		[mipv newStartRenderingTime];
+//	}
+//	
+//	if( c == vtkCommand::EndEvent)
+//	{
+//		[mipv stopRendering];
+//		[mipv deleteStartRenderingTime];
+//	}
+//	
+//	if( c == vtkCommand::AbortCheckEvent)
+//	{
+//		if( [[NSDate date] timeIntervalSinceDate:[mipv startRenderingTime]] > 2.0)
+//		{
+//			[mipv startRendering];
+//			[mipv runRendering];
+//		}
+//	}
+//}
 
 class vtkMyCallbackVR : public vtkCommand
 {
@@ -387,7 +387,7 @@ public:
 	[controller print: sender];
 }
 
-- (void)getOrientationText:(char *) orientation : (float *) vector :(BOOL) inv {
+- (void)getOrientationText:(char *) o : (float *) vector :(BOOL) inv {
 	
 	NSString *orientationX;
 	NSString *orientationY;
@@ -425,7 +425,7 @@ public:
 		} else break;
 	}
 	
-	strcpy( orientation, [optr UTF8String]);
+	strcpy( o, [optr UTF8String]);
 }
 
 //- (void) getOrientationText:(char *) string : (float *) vector :(BOOL) inv
@@ -1435,48 +1435,48 @@ public:
 	return YES;
 }
 
-- (NSDate*) startRenderingTime
-{
-	return startRenderingTime;
-}
-
-- (void) newStartRenderingTime
-{
-	startRenderingTime = [[NSDate date] retain];
-}
-
-- (void) deleteStartRenderingTime
-{
-	[startRenderingTime release];
-	startRenderingTime = 0L;
-}
-
--(void) startRendering
-{
-	if( noWaitDialog == NO)
-	{
-		[splash start];
-	}
-}
-//vtkRenderer
--(void) runRendering
-{
-	if( noWaitDialog == NO)
-	{
-		if( [splash run] == NO)
-		{
-			[self renderWindow]->SetAbortRender( true);
-		}
-	}
-}
-
--(void) stopRendering
-{
-	if( noWaitDialog == NO)
-	{
-		[splash end];
-	}
-}
+//- (NSDate*) startRenderingTime
+//{
+//	return startRenderingTime;
+//}
+//
+//- (void) newStartRenderingTime
+//{
+//	startRenderingTime = [[NSDate date] retain];
+//}
+//
+//- (void) deleteStartRenderingTime
+//{
+//	[startRenderingTime release];
+//	startRenderingTime = 0L;
+//}
+//
+//-(void) startRendering
+//{
+//	if( noWaitDialog == NO)
+//	{
+//		[splash start];
+//	}
+//}
+//
+//-(void) runRendering
+//{
+//	if( noWaitDialog == NO)
+//	{
+//		if( [splash run] == NO)
+//		{
+//			[self renderWindow]->SetAbortRender( true);
+//		}
+//	}
+//}
+//
+//-(void) stopRendering
+//{
+//	if( noWaitDialog == NO)
+//	{
+//		[splash end];
+//	}
+//}
 
 - (void) CloseViewerNotification: (NSNotification*) note
 {
@@ -1859,7 +1859,7 @@ public:
 	
 	[self setBlendingPixSource: 0L];
 	
-	cbStart->Delete();
+//	cbStart->Delete();
 	opacityTransferFunction->Delete();
 	volumeProperty->Delete();
 	compositeFunction->Delete();
@@ -4685,14 +4685,13 @@ public:
 	data = volumeData;
 	
 	aRenderer = [self renderer];
-	cbStart = vtkCallbackCommand::New();
-	cbStart->SetCallback( startRendering);
-	cbStart->SetClientData( self);
+//	cbStart = vtkCallbackCommand::New();
+//	cbStart->SetCallback( startRendering);
+//	cbStart->SetClientData( self);
 	
-	//vtkCommand.h
-	[self renderWindow]->AddObserver(vtkCommand::StartEvent, cbStart);
-	[self renderWindow]->AddObserver(vtkCommand::EndEvent, cbStart);
-	[self renderWindow]->AddObserver(vtkCommand::AbortCheckEvent, cbStart);
+//	[self renderWindow]->AddObserver(vtkCommand::StartEvent, cbStart);
+//	[self renderWindow]->AddObserver(vtkCommand::EndEvent, cbStart);
+//	[self renderWindow]->AddObserver(vtkCommand::AbortCheckEvent, cbStart);
 
 	firstObject = [pixList objectAtIndex:0];
 	float sliceThickness = [firstObject sliceInterval];  //[[pixList objectAtIndex:1] sliceLocation] - [firstObject sliceLocation];

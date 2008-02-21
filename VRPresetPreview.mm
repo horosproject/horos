@@ -46,7 +46,7 @@
 	data = volumeData;
 	
 	aRenderer = [self renderer];
-	cbStart = vtkCallbackCommand::New();
+	//cbStart = vtkCallbackCommand::New();
 	//cbStart->SetCallback( startRendering);
 	//cbStart->SetClientData( self);
 	
