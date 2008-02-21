@@ -1580,7 +1580,7 @@ public:
 	
 		rotate = NO;
 		
-		splash = [[WaitRendering alloc] init:NSLocalizedString(@"Rendering...", nil)];
+		splash = 0L;	//[[WaitRendering alloc] init:NSLocalizedString(@"Rendering...", nil)];
 		currentTool = t3DRotate;
 		[self setCursorForView: currentTool];
 		

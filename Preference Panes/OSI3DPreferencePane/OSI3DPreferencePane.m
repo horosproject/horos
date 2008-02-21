@@ -138,7 +138,7 @@
 	[recommandations setStringValue: [NSString stringWithFormat: @"%@ (%d MB): %d %@ / %d %@" , NSLocalizedString( @"Recommended for your video board", 0L), vram, without, NSLocalizedString( @"without shading", 0L), with, NSLocalizedString( @"with shading", 0L)]];
 
 	
-	[bestRenderingSlider setFloatValue: 2.0 - [defaults floatForKey: @"BESTRENDERING"]];
+	[bestRenderingSlider setFloatValue: 2.1 - [defaults floatForKey: @"BESTRENDERING"]];
 	[bestRenderingString setStringValue: [NSString stringWithFormat:@"%2.2f", [defaults floatForKey: @"BESTRENDERING"]]];
 	
 	
@@ -168,7 +168,7 @@
 
 - (IBAction) setBestRendering: (id) sender
 {
-	[[NSUserDefaults standardUserDefaults] setFloat: 2.0 - [sender floatValue] forKey: @"BESTRENDERING"];
+	[[NSUserDefaults standardUserDefaults] setFloat: 2.1 - [sender floatValue] forKey: @"BESTRENDERING"];
 	[bestRenderingString setStringValue: [NSString stringWithFormat:@"%2.2f", [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]]];
 	NSLog(@"Rendering resolution: %f", [[NSUserDefaults standardUserDefaults] floatForKey:@"BESTRENDERING"] );
 }
