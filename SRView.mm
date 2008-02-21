@@ -2252,7 +2252,11 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	aRenderer->ResetCamera();
 
 	[self saView:self];
-	
+
+	GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
+	[self getVTKRenderWindow]->MakeCurrent();
+	[[NSOpenGLContext currentContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
+
     [self setNeedsDisplay:YES];
 
 	//	vtkInteractorStyleFlight	*flight = vtkInteractorStyleFlight::New();

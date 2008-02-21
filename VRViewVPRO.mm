@@ -4459,6 +4459,10 @@ public:
 	
 	[self saView:self];
 	
+	GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
+	[self getVTKRenderWindow]->MakeCurrent();
+	[[NSOpenGLContext currentContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
+
 	[self updateVolumePRO];
 	
     return error;

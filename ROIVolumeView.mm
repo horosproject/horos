@@ -275,6 +275,10 @@
 
 - (short) setPixSource:(NSMutableArray*)pts
 {
+	GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
+	[self getVTKRenderWindow]->MakeCurrent();
+	[[NSOpenGLContext currentContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
+
 	[_points3D release];
 	_points3D = [pts copy];
 	return [self renderVolume];

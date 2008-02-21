@@ -9644,11 +9644,23 @@ static NSArray*	openSubSeriesArray = 0L;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rtstructNotification:) name:@"RTSTRUCTNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AlternateButtonPressed:) name:@"AlternateButtonPressed" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
+		
+//		[[NSNotificationCenter defaultCenter] addObserver: self
+//												selector: @selector(listChangedTest:)
+//												name: @"OsiriXServerArray has changed"
+//												object: nil];
+
+		
 	
 		displayEmptyDatabase = NO;
 	}
 	return self;
 }
+//
+//- (void) listChangedTest:(NSNotification*) n
+//{
+//	NSLog(@"********* NOTIF, %d", dontLoadSelectionSource);
+//}
 
 - (void) setDBDate {
 	[TimeFormat release];
