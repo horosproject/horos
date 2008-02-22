@@ -12918,6 +12918,12 @@ int i,j,l;
     }
 }
 
+- (BOOL)isPlaying4D;
+{
+	if(movieTimer) return YES;
+	return NO;
+}
+
 - (void) notificationStopPlaying:(NSNotification*)note
 {
 	if( timer) [self PlayStop:[self findPlayStopButton]];

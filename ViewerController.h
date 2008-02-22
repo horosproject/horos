@@ -615,6 +615,7 @@ enum
 - (void) movieRateSliderAction:(id) sender;
 - (void) MoviePlayStop:(id) sender;
 - (void) MovieStop:(id) sender;
+- (BOOL)isPlaying4D;
 - (void) checkEverythingLoaded;
 - (BOOL) isEverythingLoaded;
 - (IBAction) roiSetPixelsCheckButton:(id) sender;

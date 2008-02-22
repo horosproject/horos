@@ -215,7 +215,6 @@
 	glEnable(GL_TEXTURE_RECTANGLE_EXT);
 	
 	glDepthMask (GL_TRUE);
-	glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 		
 	glScalef(2.0f/(viewSize.width), -2.0f/(viewSize.height), 1.0f);
 	glTranslatef(-(viewSize.width)/2.0, -(viewSize.height)/2.0, 0.0);
@@ -226,9 +225,33 @@
 	
 	for(int t=0; t<[[self viewer] maxMovieIndex]; t++)
 	{
+		BOOL highlightLine = NO;
+		glColor4f (0.5f, 0.5f, 0.5f, 1.0f);
+		
+		if(t == [[self viewer] curMovieIndex])
+			highlightLine = YES;
+		else
+		{
+			// associated Viewers	
+			for (ViewerController *v in [self associatedViewers])
+			{
+				if(t == [v curMovieIndex]) highlightLine = YES;
+			}
+		}
+		
+		if([[self viewer] isPlaying4D]) highlightLine = YES;
+		
+		BOOL highlightThumbnail = NO;
 		NSMutableArray *pixList = [[self viewer] pixList:t];
 		for(int z=0; z<[pixList count]; z++)
 		{
+			highlightThumbnail = highlightLine || (z == [[self viewer] imageIndex]);
+				
+			if(highlightThumbnail)
+				glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+			else
+				glColor4f (0.5f, 0.5f, 0.5f, 1.0f);				
+			
 			upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
 			thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
 
@@ -317,18 +340,18 @@
 	// selected time line
 	int t = [[self viewer] curMovieIndex];
 	upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
-	upperLeft.x = 0.0;
-	
-	glLineWidth(2.0);
-	glColor3f(1.0f, 1.0f, 0.0f);
-	glBegin(GL_LINE_LOOP);
-		glVertex2f(upperLeft.x, upperLeft.y);
-		glVertex2f(upperLeft.x+viewSize.width, upperLeft.y);
-		glVertex2f(upperLeft.x+viewSize.width, upperLeft.y+thumbnailHeight);
-		glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
-	glEnd();
-	glColor3f(0.0f, 0.0f, 0.0f);
-	glLineWidth(1.0);	
+//	upperLeft.x = 0.0;
+//	
+//	glLineWidth(2.0);
+//	glColor3f(1.0f, 1.0f, 0.0f);
+//	glBegin(GL_LINE_LOOP);
+//		glVertex2f(upperLeft.x, upperLeft.y);
+//		glVertex2f(upperLeft.x+viewSize.width, upperLeft.y);
+//		glVertex2f(upperLeft.x+viewSize.width, upperLeft.y+thumbnailHeight);
+//		glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
+//	glEnd();
+//	glColor3f(0.0f, 0.0f, 0.0f);
+//	glLineWidth(1.0);	
 	
 	// selected image
 	int z = [[self viewer] imageIndex];
@@ -349,33 +372,33 @@
 		glLineWidth(1.0);	
 	}
 	
-	// associated Viewers	
-	// selected time line
-	for (ViewerController *v in [self associatedViewers])
-	{
-		int t = [v curMovieIndex];
-		upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
-		upperLeft.x = 0.0;
-		
-		float shift = 2.0;
-		upperLeft.y += shift;
-		
-		glLineWidth(2.0);
-		glColor3f(0.8f, 1.0f, 0.7f);
-		glBegin(GL_LINE_LOOP);
-			glVertex2f(upperLeft.x, upperLeft.y);
-			glVertex2f(upperLeft.x+viewSize.width, upperLeft.y);
-			glVertex2f(upperLeft.x+viewSize.width, upperLeft.y+thumbnailHeight-2.0*shift);
-			glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight-2.0*shift);
-		glEnd();
-		glColor3f(0.0f, 0.0f, 0.0f);
-		glLineWidth(1.0);	
-	}
+//	// associated Viewers	
+//	// selected time line
+//	for (ViewerController *v in [self associatedViewers])
+//	{
+//		int t = [v curMovieIndex];
+//		upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
+//		upperLeft.x = 0.0;
+//		
+//		float shift = 2.0;
+//		upperLeft.y += shift;
+//		
+//		glLineWidth(2.0);
+//		glColor3f(0.8f, 1.0f, 0.7f);
+//		glBegin(GL_LINE_LOOP);
+//			glVertex2f(upperLeft.x, upperLeft.y);
+//			glVertex2f(upperLeft.x+viewSize.width, upperLeft.y);
+//			glVertex2f(upperLeft.x+viewSize.width, upperLeft.y+thumbnailHeight-2.0*shift);
+//			glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight-2.0*shift);
+//		glEnd();
+//		glColor3f(0.0f, 0.0f, 0.0f);
+//		glLineWidth(1.0);	
+//	}
 	
 	glDisable(GL_LINE_SMOOTH);
 	
 	// lateral scroll bar	
-	if(drawLeftLateralScrollBar && [self canScrollHorizontallyOfAmount:-[[self enclosingScrollView] horizontalPageScroll]])
+	if(drawLeftLateralScrollBar && [self cansScrollLeft])
 	{
 		// draw the dark part
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -402,7 +425,7 @@
 		glDisable(GL_POLYGON_SMOOTH);
 	}
 	
-	if(drawRightLateralScrollBar && [self canScrollHorizontallyOfAmount:[[self enclosingScrollView] horizontalPageScroll]])
+	if(drawRightLateralScrollBar && [self cansScrollRight])
 	{
 		// draw the dark part
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -467,14 +490,17 @@
 	NSPoint event_location = [theEvent locationInWindow];
 	mouseDownPosition = [self convertPointFromWindowToOpenGL:event_location];	
 
+	BOOL scrollLeft = [self isMouseOnLeftLateralScrollBar:mouseDownPosition] && [self cansScrollLeft];
+	BOOL scrollRight = [self isMouseOnRightLateralScrollBar:mouseDownPosition] && [self cansScrollRight];
 
 	if([theEvent modifierFlags] & NSShiftKeyMask) userAction=zoom;
+	else if(([theEvent modifierFlags] & NSAlternateKeyMask) && ([theEvent modifierFlags] & NSCommandKeyMask)) userAction=rotate;
 	else if([theEvent modifierFlags] & NSCommandKeyMask) userAction=translate;
-	else if([theEvent modifierFlags] & NSControlKeyMask) userAction=rotate;
 	else if([theEvent modifierFlags] & NSAlternateKeyMask) userAction=wlww;
-	else if([theEvent clickCount]==2)
+	else if([theEvent clickCount]==2 && !scrollLeft && !scrollRight)
 	{
 		[self doubleClick];
+		return;
 	}
 	else userAction = [[self viewer] imageView].currentTool;
 
@@ -483,8 +509,6 @@
 
 	changeWLWW = NO;
 	
-	BOOL scrollLeft = [self isMouseOnLeftLateralScrollBar:mouseDownPosition];
-	BOOL scrollRight = [self isMouseOnRightLateralScrollBar:mouseDownPosition];
 	if(scrollLeft && !scrollTimer) scrollTimer = [[NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(scrollLeft:) userInfo:nil repeats:YES] retain];
 	else if(scrollRight && !scrollTimer) scrollTimer = [[NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(scrollRight:) userInfo:nil repeats:YES] retain];
 
@@ -743,9 +767,19 @@
 	[self scrollHorizontallyOfAmount:-[[self enclosingScrollView] horizontalPageScroll]];
 }
 
+- (BOOL)cansScrollLeft;
+{
+	return [self canScrollHorizontallyOfAmount:-[[self enclosingScrollView] horizontalPageScroll]];
+}
+
 - (void)scrollRight;
 {
 	[self scrollHorizontallyOfAmount:[[self enclosingScrollView] horizontalPageScroll]];
+}
+
+- (BOOL)cansScrollRight;
+{
+	return [self canScrollHorizontallyOfAmount:[[self enclosingScrollView] horizontalPageScroll]];
 }
 
 - (void)scrollLeft:(NSTimer*)theTimer;
@@ -847,7 +881,7 @@
 	int z = (mouseDownPosition.x + viewBounds.origin.x) / thumbnailWidth;
 	int t = (mouseDownPosition.y - viewBounds.origin.y - viewSize.height + [self frame].size.height) / thumbnailHeight;
 	
-	if(t == [[self viewer] curMovieIndex]) // same time line: select the clicked slice
+	if(t == [[self viewer] curMovieIndex] || [[self viewer] isPlaying4D]) // same time line: select the clicked slice
 	{
 		DCMView *view = [[self viewer] imageView];
 		if([view flippedData]) [view setIndex:[[[self viewer] pixList] count]-z-1];

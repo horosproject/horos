@@ -63,7 +63,9 @@ typedef enum {
 - (BOOL)canScrollHorizontallyOfAmount:(float)amount;
 - (void)scrollHorizontallyOfAmount:(float)amount;
 - (void)scrollLeft;
+- (BOOL)cansScrollLeft;
 - (void)scrollRight;
+- (BOOL)cansScrollRight;
 - (void)scrollLeft:(NSTimer*)theTimer;
 - (void)scrollRight:(NSTimer*)theTimer;
 - (BOOL)needsHorizontalScroller;
