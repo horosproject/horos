@@ -246,11 +246,6 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 #pragma mark web page
 
-//- (void)awakeFromNib
-//{
-//
-//}
-
 - (void)setURL:(NSString*)url;
 {
 	[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
