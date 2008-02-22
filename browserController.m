@@ -2239,7 +2239,7 @@ static NSArray*	statesArray = nil;
 	
 	NSLog(@"Opening DB: %@ Version: %@ DB Folder: %@", path, DBVersion, DBFolderLocation);
 	
-	if( [DBVersion isEqualToString: DATABASEVERSION] == NO )
+	if( DBVersion && [DBVersion isEqualToString: DATABASEVERSION] == NO )
 	{
 		[self updateDatabaseModel: path :DBVersion];
 		

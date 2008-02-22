@@ -357,13 +357,16 @@
 		upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
 		upperLeft.x = 0.0;
 		
+		float shift = 2.0;
+		upperLeft.y += shift;
+		
 		glLineWidth(2.0);
-		glColor3f(0.0f, 1.0f, 0.0f);
+		glColor3f(0.8f, 1.0f, 0.7f);
 		glBegin(GL_LINE_LOOP);
 			glVertex2f(upperLeft.x, upperLeft.y);
 			glVertex2f(upperLeft.x+viewSize.width, upperLeft.y);
-			glVertex2f(upperLeft.x+viewSize.width, upperLeft.y+thumbnailHeight);
-			glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
+			glVertex2f(upperLeft.x+viewSize.width, upperLeft.y+thumbnailHeight-2.0*shift);
+			glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight-2.0*shift);
 		glEnd();
 		glColor3f(0.0f, 0.0f, 0.0f);
 		glLineWidth(1.0);	
@@ -844,14 +847,40 @@
 	int z = (mouseDownPosition.x + viewBounds.origin.x) / thumbnailWidth;
 	int t = (mouseDownPosition.y - viewBounds.origin.y - viewSize.height + [self frame].size.height) / thumbnailHeight;
 	
-	if(t == [[self viewer] curMovieIndex])
+	if(t == [[self viewer] curMovieIndex]) // same time line: select the clicked slice
 	{
 		DCMView *view = [[self viewer] imageView];
 		if([view flippedData]) [view setIndex:[[[self viewer] pixList] count]-z-1];
 		else [view setIndex:z];
+		[view sendSyncMessage:1];
 	}
 	else
-		[self openNewViewerAtSlice:z movieFrame:t];
+	{
+		ViewerController *selectedViewer;
+		BOOL alreadyOpened = NO;
+		for (ViewerController *viewer in [self associatedViewers])
+		{
+			if(t == [viewer curMovieIndex])
+			{
+				selectedViewer = viewer;
+				alreadyOpened = YES;
+			}
+		}
+		if(!alreadyOpened)
+			[self openNewViewerAtSlice:z movieFrame:t]; // creates a new viewer
+		else
+		{
+			// select the correct slice
+			DCMView *view = [selectedViewer imageView];
+			if([view flippedData]) [view setIndex:[[[self viewer] pixList] count]-z-1];
+			else [view setIndex:z];
+			// sync other viewers
+			[view sendSyncMessage:1];
+			// make key viewer
+			[[selectedViewer window] makeKeyWindow];
+			[self setNeedsDisplay:YES];
+		}
+	}
 }
 
 - (void)openNewViewerAtSlice:(int)z movieFrame:(int)t;
