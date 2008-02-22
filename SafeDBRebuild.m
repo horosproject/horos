@@ -426,56 +426,69 @@ int main(int argc, const char *argv[])
 //	argv[ 2] : database path
 //	argv[ 3] : model path
 	
-	if( argv[ 1] && argv[ 2] && argv[ 3])
+	if( argc >= 3 && argv[ 1] && argv[ 2] && argv[ 3])
 	{
 		NSManagedObjectModel		*model;
 		NSManagedObjectContext		*context;
 		BOOL						COMMENTSAUTOFILL;
 		
-		NSString					*f = [NSString stringWithCString:argv[ 1]];
-		NSString					*p = [NSString stringWithCString:argv[ 2]];
-		NSString					*m = [NSString stringWithCString:argv[ 3]];
-		
-		NSLog( @"Start Process");
-		
-		NSArray	*newFilesArray = [NSArray arrayWithContentsOfFile: f];
+		@try
+		{
+			NSString					*f = [NSString stringWithCString:argv[ 1]];
+			NSString					*p = [NSString stringWithCString:argv[ 2]];
+			NSString					*m = [NSString stringWithCString:argv[ 3]];
+			
+			if( f && p && m)
+			{
+				NSLog( @"Start Process");
+				
+				NSArray	*newFilesArray = [NSArray arrayWithContentsOfFile: f];
 
-		NSString *INpath = [NSString stringWithContentsOfFile: p];
-		
-		// Preferences
-		NSDictionary	*dict = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"];
-		COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];
-		
-		// Context & Model
-		model = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [NSString stringWithContentsOfFile: m]]];
-		
-		
-		NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: model];
-		context = [[NSManagedObjectContext alloc] init];
-		[context setPersistentStoreCoordinator: coordinator];
-	
-		NSURL *url = [NSURL fileURLWithPath: [[INpath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"/Database.sql"]];
-		
-		NSError *error = 0L;
-		if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
-		{
-			NSLog( [error localizedDescription]);
+				NSString *INpath = [NSString stringWithContentsOfFile: p];
+				
+				// Preferences
+				NSDictionary	*dict = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"];
+				COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];
+				
+				// Context & Model
+				model = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [NSString stringWithContentsOfFile: m]]];
+				
+				
+				NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: model];
+				context = [[NSManagedObjectContext alloc] init];
+				[context setPersistentStoreCoordinator: coordinator];
+			
+				NSURL *url = [NSURL fileURLWithPath: [[INpath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"/Database.sql"]];
+				
+				NSError *error = 0L;
+				if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
+				{
+					NSLog( [error localizedDescription]);
+				}
+				[coordinator release];
+				
+				if( [[context undoManager] isUndoRegistrationEnabled])
+				{
+					[[context undoManager] setLevelsOfUndo: 1];
+					[[context undoManager] disableUndoRegistration];
+				}
+				
+				addFilesToDatabaseSafe( newFilesArray ,context ,model ,INpath ,COMMENTSAUTOFILL);
+	//			[BrowserController addFilesToDatabaseSafe: newFilesArray context: context model: model databasePath:INpath COMMENTSAUTOFILL: COMMENTSAUTOFILL];
+
+				error = 0L;
+				[context save: &error];
+				
+				[model release];
+				[context release];
+			}
 		}
-		[coordinator release];
 		
-		if( [[context undoManager] isUndoRegistrationEnabled])
+		@catch (NSException * e)
 		{
-			[[context undoManager] setLevelsOfUndo: 1];
-			[[context undoManager] disableUndoRegistration];
+			NSLog(@"************ SafeDBRebuild exception: %@", e);
 		}
-		addFilesToDatabaseSafe( newFilesArray ,context ,model ,INpath ,COMMENTSAUTOFILL);
-//		[BrowserController addFilesToDatabaseSafe: newFilesArray context: context model: model databasePath:INpath COMMENTSAUTOFILL: COMMENTSAUTOFILL];
 		
-		error = 0L;
-		[context save: &error];
-		
-		[model release];
-		[context release];
 	}
 	
 	NSLog( @"End Process");

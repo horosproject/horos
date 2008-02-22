@@ -2110,7 +2110,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowDidResize:(NSNotification *)aNotification
 {
-	if( dontEnterMagneticFunctions == NO)
+	if( dontEnterMagneticFunctions == NO && Button() != 0)
 	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"])
 		{
@@ -2374,12 +2374,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void)windowWillMove:(NSNotification *)notification
 {
 	if( dontEnterMagneticFunctions == NO)
+	{
 		savedWindowsFrame = [[self window] frame];
+	}
 }
 
 - (void)windowDidMove:(NSNotification *)notification
 {
-	if( dontEnterMagneticFunctions == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrame) == NO)
+	if( Button() != 0 && dontEnterMagneticFunctions == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrame) == NO)
 	{
 		NSEnumerator	*e;
 		NSWindow		*theWindow, *window;
