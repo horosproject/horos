@@ -34,8 +34,6 @@
 	
 	// uncomment next line when the 2 addresses PLUGIN_LIST_URL and PLUGIN_LIST_ALT_URL are good.
 	pluginsListURLs = [[NSArray arrayWithObjects:PLUGIN_LIST_URL, PLUGIN_LIST_ALT_URL, nil] retain];
-	// next line to be deleted
-//	pluginsListURLs = [[NSArray array] retain];
 
 	NSRect windowFrame = [[self window] frame];
 	[[self window] setFrame:NSMakeRect(windowFrame.origin.x,windowFrame.origin.y,500,700) display:YES];
