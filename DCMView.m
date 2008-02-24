@@ -6222,6 +6222,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 								else
 									[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f mm Location: %0.2f mm", 0L), curDCM.sliceThickness, curDCM.sliceLocation];
 							}
+							
+							NSLog( tempString); 
 						} 
 						else if( curDCM.viewPosition || curDCM.patientPosition )
 						{

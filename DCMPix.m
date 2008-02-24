@@ -6027,9 +6027,9 @@ END_CREATE_ROIS:
 			{
 				BOOL found = NO, found16 = NO;
 				
-				clutRed = malloc( 65536);
-				clutGreen = malloc( 65536);
-				clutBlue = malloc( 65536);
+				clutRed = malloc( 65536);		if( clutRed == 0L) NSLog(@"error clutRed == 0L");
+				clutGreen = malloc( 65536);		if( clutGreen == 0L) NSLog(@"error clutRed == 0L");
+				clutBlue = malloc( 65536);		if( clutBlue == 0L) NSLog(@"error clutRed == 0L");
 				
 				// initialisation
 				clutEntryR = clutEntryG = clutEntryB = 0;
@@ -6269,8 +6269,9 @@ END_CREATE_ROIS:
 				// EXTRACT THE PALETTE data only if there is 256 entries and depth is 16 bits
 				else if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16)
 				{
-					if( clutEntryR == clutEntryG == clutEntryB == 0)
+					if( clutEntryR == 0 && clutEntryG == 0 && clutEntryB == 0)
 					{
+						NSLog( @"****** clutEntryR == 0 && clutEntryG == 0 && clutEntryB == 0");
 						clutEntryR = 65535;
 						clutEntryG = 65535;
 						clutEntryB = 65535;
@@ -6280,9 +6281,7 @@ END_CREATE_ROIS:
 					val = Papy3GetElement (theGroupP, papRedPaletteCLUTDataGr, &nbVal, &elemType);
 					if ( val ) {
 						unsigned short  *ptrs =  (unsigned short*) val->a;
-						for ( int j = 0; j < clutEntryR; j++, ptrs++ ) {
-							clutRed [j] = (int) (*ptrs/256);
-						}
+						for ( int j = 0; j < clutEntryR; j++, ptrs++ ) clutRed [j] = (int) (*ptrs/256);
 						
 						found = YES; 	// this is used to let us know we have to look for the other element */
 					}//endif
