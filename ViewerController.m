@@ -2373,16 +2373,22 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowWillMove:(NSNotification *)notification
 {
+	windowIsMovedByTheUser = NO;
+	
 	if( dontEnterMagneticFunctions == NO)
 	{
 		savedWindowsFrame = [[self window] frame];
+		
+		if( Button()) windowIsMovedByTheUser = YES;
 	}
 }
 
 - (void)windowDidMove:(NSNotification *)notification
 {
-	if( Button() != 0 && dontEnterMagneticFunctions == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrame) == NO)
+	if( windowIsMovedByTheUser == YES && dontEnterMagneticFunctions == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrame) == NO)
 	{
+		if( Button() == 0) windowIsMovedByTheUser = NO;
+		
 		NSEnumerator	*e;
 		NSWindow		*theWindow, *window;
 		NSRect			frame, myFrame, dstFrame;
