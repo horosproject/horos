@@ -746,7 +746,7 @@
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
 	NSRect viewBounds = [clipView documentVisibleRect];
 	BOOL inZone = mousePos.x<=lateralScrollBarSize;
-	inZone = inZone && mousePos.x>=0+1;
+	inZone = inZone && mousePos.x>=0;
 	inZone = inZone && mousePos.y+viewBounds.origin.y<=viewBounds.size.height;
 	inZone = inZone && mousePos.y+viewBounds.origin.y>=0;
 	return inZone;
@@ -757,7 +757,7 @@
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
 	NSRect viewBounds = [clipView documentVisibleRect];
 	BOOL inZone = mousePos.x>=viewBounds.size.width - lateralScrollBarSize;
-	inZone = inZone && mousePos.x<=viewBounds.size.width-1;
+	inZone = inZone && mousePos.x<=viewBounds.size.width;
 	inZone = inZone && mousePos.y+viewBounds.origin.y<=viewBounds.size.height;
 	inZone = inZone && mousePos.y+viewBounds.origin.y>=0;
 	return inZone;
