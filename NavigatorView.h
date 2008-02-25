@@ -40,6 +40,8 @@ typedef enum {
 	
 	BOOL drawLeftLateralScrollBar, drawRightLateralScrollBar;
 	NSTimer *scrollTimer;
+	
+	NSTrackingArea *cursorTracking;
 }
 
 @property(readonly) int thumbnailWidth, thumbnailHeight;

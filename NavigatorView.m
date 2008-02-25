@@ -53,8 +53,12 @@
 		drawLeftLateralScrollBar = NO;
 		drawRightLateralScrollBar = NO;
 		
+		cursorTracking = [[NSTrackingArea alloc] initWithRect:[self visibleRect] options:(NSTrackingActiveWhenFirstResponder|NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited|NSTrackingActiveInKeyWindow) owner:self userInfo:0L];
+		[self addTrackingArea:cursorTracking];
+		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:@"changeWLWW" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name:@"DCMViewIndexChanged" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeViewerNotification:) name:@"CloseViewerNotification" object:nil];
 
 		GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 		[[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
@@ -76,6 +80,8 @@
 		scrollTimer = nil;
 	}
 	
+	[cursorTracking release];
+	
 	[super dealloc];
 }
 
@@ -86,6 +92,7 @@
 	[self setFrameSize:NSMakeSize([[[self viewer] pixList] count]*thumbnailWidth, [[self viewer] maxMovieIndex]*thumbnailHeight)];
 	wl = [[self viewer] imageView].curWL;
 	ww = [[self viewer] imageView].curWW;
+	[self setNeedsDisplay:YES];
 }
 
 - (void)initTextureArray;
@@ -639,6 +646,11 @@
 		for(int i=0; i<[isTextureWLWWUpdated count]; i++)
 			[isTextureWLWWUpdated replaceObjectAtIndex:i withObject:[NSNumber numberWithBool:NO]];
 		[self display];
+		
+		for (ViewerController *viewer in [self associatedViewers])
+		{
+			[[viewer imageView] setWLWW:wl :ww];
+		}
 	}
 	else
 	{
@@ -663,6 +675,11 @@
 	changeWLWW = YES;
 	for (int i=0; i<[isTextureWLWWUpdated count]; i++)
 		[isTextureWLWWUpdated replaceObjectAtIndex:i withObject:[NSNumber numberWithBool:NO]];
+		
+	for (ViewerController *viewer in [self associatedViewers])
+	{
+		[[viewer imageView] setWLWW:wl :ww];
+	}
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent
@@ -706,6 +723,21 @@
 //	}
 }
 
+- (void)mouseExited:(NSEvent *)theEvent
+{
+	NSLog(@"mouseExited");
+	BOOL leftLateralScrollBarAlreadyDrawn = drawLeftLateralScrollBar;
+	BOOL rightLateralScrollBarAlreadyDrawn = drawRightLateralScrollBar;
+
+	drawLeftLateralScrollBar = NO;
+	drawRightLateralScrollBar = NO;
+
+	if(leftLateralScrollBarAlreadyDrawn != drawLeftLateralScrollBar || rightLateralScrollBarAlreadyDrawn != drawRightLateralScrollBar)
+		[self setNeedsDisplay:YES];
+
+}
+
+
 #pragma mark-
 #pragma mark Scroll functions
 
@@ -714,7 +746,7 @@
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
 	NSRect viewBounds = [clipView documentVisibleRect];
 	BOOL inZone = mousePos.x<=lateralScrollBarSize;
-	inZone = inZone && mousePos.x>=0;
+	inZone = inZone && mousePos.x>=0+1;
 	inZone = inZone && mousePos.y+viewBounds.origin.y<=viewBounds.size.height;
 	inZone = inZone && mousePos.y+viewBounds.origin.y>=0;
 	return inZone;
@@ -725,7 +757,7 @@
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
 	NSRect viewBounds = [clipView documentVisibleRect];
 	BOOL inZone = mousePos.x>=viewBounds.size.width - lateralScrollBarSize;
-	inZone = inZone && mousePos.x<=viewBounds.size.width;
+	inZone = inZone && mousePos.x<=viewBounds.size.width-1;
 	inZone = inZone && mousePos.y+viewBounds.origin.y<=viewBounds.size.height;
 	inZone = inZone && mousePos.y+viewBounds.origin.y>=0;
 	return inZone;
@@ -938,6 +970,14 @@
 	
 	[newViewer adjustSlider];
 	[view sendSyncMessage:1];
+}
+
+- (void)closeViewerNotification:(NSNotification*)notif;
+{
+	if([[ViewerController getDisplayed2DViewers] count]==0)
+	{
+		[[self window] close];
+	}
 }
 
 @end

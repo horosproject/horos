@@ -2436,6 +2436,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		[[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
 		
+		[self checkCursor];
+		
 		BOOL	needUpdate = NO;
 		
 		float	cpixelMouseValueR = pixelMouseValueR;
