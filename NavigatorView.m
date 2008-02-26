@@ -767,13 +767,12 @@
 {
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
 	NSRect viewBounds = [clipView documentVisibleRect];
-	NSPoint newOrigin = viewBounds.origin;
-	newOrigin.x += amount;
+	NSPoint origin = viewBounds.origin;
 	
 	BOOL canScroll = YES;
 	
-	canScroll = canScroll && (newOrigin.x>=0);
-	canScroll = canScroll && (newOrigin.x+viewBounds.size.width<=[self frame].size.width);
+	if(amount<0) canScroll = (origin.x>0);
+	else canScroll = (origin.x+viewBounds.size.width<[self frame].size.width);
 
 	return canScroll;
 }
