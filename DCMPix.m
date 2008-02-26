@@ -6383,7 +6383,8 @@ END_CREATE_ROIS:
 		
 		// Get values needed for SUV calcs:
 		theGroupP = (SElement*) [self getPapyGroup: 0x0054 fileNb: fileNb];
-		if( theGroupP ) {
+		if( theGroupP )
+		{
 			val = Papy3GetElement (theGroupP, papUnitsGr, &pos, &elemType );
 			if( val ) units = val? [[NSString stringWithCString:val->a] retain] : nil;
 			else units = 0L;
@@ -6396,8 +6397,7 @@ END_CREATE_ROIS:
 			if( val ) decayFactor = val? [[NSString stringWithCString:val->a] floatValue] : 0;
 			else decayFactor = 1.0;
 			
-			//  Note: Following def for papRadiopharmaceuticalInformationSequence is off by 6!!!!
-			val = Papy3GetElement (theGroupP, papRadiopharmaceuticalInformationSequence + 6, &pos, &elemType );
+			val = Papy3GetElement (theGroupP, papRadiopharmaceuticalInformationSequenceGr, &pos, &elemType );
 			
 			// Loop over sequence to find injected dose
 			
@@ -6438,6 +6438,66 @@ END_CREATE_ROIS:
 				
 				// End of SUV required values
 			}
+			
+			val = Papy3GetElement (theGroupP, papDetectorInformationSequenceGr, &pos, &elemType );
+			
+			if ( val ) {
+				if( val->sq ) {
+					Papy_List *dcmList = val->sq->object->item;
+					while (dcmList != NULL)
+					{
+						SElement * gr = (SElement *) dcmList->object->group;
+							
+						if( gr)
+						{
+							if( gr->group == 0x0020 )
+							{
+								val = Papy3GetElement (gr, papImagePositionPatientGr, &nbVal, &elemType);
+								if ( val )
+								{
+									tmp = val;
+									
+									originX = [[NSString stringWithCString:tmp->a] floatValue];
+									
+									if( nbVal > 1)
+									{
+										tmp++;
+										originY = [[NSString stringWithCString:tmp->a] floatValue];
+									}
+									
+									if( nbVal > 2)
+									{
+										tmp++;
+										originZ = [[NSString stringWithCString:tmp->a] floatValue];
+									}
+								}
+								
+								originZ += frameNo * sliceThickness;
+								
+								orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
+								orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
+								
+								val = Papy3GetElement (gr, papImageOrientationPatientGr, &nbVal, &elemType);
+								if ( val ) {
+									tmpVal3 = val;
+									if( nbVal != 6) { nbVal = 6;		NSLog(@"Orientation is NOT 6 !!!");}
+									for ( int j = 0; j < nbVal; j++ ) {
+										orientation[ j]  = [[NSString stringWithCString:tmpVal3->a] floatValue];
+										tmpVal3++;
+									}
+								}
+								break;
+							}
+						}
+						dcmList = dcmList->next;
+					}
+				}
+				
+				[self computeTotalDoseCorrected];
+				
+				// End of SUV required values
+			}
+
 		}
 		
 		// End SUV			

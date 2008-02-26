@@ -6172,9 +6172,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					//	if( fullText)
 						{
 							if(lww < 50)
-								[tempString appendFormat: @"WL: %0.4f WW: %0.4f", lwl, lww];
+								[tempString appendFormat: NSLocalizedString( @"WL: %0.4f WW: %0.4f", @"WW: window width, WL: window level"), lwl, lww];
 							else
-								[tempString appendFormat: @"WL: %ld WW: %ld", (long) lwl, (long) lww];
+								[tempString appendFormat: NSLocalizedString( @"WL: %ld WW: %ld", @"WW: window width, WL: window level"), (long) lwl, (long) lww];
 							
 							if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"]))
 							{
