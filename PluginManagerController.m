@@ -257,7 +257,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	NSArray* availablePlugins = [self availablePlugins];
 	for(NSDictionary *plugin in availablePlugins)
 	{
-		if([[plugin valueForKey:@"name"] isEqualTo:name])
+		if([[plugin valueForKey:@"name"] isEqualToString:name])
 		{
 			[self setURL:[plugin valueForKey:@"url"]];
 			[self setDownloadURL:[plugin valueForKey:@"download_url"]];
@@ -272,7 +272,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 				name = [name stringByDeletingPathExtension]; // removes the .osirixplugin extension
 				sameName = [name isEqualToString:[installedPlugin valueForKey:@"name"]];
 				sameVersion = [[plugin valueForKey:@"version"] isEqualToString:[installedPlugin valueForKey:@"version"]];
-				
+
 				alreadyInstalled = alreadyInstalled || sameName || (sameName && sameVersion);
 				
 				if(alreadyInstalled) break;
@@ -293,7 +293,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 			
 			return;
 		}
-		else if([name isEqualTo:NSLocalizedString(@"Your Plugin here!", nil)])
+		else if([name isEqualToString:NSLocalizedString(@"Your Plugin here!", nil)])
 		{
 			[self loadSubmitPluginPage];
 		}
