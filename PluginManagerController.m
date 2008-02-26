@@ -32,7 +32,6 @@
 	
 	plugins = [[NSMutableArray arrayWithArray:[PluginManager pluginsList]] retain];
 	
-	// uncomment next line when the 2 addresses PLUGIN_LIST_URL and PLUGIN_LIST_ALT_URL are good.
 	pluginsListURLs = [[NSArray arrayWithObjects:PLUGIN_LIST_URL, PLUGIN_LIST_ALT_URL, nil] retain];
 
 	NSRect windowFrame = [[self window] frame];
@@ -171,7 +170,7 @@
 	else
 	{
 		[self generateAvailablePluginsMenu];
-		[self setURL:[[[self availablePlugins] objectAtIndex:0] valueForKey:@"url"]];
+		[self setURLforPluginWithName:[[[self availablePlugins] objectAtIndex:0] valueForKey:@"name"]];
 		[self setDownloadURL:[[[self availablePlugins] objectAtIndex:0] valueForKey:@"download_url"]];
 	}
 	[super showWindow:sender];
@@ -256,12 +255,42 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 - (void)setURLforPluginWithName:(NSString*)name;
 {
 	NSArray* availablePlugins = [self availablePlugins];
-	for(id loopItem in availablePlugins)
+	for(NSDictionary *plugin in availablePlugins)
 	{
-		if([[loopItem valueForKey:@"name"] isEqualTo:name])
+		if([[plugin valueForKey:@"name"] isEqualTo:name])
 		{
-			[self setURL:[loopItem valueForKey:@"url"]];
-			[self setDownloadURL:[loopItem valueForKey:@"download_url"]];
+			[self setURL:[plugin valueForKey:@"url"]];
+			[self setDownloadURL:[plugin valueForKey:@"download_url"]];
+			
+			BOOL alreadyInstalled = NO;
+			BOOL sameName = NO;
+			BOOL sameVersion = NO;
+			for(NSDictionary *installedPlugin in plugins)
+			{	
+				NSString *name = [[[plugin valueForKey:@"download_url"] lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+				name = [name stringByDeletingPathExtension]; // removes the .zip extension
+				name = [name stringByDeletingPathExtension]; // removes the .osirixplugin extension
+				sameName = [name isEqualToString:[installedPlugin valueForKey:@"name"]];
+				sameVersion = [[plugin valueForKey:@"version"] isEqualToString:[installedPlugin valueForKey:@"version"]];
+				
+				alreadyInstalled = alreadyInstalled || sameName || (sameName && sameVersion);
+				
+				if(alreadyInstalled) break;
+			}
+			
+			if(alreadyInstalled)
+			{
+				[statusTextField setHidden:NO];
+				if(sameName && sameVersion)
+					[statusTextField setStringValue:NSLocalizedString(@"Plugin already installed", nil)];
+				else
+					[statusTextField setStringValue:NSLocalizedString(@"Download the new version!", nil)];
+			}
+			else
+			{
+				[statusTextField setHidden:YES];
+			}
+			
 			return;
 		}
 		else if([name isEqualTo:NSLocalizedString(@"Your Plugin here!", nil)])
