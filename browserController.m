@@ -10488,7 +10488,8 @@ static NSArray*	openSubSeriesArray = 0L;
 					NSString * itemPath = [aPath stringByAppendingPathComponent:pathname];
 					id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
 					
-					if ([fileType isEqual:NSFileTypeRegular]) {
+					if ([fileType isEqual:NSFileTypeRegular])
+					{
 						BOOL	addFile = YES;
 						
 						switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"]) {
@@ -10513,8 +10514,22 @@ static NSArray*	openSubSeriesArray = 0L;
 						
 						if( [[itemPath lastPathComponent] length] > 0 && [[itemPath lastPathComponent] characterAtIndex: 0] == '.')
 							addFile = NO;
+						
+						for( NSString *s in [itemPath pathComponents])
+						{
+							NSString *e = [s pathExtension];
 							
+							if( [e isEqualToString:@""] || [[e lowercaseString] isEqualToString:@"dcm"] || [[e lowercaseString] isEqualToString:@"img"] || [[e lowercaseString] isEqualToString:@"im"]  || [[e lowercaseString] isEqualToString:@"dicom"])
+							{
+							}
+							else
+							{
+								addFile = NO;
+							}
+						}
+						
 						if( addFile) [filesArray addObject:itemPath];
+						else NSLog(@"skip this file: %@", [itemPath lastPathComponent]);
 					}
 				}
 				
