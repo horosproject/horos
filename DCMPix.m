@@ -9615,6 +9615,8 @@ END_CREATE_ROIS:
     if( baseAddr ) {
 		updateToBeApplied = NO;
 		
+		NSLog(@"changeWLWW");
+		
 		float  min, max;
 		
         min = iwl - iww / 2; 

@@ -134,15 +134,17 @@ static NSMutableArray *cachedServersArray = 0L;
 }
 
 //Bonjour Delegate methods
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didNotSearch:(NSDictionary *)errorDict{
-	NSLog(@"netServiceBrowser didNotSearch");
-	
+- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didNotSearch:(NSDictionary *)errorDict
+{
+	NSLog(@"netServiceBrowser didNotSearch");	
 }
 
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveDomain:(NSString *)domainString moreComing:(BOOL)moreComing{
+- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveDomain:(NSString *)domainString moreComing:(BOOL)moreComing
+{
 }
 
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveService:(NSNetService *)aNetService moreComing:(BOOL)moreComing{
+- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
+{
 	if( [_dicomServices containsObject: aNetService])
 		[_dicomServices removeObject: aNetService];
 		

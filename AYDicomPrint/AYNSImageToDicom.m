@@ -52,12 +52,6 @@
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
 //********************************************************************************************
 // returnValue must be retained and released by caller
 //********************************************************************************************
@@ -217,21 +211,18 @@
 //********************************************************************************************
 - (NSString *) _createDicomImageWithViewer: (ViewerController *) viewer toDestinationPath: (NSString *) destPath asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations
 {
-	NSImage *currentImage = [[viewer imageView] nsimage: NO];
-	
-	currentImage = [DCMPix resizeIfNecessary: currentImage dcmPix: [[viewer imageView] curDCM]];
-	
-	[currentImage lockFocus];
-	
+	NSImage *currentImage = [[viewer imageView] nsimage: NO]; //NO=image sized by window
+
+/*	currentImage = [DCMPix resizeIfNecessary: currentImage dcmPix: [[viewer imageView] curDCM]];
+	[currentImage lockFocus];*/
+		
 	NSDictionary *patientInfoDict = [self _getAnnotationDictionary: viewer];
 	
-	NSRect imageRect = NSMakeRect(0.0, 0.0, [currentImage size].width, [currentImage size].height);
-	
+/*	NSRect imageRect = NSMakeRect(0.0, 0.0, [currentImage size].width, [currentImage size].height);
 	if (annotations)
 		[self _drawAnnotationsInRect: imageRect forTile: patientInfoDict isPrinting: YES];
-	
-	[currentImage unlockFocus];
-	
+	[currentImage unlockFocus];*/
+		
 	NSString *imagePath = [self _writeDICOMHeaderAndData: patientInfoDict destinationPath: destPath imageData: currentImage colorPrint: colorPrint];
 	
 	// masu 2006-10-04
@@ -466,9 +457,10 @@
 - (NSString*) _writeDICOMHeaderAndData: (NSDictionary *) patientDict destinationPath: (NSString *) destPath imageData: (NSImage *) image colorPrint: (BOOL) colorPrint
 {
 	NSString *path = nil;
-	path = [self generateUniqueFileName: destPath];
+//	path = [self generateUniqueFileName: destPath];
+	path = @"/Users/ibook/aycanDicom.dcm";
 	FILE *outFile = nil;
-	short group = 0, element = 0, dummyShort = 0;
+	short group = 0, element = 0, dummyShort = 0, samplePerPixel = 1;
 	//char	singleDummy;
 	long dummyLong = 0;
 	long metaElementGroupLengthPosition;
@@ -799,8 +791,38 @@
 	//floatStringValue = CFSwapInt32HostToLittle(floatStringValue);
 	fwrite(&floatStringValue, 4, 1, outFile);
 	
+	
+//------------------------------------------------------------
 	// new group
 	
+	group = CFSwapInt16HostToLittle(0x2020);
+		//Basic Grayscale Image Sequence  (2020,0110) SQ
+		//Basic Color Image Sequence  (2020,0111) SQ
+
+	fwrite(&group, 2, 1, outFile);
+	if (colorPrint)
+		element = CFSwapInt16HostToLittle(0x0111);
+	else
+		element = CFSwapInt16HostToLittle(0x0110);
+	fwrite(&element, 2, 1, outFile);
+	fwrite("SQ", 2, 1, outFile);
+	dummyShort = CFSwapInt16HostToLittle(0x0000);
+	fwrite(&dummyShort, 2, 1, outFile);
+	dummyLong = CFSwapInt32HostToLittle(0xFFFFFFFF);
+	fwrite(&dummyLong, 4, 1, outFile);
+
+	//first and unique element of the sequence
+	
+	dummyShort = CFSwapInt16HostToLittle(0xFFFE);
+	fwrite(&dummyShort, 2, 1, outFile);
+	dummyShort = CFSwapInt16HostToLittle(0xE000);
+	fwrite(&dummyShort, 2, 1, outFile);
+	dummyLong = CFSwapInt32HostToLittle(0xFFFFFFFF);
+	fwrite(&dummyLong, 4, 1, outFile);
+
+	
+	// new group
+
 	group = CFSwapInt16HostToLittle(0x0028);
 	
 	// samplePerPixel
@@ -810,10 +832,9 @@
 	fwrite("US", 2, 1, outFile);
 	dummyShort = CFSwapInt16HostToLittle(0x0002);
 	fwrite(&dummyShort, 2, 1, outFile);
-	if (colorPrint)
-		dummyShort = CFSwapInt16HostToLittle(3);
-	else
-		dummyShort = CFSwapInt16HostToLittle(1);
+	if (colorPrint) samplePerPixel = 3;
+	else samplePerPixel = 1;
+	dummyShort = CFSwapInt16HostToLittle(samplePerPixel);
 	fwrite(&dummyShort, 2, 1, outFile);
 	
 	
@@ -834,16 +855,27 @@
 	else
 		fwrite("MONOCHROME2 ", strlen("MONOCHROME2 "), 1, outFile);
 
-	// planarConfiguration
-	fwrite(&group, 2, 1, outFile);
-	element = CFSwapInt16HostToLittle(0x0006);
-	fwrite(&element, 2, 1, outFile);
-	fwrite("US", 2, 1, outFile);
-	dummyShort = CFSwapInt16HostToLittle(0x0002);
-	fwrite(&dummyShort, 2, 1, outFile);
-	dummyShort = CFSwapInt16HostToLittle(0x000);
-	fwrite(&dummyShort, 2, 1, outFile);
-	
+// 08 C.7.6.3.1.3 Planar Configuration 
+//Planar Configuration (0028,0006) indicates whether the color pixel data are sent color-by-plane or 
+//color-by-pixel. This Attribute shall be present if Samples per Pixel (0028,0002) has a value greater 
+//than 1. It shall not be present otherwise.
+
+// in image box picture: 1 (frame interleave) 
+// dcmtk dcmprscp:   cannot update Basic Grayscale Image Box: unsupported attribute in basic grayscale image sequence
+
+	if (colorPrint)
+	{
+		// planarConfiguration
+		fwrite(&group, 2, 1, outFile);
+		element = CFSwapInt16HostToLittle(0x0006);
+		fwrite(&element, 2, 1, outFile);
+		fwrite("US", 2, 1, outFile);
+		dummyShort = CFSwapInt16HostToLittle(0x0002);
+		fwrite(&dummyShort, 2, 1, outFile);
+		dummyShort = CFSwapInt16HostToLittle(0x0001);
+		fwrite(&dummyShort, 2, 1, outFile);
+	}
+
 	// rows
 	fwrite(&group, 2, 1, outFile);
 	element = CFSwapInt16HostToLittle(0x0010);
@@ -920,7 +952,7 @@
 	fwrite(&dummyShort, 2, 1, outFile);
 	dummyShort = CFSwapInt16HostToLittle(0x0000);
 	fwrite(&dummyShort, 2, 1, outFile);
-	
+/*	
 	//SmallestImagePixelValue
 	fwrite(&group, 2, 1, outFile);
 	element = CFSwapInt16HostToLittle(0x0106);
@@ -932,7 +964,7 @@
 	fwrite(&dummyShort, 2, 1, outFile);
 	
 	//LargestImagePixelValue
-	/*fwrite(&group, 2, 1, outFile);
+	fwrite(&group, 2, 1, outFile);
 	element = CFSwapInt16HostToLittle(0x0107);
 	fwrite(&element, 2, 1, outFile);
 	fwrite("US", 2, 1, outFile);
@@ -940,7 +972,7 @@
 	fwrite(&dummyShort, 2, 1, outFile);
 	dummyShort = CFSwapInt16HostToLittle(0x0048);
 	fwrite(&dummyShort, 2, 1, outFile);
-	*/
+	
 	
 	
 	//WindowCenter
@@ -968,7 +1000,7 @@
 	dummyShort = CFSwapInt16HostToLittle([outString length]);
 	fwrite(&dummyShort, 2, 1, outFile);
 	fwrite([outString UTF8String], [outString length], 1, outFile);
-	
+*/	
 	// new group
 	// image data
 	group = CFSwapInt16HostToLittle(0x7fe0);
@@ -978,7 +1010,8 @@
 	fwrite("OW", 2, 1, outFile);
 	dummyShort = CFSwapInt16HostToLittle(0x0000);
 	fwrite(&dummyShort, 2, 1, outFile);
-	dummyLong = CFSwapInt32HostToLittle([image size].width * [image size].height * 1);// may be 3 for RGB
+	//image 8 bit
+	dummyLong = CFSwapInt32HostToLittle([image size].width * [image size].height * samplePerPixel);
 	dataSizePos = ftell(outFile);
 	fwrite(&dummyLong, 4, 1, outFile);
 
@@ -1002,6 +1035,25 @@
 	// only free grayscale char buffer
 	//if (!colorPrint)
 	//	free(rawImage.imageData);
+
+	//end element and end sequence
+	//go to end of image
+	fseek (outFile, 0, SEEK_END);
+	dummyShort = CFSwapInt16HostToLittle(0xFFFE);
+	//end element and end sequence
+	fwrite(&dummyShort, 2, 1, outFile);
+	dummyShort = CFSwapInt16HostToLittle(0xE00D);
+	fwrite(&dummyShort, 2, 1, outFile);
+	dummyLong = CFSwapInt32HostToLittle(0x00000000);
+	fwrite(&dummyLong, 4, 1, outFile);
+	dummyShort = CFSwapInt16HostToLittle(0xFFFE);
+	fwrite(&dummyShort, 2, 1, outFile);
+	dummyShort = CFSwapInt16HostToLittle(0xE0DD);
+	fwrite(&dummyShort, 2, 1, outFile);
+	dummyLong = CFSwapInt32HostToLittle(0x00000000);
+	fwrite(&dummyLong, 4, 1, outFile);
+	
+
 	fclose(outFile);
 
 	return path;

@@ -1887,12 +1887,25 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(IBAction) updateImage:(id) sender
 {
-	for( DCMView *v in [seriesView imageViews]) [v updateImage];
+	for( DCMView *v in [seriesView imageViews])
+	{
+		[v updateImage];
+	}
 }
 
 -(void) needsDisplayUpdate
 {
 	[self updateImage:self];
+
+	float   iwl, iww;
+	[imageView getWLWW:&iwl :&iww];
+	[imageView setWLWW:iwl :iww];
+	
+	for( int y = 0; y < maxMovieIndex; y++)
+	{
+		for( int x = 0; x < [pixList[y] count]; x++)
+			[[pixList[y] objectAtIndex: x] changeWLWW:iwl :iww];
+	}
 }
 
 - (void)windowDidLoad

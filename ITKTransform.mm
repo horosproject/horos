@@ -46,8 +46,14 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	[super dealloc];
 }
 
-- (ViewerController*) computeAffineTransformWithParameters: (double*)theParameters resampleOnViewer:(ViewerController*)referenceViewer
++ (float*) resampleWithParameters: (double*)theParameters firstObject: (DCMPix*) firstObject firstObjectOriginal: (DCMPix*)  firstObjectOriginal noOfImages: (int) noOfImages length: (long*) length itkImage: (ITK*) itkImage
 {
+	double	vectorReference[ 9];
+	double	vectorOriginal[ 9];
+
+	[firstObject orientationDouble: vectorReference];
+	[firstObjectOriginal orientationDouble: vectorOriginal];
+
 	typedef itk::AffineTransform< double, 3 > AffineTransformType;
 	typedef AffineTransformType::ParametersType ParametersType;
 	
@@ -55,15 +61,6 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	
 	ParametersType parameters(transform->GetNumberOfParameters());
 	
-	double	vectorReference[ 9];
-	double	vectorOriginal[ 9];
-
-	[[[referenceViewer pixList] objectAtIndex: 0] orientationDouble: vectorReference];
-	[[[originalViewer pixList] objectAtIndex: 0] orientationDouble: vectorOriginal];
-	
-	DCMPix *firstObject = [[referenceViewer pixList] objectAtIndex: 0];
-
-
 	int i;
 	for(i=0; i<transform->GetNumberOfParameters(); i++)
 	{
@@ -72,13 +69,11 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	
 	transform->SetParameters(parameters);
 
-	ResampleFilterType::Pointer resample = ResampleFilterType::New();
-
 	double origin[ 3] = {0, 0, 0}, originConverted[ 3];
 	
-	origin[0] =  [[[originalViewer pixList] objectAtIndex: 0] originX];
-	origin[1] =  [[[originalViewer pixList] objectAtIndex: 0] originY];
-	origin[2] =  [[[originalViewer pixList] objectAtIndex: 0] originZ];
+	origin[0] =  [firstObjectOriginal originX];
+	origin[1] =  [firstObjectOriginal originY];
+	origin[2] =  [firstObjectOriginal originZ];
 	
 	originConverted[ 0] = origin[ 0] * vectorOriginal[ 0] + origin[ 1] * vectorOriginal[ 1] + origin[ 2] * vectorOriginal[ 2];
 	originConverted[ 1] = origin[ 0] * vectorOriginal[ 3] + origin[ 1] * vectorOriginal[ 4] + origin[ 2] * vectorOriginal[ 5];
@@ -86,15 +81,19 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 
 	[itkImage itkImporter]->SetOrigin( originConverted );
 
+	ResampleFilterType::Pointer resample = ResampleFilterType::New();
+	
 	resample->SetTransform(transform);
 	resample->SetInput([itkImage itkImporter]->GetOutput());
-	resample->SetDefaultPixelValue( [[[originalViewer pixList] objectAtIndex: 0] minValueOfSeries]);
-	
+	resample->SetDefaultPixelValue( [firstObjectOriginal minValueOfSeries]);
 	
 	double outputSpacing[3];
 	outputSpacing[0] = [firstObject pixelSpacingX];
 	outputSpacing[1] = [firstObject pixelSpacingY];
 	outputSpacing[2] = [firstObject sliceInterval];
+	
+	if( outputSpacing[2] == 0 || noOfImages == 1) outputSpacing[2] = 1;
+	
 	resample->SetOutputSpacing(outputSpacing);
 	
 	double outputOrigin[3] = {0, 0, 0}, outputOriginConverted[3] = {0, 0, 0};
@@ -112,7 +111,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	ImageType::SizeType size;
 	size[0] = [firstObject pwidth];
 	size[1] = [firstObject pheight];
-	size[2] = [[referenceViewer pixList] count];
+	size[2] = noOfImages;
 	
 	resample->SetSize(size);
 
@@ -146,37 +145,72 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	
 	[splash close];
 	[splash release];
+
+	long	mem = 0;
+	for( i = 0; i < noOfImages; i++)
+	{
+		mem += [firstObject pheight] * [firstObject pwidth] * 4;
+	}
 	
-	return [self createNewViewerWithBuffer:resultBuff resampleOnViewer:referenceViewer];
+	float *fVolumePtr = (float*) malloc( mem);
+	if( fVolumePtr && resultBuff) 
+	{
+		memcpy( fVolumePtr, resultBuff, mem);
+		*length = mem;
+		
+		return fVolumePtr;
+	}
+	else return 0L;
 }
 
-- (ViewerController*) createNewViewerWithBuffer:(float*)aBuffer resampleOnViewer:(ViewerController*)referenceViewer
++ (float*) reorient2Dimage: (double*) theParameters firstObject: (DCMPix*) firstObject firstObjectOriginal: (DCMPix*) firstObjectOriginal length: (long*) length
+{
+	float *p = 0L;
+	int size = [firstObjectOriginal pwidth] * [firstObjectOriginal pheight];
+	
+	float *tempPtr = (float*) malloc( size * 2 * sizeof( float));
+	
+	memcpy( tempPtr, [firstObjectOriginal fImage], size * sizeof( float));
+	memcpy( tempPtr + size, [firstObjectOriginal fImage], size * sizeof( float));
+	
+	ITK *itk = [[ITK alloc] initWith: [NSArray arrayWithObjects: firstObjectOriginal, firstObjectOriginal, 0L] : tempPtr : -1];
+	
+	p = [ITKTransform resampleWithParameters: theParameters firstObject: firstObject firstObjectOriginal: firstObjectOriginal noOfImages: 1 length: length itkImage: itk];
+	
+	[itk release];
+	
+	free( tempPtr);
+	
+	return p;
+}
+
+- (ViewerController*) computeAffineTransformWithParameters: (double*)theParameters resampleOnViewer:(ViewerController*)referenceViewer
+{
+	DCMPix *firstObject = [[referenceViewer pixList] objectAtIndex: 0];
+	DCMPix *firstObjectOriginal = [[originalViewer pixList] objectAtIndex: 0];
+	int noOfImages = [[referenceViewer pixList] count];
+	long length;
+	
+	float *resultBuff = [ITKTransform resampleWithParameters: theParameters firstObject: firstObject firstObjectOriginal: firstObjectOriginal noOfImages: noOfImages length: &length itkImage: (ITK*) itkImage];
+	
+	return [self createNewViewerWithBuffer:resultBuff length: length resampleOnViewer:referenceViewer];
+}
+
+- (ViewerController*) createNewViewerWithBuffer:(float*)fVolumePtr length: (long) length resampleOnViewer:(ViewerController*)referenceViewer
 {
 	long				i;
 	ViewerController	*new2DViewer = 0L;
-	float				*fVolumePtr;
 	float				wl, ww;
 	
 	// First calculate the amount of memory needed for the new serie
 	
 	NSArray	*pixList = [referenceViewer pixList];
 	DCMPix	*curPix;
-	long	mem = 0;
 	
-	for( i = 0; i < [pixList count]; i++)
+	if( fVolumePtr) 
 	{
-		curPix = [pixList objectAtIndex: i];
-		mem += [curPix pheight] * [curPix pwidth] * 4;		// each pixel contains either a 32-bit float or a 32-bit ARGB value
-	}
-	
-	fVolumePtr = (float*) malloc(mem);
-	if( fVolumePtr && aBuffer) 
-	{
-		// Copy the source series in the new one !
-		memcpy(fVolumePtr,aBuffer,mem);
-		
 		// Create a NSData object to control the new pointer
-		NSData	*volumeData = [NSData dataWithBytesNoCopy:fVolumePtr length:mem freeWhenDone:YES]; 
+		NSData	*volumeData = [NSData dataWithBytesNoCopy: fVolumePtr length: length freeWhenDone:YES]; 
 		
 		// Now copy the DCMPix with the new buffer
 		NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];

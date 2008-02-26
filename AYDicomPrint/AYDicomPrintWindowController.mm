@@ -365,7 +365,7 @@
 	if( from < 0) from = 0;
 	if( to == from) to = from+1;
 
-	NSDictionary	*options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: [[m_ImageSelection selectedCell] tag]], @"mode", [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", entireSeriesInterval, @"interval", 0L];
+	NSDictionary	*options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: [[m_ImageSelection selectedCell] tag]], @"mode", [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", [NSNumber numberWithInt: [entireSeriesInterval intValue]], @"interval", 0L];
 	
 	NSLog( [options description]);
 	

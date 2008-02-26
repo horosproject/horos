@@ -41,11 +41,11 @@
 }
 
 
-- (id) initWith :(NSMutableArray*) pix :(float*) volumeData :(long) slice {
-	return [self initWithPix :(NSMutableArray*) pix volume:(float*) volumeData sliceCount:(long) slice resampleData:NO];
+- (id) initWith :(NSArray*) pix :(float*) volumeData :(long) slice {
+	return [self initWithPix :(NSArray*) pix volume:(float*) volumeData sliceCount:(long) slice resampleData:NO];
 }
 
-- (id) initWithPix :(NSMutableArray*) pix volume:(float*) volumeData sliceCount:(long) slice resampleData:(BOOL)resampleData
+- (id) initWithPix :(NSArray*) pix volume:(float*) volumeData sliceCount:(long) slice resampleData:(BOOL)resampleData
 {
     if (self = [super init])
 	{
@@ -74,10 +74,8 @@
 		
 		
 		float	*data;
-		NSMutableArray *pixList = pix;
-		[pixList retain];
-		// get values from the first DCMPix object
-		//#ifndef __cplusplus
+		NSArray *pixList = pix;
+		
 		id firstObject = [pixList objectAtIndex:0];
 		
 		height = [firstObject pheight];
@@ -94,12 +92,17 @@
 		voxelSpacingY  = [firstObject pixelSpacingY];  
 		voxelSpacingZ  = [firstObject sliceInterval]; 
 		
+		if( voxelSpacingZ == 0 || [pixList count] == 1) voxelSpacingZ = 1;
+		
 		// get data
 		if( slice == -1) {
 			data = volumeData;
 			// resample data decreases the size by 2 if all dimensions
-			NSLog(@"start data resample");
-			if (resampleData) {
+			
+			if (resampleData)
+			{
+				NSLog(@"start data resample");
+				
 				int sliceSize = height * width;
 				float *newData = (float *) malloc(height * width * depth * sizeof(float) / 8);
 				int x, y , z;
@@ -142,14 +145,7 @@
 		spacing[1] = voxelSpacingY; // along Y direction
 		spacing[2] = voxelSpacingZ; // along Z direction
 		
-		[pixList release];
-		
 		[self setupImportFilterWithSize:size origin:origin spacing:spacing data:data filterWillOwnBuffer:resampleData];
-		
-		//if (resampleData && slice == -1)
-		//	free(data);
-		
-		
     }
     return self;
 }
