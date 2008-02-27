@@ -12156,8 +12156,9 @@ int i,j,l;
 				
 				if(  curvedController == 0L && [vC curvedController] == 0L)
 				{
-					if( (int) (vectorsA[ 0]*1000.) == (int) (vectorsB[ 0]*1000.) && (int) (vectorsA[ 1]*1000.) == (int) (vectorsB[ 1]*1000.) && (int) (vectorsA[ 2]*1000.) == (int) (vectorsB[ 2]*1000.) &&
-						(int) (vectorsA[ 3]*1000.) == (int) (vectorsB[ 3]*1000.) && (int) (vectorsA[ 4]*1000.) == (int) (vectorsB[ 4]*1000.) && (int) (vectorsA[ 5]*1000.) == (int) (vectorsB[ 5]*1000.) &&
+					#define SENSIBILITY 0.05
+					if( fabs( vectorsA[ 0] - vectorsB[ 0]) < SENSIBILITY && fabs( vectorsA[ 1] - vectorsB[ 1]) < SENSIBILITY && fabs( vectorsA[ 2] - vectorsB[ 2]) < SENSIBILITY &&
+						fabs( vectorsA[ 3] - vectorsB[ 3]) < SENSIBILITY && fabs( vectorsA[ 4] - vectorsB[ 4]) < SENSIBILITY && fabs( vectorsA[ 5] - vectorsB[ 5]) < SENSIBILITY &&
 						curvedController == 0L)
 					{
 					//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
@@ -12179,8 +12180,8 @@ int i,j,l;
 					}
 				}
 				
-				if( (int) (vectorsA[ 0]*1000.) == (int) (vectorsB[ 0]*1000.) && (int) (vectorsA[ 1]*1000.) == (int) (vectorsB[ 1]*1000.) && (int) (vectorsA[ 2]*1000.) == (int) (vectorsB[ 2]*1000.) &&
-						(int) (vectorsA[ 3]*1000.) == (int) (vectorsB[ 3]*1000.) && (int) (vectorsA[ 4]*1000.) == (int) (vectorsB[ 4]*1000.) && (int) (vectorsA[ 5]*1000.) == (int) (vectorsB[ 5]*1000.) &&
+				if(		fabs( vectorsA[ 0] - vectorsB[ 0]) < SENSIBILITY && fabs( vectorsA[ 1] - vectorsB[ 1]) < SENSIBILITY && fabs( vectorsA[ 2] - vectorsB[ 2]) < SENSIBILITY &&
+						fabs( vectorsA[ 3] - vectorsB[ 3]) < SENSIBILITY && fabs( vectorsA[ 4] - vectorsB[ 4]) < SENSIBILITY && fabs( vectorsA[ 5] - vectorsB[ 5]) < SENSIBILITY &&
 						curvedController == 0L)
 				{
 				//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
