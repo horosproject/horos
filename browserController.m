@@ -1991,16 +1991,25 @@ static NSArray*	statesArray = nil;
 	NSError *error = nil;
 	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
 	
-	for( NSManagedObject *study in studiesArray ) {
-		NSManagedObject *o = [[[[study valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
-		DicomFile	*dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
-		
-		if( dcm ) {
-			if( [dcm elementForKey:@"patientUID"])
-				[study setValue: [dcm elementForKey:@"patientUID"] forKey:@"patientUID"];
+	for( NSManagedObject *study in studiesArray )
+	{
+		@try
+		{
+			NSManagedObject *o = [[[[study valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
+			DicomFile	*dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
+			
+			if( dcm)
+			{
+				if( [dcm elementForKey:@"patientUID"])
+					[study setValue: [dcm elementForKey:@"patientUID"] forKey:@"patientUID"];
+			}
+			
+			[dcm release];
 		}
-		
-		[dcm release];
+		@catch ( NSException *e)
+		{
+			NSLog( @"recomputePatientUIDs exception : %@", e);
+		}
 	}
 	[context unlock];
 	[context release];
@@ -2377,63 +2386,70 @@ static NSArray*	statesArray = nil;
 		NSString	*dstPath;
 		NSString	*extension = [srcPath pathExtension];
 		
-		if( [[srcPath stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)	{
-			DicomFile	*curFile = [[DicomFile alloc] init: srcPath];
-			
-			if( curFile ) {
-				if([extension isEqualToString:@""])
-					extension = [NSString stringWithString:@"dcm"]; 
+		@try
+		{
+			if( [[srcPath stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)	{
+				DicomFile	*curFile = [[DicomFile alloc] init: srcPath];
 				
-				int x = 0;
-				do {
-					dstPath = [incomingPath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d-%@", x, [srcPath lastPathComponent]]];
-					x++;
-				}
-				while( [[NSFileManager defaultManager] fileExistsAtPath: dstPath]);
-				
-				[[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath handler:nil];
-				
-				if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
-				{
-					[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
-				}
-				
-				if( first ) {
-					[self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: YES];
-					first = NO;
-				}
-				else if( studySelected == NO) {
-					NSManagedObject			*study;
-					NSManagedObjectContext	*context = self. managedObjectContext;
+				if( curFile ) {
+					if([extension isEqualToString:@""])
+						extension = [NSString stringWithString:@"dcm"]; 
 					
-					NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-					[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-					[dbRequest setPredicate: [NSPredicate predicateWithFormat:  @"studyInstanceUID == %@", [curFile elementForKey: @"studyID"]]];
+					int x = 0;
+					do {
+						dstPath = [incomingPath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d-%@", x, [srcPath lastPathComponent]]];
+						x++;
+					}
+					while( [[NSFileManager defaultManager] fileExistsAtPath: dstPath]);
 					
-					[context retain];
-					[context lock];
+					[[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath handler:nil];
 					
-					NSError *error = nil;
-					NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-					if( [studiesArray count]) {
-						[context unlock];
-						[context release];
+					if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
+					{
+						[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+					}
+					
+					if( first ) {
+						[self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: YES];
+						first = NO;
+					}
+					else if( studySelected == NO) {
+						NSManagedObject			*study;
+						NSManagedObjectContext	*context = self. managedObjectContext;
 						
-						[self performSelectorOnMainThread:@selector(selectThisStudy:) withObject:[studiesArray objectAtIndex: 0] waitUntilDone: YES];
-						studySelected = YES;
+						NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+						[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+						[dbRequest setPredicate: [NSPredicate predicateWithFormat:  @"studyInstanceUID == %@", [curFile elementForKey: @"studyID"]]];
+						
+						[context retain];
+						[context lock];
+						
+						NSError *error = nil;
+						NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+						if( [studiesArray count]) {
+							[context unlock];
+							[context release];
+							
+							[self performSelectorOnMainThread:@selector(selectThisStudy:) withObject:[studiesArray objectAtIndex: 0] waitUntilDone: YES];
+							studySelected = YES;
+						}
+						else {
+							[context unlock];
+							[context release];
+						}
 					}
-					else {
-						[context unlock];
-						[context release];
+					else if( listenerInterval > 5 && ([NSDate timeIntervalSinceReferenceDate] - lastCheck) > 5) {
+						lastCheck = [NSDate timeIntervalSinceReferenceDate];
+						[self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: YES];
 					}
+					
+					[curFile release];
 				}
-				else if( listenerInterval > 5 && ([NSDate timeIntervalSinceReferenceDate] - lastCheck) > 5) {
-					lastCheck = [NSDate timeIntervalSinceReferenceDate];
-					[self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: YES];
-				}
-				
-				[curFile release];
 			}
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"copyFilesThread exception: %@", e);
 		}
 	}
 	
@@ -2540,30 +2556,35 @@ static NSArray*	statesArray = nil;
 			
 			NSString	*extension = [srcPath pathExtension];
 			
-			if( [[srcPath stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)	{
-				DicomFile	*curFile = [[DicomFile alloc] init: srcPath];
+			@try {
 				
-				if( curFile ) {
-					// Dont
+				if( [[srcPath stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)	{
+					DicomFile	*curFile = [[DicomFile alloc] init: srcPath];
 					
-					[curFile release];
-					
-					if([extension isEqualToString:@""])
-						extension = [NSString stringWithString:@"dcm"]; 
-					
-					NSString *dstPath = [self getNewFileDatabasePath:extension];	
-					
-					if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil] == YES) {
-						[filesOutput addObject:dstPath];
-					}
-					
-					if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
-					{
-						[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+					if( curFile ) {
+						// Dont
+						
+						[curFile release];
+						
+						if([extension isEqualToString:@""])
+							extension = [NSString stringWithString:@"dcm"]; 
+						
+						NSString *dstPath = [self getNewFileDatabasePath:extension];	
+						
+						if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil] == YES) {
+							[filesOutput addObject:dstPath];
+						}
+						
+						if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
+						{
+							[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+						}
 					}
 				}
 			}
-			
+			@catch (NSException * e) {
+				NSLog( @"copyFilesIntoDatabaseIfNeeded exception: %@", e);
+			}
 			[splash incrementBy:1];
 			
 			[pool release];
@@ -5510,27 +5531,37 @@ static NSArray*	statesArray = nil;
 		{
 			DicomFile			*curFile = 0L;
 			
-			if( isDirectory == YES )	{
-				BOOL		go = YES;
-				NSString    *pathname;
-				NSString    *aPath = path;
-				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
-				
-				while( (pathname = [enumer nextObject]) && go == YES)
+			@try
+			{
+				if( isDirectory == YES)
 				{
-					NSString * itemPath = [aPath stringByAppendingPathComponent:pathname];
-					id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
+					BOOL		go = YES;
+					NSString    *pathname;
+					NSString    *aPath = path;
+					NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 					
-					if ([fileType isEqual:NSFileTypeRegular])
+					while( (pathname = [enumer nextObject]) && go == YES)
 					{
-						if( [[itemPath lastPathComponent] characterAtIndex: 0] != '.')
-							curFile = [[DicomFile alloc] init: itemPath];
+						NSString * itemPath = [aPath stringByAppendingPathComponent:pathname];
+						id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
 						
-						if( curFile) go = NO;
+						if ([fileType isEqual:NSFileTypeRegular])
+						{
+							
+							if( [[itemPath lastPathComponent] characterAtIndex: 0] != '.')
+								curFile = [[DicomFile alloc] init: itemPath];
+							
+							if( curFile) go = NO;
+						}
 					}
 				}
+				else curFile = [[DicomFile alloc] init: path];
 			}
-			else curFile = [[DicomFile alloc] init: path];
+			@catch ( NSException *e)
+			{
+				NSLog( @"findAndSelectFile exception: %@", e);
+				curFile = 0L;
+			}
 			
 			//We have first to find the image object from the path
 			

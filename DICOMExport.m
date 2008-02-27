@@ -242,322 +242,328 @@ extern BrowserController	*browserWindow;
 		}
 		while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
 	}
-
+	
+	
 	if( width != 0 && height != 0 && data != 0L)
 	{
-		long				i;
-		DCMCalendarDate		*acquisitionDate = [DCMCalendarDate date], *studyDate = 0L, *studyTime = 0L;
-		DCMObject			*dcmObject = 0L;
-		NSString			*patientName = 0L, *patientID = 0L, *studyDescription = 0L, *studyUID = 0L, *studyID = 0L, *charSet = 0L;
-		NSNumber			*seriesNumber = 0L;
-		unsigned char		*squaredata = 0L;
-		
-		seriesNumber = [NSNumber numberWithInt:exportSeriesNumber];
-		
-		if( dcmSourcePath)
+		@try
 		{
-			if ([DicomFile isDICOMFile:dcmSourcePath])
+			DCMCalendarDate		*acquisitionDate = [DCMCalendarDate date], *studyDate = 0L, *studyTime = 0L;
+			DCMObject			*dcmObject = 0L;
+			NSString			*patientName = 0L, *patientID = 0L, *studyDescription = 0L, *studyUID = 0L, *studyID = 0L, *charSet = 0L;
+			NSNumber			*seriesNumber = 0L;
+			unsigned char		*squaredata = 0L;
+			
+			seriesNumber = [NSNumber numberWithInt:exportSeriesNumber];
+			
+			if( dcmSourcePath)
 			{
-				dcmObject = [DCMObject objectWithContentsOfFile:dcmSourcePath decodingPixelData:NO];
-				
-				patientName = [dcmObject attributeValueWithName:@"PatientsName"];
-				patientID = [dcmObject attributeValueWithName:@"PatientID"];
-				studyDescription = [dcmObject attributeValueWithName:@"StudyDescription"];
-				studyUID = [dcmObject attributeValueWithName:@"StudyInstanceUID"];
-				studyID = [dcmObject attributeValueWithName:@"StudyID"];
-				studyDate = [dcmObject attributeValueWithName:@"StudyDate"];
-				studyTime = [dcmObject attributeValueWithName:@"StudyTime"];
-				charSet = [dcmObject attributeValueWithName:@"SpecificCharacterSet"];
-				
-				if( [seriesNumber intValue] == -1)
+				if ([DicomFile isDICOMFile:dcmSourcePath])
 				{
-					seriesNumber = [dcmObject attributeValueWithName:@"SeriesNumber"];
+					dcmObject = [DCMObject objectWithContentsOfFile:dcmSourcePath decodingPixelData:NO];
+					
+					patientName = [dcmObject attributeValueWithName:@"PatientsName"];
+					patientID = [dcmObject attributeValueWithName:@"PatientID"];
+					studyDescription = [dcmObject attributeValueWithName:@"StudyDescription"];
+					studyUID = [dcmObject attributeValueWithName:@"StudyInstanceUID"];
+					studyID = [dcmObject attributeValueWithName:@"StudyID"];
+					studyDate = [dcmObject attributeValueWithName:@"StudyDate"];
+					studyTime = [dcmObject attributeValueWithName:@"StudyTime"];
+					charSet = [dcmObject attributeValueWithName:@"SpecificCharacterSet"];
+					
+					if( [seriesNumber intValue] == -1)
+					{
+						seriesNumber = [dcmObject attributeValueWithName:@"SeriesNumber"];
+					}
+				}
+				else if ([DicomFile isFVTiffFile:dcmSourcePath])
+				{
+					DicomFile* FVfile = [[DicomFile alloc] init:dcmSourcePath];
+
+					patientName = [FVfile elementForKey:@"patientName"]; 
+					patientID = [FVfile elementForKey:@"patientID"];
+					studyDescription = @"DICOM from FV300";
+					studyUID = [FVfile elementForKey:@"studyID"];
+					studyID = [FVfile elementForKey:@"studyID"];
+					studyDate = [DCMCalendarDate date];
+					studyTime = [DCMCalendarDate date];
+					
+					[FVfile release];
 				}
 			}
-			else if ([DicomFile isFVTiffFile:dcmSourcePath])
+			else
 			{
-				DicomFile* FVfile = [[DicomFile alloc] init:dcmSourcePath];
-
-				patientName = [FVfile elementForKey:@"patientName"]; 
-				patientID = [FVfile elementForKey:@"patientID"];
-				studyDescription = @"DICOM from FV300";
-				studyUID = [FVfile elementForKey:@"studyID"];
-				studyID = [FVfile elementForKey:@"studyID"];
+				patientName = @"Anonymous";
+				patientID = @"0";
+				studyDescription = @"SC";
+				studyUID = @"0.0.0.0";
+				studyID = @"0";
 				studyDate = [DCMCalendarDate date];
 				studyTime = [DCMCalendarDate date];
-				
-				[FVfile release];
 			}
-		}
-		else
-		{
-			patientName = @"Anonymous";
-			patientID = @"0";
-			studyDescription = @"SC";
-			studyUID = @"0.0.0.0";
-			studyID = @"0";
-			studyDate = [DCMCalendarDate date];
-			studyTime = [DCMCalendarDate date];
-		}
-		
-		DCMCalendarDate *seriesDate = acquisitionDate;
-		DCMCalendarDate *seriestime = acquisitionDate;
-		
-		NSNumber *slices = [NSNumber numberWithInt: 1];
-		
-		if( spacingX != 0 && spacingY != 0)
-		{
-			if( spacingX != spacingY)	// Convert to square pixels
+			
+			DCMCalendarDate *seriesDate = acquisitionDate;
+			DCMCalendarDate *seriestime = acquisitionDate;
+			
+			NSNumber *slices = [NSNumber numberWithInt: 1];
+			
+			if( spacingX != 0 && spacingY != 0)
 			{
-				if( bpp == 16)
+				if( spacingX != spacingY)	// Convert to square pixels
 				{
-					vImage_Buffer	srcVimage, dstVimage;
-					long			newHeight = ((float) height * spacingY) / spacingX;
-					
-					newHeight /= 2;
-					newHeight *= 2;
-					
-					squaredata = malloc( newHeight * width * bpp/8);
-					
-					float	*tempFloatSrc = malloc( height * width * sizeof( float));
-					float	*tempFloatDst = malloc( newHeight * width * sizeof( float));
-					
-					if( squaredata != 0L && tempFloatSrc != 0L && tempFloatDst != 0L)
+					if( bpp == 16)
 					{
-						long err;
+						vImage_Buffer	srcVimage, dstVimage;
+						long			newHeight = ((float) height * spacingY) / spacingX;
 						
-						// Convert Source to float
-						srcVimage.data = data;
-						srcVimage.height =  height;
-						srcVimage.width = width;
-						srcVimage.rowBytes = width* bpp/8;
+						newHeight /= 2;
+						newHeight *= 2;
 						
-						dstVimage.data = tempFloatSrc;
-						dstVimage.height =  height;
-						dstVimage.width = width;
-						dstVimage.rowBytes = width*sizeof( float);
+						squaredata = malloc( newHeight * width * bpp/8);
+						
+						float	*tempFloatSrc = malloc( height * width * sizeof( float));
+						float	*tempFloatDst = malloc( newHeight * width * sizeof( float));
+						
+						if( squaredata != 0L && tempFloatSrc != 0L && tempFloatDst != 0L)
+						{
+							long err;
+							
+							// Convert Source to float
+							srcVimage.data = data;
+							srcVimage.height =  height;
+							srcVimage.width = width;
+							srcVimage.rowBytes = width* bpp/8;
+							
+							dstVimage.data = tempFloatSrc;
+							dstVimage.height =  height;
+							dstVimage.width = width;
+							dstVimage.rowBytes = width*sizeof( float);
 
-						err = vImageConvert_16UToF(&srcVimage, &dstVimage, 0,  1, 0);
-					//	if( err) NSLog(@"%d", err);
-						
-						// Scale the image
-						srcVimage.data = tempFloatSrc;
-						srcVimage.height =  height;
-						srcVimage.width = width;
-						srcVimage.rowBytes = width*sizeof( float);
-						
-						dstVimage.data = tempFloatDst;
-						dstVimage.height =  newHeight;
-						dstVimage.width = width;
-						dstVimage.rowBytes = width*sizeof( float);
-						
-						err = vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, 0);
-					//	if( err) NSLog(@"%d", err);
-						
-						// Convert Destination to 16 bits
-						srcVimage.data = tempFloatDst;
-						srcVimage.height =  newHeight;
-						srcVimage.width = width;
-						srcVimage.rowBytes = width*sizeof( float);
-						
-						dstVimage.data = squaredata;
-						dstVimage.height =  newHeight;
-						dstVimage.width = width;
-						dstVimage.rowBytes = width* bpp/8;
+							err = vImageConvert_16UToF(&srcVimage, &dstVimage, 0,  1, 0);
+						//	if( err) NSLog(@"%d", err);
+							
+							// Scale the image
+							srcVimage.data = tempFloatSrc;
+							srcVimage.height =  height;
+							srcVimage.width = width;
+							srcVimage.rowBytes = width*sizeof( float);
+							
+							dstVimage.data = tempFloatDst;
+							dstVimage.height =  newHeight;
+							dstVimage.width = width;
+							dstVimage.rowBytes = width*sizeof( float);
+							
+							err = vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, 0);
+						//	if( err) NSLog(@"%d", err);
+							
+							// Convert Destination to 16 bits
+							srcVimage.data = tempFloatDst;
+							srcVimage.height =  newHeight;
+							srcVimage.width = width;
+							srcVimage.rowBytes = width*sizeof( float);
+							
+							dstVimage.data = squaredata;
+							dstVimage.height =  newHeight;
+							dstVimage.width = width;
+							dstVimage.rowBytes = width* bpp/8;
 
-						err = vImageConvert_FTo16U( &srcVimage, &dstVimage, 0,  1, 0);
-					//	if( err) NSLog(@"%d", err);
-						
-						spacingY = spacingX;
-						height = newHeight;
-						
-						data = squaredata;
-						
-						free( tempFloatSrc);
-						free( tempFloatDst);
+							err = vImageConvert_FTo16U( &srcVimage, &dstVimage, 0,  1, 0);
+						//	if( err) NSLog(@"%d", err);
+							
+							spacingY = spacingX;
+							height = newHeight;
+							
+							data = squaredata;
+							
+							free( tempFloatSrc);
+							free( tempFloatDst);
+						}
 					}
 				}
 			}
-		}
-		
-		#if __BIG_ENDIAN__
-		if( bpp == 16)
-		{
-			//Convert to little endian
-			InverseShorts( (vector unsigned short*) data, height * width);
-		}
-		#endif
-		
-		int elemLength = height * width * spp * bpp / 8;
-		
-		if( elemLength%2 != 0)
-		{
-			NSLog( @"Warning ODD element: DICOM doesn't like them... I will correct it. height--");
-			height--;
-			elemLength = height * width * spp * bpp / 8;
 			
-			if( elemLength%2 != 0) NSLog( @"***************** ODD element !!!!!!!!!!");
-		}
-		
-		NSNumber *rows = [NSNumber numberWithInt: height];
-		NSNumber *columns  = [NSNumber numberWithInt: width];
-		
-		NSMutableData *imageNSData = [NSMutableData dataWithBytes:data length: elemLength];
-		NSString *vr;
-		int highBit;
-		int bitsAllocated;
-		float numberBytes;
-		BOOL isSigned;
-		
-		NSLog(@"Current bpp: %d", bpp);
-		
-		switch( bpp)
-		{
-			case 8:			
-				highBit = 7;
-				bitsAllocated = 8;
-				numberBytes = 1;
-				isSigned = NO;
-			break;
-			
-			case 16:			
-				highBit = 15;
-				bitsAllocated = 16;
-				numberBytes = 2;
-				isSigned = NO;
-			break;
-			
-			default:
-				NSLog(@"Unsupported bpp: %d", bpp);
-				return -1;
-			break;
-		}
-		
-		NSString *photometricInterpretation = @"MONOCHROME2";
-		if (spp == 3) photometricInterpretation = @"RGB";
-		
-		[dcmDst release];
-		dcmDst = [[DCMObject secondaryCaptureObjectWithBitDepth: bpp  samplesPerPixel:spp numberOfFrames:1] retain];
-		
-		//add attributes
-		if( charSet) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:charSet] forName:@"SpecificCharacterSet"];
-		if( studyUID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyUID] forName:@"StudyInstanceUID"];
-		if( exportSeriesUID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:exportSeriesUID] forName:@"SeriesInstanceUID"];
-		if( exportSeriesDescription) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:exportSeriesDescription] forName:@"SeriesDescription"];
-		
-		if( patientName) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:patientName] forName:@"PatientsName"];
-		if( patientID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:patientID] forName:@"PatientID"];
-		if( studyDescription) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyDescription] forName:@"StudyDescription"];
-		[dcmDst setAttributeValues:nil forName:@"InstanceNumber"];
-		if( seriesNumber) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:seriesNumber] forName:@"SeriesNumber"];
-		if( studyID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyID] forName:@"StudyID"];
-		
-		if( dcmObject)
-		{
-			if([dcmObject attributeValueWithName:@"PatientsSex"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"PatientsSex"]] forName:@"PatientsSex"];
-			if([dcmObject attributeValueWithName:@"PatientsBirthDate"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"PatientsBirthDate"]] forName:@"PatientsBirthDate"];
-			if([dcmObject attributeValueWithName:@"AccessionNumber"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"AccessionNumber"]] forName:@"AccessionNumber"];
-			
-			if([dcmObject attributeValueWithName:@"ReferringPhysiciansName"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"ReferringPhysiciansName"]] forName:@"ReferringPhysiciansName"];
-			else [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @""] forName:@"ReferringPhysiciansName"];
-		}
-		else
-		{
-			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @""] forName:@"ReferringPhysiciansName"];
-		}
-		
-		[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@"OsiriX"] forName:@"Manufacturer"];
-		[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@"OsiriX"] forName:@"ManufacturersModelName"];
-		
-		if( studyDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyDate] forName:@"StudyDate"];
-		if( studyTime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyTime] forName:@"StudyTime"];
-		if( seriesDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:seriesDate] forName:@"SeriesDate"];
-		if( seriestime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:seriestime] forName:@"SeriesTime"];
-		if( acquisitionDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:acquisitionDate] forName:@"AcquisitionDate"];
-		if( acquisitionDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:acquisitionDate] forName:@"AcquisitionTime"];
-		
-		[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:exportInstanceNumber++]] forName:@"InstanceNumber"];
-		
-		[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:rows] forName:@"Rows"];
-		[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:columns] forName:@"Columns"];
-		[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:spp]] forName:@"SamplesperPixel"];
-		
-		[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:photometricInterpretation] forName:@"PhotometricInterpretation"];
-		
-		[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithBool:isSigned]] forName:@"PixelRepresentation"];
-		
-		[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:highBit]] forName:@"HighBit"];
-		[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:bitsAllocated]] forName:@"BitsAllocated"];
-		[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:bitsAllocated]] forName:@"BitsStored"];
-		
-		if( spacingX != 0 && spacingY != 0)
-		{
-			[dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:spacingY], [NSNumber numberWithFloat:spacingX], 0L] forName:@"PixelSpacing"];
-		}
-		if( sliceThickness != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:sliceThickness]] forName:@"SliceThickness"];
-		if( orientation[ 0] != 0 || orientation[ 1] != 0 || orientation[ 2] != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:orientation[ 0]], [NSNumber numberWithFloat:orientation[ 1]], [NSNumber numberWithFloat:orientation[ 2]], [NSNumber numberWithFloat:orientation[ 3]], [NSNumber numberWithFloat:orientation[ 4]], [NSNumber numberWithFloat:orientation[ 5]], 0L] forName:@"ImageOrientationPatient"];
-		if( position[ 0] != 0 || position[ 1] != 0 || position[ 2] != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:position[ 0]], [NSNumber numberWithFloat:position[ 1]], [NSNumber numberWithFloat:position[ 2]], 0L] forName:@"ImagePositionPatient"];
-		if( slicePosition != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:slicePosition]] forName:@"SliceLocation"];
-		if( spp == 3) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:0]] forName:@"PlanarConfiguration"];
-		
-		if( bpp == 16)
-		{
-			vr = @"OW";
-			
-			//By default, we use a 1024 rescale intercept !!
-			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:-1024]] forName:@"RescaleIntercept"];
-			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:1]] forName:@"RescaleSlope"];
-			
-			if( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"CT"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"HU"] forName:@"RescaleType"];
-			else [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"US"] forName:@"RescaleType"];
-			
-			if( ww != -1 && ww != -1)
+			#if __BIG_ENDIAN__
+			if( bpp == 16)
 			{
-				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:wl]] forName:@"WindowCenter"];
-				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:ww]] forName:@"WindowWidth"];
+				//Convert to little endian
+				InverseShorts( (vector unsigned short*) data, height * width);
 			}
-		}
-		else
-		{
-			if( spp != 3)
+			#endif
+			
+			int elemLength = height * width * spp * bpp / 8;
+			
+			if( elemLength%2 != 0)
 			{
-				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:0]] forName:@"RescaleIntercept"];
-				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:1]] forName:@"RescaleSlope"];
-				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"US"] forName:@"RescaleType"];
+				NSLog( @"Warning ODD element: DICOM doesn't like them... I will correct it. height--");
+				height--;
+				elemLength = height * width * spp * bpp / 8;
+				
+				if( elemLength%2 != 0) NSLog( @"***************** ODD element !!!!!!!!!!");
 			}
 			
-			vr = @"OB";
+			NSNumber *rows = [NSNumber numberWithInt: height];
+			NSNumber *columns  = [NSNumber numberWithInt: width];
+			
+			NSMutableData *imageNSData = [NSMutableData dataWithBytes:data length: elemLength];
+			NSString *vr;
+			int highBit;
+			int bitsAllocated;
+			float numberBytes;
+			BOOL isSigned;
+			
+			NSLog(@"Current bpp: %d", bpp);
+			
+			switch( bpp)
+			{
+				case 8:			
+					highBit = 7;
+					bitsAllocated = 8;
+					numberBytes = 1;
+					isSigned = NO;
+				break;
+				
+				case 16:			
+					highBit = 15;
+					bitsAllocated = 16;
+					numberBytes = 2;
+					isSigned = NO;
+				break;
+				
+				default:
+					NSLog(@"Unsupported bpp: %d", bpp);
+					return -1;
+				break;
+			}
+			
+			NSString *photometricInterpretation = @"MONOCHROME2";
+			if (spp == 3) photometricInterpretation = @"RGB";
+			
+			[dcmDst release];
+			dcmDst = [[DCMObject secondaryCaptureObjectWithBitDepth: bpp  samplesPerPixel:spp numberOfFrames:1] retain];
+			
+			//add attributes
+			if( charSet) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:charSet] forName:@"SpecificCharacterSet"];
+			if( studyUID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyUID] forName:@"StudyInstanceUID"];
+			if( exportSeriesUID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:exportSeriesUID] forName:@"SeriesInstanceUID"];
+			if( exportSeriesDescription) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:exportSeriesDescription] forName:@"SeriesDescription"];
+			
+			if( patientName) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:patientName] forName:@"PatientsName"];
+			if( patientID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:patientID] forName:@"PatientID"];
+			if( studyDescription) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyDescription] forName:@"StudyDescription"];
+			[dcmDst setAttributeValues:nil forName:@"InstanceNumber"];
+			if( seriesNumber) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:seriesNumber] forName:@"SeriesNumber"];
+			if( studyID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyID] forName:@"StudyID"];
+			
+			if( dcmObject)
+			{
+				if([dcmObject attributeValueWithName:@"PatientsSex"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"PatientsSex"]] forName:@"PatientsSex"];
+				if([dcmObject attributeValueWithName:@"PatientsBirthDate"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"PatientsBirthDate"]] forName:@"PatientsBirthDate"];
+				if([dcmObject attributeValueWithName:@"AccessionNumber"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"AccessionNumber"]] forName:@"AccessionNumber"];
+				
+				if([dcmObject attributeValueWithName:@"ReferringPhysiciansName"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: [dcmObject attributeValueWithName:@"ReferringPhysiciansName"]] forName:@"ReferringPhysiciansName"];
+				else [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @""] forName:@"ReferringPhysiciansName"];
+			}
+			else
+			{
+				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @""] forName:@"ReferringPhysiciansName"];
+			}
+			
+			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@"OsiriX"] forName:@"Manufacturer"];
+			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@"OsiriX"] forName:@"ManufacturersModelName"];
+			
+			if( studyDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyDate] forName:@"StudyDate"];
+			if( studyTime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyTime] forName:@"StudyTime"];
+			if( seriesDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:seriesDate] forName:@"SeriesDate"];
+			if( seriestime) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:seriestime] forName:@"SeriesTime"];
+			if( acquisitionDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:acquisitionDate] forName:@"AcquisitionDate"];
+			if( acquisitionDate) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:acquisitionDate] forName:@"AcquisitionTime"];
+			
+			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:exportInstanceNumber++]] forName:@"InstanceNumber"];
+			
+			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:rows] forName:@"Rows"];
+			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:columns] forName:@"Columns"];
+			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:spp]] forName:@"SamplesperPixel"];
+			
+			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:photometricInterpretation] forName:@"PhotometricInterpretation"];
+			
+			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithBool:isSigned]] forName:@"PixelRepresentation"];
+			
+			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:highBit]] forName:@"HighBit"];
+			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:bitsAllocated]] forName:@"BitsAllocated"];
+			[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:bitsAllocated]] forName:@"BitsStored"];
+			
+			if( spacingX != 0 && spacingY != 0)
+			{
+				[dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:spacingY], [NSNumber numberWithFloat:spacingX], 0L] forName:@"PixelSpacing"];
+			}
+			if( sliceThickness != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:sliceThickness]] forName:@"SliceThickness"];
+			if( orientation[ 0] != 0 || orientation[ 1] != 0 || orientation[ 2] != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:orientation[ 0]], [NSNumber numberWithFloat:orientation[ 1]], [NSNumber numberWithFloat:orientation[ 2]], [NSNumber numberWithFloat:orientation[ 3]], [NSNumber numberWithFloat:orientation[ 4]], [NSNumber numberWithFloat:orientation[ 5]], 0L] forName:@"ImageOrientationPatient"];
+			if( position[ 0] != 0 || position[ 1] != 0 || position[ 2] != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObjects:[NSNumber numberWithFloat:position[ 0]], [NSNumber numberWithFloat:position[ 1]], [NSNumber numberWithFloat:position[ 2]], 0L] forName:@"ImagePositionPatient"];
+			if( slicePosition != 0) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:slicePosition]] forName:@"SliceLocation"];
+			if( spp == 3) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:0]] forName:@"PlanarConfiguration"];
+			
+			if( bpp == 16)
+			{
+				vr = @"OW";
+				
+				//By default, we use a 1024 rescale intercept !!
+				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:-1024]] forName:@"RescaleIntercept"];
+				[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:1]] forName:@"RescaleSlope"];
+				
+				if( [[dcmObject attributeValueWithName:@"Modality"] isEqualToString:@"CT"]) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"HU"] forName:@"RescaleType"];
+				else [dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"US"] forName:@"RescaleType"];
+				
+				if( ww != -1 && ww != -1)
+				{
+					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:wl]] forName:@"WindowCenter"];
+					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:ww]] forName:@"WindowWidth"];
+				}
+			}
+			else
+			{
+				if( spp != 3)
+				{
+					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:0]] forName:@"RescaleIntercept"];
+					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithFloat:1]] forName:@"RescaleSlope"];
+					[dcmDst setAttributeValues:[NSMutableArray arrayWithObject: @"US"] forName:@"RescaleType"];
+				}
+				
+				vr = @"OB";
+			}
+			
+			//[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@"US"] forName:@"RescaleType"];
+			
+			//add Pixel data
+			
+
+			DCMTransferSyntax *ts;
+			ts = [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax];
+			
+			DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PixelData"];
+			DCMPixelDataAttribute *attr = [[[DCMPixelDataAttribute alloc] initWithAttributeTag:tag 
+											vr:vr 
+											length:numberBytes
+											data:nil 
+											specificCharacterSet:nil
+											transferSyntax:ts 
+											dcmObject:dcmDst
+											decodeData:NO] autorelease];
+			[attr addFrame:imageNSData];
+			[dcmDst setAttribute:attr];
+
+			[dcmDst writeToFile:dstPath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
+			NSLog( dstPath);
+			if( squaredata)
+				free( squaredata);
+			squaredata = 0L;
+			
+			return 0;
 		}
-		
-		//[dcmDst setAttributeValues:[NSMutableArray arrayWithObject:@"US"] forName:@"RescaleType"];
-		
-		//add Pixel data
-		
-
-		DCMTransferSyntax *ts;
-		ts = [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax];
-		
-		DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PixelData"];
-		DCMPixelDataAttribute *attr = [[[DCMPixelDataAttribute alloc] initWithAttributeTag:tag 
-										vr:vr 
-										length:numberBytes
-										data:nil 
-										specificCharacterSet:nil
-										transferSyntax:ts 
-										dcmObject:dcmDst
-										decodeData:NO] autorelease];
-		[attr addFrame:imageNSData];
-		[dcmDst setAttribute:attr];
-
-		[dcmDst writeToFile:dstPath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
-		NSLog( dstPath);
-		if( squaredata)
+		@catch (NSException *e)
 		{
-			free( squaredata);
+			NSLog( @"WriteDCMFile failed : %@", e);
+			return -1;
 		}
-		squaredata = 0L;
-		
-		return 0;
 	}
 	else return -1;
 }
