@@ -39,7 +39,7 @@
 
 - (void)initView;
 {
-	[navigatorView setViewer:viewerController];
+	[navigatorView setViewer];
 	NSSize maxSize = [navigatorView frame].size;
 	maxSize.height += 16 + 11; // 16px for the title bar, 11px for the horizontal scroller
 	[[self window] setMaxSize:maxSize];

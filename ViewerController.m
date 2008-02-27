@@ -2919,6 +2919,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		for( int i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: 0L viewer: 0L];
 		[[self window] makeKeyAndOrderFront: self];
 		[self refreshToolbar];
+		[self updateNavigator];
 	}
 	else
 	{
@@ -2929,6 +2930,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
 				
 			[self matrixPreviewSelectCurrentSeries];
+			[self updateNavigator];
 		}
 	}
 }

@@ -59,7 +59,7 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:@"changeWLWW" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name:@"DCMViewIndexChanged" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeViewerNotification:) name:@"CloseViewerNotification" object:nil];
-
+		
 		GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 		[[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
     }
@@ -85,7 +85,7 @@
 	[super dealloc];
 }
 
-- (void)setViewer:(ViewerController*)v;
+- (void)setViewer;
 {
 	[self initTextureArray];
 	[self computeThumbnailSize];
@@ -725,7 +725,6 @@
 
 - (void)mouseExited:(NSEvent *)theEvent
 {
-	NSLog(@"mouseExited");
 	BOOL leftLateralScrollBarAlreadyDrawn = drawLeftLateralScrollBar;
 	BOOL rightLateralScrollBarAlreadyDrawn = drawRightLateralScrollBar;
 
@@ -734,7 +733,6 @@
 
 	if(leftLateralScrollBarAlreadyDrawn != drawLeftLateralScrollBar || rightLateralScrollBarAlreadyDrawn != drawRightLateralScrollBar)
 		[self setNeedsDisplay:YES];
-
 }
 
 

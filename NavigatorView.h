@@ -46,7 +46,7 @@ typedef enum {
 
 @property(readonly) int thumbnailWidth, thumbnailHeight;
 
-- (void)setViewer:(ViewerController*)v;
+- (void)setViewer;
 - (void)initTextureArray;
 - (void)generateTextureForSlice:(int)z movieIndex:(int)t arrayIndex:(int)i;
 - (void)computeThumbnailSize;
