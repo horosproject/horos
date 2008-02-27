@@ -16,7 +16,8 @@
 #import "DCMView.h"
 #import "ViewerController.h"
 
-typedef enum {
+typedef enum
+{
 	zoom = tZoom,
 	translate = tTranslate,
 	wlww = tWL,
@@ -24,10 +25,12 @@ typedef enum {
 	idle = -1
 } MouseEventType;
 
-@interface NavigatorView : NSOpenGLView {
+@interface NavigatorView : NSOpenGLView
+{
 	NSMutableArray *thumbnailsTextureArray;
 	int thumbnailWidth, thumbnailHeight;
 	float sizeFactor;
+	BOOL dontReEnter;
 
 	NSPoint mouseDownPosition, mouseDraggedPosition, mouseMovedPosition;
 	MouseEventType userAction;
@@ -45,6 +48,9 @@ typedef enum {
 }
 
 @property(readonly) int thumbnailWidth, thumbnailHeight;
+
++ (NSRect) rect;
++ (NSRect) adjustIfScreenAreaIf4DNavigator: (NSRect) frame;
 
 - (void)setViewer;
 - (void)initTextureArray;

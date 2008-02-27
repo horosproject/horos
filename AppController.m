@@ -65,7 +65,7 @@ MODIFICATION HISTORY
 #import "DefaultsOsiriX.h"
 #import "OrthogonalMPRViewer.h"
 #import "OrthogonalMPRPETCTViewer.h"
-
+#import "NavigatorView.h"
 #import "WindowLayoutManager.h"
 #import "QueryController.h"
 
@@ -2587,6 +2587,7 @@ static BOOL initialized = NO;
 		NSRect frame = [screen visibleFrame];
 
 		if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+		frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 		
 		frame.size.width /= columns;
 		frame.origin.x += (frame.size.width * columnIndex);
@@ -2819,6 +2820,7 @@ static BOOL initialized = NO;
 			NSScreen *screen = [screens objectAtIndex:i];
 			NSRect frame = [screen visibleFrame];
 			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			[[viewersList objectAtIndex:i] setWindowFrame: frame showWindow:YES animate: YES];			
 		}
@@ -2841,6 +2843,8 @@ static BOOL initialized = NO;
 			NSRect frame = [screen visibleFrame];
 			
 			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
+			
 			frame.size.width /= viewersPerScreen;
 			frame.origin.x += (frame.size.width * viewerPosition);
 			
@@ -2860,6 +2864,8 @@ static BOOL initialized = NO;
 			NSRect frame = [screen visibleFrame];
 			
 			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
+			
 			if (monitorIndex < extraViewers) 
 				frame.size.width /= columnsPerScreen;
 			else
@@ -2887,6 +2893,9 @@ static BOOL initialized = NO;
 			NSRect frame = [screen visibleFrame];
 			
 			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
+			
+			NSRect visibleFrame = frame;
 			
 			if (monitorIndex < extraViewers || extraViewers == 0) 
 				frame.size.width /= columnsPerScreen;
@@ -2897,7 +2906,7 @@ static BOOL initialized = NO;
 			if( i == viewerCount-1 && monitorIndex != numberOfMonitors-1)
 			{
 				if( strechWindows)
-					frame.size.width = [screen visibleFrame].size.width - (frame.origin.x - [screen visibleFrame].origin.x);
+					frame.size.width = visibleFrame.size.width - (frame.origin.x - visibleFrame.origin.x);
 			}
 			
 			frame.size.height /= rows;
@@ -2907,8 +2916,8 @@ static BOOL initialized = NO;
 			{
 				if( i + columns >= viewerCount && strechWindows == YES)
 				{
-					frame.size.height += frame.origin.y - [screen visibleFrame].origin.y;
-					frame.origin.y = [screen visibleFrame].origin.y;
+					frame.size.height += frame.origin.y - visibleFrame.origin.y;
+					frame.origin.y = visibleFrame.origin.y;
 				}
 			}
 			

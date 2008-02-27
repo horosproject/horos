@@ -17,13 +17,17 @@
 @class ViewerController;
 @class DCMView;
 
-@interface NavigatorWindowController : NSWindowController {
+@interface NavigatorWindowController : NSWindowController
+{
 	ViewerController *viewerController;
 	IBOutlet NavigatorView *navigatorView;
 }
 
++ (NavigatorWindowController*) navigatorWindowController;
 - (id)initWithViewer:(ViewerController*)viewer;
 - (void)setViewer:(ViewerController*)viewer;
 - (void)initView;
+
+@property(readonly) NavigatorView *navigatorView;
 
 @end

@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "NavigatorView.h"
+#import "NavigatorWindowController.h"
 
 #include <OpenGL/CGLMacro.h>
 #include <OpenGL/CGLCurrent.h>
@@ -34,6 +35,65 @@
 @implementation NavigatorView
 
 @synthesize thumbnailWidth, thumbnailHeight;
+
++ (NSRect) rect
+{
+	if( [NavigatorWindowController navigatorWindowController])
+	{
+		NavigatorView * n = [[NavigatorWindowController navigatorWindowController] navigatorView];
+		ViewerController *v = [n viewer];
+		NSRect rect;
+		
+		rect.size.width = [[v pixList] count]*n.thumbnailWidth;
+		rect.size.height = [v maxMovieIndex]*n.thumbnailHeight;
+		
+		if( rect.size.width > [[[v window] screen] visibleFrame].size.width) rect.size.width = [[[v window] screen] visibleFrame].size.width;
+		
+		rect.origin.x = [[[v window] screen] visibleFrame].origin.x;
+		rect.origin.y = [[[v window] screen] visibleFrame].origin.y;
+		
+		return rect;
+	}
+	
+	return NSMakeRect( 0, 0, 0, 0);
+}
+
++ (NSRect) adjustIfScreenAreaIf4DNavigator: (NSRect) frame;
+{
+	NSRect navRect = [NavigatorView rect];
+	
+	if( NSIsEmptyRect( navRect) == NO)
+	{
+		NSRect iRect = NSIntersectionRect( frame, navRect);
+		
+		if( NSIsEmptyRect( iRect) == NO)
+		{
+			frame.size.height = frame.size.height - iRect.size.height;
+			frame.origin.y = iRect.origin.y + iRect.size.height;
+		}
+	}
+	
+	return frame;
+}
+
+- (void) adjustWindowPosition
+{
+	dontReEnter = YES;
+	[[self window] setFrame: [NavigatorView rect] display: YES];
+	dontReEnter = NO;
+}
+
+- (void)windowDidMove:(NSNotification *)notification
+{
+	if( dontReEnter == NO)
+		[self adjustWindowPosition];
+}
+
+- (void)windowDidResize:(NSNotification *)aNotification
+{
+	if( dontReEnter == NO)
+		[self adjustWindowPosition];
+}
 
 - (id)initWithFrame:(NSRect)frame
 {
@@ -59,6 +119,8 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:@"changeWLWW" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name:@"DCMViewIndexChanged" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeViewerNotification:) name:@"CloseViewerNotification" object:nil];
+		
+		[[self window] setDelegate:self];
 		
 		GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 		[[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
@@ -87,6 +149,8 @@
 
 - (void)setViewer;
 {
+	[[self window] setDelegate:self];
+	
 	[self initTextureArray];
 	[self computeThumbnailSize];
 	[self setFrameSize:NSMakeSize([[[self viewer] pixList] count]*thumbnailWidth, [[self viewer] maxMovieIndex]*thumbnailHeight)];

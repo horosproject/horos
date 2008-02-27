@@ -14,14 +14,25 @@
 
 #import "NavigatorWindowController.h"
 #import "ViewerController.h"
+#import "AppController.h"
+
+static NavigatorWindowController *nav = 0L;
 
 @implementation NavigatorWindowController
+
+@synthesize navigatorView;
+
++ (NavigatorWindowController*) navigatorWindowController
+{
+	return nav;
+}
 
 - (id)initWithViewer:(ViewerController*)viewer;
 {
 	self = [super initWithWindowNibName:@"Navigator"];
 	if (self != nil) {
 		viewerController = viewer;
+		nav = self;
 	}
 	return self;
 }
@@ -70,6 +81,7 @@
 {
 	NSLog(@"NavigatorWindowController dealloc");
 	[super dealloc];
+	nav = 0L;
 }
 
 @end

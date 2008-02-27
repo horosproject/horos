@@ -97,8 +97,6 @@ extern  BOOL					USETOOLBARPANEL;
 static	BOOL					SYNCSERIES = NO;
 static	NSLock					*globalLoadImageLock = 0L;
 
-static NavigatorWindowController *navigatorWindowController = 0L;
-		
 static NSString* 	ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
 static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.icns";
 static NSString*	iPhotoToolbarItemIdentifier			= @"iPhoto2";
@@ -2160,7 +2158,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			{
 				NSRect frame = [[[self window] screen] visibleFrame];
 				if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
-				
+				frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 				[rects addObject: [NSValue valueWithRect: frame]];
 			}
 			
@@ -2435,6 +2433,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			NSRect frame = [[[self window] screen] visibleFrame];
 			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			[rects addObject: [NSValue valueWithRect: frame]];
 		}
@@ -4281,8 +4280,8 @@ static ViewerController *draggedController = 0L;
 	else if([itemIdent isEqualToString:NavigatorToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel:NSLocalizedString(@"Navigator", nil)];
-		[toolbarItem setPaletteLabel:NSLocalizedString(@"Series Navigator", nil)];
-		[toolbarItem setToolTip:NSLocalizedString(@"Series Navigator", nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Navigator", nil)];
+		[toolbarItem setToolTip:NSLocalizedString(@"Navigator", nil)];
 		[toolbarItem setImage:[NSImage imageNamed:NavigatorToolbarItemIdentifier]];
 		[toolbarItem setTarget:nil];
 		[toolbarItem setAction:@selector(navigator:)];
@@ -4384,7 +4383,7 @@ static ViewerController *draggedController = 0L;
 														FlipVerticalToolbarItemIdentifier,
 														FlipHorizontalToolbarItemIdentifier,
 														VRPanelToolbarItemIdentifier,
-														//NavigatorToolbarItemIdentifier,
+														NavigatorToolbarItemIdentifier,
 														nil];
 	
 	if([AppController canDisplay12Bit]) array = [array arrayByAddingObject: LUT12BitToolbarItemIdentifier];
@@ -12097,7 +12096,7 @@ int i,j,l;
 			float   dwl, dww;
 			
 			// 4D data
-			if( curMovieIndex != [vC curMovieIndex] && maxMovieIndex ==  [vC maxMovieIndex] && !navigatorWindowController)
+			if( curMovieIndex != [vC curMovieIndex] && maxMovieIndex ==  [vC maxMovieIndex] && ![NavigatorWindowController navigatorWindowController])
 			{
 				[vC setMovieIndex: curMovieIndex];
 			}
@@ -17559,40 +17558,19 @@ sourceRef);
 
 - (IBAction)navigator:(id)sender;
 {
-	BOOL found = NO;
-	NSArray *windowList = [NSApp windows];
-	
-	for(NSWindow *window in windowList)
-	{
-		//if([[[window windowController] windowNibName] isEqualToString:@"Navigator"]) found = YES;
-		if([[window windowController] isKindOfClass:[NavigatorWindowController class]])
-		{
-			found = YES;
-			[(NavigatorWindowController*)[window windowController] setViewer:self];
-		}
-	}
-	
-	if(!found)
+	if( [NavigatorWindowController navigatorWindowController] == 0L)
 	{
 		[self checkEverythingLoaded];
-		navigatorWindowController = [[NavigatorWindowController alloc] initWithViewer:self];
+		NavigatorWindowController *navigatorWindowController = [[NavigatorWindowController alloc] initWithViewer:self];
 		[navigatorWindowController showWindow:self];
+		[[AppController sharedAppController] tileWindows: self];
 	}
+	else [[NavigatorWindowController navigatorWindowController] setViewer:self];
 }
 
 - (void)updateNavigator;
 {
-	if(!navigatorWindowController) return;
-
-	NSArray *windowList = [NSApp windows];
-	for(NSWindow *window in windowList)
-	{
-		if([[window windowController] isKindOfClass:[NavigatorWindowController class]])
-		{
-			[(NavigatorWindowController*)[window windowController] setViewer:self];
-			//[[window windowController] showWindow:self];
-		}
-	}
+	[[NavigatorWindowController navigatorWindowController] setViewer:self];
 }
 
 @end
