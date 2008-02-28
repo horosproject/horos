@@ -29,6 +29,7 @@
 - (void)setViewer:(ViewerController*)viewer;
 - (void)initView;
 - (void)computeMinAndMaxSize;
+- (void)setWindowLevel:(NSNotification*)notification;
 
 @property(readonly) NavigatorView *navigatorView;
 

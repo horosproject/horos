@@ -182,7 +182,7 @@
 
 - (void)generateTextureForSlice:(int)z movieIndex:(int)t arrayIndex:(int)i;
 {
-	if(!thumbnailsTextureArray) [self initTextureArray];
+	if(!thumbnailsTextureArray || i>=[thumbnailsTextureArray count]) [self initTextureArray];
 	
 	[[self openGLContext] makeCurrentContext];
 	
@@ -383,9 +383,14 @@
 			}
 			else
 			{
-				GLuint oldTextureName = [[thumbnailsTextureArray objectAtIndex:i] intValue];
-				glDeleteTextures(1, &oldTextureName);
-				[thumbnailsTextureArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInt:-1]];
+				if(i<[thumbnailsTextureArray count])
+				{
+					GLuint oldTextureName = [[thumbnailsTextureArray objectAtIndex:i] intValue];
+					glDeleteTextures(1, &oldTextureName);
+					[thumbnailsTextureArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInt:-1]];
+				}
+				else
+					[thumbnailsTextureArray addObject:[NSNumber numberWithInt:-1]];
 			}
 			i++;
 		}

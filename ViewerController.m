@@ -2281,6 +2281,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowDidChangeScreen:(NSNotification *)aNotification
 {
+	NSLog(@"windowDidChangeScreen");
 	long i;
 	
 	if( USETOOLBARPANEL)
@@ -2399,10 +2400,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
-- (void)windowDidUpdate:(NSNotification *)notification
-{
-	[[[NavigatorWindowController navigatorWindowController] window] setLevel:[[self window] level]];
-}
+//- (void)windowDidUpdate:(NSNotification *)notification
+//{
+//	[[[NavigatorWindowController navigatorWindowController] window] setLevel:[[self window] level]];
+//}
 
 - (void)windowDidMove:(NSNotification *)notification
 {

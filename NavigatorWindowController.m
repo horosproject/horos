@@ -34,6 +34,8 @@ static NavigatorWindowController *nav = 0L;
 		viewerController = viewer;
 		nav = self;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeViewerNotification:) name:@"CloseViewerNotification" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setWindowLevel:) name:@"NSApplicationWillBecomeActiveNotification" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setWindowLevel:) name:@"NSApplicationWillResignActiveNotification" object:nil];
 	}
 	return self;
 }
@@ -100,6 +102,7 @@ static NavigatorWindowController *nav = 0L;
 {
 	NSLog(@"NavigatorWindowController dealloc");
 	nav = 0L;
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
 }
 
@@ -119,6 +122,15 @@ static NavigatorWindowController *nav = 0L;
 	if([[self window] frame].size.width < [navigatorView frame].size.width) minSize.height += 11; // 11px for the horizontal scroller
 	
 	[[self window] setMinSize:minSize];
+}
+
+- (void)setWindowLevel:(NSNotification*)notification;
+{
+	NSString *name = [notification name];
+	if([name isEqualToString:NSApplicationWillBecomeActiveNotification])
+		[[self window] setLevel:NSFloatingWindowLevel];
+	else if([name isEqualToString:NSApplicationWillResignActiveNotification])
+		[[self window] setLevel:[[viewerController window] level]];
 }
 
 @end
