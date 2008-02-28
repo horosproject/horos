@@ -2241,16 +2241,21 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	else
 	{
+		NSRect dstFrame = [[self window] frame];
+		
 		if( USETOOLBARPANEL)
 		{
-			NSRect dstFrame = [[self window] frame];
-		
 			if( dstFrame.size.height >= [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController fixedHeight])
 			{
 				dstFrame.size.height = [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController fixedHeight];
-				[[self window] setFrame: dstFrame display:YES];
+				
 			}
 		}
+		
+		dstFrame = [NavigatorView adjustIfScreenAreaIf4DNavigator: dstFrame];
+		
+		if( NSEqualRects( dstFrame, [[self window] frame]) == NO)
+			[[self window] setFrame: dstFrame display:YES];
 	}
 	
 	[self showCurrentThumbnail: self];
