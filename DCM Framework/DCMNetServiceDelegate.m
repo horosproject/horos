@@ -109,11 +109,8 @@ static NSMutableArray *cachedServersArray = 0L;
 	return NSSwapBigShortToHost(aPort);
 }
 
-//Bonjour Delegate methods
-
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindDomain:(NSString *)domainString moreComing:(BOOL)moreComing
 {
-	NSLog( @"didFindDomain");
 }
 
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
@@ -126,9 +123,10 @@ static NSMutableArray *cachedServersArray = 0L;
 	{
 		if( bugFixedForDNSResolve)
 		{
+			[_dicomServices addObject: aNetService];
+			
 			[aNetService resolveWithTimeout: 5];
 			[aNetService setDelegate:self];
-			[aNetService retain];
 		}
 	}
 }
@@ -146,9 +144,10 @@ static NSMutableArray *cachedServersArray = 0L;
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
 {
 	if( [_dicomServices containsObject: aNetService])
+	{
 		[_dicomServices removeObject: aNetService];
-		
-	[[NSNotificationCenter defaultCenter] 	postNotificationName:@"DCMNetServicesDidChange" object:nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMNetServicesDidChange" object:nil];
+	}
 }
 
 - (void)netServiceBrowserDidStopSearch:(NSNetServiceBrowser *)aNetServiceBrowser{
@@ -167,8 +166,6 @@ static NSMutableArray *cachedServersArray = 0L;
 - (void)netService:(NSNetService *)sender didNotResolve:(NSDictionary *)errorDict
 {
     NSLog( @"There was an error while attempting to resolve address for %@", [sender name]);
-	
-	[sender release];
 }
 
 + (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR cached:(BOOL) cached
@@ -260,8 +257,6 @@ static NSMutableArray *cachedServersArray = 0L;
 
 + (NSString*) gethostnameAndPort: (int*) port forService:(NSNetService*) sender
 {
-//	NSEnumerator		*enumerator = [[sender addresses] objectEnumerator];
-//	NSData				*addr;
 	struct sockaddr		*result;
 	char				buffer[256];
 	NSString			*hostname = nil;
@@ -300,10 +295,7 @@ static NSMutableArray *cachedServersArray = 0L;
 	
 	if( [[sender name] isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]] == NO || [[[DCMNetServiceDelegate currentHost] name] isEqualToString: [sender hostName]] == NO)
 	{
-		[_dicomServices addObject: sender];
 		[[NSNotificationCenter defaultCenter] 	postNotificationName:@"DCMNetServicesDidChange" object:nil];
 	}
-	
-	[sender release];
 }
 @end
