@@ -903,7 +903,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 				NSStringEncoding	encoding[ 10];
 				for( int i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
 
-				if (fileformat.getDataset()->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good())
+				if (fileformat.getDataset()->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != 0L)
 				{
 					NSArray	*c = [[NSString stringWithCString:string] componentsSeparatedByString:@"\\"];
 
@@ -920,7 +920,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 					_patientName = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
 				else _patientName = [[NSString stringWithString:@"Unamed"] retain];
 				
-				if (fileformat.getDataset()->findAndGetString(DCM_StudyDescription, string, OFFalse).good())
+				if (fileformat.getDataset()->findAndGetString(DCM_StudyDescription, string, OFFalse).good() && string != 0L)
 					_studyDescription = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
 				else _studyDescription = [[NSString stringWithString:@"Unamed"] retain];
 			}
