@@ -44,13 +44,18 @@
 		ViewerController *v = [n viewer];
 		NSRect rect;
 		
-		rect.size.width = [[v pixList] count]*n.thumbnailWidth;
+		rect.size.width = [[n window] maxSize].width;//[[v pixList] count]*n.thumbnailWidth;
 		rect.size.height = [v maxMovieIndex]*n.thumbnailHeight;
 		
 		if( rect.size.width > [[[v window] screen] visibleFrame].size.width) rect.size.width = [[[v window] screen] visibleFrame].size.width;
 		
 		rect.origin.x = [[[v window] screen] visibleFrame].origin.x;
 		rect.origin.y = [[[v window] screen] visibleFrame].origin.y;
+		
+		float scrollbarShift = 0.0;
+		if(rect.size.width < [n frame].size.width) scrollbarShift = 11;
+		
+		rect.size.height += 16+scrollbarShift;
 		
 		return rect;
 	}
@@ -76,25 +81,6 @@
 	return frame;
 }
 
-- (void) adjustWindowPosition
-{
-	dontReEnter = YES;
-	[[self window] setFrame: [NavigatorView rect] display: YES];
-	dontReEnter = NO;
-}
-
-- (void)windowDidMove:(NSNotification *)notification
-{
-	if( dontReEnter == NO)
-		[self adjustWindowPosition];
-}
-
-- (void)windowDidResize:(NSNotification *)aNotification
-{
-	if( dontReEnter == NO)
-		[self adjustWindowPosition];
-}
-
 - (id)initWithFrame:(NSRect)frame
 {
 	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
@@ -118,7 +104,6 @@
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:@"changeWLWW" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name:@"DCMViewIndexChanged" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeViewerNotification:) name:@"CloseViewerNotification" object:nil];
 		
 		[[self window] setDelegate:self];
 		
@@ -126,6 +111,11 @@
 		[[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
     }
     return self;
+}
+
+- (void)awakeFromNib
+{
+	[[self enclosingScrollView] setBackgroundColor:[NSColor blackColor]];
 }
 
 - (void)dealloc
@@ -149,8 +139,6 @@
 
 - (void)setViewer;
 {
-	[[self window] setDelegate:self];
-	
 	[self initTextureArray];
 	[self computeThumbnailSize];
 	[self setFrameSize:NSMakeSize([[[self viewer] pixList] count]*thumbnailWidth, [[self viewer] maxMovieIndex]*thumbnailHeight)];
@@ -1031,14 +1019,6 @@
 	
 	[newViewer adjustSlider];
 	[view sendSyncMessage:1];
-}
-
-- (void)closeViewerNotification:(NSNotification*)notif;
-{
-	if([[ViewerController getDisplayed2DViewers] count]==0)
-	{
-		[[self window] close];
-	}
 }
 
 @end

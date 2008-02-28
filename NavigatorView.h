@@ -30,7 +30,6 @@ typedef enum
 	NSMutableArray *thumbnailsTextureArray;
 	int thumbnailWidth, thumbnailHeight;
 	float sizeFactor;
-	BOOL dontReEnter;
 
 	NSPoint mouseDownPosition, mouseDraggedPosition, mouseMovedPosition;
 	MouseEventType userAction;

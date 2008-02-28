@@ -2399,6 +2399,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
+- (void)windowDidUpdate:(NSNotification *)notification
+{
+	[[[NavigatorWindowController navigatorWindowController] window] setLevel:[[self window] level]];
+}
+
 - (void)windowDidMove:(NSNotification *)notification
 {
 	if( windowIsMovedByTheUser == YES && dontEnterMagneticFunctions == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrame) == NO)
@@ -2498,6 +2503,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		dontEnterMagneticFunctions = YES;
 		[AppController resizeWindowWithAnimation: theWindow newSize: myFrame];
 		dontEnterMagneticFunctions = NO;
+		
+		[self updateNavigator];
 		
 		// Is the Origin identical? If yes, switch both windows
 		e = [[NSApp windows] objectEnumerator];
@@ -17576,6 +17583,11 @@ sourceRef);
 - (void)updateNavigator;
 {
 	[[NavigatorWindowController navigatorWindowController] setViewer:self];
+	
+	NSRect navigatorFrame = [[[NavigatorWindowController navigatorWindowController] window] frame];
+	navigatorFrame.origin.x = [[[self window] screen] visibleFrame].origin.x;
+	navigatorFrame.size.width = [[[self window] screen] visibleFrame].size.width;
+	[[[NavigatorWindowController navigatorWindowController] window] setFrame:navigatorFrame display:YES];
 }
 
 @end

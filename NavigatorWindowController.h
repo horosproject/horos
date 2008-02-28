@@ -21,12 +21,14 @@
 {
 	ViewerController *viewerController;
 	IBOutlet NavigatorView *navigatorView;
+	BOOL dontReEnter;
 }
 
 + (NavigatorWindowController*) navigatorWindowController;
 - (id)initWithViewer:(ViewerController*)viewer;
 - (void)setViewer:(ViewerController*)viewer;
 - (void)initView;
+- (void)computeMinAndMaxSize;
 
 @property(readonly) NavigatorView *navigatorView;
 
