@@ -162,6 +162,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 + (NSString *) stringWithBytes:(char *) str encodings: (NSStringEncoding*) encoding
 {
+	if( str == 0L) return 0L;
+
 	char				c;
 	int					i, x, from, len = strlen( str), index;
 	NSMutableString		*result = [NSMutableString string];

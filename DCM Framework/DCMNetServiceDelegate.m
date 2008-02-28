@@ -145,6 +145,7 @@ static NSMutableArray *cachedServersArray = 0L;
 {
 	if( [_dicomServices containsObject: aNetService])
 	{
+		NSLog( @"didRemove retainCout: %d", [aNetService retainCount]);
 		[_dicomServices removeObject: aNetService];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMNetServicesDidChange" object:nil];
 	}

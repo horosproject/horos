@@ -1190,8 +1190,10 @@ static char *GetPrivateIP()
 			// deleting service from list
 			NSInteger index = [services indexOfObject: currentNetService];
 			if( index != NSNotFound)
+			{
+				NSLog( @"didRemove retainCout: %d", [currentNetService retainCount]);
 				[services removeObjectAtIndex: index];
-			
+			}
             break;
         }
     }
