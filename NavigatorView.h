@@ -157,6 +157,9 @@ typedef enum
 /**  Keep scrolling when the mouse is pressed.*/
 - (void)scrollRight:(NSTimer*)theTimer;
 
+/**  Updates the view so that the selected image (with the red frame) is visible.*/
+- (void)displaySelectedImage;
+
 /**  Determines if the the view needs a horizontal scroller (returns NO if all the images can be displayed on screen).*/
 - (BOOL)needsHorizontalScroller;
 

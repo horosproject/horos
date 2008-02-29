@@ -717,6 +717,7 @@
 
 - (void)refresh:(NSNotification*)notif;
 {
+	[self displaySelectedImage];
 	[self setNeedsDisplay:YES];
 }
 
@@ -886,6 +887,11 @@
 	
 	[[[self viewer] imageView] scrollWheel:theEvent];
 	
+	[self displaySelectedImage];
+}	
+
+- (void)displaySelectedImage;
+{
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
 	NSRect viewBounds = [clipView documentVisibleRect];
 	NSRect viewFrame = [clipView frame];

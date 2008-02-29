@@ -27,6 +27,7 @@
 
 /**  Returns the Navigator Window Controller (which is a unique object).*/
 + (NavigatorWindowController*) navigatorWindowController;
+- (void) adjustWindowPosition;
 - (id)initWithViewer:(ViewerController*)viewer;
 - (void)setViewer:(ViewerController*)viewer;
 - (void)initView;

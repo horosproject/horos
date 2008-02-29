@@ -31,7 +31,7 @@ static NavigatorWindowController *nav = 0L;
 {
 	self = [super initWithWindowNibName:@"Navigator"];
 	if (self != nil) {
-		viewerController = viewer;
+		[self setViewer:viewer];
 		nav = self;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeViewerNotification:) name:@"CloseViewerNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setWindowLevel:) name:@"NSApplicationWillBecomeActiveNotification" object:nil];
@@ -55,15 +55,15 @@ static NavigatorWindowController *nav = 0L;
 {
 	[navigatorView setViewer];
 	[self computeMinAndMaxSize];
-	[[self window] setFrame:NSMakeRect([[self window] frame].origin.x, [[self window] frame].origin.y, [[[self window] screen] frame].size.width, [[self window] minSize].height) display:YES];
+	[self adjustWindowPosition];
 	[[self window] setAcceptsMouseMovedEvents:YES];
 	[[self window] makeFirstResponder:navigatorView];
 }
 
 - (IBAction)showWindow:(id)sender
 {
-	[super showWindow:sender];
 	[self initView];
+	[super showWindow:sender];
 }
 
 - (void)closeViewerNotification:(NSNotification*)notif;
@@ -74,10 +74,15 @@ static NavigatorWindowController *nav = 0L;
 	}
 }
 
-- (void) adjustWindowPosition
+- (void) adjustWindowPosition;
 {
 	dontReEnter = YES;
-	[[self window] setFrame:[NavigatorView rect] display: YES];
+	
+	float height = [[self window] frame].size.height;
+	[[self window] setFrame:[NavigatorView rect] display:YES];
+	
+	if([NavigatorView rect].size.height != height) [[AppController sharedAppController] tileWindows:self];
+	
 	dontReEnter = NO;
 }
 
@@ -95,6 +100,7 @@ static NavigatorWindowController *nav = 0L;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	[[self window] orderOut:self];
 	[self release];
 }
 
@@ -104,6 +110,7 @@ static NavigatorWindowController *nav = 0L;
 	nav = 0L;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
+	[[AppController sharedAppController] tileWindows:self];
 }
 
 - (void)computeMinAndMaxSize;
