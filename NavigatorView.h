@@ -46,6 +46,7 @@ typedef enum
 	NSTrackingArea *cursorTracking;
 		
 	int previousImageIndex, previousMovieIndex;
+	ViewerController *previousViewer;
 }
 
 @property(readonly) int thumbnailWidth, thumbnailHeight;

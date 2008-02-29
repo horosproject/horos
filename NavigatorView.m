@@ -113,6 +113,8 @@
 		previousImageIndex = -1;
 		previousMovieIndex = -1;
 		
+		previousViewer = nil;
+		
 		cursorTracking = [[NSTrackingArea alloc] initWithRect:[self visibleRect] options:(NSTrackingActiveWhenFirstResponder|NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited|NSTrackingActiveInKeyWindow) owner:self userInfo:0L];
 		[self addTrackingArea:cursorTracking];
 		
@@ -159,6 +161,7 @@
 	ww = [[self viewer] imageView].curWW;
 	previousImageIndex = -1;
 	previousMovieIndex = -1;
+	previousViewer = [self viewer];
 	[self setNeedsDisplay:YES];
 }
 
@@ -975,7 +978,9 @@
 			return v;
 	}
 	
-	return nil;
+	if([displayed2DViewers count]) return [displayed2DViewers lastObject];
+	
+	return previousViewer;
 }
 
 // associatedViewers are all the opened viewers that share the same NSData, i.e. same stack
