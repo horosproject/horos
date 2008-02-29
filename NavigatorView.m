@@ -1077,7 +1077,7 @@
 }
 
 #pragma mark-
-#pragma mark New Viewers
+#pragma mark Keyboard
 
 - (void) keyDown:(NSEvent *)event
 {
