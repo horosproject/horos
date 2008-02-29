@@ -36,6 +36,14 @@
 
 @synthesize thumbnailWidth, thumbnailHeight;
 
+- (int) minimumWindowHeight
+{
+	int scrollbarShift = thumbnailHeight;
+	if( [[[[self viewer] window] screen] visibleFrame].size.width < [[self window] maxSize].width) scrollbarShift += 11;
+	
+	return 16 + scrollbarShift;
+}
+
 + (NSRect) rect
 {
 	if( [NavigatorWindowController navigatorWindowController])
@@ -65,10 +73,10 @@
 
 + (NSRect) adjustIfScreenAreaIf4DNavigator: (NSRect) frame;
 {
-	NSRect navRect = [NavigatorView rect];
-	
-	if( NSIsEmptyRect( navRect) == NO)
+	if( [NavigatorWindowController navigatorWindowController])
 	{
+		NSRect navRect = [[[NavigatorWindowController navigatorWindowController] window] frame]; 
+		
 		NSRect iRect = NSIntersectionRect( frame, navRect);
 		
 		if( NSIsEmptyRect( iRect) == NO)

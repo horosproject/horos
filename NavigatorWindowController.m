@@ -74,28 +74,46 @@ static NavigatorWindowController *nav = 0L;
 	}
 }
 
-- (void) adjustWindowPosition;
+- (void) adjustWindowPositionWithTiling: (BOOL) withTiling;
 {
 	dontReEnter = YES;
 	
-	float height = [[self window] frame].size.height;
-	[[self window] setFrame:[NavigatorView rect] display:YES];
+	int height = [[self window] frame].size.height;
 	
-	if([NavigatorView rect].size.height != height) [[AppController sharedAppController] tileWindows:self];
+	NSRect r = [NavigatorView rect];
+	
+	r.origin.y = [[[self window] screen] visibleFrame].origin.y;
+	r.size.height = height + [[self window] frame].origin.y;
+	
+	if( r.size.height > [NavigatorView rect].size.height)
+		r.size.height = [NavigatorView rect].size.height;
+		
+	if( r.size.height < [navigatorView minimumWindowHeight])
+		r.size.height = [navigatorView minimumWindowHeight];
+	
+	[[self window] setFrame: r display:YES];
+	
+	if( r.size.height != height && withTiling == YES)
+		[[AppController sharedAppController] tileWindows:self];
 	
 	dontReEnter = NO;
+}
+
+- (void) adjustWindowPosition;
+{
+	return [self adjustWindowPositionWithTiling: YES];
 }
 
 - (void)windowDidMove:(NSNotification *)notification
 {
 	if( dontReEnter == NO)
-		[self adjustWindowPosition];
+		[self adjustWindowPositionWithTiling: YES];
 }
 
 - (void)windowDidResize:(NSNotification *)aNotification
 {
 	if( dontReEnter == NO)
-		[self adjustWindowPosition];
+		[self adjustWindowPositionWithTiling: YES];
 }
 
 - (void)windowWillClose:(NSNotification *)notification

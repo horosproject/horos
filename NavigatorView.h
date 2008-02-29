@@ -54,6 +54,8 @@ typedef enum
 + (NSRect) rect;
 + (NSRect) adjustIfScreenAreaIf4DNavigator: (NSRect) frame;
 
+- (int) minimumWindowHeight;
+
 /**  Set the data set the Navigator is linked to.*/
 - (void)setViewer;
 
