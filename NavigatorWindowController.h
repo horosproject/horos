@@ -17,6 +17,7 @@
 @class ViewerController;
 @class DCMView;
 
+/** \brief Window Controller for the Navigator. The Navigator provides a unrolled view of the selected series (in 3D and in 4D).*/
 @interface NavigatorWindowController : NSWindowController
 {
 	ViewerController *viewerController;
@@ -24,10 +25,12 @@
 	BOOL dontReEnter;
 }
 
+/**  Returns the Navigator Window Controller (which is a unique object).*/
 + (NavigatorWindowController*) navigatorWindowController;
 - (id)initWithViewer:(ViewerController*)viewer;
 - (void)setViewer:(ViewerController*)viewer;
 - (void)initView;
+/**  Computes minSize and maxSize of its window.*/
 - (void)computeMinAndMaxSize;
 - (void)setWindowLevel:(NSNotification*)notification;
 
