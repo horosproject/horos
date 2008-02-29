@@ -6688,9 +6688,10 @@ static ViewerController *draggedController = 0L;
 {
 	int activatedFusionState = [activatedFusion state];
 	int previousFusion = [popFusion selectedTag];
-	[self setFusionMode: 0];
 	
 	[seriesView setFlippedData: ![imageView flippedData]];
+	[self setFusionMode: 0];
+	
 	[imageView setIndex: [pixList[ 0] count] -1 -[imageView curImage]];
 	
 	[self adjustSlider];
@@ -12752,6 +12753,8 @@ int i,j,l;
 
 - (void) setMovieIndex: (short) i
 {
+	[[[NavigatorWindowController navigatorWindowController] navigatorView] removeNotificationObserver];
+
 	int index = [imageView curImage];
 	BOOL wasDataFlipped = [imageView flippedData];
 	
@@ -12765,6 +12768,8 @@ int i,j,l;
 	[self setWindowTitle: self];
 	
 	if( wasDataFlipped) [self flipDataSeries: self];
+	
+	[[[NavigatorWindowController navigatorWindowController] navigatorView] addNotificationObserver];
 	
 	[imageView setIndex: index];
 	[imageView sendSyncMessage:1];

@@ -1847,7 +1847,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			yearOld = [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] retain];
 		else
 			yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
-		
+	
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMViewIndexChanged" object:self];
 	}
 	else
@@ -4773,7 +4773,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
--(void) sendSyncMessage:(short) inc {
+-(void) sendSyncMessage:(short) inc
+{
 	if( numberOf2DViewer > 1   && isKeyView)	//&&  [[self window] isMainWindow] == YES
     {
 		DCMPix	*thickDCM;

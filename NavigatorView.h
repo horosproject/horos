@@ -44,6 +44,8 @@ typedef enum
 	NSTimer *scrollTimer;
 	
 	NSTrackingArea *cursorTracking;
+		
+	int previousImageIndex, previousMovieIndex;
 }
 
 @property(readonly) int thumbnailWidth, thumbnailHeight;
@@ -53,6 +55,12 @@ typedef enum
 
 /**  Set the data set the Navigator is linked to.*/
 - (void)setViewer;
+
+/**  Stops listening to notifications.*/
+- (void) removeNotificationObserver;
+
+/**  Start listening to notifications.*/
+- (void) addNotificationObserver;
 
 /**  Initializes the texture array.*/
 - (void)initTextureArray;

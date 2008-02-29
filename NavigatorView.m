@@ -81,6 +81,17 @@
 	return frame;
 }
 
+- (void) removeNotificationObserver;
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void) addNotificationObserver;
+{
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:@"changeWLWW" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name:@"DCMViewIndexChanged" object:nil];
+}
+
 - (id)initWithFrame:(NSRect)frame
 {
 	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
@@ -98,12 +109,14 @@
 		
 		drawLeftLateralScrollBar = NO;
 		drawRightLateralScrollBar = NO;
+
+		previousImageIndex = -1;
+		previousMovieIndex = -1;
 		
 		cursorTracking = [[NSTrackingArea alloc] initWithRect:[self visibleRect] options:(NSTrackingActiveWhenFirstResponder|NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited|NSTrackingActiveInKeyWindow) owner:self userInfo:0L];
 		[self addTrackingArea:cursorTracking];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:@"changeWLWW" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name:@"DCMViewIndexChanged" object:nil];
+		[self addNotificationObserver];
 		
 		[[self window] setDelegate:self];
 		
@@ -144,6 +157,8 @@
 	[self setFrameSize:NSMakeSize([[[self viewer] pixList] count]*thumbnailWidth, [[self viewer] maxMovieIndex]*thumbnailHeight)];
 	wl = [[self viewer] imageView].curWL;
 	ww = [[self viewer] imageView].curWW;
+	previousImageIndex = -1;
+	previousMovieIndex = -1;
 	[self setNeedsDisplay:YES];
 }
 
@@ -254,6 +269,9 @@
 	[[self enclosingScrollView] setVerticalPageScroll:thumbnailHeight];
 	[[self enclosingScrollView] setVerticalLineScroll:thumbnailHeight];
 }
+
+#pragma mark-
+#pragma mark Drawing
 
 - (void)drawRect:(NSRect)rect
 {
@@ -424,13 +442,13 @@
 
 	if(NSIntersectsRect(thumbRect, viewFrame))
 	{
-		glLineWidth(2.0);
+		glLineWidth(3.0);
 		glColor3f(1.0f, 0.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
-			glVertex2f(upperLeft.x, upperLeft.y);
-			glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y);
-			glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight);
-			glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
+			glVertex2f(upperLeft.x, upperLeft.y+1.0);
+			glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+1.0);
+			glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight-1.0);
+			glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight-1.0);
 		glEnd();
 		glColor3f(0.0f, 0.0f, 0.0f);
 		glLineWidth(1.0);	
@@ -528,6 +546,9 @@
 	[[self openGLContext] flushBuffer];
 }
 
+#pragma mark-
+#pragma mark Mouse functions
+
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
 {
 	return YES;
@@ -537,9 +558,6 @@
 {
 	return NO;
 }
-
-#pragma mark-
-#pragma mark Mouse functions
 
 - (NSPoint)convertPointFromWindowToOpenGL:(NSPoint)pointInWindow;
 {
@@ -717,8 +735,15 @@
 
 - (void)refresh:(NSNotification*)notif;
 {
-	[self displaySelectedImage];
-	[self setNeedsDisplay:YES];
+	int curImageIndex = [[self viewer] imageIndex];
+	int curMovieIndex = [[self viewer] curMovieIndex];
+	if( curImageIndex != previousImageIndex || curMovieIndex != previousMovieIndex)
+	{
+		[self displaySelectedImage];
+		[self setNeedsDisplay:YES];
+		previousImageIndex = curImageIndex;
+		previousMovieIndex = curMovieIndex;
+	}
 }
 
 - (void)wlwwFrom:(NSPoint)start to:(NSPoint)stop;
@@ -881,28 +906,38 @@
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
-	float d = [theEvent deltaY];
-	if( d == 0) return;
-	if( fabs( d) < 1.0) d = 1.0 * fabs( d) / d;
+	//float d = [theEvent deltaY];
+	if([theEvent deltaY] == 0) return;
+	//if( fabs( d) < 1.0) d = 1.0 * fabs( d) / d;
 	
 	[[[self viewer] imageView] scrollWheel:theEvent];
 	
-	[self displaySelectedImage];
+	if(!([theEvent modifierFlags] & NSAlternateKeyMask))
+		[self displaySelectedImage];
 }	
 
 - (void)displaySelectedImage;
 {
+	if(![self viewer]) return;
+	
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
 	NSRect viewBounds = [clipView documentVisibleRect];
 	NSRect viewFrame = [clipView frame];
 	NSSize viewSize = viewFrame.size;
-	int t = [[self viewer] curMovieIndex];
-	int z = [[self viewer] imageIndex];
-	NSPoint upperLeft;
-	upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
-	upperLeft.x = z*thumbnailWidth;
-	NSRect thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
 	
+	int z = [[[self viewer] imageView] curImage];
+	int t = [[self viewer] curMovieIndex];
+	NSPoint upperLeft;
+	upperLeft.x = z*thumbnailWidth;
+
+	if([[[self viewer] imageView] flippedData]) upperLeft.x = ([[[self viewer] pixList] count]-z-1)*thumbnailWidth;
+	
+	upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
+	
+	//upperLeft.y = t*thumbnailHeight+viewSize.height-[self frame].size.height;
+	
+	NSRect thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
+
 	NSRect intersectionRect = NSIntersectionRect(thumbRect, viewBounds);
 
 	if(intersectionRect.size.width < 2.0)
@@ -912,8 +947,12 @@
 		
 		if(thumbRect.origin.x < viewBounds.origin.x)
 			[clipView setBoundsOrigin:NSMakePoint(thumbRect.origin.x, viewBounds.origin.y+horizontalRulerHeight)];
-		else
+		else if(thumbRect.origin.x >= viewBounds.origin.x + viewBounds.size.width)
 			[clipView setBoundsOrigin:NSMakePoint(thumbRect.origin.x+thumbRect.size.width-viewFrame.size.width, viewBounds.origin.y+horizontalRulerHeight)];
+		else if(thumbRect.origin.y < viewBounds.origin.y)
+			[clipView setBoundsOrigin:NSMakePoint(viewBounds.origin.x, thumbRect.origin.y+horizontalRulerHeight)];
+		else if(thumbRect.origin.y >= viewBounds.origin.y + viewBounds.size.height)
+			[clipView setBoundsOrigin:NSMakePoint(viewBounds.origin.x, thumbRect.origin.y+thumbRect.size.height-viewFrame.size.height)];
 	}
 }
 
