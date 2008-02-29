@@ -358,7 +358,9 @@
 		A910FB300D5767610095A956 /* NavigatorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A910FB2E0D5767610095A956 /* NavigatorWindowController.m */; };
 		A910FB310D5767610095A956 /* NavigatorWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = A910FB2D0D5767610095A956 /* NavigatorWindowController.h */; };
 		A910FB320D5767610095A956 /* NavigatorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A910FB2E0D5767610095A956 /* NavigatorWindowController.m */; };
+		A910FB350D57728A0095A956 /* NavigatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = A910FB330D57728A0095A956 /* NavigatorView.h */; };
 		A910FB360D57728A0095A956 /* NavigatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = A910FB340D57728A0095A956 /* NavigatorView.m */; };
+		A910FB370D57728A0095A956 /* NavigatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = A910FB330D57728A0095A956 /* NavigatorView.h */; };
 		A910FB380D57728A0095A956 /* NavigatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = A910FB340D57728A0095A956 /* NavigatorView.m */; };
 		A911155F0BFB354F001000B4 /* ColorView.h in Headers */ = {isa = PBXBuildFile; fileRef = A911155D0BFB354F001000B4 /* ColorView.h */; };
 		A91115600BFB354F001000B4 /* ColorView.m in Sources */ = {isa = PBXBuildFile; fileRef = A911155E0BFB354F001000B4 /* ColorView.m */; };
@@ -495,8 +497,6 @@
 		A98159A109AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
 		A987B3E10D5A069200BF89C0 /* Navigator.xib in Resources */ = {isa = PBXBuildFile; fileRef = A987B3DF0D5A069200BF89C0 /* Navigator.xib */; };
 		A987B3E20D5A069200BF89C0 /* Navigator.xib in Resources */ = {isa = PBXBuildFile; fileRef = A987B3DF0D5A069200BF89C0 /* Navigator.xib */; };
-		A9885E4A0D75C40E00A851BE /* NavigatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9885E490D75C40E00A851BE /* NavigatorView.h */; };
-		A9885E4B0D75C40E00A851BE /* NavigatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9885E490D75C40E00A851BE /* NavigatorView.h */; };
 		A98875BB0D5B694100E0118E /* Navigator.tif in Resources */ = {isa = PBXBuildFile; fileRef = A98875BA0D5B694100E0118E /* Navigator.tif */; };
 		A98875BC0D5B694100E0118E /* Navigator.tif in Resources */ = {isa = PBXBuildFile; fileRef = A98875BA0D5B694100E0118E /* Navigator.tif */; };
 		A9897D990D4A142200BAC447 /* displayRGB.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9897D970D4A142200BAC447 /* displayRGB.tif */; };
@@ -8497,6 +8497,7 @@
 		A90A04960BF09BA000D00273 /* VRPresetPreview.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VRPresetPreview.mm; sourceTree = "<group>"; };
 		A910FB2D0D5767610095A956 /* NavigatorWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigatorWindowController.h; sourceTree = "<group>"; };
 		A910FB2E0D5767610095A956 /* NavigatorWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigatorWindowController.m; sourceTree = "<group>"; };
+		A910FB330D57728A0095A956 /* NavigatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigatorView.h; sourceTree = "<group>"; };
 		A910FB340D57728A0095A956 /* NavigatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigatorView.m; sourceTree = "<group>"; };
 		A911155D0BFB354F001000B4 /* ColorView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ColorView.h; sourceTree = "<group>"; };
 		A911155E0BFB354F001000B4 /* ColorView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ColorView.m; sourceTree = "<group>"; };
@@ -8573,7 +8574,6 @@
 		A97E19EE0CDF55E50065EE29 /* 3DconnexionClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = 3DconnexionClient.framework; path = Binaries/3DconnexionClient.framework; sourceTree = "<group>"; };
 		A981599E09AC6B25003FF1FB /* bonesRemoval.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = bonesRemoval.tif; sourceTree = "<group>"; };
 		A987B3E00D5A069200BF89C0 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Navigator.xib; sourceTree = "<group>"; };
-		A9885E490D75C40E00A851BE /* NavigatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigatorView.h; sourceTree = "<group>"; };
 		A98875BA0D5B694100E0118E /* Navigator.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Navigator.tif; sourceTree = "<group>"; };
 		A9897D970D4A142200BAC447 /* displayRGB.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = displayRGB.tif; sourceTree = "<group>"; };
 		A9897D980D4A142200BAC447 /* displayTotoku.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = displayTotoku.tif; sourceTree = "<group>"; };
@@ -13712,7 +13712,7 @@
 				CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */,
 				A910FB2D0D5767610095A956 /* NavigatorWindowController.h */,
 				A910FB2E0D5767610095A956 /* NavigatorWindowController.m */,
-				A9885E490D75C40E00A851BE /* NavigatorView.h */,
+				A910FB330D57728A0095A956 /* NavigatorView.h */,
 				A910FB340D57728A0095A956 /* NavigatorView.m */,
 			);
 			name = "Single Window";
@@ -18583,7 +18583,7 @@
 				ABDEB38E0D1827440079C938 /* openjpeg.h in Headers */,
 				A979EF7B0D19023E00F4F8F2 /* WebServicesMethods.h in Headers */,
 				A910FB310D5767610095A956 /* NavigatorWindowController.h in Headers */,
-				A9885E4B0D75C40E00A851BE /* NavigatorView.h in Headers */,
+				A910FB370D57728A0095A956 /* NavigatorView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20654,7 +20654,7 @@
 				ABDEB3900D1827440079C938 /* openjpeg.h in Headers */,
 				A979EF7D0D19023E00F4F8F2 /* WebServicesMethods.h in Headers */,
 				A910FB2F0D5767610095A956 /* NavigatorWindowController.h in Headers */,
-				A9885E4A0D75C40E00A851BE /* NavigatorView.h in Headers */,
+				A910FB350D57728A0095A956 /* NavigatorView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

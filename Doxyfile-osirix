@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "OsiriX"
-PROJECT_NUMBER         = 3.0b
+PROJECT_NUMBER         = 3.0
 OUTPUT_DIRECTORY       = "../Documentation/OsiriX"
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
