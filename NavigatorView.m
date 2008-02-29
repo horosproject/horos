@@ -1076,4 +1076,12 @@
 	[view sendSyncMessage:1];
 }
 
+#pragma mark-
+#pragma mark New Viewers
+
+- (void) keyDown:(NSEvent *)event
+{
+	[[[self viewer] imageView] keyDown:event];
+}
+
 @end
