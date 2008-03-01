@@ -284,10 +284,17 @@
 #pragma mark-
 #pragma mark Drawing
 
-- (void)drawRect:(NSRect)rect
+- (void) reshape
+{
+	[self setNeedsDisplay: YES];
+	
+	[super reshape];
+}
+
+- (void)drawRect:(NSRect)a
 {
 	[[self openGLContext] makeCurrentContext];
-
+	
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
 	NSRect viewBounds = [clipView documentVisibleRect];
 	NSRect viewFrame = [clipView frame];
@@ -311,6 +318,8 @@
 	NSPoint upperLeft;
 	NSRect thumbRect;
 	
+	NSArray *associatedViewers = [self associatedViewers];
+	
 	for(int t=0; t<[[self viewer] maxMovieIndex]; t++)
 	{
 		BOOL highlightLine = NO;
@@ -321,7 +330,7 @@
 		else
 		{
 			// associated Viewers	
-			for (ViewerController *v in [self associatedViewers])
+			for (ViewerController *v in associatedViewers)
 			{
 				if(t == [v curMovieIndex]) highlightLine = YES;
 			}
@@ -342,7 +351,7 @@
 			
 			upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
 			thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
-
+			
 			if(NSIntersectsRect(thumbRect, viewFrame))
 			{
 				[self generateTextureForSlice:z movieIndex:t arrayIndex:i];
@@ -943,7 +952,7 @@
 
 	if([[[self viewer] imageView] flippedData]) upperLeft.x = ([[[self viewer] pixList] count]-z-1)*thumbnailWidth;
 	
-	upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
+	upperLeft.y = 0;	//t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
 	
 	//upperLeft.y = t*thumbnailHeight+viewSize.height-[self frame].size.height;
 	

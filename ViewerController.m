@@ -14610,9 +14610,7 @@ int i,j,l;
 				
 				/* See if there were any errors loading the script */
 				if (!script || errorInfo)
-				{
 					NSLog(@"%@", errorInfo);
-				}
 				
 				/* We have to construct an AppleEvent descriptor to contain the arguments for our handler call.  Remember that this list is 1, rather than 0, based. */
 				NSAppleEventDescriptor *arguments = [[NSAppleEventDescriptor alloc] initListDescriptor];

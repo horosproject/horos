@@ -707,7 +707,7 @@ static BOOL showWarning = YES;
 			}
 			@catch (NSException * e)
 			{
-				NSLog(@"%@", e);
+				NSLog(@"xml setObject: %@", e);
 			}
 			[wait close];
 			[wait release];
@@ -824,7 +824,7 @@ static BOOL showWarning = YES;
 					}
 					@catch (NSException * e)
 					{
-						NSLog(@"%@", e);
+						NSLog(@"xml keydown :%@", e);
 					}
 					[wait close];
 					[wait release];

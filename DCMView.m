@@ -3312,7 +3312,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					if( [self is2DViewer] )
 					{
 						// 4D Direction scroll - Cardiac CT eg	
-						float change = reverseScrollWheel * [theEvent deltaY] / 2.5f;
+						float change = [theEvent deltaY] / -2.5f;
+						
+						NSLog(@"%f", change);
 						
 						if( change > 0)
 						{
