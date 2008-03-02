@@ -83,7 +83,7 @@ static NavigatorWindowController *nav = 0L;
 	NSRect r = [NavigatorView rect];
 	
 	r.origin.y = [[[self window] screen] visibleFrame].origin.y;
-	r.size.height = height + [[self window] frame].origin.y;
+	r.size.height = height + [[self window] frame].origin.y - r.origin.y;
 	
 	if( r.size.height > [NavigatorView rect].size.height)
 		r.size.height = [NavigatorView rect].size.height;

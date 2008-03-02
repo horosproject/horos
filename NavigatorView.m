@@ -91,13 +91,12 @@
 
 - (void) removeNotificationObserver;
 {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	dontListenToNotification = YES;
 }
 
 - (void) addNotificationObserver;
 {
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:@"changeWLWW" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name:@"DCMViewIndexChanged" object:nil];
+	dontListenToNotification = NO;
 }
 
 - (id)initWithFrame:(NSRect)frame
@@ -126,7 +125,8 @@
 		cursorTracking = [[NSTrackingArea alloc] initWithRect:[self visibleRect] options:(NSTrackingActiveWhenFirstResponder|NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited|NSTrackingActiveInKeyWindow) owner:self userInfo:0L];
 		[self addTrackingArea:cursorTracking];
 		
-		[self addNotificationObserver];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:@"changeWLWW" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name:@"DCMViewIndexChanged" object:nil];
 		
 		[[self window] setDelegate:self];
 		
@@ -299,6 +299,12 @@
 	NSRect viewBounds = [clipView documentVisibleRect];
 	NSRect viewFrame = [clipView frame];
 	NSSize viewSize = viewFrame.size;
+	
+//	NSLog(@"*****");
+//	NSLog( NSStringFromRect( viewBounds));
+//	NSLog( NSStringFromRect( viewFrame));
+//	NSLog( NSStringFromRect( [clipView documentRect]));
+//	NSLog( NSStringFromRect( [clipView documentVisibleRect]));
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	glViewport(0, 0, viewSize.width, viewSize.height); // set the viewport to cover entire view
@@ -732,6 +738,8 @@
 
 - (void)changeWLWW:(NSNotification*)notif;
 {
+	if( dontListenToNotification) return;
+
 	DCMPix *pix = [notif object];
 	if(pix.ww!=ww || pix.wl!=wl)
 	{
@@ -755,6 +763,8 @@
 
 - (void)refresh:(NSNotification*)notif;
 {
+	if( dontListenToNotification) return;
+	
 	int curImageIndex = [[self viewer] imageIndex];
 	int curMovieIndex = [[self viewer] curMovieIndex];
 	if( curImageIndex != previousImageIndex || curMovieIndex != previousMovieIndex)
@@ -952,7 +962,7 @@
 
 	if([[[self viewer] imageView] flippedData]) upperLeft.x = ([[[self viewer] pixList] count]-z-1)*thumbnailWidth;
 	
-	upperLeft.y = 0;	//t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
+	upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
 	
 	//upperLeft.y = t*thumbnailHeight+viewSize.height-[self frame].size.height;
 	
