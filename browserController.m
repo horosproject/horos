@@ -13544,10 +13544,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 						
 			if( path == nil || [path isEqualToString: @"aborted"])
 			{
-				[bonjourServicesList selectRow: 0 byExtendingSelection:NO];
-				
 				if( [path isEqualToString: @"aborted"]) NSLog( @"Transfer aborted");
 				else NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot connect to the database.", nil), nil, nil, nil);
+				
+				[[BrowserController currentBrowser] resetToLocalDatabase];
 			}
 			else
 			{
