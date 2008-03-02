@@ -294,7 +294,11 @@
 - (void)drawRect:(NSRect)a
 {
 	[[self openGLContext] makeCurrentContext];
-	
+
+//		[[self enclosingScrollView] setBackgroundColor : [NSColor blackColor]];
+//		[[self window] setBackgroundColor : [NSColor blackColor]];
+//		[[[self enclosingScrollView] contentView] setBackgroundColor : [NSColor blackColor]];
+
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
 	NSRect viewBounds = [clipView documentVisibleRect];
 	NSRect viewFrame = [clipView frame];
