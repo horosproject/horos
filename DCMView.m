@@ -3314,8 +3314,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						// 4D Direction scroll - Cardiac CT eg	
 						float change = [theEvent deltaY] / -2.5f;
 						
-						NSLog(@"%f", change);
-						
 						if( change > 0)
 						{
 							change = ceil( change);

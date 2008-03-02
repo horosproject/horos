@@ -475,10 +475,10 @@
 		glLineWidth(3.0);
 		glColor3f(1.0f, 0.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
-			glVertex2f(upperLeft.x, upperLeft.y+1.0);
-			glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+1.0);
-			glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight-1.0);
-			glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight-1.0);
+			glVertex2f(upperLeft.x, upperLeft.y+2.0);
+			glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+2.0);
+			glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight-2.0);
+			glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight-2.0);
 		glEnd();
 		glColor3f(0.0f, 0.0f, 0.0f);
 		glLineWidth(1.0);	
@@ -898,14 +898,14 @@
 	NSRect viewBounds = [clipView documentVisibleRect];
 	NSPoint newOrigin = viewBounds.origin;
 	newOrigin.x += amount;
-	if([self needsHorizontalScroller])
-		newOrigin.y += 20.0; // ... ?? don't know why, but it works...
+//	if([self needsHorizontalScroller])
+//		newOrigin.y += 20.0; // ... ?? don't know why, but it works...
 		
 	if(newOrigin.x<0) newOrigin.x = 0.0;
 	if(newOrigin.x+viewBounds.size.width>[self frame].size.width) newOrigin.x = [self frame].size.width - viewBounds.size.width;
 
 	if(newOrigin.x!=viewBounds.origin.x)
-		[clipView setBoundsOrigin:newOrigin];
+		[clipView scrollToPoint:newOrigin];
 }
 
 - (void)scrollLeft;
@@ -976,17 +976,14 @@
 
 	if(intersectionRect.size.width < 2.0)
 	{
-		float horizontalRulerHeight = 0.0;
-		if([self needsHorizontalScroller]) horizontalRulerHeight = 20.0;
-		
 		if(thumbRect.origin.x < viewBounds.origin.x)
-			[clipView setBoundsOrigin:NSMakePoint(thumbRect.origin.x, viewBounds.origin.y+horizontalRulerHeight)];
+			[clipView scrollToPoint:NSMakePoint(thumbRect.origin.x, viewBounds.origin.y)];
 		else if(thumbRect.origin.x >= viewBounds.origin.x + viewBounds.size.width)
-			[clipView setBoundsOrigin:NSMakePoint(thumbRect.origin.x+thumbRect.size.width-viewFrame.size.width, viewBounds.origin.y+horizontalRulerHeight)];
+			[clipView scrollToPoint:NSMakePoint(thumbRect.origin.x+thumbRect.size.width-viewFrame.size.width, viewBounds.origin.y)];
 		else if(thumbRect.origin.y < viewBounds.origin.y)
-			[clipView setBoundsOrigin:NSMakePoint(viewBounds.origin.x, thumbRect.origin.y+horizontalRulerHeight)];
+			[clipView scrollToPoint:NSMakePoint(viewBounds.origin.x, thumbRect.origin.y)];
 		else if(thumbRect.origin.y >= viewBounds.origin.y + viewBounds.size.height)
-			[clipView setBoundsOrigin:NSMakePoint(viewBounds.origin.x, thumbRect.origin.y+thumbRect.size.height-viewFrame.size.height)];
+			[clipView scrollToPoint:NSMakePoint(viewBounds.origin.x, thumbRect.origin.y+thumbRect.size.height-viewFrame.size.height)];
 	}
 }
 
