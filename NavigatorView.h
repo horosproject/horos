@@ -47,6 +47,8 @@ typedef enum
 		
 	int previousImageIndex, previousMovieIndex;
 	ViewerController *previousViewer;
+	
+	BOOL mouseDragged, mouseClickedWithCommandKey;
 }
 
 @property(readonly) int thumbnailWidth, thumbnailHeight;
@@ -183,6 +185,7 @@ typedef enum
 /** Double clicking in the Navigator will display the selected image in the 2D viewer.
 * In 4D, if the selected image is not in the same time frame, it will open a new 4D viewer displaying the selected time frame.*/
 - (void)doubleClick;
+- (void)displaySelectedViewInNewWindow:(BOOL)newWindow;
 
 /**  Opens a new viewer.
 * @param z number of the slice.

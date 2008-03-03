@@ -601,13 +601,20 @@
 {
 	NSPoint event_location = [theEvent locationInWindow];
 	mouseDownPosition = [self convertPointFromWindowToOpenGL:event_location];	
-
+	mouseDragged = NO;
+	
 	BOOL scrollLeft = [self isMouseOnLeftLateralScrollBar:mouseDownPosition] && [self cansScrollLeft];
 	BOOL scrollRight = [self isMouseOnRightLateralScrollBar:mouseDownPosition] && [self cansScrollRight];
 
+	mouseClickedWithCommandKey = NO;
+	
 	if([theEvent modifierFlags] & NSShiftKeyMask) userAction=zoom;
 	else if(([theEvent modifierFlags] & NSAlternateKeyMask) && ([theEvent modifierFlags] & NSCommandKeyMask)) userAction=rotate;
-	else if([theEvent modifierFlags] & NSCommandKeyMask) userAction=translate;
+	else if([theEvent modifierFlags] & NSCommandKeyMask) 
+	{
+		userAction=translate;
+		mouseClickedWithCommandKey = YES;
+	}
 	else if([theEvent modifierFlags] & NSAlternateKeyMask) userAction=wlww;
 	else if([theEvent clickCount]==2 && !scrollLeft && !scrollRight)
 	{
@@ -615,6 +622,10 @@
 		return;
 	}
 	else userAction = [[self viewer] imageView].currentTool;
+
+//	BOOL newWindow = NO;
+//	if(([theEvent modifierFlags] & NSCommandKeyMask)) newWindow = YES;
+//	[self displaySelectedViewInNewWindow:newWindow];
 
 	startWW = ww;
 	startWL = wl;
@@ -645,6 +656,7 @@
 {
 	NSPoint event_location = [theEvent locationInWindow];
 	mouseDraggedPosition = [self convertPointFromWindowToOpenGL:event_location];
+	mouseDragged = YES;
 	
 	if(userAction==translate)
 		[self translationFrom:mouseDownPosition to:mouseDraggedPosition];
@@ -667,6 +679,13 @@
 
 - (void)mouseUp:(NSEvent *)theEvent;
 {
+	
+	if(!mouseDragged)
+	{
+		BOOL newWindow = mouseClickedWithCommandKey;
+		[self displaySelectedViewInNewWindow:newWindow];
+	}
+		
 	changeWLWW = NO;
 	
 	userAction = idle;
@@ -1035,7 +1054,7 @@
 	return [NSArray arrayWithArray:associatedViewers];
 }
 
-- (void)doubleClick;
+- (void)displaySelectedViewInNewWindow:(BOOL)newWindow;
 {
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
 	NSRect viewBounds = [clipView documentVisibleRect];
@@ -1045,39 +1064,43 @@
 	int z = (mouseDownPosition.x + viewBounds.origin.x) / thumbnailWidth;
 	int t = (mouseDownPosition.y - viewBounds.origin.y - viewSize.height + [self frame].size.height) / thumbnailHeight;
 	
-	if(t == [[self viewer] curMovieIndex] || [[self viewer] isPlaying4D]) // same time line: select the clicked slice
+	if(!newWindow)//t == [[self viewer] curMovieIndex] || [[self viewer] isPlaying4D]) // same time line: select the clicked slice
 	{
 		DCMView *view = [[self viewer] imageView];
 		if([view flippedData]) [view setIndex:[[[self viewer] pixList] count]-z-1];
 		else [view setIndex:z];
+		
+		if(t != [[self viewer] curMovieIndex]) [[self viewer] setMovieIndex:t];
+		
 		[view sendSyncMessage:1];
 	}
 	else
 	{
-		ViewerController *selectedViewer;
-		BOOL alreadyOpened = NO;
-		for (ViewerController *viewer in [self associatedViewers])
-		{
-			if(t == [viewer curMovieIndex])
-			{
-				selectedViewer = viewer;
-				alreadyOpened = YES;
-			}
-		}
-		if(!alreadyOpened)
+//		ViewerController *selectedViewer;
+//		BOOL alreadyOpened = NO;
+//		for (ViewerController *viewer in [self associatedViewers])
+//		{
+//			if(t == [viewer curMovieIndex])
+//			{
+//				selectedViewer = viewer;
+//				alreadyOpened = YES;
+//			}
+//		}
+//		if(!alreadyOpened)
+			NSLog(@" NEW WINDOW !!");
 			[self openNewViewerAtSlice:z movieFrame:t]; // creates a new viewer
-		else
-		{
-			// select the correct slice
-			DCMView *view = [selectedViewer imageView];
-			if([view flippedData]) [view setIndex:[[[self viewer] pixList] count]-z-1];
-			else [view setIndex:z];
-			// sync other viewers
-			[view sendSyncMessage:1];
-			// make key viewer
-			[[selectedViewer window] makeKeyWindow];
-			[self setNeedsDisplay:YES];
-		}
+//		else
+//		{
+//			// select the correct slice
+//			DCMView *view = [selectedViewer imageView];
+//			if([view flippedData]) [view setIndex:[[[self viewer] pixList] count]-z-1];
+//			else [view setIndex:z];
+//			// sync other viewers
+//			[view sendSyncMessage:1];
+//			// make key viewer
+//			[[selectedViewer window] makeKeyWindow];
+//			[self setNeedsDisplay:YES];
+//		}
 	}
 }
 
@@ -1101,6 +1124,11 @@
 	view.flippedData = [[self viewer] imageView].flippedData;
 	
 	[newViewer adjustSlider];
+	
+	[[newViewer window] makeKeyAndOrderFront:self];
+	[newViewer setWL: wl WW: ww];
+	[newViewer propagateSettings];
+
 	[view sendSyncMessage:1];
 }
 
