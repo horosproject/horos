@@ -39,7 +39,7 @@
 - (int) minimumWindowHeight
 {
 	int scrollbarShift = thumbnailHeight;
-	if( [[[[self viewer] window] screen] visibleFrame].size.width < [[self window] maxSize].width) scrollbarShift += 11;
+	if( [[[[self viewer] window] screen] visibleFrame].size.width < [[self window] maxSize].width) scrollbarShift += 12;
 	
 	return 16 + scrollbarShift;
 }
@@ -60,8 +60,8 @@
 		rect.origin.x = [[[v window] screen] visibleFrame].origin.x;
 		rect.origin.y = [[[v window] screen] visibleFrame].origin.y;
 		
-		float scrollbarShift = 0.0;
-		if(rect.size.width < [n frame].size.width) scrollbarShift = 11;
+		float scrollbarShift = 0;
+		if(rect.size.width < [n frame].size.width) scrollbarShift = 12;
 		
 		rect.size.height += 16+scrollbarShift;
 		
@@ -924,7 +924,10 @@
 	if(newOrigin.x+viewBounds.size.width>[self frame].size.width) newOrigin.x = [self frame].size.width - viewBounds.size.width;
 
 	if(newOrigin.x!=viewBounds.origin.x)
-		[clipView scrollToPoint:newOrigin];
+	{
+		[clipView scrollToPoint: [clipView constrainScrollPoint: newOrigin]];//scrollToPoint
+		[[self enclosingScrollView] reflectScrolledClipView:clipView];
+	}
 }
 
 - (void)scrollLeft;
@@ -985,24 +988,26 @@
 
 	if([[[self viewer] imageView] flippedData]) upperLeft.x = ([[[self viewer] pixList] count]-z-1)*thumbnailWidth;
 	
-	upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
-	
+//	upperLeft.y = ([[self viewer] maxMovieIndex]-t)*thumbnailHeight+viewSize.height-[self frame].size.height+viewBounds.origin.y;
+	upperLeft.y = ([[self viewer] maxMovieIndex]-t)*thumbnailHeight-viewBounds.origin.y;
 	//upperLeft.y = t*thumbnailHeight+viewSize.height-[self frame].size.height;
 	
 	NSRect thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
-
+	NSLog(@"thumbRect : %f, %f, %f, %f", thumbRect.origin.x, thumbRect.origin.y, thumbRect.size.width, thumbRect.size.height);
+	NSLog(@"viewBounds : %f, %f, %f, %f", viewBounds.origin.x, viewBounds.origin.y, viewBounds.size.width, viewBounds.size.height);
 	NSRect intersectionRect = NSIntersectionRect(thumbRect, viewBounds);
 
 	if(intersectionRect.size.width < 2.0)
 	{
 		if(thumbRect.origin.x < viewBounds.origin.x)
-			[clipView scrollToPoint:NSMakePoint(thumbRect.origin.x, viewBounds.origin.y)];
+			[clipView scrollToPoint: [clipView constrainScrollPoint: NSMakePoint(thumbRect.origin.x, viewBounds.origin.y)]];
 		else if(thumbRect.origin.x >= viewBounds.origin.x + viewBounds.size.width)
-			[clipView scrollToPoint:NSMakePoint(thumbRect.origin.x+thumbRect.size.width-viewFrame.size.width, viewBounds.origin.y)];
-		else if(thumbRect.origin.y < viewBounds.origin.y)
-			[clipView scrollToPoint:NSMakePoint(viewBounds.origin.x, thumbRect.origin.y)];
-		else if(thumbRect.origin.y >= viewBounds.origin.y + viewBounds.size.height)
-			[clipView scrollToPoint:NSMakePoint(viewBounds.origin.x, thumbRect.origin.y+thumbRect.size.height-viewFrame.size.height)];
+			[clipView scrollToPoint: [clipView constrainScrollPoint: NSMakePoint(thumbRect.origin.x+thumbRect.size.width-viewFrame.size.width, viewBounds.origin.y)]];
+		else if(thumbRect.origin.y < 0)//viewBounds.origin.y)
+			[clipView scrollToPoint: [clipView constrainScrollPoint: NSMakePoint(viewBounds.origin.x, thumbRect.origin.y)]];
+		else if(thumbRect.origin.y >= viewBounds.size.height)//viewBounds.origin.y + viewBounds.size.height)
+			[clipView scrollToPoint: [clipView constrainScrollPoint: NSMakePoint(viewBounds.origin.x, thumbRect.origin.y+thumbRect.size.height-viewFrame.size.height)]]; //scrollToPoint
+		[[self enclosingScrollView] reflectScrolledClipView:clipView];
 	}
 }
 
