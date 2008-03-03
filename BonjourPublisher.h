@@ -23,6 +23,7 @@
 	NSNetService		*netService;
 	NSFileHandle		*listeningSocket;
 
+	int					OsiriXDBCurrentPort;
 	int					fdForListening;
 	int					numberOfConnectedUsers;
 	BrowserController	*interfaceOsiriX;
@@ -48,5 +49,6 @@
 - (void)setServiceName:(NSString *) newName;
 - (NSString *) serviceName;
 - (NSRecursiveLock*) subConnectionLock;
+- (int) OsiriXDBCurrentPort;
 
 @end

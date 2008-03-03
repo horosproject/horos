@@ -4396,7 +4396,7 @@ static ViewerController *draggedController = 0L;
 														FlipVerticalToolbarItemIdentifier,
 														FlipHorizontalToolbarItemIdentifier,
 														VRPanelToolbarItemIdentifier,
-														//NavigatorToolbarItemIdentifier,
+														NavigatorToolbarItemIdentifier,
 														nil];
 	
 	if([AppController canDisplay12Bit]) array = [array arrayByAddingObject: LUT12BitToolbarItemIdentifier];

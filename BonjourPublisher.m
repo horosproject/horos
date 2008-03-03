@@ -76,6 +76,11 @@ static char *GetPrivateIP()
 	[super dealloc];
 }
 
+- (int) OsiriXDBCurrentPort
+{
+	return OsiriXDBCurrentPort;
+}
+
 - (void)toggleSharing:(BOOL)boo
 {
     uint16_t chosenPort;
@@ -148,7 +153,9 @@ static char *GetPrivateIP()
 				}
 			}
 			
-			NSLog(@"Chosen port: %d", chosenPort);		
+			NSLog(@"Chosen port: %d", chosenPort);
+			
+			OsiriXDBCurrentPort = chosenPort;
 
 			// Once we're here, we know bind must have returned, so we can start the listen
 			if(listen(fdForListening, 1) == 0) {
@@ -182,6 +189,7 @@ static char *GetPrivateIP()
 			
         } else {
 			
+			OsiriXDBCurrentPort = 0;
             [netService stop];
             [[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleConnectionAcceptedNotification object:listeningSocket];
             // There is at present no way to get an NSFileHandle to -stop- listening for events, so we'll just have to tear it down and recreate it the next time we need it.

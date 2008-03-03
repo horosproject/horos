@@ -14,6 +14,7 @@
 
 #import "NavigatorView.h"
 #import "NavigatorWindowController.h"
+#import "ROI.h"
 
 #include <OpenGL/CGLMacro.h>
 #include <OpenGL/CGLCurrent.h>
@@ -323,7 +324,7 @@
 		
 	glScalef(2.0f/(viewSize.width), -2.0f/(viewSize.height), 1.0f);
 	glTranslatef(-(viewSize.width)/2.0, -(viewSize.height)/2.0, 0.0);
-	
+		
 	int i=0;
 	NSPoint upperLeft;
 	NSRect thumbRect;
@@ -350,10 +351,12 @@
 		
 		BOOL highlightThumbnail = NO;
 		NSMutableArray *pixList = [[self viewer] pixList:t];
+		NSMutableArray *roiList = [[self viewer] roiList:t];
+		
 		for(int z=0; z<[pixList count]; z++)
 		{
 			highlightThumbnail = highlightLine || (z == [[self viewer] imageIndex]);
-				
+			
 			if(highlightThumbnail)
 				glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 			else
@@ -365,7 +368,7 @@
 			if(NSIntersectsRect(thumbRect, viewFrame))
 			{
 				[self generateTextureForSlice:z movieIndex:t arrayIndex:i];
-				
+								
 				glBindTexture(GL_TEXTURE_RECTANGLE_EXT, [(NSNumber*)[thumbnailsTextureArray objectAtIndex:i] intValue]);
 			
 				DCMPix *pix = [pixList objectAtIndex:z];
@@ -441,6 +444,22 @@
 					[thumbnailsTextureArray addObject:[NSNumber numberWithInt:-1]];
 			}
 			i++;
+		}
+		
+		for(int z=0; z<[pixList count]; z++)
+		{
+			DCMPix *pix = [pixList objectAtIndex:z];
+			
+			upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
+			
+			glScissor( upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
+			glEnable(GL_SCISSOR_TEST);
+	
+			NSArray *rois = [roiList objectAtIndex:z];
+			
+			for( ROI *r in rois)
+				[r drawROI: 1.0/(zoomFactor*sizeFactor) :upperLeft.x + offset.x :upperLeft.y + offset.y :[pix pixelSpacingX] :[pix pixelSpacingY]];
+			glDisable(GL_SCISSOR_TEST);
 		}
 	}
 

@@ -569,6 +569,19 @@ static char *GetPrivateIP()
 {
 	BOOL succeed = NO;
 	
+//	NSString *ip = [NSString stringWithFormat: @"%s",inet_ntoa (socketAddress->sin_addr)];
+//	if( [publisher  OsiriXDBCurrentPort] == ntohs( socketAddress->sin_port))
+//	{
+//		for( NSString *p in [[NSHost currentHost] addresses])
+//		{
+//			if( [p isEqualToString: ip])
+//			{
+//				NSLog(@"it's us!");
+//				return NO;
+//			}
+//		}
+//	}
+	
 	int socketToRemoteServer = socket(AF_INET, SOCK_STREAM, 0);	//SOCK_STREAM, 0);
 	
 //	int sock_buf_size = 10000;
