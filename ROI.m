@@ -3245,11 +3245,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (void) drawROI :(float) scaleValue :(float) offsetx :(float) offsety :(float) spacingX :(float) spacingY;
 {
-	[self drawROIWithScaleValue:scaleValue offsetX:offsetx offsetY:offsety pixelSpacingX:spacingX pixelSpacingY:spacingY highlightIfSelected:YES];
+	[self drawROIWithScaleValue:scaleValue offsetX:offsetx offsetY:offsety pixelSpacingX:spacingX pixelSpacingY:spacingY highlightIfSelected:YES thickness:thickness];
 }
 
-- (void) drawROIWithScaleValue:(float)scaleValue offsetX:(float)offsetx offsetY:(float)offsety pixelSpacingX:(float)spacingX pixelSpacingY:(float)spacingY highlightIfSelected:(BOOL)highlightIfSelected;
+- (void) drawROIWithScaleValue:(float)scaleValue offsetX:(float)offsetx offsetY:(float)offsety pixelSpacingX:(float)spacingX pixelSpacingY:(float)spacingY highlightIfSelected:(BOOL)highlightIfSelected thickness:(float)thick;
 {
+	float thicknessCopy = thickness;
+	thickness = thick;
 	if( roiLock == 0L) roiLock = [[NSLock alloc] init];
 	
 	[roiLock lock];
@@ -4504,6 +4506,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	glDisable(GL_BLEND);
 	
 	[roiLock unlock];
+	
+	thickness = thicknessCopy;
 }
 
 - (float*) dataValuesAsFloatPointer :(long*) no
