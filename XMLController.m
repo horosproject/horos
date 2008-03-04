@@ -29,10 +29,13 @@ static NSString*	ExpandAllItemsToolbarItemIdentifier		= @"add-large";
 static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus-large";
 static NSString*	SearchToolbarItemIdentifier				= @"Search";
 static NSString*	EditingToolbarItemIdentifier			= @"Editing";
+static NSString*	SortSeriesToolbarItemIdentifier			= @"SortSeries";
 
 static BOOL showWarning = YES;
 
 @implementation XMLController
+
+@synthesize imObj;
 
 - (NSString*) getPath:(NSXMLElement*) node
 {
@@ -201,7 +204,7 @@ static BOOL showWarning = YES;
 		}
 		else
 		{
-			NSRunAlertPanel( @"Add DICOM Field",@"Illegal group / element values", @"OK", 0L, 0L);
+			NSRunAlertPanel( NSLocalizedString( @"Add DICOM Field", 0L), NSLocalizedString( @"Illegal group / element values", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
 			return;
 		}
 	}
@@ -354,6 +357,25 @@ static BOOL showWarning = YES;
 - (void) windowDidLoad
 {
     [self setupToolbar];
+}
+
++ (XMLController*) windowForImage: (NSManagedObject*) image
+{
+	// Check if we have already a window displaying this ManagedObject
+	
+	NSArray				*winList = [NSApp windows];
+	NSMutableArray		*l = [NSMutableArray array];
+	
+	for( NSWindow *w in winList)
+	{
+		if( [[w windowController] isKindOfClass:[XMLController class]])
+		{
+			if( [[w windowController] imObj] == image)
+				return [w windowController];
+		}
+	}
+	
+	return 0L;
 }
 
 -(id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name viewer:(ViewerController*) v
@@ -737,6 +759,45 @@ static BOOL showWarning = YES;
 	}
 }
 
+- (IBAction) sortSeries: (id) sender
+{
+	NSIndexSet* selectedRowIndexes = [table selectedRowIndexes];
+	
+	if( [selectedRowIndexes count] != 1)
+	{
+		NSRunAlertPanel( NSLocalizedString( @"Sort Images Series", 0L) , NSLocalizedString( @"Select an element to use to sort the images of the series.", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
+		return;
+	}
+	
+	int index = [selectedRowIndexes firstIndex];
+	id item = [table itemAtRow: index];
+	
+	if( index > 0 && item && [[item attributeForName:@"group"] objectValue] && [[item attributeForName:@"element"] objectValue])
+	{
+		unsigned gr = 0, el = 0;
+		
+		@try
+		{		
+			[[NSScanner scannerWithString: [[item attributeForName:@"group"] objectValue]] scanHexInt:&gr];
+			[[NSScanner scannerWithString: [[item attributeForName:@"element"] objectValue]] scanHexInt:&el];
+			
+			if( gr > 0 && el > 0)
+			{
+				NSLog( @"0x%04X / 0x%04X", gr, el);
+			
+	//			[viewer sortSeriesByDICOMGroup: gr element: el];
+			}
+		}
+		
+		@catch( NSException *e)
+		{
+			NSLog( @"%@", e);
+			NSRunAlertPanel( NSLocalizedString( @"Sort Images Series", 0L) , NSLocalizedString( @"Select an element to use to sort the images of the series.", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
+		}
+	}
+	else NSRunAlertPanel( NSLocalizedString( @"Sort Images Series", 0L) , NSLocalizedString( @"Select an element to use to sort the images of the series.", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
+}
+
 - (void)keyDown:(NSEvent *)event
 {
 	NSLog( @"keyDown");
@@ -962,6 +1023,14 @@ static BOOL showWarning = YES;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(deepCollapseAllItems:)];
     }
+	else if ([itemIdent isEqual: SortSeriesToolbarItemIdentifier]) {
+		[toolbarItem setLabel: NSLocalizedString(@"Sort Images", 0L)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Sort Images", 0L)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Sort Series Images by selected element", 0L)];
+		[toolbarItem setImage: [NSImage imageNamed: @"Revert.tiff"]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector( sortSeries:)];
+    }
     else {
 	// itemIdent refered to a toolbar item that is not provide or supported by us or cocoa 
 	// Returning nil will inform the toolbar this kind of item is not supported 
@@ -980,6 +1049,7 @@ static BOOL showWarning = YES;
 										CollapseAllItemsToolbarItemIdentifier,
 										NSToolbarFlexibleSpaceItemIdentifier,
 										EditingToolbarItemIdentifier,
+										SortSeriesToolbarItemIdentifier,
 										NSToolbarFlexibleSpaceItemIdentifier,
 										SearchToolbarItemIdentifier,
 										nil];
@@ -998,6 +1068,7 @@ static BOOL showWarning = YES;
 										ExpandAllItemsToolbarItemIdentifier,
 										CollapseAllItemsToolbarItemIdentifier,
 										EditingToolbarItemIdentifier,
+										SortSeriesToolbarItemIdentifier,
 										SearchToolbarItemIdentifier,
 										nil];
 }

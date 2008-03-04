@@ -48,6 +48,8 @@
 	IBOutlet NSTextField		*addGroup, *addElement, *addValue;
 }
 
++ (XMLController*) windowForImage: (NSManagedObject*) image;
+
 - (id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name viewer:(ViewerController*) v;
 - (void) setupToolbar;
 
@@ -68,5 +70,7 @@
 
 - (NSString*) stringsSeparatedForNode:(NSXMLNode*) node;
 - (void) traverse: (NSXMLNode*) node string:(NSMutableString*) string;
+
+@property(readonly) NSManagedObject *imObj;
 
 @end

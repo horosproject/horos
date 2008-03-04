@@ -81,7 +81,8 @@
 #import "PluginManager.h"
 #import <InstantMessage/IMService.h>
 #import <InstantMessage/IMAVManager.h>
-
+#import "DCMObject.h"
+#import "DCMAttributeTag.h"
 #import "NavigatorWindowController.h"
 
 
@@ -3360,9 +3361,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSString	*path = [[BrowserController currentBrowser] getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] : 0];
 	[[self window] setRepresentedFilename: path];
 	
-    XMLController * xmlController = [[XMLController alloc] initWithImage: [fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] windowName:[NSString stringWithFormat:@"Meta-Data: %@", [[self window] title]] viewer: self];
-    
-    [xmlController showWindow:self];
+	NSManagedObject *im = [fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]];
+	
+	if( [XMLController windowForImage: im])
+		[[[XMLController windowForImage: im] window] makeKeyAndOrderFront: self];
+    else
+	{
+		XMLController * xmlController = [[XMLController alloc] initWithImage: im windowName:[NSString stringWithFormat:@"Meta-Data: %@", [[self window] title]] viewer: self];
+		[xmlController showWindow:self];
+	}
 }
 
 
@@ -13016,6 +13023,73 @@ int i,j,l;
 
 
 #define DATABASEPATH @"/DATABASE/"
+
+
+- (void) sortSeriesByDICOMGroup: (int) gr element: (int) el
+{
+	NSMutableArray *xPix = [NSMutableArray array];
+	NSMutableArray *xFiles = [NSMutableArray array];
+	NSMutableArray *xData = [NSMutableArray array];
+	
+	for( int i = 0; i < maxMovieIndex; i++)
+	{
+		NSMutableArray *sortingArray = [NSMutableArray array];
+		
+		for( int x = 0; x < [pixList[ i] count]; x++)
+		{
+			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [pixList[ i] objectAtIndex: x]  decodingPixelData:NO];
+			
+			DCMAttribute *attr = [dcmObject attributeForTag: [DCMAttributeTag tagWithGroup: gr element: el]];
+			
+			if( attr && [[attr values] objectAtIndex: 0])
+			{
+				[sortingArray addObject: [[attr values] objectAtIndex: 0]];
+			}
+			else [sortingArray addObject: [NSNumber numberWithInt: 0]];
+		}
+		
+		NSArray *sortedArray = [sortingArray sortedArrayUsingSelector: @selector(compare:)];
+		
+		NSMutableArray *newPixList = [NSMutableArray array];
+		NSMutableArray *newDcmList = [NSMutableArray array];
+		NSData *newData = [NSData dataWithData: volumeData[ i]];
+		
+		for( int x = 0; x < [pixList[ i] count]; x++)
+		{
+			int oldIndex = [sortingArray indexOfObject: [sortedArray objectAtIndex: x]];
+			
+			[newPixList addObject: [pixList[ i] objectAtIndex: oldIndex]];
+			[newDcmList addObject: [fileList[ i] objectAtIndex: oldIndex]];
+		}
+		
+		[xPix addObject: newPixList];
+		[xFiles addObject: newDcmList];
+		[xData addObject: newData];
+	}
+	
+	// Replace the current series with the new series
+	
+	int mx = maxMovieIndex;
+	
+	for( int j = 0 ; j < mx ; j ++)
+	{
+		if( j == 0)
+			[self changeImageData: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j] :NO];
+		else
+			[self addMovieSerie: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
+	}
+	
+	loadingPercentage = 1;
+	[self computeInterval];
+	[self setWindowTitle:self];
+	
+//	if( wasDataFlipped) [self flipDataSeries: self];
+	
+	[imageView setIndex: 0];
+	[imageView sendSyncMessage:1];
+	
+	[self adjustSlider];
+}
 
 -(IBAction) setPagesToPrint:(id) sender
 {
