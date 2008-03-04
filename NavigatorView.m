@@ -22,6 +22,8 @@
 
 #import "DCMPix.h"
 
+static float deg2rad = 3.14159265358979/180.0; 
+
 // max size of the thumbnails in pixels
 #define thumbnailMaxHeight 100
 #define thumbnailMaxWidth 100
@@ -217,9 +219,7 @@
 
 	NSMutableArray *pixList = [[self viewer] pixList:t];
 	
-	DCMPix *pix;
-	if( [[[self viewer] imageView] flippedData]) pix = [pixList objectAtIndex: [pixList count] -z -1];
-	else pix = [pixList objectAtIndex:z];
+	DCMPix *pix = [pixList objectAtIndex:z];
 	
 	if(changeWLWW) [pix changeWLWW:wl :ww];
 	else if(![[isTextureWLWWUpdated objectAtIndex:i] boolValue]) [pix changeWLWW:wl :ww];
@@ -320,7 +320,7 @@
 	glLoadIdentity();
 	glEnable(GL_TEXTURE_RECTANGLE_EXT);
 	
-	glDepthMask (GL_TRUE);
+//	glDepthMask (GL_TRUE);
 		
 	glScalef(2.0f/(viewSize.width), -2.0f/(viewSize.height), 1.0f);
 	glTranslatef(-(viewSize.width)/2.0, -(viewSize.height)/2.0, 0.0);
@@ -351,7 +351,8 @@
 		
 		BOOL highlightThumbnail = NO;
 		NSMutableArray *pixList = [[self viewer] pixList:t];
-		NSMutableArray *roiList = [[self viewer] roiList:t];
+		
+		BOOL flippedData = [[[self viewer] imageView] flippedData];
 		
 		for(int z=0; z<[pixList count]; z++)
 		{
@@ -367,11 +368,13 @@
 			
 			if(NSIntersectsRect(thumbRect, viewFrame))
 			{
-				[self generateTextureForSlice:z movieIndex:t arrayIndex:i];
+				int correctedZ = (flippedData) ? [pixList count]-z-1 : z ;
+				
+				[self generateTextureForSlice:correctedZ movieIndex:t arrayIndex:i];
 								
 				glBindTexture(GL_TEXTURE_RECTANGLE_EXT, [(NSNumber*)[thumbnailsTextureArray objectAtIndex:i] intValue]);
 			
-				DCMPix *pix = [pixList objectAtIndex:z];
+				DCMPix *pix = [pixList objectAtIndex:correctedZ];
 				
 				NSPoint texUpperLeft, texUpperRight, texLowerLeft, texLowerRight;
 				texUpperLeft.x = 0.0;
@@ -445,25 +448,52 @@
 			}
 			i++;
 		}
+	}
+	
+	glDisable(GL_TEXTURE_RECTANGLE_EXT);
+	
+	for(int t=0; t<[[self viewer] maxMovieIndex]; t++)
+	{
+		NSMutableArray *pixList = [[self viewer] pixList:t];
+		NSMutableArray *roiList = [[self viewer] roiList:t];
 		
+		BOOL flippedData = [[[self viewer] imageView] flippedData];
+				
 		for(int z=0; z<[pixList count]; z++)
 		{
-			DCMPix *pix = [pixList objectAtIndex:z];
+			int correctedZ = (flippedData) ? [pixList count]-z-1 : z ;
+			DCMPix *pix = [pixList objectAtIndex:correctedZ];
 			
+//			upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, ([[self viewer] maxMovieIndex]-t-1)*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
 			upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
 			
-			glScissor( upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
+			glScissor( upperLeft.x, viewSize.height - (upperLeft.y+thumbnailHeight), thumbnailWidth, thumbnailHeight);
 			glEnable(GL_SCISSOR_TEST);
 	
-			NSArray *rois = [roiList objectAtIndex:z];
+			NSArray *rois = [roiList objectAtIndex:correctedZ];
+			
+			glTranslatef(upperLeft.x, upperLeft.y, 0.0);
+			
+			glTranslatef(thumbnailWidth/2.0, thumbnailHeight/2.0, 0.0);
+			glRotatef (-rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
 			
 			for( ROI *r in rois)
-				[r drawROI: 1.0/(zoomFactor*sizeFactor) :upperLeft.x + offset.x :upperLeft.y + offset.y :[pix pixelSpacingX] :[pix pixelSpacingY]];
+			{
+				glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+				
+				if([r type]!=tText)
+					[r drawROIWithScaleValue:1.0/(zoomFactor*sizeFactor) offsetX:offset.x+pix.pwidth/2.0 offsetY:offset.y+pix.pheight/2.0 pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO];
+			}
 			glDisable(GL_SCISSOR_TEST);
+			
+			glRotatef (rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
+			glTranslatef(-thumbnailWidth/2.0, -thumbnailHeight/2.0, 0.0);
+			
+			glTranslatef(-upperLeft.x, -(upperLeft.y), 0.0);
 		}
 	}
 
-	glDisable(GL_TEXTURE_RECTANGLE_EXT);
+	
 
 	// draw selection
 	glEnable(GL_LINE_SMOOTH);

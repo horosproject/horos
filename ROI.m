@@ -2633,7 +2633,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 				
 				if( modifier & NSShiftKeyMask) rect.size.width = rect.size.height;
 					
-					rtotal = -1;
+				rtotal = -1;
 				Brtotal = -1;
 				action = YES;
 				break;
@@ -3243,7 +3243,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	return [NSString stringWithFormat:@"%@	%.3f	%.3f	%.3f	%.3f	%.3f", name, mean, min, max, total, dev];
 }
 
-- (void) drawROI :(float) scaleValue :(float) offsetx :(float) offsety :(float) spacingX :(float) spacingY
+- (void) drawROI :(float) scaleValue :(float) offsetx :(float) offsety :(float) spacingX :(float) spacingY;
+{
+	[self drawROIWithScaleValue:scaleValue offsetX:offsetx offsetY:offsety pixelSpacingX:spacingX pixelSpacingY:spacingY highlightIfSelected:YES];
+}
+
+- (void) drawROIWithScaleValue:(float)scaleValue offsetX:(float)offsetx offsetY:(float)offsety pixelSpacingX:(float)spacingX pixelSpacingY:(float)spacingY highlightIfSelected:(BOOL)highlightIfSelected;
 {
 	if( roiLock == 0L) roiLock = [[NSLock alloc] init];
 	
@@ -3350,7 +3355,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glEnable(GL_POLYGON_SMOOTH);
 				
 				// draw the 4 points defining the bounding box
-				if(mode==ROI_selected)
+				if(mode==ROI_selected && highlightIfSelected)
 				{
 					glColor3f (0.5f, 0.5f, 1.0f);
 					glPointSize( 8.0);
@@ -3442,18 +3447,21 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				case 	ROI_drawing:
 				case 	ROI_selected:
 				case 	ROI_selectedModify:
-					glColor3f (0.5f, 0.5f, 1.0f);
-					//smaller points for calcium scoring
-					if (_displayCalciumScoring)
-						glPointSize( 3.0);
-					else
-						glPointSize( 8.0);
-					glBegin(GL_POINTS);
-					glVertex3f(screenXUpL, screenYUpL, 0.0);
-					glVertex3f(screenXDr, screenYUpL, 0.0);
-					glVertex3f(screenXUpL, screenYDr, 0.0);
-					glVertex3f(screenXDr, screenYDr, 0.0);
-					glEnd();
+					if(highlightIfSelected)
+					{
+						glColor3f (0.5f, 0.5f, 1.0f);
+						//smaller points for calcium scoring
+						if (_displayCalciumScoring)
+							glPointSize( 3.0);
+						else
+							glPointSize( 8.0);
+						glBegin(GL_POINTS);
+						glVertex3f(screenXUpL, screenYUpL, 0.0);
+						glVertex3f(screenXDr, screenYUpL, 0.0);
+						glVertex3f(screenXUpL, screenYDr, 0.0);
+						glVertex3f(screenXDr, screenYDr, 0.0);
+						glEnd();
+					}
 				break;
 			}
 			
@@ -3516,7 +3524,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 			glEnd();
 			
-			if( mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing) glColor4f (0.5f, 0.5f, 1.0f, opacity);
+			if((mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing) && highlightIfSelected) glColor4f (0.5f, 0.5f, 1.0f, opacity);
 			else glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 			//else glColor4f (1.0f, 0.0f, 0.0f, opacity);
 			
@@ -3570,7 +3578,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		break;
 		
 		case tText:
-			if( mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing)
+			if((mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing) && highlightIfSelected)
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
 				glPointSize( 2.0 * 3);
@@ -3736,7 +3744,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glEnd();
 			}
 			
-			if( mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing)
+			if((mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing) && highlightIfSelected)
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
 				glPointSize( (1 + sqrt( thickness))*3.5);
@@ -3823,7 +3831,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glVertex2f(  (rect.origin.x+ rect.size.width - offsetx)*scaleValue, (rect.origin.y - offsety)*scaleValue);
 			glEnd();
 			
-			if( mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing)
+			if((mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing) && highlightIfSelected)
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
 				glPointSize( (1 + sqrt( thickness))*3.5);
@@ -3876,14 +3884,26 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 			glLineWidth(thickness);
 			
-			int resol = (rect.size.height + rect.size.width) * 1.5 * scaleValue;
+			NSRect rrect = rect;
+			
+			if( rrect.size.height < 0)
+			{
+				rrect.size.height = -rrect.size.height;
+			}
+			
+			if( rrect.size.width < 0)
+			{
+				rrect.size.width = -rrect.size.width;
+			}
+			
+			int resol = (rrect.size.height + rrect.size.width) * 1.5 * scaleValue;
 			
 			glBegin(GL_LINE_LOOP);
 			for( long i = 0; i < resol ; i++ ) {
 
 				angle = i * 2 * M_PI /resol;
 			  
-			  glVertex2f( (rect.origin.x + rect.size.width*cos(angle) - offsetx)*scaleValue, (rect.origin.y + rect.size.height*sin(angle)- offsety)*scaleValue);
+			  glVertex2f( (rrect.origin.x + rrect.size.width*cos(angle) - offsetx)*scaleValue, (rrect.origin.y + rrect.size.height*sin(angle)- offsety)*scaleValue);
 			}
 			glEnd();
 			
@@ -3893,19 +3913,19 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 				angle = i * 2 * M_PI /resol;
 			  
-			  glVertex2f( (rect.origin.x + rect.size.width*cos(angle) - offsetx)*scaleValue, (rect.origin.y + rect.size.height*sin(angle)- offsety)*scaleValue);
+			  glVertex2f( (rrect.origin.x + rrect.size.width*cos(angle) - offsetx)*scaleValue, (rrect.origin.y + rrect.size.height*sin(angle)- offsety)*scaleValue);
 			}
 			glEnd();
 			
-			if( mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing)
+			if((mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing) && highlightIfSelected)
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
 				glPointSize( (1 + sqrt( thickness))*3.5);
 				glBegin( GL_POINTS);
-				glVertex2f( (rect.origin.x - offsetx - rect.size.width) * scaleValue, (rect.origin.y - rect.size.height - offsety) * scaleValue);
-				glVertex2f( (rect.origin.x - offsetx - rect.size.width) * scaleValue, (rect.origin.y + rect.size.height - offsety) * scaleValue);
-				glVertex2f( (rect.origin.x + rect.size.width - offsetx) * scaleValue, (rect.origin.y + rect.size.height - offsety) * scaleValue);
-				glVertex2f( (rect.origin.x + rect.size.width - offsetx) * scaleValue, (rect.origin.y - rect.size.height - offsety) * scaleValue);
+				glVertex2f( (rrect.origin.x - offsetx - rrect.size.width) * scaleValue, (rrect.origin.y - rrect.size.height - offsety) * scaleValue);
+				glVertex2f( (rrect.origin.x - offsetx - rrect.size.width) * scaleValue, (rrect.origin.y + rrect.size.height - offsety) * scaleValue);
+				glVertex2f( (rrect.origin.x + rrect.size.width - offsetx) * scaleValue, (rrect.origin.y + rrect.size.height - offsety) * scaleValue);
+				glVertex2f( (rrect.origin.x + rrect.size.width - offsetx) * scaleValue, (rrect.origin.y - rrect.size.height - offsety) * scaleValue);
 				glEnd();
 			}
 			
@@ -4005,7 +4025,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 			}
-				if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+				if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 				{
 					NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: 0L];
 					tempPt.y = [curView drawingFrameRect].size.height - tempPt.y ;
@@ -4275,7 +4295,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 			}
 			//ROI MODE
-			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+			if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 			{
 				NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: 0L];
 				tempPt.y = [curView drawingFrameRect].size.height - tempPt.y ;
@@ -4434,7 +4454,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				else displayTextualData = NO;
 			}
 			
-			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+			if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 			{
 				[curView window];
 				
