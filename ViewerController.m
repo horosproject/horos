@@ -13037,7 +13037,7 @@ int i,j,l;
 		
 		for( int x = 0; x < [pixList[ i] count]; x++)
 		{
-			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [pixList[ i] objectAtIndex: x]  decodingPixelData:NO];
+			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [[pixList[ i] objectAtIndex: x] srcFile]  decodingPixelData:NO];
 			
 			DCMAttribute *attr = [dcmObject attributeForTag: [DCMAttributeTag tagWithGroup: gr element: el]];
 			
@@ -13052,19 +13052,39 @@ int i,j,l;
 		
 		NSMutableArray *newPixList = [NSMutableArray array];
 		NSMutableArray *newDcmList = [NSMutableArray array];
-		NSData *newData = [NSData dataWithData: volumeData[ i]];
 		
-		for( int x = 0; x < [pixList[ i] count]; x++)
+		// HERE : HANDLE NON SAME SIZE IMAGES
+		int size = sizeof(float) * [[pixList[ i] lastObject] pwidth] * [[pixList[ i] lastObject] pheight] * [pixList[ i] count];
+		
+		//float *emptyData = malloc( size);
+		//if( emptyData)
 		{
-			int oldIndex = [sortingArray indexOfObject: [sortedArray objectAtIndex: x]];
+			NSData *newData = [NSData dataWithData: volumeData[ i]];
 			
-			[newPixList addObject: [pixList[ i] objectAtIndex: oldIndex]];
-			[newDcmList addObject: [fileList[ i] objectAtIndex: oldIndex]];
+			float *emptyData = [newData bytes];
+			
+			
+			if( emptyData != volumeData[ i]) NSLog( @"WARNING !!!!!!");
+			
+			for( int x = 0; x < [pixList[ i] count]; x++)
+			{
+				int oldIndex = [sortingArray indexOfObject: [sortedArray objectAtIndex: x]];
+				
+				[[pixList[ i] objectAtIndex: oldIndex] kill8bitsImage];
+				[[pixList[ i] objectAtIndex: oldIndex] revert];
+				
+				DCMPix *newPix = [[[pixList[ i] objectAtIndex: oldIndex] copy] autorelease];
+				
+				[newPix setfImage: (float*) (emptyData + ([[pixList[ i] lastObject] pwidth] * [[pixList[ i] lastObject] pheight]) * x)];
+				
+				[newPixList addObject: newPix];
+				[newDcmList addObject: [fileList[ i] objectAtIndex: oldIndex]];
+			}
+			
+			[xPix addObject: newPixList];
+			[xFiles addObject: newDcmList];
+			[xData addObject: newData];
 		}
-		
-		[xPix addObject: newPixList];
-		[xFiles addObject: newDcmList];
-		[xData addObject: newData];
 	}
 	
 	// Replace the current series with the new series

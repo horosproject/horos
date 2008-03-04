@@ -783,9 +783,8 @@ static BOOL showWarning = YES;
 			
 			if( gr > 0 && el > 0)
 			{
-				NSLog( @"0x%04X / 0x%04X", gr, el);
-			
-	//			[viewer sortSeriesByDICOMGroup: gr element: el];
+				NSLog( @"Sort by 0x%04X / 0x%04X", gr, el);
+				[viewer sortSeriesByDICOMGroup: gr element: el];
 			}
 		}
 		

@@ -407,6 +407,9 @@ enum
 /** Create a new ROI object */
 - (ROI*) newROI: (long) type;
 
+/** ReSort the images displayed according to this group/element */
+- (void) sortSeriesByDICOMGroup: (int) gr element: (int) el;
+
 /** Delete ALL ROI objects for  current series */
 - (IBAction) roiDeleteAll:(id) sender;
 
