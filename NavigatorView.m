@@ -130,7 +130,9 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeWLWW:) name:@"changeWLWW" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name:@"DCMViewIndexChanged" object:nil];
-		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshROIs:) name:@"removeROI" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshROIs:) name:@"roiChange" object:nil];
+
 		[[self window] setDelegate:self];
 		
 		GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
@@ -846,6 +848,14 @@ static float deg2rad = 3.14159265358979/180.0;
 		previousImageIndex = curImageIndex;
 		previousMovieIndex = curMovieIndex;
 	}
+}
+
+- (void)refreshROIs:(NSNotification*)notif;
+{
+	if( dontListenToNotification) return;
+	
+	[self displaySelectedImage];
+	[self setNeedsDisplay:YES];
 }
 
 - (void)wlwwFrom:(NSPoint)start to:(NSPoint)stop;
