@@ -667,16 +667,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		mouseClickedWithCommandKey = YES;
 	}
 	else if([theEvent modifierFlags] & NSAlternateKeyMask) userAction=wlww;
-	else if([theEvent clickCount]==2 && !scrollLeft && !scrollRight)
-	{
-		[self doubleClick];
-		return;
-	}
 	else userAction = [[self viewer] imageView].currentTool;
-
-//	BOOL newWindow = NO;
-//	if(([theEvent modifierFlags] & NSCommandKeyMask)) newWindow = YES;
-//	[self displaySelectedViewInNewWindow:newWindow];
 
 	startWW = ww;
 	startWL = wl;
@@ -730,7 +721,6 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)mouseUp:(NSEvent *)theEvent;
 {
-	
 	if(!mouseDragged)
 	{
 		BOOL newWindow = mouseClickedWithCommandKey;
@@ -1052,8 +1042,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	//upperLeft.y = t*thumbnailHeight+viewSize.height-[self frame].size.height;
 	
 	NSRect thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
-	NSLog(@"thumbRect : %f, %f, %f, %f", thumbRect.origin.x, thumbRect.origin.y, thumbRect.size.width, thumbRect.size.height);
-	NSLog(@"viewBounds : %f, %f, %f, %f", viewBounds.origin.x, viewBounds.origin.y, viewBounds.size.width, viewBounds.size.height);
 	NSRect intersectionRect = NSIntersectionRect(thumbRect, viewBounds);
 
 	if(intersectionRect.size.width < 2.0)
@@ -1151,7 +1139,6 @@ static float deg2rad = 3.14159265358979/180.0;
 //			}
 //		}
 //		if(!alreadyOpened)
-			NSLog(@" NEW WINDOW !!");
 			[self openNewViewerAtSlice:z movieFrame:t]; // creates a new viewer
 //		else
 //		{

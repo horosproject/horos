@@ -182,9 +182,8 @@ typedef enum
 /** Only in 4D. Returns all the 4D viewers that are linked to the same data set.*/
 - (NSArray*)associatedViewers;
 
-/** Double clicking in the Navigator will display the selected image in the 2D viewer.
-* In 4D, if the selected image is not in the same time frame, it will open a new 4D viewer displaying the selected time frame.*/
-- (void)doubleClick;
+/** Clicking in a view of the Navigator will display the selected image in the 2D viewer.
+* Holding the command key pressed while clicking will open a new viewer.*/
 - (void)displaySelectedViewInNewWindow:(BOOL)newWindow;
 
 /**  Opens a new viewer.
