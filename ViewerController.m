@@ -697,6 +697,7 @@ static int hotKeyToolCrossTable[] =
 - (void) setPostprocessed:(BOOL) v
 {
 	postprocessed = v;
+	[self updateNavigator];
 }
 
 - (BOOL) postprocessed

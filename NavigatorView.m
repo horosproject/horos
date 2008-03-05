@@ -268,15 +268,15 @@ static float deg2rad = 3.14159265358979/180.0;
 	// we consider that every image has the same size
 	DCMPix *aPix = [[[self viewer] pixList] objectAtIndex:0];
 	int width = [aPix pwidth];
-	int height = [aPix pheight];
+	int height = [aPix pheight]*[aPix pixelRatio];
 	
 	float wFactor = (float)width / (float)thumbnailMaxWidth;
 	float hFactor = (float)height / (float)thumbnailMaxHeight;
 	sizeFactor = (wFactor>hFactor)? wFactor : hFactor;
-	
+		
 	thumbnailWidth = width / sizeFactor;
 	thumbnailHeight = height / sizeFactor;
-	
+		
 	[[self enclosingScrollView] setHorizontalPageScroll:thumbnailWidth];
 	[[self enclosingScrollView] setHorizontalLineScroll:thumbnailWidth];
 	
@@ -384,9 +384,9 @@ static float deg2rad = 3.14159265358979/180.0;
 				texUpperRight.x = pix.pwidth;
 				texUpperRight.y = 0.0;
 				texLowerLeft.x = 0.0;
-				texLowerLeft.y = pix.pheight;
+				texLowerLeft.y = pix.pheight;// *[pix pixelRatio];
 				texLowerRight.x = pix.pwidth;
-				texLowerRight.y = pix.pheight;
+				texLowerRight.y = pix.pheight;// *[pix pixelRatio];
 				
 				NSPoint centerPoint;
 				centerPoint.x = (texUpperLeft.x+texLowerRight.x)/2.0;
@@ -484,7 +484,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 				
 				if([r type]!=tText)
-					[r drawROIWithScaleValue:1.0/(zoomFactor*sizeFactor) offsetX:offset.x+pix.pwidth/2.0 offsetY:offset.y+pix.pheight/2.0 pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0];
+					[r drawROIWithScaleValue:1.0/(zoomFactor*sizeFactor) offsetX:offset.x+pix.pwidth/2.0 offsetY:(offset.y+pix.pheight/2.0)*[pix pixelRatio] pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0];
 			}
 			glDisable(GL_SCISSOR_TEST);
 			
@@ -833,6 +833,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	int curMovieIndex = [[self viewer] curMovieIndex];
 	if( curImageIndex != previousImageIndex || curMovieIndex != previousMovieIndex)
 	{
+		[self computeThumbnailSize];
 		[self displaySelectedImage];
 		[self setNeedsDisplay:YES];
 		previousImageIndex = curImageIndex;
