@@ -42,8 +42,8 @@ static float deg2rad = 3.14159265358979/180.0;
 - (int) minimumWindowHeight
 {
 	int scrollbarShift = thumbnailHeight;
-	if( [[[[self viewer] window] screen] visibleFrame].size.width < [[self window] maxSize].width) scrollbarShift += 12;
-	
+	//if( [[[[self viewer] window] screen] visibleFrame].size.width < [[self window] maxSize].width) scrollbarShift += 12;
+	if( [[[[self viewer] window] screen] visibleFrame].size.width < [self frame].size.width) scrollbarShift += 12;
 	return 16 + scrollbarShift;
 }
 
