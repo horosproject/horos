@@ -21,6 +21,7 @@
 #import "BrowserController.h"
 #import "ViewerController.h"
 #import <OsiriX/DCMObject.h>
+#import "AppController.h"
 
 static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
@@ -37,6 +38,35 @@ static BOOL showWarning = YES;
 
 @synthesize imObj;
 @synthesize viewer;
+
+- (id) imageView
+{
+	return 0L;
+}
+
+- (void) propagateSettings
+{
+}
+
+- (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow animate: (BOOL) animate
+{
+	[AppController resizeWindowWithAnimation: [self window] newSize: rect];
+}
+
+- (BOOL) FullScreenON
+{
+	return NO;
+}
+
+- (BOOL) windowWillClose
+{
+	return NO;
+}
+
+- (NSArray*) fileList
+{
+	return [NSArray arrayWithObject: imObj];
+}
 
 - (NSString*) getPath:(NSXMLElement*) node
 {

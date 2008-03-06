@@ -50,6 +50,7 @@ MODIFICATION HISTORY
 #import "BrowserController.h"
 #import "BrowserControllerDCMTKCategory.h"
 #import "ViewerController.h"
+#import "XMLController.h"
 #import "SplashScreen.h"
 #import "NSFont_OpenGL.h"
 #import "Survey.h"
@@ -2644,7 +2645,7 @@ static BOOL initialized = NO;
 	//get 2D viewer windows
 	for( i = 0; i < [winList count]; i++)
 	{
-		if(	[[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+		if(	[[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]] || [[[winList objectAtIndex:i] windowController] isKindOfClass:[XMLController class]])
 		{
 			if( [[[winList objectAtIndex:i] windowController] windowWillClose] == NO)
 				[viewersList addObject: [[winList objectAtIndex:i] windowController]];

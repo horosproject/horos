@@ -3370,6 +3370,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		XMLController * xmlController = [[XMLController alloc] initWithImage: im windowName:[NSString stringWithFormat:@"Meta-Data: %@", [[self window] title]] viewer: self];
 		[xmlController showWindow:self];
+		[[AppController sharedAppController] tileWindows: self];
 	}
 }
 
