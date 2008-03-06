@@ -3845,14 +3845,14 @@ static NSArray*	statesArray = nil;
 		
 		@try
 		{
-		// Sort images with "instanceNumber"
-		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
-		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
-		[sort release];
-		sortedArray = [[[item valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
-			
+			// Sort images with "instanceNumber"
+			NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
+			NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
+			[sort release];
+			sortedArray = [[[item valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
 		}
-		@catch (NSException * e) {
+		@catch (NSException * e)
+		{
 			NSLog( [e description]);
 		}
 

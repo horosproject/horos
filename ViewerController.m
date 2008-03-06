@@ -3364,8 +3364,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	NSManagedObject *im = [fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]];
 	
-	if( [XMLController windowForImage: im])
-		[[[XMLController windowForImage: im] window] makeKeyAndOrderFront: self];
+	if( [XMLController windowForViewer: self])
+		[[[XMLController windowForViewer: self] window] makeKeyAndOrderFront: self];
     else
 	{
 		XMLController * xmlController = [[XMLController alloc] initWithImage: im windowName:[NSString stringWithFormat:@"Meta-Data: %@", [[self window] title]] viewer: self];
@@ -5891,6 +5891,7 @@ static ViewerController *draggedController = 0L;
 			[xPix addObject: newPixList];
 			[xFiles addObject: newDcmList];
 			[xData addObject: newData];
+			postprocessed = YES;
 		}
 	}
 	
@@ -7095,7 +7096,7 @@ static ViewerController *draggedController = 0L;
 			{
 				nonContinuous = YES;
 				
-				NSLog(@"%f", previousInterval3d - interval3d);
+				NSLog(@"nonContinuous interval: %f", previousInterval3d - interval3d);
 			}
 			
 			previousInterval3d = interval3d;
@@ -13026,8 +13027,10 @@ int i,j,l;
 #define DATABASEPATH @"/DATABASE/"
 
 
-- (void) sortSeriesByDICOMGroup: (int) gr element: (int) el
+- (BOOL) sortSeriesByDICOMGroup: (int) gr element: (int) el
 {
+	[self checkEverythingLoaded];
+	
 	NSMutableArray *xPix = [NSMutableArray array];
 	NSMutableArray *xFiles = [NSMutableArray array];
 	NSMutableArray *xData = [NSMutableArray array];
@@ -13044,48 +13047,69 @@ int i,j,l;
 			
 			if( attr && [[attr values] objectAtIndex: 0])
 			{
-				[sortingArray addObject: [[attr values] objectAtIndex: 0]];
+				if( [[[attr values] objectAtIndex: 0] isKindOfClass: [NSString class]])
+				{
+					NSString *s = [[attr values] objectAtIndex: 0];
+					
+					BOOL dot = NO;
+					BOOL onlyNumber = YES;
+					
+					for( int z = 0; z < [s length]; z++)
+					{
+						unichar c = [s characterAtIndex: z];
+						
+						if( c == '.')
+						{
+							if( dot == NO) dot = YES;
+							else onlyNumber = NO;
+						}
+						else if( c >= '0' && c <= '9') onlyNumber = onlyNumber;
+						else if( c == '-') onlyNumber = onlyNumber;
+						else onlyNumber = NO;
+					}
+					
+					if( onlyNumber)
+					{
+						[sortingArray addObject: [NSNumber numberWithFloat: [s floatValue]]];
+					}
+					else [sortingArray addObject: s];
+				}
+				else
+					[sortingArray addObject: [[attr values] objectAtIndex: 0]];
 			}
 			else [sortingArray addObject: [NSNumber numberWithInt: 0]];
 		}
 		
 		NSArray *sortedArray = [sortingArray sortedArrayUsingSelector: @selector(compare:)];
 		
+		// Create the new series
+		
 		NSMutableArray *newPixList = [NSMutableArray array];
 		NSMutableArray *newDcmList = [NSMutableArray array];
 		
-		// HERE : HANDLE NON SAME SIZE IMAGES
-		int size = sizeof(float) * [[pixList[ i] lastObject] pwidth] * [[pixList[ i] lastObject] pheight] * [pixList[ i] count];
+		float *seriesData = (float*) malloc( [volumeData[ i] length]);
+		if( seriesData == 0L) return NO;
 		
-		//float *emptyData = malloc( size);
-		//if( emptyData)
+		NSData *newData = [NSData dataWithBytesNoCopy: seriesData length:[volumeData[ i] length] freeWhenDone: YES];
+		
+		for( int x = 0, size = 0; x < [pixList[ i] count]; x++)
 		{
-			NSData *newData = [NSData dataWithData: volumeData[ i]];
+			int oldIndex = [sortingArray indexOfObjectIdenticalTo: [sortedArray objectAtIndex: x]];
+			DCMPix *p = [pixList[ i] objectAtIndex: oldIndex];
 			
-			float *emptyData = [newData bytes];
+			DCMPix *newPix = [[p copy] autorelease];
 			
+			[newPix setfImage: seriesData + size];
+			memcpy( seriesData + size, [p fImage],  [p pwidth] * [p pheight] * sizeof( float));
+			size += [p pwidth] * [p pheight];
 			
-			if( emptyData != volumeData[ i]) NSLog( @"WARNING !!!!!!");
-			
-			for( int x = 0; x < [pixList[ i] count]; x++)
-			{
-				int oldIndex = [sortingArray indexOfObject: [sortedArray objectAtIndex: x]];
-				
-				[[pixList[ i] objectAtIndex: oldIndex] kill8bitsImage];
-				[[pixList[ i] objectAtIndex: oldIndex] revert];
-				
-				DCMPix *newPix = [[[pixList[ i] objectAtIndex: oldIndex] copy] autorelease];
-				
-				[newPix setfImage: (float*) (emptyData + ([[pixList[ i] lastObject] pwidth] * [[pixList[ i] lastObject] pheight]) * x)];
-				
-				[newPixList addObject: newPix];
-				[newDcmList addObject: [fileList[ i] objectAtIndex: oldIndex]];
-			}
-			
-			[xPix addObject: newPixList];
-			[xFiles addObject: newDcmList];
-			[xData addObject: newData];
+			[newPixList addObject: newPix];
+			[newDcmList addObject: [fileList[ i] objectAtIndex: oldIndex]];
 		}
+		
+		[xPix addObject: newPixList];
+		[xFiles addObject: newDcmList];
+		[xData addObject: newData];
 	}
 	
 	// Replace the current series with the new series
@@ -13104,12 +13128,14 @@ int i,j,l;
 	[self computeInterval];
 	[self setWindowTitle:self];
 	
-//	if( wasDataFlipped) [self flipDataSeries: self];
-	
 	[imageView setIndex: 0];
 	[imageView sendSyncMessage:1];
 	
 	[self adjustSlider];
+	
+	postprocessed = YES;
+	
+	return YES;
 }
 
 -(IBAction) setPagesToPrint:(id) sender
@@ -17180,7 +17206,7 @@ long i;
 		
 		return;
 	}
-
+	
 	[self executeRevert];
 }
 

@@ -10079,6 +10079,8 @@ END_CREATE_ROIS:
 	fImage = 0L;
 	
 	[checking unlock];
+	
+	[self reloadAnnotations];
 }
 
 - (void)dealloc

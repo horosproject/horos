@@ -36,6 +36,7 @@ static BOOL showWarning = YES;
 @implementation XMLController
 
 @synthesize imObj;
+@synthesize viewer;
 
 - (NSString*) getPath:(NSXMLElement*) node
 {
@@ -359,7 +360,7 @@ static BOOL showWarning = YES;
     [self setupToolbar];
 }
 
-+ (XMLController*) windowForImage: (NSManagedObject*) image
++ (XMLController*) windowForViewer: (ViewerController*) v
 {
 	// Check if we have already a window displaying this ManagedObject
 	
@@ -370,12 +371,63 @@ static BOOL showWarning = YES;
 	{
 		if( [[w windowController] isKindOfClass:[XMLController class]])
 		{
-			if( [[w windowController] imObj] == image)
+			if( [[w windowController] viewer] == v)
 				return [w windowController];
 		}
 	}
 	
 	return 0L;
+}
+
+- (void) changeImageObject:(NSManagedObject*) image
+{
+	if( image == imObj) return;
+	
+	[table deselectAll: self];
+	
+	[imObj release];
+	imObj = [image retain];
+	
+	[srcFile release];
+	srcFile = [[image valueForKey:@"completePath"] retain];
+	
+	[xmlDocument release];
+	xmlDocument = 0L;
+	
+	if([DicomFile isDICOMFile:srcFile])
+	{
+		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+		xmlDocument = [[dcmObject xmlDocument] retain];
+		
+		isDICOM = YES;
+	}
+	else if([DicomFile isFVTiffFile:srcFile])
+	{
+		xmlDocument = XML_from_FVTiff(srcFile);
+	}
+	else if([DicomFile isNIfTIFile:srcFile])
+	{
+		xmlDocument = [[DicomFile getNIfTIXML:srcFile] retain];
+	}
+	else
+	{
+		NSXMLElement *rootElement = [[NSXMLElement alloc] initWithName:@"Unsupported Meta-Data"];
+		xmlDocument = [[NSXMLDocument alloc] initWithRootElement:rootElement];
+		[rootElement release];
+	}
+	
+	[table reloadData];
+	[table expandItem:[table itemAtRow:0] expandChildren:NO];
+}
+
+- (void)refresh:(NSNotification*) notif;
+{
+	DCMView *view = [notif object];
+	
+	if( dontListenToIndexChange) return;
+	
+	if( [view is2DViewer] && [view windowController] == viewer)
+		[self changeImageObject: [viewer currentImage]];
 }
 
 -(id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name viewer:(ViewerController*) v
@@ -387,38 +439,12 @@ static BOOL showWarning = YES;
 		
 		viewer = [v retain];
 		
+		[self changeImageObject: image];
+		
 		[[self window] setTitle:name];
 		[[self window] setFrameAutosaveName:@"XMLWindow"];
 		[[self window] setDelegate:self];
 		
-		imObj = [image retain];
-		srcFile = [[image valueForKey:@"completePath"] retain];
-		
-		if([DicomFile isDICOMFile:srcFile])
-		{
-			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-			xmlDocument = [[dcmObject xmlDocument] retain];
-			
-			isDICOM = YES;
-		}
-		else if([DicomFile isFVTiffFile:srcFile])
-		{
-/*			NSXMLElement *rootElement = [[NSXMLElement alloc] initWithName:@"FVTiffFile"];
-			xmlDocument = [[NSXMLDocument alloc] initWithRootElement:rootElement];
-			[rootElement release];*/
-			xmlDocument = XML_from_FVTiff(srcFile);
-		}
-		else if([DicomFile isNIfTIFile:srcFile])
-		{
-			xmlDocument = [[DicomFile getNIfTIXML:srcFile] retain];
-		}
-		else
-		{
-			NSXMLElement *rootElement = [[NSXMLElement alloc] initWithName:@"Unsupported Meta-Data"];
-			xmlDocument = [[NSXMLDocument alloc] initWithRootElement:rootElement];
-			[rootElement release];
-		}
-		[table reloadData];
 		[table expandItem:[table itemAtRow:0] expandChildren:NO];
 		
 		[search setRecentsAutosaveName:@"xml meta data search"];
@@ -428,6 +454,7 @@ static BOOL showWarning = YES;
 		dictionaryArray = [[NSMutableArray array] retain];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(CloseViewerNotification:) name: @"CloseViewerNotification" object: nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(refresh:) name:@"DCMViewIndexChanged" object:nil];
 	}
 	return self;
 }
@@ -776,12 +803,14 @@ static BOOL showWarning = YES;
 	{
 		unsigned gr = 0, el = 0;
 		
+		dontListenToIndexChange = YES;
+		
 		@try
 		{		
 			[[NSScanner scannerWithString: [[item attributeForName:@"group"] objectValue]] scanHexInt:&gr];
 			[[NSScanner scannerWithString: [[item attributeForName:@"element"] objectValue]] scanHexInt:&el];
 			
-			if( gr > 0 && el > 0)
+			if( gr > 0 && el >= 0)
 			{
 				NSLog( @"Sort by 0x%04X / 0x%04X", gr, el);
 				[viewer sortSeriesByDICOMGroup: gr element: el];
@@ -793,6 +822,8 @@ static BOOL showWarning = YES;
 			NSLog( @"%@", e);
 			NSRunAlertPanel( NSLocalizedString( @"Sort Images Series", 0L) , NSLocalizedString( @"Select an element to use to sort the images of the series.", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
 		}
+		
+		dontListenToIndexChange = NO;
 	}
 	else NSRunAlertPanel( NSLocalizedString( @"Sort Images Series", 0L) , NSLocalizedString( @"Select an element to use to sort the images of the series.", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
 }

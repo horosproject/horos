@@ -46,10 +46,13 @@
 	IBOutlet NSWindow			*addWindow;
 	IBOutlet NSComboBox			*dicomFieldsCombo;
 	IBOutlet NSTextField		*addGroup, *addElement, *addValue;
+	
+	BOOL						dontListenToIndexChange;
 }
 
-+ (XMLController*) windowForImage: (NSManagedObject*) image;
++ (XMLController*) windowForViewer: (ViewerController*) v;
 
+- (void) changeImageObject:(NSManagedObject*) image;
 - (id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name viewer:(ViewerController*) v;
 - (void) setupToolbar;
 
@@ -72,5 +75,6 @@
 - (void) traverse: (NSXMLNode*) node string:(NSMutableString*) string;
 
 @property(readonly) NSManagedObject *imObj;
+@property(readonly) ViewerController *viewer;
 
 @end
