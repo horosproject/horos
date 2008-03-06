@@ -3580,6 +3580,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		break;
 		
 		case tText:
+		{
 			if((mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing) && highlightIfSelected)
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
@@ -3626,10 +3627,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glDisable (GL_TEXTURE_RECTANGLE_EXT);
 			
 			glColor3f (1.0f, 1.0f, 1.0f);
+		}
 		break;
 		
 		case tMesure:
 		case tArrow:
+		{
 			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 			
 			glLineWidth(thickness);
@@ -3813,9 +3816,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				}
 				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 			}
+		}
 		break;
 		
 		case tROI:
+		{
 			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 			glLineWidth(thickness);
 			glBegin(GL_LINE_LOOP);
@@ -3877,6 +3882,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 				}
 			}
+		}
 		break;
 		
 		case tOval:
@@ -3966,6 +3972,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		break;
 		//JJCP
 		case tAxis:
+		{
 			//NSLog(@"JJCP--	Plot of ROI tAxis");
 			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 			
@@ -4180,9 +4187,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}			
 			glLineWidth(1.0);
 			glColor3f (1.0f, 1.0f, 1.0f);			
-			break;
+		}
+		break;
 			//JJCP
 		case tDynAngle:
+		{
 			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 			
 			if( mode == ROI_drawing) 
@@ -4318,12 +4327,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			glLineWidth(1.0);
 			glColor3f (1.0f, 1.0f, 1.0f);
+		}
 		break;
 			
 		case tCPolygon:
 		case tOPolygon:
 		case tAngle:
 		case tPencil:
+		{
 			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 			
 			if( mode == ROI_drawing) glLineWidth(thickness * 2);
@@ -4494,6 +4505,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			glLineWidth(1.0);
 			glColor3f (1.0f, 1.0f, 1.0f);
+		}
 		break;
 		
 	}

@@ -484,7 +484,7 @@ static float deg2rad = 3.14159265358979/180.0;
 				glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 				
 				if([r type]!=tText)
-					[r drawROIWithScaleValue:1.0/(zoomFactor*sizeFactor) offsetX:offset.x+pix.pwidth/2.0 offsetY:(offset.y+pix.pheight/2.0)*[pix pixelRatio] pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0];
+					[r drawROIWithScaleValue:1.0/(zoomFactor*sizeFactor) offsetX:offset.x+pix.pwidth/2.0 offsetY:(offset.y+pix.pheight/2.0) pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0];
 			}
 			glDisable(GL_SCISSOR_TEST);
 			
