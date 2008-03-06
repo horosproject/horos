@@ -413,25 +413,25 @@ static float deg2rad = 3.14159265358979/180.0;
 				// draw texture
 				glBegin(GL_QUAD_STRIP);
 					pt = texUpperLeft;
-					pt.x += offset.x;	pt.y += offset.y;
+					pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
 					rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
 					glTexCoord2f(rotPt.x, rotPt.y);
 					glVertex2f(upperLeft.x, upperLeft.y);
 					
 					pt = texUpperRight;
-					pt.x += offset.x;	pt.y += offset.y;
+					pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
 					rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
 					glTexCoord2f(rotPt.x, rotPt.y);
 					glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y);
 
 					pt = texLowerLeft;
-					pt.x += offset.x;	pt.y += offset.y;
+					pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
 					rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
 					glTexCoord2f(rotPt.x, rotPt.y);
 					glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
 
 					pt = texLowerRight;
-					pt.x += offset.x;	pt.y += offset.y;
+					pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
 					rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
 					glTexCoord2f(rotPt.x, rotPt.y);
 					glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight);
