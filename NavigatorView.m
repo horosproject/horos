@@ -479,13 +479,17 @@ static float deg2rad = 3.14159265358979/180.0;
 			glTranslatef(thumbnailWidth/2.0, thumbnailHeight/2.0, 0.0);
 			glRotatef (-rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
 			
+			if([pix pixelRatio]!=1.0) glScalef( 1.0, [pix pixelRatio], 1.0);
+
 			for( ROI *r in rois)
 			{
 				glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 				
 				if([r type]!=tText)
-					[r drawROIWithScaleValue:1.0/(zoomFactor*sizeFactor) offsetX:offset.x+pix.pwidth/2.0 offsetY:(offset.y+pix.pheight/2.0) pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0];
+					[r drawROIWithScaleValue:1.0/(zoomFactor*sizeFactor) offsetX:offset.x+pix.pwidth/2.0 offsetY:offset.y/[pix pixelRatio]+pix.pheight/2.0 pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0];
 			}
+			
+			if([pix pixelRatio]!=1.0) glScalef(1.0, 1.0/[pix pixelRatio], 1.0);
 			glDisable(GL_SCISSOR_TEST);
 			
 			glRotatef (rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
