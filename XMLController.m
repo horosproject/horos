@@ -39,6 +39,11 @@ static BOOL showWarning = YES;
 @synthesize imObj;
 @synthesize viewer;
 
+- (void) refreshToolbar
+{
+
+}
+
 - (id) imageView
 {
 	return 0L;
@@ -518,6 +523,12 @@ static BOOL showWarning = YES;
 	[toolbar release];
 	
     [super dealloc];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+	{
+		[NSObject cancelPreviousPerformRequestsWithTarget: [AppController sharedAppController] selector:@selector(tileWindows:) object:0L];
+		[[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
+	}
 }
 
 - (void)windowWillClose:(NSNotification *)notification
