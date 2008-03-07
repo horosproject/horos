@@ -376,7 +376,6 @@ static float deg2rad = 3.14159265358979/180.0;
 				
 				if( textureId >= 0)
 				{
-					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureId);
 				
 					DCMPix *pix = [pixList objectAtIndex:correctedZ];
 					
@@ -390,55 +389,54 @@ static float deg2rad = 3.14159265358979/180.0;
 					texLowerRight.x = pix.pwidth;
 					texLowerRight.y = pix.pheight;// *[pix pixelRatio];
 					
-					NSPoint centerPoint;
-					centerPoint.x = (texUpperLeft.x+texLowerRight.x)/2.0;
-					centerPoint.y = (texUpperLeft.y+texLowerRight.y)/2.0;
-									
-					NSPoint translate;
-					translate.x = (offset.x);
-					translate.y = (offset.y);
-					translate = [self rotatePoint:translate aroundPoint:NSMakePoint(0, 0) angle:rotationAngle];
+					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureId);
 
-					// zoomed texture
-					texUpperLeft = [self zoomPoint:texUpperLeft withCenter:centerPoint factor:zoomFactor];
-					texUpperRight = [self zoomPoint:texUpperRight withCenter:centerPoint factor:zoomFactor];
-					texLowerLeft = [self zoomPoint:texLowerLeft withCenter:centerPoint factor:zoomFactor];
-					texLowerRight = [self zoomPoint:texLowerRight withCenter:centerPoint factor:zoomFactor];
+					glScissor( upperLeft.x, viewSize.height - (upperLeft.y+thumbnailHeight), thumbnailWidth, thumbnailHeight);
+					glEnable(GL_SCISSOR_TEST);
 					
-					centerPoint.x = (texUpperLeft.x+texLowerRight.x)/2.0;
-					centerPoint.y = (texUpperLeft.y+texLowerRight.y)/2.0;
-					NSPoint modifiedCenter;
-					modifiedCenter.x = centerPoint.x + offset.x;
-					modifiedCenter.y = centerPoint.y + offset.y;
-					
-					NSPoint pt, rotPt;
-					// draw texture
-					glBegin(GL_QUAD_STRIP);
-						pt = texUpperLeft;
-						pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
-						rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
-						glTexCoord2f(rotPt.x, rotPt.y);
-						glVertex2f(upperLeft.x, upperLeft.y);
+					glTranslatef(upperLeft.x, upperLeft.y, 0.0);
+					glTranslatef(thumbnailWidth/2.0, thumbnailHeight/2.0, 0.0);
+					glRotatef(-rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
+					glScalef(1.0/zoomFactor, 1.0/zoomFactor, 1.0);
+					glTranslatef(-thumbnailWidth/2.0, -thumbnailHeight/2.0, 0.0);
+					glTranslatef(-upperLeft.x, -upperLeft.y, 0.0);
+							
+					glTranslatef(-offset.x/sizeFactor, -offset.y/sizeFactor, 0.0);
+							
+					//if([pix pixelRatio]!=1.0) glScalef( 1.0, [pix pixelRatio], 1.0);
+						// draw texture
+						glBegin(GL_QUAD_STRIP);
+							glTexCoord2f(texUpperLeft.x, texUpperLeft.y);
+							glVertex2f(upperLeft.x, upperLeft.y);
+							
+							glTexCoord2f(texUpperRight.x, texUpperRight.y);
+							glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y);
+
+							
+							glTexCoord2f(texLowerLeft.x, texLowerLeft.y);
+							glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
 						
-						pt = texUpperRight;
-						pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
-						rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
-						glTexCoord2f(rotPt.x, rotPt.y);
-						glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y);
+							glTexCoord2f(texLowerRight.x, texLowerRight.y);
+							glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight);					
+						glEnd();
+						
+					glDisable(GL_SCISSOR_TEST);
+					
+					
+					//if([pix pixelRatio]!=1.0) glScalef(1.0, 1.0/[pix pixelRatio], 1.0);
+					
+					glTranslatef(offset.x/sizeFactor, offset.y/sizeFactor, 0.0);
+					
+					
+					glTranslatef(upperLeft.x, upperLeft.y, 0.0);
+					glTranslatef(thumbnailWidth/2.0, thumbnailHeight/2.0, 0.0);
+					glScalef(zoomFactor, zoomFactor, 1.0);
+					glRotatef (rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
+					glTranslatef(-thumbnailWidth/2.0, -thumbnailHeight/2.0, 0.0);
+					glTranslatef(-upperLeft.x, -(upperLeft.y), 0.0);
 
-						pt = texLowerLeft;
-						pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
-						rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
-						glTexCoord2f(rotPt.x, rotPt.y);
-						glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
-
-						pt = texLowerRight;
-						pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
-						rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
-						glTexCoord2f(rotPt.x, rotPt.y);
-						glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight);
-					glEnd();
 				}
+
 			}
 			else
 			{
@@ -476,12 +474,16 @@ static float deg2rad = 3.14159265358979/180.0;
 			glEnable(GL_SCISSOR_TEST);
 	
 			NSArray *rois = [roiList objectAtIndex:correctedZ];
-			
+
 			glTranslatef(upperLeft.x, upperLeft.y, 0.0);
-			
+
 			glTranslatef(thumbnailWidth/2.0, thumbnailHeight/2.0, 0.0);
+
+			
+
 			glRotatef (-rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
 			
+
 			if([pix pixelRatio]!=1.0) glScalef( 1.0, [pix pixelRatio], 1.0);
 
 			for( ROI *r in rois)
@@ -492,12 +494,17 @@ static float deg2rad = 3.14159265358979/180.0;
 					[r drawROIWithScaleValue:1.0/(zoomFactor*sizeFactor) offsetX:offset.x+pix.pwidth/2.0 offsetY:offset.y/[pix pixelRatio]+pix.pheight/2.0 pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0];
 			}
 			
-			if([pix pixelRatio]!=1.0) glScalef(1.0, 1.0/[pix pixelRatio], 1.0);
 			glDisable(GL_SCISSOR_TEST);
 			
-			glRotatef (rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
-			glTranslatef(-thumbnailWidth/2.0, -thumbnailHeight/2.0, 0.0);
+			if([pix pixelRatio]!=1.0) glScalef(1.0, 1.0/[pix pixelRatio], 1.0);
 			
+			
+			glRotatef (rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
+			
+			
+			
+			glTranslatef(-thumbnailWidth/2.0, -thumbnailHeight/2.0, 0.0);
+
 			glTranslatef(-upperLeft.x, -(upperLeft.y), 0.0);
 		}
 	}
