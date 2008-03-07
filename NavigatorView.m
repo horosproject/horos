@@ -211,7 +211,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	}
 }
 
-- (void)generateTextureForSlice:(int)z movieIndex:(int)t arrayIndex:(int)i;
+- (GLuint) generateTextureForSlice:(int)z movieIndex:(int)t arrayIndex:(int)i;
 {
 	if(!thumbnailsTextureArray || i>=[thumbnailsTextureArray count]) [self initTextureArray];
 	
@@ -220,7 +220,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	DCMPix *pix = [pixList objectAtIndex:z];
 	
 	if(![[isTextureWLWWUpdated objectAtIndex:i] boolValue]) [pix changeWLWW:wl :ww];
-	else return;
+	else return [[thumbnailsTextureArray objectAtIndex:i] intValue];
 	
 	[[self openGLContext] makeCurrentContext];
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -228,11 +228,11 @@ static float deg2rad = 3.14159265358979/180.0;
 	[isTextureWLWWUpdated replaceObjectAtIndex:i withObject:[NSNumber numberWithBool:YES]];	
 	
 	char* textureBuffer = [pix baseAddr];
-			
+	
+	GLuint textureName = -1;
+	
 	if( textureBuffer)
 	{
-		GLuint textureName = 0L;
-		
 		glTextureRangeAPPLE(GL_TEXTURE_RECTANGLE_EXT, [pix pwidth]*[pix pheight]*4, textureBuffer);
 		
 		glGenTextures(1, &textureName);
@@ -250,16 +250,17 @@ static float deg2rad = 3.14159265358979/180.0;
 
 		glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_INTENSITY8, [pix pwidth], [pix pheight], 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, textureBuffer);
 		
-		//[thumbnailsTextureArray addObject:[NSNumber numberWithInt:textureName]];
-		if([[thumbnailsTextureArray objectAtIndex:i] intValue]>=0)
+		if([[thumbnailsTextureArray objectAtIndex:i] intValue] >= 0)
 		{
 			GLuint oldTextureName = [[thumbnailsTextureArray objectAtIndex:i] intValue];
 			glDeleteTextures(1, &oldTextureName);
 		}
 		[thumbnailsTextureArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInt:textureName]];
 	}
-//	else
-//		[thumbnailsTextureArray replaceObjectAtIndex:z*[pixList count]+t withObject:[NSNumber numberWithInt:-1]];
+	else
+		[thumbnailsTextureArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInt:-1]];
+		
+	return textureName;
 }
 
 - (void)computeThumbnailSize;
@@ -371,70 +372,73 @@ static float deg2rad = 3.14159265358979/180.0;
 			{
 				int correctedZ = (flippedData) ? [pixList count]-z-1 : z ;
 				
-				[self generateTextureForSlice:correctedZ movieIndex:t arrayIndex:i];
-								
-				glBindTexture(GL_TEXTURE_RECTANGLE_EXT, [(NSNumber*)[thumbnailsTextureArray objectAtIndex:i] intValue]);
-			
-				DCMPix *pix = [pixList objectAtIndex:correctedZ];
+				GLuint textureId = [self generateTextureForSlice:correctedZ movieIndex:t arrayIndex:i];
 				
-				NSPoint texUpperLeft, texUpperRight, texLowerLeft, texLowerRight;
-				texUpperLeft.x = 0.0;
-				texUpperLeft.y = 0.0;
-				texUpperRight.x = pix.pwidth;
-				texUpperRight.y = 0.0;
-				texLowerLeft.x = 0.0;
-				texLowerLeft.y = pix.pheight;// *[pix pixelRatio];
-				texLowerRight.x = pix.pwidth;
-				texLowerRight.y = pix.pheight;// *[pix pixelRatio];
+				if( textureId >= 0)
+				{
+					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureId);
 				
-				NSPoint centerPoint;
-				centerPoint.x = (texUpperLeft.x+texLowerRight.x)/2.0;
-				centerPoint.y = (texUpperLeft.y+texLowerRight.y)/2.0;
-								
-				NSPoint translate;
-				translate.x = (offset.x);
-				translate.y = (offset.y);
-				translate = [self rotatePoint:translate aroundPoint:NSMakePoint(0, 0) angle:rotationAngle];
-
-				// zoomed texture
-				texUpperLeft = [self zoomPoint:texUpperLeft withCenter:centerPoint factor:zoomFactor];
-				texUpperRight = [self zoomPoint:texUpperRight withCenter:centerPoint factor:zoomFactor];
-				texLowerLeft = [self zoomPoint:texLowerLeft withCenter:centerPoint factor:zoomFactor];
-				texLowerRight = [self zoomPoint:texLowerRight withCenter:centerPoint factor:zoomFactor];
-				
-				centerPoint.x = (texUpperLeft.x+texLowerRight.x)/2.0;
-				centerPoint.y = (texUpperLeft.y+texLowerRight.y)/2.0;
-				NSPoint modifiedCenter;
-				modifiedCenter.x = centerPoint.x + offset.x;
-				modifiedCenter.y = centerPoint.y + offset.y;
-				
-				NSPoint pt, rotPt;
-				// draw texture
-				glBegin(GL_QUAD_STRIP);
-					pt = texUpperLeft;
-					pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
-					rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
-					glTexCoord2f(rotPt.x, rotPt.y);
-					glVertex2f(upperLeft.x, upperLeft.y);
+					DCMPix *pix = [pixList objectAtIndex:correctedZ];
 					
-					pt = texUpperRight;
-					pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
-					rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
-					glTexCoord2f(rotPt.x, rotPt.y);
-					glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y);
+					NSPoint texUpperLeft, texUpperRight, texLowerLeft, texLowerRight;
+					texUpperLeft.x = 0.0;
+					texUpperLeft.y = 0.0;
+					texUpperRight.x = pix.pwidth;
+					texUpperRight.y = 0.0;
+					texLowerLeft.x = 0.0;
+					texLowerLeft.y = pix.pheight;// *[pix pixelRatio];
+					texLowerRight.x = pix.pwidth;
+					texLowerRight.y = pix.pheight;// *[pix pixelRatio];
+					
+					NSPoint centerPoint;
+					centerPoint.x = (texUpperLeft.x+texLowerRight.x)/2.0;
+					centerPoint.y = (texUpperLeft.y+texLowerRight.y)/2.0;
+									
+					NSPoint translate;
+					translate.x = (offset.x);
+					translate.y = (offset.y);
+					translate = [self rotatePoint:translate aroundPoint:NSMakePoint(0, 0) angle:rotationAngle];
 
-					pt = texLowerLeft;
-					pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
-					rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
-					glTexCoord2f(rotPt.x, rotPt.y);
-					glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
+					// zoomed texture
+					texUpperLeft = [self zoomPoint:texUpperLeft withCenter:centerPoint factor:zoomFactor];
+					texUpperRight = [self zoomPoint:texUpperRight withCenter:centerPoint factor:zoomFactor];
+					texLowerLeft = [self zoomPoint:texLowerLeft withCenter:centerPoint factor:zoomFactor];
+					texLowerRight = [self zoomPoint:texLowerRight withCenter:centerPoint factor:zoomFactor];
+					
+					centerPoint.x = (texUpperLeft.x+texLowerRight.x)/2.0;
+					centerPoint.y = (texUpperLeft.y+texLowerRight.y)/2.0;
+					NSPoint modifiedCenter;
+					modifiedCenter.x = centerPoint.x + offset.x;
+					modifiedCenter.y = centerPoint.y + offset.y;
+					
+					NSPoint pt, rotPt;
+					// draw texture
+					glBegin(GL_QUAD_STRIP);
+						pt = texUpperLeft;
+						pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
+						rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
+						glTexCoord2f(rotPt.x, rotPt.y);
+						glVertex2f(upperLeft.x, upperLeft.y);
+						
+						pt = texUpperRight;
+						pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
+						rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
+						glTexCoord2f(rotPt.x, rotPt.y);
+						glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y);
 
-					pt = texLowerRight;
-					pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
-					rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
-					glTexCoord2f(rotPt.x, rotPt.y);
-					glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight);
-				glEnd();
+						pt = texLowerLeft;
+						pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
+						rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
+						glTexCoord2f(rotPt.x, rotPt.y);
+						glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
+
+						pt = texLowerRight;
+						pt.x += offset.x;	pt.y += offset.y/[pix pixelRatio];
+						rotPt = [self rotatePoint:pt aroundPoint:modifiedCenter angle:rotationAngle];
+						glTexCoord2f(rotPt.x, rotPt.y);
+						glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight);
+					glEnd();
+				}
 			}
 			else
 			{

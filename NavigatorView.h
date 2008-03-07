@@ -75,7 +75,7 @@ typedef enum
 * @param t number of the movie frame (for 4D data set).
 * @param i index of the texture in the texture array.
 */
-- (void)generateTextureForSlice:(int)z movieIndex:(int)t arrayIndex:(int)i;
+- (GLuint)generateTextureForSlice:(int)z movieIndex:(int)t arrayIndex:(int)i;
 
 /**  Computes the size of the images in the Navigator.*/
 - (void)computeThumbnailSize;
