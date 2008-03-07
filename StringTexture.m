@@ -20,7 +20,7 @@
 {
 	NSOpenGLContext *c = [NSOpenGLContext currentContext];
 	
-	NSUInteger index = [ctxArray indexOfObject: c];
+	NSUInteger index = [ctxArray indexOfObjectIdenticalTo: c];
 	
 	if( c && index != NSNotFound)
 	{
@@ -37,7 +37,7 @@
 
 - (void) deleteTexture:(NSOpenGLContext*) c
 {
-	NSUInteger index = [ctxArray indexOfObject: c];
+	NSUInteger index = [ctxArray indexOfObjectIdenticalTo: c];
 	
 	if( c && index != NSNotFound)
 	{
@@ -94,8 +94,7 @@
 
 - (void) dealloc
 {
-	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
-	if( [ctxArray count]) NSLog( @"***** StringTexture - ctxArray is NOT EMPTY");
+	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	[ctxArray release];
 	[textArray release];
 	
@@ -221,7 +220,7 @@
 {
 	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
 	GLuint texName = 0L;
-	NSUInteger index = [ctxArray indexOfObject: currentContext];
+	NSUInteger index = [ctxArray indexOfObjectIdenticalTo: currentContext];
 	if( index != NSNotFound)
 		texName = [[textArray objectAtIndex: index] intValue];
 	
@@ -302,7 +301,7 @@
 {
 	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
 	GLuint texName = 0L;
-	NSUInteger index = [ctxArray indexOfObject: currentContext];
+	NSUInteger index = [ctxArray indexOfObjectIdenticalTo: currentContext];
 	if( index != NSNotFound)
 		texName = [[textArray objectAtIndex: index] intValue];
 	
@@ -323,7 +322,7 @@
 // these will force the texture to be regenerated at the next draw
 - (void) setMargins:(NSSize)size // set offset size and size to fit with offset
 {
-	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	marginSize = size;
 	if (NO == staticFrame) { // ensure dynamic frame sizes will be recalculated
 		frameSize.width = 0.0f;
@@ -334,7 +333,7 @@
 
 - (void) useStaticFrame:(NSSize)size // set static frame size and size to frame
 {
-	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	frameSize = size;
 	staticFrame = YES;
 	[self genTexture];
@@ -344,7 +343,7 @@
 {
 	if (staticFrame)
 	{ // set to dynamic frame and set to regen texture
-		for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+		while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 		staticFrame = NO;
 		frameSize.width = 0.0f; // ensure frame sizes will be recalculated
 		frameSize.height = 0.0f;
@@ -354,7 +353,7 @@
 
 - (void) setString:(NSAttributedString *)attributedString // set string after initial creation
 {
-	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	[attributedString retain];
 	[string release];
 	string = attributedString;
@@ -372,7 +371,7 @@
 
 - (void) setTextColor:(NSColor *)color // set default text color
 {
-	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	[color retain];
 	[textColor release];
 	textColor = color;
@@ -381,7 +380,7 @@
 
 - (void) setBoxColor:(NSColor *)color // set default text color
 {
-	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	[color retain];
 	[boxColor release];
 	boxColor = color;
@@ -390,7 +389,7 @@
 
 - (void) setBorderColor:(NSColor *)color // set default text color
 {
-	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	[color retain];
 	[borderColor release];
 	borderColor = color;

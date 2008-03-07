@@ -562,7 +562,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	}
 	else if(type == tLayerROI)
 	{
-		for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+		while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	}
 }
 
@@ -670,7 +670,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 				layerImage = [[NSImage alloc] initWithData: layerImageJPEG];
 //				layerImageWhenSelected = [[NSImage alloc] initWithData: layerImageWhenSelectedJPEG];
 				
-				for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+				while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 				//needsLoadTexture2 = YES;
 			}
 			textualBoxLine1 = [coder decodeObject];
@@ -817,7 +817,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (void) deleteTexture:(NSOpenGLContext*) c
 {
-	NSUInteger index = [ctxArray indexOfObject: c];
+	NSUInteger index = [ctxArray indexOfObjectIdenticalTo: c];
 	
 	if( c && index != NSNotFound)
 	{
@@ -836,8 +836,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 {
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:self userInfo: 0L];
 	
-	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];		// lastObject is CORRECT ! we delete objects !
-	if( [ctxArray count]) NSLog( @"****** ctxArray is not empty");
+	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	[ctxArray release];
 	[textArray release];
 	
@@ -1122,7 +1121,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			[textualBoxLine4 retain];
 			[textualBoxLine5 retain];
 			
-			for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+			while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 			//needsLoadTexture2 = NO;
 		}
 		else
@@ -2807,7 +2806,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		if(layerColor) [layerColor release];
 		layerColor = [NSColor colorWithCalibratedRed:color.red/65535.0 green:color.green/65535.0 blue:color.blue/65535.0 alpha:1.0];
 		[layerColor retain];
-		for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+		while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	}
 	else
 	{
@@ -3308,7 +3307,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 //				else
 				{
 					GLuint texName = 0L;
-					NSUInteger index = [ctxArray indexOfObject: currentContext];
+					NSUInteger index = [ctxArray indexOfObjectIdenticalTo: currentContext];
 					if( index != NSNotFound)
 						texName = [[textArray objectAtIndex: index] intValue];
 					
@@ -5094,13 +5093,13 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 - (void)setIsLayerOpacityConstant:(BOOL)boo;
 {
 	isLayerOpacityConstant = boo;
-	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 }
 
 - (void)setCanColorizeLayer:(BOOL)boo;
 {
 	canColorizeLayer = boo;
-	for( int i = 0; i < [ctxArray count]; i++) [self deleteTexture: [ctxArray lastObject]];
+	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 }
 
 - (void)setCanResizeLayer:(BOOL)boo

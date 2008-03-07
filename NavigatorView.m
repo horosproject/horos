@@ -152,6 +152,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[thumbnailsTextureArray release];
 	[isTextureWLWWUpdated release];
+	[previousViewer release];
 	
 	if(scrollTimer)
 	{
@@ -174,7 +175,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	ww = [[self viewer] imageView].curWW;
 	previousImageIndex = -1;
 	previousMovieIndex = -1;
-	previousViewer = [self viewer];
+	[previousViewer release];
+	previousViewer = [[self viewer] retain];
 	[self setNeedsDisplay:YES];
 }
 
@@ -484,7 +486,9 @@ static float deg2rad = 3.14159265358979/180.0;
 					glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 					
 					if([r type]!=tText)
+					{
 						[r drawROIWithScaleValue:1.0/(zoomFactor*sizeFactor) offsetX:offset.x+pix.pwidth/2.0 offsetY:offset.y/[pix pixelRatio]+pix.pheight/2.0 pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0];
+					}
 				}
 				
 				glDisable(GL_SCISSOR_TEST);

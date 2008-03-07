@@ -49,7 +49,8 @@ static NavigatorWindowController *nav = 0L;
 {
 	if( viewerController != viewer)
 	{
-		viewerController = viewer;
+		[viewerController release];
+		viewerController = [viewer retain];
 		[self initView];
 	}
 	[navigatorView setViewer];
@@ -72,7 +73,12 @@ static NavigatorWindowController *nav = 0L;
 
 - (void)closeViewerNotification:(NSNotification*)notif;
 {
-	if([[ViewerController getDisplayed2DViewers] count]==0)
+//	if( [notif object] == viewerController)
+//	{
+//		[self setViewer: 0L];
+//	}
+	
+	if([[ViewerController getDisplayed2DViewers] count] == 0)
 	{
 		[[self window] close];
 	}
@@ -131,6 +137,7 @@ static NavigatorWindowController *nav = 0L;
 	NSLog(@"NavigatorWindowController dealloc");
 	nav = 0L;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[viewerController release];
 	[super dealloc];
 	[[AppController sharedAppController] tileWindows:self];
 }
