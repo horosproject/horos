@@ -421,12 +421,10 @@ static float deg2rad = 3.14159265358979/180.0;
 						glEnd();
 						
 					glDisable(GL_SCISSOR_TEST);
-					
-					
+
 					//if([pix pixelRatio]!=1.0) glScalef(1.0, 1.0/[pix pixelRatio], 1.0);
 					
 					glTranslatef(offset.x/sizeFactor, offset.y/sizeFactor, 0.0);
-					
 					
 					glTranslatef(upperLeft.x, upperLeft.y, 0.0);
 					glTranslatef(thumbnailWidth/2.0, thumbnailHeight/2.0, 0.0);
@@ -434,9 +432,7 @@ static float deg2rad = 3.14159265358979/180.0;
 					glRotatef (rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
 					glTranslatef(-thumbnailWidth/2.0, -thumbnailHeight/2.0, 0.0);
 					glTranslatef(-upperLeft.x, -(upperLeft.y), 0.0);
-
 				}
-
 			}
 			else
 			{
@@ -455,57 +451,49 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	glDisable(GL_TEXTURE_RECTANGLE_EXT);
 	
-	for(int t=0; t<[[self viewer] maxMovieIndex]; t++)
+	if([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] > annotNone)
 	{
-		NSMutableArray *pixList = [[self viewer] pixList:t];
-		NSMutableArray *roiList = [[self viewer] roiList:t];
-		
-		BOOL flippedData = [[[self viewer] imageView] flippedData];
-				
-		for(int z=0; z<[pixList count]; z++)
+		for(int t=0; t<[[self viewer] maxMovieIndex]; t++)
 		{
-			int correctedZ = (flippedData) ? [pixList count]-z-1 : z ;
-			DCMPix *pix = [pixList objectAtIndex:correctedZ];
+			NSMutableArray *pixList = [[self viewer] pixList:t];
+			NSMutableArray *roiList = [[self viewer] roiList:t];
 			
-//			upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, ([[self viewer] maxMovieIndex]-t-1)*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
-			upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
-			
-			glScissor( upperLeft.x, viewSize.height - (upperLeft.y+thumbnailHeight), thumbnailWidth, thumbnailHeight);
-			glEnable(GL_SCISSOR_TEST);
-	
-			NSArray *rois = [roiList objectAtIndex:correctedZ];
-
-			glTranslatef(upperLeft.x, upperLeft.y, 0.0);
-
-			glTranslatef(thumbnailWidth/2.0, thumbnailHeight/2.0, 0.0);
-
-			
-
-			glRotatef (-rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
-			
-
-			if([pix pixelRatio]!=1.0) glScalef( 1.0, [pix pixelRatio], 1.0);
-
-			for( ROI *r in rois)
+			BOOL flippedData = [[[self viewer] imageView] flippedData];
+					
+			for(int z=0; z<[pixList count]; z++)
 			{
-				glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+				int correctedZ = (flippedData) ? [pixList count]-z-1 : z ;
+				DCMPix *pix = [pixList objectAtIndex:correctedZ];
 				
-				if([r type]!=tText)
-					[r drawROIWithScaleValue:1.0/(zoomFactor*sizeFactor) offsetX:offset.x+pix.pwidth/2.0 offsetY:offset.y/[pix pixelRatio]+pix.pheight/2.0 pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0];
-			}
-			
-			glDisable(GL_SCISSOR_TEST);
-			
-			if([pix pixelRatio]!=1.0) glScalef(1.0, 1.0/[pix pixelRatio], 1.0);
-			
-			
-			glRotatef (rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
-			
-			
-			
-			glTranslatef(-thumbnailWidth/2.0, -thumbnailHeight/2.0, 0.0);
+	//			upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, ([[self viewer] maxMovieIndex]-t-1)*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
+				upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
+				
+				glScissor( upperLeft.x, viewSize.height - (upperLeft.y+thumbnailHeight), thumbnailWidth, thumbnailHeight);
+				glEnable(GL_SCISSOR_TEST);
+		
+				NSArray *rois = [roiList objectAtIndex:correctedZ];
 
-			glTranslatef(-upperLeft.x, -(upperLeft.y), 0.0);
+				glTranslatef(upperLeft.x, upperLeft.y, 0.0);
+				glTranslatef(thumbnailWidth/2.0, thumbnailHeight/2.0, 0.0);
+				glRotatef (-rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
+				
+				if([pix pixelRatio]!=1.0) glScalef( 1.0, [pix pixelRatio], 1.0);
+
+				for( ROI *r in rois)
+				{
+					glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+					
+					if([r type]!=tText)
+						[r drawROIWithScaleValue:1.0/(zoomFactor*sizeFactor) offsetX:offset.x+pix.pwidth/2.0 offsetY:offset.y/[pix pixelRatio]+pix.pheight/2.0 pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0];
+				}
+				
+				glDisable(GL_SCISSOR_TEST);
+				
+				if([pix pixelRatio]!=1.0) glScalef(1.0, 1.0/[pix pixelRatio], 1.0);
+				glRotatef (rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
+				glTranslatef(-thumbnailWidth/2.0, -thumbnailHeight/2.0, 0.0);
+				glTranslatef(-upperLeft.x, -(upperLeft.y), 0.0);
+			}
 		}
 	}
 

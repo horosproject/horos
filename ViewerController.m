@@ -697,6 +697,7 @@ static int hotKeyToolCrossTable[] =
 - (void) setPostprocessed:(BOOL) v
 {
 	postprocessed = v;
+	[[NavigatorWindowController navigatorWindowController] initView];
 	[self updateNavigator];
 }
 

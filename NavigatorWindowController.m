@@ -52,6 +52,7 @@ static NavigatorWindowController *nav = 0L;
 		viewerController = viewer;
 		[self initView];
 	}
+	[navigatorView setViewer];
 }
 
 - (void)initView;
