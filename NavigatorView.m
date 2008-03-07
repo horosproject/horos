@@ -215,16 +215,15 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if(!thumbnailsTextureArray || i>=[thumbnailsTextureArray count]) [self initTextureArray];
 	
-	[[self openGLContext] makeCurrentContext];
-	
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-
 	NSMutableArray *pixList = [[self viewer] pixList:t];
 	
 	DCMPix *pix = [pixList objectAtIndex:z];
 	
-	if(changeWLWW) [pix changeWLWW:wl :ww];
-	else if(![[isTextureWLWWUpdated objectAtIndex:i] boolValue]) [pix changeWLWW:wl :ww];
+	if(![[isTextureWLWWUpdated objectAtIndex:i] boolValue]) [pix changeWLWW:wl :ww];
+	else return;
+	
+	[[self openGLContext] makeCurrentContext];
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 
 	[isTextureWLWWUpdated replaceObjectAtIndex:i withObject:[NSNumber numberWithBool:YES]];	
 	
@@ -441,9 +440,9 @@ static float deg2rad = 3.14159265358979/180.0;
 			{
 				if(i<[thumbnailsTextureArray count])
 				{
-					GLuint oldTextureName = [[thumbnailsTextureArray objectAtIndex:i] intValue];
-					glDeleteTextures(1, &oldTextureName);
-					[thumbnailsTextureArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInt:-1]];
+//					GLuint oldTextureName = [[thumbnailsTextureArray objectAtIndex:i] intValue];
+//					glDeleteTextures(1, &oldTextureName);
+//					[thumbnailsTextureArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInt:-1]];
 				}
 				else
 					[thumbnailsTextureArray addObject:[NSNumber numberWithInt:-1]];
@@ -675,8 +674,6 @@ static float deg2rad = 3.14159265358979/180.0;
 
 	startWW = ww;
 	startWL = wl;
-
-	changeWLWW = NO;
 	
 	if(scrollLeft && !scrollTimer) scrollTimer = [[NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(scrollLeft:) userInfo:nil repeats:YES] retain];
 	else if(scrollRight && !scrollTimer) scrollTimer = [[NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(scrollRight:) userInfo:nil repeats:YES] retain];
@@ -694,8 +691,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	mouseDownPosition = [self convertPointFromWindowToOpenGL:event_location];	
 
 	userAction = [[self viewer] imageView].currentToolRight;
-
-	changeWLWW = NO;
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent;
@@ -730,8 +725,6 @@ static float deg2rad = 3.14159265358979/180.0;
 		BOOL newWindow = mouseClickedWithCommandKey;
 		[self displaySelectedViewInNewWindow:newWindow];
 	}
-		
-	changeWLWW = NO;
 	
 	userAction = idle;
 	if(scrollTimer)
@@ -813,7 +806,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		ww = pix.ww;
 		wl = pix.wl;
-		changeWLWW = YES;
 		for(int i=0; i<[isTextureWLWWUpdated count]; i++)
 			[isTextureWLWWUpdated replaceObjectAtIndex:i withObject:[NSNumber numberWithBool:NO]];
 		[self display];
@@ -822,10 +814,6 @@ static float deg2rad = 3.14159265358979/180.0;
 		{
 			[[viewer imageView] setWLWW:wl :ww];
 		}
-	}
-	else
-	{
-		changeWLWW = NO;
 	}
 }
 
@@ -862,7 +850,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	ww = startWW + (stop.x -  start.x)*WWAdapter;
 	
 	[[[self viewer] imageView] setWLWW:wl :ww];
-	changeWLWW = YES;
 	for (int i=0; i<[isTextureWLWWUpdated count]; i++)
 		[isTextureWLWWUpdated replaceObjectAtIndex:i withObject:[NSNumber numberWithBool:NO]];
 		
