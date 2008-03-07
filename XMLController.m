@@ -39,9 +39,14 @@ static BOOL showWarning = YES;
 @synthesize imObj;
 @synthesize viewer;
 
+// To be 'compatible' with TileWindows in AppController
+/////////////////////////////////////////////////
+- (void) autoHideMatrix
+{
+}
+
 - (void) refreshToolbar
 {
-
 }
 
 - (id) imageView
@@ -72,6 +77,8 @@ static BOOL showWarning = YES;
 {
 	return [NSArray arrayWithObject: imObj];
 }
+
+/////////////////////////////////////////////////
 
 - (NSString*) getPath:(NSXMLElement*) node
 {
@@ -833,7 +840,7 @@ static BOOL showWarning = YES;
 	
 	if( [selectedRowIndexes count] != 1)
 	{
-		NSRunAlertPanel( NSLocalizedString( @"Sort Images Series", 0L) , NSLocalizedString( @"Select an element to use to sort the images of the series.", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
+		NSRunAlertPanel( NSLocalizedString( @"Sort Series Images", 0L) , NSLocalizedString( @"Select an element to use to sort the images of the series.", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
 		return;
 	}
 	
@@ -842,31 +849,34 @@ static BOOL showWarning = YES;
 	
 	if( index > 0 && item && [[item attributeForName:@"group"] objectValue] && [[item attributeForName:@"element"] objectValue])
 	{
-		unsigned gr = 0, el = 0;
-		
-		dontListenToIndexChange = YES;
-		
-		@try
-		{		
-			[[NSScanner scannerWithString: [[item attributeForName:@"group"] objectValue]] scanHexInt:&gr];
-			[[NSScanner scannerWithString: [[item attributeForName:@"element"] objectValue]] scanHexInt:&el];
-			
-			if( gr > 0 && el >= 0)
-			{
-				NSLog( @"Sort by 0x%04X / 0x%04X", gr, el);
-				[viewer sortSeriesByDICOMGroup: gr element: el];
-			}
-		}
-		
-		@catch( NSException *e)
+		if( NSRunInformationalAlertPanel( NSLocalizedString( @"Sort Series Images", 0L), NSLocalizedString(@"Are you sure you want to re-sort the series images according to this field?", 0L), NSLocalizedString(@"OK", 0L), NSLocalizedString(@"Cancel", 0L), 0L) == NSAlertDefaultReturn)
 		{
-			NSLog( @"%@", e);
-			NSRunAlertPanel( NSLocalizedString( @"Sort Images Series", 0L) , NSLocalizedString( @"Select an element to use to sort the images of the series.", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
+			unsigned gr = 0, el = 0;
+			
+			dontListenToIndexChange = YES;
+			
+			@try
+			{		
+				[[NSScanner scannerWithString: [[item attributeForName:@"group"] objectValue]] scanHexInt:&gr];
+				[[NSScanner scannerWithString: [[item attributeForName:@"element"] objectValue]] scanHexInt:&el];
+				
+				if( gr > 0 && el >= 0)
+				{
+					NSLog( @"Sort by 0x%04X / 0x%04X", gr, el);
+					[viewer sortSeriesByDICOMGroup: gr element: el];
+				}
+			}
+			
+			@catch( NSException *e)
+			{
+				NSLog( @"%@", e);
+				NSRunAlertPanel( NSLocalizedString( @"Sort Series Images", 0L) , NSLocalizedString( @"Select an element to use to sort the images of the series.", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
+			}
+			
+			dontListenToIndexChange = NO;
 		}
-		
-		dontListenToIndexChange = NO;
 	}
-	else NSRunAlertPanel( NSLocalizedString( @"Sort Images Series", 0L) , NSLocalizedString( @"Select an element to use to sort the images of the series.", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
+	else NSRunAlertPanel( NSLocalizedString( @"Sort Series Images", 0L) , NSLocalizedString( @"Select an element to use to sort the images of the series.", 0L), NSLocalizedString( @"OK", 0L), 0L, 0L);
 }
 
 - (void)keyDown:(NSEvent *)event
