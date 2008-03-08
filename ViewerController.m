@@ -1463,20 +1463,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[self checkEverythingLoaded];
 		[self displayWarningIfGantryTitled];
-	
-		BOOL volumicData = YES;
 		
 		int previousFusion = [popFusion selectedTag];
 		int previousFusionActivated = [activatedFusion state];
 		
-		long moviePixWidth = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth];
-		long moviePixHeight = [[pixList[ curMovieIndex] objectAtIndex: 0] pheight];
-		
-		for( int j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
-		{
-			if ( moviePixWidth != [[pixList[ curMovieIndex] objectAtIndex: j] pwidth]) volumicData = NO;
-			if ( moviePixHeight != [[pixList[ curMovieIndex] objectAtIndex: j] pheight]) volumicData = NO;
-		}
+		BOOL volumicData = [self isDataVolumicIn4D: NO];
 		
 		if( volumicData == NO)
 		{
@@ -4835,6 +4826,32 @@ static ViewerController *draggedController = 0L;
 
 #pragma mark-
 #pragma mark 4.1. single viewport
+
+- (BOOL) isDataVolumicIn4D: (BOOL) check4D
+{
+	BOOL volumicData = YES;
+	
+	[self checkEverythingLoaded];
+	
+	for( int x = 0 ; x < maxMovieIndex ; x++)
+	{
+		if( check4D == YES || x == curMovieIndex)
+		{
+			int pw = [[[fileList[ x] objectAtIndex: 0] valueForKey:@"width"] intValue];
+			int ph = [[[fileList[ x] objectAtIndex: 0] valueForKey:@"height"] intValue];
+			int rgb = [[pixList[ x] objectAtIndex: 0] isRGB];
+			
+			for( int j = 0 ; j < [pixList[ x] count]; j++)
+			{
+				if ( pw != [[[fileList[ x] objectAtIndex: j] valueForKey:@"width"] intValue]) volumicData = NO;
+				if ( ph != [[[fileList[ x] objectAtIndex: j] valueForKey:@"height"] intValue]) volumicData = NO;
+				if ( rgb != [[pixList[ x] objectAtIndex: j] isRGB]) volumicData = NO;
+			}
+		}
+	}
+	
+	return volumicData;
+}
 
 - (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
 {
@@ -8291,31 +8308,7 @@ NSMutableArray		*array;
 {
 	long i, x;
 
-	BOOL volumicData = YES;
-
-	int moviePixWidth = [[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"width"] intValue];
-	int moviePixHeight = [[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"height"] intValue];
-	
-	if( m != 0)
-	{
-		for( int j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
-		{
-			if ( moviePixWidth != [[[fileList[ curMovieIndex] objectAtIndex: j] valueForKey:@"width"] intValue]) volumicData = NO;
-			if ( moviePixHeight != [[[fileList[ curMovieIndex] objectAtIndex: j] valueForKey:@"height"] intValue]) volumicData = NO;
-		}
-	}
-
-//	int moviePixWidth = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth];
-//	int moviePixHeight = [[pixList[ curMovieIndex] objectAtIndex: 0] pheight];
-//	
-//	if( m != 0)
-//	{
-//		for( int j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
-//		{
-//			if ( moviePixWidth != [[pixList[ curMovieIndex] objectAtIndex: j] pwidth]) volumicData = NO;
-//			if ( moviePixHeight != [[pixList[ curMovieIndex] objectAtIndex: j] pheight]) volumicData = NO;
-//		}
-//	}
+	BOOL volumicData = [self isDataVolumicIn4D: NO];
 	
 	if( volumicData == NO)
 		m = 0;
@@ -16190,18 +16183,8 @@ int i,j,l;
 
 -(IBAction) segmentationTest:(id) sender
 {
-	BOOL volumicData = YES;
+	BOOL volumicData = [self isDataVolumicIn4D: NO];
 	
-	[self checkEverythingLoaded];
-	
-	long j;
-	for( j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
-	{
-		if ( [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth] != [[pixList[ curMovieIndex] objectAtIndex: j] pwidth]) volumicData = NO;
-		if ( [[pixList[ curMovieIndex] objectAtIndex: 0] pheight] != [[pixList[ curMovieIndex] objectAtIndex: j] pheight]) volumicData = NO;
-		if ( [[pixList[ curMovieIndex] objectAtIndex: 0] isRGB] == YES) volumicData = NO;
-	}
-		
 	if( volumicData == NO)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"Growing Region", nil), NSLocalizedString(@"Growing Region algorithms are currently supported only for volumic data and BW images.", nil), nil, nil, nil);
@@ -17708,7 +17691,14 @@ sourceRef);
 {
 	if( [NavigatorWindowController navigatorWindowController] == 0L)
 	{
-		[self checkEverythingLoaded];
+		BOOL volumicData = [self isDataVolumicIn4D: YES];
+		
+		if( volumicData == NO)
+		{
+			NSRunAlertPanel(NSLocalizedString(@"Data Error", nil), NSLocalizedString(@"This tool works only with 3D data series with identical matrix sizes.", nil), nil, nil, nil);
+			return;
+		}
+		
 		NavigatorWindowController *navigatorWindowController = [[NavigatorWindowController alloc] initWithViewer:self];
 		[navigatorWindowController showWindow:self];
 		[[AppController sharedAppController] tileWindows: self];

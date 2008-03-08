@@ -5279,6 +5279,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) roiRemoved:(NSNotification*)note
 {
+	if( [self needsDisplay]) return;
+	
 	// A ROI has been removed... do we display it? If yes, update!
 	for( long i = 0; i < [curRoiList count]; i++)
 	{
@@ -5289,6 +5291,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) roiChange:(NSNotification*)note
 {
+	if( [self needsDisplay]) return;
+	
 	// A ROI changed... do we display it? If yes, update!
 	for( long i = 0; i < [curRoiList count]; i++)
 	{

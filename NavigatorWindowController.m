@@ -51,6 +51,14 @@ static NavigatorWindowController *nav = 0L;
 	{
 		[viewerController release];
 		viewerController = [viewer retain];
+		
+		if( [viewerController isDataVolumicIn4D: YES] == NO)
+		{
+			NSLog( @"unsupported data for 4D");
+			[[self window] close];
+			return;
+		}
+		
 		[self initView];
 	}
 	[navigatorView setViewer];

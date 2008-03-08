@@ -408,6 +408,9 @@ enum
 /** Create a new ROI object */
 - (ROI*) newROI: (long) type;
 
+/** Are the data volumic: same height same width */
+- (BOOL) isDataVolumicIn4D:(BOOL) check4D;
+
 /** ReSort the images displayed according to this group/element */
 - (BOOL) sortSeriesByDICOMGroup: (int) gr element: (int) el;
 
