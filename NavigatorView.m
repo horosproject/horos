@@ -300,20 +300,10 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	[[self openGLContext] makeCurrentContext];
 
-//		[[self enclosingScrollView] setBackgroundColor : [NSColor blackColor]];
-//		[[self window] setBackgroundColor : [NSColor blackColor]];
-//		[[[self enclosingScrollView] contentView] setBackgroundColor : [NSColor blackColor]];
-
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
 	NSRect viewBounds = [clipView documentVisibleRect];
 	NSRect viewFrame = [clipView frame];
 	NSSize viewSize = viewFrame.size;
-	
-//	NSLog(@"*****");
-//	NSLog( NSStringFromRect( viewBounds));
-//	NSLog( NSStringFromRect( viewFrame));
-//	NSLog( NSStringFromRect( [clipView documentRect]));
-//	NSLog( NSStringFromRect( [clipView documentVisibleRect]));
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	glViewport(0, 0, viewSize.width, viewSize.height); // set the viewport to cover entire view
@@ -324,8 +314,6 @@ static float deg2rad = 3.14159265358979/180.0;
 	glLoadIdentity();
 	glEnable(GL_TEXTURE_RECTANGLE_EXT);
 	
-//	glDepthMask (GL_TRUE);
-		
 	glScalef(2.0f/(viewSize.width), -2.0f/(viewSize.height), 1.0f);
 	glTranslatef(-(viewSize.width)/2.0, -(viewSize.height)/2.0, 0.0);
 		
@@ -440,9 +428,6 @@ static float deg2rad = 3.14159265358979/180.0;
 			{
 				if(i<[thumbnailsTextureArray count])
 				{
-//					GLuint oldTextureName = [[thumbnailsTextureArray objectAtIndex:i] intValue];
-//					glDeleteTextures(1, &oldTextureName);
-//					[thumbnailsTextureArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInt:-1]];
 				}
 				else
 					[thumbnailsTextureArray addObject:[NSNumber numberWithInt:-1]];
@@ -467,7 +452,6 @@ static float deg2rad = 3.14159265358979/180.0;
 				int correctedZ = (flippedData) ? [pixList count]-z-1 : z ;
 				DCMPix *pix = [pixList objectAtIndex:correctedZ];
 				
-	//			upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, ([[self viewer] maxMovieIndex]-t-1)*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
 				upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
 				
 				glScissor( upperLeft.x, viewSize.height - (upperLeft.y+thumbnailHeight), thumbnailWidth, thumbnailHeight);
@@ -1154,11 +1138,18 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	// create the new viewer
 	ViewerController *newViewer = [ViewerController newWindow:[[self viewer] pixList:0] :[[self viewer] fileList:0] :[[self viewer] volumeData:0]];
+	
 	// add all the 4D frames
 	for (int i=1; i<[[self viewer] maxMovieIndex]; i++)
 	{
 		[newViewer addMovieSerie:[[self viewer] pixList:i] :[[self viewer] fileList:i] :[[self viewer] volumeData:i]];
 	}
+	
+	for (int i=0; i<[[self viewer] maxMovieIndex]; i++)
+	{
+		[newViewer setRoiList: i array: [[self viewer] roiList: i]];
+	}
+	
 	[newViewer setMovieIndex:t];
 
 	// select the correct slice

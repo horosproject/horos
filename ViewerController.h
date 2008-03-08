@@ -380,7 +380,7 @@ enum
 - (float*) volumePtr;
 - (float*) volumePtr: (long) i;
 - (NSData*)volumeData;
-- (NSData*)volumeData:(long)i;
+- (NSData*)volumeData:(long) i;
 
 /** Return the index into fileList that coresponds to the index in pixList */
 - (long) indexForPix: (long) pixIndex;
@@ -400,6 +400,7 @@ enum
 /** Return the array of ROI objects */
 - (NSMutableArray*) roiList;
 - (NSMutableArray*) roiList: (long) i;
+- (void) setRoiList: (long) i array:(NSMutableArray*) a;
 
 /**  Create a new MyPoint object */
 - (MyPoint*) newPoint: (float) x :(float) y;

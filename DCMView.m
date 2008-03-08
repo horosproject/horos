@@ -4676,7 +4676,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
            selector: @selector(roiChange:)
                name: @"roiChange"
              object: nil];
-			 
+	
+	[nc addObserver: self
+           selector: @selector(roiRemoved:)
+               name: @"removeROI"
+             object: nil];
+	
 	[nc addObserver: self
            selector: @selector(roiSelected:)
                name: @"roiSelected"
@@ -5272,14 +5277,23 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
+-(void) roiRemoved:(NSNotification*)note
+{
+	// A ROI has been removed... do we display it? If yes, update!
+	for( long i = 0; i < [curRoiList count]; i++)
+	{
+		if( [curRoiList objectAtIndex:i] == [note object])
+			[self setNeedsDisplay:YES];
+	}
+}
+
 -(void) roiChange:(NSNotification*)note
 {
 	// A ROI changed... do we display it? If yes, update!
-	for( long i = 0; i < [curRoiList count]; i++) {
-		if( [curRoiList objectAtIndex:i] == [note object]) {
-			[[note object] setRoiFont:labelFontListGL :labelFontListGLSize :self];
+	for( long i = 0; i < [curRoiList count]; i++)
+	{
+		if( [curRoiList objectAtIndex:i] == [note object])
 			[self setNeedsDisplay:YES];
-		}
 	}
 }
 

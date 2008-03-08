@@ -10694,6 +10694,15 @@ int i,j,l;
 	return roiList[i];
 }
 
+-(void) setRoiList: (long) i array:(NSMutableArray*) a
+{
+	if( i < 0) i = 0;
+	if( i>= maxMovieIndex) i = maxMovieIndex-1;
+
+	[roiList[ i] release];
+	roiList[ i] = [a retain];;
+}
+
 - (IBAction) roiPropagate:(id) sender
 {
 	long			i, x;
