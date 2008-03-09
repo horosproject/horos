@@ -5281,10 +5281,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( [self needsDisplay]) return;
 	
 	// A ROI has been removed... do we display it? If yes, update!
-	for( long i = 0; i < [curRoiList count]; i++)
+	if( [curRoiList indexOfObjectIdenticalTo: [note object]] != NSNotFound)
 	{
-		if( [curRoiList objectAtIndex:i] == [note object])
-			[self setNeedsDisplay:YES];
+		
+		[self setNeedsDisplay:YES];
 	}
 }
 
@@ -5293,10 +5293,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( [self needsDisplay]) return;
 	
 	// A ROI changed... do we display it? If yes, update!
-	for( long i = 0; i < [curRoiList count]; i++)
+	if( [curRoiList indexOfObjectIdenticalTo: [note object]] != NSNotFound)
 	{
-		if( [curRoiList objectAtIndex:i] == [note object])
-			[self setNeedsDisplay:YES];
+		[self setNeedsDisplay:YES];
 	}
 }
 
@@ -7427,7 +7426,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
 			
 			[self drawROISelectorRegion];
-		}			
+		}
 		
 		if(ctx == _alternateContext && [[NSApplication sharedApplication] isActive]) // iChat Theatre context
 		{
