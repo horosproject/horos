@@ -2374,7 +2374,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 //	NSLog( @"%d %d %d %d", minX, maxX, minY, maxY);
 //	NSLog( @"%d %d %d %d", 0, textureWidth, 0, textureHeight);
 	
-	if( minX > CUTOFF || maxX < textureWidth-CUTOFF || minY > CUTOFF || maxY < textureHeight-CUTOFF)
+	if( minX > CUTOFF || maxX < textureWidth-CUTOFF || minY > CUTOFF || maxY < textureHeight-CUTOFF || textureWidth%4 != 0 || textureHeight%4 != 0)
 	{
 		minX -= 2;
 		minY -= 2;
@@ -2505,13 +2505,13 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 				
 				textureDownRightCornerX = textureWidth+textureUpLeftCornerX-1;
 				textureDownRightCornerY = textureHeight+textureUpLeftCornerY-1;
+				
 				// ROI cannot be smaller !
 				if (textureWidth<oldTextureWidth)
 					textureWidth=oldTextureWidth;
 					
 				if (textureHeight<oldTextureHeight)
 					textureHeight=oldTextureHeight;
-				
 				
 				// new texture buffer		
 				textureBuffer = malloc(textureWidth*textureHeight*sizeof(unsigned char));
