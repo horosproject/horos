@@ -593,9 +593,10 @@ static int hotKeyToolCrossTable[] =
 						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: 0L];
 				}
 				[roiList[ i] removeAllObjects];
-				
-				[roiList[ i] addObjectsFromArray: [NSUnarchiver unarchiveObjectWithData: [rois objectAtIndex: i]]];
 			}
+			
+			for( i = 0; i < maxMovieIndex; i++)
+				[roiList[ i] addObjectsFromArray: [NSUnarchiver unarchiveObjectWithData: [rois objectAtIndex: i]]];
 			
 			[imageView setIndex: [imageView curImage]];
 			

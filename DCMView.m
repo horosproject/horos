@@ -1806,11 +1806,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 
 		keepIt = NO;
-		for( long i = 0; i < [curRoiList count]; i++ ) {
+		for( int i = 0; i < [curRoiList count]; i++ )
+		{
 			[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :labelFontListGLSize :self];
-			
 			[[curRoiList objectAtIndex:i ] recompute];
-			
 			if( curROI == [curRoiList objectAtIndex:i ]) keepIt = YES;
 		}
 		

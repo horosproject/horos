@@ -723,6 +723,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			[stanStringAttrib setObject:font forKey:NSFontAttributeName];
 			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 		}
+		
+		[self reduceTextureIfPossible];
     }
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
@@ -1007,7 +1009,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 //		}
 		
 		memcpy( textureBuffer, tBuff, tHeight*tWidth);
-
+		
+		[self reduceTextureIfPossible];
+		
 		name = [[NSString alloc] initWithString:tName];
 		displayTextualData = YES;
 		
@@ -1016,7 +1020,6 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		color.green = ROIRegionColorG;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorG"];
 		color.blue = ROIRegionColorB;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorB"];
 		opacity = ROIRegionOpacity;		//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionOpacity"];
-
 	}
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 	return self;
@@ -2497,7 +2500,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 				textureWidth=((textureDownRightCornerX-textureUpLeftCornerX))+1;
 				textureHeight=((textureDownRightCornerY-textureUpLeftCornerY))+1;	
 			  	
-				if( textureWidth%4) {textureWidth /=4;	textureWidth *=4;		textureWidth +=4;}
+				if( textureWidth%4) {textureWidth /=4;		textureWidth *=4;		textureWidth +=4;}
 				if( textureHeight%4) {textureHeight /=4;	textureHeight *=4;		textureHeight += 4;}
 				
 				textureDownRightCornerX = textureWidth+textureUpLeftCornerX-1;
@@ -3251,12 +3254,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 {
 	float thicknessCopy = thickness;
 	thickness = thick;
+	
 	if( roiLock == 0L) roiLock = [[NSLock alloc] init];
+	if( fontListGL == -1) {NSLog(@"fontListGL == -1 !"); return;}
+	if( curView == 0L) {NSLog(@"curView == 0L !"); return;}
 	
 	[roiLock lock];
-	
-	if( fontListGL == -1) NSLog(@"ERROR: fontListGL == -1 !");
-	if( curView == 0L) NSLog(@"ERROR: curView == 0L !");
 	
 	pixelSpacingX = spacingX;
 	pixelSpacingY = spacingY;
