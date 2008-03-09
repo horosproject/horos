@@ -993,23 +993,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		textureDownRightCornerY=posY+tHeight-1;
 		textureWidth=tWidth;
 		textureHeight=tHeight;
-	//	oldTextureWidth=tWidth;
-	//	oldTextureHeight=tHeight;
 		
 		textureBuffer=(unsigned char*)malloc(tWidth*tHeight*sizeof(unsigned char));
-	//	tempTextureBuffer=(unsigned char*)malloc(tWidth*tHeight*sizeof(unsigned char));
-
-//		for(j=0;j<tHeight;j++)
-//		{
-//			for(i=0;i<tWidth;i++)
-//			{
-//			//	tempTextureBuffer[i+j*tWidth]=tBuff[i+j*tWidth];
-//				textureBuffer[i+j*tWidth]= tBuff[i+j*tWidth];
-//			}
-//		}
-		
 		memcpy( textureBuffer, tBuff, tHeight*tWidth);
-		
 		[self reduceTextureIfPossible];
 		
 		name = [[NSString alloc] initWithString:tName];
@@ -2338,6 +2324,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	
 	free( textureBuffer);
 	textureBuffer = tempBuf;
+	
+	[self reduceTextureIfPossible];
 }
 
 - (BOOL) reduceTextureIfPossible
@@ -2366,8 +2354,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		}
 	}
 	
-	if( minX > maxX) return YES;
-	if( minY > maxY) return YES;
+	if( minX > maxX) return YES;	// means the ROI is empty;
+	if( minY > maxY) return YES;	// means the ROI is empty;
 	
 	#define CUTOFF 8
 	
@@ -2398,12 +2386,29 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		if( textureWidth%4) {textureWidth /=4;	textureWidth *=4;		textureWidth +=4;}
 		if( textureHeight%4) {textureHeight /=4;	textureHeight *=4;		textureHeight += 4;}
 		
-		if( textureHeight+offsetTextureY > oldTextureHeight) {textureHeight = oldTextureHeight;		offsetTextureY = 0;}
-		if( textureWidth+offsetTextureX > oldTextureWidth) {textureWidth = oldTextureWidth;	offsetTextureX = 0; }
+		unsigned char*	newTextureBuffer;
+		
+		if( textureHeight+offsetTextureY > oldTextureHeight || textureWidth+offsetTextureX > oldTextureWidth)
+		{
+			newTextureBuffer = malloc(textureWidth*textureHeight*sizeof(unsigned char));
+			if( newTextureBuffer == 0L)
+			{
+				textureWidth = oldTextureWidth;
+				textureHeight = oldTextureHeight;
+				return NO;
+			}
+		}
+		else newTextureBuffer = textureBuffer;
 		
 		for( long y = 0 ; y < textureHeight ; y++)
 		{
-			memcpy( textureBuffer + (y * textureWidth), textureBuffer + offsetTextureX+ (y+ offsetTextureY)*oldTextureWidth,  textureWidth);
+			memcpy( newTextureBuffer + (y * textureWidth), textureBuffer + offsetTextureX+ (y+ offsetTextureY)*oldTextureWidth,  textureWidth);
+		}
+		
+		if( newTextureBuffer != textureBuffer)
+		{
+			free( textureBuffer);
+			textureBuffer = newTextureBuffer;
 		}
 		
 		textureUpLeftCornerX += offsetTextureX;
@@ -2412,7 +2417,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		textureDownRightCornerY = textureUpLeftCornerY + textureHeight-1;
 	}
 	
-	return NO;
+	return NO;	// means the ROI is NOT empty;
 }
 
 + (void) fillCircle:(unsigned char *) buf :(int) width :(unsigned char) val
@@ -3256,8 +3261,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	thickness = thick;
 	
 	if( roiLock == 0L) roiLock = [[NSLock alloc] init];
-	if( fontListGL == -1) {NSLog(@"fontListGL == -1 !"); return;}
-	if( curView == 0L) {NSLog(@"curView == 0L !"); return;}
+	
+	if( fontListGL == -1 && prepareTextualData == YES) {NSLog(@"fontListGL == -1! We will not draw this ROI..."); return;}
+	if( curView == 0L && prepareTextualData == YES) {NSLog(@"curView == 0L! We will not draw this ROI..."); return;}
 	
 	[roiLock lock];
 	
