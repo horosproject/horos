@@ -471,7 +471,7 @@ static float deg2rad = 3.14159265358979/180.0;
 					
 					if([r type]!=tText)
 					{
-						[r drawROIWithScaleValue:1.0/(zoomFactor*sizeFactor) offsetX:offset.x+pix.pwidth/2.0 offsetY:offset.y/[pix pixelRatio]+pix.pheight/2.0 pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0];
+						[r drawROIWithScaleValue:1.0/(zoomFactor*sizeFactor) offsetX:offset.x+pix.pwidth/2.0 offsetY:offset.y/[pix pixelRatio]+pix.pheight/2.0 pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0 prepareTextualData: NO];
 					}
 				}
 				
@@ -513,14 +513,19 @@ static float deg2rad = 3.14159265358979/180.0;
 
 	if(NSIntersectsRect(thumbRect, viewFrame))
 	{
-		glLineWidth(3.0);
+		glScissor( upperLeft.x, viewSize.height - (upperLeft.y+thumbnailHeight), thumbnailWidth, thumbnailHeight);
+		glEnable(GL_SCISSOR_TEST);
+		
+		glLineWidth(6.0);
 		glColor3f(1.0f, 0.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
-			glVertex2f(upperLeft.x, upperLeft.y+2.0);
-			glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+2.0);
-			glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight-2.0);
-			glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight-2.0);
+			glVertex2f(upperLeft.x+1, upperLeft.y+1);
+			glVertex2f(upperLeft.x-1+thumbnailWidth, upperLeft.y+1);
+			glVertex2f(upperLeft.x-1+thumbnailWidth, upperLeft.y+thumbnailHeight-1);
+			glVertex2f(upperLeft.x+1, upperLeft.y+thumbnailHeight-1);
 		glEnd();
+		glDisable(GL_SCISSOR_TEST);
+		
 		glColor3f(0.0f, 0.0f, 0.0f);
 		glLineWidth(1.0);	
 	}
@@ -767,7 +772,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	
 	zoomFactor += zoom;
 	
-	if( zoomFactor < 0) zoomFactor = 0.001;
+	if( zoomFactor < 0.01) zoomFactor = 0.01;
+	if( zoomFactor > 10) zoomFactor = 10;
 }
 
 - (NSPoint)zoomPoint:(NSPoint)pt withCenter:(NSPoint)c factor:(float)f;
@@ -1117,6 +1123,13 @@ static float deg2rad = 3.14159265358979/180.0;
 //				alreadyOpened = YES;
 //			}
 //		}
+//		
+//		if(t == [[self viewer] curMovieIndex])
+//		{
+//			selectedViewer = [self viewer];
+//			alreadyOpened = YES;
+//		}
+//		
 //		if(!alreadyOpened)
 			[self openNewViewerAtSlice:z movieFrame:t]; // creates a new viewer
 //		else

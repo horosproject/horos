@@ -3247,10 +3247,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (void) drawROI :(float) scaleValue :(float) offsetx :(float) offsety :(float) spacingX :(float) spacingY;
 {
-	[self drawROIWithScaleValue:scaleValue offsetX:offsetx offsetY:offsety pixelSpacingX:spacingX pixelSpacingY:spacingY highlightIfSelected:YES thickness:thickness];
+	[self drawROIWithScaleValue:scaleValue offsetX:offsetx offsetY:offsety pixelSpacingX:spacingX pixelSpacingY:spacingY highlightIfSelected:YES thickness:thickness prepareTextualData: YES];
 }
 
-- (void) drawROIWithScaleValue:(float)scaleValue offsetX:(float)offsetx offsetY:(float)offsety pixelSpacingX:(float)spacingX pixelSpacingY:(float)spacingY highlightIfSelected:(BOOL)highlightIfSelected thickness:(float)thick;
+- (void) drawROIWithScaleValue:(float)scaleValue offsetX:(float)offsetx offsetY:(float)offsety pixelSpacingX:(float)spacingX pixelSpacingY:(float)spacingY highlightIfSelected:(BOOL)highlightIfSelected thickness:(float)thick prepareTextualData:(BOOL) prepareTextualData;
 {
 	float thicknessCopy = thickness;
 	thickness = thick;
@@ -3372,7 +3372,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glColor3f (1.0f, 1.0f, 1.0f);
 				}
 				
-				if( self.isTextualDataDisplayed )
+				if( self.isTextualDataDisplayed && prepareTextualData)
 				{
 					// TEXT
 					line1[0] = 0; line2[0] = 0; line3[0] = 0; line4[0] = 0; line5[0] = 0;
@@ -3474,7 +3474,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			// TEXT
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( self.isTextualDataDisplayed ) {
+			if( self.isTextualDataDisplayed && prepareTextualData) {
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
@@ -3542,7 +3542,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			// TEXT
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( self.isTextualDataDisplayed )
+			if( self.isTextualDataDisplayed && prepareTextualData)
 			{
 				NSPoint tPt = self.lowerRightPoint;
 				long	line = 0;
@@ -3801,7 +3801,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			// TEXT
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( self.isTextualDataDisplayed ) {
+			if( self.isTextualDataDisplayed && prepareTextualData) {
 				NSPoint tPt = self.lowerRightPoint;
 				long	line = 0;
 				
@@ -3858,7 +3858,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			// TEXT
 			{
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-				if( self.isTextualDataDisplayed ) {
+				if( self.isTextualDataDisplayed && prepareTextualData) {
 					NSPoint			tPt = self.lowerRightPoint;
 					long			line = 0;
 					
@@ -3945,7 +3945,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			// TEXT
 			
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( self.isTextualDataDisplayed ) {
+			if( self.isTextualDataDisplayed && prepareTextualData) {
 				NSPoint			tPt = self.lowerRightPoint;
 				long			line = 0;
 				
@@ -4000,7 +4000,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 			//TEXTO
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( self.isTextualDataDisplayed ) {
+			if( self.isTextualDataDisplayed && prepareTextualData) {
 				NSPoint tPt = self.lowerRightPoint;
 				long	line = 0;
 				float   length;
@@ -4268,7 +4268,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 			//TEXTO
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( self.isTextualDataDisplayed ) {
+			if( self.isTextualDataDisplayed && prepareTextualData) {
 					NSPoint tPt = self.lowerRightPoint;
 					long	line = 0;
 					float   length;
@@ -4368,7 +4368,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( type == tCPolygon || type == tPencil)
 			{
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-				if( self.isTextualDataDisplayed ) {
+				if( self.isTextualDataDisplayed && prepareTextualData) {
 					NSPoint tPt = self.lowerRightPoint;
 					long	line = 0;
 					float   length;
@@ -4409,7 +4409,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			else if( type == tOPolygon)
 			{
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-				if( self.isTextualDataDisplayed ) {
+				if( self.isTextualDataDisplayed && prepareTextualData) {
 					NSPoint tPt = self.lowerRightPoint;
 					long	line = 0;
 					float   length;
@@ -4452,7 +4452,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				{
 					displayTextualData = YES;
 					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-					if( self.isTextualDataDisplayed ) {
+					if( self.isTextualDataDisplayed && prepareTextualData) {
 						NSPoint tPt = self.lowerRightPoint;
 						long	line = 0;
 						float   angle;
