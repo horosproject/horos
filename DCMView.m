@@ -3306,7 +3306,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		{
 			if( fabs( [theEvent deltaY]) * 2.0f >  fabs( deltaX) )
 			{
-				if( [theEvent modifierFlags]  & NSAlternateKeyMask)
+				if( [theEvent modifierFlags]  & NSCommandKeyMask)
+				{
+					if( [self is2DViewer] )
+					{
+						float change = [theEvent deltaY] / -0.2f;
+						
+						blendingFactor += change;
+						[self setBlendingFactor: blendingFactor];
+					}
+				}
+				else if( [theEvent modifierFlags]  & NSAlternateKeyMask)
 				{
 					if( [self is2DViewer] )
 					{
@@ -8261,12 +8271,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
--(void) setBlendingFactor:(float) f {
+-(void) setBlendingFactor:(float) f
+{
 	blendingFactor = f;
+	
+	if( blendingFactor < -256) blendingFactor = -256;
+	if( blendingFactor > 256) blendingFactor = 256;
 	
 	[blendingView setAlpha: blendingFactor];
 	[self loadTextures];
 	[self setNeedsDisplay: YES];
+	
+	if( [self is2DViewer])
+	{
+		if( blendingFactor != [[[self windowController] blendingSlider] floatValue])
+		{
+			[[[self windowController] blendingSlider] setFloatValue: blendingFactor];
+			[[self windowController] blendingSlider: [[self windowController] blendingSlider]];
+		}
+	}
 }
 
 -(void) setBlendingMode:(long) f {
