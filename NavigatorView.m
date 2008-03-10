@@ -643,8 +643,9 @@ static float deg2rad = 3.14159265358979/180.0;
 - (NSPoint)convertPointFromWindowToOpenGL:(NSPoint)pointInWindow;
 {
 	NSPoint pointInView = [self convertPoint:pointInWindow fromView:nil];
-	pointInView.y = [[[self enclosingScrollView] contentView] documentVisibleRect].size.height-pointInView.y;
 	pointInView.x -= [[[self enclosingScrollView] contentView] documentVisibleRect].origin.x;
+	pointInView.y -= [[[self enclosingScrollView] contentView] documentVisibleRect].origin.y;
+	pointInView.y = [[[self enclosingScrollView] contentView] documentVisibleRect].size.height-pointInView.y;
 	return pointInView;
 }
 
@@ -1027,7 +1028,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 	if([[[self viewer] imageView] flippedData]) upperLeft.x = ([[[self viewer] pixList] count]-z-1)*thumbnailWidth;
 	
-//	upperLeft.y = ([[self viewer] maxMovieIndex]-t)*thumbnailHeight+viewSize.height-[self frame].size.height+viewBounds.origin.y;
+	//upperLeft.y = ([[self viewer] maxMovieIndex]-t)*thumbnailHeight+viewSize.height-[self frame].size.height+viewBounds.origin.y;
 	upperLeft.y = ([[self viewer] maxMovieIndex]-t)*thumbnailHeight-viewBounds.origin.y;
 	//upperLeft.y = t*thumbnailHeight+viewSize.height-[self frame].size.height;
 	
@@ -1106,8 +1107,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	NSSize viewSize = viewFrame.size;
 
 	int z = (mouseDownPosition.x + viewBounds.origin.x) / thumbnailWidth;
-	int t = (mouseDownPosition.y - viewBounds.origin.y - viewSize.height + [self frame].size.height) / thumbnailHeight;
-	
+	int t = (mouseDownPosition.y + [self frame].size.height-viewSize.height-viewBounds.origin.y)/thumbnailHeight;
+
 	if(!newWindow)//t == [[self viewer] curMovieIndex] || [[self viewer] isPlaying4D]) // same time line: select the clicked slice
 	{
 		DCMView *view = [[self viewer] imageView];
