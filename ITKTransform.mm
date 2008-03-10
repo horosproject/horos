@@ -115,33 +115,32 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	
 	resample->SetSize(size);
 
-	int u, v;
-	// Display translation
-	printf ("\nTranslation:\n");
-	for (u = 0; u < 3; u++)
-		printf ("\t%3.2f", theParameters [9+u]);
-	printf ("\n\n");
-
-	// Display rotation
-	printf ("Rotation:\n");
-	for (u = 0; u < 3; u++)
-	{
-		for (v = 0; v < 3; v++)
-			printf ("\t%3.2f", theParameters [u*3+v]);
-		printf ("\n");
-	}
-	printf ("\n\n");
+//	int u, v;
+//	// Display translation
+//	printf ("\nTranslation:\n");
+//	for (u = 0; u < 3; u++)
+//		printf ("\t%3.2f", theParameters [9+u]);
+//	printf ("\n\n");
+//
+//	// Display rotation
+//	printf ("Rotation:\n");
+//	for (u = 0; u < 3; u++)
+//	{
+//		for (v = 0; v < 3; v++)
+//			printf ("\t%3.2f", theParameters [u*3+v]);
+//		printf ("\n");
+//	}
+//	printf ("\n\n");
 	
-	WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Resampling...", nil)];
+	WaitRendering *splash = 0L;
+	
+	if( noOfImages > 2)
+		splash = [[WaitRendering alloc] init:NSLocalizedString(@"Resampling...", nil)];
 	[splash showWindow:self];
-	
-	NSLog(@"start transform");
 	
 	resample->Update();
 	
 	float* resultBuff = resample->GetOutput()->GetBufferPointer();
-	
-	NSLog(@"transform done");
 	
 	[splash close];
 	[splash release];
