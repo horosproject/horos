@@ -36,5 +36,6 @@
 - (void)setWindowLevel:(NSNotification*)notification;
 
 @property(readonly) NavigatorView *navigatorView;
+@property(readonly) ViewerController *viewerController;
 
 @end

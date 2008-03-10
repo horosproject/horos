@@ -52,10 +52,10 @@ static float deg2rad = 3.14159265358979/180.0;
 	if( [NavigatorWindowController navigatorWindowController])
 	{
 		NavigatorView * n = [[NavigatorWindowController navigatorWindowController] navigatorView];
-		ViewerController *v = [n viewer];
+		ViewerController *v = [[NavigatorWindowController navigatorWindowController] viewerController];
 		NSRect rect;
 		
-		rect.size.width = [[n window] maxSize].width;//[[v pixList] count]*n.thumbnailWidth;
+		rect.size.width = [[n window] maxSize].width;
 		rect.size.height = [v maxMovieIndex]*n.thumbnailHeight;
 		
 		if( rect.size.width > [[[v window] screen] visibleFrame].size.width) rect.size.width = [[[v window] screen] visibleFrame].size.width;
@@ -123,7 +123,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		previousImageIndex = -1;
 		previousMovieIndex = -1;
 		
-		previousViewer = nil;
+//		previousViewer = nil;
 		
 		cursorTracking = [[NSTrackingArea alloc] initWithRect:[self visibleRect] options:(NSTrackingActiveWhenFirstResponder|NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited|NSTrackingActiveInKeyWindow) owner:self userInfo:0L];
 		[self addTrackingArea:cursorTracking];
@@ -152,7 +152,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[thumbnailsTextureArray release];
 	[isTextureWLWWUpdated release];
-	[previousViewer release];
+//	[previousViewer release];
 	
 	if(scrollTimer)
 	{
@@ -175,8 +175,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	ww = [[self viewer] imageView].curWW;
 	previousImageIndex = -1;
 	previousMovieIndex = -1;
-	[previousViewer release];
-	previousViewer = [[self viewer] retain];
+//	[previousViewer release];
+//	previousViewer = [[self viewer] retain];
 	[self setNeedsDisplay:YES];
 }
 
@@ -1054,17 +1054,19 @@ static float deg2rad = 3.14159265358979/180.0;
 // current selected viewer
 - (ViewerController*)viewer;
 {
-	NSArray *displayed2DViewers = [ViewerController getDisplayed2DViewers];
+	return [[NavigatorWindowController navigatorWindowController] viewerController];
 	
-	for (ViewerController *v in displayed2DViewers)
-	{
-		if([[[v imageView] window] isMainWindow] && [v imageView].isKeyView)
-			return v;
-	}
-	
-	if([displayed2DViewers count]) return [displayed2DViewers lastObject];
-	
-	return previousViewer;
+//	NSArray *displayed2DViewers = [ViewerController getDisplayed2DViewers];
+//	
+//	for (ViewerController *v in displayed2DViewers)
+//	{
+//		if([[[v imageView] window] isMainWindow] && [v imageView].isKeyView)
+//			return v;
+//	}
+//	
+//	if([displayed2DViewers count]) return [displayed2DViewers lastObject];
+//	
+//	return previousViewer;
 }
 
 // associatedViewers are all the opened viewers that share the same NSData, i.e. same stack

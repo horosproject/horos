@@ -21,6 +21,7 @@ static NavigatorWindowController *nav = 0L;
 @implementation NavigatorWindowController
 
 @synthesize navigatorView;
+@synthesize viewerController;
 
 + (NavigatorWindowController*) navigatorWindowController
 {
@@ -30,9 +31,14 @@ static NavigatorWindowController *nav = 0L;
 - (id)initWithViewer:(ViewerController*)viewer;
 {
 	self = [super initWithWindowNibName:@"Navigator"];
-	if (self != nil) {
-		[self setViewer:viewer];
+	if (self != nil)
+	{
 		nav = self;
+		
+		[self window];	// generate the awake from nib ! and populates the nib variables like navigatorView
+		
+		[self setViewer: viewer];
+		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeViewerNotification:) name:@"CloseViewerNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setWindowLevel:) name:@"NSApplicationWillBecomeActiveNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setWindowLevel:) name:@"NSApplicationWillResignActiveNotification" object:nil];
@@ -42,6 +48,8 @@ static NavigatorWindowController *nav = 0L;
 
 - (void)awakeFromNib; 
 {
+	
+	
 	[[self window] setAcceptsMouseMovedEvents:YES];
 }
 
@@ -51,16 +59,17 @@ static NavigatorWindowController *nav = 0L;
 	{
 		[viewerController release];
 		viewerController = [viewer retain];
-		
-		if( [viewerController isDataVolumicIn4D: YES] == NO)
-		{
-			NSLog( @"unsupported data for 4D");
-			[[self window] close];
-			return;
-		}
-		
-		[self initView];
 	}
+	
+	if( [viewerController isDataVolumicIn4D: YES] == NO)
+	{
+		NSLog( @"unsupported data for 4D");
+		[[self window] close];
+		return;
+	}
+	
+	[self initView];
+	
 	[navigatorView setViewer];
 }
 
