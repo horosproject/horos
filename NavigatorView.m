@@ -222,7 +222,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	DCMPix *pix = [pixList objectAtIndex:z];
 	
 	if(![[isTextureWLWWUpdated objectAtIndex:i] boolValue]) [pix changeWLWW:wl :ww];
-	else return [[thumbnailsTextureArray objectAtIndex:i] intValue];
+	else if( [[thumbnailsTextureArray objectAtIndex:i] intValue] >= 0) return [[thumbnailsTextureArray objectAtIndex:i] intValue];
 	
 	[[self openGLContext] makeCurrentContext];
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -366,7 +366,6 @@ static float deg2rad = 3.14159265358979/180.0;
 				
 				if( textureId >= 0)
 				{
-				
 					DCMPix *pix = [pixList objectAtIndex:correctedZ];
 					
 					NSPoint texUpperLeft, texUpperRight, texLowerLeft, texLowerRight;
@@ -428,6 +427,12 @@ static float deg2rad = 3.14159265358979/180.0;
 			{
 				if(i<[thumbnailsTextureArray count])
 				{
+					if([[thumbnailsTextureArray objectAtIndex:i] intValue] >= 0)
+					{
+						GLuint oldTextureName = [[thumbnailsTextureArray objectAtIndex:i] intValue];
+						glDeleteTextures(1, &oldTextureName);
+					}
+					[thumbnailsTextureArray replaceObjectAtIndex:i withObject:[NSNumber numberWithInt:-1]];
 				}
 				else
 					[thumbnailsTextureArray addObject:[NSNumber numberWithInt:-1]];
