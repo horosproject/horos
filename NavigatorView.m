@@ -718,7 +718,10 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)mouseUp:(NSEvent *)theEvent;
 {
-	if(!mouseDragged)
+	BOOL scrollLeft = [self isMouseOnLeftLateralScrollBar:mouseDownPosition] && [self cansScrollLeft];
+	BOOL scrollRight = [self isMouseOnRightLateralScrollBar:mouseDownPosition] && [self cansScrollRight];
+
+	if(!mouseDragged && !scrollLeft && !scrollRight)
 	{
 		BOOL newWindow = mouseClickedWithCommandKey;
 		[self displaySelectedViewInNewWindow:newWindow];
