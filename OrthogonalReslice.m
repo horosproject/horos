@@ -469,6 +469,7 @@
 			{
 				curPix = [[DCMPix alloc] initwithdata: 0L :32 :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix copySUVfrom: firstPix];
+				curPix.frameOfReferenceUID = firstPix.frameOfReferenceUID;
 				[newPixListX addObject: curPix];
 				[curPix release];
 			}
@@ -480,6 +481,7 @@
 			{
 				curPix = [[DCMPix alloc] initwithdata: 0L :32 :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix copySUVfrom: firstPix];
+				curPix.frameOfReferenceUID = firstPix.frameOfReferenceUID;
 				[newPixListY addObject: curPix];
 				[curPix release];
 			}

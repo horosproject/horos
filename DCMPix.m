@@ -1041,6 +1041,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize DCMPixShutterRectOriginX = shutterRect_x;
 @synthesize DCMPixShutterRectOriginY = shutterRect_y;
 
+@synthesize frameOfReferenceUID;
 @synthesize repetitiontime, echotime;
 @synthesize flipAngle, laterality;
 @synthesize protocolName, viewPosition, patientPosition;
@@ -2721,15 +2722,16 @@ BOOL gUSEPAPYRUSDCMPIX;
 	checking = [[NSLock alloc] init];
 	convertedDICOM = 0L;
 	subtractedfImage = 0L;
-	units = 0L;
+	frameOfReferenceUID = nil;
+	units = nil;
 	decayFactor = 1.0;
-	decayCorrection = 0L;
-	repetitiontime = 0L;
-	echotime = 0L;
-	protocolName = 0L;
-	flipAngle = 0L;
-	viewPosition = 0L;
-	patientPosition = 0L;
+	decayCorrection = nil;
+	repetitiontime = nil;
+	echotime = nil;
+	protocolName = nil;
+	flipAngle = nil;
+	viewPosition = nil;
+	patientPosition = nil;
 	maxValueOfSeries = 0;
 	minValueOfSeries = 0;
 	radiopharmaceuticalStartTime = 0L;
@@ -2776,9 +2778,10 @@ BOOL gUSEPAPYRUSDCMPIX;
 		[DCMPix checkUserDefaults: NO];
 		
 		cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
-		
-		acquisitionTime = 0L;
-		radiopharmaceuticalStartTime = 0L;
+
+		frameOfReferenceUID = nil;
+		acquisitionTime = nil;
+		radiopharmaceuticalStartTime = nil;
 		radionuclideTotalDose = 0;
 		radionuclideTotalDoseCorrected = 0;
 		maxValueOfSeries = 0;
@@ -2787,21 +2790,21 @@ BOOL gUSEPAPYRUSDCMPIX;
 		SUVConverted = NO;
 		generated = YES;
 		fixed8bitsWLWW = NO;
-		thickSlab = 0L;
+		thickSlab = nil;
 		sliceInterval = 0;
-		convertedDICOM = 0L;
+		convertedDICOM = nil;
 		checking = [[NSLock alloc] init];
 		stack = 2;
 		stackMode = 0;
 		updateToBeApplied = NO;
-		image = 0L;
-		oImage = 0L;
-		fImage = 0L;
-		fVolImage = 0L;
-		baseAddr = 0L;
+		image = nil;
+		oImage = nil;
+		fImage = nil;
+		fVolImage = nil;
+		baseAddr = nil;
 		imID = 0;
 		imTot = 1;
-		srcFile = 0L;
+		srcFile = nil;
 		frameNo = 0;
 		serieNo = 0;
 		isRGB = NO;
@@ -2809,15 +2812,15 @@ BOOL gUSEPAPYRUSDCMPIX;
 		fullwl = fullww = 0;
 		thickSlabVRActivated = NO;
 		
-		repetitiontime = 0L;
-		echotime = 0L;
-		flipAngle = 0L;
-		protocolName = 0L;
-		viewPosition = 0L;
-		patientPosition = 0L;
+		repetitiontime = nil;
+		echotime = nil;
+		flipAngle = nil;
+		protocolName = nil;
+		viewPosition = nil;
+		patientPosition = nil;
 		
-		units = 0L;
-		decayCorrection = 0L;
+		units = nil;
+		decayCorrection = nil;
 		decayFactor = 1.0;
 		
 		offset = 0.0;
@@ -2952,25 +2955,26 @@ BOOL gUSEPAPYRUSDCMPIX;
 		stack = 2;
 		stackMode = 0;
 		updateToBeApplied = NO;
-		image = 0L;
-		oImage = 0L;
-		fImage = 0L;
-		baseAddr = 0L;
+		frameOfReferenceUID = nil;
+		image = nil;
+		oImage = nil;
+		fImage = nil;
+		baseAddr = nil;
 		isRGB = NO;
 		nonDICOM = NO;
 		fullwl = fullww = 0;
-		repetitiontime = 0L;
-		echotime = 0L;
-		flipAngle = 0L;
-		protocolName = 0L;
-		viewPosition = 0L;
-		patientPosition = 0L;
+		repetitiontime = nil;
+		echotime = nil;
+		flipAngle = nil;
+		protocolName = nil;
+		viewPosition = nil;
+		patientPosition = nil;
 		
 		//---------------------------------radiotherapy
 		generated = NO;
 		displaySUVValue = NO;
-		acquisitionTime = 0L;
-		radiopharmaceuticalStartTime = 0L;
+		acquisitionTime = nil;
+		radiopharmaceuticalStartTime = nil;
 		radionuclideTotalDose = 0;
 		radionuclideTotalDoseCorrected = 0;
 		
@@ -2980,7 +2984,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		subtractedfZ = 0.8;
 		subtractedfZero = 0.8;
 		subtractedfGamma = 2.0;
-		subGammaFunction = 0L;
+		subGammaFunction = nil;
 		
 		//ang = 0;
 		//rot = 0;
@@ -3105,6 +3109,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 	copy->originZ = self->originZ;
 	
 	memcpy( copy->orientation, self->orientation, sizeof orientation );
+	
+	copy->frameOfReferenceUID = [self->frameOfReferenceUID retain];
 	
 	copy->isRGB = self->isRGB;
 	copy->cineRate = self->cineRate;
@@ -4892,6 +4898,7 @@ END_CREATE_ROIS:
 	} // endif ...extraction of the color palette
 	
 	// Image object dicom tags
+	if( [dcmObject attributeValueWithName:@"FrameofReferenceUID"])	frameOfReferenceUID = [[dcmObject attributeValueWithName:@"FrameofReferenceUID"] retain];
 	if( [dcmObject attributeValueWithName:@"PatientsWeight"])	patientsWeight = [[dcmObject attributeValueWithName:@"PatientsWeight"] floatValue];
 	if( [dcmObject attributeValueWithName:@"SliceThickness"])	sliceThickness = [[dcmObject attributeValueWithName:@"SliceThickness"] floatValue];
 	if( [dcmObject attributeValueWithName:@"SpacingBetweenSlices"]) spacingBetweenSlices = [[dcmObject attributeValueWithName:@"SpacingBetweenSlices"] floatValue];
@@ -5642,6 +5649,10 @@ END_CREATE_ROIS:
 		
 		theGroupP = (SElement*) [self getPapyGroup: 0x0018 fileNb: fileNb];
 		if( theGroupP )	{
+			val = Papy3GetElement (theGroupP, papFrameofReferenceUIDGr, &nbVal, &elemType);
+			if ( val ) frameOfReferenceUID = [[NSString stringWithCString:val->a] retain];
+			else sliceThickness = 0;
+
 			val = Papy3GetElement (theGroupP, papSliceThicknessGr, &nbVal, &elemType);
 			if ( val ) sliceThickness = [[NSString stringWithCString:val->a] floatValue];
 			else sliceThickness = 0;
@@ -10057,18 +10068,19 @@ END_CREATE_ROIS:
 	fullww = 0;
 	fullwl = 0;
 
-	[acquisitionTime release];					acquisitionTime = 0L;
-	[radiopharmaceuticalStartTime release];		radiopharmaceuticalStartTime = 0L;
-	[convertedDICOM release];					convertedDICOM = 0L;
-	[repetitiontime release];					repetitiontime = 0L;
-	[echotime release];							echotime = 0L;
-	[flipAngle release];						flipAngle = 0L;
-	[laterality release];						laterality = 0L;
-	[protocolName release];						protocolName = 0L;
-	[viewPosition release];						viewPosition = 0L;
-	[patientPosition release];					patientPosition = 0L;
-	[units release];							units = 0L;
-	[decayCorrection release];					decayCorrection = 0L;
+	[frameOfReferenceUID release];				frameOfReferenceUID = nil;
+	[acquisitionTime release];					acquisitionTime = nil;
+	[radiopharmaceuticalStartTime release];		radiopharmaceuticalStartTime = nil;
+	[convertedDICOM release];					convertedDICOM = nil;
+	[repetitiontime release];					repetitiontime = nil;
+	[echotime release];							echotime = nil;
+	[flipAngle release];						flipAngle = nil;
+	[laterality release];						laterality = nil;
+	[protocolName release];						protocolName = nil;
+	[viewPosition release];						viewPosition = nil;
+	[patientPosition release];					patientPosition = nil;
+	[units release];							units = nil;
+	[decayCorrection release];					decayCorrection = nil;
 	
 	if( fVolImage == nil ) {
 		if( fImage != nil )	{
@@ -10088,6 +10100,7 @@ END_CREATE_ROIS:
 	if( shutterPolygonal) free( shutterPolygonal);
 	
 	[self clearCachedPapyGroups];
+	[frameOfReferenceUID release];
 	[cachedPapyGroups release];
 	[transferFunction release];
 	[positionerPrimaryAngle release];
