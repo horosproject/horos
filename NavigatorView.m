@@ -94,12 +94,12 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void) removeNotificationObserver;
 {
-	dontListenToNotification = YES;
+	dontListenToNotification++;
 }
 
 - (void) addNotificationObserver;
 {
-	dontListenToNotification = NO;
+	dontListenToNotification--;
 }
 
 - (id)initWithFrame:(NSRect)frame
@@ -668,7 +668,11 @@ static float deg2rad = 3.14159265358979/180.0;
 		mouseClickedWithCommandKey = YES;
 	}
 	else if([theEvent modifierFlags] & NSAlternateKeyMask) userAction=wlww;
-	else userAction = [[self viewer] imageView].currentTool;
+	else
+	{
+		if(!scrollLeft && !scrollRight) [self displaySelectedViewInNewWindow:NO];
+		userAction = [[self viewer] imageView].currentTool;
+	}
 
 	startWW = ww;
 	startWL = wl;
@@ -801,7 +805,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)changeWLWW:(NSNotification*)notif;
 {
-	if( dontListenToNotification) return;
+	if(dontListenToNotification > 0) return;
 
 	DCMPix *pix = [notif object];
 	if(pix.ww!=ww || pix.wl!=wl)
@@ -821,7 +825,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)refresh:(NSNotification*)notif;
 {
-	if( dontListenToNotification) return;
+	if(dontListenToNotification > 0) return;
 	
 	int curImageIndex = [[self viewer] imageIndex];
 	int curMovieIndex = [[self viewer] curMovieIndex];
@@ -837,7 +841,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)refreshROIs:(NSNotification*)notif;
 {
-	if( dontListenToNotification) return;
+	if(dontListenToNotification > 0) return;
 	
 	[self displaySelectedImage];
 	[self setNeedsDisplay:YES];
@@ -1031,23 +1035,26 @@ static float deg2rad = 3.14159265358979/180.0;
 
 	if([[[self viewer] imageView] flippedData]) upperLeft.x = ([[[self viewer] pixList] count]-z-1)*thumbnailWidth;
 	
-	//upperLeft.y = ([[self viewer] maxMovieIndex]-t)*thumbnailHeight+viewSize.height-[self frame].size.height+viewBounds.origin.y;
-	upperLeft.y = ([[self viewer] maxMovieIndex]-t)*thumbnailHeight-viewBounds.origin.y;
-	//upperLeft.y = t*thumbnailHeight+viewSize.height-[self frame].size.height;
+	upperLeft.y = ([[self viewer] maxMovieIndex]-t)*thumbnailHeight;//-viewBounds.origin.y;
 	
-	NSRect thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
+	NSRect thumbRect = NSMakeRect(upperLeft.x, upperLeft.y-thumbnailHeight, thumbnailWidth, thumbnailHeight);
 	NSRect intersectionRect = NSIntersectionRect(thumbRect, viewBounds);
 
-	if(intersectionRect.size.width < 2.0)
+	if(fabs(intersectionRect.size.width) < thumbnailWidth || fabs(intersectionRect.size.height) < thumbnailHeight)
 	{
+		NSPoint scrollToMe = NSMakePoint(viewBounds.origin.x, viewBounds.origin.y);
+		
 		if(thumbRect.origin.x < viewBounds.origin.x)
-			[clipView scrollToPoint: [clipView constrainScrollPoint: NSMakePoint(thumbRect.origin.x, viewBounds.origin.y)]];
-		else if(thumbRect.origin.x >= viewBounds.origin.x + viewBounds.size.width)
-			[clipView scrollToPoint: [clipView constrainScrollPoint: NSMakePoint(thumbRect.origin.x+thumbRect.size.width-viewFrame.size.width, viewBounds.origin.y)]];
-		else if(thumbRect.origin.y < 0)//viewBounds.origin.y)
-			[clipView scrollToPoint: [clipView constrainScrollPoint: NSMakePoint(viewBounds.origin.x, thumbRect.origin.y)]];
-		else if(thumbRect.origin.y >= viewBounds.size.height)//viewBounds.origin.y + viewBounds.size.height)
-			[clipView scrollToPoint: [clipView constrainScrollPoint: NSMakePoint(viewBounds.origin.x, thumbRect.origin.y+thumbRect.size.height-viewFrame.size.height)]]; //scrollToPoint
+			scrollToMe.x = thumbRect.origin.x;
+		else if(thumbRect.origin.x+thumbnailWidth > viewBounds.origin.x + viewBounds.size.width)
+			scrollToMe.x = thumbRect.origin.x+thumbRect.size.width-viewFrame.size.width;
+		if(thumbRect.origin.y < viewBounds.origin.y)
+			scrollToMe.y = thumbRect.origin.y;
+		else if(thumbRect.origin.y+thumbnailHeight > viewBounds.origin.y + viewBounds.size.height)
+			scrollToMe.y = thumbRect.origin.y+thumbRect.size.height-viewFrame.size.height;
+		
+		[clipView scrollToPoint:[clipView constrainScrollPoint:scrollToMe]];
+
 		[[self enclosingScrollView] reflectScrolledClipView:clipView];
 	}
 }
@@ -1142,7 +1149,9 @@ static float deg2rad = 3.14159265358979/180.0;
 //		}
 //		
 //		if(!alreadyOpened)
+			dontListenToNotification++;
 			[self openNewViewerAtSlice:z movieFrame:t]; // creates a new viewer
+			dontListenToNotification--;
 //		else
 //		{
 //			// select the correct slice
@@ -1190,7 +1199,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	[newViewer setWL: wl WW: ww];
 	[newViewer propagateSettings];
 
-	[view sendSyncMessage:1];
+	//[view sendSyncMessage:1];
+	[newViewer checkEverythingLoaded];
 }
 
 #pragma mark-

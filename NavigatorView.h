@@ -36,7 +36,7 @@ typedef enum
 	NSPoint offset, translation;
 	float rotationAngle, zoomFactor;
 	
-	BOOL dontListenToNotification;
+	int dontListenToNotification;
 	float wl, ww, startWL, startWW;
 	NSMutableArray *isTextureWLWWUpdated;
 	
