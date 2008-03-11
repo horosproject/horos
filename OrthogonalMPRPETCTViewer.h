@@ -145,6 +145,8 @@
 
 // 4D
 - (void) MoviePlayStop:(id) sender;
+- (short) curMovieIndex;
+- (short) maxMovieIndex;
 - (void) setMovieIndex: (short) i;
 - (void) movieRateSliderAction:(id) sender;
 - (void) moviePosSliderAction:(id) sender;

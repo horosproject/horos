@@ -74,6 +74,8 @@
 - (BOOL) is2DViewer;
 - (ViewerController*) viewer;
 
+- (short) curMovieIndex;
+- (short) maxMovieIndex;
 - (void) ApplyCLUTString:(NSString*) str;
 - (void) setWLWW:(float) iwl :(float) iww;
 - (void) setCurWLWWMenu: (NSString*) wlww;

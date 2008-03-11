@@ -915,6 +915,8 @@ NSString * documentsDirectory();
 
 - (IBAction) changeBlendingFactor:(id) sender
 {
+	if( sender == 0L) sender = blendingSlider;
+	 
 	[PETCTController setBlendingFactor:[sender floatValue]];
 }
 
@@ -2521,14 +2523,20 @@ NSString * documentsDirectory();
     }
 }
 
+- (short) curMovieIndex
+{
+	return curMovieIndex;
+}
+
+- (short) maxMovieIndex
+{
+	return maxMovieIndex;
+}
+
 - (void) setMovieIndex: (short) i
 {
 	int index = [[CTController originalView] curImage];
 	BOOL wasDataFlipped = [[CTController originalView] flippedData];
-
-
-
-
 
 //	[CTController initWithPixList: [NSMutableArray arrayWithArray: [pix subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [files subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : vC : nil : self];
 //	[PETController initWithPixList: [NSMutableArray arrayWithArray: [[bC pixList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)]] : [[bC fileList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)] : vData : vC : nil : self];

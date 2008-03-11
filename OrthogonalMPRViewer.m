@@ -1672,6 +1672,9 @@ NSString * documentsDirectory();
     }
 }
 
+- (short) curMovieIndex { return curMovieIndex;}
+- (short) maxMovieIndex { return maxMovieIndex;}
+
 - (void) setMovieIndex: (short) i
 {
 	int index = [[controller originalView] curImage];

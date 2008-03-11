@@ -3255,21 +3255,58 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			if( fabs( [theEvent deltaY]) >  fabs( deltaX) )
 			{
-				change = reverseScrollWheel * [theEvent deltaY];
-				if( change > 0)
+				if( [theEvent modifierFlags]  & NSCommandKeyMask)
 				{
-					change = ceil( change);
-					if( change < 1) change = 1;
+					if( blendingView)
+					{
+						float change = [theEvent deltaY] / -0.2f;
+						blendingFactor += change;
+					
+						[self setBlendingFactor: blendingFactor];
+					}
+				}
+				else if( [theEvent modifierFlags]  & NSAlternateKeyMask)
+				{
+					// 4D Direction scroll - Cardiac CT eg	
+					float change = [theEvent deltaY] / -2.5f;
+					
+					if( change > 0)
+					{
+						change = ceil( change);
+						if( change < 1) change = 1;
+						
+						change += [[self windowController] curMovieIndex];
+						while( change >= [[self windowController] maxMovieIndex]) change -= [[self windowController] maxMovieIndex];
+					}
+					else
+					{
+						change = floor( change);
+						if( change > -1) change = -1;
+						
+						change += [[self windowController] curMovieIndex];
+						while( change < 0) change += [[self windowController] maxMovieIndex];
+					}
+					
+					[[self windowController] setMovieIndex: change];
 				}
 				else
 				{
-					change = floor( change);
-					if( change > -1) change = -1;		
-				}
-				
-				if ( [self isKindOfClass: [OrthogonalMPRView class]] )
-				{
-					[(OrthogonalMPRView*)self scrollTool: 0 : (long)change];
+					change = reverseScrollWheel * [theEvent deltaY];
+					if( change > 0)
+					{
+						change = ceil( change);
+						if( change < 1) change = 1;
+					}
+					else
+					{
+						change = floor( change);
+						if( change > -1) change = -1;		
+					}
+					
+					if ( [self isKindOfClass: [OrthogonalMPRView class]] )
+					{
+						[(OrthogonalMPRView*)self scrollTool: 0 : (long)change];
+					}
 				}
 			}
 			else
