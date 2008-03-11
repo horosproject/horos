@@ -972,6 +972,11 @@ NSString * documentsDirectory();
     [toolbar runCustomizationPalette:sender];
 }
 
+- (void) threeDPanel:(id) sender
+{
+	[viewer threeDPanel: sender];
+}
+
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted
 {
     // Required delegate method:  Given an item identifier, this method returns an item 
@@ -1044,7 +1049,7 @@ NSString * documentsDirectory();
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"3D Pos", nil)];
 		[toolbarItem setToolTip:NSLocalizedString(@"3D Pos", nil)];
 		[toolbarItem setImage:[NSImage imageNamed:@"OrientationWidget.tiff"]];
-		[toolbarItem setTarget:viewer];
+		[toolbarItem setTarget:self];
 		[toolbarItem setAction:@selector(threeDPanel:)];
     }
 	else if ([itemIdent isEqual: SameWidthSplitViewToolbarItemIdentifier]) {
