@@ -49,6 +49,8 @@ typedef enum
 	ViewerController *previousViewer;
 	
 	BOOL mouseDragged, mouseClickedWithCommandKey;
+	
+	NSMutableDictionary *savedTransformDict;
 }
 
 @property(readonly) int thumbnailWidth, thumbnailHeight;
@@ -191,5 +193,8 @@ typedef enum
 * @param t number of the movie frame (for 4D data set).
 */
 - (void)openNewViewerAtSlice:(int)z movieFrame:(int)t;
+
+- (void)saveTransformForCurrentViewer;
+- (void)loadTransformForCurrentViewer;
 
 @end

@@ -66,7 +66,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		float scrollbarShift = 0;
 		if(rect.size.width < [n frame].size.width) scrollbarShift = 12;
 		
-		rect.size.height += 16+scrollbarShift;
+		rect.size.height += 17+scrollbarShift;
 		
 		return rect;
 	}
@@ -123,6 +123,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		previousImageIndex = -1;
 		previousMovieIndex = -1;
 		
+		savedTransformDict = [[NSMutableDictionary dictionary] retain];
+		
 //		previousViewer = nil;
 		
 		cursorTracking = [[NSTrackingArea alloc] initWithRect:[self visibleRect] options:(NSTrackingActiveWhenFirstResponder|NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited|NSTrackingActiveInKeyWindow) owner:self userInfo:0L];
@@ -152,6 +154,8 @@ static float deg2rad = 3.14159265358979/180.0;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[thumbnailsTextureArray release];
 	[isTextureWLWWUpdated release];
+	[savedTransformDict release];
+	
 //	[previousViewer release];
 	
 	if(scrollTimer)
@@ -177,6 +181,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	previousMovieIndex = -1;
 //	[previousViewer release];
 //	previousViewer = [[self viewer] retain];
+	[self loadTransformForCurrentViewer];
 	[self setNeedsDisplay:YES];
 }
 
@@ -913,7 +918,6 @@ static float deg2rad = 3.14159265358979/180.0;
 		[self setNeedsDisplay:YES];
 }
 
-
 #pragma mark-
 #pragma mark Scroll functions
 
@@ -1204,6 +1208,41 @@ static float deg2rad = 3.14159265358979/180.0;
 - (void) keyDown:(NSEvent *)event
 {
 	[[[self viewer] imageView] keyDown:event];
+}
+
+#pragma mark-
+#pragma mark Saving Transformation Values
+
+- (void)saveTransformForCurrentViewer;
+{
+	if(![self viewer]) return;
+	NSString *seriesInstanceUID = [[[[self viewer] imageView] seriesObj] valueForKey:@"seriesInstanceUID"];
+	NSMutableDictionary *currentTransform = [NSMutableDictionary dictionary];
+	[currentTransform setObject:[NSNumber numberWithFloat:zoomFactor] forKey:@"zoomFactor"];
+	[currentTransform setObject:[NSNumber numberWithFloat:rotationAngle] forKey:@"rotationAngle"];
+	[currentTransform setObject:[NSValue valueWithPoint:offset] forKey:@"offset"];
+	[savedTransformDict setObject:currentTransform forKey:seriesInstanceUID];
+}
+
+- (void)loadTransformForCurrentViewer;
+{
+	if(![self viewer]) return;
+	NSString *seriesInstanceUID = [[[[self viewer] imageView] seriesObj] valueForKey:@"seriesInstanceUID"];
+	NSMutableDictionary *currentTransform = [savedTransformDict objectForKey:seriesInstanceUID];
+	if(currentTransform)
+	{
+		zoomFactor = [[currentTransform objectForKey:@"zoomFactor"] floatValue];
+		rotationAngle = [[currentTransform objectForKey:@"rotationAngle"] floatValue];
+		offset = [[currentTransform objectForKey:@"offset"] pointValue];
+	}
+	else
+	{
+		zoomFactor = 1.0;
+		rotationAngle = 0.0;
+		offset = NSMakePoint(0, 0);
+	}
+	
+	[self setNeedsDisplay:YES];
 }
 
 @end

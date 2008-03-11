@@ -55,6 +55,7 @@ static NavigatorWindowController *nav = 0L;
 
 - (void)setViewer:(ViewerController*)viewer;
 {
+	[navigatorView saveTransformForCurrentViewer];
 	if( viewerController != viewer)
 	{
 		[viewerController release];
