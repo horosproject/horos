@@ -693,6 +693,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			if(layerColor)[layerColor retain];
 			displayTextualData = [[coder decodeObject] boolValue];
 		}
+		else displayTextualData = YES;
 		
 		if (fileVersion >= 8)
 		{
