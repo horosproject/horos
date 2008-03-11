@@ -21,6 +21,7 @@
 {
 	[[self window] makeKeyAndOrderFront: sender];
 	[super showWindow: sender];
+	[[self window] display];
 }
 
 - (void) dealloc

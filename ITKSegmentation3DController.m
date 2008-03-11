@@ -285,7 +285,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 		}
 	}
 	
-	if( [previewCheck state] != NSOnState) return;
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"previewGrowingRegion"] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"segmentationDirectlyGenerate"] == NO) return;
 	
 	for(p=0;p<[params numberOfRows]; p++)
 	{
@@ -302,39 +302,52 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 		return;
 	}
 
-	long				slice;
+	long slice;
+	int previousMovieIndex = [viewer curMovieIndex];
 	
 	slice = [[viewer imageView] curImage];
 	
-	ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWith:[viewer pixList] :[viewer volumePtr] :slice];
-	if( itk)
+	for( int i = 0; i < [viewer maxMovieIndex]; i++)
 	{
-		// an array for the parameters
-		int algo = [[algorithmPopup selectedItem] tag];
-		int parametersCount = [[parameters objectAtIndex:algo] count];
-		NSMutableArray *parametersArray = [[NSMutableArray alloc] initWithCapacity:parametersCount];
-		int i;
-		for(i=0; i<parametersCount; i++)
-		{
-			[parametersArray addObject:[NSNumber numberWithFloat:[[params cellAtRow:i column:0] floatValue]]];
-		}
-				
-		[itk regionGrowing3D	: viewer
-								: 0L
-								: slice
-								: startingPoint
-								: algo //[[params cellAtIndex: 1] floatValue]
-								: parametersArray //[[params cellAtIndex: 2] floatValue]
-								: [[pixelsSet cellWithTag:0] state]==NSOnState
-								: [[pixelsValue cellWithTag:0] floatValue]
-								: [[pixelsSet cellWithTag:1] state]==NSOnState
-								: [[pixelsValue cellWithTag:1] floatValue]
-								: [[NSUserDefaults standardUserDefaults] integerForKey: @"growingRegionROIType"]
-								: ((long)[roiResolution maxValue] + 1) - [roiResolution intValue]
-								: name];
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"growingRegionPropagateIn4D"])
+			[viewer setMovieIndex: i];
 		
-		[itk release];
+		if( i == [viewer curMovieIndex])
+		{
+			ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWith:[viewer pixList] :[viewer volumePtr] :slice];
+			if( itk)
+			{
+				// an array for the parameters
+				int algo = [[algorithmPopup selectedItem] tag];
+				int parametersCount = [[parameters objectAtIndex:algo] count];
+				NSMutableArray *parametersArray = [[NSMutableArray alloc] initWithCapacity:parametersCount];
+				int i;
+				for(i=0; i<parametersCount; i++)
+				{
+					[parametersArray addObject:[NSNumber numberWithFloat:[[params cellAtRow:i column:0] floatValue]]];
+				}
+				
+				[itk regionGrowing3D	: viewer
+										: 0L
+										: slice
+										: startingPoint
+										: algo //[[params cellAtIndex: 1] floatValue]
+										: parametersArray //[[params cellAtIndex: 2] floatValue]
+										: [[pixelsSet cellWithTag:0] state]==NSOnState
+										: [[pixelsValue cellWithTag:0] floatValue]
+										: [[pixelsSet cellWithTag:1] state]==NSOnState
+										: [[pixelsValue cellWithTag:1] floatValue]
+										: [[NSUserDefaults standardUserDefaults] integerForKey: @"growingRegionROIType"]
+										: ((long)[roiResolution maxValue] + 1) - [roiResolution intValue]
+										: name];
+				
+				[itk release];
+			}
+		}
 	}
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"growingRegionPropagateIn4D"])
+		[viewer setMovieIndex: previousMovieIndex];
 }
 
 -(IBAction) compute:(id) sender
@@ -361,7 +374,8 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	
 	[viewer roiDeleteWithName: NSLocalizedString( @"Segmentation Preview", 0L)];
 	
-	long				slice;
+	long slice;
+	int previousMovieIndex = [viewer curMovieIndex];
 	
 	if( [[growingMode selectedCell] tag] == 1)
 	{
@@ -369,76 +383,88 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	}
 	else slice = [[viewer imageView] curImage];
 
-	ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWith:[viewer pixList] :[viewer volumePtr] :slice];
-	if( itk)
+	for( int i = 0; i < [viewer maxMovieIndex]; i++)
 	{
-		ViewerController	*v = 0L;
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"growingRegionPropagateIn4D"])
+			[viewer setMovieIndex: i];
 		
-		if( [[outputResult selectedCell] tag] == 1)
+		if( i == [viewer curMovieIndex])
 		{
-			if( resultsViewer == 0L)
+			ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWith:[viewer pixList] :[viewer volumePtr] :slice];
+			if( itk)
 			{
-				long currentImageIndex = [[viewer imageView] curImage];
-				resultsViewer = [self duplicateCurrent2DViewerWindow];
-				[[viewer imageView] setIndex:currentImageIndex];
+				ViewerController	*v = 0L;
 				
-				if( [[pixelsSet cellWithTag:1] state] == NSOnState)	// FILL THE IMAGE WITH THE VALUE
+				if( [[outputResult selectedCell] tag] == 1)
 				{
-					long	i, x, y, z;
-					float	*dstImage, *srcImage, value = [[pixelsValue cellWithTag:1] floatValue];
-					
-					for( i = 0; i < [[resultsViewer pixList] count]; i++)
+					if( resultsViewer == 0L)
 					{
-						DCMPix	*curPix = [[resultsViewer pixList] objectAtIndex: i];
-						dstImage = [curPix fImage];
-						long tot = [curPix pwidth] * [curPix pheight];
+						long currentImageIndex = [[viewer imageView] curImage];
+						resultsViewer = [self duplicateCurrent2DViewerWindow];
+						[[viewer imageView] setIndex:currentImageIndex];
 						
-						for( x = 0; x < tot; x++) 
+						if( [[pixelsSet cellWithTag:1] state] == NSOnState)	// FILL THE IMAGE WITH THE VALUE
 						{
-							*dstImage++ = value;
+							long	i, x, y, z;
+							float	*dstImage, *srcImage, value = [[pixelsValue cellWithTag:1] floatValue];
+							
+							for( i = 0; i < [[resultsViewer pixList] count]; i++)
+							{
+								DCMPix	*curPix = [[resultsViewer pixList] objectAtIndex: i];
+								dstImage = [curPix fImage];
+								long tot = [curPix pwidth] * [curPix pheight];
+								
+								for( x = 0; x < tot; x++) 
+								{
+									*dstImage++ = value;
+								}
+							}
 						}
 					}
+					
+					v = resultsViewer;
 				}
+				
+				// an array for the parameters
+				int algo = [[algorithmPopup selectedItem] tag];
+				int parametersCount = [[parameters objectAtIndex:algo] count];
+				NSMutableArray *parametersArray = [[NSMutableArray alloc] initWithCapacity:parametersCount];
+				int i;
+				for(i=0; i<parametersCount; i++)
+				{
+					[parametersArray addObject:[NSNumber numberWithFloat:[[params cellAtRow:i column:0] floatValue]]];
+				}
+				
+				[itk regionGrowing3D	: viewer
+										: v
+										: slice
+										: startingPoint
+										: algo //[[params cellAtIndex: 1] floatValue]
+										: parametersArray //[[params cellAtIndex: 2] floatValue]
+										: [[pixelsSet cellWithTag:0] state]==NSOnState
+										: [[pixelsValue cellWithTag:0] floatValue]
+										: [[pixelsSet cellWithTag:1] state]==NSOnState
+										: [[pixelsValue cellWithTag:1] floatValue]
+										: [[NSUserDefaults standardUserDefaults] integerForKey: @"growingRegionROIType"]
+										: ((long)[roiResolution maxValue] + 1) - [roiResolution intValue]
+										: [newName stringValue]];
+						
+				if( v)
+				{
+					float wl, ww;
+					
+					[v needsDisplayUpdate];
+					[[viewer imageView] getWLWW:&wl :&ww];
+					[[v imageView] setWLWW:wl :ww];
+				}
+				
+				[itk release];
 			}
-			
-			v = resultsViewer;
 		}
-		
-		// an array for the parameters
-		int algo = [[algorithmPopup selectedItem] tag];
-		int parametersCount = [[parameters objectAtIndex:algo] count];
-		NSMutableArray *parametersArray = [[NSMutableArray alloc] initWithCapacity:parametersCount];
-		int i;
-		for(i=0; i<parametersCount; i++)
-		{
-			[parametersArray addObject:[NSNumber numberWithFloat:[[params cellAtRow:i column:0] floatValue]]];
-		}
-				
-		[itk regionGrowing3D	: viewer
-								: v
-								: slice
-								: startingPoint
-								: algo //[[params cellAtIndex: 1] floatValue]
-								: parametersArray //[[params cellAtIndex: 2] floatValue]
-								: [[pixelsSet cellWithTag:0] state]==NSOnState
-								: [[pixelsValue cellWithTag:0] floatValue]
-								: [[pixelsSet cellWithTag:1] state]==NSOnState
-								: [[pixelsValue cellWithTag:1] floatValue]
-								: [[NSUserDefaults standardUserDefaults] integerForKey: @"growingRegionROIType"]
-								: ((long)[roiResolution maxValue] + 1) - [roiResolution intValue]
-								: [newName stringValue]];
-				
-		if( v)
-		{
-			float wl, ww;
-			
-			[v needsDisplayUpdate];
-			[[viewer imageView] getWLWW:&wl :&ww];
-			[[v imageView] setWLWW:wl :ww];
-		}
-		
-		[itk release];
 	}
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"growingRegionPropagateIn4D"])
+		[viewer setMovieIndex: previousMovieIndex];
 }
 
 - (void) fillAlgorithmPopup

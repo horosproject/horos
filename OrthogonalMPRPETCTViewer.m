@@ -2559,7 +2559,7 @@ NSString * documentsDirectory();
 	
 //	if( wasDataFlipped) [self flipDataSeries: self];
 	[[CTController originalView] setIndex:index];
-	//[[CTController originalView] sendSyncMessage:1];
+	//[[CTController originalView] sendSyncMessage:0];
 	
 	cPix = [blendingViewerController pixList:i];
 	subPix = [NSMutableArray arrayWithArray: [cPix subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)]];
@@ -2570,7 +2570,7 @@ NSString * documentsDirectory();
 	[[PETController originalView] setDCM:subPix :[[blendingViewerController fileList:i] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)] :[blendingViewerController roiList:i] :0 :'i' :NO];
 //	if( wasDataFlipped) [self flipDataSeries: self];
 	[[PETController originalView] setIndex:index];
-	//[[CTController originalView] sendSyncMessage:1];
+	//[[CTController originalView] sendSyncMessage:0];
 //	
 //	[CTController setFusion];
 //	[PETController setFusion];

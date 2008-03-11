@@ -494,23 +494,41 @@ static float deg2rad = 3.14159265358979/180.0;
 
 	// draw selection
 	glEnable(GL_LINE_SMOOTH);
+		
+	// associated Viewers
+	for (ViewerController *v in [self associatedViewers])
+	{
+		int t = [v curMovieIndex];
+		upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
+		
+		int z = [v imageIndex];
+		upperLeft.x = z*thumbnailWidth-viewBounds.origin.x;
+		thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
+		
+		if(NSIntersectsRect(thumbRect, viewFrame))
+		{
+			glScissor( upperLeft.x, viewSize.height - (upperLeft.y+thumbnailHeight), thumbnailWidth, thumbnailHeight);
+			glEnable(GL_SCISSOR_TEST);
+			
+			glLineWidth(6.0);
+			glColor3f(0.0f, 3.0f, 0.0f);
+			glBegin(GL_LINE_LOOP);
+				glVertex2f(upperLeft.x+1, upperLeft.y+1);
+				glVertex2f(upperLeft.x-1+thumbnailWidth, upperLeft.y+1);
+				glVertex2f(upperLeft.x-1+thumbnailWidth, upperLeft.y+thumbnailHeight-1);
+				glVertex2f(upperLeft.x+1, upperLeft.y+thumbnailHeight-1);
+			glEnd();
+			glDisable(GL_SCISSOR_TEST);
+			
+			glColor3f(0.0f, 0.0f, 0.0f);
+			glLineWidth(1.0);	
+		}
+	}
 	
 	// selected time line
 	int t = [[self viewer] curMovieIndex];
 	upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
-//	upperLeft.x = 0.0;
-//	
-//	glLineWidth(2.0);
-//	glColor3f(1.0f, 1.0f, 0.0f);
-//	glBegin(GL_LINE_LOOP);
-//		glVertex2f(upperLeft.x, upperLeft.y);
-//		glVertex2f(upperLeft.x+viewSize.width, upperLeft.y);
-//		glVertex2f(upperLeft.x+viewSize.width, upperLeft.y+thumbnailHeight);
-//		glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
-//	glEnd();
-//	glColor3f(0.0f, 0.0f, 0.0f);
-//	glLineWidth(1.0);	
-	
+
 	// selected image
 	int z = [[self viewer] imageIndex];
 	upperLeft.x = z*thumbnailWidth-viewBounds.origin.x;
@@ -534,30 +552,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		glColor3f(0.0f, 0.0f, 0.0f);
 		glLineWidth(1.0);	
 	}
-	
-//	// associated Viewers	
-//	// selected time line
-//	for (ViewerController *v in [self associatedViewers])
-//	{
-//		int t = [v curMovieIndex];
-//		upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
-//		upperLeft.x = 0.0;
-//		
-//		float shift = 2.0;
-//		upperLeft.y += shift;
-//		
-//		glLineWidth(2.0);
-//		glColor3f(0.8f, 1.0f, 0.7f);
-//		glBegin(GL_LINE_LOOP);
-//			glVertex2f(upperLeft.x, upperLeft.y);
-//			glVertex2f(upperLeft.x+viewSize.width, upperLeft.y);
-//			glVertex2f(upperLeft.x+viewSize.width, upperLeft.y+thumbnailHeight-2.0*shift);
-//			glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight-2.0*shift);
-//		glEnd();
-//		glColor3f(0.0f, 0.0f, 0.0f);
-//		glLineWidth(1.0);	
-//	}
-	
+
 	glDisable(GL_LINE_SMOOTH);
 	
 	// lateral scroll bar	
@@ -1127,7 +1122,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		if(t != [[self viewer] curMovieIndex]) [[self viewer] setMovieIndex:t];
 		
-		[view sendSyncMessage:1];
+		[view sendSyncMessage:0];
 	}
 	else
 	{
@@ -1159,7 +1154,7 @@ static float deg2rad = 3.14159265358979/180.0;
 //			if([view flippedData]) [view setIndex:[[[self viewer] pixList] count]-z-1];
 //			else [view setIndex:z];
 //			// sync other viewers
-//			[view sendSyncMessage:1];
+//			[view sendSyncMessage:0];
 //			// make key viewer
 //			[[selectedViewer window] makeKeyWindow];
 //			[self setNeedsDisplay:YES];
@@ -1199,7 +1194,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	[newViewer setWL: wl WW: ww];
 	[newViewer propagateSettings];
 
-	//[view sendSyncMessage:1];
+	//[view sendSyncMessage:0];
 	[newViewer checkEverythingLoaded];
 }
 

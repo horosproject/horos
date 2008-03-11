@@ -5273,8 +5273,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					if( flippedData) curImage -= diff;
 					else curImage += diff;
 					
-					//NSLog(@"Rel");
-					
 					if( curImage < 0)
 					{
 						curImage += [dcmPixList count];
@@ -5305,7 +5303,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		
 		if( [[self window] isMainWindow])
-			[self sendSyncMessage: 1];
+			[self sendSyncMessage: 0];
 	}
 }
 
@@ -9011,7 +9009,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
 	sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
 	
-	[self sendSyncMessage:1];
+	[self sendSyncMessage: 0];
 	
 	if( [self is2DViewer])
 	{
@@ -9027,7 +9025,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
 	slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
 	sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
-	[self sendSyncMessage:1];
+	
+	[self sendSyncMessage: 0];
 	
 	[self setNeedsDisplay:YES];
 }
@@ -9229,7 +9228,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	isKeyView = NO;
 	[self setNeedsDisplay:YES];
-	[self sendSyncMessage:1];
+	[self sendSyncMessage: 0];
 	
 	return [super resignFirstResponder];
 }

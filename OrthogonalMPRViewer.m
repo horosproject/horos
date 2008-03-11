@@ -1697,7 +1697,7 @@ NSString * documentsDirectory();
 //	if( wasDataFlipped) [self flipDataSeries: self];
 	
 	[[controller originalView] setIndex:index];
-	//[[controller originalView] sendSyncMessage:1];
+	//[[controller originalView] sendSyncMessage: 0];
 	[controller setFusion];
 	
 	[controller refreshViews];

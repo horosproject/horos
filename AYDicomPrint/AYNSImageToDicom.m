@@ -202,7 +202,7 @@
 	}
 
 	[[currentViewer imageView] setIndex: currentImageIndex];
-	[[currentViewer imageView] sendSyncMessage:1];
+	[[currentViewer imageView] sendSyncMessage:0];
 	[currentViewer adjustSlider];
 	
 	return dicomFilePathList;

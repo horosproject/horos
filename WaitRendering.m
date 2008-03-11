@@ -17,6 +17,13 @@
 
 @implementation WaitRendering
 
+- (void) ShowWindow:(id) sender
+{
+	[[self window] makeKeyAndOrderFront: sender];
+	[super showWindow: sender];
+	[[self window] display];
+}
+
 - (void) setCancel:(BOOL) c
 {
 	cancel = c;

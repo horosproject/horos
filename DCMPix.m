@@ -5651,7 +5651,7 @@ END_CREATE_ROIS:
 		if( theGroupP )	{
 			val = Papy3GetElement (theGroupP, papFrameofReferenceUIDGr, &nbVal, &elemType);
 			if ( val ) frameOfReferenceUID = [[NSString stringWithCString:val->a] retain];
-			else sliceThickness = 0;
+			else frameOfReferenceUID = 0;
 
 			val = Papy3GetElement (theGroupP, papSliceThicknessGr, &nbVal, &elemType);
 			if ( val ) sliceThickness = [[NSString stringWithCString:val->a] floatValue];

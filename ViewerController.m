@@ -728,7 +728,7 @@ static int hotKeyToolCrossTable[] =
 	[self computeInterval];
 	[self setWindowTitle:self];
 	[imageView setIndex: [newPixList count]/2];
-	[imageView sendSyncMessage:1];
+	[imageView sendSyncMessage:0];
 	[self adjustSlider];
 }
 
@@ -1181,7 +1181,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[self computeInterval];
 		[self setWindowTitle:self];
 		[imageView setIndex: [[xPix objectAtIndex: 0] count]/2];
-		[imageView sendSyncMessage:1];
+		[imageView sendSyncMessage:0];
 		[self adjustSlider];
 	}
 	
@@ -1517,7 +1517,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				{
 					case 0:
 						[imageView setIndex: [pixList[curMovieIndex] count]/2];
-						[imageView sendSyncMessage:1];
+						[imageView sendSyncMessage:0];
 						[self adjustSlider];
 					break;
 					
@@ -1548,7 +1548,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
 					case 1:
 						[imageView setIndex: [pixList[curMovieIndex] count]/2];
-						[imageView sendSyncMessage:1];
+						[imageView sendSyncMessage:0];
 						[self adjustSlider];
 					break;
 					
@@ -1591,7 +1591,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
 					case 2:
 						[imageView setIndex: [pixList[curMovieIndex] count]/2];
-						[imageView sendSyncMessage:1];
+						[imageView sendSyncMessage:0];
 						[self adjustSlider];
 					break;
 				}
@@ -1635,7 +1635,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[self updateImage: self];
 		
-		[imageView sendSyncMessage:1];
+		[imageView sendSyncMessage:0];
 		[self adjustSlider];
 	}
 }
@@ -2274,7 +2274,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	[imageView stopROIEditingForce: YES];
 	
-	[imageView sendSyncMessage: 1];
+	[imageView sendSyncMessage: 0];
 	
 	if (AUTOHIDEMATRIX) [self autoHideMatrix];
 }
@@ -3742,7 +3742,7 @@ static ViewerController *draggedController = 0L;
 	if( v == pixList[ 0])
 	{
 		[imageView setIndex: [[[note userInfo] valueForKey:@"z"] intValue]];
-		[imageView sendSyncMessage:1];
+		[imageView sendSyncMessage: 0];
 	}
 }
 
@@ -5949,7 +5949,7 @@ static ViewerController *draggedController = 0L;
 		if( wasDataFlipped) [self flipDataSeries: self];
 		
 		[imageView setIndex: index];
-		[imageView sendSyncMessage:1];
+		[imageView sendSyncMessage: 0];
 		
 		[self adjustSlider];
 		
@@ -6604,7 +6604,7 @@ static ViewerController *draggedController = 0L;
 	
 	[[NSUserDefaults standardUserDefaults] setInteger:[subCtrlSum intValue] forKey:@"stackThickness"];
 	
-	[imageView sendSyncMessage:1];
+	[imageView sendSyncMessage: 0];
 
 }
 
@@ -6739,7 +6739,7 @@ static ViewerController *draggedController = 0L;
 	
 	[self adjustSlider];
 	
-	[imageView sendSyncMessage:1];
+	[imageView sendSyncMessage: 0];
 	
 	if( activatedFusionState == NSOnState)
 		[self setFusionMode: previousFusion];
@@ -8387,7 +8387,7 @@ NSMutableArray		*array;
 		[sliderFusion setEnabled:YES];
 	}
 	
-	[imageView sendSyncMessage:1];
+	[imageView sendSyncMessage: 0];
 	
 	float   iwl, iww;
 	[imageView getWLWW:&iwl :&iww];
@@ -8435,7 +8435,7 @@ NSMutableArray		*array;
 	
 	[[NSUserDefaults standardUserDefaults] setInteger:[sender intValue] forKey:@"stackThickness"];
 	
-	[imageView sendSyncMessage:1];
+	[imageView sendSyncMessage: 0];
 }
 #pragma mark blending
 
@@ -8480,7 +8480,7 @@ NSMutableArray		*array;
 						
 						if( result[0] + result[1] + result[2] < 0.01) 
 						{
-							[[a imageView] sendSyncMessage:1];
+							[[a imageView] sendSyncMessage: 0];
 							[a ActivateBlending: b];
 							
 							fused = YES;
@@ -8613,7 +8613,7 @@ NSMutableArray		*array;
 	
 	[self buildMatrixPreview: NO];
 	
-	[imageView sendSyncMessage:1];
+	[imageView sendSyncMessage: 0];
 }
 
 -(ViewerController*) blendedWindow
@@ -8659,7 +8659,7 @@ NSMutableArray		*array;
 			for( i = 0; i < [pixList[ curMovieIndex] count]; i++)
 			{
 				[imageView setIndex:i];
-				[imageView sendSyncMessage:1];
+				[imageView sendSyncMessage: 0];
 				[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
 				
 				[imageView subtract: [bc imageView]];
@@ -8670,7 +8670,7 @@ NSMutableArray		*array;
 			for( i = 0; i < [pixList[ curMovieIndex] count]; i++)
 			{
 				[imageView setIndex:i];
-				[imageView sendSyncMessage:1];
+				[imageView sendSyncMessage: 0];
 				[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
 				
 				[imageView multiply: [bc imageView]];
@@ -8810,7 +8810,7 @@ NSMutableArray		*array;
 			for( x = 0; x < [[bc pixList] count]; x++)
 			{
 				[[bc imageView] setIndex: x];
-				[[bc imageView] sendSyncMessage:1];
+				[[bc imageView] sendSyncMessage: 0];
 				[bc adjustSlider];
 				
 				if( bcRoiList != [[bc roiList] objectAtIndex: [[bc imageView] curImage]])
@@ -8832,7 +8832,7 @@ NSMutableArray		*array;
 			}
 			
 			[[bc imageView] setIndex: curIndex];
-			[[bc imageView] sendSyncMessage:1];
+			[[bc imageView] sendSyncMessage: 0];
 			[bc adjustSlider];
 			
 			[splash close];
@@ -12008,7 +12008,13 @@ int i,j,l;
 	}
 	else
 	{
-		if( [imageView syncro] == syncroOFF) [imageView setSyncro: syncroLOC];
+		if( [imageView syncro] == syncroOFF)
+		{
+			if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask)
+				[imageView setSyncro: syncroREL];
+			else
+				[imageView setSyncro: syncroLOC];
+		}
 		else [imageView setSyncro: syncroOFF];
 		
 		[imageView becomeMainWindow];
@@ -12035,7 +12041,6 @@ int i,j,l;
 		
 		for( ViewerController *v in viewersList)
 		{
-		
 			if( [studyID isEqualToString: [v studyInstanceUID]] == NO)
 			{
 				allFromSameStudy = NO;
@@ -12106,7 +12111,7 @@ int i,j,l;
 			
 			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"COPYSETTINGS"];
 			[imageView setSyncro: syncroLOC];
-			[imageView sendSyncMessage:1];
+			[imageView sendSyncMessage: 0];
 			[self propagateSettings];
 		}
 		else NSRunAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(@"Only useful if propagate settings is OFF.", nil), nil, nil, nil);
@@ -12440,7 +12445,7 @@ int i,j,l;
 		
 		newViewer = [transform computeAffineTransformWithParameters: matrix resampleOnViewer: self];
 		
-		[imageView sendSyncMessage:1];
+		[imageView sendSyncMessage: 0];
 		[self adjustSlider];
 		
 		[transform release];
@@ -12572,7 +12577,7 @@ int i,j,l;
 			
 			ViewerController *newViewer = [transform computeAffineTransformWithParameters: matrix resampleOnViewer: self];
 			
-			[imageView sendSyncMessage:1];
+			[imageView sendSyncMessage: 0];
 			[self adjustSlider];
 			
 			[transform release];
@@ -12800,7 +12805,7 @@ int i,j,l;
 	[[[NavigatorWindowController navigatorWindowController] navigatorView] addNotificationObserver];
 	
 	[imageView setIndex: index];
-	[imageView sendSyncMessage:1];
+	[imageView sendSyncMessage: 0];
 	
 	[self adjustSlider];
 }
@@ -12861,7 +12866,7 @@ int i,j,l;
 	if( [imageView flippedData]) [imageView setIndex: [self getNumberOfImages] -1 -i];
 	else [imageView setIndex: i];
 
-	[imageView sendSyncMessage:1];
+	[imageView sendSyncMessage: 0];
 	
 	[self adjustSlider];
 	
@@ -12923,7 +12928,7 @@ int i,j,l;
 		
 		[self adjustSlider];
 		
-		[imageView sendSyncMessage:1];
+		[imageView sendSyncMessage: 0];
 		
 		lastTime = thisTime;
 		
@@ -13148,7 +13153,7 @@ int i,j,l;
 	[self setWindowTitle:self];
 	
 	[imageView setIndex: 0];
-	[imageView sendSyncMessage:1];
+	[imageView sendSyncMessage: 0];
 	
 	[self adjustSlider];
 	
@@ -13380,7 +13385,7 @@ int i,j,l;
 		
 		// Go back to initial frame
 		[imageView setIndex: currentImageIndex];
-		[imageView sendSyncMessage:1];
+		[imageView sendSyncMessage: 0];
 		[self adjustSlider];
 		
 		[splash close];
@@ -13415,7 +13420,7 @@ int i,j,l;
 		if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] - [sender intValue]];
 		else [imageView setIndex:  [sender intValue]-1];
 		
-		[imageView sendSyncMessage:1];
+		[imageView sendSyncMessage: 0];
 		
 		[self adjustSlider];
 	}
@@ -13541,7 +13546,7 @@ int i,j,l;
 			case 3:
 				if( [imageView flippedData]) [imageView setIndex: [self getNumberOfImages] - 1 -curSample];
 				else [imageView setIndex:curSample];
-				[imageView sendSyncMessage:1];
+				[imageView sendSyncMessage: 0];
 				[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
 			break;
 
@@ -13710,7 +13715,7 @@ int i,j,l;
 		else [imageView setIndex:  [sender intValue]-1];
 	}
 	
-	[imageView sendSyncMessage:1];
+	[imageView sendSyncMessage: 0];
 	
 	[self adjustSlider];
 	
@@ -14110,7 +14115,7 @@ int i,j,l;
 					if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] -1 -i];
 					else [imageView setIndex:i];
 					
-					[imageView sendSyncMessage:1];
+					[imageView sendSyncMessage: 0];
 					[self adjustSlider];
 					
 					[self exportDICOMFileInt:[[dcmFormat selectedCell] tag] withName:[dcmSeriesName stringValue] allViewers: [dcmAllViewers state]];
@@ -14128,7 +14133,7 @@ int i,j,l;
 			
 			// Go back to initial frame
 			[imageView setIndex: curImage];
-			[imageView sendSyncMessage:1];
+			[imageView sendSyncMessage: 0];
 			[self adjustSlider];
 			
 			[splash close];
@@ -14244,7 +14249,7 @@ int i,j,l;
 			else [imageView setIndex:  [sender intValue]-1];
 		}
 		
-		[imageView sendSyncMessage:1];
+		[imageView sendSyncMessage: 0];
 		
 		[self adjustSlider];
 		
@@ -14672,7 +14677,7 @@ int i,j,l;
 				if( export)
 				{
 					[imageView setIndex:i];
-					[imageView sendSyncMessage:1];
+					[imageView sendSyncMessage: 0];
 					[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
 					
 					NSImage *im = [imageView nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"] allViewers:[imageAllViewers state]];

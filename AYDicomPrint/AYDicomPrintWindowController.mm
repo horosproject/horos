@@ -182,7 +182,7 @@
 		if( [[m_CurrentViewer imageView] flippedData]) [[m_CurrentViewer imageView] setIndex: [[m_CurrentViewer pixList] count] - [sender intValue]];
 		else [[m_CurrentViewer imageView] setIndex:  [sender intValue]-1];
 		
-		[[m_CurrentViewer imageView] sendSyncMessage:1];
+		[[m_CurrentViewer imageView] sendSyncMessage:0];
 		
 		[m_CurrentViewer adjustSlider];
 		
