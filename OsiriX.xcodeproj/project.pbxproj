@@ -6437,6 +6437,12 @@
 		CE3F99A10C84724B00CB38F1 /* StructuredReport.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F993C0C84724B00CB38F1 /* StructuredReport.xib */; };
 		CE3F99A20C84724B00CB38F1 /* XMLViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F993E0C84724B00CB38F1 /* XMLViewer.xib */; };
 		CE3F99A30C84724B00CB38F1 /* AYDicomPrint.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F99400C84724B00CB38F1 /* AYDicomPrint.xib */; };
+		CE40ED530D86D54D007C6D49 /* ThreeDPositionController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE40ED510D86D54D007C6D49 /* ThreeDPositionController.h */; };
+		CE40ED540D86D54D007C6D49 /* ThreeDPositionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE40ED520D86D54D007C6D49 /* ThreeDPositionController.m */; };
+		CE40ED550D86D54D007C6D49 /* ThreeDPositionController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE40ED510D86D54D007C6D49 /* ThreeDPositionController.h */; };
+		CE40ED560D86D54D007C6D49 /* ThreeDPositionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE40ED520D86D54D007C6D49 /* ThreeDPositionController.m */; };
+		CE40ED590D86D634007C6D49 /* 3DPosition.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE40ED570D86D634007C6D49 /* 3DPosition.xib */; };
+		CE40ED5A0D86D634007C6D49 /* 3DPosition.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE40ED570D86D634007C6D49 /* 3DPosition.xib */; };
 		CE416BCE07969EEB009A8D42 /* OsiriX.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E0B3A3F067526CD00908593 /* OsiriX.framework */; };
 		CE438F420CB621DF006AAFD9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CE438F4D0CB621EC006AAFD9 /* Growl.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
@@ -11539,6 +11545,9 @@
 		CE3F993D0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/StructuredReport.xib; sourceTree = "<group>"; };
 		CE3F993F0C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/XMLViewer.xib; sourceTree = "<group>"; };
 		CE3F99410C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/AYDicomPrint.xib; sourceTree = "<group>"; };
+		CE40ED510D86D54D007C6D49 /* ThreeDPositionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreeDPositionController.h; sourceTree = "<group>"; };
+		CE40ED520D86D54D007C6D49 /* ThreeDPositionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreeDPositionController.m; sourceTree = "<group>"; };
+		CE40ED580D86D634007C6D49 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/3DPosition.xib; sourceTree = "<group>"; };
 		CE4700FB0CC51A6600ECF78A /* WindowLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowLayoutManager.h; sourceTree = "<group>"; };
 		CE4700FC0CC51A6600ECF78A /* WindowLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WindowLayoutManager.m; sourceTree = "<group>"; };
 		CE49E2C50760B93500444203 /* Empty.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Empty.tif; path = Binaries/Icons/Empty.tif; sourceTree = SOURCE_ROOT; };
@@ -12222,6 +12231,7 @@
 				CEBD8A4B0875B029000E42D6 /* Pane */,
 				ABBB639A0635874D00D9531F /* DCMTK */,
 				ABBB647A063587B200D9531F /* Icons */,
+				CE40ED570D86D634007C6D49 /* 3DPosition.xib */,
 				A987B3DF0D5A069200BF89C0 /* Navigator.xib */,
 				CE3F98E20C84724B00CB38F1 /* Survey.xib */,
 				CE3F98E40C84724B00CB38F1 /* SmartAlbum.xib */,
@@ -13714,6 +13724,8 @@
 				A910FB2E0D5767610095A956 /* NavigatorWindowController.m */,
 				A910FB330D57728A0095A956 /* NavigatorView.h */,
 				A910FB340D57728A0095A956 /* NavigatorView.m */,
+				CE40ED510D86D54D007C6D49 /* ThreeDPositionController.h */,
+				CE40ED520D86D54D007C6D49 /* ThreeDPositionController.m */,
 			);
 			name = "Single Window";
 			sourceTree = "<group>";
@@ -18584,6 +18596,7 @@
 				A979EF7B0D19023E00F4F8F2 /* WebServicesMethods.h in Headers */,
 				A910FB310D5767610095A956 /* NavigatorWindowController.h in Headers */,
 				A910FB370D57728A0095A956 /* NavigatorView.h in Headers */,
+				CE40ED530D86D54D007C6D49 /* ThreeDPositionController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20655,6 +20668,7 @@
 				A979EF7D0D19023E00F4F8F2 /* WebServicesMethods.h in Headers */,
 				A910FB2F0D5767610095A956 /* NavigatorWindowController.h in Headers */,
 				A910FB350D57728A0095A956 /* NavigatorView.h in Headers */,
+				CE40ED550D86D54D007C6D49 /* ThreeDPositionController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21410,6 +21424,7 @@
 				A9897D9C0D4A142200BAC447 /* displayTotoku.tif in Resources */,
 				A987B3E20D5A069200BF89C0 /* Navigator.xib in Resources */,
 				A98875BC0D5B694100E0118E /* Navigator.tif in Resources */,
+				CE40ED590D86D634007C6D49 /* 3DPosition.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21800,6 +21815,7 @@
 				A9897D9A0D4A142200BAC447 /* displayTotoku.tif in Resources */,
 				A987B3E10D5A069200BF89C0 /* Navigator.xib in Resources */,
 				A98875BB0D5B694100E0118E /* Navigator.tif in Resources */,
+				CE40ED5A0D86D634007C6D49 /* 3DPosition.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22942,6 +22958,7 @@
 				A979EF7C0D19023E00F4F8F2 /* WebServicesMethods.m in Sources */,
 				A910FB320D5767610095A956 /* NavigatorWindowController.m in Sources */,
 				A910FB380D57728A0095A956 /* NavigatorView.m in Sources */,
+				CE40ED540D86D54D007C6D49 /* ThreeDPositionController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24619,6 +24636,7 @@
 				A979EF7E0D19023E00F4F8F2 /* WebServicesMethods.m in Sources */,
 				A910FB300D5767610095A956 /* NavigatorWindowController.m in Sources */,
 				A910FB360D57728A0095A956 /* NavigatorView.m in Sources */,
+				CE40ED560D86D54D007C6D49 /* ThreeDPositionController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25136,6 +25154,14 @@
 				CE3F99410C84724B00CB38F1 /* English */,
 			);
 			name = AYDicomPrint.xib;
+			sourceTree = "<group>";
+		};
+		CE40ED570D86D634007C6D49 /* 3DPosition.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE40ED580D86D634007C6D49 /* English */,
+			);
+			name = 3DPosition.xib;
 			sourceTree = "<group>";
 		};
 		CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */ = {

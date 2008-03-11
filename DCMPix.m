@@ -2717,27 +2717,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 -(id) myinitEmpty
 {
 	cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
-	displaySUVValue = NO;
-	fixed8bitsWLWW = NO;
 	checking = [[NSLock alloc] init];
-	convertedDICOM = 0L;
-	subtractedfImage = 0L;
-	frameOfReferenceUID = nil;
-	units = nil;
 	decayFactor = 1.0;
-	decayCorrection = nil;
-	repetitiontime = nil;
-	echotime = nil;
-	protocolName = nil;
-	flipAngle = nil;
-	viewPosition = nil;
-	patientPosition = nil;
-	maxValueOfSeries = 0;
-	minValueOfSeries = 0;
-	radiopharmaceuticalStartTime = 0L;
-	acquisitionTime = 0L;
-	radionuclideTotalDose = 0;
-	radionuclideTotalDoseCorrected = 0;
 	
 	orientation[ 0] = 1;
 	orientation[ 1] = 0;
@@ -2779,51 +2760,11 @@ BOOL gUSEPAPYRUSDCMPIX;
 		
 		cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
 
-		frameOfReferenceUID = nil;
-		acquisitionTime = nil;
-		radiopharmaceuticalStartTime = nil;
-		radionuclideTotalDose = 0;
-		radionuclideTotalDoseCorrected = 0;
-		maxValueOfSeries = 0;
-		minValueOfSeries = 0;
-		hasSUV = NO;
-		SUVConverted = NO;
 		generated = YES;
-		fixed8bitsWLWW = NO;
-		thickSlab = nil;
-		sliceInterval = 0;
-		convertedDICOM = nil;
 		checking = [[NSLock alloc] init];
 		stack = 2;
-		stackMode = 0;
-		updateToBeApplied = NO;
-		image = nil;
-		oImage = nil;
-		fImage = nil;
-		fVolImage = nil;
-		baseAddr = nil;
-		imID = 0;
 		imTot = 1;
-		srcFile = nil;
-		frameNo = 0;
-		serieNo = 0;
-		isRGB = NO;
-		nonDICOM = NO;
-		fullwl = fullww = 0;
-		thickSlabVRActivated = NO;
-		
-		repetitiontime = nil;
-		echotime = nil;
-		flipAngle = nil;
-		protocolName = nil;
-		viewPosition = nil;
-		patientPosition = nil;
-		
-		units = nil;
-		decayCorrection = nil;
 		decayFactor = 1.0;
-		
-		offset = 0.0;
 		slope  = 1.0;
 		
 		height = yDim;
@@ -2944,55 +2885,16 @@ BOOL gUSEPAPYRUSDCMPIX;
 		imageObj = [iO retain];
 		
 		//---------------------------------various
-		maxValueOfSeries = 0;
-		minValueOfSeries = 0;
-		fixed8bitsWLWW = NO;
-		savedWL = savedWW = 0;
 		pixelRatio = 1.0;
-		sliceInterval = 0;
-		convertedDICOM = 0L;
 		checking = [[NSLock alloc] init];
 		stack = 2;
-		stackMode = 0;
-		updateToBeApplied = NO;
-		frameOfReferenceUID = nil;
-		image = nil;
-		oImage = nil;
-		fImage = nil;
-		baseAddr = nil;
-		isRGB = NO;
-		nonDICOM = NO;
-		fullwl = fullww = 0;
-		repetitiontime = nil;
-		echotime = nil;
-		flipAngle = nil;
-		protocolName = nil;
-		viewPosition = nil;
-		patientPosition = nil;
-		
-		//---------------------------------radiotherapy
-		generated = NO;
-		displaySUVValue = NO;
-		acquisitionTime = nil;
-		radiopharmaceuticalStartTime = nil;
-		radionuclideTotalDose = 0;
-		radionuclideTotalDoseCorrected = 0;
-		
 		//----------------------------------angio
-		subPixOffset.x = subPixOffset.y = 0;
 		subtractedfPercent = 1.0;
 		subtractedfZ = 0.8;
 		subtractedfZero = 0.8;
 		subtractedfGamma = 2.0;
-		subGammaFunction = nil;
 		
-		//ang = 0;
-		//rot = 0;
 		maskID = 1;
-		maskTime = 0;
-		fImageTime = 0;
-		
-		DCMPixShutterOnOff = NSOffState;
 		
 		//----------------------------------orientation		
 		orientation[ 0] = 1;

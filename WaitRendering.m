@@ -17,10 +17,10 @@
 
 @implementation WaitRendering
 
-- (void) ShowWindow:(id) sender
+- (void) showWindow: (id) sender
 {
-	[[self window] makeKeyAndOrderFront: sender];
 	[super showWindow: sender];
+	[[self window] makeKeyAndOrderFront: sender];
 	[[self window] display];
 }
 

@@ -84,6 +84,7 @@
 #import "DCMObject.h"
 #import "DCMAttributeTag.h"
 #import "NavigatorWindowController.h"
+#import "ThreeDPositionController.h"
 
 
 #import "DefaultsOsiriX.h"
@@ -141,6 +142,7 @@ static NSString*	OrientationToolbarItemIdentifier	= @"Orientation";
 static NSString*	PrintToolbarItemIdentifier			= @"Print.icns";
 static NSString*	LUT12BitToolbarItemIdentifier		= @"LUT12Bit";
 static NSString*	NavigatorToolbarItemIdentifier		= @"Navigator";
+static NSString*	ThreeDPositionToolbarItemIdentifier	= @"3DPosition";
 
 static NSArray*		DefaultROINames;
 
@@ -4306,6 +4308,15 @@ static ViewerController *draggedController = 0L;
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([display12bitToolbarItemView frame]), NSHeight([display12bitToolbarItemView frame]))];
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([display12bitToolbarItemView frame]),NSHeight([display12bitToolbarItemView frame]))];
     }
+	else if([itemIdent isEqualToString:ThreeDPositionToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel:NSLocalizedString(@"3D Pos", nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"3D Pos", nil)];
+		[toolbarItem setToolTip:NSLocalizedString(@"3D Pos", nil)];
+		[toolbarItem setImage:[NSImage imageNamed:@"OrientationWidget.tiff"]];
+		[toolbarItem setTarget:nil];
+		[toolbarItem setAction:@selector(threeDPanel:)];
+    }
 	else if([itemIdent isEqualToString:NavigatorToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel:NSLocalizedString(@"Navigator", nil)];
@@ -4413,6 +4424,7 @@ static ViewerController *draggedController = 0L;
 														FlipHorizontalToolbarItemIdentifier,
 														VRPanelToolbarItemIdentifier,
 														NavigatorToolbarItemIdentifier,
+														ThreeDPositionToolbarItemIdentifier,
 														nil];
 	
 	if([AppController canDisplay12Bit]) array = [array arrayByAddingObject: LUT12BitToolbarItemIdentifier];
@@ -17726,8 +17738,28 @@ sourceRef);
 	else [[NavigatorWindowController navigatorWindowController] setViewer:self];
 }
 
+- (IBAction)threeDPanel:(id)sender;
+{
+	if( [ThreeDPositionController threeDPositionController] == 0L)
+	{
+		BOOL volumicData = [self isDataVolumicIn4D: YES];
+		
+		if( volumicData == NO)
+		{
+			NSRunAlertPanel(NSLocalizedString(@"Data Error", nil), NSLocalizedString(@"This tool works only with 3D data series with identical matrix sizes.", nil), nil, nil, nil);
+			return;
+		}
+		
+		ThreeDPositionController *threeDPositionController = [[ThreeDPositionController alloc] initWithViewer:self];
+		[threeDPositionController showWindow:self];
+	}
+	else [[ThreeDPositionController threeDPositionController] setViewer:self];
+}
+
 - (void)updateNavigator;
 {
+	[[ThreeDPositionController threeDPositionController] setViewer:self];
+	
 	[[NavigatorWindowController navigatorWindowController] setViewer:self];
 	
 	NSRect navigatorFrame = [[[NavigatorWindowController navigatorWindowController] window] frame];

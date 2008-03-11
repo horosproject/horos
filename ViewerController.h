@@ -989,4 +989,6 @@ enum
 - (IBAction)navigator:(id)sender;
 - (void)updateNavigator;
 
+- (IBAction)threeDPanel:(id)sender;
+
 @end
