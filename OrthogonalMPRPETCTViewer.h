@@ -101,6 +101,7 @@
 - (void) moveBlendingFactorSlider:(float) f;
 - (IBAction) blendingMode:(id) sender;
 - (void) setBlendingMode: (long) m;
+- (void) realignDataSet:(id) sender;
 
 // NSToolbar
 - (void) setupToolbar;

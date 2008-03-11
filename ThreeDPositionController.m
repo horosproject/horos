@@ -17,6 +17,7 @@
 #import "AppController.h"
 #import "DCMPix.h"
 #import "DCMView.h"
+#import "OrthogonalMPRPETCTViewer.h"
 
 static ThreeDPositionController *nav = 0L;
 
@@ -95,10 +96,16 @@ static ThreeDPositionController *nav = 0L;
 	[viewerController computeInterval];
 	[viewerController propagateSettings];
 	
-	for( ViewerController * v in [ViewerController getDisplayed2DViewers])
+	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 	{
 		[[v imageView] sendSyncMessage: 0];
 		[v refresh];
+	}
+	
+	for( NSWindow *w in [[NSApplication sharedApplication] windows])
+	{
+		if( [[w windowController] isKindOfClass: [OrthogonalMPRPETCTViewer class]])
+			[[w windowController] realignDataSet: self];
 	}
 }
 

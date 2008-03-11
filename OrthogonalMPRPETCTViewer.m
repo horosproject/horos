@@ -37,9 +37,7 @@ static NSString*	MIPToolbarItemIdentifier					= @"Empty";
 static NSString*	FlipVolumeToolbarItemIdentifier				= @"Revert.tiff";
 static NSString*	WLWWToolbarItemIdentifier					= @"WLWW";
 static NSString*	VRPanelToolbarItemIdentifier				= @"MIP.tif";
-
-
-
+static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 
 NSString * documentsDirectory();
 
@@ -89,6 +87,73 @@ NSString * documentsDirectory();
 	}
 }
 
+- (void) initPixList:(NSData*) vData
+{
+	// takes the intersection of the CT and the PET stack
+	float signCT, signPET;
+	signCT = ([[pixList objectAtIndex:0] sliceInterval] > 0)? 1.0 : -1.0;
+	signPET = ([[[blendingViewerController pixList] objectAtIndex:0] sliceInterval] > 0)? 1.0 : -1.0;
+	
+	float firstCTSlice, lastCTSlice, heightCTStack,firstPETSlice, firstPETSliceIndex, heightPETStack;
+	firstCTSlice = [[pixList objectAtIndex:0] sliceLocation];
+	lastCTSlice = [[pixList lastObject] sliceLocation];
+	heightCTStack = fabs(firstCTSlice-lastCTSlice);
+	firstPETSliceIndex = firstCTSlice / [[[blendingViewerController pixList] objectAtIndex:0] sliceInterval];
+	firstPETSlice = [[[blendingViewerController pixList] objectAtIndex:0] sliceLocation];
+
+	heightPETStack = heightCTStack / [[[blendingViewerController pixList] objectAtIndex:0] sliceInterval];
+	
+	float maxCTSlice, minCTSlice, maxPETSlice, minPETSlice;
+	if (signCT > 0)
+	{
+		maxCTSlice = [[pixList lastObject] sliceLocation];
+		minCTSlice = [[pixList objectAtIndex:0] sliceLocation];
+	}
+	else
+	{
+		maxCTSlice = [[pixList objectAtIndex:0] sliceLocation];
+		minCTSlice = [[pixList lastObject] sliceLocation];
+	}
+	
+	if (signPET > 0)
+	{
+		maxPETSlice = [[[blendingViewerController pixList] lastObject] sliceLocation];
+		minPETSlice = [[[blendingViewerController pixList] objectAtIndex:0] sliceLocation];
+	}
+	else
+	{
+		maxPETSlice = [[[blendingViewerController pixList] objectAtIndex:0] sliceLocation];
+		minPETSlice = [[[blendingViewerController pixList] lastObject] sliceLocation];
+	}
+	
+	float higherCommunSlice, lowerCommunSlice;
+	higherCommunSlice = (maxCTSlice < maxPETSlice ) ? maxCTSlice : maxPETSlice ;
+	lowerCommunSlice = (minCTSlice > minPETSlice ) ? minCTSlice : minPETSlice ;
+	
+	long higherCTSliceIndex, lowerCTSliceIndex, higherPETSliceIndex, lowerPETSliceIndex;
+	higherCTSliceIndex = (higherCommunSlice - firstCTSlice) / [[pixList objectAtIndex:0] sliceInterval];
+	lowerCTSliceIndex = (lowerCommunSlice - firstCTSlice) / [[pixList objectAtIndex:0] sliceInterval];
+	higherPETSliceIndex = (higherCommunSlice - firstPETSlice) / [[[blendingViewerController pixList] objectAtIndex:0] sliceInterval];
+	lowerPETSliceIndex = (lowerCommunSlice - firstPETSlice) / [[[blendingViewerController pixList] objectAtIndex:0] sliceInterval];
+	
+	
+	fistCTSlice = (higherCTSliceIndex < lowerCTSliceIndex)? higherCTSliceIndex : lowerCTSliceIndex ;
+	fistPETSlice = (higherPETSliceIndex < lowerPETSliceIndex)? higherPETSliceIndex : lowerPETSliceIndex ;
+	sliceRangeCT = abs(higherCTSliceIndex - lowerCTSliceIndex)+1;
+	sliceRangePET = abs(higherPETSliceIndex - lowerPETSliceIndex)+1;
+	
+	if( fistCTSlice < 0) fistCTSlice = 0;
+	if( fistPETSlice < 0) fistPETSlice = 0;
+		
+	if( fistCTSlice + sliceRangeCT > [pixList count])  sliceRangeCT = [pixList count] - fistCTSlice;
+	if( fistPETSlice + sliceRangePET > [[blendingViewerController pixList] count])  sliceRangePET = [[blendingViewerController pixList] count] - fistPETSlice;
+	
+	// initialisations
+	[CTController initWithPixList: [NSMutableArray arrayWithArray: [pixList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [filesList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : viewer : nil : self];
+	[PETController initWithPixList: [NSMutableArray arrayWithArray: [[blendingViewerController pixList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)]] : [[blendingViewerController fileList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)] : vData : blendingViewerController : nil : self];
+	[PETCTController initWithPixList: [NSMutableArray arrayWithArray: [pixList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [filesList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : viewer : blendingViewerController : self];
+}
+
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC
 {
 	self = [super initWithWindowNibName:@"PETCT"];
@@ -124,76 +189,13 @@ NSString * documentsDirectory();
 	}
 	
 	pixList = [pix retain];
+	filesList = files;
 	
-	// takes the intersection of the CT and the PET stack
-	float signCT, signPET;
-	signCT = ([[pix objectAtIndex:0] sliceInterval] > 0)? 1.0 : -1.0;
-	signPET = ([[[bC pixList] objectAtIndex:0] sliceInterval] > 0)? 1.0 : -1.0;
-	
-	float firstCTSlice, lastCTSlice, heightCTStack,firstPETSlice, firstPETSliceIndex, heightPETStack;
-	firstCTSlice = [[pix objectAtIndex:0] sliceLocation];
-	lastCTSlice = [[pix lastObject] sliceLocation];
-	heightCTStack = fabs(firstCTSlice-lastCTSlice);
-	firstPETSliceIndex = firstCTSlice / [[[bC pixList] objectAtIndex:0] sliceInterval];
-	firstPETSlice = [[[bC pixList] objectAtIndex:0] sliceLocation];
-
-	heightPETStack = heightCTStack / [[[bC pixList] objectAtIndex:0] sliceInterval];
-	
-	float maxCTSlice, minCTSlice, maxPETSlice, minPETSlice;
-	if (signCT > 0)
-	{
-		maxCTSlice = [[pix lastObject] sliceLocation];
-		minCTSlice = [[pix objectAtIndex:0] sliceLocation];
-	}
-	else
-	{
-		maxCTSlice = [[pix objectAtIndex:0] sliceLocation];
-		minCTSlice = [[pix lastObject] sliceLocation];
-	}
-	
-	if (signPET > 0)
-	{
-		maxPETSlice = [[[bC pixList] lastObject] sliceLocation];
-		minPETSlice = [[[bC pixList] objectAtIndex:0] sliceLocation];
-	}
-	else
-	{
-		maxPETSlice = [[[bC pixList] objectAtIndex:0] sliceLocation];
-		minPETSlice = [[[bC pixList] lastObject] sliceLocation];
-	}
-	
-	float higherCommunSlice, lowerCommunSlice;
-	higherCommunSlice = (maxCTSlice < maxPETSlice ) ? maxCTSlice : maxPETSlice ;
-	lowerCommunSlice = (minCTSlice > minPETSlice ) ? minCTSlice : minPETSlice ;
-	
-	long higherCTSliceIndex, lowerCTSliceIndex, higherPETSliceIndex, lowerPETSliceIndex;
-	higherCTSliceIndex = (higherCommunSlice - firstCTSlice) / [[pix objectAtIndex:0] sliceInterval];
-	lowerCTSliceIndex = (lowerCommunSlice - firstCTSlice) / [[pix objectAtIndex:0] sliceInterval];
-	higherPETSliceIndex = (higherCommunSlice - firstPETSlice) / [[[bC pixList] objectAtIndex:0] sliceInterval];
-	lowerPETSliceIndex = (lowerCommunSlice - firstPETSlice) / [[[bC pixList] objectAtIndex:0] sliceInterval];
-	
-	
-	fistCTSlice = (higherCTSliceIndex < lowerCTSliceIndex)? higherCTSliceIndex : lowerCTSliceIndex ;
-	fistPETSlice = (higherPETSliceIndex < lowerPETSliceIndex)? higherPETSliceIndex : lowerPETSliceIndex ;
-	sliceRangeCT = abs(higherCTSliceIndex - lowerCTSliceIndex)+1;
-	sliceRangePET = abs(higherPETSliceIndex - lowerPETSliceIndex)+1;
-	
-	if( fistCTSlice < 0) fistCTSlice = 0;
-	if( fistPETSlice < 0) fistPETSlice = 0;
+	[self initPixList: vData];
 		
-	if( fistCTSlice + sliceRangeCT > [pix count])  sliceRangeCT = [pix count] - fistCTSlice;
-	if( fistPETSlice + sliceRangePET > [[bC pixList] count])  sliceRangePET = [[bC pixList] count] - fistPETSlice;
-	
-	
-	// initialisations
-	[CTController initWithPixList: [NSMutableArray arrayWithArray: [pix subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [files subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : vC : nil : self];
-	[PETController initWithPixList: [NSMutableArray arrayWithArray: [[bC pixList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)]] : [[bC fileList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)] : vData : bC : nil : self];
-	[PETCTController initWithPixList: [NSMutableArray arrayWithArray: [pix subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [files subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : vC : bC : self];
-
 	isFullWindow = NO;
 	displayResliceAxes = 1;
 	minSplitViewsSize = 150.0;
-	filesList = files;
 	
 	// CLUT Menu
 	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
@@ -1036,6 +1038,15 @@ NSString * documentsDirectory();
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(Panel3D:)];
     }
+	else if([itemIdent isEqualToString:ThreeDPositionToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel:NSLocalizedString(@"3D Pos", nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"3D Pos", nil)];
+		[toolbarItem setToolTip:NSLocalizedString(@"3D Pos", nil)];
+		[toolbarItem setImage:[NSImage imageNamed:@"OrientationWidget.tiff"]];
+		[toolbarItem setTarget:viewer];
+		[toolbarItem setAction:@selector(threeDPanel:)];
+    }
 	else if ([itemIdent isEqual: SameWidthSplitViewToolbarItemIdentifier]) {
 		[toolbarItem setLabel:NSLocalizedString(@"Same Widths", 0L)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Same Widths",nil)];
@@ -1135,6 +1146,7 @@ NSString * documentsDirectory();
 											SameWidthSplitViewToolbarItemIdentifier,
 											WLWWToolbarItemIdentifier,
 											VRPanelToolbarItemIdentifier,
+											ThreeDPositionToolbarItemIdentifier,
 											nil];
 }
 
@@ -1158,6 +1170,7 @@ NSString * documentsDirectory();
 										ExportToolbarItemIdentifier,
 										WLWWToolbarItemIdentifier,
 										VRPanelToolbarItemIdentifier,
+										ThreeDPositionToolbarItemIdentifier,
 										nil];
 }
 
@@ -2537,13 +2550,9 @@ NSString * documentsDirectory();
 {
 	int index = [[CTController originalView] curImage];
 	BOOL wasDataFlipped = [[CTController originalView] flippedData];
-
-//	[CTController initWithPixList: [NSMutableArray arrayWithArray: [pix subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [files subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : vC : nil : self];
-//	[PETController initWithPixList: [NSMutableArray arrayWithArray: [[bC pixList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)]] : [[bC fileList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)] : vData : vC : nil : self];
-//	[PETCTController initWithPixList: [NSMutableArray arrayWithArray: [pix subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [files subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : vC : bC : self];
-
-
-
+	
+	[self initPixList: 0L];
+	
 	curMovieIndex = i;
 	if( curMovieIndex < 0) curMovieIndex = maxMovieIndex-1;
 	if( curMovieIndex >= maxMovieIndex) curMovieIndex = 0;
@@ -2579,6 +2588,11 @@ NSString * documentsDirectory();
 	[CTController refreshViews];
 	[PETController refreshViews];
 	[PETCTController refreshViews];
+}
+
+- (void) realignDataSet:(id) sender
+{
+	[self setMovieIndex: curMovieIndex];
 }
 
 - (void) movieRateSliderAction:(id) sender

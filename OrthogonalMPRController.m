@@ -61,19 +61,21 @@
 - (id) initWithPixList: (NSArray*)pix :(NSArray*)files :(NSData*)vData :(ViewerController*)vC :(ViewerController*)bC :(id)newViewer
 {
 	if (self = [super init])
-	{		
+	{
 		// initialisations
-		
-		originalDCMPixList = [[NSMutableArray alloc] initWithCapacity: [pix count]];
+		if( originalDCMPixList) [originalDCMPixList removeAllObjects];
+		else originalDCMPixList = [[NSMutableArray alloc] initWithCapacity: [pix count]];
 		
 		for( DCMPix *p in pix)
 			[originalDCMPixList addObject:  [[p copy] autorelease]];
 		
+		[originalDCMFilesList release];
 		originalDCMFilesList = [[NSMutableArray alloc] initWithArray:files];
 		
 		if( [vC blendingController] == 0L)
 		{
 			NSLog( @"originalROIList");
+			[originalROIList release];
 			originalROIList = [[[vC imageView] dcmRoiList] retain];
 		}
 		else
@@ -81,6 +83,7 @@
 			originalROIList = 0L;
 		}
 		
+		[reslicer release];
 		reslicer = [[OrthogonalReslice alloc] initWithOriginalDCMPixList: originalDCMPixList];
 			
 		// Set the views (OrthogonalMPRView)
