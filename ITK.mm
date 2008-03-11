@@ -92,7 +92,7 @@
 		voxelSpacingY  = [firstObject pixelSpacingY];  
 		voxelSpacingZ  = [firstObject sliceInterval]; 
 		
-		if( voxelSpacingZ == 0 || [pixList count] == 1) voxelSpacingZ = 1;
+		if( voxelSpacingZ == 0 || [pixList count] == 1) voxelSpacingZ = 0.1;
 		
 		// get data
 		if( slice == -1) {
@@ -151,20 +151,25 @@
 }
 
 
-- (void)setupImportFilterWithSize:(ImportFilterType::SizeType)size origin:(double[3])origin spacing:(double[3])spacing data:(float *)data filterWillOwnBuffer:(BOOL)filterWillOwnBuffer{
+- (void)setupImportFilterWithSize:(ImportFilterType::SizeType)size origin:(double[3])origin spacing:(double[3])spacing data:(float *)data filterWillOwnBuffer:(BOOL)filterWillOwnBuffer
+{
 	itk::MultiThreader::SetGlobalDefaultNumberOfThreads( MPProcessors());
 	importFilter = ImportFilterType::New();
+	
 	//ImportFilterType::SizeType size;
 	ImportFilterType::IndexType start;
 	ImportFilterType::RegionType region;
 	start.Fill( 0 );
 	region.SetIndex( start );
 	region.SetSize( size );
-	importFilter->SetRegion( region );
-	importFilter->SetOrigin( origin );
-	importFilter->SetSpacing( spacing ); 
+	
+	importFilter->SetRegion( region);
+	importFilter->SetOrigin( origin);
+	importFilter->SetSpacing( spacing); 
+	
 	const bool importImageFilterWillOwnTheBuffer = filterWillOwnBuffer;
 	importFilter->SetImportPointer( data, size[0] * size[1] * size[2], importImageFilterWillOwnTheBuffer);
+	
 	NSLog(@"ITK Image allocated, own data: %d", importImageFilterWillOwnTheBuffer);
 }
 

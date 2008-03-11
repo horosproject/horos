@@ -92,7 +92,8 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	outputSpacing[1] = [firstObject pixelSpacingY];
 	outputSpacing[2] = [firstObject sliceInterval];
 	
-	if( outputSpacing[2] == 0 || noOfImages == 1) outputSpacing[2] = 1;
+	if( outputSpacing[2] == 0 || noOfImages == 1)
+		outputSpacing[2] = 1;
 	
 	resample->SetOutputSpacing(outputSpacing);
 	
@@ -169,16 +170,19 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	
 	float *tempPtr = (float*) malloc( size * 2 * sizeof( float));
 	
-	memcpy( tempPtr, [firstObjectOriginal fImage], size * sizeof( float));
-	memcpy( tempPtr + size, [firstObjectOriginal fImage], size * sizeof( float));
-	
-	ITK *itk = [[ITK alloc] initWith: [NSArray arrayWithObjects: firstObjectOriginal, firstObjectOriginal, 0L] : tempPtr : -1];
-	
-	p = [ITKTransform resampleWithParameters: theParameters firstObject: firstObject firstObjectOriginal: firstObjectOriginal noOfImages: 1 length: length itkImage: itk];
-	
-	[itk release];
-	
-	free( tempPtr);
+	if( tempPtr)
+	{
+		memcpy( tempPtr, [firstObjectOriginal fImage], size * sizeof( float));
+		memcpy( tempPtr + size, [firstObjectOriginal fImage], size * sizeof( float));
+		
+		ITK *itk = [[ITK alloc] initWith: [NSArray arrayWithObjects: firstObjectOriginal, firstObjectOriginal, 0L] : tempPtr : -1];
+		
+		p = [ITKTransform resampleWithParameters: theParameters firstObject: firstObject firstObjectOriginal: firstObjectOriginal noOfImages: 1 length: length itkImage: itk];
+		
+		[itk release];
+		
+		free( tempPtr);
+	}
 	
 	return p;
 }
