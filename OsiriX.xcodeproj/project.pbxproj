@@ -3824,6 +3824,10 @@
 		CE0CB174084A623C00C6385F /* DCMPix.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0CB170084A623C00C6385F /* DCMPix.h */; };
 		CE0E08E806A106D700F2C01C /* ThickSlabController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0E08E606A106D700F2C01C /* ThickSlabController.h */; };
 		CE0E08E906A106D700F2C01C /* ThickSlabController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE0E08E706A106D700F2C01C /* ThickSlabController.mm */; };
+		CE0E3A550D87C56D008135A8 /* ThreeDPanView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0E3A530D87C56D008135A8 /* ThreeDPanView.h */; };
+		CE0E3A560D87C56D008135A8 /* ThreeDPanView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0E3A540D87C56D008135A8 /* ThreeDPanView.m */; };
+		CE0E3A570D87C56D008135A8 /* ThreeDPanView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0E3A530D87C56D008135A8 /* ThreeDPanView.h */; };
+		CE0E3A580D87C56D008135A8 /* ThreeDPanView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0E3A540D87C56D008135A8 /* ThreeDPanView.m */; };
 		CE0F3BF60A56A62000D54F38 /* dcxfer.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B5309B6827F00545F5E /* dcxfer.cc */; };
 		CE0F3BF70A56A62100D54F38 /* dcvrut.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B5109B6827F00545F5E /* dcvrut.cc */; };
 		CE0F3BF80A56A62200D54F38 /* dcvrus.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B4F09B6827F00545F5E /* dcvrus.cc */; };
@@ -10282,6 +10286,8 @@
 		CE0CB170084A623C00C6385F /* DCMPix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMPix.h; sourceTree = "<group>"; };
 		CE0E08E606A106D700F2C01C /* ThickSlabController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThickSlabController.h; sourceTree = "<group>"; };
 		CE0E08E706A106D700F2C01C /* ThickSlabController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThickSlabController.mm; sourceTree = "<group>"; };
+		CE0E3A530D87C56D008135A8 /* ThreeDPanView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreeDPanView.h; sourceTree = "<group>"; };
+		CE0E3A540D87C56D008135A8 /* ThreeDPanView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreeDPanView.m; sourceTree = "<group>"; };
 		CE11138D08EDD5FD005B15E1 /* libvtkpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkpng.a; path = Binaries/VTKLibs/libvtkpng.a; sourceTree = "<group>"; };
 		CE11138E08EDD5FD005B15E1 /* libvtkCommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommon.a; path = Binaries/VTKLibs/libvtkCommon.a; sourceTree = "<group>"; };
 		CE11138F08EDD5FD005B15E1 /* libvtkGraphics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkGraphics.a; path = Binaries/VTKLibs/libvtkGraphics.a; sourceTree = "<group>"; };
@@ -13724,6 +13730,8 @@
 				A910FB2E0D5767610095A956 /* NavigatorWindowController.m */,
 				A910FB330D57728A0095A956 /* NavigatorView.h */,
 				A910FB340D57728A0095A956 /* NavigatorView.m */,
+				CE0E3A530D87C56D008135A8 /* ThreeDPanView.h */,
+				CE0E3A540D87C56D008135A8 /* ThreeDPanView.m */,
 				CE40ED510D86D54D007C6D49 /* ThreeDPositionController.h */,
 				CE40ED520D86D54D007C6D49 /* ThreeDPositionController.m */,
 			);
@@ -18597,6 +18605,7 @@
 				A910FB310D5767610095A956 /* NavigatorWindowController.h in Headers */,
 				A910FB370D57728A0095A956 /* NavigatorView.h in Headers */,
 				CE40ED530D86D54D007C6D49 /* ThreeDPositionController.h in Headers */,
+				CE0E3A550D87C56D008135A8 /* ThreeDPanView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20669,6 +20678,7 @@
 				A910FB2F0D5767610095A956 /* NavigatorWindowController.h in Headers */,
 				A910FB350D57728A0095A956 /* NavigatorView.h in Headers */,
 				CE40ED550D86D54D007C6D49 /* ThreeDPositionController.h in Headers */,
+				CE0E3A570D87C56D008135A8 /* ThreeDPanView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22959,6 +22969,7 @@
 				A910FB320D5767610095A956 /* NavigatorWindowController.m in Sources */,
 				A910FB380D57728A0095A956 /* NavigatorView.m in Sources */,
 				CE40ED540D86D54D007C6D49 /* ThreeDPositionController.m in Sources */,
+				CE0E3A560D87C56D008135A8 /* ThreeDPanView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24637,6 +24648,7 @@
 				A910FB300D5767610095A956 /* NavigatorWindowController.m in Sources */,
 				A910FB360D57728A0095A956 /* NavigatorView.m in Sources */,
 				CE40ED560D86D54D007C6D49 /* ThreeDPositionController.m in Sources */,
+				CE0E3A580D87C56D008135A8 /* ThreeDPanView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
