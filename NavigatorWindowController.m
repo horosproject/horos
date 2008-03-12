@@ -48,8 +48,6 @@ static NavigatorWindowController *nav = 0L;
 
 - (void)awakeFromNib; 
 {
-	
-	
 	[[self window] setAcceptsMouseMovedEvents:YES];
 }
 

@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "ThreeDPositionController.h"
+#import "ThreeDPanView.h"
 #import "ViewerController.h"
 #import "AppController.h"
 #import "DCMPix.h"
@@ -40,6 +41,8 @@ static ThreeDPositionController *nav = 0L;
 		[self window];	// generate the awake from nib ! and populates the nib variables like navigatorView
 		
 		[self setViewer: viewer];
+		[axialPan setController: self];
+		[verticalPan setController: self];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeViewerNotification:) name:@"CloseViewerNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setWindowLevel:) name:@"NSApplicationWillBecomeActiveNotification" object:nil];
@@ -48,31 +51,26 @@ static ThreeDPositionController *nav = 0L;
 	return self;
 }
 
-- (IBAction) changePosition:(id) sender
+- (void) movePositionPosition:(float*) move
 {
-	float move[ 3] = { 0, 0, 0};
-	
-	DCMPix *d = [[viewerController pixList] objectAtIndex: 0];
-	
-	switch( [sender tag])
-	{
-		case 0:			move[ 0] += [d pixelSpacingX]/2.;		break;
-		case 1:			move[ 0] -= [d pixelSpacingX]/2.;		break;
-		case 2:			move[ 1] += [d pixelSpacingY]/2.;		break;
-		case 3:			move[ 1] -= [d pixelSpacingY]/2.;		break;
-		case 4:			move[ 2] += [d sliceInterval]/2.;		break;
-		case 5:			move[ 2] -= [d sliceInterval]/2.;		break;
-	}
-	
 	for( int i = 0; i < [viewerController maxMovieIndex]; i++)
 	{
 		for( DCMPix *p in [viewerController pixList: i])
 		{
 			float o[ 3];
 			
-			o[ 0] = [p originX] + move[ 0];
-			o[ 1] = [p originY] + move[ 1];
-			o[ 2] = [p originZ] + move[ 2];
+			if( move)
+			{
+				o[ 0] = [p originX] + move[ 0]*[p pixelSpacingX];
+				o[ 1] = [p originY] + move[ 1]*[p pixelSpacingY];
+				o[ 2] = [p originZ] - move[ 2]*[p sliceInterval];
+			}
+			else
+			{
+				o[ 0] = [p originX];
+				o[ 1] = [p originY];
+				o[ 2] = [p originZ];
+			}
 			
 			[p setOrigin: o];
 			
@@ -107,6 +105,94 @@ static ThreeDPositionController *nav = 0L;
 		if( [[w windowController] isKindOfClass: [OrthogonalMPRPETCTViewer class]])
 			[[w windowController] realignDataSet: self];
 	}
+
+}
+
+- (IBAction) reset:(id) sender
+{
+	[viewerController executeRevert];
+	
+	[self movePositionPosition: 0L];
+}
+
+- (IBAction) changeMatrixMode:(id) sender
+{
+	switch( [matrixMode selectedTag])
+	{
+		case 0:
+			[axialPan setImage: [NSImage imageNamed: @"AxialSmall.tif"]];
+			[verticalPan setImage: [NSImage imageNamed: @"CorSmall.tif"]];
+		break;
+		
+		case 1:
+			[axialPan setImage: [NSImage imageNamed: @"CorSmall.tif"]];
+			[verticalPan setImage: [NSImage imageNamed: @"AxialSmall.tif"]];
+		break;
+		
+		case 2:
+			[axialPan setImage: [NSImage imageNamed: @"SagSmall.tif"]];
+			[verticalPan setImage: [NSImage imageNamed: @"AxialSmall.tif"]];
+		break;
+	}
+}
+
+- (int) mode
+{
+	return [matrixMode selectedTag];
+}
+
+- (IBAction) changePosition:(id) sender
+{
+	float move[ 3] = { 0, 0, 0};
+	
+	DCMPix *d = [[viewerController pixList] objectAtIndex: 0];
+	
+	switch( [matrixMode selectedTag])
+	{
+		case 0:
+			switch( [sender tag])
+			{
+				case 0:			move[ 0] -= 1/2.;		break;
+				case 1:			move[ 0] += 1/2.;		break;
+				case 2:			move[ 1] += 1/2.;		break;
+				case 3:			move[ 1] -= 1/2.;		break;
+				case 4:			move[ 2] += 1/2.;		break;
+				case 5:			move[ 2] -= 1/2.;		break;
+				case 6:			move[ 0] -= 1/2.;		break;
+				case 7:			move[ 0] += 1/2.;		break;
+			}
+		break;
+		
+		case 1:
+			switch( [sender tag])
+			{
+				case 0:			move[ 0] -= 1/2.;		break;
+				case 1:			move[ 0] += 1/2.;		break;
+				case 2:			move[ 2] += 1/2.;		break;
+				case 3:			move[ 2] -= 1/2.;		break;
+				case 4:			move[ 1] += 1/2.;		break;
+				case 5:			move[ 1] -= 1/2.;		break;
+				case 6:			move[ 0] -= 1/2.;		break;
+				case 7:			move[ 0] += 1/2.;		break;
+			}
+		break;
+		
+		case 2:
+			switch( [sender tag])
+			{
+				case 0:			move[ 1] -= 1/2.;		break;
+				case 1:			move[ 1] += 1/2.;		break;
+				case 2:			move[ 2] += 1/2.;		break;
+				case 3:			move[ 2] -= 1/2.;		break;
+				case 4:			move[ 0] += 1/2.;		break;
+				case 5:			move[ 0] -= 1/2.;		break;
+				case 6:			move[ 0] -= 1/2.;		break;
+				case 7:			move[ 0] += 1/2.;		break;
+			}
+		break;
+	}
+	
+	[self movePositionPosition: move];
 }
 
 - (void)awakeFromNib; 
