@@ -174,7 +174,7 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	[self initTextureArray];
 	[self computeThumbnailSize];
-	[self setFrameSize:NSMakeSize([[[self viewer] pixList] count]*thumbnailWidth, [[self viewer] maxMovieIndex]*thumbnailHeight)];
+	[self setFrame:NSMakeRect(0.0, 0.0, [[[self viewer] pixList] count]*thumbnailWidth, [[self viewer] maxMovieIndex]*thumbnailHeight)];
 	wl = [[self viewer] imageView].curWL;
 	ww = [[self viewer] imageView].curWW;
 	previousImageIndex = -1;
