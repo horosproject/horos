@@ -149,9 +149,18 @@ NSString * documentsDirectory();
 	if( fistPETSlice + sliceRangePET > [[blendingViewerController pixList] count])  sliceRangePET = [[blendingViewerController pixList] count] - fistPETSlice;
 	
 	// initialisations
-	[CTController initWithPixList: [NSMutableArray arrayWithArray: [pixList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [filesList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : viewer : nil : self];
-	[PETController initWithPixList: [NSMutableArray arrayWithArray: [[blendingViewerController pixList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)]] : [[blendingViewerController fileList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)] : vData : blendingViewerController : nil : self];
-	[PETCTController initWithPixList: [NSMutableArray arrayWithArray: [pixList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [filesList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : viewer : blendingViewerController : self];
+	if( vData)
+	{
+		[CTController initWithPixList: [NSMutableArray arrayWithArray: [pixList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [filesList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : viewer : nil : self];
+		[PETController initWithPixList: [NSMutableArray arrayWithArray: [[blendingViewerController pixList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)]] : [[blendingViewerController fileList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)] : vData : blendingViewerController : nil : self];
+		[PETCTController initWithPixList: [NSMutableArray arrayWithArray: [pixList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [filesList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : viewer : blendingViewerController : self];
+	}
+	else
+	{
+		[CTController setPixList: [NSMutableArray arrayWithArray: [pixList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [filesList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : viewer];
+		[PETController setPixList: [NSMutableArray arrayWithArray: [[blendingViewerController pixList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)]] : [[blendingViewerController fileList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)] : blendingViewerController];
+		[PETCTController setPixList: [NSMutableArray arrayWithArray: [pixList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [filesList subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : viewer];
+	}
 }
 
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC

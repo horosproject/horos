@@ -38,6 +38,7 @@
 }
 
 - (id) initWithPixList: (NSArray*) pixList :(NSArray*) filesList :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC:(id) newViewer;
+- (void) setPixList: (NSArray*)pix :(NSArray*)files :(ViewerController*)vC;
 
 - (void) reslice: (long) x: (long) y: (OrthogonalMPRView*) sender;
 - (void) flipVolume;
