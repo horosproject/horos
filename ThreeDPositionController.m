@@ -56,12 +56,12 @@ static ThreeDPositionController *nav = 0L;
 	
 	switch( [sender tag])
 	{
-		case 0:			move[ 0] += [d pixelSpacingX];		break;
-		case 1:			move[ 0] -= [d pixelSpacingX];		break;
-		case 2:			move[ 1] += [d pixelSpacingY];		break;
-		case 3:			move[ 1] -= [d pixelSpacingY];		break;
-		case 4:			move[ 2] += [d sliceInterval];		break;
-		case 5:			move[ 2] -= [d sliceInterval];		break;
+		case 0:			move[ 0] += [d pixelSpacingX]/2.;		break;
+		case 1:			move[ 0] -= [d pixelSpacingX]/2.;		break;
+		case 2:			move[ 1] += [d pixelSpacingY]/2.;		break;
+		case 3:			move[ 1] -= [d pixelSpacingY]/2.;		break;
+		case 4:			move[ 2] += [d sliceInterval]/2.;		break;
+		case 5:			move[ 2] -= [d sliceInterval]/2.;		break;
 	}
 	
 	for( int i = 0; i < [viewerController maxMovieIndex]; i++)
