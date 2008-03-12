@@ -17721,6 +17721,12 @@ sourceRef);
 
 - (IBAction)navigator:(id)sender;
 {
+	if([[[self imageView] curDCM] isRGB])
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Data Error", nil), NSLocalizedString(@"This tool currently does not work with RGB data series.", nil), nil, nil, nil);
+		return;
+	}
+	
 	if( [NavigatorWindowController navigatorWindowController] == 0L)
 	{
 		BOOL volumicData = [self isDataVolumicIn4D: YES];
