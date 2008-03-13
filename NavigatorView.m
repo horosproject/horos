@@ -516,7 +516,7 @@ static float deg2rad = 3.14159265358979/180.0;
 			glEnable(GL_SCISSOR_TEST);
 			
 			glLineWidth(6.0);
-			glColor3f(0.0f, 3.0f, 0.0f);
+			glColor3f(0.0f, 1.0f, 0.0f);
 			glBegin(GL_LINE_LOOP);
 				glVertex2f(upperLeft.x+1, upperLeft.y+1);
 				glVertex2f(upperLeft.x-1+thumbnailWidth, upperLeft.y+1);
@@ -832,6 +832,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	if( curImageIndex != previousImageIndex || curMovieIndex != previousMovieIndex)
 	{
 		[self computeThumbnailSize];
+		[[[self viewer] imageView] sendSyncMessage:0];
 		[self displaySelectedImage];
 		[self setNeedsDisplay:YES];
 		previousImageIndex = curImageIndex;
@@ -1013,7 +1014,7 @@ static float deg2rad = 3.14159265358979/180.0;
 	//if( fabs( d) < 1.0) d = 1.0 * fabs( d) / d;
 	
 	[[[self viewer] imageView] scrollWheel:theEvent];
-	
+
 	if(!([theEvent modifierFlags] & NSAlternateKeyMask))
 		[self displaySelectedImage];
 }	
