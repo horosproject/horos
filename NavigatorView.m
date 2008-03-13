@@ -1220,7 +1220,7 @@ static float deg2rad = 3.14159265358979/180.0;
 - (void)saveTransformForCurrentViewer;
 {
 	if(![self viewer]) return;
-	NSString *seriesInstanceUID = [[[[self viewer] imageView] seriesObj] valueForKey:@"seriesInstanceUID"];
+	NSString *seriesInstanceUID = [[[[[self viewer] pixList:0] objectAtIndex:0] seriesObj] valueForKey:@"seriesInstanceUID"];
 	NSMutableDictionary *currentTransform = [NSMutableDictionary dictionary];
 	[currentTransform setObject:[NSNumber numberWithFloat:zoomFactor] forKey:@"zoomFactor"];
 	[currentTransform setObject:[NSNumber numberWithFloat:rotationAngle] forKey:@"rotationAngle"];
@@ -1231,7 +1231,7 @@ static float deg2rad = 3.14159265358979/180.0;
 - (void)loadTransformForCurrentViewer;
 {
 	if(![self viewer]) return;
-	NSString *seriesInstanceUID = [[[[self viewer] imageView] seriesObj] valueForKey:@"seriesInstanceUID"];
+	NSString *seriesInstanceUID = [[[[[self viewer] pixList:0] objectAtIndex:0] seriesObj] valueForKey:@"seriesInstanceUID"];
 	NSMutableDictionary *currentTransform = [savedTransformDict objectForKey:seriesInstanceUID];
 	if(currentTransform)
 	{
