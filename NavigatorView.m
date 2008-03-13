@@ -1124,45 +1124,49 @@ static float deg2rad = 3.14159265358979/180.0;
 		if([view flippedData]) [view setIndex:[[[self viewer] pixList] count]-z-1];
 		else [view setIndex:z];
 		
-		if(t != [[self viewer] curMovieIndex]) [[self viewer] setMovieIndex:t];
+		if(t != [[self viewer] curMovieIndex])
+		{
+			ViewerController *selectedViewer;
+			BOOL alreadyOpen = NO;
+			for (ViewerController *viewer in [self associatedViewers])
+			{
+				if(t == [viewer curMovieIndex])
+				{
+					selectedViewer = viewer;
+					alreadyOpen = YES;
+				}
+			}
+
+			if(t == [[self viewer] curMovieIndex])
+			{
+				selectedViewer = [self viewer];
+				alreadyOpen = YES;
+			}
+
+			if(!alreadyOpen)
+				[[self viewer] setMovieIndex:t];
+			else
+			{
+				// select the correct slice
+				DCMView *view = [selectedViewer imageView];
+				if([view flippedData]) [view setIndex:[[[self viewer] pixList] count]-z-1];
+				else [view setIndex:z];
+				// sync other viewers
+				[view sendSyncMessage:0];
+				// make key viewer
+				[[selectedViewer window] makeKeyWindow];
+				[self setNeedsDisplay:YES];
+			}
+
+		}
 		
 		[view sendSyncMessage:0];
 	}
 	else
 	{
-//		ViewerController *selectedViewer;
-//		BOOL alreadyOpened = NO;
-//		for (ViewerController *viewer in [self associatedViewers])
-//		{
-//			if(t == [viewer curMovieIndex])
-//			{
-//				selectedViewer = viewer;
-//				alreadyOpened = YES;
-//			}
-//		}
-//		
-//		if(t == [[self viewer] curMovieIndex])
-//		{
-//			selectedViewer = [self viewer];
-//			alreadyOpened = YES;
-//		}
-//		
-//		if(!alreadyOpened)
-			dontListenToNotification++;
-			[self openNewViewerAtSlice:z movieFrame:t]; // creates a new viewer
-			dontListenToNotification--;
-//		else
-//		{
-//			// select the correct slice
-//			DCMView *view = [selectedViewer imageView];
-//			if([view flippedData]) [view setIndex:[[[self viewer] pixList] count]-z-1];
-//			else [view setIndex:z];
-//			// sync other viewers
-//			[view sendSyncMessage:0];
-//			// make key viewer
-//			[[selectedViewer window] makeKeyWindow];
-//			[self setNeedsDisplay:YES];
-//		}
+		dontListenToNotification++;
+		[self openNewViewerAtSlice:z movieFrame:t]; // creates a new viewer
+		dontListenToNotification--;
 	}
 }
 
