@@ -149,9 +149,9 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 			if( [[viewer window] isVisible] == NO)
 			{
 				[[self window] orderBack:self];
-				NSLog( @"problem....");
+				NSLog( @"problem.... ToolbarPanel.m");
 			}
-			NSLog(@"show toolbar");
+//			NSLog(@"show toolbar");
 		}
 		else
 		{

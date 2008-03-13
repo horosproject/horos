@@ -4930,8 +4930,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	float c1[ 3], c2[ 3], r[ 3], sc[ 3];
 
-	sft[ 0][ 0] = NAN; sft[ 0][ 1] = NAN; sft[ 0][ 2] = NAN;
-	sft[ 1][ 0] = NAN; sft[ 1][ 1] = NAN; sft[ 1][ 2] = NAN;
+	sft[ 0][ 0] = HUGE_VALF; sft[ 0][ 1] = HUGE_VALF; sft[ 0][ 2] = HUGE_VALF;
+	sft[ 1][ 0] = HUGE_VALF; sft[ 1][ 1] = HUGE_VALF; sft[ 1][ 2] = HUGE_VALF;
 	
 	[oPix convertPixX: 0 pixY: 0 toDICOMCoords: c1];
 	[oPix convertPixX: [oPix pwidth]-1 pixY: 0 toDICOMCoords: c2];
@@ -4973,6 +4973,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		sft[ x][ 0] = sc[ 0]; sft[ x][ 1] = sc[ 1]; sft[ x][ 2] = sc[ 2];
 		x++;
 	}
+	
+	if( x != 2)
+	{
+		sft[ 0][ 0] = HUGE_VALF; sft[ 0][ 1] = HUGE_VALF; sft[ 0][ 2] = HUGE_VALF;
+		sft[ 1][ 0] = HUGE_VALF; sft[ 1][ 1] = HUGE_VALF; sft[ 1][ 2] = HUGE_VALF;
+	}
 }
 
 - (void) computeSlice:(DCMPix*) oPix :(DCMPix*) oPix2
@@ -5004,22 +5010,22 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		else
 		{
-			sliceFromToS[ 0][ 0] = NAN;
-			sliceFromToE[ 0][ 0] = NAN;
+			sliceFromToS[ 0][ 0] = HUGE_VALF;
+			sliceFromToE[ 0][ 0] = HUGE_VALF;
 		}
 		
 		if( oPix2)
 			[self computeSliceIntersection: oPix2 sliceFromTo: sliceFromTo2 vector: vectorB origin: originB];
 		else
-			sliceFromTo2[ 0][ 0] = NAN;
+			sliceFromTo2[ 0][ 0] = HUGE_VALF;
 	}
 	else
 	{
 		sliceVector[0] = sliceVector[1] = sliceVector[2] = 0; 
-		sliceFromTo[ 0][ 0] = NAN;
-		sliceFromTo2[ 0][ 0] = NAN;
-		sliceFromToS[ 0][ 0] = NAN;
-		sliceFromToE[ 0][ 0] = NAN;
+		sliceFromTo[ 0][ 0] = HUGE_VALF;
+		sliceFromTo2[ 0][ 0] = HUGE_VALF;
+		sliceFromToS[ 0][ 0] = HUGE_VALF;
+		sliceFromToE[ 0][ 0] = HUGE_VALF;
 	}
 }
 
@@ -5110,19 +5116,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						}
 						else
 						{
-							sliceFromTo[ 0][ 0] = NAN;
-							sliceFromTo2[ 0][ 0] = NAN;
-							sliceFromToS[ 0][ 0] = NAN;
-							sliceFromToE[ 0][ 0] = NAN;
+							sliceFromTo[ 0][ 0] = HUGE_VALF;
+							sliceFromTo2[ 0][ 0] = HUGE_VALF;
+							sliceFromToS[ 0][ 0] = HUGE_VALF;
+							sliceFromToE[ 0][ 0] = HUGE_VALF;
 							sliceVector[0] = sliceVector[1] = sliceVector[2] = 0;
 						}
 					}
 					else if( [[otherView window] isMainWindow] == NO)
 					{
-						sliceFromTo[ 0][ 0] = NAN;
-						sliceFromTo2[ 0][ 0] = NAN;
-						sliceFromToS[ 0][ 0] = NAN;
-						sliceFromToE[ 0][ 0] = NAN;
+						sliceFromTo[ 0][ 0] = HUGE_VALF;
+						sliceFromTo2[ 0][ 0] = HUGE_VALF;
+						sliceFromToS[ 0][ 0] = HUGE_VALF;
+						sliceFromToE[ 0][ 0] = HUGE_VALF;
 						sliceVector[0] = sliceVector[1] = sliceVector[2] = 0;	
 					}
 					
@@ -5141,12 +5147,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						}
 						else
 						{
-							slicePoint3D[ 0] = NAN;
+							slicePoint3D[ 0] = HUGE_VALF;
 						}
 					}
 					else
 					{
-						slicePoint3D[ 0] = NAN;
+						slicePoint3D[ 0] = HUGE_VALF;
 					}
 				}
 				
@@ -5282,10 +5288,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 			else
 			{
-				sliceFromTo[ 0][ 0] = NAN;
-				sliceFromTo2[ 0][ 0] = NAN;
-				sliceFromToS[ 0][ 0] = NAN;
-				sliceFromToE[ 0][ 0] = NAN;
+				sliceFromTo[ 0][ 0] = HUGE_VALF;
+				sliceFromTo2[ 0][ 0] = HUGE_VALF;
+				sliceFromToS[ 0][ 0] = HUGE_VALF;
+				sliceFromToE[ 0][ 0] = HUGE_VALF;
 				sliceVector[0] = sliceVector[1] = sliceVector[2] = 0; 
 			}
 		}
@@ -7329,9 +7335,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 				if( DISPLAYCROSSREFERENCELINES)
 				{
-					if( sliceFromTo[ 0][ 0] != NAN)
+					if( sliceFromTo[ 0][ 0] != HUGE_VALF)
 					{
-						if( sliceFromToS[ 0][ 0] != NAN)
+						if( sliceFromToS[ 0][ 0] != HUGE_VALF)
 						{
 							[self drawCrossLines: sliceFromToS ctx: cgl_ctx green: NO];
 							[self drawCrossLines: sliceFromToE ctx: cgl_ctx green: NO];
@@ -7339,12 +7345,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						
 						[self drawCrossLines: sliceFromTo ctx: cgl_ctx green: YES];
 						
-						if( sliceFromTo2[ 0][ 0] != NAN)
+						if( sliceFromTo2[ 0][ 0] != HUGE_VALF)
 							[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx green: YES];
 					}
 				}
 				
-				if( slicePoint3D[ 0] != NAN)
+				if( slicePoint3D[ 0] != HUGE_VALF)
 				{
 					float tempPoint3D[ 2];
 					
@@ -7359,7 +7365,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					glColor3f (0.0f, 0.6f, 0.0f);
 					glLineWidth(2.0);
 
-					if( sliceFromTo[ 0][ 0] != NAN && (sliceVector[ 0] != 0 || sliceVector[ 1] != 0  || sliceVector[ 2] != 0))
+					if( sliceFromTo[ 0][ 0] != HUGE_VALF && (sliceVector[ 0] != 0 || sliceVector[ 1] != 0  || sliceVector[ 2] != 0))
 					{
 						float a[ 2];
 						// perpendicular vector
@@ -9003,12 +9009,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	[self updateTilingViews];
 	
-	sliceFromTo[ 0][ 0] = NAN;
-	sliceFromTo2[ 0][ 0] = NAN;
-	sliceFromToS[ 0][ 0] = NAN;
-	sliceFromToE[ 0][ 0] = NAN;
+	sliceFromTo[ 0][ 0] = HUGE_VALF;
+	sliceFromTo2[ 0][ 0] = HUGE_VALF;
+	sliceFromToS[ 0][ 0] = HUGE_VALF;
+	sliceFromToE[ 0][ 0] = HUGE_VALF;
 	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
-	slicePoint3D[ 0] = NAN;
+	slicePoint3D[ 0] = HUGE_VALF;
 	
 	
 	[self sendSyncMessage: 0];
@@ -9024,12 +9030,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) becomeKeyWindow
 {
-	sliceFromTo[ 0][ 0] = NAN;
-	sliceFromTo2[ 0][ 0] = NAN;
-	sliceFromToS[ 0][ 0] = NAN;
-	sliceFromToE[ 0][ 0] = NAN;
+	sliceFromTo[ 0][ 0] = HUGE_VALF;
+	sliceFromTo2[ 0][ 0] = HUGE_VALF;
+	sliceFromToS[ 0][ 0] = HUGE_VALF;
+	sliceFromToE[ 0][ 0] = HUGE_VALF;
 	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
-	slicePoint3D[ 0] = NAN;
+	slicePoint3D[ 0] = HUGE_VALF;
 	
 	
 	[self sendSyncMessage: 0];
