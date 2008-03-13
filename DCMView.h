@@ -101,8 +101,10 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	unsigned char   alphaTable[256], opaqueTable[256], redTable[256], greenTable[256], blueTable[256];
 	float			redFactor, greenFactor, blueFactor;
 	long			blendingMode;
-	float			sliceVector[ 3], slicePoint[ 3], slicePointO[ 3], slicePointI[ 3];
-	float			sliceVector2[ 3], slicePoint2[ 3], slicePointO2[ 3], slicePointI2[ 3];
+	
+	float			sliceFromTo[ 2][ 3], sliceFromToS[ 2][ 3], sliceFromToE[ 2][ 3], sliceFromTo2[ 2][ 3], sliceFromToThickness;
+	
+	float			sliceVector[ 3];
 	float			slicePoint3D[ 3];
 	float			syncRelativeDiff;
 	long			syncSeriesIndex;

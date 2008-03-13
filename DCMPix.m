@@ -8590,6 +8590,17 @@ END_CREATE_ROIS:
 	for( i = 0 ; i < 9; i ++) c[ i] = orientation[ i];
 }
 
+-(BOOL) identicalOrientationTo:(DCMPix*) c
+{
+	double o[ 9];
+	
+	[c orientationDouble: o];
+	
+	for( int i = 0 ; i < 9; i ++) if( o[ i] != orientation[ i]) return NO;
+	
+	return YES;
+}
+
 -(void) orientation:(float*) c
 {
 	int i;
@@ -8655,6 +8666,9 @@ END_CREATE_ROIS:
 	sc[ 0 ] = temp[ 0 ] * orientation[ 0 ] + temp[ 1 ] * orientation[ 1 ] + temp[ 2 ] * orientation[ 2 ];
 	sc[ 1 ] = temp[ 0 ] * orientation[ 3 ] + temp[ 1 ] * orientation[ 4 ] + temp[ 2 ] * orientation[ 5 ];
 	sc[ 2 ] = temp[ 0 ] * orientation[ 6 ] + temp[ 1 ] * orientation[ 7 ] + temp[ 2 ] * orientation[ 8 ];
+	
+	sc[ 0 ] += pixelSpacingX /2.;	// The center of the pixel
+	sc[ 1 ] += pixelSpacingY /2.;	// The center of the pixel
 }
 
 - (void) convertDICOMCoordsDouble: (double*) dc toSliceCoords: (double*) sc

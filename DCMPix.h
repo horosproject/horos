@@ -216,8 +216,9 @@ Note setter is different to not break existing usage. :-( */
 @property double pixelSpacingX, pixelSpacingY;
 
 /** Slice orientation */
-- (void)orientation:(float*) c;
-- (void)setOrientation:(float*) c;
+- (void) orientation:(float*) c;
+- (void) setOrientation:(float*) c;
+- (BOOL) identicalOrientationTo:(DCMPix*) c;
 
 - (void)orientationDouble:(double*) c;
 - (void)setOrientationDouble:(double*) c;

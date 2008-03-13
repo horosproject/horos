@@ -91,7 +91,7 @@ extern NSMutableDictionary				*plugins;
 static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable = 0L;
 
 static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, COPYSETTINGSINSERIES, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
-static		int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX;
+static		int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
 static		BOOL						gClickCountSet = NO;
 static		float						margin = 2;
 static		 NSDictionary				*_hotKeyDictionary = 0L, *_hotKeyModifiersDictionary = 0L;
@@ -100,6 +100,54 @@ static			NSRecursiveLock			*drawLock = 0L;
 
 NSString *pasteBoardOsiriX = @"OsiriX pasteboard";
 NSString *pasteBoardOsiriXPlugin = @"OsiriXPluginDataType";
+
+// intersect3D_SegmentPlane(): intersect a segment and a plane
+//    Input:  S = a segment, and Pn = a plane = {Point V0; Vector n;}
+//    Output: *I0 = the intersect point (when it exists)
+//    Return: 0 = disjoint (no intersection)
+//            1 = intersection in the unique point *I0
+//            2 = the segment lies in the plane
+
+#define SMALL_NUM  0.00000001 // anything that avoids division overflow
+#define DOT(v1,v2) (v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2])
+
+int intersect3D_SegmentPlane( float *P0, float *P1, float *Pnormal, float *Ppoint, float* resultPt )
+{
+    float    u[ 3];
+	float    w[ 3];
+	
+	u[ 0]  = P1[ 0] - P0[ 0];
+	u[ 1]  = P1[ 1] - P0[ 1];
+	u[ 2]  = P1[ 2] - P0[ 2];
+	
+	w[ 0] =  P0[ 0] - Ppoint[ 0];
+	w[ 1] =  P0[ 1] - Ppoint[ 1];
+	w[ 2] =  P0[ 2] - Ppoint[ 2];
+	
+    float     D = DOT(Pnormal, u);
+    float     N = -DOT(Pnormal, w);
+	
+    if (fabs(D) < SMALL_NUM) {          // segment is parallel to plane
+        if (N == 0)                     // segment lies in plane
+            return 0;
+        else
+            return 0;                   // no intersection
+    }
+	
+    // they are not parallel
+    // compute intersect param
+	
+    float sI = N / D;
+    if (sI < 0 || sI > 1)
+        return 0;						// no intersection
+	
+    resultPt[ 0] = P0[ 0] + sI * u[ 0];		// compute segment intersect point
+	resultPt[ 1] = P0[ 1] + sI * u[ 1];
+	resultPt[ 2] = P0[ 2] + sI * u[ 2];
+	
+    return 1;
+}
+
 
 #define CROSS(dest,v1,v2) \
           dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \
@@ -574,6 +622,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	SOFTWAREINTERPOLATION = [[NSUserDefaults standardUserDefaults] boolForKey:@"SOFTWAREINTERPOLATION"];
 	SOFTWAREINTERPOLATION_MAX = [[NSUserDefaults standardUserDefaults] integerForKey:@"SOFTWAREINTERPOLATION_MAX"];
+	DISPLAYCROSSREFERENCELINES = [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayCrossReferenceLines"];
 	
 	IndependentCRWLWW = [[NSUserDefaults standardUserDefaults] boolForKey:@"IndependentCRWLWW"];
 	COPYSETTINGSINSERIES = [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGSINSERIES"];
@@ -589,9 +638,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( ANNOTATIONS == annotBase) reload = [DCMPix setAnonymizedAnnotations: YES];
 		else if( ANNOTATIONS == annotFull) reload = [DCMPix setAnonymizedAnnotations: NO];
 		
-		NSArray		*viewers = [ViewerController getDisplayed2DViewers];
-		
-		for( ViewerController *v in viewers)
+		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 		{
 			[v refresh];
 			if( reload) [v reloadAnnotations];
@@ -603,6 +650,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		
 		if( reload) [[BrowserController currentBrowser] refreshMatrix: self];		// This will refresh the DCMView of the BrowserController
+	}
+	else
+	{
+		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+		{
+			[[[v window] contentView] setNeedsDisplay: YES];
+		}
 	}
 }
 
@@ -4870,8 +4924,58 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     }
 }
 
--(void) computeSlice:(DCMPix*) oPix :(DCMPix*) oPix2
-// COMPUTE SLICE PLANE
+- (void) computeSliceIntersection: (DCMPix*) oPix sliceFromTo: (float[2][3]) sft vector: (float*) vectorB origin: (float*) originB
+{
+	// Compute Slice From To Points
+	
+	float c1[ 3], c2[ 3], r[ 3], sc[ 3];
+
+	sft[ 0][ 0] = NAN; sft[ 0][ 1] = NAN; sft[ 0][ 2] = NAN;
+	sft[ 1][ 0] = NAN; sft[ 1][ 1] = NAN; sft[ 1][ 2] = NAN;
+	
+	[oPix convertPixX: 0 pixY: 0 toDICOMCoords: c1];
+	[oPix convertPixX: [oPix pwidth]-1 pixY: 0 toDICOMCoords: c2];
+	
+	int x = 0;
+	if( x < 2 && intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r))
+	{
+		[curDCM convertDICOMCoords: r toSliceCoords: sc];
+		sft[ x][ 0] = sc[ 0]; sft[ x][ 1] = sc[ 1]; sft[ x][ 2] = sc[ 2];
+		x++;
+	}
+			
+	[oPix convertPixX: [oPix pwidth]-1 pixY: 0 toDICOMCoords: c1];
+	[oPix convertPixX: [oPix pwidth]-1 pixY: [oPix pheight]-1 toDICOMCoords: c2];
+	
+	if(  x < 2 && intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r))
+	{
+		[curDCM convertDICOMCoords: r toSliceCoords: sc];
+		sft[ x][ 0] = sc[ 0]; sft[ x][ 1] = sc[ 1]; sft[ x][ 2] = sc[ 2];
+		x++;
+	}
+	
+	[oPix convertPixX: [oPix pwidth]-1 pixY: [oPix pheight]-1 toDICOMCoords: c1];
+	[oPix convertPixX: 0 pixY: [oPix pheight]-1 toDICOMCoords: c2];
+	
+	if(  x < 2 && intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r))
+	{
+		[curDCM convertDICOMCoords: r toSliceCoords: sc];
+		sft[ x][ 0] = sc[ 0]; sft[ x][ 1] = sc[ 1]; sft[ x][ 2] = sc[ 2];
+		x++;
+	}
+	
+	[oPix convertPixX: 0 pixY: [oPix pheight]-1 toDICOMCoords: c1];
+	[oPix convertPixX: 0 pixY: 0 toDICOMCoords: c2];
+	
+	if(  x < 2 && intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r))
+	{
+		[curDCM convertDICOMCoords: r toSliceCoords: sc];
+		sft[ x][ 0] = sc[ 0]; sft[ x][ 1] = sc[ 1]; sft[ x][ 2] = sc[ 2];
+		x++;
+	}
+}
+
+- (void) computeSlice:(DCMPix*) oPix :(DCMPix*) oPix2
 {
 	float vectorA[ 9], vectorA2[ 9], vectorB[ 9];
 	float originA[ 3], originA2[ 3], originB[ 3];
@@ -4886,149 +4990,36 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( oPix2) [oPix2 orientation: vectorA2];
 	[curDCM orientation: vectorB];		//vectorB[0] = vectorB[6];	vectorB[1] = vectorB[7];	vectorB[2] = vectorB[8];
 	
+	float slicePoint[ 3];
+	
 	if( intersect3D_2Planes( vectorA+6, originA, vectorB+6, originB, sliceVector, slicePoint) == noErr)
 	{
-		float perpendicular[ 3], temp[ 3];
+		[self computeSliceIntersection: oPix sliceFromTo: sliceFromTo vector: vectorB origin: originB];
+		sliceFromToThickness = [oPix sliceThickness];
 		
-		CROSS( perpendicular, sliceVector, (vectorB + 6));
+		if( [[[oPix pixArray] objectAtIndex: 0] identicalOrientationTo: oPix] && [[[oPix pixArray] lastObject] identicalOrientationTo: oPix])
+		{
+			[self computeSliceIntersection: [[oPix pixArray] objectAtIndex: 0] sliceFromTo: sliceFromToS vector: vectorB origin: originB];
+			[self computeSliceIntersection: [[oPix pixArray] lastObject] sliceFromTo: sliceFromToE vector: vectorB origin: originB];
+		}
+		else
+		{
+			sliceFromToS[ 0][ 0] = NAN;
+			sliceFromToE[ 0][ 0] = NAN;
+		}
 		
-		// Now reoriente this 3D line in our plane!
-		
-	//	NSLog(@"slice compute");
-		
-		temp[ 0] = sliceVector[ 0] * vectorB[ 0] + sliceVector[ 1] * vectorB[ 1] + sliceVector[ 2] * vectorB[ 2];
-		temp[ 1] = sliceVector[ 0] * vectorB[ 3] + sliceVector[ 1] * vectorB[ 4] + sliceVector[ 2] * vectorB[ 5];
-		temp[ 2] = sliceVector[ 0] * vectorB[ 6] + sliceVector[ 1] * vectorB[ 7] + sliceVector[ 2] * vectorB[ 8];
-		sliceVector[ 0] = temp[ 0];
-		sliceVector[ 1] = temp[ 1];
-		sliceVector[ 2] = temp[ 2];
-		
-		slicePoint[ 0] -= curDCM.originX;
-		slicePoint[ 1] -= curDCM.originY;
-		slicePoint[ 2] -= curDCM.originZ;
-		
-		float half_slice_thickness = oPix.sliceThickness * 0.5f;
-		
-		slicePoint[ 0] += perpendicular[ 0] * half_slice_thickness;
-		slicePoint[ 1] += perpendicular[ 1] * half_slice_thickness;
-		slicePoint[ 2] += perpendicular[ 2] * half_slice_thickness;
-		
-		slicePointO[ 0] = slicePoint[ 0] + perpendicular[ 0] * half_slice_thickness;
-		slicePointO[ 1] = slicePoint[ 1] + perpendicular[ 1] * half_slice_thickness;
-		slicePointO[ 2] = slicePoint[ 2] + perpendicular[ 2] * half_slice_thickness;
-		
-		slicePointI[ 0] = slicePoint[ 0] - perpendicular[ 0] * half_slice_thickness;
-		slicePointI[ 1] = slicePoint[ 1] - perpendicular[ 1] * half_slice_thickness;
-		slicePointI[ 2] = slicePoint[ 2] - perpendicular[ 2] * half_slice_thickness;
-		
-		temp[ 0] = slicePoint[ 0] * vectorB[ 0] + slicePoint[ 1] * vectorB[ 1] + slicePoint[ 2]*vectorB[ 2];
-		temp[ 1] = slicePoint[ 0] * vectorB[ 3] + slicePoint[ 1] * vectorB[ 4] + slicePoint[ 2]*vectorB[ 5];
-		temp[ 2] = slicePoint[ 0] * vectorB[ 6] + slicePoint[ 1] * vectorB[ 7] + slicePoint[ 2]*vectorB[ 8];
-		slicePoint[ 0] = temp[ 0];	slicePoint[ 1] = temp[ 1];	slicePoint[ 2] = temp[ 2];
-	
-		slicePoint[ 0] /= curDCM.pixelSpacingX;
-		slicePoint[ 1] /= curDCM.pixelSpacingY;
-		slicePoint[ 0] -= curDCM.pwidth * 0.5f;
-		slicePoint[ 1] -= curDCM.pheight * 0.5f;
-		
-		temp[ 0] = slicePointO[ 0] * vectorB[ 0] + slicePointO[ 1] * vectorB[ 1] + slicePointO[ 2]*vectorB[ 2];
-		temp[ 1] = slicePointO[ 0] * vectorB[ 3] + slicePointO[ 1] * vectorB[ 4] + slicePointO[ 2]*vectorB[ 5];
-		temp[ 2] = slicePointO[ 0] * vectorB[ 6] + slicePointO[ 1] * vectorB[ 7] + slicePointO[ 2]*vectorB[ 8];
-		slicePointO[ 0] = temp[ 0];	slicePointO[ 1] = temp[ 1];	slicePointO[ 2] = temp[ 2];
-		slicePointO[ 0] /= curDCM.pixelSpacingX;
-		slicePointO[ 1] /= curDCM.pixelSpacingY;
-		slicePointO[ 0] -= curDCM.pwidth * 0.5f;
-		slicePointO[ 1] -= curDCM.pheight * 0.5f;
-		
-		temp[ 0] = slicePointI[ 0] * vectorB[ 0] + slicePointI[ 1] * vectorB[ 1] + slicePointI[ 2]*vectorB[ 2];
-		temp[ 1] = slicePointI[ 0] * vectorB[ 3] + slicePointI[ 1] * vectorB[ 4] + slicePointI[ 2]*vectorB[ 5];
-		temp[ 2] = slicePointI[ 0] * vectorB[ 6] + slicePointI[ 1] * vectorB[ 7] + slicePointI[ 2]*vectorB[ 8];
-		slicePointI[ 0] = temp[ 0];	slicePointI[ 1] = temp[ 1];	slicePointI[ 2] = temp[ 2];
-		slicePointI[ 0] /= curDCM.pixelSpacingX;
-		slicePointI[ 1] /= curDCM.pixelSpacingY;
-		slicePointI[ 0] -= curDCM.pwidth * 0.5f;
-		slicePointI[ 1] -= curDCM.pheight * 0.5f;
+		if( oPix2)
+			[self computeSliceIntersection: oPix2 sliceFromTo: sliceFromTo2 vector: vectorB origin: originB];
+		else
+			sliceFromTo2[ 0][ 0] = NAN;
 	}
 	else
 	{
 		sliceVector[0] = sliceVector[1] = sliceVector[2] = 0; 
-		slicePoint[0] = slicePoint[1] = slicePoint[2] = 0; 
-	}
-	
-	if( oPix2)
-	{
-		if( intersect3D_2Planes( vectorA2+6, originA2, vectorB+6, originB, sliceVector2, slicePoint2) == noErr)
-		{
-			float perpendicular[ 3], temp[ 3];
-			
-			CROSS( perpendicular, sliceVector2, (vectorB + 6));
-			
-			// Now reoriente this 3D line in our plane!
-			
-			temp[ 0] = sliceVector2[ 0] * vectorB[ 0] + sliceVector2[ 1] * vectorB[ 1] + sliceVector2[ 2] * vectorB[ 2];
-			temp[ 1] = sliceVector2[ 0] * vectorB[ 3] + sliceVector2[ 1] * vectorB[ 4] + sliceVector2[ 2] * vectorB[ 5];
-			temp[ 2] = sliceVector2[ 0] * vectorB[ 6] + sliceVector2[ 1] * vectorB[ 7] + sliceVector2[ 2] * vectorB[ 8];
-			sliceVector2[ 0] = temp[ 0];
-			sliceVector2[ 1] = temp[ 1];
-			sliceVector2[ 2] = temp[ 2];
-			
-			slicePoint2[ 0] -= curDCM.originX;
-			slicePoint2[ 1] -= curDCM.originY;
-			slicePoint2[ 2] -= curDCM.originZ;
-
-			float half_slice_thickness = [oPix2 sliceThickness] * 0.5f;
-			
-			slicePoint2[ 0] += perpendicular[ 0] * half_slice_thickness;
-			slicePoint2[ 1] += perpendicular[ 1] * half_slice_thickness;
-			slicePoint2[ 2] += perpendicular[ 2] * half_slice_thickness;
-			
-			slicePointO2[ 0] = slicePoint2[ 0] + perpendicular[ 0] * half_slice_thickness;
-			slicePointO2[ 1] = slicePoint2[ 1] + perpendicular[ 1] * half_slice_thickness;
-			slicePointO2[ 2] = slicePoint2[ 2] + perpendicular[ 2] * half_slice_thickness;
-			
-			slicePointI2[ 0] = slicePoint2[ 0] - perpendicular[ 0] * half_slice_thickness;
-			slicePointI2[ 1] = slicePoint2[ 1] - perpendicular[ 1] * half_slice_thickness;
-			slicePointI2[ 2] = slicePoint2[ 2] - perpendicular[ 2] * half_slice_thickness;
-			
-			temp[ 0] = slicePoint2[ 0] * vectorB[ 0] + slicePoint2[ 1] * vectorB[ 1] + slicePoint2[ 2]*vectorB[ 2];
-			temp[ 1] = slicePoint2[ 0] * vectorB[ 3] + slicePoint2[ 1] * vectorB[ 4] + slicePoint2[ 2]*vectorB[ 5];
-			temp[ 2] = slicePoint2[ 0] * vectorB[ 6] + slicePoint2[ 1] * vectorB[ 7] + slicePoint2[ 2]*vectorB[ 8];
-			slicePoint2[ 0] = temp[ 0];	slicePoint2[ 1] = temp[ 1];	slicePoint2[ 2] = temp[ 2];
-		
-			slicePoint2[ 0] /= curDCM.pixelSpacingX;
-			slicePoint2[ 1] /= curDCM.pixelSpacingY;
-			slicePoint2[ 0] -= curDCM.pwidth * 0.5f;
-			slicePoint2[ 1] -= curDCM.pheight * 0.5f;
-			
-			temp[ 0] = slicePointO2[ 0] * vectorB[ 0] + slicePointO2[ 1] * vectorB[ 1] + slicePointO2[ 2]*vectorB[ 2];
-			temp[ 1] = slicePointO2[ 0] * vectorB[ 3] + slicePointO2[ 1] * vectorB[ 4] + slicePointO2[ 2]*vectorB[ 5];
-			temp[ 2] = slicePointO2[ 0] * vectorB[ 6] + slicePointO2[ 1] * vectorB[ 7] + slicePointO2[ 2]*vectorB[ 8];
-			slicePointO2[ 0] = temp[ 0];	slicePointO2[ 1] = temp[ 1];	slicePointO2[ 2] = temp[ 2];
-			
-			slicePointO2[ 0] /= curDCM.pixelSpacingX;
-			slicePointO2[ 1] /= curDCM.pixelSpacingY;
-			slicePointO2[ 0] -= curDCM.pwidth * 0.5f;
-			slicePointO2[ 1] -= curDCM.pheight * 0.5f;
-			
-			temp[ 0] = slicePointI2[ 0] * vectorB[ 0] + slicePointI2[ 1] * vectorB[ 1] + slicePointI2[ 2]*vectorB[ 2];
-			temp[ 1] = slicePointI2[ 0] * vectorB[ 3] + slicePointI2[ 1] * vectorB[ 4] + slicePointI2[ 2]*vectorB[ 5];
-			temp[ 2] = slicePointI2[ 0] * vectorB[ 6] + slicePointI2[ 1] * vectorB[ 7] + slicePointI2[ 2]*vectorB[ 8];
-			slicePointI2[ 0] = temp[ 0];	slicePointI2[ 1] = temp[ 1];	slicePointI2[ 2] = temp[ 2];
-			slicePointI2[ 0] /= curDCM.pixelSpacingX;
-			slicePointI2[ 1] /= curDCM.pixelSpacingY;
-			slicePointI2[ 0] -= curDCM.pwidth/2.;
-			slicePointI2[ 1] -= curDCM.pheight/2.;
-		}
-		else
-		{
-			sliceVector2[0] = sliceVector2[1] = sliceVector2[2] = 0; 
-			slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 
-		}
-	}
-	else
-	{
-		sliceVector2[0] = sliceVector2[1] = sliceVector2[2] = 0; 
-		slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 
+		sliceFromTo[ 0][ 0] = NAN;
+		sliceFromTo2[ 0][ 0] = NAN;
+		sliceFromToS[ 0][ 0] = NAN;
+		sliceFromToE[ 0][ 0] = NAN;
 	}
 }
 
@@ -5119,18 +5110,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						}
 						else
 						{
-							sliceVector[0] = sliceVector[1] = sliceVector[2] = 0; 
-							slicePoint[0] = slicePoint[1] = slicePoint[2] = 0;
-							sliceVector2[0] = sliceVector2[1] = sliceVector2[2] = 0; 
-							slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 		
+							sliceFromTo[ 0][ 0] = NAN;
+							sliceFromTo2[ 0][ 0] = NAN;
+							sliceFromToS[ 0][ 0] = NAN;
+							sliceFromToE[ 0][ 0] = NAN;
+							sliceVector[0] = sliceVector[1] = sliceVector[2] = 0;
 						}
 					}
 					else if( [[otherView window] isMainWindow] == NO)
 					{
-						sliceVector[0] = sliceVector[1] = sliceVector[2] = 0; 
-						slicePoint[0] = slicePoint[1] = slicePoint[2] = 0;
-						sliceVector2[0] = sliceVector2[1] = sliceVector2[2] = 0; 
-						slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 		
+						sliceFromTo[ 0][ 0] = NAN;
+						sliceFromTo2[ 0][ 0] = NAN;
+						sliceFromToS[ 0][ 0] = NAN;
+						sliceFromToE[ 0][ 0] = NAN;
+						sliceVector[0] = sliceVector[1] = sliceVector[2] = 0;	
 					}
 					
 					// Double-Click -> find the nearest point on our plane, go to this plane and draw the intersection!
@@ -5144,22 +5137,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						{
 							curImage = newIndex;
 							
-							slicePoint3D[ 0] = resultPoint[ 0];
-							slicePoint3D[ 1] = resultPoint[ 1];
-							slicePoint3D[ 2] = resultPoint[ 2];
+							[curDCM convertDICOMCoords: resultPoint toSliceCoords: slicePoint3D];
 						}
 						else
 						{
-							slicePoint3D[ 0] = 0;
-							slicePoint3D[ 1] = 0;
-							slicePoint3D[ 2] = 0;
+							slicePoint3D[ 0] = NAN;
 						}
 					}
 					else
 					{
-						slicePoint3D[ 0] = 0;
-						slicePoint3D[ 1] = 0;
-						slicePoint3D[ 2] = 0;
+						slicePoint3D[ 0] = NAN;
 					}
 				}
 				
@@ -5295,10 +5282,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 			else
 			{
+				sliceFromTo[ 0][ 0] = NAN;
+				sliceFromTo2[ 0][ 0] = NAN;
+				sliceFromToS[ 0][ 0] = NAN;
+				sliceFromToE[ 0][ 0] = NAN;
 				sliceVector[0] = sliceVector[1] = sliceVector[2] = 0; 
-				slicePoint[0] = slicePoint[1] = slicePoint[2] = 0;
-				sliceVector2[0] = sliceVector2[1] = sliceVector2[2] = 0; 
-				slicePoint2[0] = slicePoint2[1] = slicePoint2[2] = 0; 
 			}
 		}
 		
@@ -6751,6 +6739,44 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
+- (void) drawCrossLines:(float[2][3]) sft ctx: (CGLContextObj) cgl_ctx green: (BOOL) green
+{
+	if( green)
+		glColor3f (0.0f, 0.6f, 0.0f);
+	else
+		glColor3f (1.0f, 0.6f, 0.0f);
+		
+	glLineWidth(2.0);
+	glBegin(GL_LINES);
+		glVertex2f( scaleValue*(sft[ 0][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(sft[ 0][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
+		glVertex2f( scaleValue*(sft[ 1][ 0]/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*(sft[ 1][ 1]/curDCM.pixelSpacingY - curDCM.pheight /2.));
+	glEnd();
+	
+	if( green)
+	{
+		float a[ 2];	// perpendicular vector
+		
+		a[ 1] = sft[ 0][ 0] - sft[ 1][ 0];
+		a[ 0] = sft[ 0][ 1] - sft[ 1][ 1];
+		
+		double t = a[ 1]*a[ 1] + a[ 0]*a[ 0];
+		t = sqrt(t);
+		a[0] = a[0]/t;
+		a[1] = a[1]/t;
+		
+		glLineWidth(1.0);
+		glBegin(GL_LINES);
+			glVertex2f( scaleValue*((sft[ 0][ 0]+a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*((sft[ 0][ 1]-a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight /2.));
+			glVertex2f( scaleValue*((sft[ 1][ 0]+a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*((sft[ 1][ 1]-a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight /2.));
+		glEnd();
+		
+		glBegin(GL_LINES);
+			glVertex2f( scaleValue*((sft[ 0][ 0]-a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*((sft[ 0][ 1]+a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight /2.));
+			glVertex2f( scaleValue*((sft[ 1][ 0]-a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*((sft[ 1][ 1]+a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight /2.));
+		glEnd();
+	}
+}
+
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
 {
 	long		clutBars	= CLUTBARS;
@@ -7291,7 +7317,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 			}
 			
-			//** SLICE CUT BETWEEN SERIES
+			//** SLICE CUT BETWEEN SERIES - CROSS REFERENCES LINES
 			
 			if( stringID == 0L && [[self window] isMainWindow] == NO)
 			{
@@ -7300,99 +7326,71 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				glEnable(GL_POINT_SMOOTH);
 				glEnable(GL_LINE_SMOOTH);
 				glEnable(GL_POLYGON_SMOOTH);
-
-				if( sliceVector[ 0] != 0 | sliceVector[ 1] != 0  | sliceVector[ 2] != 0 ) {
-					glColor3f (0.0f, 0.6f, 0.0f);
-					glLineWidth(2.0);
-					glBegin(GL_LINES);
-						glVertex2f( scaleValue*(slicePoint[ 0] - 10000*sliceVector[ 0]), scaleValue*(slicePoint[ 1] - 10000*sliceVector[ 1]));
-						glVertex2f( scaleValue*(slicePoint[ 0] + 10000*sliceVector[ 0]), scaleValue*(slicePoint[ 1] + 10000*sliceVector[ 1]));
-					glEnd();
-					glLineWidth(1.0);
-					glBegin(GL_LINES);
-						glVertex2f( scaleValue*(slicePointI[ 0] - 10000*sliceVector[ 0]), scaleValue*(slicePointI[ 1] - 10000*sliceVector[ 1]));
-						glVertex2f( scaleValue*(slicePointI[ 0] + 10000*sliceVector[ 0]), scaleValue*(slicePointI[ 1] + 10000*sliceVector[ 1]));
-					glEnd();
-					glBegin(GL_LINES);
-						glVertex2f( scaleValue*(slicePointO[ 0] - 10000*sliceVector[ 0]), scaleValue*(slicePointO[ 1] - 10000*sliceVector[ 1]));
-						glVertex2f( scaleValue*(slicePointO[ 0] + 10000*sliceVector[ 0]), scaleValue*(slicePointO[ 1] + 10000*sliceVector[ 1]));
-					glEnd();
+				
+				if( DISPLAYCROSSREFERENCELINES)
+				{
+					if( sliceFromTo[ 0][ 0] != NAN)
+					{
+						if( sliceFromToS[ 0][ 0] != NAN)
+						{
+							[self drawCrossLines: sliceFromToS ctx: cgl_ctx green: NO];
+							[self drawCrossLines: sliceFromToE ctx: cgl_ctx green: NO];
+						}
+						
+						[self drawCrossLines: sliceFromTo ctx: cgl_ctx green: YES];
+						
+						if( sliceFromTo2[ 0][ 0] != NAN)
+							[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx green: YES];
+					}
 				}
 				
-				if( slicePoint3D[ 0] != 0 | slicePoint3D[ 1] != 0  | slicePoint3D[ 2] != 0 ) {
-					float vectorP[ 9], tempPoint3D[ 3], rotateVector[ 2];
-					
-				//	glColor3f (0.6f, 0.0f, 0.0f);
-					
-					[curDCM orientation: vectorP];
+				if( slicePoint3D[ 0] != NAN)
+				{
+					float tempPoint3D[ 2];
 					
 					glLineWidth(2.0);
 					
-				//	NSLog(@"Before: %2.2f / %2.2f / %2.2f", slicePoint3D[ 0], slicePoint3D[ 1], slicePoint3D[ 2]);
-					
-					slicePoint3D[ 0] -= curDCM.originX;
-					slicePoint3D[ 1] -= curDCM.originY;
-					slicePoint3D[ 2] -= curDCM.originZ;
-					
-					tempPoint3D[ 0] = slicePoint3D[ 0] * vectorP[ 0] + slicePoint3D[ 1] * vectorP[ 1] + slicePoint3D[ 2] * vectorP[ 2];
-					tempPoint3D[ 1] = slicePoint3D[ 0] * vectorP[ 3] + slicePoint3D[ 1] * vectorP[ 4] + slicePoint3D[ 2] * vectorP[ 5];
-					tempPoint3D[ 2] = slicePoint3D[ 0] * vectorP[ 6] + slicePoint3D[ 1] * vectorP[ 7] + slicePoint3D[ 2] * vectorP[ 8];
-					
-					slicePoint3D[ 0] += curDCM.originX;
-					slicePoint3D[ 1] += curDCM.originY;
-					slicePoint3D[ 2] += curDCM.originZ;
-					
-				//	NSLog(@"After: %2.2f / %2.2f / %2.2f", tempPoint3D[ 0], tempPoint3D[ 1], tempPoint3D[ 2]);
-					
-					tempPoint3D[0] /= curDCM.pixelSpacingX;
-					tempPoint3D[1] /= curDCM.pixelSpacingY;
+					tempPoint3D[0] = slicePoint3D[ 0] / curDCM.pixelSpacingX;
+					tempPoint3D[1] = slicePoint3D[ 1] / curDCM.pixelSpacingY;
 					
 					tempPoint3D[0] -= curDCM.pwidth * 0.5f;
 					tempPoint3D[1] -= curDCM.pheight * 0.5f;
-					
-					if( sliceVector[ 0] != 0 | sliceVector[ 1] != 0  | sliceVector[ 2] != 0 ) {
-						rotateVector[ 0] = sliceVector[ 1];
-						rotateVector[ 1] = -sliceVector[ 0];
-						
-						glBegin(GL_LINES);
-						glVertex2f( scaleValue*(tempPoint3D[ 0]-20/curDCM.pixelSpacingX *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]-20/curDCM.pixelSpacingY*(rotateVector[ 1])));
-						glVertex2f( scaleValue*(tempPoint3D[ 0]+20/curDCM.pixelSpacingX *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]+20/curDCM.pixelSpacingY*(rotateVector[ 1])));
-						glEnd();
-					}
-					else {
-						glColor3f (0.0f, 0.6f, 0.0f);
-						glLineWidth(2.0);
-						
-						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(tempPoint3D[ 0]-20/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
-							glVertex2f( scaleValue*(tempPoint3D[ 0]+20/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
-							
-							glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]-20/curDCM.pixelSpacingY));
-							glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]+20/curDCM.pixelSpacingY));
-						glEnd();
-					}
-					
-					
-					
-					glLineWidth(1.0);
-				}
-				
-				if( sliceVector2[ 0] != 0 | sliceVector2[ 1] != 0  | sliceVector2[ 2] != 0 ) {
+
 					glColor3f (0.0f, 0.6f, 0.0f);
 					glLineWidth(2.0);
-					glBegin(GL_LINES);
-						glVertex2f( scaleValue*(slicePoint2[ 0] - 10000*sliceVector2[ 0]), scaleValue*(slicePoint2[ 1] - 10000*sliceVector2[ 1]));
-						glVertex2f( scaleValue*(slicePoint2[ 0] + 10000*sliceVector2[ 0]), scaleValue*(slicePoint2[ 1] + 10000*sliceVector2[ 1]));
-					glEnd();
+
+					if( sliceFromTo[ 0][ 0] != NAN && (sliceVector[ 0] != 0 || sliceVector[ 1] != 0  || sliceVector[ 2] != 0))
+					{
+						float a[ 2];
+						// perpendicular vector
+						
+						a[ 1] = sliceFromTo[ 0][ 0] - sliceFromTo[ 1][ 0];
+						a[ 0] = sliceFromTo[ 0][ 1] - sliceFromTo[ 1][ 1];
+						
+						// normalize
+						double t = a[ 1]*a[ 1] + a[ 0]*a[ 0];
+						t = sqrt(t);
+						a[0] = a[0]/t;
+						a[1] = a[1]/t;
+						
+						#define LINELENGTH 15
+						
+						glBegin(GL_LINES);
+							glVertex2f( scaleValue*(tempPoint3D[ 0]-LINELENGTH/curDCM.pixelSpacingX * a[ 0]), scaleValue*(tempPoint3D[ 1]+LINELENGTH/curDCM.pixelSpacingY*(a[ 1])));
+							glVertex2f( scaleValue*(tempPoint3D[ 0]+LINELENGTH/curDCM.pixelSpacingX * a[ 0]), scaleValue*(tempPoint3D[ 1]-LINELENGTH/curDCM.pixelSpacingY*(a[ 1])));
+						glEnd();
+					}
+					else
+					{
+						glBegin(GL_LINES);
+							glVertex2f( scaleValue*(tempPoint3D[ 0]-LINELENGTH/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
+							glVertex2f( scaleValue*(tempPoint3D[ 0]+LINELENGTH/curDCM.pixelSpacingX), scaleValue*(tempPoint3D[ 1]));
+							
+							glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]-LINELENGTH/curDCM.pixelSpacingY));
+							glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]+LINELENGTH/curDCM.pixelSpacingY));
+						glEnd();
+					}
 					glLineWidth(1.0);
-					glBegin(GL_LINES);
-						glVertex2f( scaleValue*(slicePointI2[ 0] - 10000*sliceVector2[ 0]), scaleValue*(slicePointI2[ 1] - 10000*sliceVector2[ 1]));
-						glVertex2f( scaleValue*(slicePointI2[ 0] + 10000*sliceVector2[ 0]), scaleValue*(slicePointI2[ 1] + 10000*sliceVector2[ 1]));
-					glEnd();
-					glBegin(GL_LINES);
-						glVertex2f( scaleValue*(slicePointO2[ 0] - 10000*sliceVector2[ 0]), scaleValue*(slicePointO2[ 1] - 10000*sliceVector2[ 1]));
-						glVertex2f( scaleValue*(slicePointO2[ 0] + 10000*sliceVector2[ 0]), scaleValue*(slicePointO2[ 1] + 10000*sliceVector2[ 1]));
-					glEnd();
 				}
 				
 				glDisable(GL_LINE_SMOOTH);
@@ -9005,9 +9003,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	[self updateTilingViews];
 	
+	sliceFromTo[ 0][ 0] = NAN;
+	sliceFromTo2[ 0][ 0] = NAN;
+	sliceFromToS[ 0][ 0] = NAN;
+	sliceFromToE[ 0][ 0] = NAN;
 	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
-	slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
-	sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
+	slicePoint3D[ 0] = NAN;
+	
 	
 	[self sendSyncMessage: 0];
 	
@@ -9022,9 +9024,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) becomeKeyWindow
 {
+	sliceFromTo[ 0][ 0] = NAN;
+	sliceFromTo2[ 0][ 0] = NAN;
+	sliceFromToS[ 0][ 0] = NAN;
+	sliceFromToE[ 0][ 0] = NAN;
 	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
-	slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
-	sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
+	slicePoint3D[ 0] = NAN;
+	
 	
 	[self sendSyncMessage: 0];
 	

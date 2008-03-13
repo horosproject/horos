@@ -4854,8 +4854,13 @@ static ViewerController *draggedController = 0L;
 #pragma mark-
 #pragma mark 4.1. single viewport
 
-- (BOOL) isDataVolumicIn4D: (BOOL) check4D
+- (BOOL) isDataVolumicIn4D: (BOOL) check4D checkEverythingLoaded:(BOOL) c;
 {
+	if( c == NO)
+	{
+		if( ThreadLoadImage == YES) return NO;
+	}
+
 	BOOL volumicData = YES;
 	
 	[self checkEverythingLoaded];
@@ -4864,20 +4869,38 @@ static ViewerController *draggedController = 0L;
 	{
 		if( check4D == YES || x == curMovieIndex)
 		{
+			float orientation[ 9];
+			[[pixList[ x] objectAtIndex: 0] orientation: orientation];
 			int pw = [[[fileList[ x] objectAtIndex: 0] valueForKey:@"width"] intValue];
 			int ph = [[[fileList[ x] objectAtIndex: 0] valueForKey:@"height"] intValue];
 			int rgb = [[pixList[ x] objectAtIndex: 0] isRGB];
 			
 			for( int j = 0 ; j < [pixList[ x] count]; j++)
 			{
-				if ( pw != [[[fileList[ x] objectAtIndex: j] valueForKey:@"width"] intValue]) volumicData = NO;
-				if ( ph != [[[fileList[ x] objectAtIndex: j] valueForKey:@"height"] intValue]) volumicData = NO;
-				if ( rgb != [[pixList[ x] objectAtIndex: j] isRGB]) volumicData = NO;
+				if( pw != [[[fileList[ x] objectAtIndex: j] valueForKey:@"width"] intValue])
+					volumicData = NO;
+				if( ph != [[[fileList[ x] objectAtIndex: j] valueForKey:@"height"] intValue])
+					volumicData = NO;
+				if( rgb != [[pixList[ x] objectAtIndex: j] isRGB])
+					volumicData = NO;
+				
+				float o[ 9];
+				[[pixList[ x] objectAtIndex: j] orientation: o];
+				for( int k = 0 ; k < 9; k++)
+				{
+					if( o[ k] != orientation[ k])
+						volumicData = NO;
+				}
 			}
 		}
 	}
 	
 	return volumicData;
+}
+
+- (BOOL) isDataVolumicIn4D: (BOOL) check4D
+{
+	return [self isDataVolumicIn4D: check4D checkEverythingLoaded: YES];
 }
 
 - (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
