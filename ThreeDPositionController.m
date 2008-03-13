@@ -202,6 +202,14 @@ static ThreeDPositionController *nav = 0L;
 
 - (void)setViewer:(ViewerController*)viewer;
 {
+	[viewer checkEverythingLoaded];
+	
+	if( viewerController == 0L)
+	{
+		[matrixMode selectCellWithTag: [viewer currentOrientationTool]];
+		[self changeMatrixMode: self];
+	}
+	
 	if( viewerController != viewer)
 	{
 		[viewerController release];
