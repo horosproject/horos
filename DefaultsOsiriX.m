@@ -984,6 +984,7 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject: @"OsiriX" forKey: @"ALBUMNAME"];
 	
 	[defaultValues setObject: @"1" forKey: @"DisplayCrossReferenceLines"];
+	[defaultValues setObject: @"1" forKey: @"AlwaysScaleToFit"];
 	
 	//VRDefaultViewSize
 	[defaultValues setObject:@"0" forKey: @"VRDefaultViewSize"];

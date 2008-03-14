@@ -1480,6 +1480,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[self checkEverythingLoaded];
 		[self displayWarningIfGantryTitled];
+		[self displayAWarningIfNonTrueVolumicData];
 		
 		int previousFusion = [popFusion selectedTag];
 		int previousFusionActivated = [activatedFusion state];
@@ -1778,6 +1779,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[contextualMenu addItem:item];
 		[item release];
 		
+		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Scale To Fit", nil) action: @selector(scaleToFit:) keyEquivalent:@""];
+		[contextualMenu addItem:item];
+		[item release];
+		
 		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Key image", nil) action: @selector(setKeyImage:) keyEquivalent:@""];
 		[contextualMenu addItem:item];
 		[item release];
@@ -2011,7 +2016,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if( showWindow == YES && wasAlreadyVisible == NO)
 			[[self window] orderFront:self];
 			
-		if( showWindow)
+		if( showWindow && [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"] == NO)
 		{
 			if( wasAlreadyVisible)
 				[imageView setScaleValue: scaleValue * [imageView frame].size.width / previousHeight];
@@ -4873,15 +4878,12 @@ static ViewerController *draggedController = 0L;
 			[[pixList[ x] objectAtIndex: 0] orientation: orientation];
 			int pw = [[[fileList[ x] objectAtIndex: 0] valueForKey:@"width"] intValue];
 			int ph = [[[fileList[ x] objectAtIndex: 0] valueForKey:@"height"] intValue];
-			int rgb = [[pixList[ x] objectAtIndex: 0] isRGB];
 			
 			for( int j = 0 ; j < [pixList[ x] count]; j++)
 			{
 				if( pw != [[[fileList[ x] objectAtIndex: j] valueForKey:@"width"] intValue])
 					volumicData = NO;
 				if( ph != [[[fileList[ x] objectAtIndex: j] valueForKey:@"height"] intValue])
-					volumicData = NO;
-				if( rgb != [[pixList[ x] objectAtIndex: j] isRGB])
 					volumicData = NO;
 				
 				float o[ 9];
@@ -5140,6 +5142,8 @@ static ViewerController *draggedController = 0L;
 	NSString	*previousStudyInstanceUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] retain];
 	float		previousOrientation[ 9];
 	float		previousLocation = 0, previousScale = 0;
+	
+	nonVolumicDataWarningDisplayed = YES;
 	
 	if( previousColumns != 1 || previousRows != 1)
 		[self setImageRows: 1 columns: 1];
@@ -5471,7 +5475,7 @@ static ViewerController *draggedController = 0L;
 	
 	[self selectFirstTilingView];
 	
-	nonContinuousWarningDisplayed = NO;
+	nonVolumicDataWarningDisplayed = NO;
 }
 
 - (void) showWindowTransition
@@ -5579,7 +5583,6 @@ static ViewerController *draggedController = 0L;
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
-
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ResampleData"])
 	{
 		int height = [[pixList[ 0] objectAtIndex: 0] pheight];
@@ -7124,16 +7127,12 @@ static ViewerController *draggedController = 0L;
 	return val;
 }
 
--(float) computeInterval
+- (void) displayAWarningIfNonTrueVolumicData
 {
-	float s = [self computeIntervalFlipNow: [NSNumber numberWithBool: YES]];
-	
-	if( nonContinuousWarningDisplayed == NO)
+	if( nonVolumicDataWarningDisplayed == NO)
 	{
 		double previousInterval3d = 0;
-		
 		double minInterval = 0, maxInterval = 0;
-		
 		BOOL nonContinuous = NO;
 		
 		for( int i = 0 ; i < [pixList[ 0] count] -1; i++)
@@ -7164,8 +7163,7 @@ static ViewerController *draggedController = 0L;
 			if( sss != 0 && previousInterval3d != 0)
 			{
 				nonContinuous = YES;
-				
-				NSLog(@"nonContinuous interval: %f", previousInterval3d - interval3d);
+//				NSLog(@"nonContinuous interval: %f", previousInterval3d - interval3d);
 			}
 			
 			previousInterval3d = interval3d;
@@ -7175,9 +7173,18 @@ static ViewerController *draggedController = 0L;
 		{
 			NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), [NSString stringWithFormat: NSLocalizedString(@"These slices have a non regular slice interval, varying from %.3f mm to %.3f mm. This will produce distortion in 3D representations, and in measurements.", nil), minInterval, maxInterval], NSLocalizedString(@"OK", nil), 0L, 0L);
 		}
+		else if( [self isDataVolumicIn4D: YES] == NO)
+		{
+			NSRunInformationalAlertPanel( NSLocalizedString(@"Warning!", nil), NSLocalizedString(@"These slices doesn't represent a true 3D volumic data. This will produce distortion in 3D representations, and in measurements.", nil), NSLocalizedString(@"OK", nil), 0L, 0L);
+		}
 		
-		nonContinuousWarningDisplayed = YES;
+		nonVolumicDataWarningDisplayed = YES;
 	}
+}
+
+-(float) computeInterval
+{
+	float s = [self computeIntervalFlipNow: [NSNumber numberWithBool: YES]];
 	
 	return s;
 }
@@ -7524,7 +7531,7 @@ static float oldsetww, oldsetwl;
 			}
 		}
 		
-		if( interval != 0)	// It's a 3D volumetric data
+		if( [self isDataVolumicIn4D: YES])
 		{
 			// Apply the convolution in the Z direction
 			
@@ -9920,6 +9927,8 @@ int i,j,l;
 	NSMutableArray		*pts;
 	
 	[self computeInterval];
+	
+	[self displayAWarningIfNonTrueVolumicData];
 	
 	for( i = 0; i < maxMovieIndex; i++)
 		[self saveROI: i];
@@ -16134,7 +16143,9 @@ int i,j,l;
 	}
 	else
 	{
+		[self displayAWarningIfNonTrueVolumicData];
 		[self displayWarningIfGantryTitled];
+		
 		[self MovieStop: self];
 				
 		VRController *viewer = [appController FindViewer :@"VRPanel" :pixList[0]];
@@ -16245,7 +16256,9 @@ int i,j,l;
 		NSRunAlertPanel(NSLocalizedString(@"Growing Region", nil), NSLocalizedString(@"Growing Region algorithms are currently supported only for volumic data and BW images.", nil), nil, nil, nil);
 		return;
 	}
-
+	
+	[self displayAWarningIfNonTrueVolumicData];
+	
 	[self clear8bitRepresentations];
 	
 	float computeInterval = [self computeInterval];
@@ -16286,6 +16299,8 @@ int i,j,l;
 	}
 	else
 	{
+		[self displayAWarningIfNonTrueVolumicData];
+		
 		[self MovieStop: self];
 		
 		if( [VRPROController available])
@@ -16498,7 +16513,10 @@ int i,j,l;
 	}
 	else
 	{
+		[self displayAWarningIfNonTrueVolumicData];
+		
 		[self displayWarningIfGantryTitled];
+		
 		if( [curConvMenu isEqualToString:NSLocalizedString(@"No Filter", nil)] == NO)
 		{
 			if( NSRunInformationalAlertPanel( NSLocalizedString(@"Convolution", nil), NSLocalizedString(@"Should I apply current convolution filter on raw data? 2D/3D post-processing viewers can only display raw data.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
@@ -16610,7 +16628,9 @@ int i,j,l;
 	}
 	else
 	{
+		[self displayAWarningIfNonTrueVolumicData];
 		[self displayWarningIfGantryTitled];
+		
 		[self MovieStop: self];
 		
 		SRController *viewer = [appController FindViewer :@"SR" :pixList[0]];
@@ -16735,6 +16755,7 @@ long i;
 	}
 	else
 	{
+		[self displayAWarningIfNonTrueVolumicData];
 		[self displayWarningIfGantryTitled];
 		
 		long	i, x, y;
@@ -16848,6 +16869,7 @@ long i;
 	}
 	else
 	{
+		[self displayAWarningIfNonTrueVolumicData];
 		[self displayWarningIfGantryTitled];
 		
 		[self MovieStop: self];
@@ -16976,6 +16998,7 @@ long i;
 	}
 	else
 	{
+		[self displayAWarningIfNonTrueVolumicData];
 		[self displayWarningIfGantryTitled];
 		
 		[self MovieStop: self];
@@ -17082,6 +17105,7 @@ long i;
 	}
 	else
 	{
+		[self displayAWarningIfNonTrueVolumicData];
 		[self displayWarningIfGantryTitled];
 		
 		[self MovieStop: self];

@@ -7575,41 +7575,69 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     {
 		NSRect rect = [self frame];
 		
-		if( previousViewSize.width != 0 && previousViewSize.width != rect.size.width)
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"])
 		{
-			// Adapted scale to new viewSize!
-			
-			float	yChanged = (rect.size.width ) / previousViewSize.width;
-			
-			previousViewSize = rect.size;
-			
-			if( yChanged > 0.01 && yChanged < 1000) yChanged = yChanged;
-			else yChanged = 0.01;
-			
-			if( [self is2DViewer])
-				[[self windowController] setUpdateTilingViewsValue: YES];
-			
-			self.scaleValue = scaleValue * yChanged;
-			
-			if( [self is2DViewer])
-				[[self windowController] setUpdateTilingViewsValue: NO];
-			
-			origin.x *= yChanged;
-			origin.y *= yChanged;
-			
-			originOffset.x *= yChanged;
-			originOffset.y *= yChanged;
-			
-			if( [self is2DViewer] == YES)
+			if( NSEqualSizes( previousViewSize, rect.size) == NO)
 			{
-				if( [[self window] isMainWindow])
-					[[self windowController] propagateSettings];
+				if( [self is2DViewer])
+					[[self windowController] setUpdateTilingViewsValue: YES];
+					
+				origin.x = origin.y = 0;
+				[self scaleToFit];
+				
+				if( [self is2DViewer] == YES)
+				{
+					[[self windowController] setUpdateTilingViewsValue: NO];
+					
+					if( [[self window] isMainWindow])
+						[[self windowController] propagateSettings];
+				}
+				
+				if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
+				
+				if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
+				
+				previousViewSize = rect.size;
 			}
-			
-			if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
-			if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
 		}
-		else previousViewSize = rect.size;
+		else
+		{
+			if( previousViewSize.width != 0 && previousViewSize.width != rect.size.width)
+			{
+				// Adapted scale to new viewSize!
+				float	yChanged = (rect.size.width ) / previousViewSize.width;
+				
+				previousViewSize = rect.size;
+				
+				if( yChanged > 0.01 && yChanged < 1000) yChanged = yChanged;
+				else yChanged = 0.01;
+				
+				if( [self is2DViewer])
+					[[self windowController] setUpdateTilingViewsValue: YES];
+				
+				self.scaleValue = scaleValue * yChanged;
+				
+				if( [self is2DViewer])
+					[[self windowController] setUpdateTilingViewsValue: NO];
+				
+				origin.x *= yChanged;
+				origin.y *= yChanged;
+				
+				originOffset.x *= yChanged;
+				originOffset.y *= yChanged;
+				
+				if( [self is2DViewer] == YES)
+				{
+					if( [[self window] isMainWindow])
+						[[self windowController] propagateSettings];
+				}
+				
+				if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
+				
+				if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
+			}
+			else previousViewSize = rect.size;
+		}
     }
 }
 
@@ -8864,7 +8892,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						
 							glPixelTransferf( GL_RED_BIAS, 0);		//glPixelTransferf( GL_GREEN_BIAS, 0);		glPixelTransferf( GL_BLUE_BIAS, 0);
 							glPixelTransferf( GL_RED_SCALE, 1);		//glPixelTransferf( GL_GREEN_SCALE, 1);		glPixelTransferf( GL_BLUE_SCALE, 1);
-
 						}
 					}
 					else {
@@ -9352,6 +9379,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	self.scaleValue = 1.0f;
 }
 
+- (IBOutlet)scaleToFit:(id)sender
+{
+	[self setOriginX: 0 Y: 0];
+	self.rotation = 0.0f;
+	[self scaleToFit];
+}
+
 //Database links
 - (NSManagedObject *)imageObj {
 																																			  
@@ -9382,7 +9416,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [image valueForKey:@"yFlipped"]) self.yFlipped = [[image valueForKey:@"yFlipped"] boolValue];
 		else if( !onlyImage) self.yFlipped = [[series valueForKey:@"yFlipped"] boolValue];
 		
-		if( [self is2DViewer] && firstTimeDisplay)
+		if( [self is2DViewer] && firstTimeDisplay && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO)
 		{
 			if( [image valueForKey:@"scale"]) [self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
 			else if( !onlyImage) {
@@ -9404,7 +9438,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [image valueForKey:@"rotationAngle"]) [self setRotation: [[image valueForKey:@"rotationAngle"] floatValue]];
 		else if( !onlyImage) [self setRotation:  [[series valueForKey:@"rotationAngle"] floatValue]];
 		
-		if ([self is2DViewer] == YES) {
+		if ([self is2DViewer] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO)
+		{
 			NSPoint o = NSMakePoint(0 , 0);
 			if( [image valueForKey:@"xOffset"])  o.x = [[image valueForKey:@"xOffset"] floatValue];
 			else if( !onlyImage) o.x = [[series valueForKey:@"xOffset"] floatValue];

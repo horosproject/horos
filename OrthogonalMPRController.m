@@ -1074,7 +1074,6 @@
 			[contextual addItem:item];
 			[item release];
 			
-			
 
 			/********** Orientation submenu ************/ 
 			

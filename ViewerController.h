@@ -314,7 +314,7 @@ enum
 	
 	NSMutableArray			*retainedToolbarItems;
 	
-	BOOL					nonContinuousWarningDisplayed;
+	BOOL					nonVolumicDataWarningDisplayed;
 	
 	IBOutlet NSView			*display12bitToolbarItemView;
 	IBOutlet NSButton		*display12bitToolbarItemCheckBox;
@@ -408,9 +408,10 @@ enum
 /** Create a new ROI object */
 - (ROI*) newROI: (long) type;
 
-/** Are the data volumic: same height same width */
+/** Are the data volumic: same height same width same orientation */
 - (BOOL) isDataVolumicIn4D:(BOOL) check4D checkEverythingLoaded:(BOOL) c;
 - (BOOL) isDataVolumicIn4D:(BOOL) check4D;
+- (void) displayAWarningIfNonTrueVolumicData;
 
 /** ReSort the images displayed according to this group/element */
 - (BOOL) sortSeriesByDICOMGroup: (int) gr element: (int) el;
