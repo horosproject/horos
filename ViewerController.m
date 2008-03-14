@@ -2699,6 +2699,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[self selectFirstTilingView];
 	
 	[imageView setScaleValue: scaleValue];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"])
+		[imageView scaleToFit];
 }
 
 - (BOOL) FullScreenON { return FullScreenOn;}

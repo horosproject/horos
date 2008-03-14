@@ -1577,6 +1577,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	else
 		self.scaleValue = sizeView.size.height / curDCM.pheight /curDCM.pixelRatio;
 	
+	origin.x = origin.y = 0;
+	
 	[self setNeedsDisplay:YES];
 }
 
