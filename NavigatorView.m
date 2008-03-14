@@ -172,11 +172,11 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)setViewer;
 {
+	wl = [[self viewer] imageView].curWL;
+	ww = [[self viewer] imageView].curWW;
 	[self initTextureArray];
 	[self computeThumbnailSize];
 	[self setFrame:NSMakeRect(0.0, 0.0, [[[self viewer] pixList] count]*thumbnailWidth, [[self viewer] maxMovieIndex]*thumbnailHeight)];
-	wl = [[self viewer] imageView].curWL;
-	ww = [[self viewer] imageView].curWW;
 	previousImageIndex = -1;
 	previousMovieIndex = -1;
 //	[previousViewer release];
@@ -814,7 +814,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		wl = pix.wl;
 		for(int i=0; i<[isTextureWLWWUpdated count]; i++)
 			[isTextureWLWWUpdated replaceObjectAtIndex:i withObject:[NSNumber numberWithBool:NO]];
-		[self display];
+		[self setNeedsDisplay:YES];
 		
 		for (ViewerController *viewer in [self associatedViewers])
 		{

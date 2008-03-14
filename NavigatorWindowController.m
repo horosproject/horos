@@ -54,10 +54,12 @@ static NavigatorWindowController *nav = 0L;
 - (void)setViewer:(ViewerController*)viewer;
 {
 	[navigatorView saveTransformForCurrentViewer];
+	BOOL needsUpdate = NO;
 	if( viewerController != viewer)
 	{
 		[viewerController release];
 		viewerController = [viewer retain];
+		needsUpdate = YES;
 	}
 	
 	if( [viewerController isDataVolumicIn4D: YES] == NO)
@@ -67,9 +69,9 @@ static NavigatorWindowController *nav = 0L;
 		return;
 	}
 	
-	[self initView];
+	if(needsUpdate)[self initView];
 	
-	[navigatorView setViewer];
+	//[navigatorView setViewer];
 }
 
 - (void)initView;
