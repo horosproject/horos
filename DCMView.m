@@ -7596,7 +7596,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 				
 				if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
-				
 				if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
 				
 				previousViewSize = rect.size;
@@ -9379,6 +9378,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self setOriginX: 0 Y: 0];
 	self.rotation = 0.0f;
 	self.scaleValue = 1.0f;
+	
+	if( [self is2DViewer] == YES)
+	{
+		if( [[self window] isMainWindow])
+			[[self windowController] propagateSettings];
+	}
+	
+	if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
+	if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
 }
 
 - (IBOutlet)scaleToFit:(id)sender
@@ -9386,6 +9394,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[self setOriginX: 0 Y: 0];
 	self.rotation = 0.0f;
 	[self scaleToFit];
+
+	if( [self is2DViewer] == YES)
+	{
+		if( [[self window] isMainWindow])
+			[[self windowController] propagateSettings];
+	}
+	
+	if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
+	if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
 }
 
 //Database links
