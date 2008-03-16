@@ -333,8 +333,11 @@ static char *GetPrivateIP()
 		{
 			[pressedKeys appendString: [event characters]];
 			
+			NSLog(@"%@", pressedKeys);
+			
 			NSArray		*resultFilter = [resultArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", [NSString stringWithFormat:@"%@*", pressedKeys]]];
 			
+			[NSObject cancelPreviousPerformRequestsWithTarget: pressedKeys selector:@selector(setString:) object:@""];
 			[pressedKeys performSelector:@selector(setString:) withObject:@"" afterDelay:0.5];
 			
 			if( [resultFilter count])
@@ -342,6 +345,7 @@ static char *GetPrivateIP()
 				[outlineView selectRow: [outlineView rowForItem: [resultFilter objectAtIndex: 0]] byExtendingSelection: NO];
 				[outlineView scrollRowToVisible: [outlineView selectedRow]];
 			}
+			else NSBeep();
 		}
 	}
 }

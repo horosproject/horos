@@ -18,6 +18,11 @@
 
 @implementation MyOutlineView
 
+- (void)keyDown:(NSEvent *)event
+{
+	[[[self window] windowController] keyDown: event];
+}
+
 - (NSObject < NSCoding > *)columnState
 {
     NSMutableArray    *state;

@@ -716,6 +716,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (IBAction)print:(id)sender
 {
+//	DCMPix *newPix = [curDCM renderInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
+//	NSData	*newData = [NSData dataWithBytesNoCopy: [newPix fImage] length: [newPix pheight]*[newPix pwidth]*sizeof( float) freeWhenDone:YES];
+//	[ViewerController newWindow
+//		: [NSMutableArray arrayWithObject: newPix]
+//		: [NSMutableArray arrayWithObject: [newPix imageObj]]
+//		: newData];
+//	return;
+	
 	if ([self is2DViewer] == YES)
 	{
 		[[self windowController] print: self];
@@ -5648,6 +5656,26 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     return a;
 }
 
+-(NSPoint) ConvertFromGL2NSView:(NSPoint) a
+{
+	a = [self ConvertFromGL2View: a];
+   
+	a.y = [self drawingFrameRect].size.height - a.y;		// inverse Y scaling system
+	a.y -= [self drawingFrameRect].size.height/2;			// Our viewing zero is centered in the view, NSView has the zero in left/bottom
+	a.x += [self drawingFrameRect].size.width/2;					
+	
+    return a;
+}
+
+-(NSPoint) ConvertFromGL2Screen:(NSPoint) a
+{
+	a = [self ConvertFromGL2NSView: a];
+	a = [self convertPointToBase: a];
+	a = [[self window] convertBaseToScreen: a];
+	
+    return a;
+}
+
 -(NSPoint) ConvertFromView2GL:(NSPoint) a
 {
 	NSRect size = drawingFrameRect;	//[[[NSOpenGLContext currentContext] view] frame];
@@ -5764,13 +5792,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	// get first 3 AXIS
 	for ( int i=0; i < 3; ++i) {
-		if (absX>.2 && absX>absY && absX>absZ)
+		if (absX>.2 && absX>=absY && absX>=absZ)
 		{
 			[optr appendString: orientationX]; absX=0;
 		}
-		else if (absY>.2 && absY>absX && absY>absZ)	{
+		else if (absY>.2 && absY>=absX && absY>=absZ)	{
 			[optr appendString: orientationY]; absY=0;
-		} else if (absZ>.2 && absZ>absX && absZ>absY) {
+		} else if (absZ>.2 && absZ>=absX && absZ>=absY) {
 			[optr appendString: orientationZ]; absZ=0;
 		} else break;
 	}
@@ -6853,39 +6881,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( blendingView != 0L && syncOnLocationImpossible == NO && noBlending == NO )
 		{
-			if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
-			{
-//					float vectorP[ 9], tempOrigin[ 3], tempOriginBlending[ 3];
-//					
-//					[curDCM orientation: vectorP];
-//					
-//					tempOrigin[ 0] = curDCM.originX * vectorP[ 0] + curDCM.originY * vectorP[ 1] + curDCM.originZ * vectorP[ 2];
-//					tempOrigin[ 1] = curDCM.originX * vectorP[ 3] + curDCM.originY * vectorP[ 4] + curDCM.originZ * vectorP[ 5];
-//					tempOrigin[ 2] = curDCM.originX * vectorP[ 6] + curDCM.originY * vectorP[ 7] + curDCM.originZ * vectorP[ 8];
-//					
-//					tempOriginBlending[ 0] = [[blendingView curDCM] originX] * vectorP[ 0] + [[blendingView curDCM] originY] * vectorP[ 1] + [[blendingView curDCM] originZ] * vectorP[ 2];
-//					tempOriginBlending[ 1] = [[blendingView curDCM] originX] * vectorP[ 3] + [[blendingView curDCM] originY] * vectorP[ 4] + [[blendingView curDCM] originZ] * vectorP[ 5];
-//					tempOriginBlending[ 2] = [[blendingView curDCM] originX] * vectorP[ 6] + [[blendingView curDCM] originY] * vectorP[ 7] + [[blendingView curDCM] originZ] * vectorP[ 8];
-//					
-//					offset.x = (tempOrigin[0] + curDCM.pwidth*curDCM.pixelSpacingX/2. - (tempOriginBlending[ 0] + [[blendingView curDCM] pwidth]*[[blendingView curDCM] pixelSpacingX]/2.));
-//					offset.y = (tempOrigin[1] + curDCM.pheight*curDCM.pixelSpacingY/2. - (tempOriginBlending[ 1] + [[blendingView curDCM] pheight]*[[blendingView curDCM] pixelSpacingY]/2.));
-//					
-//					offset.x *= scaleValue;
-//					offset.x /= curDCM.pixelSpacingX;
-//					
-//					offset.y *= scaleValue;
-//					offset.y /= curDCM.pixelSpacingY;
-				
-				offset.y = 0;
-				offset.x = 0;
-			}
-			else
-			{
-				offset.y = 0;
-				offset.x = 0;
-			}
-			
-			//NSLog(@"offset:%f - %f", offset.x, offset.y);
+//			if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
+//			{
+//				offset.y = 0;
+//				offset.x = 0;
+//			}
+//			else
+//			{
+//				offset.y = 0;
+//				offset.x = 0;
+//			}
 			
 			glBlendEquation(GL_FUNC_ADD);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -7280,13 +7285,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				NSSortDescriptor * roiSorting = [[[NSSortDescriptor alloc] initWithKey:@"uniqueID" ascending:NO] autorelease];
 				
 				rectArray = [[NSMutableArray alloc] initWithCapacity: [curRoiList count]];
-
+				
 				for( int i = [curRoiList count]-1; i >= 0; i--) {
 					if( resetData) [[curRoiList objectAtIndex:i] recompute];
 					[[curRoiList objectAtIndex:i] setRoiFont: labelFontListGL :labelFontListGLSize :self];
 					[[curRoiList objectAtIndex:i] drawROI: scaleValue : curDCM.pwidth / 2. : curDCM.pheight / 2. : curDCM.pixelSpacingX : curDCM.pixelSpacingY];
 				}
-				
 				
 				if ( !suppress_labels ) {
 					NSArray	*sortedROIs = [curRoiList sortedArrayUsingDescriptors: [NSArray arrayWithObject: roiSorting]];
@@ -8732,33 +8736,35 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			dst.height = *tH;
 			
 
-			if( *rBAddrSize < rowBytes * *tH ) {
+			if( *rBAddrSize < rowBytes * *tH )
+			{
 				if( *rAddr) free( *rAddr);
 				*rAddr = malloc( rowBytes * *tH);
 				*rBAddrSize = rowBytes * *tH;
 				
-				if( resampledTempAddr) free( resampledTempAddr);
-				
-				int requiredSize;
-				
-				if( (colorTransfer == YES) || (blending == YES))
-					requiredSize = vImageScale_ARGB8888( &src, &dst, 0L, kvImageGetTempBufferSize);
-				else
-					requiredSize = vImageScale_Planar8( &src, &dst, 0L, kvImageGetTempBufferSize);
-				
-				if( requiredSize < *rBAddrSize)
-					resampledTempAddr = malloc(  *rBAddrSize);
-				else resampledTempAddr = 0L;
+//				if( resampledTempAddr) free( resampledTempAddr);
+//				
+//				int requiredSize;
+//				
+//				if( (colorTransfer == YES) || (blending == YES))
+//					requiredSize = vImageScale_ARGB8888( &src, &dst, 0L, kvImageGetTempBufferSize);
+//				else
+//					requiredSize = vImageScale_Planar8( &src, &dst, 0L, kvImageGetTempBufferSize);
+//				
+//				if( requiredSize < *rBAddrSize)
+//					resampledTempAddr = malloc(  *rBAddrSize);
+//				else resampledTempAddr = 0L;
 			}
 			
-			if( *rAddr ) {
+			if( *rAddr ) 
+			{
 				baseAddr = *rAddr;
 				dst.data = baseAddr;
 				
 				if( (colorTransfer == YES) || (blending == YES))
-					vImageScale_ARGB8888( &src, &dst, resampledTempAddr, QUALITY);
+					vImageScale_ARGB8888( &src, &dst, 0L, QUALITY);						//resampledTempAddr - RANDOM CRASHES WITH the temp ptr during image blending.....
 				else
-					vImageScale_Planar8( &src, &dst, resampledTempAddr, QUALITY);
+					vImageScale_Planar8( &src, &dst, 0L, QUALITY);						//resampledTempAddr - RANDOM CRASHES WITH the temp ptr during image blending.....
 			}
 			else {
 				if( (colorTransfer == YES) || (blending == YES)) {

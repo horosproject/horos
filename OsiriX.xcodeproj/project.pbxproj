@@ -4045,6 +4045,10 @@
 		CE37F94A0925D210000A14CA /* LogArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF17E98E088768CA00ECF621 /* LogArrayController.m */; };
 		CE39BFA306BC5DAE006D6824 /* Scripting_Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */; };
 		CE39BFA406BC5DAE006D6824 /* Scripting_Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */; };
+		CE3DDDAF0D8AC94C00AE9588 /* QueryOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3DDDAD0D8AC94C00AE9588 /* QueryOutlineView.h */; };
+		CE3DDDB00D8AC94C00AE9588 /* QueryOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3DDDAE0D8AC94C00AE9588 /* QueryOutlineView.m */; };
+		CE3DDDB10D8AC94C00AE9588 /* QueryOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3DDDAD0D8AC94C00AE9588 /* QueryOutlineView.h */; };
+		CE3DDDB20D8AC94C00AE9588 /* QueryOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3DDDAE0D8AC94C00AE9588 /* QueryOutlineView.m */; };
 		CE3E695D07AFB6DE00541E20 /* CurvedMPR.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3E695B07AFB6DE00541E20 /* CurvedMPR.h */; };
 		CE3E695E07AFB6DE00541E20 /* CurvedMPR.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3E695C07AFB6DE00541E20 /* CurvedMPR.m */; };
 		CE3E696107AFB6DE00541E20 /* CurvedMPR.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3E695B07AFB6DE00541E20 /* CurvedMPR.h */; };
@@ -10353,6 +10357,8 @@
 		CE3422CA0946237A00CCEA2A /* libvtksys.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtksys.a; path = Binaries/VTKLibs/libvtksys.a; sourceTree = "<group>"; };
 		CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scripting_Additions.h; sourceTree = "<group>"; };
 		CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scripting_Additions.m; sourceTree = "<group>"; };
+		CE3DDDAD0D8AC94C00AE9588 /* QueryOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryOutlineView.h; sourceTree = "<group>"; };
+		CE3DDDAE0D8AC94C00AE9588 /* QueryOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryOutlineView.m; sourceTree = "<group>"; };
 		CE3E695B07AFB6DE00541E20 /* CurvedMPR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurvedMPR.h; sourceTree = "<group>"; };
 		CE3E695C07AFB6DE00541E20 /* CurvedMPR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CurvedMPR.m; sourceTree = "<group>"; };
 		CE3F768F08ED63DC00F4E202 /* vtk3DS.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = vtk3DS.h; sourceTree = "<group>"; };
@@ -13109,6 +13115,8 @@
 		ABB7A43606343BFF00AD1777 /* Query */ = {
 			isa = PBXGroup;
 			children = (
+				CE3DDDAD0D8AC94C00AE9588 /* QueryOutlineView.h */,
+				CE3DDDAE0D8AC94C00AE9588 /* QueryOutlineView.m */,
 				BFC9C2A709B697DB003717B1 /* DCMTKVerifySCU.h */,
 				BFC9C2A809B697DB003717B1 /* DCMTKVerifySCU.mm */,
 				7EB4AAE5079494CB007AD271 /* QueryArrayController.h */,
@@ -18606,6 +18614,7 @@
 				A910FB370D57728A0095A956 /* NavigatorView.h in Headers */,
 				CE40ED530D86D54D007C6D49 /* ThreeDPositionController.h in Headers */,
 				CE0E3A550D87C56D008135A8 /* ThreeDPanView.h in Headers */,
+				CE3DDDAF0D8AC94C00AE9588 /* QueryOutlineView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20679,6 +20688,7 @@
 				A910FB350D57728A0095A956 /* NavigatorView.h in Headers */,
 				CE40ED550D86D54D007C6D49 /* ThreeDPositionController.h in Headers */,
 				CE0E3A570D87C56D008135A8 /* ThreeDPanView.h in Headers */,
+				CE3DDDB10D8AC94C00AE9588 /* QueryOutlineView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22970,6 +22980,7 @@
 				A910FB380D57728A0095A956 /* NavigatorView.m in Sources */,
 				CE40ED540D86D54D007C6D49 /* ThreeDPositionController.m in Sources */,
 				CE0E3A560D87C56D008135A8 /* ThreeDPanView.m in Sources */,
+				CE3DDDB00D8AC94C00AE9588 /* QueryOutlineView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24649,6 +24660,7 @@
 				A910FB360D57728A0095A956 /* NavigatorView.m in Sources */,
 				CE40ED560D86D54D007C6D49 /* ThreeDPositionController.m in Sources */,
 				CE0E3A580D87C56D008135A8 /* ThreeDPanView.m in Sources */,
+				CE3DDDB20D8AC94C00AE9588 /* QueryOutlineView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

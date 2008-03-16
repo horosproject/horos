@@ -475,6 +475,9 @@ Note setter is different to not break existing usage. :-( */
 - (short*) kernel;
 - (short) normalization;
 - (short) kernelsize;
+- (DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF;
+- (DCMPix*) mergeWithDCMPix:(DCMPix*) o offset:(NSPoint) oo;
+- (DCMPix*) renderInRectSize:(NSSize) rectSize atPosition:(NSPoint) oo rotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF;
 - (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element papyLink:(short)fileNb;
 - (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element DCMLink:(DCMObject*)dcmObject;
 /**  calls 

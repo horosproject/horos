@@ -13,7 +13,7 @@
 =========================================================================*/
 
 
-
+#import "QueryOutlineView.h"
 #import "sourcesTableView.h"
 #import <AppKit/AppKit.h>
 
@@ -23,7 +23,7 @@
 /** \brief Window Controller for Q/R */
 @interface QueryController : NSWindowController {
 
-    IBOutlet    NSOutlineView				*outlineView;
+    IBOutlet    QueryOutlineView				*outlineView;
 	IBOutlet	NSProgressIndicator			*progressIndicator;
 	IBOutlet	NSSearchField				*searchFieldName, *searchFieldID, *searchFieldAN;
 	

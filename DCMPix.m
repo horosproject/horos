@@ -59,6 +59,7 @@ NSLock	*quicktimeThreadLock = 0L;
 static NSMutableArray *nonLinearWLWWThreads = 0L;
 static NSMutableArray *minmaxThreads = 0L;
 static NSConditionLock *processorsLock = 0L;
+static float deg2rad = 3.14159265358979/180.0; 
 
 struct NSPointInt
 {
@@ -8583,6 +8584,242 @@ END_CREATE_ROIS:
 }
 
 # pragma mark-
+
+- (NSPoint)rotatePoint:(NSPoint)pt aroundPoint:(NSPoint)c angle:(float)a;
+{
+	NSPoint rot;
+	
+	pt.x -= c.x;
+	pt.y -= c.y;
+	
+	rot.x = cos(a)*pt.x - sin(a)*pt.y;
+	rot.y = sin(a)*pt.x + cos(a)*pt.y;
+
+	rot.x += c.x;
+	rot.y += c.y;
+	
+	return rot;
+}
+
+#define BACKGROUND 0
+
+- (void) drawImage: (vImage_Buffer*) src inImage: (vImage_Buffer*) dst offset:(NSPoint) oo background:(float) b
+{
+	float *f = (float*) dst->data;
+	int i = dst->height * dst->width;
+	while( i-->0) *f++ = b;
+	
+	int ox = oo.x;
+	int oy = oo.y;
+	
+	int dstHeight = dst->height;
+	int dstWidth = dst->width;
+	
+	NSRect dstRect = NSMakeRect( 0, 0, dst->width, dst->height);
+	NSRect srcRect = NSMakeRect( ox, oy, src->width, src->height);
+	
+	NSRect unionRect = NSIntersectionRect( dstRect, srcRect);
+	
+	int y1 = unionRect.origin.y;
+	int y2 = unionRect.origin.y+unionRect.size.height;
+	int x1 = unionRect.origin.x;
+	int x2 = unionRect.origin.x+unionRect.size.width;
+	
+	int lineBytes = (x2-x1)*sizeof( float);
+	
+	float *srcData = (float*) src->data;
+	float *dstData = (float*) dst->data;
+	
+	for( int y = y1; y < y2; y++)
+	{
+		memcpy( dstData + (y*dst->width + x1), srcData +((y-oy)*src->width + (x1-ox)), lineBytes);
+	}
+}
+
+-(DCMPix*) mergeWithDCMPix:(DCMPix*) o offset:(NSPoint) oo
+{
+	int ox = oo.x;
+	int oy = oo.y;
+	
+	NSRect dstRect = NSMakeRect( 0, 0, [self pwidth], [self pheight]);
+	NSRect srcRect = NSMakeRect( ox, oy, [o pwidth], [o pwidth]);
+	
+	NSRect unionRect = NSUnionRect( dstRect, srcRect);
+	
+	vImage_Buffer src;
+	vImage_Buffer dst;
+	
+	dst.height = unionRect.size.height;
+	dst.width = unionRect.size.width;
+	dst.rowBytes = dst.width * 4;
+	dst.data = malloc( dst.height * dst.rowBytes);
+	
+	// Draw first image
+	src.height = [self pheight];
+	src.width = [self pwidth];
+	src.rowBytes = [self pwidth]*4;
+	src.data = [self fImage];
+	
+	[self drawImage:&src inImage:&dst offset:unionRect.origin background: BACKGROUND];
+	
+	// Draw second image
+	src.height = [o pheight];
+	src.width = [o pwidth];
+	src.rowBytes = [o pwidth]*4;
+	src.data = [o fImage];
+	
+	[self drawImage:&src inImage:&dst offset:NSMakePoint( ox, oy) background: BACKGROUND];
+	
+	// Create final DCMPix
+	DCMPix *newPix = [[self copy] autorelease];
+	
+	[newPix setfImage: dst.data];
+	newPix.pheight = dst.height;
+	newPix.pwidth = dst.width;
+	newPix.rowBytes = dst.width;
+
+	NSData	*newData = [NSData dataWithBytesNoCopy: dst.data length: dst.height * dst.rowBytes freeWhenDone:YES];
+	
+	[ViewerController newWindow
+		: [NSMutableArray arrayWithObject: newPix]
+		: [NSMutableArray arrayWithObject: imageObj]
+		: newData];
+}
+
+-(DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF
+{
+	int newHeight;
+	int newWidth;
+	
+	r *= deg2rad;
+	
+	// Apply scale
+	newWidth = [self pwidth] * scale;
+	newHeight = [self pheight] * scale;
+	
+	// Apply rotation
+	NSPoint pt[ 4];
+	NSPoint zeroPt = NSMakePoint( 0, 0);
+	
+	pt[ 0] = [self rotatePoint: zeroPt aroundPoint: zeroPt angle: r];
+	pt[ 1] = [self rotatePoint: NSMakePoint( zeroPt.x+newWidth, zeroPt.y) aroundPoint: zeroPt angle: r];
+	pt[ 2] = [self rotatePoint: NSMakePoint( zeroPt.x+newWidth, zeroPt.y+newHeight) aroundPoint: zeroPt angle: r];
+	pt[ 3] = [self rotatePoint: NSMakePoint( zeroPt.x, zeroPt.y+newHeight) aroundPoint: zeroPt angle: r];
+	
+	float minX, maxX, minY, maxY;
+	
+	minX = maxX = pt[ 0].x;
+	minY = maxY = pt[ 0].y;
+	
+	for( int i = 0; i < 4; i++)
+	{
+		minX = minX > pt[ i].x ? pt[ i].x : minX;
+		maxX = maxX < pt[ i].x ? pt[ i].x : maxX;
+		minY = minY > pt[ i].y ? pt[ i].y : minY;
+		maxY = maxY < pt[ i].y ? pt[ i].y : maxY;
+	}
+	
+	NSRect newRect = NSMakeRect( minX, minY, maxX - minX, maxY - minY);
+	NSLog( NSStringFromRect( newRect));
+	
+	NSRect dstRect = newRect;
+	
+	int newW = (dstRect.size.width);
+	int newH = (dstRect.size.height);
+	
+	vImage_Buffer src;
+	vImage_Buffer dst;
+	
+	if( [self isRGB] == NO)
+	{
+		src.height = [self pheight];
+		src.width = [self pwidth];
+		src.rowBytes = [self pwidth]*4;
+		src.data = [self fImage];
+		
+		// Flipping X-Y
+		if( xF)
+			vImageHorizontalReflect_PlanarF ( &src, &src, 0L);
+		
+		if( yF)
+			vImageVerticalReflect_PlanarF ( &src, &src, 0L);
+		
+		dst.height = [self pheight]*scale;
+		dst.width = [self pwidth]*scale;
+		dst.rowBytes = dst.width*4;
+		dst.data = malloc( dst.height * dst.rowBytes);
+				
+		// Scaling
+		vImageScale_PlanarF
+		(
+			&src,
+			&dst,
+			0L,
+			kvImageHighQualityResampling
+		);
+		
+		// Rotation
+		src = dst;
+		
+		dst.height = newH;
+		dst.width = newW;
+		dst.rowBytes = newW*4;
+		dst.data = malloc( dst.height * dst.rowBytes);
+		
+		vImageRotate_PlanarF
+		(
+			&src,
+			&dst,
+			0L,
+			-r,
+			BACKGROUND,
+			kvImageHighQualityResampling
+		);
+		free( src.data);
+	}
+	
+	DCMPix *newPix = [[self copy] autorelease];
+	
+	[newPix setfImage: dst.data];
+	newPix.pheight = dst.height;
+	newPix.pwidth = dst.width;
+	newPix.rowBytes = dst.width;
+	
+	return newPix;
+}
+
+- (DCMPix*) renderInRectSize:(NSSize) rectSize atPosition:(NSPoint) oo rotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF;
+{
+	DCMPix *newPix = [self renderWithRotation: r scale: scale xFlipped: xF yFlipped:  yF];
+	
+	vImage_Buffer src;
+	vImage_Buffer dst;
+	
+	src.height = [newPix pheight];
+	src.width = [newPix pwidth];
+	src.rowBytes = src.width*4;
+	src.data = [newPix fImage];
+	
+	dst.height = rectSize.height;
+	dst.width = rectSize.width;
+	dst.rowBytes = dst.width*4;
+	dst.data = malloc( dst.height * dst.rowBytes);
+	
+	// zero coordinate is in the center of the view
+	oo.x = rectSize.width/2 + oo.x - [newPix pwidth]/2;
+	oo.y = rectSize.height/2 + oo.y - [newPix pheight]/2;
+	
+	[self drawImage: &src inImage: &dst offset:oo background: BACKGROUND];
+
+	newPix = [[self copy] autorelease];
+	
+	[newPix setfImage: dst.data];
+	newPix.pheight = dst.height;
+	newPix.pwidth = dst.width;
+	newPix.rowBytes = dst.width;
+
+	return newPix;
+}
 
 -(void) orientationDouble:(double*) c
 {

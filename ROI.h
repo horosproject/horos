@@ -324,9 +324,7 @@ enum
 
 
 /** Set cab resize layer */
-- (void)setCanResizeLayer:(BOOL)boo;
-
-
+- (void) setCanResizeLayer:(BOOL)boo;
 // Calcium Scoring
 /** Cofactor for Calcium Score 
 *	Cofactor values used by Agaston.  

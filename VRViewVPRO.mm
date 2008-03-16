@@ -575,13 +575,13 @@ public:
 	
 	// get first 3 AXIS
 	for ( int i=0; i < 3; ++i) {
-		if (absX>.2 && absX>absY && absX>absZ)
+		if (absX>.2 && absX>=absY && absX>=absZ)
 		{
 			[optr appendString: orientationX]; absX=0;
 		}
-		else if (absY>.2 && absY>absX && absY>absZ)	{
+		else if (absY>.2 && absY>=absX && absY>=absZ)	{
 			[optr appendString: orientationY]; absY=0;
-		} else if (absZ>.2 && absZ>absX && absZ>absY) {
+		} else if (absZ>.2 && absZ>=absX && absZ>=absY) {
 			[optr appendString: orientationZ]; absZ=0;
 		} else break; *optr='\0';
 	}

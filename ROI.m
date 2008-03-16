@@ -540,7 +540,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 -(void) setDefaultName:(NSString*) n { [ROI setDefaultName: n]; }
 -(NSString*) defaultName { return defaultName; }
- 
+  
 // --- tPlain functions 
 -(void)displayTexture
 {

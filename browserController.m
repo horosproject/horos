@@ -10202,7 +10202,6 @@ static NSArray*	openSubSeriesArray = 0L;
 
 - (void)keyDown:(NSEvent *)event
 {
-
     unichar c = [[event characters] characterAtIndex:0];
 	
     if (c == NSDeleteCharacter ||
@@ -10233,6 +10232,7 @@ static NSArray*	openSubSeriesArray = 0L;
 			[databaseOutline selectRow: [databaseOutline rowForItem: [result objectAtIndex: 0]] byExtendingSelection: NO];
 			[databaseOutline scrollRowToVisible: databaseOutline.selectedRow];
 		}
+		else NSBeep();
     }
 }
 
