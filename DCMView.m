@@ -8402,11 +8402,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	[curDCM orientation: o];
 	
-	if( yFlipped && xFlipped) {
+	if( yFlipped && xFlipped)
+	{
 		rot = rot + 180;
 	}
-	else {
-		if( yFlipped ) {
+	else
+	{
+		if( yFlipped )
+		{
 			xRot *= -1;
 			yRot *= -1;
 			
@@ -8424,12 +8427,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			o[ 2] *= -1;
 		}
 	}
-
+	
 	// Compute normal vector
 	o[6] = o[1]*o[5] - o[2]*o[4];
 	o[7] = o[2]*o[3] - o[0]*o[5];
 	o[8] = o[0]*o[4] - o[1]*o[3];
-
+	
 	XYZ vector, rotationVector; 
 	
 	rotationVector.x = o[ 6];	rotationVector.y = o[ 7];	rotationVector.z = o[ 8];

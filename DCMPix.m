@@ -2666,11 +2666,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (void)setPixelSpacingX :(double) s { [self CheckLoad];
 	pixelSpacingX = s;
+	if( pixelSpacingX) pixelRatio = pixelSpacingY / pixelSpacingX;
 }
 
 - (void)setPixelSpacingY :(double) s {
 	[self CheckLoad];
 	pixelSpacingY = s;
+	if( pixelSpacingX) pixelRatio = pixelSpacingY / pixelSpacingX;
 }
 
 - (double)originX { [self CheckLoad]; return originX;}
@@ -8686,6 +8688,65 @@ END_CREATE_ROIS:
 		: newData];
 }
 
+- (void) orientationCorrected:(float*) correctedOrientation rotation:(float) rotation xFlipped: (BOOL) xFlipped yFlipped: (BOOL) yFlipped
+{
+	float	o[ 9];
+	float   yRot = -1, xRot = -1;
+	float	rot = rotation;
+	
+	[self orientation: o];
+	
+	if( yFlipped && xFlipped)
+	{
+		rot = rot + 180;
+	}
+	else
+	{
+		if( yFlipped )
+		{
+			xRot *= -1;
+			yRot *= -1;
+			
+			o[ 3] *= -1;
+			o[ 4] *= -1;
+			o[ 5] *= -1;
+		}
+		
+		if( xFlipped ) {
+			xRot *= -1;
+			yRot *= -1;
+			
+			o[ 0] *= -1;
+			o[ 1] *= -1;
+			o[ 2] *= -1;
+		}
+	}
+	
+	// Compute normal vector
+	o[6] = o[1]*o[5] - o[2]*o[4];
+	o[7] = o[2]*o[3] - o[0]*o[5];
+	o[8] = o[0]*o[4] - o[1]*o[3];
+	
+	XYZ vector, rotationVector; 
+	
+	rotationVector.x = o[ 6];	rotationVector.y = o[ 7];	rotationVector.z = o[ 8];
+	
+	vector.x = o[ 0];	vector.y = o[ 1];	vector.z = o[ 2];
+	vector =  ArbitraryRotate(vector, xRot*rot*deg2rad, rotationVector);
+	o[ 0] = vector.x;	o[ 1] = vector.y;	o[ 2] = vector.z;
+	
+	vector.x = o[ 3];	vector.y = o[ 4];	vector.z = o[ 5];
+	vector =  ArbitraryRotate(vector, yRot*rot*deg2rad, rotationVector);
+	o[ 3] = vector.x;	o[ 4] = vector.y;	o[ 5] = vector.z;
+
+	// Compute normal vector
+	o[6] = o[1]*o[5] - o[2]*o[4];
+	o[7] = o[2]*o[3] - o[0]*o[5];
+	o[8] = o[0]*o[4] - o[1]*o[3];
+
+	memcpy( correctedOrientation, o, sizeof o );
+}
+
 -(DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF
 {
 	int newHeight;
@@ -8695,7 +8756,7 @@ END_CREATE_ROIS:
 	
 	// Apply scale
 	newWidth = [self pwidth] * scale;
-	newHeight = [self pheight] * scale;
+	newHeight = [self pheight] * scale * pixelRatio;
 	
 	// Apply rotation
 	NSPoint pt[ 4];
@@ -8784,6 +8845,18 @@ END_CREATE_ROIS:
 	newPix.pheight = dst.height;
 	newPix.pwidth = dst.width;
 	newPix.rowBytes = dst.width;
+	newPix.pixelSpacingX = pixelSpacingX / scale;
+	newPix.pixelSpacingY = pixelSpacingY / scale;
+	
+	// New origin
+	float o[ 3];
+	[self convertPixX: minX pixY: minY toDICOMCoords: o];
+	[newPix setOrigin: o];
+	
+	// New orientation
+	float v[ 9];
+	[self orientationCorrected: v rotation: r xFlipped: xF yFlipped: yF];
+	[newPix setOrientation: v];
 	
 	return newPix;
 }
@@ -8811,7 +8884,7 @@ END_CREATE_ROIS:
 	
 	[self drawImage: &src inImage: &dst offset:oo background: BACKGROUND];
 
-	newPix = [[self copy] autorelease];
+	newPix = [[newPix copy] autorelease];
 	
 	[newPix setfImage: dst.data];
 	newPix.pheight = dst.height;
