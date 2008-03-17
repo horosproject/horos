@@ -7562,7 +7562,8 @@ static BOOL needToRezoom;
 		}
 	}
 }
-- (NSArray*) albumArray {
+- (NSArray*) albumArray
+{
 	NSString				*dbName = @"main";
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	NSManagedObjectModel	*model = self.managedObjectModel;
@@ -7570,16 +7571,27 @@ static BOOL needToRezoom;
 	[context retain];
 	[context lock];
 	
-	//Find all albums
-	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Album"]];
-	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-	NSError *error = nil;
-	NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
+	NSArray *albumsArray = 0L;
+	NSArray *result = 0L;
 	
-	NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
-	albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, 0L]];
-	NSArray *result = [NSArray arrayWithObject: [NSDictionary dictionaryWithObject: @"Database" forKey:@"name"]];
+	@try
+	{
+		//Find all albums
+		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Album"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+		NSError *error = nil;
+		albumsArray = [context executeFetchRequest:dbRequest error:&error];
+		
+		NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
+		albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, 0L]];
+		result = [NSArray arrayWithObject: [NSDictionary dictionaryWithObject: @"Database" forKey:@"name"]];
+	}
+	
+	@catch (NSException *e)
+	{
+		NSLog( @"albumArray exception : %@", e);
+	}
 	
 	[context unlock];
 	[context release];

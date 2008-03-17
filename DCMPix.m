@@ -8801,10 +8801,24 @@ END_CREATE_ROIS:
 		
 		// Flipping X-Y
 		if( xF)
-			vImageHorizontalReflect_PlanarF ( &src, &src, 0L);
+		{
+			dst = src;
+			dst.data = malloc( dst.height * dst.rowBytes);
+			vImageHorizontalReflect_PlanarF ( &src, &dst, 0L);
+			
+			if( src.data != [self fImage]) free( src.data);
+			src = dst;
+		}
 		
 		if( yF)
-			vImageVerticalReflect_PlanarF ( &src, &src, 0L);
+		{
+			dst = src;
+			dst.data = malloc( dst.height * dst.rowBytes);
+			vImageVerticalReflect_PlanarF ( &src, &dst, 0L);
+			
+			if( src.data != [self fImage]) free( src.data);
+			src = dst;
+		}
 		
 		dst.height = [self pheight]*scale;
 		dst.width = [self pwidth]*scale;
@@ -8821,6 +8835,7 @@ END_CREATE_ROIS:
 		);
 		
 		// Rotation
+		if( src.data != [self fImage]) free( src.data);
 		src = dst;
 		
 		dst.height = newH;
@@ -8837,7 +8852,7 @@ END_CREATE_ROIS:
 			BACKGROUND,
 			kvImageHighQualityResampling
 		);
-		free( src.data);
+		if( src.data != [self fImage]) free( src.data);
 	}
 	
 	DCMPix *newPix = [[self copy] autorelease];
@@ -8848,7 +8863,7 @@ END_CREATE_ROIS:
 	newPix.rowBytes = dst.width;
 	newPix.pixelSpacingX = pixelSpacingX / scale;
 	newPix.pixelSpacingY = pixelSpacingY / scale;
-		
+	
 	// New orientation
 	float v[ 9];
 	[newPix orientationCorrected: v rotation: r xFlipped: xF yFlipped: yF];
@@ -8858,9 +8873,11 @@ END_CREATE_ROIS:
 	float o[ 3];
 	NSPoint a = NSMakePoint( minX, minY);
 	a = [self rotatePoint: a aroundPoint: centerPt angle: -rot];
-	[self convertPixX: -a.x pixY: -a.y toDICOMCoords: o];
+	if( xF) a.x = newWidth - a.x;
+	if( yF) a.y = newHeight - a.y;
+	[self convertPixX: a.x/scale pixY: a.y/scale toDICOMCoords: o];
 	[newPix setOrigin: o];
-
+	
 	return newPix;
 }
 
