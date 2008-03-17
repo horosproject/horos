@@ -8820,7 +8820,7 @@ END_CREATE_ROIS:
 			src = dst;
 		}
 		
-		dst.height = [self pheight]*scale;
+		dst.height = [self pheight]*scale * pixelRatio;
 		dst.width = [self pwidth]*scale;
 		dst.rowBytes = dst.width*4;
 		dst.data = malloc( dst.height * dst.rowBytes);
@@ -8862,7 +8862,7 @@ END_CREATE_ROIS:
 	newPix.pwidth = dst.width;
 	newPix.rowBytes = dst.width;
 	newPix.pixelSpacingX = pixelSpacingX / scale;
-	newPix.pixelSpacingY = pixelSpacingY / scale;
+	newPix.pixelSpacingY = pixelSpacingX / scale;
 	
 	// New orientation
 	float v[ 9];
@@ -8899,17 +8899,16 @@ END_CREATE_ROIS:
 	dst.data = malloc( dst.height * dst.rowBytes);
 	
 	// zero coordinate is in the center of the view
-	NSPoint cov = NSMakePoint( rectSize.width/2 + oo.x - [newPix pwidth]/2, rectSize.height/2 + oo.y - [newPix pheight]/2);
-	
+	NSPoint cov = NSMakePoint( rectSize.width/2 + oo.x - [newPix pwidth]/2, rectSize.height/2 - oo.y - [newPix pheight]/2);
 	[self drawImage: &src inImage: &dst offset: cov background: BACKGROUND];
-
+	
 	DCMPix *rPix = [[newPix copy] autorelease];
 	
 	[rPix setfImage: dst.data];
 	rPix.pheight = dst.height;
 	rPix.pwidth = dst.width;
 	rPix.rowBytes = dst.width;
-
+	
 	// New origin
 	float o[ 3];
 	[rPix convertPixX: -cov.x pixY: -cov.y toDICOMCoords: o];
