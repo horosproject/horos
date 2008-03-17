@@ -716,13 +716,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (IBAction)print:(id)sender
 {
-//	DCMPix *newPix = [curDCM renderInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
-//	NSData	*newData = [NSData dataWithBytesNoCopy: [newPix fImage] length: [newPix pheight]*[newPix pwidth]*sizeof( float) freeWhenDone:YES];
-//	[ViewerController newWindow
-//		: [NSMutableArray arrayWithObject: newPix]
-//		: [NSMutableArray arrayWithObject: [newPix imageObj]]
-//		: newData];
-//	return;
+	DCMPix *newPix = [curDCM renderInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
+	NSData	*newData = [NSData dataWithBytesNoCopy: [newPix fImage] length: [newPix pheight]*[newPix pwidth]*sizeof( float) freeWhenDone:YES];
+	[ViewerController newWindow
+		: [NSMutableArray arrayWithObject: newPix]
+		: [NSMutableArray arrayWithObject: [newPix imageObj]]
+		: newData];
+	return;
 	
 	if ([self is2DViewer] == YES)
 	{

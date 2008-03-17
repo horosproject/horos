@@ -8848,17 +8848,19 @@ END_CREATE_ROIS:
 	newPix.rowBytes = dst.width;
 	newPix.pixelSpacingX = pixelSpacingX / scale;
 	newPix.pixelSpacingY = pixelSpacingY / scale;
-	
-	// New origin
-	float o[ 3];
-	[newPix convertPixX: minX pixY: minY toDICOMCoords: o];
-	[newPix setOrigin: o];
-	
+		
 	// New orientation
 	float v[ 9];
 	[newPix orientationCorrected: v rotation: r xFlipped: xF yFlipped: yF];
 	[newPix setOrientation: v];
 	
+	// New origin
+	float o[ 3];
+	NSPoint a = NSMakePoint( minX, minY);
+	a = [self rotatePoint: a aroundPoint: centerPt angle: -rot];
+	[self convertPixX: -a.x pixY: -a.y toDICOMCoords: o];
+	[newPix setOrigin: o];
+
 	return newPix;
 }
 
