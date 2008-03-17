@@ -8752,7 +8752,7 @@ END_CREATE_ROIS:
 	int newHeight;
 	int newWidth;
 	
-	r *= deg2rad;
+	float rot = r*deg2rad;
 	
 	// Apply scale
 	newWidth = [self pwidth] * scale;
@@ -8760,12 +8760,13 @@ END_CREATE_ROIS:
 	
 	// Apply rotation
 	NSPoint pt[ 4];
+	NSPoint centerPt = NSMakePoint( newWidth/2, newHeight/2);
 	NSPoint zeroPt = NSMakePoint( 0, 0);
 	
-	pt[ 0] = [self rotatePoint: zeroPt aroundPoint: zeroPt angle: r];
-	pt[ 1] = [self rotatePoint: NSMakePoint( zeroPt.x+newWidth, zeroPt.y) aroundPoint: zeroPt angle: r];
-	pt[ 2] = [self rotatePoint: NSMakePoint( zeroPt.x+newWidth, zeroPt.y+newHeight) aroundPoint: zeroPt angle: r];
-	pt[ 3] = [self rotatePoint: NSMakePoint( zeroPt.x, zeroPt.y+newHeight) aroundPoint: zeroPt angle: r];
+	pt[ 0] = [self rotatePoint: zeroPt aroundPoint: centerPt angle: rot];
+	pt[ 1] = [self rotatePoint: NSMakePoint( zeroPt.x+newWidth, zeroPt.y) aroundPoint: centerPt angle: rot];
+	pt[ 2] = [self rotatePoint: NSMakePoint( zeroPt.x+newWidth, zeroPt.y+newHeight) aroundPoint: centerPt angle: rot];
+	pt[ 3] = [self rotatePoint: NSMakePoint( zeroPt.x, zeroPt.y+newHeight) aroundPoint: centerPt angle: rot];
 	
 	float minX, maxX, minY, maxY;
 	
@@ -8832,7 +8833,7 @@ END_CREATE_ROIS:
 			&src,
 			&dst,
 			0L,
-			-r,
+			-rot,
 			BACKGROUND,
 			kvImageHighQualityResampling
 		);
@@ -8850,12 +8851,12 @@ END_CREATE_ROIS:
 	
 	// New origin
 	float o[ 3];
-	[self convertPixX: minX pixY: minY toDICOMCoords: o];
+	[newPix convertPixX: minX pixY: minY toDICOMCoords: o];
 	[newPix setOrigin: o];
 	
 	// New orientation
 	float v[ 9];
-	[self orientationCorrected: v rotation: r xFlipped: xF yFlipped: yF];
+	[newPix orientationCorrected: v rotation: r xFlipped: xF yFlipped: yF];
 	[newPix setOrientation: v];
 	
 	return newPix;
@@ -8879,19 +8880,23 @@ END_CREATE_ROIS:
 	dst.data = malloc( dst.height * dst.rowBytes);
 	
 	// zero coordinate is in the center of the view
-	oo.x = rectSize.width/2 + oo.x - [newPix pwidth]/2;
-	oo.y = rectSize.height/2 + oo.y - [newPix pheight]/2;
+	NSPoint cov = NSMakePoint( rectSize.width/2 + oo.x - [newPix pwidth]/2, rectSize.height/2 + oo.y - [newPix pheight]/2);
 	
-	[self drawImage: &src inImage: &dst offset:oo background: BACKGROUND];
+	[self drawImage: &src inImage: &dst offset: cov background: BACKGROUND];
 
-	newPix = [[newPix copy] autorelease];
+	DCMPix *rPix = [[newPix copy] autorelease];
 	
-	[newPix setfImage: dst.data];
-	newPix.pheight = dst.height;
-	newPix.pwidth = dst.width;
-	newPix.rowBytes = dst.width;
+	[rPix setfImage: dst.data];
+	rPix.pheight = dst.height;
+	rPix.pwidth = dst.width;
+	rPix.rowBytes = dst.width;
 
-	return newPix;
+	// New origin
+	float o[ 3];
+	[rPix convertPixX: -cov.x pixY: -cov.y toDICOMCoords: o];
+	[rPix setOrigin: o];
+	
+	return rPix;
 }
 
 -(void) orientationDouble:(double*) c
