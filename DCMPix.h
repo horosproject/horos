@@ -64,7 +64,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
     float               slope, offset;
 
 //	image size
-    long                height, width, rowBytes;
+    long                height, width;
 
 //	window level & width
 	float				savedWL, savedWW;
@@ -259,7 +259,6 @@ Note setter is different to not break existing usage. :-( */
 @property char* baseAddr;
 @property unsigned char* LUT12baseAddr;
 
-@property long rowBytes;
 @property(readonly) long serieNo;
 @property(readonly) NSArray *pixArray;
 @property(readonly) float *transferFunctionPtr;
@@ -399,19 +398,22 @@ Note setter is different to not break existing usage. :-( */
 /** Utility methods to convert user supplied pixel coords to DICOM patient coords float d[3] (in mm)
 * using current slice location and orientation
 */
--(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d;
+- (void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d;
+- (void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d pixelCenter: (BOOL) pixelCenter;
 
 /** Utility methods to convert user supplied pixel coords to DICOM patient coords double d[3] (in mm)
 * using current slice location and orientation
 */
--(void) convertPixDoubleX: (double) x pixY: (double) y toDICOMCoords: (double*) d;
+- (void) convertPixDoubleX: (double) x pixY: (double) y toDICOMCoords: (double*) d;
+- (void) convertPixDoubleX: (double) x pixY: (double) y toDICOMCoords: (double*) d pixelCenter: (BOOL) pixelCenter;
 
 /** convert DICOM coordinated to slice coordinates */
--(void) convertDICOMCoords: (float*) dc toSliceCoords: (float*) sc;
+- (void) convertDICOMCoords: (float*) dc toSliceCoords: (float*) sc;
+- (void) convertDICOMCoords: (float*) dc toSliceCoords: (float*) sc pixelCenter:(BOOL) pixelCenter;
 
 /** convert DICOM coordinated to slice coordinates */
--(void) convertDICOMCoordsDouble: (double*) dc toSliceCoords: (double*) sc;
-
+- (void) convertDICOMCoordsDouble: (double*) dc toSliceCoords: (double*) sc;
+- (void) convertDICOMCoordsDouble: (double*) dc toSliceCoords: (double*) sc pixelCenter:(BOOL) pixelCenter;
 
 /** Return index & sliceCoords */
 +(int) nearestSliceInPixelList: (NSArray*)pixlist withDICOMCoords: (float*)dc sliceCoords: (float*) sc;  
@@ -447,22 +449,22 @@ Note setter is different to not break existing usage. :-( */
 - (void) setSubtractedfImage:(float*)mask :(NSPoint)smm;
 - (float*) subtractImages:(float*)input :(float*)subfImage;
 
--(void) fImageTime:(float)newTime;
--(float) fImageTime;
--(void) maskID:(long)newID;
--(long) maskID;
--(void) maskTime:(float)newMaskTime;
--(float) maskTime;
--(void) positionerPrimaryAngle:(NSNumber *)newPositionerPrimaryAngle;
--(NSNumber*) positionerPrimaryAngle;
--(void) positionerSecondaryAngle:(NSNumber*)newPositionerSecondaryAngle;
--(NSNumber*) positionerSecondaryAngle;
+- (void) fImageTime:(float)newTime;
+- (float) fImageTime;
+- (void) maskID:(long)newID;
+- (long) maskID;
+- (void) maskTime:(float)newMaskTime;
+- (float) maskTime;
+- (void) positionerPrimaryAngle:(NSNumber *)newPositionerPrimaryAngle;
+- (NSNumber*) positionerPrimaryAngle;
+- (void) positionerSecondaryAngle:(NSNumber*)newPositionerSecondaryAngle;
+- (NSNumber*) positionerSecondaryAngle;
 + (NSPoint) originDeltaBetween:(DCMPix*) pix1 And:(DCMPix*) pix2;
 - (void) setBlackIndex:(int) i;
 + (NSImage*) resizeIfNecessary:(NSImage*) currentImage dcmPix: (DCMPix*) dcmPix;
--(void) DCMPixShutterRect:(long)x:(long)y:(long)w:(long)h;
--(BOOL) DCMPixShutterOnOff;
--(void) DCMPixShutterOnOff:(BOOL)newDCMPixShutterOnOff;
+- (void) DCMPixShutterRect:(long)x:(long)y:(long)w:(long)h;
+- (BOOL) DCMPixShutterOnOff;
+- (void) DCMPixShutterOnOff:(BOOL)newDCMPixShutterOnOff;
 - (void) computeTotalDoseCorrected;
 //- (void) copyFromOther:(DCMPix *) fromDcm;
 - (void) imageArithmeticMultiplication:(DCMPix*) sub;
@@ -588,11 +590,11 @@ Note setter is different to not break existing usage. :-( */
 * @param s stack
 * @param direction stack direction
 */
--(void) setFusion:(short) m :(short) s :(short) direction;
+- (void) setFusion:(short) m :(short) s :(short) direction;
 
 /** Sets updateToBeApplied to YES. It is called whenver a setting has been changed.  
 * Should be called by the class automatically when needed */
--(void) setUpdateToApply;
+- (void) setUpdateToApply;
 
 
 /** Releases the fImage and sets all values to nil. */

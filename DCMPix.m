@@ -119,7 +119,7 @@ double MySubtractTime( uint64_t endTime, uint64_t startTime )
 	return time.i * 1e-9;
 }
 
-unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height, int width, int rowBytes, long wl, long ww, BOOL isRGB)
+unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height, int width, int iconWidth, long wl, long ww, BOOL isRGB)
 // create an icon from an 12 or 16 bit image
 {
 	unsigned char		*iconPtr;
@@ -146,8 +146,9 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 	{
 		if( isRGB)
 		{
-			long	x;
-			unsigned char   *rgbImage = (unsigned char*) image;
+			int x;
+			unsigned char *rgbImage = (unsigned char*) image;
+			int rowBytes = iconWidth*4;
 			
 			for (i = 0; i < destHeight; i++)  // lines
 			{
@@ -155,7 +156,7 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 				iconPtr = icon + rowBytes*i;
 				for (j = 0; j < destWidth; j++)         // columns 
 				{
-					for (x =1; x< 4;x++, iconPtr++)		// Dont take alpha channel
+					for (x = 1; x< 4;x++, iconPtr++)		// Dont take alpha channel
 					{
 						value = *( rgbImage + line + x + (long) (j * ratio)*4); //ARGB
 						
@@ -169,6 +170,7 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 		}
 		else
 		{
+			int rowBytes = iconWidth;
 			for (i = 0; i < destHeight; i++)  // lines
 			{
 				line = width * (long) (ratio * i) ;
@@ -1047,7 +1049,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize flipAngle, laterality;
 @synthesize protocolName, viewPosition, patientPosition;
 
-@synthesize rowBytes;
 @synthesize serieNo, pixArray;
 @synthesize pixPos, transferFunctionPtr;
 @synthesize stackMode, generated;
@@ -2816,7 +2817,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 				break;
 				
 				case 8:		// RGBA -> argb
-				rowBytes = width * 4;
+				//rowBytes = width * 4;
 				fImage = malloc(width*height*4);
 				
 				if( im)
@@ -2934,7 +2935,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 //	//	self->fImage = fromDcm->fImage;	// Don't load the image!
 //	self->height = fromDcm->height;
 //	self->width = fromDcm->width;
-//	self->rowBytes = fromDcm->rowBytes;
 //	self->wl = fromDcm->wl;
 //	self->ww = fromDcm->ww;
 //	self->sliceInterval = fromDcm->sliceInterval;
@@ -2999,7 +2999,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	copy->fImage = self->fImage;	// Don't load the image!
 	copy->height = self->height;
 	copy->width = self->width;
-	copy->rowBytes = self->rowBytes;
+//	copy->rowBytes = self->rowBytes;
 	copy->wl = self->wl;
 	copy->ww = self->ww;
 	copy->sliceInterval = self->sliceInterval;
@@ -3518,16 +3518,16 @@ BOOL gUSEPAPYRUSDCMPIX;
 			dstf.data = fImage;
 			
 			switch( dataType)
-		{
-			case TIFF_SSHORT:
-			case TIFF_SLONG:
-				vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
-				break;
-				
-			default:
-				vImageConvert_16UToF( &src16, &dstf, 0, 1, 0);
-				break;
-		}
+			{
+				case TIFF_SSHORT:
+				case TIFF_SLONG:
+					vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
+					break;
+					
+				default:
+					vImageConvert_16UToF( &src16, &dstf, 0, 1, 0);
+					break;
+			}
 		}
 		else
 		{
@@ -3542,7 +3542,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			
 			memcpy( fImage, oImage, width*height*4);
 			
-			rowBytes = width * 4;
+//			rowBytes = width * 4;
 		}
 		
 		free(oImage);
@@ -4540,7 +4540,7 @@ END_CREATE_ROIS:
 		realwidth = [TIFFRep pixelsWide];
 		width = realwidth/2;
 		width *= 2;
-		rowBytes = [TIFFRep bytesPerRow];
+//		rowBytes = [TIFFRep bytesPerRow];
 		oImage = 0L;
 		unsigned char *srcImage = [TIFFRep bitmapData];
 		
@@ -4556,7 +4556,7 @@ END_CREATE_ROIS:
 				NSLog(@"8 bit DICOM PDF");
 				tmpPtr = argbImage;
 				for( int y = 0 ; y < height; y++) {
-					srcPtr = srcImage + y*rowBytes;
+					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
 					
 					int x = width;
 					while( x-- > 0 ) {
@@ -4576,7 +4576,7 @@ END_CREATE_ROIS:
 				//NSLog(@"32 bits DICOM PDF");
 				tmpPtr = argbImage;
 				for( int y = 0 ; y < height; y++ ) {
-					srcPtr = srcImage + y*rowBytes;
+					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
 					int x = width;
 					while( x-- > 0 ) {
 						unsigned char r = *srcPtr++;
@@ -4596,7 +4596,7 @@ END_CREATE_ROIS:
 				//NSLog(@"loadDICOMDCMFramework 24 bits");
 				tmpPtr = argbImage;
 				for( int y = 0 ; y < height; y++ ) {
-					srcPtr = srcImage + y*rowBytes;
+					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
 					
 					int x = width;
 					while( x-- > 0 ) {
@@ -4616,7 +4616,7 @@ END_CREATE_ROIS:
 				NSLog(@"48 bits");
 				tmpPtr = argbImage;
 				for( int y = 0 ; y < height; y++ ) {
-					srcPtr = srcImage + y*rowBytes;
+					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
 					
 					int x = width;
 					while( x-- > 0 ) {
@@ -4634,7 +4634,7 @@ END_CREATE_ROIS:
 		}
 		
 		fImage = (float*) argbImage;
-		rowBytes = width * 4;
+//		rowBytes = width * 4;
 		
 		//[pdfData writeToFile:@"/tmp/dcm.pdf" atomically:YES];
 		//[[NSWorkspace sharedWorkspace] openFile:@"/tmp/dcm.pdf" withApplication:@"Preview"];
@@ -7397,7 +7397,7 @@ END_CREATE_ROIS:
 	int realwidth = [TIFFRep pixelsWide];
 	width = realwidth/2;
 	width *= 2;
-	rowBytes = [TIFFRep bytesPerRow];
+//	rowBytes = [TIFFRep bytesPerRow];
 	oImage = 0L;
 	
 	unsigned char *srcImage = [TIFFRep bitmapData];
@@ -7420,7 +7420,7 @@ END_CREATE_ROIS:
 		tmpPtr = argbImage;
 		for( y = 0 ; y < height; y++)
 		{
-			srcPtr = srcImage + y*rowBytes;
+			srcPtr = srcImage + y*[TIFFRep bytesPerRow];
 			
 			x = width;
 			while( x-->0)
@@ -7439,7 +7439,7 @@ END_CREATE_ROIS:
 		tmpPtr = argbImage;
 		for( y = 0 ; y < height; y++)
 		{
-			srcPtr = srcImage + y*rowBytes;
+			srcPtr = srcImage + y*[TIFFRep bytesPerRow];
 			
 			x = width;
 			while( x-->0)
@@ -7461,7 +7461,7 @@ END_CREATE_ROIS:
 		tmpPtr = argbImage;
 		for( y = 0 ; y < height; y++)
 		{
-			srcPtr = srcImage + y*rowBytes;
+			srcPtr = srcImage + y*[TIFFRep bytesPerRow];
 			
 			x = width;
 			while( x-->0)
@@ -7489,7 +7489,7 @@ END_CREATE_ROIS:
 		tmpPtr = argbImage;
 		for( y = 0 ; y < height; y++)
 		{
-			srcPtr = srcImage + y*rowBytes;
+			srcPtr = srcImage + y*[TIFFRep bytesPerRow];
 			
 			x = width;
 			while( x-->0)
@@ -7511,7 +7511,7 @@ END_CREATE_ROIS:
 }
 	
 	fImage = (float*) argbImage;
-	rowBytes = width * 4;
+//	rowBytes = width * 4;
 	isRGB = YES;
 	
 	[TIFFRep release];
@@ -7699,7 +7699,7 @@ END_CREATE_ROIS:
 					height = [[decoder height] intValue];
 					//NSLog(@"height %d : %d", height, [decoder height]);
 					isRGB = [decoder isRGB];
-					rowBytes = [[decoder rowBytes] intValue];				
+//					rowBytes = [[decoder rowBytes] intValue];				
 					[decoder release];					
 					
 				}
@@ -7722,7 +7722,7 @@ END_CREATE_ROIS:
 						realwidth = [TIFFRep pixelsWide];
 						width = realwidth/2;
 						width *= 2;
-						rowBytes = [TIFFRep bytesPerRow];
+//						rowBytes = [TIFFRep bytesPerRow];
 						oImage = 0L;
 						
 						long totSize;
@@ -7744,7 +7744,7 @@ END_CREATE_ROIS:
 						long x, y;
 						for( y = 0 ; y < height; y++)
 						{
-							srcPtr = srcImage + y*rowBytes;
+							srcPtr = srcImage + y*[TIFFRep bytesPerRow];
 							x = width;
 							while( x-->0)
 							{
@@ -7757,7 +7757,7 @@ END_CREATE_ROIS:
 						}
 						
 						fImage = (float*) argbImage;
-						rowBytes = width * 4;
+//						rowBytes = width * 4;
 						isRGB = YES;
 						[TIFFRep release];
 					}
@@ -8467,7 +8467,7 @@ END_CREATE_ROIS:
 						realwidth = tempRect.right;
 						width = realwidth/2;
 						width *= 2;
-						rowBytes = GetPixRowBytes(pixMapHandle);
+//						rowBytes = GetPixRowBytes(pixMapHandle);
 						oImage = 0L;
 						srcImage = (unsigned char*) pixBaseAddr;
 						
@@ -8482,14 +8482,14 @@ END_CREATE_ROIS:
 						
 						tmpPtr = argbImage;
 						for( long y = 0 ; y < height; y++ ) {
-							srcPtr = srcImage + y*rowBytes;
+							srcPtr = srcImage + y*GetPixRowBytes(pixMapHandle);
 							memcpy( tmpPtr, srcPtr, width*4);
 							tmpPtr += width*4;
 						}
 						
 						UnlockPixels (pixMapHandle);
 						
-						rowBytes = width * 4;
+//						rowBytes = width * 4;
 						fImage = (float*) argbImage;
 						isRGB = YES;
 						
@@ -8507,8 +8507,8 @@ END_CREATE_ROIS:
 #endif
 			}
 			
-			if( fImage == nil ) {
-				
+			if( fImage == nil )
+			{
 				NSLog(@"not able to load the image...");
 				
 				if( fVolImage )	{
@@ -8519,7 +8519,8 @@ END_CREATE_ROIS:
 				}
 				
 				height = 128;
-				rowBytes = width = 128;
+				width = 128;
+//				rowBytes = width*4;
 				oImage = 0L;
 				isRGB = NO;
 				
@@ -8678,7 +8679,7 @@ END_CREATE_ROIS:
 	[newPix setfImage: dst.data];
 	newPix.pheight = dst.height;
 	newPix.pwidth = dst.width;
-	newPix.rowBytes = dst.width;
+//	newPix.rowBytes = dst.width*sizeof(float);
 
 	NSData	*newData = [NSData dataWithBytesNoCopy: dst.data length: dst.height * dst.rowBytes freeWhenDone:YES];
 	
@@ -8860,7 +8861,7 @@ END_CREATE_ROIS:
 	[newPix setfImage: dst.data];
 	newPix.pheight = dst.height;
 	newPix.pwidth = dst.width;
-	newPix.rowBytes = dst.width;
+//	newPix.rowBytes = dst.width;
 	newPix.pixelSpacingX = pixelSpacingX / scale;
 	newPix.pixelSpacingY = pixelSpacingX / scale;
 	
@@ -8907,7 +8908,7 @@ END_CREATE_ROIS:
 	[rPix setfImage: dst.data];
 	rPix.pheight = dst.height;
 	rPix.pwidth = dst.width;
-	rPix.rowBytes = dst.width;
+//	rPix.rowBytes = dst.width*sizeof( float);
 	
 	// New origin
 	float o[ 3];
@@ -8974,8 +8975,32 @@ END_CREATE_ROIS:
 	[self setOrientationDouble: d];
 }
 
+-(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d pixelCenter: (BOOL) pixelCenter
+{
+	if( pixelCenter)
+	{
+		x = (int) x;	x += 0.5;
+		y = (int) x;	y += 0.5;
+	}
+	
+	d[0] = originX + y*orientation[3]*pixelSpacingY + x*orientation[0]*pixelSpacingX;
+	d[1] = originY + y*orientation[4]*pixelSpacingY + x*orientation[1]*pixelSpacingX;
+	d[2] = originZ + y*orientation[5]*pixelSpacingY + x*orientation[2]*pixelSpacingX;
+}
+
 -(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d
 {
+	[self convertPixX: x pixY: y toDICOMCoords: d pixelCenter: NO];
+}
+
+-(void) convertPixDoubleX: (double) x pixY: (double) y toDICOMCoords: (double*) d pixelCenter: (BOOL) pixelCenter
+{
+	if( pixelCenter)
+	{
+		x = (int) x;	x += 0.5;
+		y = (int) x;	y += 0.5;
+	}
+	
 	d[0] = originX + y*orientation[3]*pixelSpacingY + x*orientation[0]*pixelSpacingX;
 	d[1] = originY + y*orientation[4]*pixelSpacingY + x*orientation[1]*pixelSpacingX;
 	d[2] = originZ + y*orientation[5]*pixelSpacingY + x*orientation[2]*pixelSpacingX;
@@ -8983,12 +9008,10 @@ END_CREATE_ROIS:
 
 -(void) convertPixDoubleX: (double) x pixY: (double) y toDICOMCoords: (double*) d
 {
-	d[0] = originX + y*orientation[3]*pixelSpacingY + x*orientation[0]*pixelSpacingX;
-	d[1] = originY + y*orientation[4]*pixelSpacingY + x*orientation[1]*pixelSpacingX;
-	d[2] = originZ + y*orientation[5]*pixelSpacingY + x*orientation[2]*pixelSpacingX;
+	[self convertPixDoubleX: x pixY: y toDICOMCoords: d pixelCenter: NO];
 }
 
-- (void) convertDICOMCoords: (float*) dc toSliceCoords: (float*) sc
+-(void) convertDICOMCoords: (float*) dc toSliceCoords: (float*) sc pixelCenter:(BOOL) pixelCenter
 {	
 	float temp[ 3 ];
 	
@@ -9000,11 +9023,19 @@ END_CREATE_ROIS:
 	sc[ 1 ] = temp[ 0 ] * orientation[ 3 ] + temp[ 1 ] * orientation[ 4 ] + temp[ 2 ] * orientation[ 5 ];
 	sc[ 2 ] = temp[ 0 ] * orientation[ 6 ] + temp[ 1 ] * orientation[ 7 ] + temp[ 2 ] * orientation[ 8 ];
 	
-	sc[ 0 ] += pixelSpacingX /2.;	// The center of the pixel
-	sc[ 1 ] += pixelSpacingY /2.;	// The center of the pixel
+	if( pixelCenter)
+	{
+		sc[ 0 ] += pixelSpacingX /2.;	// The center of the pixel
+		sc[ 1 ] += pixelSpacingY /2.;	// The center of the pixel
+	}
 }
 
-- (void) convertDICOMCoordsDouble: (double*) dc toSliceCoords: (double*) sc
+- (void) convertDICOMCoords: (float*) dc toSliceCoords: (float*) sc
+{
+	[self convertDICOMCoords: dc toSliceCoords:  sc pixelCenter: YES];
+}
+
+- (void) convertDICOMCoordsDouble: (double*) dc toSliceCoords: (double*) sc pixelCenter:(BOOL) pixelCenter
 {	
 	double temp[ 3 ];
 	
@@ -9015,6 +9046,17 @@ END_CREATE_ROIS:
 	sc[ 0 ] = temp[ 0 ] * orientation[ 0 ] + temp[ 1 ] * orientation[ 1 ] + temp[ 2 ] * orientation[ 2 ];
 	sc[ 1 ] = temp[ 0 ] * orientation[ 3 ] + temp[ 1 ] * orientation[ 4 ] + temp[ 2 ] * orientation[ 5 ];
 	sc[ 2 ] = temp[ 0 ] * orientation[ 6 ] + temp[ 1 ] * orientation[ 7 ] + temp[ 2 ] * orientation[ 8 ];
+	
+	if( pixelCenter)
+	{
+		sc[ 0 ] += pixelSpacingX /2.;	// The center of the pixel
+		sc[ 1 ] += pixelSpacingY /2.;	// The center of the pixel
+	}
+}
+
+- (void) convertDICOMCoordsDouble: (double*) dc toSliceCoords: (double*) sc
+{
+	[self convertDICOMCoordsDouble: dc toSliceCoords: sc pixelCenter: YES];
 }
 
 +(int) nearestSliceInPixelList: (NSArray*)pixList withDICOMCoords: (float*)dicomCoords sliceCoords: (float*)nearestSliceCoords {
@@ -9115,7 +9157,7 @@ END_CREATE_ROIS:
 			break;
 	}
 	
-	[self setRowBytes: [self pwidth]];
+//	[self setRowBytes: [self pwidth]*sizeof( float)];
 	[self setBaseAddr: malloc( [self pwidth] * [self pheight])];
 	
 	[self setRGB: NO];
@@ -9182,7 +9224,7 @@ END_CREATE_ROIS:
 			break;
 	}
 	
-	[self setRowBytes: [self pwidth]*4];
+//	[self setRowBytes: [self pwidth]*4];
 	
 	[self setBaseAddr: malloc( [self pwidth] * [self pheight] * 4)];
 	
@@ -9513,15 +9555,15 @@ END_CREATE_ROIS:
 			{
 				int i = shutterRect_h;
 				
-				char*	src = baseAddr + ((shutterRect_y * rowBytes) + shutterRect_x*4);
-				char*	dst = tempMem + ((shutterRect_y * rowBytes) + shutterRect_x*4);
+				char*	src = baseAddr + ((shutterRect_y * width*4) + shutterRect_x*4);
+				char*	dst = tempMem + ((shutterRect_y * width*4) + shutterRect_x*4);
 				
 				while( i-- > 0)
 				{
 					memcpy( dst, src, shutterRect_w*4);
 					
-					dst += rowBytes;
-					src += rowBytes;
+					dst += width*4;
+					src += width*4;
 				}
 				
 				memcpy(baseAddr, tempMem, height * width * 4*sizeof(char));
@@ -9539,15 +9581,15 @@ END_CREATE_ROIS:
 			{
 				int i = shutterRect_h;
 				
-				char*	src = baseAddr + ((shutterRect_y * rowBytes) + shutterRect_x);
-				char*	dst = tempMem + ((shutterRect_y * rowBytes) + shutterRect_x);
+				char*	src = baseAddr + ((shutterRect_y * width) + shutterRect_x);
+				char*	dst = tempMem + ((shutterRect_y * width) + shutterRect_x);
 				
 				while( i-- > 0)
 				{
 					memcpy( dst, src, shutterRect_w);
 					
-					dst += rowBytes;
-					src += rowBytes;
+					dst += width;
+					src += width;
 				}
 				
 				if( shutterCircular_radius)
@@ -9764,7 +9806,7 @@ END_CREATE_ROIS:
 				
 				thickSlabVRActivated = YES;
 				
-				[self setRowBytes: width*4];
+//				[self setRowBytes: width*4];
 				[self setBaseAddr: (char*) rgbaImage];
 			}
 			break;
@@ -9826,11 +9868,12 @@ END_CREATE_ROIS:
 	return fResult;
 }
 
-- (float*)computefImage {
+- (float*)computefImage
+{
 	float *result;
 	
 	thickSlabVRActivated = NO;
-	[self setRowBytes: width];
+//	[self setRowBytes: width*4];
 	
 	// = STACK IMAGES thickslab
 	if( stackMode > 0 && stack >= 1 ) {
@@ -9969,7 +10012,7 @@ END_CREATE_ROIS:
 			if( thickSlabVRActivated == NO ) {
 				dst8.height = height;
 				dst8.width = width;
-				dst8.rowBytes = rowBytes;					
+				dst8.rowBytes = width;					
 				dst8.data = baseAddr;
 				
 				srcf.height = height;
@@ -10111,7 +10154,7 @@ END_CREATE_ROIS:
 			
 			dst.height = height;
 			dst.width = width;
-			dst.rowBytes = rowBytes;
+			dst.rowBytes = width*4;
 			dst.data = baseAddr;
 			
 			vImageTableLookUp_ARGB8888 ( &src,  &dst,  convTable,  convTable,  convTable,  convTable,  0);
@@ -10137,7 +10180,8 @@ END_CREATE_ROIS:
 	if( baseAddr == 0L) [self computeWImage: NO: newWW :newWL];
 }
 
-- (NSImage*)computeWImage: (BOOL)smallIcon : (float)newWW : (float)newWL {
+- (NSImage*)computeWImage: (BOOL)smallIcon : (float)newWW : (float)newWL
+{
     long    destWidth, destHeight;
 	
     [self CheckLoad];
@@ -10159,21 +10203,21 @@ END_CREATE_ROIS:
         destHeight = height;
     }
     
-	if( isRGB) rowBytes = destWidth * 4;
+    unsigned char *bitmapData;
+	
+	if( isRGB )
+		bitmapData = calloc( ((destWidth*4) + 4) * ((destHeight*4) + 4), 1);
 	else
-		rowBytes = destWidth;
-	
-    unsigned char *bitmapData = malloc( (rowBytes + 4) * (destHeight+4));
-	
+		bitmapData = calloc( (destWidth + 4) * (destHeight + 4), 1);
+		
 	if( bitmapData)
 	{
-		memset( bitmapData, 0, (rowBytes + 4) * (destHeight+4));
-		
 		NSBitmapImageRep *bitmapRep = 0L;
 		
 		baseAddr = (char*) bitmapData;
 		
-		if( smallIcon) {
+		if( smallIcon)
+		{
 			if( isRGB ) {
 				bitmapRep = [[NSBitmapImageRep alloc] 
 							 initWithBitmapDataPlanes:&bitmapData
@@ -10184,7 +10228,7 @@ END_CREATE_ROIS:
 							 hasAlpha:NO
 							 isPlanar:NO
 							 colorSpaceName:NSCalibratedRGBColorSpace
-							 bytesPerRow:rowBytes
+							 bytesPerRow:destWidth*4
 							 bitsPerPixel:24
 							 ];
 			}
@@ -10198,7 +10242,7 @@ END_CREATE_ROIS:
 							 hasAlpha:NO
 							 isPlanar:NO
 							 colorSpaceName:NSCalibratedWhiteColorSpace
-							 bytesPerRow:rowBytes
+							 bytesPerRow:destWidth
 							 bitsPerPixel:8 // 8 - 24 -32
 							 ];
 			}
@@ -10214,7 +10258,7 @@ END_CREATE_ROIS:
 					newWL = wl;
 				}
 				
-				CreateIconFrom16( fImage, bitmapData, height, width, rowBytes, newWL, newWW, isRGB);
+				CreateIconFrom16( fImage, bitmapData, height, width, destWidth, newWL, newWW, isRGB);
 				
 				image = [[xNSImage alloc] initWithSize:NSMakeSize(destWidth,  destHeight)]; 
 				[image addRepresentation:bitmapRep];
@@ -10238,14 +10282,11 @@ END_CREATE_ROIS:
     return image;
 }
 
-- (NSImage*)getImage {
-	//    [self CheckLoad];
-    
-	if( image == nil ) {
+- (NSImage*)getImage
+{
+	if( image == nil )
 		NSLog(@"image == 0L!!");
-	}
 	
-	// NSLog(@"getImage de DCMPix");
     return image;
 }
 
@@ -10272,7 +10313,20 @@ END_CREATE_ROIS:
     return height;
 }
 
-- (long)rowBytes { [self CheckLoad]; return rowBytes; }
+- (void) setRowBytes:(long) r
+{
+	NSLog( @"*** DEPRECATED : [DCMPix setRowBytes] is deprecated, use pwidth instead.");
+}
+
+- (long) rowBytes
+{
+	[self CheckLoad];
+	
+	NSLog( @"*** DEPRECATED : [DCMPix rowBytes] is deprecated, use pwidth instead.");
+	
+	if( isRGB) return width*4;
+	else return width;
+}
 
 - (void)setUpdateToApply { updateToBeApplied = YES; }
 

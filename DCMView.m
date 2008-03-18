@@ -8588,12 +8588,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			src.height = curDCM.pheight;
 			src.width = curDCM.pwidth;
-			src.rowBytes = curDCM.rowBytes;
+			src.rowBytes = src.width*4;
 			src.data = curDCM.baseAddr;
 			
 			dest.height = curDCM.pheight;
 			dest.width = curDCM.pwidth;
-			dest.rowBytes = curDCM.rowBytes;
+			dest.rowBytes = dest.width*4;
 			dest.data = curDCM.baseAddr;
 			
 			if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0) {
@@ -8628,12 +8628,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			src.height = curDCM.pheight;
 			src.width = curDCM.pwidth;
-			src.rowBytes = curDCM.rowBytes;
+			src.rowBytes = src.width*4;
 			src.data = curDCM.baseAddr;
 			
 			dest.height = curDCM.pheight;
 			dest.width = curDCM.pwidth;
-			dest.rowBytes = curDCM.rowBytes;
+			dest.rowBytes = dest.width*4;
 			dest.data = curDCM.baseAddr;
 			
 			for( long i = 0; i < 256; i++ ) {
@@ -8653,18 +8653,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
 	    if( *colorBufPtr) free( *colorBufPtr);
 
-		*colorBufPtr = malloc( curDCM.rowBytes * curDCM.pheight * 4);
+		*colorBufPtr = malloc( 4 * curDCM.pwidth * curDCM.pheight);
 		
 		vImage_Buffer src8, dest8;
 		
 		src8.height = curDCM.pheight;
 		src8.width = curDCM.pwidth;
-		src8.rowBytes = curDCM.rowBytes;
+		src8.rowBytes = src8.width;
 		src8.data = curDCM.baseAddr;
 		
 		dest8.height = curDCM.pheight;
 		dest8.width = curDCM.pwidth;
-		dest8.rowBytes = curDCM.rowBytes*4;
+		dest8.rowBytes = dest8.width*4;
 		dest8.data = *colorBufPtr;
 		
 		vImageConvert_Planar8toARGB8888(&src8, &src8, &src8, &src8, &dest8, 0);
@@ -8692,15 +8692,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	if( isRGB == YES || [curDCM thickSlabVRActivated] == YES )
 	{
-		*tW = curDCM.rowBytes/4;
-		rowBytes = curDCM.rowBytes;
+		*tW = curDCM.pwidth;
+		rowBytes = curDCM.pwidth*4;
 		baseAddr = curDCM.baseAddr;
 		
 		if( curDCM.isLUT12Bit)
 		{
 			baseAddr = (char*) curDCM.LUT12baseAddr;
-			rowBytes = curDCM.rowBytes*4;
-			*tW = curDCM.rowBytes;
+			rowBytes = curDCM.pwidth*4;
+			*tW = curDCM.pwidth;
 		}
 	}
     else {
@@ -8726,14 +8726,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				rowBytes = *tW * 4;
 				
 				src.data = *colorBufPtr;
-				src.rowBytes = curDCM.rowBytes*4;
+				src.rowBytes = curDCM.pwidth*4;
 				dst.rowBytes = rowBytes;
 			}
 			else {
 				rowBytes = *tW;
 				
 				src.data = curDCM.baseAddr;
-				src.rowBytes = curDCM.rowBytes;
+				src.rowBytes = curDCM.pwidth;
 				dst.rowBytes = rowBytes;
 			}
 			
@@ -8773,31 +8773,31 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 			else {
 				if( (colorTransfer == YES) || (blending == YES)) {
-					*tW = curDCM.rowBytes;
-					rowBytes = curDCM.rowBytes;
+					*tW = curDCM.pwidth;
+					rowBytes = curDCM.pwidth;
 					baseAddr = (char*) *colorBufPtr;
 				}
 				else {
-					*tW = curDCM.rowBytes;
-					rowBytes = curDCM.rowBytes;
+					*tW = curDCM.pwidth;
+					rowBytes = curDCM.pwidth;
 					baseAddr = curDCM.baseAddr;
 				}
 			}
 		}
 		else if( FULL32BITPIPELINE) {
 			*tW = curDCM.pwidth;
-			rowBytes = curDCM.rowBytes*4;
+			rowBytes = curDCM.pwidth*4;
 			baseAddr = (char*) curDCM.fImage;
 		}
 		else {
 			if( (colorTransfer == YES) || (blending == YES)) {
-				*tW = curDCM.rowBytes;
-				rowBytes = curDCM.rowBytes;
+				*tW = curDCM.pwidth;
+				rowBytes = curDCM.pwidth;
 				baseAddr = (char*) *colorBufPtr;
 			}
 			else {
-				*tW = curDCM.rowBytes;
-				rowBytes = curDCM.rowBytes;
+				*tW = curDCM.pwidth;
+				rowBytes = curDCM.pwidth;
 				baseAddr = curDCM.baseAddr;
 			}
 		}

@@ -800,7 +800,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		while (y-->0)
 		{
 			*dstPtr++ = *srcPtr;
-			srcPtr += rowBytes;
+			srcPtr += rowBytes/4;
 		}
 	}
 
@@ -928,7 +928,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[[newPixList lastObject] setUnits: [firstPix units]];
 				
 				[[newPixList lastObject] setPwidth: newX];
-				[[newPixList lastObject] setRowBytes: newX];
+//				[[newPixList lastObject] setRowBytes: newX*sizeof(float)];
 				[[newPixList lastObject] setPheight: newY];
 				
 				[[newPixList lastObject] setfImage: (float*) (emptyData + imageSize * ([newPixList count] - 1))];
@@ -1035,7 +1035,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 					DCMPix	*curPix = [newPixList lastObject];
 					float	*srcPtr;
 					float	*dstPtr;
-					long	rowBytes = [firstPix pwidth];
+					long	rowBytes = [firstPix pwidth]*4;
 					
 					[self waitForAProcessor];
 					
@@ -1054,7 +1054,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	//					{
 	//						*dstPtr = *srcPtr;
 	//						dstPtr++;
-	//						srcPtr += rowBytes;
+	//						srcPtr += rowBytes/4;
 	//					}
 	//				}
 										
@@ -1084,7 +1084,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	//								left = s - floor(s);
 	//								right = 1-left;
 	//								
-	//								*(srcPtr + y * rowBytes) = right * *(srcPtr + (long) (s) * rowBytes) + left * *(srcPtr + (long) ((s)+1) * rowBytes);
+	//								*(srcPtr + y * rowBytes/4) = right * *(srcPtr + (long) (s) * rowBytes/4) + left * *(srcPtr + (long) ((s)+1) * rowBytes/4);
 	//							}
 	//						}
 					}
@@ -1381,7 +1381,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 				[dcm setPheight: x];
 				[dcm setPwidth: y];
-				[dcm setRowBytes: y];
+//				[dcm setRowBytes: y*sizeof(float)];
 			}
 			
 			[dcm orientationDouble: o];
