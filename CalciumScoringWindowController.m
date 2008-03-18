@@ -223,7 +223,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		zpx = [[_viewer imageView] curImage];
 		
 		float location[3];
-		[[[_viewer imageView] curDCM] convertPixX: (float) xpx pixY: (float) ypx toDICOMCoords: (float*) location pixeCenter: YES];
+		[[[_viewer imageView] curDCM] convertPixX: (float) xpx pixY: (float) ypx toDICOMCoords: (float*) location pixelCenter: YES];
 		xmm = location[0];
 		ymm = location[1];
 		zmm = location[2];

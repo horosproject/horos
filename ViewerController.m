@@ -1013,7 +1013,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
 					[curPix orientationDouble: orientation];
 					
-					[lastPix convertPixDoubleX:0 pixY: i toDICOMCoords: origin];
+					[lastPix convertPixDoubleX:0 pixY: i toDICOMCoords: origin pixelCenter: NO];
 					
 					[curPix setOriginDouble: origin];
 					
@@ -1109,7 +1109,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
 					[curPix orientationDouble: orientation];
 					
-					[lastPix convertPixDoubleX:i pixY:0 toDICOMCoords: origin];
+					[lastPix convertPixDoubleX:i pixY:0 toDICOMCoords: origin pixelCenter: NO];
 					
 					if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
 						[[newPixList lastObject] setSliceLocation: origin[ 0]];
@@ -1249,7 +1249,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[dcm setOrientationDouble: o];
 			[dcm setSliceInterval: 0];
 			
-			[dcm convertPixDoubleX: 0 pixY: -[dcm pheight]+1 toDICOMCoords: origin];
+			[dcm convertPixDoubleX: 0 pixY: -[dcm pheight]+1 toDICOMCoords: origin pixelCenter: NO];
 			
 			[dcm setOriginDouble: origin];
 			
@@ -1300,7 +1300,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			double	origin[3];
 			
-			[dcm convertPixDoubleX: -[dcm pwidth]+1 pixY: 0 toDICOMCoords: origin];
+			[dcm convertPixDoubleX: -[dcm pwidth]+1 pixY: 0 toDICOMCoords: origin pixelCenter: NO];
 			[dcm setOriginDouble: origin];
 			[dcm setSliceLocation: origin[ [ViewerController orientation: o]]];
 		}
@@ -12580,11 +12580,13 @@ int i,j,l;
 						
 						[[curModelPoint2D pix]	convertPixX:	[[[curModelPoint2D points] objectAtIndex:0] x]
 												pixY:			[[[curModelPoint2D points] objectAtIndex:0] y]
-												toDICOMCoords:	modelLocation];
+												toDICOMCoords:	modelLocation
+												pixelCenter: YES];
 						
 						[[curSensorPoint2D pix]	convertPixX:	[[[curSensorPoint2D points] objectAtIndex:0] x]
 												pixY:			[[[curSensorPoint2D points] objectAtIndex:0] y]
-												toDICOMCoords:	sensorLocation];
+												toDICOMCoords:	sensorLocation
+												pixelCenter: YES];
 						
 						// Convert the point in 3D orientation of the model
 						

@@ -276,7 +276,8 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	// change the Position	
 	[[[[mprController originalView] pixList] objectAtIndex:[[mprController originalView] curImage]] convertPixDoubleX:[(EndoscopyMPRView*)[mprController originalView] crossPositionX]
 																									pixY:[(EndoscopyMPRView*)[mprController originalView] crossPositionY]
-																									toDICOMCoords:position1];
+																									toDICOMCoords:position1
+																									pixelCenter: YES];
 						
 //	[[[[mprController xReslicedView] pixList] objectAtIndex:[[mprController xReslicedView] curImage]]	convertPixDoubleX: [(EndoscopyMPRView*)[mprController xReslicedView] crossPositionX]
 //																										pixY: [(EndoscopyMPRView*)[mprController xReslicedView] crossPositionY]
@@ -308,7 +309,8 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	[[[self pixList]	objectAtIndex:[[mprController originalView] curImage]]
 						convertPixDoubleX: [(EndoscopyMPRView*)[mprController originalView] focalPointX]
 						pixY: [(EndoscopyMPRView*)[mprController originalView] focalPointY]
-						toDICOMCoords: focalPoint1];
+						toDICOMCoords: focalPoint1
+						pixelCenter: YES];
 	
 	
 
@@ -401,12 +403,14 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	[[[[mprController originalView] pixList]	objectAtIndex:round(position.z)]
 												convertPixX: position.x
 												pixY: position.y
-												toDICOMCoords: pos];
+												toDICOMCoords: pos
+												pixelCenter: YES];
 												
 	[[[[mprController originalView] pixList]	objectAtIndex:round(focalPoint.z) ]
 												convertPixX: focalPoint.x
 												pixY: focalPoint.y
-												toDICOMCoords: fp];
+												toDICOMCoords: fp
+												pixelCenter: YES];
 	pos[0] *= factor;
 	pos[1] *= factor;
 	pos[2] *= factor;

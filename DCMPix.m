@@ -8874,7 +8874,7 @@ END_CREATE_ROIS:
 	a = [self rotatePoint: a aroundPoint: centerPt angle: -rot];
 	if( xF) a.x = newWidth - a.x -1;
 	if( yF) a.y = newHeight - a.y -1;
-	[self convertPixX: a.x/scale pixY: a.y/scale toDICOMCoords: o];
+	[self convertPixX: a.x/scale pixY: a.y/scale toDICOMCoords: o pixelCenter: NO];
 	[newPix setOrigin: o];
 	
 	return newPix;
@@ -8917,7 +8917,7 @@ END_CREATE_ROIS:
 	
 	// New origin
 	float o[ 3];
-	[rPix convertPixX: -cov.x pixY: -cov.y toDICOMCoords: o];
+	[rPix convertPixX: -cov.x pixY: -cov.y toDICOMCoords: o pixelCenter: NO];
 	[rPix setOrigin: o];
 	
 	return rPix;
@@ -9004,7 +9004,7 @@ END_CREATE_ROIS:
 
 -(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d
 {
-	[self convertPixX: x pixY: y toDICOMCoords: d pixelCenter: NO];
+	[self convertPixX: x pixY: y toDICOMCoords: d pixelCenter: YES];
 }
 
 -(void) convertPixDoubleX: (double) x pixY: (double) y toDICOMCoords: (double*) d pixelCenter: (BOOL) pixelCenter
@@ -9022,7 +9022,7 @@ END_CREATE_ROIS:
 
 -(void) convertPixDoubleX: (double) x pixY: (double) y toDICOMCoords: (double*) d
 {
-	[self convertPixDoubleX: x pixY: y toDICOMCoords: d pixelCenter: NO];
+	[self convertPixDoubleX: x pixY: y toDICOMCoords: d pixelCenter: YES];
 }
 
 -(void) convertDICOMCoords: (float*) dc toSliceCoords: (float*) sc pixelCenter:(BOOL) pixelCenter
