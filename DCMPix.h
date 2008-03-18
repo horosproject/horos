@@ -12,14 +12,9 @@
      PURPOSE.
 =========================================================================*/
 
-//7/7/05 Fixed bug with DCM Framework and WW and WC. Use float value rather than int value. LP
-
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
 #import <Accelerate/Accelerate.h>
-
-
-#define USEVIMAGE
 
 typedef struct {
    double x,y,z;
@@ -27,7 +22,6 @@ typedef struct {
 
 extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
-@class xNSImage;
 @class ROI;
 @class ThickSlabController;
 @class DCMObject;
@@ -45,9 +39,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 //BUFFERS	
 	NSArray				*pixArray;
     NSManagedObject		*imageObj;	/**< Core data object for image */
-    xNSImage			*image;    /**< buffer for creating an NSImage */
-    short               *oImage;   /**< short buffer of image Data */
-	float				*fImage /**< float buffer of image Data */, *fVolImage;  /**< float buffer of volume Data */
+	float				*fImage /**< float buffer of image Data */, *fExternalOwnedImage;  /**< float buffer of image Data - provided by another source, not owned by this object, not release by this object */
     char                *wImage; /**< ? */
 	
 //DICOM TAGS
@@ -451,6 +443,7 @@ Note setter is different to not break existing usage. :-( */
 
 - (void) fImageTime:(float)newTime;
 - (float) fImageTime;
+- (void) freefImageWhenDone:(BOOL) b;
 - (void) maskID:(long)newID;
 - (long) maskID;
 - (void) maskTime:(float)newMaskTime;
@@ -480,6 +473,7 @@ Note setter is different to not break existing usage. :-( */
 - (DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF;
 - (DCMPix*) mergeWithDCMPix:(DCMPix*) o offset:(NSPoint) oo;
 - (DCMPix*) renderInRectSize:(NSSize) rectSize atPosition:(NSPoint) oo rotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF;
+- (NSImage*) renderNSImageInRectSize:(NSSize) rectSize atPosition:(NSPoint) oo rotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF;
 - (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element papyLink:(short)fileNb;
 - (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element DCMLink:(DCMObject*)dcmObject;
 /**  calls 
@@ -534,13 +528,14 @@ Note setter is different to not break existing usage. :-( */
 * @param newWW  window width to use
 * @param newWL window level to use;
 */
-- (NSImage*) computeWImage: (BOOL) smallIcon :(float)newWW :(float)newWL;
+- (NSImage*) generateThumbnailImageWithWW: (float)newWW WL: (float)newWL;
+- (void) allocate8bitRepresentation;
 
 /** create an NSImage from the current pix using the current ww/wl. Full size*/
 - (NSImage*) image;
 
 /** reeturns the current image. returns nil if no image has be previously created */
-- (NSImage*) getImage;
+// - (NSImage*) getImage;
 
 /** A pointer to the orientation.  9 values in length. 3 for each axis. */
 - (void) orientation:(float*) c;
@@ -548,16 +543,9 @@ Note setter is different to not break existing usage. :-( */
 /** Sets the orientation.  9 values in length. 3 for each axis. */
 - (void) setOrientation:(float*) c;
 
-/** A short pointer to the image data */
-- (short*) oImage;
-
 /** Releases the current NSImage */
 - (void) kill8bitsImage;
 
-
-/** if no image. Creates one using
-* computeWImage: (BOOL) smallIcon :(float)newWW :(float)newWL
-*/ 
 - (void) checkImageAvailble:(float)newWW :(float)newWL;
 
 /** Load the DICOM image using the DCMFramework.  

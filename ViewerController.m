@@ -3300,7 +3300,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 							
 							if( dcmPix)
 							{
-								NSImage *img = [dcmPix computeWImage:YES :0 :0];
+								NSImage *img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
 								
 								if( img)
 								{
@@ -14211,7 +14211,6 @@ int i,j,l;
         {
             DCMPix  *pix = [pixList[ curMovieIndex] objectAtIndex:i];
             
-			#ifdef USEVIMAGE
 			vImage_Buffer dst16, srcf;
 			
 			dst16.height = srcf.height = [pix pheight];
@@ -14229,11 +14228,6 @@ int i,j,l;
             [data writeToFile:[NSString stringWithFormat:@"%@.%d",[panel filename],i] atomically:NO];
 			
 			free( dst16.data);
-			#else
-            NSData *data = [NSData dataWithBytesNoCopy:[pix oImage] length:[pix width]*[pix height]*2 freeWhenDone:NO];
-
-            [data writeToFile:[NSString stringWithFormat:@"%@.%d",[panel filename],i] atomically:NO];
-			#endif
         }
     }
 }

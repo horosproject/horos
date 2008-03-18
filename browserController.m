@@ -6643,8 +6643,7 @@ static BOOL withReset = NO;
 				
 				if( dcmPix)
 				{
-					[dcmPix computeWImage:YES :0 :0];
-					NSImage *thumbnail = [dcmPix getImage];
+					NSImage *thumbnail = [dcmPix generateThumbnailImageWithWW:0 WL:0];
 					NSData *data = [BrowserController produceJPEGThumbnail: thumbnail];
 					
 					if( thumbnail && data) [series setValue: data forKey:@"thumbnail"];
@@ -6830,12 +6829,11 @@ static BOOL withReset = NO;
 			DCMPix *dcmPix  = [[DCMPix alloc] myinit:[filesPaths objectAtIndex:i] :position :subGroupCount :0L :frame :0 isBonjour:isCurrentDatabaseBonjour imageObj: [files objectAtIndex: i]];
 			
 			if( dcmPix ) {
-				if( thumbnail == notFoundImage ) {
-					[dcmPix computeWImage:YES :0 :0];
-					if( [dcmPix getImage] == 0L) NSLog(@"getImage == 0L");
+				if( thumbnail == notFoundImage )
+				{
 					[dcmPix revert];	// <- Kill the raw data
 					
-					thumbnail = [dcmPix getImage];
+					thumbnail = [dcmPix generateThumbnailImageWithWW:0 WL:0];
 					if( thumbnail == nil) thumbnail = notFoundImage;
 					
 					[previewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
@@ -8948,10 +8946,9 @@ static BOOL needToRezoom;
 					
 					DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :0L :0 :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
 					
-					if( dcmPix ) {
-						[dcmPix computeWImage:YES :0 :0];
-						
-						NSImage	 *img = [dcmPix getImage];
+					if( dcmPix )
+					{
+						NSImage	 *img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
 						
 						NSButtonCell *cell = [subOpenMatrix3D cellAtRow:0 column: i];
 						[cell setTransparent:NO];
@@ -8974,9 +8971,7 @@ static BOOL needToRezoom;
 						
 						if( dcmPix)
 						{
-							[dcmPix computeWImage:YES :0 :0];
-							
-							NSImage	 *img = [dcmPix getImage];
+							NSImage	 *img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
 							
 							NSButtonCell *cell = [subOpenMatrix4D cellAtRow:0 column: i];
 							[cell setTransparent:NO];

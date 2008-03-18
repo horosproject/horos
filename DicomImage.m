@@ -946,9 +946,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 {
 	#ifdef OSIRIX_VIEWER
 	DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :0L :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
-	//[pix computeWImage:NO :[[self valueForKeyPath:@"series.windowLevel"] floatValue] :[[self valueForKeyPath:@"series.windowWidth"] floatValue]];
-	[pix computeWImage:NO :0 :0];
-	NSData	*data = [[pix getImage] TIFFRepresentation];
+	NSData	*data = [[pix image] TIFFRepresentation];
 	NSImage *thumbnail = [[[NSImage alloc] initWithData: data] autorelease];
 
 	[pix release];
@@ -960,9 +958,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 {
 	#ifdef OSIRIX_VIEWER
 	DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :0L :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
-	//[pix computeWImage:YES :[[self valueForKeyPath:@"series.windowLevel"] floatValue] :[[self valueForKeyPath:@"series.windowWidth"] floatValue]];
-	[pix computeWImage:YES :0 :0];
-	NSData	*data = [[pix getImage] TIFFRepresentation];
+	NSData	*data = [[pix generateThumbnailImageWithWW:0 WL:0] TIFFRepresentation];
 	NSImage *thumbnail = [[[NSImage alloc] initWithData: data] autorelease];
 	[pix release];
 	return thumbnail;

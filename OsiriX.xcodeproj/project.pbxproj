@@ -666,11 +666,9 @@
 		AB28B8E105B79D1E00A9906C /* XMLController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB4A6DF3056EC14E009E6C6E /* XMLController.h */; };
 		AB28B8E205B79D1F00A9906C /* Wait.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6F34FC0574081F00CDCA47 /* Wait.m */; };
 		AB28B8E305B79D1F00A9906C /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB142DFD05600D76008461A0 /* AppController.m */; };
-		AB28B8E405B79D2000A9906C /* xNSImage.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D4D5E05750BD300A321DA /* xNSImage.m */; };
 		AB28B8E505B79D2100A9906C /* QueryController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB425D73058FC58E00224020 /* QueryController.mm */; };
 		AB28B8E605B79D2100A9906C /* dicomData.h in Headers */ = {isa = PBXBuildFile; fileRef = ABFA7CD3056056F300963FF8 /* dicomData.h */; };
 		AB28B8E805B79D2300A9906C /* AppController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB142DFC05600D76008461A0 /* AppController.h */; };
-		AB28B8E905B79D2300A9906C /* xNSImage.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0D4D5D05750BD300A321DA /* xNSImage.h */; };
 		AB28B8EA05B79D2400A9906C /* QueryController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB425D72058FC58E00224020 /* QueryController.h */; };
 		AB28B8EB05B79D2500A9906C /* Wait.h in Headers */ = {isa = PBXBuildFile; fileRef = AB6F34FB0574081F00CDCA47 /* Wait.h */; };
 		AB28B8ED05B79D2600A9906C /* dicomData.m in Sources */ = {isa = PBXBuildFile; fileRef = ABFA7CD2056056F300963FF8 /* dicomData.m */; };
@@ -7570,7 +7568,6 @@
 		CECB041C07539E3900576814 /* NSFont_OpenGL.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3C6A8F057ADCA60001052D /* NSFont_OpenGL.m */; };
 		CECB041E07539E3900576814 /* Wait.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6F34FC0574081F00CDCA47 /* Wait.m */; };
 		CECB041F07539E3900576814 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB142DFD05600D76008461A0 /* AppController.m */; };
-		CECB042007539E3900576814 /* xNSImage.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0D4D5E05750BD300A321DA /* xNSImage.m */; };
 		CECB042107539E3900576814 /* QueryController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB425D73058FC58E00224020 /* QueryController.mm */; };
 		CECB042407539E3900576814 /* dicomData.m in Sources */ = {isa = PBXBuildFile; fileRef = ABFA7CD2056056F300963FF8 /* dicomData.m */; };
 		CECB042507539E3900576814 /* NSSplitViewSave.m in Sources */ = {isa = PBXBuildFile; fileRef = AB08564C059211F9009962D7 /* NSSplitViewSave.m */; };
@@ -7656,7 +7653,6 @@
 		CECBFEF407539E3900576814 /* XMLController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB4A6DF3056EC14E009E6C6E /* XMLController.h */; };
 		CECBFEF507539E3900576814 /* dicomData.h in Headers */ = {isa = PBXBuildFile; fileRef = ABFA7CD3056056F300963FF8 /* dicomData.h */; };
 		CECBFEF607539E3900576814 /* AppController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB142DFC05600D76008461A0 /* AppController.h */; };
-		CECBFEF707539E3900576814 /* xNSImage.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0D4D5D05750BD300A321DA /* xNSImage.h */; };
 		CECBFEF807539E3900576814 /* QueryController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB425D72058FC58E00224020 /* QueryController.h */; };
 		CECBFEF907539E3900576814 /* Wait.h in Headers */ = {isa = PBXBuildFile; fileRef = AB6F34FB0574081F00CDCA47 /* Wait.h */; };
 		CECBFEFA07539E3900576814 /* browserController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABBCCDA605643A4C00A4E47A /* browserController.h */; };
@@ -8682,8 +8678,6 @@
 		AB0BD75705646FD800BED927 /* PapyEallocUnix3.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyEallocUnix3.c; path = Papyrus3/PapyEallocUnix3.c; sourceTree = "<group>"; };
 		AB0CA45F05BE159500F52729 /* ColorTransferView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorTransferView.h; sourceTree = "<group>"; };
 		AB0CA46005BE159500F52729 /* ColorTransferView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorTransferView.m; sourceTree = "<group>"; };
-		AB0D4D5D05750BD300A321DA /* xNSImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xNSImage.h; sourceTree = "<group>"; };
-		AB0D4D5E05750BD300A321DA /* xNSImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xNSImage.m; sourceTree = "<group>"; };
 		AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		AB0F20AB06460F7F0075465D /* Burner.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Burner.tif; sourceTree = "<group>"; };
 		AB10FA670B96C95500D74684 /* OsirixDownload.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = OsirixDownload.icns; sourceTree = "<group>"; };
@@ -13047,8 +13041,6 @@
 				AB0813D7057C698900A72813 /* MyOutlineView.m */,
 				AB08564B059211F9009962D7 /* NSSplitViewSave.h */,
 				AB08564C059211F9009962D7 /* NSSplitViewSave.m */,
-				AB0D4D5D05750BD300A321DA /* xNSImage.h */,
-				AB0D4D5E05750BD300A321DA /* xNSImage.m */,
 				ABB3DB0B05868E34006494CB /* VTKView.h */,
 				ABB3DB0C05868E34006494CB /* VTKView.mm */,
 				AB5E1AFA05956BB600C48BEB /* Accelerate.h */,
@@ -16695,7 +16687,6 @@
 				AB28B8E105B79D1E00A9906C /* XMLController.h in Headers */,
 				AB28B8E605B79D2100A9906C /* dicomData.h in Headers */,
 				AB28B8E805B79D2300A9906C /* AppController.h in Headers */,
-				AB28B8E905B79D2300A9906C /* xNSImage.h in Headers */,
 				AB28B8EA05B79D2400A9906C /* QueryController.h in Headers */,
 				AB28B8EB05B79D2500A9906C /* Wait.h in Headers */,
 				AB28B8EF05B79D2800A9906C /* browserController.h in Headers */,
@@ -18774,7 +18765,6 @@
 				CECBFEF407539E3900576814 /* XMLController.h in Headers */,
 				CECBFEF507539E3900576814 /* dicomData.h in Headers */,
 				CECBFEF607539E3900576814 /* AppController.h in Headers */,
-				CECBFEF707539E3900576814 /* xNSImage.h in Headers */,
 				CECBFEF807539E3900576814 /* QueryController.h in Headers */,
 				CECBFEF907539E3900576814 /* Wait.h in Headers */,
 				CECBFEFA07539E3900576814 /* browserController.h in Headers */,
@@ -22228,7 +22218,6 @@
 				AB28B8DA05B79D1800A9906C /* NSFont_OpenGL.m in Sources */,
 				AB28B8E205B79D1F00A9906C /* Wait.m in Sources */,
 				AB28B8E305B79D1F00A9906C /* AppController.m in Sources */,
-				AB28B8E405B79D2000A9906C /* xNSImage.m in Sources */,
 				AB28B8E505B79D2100A9906C /* QueryController.mm in Sources */,
 				AB28B8ED05B79D2600A9906C /* dicomData.m in Sources */,
 				AB28B8EE05B79D2700A9906C /* NSSplitViewSave.m in Sources */,
@@ -23917,7 +23906,6 @@
 				CECB041C07539E3900576814 /* NSFont_OpenGL.m in Sources */,
 				CECB041E07539E3900576814 /* Wait.m in Sources */,
 				CECB041F07539E3900576814 /* AppController.m in Sources */,
-				CECB042007539E3900576814 /* xNSImage.m in Sources */,
 				CECB042107539E3900576814 /* QueryController.mm in Sources */,
 				CECB042407539E3900576814 /* dicomData.m in Sources */,
 				CECB042507539E3900576814 /* NSSplitViewSave.m in Sources */,
