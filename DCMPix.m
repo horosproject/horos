@@ -2629,13 +2629,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 - (void) freefImageWhenDone:(BOOL) b
 {
 	if( b)
-	{
 		fExternalOwnedImage = 0L;
-	}
 	else
-	{
 		fExternalOwnedImage = fImage;
-	}
 }
 
 -(void) setfImage:(float*) ptr

@@ -717,7 +717,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 - (IBAction)print:(id)sender
 {
 	DCMPix *newPix = [curDCM renderInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
-//	DCMPix *newPix = [curDCM renderWithRotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
 	
 	[newPix freefImageWhenDone: NO];
 	
@@ -727,9 +726,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		: [NSMutableArray arrayWithObject: [newPix imageObj]]
 		: newData];
 	
-	NSData *im = [[curDCM renderNSImageInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped] TIFFRepresentation];
-	
-	[im writeToFile: @"test.tiff" atomically: YES];
+//	NSData *im = [[curDCM renderNSImageInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped] TIFFRepresentation];
+//	[im writeToFile: @"/test.tiff" atomically: YES];
 	
 	return;
 	
