@@ -191,7 +191,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 		zpx = [[viewer imageView] curImage];
 		
 		float location[3];
-		[[[viewer imageView] curDCM] convertPixX: (float) xpx pixY: (float) ypx toDICOMCoords: (float*) location];
+		[[[viewer imageView] curDCM] convertPixX: (float) xpx pixY: (float) ypx toDICOMCoords: (float*) location pixelCenter: YES];
 		xmm = location[0];
 		ymm = location[1];
 		zmm = location[2];

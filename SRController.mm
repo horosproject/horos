@@ -227,7 +227,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 				{
 					float location[ 3 ];
 					
-					[[[viewer2D pixList] objectAtIndex: i] convertPixX: [[[curROI points] objectAtIndex:0] x] pixY: [[[curROI points] objectAtIndex:0] y] toDICOMCoords: location];
+					[[[viewer2D pixList] objectAtIndex: i] convertPixX: [[[curROI points] objectAtIndex:0] x] pixY: [[[curROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
 					
 					x =location[ 0 ];
 					y =location[ 1 ];
@@ -1015,7 +1015,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		float location[3];
 		double x, y, z;
 			
-		[[[viewer2D pixList] objectAtIndex:[[viewer2D imageView] curImage]] convertPixX: [[[addedROI points] objectAtIndex:0] x] pixY: [[[addedROI points] objectAtIndex:0] y] toDICOMCoords: location];
+		[[[viewer2D pixList] objectAtIndex:[[viewer2D imageView] curImage]] convertPixX: [[[addedROI points] objectAtIndex:0] x] pixY: [[[addedROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
 		
 		x = location[0];
 		y = location[1];
@@ -1043,7 +1043,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		float location[3];
 		double x, y, z;
 		
-		[[[viewer2D pixList] objectAtIndex: 0] convertPixX: [[[removedROI points] objectAtIndex:0] x] pixY: [[[removedROI points] objectAtIndex:0] y] toDICOMCoords: location];
+		[[[viewer2D pixList] objectAtIndex: 0] convertPixX: [[[removedROI points] objectAtIndex:0] x] pixY: [[[removedROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
 
 		x = location[0];
 		y = location[1];

@@ -8872,8 +8872,8 @@ END_CREATE_ROIS:
 	float o[ 3];
 	NSPoint a = NSMakePoint( minX, minY);
 	a = [self rotatePoint: a aroundPoint: centerPt angle: -rot];
-	if( xF) a.x = newWidth - a.x;
-	if( yF) a.y = newHeight - a.y;
+	if( xF) a.x = newWidth - a.x -1;
+	if( yF) a.y = newHeight - a.y -1;
 	[self convertPixX: a.x/scale pixY: a.y/scale toDICOMCoords: o];
 	[newPix setOrigin: o];
 	
@@ -8896,9 +8896,14 @@ END_CREATE_ROIS:
 	dst.width = rectSize.width;
 	dst.rowBytes = dst.width*4;
 	dst.data = malloc( dst.height * dst.rowBytes);
-	
+
+	if( xF) oo.x = - oo.x;
+	if( yF) oo.y = - oo.y;
+		
 	// zero coordinate is in the center of the view
-	NSPoint cov = NSMakePoint( rectSize.width/2 + oo.x - [newPix pwidth]/2, rectSize.height/2 - oo.y - [newPix pheight]/2);
+	NSPoint cov = NSMakePoint( rectSize.width/2 + oo.x - [newPix pwidth]/2 -0.5, rectSize.height/2 - oo.y - [newPix pheight]/2);
+	
+	
 	[self drawImage: &src inImage: &dst offset: cov background: BACKGROUND];
 	
 	DCMPix *rPix = [[newPix copy] autorelease];
@@ -8988,8 +8993,8 @@ END_CREATE_ROIS:
 {
 	if( pixelCenter)
 	{
-		x = (int) x;	x += 0.5;
-		y = (int) x;	y += 0.5;
+		x -= 0.5;
+		y -= 0.5;
 	}
 	
 	d[0] = originX + y*orientation[3]*pixelSpacingY + x*orientation[0]*pixelSpacingX;
@@ -9006,8 +9011,8 @@ END_CREATE_ROIS:
 {
 	if( pixelCenter)
 	{
-		x = (int) x;	x += 0.5;
-		y = (int) x;	y += 0.5;
+		x -= 0.5;
+		y -= 0.5;
 	}
 	
 	d[0] = originX + y*orientation[3]*pixelSpacingY + x*orientation[0]*pixelSpacingX;

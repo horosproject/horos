@@ -3577,7 +3577,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					sprintf (line4, "2D Pos: X:%0.3f px Y:%0.3f px", rect.origin.x, rect.origin.y);
 					
 					float location[ 3 ];
-					[[curView curDCM] convertPixX: rect.origin.x pixY: rect.origin.y toDICOMCoords: location];
+					[[curView curDCM] convertPixX: rect.origin.x pixY: rect.origin.y toDICOMCoords: location pixelCenter: YES];
 					if(fabs(location[0]) < 1.0 && location[0] != 0.0)
 						sprintf (line5, "3D Pos: X:%0.1f %cm Y:%0.1f %cm Z:%0.1f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5);
 					else

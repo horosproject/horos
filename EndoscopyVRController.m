@@ -151,7 +151,7 @@ extern NSString * documentsDirectory();
 				{
 					float location[ 3 ];
 					
-					[[[viewer2D pixList] objectAtIndex: i] convertPixX: [[[curROI points] objectAtIndex:0] x] pixY: [[[curROI points] objectAtIndex:0] y] toDICOMCoords: location];
+					[[[viewer2D pixList] objectAtIndex: i] convertPixX: [[[curROI points] objectAtIndex:0] x] pixY: [[[curROI points] objectAtIndex:0] y] toDICOMCoords: location pixelCenter: YES];
 					
 					x = location[ 0 ];
 					y = location[ 1 ];

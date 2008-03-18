@@ -428,7 +428,7 @@ extern  short		annotations;
 			[exportDCM setOrientation: o];
 			
 			NSPoint tempPt = [self ConvertFromView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
-			[curPix convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o];
+			[curPix convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 			[exportDCM setPosition: o];
 			
 //			o[0] = [curPix originX];

@@ -1237,7 +1237,7 @@ extern NSString * documentsDirectory();
 				[exportDCM setOrientation: o];
 				
 				NSPoint tempPt = [[view finalView] ConvertFromView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
-				[[[view finalView] curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o];
+				[[[view finalView] curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 				[exportDCM setPosition: o];
 				
 //				pos[ 0] = [[[view finalView] curDCM] originX];		pos[ 1] = [[[view finalView] curDCM] originY];		pos[ 2] = [[[view finalView] curDCM] originZ];
@@ -1293,7 +1293,7 @@ extern NSString * documentsDirectory();
 			[exportDCM setOrientation: o];
 			
 			NSPoint tempPt = [[view finalView] ConvertFromView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
-			[[[view finalView] curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o];
+			[[[view finalView] curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 			[exportDCM setPosition: o];
 			
 //			pos[ 0] = [[[view finalView] curDCM] originX];		pos[ 1] = [[[view finalView] curDCM] originY];		pos[ 2] = [[[view finalView] curDCM] originZ];

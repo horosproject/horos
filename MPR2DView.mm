@@ -1248,7 +1248,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	
 	int index = [oView curImage];
 	
-	[[pixList objectAtIndex: index] convertPixX: [oView cross].x pixY: [oView cross].y toDICOMCoords: temp];
+	[[pixList objectAtIndex: index] convertPixX: [oView cross].x pixY: [oView cross].y toDICOMCoords: temp pixelCenter: YES];
 	[dict setObject:[NSNumber numberWithFloat: temp[ 0]] forKey:@"pt3Dx"];
 	[dict setObject:[NSNumber numberWithFloat: temp[ 1]] forKey:@"pt3Dy"];
 	[dict setObject:[NSNumber numberWithFloat: temp[ 2]] forKey:@"pt3Dz"];

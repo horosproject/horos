@@ -14053,7 +14053,7 @@ int i,j,l;
 		{
 			// Get the upper left pixel position
 			NSPoint tempPt = [imageView ConvertFromView2GL: NSMakePoint( 0, 0)];
-			[[imageView curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o];
+			[[imageView curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 			[exportDCM setPosition: o];
 		}
 		else
@@ -15560,7 +15560,7 @@ int i,j,l;
 					{
 						float location[ 3];
 						
-						[curDCM convertPixX: [[points objectAtIndex: y] x] pixY: [[points objectAtIndex: y] y] toDICOMCoords: location];
+						[curDCM convertPixX: [[points objectAtIndex: y] x] pixY: [[points objectAtIndex: y] y] toDICOMCoords: location pixelCenter: YES];
 						
 						NSArray	*pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], 0L];
 						
@@ -15648,7 +15648,7 @@ int i,j,l;
 			
 			curDCM = [pixList[curMovieIndex] objectAtIndex: fROIIndex];
 			centroid = [fROI centroid];
-			[curDCM  convertPixX: centroid.x pixY: centroid.y toDICOMCoords: location];
+			[curDCM  convertPixX: centroid.x pixY: centroid.y toDICOMCoords: location pixelCenter: YES];
 			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]-1], [NSNumber numberWithFloat:location[1]-1], [NSNumber numberWithFloat:location[2]], 0L];
 			[*pts addObject: pt3D];
 			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]-1], [NSNumber numberWithFloat:location[1]+1], [NSNumber numberWithFloat:location[2]], 0L];
@@ -15658,7 +15658,7 @@ int i,j,l;
 			
 			curDCM = [pixList[curMovieIndex] objectAtIndex: lROIIndex];
 			centroid = [lROI centroid];
-			[curDCM  convertPixX: centroid.x pixY: centroid.y toDICOMCoords: location];
+			[curDCM  convertPixX: centroid.x pixY: centroid.y toDICOMCoords: location pixelCenter: YES];
 			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]-1], [NSNumber numberWithFloat:location[1]-1], [NSNumber numberWithFloat:location[2]], 0L];
 			[*pts addObject: pt3D];
 			pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]-1], [NSNumber numberWithFloat:location[1]+1], [NSNumber numberWithFloat:location[2]], 0L];

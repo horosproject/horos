@@ -140,7 +140,7 @@
 		{
 			float location[3];
 			
-			[curDCM convertPixX: [[points objectAtIndex: j] x] pixY: [[points objectAtIndex: j] y] toDICOMCoords: location];
+			[curDCM convertPixX: [[points objectAtIndex: j] x] pixY: [[points objectAtIndex: j] y] toDICOMCoords: location pixelCenter: YES];
 			//NSLog(@"location : %f, %f, %f", location[0], location[1], location[2]);
 			
 			location[0] *= factor;

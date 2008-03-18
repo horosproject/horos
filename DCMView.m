@@ -719,6 +719,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //	NSData *im = [[curDCM renderNSImageInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped] TIFFRepresentation];
 //	[im writeToFile: @"test.tiff" atomically: YES];
 	
+//	DCMPix *newPix = [curDCM renderWithRotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
 	DCMPix *newPix = [curDCM renderInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
 	
 	[newPix freefImageWhenDone: NO];
@@ -2857,7 +2858,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 			float location[ 3];
 			
-			[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];
+			[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location pixelCenter: YES];
 						
 			DCMPix	*thickDCM;
 		
@@ -4951,8 +4952,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	sft[ 0][ 0] = HUGE_VALF; sft[ 0][ 1] = HUGE_VALF; sft[ 0][ 2] = HUGE_VALF;
 	sft[ 1][ 0] = HUGE_VALF; sft[ 1][ 1] = HUGE_VALF; sft[ 1][ 2] = HUGE_VALF;
 	
-	[oPix convertPixX: 0 pixY: 0 toDICOMCoords: c1];
-	[oPix convertPixX: [oPix pwidth]-1 pixY: 0 toDICOMCoords: c2];
+	[oPix convertPixX: 0 pixY: 0 toDICOMCoords: c1 pixelCenter: YES];
+	[oPix convertPixX: [oPix pwidth] pixY: 0 toDICOMCoords: c2 pixelCenter: YES];
 	
 	int x = 0;
 	if( x < 2 && intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r))
@@ -4962,8 +4963,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		x++;
 	}
 			
-	[oPix convertPixX: [oPix pwidth]-1 pixY: 0 toDICOMCoords: c1];
-	[oPix convertPixX: [oPix pwidth]-1 pixY: [oPix pheight]-1 toDICOMCoords: c2];
+	[oPix convertPixX: [oPix pwidth] pixY: 0 toDICOMCoords: c1 pixelCenter: YES];
+	[oPix convertPixX: [oPix pwidth] pixY: [oPix pheight] toDICOMCoords: c2 pixelCenter: YES];
 	
 	if(  x < 2 && intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r))
 	{
@@ -4972,8 +4973,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		x++;
 	}
 	
-	[oPix convertPixX: [oPix pwidth]-1 pixY: [oPix pheight]-1 toDICOMCoords: c1];
-	[oPix convertPixX: 0 pixY: [oPix pheight]-1 toDICOMCoords: c2];
+	[oPix convertPixX: [oPix pwidth] pixY: [oPix pheight] toDICOMCoords: c1 pixelCenter: YES];
+	[oPix convertPixX: 0 pixY: [oPix pheight] toDICOMCoords: c2 pixelCenter: YES];
 	
 	if(  x < 2 && intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r))
 	{
@@ -4982,8 +4983,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		x++;
 	}
 	
-	[oPix convertPixX: 0 pixY: [oPix pheight]-1 toDICOMCoords: c1];
-	[oPix convertPixX: 0 pixY: 0 toDICOMCoords: c2];
+	[oPix convertPixX: 0 pixY: [oPix pheight] toDICOMCoords: c1 pixelCenter: YES];
+	[oPix convertPixX: 0 pixY: 0 toDICOMCoords: c2 pixelCenter: YES];
 	
 	if(  x < 2 && intersect3D_SegmentPlane( c1, c2, vectorB+6, originB, r))
 	{
@@ -6243,10 +6244,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 									if( maxVal < 0) maxVal = 0;
 									if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
 									
-									[[dcmPixList objectAtIndex: maxVal] convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];
+									[[dcmPixList objectAtIndex: maxVal] convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location pixelCenter: YES];
 								}
 								else {
-									[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];
+									[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location pixelCenter: YES];
 								}
 								
 								if(fabs(location[0]) < 1.0 && location[0] != 0.0)
@@ -7718,6 +7719,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( screenCapture)	// Pixels displayed in current window
 	{
 		for( long i = 0; i < [curRoiList count]; i++)	[[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
+		
+		force8bits = YES;
 		
 		if( force8bits == YES || curDCM.isRGB == YES)		// Screen Capture in RGB - 8 bit
 		{
