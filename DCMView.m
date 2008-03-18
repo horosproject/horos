@@ -716,6 +716,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (IBAction)print:(id)sender
 {
+//	NSData *im = [[curDCM renderNSImageInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped] TIFFRepresentation];
+//	[im writeToFile: @"test.tiff" atomically: YES];
+	
 	DCMPix *newPix = [curDCM renderInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
 	
 	[newPix freefImageWhenDone: NO];
@@ -726,8 +729,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		: [NSMutableArray arrayWithObject: [newPix imageObj]]
 		: newData];
 	
-//	NSData *im = [[curDCM renderNSImageInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped] TIFFRepresentation];
-//	[im writeToFile: @"/test.tiff" atomically: YES];
 	
 	return;
 	
@@ -7670,7 +7671,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels :(BOOL) allTiles
 {
-	if( allTiles && [self is2DViewer] && (_imageRows != 1 || _imageColumns != 1)) {
+	if( allTiles && [self is2DViewer] && (_imageRows != 1 || _imageColumns != 1))
+	{
 		NSArray		*views = [[[self windowController] seriesView] imageViews];
 		
 		// Create a large buffer for all views
@@ -7717,21 +7719,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
 		for( long i = 0; i < [curRoiList count]; i++)	[[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
 		
-	//	if( force8bits)
+		if( force8bits == YES || curDCM.isRGB == YES)		// Screen Capture in RGB - 8 bit
 		{
 			NSRect size = [self bounds];
 			
 			*width = size.size.width;
-			//*width/=4;
-			//*width*=4;
 			*height = size.size.height;
 			*spp = 3;
-//			*spp = 4;
 			*bpp = 8;
 			
 			buf = malloc( 10 + *width * *height * 4 * *bpp/8);
-			if( buf ) {
-				if(removeGraphical) {
+			if( buf)
+			{
+				if( removeGraphical)
+				{
 					NSString	*str = [[self stringID] retain];
 					[self setStringID: @"export"];
 					
@@ -7741,8 +7742,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					[str release];
 				}
 				else [self display];
-				
-//				[[self openGLContext] flushBuffer];	// <- Very important! Keep this line
 				
 				[[self openGLContext] makeCurrentContext];
 				
@@ -7787,6 +7786,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 				free( tempBuf);
 			}
+		}
+		else		// Screen Capture in RGB - 8 bit
+		{
+			NSImage *im = [curDCM renderNSImageInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
+			
+			NSBitmapImageRep *rep = [[im representations] lastObject];
+			
+			*width = [rep pixelsWide];
+			*height = [rep pixelsHigh];
+			*spp = [rep samplesPerPixel];
+			*bpp = [rep bitsPerPixel];
+			
+			buf = malloc( *width * *height * 4 * *bpp/8);
+			memcpy( buf, [rep bitmapData], *width * *height * 4 * *bpp/8);
 		}
 	}
 	else				// Pixels contained in memory  -> only RGB or 16 bits data

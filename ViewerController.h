@@ -979,8 +979,8 @@ enum
 - (IBAction)ungroupSelectedROIs:(id)sender;
 
 - (void) turnOffSyncSeriesBetweenStudies:(id) sender;
-- (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name;
-- (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers;
+- (void) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name;
+- (void) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers;
 
 #pragma mark-
 #pragma mark 12 Bit

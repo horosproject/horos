@@ -13817,17 +13817,17 @@ int i,j,l;
 	[NSApp beginSheet: quicktimeWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
-- (void) exportDICOMFileInt :(BOOL) screenCapture
+- (void) exportDICOMFileInt:(int) screenCapture
 {
 	[self exportDICOMFileInt:screenCapture withName:[dcmSeriesName stringValue]];
 }
 
-- (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name;
+- (void) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name;
 {
-	[self exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name allViewers: NO];
+	[self exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: NO];
 }
 
-- (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers
+- (void) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers
 {
 	DCMPix			*curPix = [imageView curDCM];
 	NSArray			*viewers = [ViewerController getDisplayed2DViewers];
