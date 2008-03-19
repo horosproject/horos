@@ -4864,12 +4864,11 @@ static ViewerController *draggedController = 0L;
 
 - (BOOL) isDataVolumicIn4D: (BOOL) check4D checkEverythingLoaded:(BOOL) c;
 {
+	BOOL volumicData = YES;
 	if( c == NO)
 	{
-		if( ThreadLoadImage == YES) return NO;
+		if( ThreadLoadImage) return NO;
 	}
-
-	BOOL volumicData = YES;
 	
 	[self checkEverythingLoaded];
 	
@@ -5258,7 +5257,7 @@ static ViewerController *draggedController = 0L;
 	if( sameSeries)
 	{
 		[imageView setIndex: imageIndex];
-		[imageView updatePresentationStateFromSeries];
+//		[imageView updatePresentationStateFromSeries];
 	}
 	else [imageView setIndexWithReset: imageIndex :YES];
 	
@@ -5614,7 +5613,7 @@ static ViewerController *draggedController = 0L;
 
 -(void) loadImageData:(id) sender
 {
-    NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
+    NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
     long				i, x;
 	BOOL				isPET = NO;
 	
@@ -8367,12 +8366,15 @@ NSMutableArray		*array;
 - (void) setFusionMode:(long) m
 {
 	long i, x;
-
-	BOOL volumicData = [self isDataVolumicIn4D: NO checkEverythingLoaded: NO];
 	
-	if( volumicData == NO)
-		m = 0;
-
+	if( m != 0)
+	{
+		BOOL volumicData = [self isDataVolumicIn4D: NO checkEverythingLoaded: NO];
+		
+		if( volumicData == NO)
+			m = 0;
+	}
+	
 	// Thick Slab
 	if( m == 4 || m == 5)
 	{
