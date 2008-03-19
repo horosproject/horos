@@ -8746,8 +8746,8 @@ END_CREATE_ROIS:
 
 -(DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF
 {
-	int newHeight;
-	int newWidth;
+	float newHeight;
+	float newWidth;
 	
 	float rot = r*deg2rad;
 	
@@ -8896,13 +8896,15 @@ END_CREATE_ROIS:
 	dst.width = rectSize.width;
 	dst.rowBytes = dst.width*4;
 	dst.data = malloc( dst.height * dst.rowBytes);
-
+		
 	if( xF) oo.x = - oo.x;
 	if( yF) oo.y = - oo.y;
 		
 	// zero coordinate is in the center of the view
-	NSPoint cov = NSMakePoint( rectSize.width/2 + oo.x - [newPix pwidth]/2 -0.5, rectSize.height/2 - oo.y - [newPix pheight]/2);
+	NSPoint cov = NSMakePoint( rectSize.width/2 + oo.x - [newPix pwidth]/2, rectSize.height/2 - oo.y - [newPix pheight]/2);
 	
+	cov.x = (int) cov.x;
+	cov.y = (int) cov.y;
 	
 	[self drawImage: &src inImage: &dst offset: cov background: BACKGROUND];
 	

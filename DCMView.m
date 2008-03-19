@@ -7720,8 +7720,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
 		for( long i = 0; i < [curRoiList count]; i++)	[[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
 		
-		force8bits = YES;
-		
 		if( force8bits == YES || curDCM.isRGB == YES)		// Screen Capture in RGB - 8 bit
 		{
 			NSRect size = [self bounds];
@@ -7790,22 +7788,34 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				free( tempBuf);
 			}
 		}
-		else		// Screen Capture in RGB - 8 bit
+		else // Screen Capture in 16 bit BW
 		{
-			NSImage *im = [curDCM renderNSImageInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
+			DCMPix *im = [curDCM renderInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
 			
-			NSBitmapImageRep *rep = [[im representations] lastObject];
+			*width = [im pwidth];
+			*height = [im pheight];
+			*spp = 1;
+			*bpp = 16;
 			
-			*width = [rep pixelsWide];
-			*height = [rep pixelsHigh];
-			*spp = [rep samplesPerPixel];
-			*bpp = [rep bitsPerPixel];
+			vImage_Buffer			srcf, dst8;
 			
-			buf = malloc( *width * *height * 4 * *bpp/8);
-			memcpy( buf, [rep bitmapData], *width * *height * 4 * *bpp/8);
+			srcf.height = *height;
+			srcf.width = *width;
+			srcf.rowBytes = *width * sizeof( float);
+			
+			dst8.height =  *height;
+			dst8.width = *width;
+			dst8.rowBytes = *width * sizeof( short);
+
+			buf = malloc( *width * *height * *spp * *bpp/8);
+			
+			srcf.data = [im fImage];
+			dst8.data = buf;
+			
+			vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);
 		}
 	}
-	else				// Pixels contained in memory  -> only RGB or 16 bits data
+	else // Pixels contained in memory  -> only RGB or 16 bits data
 	{
 		BOOL	isRGB = curDCM.isRGB;
 		

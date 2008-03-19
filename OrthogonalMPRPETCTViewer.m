@@ -72,7 +72,7 @@ NSString * documentsDirectory();
 		
 		view = [PETController xReslicedView];
 		
-		[view setCrossPosition: [view crossPositionX] :[[PETController originalDCMPixList] count] -1 - ([[[note userInfo] valueForKey:@"z"] intValue] + fistPETSlice)];
+		[view setCrossPosition: [view crossPositionX] :[[PETController originalDCMPixList] count] -1 - ([[[note userInfo] valueForKey:@"z"] intValue] + fistPETSlice) +0.5];
 	}
 	
 	if( [viewer pixList] == v)
@@ -83,7 +83,7 @@ NSString * documentsDirectory();
 		
 		view = [CTController xReslicedView];
 		
-		[view setCrossPosition: [view crossPositionX] :[[CTController originalDCMPixList] count] -1 - ([[[note userInfo] valueForKey:@"z"] intValue] + fistCTSlice)];
+		[view setCrossPosition: [view crossPositionX] :[[CTController originalDCMPixList] count] -1 - ([[[note userInfo] valueForKey:@"z"] intValue] + fistCTSlice) +0.5];
 	}
 }
 
@@ -2052,7 +2052,7 @@ NSString * documentsDirectory();
 			
 			for( i = 0; i < max; i++)
 			{
-				[view setCrossPosition:x+i*deltaX :y+i*deltaY];
+				[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
 				[modalitySplitView display];
 				
 				NSImage *im = [[self keyView] nsimage:NO];
@@ -2068,7 +2068,7 @@ NSString * documentsDirectory();
 
 				[bitmapData writeToFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%d.jpg", i+1]] atomically:YES];
 			}
-			[view setCrossPosition:oldX :oldY];
+			[view setCrossPosition:oldX+0.5 :oldY+0.5];
 			[view setNeedsDisplay:YES];
 
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) 
@@ -2293,7 +2293,7 @@ NSString * documentsDirectory();
 			{
 				for( i = from; i < to; i+=interval)
 				{
-					[view setCrossPosition:x+i*deltaX :y+i*deltaY];
+					[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
 					[modalitySplitView display];
 					
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -2312,7 +2312,7 @@ NSString * documentsDirectory();
 
 				for( i = from; i < to; i+=interval)
 				{
-					[view setCrossPosition:x+i*deltaX :y+i*deltaY];
+					[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
 					[modalitySplitView display];
 					
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -2328,7 +2328,7 @@ NSString * documentsDirectory();
 				}
 			}
 			
-			[view setCrossPosition:oldX :oldY];
+			[view setCrossPosition:oldX+0.5 :oldY+0.5];
 			[view setNeedsDisplay:YES];
 			
 			[splash close];

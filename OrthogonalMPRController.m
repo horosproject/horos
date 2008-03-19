@@ -193,29 +193,34 @@
 		[yReslicedView adjustWLWW:wl :ww];
 		
 		// move cross on the other views
-		[xReslicedView setCrossPositionX:x];
-		[yReslicedView setCrossPositionX:y];
+		[xReslicedView setCrossPositionX:x+0.5];
+		[yReslicedView setCrossPositionX:y+0.5];
 		NSInteger sliceIndex = [[originalView pixList] indexOfObject:[originalView curDCM]] + [[originalView curDCM] stack]/2;
 		NSInteger h = (sign>0)? [[originalView dcmPixList] count]-sliceIndex-1 : sliceIndex ;
 
-		[xReslicedView setCrossPositionY:h];
-		[yReslicedView setCrossPositionY:h];
+		[xReslicedView setCrossPositionY:h+0.5];
+		[yReslicedView setCrossPositionY:h+0.5];
 	}
 	else
 	{
+		int stackCount = [[originalView dcmPixList] count];
+		
+		stackCount /= 2;
+		stackCount *= 2;
+		
 		// slice index on axial view
-		long sliceIndex = (sign>0)? [[originalView dcmPixList] count]-1 -y : y;
+		int sliceIndex = (sign>0)? stackCount-1 -y : y;
 		
 		sliceIndex = sliceIndex - thickSlab/2;
 		
 		if( sliceIndex < 0) sliceIndex = 0;
-		if( sliceIndex >= [[originalView dcmPixList] count]) sliceIndex = [[originalView dcmPixList] count]-1;
+		if( sliceIndex >= stackCount) sliceIndex = stackCount-1;
 		// update axial view
 		[originalView setIndex:sliceIndex];
 		
 		if ([sender isEqual: xReslicedView])
 		{
-			[originalView setCrossPositionX:x];
+			[originalView setCrossPositionX:x+0.5];
 			// compute 3rd view	
 			[reslicer yReslice:x];
 			yReslicedDCMPixList = [reslicer yReslicedDCMPixList];
@@ -231,11 +236,11 @@
 			[yReslicedView adjustWLWW:wl :ww];
 
 			// move cross on 3rd view
-			[yReslicedView setCrossPositionY:y];
+			[yReslicedView setCrossPositionY:y+0.5];
 		}
 		else if ([sender isEqual: yReslicedView])
 		{
-			[originalView setCrossPositionY:x];
+			[originalView setCrossPositionY:x+0.5];
 			// compute 3rd view
 			[reslicer xReslice:x];
 			xReslicedDCMPixList = [reslicer xReslicedDCMPixList];
@@ -251,7 +256,7 @@
 			[xReslicedView adjustWLWW:wl :ww];
 
 			// move cross on 3rd view
-			[xReslicedView setCrossPositionY:y];
+			[xReslicedView setCrossPositionY:y+0.5];
 		}
 	}
 
@@ -588,7 +593,7 @@
 		y = xReslicedCrossPositionY+(from-to);
 		if ( y < 0) y = 0;
 		if ( y >= max) y = max-1;
-		[xReslicedView setCrossPosition:x :y];
+		[xReslicedView setCrossPosition:x+0.5 :y+0.5];
 	}
 	else if ([sender isEqual: xReslicedView])
 	{
@@ -597,7 +602,7 @@
 		y = originalCrossPositionY+(from-to);
 		if ( y < 0) y = 0;
 		if ( y >= max) y = max-1;
-		[originalView setCrossPosition:x :y];
+		[originalView setCrossPosition:x+0.5 :y+0.5];
 	}
 	else if ([sender isEqual: yReslicedView])
 	{
@@ -606,7 +611,7 @@
 		y = [originalView crossPositionY];
 		if ( x < 0) x = 0;
 		if ( x >= max) x = max-1;
-		[originalView setCrossPosition:x :y];
+		[originalView setCrossPosition:x+0.5 :y+0.5];
 	}
 }
 
@@ -796,8 +801,8 @@
 	x = [firstDCMPix pwidth]/2;
 	y = [firstDCMPix pheight]/2;
 	
-	[originalView setCrossPositionX:x];
-	[originalView setCrossPositionY:y];
+	[originalView setCrossPositionX:x+0.5];
+	[originalView setCrossPositionY:y+0.5];
 	[self reslice:x:y:originalView];
 }
 

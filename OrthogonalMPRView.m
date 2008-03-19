@@ -273,8 +273,8 @@
 		glEnable(GL_POLYGON_SMOOTH);
 	
 		float xCrossCenter,yCrossCenter;
-		xCrossCenter = (crossPositionX +0.5 -[[self curDCM] pwidth]/2) * scaleValue;
-		yCrossCenter = (crossPositionY +0.5 -[[self curDCM] pheight]/2) * scaleValue;
+		xCrossCenter = (crossPositionX  - [[self curDCM] pwidth]/2) * scaleValue;
+		yCrossCenter = (crossPositionY  - [[self curDCM] pheight]/2) * scaleValue;
 		
 		//NSLog(@"subdraw thickslab:%f pixelSpacingY:%f", [controller thickSlabDistance], [[self curDCM] pixelSpacingY]);
 		//yCrossCenter = yCrossCenter - ([controller thickSlabDistance]*(float)[controller thickSlab]   / 2.0);

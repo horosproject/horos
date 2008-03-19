@@ -65,11 +65,11 @@ NSString * documentsDirectory();
 	{
 		OrthogonalMPRView *view = [controller originalView];
 		
-		[view setCrossPosition: [[[note userInfo] valueForKey:@"x"] intValue] :[[[note userInfo] valueForKey:@"y"] intValue]];
+		[view setCrossPosition: [[[note userInfo] valueForKey:@"x"] intValue]+0.5 :[[[note userInfo] valueForKey:@"y"] intValue]+0.5];
 		
 		view = [controller xReslicedView];
 		
-		[view setCrossPosition: [view crossPositionX] :[[controller originalDCMPixList] count] -1 - [[[note userInfo] valueForKey:@"z"] intValue]];
+		[view setCrossPosition: [view crossPositionX]+0.5 :[[controller originalDCMPixList] count] -1 - [[[note userInfo] valueForKey:@"z"] intValue]+0.5];
 	}
 }
 
@@ -1226,7 +1226,7 @@ NSString * documentsDirectory();
 			
 			for( i = 0; i < max; i++)
 			{
-				[view setCrossPosition:x+i*deltaX :y+i*deltaY];
+				[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
 				[splitView display];
 				
 				NSImage *im = [[self keyView] nsimage:NO];
@@ -1242,7 +1242,7 @@ NSString * documentsDirectory();
 
 				[bitmapData writeToFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%d.jpg", i+1]] atomically:YES];
 			}
-			[view setCrossPosition:oldX :oldY];
+			[view setCrossPosition:oldX+0.5 :oldY+0.5];
 			[view setNeedsDisplay:YES];
 
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) 
@@ -1415,7 +1415,7 @@ NSString * documentsDirectory();
 			{
 				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 				
-				[view setCrossPosition:x+i*deltaX :y+i*deltaY];
+				[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
 				[splitView display];
 				[view display];
 				
@@ -1426,7 +1426,7 @@ NSString * documentsDirectory();
 				[pool release];
 			}
 			
-			[view setCrossPosition:oldX :oldY];
+			[view setCrossPosition:oldX+0.5 :oldY+0.5];
 			
 			[[self keyView] setIndex: curImage];
 			

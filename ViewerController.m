@@ -8368,7 +8368,7 @@ NSMutableArray		*array;
 {
 	long i, x;
 
-	BOOL volumicData = [self isDataVolumicIn4D: NO];
+	BOOL volumicData = [self isDataVolumicIn4D: NO checkEverythingLoaded: NO];
 	
 	if( volumicData == NO)
 		m = 0;
@@ -13831,9 +13831,9 @@ int i,j,l;
 
 - (void) exportDICOMFileInt:(int)screenCapture withName:(NSString*)name allViewers: (BOOL) allViewers
 {
-	DCMPix			*curPix = [imageView curDCM];
-	NSArray			*viewers = [ViewerController getDisplayed2DViewers];
-	long			annotCopy,clutBarsCopy;
+	DCMPix *curPix = [imageView curDCM];
+	NSArray *viewers = [ViewerController getDisplayed2DViewers];
+	long annotCopy,clutBarsCopy;
 	
 	long	width, height, spp, bpp, err, i, x;
 	float	cwl, cww;
@@ -13845,6 +13845,15 @@ int i,j,l;
 		clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 		
 		[DCMView setCLUTBARS: barHide ANNOTATIONS: annotGraphics];
+	}
+	
+	BOOL force8bits = YES;
+	
+	switch( screenCapture)
+	{
+		case 0: /*memory data*/		force8bits = NO; break;
+		case 1: /*screen capture*/	force8bits = YES; break;
+		case 2: /*screen capture*/	force8bits = NO; break;
 	}
 	
 	unsigned char *data = 0L;
@@ -13994,7 +14003,7 @@ int i,j,l;
 		{
 			long	iwidth, iheight, ispp, ibpp;
 			
-			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixels:&iwidth :&iheight :&ispp :&ibpp :screenCapture :NO];
+			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixels:&iwidth :&iheight :&ispp :&ibpp :screenCapture :force8bits];
 			
 			NSRect	bounds = [[viewsRect objectAtIndex: i] rectValue];	//[[[viewers objectAtIndex: i] imageView] bounds];
 			
@@ -14015,7 +14024,7 @@ int i,j,l;
 			free( tempData);
 		}
 	}
-	else data = [imageView getRawPixels:&width :&height :&spp :&bpp :screenCapture :NO];
+	else data = [imageView getRawPixels:&width :&height :&spp :&bpp :screenCapture :force8bits];
 	
 	if( data)
 	{
