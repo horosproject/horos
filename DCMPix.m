@@ -8746,8 +8746,8 @@ END_CREATE_ROIS:
 
 -(DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF
 {
-	float newHeight;
-	float newWidth;
+	int newHeight;
+	int newWidth;
 	
 	float rot = r*deg2rad;
 	
@@ -8757,7 +8757,7 @@ END_CREATE_ROIS:
 	
 	// Apply rotation
 	NSPoint pt[ 4];
-	NSPoint centerPt = NSMakePoint( newWidth/2, newHeight/2);
+	NSPoint centerPt = NSMakePoint( newWidth/2., newHeight/2.);
 	NSPoint zeroPt = NSMakePoint( 0, 0);
 	
 	pt[ 0] = [self rotatePoint: zeroPt aroundPoint: centerPt angle: rot];
