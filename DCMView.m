@@ -10153,4 +10153,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
+- (BOOL)isLUT12Bit;
+{
+	BOOL is12Bit = YES;
+	for (DCMPix* pix in dcmPixList)
+	{
+		is12Bit = is12Bit && pix.isLUT12Bit;
+	}
+	return is12Bit;
+}
+
 @end

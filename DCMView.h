@@ -460,5 +460,6 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void)deleteROIGroupID:(NSTimeInterval)groupID;
 
 - (void)setIsLUT12Bit:(BOOL)boo;
+- (BOOL)isLUT12Bit;
 
 @end

@@ -318,6 +318,7 @@ enum
 	
 	IBOutlet NSView			*display12bitToolbarItemView;
 	IBOutlet NSButton		*display12bitToolbarItemCheckBox;
+	NSTimer					*t12BitTimer;
 }
 
 @property(readonly) short currentOrientationTool;

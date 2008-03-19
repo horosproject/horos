@@ -4957,6 +4957,9 @@ static ViewerController *draggedController = 0L;
 	
 	[OpacityPopup setEnabled:YES];
 	
+	if([AppController canDisplay12Bit]) t12BitTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(verify12Bit:) userInfo:nil repeats:YES];
+	else t12BitTimer = nil;
+	
 	[self refreshToolbar];
 	
 	return self;
@@ -5113,6 +5116,13 @@ static ViewerController *draggedController = 0L;
 	{
 		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:0L];
 		[appController performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
+	}
+	
+	if(t12BitTimer)
+	{
+		[t12BitTimer invalidate];
+		[t12BitTimer release];
+		t12BitTimer = nil;
 	}
 	
 	NSLog(@"ViewController dealloc End");
@@ -17771,6 +17781,13 @@ sourceRef);
 	BOOL t12Bit = ([sender state]==NSOnState);
 	[imageView setIsLUT12Bit:t12Bit];
 	[imageView updateImage];
+}
+
+- (void)verify12Bit:(NSTimer*)theTimer
+{
+	BOOL t12Bit = [imageView isLUT12Bit];
+	if(t12Bit) [display12bitToolbarItemCheckBox setState:NSOnState];
+	else [display12bitToolbarItemCheckBox setState:NSOffState];
 }
 
 #pragma mark-
