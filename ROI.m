@@ -3894,6 +3894,30 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							sprintf (line2, "Area: %0.3f pix2", fabs( NSWidth(rect)*NSHeight(rect)));
 						sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
 						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+						
+						if( [curView blendingView])
+						{
+							DCMPix	*blendedPix = [[curView blendingView] curDCM];
+							
+							ROI *blendedROI = [[[ROI alloc] initWithType: type :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :NSMakePoint( [blendedPix originX], [blendedPix originY])] autorelease];
+							
+							NSRect blendedRect = [self rect];
+							NSPoint downRight = NSMakePoint( blendedRect.origin.x + blendedRect.size.width, blendedRect.origin.y + blendedRect.size.height);
+							
+							blendedRect.origin = [curView ConvertFromGL2GL: blendedRect.origin toView:[curView blendingView]];
+							
+							downRight = [curView ConvertFromGL2GL: downRight toView:[curView blendingView]];
+							
+							blendedRect.size.width = downRight.x - blendedRect.origin.x;
+							blendedRect.size.height = downRight.y - blendedRect.origin.y;
+							
+							[blendedROI setROIRect: blendedRect];
+							
+							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
+							
+							sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Total: %0.0f", Brmean, Brdev, Brtotal);
+							sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
+						}
 					}
 					
 					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
@@ -3988,7 +4012,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						
 						ROI *blendedROI = [[[ROI alloc] initWithType: tCPolygon :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :NSMakePoint( [blendedPix originX], [blendedPix originY])] autorelease];
 						
-						NSMutableArray *pts = [self points];
+						NSMutableArray *pts = [[[NSMutableArray alloc] initWithArray: [self points] copyItems:YES] autorelease];
 						
 						for( MyPoint *p in pts)
 							[p setPoint: [curView ConvertFromGL2GL: [p point] toView:[curView blendingView]]];
@@ -4420,18 +4444,38 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
 						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 						
-						length = 0;
-						long i;
-						
-						for( i = 0; i < [splinePoints count]-1; i++ ) {
-							length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
+						if( [curView blendingView])
+						{
+							DCMPix	*blendedPix = [[curView blendingView] curDCM];
+							
+							ROI *blendedROI = [[[ROI alloc] initWithType: tCPolygon :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :NSMakePoint( [blendedPix originX], [blendedPix originY])] autorelease];
+							
+							NSMutableArray *pts = [[[NSMutableArray alloc] initWithArray: [self points] copyItems:YES] autorelease];
+							
+							for( MyPoint *p in pts)
+								[p setPoint: [curView ConvertFromGL2GL: [p point] toView:[curView blendingView]]];
+							
+							[blendedROI setPoints: pts];
+							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
+							
+							sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Total: %0.0f", Brmean, Brdev, Brtotal);
+							sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
 						}
-						length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:0] point]];
-						
-						if (length < .1)
-							sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
 						else
-							sprintf (line5, "Length: %0.3f cm", length);
+						{
+							length = 0;
+							long i;
+							
+							for( i = 0; i < [splinePoints count]-1; i++ ) {
+								length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
+							}
+							length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:0] point]];
+							
+							if (length < .1)
+								sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
+							else
+								sprintf (line5, "Length: %0.3f cm", length);
+						}
 					}
 					
 					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
@@ -4463,15 +4507,35 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
 						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 						
-						length = 0;
-						for( long i = 0; i < [splinePoints count]-1; i++ ) {
-							length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
+						if( [curView blendingView])
+						{
+							DCMPix	*blendedPix = [[curView blendingView] curDCM];
+							
+							ROI *blendedROI = [[[ROI alloc] initWithType: tCPolygon :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :NSMakePoint( [blendedPix originX], [blendedPix originY])] autorelease];
+							
+							NSMutableArray *pts = [[[NSMutableArray alloc] initWithArray: [self points] copyItems:YES] autorelease];
+							
+							for( MyPoint *p in pts)
+								[p setPoint: [curView ConvertFromGL2GL: [p point] toView:[curView blendingView]]];
+							
+							[blendedROI setPoints: pts];
+							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
+							
+							sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Total: %0.0f", Brmean, Brdev, Brtotal);
+							sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
 						}
-						
-						if (length < .1)
-							sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
 						else
-							sprintf (line5, "Length: %0.3f cm", length);
+						{
+							length = 0;
+							for( long i = 0; i < [splinePoints count]-1; i++ ) {
+								length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
+							}
+							
+							if (length < .1)
+								sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
+							else
+								sprintf (line5, "Length: %0.3f cm", length);
+						}
 					}
 					
 					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];

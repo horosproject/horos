@@ -192,6 +192,7 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 
 // POLY CLIP
 
+#define MAXVERTICAL     100000
 
 
 #define INIT_DELTAS dx=V2.x-V1.x;  dy=V2.y-V1.y;
@@ -291,7 +292,7 @@ static inline void CLIP_Bottom(NSPointInt *Polygon,long *count, NSPointInt V1,NS
 
 void CLIP_Polygon(NSPointInt *inPoly, long inCount, NSPointInt *outPoly, long *outCount, long w, long h) {
 	int				d;
-	NSPointInt		TmpPoly[ 10000];
+	NSPointInt		TmpPoly[ MAXVERTICAL];
 	long			TmpCount;	
 	NSPointInt		DownRight;
 	
@@ -333,8 +334,6 @@ struct edge {
     long xNowWhole, xNowNum, xNowDen, xNowDir;
     long xNowNumStep;
 };
-
-#define MAXVERTICAL     10000
 
 static inline long sgn( long x ) {
 	if( x > 0) return 1;

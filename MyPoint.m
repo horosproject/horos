@@ -27,6 +27,15 @@
 	return [[[self alloc] initWithPoint: a] autorelease];
 }
 
+-(id) copyWithZone: (NSZone*)zone
+{
+	MyPoint *p = [[[self class] allocWithZone: zone] init];
+	
+	[p setPoint: [self point]];
+	
+	return p;
+}
+
 - (NSString*) description
 {
 	return [NSString stringWithFormat: @"%f %f", pt.x, pt.y];

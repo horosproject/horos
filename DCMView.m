@@ -5464,46 +5464,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) cross3D:(float*) x :(float*) y :(float*) z 
 {
-	NSPoint cPt = cross;	//[self ConvertFromView2GL:cross];
+	NSPoint cPt = cross;
 
-//	cPt.x += curDCM.pwidth/2.;
-//	cPt.y += curDCM.pheight/2.;
-	
 	if( x) *x = cPt.x * [[dcmPixList objectAtIndex:0] pixelSpacingX];
 	if( y) *y = cPt.y * [[dcmPixList objectAtIndex:0] pixelSpacingY];
-	
-//	if( curDCM.sliceThickness < 0) NSLog(@"thickness NEG");
-	if( z) *z = curImage;  //* curDCM.sliceThickness;
-//	*z =  curDCM.sliceLocation;
-	
-	// Now convert this local point in a global 3D coordinate!
-	
-	float temp[ 3], vectorB[ 9];
-	
-//	*x += curDCM.originX;
-//	*y += curDCM.originY;
-//	*z += curDCM.originZ;
-
-//	[curDCM orientation: vectorB];
-
-//	temp[ 0] = *x * vectorB[ 0] + *y * vectorB[ 1] + *z * vectorB[ 2];
-//	temp[ 1] = *x * vectorB[ 3] + *y * vectorB[ 4] + *z * vectorB[ 5];
-//	temp[ 2] = *x * vectorB[ 6] + *y * vectorB[ 7] + *z * vectorB[ 8];
-//	
-//	*x = temp[ 0];
-//	*y = temp[ 1];
-//	*z = temp[ 2];
-	
-//	*x =  temp[ 0];
-//	*y =  temp[ 1];
-//	*z =  temp[ 2];
-
-//	*x -= curDCM.originX;
-//	*y -= curDCM.originY;
-//	*z -= curDCM.originZ;
-	
-//	NSLog(@"3D Pt: X=%0.0f Y=%0.0f Z=%0.0f", *x, *y, *z);
-
+	if( z) *z = curImage;
 }
 
 - (NSPoint) convertFromNSView2iChat: (NSPoint) a
