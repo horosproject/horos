@@ -277,6 +277,9 @@ static NSMenu					*fusionPluginsMenu = 0L;
 		
 		//[self discoverPlugins];
 		[PluginManager discoverPlugins];
+		
+		//[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:self withObject:self];
+		//[self checkForUpdates:self]; for testing purpose
 	}
 	return self;
 }
@@ -762,6 +765,85 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 + (NSArray*)availabilities;
 {
 	return [NSArray arrayWithObjects:NSLocalizedString(@"Current user", nil), NSLocalizedString(@"All users", nil), NSLocalizedString(@"OsiriX bundle", nil), nil];
+}
+
+
+#pragma mark -
+#pragma mark auto update
+
+- (IBAction)checkForUpdates:(id)sender
+{
+	NSURL				*url;
+	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+	
+	url = [NSURL URLWithString:@"http://www.osirix-viewer.com/osirix_plugins/plugins.plist"];
+	
+	if(url)
+	{
+		NSMutableArray *onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];
+		
+		NSArray *installedPlugins = [PluginManager pluginsList];
+		
+		for (NSDictionary *installedPlugin in installedPlugins)
+		{
+			NSString *pluginName = [installedPlugin valueForKey:@"name"];
+			
+			NSDictionary *onlinePlugin = nil;
+			for (NSDictionary *plugin in onlinePlugins)
+			{
+				NSString *name = [[[plugin valueForKey:@"download_url"] lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+				name = [name stringByDeletingPathExtension]; // removes the .zip extension
+				name = [name stringByDeletingPathExtension]; // removes the .osirixplugin extension
+				if([pluginName isEqualToString:name])
+				{
+					onlinePlugin = plugin;
+					break;
+				}
+			}
+			
+			if(onlinePlugin)
+			{
+				NSString *currVersion = [installedPlugin objectForKey:@"version"];
+				NSString *onlineVersion = [onlinePlugin objectForKey:@"version"];
+				
+				if(currVersion && onlineVersion)
+				{
+					if(![currVersion isEqualToString:onlineVersion])
+					{
+						NSLog(@"currVersion : %@ , length: %d", currVersion, [currVersion length]);
+						NSLog(@"onlineVersion : %@ , length: %d", onlineVersion, [onlineVersion length]);
+						
+						NSLog(@"installed name : %@", [installedPlugin valueForKey:@"name"]);
+						NSLog(@"pluginName : %@", pluginName);
+					}
+				}
+				
+				[onlinePlugins removeObject:onlinePlugin];
+			}
+			
+			
+//			if (productVersionDict && currVersionNumber && latestVersionNumber)
+//			{
+//				if ([latestVersionNumber intValue] <= [currVersionNumber intValue])
+//				{
+//					if (verboseUpdateCheck)
+//						[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPTODATE" waitUntilDone:YES];
+//				}
+//				else
+//				{
+//					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CHECKUPDATES"] || verboseUpdateCheck == YES)
+//						[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATE" waitUntilDone:YES];				
+//				}
+//			}
+//			else
+//			{
+//				if (verboseUpdateCheck)
+//					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"ERROR" waitUntilDone:YES];
+//			}			
+		}
+	}
+	
+	[pool release];
 }
 
 #endif
