@@ -3562,7 +3562,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					
 					if( [curView blendingView])
 					{
-						if( Brtotal == -1)
+//						if( Brtotal == -1)
 						{
 							DCMPix	*blendedPix = [[curView blendingView] curDCM];
 							
@@ -3570,12 +3570,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							
 							NSRect blendedRect = [self rect];
 							
-							NSLog( @"%@", NSStringFromPoint( blendedRect.origin));
 							blendedRect.origin = [curView ConvertFromGL2View:  blendedRect.origin];
-							NSLog( @"%@", NSStringFromPoint( blendedRect.origin));
 							blendedRect.origin = [[curView blendingView] ConvertFromView2GL:  blendedRect.origin];
-							NSLog( @"%@", NSStringFromPoint( blendedRect.origin));
-							NSLog( @"*******");
 							
 							[blendedROI setROIRect: blendedRect];
 							
