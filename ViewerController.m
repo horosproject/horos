@@ -2105,6 +2105,13 @@ static volatile int numberOfThreadsForRelisce = 0;
         timeriChat = nil;
     }
 	
+	if(t12BitTimer)
+	{
+		[t12BitTimer invalidate];
+		[t12BitTimer release];
+		t12BitTimer = nil;
+	}
+	
 	stopThreadLoadImage = YES;
 	[ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
@@ -4957,7 +4964,7 @@ static ViewerController *draggedController = 0L;
 	
 	[OpacityPopup setEnabled:YES];
 	
-	if([AppController canDisplay12Bit]) t12BitTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(verify12Bit:) userInfo:nil repeats:YES];
+	if([AppController canDisplay12Bit]) t12BitTimer = [[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(verify12Bit:) userInfo:nil repeats:YES] retain];
 	else t12BitTimer = nil;
 	
 	[self refreshToolbar];
@@ -5117,14 +5124,7 @@ static ViewerController *draggedController = 0L;
 		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:0L];
 		[appController performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
 	}
-	
-	if(t12BitTimer)
-	{
-		[t12BitTimer invalidate];
-		[t12BitTimer release];
-		t12BitTimer = nil;
-	}
-	
+		
 	NSLog(@"ViewController dealloc End");
 	
 //	[[IMAVManager sharedAVManager] setVideoDataSource:nil];
@@ -5323,6 +5323,12 @@ static ViewerController *draggedController = 0L;
 			else [self ApplyOpacityString: NSLocalizedString( @"Linear Table", 0L)];
 		}
 		else [self ApplyOpacityString: NSLocalizedString( @"Linear Table", 0L)];
+		
+		if(([[self modality] isEqualToString:@"CR"] || [[self modality] isEqualToString:@"MG"] || [[self modality] isEqualToString:@"XA"] || [[self modality] isEqualToString:@"RF"]) && [[NSUserDefaults standardUserDefaults] boolForKey:@"automatic12BitTotoku"] && [AppController canDisplay12Bit])
+		{
+			[imageView setIsLUT12Bit:YES];
+			[display12bitToolbarItemMatrix selectCellWithTag:0];
+		}
 	}
 	else
 	{
@@ -16060,7 +16066,7 @@ int i,j,l;
 		if(([[self modality] isEqualToString:@"CR"] || [[self modality] isEqualToString:@"MG"] || [[self modality] isEqualToString:@"XA"] || [[self modality] isEqualToString:@"RF"]) && [[NSUserDefaults standardUserDefaults] boolForKey:@"automatic12BitTotoku"] && [AppController canDisplay12Bit])
 		{
 			[imageView setIsLUT12Bit:YES];
-			[display12bitToolbarItemCheckBox setState:NSOnState];
+			[display12bitToolbarItemMatrix selectCellWithTag:0];
 		}
 	}
 		
@@ -17778,7 +17784,7 @@ sourceRef);
 
 -(IBAction)enable12Bit:(id)sender;
 {
-	BOOL t12Bit = ([sender state]==NSOnState);
+	BOOL t12Bit = ([[sender selectedCell] tag]==0);
 	[imageView setIsLUT12Bit:t12Bit];
 	[imageView updateImage];
 }
@@ -17786,8 +17792,8 @@ sourceRef);
 - (void)verify12Bit:(NSTimer*)theTimer
 {
 	BOOL t12Bit = [imageView isLUT12Bit];
-	if(t12Bit) [display12bitToolbarItemCheckBox setState:NSOnState];
-	else [display12bitToolbarItemCheckBox setState:NSOffState];
+	if(t12Bit) [display12bitToolbarItemMatrix selectCellWithTag:0];
+	else [display12bitToolbarItemMatrix selectCellWithTag:1];
 }
 
 #pragma mark-

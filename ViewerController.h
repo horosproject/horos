@@ -317,7 +317,7 @@ enum
 	BOOL					nonVolumicDataWarningDisplayed;
 	
 	IBOutlet NSView			*display12bitToolbarItemView;
-	IBOutlet NSButton		*display12bitToolbarItemCheckBox;
+	IBOutlet NSMatrix		*display12bitToolbarItemMatrix;
 	NSTimer					*t12BitTimer;
 }
 
