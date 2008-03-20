@@ -2515,6 +2515,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 				if( min) *min = 0;
 				if( mean) *mean = 0;
 				if( total) *total = 0;
+				if( dev) *dev = 0;
 			}
 			else if( isRGB)
 			{
@@ -2526,6 +2527,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 				if( min) *min = val;
 				if( mean) *mean = val;
 				if( total) *total = val;
+				if( dev) *dev = 0;
 			}
 			else {
 				float	*curPix = &fImage[ (pts[ 0].y * width) + pts[ 0].x];
@@ -2536,6 +2538,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 				if( min) *min = val;
 				if( mean) *mean = val;
 				if( total) *total = val;
+				if( dev) *dev = 0;
 			}
 		}
 		else {

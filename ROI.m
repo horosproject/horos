@@ -298,7 +298,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 @synthesize layerReferenceFilePath;
 @synthesize layerImage;
 @synthesize layerPixelSpacingX, layerPixelSpacingY;
-@synthesize textualBoxLine1, textualBoxLine2, textualBoxLine3, textualBoxLine4, textualBoxLine5;
+@synthesize textualBoxLine1, textualBoxLine2, textualBoxLine3, textualBoxLine4, textualBoxLine5, textualBoxLine6;
 @synthesize groupID;
 @synthesize isLayerOpacityConstant, canColorizeLayer, displayTextualData, clickPoint;
 
@@ -869,6 +869,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	[textualBoxLine3 release];
 	[textualBoxLine4 release];
 	[textualBoxLine5 release];
+	[textualBoxLine6 release];
 	
 	[parentROI release];
 	[pix release];
@@ -1104,12 +1105,14 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			textualBoxLine3 = @"";
 			textualBoxLine4 = @"";
 			textualBoxLine5 = @"";
+			textualBoxLine6 = @"";
 			
 			[textualBoxLine1 retain];
 			[textualBoxLine2 retain];
 			[textualBoxLine3 retain];
 			[textualBoxLine4 retain];
 			[textualBoxLine5 retain];
+			[textualBoxLine6 retain];
 			
 			while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 			//needsLoadTexture2 = NO;
@@ -3173,6 +3176,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			[self glStr: (unsigned char*)line3 : tPt.x : tPt.y : line];	if( line3[0]) line++;
 			[self glStr: (unsigned char*)line4 : tPt.x : tPt.y : line];	if( line4[0]) line++;
 			[self glStr: (unsigned char*)line5 : tPt.x : tPt.y : line];	if( line5[0]) line++;
+			[self glStr: (unsigned char*)line6 : tPt.x : tPt.y : line];	if( line6[0]) line++;
 			
 			//glDisable(GL_POLYGON_SMOOTH);
 			glDisable(GL_BLEND);
@@ -3186,7 +3190,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	}
 }
 
-- (void) prepareTextualData:( char*) l1 :( char*) l2 :( char*) l3 :( char*) l4 :( char*) l5 location:(NSPoint) tPt
+- (void) prepareTextualData:( char*) l1 :( char*) l2 :( char*) l3 :( char*) l4 :( char*) l5 :( char*) l6 location:(NSPoint) tPt
 {
 	long		maxWidth = 0, line;
 	NSPoint		ctPt = tPt;
@@ -3206,6 +3210,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	maxWidth = [self maxStringWidth:l3 max: maxWidth];	if( l3[0]) line++;
 	maxWidth = [self maxStringWidth:l4 max: maxWidth];	if( l4[0]) line++;
 	maxWidth = [self maxStringWidth:l5 max: maxWidth];	if( l5[0]) line++;
+	maxWidth = [self maxStringWidth:l5 max: maxWidth];	if( l6[0]) line++;
 	
 	drawRect.size.height = line * 12 + 4;
 	drawRect.size.width = maxWidth + 8;
@@ -3382,7 +3387,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				if( self.isTextualDataDisplayed && prepareTextualData)
 				{
 					// TEXT
-					line1[0] = 0; line2[0] = 0; line3[0] = 0; line4[0] = 0; line5[0] = 0;
+					line1[0] = 0; line2[0] = 0; line3[0] = 0; line4[0] = 0; line5[0] = 0; line6[0] = 0;
 					NSPoint tPt = self.lowerRightPoint;
 				
 					if(![name isEqualToString:@"Unnamed"]) strcpy(line1, [name UTF8String]);
@@ -3391,8 +3396,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					if(textualBoxLine3 && ![textualBoxLine3 isEqualToString:@""]) strcpy(line3, [textualBoxLine3 UTF8String]);
 					if(textualBoxLine4 && ![textualBoxLine4 isEqualToString:@""]) strcpy(line4, [textualBoxLine4 UTF8String]);
 					if(textualBoxLine5 && ![textualBoxLine5 isEqualToString:@""]) strcpy(line5, [textualBoxLine5 UTF8String]);
-
-					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+					if(textualBoxLine6 && ![textualBoxLine6 isEqualToString:@""]) strcpy(line6, [textualBoxLine5 UTF8String]);
+					
+					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
 				}
 				[pool release];
 			}
@@ -3480,7 +3486,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glColor3f (1.0f, 1.0f, 1.0f);
 			
 			// TEXT
-			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 			if( self.isTextualDataDisplayed && prepareTextualData) {
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
@@ -3512,7 +3518,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					}
 				}
 				//if (!_displayCalciumScoring)
-				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
 			}
 		}
 		break;
@@ -3548,7 +3554,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glColor3f (1.0f, 1.0f, 1.0f);
 			
 			// TEXT
-			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 			if( self.isTextualDataDisplayed && prepareTextualData)
 			{
 				NSPoint tPt = self.lowerRightPoint;
@@ -3585,7 +3591,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					else
 						sprintf (line5, "3D Pos: X:%0.3f mm Y:%0.3f mm Z:%0.3f mm", location[0], location[1], location[2]);
 				}
-				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
 			}
 		}
 		break;
@@ -3809,7 +3815,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glColor3f (1.0f, 1.0f, 1.0f);
 			
 			// TEXT
-			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 			if( self.isTextualDataDisplayed && prepareTextualData) {
 				NSPoint tPt = self.lowerRightPoint;
 				long	line = 0;
@@ -3825,7 +3831,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					else
 						sprintf (line2, "Length: %0.3f pix", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
 				}
-				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
 			}
 		}
 		break;
@@ -3866,7 +3872,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			// TEXT
 			{
-				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 				if( self.isTextualDataDisplayed && prepareTextualData) {
 					NSPoint			tPt = self.lowerRightPoint;
 					long			line = 0;
@@ -3890,7 +3896,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 					}
 					
-					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
 				}
 			}
 		}
@@ -3953,7 +3959,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			// TEXT
 			
-			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;	line6[ 0] = 0;
 			if( self.isTextualDataDisplayed && prepareTextualData) {
 				NSPoint			tPt = self.lowerRightPoint;
 				long			line = 0;
@@ -3990,12 +3996,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						[blendedROI setPoints: pts];
 						[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
 						
-						sprintf (line3, "Fused Image Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
-						sprintf (line4, "Fused Image Min: %0.3f Max: %0.3f", rmin, rmax);
+						sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Total: %0.0f", Brmean, Brdev, Brtotal);
+						sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
 					}
 				}
 				
-				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
 			}
 		}
 		break;
@@ -4026,7 +4032,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				for( long i=4;i<[points count];i++ ) [points removeObjectAtIndex: i];
 			}
 			//TEXTO
-			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 			if( self.isTextualDataDisplayed && prepareTextualData) {
 				NSPoint tPt = self.lowerRightPoint;
 				long	line = 0;
@@ -4061,7 +4067,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						sprintf (line5, "Length: %0.3f cm", length);
 				}
 				
-				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
 			}
 				if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 				{
@@ -4293,7 +4299,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				angle = [self Angle:b :c :d];
 			}
 			//TEXTO
-			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 			if( self.isTextualDataDisplayed && prepareTextualData) {
 					NSPoint tPt = self.lowerRightPoint;
 					long	line = 0;
@@ -4331,7 +4337,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					sprintf (line3, "Angle 2: %0.2f",360 - angle);
 					sprintf (line4,"");
 					//sprintf (line5,"");
-					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
 			}
 			//ROI MODE
 			if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
@@ -4392,7 +4398,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			// TEXT
 			if( type == tCPolygon || type == tPencil)
 			{
-				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 				if( self.isTextualDataDisplayed && prepareTextualData) {
 					NSPoint tPt = self.lowerRightPoint;
 					long	line = 0;
@@ -4428,12 +4434,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							sprintf (line5, "Length: %0.3f cm", length);
 					}
 					
-					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
 				}
 			}
 			else if( type == tOPolygon)
 			{
-				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 				if( self.isTextualDataDisplayed && prepareTextualData) {
 					NSPoint tPt = self.lowerRightPoint;
 					long	line = 0;
@@ -4468,7 +4474,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							sprintf (line5, "Length: %0.3f cm", length);
 					}
 					
-					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
 				}
 			}
 			else if( type == tAngle)
@@ -4476,7 +4482,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				if( [points count] == 3)
 				{
 					displayTextualData = YES;
-					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
 					if( self.isTextualDataDisplayed && prepareTextualData) {
 						NSPoint tPt = self.lowerRightPoint;
 						long	line = 0;
@@ -4488,7 +4494,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						
 						sprintf (line2, "Angle: %0.3f / %0.3f", angle, 360 - angle);
 						
-						[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+						[self prepareTextualData:line1 :line2 :line3 :line4 :line5 :line6 location:tPt];
 					}
 				}
 				else displayTextualData = NO;

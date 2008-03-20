@@ -114,8 +114,8 @@ enum
 	
 	float			offsetTextBox_x, offsetTextBox_y;
 	
-	char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
-	NSString		*textualBoxLine1, *textualBoxLine2, *textualBoxLine3, *textualBoxLine4, *textualBoxLine5;
+	char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256], line6[ 256];
+	NSString		*textualBoxLine1, *textualBoxLine2, *textualBoxLine3, *textualBoxLine4, *textualBoxLine5, *textualBoxLine6;
 	
 	BOOL			_displayCalciumScoring;
 	int				_calciumThreshold;
@@ -364,7 +364,7 @@ enum
 - (NSPoint)rotatePoint:(NSPoint)point withAngle:(float)alpha aroundCenter:(NSPoint)center;
 - (void) displayPointUnderMouse:(NSPoint) pt :(float) offsetx :(float) offsety :(float) scale;
 
-@property(retain) NSString *textualBoxLine1, *textualBoxLine2, *textualBoxLine3, *textualBoxLine4, *textualBoxLine5;
+@property(retain) NSString *textualBoxLine1, *textualBoxLine2, *textualBoxLine3, *textualBoxLine4, *textualBoxLine5, *textualBoxLine6;
 @property NSTimeInterval groupID;
 
 
