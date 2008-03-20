@@ -2481,6 +2481,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			*dev = *dev / (count-1);
 			*dev = sqrt(*dev);
 		}
+		else if( dev) *dev = 0;
 		
 		if( max) *max = imax;
 		if( min) *min = imin;
@@ -2571,6 +2572,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 				*dev = *dev / (count-1);
 				*dev = sqrt(*dev);
 			}
+			else if( dev) *dev = 0;
 			
 			if( mean) *mean = imean;
 		}
