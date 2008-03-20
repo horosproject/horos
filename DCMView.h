@@ -338,6 +338,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (NSPoint) ConvertFromGL2View:(NSPoint) a;
 - (NSPoint) ConvertFromGL2NSView:(NSPoint) a;
 - (NSPoint) ConvertFromGL2Screen:(NSPoint) a;
+- (NSPoint) ConvertFromGL2GL:(NSPoint) a toView:(DCMView*) otherView;
 - (void) cross3D:(float*) x :(float*) y :(float*) z;
 - (void) setWLWW:(float) wl :(float) ww;
 - (void)discretelySetWLWW:(float)wl :(float)ww;

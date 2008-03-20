@@ -3562,25 +3562,19 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					
 					if( [curView blendingView])
 					{
-//						if( Brtotal == -1)
-						{
-							DCMPix	*blendedPix = [[curView blendingView] curDCM];
-							
-							ROI *blendedROI = [[[ROI alloc] initWithType: type :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :NSMakePoint( [blendedPix originX], [blendedPix originY])] autorelease];
-							
-							NSRect blendedRect = [self rect];
-							
-							blendedRect.origin = [curView ConvertFromGL2View:  blendedRect.origin];
-							blendedRect.origin = [[curView blendingView] ConvertFromView2GL:  blendedRect.origin];
-							
-							[blendedROI setROIRect: blendedRect];
-							
-							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
-						}
+						DCMPix	*blendedPix = [[curView blendingView] curDCM];
+						
+						ROI *blendedROI = [[[ROI alloc] initWithType: type :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :NSMakePoint( [blendedPix originX], [blendedPix originY])] autorelease];
+						
+						NSRect blendedRect = [self rect];
+						blendedRect.origin = [curView ConvertFromGL2GL: blendedRect.origin toView:[curView blendingView]];
+						[blendedROI setROIRect: blendedRect];
+						
+						[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
 					}
 					
 					sprintf (line2, "Val: %0.3f", rmean);
-					if( Brtotal != -1) sprintf (line3, "Fused Val: %0.3f", Brmean);
+					if( Brtotal != -1) sprintf (line3, "Fused Image Val: %0.3f", Brmean);
 					
 					sprintf (line4, "2D Pos: X:%0.3f px Y:%0.3f px", rect.origin.x, rect.origin.y);
 					
@@ -3981,6 +3975,24 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					
 					sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
 					sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+					
+					if( [curView blendingView])
+					{
+						DCMPix	*blendedPix = [[curView blendingView] curDCM];
+						
+						ROI *blendedROI = [[[ROI alloc] initWithType: tCPolygon :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :NSMakePoint( [blendedPix originX], [blendedPix originY])] autorelease];
+						
+						NSMutableArray *pts = [self points];
+						
+						for( MyPoint *p in pts)
+							[p setPoint: [curView ConvertFromGL2GL: [p point] toView:[curView blendingView]]];
+						
+						[blendedROI setPoints: pts];
+						[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
+						
+						sprintf (line3, "Fused Image Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+						sprintf (line4, "Fused Image Min: %0.3f Max: %0.3f", rmin, rmax);
+					}
 				}
 				
 				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];

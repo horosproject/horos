@@ -5555,6 +5555,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     return a;
 }
 
+-(NSPoint) ConvertFromGL2GL:(NSPoint) a toView:(DCMView*) otherView
+{
+	a = [self ConvertFromGL2View:  a];
+	a = [otherView ConvertFromView2GL:  a];
+	
+	return a;
+}
+
 -(NSPoint) ConvertFromGL2View:(NSPoint) a
 {
     NSRect size = drawingFrameRect;
