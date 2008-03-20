@@ -122,8 +122,7 @@ extern  short		annotations;
 	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: self];
 	//mouseLocStart = [self convertPoint:mouseLocStart fromView: self];
 	mouseLocStart = [[[theEvent window] contentView] convertPoint:mouseLocStart toView:self];
-	mouseLocStart.y = size.size.height - mouseLocStart.y;
-	mouseLocStart = [self ConvertFromView2GL:mouseLocStart];
+	mouseLocStart = [self ConvertFromNSView2GL:mouseLocStart];
 	
 	focalPointLocation.x = crossPositionX + focalShiftX;
 	focalPointLocation.y = crossPositionY + focalShiftY;
@@ -159,8 +158,7 @@ extern  short		annotations;
 			//mouseLoc = [theEvent locationInWindow];	//[self convertPoint: [theEvent locationInWindow] fromView:nil];
 			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView: self];
 			mouseLoc = [[[theEvent window] contentView] convertPoint:mouseLoc toView:self];
-			mouseLoc.y = size.size.height - mouseLoc.y;
-			mouseLoc = [self ConvertFromView2GL:mouseLoc];
+			mouseLoc = [self ConvertFromNSView2GL:mouseLoc];
 			
 			switch ([theEvent type])
 			{
@@ -427,7 +425,7 @@ extern  short		annotations;
 			[self orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
 			[exportDCM setOrientation: o];
 			
-			NSPoint tempPt = [self ConvertFromView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
+			NSPoint tempPt = [self ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
 			[curPix convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 			[exportDCM setPosition: o];
 			

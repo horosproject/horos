@@ -1480,7 +1480,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 - (void) setPoints: (NSMutableArray*) pts {
 	
-	if ( type == tROI || type == tOval ) return;  // Doesn't make sense to set points for these types.
+	if ( type == tROI || type == tOval || type == t2DPoint) return;  // Doesn't make sense to set points for these types.
 	
 	[points removeAllObjects];
 	for ( long i = 0; i < [pts count]; i++ )
@@ -3559,17 +3559,29 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				if( ROITEXTNAMEONLY == NO )
 				{
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
-//					if( [curView blendingView])		Sadly this doesn't work AT ALL ! Antoine
-//					{
-//						if( Brtotal == -1)
-//						{
-//							DCMPix	*blendedPix = [[curView blendingView] curDCM];
-//							
-//							[self setOriginAndSpacing:[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :NSMakePoint( [blendedPix originX], [blendedPix originY]) :NO];
-//							[blendedPix computeROI:self :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
-//							[self setOriginAndSpacing:[[curView curDCM] pixelSpacingX] :[[curView curDCM] pixelSpacingY] :NSMakePoint( [[curView curDCM] originX], [[curView curDCM] originY]) :NO];
-//						}
-//					}
+					
+					if( [curView blendingView])
+					{
+						if( Brtotal == -1)
+						{
+							DCMPix	*blendedPix = [[curView blendingView] curDCM];
+							
+							ROI *blendedROI = [[[ROI alloc] initWithType: type :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :NSMakePoint( [blendedPix originX], [blendedPix originY])] autorelease];
+							
+							NSRect blendedRect = [self rect];
+							
+							NSLog( @"%@", NSStringFromPoint( blendedRect.origin));
+							blendedRect.origin = [curView ConvertFromGL2View:  blendedRect.origin];
+							NSLog( @"%@", NSStringFromPoint( blendedRect.origin));
+							blendedRect.origin = [[curView blendingView] ConvertFromView2GL:  blendedRect.origin];
+							NSLog( @"%@", NSStringFromPoint( blendedRect.origin));
+							NSLog( @"*******");
+							
+							[blendedROI setROIRect: blendedRect];
+							
+							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
+						}
+					}
 					
 					sprintf (line2, "Val: %0.3f", rmean);
 					if( Brtotal != -1) sprintf (line3, "Fused Val: %0.3f", Brmean);
@@ -4046,8 +4058,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 				{
 					NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: 0L];
-					tempPt.y = [curView drawingFrameRect].size.height - tempPt.y ;
-					tempPt = [curView ConvertFromView2GL:tempPt];
+					tempPt = [curView ConvertFromNSView2GL:tempPt];
 					
 					glColor3f (0.5f, 0.5f, 1.0f);
 					glPointSize( (1 + sqrt( thickness))*3.5);
@@ -4318,8 +4329,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 			{
 				NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: 0L];
-				tempPt.y = [curView drawingFrameRect].size.height - tempPt.y ;
-				tempPt = [curView ConvertFromView2GL:tempPt];
+				tempPt = [curView ConvertFromNSView2GL:tempPt];
 				
 				glColor3f (0.5f, 0.5f, 1.0f);
 				glPointSize( (1 + sqrt( thickness))*3.5);
@@ -4481,8 +4491,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				[curView window];
 				
 				NSPoint tempPt = [curView convertPoint: [[curView window] mouseLocationOutsideOfEventStream] fromView: 0L];
-				tempPt.y = [curView drawingFrameRect].size.height - tempPt.y ;
-				tempPt = [curView ConvertFromView2GL:tempPt];
+				tempPt = [curView ConvertFromNSView2GL:tempPt];
 				
 				glColor3f (0.5f, 0.5f, 1.0f);
 				glPointSize( (1 + sqrt( thickness))*3.5);

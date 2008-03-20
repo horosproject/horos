@@ -1236,7 +1236,7 @@ extern NSString * documentsDirectory();
 				[[view finalView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
 				[exportDCM setOrientation: o];
 				
-				NSPoint tempPt = [[view finalView] ConvertFromView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
+				NSPoint tempPt = [[view finalView] ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
 				[[[view finalView] curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 				[exportDCM setPosition: o];
 				
@@ -1292,7 +1292,7 @@ extern NSString * documentsDirectory();
 			[[view finalView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
 			[exportDCM setOrientation: o];
 			
-			NSPoint tempPt = [[view finalView] ConvertFromView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
+			NSPoint tempPt = [[view finalView] ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
 			[[[view finalView] curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 			[exportDCM setPosition: o];
 			

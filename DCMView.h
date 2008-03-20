@@ -332,7 +332,9 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) setCrossCoordinates:(float) x :(float) y :(BOOL) update;
 - (void) setCross:(long) x :(long)y :(BOOL) update;
 - (void) setMPRAngle: (float) vectorMPR;
+- (NSPoint) ConvertFromNSView2GL:(NSPoint) a;
 - (NSPoint) ConvertFromView2GL:(NSPoint) a;
+- (NSPoint) ConvertFromUpLeftView2GL:(NSPoint) a;
 - (NSPoint) ConvertFromGL2View:(NSPoint) a;
 - (NSPoint) ConvertFromGL2NSView:(NSPoint) a;
 - (NSPoint) ConvertFromGL2Screen:(NSPoint) a;
@@ -411,6 +413,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) updateImage;
 - (BOOL) shouldPropagate;
 - (NSPoint) convertFromView2iChat: (NSPoint) a;
+- (NSPoint) convertFromNSView2iChat: (NSPoint) a;
 - (void) annotMenu:(id) sender;
 - (float) MPRAngle;
 

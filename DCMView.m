@@ -844,7 +844,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	glColor4f(1.0,1.0,0.0,repulsorAlpha);
 	
-	NSPoint pt = [self convertFromView2iChat: repulsorPosition];
+	NSPoint pt = [self convertFromNSView2iChat: repulsorPosition];
 	
 	glBegin(GL_POLYGON);	
 	for(i = 0; i < circleRes ; i++)
@@ -2343,9 +2343,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //			NSPoint     eventLocation = [event locationInWindow];
 //			NSRect size = [self frame];
 //			eventLocation = [self convertPoint:eventLocation fromView: self];
-//			eventLocation = [[[event window] contentView] convertPoint:eventLocation toView:self];
-//			eventLocation.y = size.size.height - eventLocation.y;
-//			eventLocation = [self ConvertFromView2GL:eventLocation];
+//			eventLocation = [self convertPoint:eventLocation fromView: 0L];
+//			eventLocation = [self ConvertFromNSView2GL:eventLocation];
 //
 //			[self setCrossPosition:(float)eventLocation.x : (float)eventLocation.y];
 //			[self setNeedsDisplay:YES];
@@ -2373,11 +2372,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [self roiTool: tool] ) {
 			NSRect      size = [self frame];
 			NSPoint     eventLocation = [event locationInWindow];
-			NSPoint		tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
+			NSPoint		tempPt = [self convertPoint:eventLocation fromView: 0L];
 			
-			tempPt.y = size.size.height - tempPt.y ;
-			
-			tempPt = [self ConvertFromView2GL:tempPt];
+			tempPt = [self ConvertFromNSView2GL:tempPt];
 			
 			for( long i = 0; i < [curRoiList count]; i++) {
 				[[curRoiList objectAtIndex:i] mouseRoiUp: tempPt];
@@ -2520,9 +2517,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		float	cpixelMouseValue = pixelMouseValue;
 		
 		eventLocation = [self convertPoint:eventLocation fromView:nil];
-		eventLocation.y = size.size.height - eventLocation.y;
-		
-		NSPoint imageLocation = [self ConvertFromView2GL:eventLocation];
+		NSPoint imageLocation = [self ConvertFromNSView2GL:eventLocation];
 		
 		pixelMouseValueR = 0;
 		pixelMouseValueG = 0;
@@ -2533,8 +2528,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( imageLocation.x >= 0 && imageLocation.x < curDCM.pwidth)	//&& NSPointInRect( eventLocation, size)) <- this doesn't work in MPR Ortho
 		{
-			if( imageLocation.y >= 0 && imageLocation.y < curDCM.pheight) {
-				
+			if( imageLocation.y >= 0 && imageLocation.y < curDCM.pheight)
+			{
 				mouseXPos = imageLocation.x;
 				mouseYPos = imageLocation.y;
 				
@@ -2573,70 +2568,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		blendingPixelMouseValueB = 0;
 		
 		// Blended view
-		if( blendingView) {
-			
-			NSPoint	offset;
-			
-			if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
-			{
-				float	vectorP[ 9], tempOrigin[ 3], tempOriginBlending[ 3];
-				
-				// Compute blended view offset
-				[curDCM orientation: vectorP];
-				
-				tempOrigin[ 0] = curDCM.originX * vectorP[ 0] + curDCM.originY * vectorP[ 1] + curDCM.originZ * vectorP[ 2];
-				tempOrigin[ 1] = curDCM.originX * vectorP[ 3] + curDCM.originY * vectorP[ 4] + curDCM.originZ * vectorP[ 5];
-				tempOrigin[ 2] = curDCM.originX * vectorP[ 6] + curDCM.originY * vectorP[ 7] + curDCM.originZ * vectorP[ 8];
-				
-				tempOriginBlending[ 0] = [blendingView curDCM].originX * vectorP[ 0] + [blendingView curDCM].originY * vectorP[ 1] + [blendingView curDCM].originZ * vectorP[ 2];
-				tempOriginBlending[ 1] = [blendingView curDCM].originX * vectorP[ 3] + [blendingView curDCM].originY * vectorP[ 4] + [blendingView curDCM].originZ * vectorP[ 5];
-				tempOriginBlending[ 2] = [blendingView curDCM].originX * vectorP[ 6] + [blendingView curDCM].originY * vectorP[ 7] + [blendingView curDCM].originZ * vectorP[ 8];
-				
-				offset.x = (tempOrigin[0] + curDCM.pwidth * curDCM.pixelSpacingX / 2.0 - (tempOriginBlending[ 0] + [blendingView curDCM].pwidth*[blendingView curDCM].pixelSpacingX/2.));
-				offset.y = (tempOrigin[1] + curDCM.pheight*curDCM.pixelSpacingY/2. - (tempOriginBlending[ 1] + [blendingView curDCM].pheight*[blendingView curDCM].pixelSpacingY/2.));
-				
-				offset.x /= [blendingView curDCM].pixelSpacingX;
-				offset.y /= [blendingView curDCM].pixelSpacingY;
-			}
-			else {
-				offset.x = 0;
-				offset.y = 0;
-			}
-			
-			// Convert screen position to pixel position in blended image
-			float xx, yy;
-			NSRect size = [self frame];
-			NSPoint a = eventLocation;
-						
-			if( xFlipped) a.x = size.size.width - a.x;
-			if( yFlipped) a.y = size.size.height - a.y;
-			
-			a.x -= size.size.width/2;
-			a.x /= [blendingView scaleValue];
-			
-			a.y -= size.size.height/2;
-			a.y /= [blendingView scaleValue];
-			
-			xx = a.x*cos([blendingView rotation]*deg2rad) + a.y*sin([blendingView rotation]*deg2rad);
-			yy = -a.x*sin([blendingView rotation]*deg2rad) + a.y*cos([blendingView rotation]*deg2rad);
-
-			a.y = yy;
-			a.x = xx;
-			
-			a.x -= ([blendingView origin].x + [blendingView originOffset].x)/[blendingView scaleValue];
-			a.y += ([blendingView origin].y + [blendingView originOffset].y)/[blendingView scaleValue];
-						
-			if( curDCM)
-			{
-				a.x += [[blendingView curDCM] pwidth]/2.;
-				a.y += [[blendingView curDCM] pheight]*[[blendingView curDCM] pixelRatio]/ 2.;
-				a.y /= [[blendingView curDCM] pixelRatio];
-			}
-			
-			a.x += offset.x;
-			a.y += offset.y;
-			
-			NSPoint blendedLocation = a;						//= [blendingView ConvertFromView2GL:eventLocation];
+		if( blendingView)
+		{
+			NSPoint blendedLocation = [blendingView ConvertFromNSView2GL: eventLocation];
 			
 			if( blendedLocation.x >= 0 && blendedLocation.x < [[blendingView curDCM] pwidth])
 			{
@@ -2645,8 +2579,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					blendingMouseXPos = blendedLocation.x;
 					blendingMouseYPos = blendedLocation.y;
 					
-					int
-						xPos = (int)blendingMouseXPos,
+					int xPos = (int)blendingMouseXPos,
 						yPos = (int)blendingMouseYPos;
 					
 					if( [[blendingView curDCM] isRGB])
@@ -2680,10 +2613,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					if( cross.x != -9999 && cross.y != -9999)
 					{
 						NSPoint tempPt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-						
-						tempPt.y = size.size.height - tempPt.y ;
-						
-						tempPt = [self ConvertFromView2GL:tempPt];
+						tempPt = [self ConvertFromNSView2GL:tempPt];
 						
 						if( tempPt.x > cross.x - BS/scaleValue && tempPt.x < cross.x + BS/scaleValue && tempPt.y > cross.y - BS/scaleValue && tempPt.y < cross.y + BS/scaleValue == YES)	//&& [stringID isEqualToString:@"Original"] 
 						{
@@ -2721,8 +2651,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [self roiTool: currentTool])
 		{
 			NSPoint pt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-			pt.y = size.size.height - pt.y ;
-			pt = [self ConvertFromView2GL: pt];
+			pt = [self ConvertFromNSView2GL: pt];
 			
 			for( ROI *r in curRoiList)
 				[r displayPointUnderMouse :pt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue];
@@ -2793,8 +2722,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( [self is2DViewer] == YES && [event type] == NSLeftMouseDown && ([event modifierFlags]& NSDeviceIndependentModifierFlagsMask) == 0)
 	{
 		NSPoint tempPt = [[[event window] contentView] convertPoint: [event locationInWindow] toView:self];
-		tempPt.y = [self frame].size.height - tempPt.y;
-		tempPt = [self ConvertFromView2GL:tempPt];
+		tempPt = [self ConvertFromNSView2GL:tempPt];
 		
 		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithFloat:tempPt.y], @"Y", [NSNumber numberWithLong:tempPt.x],@"X", [NSNumber numberWithBool: NO], @"stopMouseDown", 0L];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"mouseDown" object: [self windowController] userInfo: dict];
@@ -2836,10 +2764,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
         originStart = origin;
 		originOffsetStart = originOffset;
         
-        mesureB = mesureA = [[[event window] contentView] convertPoint:eventLocation toView:self];
+        mesureB = mesureA = [self convertPoint:eventLocation fromView: 0L];
         mesureB.y = mesureA.y = size.size.height - mesureA.y ;
         
-        roiRect.origin = [[[event window] contentView] convertPoint:eventLocation toView:self];
+        roiRect.origin = [self convertPoint:eventLocation fromView: 0L];
         roiRect.origin.y = size.size.height - roiRect.origin.y;
 		
         if( [event clickCount] > 1 && [self window] == [[BrowserController currentBrowser] window])
@@ -2903,10 +2831,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( cross.x != -9999 && cross.y != -9999) {
 																																			  
-			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
-			tempPt.y = size.size.height - tempPt.y ;
-			
-			tempPt = [self ConvertFromView2GL:tempPt];
+			NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
+			tempPt = [self ConvertFromNSView2GL:tempPt];
 			if( tempPt.x > cross.x - BS/scaleValue && tempPt.x < cross.x + BS/scaleValue && tempPt.y > cross.y - BS/scaleValue && tempPt.y < cross.y + BS/scaleValue == YES)	//&& [stringID isEqualToString:@"Original"] 
 			{
 				crossMove = 1;
@@ -2940,9 +2866,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			[[self windowController] addToUndoQueue:@"roi"];
 			
-			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
-			tempPt.y = size.size.height - tempPt.y ;
-			tempPt = [self ConvertFromView2GL:tempPt];
+			NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
+			tempPt = [self ConvertFromNSView2GL:tempPt];
 			
 			BOOL clickInROI = NO;
 			for( int i = 0; i < [curRoiList count]; i++) {
@@ -3022,17 +2947,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 			}
 			
-			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
-			tempPt.y = size.size.height - tempPt.y ;
+			NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
 
 			ROISelectorStartPoint = tempPt;
 			ROISelectorEndPoint = tempPt;
-
+			
+			ROISelectorStartPoint.y = [self drawingFrameRect].size.height - ROISelectorStartPoint.y;
+			ROISelectorEndPoint.y = [self drawingFrameRect].size.height - ROISelectorEndPoint.y;
+			
 			[self deleteMouseDownTimer];
 			
-			//if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
-			
-			tempPt = [self ConvertFromView2GL:tempPt];
+			tempPt = [self ConvertFromNSView2GL:tempPt];
 
 			BOOL clickInROI = NO;
 			for( int i = 0; i < [curRoiList count]; i++ ) {
@@ -3065,9 +2990,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			BOOL		DoNothing = NO;
 			NSInteger	selected = -1, i, x;
-			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
-			tempPt.y = size.size.height - tempPt.y ;
-			tempPt = [self ConvertFromView2GL:tempPt];
+			NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
+			tempPt = [self ConvertFromNSView2GL:tempPt];
 			
 			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
 			{
@@ -3672,11 +3596,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			long	i;
 			BOOL	action = NO;
 			
-			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
+			NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
 			
 			// get point in Open GL
-			tempPt.y = size.size.height - tempPt.y;
-			tempPt = [self ConvertFromView2GL:tempPt];
+			tempPt = [self ConvertFromNSView2GL:tempPt];
 			
 			// check rois for hit Test.
 			action = [self checkROIsForHitAtPoint:tempPt forEvent:event];
@@ -3758,8 +3681,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	// Command and Alternate rotate ROI
 	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask)) {
 		NSPoint rotatePoint = [[[event window] contentView] convertPoint:start toView:self];
-		rotatePoint.y = frame.size.height - start.y ;
-		rotatePoint = [self ConvertFromView2GL: rotatePoint];
+		rotatePoint.y = start.y ;
+		rotatePoint = [self ConvertFromNSView2GL: rotatePoint];
 
 		NSPoint offset;
 		float   xx, yy;
@@ -3774,8 +3697,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	// Command and Shift scale
 	else if (([event modifierFlags] & NSCommandKeyMask) && !([event modifierFlags] & NSShiftKeyMask)) {
 		NSPoint rotatePoint = [[[event window] contentView] convertPoint:start toView:self];
-		rotatePoint.y = frame.size.height - start.y ;
-		rotatePoint = [self ConvertFromView2GL: rotatePoint];
+		rotatePoint.y = start.y ;
+		rotatePoint = [self ConvertFromNSView2GL: rotatePoint];
 		
 		double ss = 1.0 - (previous.x - current.x)/200.;
 		
@@ -3847,20 +3770,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( crossMove)
 		{
-			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
-			tempPt.y = frame.size.height - tempPt.y ;
-			
-			
-			cross = [self ConvertFromView2GL:tempPt];
+			NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
+			cross = [self ConvertFromNSView2GL:tempPt];
 		}
 		else
 		{
 			float newAngle;
 			
-			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
-			tempPt.y = frame.size.height - tempPt.y ;
-			
-			tempPt = [self ConvertFromView2GL:tempPt];
+			NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
+			tempPt = [self ConvertFromNSView2GL:tempPt];
 			
 			tempPt.x -= cross.x;
 			tempPt.y -= cross.y;
@@ -4187,11 +4105,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	NSRect frame = [self frame];
 	NSPoint eventLocation = [event locationInWindow];
-	NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
-	tempPt.y = frame.size.height - tempPt.y ;
+	NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
 	
 	repulsorPosition = tempPt;
-	tempPt = [self ConvertFromView2GL:tempPt];
+	tempPt = [self ConvertFromNSView2GL:tempPt];
 	
 	
 	float pixSpacingRatio = 1.0;
@@ -4279,7 +4196,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 		
-- (void)mouseDraggedROISelector:(NSEvent *)event {
+- (void)mouseDraggedROISelector:(NSEvent *)event
+{
 	NSMutableArray *points;
 	
 	// deselect all ROIs
@@ -4293,7 +4211,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 	NSRect frame = [self frame];
 	NSPoint eventLocation = [event locationInWindow];
-	NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
+	NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
 	tempPt.y = frame.size.height - tempPt.y ;
 	ROISelectorEndPoint = tempPt;
 	
@@ -4302,8 +4220,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	NSRect rect;
 	
 	if( rotation == 0 ) {	
-		NSPoint tempStartPoint = [self ConvertFromView2GL:ROISelectorStartPoint];
-		NSPoint tempEndPoint = [self ConvertFromView2GL:ROISelectorEndPoint];
+		NSPoint tempStartPoint = [self ConvertFromUpLeftView2GL:ROISelectorStartPoint];
+		NSPoint tempEndPoint = [self ConvertFromUpLeftView2GL:ROISelectorEndPoint];
 		
 		rect = NSMakeRect(min(tempStartPoint.x, tempEndPoint.x), min(tempStartPoint.y, tempEndPoint.y), fabsf(tempStartPoint.x - tempEndPoint.x), fabsf(tempStartPoint.y - tempEndPoint.y));
 		
@@ -4311,10 +4229,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if(rect.size.height<1)rect.size.height=1;
 	}
 	else {
-		polyRect[ 0] = [self ConvertFromView2GL:ROISelectorStartPoint];
-		polyRect[ 1] = [self ConvertFromView2GL:NSMakePoint(ROISelectorStartPoint.x,ROISelectorStartPoint.y - (ROISelectorStartPoint.y-ROISelectorEndPoint.y))];
-		polyRect[ 2] = [self ConvertFromView2GL:ROISelectorEndPoint];
-		polyRect[ 3] = [self ConvertFromView2GL:NSMakePoint(ROISelectorStartPoint.x - (ROISelectorStartPoint.x-ROISelectorEndPoint.x),ROISelectorStartPoint.y)];
+		polyRect[ 0] = [self ConvertFromUpLeftView2GL:ROISelectorStartPoint];
+		polyRect[ 1] = [self ConvertFromUpLeftView2GL:NSMakePoint(ROISelectorStartPoint.x,ROISelectorStartPoint.y - (ROISelectorStartPoint.y-ROISelectorEndPoint.y))];
+		polyRect[ 2] = [self ConvertFromUpLeftView2GL:ROISelectorEndPoint];
+		polyRect[ 3] = [self ConvertFromUpLeftView2GL:NSMakePoint(ROISelectorStartPoint.x - (ROISelectorStartPoint.x-ROISelectorEndPoint.x),ROISelectorStartPoint.y)];
 	}
 	
 	// select ROIs in the selection rectangle
@@ -5522,8 +5440,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	cross.x = x + size.size.width/2;
 	cross.y = y + size.size.height/2;
 	
-	cross.y = size.size.height - cross.y ;
-	cross = [self ConvertFromView2GL:cross];
+	cross = [self ConvertFromNSView2GL:cross];
 	
 	[self setNeedsDisplay:true];
 	
@@ -5589,6 +5506,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 }
 
+- (NSPoint) convertFromNSView2iChat: (NSPoint) a
+{
+	//inverse Y scaling system
+	a.y = [self drawingFrameRect].size.height - a.y;		// inverse Y scaling system
+	
+	return [self convertFromView2iChat: a];
+}
+
 - (NSPoint) convertFromView2iChat: (NSPoint) a
 {
 	if( [NSOpenGLContext currentContext] == _alternateContext)
@@ -5651,16 +5576,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     a.x = xx;
 
     a.y *= scaleValue;
-	a.y += size.size.height/2;
+	a.y += size.size.height/2.;
 	
     a.x *= scaleValue;
-	a.x += size.size.width/2;
+	a.x += size.size.width/2.;
 	
 	if( xFlipped) a.x = size.size.width - a.x;
 	if( yFlipped) a.y = size.size.height - a.y;
 	
-	a.x -= size.size.width/2;
-	a.y -= size.size.height/2;
+	a.x -= size.size.width/2.;
+	a.y -= size.size.height/2.;
 	
     return a;
 }
@@ -5670,8 +5595,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	a = [self ConvertFromGL2View: a];
    
 	a.y = [self drawingFrameRect].size.height - a.y;		// inverse Y scaling system
-	a.y -= [self drawingFrameRect].size.height/2;			// Our viewing zero is centered in the view, NSView has the zero in left/bottom
-	a.x += [self drawingFrameRect].size.width/2;					
+	a.y -= [self drawingFrameRect].size.height/2.;			// Our viewing zero is centered in the view, NSView has the zero in left/bottom
+	a.x += [self drawingFrameRect].size.width/2.;					
 	
     return a;
 }
@@ -5685,9 +5610,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     return a;
 }
 
--(NSPoint) ConvertFromView2GL:(NSPoint) a
+-(NSPoint) ConvertFromNSView2GL:(NSPoint) a
 {
-	NSRect size = drawingFrameRect;	//[[[NSOpenGLContext currentContext] view] frame];
+	//inverse Y scaling system
+	a.y = [self drawingFrameRect].size.height - a.y;		// inverse Y scaling system
+	
+	return [self ConvertFromUpLeftView2GL: a];
+}
+
+- (NSPoint) ConvertFromView2GL:(NSPoint) a;
+{
+	a.x += [self drawingFrameRect].size.width/2.;
+	a.y += [self drawingFrameRect].size.height/2.;
+	
+	return [self ConvertFromUpLeftView2GL: a];
+}
+
+- (NSPoint) ConvertFromUpLeftView2GL:(NSPoint) a
+{
+	NSRect size = drawingFrameRect;
 	
 	if( xFlipped) a.x = size.size.width - a.x;
 	if( yFlipped) a.y = size.size.height - a.y;
@@ -6890,17 +6831,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( blendingView != 0L && syncOnLocationImpossible == NO && noBlending == NO )
 		{
-//			if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingY != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
-//			{
-//				offset.y = 0;
-//				offset.x = 0;
-//			}
-//			else
-//			{
-//				offset.y = 0;
-//				offset.x = 0;
-//			}
-			
 			glBlendEquation(GL_FUNC_ADD);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			

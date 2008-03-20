@@ -789,10 +789,8 @@
 	NSPoint   eventLocation = [event locationInWindow];
 	if ( [event type] != NSRightMouseDown)
 	{
-		eventLocation = [self convertPoint:eventLocation fromView: self];
-		eventLocation = [[[event window] contentView] convertPoint:eventLocation toView:self];
-		eventLocation.y = frame.size.height - eventLocation.y;
-		eventLocation = [self ConvertFromView2GL:eventLocation];
+		eventLocation = [self convertPoint:eventLocation fromView: 0L];
+		eventLocation = [self ConvertFromNSView2GL:eventLocation];
 		
 		if ( [self isKindOfClass: [OrthogonalMPRView class]] ) {
 			[(OrthogonalMPRView*)self setCrossPosition:(float)eventLocation.x : (float)eventLocation.y];

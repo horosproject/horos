@@ -146,7 +146,7 @@ enum
 @property(retain) NSMutableArray *points; // Return/set the points state of the ROI
 @property(readonly) NSMutableArray *zPositions;
 @property(readonly) BOOL clickInTextBox;
-@property(setter=setROIRect:) NSRect rect; // To create a Rectangular ROI (tROI) or an Oval ROI (tOval)
+@property(setter=setROIRect:) NSRect rect; // To create a Rectangular ROI (tROI) or an Oval ROI (tOval) or a 2DPoint
 @property(retain) DCMPix *pix; // The DCMPix associated to this ROI
 @property(readonly) DCMView *curView;  // The DCMView associated to this ROI
 @property float mousePosMeasure;

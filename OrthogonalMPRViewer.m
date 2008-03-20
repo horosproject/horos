@@ -1317,7 +1317,7 @@ NSString * documentsDirectory();
 		else [curPix orientation: o];
 		[exportDCM setOrientation: o];
 		
-		NSPoint tempPt = [[self keyView] ConvertFromView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
+		NSPoint tempPt = [[self keyView] ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
 		[curPix convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 		[exportDCM setPosition: o];
 				

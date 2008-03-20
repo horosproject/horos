@@ -3573,8 +3573,7 @@ static ViewerController *draggedController = 0L;
 								NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
 								NSRect size = [imageView frame];
 								eventLocation = [imageView convertPoint:eventLocation fromView:nil];
-								eventLocation.y = size.size.height - eventLocation.y;
-								NSPoint imageLocation = [imageView ConvertFromView2GL:eventLocation];
+								NSPoint imageLocation = [imageView ConvertFromNSView2GL:eventLocation];
 								
 								NSPoint centroid = [theNewROI centroid];
 								NSPoint offset;
@@ -14081,7 +14080,7 @@ int i,j,l;
 		if( screenCapture)
 		{
 			// Get the upper left pixel position
-			NSPoint tempPt = [imageView ConvertFromView2GL: NSMakePoint( 0, 0)];
+			NSPoint tempPt = [imageView ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];
 			[[imageView curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 			[exportDCM setPosition: o];
 		}

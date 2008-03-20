@@ -168,10 +168,9 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 {
 //NSLog(@"mouseDown");
 	NSPoint eventLocation = [event locationInWindow];
-	NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
+	NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
 	NSRect viewFrame = [self frame];
-	tempPt.y = viewFrame.size.height - tempPt.y;
-	tempPt = [self ConvertFromView2GL:tempPt];
+	tempPt = [self ConvertFromNSView2GL:tempPt];
 	
 	tempPt.x = (tempPt.x - [[self curDCM] pwidth]/2.0) * scaleValue;
 	tempPt.y = (tempPt.y - [[self curDCM] pheight]/2.0) * scaleValue;
@@ -215,10 +214,9 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 {
 //NSLog(@"mouseMoved");
 	NSPoint eventLocation = [event locationInWindow];
-	NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
+	NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
 	NSRect viewFrame = [self frame];
-	tempPt.y = viewFrame.size.height - tempPt.y;
-	tempPt = [self ConvertFromView2GL:tempPt];
+	tempPt = [self ConvertFromNSView2GL:tempPt];
 	
 	tempPt.x = (tempPt.x - [[self curDCM] pwidth]/2.0) * scaleValue;
 	tempPt.y = (tempPt.y - [[self curDCM] pheight]/2.0) * scaleValue;
@@ -259,10 +257,9 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 	if(draggingTopLimit || draggingBottomLimit)
 	{
 		NSPoint eventLocation = [event locationInWindow];
-		NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
+		NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
 		NSRect viewFrame = [self frame];
-		tempPt.y = viewFrame.size.height - tempPt.y;
-		tempPt = [self ConvertFromView2GL:tempPt];
+		tempPt = [self ConvertFromNSView2GL:tempPt];
 		
 		tempPt.x = (tempPt.x - [[self curDCM] pwidth]/2.0) * scaleValue;
 		tempPt.y = (tempPt.y - [[self curDCM] pheight]/2.0) * scaleValue;
