@@ -173,6 +173,13 @@
 		[self setURLforPluginWithName:[[[self availablePlugins] objectAtIndex:0] valueForKey:@"name"]];
 		[self setDownloadURL:[[[self availablePlugins] objectAtIndex:0] valueForKey:@"download_url"]];
 	}
+
+	NSArray *viewers = [ViewerController getDisplayed2DViewers];
+	for (ViewerController *viewer in viewers)
+	{
+		[[viewer window] close];
+	}
+
 	[super showWindow:sender];
 	[self refreshPluginList];
 }
