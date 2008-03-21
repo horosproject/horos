@@ -14061,7 +14061,14 @@ int i,j,l;
 		[imageView getWLWW:&cwl :&cww];
 		[exportDCM setDefaultWWWL: cww :cwl];
 		
-		if( screenCapture)
+		if( screenCapture == 2)
+		{
+			// In -(unsigned char*) getRawPixelsView:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels
+			// we generate the 16-bit BW image at full resolution : scale = 1
+			
+			[exportDCM setPixelSpacing: [curPix pixelSpacingX] / 1.0 :[curPix pixelSpacingX] / 1.0];
+		}
+		else if( screenCapture == 1)
 		{
 			[exportDCM setPixelSpacing: [curPix pixelSpacingX] / [imageView scaleValue] :[curPix pixelSpacingX] / [imageView scaleValue]];
 		}

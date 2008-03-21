@@ -8825,9 +8825,11 @@ END_CREATE_ROIS:
 		{
 			dst = src;
 			dst.data = malloc( dst.height * dst.rowBytes);
-			vImageHorizontalReflect_PlanarF ( &src, &dst, 0L);
+			if( dst.data)
+				vImageHorizontalReflect_PlanarF ( &src, &dst, 0L);
 			
 			if( src.data != [self fImage]) free( src.data);
+			if( dst.data == 0L) return 0L;
 			src = dst;
 		}
 		
@@ -8835,28 +8837,27 @@ END_CREATE_ROIS:
 		{
 			dst = src;
 			dst.data = malloc( dst.height * dst.rowBytes);
-			vImageVerticalReflect_PlanarF ( &src, &dst, 0L);
+			if( dst.data)
+				vImageVerticalReflect_PlanarF ( &src, &dst, 0L);
 			
 			if( src.data != [self fImage]) free( src.data);
+			if( dst.data == 0L) return 0L;
 			src = dst;
 		}
+		
+		// Scaling
 		
 		dst.height = [self pheight]*scale * pixelRatio;
 		dst.width = [self pwidth]*scale;
 		dst.rowBytes = dst.width*4;
 		dst.data = malloc( dst.height * dst.rowBytes);
-				
-		// Scaling
-		vImageScale_PlanarF
-		(
-			&src,
-			&dst,
-			0L,
-			kvImageHighQualityResampling
-		);
+		if( dst.data)
+			vImageScale_PlanarF( &src, &dst, 0L, kvImageHighQualityResampling );
 		
 		// Rotation
 		if( src.data != [self fImage]) free( src.data);
+		if( dst.data == 0L) return 0L;
+		
 		src = dst;
 		
 		dst.height = newH;
@@ -8864,16 +8865,11 @@ END_CREATE_ROIS:
 		dst.rowBytes = newW*4;
 		dst.data = malloc( dst.height * dst.rowBytes);
 		
-		vImageRotate_PlanarF
-		(
-			&src,
-			&dst,
-			0L,
-			-rot,
-			BACKGROUND,
-			kvImageHighQualityResampling
-		);
+		if( dst.data)
+			vImageRotate_PlanarF( &src, &dst, 0L, -rot, BACKGROUND, kvImageHighQualityResampling );
+			
 		if( src.data != [self fImage]) free( src.data);
+		if( dst.data == 0L) return 0L;
 	}
 	
 	DCMPix *newPix = [[self copy] autorelease];
@@ -8907,6 +8903,7 @@ END_CREATE_ROIS:
 - (DCMPix*) renderInRectSize:(NSSize) rectSize atPosition:(NSPoint) oo rotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF;
 {
 	DCMPix *newPix = [self renderWithRotation: r scale: scale xFlipped: xF yFlipped:  yF];
+	if( newPix == 0L) return 0L;
 	
 	vImage_Buffer src;
 	vImage_Buffer dst;
@@ -8920,17 +8917,21 @@ END_CREATE_ROIS:
 	dst.width = rectSize.width;
 	dst.rowBytes = dst.width*4;
 	dst.data = malloc( dst.height * dst.rowBytes);
-		
+	
 	if( xF) oo.x = - oo.x;
 	if( yF) oo.y = - oo.y;
-		
+	
+	oo = [self rotatePoint: oo aroundPoint:NSMakePoint( 0, 0) angle: -r*deg2rad];
+	
 	// zero coordinate is in the center of the view
 	NSPoint cov = NSMakePoint( rectSize.width/2 + oo.x - [newPix pwidth]/2, rectSize.height/2 - oo.y - [newPix pheight]/2);
 	
 	cov.x = (int) cov.x;
 	cov.y = (int) cov.y;
 	
-	[self drawImage: &src inImage: &dst offset: cov background: BACKGROUND];
+	if( dst.data)
+		[self drawImage: &src inImage: &dst offset: cov background: BACKGROUND];
+	else return 0L;
 	
 	DCMPix *rPix = [[newPix copy] autorelease];
 	

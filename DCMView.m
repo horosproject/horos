@@ -720,18 +720,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //	[im writeToFile: @"test.tiff" atomically: YES];
 	
 //	DCMPix *newPix = [curDCM renderWithRotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
-	DCMPix *newPix = [curDCM renderInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
-	
-	[newPix freefImageWhenDone: NO];
-	
-	NSData	*newData = [NSData dataWithBytesNoCopy: [newPix fImage] length: [newPix pheight]*[newPix pwidth]*sizeof(float) freeWhenDone:YES];
-	[ViewerController newWindow
-		: [NSMutableArray arrayWithObject: newPix]
-		: [NSMutableArray arrayWithObject: [newPix imageObj]]
-		: newData];
-	
-	
-	return;
+//	DCMPix *newPix = [curDCM renderInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
+//	
+//	[newPix freefImageWhenDone: NO];
+//	
+//	NSData	*newData = [NSData dataWithBytesNoCopy: [newPix fImage] length: [newPix pheight]*[newPix pwidth]*sizeof(float) freeWhenDone:YES];
+//	[ViewerController newWindow
+//		: [NSMutableArray arrayWithObject: newPix]
+//		: [NSMutableArray arrayWithObject: [newPix imageObj]]
+//		: newData];
+//	
+//	
+//	return;
 	
 	if ([self is2DViewer] == YES)
 	{
@@ -7693,7 +7693,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		else // Screen Capture in 16 bit BW
 		{
-			DCMPix *im = [curDCM renderInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
+			float s = [self scaleValue];
+			NSPoint o = [self origin];
+			
+			NSSize destRectSize = [self frame].size;
+			
+			// We want the full resolution, not less, not more
+			destRectSize.width /= s;
+			destRectSize.height /= s;
+			o.x /= s;
+			o.y /= s;
+			s = 1;
+			
+			DCMPix *im = [curDCM renderInRectSize: destRectSize atPosition:o rotation: [self rotation] scale: s xFlipped: xFlipped yFlipped: yFlipped];
 			
 			*width = [im pwidth];
 			*height = [im pheight];
@@ -7715,7 +7727,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			srcf.data = [im fImage];
 			dst8.data = buf;
 			
-			vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);
+			if( buf)
+				vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);
 		}
 	}
 	else // Pixels contained in memory  -> only RGB or 16 bits data
