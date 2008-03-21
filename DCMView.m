@@ -5953,8 +5953,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		NSDictionary *annotationsDictionary = curDCM.annotationsDictionary;
 		
-		[curDCM loadCustomImageAnnotationsPapyLink: 0 DCMLink: 0];
-		
 		NSMutableDictionary *xRasterInit = [NSMutableDictionary dictionary];
 		[xRasterInit setObject:[NSNumber numberWithInt:6] forKey:@"TopLeft"];
 		[xRasterInit setObject:[NSNumber numberWithInt:6] forKey:@"MiddleLeft"];

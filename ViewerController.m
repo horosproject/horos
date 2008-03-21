@@ -3131,7 +3131,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 	else matrixPreviewBuilt = YES;
 	
 	NSManagedObject			*study = [curImage valueForKeyPath:@"series.study"];
-	if( study == 0L) return;
+	if( study == 0L)
+	{
+		[previewMatrix renewRows: 0 columns: 0];
+		[previewMatrix sizeToCells];
+		return;
+	}
 	
 	// FIND ALL STUDIES of this patient
 	NSLog(@"buildMatrixPreview");

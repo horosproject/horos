@@ -2752,9 +2752,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 	}
 }
 
-
-	
-
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize
 {
 	//if( pixelSize != 32) NSLog( @"Only floating images are supported...");
@@ -2796,47 +2793,47 @@ BOOL gUSEPAPYRUSDCMPIX;
 		else
 		{
 			switch( pixelSize)
-		{
-			case 7:		// ARGB
-				isRGB = YES;
-			case 32:	// FLOAT
-				fImage = malloc(width*height*sizeof(float));
-				long i;
-				
-				if( im)
-				{
-					if( xDim != width)
+			{
+				case 7:		// ARGB
+					isRGB = YES;
+				case 32:	// FLOAT
+					fImage = malloc(width*height*sizeof(float));
+					long i;
+					
+					if( im)
 					{
-						//	NSLog(@"Allocate a new fImage");
-						for( i =0; i < height; i++)
+						if( xDim != width)
 						{
-							memcpy( fImage + i*width, im + i*xDim, width*sizeof(float));
+							//	NSLog(@"Allocate a new fImage");
+							for( i =0; i < height; i++)
+							{
+								memcpy( fImage + i*width, im + i*xDim, width*sizeof(float));
+							}
+						}
+						else memcpy( fImage, im, width*height*sizeof(float));
+					}
+					break;
+					
+					case 8:		// RGBA -> argb
+					//rowBytes = width * 4;
+					fImage = malloc(width*height*4);
+					
+					if( im)
+					{
+						unsigned char *src = (unsigned char*) im, *dst = (unsigned char*) fImage;
+						
+						for( i =0; i < height*width*4; i+= 4)
+						{
+							dst[ i] = src[ i+3];
+							dst[ i+1] = src[ i];
+							dst[ i+2] = src[ i+1];
+							dst[ i+3] = src[ i+2];
 						}
 					}
-					else memcpy( fImage, im, width*height*sizeof(float));
-				}
-				break;
-				
-				case 8:		// RGBA -> argb
-				//rowBytes = width * 4;
-				fImage = malloc(width*height*4);
-				
-				if( im)
-				{
-					unsigned char *src = (unsigned char*) im, *dst = (unsigned char*) fImage;
 					
-					for( i =0; i < height*width*4; i+= 4)
-					{
-						dst[ i] = src[ i+3];
-						dst[ i+1] = src[ i];
-						dst[ i+2] = src[ i+1];
-						dst[ i+3] = src[ i+2];
-					}
-				}
-				
-				isRGB = YES;
-				break;
-		}
+					isRGB = YES;
+					break;
+			}
 		}
 		
 		originX = oX;
@@ -2849,7 +2846,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 		sliceLocation = 0;
 		sliceThickness = 0;
 		
-		memset( orientation, 0, sizeof orientation );
+		memset( orientation, 0, sizeof orientation);
+		
+		[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:nil];
     }
     return self;
 }
