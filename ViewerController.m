@@ -936,7 +936,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[[newPixList lastObject] setFrameNo: [newPixList count]-1];
 				[[newPixList lastObject] setID: [newPixList count]-1];
 				
-				[newDcmList addObject: [fileList[ j] objectAtIndex: 0] ];
+				if( [fileList[ j] count])
+					[newDcmList addObject: [fileList[ j] objectAtIndex: 0]];
 				
 				if( directionm == 0)		// X - RESLICE
 				{
@@ -1850,23 +1851,27 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 	}
 	
-	NSManagedObject	*curImage = [fileList[ curMovieIndex] objectAtIndex:0];
-	
-	if( [[[curImage valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"])
-		[[self window] setTitle: NSLocalizedString( @"No images", 0L)];
-	else
+	if( [fileList[ curMovieIndex] count])
 	{
-		NSDate	*bod = [curImage valueForKeyPath:@"series.study.dateOfBirth"];
+		NSManagedObject	*curImage = [fileList[ curMovieIndex] objectAtIndex:0];
 		
-		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
+		if( [[[curImage valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"])
+			[[self window] setTitle: NSLocalizedString( @"No images", 0L)];
+		else
 		{
-			if( [curImage valueForKeyPath:@"series.study.dateOfBirth"])
-				[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [BrowserController DateOfBirthFormat: bod], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
-			else
-				[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
-		}	
-		else [[self window] setTitle: [NSString stringWithFormat: @"%@ (%@)%@", [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
+			NSDate	*bod = [curImage valueForKeyPath:@"series.study.dateOfBirth"];
+			
+			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
+			{
+				if( [curImage valueForKeyPath:@"series.study.dateOfBirth"])
+					[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [BrowserController DateOfBirthFormat: bod], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
+				else
+					[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
+			}	
+			else [[self window] setTitle: [NSString stringWithFormat: @"%@ (%@)%@", [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
+		}
 	}
+	else [[self window] setTitle: @"Viewer"];
 	
 	[imageView checkCursor];	// <- To avoid a stupid bug between setTitle and NSTrackingArea..... 
 }
@@ -4920,6 +4925,8 @@ static ViewerController *draggedController = 0L;
 
 - (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
 {
+	if( [d count] == 0) d = 0L;
+	
 	[AppController displayImportantNotice: self];
 	
 	self = [super initWithWindowNibName:@"Viewer"];
@@ -5033,8 +5040,6 @@ static ViewerController *draggedController = 0L;
 
 - (void) dealloc
 {
-	long	i;
-	
 	[self ActivateBlending: 0L];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
@@ -5053,12 +5058,10 @@ static ViewerController *draggedController = 0L;
 	[seriesView release];
 	
 	[exportDCM release];
-
-	NSLog(@"ViewController dealloc Start");
 	
 	if( USETOOLBARPANEL)
 	{
-		for( i = 0 ; i < [[NSScreen screens] count]; i++)
+		for( int i = 0 ; i < [[NSScreen screens] count]; i++)
 			[toolbarPanel[ i] toolbarWillClose : toolbar];
 	}
 	
@@ -5075,21 +5078,20 @@ static ViewerController *draggedController = 0L;
 	if( numberOf2DViewer == 0)
 	{
 		USETOOLBARPANEL = NO;
-		for( i = 0; i < [[NSScreen screens] count]; i++)
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
 			[[toolbarPanel[ i] window] orderOut:self];
 	}
 	
-//	for( i = 0; i < maxMovieIndex; i++)
+//	for( int i = 0; i < maxMovieIndex; i++)
 //	{
 //		[self saveROI: i];
 //	}
 //	
-//	int x, z;
-//	for( i = 0; i < maxMovieIndex; i++)
+//	for( int i = 0; i < maxMovieIndex; i++)
 //	{
-//		for( x = 0; x < [roiList[ i] count] ; x++)
+//		for( int x = 0; x < [roiList[ i] count] ; x++)
 //		{
-//			for( z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
+//			for( int z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
 //				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: 0L];
 //		}
 //		[roiList[ i] release];
@@ -5119,22 +5121,19 @@ static ViewerController *draggedController = 0L;
 	[processorsLock release];
 	[retainedToolbarItems release];
 	
+	[toolbar release];
     [super dealloc];
-
+	
 //	[appController tileWindows: 0L];	<- We cannot do this, because:
 //	This is very important, or if we have a queue of closing windows, it will crash....
+	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 	{
 		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:0L];
 		[appController performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
 	}
-		
-	NSLog(@"ViewController dealloc End");
 	
-//	[[IMAVManager sharedAVManager] setVideoDataSource:nil];
-//	[[IMService notificationCenter] removeObserver:self];
-
-	[toolbar release];
+	NSLog(@"ViewController dealloc");
 }
 
 - (void) selectFirstTilingView
@@ -5213,7 +5212,7 @@ static ViewerController *draggedController = 0L;
 	if( [imageView flippedData]) index2compare = [fileList[ 0] count]-1;
 	else index2compare = 0;
 	
-	if( [fileList[ 0] objectAtIndex: index2compare] == [d objectAtIndex: 0])
+	if( index2compare >= 0 && [d count] > 0 && [fileList[ 0] count] > 0 && [fileList[ 0] objectAtIndex: index2compare] == [d objectAtIndex: 0])
 	{
 		NSLog( @"same series");
 		if( [d count] >= [fileList[ 0] count])
@@ -5254,9 +5253,9 @@ static ViewerController *draggedController = 0L;
 		[[pixList[0] objectAtIndex: i] setArrayPix: pixList[0] :i];
 	}
 	
-
-   [d retain];
-    fileList[ 0] = d;
+	if( [d count] == 0) d = 0L;
+	[d retain];
+	fileList[ 0] = d;
 
 	// Prepare roiList
 	roiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
@@ -5266,8 +5265,8 @@ static ViewerController *draggedController = 0L;
 	}
 	[self loadROI:0];
 	
- 	
 	[imageView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
+	
 	if( sameSeries)
 	{
 		[imageView setIndex: imageIndex];
@@ -5434,7 +5433,6 @@ static ViewerController *draggedController = 0L;
 		if( blendingController) [self ActivateBlending: 0L];
 	}
 	
-		
 	[previousStudyInstanceUID release];
 	[previousPatientUID release];
 	
@@ -14127,7 +14125,6 @@ int i,j,l;
 	return nil;
 }
 
-
 -(IBAction) endExportDICOMFileSettings:(id) sender
 {
 	long i, curImage;
@@ -14335,6 +14332,13 @@ int i,j,l;
 {
 	[dcmFormat setEnabled: YES];
 	[dcmAllViewers setState: NSOffState];
+	
+	if( [[imageView curDCM] isRGB])
+	{
+		if( [dcmFormat selectedTag] == 2) [dcmFormat selectCellWithTag: 1];
+		[[dcmFormat cellWithTag: 2] setEnabled: NO];
+	}
+	else [[dcmFormat cellWithTag: 2] setEnabled: YES];
 	
 	if( [[[imageView seriesObj] valueForKey: @"keyImages"] count]) [[dcmSelection cellWithTag: 2] setEnabled: YES];
 	else [[dcmSelection cellWithTag: 2] setEnabled: NO];

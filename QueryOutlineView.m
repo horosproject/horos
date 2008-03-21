@@ -19,6 +19,11 @@
 
 - (void)keyDown:(NSEvent *)event
 {
-	[[[self window] windowController] keyDown: event];
+	unichar c = [[event characters] characterAtIndex:0];
+	 
+	if( c >= 0xF700 && c <= 0xF8FF) // Functions keys
+		[super keyDown: event];
+	else
+		[[[self window] windowController] keyDown: event];
 }
 @end

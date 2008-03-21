@@ -2752,22 +2752,50 @@ BOOL gUSEPAPYRUSDCMPIX;
 	}
 }
 
+- (void) initParameters
+{
+	[DCMPix checkUserDefaults: NO];
+	
+	cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
+		
+	//---------------------------------various
+	pixelRatio = 1.0;
+	checking = [[NSLock alloc] init];
+	stack = 2;
+	decayFactor = 1.0;
+	slope = 1.0;
+	//----------------------------------angio
+	subtractedfPercent = 1.0;
+	subtractedfZ = 0.8;
+	subtractedfZero = 0.8;
+	subtractedfGamma = 2.0;
+	
+	maskID = 1;
+	
+	//----------------------------------orientation		
+	orientation[ 0] = 1;
+	orientation[ 1] = 0;
+	orientation[ 2] = 0;
+	orientation[ 3] = 0;
+	orientation[ 4] = 1;
+	orientation[ 5] = 0;
+	// Compute normal vector
+	orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
+	orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
+	orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
+	
+	annotationsDictionary = [[NSMutableDictionary dictionary] retain];
+}
+
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize
 {
 	//if( pixelSize != 32) NSLog( @"Only floating images are supported...");
 	if( self = [super init])
     {
-		[DCMPix checkUserDefaults: NO];
-		
-		cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
-		annotationsDictionary = [[NSMutableDictionary dictionary] retain];
+		[self initParameters];
 		
 		generated = YES;
-		checking = [[NSLock alloc] init];
-		stack = 2;
 		imTot = 1;
-		decayFactor = 1.0;
-		slope  = 1.0;
 		
 		height = yDim;
 		height /= 2;
@@ -2862,59 +2890,31 @@ BOOL gUSEPAPYRUSDCMPIX;
 	return  [self myinit:[entity valueForKey:@"completePath"] :0 :1 :0L :0L :0L isBonjour:NO imageObj: entity];
 }
 
- - (id)initWithContentsOfFile: (NSString *)file {
- return  [self myinit:file :0 :1 :0L :0L :0L isBonjour:NO imageObj: 0L];
+ - (id)initWithContentsOfFile: (NSString *)file
+{
+	return  [self myinit:file :0 :1 :0L :0L :0L isBonjour:NO imageObj: 0L];
 }
 
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO
 {	
 	// doesn't load pix data, only initializes instance variables
-	if( hello == NO)
+	if( hello == NO && s != 0L)
 		if( [[NSFileManager defaultManager] fileExistsAtPath:s] == NO) return 0L;
 	
     if( self = [super init])
     {
-		[DCMPix checkUserDefaults: NO];
-		
-		cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
-		
 		//-------------------------received parameters
-		srcFile = s;
+		srcFile = [s retain];
+		imageObj = [iO retain];
+		
 		imID = pos;
 		imTot = tot;
 		fExternalOwnedImage = ptr;
 		frameNo = f;
 		serieNo = ss;
 		isBonjour = hello;
-		imageObj = [iO retain];
 		
-		//---------------------------------various
-		pixelRatio = 1.0;
-		checking = [[NSLock alloc] init];
-		stack = 2;
-		//----------------------------------angio
-		subtractedfPercent = 1.0;
-		subtractedfZ = 0.8;
-		subtractedfZero = 0.8;
-		subtractedfGamma = 2.0;
-		
-		maskID = 1;
-		
-		//----------------------------------orientation		
-		orientation[ 0] = 1;
-		orientation[ 1] = 0;
-		orientation[ 2] = 0;
-		orientation[ 3] = 0;
-		orientation[ 4] = 1;
-		orientation[ 5] = 0;
-		// Compute normal vector
-		orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
-		orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
-		orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
-		
-		[srcFile retain];
-		
-		annotationsDictionary = [[NSMutableDictionary dictionary] retain];
+		[self initParameters];
     }
     return self;
 }
@@ -2988,6 +2988,26 @@ BOOL gUSEPAPYRUSDCMPIX;
 - (id) copyWithZone:(NSZone *)zone
 {
 	DCMPix *copy = [[[self class] allocWithZone: zone] myinit:self->srcFile :self->imID :self->imTot :self->fExternalOwnedImage :self->frameNo :self->serieNo];
+	
+	if( copy == 0L)
+	{
+		copy = [[[self class] allocWithZone: zone] init];
+		{
+			//-------------------------received parameters
+			copy->srcFile = [self->srcFile retain];
+			copy->imageObj = [self->imageObj retain];
+			copy->imID = self->imID;
+			copy->imTot = self->imTot;
+			copy->fExternalOwnedImage = self->fExternalOwnedImage;
+			copy->frameNo = self->frameNo;
+			copy->serieNo = self->serieNo;
+			copy->isBonjour = self->isBonjour;
+			
+			[self initParameters];
+		}
+	}
+	
+	if( copy == 0L) return 0L;
 	
 	[copy->cachedPapyGroups release];
 	[copy->imageObj release];
