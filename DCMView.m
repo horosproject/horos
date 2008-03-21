@@ -1277,25 +1277,21 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	[self copy:sender];
 	
-	long	i;
-	BOOL	done = NO;
-	NSTimeInterval groupID;
-
 	[[self windowController] addToUndoQueue:@"roi"];
 	
-	for( i = 0; i < [curRoiList count]; i++)
+	for( long i = 0; i < curRoiList.count; i++ )
 	{
-		if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+		ROI *roi = [curRoiList objectAtIndex:i];
+		if( roi.ROImode == ROI_selected)
 		{
-			groupID = [[curRoiList objectAtIndex:i] groupID];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: roi userInfo: nil];
 			[curRoiList removeObjectAtIndex:i];
 			i--;
-			if(groupID!=0.0)[self deleteROIGroupID:groupID];
+			if( roi.groupID !=0.0 ) [self deleteROIGroupID: roi.groupID];
 		}
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: 0L userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: nil userInfo: nil];
 	
 	[self setNeedsDisplay:YES];
 }
@@ -1990,38 +1986,35 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[[self windowController] addToUndoQueue:@"roi"];
 			
 			// NE PAS OUBLIER DE CHANGER EGALEMENT LE CUT !
-			long	i;
-			BOOL	done = NO;
-			NSTimeInterval groupID;
 			
-			for( i = 0; i < [curRoiList count]; i++)
+			for( long i = 0; i < curRoiList.count; i++)
 			{
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selectedModify || [[curRoiList objectAtIndex:i] ROImode] == ROI_drawing)
+				ROI *roi = [curRoiList objectAtIndex:i];
+				if( roi.ROImode == ROI_selectedModify || roi.ROImode == ROI_drawing)
 				{
-					if( [[curRoiList objectAtIndex:i] deleteSelectedPoint] == NO)
+					if( roi.deleteSelectedPoint == NO )
 					{
-						groupID = [[curRoiList objectAtIndex:i] groupID];
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:roi userInfo: nil];
 						[curRoiList removeObjectAtIndex:i];
 						i--;
-						if(groupID!=0.0)[self deleteROIGroupID:groupID];
+						if( roi.groupID != 0.0 ) [self deleteROIGroupID:roi.groupID];
 					}
 				}
 			}
 			
-			for( i = 0; i < [curRoiList count]; i++)
+			for( long i = 0; i < curRoiList.count; i++)
 			{
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+				ROI *roi = [curRoiList objectAtIndex:i];
+				if( roi.ROImode == ROI_selected )
 				{
-					groupID = [[curRoiList objectAtIndex:i] groupID];
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: roi userInfo: nil];
 					[curRoiList removeObjectAtIndex:i];
 					i--;
-					if(groupID!=0.0)[self deleteROIGroupID:groupID];
+					if( roi.groupID != 0.0 ) [self deleteROIGroupID: roi.groupID];
 				}
 			}
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: 0L userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: nil userInfo: nil];
 			
 			[self setNeedsDisplay: YES];
 		}
@@ -2256,9 +2249,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void)deleteROIGroupID:(NSTimeInterval)groupID {
 	
-	for( int i=0; i<[curRoiList count]; i++ ) {
-		if([[curRoiList objectAtIndex:i] groupID] == groupID) {
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"removeROI" object:[curRoiList objectAtIndex:i] userInfo:nil];
+	for( long i=0; i < curRoiList.count; i++ ) {
+		ROI *roi = [curRoiList objectAtIndex:i];
+		if( roi.groupID == groupID) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"removeROI" object:roi userInfo:nil];
 			[curRoiList removeObjectAtIndex:i];
 			i--;
 		}
