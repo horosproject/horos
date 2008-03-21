@@ -42,24 +42,19 @@
 	
 	NSMutableArray			*roiNames;
 }
-
-@property(readonly) ROI *curROI;
-@property(readonly) BOOL allWithSameName;
-
-- (id) initWithROI: (ROI*) iroi :(ViewerController*) c;
-- (void) setROI: (ROI*) iroi :(ViewerController*) c;
-
-// Actions
 - (IBAction)acceptSheet:(id)sender;
 - (IBAction) recalibrate:(id) sender;
+- (id) initWithROI: (ROI*) iroi :(ViewerController*) c;
 - (IBAction) exportData:(id) sender;
 - (IBAction) histogram:(id) sender;
 - (IBAction) plot:(id) sender;
+- (ROI*) curROI;
 - (IBAction) setColor:(NSColorWell*) sender;
 - (IBAction) setThickness:(NSSlider*) sender;
 - (IBAction) setOpacity:(NSSlider*) sender;
 - (IBAction) setTextData:(id) sender;
 - (IBAction) roiSaveCurrent: (id) sender;
-- (IBAction) deleteROI:(id) sender;
+- (void) setROI: (ROI*) iroi :(ViewerController*) c;
+- (BOOL) allWithSameName;
 
 @end

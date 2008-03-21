@@ -1277,21 +1277,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	[self copy:sender];
 	
+	long	i;
+	BOOL	done = NO;
+	NSTimeInterval groupID;
+
 	[[self windowController] addToUndoQueue:@"roi"];
 	
-	for( long i = 0; i < curRoiList.count; i++ )
+	for( i = 0; i < [curRoiList count]; i++)
 	{
-		ROI *roi = [curRoiList objectAtIndex:i];
-		if( roi.ROImode == ROI_selected)
+		if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
 		{
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: roi userInfo: nil];
+			groupID = [[curRoiList objectAtIndex:i] groupID];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
 			[curRoiList removeObjectAtIndex:i];
 			i--;
-			if( roi.groupID !=0.0 ) [self deleteROIGroupID: roi.groupID];
+			if(groupID!=0.0)[self deleteROIGroupID:groupID];
 		}
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: nil userInfo: nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: 0L userInfo: 0L];
 	
 	[self setNeedsDisplay:YES];
 }
@@ -1986,35 +1990,38 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[[self windowController] addToUndoQueue:@"roi"];
 			
 			// NE PAS OUBLIER DE CHANGER EGALEMENT LE CUT !
+			long	i;
+			BOOL	done = NO;
+			NSTimeInterval groupID;
 			
-			for( long i = 0; i < curRoiList.count; i++)
+			for( i = 0; i < [curRoiList count]; i++)
 			{
-				ROI *roi = [curRoiList objectAtIndex:i];
-				if( roi.ROImode == ROI_selectedModify || roi.ROImode == ROI_drawing)
+				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selectedModify || [[curRoiList objectAtIndex:i] ROImode] == ROI_drawing)
 				{
-					if( roi.deleteSelectedPoint == NO )
+					if( [[curRoiList objectAtIndex:i] deleteSelectedPoint] == NO)
 					{
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:roi userInfo: nil];
+						groupID = [[curRoiList objectAtIndex:i] groupID];
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
 						[curRoiList removeObjectAtIndex:i];
 						i--;
-						if( roi.groupID != 0.0 ) [self deleteROIGroupID:roi.groupID];
+						if(groupID!=0.0)[self deleteROIGroupID:groupID];
 					}
 				}
 			}
 			
-			for( long i = 0; i < curRoiList.count; i++)
+			for( i = 0; i < [curRoiList count]; i++)
 			{
-				ROI *roi = [curRoiList objectAtIndex:i];
-				if( roi.ROImode == ROI_selected )
+				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
 				{
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: roi userInfo: nil];
+					groupID = [[curRoiList objectAtIndex:i] groupID];
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
 					[curRoiList removeObjectAtIndex:i];
 					i--;
-					if( roi.groupID != 0.0 ) [self deleteROIGroupID: roi.groupID];
+					if(groupID!=0.0)[self deleteROIGroupID:groupID];
 				}
 			}
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: nil userInfo: nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: 0L userInfo: 0L];
 			
 			[self setNeedsDisplay: YES];
 		}
@@ -2249,10 +2256,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void)deleteROIGroupID:(NSTimeInterval)groupID {
 	
-	for( long i=0; i < curRoiList.count; i++ ) {
-		ROI *roi = [curRoiList objectAtIndex:i];
-		if( roi.groupID == groupID) {
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"removeROI" object:roi userInfo:nil];
+	for( int i=0; i<[curRoiList count]; i++ ) {
+		if([[curRoiList objectAtIndex:i] groupID] == groupID) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"removeROI" object:[curRoiList objectAtIndex:i] userInfo:nil];
 			[curRoiList removeObjectAtIndex:i];
 			i--;
 		}
@@ -5946,7 +5952,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		
 		NSDictionary *annotationsDictionary = curDCM.annotationsDictionary;
-
+		
+		[curDCM loadCustomImageAnnotationsPapyLink: 0 DCMLink: 0];
+		
 		NSMutableDictionary *xRasterInit = [NSMutableDictionary dictionary];
 		[xRasterInit setObject:[NSNumber numberWithInt:6] forKey:@"TopLeft"];
 		[xRasterInit setObject:[NSNumber numberWithInt:6] forKey:@"MiddleLeft"];

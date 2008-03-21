@@ -923,7 +923,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 - (void) computeMax:(float*) fResult pos:(int) pos threads:(int) threads object: (DCMPix*) o
 {
 	float				*fNext = NULL;
-	long				from, to, size = o.pheight * o.pwidth;
+	long				from, to, size = [o pheight] * [o pwidth];
 	
 	from = (pos * size) / threads;
 	to = ((pos+1) * size) / threads;
@@ -995,14 +995,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		int startLine = [[dict valueForKey:@"start"] intValue];
 		int endLine = [[dict valueForKey:@"end"] intValue];
 		
-		register int			ii = (endLine - startLine) * o.pwidth;
-		register unsigned char	*dst8Ptr = (unsigned char*) o.baseAddr + startLine * o.pwidth;
+		register int			ii = (endLine - startLine) * [o pwidth];
+		register unsigned char	*dst8Ptr = (unsigned char*) [o baseAddr] + startLine * [o pwidth];
 		register float			*src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
-		register float			from = o.wl - o.ww/2.;
-		register float			ratio = 4096. / o.ww;
-		register float			*tfPtr = o.transferFunctionPtr;
+		register float			from = [o wl] - [o ww]/2.;
+		register float			ratio = 4096. / [o ww];
+		register float			*tfPtr = [o transferFunctionPtr];
 		
-		src32Ptr += startLine * o.pwidth;
+		src32Ptr += startLine * [o pwidth];
 		
 		if( tfPtr)
 		{
@@ -1174,10 +1174,10 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 + (NSPoint) originDeltaBetween:(DCMPix*) pix1 And:(DCMPix*) pix2
 {
-	double destPixelSpacingX = pix1.pixelSpacingX;
-	double destPixelSpacingY = pix1.pixelSpacingY;
-	double senderPixelSpacingX = pix2.pixelSpacingX;
-	double senderPixelSpacingY = pix2.pixelSpacingY;
+	double destPixelSpacingX = [pix1 pixelSpacingX];
+	double destPixelSpacingY = [pix1 pixelSpacingY];
+	double senderPixelSpacingX = [pix2 pixelSpacingX];
+	double senderPixelSpacingY = [pix2 pixelSpacingY];
 	
 	
 	if( destPixelSpacingX == 0 || destPixelSpacingY == 0 || senderPixelSpacingX == 0 || senderPixelSpacingY == 0)
@@ -1185,72 +1185,72 @@ BOOL gUSEPAPYRUSDCMPIX;
 		return NSMakePoint( 0, 0);
 	}
 	
-	double destWidth = pix1.pwidth;
-	double destHeight =pix1.pheight;
+	double destWidth = [pix1 pwidth];
+	double destHeight =[pix1 pheight];
 	double vectorP1[ 9];
 	double destOrigin[ 3];
 	
 	[pix1 orientationDouble: vectorP1];
-	destOrigin[ 0] = pix1.originX * vectorP1[ 0] + pix1.originY * vectorP1[ 1] + pix1.originZ * vectorP1[ 2];
-	destOrigin[ 1] = pix1.originX * vectorP1[ 3] + pix1.originY * vectorP1[ 4] + pix1.originZ * vectorP1[ 5];
-	destOrigin[ 2] = pix1.originX * vectorP1[ 6] + pix1.originY * vectorP1[ 7] + pix1.originZ * vectorP1[ 8];
+	destOrigin[ 0] = [pix1  originX] * vectorP1[ 0] + [pix1  originY] * vectorP1[ 1] + [pix1  originZ] * vectorP1[ 2];
+	destOrigin[ 1] = [pix1  originX] * vectorP1[ 3] + [pix1  originY] * vectorP1[ 4] + [pix1  originZ] * vectorP1[ 5];
+	destOrigin[ 2] = [pix1  originX] * vectorP1[ 6] + [pix1  originY] * vectorP1[ 7] + [pix1  originZ] * vectorP1[ 8];
 	
 	double vectorP2[ 9];
 	double senderOrigin[ 3];
 	
 	[pix2 orientationDouble: vectorP2];
-	senderOrigin[ 0] = pix2.originX * vectorP2[ 0] + pix2.originY * vectorP2[ 1] + pix2.originZ * vectorP2[ 2];
-	senderOrigin[ 1] = pix2.originX * vectorP2[ 3] + pix2.originY * vectorP2[ 4] + pix2.originZ * vectorP2[ 5];
-	senderOrigin[ 2] = pix2.originX * vectorP2[ 6] + pix2.originY * vectorP2[ 7] + pix2.originZ * vectorP2[ 8];
+	senderOrigin[ 0] = [pix2  originX] * vectorP2[ 0] + [pix2  originY] * vectorP2[ 1] + [pix2  originZ] * vectorP2[ 2];
+	senderOrigin[ 1] = [pix2  originX] * vectorP2[ 3] + [pix2  originY] * vectorP2[ 4] + [pix2  originZ] * vectorP2[ 5];
+	senderOrigin[ 2] = [pix2  originX] * vectorP2[ 6] + [pix2  originY] * vectorP2[ 7] + [pix2  originZ] * vectorP2[ 8];
 	
 	NSPoint offset;
 
-	offset.x = destOrigin[ 0] + destPixelSpacingX * destWidth/2 - (senderOrigin[ 0] + senderPixelSpacingX * pix2.pwidth/2);
-	offset.y = destOrigin[ 1] + destPixelSpacingY * destHeight/2 - (senderOrigin[ 1] + senderPixelSpacingY * pix2.pheight/2);
+	offset.x = destOrigin[ 0] + destPixelSpacingX * destWidth/2 - (senderOrigin[ 0] + senderPixelSpacingX * [pix2 pwidth]/2);
+	offset.y = destOrigin[ 1] + destPixelSpacingY * destHeight/2 - (senderOrigin[ 1] + senderPixelSpacingY * [pix2 pheight]/2);
 	
 	offset.x /= senderPixelSpacingX;
 	offset.y /= senderPixelSpacingY;
 	
-	offset.y *= pix2.pixelRatio;
+	offset.y *= [pix2 pixelRatio];
 	
 	return offset;
 }
 
 + (NSImage*) resizeIfNecessary:(NSImage*) currentImage dcmPix: (DCMPix*) dcmPix
 {
-	NSRect sourceRect = NSMakeRect(0.0, 0.0, currentImage.size.width, currentImage.size.height);
+	NSRect sourceRect = NSMakeRect(0.0, 0.0, [currentImage size].width, [currentImage size].height);
 	NSRect imageRect;
 	
-	if(	currentImage.size.width > 512 &&
-	    currentImage.size.height > 512)
+	if(	[currentImage size].width > 512 &&
+	   [currentImage size].height > 512)
 	{
 		// Rescale image if resolution is too high, compared to the original resolution
 		
 		float MAXSIZE = 1.3;
 		
-		int minWidth = dcmPix.pwidth*MAXSIZE;
-		int minHeight = dcmPix.pheight*MAXSIZE;
+		int minWidth = [dcmPix pwidth]*MAXSIZE;
+		int minHeight = [dcmPix pheight]*MAXSIZE;
 		
-		if( minWidth < 512) MAXSIZE = 512 / dcmPix.pwidth;
-		if( minHeight < 512) MAXSIZE = 512 / dcmPix.pheight;
+		if( minWidth < 512) MAXSIZE = 512 / [dcmPix pwidth];
+		if( minHeight < 512) MAXSIZE = 512 / [dcmPix pheight];
 		
-		minWidth = dcmPix.pwidth*MAXSIZE;
-		minHeight = dcmPix.pheight*MAXSIZE;
+		minWidth = [dcmPix pwidth]*MAXSIZE;
+		minHeight = [dcmPix pheight]*MAXSIZE;
 		
-		if(	currentImage.size.width > minWidth &&
-		    currentImage.size.height > minHeight)
+		if(		[currentImage size].width > minWidth &&
+		   [currentImage size].height > minHeight)
 		{
-			if( currentImage.size.width/dcmPix.pwidth < currentImage.size.height / dcmPix.pheight )
+			if( [currentImage size].width/[dcmPix pwidth] < [currentImage size].height / [dcmPix pheight])
 			{
-				float ratio = currentImage.size.width / (minWidth);
-				imageRect = NSMakeRect(0.0, 0.0, (int) (currentImage.size.width/ratio), (int) (currentImage.size.height/ratio));
+				float ratio = [currentImage size].width / (minWidth);
+				imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
 				
 				NSLog( @"ratio: %f", ratio);
 			}
 			else
 			{
-				float ratio = currentImage.size.height / (minHeight);
-				imageRect = NSMakeRect(0.0, 0.0, (int) (currentImage.size.width/ratio), (int) (currentImage.size.height/ratio));
+				float ratio = [currentImage size].height / (minHeight);
+				imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
 				
 				NSLog( @"ratio: %f", ratio);
 			}
@@ -1263,7 +1263,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			[currentImage drawInRect: imageRect fromRect: sourceRect operation: NSCompositeCopy fraction: 1.0];
 			[compositingImage unlockFocus];
 			
-			NSLog( @"New Size: %f %f", compositingImage.size.width, compositingImage.size.height);
+			NSLog( @"New Size: %f %f", [compositingImage size].width, [compositingImage size].height);
 			
 			return [compositingImage autorelease];
 		}
@@ -1275,12 +1275,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 - (NSImage*) image
 {
 	unsigned char		*buf = 0L;
+	long				i;
 	NSImage				*imageRep = 0L;
 	NSBitmapImageRep	*rep;
 	
 	if( [self isRGB] == YES)
 	{
-		long i = width * height * 3;
+		i = width * height * 3;
 		buf = malloc( i);
 		if( buf)
 		{
@@ -1566,7 +1567,7 @@ BOOL gUSEPAPYRUSDCMPIX;
     [self CheckLoad];
 	
 	pts = (NSPoint*) malloc( ptsTemp.count * sizeof(NSPoint) );
-	no = ptsTemp.count;
+	no = [ptsTemp count];
 	for( long i = 0; i < no; i++ ) {
 		pts[ i] = [[ptsTemp objectAtIndex: i] point];
 		//	pts[ i].x+=1.5;
@@ -1835,9 +1836,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 	unsigned char*	map = 0L;
 	float*			tempImage = 0L;
 	
-	if( roi.type == tCPolygon || roi.type == tOPolygon || roi.type == tPencil )
+	if( [roi type] == tCPolygon || [roi type] == tOPolygon || [roi type] == tPencil )
 	{
-		NSArray *ptsTemp = roi.points;
+		NSArray *ptsTemp = [roi points];
 		
 		int no = ptsTemp.count;
 		struct NSPointInt *ptsInt = (struct NSPointInt*) malloc( no * sizeof(struct NSPointInt) );
@@ -2079,8 +2080,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 			return;
 		}
 		else {
-			if( spline) ptsTemp = roi.splinePoints;
-			else ptsTemp = roi.points;
+			if( spline) ptsTemp = [roi splinePoints];
+			else ptsTemp = [roi points];
 
 			no = ptsTemp.count;
 
@@ -2445,7 +2446,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		if( dev != 0L && count > 0 ) {
 			idev = 0;
 			
-			buf = roi.textureBuffer;
+			buf = [roi textureBuffer];
 			
 			for( int y = 0; y < textHeight; y++ ) {
 				fImageTemp = fImage + ((y + textureUpLeftCornerY) * width) + textureUpLeftCornerX;
@@ -2487,7 +2488,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		if( mean) *mean = imean;
 	}
 	else {
-		NSMutableArray  *ptsTemp = roi.splinePoints;
+		NSMutableArray  *ptsTemp = [roi splinePoints];
 		NSPointInt		*pts;
 		
 		pts = (NSPointInt*) malloc( ptsTemp.count * sizeof(NSPointInt) );
@@ -2762,7 +2763,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 		[DCMPix checkUserDefaults: NO];
 		
 		cachedPapyGroups = [[NSMutableDictionary dictionary] retain];
-
+		annotationsDictionary = [[NSMutableDictionary dictionary] retain];
+		
 		generated = YES;
 		checking = [[NSLock alloc] init];
 		stack = 2;
@@ -5140,7 +5142,7 @@ END_CREATE_ROIS:
 		
 		//get PixelData
 		NSData *pixData = [pixelAttr decodeFrameAtIndex:ee];
-		short *oImage =  malloc( pixData.length );	//pointer to a memory zone where each pixel of the data has a short value reserved
+		short *oImage =  malloc([pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
 		[pixData getBytes:oImage];
 		//NSLog(@"image size: %d", ( height * width * 2));
 		//NSLog(@"Data size: %d", [pixData length]);
@@ -7311,9 +7313,11 @@ END_CREATE_ROIS:
 				
 				if( oData && gDisplayDICOMOverlays)
 				{
-					for( int y = 0; y < oRows; y++)
+					int			y, x;
+					
+					for( y = 0; y < oRows; y++)
 					{
-						for( int x = 0; x < oColumns; x++)
+						for( x = 0; x < oColumns; x++)
 						{
 							if( oData[ y * oColumns + x]) imPix->fImage[ y * width + x] = 0xFF;
 						}
@@ -7706,13 +7710,13 @@ END_CREATE_ROIS:
 					// make it big
 					[icon setSize:NSMakeSize(128,128)];
 					
-					NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: icon.TIFFRepresentation];
+					NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [icon TIFFRepresentation]];
 					
 					// size of the image
-					height = TIFFRep.pixelsHigh;
+					height = [TIFFRep pixelsHigh];
 					height /= 2;
 					height *= 2;
-					realwidth = TIFFRep.pixelsWide;
+					realwidth = [TIFFRep pixelsWide];
 					width = realwidth/2;
 					width *= 2;
 					
@@ -7729,13 +7733,14 @@ END_CREATE_ROIS:
 						argbImage = malloc( totSize);
 					}
 					
-					unsigned char *srcImage = TIFFRep.bitmapData;
+					unsigned char *srcImage = [TIFFRep bitmapData];
 					unsigned char *tmpPtr = argbImage, *srcPtr;
 					
-					for( long y = 0 ; y < height; y++ )
+					long x, y;
+					for( y = 0 ; y < height; y++)
 					{
-						srcPtr = srcImage + y*TIFFRep.bytesPerRow;
-						long x = width;
+						srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+						x = width;
 						while( x-->0)
 						{
 							tmpPtr++;
@@ -8140,14 +8145,14 @@ END_CREATE_ROIS:
 						{
 							NSData		*file = [NSData dataWithContentsOfFile: srcFile];
 							
-							if( file.length == 348)
+							if( [file length] == 348)
 							{
 								long			totSize;
 								struct dsr*		Analyze;
 								NSData			*fileData;
 								BOOL			swapByteOrder = NO;
 								
-								Analyze = (struct dsr*) file.bytes;
+								Analyze = (struct dsr*) [file bytes];
 								
 								short endian = Analyze->dime.dim[ 0];		// dim[0] 
 								if ((endian < 0) || (endian > 15)) 
@@ -8511,7 +8516,7 @@ END_CREATE_ROIS:
 			height = 128;
 			width = 128;
 //				rowBytes = width*4;
-			oImage = nil;
+			oImage = 0L;
 			isRGB = NO;
 			
 			for( long i = 0; i < 128*128; i++ ) fImage[ i ] = i;
@@ -8652,18 +8657,18 @@ END_CREATE_ROIS:
 	dst.data = malloc( dst.height * dst.rowBytes);
 	
 	// Draw first image
-	src.height = self.pheight;
-	src.width = self.pwidth;
-	src.rowBytes = self.pwidth*4;
-	src.data = self.fImage;
+	src.height = [self pheight];
+	src.width = [self pwidth];
+	src.rowBytes = [self pwidth]*4;
+	src.data = [self fImage];
 	
 	[self drawImage:&src inImage:&dst offset:unionRect.origin background: BACKGROUND];
 	
 	// Draw second image
-	src.height = o.pheight;
-	src.width = o.pwidth;
-	src.rowBytes = o.pwidth*4;
-	src.data = o.fImage;
+	src.height = [o pheight];
+	src.width = [o pwidth];
+	src.rowBytes = [o pwidth]*4;
+	src.data = [o fImage];
 	
 	[self drawImage:&src inImage:&dst offset:NSMakePoint( ox, oy) background: BACKGROUND];
 	
@@ -8752,8 +8757,8 @@ END_CREATE_ROIS:
 	float rot = r*deg2rad;
 	
 	// Apply scale
-	newWidth = self.pwidth * scale;
-	newHeight = self.pheight * scale * pixelRatio;
+	newWidth = [self pwidth] * scale;
+	newHeight = [self pheight] * scale * pixelRatio;
 	
 	// Apply rotation
 	NSPoint pt[ 4];
@@ -8791,10 +8796,10 @@ END_CREATE_ROIS:
 	
 	if( [self isRGB] == NO)
 	{
-		src.height = self.pheight;
-		src.width = self.pwidth;
-		src.rowBytes = self.pwidth*4;
-		src.data = self.fImage;
+		src.height = [self pheight];
+		src.width = [self pwidth];
+		src.rowBytes = [self pwidth]*4;
+		src.data = [self fImage];
 		
 		// Flipping X-Y
 		if( xF)
@@ -8813,12 +8818,12 @@ END_CREATE_ROIS:
 			dst.data = malloc( dst.height * dst.rowBytes);
 			vImageVerticalReflect_PlanarF ( &src, &dst, 0L);
 			
-			if( src.data != self.fImage ) free( src.data);
+			if( src.data != [self fImage]) free( src.data);
 			src = dst;
 		}
 		
-		dst.height = self.pheight*scale * pixelRatio;
-		dst.width = self.pwidth*scale;
+		dst.height = [self pheight]*scale * pixelRatio;
+		dst.width = [self pwidth]*scale;
 		dst.rowBytes = dst.width*4;
 		dst.data = malloc( dst.height * dst.rowBytes);
 				
@@ -8832,7 +8837,7 @@ END_CREATE_ROIS:
 		);
 		
 		// Rotation
-		if( src.data != self.fImage ) free( src.data);
+		if( src.data != [self fImage]) free( src.data);
 		src = dst;
 		
 		dst.height = newH;
@@ -8849,7 +8854,7 @@ END_CREATE_ROIS:
 			BACKGROUND,
 			kvImageHighQualityResampling
 		);
-		if( src.data != self.fImage ) free( src.data);
+		if( src.data != [self fImage]) free( src.data);
 	}
 	
 	DCMPix *newPix = [[self copy] autorelease];
@@ -8887,10 +8892,10 @@ END_CREATE_ROIS:
 	vImage_Buffer src;
 	vImage_Buffer dst;
 	
-	src.height = newPix.pheight;
-	src.width = newPix.pwidth;
+	src.height = [newPix pheight];
+	src.width = [newPix pwidth];
 	src.rowBytes = src.width*4;
-	src.data = newPix.fImage;
+	src.data = [newPix fImage];
 	
 	dst.height = rectSize.height;
 	dst.width = rectSize.width;
@@ -8929,14 +8934,15 @@ END_CREATE_ROIS:
 {
 	DCMPix *newPix = [self renderInRectSize: rectSize atPosition: oo rotation: r scale: scale xFlipped: xF yFlipped: yF];
 	
-	[newPix changeWLWW: newPix.wl :newPix.ww];
+	[newPix changeWLWW: [newPix wl] :[newPix ww]];
 	
-	return newPix.image;
+	return [newPix image];
 }
 
 -(void) orientationDouble:(double*) c
 {
-	for( int i = 0 ; i < 9; i ++) c[ i] = orientation[ i];
+	int i;
+	for( i = 0 ; i < 9; i ++) c[ i] = orientation[ i];
 }
 
 -(BOOL) identicalOrientationTo:(DCMPix*) c
@@ -8952,12 +8958,15 @@ END_CREATE_ROIS:
 
 -(void) orientation:(float*) c
 {
-	for( int i = 0 ; i < 9; i ++) c[ i] = orientation[ i];
+	int i;
+	for( i = 0 ; i < 9; i ++) c[ i] = orientation[ i];
 }
 
 -(void) setOrientationDouble:(double*) c
 {
-	for( long i = 0 ; i < 6; i ++) orientation[ i] = c[ i];
+	long i;
+	
+	for( i = 0 ; i < 6; i ++) orientation[ i] = c[ i];
 	
 	double length = sqrt(orientation[0]*orientation[0] + orientation[1]*orientation[1] + orientation[2]*orientation[2]);
 	
@@ -8980,8 +8989,9 @@ END_CREATE_ROIS:
 -(void) setOrientation:(float*) c
 {
 	double d[ 6];
+	int i;
 	
-	for( int i = 0 ; i < 6; i ++) d[ i] = c[ i];
+	for( i = 0 ; i < 6; i ++) d[ i] = c[ i];
 	
 	[self setOrientationDouble: d];
 }
@@ -9143,7 +9153,7 @@ END_CREATE_ROIS:
 	
 	long			i;
 	float			*dstPtr = malloc( height * width * 4);
-	unsigned char   *srcPtr = (unsigned char*) self.fImage;
+	unsigned char   *srcPtr = (unsigned char*) [self fImage];
 	
 	// Set this image as the Red Composant
 	switch( mode) {
@@ -9187,15 +9197,15 @@ END_CREATE_ROIS:
 	
 	if( isRGB) return;
 	
-	srcf.height = self.pheight;
-	srcf.width = self.pwidth;
-	srcf.rowBytes = self.pwidth*sizeof(float);
-	srcf.data =  self.fImage;
+	srcf.height = [self pheight];
+	srcf.width = [self pwidth];
+	srcf.rowBytes =  [self pwidth]*sizeof(float);
+	srcf.data =  [self fImage];
 	
-	dst8.height = self.pheight;
-	dst8.width = self.pwidth;
-	dst8.rowBytes = self.pwidth; 
-	dst8.data = malloc( self.pheight * self.pwidth );
+	dst8.height = [self pheight];
+	dst8.width = [self pwidth];
+	dst8.rowBytes = [self pwidth]; 
+	dst8.data = malloc( [self pheight] * [self pwidth]);
 	
 	long i;
 	long min = cwl - cww / 2;
@@ -9204,7 +9214,7 @@ END_CREATE_ROIS:
 	vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);					// FLOAT TO 8 bit
 	
 	unsigned char*  srcPtr = (unsigned char*) dst8.data;
-	unsigned char*  dstPtr = (unsigned char*) self.fImage;
+	unsigned char*  dstPtr = (unsigned char*) [self fImage];
 	
 	// Set this image as the Red Composant
 	switch( mode) {
@@ -9228,8 +9238,8 @@ END_CREATE_ROIS:
 			
 			case 3: // RGB
 			dst8888 = dst8;
-			dst8888.rowBytes = self.pwidth*4;
-			dst8888.data = self.fImage;
+			dst8888.rowBytes = [self pwidth]*4;
+			dst8888.data =[self fImage];
 			
 			vImageConvert_Planar8toARGB8888(&dst8, &dst8, &dst8, &dst8, &dst8888, 0);
 			break;
@@ -9237,7 +9247,7 @@ END_CREATE_ROIS:
 	
 //	[self setRowBytes: [self pwidth]*4];
 	
-	[self setBaseAddr: malloc( self.pwidth * self.pheight * 4)];
+	[self setBaseAddr: malloc( [self pwidth] * [self pheight] * 4)];
 	
 	[self setRGB: YES];
 	
@@ -9276,7 +9286,7 @@ END_CREATE_ROIS:
 	float val = 0;
 	
 	if( x < 0 || x >= width || y < 0 || y >= height) return 0;
-	if( fImage == nil ) return 0;
+	if( fImage == 0L) return 0;
 	
 	if( (stackMode == 1 || stackMode == 2 || stackMode == 3) && stack >= 1)
 	{
@@ -9901,7 +9911,7 @@ END_CREATE_ROIS:
 		[transferFunction release];
 		transferFunction = [tf retain];
 		
-		transferFunctionPtr = (float*) transferFunction.bytes;
+		transferFunctionPtr = (float*) [transferFunction bytes];
 		
 		updateToBeApplied = YES;
 	}
@@ -10684,9 +10694,9 @@ END_CREATE_ROIS:
 	if( attr ) {
 		NSMutableString *result = nil;
 		
-		for( id field in attr.values ) {	
+		for( id field in [attr values]) {	
 			if([field isKindOfClass:[NSString class]]) {
-				NSString *vr = attr.vr;
+				NSString *vr = [attr vr];
 				
 				if([vr isEqualToString:@"DS"]) field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
 				
@@ -10698,7 +10708,7 @@ END_CREATE_ROIS:
 				else [result appendFormat: @"\\%@", [field stringValue]];
 			}
 			else if([field isKindOfClass:[NSCalendarDate class]]) {
-				NSString *vr = attr.vr;
+				NSString *vr = [attr vr];
 				if([vr isEqualToString:@"DA"]) {
 					if( result == nil) result = [NSMutableString stringWithString: [BrowserController DateOfBirthFormat: field]];
 					else [result appendFormat: @"\\%@", [BrowserController DateOfBirthFormat: field]];
@@ -10745,7 +10755,7 @@ END_CREATE_ROIS:
 				NSMutableArray *contentOUT = [NSMutableArray array];
 				
 				BOOL contentForLine = NO;
-				for ( int f=0; f < content.count; f++ )
+				for ( int f=0; f<[content count]; f++ )
 				{
 					@try
 					{
@@ -10804,8 +10814,8 @@ END_CREATE_ROIS:
 							}
 							else
 							{
-								value = value.description;
-								if( value.length == 0) value = @"-";
+								value = [value description];
+								if( [value length] == 0) value = @"-";
 							}
 						}
 						else if([type isEqualToString:@"Special"])
@@ -10820,7 +10830,7 @@ END_CREATE_ROIS:
 									int age = -[date timeIntervalSinceNow]/(60*60*24*365);
 									value = [NSString stringWithFormat:@"%d y", age];
 								}
-								else value = nil;
+								else value = 0L;
 							}
 							
 							if ([value isEqualToString: NSLocalizedString(@"Patient's Age At Acquisition", 0L)] || [value isEqualToString: (@"Patient's Age At Acquisition")])
@@ -10833,16 +10843,16 @@ END_CREATE_ROIS:
 									int age = -[date1 timeIntervalSinceDate: date2]/(60*60*24*365);
 									value = [NSString stringWithFormat:@"%d y", age];
 								}
-								else value = nil;
+								else value = 0L;
 							}
 							
-							if(value==nil || value.length == 0) value = @"-";
+							if(value==nil || [value length] == 0) value = @"-";
 							else contentForLine = YES;
 						}
 						else if([type isEqualToString:@"Manual"])
 						{
 							value = [field objectForKey:@"field"];
-							if(value==nil || value.length == 0) value = @"-";
+							if(value==nil || [value length] == 0) value = @"-";
 							
 							if(![value isEqualToString:@""]) value = [value stringByAppendingString:@" "];
 						}
