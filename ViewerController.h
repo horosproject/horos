@@ -551,7 +551,7 @@ enum
 - (void) loadROI:(long) mIndex;
 - (void) saveROI:(long) mIndex;
 - (id) findPlayStopButton;
-- (IBOutlet)setKeyImage:(id)sender;
+- (IBAction)setKeyImage:(id)sender;
 - (BOOL) FullScreenON;
 - (void) setROITool:(id) sender;
 - (void) setROIToolTag:(int) roitype;

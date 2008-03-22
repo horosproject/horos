@@ -14114,8 +14114,6 @@ int i,j,l;
 	}
 }
 
-
-
 -(id) findPlayStopButton
 {
 	unsigned long i, x;
@@ -17355,6 +17353,52 @@ long i;
 	[[BrowserController currentBrowser] saveDatabase: 0L];
 }
 
+- (IBAction) findNextPreviousKeyImage:(id)sender
+{
+	[self checkEverythingLoaded];
+	
+	BOOL tag = [sender tag];
+	
+	if( [imageView flippedData]) tag = !tag;
+	
+	if( tag == 0)
+	{
+		for( int i = [imageView curImage]+1; i < [fileList[ curMovieIndex] count]; i++)
+		{
+			NSManagedObject *image = [fileList[ curMovieIndex] objectAtIndex: i];
+			
+			if( [[image valueForKey:@"isKeyImage"] boolValue])
+			{
+				[imageView setIndex: i];
+				[imageView sendSyncMessage: 0];
+				[self adjustSlider];
+				[imageView displayIfNeeded];
+				return;
+			}
+		}
+		
+		NSBeep();
+	}
+	else
+	{
+		for( int i = [imageView curImage]-1; i >= 0 ; i--)
+		{
+			NSManagedObject *image = [fileList[ curMovieIndex] objectAtIndex: i];
+			
+			if( [[image valueForKey:@"isKeyImage"] boolValue])
+			{
+				[imageView setIndex: i];
+				[imageView sendSyncMessage: 0];
+				[self adjustSlider];
+				[imageView displayIfNeeded];
+				return;
+			}
+		}
+		
+		NSBeep();
+	}
+}
+
 - (IBAction) keyImageDisplayButton:(id) sender
 {
 	NSManagedObject	*series = [[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKey:@"series"];
@@ -17369,7 +17413,6 @@ long i;
 			// ALL IMAGES ARE DISPLAYED			
 			NSArray	*images = [[BrowserController currentBrowser] childrenArray: series];
 			[[BrowserController currentBrowser] openViewerFromImages :[NSArray arrayWithObject: images] movie: NO viewer :self keyImagesOnly: displayOnlyKeyImages];
-			//[[BrowserController currentBrowser] openViewerFromImages :[NSArray arrayWithObject: images] movie: NO viewer :self keyImagesOnly: tag];
 		}
 		else
 		{
@@ -17397,7 +17440,7 @@ long i;
 	}
 }
 
-- (IBOutlet)setKeyImage:(id)sender
+- (IBAction) setKeyImage:(id)sender
 {
 	[keyImageCheck setState: ![keyImageCheck state]];
 	[self keyImageCheckBox: keyImageCheck];
