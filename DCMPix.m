@@ -2680,6 +2680,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 - (double)originY { [self CheckLoad]; return originY;}
 - (double)originZ { [self CheckLoad]; return originZ;}
 
+- (void)origin: (float*)o { o[ 0] = originX; o[ 1] = originY; o[ 2] = originZ; }
+- (void)originDouble: (double*)o { o[ 0] = originX; o[ 1] = originY; o[ 2] = originZ; }
 - (void)setOrigin: (float*)o { originX = o[ 0]; originY = o[ 1]; originZ = o[ 2]; }
 - (void)setOriginDouble: (double*)o { originX = o[ 0]; originY = o[ 1]; originZ = o[ 2]; };
 
@@ -8732,6 +8734,11 @@ END_CREATE_ROIS:
 	newPix.pheight = dst.height;
 	newPix.pwidth = dst.width;
 	
+	// New origin
+	float or[ 3];
+	[newPix convertPixX: unionRect.origin.x pixY: unionRect.origin.y toDICOMCoords: or pixelCenter: NO];
+	[newPix setOrigin: or];
+
 	return newPix;
 }
 

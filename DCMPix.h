@@ -223,6 +223,8 @@ Note setter is different to not break existing usage. :-( */
 
 - (void)setOrigin :(float*) o;
 - (void)setOriginDouble :(double*) o;
+- (void)origin: (float*)o;
+- (void)originDouble: (double*)o;
 
 /**  Axial Location */
 @property double sliceLocation;
