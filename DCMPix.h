@@ -468,6 +468,7 @@ Note setter is different to not break existing usage. :-( */
 - (BOOL) updateToApply;
 - (id) myinitEmpty;  /**< Returns an Empty object */
 - (short*) kernel;
++ (NSPoint) rotatePoint:(NSPoint)pt aroundPoint:(NSPoint)c angle:(float)a;
 - (short) normalization;
 - (short) kernelsize;
 - (DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF;

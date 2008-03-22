@@ -8606,7 +8606,7 @@ END_CREATE_ROIS:
 
 # pragma mark-
 
-- (NSPoint)rotatePoint:(NSPoint)pt aroundPoint:(NSPoint)c angle:(float)a;
++ (NSPoint) rotatePoint:(NSPoint)pt aroundPoint:(NSPoint)c angle:(float)a;
 {
 	NSPoint rot;
 	
@@ -8670,7 +8670,7 @@ END_CREATE_ROIS:
 				 
 				 int diff = *s - b;
 				 
-				 if( diff)
+				 if( diff > 900)
 					*d = *s;
 			}
 		}
@@ -8685,12 +8685,16 @@ END_CREATE_ROIS:
 -(DCMPix*) mergeWithDCMPix:(DCMPix*) o offset:(NSPoint) oo
 {
 	if( o == 0L) return 0L;
-
+	if( [o isRGB]) return 0L;
+	if( [self isRGB]) return 0L;
+	
 	int ox = oo.x;
 	int oy = oo.y;
 	
 	NSRect dstRect = NSMakeRect( 0, 0, [self pwidth], [self pheight]);
-	NSRect srcRect = NSMakeRect( ox, oy, [o pwidth], [o pwidth]);
+	
+	NSPoint center = NSMakePoint( [self pwidth]/2 - [o pwidth]/2, [self pheight]/2 - [o pheight]/2);
+	NSRect srcRect = NSMakeRect( ox + center.x, oy + center.y, [o pwidth], [o pheight]);
 	
 	NSRect unionRect = NSUnionRect( dstRect, srcRect);
 	
@@ -8708,7 +8712,7 @@ END_CREATE_ROIS:
 	src.rowBytes = [self pwidth]*4;
 	src.data = [self fImage];
 	
-	[self drawImage:&src inImage:&dst offset:unionRect.origin background: [self minValueOfSeries] transparency: NO];
+	[self drawImage:&src inImage:&dst offset:unionRect.origin background: [self minValueOfSeries]-1024 transparency: NO];
 	
 	// Draw second image
 	src.height = [o pheight];
@@ -8716,7 +8720,7 @@ END_CREATE_ROIS:
 	src.rowBytes = [o pwidth]*4;
 	src.data = [o fImage];
 	
-	[self drawImage:&src inImage:&dst offset:NSMakePoint( ox, oy) background: [self minValueOfSeries] transparency: YES];
+	[self drawImage:&src inImage:&dst offset:NSMakePoint( ox+center.x, oy+center.y) background: [self minValueOfSeries]-1024 transparency: YES];
 	
 	// Create final DCMPix
 	DCMPix *newPix = [[self copy] autorelease];
@@ -8792,6 +8796,8 @@ END_CREATE_ROIS:
 
 -(DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF
 {
+	if( [self isRGB]) return 0L;
+
 	int newHeight;
 	int newWidth;
 	
@@ -8806,10 +8812,10 @@ END_CREATE_ROIS:
 	NSPoint centerPt = NSMakePoint( newWidth/2., newHeight/2.);
 	NSPoint zeroPt = NSMakePoint( 0, 0);
 	
-	pt[ 0] = [self rotatePoint: zeroPt aroundPoint: centerPt angle: rot];
-	pt[ 1] = [self rotatePoint: NSMakePoint( zeroPt.x+newWidth, zeroPt.y) aroundPoint: centerPt angle: rot];
-	pt[ 2] = [self rotatePoint: NSMakePoint( zeroPt.x+newWidth, zeroPt.y+newHeight) aroundPoint: centerPt angle: rot];
-	pt[ 3] = [self rotatePoint: NSMakePoint( zeroPt.x, zeroPt.y+newHeight) aroundPoint: centerPt angle: rot];
+	pt[ 0] = [DCMPix rotatePoint: zeroPt aroundPoint: centerPt angle: rot];
+	pt[ 1] = [DCMPix rotatePoint: NSMakePoint( zeroPt.x+newWidth, zeroPt.y) aroundPoint: centerPt angle: rot];
+	pt[ 2] = [DCMPix rotatePoint: NSMakePoint( zeroPt.x+newWidth, zeroPt.y+newHeight) aroundPoint: centerPt angle: rot];
+	pt[ 3] = [DCMPix rotatePoint: NSMakePoint( zeroPt.x, zeroPt.y+newHeight) aroundPoint: centerPt angle: rot];
 	
 	float minX, maxX, minY, maxY;
 	
@@ -8888,7 +8894,7 @@ END_CREATE_ROIS:
 		dst.data = malloc( dst.height * dst.rowBytes);
 		
 		if( dst.data)
-			vImageRotate_PlanarF( &src, &dst, 0L, -rot, [self minValueOfSeries], kvImageHighQualityResampling );
+			vImageRotate_PlanarF( &src, &dst, 0L, -rot, [self minValueOfSeries]-1024, kvImageHighQualityResampling+kvImageBackgroundColorFill);
 			
 		if( src.data != [self fImage]) free( src.data);
 		if( dst.data == 0L) return 0L;
@@ -8913,7 +8919,7 @@ END_CREATE_ROIS:
 	// New origin
 	float o[ 3];
 	NSPoint a = NSMakePoint( minX, minY);
-	a = [self rotatePoint: a aroundPoint: centerPt angle: -rot];
+	a = [DCMPix rotatePoint: a aroundPoint: centerPt angle: -rot];
 	if( xF) a.x = newWidth - a.x -1;
 	if( yF) a.y = newHeight - a.y -1;
 	[self convertPixX: a.x/scale pixY: a.y/scale toDICOMCoords: o pixelCenter: NO];
@@ -8924,6 +8930,8 @@ END_CREATE_ROIS:
 
 - (DCMPix*) renderInRectSize:(NSSize) rectSize atPosition:(NSPoint) oo rotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF;
 {
+	if( [self isRGB]) return 0L;
+	
 	DCMPix *newPix = [self renderWithRotation: r scale: scale xFlipped: xF yFlipped:  yF];
 	if( newPix == 0L) return 0L;
 	
@@ -8943,7 +8951,7 @@ END_CREATE_ROIS:
 	if( xF) oo.x = - oo.x;
 	if( yF) oo.y = - oo.y;
 	
-	oo = [self rotatePoint: oo aroundPoint:NSMakePoint( 0, 0) angle: -r*deg2rad];
+	oo = [DCMPix rotatePoint: oo aroundPoint:NSMakePoint( 0, 0) angle: -r*deg2rad];
 	
 	// zero coordinate is in the center of the view
 	NSPoint cov = NSMakePoint( rectSize.width/2 + oo.x - [newPix pwidth]/2, rectSize.height/2 - oo.y - [newPix pheight]/2);
@@ -8952,7 +8960,7 @@ END_CREATE_ROIS:
 	cov.y = (int) cov.y;
 	
 	if( dst.data)
-		[self drawImage: &src inImage: &dst offset: cov background: [self minValueOfSeries]];
+		[self drawImage: &src inImage: &dst offset: cov background: [self minValueOfSeries]-1024];
 	else return 0L;
 	
 	DCMPix *rPix = [[newPix copy] autorelease];
@@ -8974,6 +8982,8 @@ END_CREATE_ROIS:
 
 - (NSImage*) renderNSImageInRectSize:(NSSize) rectSize atPosition:(NSPoint) oo rotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF
 {
+	if( [self isRGB]) return 0L;
+	
 	DCMPix *newPix = [self renderInRectSize: rectSize atPosition: oo rotation: r scale: scale xFlipped: xF yFlipped: yF];
 	
 	[newPix changeWLWW: [newPix wl] :[newPix ww]];

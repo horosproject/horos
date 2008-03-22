@@ -716,10 +716,24 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (IBAction)print:(id)sender
 {
-	DCMPix *fusedPix = [[blendingView curDCM] renderInRectSize: [blendingView frame].size atPosition:[blendingView origin] rotation: [blendingView rotation] scale: [blendingView scaleValue] xFlipped: [blendingView xFlipped] yFlipped: [blendingView yFlipped]];
-	DCMPix *originalPix = [curDCM renderInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: [self xFlipped] yFlipped: [self yFlipped]];
+	DCMPix *fusedPix = [[blendingView curDCM] renderWithRotation: [blendingView rotation] scale: [blendingView scaleValue] xFlipped: [blendingView xFlipped] yFlipped: [blendingView yFlipped]];
+	DCMPix *originalPix = [curDCM renderWithRotation: [self rotation] scale: [self scaleValue] xFlipped: [self xFlipped] yFlipped: [self yFlipped]];
 	
-	DCMPix *newPix = [originalPix mergeWithDCMPix: fusedPix offset: NSMakePoint( 0, 0)];
+	NSPoint oo = [blendingView origin];
+	if( [blendingView xFlipped]) oo.x = - oo.x;
+	if( [blendingView yFlipped]) oo.y = - oo.y;
+	oo = [DCMPix rotatePoint: oo aroundPoint:NSMakePoint( 0, 0) angle: -[blendingView rotation]*deg2rad];
+
+	NSPoint cc = [self origin];
+	if( [self xFlipped]) cc.x = - cc.x;
+	if( [self yFlipped]) cc.y = - cc.y;
+	cc = [DCMPix rotatePoint: cc aroundPoint:NSMakePoint( 0, 0) angle: -[self rotation]*deg2rad];
+
+	oo.x -= cc.x;
+	oo.y -= cc.y;
+	oo.y = -oo.y;
+
+	DCMPix *newPix = [originalPix mergeWithDCMPix: fusedPix offset: oo];
 	
 	[newPix freefImageWhenDone: NO];
 	
