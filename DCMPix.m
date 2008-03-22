@@ -8622,13 +8622,14 @@ END_CREATE_ROIS:
 	return rot;
 }
 
-#define BACKGROUND 0
-
-- (void) drawImage: (vImage_Buffer*) src inImage: (vImage_Buffer*) dst offset:(NSPoint) oo background:(float) b
+- (void) drawImage: (vImage_Buffer*) src inImage: (vImage_Buffer*) dst offset:(NSPoint) oo background:(float) b transparency: (BOOL) t
 {
-	float *f = (float*) dst->data;
-	int i = dst->height * dst->width;
-	while( i-->0) *f++ = b;
+	if( t == NO)
+	{
+		float *f = (float*) dst->data;
+		int i = dst->height * dst->width;
+		while( i-->0) *f++ = b;
+	}
 	
 	int ox = oo.x;
 	int oy = oo.y;
@@ -8651,14 +8652,40 @@ END_CREATE_ROIS:
 	float *srcData = (float*) src->data;
 	float *dstData = (float*) dst->data;
 	
-	for( int y = y1; y < y2; y++)
+	if( t == NO)
 	{
-		memcpy( dstData + (y*dst->width + x1), srcData +((y-oy)*src->width + (x1-ox)), lineBytes);
+		for( int y = y1; y < y2; y++)
+		{
+			memcpy( dstData + (y*dst->width + x1), srcData +((y-oy)*src->width + (x1-ox)), lineBytes);
+		}
 	}
+	else
+	{
+		for( int y = y1; y < y2; y++)
+		{
+			for( int x = x1; x < x2; x++)
+			{
+				 float *d = dstData + (y*dst->width + x);
+				 float *s = srcData +((y-oy)*src->width + (x-ox));
+				 
+				 int diff = *s - b;
+				 
+				 if( diff)
+					*d = *s;
+			}
+		}
+	}
+}
+
+- (void) drawImage: (vImage_Buffer*) src inImage: (vImage_Buffer*) dst offset:(NSPoint) oo background:(float) b
+{
+	return [self drawImage:  src inImage:  dst offset: oo background: b transparency:  NO];
 }
 
 -(DCMPix*) mergeWithDCMPix:(DCMPix*) o offset:(NSPoint) oo
 {
+	if( o == 0L) return 0L;
+
 	int ox = oo.x;
 	int oy = oo.y;
 	
@@ -8681,7 +8708,7 @@ END_CREATE_ROIS:
 	src.rowBytes = [self pwidth]*4;
 	src.data = [self fImage];
 	
-	[self drawImage:&src inImage:&dst offset:unionRect.origin background: BACKGROUND];
+	[self drawImage:&src inImage:&dst offset:unionRect.origin background: [self minValueOfSeries] transparency: NO];
 	
 	// Draw second image
 	src.height = [o pheight];
@@ -8689,7 +8716,7 @@ END_CREATE_ROIS:
 	src.rowBytes = [o pwidth]*4;
 	src.data = [o fImage];
 	
-	[self drawImage:&src inImage:&dst offset:NSMakePoint( ox, oy) background: BACKGROUND];
+	[self drawImage:&src inImage:&dst offset:NSMakePoint( ox, oy) background: [self minValueOfSeries] transparency: YES];
 	
 	// Create final DCMPix
 	DCMPix *newPix = [[self copy] autorelease];
@@ -8700,13 +8727,8 @@ END_CREATE_ROIS:
 	
 	newPix.pheight = dst.height;
 	newPix.pwidth = dst.width;
-
-	NSData	*newData = [NSData dataWithBytesNoCopy: dst.data length: dst.height * dst.rowBytes freeWhenDone:YES];
 	
-	[ViewerController newWindow
-		: [NSMutableArray arrayWithObject: newPix]
-		: [NSMutableArray arrayWithObject: imageObj]
-		: newData];
+	return newPix;
 }
 
 - (void) orientationCorrected:(float*) correctedOrientation rotation:(float) rotation xFlipped: (BOOL) xFlipped yFlipped: (BOOL) yFlipped
@@ -8866,7 +8888,7 @@ END_CREATE_ROIS:
 		dst.data = malloc( dst.height * dst.rowBytes);
 		
 		if( dst.data)
-			vImageRotate_PlanarF( &src, &dst, 0L, -rot, BACKGROUND, kvImageHighQualityResampling );
+			vImageRotate_PlanarF( &src, &dst, 0L, -rot, [self minValueOfSeries], kvImageHighQualityResampling );
 			
 		if( src.data != [self fImage]) free( src.data);
 		if( dst.data == 0L) return 0L;
@@ -8930,7 +8952,7 @@ END_CREATE_ROIS:
 	cov.y = (int) cov.y;
 	
 	if( dst.data)
-		[self drawImage: &src inImage: &dst offset: cov background: BACKGROUND];
+		[self drawImage: &src inImage: &dst offset: cov background: [self minValueOfSeries]];
 	else return 0L;
 	
 	DCMPix *rPix = [[newPix copy] autorelease];

@@ -716,6 +716,22 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (IBAction)print:(id)sender
 {
+	DCMPix *fusedPix = [[blendingView curDCM] renderInRectSize: [blendingView frame].size atPosition:[blendingView origin] rotation: [blendingView rotation] scale: [blendingView scaleValue] xFlipped: [blendingView xFlipped] yFlipped: [blendingView yFlipped]];
+	DCMPix *originalPix = [curDCM renderInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: [self xFlipped] yFlipped: [self yFlipped]];
+	
+	DCMPix *newPix = [originalPix mergeWithDCMPix: fusedPix offset: NSMakePoint( 0, 0)];
+	
+	[newPix freefImageWhenDone: NO];
+	
+	NSData	*newData = [NSData dataWithBytesNoCopy: [newPix fImage] length: [newPix pheight]*[newPix pwidth]*sizeof(float) freeWhenDone:YES];
+	[ViewerController newWindow
+		: [NSMutableArray arrayWithObject: newPix]
+		: [NSMutableArray arrayWithObject: [newPix imageObj]]
+		: newData];
+	
+	
+	return;
+
 //	NSData *im = [[curDCM renderNSImageInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped] TIFFRepresentation];
 //	[im writeToFile: @"test.tiff" atomically: YES];
 	
