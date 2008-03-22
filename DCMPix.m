@@ -8712,7 +8712,7 @@ END_CREATE_ROIS:
 	src.rowBytes = [self pwidth]*4;
 	src.data = [self fImage];
 	
-	[self drawImage:&src inImage:&dst offset:unionRect.origin background: [self minValueOfSeries]-1024 transparency: NO];
+	[self drawImage:&src inImage:&dst offset:NSMakePoint( -unionRect.origin.x, -unionRect.origin.y) background: [self minValueOfSeries]-1024 transparency: NO];
 	
 	// Draw second image
 	src.height = [o pheight];
@@ -8720,7 +8720,7 @@ END_CREATE_ROIS:
 	src.rowBytes = [o pwidth]*4;
 	src.data = [o fImage];
 	
-	[self drawImage:&src inImage:&dst offset:NSMakePoint( ox+center.x, oy+center.y) background: [self minValueOfSeries]-1024 transparency: YES];
+	[self drawImage:&src inImage:&dst offset:NSMakePoint( ox+center.x-unionRect.origin.x, oy+center.y-unionRect.origin.y) background: [self minValueOfSeries]-1024 transparency: YES];
 	
 	// Create final DCMPix
 	DCMPix *newPix = [[self copy] autorelease];
