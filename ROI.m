@@ -3009,15 +3009,37 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		return dRect;
 	}
 	
-	long				direction = 0, maxRedo = [rectArray count] + 2;
+	int direction = 0, maxRedo = [rectArray count] + 2;
 	
 	*moved = NO;
 	
 	dRect.origin.x += 8;
 	dRect.origin.y += 8;
 	
-	for( long i = 0; i < [rectArray count]; i++ ) {
-		
+	//Does it intersect with the frame view?
+	NSRect displayingRect = [curView drawingFrameRect];
+	displayingRect.origin.x -= displayingRect.size.width/2;
+	displayingRect.origin.y -= displayingRect.size.height/2;
+	if( NSIntersectsRect( dRect, displayingRect))
+	{
+		if( NSEqualRects( NSUnionRect( dRect, displayingRect), displayingRect) == NO)
+		{
+			if( dRect.origin.x < displayingRect.origin.x)
+				dRect.origin.x = displayingRect.origin.x;
+			
+			if( dRect.origin.y < displayingRect.origin.y)
+				dRect.origin.y = displayingRect.origin.y;
+			
+			if( dRect.origin.y + dRect.size.height > displayingRect.origin.y + displayingRect.size.height)
+				dRect.origin.y = displayingRect.origin.y + displayingRect.size.height - dRect.size.height;
+			
+			if( dRect.origin.x + dRect.size.width > displayingRect.origin.x + displayingRect.size.width)
+				dRect.origin.x = displayingRect.origin.x + displayingRect.size.width - dRect.size.width;
+		}
+	}
+	
+	for( int i = 0; i < [rectArray count]; i++ )
+	{
 		NSRect	curRect = [[rectArray objectAtIndex: i] rectValue];
 		
 		if( NSIntersectsRect( curRect, dRect))

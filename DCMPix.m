@@ -8801,10 +8801,8 @@ END_CREATE_ROIS:
 	memcpy( correctedOrientation, o, sizeof o );
 }
 
--(DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF
+- (NSRect) useFulRectWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF
 {
-	if( [self isRGB]) return 0L;
-
 	int newHeight;
 	int newWidth;
 	
@@ -8838,9 +8836,24 @@ END_CREATE_ROIS:
 	}
 	
 	NSRect newRect = NSMakeRect( minX, minY, maxX - minX, maxY - minY);
-	NSLog( NSStringFromRect( newRect));
 	
-	NSRect dstRect = newRect;
+	return newRect;
+}
+
+- (DCMPix*) renderWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF
+{
+	if( [self isRGB]) return 0L;
+	
+	NSRect dstRect = [self useFulRectWithRotation: r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF];
+	
+	float rot = r*deg2rad;
+	int newHeight;
+	int newWidth;
+	
+	// Apply scale
+	newWidth = [self pwidth] * scale;
+	newHeight = [self pheight] * scale * pixelRatio;
+	NSPoint centerPt = NSMakePoint( newWidth/2., newHeight/2.);
 	
 	int newW = (dstRect.size.width);
 	int newH = (dstRect.size.height);
@@ -8925,7 +8938,7 @@ END_CREATE_ROIS:
 	
 	// New origin
 	float o[ 3];
-	NSPoint a = NSMakePoint( minX, minY);
+	NSPoint a = NSMakePoint( dstRect.origin.x, dstRect.origin.y);
 	a = [DCMPix rotatePoint: a aroundPoint: centerPt angle: -rot];
 	if( xF) a.x = newWidth - a.x -1;
 	if( yF) a.y = newHeight - a.y -1;

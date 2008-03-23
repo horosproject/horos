@@ -294,6 +294,10 @@ static int hotKeyToolCrossTable[] =
 	{
 		if( [self selectedROI]) valid = YES;
 	}
+	else if( [item action] == @selector( blendWindows:))
+	{
+		if( numberOf2DViewer > 1) valid = YES;
+	}
 	else if( [item action] == @selector( roiGetInfo:))
 	{
 		if( [self selectedROI]) valid = YES;

@@ -714,7 +714,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (IBAction)print:(id)sender
+- (IBAction) mergeFusedImages:(id)sender
 {
 	DCMPix *fusedPix = [[blendingView curDCM] renderWithRotation: [blendingView rotation] scale: [blendingView scaleValue] xFlipped: [blendingView xFlipped] yFlipped: [blendingView yFlipped]];
 	DCMPix *originalPix = [curDCM renderWithRotation: [self rotation] scale: [self scaleValue] xFlipped: [self xFlipped] yFlipped: [self yFlipped]];
@@ -742,10 +742,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		: [NSMutableArray arrayWithObject: newPix]
 		: [NSMutableArray arrayWithObject: [newPix imageObj]]
 		: newData];
-	
-	
-	return;
+}
 
+- (IBAction) print:(id)sender
+{
 //	NSData *im = [[curDCM renderNSImageInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped] TIFFRepresentation];
 //	[im writeToFile: @"test.tiff" atomically: YES];
 	
@@ -1085,6 +1085,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		valid = YES;
 		if( [item tag] == syncro) [item setState: NSOnState];
 		else [item setState: NSOffState];
+	}
+	else if( [item action] == @selector( mergeFusedImages:))
+	{
+		if( blendingView) valid = YES;
 	}
 	else if( [item action] == @selector( annotMenu:))
 	{
