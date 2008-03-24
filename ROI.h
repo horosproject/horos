@@ -230,6 +230,7 @@ enum
 
 /**  Compute the length for between two points in cm */
 - (float) Length:(NSPoint) mesureA :(NSPoint) mesureB;
+- (float) LengthFrom:(NSPoint) mesureA to:(NSPoint) mesureB inPixel: (BOOL) inPixel;
 
 /** Compute an angle between 2 lines */
 - (float) Angle:(NSPoint) p2 :(NSPoint) p1 :(NSPoint) p3;

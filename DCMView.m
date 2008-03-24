@@ -716,15 +716,26 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (IBAction) mergeFusedImages:(id)sender
 {
-	DCMPix *fusedPix = [[blendingView curDCM] renderWithRotation: [blendingView rotation] scale: [blendingView scaleValue] xFlipped: [blendingView xFlipped] yFlipped: [blendingView yFlipped]];
-	DCMPix *originalPix = [curDCM renderWithRotation: [self rotation] scale: [self scaleValue] xFlipped: [self xFlipped] yFlipped: [self yFlipped]];
+	float oScale = 1.0; // The back image is at full resolution
+	float scaleRatio = 1.0 / [self scaleValue];
+	
+	float blendingScale = [blendingView scaleValue] * scaleRatio;
+
+	DCMPix *fusedPix = [[blendingView curDCM] renderWithRotation: [blendingView rotation] scale: blendingScale xFlipped: [blendingView xFlipped] yFlipped: [blendingView yFlipped]];
+	DCMPix *originalPix = [curDCM renderWithRotation: [self rotation] scale: oScale xFlipped: [self xFlipped] yFlipped: [self yFlipped]];
 	
 	NSPoint oo = [blendingView origin];
+	oo.x *= scaleRatio;
+	oo.y *= scaleRatio;
+	
 	if( [blendingView xFlipped]) oo.x = - oo.x;
 	if( [blendingView yFlipped]) oo.y = - oo.y;
 	oo = [DCMPix rotatePoint: oo aroundPoint:NSMakePoint( 0, 0) angle: -[blendingView rotation]*deg2rad];
 
 	NSPoint cc = [self origin];
+	cc.x *= scaleRatio;
+	cc.y *= scaleRatio;
+
 	if( [self xFlipped]) cc.x = - cc.x;
 	if( [self yFlipped]) cc.y = - cc.y;
 	cc = [DCMPix rotatePoint: cc aroundPoint:NSMakePoint( 0, 0) angle: -[self rotation]*deg2rad];
@@ -7649,6 +7660,38 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	else return [self getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels];
 }
 
+- (NSRect) smartCrop
+{
+	NSRect smartRect = NSMakeRect( 0, 0, [self frame].size.width, [self frame].size.height);
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
+	{
+		NSPoint oo = [self origin];
+		
+		NSRect usefulRect = [curDCM usefulRectWithRotation: rotation scale: scaleValue xFlipped: xFlipped yFlipped: yFlipped];
+		
+		NSSize rectSize = [self frame].size;
+		
+		if( xFlipped) oo.x = - oo.x;
+		if( yFlipped) oo.y = - oo.y;
+
+		oo = [DCMPix rotatePoint: oo aroundPoint:NSMakePoint( 0, 0) angle: -rotation*deg2rad];
+		
+		NSPoint cov = NSMakePoint( rectSize.width/2 + oo.x - usefulRect.size.width/2, rectSize.height/2 - oo.y - usefulRect.size.width/2);
+		
+		usefulRect.origin = cov;
+		
+		NSRect frameRect;
+		
+		frameRect.size = rectSize;
+		frameRect.origin.x = frameRect.origin.y = 0;
+		
+		smartRect = NSIntersectionRect( frameRect, usefulRect);
+	}
+	
+	return smartRect;
+}
+
 -(unsigned char*) getRawPixelsView:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels
 {
 	unsigned char	*buf = 0L;
@@ -7659,10 +7702,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( force8bits == YES || curDCM.isRGB == YES)		// Screen Capture in RGB - 8 bit
 		{
-			NSRect size = [self bounds];
+			NSSize size = [self frame].size;
 			
-			*width = size.size.width;
-			*height = size.size.height;
+			*width = size.width;
+			*height = size.height;
 			*spp = 3;
 			*bpp = 8;
 			
@@ -7723,6 +7766,38 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 				
 				free( tempBuf);
+			}
+			
+			// smart cropping
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
+			{
+				NSRect smartCroppedRect = [self smartCrop];
+				
+				// Apply the crop
+				NSRect fRect = NSMakeRect( 0, 0 , *width, *height);
+				NSRect unionRect = NSIntersectionRect( smartCroppedRect, fRect);
+				
+				int y1 = unionRect.origin.y;
+				int y2 = unionRect.origin.y+unionRect.size.height;
+				int x1 = unionRect.origin.x;
+				int x2 = unionRect.origin.x+unionRect.size.width;
+				
+				int lineBytes = (x2-x1) * 3;
+				
+				unsigned char *srcData = (unsigned char*) buf;
+				unsigned char *dstData = (unsigned char*) malloc( (int) smartCroppedRect.size.width * (int) smartCroppedRect.size.height * 3);
+				
+				if( dstData)
+				{
+					for( int y = y1; y < y2; y++)
+						memcpy( dstData + ((y-y1)*(int)smartCroppedRect.size.width*3), srcData +(y**width*3 + x1*3), lineBytes);
+					
+					free( buf);
+					buf = dstData;
+					
+					*width = smartCroppedRect.size.width;
+					*height = smartCroppedRect.size.height;
+				}
 			}
 		}
 		else // Screen Capture in 16 bit BW

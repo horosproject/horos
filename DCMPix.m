@@ -8801,7 +8801,7 @@ END_CREATE_ROIS:
 	memcpy( correctedOrientation, o, sizeof o );
 }
 
-- (NSRect) useFulRectWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF
+- (NSRect) usefulRectWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF
 {
 	int newHeight;
 	int newWidth;
@@ -8844,7 +8844,7 @@ END_CREATE_ROIS:
 {
 	if( [self isRGB]) return 0L;
 	
-	NSRect dstRect = [self useFulRectWithRotation: r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF];
+	NSRect dstRect = [self usefulRectWithRotation: r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF];
 	
 	float rot = r*deg2rad;
 	int newHeight;
@@ -8950,6 +8950,11 @@ END_CREATE_ROIS:
 
 - (DCMPix*) renderInRectSize:(NSSize) rectSize atPosition:(NSPoint) oo rotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF;
 {
+	return [self renderInRectSize: rectSize atPosition: oo rotation: r scale: scale xFlipped: xF yFlipped:  yF smartCrop: YES];
+}
+
+- (DCMPix*) renderInRectSize:(NSSize) rectSize atPosition:(NSPoint) oo rotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF smartCrop: (BOOL) smartCrop;
+{
 	if( [self isRGB]) return 0L;
 	
 	DCMPix *newPix = [self renderWithRotation: r scale: scale xFlipped: xF yFlipped:  yF];
@@ -8963,21 +8968,43 @@ END_CREATE_ROIS:
 	src.rowBytes = src.width*4;
 	src.data = [newPix fImage];
 	
-	dst.height = rectSize.height;
-	dst.width = rectSize.width;
-	dst.rowBytes = dst.width*4;
-	dst.data = malloc( dst.height * dst.rowBytes);
-	
 	if( xF) oo.x = - oo.x;
 	if( yF) oo.y = - oo.y;
 	
 	oo = [DCMPix rotatePoint: oo aroundPoint:NSMakePoint( 0, 0) angle: -r*deg2rad];
-	
+		
 	// zero coordinate is in the center of the view
 	NSPoint cov = NSMakePoint( rectSize.width/2 + oo.x - [newPix pwidth]/2, rectSize.height/2 - oo.y - [newPix pheight]/2);
 	
+	if( smartCrop)	// remove the black part of the image
+	{
+		NSRect usefulRect;
+		
+		usefulRect.origin = cov;
+		usefulRect.size.width = [newPix pwidth];
+		usefulRect.size.height = [newPix pheight];
+		
+		NSRect frameRect;
+		
+		frameRect.size = rectSize;
+		frameRect.origin.x = frameRect.origin.y = 0;
+		
+		NSRect smartRect = NSIntersectionRect( frameRect, usefulRect);
+		
+		rectSize.height = smartRect.size.height;
+		rectSize.width = smartRect.size.width;
+		
+		cov.x -= smartRect.origin.x;
+		cov.y -= smartRect.origin.y;
+	}
+	
 	cov.x = (int) cov.x;
 	cov.y = (int) cov.y;
+
+	dst.height = rectSize.height;
+	dst.width = rectSize.width;
+	dst.rowBytes = dst.width*4;
+	dst.data = malloc( dst.height * dst.rowBytes);
 	
 	if( dst.data)
 		[self drawImage: &src inImage: &dst offset: cov background: [self minValueOfSeries]-1024];

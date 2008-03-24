@@ -1253,6 +1253,11 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 
 -(float) Length:(NSPoint) mesureA :(NSPoint) mesureB
 {
+	return [self LengthFrom: mesureA to : mesureB inPixel: NO];
+}
+
+-(float) LengthFrom:(NSPoint) mesureA to:(NSPoint) mesureB inPixel: (BOOL) inPixel
+{
 	short yT, xT;
 	float mesureLength;
 	
@@ -1267,8 +1272,11 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		if( pixelSpacingX != 0 && pixelSpacingY != 0)
 		{
-			coteA *= pixelSpacingX;
-			coteB *= pixelSpacingY;
+			if( inPixel == NO)
+			{
+				coteA *= pixelSpacingX;
+				coteB *= pixelSpacingY;
+			}
 		}
 		
 		if( coteA == 0) mesureLength = coteB;
@@ -1277,7 +1285,10 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		if( pixelSpacingX != 0 && pixelSpacingY != 0)
 		{
-			mesureLength /= 10.0;
+			if( inPixel == NO)
+			{
+				mesureLength /= 10.0;
+			}
 		}
 	}
 	
@@ -3844,11 +3855,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 				if( type == tMesure && ROITEXTNAMEONLY == NO) {
-					if( pixelSpacingX != 0 && pixelSpacingY != 0) {
-						if ([self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]] < .1)
-							sprintf (line2, "L: %0.1f %cm", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]] * 10000.0, 0xb5);
+					if( pixelSpacingX != 0 && pixelSpacingY != 0)
+					{
+						float lPix, lMm = [self MesureLength: &lPix];
+						
+						if ( lMm < .1)
+							sprintf (line2, "Length: %0.1f %cm (%0.3f pix)", lMm * 10000.0, 0xb5, lPix);
 						else
-							sprintf (line2, "Length: %0.3f cm", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
+							sprintf (line2, "Length: %0.3f cm (%0.3f pix)", lMm, lPix);
 					}
 					else
 						sprintf (line2, "Length: %0.3f pix", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
