@@ -4713,10 +4713,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	suppress_labels = NO;
 	
-    NSLog(@"DCMView alloc");
-	
-	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
-	
 //	NSOpenGLPixelFormatAttribute attrs[] =
 //    {
 //			NSOpenGLPFAAccelerated,
@@ -4728,6 +4724,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	
 	// Get pixel format from OpenGL
+	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
     NSOpenGLPixelFormat* pixFmt = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
     if ( !pixFmt ) {
     //        NSRunCriticalAlertPanel(NSLocalizedString(@"OPENGL ERROR",nil), NSLocalizedString(@"Not able to run Quartz Extreme: OpenGL+Quartz. Update your video hardware!",nil), NSLocalizedString(@"OK",nil), nil, nil);
@@ -6781,6 +6778,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
+- (NSOpenGLContext*) offscreenDisplay: (NSRect) r
+{
+	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
+    NSOpenGLPixelFormat* pixFmt = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
+	
+	NSOpenGLContext * c = [[[NSOpenGLContext alloc] initWithFormat: pixFmt shareContext: 0L] autorelease];
+	
+	[c makeCurrentContext];
+	[self drawRect: r withContext: c];
+	
+	return c;
+}
+
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
 {
 	long		clutBars	= CLUTBARS;
@@ -7707,6 +7717,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			buf = malloc( 10 + *width * *height * 4 * *bpp/8);
 			if( buf)
 			{
+				NSOpenGLContext *c = [self openGLContext];
+				
 				if( removeGraphical)
 				{
 					NSString	*str = [[self stringID] retain];
@@ -7717,11 +7729,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					[self setStringID: str];
 					[str release];
 				}
-				else [self display];
+				else
+				{
+					[self display];
+//					[self drawRect: [self smartCrop] withContext: 0L];
+				}
 				
-				[[self openGLContext] makeCurrentContext];
+				[c makeCurrentContext];
 				
-				CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+				CGLContextObj cgl_ctx = [c CGLContextObj];
 				
 				glReadBuffer(GL_FRONT);
 				
@@ -7764,7 +7780,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 			
 			// smart cropping
-			if( removeGraphical == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
 			{
 				NSRect smartCroppedRect = [self smartCrop];
 				
