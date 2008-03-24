@@ -7630,6 +7630,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels :(BOOL) allTiles
 {
+	return [self getRawPixels:width :height :spp :bpp :screenCapture :force8bits :removeGraphical :squarePixels :allTiles :NO];
+}
+
+-(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels :(BOOL) allTiles :(BOOL) allowSmartCropping
+{
+	return [self getRawPixelsWidth: width height: height spp: spp bpp: bpp screenCapture: screenCapture force8bits: force8bits removeGraphical: removeGraphical squarePixels: squarePixels allTiles: allTiles allowSmartCropping: allowSmartCropping];
+}
+
+- (unsigned char*) getRawPixelsWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allTiles:(BOOL) allTiles allowSmartCropping:(BOOL) allowSmartCropping;
+{
 	if( allTiles && [self is2DViewer] && (_imageRows != 1 || _imageColumns != 1))
 	{
 		NSArray		*views = [[[self windowController] seriesView] imageViews];
@@ -7637,7 +7647,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		// Create a large buffer for all views
 		// All views are identical
 		
-		unsigned char	*firstView = [[views objectAtIndex: 0] getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels :NO];
+		unsigned char	*firstView = [[views objectAtIndex: 0] getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:NO];
 		unsigned char	*globalView;
 		
 		long viewSize =  *bpp * *spp * *width * *height / 8;
@@ -7648,26 +7658,32 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		free( firstView);
 		
-		for( int x = 0; x < _imageColumns; x++ ) {
-			for( int y = 0; y < _imageRows; y++) {
-				unsigned char	*aView = [[views objectAtIndex: x + y*_imageColumns] getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels :NO];
+		if( globalView)
+		{
+			for( int x = 0; x < _imageColumns; x++ )
+			{
+				for( int y = 0; y < _imageRows; y++)
+				{
+					unsigned char	*aView = [[views objectAtIndex: x + y*_imageColumns] getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:NO];
+					
+					unsigned char	*o = globalView + *spp*globalWidth*y**height**bpp/8 +  x**width**spp**bpp/8;
 				
-				unsigned char	*o = globalView + *spp*globalWidth*y**height**bpp/8 +  x**width**spp**bpp/8;
-			
-				for( int yy = 0 ; yy < *height; yy++) {
-					memcpy( o + yy**spp*globalWidth**bpp/8, aView + yy**spp**width**bpp/8, *spp**width**bpp/8);
+					for( int yy = 0 ; yy < *height; yy++)
+					{
+						memcpy( o + yy**spp*globalWidth**bpp/8, aView + yy**spp**width**bpp/8, *spp**width**bpp/8);
+					}
+					
+					free( aView);
 				}
-				
-				free( aView);
 			}
+			
+			*width = globalWidth;
+			*height = globalHeight;
 		}
-		
-		*width = globalWidth;
-		*height = globalHeight;
 		
 		return globalView;
 	}
-	else return [self getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels :YES];
+	else return [self getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:allowSmartCropping];
 }
 
 - (NSRect) smartCrop
@@ -7698,6 +7714,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 }
 
 -(unsigned char*) getRawPixelsView:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels :(BOOL) allowSmartCropping
+{
+	return [self getRawPixelsViewWidth: width height: height spp: spp bpp: bpp screenCapture: screenCapture force8bits: force8bits removeGraphical: removeGraphical squarePixels: squarePixels allowSmartCropping: allowSmartCropping];
+}
+
+-(unsigned char*) getRawPixelsViewWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allowSmartCropping:(BOOL) allowSmartCropping
 {
 	unsigned char	*buf = 0L;
 	
@@ -8210,7 +8231,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		for( long i = 0; i < [viewers count]; i++) {
 			long	iwidth, iheight, ispp, ibpp;
 			
-			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixels:&iwidth :&iheight :&ispp :&ibpp :YES :NO];
+			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixels:&iwidth :&iheight :&ispp :&ibpp :YES :YES];
 			
 			NSRect	bounds = [[viewsRect objectAtIndex: i] rectValue];	//[[[viewers objectAtIndex: i] imageView] bounds];
 			
