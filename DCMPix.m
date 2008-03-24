@@ -8870,7 +8870,7 @@ END_CREATE_ROIS:
 		src.height = [self pheight];
 		src.width = [self pwidth];
 		src.rowBytes = [self pwidth]*4;
-		src.data = [self fImage];
+		src.data = [self computefImage];
 		
 		// Flipping X-Y
 		if( xF)
