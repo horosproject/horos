@@ -14091,10 +14091,23 @@ int i,j,l;
 		else [curPix orientation: o];
 		[exportDCM setOrientation: o];
 		
-		if( screenCapture)
+		if( screenCapture == 2)		// 16-bit crop : smart crop / full resolution
 		{
 			// Get the upper left pixel position
-			NSPoint tempPt = [imageView ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];
+			NSPoint tempPt = [imageView ConvertFromUpLeftView2GL: [imageView smartCrop].origin];
+			[[imageView curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
+			[exportDCM setPosition: o];
+		}
+		else if( screenCapture == 1) // RGB 
+		{
+			NSPoint tempPt;
+			
+			// Get the upper left pixel position
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
+				tempPt = [imageView ConvertFromUpLeftView2GL: [imageView smartCrop].origin];
+			else
+				tempPt = [imageView ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];
+				
 			[[imageView curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 			[exportDCM setPosition: o];
 		}

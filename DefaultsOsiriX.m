@@ -674,6 +674,8 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject:@"0" forKey:@"DECOMPRESSDICOMLISTENER"];
 	[defaultValues setObject:@"0" forKey:@"COMPRESSDICOMLISTENER"];
 	[defaultValues setObject:@"0" forKey:@"CheckForMultipleVolumesInSeries"];
+	[defaultValues setObject:@"1" forKey:@"ScreenCaptureSmartCropping"];
+	
 	
 	// ** DELETEFILELISTENER
 	[defaultValues setObject:@"1" forKey:@"DELETEFILELISTENER"];

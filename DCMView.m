@@ -7662,32 +7662,27 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (NSRect) smartCrop
 {
-	NSRect smartRect = NSMakeRect( 0, 0, [self frame].size.width, [self frame].size.height);
+	NSPoint oo = [self origin];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
-	{
-		NSPoint oo = [self origin];
-		
-		NSRect usefulRect = [curDCM usefulRectWithRotation: rotation scale: scaleValue xFlipped: xFlipped yFlipped: yFlipped];
-		
-		NSSize rectSize = [self frame].size;
-		
-		if( xFlipped) oo.x = - oo.x;
-		if( yFlipped) oo.y = - oo.y;
+	NSRect usefulRect = [curDCM usefulRectWithRotation: rotation scale: scaleValue xFlipped: xFlipped yFlipped: yFlipped];
+	
+	NSSize rectSize = [self frame].size;
+	
+	if( xFlipped) oo.x = - oo.x;
+	if( yFlipped) oo.y = - oo.y;
 
-		oo = [DCMPix rotatePoint: oo aroundPoint:NSMakePoint( 0, 0) angle: -rotation*deg2rad];
-		
-		NSPoint cov = NSMakePoint( rectSize.width/2 + oo.x - usefulRect.size.width/2, rectSize.height/2 - oo.y - usefulRect.size.width/2);
-		
-		usefulRect.origin = cov;
-		
-		NSRect frameRect;
-		
-		frameRect.size = rectSize;
-		frameRect.origin.x = frameRect.origin.y = 0;
-		
-		smartRect = NSIntersectionRect( frameRect, usefulRect);
-	}
+	oo = [DCMPix rotatePoint: oo aroundPoint:NSMakePoint( 0, 0) angle: -rotation*deg2rad];
+	
+	NSPoint cov = NSMakePoint( rectSize.width/2 + oo.x - usefulRect.size.width/2, rectSize.height/2 - oo.y - usefulRect.size.width/2);
+	
+	usefulRect.origin = cov;
+	
+	NSRect frameRect;
+	
+	frameRect.size = rectSize;
+	frameRect.origin.x = frameRect.origin.y = 0;
+	
+	NSRect smartRect = NSIntersectionRect( frameRect, usefulRect);
 	
 	return smartRect;
 }
@@ -7769,7 +7764,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 			
 			// smart cropping
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
+			if( removeGraphical == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
 			{
 				NSRect smartCroppedRect = [self smartCrop];
 				

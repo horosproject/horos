@@ -8815,12 +8815,12 @@
 		AB94E72306343D91003E4C48 /* MutableArrayCategory.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MutableArrayCategory.m; sourceTree = "<group>"; };
 		AB94E72406343D91003E4C48 /* MutableArrayCategory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MutableArrayCategory.h; sourceTree = "<group>"; };
 		AB95C0380A2B08ED00380C65 /* FileNotFound.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FileNotFound.tif; sourceTree = "<group>"; };
-		AB9723890C684B4E00DC727C /* OsiriXDB_Previous_DataModel1.1.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel1.1.mom; sourceTree = "<group>"; };
-		AB97238A0C684B4E00DC727C /* OsiriXDB_Previous_DataModel1.5.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel1.5.mom; sourceTree = "<group>"; };
-		AB97238B0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.0.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel2.0.mom; sourceTree = "<group>"; };
-		AB97238C0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.1.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel2.1.mom; sourceTree = "<group>"; };
-		AB97238D0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.2.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel2.2.mom; sourceTree = "<group>"; };
-		AB97238E0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.3.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel2.3.mom; sourceTree = "<group>"; };
+		AB9723890C684B4E00DC727C /* OsiriXDB_Previous_DataModel1.1.mom */ = {isa = PBXFileReference; lastKnownFileType = file; path = OsiriXDB_Previous_DataModel1.1.mom; sourceTree = "<group>"; };
+		AB97238A0C684B4E00DC727C /* OsiriXDB_Previous_DataModel1.5.mom */ = {isa = PBXFileReference; lastKnownFileType = file; path = OsiriXDB_Previous_DataModel1.5.mom; sourceTree = "<group>"; };
+		AB97238B0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.0.mom */ = {isa = PBXFileReference; lastKnownFileType = file; path = OsiriXDB_Previous_DataModel2.0.mom; sourceTree = "<group>"; };
+		AB97238C0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.1.mom */ = {isa = PBXFileReference; lastKnownFileType = file; path = OsiriXDB_Previous_DataModel2.1.mom; sourceTree = "<group>"; };
+		AB97238D0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.2.mom */ = {isa = PBXFileReference; lastKnownFileType = file; path = OsiriXDB_Previous_DataModel2.2.mom; sourceTree = "<group>"; };
+		AB97238E0C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.3.mom */ = {isa = PBXFileReference; lastKnownFileType = file; path = OsiriXDB_Previous_DataModel2.3.mom; sourceTree = "<group>"; };
 		AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = ReportTemplate.rtf; path = Binaries/ReportTemplate.rtf; sourceTree = "<group>"; };
 		AB9E05460B30107A00661F7E /* key.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = key.png; sourceTree = "<group>"; };
 		ABA71D3F06726B1800335A62 /* OsiriX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OsiriX.app; sourceTree = BUILT_PRODUCTS_DIR; };

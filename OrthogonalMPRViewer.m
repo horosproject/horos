@@ -1320,9 +1320,6 @@ NSString * documentsDirectory();
 		NSPoint tempPt = [[self keyView] ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
 		[curPix convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
 		[exportDCM setPosition: o];
-				
-//		o[ 0] = [curPix originX];		o[ 1] = [curPix originY];		o[ 2] = [curPix originZ];
-//		[exportDCM setPosition: o];
 		
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
