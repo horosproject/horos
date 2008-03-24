@@ -1293,7 +1293,7 @@ NSString * documentsDirectory();
 	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
 	[DCMView setDefaults];
 	
-	unsigned char *data = [[self keyView] getRawPixels:&width :&height :&spp :&bpp :screenCapture :NO];
+	unsigned char *data = [[self keyView] getRawPixelsViewWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:NO removeGraphical:YES squarePixels:YES allowSmartCropping: YES];
 	
 	if( data)
 	{
