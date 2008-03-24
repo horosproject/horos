@@ -14027,7 +14027,7 @@ int i,j,l;
 		{
 			long	iwidth, iheight, ispp, ibpp;
 			
-			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixels:&iwidth :&iheight :&ispp :&ibpp :screenCapture :force8bits];
+			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixelsWidth:&iwidth height:&iheight spp:&ispp bpp:&ibpp screenCapture:screenCapture force8bits:force8bits removeGraphical:YES squarePixels:YES allTiles:[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping:NO];
 			
 			NSRect	bounds = [[viewsRect objectAtIndex: i] rectValue];	//[[[viewers objectAtIndex: i] imageView] bounds];
 			
@@ -14048,7 +14048,7 @@ int i,j,l;
 			free( tempData);
 		}
 	}
-	else data = [imageView getRawPixels:&width :&height :&spp :&bpp :screenCapture :force8bits];
+	else data = [imageView getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:YES squarePixels:YES allTiles:[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping:YES];
 	
 	if( data)
 	{

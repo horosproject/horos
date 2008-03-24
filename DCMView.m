@@ -7730,7 +7730,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		{
 			NSRect smartCroppedRect = [self smartCrop];
 			
-			if( removeGraphical && allowSmartCropping && [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
+			if( allowSmartCropping && [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
 			{
 				smartCroppedRect = [self smartCrop];
 				
@@ -7854,7 +7854,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			o.y /= s;
 			s = 1;
 			
-			DCMPix *im = [curDCM renderInRectSize: destRectSize atPosition:o rotation: [self rotation] scale: s xFlipped: xFlipped yFlipped: yFlipped];
+			DCMPix *im = [curDCM renderInRectSize: destRectSize atPosition:o rotation: [self rotation] scale: s xFlipped: xFlipped yFlipped: yFlipped smartCrop: allowSmartCropping];
 			
 			*width = [im pwidth];
 			*height = [im pheight];
@@ -8019,7 +8019,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		// IF 8 bits or RGB, IF non-square pixels -> square pixels
 		
-		if( squarePixels == YES && *bpp == 8 && self.pixelSpacingX != self.pixelSpacingY) {
+		if( squarePixels == YES && *bpp == 8 && self.pixelSpacingX != self.pixelSpacingY)
+		{
 			vImage_Buffer	srcVimage, dstVimage;
 			
 			srcVimage.data = buf;
@@ -8231,7 +8232,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		for( long i = 0; i < [viewers count]; i++) {
 			long	iwidth, iheight, ispp, ibpp;
 			
-			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixels:&iwidth :&iheight :&ispp :&ibpp :YES :YES];
+			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixelsWidth:&iwidth height:&iheight spp:&ispp bpp:&ibpp screenCapture:YES force8bits:YES removeGraphical: NO squarePixels: YES allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping: NO];
 			
 			NSRect	bounds = [[viewsRect objectAtIndex: i] rectValue];	//[[[viewers objectAtIndex: i] imageView] bounds];
 			
@@ -8247,7 +8248,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			free( tempData);
 		}
 	}
-	else data = [self getRawPixels :&width :&height :&spp :&bpp :!originalSize : YES :NO :YES];
+	else data = [self getRawPixelsWidth :&width height:&height spp:&spp bpp:&bpp screenCapture:!originalSize force8bits: YES removeGraphical:NO squarePixels:YES allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping: YES];
 	
 	if( [stringID isEqualToString:@"copy"] )
 	{
