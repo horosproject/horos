@@ -7637,7 +7637,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		// Create a large buffer for all views
 		// All views are identical
 		
-		unsigned char	*firstView = [[views objectAtIndex: 0] getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels];
+		unsigned char	*firstView = [[views objectAtIndex: 0] getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels :NO];
 		unsigned char	*globalView;
 		
 		long viewSize =  *bpp * *spp * *width * *height / 8;
@@ -7650,7 +7650,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		for( int x = 0; x < _imageColumns; x++ ) {
 			for( int y = 0; y < _imageRows; y++) {
-				unsigned char	*aView = [[views objectAtIndex: x + y*_imageColumns] getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels];
+				unsigned char	*aView = [[views objectAtIndex: x + y*_imageColumns] getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels :NO];
 				
 				unsigned char	*o = globalView + *spp*globalWidth*y**height**bpp/8 +  x**width**spp**bpp/8;
 			
@@ -7667,7 +7667,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		return globalView;
 	}
-	else return [self getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels];
+	else return [self getRawPixelsView:width :height :spp :bpp :screenCapture: force8bits :removeGraphical :squarePixels :YES];
 }
 
 - (NSRect) smartCrop
@@ -7697,7 +7697,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	return smartRect;
 }
 
--(unsigned char*) getRawPixelsView:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels
+-(unsigned char*) getRawPixelsView:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels :(BOOL) allowSmartCropping
 {
 	unsigned char	*buf = 0L;
 	
@@ -7707,10 +7707,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( force8bits == YES || curDCM.isRGB == YES)		// Screen Capture in RGB - 8 bit
 		{
-			NSSize size = [self frame].size;
+			NSRect smartCroppedRect = [self smartCrop];
 			
-			*width = size.width;
-			*height = size.height;
+			if( removeGraphical && allowSmartCropping && [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
+			{
+				smartCroppedRect = [self smartCrop];
+				
+				*width = smartCroppedRect.size.width;
+				*height = smartCroppedRect.size.height;
+			}
+			else smartCroppedRect = [self frame];
+			
+			*width = smartCroppedRect.size.width;
+			*height = smartCroppedRect.size.height;
 			*spp = 3;
 			*bpp = 8;
 			
@@ -7718,9 +7727,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( buf)
 			{
 				NSOpenGLContext *c = [self openGLContext];
-				
-				
-				NSSize f = [self frame].size;
 				
 				if( removeGraphical)
 				{
@@ -7732,12 +7738,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					[self setStringID: str];
 					[str release];
 				}
-				else
-				{
-					
-					[self setFrameSize: [self smartCrop].size];
-					[self display];
-				}
+				else [self display];
 				
 				[c makeCurrentContext];
 				
@@ -7746,7 +7747,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				glReadBuffer(GL_FRONT);
 				
 				#if __BIG_ENDIAN__
-					glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
+					glReadPixels(smartCroppedRect.origin.x, [self frame].size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
 					
 					register int ii = *width * *height;
 					register unsigned char	*t_argb = buf;
@@ -7758,7 +7759,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						t_rgb+=3;
 					}
 				#else
-					glReadPixels(0, 0, *width, *height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
+					glReadPixels( smartCroppedRect.origin.x, [self frame].size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
 					
 					register int ii = *width * *height;
 					register unsigned char	*t_argb = buf;
@@ -7769,8 +7770,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						t_rgb+=3;
 					}
 				#endif
-				
-				[self setFrameSize: f];
 				
 				long rowBytes = *width**spp**bpp/8;
 				
@@ -7785,37 +7784,40 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				free( tempBuf);
 			}
 			
-			// smart cropping
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
-			{
-				NSRect smartCroppedRect = [self smartCrop];
-				
-				// Apply the crop
-				NSRect fRect = NSMakeRect( 0, 0 , *width, *height);
-				NSRect unionRect = NSIntersectionRect( smartCroppedRect, fRect);
-				
-				int y1 = unionRect.origin.y;
-				int y2 = unionRect.origin.y+unionRect.size.height;
-				int x1 = unionRect.origin.x;
-				int x2 = unionRect.origin.x+unionRect.size.width;
-				
-				int lineBytes = (x2-x1) * 3;
-				
-				unsigned char *srcData = (unsigned char*) buf;
-				unsigned char *dstData = (unsigned char*) malloc( (int) smartCroppedRect.size.width * (int) smartCroppedRect.size.height * 3);
-				
-				if( dstData)
-				{
-					for( int y = y1; y < y2; y++)
-						memcpy( dstData + ((y-y1)*(int)smartCroppedRect.size.width*3), srcData +(y**width*3 + x1*3), lineBytes);
-					
-					free( buf);
-					buf = dstData;
-					
-					*width = smartCroppedRect.size.width;
-					*height = smartCroppedRect.size.height;
-				}
-			}
+//			// smart cropping
+//			if( removeGraphical && [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
+//			{
+//				NSRect smartCroppedRect = [self smartCrop];
+//				
+//				// Apply the crop
+//				NSRect fRect = NSMakeRect( 0, 0 , *width, *height);
+//				NSRect unionRect = NSIntersectionRect( smartCroppedRect, fRect);
+//				
+//				int y1 = unionRect.origin.y;
+//				int y2 = unionRect.origin.y+unionRect.size.height;
+//				int x1 = unionRect.origin.x;
+//				int x2 = unionRect.origin.x+unionRect.size.width;
+//				
+//				int lineBytes = (x2-x1) * 3;
+//				
+//				unsigned char *srcData = (unsigned char*) buf;
+//				
+//				int newW = smartCroppedRect.size.width;
+//				int newH = smartCroppedRect.size.height;
+//				unsigned char *dstData = (unsigned char*) malloc( (int) newW * (int) newH * 3);
+//				
+//				if( dstData)
+//				{
+//					for( int y = y1; y < y2; y++)
+//						memcpy( dstData + ((y-y1)*(int)newW*3), srcData +(y**width*3 + x1*3), lineBytes);
+//					
+//					free( buf);
+//					buf = dstData;
+//					
+//					*width = newW;
+//					*height = newH;
+//				}
+//			}
 		}
 		else // Screen Capture in 16 bit BW
 		{

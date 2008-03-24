@@ -468,21 +468,25 @@ static inline void DrawRuns(	struct edge *active,
     if (numCoords % 2)  /* Protect from degenerate polygons */
         xCoords[numCoords] = xCoords[numCoords - 1], numCoords++;
 	
-    for ( long i = 0; i < numCoords; i += 2 ) {
+    for ( long i = 0; i < numCoords; i += 2 )
+	{
 		// ** COMPUTE
-		if( compute ) {
+		if( compute )
+		{
 			start = xCoords[i];		if( start < 0) start = 0;		if( start >= w) start = w;
 			end = xCoords[i + 1];	if( end < 0) end = 0;			if( end >= w) end = w;
 			
-			switch( orientation) {
-			case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];			break;
-			case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		break;
-			case 2:		curPix = &pix[ (curY * w) + start];							break;
-		}
+			switch( orientation)
+			{
+				case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];			break;
+				case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		break;
+				case 2:		curPix = &pix[ (curY * w) + start];							break;
+			}
 			
 			long x = end - start;
 			
-			if( RGB == NO ) {
+			if( RGB == NO )
+			{
 				while( x-- >= 0 ) {
 					val = *curPix;
 					
