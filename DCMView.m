@@ -7719,6 +7719,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			{
 				NSOpenGLContext *c = [self openGLContext];
 				
+				
+				NSSize f = [self frame].size;
+				
 				if( removeGraphical)
 				{
 					NSString	*str = [[self stringID] retain];
@@ -7731,8 +7734,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 				else
 				{
+					
+					[self setFrameSize: [self smartCrop].size];
 					[self display];
-//					[self drawRect: [self smartCrop] withContext: 0L];
 				}
 				
 				[c makeCurrentContext];
@@ -7765,6 +7769,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						t_rgb+=3;
 					}
 				#endif
+				
+				[self setFrameSize: f];
 				
 				long rowBytes = *width**spp**bpp/8;
 				
