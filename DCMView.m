@@ -7726,7 +7726,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
 		for( long i = 0; i < [curRoiList count]; i++)	[[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
 		
-		if( force8bits == YES || curDCM.isRGB == YES)		// Screen Capture in RGB - 8 bit
+		if( force8bits == YES || curDCM.isRGB == YES || blendingView != 0L)		// Screen Capture in RGB - 8 bit
 		{
 			NSRect smartCroppedRect = [self smartCrop];
 			

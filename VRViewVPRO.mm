@@ -963,7 +963,7 @@ public:
 			
 			if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
 			
-			unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :NO];
+			unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
 			
 			if( dataPtr)
 			{
@@ -1022,7 +1022,7 @@ public:
 
 				long	width, height, spp, bpp, err;
 				
-				unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :NO];
+				unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
 				
 				if( dataPtr)
 				{
@@ -1096,7 +1096,7 @@ public:
 
 				long	width, height, spp, bpp, err;
 				
-				unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :NO];
+				unsigned char *dataPtr = [self getRawPixels:&width :&height :&spp :&bpp :YES :YES];
 				
 				if( dataPtr)
 				{

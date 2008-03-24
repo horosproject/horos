@@ -413,7 +413,7 @@
 			
 			long	width, height, spp, bpp, err;
 			
-			unsigned char *dataPtr = [[controller3D view] getRawPixels:&width :&height :&spp :&bpp :YES :NO];
+			unsigned char *dataPtr = [[controller3D view] getRawPixels:&width :&height :&spp :&bpp :YES :YES];
 			float	o[ 9];
 			
 			if( dataPtr)
