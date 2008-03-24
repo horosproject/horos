@@ -254,7 +254,7 @@
 					{
 						srcP = Ycache + y*newTotal*newX + i * w;
 						dstP = curPixfImage + (newY-y-1) * newX;
-
+						
 						memcpy(	dstP, srcP, newX *sizeof(float));
 					}
 				}
@@ -388,7 +388,7 @@
 		{
 			if(useYcache)
 				Ycache = malloc( newTotal*newY*newX*sizeof(float));
-				
+			
 			if( Ycache)
 			{
 				NSLog( @"start YCache");
@@ -551,6 +551,17 @@
 			
 			[curPix setOrigin: origin];
 		}
+	}
+	
+	if( axe == 0)		// X - RESLICE
+	{
+		if( [newPixListX count] > stack)
+			[newPixListX removeObjectsInRange: NSMakeRange( stack, [newPixListX count]-stack)];
+	}
+	else
+	{
+		if( [newPixListY count] > stack)
+			[newPixListY removeObjectsInRange: NSMakeRange( stack, [newPixListY count]-stack)];
 	}
 	
 	if( processorsLock == 0L)
