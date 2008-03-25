@@ -1081,6 +1081,12 @@ extern NSThread					*mainThread;
 		
 		[tempHTML replaceOccurrencesOfString:@"%StudyDate%" withString:[NSString stringWithFormat:@"%@", [WebServicesMethods iPhoneCompatibleNumericalFormat:date]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%SeriesCount%" withString:[NSString stringWithFormat:@"%d Series", count] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%StudyComment%" withString:[WebServicesMethods nonNilString:[study valueForKeyPath:@"comment"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		
+		NSString *stateText = @"";
+		if( [[study valueForKeyPath:@"stateText"] intValue])
+			stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKeyPath:@"stateText"] intValue]];
+		[tempHTML replaceOccurrencesOfString:@"%StudyState%" withString:[WebServicesMethods nonNilString:stateText] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%StudyListItemID%" withString:[WebServicesMethods nonNilString:[study valueForKeyPath:@"studyInstanceUID"]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[returnHTML appendString:tempHTML];
 	}
@@ -1099,6 +1105,8 @@ extern NSThread					*mainThread;
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientName%" withString:NSLocalizedString(@"Patient Name", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_PatientDateOfBirth%" withString:NSLocalizedString(@"Date of Birth", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyDate%" withString:NSLocalizedString(@"Study Date", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyState%" withString:NSLocalizedString(@"Study Status", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyComment%" withString:NSLocalizedString(@"Study Comment", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Series%" withString:NSLocalizedString(@"Series", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DICOMTransfert%" withString:NSLocalizedString(@"DICOM Transfert", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SendSelectedSeriesTo%" withString:NSLocalizedString(@"Send selected Series to", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
@@ -1155,6 +1163,9 @@ extern NSThread					*mainThread;
 	[returnHTML replaceOccurrencesOfString:@"%PageTitle%" withString:[WebServicesMethods nonNilString:[study valueForKeyPath:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	[returnHTML replaceOccurrencesOfString:@"%PatientID%" withString:[WebServicesMethods nonNilString:[study valueForKeyPath:@"patientID"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 	[returnHTML replaceOccurrencesOfString:@"%PatientName%" withString:[WebServicesMethods nonNilString:[study valueForKeyPath:@"name"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+	[returnHTML replaceOccurrencesOfString:@"%StudyComment%" withString:[WebServicesMethods nonNilString:[study valueForKeyPath:@"comment"]] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
+	NSString *stateText = [[BrowserController statesArray] objectAtIndex: [[study valueForKeyPath:@"stateText"] intValue]];
+	[returnHTML replaceOccurrencesOfString:@"%StudyState%" withString:[WebServicesMethods nonNilString:stateText] options:NSLiteralSearch range:NSMakeRange(0, [returnHTML length])];
 
 	NSDateFormatter *dobDateFormat = [[[NSDateFormatter alloc] init] autorelease];
 	[dobDateFormat setDateFormat:[[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateOfBirthFormat2"]];
