@@ -1155,7 +1155,7 @@ NSString * documentsDirectory();
 -(void) sendMail:(id) sender
 {
 	Mailer		*email;
-	NSImage		*im = [[self keyView] nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
+	NSImage		*im = [[self keyView] nsimage: NO];
 
 	NSArray *representations;
 	NSData *bitmapData;
@@ -1288,12 +1288,13 @@ NSString * documentsDirectory();
 	long	width, height, spp, bpp, err;
 	float	cwl, cww;
 	float	o[ 9];
+	float	imOrigin[ 3], imSpacing[ 2];
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
 	[DCMView setDefaults];
 	
-	unsigned char *data = [[self keyView] getRawPixelsViewWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:NO removeGraphical:YES squarePixels:YES allowSmartCropping: YES];
+	unsigned char *data = [[self keyView] getRawPixelsViewWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:NO removeGraphical:YES squarePixels:YES allowSmartCropping: YES origin: imOrigin spacing: imSpacing];
 	
 	if( data)
 	{
@@ -1305,10 +1306,7 @@ NSString * documentsDirectory();
 		[[self keyView] getWLWW:&cwl :&cww];
 		[exportDCM setDefaultWWWL: cww :cwl];
 		
-		if( screenCapture)
-			[exportDCM setPixelSpacing: [curPix pixelSpacingX] / [[self keyView] scaleValue] :[curPix pixelSpacingX] / [[self keyView] scaleValue]];
-		else
-			[exportDCM setPixelSpacing: [curPix pixelSpacingX] :[curPix pixelSpacingY]];
+		[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
 			
 		[exportDCM setSliceThickness: [curPix sliceThickness]];
 		[exportDCM setSlicePosition: [curPix sliceLocation]];
@@ -1317,10 +1315,7 @@ NSString * documentsDirectory();
 		else [curPix orientation: o];
 		[exportDCM setOrientation: o];
 		
-		NSPoint tempPt = [[self keyView] ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
-		[curPix convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
-		[exportDCM setPosition: o];
-		
+		[exportDCM setPosition: imOrigin];
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
 		err = [exportDCM writeDCMFile: 0L];

@@ -342,7 +342,7 @@ extern  short		annotations;
 -(void) sendMail:(id) sender
 {
 	Mailer		*email;
-	NSImage		*im = [self nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
+	NSImage		*im = [self nsimage: NO];
 
 	NSArray *representations;
 	NSData *bitmapData;
@@ -459,7 +459,7 @@ extern  short		annotations;
 
 -(unsigned char*) superGetRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical
 {
-	[super getRawPixels:width :height :spp :bpp :screenCapture :force8bits :removeGraphical];
+	return [super getRawPixelsWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:removeGraphical squarePixels:YES allTiles:NO allowSmartCropping:NO origin:0L spacing:0L];
 }
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical
@@ -467,7 +467,7 @@ extern  short		annotations;
 	if ([(EndoscopyViewer*)[[self window] windowController] exportAllViews])
 		return [(EndoscopyViewer*)[[self window] windowController] getRawPixels:width :height :spp :bpp];
 	else
-		return [super getRawPixels:width :height :spp :bpp :screenCapture :force8bits :removeGraphical];
+		return [super getRawPixelsWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:removeGraphical squarePixels:YES allTiles:NO allowSmartCropping:NO origin:0L spacing:0L];
 }
 
 @end

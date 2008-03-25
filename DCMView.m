@@ -749,6 +749,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[newPix freefImageWhenDone: NO];
 	
 	NSData	*newData = [NSData dataWithBytesNoCopy: [newPix fImage] length: [newPix pheight]*[newPix pwidth]*sizeof(float) freeWhenDone:YES];
+	
+	[[self windowController] close];
+	
 	[ViewerController newWindow
 		: [NSMutableArray arrayWithObject: newPix]
 		: [NSMutableArray arrayWithObject: [newPix imageObj]]
@@ -784,7 +787,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		NSLog(@"Orientation %d", [printInfo orientation]);
 		
-		NSImage *im = [self nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
+		NSImage *im = [self nsimage: NO];
 		
 		NSLog( @"w:%f, h:%f", [im size].width, [im size].height);
 		
@@ -1299,7 +1302,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		[pb declareTypes:[NSArray arrayWithObject:NSTIFFPboardType] owner:self];
 		
-		im = [self nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
+		im = [self nsimage: NO];
 		
 		[pb setData: [[NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
 	}
@@ -7548,7 +7551,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     {
 		NSRect rect = [self frame];
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"])
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"] && [self is2DViewer])
 		{
 			if( NSEqualSizes( previousViewSize, rect.size) == NO)
 			{
@@ -7615,30 +7618,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits
 {
-	return [self getRawPixels:width :height :spp :bpp :screenCapture :force8bits :YES];
+	return [self getRawPixelsWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:YES squarePixels:NO allTiles:[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping:NO origin: 0L spacing: 0L];
 }
 
--(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical
-{
-	return [self getRawPixels:width :height :spp :bpp :screenCapture :force8bits :removeGraphical :NO];
-}
-
--(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels
-{
-	return [self getRawPixels:width :height :spp :bpp :screenCapture :force8bits :removeGraphical :squarePixels :[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"]];
-}
-
--(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels :(BOOL) allTiles
-{
-	return [self getRawPixels:width :height :spp :bpp :screenCapture :force8bits :removeGraphical :squarePixels :allTiles :NO];
-}
-
--(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels :(BOOL) allTiles :(BOOL) allowSmartCropping
-{
-	return [self getRawPixelsWidth: width height: height spp: spp bpp: bpp screenCapture: screenCapture force8bits: force8bits removeGraphical: removeGraphical squarePixels: squarePixels allTiles: allTiles allowSmartCropping: allowSmartCropping];
-}
-
-- (unsigned char*) getRawPixelsWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allTiles:(BOOL) allTiles allowSmartCropping:(BOOL) allowSmartCropping;
+- (unsigned char*) getRawPixelsWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allTiles:(BOOL) allTiles allowSmartCropping:(BOOL) allowSmartCropping origin:(float*) imOrigin spacing:(float*) imSpacing;
 {
 	if( allTiles && [self is2DViewer] && (_imageRows != 1 || _imageColumns != 1))
 	{
@@ -7647,7 +7630,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		// Create a large buffer for all views
 		// All views are identical
 		
-		unsigned char	*firstView = [[views objectAtIndex: 0] getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:NO];
+		unsigned char	*firstView = [[views objectAtIndex: 0] getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:NO origin: imOrigin spacing: imSpacing];
 		unsigned char	*globalView;
 		
 		long viewSize =  *bpp * *spp * *width * *height / 8;
@@ -7664,7 +7647,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			{
 				for( int y = 0; y < _imageRows; y++)
 				{
-					unsigned char	*aView = [[views objectAtIndex: x + y*_imageColumns] getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:NO];
+					unsigned char	*aView = [[views objectAtIndex: x + y*_imageColumns] getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:NO origin: imOrigin spacing: imSpacing];
 					
 					unsigned char	*o = globalView + *spp*globalWidth*y**height**bpp/8 +  x**width**spp**bpp/8;
 				
@@ -7683,7 +7666,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		return globalView;
 	}
-	else return [self getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:allowSmartCropping];
+	else return [self getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:allowSmartCropping origin: imOrigin spacing: imSpacing];
 }
 
 - (NSRect) smartCrop
@@ -7713,12 +7696,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	return smartRect;
 }
 
--(unsigned char*) getRawPixelsView:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels :(BOOL) allowSmartCropping
-{
-	return [self getRawPixelsViewWidth: width height: height spp: spp bpp: bpp screenCapture: screenCapture force8bits: force8bits removeGraphical: removeGraphical squarePixels: squarePixels allowSmartCropping: allowSmartCropping];
-}
-
--(unsigned char*) getRawPixelsViewWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allowSmartCropping:(BOOL) allowSmartCropping
+-(unsigned char*) getRawPixelsViewWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allowSmartCropping:(BOOL) allowSmartCropping origin:(float*) imOrigin spacing:(float*) imSpacing
 {
 	unsigned char	*buf = 0L;
 	
@@ -7726,7 +7704,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
 		for( long i = 0; i < [curRoiList count]; i++)	[[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
 		
-		if( force8bits == YES || curDCM.isRGB == YES || blendingView != 0L)		// Screen Capture in RGB - 8 bit
+		if( force8bits == YES || curDCM.isRGB == YES || blendingView != 0L || [curDCM SUVConverted])		// Screen Capture in RGB - 8 bit
 		{
 			NSRect smartCroppedRect = [self smartCrop];
 			
@@ -7737,7 +7715,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				*width = smartCroppedRect.size.width;
 				*height = smartCroppedRect.size.height;
 			}
-			else smartCroppedRect = [self frame];
+			else smartCroppedRect = NSMakeRect( 0, 0, [self frame].size.width, [self frame].size.height);
+			
+			if( imOrigin)
+			{
+				NSPoint tempPt = [self ConvertFromUpLeftView2GL: smartCroppedRect.origin];
+				[curDCM convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: imOrigin pixelCenter: YES];
+			}
+			
+			if( imSpacing)
+			{
+				imSpacing[ 0] = [curDCM pixelSpacingX] / scaleValue;
+				imSpacing[ 1] = [curDCM pixelSpacingX] / scaleValue;
+			}
 			
 			*width = smartCroppedRect.size.width;
 			*height = smartCroppedRect.size.height;
@@ -7856,6 +7846,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			DCMPix *im = [curDCM renderInRectSize: destRectSize atPosition:o rotation: [self rotation] scale: s xFlipped: xFlipped yFlipped: yFlipped smartCrop: YES];
 			
+			if( imSpacing)
+			{
+				imSpacing[ 0] = [im pixelSpacingX];
+				imSpacing[ 1] = [im pixelSpacingX];
+			}
+			
+			if( imOrigin)
+			{
+				imOrigin[ 0] = [im originX];
+				imOrigin[ 1] = [im originY];
+				imOrigin[ 2] = [im originZ];
+			}
+			
 			*width = [im pwidth];
 			*height = [im pheight];
 			*spp = 1;
@@ -7882,6 +7885,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	else // Pixels contained in memory  -> only RGB or 16 bits data
 	{
+		if( imOrigin)
+		{	
+			imOrigin[ 0] = [curDCM originX];
+			imOrigin[ 1] = [curDCM originY];
+			imOrigin[ 2] = [curDCM originZ];
+		}
+		
+		if( imSpacing)
+		{
+			imSpacing[ 0] = [curDCM pixelSpacingX];
+			imSpacing[ 1] = [curDCM pixelSpacingY];
+		}
+		
 		BOOL	isRGB = curDCM.isRGB;
 		
 		*width = curDCM.pwidth;
@@ -8064,9 +8080,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	return buf;
 }
 
+-(NSImage*) nsimage
+{
+	return [self nsimage: NO allViewers: NO];
+}
+
 -(NSImage*) nsimage:(BOOL) originalSize
 {
-	return [self nsimage: originalSize allViewers: NO];
+	return [self nsimage: NO allViewers: NO];
 }
 
 -(NSImage*) nsimage:(BOOL) originalSize allViewers:(BOOL) allViewers {
@@ -8232,7 +8253,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		for( long i = 0; i < [viewers count]; i++) {
 			long	iwidth, iheight, ispp, ibpp;
 			
-			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixelsWidth:&iwidth height:&iheight spp:&ispp bpp:&ibpp screenCapture:YES force8bits:YES removeGraphical: NO squarePixels: YES allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping: NO];
+			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixelsWidth:&iwidth height:&iheight spp:&ispp bpp:&ibpp screenCapture:YES force8bits:YES removeGraphical: NO squarePixels: YES allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping: NO origin: 0L spacing: 0L];
 			
 			NSRect	bounds = [[viewsRect objectAtIndex: i] rectValue];	//[[[viewers objectAtIndex: i] imageView] bounds];
 			
@@ -8248,7 +8269,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			free( tempData);
 		}
 	}
-	else data = [self getRawPixelsWidth :&width height:&height spp:&spp bpp:&bpp screenCapture:!originalSize force8bits: YES removeGraphical:NO squarePixels:YES allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping: YES];
+	else data = [self getRawPixelsWidth :&width height:&height spp:&spp bpp:&bpp screenCapture:!originalSize force8bits: YES removeGraphical:NO squarePixels:YES allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping: YES origin: 0L spacing: 0L];
 	
 	if( [stringID isEqualToString:@"copy"] )
 	{

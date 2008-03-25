@@ -2117,13 +2117,13 @@ NSString * documentsDirectory();
 			clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	long	width, height, spp, bpp, err;
 	float	cwl, cww;
-	float	o[ 9];
+	float	o[ 9], imOrigin[ 3], imSpacing[ 2];
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
 	[DCMView setDefaults];
 	
-	unsigned char *data = [curView getRawPixels:&width :&height :&spp :&bpp :screenCapture :NO];
+	unsigned char *data = [curView getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:NO removeGraphical:YES squarePixels:NO allTiles:NO allowSmartCropping:YES origin: imOrigin spacing: imSpacing];
 	
 	if( data)
 	{
@@ -2135,10 +2135,7 @@ NSString * documentsDirectory();
 		[curView getWLWW:&cwl :&cww];
 		[exportDCM setDefaultWWWL: cww :cwl];
 		
-		if( screenCapture)
-			[exportDCM setPixelSpacing: [curPix pixelSpacingX] / [curView scaleValue] :[curPix pixelSpacingX] / [curView scaleValue]];
-		else
-			[exportDCM setPixelSpacing: [curPix pixelSpacingX] :[curPix pixelSpacingY]];
+		[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
 			
 		[exportDCM setSliceThickness: [curPix sliceThickness]];
 		[exportDCM setSlicePosition: [curPix sliceLocation]];
@@ -2146,11 +2143,7 @@ NSString * documentsDirectory();
 		if( screenCapture) [curView orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
 		else [curPix orientation: o];
 		[exportDCM setOrientation: o];
-		
-		NSPoint tempPt = [curView ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
-		[curPix convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
-		[exportDCM setPosition: o];
-		
+		[exportDCM setPosition: imOrigin];
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
 		err = [exportDCM writeDCMFile: 0L];

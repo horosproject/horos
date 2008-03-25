@@ -13636,7 +13636,7 @@ int i,j,l;
 			break;
 		}
 		
-		im = [imageView nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"] allViewers: qt_allViewers];
+		im = [imageView nsimage: NO allViewers: qt_allViewers];
 	}
 	
 	return im;
@@ -13882,6 +13882,8 @@ int i,j,l;
 	
 	unsigned char *data = 0L;
 	
+	float imOrigin[ 3], imSpacing[ 2];
+	
 	if( allViewers)
 	{
 		unsigned char	*tempData = 0L;
@@ -14027,7 +14029,7 @@ int i,j,l;
 		{
 			long	iwidth, iheight, ispp, ibpp;
 			
-			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixelsWidth:&iwidth height:&iheight spp:&ispp bpp:&ibpp screenCapture:screenCapture force8bits:force8bits removeGraphical:YES squarePixels:YES allTiles:[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping:NO];
+			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixelsWidth:&iwidth height:&iheight spp:&ispp bpp:&ibpp screenCapture:screenCapture force8bits:force8bits removeGraphical:YES squarePixels:YES allTiles:[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping:NO origin: imOrigin spacing: imSpacing];
 			
 			NSRect	bounds = [[viewsRect objectAtIndex: i] rectValue];	//[[[viewers objectAtIndex: i] imageView] bounds];
 			
@@ -14048,7 +14050,7 @@ int i,j,l;
 			free( tempData);
 		}
 	}
-	else data = [imageView getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:YES squarePixels:YES allTiles:[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping:YES];
+	else data = [imageView getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:screenCapture force8bits:force8bits removeGraphical:YES squarePixels:YES allTiles:[[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping:YES origin: imOrigin spacing: imSpacing];
 	
 	if( data)
 	{
@@ -14065,22 +14067,6 @@ int i,j,l;
 		[imageView getWLWW:&cwl :&cww];
 		[exportDCM setDefaultWWWL: cww :cwl];
 		
-		if( screenCapture == 2)
-		{
-			// In -(unsigned char*) getRawPixelsView:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels
-			// we generate the 16-bit BW image at full resolution : scale = 1
-			
-			[exportDCM setPixelSpacing: [curPix pixelSpacingX] / 1.0 :[curPix pixelSpacingX] / 1.0];
-		}
-		else if( screenCapture == 1)
-		{
-			[exportDCM setPixelSpacing: [curPix pixelSpacingX] / [imageView scaleValue] :[curPix pixelSpacingX] / [imageView scaleValue]];
-		}
-		else
-		{
-			[exportDCM setPixelSpacing: [curPix pixelSpacingX]:[curPix pixelSpacingY]];
-		}
-		
 		float thickness, location;
 		
 		[imageView getThickSlabThickness:&thickness location:&location];
@@ -14091,32 +14077,9 @@ int i,j,l;
 		else [curPix orientation: o];
 		[exportDCM setOrientation: o];
 		
-		if( screenCapture == 2)		// 16-bit crop : smart crop / full resolution
-		{
-			// Get the upper left pixel position
-			NSPoint tempPt = [imageView ConvertFromUpLeftView2GL: [imageView smartCrop].origin];
-			[[imageView curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
-			[exportDCM setPosition: o];
-		}
-		else if( screenCapture == 1) // RGB 
-		{
-			NSPoint tempPt;
-			
-			// Get the upper left pixel position
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
-				tempPt = [imageView ConvertFromUpLeftView2GL: [imageView smartCrop].origin];
-			else
-				tempPt = [imageView ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];
+		[exportDCM setPosition: imOrigin];
+		[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
 				
-			[[imageView curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
-			[exportDCM setPosition: o];
-		}
-		else
-		{
-			o[ 0] = [curPix originX];		o[ 1] = [curPix originY];		o[ 2] = [curPix originZ];
-			[exportDCM setPosition: o];
-		}
-		
 		[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 		
 		err = [exportDCM writeDCMFile: 0L];
@@ -14780,7 +14743,7 @@ int i,j,l;
 					[imageView sendSyncMessage: 0];
 					[[seriesView imageViews] makeObjectsPerformSelector:@selector(display)];
 					
-					NSImage *im = [imageView nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"] allViewers:[imageAllViewers state]];
+					NSImage *im = [imageView nsimage: NO allViewers:[imageAllViewers state]];
 					
 					NSArray *representations;
 					NSData *bitmapData;
@@ -15003,337 +14966,6 @@ int i,j,l;
 
 #define ICHAT_WIDTH 640
 #define ICHAT_HEIGHT 480
-
-//-(IBAction) produceIChatData:(id) sender
-//{
-//#if !__LP64__
-//	long			i, x, z, zz, inv, swidth, sheight, offsetX, offsetY;
-//	float			ratioX, ratioY;
-//	unsigned char   *rgbPtr;
-//	unsigned char   *finalPtr;
-//	FILE			*fp;
-//	long			line3, line4, spp, bpp;
-//	unsigned char   *src, *dst;
-//	long			scrapSize;
-//	ScrapRef		scrap;
-//
-//	// Is there an image in clipboard?
-//	
-//	GetCurrentScrap( &scrap); 
-//	if( GetScrapFlavorSize(scrap, 'OXRA', &scrapSize) == noErr) return;
-//	
-//	rgbPtr = [imageView getRawPixels: &swidth :&sheight :&spp :&bpp :YES :NO];
-//	finalPtr = malloc( 3L*ICHAT_WIDTH*ICHAT_HEIGHT);
-//	
-//	bzero( finalPtr, 3L*ICHAT_WIDTH*ICHAT_HEIGHT);
-//	
-//	ratioX = (float) swidth / (float) ICHAT_WIDTH;
-//	ratioY = (float) sheight / (float) ICHAT_HEIGHT;
-//
-//	if( ratioX > ratioY)
-//	{
-//		offsetX = 0;
-//		offsetY =(ICHAT_HEIGHT - sheight/ratioX)/2;
-//		offsetY += 2;
-//		
-//	}
-//	else
-//	{
-//		offsetY = 0;
-//		offsetX =(ICHAT_WIDTH - swidth/ratioY)/2;
-//		offsetX += 2;
-//	}
-//	
-//	if( ratioX > ratioY)
-//	{
-//		for( i = offsetY; i < ICHAT_HEIGHT-offsetY; i++)
-//		{
-//			line3 = (i)* ICHAT_WIDTH * 3L;
-//			
-//			line4 = (((i-offsetY)* swidth) / ICHAT_WIDTH);
-//			line4 *= swidth*3L;
-//			
-//			for( z = 0 ; z < ICHAT_WIDTH; z++)
-//			{
-//				dst = &finalPtr[ line3 +z*3];
-//				src = &rgbPtr[ line4 + (((z)*swidth) / ICHAT_WIDTH)*3];
-//				
-//				*dst++		= *src++;
-//				*dst++		= *src++;
-//				*dst		= *src;
-//			}
-//		}
-//	}
-//	else
-//	{
-//		for( i = 0; i < ICHAT_HEIGHT ; i++)
-//		{
-//			line3 = i * ICHAT_WIDTH * 3L;
-//			line4 = ( (i* sheight) / ICHAT_HEIGHT) * swidth * 3L;
-//			
-//			for( z = offsetX ; z < ICHAT_WIDTH-offsetX; z++)
-//			{
-//				dst = &finalPtr[ line3 +(z) *3];
-//				src = &rgbPtr[ line4 + (((z-offsetX)*sheight) / ICHAT_HEIGHT)*3];
-//				
-//				*dst++		= *src++;
-//				*dst++		= *src++;
-//				*dst		= *src;
-//			}
-//		}
-//	}
-//	
-//	//Draw Mouse
-//	
-//	NSPoint cursorLoc;// = [imageView convertPoint:[[self window] convertScreenToBase: [NSEvent mouseLocation]] fromView:0L];
-//	
-////	cursorLoc = [[[self window] contentView] convertPoint:[NSEvent mouseLocation] toView:self];
-//	
-////	cursorLoc = [imageView convertPoint:[NSEvent mouseLocation] fromView:imageView];
-//	cursorLoc = [[[self window] contentView] convertPoint:[[self window] mouseLocationOutsideOfEventStream] toView:imageView];
-//	
-////	NSLog( @"x: %2.2f y: %2.2f", cursorLoc.x, cursorLoc.y);
-//	
-//	long	xx = cursorLoc.x;
-//	long	yy = cursorLoc.y;
-//	
-//	if( ratioX > ratioY)
-//	{
-//		xx = (xx * ICHAT_WIDTH) / swidth;
-//	//	xx = ICHAT_WIDTH - xx;
-//		
-//		yy = (yy * ICHAT_WIDTH) / swidth;
-//		yy = ICHAT_HEIGHT - yy;
-//		yy -= offsetY;
-//	}
-//	else
-//	{
-//		xx = (xx * ICHAT_HEIGHT) / sheight;
-//	//	xx = ICHAT_WIDTH - xx;
-//		xx += offsetX;
-//		
-//		yy = (yy * ICHAT_HEIGHT) / sheight;
-//		yy = ICHAT_HEIGHT - yy;
-//	}
-//	
-////	NSLog( @"offset: %d", offsetX);
-//	
-//	for( x = -3; x< 3; x++)
-//	{
-//		for( z = -3; z < 3; z++)
-//		{
-//			if( x + xx >= 0 && x + xx < ICHAT_WIDTH)
-//			{
-//				if( z + yy >= 0 && z + yy < ICHAT_HEIGHT)
-//				{
-//					dst = &finalPtr[ (z + yy)*ICHAT_WIDTH*3L + (x + xx)*3L];
-//					*dst++ = 0x00;
-//					*dst++ = 0xFF;
-//					*dst = 0;
-//				}
-//			}
-//		}
-//	}
-//	
-////	NSPasteboard	*pb = [NSPasteboard generalPasteboard];
-////	[pb declareTypes:[NSArray arrayWithObject:@"OXRA"] owner:self];
-////	[pb setData: [NSData dataWithBytesNoCopy: finalPtr length:3L*ICHAT_WIDTH*ICHAT_HEIGHT freeWhenDone:YES] forType:@"OXRA"];
-//
-//	{
-////		ScrapFlavorInfo info[100];
-//		
-//		ClearCurrentScrap ();
-//		GetCurrentScrap( &scrap); 
-//		
-//		PutScrapFlavor ( scrap, 'OXRA',kScrapFlavorMaskNone ,3L*ICHAT_WIDTH*ICHAT_HEIGHT,finalPtr ); 
-//
-//	}
-////	fp = fopen("/tmp/osirix24bitsTemp", "wb");
-////	fwrite( finalPtr, 3L*ICHAT_WIDTH*ICHAT_HEIGHT, 1, fp);
-////	fclose( fp);
-////	rename("/tmp/osirix24bitsTemp", "/tmp/osirix24bits");
-//	
-//	free( rgbPtr);
-//	free( finalPtr);
-////	
-////	
-////	{
-////		long scrapSize;
-////		ScrapRef scrap;
-////		ScrapFlavorInfo info[100];
-////		
-////		GetCurrentScrap( &scrap); 
-////		
-////		GetScrapFlavorCount ( scrap, &scrapSize);
-////		
-////		GetScrapFlavorInfoList ( scrap,     &scrapSize,     info ); 
-////		
-////		if( GetScrapFlavorSize(scrap, 'OXRA', &scrapSize) == noErr)
-////		{
-////			
-////		}
-////	}
-////
-////	NSImage *sourceImage = [imageView nsimage:NO];
-////	
-////	[sourceImage setScalesWhenResized:YES];
-////	
-////	// Report an error if the source isn't a valid image
-////	if (![sourceImage isValid])
-////	{
-////			NSLog(@"Invalid Image");
-////	} else
-////	{
-////			NSImage *smallImage = [[[NSImage alloc] initWithSize:NSMakeSize(ICHAT_WIDTH, ICHAT_HEIGHT)] autorelease];
-////			
-////			[smallImage lockFocus];
-////			
-////			[[NSColor blackColor] set];
-////			[NSBezierPath fillRect: NSMakeRect(0, 0, ICHAT_WIDTH, ICHAT_HEIGHT)];
-////			
-////			NSSize size = [sourceImage size];
-////			
-////			[[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
-////			
-////			float ratioX, ratioY;
-////			
-////			ratioX = size.width / ICHAT_WIDTH;
-////			ratioY = size.height / ICHAT_HEIGHT;
-////			
-////			if( ratioX > ratioY)
-////			{
-////				[sourceImage setSize:NSMakeSize(size.width/ratioX, size.height/ratioX)];
-////				
-////				[sourceImage compositeToPoint:NSMakePoint(0, (ICHAT_HEIGHT - size.height/ratioX)/2) operation:NSCompositeCopy];
-////				
-////			}
-////			else
-////			{
-////				[sourceImage setSize:NSMakeSize(size.width/ratioY, size.height/ratioY)];
-////				
-////				[sourceImage compositeToPoint:NSMakePoint((ICHAT_WIDTH - size.width/ratioY)/2, 0) operation:NSCompositeCopy];
-////			}
-////			
-////			[smallImage unlockFocus];
-////			
-////			NSBitmapImageRep *bm = [NSBitmapImageRep imageRepWithData: [smallImage TIFFRepresentation]];
-////			
-////			unsigned char *rgb = malloc( 3L*ICHAT_WIDTH*ICHAT_HEIGHT);
-////			
-////			if( bm != 0L && rgb != 0L)
-////			{
-////				long i, x, z, line3, line4, inv;
-////				unsigned char *src = [bm bitmapData];
-////				
-////				NSLog(@"BPP:%d", [bm bitsPerPixel]);
-////				
-////				if( [bm bitsPerPixel] == 24)
-////				{
-////					for( i = 0; i < ICHAT_HEIGHT ; i++)
-////					{
-////						line3 = i * ICHAT_WIDTH * 3L;
-////						line4 = i * ICHAT_WIDTH * 3L;
-////						
-////						for( z = 0 ; z < ICHAT_WIDTH; z++)
-////						{
-////							inv = (ICHAT_WIDTH-1-z);
-////							
-////							rgb[ line3 +z*3]		= src[ line4 + inv*3];
-////							rgb[ line3 +z*3 +1]		= src[ line4 + inv*3 +1];
-////							rgb[ line3 +z*3 +2]		= src[ line4 + inv*3 +2];
-////						}
-////					}
-////				}
-////				else if( [bm bitsPerPixel] == 32)
-////				{
-////					for( i = 0; i < ICHAT_HEIGHT ; i++)
-////					{
-////						line3 = i * ICHAT_WIDTH * 3L;
-////						line4 = i * ICHAT_WIDTH * 4L;
-////						
-////						for( z = 0 ; z < ICHAT_WIDTH; z++)
-////						{
-////							inv = (ICHAT_WIDTH-1-z);
-////							
-////							rgb[ line3 +z*3]		= src[ line4 + inv*4];
-////							rgb[ line3 +z*3 +1]		= src[ line4 + inv*4 +1];
-////							rgb[ line3 +z*3 +2]		= src[ line4 + inv*4 +2];
-////						}
-////					}
-////				}
-////				
-////				NSData *rawData = [NSData dataWithBytesNoCopy:rgb  length:3L*ICHAT_WIDTH*ICHAT_HEIGHT freeWhenDone:YES];
-////				
-////				[rawData writeToFile:@"/tmp/osirix24bits" atomically:YES];
-////			}
-////	//		free( rgb);
-////			
-////	//		[[smallImage TIFFRepresentation] writeToFile:@"/test.tiff" atomically:NO];
-////	}
-////
-//#endif
-//}
-
-// IMAVManager notification callback.
-//- (void)_stateChanged:(NSNotification *)aNotification {
-//    // Read the state.
-//	NSLog(@"_stateChanged !");
-//	IMAVManager *avManager = [IMAVManager sharedAVManager];
-//    IMAVManagerState state = [avManager state];
-//	NSLog(@"state: %d", state);
-//
-//    if(state == IMAVRequested)
-//	{
-//        [avManager start];
-//		NSLog(@"Start iChat Theatre");
-//	}
-//	else if(state == IMAVInactive)
-//	{
-//		[avManager stop];
-//		NSLog(@"STOP iChat Theatre");
-//	}
-//}
-
-//- (void) iChatBroadcast:(id) sender
-//{
-//	NSLog(@"ichat broadcast");
-//    IMAVManager *avManager = [IMAVManager sharedAVManager];
-//	NSLog(@"[avManager state] : %d", [avManager state]);
-//    if ([avManager state] == IMAVInactive) {
-//        [avManager start];
-//		NSLog(@"Start broadcast");
-//		NSLog(@"[avManager state] : %d", [avManager state]);
-//    } else {
-//        [avManager stop];
-//		NSLog(@"STOP broadcast");
-//    }
-//}
-
-//- (void) iChatBroadcast:(id) sender
-//{
-//	if( timeriChat)
-//    {
-//        [timeriChat invalidate];
-//        [timeriChat release];
-//        timeriChat = nil;
-//        
-//        [[self findiChatButton] setLabel: NSLocalizedString(@"BroadCast", 0L)];
-//		[[self findiChatButton] setPaletteLabel: NSLocalizedString(@"BroadCast", 0L)];
-//        [[self findiChatButton] setToolTip: NSLocalizedString(@"BroadCast", 0L)];
-//    }
-//    else
-//    {
-//		[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationiChatBroadcast" object:0L userInfo: 0L];
-//		
-//        timeriChat = [[NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(produceIChatData:) userInfo:nil repeats:YES] retain];
-//        [[NSRunLoop currentRunLoop] addTimer:timeriChat forMode:NSModalPanelRunLoopMode];
-//        [[NSRunLoop currentRunLoop] addTimer:timeriChat forMode:NSEventTrackingRunLoopMode];
-//		
-//        [[self findiChatButton] setLabel: NSLocalizedString(@"Stop", nil)];
-//		[[self findiChatButton] setPaletteLabel: NSLocalizedString(@"Stop", nil)];
-//        [[self findiChatButton] setToolTip: NSLocalizedString(@"Stop", nil)];
-//    }
-//}
 
 - (void)iChatBroadcast:(id)sender
 {

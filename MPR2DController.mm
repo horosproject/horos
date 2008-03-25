@@ -1225,7 +1225,7 @@ extern NSString * documentsDirectory();
 			[viewerController setMovieIndex: curMovieIndex];
 			[view movieChangeSource:(float*) [volumeData[ curMovieIndex] bytes]];
 			
-			unsigned char *data = [view getRawPixels:&width :&height :&spp :&bpp :YES :YES];
+			unsigned char *data = [view getRawPixels:&width :&height :&spp :&bpp :YES :NO];
 			
 			if( data)
 			{
@@ -1233,12 +1233,12 @@ extern NSString * documentsDirectory();
 				[dcmSequence setPixelSpacing: [[view finalView] pixelSpacing]/ [[view finalView] scaleValue] :[[view finalView] pixelSpacing]/ [[view finalView] scaleValue]];
 				[exportDCM setSliceThickness: [[view finalView] pixelSpacing]];
 				
-				[[view finalView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
-				[exportDCM setOrientation: o];
-				
-				NSPoint tempPt = [[view finalView] ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
-				[[[view finalView] curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
-				[exportDCM setPosition: o];
+//				[[view finalView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
+//				[exportDCM setOrientation: o];
+//				
+//				NSPoint tempPt = [[view finalView] ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
+//				[[[view finalView] curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
+//				[exportDCM setPosition: o];
 				
 				if( fabs( o[6]) > fabs(o[7]) && fabs( o[6]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 0]];
 				if( fabs( o[7]) > fabs(o[6]) && fabs( o[7]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 1]];
@@ -1273,7 +1273,7 @@ extern NSString * documentsDirectory();
 		
 		if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
 		
-		unsigned char *data = [view getRawPixels:&width :&height :&spp :&bpp :YES :YES];
+		unsigned char *data = [view getRawPixels:&width :&height :&spp :&bpp :YES :NO];
 		
 		if( data)
 		{
@@ -1286,12 +1286,12 @@ extern NSString * documentsDirectory();
 			[exportDCM setPixelSpacing: [[view finalView] pixelSpacing] / [[view finalView] scaleValue] :[[view finalView] pixelSpacing] / [[view finalView] scaleValue]];
 			[exportDCM setSliceThickness: [[view finalView] pixelSpacing]];
 			
-			[[view finalView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
-			[exportDCM setOrientation: o];
+			//[[view finalView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
+			//[exportDCM setOrientation: o];
 			
-			NSPoint tempPt = [[view finalView] ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
-			[[[view finalView] curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
-			[exportDCM setPosition: o];
+			//NSPoint tempPt = [[view finalView] ConvertFromUpLeftView2GL: NSMakePoint( 0, 0)];				// <- Because we do screen capture !!!!!
+			//[[[view finalView] curDCM] convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: o pixelCenter: YES];
+			//[exportDCM setPosition: o];
 			
 			if( fabs( o[6]) > fabs(o[7]) && fabs( o[6]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 0]];
 			if( fabs( o[7]) > fabs(o[6]) && fabs( o[7]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 1]];
