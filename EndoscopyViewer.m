@@ -956,7 +956,6 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 											NSToolbarSeparatorItemIdentifier,
 											NSToolbarFlexibleSpaceItemIdentifier,
 											FlyThruToolbarItemIdentifier,
-											CenterlineToolbarItemIdentifier,
 											ShadingToolbarItemIdentifier,
 											endo3DToolsToolbarItemIdentifier,
 											nil];
