@@ -1466,6 +1466,11 @@ NSString * documentsDirectory();
 	[dcmToTextField setIntValue:max];
 	[dcmInterval setIntValue:1];
 	[dcmIntervalTextField setIntValue:1];
+
+	int count = fabs( [dcmFromTextField intValue] - [dcmToTextField intValue]);
+	count++;
+	count /= [dcmIntervalTextField intValue];
+	[dcmCountTextField setStringValue: [NSString stringWithFormat:@"%d images", count]];
 	
 	[self checkView: dcmBox :([[dcmSelection selectedCell] tag] == 1)];
 	
@@ -1478,8 +1483,19 @@ NSString * documentsDirectory();
 	else if([sender isEqualTo:dcmTo]){[dcmToTextField setIntValue:[sender intValue]];[dcmToTextField display];}
 	else if([sender isEqualTo:dcmToTextField]){[dcmTo setIntValue:[sender intValue]];[dcmTo display];}
 	else if([sender isEqualTo:dcmFromTextField]){[dcmFrom setIntValue:[sender intValue]];[dcmFrom display];}
-			
-	if ([[self keyView] isEqualTo:[controller originalView]])
+	else if([sender isEqualTo:dcmIntervalTextField]){[dcmInterval setIntValue:[sender intValue]];[dcmInterval display];}
+	else if([sender isEqualTo:dcmInterval]){[dcmIntervalTextField setIntValue:[sender intValue]];[dcmIntervalTextField display];}
+	
+	int count = fabs( [dcmFromTextField intValue] - [dcmToTextField intValue]);
+	count++;
+	count /= [dcmIntervalTextField intValue];
+	[dcmCountTextField setStringValue: [NSString stringWithFormat:@"%d images", count]];
+	
+	if( sender == dcmIntervalTextField || sender == dcmInterval)
+	{
+		
+	}
+	else if ([[self keyView] isEqualTo:[controller originalView]])
 	{
 		//[self resliceFromX: [[controller xReslicedView] crossPositionX] : [sender intValue] : controller];
 		[controller reslice: [[controller xReslicedView] crossPositionX] : [sender intValue] : [controller xReslicedView]];

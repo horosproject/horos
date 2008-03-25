@@ -760,23 +760,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (IBAction) print:(id)sender
 {
-//	NSData *im = [[curDCM renderNSImageInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped] TIFFRepresentation];
-//	[im writeToFile: @"test.tiff" atomically: YES];
-	
-//	DCMPix *newPix = [curDCM renderWithRotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
-//	DCMPix *newPix = [curDCM renderInRectSize: [self frame].size atPosition:[self origin] rotation: [self rotation] scale: [self scaleValue] xFlipped: xFlipped yFlipped: yFlipped];
-//	
-//	[newPix freefImageWhenDone: NO];
-//	
-//	NSData	*newData = [NSData dataWithBytesNoCopy: [newPix fImage] length: [newPix pheight]*[newPix pwidth]*sizeof(float) freeWhenDone:YES];
-//	[ViewerController newWindow
-//		: [NSMutableArray arrayWithObject: newPix]
-//		: [NSMutableArray arrayWithObject: [newPix imageObj]]
-//		: newData];
-//	
-//	
-//	return;
-	
 	if ([self is2DViewer] == YES)
 	{
 		[[self windowController] print: self];

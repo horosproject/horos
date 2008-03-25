@@ -192,8 +192,7 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 
 // POLY CLIP
 
-#define MAXVERTICAL     100000
-
+#define MAXVERTICAL     10000
 
 #define INIT_DELTAS dx=V2.x-V1.x;  dy=V2.y-V1.y;
 #define INIT_CLIP INIT_DELTAS if(dx)m=dy/dx;
@@ -2116,10 +2115,12 @@ BOOL gUSEPAPYRUSDCMPIX;
 						if( ptsInt[ i].y >= height) clip = YES;
 					}
 					
-					if( clip) {
+					if( clip)
+					{
 						long newNo;
 						
 						pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
+						
 						CLIP_Polygon( ptsInt, no, pTemp, &newNo, width, height);
 						
 						free( ptsInt);

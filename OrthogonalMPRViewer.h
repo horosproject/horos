@@ -43,7 +43,7 @@
 	IBOutlet NSWindow					*dcmExportWindow;
 	IBOutlet NSMatrix					*dcmSelection, *dcmFormat;
 	IBOutlet NSSlider					*dcmInterval, *dcmFrom, *dcmTo;
-	IBOutlet NSTextField				*dcmSeriesName, *dcmFromTextField, *dcmToTextField, *dcmIntervalTextField;
+	IBOutlet NSTextField				*dcmSeriesName, *dcmFromTextField, *dcmToTextField, *dcmIntervalTextField, *dcmCountTextField;
 	IBOutlet NSBox						*dcmBox;
 	DICOMExport							*exportDCM;
 	
