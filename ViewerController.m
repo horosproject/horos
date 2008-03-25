@@ -5894,8 +5894,9 @@ static ViewerController *draggedController = 0L;
 		return;
 	}
 	
-	[self computeInterval];
 	[self checkEverythingLoaded];
+	[self computeInterval];
+	
 	[imageView stopROIEditingForce: YES];
 	
 	NSLog(@"executeFilter");

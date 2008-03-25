@@ -2471,9 +2471,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) roiSet
 {
-	for( long i = 0; i < [curRoiList count]; i++) {
-		[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :labelFontListGLSize :self];
-	}
+	for( ROI *c in curRoiList)
+		[c setRoiFont: labelFontListGL :labelFontListGLSize :self];
 }
 
 // checks to see if tool is a valid ID for ROIs

@@ -2471,10 +2471,80 @@ static NSArray*	statesArray = nil;
 	return [self copyFilesIntoDatabaseIfNeeded: filesInput async: NO];
 }
 
-- (NSMutableArray*)copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput async: (BOOL)async {
+- (IBAction) copyToDBFolder: (id) sender
+{
+	BOOL matrixThumbnails = NO;
+	
+	if( isCurrentDatabaseBonjour) return;
+	
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
+	{
+		matrixThumbnails = YES;
+		NSLog( @"copyToDBFolder from matrix");
+	}
+	
+	NSMutableArray *objects = [NSMutableArray arrayWithCapacity: 0];
+	NSMutableArray *files;
+	
+	if( matrixThumbnails)
+		files = [self filesForDatabaseMatrixSelection: objects onlyImages: NO];
+	else
+		files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
+	
+	Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying linked files into Database...", 0L)];
+		
+	[splash showWindow:self];
+	[[splash progress] setMaxValue:[objects count]];
+	[splash setCancel: YES];
+		
+	[managedObjectContext lock];
+	@try
+	{
+		for( NSManagedObject *im in objects)
+		{
+			if( [[im valueForKey: @"inDatabaseFolder"] boolValue] == NO)
+			{
+				NSString *srcPath = [im valueForKey:@"completePath"];
+				NSString *extension = [srcPath pathExtension];
+				
+				if([extension isEqualToString:@""])
+					extension = [NSString stringWithString:@"dcm"]; 
+				
+				NSString *dstPath = [self getNewFileDatabasePath:extension];
+				
+				if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
+				{
+					[im setValue: [NSNumber numberWithBool: YES] forKey:@"inDatabaseFolder"];
+					[im setValue: [dstPath lastPathComponent] forKey:@"path"];
+					[im setValue: [NSNumber numberWithBool: NO] forKey:@"mountedVolume"];
+				}
+			}
+			
+			[splash incrementBy:1];
+			
+			if( [splash aborted])
+				break;
+		}
+	}
+	@catch ( NSException *e)
+	{
+		NSLog( @"******** copy to DB exception: %@", e);
+	}
+	[managedObjectContext unlock];
+	[splash close];
+	[splash release];
+}
+
+- (NSMutableArray*)copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput async: (BOOL)async
+{
+	return [self copyFilesIntoDatabaseIfNeeded: filesInput async: async COPYDATABASE: [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYDATABASE"] COPYDATABASEMODE: [[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASEMODE"]];
+}
+
+- (NSMutableArray*)copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput async: (BOOL)async COPYDATABASE: (BOOL) COPYDATABASE COPYDATABASEMODE:(int) COPYDATABASEMODE;
+{
 	if ( isCurrentDatabaseBonjour) return 0L;
 	if ([ filesInput count] == 0) return filesInput;
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"COPYDATABASE"] == NO) return filesInput;
+	if (COPYDATABASE == NO) return filesInput;
 	
 	NSMutableArray			*newList = [NSMutableArray arrayWithCapacity: [filesInput count]];
 	NSString				*INpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEFPATH];
@@ -2487,7 +2557,7 @@ static NSArray*	statesArray = nil;
 	
 	if( [newList count] == 0) return filesInput;
 	
-	switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"COPYDATABASEMODE"])	{
+	switch (COPYDATABASEMODE)	{
 		case always:
 			break;
 			
@@ -2545,7 +2615,7 @@ static NSArray*	statesArray = nil;
 		[NSThread detachNewThreadSelector:@selector(copyFilesThread:) toTarget:self withObject: filesInput];
 	}
 	else {
-		Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying into Database...",@"Copying into Database...")];
+		Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying into Database...", 0L)];
 		
 		[splash showWindow:self];
 		[[splash progress] setMaxValue:[filesInput count]];
@@ -2556,20 +2626,19 @@ static NSArray*	statesArray = nil;
 			
 			NSString	*extension = [srcPath pathExtension];
 			
-			@try {
-				
-				if( [[srcPath stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)	{
+			@try
+			{
+				if( [[[srcPath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)	{
 					DicomFile	*curFile = [[DicomFile alloc] init: srcPath];
 					
-					if( curFile ) {
-						// Dont
-						
+					if( curFile )
+					{
 						[curFile release];
 						
 						if([extension isEqualToString:@""])
 							extension = [NSString stringWithString:@"dcm"]; 
 						
-						NSString *dstPath = [self getNewFileDatabasePath:extension];	
+						NSString *dstPath = [self getNewFileDatabasePath:extension];
 						
 						if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil] == YES) {
 							[filesOutput addObject:dstPath];
@@ -6418,8 +6487,7 @@ static BOOL withReset = NO;
 			}
 			else if ([seriesSOPClassUID isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]])
 			{
-				//[cell setAction: @selector(pdfPreview:)];
-				//[cell setTitle: @"Open PDF"];
+				[cell setTitle: @"PDF"];
 				img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"pdf"]];
 			}
 			else if ([fileType isEqualToString: @"DICOMMPEG2"])
@@ -7098,7 +7166,8 @@ static BOOL withReset = NO;
 	return [self filesForDatabaseMatrixSelection: correspondingManagedObjects onlyImages: YES];
 }
 
-- (void)createContextualMenu {
+- (void)createContextualMenu
+{
 	NSMenuItem		*item, *subItem;
 	
 	if ( contextual == nil ) contextual	= [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
@@ -7195,6 +7264,10 @@ static BOOL withReset = NO;
 	[contextual addItem:item];
 	[item release];
 	
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy linked files to Database folder", nil)  action:@selector(copyToDBFolder:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
+	
 	[oMatrix setMenu: contextual];
 	
 	// Create alternate contextual menu for RT objects
@@ -7223,7 +7296,6 @@ static BOOL withReset = NO;
 	//	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
 	indx = [contextualRT indexOfItemWithTitle: @"Open Key Images"];
 	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
-	
 }
 
 -(void) annotMenu:(id) sender
@@ -9688,9 +9760,7 @@ static NSArray*	openSubSeriesArray = 0L;
 //												selector: @selector(listChangedTest:)
 //												name: @"OsiriXServerArray has changed"
 //												object: nil];
-
 		
-	
 		displayEmptyDatabase = NO;
 	}
 	return self;
@@ -9934,6 +10004,10 @@ static NSArray*	openSubSeriesArray = 0L;
 		[anonymizeItem setTarget:self];
 		[menu addItem:anonymizeItem];
 		[anonymizeItem release];
+		
+		exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy linked files to Database folder", nil)  action:@selector(copyToDBFolder:) keyEquivalent:@""];
+		[menu addItem:exportItem];
+		[exportItem release];
 		
 		[databaseOutline setMenu:menu];
 		[menu release];
@@ -10248,7 +10322,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	mainWindow = [[note object] retain];
 }
 
-- (BOOL)validateMenuItem: (NSMenuItem*)menuItem {
+- (BOOL)validateMenuItem: (NSMenuItem*) menuItem
+{
 	if ( menuItem.menu == imageTileMenu ) {
 		return [mainWindow.windowController isKindOfClass:[ViewerController class]];
 	}
@@ -10263,6 +10338,29 @@ static NSArray*	openSubSeriesArray = 0L;
 	else if( [menuItem action] == @selector( decompressSelectedFiles:))
 	{
 		if( isCurrentDatabaseBonjour) return NO;
+	}
+	else if( [menuItem action] == @selector( copyToDBFolder:))
+	{
+		if( isCurrentDatabaseBonjour) return NO;
+		
+		BOOL matrixThumbnails;
+		
+		if( menuItem.menu == contextual) matrixThumbnails = YES;
+		else matrixThumbnails = NO;
+		
+		NSMutableArray *files, *objects = [NSMutableArray array];
+		
+		if( matrixThumbnails)
+			files = [self filesForDatabaseMatrixSelection: objects onlyImages: NO];
+		else
+			files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
+			
+		for( NSManagedObject *im in objects)
+		{
+			if( [[im valueForKey: @"inDatabaseFolder"] boolValue] == NO) return YES;
+		}
+		
+		return NO;
 	}
 	else if( [menuItem action] == @selector( delItem:))
 	{

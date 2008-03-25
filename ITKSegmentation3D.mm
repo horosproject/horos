@@ -481,8 +481,6 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
     return self;
 }
 
-
-
 - (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(int) algorithmNumber :(NSArray*) parameters :(BOOL) setIn :(float) inValue :(BOOL) setOut :(float) outValue :(int) roiType :(long) roiResolution :(NSString*) newname;
 {
 	NSLog(@"ITK max number of threads: %d", itk::MultiThreader::GetGlobalDefaultNumberOfThreads());
@@ -731,7 +729,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			[theNewROI reduceTextureIfPossible];
 			[theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
 			[[[srcViewer roiList] objectAtIndex:slice] addObject:theNewROI];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];	
+			[[srcViewer imageView] roiSet];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];
 			
 			if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", 0L)])
 			{
@@ -929,7 +928,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 						if( newroiResolution >  roiResolution) roiResolution = newroiResolution;
 					}
 					
-					if( roiResolution != 1)
+					if( roiResolution != 1 && roiResolution > 0)
 					{
 						long tot = [points count];
 						long zz;
@@ -944,17 +943,18 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					}
 	
 					{
-					NSMutableArray  *roiSeriesList;
-					NSMutableArray  *roiImageList;
+						NSMutableArray  *roiSeriesList;
+						NSMutableArray  *roiImageList;
 
-					roiSeriesList = [srcViewer roiList];
-					
-					if( slice == -1) roiImageList = [roiSeriesList objectAtIndex: i];
-					else roiImageList = [roiSeriesList objectAtIndex: [[srcViewer imageView] curImage]];
-					
-					[newROI setName: newname];
-					[roiImageList addObject: newROI];
-					[srcViewer needsDisplayUpdate];
+						roiSeriesList = [srcViewer roiList];
+						
+						if( slice == -1) roiImageList = [roiSeriesList objectAtIndex: i];
+						else roiImageList = [roiSeriesList objectAtIndex: [[srcViewer imageView] curImage]];
+						
+						[newROI setName: newname];
+						[roiImageList addObject: newROI];
+						[[srcViewer imageView] roiSet];
+						[srcViewer needsDisplayUpdate];
 					}
 				}
 				

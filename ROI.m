@@ -4896,7 +4896,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		_calciumCofactor =  [[curView curDCM] calciumCofactorForROI:self threshold:_calciumThreshold];
 	//NSLog(@"cofactor: %d", _calciumCofactor);
 	return _calciumCofactor;
-
 }
 
 - (float)calciumScore{
@@ -4906,9 +4905,17 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 	//area needs to be > 1 mm
-	float intervalRatio = fabs([[curView curDCM] sliceInterval] / [[curView curDCM] sliceThickness]);
+	
+	float intervalRatio = 1;
+	
+	if( curView)
+		intervalRatio = fabs([[curView curDCM] sliceInterval] / [[curView curDCM] sliceThickness]);
+	else
+		NSLog( @"curView == 0L");
+	
 	if (intervalRatio > 1)
 		intervalRatio = 1;
+	
 	float area = [self plainArea] * pixelSpacingX * pixelSpacingY;
 	//if (area < 1)
 	//	return 0;

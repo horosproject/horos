@@ -416,8 +416,8 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 								: 0
 								: 0
 								: 0
-								: 20 // Brush ROI
-								: 0.9 // ROI resolution medium high
+								: 0 // Brush ROI
+								: 1
 								: name];
 		
 		[itk release];
@@ -458,7 +458,6 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 			
 			[roi setColor:aColor];
 		}
-			
 	}
 	
 	if (addROIs)

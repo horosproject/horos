@@ -324,6 +324,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) addDICOMDIR:(NSString*) dicomdir :(NSMutableArray*) files;
 -(NSMutableArray*) copyFilesIntoDatabaseIfNeeded:(NSMutableArray*) filesInput;
 -(NSMutableArray*) copyFilesIntoDatabaseIfNeeded:(NSMutableArray*) filesInput async: (BOOL) async;
+- (NSMutableArray*)copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput async: (BOOL)async COPYDATABASE: (BOOL) COPYDATABASE COPYDATABASEMODE:(int) COPYDATABASEMODE;
 -(ViewerController*) loadSeries :(NSManagedObject *)curFile :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages;
 -(void) loadNextPatient:(NSManagedObject *) curImage :(long) direction :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages;
 -(void) loadNextSeries:(NSManagedObject *) curImage :(long) direction :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages;
@@ -350,7 +351,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (NSString*) getDatabaseFolderFor: (NSString*) path;
 - (NSString*) getDatabaseIndexFileFor: (NSString*) path;
-
+- (IBAction) copyToDBFolder: (id) sender;
 - (void) setCurrentBonjourService:(int) index;
 - (IBAction)customize:(id)sender;
 - (IBAction)showhide:(id)sender;

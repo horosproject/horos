@@ -373,6 +373,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	if (!readable)
 	{
+		if( compressed) *compressed = NO;
 		return [DCMObject isDICOM:[NSData dataWithContentsOfMappedFile:file]];
 	}
     return readable;
