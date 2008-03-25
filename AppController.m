@@ -815,7 +815,11 @@ static NSDate *lastWarningDate = 0L;
 		refreshDatabase = YES;
 	if ([[previousDefaults valueForKey: @"KeepStudiesOfSamePatientTogether"]intValue]				!=		[defaults integerForKey: @"KeepStudiesOfSamePatientTogether"])
 		refreshDatabase = YES;
-
+	if ([[previousDefaults valueForKey: @"NOINTERPOLATION"]intValue]				!=		[defaults integerForKey: @"NOINTERPOLATION"])
+		refreshViewer = YES;
+	if ([[previousDefaults valueForKey: @"SOFTWAREINTERPOLATION"]intValue]				!=		[defaults integerForKey: @"SOFTWAREINTERPOLATION"])
+		refreshViewer = YES;
+	
 	[previousDefaults release];
 	previousDefaults = [[defaults dictionaryRepresentation] retain];
 	
@@ -842,15 +846,15 @@ static NSDate *lastWarningDate = 0L;
 	
 	if( refreshViewer)
 	{
-		NSArray *windows = [NSApp windows];
-
-		for(id loopItem in windows)
+		NSArray *windows = [ViewerController getDisplayed2DViewers];
+		
+		for(ViewerController *v in windows)
+			[v needsDisplayUpdate];
+		
+		for(ViewerController *v in windows)
 		{
-			if([[loopItem windowController] isKindOfClass: [ViewerController class]] &&
-				[loopItem isMainWindow])
-			{
-				[[loopItem windowController] copySettingsToOthers: self];
-			}
+			if([[v window] isMainWindow])
+				[v copySettingsToOthers: self];
 		}
 	}
 	

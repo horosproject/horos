@@ -6191,7 +6191,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 									[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location pixelCenter: YES];
 								}
 								
-								if(fabs(location[0]) < 1.0 && location[0] != 0.0)
+								if(fabs(location[0]) < 1.0 && location[0] != 0.0 && curDCM.pixelSpacingX < 0.2)
 									[tempString appendFormat: @"X: %2.2f %cm Y: %2.2f %cm Z: %2.2f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5];
 								else
 									[tempString appendFormat: @"X: %2.2f mm Y: %2.2f mm Z: %2.2f mm", location[0], location[1], location[2]];

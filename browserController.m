@@ -2517,6 +2517,7 @@ static NSArray*	statesArray = nil;
 					[im setValue: [NSNumber numberWithBool: YES] forKey:@"inDatabaseFolder"];
 					[im setValue: [dstPath lastPathComponent] forKey:@"path"];
 					[im setValue: [NSNumber numberWithBool: NO] forKey:@"mountedVolume"];
+					[[im valueForKey:@"series"] setValue: [NSNumber numberWithBool: NO] forKey:@"mountedVolume"];
 				}
 			}
 			
@@ -12595,7 +12596,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 							}
 						}
 						
-						[context deleteObject: study];
+						BOOL completeStudyIsMounted = YES;
+						
+						for( NSManagedObject *s in [[study valueForKey:@"series"] allObjects])
+						{
+							if( [[s valueForKey:@"mountedVolume"] boolValue] == NO)
+							{
+								completeStudyIsMounted = NO;
+							}
+						}
+						
+						if( completeStudyIsMounted)
+							[context deleteObject: study];
+						else
+							[context deleteObject: [seriesArray objectAtIndex:i]];
 					}
 					
 					if( i % 50 == 0) [splash incrementBy:1];
@@ -12613,6 +12627,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			
 			[self outlineViewRefresh];
+			[self refreshMatrix: self];
 		}
 		
 		[splash close];
