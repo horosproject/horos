@@ -842,6 +842,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	[ctxArray release];
 	[textArray release];
+	if( [textArray count]) NSLog( @"** ROI.m dealloc not all texture were deleted...");
 	
 	if (textureBuffer) free(textureBuffer);
 		

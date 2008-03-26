@@ -70,7 +70,7 @@
 	}
 	[_authView updateStatus:self];
 	
-	routesArray = [[[defaults arrayForKey:@"AUTOROUTINGDICTIONARY"] mutableCopy] retain];
+	routesArray = [[defaults arrayForKey:@"AUTOROUTINGDICTIONARY"] mutableCopy];
 	if (routesArray == 0L) routesArray = [[NSMutableArray alloc] initWithCapacity: 0];
 	
 	int i;

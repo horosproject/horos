@@ -99,6 +99,9 @@ static WindowLayoutManager *sharedLayoutManager = 0L;
 				}
 			}
 			
+			if( IMAGEROWS < 1) IMAGEROWS = 1;
+			if( IMAGECOLUMNS < 1) IMAGECOLUMNS = 1;
+			
 			[_currentHangingProtocol retain];
 		}
 	}

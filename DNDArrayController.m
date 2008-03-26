@@ -161,11 +161,10 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 	[self setSortDescriptors: [tb sortDescriptors]];
 	[self rearrangeObjects];
 	
-	NSArray *a = [[self arrangedObjects] copy];
+	NSArray *a = [[[self arrangedObjects] copy] autorelease];
 	
 	[self removeObjects: [self arrangedObjects]];
 	[self addObjects: a];
-	[a release];
 }
 
 - (BOOL)tableView:(NSTableView*)tv

@@ -76,7 +76,7 @@
 	[_authView updateStatus:self];
 
 
-	hangingProtocols = [[[defaults objectForKey:@"HANGINGPROTOCOLS"] mutableCopy] retain];
+	hangingProtocols = [[defaults objectForKey:@"HANGINGPROTOCOLS"] mutableCopy];
 	//setup GUI
 	
 	modalityForHangingProtocols = [[NSString stringWithString:@"CR"] retain];
@@ -89,6 +89,7 @@
 
 - (void)dealloc {
 	[hangingProtocols release];
+	[modalityForHangingProtocols release];
 	
 	NSLog(@"dealloc OSIHangingPreferencePanePref");
 
@@ -108,14 +109,15 @@
     row:(int)rowIndex
 {
 
-	NSMutableArray *hangingProtocolArray = [[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy];
+	NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
 	NSParameterAssert(rowIndex >= 0 && rowIndex < [hangingProtocolArray count]);
-	id theRecord = [[hangingProtocolArray objectAtIndex:rowIndex] mutableCopy];
+	id theRecord = [[[hangingProtocolArray objectAtIndex:rowIndex] mutableCopy] autorelease];
+	
+	if( [anObject intValue] < 1 || [anObject intValue] > 4) anObject = [NSNumber numberWithInt: 1];
 	[theRecord setObject:anObject forKey:[aTableColumn identifier]];
 	
 	[hangingProtocolArray replaceObjectAtIndex:rowIndex withObject: theRecord];
 	[hangingProtocols setObject:hangingProtocolArray forKey: modalityForHangingProtocols];
-	
 	[[NSUserDefaults standardUserDefaults] setObject:hangingProtocols forKey:@"HANGINGPROTOCOLS"];
 
 }
@@ -124,12 +126,27 @@
     objectValueForTableColumn:(NSTableColumn *)aTableColumn
     row:(int)rowIndex
 {
-	NSArray *hangingProtocolArray = [hangingProtocols objectForKey:modalityForHangingProtocols];
+	NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
 	NSParameterAssert(rowIndex >= 0 && rowIndex < [hangingProtocolArray count]);
 	id theRecord = [hangingProtocolArray objectAtIndex:rowIndex];
-	return [theRecord objectForKey:[aTableColumn identifier]];
-
+	
+	if( [[aTableColumn identifier] isEqualToString:@"Study Description"] == NO)
+	{
+		NSNumber *n = [theRecord objectForKey:[aTableColumn identifier]];
 		
+		if( [n intValue] < 1 || [n intValue] > 4 || [n isKindOfClass: [NSNumber class]] == NO)
+		{
+			theRecord = [[[hangingProtocolArray objectAtIndex:rowIndex] mutableCopy] autorelease];
+			
+			[theRecord setObject: [NSNumber numberWithInt: 1] forKey:[aTableColumn identifier]];
+			
+			[hangingProtocolArray replaceObjectAtIndex:rowIndex withObject: theRecord];
+			[hangingProtocols setObject:hangingProtocolArray forKey: modalityForHangingProtocols];
+			[[NSUserDefaults standardUserDefaults] setObject:hangingProtocols forKey:@"HANGINGPROTOCOLS"];
+		}
+	}
+	
+	return [theRecord objectForKey:[aTableColumn identifier]];
 }
 
 - (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
@@ -137,8 +154,8 @@
 	if( [_authView authorizationState] != SFAuthorizationViewUnlockedState) return NO;
 	
 	if ([aTableView isEqual:hangingProtocolTableView] && [[aTableColumn identifier] isEqualToString:@"Study Description"] && rowIndex == 0) 
-			return NO;
-
+		return NO;
+	
 	return YES;
 }
 
@@ -160,7 +177,7 @@
 	[protocol setObject:[NSNumber numberWithInt:1] forKey:@"Image Rows"];
 	[protocol setObject:[NSNumber numberWithInt:1] forKey:@"Image Columns"];
 
-	NSMutableArray *hangingProtocolArray = [[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy];
+	NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
     [hangingProtocolArray  addObject:protocol];
     [hangingProtocols setObject: hangingProtocolArray forKey: modalityForHangingProtocols];
 	
@@ -177,7 +194,7 @@
 
 	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
 	{
-		NSMutableArray *hangingProtocolArray = [[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy];
+		NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
 		[hangingProtocolArray removeObjectAtIndex:[hangingProtocolTableView selectedRow]];
 		[hangingProtocols setObject: hangingProtocolArray forKey: modalityForHangingProtocols];
 		[hangingProtocolTableView reloadData];

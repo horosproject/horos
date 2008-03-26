@@ -10559,7 +10559,6 @@ END_CREATE_ROIS:
 	
 	if( subGammaFunction) vImageDestroyGammaFunction( subGammaFunction);
 	
-//	NSLog(@"retainCount:%d", [annotationsDictionary retainCount]);
 	[annotationsDictionary release];
 	
 	if(LUT12baseAddr) free(LUT12baseAddr);

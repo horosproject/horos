@@ -96,6 +96,7 @@
 {
 	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	[ctxArray release];
+	if( [textArray count]) NSLog( @"** not all texture were deleted...");
 	[textArray release];
 	
 	[textColor release];
@@ -323,6 +324,8 @@
 - (void) setMargins:(NSSize)size // set offset size and size to fit with offset
 {
 	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
+	if( [textArray count]) NSLog( @"** not all texture were deleted...");
+	
 	marginSize = size;
 	if (NO == staticFrame) { // ensure dynamic frame sizes will be recalculated
 		frameSize.width = 0.0f;
@@ -334,6 +337,8 @@
 - (void) useStaticFrame:(NSSize)size // set static frame size and size to frame
 {
 	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
+	if( [textArray count]) NSLog( @"** not all texture were deleted...");
+	
 	frameSize = size;
 	staticFrame = YES;
 	[self genTexture];
@@ -344,6 +349,8 @@
 	if (staticFrame)
 	{ // set to dynamic frame and set to regen texture
 		while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
+		if( [textArray count]) NSLog( @"** not all texture were deleted...");
+		
 		staticFrame = NO;
 		frameSize.width = 0.0f; // ensure frame sizes will be recalculated
 		frameSize.height = 0.0f;
@@ -354,6 +361,8 @@
 - (void) setString:(NSAttributedString *)attributedString // set string after initial creation
 {
 	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
+	if( [textArray count]) NSLog( @"** not all texture were deleted...");
+	
 	[attributedString retain];
 	[string release];
 	string = attributedString;
@@ -372,6 +381,8 @@
 - (void) setTextColor:(NSColor *)color // set default text color
 {
 	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
+	if( [textArray count]) NSLog( @"** not all texture were deleted...");
+	
 	[color retain];
 	[textColor release];
 	textColor = color;
@@ -381,6 +392,8 @@
 - (void) setBoxColor:(NSColor *)color // set default text color
 {
 	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
+	if( [textArray count]) NSLog( @"** not all texture were deleted...");
+	
 	[color retain];
 	[boxColor release];
 	boxColor = color;
@@ -390,6 +403,8 @@
 - (void) setBorderColor:(NSColor *)color // set default text color
 {
 	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
+	if( [textArray count]) NSLog( @"** not all texture were deleted...");
+	
 	[color retain];
 	[borderColor release];
 	borderColor = color;

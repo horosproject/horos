@@ -11910,7 +11910,7 @@ int i,j,l;
 	int i=0;
 	while ( superMenu != nil)
 	{
-		tail = [composedMenuTitle copy];
+		tail = [[composedMenuTitle copy] autorelease];
 		[composedMenuTitle release];
 		composedMenuTitle = [NSString stringWithFormat:@"%@ %@",currentMenuTitle, tail];
 		currentMenu = superMenu;

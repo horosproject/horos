@@ -114,7 +114,7 @@ static NSString *softwareVersion = @"001";
 
 + (id)secondaryCaptureObjectFromTemplate:(DCMObject *)object{
 	//NSLog(@"Secondary capture");
-	DCMObject *scObject = [object copy];
+	DCMObject *scObject = [[object copy] autorelease];
 	NSMutableDictionary *attrs = [scObject attributes];
 	NSMutableArray *keysToRemove = [NSMutableArray array];
 

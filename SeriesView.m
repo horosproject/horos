@@ -34,8 +34,8 @@
 		seriesColumns = columns;
 		tag = 0;
 		
-		imageRows = [[WindowLayoutManager sharedWindowLayoutManager] IMAGECOLUMNS];
-		imageColumns = [[WindowLayoutManager sharedWindowLayoutManager] IMAGEROWS];
+		imageColumns = [[WindowLayoutManager sharedWindowLayoutManager] IMAGECOLUMNS];
+		imageRows = [[WindowLayoutManager sharedWindowLayoutManager] IMAGEROWS];
 		
 //		NSLog(@"ImageRows %d imageColumns: %d", imageRows, imageColumns);
 	
