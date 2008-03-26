@@ -139,6 +139,9 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
     float			bdstartWW, bdcurWW, bdstartMin, bdstartMax;
     float			bdstartWL, bdcurWL;
 	
+	BOOL			curWLWWSUVConverted;
+	float			curWLWWSUVFactor;
+	
     NSSize          scaleStart, scaleInit;
     
 	double			resizeTotal;

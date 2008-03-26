@@ -686,6 +686,37 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	return [attrString size];
 }
 
+- (void) reapplyWindowLevel
+{
+	if( curWL != 0 && curWW != 0 && curWLWWSUVConverted != curDCM.SUVConverted)
+	{
+		if( curWLWWSUVFactor > 0)
+		{
+			if( curWLWWSUVConverted)
+			{
+				curWL /= curWLWWSUVFactor;
+				curWW /= curWLWWSUVFactor;
+			}
+			else
+			{
+				curWLWWSUVFactor = 1.0;
+				if( curWLWWSUVConverted && [self is2DViewer])
+					curWLWWSUVFactor = [[self windowController] factorPET2SUV];
+				
+				curWL *= curWLWWSUVFactor;
+				curWW *= curWLWWSUVFactor;
+			}
+		}
+		
+		curWLWWSUVConverted = curDCM.SUVConverted;
+		curWLWWSUVFactor = 1.0;
+		if( curWLWWSUVConverted && [self is2DViewer])
+			curWLWWSUVFactor = [[self windowController] factorPET2SUV];
+	}
+	
+	[curDCM changeWLWW :curWL :curWW];
+}
+
 - (BOOL) isKeyImage
 {
 	BOOL result = NO;
@@ -1664,6 +1695,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		curWL = curDCM.wl;
 		curWW = curDCM.ww;
+		curWLWWSUVConverted = curDCM.SUVConverted;
+		curWLWWSUVFactor = 1.0;
+		if( curWLWWSUVConverted && [self is2DViewer])
+			curWLWWSUVFactor = [[self windowController] factorPET2SUV];
+	
 		origin.x = origin.y = 0;
 		scaleValue = 1;
 		
@@ -1924,8 +1960,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [self is2DViewer] == YES) {
 			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
 			{
-				if( curWW != curDCM.ww || curWL != curDCM.wl || [curDCM updateToApply] == YES) {
-					[curDCM changeWLWW :curWL :curWW];
+				if( curWW != curDCM.ww || curWL != curDCM.wl || [curDCM updateToApply] == YES)
+				{
+					[self reapplyWindowLevel];
 				}
 				else [curDCM checkImageAvailble :curWW :curWL];
 			
@@ -1936,8 +1973,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		
 		if( done == NO) {
-			if( curWW != curDCM.ww || curWL != curDCM.wl || [curDCM updateToApply] == YES) {
-				[curDCM changeWLWW :curWL :curWW];
+			if( curWW != curDCM.ww || curWL != curDCM.wl || [curDCM updateToApply] == YES)
+			{
+				[self reapplyWindowLevel];
 			}
 			else [curDCM checkImageAvailble :curWW :curWL];
 		}
@@ -2386,7 +2424,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( [self is2DViewer] == YES)
 			{
 				[[[self windowController] thickSlabController] setLowQuality: NO];
-				[curDCM changeWLWW :curWL : curWW];
+				[self reapplyWindowLevel];
 				[self loadTextures];
 				[self setNeedsDisplay:YES];
 			}
@@ -4426,13 +4464,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	[curDCM changeWLWW :wl : ww];
 	
-	if( curDCM) {
+	if( curDCM)
+	{
 		curWW = curDCM.ww;
 		curWL = curDCM.wl;
+		curWLWWSUVConverted = curDCM.SUVConverted;
+		curWLWWSUVFactor = 1.0;
+		if( curWLWWSUVConverted && [self is2DViewer])
+			curWLWWSUVFactor = [[self windowController] factorPET2SUV];
 	}
 	else {
 		curWW = ww;
 		curWL = wl;
+		curWLWWSUVConverted = NO;
 	}
 	
 	[self loadTextures];
@@ -4482,7 +4526,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     
     curWW = curDCM.ww;
     curWL = curDCM.wl;
-	
+	curWLWWSUVConverted = curDCM.SUVConverted;
+	curWLWWSUVFactor = 1.0;
+	if( curWLWWSUVConverted && [self is2DViewer])
+		curWLWWSUVFactor = [[self windowController] factorPET2SUV];
+	 
     [self loadTextures];
     [self setNeedsDisplay:YES];
 	
@@ -4543,7 +4591,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 -(void) multiply:(DCMView*) bV {
 	[curDCM imageArithmeticMultiplication: [bV curDCM]];
 	
-	[curDCM changeWLWW :curWL: curWW];
+	[self reapplyWindowLevel];
 	[self loadTextures];
 	[self setNeedsDisplay: YES];
 }
@@ -4551,7 +4599,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 -(void) subtract:(DCMView*) bV {
 	[curDCM imageArithmeticSubtraction: [bV curDCM]];
 	
-	[curDCM changeWLWW :curWL: curWW];
+	[self reapplyWindowLevel];
 	[self loadTextures];
 	[self setNeedsDisplay: YES];
 }
@@ -8684,7 +8732,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		{
 			vImage_Buffer src, dest;
 			
-			[curDCM changeWLWW :curWL: curWW];
+			[self reapplyWindowLevel];
 			
 			src.height = curDCM.pheight;
 			src.width = curDCM.pwidth;
@@ -8724,7 +8772,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			vImage_Buffer src, dest;
 			
-			[curDCM changeWLWW :curWL: curWW];
+			[self reapplyWindowLevel];
 			
 			src.height = curDCM.pheight;
 			src.width = curDCM.pwidth;
@@ -9058,7 +9106,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		case 2: blueFactor = [sender floatValue];  break;
 	}
 	
-	[curDCM changeWLWW :curWL: curWW];
+	[self reapplyWindowLevel];
 	
 	[self loadTextures];
 	[self setNeedsDisplay:YES];
