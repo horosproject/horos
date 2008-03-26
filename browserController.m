@@ -10355,7 +10355,7 @@ static NSArray*	openSubSeriesArray = 0L;
 			files = [self filesForDatabaseMatrixSelection: objects onlyImages: NO];
 		else
 			files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
-			
+		
 		for( NSManagedObject *im in objects)
 		{
 			if( [[im valueForKey: @"inDatabaseFolder"] boolValue] == NO) return YES;

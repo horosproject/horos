@@ -1961,7 +1961,8 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
     // The set of allowed items is used to construct the customization palette
 	
 	if( [style isEqualToString:@"standard"])
-		return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
+	{
+		NSMutableArray * a = [NSMutableArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
@@ -1972,7 +1973,6 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 											CroppingToolbarItemIdentifier,
 											OrientationToolbarItemIdentifier,
 											ShadingToolbarItemIdentifier,
-											EngineToolbarItemIdentifier,
 											PerspectiveToolbarItemIdentifier,
 											OrientationsViewToolbarItemIdentifier,
 											ToolsToolbarItemIdentifier,
@@ -1993,6 +1993,12 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 											ConvolutionViewToolbarItemIdentifier,
 											BackgroundColorViewToolbarItemIdentifier,
 											nil];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showGPUEngineRendering"])
+			[a addObject: EngineToolbarItemIdentifier];
+			
+		return a;
+	}
 	else
 		return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
 											NSToolbarFlexibleSpaceItemIdentifier,

@@ -707,9 +707,14 @@ static BOOL showWarning = YES;
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
+	return YES;
+	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] == NO) return NO;
+	
 	if( isDICOM == NO) return NO;
+	
 	if( [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] == NO) return NO;
+	
 	if( editingActivated == NO) return NO;
 	
 	if( [[tableColumn identifier] isEqualToString: @"stringValue"])
@@ -824,12 +829,29 @@ static BOOL showWarning = YES;
 
 - (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && editingActivated)
+	id previousValue = [self outlineView: outlineView objectValueForTableColumn: tableColumn byItem: item];
+	
+	if( [[tableColumn identifier] isEqualToString: @"stringValue"] == NO)
 	{
-		if( [[tableColumn identifier] isEqualToString: @"stringValue"])
+		if( [previousValue isEqual: object] == NO)
+			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"You can only edit the 'Content' column.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		
+		return;
+	}
+	
+	if( [previousValue isEqual: object] == NO)
+	{
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && editingActivated && [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]])
 		{
 			allowSelectionChange = NO;
 			[self performSelector:@selector(setObject:) withObject: [NSArray arrayWithObjects: item, object, 0L] afterDelay: 0];
+		}
+		else
+		{
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] == NO || editingActivated == NO)
+				NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"Activate DICOM editing to change the values.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			else
+				NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing not possible for this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		}
 	}
 }
