@@ -4912,7 +4912,9 @@ static ViewerController *draggedController = 0L;
 				[[pixList[ x] objectAtIndex: j] orientation: o];
 				for( int k = 0 ; k < 9; k++)
 				{
-					if( o[ k] != orientation[ k])
+					#define SENSIBILITY 0.05
+					
+					if( fabs( o[ k] - orientation[ k]) > SENSIBILITY)
 						volumicData = NO;
 				}
 			}
@@ -7135,9 +7137,9 @@ static ViewerController *draggedController = 0L;
 					yd = fabs( yd - vectors[ 7]);
 					zd = fabs( zd - vectors[ 8]);
 					
-					if( xd + yd + zd > 0.01)
+					if( xd + yd + zd > 0.1)
 					{
-						NSLog( @"Not a real 3D data set.");
+						NSLog( @"titledGantry - Not a real 3D data set.");
 						titledGantry = YES;
 					}
 				}
@@ -7172,7 +7174,7 @@ static ViewerController *draggedController = 0L;
 			yd /= interval3d;
 			zd /= interval3d;
 			
-			int sss = fabs( previousInterval3d - interval3d) * 1000.;
+			int sss = fabs( previousInterval3d - interval3d) * 100.;
 			
 			if( i == 0)
 			{

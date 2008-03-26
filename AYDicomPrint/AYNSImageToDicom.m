@@ -473,6 +473,8 @@
 		return nil;
 
 	outFile = fopen([path fileSystemRepresentation],"wb");
+	if( outFile == 0) return nil;
+	
 	fseek(outFile, 0, 0);
 	int i = 0;
 	for(i = 0; i < 128; i++)
