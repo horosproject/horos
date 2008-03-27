@@ -5199,14 +5199,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 								everythingLoaded = [[self windowController] isEverythingLoaded];
 								
 								everythingLoaded = [[dcmPixList objectAtIndex: 0] isLoaded];
-								if( everythingLoaded) firstSliceLocation = [[dcmPixList objectAtIndex: 0] sliceLocation];
-								else firstSliceLocation = [[[dcmFilesList objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
+								if( everythingLoaded)
+									firstSliceLocation = [[dcmPixList objectAtIndex: 0] sliceLocation];
+								else
+									firstSliceLocation = [[[dcmFilesList objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
 								
 								for( i = 0; i < [dcmFilesList count]; i++)
 								{
-									everythingLoaded = [[dcmPixList objectAtIndex: 0] isLoaded];
-									if( everythingLoaded) slicePosition = [[dcmPixList objectAtIndex: i] sliceLocation];
-									else slicePosition = [[[dcmFilesList objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
+									everythingLoaded = [[dcmPixList objectAtIndex: i] isLoaded];
+									if( everythingLoaded)
+										slicePosition = [[dcmPixList objectAtIndex: i] sliceLocation];
+									else
+										slicePosition = [[[dcmFilesList objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
 									
 									fdiff = slicePosition - loc;
 									
@@ -7794,14 +7798,21 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( force8bits == YES || curDCM.isRGB == YES || blendingView != 0L || [curDCM SUVConverted])		// Screen Capture in RGB - 8 bit
 		{
 			NSPoint shiftOrigin;
-			NSRect smartCroppedRect = [self smartCrop: &shiftOrigin];
+			BOOL smartCropped = NO;
+			NSRect smartCroppedRect;
 			
 			if( allowSmartCropping && [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
 			{
-				smartCroppedRect = [self smartCrop];
+				smartCroppedRect = [self smartCrop: &shiftOrigin];
 				
-				*width = smartCroppedRect.size.width;
-				*height = smartCroppedRect.size.height;
+				if( smartCroppedRect.size.width == [self frame].size.width && smartCroppedRect.size.height == [self frame].size.height)
+					smartCropped = NO;
+				else
+				{
+					*width = smartCroppedRect.size.width;
+					*height = smartCroppedRect.size.height;
+					smartCropped = YES;
+				}
 			}
 			else smartCroppedRect = NSMakeRect( 0, 0, [self frame].size.width, [self frame].size.height);
 			
@@ -7836,6 +7847,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					[self setStringID: @"export"];
 					
 					[self display];
+					[self setNeedsDisplay: YES];	// for refresh, later
 					
 					[self setStringID: str];
 					[str release];
@@ -7872,9 +7884,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					NSPoint oo = [self origin];
 					NSRect cc = [self frame];
 					
-					dontEnterReshape = YES;
-					[self setFrame: smartCroppedRect];
-					[self setOrigin: NSMakePoint( shiftOrigin.x, shiftOrigin.y)];
+					if( smartCropped)
+					{
+						dontEnterReshape = YES;
+						[self setFrame: smartCroppedRect];
+						[self setOrigin: NSMakePoint( shiftOrigin.x, shiftOrigin.y)];
+					}
+					
 					[self display];
 					
 					glReadBuffer(GL_FRONT);
@@ -7904,9 +7920,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						}
 					#endif
 					
-					[self setFrame: cc];
-					[self setOrigin: oo];
-					
+					if( smartCropped)
+					{
+						[self setFrame: cc];
+						[self setOrigin: oo];
+					}
 					
 					dontEnterReshape = NO;
 				}
@@ -7923,41 +7941,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 				free( tempBuf);
 			}
-			
-//			// smart cropping
-//			if( removeGraphical && [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
-//			{
-//				NSRect smartCroppedRect = [self smartCrop];
-//				
-//				// Apply the crop
-//				NSRect fRect = NSMakeRect( 0, 0 , *width, *height);
-//				NSRect unionRect = NSIntersectionRect( smartCroppedRect, fRect);
-//				
-//				int y1 = unionRect.origin.y;
-//				int y2 = unionRect.origin.y+unionRect.size.height;
-//				int x1 = unionRect.origin.x;
-//				int x2 = unionRect.origin.x+unionRect.size.width;
-//				
-//				int lineBytes = (x2-x1) * 3;
-//				
-//				unsigned char *srcData = (unsigned char*) buf;
-//				
-//				int newW = smartCroppedRect.size.width;
-//				int newH = smartCroppedRect.size.height;
-//				unsigned char *dstData = (unsigned char*) malloc( (int) newW * (int) newH * 3);
-//				
-//				if( dstData)
-//				{
-//					for( int y = y1; y < y2; y++)
-//						memcpy( dstData + ((y-y1)*(int)newW*3), srcData +(y**width*3 + x1*3), lineBytes);
-//					
-//					free( buf);
-//					buf = dstData;
-//					
-//					*width = newW;
-//					*height = newH;
-//				}
-//			}
 		}
 		else // Screen Capture in 16 bit BW
 		{

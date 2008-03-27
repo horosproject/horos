@@ -2662,13 +2662,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (BOOL) isLoaded
 {
-	[checking lock];
-	
 	BOOL f;
 	if( fImage) f = YES;
 	else f = NO;
-	
-	[checking unlock];
 	
 	return f;
 }
