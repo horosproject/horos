@@ -2660,6 +2660,19 @@ BOOL gUSEPAPYRUSDCMPIX;
 		fExternalOwnedImage = fImage;
 }
 
+- (BOOL) isLoaded
+{
+	[checking lock];
+	
+	BOOL f;
+	if( fImage) f = YES;
+	else f = NO;
+	
+	[checking unlock];
+	
+	return f;
+}
+
 - (float*)fImage {
     [self CheckLoad];
     return fImage;

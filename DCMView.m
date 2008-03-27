@@ -5194,15 +5194,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 								long	index, i;
 								float   smallestdiff = -1, fdiff, slicePosition;
 								
-								everythingLoaded = [[self windowController] isEverythingLoaded];
-								
 								noSlicePosition = NO;
 								
+								everythingLoaded = [[self windowController] isEverythingLoaded];
+								
+								everythingLoaded = [[dcmPixList objectAtIndex: 0] isLoaded];
 								if( everythingLoaded) firstSliceLocation = [[dcmPixList objectAtIndex: 0] sliceLocation];
 								else firstSliceLocation = [[[dcmFilesList objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
 								
 								for( i = 0; i < [dcmFilesList count]; i++)
 								{
+									everythingLoaded = [[dcmPixList objectAtIndex: 0] isLoaded];
 									if( everythingLoaded) slicePosition = [[dcmPixList objectAtIndex: i] sliceLocation];
 									else slicePosition = [[[dcmFilesList objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
 									
@@ -5238,6 +5240,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 									if( [dcmPixList count] > 1)
 									{
 										float sliceDistance;
+										
+										if( [[dcmPixList objectAtIndex: 1] isLoaded] && [[dcmPixList objectAtIndex: 0] isLoaded]) everythingLoaded = YES;
+										else everythingLoaded = NO;
 										
 										if( everythingLoaded) sliceDistance = fabs( [[dcmPixList objectAtIndex: 1] sliceLocation] - [[dcmPixList objectAtIndex: 0] sliceLocation]);
 										else sliceDistance = fabs( [[[dcmFilesList objectAtIndex: 1] valueForKey:@"sliceLocation"] floatValue] - [[[dcmFilesList objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue]);

@@ -443,6 +443,7 @@ Note setter is different to not break existing usage. :-( */
 - (void) setSubtractedfImage:(float*)mask :(NSPoint)smm;
 - (float*) subtractImages:(float*)input :(float*)subfImage;
 
+- (BOOL) isLoaded;
 - (void) fImageTime:(float)newTime;
 - (float) fImageTime;
 - (void) freefImageWhenDone:(BOOL) b;
