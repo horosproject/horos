@@ -477,7 +477,8 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 		handle->logStartTime = time (NULL);
 		
 		strcpy( handle->logMessage, "In Progress");
-		sprintf( handle->logUID, "%d%s%s", random(), patientName, seriesUID);
+		unsigned int random = (unsigned int)time(NULL);
+		sprintf( handle->logUID, "%d%s%s", random, patientName, seriesUID);
 	}
 	
 	handle->logNumberReceived = ++(handle->imageCount);

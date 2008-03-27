@@ -713,7 +713,8 @@
 		{
 			FILE * pFile;
 			char dir[ 1024], newdir[1024];
-			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/move_log_", random());
+			unsigned int random = (unsigned int)time(NULL);
+			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/move_log_", random);
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
@@ -729,7 +730,8 @@
 		{
 			FILE * pFile;
 			char dir[ 1024], newdir[1024];
-			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/move_log_", random());
+			unsigned int random = (unsigned int)time(NULL);
+			sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/move_log_", random);
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{

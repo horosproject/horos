@@ -119,7 +119,9 @@ extern NSLock	*PapyrusLock;
 			
 			imageID = [[NSString alloc] initWithString: [[NSDate date] description]];
 			serieID = [[NSString alloc] initWithString: [[NSDate date] description]];
-			studyID = [[NSString alloc] initWithFormat:@"%d", random()];
+			
+			unsigned int random = (unsigned int)time(NULL);
+			studyID = [[NSString alloc] initWithFormat:@"%d", random];
 
 			name = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 			patientID = [[NSString alloc] initWithString:name];
