@@ -803,6 +803,8 @@ static NSDate *lastWarningDate = 0L;
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"AETransferSyntax"]		isEqualToString:	[defaults stringForKey: @"AETransferSyntax"]] == NO)
 		restartListener = YES;
+	if ([[previousDefaults valueForKey: @"addNewIncomingFilesToDefaultDBOnly"]intValue] !=	[defaults integerForKey: @"addNewIncomingFilesToDefaultDBOnly"])
+		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"STORESCP"] intValue]					!=		[defaults integerForKey: @"STORESCP"])
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"USESTORESCP"] intValue]				!=		[defaults integerForKey: @"USESTORESCP"])

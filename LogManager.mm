@@ -75,17 +75,6 @@ LogManager *currentLogManager;
 		
 		if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour]) return;
 		
-//		// Tests
-//		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-//		[dbRequest setEntity: [[[BrowserController currentBrowser].managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
-//		[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-//		NSError	*error = 0L;
-//		NSArray *l = [context executeFetchRequest:dbRequest error:&error];
-//		
-//		NSLog(@"%@", l);
-//		
-//		//
-		
 		NSFileManager *manager = [NSFileManager defaultManager];
 		NSDirectoryEnumerator *enumerator = [manager enumeratorAtPath:[self logFolder]];
 		NSString *path;

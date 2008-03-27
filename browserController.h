@@ -201,7 +201,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSString						*fixedDocumentsDirectory;
 	
-	char							cfixedDocumentsDirectory[ 1024];
+	char							cfixedDocumentsDirectory[ 1024], cfixedIncomingDirectory[ 1024];
 	
 	NSTimeInterval					databaseLastModification;
 	
@@ -267,7 +267,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 @property(readonly) NSString *documentsDirectory;
 @property(readonly) NSString *fixedDocumentsDirectory;
-@property(readonly) char *cfixedDocumentsDirectory;
+@property(readonly) char *cfixedDocumentsDirectory, *cfixedIncomingDirectory;
 
 @property(retain) NSString *searchString;
 @property(retain) NSPredicate *fetchPredicate;
@@ -458,6 +458,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSString *)documentsDirectoryFor:(int) mode url:(NSString*) url;
 - (NSString *)setFixedDocumentsDirectory;
 - (IBAction)showLogWindow: (id)sender;
+- (void) resetLogWindowController;
 
 - (NSString *)folderPathResolvingAliasAndSymLink:(NSString *)path;
 

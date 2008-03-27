@@ -33,6 +33,14 @@
 	[[self window] setFrameAutosaveName:@"LogWindow"];
 }
 
+- (void) dealloc
+{
+	NSLog( @"LogWindowController dealloc");
+	
+	[super dealloc];
+}
+
+
 -(IBAction) showWindow:(id) sender
 {
 	[super showWindow: sender];

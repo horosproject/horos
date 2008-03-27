@@ -2255,6 +2255,7 @@ static NSArray*	statesArray = nil;
 		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"recomputePatientUID"];
 	}
 	
+	[self resetLogWindowController];
 	[[LogManager currentLogManager] resetLogs];
 	
 	[managedObjectContext lock];
@@ -13762,7 +13763,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	strcpy( cfixedDocumentsDirectory, [fixedDocumentsDirectory UTF8String]);
 	
-	NSLog( @"setFixedDocumentsDirectory");
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"addNewIncomingFilesToDefaultDBOnly"])
+	{
+		NSString *defaultPath = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
+		strcpy( cfixedIncomingDirectory, [defaultPath UTF8String]);
+	}
+	else strcpy( cfixedIncomingDirectory, [fixedDocumentsDirectory UTF8String]);
+	
 	return fixedDocumentsDirectory;
 }
 
@@ -13772,6 +13779,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 
 - (char *)cfixedDocumentsDirectory { return cfixedDocumentsDirectory; }
+- (char *)cfixedIncomingDirectory{ return cfixedIncomingDirectory;}
 
 - (NSString *)documentsDirectory {
 	NSString	*dir = documentsDirectory();
@@ -13783,10 +13791,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return dir;
 }
 
-- (IBAction)showLogWindow: (id)sender {
+- (IBAction)showLogWindow: (id)sender
+{
 	if(!logWindowController)
 		logWindowController = [[LogWindowController alloc] init];
     [logWindowController showWindow:self];
+}
+
+- (void) resetLogWindowController
+{
+	[logWindowController close];
+	[logWindowController release];
+	logWindowController = 0L;
 }
 
 - (void)setSearchString: (NSString *)searchString

@@ -28,7 +28,8 @@
 	[self setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"startTime" ascending:NO] autorelease]]];
 }
 
--(NSManagedObjectContext *)managedObjectContext{
+-(NSManagedObjectContext *)managedObjectContext
+{
 	return [[BrowserController currentBrowser] managedObjectContext];
 }
 

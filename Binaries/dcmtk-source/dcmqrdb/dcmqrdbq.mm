@@ -421,7 +421,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	const char *sss = 0L;
 	char patientName[ 1024];
 	char studyDescription[ 1024];
-	char seriesDescription[ 1024];
+	char seriesUID[ 1024];
 	char specificCharacterSet[ 1024];
 	
 	// ************
@@ -458,7 +458,13 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 		strcat( studyDescription, " ");
 		strcat( studyDescription, sss);
 	}
-
+	
+	if (dataset->findAndGetString (DCM_SeriesInstanceUID, sss, OFFalse).good() && sss != NULL)
+	{
+		strcpy( seriesUID, sss);
+	}
+	else strcpy( seriesUID, patientName);
+	
 	if( handle->logCreated == NO)
 	{
 		handle->logCreated = YES;
@@ -471,7 +477,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 		handle->logStartTime = time (NULL);
 		
 		strcpy( handle->logMessage, "In Progress");
-		sprintf( handle->logUID, "%d%s", random(), patientName);
+		sprintf( handle->logUID, "%d%s%s", random(), patientName, seriesUID);
 	}
 	
 	handle->logNumberReceived = ++(handle->imageCount);
@@ -479,7 +485,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	
 	FILE * pFile;
 	char dir[ 1024], newdir[1024];
-	sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/store_log_", handle->logUID);
+	sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP/store_log_", handle->logUID);
 	pFile = fopen (dir,"w+");
 	if( pFile)
 	{
@@ -1264,7 +1270,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 			
 			FILE * pFile;
 			char dir[ 1024], newdir[1024];
-			sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/store_log_", handle->logUID);
+			sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP/store_log_", handle->logUID);
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
@@ -1310,7 +1316,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
     newImageFileName[0] = 0; // return empty string in case of error
 	
 	char dir[ 4096];
-	sprintf( dir, "%s/%s", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP");
+	sprintf( dir, "%s/%s", [[BrowserController currentBrowser] cfixedIncomingDirectory], "TEMP");
 	if (! fnamecreator.makeFilename(seedvalue, dir, prefix, ".dcm", filename))
 	{
 		return DcmQROsiriXDatabaseError;

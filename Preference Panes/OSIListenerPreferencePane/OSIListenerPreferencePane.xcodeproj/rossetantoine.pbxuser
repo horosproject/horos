@@ -9,7 +9,6 @@
 			8D202CE80486D31800D8A456 /* OSIListenerPreferencePane */,
 		);
 		breakpoints = (
-			AB34B70409AA10ED0057FE0E /* OSIListenerPreferencePanePref.m:85 */,
 		);
 		codeSenseManager = AB34B6EB09AA0E9A0057FE0E /* Code sense */;
 		executables = (
@@ -35,7 +34,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					586,
+					667,
 					20,
 					48,
 					43,
@@ -74,8 +73,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 216208254;
-			PBXWorkspaceStateSaveDate = 216208254;
+			PBXPerProjectTemplateStateSaveDate = 228294509;
+			PBXWorkspaceStateSaveDate = 228294509;
 		};
 		perUserProjectItems = {
 			AB52E74B0A19FC0F00726305 /* PBXTextBookmark */ = AB52E74B0A19FC0F00726305 /* PBXTextBookmark */;
@@ -103,23 +102,6 @@
 	AB34B6EB09AA0E9A0057FE0E /* Code sense */ = {
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
-	};
-	AB34B70409AA10ED0057FE0E /* OSIListenerPreferencePanePref.m:85 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		countType = 0;
-		delayBeforeContinue = 0;
-		fileReference = F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */;
-		functionName = "-setExtraStoreSCP:";
-		hitCount = 1;
-		ignoreCount = 0;
-		lineNumber = 85;
-		location = OSIListenerPreferencePane;
-		modificationTime = 180865703.81534;
-		state = 1;
 	};
 	AB34B70609AA11020057FE0E /* Executable */ = {
 		isa = PBXExecutable;
