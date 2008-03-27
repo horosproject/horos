@@ -7778,6 +7778,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			*ori = [DCMPix rotatePoint: *ori aroundPoint:NSMakePoint( 0, 0) angle: rotation*deg2rad];
 		}
 	}
+	
+	smartRect.origin.x = (int) smartRect.origin.x;
+	smartRect.origin.y = (int) smartRect.origin.y;
+	smartRect.size.width = (int) smartRect.size.width;
+	smartRect.size.height = (int) smartRect.size.height;
+	
 	return smartRect;
 }
 
@@ -7892,6 +7898,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					}
 					
 					[self display];
+					
+					if( smartCropped)
+						[[self superview] display];	// to avoid the 'white' screen behind
 					
 					glReadBuffer(GL_FRONT);
 					

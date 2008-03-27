@@ -82,8 +82,11 @@
 	[super dealloc];
 }
 
-- (void)drawRect:(NSRect)rect {
-    NSDrawWhiteBezel(rect, rect);
+- (void)drawRect:(NSRect)rect
+{
+	NSColor *backgroundColor = [NSColor blackColor];
+	[backgroundColor setFill];	
+	[NSBezierPath fillRect:rect];
 }
 
 - (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize{
@@ -97,7 +100,6 @@
 	NSRect newFrame = NSMakeRect(newX, newY, newWidth, newHeight);
 	[self setFrame:newFrame];
 	[self setNeedsDisplay:YES];
-	
 }
 
 - (void)resizeSubviewsWithOldSize:(NSSize)oldBoundsSize{

@@ -62,9 +62,13 @@
 	[super dealloc];
 }
 
-- (void)drawRect:(NSRect)rect {
-    NSDrawLightBezel(rect, rect);
-}
+//- (void)drawRect:(NSRect)rect {
+//    NSDrawLightBezel(rect, rect);
+//	NSColor *backgroundColor = [NSColor  colorWithCalibratedRed:1 green:0 blue:0 alpha:1];
+//	[backgroundColor setFill];	
+//	[NSBezierPath fillRect:rect];
+//	[super drawRect:rect];
+//}
 
 - (BOOL)acceptsFirstResponder {
     return NO;
