@@ -2301,20 +2301,20 @@ static BOOL initialized = NO;
 	else verboseUpdateCheck = NO;
 	
 	if (hasMacOSXLeopard())
-		url=[NSURL URLWithString:@"http://pubimage.hcuge.ch:8080/versionLeopard.xml"];
+		url=[NSURL URLWithString:@"http://www.osirix-viewer.com/versionLeopard.xml"];
 	else if (hasMacOSXTiger())
-		url=[NSURL URLWithString:@"http://pubimage.hcuge.ch:8080/versionTiger.xml"];
+		url=[NSURL URLWithString:@"http://www.osirix-viewer.com/versionTiger.xml"];
 	else
-		url=[NSURL URLWithString:@"http://pubimage.hcuge.ch:8080/version.xml"];
+		url=[NSURL URLWithString:@"http://www.osirix-viewer.com/version.xml"];
 	
 	if( url == 0L)
 	{
 		if (hasMacOSXLeopard())
-			url=[NSURL URLWithString:@"http://www.osirix-viewer.com/versionLeopard.xml"];
+			url=[NSURL URLWithString:@"http://pubimage.hcuge.ch:8080/versionLeopard.xml"];
 		else if (hasMacOSXTiger())
-			url=[NSURL URLWithString:@"http://www.osirix-viewer.com/versionTiger.xml"];
+			url=[NSURL URLWithString:@"http://pubimage.hcuge.ch:8080/versionTiger.xml"];
 		else
-			url=[NSURL URLWithString:@"http://www.osirix-viewer.com/version.xml"];
+			url=[NSURL URLWithString:@"http://pubimage.hcuge.ch:8080/version.xml"];
 	}
 	
 	if (url)
