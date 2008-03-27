@@ -5964,12 +5964,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (void)drawTextualData:(NSRect) size :(long) annotations
+- (void) drawTextualData:(NSRect) size :(long) annotations
 {
 	NSManagedObject   *file = [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-		
+	
 	//** TEXT INFORMATION
 	glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 	glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
@@ -6768,13 +6768,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	glScalef( 1.f, curDCM.pixelRatio, 1.f);
 }
 
-- (void) drawRect:(NSRect)aRect
+- (void) drawRect:(NSRect) r
 {
 	if( drawing == NO) return;
 	
 	@synchronized (self)
 	{
-		[self drawRect:(NSRect)aRect withContext: [self openGLContext]];
+		NSRect aRect;
+		
+		[self drawRect: [self frame] withContext: [self openGLContext]];
 	}
 }
 
@@ -6818,13 +6820,47 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (NSOpenGLContext*) offscreenDisplay: (NSRect) r
 {
-	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
+	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFAOffScreen, NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
     NSOpenGLPixelFormat* pixFmt = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
 	
 	NSOpenGLContext * c = [[[NSOpenGLContext alloc] initWithFormat: pixFmt shareContext: 0L] autorelease];
 	
+	void* memBuffer = (void *) malloc (drawingFrameRect.size.width * drawingFrameRect.size.height * 4); 
+	[c setOffScreen: memBuffer width: drawingFrameRect.size.width height: drawingFrameRect.size.height rowbytes: drawingFrameRect.size.width*4];
+	
+//	NSOpenGLContext * c = [self openGLContext];
+	
 	[c makeCurrentContext];
+	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
+//	GLuint framebuffer, renderbuffer;
+//	GLenum status;
+//	// Set the width and height appropriately for you image
+//	GLuint texWidth = r.size.width,
+//		   texHeight = r.size.height;
+//		   
+//	//Set up a FBO with one renderbuffer attachment
+//	glGenFramebuffersEXT(1, &framebuffer);
+//	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebuffer);
+//	glGenRenderbuffersEXT(1, &renderbuffer);
+//	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, renderbuffer);
+//	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGBA8, texWidth, texHeight);
+//	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,
+//					 GL_RENDERBUFFER_EXT, renderbuffer);
+//	status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+////	if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
+//					// Handle errors
+	
 	[self drawRect: r withContext: c];
+	
+	// Make the window the target
+//	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	//Your code to use the contents
+	// ...
+	// Delete the renderbuffer attachment
+//	glDeleteRenderbuffersEXT(1, &renderbuffer);
+		
+	
 	
 	return c;
 }
@@ -6864,8 +6900,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	NSPoint offset = { 0.0f, 0.0f };
 	
-	if( ctx == [self openGLContext]) drawingFrameRect = [self frame];
-	else drawingFrameRect = aRect;
+	drawingFrameRect = aRect;
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
@@ -7582,7 +7617,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void) reshape	// scrolled, moved or resized
 {
-	if( dcmPixList && [[self window] isVisible])
+	if( dcmPixList && [[self window] isVisible] && dontEnterReshape == NO)
     {
 		NSRect rect = [self frame];
 		
@@ -7704,7 +7739,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	else return [self getRawPixelsViewWidth:width height:height spp:spp bpp:bpp screenCapture:screenCapture force8bits: force8bits removeGraphical:removeGraphical squarePixels:squarePixels allowSmartCropping:allowSmartCropping origin: imOrigin spacing: imSpacing];
 }
 
-- (NSRect) smartCrop
+- (NSRect) smartCrop: (NSPoint*) ori
 {
 	NSPoint oo = [self origin];
 	
@@ -7728,8 +7763,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	NSRect smartRect = NSIntersectionRect( frameRect, usefulRect);
 	
+	if( ori)
+	{
+		ori->x = ori->y = 0;
+		if( NSEqualRects( usefulRect, smartRect) == NO)
+		{
+			ori->x = (usefulRect.origin.x - smartRect.origin.x) / 2 + (usefulRect.origin.x+usefulRect.size.width - (smartRect.origin.x+smartRect.size.width)) / 2;
+			ori->y = - ((usefulRect.origin.y - smartRect.origin.y) / 2 + (usefulRect.origin.y+usefulRect.size.height - (smartRect.origin.y+smartRect.size.height)) / 2);
+			
+			*ori = [DCMPix rotatePoint: *ori aroundPoint:NSMakePoint( 0, 0) angle: rotation*deg2rad];
+		}
+	}
 	return smartRect;
 }
+
+- (NSRect) smartCrop
+{
+	return [self smartCrop: 0L];
+}
+
 
 -(unsigned char*) getRawPixelsViewWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allowSmartCropping:(BOOL) allowSmartCropping origin:(float*) imOrigin spacing:(float*) imSpacing
 {
@@ -7741,7 +7793,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( force8bits == YES || curDCM.isRGB == YES || blendingView != 0L || [curDCM SUVConverted])		// Screen Capture in RGB - 8 bit
 		{
-			NSRect smartCroppedRect = [self smartCrop];
+			NSPoint shiftOrigin;
+			NSRect smartCroppedRect = [self smartCrop: &shiftOrigin];
 			
 			if( allowSmartCropping && [[NSUserDefaults standardUserDefaults] boolForKey: @"ScreenCaptureSmartCropping"])
 			{
@@ -7774,6 +7827,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			{
 				NSOpenGLContext *c = [self openGLContext];
 				
+				[c makeCurrentContext];
+				CGLContextObj cgl_ctx = [c CGLContextObj];
+				
 				if( removeGraphical)
 				{
 					NSString	*str = [[self stringID] retain];
@@ -7783,39 +7839,77 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					[self setStringID: str];
 					[str release];
+					
+					glReadBuffer(GL_FRONT);
+					
+					#if __BIG_ENDIAN__
+						glReadPixels(smartCroppedRect.origin.x, [self frame].size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
+						
+						register int ii = *width * *height;
+						register unsigned char	*t_argb = buf;
+						register unsigned char	*t_rgb = buf;
+						while( ii-->0)
+						{
+							*((int*) t_rgb) = *((int*) t_argb);
+							t_argb+=4;
+							t_rgb+=3;
+						}
+					#else
+						glReadPixels( smartCroppedRect.origin.x, [self frame].size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
+						
+						register int ii = *width * *height;
+						register unsigned char	*t_argb = buf;
+						register unsigned char	*t_rgb = buf;
+						while( ii-->0 ) {
+							*((int*) t_rgb) = *((int*) t_argb);
+							t_argb+=4;
+							t_rgb+=3;
+						}
+					#endif
 				}
-				else [self display];
-				
-				[c makeCurrentContext];
-				
-				CGLContextObj cgl_ctx = [c CGLContextObj];
-				
-				glReadBuffer(GL_FRONT);
-				
-				#if __BIG_ENDIAN__
-					glReadPixels(smartCroppedRect.origin.x, [self frame].size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
+				else
+				{
+					NSPoint oo = [self origin];
+					NSRect cc = [self frame];
 					
-					register int ii = *width * *height;
-					register unsigned char	*t_argb = buf;
-					register unsigned char	*t_rgb = buf;
-					while( ii-->0)
-					{
-						*((int*) t_rgb) = *((int*) t_argb);
-						t_argb+=4;
-						t_rgb+=3;
-					}
-				#else
-					glReadPixels( smartCroppedRect.origin.x, [self frame].size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
+					dontEnterReshape = YES;
+					[self setFrame: smartCroppedRect];
+					[self setOrigin: NSMakePoint( shiftOrigin.x, shiftOrigin.y)];
+					[self display];
 					
-					register int ii = *width * *height;
-					register unsigned char	*t_argb = buf;
-					register unsigned char	*t_rgb = buf;
-					while( ii-->0 ) {
-						*((int*) t_rgb) = *((int*) t_argb);
-						t_argb+=4;
-						t_rgb+=3;
-					}
-				#endif
+					glReadBuffer(GL_FRONT);
+					
+					#if __BIG_ENDIAN__
+						glReadPixels( 0,  0, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
+						
+						register int ii = *width * *height;
+						register unsigned char	*t_argb = buf;
+						register unsigned char	*t_rgb = buf;
+						while( ii-->0)
+						{
+							*((int*) t_rgb) = *((int*) t_argb);
+							t_argb+=4;
+							t_rgb+=3;
+						}
+					#else
+						glReadPixels(  0,  0, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
+						
+						register int ii = *width * *height;
+						register unsigned char	*t_argb = buf;
+						register unsigned char	*t_rgb = buf;
+						while( ii-->0 ) {
+							*((int*) t_rgb) = *((int*) t_argb);
+							t_argb+=4;
+							t_rgb+=3;
+						}
+					#endif
+					
+					[self setFrame: cc];
+					[self setOrigin: oo];
+					
+					
+					dontEnterReshape = NO;
+				}
 				
 				long rowBytes = *width**spp**bpp/8;
 				

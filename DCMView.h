@@ -220,7 +220,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	NSTimer			*_rightMouseDownTimer; //Checking For Right hold
 	NSImage			*destinationImage; //image will be dropping
 	
-	BOOL			_hasChanged, needToLoadTexture;
+	BOOL			_hasChanged, needToLoadTexture, dontEnterReshape;
 	
 	//Context for rendering to iChat
 	NSOpenGLContext *_alternateContext;
