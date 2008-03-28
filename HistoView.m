@@ -50,16 +50,28 @@
 	[self setNeedsDisplay:YES];
 }
 
+- (void) dealloc
+{
+	[backgroundColor release];
+	[binColor release];
+	[selectedBinColor  release];
+	[textColor release];
+	[borderColor release];
+	
+	[super dealloc];
+}
+
+
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self)
 	{
 		curMousePosition = -1;
-		backgroundColor = [NSColor whiteColor];
-		binColor = [NSColor lightGrayColor];
-		selectedBinColor = [NSColor selectedMenuItemColor];
-		textColor = [NSColor blackColor];
-		borderColor = [NSColor grayColor];
+		backgroundColor = [[NSColor whiteColor] retain];
+		binColor = [[NSColor lightGrayColor] retain];
+		selectedBinColor = [[NSColor selectedMenuItemColor] retain];
+		textColor = [[NSColor blackColor] retain];
+		borderColor = [[NSColor grayColor] retain];
     }
     return self;
 }

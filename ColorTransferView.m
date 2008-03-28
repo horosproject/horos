@@ -39,12 +39,6 @@
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
 - (IBAction) renderButton:(id) sender
 {
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"CLUTChanged" object: self userInfo: 0L];
