@@ -168,6 +168,9 @@ static NSHost *currentHost = 0L;
 		// Convert this to a useable number
 		CFNumberGetValue(typeCode, kCFNumberSInt32Type, &vramStorage);
 		// If we get something other than 0, we'll use it
+		
+		CFRelease( typeCode);
+		
 		if(vramStorage > 0)
 			return vramStorage;
 	}

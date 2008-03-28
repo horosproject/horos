@@ -1637,7 +1637,7 @@ public:
 	
 	[self setBlendingPixSource: 0L];
 	
-	cbStart->Delete();
+//	cbStart->Delete();
 	opacityTransferFunction->Delete();
 	volumeProperty->Delete();
 	compositeFunction->Delete();
@@ -1678,51 +1678,6 @@ public:
 	[cursor release];
 	
     [super dealloc];
-}
-
- 
-- (void)finalize {
-	[splash close];
-	
-	cbStart->Delete();
-	opacityTransferFunction->Delete();
-	volumeProperty->Delete();
-	compositeFunction->Delete();
-	orientationWidget->Delete();
-	
-	if( volumeMapper) volumeMapper->Delete();
-	if( textureMapper) textureMapper->Delete();
-//	if( shearWarpMapper) shearWarpMapper->Delete();
-	
-	volume->Delete();
-	outlineData->Delete();
-	mapOutline->Delete();
-//	outlineRect->Delete();
-	croppingBox->Delete();
-	textWLWW->Delete();
-	textX->Delete();
-	int i;
-	for( i = 0; i < 4; i++) oText[ i]->Delete();
-	colorTransferFunction->Delete();
-	reader->Delete();
-	
-    aCamera->Delete();
-
-	ROI3D->Delete();
-	ROI3DData->Delete();
-	ROI3DActor->Delete();
-	
-	Line2D->Delete();
-	Line2DActor->Delete();
-	Line2DText->Delete();
-	
-	
-	if( isRGB) free( dataFRGB);
-	
-	free( data8);
-	
-	[super finalize];
-
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent
@@ -3871,14 +3826,14 @@ public:
 	data = volumeData;
 	
 	aRenderer = [self renderer];
-	cbStart = vtkCallbackCommand::New();
-	cbStart->SetCallback( startRendering);
-	cbStart->SetClientData( self);
+//	cbStart = vtkCallbackCommand::New();
+//	cbStart->SetCallback( startRendering);
+//	cbStart->SetClientData( self);
 	
 	//vtkCommand.h
-	[self renderWindow]->AddObserver(vtkCommand::StartEvent, cbStart);
-	[self renderWindow]->AddObserver(vtkCommand::EndEvent, cbStart);
-	[self renderWindow]->AddObserver(vtkCommand::AbortCheckEvent, cbStart);
+//	[self renderWindow]->AddObserver(vtkCommand::StartEvent, cbStart);
+//	[self renderWindow]->AddObserver(vtkCommand::EndEvent, cbStart);
+//	[self renderWindow]->AddObserver(vtkCommand::AbortCheckEvent, cbStart);
 
 	firstObject = [pixList objectAtIndex:0];
 	float sliceThickness = [firstObject sliceInterval];  //[[pixList objectAtIndex:1] sliceLocation] - [firstObject sliceLocation];

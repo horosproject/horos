@@ -48,6 +48,8 @@
 		}
 	}
 	
+	delete document;
+	
 	return result;
 }
 
@@ -163,6 +165,7 @@
 //				fileformat->saveFile(filename.c_str(), EXS_LittleEndianExplicit);
 //			}
 //		}
+//		delete fileformat
 	}
 	return self;
 }
@@ -397,6 +400,9 @@
 			fileformat->saveFile( [path UTF8String], EXS_LittleEndianExplicit);
 		}
 	}
+	
+	if( fileformat)
+		delete fileformat;
 }
 
 - (void)saveAsHTML;

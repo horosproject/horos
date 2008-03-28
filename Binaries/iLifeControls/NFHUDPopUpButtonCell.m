@@ -48,12 +48,12 @@
 
 -(void)drawTitleWithFrame:(NSRect)frame inView:(NSView *)view
 {
-	NSMutableDictionary *attrs = [[NSMutableDictionary alloc]init];
+	NSMutableDictionary *attrs = [[[NSMutableDictionary alloc]init] autorelease];
 	[attrs addEntriesFromDictionary:[[self attributedTitle] attributesAtIndex:0 effectiveRange:NULL]];
 	NSFont *font = [NSFont fontWithName:@"LucidaGrande" size:11.0];
 	[attrs setObject:font forKey:NSFontAttributeName];
 	[attrs setObject:[NSColor whiteColor]forKey:NSForegroundColorAttributeName];
-	NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:[self title] attributes:attrs];
+	NSMutableAttributedString *attrStr = [[[NSMutableAttributedString alloc] initWithString:[self title] attributes:attrs] autorelease];
 	frame = [self titleRectForBounds:frame];
 	[super drawTitle:attrStr withFrame:frame inView:view];
 }

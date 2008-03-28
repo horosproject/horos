@@ -179,7 +179,7 @@ typedef char* vtkPolyDataNormals;
 	float						rotationValue;
 	long						rotationOrientation;
 	
-	vtkCallbackCommand			*cbStart;
+//	vtkCallbackCommand			*cbStart;
 	
 	// DICOM export
 	IBOutlet NSWindow			*exportDCMWindow;

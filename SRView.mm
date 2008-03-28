@@ -68,32 +68,32 @@ typedef struct _xyzArray
 	short z;
 } xyzArray;
 
-static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
-{
-	SRView* mipv = (SRView*) ptr;
-	
-	//vtkRenderWindow
-	//[self renderWindow] SetAbortRender( true);
-	if( c == vtkCommand::StartEvent)
-	{
-		[mipv newStartRenderingTime];
-	}
-	
-	if( c == vtkCommand::EndEvent)
-	{
-		[mipv stopRendering];
-		[[mipv startRenderingTime] release];
-	}
-	
-	if( c == vtkCommand::AbortCheckEvent)
-	{
-//		if( [[NSDate date] timeIntervalSinceDate:[mipv startRenderingTime]] > 2.0)
-//		{
-//			[mipv startRendering];
-//			[mipv runRendering];
-//		}
-	}
-}
+//static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
+//{
+//	SRView* mipv = (SRView*) ptr;
+//	
+//	//vtkRenderWindow
+//	//[self renderWindow] SetAbortRender( true);
+//	if( c == vtkCommand::StartEvent)
+//	{
+//		[mipv newStartRenderingTime];
+//	}
+//	
+//	if( c == vtkCommand::EndEvent)
+//	{
+//		[mipv stopRendering];
+//		[[mipv startRenderingTime] release];
+//	}
+//	
+//	if( c == vtkCommand::AbortCheckEvent)
+//	{
+////		if( [[NSDate date] timeIntervalSinceDate:[mipv startRenderingTime]] > 2.0)
+////		{
+////			[mipv startRendering];
+////			[mipv runRendering];
+////		}
+//	}
+//}
 
 @implementation SRView
 
@@ -757,7 +757,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		blendingController = 0L;
 		blendingFactor = 0.5;
 		blendingReader = 0L;
-		cbStart = 0L;
+//		cbStart = 0L;
 		
 		exportDCM = 0L;
 		
@@ -827,7 +827,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	if( isoResample) isoResample->Delete();
 	if( BisoResample) BisoResample->Delete();
 	
-	cbStart->Delete();
+//	cbStart->Delete();
 	matrice->Delete();
 	
 	outlineData->Delete();
@@ -2036,13 +2036,13 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	data = volumeData;
 	
 	aRenderer = [self renderer];
-	cbStart = vtkCallbackCommand::New();
-	cbStart->SetCallback( startRendering);
-	cbStart->SetClientData( self);
+//	cbStart = vtkCallbackCommand::New();
+//	cbStart->SetCallback( startRendering);
+//	cbStart->SetClientData( self);
 	
-	[self renderWindow]->AddObserver(vtkCommand::StartEvent, cbStart);
-	[self renderWindow]->AddObserver(vtkCommand::EndEvent, cbStart);
-	[self renderWindow]->AddObserver(vtkCommand::AbortCheckEvent, cbStart);
+//	[self renderWindow]->AddObserver(vtkCommand::StartEvent, cbStart);
+//	[self renderWindow]->AddObserver(vtkCommand::EndEvent, cbStart);
+//	[self renderWindow]->AddObserver(vtkCommand::AbortCheckEvent, cbStart);
 	
 //	aRenderer->AddObserver(vtkCommand::StartEvent, cbStart);
 //	aRenderer->AddObserver(vtkCommand::EndEvent, cbStart);

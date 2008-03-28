@@ -222,8 +222,8 @@ public:
     {
 		return new vtkMyCallbackVR;
 	}
-  void Delete()
-    { delete this; }
+ // void Delete()
+//    { delete this; }
 	
 	virtual void Execute(vtkObject *caller, unsigned long, void*)
     {
@@ -1855,7 +1855,6 @@ public:
 	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
-//	cropcallback->Delete();
 	
 	[self setBlendingPixSource: 0L];
 	
@@ -1879,6 +1878,14 @@ public:
 	outlineData->Delete();
 	mapOutline->Delete();
 	outlineRect->Delete();
+	
+	if( cropcallback)
+	{
+		croppingBox->InvokeEvent(vtkCommand::EndEvent,NULL);
+		croppingBox->RemoveObserver(cropcallback);
+		cropcallback->Delete();
+	}
+	
 	croppingBox->Delete();
 	textWLWW->Delete();
 	textX->Delete();
@@ -1888,6 +1895,7 @@ public:
     aCamera->Delete();
 //	aRenderer->Delete();
 	
+	Line2DData->Delete();
 	ROI3DData->Delete();
 	ROI3D->Delete();
 	ROI3DActor->Delete();
@@ -1895,7 +1903,7 @@ public:
 	Line2D->Delete();
 	Line2DActor->Delete();
 	Line2DText->Delete();
-	
+		
     [pixList release];
     pixList = 0L;
 	
@@ -2261,8 +2269,7 @@ public:
 	
 	ROI3DData->SetVerts( rect);
 	ROI3DData->SetLines( rect);		rect->Delete();
-	
-	ROI3DData->SetPoints( pts);
+	ROI3DData->SetPoints( pts);		pts->Delete();
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
@@ -5779,6 +5786,8 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	//Actor
 	vtkActor *sphereActor = vtkActor::New();
 	sphereActor->SetMapper(mapper);
+	mapper->Delete();
+	
 	sphereActor->GetProperty()->SetColor(r,g,b);
 	sphereActor->DragableOn();
 	sphereActor->PickableOn();
@@ -5793,6 +5802,7 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	
 	[self add3DPointActor: sphereActor];
 	
+	sphereActor->Delete();
 	sphereSource->Delete();
 }
 
@@ -6329,6 +6339,8 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	mapper->SetInputConnection(sphereSource->GetOutputPort());
 	//Actor
 	actor->SetMapper(mapper);
+	mapper->Delete();
+	
 	[point3DRadiusArray removeObjectAtIndex:index];
 	[point3DRadiusArray insertObject:[NSNumber numberWithFloat:radius] atIndex:index];
 	
