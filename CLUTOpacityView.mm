@@ -21,20 +21,19 @@
     self = [super initWithFrame:frame];
     if (self)
 	{
-		backgroundColor = [NSColor blackColor];
+		backgroundColor = [[NSColor blackColor] retain];
 		histogramOpacity = 0.25;
-		histogramColor = [NSColor lightGrayColor];
-		pointsColor = [NSColor blackColor];
-		pointsBorderColor = [NSColor blackColor];
-		textLabelColor = [NSColor whiteColor];
-		selectedPointColor = [NSColor whiteColor];
-		curveColor = [NSColor grayColor];
+		histogramColor = [[NSColor lightGrayColor] retain];
+		pointsColor = [[NSColor blackColor] retain];
+		pointsBorderColor = [[NSColor blackColor] retain];
+		textLabelColor = [[NSColor whiteColor] retain];
+		selectedPointColor = [[NSColor whiteColor] retain];
+		curveColor = [[NSColor grayColor] retain];
 		
 		HUmin = -1000.0;
 		HUmax = 1000.0;
 		curves = [[NSMutableArray arrayWithCapacity:0] retain];
 		pointColors = [[NSMutableArray arrayWithCapacity:0] retain];
-		colorPanel = [NSColorPanel sharedColorPanel];
 		selectedPoint.y = -1.0;
 		pointDiameter = 8;
 		lineWidth = 3;
@@ -71,14 +70,21 @@
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	
 	if(histogram) free(histogram);
 	[curves release];
 	[pointColors release];
 	[selectedPointColor release];
 	[contextualMenu release];
 	[undoManager release];
-	
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+
+	[backgroundColor release];
+	[histogramColor release];
+	[pointsColor release];
+	[pointsBorderColor release];
+	[textLabelColor release];
+	[selectedPointColor release];
+	[curveColor release];
 	
 	[super dealloc];
 }
@@ -398,6 +404,8 @@
 		NSGradient *gradient = [[NSGradient alloc] initWithColors:[pointColors objectAtIndex:i] atLocations:locations colorSpace:[NSColorSpace deviceRGBColorSpace]];
 		[gradient drawInBezierPath:line angle:0];
 		[gradient release];
+		
+		free( locations);
 	}
 }
 
@@ -719,7 +727,7 @@
 			if(position.x>=pt2.x-pointDiameter && position.y>=pt2.y-pointDiameter && position.x<=pt2.x+pointDiameter && position.y<=pt2.y+pointDiameter)
 			{
 				selectedPoint = [[aCurve objectAtIndex:j] pointValue];
-				[colorPanel setColor:[[pointColors objectAtIndex:i] objectAtIndex:j]];
+				[[NSColorPanel sharedColorPanel] setColor:[[pointColors objectAtIndex:i] objectAtIndex:j]];
 				[self sendToFrontCurveAtIndex:i];
 				selectedCurveIndex = -1;
 				clutChanged = NO;
@@ -1029,14 +1037,14 @@ NSRect rect = drawingRect;
 		{
 			nothingChanged = YES;
 			clutChanged = NO;
-			[colorPanel orderFront:self];
+			[[NSColorPanel sharedColorPanel] orderFront:self];
 		}
 	}
 	else if([theEvent clickCount] == 2)
 	{
 		nothingChanged = YES;
 		clutChanged = NO;
-		[colorPanel orderFront:self];
+		[[NSColorPanel sharedColorPanel] orderFront:self];
 	}
 }
 

@@ -31,8 +31,6 @@
 	int selectedCurveIndex;
 	int pointDiameter, lineWidth, pointBorder;
 	
-	NSColorPanel *colorPanel;
-	
 	NSMutableArray *curves, *pointColors;
 	
 	NSMenu *contextualMenu;
