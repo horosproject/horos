@@ -18,7 +18,6 @@
 
 @interface OSIGeneralPreferencePanePref : NSPreferencePane 
 {
-	IBOutlet NSButton		*CheckUpdatesOnOff;
 	IBOutlet NSButton		*securityOnOff;
 	
 	IBOutlet NSMatrix		*readerMatrix, *parserMatrix;
@@ -27,7 +26,6 @@
 }
 
 -(void) mainViewDidLoad;
--(IBAction)setCheckUpdates:(id)sender;
 -(IBAction)setUseDCMTK:(id)sender;
 -(IBAction)setReader: (id) sender;
 -(IBAction)setParser: (id) sender;

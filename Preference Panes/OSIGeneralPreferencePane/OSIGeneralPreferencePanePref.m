@@ -87,7 +87,6 @@
 	[_authView updateStatus: self];
 	
 	//setup GUI
-	[CheckUpdatesOnOff setState:[defaults boolForKey:@"CHECKUPDATES"]];
 	[securityOnOff setState:[defaults boolForKey:@"AUTHENTICATION"]];
 	
 	[readerMatrix selectCellWithTag: [defaults boolForKey: @"USEPAPYRUSDCMPIX"]];
@@ -102,10 +101,6 @@
 - (IBAction) setParser: (id) sender
 {
 	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: @"TOOLKITPARSER"];
-}
-
--(IBAction)setCheckUpdates:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"CHECKUPDATES"];
 }
 
 -(IBAction)setUseDCMTK:(id)sender{

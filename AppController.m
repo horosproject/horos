@@ -2075,7 +2075,7 @@ static BOOL initialized = NO;
 
 // Increment the startup counter.
 
-	long					startCount = [[NSUserDefaults standardUserDefaults] integerForKey: @"STARTCOUNT"];
+	long startCount = [[NSUserDefaults standardUserDefaults] integerForKey: @"STARTCOUNT"];
 	[[NSUserDefaults standardUserDefaults] setInteger: startCount+1 forKey: @"STARTCOUNT"];
 	
 	if (startCount==0)			// Replaces FIRSTTIME.
@@ -2083,7 +2083,7 @@ static BOOL initialized = NO;
 		switch( NSRunInformationalAlertPanel( NSLocalizedString(@"OsiriX Updates", 0L), NSLocalizedString( @"Would you like to activate automatic checking for updates?", 0L), NSLocalizedString( @"Yes", 0L), NSLocalizedString( @"No", 0L), 0L))
 		{
 			case 0:
-				[[NSUserDefaults standardUserDefaults] setObject: @"NO" forKey: @"CHECKUPDATES"];
+				[[NSUserDefaults standardUserDefaults] setObject: @"NO" forKey: @"CheckOsiriXUpdates"];
 			break;
 		}
 	}
@@ -2332,7 +2332,7 @@ static BOOL initialized = NO;
 			}
 			else
 			{
-				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CHECKUPDATES"] || verboseUpdateCheck == YES)
+				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CheckOsiriXUpdates"] || verboseUpdateCheck == YES)
 					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATE" waitUntilDone:YES];				
 			}
 		}

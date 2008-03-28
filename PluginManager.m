@@ -827,7 +827,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 //				if ([latestVersionNumber intValue] <= [currVersionNumber intValue])
 //				{
 //					if (verboseUpdateCheck)
-//						[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPTODATE" waitUntilDone:YES];
+//						[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"CheckOsiriXUpdates" waitUntilDone:YES];
 //				}
 //				else
 //				{
