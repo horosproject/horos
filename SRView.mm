@@ -2924,6 +2924,10 @@ typedef struct _xyzArray
 	mapper->SetInputConnection(sphereSource->GetOutputPort());
 	//Actor
 	actor->SetMapper(mapper);
+	
+	sphereSource->Delete();
+	mapper->Delete();
+	
 	[point3DRadiusArray removeObjectAtIndex:index];
 	[point3DRadiusArray insertObject:[NSNumber numberWithFloat:radius] atIndex:index];
 }

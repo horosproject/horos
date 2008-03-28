@@ -5801,8 +5801,6 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 	[point3DColorsArray addObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0]];
 	
 	[self add3DPointActor: sphereActor];
-	
-	sphereActor->Delete();
 	sphereSource->Delete();
 }
 
