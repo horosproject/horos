@@ -320,7 +320,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 				// an array for the parameters
 				int algo = [[algorithmPopup selectedItem] tag];
 				int parametersCount = [[parameters objectAtIndex:algo] count];
-				NSMutableArray *parametersArray = [[NSMutableArray alloc] initWithCapacity:parametersCount];
+				NSMutableArray *parametersArray = [NSMutableArray arrayWithCapacity:parametersCount];
 				int i;
 				for(i=0; i<parametersCount; i++)
 				{
@@ -428,7 +428,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 				// an array for the parameters
 				int algo = [[algorithmPopup selectedItem] tag];
 				int parametersCount = [[parameters objectAtIndex:algo] count];
-				NSMutableArray *parametersArray = [[NSMutableArray alloc] initWithCapacity:parametersCount];
+				NSMutableArray *parametersArray = [NSMutableArray arrayWithCapacity:parametersCount] ;
 				int i;
 				for(i=0; i<parametersCount; i++)
 				{
@@ -470,7 +470,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 - (void) fillAlgorithmPopup
 {
 	int i;
-	NSMenu *items = [[NSMenu alloc] initWithTitle:@""];
+	NSMenu *items = [[[NSMenu alloc] initWithTitle:@""] autorelease];
 	
 	for (i=0; i<[algorithms count]; i++)
 	{

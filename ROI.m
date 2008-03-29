@@ -2492,7 +2492,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			case ROI_drawing:
 				
 				thickness = ROIRegionThickness;
-			
+				
 				if (textureUpLeftCornerX > pt.x-thickness)
 				{
 					oldTextureUpLeftCornerX = textureUpLeftCornerX;

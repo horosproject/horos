@@ -961,27 +961,43 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 	DcmFileFormat fileformat;
 	cond = fileformat.loadFile(imageFileName);
 	
-	if (cond.good()) {
-		const char *sopclass;
-		const char *sopinstance;
-		cond = fileformat.getDataset()->findAndGetString(DCM_SOPClassUID, sopclass, OFFalse);
-		cond = fileformat.getDataset()->findAndGetString(DCM_SOPInstanceUID, sopinstance, OFFalse);
-		strcpy (SOPClassUID, (char *) sopclass) ;
-		strcpy (SOPInstanceUID, (char *) sopinstance) ;
-		/* figure out which of the accepted presentation contexts should be used */
-		DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-		//on the fly conversion:
-		E_TransferSyntax moveTransferSyntax = preferredTS;
-		T_ASC_PresentationContextID presId;
-		DcmXfer preferredXfer(moveTransferSyntax);
-		OFBool status = YES;
+	if (cond.good())
+	{
+		const char *sopclass = 0L;
+		const char *sopinstance = 0L;
 		
-		if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated()) {
-				// do nothing
+		cond = fileformat.getDataset()->findAndGetString(DCM_SOPClassUID, sopclass, OFFalse);
+		if (cond.good())
+		{
+			cond = fileformat.getDataset()->findAndGetString(DCM_SOPInstanceUID, sopinstance, OFFalse);
+			if (cond.good())
+			{
+				if( SOPClassUID != 0L && sopclass != 0L && SOPInstanceUID != 0L && sopinstance != 0L)
+				{
+					strcpy (SOPClassUID, (char *) sopclass) ;
+					strcpy (SOPInstanceUID, (char *) sopinstance) ;
+					/* figure out which of the accepted presentation contexts should be used */
+					DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+					//on the fly conversion:
+					E_TransferSyntax moveTransferSyntax = preferredTS;
+					T_ASC_PresentationContextID presId;
+					DcmXfer preferredXfer(moveTransferSyntax);
+					OFBool status = YES;
+					
+					if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated())
+					{
+						// do nothing
+					}
+					else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated())
+					{
+						cond = decompressFileFormat(fileformat, imageFileName);
+					}
+				}
+				else cond = EC_IllegalParameter;
+			}
 		}
-		else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated()) {
-				cond = decompressFileFormat(fileformat, imageFileName);
-		}
+		
+		
 			//else if (filexfer.isNotEncapsulated() && preferredXfer.isEncapsulated()) {
 			//	status = compressFile(fileformat, fname);
 			//}
@@ -995,18 +1011,11 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 		{
 		
 		}
-		else
-		{
-			NSLog( @"******* DCMQRDBQ Error -1");
-		}
-		
 	}
-	else NSLog( @"******* DCMQRDBQ Error -2");
 	
 	//read file to get SOPClass and SOPInstanceUIDs
 	
 	 return cond;
-	//return DcmQROsiriXDatabaseError;
 }
 
 OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(

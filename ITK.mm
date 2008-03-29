@@ -32,6 +32,8 @@
 {
 	NSLog(@"ITK Image dealloc");
 	
+	importFilter->Delete();
+	
 	[super dealloc];
 }
 
