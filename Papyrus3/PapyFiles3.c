@@ -268,7 +268,6 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                       {
                         ExtractModality (theValP, theFileNb);
                         thePapyrusFile = DICOM_NOT10; /* non-part 10 DICOM file */
-
                       }
                       else
                       {
@@ -322,7 +321,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
     
                     gNbShadowOwner [theFileNb] = 0;
 			              /* shadow_group that we allow to read */
-                    (void) Papy3AddOwner (theFileNb, "PAPYRUS 3.0");      
+                    (void) Papy3AddOwner (theFileNb, "PAPYRUS 3.0");
     
                     /* read group 2 (File Meta Information) to extract the basic informations */
                     /* regarding the way of reading the file */
@@ -331,6 +330,9 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                       if ((theErr = ExtractFileMetaInformation3 (theFileNb)) < 0)
                       {
                         iResult = theErr;
+						
+						if (gShadowOwner [theFileNb] != NULL) 
+							efree3 ((void **) &(gShadowOwner [theFileNb]));
                       }
 					  
 					  if( gArrTransfSyntax [theFileNb] == BIG_ENDIAN_EXPL) 
@@ -356,6 +358,9 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                           if ((theErr = ExtractPapyDataSetInformation3 (theFileNb)) < 0) 
                           {
                             iResult = theErr;
+							
+							if (gShadowOwner [theFileNb] != NULL) 
+								efree3 ((void **) &(gShadowOwner [theFileNb]));
                           }
                         } /* if ...PAPYRUS file */
     
@@ -378,8 +383,10 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                           if ((theErr = ExtractGroup28Information (theFileNb)) < 0)
                           {
 								iResult = theErr;
+								
+								if (gShadowOwner [theFileNb] != NULL) 
+									efree3 ((void **) &(gShadowOwner [theFileNb]));
                           }
-						  
 						  
 						  if (gIsPapyFile [theFileNb] == DICOM10)
                             theErr = Papy3FSeek (gPapyFile [theFileNb], SEEK_SET, 132L);
@@ -434,6 +441,9 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
 
     } /* if ...no error 'til yet... */ 
     
+	if( iResult > kMax_file_open)
+		printf("Warning nbFile > kMax_file_open");
+	
     return iResult;
     
 } /* endof Papy3FileOpen */
