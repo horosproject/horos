@@ -94,13 +94,17 @@
 		
 		long rowBytes = *width**spp**bpp/8;
 		
-		unsigned char	*tempBuf = (unsigned char*) malloc( rowBytes);
-		
-		for( i = 0; i < *height/2; i++)
 		{
-			memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
-			memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
-			memcpy( buf + i*rowBytes, tempBuf, rowBytes);
+			unsigned char	*tempBuf = (unsigned char*) malloc( rowBytes);
+			
+			for( i = 0; i < *height/2; i++)
+			{
+				memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
+				memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
+				memcpy( buf + i*rowBytes, tempBuf, rowBytes);
+			}
+			
+			free( tempBuf);
 		}
 		
 		//Add the small OsiriX logo at the bottom right of the image

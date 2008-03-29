@@ -1521,7 +1521,7 @@ PixelRepresentation
 	
 	//set character set if necessary
 	if (!specificCharacterSet && [self attributeValueWithName:@"SpecificCharacterSet"])
-		[self setCharacterSet:[[DCMCharacterSet alloc] initWithCode:[self attributeValueWithName:@"SpecificCharacterSet"]]];
+		[self setCharacterSet: [[[DCMCharacterSet alloc] initWithCode:[self attributeValueWithName:@"SpecificCharacterSet"]] autorelease]];
 
 	NSMutableArray *mutableKeys = [NSMutableArray arrayWithArray:[attributes allKeys]];
 	NSArray *sortedKeys = [mutableKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];

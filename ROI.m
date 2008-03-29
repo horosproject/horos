@@ -2396,29 +2396,42 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		int oldTextureWidth = textureWidth;
 		int oldTextureHeight = textureHeight;
 		
-		textureWidth = maxX - minX+1;
-		textureHeight = maxY - minY+1;
+		textureWidth = maxX - minX;
+		textureHeight = maxY - minY;
 		
 		if( textureWidth%4) {textureWidth /=4;	textureWidth *=4;		textureWidth +=4;}
 		if( textureHeight%4) {textureHeight /=4;	textureHeight *=4;		textureHeight += 4;}
 		
+		if( textureWidth > oldTextureWidth)
+		{
+			textureWidth = oldTextureWidth;
+			offsetTextureX = 0;
+		}
+		if( oldTextureWidth < textureWidth + offsetTextureX)
+		{
+			textureWidth = oldTextureWidth;
+			offsetTextureX = 0;
+		}
+		if( textureHeight > oldTextureHeight)
+		{
+			textureHeight = oldTextureHeight;
+			offsetTextureY = 0;
+		}
+		
 		unsigned char*	newTextureBuffer;
 		
-		if( textureHeight+offsetTextureY > oldTextureHeight || textureWidth+offsetTextureX > oldTextureWidth)
+		newTextureBuffer = calloc( (1+textureWidth)*(1+textureHeight), sizeof(unsigned char));
+		if( newTextureBuffer == 0L)
 		{
-			newTextureBuffer = malloc(textureWidth*textureHeight*sizeof(unsigned char));
-			if( newTextureBuffer == 0L)
-			{
-				textureWidth = oldTextureWidth;
-				textureHeight = oldTextureHeight;
-				return NO;
-			}
+			textureWidth = oldTextureWidth;
+			textureHeight = oldTextureHeight;
+			return NO;
 		}
-		else newTextureBuffer = textureBuffer;
 		
 		for( long y = 0 ; y < textureHeight ; y++)
 		{
-			memcpy( newTextureBuffer + (y * textureWidth), textureBuffer + offsetTextureX+ (y+ offsetTextureY)*oldTextureWidth,  textureWidth);
+			if( y + offsetTextureY < oldTextureHeight)
+				memcpy( newTextureBuffer + (y * textureWidth), textureBuffer + offsetTextureX+ (y+ offsetTextureY)*oldTextureWidth, textureWidth);
 		}
 		
 		if( newTextureBuffer != textureBuffer)
@@ -2429,8 +2442,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		textureUpLeftCornerX += offsetTextureX;
 		textureUpLeftCornerY += offsetTextureY;
-		textureDownRightCornerX = textureUpLeftCornerX + textureWidth-1;
-		textureDownRightCornerY = textureUpLeftCornerY + textureHeight-1;
+		textureDownRightCornerX = textureUpLeftCornerX + textureWidth;
+		textureDownRightCornerY = textureUpLeftCornerY + textureHeight;
 	}
 	
 	return NO;	// means the ROI is NOT empty;
