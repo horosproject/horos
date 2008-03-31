@@ -44,7 +44,6 @@
 		didResizeVRVIew = NO;
 		mousePositionX = 0.0;
 		
-		[self computeHistogram];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changePointColor:) name:@"NSColorPanelColorDidChangeNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeHistogram:) name:@"updateVolumeData" object:nil];
 		
@@ -62,7 +61,11 @@
 	curves = [[NSMutableArray arrayWithCapacity:0] retain];
 	if(pointColors) [pointColors release];
 	pointColors = [[NSMutableArray arrayWithCapacity:0] retain];
-	[self computeHistogram];
+	if( histogram)
+	{
+		free( histogram);
+		histogram = 0L;
+	}
 	didResizeVRVIew = NO;
 	[self updateView];
 }
@@ -130,7 +133,7 @@
 	
 	histogramSize = (int)((HUmax-HUmin)/2);
 	if(histogram) free(histogram);
-	histogram = (vImagePixelCount*) malloc(sizeof(vImagePixelCount) * histogramSize);
+	histogram = (vImagePixelCount*) malloc(sizeof(vImagePixelCount) * (histogramSize + 10));
 	vImageHistogramCalculation_PlanarF(&buffer, histogram, histogramSize, HUmin, HUmax, kvImageDoNotTile);
 	
 	int i;
@@ -678,6 +681,9 @@
 
 - (void)drawRect:(NSRect)rect
 {
+	if( histogram == 0L)
+		[self computeHistogram];
+	
 	[backgroundColor set];
 	NSRectFill(rect);
 	
