@@ -197,7 +197,7 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 #define INIT_DELTAS dx=V2.x-V1.x;  dy=V2.y-V1.y;
 #define INIT_CLIP INIT_DELTAS if(dx)m=dy/dx;
 
-static inline void CLIP_Left(NSPointInt *Polygon, long *count, NSPointInt V1,NSPointInt V2) {
+static inline void CLIP_Left(NSPointInt *Polygon, long *count, NSPointInt V1, NSPointInt V2) {
 	float   dx,dy, m=1;
 	INIT_CLIP
 	
@@ -217,7 +217,7 @@ static inline void CLIP_Left(NSPointInt *Polygon, long *count, NSPointInt V1,NSP
 	}
 }
 
-static inline void CLIP_Right(NSPointInt *Polygon,long *count, NSPointInt V1,NSPointInt V2, NSPointInt DownRight) {
+static inline void CLIP_Right(NSPointInt *Polygon, long *count, NSPointInt V1, NSPointInt V2, NSPointInt DownRight) {
 	float dx,dy, m=1;
 	INIT_CLIP
 	// ************OK************
@@ -291,7 +291,7 @@ static inline void CLIP_Bottom(NSPointInt *Polygon,long *count, NSPointInt V1,NS
 
 void CLIP_Polygon(NSPointInt *inPoly, long inCount, NSPointInt *outPoly, long *outCount, long w, long h) {
 	int				d;
-	NSPointInt		TmpPoly[ MAXVERTICAL];
+	NSPointInt		*TmpPoly = malloc( MAXVERTICAL * sizeof( NSPointInt));
 	long			TmpCount;	
 	NSPointInt		DownRight;
 	
@@ -323,6 +323,8 @@ void CLIP_Polygon(NSPointInt *inPoly, long inCount, NSPointInt *outPoly, long *o
 		if(d==TmpCount)d=0;
 		CLIP_Bottom(outPoly, outCount, TmpPoly[v],TmpPoly[d], DownRight);
 	}
+	
+	free( TmpPoly);
 }
 
 // POLY FILL
@@ -715,17 +717,19 @@ void ras_FillPolygon(	NSPointInt *p,
 					 long stackNo,
 					 BOOL restore)
 {
-	struct edge *edgeTable[ MAXVERTICAL];
+	struct edge **edgeTable = (struct edge **) malloc( MAXVERTICAL * sizeof( struct edge *));
     struct	edge *active;
-	BOOL	clip = NO;
-	NSPointInt	*pTemp;
 	long curY;
 	
     FillEdges(p, no, edgeTable);
 	
-    for ( curY = 0; edgeTable[ curY] == NULL; curY++ ) {
+    for ( curY = 0; edgeTable[ curY] == NULL; curY++ )
+	{
         if (curY == MAXVERTICAL - 1)
-            return;     /* No edges in polygon */
+		{
+			free( edgeTable);
+			return;     /* No edges in polygon */
+		}
 	}
 	
     for (active = NULL; (active = UpdateActive(active, edgeTable, curY)) != NULL; curY++)
@@ -733,10 +737,7 @@ void ras_FillPolygon(	NSPointInt *p,
 		DrawRuns(active, curY, pix, w, h, min, max, outside, newVal, addition, RGB, compute, imax, imin, count, itotal, idev, imean, orientation, stackNo, restore);
 	}
 	
-	if( clip)
-	{
-		free( pTemp);
-	}
+	free( edgeTable);
 }
 
 static inline long pnpoly( NSPoint *p, long count, float x, float y) {

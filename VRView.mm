@@ -2493,7 +2493,7 @@ public:
 					
 					double *tempPoint = aRenderer->GetDisplayPoint();
 					
-					NSLog(@"New pt: %2.2f %2.2f", tempPoint[0] , tempPoint[ 1]);
+//					NSLog(@"New pt: %2.2f %2.2f", tempPoint[0] , tempPoint[ 1]);
 					
 					[ROIPoints addObject: [NSValue valueWithPoint: NSMakePoint( tempPoint[0], tempPoint[ 1])]];
 					
@@ -3203,7 +3203,7 @@ public:
 		
 		if( aCamera->GetParallelProjection())
 		{
-			NSLog(@"Cam Proj: %f %f %f",cameraProj[ 0], cameraProj[ 1], cameraProj[ 2]);
+//			NSLog(@"Cam Proj: %f %f %f",cameraProj[ 0], cameraProj[ 1], cameraProj[ 2]);
 			
 			aCamera->GetPosition( xyz);
 			
