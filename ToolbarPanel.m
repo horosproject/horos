@@ -69,7 +69,7 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 	{
 		toolbar = 0L;
 		
-		[[self window] setCollectionBehavior: NSWindowCollectionBehaviorCanJoinAllSpaces];
+//		[[self window] setCollectionBehavior: NSWindowCollectionBehaviorCanJoinAllSpaces];
 	}
 	
 	return self;

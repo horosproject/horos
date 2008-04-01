@@ -5017,7 +5017,7 @@ public:
 								factor*[firstObject originX] * matrice->Element[0][2] + factor*[firstObject originY] * matrice->Element[1][2] + factor*[firstObject originZ]*matrice->Element[2][2]);
 	outlineRect->PickableOff();
 
-	[self initAnnotatedCubeActor];
+//	[self initAnnotatedCubeActor];
 	
 	croppingBox = vtkBoxWidget::New();
 	
@@ -5156,6 +5156,8 @@ public:
 	[[NSOpenGLContext currentContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
 	
 	[self setNeedsDisplay:YES];
+	
+	[self initAnnotatedCubeActor];
 	
     return error;
 }
