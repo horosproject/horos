@@ -19,6 +19,11 @@ static NSString *albumDragType = @"Osirix Album drag";
 
 @implementation BrowserMatrix
 
+- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
+{
+	return YES;
+}
+
 - (void) selectCell:(NSEvent*) theEvent
 {
 	NSInteger row, column;

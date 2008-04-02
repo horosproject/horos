@@ -18,6 +18,11 @@
 
 @implementation MyOutlineView
 
+- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
+{
+	return YES;
+}
+
 - (void)keyDown:(NSEvent *)event
 {
 	unichar c = [[event characters] characterAtIndex:0];

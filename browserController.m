@@ -143,7 +143,8 @@ static NSString*	SearchToolbarItemIdentifier			= @"Search";
 static NSString*	TimeIntervalToolbarItemIdentifier	= @"TimeInterval";
 static NSString*	XMLToolbarItemIdentifier			= @"XML.icns";
 static NSTimeInterval	gLastActivity = 0;
-static BOOL				DICOMDIRCDMODE = NO;
+static BOOL DICOMDIRCDMODE = NO;
+static BOOL autotestdone = NO;
 
 static NSArray*	statesArray = nil;
 
@@ -9592,6 +9593,18 @@ static NSArray*	openSubSeriesArray = 0L;
 	NSRunCriticalAlertPanel(NSLocalizedString(@"Search", nil), NSLocalizedString(@"The search field is currently not displayed in the toolbar. Customize your toolbar to add it.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 }
 
+//- (void) autoTest:(id) sender
+//{
+//	if( autotestdone == NO)
+//	{
+//		autotestdone = YES;
+//		// AUTO TEST
+//		[self matrixDoublePressed: 0L];
+//		[[[ViewerController getDisplayed2DViewers] lastObject] checkEverythingLoaded];
+//		[[[ViewerController getDisplayed2DViewers] lastObject] VRViewer: 0L];
+//	}
+//}
+
 - (id)initWithWindow: (NSWindow *)window
 {
 	[AppController initialize];
@@ -9763,7 +9776,11 @@ static NSArray*	openSubSeriesArray = 0L;
 //												name: @"OsiriXServerArray has changed"
 //												object: nil];
 		
+//		[[NSTimer scheduledTimerWithTimeInterval: 5 target:self selector:@selector(autoTest:) userInfo:self repeats:NO] retain];
+		
 		displayEmptyDatabase = NO;
+		
+		
 	}
 	return self;
 }

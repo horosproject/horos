@@ -632,6 +632,8 @@ static char *GetPrivateIP()
 	
 	selectedRow = [sourcesTable selectedRow];
 	
+	NSLog( @"%@", sourcesArray );
+	
 	atLeastOneSource = NO;
 	for( i = 0; i < [sourcesArray count]; i++)
 	{
