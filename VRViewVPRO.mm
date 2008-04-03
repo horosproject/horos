@@ -4221,9 +4221,9 @@ public:
 	property = cube->GetZMinusFaceProperty();
 	property->SetColor(1, 0, 0);
 
-	cube->TextEdgesOff();
-	cube->CubeOn();
-	cube->FaceTextOn();
+	cube->SetTextEdgesVisibility( 1);
+	cube->SetCubeVisibility( 1);
+	cube->SetFaceTextVisibility( 1);
 
 	orientationWidget = vtkOrientationMarkerWidget::New();
 	orientationWidget->SetOrientationMarker( cube );
@@ -4328,7 +4328,7 @@ public:
 		oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
 		oText[ i]->GetTextProperty()->SetFontSize( 16);
 		oText[ i]->GetTextProperty()->SetBold( true);
-		oText[ i]->GetTextProperty()->SetShadow( true);
+//		oText[ i]->GetTextProperty()->SetShadow( true);
 		
 		aRenderer->AddActor2D( oText[ i]);
 	}
@@ -4408,7 +4408,7 @@ public:
 	Line2DText->SetScaledText( false);
 	Line2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
 	Line2DText->GetPositionCoordinate()->SetValue( 2., 2.);
-	Line2DText->GetTextProperty()->SetShadow( YES);
+//	Line2DText->GetTextProperty()->SetShadow( YES);
 	
 	aRenderer->AddActor2D( Line2DActor);
 	

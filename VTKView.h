@@ -51,5 +51,6 @@ typedef char* vtkCocoaRenderWindow;
 -(vtkRenderWindow *)renderWindow;
 -(vtkCocoaRenderWindow *) cocoaWindow;
 -(void)removeAllActors;
+- (void) prepareForRelease;
 
 @end

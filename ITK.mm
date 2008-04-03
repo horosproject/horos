@@ -34,7 +34,7 @@
 	
 	if( sizeof( long) == 8 )
 	{
-	
+		// Why..... mystery of 64-bit support in MacOS......
 	}
 	else
 		importFilter->Delete();

@@ -739,6 +739,8 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	[toolbar release];
 	[_renderingMode release];
 	
+	[view prepareForRelease];
+	
 	[super dealloc];
 }
 

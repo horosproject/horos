@@ -4664,19 +4664,20 @@ public:
 	property->SetColor(1, 0, 0);
 
 	cube->GetTextEdgesProperty()->SetColor(0.5, 0.5, 0.5);
-//	cube->TextEdgesOn();
-//	cube->CubeOn();
-//	cube->FaceTextOn();
+	cube->SetTextEdgesVisibility( 1);
+	cube->SetCubeVisibility( 1);
+	cube->SetFaceTextVisibility( 1);
 	
 	vtkPropAssembly *assembly = vtkPropAssembly::New();
 	assembly->AddPart ( cube);
 	
 	orientationWidget = vtkOrientationMarkerWidget::New();
 	orientationWidget->SetOrientationMarker( assembly);
-	orientationWidget->SetInteractive( 0);
+	
 	orientationWidget->SetInteractor( [self getInteractor]);
 	orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
 	orientationWidget->SetEnabled( 1 );
+	orientationWidget->SetInteractive( 0);
 	
 	cube->Delete();
 	assembly->Delete();
@@ -5071,8 +5072,6 @@ public:
 		oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
 		oText[ i]->GetTextProperty()->SetFontSize( 16);
 		oText[ i]->GetTextProperty()->SetBold( true);
-		oText[ i]->GetTextProperty()->SetShadow( true);
-		
 		aRenderer->AddActor2D( oText[ i]);
 	}
 	oText[ 0]->GetPositionCoordinate()->SetValue( 0.01, 0.5);
@@ -5154,7 +5153,7 @@ public:
 	Line2DText->SetScaledText( false);
 	Line2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
 	Line2DText->GetPositionCoordinate()->SetValue( 2., 2.);
-	Line2DText->GetTextProperty()->SetShadow( YES);
+//	Line2DText->GetTextProperty()->SetShadow( YES);
 	
 	aRenderer->AddActor2D( Line2DActor);
 		

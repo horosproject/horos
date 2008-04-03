@@ -153,11 +153,11 @@
 	}
 	
 	#define MAXPOINTS 3000
-		
+	
+	NSMutableArray *newpts = [NSMutableArray arrayWithCapacity: MAXPOINTS*2];
+	
 	if( [pts count] > MAXPOINTS*2)
 	{
-		NSMutableArray *newpts = [NSMutableArray arrayWithCapacity: MAXPOINTS*2];
-		
 		int i, add = [pts count] / MAXPOINTS;
 		
 		if( add > 1)

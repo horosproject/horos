@@ -1105,6 +1105,19 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[presetPreviewArray release];
 	[presetNameArray release];
 	
+	[view prepareForRelease];
+	
+	[presetPreview1 prepareForRelease];
+	[presetPreview2 prepareForRelease];
+	[presetPreview3 prepareForRelease];
+	[presetPreview4 prepareForRelease];
+	[presetPreview5 prepareForRelease];
+	[presetPreview6 prepareForRelease];
+	[presetPreview7 prepareForRelease];
+	[presetPreview8 prepareForRelease];
+	[presetPreview9 prepareForRelease];
+	[selectedPresetPreview prepareForRelease];
+	
 	[super dealloc];
 }
 

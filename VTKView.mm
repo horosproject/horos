@@ -37,8 +37,8 @@
 
 -(id)initWithFrame:(NSRect)frame {
 
-    if ( self = [super initWithFrame:frame] ) {
-    		
+    if ( self = [super initWithFrame:frame])
+	{
         _renderer = vtkRenderer::New();
 		_cocoaRenderWindow = vtkCocoaRenderWindow::New();
 		_cocoaRenderWindow->SetWindowId( [self window]);
@@ -70,6 +70,11 @@
 	[super dealloc];
 }
 
+- (void) prepareForRelease
+{
+	_cocoaRenderWindow->SetWindowId( 0L);
+	_cocoaRenderWindow->SetDisplayId( 0L);
+}
 
 - (BOOL)mouseDownCanMoveWindow
 {

@@ -449,7 +449,7 @@
 		oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
 		oText[ i]->GetTextProperty()->SetFontSize( 16);
 		oText[ i]->GetTextProperty()->SetBold( true);
-		oText[ i]->GetTextProperty()->SetShadow( true);
+//		oText[ i]->GetTextProperty()->SetShadow( true);
 //		
 //		aRenderer->AddActor2D( oText[ i]);
 	}
