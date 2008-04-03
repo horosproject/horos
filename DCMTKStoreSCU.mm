@@ -1206,7 +1206,7 @@ NS_DURING
 	   for (int i=0; i < paramCount; i++)
       {
         ignoreName = OFFalse;
-		NSStringEncoding encoding = [NSString defaultCStringEncoding];
+		//NSStringEncoding encoding = [NSString defaultCStringEncoding];
 		
 		//currentFilename = (const char *)[(NSString *)[_filesToSend objectAtIndex:i]  cStringUsingEncoding:[NSString defaultCStringEncoding]];
 		
