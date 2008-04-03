@@ -758,9 +758,9 @@
 	property = cube->GetZMinusFaceProperty();
 	property->SetColor(1, 0, 0);
 
-	cube->TextEdgesOff();
-	cube->CubeOn();
-	cube->FaceTextOn();
+//	cube->TextEdgesOff();
+//	cube->CubeOn();
+//	cube->FaceTextOn();
 	if (!orientationWidget) {
 		orientationWidget = vtkOrientationMarkerWidget::New();	
 		orientationWidget->SetInteractor( [self getInteractor] );

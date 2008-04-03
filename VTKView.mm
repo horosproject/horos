@@ -23,7 +23,7 @@
 #include "vtkInteractorStyleTrackballCamera.h"
 #undef id
 
-#import "vtkCocoaWindow.h"
+//#import "vtkCocoaWindow.h"
 //#import "vtkCocoaWindowModifications.h"
 #import "VTKView.h"
 

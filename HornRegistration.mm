@@ -217,7 +217,7 @@
 		matrixResult[ u] = matrix->Element[ 2][ 3];
 		u++;
 		
-		matrix->PrintSelf( cout,0);
+//		matrix->PrintSelf( cout,0);
 		
 		modelPts->Delete();
 		sensorPts->Delete();

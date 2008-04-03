@@ -2159,9 +2159,9 @@ typedef struct _xyzArray
 	property = cube->GetZMinusFaceProperty();
 	property->SetColor(1, 0, 0);
 
-	cube->TextEdgesOff();
-	cube->CubeOn();
-	cube->FaceTextOn();
+//	cube->TextEdgesOff();
+//	cube->CubeOn();
+//	cube->FaceTextOn();
 
 	orientationWidget = vtkOrientationMarkerWidget::New();
 	orientationWidget->SetOrientationMarker( cube );

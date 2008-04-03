@@ -18,7 +18,7 @@
 
 #ifdef __cplusplus
 #import "vtkCocoaGLView.h"
-#import "vtkCocoaWindow.h"
+//#import "vtkCocoaWindow.h"
 #define id Id
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"

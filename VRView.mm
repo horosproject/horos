@@ -43,6 +43,7 @@
 #include "vtkInteractorStyle.h"
 #include "vtkWorldPointPicker.h"
 #include "vtkOpenGLVolumeTextureMapper3D.h"
+#include "vtkPropAssembly.h"
 
 #include "vtkSphereSource.h"
 #include "vtkAssemblyPath.h"
@@ -586,19 +587,19 @@ public:
 			volume->SetMapper( volumeMapper);
 		break;
 		
-		case 1:		// TEXTURE
-			if( textureMapper == 0L)
-			{
-				textureMapper = vtkVolumeTextureMapper3D::New();
-				textureMapper->SetInput((vtkDataSet *) reader->GetOutput());
-				
-				if( volumeProperty->GetShade())
-					textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
-				else
-					textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
-			}
-			volume->SetMapper( textureMapper);
-		break;
+//		case 1:		// TEXTURE
+//			if( textureMapper == 0L)
+//			{
+//				textureMapper = vtkVolumeTextureMapper3D::New();
+//				textureMapper->SetInput((vtkDataSet *) reader->GetOutput());
+//				
+//				if( volumeProperty->GetShade())
+//					textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
+//				else
+//					textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
+//			}
+//			volume->SetMapper( textureMapper);
+//		break;
 		
 		case 2:		// BOTH
 			if( volumeMapper == 0L)
@@ -613,8 +614,8 @@ public:
 				textureMapper = vtkVolumeTextureMapper3D::New();
 				textureMapper->SetInput((vtkDataSet *) reader->GetOutput());
 				
-				if( volumeProperty->GetShade()) textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
-				else textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
+//				if( volumeProperty->GetShade()) textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
+//				else textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
 			}
 			volume->SetMapper( textureMapper);
 		break;
@@ -675,19 +676,19 @@ public:
 			blendingVolume->SetMapper( blendingVolumeMapper);
 		break;
 		
-		case 1:		// TEXTURE
-			if( blendingTextureMapper == 0L)
-			{
-				blendingTextureMapper = vtkVolumeTextureMapper3D::New();
-				blendingTextureMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
-				
-				if( blendingVolumeProperty->GetShade())
-					blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
-				else
-					blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
-			}
-			blendingVolume->SetMapper( blendingTextureMapper);
-		break;
+//		case 1:		// TEXTURE
+//			if( blendingTextureMapper == 0L)
+//			{
+//				blendingTextureMapper = vtkVolumeTextureMapper3D::New();
+//				blendingTextureMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
+//				
+//				if( blendingVolumeProperty->GetShade())
+//					blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
+//				else
+//					blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
+//			}
+//			blendingVolume->SetMapper( blendingTextureMapper);
+//		break;
 		
 		case 2:		// BOTH
 			if( blendingVolumeMapper == 0L)
@@ -697,14 +698,14 @@ public:
 			}
 			blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
 			
-			if( blendingTextureMapper == 0L)
-			{
-				blendingTextureMapper = vtkVolumeTextureMapper3D::New();
-				blendingTextureMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
-				
-				if( blendingVolumeProperty->GetShade()) blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
-				else blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
-			}
+//			if( blendingTextureMapper == 0L)
+//			{
+//				blendingTextureMapper = vtkVolumeTextureMapper3D::New();
+//				blendingTextureMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
+//				
+//				if( blendingVolumeProperty->GetShade()) blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
+//				else blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
+//			}
 			blendingVolume->SetMapper( blendingTextureMapper);
 		break;
 	}
@@ -1355,12 +1356,12 @@ public:
 		WaitRendering	*www = [[WaitRendering alloc] init:@"Preparing 3D data..."];
 		[www start];
 		
-		if( textureMapper)
-		{
-			if( volumeProperty->GetShade()) textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
-			else textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
-			reader->GetOutput()->Modified();
-		}
+//		if( textureMapper)
+//		{
+//			if( volumeProperty->GetShade()) textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
+//			else textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
+//			reader->GetOutput()->Modified();
+//		}
 		
 		[self display];
 		[www end];
@@ -1374,12 +1375,12 @@ public:
 		WaitRendering	*www = [[WaitRendering alloc] init:@"Preparing 3D data..."];
 		[www start];
 		
-		if( textureMapper)
-		{
-			if( volumeProperty->GetShade()) textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
-			else textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
-			reader->GetOutput()->Modified();
-		}
+//		if( textureMapper)
+//		{
+//			if( volumeProperty->GetShade()) textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
+//			else textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
+//			reader->GetOutput()->Modified();
+//		}
 		
 		[self display];
 		[www end];
@@ -4641,12 +4642,12 @@ public:
 - (void) initAnnotatedCubeActor
 {
 	vtkAnnotatedCubeActor* cube = vtkAnnotatedCubeActor::New();
-	cube->SetXPlusFaceText ( [NSLocalizedString( @"L", @"L: Left") UTF8String] );		
-	cube->SetXMinusFaceText( [NSLocalizedString( @"R", @"R: Right") UTF8String] );
-	cube->SetYPlusFaceText ( [NSLocalizedString( @"P", @"P: Posterior") UTF8String] );
-	cube->SetYMinusFaceText( [NSLocalizedString( @"A", @"A: Anterior") UTF8String] );
-	cube->SetZPlusFaceText ( [NSLocalizedString( @"S", @"S: Superior") UTF8String] );
-	cube->SetZMinusFaceText( [NSLocalizedString( @"I", @"I: Inferior") UTF8String] );
+	cube->SetXPlusFaceText ( [NSLocalizedString( @"L", @"L: Left") UTF8String]);		
+	cube->SetXMinusFaceText( [NSLocalizedString( @"R", @"R: Right") UTF8String]);
+	cube->SetYPlusFaceText ( [NSLocalizedString( @"P", @"P: Posterior") UTF8String]);
+	cube->SetYMinusFaceText( [NSLocalizedString( @"A", @"A: Anterior") UTF8String]);
+	cube->SetZPlusFaceText ( [NSLocalizedString( @"S", @"S: Superior") UTF8String]);
+	cube->SetZMinusFaceText( [NSLocalizedString( @"I", @"I: Inferior") UTF8String]);
 	cube->SetFaceTextScale( 0.67 );
 
 	vtkProperty* property = cube->GetXPlusFaceProperty();
@@ -4662,19 +4663,23 @@ public:
 	property = cube->GetZMinusFaceProperty();
 	property->SetColor(1, 0, 0);
 
-	vtkProperty* propertyEdges = cube->GetTextEdgesProperty();
-	propertyEdges->SetColor(0.5, 0.5, 0.5);
-	cube->CubeOn();
-	cube->FaceTextOn();
+	cube->GetTextEdgesProperty()->SetColor(0.5, 0.5, 0.5);
+//	cube->TextEdgesOn();
+//	cube->CubeOn();
+//	cube->FaceTextOn();
+	
+	vtkPropAssembly *assembly = vtkPropAssembly::New();
+	assembly->AddPart ( cube);
 	
 	orientationWidget = vtkOrientationMarkerWidget::New();
-	orientationWidget->SetOrientationMarker( cube );
-
-	orientationWidget->SetInteractor( [self getInteractor] );
-	orientationWidget->SetEnabled( 1 );
+	orientationWidget->SetOrientationMarker( assembly);
+	orientationWidget->SetInteractive( 0);
+	orientationWidget->SetInteractor( [self getInteractor]);
 	orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
-
+	orientationWidget->SetEnabled( 1 );
+	
 	cube->Delete();
+	assembly->Delete();
 }
 
 -(short) setPixSource:(NSMutableArray*)pix :(float*) volumeData
@@ -4812,22 +4817,26 @@ public:
 	}
 	
 	reader = vtkImageImport::New();
-	reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);	//AVOID VTK BUG
-	reader->SetDataExtentToWholeExtent();
 	
 	if( isRGB)
 	{
+		reader->SetImportVoidPointer(data);
+	reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);	//AVOID VTK BUG
+	reader->SetDataExtentToWholeExtent();
 		reader->SetDataScalarTypeToUnsignedChar();
 		reader->SetNumberOfScalarComponents( 4);
-		reader->SetImportVoidPointer(data);
+		
 	}
 	else 
 	{
+		reader->SetImportVoidPointer(data8);
+	reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);	//AVOID VTK BUG
+	reader->SetDataExtentToWholeExtent();
 	//	reader->SetDataScalarTypeToFloat();
 		reader->SetDataScalarTypeToUnsignedShort();
 		reader->SetNumberOfScalarComponents( 1);
 	//	reader->SetImportVoidPointer(data);
-		reader->SetImportVoidPointer(data8);
+		
 	}
 	
 	[firstObject orientation:cosines];

@@ -32,7 +32,12 @@
 {
 	NSLog(@"ITK Image dealloc");
 	
-	importFilter->Delete();
+	if( sizeof( long) == 8 )
+	{
+	
+	}
+	else
+		importFilter->Delete();
 	
 	[super dealloc];
 }
@@ -171,8 +176,6 @@
 	
 	const bool importImageFilterWillOwnTheBuffer = filterWillOwnBuffer;
 	importFilter->SetImportPointer( data, size[0] * size[1] * size[2], importImageFilterWillOwnTheBuffer);
-	
-	NSLog(@"ITK Image allocated, own data: %d", importImageFilterWillOwnTheBuffer);
 }
 
 @end
