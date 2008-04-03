@@ -1345,6 +1345,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 	[[self windowController] addToUndoQueue:@"roi"];
 	
+	[drawLock lock];
+	
 	for( i = 0; i < [curRoiList count]; i++)
 	{
 		if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
@@ -1358,6 +1360,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: 0L userInfo: 0L];
+	
+	[drawLock unlock];
 	
 	[self setNeedsDisplay:YES];
 }
@@ -2063,6 +2067,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			BOOL	done = NO;
 			NSTimeInterval groupID;
 			
+			[drawLock lock];
+			
 			for( i = 0; i < [curRoiList count]; i++)
 			{
 				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selectedModify || [[curRoiList objectAtIndex:i] ROImode] == ROI_drawing)
@@ -2091,6 +2097,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: 0L userInfo: 0L];
+			
+			[drawLock unlock];
 			
 			[self setNeedsDisplay: YES];
 		}
@@ -2325,6 +2333,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void)deleteROIGroupID:(NSTimeInterval)groupID {
 	
+	[drawLock lock];
+	
 	for( int i=0; i<[curRoiList count]; i++ ) {
 		if([[curRoiList objectAtIndex:i] groupID] == groupID) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"removeROI" object:[curRoiList objectAtIndex:i] userInfo:nil];
@@ -2332,6 +2342,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			i--;
 		}
 	}
+	
+	[drawLock unlock];
 }
 
 - (void)flagsChanged:(NSEvent *)event
@@ -2968,37 +2980,45 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				if ( self.pixelSpacingY != 0 && self.pixelSpacingX != 0 )
 					pixSpacingRatio = self.pixelSpacingY / self.pixelSpacingX;
 					
-				float distance;
-				if( [curRoiList count]>0 ) {
-					NSPoint pt = [[[[curRoiList objectAtIndex:0] points] objectAtIndex:0] point];
-					float dx = (pt.x-tempPt.x);
-					float dx2 = dx * dx;
-					float dy = (pt.y-tempPt.y)*pixSpacingRatio;
-					float dy2 = dy * dy;
-					distance = sqrt(dx2 + dy2);
-				}
-				else distance = 0.0;
-				
-				NSMutableArray *points;
-				for( int i=0; i<[curRoiList count]; i++ ) {
-																																			  
-					points = [[curRoiList objectAtIndex:i] points];
-																																			  
-					for( int j=0; j<[points count]; j++ ) {
-						NSPoint pt = [[points objectAtIndex:j] point];
+				float distance = 0;
+				if( [curRoiList count]>0 )
+				{
+					ROI *r = [curRoiList objectAtIndex:0];
+					if( r.type != tPlain)
+					{
+						NSPoint pt = [[[[curRoiList objectAtIndex:0] points] objectAtIndex:0] point];
 						float dx = (pt.x-tempPt.x);
 						float dx2 = dx * dx;
-						float dy = (pt.y-tempPt.y) *pixSpacingRatio;
+						float dy = (pt.y-tempPt.y)*pixSpacingRatio;
 						float dy2 = dy * dy;
-						float d = sqrt(dx2 + dy2);
-						distance = (d < distance) ? d : distance ;
+						distance = sqrt(dx2 + dy2);
+					}
+				}
+				
+				NSMutableArray *points;
+				for( int i=0; i<[curRoiList count]; i++ )
+				{
+					ROI *r = [curRoiList objectAtIndex: i];
+					if( r.type != tPlain)
+					{
+						points = [r points];
+																																				  
+						for( int j=0; j<[points count]; j++ ) {
+							NSPoint pt = [[points objectAtIndex:j] point];
+							float dx = (pt.x-tempPt.x);
+							float dx2 = dx * dx;
+							float dy = (pt.y-tempPt.y) *pixSpacingRatio;
+							float dy2 = dy * dy;
+							float d = sqrt(dx2 + dy2);
+							distance = (d < distance) ? d : distance ;
+						}
 					}
 				}
 				repulsorRadius = (int) ((distance + 0.5) * 0.8);
 				if(repulsorRadius<2) repulsorRadius = 2;
 				if(repulsorRadius>curDCM.pwidth/2) repulsorRadius = curDCM.pwidth/2;
 				
-				if( [curRoiList count] == 0) {
+				if( [curRoiList count] == 0 || distance == 0) {
 					NSRunCriticalAlertPanel(NSLocalizedString(@"Repulsor",nil),NSLocalizedString(@"The Repulsor tool works only if there are ROIs on the image.",nil), NSLocalizedString(@"OK",nil), nil,nil);
 				}
 			}
@@ -4196,9 +4216,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	for( int i=0; i<[roiArray count]; i++ )
 	{
-		if([(ROI*)[roiArray objectAtIndex:i] type] != tAxis && [(ROI*)[roiArray objectAtIndex:i] type] != tDynAngle) //JJCP
+		ROI *r = [roiArray objectAtIndex:i];
+		
+		if([r type] != tAxis && [r type] != tDynAngle && [r type] != tPlain) //JJCP
 		{		
-			points = [[roiArray objectAtIndex:i] points];
+			points = [r points];
 			int n = 0;
 			for( int j=0; j<[points count]; j++ ) {
 				NSPoint pt = [[points objectAtIndex:j] point];
@@ -4210,8 +4232,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					float d = sqrt(dx2 + dy2);
 					
 					if( d < repulsorRadius ) {
-						if([(ROI*)[roiArray objectAtIndex:i] type] == t2DPoint)
-							[[roiArray objectAtIndex:i] setROIRect:NSOffsetRect([[roiArray objectAtIndex:i] rect],dx/d*repulsorRadius-dx,dy/d*repulsorRadius-dy)];
+						if([r type] == t2DPoint)
+							[r setROIRect:NSOffsetRect([r rect],dx/d*repulsorRadius-dx,dy/d*repulsorRadius-dy)];
 						else
 							[[points objectAtIndex:j] move:dx/d*repulsorRadius-dx :dy/d*repulsorRadius-dy];
 						
@@ -4220,7 +4242,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						
 						for( int delta = -1; delta <= 1; delta++ ) {
 							int k = j+delta;
-							if([(ROI*)[roiArray objectAtIndex:i] type] == tCPolygon || [(ROI*)[roiArray objectAtIndex:i] type] == tPencil) {
+							if([r type] == tCPolygon || [r type] == tPencil) {
 								if(k==-1)
 									k = [points count]-1;
 								else if(k==[points count])
@@ -4252,11 +4274,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							}
 						}
 						
-						[[roiArray objectAtIndex:i] recompute];
+						[r recompute];
 						
-						if( [[[roiArray objectAtIndex:i] comments] isEqualToString: @"morphing generated"])
-							[[roiArray objectAtIndex:i] setComments:@""];
-						[[NSNotificationCenter defaultCenter] postNotificationName:@"roiChange" object:[roiArray objectAtIndex:i] userInfo: 0L];
+						if( [[r comments] isEqualToString: @"morphing generated"])
+							[r setComments:@""];
+						[[NSNotificationCenter defaultCenter] postNotificationName:@"roiChange" object:r userInfo: 0L];
 					}
 				}
 			}
@@ -5343,7 +5365,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	// A ROI has been removed... do we display it? If yes, update!
 	if( [curRoiList indexOfObjectIdenticalTo: [note object]] != NSNotFound)
 	{
-		
 		[self setNeedsDisplay:YES];
 	}
 }
@@ -7322,7 +7343,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( [self is2DViewer] == YES) drawROI = [[[self windowController] roiLock] tryLock];
 			else drawROI = YES;
 			
-			if( drawROI ) {
+			if( drawROI )
+			{
 				BOOL resetData = NO;
 				if(_imageColumns > 1 || _imageRows > 1) resetData = YES;	//For alias ROIs
 				
@@ -7330,15 +7352,28 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 				rectArray = [[NSMutableArray alloc] initWithCapacity: [curRoiList count]];
 				
-				for( int i = [curRoiList count]-1; i >= 0; i--) {
-					if( resetData) [[curRoiList objectAtIndex:i] recompute];
-					[[curRoiList objectAtIndex:i] setRoiFont: labelFontListGL :labelFontListGLSize :self];
-					[[curRoiList objectAtIndex:i] drawROI: scaleValue : curDCM.pwidth / 2. : curDCM.pheight / 2. : curDCM.pixelSpacingX : curDCM.pixelSpacingY];
+				for( int i = [curRoiList count]-1; i >= 0; i--)
+				{
+					ROI *r = [[curRoiList objectAtIndex:i] retain];	// If we are not in the main thread (iChat), we want to be sure to keep our ROIs
+					
+					if( resetData) [r recompute];
+					[r setRoiFont: labelFontListGL :labelFontListGLSize :self];
+					[r drawROI: scaleValue : curDCM.pwidth / 2. : curDCM.pheight / 2. : curDCM.pixelSpacingX : curDCM.pixelSpacingY];
+					
+					[r release];
 				}
 				
-				if ( !suppress_labels ) {
+				if ( !suppress_labels )
+				{
 					NSArray	*sortedROIs = [curRoiList sortedArrayUsingDescriptors: [NSArray arrayWithObject: roiSorting]];
-					for( int i = [sortedROIs count]-1; i>=0; i-- ) [[sortedROIs objectAtIndex:i] drawTextualData];
+					for( int i = [sortedROIs count]-1; i>=0; i-- )
+					{
+						ROI *r = [[sortedROIs objectAtIndex:i] retain];
+						
+						[r drawTextualData];
+						
+						[r release];
+					}
 				}
 				
 				[rectArray release];

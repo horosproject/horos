@@ -402,9 +402,12 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	{
 		long	ii;
 		
+		NSLog( @"points: %d", output->GetNumberOfLines());
+		
 		for( ii = 0; ii < output->GetNumberOfLines(); ii+=2)
 		{
-			double *  p = output->GetPoint(ii);
+			double p[ 3];
+			output->GetPoint(ii, p);
 			[tempArray addObject: [MyPoint point: NSMakePoint(p[0], p[1])]];		//[srcViewer newPoint: p[0]  : p[1] ]];
 		}
 		
@@ -414,7 +417,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		
 		for( ; ii >= 0; ii-=2)
 		{
-			double *  p = output->GetPoint(ii);
+			double p[ 3];
+			output->GetPoint(ii, p);
 			[tempArray addObject: [MyPoint point: NSMakePoint(p[0], p[1])]];
 		}
 		
@@ -906,14 +910,16 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					
 					for( ii = 0; ii < output->GetNumberOfLines(); ii+=2)
 					{
-						double *  p = output->GetPoint(ii);
+						double p[ 3];
+						output->GetPoint(ii, p);
 						[points addObject: [srcViewer newPoint: p[0]  : p[1] ]];
 					}
 					ii--;
 					if(ii>= output->GetNumberOfLines()) ii-=2;
 					for( ; ii >= 0; ii-=2)
 					{
-						double *  p = output->GetPoint(ii);
+						double p[ 3];
+						output->GetPoint(ii, p);
 						[points addObject: [srcViewer newPoint: p[0]  : p[1] ]];
 					}
 					
