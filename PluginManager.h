@@ -54,6 +54,7 @@
 + (NSArray*)availabilities;
 
 - (IBAction)checkForUpdates:(id)sender;
+- (void)displayUpdateMessage:(NSDictionary*)messageDictionary;
 
 #endif
 

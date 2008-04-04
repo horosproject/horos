@@ -278,8 +278,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 		//[self discoverPlugins];
 		[PluginManager discoverPlugins];
 		
-		//[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:self withObject:self];
-		//[self checkForUpdates:self]; for testing purpose
+		[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:self withObject:self];
 	}
 	return self;
 }
@@ -781,8 +780,9 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 	if(url)
 	{
 		NSMutableArray *onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];
-		
 		NSArray *installedPlugins = [PluginManager pluginsList];
+		
+		NSMutableArray *pluginsToUpdate = [NSMutableArray array];
 		
 		for (NSDictionary *installedPlugin in installedPlugins)
 		{
@@ -810,40 +810,54 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 				{
 					if(![currVersion isEqualToString:onlineVersion])
 					{
-						NSLog(@"currVersion : %@ , length: %d", currVersion, [currVersion length]);
-						NSLog(@"onlineVersion : %@ , length: %d", onlineVersion, [onlineVersion length]);
-						
-						NSLog(@"installed name : %@", [installedPlugin valueForKey:@"name"]);
-						NSLog(@"pluginName : %@", pluginName);
+						NSMutableDictionary *modifiedOnlinePlugin = [NSMutableDictionary dictionaryWithDictionary:onlinePlugin];
+						[modifiedOnlinePlugin setObject:pluginName forKey:@"name"];
+						[pluginsToUpdate addObject:modifiedOnlinePlugin];
 					}
 				}
-				
 				[onlinePlugins removeObject:onlinePlugin];
 			}
+		}
+		//ici
+		if([pluginsToUpdate count])
+		{
+			NSString *title;
+			NSMutableString *message = [NSMutableString string];
 			
+			if([pluginsToUpdate count]==1)
+			{
+				title = NSLocalizedString(@"Plugin Update Available", @"");
+				[message appendFormat:NSLocalizedString(@"A new version of the plugin \"%@\" is available.", @""), [[pluginsToUpdate objectAtIndex:0] objectForKey:@"name"]];
+			}
+			else
+			{
+				title = NSLocalizedString(@"Plugin Updates Available", @"");
+				[message appendString:NSLocalizedString(@"New versions of the following plugins are available:\n", @"")];
+				for (NSDictionary *plugin in pluginsToUpdate)
+				{
+					[message appendFormat:@"%@, ", [plugin objectForKey:@"name"]];
+				}
+				message = [NSMutableString stringWithString:[message substringToIndex:[message length]-2]];
+			}
+								
+			NSDictionary *messageDictionary = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:title, message, pluginsToUpdate, nil] forKeys:[NSArray arrayWithObjects:@"title", @"body", @"plugins", nil]];
 			
-//			if (productVersionDict && currVersionNumber && latestVersionNumber)
-//			{
-//				if ([latestVersionNumber intValue] <= [currVersionNumber intValue])
-//				{
-//					if (verboseUpdateCheck)
-//						[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"CheckOsiriXUpdates" waitUntilDone:YES];
-//				}
-//				else
-//				{
-//					if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CHECKUPDATES"] || verboseUpdateCheck == YES)
-//						[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATE" waitUntilDone:YES];				
-//				}
-//			}
-//			else
-//			{
-//				if (verboseUpdateCheck)
-//					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"ERROR" waitUntilDone:YES];
-//			}			
+			[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:messageDictionary waitUntilDone:YES];
 		}
 	}
 	
 	[pool release];
+}
+
+- (void)displayUpdateMessage:(NSDictionary*)messageDictionary;
+{
+	int button = NSRunAlertPanel( [messageDictionary objectForKey:@"title"], [messageDictionary objectForKey:@"body"], NSLocalizedString(@"OK", @""), NSLocalizedString( @"Cancel", @""), nil);
+		
+	if (NSOKButton == button)
+	{
+		//[messageDictionary objectForKey:@"plugins"];
+		//[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+	}
 }
 
 #endif
