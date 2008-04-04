@@ -63,10 +63,9 @@
 
 -(void)dealloc
 {
-	_interactor->Delete();
     _renderer->Delete();
 	_cocoaRenderWindow->Delete();
-	
+	_interactor->Delete();
 	[super dealloc];
 }
 

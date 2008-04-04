@@ -1105,6 +1105,8 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[presetPreviewArray release];
 	[presetNameArray release];
 	
+	[super dealloc];
+	
 	[view prepareForRelease];
 	
 	[presetPreview1 prepareForRelease];
@@ -1117,8 +1119,6 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[presetPreview8 prepareForRelease];
 	[presetPreview9 prepareForRelease];
 	[selectedPresetPreview prepareForRelease];
-	
-	[super dealloc];
 }
 
 - (void) CloseViewerNotification: (NSNotification*) note
