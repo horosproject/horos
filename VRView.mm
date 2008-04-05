@@ -587,19 +587,19 @@ public:
 			volume->SetMapper( volumeMapper);
 		break;
 		
-//		case 1:		// TEXTURE
-//			if( textureMapper == 0L)
-//			{
-//				textureMapper = vtkVolumeTextureMapper3D::New();
-//				textureMapper->SetInput((vtkDataSet *) reader->GetOutput());
-//				
+		case 1:		// TEXTURE
+			if( textureMapper == 0L)
+			{
+				textureMapper = vtkVolumeTextureMapper3D::New();
+				textureMapper->SetInput((vtkDataSet *) reader->GetOutput());
+				
 //				if( volumeProperty->GetShade())
 //					textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
 //				else
 //					textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
-//			}
-//			volume->SetMapper( textureMapper);
-//		break;
+			}
+			volume->SetMapper( textureMapper);
+		break;
 		
 		case 2:		// BOTH
 			if( volumeMapper == 0L)
@@ -676,19 +676,19 @@ public:
 			blendingVolume->SetMapper( blendingVolumeMapper);
 		break;
 		
-//		case 1:		// TEXTURE
-//			if( blendingTextureMapper == 0L)
-//			{
-//				blendingTextureMapper = vtkVolumeTextureMapper3D::New();
-//				blendingTextureMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
-//				
+		case 1:		// TEXTURE
+			if( blendingTextureMapper == 0L)
+			{
+				blendingTextureMapper = vtkVolumeTextureMapper3D::New();
+				blendingTextureMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
+				
 //				if( blendingVolumeProperty->GetShade())
 //					blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
 //				else
 //					blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
-//			}
-//			blendingVolume->SetMapper( blendingTextureMapper);
-//		break;
+			}
+			blendingVolume->SetMapper( blendingTextureMapper);
+		break;
 		
 		case 2:		// BOTH
 			if( blendingVolumeMapper == 0L)
@@ -698,14 +698,14 @@ public:
 			}
 			blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
 			
-//			if( blendingTextureMapper == 0L)
-//			{
-//				blendingTextureMapper = vtkVolumeTextureMapper3D::New();
-//				blendingTextureMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
-//				
+			if( blendingTextureMapper == 0L)
+			{
+				blendingTextureMapper = vtkVolumeTextureMapper3D::New();
+				blendingTextureMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
+				
 //				if( blendingVolumeProperty->GetShade()) blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
 //				else blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
-//			}
+			}
 			blendingVolume->SetMapper( blendingTextureMapper);
 		break;
 	}
@@ -1356,12 +1356,12 @@ public:
 		WaitRendering	*www = [[WaitRendering alloc] init:@"Preparing 3D data..."];
 		[www start];
 		
-//		if( textureMapper)
-//		{
+		if( textureMapper)
+		{
 //			if( volumeProperty->GetShade()) textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
 //			else textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
-//			reader->GetOutput()->Modified();
-//		}
+			reader->GetOutput()->Modified();
+		}
 		
 		[self display];
 		[www end];
@@ -1375,12 +1375,12 @@ public:
 		WaitRendering	*www = [[WaitRendering alloc] init:@"Preparing 3D data..."];
 		[www start];
 		
-//		if( textureMapper)
-//		{
+		if( textureMapper)
+		{
 //			if( volumeProperty->GetShade()) textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
 //			else textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
-//			reader->GetOutput()->Modified();
-//		}
+			reader->GetOutput()->Modified();
+		}
 		
 		[self display];
 		[www end];
@@ -5153,7 +5153,8 @@ public:
 	Line2DText->SetScaledText( false);
 	Line2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
 	Line2DText->GetPositionCoordinate()->SetValue( 2., 2.);
-//	Line2DText->GetTextProperty()->SetShadow( YES);
+	Line2DText->GetTextProperty()->SetColor( 1, 1, 1);
+	Line2DText->GetTextProperty()->SetShadow( YES);
 	
 	aRenderer->AddActor2D( Line2DActor);
 		

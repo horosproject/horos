@@ -43,6 +43,7 @@
 		_cocoaRenderWindow = vtkCocoaRenderWindow::New();
 		_cocoaRenderWindow->SetWindowId( [self window]);
 		_cocoaRenderWindow->SetDisplayId( self);
+		NSLog( @"%s", _cocoaRenderWindow->GetWindowName());
 		
 		_cocoaRenderWindow->AddRenderer(_renderer);
         _interactor = vtkCocoaRenderWindowInteractor::New();
