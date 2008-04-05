@@ -2217,7 +2217,8 @@ typedef struct _xyzArray
 		oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
 		oText[ i]->GetTextProperty()->SetFontSize( 16);
 		oText[ i]->GetTextProperty()->SetBold( true);
-//		oText[ i]->GetTextProperty()->SetShadow( true);
+		oText[ i]->GetTextProperty()->SetShadow( true);
+		oText[ i]->GetTextProperty()->SetShadowOffset(1, 1);
 		
 		aRenderer->AddActor2D( oText[ i]);
 	}

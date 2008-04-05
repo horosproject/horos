@@ -427,6 +427,7 @@ public:
 	}
 	
 	strcpy( o, [optr UTF8String]);
+	strcat( o, " ");
 }
 
 //- (void) getOrientationText:(char *) string : (float *) vector :(BOOL) inv
@@ -2078,9 +2079,9 @@ public:
 		else Line2DText->GetPositionCoordinate()->SetValue( point2[0], point2[ 1]);
 		
 		if (length/(10.*factor) < .1)
-			sprintf( text, "Length: %2.2f %cm", (length/(10.*factor)) * 10000.0, 0xB5);
+			sprintf( text, "Length: %2.2f %cm ", (length/(10.*factor)) * 10000.0, 0xB5);
 		else
-			sprintf( text, "Length: %2.2f cm", length/(10.*factor));
+			sprintf( text, "Length: %2.2f cm ", length/(10.*factor));
 		
 		Line2DText->SetInput( text);
 		aRenderer->AddActor(Line2DText);
@@ -2463,13 +2464,13 @@ public:
 
 				if( [[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"] == YES))
 				{
-					if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f", wl-ww/2, wl+ww/2);
-					else sprintf(WLWWString, "From: %0.f   To: %0.f", wl-ww/2, wl+ww/2);
+					if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f ", wl-ww/2, wl+ww/2);
+					else sprintf(WLWWString, "From: %0.f   To: %0.f ", wl-ww/2, wl+ww/2);
 				}
 				else
 				{
-					if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f", wl, ww);
-					else sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, ww);
+					if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
+					else sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
 				}
 				
 				textWLWW->SetInput( WLWWString);
@@ -4042,13 +4043,13 @@ public:
 	
 	if( [[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"] == YES))
 	{
-		if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f", wl-ww/2, wl+ww/2);
-		else sprintf(WLWWString, "From: %0.f   To: %0.f", wl-ww/2, wl+ww/2);
+		if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f ", wl-ww/2, wl+ww/2);
+		else sprintf(WLWWString, "From: %0.f   To: %0.f ", wl-ww/2, wl+ww/2);
 	}
 	else
 	{
-		if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f", wl, ww);
-		else sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, ww);
+		if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
+		else sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
 	}
 	textWLWW->SetInput( WLWWString);
 	
@@ -4613,7 +4614,7 @@ public:
 	if( textWLWW)
 	{
 		int *wsize = [self renderWindow]->GetSize();
-		textWLWW->GetPositionCoordinate()->SetValue( 2., wsize[ 1]-11);
+		textWLWW->GetPositionCoordinate()->SetValue( 2., wsize[ 1]-15);
 	}
 }
 
@@ -5046,32 +5047,42 @@ public:
 	croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
 		
 	textWLWW = vtkTextActor::New();
-	if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f", wl, ww);
-	else sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, ww);
+	if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
+	else sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
 	textWLWW->SetInput( WLWWString);
 	textWLWW->SetScaledText( false);												//vtkviewPort
 	textWLWW->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
-	textWLWW->GetPositionCoordinate()->SetValue( 0,0);
+	int *wsize = [self renderWindow]->GetSize();
+	textWLWW->GetPositionCoordinate()->SetValue( 2., wsize[ 1]-15);
+	textWLWW->GetTextProperty()->SetShadow(true);
+	textWLWW->GetTextProperty()->SetBold(true);
+	textWLWW->GetTextProperty()->SetShadowOffset(1, 1);
+	
 	aRenderer->AddActor2D(textWLWW);
 	
 	textX = vtkTextActor::New();
 	if (isViewportResizable)
-		textX->SetInput( "X");
+		textX->SetInput( "X ");
 	else
-		textX->SetInput( "");
+		textX->SetInput( " ");
 	textX->SetScaledText( false);
 	textX->GetPositionCoordinate()->SetCoordinateSystemToViewport();
 	textX->GetPositionCoordinate()->SetValue( 2., 2.);
+	textX->GetTextProperty()->SetShadow(true);
+	textX->GetTextProperty()->SetShadowOffset(1, 1);
+	
 	aRenderer->AddActor2D(textX);
 	
 	for( i = 0; i < 4; i++)
 	{
 		oText[ i]= vtkTextActor::New();
-		oText[ i]->SetInput( "X");
+		oText[ i]->SetInput( "X ");
 		oText[ i]->SetScaledText( false);
 		oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
 		oText[ i]->GetTextProperty()->SetFontSize( 16);
 		oText[ i]->GetTextProperty()->SetBold( true);
+		oText[ i]->GetTextProperty()->SetShadow(true);
+		oText[ i]->GetTextProperty()->SetShadowOffset(1, 1);
 		
 		aRenderer->AddActor2D( oText[ i]);
 	}
@@ -5150,13 +5161,15 @@ public:
 	Line2DActor->GetProperty()->SetColor(1,1,0);
 
 	Line2DText = vtkTextActor::New();
-	Line2DText->SetInput( "");
+	Line2DText->SetInput( " ");
 	Line2DText->SetScaledText( false);
 	Line2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
 	Line2DText->GetPositionCoordinate()->SetValue( 2., 2.);
-	Line2DText->GetTextProperty()->SetColor( 0.4, 1.0, 0.4);
+	Line2DText->GetTextProperty()->SetColor( 1.0, 1.0, 0.0);
 	Line2DText->GetTextProperty()->SetBold( true);
 	Line2DText->GetTextProperty()->SetFontSize( 14);
+	Line2DText->GetTextProperty()->SetShadow(true);
+	Line2DText->GetTextProperty()->SetShadowOffset(1, 1);
 	
 	aRenderer->AddActor2D( Line2DActor);
 		
@@ -5697,11 +5710,13 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 		{
 			textWLWW->GetTextProperty()->SetColor(1,1,1);
 			for( int i = 0 ; i < 4 ; i++) oText[ i]->GetTextProperty()->SetColor(1,1,1);
+			textX->GetTextProperty()->SetColor(1,1,1);
 		}
 		else
 		{
 			textWLWW->GetTextProperty()->SetColor(0,0,0);
 			for( int i = 0 ; i < 4 ; i++) oText[ i]->GetTextProperty()->SetColor(0,0,0);
+			textX->GetTextProperty()->SetColor(0,0,0);
 		}
 		[backgroundColor setColor: [NSColor colorWithDeviceRed:[color redComponent] green:[color greenComponent] blue:[ color blueComponent] alpha:1.0]];
 		
