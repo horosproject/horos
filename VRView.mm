@@ -5072,6 +5072,7 @@ public:
 		oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
 		oText[ i]->GetTextProperty()->SetFontSize( 16);
 		oText[ i]->GetTextProperty()->SetBold( true);
+		
 		aRenderer->AddActor2D( oText[ i]);
 	}
 	oText[ 0]->GetPositionCoordinate()->SetValue( 0.01, 0.5);
@@ -5153,8 +5154,9 @@ public:
 	Line2DText->SetScaledText( false);
 	Line2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
 	Line2DText->GetPositionCoordinate()->SetValue( 2., 2.);
-	Line2DText->GetTextProperty()->SetColor( 1, 1, 1);
-	Line2DText->GetTextProperty()->SetShadow( YES);
+	Line2DText->GetTextProperty()->SetColor( 0.4, 1.0, 0.4);
+	Line2DText->GetTextProperty()->SetBold( true);
+	Line2DText->GetTextProperty()->SetFontSize( 14);
 	
 	aRenderer->AddActor2D( Line2DActor);
 		
@@ -5691,9 +5693,16 @@ double pos[3], focal[3], vUp[3],  fpVector[3];
 		//change background color
 		aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
 		
-		if( [color redComponent]+[color greenComponent]+[ color blueComponent] < 1.5) textWLWW->GetTextProperty()->SetColor(1,1,1);
-		else textWLWW->GetTextProperty()->SetColor(0,0,0);
-		
+		if( [color redComponent]+[color greenComponent]+[ color blueComponent] < 1.5)
+		{
+			textWLWW->GetTextProperty()->SetColor(1,1,1);
+			for( int i = 0 ; i < 4 ; i++) oText[ i]->GetTextProperty()->SetColor(1,1,1);
+		}
+		else
+		{
+			textWLWW->GetTextProperty()->SetColor(0,0,0);
+			for( int i = 0 ; i < 4 ; i++) oText[ i]->GetTextProperty()->SetColor(0,0,0);
+		}
 		[backgroundColor setColor: [NSColor colorWithDeviceRed:[color redComponent] green:[color greenComponent] blue:[ color blueComponent] alpha:1.0]];
 		
 		[self setNeedsDisplay:YES];
