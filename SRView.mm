@@ -574,7 +574,15 @@ typedef struct _xyzArray
 			[dcmSequence setSourceFile: [firstObject sourceFile]];
 			
 			//if( croppingBox->GetEnabled()) croppingBox->Off();
-			aRenderer->RemoveActor(outlineRect);
+			
+			BOOL wasPresent = NO;
+	
+			if( aRenderer->GetActors()->IsItemPresent( outlineRect))
+			{
+				aRenderer->RemoveActor( outlineRect);
+				wasPresent = YES;
+			}
+			
 			aRenderer->RemoveActor(textX);
 			[self display];
 			for( i = 0; i < numberOfFrames; i++)
@@ -616,6 +624,11 @@ typedef struct _xyzArray
 				
 				[pool release];
 			}
+			
+			if( wasPresent)
+				aRenderer->AddActor(outlineRect);
+			
+			aRenderer->AddActor(textX);
 			
 //			[self endRenderImageWithBestQuality];
 			
@@ -1498,13 +1511,21 @@ typedef struct _xyzArray
 - (void) keyDown:(NSEvent *)event
 {
     unichar c = [[event characters] characterAtIndex:0];
-
-	if( c == 27)
+	
+	if( c == ' ')
+	{
+		if( aRenderer->GetActors()->IsItemPresent( outlineRect))
+			aRenderer->RemoveActor( outlineRect);
+		else
+			aRenderer->AddActor( outlineRect);
+			
+		[self setNeedsDisplay: YES];
+	}
+	else if( c == 27)
 	{
 		[[[self window] windowController] offFullScreen];
 	}
-	
-	if(c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter)
+	else if(c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter)
 	{
 		if([self isAny3DPointSelected])
 		{
@@ -1512,8 +1533,7 @@ typedef struct _xyzArray
 		}
 		else [self yaw:-90.0];
 	}
-	
-	[super keyDown:event];
+	else [super keyDown:event];
 }
 
 -(void) setCurrentTool:(short) i
@@ -2346,14 +2366,20 @@ typedef struct _xyzArray
 -(NSImage*) nsimageQuicktime
 {
 	NSImage *theIm;
-
-	aRenderer->RemoveActor(outlineRect);
+	BOOL wasPresent = NO;
+	
+	if( aRenderer->GetActors()->IsItemPresent( outlineRect))
+	{
+		aRenderer->RemoveActor( outlineRect);
+		wasPresent = YES;
+	}
 	
 	[self display];
 	
 	theIm = [self nsimage:YES];
 	
-	aRenderer->AddActor(outlineRect);
+	if( wasPresent)
+		aRenderer->AddActor(outlineRect);
 	
 	return theIm;
 }
