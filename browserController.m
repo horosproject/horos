@@ -12743,7 +12743,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					numberBytes = 2;
 					highBit = 15;
 					bitsAllocated = 16;
-					isLittleEndian = YES;
+					isSigned = YES;
+					isLittleEndian = NO;
 					break;
 				default:	spp = 1;
 					numberBytes = 2;
@@ -12760,8 +12761,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 				DCMCalendarDate *studyDate = [DCMCalendarDate date];
 				DCMCalendarDate *seriesDate = [DCMCalendarDate date];
 				[[NSUserDefaults standardUserDefaults] setInteger:(++studyID) forKey:@"SCStudyID"];
-				for (i = 0; i < s; i++){
-					NSLog(@"slice: %d", i);
+				for (i = 0; i < s; i++)
+				{
 					DCMObject *dcmObject = [DCMObject secondaryCaptureObjectWithBitDepth:numberBytes * 8  samplesPerPixel:spp numberOfFrames:1];
 					DCMCalendarDate *aquisitionDate = [DCMCalendarDate date];
 					//add attributes
@@ -12799,7 +12800,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithBool:isSigned]] forName:@"PixelRepresentation"];
 					
-					[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithBool:highBit]] forName:@"HighBit"];
+					[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:highBit]] forName:@"HighBit"];
 					[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:bitsAllocated]] forName:@"BitsAllocated"];
 					[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:bitsAllocated]] forName:@"BitsStored"];
 					
@@ -12807,11 +12808,29 @@ static volatile int numberOfThreadsForJPEG = 0;
 					NSString *vr = @"OW";
 					if (numberBytes < 2)
 						vr = @"OB";
-					DCMTransferSyntax *ts;
-					if (isLittleEndian)
-						ts = [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax];
-					else
-						ts = [DCMTransferSyntax ExplicitVRBigEndianTransferSyntax];
+					
+					NSRange range = NSMakeRange([offset intValue] + subDataLength * i, subDataLength);
+					NSMutableData *subdata = [NSMutableData dataWithData:[data subdataWithRange:range]];
+					
+					DCMTransferSyntax *ts = [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax];
+					if (isLittleEndian == NO)
+					{
+						if( isSigned == NO)
+						{
+							unsigned short *ptr = (unsigned short*) [subdata mutableBytes];
+							int l = subDataLength/2;
+							while( l-- > 0)
+								ptr[ l] = EndianU16_BtoL( ptr[ l]);
+						}
+						else
+						{
+							short *ptr = ( short*) [subdata mutableBytes];
+							int l = subDataLength/2;
+							while( l-- > 0)
+								ptr[ l] = EndianS16_BtoL( ptr[ l]);
+						}
+					}
+					
 					DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PixelData"];
 					DCMPixelDataAttribute *attr = [[[DCMPixelDataAttribute alloc] initWithAttributeTag:tag 
 																									vr:vr 
@@ -12821,12 +12840,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 																						transferSyntax:ts 
 																							 dcmObject:dcmObject
 																							decodeData:NO] autorelease];
-					NSRange range = NSMakeRange([offset intValue] + subDataLength * i, subDataLength);
-					NSMutableData *subdata = [NSMutableData dataWithData:[data subdataWithRange:range]];
-					[attr addFrame:subdata];
 					
+					[attr addFrame:subdata];
 					[dcmObject setAttribute:attr];
-					NSLog(@"raw data to Dicom: %@", [dcmObject description]);
+					
 					NSString	*tempFilename = [documentsDirectory() stringByAppendingFormat:@"/INCOMING/%d.dcm", i];
 					[dcmObject writeToFile:tempFilename withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
 				} 
