@@ -96,7 +96,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 static Wait *waitSendWindow = 0L;
 
 static NSMenu *contextual = nil;
-static NSMenu *contextualRT = nil;  // Alternate menu for RT objects (which usually don't have images)
+static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
 
 extern void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome);
 extern BOOL hasMacOSXTiger();
@@ -6469,7 +6469,7 @@ static BOOL withReset = NO;
 			}
 		}
 		
-		if( img || [modality  hasPrefix: @"RT"] ) {
+		if ( img || [modality  hasPrefix: @"RT"] ) {
 			NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
 			[cell setTransparent:NO];
 			[cell setEnabled:YES];
@@ -6478,14 +6478,17 @@ static BOOL withReset = NO;
 			[cell setImagePosition: NSImageBelow];
 			[cell setAction: @selector(matrixPressed:)];
 			
-			if ( [modality hasPrefix: @"RT"] )
+			if ( [modality isEqualToString: @"RTSTRUCT"] ) {
+				[[contextualRT itemAtIndex: 0] setAction:@selector(createROIsFromRTSTRUCT:)];
 				[cell setMenu: contextualRT];
-			else
+			}
+			else {
 				[cell setMenu: contextual];
+			}
 			
 			NSString	*name = [curFile valueForKey:@"name"];
 			
-			if( [name length] > 15) name = [name substringToIndex: 15];
+			if( name.length > 15) name = [name substringToIndex: 15];
 			
 			if ( [modality hasPrefix: @"RT"] ) {
 				[cell setTitle: [NSString stringWithFormat: @"%@\r%@", name, modality]];
