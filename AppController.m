@@ -2030,8 +2030,7 @@ static BOOL initialized = NO;
 //	DOClient	*client = [[DOClient alloc] init];
 //	[client connect];
 //	[client log:@"Happy Xmas 2006"];
-		
-//	[[PluginManager alloc] setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
+	
 	[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
     NSLog(@"Finishing Launching");
     
