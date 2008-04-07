@@ -346,6 +346,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	[statusProgressIndicator setHidden:YES];
 	[statusProgressIndicator stopAnimation:self];
 	[self installDownloadedPluginAtPath:downloadedFilePath];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"PluginManagerControllerDownloadAndInstallDidFinish" object:self userInfo:nil];
 }
 
 - (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error

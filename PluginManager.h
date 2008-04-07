@@ -19,7 +19,10 @@
 /** \brief Mangages PluginFilter loading */
 @interface PluginManager : NSObject
 {
+	NSMutableArray *downloadQueue;
 }
+
+@property(retain,readwrite) NSMutableArray *downloadQueue;
 
 + (NSMutableDictionary*) plugins;
 + (NSMutableDictionary*) pluginsDict;

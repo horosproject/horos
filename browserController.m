@@ -176,6 +176,8 @@ static NSArray*	statesArray = nil;
 
 @synthesize rtstructProgressBar, rtstructProgressPercent;
 
+@synthesize pluginManagerController;
+
 + (BrowserController*) currentBrowser { return browserWindow; }
 + (NSArray*) statesArray { return statesArray; }
 + (void) updateActivity {

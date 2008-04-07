@@ -18,7 +18,7 @@
 
 #import "browserController.h"
 #import "BLAuthentication.h"
-
+#import "PluginManagerController.h"
 
 static NSMutableDictionary		*plugins = 0L, *pluginsDict = 0L, *fileFormatPlugins = 0L;
 static NSMutableDictionary		*reportPlugins = 0L;
@@ -27,6 +27,8 @@ static NSMutableArray			*preProcessPlugins = 0L;
 static NSMenu					*fusionPluginsMenu = 0L;
 
 @implementation PluginManager
+
+@synthesize downloadQueue;
 
 + (NSMutableDictionary*) plugins
 {
@@ -277,6 +279,8 @@ static NSMenu					*fusionPluginsMenu = 0L;
 		
 		//[self discoverPlugins];
 		[PluginManager discoverPlugins];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadNext:) name:@"PluginManagerControllerDownloadAndInstallDidFinish" object:nil];
 		
 		[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:self withObject:self];
 	}
@@ -851,13 +855,38 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 
 - (void)displayUpdateMessage:(NSDictionary*)messageDictionary;
 {
-	int button = NSRunAlertPanel( [messageDictionary objectForKey:@"title"], [messageDictionary objectForKey:@"body"], NSLocalizedString(@"OK", @""), NSLocalizedString( @"Cancel", @""), nil);
+	int button = NSRunAlertPanel( [messageDictionary objectForKey:@"title"], [messageDictionary objectForKey:@"body"], NSLocalizedString(@"Download", @""), NSLocalizedString( @"Cancel", @""), nil);
 		
 	if (NSOKButton == button)
 	{
-		//[messageDictionary objectForKey:@"plugins"];
-		//[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+		PluginManagerController *pluginManagerController = [[BrowserController currentBrowser] pluginManagerController];
+
+		if(pluginManagerController)
+		{
+			NSArray *pluginsToDownload = [messageDictionary objectForKey:@"plugins"];
+			self.downloadQueue = [NSMutableArray arrayWithArray:pluginsToDownload];
+			
+			NSLog(@"Download Plugin : %@", [[pluginsToDownload objectAtIndex:0] objectForKey:@"download_url"]);
+			[pluginManagerController setDownloadURL:[[pluginsToDownload objectAtIndex:0] objectForKey:@"download_url"]];
+			[pluginManagerController download:self];
+		}
 	}
+}
+
+-(void)downloadNext:(NSNotification*)notification;
+{
+	if([downloadQueue count]>1)
+	{
+		[downloadQueue removeObjectAtIndex:0];
+
+		PluginManagerController *pluginManagerController = [[BrowserController currentBrowser] pluginManagerController];
+
+		NSLog(@"Download Plugin : %@", [[downloadQueue objectAtIndex:0] objectForKey:@"download_url"]);
+		[pluginManagerController setDownloadURL:[[downloadQueue objectAtIndex:0] objectForKey:@"download_url"]];
+		[pluginManagerController download:self];
+	}
+	else
+		NSRunInformationalAlertPanel(NSLocalizedString(@"Plugin Update Completed", @""), NSLocalizedString(@"All your plugins are now up to date.", @""), NSLocalizedString(@"OK", @""), nil, nil);
 }
 
 #endif

@@ -37,6 +37,7 @@
 @class DCMPix;
 @class StructuredReportController;
 @class BrowserMatrix;
+@class PluginManagerController;
 
 enum RootTypes{PatientRootType, StudyRootType, RandomRootType};
 enum simpleSearchType {PatientNameSearch, PatientIDSearch};
@@ -237,6 +238,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	float							rtstructProgressPercent;
 	
 	int								DicomDirScanDepth;
+	
+	IBOutlet PluginManagerController *pluginManagerController;
 }
 
 @property(readonly) NSDateFormatter *DateTimeFormat;
@@ -276,6 +279,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 @property BOOL rtstructProgressBar;
 @property float rtstructProgressPercent;
+
+@property(readonly) PluginManagerController *pluginManagerController;
 
 + (BrowserController*) currentBrowser;
 + (void) replaceNotAdmitted:(NSMutableString*) name;
