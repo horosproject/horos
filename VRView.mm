@@ -1814,8 +1814,16 @@ public:
 		[www start];
 	}
 	
-	[self computeOrientationText];
-	[super drawRect:aRect];
+	try
+	{
+		[self computeOrientationText];
+		[super drawRect:aRect];
+	}
+	
+	catch (...)
+	{
+		NSLog( @"Exception during drawRect... not enough memory?");
+	}
 	
 	if( www)
 	{
