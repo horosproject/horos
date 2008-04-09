@@ -1771,8 +1771,16 @@ typedef struct _xyzArray
 
 - (void) drawRect:(NSRect)aRect
 {
-	[self computeOrientationText];
-	[super drawRect:aRect];
+	try
+	{
+		[self computeOrientationText];
+		[super drawRect:aRect];
+	}
+	
+	catch (...)
+	{
+		NSLog( @"Exception during drawRect... not enough memory?");
+	}
 }
 
 - (void) deleteActor:(long) actor
