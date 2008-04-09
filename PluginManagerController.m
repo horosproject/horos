@@ -379,14 +379,25 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 	}
 	
-	NSString *userPluginsDirectoryPath = [PluginManager userActivePluginsDirectoryPath];
-
-	if([[NSFileManager defaultManager] fileExistsAtPath:[userPluginsDirectoryPath stringByAppendingPathComponent:[pluginPath lastPathComponent]]])
-	{
-		[[NSFileManager defaultManager] removeFileAtPath:[userPluginsDirectoryPath stringByAppendingPathComponent:[pluginPath lastPathComponent]] handler:nil];
-	}
+	//NSString *userPluginsDirectoryPath = [PluginManager userActivePluginsDirectoryPath];
 	
-	[PluginManager movePluginFromPath:pluginPath toPath:userPluginsDirectoryPath];	
+	// determine in which directory to install the plugin (default = user active dir, or if the plugin was already installed: in the same dir)
+	NSMutableArray *directories = [NSMutableArray arrayWithArray:[PluginManager activeDirectories]];
+	[directories addObjectsFromArray:[PluginManager inactiveDirectories]];
+	
+	NSString *installDirectoryPath = [PluginManager userActivePluginsDirectoryPath]; // default = user active directory
+	
+	for (NSString *dir in directories) // search if the plugin was already installed
+	{
+		if([[NSFileManager defaultManager] fileExistsAtPath:[dir stringByAppendingPathComponent:[pluginPath lastPathComponent]]])
+		{
+			installDirectoryPath = dir; // in that case, install the (updated) plugin in the same directory it was
+			[[NSFileManager defaultManager] removeFileAtPath:[dir stringByAppendingPathComponent:[pluginPath lastPathComponent]] handler:nil];
+			break;
+		}
+	}
+			
+	[PluginManager movePluginFromPath:pluginPath toPath:installDirectoryPath];	
 
 	[statusTextField setStringValue:NSLocalizedString(@"Plugin Installed", nil)];
 	[statusProgressIndicator setHidden:YES];
