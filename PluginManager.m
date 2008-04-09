@@ -859,6 +859,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 		
 	if (NSOKButton == button)
 	{
+		startedUpdateProcess = YES;
 		PluginManagerController *pluginManagerController = [[BrowserController currentBrowser] pluginManagerController];
 
 		if(pluginManagerController)
@@ -871,10 +872,13 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 			[pluginManagerController download:self];
 		}
 	}
+	else startedUpdateProcess = NO;
 }
 
 -(void)downloadNext:(NSNotification*)notification;
 {
+	if(!startedUpdateProcess) return;
+	
 	if([downloadQueue count]>1)
 	{
 		[downloadQueue removeObjectAtIndex:0];
@@ -886,7 +890,10 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 		[pluginManagerController download:self];
 	}
 	else
+	{
 		NSRunInformationalAlertPanel(NSLocalizedString(@"Plugin Update Completed", @""), NSLocalizedString(@"All your plugins are now up to date.", @""), NSLocalizedString(@"OK", @""), nil, nil);
+		startedUpdateProcess = NO;
+	}
 }
 
 #endif

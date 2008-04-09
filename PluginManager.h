@@ -20,6 +20,7 @@
 @interface PluginManager : NSObject
 {
 	NSMutableArray *downloadQueue;
+	BOOL startedUpdateProcess;
 }
 
 @property(retain,readwrite) NSMutableArray *downloadQueue;
