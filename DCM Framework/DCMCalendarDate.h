@@ -49,12 +49,14 @@
 /** Create a DICOM time from a string */
 + (id)dicomTimeWithDate:(NSDate *)date;
 
+/** Create a DICOM datetime from a DICOM date and a DICOM time */
++ (id)dicomDateTimeWithDicomDate:(DCMCalendarDate*)date dicomTime:(DCMCalendarDate*)time;
+
 /** Create a DICOM date from a string for queries */
 + (id)queryDate:(NSString *)query;
 
-
-/** Convenience method for creating a DCMCalendar date  */
-- (DCMCalendarDate *)dateWithYear:(int)year month:(unsigned)month day:(unsigned)day hour:(unsigned)hour minute:(unsigned)minute second:(unsigned)second timeZone:(NSTimeZone *)aTimeZone;
+/** Create a DICOM date the name of this method should change but I don't want to do it right before a release - spalte */
++ (id)dateWithYear:(NSInteger)year month:(NSUInteger)month day:(NSUInteger)day hour:(NSUInteger)hour minute:(NSUInteger)minute second:(NSUInteger)second timeZone:(NSTimeZone *)aTimeZone;
 
 /** return the date as a DICOM formatted string */
 - (NSString *)dateString;
@@ -76,6 +78,9 @@
 /** return the time as an NSNumber HHMMSS.ff*/
 - (NSNumber *)timeAsNumber;
 
+/** the additional microseconds */
+- (int)microseconds;
+
 /** add microseonds to time */
 - (void)setMicroseconds:(int)useconds;
 
@@ -90,5 +95,9 @@
 
 /** Human readable description of the date */
 - (NSString *)description;
+- (NSString *)descriptionWithLocale:(id)localeDictionary;
+
+/** override timeIntervalSinceReferenceDate so that NSDate's timeIntervalSinceDate: takes into account microseconds */
+- (NSTimeInterval)timeIntervalSinceReferenceDate;
 
 @end

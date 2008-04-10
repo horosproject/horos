@@ -14,7 +14,7 @@
 
 //7/5/05 Finxed bug in dicomTime. Changed comparison to first component rather than whole string. LP
 
-#import "DCMCalendarDate.h"
+#import "DCMCalendarDate.h"aTimeZone
 #import "DCM.h"
 
 @implementation DCMCalendarDate
@@ -161,6 +161,16 @@
 	NSString *dateString = [cDate descriptionWithCalendarFormat:format];
 	return [DCMCalendarDate dicomTime:dateString];
 }
+
++ (id)dicomDateTimeWithDicomDate:(DCMCalendarDate*)date dicomTime:(DCMCalendarDate*)time{
+	DCMCalendarDate *dateTime = [[[DCMCalendarDate alloc] initWithYear:[date yearOfCommonEra] month:[date monthOfYear] day:[date dayOfMonth]
+				hour:[time hourOfDay] minute:[time minuteOfHour] second:[time secondOfMinute] timeZone:[date timeZone]] autorelease];
+	
+	[dateTime setMicroseconds:[time microseconds]];
+	[dateTime setIsQuery:NO];
+	[dateTime setQueryString:nil];
+	return dateTime;
+}
 	
 + (id)queryDate:(NSString *)query{
 	DCMCalendarDate *date = [[[DCMCalendarDate alloc] init] autorelease];
@@ -169,6 +179,14 @@
 	return date;
 }
 
+
++ (id)dateWithYear:(NSInteger)year month:(NSUInteger)month day:(NSUInteger)day hour:(NSUInteger)hour minute:(NSUInteger)minute second:(NSUInteger)second timeZone:(NSTimeZone *)aTimeZone{
+	DCMCalendarDate *date = [[[DCMCalendarDate alloc] initWithYear:year month:month day:day hour:hour minute:minute second:second timeZone:aTimeZone] autorelease];
+	[date setMicroseconds:0];
+	[date setIsQuery:NO];
+	[date setQueryString:nil];
+	return date;
+}
 
 //------------------------------------------------------------------------------------------------------------------------------------
 #pragma mark•
@@ -214,6 +232,10 @@
 	return [NSNumber numberWithInt:[[self timeString] floatValue]];
 }
 
+- (int)microseconds{
+	return microseconds;
+}
+
 - (void)setMicroseconds:(int)useconds{
 	microseconds = useconds;
 }
@@ -247,11 +269,27 @@
 - (NSString *)description{
 	if (isQuery)
 		return queryString;
+	if ([[self calendarFormat] isEqualToString:@"%H:%M:%S"] ||
+			[[self calendarFormat] isEqualToString:@"%H%M%S"] ||
+			[[self calendarFormat] isEqualToString:@"%H%M"] ||
+			[[self calendarFormat] isEqualToString:@"%H"]) 
+		return [self timeString];
 	return [super description];
 }
 
-- (DCMCalendarDate *)dateWithYear:(int)year month:(unsigned)month day:(unsigned)day hour:(unsigned)hour minute:(unsigned)minute second:(unsigned)second timeZone:(NSTimeZone *)aTimeZone{ 
-	return [DCMCalendarDate dicomDateWithDate:[self dateWithYear:(int)year month:(unsigned)month day:(unsigned)day hour:(unsigned)hour minute:(unsigned)minute second:(unsigned)second timeZone:(NSTimeZone *)aTimeZone]];
+- (NSString *)descriptionWithLocale:(id)localeDictionary{
+	if (isQuery)
+		return queryString;
+	if ([[self calendarFormat] isEqualToString:@"%H:%M:%S"] ||
+			[[self calendarFormat] isEqualToString:@"%H%M%S"] ||
+			[[self calendarFormat] isEqualToString:@"%H%M"] ||
+			[[self calendarFormat] isEqualToString:@"%H"]) 
+		return [self timeString];
+	return [super descriptionWithLocale:localeDictionary];
+}
+
+- (NSTimeInterval)timeIntervalSinceReferenceDate{
+	return [super timeIntervalSinceReferenceDate] + ((NSTimeInterval)microseconds / (NSTimeInterval)1e6);
 }
 
 @end
