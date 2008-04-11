@@ -135,7 +135,7 @@ typedef FILE *      	PAPY_FILE;    		/* ANSI FILE pointer */
 
 /* --- Enumerated types --- */
 
-/* Definition of the DICOM transfert syntaxes */
+/* Definition of the DICOM transfer syntaxes */
 enum ETransf_Syntax	{LITTLE_ENDIAN_IMPL, LITTLE_ENDIAN_EXPL, BIG_ENDIAN_EXPL};
 
 /* The type of the file */

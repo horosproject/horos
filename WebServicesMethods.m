@@ -1108,7 +1108,7 @@ extern NSThread					*mainThread;
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyState%" withString:NSLocalizedString(@"Study Status", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_StudyComment%" withString:NSLocalizedString(@"Study Comment", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Series%" withString:NSLocalizedString(@"Series", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
-	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DICOMTransfert%" withString:NSLocalizedString(@"DICOM Transfert", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
+	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_DICOMTransfer%" withString:NSLocalizedString(@"DICOM Transfer", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_SendSelectedSeriesTo%" withString:NSLocalizedString(@"Send selected Series to", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 	[templateString replaceOccurrencesOfString:@"%LocalizedLabel_Send%" withString:NSLocalizedString(@"Send", @"") options:NSLiteralSearch range:NSMakeRange(0, [templateString length])];
 
