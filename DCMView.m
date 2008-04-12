@@ -462,7 +462,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 @implementation DCMView
 
-@synthesize drawingFrameRect;
+@synthesize drawingFrameRect, dontEnterReshape;
 @synthesize rectArray;
 @synthesize flippedData;
 @synthesize dcmPixList;

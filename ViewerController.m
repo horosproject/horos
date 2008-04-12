@@ -3030,10 +3030,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( previous.size.width != frameLeft.size.width)
 	{
+		imageView.dontEnterReshape = YES;
 		[[[splitView subviews] objectAtIndex: 0] setFrameSize: frameLeft.size];
 		[[[splitView subviews] objectAtIndex: 1] setFrameSize: frameRight.size];
-		
 		[splitView adjustSubviews];
+		imageView.dontEnterReshape = NO;
 	}
 }
 
