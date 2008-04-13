@@ -1954,7 +1954,8 @@ typedef struct _xyzArray
 	}
 	catch (...)
 	{
-		
+		if( NSRunAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.\r\rUpgrade to OsiriX 64-bit to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+			[[AppController sharedAppController] osirix64bit: self];
 	}
 }
 
