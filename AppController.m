@@ -1800,7 +1800,6 @@ static BOOL initialized = NO;
 					[[NSUserDefaults standardUserDefaults] setObject:wlwwValues forKey:@"WLWW3"];
 				}
 				
-				
 				// CREATE A TEMPORATY FILE DURING STARTUP
 				NSString *path = [documentsDirectory() stringByAppendingPathComponent:@"/Loading"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:path])

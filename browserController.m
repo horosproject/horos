@@ -6703,6 +6703,8 @@ static BOOL withReset = NO;
 	{
 		NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 		
+		NSString *recoveryPath = [documentsDirectory() stringByAppendingPathComponent:@"/ThumbnailPath"];
+		
 		NSArray	*files = [self imagesArray: series];
 		if( [files count] > 0)
 		{
@@ -6715,6 +6717,10 @@ static BOOL withReset = NO;
 				
 				NSLog( @"Build thumbnail for:");
 				NSLog( [image valueForKey:@"completePath"]);
+				
+				[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: 0L];
+				[[image valueForKey:@"completePath"] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: 0L];
+				
 				DCMPix	*dcmPix  = [[DCMPix alloc] myinit:[image valueForKey:@"completePath"] :0 :1 :0L :frame :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
 				
 				if( dcmPix)
@@ -6725,6 +6731,8 @@ static BOOL withReset = NO;
 					if( thumbnail && data) [series setValue: data forKey:@"thumbnail"];
 					[dcmPix release];
 				}
+				
+				[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: 0L];
 			}
 		}
 		
@@ -6736,6 +6744,16 @@ static BOOL withReset = NO;
 {
 	if( [DCMPix isRunOsiriXInProtectedModeActivated]) return;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"] == NO) return;
+	
+	NSString *recoveryPath = [documentsDirectory() stringByAppendingPathComponent:@"/ThumbnailPath"];
+	if( [[NSFileManager defaultManager] fileExistsAtPath: recoveryPath])
+	{
+		NSRunAlertPanel( NSLocalizedString(@"Corrupted files", nil), [NSString stringWithFormat:NSLocalizedString(@"A corrupted file crashed OsiriX:\r\r%@\r\rThis file will be moved to the Trash.\r\rYou can run OsiriX in Protected Mode (shift + option keys at startup) if you have more crashes.", nil), [NSString stringWithContentsOfFile: recoveryPath]], nil, nil, nil);
+		
+		NSInteger tag = 0;
+		
+		[[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source: [[NSString stringWithContentsOfFile: recoveryPath] stringByDeletingLastPathComponent] destination:@"" files:[NSArray arrayWithObject:[[NSString stringWithContentsOfFile: recoveryPath] lastPathComponent]] tag:&tag];
+	}
 	
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	NSManagedObjectModel	*model = self.managedObjectModel;
@@ -10367,22 +10385,28 @@ static NSArray*	openSubSeriesArray = 0L;
 	{
 		if( isCurrentDatabaseBonjour) return NO;
 		
-		BOOL matrixThumbnails;
+		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
 		
-		if( menuItem.menu == contextual) matrixThumbnails = YES;
-		else matrixThumbnails = NO;
-		
-		NSMutableArray *files, *objects = [NSMutableArray array];
-		
-		if( matrixThumbnails)
-			files = [self filesForDatabaseMatrixSelection: objects onlyImages: NO];
-		else
-			files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
-		
-		for( NSManagedObject *im in objects)
-		{
-			if( [[im valueForKey: @"inDatabaseFolder"] boolValue] == NO) return YES;
+		if( [selectedRows count] < 5)
+		{		
+			BOOL matrixThumbnails;
+			
+			if( menuItem.menu == contextual) matrixThumbnails = YES;
+			else matrixThumbnails = NO;
+			
+			NSMutableArray *files, *objects = [NSMutableArray array];
+			
+			if( matrixThumbnails)
+				files = [self filesForDatabaseMatrixSelection: objects onlyImages: NO];
+			else
+				files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
+			
+			for( NSManagedObject *im in objects)
+			{
+				if( [[im valueForKey: @"inDatabaseFolder"] boolValue] == NO) return YES;
+			}
 		}
+		else return YES;
 		
 		return NO;
 	}
