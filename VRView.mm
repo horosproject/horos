@@ -1803,46 +1803,53 @@ public:
 	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
 	
 	if(iChatRunning) [drawLock lock];
-
-	WaitRendering	*www = 0;
 	
-	if( firstTime)
+	@try
 	{
-		NSLog( @"POP");
-		firstTime = NO;	
-		www = [[WaitRendering alloc] init:NSLocalizedString(@"Preparing 3D data...", nil)];
-		[www start];
-	}
-	
-	try
-	{
-		[self computeOrientationText];
-		[super drawRect:aRect];
-	}
-	
-	catch (...)
-	{
-		NSLog( @"Exception during drawRect... not enough memory?");
-	}
-	
-	if( www)
-	{
-		NSLog( @"OPO");
-		[www end];
-		[www close];
-		[www release];
+		WaitRendering	*www = 0;
 		
-		if( isRGB == NO)
+		if( firstTime)
 		{
-			*(data+0) = firstPixel;
-			*(data+1) = secondPixel;
-			
-			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+			NSLog( @"POP");
+			firstTime = NO;	
+			www = [[WaitRendering alloc] init:NSLocalizedString(@"Preparing 3D data...", nil)];
+			[www start];
 		}
+		
+		try
+		{
+			[self computeOrientationText];
+			[super drawRect:aRect];
+		}
+		
+		catch (...)
+		{
+			NSLog( @"C++ Exception during drawRect... not enough memory?");
+		}
+		
+		if( www)
+		{
+			NSLog( @"OPO");
+			[www end];
+			[www close];
+			[www release];
+			
+			if( isRGB == NO)
+			{
+				*(data+0) = firstPixel;
+				*(data+1) = secondPixel;
+				
+				vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+			}
+		}
+		
+		_hasChanged = YES;
 	}
-	
-	_hasChanged = YES;
-	
+	@catch (NSException * e)
+	{
+		NSLog( @"Exception during drawRect: %@", e);
+	}
+
 	if(iChatRunning) [drawLock unlock];
 }
 
