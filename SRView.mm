@@ -30,7 +30,7 @@
 #include "math.h"
 #include "vtkImageFlip.h"
 #import "QuicktimeExport.h"
-
+#import "AppController.h"
 #include "vtkRIBExporter.h"
 #include "vtkIVExporter.h"
 #include "vtkOBJExporter.h"
@@ -1780,6 +1780,11 @@ typedef struct _xyzArray
 	catch (...)
 	{
 		NSLog( @"Exception during drawRect... not enough memory?");
+		
+		if( NSRunAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.\r\rUpgrade to OsiriX 64-bit to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+			[[AppController sharedAppController] osirix64bit: self];
+		
+		[[self window] performSelector:@selector(performClose:) withObject:self afterDelay: 1.0];
 	}
 }
 
@@ -1827,6 +1832,9 @@ typedef struct _xyzArray
 - (void) changeActor:(long) actor :(float) resolution :(float) transparency :(float) r :(float) g :(float) b :(float) isocontour :(BOOL) useDecimate :(float) decimateVal :(BOOL) useSmooth :(long) smoothVal
 {
 //	[splash setCancel:YES];
+	
+	try
+	{
 	
 	NSLog(@"ChangeActor IN");
 		
@@ -1942,6 +1950,12 @@ typedef struct _xyzArray
 	 [self setNeedsDisplay:YES];
 	
 	NSLog(@"ChangeActor OUT");
+	
+	}
+	catch (...)
+	{
+		
+	}
 }
 
 - (void) BchangeActor:(long) actor :(float) resolution :(float) transparency :(float) r :(float) g :(float) b :(float) isocontour :(BOOL) useDecimate :(float) decimateVal :(BOOL) useSmooth :(long) smoothVal

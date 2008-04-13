@@ -6061,8 +6061,9 @@ static ViewerController *draggedController = 0L;
 + (BOOL)resampleDataFromPixArray:(NSArray *)originalPixlist fileArray:(NSArray*)originalFileList inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor;
 {
 	NSLog(@"resampleDataFromPixArray - factor : %f", xFactor);
+	
 	long				i, y, z;
-	unsigned long long			size, newX, newY, newZ, imageSize;
+	unsigned long long	size, newX, newY, newZ, imageSize;
 	float				*srcImage, *dstImage, *emptyData;
 	DCMPix				*curPix;
 	
@@ -6083,211 +6084,200 @@ static ViewerController *draggedController = 0L;
 	imageSize = newX * newY;
 	size = sizeof(float) * maxZ * imageSize;
 
-//	NSLog(@"newX:%qu, newY:%qu, newZ:%qu", newX, newY, newZ);
-//	NSLog(@"imageSize:%qu, size:%qu", imageSize, size);
-//	NSLog(@"imageSize*sizeof(float)*50 : %qu", imageSize*sizeof(float)*50);
-	
-	emptyData = malloc( size + newX*newY*sizeof(float)*50);		// Just to be sure we have enough memory to play with them !
-//	NSLog(@"size + imageSize*sizeof(float)*50  : %qu MB", (size + imageSize*sizeof(float)*50)/(1024 *1024));
+	emptyData = malloc( size);		// Just to be sure we have enough memory to play with them !
 
 	if( emptyData)
 	{
-		free( emptyData);
-		emptyData = malloc( size);
-//		NSLog(@"size  : %qu MB", size/(1024 *1024));
-		if(emptyData)
+		float vectors[ 9], vectorsB[ 9], interval = 0, origin[ 3], newOrigin[ 3];
+		BOOL equalVector = YES;
+		int o;
+		
+		if( [originalPixlist count] > 1)
 		{
-			float vectors[ 9], vectorsB[ 9], interval = 0, origin[ 3], newOrigin[ 3];
-			BOOL equalVector = YES;
-			int o;
+			DCMPix	*firstObject = [originalPixlist objectAtIndex:0];
+			DCMPix	*secondObject = [originalPixlist objectAtIndex:1];
+			DCMPix	*lastObject = [originalPixlist lastObject];
 			
-			if( [originalPixlist count] > 1)
+			[firstObject orientation: vectors];
+			[secondObject orientation: vectorsB];
+			
+//			if( [firstObject fImage] != [*aData bytes])
+//			{
+//				NSLog(@"flipped Data in resampleDataFromPixArray");
+//				
+//				if( [lastObject fImage] != [*aData bytes]) NSLog( @"uh?");
+//				
+//				origin[ 0] = [lastObject originX]; 
+//				origin[ 1] = [lastObject originY]; 
+//				origin[ 2] = [lastObject originZ]; 
+//			}
+//			else
 			{
-				DCMPix	*firstObject = [originalPixlist objectAtIndex:0];
-				DCMPix	*secondObject = [originalPixlist objectAtIndex:1];
-				DCMPix	*lastObject = [originalPixlist lastObject];
-				
-				[firstObject orientation: vectors];
-				[secondObject orientation: vectorsB];
-				
-	//			if( [firstObject fImage] != [*aData bytes])
-	//			{
-	//				NSLog(@"flipped Data in resampleDataFromPixArray");
-	//				
-	//				if( [lastObject fImage] != [*aData bytes]) NSLog( @"uh?");
-	//				
-	//				origin[ 0] = [lastObject originX]; 
-	//				origin[ 1] = [lastObject originY]; 
-	//				origin[ 2] = [lastObject originZ]; 
-	//			}
-	//			else
+				origin[ 0] = [firstObject originX]; 
+				origin[ 1] = [firstObject originY]; 
+				origin[ 2] = [firstObject originZ]; 
+			}
+			
+			for( i = 0; i < 9; i++)
+			{
+				if( vectors[ i] != vectorsB[ i]) equalVector = NO;
+			}
+			
+			if( equalVector)
+			{
+				if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
 				{
-					origin[ 0] = [firstObject originX]; 
-					origin[ 1] = [firstObject originY]; 
-					origin[ 2] = [firstObject originZ]; 
+					interval = [secondObject originX] - [firstObject originX];
+					
+					o = 0;
 				}
 				
-				for( i = 0; i < 9; i++)
+				if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
 				{
-					if( vectors[ i] != vectorsB[ i]) equalVector = NO;
+					interval = [secondObject originY] - [firstObject originY];
+					
+					o = 1;
 				}
 				
-				if( equalVector)
+				if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
 				{
-					if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
-					{
-						interval = [secondObject originX] - [firstObject originX];
-						
-						o = 0;
-					}
+					interval = [secondObject originZ] - [firstObject originZ];
 					
-					if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
-					{
-						interval = [secondObject originY] - [firstObject originY];
-						
-						o = 1;
-					}
-					
-					if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
-					{
-						interval = [secondObject originZ] - [firstObject originZ];
-						
-						o = 2;
-					}
+					o = 2;
 				}
 			}
-			
-			interval *= (float) zFactor;
-			
-			if( interval == 0L)
-			{
-				free( emptyData);
-				return NO;
-			}
-			
-			NSMutableArray	*newPixList = [NSMutableArray arrayWithCapacity: 0];
-			NSData *newData = [NSData dataWithBytesNoCopy:emptyData length:size freeWhenDone:YES];
-			
-			for( z = 0 ; z < newZ; z ++)
-			{
-				curPix = [originalPixlist objectAtIndex: (z * originZ) / newZ];
-				
-				DCMPix	*copyPix = [curPix copy];
-				
-				[newPixList addObject: copyPix];
-				
-				[copyPix setPwidth: newX];
-				[copyPix setPheight: newY];
-				
-				[copyPix setfImage: (float*) (emptyData + imageSize * z)];
-				[copyPix setTot: newZ];
-				[copyPix setFrameNo: z];
-				[copyPix setID: z];
-				
-				[copyPix setPixelSpacingX: [curPix pixelSpacingX] * xFactor];
-				[copyPix setPixelSpacingY: [curPix pixelSpacingY] * yFactor];
-				[copyPix setSliceThickness: [curPix sliceThickness] * zFactor];
-				[copyPix setPixelRatio:  [curPix pixelRatio] / xFactor * yFactor];
-				
-				newOrigin[ 0] = origin[ 0];	newOrigin[ 1] = origin[ 1];	newOrigin[ 2] = origin[ 2];
-				switch( o)
-				{
-					case 0:
-						newOrigin[ 0] = origin[ 0] + (float) z * interval;
-						[copyPix setSliceLocation: newOrigin[ 0]];
-						break;
-						
-					case 1:
-						newOrigin[ 1] = origin[ 1] + (float) z * interval;
-						[copyPix setSliceLocation: newOrigin[ 1]];
-						break;
-						
-					case 2:
-						newOrigin[ 2] = origin[ 2] + (float) z * interval;
-						[copyPix setSliceLocation: newOrigin[ 2]];
-						break;
-				}
-				[copyPix setOrigin: newOrigin];
-				[copyPix setSliceInterval: 0];
-				
-				[copyPix release];	// It's added to the newPixList array
-			}
-			
-			// X - Y RESAMPLING
-			
-			if( originHeight != newY || originWidth != newX)
-			{
-				for( z = 0; z < originZ; z++)
-				{
-					vImage_Buffer	srcVimage, dstVimage;
-					
-					curPix = [originalPixlist objectAtIndex: z];
-					
-					srcImage = [curPix fImage];
-					dstImage = emptyData + imageSize * z;
-					
-					srcVimage.data = srcImage;
-					srcVimage.height =  originHeight;
-					srcVimage.width = originWidth;
-					srcVimage.rowBytes = originWidth*4;
-					
-					dstVimage.data = dstImage;
-					dstVimage.height =  newY;
-					dstVimage.width = newX;
-					dstVimage.rowBytes = newX*4;
-					
-					if( [curPix isRGB])
-						vImageScale_ARGB8888( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
-					else
-						vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
-				}
-			}
-			else
-			{
-				memcpy( emptyData, [[originalPixlist objectAtIndex: 0] fImage], originHeight * originWidth * 4 * originZ);
-			}
-			
-			// Z RESAMPLING
-			
-			if( originZ != newZ)
-			{
-				curPix = [newPixList objectAtIndex: 0];
-				
-				for( y = 0; y < newY; y++)
-				{
-					vImage_Buffer	srcVimage, dstVimage;
-					
-					srcImage = [curPix  fImage] + y * newX;
-					dstImage = emptyData + y * newX;
-					
-					srcVimage.data = srcImage;
-					srcVimage.height =  originZ;
-					srcVimage.width = newX;
-					srcVimage.rowBytes = newY*newX*4;
-					
-					dstVimage.data = dstImage;
-					dstVimage.height =  newZ;
-					dstVimage.width = newX;
-					dstVimage.rowBytes = newY*newX*4;
-					
-					if( [curPix isRGB])
-						vImageScale_ARGB8888( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
-					else
-						vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
-				}
-			}
-			
-			for( z = 0 ; z < newZ; z ++)
-			{
-				[aFileList addObject: [originalFileList objectAtIndex: (z * originZ) / newZ]];
-				[aPixList addObject: [newPixList objectAtIndex: z]];
-				
-				[[aPixList lastObject] setArrayPix: aPixList :z];
-				[[aPixList lastObject] setID: z];
-			}
-			*aData = newData;
-			return YES;
 		}
+		
+		interval *= (float) zFactor;
+		
+		if( interval == 0L)
+		{
+			free( emptyData);
+			return NO;
+		}
+		
+		NSMutableArray	*newPixList = [NSMutableArray arrayWithCapacity: 0];
+		NSData *newData = [NSData dataWithBytesNoCopy:emptyData length:size freeWhenDone:YES];
+		
+		for( z = 0 ; z < newZ; z ++)
+		{
+			curPix = [originalPixlist objectAtIndex: (z * originZ) / newZ];
+			
+			DCMPix	*copyPix = [curPix copy];
+			
+			[newPixList addObject: copyPix];
+			
+			[copyPix setPwidth: newX];
+			[copyPix setPheight: newY];
+			
+			[copyPix setfImage: (float*) (emptyData + imageSize * z)];
+			[copyPix setTot: newZ];
+			[copyPix setFrameNo: z];
+			[copyPix setID: z];
+			
+			[copyPix setPixelSpacingX: [curPix pixelSpacingX] * xFactor];
+			[copyPix setPixelSpacingY: [curPix pixelSpacingY] * yFactor];
+			[copyPix setSliceThickness: [curPix sliceThickness] * zFactor];
+			[copyPix setPixelRatio:  [curPix pixelRatio] / xFactor * yFactor];
+			
+			newOrigin[ 0] = origin[ 0];	newOrigin[ 1] = origin[ 1];	newOrigin[ 2] = origin[ 2];
+			switch( o)
+			{
+				case 0:
+					newOrigin[ 0] = origin[ 0] + (float) z * interval;
+					[copyPix setSliceLocation: newOrigin[ 0]];
+					break;
+					
+				case 1:
+					newOrigin[ 1] = origin[ 1] + (float) z * interval;
+					[copyPix setSliceLocation: newOrigin[ 1]];
+					break;
+					
+				case 2:
+					newOrigin[ 2] = origin[ 2] + (float) z * interval;
+					[copyPix setSliceLocation: newOrigin[ 2]];
+					break;
+			}
+			[copyPix setOrigin: newOrigin];
+			[copyPix setSliceInterval: 0];
+			
+			[copyPix release];	// It's added to the newPixList array
+		}
+		
+		// X - Y RESAMPLING
+		
+		if( originHeight != newY || originWidth != newX)
+		{
+			for( z = 0; z < originZ; z++)
+			{
+				vImage_Buffer	srcVimage, dstVimage;
+				
+				curPix = [originalPixlist objectAtIndex: z];
+				
+				srcImage = [curPix fImage];
+				dstImage = emptyData + imageSize * z;
+				
+				srcVimage.data = srcImage;
+				srcVimage.height =  originHeight;
+				srcVimage.width = originWidth;
+				srcVimage.rowBytes = originWidth*4;
+				
+				dstVimage.data = dstImage;
+				dstVimage.height =  newY;
+				dstVimage.width = newX;
+				dstVimage.rowBytes = newX*4;
+				
+				if( [curPix isRGB])
+					vImageScale_ARGB8888( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+				else
+					vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+			}
+		}
+		else
+		{
+			memcpy( emptyData, [[originalPixlist objectAtIndex: 0] fImage], originHeight * originWidth * 4 * originZ);
+		}
+		
+		// Z RESAMPLING
+		
+		if( originZ != newZ)
+		{
+			curPix = [newPixList objectAtIndex: 0];
+			
+			for( y = 0; y < newY; y++)
+			{
+				vImage_Buffer	srcVimage, dstVimage;
+				
+				srcImage = [curPix  fImage] + y * newX;
+				dstImage = emptyData + y * newX;
+				
+				srcVimage.data = srcImage;
+				srcVimage.height =  originZ;
+				srcVimage.width = newX;
+				srcVimage.rowBytes = newY*newX*4;
+				
+				dstVimage.data = dstImage;
+				dstVimage.height =  newZ;
+				dstVimage.width = newX;
+				dstVimage.rowBytes = newY*newX*4;
+				
+				if( [curPix isRGB])
+					vImageScale_ARGB8888( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+				else
+					vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+			}
+		}
+		
+		for( z = 0 ; z < newZ; z ++)
+		{
+			[aFileList addObject: [originalFileList objectAtIndex: (z * originZ) / newZ]];
+			[aPixList addObject: [newPixList objectAtIndex: z]];
+			
+			[[aPixList lastObject] setArrayPix: aPixList :z];
+			[[aPixList lastObject] setID: z];
+		}
+		*aData = newData;
+		return YES;
 	}
 
 	return NO;
