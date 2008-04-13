@@ -2069,242 +2069,251 @@ typedef struct _xyzArray
 - (short) setPixSource:(NSMutableArray*)pix :(float*) volumeData
 {
 	short   error = 0;
-	long	i;
-    
-    [pix retain];
-    pixList = pix;
 	
-	projectionMode = 0;
-	
-	data = volumeData;
-	
-	aRenderer = [self renderer];
-//	cbStart = vtkCallbackCommand::New();
-//	cbStart->SetCallback( startRendering);
-//	cbStart->SetClientData( self);
-	
-//	[self renderWindow]->AddObserver(vtkCommand::StartEvent, cbStart);
-//	[self renderWindow]->AddObserver(vtkCommand::EndEvent, cbStart);
-//	[self renderWindow]->AddObserver(vtkCommand::AbortCheckEvent, cbStart);
-	
-//	aRenderer->AddObserver(vtkCommand::StartEvent, cbStart);
-//	aRenderer->AddObserver(vtkCommand::EndEvent, cbStart);
+	try
+	{
+		
+		long	i;
+		
+		[pix retain];
+		pixList = pix;
+		
+		projectionMode = 0;
+		
+		data = volumeData;
+		
+		aRenderer = [self renderer];
+	//	cbStart = vtkCallbackCommand::New();
+	//	cbStart->SetCallback( startRendering);
+	//	cbStart->SetClientData( self);
+		
+	//	[self renderWindow]->AddObserver(vtkCommand::StartEvent, cbStart);
+	//	[self renderWindow]->AddObserver(vtkCommand::EndEvent, cbStart);
+	//	[self renderWindow]->AddObserver(vtkCommand::AbortCheckEvent, cbStart);
+		
+	//	aRenderer->AddObserver(vtkCommand::StartEvent, cbStart);
+	//	aRenderer->AddObserver(vtkCommand::EndEvent, cbStart);
 
-	firstObject = [pixList objectAtIndex:0];
-	float sliceThickness = [firstObject sliceInterval]; //[[pixList objectAtIndex:1] sliceLocation] - [firstObject sliceLocation];
-	
-	if( sliceThickness == 0)
-	{
-		NSLog(@"slice interval = slice thickness!");
-		sliceThickness = [firstObject sliceThickness];
-	}
-	
-	NSLog(@"sliceThickness: %2.2f", sliceThickness);
-	
-	// Convert float to char
-	
-	if( [firstObject isRGB])
-	{
-		// Convert RGB to BW... We could add support for RGB later if needed by users....
+		firstObject = [pixList objectAtIndex:0];
+		float sliceThickness = [firstObject sliceInterval]; //[[pixList objectAtIndex:1] sliceLocation] - [firstObject sliceLocation];
 		
-		long	i, size, val;
-		unsigned char	*srcPtr = (unsigned char*) data;
-		float   *dstPtr;
-		
-		size = [firstObject pheight] * [pix count];
-		size *= [firstObject pwidth];
-		size *= sizeof( float);
-		
-		dataFRGB = (float*) malloc( size);
-		
-		size /= 4;
-		
-		dstPtr = dataFRGB;
-		for( i = 0 ; i < size; i++)
+		if( sliceThickness == 0)
 		{
-			srcPtr++;
-			val = *srcPtr++;
-			val += *srcPtr++;
-			val += *srcPtr++;
-			*dstPtr++ = val/3;
+			NSLog(@"slice interval = slice thickness!");
+			sliceThickness = [firstObject sliceThickness];
 		}
 		
-		data = dataFRGB;
-	}
-	
-	reader = vtkImageImport::New();
-	reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);
-	reader->SetDataExtentToWholeExtent();
-	reader->SetDataScalarTypeToFloat();
-	reader->SetImportVoidPointer(data);
-//	reader->SetDataOrigin(  [firstObject originX],
-//							[firstObject originY],
-//							[firstObject originZ]);
-	reader->SetDataSpacing( [firstObject pixelSpacingX], [firstObject pixelSpacingY], fabs( sliceThickness)); 
-
-	if( sliceThickness < 0 )
-	{
-		flip = vtkImageFlip::New();
-		flip->SetInput( reader->GetOutput());
-		flip->SetFlipAboutOrigin( TRUE);
-		flip->SetFilteredAxis(2);
-	}
-	else flip = 0L;
+		NSLog(@"sliceThickness: %2.2f", sliceThickness);
 		
-	// PLANE
-	
-	[firstObject orientation:cosines];
-	
-	matrice = vtkMatrix4x4::New();
-	matrice->Element[0][0] = cosines[0];		matrice->Element[1][0] = cosines[1];		matrice->Element[2][0] = cosines[2];		matrice->Element[3][0] = 0;
-	matrice->Element[0][1] = cosines[3];		matrice->Element[1][1] = cosines[4];		matrice->Element[2][1] = cosines[5];		matrice->Element[3][1] = 0;
-	matrice->Element[0][2] = cosines[6];		matrice->Element[1][2] = cosines[7];		matrice->Element[2][2] = cosines[8];		matrice->Element[3][2] = 0;
-	matrice->Element[0][3] = 0;					matrice->Element[1][3] = 0;					matrice->Element[2][3] = 0;					matrice->Element[3][3] = 1;
-	
-	outlineData = vtkOutlineFilter::New();
-	if( flip) outlineData->SetInput((vtkDataSet *) flip->GetOutput());
-    else outlineData->SetInput((vtkDataSet *) reader->GetOutput());
-	
-    mapOutline = vtkPolyDataMapper::New();
-    mapOutline->SetInput(outlineData->GetOutput());
-    
-    outlineRect = vtkActor::New();
-    outlineRect->SetMapper(mapOutline);
-    outlineRect->GetProperty()->SetColor(0,1,0);
-    outlineRect->GetProperty()->SetOpacity(0.5);
-	outlineRect->SetUserMatrix( matrice);
-	outlineRect->SetOrigin( [firstObject originX], [firstObject originY], [firstObject originZ]);
-	outlineRect->SetPosition(	[firstObject originX] * matrice->Element[0][0] + [firstObject originY] * matrice->Element[1][0] + [firstObject originZ]*matrice->Element[2][0],
-								[firstObject originX] * matrice->Element[0][1] + [firstObject originY] * matrice->Element[1][1] + [firstObject originZ]*matrice->Element[2][1],
-								[firstObject originX] * matrice->Element[0][2] + [firstObject originY] * matrice->Element[1][2] + [firstObject originZ]*matrice->Element[2][2]);
-	outlineRect->PickableOff();
-	
-	vtkAnnotatedCubeActor* cube = vtkAnnotatedCubeActor::New();
-	cube->SetXPlusFaceText ( [NSLocalizedString( @"L", @"L: Left") UTF8String] );		
-	cube->SetXMinusFaceText( [NSLocalizedString( @"R", @"R: Right") UTF8String] );
-	cube->SetYPlusFaceText ( [NSLocalizedString( @"P", @"P: Posterior") UTF8String] );
-	cube->SetYMinusFaceText( [NSLocalizedString( @"A", @"A: Anterior") UTF8String] );
-	cube->SetZPlusFaceText ( [NSLocalizedString( @"S", @"S: Superior") UTF8String] );
-	cube->SetZMinusFaceText( [NSLocalizedString( @"I", @"I: Inferior") UTF8String] );
-	cube->SetFaceTextScale( 0.67 );
-
-
-	vtkProperty* property = cube->GetXPlusFaceProperty();
-	property->SetColor(0, 0, 1);
-	property = cube->GetXMinusFaceProperty();
-	property->SetColor(0, 0, 1);
-	property = cube->GetYPlusFaceProperty();
-	property->SetColor(0, 1, 0);
-	property = cube->GetYMinusFaceProperty();
-	property->SetColor(0, 1, 0);
-	property = cube->GetZPlusFaceProperty();
-	property->SetColor(1, 0, 0);
-	property = cube->GetZMinusFaceProperty();
-	property->SetColor(1, 0, 0);
-
-	cube->SetTextEdgesVisibility( 1);
-	cube->SetCubeVisibility( 1);
-	cube->SetFaceTextVisibility( 1);
-
-	orientationWidget = vtkOrientationMarkerWidget::New();
-	orientationWidget->SetOrientationMarker( cube );
-	orientationWidget->SetInteractor( [self getInteractor] );
-	orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
-	orientationWidget->SetEnabled( 1 );
-	orientationWidget->InteractiveOff();
-	cube->Delete();
-
-
-
-//	croppingBox = vtkBoxWidget::New();
-//	croppingBox->GetHandleProperty()->SetColor(0, 1, 0);
-//	
-//	croppingBox->SetProp3D(skin);
-//	croppingBox->SetPlaceFactor( 1.0);
-//	croppingBox->SetHandleSize( 0.005);
-//	croppingBox->PlaceWidget();
-//    croppingBox->SetInteractor( [self renderWindowInteractor]);
-//	croppingBox->SetInsideOut( true);
-//	croppingBox->OutlineCursorWiresOff();
-//	cropcallback = vtkMyCallback::New();
-//	cropcallback->setBlendingVolume( 0L);
-//	croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
-	
-/*	planeWidget = vtkPlaneWidget::New();
-	
-	planeWidget->GetHandleProperty()->SetColor(0, 0, 1);
-	planeWidget->SetHandleSize( 0.005);
-	planeWidget->SetProp3D(volume);
-	planeWidget->SetResolution( 1);
-	planeWidget->SetPoint1(-50, -50, -50);
-	planeWidget->SetPoint2(50, 50, 50);
-	planeWidget->PlaceWidget();
-	planeWidget->SetRepresentationToWireframe();
-    planeWidget->SetInteractor( [self renderWindowInteractor]);
-	planeWidget->On();
-	vtkPlaneCallback *planecallback = vtkPlaneCallback::New();
-	planeWidget->AddObserver(vtkCommand::InteractionEvent, planecallback);
-*/	
-	textX = vtkTextActor::New();
-	textX->SetInput( "X");
-	textX->SetScaledText( false);
-	textX->GetPositionCoordinate()->SetCoordinateSystemToViewport();
-	textX->GetPositionCoordinate()->SetValue( 2., 2.);
-	aRenderer->AddActor2D(textX);
-	
-	for( i = 0; i < 4; i++)
-	{
-		oText[ i]= vtkTextActor::New();
-		oText[ i]->SetInput( "X");
-		oText[ i]->SetScaledText( false);
-		oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
-		oText[ i]->GetTextProperty()->SetFontSize( 16);
-		oText[ i]->GetTextProperty()->SetBold( true);
-		oText[ i]->GetTextProperty()->SetShadow( true);
-		oText[ i]->GetTextProperty()->SetShadowOffset(1, 1);
+		// Convert float to char
 		
-		aRenderer->AddActor2D( oText[ i]);
+		if( [firstObject isRGB])
+		{
+			// Convert RGB to BW... We could add support for RGB later if needed by users....
+			
+			long	i, size, val;
+			unsigned char	*srcPtr = (unsigned char*) data;
+			float   *dstPtr;
+			
+			size = [firstObject pheight] * [pix count];
+			size *= [firstObject pwidth];
+			size *= sizeof( float);
+			
+			dataFRGB = (float*) malloc( size);
+			
+			size /= 4;
+			
+			dstPtr = dataFRGB;
+			for( i = 0 ; i < size; i++)
+			{
+				srcPtr++;
+				val = *srcPtr++;
+				val += *srcPtr++;
+				val += *srcPtr++;
+				*dstPtr++ = val/3;
+			}
+			
+			data = dataFRGB;
+		}
+		
+		reader = vtkImageImport::New();
+		reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);
+		reader->SetDataExtentToWholeExtent();
+		reader->SetDataScalarTypeToFloat();
+		reader->SetImportVoidPointer(data);
+	//	reader->SetDataOrigin(  [firstObject originX],
+	//							[firstObject originY],
+	//							[firstObject originZ]);
+		reader->SetDataSpacing( [firstObject pixelSpacingX], [firstObject pixelSpacingY], fabs( sliceThickness)); 
+
+		if( sliceThickness < 0 )
+		{
+			flip = vtkImageFlip::New();
+			flip->SetInput( reader->GetOutput());
+			flip->SetFlipAboutOrigin( TRUE);
+			flip->SetFilteredAxis(2);
+		}
+		else flip = 0L;
+			
+		// PLANE
+		
+		[firstObject orientation:cosines];
+		
+		matrice = vtkMatrix4x4::New();
+		matrice->Element[0][0] = cosines[0];		matrice->Element[1][0] = cosines[1];		matrice->Element[2][0] = cosines[2];		matrice->Element[3][0] = 0;
+		matrice->Element[0][1] = cosines[3];		matrice->Element[1][1] = cosines[4];		matrice->Element[2][1] = cosines[5];		matrice->Element[3][1] = 0;
+		matrice->Element[0][2] = cosines[6];		matrice->Element[1][2] = cosines[7];		matrice->Element[2][2] = cosines[8];		matrice->Element[3][2] = 0;
+		matrice->Element[0][3] = 0;					matrice->Element[1][3] = 0;					matrice->Element[2][3] = 0;					matrice->Element[3][3] = 1;
+		
+		outlineData = vtkOutlineFilter::New();
+		if( flip) outlineData->SetInput((vtkDataSet *) flip->GetOutput());
+		else outlineData->SetInput((vtkDataSet *) reader->GetOutput());
+		
+		mapOutline = vtkPolyDataMapper::New();
+		mapOutline->SetInput(outlineData->GetOutput());
+		
+		outlineRect = vtkActor::New();
+		outlineRect->SetMapper(mapOutline);
+		outlineRect->GetProperty()->SetColor(0,1,0);
+		outlineRect->GetProperty()->SetOpacity(0.5);
+		outlineRect->SetUserMatrix( matrice);
+		outlineRect->SetOrigin( [firstObject originX], [firstObject originY], [firstObject originZ]);
+		outlineRect->SetPosition(	[firstObject originX] * matrice->Element[0][0] + [firstObject originY] * matrice->Element[1][0] + [firstObject originZ]*matrice->Element[2][0],
+									[firstObject originX] * matrice->Element[0][1] + [firstObject originY] * matrice->Element[1][1] + [firstObject originZ]*matrice->Element[2][1],
+									[firstObject originX] * matrice->Element[0][2] + [firstObject originY] * matrice->Element[1][2] + [firstObject originZ]*matrice->Element[2][2]);
+		outlineRect->PickableOff();
+		
+		vtkAnnotatedCubeActor* cube = vtkAnnotatedCubeActor::New();
+		cube->SetXPlusFaceText ( [NSLocalizedString( @"L", @"L: Left") UTF8String] );		
+		cube->SetXMinusFaceText( [NSLocalizedString( @"R", @"R: Right") UTF8String] );
+		cube->SetYPlusFaceText ( [NSLocalizedString( @"P", @"P: Posterior") UTF8String] );
+		cube->SetYMinusFaceText( [NSLocalizedString( @"A", @"A: Anterior") UTF8String] );
+		cube->SetZPlusFaceText ( [NSLocalizedString( @"S", @"S: Superior") UTF8String] );
+		cube->SetZMinusFaceText( [NSLocalizedString( @"I", @"I: Inferior") UTF8String] );
+		cube->SetFaceTextScale( 0.67 );
+
+
+		vtkProperty* property = cube->GetXPlusFaceProperty();
+		property->SetColor(0, 0, 1);
+		property = cube->GetXMinusFaceProperty();
+		property->SetColor(0, 0, 1);
+		property = cube->GetYPlusFaceProperty();
+		property->SetColor(0, 1, 0);
+		property = cube->GetYMinusFaceProperty();
+		property->SetColor(0, 1, 0);
+		property = cube->GetZPlusFaceProperty();
+		property->SetColor(1, 0, 0);
+		property = cube->GetZMinusFaceProperty();
+		property->SetColor(1, 0, 0);
+
+		cube->SetTextEdgesVisibility( 1);
+		cube->SetCubeVisibility( 1);
+		cube->SetFaceTextVisibility( 1);
+
+		orientationWidget = vtkOrientationMarkerWidget::New();
+		orientationWidget->SetOrientationMarker( cube );
+		orientationWidget->SetInteractor( [self getInteractor] );
+		orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
+		orientationWidget->SetEnabled( 1 );
+		orientationWidget->InteractiveOff();
+		cube->Delete();
+
+
+
+	//	croppingBox = vtkBoxWidget::New();
+	//	croppingBox->GetHandleProperty()->SetColor(0, 1, 0);
+	//	
+	//	croppingBox->SetProp3D(skin);
+	//	croppingBox->SetPlaceFactor( 1.0);
+	//	croppingBox->SetHandleSize( 0.005);
+	//	croppingBox->PlaceWidget();
+	//    croppingBox->SetInteractor( [self renderWindowInteractor]);
+	//	croppingBox->SetInsideOut( true);
+	//	croppingBox->OutlineCursorWiresOff();
+	//	cropcallback = vtkMyCallback::New();
+	//	cropcallback->setBlendingVolume( 0L);
+	//	croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
+		
+	/*	planeWidget = vtkPlaneWidget::New();
+		
+		planeWidget->GetHandleProperty()->SetColor(0, 0, 1);
+		planeWidget->SetHandleSize( 0.005);
+		planeWidget->SetProp3D(volume);
+		planeWidget->SetResolution( 1);
+		planeWidget->SetPoint1(-50, -50, -50);
+		planeWidget->SetPoint2(50, 50, 50);
+		planeWidget->PlaceWidget();
+		planeWidget->SetRepresentationToWireframe();
+		planeWidget->SetInteractor( [self renderWindowInteractor]);
+		planeWidget->On();
+		vtkPlaneCallback *planecallback = vtkPlaneCallback::New();
+		planeWidget->AddObserver(vtkCommand::InteractionEvent, planecallback);
+	*/	
+		textX = vtkTextActor::New();
+		textX->SetInput( "X");
+		textX->SetScaledText( false);
+		textX->GetPositionCoordinate()->SetCoordinateSystemToViewport();
+		textX->GetPositionCoordinate()->SetValue( 2., 2.);
+		aRenderer->AddActor2D(textX);
+		
+		for( i = 0; i < 4; i++)
+		{
+			oText[ i]= vtkTextActor::New();
+			oText[ i]->SetInput( "X");
+			oText[ i]->SetScaledText( false);
+			oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
+			oText[ i]->GetTextProperty()->SetFontSize( 16);
+			oText[ i]->GetTextProperty()->SetBold( true);
+			oText[ i]->GetTextProperty()->SetShadow( true);
+			oText[ i]->GetTextProperty()->SetShadowOffset(1, 1);
+			
+			aRenderer->AddActor2D( oText[ i]);
+		}
+		oText[ 0]->GetPositionCoordinate()->SetValue( 0.01, 0.5);
+		oText[ 1]->GetPositionCoordinate()->SetValue( 0.99, 0.5);
+		oText[ 1]->GetTextProperty()->SetJustificationToRight();
+		
+		oText[ 2]->GetPositionCoordinate()->SetValue( 0.5, 0.03);
+		oText[ 2]->GetTextProperty()->SetVerticalJustificationToTop();
+		oText[ 3]->GetPositionCoordinate()->SetValue( 0.5, 0.97);
+		aCamera = vtkCamera::New();
+		aCamera->SetViewUp (0, 1, 0);
+		aCamera->SetFocalPoint (0, 0, 0);
+		aCamera->SetPosition (0, 0, 1);
+		aCamera->SetRoll(180);
+
+	//    aCamera->ComputeViewPlaneNormal();    
+		
+		aCamera->Dolly(1.5);
+
+		
+		aRenderer->AddActor( outlineRect);
+
+		aRenderer->SetActiveCamera(aCamera);
+		
+		aCamera->SetFocalPoint (0, 0, 0);
+		aCamera->SetPosition (1, 0, 0);
+		aCamera->ComputeViewPlaneNormal();
+		aCamera->SetViewUp(0, 0, 1);
+		aCamera->OrthogonalizeViewUp();
+		aCamera->Dolly(1.5);
+		aRenderer->ResetCamera();
+
+		[self saView:self];
+
+		GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
+		[self getVTKRenderWindow]->MakeCurrent();
+		[[NSOpenGLContext currentContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
+
+		[self setNeedsDisplay:YES];
+		
 	}
-	oText[ 0]->GetPositionCoordinate()->SetValue( 0.01, 0.5);
-	oText[ 1]->GetPositionCoordinate()->SetValue( 0.99, 0.5);
-	oText[ 1]->GetTextProperty()->SetJustificationToRight();
-	
-	oText[ 2]->GetPositionCoordinate()->SetValue( 0.5, 0.03);
-	oText[ 2]->GetTextProperty()->SetVerticalJustificationToTop();
-	oText[ 3]->GetPositionCoordinate()->SetValue( 0.5, 0.97);
-    aCamera = vtkCamera::New();
-	aCamera->SetViewUp (0, 1, 0);
-	aCamera->SetFocalPoint (0, 0, 0);
-	aCamera->SetPosition (0, 0, 1);
-	aCamera->SetRoll(180);
+	catch (...)
+	{
+		NSLog( @"setPixSource C++ exception SRView.m");
+		return -1;
+	}
 
-//    aCamera->ComputeViewPlaneNormal();    
-    
-	aCamera->Dolly(1.5);
-
-	
-	aRenderer->AddActor( outlineRect);
-
-	aRenderer->SetActiveCamera(aCamera);
-	
-	aCamera->SetFocalPoint (0, 0, 0);
-	aCamera->SetPosition (1, 0, 0);
-	aCamera->ComputeViewPlaneNormal();
-	aCamera->SetViewUp(0, 0, 1);
-	aCamera->OrthogonalizeViewUp();
-	aCamera->Dolly(1.5);
-	aRenderer->ResetCamera();
-
-	[self saView:self];
-
-	GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
-	[self getVTKRenderWindow]->MakeCurrent();
-	[[NSOpenGLContext currentContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
-
-    [self setNeedsDisplay:YES];
-
-	//	vtkInteractorStyleFlight	*flight = vtkInteractorStyleFlight::New();
-	//	[self getInteractor]->SetInteractorStyle(flight);
     return error;
 }
 

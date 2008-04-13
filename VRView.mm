@@ -4838,370 +4838,381 @@ public:
 		vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 	}
 	
-	reader = vtkImageImport::New();
-	
-	if( isRGB)
+	try
 	{
-		reader->SetImportVoidPointer(data);
-	reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);	//AVOID VTK BUG
-	reader->SetDataExtentToWholeExtent();
-		reader->SetDataScalarTypeToUnsignedChar();
-		reader->SetNumberOfScalarComponents( 4);
 		
-	}
-	else 
-	{
-		reader->SetImportVoidPointer(data8);
-	reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);	//AVOID VTK BUG
-	reader->SetDataExtentToWholeExtent();
-	//	reader->SetDataScalarTypeToFloat();
-		reader->SetDataScalarTypeToUnsignedShort();
-		reader->SetNumberOfScalarComponents( 1);
-	//	reader->SetImportVoidPointer(data);
+		reader = vtkImageImport::New();
 		
-	}
-	
-	[firstObject orientation:cosines];
-	
-//	float invThick;
-	
-//	if( cosines[6] + cosines[7] + cosines[8] < 0) invThick = -1;
-//	else invThick = 1;
-	
-	factor = 1.0;
-//	if( [firstObject pixelSpacingX] < 0.5 || [firstObject pixelSpacingY] < 0.5 || fabs( sliceThickness) < 0.3) factor = 10;
-	
-	needToFlip = NO;
-	if( sliceThickness < 0 )
-	{
-		sliceThickness = fabs( sliceThickness);
-		NSLog(@"We should not be here....");
-		needToFlip = YES;
-		NSLog(@"Flip !!");
-	}
-	//
-//	if( needToFlip)
-//	{
-//		[self flipData: (char*) volumeData :[pixList count] :[firstObject pheight] * [firstObject pwidth]];
-//		
-//		for(  i = 0 ; i < [pixList count]; i++)
-//		{
-//			[[pixList objectAtIndex: i] setfImage: volumeData + ([pixList count]-1-i)*[firstObject pheight] * [firstObject pwidth]];
-//			[[pixList objectAtIndex: i] setSliceInterval: sliceThickness];
-//		}
-//		
-//		id tempObj;
-//		
-//		for( i = 0; i < [pixList count]/2 ; i++)
-//		{
-//			tempObj = [[pixList objectAtIndex: i] retain];
-//			
-//			[pixList replaceObjectAtIndex: i withObject:[pixList objectAtIndex: [pixList count]-i-1]];
-//			[pixList replaceObjectAtIndex: [pixList count]-i-1 withObject: tempObj];
-//			
-//			[tempObj release];
-//		}
-//		
-//		firstObject = [pixList objectAtIndex: 0];
-//	}
-//	
-//	if( [firstObject flipData])
-//	{
-//		NSLog(@"firstObject = [pixList lastObject]");
-//		firstObject = [pixList lastObject];
-//	}
-	
-	factor = 1.0 / [firstObject pixelSpacingX];
-	NSLog(@"Thickness: %2.2f Factor: %2.2f", sliceThickness, factor);
-//	factor = 1.0;
-	
-	if( [firstObject pixelSpacingX] == 0 || [firstObject pixelSpacingY] == 0) reader->SetDataSpacing( 1, 1, sliceThickness);
-	else reader->SetDataSpacing( factor*[firstObject pixelSpacingX], factor*[firstObject pixelSpacingY], factor * sliceThickness);
-	
+		if( isRGB)
+		{
+			reader->SetImportVoidPointer(data);
+		reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);	//AVOID VTK BUG
+		reader->SetDataExtentToWholeExtent();
+			reader->SetDataScalarTypeToUnsignedChar();
+			reader->SetNumberOfScalarComponents( 4);
+			
+		}
+		else 
+		{
+			reader->SetImportVoidPointer(data8);
+		reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);	//AVOID VTK BUG
+		reader->SetDataExtentToWholeExtent();
+		//	reader->SetDataScalarTypeToFloat();
+			reader->SetDataScalarTypeToUnsignedShort();
+			reader->SetNumberOfScalarComponents( 1);
+		//	reader->SetImportVoidPointer(data);
+			
+		}
 		
-//	reader->SetDataOrigin(  [firstObject originX],
-//							[firstObject originY],
-//							[firstObject originZ]);
+		[firstObject orientation:cosines];
+		
+	//	float invThick;
+		
+	//	if( cosines[6] + cosines[7] + cosines[8] < 0) invThick = -1;
+	//	else invThick = 1;
+		
+		factor = 1.0;
+	//	if( [firstObject pixelSpacingX] < 0.5 || [firstObject pixelSpacingY] < 0.5 || fabs( sliceThickness) < 0.3) factor = 10;
+		
+		needToFlip = NO;
+		if( sliceThickness < 0 )
+		{
+			sliceThickness = fabs( sliceThickness);
+			NSLog(@"We should not be here....");
+			needToFlip = YES;
+			NSLog(@"Flip !!");
+		}
+		//
+	//	if( needToFlip)
+	//	{
+	//		[self flipData: (char*) volumeData :[pixList count] :[firstObject pheight] * [firstObject pwidth]];
+	//		
+	//		for(  i = 0 ; i < [pixList count]; i++)
+	//		{
+	//			[[pixList objectAtIndex: i] setfImage: volumeData + ([pixList count]-1-i)*[firstObject pheight] * [firstObject pwidth]];
+	//			[[pixList objectAtIndex: i] setSliceInterval: sliceThickness];
+	//		}
+	//		
+	//		id tempObj;
+	//		
+	//		for( i = 0; i < [pixList count]/2 ; i++)
+	//		{
+	//			tempObj = [[pixList objectAtIndex: i] retain];
+	//			
+	//			[pixList replaceObjectAtIndex: i withObject:[pixList objectAtIndex: [pixList count]-i-1]];
+	//			[pixList replaceObjectAtIndex: [pixList count]-i-1 withObject: tempObj];
+	//			
+	//			[tempObj release];
+	//		}
+	//		
+	//		firstObject = [pixList objectAtIndex: 0];
+	//	}
+	//	
+	//	if( [firstObject flipData])
+	//	{
+	//		NSLog(@"firstObject = [pixList lastObject]");
+	//		firstObject = [pixList lastObject];
+	//	}
+		
+		factor = 1.0 / [firstObject pixelSpacingX];
+		NSLog(@"Thickness: %2.2f Factor: %2.2f", sliceThickness, factor);
+	//	factor = 1.0;
+		
+		if( [firstObject pixelSpacingX] == 0 || [firstObject pixelSpacingY] == 0) reader->SetDataSpacing( 1, 1, sliceThickness);
+		else reader->SetDataSpacing( factor*[firstObject pixelSpacingX], factor*[firstObject pixelSpacingY], factor * sliceThickness);
+		
+			
+	//	reader->SetDataOrigin(  [firstObject originX],
+	//							[firstObject originY],
+	//							[firstObject originZ]);
 
 
-//	vtkPlane *aplane = vtkPlane::New();
-//	aplane->SetNormal( normalv[0], normalv[1], normalv[2]);
-//	aplane->SetOrigin( [firstObject originX], [firstObject originY], [firstObject originZ]);
-	
-	
-//	vtkPlaneWidget  *aplaneWidget = vtkPlaneWidget::New();
-//	aplaneWidget->SetOrigin( [firstObject originX], [firstObject originY], [firstObject originZ]);
-//	aplaneWidget->SetNormal( normal[0], normal[1], normal[2] );
-//	aplaneWidget->SetResolution(10);
-//	aplaneWidget->PlaceWidget();
-//    aplaneWidget->SetInteractor( [self renderWindowInteractor]);
-	
-	opacityTransferFunction = vtkPiecewiseFunction::New();
-	opacityTransferFunction->AddPoint(0, 0);
-	opacityTransferFunction->AddPoint(255, 1);
-//	opacityTransferFunction->ClampingOff();
-	
-//	vtkPiecewiseFunction	*colorTransferFunction = vtkPiecewiseFunction::New();
-//	colorTransferFunction->AddPoint(0, 0);
-//	colorTransferFunction->AddPoint(255, 1);
-	
-	colorTransferFunction = vtkColorTransferFunction::New();
-//	colorTransferFunction->ClampingOff();
-	
-	red = vtkColorTransferFunction::New();
-	red->AddRGBPoint(   0, 0, 0, 0 );
-	red->AddRGBPoint( 255, 1, 0, 0 );
-	
-	green = vtkColorTransferFunction::New();
-	green->AddRGBPoint(   0, 0, 0, 0 );
-	green->AddRGBPoint( 255, 0, 1, 0 );
-	
-	blue = vtkColorTransferFunction::New();
-	blue->AddRGBPoint(   0, 0, 0, 0 );
-	blue->AddRGBPoint( 255, 0, 0, 1 );
-	
-	volumeProperty = vtkVolumeProperty::New();
-	if( isRGB)
-	{
-		volumeProperty->IndependentComponentsOn();
+	//	vtkPlane *aplane = vtkPlane::New();
+	//	aplane->SetNormal( normalv[0], normalv[1], normalv[2]);
+	//	aplane->SetOrigin( [firstObject originX], [firstObject originY], [firstObject originZ]);
 		
-		volumeProperty->SetColor( 1,red);
-		volumeProperty->SetColor( 2,green);
-		volumeProperty->SetColor( 3,blue);
 		
-		volumeProperty->SetScalarOpacity( 1, opacityTransferFunction);
-		volumeProperty->SetScalarOpacity( 2, opacityTransferFunction);
-		volumeProperty->SetScalarOpacity( 3, opacityTransferFunction);
+	//	vtkPlaneWidget  *aplaneWidget = vtkPlaneWidget::New();
+	//	aplaneWidget->SetOrigin( [firstObject originX], [firstObject originY], [firstObject originZ]);
+	//	aplaneWidget->SetNormal( normal[0], normal[1], normal[2] );
+	//	aplaneWidget->SetResolution(10);
+	//	aplaneWidget->PlaceWidget();
+	//    aplaneWidget->SetInteractor( [self renderWindowInteractor]);
 		
-		volumeProperty->SetComponentWeight( 0, 0);
+		opacityTransferFunction = vtkPiecewiseFunction::New();
+		opacityTransferFunction->AddPoint(0, 0);
+		opacityTransferFunction->AddPoint(255, 1);
+	//	opacityTransferFunction->ClampingOff();
+		
+	//	vtkPiecewiseFunction	*colorTransferFunction = vtkPiecewiseFunction::New();
+	//	colorTransferFunction->AddPoint(0, 0);
+	//	colorTransferFunction->AddPoint(255, 1);
+		
+		colorTransferFunction = vtkColorTransferFunction::New();
+	//	colorTransferFunction->ClampingOff();
+		
+		red = vtkColorTransferFunction::New();
+		red->AddRGBPoint(   0, 0, 0, 0 );
+		red->AddRGBPoint( 255, 1, 0, 0 );
+		
+		green = vtkColorTransferFunction::New();
+		green->AddRGBPoint(   0, 0, 0, 0 );
+		green->AddRGBPoint( 255, 0, 1, 0 );
+		
+		blue = vtkColorTransferFunction::New();
+		blue->AddRGBPoint(   0, 0, 0, 0 );
+		blue->AddRGBPoint( 255, 0, 0, 1 );
+		
+		volumeProperty = vtkVolumeProperty::New();
+		if( isRGB)
+		{
+			volumeProperty->IndependentComponentsOn();
+			
+			volumeProperty->SetColor( 1,red);
+			volumeProperty->SetColor( 2,green);
+			volumeProperty->SetColor( 3,blue);
+			
+			volumeProperty->SetScalarOpacity( 1, opacityTransferFunction);
+			volumeProperty->SetScalarOpacity( 2, opacityTransferFunction);
+			volumeProperty->SetScalarOpacity( 3, opacityTransferFunction);
+			
+			volumeProperty->SetComponentWeight( 0, 0);
 
-//		volumeProperty->SetColor( 0,red);
-//		volumeProperty->SetColor( 1,green);
-//		volumeProperty->SetColor( 2,blue);
-//		
-//		volumeProperty->SetScalarOpacity( 0, opacityTransferFunction);
-//		volumeProperty->SetScalarOpacity( 1, opacityTransferFunction);
-//		volumeProperty->SetScalarOpacity( 2, opacityTransferFunction);
+	//		volumeProperty->SetColor( 0,red);
+	//		volumeProperty->SetColor( 1,green);
+	//		volumeProperty->SetColor( 2,blue);
+	//		
+	//		volumeProperty->SetScalarOpacity( 0, opacityTransferFunction);
+	//		volumeProperty->SetScalarOpacity( 1, opacityTransferFunction);
+	//		volumeProperty->SetScalarOpacity( 2, opacityTransferFunction);
+			
+		}
+		else
+		{
+			volumeProperty->SetColor( colorTransferFunction);	//	if( isRGB == NO) 
+			volumeProperty->SetScalarOpacity( opacityTransferFunction);
+		}
 		
-	}
-	else
-	{
-		volumeProperty->SetColor( colorTransferFunction);	//	if( isRGB == NO) 
-		volumeProperty->SetScalarOpacity( opacityTransferFunction);
-	}
-	
-	
-	[self setCLUT:0L :0L :0L];
-	
-	[self setShadingValues:0.15 :0.9 :0.3 :15];
-
-//	volumeProperty->ShadeOn();
-
-	if( [[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) volumeProperty->SetInterpolationTypeToNearest();
-    else volumeProperty->SetInterpolationTypeToLinear();//SetInterpolationTypeToNearest();	//SetInterpolationTypeToLinear
 		
-	compositeFunction = vtkVolumeRayCastCompositeFunction::New();
-//	compositeFunction->SetCompositeMethodToClassifyFirst();
-//	compositeFunction = vtkVolumeRayCastMIPFunction::New();
-	
-	LOD = 2.0;
-	#if __ppc__
-	LOD += 0.5;
-	#endif
-	
-	volume = vtkVolume::New();
-    volume->SetProperty( volumeProperty);
-	
-//	[self setEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]];
-	
-	vtkMatrix4x4	*matrice = vtkMatrix4x4::New();
-	matrice->Element[0][0] = cosines[0];		matrice->Element[1][0] = cosines[1];		matrice->Element[2][0] = cosines[2];		matrice->Element[3][0] = 0;
-	matrice->Element[0][1] = cosines[3];		matrice->Element[1][1] = cosines[4];		matrice->Element[2][1] = cosines[5];		matrice->Element[3][1] = 0;
-	matrice->Element[0][2] = cosines[6];		matrice->Element[1][2] = cosines[7];		matrice->Element[2][2] = cosines[8];		matrice->Element[3][2] = 0;
-	matrice->Element[0][3] = 0;					matrice->Element[1][3] = 0;					matrice->Element[2][3] = 0;					matrice->Element[3][3] = 1;
+		[self setCLUT:0L :0L :0L];
+		
+		[self setShadingValues:0.15 :0.9 :0.3 :15];
 
-//	volume->SetOrigin( [firstObject originX], [firstObject originY], [firstObject originZ]);
-	volume->SetPosition(	factor*[firstObject originX] * matrice->Element[0][0] + factor*[firstObject originY] * matrice->Element[1][0] + factor*[firstObject originZ]*matrice->Element[2][0],
-							factor*[firstObject originX] * matrice->Element[0][1] + factor*[firstObject originY] * matrice->Element[1][1] + factor*[firstObject originZ]*matrice->Element[2][1],
-							factor*[firstObject originX] * matrice->Element[0][2] + factor*[firstObject originY] * matrice->Element[1][2] + factor*[firstObject originZ]*matrice->Element[2][2]);
-//	volume->SetPosition(	[firstObject originX],// * matrice->Element[0][0] + [firstObject originY] * matrice->Element[1][0] + [firstObject originZ]*matrice->Element[2][0],
-//							[firstObject originY],// * matrice->Element[0][1] + [firstObject originY] * matrice->Element[1][1] + [firstObject originZ]*matrice->Element[2][1],
-//							[firstObject originZ]);// * matrice->Element[0][2] + [firstObject originY] * matrice->Element[1][2] + [firstObject originZ]*matrice->Element[2][2]);
-	volume->SetUserMatrix( matrice);
-	matrice->Delete();
-	
-	volume->PickableOff();
-	
-	outlineData = vtkOutlineFilter::New();
-	outlineData->SetInput((vtkDataSet *) reader->GetOutput());
-	
-    mapOutline = vtkPolyDataMapper::New();
-    mapOutline->SetInput(outlineData->GetOutput());
-    
-    outlineRect = vtkActor::New();
-    outlineRect->SetMapper(mapOutline);
-    outlineRect->GetProperty()->SetColor(0,1,0);
-    outlineRect->GetProperty()->SetOpacity(0.5);
-	outlineRect->SetUserMatrix( matrice);
-	outlineRect->SetPosition(	factor*[firstObject originX] * matrice->Element[0][0] + factor*[firstObject originY] * matrice->Element[1][0] + factor*[firstObject originZ]*matrice->Element[2][0],
+	//	volumeProperty->ShadeOn();
+
+		if( [[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) volumeProperty->SetInterpolationTypeToNearest();
+		else volumeProperty->SetInterpolationTypeToLinear();//SetInterpolationTypeToNearest();	//SetInterpolationTypeToLinear
+			
+		compositeFunction = vtkVolumeRayCastCompositeFunction::New();
+	//	compositeFunction->SetCompositeMethodToClassifyFirst();
+	//	compositeFunction = vtkVolumeRayCastMIPFunction::New();
+		
+		LOD = 2.0;
+		#if __ppc__
+		LOD += 0.5;
+		#endif
+		
+		volume = vtkVolume::New();
+		volume->SetProperty( volumeProperty);
+		
+	//	[self setEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]];
+		
+		vtkMatrix4x4	*matrice = vtkMatrix4x4::New();
+		matrice->Element[0][0] = cosines[0];		matrice->Element[1][0] = cosines[1];		matrice->Element[2][0] = cosines[2];		matrice->Element[3][0] = 0;
+		matrice->Element[0][1] = cosines[3];		matrice->Element[1][1] = cosines[4];		matrice->Element[2][1] = cosines[5];		matrice->Element[3][1] = 0;
+		matrice->Element[0][2] = cosines[6];		matrice->Element[1][2] = cosines[7];		matrice->Element[2][2] = cosines[8];		matrice->Element[3][2] = 0;
+		matrice->Element[0][3] = 0;					matrice->Element[1][3] = 0;					matrice->Element[2][3] = 0;					matrice->Element[3][3] = 1;
+
+	//	volume->SetOrigin( [firstObject originX], [firstObject originY], [firstObject originZ]);
+		volume->SetPosition(	factor*[firstObject originX] * matrice->Element[0][0] + factor*[firstObject originY] * matrice->Element[1][0] + factor*[firstObject originZ]*matrice->Element[2][0],
 								factor*[firstObject originX] * matrice->Element[0][1] + factor*[firstObject originY] * matrice->Element[1][1] + factor*[firstObject originZ]*matrice->Element[2][1],
 								factor*[firstObject originX] * matrice->Element[0][2] + factor*[firstObject originY] * matrice->Element[1][2] + factor*[firstObject originZ]*matrice->Element[2][2]);
-	outlineRect->PickableOff();
+	//	volume->SetPosition(	[firstObject originX],// * matrice->Element[0][0] + [firstObject originY] * matrice->Element[1][0] + [firstObject originZ]*matrice->Element[2][0],
+	//							[firstObject originY],// * matrice->Element[0][1] + [firstObject originY] * matrice->Element[1][1] + [firstObject originZ]*matrice->Element[2][1],
+	//							[firstObject originZ]);// * matrice->Element[0][2] + [firstObject originY] * matrice->Element[1][2] + [firstObject originZ]*matrice->Element[2][2]);
+		volume->SetUserMatrix( matrice);
+		matrice->Delete();
+		
+		volume->PickableOff();
+		
+		outlineData = vtkOutlineFilter::New();
+		outlineData->SetInput((vtkDataSet *) reader->GetOutput());
+		
+		mapOutline = vtkPolyDataMapper::New();
+		mapOutline->SetInput(outlineData->GetOutput());
+		
+		outlineRect = vtkActor::New();
+		outlineRect->SetMapper(mapOutline);
+		outlineRect->GetProperty()->SetColor(0,1,0);
+		outlineRect->GetProperty()->SetOpacity(0.5);
+		outlineRect->SetUserMatrix( matrice);
+		outlineRect->SetPosition(	factor*[firstObject originX] * matrice->Element[0][0] + factor*[firstObject originY] * matrice->Element[1][0] + factor*[firstObject originZ]*matrice->Element[2][0],
+									factor*[firstObject originX] * matrice->Element[0][1] + factor*[firstObject originY] * matrice->Element[1][1] + factor*[firstObject originZ]*matrice->Element[2][1],
+									factor*[firstObject originX] * matrice->Element[0][2] + factor*[firstObject originY] * matrice->Element[1][2] + factor*[firstObject originZ]*matrice->Element[2][2]);
+		outlineRect->PickableOff();
 
-//	[self initAnnotatedCubeActor];
-	
-	croppingBox = vtkBoxWidget::New();
-	
-	croppingBox->GetHandleProperty()->SetColor(0, 1, 0);
-	croppingBox->SetProp3D( volume);
-	croppingBox->SetPlaceFactor( 1.0);
-	croppingBox->SetHandleSize( 0.005);
-	croppingBox->PlaceWidget();
-	croppingBox->SetInteractor( [self getInteractor]);
-	croppingBox->SetRotationEnabled( false);
-	croppingBox->SetInsideOut( true);
-	croppingBox->OutlineCursorWiresOff();
-	
-	cropcallback = vtkMyCallbackVR::New();
-	cropcallback->setBlendingVolume( 0L);
-	croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
+	//	[self initAnnotatedCubeActor];
 		
-	textWLWW = vtkTextActor::New();
-	if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
-	else sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
-	textWLWW->SetInput( WLWWString);
-	textWLWW->SetScaledText( false);												//vtkviewPort
-	textWLWW->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
-	int *wsize = [self renderWindow]->GetSize();
-	textWLWW->GetPositionCoordinate()->SetValue( 2., wsize[ 1]-15);
-	textWLWW->GetTextProperty()->SetShadow(true);
-	textWLWW->GetTextProperty()->SetBold(true);
-	textWLWW->GetTextProperty()->SetShadowOffset(1, 1);
-	
-	aRenderer->AddActor2D(textWLWW);
-	
-	textX = vtkTextActor::New();
-	if (isViewportResizable)
-		textX->SetInput( "X ");
-	else
-		textX->SetInput( " ");
-	textX->SetScaledText( false);
-	textX->GetPositionCoordinate()->SetCoordinateSystemToViewport();
-	textX->GetPositionCoordinate()->SetValue( 2., 2.);
-	textX->GetTextProperty()->SetShadow(true);
-	textX->GetTextProperty()->SetShadowOffset(1, 1);
-	
-	aRenderer->AddActor2D(textX);
-	
-	for( i = 0; i < 4; i++)
-	{
-		oText[ i]= vtkTextActor::New();
-		oText[ i]->SetInput( "X ");
-		oText[ i]->SetScaledText( false);
-		oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
-		oText[ i]->GetTextProperty()->SetFontSize( 16);
-		oText[ i]->GetTextProperty()->SetBold( true);
-		oText[ i]->GetTextProperty()->SetShadow(true);
-		oText[ i]->GetTextProperty()->SetShadowOffset(1, 1);
+		croppingBox = vtkBoxWidget::New();
 		
-		aRenderer->AddActor2D( oText[ i]);
+		croppingBox->GetHandleProperty()->SetColor(0, 1, 0);
+		croppingBox->SetProp3D( volume);
+		croppingBox->SetPlaceFactor( 1.0);
+		croppingBox->SetHandleSize( 0.005);
+		croppingBox->PlaceWidget();
+		croppingBox->SetInteractor( [self getInteractor]);
+		croppingBox->SetRotationEnabled( false);
+		croppingBox->SetInsideOut( true);
+		croppingBox->OutlineCursorWiresOff();
+		
+		cropcallback = vtkMyCallbackVR::New();
+		cropcallback->setBlendingVolume( 0L);
+		croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
+			
+		textWLWW = vtkTextActor::New();
+		if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
+		else sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
+		textWLWW->SetInput( WLWWString);
+		textWLWW->SetScaledText( false);												//vtkviewPort
+		textWLWW->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
+		int *wsize = [self renderWindow]->GetSize();
+		textWLWW->GetPositionCoordinate()->SetValue( 2., wsize[ 1]-15);
+		textWLWW->GetTextProperty()->SetShadow(true);
+		textWLWW->GetTextProperty()->SetBold(true);
+		textWLWW->GetTextProperty()->SetShadowOffset(1, 1);
+		
+		aRenderer->AddActor2D(textWLWW);
+		
+		textX = vtkTextActor::New();
+		if (isViewportResizable)
+			textX->SetInput( "X ");
+		else
+			textX->SetInput( " ");
+		textX->SetScaledText( false);
+		textX->GetPositionCoordinate()->SetCoordinateSystemToViewport();
+		textX->GetPositionCoordinate()->SetValue( 2., 2.);
+		textX->GetTextProperty()->SetShadow(true);
+		textX->GetTextProperty()->SetShadowOffset(1, 1);
+		
+		aRenderer->AddActor2D(textX);
+		
+		for( i = 0; i < 4; i++)
+		{
+			oText[ i]= vtkTextActor::New();
+			oText[ i]->SetInput( "X ");
+			oText[ i]->SetScaledText( false);
+			oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
+			oText[ i]->GetTextProperty()->SetFontSize( 16);
+			oText[ i]->GetTextProperty()->SetBold( true);
+			oText[ i]->GetTextProperty()->SetShadow(true);
+			oText[ i]->GetTextProperty()->SetShadowOffset(1, 1);
+			
+			aRenderer->AddActor2D( oText[ i]);
+		}
+		oText[ 0]->GetPositionCoordinate()->SetValue( 0.01, 0.5);
+		oText[ 1]->GetPositionCoordinate()->SetValue( 0.99, 0.5);
+		oText[ 1]->GetTextProperty()->SetJustificationToRight();
+		
+		oText[ 2]->GetPositionCoordinate()->SetValue( 0.5, 0.03);
+		oText[ 2]->GetTextProperty()->SetVerticalJustificationToTop();
+		oText[ 3]->GetPositionCoordinate()->SetValue( 0.5, 0.97);
+			
+		aCamera = vtkCamera::New();
+		aCamera->SetViewUp (0, 1, 0);
+		aCamera->SetFocalPoint (0, 0, 0);
+		aCamera->SetPosition (0, 0, 1);
+		aCamera->SetRoll(180);
+		aCamera->SetParallelProjection( true);
+		
+	//	aCamera->ComputeViewPlaneNormal();
+	//	aCamera->OrthogonalizeViewUp();
+		
+		aCamera->Dolly(1.5);
+
+	//	_cocoaRenderWindow->SetLineSmoothing( true);
+	//	_cocoaRenderWindow->SetPolygonSmoothing(true);
+		aRenderer->AddVolume( volume);
+	//	aRenderer->AddActor(outlineRect);
+
+		aRenderer->SetActiveCamera(aCamera);
+		aRenderer->ResetCamera();
+		
+	//	[self renderWindow]->StereoRenderOn();
+	//	[self renderWindow]->SetStereoTypeToRedBlue();
+		
+		
+		// 3D Cut ROI
+		vtkPoints *pts = vtkPoints::New();
+		vtkCellArray *rect = vtkCellArray::New();
+		
+		ROI3DData = vtkPolyData::New();
+		ROI3DData-> SetPoints( pts);
+		pts->Delete();
+		ROI3DData-> SetLines( rect);
+		rect->Delete();
+		
+		ROI3D = vtkPolyDataMapper2D::New();
+		ROI3D->SetInput( ROI3DData);
+		
+		ROI3DActor = vtkActor2D::New();
+		ROI3DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
+		ROI3DActor->SetMapper( ROI3D);
+		ROI3DActor->GetProperty()->SetPointSize( 1);	//vtkProperty2D
+		ROI3DActor->GetProperty()->SetLineWidth( 2);
+		ROI3DActor->GetProperty()->SetColor(0.3,1,0);
+		
+		aRenderer->AddActor2D( ROI3DActor);
+		
+		//	2D Line
+		pts = vtkPoints::New();
+		rect = vtkCellArray::New();
+		
+		Line2DData = vtkPolyData::New();
+		Line2DData-> SetPoints( pts);
+		pts->Delete();
+		Line2DData-> SetLines( rect);
+		rect->Delete();
+		
+		Line2D = vtkPolyDataMapper2D::New();
+		Line2D->SetInput( Line2DData);
+		
+		Line2DActor = vtkActor2D::New();
+		Line2DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
+		Line2DActor->SetMapper( Line2D);
+		Line2DActor->GetProperty()->SetPointSize( 6);	//vtkProperty2D
+		Line2DActor->GetProperty()->SetLineWidth( 3);
+		Line2DActor->GetProperty()->SetColor(1,1,0);
+
+		Line2DText = vtkTextActor::New();
+		Line2DText->SetInput( " ");
+		Line2DText->SetScaledText( false);
+		Line2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
+		Line2DText->GetPositionCoordinate()->SetValue( 2., 2.);
+		Line2DText->GetTextProperty()->SetColor( 1.0, 1.0, 0.0);
+		Line2DText->GetTextProperty()->SetBold( true);
+		Line2DText->GetTextProperty()->SetFontSize( 14);
+		Line2DText->GetTextProperty()->SetShadow(true);
+		Line2DText->GetTextProperty()->SetShadowOffset(1, 1);
+		
+		aRenderer->AddActor2D( Line2DActor);
+			
+		[self saView:self];
+		
+		GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
+		[self getVTKRenderWindow]->MakeCurrent();
+		[[NSOpenGLContext currentContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
+		
+		[self setNeedsDisplay:YES];
+		
+		[self initAnnotatedCubeActor];
 	}
-	oText[ 0]->GetPositionCoordinate()->SetValue( 0.01, 0.5);
-	oText[ 1]->GetPositionCoordinate()->SetValue( 0.99, 0.5);
-	oText[ 1]->GetTextProperty()->SetJustificationToRight();
 	
-	oText[ 2]->GetPositionCoordinate()->SetValue( 0.5, 0.03);
-	oText[ 2]->GetTextProperty()->SetVerticalJustificationToTop();
-	oText[ 3]->GetPositionCoordinate()->SetValue( 0.5, 0.97);
-		
-    aCamera = vtkCamera::New();
-	aCamera->SetViewUp (0, 1, 0);
-	aCamera->SetFocalPoint (0, 0, 0);
-	aCamera->SetPosition (0, 0, 1);
-	aCamera->SetRoll(180);
-	aCamera->SetParallelProjection( true);
-	
-//	aCamera->ComputeViewPlaneNormal();
-//	aCamera->OrthogonalizeViewUp();
-    
-	aCamera->Dolly(1.5);
+	catch (...)
+	{
+		NSLog( @"setPixSource VRView C++ exception");
+		return -1;
+	}
 
-//	_cocoaRenderWindow->SetLineSmoothing( true);
-//	_cocoaRenderWindow->SetPolygonSmoothing(true);
-    aRenderer->AddVolume( volume);
-//	aRenderer->AddActor(outlineRect);
-
-	aRenderer->SetActiveCamera(aCamera);
-	aRenderer->ResetCamera();
-	
-//	[self renderWindow]->StereoRenderOn();
-//	[self renderWindow]->SetStereoTypeToRedBlue();
-	
-	
-	// 3D Cut ROI
-	vtkPoints *pts = vtkPoints::New();
-	vtkCellArray *rect = vtkCellArray::New();
-	
-	ROI3DData = vtkPolyData::New();
-    ROI3DData-> SetPoints( pts);
-	pts->Delete();
-    ROI3DData-> SetLines( rect);
-	rect->Delete();
-	
-	ROI3D = vtkPolyDataMapper2D::New();
-	ROI3D->SetInput( ROI3DData);
-	
-	ROI3DActor = vtkActor2D::New();
-	ROI3DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
-    ROI3DActor->SetMapper( ROI3D);
-	ROI3DActor->GetProperty()->SetPointSize( 1);	//vtkProperty2D
-	ROI3DActor->GetProperty()->SetLineWidth( 2);
-	ROI3DActor->GetProperty()->SetColor(0.3,1,0);
-	
-	aRenderer->AddActor2D( ROI3DActor);
-	
-	//	2D Line
-	pts = vtkPoints::New();
-	rect = vtkCellArray::New();
-	
-	Line2DData = vtkPolyData::New();
-    Line2DData-> SetPoints( pts);
-	pts->Delete();
-    Line2DData-> SetLines( rect);
-	rect->Delete();
-	
-	Line2D = vtkPolyDataMapper2D::New();
-	Line2D->SetInput( Line2DData);
-	
-	Line2DActor = vtkActor2D::New();
-	Line2DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
-    Line2DActor->SetMapper( Line2D);
-	Line2DActor->GetProperty()->SetPointSize( 6);	//vtkProperty2D
-	Line2DActor->GetProperty()->SetLineWidth( 3);
-	Line2DActor->GetProperty()->SetColor(1,1,0);
-
-	Line2DText = vtkTextActor::New();
-	Line2DText->SetInput( " ");
-	Line2DText->SetScaledText( false);
-	Line2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
-	Line2DText->GetPositionCoordinate()->SetValue( 2., 2.);
-	Line2DText->GetTextProperty()->SetColor( 1.0, 1.0, 0.0);
-	Line2DText->GetTextProperty()->SetBold( true);
-	Line2DText->GetTextProperty()->SetFontSize( 14);
-	Line2DText->GetTextProperty()->SetShadow(true);
-	Line2DText->GetTextProperty()->SetShadowOffset(1, 1);
-	
-	aRenderer->AddActor2D( Line2DActor);
-		
-	[self saView:self];
-	
-	GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
-	[self getVTKRenderWindow]->MakeCurrent();
-	[[NSOpenGLContext currentContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
-	
-	[self setNeedsDisplay:YES];
-	
-	[self initAnnotatedCubeActor];
 	
     return error;
 }
