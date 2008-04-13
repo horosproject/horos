@@ -2378,7 +2378,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 //	NSLog( @"%d %d %d %d", minX, maxX, minY, maxY);
 //	NSLog( @"%d %d %d %d", 0, textureWidth, 0, textureHeight);
 	
-	if( minX > CUTOFF || maxX < textureWidth-CUTOFF || minY > CUTOFF || maxY < textureHeight-CUTOFF || textureWidth%4 != 0 || textureHeight%4 != 0)
+	if( minX > CUTOFF || maxX < textureWidth-CUTOFF || minY > CUTOFF || maxY < textureHeight-CUTOFF)
+//	 || textureWidth%4 != 0 || textureHeight%4 != 0)
 	{
 		minX -= 2;
 		minY -= 2;
@@ -2387,8 +2388,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		if( minX < 0) minX = 0;
 		if( minY < 0) minY = 0;
-		if( maxX >= textureWidth) maxX = textureWidth-1;
-		if( maxY >= textureHeight) maxY = textureHeight-1;
+		if( maxX-minX > textureWidth) maxX = textureWidth+1+minX;
+		if( maxY-minY > textureHeight) maxY = textureHeight+1+minY;
 		
 		int offsetTextureY = minY;
 		int offsetTextureX = minX;
@@ -2396,11 +2397,11 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		int oldTextureWidth = textureWidth;
 		int oldTextureHeight = textureHeight;
 		
-		textureWidth = maxX - minX;
-		textureHeight = maxY - minY;
+		textureWidth = maxX - minX+1;
+		textureHeight = maxY - minY+1;
 		
-		if( textureWidth%4) {textureWidth /=4;	textureWidth *=4;		textureWidth +=4;}
-		if( textureHeight%4) {textureHeight /=4;	textureHeight *=4;		textureHeight += 4;}
+//		if( textureWidth%4) {textureWidth /=4;		textureWidth *=4;		textureWidth += 4;}
+//		if( textureHeight%4) {textureHeight /=4;	textureHeight *=4;		textureHeight += 4;}
 		
 		if( textureWidth > oldTextureWidth)
 		{
@@ -2428,7 +2429,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			return NO;
 		}
 		
-		for( long y = 0 ; y < textureHeight ; y++)
+		for( int y = 0 ; y < textureHeight ; y++)
 		{
 			if( y + offsetTextureY < oldTextureHeight)
 				memcpy( newTextureBuffer + (y * textureWidth), textureBuffer + offsetTextureX+ (y+ offsetTextureY)*oldTextureWidth, textureWidth);
@@ -2442,8 +2443,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		textureUpLeftCornerX += offsetTextureX;
 		textureUpLeftCornerY += offsetTextureY;
-		textureDownRightCornerX = textureUpLeftCornerX + textureWidth;
-		textureDownRightCornerY = textureUpLeftCornerY + textureHeight;
+		textureDownRightCornerX = textureUpLeftCornerX + textureWidth-1;
+		textureDownRightCornerY = textureUpLeftCornerY + textureHeight-1;
 	}
 	
 	return NO;	// means the ROI is NOT empty;
@@ -2534,8 +2535,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 				textureWidth=((textureDownRightCornerX-textureUpLeftCornerX))+1;
 				textureHeight=((textureDownRightCornerY-textureUpLeftCornerY))+1;	
 			  	
-				if( textureWidth%4) {textureWidth /=4;		textureWidth *=4;		textureWidth +=4;}
-				if( textureHeight%4) {textureHeight /=4;	textureHeight *=4;		textureHeight += 4;}
+//				if( textureWidth%4) {textureWidth /=4;		textureWidth *=4;		textureWidth +=4;}
+//				if( textureHeight%4) {textureHeight /=4;	textureHeight *=4;		textureHeight += 4;}
 				
 				textureDownRightCornerX = textureWidth+textureUpLeftCornerX-1;
 				textureDownRightCornerY = textureHeight+textureUpLeftCornerY-1;
