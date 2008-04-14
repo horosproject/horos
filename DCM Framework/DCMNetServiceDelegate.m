@@ -143,6 +143,8 @@ static NSMutableArray *cachedServersArray = 0L;
 
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
 {
+	[aNetService retain];	// <- Yes, this is a memory leak, but we will avoid a not comprehensible bug....
+	
 	if( [_dicomServices containsObject: aNetService])
 	{
 		NSLog( @"didRemove retainCout: %d", [aNetService retainCount]);

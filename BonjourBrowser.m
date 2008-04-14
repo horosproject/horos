@@ -1066,8 +1066,6 @@ static char *GetPrivateIP()
 {
 	if( bugFixedForDNSResolve)
 	{
-		NSLog(@"before sender count: %d", [sender retainCount]);
-		
 	   if ([[sender addresses] count] > 0)
 	   {
 			NSData * address;
@@ -1116,7 +1114,6 @@ static char *GetPrivateIP()
 				}
 			}
 		}
-		NSLog(@"after sender count: %d", [sender retainCount]);
 	}
 }
 

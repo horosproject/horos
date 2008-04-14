@@ -62,7 +62,7 @@ static NSString  *pasteBoardTypeCover = @"KeyImages";
 
 - (void)mouseUp:(NSEvent *)event{
 	[super mouseUp:event];
-	[arrayController select:self];
+//	[arrayController select:self];
 }
 
 /*****************************************************************************

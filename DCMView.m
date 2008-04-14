@@ -73,10 +73,6 @@ Version 2.3
 //#define RECTANGLE false
 //GL_TEXTURE_RECTANGLE_EXT - GL_TEXTURE_2D
 
-
-
-
-
 extern		NSThread					*mainThread;
 extern		BOOL						USETOOLBARPANEL;
 extern		ToolbarPanelController		*toolbarPanel[10];
@@ -85,18 +81,15 @@ extern		AppController				*appController;
 static		float						deg2rad = 3.14159265358979/180.0; 
 extern		long						numberOf2DViewer;
 			BOOL						display2DMPRLines = YES;
-
-extern NSMutableDictionary				*plugins;
-
+extern		NSMutableDictionary			*plugins;
 static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable = 0L;
-
 static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, COPYSETTINGSINSERIES, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
 static		int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
 static		BOOL						gClickCountSet = NO;
 static		float						margin = 2;
-static		 NSDictionary				*_hotKeyDictionary = 0L, *_hotKeyModifiersDictionary = 0L;
+static		NSDictionary				*_hotKeyDictionary = 0L, *_hotKeyModifiersDictionary = 0L;
 
-static			NSRecursiveLock			*drawLock = 0L;
+static		NSRecursiveLock				*drawLock = 0L;
 
 NSString *pasteBoardOsiriX = @"OsiriX pasteboard";
 NSString *pasteBoardOsiriXPlugin = @"OsiriXPluginDataType";

@@ -151,14 +151,6 @@ void errmsg(const char* msg, ...)
 	[super dealloc];
 }
 
-- (void)finalize {
-	if (scp != NULL) {
-		 scp->cleanChildren(OFTrue);  // clean up any child processes 		 
-		 delete scp;
-		 scp = 0L;
-	}
-	[super finalize];
-}
 
 //- (void)cleanup:(NSTimer *)timer{
 //	if (scp != NULL) 

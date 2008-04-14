@@ -29,7 +29,6 @@ enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtr
 }
 
 - (NSMutableArray*) pixList;
-- (void)windowWillClose:(NSNotification *)notification;
 - (void) addToUndoQueue:(NSString*) what;
 - (int)blendingType;
 

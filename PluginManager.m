@@ -282,7 +282,8 @@ static NSMenu					*fusionPluginsMenu = 0L;
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadNext:) name:@"PluginManagerControllerDownloadAndInstallDidFinish" object:nil];
 		
-		[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:self withObject:self];
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"checkForUpdatesPlugins"])
+			[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:self withObject:self];
 	}
 	return self;
 }

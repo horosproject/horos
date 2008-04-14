@@ -2730,12 +2730,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) UpdateConvolutionMenu: (NSNotification*) note
 {
-	if( lastMenuNotification == note)
-	{
-		[convPopup setMenu: [[convolutionPresetsMenu copy] autorelease]];
-		[convPopup setTitle: curConvMenu];
-	}
-	else
+	if( lastMenuNotification != note)
 	{
 		//*** Build the menu
 		NSMenu      *mainMenu;
@@ -2762,20 +2757,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 		[convolutionPresetsMenu addItem: [NSMenuItem separatorItem]];
 		[convolutionPresetsMenu addItemWithTitle:NSLocalizedString(@"Add a Filter", nil) action:@selector (AddConv:) keyEquivalent:@""];
-
-		[convPopup setTitle: curConvMenu];
 	}
+
+	[convPopup setMenu: [[convolutionPresetsMenu copy] autorelease]];
+	[convPopup setTitle: curConvMenu];
 }
 
 -(void) UpdateWLWWMenu: (NSNotification*) note
 {
-	if( lastMenuNotification == note)
-	{
-		[wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
-		[imageView setMenu: [[contextualMenu copy] autorelease]];
-		[wlwwPopup setTitle: curWLWWMenu];
-	}
-	else
+	if( lastMenuNotification != note)
 	{
 		//*** Build the menu
 		short       i;
@@ -2804,14 +2794,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Add Current WL/WW", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
 		[wlwwPresetsMenu addItemWithTitle: NSLocalizedString(@"Set WL/WW Manually", nil) action:@selector (SetWLWW:) keyEquivalent:@""];
 		
-		[wlwwPopup setTitle:curWLWWMenu];
-		
 		[contextualMenu release];
 		contextualMenu = 0L;
 		[imageView setMenu: 0L];	// Will force recomputing, when neaded
 		
 		lastMenuNotification = note;
 	}
+	
+	[wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
+	[imageView setMenu: [[contextualMenu copy] autorelease]];
+	[wlwwPopup setTitle: curWLWWMenu];
 }
 
 - (void) AddCurrentWLWW:(id) sender
@@ -2861,12 +2853,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) UpdateOpacityMenu: (NSNotification*) note
 {
-	if( lastMenuNotification == note)
-	{
-		[OpacityPopup setMenu: [[opacityPresetsMenu copy] autorelease]];
-		[OpacityPopup setTitle: curOpacityMenu];
-	}
-	else
+	if( lastMenuNotification != note)
 	{
 		//*** Build the menu
 		short       i;
@@ -2889,9 +2876,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 		[opacityPresetsMenu addItem: [NSMenuItem separatorItem]];
 		[opacityPresetsMenu addItemWithTitle:NSLocalizedString(@"Add an Opacity Table", nil) action:@selector (AddOpacity:) keyEquivalent:@""];
-
-		[OpacityPopup setTitle: curOpacityMenu];
 	}
+	
+	[OpacityPopup setMenu: [[opacityPresetsMenu copy] autorelease]];
+	[OpacityPopup setTitle: curOpacityMenu];
 }
 
 - (DCMView*) imageView
@@ -4821,12 +4809,7 @@ static ViewerController *draggedController = 0L;
 
 -(void) UpdateCLUTMenu: (NSNotification*) note
 {
-	if( lastMenuNotification == note)
-	{
-		[clutPopup setMenu: [[clutPresetsMenu copy] autorelease]];
-		[clutPopup setTitle: curCLUTMenu];
-	}
-	else
+	if( lastMenuNotification != note)
 	{
 		//*** Build the menu
 		short       i;
@@ -4854,6 +4837,9 @@ static ViewerController *draggedController = 0L;
 
 		[clutPopup setTitle: curCLUTMenu];
 	}
+	
+	[clutPopup setMenu: [[clutPresetsMenu copy] autorelease]];
+	[clutPopup setTitle: curCLUTMenu];
 }
 
 // ============================================================
