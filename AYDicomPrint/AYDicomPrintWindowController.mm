@@ -329,7 +329,7 @@
 	int rows = [[imageDisplayFormat substringWithRange: NSMakeRange([imageDisplayFormat length] - 1, 1)] intValue];
 	int columns = [[imageDisplayFormat substringWithRange: NSMakeRange([imageDisplayFormat length] - 3, 1)] intValue];
 	int ipp = rows * columns;
-
+	
 	// create temporary directory
 	if (!NSTemporaryDirectory())
 	{
@@ -337,14 +337,14 @@
 		[pool release];
 		return;
 	}
-
+	
 	NSString *destPath = [NSString stringWithFormat: @"%@/dicomPrint", NSTemporaryDirectory()];
 	NSFileManager *fileManager = [NSFileManager defaultManager];
-
+	
 	// remove destination directory
 	if ([fileManager fileExistsAtPath: destPath])
 		[fileManager removeFileAtPath: destPath handler: nil];
-
+	
 	// create destination directory
 	if ([fileManager fileExistsAtPath: destPath] || ![fileManager createDirectoryAtPath: destPath attributes: nil])
 	{

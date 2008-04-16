@@ -14,12 +14,6 @@
 
 #import "AYNSImageToDicom.h"
 
-// masu 2006-10-02
-// it seems that memory allocated in a method can not be released in an other
-// try to make it global as a workaround
-//struct rawData rawImage;
-
-
 @interface AYNSImageToDicom (private)
 - (NSString *) _createDicomImageWithViewer: (ViewerController *) viewer toDestinationPath: (NSString *) destPath asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations;
 - (struct rawData) _convertRGBToGrayscale: (NSImage *) image;
@@ -227,6 +221,11 @@
 	
 	// masu 2006-10-04
 	
+	if( imagePath == 0L)
+	{
+		NSLog( @"WARNING imagePath == 0L");
+		imagePath = @"";
+	}
 	return imagePath;
 }
 
@@ -457,8 +456,7 @@
 - (NSString*) _writeDICOMHeaderAndData: (NSDictionary *) patientDict destinationPath: (NSString *) destPath imageData: (NSImage *) image colorPrint: (BOOL) colorPrint
 {
 	NSString *path = nil;
-//	path = [self generateUniqueFileName: destPath];
-	path = @"/Users/ibook/aycanDicom.dcm";
+	path = [self generateUniqueFileName: destPath];
 	FILE *outFile = nil;
 	short group = 0, element = 0, dummyShort = 0, samplePerPixel = 1;
 	//char	singleDummy;
