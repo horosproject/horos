@@ -23,6 +23,8 @@
 	 
 	if( c >= 0xF700 && c <= 0xF8FF) // Functions keys
 		[super keyDown: event];
+	else if( c == 9) // Tab Key
+		[super keyDown: event];
 	else
 		[[[self window] windowController] keyDown: event];
 }

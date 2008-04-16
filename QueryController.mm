@@ -1106,6 +1106,9 @@ static char *GetPrivateIP()
 	
 	if( [sender selectedTag] == 5)
 	{
+		[fromDate setEnabled: YES];
+		[toDate setEnabled: YES];
+		
 		NSDate	*later = [[fromDate dateValue] laterDate: [toDate dateValue]];
 		NSDate	*earlier = [[fromDate dateValue] earlierDate: [toDate dateValue]];
 		
@@ -1114,7 +1117,10 @@ static char *GetPrivateIP()
 		dateQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyDate"] retain];
 	}
 	else
-	{		
+	{
+		[fromDate setEnabled: NO];
+		[toDate setEnabled: NO];
+		
 		DCMCalendarDate *date;
 		
 		int searchType = searchAfter;
@@ -1369,6 +1375,8 @@ static char *GetPrivateIP()
 		[self refreshSources];
 				
 		[[self window] setDelegate:self];
+		
+		[self setDateQuery: dateFilterMatrix];
 		
 		currentQueryController = self;
 	}

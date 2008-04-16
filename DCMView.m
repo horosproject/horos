@@ -3299,7 +3299,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
-	float				reverseScrollWheel;					// DDP (050913): allow reversed scroll wheel preference.
+	float reverseScrollWheel;
 	
 	if( !drawing) return;
 	if( [[self window] isVisible] == NO) return;
