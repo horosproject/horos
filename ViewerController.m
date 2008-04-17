@@ -827,6 +827,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	BOOL				square = NO;
 	BOOL				succeed = YES;
 	
+	NSString			*previousCLUT = [curCLUTMenu retain];
+	NSString			*previousOpacity = [curOpacityMenu retain];
+	
 	// Get Values
 	if( directionm == 0)		// X - RESLICE
 	{
@@ -1190,7 +1193,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[imageView setIndex: [[xPix objectAtIndex: 0] count]/2];
 		[imageView sendSyncMessage:0];
 		[self adjustSlider];
+		
+		[self ApplyCLUTString: previousCLUT];
+		[self ApplyOpacityString: previousOpacity];
 	}
+	
+	[previousCLUT release];
+	[previousOpacity release];
 	
 	// Close the waiting window
 	[self endWaitWindow: waitWindow];

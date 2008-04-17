@@ -5161,19 +5161,27 @@ static NSArray*	statesArray = nil;
 			}
 		}
 		
-		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] != 3 ) {
-			
-			if( [[tableColumn identifier] isEqualToString:@"reportURL"] ) {
-				if( [item valueForKey:@"reportURL"] ) {
-					if( isCurrentDatabaseBonjour || [[NSFileManager defaultManager] fileExistsAtPath: [item valueForKey:@"reportURL"]] == YES)
-					{
-						NSImage	*reportIcon = [NSImage imageNamed:@"Report.icns"];
-						//NSImage	*reportIcon = [self reportIcon];
-						[reportIcon setSize: NSMakeSize(16, 16)];
-						
-						[(ImageAndTextCell*) cell setImage: reportIcon];
-					}
-					else [item setValue: 0L forKey:@"reportURL"];
+		if( [[tableColumn identifier] isEqualToString:@"reportURL"])
+		{
+			if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] != 3)
+			{
+				if( isCurrentDatabaseBonjour || [[NSFileManager defaultManager] fileExistsAtPath: [item valueForKey:@"reportURL"]] == YES)
+				{
+					NSImage	*reportIcon = [NSImage imageNamed:@"Report.icns"];
+					//NSImage	*reportIcon = [self reportIcon];
+					[reportIcon setSize: NSMakeSize(16, 16)];
+					
+					[(ImageAndTextCell*) cell setImage: reportIcon];
+				}
+				else [item setValue: 0L forKey:@"reportURL"];
+			}
+			else
+			{
+				if( [[item valueForKey:@"reportSeries"] count])
+				{
+					NSImage	*reportIcon = [NSImage imageNamed:@"Report.icns"];
+					[reportIcon setSize: NSMakeSize(16, 16)];
+					[(ImageAndTextCell*) cell setImage: reportIcon];
 				}
 			}
 		}
@@ -12921,17 +12929,23 @@ static volatile int numberOfThreadsForJPEG = 0;
 #pragma mark -
 #pragma mark Report functions
 
-- (IBAction)srReports: (id)sender{
+- (IBAction)srReports: (id)sende
+{
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
-	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];			
+	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
+
 	NSManagedObject *studySelected;
-	if (item) {	
+	
+	if (item)
+	{
 		if ([[[item entity] name] isEqual:@"Study"])
 			studySelected = item;
 		else
 			studySelected = [item valueForKey:@"study"];
+		
 		if (structuredReportController)
 			[structuredReportController release];
+		
 		structuredReportController = [[StructuredReportController alloc] initWithStudy:studySelected];
 	}
 }
@@ -13075,23 +13089,27 @@ static volatile int numberOfThreadsForJPEG = 0;
 			//	BONJOUR
 			// *********************************************
 			
-			@try {
-				
-			if( isCurrentDatabaseBonjour ) {
+			@try
+			{
+			if( isCurrentDatabaseBonjour)
+			{
 				NSString	*localFile = nil;
 				
 				if( [item valueForKey:@"reportURL"])
 					localFile = [bonjourBrowser getFile:[item valueForKey:@"reportURL"] index:[bonjourServicesList selectedRow]-1];
 				
-				if( localFile != nil && [[NSFileManager defaultManager] fileExistsAtPath:localFile] == YES ) {
+				if( localFile != nil && [[NSFileManager defaultManager] fileExistsAtPath:localFile] == YES)
+				{
 					if (reportsMode < 3)
 						[[NSWorkspace sharedWorkspace] openFile: localFile];
-					else {
+					else
+					{
 						//structured report code here
 						//Osirix will open DICOM Structured Reports
 					}
 				}
-				else {
+				else
+				{
 					Reports	*report = [[Reports alloc] init];
 					
 					[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/TEMP/", documentsDirectory()] type:reportsMode];
@@ -13122,7 +13140,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 				{
 					if (reportsMode < 3)
 						[[NSWorkspace sharedWorkspace] openFile: [studySelected valueForKey:@"reportURL"]];
-					else {
+					else
+					{
 						//structured report code here
 						//Osirix will open DICOM Structured Reports
 						//Release Old Controller
