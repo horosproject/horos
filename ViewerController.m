@@ -688,13 +688,13 @@ static int hotKeyToolCrossTable[] =
 	if( wlwwPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	else [wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
 	
-	if( clutPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curWLWWMenu userInfo: 0L];
+	if( clutPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 	else [clutPopup setMenu: [[clutPresetsMenu copy] autorelease]];
 	
-	if( convolutionPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curWLWWMenu userInfo: 0L];
+	if( convolutionPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
 	else [convPopup setMenu: [[convolutionPresetsMenu copy] autorelease]];
 	
-	if( opacityPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curWLWWMenu userInfo: 0L];
+	if( opacityPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 	else [OpacityPopup setMenu: [[opacityPresetsMenu copy] autorelease]];
 
 	[clutPopup setTitle:curCLUTMenu];
@@ -5488,6 +5488,8 @@ static ViewerController *draggedController = 0L;
 	
 	[self selectFirstTilingView];
 	
+	[self setCurWLWWMenu: [DCMView findWLWWPreset: [imageView curWL] :[imageView curWW] :[imageView curDCM]]];
+	
 	nonVolumicDataWarningDisplayed = NO;
 }
 
@@ -6662,7 +6664,7 @@ static ViewerController *draggedController = 0L;
 
 - (void) setCurWLWWMenu:(NSString*) s
 {
-	if( s != curWLWWMenu)
+	if( s != curWLWWMenu && [s isEqualToString: curWLWWMenu] == NO)
 	{
 		[curWLWWMenu release];
 		curWLWWMenu = [s retain];
@@ -15554,6 +15556,10 @@ int i,j,l;
 	curMovieIndex = 0;
 	maxMovieIndex = 1;
 	blendingController = 0L;
+	
+	[curCLUTMenu release];
+	[curConvMenu release];
+	[curWLWWMenu release];
 	
 	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	curConvMenu = [NSLocalizedString(@"No Filter", nil) retain];

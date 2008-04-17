@@ -4447,6 +4447,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 - (void) changeWLWW: (NSNotification*) note {
 	DCMPix	*otherPix = [note object];
 	
+	if( [self is2DViewer])
+		[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
+	
 	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO) return;
 	
 	if( [dcmPixList containsObject: otherPix] ) {
