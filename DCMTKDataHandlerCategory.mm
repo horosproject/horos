@@ -372,7 +372,9 @@
 				}
 			}
 			else
+			{
 				predicate = nil;
+			}
 		}
 		else if (strcmp(sType, "IMAGE") == 0)
 		{
