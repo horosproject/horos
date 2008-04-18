@@ -387,13 +387,19 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	
 	NSString *installDirectoryPath = [PluginManager userActivePluginsDirectoryPath]; // default = user active directory
 	
+	BOOL alreadyFound = NO;
+	
 	for (NSString *dir in directories) // search if the plugin was already installed
 	{
 		if([[NSFileManager defaultManager] fileExistsAtPath:[dir stringByAppendingPathComponent:[pluginPath lastPathComponent]]])
 		{
-			installDirectoryPath = dir; // in that case, install the (updated) plugin in the same directory it was
+			if(!alreadyFound)
+			{
+				installDirectoryPath = dir; // in that case, install the (updated) plugin in the same directory it was
+				alreadyFound = YES;
+			}
 			[[NSFileManager defaultManager] removeFileAtPath:[dir stringByAppendingPathComponent:[pluginPath lastPathComponent]] handler:nil];
-			break;
+			//break;
 		}
 	}
 			
