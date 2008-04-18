@@ -21,8 +21,7 @@
 #import "AppController.h"
 #import "AllKeyImagesArrayController.h"
 #import "WindowLayoutManager.h"
-
-extern AppController *appController;
+#import "DicomImage.h"
 
 
 #undef verify
@@ -56,30 +55,51 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 		}
 		NSArray *reports = [set allObjects];
 		enumerator = [reports objectEnumerator];
-		id report;
+		
+		DicomImage *report;
 		NSMutableArray *reportsArray = [NSMutableArray array];
-		while (report = [enumerator nextObject]) {
+		while (report = [enumerator nextObject])
+		{
 			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjects: 
-				[NSArray arrayWithObjects:study, [report valueForKey:@"date"], [report valueForKey:@"completePath"], nil] 
+				[NSArray arrayWithObjects:study, [BrowserController DateTimeFormat: [report valueForKey:@"date"]], [report valueForKey:@"completePath"], nil] 
 			forKeys:[NSArray arrayWithObjects: @"study", @"report", @"path", nil]];
 			[reportsArray addObject:dict];
 		}
+		
 		[self setReports: reportsArray];
-		if ([reportsArray count] > 0) {
+		
+		if ([reportsArray count] > 0)
+		{
 			_reportIndex = [[NSIndexSet indexSetWithIndex:0] retain];
 			id sr = [self createReportForStudy:[[_reports objectAtIndex:0] objectForKey:@"study"] path:[[_reports objectAtIndex:0] objectForKey:@"path"]];
 			[self setReport:sr];
-		}		
+		}
 		else
 			[self setReport:[self createReportForStudy:study]];
 		
 		[[self window] makeKeyAndOrderFront:self];
+		
 		[allKeyObjectsArrayController updateMatrix];
 	}
 	return self;
 }
 
-- (void)setStudy:(id)study{
+- (void)windowDidLoad
+{
+	if ([_report fileExists])
+		[self setTabIndex:0];
+	else
+		[self setTabIndex:1];
+	
+	[self setupToolbar];
+	[webView setFrameLoadDelegate:self];  
+	_waitingToPrint = NO;
+
+	[allKeyObjectsArrayController updateMatrix];
+}
+
+- (void)setStudy:(id)study
+{
 		[self setReport:[self createReportForStudy:study]];
 		[_study release];
 		_study = [study retain];	
@@ -87,18 +107,8 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 		_reports = [NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithObjects:study, [study valueForKey:@"name"], nil] forKeys:[NSArray arrayWithObjects: @"study", @"report", nil]];
 }
 
-- (void)windowDidLoad{
-	[self setupToolbar];
-	[webView setFrameLoadDelegate:self];  
-	_waitingToPrint = NO;
-	if ([_report fileExists])
-		[self setTabIndex:0];
-	else
-		[self setTabIndex:1];
-	[allKeyObjectsArrayController updateMatrix];
-}
-
-- (void)dealloc{
+- (void)dealloc
+{
 	[_reportIndex release];
 	[_report release];
 	[_reports release];
@@ -236,7 +246,8 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	_exportStyle = style;
 }
 
-- (IBAction)save:(id)sender{
+- (IBAction)save:(id)sender
+{
 	[_report save];
 	[[self window] close];
 }
@@ -256,6 +267,7 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	else {
 		NSAlert *alert = [NSAlert alertWithError:nil];
 		[alert setMessageText:NSLocalizedString(@"No key Images to display.", nil)];
+		[alert setInformativeText:@""];
 		[alert addButtonWithTitle:@"OK"];
 		[alert runModal];
 	}
@@ -266,6 +278,7 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	
 	NSAlert *alert = [NSAlert alertWithError:nil];
 	[alert setMessageText:NSLocalizedString(@"Replace Images with current Key Images?", nil)];
+	[alert setInformativeText:@""];
 	[alert addButtonWithTitle:@"OK"];
 	[alert addButtonWithTitle:@"Cancel"];
 	if ([alert runModal] == NSAlertFirstButtonReturn ) {
@@ -340,7 +353,8 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	_reportIndex = [indexSet retain];
 }
 
-- (NSArray *) keyImagesInStudy{
+- (NSArray *) keyImagesInStudy
+{
 	return _keyImagesInStudy;
 }
 

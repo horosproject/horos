@@ -378,7 +378,7 @@
 	return date;
 }
 
-- (void)setContentData:(NSDate *)date{
+- (void)setContentDate:(NSDate *)date{
 }
 
 - (NSString *)title{
@@ -575,7 +575,8 @@
 	}
 }
 
-- (void)save{
+- (void)save
+{
 	if (_reportHasChanged)
 		[self createReport];
 	DcmFileFormat fileformat;	
@@ -583,8 +584,12 @@
 	if (status.good()) 
 		status = fileformat.saveFile([[self srPath] UTF8String], EXS_LittleEndianExplicit);
 		
-	if (status.good()) 
+	if (status.good())
+	{
 		NSLog(@"Report saved: %@", [self srPath]);
+		
+		[[BrowserController currentBrowser] checkIncoming: self];
+	}
 	else
 		NSLog(@"Report not saved: %@", [self srPath]);
 }

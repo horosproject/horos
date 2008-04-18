@@ -65,6 +65,7 @@
 #import "BonjourBrowser.h"
 #import "WindowLayoutManager.h"
 #import "StructuredReportController.h"
+//#import "StructuredReport.h"
 #import "QTExportHTMLSummary.h"
 #import "BrowserControllerDCMTKCategory.h"
 #import "BrowserMatrix.h"
@@ -5002,6 +5003,12 @@ static NSArray*	statesArray = nil;
 				}
 				else return 0L;
 			}
+			else if( [[item valueForKey:@"reportSeries"] count])
+			{
+				NSArray *images = [[[[item valueForKey:@"reportSeries"] lastObject] valueForKey:@"images"] allObjects];
+				
+				return [[images lastObject] valueForKey:@"date"];
+			}
 			else return 0L;
 		}
 		else return 0L;
@@ -5030,7 +5037,7 @@ static NSArray*	statesArray = nil;
 				name = [item valueForKey:@"name"];
 			
 			//return [NSString stringWithFormat:@"%@ (%d series)", name, [[item valueForKey:@"series"] count]];
-			return [NSString stringWithFormat: NSLocalizedString( @"%@ (%d series)", @"patient name, number of series: helmut la moumoute (4 series)"), name, [[item valueForKey:@"imageSeries"] count]];
+			return [NSString stringWithFormat: NSLocalizedString( @"%@ (%d series)", @"patient name, number of series: for example, helmut la moumoute (4 series)"), name, [[item valueForKey:@"imageSeries"] count]];
 		}
 	}
 	
@@ -5163,27 +5170,14 @@ static NSArray*	statesArray = nil;
 		
 		if( [[tableColumn identifier] isEqualToString:@"reportURL"])
 		{
-			if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] != 3)
+			if( isCurrentDatabaseBonjour || [[NSFileManager defaultManager] fileExistsAtPath: [item valueForKey:@"reportURL"]] == YES || [[item valueForKey:@"reportSeries"] count] > 0)
 			{
-				if( isCurrentDatabaseBonjour || [[NSFileManager defaultManager] fileExistsAtPath: [item valueForKey:@"reportURL"]] == YES)
-				{
-					NSImage	*reportIcon = [NSImage imageNamed:@"Report.icns"];
-					//NSImage	*reportIcon = [self reportIcon];
-					[reportIcon setSize: NSMakeSize(16, 16)];
-					
-					[(ImageAndTextCell*) cell setImage: reportIcon];
-				}
-				else [item setValue: 0L forKey:@"reportURL"];
+				NSImage	*reportIcon = [NSImage imageNamed:@"Report.icns"];
+				[reportIcon setSize: NSMakeSize(16, 16)];
+				
+				[(ImageAndTextCell*) cell setImage: reportIcon];
 			}
-			else
-			{
-				if( [[item valueForKey:@"reportSeries"] count])
-				{
-					NSImage	*reportIcon = [NSImage imageNamed:@"Report.icns"];
-					[reportIcon setSize: NSMakeSize(16, 16)];
-					[(ImageAndTextCell*) cell setImage: reportIcon];
-				}
-			}
+			else [item setValue: 0L forKey:@"reportURL"];
 		}
 		
 	}
@@ -13027,6 +13021,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 					[studySelected setValue: 0L forKey:@"reportURL"];
 				}
 				[databaseOutline reloadData];
+			}
+			else if( [[item valueForKey:@"reportSeries"] count])
+			{
+				NSManagedObjectContext	*context = self.managedObjectContext;
+				
+				[context lock];
+				
+				NSArray *array = [item valueForKey:@"reportSeries"];
+				
+				for( NSManagedObject *o in array)
+					[context deleteObject: o];
+				
+				[context unlock];
+				
+				[self saveDatabase: currentDatabasePath];
 			}
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixDeletedReport" object:nil userInfo:nil];
 		}

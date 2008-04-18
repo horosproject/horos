@@ -92,7 +92,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			
 			NSString *moveDestination = [[moveRequest moveDestination] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 			
-			NSLog( @"C-MOVE : MoveDestination : %@", moveDestination);
+//			NSLog( @"C-MOVE : MoveDestination : %@", moveDestination);
 			
 			NSArray					*serversArray		= [DCMNetServiceDelegate DICOMServersList];			
 			NSArray					*servers;
@@ -130,7 +130,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 					hostname = [server objectForKey:@"Address"];
 					port = [server objectForKey:@"Port"];
 //				}
-				NSLog(@"Server: %@", [server description]);
+//				NSLog(@"Server: %@", [server description]);
 				NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
 				NSError *error = 0L;
 				NSString *searchType = [object attributeValueWithName:@"Query/RetrieveLevel"];
@@ -212,7 +212,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			}
 			else
 			{
-				NSLog( @"C-MOVE MoveDestination NOT FOUND... on the local DICOM nodes list (see Preferences)");
+//				NSLog( @"C-MOVE MoveDestination NOT FOUND... on the local DICOM nodes list (see Preferences)");
 			
 				DCMCMoveResponse *moveResponse = [DCMCMoveResponse cMoveResponseWithAffectedSOPClassUID:[moveRequest affectedSOPClassUID]  
 						priority:[moveRequest priority]
@@ -273,7 +273,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			//NSLog(@"fetch: %@", [fetchArray description]);
 			for (fetchedObject in fetchArray){
 				DCMObject *object = nil;
-				NSLog(@"Fetch: %@", [fetchedObject description]);
+//				NSLog(@"Fetch: %@", [fetchedObject description]);
 				if ([searchType isEqualToString:@"STUDY"])
 					object = [self studyObjectForFetchedObject:fetchedObject];
 				else if ([searchType isEqualToString:@"SERIES"])
@@ -348,13 +348,14 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 	
 }
 
-- (NSPredicate *)predicateForObject:(DCMObject *)object{
+- (NSPredicate *)predicateForObject:(DCMObject *)object
+{
 	//NSPredicate *compoundPredicate = [NSPredicate predicateWithFormat:@"hasDICOM == %d", YES];
 	NSPredicate *compoundPredicate = [NSPredicate predicateWithValue:YES];
 	NSEnumerator *enumerator = [[object attributes] keyEnumerator];
 	NSString *searchType = [object attributeValueWithName:@"Query/RetrieveLevel"];
 	//should be STUDY, SERIES OR IMAGE
-	NSLog(@"predicateForObject: %@", [object description]);
+//	NSLog(@"predicateForObject: %@", [object description]);
 	NSString *key;
 	while (key = [enumerator nextObject]){
 		id value;
@@ -593,11 +594,13 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 				compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
 
 		}
-		else if ([searchType isEqualToString:@"IMAGE"]) {
+		else if ([searchType isEqualToString:@"IMAGE"])
+		{
+		
 		}
 	}
 	
-	NSLog(@"predicateForObject: %@", [compoundPredicate description]);
+//	NSLog(@"predicateForObject: %@", [compoundPredicate description]);
 	return compoundPredicate;
 }
 

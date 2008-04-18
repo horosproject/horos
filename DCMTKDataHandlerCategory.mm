@@ -47,22 +47,24 @@
 	
 	if (strcmp(sType, "STUDY") == 0) 
 		compoundPredicate = [NSPredicate predicateWithFormat:@"hasDICOM == %d", YES];
-	else
-		compoundPredicate = [NSPredicate predicateWithValue:YES];
+	else if (strcmp(sType, "SERIES") == 0)
+		compoundPredicate = [NSPredicate predicateWithFormat:@"study.hasDICOM == %d", YES];
+	else if (strcmp(sType, "IMAGE") == 0)
+		compoundPredicate = [NSPredicate predicateWithFormat:@"series.study.hasDICOM == %d", YES];
 		
 	//NSLog(@"charset %@", specificCharacterSet);
-		
 	
 	int elemCount = (int)(dataset->card());
-    for (int elemIndex=0; elemIndex<elemCount; elemIndex++) {
+    for (int elemIndex=0; elemIndex<elemCount; elemIndex++)
+	{
 		NSPredicate *predicate = nil;
 		DcmElement* dcelem = dataset->getElement(elemIndex);
 		DcmTagKey key = dcelem->getTag().getXTag();
-		//printf("elemindex: %d key: %s\n",elemIndex, key.toString().c_str());
-		if (strcmp(sType, "STUDY") == 0) {
-			compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:
-						[NSArray arrayWithObjects: compoundPredicate, nil]];
-			if (key == DCM_PatientsName){
+		
+		if (strcmp(sType, "STUDY") == 0)
+		{
+			if (key == DCM_PatientsName)
+			{
 				char *pn;
 				if (dcelem->getString(pn).good() && pn != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet]];
@@ -227,7 +229,8 @@
 			else
 				predicate = nil;
 		}
-		else if (strcmp(sType, "SERIES") == 0) {
+		else if (strcmp(sType, "SERIES") == 0)
+		{
 			if (key == DCM_StudyInstanceUID) {
 				char *string;
 				if (dcelem->getString(string).good() && string != NULL)
@@ -371,8 +374,8 @@
 			else
 				predicate = nil;
 		}
-		else if (strcmp(sType, "IMAGE") == 0) {
-			
+		else if (strcmp(sType, "IMAGE") == 0)
+		{
 			if (key == DCM_StudyInstanceUID) {
 				char *string;
 				if (dcelem->getString(string).good() && string != NULL)

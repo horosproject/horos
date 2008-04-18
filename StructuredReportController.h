@@ -41,7 +41,7 @@
 	IBOutlet NSToolbarItem *printItem;
 	NSToolbar *toolbar;
 	NSView *_contentView;
-		StructuredReport *_report;
+	StructuredReport *_report;
 	NSArray *_reports;
 	int _exportStyle;
 	NSString *_exportExtension;
