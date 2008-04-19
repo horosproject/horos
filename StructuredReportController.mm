@@ -41,8 +41,19 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 
 @implementation StructuredReportController
 
-- (id)initWithStudy:(id)study{
-	if (self = [super initWithWindowNibName:@"StructuredReport"]) {	
+- (id)initWithStudy:(id)study
+{
+	if (self = [super initWithWindowNibName:@"StructuredReport"])
+	{
+		@try
+		{
+			[[self window] makeKeyAndOrderFront:self];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"StructuredReportController - initWithStudy - Coca Bindings problems...");
+		}
+
 		_study = [study retain];
 		_keyImagesInStudy = [[(NSSet *)[study keyImages] allObjects] retain];
 		NSEnumerator *enumerator = [[study valueForKey:@"reportSeries"] objectEnumerator];
@@ -77,9 +88,8 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 		else
 			[self setReport:[self createReportForStudy:study]];
 		
-		[[self window] makeKeyAndOrderFront:self];
-		
 		[allKeyObjectsArrayController updateMatrix];
+		
 	}
 	return self;
 }
@@ -94,8 +104,6 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	[self setupToolbar];
 	[webView setFrameLoadDelegate:self];  
 	_waitingToPrint = NO;
-
-	[allKeyObjectsArrayController updateMatrix];
 }
 
 - (void)setStudy:(id)study
@@ -114,6 +122,7 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	[_reports release];
 	[_study release];
 	[_keyImagesInStudy release];
+	
 	[super dealloc];
 }
 
