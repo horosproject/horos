@@ -53,7 +53,7 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 		{
 			NSLog( @"StructuredReportController - initWithStudy - Coca Bindings problems...");
 		}
-
+		
 		_study = [study retain];
 		_keyImagesInStudy = [[(NSSet *)[study keyImages] allObjects] retain];
 		NSEnumerator *enumerator = [[study valueForKey:@"reportSeries"] objectEnumerator];

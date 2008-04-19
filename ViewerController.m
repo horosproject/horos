@@ -12230,6 +12230,8 @@ int i,j,l;
 					
 					if( [[vC modality] isEqualToString: @"CR"]) propagate = NO;
 					
+					if( [[vC modality] isEqualToString: @"NM"]) propagate = NO;
+					
 					if( [[vC modality] isEqualToString:@"PT"] == YES && [[self modality] isEqualToString:@"PT"] == YES)
 					{
 						if( [[imageView curDCM] SUVConverted] != [[[vC imageView] curDCM] SUVConverted]) propagate = NO;
