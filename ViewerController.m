@@ -16405,7 +16405,7 @@ int i,j,l;
 			{
 				selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
 				
-				if( [selectedRoi type] == tOPolygon || [selectedRoi type] == tCPolygon || [selectedRoi type] == tPencil)
+				if( [selectedRoi type] == tOPolygon || [selectedRoi type] == tCPolygon || [selectedRoi type] == tPencil || [selectedRoi type] == tMesure)
 				{
 				
 				}
@@ -16459,7 +16459,7 @@ long i;
 				
 				[selectedRoi setROIMode: ROI_selected];
 				
-				if( [selectedRoi type] == tOPolygon || [selectedRoi type] == tCPolygon || [selectedRoi type] == tPencil)
+				if( [selectedRoi type] == tOPolygon || [selectedRoi type] == tCPolygon || [selectedRoi type] == tPencil || [selectedRoi type] == tMesure)
 				{
 				
 				}
@@ -16496,17 +16496,22 @@ long i;
 			[[curvedMPRaxis cellWithTag:2] setState:NSOffState];
 			[[curvedMPRaxis cellWithTag:1] setEnabled:NO];
 			[[curvedMPRaxis cellWithTag:2] setEnabled:NO];
-
-			int zPos = [[[selectedRoi zPositions] objectAtIndex:0] intValue];
-			for(i=1; i < [[selectedRoi zPositions] count]; i++)
+			
+			NSArray *zPosArray = [selectedRoi zPositions];
+			
+			if( [zPosArray count])
 			{
-				if(zPos != [[[selectedRoi zPositions] objectAtIndex:i] intValue])
+				int zPos = [[zPosArray objectAtIndex:0] intValue];
+				for(i=1; i < [zPosArray count]; i++)
 				{
-					[[curvedMPRaxis cellWithTag:1] setEnabled:YES];
-					[[curvedMPRaxis cellWithTag:2] setEnabled:YES];
-					[[curvedMPRaxis cellWithTag:1] setState:oldStateForCellWithTag[1]];
-					[[curvedMPRaxis cellWithTag:2] setState:oldStateForCellWithTag[2]];
-					i = [[selectedRoi zPositions] count];
+					if(zPos != [[zPosArray objectAtIndex:i] intValue])
+					{
+						[[curvedMPRaxis cellWithTag:1] setEnabled:YES];
+						[[curvedMPRaxis cellWithTag:2] setEnabled:YES];
+						[[curvedMPRaxis cellWithTag:1] setState:oldStateForCellWithTag[1]];
+						[[curvedMPRaxis cellWithTag:2] setState:oldStateForCellWithTag[2]];
+						i = [zPosArray count];
+					}
 				}
 			}
 			
