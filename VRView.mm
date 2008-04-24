@@ -5204,7 +5204,8 @@ public:
 		
 		[self setNeedsDisplay:YES];
 		
-		[self initAnnotatedCubeActor];
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontShow3DCubeOrientation"] == NO)
+			[self initAnnotatedCubeActor];
 	}
 	
 	catch (...)

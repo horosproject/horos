@@ -336,10 +336,13 @@ typedef struct _xyzArray
 	{
 		BOOL orientationSwitch = NO;
 		
-		if( orientationWidget->GetEnabled())
+		if( orientationWidget)
 		{
-			orientationSwitch= YES;
-			[self switchOrientationWidget: self];
+			if( orientationWidget->GetEnabled())
+			{
+				orientationSwitch= YES;
+				[self switchOrientationWidget: self];
+			}
 		}
 		
 		WaitRendering *splashExport = [[WaitRendering alloc] init:@"Exporting..."];
@@ -850,7 +853,8 @@ typedef struct _xyzArray
 	reader->Delete();
     aCamera->Delete();
 	textX->Delete();
-	orientationWidget->Delete();
+	if( orientationWidget)
+		orientationWidget->Delete();
 	for( i = 0; i < 4; i++) oText[ i]->Delete();
 	//	aRenderer->Delete();
 	
@@ -2183,41 +2187,44 @@ typedef struct _xyzArray
 									[firstObject originX] * matrice->Element[0][2] + [firstObject originY] * matrice->Element[1][2] + [firstObject originZ]*matrice->Element[2][2]);
 		outlineRect->PickableOff();
 		
-		vtkAnnotatedCubeActor* cube = vtkAnnotatedCubeActor::New();
-		cube->SetXPlusFaceText ( [NSLocalizedString( @"L", @"L: Left") UTF8String] );		
-		cube->SetXMinusFaceText( [NSLocalizedString( @"R", @"R: Right") UTF8String] );
-		cube->SetYPlusFaceText ( [NSLocalizedString( @"P", @"P: Posterior") UTF8String] );
-		cube->SetYMinusFaceText( [NSLocalizedString( @"A", @"A: Anterior") UTF8String] );
-		cube->SetZPlusFaceText ( [NSLocalizedString( @"S", @"S: Superior") UTF8String] );
-		cube->SetZMinusFaceText( [NSLocalizedString( @"I", @"I: Inferior") UTF8String] );
-		cube->SetFaceTextScale( 0.67 );
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontShow3DCubeOrientation"] == NO)
+		{
+			vtkAnnotatedCubeActor* cube = vtkAnnotatedCubeActor::New();
+			cube->SetXPlusFaceText ( [NSLocalizedString( @"L", @"L: Left") UTF8String] );		
+			cube->SetXMinusFaceText( [NSLocalizedString( @"R", @"R: Right") UTF8String] );
+			cube->SetYPlusFaceText ( [NSLocalizedString( @"P", @"P: Posterior") UTF8String] );
+			cube->SetYMinusFaceText( [NSLocalizedString( @"A", @"A: Anterior") UTF8String] );
+			cube->SetZPlusFaceText ( [NSLocalizedString( @"S", @"S: Superior") UTF8String] );
+			cube->SetZMinusFaceText( [NSLocalizedString( @"I", @"I: Inferior") UTF8String] );
+			cube->SetFaceTextScale( 0.67 );
 
 
-		vtkProperty* property = cube->GetXPlusFaceProperty();
-		property->SetColor(0, 0, 1);
-		property = cube->GetXMinusFaceProperty();
-		property->SetColor(0, 0, 1);
-		property = cube->GetYPlusFaceProperty();
-		property->SetColor(0, 1, 0);
-		property = cube->GetYMinusFaceProperty();
-		property->SetColor(0, 1, 0);
-		property = cube->GetZPlusFaceProperty();
-		property->SetColor(1, 0, 0);
-		property = cube->GetZMinusFaceProperty();
-		property->SetColor(1, 0, 0);
+			vtkProperty* property = cube->GetXPlusFaceProperty();
+			property->SetColor(0, 0, 1);
+			property = cube->GetXMinusFaceProperty();
+			property->SetColor(0, 0, 1);
+			property = cube->GetYPlusFaceProperty();
+			property->SetColor(0, 1, 0);
+			property = cube->GetYMinusFaceProperty();
+			property->SetColor(0, 1, 0);
+			property = cube->GetZPlusFaceProperty();
+			property->SetColor(1, 0, 0);
+			property = cube->GetZMinusFaceProperty();
+			property->SetColor(1, 0, 0);
 
-		cube->SetTextEdgesVisibility( 1);
-		cube->SetCubeVisibility( 1);
-		cube->SetFaceTextVisibility( 1);
+			cube->SetTextEdgesVisibility( 1);
+			cube->SetCubeVisibility( 1);
+			cube->SetFaceTextVisibility( 1);
 
-		orientationWidget = vtkOrientationMarkerWidget::New();
-		orientationWidget->SetOrientationMarker( cube );
-		orientationWidget->SetInteractor( [self getInteractor] );
-		orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
-		orientationWidget->SetEnabled( 1 );
-		orientationWidget->InteractiveOff();
-		cube->Delete();
-
+			orientationWidget = vtkOrientationMarkerWidget::New();
+			orientationWidget->SetOrientationMarker( cube );
+			orientationWidget->SetInteractor( [self getInteractor] );
+			orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
+			orientationWidget->SetEnabled( 1 );
+			orientationWidget->InteractiveOff();
+			cube->Delete();
+		}
 
 
 	//	croppingBox = vtkBoxWidget::New();
@@ -2321,15 +2328,18 @@ typedef struct _xyzArray
 {
 	long i;
 	
-	if( orientationWidget->GetEnabled())
+	if( orientationWidget)
 	{
-		orientationWidget->Off();
-		for( i = 0; i < 4; i++) aRenderer->RemoveActor2D( oText[ i]);
-	}
-	else if( [self renderWindow]->GetStereoRender() == false)
-	{
-		orientationWidget->On();
-		for( i = 0; i < 4; i++) aRenderer->AddActor2D( oText[ i]);
+		if( orientationWidget->GetEnabled())
+		{
+			orientationWidget->Off();
+			for( i = 0; i < 4; i++) aRenderer->RemoveActor2D( oText[ i]);
+		}
+		else if( [self renderWindow]->GetStereoRender() == false)
+		{
+			orientationWidget->On();
+			for( i = 0; i < 4; i++) aRenderer->AddActor2D( oText[ i]);
+		}
 	}
 	
 	[self setNeedsDisplay:YES];
@@ -2344,7 +2354,8 @@ typedef struct _xyzArray
 		[self renderWindow]->StereoRenderOn();
 		[self renderWindow]->SetStereoTypeToRedBlue();
 		
-		orientationWidget->Off();
+		if( orientationWidget)
+			orientationWidget->Off();
 		for( i = 0; i < 4; i++) aRenderer->RemoveActor2D( oText[ i]);
 	}
 	else
