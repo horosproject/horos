@@ -93,12 +93,19 @@
 
 - (IBAction)delete:(id)sender;
 {
-	NSArray *pluginsList = [pluginsArrayController arrangedObjects];
-	NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable selectedRow]] objectForKey:@"name"];
-
-	[PluginManager deletePluginWithName:pluginName];
+	if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete a plugin", 0L),
+												 NSLocalizedString(@"Are you sure you want to delete the selected plugin?", 0L),
+												 NSLocalizedString(@"OK",nil),
+												 NSLocalizedString(@"Cancel",nil),
+												 0L) == NSAlertDefaultReturn)
+	{
+		NSArray *pluginsList = [pluginsArrayController arrangedObjects];
+		NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable selectedRow]] objectForKey:@"name"];
 	
-	[self refreshPluginList];
+		[PluginManager deletePluginWithName:pluginName];
+	
+		[self refreshPluginList];
+	}
 }
 
 - (IBAction)modifiyAvailability:(id)sender;

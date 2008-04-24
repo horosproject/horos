@@ -1078,7 +1078,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	}
 }
 
-- (void)createContextualMenu{
+- (void)createContextualMenu
+{
 	NSMenu *contextual =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
 	NSMenu *submenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Mode", nil)];
 	NSMenuItem *item, *subItem;
