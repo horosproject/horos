@@ -326,7 +326,8 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 - (IBAction)download:(id)sender;
 {
 	NSURLDownload *download = [[NSURLDownload alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:downloadURL]] delegate:self];
-	downloadedFilePath = [NSString stringWithFormat:@"%@/Desktop/%@", NSHomeDirectory(), [[downloadURL lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+	//downloadedFilePath = [NSString stringWithFormat:@"%@/Desktop/%@", NSHomeDirectory(), [[downloadURL lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+	downloadedFilePath = [NSString stringWithFormat:@"/tmp/%@", [[downloadURL lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	[download setDestination:downloadedFilePath allowOverwrite:YES];
 }
 
@@ -389,6 +390,9 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	
 	BOOL alreadyFound = NO;
 	
+	NSString *trashDir = [NSHomeDirectory() stringByAppendingPathComponent:@".Trash"];
+	int tag;
+	
 	for (NSString *dir in directories) // search if the plugin was already installed
 	{
 		if([[NSFileManager defaultManager] fileExistsAtPath:[dir stringByAppendingPathComponent:[pluginPath lastPathComponent]]])
@@ -398,13 +402,26 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 				installDirectoryPath = dir; // in that case, install the (updated) plugin in the same directory it was
 				alreadyFound = YES;
 			}
-			[[NSFileManager defaultManager] removeFileAtPath:[dir stringByAppendingPathComponent:[pluginPath lastPathComponent]] handler:nil];
+//			[[NSFileManager defaultManager] removeFileAtPath:[dir stringByAppendingPathComponent:[pluginPath lastPathComponent]] handler:nil];
+			[[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:dir destination:trashDir files:[NSArray arrayWithObject:[pluginPath lastPathComponent]] tag:&tag];
+			if(tag!=0)
+					NSLog(@"***** PluginManager : plugin install failed. Plugin: %@", [pluginPath lastPathComponent]);
 			//break;
 		}
 	}
 			
 	[PluginManager movePluginFromPath:pluginPath toPath:installDirectoryPath];	
-
+	
+//	NSTask *aTask = [[NSTask alloc] init];
+//    NSMutableArray *args = [NSMutableArray array];
+//	
+//    [args addObject:pluginPath];
+//    [aTask setLaunchPath:@"/usr/bin/touch"];
+//    [aTask setArguments:args];
+//    [aTask launch];
+//	[aTask waitUntilExit];
+//	[aTask release];
+	
 	[statusTextField setStringValue:NSLocalizedString(@"Plugin Installed", nil)];
 	[statusProgressIndicator setHidden:YES];
 	[statusProgressIndicator stopAnimation:self];
