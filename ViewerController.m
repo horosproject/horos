@@ -12449,17 +12449,21 @@ int i,j,l;
 	return points2D;
 }
 
+- (ViewerController*) resampleSeriesInNewOrientation
+{
+}
+
 - (ViewerController*) resampleSeries:(ViewerController*) movingViewer
 {
 	ViewerController	*newViewer = 0L;
-
+	
 	if( [[self studyInstanceUID] isEqualToString: [movingViewer studyInstanceUID]])
 	{
 		float vectorModel[ 9], vectorSensor[ 9];
-			
+		
 		[[[movingViewer pixList] objectAtIndex:0] orientation: vectorSensor];
 		[[[self pixList] objectAtIndex:0] orientation: vectorModel];
-			
+		
 		double translation[ 3], matrix[ 12], length;
 		
 		// No translation -> same origin, same study

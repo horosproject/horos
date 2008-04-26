@@ -662,7 +662,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 		NSString *name;
 		while(name = [e nextObject])
 		{
-			if([[name stringByDeletingPathExtension] isEqualToString:pluginName])
+			if([[name stringByDeletingPathExtension] isEqualToString: [pluginName stringByDeletingPathExtension]])
 			{
 				NSInteger tag;
 				[[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:path destination:trashDir files:[NSArray arrayWithObject:name] tag:&tag];

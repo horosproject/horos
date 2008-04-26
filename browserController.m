@@ -6721,7 +6721,7 @@ static BOOL withReset = NO;
 				NSLog( [image valueForKey:@"completePath"]);
 				
 				[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: 0L];
-				[[image valueForKey:@"completePath"] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: 0L];
+				[[[[[series valueForKey:@"study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: 0L];
 				
 				DCMPix	*dcmPix  = [[DCMPix alloc] myinit:[image valueForKey:@"completePath"] :0 :1 :0L :frame :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
 				
@@ -6747,18 +6747,49 @@ static BOOL withReset = NO;
 	if( [DCMPix isRunOsiriXInProtectedModeActivated]) return;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"] == NO) return;
 	
+	NSManagedObjectContext	*context = self.managedObjectContext;
+	NSManagedObjectModel	*model = self.managedObjectModel;
+
 	NSString *recoveryPath = [documentsDirectory() stringByAppendingPathComponent:@"/ThumbnailPath"];
 	if( [[NSFileManager defaultManager] fileExistsAtPath: recoveryPath])
 	{
-		NSRunAlertPanel( NSLocalizedString(@"Corrupted files", nil), [NSString stringWithFormat:NSLocalizedString(@"A corrupted file crashed OsiriX:\r\r%@\r\rThis file will be moved to the Trash.\r\rYou can run OsiriX in Protected Mode (shift + option keys at startup) if you have more crashes.", nil), [NSString stringWithContentsOfFile: recoveryPath]], nil, nil, nil);
+		displayEmptyDatabase = YES;
+		[self outlineViewRefresh];
+		[self refreshMatrix: self];
 		
 		NSInteger tag = 0;
 		
-		[[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source: [[NSString stringWithContentsOfFile: recoveryPath] stringByDeletingLastPathComponent] destination:@"" files:[NSArray arrayWithObject:[[NSString stringWithContentsOfFile: recoveryPath] lastPathComponent]] tag:&tag];
+		NSString *uri = [NSString stringWithContentsOfFile: recoveryPath];
+		
+		NSManagedObject *studyObject = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
+		
+		int r = NSRunAlertPanel( NSLocalizedString(@"Corrupted files", nil), [NSString stringWithFormat:NSLocalizedString(@"A corrupted study crashed OsiriX:\r\r%@\r\rThis file will be deleted.\r\rYou can run OsiriX in Protected Mode (shift + option keys at startup) if you have more crashes.\r\rShould I delete this corrupted study?", nil), [studyObject valueForKey:@"name"]], NSLocalizedString(@"OK", 0L), NSLocalizedString(@"Cancel", 0L), nil);
+		if( r == NSAlertDefaultReturn)
+		{
+			[context lock];
+			[context retain];
+			
+			@try
+			{
+				[context deleteObject: studyObject];
+				[self saveDatabase: currentDatabasePath];
+			}
+				
+			@catch( NSException *ne)
+			{
+				NSLog(@"buildAllThumbnails exception: %@", [ne description]);
+			}
+			
+			[context unlock];
+			[context release];
+			
+			[self outlineViewRefresh];
+			[self refreshMatrix: self];
+		}
+		
+		displayEmptyDatabase = NO;
 	}
 	
-	NSManagedObjectContext	*context = self.managedObjectContext;
-	NSManagedObjectModel	*model = self.managedObjectModel;
 	
 	if( [checkIncomingLock tryLock])
 	{	
