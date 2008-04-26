@@ -654,6 +654,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 	[pluginsPaths addObjectsFromArray:[PluginManager inactiveDirectories]];
 	
     NSString *path;
+	NSString *trashDir = [NSHomeDirectory() stringByAppendingPathComponent:@".Trash"];
 	
 	for(path in pluginsPaths)
 	{
@@ -663,15 +664,29 @@ static NSMenu					*fusionPluginsMenu = 0L;
 		{
 			if([[name stringByDeletingPathExtension] isEqualToString:pluginName])
 			{
-				// delete
-				BOOL deleted = [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@/%@", path, name] handler:nil];
-				if(!deleted)
+				NSInteger tag;
+				[[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:path destination:trashDir files:[NSArray arrayWithObject:name] tag:&tag];
+				if(tag!=0)
 				{
+					NSLog( @"performFileOperation:NSWorkspaceRecycleOperation failed, will us mv");
+					
 					NSMutableArray *args = [NSMutableArray array];
-					[args addObject:@"-r"];
+					[args addObject:@"-f"];
 					[args addObject:[NSString stringWithFormat:@"%@/%@", path, name]];
-					[[BLAuthentication sharedInstance] executeCommand:@"/bin/rm" withArgs:args];
+					[args addObject:[NSString stringWithFormat:@"%@/%@", trashDir, name]];
+					[[BLAuthentication sharedInstance] executeCommand:@"/bin/mv" withArgs:args];
+
 				}
+				
+//				// delete
+//				BOOL deleted = [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@/%@", path, name] handler:nil];
+//				if(!deleted)
+//				{
+//					NSMutableArray *args = [NSMutableArray array];
+//					[args addObject:@"-r"];
+//					[args addObject:[NSString stringWithFormat:@"%@/%@", path, name]];
+//					[[BLAuthentication sharedInstance] executeCommand:@"/bin/rm" withArgs:args];
+//				}
 			}
 		}
 	}
