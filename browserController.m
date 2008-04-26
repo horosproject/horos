@@ -6763,7 +6763,7 @@ static BOOL withReset = NO;
 		
 		NSManagedObject *studyObject = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
 		
-		int r = NSRunAlertPanel( NSLocalizedString(@"Corrupted files", nil), [NSString stringWithFormat:NSLocalizedString(@"A corrupted study crashed OsiriX:\r\r%@\r\rThis file will be deleted.\r\rYou can run OsiriX in Protected Mode (shift + option keys at startup) if you have more crashes.\r\rShould I delete this corrupted study?", nil), [studyObject valueForKey:@"name"]], NSLocalizedString(@"OK", 0L), NSLocalizedString(@"Cancel", 0L), nil);
+		int r = NSRunAlertPanel( NSLocalizedString(@"Corrupted files", nil), [NSString stringWithFormat:NSLocalizedString(@"A corrupted study crashed OsiriX:\r\r%@ / %@\r\rThis file will be deleted.\r\rYou can run OsiriX in Protected Mode (shift + option keys at startup) if you have more crashes.\r\rShould I delete this corrupted study? (Highly recommended)", nil), [studyObject valueForKey:@"name"], [studyObject valueForKey:@"studyName"], 0L], NSLocalizedString(@"OK", 0L), NSLocalizedString(@"Cancel", 0L), nil);
 		if( r == NSAlertDefaultReturn)
 		{
 			[context lock];
