@@ -19,6 +19,11 @@
 #import "QueryController.h"
 #import "DCMNetServiceDelegate.h"
 
+#import <sys/socket.h>
+#import <netinet/in.h>
+#import <arpa/inet.h>
+#import <unistd.h>
+
 // HTTP SERVER
 //
 // XML-RPC Standard
@@ -94,8 +99,19 @@
 		if( [array count] == 1)
 		{
 			NSString *selName = [[array objectAtIndex:0] objectValue];
-
-			NSMutableDictionary	*httpServerMessage = [NSMutableDictionary dictionaryWithObjectsAndKeys: selName, @"MethodName", doc, @"NSXMLDocument", [NSNumber numberWithBool: NO], @"Processed", 0L];
+			char buffer[256];
+			NSString *ipAddressString = @"";
+			
+			struct sockaddr *addr = (struct sockaddr *) [[conn peerAddress] bytes];
+			if( addr->sa_family == AF_INET)
+			{
+				if (inet_ntop(AF_INET, &((struct sockaddr_in *)addr)->sin_addr, buffer, sizeof(buffer)))
+				{
+					ipAddressString = [NSString stringWithCString:buffer];
+				}
+			}
+			
+			NSMutableDictionary	*httpServerMessage = [NSMutableDictionary dictionaryWithObjectsAndKeys: selName, @"MethodName", doc, @"NSXMLDocument", [NSNumber numberWithBool: NO], @"Processed", ipAddressString, @"peerAddress", 0L];
 			
 			#pragma mark DBWindowFind
 			
