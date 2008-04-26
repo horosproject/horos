@@ -75,8 +75,8 @@ static WindowLayoutManager *sharedLayoutManager = 0L;
 	{
 		//Search for a hanging Protocol for the study description in the modality array
 		NSArray *hangingProtocolArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] objectForKey: modality];
-		if ([hangingProtocolArray count] > 0) {
-
+		if ([hangingProtocolArray count] > 0)
+		{
 			[_currentHangingProtocol release];
 			_currentHangingProtocol = nil;
 			_currentHangingProtocol = [hangingProtocolArray objectAtIndex:0];
