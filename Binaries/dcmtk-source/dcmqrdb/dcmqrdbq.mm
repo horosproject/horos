@@ -112,31 +112,39 @@ OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname){
 	return cond;
 }
 
-static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, E_TransferSyntax newXfer){
+static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *outfname, E_TransferSyntax newXfer){
 	
 	int opt_Quality;
 	OFCondition cond;
 	OFBool status = YES;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-	//hopefully dcmtk willsupport jpeg2000 compressio and compression in the future
 	
-	if (newXfer == EXS_JPEG2000) {
-		//NSLog(@"Compress JPEG 2000 Lossy");
+	if (newXfer == EXS_JPEG2000)
+	{
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
+		
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
-		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:opt_Quality AET:@"OsiriX" atomically:YES];
+		
+		unlink( outfname);
+		
+		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:opt_Quality AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 	}
-	else if  (newXfer == EXS_JPEG2000LosslessOnly) {
+	else if  (newXfer == EXS_JPEG2000LosslessOnly)
+	{
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
+		
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
-		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+		
+		unlink( outfname);
+		
 		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality:0 AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 	}
-	else {
-		
+	else
+	{
 		DcmDataset *dataset = fileformat.getDataset();
 		DcmItem *metaInfo = fileformat.getMetaInfo();
 		DcmRepresentationParameter *params;
@@ -165,8 +173,10 @@ static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, E_
 			// store in lossless JPEG format
 			
 			fileformat.loadAllDataIntoMemory();
-			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
-			cond = fileformat.saveFile(fname, newXfer);
+			
+			unlink( outfname);
+			
+			cond = fileformat.saveFile(outfname, newXfer);
 			status =  (cond.good()) ? YES : NO;
 		}
 		else
@@ -933,8 +943,10 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
       DcmQueryRetrieveDatabaseStatus *status)
 {
 	  
-	return this->nextMoveResponse( SOPClassUID, SOPInstanceUID, imageFileName, EXS_LittleEndianExplicit, numberOfRemainingSubOperations, status);
+	return this->nextMoveResponse( SOPClassUID, SOPInstanceUID, imageFileName, EXS_LittleEndianExplicit, numberOfRemainingSubOperations, status);		//EXS_JPEGProcess14SV1TransferSyntax  EXS_LittleEndianExplicit
 }
+
+static int seed = 0;
 
 OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
                 char            *SOPClassUID,
@@ -948,6 +960,10 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
         status->setStatus(STATUS_Success);
         return (EC_Normal) ;
     }
+	
+	char outfname[ 4096];
+	
+	sprintf( outfname, "%s/%s/QR-CMOVE-%d.dcm", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP", seed++);
 	
 	*numberOfRemainingSubOperations = --handle->NumberRemainOperations ;
 //	NSLog(@"next Move response: %d", *numberOfRemainingSubOperations);
@@ -978,7 +994,9 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 					strcpy (SOPInstanceUID, (char *) sopinstance) ;
 					/* figure out which of the accepted presentation contexts should be used */
 					DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+					
 					//on the fly conversion:
+					
 					E_TransferSyntax moveTransferSyntax = preferredTS;
 					T_ASC_PresentationContextID presId;
 					DcmXfer preferredXfer(moveTransferSyntax);
@@ -987,6 +1005,12 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 					if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated())
 					{
 						// do nothing
+					}
+					else if (filexfer.isNotEncapsulated() && preferredXfer.isEncapsulated())
+					{
+						status = compressFileFormat(fileformat, imageFileName, outfname, moveTransferSyntax);
+						
+						strcpy( imageFileName, outfname);
 					}
 					else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated())
 					{
@@ -997,19 +1021,9 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 			}
 		}
 		
-		
-			//else if (filexfer.isNotEncapsulated() && preferredXfer.isEncapsulated()) {
-			//	status = compressFile(fileformat, fname);
-			//}
-			//else if (filexfer.getXfer() != opt_networkTransferSyntax){
-			// may need to convert encapsulated syntax
-			//	status = compressFileFormat(fileformat, fname,moveTransferSyntax );
-			//}
-		// }
-		
 		if (cond.good())
 		{
-		
+			
 		}
 	}
 	
@@ -1305,8 +1319,6 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 /**********************************
  *      Provides a storage filename
  *********************************/
-
-static int seed = 0;
 
 OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
                 const char      *SOPClassUID,

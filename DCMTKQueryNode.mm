@@ -29,7 +29,6 @@
 #include "dcmetinf.h"
 #include "dcfilefo.h"
 #include "dcdebug.h"
-#include "dcuid.h"
 #include "dcdict.h"
 #include "dcdeftag.h"
 //#include "cmdlnarg.h"
@@ -197,29 +196,185 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 //   
 }
 
+static OFCondition
+acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
+{
+    const char* knownAbstractSyntaxes[] = {
+        UID_VerificationSOPClass
+    };
+    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
+    int numTransferSyntaxes;
+	
+	OFCmdUnsignedInt  opt_maxPDU = ASC_DEFAULTMAXPDU;
+	E_TransferSyntax opt_in_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+	
+    OFCondition cond = ASC_receiveAssociation(aNet, assoc, opt_maxPDU);
+    if (cond.good())
+    {
+      switch (opt_in_networkTransferSyntax)
+      {
+        case EXS_LittleEndianImplicit:
+          /* we only support Little Endian Implicit */
+          transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
+          numTransferSyntaxes = 1;
+          break;
+        case EXS_LittleEndianExplicit:
+          /* we prefer Little Endian Explicit */
+          transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+          numTransferSyntaxes = 3;
+          break;
+        case EXS_BigEndianExplicit:
+          /* we prefer Big Endian Explicit */
+          transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+          numTransferSyntaxes = 3;
+          break;
+        case EXS_JPEGProcess14SV1TransferSyntax:
+          /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
+          transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
+          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+          numTransferSyntaxes = 4;
+          break;
+        case EXS_JPEGProcess1TransferSyntax:
+          /* we prefer JPEGBaseline (default lossy for 8 bit images) */
+          transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
+          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+          numTransferSyntaxes = 4;
+          break;
+        case EXS_JPEGProcess2_4TransferSyntax:
+          /* we prefer JPEGExtended (default lossy for 12 bit images) */
+          transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
+          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+          numTransferSyntaxes = 4;
+          break;
+        case EXS_RLELossless:
+          /* we prefer RLE Lossless */
+          transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
+          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+          numTransferSyntaxes = 4;
+          break;
+        default:
+          /* We prefer explicit transfer syntaxes.
+           * If we are running on a Little Endian machine we prefer
+           * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
+           */
+          if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
+          {
+            transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+            transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+          } else {
+            transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+            transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+          }
+          transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+          numTransferSyntaxes = 3;
+          break;
+
+        }
+
+        /* accept the Verification SOP Class if presented */
+        cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
+            (*assoc)->params,
+            knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes),
+            transferSyntaxes, numTransferSyntaxes);
+
+        if (cond.good())
+        {
+            /* the array of Storage SOP Class UIDs comes from dcuid.h */
+            cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
+                (*assoc)->params,
+                dcmAllStorageSOPClassUIDs, numberOfAllDcmStorageSOPClassUIDs,
+                transferSyntaxes, numTransferSyntaxes);
+        }
+    }
+    if (cond.good()) cond = ASC_acknowledgeAssociation(*assoc);
+    if (cond.bad()) {
+        ASC_dropAssociation(*assoc);
+        ASC_destroyAssociation(assoc);
+    }
+    return cond;
+}
+
+//static OFCondition
+//subOpSCP(T_ASC_Association **subAssoc)
+//{
+//    T_DIMSE_Message     msg;
+//    T_ASC_PresentationContextID presID;
+//
+//    if (!ASC_dataWaiting(*subAssoc, 0)) /* just in case */
+//        return DIMSE_NODATAAVAILABLE;
+//
+//    OFCondition cond = DIMSE_receiveCommand(*subAssoc, DIMSE_BLOCKING, 0, &presID,
+//            &msg, NULL);
+//
+//    if (cond == EC_Normal) {
+//        switch (msg.CommandField) {
+//        case DIMSE_C_STORE_RQ:
+//            cond = storeSCP(*subAssoc, &msg, presID);
+//            break;
+//        case DIMSE_C_ECHO_RQ:
+//            cond = echoSCP(*subAssoc, &msg, presID);
+//            break;
+//        default:
+//            cond = DIMSE_BADCOMMANDTYPE;
+//            break;
+//        }
+//    }
+//    /* clean up on association termination */
+//    if (cond == DUL_PEERREQUESTEDRELEASE)
+//    {
+//        cond = ASC_acknowledgeRelease(*subAssoc);
+//        ASC_dropSCPAssociation(*subAssoc);
+//        ASC_destroyAssociation(subAssoc);
+//        return cond;
+//    }
+//    else if (cond == DUL_PEERABORTEDASSOCIATION)
+//    {
+//    }
+//    else if (cond != EC_Normal)
+//    {
+//        errmsg("DIMSE Failure (aborting sub-association):\n");
+//        DimseCondition::dump(cond);
+//        /* some kind of error so abort the association */
+//        cond = ASC_abortAssociation(*subAssoc);
+//    }
+//
+//    if (cond != EC_Normal)
+//    {
+//        ASC_dropAssociation(*subAssoc);
+//        ASC_destroyAssociation(subAssoc);
+//    }
+//    return cond;
+//}
+
 static void
 subOpCallback(void * /*subOpCallbackData*/ ,
         T_ASC_Network *aNet, T_ASC_Association **subAssoc)
 {
-	
-   // if (aNet == NULL) return;   /* help no net ! */
+	if (aNet == NULL) return;   /* help no net ! */
 
-  //  if (*subAssoc == NULL) {
+	if (*subAssoc == NULL)
+	{
         /* negotiate association */
- //       acceptSubAssoc(aNet, subAssoc);
-//    } else {
+		acceptSubAssoc(aNet, subAssoc);
+	}
+	else
+	{
         /* be a service class provider */
-//        subOpSCP(subAssoc);
-//    }
+		//subOpSCP(subAssoc);
+	}
 }
-
-
-
-
-
-
- 
-
 
 @implementation DCMTKQueryNode
 
