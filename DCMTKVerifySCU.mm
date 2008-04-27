@@ -166,7 +166,8 @@ static const char* transferSyntaxes[] = {
     DIC_NODENAME peerHost;
     T_ASC_Association *assoc = NULL;
    
-	NSLog(@"hostname: %@ calledAET %@", _hostname, _calledAET);
+//	NSLog(@"hostname: %@ calledAET %@", _hostname, _calledAET);
+
 	opt_peer = [_hostname UTF8String];
 	opt_port = _port;
 	

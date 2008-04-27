@@ -15,6 +15,7 @@
 #import "StructuredReport.h"
 #import "browserController.h"
 #import <AddressBook/AddressBook.h>
+#import "DicomImage.h"
 #import "DICOMToNSString.h"
 
 #undef verify
@@ -703,8 +704,9 @@
 	
 	NSEnumerator *enumerator = [references objectEnumerator];
 	id reference;
-	while (reference = [enumerator nextObject]){
-		predicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:predicate, [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", reference], nil]]; 
+	while (reference = [enumerator nextObject])
+	{
+		predicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:predicate, [NSPredicate predicateWithFormat:@"compressedSopInstanceUID == %@", [DicomImage sopInstanceUIDEncodeString: reference]], nil]]; 
 	}
 	[dbRequest setPredicate: predicate];
 	imagesArray = [[context executeFetchRequest:dbRequest error:&error] retain];

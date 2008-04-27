@@ -15,6 +15,7 @@
 #import "ROISRConverter.h"
 #import "SRAnnotation.h"
 #import "DicomStudy.h"
+#import "DicomImage.h"
 #import "browserController.h"
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
@@ -73,7 +74,7 @@ extern void* sopInstanceUIDEncode( NSString *sopuid);
 		
 		
 		NSArray			*srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
-		NSPredicate		*predicate = [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", sopInstanceUID];
+		NSPredicate		*predicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID == %@", [DicomImage sopInstanceUIDEncodeString: sopInstanceUID]];
 		NSArray			*found = [srs filteredArrayUsingPredicate:predicate];
 		
 		if ([found count] < 1)

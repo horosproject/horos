@@ -379,7 +379,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	//add query keys
 	DcmDataset *dataset = [self queryPrototype];
 	NSString *stringEncoding = [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"];
-	NSLog(@"default string Encoding: %@",stringEncoding );
+//	NSLog(@"default string Encoding: %@",stringEncoding );
 	//hard code for UTF8
 	//stringEncoding = @"ISO_IR 192";
 	int encoding = [NSString encodingForDICOMCharacterSet:stringEncoding];
@@ -554,7 +554,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     DIC_NODENAME peerHost;
     T_ASC_Association *assoc = NULL;
    
-	NSLog(@"hostname: %@ calledAET %@", _hostname, _calledAET);
+//	NSLog(@"hostname: %@ calledAET %@", _hostname, _calledAET);
 	
 	opt_peer = [_hostname UTF8String];
 	opt_port = _port;

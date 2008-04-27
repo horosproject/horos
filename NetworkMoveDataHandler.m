@@ -29,7 +29,7 @@
 - (id)initWithDebugLevel:(int)debug{
 	if (self = [super initWithDebugLevel:debug])
 	{
-		NSLog(@"Init NetworkMoveHandler");
+//		NSLog(@"Init NetworkMoveHandler");
 		logEntry = 0L;
 	}
 	return self;

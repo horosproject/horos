@@ -18,18 +18,16 @@
 #include "dctk.h"
 
 #import "browserController.h"
-
+#import "DicomImage.h"
 
 @implementation OsiriXSCPDataHandler (DCMTKDataHandlerCategory)
 
-- (NSPredicate *)predicateForDataset:( DcmDataset *)dataset{
-
-	//NSPredicate *compoundPredicate = [NSPredicate predicateWithFormat:@"hasDICOM == %d", YES];
+- (NSPredicate *)predicateForDataset:( DcmDataset *)dataset
+{
 	NSPredicate *compoundPredicate = nil;
 	const char *sType = NULL;
 	const char *scs = NULL;
-	//NSString *charset;	
-	//should be STUDY, SERIES OR IMAGE
+	
 	NS_DURING 
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	
@@ -51,8 +49,6 @@
 		compoundPredicate = [NSPredicate predicateWithFormat:@"study.hasDICOM == %d", YES];
 	else if (strcmp(sType, "IMAGE") == 0)
 		compoundPredicate = [NSPredicate predicateWithFormat:@"series.study.hasDICOM == %d", YES];
-		
-	//NSLog(@"charset %@", specificCharacterSet);
 	
 	int elemCount = (int)(dataset->card());
     for (int elemIndex=0; elemIndex<elemCount; elemIndex++)
@@ -401,11 +397,10 @@
 //					predicate = [NSPredicate predicateWithFormat:@"series.seriesDICOMUID like %@", suid];
 				}
 			} 
-			else if (key == DCM_SOPInstanceUID) {
-				char *string;
-//				if (dcelem->getString(string).good() && string != NULL)
-//					predicate = [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
-					
+			else if (key == DCM_SOPInstanceUID)
+			{
+				char *string = 0L;
+				
 				if (dcelem->getString(string).good() && string != NULL)
 				{
 					NSArray *uids = [[NSString stringWithCString:string  DICOMEncoding:nil] componentsSeparatedByString:@"\\"];
@@ -414,7 +409,7 @@
 					int x;
 					for(x = 0; x < [uids count]; x++)
 					{
-						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", [uids objectAtIndex: x]]];
+						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"compressedSopInstanceUID == %@", [DicomImage sopInstanceUIDEncodeString: [uids objectAtIndex: x]]]];
 					}
 					
 					predicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
@@ -650,7 +645,7 @@
 	const char *sType;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	OFCondition cond;
-	
+		
 	if (strcmp(sType, "STUDY") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Study"];
 	else if (strcmp(sType, "SERIES") == 0) 
@@ -660,7 +655,8 @@
 	else 
 		entity = nil;
 	
-	if (entity) {
+	if (entity)
+	{
 		[request setEntity:entity];
 		[request setPredicate:predicate];
 					
@@ -760,6 +756,9 @@
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	const char *sType;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
+	
+//	sType = "IMAGE";
+//	predicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID == %@", [DicomImage sopInstanceUIDEncodeString: @"1.3.12.2.1107.5.1.4.51988.4.0.1153171689822390"]];
 	
 	if (strcmp(sType, "STUDY") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Study"];
@@ -865,6 +864,7 @@
 	{
 		NSLog( @"prepareMoveForDataSet exception");
 		NSLog( [e description]);
+		NSLog( [predicate description]);
 	}
 
 	[context unlock];

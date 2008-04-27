@@ -55,6 +55,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 //	NSNumber	*yFlipped, *xFlipped;
 }
 
++ (NSString*) sopInstanceUIDEncodeString:(NSString*) s;
 - (NSString*) uniqueFilename;
 - (NSSet*) paths;
 - (NSString*) completePath;

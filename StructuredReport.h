@@ -71,7 +71,7 @@
 - (void)setKeyImages:(NSArray *)keyImages;
 - (BOOL)isEditable;
 - (NSDate *)contentDate;
-- (void)setContentData:(NSDate *)date;
+- (void)setContentDate:(NSDate *)date;
 - (NSString *)title;
 - (void)setTitle:(NSString *)title;
 

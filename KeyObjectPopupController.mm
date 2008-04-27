@@ -101,8 +101,9 @@
 		NSArray *imagesArray = nil;
 		NSEnumerator *enumerator = [references objectEnumerator];
 		id reference;
-		while (reference = [enumerator nextObject]){
-			predicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:predicate, [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", reference], nil]]; 
+		while (reference = [enumerator nextObject])
+		{
+			predicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:predicate, [NSPredicate predicateWithFormat:@"compressedSopInstanceUID == %@", [DicomImage sopInstanceUIDEncodeString: reference]], nil]]; 
 		}
 		imagesArray = [[imageInSeries filteredArrayUsingPredicate:predicate] retain];
 		[[BrowserController currentBrowser] openViewerFromImages:[NSArray arrayWithObject: imagesArray] movie:NO viewer :_viewerController keyImagesOnly:NO];
