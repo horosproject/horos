@@ -725,7 +725,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //	SetDebugLevel(3);
 	
 	//Use Little Endian TS
-	_networkTransferSyntax = EXS_LittleEndianExplicit;	//EXS_LittleEndianExplicit;
+	_networkTransferSyntax = EXS_LittleEndianExplicit;	//EXS_LittleEndianExplicit;	//EXS_LittleEndianExplicit;
 	
 	
 	NS_DURING

@@ -117,8 +117,8 @@
 		[params setObject:port forKey:@"port"];
 	}
 	*/
-	[params setObject:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] forKey:@"transferSyntax"];
-	[params setObject:[DCMAbstractSyntaxUID  studyRootQueryRetrieveInformationModelFind] forKey:@"affectedSOPClassUID"];
+	[params setObject:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] forKey:@"transferSyntax"];		//
+	[params setObject:[DCMAbstractSyntaxUID studyRootQueryRetrieveInformationModelFind] forKey:@"affectedSOPClassUID"];
 	
 	[rootNode release];
 	rootNode = [[DCMTKRootQueryNode queryNodeWithDataset:nil
@@ -126,7 +126,7 @@
 									calledAET:calledAET 
 									hostname:hostname
 									port:[port intValue]
-									transferSyntax:0L		//EXS_LittleEndianExplicit
+									transferSyntax: 0		//EXS_LittleEndianExplicit / EXS_JPEGProcess14SV1TransferSyntax
 									compression: nil
 									extraParameters:nil] retain];
 	NSMutableArray *filterArray = [NSMutableArray array];

@@ -71,8 +71,6 @@ extern void* sopInstanceUIDEncode( NSString *sopuid);
 		//Check to see if there is already this ROI-image
 		NSString		*sopInstanceUID = [sr sopInstanceUID];
 		
-		
-		
 		NSArray			*srs = [(NSSet *)[roiSRSeries valueForKey:@"images"] allObjects];
 		NSPredicate		*predicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID == %@", [DicomImage sopInstanceUIDEncodeString: sopInstanceUID]];
 		NSArray			*found = [srs filteredArrayUsingPredicate:predicate];
