@@ -106,9 +106,7 @@
 			if( addr->sa_family == AF_INET)
 			{
 				if (inet_ntop(AF_INET, &((struct sockaddr_in *)addr)->sin_addr, buffer, sizeof(buffer)))
-				{
 					ipAddressString = [NSString stringWithCString:buffer];
-				}
 			}
 			
 			NSMutableDictionary	*httpServerMessage = [NSMutableDictionary dictionaryWithObjectsAndKeys: selName, @"MethodName", doc, @"NSXMLDocument", [NSNumber numberWithBool: NO], @"Processed", ipAddressString, @"peerAddress", 0L];
