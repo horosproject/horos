@@ -772,9 +772,7 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 			/* clear condition stack */
 			
 			if( strlen( outfname) > 0)
-			{
 				unlink( outfname);
-			}
 		}
     }
 }
