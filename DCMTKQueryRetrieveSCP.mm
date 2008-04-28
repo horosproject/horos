@@ -192,7 +192,7 @@ void errmsg(const char* msg, ...)
 //	else options.networkTransferSyntax_ = EXS_LittleEndianExplicit;																								// See dcmqrsrv.mm
 	
 	//outgoing syntaxes we should determine this by server. not globally
-	options.networkTransferSyntaxOut_ =  EXS_LittleEndianExplicit;	//;	//EXS_LittleEndianExplicit;	//;		EXS_JPEG2000		// See dcmqrcbm.mm
+	options.networkTransferSyntaxOut_ =  EXS_LittleEndianExplicit;	//;	//EXS_LittleEndianExplicit;	//;		EXS_JPEG2000		// See dcmqrcbm.mm - NOT USED
 	/*
 	options.networkTransferSyntaxOut_ = EXS_LittleEndianExplicit;
 	options.networkTransferSyntaxOut_ = EXS_BigEndianExplicit;

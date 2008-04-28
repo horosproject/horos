@@ -83,20 +83,22 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-static OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname){
+static OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
+{
 	OFBool status = YES;
-	//DcmFileFormat fileformat;
 	OFCondition cond;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-	//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
-	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000) {
+	
+	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
+	{
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
 		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 	}
-	else {
+	else
+	{
 		  DcmDataset *dataset = fileformat.getDataset();
 
 		  // decompress data set if compressed
@@ -113,15 +115,15 @@ static OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fn
 		  }
 		  else
 			status = NO;
-
 	}
-
+	
+	printf("\n*** Decompress for C-Move\n");
+	
 	return cond;
 }
 
-static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *outfname, E_TransferSyntax newXfer){
-	
-	int opt_Quality;
+static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *outfname, E_TransferSyntax newXfer)
+{
 	OFCondition cond;
 	OFBool status = YES;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
@@ -135,8 +137,10 @@ static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, ch
 		
 		unlink( outfname);
 		
-		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:opt_Quality AET:@"OsiriX" atomically:YES];
+		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
+		
+		printf("\n**** compressFileFormat EXS_JPEG2000\n");
 	}
 	else if  (newXfer == EXS_JPEG2000LosslessOnly)
 	{
@@ -147,15 +151,17 @@ static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, ch
 		
 		unlink( outfname);
 		
-		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality:0 AET:@"OsiriX" atomically:YES];
+		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
+		
+		printf("\n**** compressFileFormat EXS_JPEG2000LosslessOnly\n");
 	}
 	else
 	{
 		DcmDataset *dataset = fileformat.getDataset();
 		DcmItem *metaInfo = fileformat.getMetaInfo();
 		DcmRepresentationParameter *params;
-		DJ_RPLossy lossyParams(opt_Quality);
+		DJ_RPLossy lossyParams( 90);
 		DcmRLERepresentationParameter rleParams;
 		DJ_RPLossless losslessParams; // codec parameters, we use the defaults
 		if (newXfer == EXS_JPEGProcess14SV1TransferSyntax)
@@ -164,18 +170,17 @@ static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, ch
 		params = &lossyParams; 
 		else if (newXfer == EXS_RLELossless)
 		params = &rleParams; 
-
-	
+		
 		// this causes the lossless JPEG version of the dataset to be created
 		dataset->chooseRepresentation(newXfer, params);
 
 		// check if everything went well
 		if (dataset->canWriteXfer(newXfer))
 		{
-		// force the meta-header UIDs to be re-generated when storing the file 
-		// since the UIDs in the data set may have changed 
-		delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-		delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+			// force the meta-header UIDs to be re-generated when storing the file 
+			// since the UIDs in the data set may have changed 
+			delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+			delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
 
 			// store in lossless JPEG format
 			
@@ -185,9 +190,20 @@ static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, ch
 			
 			cond = fileformat.saveFile(outfname, newXfer);
 			status =  (cond.good()) ? YES : NO;
+			
+			if (newXfer == EXS_JPEGProcess14SV1TransferSyntax)
+				printf("\n**** compressFileFormat EXS_JPEGProcess14SV1TransferSyntax\n");
+			else if (newXfer == EXS_JPEGProcess2_4TransferSyntax)
+				printf("\n**** compressFileFormat EXS_JPEGProcess2_4TransferSyntax\n");
+			else if (newXfer == EXS_RLELossless)
+				printf("\n**** compressFileFormat EXS_RLELossless\n");
 		}
 		else
+		{
 			status = NO;
+			
+			printf("\n**** compressFileFormat failed\n");
+		}
 	}
 	
 	return status;
@@ -705,7 +721,8 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 		cond = fileformat.loadFile( subImgFileName);
 	
 		/* figure out which of the accepted presentation contexts should be used */
-		DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+		E_TransferSyntax originalXFer = fileformat.getDataset()->getOriginalXfer();
+		DcmXfer filexfer( originalXFer);
 		
 		//on the fly conversion:
 		
@@ -723,7 +740,19 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 		{
 			status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
 			
-			strcpy( subImgFileName, outfname);
+			if( status)
+				strcpy( subImgFileName, outfname);
+		}
+		else if (filexfer.isEncapsulated() && preferredXfer.isEncapsulated())
+		{
+			if( xferSyntax != originalXFer)
+			{
+				cond = decompressFileFormat(fileformat, subImgFileName);
+				status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
+				
+				if( status)
+					strcpy( subImgFileName, outfname);
+			}
 		}
 		else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated())
 		{

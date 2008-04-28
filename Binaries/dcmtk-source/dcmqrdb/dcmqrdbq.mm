@@ -114,7 +114,6 @@ END_EXTERN_C
 
 //static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *outfname, E_TransferSyntax newXfer){
 //	
-//	int opt_Quality;
 //	OFCondition cond;
 //	OFBool status = YES;
 //	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
@@ -128,7 +127,7 @@ END_EXTERN_C
 //		
 //		unlink( outfname);
 //		
-//		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:opt_Quality AET:@"OsiriX" atomically:YES];
+//		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
 //		[dcmObject release];
 //	}
 //	else if  (newXfer == EXS_JPEG2000LosslessOnly)
