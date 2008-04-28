@@ -698,7 +698,6 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 		when the file is read to get SOPInstance and SOPClass. It would be nice to only open the file once.
 		This may not be feasible.
 	*/
-	
     dbcond = dbHandle.nextMoveResponse( subImgSOPClass, subImgSOPInstance, subImgFileName, &nRemaining, dbStatus);
     if (dbcond.bad())
 	{
@@ -1036,7 +1035,6 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 	transferSyntaxes[9] = UID_RLELosslessTransferSyntax;
 	
 	numTransferSyntaxes = 10;
-
 
 //#ifdef DISABLE_COMPRESSION_EXTENSION
 //    /* gLocalByteOrder is defined in dcxfer.h */
