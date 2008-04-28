@@ -130,7 +130,6 @@ private:
     OFBool mapMoveDestination(
       const char *origPeer, const char *origAE,
       const char *dstAE, char *dstPeer, int *dstPort);
-	OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC_Parameters *params, E_TransferSyntax preferredSyntax);
     OFCondition addAllStoragePresentationContexts(T_ASC_Parameters *params);
 
     /// reference to database handle

@@ -34,6 +34,9 @@
 #include <Cocoa/Cocoa.h>
 #include"DCMNetServiceDelegate.h"
 #import "SendController.h"
+#import "browserController.h"
+#import "DCMObject.h"
+#import "DCMTransferSyntax.h"
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmqrcbm.h"
@@ -46,11 +49,234 @@
 #include "dcmqrdbs.h"
 #include "dcmqrdbi.h"
 
+#include "ofstring.h"
+#include "dimse.h"
+#include "diutil.h"
+#include "dcdatset.h"
+#include "dcmetinf.h"
+#include "dcfilefo.h"
+#include "dcdebug.h"
+#include "dcuid.h"
+#include "dcdict.h"
+#include "dcdeftag.h"
+
+#include "ofconapp.h"
+#include "dcuid.h"     /* for dcmtk version name */
+#include "dicom.h"     /* for DICOM_APPLICATION_REQUESTOR */
+#include "dcostrmz.h"  /* for dcmZlibCompressionLevel */
+#include "dcasccfg.h"  /* for class DcmAssociationConfiguration */
+#include "dcasccff.h"  /* for class DcmAssociationConfigurationFile */
+
+
+#include "djdecode.h"  /* for dcmjpeg decoders */
+#include "djencode.h"  /* for dcmjpeg encoders */
+#include "dcrledrg.h"  /* for DcmRLEDecoderRegistration */
+#include "dcrleerg.h"  /* for DcmRLEEncoderRegistration */
+#include "djrploss.h"
+#include "djrplol.h"
+#include "dcpixel.h"
+#include "dcrlerp.h"
+
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* needed on Solaris for O_RDONLY */
 #endif
 END_EXTERN_C
+
+static OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname){
+	OFBool status = YES;
+	//DcmFileFormat fileformat;
+	OFCondition cond;
+	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+	//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
+	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000) {
+		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+		[dcmObject release];
+	}
+	else {
+		  DcmDataset *dataset = fileformat.getDataset();
+
+		  // decompress data set if compressed
+		  dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+
+		  // check if everything went well
+		  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+		  {
+			fileformat.loadAllDataIntoMemory();
+			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
+			cond = fileformat.saveFile(fname, EXS_LittleEndianExplicit);
+			status =  (cond.good()) ? YES : NO;
+			
+		  }
+		  else
+			status = NO;
+
+	}
+
+	return cond;
+}
+
+static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *outfname, E_TransferSyntax newXfer){
+	
+	int opt_Quality;
+	OFCondition cond;
+	OFBool status = YES;
+	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+	
+	if (newXfer == EXS_JPEG2000)
+	{
+		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
+		
+		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+		
+		unlink( outfname);
+		
+		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:opt_Quality AET:@"OsiriX" atomically:YES];
+		[dcmObject release];
+	}
+	else if  (newXfer == EXS_JPEG2000LosslessOnly)
+	{
+		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
+		
+		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+		
+		unlink( outfname);
+		
+		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality:0 AET:@"OsiriX" atomically:YES];
+		[dcmObject release];
+	}
+	else
+	{
+		DcmDataset *dataset = fileformat.getDataset();
+		DcmItem *metaInfo = fileformat.getMetaInfo();
+		DcmRepresentationParameter *params;
+		DJ_RPLossy lossyParams(opt_Quality);
+		DcmRLERepresentationParameter rleParams;
+		DJ_RPLossless losslessParams; // codec parameters, we use the defaults
+		if (newXfer == EXS_JPEGProcess14SV1TransferSyntax)
+		params = &losslessParams;
+		else if (newXfer == EXS_JPEGProcess2_4TransferSyntax)
+		params = &lossyParams; 
+		else if (newXfer == EXS_RLELossless)
+		params = &rleParams; 
+
+	
+		// this causes the lossless JPEG version of the dataset to be created
+		dataset->chooseRepresentation(newXfer, params);
+
+		// check if everything went well
+		if (dataset->canWriteXfer(newXfer))
+		{
+		// force the meta-header UIDs to be re-generated when storing the file 
+		// since the UIDs in the data set may have changed 
+		delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+		delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+
+			// store in lossless JPEG format
+			
+			fileformat.loadAllDataIntoMemory();
+			
+			unlink( outfname);
+			
+			cond = fileformat.saveFile(outfname, newXfer);
+			status =  (cond.good()) ? YES : NO;
+		}
+		else
+			status = NO;
+	}
+	
+	return status;
+}
+
+static OFCondition
+getTransferSyntax(T_ASC_Association * assoc, 
+        T_ASC_PresentationContextID pid,
+        E_TransferSyntax *xferSyntax)
+    /*
+     * This function checks if the presentation context id which was passed refers to a valid presentation
+     * context. If this is the case, this function determines the transfer syntax the presentation context ID
+     * refers to (will be returned to the user) and also checks if dcmtk supports this transfer syntax.
+     *
+     * Parameters:
+     *   assoc      - [in] The association (network connection to another DICOM application).
+     *   pid        - [in] The id of the presentation context which shall be checked regarding validity.
+     *   xferSyntax - [out] If pid refers to a valuid presentation context, this variable contains in the
+     *                     end the transfer syntax which is specified in the presentation context.
+     */
+{
+    T_ASC_PresentationContext pc;
+    char *ts = NULL;
+
+    /* figure out if is this a valid presentation context */
+    OFCondition cond = ASC_findAcceptedPresentationContext(assoc->params, pid, &pc);
+    if (cond.bad())
+    {
+        return makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", cond);
+    }
+
+    /* determine the transfer syntax which is specified in the presentation context */
+    ts = pc.acceptedTransferSyntax;
+    
+    /* create a DcmXfer object on the basis of the transfer syntax which was determined above */
+    DcmXfer xfer(ts);
+
+    /* check if the transfer syntax is supported by dcmtk */
+    *xferSyntax = xfer.getXfer();
+    switch (*xferSyntax)
+    {
+        case EXS_LittleEndianImplicit:
+        case EXS_LittleEndianExplicit:
+        case EXS_BigEndianExplicit:
+        case EXS_JPEGProcess1TransferSyntax:
+        case EXS_JPEGProcess2_4TransferSyntax:
+        case EXS_JPEGProcess3_5TransferSyntax:
+        case EXS_JPEGProcess6_8TransferSyntax:
+        case EXS_JPEGProcess7_9TransferSyntax:
+        case EXS_JPEGProcess10_12TransferSyntax:
+        case EXS_JPEGProcess11_13TransferSyntax:
+        case EXS_JPEGProcess14TransferSyntax:
+        case EXS_JPEGProcess15TransferSyntax:
+        case EXS_JPEGProcess16_18TransferSyntax:
+        case EXS_JPEGProcess17_19TransferSyntax:
+        case EXS_JPEGProcess20_22TransferSyntax:
+        case EXS_JPEGProcess21_23TransferSyntax:
+        case EXS_JPEGProcess24_26TransferSyntax:
+        case EXS_JPEGProcess25_27TransferSyntax:
+        case EXS_JPEGProcess28TransferSyntax:
+        case EXS_JPEGProcess29TransferSyntax:
+        case EXS_JPEGProcess14SV1TransferSyntax:
+        case EXS_RLELossless:
+        case EXS_JPEGLSLossless:
+        case EXS_JPEGLSLossy:
+        case EXS_JPEG2000LosslessOnly:
+        case EXS_JPEG2000:
+        case EXS_MPEG2MainProfileAtMainLevel:
+        case EXS_JPEG2000MulticomponentLosslessOnly:
+        case EXS_JPEG2000Multicomponent:        	
+#ifdef WITH_ZLIB
+        case EXS_DeflatedLittleEndianExplicit:
+#endif
+        /* OK, these can be supported */
+        break;
+    default:
+        /* all other transfer syntaxes are not supported; hence, set the error indicator variable */
+        {
+          char buf[256];
+          sprintf(buf, "DIMSE Unsupported transfer syntax: %s", ts);
+          OFCondition subCond = makeDcmnetCondition(DIMSEC_UNSUPPORTEDTRANSFERSYNTAX, OF_error, buf);
+          cond = makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
+        }
+        break;
+    }
+
+    /* return result value */
+    return cond;
+}
 
 
 static void moveSubOpProgressCallback(void *callbackData, 
@@ -320,7 +546,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     OFCondition cond = EC_Normal;
     DIC_NODENAME dstHostName;
     DIC_NODENAME dstHostNamePlusPort;
-    int dstPortNumber;
+    int dstPortNumber, preferredSyntax;
     DIC_NODENAME localHostName;
     T_ASC_Parameters *params;
 
@@ -339,35 +565,40 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
 
     ASC_getPresentationAddresses(origAssoc->params, origHostName, NULL);
 	
-	
-    if (!mapMoveDestination(origHostName, origAETitle,
-	request->MoveDestination, dstHostName, &dstPortNumber)) {
-	return APP_INVALIDPEER;
+    if (!mapMoveDestination(origHostName, origAETitle, request->MoveDestination, dstHostName, &dstPortNumber))
+	{
+		return APP_INVALIDPEER;
     }
 
-    if (cond.good()) {
-	cond = ASC_createAssociationParameters(&params, ASC_DEFAULTMAXPDU);
-	if (cond.bad()) {
-	    DcmQueryRetrieveOptions::errmsg("moveSCP: Cannot create Association-params for sub-ops:");
-	    DimseCondition::dump(cond);
-	}
+    if (cond.good())
+	{
+		cond = ASC_createAssociationParameters(&params, ASC_DEFAULTMAXPDU);
+		if (cond.bad())
+		{
+			DcmQueryRetrieveOptions::errmsg("moveSCP: Cannot create Association-params for sub-ops:");
+			DimseCondition::dump(cond);
+		}
     }
-    if (cond.good()) {
-	gethostname(localHostName, sizeof(localHostName) - 1);
-	sprintf(dstHostNamePlusPort, "%s:%d", dstHostName, dstPortNumber);
-	ASC_setPresentationAddresses(params, localHostName, 
-		dstHostNamePlusPort);
-	ASC_setAPTitles(params, ourAETitle.c_str(), dstAETitle,NULL);
 	
-	cond = addAllStoragePresentationContexts(params);
-	if (cond.bad()) {
-	    DimseCondition::dump(cond);
-	}
-	if (options_.debug_) {
-	    printf("Request Parameters:\n");
-	    ASC_dumpParameters(params, COUT);
-	}
+    if (cond.good())
+	{
+		gethostname(localHostName, sizeof(localHostName) - 1);
+		sprintf(dstHostNamePlusPort, "%s:%d", dstHostName, dstPortNumber);
+		ASC_setPresentationAddresses(params, localHostName, dstHostNamePlusPort);
+		ASC_setAPTitles(params, ourAETitle.c_str(), dstAETitle,NULL);
+	
+		cond = addAllStoragePresentationContexts(params);
+		if (cond.bad())
+		{
+			DimseCondition::dump(cond);
+		}
+		if (options_.debug_)
+		{
+			printf("Request Parameters:\n");
+			ASC_dumpParameters(params, COUT);
+		}
     }
+	
     if (cond.good()) {
 	/* create association */
 	if (options_.verbose_)
@@ -429,6 +660,8 @@ OFCondition DcmQueryRetrieveMoveContext::closeSubAssociation()
     return cond;
 }
 
+static int seed = 0;
+
 void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus * dbStatus)
 {
     OFCondition cond = EC_Normal;
@@ -449,21 +682,71 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 		when the file is read to get SOPInstance and SOPClass. It would be nice to only open the file once.
 		This may not be feasible.
 	*/
-    dbcond = dbHandle.nextMoveResponse( subImgSOPClass, subImgSOPInstance, subImgFileName, EXS_JPEGProcess14SV1TransferSyntax, &nRemaining, dbStatus);	//EXS_LittleEndianExplicit // EXS_JPEGProcess14SV1TransferSyntax
-    if (dbcond.bad()) {
-	DcmQueryRetrieveOptions::errmsg("moveSCP: Database: nextMoveResponse Failed (%s):",
-	    DU_cmoveStatusString(dbStatus->status()));
+	
+    dbcond = dbHandle.nextMoveResponse( subImgSOPClass, subImgSOPInstance, subImgFileName, &nRemaining, dbStatus);
+    if (dbcond.bad())
+	{
+		DcmQueryRetrieveOptions::errmsg("moveSCP: Database: nextMoveResponse Failed (%s):",DU_cmoveStatusString(dbStatus->status()));
     }
+	
+	E_TransferSyntax xferSyntax;
+	T_ASC_PresentationContextID presId;
+	const char *sopclass = 0L;
+	char outfname[ 4096];
+	
+	strcpy( outfname, "");
+	
+	presId = ASC_findAcceptedPresentationContextID(subAssoc, subImgSOPClass);
+	cond = getTransferSyntax(subAssoc, presId, &xferSyntax);
 
-    if (dbStatus->status() == STATUS_Pending) {
-	/* perform sub-op */
-	cond = performMoveSubOp(subImgSOPClass,
-	    subImgSOPInstance, subImgFileName);
-	if (cond != EC_Normal) {
-	    DcmQueryRetrieveOptions::errmsg("moveSCP: Move Sub-Op Failed:");
-	    DimseCondition::dump(cond);
-	    	/* clear condition stack */
+	if (cond.good())
+	{
+		DcmFileFormat fileformat;
+		cond = fileformat.loadFile( subImgFileName);
+	
+		/* figure out which of the accepted presentation contexts should be used */
+		DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+		
+		//on the fly conversion:
+		
+		DcmXfer preferredXfer( xferSyntax);
+		OFBool status = YES;
+		
+		sprintf( outfname, "%s/%s/QR-CMOVE-%d-%d.dcm", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP", seed++, getpid());
+		unlink( outfname);
+		
+		if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated())
+		{
+			// do nothing
+		}
+		else if (filexfer.isNotEncapsulated() && preferredXfer.isEncapsulated())
+		{
+			status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
+			
+			strcpy( subImgFileName, outfname);
+		}
+		else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated())
+		{
+			cond = decompressFileFormat(fileformat, subImgFileName);
+		}
 	}
+	
+    if (dbStatus->status() == STATUS_Pending)
+	{
+		/* perform sub-op */
+		cond = performMoveSubOp(subImgSOPClass,
+			subImgSOPInstance, subImgFileName);
+		if (cond != EC_Normal)
+		{
+			DcmQueryRetrieveOptions::errmsg("moveSCP: Move Sub-Op Failed:");
+			DimseCondition::dump(cond);
+			/* clear condition stack */
+			
+			if( strlen( outfname) > 0)
+			{
+				unlink( outfname);
+			}
+		}
     }
 }
 
@@ -588,252 +871,260 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
     return OFTrue;
 }
 
-
-
-OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC_Parameters *params, E_TransferSyntax preferredSyntax){
-  // this would be the place to add support for compressed transfer syntaxes
-    OFCondition cond = EC_Normal;
-
-    int i;
-    int pid = 1;
-
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
-    int numTransferSyntaxes = 0;
-
-
-    switch (preferredSyntax)
-    {
-      case EXS_LittleEndianImplicit:
-        /* we only support Little Endian Implicit */
-        transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 1;
-        break;
-      case EXS_LittleEndianExplicit:
-        /* we prefer Little Endian Explicit */
-        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
-        break;
-      case EXS_BigEndianExplicit:
-        /* we prefer Big Endian Explicit */
-        transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
-        break;
-    case EXS_JPEGProcess14SV1TransferSyntax:
-      /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
-      transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-    case EXS_JPEGProcess1TransferSyntax:
-      /* we prefer JPEGBaseline (default lossy for 8 bit images) */
-      transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-    case EXS_JPEGProcess2_4TransferSyntax:
-      /* we prefer JPEGExtended (default lossy for 12 bit images) */
-      transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-    case EXS_JPEG2000LosslessOnly:
-      /* we prefer JPEG 2000 lossless */
-      transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-    case EXS_JPEG2000:
-      /* we prefer JPEG 2000 lossy or lossless */
-      transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-#ifdef WITH_ZLIB
-    case EXS_DeflatedLittleEndianExplicit:
-      /* we prefer deflated transmission */
-      transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-#endif
-    case EXS_RLELossless:
-      /* we prefer RLE Lossless */
-      transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-    default:
-        /* We prefer explicit transfer syntaxes.
-         * If we are running on a Little Endian machine we prefer
-         * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
-         */
-        if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
-        {
-          transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        } else {
-          transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        }
-        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
-        break;
-    }
-
-        
-    for (i=0; i<numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++) {
-	cond = ASC_addPresentationContext(
-	    params, pid, dcmLongSCUStorageSOPClassUIDs[i],
-	    transferSyntaxes, numTransferSyntaxes);
-	pid += 2;	/* only odd presentation context id's */
-    }
-    return cond;
-
-}
+//OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC_Parameters *params, E_TransferSyntax preferredSyntax){
+//  // this would be the place to add support for compressed transfer syntaxes
+//    OFCondition cond = EC_Normal;
+//
+//    int i;
+//    int pid = 1;
+//
+//    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
+//    int numTransferSyntaxes = 0;
+//	
+//    switch (preferredSyntax)
+//    {
+//      case EXS_LittleEndianImplicit:
+//        /* we only support Little Endian Implicit */
+//        transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
+//        numTransferSyntaxes = 1;
+//        break;
+//      case EXS_LittleEndianExplicit:
+//        /* we prefer Little Endian Explicit */
+//        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+//        transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+//        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+//        numTransferSyntaxes = 3;
+//        break;
+//      case EXS_BigEndianExplicit:
+//        /* we prefer Big Endian Explicit */
+//        transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+//        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+//        numTransferSyntaxes = 3;
+//        break;
+//    case EXS_JPEGProcess14SV1TransferSyntax:
+//      /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
+//      transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
+//      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//      numTransferSyntaxes = 4;
+//      break;
+//    case EXS_JPEGProcess1TransferSyntax:
+//      /* we prefer JPEGBaseline (default lossy for 8 bit images) */
+//      transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
+//      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//      numTransferSyntaxes = 4;
+//      break;
+//    case EXS_JPEGProcess2_4TransferSyntax:
+//      /* we prefer JPEGExtended (default lossy for 12 bit images) */
+//      transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
+//      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//      numTransferSyntaxes = 4;
+//      break;
+//    case EXS_JPEG2000LosslessOnly:
+//      /* we prefer JPEG 2000 lossless */
+//      transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
+//      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//      numTransferSyntaxes = 4;
+//      break;
+//    case EXS_JPEG2000:
+//      /* we prefer JPEG 2000 lossy or lossless */
+//      transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
+//      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//      numTransferSyntaxes = 4;
+//      break;
+//#ifdef WITH_ZLIB
+//    case EXS_DeflatedLittleEndianExplicit:
+//      /* we prefer deflated transmission */
+//      transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+//      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//      numTransferSyntaxes = 4;
+//      break;
+//#endif
+//    case EXS_RLELossless:
+//      /* we prefer RLE Lossless */
+//      transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
+//      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//      numTransferSyntaxes = 4;
+//      break;
+//    default:
+//        /* We prefer explicit transfer syntaxes.
+//         * If we are running on a Little Endian machine we prefer
+//         * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
+//         */
+//        if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
+//        {
+//          transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+//          transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+//        } else {
+//          transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+//          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//        }
+//        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+//        numTransferSyntaxes = 3;
+//        break;
+//    }
+//	
+//    for (i=0; i<numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++)
+//	{
+//		cond = ASC_addPresentationContext(params, pid, dcmLongSCUStorageSOPClassUIDs[i],  transferSyntaxes, numTransferSyntaxes);
+//		pid += 2;	/* only odd presentation context id's */
+//    }
+//    return cond;
+//
+//}
 
 OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC_Parameters *params)
 {
-    // this would be the place to add support for compressed transfer syntaxes
     OFCondition cond = EC_Normal;
 
     int i;
     int pid = 1;
 
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
+    const char* transferSyntaxes[ 10] = { NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL,NULL, NULL };
     int numTransferSyntaxes = 0;
+	
+	transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+	transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+	transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+	transferSyntaxes[3] = UID_JPEGProcess14SV1TransferSyntax;
+	transferSyntaxes[4] = UID_JPEGProcess1TransferSyntax;
+	transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;
+	transferSyntaxes[6] = UID_JPEG2000LosslessOnlyTransferSyntax;
+	transferSyntaxes[7] = UID_JPEG2000TransferSyntax;
+	transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+	transferSyntaxes[9] = UID_RLELosslessTransferSyntax;
+	
+	numTransferSyntaxes = 10;
 
-#ifdef DISABLE_COMPRESSION_EXTENSION
-    /* gLocalByteOrder is defined in dcxfer.h */
-    if (gLocalByteOrder == EBO_LittleEndian) {
-    /* we are on a little endian machine */
-        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
-    } else {
-        /* we are on a big endian machine */
-        transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
-    }
-#else
-    switch (options_.networkTransferSyntaxOut_)
-    {
-      case EXS_LittleEndianImplicit:
-        /* we only support Little Endian Implicit */
-        transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 1;
-        break;
-      case EXS_LittleEndianExplicit:
-        /* we prefer Little Endian Explicit */
-        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
-        break;
-      case EXS_BigEndianExplicit:
-        /* we prefer Big Endian Explicit */
-        transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
-        break;
-    case EXS_JPEGProcess14SV1TransferSyntax:
-      /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
-      transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-    case EXS_JPEGProcess1TransferSyntax:
-      /* we prefer JPEGBaseline (default lossy for 8 bit images) */
-      transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-    case EXS_JPEGProcess2_4TransferSyntax:
-      /* we prefer JPEGExtended (default lossy for 12 bit images) */
-      transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-    case EXS_JPEG2000LosslessOnly:
-      /* we prefer JPEG 2000 lossless */
-      transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-    case EXS_JPEG2000:
-      /* we prefer JPEG 2000 lossy or lossless */
-      transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-#ifdef WITH_ZLIB
-    case EXS_DeflatedLittleEndianExplicit:
-      /* we prefer deflated transmission */
-      transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-#endif
-    case EXS_RLELossless:
-      /* we prefer RLE Lossless */
-      transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-    default:
-        /* We prefer explicit transfer syntaxes.
-         * If we are running on a Little Endian machine we prefer
-         * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
-         */
-        if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
-        {
-          transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        } else {
-          transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        }
-        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
-        break;
-    }
-#endif
-        
+
+//#ifdef DISABLE_COMPRESSION_EXTENSION
+//    /* gLocalByteOrder is defined in dcxfer.h */
+//    if (gLocalByteOrder == EBO_LittleEndian) {
+//    /* we are on a little endian machine */
+//        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+//        transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+//        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+//        numTransferSyntaxes = 3;
+//    } else {
+//        /* we are on a big endian machine */
+//        transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+//        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+//        numTransferSyntaxes = 3;
+//    }
+//#else
+//    switch ( preferredTS)
+//    {
+//      case EXS_LittleEndianImplicit:
+//        /* we only support Little Endian Implicit */
+//        transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
+//        numTransferSyntaxes = 1;
+//        break;
+//      case EXS_LittleEndianExplicit:
+//        /* we prefer Little Endian Explicit */
+//        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+//        transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+//        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+//        numTransferSyntaxes = 3;
+//        break;
+//      case EXS_BigEndianExplicit:
+//        /* we prefer Big Endian Explicit */
+//        transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+//        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+//        numTransferSyntaxes = 3;
+//        break;
+//    case EXS_JPEGProcess14SV1TransferSyntax:
+//      /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
+//      transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
+//      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//      numTransferSyntaxes = 4;
+//      break;
+//    case EXS_JPEGProcess1TransferSyntax:
+//      /* we prefer JPEGBaseline (default lossy for 8 bit images) */
+//      transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
+//      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//      numTransferSyntaxes = 4;
+//      break;
+//    case EXS_JPEGProcess2_4TransferSyntax:
+//      /* we prefer JPEGExtended (default lossy for 12 bit images) */
+//      transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
+//      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//      numTransferSyntaxes = 4;
+//      break;
+//    case EXS_JPEG2000LosslessOnly:
+//      /* we prefer JPEG 2000 lossless */
+//      transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
+//      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//      numTransferSyntaxes = 4;
+//      break;
+//    case EXS_JPEG2000:
+//      /* we prefer JPEG 2000 lossy or lossless */
+//      transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
+//      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//      numTransferSyntaxes = 4;
+//      break;
+//#ifdef WITH_ZLIB
+//    case EXS_DeflatedLittleEndianExplicit:
+//      /* we prefer deflated transmission */
+//      transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+//      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//      numTransferSyntaxes = 4;
+//      break;
+//#endif
+//    case EXS_RLELossless:
+//      /* we prefer RLE Lossless */
+//      transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
+//      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//      numTransferSyntaxes = 4;
+//      break;
+//    default:
+//        /* We prefer explicit transfer syntaxes.
+//         * If we are running on a Little Endian machine we prefer
+//         * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
+//         */
+//        if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
+//        {
+//          transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+//          transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+//        } else {
+//          transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+//          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//        }
+//        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+//        numTransferSyntaxes = 3;
+//        break;
+//    }
+//#endif
+	
     for (i=0; i<numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++) {
 	cond = ASC_addPresentationContext(
 	    params, pid, dcmLongSCUStorageSOPClassUIDs[i],

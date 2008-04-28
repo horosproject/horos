@@ -76,115 +76,115 @@ END_EXTERN_C
 #include "dcpixel.h"
 #include "dcrlerp.h"
 
-OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname){
-	OFBool status = YES;
-	//DcmFileFormat fileformat;
-	OFCondition cond;
-	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-	//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
-	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000) {
-		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
-		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
-		[dcmObject release];
-	}
-	else {
-		  DcmDataset *dataset = fileformat.getDataset();
+//static OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname){
+//	OFBool status = YES;
+//	//DcmFileFormat fileformat;
+//	OFCondition cond;
+//	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+//	//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
+//	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000) {
+//		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+//		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+//		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+//		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+//		[dcmObject release];
+//	}
+//	else {
+//		  DcmDataset *dataset = fileformat.getDataset();
+//
+//		  // decompress data set if compressed
+//		  dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+//
+//		  // check if everything went well
+//		  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+//		  {
+//			fileformat.loadAllDataIntoMemory();
+//			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
+//			cond = fileformat.saveFile(fname, EXS_LittleEndianExplicit);
+//			status =  (cond.good()) ? YES : NO;
+//			
+//		  }
+//		  else
+//			status = NO;
+//
+//	}
+//
+//	return cond;
+//}
 
-		  // decompress data set if compressed
-		  dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
-
-		  // check if everything went well
-		  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
-		  {
-			fileformat.loadAllDataIntoMemory();
-			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
-			cond = fileformat.saveFile(fname, EXS_LittleEndianExplicit);
-			status =  (cond.good()) ? YES : NO;
-			
-		  }
-		  else
-			status = NO;
-
-	}
-
-	return cond;
-}
-
-static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *outfname, E_TransferSyntax newXfer){
-	
-	int opt_Quality;
-	OFCondition cond;
-	OFBool status = YES;
-	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-	
-	if (newXfer == EXS_JPEG2000)
-	{
-		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
-		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
-		
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
-		
-		unlink( outfname);
-		
-		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:opt_Quality AET:@"OsiriX" atomically:YES];
-		[dcmObject release];
-	}
-	else if  (newXfer == EXS_JPEG2000LosslessOnly)
-	{
-		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
-		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
-		
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
-		
-		unlink( outfname);
-		
-		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality:0 AET:@"OsiriX" atomically:YES];
-		[dcmObject release];
-	}
-	else
-	{
-		DcmDataset *dataset = fileformat.getDataset();
-		DcmItem *metaInfo = fileformat.getMetaInfo();
-		DcmRepresentationParameter *params;
-		DJ_RPLossy lossyParams(opt_Quality);
-		DcmRLERepresentationParameter rleParams;
-		DJ_RPLossless losslessParams; // codec parameters, we use the defaults
-		if (newXfer == EXS_JPEGProcess14SV1TransferSyntax)
-		params = &losslessParams;
-		else if (newXfer == EXS_JPEGProcess2_4TransferSyntax)
-		params = &lossyParams; 
-		else if (newXfer == EXS_RLELossless)
-		params = &rleParams; 
-
-	
-		// this causes the lossless JPEG version of the dataset to be created
-		dataset->chooseRepresentation(newXfer, params);
-
-		// check if everything went well
-		if (dataset->canWriteXfer(newXfer))
-		{
-		// force the meta-header UIDs to be re-generated when storing the file 
-		// since the UIDs in the data set may have changed 
-		delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-		delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
-
-			// store in lossless JPEG format
-			
-			fileformat.loadAllDataIntoMemory();
-			
-			unlink( outfname);
-			
-			cond = fileformat.saveFile(outfname, newXfer);
-			status =  (cond.good()) ? YES : NO;
-		}
-		else
-			status = NO;
-	}
-	
-	return status;
-}
+//static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *outfname, E_TransferSyntax newXfer){
+//	
+//	int opt_Quality;
+//	OFCondition cond;
+//	OFBool status = YES;
+//	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+//	
+//	if (newXfer == EXS_JPEG2000)
+//	{
+//		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+//		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
+//		
+//		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+//		
+//		unlink( outfname);
+//		
+//		[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:opt_Quality AET:@"OsiriX" atomically:YES];
+//		[dcmObject release];
+//	}
+//	else if  (newXfer == EXS_JPEG2000LosslessOnly)
+//	{
+//		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+//		NSString *outpath = [NSString stringWithCString:outfname encoding:[NSString defaultCStringEncoding]];
+//		
+//		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+//		
+//		unlink( outfname);
+//		
+//		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality:0 AET:@"OsiriX" atomically:YES];
+//		[dcmObject release];
+//	}
+//	else
+//	{
+//		DcmDataset *dataset = fileformat.getDataset();
+//		DcmItem *metaInfo = fileformat.getMetaInfo();
+//		DcmRepresentationParameter *params;
+//		DJ_RPLossy lossyParams(opt_Quality);
+//		DcmRLERepresentationParameter rleParams;
+//		DJ_RPLossless losslessParams; // codec parameters, we use the defaults
+//		if (newXfer == EXS_JPEGProcess14SV1TransferSyntax)
+//		params = &losslessParams;
+//		else if (newXfer == EXS_JPEGProcess2_4TransferSyntax)
+//		params = &lossyParams; 
+//		else if (newXfer == EXS_RLELossless)
+//		params = &rleParams; 
+//
+//	
+//		// this causes the lossless JPEG version of the dataset to be created
+//		dataset->chooseRepresentation(newXfer, params);
+//
+//		// check if everything went well
+//		if (dataset->canWriteXfer(newXfer))
+//		{
+//		// force the meta-header UIDs to be re-generated when storing the file 
+//		// since the UIDs in the data set may have changed 
+//		delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+//		delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+//
+//			// store in lossless JPEG format
+//			
+//			fileformat.loadAllDataIntoMemory();
+//			
+//			unlink( outfname);
+//			
+//			cond = fileformat.saveFile(outfname, newXfer);
+//			status =  (cond.good()) ? YES : NO;
+//		}
+//		else
+//			status = NO;
+//	}
+//	
+//	return status;
+//}
 
 
 const OFConditionConst DcmQROsiriXDatabaseErrorC(OFM_imagectn, 0x001, OF_error, "DcmQR Index Database Error");
@@ -960,11 +960,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
         status->setStatus(STATUS_Success);
         return (EC_Normal) ;
     }
-	
-	char outfname[ 4096];
-	
-	sprintf( outfname, "%s/%s/QR-CMOVE-%d.dcm", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP", seed++);
-	
+		
 	*numberOfRemainingSubOperations = --handle->NumberRemainOperations ;
 //	NSLog(@"next Move response: %d", *numberOfRemainingSubOperations);
 	 status->setStatus(STATUS_Pending);
@@ -973,7 +969,6 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
 		
 	OFCondition cond = [handle->dataHandler nextMoveObject:imageFileName];
-	//NSLog(@"Next file: %s", imageFileName);
 	DcmFileFormat fileformat;
 	cond = fileformat.loadFile(imageFileName);
 	
@@ -992,30 +987,6 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 				{
 					strcpy (SOPClassUID, (char *) sopclass) ;
 					strcpy (SOPInstanceUID, (char *) sopinstance) ;
-					/* figure out which of the accepted presentation contexts should be used */
-					DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-					
-					//on the fly conversion:
-					
-					E_TransferSyntax moveTransferSyntax = preferredTS;
-					T_ASC_PresentationContextID presId;
-					DcmXfer preferredXfer(moveTransferSyntax);
-					OFBool status = YES;
-					
-					if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated())
-					{
-						// do nothing
-					}
-					else if (filexfer.isNotEncapsulated() && preferredXfer.isEncapsulated())
-					{
-						status = compressFileFormat(fileformat, imageFileName, outfname, moveTransferSyntax);
-						
-						strcpy( imageFileName, outfname);
-					}
-					else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated())
-					{
-						cond = decompressFileFormat(fileformat, imageFileName);
-					}
 				}
 				else cond = EC_IllegalParameter;
 			}
@@ -1026,8 +997,6 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 			
 		}
 	}
-	
-	//read file to get SOPClass and SOPInstanceUIDs
 	
 	 return cond;
 }

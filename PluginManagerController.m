@@ -210,6 +210,10 @@
 		[self refreshPluginList];
 }
 
+- (BOOL)tableView:(NSTableView *)tableView shouldTypeSelectForEvent:(NSEvent *)event withCurrentSearchString:(NSString *)searchString
+{
+	NSLog(@"%@", event);
+}
 #pragma mark -
 #pragma mark web view
 

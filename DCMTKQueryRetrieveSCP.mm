@@ -186,26 +186,13 @@ void errmsg(const char* msg, ...)
 	options.supportPatientRoot_ = OFFalse;
 	options.supportPatientStudyOnly_ = OFFalse;
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"acceptOnlyExplicitLittleEndian"]) options.networkTransferSyntax_ = EXS_LittleEndianImplicit;		// See dcmqrsrv.mm
-	else options.networkTransferSyntax_ = EXS_LittleEndianExplicit;																								// See dcmqrsrv.mm
+	options.networkTransferSyntax_ = (E_TransferSyntax) [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredSyntaxForIncoming"];
 	
-	/*we will stick to the default for now for incoming syntaxes
-	options.networkTransferSyntax_     = EXS_LittleEndianExplicit;
-	options.networkTransferSyntax_     = EXS_BigEndianExplicit;
-	options.networkTransferSyntax_     = EXS_LittleEndianImplicit;
-#ifndef DISABLE_COMPRESSION_EXTENSION
-	options.networkTransferSyntax_     = EXS_JPEGProcess14SV1TransferSyntax;
-	options.networkTransferSyntax_     = EXS_JPEGProcess1TransferSyntax;
-    options.networkTransferSyntax_     = EXS_JPEGProcess2_4TransferSyntax;
-    options.networkTransferSyntax_ = EXS_JPEG2000LosslessOnly;
-    options.networkTransferSyntax_ = EXS_JPEG2000;
-	options.networkTransferSyntax_     = EXS_RLELossless;
-#ifdef WITH_ZLIB
-	options.networkTransferSyntax_ = EXS_DeflatedLittleEndianExplicit
-	*/
+//	options.networkTransferSyntax_ = EXS_LittleEndianImplicit;		// See dcmqrsrv.mm
+//	else options.networkTransferSyntax_ = EXS_LittleEndianExplicit;																								// See dcmqrsrv.mm
 	
 	//outgoing syntaxes we should determine this by server. not globally
-	options.networkTransferSyntaxOut_ =  EXS_LittleEndianExplicit;	//;	//EXS_LittleEndianExplicit;	//;EXS_JPEGProcess14TransferSyntax		EXS_JPEG2000
+	options.networkTransferSyntaxOut_ =  EXS_LittleEndianExplicit;	//;	//EXS_LittleEndianExplicit;	//;		EXS_JPEG2000		// See dcmqrcbm.mm
 	/*
 	options.networkTransferSyntaxOut_ = EXS_LittleEndianExplicit;
 	options.networkTransferSyntaxOut_ = EXS_BigEndianExplicit;

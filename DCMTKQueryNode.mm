@@ -196,115 +196,115 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 //   
 }
 
-static OFCondition
-acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
-{
-    const char* knownAbstractSyntaxes[] = {
-        UID_VerificationSOPClass
-    };
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
-    int numTransferSyntaxes;
-	
-	OFCmdUnsignedInt  opt_maxPDU = ASC_DEFAULTMAXPDU;
-	E_TransferSyntax opt_in_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
-	
-    OFCondition cond = ASC_receiveAssociation(aNet, assoc, opt_maxPDU);
-    if (cond.good())
-    {
-      switch (opt_in_networkTransferSyntax)
-      {
-        case EXS_LittleEndianImplicit:
-          /* we only support Little Endian Implicit */
-          transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
-          numTransferSyntaxes = 1;
-          break;
-        case EXS_LittleEndianExplicit:
-          /* we prefer Little Endian Explicit */
-          transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-          transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
-          numTransferSyntaxes = 3;
-          break;
-        case EXS_BigEndianExplicit:
-          /* we prefer Big Endian Explicit */
-          transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
-          numTransferSyntaxes = 3;
-          break;
-        case EXS_JPEGProcess14SV1TransferSyntax:
-          /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
-          transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
-          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-          numTransferSyntaxes = 4;
-          break;
-        case EXS_JPEGProcess1TransferSyntax:
-          /* we prefer JPEGBaseline (default lossy for 8 bit images) */
-          transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
-          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-          numTransferSyntaxes = 4;
-          break;
-        case EXS_JPEGProcess2_4TransferSyntax:
-          /* we prefer JPEGExtended (default lossy for 12 bit images) */
-          transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
-          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-          numTransferSyntaxes = 4;
-          break;
-        case EXS_RLELossless:
-          /* we prefer RLE Lossless */
-          transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
-          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-          numTransferSyntaxes = 4;
-          break;
-        default:
-          /* We prefer explicit transfer syntaxes.
-           * If we are running on a Little Endian machine we prefer
-           * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
-           */
-          if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
-          {
-            transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-            transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-          } else {
-            transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-            transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-          }
-          transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-          numTransferSyntaxes = 3;
-          break;
-
-        }
-
-        /* accept the Verification SOP Class if presented */
-        cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
-            (*assoc)->params,
-            knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes),
-            transferSyntaxes, numTransferSyntaxes);
-
-        if (cond.good())
-        {
-            /* the array of Storage SOP Class UIDs comes from dcuid.h */
-            cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
-                (*assoc)->params,
-                dcmAllStorageSOPClassUIDs, numberOfAllDcmStorageSOPClassUIDs,
-                transferSyntaxes, numTransferSyntaxes);
-        }
-    }
-    if (cond.good()) cond = ASC_acknowledgeAssociation(*assoc);
-    if (cond.bad()) {
-        ASC_dropAssociation(*assoc);
-        ASC_destroyAssociation(assoc);
-    }
-    return cond;
-}
+//static OFCondition
+//acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
+//{
+//    const char* knownAbstractSyntaxes[] = {
+//        UID_VerificationSOPClass
+//    };
+//    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
+//    int numTransferSyntaxes;
+//	
+//	OFCmdUnsignedInt  opt_maxPDU = ASC_DEFAULTMAXPDU;
+//	E_TransferSyntax opt_in_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+//	
+//    OFCondition cond = ASC_receiveAssociation(aNet, assoc, opt_maxPDU);
+//    if (cond.good())
+//    {
+//      switch (opt_in_networkTransferSyntax)
+//      {
+//        case EXS_LittleEndianImplicit:
+//          /* we only support Little Endian Implicit */
+//          transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
+//          numTransferSyntaxes = 1;
+//          break;
+//        case EXS_LittleEndianExplicit:
+//          /* we prefer Little Endian Explicit */
+//          transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+//          transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+//          transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+//          numTransferSyntaxes = 3;
+//          break;
+//        case EXS_BigEndianExplicit:
+//          /* we prefer Big Endian Explicit */
+//          transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+//          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//          transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+//          numTransferSyntaxes = 3;
+//          break;
+//        case EXS_JPEGProcess14SV1TransferSyntax:
+//          /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
+//          transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
+//          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//          numTransferSyntaxes = 4;
+//          break;
+//        case EXS_JPEGProcess1TransferSyntax:
+//          /* we prefer JPEGBaseline (default lossy for 8 bit images) */
+//          transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
+//          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//          numTransferSyntaxes = 4;
+//          break;
+//        case EXS_JPEGProcess2_4TransferSyntax:
+//          /* we prefer JPEGExtended (default lossy for 12 bit images) */
+//          transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
+//          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//          numTransferSyntaxes = 4;
+//          break;
+//        case EXS_RLELossless:
+//          /* we prefer RLE Lossless */
+//          transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
+//          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+//          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+//          numTransferSyntaxes = 4;
+//          break;
+//        default:
+//          /* We prefer explicit transfer syntaxes.
+//           * If we are running on a Little Endian machine we prefer
+//           * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
+//           */
+//          if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
+//          {
+//            transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+//            transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+//          } else {
+//            transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+//            transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+//          }
+//          transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+//          numTransferSyntaxes = 3;
+//          break;
+//
+//        }
+//
+//        /* accept the Verification SOP Class if presented */
+//        cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
+//            (*assoc)->params,
+//            knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes),
+//            transferSyntaxes, numTransferSyntaxes);
+//
+//        if (cond.good())
+//        {
+//            /* the array of Storage SOP Class UIDs comes from dcuid.h */
+//            cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
+//                (*assoc)->params,
+//                dcmAllStorageSOPClassUIDs, numberOfAllDcmStorageSOPClassUIDs,
+//                transferSyntaxes, numTransferSyntaxes);
+//        }
+//    }
+//    if (cond.good()) cond = ASC_acknowledgeAssociation(*assoc);
+//    if (cond.bad()) {
+//        ASC_dropAssociation(*assoc);
+//        ASC_destroyAssociation(assoc);
+//    }
+//    return cond;
+//}
 
 //static OFCondition
 //subOpSCP(T_ASC_Association **subAssoc)
@@ -362,18 +362,18 @@ static void
 subOpCallback(void * /*subOpCallbackData*/ ,
         T_ASC_Network *aNet, T_ASC_Association **subAssoc)
 {
-	if (aNet == NULL) return;   /* help no net ! */
-
-	if (*subAssoc == NULL)
-	{
-        /* negotiate association */
-		acceptSubAssoc(aNet, subAssoc);
-	}
-	else
-	{
-        /* be a service class provider */
-		//subOpSCP(subAssoc);
-	}
+//	if (aNet == NULL) return;   /* help no net ! */
+//
+//	if (*subAssoc == NULL)
+//	{
+//        /* negotiate association */
+//		acceptSubAssoc(aNet, subAssoc);
+//	}
+//	else
+//	{
+//        /* be a service class provider */
+//		//subOpSCP(subAssoc);
+//	}
 }
 
 @implementation DCMTKQueryNode
