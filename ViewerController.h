@@ -525,6 +525,7 @@ enum
 - (IBAction) roiIntDeleteAllROIsWithSameName :(NSString*) name;
 - (IBAction) roiDeleteAllROIsWithSameName:(id) sender;
 - (IBAction) updateZVector:(id) sender;
+- (void)displayDICOMOverlays: (id)sender;
 - (IBAction)resampleDataBy2:(id)sender;
 - (BOOL)resampleDataBy2;
 - (BOOL)resampleDataWithFactor:(float)factor;

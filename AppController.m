@@ -759,12 +759,15 @@ static NSDate *lastWarningDate = 0L;
 	BOOL				refreshColumns = NO;
 	BOOL				recomputePETBlending = NO;
 	BOOL				refreshViewer = NO;
+	BOOL				revertViewer = NO;
 	NSUserDefaults		*defaults = [NSUserDefaults standardUserDefaults];
 	
 	if( mainThread != [NSThread currentThread]) return;
 	
 	NS_DURING
 	
+	if( [[previousDefaults valueForKey: @"DisplayDICOMOverlays"] intValue]				!=		[defaults integerForKey: @"DisplayDICOMOverlays"])
+		revertViewer = YES;
 	if( [[previousDefaults valueForKey: @"ROITEXTNAMEONLY"] intValue]				!=		[defaults integerForKey: @"ROITEXTNAMEONLY"])
 		refreshViewer = YES;
 	if( [[previousDefaults valueForKey: @"ROITEXTIFSELECTED"] intValue]				!=		[defaults integerForKey: @"ROITEXTIFSELECTED"])
@@ -844,12 +847,18 @@ static NSDate *lastWarningDate = 0L;
 	if( recomputePETBlending)
 		[DCMView computePETBlendingCLUT];
 	
-	if( refreshViewer)
+	[DCMPix checkUserDefaults: YES];
+	
+	if( refreshViewer || revertViewer)
 	{
 		NSArray *windows = [ViewerController getDisplayed2DViewers];
 		
 		for(ViewerController *v in windows)
+		{
 			[v needsDisplayUpdate];
+			if( revertViewer)
+				[v displayDICOMOverlays: self];
+		}
 		
 		for(ViewerController *v in windows)
 		{
@@ -877,7 +886,7 @@ static NSDate *lastWarningDate = 0L;
 	
 	[[BrowserController currentBrowser] setNetworkLogs];
 	[DicomFile resetDefaults];
-	[DCMPix checkUserDefaults: YES];
+	
 	[DCMView setDefaults];
 	[ROI loadDefaultSettings];
 	

@@ -769,10 +769,10 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 			DcmQueryRetrieveOptions::errmsg("moveSCP: Move Sub-Op Failed:");
 			DimseCondition::dump(cond);
 			/* clear condition stack */
-			
-			if( strlen( outfname) > 0)
-				unlink( outfname);
 		}
+		
+		if( strlen( outfname) > 0)
+			unlink( outfname);
     }
 }
 
