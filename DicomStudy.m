@@ -24,6 +24,7 @@ Version 2.3
 ****************************************************************************************************/
 
 #import "DicomStudy.h"
+#import "DicomSeries.h"
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import <OsiriX/DCM.h>
 
@@ -294,7 +295,7 @@ Version 2.3
 	{
 		if ([DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]])
 		{
-			if( [[series valueForKey:@"id"] intValue] != 5002 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] == NO)		// We dont want the OsiriX ROIs SR
+			if( [[series valueForKey:@"id"] intValue] != 5002 || [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] == NO)		// We dont want the OsiriX ROIs SR
 				[newArray addObject:series];
 		}
 	}
@@ -354,13 +355,15 @@ Version 2.3
 
 - (NSManagedObject *)roiSRSeries
 {
-	NSArray *array = [self reportSeries] ;
+	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	if ([array count] < 1)  return 0L;
 	
-	NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"id == %d", 5002]; 
-	NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"name == %@", @"OsiriX ROI SR"]; 
-	NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:predicate1, predicate2, nil]];
-	NSArray *newArray = [array filteredArrayUsingPredicate:compoundPredicate];
+	NSMutableArray *newArray = [NSMutableArray array];
+	for( DicomSeries *series in array)
+	{
+		if( [[series valueForKey:@"id"] intValue] == 5002 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
+			[newArray addObject:series];
+	}
 	
 	if( [newArray count] > 1)
 	{
@@ -369,6 +372,7 @@ Version 2.3
 		for( i = 1 ; i < [newArray count] ; i++)
 			[[self managedObjectContext] deleteObject: [newArray objectAtIndex: i]]; 
 	}
+	
 	if( [newArray count]) return [newArray objectAtIndex: 0];
 	
 	return 0L;
