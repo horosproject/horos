@@ -285,13 +285,18 @@ Version 2.3
 	return newArray;
 }
 
-- (NSArray *)reportSeries{
+- (NSArray *)reportSeries
+{
 	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	NSMutableArray *newArray = [NSMutableArray array];
 	id series;
-	for (series in array){
+	for (series in array)
+	{
 		if ([DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]])
-			[newArray addObject:series];
+		{
+			if( [[series valueForKey:@"id"] intValue] != 5002 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] == NO)		// We dont want the OsiriX ROIs SR
+				[newArray addObject:series];
+		}
 	}
 	return newArray;
 }

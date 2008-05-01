@@ -4968,8 +4968,7 @@ static NSArray*	statesArray = nil;
 	//	PLUGINS
 	// *********************************************
 	
-	if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 3 && 
-	   [[tableColumn identifier] isEqualToString:@"reportURL"])
+	if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 3 && [[tableColumn identifier] isEqualToString:@"reportURL"])
 	{
 		if ([[item valueForKey:@"type"] isEqualToString:@"Study"])
 		{
