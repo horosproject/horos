@@ -76,10 +76,9 @@ MODIFICATION HISTORY
 
 #define BUILTIN_DCMTK YES
 
+ToolbarPanelController *toolbarPanel[10] = {0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L};
 
-ToolbarPanelController		*toolbarPanel[10] = {0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L};
-
-static		NSString				*currentHostName = 0L;
+static NSString *currentHostName = 0L;
 
 NSThread				*mainThread;
 BOOL					NEEDTOREBUILD = NO;
