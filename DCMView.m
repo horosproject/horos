@@ -24,6 +24,7 @@ Version 2.3
 */
 
 #import "DCMAbstractSyntaxUID.h"
+#import "MPRPreviewView.h"
 #import <DCMView.h>
 #import "StringTexture.h"
 #import "DCMPix.h"
@@ -7827,6 +7828,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 -(unsigned char*) getRawPixelsViewWidth:(long*) width height:(long*) height spp:(long*) spp bpp:(long*) bpp screenCapture:(BOOL) screenCapture force8bits:(BOOL) force8bits removeGraphical:(BOOL) removeGraphical squarePixels:(BOOL) squarePixels allowSmartCropping:(BOOL) allowSmartCropping origin:(float*) imOrigin spacing:(float*) imSpacing
 {
 	unsigned char	*buf = 0L;
+	
+	if( [self class] == [MPRPreviewView class] ||
+		[self class] == [OrthogonalMPRPETCTView class] ||
+		[self class] == [OrthogonalMPRView class]) allowSmartCropping = NO;	// <- MPR 2D, Ortho MPR
 	
 	if( screenCapture)	// Pixels displayed in current window
 	{
