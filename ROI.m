@@ -4340,7 +4340,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				a1 = [[points objectAtIndex: 0] point];
 				a2 = [[points objectAtIndex: 1] point];
 				b1 = [[points objectAtIndex: 2] point];
-				b2 = [[points objectAtIndex: 3] point];				
+				b2 = [[points objectAtIndex: 3] point];
+				
+				if( pixelSpacingX != 0 && pixelSpacingY != 0)
+				{
+					a1 = NSMakePoint(a1.x * pixelSpacingX, a1.y * pixelSpacingY);
+					a2 = NSMakePoint(a2.x * pixelSpacingX, a2.y * pixelSpacingY);
+					b1 = NSMakePoint(b1.x * pixelSpacingX, b1.y * pixelSpacingY);
+					b2 = NSMakePoint(b2.x * pixelSpacingX, b2.y * pixelSpacingY);
+				}
+				
 				//plot=YES;
 				//plot2=YES;
 				
