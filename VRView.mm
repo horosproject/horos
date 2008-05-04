@@ -5078,7 +5078,7 @@ public:
 		int *wsize = [self renderWindow]->GetSize();
 		textWLWW->GetPositionCoordinate()->SetValue( 2., wsize[ 1]-15);
 		textWLWW->GetTextProperty()->SetShadow(true);
-		textWLWW->GetTextProperty()->SetBold(true);
+//		textWLWW->GetTextProperty()->SetBold(true);
 		textWLWW->GetTextProperty()->SetShadowOffset(1, 1);
 		
 		aRenderer->AddActor2D(textWLWW);
@@ -5102,7 +5102,7 @@ public:
 			oText[ i]->SetInput( "X ");
 			oText[ i]->SetScaledText( false);
 			oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
-			oText[ i]->GetTextProperty()->SetFontSize( 16);
+//			oText[ i]->GetTextProperty()->SetFontSize( 16);
 			oText[ i]->GetTextProperty()->SetBold( true);
 			oText[ i]->GetTextProperty()->SetShadow(true);
 			oText[ i]->GetTextProperty()->SetShadowOffset(1, 1);
@@ -5190,7 +5190,7 @@ public:
 		Line2DText->GetPositionCoordinate()->SetValue( 2., 2.);
 		Line2DText->GetTextProperty()->SetColor( 1.0, 1.0, 0.0);
 		Line2DText->GetTextProperty()->SetBold( true);
-		Line2DText->GetTextProperty()->SetFontSize( 14);
+//		Line2DText->GetTextProperty()->SetFontSize( 14);
 		Line2DText->GetTextProperty()->SetShadow(true);
 		Line2DText->GetTextProperty()->SetShadowOffset(1, 1);
 		
