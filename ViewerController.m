@@ -2826,7 +2826,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     
 	[newName setStringValue: NSLocalizedString(@"Unnamed", nil)];
 	
-    [NSApp beginSheet: addWLWWWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+	[NSApp beginSheet: addWLWWWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
 -(IBAction) endNameWLWW:(id) sender
