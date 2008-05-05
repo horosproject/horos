@@ -3,7 +3,7 @@
 //  echoSCU
 //
 //  Created by Lance Pysher on 12/25/04.
-//  Copyright 2004 __MyCompanyName__. All rights reserved.
+//  Copyright 2004 OsiriX. All rights reserved.
 //
 
 

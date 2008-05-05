@@ -3,7 +3,7 @@
 //  DCMSampleApp
 //
 //  Created by Lance Pysher on Thu Jun 17 2004.
-//  Copyright (c) 2004 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2004 OsiriX. All rights reserved.
 //
 
 #import "Controller.h"

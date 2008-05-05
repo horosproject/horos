@@ -3,7 +3,7 @@
 //  echoSCU
 //
 //  Created by Lance Pysher on 1/7/05.
-//  Copyright 2005 __MyCompanyName__. All rights reserved.
+//  Copyright 2005 OsiriX. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
