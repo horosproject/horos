@@ -4193,7 +4193,6 @@
 		CE3F800608ED63E100F4E202 /* vtkCocoaGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3F770808ED63DC00F4E202 /* vtkCocoaGLView.h */; };
 		CE3F800708ED63E100F4E202 /* vtkCocoaRenderWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3F770908ED63DC00F4E202 /* vtkCocoaRenderWindow.h */; };
 		CE3F800808ED63E100F4E202 /* vtkCocoaRenderWindowInteractor.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3F770A08ED63DC00F4E202 /* vtkCocoaRenderWindowInteractor.h */; };
-		CE3F800908ED63E100F4E202 /* vtkCocoaWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3F770B08ED63DC00F4E202 /* vtkCocoaWindow.h */; };
 		CE3F800A08ED63E100F4E202 /* vtkCollection.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3F770C08ED63DC00F4E202 /* vtkCollection.h */; };
 		CE3F800B08ED63E100F4E202 /* vtkCollectionIterator.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3F770D08ED63DC00F4E202 /* vtkCollectionIterator.h */; };
 		CE3F800C08ED63E100F4E202 /* vtkCollectPolyData.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3F770E08ED63DC00F4E202 /* vtkCollectPolyData.h */; };
@@ -16997,7 +16996,6 @@
 				CE3F800608ED63E100F4E202 /* vtkCocoaGLView.h in Headers */,
 				CE3F800708ED63E100F4E202 /* vtkCocoaRenderWindow.h in Headers */,
 				CE3F800808ED63E100F4E202 /* vtkCocoaRenderWindowInteractor.h in Headers */,
-				CE3F800908ED63E100F4E202 /* vtkCocoaWindow.h in Headers */,
 				CE3F800A08ED63E100F4E202 /* vtkCollection.h in Headers */,
 				CE3F800B08ED63E100F4E202 /* vtkCollectionIterator.h in Headers */,
 				CE3F800C08ED63E100F4E202 /* vtkCollectPolyData.h in Headers */,
