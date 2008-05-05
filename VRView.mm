@@ -2105,8 +2105,16 @@ public:
 		
 		Line2DText->SetInput( text);
 		aRenderer->AddActor(Line2DText);
+		
+		measureLength = length/(10.*factor);
 	}
-	else aRenderer->RemoveActor(Line2DText);
+	else
+	{
+		aRenderer->RemoveActor(Line2DText);
+		measureLength = 0;
+	}
+	
+	[self mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 }
 
 - (void) getOrientation: (float*) o 
@@ -2205,6 +2213,8 @@ public:
 	
 	NSPoint mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
 	
+	NSMutableString *s = [NSMutableString stringWithFormat: NSLocalizedString( @"View Size: %d x %d", 0L), (int) [self frame].size.width, (int) [self frame].size.height];
+	
 	if( [self get3DPixelUnder2DPositionX:mouseLocStart.x Y:mouseLocStart.y pixel:pix position:pos value:&value])
 	{
 		long sliceNo;
@@ -2215,9 +2225,19 @@ public:
 		NSString	*mmLoc = [[NSString stringWithFormat: @"X:%.2f Y:%.2f Z:%.2f (mm)", pos[ 0], pos[ 1], pos[ 2]] stringByPaddingToLength: 38 withString: @" " startingAtIndex: 0];
 		NSString	*val = [[NSString stringWithFormat: @"%.2f", value] stringByPaddingToLength: 9 withString: @" " startingAtIndex:  0];
 		
-		[pixelInformation setStringValue: [NSString stringWithFormat: NSLocalizedString( @"View Size: %d x %d   Pixel: %@    %@ %@", 0L), (int) [self frame].size.width, (int)[self frame].size.height, val, pixLoc, mmLoc]];
+		[s appendFormat: NSLocalizedString( @"   Pixel: %@    %@ %@", 0L), val, pixLoc, mmLoc];
 	}
-	else [pixelInformation setStringValue: [NSString stringWithFormat: NSLocalizedString( @"View Size: %d x %d", 0L), (int) [self frame].size.width, (int) [self frame].size.height]];
+	
+	if( measureLength)
+	{
+		if( measureLength < .1)
+			[s appendFormat: NSLocalizedString( @"   Measurement: %2.2f %cm ", 0L), measureLength * 10000.0, 0xB5];
+		else
+			[s appendFormat: NSLocalizedString( @"   Measurement: %2.2f cm ", 0L), measureLength];
+	}
+	
+	[pixelInformation setStringValue: s];
+	
 	[drawLock unlock];
 }
 
@@ -3744,6 +3764,7 @@ public:
 			Line2DData-> SetPoints( pts);		pts->Delete();
 			Line2DData-> SetLines( rect);		rect->Delete();
 			aRenderer->RemoveActor( Line2DText);
+			measureLength = 0;
 			
 			[self setNeedsDisplay:YES];
 		}

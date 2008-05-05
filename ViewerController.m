@@ -989,7 +989,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 						dstVimage.width = newX;
 						dstVimage.rowBytes = newX*4;
 						
-						vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, 0);
+						vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
 												
 	//						for( x = 0; x < newX; x++)
 	//						{
@@ -1080,7 +1080,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 						dstVimage.width = newX;
 						dstVimage.rowBytes = newX*4;
 						
-						vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, 0);
+						vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
 						
 	//						for( x = 0; x < newX; x++)
 	//						{

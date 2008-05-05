@@ -164,7 +164,7 @@ typedef char* vtkMyCallbackVR;
 	ViewerController			*blendingController;
 	char						*blendingData8;
 	vImage_Buffer				blendingSrcf, blendingDst8;
-	float						blendingWl, blendingWw;
+	float						blendingWl, blendingWw, measureLength;
 	vtkImageImport				*blendingReader;
 	
 	vtkFixedPointVolumeRayCastMapper		*blendingVolumeMapper;

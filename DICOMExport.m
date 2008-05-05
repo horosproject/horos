@@ -353,7 +353,7 @@ extern BrowserController	*browserWindow;
 							dstVimage.width = width;
 							dstVimage.rowBytes = width*sizeof( float);
 							
-							err = vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, 0);
+							err = vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
 						//	if( err) NSLog(@"%d", err);
 							
 							// Convert Destination to 16 bits
