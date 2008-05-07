@@ -1385,7 +1385,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	// Image Level
 	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"]  && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO)
-		[[self imageObj] setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
+		[[self imageObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
 	else
 		[[self imageObj] setValue: 0L forKey:@"xFlipped"];
 	
@@ -9714,19 +9714,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	NSManagedObject *series = [self seriesObj];
 	NSManagedObject *image = [self imageObj];
-	if( series ) {
-		if( [image valueForKey:@"xFlipped"]) self.xFlipped = [[image valueForKey:@"xFlipped"] boolValue];
-		else if( !onlyImage) self.xFlipped = [[series valueForKey:@"xFlipped"] boolValue];
+	if( series )
+	{
+		if( [image valueForKey:@"xFlipped"])
+				self.xFlipped = [[image valueForKey:@"xFlipped"] boolValue];
+		else if( !onlyImage)
+				self.xFlipped = [[series valueForKey:@"xFlipped"] boolValue];
 		
 		if( [image valueForKey:@"yFlipped"]) self.yFlipped = [[image valueForKey:@"yFlipped"] boolValue];
 		else if( !onlyImage) self.yFlipped = [[series valueForKey:@"yFlipped"] boolValue];
 		
-		if( [self is2DViewer] && firstTimeDisplay && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO)
+		if( ([self is2DViewer] && firstTimeDisplay && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO)
 		{
 			if( [image valueForKey:@"scale"]) [self setScaleValue: [[image valueForKey:@"scale"] floatValue]];
-			else if( !onlyImage) {
-				if( [series valueForKey:@"scale"]) {
-					if( [[series valueForKey:@"scale"] floatValue] != 0) {
+			else if( !onlyImage)
+			{
+				if( [series valueForKey:@"scale"])
+				{
+					if( [[series valueForKey:@"scale"] floatValue] != 0)
+					{
 						//displayStyle = 2  -> scaleValue is proportional to view height
 						if( [[series valueForKey:@"displayStyle"] intValue] == 2)
 							[self setScaleValue: [[series valueForKey:@"scale"] floatValue] * [self frame].size.width];
@@ -9743,7 +9749,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [image valueForKey:@"rotationAngle"]) [self setRotation: [[image valueForKey:@"rotationAngle"] floatValue]];
 		else if( !onlyImage) [self setRotation:  [[series valueForKey:@"rotationAngle"] floatValue]];
 		
-		if ([self is2DViewer] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO)
+		if( ([self is2DViewer] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"AlwaysScaleToFit"] == NO) || COPYSETTINGSINSERIES == NO)
 		{
 			NSPoint o = NSMakePoint(0 , 0);
 			if( [image valueForKey:@"xOffset"])  o.x = [[image valueForKey:@"xOffset"] floatValue];
