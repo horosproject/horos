@@ -519,11 +519,33 @@ static char *GetPrivateIP()
 	return nil;
 }
 
+- (NSArray*) sortArray
+{
+	if( [[[[outlineView sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"date"])
+	{
+		NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
+		
+		NSMutableArray *sortArray = [NSMutableArray arrayWithObject: [[outlineView sortDescriptors] objectAtIndex: 0]];
+		
+		[sortArray addObject: [[[NSSortDescriptor alloc] initWithKey:@"time" ascending: [[[outlineView sortDescriptors] objectAtIndex: 0] ascending]] autorelease]];
+		
+		if( [[outlineView sortDescriptors] count] > 1)
+		{
+			NSMutableArray *lastObjects = [NSMutableArray arrayWithArray: [outlineView sortDescriptors]];
+			[lastObjects removeObjectAtIndex: 0];
+			[sortArray addObjectsFromArray: lastObjects];
+		}
+		
+		return sortArray;
+	}
+	else return [outlineView sortDescriptors];
+}
+
 - (void)outlineView:(NSOutlineView *)aOutlineView sortDescriptorsDidChange:(NSArray *)oldDescs
 {
 	id item = [outlineView itemAtRow: [outlineView selectedRow]];
 	
-	[resultArray sortUsingDescriptors: [outlineView sortDescriptors]];
+	[resultArray sortUsingDescriptors: [self sortArray]];
 	[outlineView reloadData];
 	
 	if( [[[[outlineView sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"name"] == NO)
@@ -801,7 +823,7 @@ static char *GetPrivateIP()
 	
 	[sourcesTable selectRow: selectedRow byExtendingSelection: NO];
 	
-	[resultArray sortUsingDescriptors: [outlineView sortDescriptors]];
+	[resultArray sortUsingDescriptors: [self sortArray]];
 	[outlineView reloadData];
 	
 	if( atLeastOneSource == NO)
@@ -825,7 +847,7 @@ static char *GetPrivateIP()
 	[progressIndicator startAnimation:nil];
 	[queryManager performQuery];
 	[progressIndicator stopAnimation:nil];
-	[resultArray sortUsingDescriptors: [outlineView sortDescriptors]];
+	[resultArray sortUsingDescriptors: [self sortArray]];
 	[outlineView reloadData];
 	[pool release];
 }
