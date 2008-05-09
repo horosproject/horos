@@ -11755,7 +11755,6 @@
 		CEDCFB380B4C4A4B00510ABD /* SyncSmall.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncSmall.tiff; sourceTree = "<group>"; };
 		CEDCFB3E0B4C4E3900510ABD /* SyncSmallLocked.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncSmallLocked.tif; sourceTree = "<group>"; };
 		CEDCFB3F0B4C4E3900510ABD /* SyncSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncSmall.tif; sourceTree = "<group>"; };
-		CEDDB9CA0DBB182600B2173C /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html.documentation; name = index.html; path = "/Users/antoinerosset/osirix/Documentation/Developers Guide/index.html"; sourceTree = "<absolute>"; };
 		CEDE5B5C07F206B5003034B6 /* ROIDefaultsWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ROIDefaultsWindow.m; sourceTree = "<group>"; };
 		CEDE5B5D07F206B5003034B6 /* ROIDefaultsWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIDefaultsWindow.h; sourceTree = "<group>"; };
 		CEDEF7D30D020E9100CADB15 /* TIFFSmall.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TIFFSmall.tiff; sourceTree = "<group>"; };
@@ -12232,7 +12231,6 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				CEDDB9CA0DBB182600B2173C /* index.html */,
 				AB78245B0D3BACC700460DCE /* WebServicesHTML */,
 				CEC4B5A20C7DF2D600AF5A76 /* 3DPRESETS */,
 				ABE0D69A0CDB1B9E00F0494B /* iChatTheatreHelp */,

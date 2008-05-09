@@ -147,7 +147,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	IBOutlet NSWindow				*editSmartAlbum;
 	IBOutlet NSTextField			*editSmartAlbumName, *editSmartAlbumQuery;
-	IBOutlet NSPredicateEditor		*editSmartAlbumPredicate;
+//	IBOutlet NSPredicateEditor		*editSmartAlbumPredicate;
 	
 	IBOutlet NSDrawer				*albumDrawer;
 	

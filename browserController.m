@@ -24,7 +24,6 @@
 #import "SRAnnotation.h"
 #import "AppController.h"
 #import "dicomData.h"
-#import "DCMPix.h"
 #import "BrowserController.h"
 #import "viewerController.h"
 #import "PluginFilter.h"
@@ -43,11 +42,11 @@
 #import "WaitRendering.h"
 #import "DotMacKit/DotMacKit.h"
 #import "BurnerWindowController.h"
-#import "DCMObject.h"
 #import "DCMTransferSyntax.h"
 #import "DCMAttributeTag.h"
 #import "DCMPixelDataAttribute.h"
 #import "DCMCalendarDate.h"
+#import <OsiriX/DCM.h>
 #import <OsiriX/DCMNetworking.h>
 #import <OsiriX/DCMDirectory.h>
 #import <OsiriX/DCMObject.h>
@@ -81,7 +80,7 @@
 #define DATABASEFPATH @"/DATABASE"
 #define DATAFILEPATH @"/Database.sql"
 
-enum DCM_CompressionQuality {DCMLosslessQuality, DCMHighQuality, DCMMediumQuality, DCMLowQuality};
+//enum DCM_CompressionQuality {DCMLosslessQuality, DCMHighQuality, DCMMediumQuality, DCMLowQuality};
 
 BrowserController  *browserWindow = nil;
 
