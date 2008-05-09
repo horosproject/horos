@@ -2657,7 +2657,7 @@ static BOOL initialized = NO;
 	{
 		if(	[[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]] || [[[winList objectAtIndex:i] windowController] isKindOfClass:[XMLController class]])
 		{
-			if( [[[winList objectAtIndex:i] windowController] windowWillClose] == NO)
+			if( [[[winList objectAtIndex:i] windowController] windowWillClose] == NO && [[winList objectAtIndex:i] isMiniaturized] == NO)
 				[viewersList addObject: [[winList objectAtIndex:i] windowController]];
 				
 			if( [[viewersList lastObject] FullScreenON] ) return;

@@ -2302,6 +2302,22 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[self showCurrentThumbnail: self];
 }
 
+- (void)windowDidMiniaturize:(NSNotification *)notification
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+	{
+		[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+	}
+}
+
+- (void)windowDidDeminiaturize:(NSNotification *)notification
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+	{
+		[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+	}
+}
+
 - (void) windowDidResignMain:(NSNotification *)aNotification
 {
 	[imageView stopROIEditingForce: YES];
