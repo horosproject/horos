@@ -5370,7 +5370,8 @@ static NSArray*	statesArray = nil;
 		
 		BOOL windowsStateApplied = NO;
 		
-		if( [item valueForKey:@"windowsState"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"])	{
+		if( [item valueForKey:@"windowsState"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"])
+		{
 			NSData	*d = [item valueForKey:@"windowsState"];
 			
 			NSString	*tmp = [NSString stringWithFormat:@"/tmp/windowsState"];

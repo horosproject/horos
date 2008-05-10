@@ -748,8 +748,8 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[nc addObserver:self selector:@selector(updateROIVolume:) name:@"ROIVolumePropertiesChanged" object:nil];
 #endif
 
-	// allow bones removal only for CT scans
-	if(![[viewer2D modality] isEqualToString:@"CT"])
+	// allow bones removal only for CT or SC scans
+	if( [[viewer2D modality] isEqualToString:@"CT"] == NO && [[viewer2D modality] isEqualToString:@"SC"])
 	{
 		[[toolsMatrix cellWithTag:21] setEnabled:NO];
 	}
