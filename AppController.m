@@ -663,16 +663,21 @@ static NSDate *lastWarningDate = 0L;
 
 + (void) displayImportantNotice:(id) sender
 {
-	if( lastWarningDate == 0L || [lastWarningDate timeIntervalSinceNow] < -60*60*12)
+	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"lastWarningDay"] != [[NSCalendarDate date] dayOfYear])
 	{
-		int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", 0L), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device (FDA or CE-1).\r\rPlease check with local compliance office for possible limitations in its clinical use.\r\rFor a FDA / CE-1 certified version, please check our partners web page:\r\rhttp://www.osirix-viewer.com/Partners.html\r", 0L), NSLocalizedString( @"I agree", 0L), NSLocalizedString( @"Quit", 0L), nil);
+		if( lastWarningDate == 0L || [lastWarningDate timeIntervalSinceNow] < -60*60*12)
+		{
+			int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", 0L), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device (FDA or CE-1).\r\rPlease check with local compliance office for possible limitations in its clinical use.\r\rFor a FDA / CE-1 certified version, please check our partners web page:\r\rhttp://www.osirix-viewer.com/Partners.html\r", 0L), NSLocalizedString( @"I agree", 0L), NSLocalizedString( @"Quit", 0L), nil);
+			
+			if( result != NSAlertDefaultReturn)
+				[[AppController sharedAppController] terminate: self];
+			else
+				[[NSUserDefaults standardUserDefaults] setInteger: [[NSCalendarDate date] dayOfYear] forKey: @"lastWarningDay"];
+		}
 		
-		if( result != NSAlertDefaultReturn)
-			[[AppController sharedAppController] terminate: self];
+		[lastWarningDate release];
+		lastWarningDate = [[NSDate date] retain];
 	}
-	
-	[lastWarningDate release];
-	lastWarningDate = [[NSDate date] retain];
 }
 
 - (NSString*) privateIP
