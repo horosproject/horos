@@ -163,6 +163,9 @@
 }
 
 + (id)dicomDateTimeWithDicomDate:(DCMCalendarDate*)date dicomTime:(DCMCalendarDate*)time{
+	if (date == nil || time == nil)
+		return nil;
+	
 	DCMCalendarDate *dateTime = [[[DCMCalendarDate alloc] initWithYear:[date yearOfCommonEra] month:[date monthOfYear] day:[date dayOfMonth]
 				hour:[time hourOfDay] minute:[time minuteOfHour] second:[time secondOfMinute] timeZone:[date timeZone]] autorelease];
 	
