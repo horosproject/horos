@@ -274,6 +274,24 @@ static int hotKeyToolCrossTable[] =
 	return studiesArray;
 }
 
++ (NSArray*) getDisplayedSeries
+{
+	NSArray				*displayedViewers = [ViewerController getDisplayed2DViewers];
+	NSMutableArray		*seriesArray = [NSMutableArray array];
+	
+	for( ViewerController *win in displayedViewers)
+	{
+		if( [[win imageView] seriesObj])
+		{
+			if( [seriesArray containsObject: [[win imageView] seriesObj]] == NO)
+				[seriesArray addObject: [[win imageView] seriesObj]];
+		}
+	}
+	
+	return seriesArray;
+}
+
+
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
 	BOOL valid = NO;
@@ -3184,6 +3202,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if ([studiesArray count])
 	{
+		NSArray *displayedSeries = [ViewerController getDisplayedSeries];
+		
 		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
 		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
 		[sort release];
@@ -3314,13 +3334,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 					{
 						[cell setBackgroundColor: [NSColor selectedControlColor]];
 						[cell setBordered: NO];
-	//					[previewMatrix selectCellAtRow:index column:0];
 					}
-	//				else if( [[[blendedwin fileList] objectAtIndex: 0] valueForKey:@"series"] == curSeries)
-	//				{
-	//					[cell setBackgroundColor: [NSColor colorWithDeviceRed:1.0 green:0.8 blue:0.2 alpha:1.0]];
-	//					[cell setBordered: NO];
-	//				}
+					else if( [displayedSeries containsObject: curSeries])
+					{
+						[cell setBackgroundColor: [NSColor colorWithCalibratedRed:249./255. green:240./255. blue:140./255. alpha:1.0]];
+						[cell setBordered: NO];
+					}
 					else [cell setBordered: YES];
 					
 					if( visible)
@@ -4998,6 +5017,9 @@ static ViewerController *draggedController = 0L;
 	
 	[self refreshToolbar];
 	
+	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+		[v buildMatrixPreview: NO];
+	
 	return self;
 }
 
@@ -5150,6 +5172,9 @@ static ViewerController *draggedController = 0L;
 		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:0L];
 		[appController performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
 	}
+	
+	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+		[v buildMatrixPreview: NO];
 	
 	NSLog(@"ViewController dealloc");
 }
@@ -5516,6 +5541,9 @@ static ViewerController *draggedController = 0L;
 	[self setCurWLWWMenu: [DCMView findWLWWPreset: [imageView curWL] :[imageView curWW] :[imageView curDCM]]];
 	
 	nonVolumicDataWarningDisplayed = NO;
+	
+	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+		[v buildMatrixPreview: NO];
 }
 
 - (void) showWindowTransition

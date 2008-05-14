@@ -530,24 +530,27 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 
 *******************************/
-- (void)queryWithValues:(NSArray *)values{
+- (void)queryWithValues:(NSArray *)values
+{
 	//add query keys
 	DcmDataset *dataset = [self queryPrototype];
 	NSString *stringEncoding = [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"];
+	
 //	NSLog(@"default string Encoding: %@",stringEncoding );
 	//hard code for UTF8
 	//stringEncoding = @"ISO_IR 192";
+	
 	int encoding = [NSString encodingForDICOMCharacterSet:stringEncoding];
 	dataset->putAndInsertString(DCM_SpecificCharacterSet, [stringEncoding UTF8String]);
 	const char *queryLevel;
 	if (dataset->findAndGetString(DCM_QueryRetrieveLevel, queryLevel).good()){}
+	
 	//Keys are only modified at the study level.  At other levels the UIDs will be used
 	if (strcmp(queryLevel, "STUDY") == 0) {
 		NSEnumerator *enumerator = [values objectEnumerator];
 		NSDictionary *dictionary;
 		// need to get actual encoding from preferences
 		
-
 		while (dictionary = [enumerator nextObject]) {
 			const char *string;
 			NSString *key = [dictionary objectForKey:@"name"];

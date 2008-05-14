@@ -46,7 +46,7 @@
     NSMutableArray							*resultArray;
     NSMutableArray							*queryFilters;
 	
-	QueryFilter								*dateQueryFilter, *modalityQueryFilter;
+	QueryFilter								*dateQueryFilter, *timeQueryFilter, *modalityQueryFilter;
 	NSString								*currentQueryKey;
 	BOOL									echoSuccess;
 	NSMutableDictionary						*activeMoves;

@@ -73,9 +73,12 @@
 //------------------------------------------------------------------------------------------------------------------------------------
 #pragma mark¥
 
-- (NSString *)filteredValue{
+- (NSString *)filteredValue
+{
 	NSLog(@"search type: %d object:%@", _searchType, [_object description]);
-	switch (_searchType) {
+
+	switch (_searchType)
+	{
 	case 0: return [NSString stringWithFormat:@"*%@*", _object];	//contains
 	case 1: return [NSString stringWithFormat:@"%@*", _object];		//searchStartsWith
 	case 2: return [NSString stringWithFormat:@"*%@", _object];		//searchEndsWith
@@ -89,8 +92,10 @@
 	case 6: return [NSString stringWithFormat:@"-%@", [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]]; //before
 	case 7: return [NSString stringWithFormat:@"%@-", [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]]; //after
 	case 8: return [self withinDateString]; //within
-	case 9:  return [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]; 
-		
+	case 9:  return [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil];
+	
+	case 10: return [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil];  //today am
+	case 11: return [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil];  //today pm
 	}
 	
 }

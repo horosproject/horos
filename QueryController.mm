@@ -227,6 +227,8 @@ static char *GetPrivateIP()
 			[fromDate setDateValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[presets valueForKey: @"fromDate"] doubleValue]]];
 			[toDate setDateValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[presets valueForKey: @"toDate"] doubleValue]]];
 			[searchBirth setDateValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[presets valueForKey: @"searchBirth"] doubleValue]]];
+			
+			[searchFieldName selectText: self];
 		}
 	}
 }
@@ -738,6 +740,7 @@ static char *GetPrivateIP()
 					
 					//
 					if ([dateQueryFilter object]) [queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
+					if ([timeQueryFilter object]) [queryManager addFilter:[timeQueryFilter filteredValue] forDescription:@"StudyTime"];
 					
 					if ([modalityQueryFilter object]) [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
 					
@@ -1125,6 +1128,8 @@ static char *GetPrivateIP()
 - (void)setDateQuery:(id)sender
 {
 	[dateQueryFilter release];
+	[timeQueryFilter release];
+	timeQueryFilter = 0L;
 	
 	if( [sender selectedTag] == 5)
 	{
@@ -1143,7 +1148,7 @@ static char *GetPrivateIP()
 		[fromDate setEnabled: NO];
 		[toDate setEnabled: NO];
 		
-		DCMCalendarDate *date;
+		DCMCalendarDate *date = 0L;
 		
 		int searchType = searchAfter;
 		
@@ -1152,9 +1157,16 @@ static char *GetPrivateIP()
 			case 0:			date = nil;																								break;
 			case 1:			date = [DCMCalendarDate date];											searchType = SearchToday;		break;
 			case 2:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24 -1];	searchType = searchYesterday;	break;
-			case 3:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*7 -1];										break;
+			case 3:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*7 -1];									break;
 			case 4:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31 -1];									break;
 			
+			case 10:	// AM & PM
+			case 11:
+				date = [DCMCalendarDate date];
+				searchType = SearchToday;
+				
+				timeQueryFilter = [[QueryFilter queryFilterWithObject:date ofSearchType:searchType  forKey:@"StudyTime"] retain];
+			break;				
 		}
 		dateQueryFilter = [[QueryFilter queryFilterWithObject:date ofSearchType:searchType  forKey:@"StudyDate"] retain];
 	}
@@ -1378,6 +1390,7 @@ static char *GetPrivateIP()
 		
 		queryFilters = 0L;
 		dateQueryFilter = 0L;
+		timeQueryFilter = 0L;
 		modalityQueryFilter = 0L;
 		currentQueryKey = 0L;
 		echoSuccess = 0L;
@@ -1417,6 +1430,7 @@ static char *GetPrivateIP()
 	[queryManager release];
 	[queryFilters release];
 	[dateQueryFilter release];
+	[timeQueryFilter release];
 	[modalityQueryFilter release];
 	[activeMoves release];
 	[sourcesArray release];
@@ -1477,6 +1491,7 @@ static char *GetPrivateIP()
 	currentQueryKey = PatientName;
 	
 	dateQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"StudyDate"] retain];
+	timeQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
 	modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateServers:) name:@"DCMNetServicesDidChange"  object:nil];

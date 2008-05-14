@@ -2567,7 +2567,7 @@ static BOOL initialized = NO;
 		}
 	}
 	
-	if( last) [last makeKeyAndOrderFront: self];
+	if( last && makeKey) [last makeKeyAndOrderFront: self];
 }
 
 - (void) checkAllWindowsAreVisible:(id) sender

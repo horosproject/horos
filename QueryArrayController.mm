@@ -72,13 +72,18 @@
 	[super finalize];
 }
 
-- (void)addFilter:(id)filter forDescription:(NSString *)description{
+- (void)addFilter:(id)filter forDescription:(NSString *)description
+{
 	NSLog(@"Filter: %@", [filter description]);
+	
 	if ([description rangeOfString:@"Date"].location != NSNotFound)
 		filter = [DCMCalendarDate queryDate:filter];
+	
 	else if ([description rangeOfString:@"Time"].location != NSNotFound)
 		filter = [DCMCalendarDate queryDate:filter];
+	
 	NSLog(@"add filter:%@ class:%@ description:%@", [filter description], [filter class], [description description]);
+	
 	[filters setObject:filter forKey:description];
 }
 
@@ -138,7 +143,7 @@
 			[filterArray addObject:filter];
 		}
 	}
-			
+	
 	[rootNode queryWithValues:filterArray];
 	
 	[queries release];
