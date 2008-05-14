@@ -574,23 +574,28 @@ static char *GetPrivateIP()
 - (void) queryPatientID:(NSString*) ID
 {
 	NSInteger PatientModeMatrixSelected = [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]];
+	NSInteger dateFilterMatrixSelected = [dateFilterMatrix selectedTag];
+	NSInteger mRow = [modalityFilterMatrix selectedRow];
+	NSInteger mCol = [modalityFilterMatrix selectedColumn];
+	NSString *copySearchField = [NSString stringWithString: [searchFieldID stringValue]];
 	
 	[PatientModeMatrix selectTabViewItemAtIndex: 1];	// PatientID search
 	
 	[dateFilterMatrix selectCellWithTag: 0];
 	[self setDateQuery: dateFilterMatrix];
-	
 	[modalityFilterMatrix selectCellWithTag: 3];
 	[self setModalityQuery: modalityFilterMatrix];
-	
 	[searchFieldID setStringValue: ID];
 	
 	[self query: self];
 	
 	[PatientModeMatrix selectTabViewItemAtIndex: PatientModeMatrixSelected];
+	[dateFilterMatrix selectCellWithTag: dateFilterMatrixSelected];
+	[modalityFilterMatrix selectCellAtRow: mRow column: mCol];
+	[searchFieldID setStringValue: copySearchField];
 }
 
-- (void) querySelectedPatient: (id) sender
+- (void) querySelectedStudy: (id) sender
 {
 	id   item = [outlineView itemAtRow: [outlineView selectedRow]];
 	
@@ -625,7 +630,7 @@ static char *GetPrivateIP()
 			if( [chars characterAtIndex:0] != 13 && [chars characterAtIndex:0] != 3) return;
 		}
 	}
-
+	
 	NSString			*theirAET;
 	NSString			*hostname;
 	NSString			*port;
@@ -1152,7 +1157,7 @@ static char *GetPrivateIP()
 		
 		int searchType = searchAfter;
 		
-		switch ([sender selectedTag])
+		switch( [sender selectedTag])
 		{
 			case 0:			date = nil;																								break;
 			case 1:			date = [DCMCalendarDate date];											searchType = SearchToday;		break;
@@ -1165,7 +1170,14 @@ static char *GetPrivateIP()
 				date = [DCMCalendarDate date];
 				searchType = SearchToday;
 				
-				timeQueryFilter = [[QueryFilter queryFilterWithObject:date ofSearchType:searchType  forKey:@"StudyTime"] retain];
+				NSString	*between;
+				
+				if( [sender selectedTag] == 10)
+					between = [NSString stringWithString:@"000000.000-120000.000"];
+				else
+					between = [NSString stringWithString:@"120000.000-235959.000"];
+				
+				timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
 			break;				
 		}
 		dateQueryFilter = [[QueryFilter queryFilterWithObject:date ofSearchType:searchType  forKey:@"StudyDate"] retain];
@@ -1477,7 +1489,7 @@ static char *GetPrivateIP()
 	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Retrieve and display the images", 0L) action: @selector( retrieveAndView:) keyEquivalent:@""] autorelease];
 	[item setTarget: self];		[menu addItem: item];
 	
-	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query all studies of this patient", 0L) action: @selector( querySelectedPatient:) keyEquivalent:@""] autorelease];
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query all studies of this patient", 0L) action: @selector( querySelectedStudy:) keyEquivalent:@""] autorelease];
 	[item setTarget: self];		[menu addItem: item];
 	
 	[menu addItem: [NSMenuItem separatorItem]];
@@ -1618,7 +1630,7 @@ static char *GetPrivateIP()
 		break;
 		
 		case 1:		// Query Selected Patient
-			[self querySelectedPatient: self];
+			[self querySelectedStudy: self];
 		break;
 	}
 }

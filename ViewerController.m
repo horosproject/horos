@@ -2945,6 +2945,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return numberOf2DViewer;
 }
 
+- (IBAction)querySelectedStudy: (id)sender
+{
+	[[BrowserController currentBrowser] querySelectedStudy: self];
+}
 
 #pragma mark-
 #pragma mark 2. window subdivision

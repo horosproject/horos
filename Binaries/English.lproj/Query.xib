@@ -1112,7 +1112,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 													<int key="NSPeriodicInterval">75</int>
 												</object>
 												<object class="NSButtonCell" id="116553036">
-													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags">-2080244224</int>
 													<int key="NSCellFlags2">131072</int>
 													<string key="NSContents">Today</string>
 													<reference key="NSSupport" ref="26"/>
@@ -1148,7 +1148,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 													<int key="NSPeriodicInterval">75</int>
 												</object>
 												<object class="NSButtonCell" id="996368469">
-													<int key="NSCellFlags">-2080244224</int>
+													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">131072</int>
 													<string key="NSContents">Yesterday</string>
 													<reference key="NSSupport" ref="26"/>
@@ -1335,8 +1335,8 @@ OAA</bytes>
 												<int key="NSPeriodicDelay">400</int>
 												<int key="NSPeriodicInterval">75</int>
 											</object>
-											<int key="NSSelectedRow">2</int>
-											<reference key="NSSelectedCell" ref="996368469"/>
+											<int key="NSSelectedRow">1</int>
+											<reference key="NSSelectedCell" ref="116553036"/>
 											<reference key="NSBackgroundColor" ref="789164403"/>
 											<reference key="NSCellBackgroundColor" ref="1060234762"/>
 											<object class="NSFont" key="NSFont">
@@ -4434,9 +4434,9 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{626, 410}, {911, 746}}</string>
+					<string>{{333, 410}, {911, 746}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{626, 410}, {911, 746}}</string>
+					<string>{{333, 410}, {911, 746}}</string>
 					<reference ref="9"/>
 					<string>{{154, 110}, {911, 746}}</string>
 					<reference ref="9"/>
