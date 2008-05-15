@@ -6298,6 +6298,22 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							}	
 						}
 					}
+					else if( [[annot objectAtIndex:j] isEqualToString:@"Plugin"] )
+					{
+						
+						NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+							[NSNumber numberWithFloat: yRaster], @"yRaster",
+							[NSNumber numberWithFloat: xRaster], @"xRaster",
+							[NSNumber numberWithInt: [[align objectForKey:[keys objectAtIndex:k]] intValue]], @"alignment",
+												  nil];
+						
+						
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo"
+																			object: self
+																		  userInfo: userInfo];
+						yRaster += increment;
+					}
+					
 					else if([[annot objectAtIndex:j] isEqualToString:@"Orientation"])
 					{
 						if(!orientationDrawn) [self drawOrientation: size];

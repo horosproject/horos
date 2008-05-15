@@ -781,6 +781,7 @@
 	[specialFieldsTitles addObject: NSLocalizedString(@"Thickness / Location / Position", 0L)];
 	[specialFieldsTitles addObject: NSLocalizedString(@"Patient's Actual Age", 0L)];
 	[specialFieldsTitles addObject: NSLocalizedString(@"Patient's Age At Acquisition", 0L)];
+	[specialFieldsTitles addObject: NSLocalizedString(@"Plugin", 0L)];
 	return specialFieldsTitles;
 }
 
@@ -798,6 +799,7 @@
 	[specialFieldsTitles addObject:(@"Thickness / Location / Position")];
 	[specialFieldsTitles addObject:(@"Patient's Actual Age")];
 	[specialFieldsTitles addObject:(@"Patient's Age At Acquisition")];
+	[specialFieldsTitles addObject:(@"Plugin")];
 	return specialFieldsTitles;
 }
 
