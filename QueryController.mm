@@ -250,7 +250,7 @@ static char *GetPrivateIP()
 	}
 	else
 	{
-		for( NSString *key in [savedPresets allKeys])
+		for( NSString *key in [[savedPresets allKeys] sortedArrayUsingSelector: @selector( compare:)])
 		{
 			[menu addItemWithTitle: key action:@selector( applyPreset:) keyEquivalent: @""];
 		}

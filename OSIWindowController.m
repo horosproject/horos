@@ -20,11 +20,6 @@
 - (id)initWithWindowNibName:(NSString *)windowNibName{
 	if (self = [super initWithWindowNibName:(NSString *)windowNibName])
 	{
-		// Register with WindowLayoutManager
-//		[[WindowLayoutManager sharedWindowLayoutManager] registerWindowController:self];	<- MAJOR memory leak !!!!!!!
-//	//	NSLog(@"Register Window: %@", NSStringFromClass([self class])); 
-//	 // do what OsiriX needs to do for window Controllers
-	 
 	}
 	return self;
 }
@@ -57,10 +52,6 @@
 	// let subclasses handle it for now
 	return nil;
 }
-
-//- (void)windowWillClose:(NSNotification *)notification{
-//	[[WindowLayoutManager sharedWindowLayoutManager] unregisterWindowController:self];
-//}
 
 - (int)blendingType{
 	return _blendingType;
