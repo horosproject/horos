@@ -780,6 +780,7 @@ enum
 - (void)deselectAllROIs;
 - (void) refreshToolbar;
 - (void) reloadAnnotations;
+- (NSScrollView*) previewMatrixScrollView;
 
 #pragma mark-
 #pragma mark Brush ROI Filters

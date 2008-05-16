@@ -3094,6 +3094,31 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[self setMatrixVisible: !hide];
 }
 
+- (NSScrollView*) previewMatrixScrollView
+{
+	return previewMatrixScrollView;
+}
+
+- (void) ViewBoundsDidChange: (NSNotification*) note
+{
+	if( [note object] == [previewMatrixScrollView contentView])
+	{
+		BOOL syncThumbnails = [[NSUserDefaults standardUserDefaults] boolForKey:@"syncPreviewList"];
+		
+		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask)
+			syncThumbnails = !syncThumbnails;
+		
+		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+		{
+			if( v != self && [[v studyInstanceUID] isEqualToString: [self studyInstanceUID]] && syncThumbnails)
+			{
+				[[v.previewMatrixScrollView contentView] scrollToPoint: [[previewMatrix superview] bounds].origin];
+				[v.previewMatrixScrollView reflectScrolledClipView: [v.previewMatrixScrollView contentView]];
+			}
+		}
+	}
+}
+
 -(void) ViewFrameDidChange:(NSNotification*) note
 {
 	if( [note object] == [[splitView subviews] objectAtIndex: 1] && stopViewFrameDidChangeNotification == NO)
@@ -3174,6 +3199,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( visible == NO) matrixPreviewBuilt = NO; 
 	else matrixPreviewBuilt = YES;
+	
+	[previewMatrixScrollView setPostsBoundsChangedNotifications:YES];
 	
 	NSManagedObject			*study = [curImage valueForKeyPath:@"series.study"];
 	if( study == 0L)
@@ -15734,6 +15761,8 @@ int i,j,l;
     [nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
 	[nc	addObserver:self selector:@selector(Display3DPoint:) name:@"Display3DPoint" object:nil];
 	[nc addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
+	[nc addObserver:self selector:@selector(ViewBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:nil];
+	
 	[nc addObserver:self selector:@selector(revertSeriesNotification:) name:@"revertSeriesNotification" object:nil];
 	[nc addObserver:self selector:@selector(updateVolumeData:) name:@"updateVolumeData" object:nil];
 	[nc addObserver:self selector:@selector(roiChange:) name:@"roiChange" object:nil];
@@ -15849,7 +15878,9 @@ int i,j,l;
 	
 	if( com == 0L || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
 	else [CommentsField setTitle: com];
-
+	
+	
+	
 	// SplitView
 	[[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications:YES]; 
 	[splitView restoreDefault:@"SPLITVIEWER"];
