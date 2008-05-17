@@ -12314,20 +12314,23 @@ int i,j,l;
 					
 					if( [[vC modality] isEqualToString:@"MR"] == YES && [[self modality] isEqualToString:@"MR"] == YES)
 					{
-						if(		[[[imageView curDCM] repetitiontime] isEqualToString: [[[vC imageView] curDCM] repetitiontime]] == NO || 
-								[[[imageView curDCM] echotime] isEqualToString: [[[vC imageView] curDCM] echotime]] == NO)
-								{
-									propagate = NO;
-								}
+						if(	[[[imageView curDCM] repetitiontime] isEqualToString: [[[vC imageView] curDCM] repetitiontime]] == NO || 
+							[[[imageView curDCM] echotime] isEqualToString: [[[vC imageView] curDCM] echotime]] == NO)
+							{
+								propagate = NO;
+							}
 					}
 					
-					if( propagate)
+					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"DONTCOPYWLWWSETTINGS"] == NO)
 					{
-						[imageView getWLWW:&iwl :&iww];
-						[[vC imageView] getWLWW:&dwl :&dww];
-						
-						if( iwl != dwl || iww != dww)
-							[[vC imageView] setWLWW:iwl :iww];
+						if( propagate)
+						{
+							[imageView getWLWW:&iwl :&iww];
+							[[vC imageView] getWLWW:&dwl :&dww];
+							
+							if( iwl != dwl || iww != dww)
+								[[vC imageView] setWLWW:iwl :iww];
+						}
 					}
 				}
 

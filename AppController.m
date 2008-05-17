@@ -1709,6 +1709,8 @@ static BOOL initialized = NO;
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"is12bitPluginAvailable"];
 				
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"COPYSETTINGSINSERIES"];
+				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"DONTCOPYWLWWSETTINGS"];
+				
 				
 				[[PluginManager alloc] init];
 				
