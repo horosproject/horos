@@ -603,7 +603,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		[extension isEqualToString:@"gif"] == YES)
 		{
 			NSImage		*otherImage = [[NSImage alloc] initWithContentsOfFile:filePath];
-			if( otherImage)
+			if( otherImage || [extension isEqualToString:@"tiff"] || [extension isEqualToString:@"tif"])
 			{
 				// Try to identify a 2 digit number in the last part of the file.
 				char				strNo[ 5];
@@ -621,22 +621,28 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					{
 						long count = 0;
 						int w = 0, h = 0;
-
-						count = 1;
-						while (TIFFReadDirectory(tif))
+						
+						width = 0;
+						height = 0;
+						
+						count = 0;
+						do
+						{
+							TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &w);
+							TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
+							
+							if( w > width) width = w;
+							if( h > height) height = h;
+							
 							count++;
+						}
+						while (TIFFReadDirectory(tif));
 						
 						NoOfFrames = count;
 						
 						NSLog( @"TIFF NoOfFrames: %d", NoOfFrames);
 						
-						TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &w);
-						TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
-						
 						TIFFClose(tif);
-						
-						width = w;
-						height = h;
 					}
 				}
 				else

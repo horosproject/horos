@@ -3344,6 +3344,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	int				w, h, row;
 	short			bpp, count, tifspp;
 	short			dataType = 0;
+	short			planarConfig = 0;
 	
 	isRGB = NO;
 	
@@ -3370,8 +3371,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 		TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &bpp);
 		TIFFGetField(tif, TIFFTAG_SAMPLESPERPIXEL, &tifspp);
 		TIFFGetField(tif, TIFFTAG_DATATYPE, &dataType);
+		TIFFGetField(tif, TIFFTAG_PLANARCONFIG, &planarConfig);
 		
-		NSLog( @"Bits Per Sample: %d, Samples Per Pixel: %d", bpp, tifspp);
+		NSLog( @"Bits Per Sample: %d, Samples Per Pixel: %d PlanarConfig: %d", bpp, tifspp, planarConfig);
 		
 		height = h;
 		height /= 2;
@@ -3381,7 +3383,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 		width *= 2;
 		
 		totSize = (height+1) * (width+1);
-		
 		
 		if( tifspp == 3)	// RGB
 		{
@@ -3396,25 +3397,64 @@ BOOL gUSEPAPYRUSDCMPIX;
 		{
 			if( tifspp == 3)	// RGB
 			{
-				unsigned short *buf = _TIFFmalloc(TIFFScanlineSize(tif));
-				unsigned char  *dst, *aImage = (unsigned char*) oImage;
-				long scanline = TIFFScanlineSize(tif);
-				
-				for (row = 0; row < h; row++)
+				if( planarConfig == PLANARCONFIG_SEPARATE)
 				{
-					TIFFReadScanline(tif, buf, row, 0);
+					unsigned char  *dst = (unsigned char*) oImage;
 					
-					dst = aImage + (row*(scanline/6) * 4);
-					for( i = 0; i < scanline/6; i++)
+					TIFFReadRGBAImage(tif, w, h, (uint32 *) dst, 0);
+					
+					for( i =0; i < height*width*4; i+= 4)
 					{
-						dst[ i*4 + 0] = 0;
-						dst[ i*4 + 1] = buf[ i*3 + 0] / 256;
-						dst[ i*4 + 2] = buf[ i*3 + 1] / 256;
-						dst[ i*4 + 3] = buf[ i*3 + 2] / 256;
+						dst[ i+3] = dst[ i+2];
+						dst[ i+2] = dst[ i+1];
+						dst[ i+1] = dst[ i];
+						
+						dst[ i] = 0;
+					}
+				}
+				else
+				{
+					unsigned short *buf = _TIFFmalloc(TIFFScanlineSize(tif));
+					unsigned char  *dst, *aImage = (unsigned char*) oImage;
+					long scanline = TIFFScanlineSize(tif);
+					
+					BOOL trueRGB = NO;
+					
+					for (row = 0; row < h; row++)
+					{
+						TIFFReadScanline(tif, buf, row, 0);
+						
+						dst = aImage + (row*(scanline/6) * 4);
+						for( i = 0; i < scanline/6; i++)
+						{
+							dst[ i*4 + 0] = 0;
+							dst[ i*4 + 1] = buf[ i*3 + 0] / 256;
+							dst[ i*4 + 2] = buf[ i*3 + 1] / 256;
+							dst[ i*4 + 3] = buf[ i*3 + 2] / 256;
+							
+							if( buf[ i*3 + 0] == buf[ i*3 + 1] && buf[ i*3 + 0] == buf[ i*3 + 2])
+							{
+							}
+							else trueRGB = YES;
+						}
+					}
+					
+					_TIFFfree(buf);
+					
+					if( trueRGB == NO)	// Convert it to BW
+					{
+						isRGB = NO;
+						
+						unsigned char  *dst = (unsigned char*) oImage;
+						
+						for( i =0; i < height*width*4; i+= 4)
+						{
+							oImage[ i/4] = dst[ i+1];
+						}
 					}
 				}
 				
-				_TIFFfree(buf);
+				//check for true rgb
 			}
 			else
 			{
@@ -3428,26 +3468,81 @@ BOOL gUSEPAPYRUSDCMPIX;
 		{
 			if( tifspp == 3)	// RGB
 			{
-				unsigned char *buf = _TIFFmalloc( TIFFScanlineSize(tif));
-				unsigned char  *dst, *aImage = (unsigned char*) oImage;
-				long scanline = TIFFScanlineSize(tif);
-				
-				for (row = 0; row < h; row++)
+				if( planarConfig == PLANARCONFIG_SEPARATE)
 				{
-					TIFFReadScanline(tif, buf, row, 0);
+					unsigned char  *dst = (unsigned char*) oImage;
 					
+					TIFFReadRGBAImage(tif, w, h, (uint32 *) dst, 0);
 					
-					dst = aImage + (row*(scanline/3) * 4);
-					for( i = 0; i < scanline/3; i++)
+					BOOL trueRGB = NO;
+					
+					for( i =0; i < height*width*4; i+= 4)
 					{
-						dst[ i*4 + 0] = 0;	//buf[ i*3 + 0];
-						dst[ i*4 + 1] = buf[ i*3 + 0];
-						dst[ i*4 + 2] = buf[ i*3 + 1];
-						dst[ i*4 + 3] = buf[ i*3 + 2];
+						dst[ i+3] = dst[ i+2];
+						dst[ i+2] = dst[ i+1];
+						dst[ i+1] = dst[ i];
+						
+						if( dst[ i+1] == dst[ i+2] && dst[ i+2] == dst[ i+3])
+						{
+						}
+						else trueRGB = YES;
+						
+						dst[ i] = 0;
+					}
+					
+					if( trueRGB == NO)	// Convert it to BW
+					{
+						isRGB = NO;
+						
+						unsigned char  *dst = (unsigned char*) oImage;
+						
+						for( i =0; i < height*width*4; i+= 4)
+						{
+							oImage[ i/4] = dst[ i+1];
+						}
 					}
 				}
-				
-				_TIFFfree(buf);
+				else
+				{
+					unsigned char *buf = _TIFFmalloc( TIFFScanlineSize(tif));
+					unsigned char  *dst, *aImage = (unsigned char*) oImage;
+					long scanline = TIFFScanlineSize(tif);
+					
+					BOOL trueRGB = NO;
+					
+					for (row = 0; row < h; row++)
+					{
+						TIFFReadScanline(tif, buf, row, 0);
+						
+						dst = aImage + (row*(scanline/3) * 4);
+						for( i = 0; i < scanline/3; i++)
+						{
+							dst[ i*4 + 0] = 0;
+							dst[ i*4 + 1] = buf[ i*3 + 0];
+							dst[ i*4 + 2] = buf[ i*3 + 1];
+							dst[ i*4 + 3] = buf[ i*3 + 2];
+							
+							if( buf[ i*3 + 0] == buf[ i*3 + 1] && buf[ i*3 + 0] == buf[ i*3 + 2])
+							{
+							}
+							else trueRGB = YES;
+						}
+					}
+					
+					if( trueRGB == NO)	// Convert it to BW
+					{
+						isRGB = NO;
+						
+						unsigned char  *dst = (unsigned char*) oImage;
+						
+						for( i =0; i < height*width*4; i+= 4)
+						{
+							oImage[ i/4] = dst[ i+1];
+						}
+					}
+					
+					_TIFFfree(buf);
+				}
 			}
 			else if( tifspp == 1)
 			{
@@ -3651,19 +3746,19 @@ BOOL gUSEPAPYRUSDCMPIX;
 	// This function has been modified twice by Greg Jefferis on 9 June 2004
 	// early am and late pm respectively.  After the second iteration it has been 
 	// tested on new and old style 16 and 8 bit LSM tiff files.  Comments?
-	FILE	*fp = fopen( [srcFile UTF8String], "r");
+	FILE *fp = fopen( [srcFile UTF8String], "r");
 	int	i,it = 0;
 	int	nextoff = 0;
-	int		counter = 0;
+	int counter = 0;
 	int	pos = 8, k;
-	short   shortval;
-	int		lsmDebug=0;  // Flag to determine if debugging messages are printed
+	short shortval;
+	int lsmDebug=0;  // Flag to determine if debugging messages are printed
 	
 	int	realwidth, realheight;
 	
 	int	TIF_NEWSUBFILETYPE = 0; // GJ: flag indicating whether image is "real" or thumbnail 
 	int	LENGTH2, TIF_STRIPOFFSETS; // GJ: Number of channels & offset containing file offset to image data
-	int	TIF_CZ_LSMINFO, TIF_COMPRESSION; // GJ: Offset of additional data about image
+	int	TIF_CZ_LSMINFO, TIF_COMPRESSION = 0; // GJ: Offset of additional data about image
 	/* No longer required as of 040609 pm with simplified reader
 	 int	LENGTH1, TIF_BITSPERSAMPLE_CHANNEL1, TIF_BITSPERSAMPLE_CHANNEL2, TIF_BITSPERSAMPLE_CHANNEL3;
 	 int	TIF_COMPRESSION, TIF_PHOTOMETRICINTERPRETATION, TIF_STRIPOFFSETS, TIF_SAMPLESPERPIXEL, TIF_STRIPBYTECOUNTS;
@@ -3673,7 +3768,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	 */
 	// GJ: this will store the location of the data for this frame
 	int	imageDataOffsetForThisFrame;
-	int		goodFramesChecked=0;
+	int	goodFramesChecked=0;
 	
 	// do / while loop which iterates over each image in the directory
 	// there will be as many directory entries as there are slices
@@ -3708,29 +3803,29 @@ BOOL gUSEPAPYRUSDCMPIX;
 			LENGTH = ((tags2[7] & MASK2) << 24) | ((tags2[6] & MASK2) << 16) | ((tags2[5] & MASK2) << 8) | (tags2[4] & MASK2);
 			if(lsmDebug) NSLog(@"FirstTagRound: Analysing tag %d of type %d and length %d",k,TAGTYPE,LENGTH);  //GJ: for reporting
 			switch (TAGTYPE)
-		{
-			case 254:
-				// GJ figure out whether this is a thumbnail (!0) or a real image (0)
-				TIF_NEWSUBFILETYPE = ((tags2[11] & MASK2) << 24) | ((tags2[10] & MASK2) << 16) | ((tags2[9] & MASK2) << 8) | (tags2[8] & MASK2);
-				if(lsmDebug) NSLog(@"LoadLSM: TIF_NEWSUBFILETYPE= %d",TIF_NEWSUBFILETYPE);
+			{
+				case 254:
+					// GJ figure out whether this is a thumbnail (!0) or a real image (0)
+					TIF_NEWSUBFILETYPE = ((tags2[11] & MASK2) << 24) | ((tags2[10] & MASK2) << 16) | ((tags2[9] & MASK2) << 8) | (tags2[8] & MASK2);
+					if(lsmDebug) NSLog(@"LoadLSM: TIF_NEWSUBFILETYPE= %d",TIF_NEWSUBFILETYPE);
+					break;
+					case 273: 
+					//GJ: number of image channels (some of which can be empty)
+					LENGTH2 = ((tags2[7] & MASK2) << 24) | ((tags2[6] & MASK2) << 16) | ((tags2[5] & MASK2) << 8) | (tags2[4] & MASK2);
+					// Offset of the place where STRIPOFFSETS are recorded
+					TIF_STRIPOFFSETS = ((tags2[11] & MASK2) << 24) | ((tags2[10] & MASK2) << 16) | ((tags2[9] & MASK2) << 8) | (tags2[8] & MASK2);
+					break;
+					//case 279:  
+					// the file offset 
+					// at which the size of the individual images for each slice are stored
+					// (up to 3 numbers in bytes)
+					//	TIF_STRIPBYTECOUNTS = ((tags2[11] & MASK2) << 24) | ((tags2[10] & MASK2) << 16) | ((tags2[9] & MASK2) << 8) | (tags2[8] & MASK2);
+					//	break;
+					//				case 34412:
+					//					TIF_CZ_LSMINFO = ((tags2[11] & MASK2) << 24) | ((tags2[10] & MASK2) << 16) | ((tags2[9] & MASK2) << 8) | (tags2[8] & MASK2);
+					//				default:
 				break;
-				case 273: 
-				//GJ: number of image channels (some of which can be empty)
-				LENGTH2 = ((tags2[7] & MASK2) << 24) | ((tags2[6] & MASK2) << 16) | ((tags2[5] & MASK2) << 8) | (tags2[4] & MASK2);
-				// Offset of the place where STRIPOFFSETS are recorded
-				TIF_STRIPOFFSETS = ((tags2[11] & MASK2) << 24) | ((tags2[10] & MASK2) << 16) | ((tags2[9] & MASK2) << 8) | (tags2[8] & MASK2);
-				break;
-				//case 279:  
-				// the file offset 
-				// at which the size of the individual images for each slice are stored
-				// (up to 3 numbers in bytes)
-				//	TIF_STRIPBYTECOUNTS = ((tags2[11] & MASK2) << 24) | ((tags2[10] & MASK2) << 16) | ((tags2[9] & MASK2) << 8) | (tags2[8] & MASK2);
-				//	break;
-				//				case 34412:
-				//					TIF_CZ_LSMINFO = ((tags2[11] & MASK2) << 24) | ((tags2[10] & MASK2) << 16) | ((tags2[9] & MASK2) << 8) | (tags2[8] & MASK2);
-				//				default:
-				break;
-		}
+			}
 			// We don't need to process all the tags if this is a thumbnail
 			if(TIF_NEWSUBFILETYPE>0) continue;
 			
@@ -3777,12 +3872,16 @@ BOOL gUSEPAPYRUSDCMPIX;
 		if(TIF_NEWSUBFILETYPE==0){
 			// This directory entry was a main image
 			// Is it also the entry for the image we are looking for?
-			if(goodFramesChecked++ == frameNo){
+			if(goodFramesChecked++ == frameNo)
+			{
 				// yes, so record the imageDataOffsetForThisFrame
-				if(LENGTH2==1){
+				if(LENGTH2==1)
+				{
 					// for a single channel image it is just TIF_STRIPOFFSETS
 					imageDataOffsetForThisFrame = TIF_STRIPOFFSETS;
-				}else{
+				}
+				else
+				{
 					// if this is a multi channel image, check that serieNo has a sensible value
 					if(LENGTH2>1 && serieNo>=LENGTH2){ 
 						NSLog(@"LoadLSM: zero indexed serieNo (%d) is greater than number of channels (%d)",serieNo,LENGTH2);
@@ -3800,6 +3899,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 				if(lsmDebug)  NSLog(@"Found frame number %d - breaking out of first loop",frameNo);
 				break;
 			}
+			
 			if(lsmDebug) NSLog(@"goodFramesChecked = %d",goodFramesChecked);
 		}
 		
@@ -3828,71 +3928,78 @@ BOOL gUSEPAPYRUSDCMPIX;
 		fseek(fp, 10+12*k, SEEK_SET);
 		fread( &TAG1, 12, 1, fp);
 		
-	{
-		int TAGTYPE = 0;
-		int LENGTH = 0;
-		int MASK = 0x00ff;
-		int MASK2 = 0x000000ff;
-		
-		
-		TAGTYPE = ((TAG1[1] & MASK) << 8) | ((TAG1[0] & MASK ) <<0);
-		LENGTH = ((TAG1[7] & MASK2) << 24) | ((TAG1[6] & MASK2) << 16) | ((TAG1[5] & MASK2) << 8) | (TAG1[4] & MASK2);
-		
-		//NSLog(@"Analysing tag %d of type %d and length %d",k,TAGTYPE,LENGTH);  //GJ: for reporting
-		
-		switch (TAGTYPE)
-	{
-		case 254:
-			TIF_NEWSUBFILETYPE = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
-			// GJ: this is condition which cannot be handled by the present version of LoadLSM
-			if(TIF_NEWSUBFILETYPE!=0){
-				NSLog(@"LoadLSM unable to handle files in which the first image directory entry is a thumbnail");
-				// give up on trying to read this file and exit method!
-				return;
+		{
+			int TAGTYPE = 0;
+			int LENGTH = 0;
+			int MASK = 0x00ff;
+			int MASK2 = 0x000000ff;
+			
+			
+			TAGTYPE = ((TAG1[1] & MASK) << 8) | ((TAG1[0] & MASK ) <<0);
+			LENGTH = ((TAG1[7] & MASK2) << 24) | ((TAG1[6] & MASK2) << 16) | ((TAG1[5] & MASK2) << 8) | (TAG1[4] & MASK2);
+			
+			//NSLog(@"Analysing tag %d of type %d and length %d",k,TAGTYPE,LENGTH);  //GJ: for reporting
+			
+			switch (TAGTYPE)
+			{
+				case 254:
+					TIF_NEWSUBFILETYPE = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
+					// GJ: this is condition which cannot be handled by the present version of LoadLSM
+					if(TIF_NEWSUBFILETYPE!=0){
+						NSLog(@"LoadLSM unable to handle files in which the first image directory entry is a thumbnail");
+						// give up on trying to read this file and exit method!
+						return;
+					}
+				break;
+				
+				case 256:
+					realwidth = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
+					width =realwidth/ 2; width *= 2;
+				break;
+				
+				case 257:
+					realheight = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
+					height = realheight/2; height *= 2;
+				break;
+				
+					// GJ: don't need to parse these tags as things are wriiten now
+					/*
+					 case 258:
+					 LENGTH1 = ((TAG1[7] & MASK2) << 24) | ((TAG1[6] & MASK2) << 16) | ((TAG1[5] & MASK2) << 8) | (TAG1[4] & MASK2);
+					 TIF_BITSPERSAMPLE_CHANNEL1 = ((TAG1[8] & MASK2) << 0);
+					 TIF_BITSPERSAMPLE_CHANNEL2 = ((TAG1[9] & MASK2) << 0);
+					 TIF_BITSPERSAMPLE_CHANNEL3 = ((TAG1[10] & MASK2) << 0);
+					 break;*/
+					 
+				case 259:
+					TIF_COMPRESSION = ((TAG1[8] & MASK2) << 0);
+					NSLog( @"COMPRESSION: %d", TIF_COMPRESSION);
+				break;
+				
+					/*	case 262:
+					 TIF_PHOTOMETRICINTERPRETATION = ((TAG1[8] & MASK2) << 0);
+					 break;
+					 case 273:
+					 LENGTH2 = ((TAG1[7] & MASK2) << 24) | ((TAG1[6] & MASK2) << 16) | ((TAG1[5] & MASK2) << 8) | (TAG1[4] & MASK2);
+					 TIF_STRIPOFFSETS = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
+					 //NSLog(@"LoadLSM:TIF_STRIPOFFSETS = %d; LENGTH2 = %d",TIF_STRIPOFFSETS,LENGTH2);
+					 break;
+					 case 277:
+					 TIF_SAMPLESPERPIXEL = ((TAG1[8] & MASK2) << 0);
+					 break;
+					 case 279:
+					 TIF_STRIPBYTECOUNTS = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
+					 break; */
+					 
+				case 34412:
+					TIF_CZ_LSMINFO = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
+					//NSLog(@"LoadLSM: TIF_CZ_LSMINFO = %d",TIF_CZ_LSMINFO);
+				break;
+				
+				default:
+				break;
 			}
-			break;
-			case 256:
-			realwidth = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
-			width =realwidth/ 2; width *= 2;
-			break;
-			case 257:
-			realheight = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
-			height = realheight/2; height *= 2;
-			break;
-			// GJ: don't need to parse these tags as things are wriiten now
-			/*
-			 case 258:
-			 LENGTH1 = ((TAG1[7] & MASK2) << 24) | ((TAG1[6] & MASK2) << 16) | ((TAG1[5] & MASK2) << 8) | (TAG1[4] & MASK2);
-			 TIF_BITSPERSAMPLE_CHANNEL1 = ((TAG1[8] & MASK2) << 0);
-			 TIF_BITSPERSAMPLE_CHANNEL2 = ((TAG1[9] & MASK2) << 0);
-			 TIF_BITSPERSAMPLE_CHANNEL3 = ((TAG1[10] & MASK2) << 0);
-			 break;*/
-			case 259:
-			TIF_COMPRESSION = ((TAG1[8] & MASK2) << 0);
-			NSLog( @"COMPRESSION: %d", TIF_COMPRESSION);
-			break;
-			/*	case 262:
-			 TIF_PHOTOMETRICINTERPRETATION = ((TAG1[8] & MASK2) << 0);
-			 break;
-			 case 273:
-			 LENGTH2 = ((TAG1[7] & MASK2) << 24) | ((TAG1[6] & MASK2) << 16) | ((TAG1[5] & MASK2) << 8) | (TAG1[4] & MASK2);
-			 TIF_STRIPOFFSETS = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
-			 //NSLog(@"LoadLSM:TIF_STRIPOFFSETS = %d; LENGTH2 = %d",TIF_STRIPOFFSETS,LENGTH2);
-			 break;
-			 case 277:
-			 TIF_SAMPLESPERPIXEL = ((TAG1[8] & MASK2) << 0);
-			 break;
-			 case 279:
-			 TIF_STRIPBYTECOUNTS = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
-			 break; */
-			case 34412:
-			TIF_CZ_LSMINFO = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
-			//NSLog(@"LoadLSM: TIF_CZ_LSMINFO = %d",TIF_CZ_LSMINFO);
-			break;
-			default:
-			break;
-	}
-	}
+		}
 	} // end for loop parsing info of first frame
 	
 	if( TIF_CZ_LSMINFO)
@@ -3935,7 +4042,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		if( fExternalOwnedImage) fImage = fExternalOwnedImage;
 		else fImage = malloc(width*height*sizeof(float) + 100);
 		
-		int numPixels=height * width;
+		int numPixels = height * width;
 		
 		// GJ: Move to correct location for image data
 		fseek(fp, imageDataOffsetForThisFrame, SEEK_SET);
@@ -3973,9 +4080,28 @@ BOOL gUSEPAPYRUSDCMPIX;
 				i = numPixels;
 				while( i-- > 0) oImage[i] = eightBitData[ i];
 				free( eightBitData);
-				break;
 				
-				case 2: 
+				if( TIF_COMPRESSION)
+				{
+					[self LoadTiff: counter];
+					
+					// RGBA -> separate according to SerieNo
+					
+					if( isRGB && serieNo < 3)
+					{
+						isRGB = NO;
+						unsigned char  *dst = (unsigned char*) fImage;
+						
+						i = numPixels;
+						while( i-- > 0)
+						{
+							oImage[ i] = dst[ i*4+ 1 + serieNo];
+						}
+					}
+				}
+			break;
+				
+			case 2: 
 				// GJ: 040608 added code to handle 16 bit data including multi channels
 				oImage = malloc(numPixels*2);
 				
@@ -4007,7 +4133,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 				fread( fImage, numPixels * 4, 1 ,fp);
 				i = numPixels;
 				while( i-- > 0) ConvertFloatToNative( &fImage[i]);
-				break;
+			break;
 		}
 		
 		if( oImage)
@@ -8372,14 +8498,17 @@ END_CREATE_ROIS:
 				{
 #ifndef STATIC_DICOM_LIB
 					TIFF* tif = TIFFOpen([srcFile UTF8String], "r");
-					if( tif ) {
+					if( tif )
+					{
 						short   bpp, count, tifspp;
 						
 						TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &bpp);
 						TIFFGetField(tif, TIFFTAG_SAMPLESPERPIXEL, &tifspp);
 						
-						if( bpp == 16 || bpp == 32 || bpp == 8) {
-							if( tifspp == 1) USECUSTOMTIFF = YES;
+						if( bpp == 16 || bpp == 32 || bpp == 8)
+						{
+							if( tifspp == 1)
+								USECUSTOMTIFF = YES;
 						}
 						
 						count = 1;
@@ -8401,7 +8530,6 @@ END_CREATE_ROIS:
 				if( USECUSTOMTIFF) // Is it a 16/32-bit TIFF not supported by Apple???
 				{
 					[self LoadTiff:frameNo];
-					
 				}
 				else {
 					[otherImage setBackgroundColor: [NSColor whiteColor]];

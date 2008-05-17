@@ -828,6 +828,7 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject:@"1" forKey: @"dcmExportFormat"];
 	[defaultValues setObject:[NSNumber numberWithInt: 2] forKey: @"preferredSyntaxForIncoming"]; // 2 = EXS_LittleEndianExplicit See dcmqrsrv.mm
 	[defaultValues setObject :@"ISO_IR 100" forKey: @"STRINGENCODING"];
+	[defaultValues setObject:@"1" forKey:@"syncPreviewList"];
 	
 	// ** ROI Default
 	[defaultValues setObject:[NSNumber numberWithFloat: 2] forKey:@"ROIThickness"];
