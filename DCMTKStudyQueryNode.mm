@@ -101,21 +101,28 @@
 		if (dataset ->findAndGetString(DCM_ModalitiesInStudy, string).good() && string != nil)	{
 			_modality = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 		}
-		/*
-		else {
-			// look for modality at the Series level and get modalities from children
-			//This has not been tested yet LWP
-			[self queryWithValues:nil];
-			NSMutableSet *modalitiesInStudy = [NSMutableSet set];
-			NSEnumerator *enumerator = [_children  objectEnumerator];
-			DCMTKSeriesQueryNode * child;
-			while (child = [enumerator nextObject]) {
-				if ([child modality])
-					[modalitiesInStudy addObject:[child modality]];
+		else
+		{
+			if (dataset ->findAndGetString(DCM_Modality, string).good() && string != nil)	{
+			_modality = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			}
-			_modality = [[[modalitiesInStudy allObjects] componentsJoinedByString:@"/"] retain];
+			/*
+			else {
+				// look for modality at the Series level and get modalities from children
+				//This has not been tested yet LWP
+				[self queryWithValues:nil];
+				NSMutableSet *modalitiesInStudy = [NSMutableSet set];
+				NSEnumerator *enumerator = [_children  objectEnumerator];
+				DCMTKSeriesQueryNode * child;
+				while (child = [enumerator nextObject]) {
+					if ([child modality])
+						[modalitiesInStudy addObject:[child modality]];
+				}
+				_modality = [[[modalitiesInStudy allObjects] componentsJoinedByString:@"/"] retain];
+			}
+			*/
 		}
-		*/	
+		
 		if (dataset ->findAndGetString(DCM_NumberOfStudyRelatedInstances, string).good() && string != nil)
 		{
 			NSString	*numberString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];

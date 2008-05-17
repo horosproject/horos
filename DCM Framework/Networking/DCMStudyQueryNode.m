@@ -41,6 +41,11 @@
 	[findObject setAttributeValues:[NSMutableArray array] forName:@"StudyInstanceUID"];
 	[findObject setAttributeValues:[NSMutableArray array] forName:@"SeriesNumber"];
 	[findObject setAttributeValues:[NSMutableArray array] forName:@"NumberofSeriesRelatedInstances"];
+	
+	[findObject setAttributeValues:[NSMutableArray array] forName:@"NumberofStudyRelatedInstances"];
+	[findObject setAttributeValues:[NSMutableArray array] forName:@"ModalitiesinStudy"];
+	[findObject setAttributeValues:[NSMutableArray array] forName:@"Modality"];
+	
 	// this will be be link to our UID
 	[findObject setAttributeValues:[NSMutableArray arrayWithObject:[dcmObject attributeValueWithName:@"StudyInstanceUID"]] forName:@"StudyInstanceUID"];
 	[findObject setAttributeValues:[NSMutableArray arrayWithObject:@"SERIES"] forName:@"Query/RetrieveLevel"];
@@ -79,8 +84,9 @@
 	return [dcmObject attributeValueWithName:@"Modality"];
 }
 
-- (NSNumber *)numberImages{
-	return [NSNumber numberWithInt:[[dcmObject attributeValueWithName:@"NumberofStudyRelatedInstances"] intValue]];
+- (NSNumber *)numberImages
+{
+	return [NSNumber numberWithInt:[[dcmObject attributeValueWithName:@"NumberofStudyRelatedInstances"] intValue]];	//NumberOfSeriesRelatedInstances
 }
 
 - (void)move:(NSDictionary *)parameters{
