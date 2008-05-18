@@ -7096,6 +7096,29 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			glDisable(GL_BLEND);
 		}
 		
+		if( [self is2DViewer])
+		{
+			if( [[self windowController] highLighted])
+			{
+				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
+				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
+					
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glEnable(GL_BLEND);
+				
+				glColor4f (249./255., 240./255., 140./255., 0.7f);
+				glLineWidth(1.0);
+				glBegin(GL_QUADS);
+					glVertex2f(0.0, 0.0);
+					glVertex2f(0.0, drawingFrameRect.size.height);
+					glVertex2f(drawingFrameRect.size.width, drawingFrameRect.size.height);
+					glVertex2f(drawingFrameRect.size.width, 0);
+				glEnd();
+				glDisable(GL_BLEND);
+			}
+		}
+		
 		// highlight the visible part of the view (the part visible through iChat)
 		if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView && iChatWidth>0 && iChatHeight>0)
 		{

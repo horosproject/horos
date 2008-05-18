@@ -242,7 +242,7 @@ static int hotKeyToolCrossTable[] =
 
 + (NSMutableArray*) getDisplayed2DViewers
 {
-	NSArray				*winList = [NSApp windows];
+	NSArray				*winList = [NSApp orderedWindows];
 	NSMutableArray		*viewersList = [NSMutableArray array];
 	
 	for( id loopItem in winList)
@@ -3007,12 +3007,28 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		if( [[sender selectedCell] representedObject] != [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"])
 		{
-			ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
+			BOOL found = NO;
+		
+			// is this series already displayed? -> select it !
+			
+			for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+			{
+				if( [[v imageView] seriesObj] == [[sender selectedCell] representedObject] && v != self)
+				{
+					[[v window] makeKeyAndOrderFront: self];
+					found = YES;
+				}
+			}
+			
+			if( found == NO)
+			{
+				ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
 
-			[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
-				
-			[self matrixPreviewSelectCurrentSeries];
-			[self updateNavigator];
+				[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+					
+				[self matrixPreviewSelectCurrentSeries];
+				[self updateNavigator];
+			}
 		}
 	}
 }
@@ -3363,7 +3379,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 					[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rClick + Apple Key:\rOpen in new window", 0L), [curSeries valueForKey:@"id"]] forCell:cell];
 					if( [curImage valueForKey:@"series"] == curSeries)
 					{
-						[cell setBackgroundColor: [NSColor selectedControlColor]];
+//						[cell setBackgroundColor: [NSColor selectedControlColor]];
+						[cell setBackgroundColor: [NSColor colorWithCalibratedRed:249./255. green:80./255. blue:80./255. alpha:1.0]];
 						[cell setBordered: NO];
 					}
 					else if( [displayedSeries containsObject: curSeries])
@@ -3818,6 +3835,19 @@ static ViewerController *draggedController = 0L;
     }
 }
 
+- (BOOL) highLighted
+{
+	return highLighted;
+}
+
+- (void) setHighLighted: (BOOL) b
+{
+	highLighted = b;
+	
+	for( DCMView * v in [seriesView imageViews])
+		[v setNeedsDisplay: YES];
+}
+
 -(void) mouseMoved: (NSEvent*) theEvent
 {
 	if( windowWillClose) return;
@@ -3826,7 +3856,47 @@ static ViewerController *draggedController = 0L;
 	{
 		[self autoHideMatrix];
 	}
-//	[super mouseMoved: theEvent];
+
+	NSPoint	mouse = [[self window] mouseLocationOutsideOfEventStream];
+	
+	NSArray	*displayedViewers = [ViewerController getDisplayed2DViewers];
+	
+	for( ViewerController *v in displayedViewers)
+		[v setHighLighted: NO];
+		
+	if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height-20)
+	{
+		NSInteger row, column;
+		
+		mouse = [previewMatrix convertPoint:mouse fromView: 0L];
+		
+		if( [previewMatrix getRow: &row column: &column forPoint: mouse])
+		{
+			for( ViewerController *v in displayedViewers)
+			{
+				if( [[v imageView] seriesObj] == [[previewMatrix cellAtRow: row column: column] representedObject] && v != self)
+				{
+					[v setHighLighted: YES];
+				}
+			}
+		}
+	}
+	else
+	{
+		if( theEvent)
+		{
+			for( ViewerController *v in displayedViewers)
+			{
+				NSPoint	mouse = [NSEvent mouseLocation];
+				
+				if( NSPointInRect( mouse, [[v window] frame]))
+				{
+					[v mouseMoved: 0L];
+					break;
+				}
+			}
+		}
+	}
 }
 
 - (void) Display3DPoint:(NSNotification*) note
