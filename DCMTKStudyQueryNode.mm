@@ -105,8 +105,9 @@
 		}
 		else
 		{
-			if (dataset ->findAndGetString(DCM_Modality, string).good() && string != nil)	{
-			_modality = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
+			if (dataset ->findAndGetString(DCM_Modality, string).good() && string != nil)
+			{
+				_modality = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			}
 			/*
 			else {

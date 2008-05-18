@@ -506,6 +506,11 @@ static char *GetPrivateIP()
 		[cell setFont: [NSFont boldSystemFontOfSize:13]];
 		[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 	}
+	else if( [[tableColumn identifier] isEqualToString: @"numberImages"])
+	{
+		if( [item valueForKey:@"numberImages"]) [cell setIntegerValue: [[item valueForKey:@"numberImages"] intValue]];
+		else [cell setStringValue:@"n/a"];
+	}
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{

@@ -87,15 +87,15 @@
 				return [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil];	
 			else
 				return _object;
-	case 4: return [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil];  //today
+	case 4: return [_object descriptionWithCalendarFormat:@"%Y%m%d-%Y%m%d" timeZone:nil locale:nil];  //today
 	case 5: return [_object descriptionWithCalendarFormat:@"%Y%m%d-%Y%m%d" timeZone:nil locale:nil];   //Yesterday
 	case 6: return [NSString stringWithFormat:@"-%@", [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]]; //before
 	case 7: return [NSString stringWithFormat:@"%@-", [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]]; //after
 	case 8: return [self withinDateString]; //within
-	case 9:  return [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil];
+	case 9:  return [_object descriptionWithCalendarFormat:@"%Y%m%d-%Y%m%d" timeZone:nil locale:nil];
 	
-	case 10: return [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil];  //today am
-	case 11: return [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil];  //today pm
+	case 10: return [_object descriptionWithCalendarFormat:@"%Y%m%d-%Y%m%d" timeZone:nil locale:nil];  //today am
+	case 11: return [_object descriptionWithCalendarFormat:@"%Y%m%d-%Y%m%d" timeZone:nil locale:nil];  //today pm
 	}
 	
 }
