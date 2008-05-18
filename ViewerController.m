@@ -3128,7 +3128,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			if( v != self && [[v studyInstanceUID] isEqualToString: [self studyInstanceUID]] && syncThumbnails)
 			{
-				[[v.previewMatrixScrollView contentView] scrollToPoint: [[previewMatrix superview] bounds].origin];
+				[[v.previewMatrixScrollView contentView] scrollToPoint: [[v.previewMatrixScrollView contentView] constrainScrollPoint: [[previewMatrix superview] bounds].origin]];
 				[v.previewMatrixScrollView reflectScrolledClipView: [v.previewMatrixScrollView contentView]];
 			}
 		}
