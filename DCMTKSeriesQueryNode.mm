@@ -60,6 +60,8 @@
 		_studyInstanceUID = nil;
 		const char *string = nil;
 		
+//		dataset ->print( COUT);
+		
 		if (dataset ->findAndGetString(DCM_SpecificCharacterSet, string).good() && string != nil)
 			_specificCharacterSet = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 

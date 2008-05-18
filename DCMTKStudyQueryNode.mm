@@ -61,6 +61,8 @@
 		
 		const char *string = nil;
 		
+//		dataset ->print( COUT);
+		
 		if (dataset ->findAndGetString(DCM_SpecificCharacterSet, string).good() && string != nil)
 			_specificCharacterSet = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 		
@@ -129,7 +131,12 @@
 			_numberImages = [[NSNumber numberWithInt: [numberString intValue]] retain];
 			[numberString release];
 		}
-
+//		else if (dataset ->findAndGetString(DCM_ImageGroupLength, string).good() && string != nil)
+//		{
+//			NSString	*numberString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
+//			_numberImages = [[NSNumber numberWithInt: [numberString intValue]] retain];
+//			[numberString release];
+//		}
 	}
 	return self;
 }
