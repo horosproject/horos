@@ -75,10 +75,6 @@ LogManager *currentLogManager;
 		
 		if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour]) return;
 		
-		NSFileManager *manager = [NSFileManager defaultManager];
-		NSDirectoryEnumerator *enumerator = [manager enumeratorAtPath:[self logFolder]];
-		NSString *path;
-		
 		char logPatientName[ 1024];
 		char logStudyDescription[ 1024];
 		char logCallingAET[ 1024];
@@ -104,6 +100,10 @@ LogManager *currentLogManager;
 		[context retain];
 		if( [context tryLock])
 		{
+			NSFileManager *manager = [NSFileManager defaultManager];
+			NSDirectoryEnumerator *enumerator = [manager enumeratorAtPath:[self logFolder]];
+			NSString *path;
+			
 			NS_DURING
 			while (path = [enumerator nextObject]){
 				if ([[path pathExtension] isEqualToString: @"log"])
