@@ -2120,6 +2120,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 	[splitView saveDefault:@"SPLITVIEWER"];
 	
+	[highLightedTimer invalidate];
+	[highLightedTimer release];
+	highLightedTimer = 0L;
+	
 	if( movieTimer)
 	{
         [movieTimer invalidate];
@@ -3379,8 +3383,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 					[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rClick + Apple Key:\rOpen in new window", 0L), [curSeries valueForKey:@"id"]] forCell:cell];
 					if( [curImage valueForKey:@"series"] == curSeries)
 					{
-//						[cell setBackgroundColor: [NSColor selectedControlColor]];
 						[cell setBackgroundColor: [NSColor colorWithCalibratedRed:249./255. green:80./255. blue:80./255. alpha:1.0]];
+						[cell setBackgroundColor: [NSColor colorWithCalibratedRed:252/255. green:177/255. blue:141/255. alpha:1.0]];
+//						[cell setBackgroundColor: [NSColor colorWithCalibratedRed:183/255. green:213/255. blue:254/255. alpha:1.0]];
 						[cell setBordered: NO];
 					}
 					else if( [displayedSeries containsObject: curSeries])
@@ -3835,17 +3840,44 @@ static ViewerController *draggedController = 0L;
     }
 }
 
-- (BOOL) highLighted
+- (float) highLighted
 {
 	return highLighted;
 }
 
-- (void) setHighLighted: (BOOL) b
-{
-	highLighted = b;
-	
+ - (void) highLightTimerFunction:(NSTimer*)theTimer
+ {
+	highLighted -= 0.05;
 	for( DCMView * v in [seriesView imageViews])
-		[v setNeedsDisplay: YES];
+			[v setNeedsDisplay: YES];
+	
+	if( highLighted <= 0.0)
+	{
+		[highLightedTimer invalidate];
+		[highLightedTimer release];
+		highLightedTimer = 0L;
+	}
+}
+
+- (void) setHighLighted: (float) b
+{
+	if( b != highLighted)
+	{
+		highLighted = b;
+		
+		for( DCMView * v in [seriesView imageViews])
+			[v setNeedsDisplay: YES];
+		
+		if( b == 1.0)
+		{
+			[highLightedTimer invalidate];
+			[highLightedTimer release];
+			
+			highLightedTimer = [[NSTimer scheduledTimerWithTimeInterval:0.02 target:self selector:@selector( highLightTimerFunction:) userInfo:0 repeats: YES] retain];
+			[[NSRunLoop currentRunLoop] addTimer: highLightedTimer forMode:NSModalPanelRunLoopMode];
+			[[NSRunLoop currentRunLoop] addTimer: highLightedTimer forMode:NSEventTrackingRunLoopMode];
+		}
+	}
 }
 
 -(void) mouseMoved: (NSEvent*) theEvent
@@ -3856,43 +3888,57 @@ static ViewerController *draggedController = 0L;
 	{
 		[self autoHideMatrix];
 	}
-
-	NSPoint	mouse = [[self window] mouseLocationOutsideOfEventStream];
 	
-	NSArray	*displayedViewers = [ViewerController getDisplayed2DViewers];
-	
-	for( ViewerController *v in displayedViewers)
-		[v setHighLighted: NO];
-		
-	if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height-20)
+	if( [self checkFrameSize])
 	{
-		NSInteger row, column;
+		NSPoint	mouse = [[self window] mouseLocationOutsideOfEventStream];
 		
-		mouse = [previewMatrix convertPoint:mouse fromView: 0L];
+		NSArray	*displayedViewers = [ViewerController getDisplayed2DViewers];
 		
-		if( [previewMatrix getRow: &row column: &column forPoint: mouse])
+//		for( ViewerController *v in displayedViewers)
+//			[v setHighLighted: NO];
+			
+		if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height-20)
 		{
-			for( ViewerController *v in displayedViewers)
+			NSInteger row, column;
+			
+			mouse = [previewMatrix convertPoint:mouse fromView: 0L];
+			
+			BOOL found = NO;
+			
+			if( [previewMatrix getRow: &row column: &column forPoint: mouse])
 			{
-				if( [[v imageView] seriesObj] == [[previewMatrix cellAtRow: row column: column] representedObject] && v != self)
+				for( ViewerController *v in displayedViewers)
 				{
-					[v setHighLighted: YES];
+					if( [[v imageView] seriesObj] == [[previewMatrix cellAtRow: row column: column] representedObject] && v != self)
+					{
+						found = YES;
+						if( lastHighLightedRow != row)
+						{
+							lastHighLightedRow = row;
+							[v setHighLighted: 1.0];
+						}
+					}
 				}
 			}
+			
+			if( found == NO)
+				lastHighLightedRow = 0;
 		}
-	}
-	else
-	{
-		if( theEvent)
+		else
 		{
-			for( ViewerController *v in displayedViewers)
+			lastHighLightedRow = 0;
+			if( theEvent)
 			{
-				NSPoint	mouse = [NSEvent mouseLocation];
-				
-				if( NSPointInRect( mouse, [[v window] frame]))
+				for( ViewerController *v in displayedViewers)
 				{
-					[v mouseMoved: 0L];
-					break;
+					NSPoint	mouse = [NSEvent mouseLocation];
+					
+					if( NSPointInRect( mouse, [[v window] frame]))
+					{
+						[v mouseMoved: 0L];
+						break;
+					}
 				}
 			}
 		}

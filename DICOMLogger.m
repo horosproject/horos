@@ -12,13 +12,10 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import "DICOMLogger.h"
 
-
 @implementation DICOMLogger
+
 static DICOMLogger *sharedLogger = nil;
 
 - (id)initWithLog:(NSString *)info atPath:(NSString *)path{
@@ -56,12 +53,5 @@ static DICOMLogger *sharedLogger = nil;
 - (void)dealloc {
     if (self != sharedLogger) [super dealloc];	// Don't free the shared instance
 }
-
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
 
 @end

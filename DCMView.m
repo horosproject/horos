@@ -7098,7 +7098,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( [self is2DViewer])
 		{
-			if( [[self windowController] highLighted])
+			if( [[self windowController] highLighted] > 0)
 			{
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
@@ -7107,7 +7107,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 				glEnable(GL_BLEND);
 				
-				glColor4f (249./255., 240./255., 140./255., 0.7f);
+				glColor4f (249./255., 240./255., 140./255., [[self windowController] highLighted]);
 				glLineWidth(1.0);
 				glBegin(GL_QUADS);
 					glVertex2f(0.0, 0.0);
@@ -7189,7 +7189,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 			glScalef (2.0f /(drawingFrameRect.size.width), -2.0f / (drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
 
-			if( clutBars == barOrigin || clutBars == barBoth) {
+			if( clutBars == barOrigin || clutBars == barBoth)
+			{
 				float			heighthalf = drawingFrameRect.size.height/2 - 1;
 				float			widthhalf = drawingFrameRect.size.width/2 - 1;
 				long			yRaster = 1, xRaster, i;
@@ -7243,8 +7244,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 			} //clutBars == barOrigin || clutBars == barBoth
 			
-			if( blendingView ) {
-				if( clutBars == barFused || clutBars == barBoth) {
+			if( blendingView )
+			{
+				if( clutBars == barFused || clutBars == barBoth)
+				{
 					unsigned char	*bred, *bgreen, *bblue;
 					float			heighthalf = drawingFrameRect.size.height/2 - 1;
 					float			widthhalf = drawingFrameRect.size.width/2 - 1;
@@ -7317,16 +7320,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 			glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
 
-			//FRAME RECT IF MORE THAN 1 WINDOW and IF THIS WINDOW IS THE FRONTMOST
+			//FRAME RECT IF MORE THAN 1 WINDOW and IF THIS WINDOW IS THE FRONTMOST : BORDER AROUND THE IMAGE
+			
 			if(( numberOf2DViewer > 1 && [self is2DViewer] == YES && stringID == 0L) || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
-			{	// draw line around key View
-				if( [[self window] isMainWindow] && isKeyView && ctx!=_alternateContext) {
+			{
+				// draw line around key View
+				
+				if( [[self window] isMainWindow] && isKeyView && ctx!=_alternateContext)
+				{
 					float heighthalf = drawingFrameRect.size.height/2;
 					float widthhalf = drawingFrameRect.size.width/2;
 					
 					// red square
 					
-					glEnable(GL_BLEND);
+//					glEnable(GL_BLEND);
 					glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
 					glLineWidth(8.0);
 					glBegin(GL_LINE_LOOP);
@@ -7336,7 +7343,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						glVertex2f(  widthhalf, -heighthalf);
 					glEnd();
 					glLineWidth(1.0);
-					glDisable(GL_BLEND);
+//					glDisable(GL_BLEND);
 				}
 			}  //drawLines for ImageView Frames
 			

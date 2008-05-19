@@ -65,7 +65,10 @@ enum
 	IBOutlet NSSplitView	*splitView;
 	IBOutlet NSMatrix		*previewMatrix;
 	IBOutlet NSScrollView	*previewMatrixScrollView;
-	BOOL					matrixPreviewBuilt, highLighted;
+	BOOL					matrixPreviewBuilt;
+	float					highLighted;
+	int						lastHighLightedRow;
+	NSTimer					*highLightedTimer;
 	
     IBOutlet NSWindow       *quicktimeWindow;
 	IBOutlet NSMatrix		*quicktimeMode;
@@ -589,8 +592,8 @@ enum
 - (void) popFusionAction:(id) sender;
 - (void) propagateSettings;
 - (void) setCurWLWWMenu:(NSString*)s ;
-- (BOOL) highLighted;
-- (void) setHighLighted: (BOOL) b;
+- (float) highLighted;
+- (void) setHighLighted: (float) b;
 
 /** Used to determine in the Window Controller is a 2D Viewer.
 * Always return YES
