@@ -3906,49 +3906,52 @@ static ViewerController *draggedController = 0L;
 		
 		NSArray	*displayedViewers = [ViewerController getDisplayed2DViewers];
 		
-		if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height-20)
+		if( [displayedViewers count] > 2)
 		{
-			NSInteger row, column;
-			
-			mouse = [previewMatrix convertPoint:mouse fromView: 0L];
-			
-			BOOL found = NO;
-			
-			if( [previewMatrix getRow: &row column: &column forPoint: mouse])
+			if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height-20)
 			{
-				for( ViewerController *v in displayedViewers)
+				NSInteger row, column;
+				
+				mouse = [previewMatrix convertPoint:mouse fromView: 0L];
+				
+				BOOL found = NO;
+				
+				if( [previewMatrix getRow: &row column: &column forPoint: mouse])
 				{
-					if( [[v imageView] seriesObj] == [[previewMatrix cellAtRow: row column: column] representedObject] && v != self)
+					for( ViewerController *v in displayedViewers)
 					{
-						found = YES;
-						
-						if( lastHighLightedRow != row)
-						{							
-							[v setHighLighted: 1.0];
+						if( [[v imageView] seriesObj] == [[previewMatrix cellAtRow: row column: column] representedObject] && v != self)
+						{
+							found = YES;
+							
+							if( lastHighLightedRow != row)
+							{							
+								[v setHighLighted: 1.0];
+							}
 						}
 					}
-				}
-				
-				if( found)
-					lastHighLightedRow = row;
-				else
-					lastHighLightedRow = 0;
-			}
-			else lastHighLightedRow = 0;
-		}
-		else
-		{
-			lastHighLightedRow = 0;
-			if( theEvent)
-			{
-				for( ViewerController *v in displayedViewers)
-				{
-					NSPoint	mouse = [NSEvent mouseLocation];
 					
-					if( NSPointInRect( mouse, [[v window] frame]))
+					if( found)
+						lastHighLightedRow = row;
+					else
+						lastHighLightedRow = 0;
+				}
+				else lastHighLightedRow = 0;
+			}
+			else
+			{
+				lastHighLightedRow = 0;
+				if( theEvent)
+				{
+					for( ViewerController *v in displayedViewers)
 					{
-						[v mouseMoved: 0L];
-						break;
+						NSPoint	mouse = [NSEvent mouseLocation];
+						
+						if( NSPointInRect( mouse, [[v window] frame]))
+						{
+							[v mouseMoved: 0L];
+							break;
+						}
 					}
 				}
 			}
