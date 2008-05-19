@@ -3006,6 +3006,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[[self window] makeKeyAndOrderFront: self];
 		[self refreshToolbar];
 		[self updateNavigator];
+		
+		[newViewer setHighLighted: 1.0];
+		lastHighLightedRow = [sender selectedRow];
 	}
 	else
 	{
@@ -3020,6 +3023,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 				if( [[v imageView] seriesObj] == [[sender selectedCell] representedObject] && v != self)
 				{
 					[[v window] makeKeyAndOrderFront: self];
+					[v setHighLighted: 1.0];
+					lastHighLightedRow = [sender selectedRow];
+					
 					found = YES;
 				}
 			}
@@ -3033,6 +3039,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[self matrixPreviewSelectCurrentSeries];
 				[self updateNavigator];
 			}
+		}
+		else
+		{
+			lastHighLightedRow = 0;
+			[self mouseMoved: 0L];
 		}
 	}
 }
@@ -3861,7 +3872,7 @@ static ViewerController *draggedController = 0L;
 
 - (void) setHighLighted: (float) b
 {
-	if( b != highLighted)
+	if( b != highLighted && [[NSUserDefaults standardUserDefaults] boolForKey: @"highLightViewer"])
 	{
 		highLighted = b;
 		
@@ -3895,9 +3906,6 @@ static ViewerController *draggedController = 0L;
 		
 		NSArray	*displayedViewers = [ViewerController getDisplayed2DViewers];
 		
-//		for( ViewerController *v in displayedViewers)
-//			[v setHighLighted: NO];
-			
 		if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height-20)
 		{
 			NSInteger row, column;
@@ -3913,17 +3921,20 @@ static ViewerController *draggedController = 0L;
 					if( [[v imageView] seriesObj] == [[previewMatrix cellAtRow: row column: column] representedObject] && v != self)
 					{
 						found = YES;
+						
 						if( lastHighLightedRow != row)
-						{
-							lastHighLightedRow = row;
+						{							
 							[v setHighLighted: 1.0];
 						}
 					}
 				}
+				
+				if( found)
+					lastHighLightedRow = row;
+				else
+					lastHighLightedRow = 0;
 			}
-			
-			if( found == NO)
-				lastHighLightedRow = 0;
+			else lastHighLightedRow = 0;
 		}
 		else
 		{
