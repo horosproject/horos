@@ -12,11 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-#if !__LP64__
 #define USE3DCONNEXION 1
-#else
-#define USE3DCONNEXION 0
-#endif
 
 #import "VRView.h"
 #import "DCMCursor.h"
