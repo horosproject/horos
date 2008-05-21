@@ -2992,6 +2992,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask && FullScreenOn == NO) 
 	{
 		ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :0L :YES keyImagesOnly: displayOnlyKeyImages];
+		[newViewer setHighLighted: 1.0];
+		lastHighLightedRow = [sender selectedRow];
 		
 		[self matrixPreviewSelectCurrentSeries];
 		
@@ -3006,9 +3008,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[[self window] makeKeyAndOrderFront: self];
 		[self refreshToolbar];
 		[self updateNavigator];
-		
-		[newViewer setHighLighted: 1.0];
-		lastHighLightedRow = [sender selectedRow];
 	}
 	else
 	{

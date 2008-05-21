@@ -45,7 +45,7 @@ static		int						gUID = 0;
 extern long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer);
 
 static float ROIRegionOpacity, ROITextThickness, ROIThickness, ROIOpacity, ROIColorR, ROIColorG, ROIColorB, ROITextColorR, ROITextColorG, ROITextColorB;
-static float ROIRegionThickness, ROIRegionColorR, ROIRegionColorG, ROIRegionColorB;
+static float ROIRegionThickness, ROIRegionColorR, ROIRegionColorG, ROIRegionColorB, ROIArrowThickness;
 static BOOL ROITEXTIFSELECTED, ROITEXTNAMEONLY;
 static BOOL ROIDefaultsLoaded = NO;
 static BOOL splineForROI = NO;
@@ -320,6 +320,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		[[NSUserDefaults standardUserDefaults] setFloat: ROIRegionColorG forKey: @"ROIRegionColorG"];
 		[[NSUserDefaults standardUserDefaults] setFloat: ROIRegionColorB forKey: @"ROIRegionColorB"];
 		[[NSUserDefaults standardUserDefaults] setFloat: ROIRegionThickness forKey: @"ROIRegionThickness"];
+		[[NSUserDefaults standardUserDefaults] setFloat: ROIArrowThickness forKey: @"ROIArrowThickness"];
 	}
 }
 
@@ -343,6 +344,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	ROIRegionColorG = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorG"];
 	ROIRegionColorB = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionColorB"];
 	ROIRegionThickness = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionThickness"];
+	ROIArrowThickness = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIArrowThickness"];
 	
 	ROITEXTIFSELECTED = [[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTIFSELECTED"];
 	ROITEXTNAMEONLY = [[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTNAMEONLY"];
@@ -1033,6 +1035,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		previousPoint.x = previousPoint.y = -1000;
 		
 		if( type == tText) thickness = ROITextThickness;
+		else if( type == tArrow) thickness = ROIArrowThickness;
+		else if( type == tPlain) thickness = ROIRegionThickness;
 		else thickness = ROIThickness;
 		
 		opacity = ROIOpacity;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIOpacity"];
@@ -2864,6 +2868,10 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	{
 		ROIRegionThickness = thickness;	//[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROIRegionThickness"];
 	}
+	else if( type == tArrow)
+	{
+		ROIArrowThickness = thickness;
+	}
 	else if( type == tText)
 	{
 		ROITextThickness = thickness;	//[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROITextThickness"];
@@ -3721,12 +3729,15 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					else
 						slide = (b.x-a.x)/((b.y-a.y));
 				}
-				#define ARROWSIZE 30.0
+				#define ARROWSIZE 25.0
 				
 				// LINE
+				glLineWidth(thickness*2);
+				
 				angle = 90 - atan( slide)/deg2rad;
 				adj = (ARROWSIZE + thickness * 13)  * cos( angle*deg2rad);
 				op = (ARROWSIZE + thickness * 13) * sin( angle*deg2rad);
+				
 				glBegin(GL_LINE_STRIP);
 					if(b.y-a.y > 0)
 					{	
@@ -3743,6 +3754,25 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							glVertex2f( a.x - adj, a.y - (op));
 					}
 					glVertex2f( b.x, b.y);
+				glEnd();
+				
+				glPointSize( thickness*2);
+				glBegin( GL_POINTS);
+				if(b.y-a.y > 0)
+				{	
+					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+					else
+						glVertex2f( a.x + adj, a.y + (op));
+				}
+				else
+				{
+					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+						glVertex2f( a.x - adj, a.y - (op*pixelSpacingX / pixelSpacingY));
+					else
+						glVertex2f( a.x - adj, a.y - (op));
+				}
+				glVertex2f( b.x, b.y);
 				glEnd();
 				
 				// ARROW

@@ -830,6 +830,7 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject :@"ISO_IR 100" forKey: @"STRINGENCODING"];
 	[defaultValues setObject:@"1" forKey:@"syncPreviewList"];
 	[defaultValues setObject:@"1" forKey:@"highLightViewer"];
+	[defaultValues setObject:@"1" forKey:@"ROIArrowThickness"];
 	
 	// ** ROI Default
 	[defaultValues setObject:[NSNumber numberWithFloat: 2] forKey:@"ROIThickness"];

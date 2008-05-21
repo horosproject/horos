@@ -99,11 +99,10 @@
 			}
 		}
 
-		if([file valueForKeyPath:@"series.study.studyName"] && !([[file valueForKeyPath:@"series.study.studyName"] isEqualToString:@"unnamed"])) string2draw = [string2draw stringByAppendingFormat:@"%@", [file valueForKeyPath:@"series.study.studyName"]];
-		if([file valueForKeyPath:@"series.name"] && !([[file valueForKeyPath:@"series.name"] isEqualToString:@"unnamed"])) string2draw = [string2draw stringByAppendingFormat:@"%@", [file valueForKeyPath:@"series.name"]];
+		if([file valueForKeyPath:@"series.study.studyName"] && !([[file valueForKeyPath:@"series.study.studyName"] isEqualToString:@"unnamed"])) string2draw = [string2draw stringByAppendingFormat:@"%@  ", [file valueForKeyPath:@"series.study.studyName"]];
+		if([file valueForKeyPath:@"series.name"] && !([[file valueForKeyPath:@"series.name"] isEqualToString:@"unnamed"])) string2draw = [string2draw stringByAppendingFormat:@"%@  ", [file valueForKeyPath:@"series.name"]];
 		string2draw = [string2draw stringByAppendingFormat:@"\r"];
 	}
-	
 	
 	NSMutableDictionary *attribs = [NSMutableDictionary dictionary];  
 	[attribs setObject:[NSFont systemFontOfSize:10] forKey:NSFontAttributeName];
@@ -112,7 +111,7 @@
 	float bottomMargin = [[[NSPrintOperation currentOperation] printInfo] bottomMargin]; //90
 	//
 	NSPoint pageNumberPoint = NSMakePoint((borderSize.width - pageNumberSize.width) / 2.0, borderSize.height - (bottomMargin + pageNumberSize.height) / 2.0);
-	NSPoint where2draw = NSMakePoint(2, borderSize.height - headerHeight);
+	NSPoint where2draw = NSMakePoint(20, borderSize.height - (headerHeight+15));
 	[string2draw drawAtPoint: where2draw withAttributes:attribs]; //only invoke this method when an NSView object has focus
 	[self unlockFocus];	
 }
