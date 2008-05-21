@@ -42,7 +42,8 @@
 	IBOutlet	NSDatePicker				*fromDate, *toDate, *searchBirth;
     IBOutlet	NSPopUpButton				*sendToPopup;
 	
-	NSLock									*autoQueryLock, *displayLock;
+//	NSLock									*displayLock;
+	NSLock									*autoQueryLock;
 	NSMutableString							*pressedKeys;
     NSMutableArray							*resultArray;
     NSMutableArray							*queryFilters;
@@ -64,6 +65,7 @@
 + (BOOL) echo: (NSString*) address port:(int) port AET:(NSString*) aet;
 + (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer;
 
+- (void) refreshList: (NSArray*) l;
 - (BOOL) queryWithDisplayingErrors:(BOOL) showError;
 - (IBAction) selectUniqueSource:(id) sender;
 - (void) refreshSources;

@@ -450,7 +450,7 @@ static char *GetPrivateIP()
 
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
-	[displayLock lock];
+//	[displayLock lock];
 	
 	if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
 	{
@@ -514,7 +514,7 @@ static char *GetPrivateIP()
 		else [cell setStringValue:@"n/a"];
 	}
 	
-	[displayLock unlock];
+//	[displayLock unlock];
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
@@ -820,14 +820,14 @@ static char *GetPrivateIP()
 						}
 					}
 				}
-				//				else
-				//				{
-				//					NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
-				//				
-				//					response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (c-echo failed)", 0L)];
-				//					
-				//					NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
-				//				}
+//				else
+//				{
+//					NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
+//				
+//					response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (c-echo failed)", 0L)];
+//					
+//					NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
+//				}
 			}
 			else
 			{
@@ -848,12 +848,8 @@ static char *GetPrivateIP()
 	
 	if( [tempResultArray count])
 	{
-		[displayLock lock];
 		[tempResultArray sortUsingDescriptors: [self sortArray]];
-		[resultArray removeAllObjects];
-		[resultArray addObjectsFromArray: tempResultArray];
-		[outlineView performSelectorOnMainThread:@selector(reloadData) withObject:0L waitUntilDone: NO];
-		[displayLock unlock];
+		[self performSelectorOnMainThread:@selector( refreshList: ) withObject: tempResultArray waitUntilDone: YES];
 	}
 	
 	if( atLeastOneSource == NO)
@@ -863,6 +859,13 @@ static char *GetPrivateIP()
 	}
 	
 	return error;
+}
+
+- (void) refreshList: (NSArray*) l
+{
+	[resultArray removeAllObjects];
+	[resultArray addObjectsFromArray: l];
+	[outlineView reloadData];
 }
 
 - (void) displayQueryResults
@@ -915,6 +918,7 @@ static char *GetPrivateIP()
 	
 	if( [self queryWithDisplayingErrors: NO] == 0)
 		[self performSelectorOnMainThread: @selector( displayQueryResults) withObject:0 waitUntilDone: NO];
+	else NSLog( @"auto query failed");
 	
 	NSLog( @"autoQueryTimerFunction END");
 	
@@ -1508,7 +1512,7 @@ static char *GetPrivateIP()
 		resultArray = [[NSMutableArray array] retain];
 		activeMoves = [[NSMutableDictionary dictionary] retain];
 		autoQueryLock = [[NSLock alloc] init];
-		displayLock = [[NSLock alloc] init];
+//		displayLock = [[NSLock alloc] init];
 		
 		sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"SavedQueryArray"] mutableCopy];
 		if( sourcesArray == 0L) sourcesArray = [[NSMutableArray array] retain];
@@ -1530,9 +1534,9 @@ static char *GetPrivateIP()
 	[autoQueryLock lock];
 	[autoQueryLock unlock];
 	
-	[displayLock lock];
-	[displayLock unlock];
-	[displayLock release];
+//	[displayLock lock];
+//	[displayLock unlock];
+//	[displayLock release];
 	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
 
