@@ -640,9 +640,6 @@ static char *GetPrivateIP()
 	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
 	
-//	[resultArray removeAllObjects];
-//	[outlineView reloadData];
-	
 	noChecked = YES;
 	for( i = 0; i < [sourcesArray count]; i++)
 	{
@@ -660,7 +657,7 @@ static char *GetPrivateIP()
 	
 	selectedRow = [sourcesTable selectedRow];
 	
-	NSLog( @"%@", sourcesArray );
+//	NSLog( @"%@", sourcesArray );
 	
 	atLeastOneSource = NO;
 	BOOL firstResults = YES;
@@ -748,12 +745,25 @@ static char *GetPrivateIP()
 					}
 					
 					//
-					if ([dateQueryFilter object]) [queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
-					if ([timeQueryFilter object]) [queryManager addFilter:[timeQueryFilter filteredValue] forDescription:@"StudyTime"];
+					if ([dateQueryFilter object])
+					{
+						[queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
+						queryItem = YES;
+					}
 					
-					if ([modalityQueryFilter object]) [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
+					if ([timeQueryFilter object])
+					{
+						[queryManager addFilter:[timeQueryFilter filteredValue] forDescription:@"StudyTime"];
+						queryItem = YES;
+					}
 					
-					if ([dateQueryFilter object] || queryItem)
+					if ([modalityQueryFilter object])
+					{
+						[queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
+						queryItem = YES;
+					}
+					
+					if (queryItem)
 					{						
 						[self performQuery: 0L];
 					}
@@ -791,6 +801,7 @@ static char *GetPrivateIP()
 							}
 							else doit = YES;
 						}
+						else doit = YES;
 						
 						if( doit)
 						{
