@@ -41,6 +41,6 @@
 - (void)sortArray:(NSArray *)sortDesc;
 - (void)performQuery;
 - (NSDictionary *)parameters;
-
+- (void)performQuery: (BOOL) showError;
 
 @end

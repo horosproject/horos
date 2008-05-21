@@ -97,7 +97,7 @@
 	queries = [newQueries retain];
 }
 
-- (void)performQuery
+- (void)performQuery: (BOOL) showError
 {
 	if( queryLock == 0L) queryLock = [[NSLock alloc] init];
 
@@ -110,18 +110,6 @@
 	[params setObject:[NSNumber numberWithInt:1] forKey:@"debugLevel"];
 	[params setObject:callingAET forKey:@"callingAET"];
 	[params setObject:calledAET forKey:@"calledAET"];
-	/*
-	if (_netService) {
-		hostname = [_netService hostName];
-		[port release];
-		port = [[NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:_netService]] retain];
-		[params setObject:_netService  forKey:@"netService"];
-	}
-	else {
-		[params setObject:hostname  forKey:@"hostname"];
-		[params setObject:port forKey:@"port"];
-	}
-	*/
 	[params setObject:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] forKey:@"transferSyntax"];		//
 	[params setObject:[DCMAbstractSyntaxUID studyRootQueryRetrieveInformationModelFind] forKey:@"affectedSOPClassUID"];
 	
@@ -150,12 +138,20 @@
 	queries = [[rootNode children] retain];
 	
 	NS_HANDLER
-		NSAlert *alert = [NSAlert alertWithMessageText:@"Query Error" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", @"Query Failed"];
-		NSLog(@"performQuery exception: %@", [localException name]);
-		[alert runModal];
+		if( showError)
+		{
+			NSAlert *alert = [NSAlert alertWithMessageText:@"Query Error" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", @"Query Failed"];
+			NSLog(@"performQuery exception: %@", [localException name]);
+			[alert runModal];
+		}
 	NS_ENDHANDLER
 	
 	[queryLock unlock];
+}
+
+- (void)performQuery
+{
+	return [self performQuery: YES];
 }
 
 - (NSDictionary *)parameters{	

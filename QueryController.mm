@@ -450,6 +450,8 @@ static char *GetPrivateIP()
 
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
+	[displayLock lock];
+	
 	if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
 	{
 		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
@@ -511,6 +513,8 @@ static char *GetPrivateIP()
 		if( [item valueForKey:@"numberImages"]) [cell setIntegerValue: [[item valueForKey:@"numberImages"] intValue]];
 		else [cell setStringValue:@"n/a"];
 	}
+	
+	[displayLock unlock];
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
@@ -624,30 +628,20 @@ static char *GetPrivateIP()
 	return result;
 }
 
--(void) query:(id)sender
+-(BOOL) queryWithDisplayingErrors:(BOOL) showError
 {
-	if ([sender isKindOfClass:[NSSearchField class]])
-	{
-		NSString	*chars = [[NSApp currentEvent] characters];
-		
-		if( [chars length])
-		{
-			if( [chars characterAtIndex:0] != 13 && [chars characterAtIndex:0] != 3) return;
-		}
-	}
-	
 	NSString			*theirAET;
 	NSString			*hostname;
 	NSString			*port;
 	NSNetService		*netService = nil;
 	id					aServer;
 	int					i, selectedServer, selectedRow;
-	BOOL				atLeastOneSource = NO, noChecked = YES;
+	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO;
 	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
 	
-	[resultArray removeAllObjects];
-	[outlineView reloadData];
+//	[resultArray removeAllObjects];
+//	[outlineView reloadData];
 	
 	noChecked = YES;
 	for( i = 0; i < [sourcesArray count]; i++)
@@ -669,13 +663,18 @@ static char *GetPrivateIP()
 	NSLog( @"%@", sourcesArray );
 	
 	atLeastOneSource = NO;
+	BOOL firstResults = YES;
+	
+	NSMutableArray *tempResultArray = [NSMutableArray array];
+	
 	for( i = 0; i < [sourcesArray count]; i++)
 	{
 		if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES || selectedServer == i)
 		{
 			aServer = [[sourcesArray objectAtIndex:i] valueForKey:@"server"];
 			
-			[sourcesTable selectRow: i byExtendingSelection: NO];
+			if( showError)
+				[sourcesTable selectRow: i byExtendingSelection: NO];
 			
 			NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
 			theirAET = [aServer objectForKey:@"AETitle"];
@@ -755,7 +754,7 @@ static char *GetPrivateIP()
 					if ([modalityQueryFilter object]) [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
 					
 					if ([dateQueryFilter object] || queryItem)
-					{
+					{						
 						[self performQuery: 0L];
 					}
 					// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
@@ -763,96 +762,139 @@ static char *GetPrivateIP()
 					{
 						BOOL doit = NO;
 						
-						if( atLeastOneSource == NO)
+						if( showError)
 						{
-							NSString *alertSuppress = @"No parameters query";
-							NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-							if ([defaults boolForKey:alertSuppress])
+							if( atLeastOneSource == NO)
 							{
-								doit = YES;
-							}
-							else
-							{
-								NSAlert* alert = [NSAlert new];
-								[alert setMessageText: NSLocalizedString(@"Query", 0L)];
-								[alert setInformativeText: NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil)];
-								[alert setShowsSuppressionButton:YES ];
-								[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
-								[alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
-								
-								if ( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
-								
-								if ([[alert suppressionButton] state] == NSOnState)
+								NSString *alertSuppress = @"No parameters query";
+								NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+								if ([defaults boolForKey:alertSuppress])
 								{
-									[defaults setBool:YES forKey:alertSuppress];
+									doit = YES;
+								}
+								else
+								{
+									NSAlert* alert = [NSAlert new];
+									[alert setMessageText: NSLocalizedString(@"Query", 0L)];
+									[alert setInformativeText: NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil)];
+									[alert setShowsSuppressionButton:YES ];
+									[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
+									[alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
+									
+									if ( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
+									
+									if ([[alert suppressionButton] state] == NSOnState)
+									{
+										[defaults setBool:YES forKey:alertSuppress];
+									}
 								}
 							}
+							else doit = YES;
 						}
-						else doit = YES;
 						
-						if( doit) [self performQuery: 0L];
+						if( doit)
+						{
+							[self performQuery: 0L];
+						}
 						else i = [sourcesArray count];
 					}
 					
-					if( [resultArray count] == 0)
+					if( firstResults)
 					{
-						[resultArray addObjectsFromArray: [queryManager queries]];
+						firstResults = NO;
+						[tempResultArray removeAllObjects];
+						[tempResultArray addObjectsFromArray: [queryManager queries]];
 					}
 					else
 					{
 						int			x;
 						NSArray		*curResult = [queryManager queries];
-						NSArray		*uidArray = [resultArray valueForKey: @"uid"];
+						NSArray		*uidArray = [tempResultArray valueForKey: @"uid"];
 						
 						for( x = 0 ; x < [curResult count] ; x++)
 						{
 							if( [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]] == NO)
 							{
-								[resultArray addObject: [curResult objectAtIndex: x]];
+								[tempResultArray addObject: [curResult objectAtIndex: x]];
 							}
 						}
 					}
 				}
-//				else
-//				{
-//					NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
-//				
-//					response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (c-echo failed)", 0L)];
-//					
-//					NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
-//				}
+				//				else
+				//				{
+				//					NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
+				//				
+				//					response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (c-echo failed)", 0L)];
+				//					
+				//					NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
+				//				}
 			}
 			else
 			{
-				NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
+				if( showError)
+				{
+					NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
 				
-				response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (ping failed)", 0L)];
+					response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (ping failed)", 0L)];
 				
-				NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
+					NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
+					
+					error = YES;
+				}
 			}
 			atLeastOneSource = YES;
 		}
 	}
 	
-	[sourcesTable selectRow: selectedRow byExtendingSelection: NO];
-	
-	[resultArray sortUsingDescriptors: [self sortArray]];
-	[outlineView reloadData];
+	if( [tempResultArray count])
+	{
+		[displayLock lock];
+		[tempResultArray sortUsingDescriptors: [self sortArray]];
+		[resultArray removeAllObjects];
+		[resultArray addObjectsFromArray: tempResultArray];
+		[outlineView performSelectorOnMainThread:@selector(reloadData) withObject:0L waitUntilDone: NO];
+		[displayLock unlock];
+	}
 	
 	if( atLeastOneSource == NO)
-		NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a DICOM node (check box).", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
-
-	if ([sender isKindOfClass:[NSSearchField class]])
 	{
-		[sender selectText: self];
+		if( showError)
+			NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a DICOM node (check box).", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
 	}
+	
+	return error;
+}
+
+- (void) displayQueryResults
+{
+	[sourcesTable selectRow: [sourcesTable selectedRow] byExtendingSelection: NO];
 	
 	if( [resultArray count] <= 1) [numberOfStudies setStringValue: [NSString stringWithFormat:@"%d study found.", [resultArray count]]];
 	else [numberOfStudies setStringValue: [NSString stringWithFormat:@"%d studies found.", [resultArray count]]];
 }
 
+-(void) query:(id)sender
+{
+	if ([sender isKindOfClass:[NSSearchField class]])
+	{
+		NSString	*chars = [[NSApp currentEvent] characters];
+		
+		if( [chars length])
+		{
+			if( [chars characterAtIndex:0] != 13 && [chars characterAtIndex:0] != 3) return;
+		}
+	}
+	
+	[self queryWithDisplayingErrors: YES];
+	
+	[self displayQueryResults];
+	
+	if ([sender isKindOfClass:[NSSearchField class]])
+		[sender selectText: self];
+}
+
 // This function calls many GUI function, it has to be called from the main thread
-- (void)performQuery:(id)object
+- (void) performQuery:(id)object
 {
 	checkAndViewTry = -1;
 	
@@ -863,6 +905,49 @@ static char *GetPrivateIP()
 	[resultArray sortUsingDescriptors: [self sortArray]];
 	[outlineView reloadData];
 	[pool release];
+}
+
+- (void) autoQueryThread
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSLog( @"autoQueryTimerFunction START");
+	
+	if( [self queryWithDisplayingErrors: NO] == 0)
+		[self performSelectorOnMainThread: @selector( displayQueryResults) withObject:0 waitUntilDone: NO];
+	
+	NSLog( @"autoQueryTimerFunction END");
+	
+	[pool release];
+}
+
+- (void) autoQueryTimerFunction:(NSTimer*) t
+{
+	if( [autoQueryLock tryLock])
+	{
+		[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: 0L];
+		
+		[autoQueryLock unlock];
+	}
+}
+
+- (IBAction) autoQueryTimer:(id) sender
+{
+	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"])
+	{
+		NSLog( @"autoQueryTimer: %d", [[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"]);
+		
+		[QueryTimer invalidate];
+		[QueryTimer release];
+		
+		QueryTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"] target:self selector:@selector( autoQueryTimerFunction:) userInfo:0L repeats:YES] retain];
+	}
+	else
+	{
+		[QueryTimer invalidate];
+		[QueryTimer release];
+		QueryTimer = 0L;
+	}
 }
 
 - (void)clearQuery:(id)sender{
@@ -1294,6 +1379,8 @@ static char *GetPrivateIP()
 	
 	[alreadyInDatabase setImage:[NSImage pieChartImageWithPercentage:1.0]];
 	[partiallyInDatabase setImage:[NSImage pieChartImageWithPercentage:0.33]];
+	
+	[self autoQueryTimer: self];
 }
 
 //******
@@ -1420,6 +1507,8 @@ static char *GetPrivateIP()
 		queryFilters = [[NSMutableArray array] retain];
 		resultArray = [[NSMutableArray array] retain];
 		activeMoves = [[NSMutableDictionary dictionary] retain];
+		autoQueryLock = [[NSLock alloc] init];
+		displayLock = [[NSLock alloc] init];
 		
 		sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"SavedQueryArray"] mutableCopy];
 		if( sourcesArray == 0L) sourcesArray = [[NSMutableArray array] retain];
@@ -1438,6 +1527,13 @@ static char *GetPrivateIP()
 
 - (void)dealloc
 {
+	[autoQueryLock lock];
+	[autoQueryLock unlock];
+	
+	[displayLock lock];
+	[displayLock unlock];
+	[displayLock release];
+	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
 
 	NSLog( @"dealloc QueryController");
@@ -1452,8 +1548,10 @@ static char *GetPrivateIP()
 	[activeMoves release];
 	[sourcesArray release];
 	[resultArray release];
-//	[partiallyInDatabase release];
-//	[alreadyInDatabase release];
+	[autoQueryLock release];
+	[QueryTimer invalidate];
+	[QueryTimer release];
+	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
 	

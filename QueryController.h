@@ -23,7 +23,7 @@
 /** \brief Window Controller for Q/R */
 @interface QueryController : NSWindowController {
 
-    IBOutlet    QueryOutlineView				*outlineView;
+    IBOutlet    QueryOutlineView			*outlineView;
 	IBOutlet	NSProgressIndicator			*progressIndicator;
 	IBOutlet	NSSearchField				*searchFieldName, *searchFieldID, *searchFieldAN;
 	
@@ -42,6 +42,7 @@
 	IBOutlet	NSDatePicker				*fromDate, *toDate, *searchBirth;
     IBOutlet	NSPopUpButton				*sendToPopup;
 	
+	NSLock									*autoQueryLock, *displayLock;
 	NSMutableString							*pressedKeys;
     NSMutableArray							*resultArray;
     NSMutableArray							*queryFilters;
@@ -53,7 +54,7 @@
 	int										checkAndViewTry;
 	
 	NSImage									*Realised3, *Realised2;
-//	NSImage									*alreadyInDatabase, *partiallyInDatabase;
+	NSTimer									*QueryTimer;
 	IBOutlet NSImageView					*alreadyInDatabase, *partiallyInDatabase;
 	
 	QueryArrayController					*queryManager;
@@ -63,6 +64,7 @@
 + (BOOL) echo: (NSString*) address port:(int) port AET:(NSString*) aet;
 + (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer;
 
+- (BOOL) queryWithDisplayingErrors:(BOOL) showError;
 - (IBAction) selectUniqueSource:(id) sender;
 - (void) refreshSources;
 - (IBAction) retrieveAndViewClick: (id) sender;
@@ -86,4 +88,5 @@
 - (NSArray*) localStudy:(id) item;
 - (IBAction) endAddPreset:(id) sender;
 - (void) buildPresetsMenu;
+- (IBAction) autoQueryTimer:(id) sender;
 @end
