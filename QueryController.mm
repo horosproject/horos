@@ -899,6 +899,8 @@ static char *GetPrivateIP()
 		}
 	}
 	
+	[self autoQueryTimer: self];
+	
 	[self queryWithDisplayingErrors: YES];
 	
 	[self displayQueryResults];
@@ -919,6 +921,8 @@ static char *GetPrivateIP()
 	[resultArray sortUsingDescriptors: [self sortArray]];
 	[outlineView reloadData];
 	[pool release];
+	
+	queryPerformed = YES;
 }
 
 - (void) autoQueryThread
@@ -938,11 +942,19 @@ static char *GetPrivateIP()
 
 - (void) autoQueryTimerFunction:(NSTimer*) t
 {
-	if( [autoQueryLock tryLock])
+	if( queryPerformed)
 	{
-		[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: 0L];
+		if( --autoQueryRemainingSecs <= 0)
+		{
+			if( [autoQueryLock tryLock])
+			{
+				[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: 0L];
+				
+				[autoQueryLock unlock];
+			}
+		}
 		
-		[autoQueryLock unlock];
+		[autoQueryCounter setStringValue: [NSString stringWithFormat: @"%2.2d:%2.2d", (int) (autoQueryRemainingSecs/60), (int) (autoQueryRemainingSecs%60)]];
 	}
 }
 
@@ -955,10 +967,15 @@ static char *GetPrivateIP()
 		[QueryTimer invalidate];
 		[QueryTimer release];
 		
-		QueryTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"] target:self selector:@selector( autoQueryTimerFunction:) userInfo:0L repeats:YES] retain];
+		autoQueryRemainingSecs = 60*[[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"];
+		[autoQueryCounter setStringValue: [NSString stringWithFormat: @"%2.2d:%2.2d", (int) (autoQueryRemainingSecs/60), (int) (autoQueryRemainingSecs%60)]];
+		
+		QueryTimer = [[NSTimer scheduledTimerWithTimeInterval: 1 target:self selector:@selector( autoQueryTimerFunction:) userInfo:0L repeats:YES] retain];
 	}
 	else
 	{
+		[autoQueryCounter setStringValue: @""];
+		
 		[QueryTimer invalidate];
 		[QueryTimer release];
 		QueryTimer = 0L;

@@ -42,15 +42,16 @@
 	IBOutlet	NSDatePicker				*fromDate, *toDate, *searchBirth;
     IBOutlet	NSPopUpButton				*sendToPopup;
 	
-//	NSLock									*displayLock;
+	int										autoQueryRemainingSecs;
 	NSLock									*autoQueryLock;
+	IBOutlet NSTextField					*autoQueryCounter;
 	NSMutableString							*pressedKeys;
     NSMutableArray							*resultArray;
     NSMutableArray							*queryFilters;
 	
 	QueryFilter								*dateQueryFilter, *timeQueryFilter, *modalityQueryFilter;
 	NSString								*currentQueryKey;
-	BOOL									echoSuccess;
+	BOOL									echoSuccess, queryPerformed;
 	NSMutableDictionary						*activeMoves;
 	int										checkAndViewTry;
 	
