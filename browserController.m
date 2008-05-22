@@ -7027,6 +7027,8 @@ static BOOL withReset = NO;
 	
 	BOOL screenChanged = NO, dbScreenChanged = NO;
 	
+	float ratioX = 1, ratioY = 1;
+	
 	for( int i = 0 ; i < [[NSScreen screens] count] ; i++)
 	{
 		NSScreen *s = [[NSScreen screens] objectAtIndex: i];
@@ -7043,6 +7045,9 @@ static BOOL withReset = NO;
 				dbScreenChanged = YES;
 			}
 			
+			ratioX = visibleScreenRect[ i].size.width / [s visibleFrame].size.width;
+			ratioY = visibleScreenRect[ i].size.height / [s visibleFrame].size.height;
+			
 			visibleScreenRect[ i] = [s visibleFrame];
 		}
 	}
@@ -7054,6 +7059,19 @@ static BOOL withReset = NO;
 	
 	if( screenChanged)
 	{
+		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+		{
+			NSRect r = [[v window] frame];
+			
+			r.origin.x /= ratioX;
+			r.origin.y /= ratioY;
+			
+			r.size.width /= ratioX;
+			r.size.height /= ratioY;
+			
+			[[v window] setFrame: r display: NO];
+		}
+		
 		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:0L];
 		[appController performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
 	}
@@ -7061,35 +7079,37 @@ static BOOL withReset = NO;
 
 - (void)ViewFrameDidChange: (NSNotification*)note
 {
-	if( [note object] == [[splitViewVert subviews] objectAtIndex: 1])	// 1
+	if( [[splitViewVert subviews] count] > 1)
 	{
-		NSSize size = oMatrix.cellSize;
-        NSSize space = oMatrix.intercellSpacing;
-        NSRect frame = [[splitViewVert.subviews objectAtIndex: 0] frame];
-		
-		int preWidth = frame.size.width+1;
-		int width = frame.size.width;
-		int cellsize = (size.width + space.width*2);
-		
-		width += cellsize/2;
-		width /=  cellsize;
-		width *=  cellsize;
-		
-		width += 17;
-		
-		while( splitViewVert.frame.size.width - width - splitViewVert.dividerThickness <= 200 && width > 0) width -= cellsize;
-		
-		frame.size.width = width;
-		[[splitViewVert.subviews objectAtIndex: 0] setFrame: frame];
-		
-		frame = [[[splitViewVert subviews] objectAtIndex: 1] frame];
-		frame.size.width = [splitViewVert frame].size.width - width - [splitViewVert dividerThickness];
-		
-		[[splitViewVert.subviews objectAtIndex: 1] setFrame: frame];
-		
-		[splitViewVert adjustSubviews];
+		if( [note object] == [[splitViewVert subviews] objectAtIndex: 1])	// 1
+		{
+			NSSize size = oMatrix.cellSize;
+			NSSize space = oMatrix.intercellSpacing;
+			NSRect frame = [[splitViewVert.subviews objectAtIndex: 0] frame];
+			
+			int preWidth = frame.size.width+1;
+			int width = frame.size.width;
+			int cellsize = (size.width + space.width*2);
+			
+			width += cellsize/2;
+			width /=  cellsize;
+			width *=  cellsize;
+			
+			width += 17;
+			
+			while( splitViewVert.frame.size.width - width - splitViewVert.dividerThickness <= 200 && width > 0) width -= cellsize;
+			
+			frame.size.width = width;
+			[[splitViewVert.subviews objectAtIndex: 0] setFrame: frame];
+			
+			frame = [[[splitViewVert subviews] objectAtIndex: 1] frame];
+			frame.size.width = [splitViewVert frame].size.width - width - [splitViewVert dividerThickness];
+			
+			[[splitViewVert.subviews objectAtIndex: 1] setFrame: frame];
+			
+			[splitViewVert adjustSubviews];
+		}
 	}
-	
 }
 
 - (void)splitViewDidResizeSubviews: (NSNotification *)aNotification {
@@ -8906,7 +8926,8 @@ static BOOL needToRezoom;
 			
 			[splittedSeries addObject: [NSMutableArray array]];
 			
-			if( [singleSeries count] > 1 ) {
+			if( [singleSeries count] > 1 )
+			{
 				[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
 				
 				interval = [[[singleSeries objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: 1] valueForKey:@"sliceLocation"] floatValue];
@@ -8914,7 +8935,8 @@ static BOOL needToRezoom;
 				if( interval == 0)	// 4D - 3D
 				{
 					int pos3Dindex = 1;
-					for( int x = 1; x < [singleSeries count]; x++ )	{
+					for( int x = 1; x < [singleSeries count]; x++ )
+					{
 						interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
 						
 						if( interval != 0) pos3Dindex = 0;
@@ -8928,17 +8950,21 @@ static BOOL needToRezoom;
 				}
 				else	// 3D - 4D
 				{				
-					for( int x = 1; x < [singleSeries count]; x++ )	{
+					for( int x = 1; x < [singleSeries count]; x++ )
+					{
 						interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
 						
-						if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0) ) {
+						if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0) )
+						{
 							[splittedSeries addObject: [NSMutableArray array]];
 							NSLog(@"split at: %d", x);
 							
 							previousinterval = 0;
 						}
-						else if( previousinterval )	{
-							if( fabs(interval/previousinterval) > 2.0f || fabs(interval/previousinterval) < 0.5f ) {
+						else if( previousinterval )
+						{
+							if( fabs(interval/previousinterval) > 2.0f || fabs(interval/previousinterval) < 0.5f )
+							{
 								[splittedSeries addObject: [NSMutableArray array]];
 								NSLog(@"split at: %d", x);
 								previousinterval = 0;

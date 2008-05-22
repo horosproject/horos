@@ -52,23 +52,29 @@
 
 	if (didScan == NO)
 			return; // probably should throw an exception at this point
-
-	[[[self subviews] objectAtIndex: 0] setFrame: r0];
-	[[[self subviews] objectAtIndex: 1] setFrame: r1];
-
+	
+	if( [[self subviews] count] > 1)
+	{
+		[[[self subviews] objectAtIndex: 0] setFrame: r0];
+		[[[self subviews] objectAtIndex: 1] setFrame: r1];
+	}
+	
 	[self adjustSubviews];
 }
 
 - (void) saveDefault: (NSString *) defaultName
 {
-	NSRect r0 = [[[self subviews] objectAtIndex: 0] frame];
-	NSRect r1 = [[[self subviews] objectAtIndex: 1] frame];
+	if( [[self subviews] count] > 1)
+	{
+		NSRect r0 = [[[self subviews] objectAtIndex: 0] frame];
+		NSRect r1 = [[[self subviews] objectAtIndex: 1] frame];
 
-	NSString * string = [NSString stringWithFormat: @"%f %f %f %f %f %f %f %f",
-			r0.origin.x, r0.origin.y, r0.size.width, r0.size.height,
-			r1.origin.x, r1.origin.y, r1.size.width, r1.size.height];
-	
-	[[NSUserDefaults standardUserDefaults] setObject: string forKey: defaultName];
+		NSString * string = [NSString stringWithFormat: @"%f %f %f %f %f %f %f %f",
+				r0.origin.x, r0.origin.y, r0.size.width, r0.size.height,
+				r1.origin.x, r1.origin.y, r1.size.width, r1.size.height];
+		
+		[[NSUserDefaults standardUserDefaults] setObject: string forKey: defaultName];
+	}
 }
 
 @end

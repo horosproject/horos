@@ -1386,21 +1386,24 @@ NSString * documentsDirectory();
 
 - (void) expandAllSplitViews
 {
-	[originalSplitView setSubview:[[originalSplitView subviews] objectAtIndex:0] isCollapsed:NO];
-	[originalSplitView setSubview:[[originalSplitView subviews] objectAtIndex:1] isCollapsed:NO];
-	[originalSplitView setSubview:[[originalSplitView subviews] objectAtIndex:2] isCollapsed:NO];
-		
-	[xReslicedSplitView setSubview:[[xReslicedSplitView subviews] objectAtIndex:0] isCollapsed:NO];
-	[xReslicedSplitView setSubview:[[xReslicedSplitView subviews] objectAtIndex:1] isCollapsed:NO];
-	[xReslicedSplitView setSubview:[[xReslicedSplitView subviews] objectAtIndex:2] isCollapsed:NO];
-		
-	[yReslicedSplitView setSubview:[[yReslicedSplitView subviews] objectAtIndex:0] isCollapsed:NO];
-	[yReslicedSplitView setSubview:[[yReslicedSplitView subviews] objectAtIndex:1] isCollapsed:NO];
-	[yReslicedSplitView setSubview:[[yReslicedSplitView subviews] objectAtIndex:2] isCollapsed:NO];
-		
-	[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:0] isCollapsed:NO];
-	[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:1] isCollapsed:NO];
-	[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:2] isCollapsed:NO];
+	if( [[originalSplitView subviews] count] > 2)
+	{
+		[originalSplitView setSubview:[[originalSplitView subviews] objectAtIndex:0] isCollapsed:NO];
+		[originalSplitView setSubview:[[originalSplitView subviews] objectAtIndex:1] isCollapsed:NO];
+		[originalSplitView setSubview:[[originalSplitView subviews] objectAtIndex:2] isCollapsed:NO];
+			
+		[xReslicedSplitView setSubview:[[xReslicedSplitView subviews] objectAtIndex:0] isCollapsed:NO];
+		[xReslicedSplitView setSubview:[[xReslicedSplitView subviews] objectAtIndex:1] isCollapsed:NO];
+		[xReslicedSplitView setSubview:[[xReslicedSplitView subviews] objectAtIndex:2] isCollapsed:NO];
+			
+		[yReslicedSplitView setSubview:[[yReslicedSplitView subviews] objectAtIndex:0] isCollapsed:NO];
+		[yReslicedSplitView setSubview:[[yReslicedSplitView subviews] objectAtIndex:1] isCollapsed:NO];
+		[yReslicedSplitView setSubview:[[yReslicedSplitView subviews] objectAtIndex:2] isCollapsed:NO];
+			
+		[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:0] isCollapsed:NO];
+		[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:1] isCollapsed:NO];
+		[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:2] isCollapsed:NO];
+	}
 }
 
 - (void) fullWindowPlan:(int)index:(id)sender

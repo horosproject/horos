@@ -2628,8 +2628,6 @@ static BOOL initialized = NO;
 	
 	int currentrow = rows * ([[v window] frame].origin.y + (3*[[v window] frame].size.height)/4 - [[[v window] screen] visibleFrame].origin.y) / [[[v window] screen] visibleFrame].size.height;
 	
-	NSLog( @"row : %d", currentrow);
-	
 	return rows - currentrow;
 }
 

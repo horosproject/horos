@@ -3065,9 +3065,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[[[splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
 	
-	frameRight = [[[splitView subviews] objectAtIndex: 1] frame];
-	frameRight.size.width = [splitView frame].size.width - frame.size.width - [splitView dividerThickness];
-	[[[splitView subviews] objectAtIndex: 1] setFrame: frameRight];
+	if( [[splitView subviews] count] > 1)
+	{
+		frameRight = [[[splitView subviews] objectAtIndex: 1] frame];
+		frameRight.size.width = [splitView frame].size.width - frame.size.width - [splitView dividerThickness];
+		[[[splitView subviews] objectAtIndex: 1] setFrame: frameRight];
+	}
 	
 	[splitView adjustSubviews];
 	
@@ -3080,27 +3083,30 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	NSRect	frameLeft, frameRight, previous;
 	
-	frameLeft =  previous  = [[[splitView subviews] objectAtIndex: 0] frame];
-	frameRight = [[[splitView subviews] objectAtIndex: 1] frame];
-	
-	if( visible == YES)
+	if( [[splitView subviews] count] > 1)
 	{
-		frameLeft.size.width = [previewMatrix cellSize].width+13;
-		frameRight.size.width = [splitView frame].size.width - [splitView dividerThickness] - frameLeft.size.width;
-	}
-	else
-	{
-		frameLeft.size.width = 0;
-		frameRight.size.width = [splitView frame].size.width - [splitView dividerThickness] - frameLeft.size.width;
-	}
-	
-	if( previous.size.width != frameLeft.size.width)
-	{
-		imageView.dontEnterReshape = YES;
-		[[[splitView subviews] objectAtIndex: 0] setFrameSize: frameLeft.size];
-		[[[splitView subviews] objectAtIndex: 1] setFrameSize: frameRight.size];
-		[splitView adjustSubviews];
-		imageView.dontEnterReshape = NO;
+		frameLeft =  previous  = [[[splitView subviews] objectAtIndex: 0] frame];
+		frameRight = [[[splitView subviews] objectAtIndex: 1] frame];
+		
+		if( visible == YES)
+		{
+			frameLeft.size.width = [previewMatrix cellSize].width+13;
+			frameRight.size.width = [splitView frame].size.width - [splitView dividerThickness] - frameLeft.size.width;
+		}
+		else
+		{
+			frameLeft.size.width = 0;
+			frameRight.size.width = [splitView frame].size.width - [splitView dividerThickness] - frameLeft.size.width;
+		}
+		
+		if( previous.size.width != frameLeft.size.width)
+		{
+			imageView.dontEnterReshape = YES;
+			[[[splitView subviews] objectAtIndex: 0] setFrameSize: frameLeft.size];
+			[[[splitView subviews] objectAtIndex: 1] setFrameSize: frameRight.size];
+			[splitView adjustSubviews];
+			imageView.dontEnterReshape = NO;
+		}
 	}
 }
 
@@ -3152,13 +3158,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) ViewFrameDidChange:(NSNotification*) note
 {
-	if( [note object] == [[splitView subviews] objectAtIndex: 1] && stopViewFrameDidChangeNotification == NO)
+	if( [[splitView subviews] count] > 1)
 	{
-		BOOL visible = [self checkFrameSize];
-		
-		if( visible == YES && matrixPreviewBuilt == NO)
+		if( [note object] == [[splitView subviews] objectAtIndex: 1] && stopViewFrameDidChangeNotification == NO)
 		{
-			[self buildMatrixPreview];
+			BOOL visible = [self checkFrameSize];
+			
+			if( visible == YES && matrixPreviewBuilt == NO)
+			{
+				[self buildMatrixPreview];
+			}
 		}
 	}
 }

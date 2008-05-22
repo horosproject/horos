@@ -446,14 +446,18 @@
 
 - (BOOL)isStackUpsideDown;
 {
-	NSLog(@"- (BOOL)isStackUpsideDown;");
-	NSLog(@"[[dcmPixList objectAtIndex:0] sliceLocation] : %f", [[dcmPixList objectAtIndex:0] sliceLocation]);
-	NSLog(@"[[dcmPixList objectAtIndex:1] sliceLocation] : %f", [[dcmPixList objectAtIndex:1] sliceLocation]);
-	
-	//if(![[viewer imageView] flippedData])
-		return ([[dcmPixList objectAtIndex:0] sliceLocation] - [[dcmPixList objectAtIndex:1] sliceLocation] < 0);
-	//else
-	//	return ([[dcmPixList objectAtIndex:0] sliceLocation] - [[dcmPixList objectAtIndex:1] sliceLocation] > 0);
+	if( [dcmPixList count] > 1)
+	{
+		NSLog(@"- (BOOL)isStackUpsideDown;");
+		NSLog(@"[[dcmPixList objectAtIndex:0] sliceLocation] : %f", [[dcmPixList objectAtIndex:0] sliceLocation]);
+		NSLog(@"[[dcmPixList objectAtIndex:1] sliceLocation] : %f", [[dcmPixList objectAtIndex:1] sliceLocation]);
+		
+		//if(![[viewer imageView] flippedData])
+			return ([[dcmPixList objectAtIndex:0] sliceLocation] - [[dcmPixList objectAtIndex:1] sliceLocation] < 0);
+		//else
+		//	return ([[dcmPixList objectAtIndex:0] sliceLocation] - [[dcmPixList objectAtIndex:1] sliceLocation] > 0);
+	}
+	else return NO;
 }
 
 @end

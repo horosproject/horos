@@ -739,43 +739,46 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 - (void)splitViewDidResizeSubviews:(NSNotification *)aNotification
 {
 	NSSplitView	*currentSplitView = [aNotification object];
-	
-	NSRect	rect1, rect2, old_rect1, old_rect2;
-
 	NSArray	*subviews = [currentSplitView subviews];
-	rect1 = [[subviews objectAtIndex:0] frame];
-	rect2 = [[subviews objectAtIndex:1] frame];
 	
-	if([currentSplitView isEqual:bottomSplitView])
+	if( [subviews count] > 1)
 	{
-		subviews = [topSplitView subviews];
-		old_rect1 = [[subviews objectAtIndex:0] frame];
-		old_rect2 = [[subviews objectAtIndex:1] frame];
+		NSRect	rect1, rect2, old_rect1, old_rect2;
 		
-		old_rect1.origin.x = rect1.origin.x;
-		old_rect1.size.width = rect1.size.width;
-		old_rect2.origin.x = rect2.origin.x;
-		old_rect2.size.width = rect2.size.width;
-	
-		[[subviews objectAtIndex:0] setFrame:old_rect1];
-		[[subviews objectAtIndex:1] setFrame:old_rect2];
+		rect1 = [[subviews objectAtIndex:0] frame];
+		rect2 = [[subviews objectAtIndex:1] frame];
 		
-		[topSplitView setNeedsDisplay:YES];
-	}
-	else if ([currentSplitView isEqual:topSplitView])
-	{
-		subviews = [bottomSplitView subviews];
-		old_rect1 = [[subviews objectAtIndex:0] frame];
-		old_rect2 = [[subviews objectAtIndex:1] frame];
-		old_rect1.origin.x = rect1.origin.x;
-		old_rect1.size.width = rect1.size.width;
-		old_rect2.origin.x = rect2.origin.x;
-		old_rect2.size.width = rect2.size.width;
-	
-		[[subviews objectAtIndex:0] setFrame:old_rect1];
-		[[subviews objectAtIndex:1] setFrame:old_rect2];
+		if([currentSplitView isEqual:bottomSplitView])
+		{
+			subviews = [topSplitView subviews];
+			old_rect1 = [[subviews objectAtIndex:0] frame];
+			old_rect2 = [[subviews objectAtIndex:1] frame];
+			
+			old_rect1.origin.x = rect1.origin.x;
+			old_rect1.size.width = rect1.size.width;
+			old_rect2.origin.x = rect2.origin.x;
+			old_rect2.size.width = rect2.size.width;
 		
-		[bottomSplitView setNeedsDisplay:YES];
+			[[subviews objectAtIndex:0] setFrame:old_rect1];
+			[[subviews objectAtIndex:1] setFrame:old_rect2];
+			
+			[topSplitView setNeedsDisplay:YES];
+		}
+		else if ([currentSplitView isEqual:topSplitView])
+		{
+			subviews = [bottomSplitView subviews];
+			old_rect1 = [[subviews objectAtIndex:0] frame];
+			old_rect2 = [[subviews objectAtIndex:1] frame];
+			old_rect1.origin.x = rect1.origin.x;
+			old_rect1.size.width = rect1.size.width;
+			old_rect2.origin.x = rect2.origin.x;
+			old_rect2.size.width = rect2.size.width;
+		
+			[[subviews objectAtIndex:0] setFrame:old_rect1];
+			[[subviews objectAtIndex:1] setFrame:old_rect2];
+			
+			[bottomSplitView setNeedsDisplay:YES];
+		}
 	}
 }
 

@@ -68,7 +68,8 @@
 				format = @"%H";
 			DCMCalendarDate *date = [[[DCMCalendarDate alloc] initWithString:firstComponent calendarFormat:format] autorelease];
 			int useconds = 0;
-			if ([timeComponents count] > 1) {
+			if ([timeComponents count] > 1)
+			{
 				useconds = [[timeComponents objectAtIndex:1] intValue] * pow(10, 6 - [(NSString *)[timeComponents objectAtIndex:1] length]);
 			}
 			[date setMicroseconds:useconds];

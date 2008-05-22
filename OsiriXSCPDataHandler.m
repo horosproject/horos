@@ -426,10 +426,12 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
 					predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(%lf, \"NSDate\")",[self startOfDay:query]];
 				}
-				else if ([(DCMCalendarDate *)value isQuery]){
+				else if ([(DCMCalendarDate *)value isQuery])
+				{
 					value = [attr value];
 					NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
-					if ([values count] == 2){
+					if ([values count] == 2)
+					{
 						DCMCalendarDate *startDate = [DCMCalendarDate dicomDate:[values objectAtIndex:0]];
 						DCMCalendarDate *endDate = [DCMCalendarDate dicomDate:[values objectAtIndex:1]];
 						//NSLog(@"startDate: %@", [startDate description]);

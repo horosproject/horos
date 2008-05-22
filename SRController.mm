@@ -925,7 +925,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 - (void) add2DPoint: (float) x : (float) y : (float) z
 {
-	if (viewer2D)
+	if (viewer2D && [[viewer2D pixList] count] > 1)
 	{
 		DCMPix *firstDCMPix = [[viewer2D pixList] objectAtIndex: 0];
 		DCMPix *secondDCMPix = [[viewer2D pixList] objectAtIndex: 1];
