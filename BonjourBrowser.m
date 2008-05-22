@@ -109,6 +109,8 @@ static char *GetPrivateIP()
 		OSErr err;       
 		SInt32 osVersion;
 		
+		serviceBeingResolvedIndex = -1;
+		
 		err = Gestalt ( gestaltSystemVersion, &osVersion );       
 		if ( err == noErr)       
 		{
@@ -1566,7 +1568,8 @@ static char *GetPrivateIP()
 {
 	BOOL newConnection = NO;
 	
-	if( serviceBeingResolvedIndex != index) newConnection = YES;
+	if( serviceBeingResolvedIndex != index)
+		newConnection = YES;
 	
 	[BonjourBrowser waitForLock: lock];
 	
