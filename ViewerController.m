@@ -8774,8 +8774,6 @@ NSMutableArray		*array;
 {
 	if( bC == self) return;
 	
-	NSLog( @"Blending Activated!");
-	
 //	[self checkEverythingLoaded];
 //	[bC checkEverythingLoaded];
 	
@@ -8785,6 +8783,8 @@ NSMutableArray		*array;
 	
 	if( blendingController)
 	{
+		NSLog( @"Blending Activated!");
+		
 		if( [blendingController blendingController] == self)	// NO cross blending !
 		{
 			[blendingController ActivateBlending: 0L];
