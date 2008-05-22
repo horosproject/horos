@@ -3917,63 +3917,63 @@ static ViewerController *draggedController = 0L;
 		[self autoHideMatrix];
 	}
 	
-	if( [self checkFrameSize])
-	{
-		NSPoint	mouse = [[self window] mouseLocationOutsideOfEventStream];
-		
-		NSArray	*displayedViewers = [ViewerController getDisplayed2DViewers];
-		
-		if( [displayedViewers count] > 2)
-		{
-			if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height-20)
-			{
-				NSInteger row, column;
-				
-				mouse = [previewMatrix convertPoint:mouse fromView: 0L];
-				
-				BOOL found = NO;
-				
-				if( [previewMatrix getRow: &row column: &column forPoint: mouse])
-				{
-					for( ViewerController *v in displayedViewers)
-					{
-						if( [[v imageView] seriesObj] == [[previewMatrix cellAtRow: row column: column] representedObject] && v != self)
-						{
-							found = YES;
-							
-							if( lastHighLightedRow != row)
-							{							
-								[v setHighLighted: 1.0];
-							}
-						}
-					}
-					
-					if( found)
-						lastHighLightedRow = row;
-					else
-						lastHighLightedRow = 0;
-				}
-				else lastHighLightedRow = 0;
-			}
-			else
-			{
-				lastHighLightedRow = 0;
-				if( theEvent)
-				{
-					for( ViewerController *v in displayedViewers)
-					{
-						NSPoint	mouse = [NSEvent mouseLocation];
-						
-						if( NSPointInRect( mouse, [[v window] frame]))
-						{
-							[v mouseMoved: 0L];
-							break;
-						}
-					}
-				}
-			}
-		}
-	}
+//	if( [self checkFrameSize])
+//	{
+//		NSPoint	mouse = [[self window] mouseLocationOutsideOfEventStream];
+//		
+//		NSArray	*displayedViewers = [ViewerController getDisplayed2DViewers];
+//		
+//		if( [displayedViewers count] > 2)
+//		{
+//			if( mouse.x >= 0 && mouse.x <= [previewMatrix cellSize].width+13 && mouse.y >= 0 && mouse.y <= [splitView frame].size.height-20)
+//			{
+//				NSInteger row, column;
+//				
+//				mouse = [previewMatrix convertPoint:mouse fromView: 0L];
+//				
+//				BOOL found = NO;
+//				
+//				if( [previewMatrix getRow: &row column: &column forPoint: mouse])
+//				{
+//					for( ViewerController *v in displayedViewers)
+//					{
+//						if( [[v imageView] seriesObj] == [[previewMatrix cellAtRow: row column: column] representedObject] && v != self)
+//						{
+//							found = YES;
+//							
+//							if( lastHighLightedRow != row)
+//							{							
+//								[v setHighLighted: 1.0];
+//							}
+//						}
+//					}
+//					
+//					if( found)
+//						lastHighLightedRow = row;
+//					else
+//						lastHighLightedRow = 0;
+//				}
+//				else lastHighLightedRow = 0;
+//			}
+//			else
+//			{
+//				lastHighLightedRow = 0;
+//				if( theEvent)
+//				{
+//					for( ViewerController *v in displayedViewers)
+//					{
+//						NSPoint	mouse = [NSEvent mouseLocation];
+//						
+//						if( NSPointInRect( mouse, [[v window] frame]))
+//						{
+//							[v mouseMoved: 0L];
+//							break;
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
 }
 
 - (void) Display3DPoint:(NSNotification*) note
