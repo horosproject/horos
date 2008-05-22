@@ -59,7 +59,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSDateFormatter			*DateTimeFormat, *DateOfBirthFormat, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
 	
-	
+	NSRect					visibleScreenRect[ 40];
 	NSString				*currentDatabasePath;
 	BOOL					isCurrentDatabaseBonjour;
 	NSString				*transferSyntax;

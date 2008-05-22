@@ -83,9 +83,11 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 
 - (void) WindowDidMoveNotification:(NSNotification *)aNotification
 {
-	if( [aNotification object] == [self window])
+	if( [aNotification object] == [self window] && dontReenter == NO)
 	{
+		dontReenter = YES;
 		[self checkPosition];
+		dontReenter = NO;
 	}
 }
 

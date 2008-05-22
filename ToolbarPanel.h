@@ -25,6 +25,7 @@
 	long					screen;
 	NSToolbar				*emptyToolbar;
 	ViewerController		*viewer;
+	BOOL					dontReenter;
 }
 
 @property (readonly) ViewerController *viewer;

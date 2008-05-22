@@ -2361,7 +2361,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void)windowDidChangeScreen:(NSNotification *)aNotification
 {
 	NSLog(@"windowDidChangeScreen");
-	long i;
+	
+	int i;
 	
 	if( USETOOLBARPANEL)
 	{
@@ -3350,6 +3351,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				for( i = 0; i < [series count]; i++)
 				{
 					NSManagedObject	*curSeries = [series objectAtIndex:i];
+					NSManagedObject	*curBlendedSeries = [series objectAtIndex:i];
 					
 					int keyImagesNumber = 0, z;
 	//				NSArray	*keyImagesArray = [[[curSeries valueForKey:@"images"] allObjects] valueForKey:@"isKeyImage"];		<- This is too slow......
@@ -3393,9 +3395,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 					[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rClick + Apple Key:\rOpen in new window", 0L), [curSeries valueForKey:@"id"]] forCell:cell];
 					if( [curImage valueForKey:@"series"] == curSeries)
 					{
-						[cell setBackgroundColor: [NSColor colorWithCalibratedRed:249./255. green:80./255. blue:80./255. alpha:1.0]];
-						[cell setBackgroundColor: [NSColor colorWithCalibratedRed:252/255. green:177/255. blue:141/255. alpha:1.0]];
+//						[cell setBackgroundColor: [NSColor colorWithCalibratedRed:249./255. green:80./255. blue:80./255. alpha:1.0]];
 //						[cell setBackgroundColor: [NSColor colorWithCalibratedRed:183/255. green:213/255. blue:254/255. alpha:1.0]];
+						[cell setBackgroundColor: [NSColor colorWithCalibratedRed:252/255. green:177/255. blue:141/255. alpha:1.0]];
+						
+
+						[cell setBordered: NO];
+					}
+					else if( [curImage valueForKey:@"series"] == [[self blendedWindow] currentSeries])
+					{
+						[cell setBackgroundColor: [NSColor colorWithCalibratedRed: (252.+249.)/(2*255.) green: (177.+240.)/(2*255.) blue: (141.+140.)/(2*255.) alpha:1.0]];
 						[cell setBordered: NO];
 					}
 					else if( [displayedSeries containsObject: curSeries])
@@ -5327,14 +5336,14 @@ static ViewerController *draggedController = 0L;
 //	[appController tileWindows: 0L];	<- We cannot do this, because:
 //	This is very important, or if we have a queue of closing windows, it will crash....
 	
+	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+		[v buildMatrixPreview: NO];
+
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 	{
 		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:0L];
 		[appController performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
 	}
-	
-	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-		[v buildMatrixPreview: NO];
 	
 	NSLog(@"ViewController dealloc");
 }

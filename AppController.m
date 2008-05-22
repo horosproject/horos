@@ -2625,8 +2625,11 @@ static BOOL initialized = NO;
 - (int) currentRowForViewer: (ViewerController*) v
 {
 	int rows = ([[[v window] screen] visibleFrame].size.height / [[v window] frame].size.height);
-	int currentrow = rows * ([[v window] frame].origin.y + [[v window] frame].size.height/2 - [[[v window] screen] visibleFrame].origin.y) / [[[v window] screen] visibleFrame].size.height;
-
+	
+	int currentrow = rows * ([[v window] frame].origin.y + (3*[[v window] frame].size.height)/4 - [[[v window] screen] visibleFrame].origin.y) / [[[v window] screen] visibleFrame].size.height;
+	
+	NSLog( @"row : %d", currentrow);
+	
 	return rows - currentrow;
 }
 
@@ -2636,6 +2639,11 @@ static BOOL initialized = NO;
 	
 	for( ViewerController *v in array)
 		[[v imageView] scaleToFit];
+}
+
+- (NSPoint) windowCenter: (NSWindow*) w
+{
+	return NSMakePoint( [w frame].origin.x + [w frame].size.width/2, [w frame].origin.y + [w frame].size.height/2);
 }
 
 - (void) tileWindows:(id)sender
@@ -2696,13 +2704,13 @@ static BOOL initialized = NO;
 			}
 		}
 		
-		float minX = [[[cWindows objectAtIndex: index] window] frame].origin.x;
+		float minX = [self windowCenter: [[cWindows objectAtIndex: index] window]].x;
 		
 		for( x = 0; x < [cWindows count]; x++)
 		{
-			if( [[[cWindows objectAtIndex: x] window] frame].origin.x < minX && [self currentRowForViewer: [cWindows objectAtIndex: x]] <= row)
+			if( [self windowCenter: [[cWindows objectAtIndex: x] window]].x < minX && [self currentRowForViewer: [cWindows objectAtIndex: x]] <= row)
 			{
-				minX = [[[cWindows objectAtIndex: x] window] frame].origin.x;
+				minX = [self windowCenter: [[cWindows objectAtIndex: x] window]].x;
 				index = x;
 			}
 		}

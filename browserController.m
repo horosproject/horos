@@ -7019,7 +7019,48 @@ static BOOL withReset = NO;
     return proposedPosition;
 }
 
-- (void)ViewFrameDidChange: (NSNotification*)note {
+- (void) windowDidChangeScreen:(NSNotification *)aNotification
+{
+	NSLog(@"windowDidChangeScreen");
+	
+	// Did the user change the window resolution?
+	
+	BOOL screenChanged = NO, dbScreenChanged = NO;
+	
+	for( int i = 0 ; i < [[NSScreen screens] count] ; i++)
+	{
+		NSScreen *s = [[NSScreen screens] objectAtIndex: i];
+		
+		if( NSEqualRects( [s visibleFrame], visibleScreenRect[ i]) == NO)
+		{
+			screenChanged = YES;
+			
+			if( [[self window] screen] == s)
+			{
+				NSLog( NSStringFromRect( [[self window] frame]));
+				NSLog( NSStringFromRect( visibleScreenRect[ i]));
+				
+				dbScreenChanged = YES;
+			}
+			
+			visibleScreenRect[ i] = [s visibleFrame];
+		}
+	}
+	
+	if( dbScreenChanged)
+	{
+		[[self window] zoom: self];
+	}
+	
+	if( screenChanged)
+	{
+		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:0L];
+		[appController performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
+	}
+}
+
+- (void)ViewFrameDidChange: (NSNotification*)note
+{
 	if( [note object] == [[splitViewVert subviews] objectAtIndex: 1])	// 1
 	{
 		NSSize size = oMatrix.cellSize;
@@ -9663,6 +9704,11 @@ static NSArray*	openSubSeriesArray = 0L;
 - (id)initWithWindow: (NSWindow *)window
 {
 	[AppController initialize];
+	
+	for( int i = 0 ; i < [[NSScreen screens] count] ; i++)
+	{
+		visibleScreenRect[ i] = [[[NSScreen screens] objectAtIndex: i] visibleFrame];
+	}
 	
 	if (hasMacOSXLeopard() == NO)	{
 		NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", nil), NSLocalizedString(@"This application requires MacOS X 10.5 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"OK", nil), nil, nil);
