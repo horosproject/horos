@@ -7958,7 +7958,7 @@ static BOOL needToRezoom;
 		NSFont *txtFont;
 		
 		if( rowIndex == 0) txtFont = [NSFont boldSystemFontOfSize: 11];
-		else txtFont = [NSFont systemFontOfSize:11];			
+		else txtFont = [NSFont systemFontOfSize:11];
 		
 		[aCell setFont:txtFont];
 		[aCell setLineBreakMode: NSLineBreakByTruncatingMiddle];
@@ -7977,10 +7977,14 @@ static BOOL needToRezoom;
 			NSString	*type = [dict valueForKey:@"type"];
 			NSString	*path = [dict valueForKey:@"Path"];
 			
+			if( [type isEqualToString:@"dicomDestination"])
+				[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"DICOMDestination.tif"]];
+			
 			if( [type isEqualToString:@"fixedIP"])
 				[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"FixedIP.tif"]];
 			
-			if( [type isEqualToString:@"localPath"] ) {
+			if( [type isEqualToString:@"localPath"] )
+			{
 				BOOL isDirectory;
 				
 				if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] )	{
@@ -8154,7 +8158,24 @@ static BOOL needToRezoom;
 			
 			if( row > 0 ) object = [[bonjourBrowser services] objectAtIndex: row-1];
 			
-			if( [[object valueForKey: @"type"] isEqualToString:@"localPath"] || (row == 0 && isCurrentDatabaseBonjour == NO) ) {
+			if( [[object valueForKey: @"type"] isEqualToString:@"dicomDestination"])
+			{
+				NSArray * r = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly: NO];
+				
+				for( int i = 0 ; i < [r count]; i++)
+				{
+					NSDictionary *c = [r objectAtIndex: i];
+					
+					if( [[c objectForKey:@"Description"] isEqualToString: [object objectForKey:@"Description"]] &&
+						[[c objectForKey:@"Address"] isEqualToString: [object objectForKey:@"Address"]] &&
+						[[c objectForKey:@"Port"] intValue] == [[object objectForKey:@"Port"] intValue])
+							[[NSUserDefaults standardUserDefaults] setInteger: i forKey:@"lastSendServer"];
+				}
+				
+				[self selectServer: imagesArray];
+			}
+			else if( [[object valueForKey: @"type"] isEqualToString:@"localPath"] || (row == 0 && isCurrentDatabaseBonjour == NO) )
+			{
 				NSString	*dbFolder = 0L;
 				NSString	*sqlFile = 0L;
 				
@@ -8357,7 +8378,8 @@ static BOOL needToRezoom;
 					dcmNode = dict;
 				}
 				
-				if( [dcmNode valueForKey:@"Port"] && OnlyDICOM )	{
+				if( [dcmNode valueForKey:@"Port"] && OnlyDICOM )
+				{
 					WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Transfer started...", nil)];
 					[wait showWindow:self];
 					
@@ -8373,7 +8395,8 @@ static BOOL needToRezoom;
 					[wait close];
 					[wait release];
 				}
-				else {
+				else
+				{
 					Wait	*splash = [[Wait alloc] initWithString:@"Copying to OsiriX database..."];
 					[splash showWindow:self];
 					[[splash progress] setMaxValue:[imagesArray count]];
@@ -8469,6 +8492,11 @@ static BOOL needToRezoom;
 			{
 				if( [[[dcmNode valueForKey:@"Path"] pathExtension] isEqualToString:@"sql"]) return [dcmNode valueForKey:@"Path"];
 				else return [[dcmNode valueForKey:@"Path"] stringByAppendingPathComponent:@"OsiriX Data/"];
+			}
+			
+			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"dicomDestination"])
+			{
+				return [NSString stringWithFormat:@"%@ - %@:%@",[dcmNode objectForKey:@"AETitle"], [dcmNode objectForKey:@"Address"], [dcmNode objectForKey:@"Port"]];
 			}
 			
 			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"fixedIP"])
@@ -12306,17 +12334,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void)loadDICOMFromiPod {
+- (void)loadDICOMFromiPod
+{
 	NSArray *allVolumes = [[NSWorkspace sharedWorkspace] mountedLocalVolumePaths];
 	int index;
 	NSString	*defaultPath = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]);
 	
-	for ( NSString *path in allVolumes ) {
+	for ( NSString *path in allVolumes)
+	{
 		NSString *iPodControlPath = [path stringByAppendingPathComponent:@"iPod_Control"];
 		BOOL isItAnIpod = [[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath];
 		BOOL isThereAnOsiriXDataAtTheRoot = [[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"]];
 		
-		if( isItAnIpod || isThereAnOsiriXDataAtTheRoot )
+		if( isItAnIpod || isThereAnOsiriXDataAtTheRoot)
 		{
 			if( [path isEqualToString: defaultPath] == NO && [[path stringByAppendingPathComponent:@"OsiriX Data"] isEqualToString: defaultPath] == NO)
 			{
@@ -12329,14 +12359,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				// Is this iPod already in the list?
 				BOOL found = NO;
-				for( NSDictionary *service in [bonjourBrowser services] ) {
+				for( NSDictionary *service in [bonjourBrowser services])
+				{
 					
-					if( [[service valueForKey:@"type"] isEqualToString:@"localPath"] ) {
+					if( [[service valueForKey:@"type"] isEqualToString:@"localPath"])
+					{
 						if( [[service valueForKey:@"Path"] isEqualToString: path]) found = YES;
 					}
 				}
 				
-				if( found == NO ) {
+				if( found == NO)
+				{
 					int z = self.currentBonjourService;
 					NSDictionary	*selectedDict = nil;
 					if( z >= 0 && z < [bonjourBrowser.services count]) selectedDict = [[bonjourBrowser.services objectAtIndex: z] retain];
@@ -12522,12 +12555,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void)selectServer: (NSArray*)objects {
+- (void)selectServer: (NSArray*)objects
+{
 	if( [objects count] > 0) [SendController sendFiles:objects];
 	else NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"No files are selected...",nil),NSLocalizedString( @"OK",nil), nil, nil);
 }
 
-- (void)export2PACS: (id)sender {
+- (void)export2PACS: (id)sender
+{
 	[self.window makeKeyAndOrderFront:sender];
 	
 	NSMutableArray	*objects = [NSMutableArray array];
@@ -13839,13 +13874,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[bonjourReportFilesToCheck removeAllObjects];
 	
-	if( index >= 0 )
+	if( index >= 0)
 	{
 		NSDictionary *object = [[bonjourBrowser services] objectAtIndex: index];
 		
+		// DICOM DESTINATION
+		if( [[object valueForKey: @"type"] isEqualToString:@"dicomDestination"])
+		{
+			NSRunAlertPanel( NSLocalizedString(@"DICOM Destination", nil), NSLocalizedString(@"It is a DICOM destination node: you cannot browse its content.", nil), nil, nil, nil);
+			
+			[bonjourServicesList selectRow: previousBonjourIndex+1 byExtendingSelection:NO];
+		}
 		// LOCAL PATH - DATABASE
-		
-		if( [[object valueForKey: @"type"] isEqualToString:@"localPath"] ) {
+		else if( [[object valueForKey: @"type"] isEqualToString:@"localPath"])
+		{
 			[self openDatabasePath: [object valueForKey: @"Path"]];
 		}
 		else	// NETWORK - DATABASE - bonjour / fixedIP

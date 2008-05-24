@@ -7108,6 +7108,8 @@
 		CEA337BD06AD9BF6006D2357 /* iDiskSend.icns in Resources */ = {isa = PBXBuildFile; fileRef = CEA337BB06AD9BF6006D2357 /* iDiskSend.icns */; };
 		CEA6566F094EF62400D4E5E5 /* vtkVolumeProVP1000Mapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CEA0C72607A6B186004E5D9D /* vtkVolumeProVP1000Mapper.cxx */; };
 		CEA656CC094EF64300D4E5E5 /* vli3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA656CB094EF64300D4E5E5 /* vli3.framework */; };
+		CEAE02E00DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */; };
+		CEAE02E10DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */; };
 		CEAEAC530C966FEF001CEA25 /* VRControllerVPRO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE677D1207A6BDDD003B3650 /* VRControllerVPRO.h */; };
 		CEAF1D7C0A757C3200A0D729 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E /* jaricom.c */; };
 		CEAF1D7D0A757C3200A0D729 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6309B6828300545F5E /* jcapimin.c */; };
@@ -11686,6 +11688,7 @@
 		CEA65654094EF57000D4E5E5 /* vli.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vli.h; path = VolumePRO/vli3.framework/Versions/A/Headers/vli.h; sourceTree = "<group>"; };
 		CEA656CB094EF64300D4E5E5 /* vli3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vli3.framework; path = VolumePRO/vli3.framework; sourceTree = "<group>"; };
 		CEA65731094EF6FD00D4E5E5 /* vli3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vli3.h; path = VolumePRO/vli3.framework/Versions/A/Headers/vli3.h; sourceTree = "<group>"; };
+		CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DICOMDestination.tif; sourceTree = "<group>"; };
 		CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OsiriXTables.pdf; sourceTree = "<group>"; };
 		CEB1DA6608A3B1040058C303 /* smalltrash.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smalltrash.tif; sourceTree = "<group>"; };
 		CEB7179706CE7CBD00084CA5 /* libjasper2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjasper2.a; path = Binaries/Jasper/libjasper2.a; sourceTree = SOURCE_ROOT; };
@@ -13175,6 +13178,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */,
 				A98875BA0D5B694100E0118E /* Navigator.tif */,
 				A9897D970D4A142200BAC447 /* displayRGB.tif */,
 				A9897D980D4A142200BAC447 /* displayTotoku.tif */,
@@ -21457,6 +21461,7 @@
 				A987B3E20D5A069200BF89C0 /* Navigator.xib in Resources */,
 				A98875BC0D5B694100E0118E /* Navigator.tif in Resources */,
 				CE40ED590D86D634007C6D49 /* 3DPosition.xib in Resources */,
+				CEAE02E00DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21848,6 +21853,7 @@
 				A987B3E10D5A069200BF89C0 /* Navigator.xib in Resources */,
 				A98875BB0D5B694100E0118E /* Navigator.tif in Resources */,
 				CE40ED5A0D86D634007C6D49 /* 3DPosition.xib in Resources */,
+				CEAE02E10DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

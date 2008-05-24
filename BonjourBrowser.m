@@ -20,6 +20,7 @@
 #import "DicomFile.h"
 #import "DicomImage.h"
 #include "SimplePing.h"
+#import "DCMNetServiceDelegate.h"
 
 #import <sys/socket.h>
 #import <netinet/in.h>
@@ -129,6 +130,7 @@ static char *GetPrivateIP()
 		
 		[self buildFixedIPList];
 		[self buildLocalPathsList];
+		[self buildDICOMDestinationsList];
 		[[BrowserController currentBrowser] loadDICOMFromiPod];
 		[self arrangeServices];
 		
@@ -164,9 +166,15 @@ static char *GetPrivateIP()
 //		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
-												selector: @selector(updateFixedList:)
+												selector: @selector( updateFixedList:)
 												name: @"OsiriXServerArray has changed"
 												object: nil];
+		
+		[[NSNotificationCenter defaultCenter] addObserver: self
+												selector: @selector( updateFixedList:)
+												name: @"DCMNetServicesDidChange"
+												object: nil];
+												
 	}
 	return self;
 }
@@ -947,6 +955,31 @@ static char *GetPrivateIP()
 	}
 }
 
+- (void) buildDICOMDestinationsList
+{
+	int			i;
+	NSArray		*dbArray = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
+	
+	if( dbArray == 0L) dbArray = [NSArray array];
+	
+	for( i = 0; i < [services count]; i++)
+	{
+		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"dicomDestination"])
+		{
+			[services removeObjectAtIndex: i];
+			i--;
+		}
+	}
+	
+	for( i = 0; i < [dbArray count]; i++)
+	{
+		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: [dbArray objectAtIndex: i]];
+		
+		[dict setValue:@"dicomDestination" forKey:@"type"];
+		[services addObject: dict];
+	}
+}
+
 - (void) buildLocalPathsList
 {
 	int			i;
@@ -989,6 +1022,7 @@ static char *GetPrivateIP()
 	[self buildFixedIPList];
 	[self buildLocalPathsList];
 	[[BrowserController currentBrowser] loadDICOMFromiPod];
+	[self buildDICOMDestinationsList];
 	[self arrangeServices];
 	
 	[interfaceOsiriX displayBonjourServices];
@@ -1030,6 +1064,12 @@ static char *GetPrivateIP()
 	for( i = 0 ; i < [services count]; i++)
 	{
 		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"bonjour"])
+			[result addObject: [services objectAtIndex: i]];
+	}
+	
+	for( i = 0 ; i < [services count]; i++)
+	{
+		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"dicomDestination"])
 			[result addObject: [services objectAtIndex: i]];
 	}
 
