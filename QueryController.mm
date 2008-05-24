@@ -157,7 +157,7 @@ static char *GetPrivateIP()
 		{
 			NSAlert* alert = [NSAlert new];
 			[alert setMessageText: NSLocalizedString(@"Auto-Retrieving", 0L)];
-			[alert setInformativeText: NSLocalizedString(@"Are you sure that you want to activate Auto-Retrieving : each study displayed in the Query & Retrieve list will be automatically retrieved to this computer.\r\r(Only 10 studies is retrieved each time. Next 10 studies during next 'refresh'.)", nil)];
+			[alert setInformativeText: NSLocalizedString(@"Are you sure that you want to activate the Auto-Retrieving function : each study displayed in the Query & Retrieve list will be automatically retrieved to destination computer.\r\r(Only 10 studies is retrieved each time. Next 10 studies during next 'refresh'.)", nil)];
 			[alert setShowsSuppressionButton:YES ];
 			[alert addButtonWithTitle: NSLocalizedString(@"Yes", nil)];
 			[alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];

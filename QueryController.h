@@ -93,4 +93,5 @@
 - (void) buildPresetsMenu;
 - (IBAction) autoQueryTimer:(id) sender;
 - (IBAction) switchAutoRetrieving: (id) sender;
+- (void) displayAndRetrieveQueryResults;
 @end
