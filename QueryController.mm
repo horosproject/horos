@@ -156,10 +156,10 @@ static char *GetPrivateIP()
 		else
 		{
 			NSAlert* alert = [NSAlert new];
-			[alert setMessageText: NSLocalizedString(@"Query", 0L)];
-			[alert setInformativeText: NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil)];
+			[alert setMessageText: NSLocalizedString(@"Auto-Retrieving", 0L)];
+			[alert setInformativeText: NSLocalizedString(@"Are you sure that you want to activate Auto-Retrieving : each study displayed in the Query & Retrieve list will be automatically retrieved to this computer.\r\r(Only 10 studies is retrieved each time. Next 10 studies during next 'refresh'.)", nil)];
 			[alert setShowsSuppressionButton:YES ];
-			[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
+			[alert addButtonWithTitle: NSLocalizedString(@"Yes", nil)];
 			[alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
 			
 			if ( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
@@ -172,7 +172,7 @@ static char *GetPrivateIP()
 		
 		if( doit)
 		{
-		
+			[self displayAndRetrieveQueryResults];
 		}
 		else [[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"autoRetrieving"];
 	}
@@ -695,8 +695,6 @@ static char *GetPrivateIP()
 	
 	selectedRow = [sourcesTable selectedRow];
 	
-//	NSLog( @"%@", sourcesArray );
-	
 	atLeastOneSource = NO;
 	BOOL firstResults = YES;
 	
@@ -896,10 +894,9 @@ static char *GetPrivateIP()
 	}
 	
 	if( [tempResultArray count])
-	{
 		[tempResultArray sortUsingDescriptors: [self sortArray]];
-		[self performSelectorOnMainThread:@selector( refreshList: ) withObject: tempResultArray waitUntilDone: YES];
-	}
+		
+	[self performSelectorOnMainThread:@selector( refreshList: ) withObject: tempResultArray waitUntilDone: YES];
 	
 	if( atLeastOneSource == NO)
 	{
@@ -963,6 +960,34 @@ static char *GetPrivateIP()
 	queryPerformed = YES;
 }
 
+- (void) displayAndRetrieveQueryResults
+{
+	[self displayQueryResults];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
+	{
+		// Start to retrieve the first 10 studies...
+		
+		NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [queryManager parameters]];
+		NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
+		
+		[dictionary setObject: moveDataHandler  forKey:@"receivedDataHandler"];
+		
+		NSMutableArray *selectedItems = [NSMutableArray array];
+		
+		for( id item in resultArray)
+		{
+			if( [[self localStudy: item] count] == 0)
+				[selectedItems addObject: item];
+				
+			if( [selectedItems count] >= 10) break;
+		}
+		
+		if( [selectedItems count])
+			[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
+	}
+}
+
 - (void) autoQueryThread
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -970,7 +995,7 @@ static char *GetPrivateIP()
 	NSLog( @"autoQueryTimerFunction START");
 	
 	if( [self queryWithDisplayingErrors: NO] == 0)
-		[self performSelectorOnMainThread: @selector( displayQueryResults) withObject:0 waitUntilDone: NO];
+		[self performSelectorOnMainThread: @selector( displayAndRetrieveQueryResults) withObject:0 waitUntilDone: NO];
 	else NSLog( @"auto query failed");
 	
 	NSLog( @"autoQueryTimerFunction END");
@@ -988,8 +1013,11 @@ static char *GetPrivateIP()
 			{
 				[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: 0L];
 				
+				autoQueryRemainingSecs = 60*[[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"]; 
+				
 				[autoQueryLock unlock];
 			}
+			else autoQueryRemainingSecs = 0;
 		}
 		
 		[autoQueryCounter setStringValue: [NSString stringWithFormat: @"%2.2d:%2.2d", (int) (autoQueryRemainingSecs/60), (int) (autoQueryRemainingSecs%60)]];
@@ -1042,48 +1070,71 @@ static char *GetPrivateIP()
 		[pb setString: [aFile valueForKey:@"name"] forType:NSStringPboardType];
 }
 
--(void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable forViewing: (BOOL) forViewing
+-(void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable forViewing: (BOOL) forViewing items:(NSArray*) items showGUI:(BOOL) showGUI
 {
 	NSMutableArray	*selectedItems = [NSMutableArray array];
-	NSIndexSet		*selectedRowIndexes = [outlineView selectedRowIndexes];
-	NSInteger		index;
 	
-	if( [selectedRowIndexes count])
+	if([items count])
 	{
-		for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+		for( id item in items)
 		{
-		   if ([selectedRowIndexes containsIndex:index])
-		   {
-				if( onlyIfNotAvailable)
-				{
-					if( [[self localStudy: [outlineView itemAtRow:index]] count] == 0) [selectedItems addObject: [outlineView itemAtRow:index]];
-					NSLog( @"Already here! We don't need to download it...");
-				}
-				else [selectedItems addObject: [outlineView itemAtRow:index]];
-		   }
+			if( onlyIfNotAvailable)
+			{
+				if( [[self localStudy: item] count] == 0) [selectedItems addObject: item];
+				NSLog( @"Already here! We don't need to download it...");
+			}
+			else [selectedItems addObject: item];
 		}
 		
 		if( [selectedItems count] > 0)
 		{
 			if( [sendToPopup indexOfSelectedItem] != 0 && forViewing == YES)
 			{
-				NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Query & Retrieve",nil),NSLocalizedString( @"If you want to retrieve & view these images, change the destination to this computer ('retrieve to' menu).",nil),NSLocalizedString( @"OK",nil), nil, nil);
+				if( showGUI)
+					NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Query & Retrieve",nil),NSLocalizedString( @"If you want to retrieve & view these images, change the destination to this computer ('retrieve to' menu).",nil),NSLocalizedString( @"OK",nil), nil, nil);
 			}
 			else
 			{
-				WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting Retrieving...", nil)];
-				[wait showWindow:self];
+				WaitRendering *wait = 0L;
+				
+				if( showGUI)
+				{
+					wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting Retrieving...", nil)];
+					[wait showWindow:self];
+				}
 				
 				checkAndViewTry = -1;
-				[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject: selectedItems];
+				[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
 				
-				unsigned long finalTicks;
-				Delay( 30, &finalTicks);
+				if( showGUI)
+				{
+					unsigned long finalTicks;
+					Delay( 30, &finalTicks);
 				
-				[wait close];
-				[wait release];
+					[wait close];
+					[wait release];
+				}
 			}
 		}
+	}
+}
+
+-(void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable forViewing: (BOOL) forViewing
+{
+	NSMutableArray	*selectedItems = [NSMutableArray array];
+	NSIndexSet		*selectedRowIndexes = [outlineView selectedRowIndexes];
+	
+	if( [selectedRowIndexes count])
+	{
+		NSInteger		index;
+		
+		for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+		{
+		   if ([selectedRowIndexes containsIndex:index])
+				[selectedItems addObject: [outlineView itemAtRow:index]];
+		}
+		
+		[self retrieve: sender onlyIfNotAvailable: onlyIfNotAvailable forViewing: forViewing items: selectedItems showGUI: YES];
 	}
 }
 
@@ -1128,14 +1179,14 @@ static char *GetPrivateIP()
 	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [queryManager parameters]];
 	
 	NSLog( @"Retrieve START");
-	NSLog( [dictionary description]);
+//	NSLog( [dictionary description]);
 	
 	[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
 	
 	for( int i = 0; i < [array count] ; i++)
 	{
 		DCMTKQueryNode	*object = [array objectAtIndex: i];
-
+		
 		[dictionary setObject:[object valueForKey:@"calledAET"] forKey:@"calledAET"];
 		[dictionary setObject:[object valueForKey:@"hostname"] forKey:@"hostname"];
 		[dictionary setObject:[object valueForKey:@"port"] forKey:@"port"];
