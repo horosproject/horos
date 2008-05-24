@@ -92,4 +92,5 @@
 - (IBAction) endAddPreset:(id) sender;
 - (void) buildPresetsMenu;
 - (IBAction) autoQueryTimer:(id) sender;
+- (IBAction) switchAutoRetrieving: (id) sender;
 @end

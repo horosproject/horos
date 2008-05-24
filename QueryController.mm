@@ -140,6 +140,44 @@ static char *GetPrivateIP()
 	else return NO;
 }
 
+- (IBAction) switchAutoRetrieving: (id) sender
+{
+	NSLog( @"auto-retrieving switched");
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
+	{
+		BOOL doit = NO;
+		NSString *alertSuppress = @"auto retrieving warning";
+		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+		if ([defaults boolForKey: alertSuppress])
+		{
+			doit = YES;
+		}
+		else
+		{
+			NSAlert* alert = [NSAlert new];
+			[alert setMessageText: NSLocalizedString(@"Query", 0L)];
+			[alert setInformativeText: NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil)];
+			[alert setShowsSuppressionButton:YES ];
+			[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
+			[alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
+			
+			if ( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
+			
+			if ([[alert suppressionButton] state] == NSOnState)
+			{
+				[defaults setBool:YES forKey:alertSuppress];
+			}
+		}
+		
+		if( doit)
+		{
+		
+		}
+		else [[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"autoRetrieving"];
+	}
+}
+
 - (IBAction) endAddPreset:(id) sender
 {
 	if( [sender tag])

@@ -1710,7 +1710,7 @@ static BOOL initialized = NO;
 				
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"COPYSETTINGSINSERIES"];
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"DONTCOPYWLWWSETTINGS"];
-				
+				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
 				
 				[[PluginManager alloc] init];
 				

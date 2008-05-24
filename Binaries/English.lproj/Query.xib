@@ -1749,18 +1749,18 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 						</object>
 						<object class="NSTextField" id="162008091">
 							<reference key="NSNextResponder" ref="265611195"/>
-							<int key="NSvFlags">265</int>
-							<string key="NSFrame">{{685, 538}, {216, 13}}</string>
+							<int key="NSvFlags">289</int>
+							<string key="NSFrame">{{570, 22}, {335, 13}}</string>
 							<reference key="NSSuperview" ref="265611195"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="845019879">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">71303168</int>
 								<string key="NSContents">XX studies found</string>
-								<object class="NSFont" key="NSSupport" id="302464230">
-									<string key="NSName">LucidaGrande</string>
+								<object class="NSFont" key="NSSupport" id="25">
+									<string key="NSName">LucidaGrande-Bold</string>
 									<double key="NSSize">1.000000e+01</double>
-									<int key="NSfFlags">2843</int>
+									<int key="NSfFlags">16</int>
 								</object>
 								<reference key="NSControlView" ref="162008091"/>
 								<reference key="NSBackgroundColor" ref="789164403"/>
@@ -1852,7 +1852,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 																		<reference key="NSControlView" ref="275723918"/>
 																		<int key="NSButtonFlags">1215582719</int>
 																		<int key="NSButtonFlags2">2</int>
-																		<object class="NSButtonImageSource" key="NSAlternateImage">
+																		<object class="NSButtonImageSource" key="NSAlternateImage" id="820230698">
 																			<string key="NSImageName">NSSwitch</string>
 																		</object>
 																		<string key="NSAlternateContents"/>
@@ -2021,7 +2021,11 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">71303168</int>
 												<string key="NSContents">Drag sources into the priority order for retrieving</string>
-												<reference key="NSSupport" ref="302464230"/>
+												<object class="NSFont" key="NSSupport" id="302464230">
+													<string key="NSName">LucidaGrande</string>
+													<double key="NSSize">1.000000e+01</double>
+													<int key="NSfFlags">2843</int>
+												</object>
 												<reference key="NSControlView" ref="784743569"/>
 												<reference key="NSBackgroundColor" ref="789164403"/>
 												<reference key="NSTextColor" ref="1043597042"/>
@@ -2055,18 +2059,14 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 						<object class="NSTextField" id="968854848">
 							<reference key="NSNextResponder" ref="265611195"/>
 							<int key="NSvFlags">289</int>
-							<string key="NSFrame">{{496, 20}, {406, 13}}</string>
+							<string key="NSFrame">{{496, 8}, {406, 13}}</string>
 							<reference key="NSSuperview" ref="265611195"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="830184605">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">71303168</int>
 								<string key="NSContents">127.0.0:00</string>
-								<object class="NSFont" key="NSSupport">
-									<string key="NSName">LucidaGrande-Bold</string>
-									<double key="NSSize">1.000000e+01</double>
-									<int key="NSfFlags">16</int>
-								</object>
+								<reference key="NSSupport" ref="25"/>
 								<reference key="NSControlView" ref="968854848"/>
 								<reference key="NSBackgroundColor" ref="789164403"/>
 								<reference key="NSTextColor" ref="1043597042"/>
@@ -2545,6 +2545,31 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 								<reference key="NSTextColor" ref="1043597042"/>
 							</object>
 						</object>
+						<object class="NSButton" id="366844117">
+							<reference key="NSNextResponder" ref="265611195"/>
+							<int key="NSvFlags">265</int>
+							<string key="NSFrame">{{745, 536}, {161, 18}}</string>
+							<reference key="NSSuperview" ref="265611195"/>
+							<bool key="NSEnabled">YES</bool>
+							<object class="NSButtonCell" key="NSCell" id="442527581">
+								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags2">67371008</int>
+								<string key="NSContents">Auto-Retrieve the Query results</string>
+								<reference key="NSSupport" ref="22"/>
+								<reference key="NSControlView" ref="366844117"/>
+								<int key="NSButtonFlags">1211912703</int>
+								<int key="NSButtonFlags2">130</int>
+								<object class="NSCustomResource" key="NSNormalImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">NSSwitch</string>
+								</object>
+								<reference key="NSAlternateImage" ref="820230698"/>
+								<string key="NSAlternateContents"/>
+								<string key="NSKeyEquivalent"/>
+								<int key="NSPeriodicDelay">200</int>
+								<int key="NSPeriodicInterval">25</int>
+							</object>
+						</object>
 					</object>
 					<string key="NSFrameSize">{911, 746}</string>
 					<reference key="NSSuperview"/>
@@ -2757,6 +2782,10 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 				<string key="NSMaxSize">{318, 154}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="524337109">
+				<object class="NSMutableArray" key="NSDeclaredKeys">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>autoRetrieving</string>
+				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 		</object>
@@ -3183,6 +3212,46 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 					</object>
 					<int key="connectionID">838</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.autoRefreshQueryResults</string>
+						<reference key="source" ref="366844117"/>
+						<reference key="destination" ref="524337109"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="366844117"/>
+							<reference key="NSDestination" ref="524337109"/>
+							<string key="NSLabel">enabled: values.autoRefreshQueryResults</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.autoRefreshQueryResults</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">841</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">switchAutoRetrieving:</string>
+						<reference key="source" ref="934212155"/>
+						<reference key="destination" ref="366844117"/>
+					</object>
+					<int key="connectionID">842</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.autoRetrieving</string>
+						<reference key="source" ref="366844117"/>
+						<reference key="destination" ref="524337109"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="366844117"/>
+							<reference key="NSDestination" ref="524337109"/>
+							<string key="NSLabel">value: values.autoRetrieving</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.autoRetrieving</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">843</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -3226,9 +3295,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 							<reference ref="155163123"/>
 							<reference ref="460639150"/>
 							<reference ref="1066080745"/>
-							<reference ref="162008091"/>
 							<reference ref="645620780"/>
-							<reference ref="968854848"/>
 							<reference ref="1013540638"/>
 							<reference ref="1041619656"/>
 							<reference ref="303578602"/>
@@ -3239,6 +3306,9 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 							<reference ref="493782390"/>
 							<reference ref="271767141"/>
 							<reference ref="179047244"/>
+							<reference ref="968854848"/>
+							<reference ref="162008091"/>
+							<reference ref="366844117"/>
 						</object>
 						<reference key="parent" ref="206394704"/>
 					</object>
@@ -4418,6 +4488,20 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 						<reference key="object" ref="717417091"/>
 						<reference key="parent" ref="179047244"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">839</int>
+						<reference key="object" ref="366844117"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="442527581"/>
+						</object>
+						<reference key="parent" ref="265611195"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">840</int>
+						<reference key="object" ref="442527581"/>
+						<reference key="parent" ref="366844117"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -4679,14 +4763,16 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 					<string>831.IBPluginDependency</string>
 					<string>836.IBPluginDependency</string>
 					<string>836.ImportedFromIB2</string>
+					<string>839.IBPluginDependency</string>
+					<string>840.IBPluginDependency</string>
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{22, 110}, {911, 746}}</string>
+					<string>{{374, 497}, {911, 746}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{22, 110}, {911, 746}}</string>
+					<string>{{374, 497}, {911, 746}}</string>
 					<reference ref="9"/>
 					<string>{{154, 110}, {911, 746}}</string>
 					<reference ref="9"/>
@@ -4937,6 +5023,8 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="unlocalizedProperties">
@@ -4959,7 +5047,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">838</int>
+			<int key="maxID">843</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -5053,11 +5141,13 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 							<string>selectUniqueSource:</string>
 							<string>setDateQuery:</string>
 							<string>setModalityQuery:</string>
+							<string>switchAutoRetrieving:</string>
 							<string>verify:</string>
 							<string>view:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
