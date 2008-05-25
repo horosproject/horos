@@ -2344,14 +2344,71 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[drawLock unlock];
 }
 
+- (BOOL) allIdenticalValues:(NSString*) v inArray:(NSArray*) a
+{
+	if( [a count])
+	{
+		NSString *s = [[a objectAtIndex: 0] valueForKey: v];
+		for( id i in a)
+		{
+			if( [s isEqualToString: [i valueForKey: v]] == NO) return NO;
+		}
+		
+		return YES;
+	}
+	return NO;
+}
+
 - (void) computeDescriptionInLarge
 {
 	[drawLock lock];
 	
-	NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
-	[stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size:48] forKey:NSFontAttributeName];
+	id curSeries = [self seriesObj];
+	id curStudy = [curSeries valueForKey:@"study"];
 	
-	NSAttributedString *text = [[[NSAttributedString alloc] initWithString: @"hello world" attributes: stanStringAttrib] autorelease];
+	NSArray *viewers = [ViewerController getDisplayed2DViewers];
+	NSMutableArray *studiesArray = [NSMutableArray array];
+	NSMutableArray *seriesArray = [NSMutableArray array];
+	
+	for( ViewerController *v in viewers)
+	{
+		[studiesArray addObject: [v currentStudy]];
+		[seriesArray addObject: [v currentSeries]];
+	}
+	
+	NSMutableString *description = [NSMutableString stringWithString:@""];
+	// same patients?
+	if( [self allIdenticalValues: @"name" inArray: studiesArray] == NO)
+	{
+		if( [curStudy valueForKey: @"name"])
+		{
+			if( [description length]) [description appendString:@"\r"];
+			[description appendString: [curStudy valueForKey: @"name"]];
+		}
+	}
+	
+	if( [description length]) [description appendString:@"\r"];
+	[description appendString: [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]]];
+	
+	if( [self allIdenticalValues: @"studyName" inArray: studiesArray] == NO)
+	{
+		if( [curStudy valueForKey: @"studyName"])
+		{
+			if( [description length]) [description appendString:@"\r"];
+			[description appendString: [curStudy valueForKey: @"studyName"]];
+		}
+	}
+
+	if( [curSeries valueForKey:@"name"])
+	{
+		if( [description length]) [description appendString:@"\r"];
+		[description appendString: [curSeries valueForKey:@"name"]];
+	}
+	
+	NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
+	[stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size:40] forKey:NSFontAttributeName];
+	
+	NSAttributedString *text = [[[NSAttributedString alloc] initWithString: description attributes: stanStringAttrib] autorelease];
 	
 	if( showDescriptionInLargeText == 0L)
 		showDescriptionInLargeText = [[GLString alloc] initWithAttributedString: text withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:0.4f green:0.4f blue:0.0f alpha:0.7f] withBorderColor:[NSColor colorWithDeviceRed:0.8f green:0.8f blue:0.0f alpha:0.8f]];

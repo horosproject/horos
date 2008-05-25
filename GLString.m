@@ -185,15 +185,13 @@
 	
 	if ([boxColor alphaComponent]) { // this should be == 0.0f but need to make sure
 		[boxColor set]; 
-		NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height) , 0.5, 0.5)
-														cornerRadius:cRadius];
+		NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(NSMakeRect (0.0f, 0.0f, frameSize.width-1, frameSize.height-1) , 0.5, 0.5) cornerRadius:cRadius];
 		[path fill];
 	}
 
 	if ([borderColor alphaComponent]) {
 		[borderColor set]; 
-		NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height), 0.5, 0.5) 
-														cornerRadius:cRadius];
+		NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(NSMakeRect (0.0f, 0.0f, frameSize.width-1, frameSize.height-1), 0.5, 0.5) cornerRadius:cRadius];
 		[path setLineWidth:1.0f];
 		[path stroke];
 	}
