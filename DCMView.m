@@ -2369,11 +2369,30 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	NSArray *viewers = [ViewerController getDisplayed2DViewers];
 	NSMutableArray *studiesArray = [NSMutableArray array];
 	NSMutableArray *seriesArray = [NSMutableArray array];
+	NSMutableDictionary *colorsStudy = [NSMutableDictionary dictionary];
+	NSArray *colors = [NSArray arrayWithObjects:	[NSColor colorWithDeviceRed:0.4f green:0.4f blue:0.0f alpha:0.7f],
+													[NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.4f alpha:0.7f],
+													[NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.4f alpha:0.7f],
+													[NSColor colorWithDeviceRed:0.4f green:0.0f blue:0.0f alpha:0.7f],
+													[NSColor colorWithDeviceRed:0.0f green:0.4f blue:0.0f alpha:0.7f],
+													[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.4f alpha:0.7f],
+													nil];
 	
 	for( ViewerController *v in viewers)
 	{
 		[studiesArray addObject: [v currentStudy]];
 		[seriesArray addObject: [v currentSeries]];
+	}
+	
+	// Give a different color for each study/patient
+	int color = 0;
+	for( id study in studiesArray)
+	{
+		if( [colorsStudy objectForKey: [study valueForKey:@"studyInstanceUID"]] == 0L)
+		{
+			[colorsStudy setObject: [colors objectAtIndex: color++] forKey: [study valueForKey:@"studyInstanceUID"]];
+		}	
+		if( color >= [colors count]) color = 0;
 	}
 	
 	NSMutableString *description = [NSMutableString stringWithString:@""];
@@ -2406,15 +2425,21 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	
 	NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
-	[stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size:40] forKey:NSFontAttributeName];
+	[stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size:30] forKey:NSFontAttributeName];
 	
 	NSAttributedString *text = [[[NSAttributedString alloc] initWithString: description attributes: stanStringAttrib] autorelease];
 	
-	if( showDescriptionInLargeText == 0L)
-		showDescriptionInLargeText = [[GLString alloc] initWithAttributedString: text withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:0.4f green:0.4f blue:0.0f alpha:0.7f] withBorderColor:[NSColor colorWithDeviceRed:0.8f green:0.8f blue:0.0f alpha:0.8f]];
-	else
-		[showDescriptionInLargeText setString: text];
+	NSColor *boxColor = [colorsStudy objectForKey: [curStudy valueForKey:@"studyInstanceUID"]];
+	NSColor *frameColor = [NSColor colorWithDeviceRed: [boxColor redComponent] green:[boxColor greenComponent] blue:[boxColor blueComponent] alpha:1];
 	
+	if( showDescriptionInLargeText == 0L)
+		showDescriptionInLargeText = [[GLString alloc] initWithAttributedString: text withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor: boxColor withBorderColor:frameColor];
+	else
+	{
+		[showDescriptionInLargeText setString: text];
+		[showDescriptionInLargeText setBoxColor: boxColor];
+		[showDescriptionInLargeText setBorderColor: frameColor];
+	}
 	[drawLock lock];
 }
 
