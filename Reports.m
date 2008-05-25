@@ -116,7 +116,39 @@ static id aedesc_to_id(AEDesc *desc)
 	return [[(NSURL *)CFURLCreateWithFileSystemPath( kCFAllocatorDefault, (CFStringRef)string, kCFURLHFSPathStyle, NO) autorelease] path];
 }
 
-- (NSString *) reportScriptBody:(NSManagedObject*) study
+- (NSString *) HFSPathFromPOSIXPath: (NSString*) p
+{
+    // thanks to stone.com for the pointer to  CFURLCreateWithFileSystemPath()
+
+    CFURLRef    url;
+    CFStringRef hfsPath = NULL;
+
+    BOOL        isDirectoryPath = [p hasSuffix:@"/"];
+    // Note that for the usual case of absolute paths,  isDirectoryPath is
+    // completely ignored by CFURLCreateWithFileSystemPath.
+    // isDirectoryPath is only considered for relative paths.
+    // This code has not really been tested relative paths...
+
+    url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault,
+                                          (CFStringRef)p,
+                                          kCFURLPOSIXPathStyle,
+                                          isDirectoryPath);
+    if (NULL != url) {
+
+        // Convert URL to a colon-delimited HFS path
+        // represented as Unicode characters in an NSString.
+
+        hfsPath = CFURLCopyFileSystemPath(url, kCFURLHFSPathStyle);
+        if (NULL != hfsPath) {
+            [(NSString *)hfsPath autorelease];
+        }
+        CFRelease(url);
+    }
+
+    return (NSString *) hfsPath;
+}
+
+- (NSString *) reportScriptBody:(NSManagedObject*) study path:(NSString*) path
 {
 	NSString	*sourceData = [self generateReportSourceData: study];
 	
@@ -130,7 +162,7 @@ static id aedesc_to_id(AEDesc *desc)
 	[s appendString:@"set myMerge to data merge of active document\n"];
 	[s appendString:@"set destination of myMerge to send to new document\n"];
 	[s appendString:@"execute data merge myMerge\n"];
-	[s appendString:@"save as active document file name \"report.doc\"\n"];
+	[s appendString:[NSString stringWithFormat:@"save as active document file name \"%@\"\n", [self HFSPathFromPOSIXPath: path]]];
 	[s appendString:@"close active document saving no\n"];
 	[s appendString:@"close active document saving no\n"];
 	[s appendString:@"end tell\n"];
@@ -148,12 +180,36 @@ static id aedesc_to_id(AEDesc *desc)
 	{
 		case 0:
 		{
-			[self runScript: [self reportScriptBody: study]];
-			
 			NSString	*destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"doc"];
-			[[NSFileManager defaultManager] movePath:[documentsDirectory() stringByAppendingFormat:@"/report.doc"] toPath:destinationFile handler: 0L];
-			[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"Microsoft Word"];
-			[study setValue: destinationFile forKey:@"reportURL"];
+			
+			[self runScript: [self reportScriptBody: study path: destinationFile]];
+			
+//			BOOL failed = NO;
+//			
+//			
+//			if( [[NSFileManager defaultManager] movePath:[documentsDirectory() stringByAppendingFormat:@"/OsiriX-temp-report.doc"] toPath:destinationFile handler: 0L] == NO)
+//			{
+//				char	s[1024];
+//				FSSpec	spec;
+//				FSRef	ref;
+//				
+//				if( FSFindFolder (kOnAppropriateDisk, kDocumentsFolderType, kCreateFolder, &ref) == noErr )
+//				{
+//					FSRefMakePath(&ref, (UInt8 *)s, sizeof(s));
+//					
+//					if( [[NSFileManager defaultManager] movePath: [[NSString stringWithUTF8String: s] stringByAppendingPathComponent:@"/OsiriX-temp-report.doc"] toPath:destinationFile handler: 0L] == NO)
+//						failed = YES;
+//				}
+//				else failed = YES;
+//			}
+//			
+//			if( failed)
+//				NSRunCriticalAlertPanel( NSLocalizedString(@"Microsoft Word", nil),  NSLocalizedString(@"Microsoft Word failed to create a report for this study.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+//			else
+			{
+				[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"Microsoft Word"];
+				[study setValue: destinationFile forKey:@"reportURL"];
+			}
 		}
 		break;
 		
