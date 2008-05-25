@@ -3813,6 +3813,10 @@
 		CE0817BA0C0FEEAE00BBD907 /* iPodEjectOn.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE0817B80C0FEEAE00BBD907 /* iPodEjectOn.tif */; };
 		CE0817BB0C0FEEAE00BBD907 /* iPodEjectOff.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE0817B70C0FEEAE00BBD907 /* iPodEjectOff.tif */; };
 		CE0817BC0C0FEEAE00BBD907 /* iPodEjectOn.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE0817B80C0FEEAE00BBD907 /* iPodEjectOn.tif */; };
+		CE087B0C0DE9BD6E000E5593 /* GLString.m in Sources */ = {isa = PBXBuildFile; fileRef = CE087B0A0DE9BD6E000E5593 /* GLString.m */; };
+		CE087B0D0DE9BD6E000E5593 /* GLString.h in Headers */ = {isa = PBXBuildFile; fileRef = CE087B0B0DE9BD6E000E5593 /* GLString.h */; };
+		CE087B0E0DE9BD6E000E5593 /* GLString.m in Sources */ = {isa = PBXBuildFile; fileRef = CE087B0A0DE9BD6E000E5593 /* GLString.m */; };
+		CE087B0F0DE9BD6E000E5593 /* GLString.h in Headers */ = {isa = PBXBuildFile; fileRef = CE087B0B0DE9BD6E000E5593 /* GLString.h */; };
 		CE0B46C9087D2B910052E309 /* VRPROFlyThruAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0B46C7087D2B900052E309 /* VRPROFlyThruAdapter.m */; };
 		CE0B46CA087D2B910052E309 /* VRPROFlyThruAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0B46C8087D2B910052E309 /* VRPROFlyThruAdapter.h */; };
 		CE0CB171084A623C00C6385F /* DCMPix.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0CB16F084A623C00C6385F /* DCMPix.m */; };
@@ -10287,6 +10291,8 @@
 		CE0718FD0C71D5F3006332F3 /* OsiriXDB_DataModel.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = OsiriXDB_DataModel.xcdatamodel; sourceTree = "<group>"; };
 		CE0817B70C0FEEAE00BBD907 /* iPodEjectOff.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPodEjectOff.tif; sourceTree = "<group>"; };
 		CE0817B80C0FEEAE00BBD907 /* iPodEjectOn.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPodEjectOn.tif; sourceTree = "<group>"; };
+		CE087B0A0DE9BD6E000E5593 /* GLString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLString.m; sourceTree = "<group>"; };
+		CE087B0B0DE9BD6E000E5593 /* GLString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLString.h; sourceTree = "<group>"; };
 		CE0B46C7087D2B900052E309 /* VRPROFlyThruAdapter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = VRPROFlyThruAdapter.m; sourceTree = "<group>"; };
 		CE0B46C8087D2B910052E309 /* VRPROFlyThruAdapter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRPROFlyThruAdapter.h; sourceTree = "<group>"; };
 		CE0CB16F084A623C00C6385F /* DCMPix.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMPix.m; sourceTree = "<group>"; };
@@ -13022,6 +13028,8 @@
 		ABAA285A058A675600F0601D /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				CE087B0A0DE9BD6E000E5593 /* GLString.m */,
+				CE087B0B0DE9BD6E000E5593 /* GLString.h */,
 				CEE8CECE0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m */,
 				CEE8CECF0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h */,
 				CE4700FB0CC51A6600ECF78A /* WindowLayoutManager.h */,
@@ -18632,6 +18640,7 @@
 				CE40ED530D86D54D007C6D49 /* ThreeDPositionController.h in Headers */,
 				CE0E3A550D87C56D008135A8 /* ThreeDPanView.h in Headers */,
 				CE3DDDAF0D8AC94C00AE9588 /* QueryOutlineView.h in Headers */,
+				CE087B0D0DE9BD6E000E5593 /* GLString.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20705,6 +20714,7 @@
 				CE40ED550D86D54D007C6D49 /* ThreeDPositionController.h in Headers */,
 				CE0E3A570D87C56D008135A8 /* ThreeDPanView.h in Headers */,
 				CE3DDDB10D8AC94C00AE9588 /* QueryOutlineView.h in Headers */,
+				CE087B0F0DE9BD6E000E5593 /* GLString.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22998,6 +23008,7 @@
 				CE40ED540D86D54D007C6D49 /* ThreeDPositionController.m in Sources */,
 				CE0E3A560D87C56D008135A8 /* ThreeDPanView.m in Sources */,
 				CE3DDDB00D8AC94C00AE9588 /* QueryOutlineView.m in Sources */,
+				CE087B0C0DE9BD6E000E5593 /* GLString.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24677,6 +24688,7 @@
 				CE40ED560D86D54D007C6D49 /* ThreeDPositionController.m in Sources */,
 				CE0E3A580D87C56D008135A8 /* ThreeDPanView.m in Sources */,
 				CE3DDDB20D8AC94C00AE9588 /* QueryOutlineView.m in Sources */,
+				CE087B0E0DE9BD6E000E5593 /* GLString.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

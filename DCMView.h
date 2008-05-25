@@ -74,6 +74,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 
 typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRight} DCMViewTextAlign;
 
+@class GLString;
 @class DCMPix;
 @class DCMView;
 @class ROI;
@@ -220,7 +221,9 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	NSTimer			*_rightMouseDownTimer; //Checking For Right hold
 	NSImage			*destinationImage; //image will be dropping
 	
-	BOOL			_hasChanged, needToLoadTexture, dontEnterReshape;
+	BOOL			_hasChanged, needToLoadTexture, dontEnterReshape, showDescriptionInLarge;
+	
+	GLString		*showDescriptionInLargeText;
 	
 	//Context for rendering to iChat
 	NSOpenGLContext *_alternateContext;
@@ -263,7 +266,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 
 @property(readonly) NSRect drawingFrameRect;
 @property(readonly) NSMutableArray *rectArray;
-@property BOOL flippedData, dontEnterReshape;
+@property BOOL flippedData, dontEnterReshape, showDescriptionInLarge;
 @property(readonly) NSMutableArray *dcmPixList,  *dcmRoiList;
 @property(readonly) NSArray *dcmFilesList;
 @property long syncSeriesIndex;
@@ -423,6 +426,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (NSPoint) convertFromNSView2iChat: (NSPoint) a;
 - (void) annotMenu:(id) sender;
 - (float) MPRAngle;
+- (ROI*) clickInROI: (NSPoint) tempPt;
 
 // methods to access global variables (for plugins)
 + (BOOL) display2DMPRLines;

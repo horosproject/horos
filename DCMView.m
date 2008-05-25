@@ -31,6 +31,7 @@ Version 2.3
 #import "ROI.h"
 #import "NSFont_OpenGL.h"
 #import "DCMCursor.h"
+#import "GLString.h"
 #include <Accelerate/Accelerate.h>
 
 #import "SeriesView.h"
@@ -456,6 +457,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 @implementation DCMView
 
+@synthesize showDescriptionInLarge;
 @synthesize drawingFrameRect, dontEnterReshape;
 @synthesize rectArray;
 @synthesize flippedData;
@@ -1897,6 +1899,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if(iChatCursorTextureBuffer) free(iChatCursorTextureBuffer);
 	if(iChatCursorTextureName) glDeleteTextures(1, &iChatCursorTextureName);
 	
+	[showDescriptionInLargeText release];
+	
     [super dealloc];
 }
 
@@ -2340,7 +2344,24 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[drawLock unlock];
 }
 
-- (void)flagsChanged:(NSEvent *)event
+- (void) computeDescriptionInLarge
+{
+	[drawLock lock];
+	
+	NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
+	[stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size:48] forKey:NSFontAttributeName];
+	
+	NSAttributedString *text = [[[NSAttributedString alloc] initWithString: @"hello world" attributes: stanStringAttrib] autorelease];
+	
+	if( showDescriptionInLargeText == 0L)
+		showDescriptionInLargeText = [[GLString alloc] initWithAttributedString: text withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:0.4f green:0.4f blue:0.0f alpha:0.7f] withBorderColor:[NSColor colorWithDeviceRed:0.8f green:0.8f blue:0.0f alpha:0.8f]];
+	else
+		[showDescriptionInLargeText setString: text];
+	
+	[drawLock lock];
+}
+
+- (void) flagsChanged:(NSEvent *)event
 {
 	if( [self is2DViewer] == YES)
 	{
@@ -2357,9 +2378,49 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}		
 			
 		if (update == YES) [self setNeedsDisplay:YES];
+		
+		BOOL cLarge = showDescriptionInLarge;
+		showDescriptionInLarge = NO;
+		if( [event modifierFlags] & NSControlKeyMask)
+		{
+			if([event modifierFlags] & NSCommandKeyMask) {}
+			else if([event modifierFlags] & NSShiftKeyMask) {}
+			else if([event modifierFlags] & NSAlternateKeyMask) {}
+			else
+			{
+				showDescriptionInLarge = YES;
+			}
+		}
+		
+		if( showDescriptionInLarge != cLarge)
+		{
+			for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+			{
+				for( DCMView *m in [v imageViews])
+				{
+					m.showDescriptionInLarge = showDescriptionInLarge;
+					
+					if( showDescriptionInLarge)
+						[m computeDescriptionInLarge];
+					[m setNeedsDisplay: YES];
+				}
+			}
+		}
 	}
 	
-	[self setCursorForView: [self getTool: event]];
+	BOOL roiHit = NO;
+	
+	if( [self roiTool: currentTool])
+	{
+		NSPoint tempPt = [self convertPoint: [event locationInWindow] fromView: 0L];
+		tempPt = [self ConvertFromNSView2GL:tempPt];
+		if( [self clickInROI: tempPt]) roiHit = YES;
+	}
+	if( roiHit == NO)
+		[self setCursorForView: [self getTool: event]];
+	else
+		[self setCursorForView: currentTool];
+		
 	if( cursorSet) [cursor set];
 	
 	[super flagsChanged:event];
@@ -2729,6 +2790,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			for( ROI *r in curRoiList)
 				[r displayPointUnderMouse :pt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue];
+			
+			if( [theEvent type] == NSMouseMoved)
+			{
+				// Should we change the mouse cursor?
+				if( [theEvent modifierFlags]) [self flagsChanged: theEvent];
+			}
 		}
 		
 		[drawLock unlock];
@@ -2753,16 +2820,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( blendingView) tool = tWLBlended;
 		else tool = tWL;
 	}
-	if( [self roiTool:currentTool] != YES && currentTool!=tROISelector)   // Not a ROI TOOL !
+//	if( [self roiTool:currentTool] != YES && currentTool!=tROISelector)   // Not a ROI TOOL !
 	{
 		if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))  tool = tRotate;
 		if (([event modifierFlags] & NSShiftKeyMask))  tool = tZoom;
 	}
-	else
-	{
-		if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask)) tool = currentTool;
-		if (([event modifierFlags] & NSCommandKeyMask)) tool = currentTool;
-	}
+//	else
+//	{
+//		if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask)) tool = currentTool;
+//		if (([event modifierFlags] & NSCommandKeyMask)) tool = currentTool;
+//	}
 	
 	return tool;
 }
@@ -2778,6 +2845,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	bdstartWL = [[blendingView curDCM] wl];
 	bdstartMin = [[blendingView curDCM] wl] - [[blendingView curDCM] ww]/2;
 	bdstartMax = [[blendingView curDCM] wl] + [[blendingView curDCM] ww]/2;
+}
+
+- (ROI*) clickInROI: (NSPoint) tempPt
+{
+	for( ROI * r in curRoiList)
+	{
+		if([r clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
+			return r;
+	}
+	
+	return 0L;
 }
 
 - (void)mouseDown:(NSEvent *)event
@@ -2825,7 +2903,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		start = previous = [self convertPoint:eventLocation fromView:self];
         
-		tool = [self getTool: event];
+		BOOL roiHit = NO;
+		
+		if( [self roiTool: currentTool])
+		{
+			NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
+			tempPt = [self ConvertFromNSView2GL:tempPt];
+			if( [self clickInROI: tempPt]) roiHit = YES;
+		}
+		
+		if( roiHit == NO)
+			tool = [self getTool: event];
+		else
+			tool = currentTool;
 		
         startImage = curImage;
         [self setStartWLWW];
@@ -2903,8 +2993,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[nc postNotificationName: @"sync" object: self userInfo: instructions];
 		}
 		
-		if( cross.x != -9999 && cross.y != -9999) {
-																																			  
+		if( cross.x != -9999 && cross.y != -9999)
+		{
 			NSPoint tempPt = [self convertPoint:eventLocation fromView: 0L];
 			tempPt = [self ConvertFromNSView2GL:tempPt];
 			if( tempPt.x > cross.x - BS/scaleValue && tempPt.x < cross.x + BS/scaleValue && tempPt.y > cross.y - BS/scaleValue && tempPt.y < cross.y + BS/scaleValue == YES)	//&& [stringID isEqualToString:@"Original"] 
@@ -2926,7 +3016,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				
 			//	NSLog( @"Dist:%0.0f / %0.0f_%0.0f", distance, tempPt.x, tempPt.y);
 				
-				if( distance * scaleValue < 10 ) {
+				if( distance * scaleValue < 10 )
+				{
 					crossMove = 0;
 					switchAngle = -1;
 				}
@@ -2935,7 +3026,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		else crossMove = -1;
 		
-		if(tool == tRepulsor) {
+		if(tool == tRepulsor)
+		{
 			[self deleteMouseDownTimer];
 			
 			[[self windowController] addToUndoQueue:@"roi"];
@@ -6941,7 +7033,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	drawingFrameRect = aRect;
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
+
+
+
+			
 	glViewport (0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height); // set the viewport to cover entire window
 	
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -7678,13 +7773,32 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				glDisable(GL_TEXTURE_RECTANGLE_EXT);
 			}
 		} // end iChat Theatre context	
-				
+		
+		if( showDescriptionInLarge)
+		{
+			glMatrixMode (GL_PROJECTION);
+			glPushMatrix();
+				glLoadIdentity ();
+				glMatrixMode (GL_MODELVIEW);
+				glPushMatrix();
+					glLoadIdentity ();
+					glScalef (2.0f / [self frame].size.width, -2.0f /  [self frame].size.height, 1.0f);
+					glTranslatef (-[self frame].size.width / 2.0f, -[self frame].size.height / 2.0f, 0.0f);
+
+					[showDescriptionInLargeText drawAtPoint:NSMakePoint([self frame].size.width/2 - [showDescriptionInLargeText frameSize].width/2, [self frame].size.height/2 - [showDescriptionInLargeText frameSize].height/2)];
+					
+					glPopMatrix(); // GL_MODELVIEW
+				glMatrixMode (GL_PROJECTION);
+			glPopMatrix();
+		}
 	}  
-	else {    //no valid image  ie curImage = -1
+	else
+	{    //no valid image  ie curImage = -1
 		//NSLog(@"no IMage");
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear (GL_COLOR_BUFFER_BIT);
 	}
+
 		
 	// Swap buffer to screen
 	//	[[self openGLContext] flushBuffer];
