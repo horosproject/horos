@@ -3402,18 +3402,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 					else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], count, type]];
 					
 					[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rClick + Apple Key:\rOpen in new window", 0L), [curSeries valueForKey:@"id"]] forCell:cell];
+					
 					if( [curImage valueForKey:@"series"] == curSeries)
 					{
-//						[cell setBackgroundColor: [NSColor colorWithCalibratedRed:249./255. green:80./255. blue:80./255. alpha:1.0]];
-//						[cell setBackgroundColor: [NSColor colorWithCalibratedRed:183/255. green:213/255. blue:254/255. alpha:1.0]];
 						[cell setBackgroundColor: [NSColor colorWithCalibratedRed:252/255. green:177/255. blue:141/255. alpha:1.0]];
 						
-
 						[cell setBordered: NO];
 					}
-					else if( [curImage valueForKey:@"series"] == [[self blendedWindow] currentSeries])
+					else if( [[self blendingController] currentSeries] == curSeries)
 					{
-						[cell setBackgroundColor: [NSColor colorWithCalibratedRed: (252.+249.)/(2*255.) green: (177.+240.)/(2*255.) blue: (141.+140.)/(2*255.) alpha:1.0]];
+						[cell setBackgroundColor: [NSColor colorWithCalibratedRed: (195.)/(255.) green: (249.)/(255.) blue: (145.)/(255.) alpha:1.0]];
 						[cell setBordered: NO];
 					}
 					else if( [displayedSeries containsObject: curSeries])

@@ -90,7 +90,7 @@ static		int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX, DISPL
 static		BOOL						gClickCountSet = NO;
 static		float						margin = 2;
 static		NSDictionary				*_hotKeyDictionary = 0L, *_hotKeyModifiersDictionary = 0L;
-
+static		NSMutableArray				*overlayWindows = 0L;
 static		NSRecursiveLock				*drawLock = 0L;
 
 NSString *pasteBoardOsiriX = @"OsiriX pasteboard";
@@ -461,7 +461,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     NSDate *d2 = [[v2 currentStudy] valueForKey:@"dateOpened"];
 	
 	if( d1 == 0L || d2 == 0L)
+	{
 		NSLog( @"d1 == 0L || d2 == 0L : studyCompare");
+	
+		return NSOrderedSame;
+	}
 	
     return [d1 compare: d2];
 }
@@ -692,6 +696,43 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:string attributes:attr] autorelease];
 	return [attrString size];
 }
+
+//+ (void) hideOverlayWindows
+//{
+//	[overlayWindows removeAllObjects];
+//}
+//
+//+ (void) showOverlayWindows
+//{
+//	if( overlayWindows == 0L) overlayWindows = [[NSMutableArray array] retain];
+//
+//	if( [overlayWindows count] == 0)
+//	{
+//		NSMutableArray *screens = [NSMutableArray array];
+//		
+//		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+//		{
+//			if( [screens containsObject: [[v window] screen]] == NO)
+//				[screens addObject: [[v window] screen]];
+//		}
+//		
+//		for( NSScreen *s in screens)
+//		{
+//			NSWindow *newWindow = [[[NSWindow alloc] initWithContentRect: [s visibleFrame]
+//															  styleMask: NSBorderlessWindowMask
+//																backing: NSBackingStoreBuffered
+//																  defer: NO
+//																 screen: s] autorelease];
+//			// Define new window	
+//			[newWindow setBackgroundColor:[NSColor blackColor]];
+//			[newWindow setAlphaValue:0.2];
+//			[newWindow setLevel:NSScreenSaverWindowLevel-2];
+//			[newWindow makeKeyAndOrderFront:nil];
+//			
+//			[overlayWindows addObject: newWindow];
+//		}
+//	}
+//}
 
 - (void) reapplyWindowLevel
 {
@@ -2500,6 +2541,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 			}
 		}
+		
+//		if( showDescriptionInLarge)
+//		{
+//			[DCMView showOverlayWindows];
+//		}
+//		else
+//		{
+//			[DCMView hideOverlayWindows];
+//		}
 	}
 	
 	BOOL roiHit = NO;
@@ -4271,7 +4321,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 }
 
-- (void)mouseDraggedWindowLevel:(NSEvent *)event{
+- (void)mouseDraggedWindowLevel:(NSEvent *)event
+{
 	NSPoint current = [self currentPointInView:event];
 	// Not blending
 	//if( !([stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != 0L)))

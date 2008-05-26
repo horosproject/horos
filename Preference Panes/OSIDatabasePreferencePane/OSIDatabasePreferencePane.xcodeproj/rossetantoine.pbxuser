@@ -73,17 +73,17 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 226321188;
-			PBXWorkspaceStateSaveDate = 226321188;
+			PBXPerProjectTemplateStateSaveDate = 233492211;
+			PBXWorkspaceStateSaveDate = 233492211;
 		};
 		perUserProjectItems = {
-			AB0C3CB50C10769C00421F69 /* PBXTextBookmark */ = AB0C3CB50C10769C00421F69 /* PBXTextBookmark */;
 			AB80A1D00A19C50900FED357 /* PBXTextBookmark */ = AB80A1D00A19C50900FED357 /* PBXTextBookmark */;
 			AB80A5DE0A19C5B600FED357 /* PBXTextBookmark */ = AB80A5DE0A19C5B600FED357 /* PBXTextBookmark */;
 			AB80AB580A19CF2500FED357 /* PBXTextBookmark */ = AB80AB580A19CF2500FED357 /* PBXTextBookmark */;
 			AB80AB5F0A19CF2500FED357 /* PBXTextBookmark */ = AB80AB5F0A19CF2500FED357 /* PBXTextBookmark */;
 			AB8B034E0B4022530019CA7D /* PBXTextBookmark */ = AB8B034E0B4022530019CA7D /* PBXTextBookmark */;
 			ABAB6FB50D7D64B800442FB7 /* PBXTextBookmark */ = ABAB6FB50D7D64B800442FB7 /* PBXTextBookmark */;
+			ABBBD7100DEAFA5C008A1F06 /* PBXTextBookmark */ = ABBBD7100DEAFA5C008A1F06 /* PBXTextBookmark */;
 		};
 		sourceControlManager = AB465F4B09A32E06005A2766 /* Source Control */;
 		userBuildSettings = {
@@ -91,16 +91,6 @@
 	};
 	8D202CE80486D31800D8A456 /* OSIDatabasePreferencePane */ = {
 		activeExec = 0;
-	};
-	AB0C3CB50C10769C00421F69 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
-		name = "OSIDatabasePreferencePanePref.m: 344";
-		rLen = 650;
-		rLoc = 12294;
-		rType = 0;
-		vrLen = 4204;
-		vrLoc = 9792;
 	};
 	AB465F4B09A32E06005A2766 /* Source Control */ = {
 		isa = PBXSourceControlManager;
@@ -222,6 +212,16 @@
 		vrLen = 4218;
 		vrLoc = 9775;
 	};
+	ABBBD7100DEAFA5C008A1F06 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
+		name = "OSIDatabasePreferencePanePref.m: 381";
+		rLen = 0;
+		rLoc = 13669;
+		rType = 0;
+		vrLen = 4218;
+		vrLoc = 9775;
+	};
 	CE75CA4A0A23AAFA00D22E9E /* PreferencePaneController.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1829, 1157}}";
@@ -240,8 +240,8 @@
 	};
 	F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1298, 7014}}";
-			sepNavSelRange = "{11084, 9}";
+			sepNavIntBoundsRect = "{{0, 0}, {1298, 6650}}";
+			sepNavSelRange = "{13669, 0}";
 			sepNavVisRange = "{9775, 4218}";
 			sepNavVisRect = "{{0, 4053}, {1312, 1456}}";
 			sepNavWindowFrame = "{{1079, 543}, {1245, 698}}";
