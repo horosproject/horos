@@ -3251,7 +3251,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	
 	// FIND ALL STUDIES of this patient
-	NSLog(@"buildMatrixPreview");
 	
 	NSString	*searchString = [study valueForKey:@"patientID"];
 	
