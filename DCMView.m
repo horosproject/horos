@@ -2460,7 +2460,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	if( [description length]) [description appendString:@"\r"];
-	[description appendString: [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]]];
+	[description appendString: [BrowserController DateTimeFormat: [curSeries valueForKey:@"date"]]];
 	
 	if( [self allIdenticalValues: @"studyName" inArray: studiesArray] == NO)
 	{
