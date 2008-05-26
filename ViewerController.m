@@ -12411,7 +12411,8 @@ int i,j,l;
 	
 	if( [[[[fileList[0] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == YES) return;
 	
-	if( [[self window] isVisible] == NO) return;
+//	if( [[self window] isVisible] == NO) return;
+	if( windowWillClose) return;
 	
 	// *** 2D Viewers ***
 	viewersList = [ViewerController getDisplayed2DViewers];

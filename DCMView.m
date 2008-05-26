@@ -2519,6 +2519,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
 	
 	if( [[self window] isVisible] == NO) return;
+	
 	if( [self is2DViewer] == YES)
 	{
 		if( [[self windowController] windowWillClose]) return;
@@ -2701,7 +2702,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 -(void) mouseMoved: (NSEvent*) theEvent
 {
 	if( !drawing) return;
+	
 	if( [[self window] isVisible] == NO) return;
+	
 	if( [self is2DViewer] == YES)
 	{
 		if( [[self windowController] windowWillClose]) return;
@@ -5266,8 +5269,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	//	
 	//	if( stringID == 0L && [[note object] stringID] == 0L) stringOK = YES;
 		
-		if( [[self window] isVisible] == NO)
-			return;
+		if( [self is2DViewer] == YES)
+		{
+			if( [[self windowController] windowWillClose]) return;
+		}
 		
 		if( [note object] != self && isKeyView == YES && matrix == 0 && stringID == 0L && [[note object] stringID] == 0L && curImage > -1 )   //|| [[[note object] stringID] isEqualToString:@"Original"] == YES))   // Dont change the browser preview....
 		{
