@@ -8,8 +8,8 @@
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="145"/>
 			<integer value="845"/>
+			<integer value="145"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2787,9 +2787,9 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 			<object class="NSUserDefaultsController" id="524337109">
 				<object class="NSMutableArray" key="NSDeclaredKeys">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>autoretrievePreviousStudy</string>
-					<string>NumberOfPreviousStudyToRetrieve</string>
-					<string>retrieveSameModality</string>
+					<object class="NSMutableString">
+						<characters key="NS.bytes">retrieveSameDescription</characters>
+					</object>
 				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
@@ -3581,22 +3581,6 @@ IGJlIHJldHJpZXZlZCBkdXJpbmcgbmV4dCAncmVmcmVzaCcuA</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.retrieveSameDescription</string>
-						<reference key="source" ref="236415451"/>
-						<reference key="destination" ref="524337109"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="236415451"/>
-							<reference key="NSDestination" ref="524337109"/>
-							<string key="NSLabel">value: selection.retrieveSameDescription</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.retrieveSameDescription</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">886</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: values.NumberOfPreviousStudyToRetrieve</string>
 						<reference key="source" ref="740528722"/>
 						<reference key="destination" ref="524337109"/>
@@ -3626,6 +3610,22 @@ IGJlIHJldHJpZXZlZCBkdXJpbmcgbmV4dCAncmVmcmVzaCcuA</string>
 						</object>
 					</object>
 					<int key="connectionID">888</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.retrieveSameDescription</string>
+						<reference key="source" ref="236415451"/>
+						<reference key="destination" ref="524337109"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="236415451"/>
+							<reference key="NSDestination" ref="524337109"/>
+							<string key="NSLabel">value: values.retrieveSameDescription</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.retrieveSameDescription</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">889</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -5373,9 +5373,9 @@ IGJlIHJldHJpZXZlZCBkdXJpbmcgbmV4dCAncmVmcmVzaCcuA</string>
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{374, 497}, {911, 746}}</string>
+					<string>{{744, 497}, {911, 746}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{374, 497}, {911, 746}}</string>
+					<string>{{744, 497}, {911, 746}}</string>
 					<reference ref="9"/>
 					<string>{{154, 110}, {911, 746}}</string>
 					<reference ref="9"/>
@@ -5628,13 +5628,13 @@ IGJlIHJldHJpZXZlZCBkdXJpbmcgbmV4dCAncmVmcmVzaCcuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{868, 490}, {474, 306}}</string>
+					<string>{{523, 1026}, {474, 306}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{868, 490}, {474, 306}}</string>
+					<string>{{523, 1026}, {474, 306}}</string>
 					<reference ref="8"/>
 					<string>{{755, 724}, {318, 132}}</string>
-					<integer value="1" id="5"/>
-					<reference ref="5"/>
+					<reference ref="9"/>
+					<reference ref="9"/>
 					<string>{474, 306}</string>
 					<string>{474, 306}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -5683,7 +5683,7 @@ IGJlIHJldHJpZXZlZCBkdXJpbmcgbmV4dCAncmVmcmVzaCcuA</string>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">888</int>
+			<int key="maxID">889</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

@@ -455,6 +455,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	else return NO;
 }
 
+NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context)
+{
+    NSDate *d1 = [[v1 currentStudy] valueForKey:@"dateOpened"];
+    NSDate *d2 = [[v2 currentStudy] valueForKey:@"dateOpened"];
+	
+	if( d1 == 0L || d2 == 0L)
+		NSLog( @"d1 == 0L || d2 == 0L : studyCompare");
+	
+    return [d1 compare: d2];
+}
+
 @implementation DCMView
 
 @synthesize showDescriptionInLarge;
@@ -2366,7 +2377,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	id curSeries = [self seriesObj];
 	id curStudy = [curSeries valueForKey:@"study"];
 	
-	NSArray *viewers = [ViewerController getDisplayed2DViewers];
+	NSArray *viewers = [[ViewerController getDisplayed2DViewers] sortedArrayUsingFunction: studyCompare context: nil];
+	
 	NSMutableArray *studiesArray = [NSMutableArray array];
 	NSMutableArray *seriesArray = [NSMutableArray array];
 	NSMutableDictionary *colorsStudy = [NSMutableDictionary dictionary];
