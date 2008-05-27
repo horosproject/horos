@@ -105,7 +105,6 @@
 	
 	NS_DURING
 	
-	//NSLog(@"query");
 	NSMutableDictionary *params = [NSMutableDictionary dictionary];
 	[params setObject:[NSNumber numberWithInt:1] forKey:@"debugLevel"];
 	[params setObject:callingAET forKey:@"callingAET"];

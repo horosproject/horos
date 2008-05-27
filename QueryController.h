@@ -48,6 +48,7 @@
 	NSMutableString							*pressedKeys;
     NSMutableArray							*resultArray;
     NSMutableArray							*queryFilters;
+	NSMutableDictionary						*previousAutoRetrieve;
 	
 	QueryFilter								*dateQueryFilter, *timeQueryFilter, *modalityQueryFilter;
 	NSString								*currentQueryKey;

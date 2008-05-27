@@ -745,7 +745,7 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject:@"1" forKey:@"UNMOUNT"];
 	[defaultValues setObject: @"1" forKey: @"USEDICOMDIR"];
 	[defaultValues setObject: @"1" forKey: @"SAVEROIS"];
-	[defaultValues setObject: @"1" forKey: @"NOLOCALIZER"];
+	[defaultValues setObject: @"0" forKey: @"NOLOCALIZER"];
 	[defaultValues setObject: @"0" forKey: @"TRANSITIONEFFECT"];
 	[defaultValues setObject: @"0" forKey: @"checkDICOMListenerWithEcho"];
 	[defaultValues setObject:@"0" forKey:@"NOINTERPOLATION"];

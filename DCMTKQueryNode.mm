@@ -719,7 +719,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	opt_port = _port;
 	
 //	//verbose option set to true for now
-	_verbose=OFTrue;
+	_verbose = OFFalse;
 //
 //	
 //	//debug code activated for now
@@ -836,7 +836,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
     cond = ASC_createAssociationParameters(&params, _maxReceivePDULength);
-	DimseCondition::dump(cond);
+//	DimseCondition::dump(cond);
     if (cond.bad()) {
         DimseCondition::dump(cond);
 		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"Could create association parameters" userInfo:nil];
@@ -889,7 +889,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 		/* create association, i.e. try to establish a network connection to another */
 	/* DICOM application. This call creates an instance of T_ASC_Association*. */
-//	if (_verbose)
+	if (_verbose)
 		printf("Requesting Association\n");
 	cond = ASC_requestAssociation(net, params, &assoc);
 	if (cond.bad()) {
@@ -912,7 +912,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	
 	  /* dump the presentation contexts which have been accepted/refused */
-//if (_verbose)
+if (_verbose)
 	{
         printf("Association Parameters Negotiated:\n");
         ASC_dumpParameters(params, COUT);

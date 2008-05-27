@@ -2376,14 +2376,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			serieID = newSerieID;
 		}
 		
-		if (NOLOCALIZER)
-		{
-			NSRange range = [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch];
-			if( range.location != NSNotFound)
-			{
-				return -1;
-			}
-		}
+//		if (NOLOCALIZER)
+//		{
+//			NSRange range = [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch];
+//			if( range.location != NSNotFound)
+//			{
+//				return -1;
+//			}
+//		}
 		
 		[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
 		
@@ -2833,14 +2833,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			serieID = newSerieID;
 		}
 		
-		if (NOLOCALIZER)
-		{
-			NSRange range = [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch];
-			if( range.location != NSNotFound)
-			{
-				return -1;
-			}
-		}
+//		if (NOLOCALIZER)
+//		{
+//			NSRange range = [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch];
+//			if( range.location != NSNotFound)
+//			{
+//				return -1;
+//			}
+//		}
 
 		if( serieID == 0L)  
 			serieID = [[NSString alloc] initWithString:name];

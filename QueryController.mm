@@ -144,6 +144,8 @@ static char *GetPrivateIP()
 {
 	NSLog( @"auto-retrieving switched");
 	
+	[previousAutoRetrieve removeAllObjects];
+	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
 	{
 		BOOL doit = NO;
@@ -977,14 +979,45 @@ static char *GetPrivateIP()
 		
 		for( id item in resultArray)
 		{
-			if( [[self localStudy: item] count] == 0)
-				[selectedItems addObject: item];
+			NSArray *studyArray = [self localStudy: item];
+			
+			int localFiles = 0;
+			int totalFiles = [[item valueForKey:@"numberImages"] intValue];
+			
+			if( [studyArray count])
+				localFiles = [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue];
+			
+			if( localFiles < totalFiles)
+			{
+				NSString *stringID = [NSString stringWithFormat:@"%@-%@-%@", [item valueForKey:@"name"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"]];
+				NSNumber *previousNumberOfFiles = [previousAutoRetrieve objectForKey: stringID];
 				
+				// We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
+				
+				if( [previousNumberOfFiles intValue] != totalFiles)
+				{
+					[selectedItems addObject: item];
+					[previousAutoRetrieve setValue: [NSNumber numberWithInt: totalFiles] forKey: stringID];
+				}
+			}
+			
 			if( [selectedItems count] >= 10) break;
 		}
 		
 		if( [selectedItems count])
+		{
 			[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
+			
+			NSLog( @"Will retrieve these items:");
+			for( id item in selectedItems)
+			{
+				NSLog( @"%@ %@ %@", [item valueForKey:@"name"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"]);
+			}
+		}
+		else
+		{
+			NSLog( @"autoRetrieving is up to date! Nothing to retrieve.");
+		}
 	}
 }
 
@@ -1179,7 +1212,6 @@ static char *GetPrivateIP()
 	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [queryManager parameters]];
 	
 	NSLog( @"Retrieve START");
-//	NSLog( [dictionary description]);
 	
 	[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
 	
@@ -1628,6 +1660,7 @@ static char *GetPrivateIP()
 		queryFilters = [[NSMutableArray array] retain];
 		resultArray = [[NSMutableArray array] retain];
 		activeMoves = [[NSMutableDictionary dictionary] retain];
+		previousAutoRetrieve = [[NSMutableDictionary dictionary] retain];
 		autoQueryLock = [[NSLock alloc] init];
 //		displayLock = [[NSLock alloc] init];
 		
@@ -1667,6 +1700,7 @@ static char *GetPrivateIP()
 	[timeQueryFilter release];
 	[modalityQueryFilter release];
 	[activeMoves release];
+	[previousAutoRetrieve release];
 	[sourcesArray release];
 	[resultArray release];
 	[autoQueryLock release];

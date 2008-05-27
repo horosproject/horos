@@ -698,15 +698,15 @@ extern NSLock	*PapyrusLock;
 			serieID = newSerieID;
 		}
 		
-		if ([self noLocalizer])
-		{
-			NSRange range = [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch];
-			if( range.location != NSNotFound)
-			{
-				NSLog(@"localizer image - remove it");
-				return -1;
-			}
-		}
+//		if ([self noLocalizer])
+//		{
+//			NSRange range = [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch];
+//			if( range.location != NSNotFound)
+//			{
+//				NSLog(@"localizer image - remove it");
+//				return -1;
+//			}
+//		}
 		
 		[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
 		

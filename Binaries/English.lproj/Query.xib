@@ -8,8 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="845"/>
-			<integer value="145"/>
+			<integer value="515"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1084,7 +1083,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 											<object class="NSMutableArray" key="NSCells">
 												<bool key="EncodedWithXMLCoder">YES</bool>
 												<object class="NSButtonCell" id="156020973">
-													<int key="NSCellFlags">-2080244224</int>
+													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">131072</int>
 													<string key="NSContents">Any date</string>
 													<reference key="NSSupport" ref="26"/>
@@ -1165,7 +1164,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 													<int key="NSCellFlags2">131072</int>
 													<string key="NSContents"/>
 													<reference key="NSSupport" ref="26"/>
-													<int key="NSTag">6</int>
+													<int key="NSTag">-1</int>
 													<reference key="NSControlView" ref="300640267"/>
 													<int key="NSButtonFlags">1211552255</int>
 													<int key="NSButtonFlags2">0</int>
@@ -1199,7 +1198,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 													<int key="NSCellFlags2">131072</int>
 													<string key="NSContents"/>
 													<reference key="NSSupport" ref="26"/>
-													<int key="NSTag">7</int>
+													<int key="NSTag">-1</int>
 													<reference key="NSControlView" ref="300640267"/>
 													<int key="NSButtonFlags">1211552255</int>
 													<int key="NSButtonFlags2">0</int>
@@ -1210,7 +1209,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 													<int key="NSPeriodicInterval">75</int>
 												</object>
 												<object class="NSButtonCell" id="671080326">
-													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags">-2080244224</int>
 													<int key="NSCellFlags2">131072</int>
 													<string key="NSContents">Yesterday</string>
 													<reference key="NSSupport" ref="26"/>
@@ -1229,7 +1228,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 													<int key="NSCellFlags2">131072</int>
 													<string key="NSContents">Radio</string>
 													<reference key="NSSupport" ref="26"/>
-													<int key="NSTag">9</int>
+													<int key="NSTag">-1</int>
 													<reference key="NSControlView" ref="300640267"/>
 													<int key="NSButtonFlags">1211945471</int>
 													<int key="NSButtonFlags2">0</int>
@@ -1309,7 +1308,7 @@ OAA</bytes>
 													<int key="NSCellFlags2">131072</int>
 													<string key="NSContents">Today PM</string>
 													<reference key="NSSupport" ref="26"/>
-													<int key="NSTag">11</int>
+													<int key="NSTag">-1</int>
 													<reference key="NSControlView" ref="300640267"/>
 													<int key="NSButtonFlags">1211945471</int>
 													<int key="NSButtonFlags2">0</int>
@@ -1337,7 +1336,8 @@ OAA</bytes>
 												<int key="NSPeriodicDelay">400</int>
 												<int key="NSPeriodicInterval">75</int>
 											</object>
-											<reference key="NSSelectedCell" ref="156020973"/>
+											<int key="NSSelectedRow">4</int>
+											<reference key="NSSelectedCell" ref="671080326"/>
 											<reference key="NSBackgroundColor" ref="789164403"/>
 											<reference key="NSCellBackgroundColor" ref="1060234762"/>
 											<object class="NSFont" key="NSFont">
@@ -2785,12 +2785,6 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 				<string key="NSMaxSize">{318, 154}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="524337109">
-				<object class="NSMutableArray" key="NSDeclaredKeys">
-					<bool key="EncodedWithXMLCoder">YES</bool>
-					<object class="NSMutableString">
-						<characters key="NS.bytes">retrieveSameDescription</characters>
-					</object>
-				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 			<object class="NSWindowTemplate" id="665538993">
@@ -2804,7 +2798,7 @@ AQAAAA4QAAVDRVNUAENFVAAAAAEBAAABAQ</bytes>
 				<string key="NSWindowContentMaxSize">{474, 306}</string>
 				<string key="NSWindowContentMinSize">{474, 306}</string>
 				<object class="NSView" key="NSWindowView" id="11071281">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3077,7 +3071,6 @@ IGJlIHJldHJpZXZlZCBkdXJpbmcgbmV4dCAncmVmcmVzaCcuA</string>
 						</object>
 					</object>
 					<string key="NSFrameSize">{474, 306}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{474, 328}</string>
@@ -5373,9 +5366,9 @@ IGJlIHJldHJpZXZlZCBkdXJpbmcgbmV4dCAncmVmcmVzaCcuA</string>
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{744, 497}, {911, 746}}</string>
+					<string>{{251, 316}, {911, 746}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{744, 497}, {911, 746}}</string>
+					<string>{{251, 316}, {911, 746}}</string>
 					<reference ref="9"/>
 					<string>{{154, 110}, {911, 746}}</string>
 					<reference ref="9"/>
@@ -5628,9 +5621,9 @@ IGJlIHJldHJpZXZlZCBkdXJpbmcgbmV4dCAncmVmcmVzaCcuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{523, 1026}, {474, 306}}</string>
+					<string>{{523, 850}, {474, 306}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{523, 1026}, {474, 306}}</string>
+					<string>{{523, 850}, {474, 306}}</string>
 					<reference ref="8"/>
 					<string>{{755, 724}, {318, 132}}</string>
 					<reference ref="9"/>

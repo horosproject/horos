@@ -75,7 +75,7 @@
 
 - (NSString *)filteredValue
 {
-	NSLog(@"search type: %d object:%@", _searchType, [_object description]);
+//	NSLog(@"search type: %d object:%@", _searchType, [_object description]);
 
 	switch (_searchType)
 	{
