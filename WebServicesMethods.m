@@ -370,7 +370,28 @@ extern NSThread					*mainThread;
 		[scan setScanLocation:[scan scanLocation]+1];
 	}
 	
-	BOOL isiPhone = isSafari && isMobile;
+	BOOL isiPhone = isSafari && isMobile; // works only with Mobile Safari
+	
+	if(!isiPhone) // look for Mobile Webkit (used in Mobile OsiriX)
+	{
+		scan = [NSScanner scannerWithString:userAgent];
+		BOOL isiPhoneOS = NO;
+		while(![scan isAtEnd] && !isiPhoneOS)
+		{
+			isiPhoneOS = [scan scanString:@"iPhone OS" intoString:nil];
+			[scan setScanLocation:[scan scanLocation]+1];
+		}
+		
+		scan = [NSScanner scannerWithString:userAgent];
+		BOOL isWebKit = NO;
+		while(![scan isAtEnd] && !isWebKit)
+		{
+			isWebKit = [scan scanString:@"AppleWebKit" intoString:nil];
+			[scan setScanLocation:[scan scanLocation]+1];
+		}
+		
+		isiPhone = isiPhoneOS && isWebKit;
+	}
 	
 	//NSLog(@"isiPhone : %d", isiPhone);
 	

@@ -8,10 +8,15 @@ var WebKitDetect = {
 	{ 
 		return WebKitDetect.isWebKit() && new RegExp("Mobile/").test(navigator.userAgent);
 	}, 
+
+	isiPhoneOS : function()
+	{ 
+		return WebKitDetect.isWebKit() && new RegExp("iPhone OS").test(navigator.userAgent);
+	}, 
 	
 	mobileDevice : function()
 	{
-		if (!WebKitDetect.isMobile()) {
+		if (!WebKitDetect.isMobile() && !WebKitDetect.isiPhoneOS()) {
 			return null; 
 		} 
 		var fields = new RegExp("(Mozilla/5.0 \\()([^;]+)").exec(navigator.userAgent); 
