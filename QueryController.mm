@@ -174,7 +174,12 @@ static char *GetPrivateIP()
 		
 		if( doit)
 		{
-			[self displayAndRetrieveQueryResults];
+			if( [autoQueryLock tryLock])
+			{
+				[self autoQueryThread];
+				[self displayAndRetrieveQueryResults];
+				[autoQueryLock unlock];
+			}
 		}
 		else [[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"autoRetrieving"];
 	}
@@ -610,8 +615,8 @@ static char *GetPrivateIP()
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification
 {
-	NSIndexSet			*index = [outlineView selectedRowIndexes];
-	id					item = [outlineView itemAtRow:[index firstIndex]];
+	NSIndexSet *index = [outlineView selectedRowIndexes];
+	id item = [outlineView itemAtRow:[index firstIndex]];
 	
 	if( item)
 	{
@@ -677,6 +682,8 @@ static char *GetPrivateIP()
 	id					aServer;
 	int					i, selectedServer, selectedRow;
 	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO;
+	
+	[autoQueryLock lock];
 	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
 	
@@ -905,6 +912,8 @@ static char *GetPrivateIP()
 		if( showError)
 			NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a DICOM node (check box).", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
 	}
+	
+	[autoQueryLock unlock];
 	
 	return error;
 }

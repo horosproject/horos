@@ -2035,11 +2035,35 @@ static BOOL initialized = NO;
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
 	long i;
-
-//	#if !__LP64__
+	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"] == NO)
+	{
 		[GrowlApplicationBridge setGrowlDelegate:self];
-//	#endif
+		
+		if( [GrowlApplicationBridge isGrowlInstalled] == NO)
+		{
+			NSString *alertSuppress = @"growl info";
+			if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
+			{
+				NSAlert* alert = [NSAlert new];
+				[alert setMessageText: NSLocalizedString(@"Growl !", 0L)];
+				[alert setInformativeText: NSLocalizedString(@"Did you know that OsiriX supports Growl? An amazing notification system for MacOS. You can download it for free on Internet.", nil)];
+				[alert setShowsSuppressionButton:YES ];
+				[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
+				[alert addButtonWithTitle: NSLocalizedString(@"Download Growl", nil)];
+				
+				if( [alert runModal] == NSAlertFirstButtonReturn)
+				{
+					
+				}
+				else
+					[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://growl.info"]];
+				
+				if ([[alert suppressionButton] state] == NSOnState)
+					[[NSUserDefaults standardUserDefaults] setBool:YES forKey:alertSuppress];
+			}
+		}
+	}
 	
 //	DOClient	*client = [[DOClient alloc] init];
 //	[client connect];
