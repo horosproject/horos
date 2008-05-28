@@ -10828,8 +10828,9 @@ END_CREATE_ROIS:
 			if( inGrOrModP->element == element ) {
 				if( inGrOrModP->nb_val > 0 )	{
 					UValue_T *theValueP = inGrOrModP->value;
-					for ( int k = 0; k < inGrOrModP->nb_val; k++, theValueP++ )	{
-						if( theValueP->a ) {
+					for ( int k = 0; k < inGrOrModP->nb_val; k++, theValueP++ )
+					{
+						{
 #undef UL
 #undef IS
 #undef SL
@@ -10840,7 +10841,7 @@ END_CREATE_ROIS:
 #undef DS
 							if(inGrOrModP->vr==DS)	// floating point string
 							{
-								[field appendString:[NSString stringWithFormat:@"%.6g", [[NSString stringWithCString:theValueP->a] floatValue]]];
+								if( theValueP->a) [field appendString:[NSString stringWithFormat:@"%.6g", [[NSString stringWithCString:theValueP->a] floatValue]]];
 							}
 							else if(inGrOrModP->vr==FL)	// floating point string
 							{
@@ -10852,7 +10853,7 @@ END_CREATE_ROIS:
 							}
 							else if(inGrOrModP->vr==UL)
 								[field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->ul]];
-							else if(inGrOrModP->vr==US)
+							else if(inGrOrModP->vr==US || inGrOrModP->vr==USS)
 								[field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->us]];
 							else if(inGrOrModP->vr==SL)
 								[field appendString:[NSString stringWithFormat:@"%d", (int) theValueP->sl]];
@@ -10884,7 +10885,7 @@ END_CREATE_ROIS:
 								[field appendString:[NSString stringWithString:temp]];
 								NSLog(@"SQ field : %@", field);
 							}
-							else
+							else if( theValueP->a)
 								[field appendString:[NSString stringWithCString:theValueP->a encoding:NSASCIIStringEncoding]];
 							
 #undef OB
@@ -10920,7 +10921,7 @@ END_CREATE_ROIS:
 							}
 							//break;
 						}
-						if(inGrOrModP->nb_val>1 && k<inGrOrModP->nb_val-1)[field appendString:@"\\"];
+						if(inGrOrModP->nb_val>1 && k<inGrOrModP->nb_val-1)[field appendString:@" / "];
 					}
 				}
 			}
@@ -10942,25 +10943,25 @@ END_CREATE_ROIS:
 				if([vr isEqualToString:@"DS"]) field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
 				
 				if( result == nil) result = [NSMutableString stringWithString: field];
-				else [result appendFormat: @"\\%@", field];
+				else [result appendFormat: @" / %@", field];
 			}
 			else if([field isKindOfClass:[NSNumber class]])	{
 				if( result == nil) result = [NSMutableString stringWithString: [field stringValue]];
-				else [result appendFormat: @"\\%@", [field stringValue]];
+				else [result appendFormat: @" / %@", [field stringValue]];
 			}
 			else if([field isKindOfClass:[NSCalendarDate class]]) {
 				NSString *vr = [attr vr];
 				if([vr isEqualToString:@"DA"]) {
 					if( result == nil) result = [NSMutableString stringWithString: [BrowserController DateOfBirthFormat: field]];
-					else [result appendFormat: @"\\%@", [BrowserController DateOfBirthFormat: field]];
+					else [result appendFormat: @" / %@", [BrowserController DateOfBirthFormat: field]];
 				}
 				else if([vr isEqualToString:@"TM"]) {
 					if( result == nil) result = [NSMutableString stringWithString: [BrowserController TimeWithSecondsFormat: field]];
-					else [result appendFormat: @"\\%@", [BrowserController TimeWithSecondsFormat: field]];
+					else [result appendFormat: @" / %@", [BrowserController TimeWithSecondsFormat: field]];
 				}
 				else {
 					if( result == nil) result = [NSMutableString stringWithString: [BrowserController DateTimeWithSecondsFormat: field]];
-					else [result appendFormat: @"\\%@", [BrowserController DateTimeWithSecondsFormat: field]];
+					else [result appendFormat: @" / %@", [BrowserController DateTimeWithSecondsFormat: field]];
 				}
 			}
 		}
