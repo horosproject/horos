@@ -19,6 +19,7 @@
 #import "DCMTKStoreSCU.h"
 #import "DCMPix.h"
 #import <QTKit/QTKit.h>
+#import "DCMNetServiceDelegate.h"
 
 extern NSThread					*mainThread;
 
@@ -1299,6 +1300,7 @@ extern NSThread					*mainThread;
 
 - (NSArray*)dicomNodes;
 {
+	return [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 	NSMutableArray *nodes = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"SERVERS"]];
 	for(NSDictionary *node in nodes)
 	{
