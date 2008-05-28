@@ -95,4 +95,5 @@
 - (IBAction) autoQueryTimer:(id) sender;
 - (IBAction) switchAutoRetrieving: (id) sender;
 - (void) displayAndRetrieveQueryResults;
+- (void) autoQueryThread;
 @end

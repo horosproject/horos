@@ -12482,8 +12482,8 @@ int i,j,l;
 				
 				float vectorsA[9], vectorsB[9];
 				
-				[[pixList[0] objectAtIndex:0] orientation: vectorsA];
-				[[[vC pixList] objectAtIndex:0] orientation: vectorsB];
+				[[pixList[ 0] objectAtIndex: [pixList[ 0] count]/2] orientation: vectorsA];
+				[[[vC pixList] objectAtIndex: [[vC pixList] count]/2] orientation: vectorsB];
 				
 				float fValue;
 				

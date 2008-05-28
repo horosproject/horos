@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="515"/>
+			<integer value="145"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1083,7 +1083,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 											<object class="NSMutableArray" key="NSCells">
 												<bool key="EncodedWithXMLCoder">YES</bool>
 												<object class="NSButtonCell" id="156020973">
-													<int key="NSCellFlags">67239424</int>
+													<int key="NSCellFlags">-2080244224</int>
 													<int key="NSCellFlags2">131072</int>
 													<string key="NSContents">Any date</string>
 													<reference key="NSSupport" ref="26"/>
@@ -1209,7 +1209,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 													<int key="NSPeriodicInterval">75</int>
 												</object>
 												<object class="NSButtonCell" id="671080326">
-													<int key="NSCellFlags">-2080244224</int>
+													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">131072</int>
 													<string key="NSContents">Yesterday</string>
 													<reference key="NSSupport" ref="26"/>
@@ -1336,8 +1336,7 @@ OAA</bytes>
 												<int key="NSPeriodicDelay">400</int>
 												<int key="NSPeriodicInterval">75</int>
 											</object>
-											<int key="NSSelectedRow">4</int>
-											<reference key="NSSelectedCell" ref="671080326"/>
+											<reference key="NSSelectedCell" ref="156020973"/>
 											<reference key="NSBackgroundColor" ref="789164403"/>
 											<reference key="NSCellBackgroundColor" ref="1060234762"/>
 											<object class="NSFont" key="NSFont">

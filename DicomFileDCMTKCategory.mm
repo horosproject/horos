@@ -16,7 +16,7 @@
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import "Papyrus3/Papyrus3.h"
 #import "DICOMToNSString.h"
-//#import "browserController.h"
+#import "MutableArrayCategory.h"
 //#import "SRAnnotation.h"
 
 // #undef verify
@@ -212,6 +212,7 @@ extern NSLock	*PapyrusLock;
 	NSStringEncoding	encoding[ 10];
 	NSString *echoTime = nil;
 	const char *string = NULL;
+	NSMutableArray *imageTypeArray = 0L;
 	
 	DcmFileFormat fileformat;
 	[PapyrusLock lock];
@@ -333,8 +334,15 @@ extern NSLock	*PapyrusLock;
 		}
 		
 		//Image Type
-		if (dataset->findAndGetString(DCM_ImageType, string, OFFalse).good() && string != NULL){
-			imageType = [[NSString stringWithCString:string] retain];
+		if (dataset->findAndGetString(DCM_ImageType, string, OFFalse).good() && string != NULL)
+		{
+			imageTypeArray = [NSMutableArray arrayWithArray: [[NSString stringWithCString:string] componentsSeparatedByString:@"\\"]];
+			
+			if( [imageTypeArray count] > 2)
+			{
+				imageType = [[imageTypeArray objectAtIndex: 2] retain];
+				[dicomElements setObject:imageType forKey:@"imageType"];
+			}
 		}
 		else
 			imageType = nil;
@@ -698,15 +706,18 @@ extern NSLock	*PapyrusLock;
 			serieID = newSerieID;
 		}
 		
-//		if ([self noLocalizer])
-//		{
-//			NSRange range = [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch];
-//			if( range.location != NSNotFound)
-//			{
-//				NSLog(@"localizer image - remove it");
-//				return -1;
-//			}
-//		}
+		if( [self noLocalizer] && [self containsString: @"LOCALIZER" inArray: imageTypeArray])
+		{
+			NSString	*n;
+			
+			n = [[NSString alloc] initWithString: @"LOCALIZER"];
+			[serieID release];
+			serieID = n;
+			
+			[serie release];
+			serie = [[NSString alloc] initWithString: @"Localizers"];
+			[dicomElements setObject:serie forKey:@"seriesDescription"];
+		}		
 		
 		[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
 		

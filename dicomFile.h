@@ -116,6 +116,7 @@
 - (BOOL)separateCardiac4D; /**< Returns the SEPARATECARDIAC4D default. If YES separates cardiac studies into separate gated series. */
 - (int)commentsGroup; /**< Returns the commentsGroup default. The DICOM group to get comments from. */
 - (int)commentsElement; /**< Returns the commentsGroup default.  The DICOM  element to get get comments from. */
+- (BOOL) containsString: (NSString*) s inArray: (NSArray*) a;
 @end
 
 

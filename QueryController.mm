@@ -1018,9 +1018,12 @@ static char *GetPrivateIP()
 			[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
 			
 			NSLog( @"Will retrieve these items:");
+			
 			for( id item in selectedItems)
 			{
 				NSLog( @"%@ %@ %@", [item valueForKey:@"name"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"]);
+				
+//				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", 0L) description: [item valueForKey:@"name"] name: @"autoretrieve"];
 			}
 		}
 		else
@@ -1053,6 +1056,8 @@ static char *GetPrivateIP()
 		{
 			if( [autoQueryLock tryLock])
 			{
+				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", 0L) description: NSLocalizedString( @"Refreshing...", 0L) name: @"newfiles"];
+				
 				[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: 0L];
 				
 				autoQueryRemainingSecs = 60*[[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"]; 
@@ -1670,7 +1675,7 @@ static char *GetPrivateIP()
 		resultArray = [[NSMutableArray array] retain];
 		activeMoves = [[NSMutableDictionary dictionary] retain];
 		previousAutoRetrieve = [[NSMutableDictionary dictionary] retain];
-		autoQueryLock = [[NSLock alloc] init];
+		autoQueryLock = [[NSRecursiveLock alloc] init];
 //		displayLock = [[NSLock alloc] init];
 		
 		sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"SavedQueryArray"] mutableCopy];

@@ -45,10 +45,6 @@
 *
 *******************************************************************************************************************/
 
-
-
-
-
 extern NSString * convertDICOM( NSString *inputfile);
 extern NSLock	*PapyrusLock;
 
@@ -129,6 +125,19 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 //@end
 
 @implementation DicomFile
+
+- (BOOL) containsString: (NSString*) s inArray: (NSArray*) a
+{
+	for( NSString *v in a)
+	{
+		if ([v isKindOfClass:[NSString class]])
+		{
+			if ([v isEqualToString: s]) return YES;
+		}
+	}
+	return NO;
+}
+
 + (void) setFilesAreFromCDMedia: (BOOL) f;
 {
 	filesAreFromCDMedia = f;
@@ -1678,6 +1687,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	NSStringEncoding	encoding;//NSStringEncoding
 	NSString *echoTime = nil;
 	NSString *sopClassUID = nil;
+	NSMutableArray *imageTypeArray = 0L;
 	
 	[PapyrusLock lock];
 	
@@ -1865,8 +1875,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					[dicomElements setObject:sopClassUID forKey:@"SOPClassUID"];					
 				}
 				
-				
-				
 				val = Papy3GetElement (theGroupP, papSpecificCharacterSetGr, &nbVal, &itemType);
 				if (val != NULL)
 				{
@@ -1880,6 +1888,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				val = Papy3GetElement (theGroupP, papImageTypeGr, &nbVal, &itemType);
 				if (val != NULL)
 				{
+					UValue_T *ty = val;
+					imageTypeArray = [NSMutableArray array];
+					for( int z = 0; z < nbVal ; z++)
+					{
+						[imageTypeArray addObject: [[[NSString alloc] initWithCString:ty->a encoding: NSASCIIStringEncoding] autorelease]];
+						ty++;
+					}
+					
 					if( nbVal > 2)
 					{
 						val+=2;
@@ -1888,6 +1904,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					else imageType = 0L;
 				}
 				else imageType = 0L;
+				
 				if( imageType) [dicomElements setObject:imageType forKey:@"imageType"];
 				
 				val = Papy3GetElement (theGroupP, papSOPInstanceUIDGr, &nbVal, &itemType);
@@ -2302,6 +2319,19 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					serieID = n;
 				}
 				
+			   if( NOLOCALIZER && [self containsString: @"LOCALIZER" inArray: imageTypeArray])
+			   {
+				   NSString	*n;
+				   
+				   n = [[NSString alloc] initWithString: @"LOCALIZER"];
+				   [serieID release];
+				   serieID = n;
+				   
+				   [serie release];
+				   serie = [[NSString alloc] initWithString: @"Localizers"];
+				   [dicomElements setObject:serie forKey:@"seriesDescription"];
+			   }
+			   
 				val = Papy3GetElement (theGroupP, papStudyInstanceUIDGr, &nbVal, &itemType);
 				if (val != NULL) studyID = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 				else
@@ -2558,7 +2588,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:fileType forKey:@"fileType"];
 		}
 		
-		NSArray	*imageTypeArray = [dcmObject attributeArrayWithName:@"ImageType"];
+		NSMutableArray	*imageTypeArray = [NSMutableArray arrayWithArray: [dcmObject attributeArrayWithName:@"ImageType"]];
 		if( [imageTypeArray count] > 2)
 		{
 			if (imageType = [[[dcmObject attributeArrayWithName:@"ImageType"] objectAtIndex: 2] retain]) //ImageType		
@@ -2814,6 +2844,19 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			n = [[NSString alloc] initWithFormat:@"%@ %@", serieID , serie];
 			[serieID release];
 			serieID = n;
+		}
+		
+		if( NOLOCALIZER && [self containsString: @"LOCALIZER" inArray: imageTypeArray])
+		{
+			NSString	*n;
+			
+			n = [[NSString alloc] initWithString: @"LOCALIZER"];
+			[serieID release];
+			serieID = n;
+			
+			[serie release];
+			serie = [[NSString alloc] initWithString: @"Localizers"];
+			[dicomElements setObject:serie forKey:@"seriesDescription"];
 		}
 		
 		NSString *echoTime = nil;
