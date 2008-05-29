@@ -274,7 +274,8 @@ Version 2.3
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ------------------------ Series subselections-----------------------------------ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 
-- (NSArray *)imageSeries{
+- (NSArray *)imageSeries
+{
 	NSArray *array = [self primitiveValueForKey: @"series"];
 	
 	NSMutableArray *newArray = [NSMutableArray array];

@@ -140,6 +140,16 @@ static char *GetPrivateIP()
 	else return NO;
 }
 
+- (IBAction) cancel:(id)sender
+{
+	[NSApp abortModal];
+}
+
+- (IBAction) ok:sender
+{
+	[NSApp stopModal];
+}
+
 - (IBAction) switchAutoRetrieving: (id) sender
 {
 	NSLog( @"auto-retrieving switched");
@@ -148,31 +158,42 @@ static char *GetPrivateIP()
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"autoRetrieving"])
 	{
-		BOOL doit = NO;
-		NSString *alertSuppress = @"auto retrieving warning";
-		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-		if ([defaults boolForKey: alertSuppress])
-		{
-			doit = YES;
-		}
-		else
-		{
-			NSAlert* alert = [NSAlert new];
-			[alert setMessageText: NSLocalizedString(@"Auto-Retrieving", 0L)];
-			[alert setInformativeText: NSLocalizedString(@"Are you sure that you want to activate the Auto-Retrieving function : each study displayed in the Query & Retrieve list will be automatically retrieved to destination computer.\r\r(Only 10 studies is retrieved each time. Next 10 studies during next 'refresh'.)", nil)];
-			[alert setShowsSuppressionButton:YES ];
-			[alert addButtonWithTitle: NSLocalizedString(@"Yes", nil)];
-			[alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
-			
-			if ( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
-			
-			if ([[alert suppressionButton] state] == NSOnState)
-			{
-				[defaults setBool:YES forKey:alertSuppress];
-			}
-		}
+//		BOOL doit = NO;
+//		NSString *alertSuppress = @"auto retrieving warning";
+//		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//		if ([defaults boolForKey: alertSuppress])
+//		{
+//			doit = YES;
+//		}
+//		else
+//		{
+//			NSAlert* alert = [NSAlert new];
+//			[alert setMessageText: NSLocalizedString(@"Auto-Retrieving", 0L)];
+//			[alert setInformativeText: NSLocalizedString(@"Are you sure that you want to activate the Auto-Retrieving function : each study displayed in the Query & Retrieve list will be automatically retrieved to destination computer.\r\r(Only 10 studies is retrieved each time. Next 10 studies during next 'refresh'.)", nil)];
+//			[alert setShowsSuppressionButton:YES ];
+//			[alert addButtonWithTitle: NSLocalizedString(@"Yes", nil)];
+//			[alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
+//			
+//			if ( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
+//			
+//			if ([[alert suppressionButton] state] == NSOnState)
+//			{
+//				[defaults setBool:YES forKey:alertSuppress];
+//			}
+//		}
 		
-		if( doit)
+		[NSApp beginSheet:	autoRetrieveWindow
+			modalForWindow: self.window
+			modalDelegate: nil
+			didEndSelector: nil
+			contextInfo: nil];
+		
+		int result = [NSApp runModalForWindow: autoRetrieveWindow];
+		[autoRetrieveWindow orderOut: self];
+		
+		[NSApp endSheet: autoRetrieveWindow];
+		
+		if( result == NSRunStoppedResponse)
 		{
 			if( [autoQueryLock tryLock])
 			{
@@ -579,8 +600,6 @@ static char *GetPrivateIP()
 {
 	if( [[[[outlineView sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"date"])
 	{
-		NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
-		
 		NSMutableArray *sortArray = [NSMutableArray arrayWithObject: [[outlineView sortDescriptors] objectAtIndex: 0]];
 		
 		[sortArray addObject: [[[NSSortDescriptor alloc] initWithKey:@"time" ascending: [[[outlineView sortDescriptors] objectAtIndex: 0] ascending]] autorelease]];
@@ -625,7 +644,7 @@ static char *GetPrivateIP()
 	else [selectedResultSource setStringValue:@""];
 }
 
-- (void) queryPatientID:(NSString*) ID
+- (NSArray*) queryPatientID:(NSString*) ID
 {
 	NSInteger PatientModeMatrixSelected = [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]];
 	NSInteger dateFilterMatrixSelected = [dateFilterMatrix selectedTag];
@@ -643,10 +662,14 @@ static char *GetPrivateIP()
 	
 	[self query: self];
 	
+	NSArray *result = [NSArray arrayWithArray: resultArray];
+	
 	[PatientModeMatrix selectTabViewItemAtIndex: PatientModeMatrixSelected];
 	[dateFilterMatrix selectCellWithTag: dateFilterMatrixSelected];
 	[modalityFilterMatrix selectCellAtRow: mRow column: mCol];
 	[searchFieldID setStringValue: copySearchField];
+	
+	return result;
 }
 
 - (void) querySelectedStudy: (id) sender
@@ -929,8 +952,8 @@ static char *GetPrivateIP()
 {
 	[sourcesTable selectRow: [sourcesTable selectedRow] byExtendingSelection: NO];
 	
-	if( [resultArray count] <= 1) [numberOfStudies setStringValue: [NSString stringWithFormat:@"%d study found.", [resultArray count]]];
-	else [numberOfStudies setStringValue: [NSString stringWithFormat:@"%d studies found.", [resultArray count]]];
+	if( [resultArray count] <= 1) [numberOfStudies setStringValue: [NSString stringWithFormat:@"%d study found", [resultArray count]]];
+	else [numberOfStudies setStringValue: [NSString stringWithFormat:@"%d studies found", [resultArray count]]];
 }
 
 -(void) query:(id)sender
@@ -971,6 +994,37 @@ static char *GetPrivateIP()
 	queryPerformed = YES;
 }
 
+- (NSString*) stringIDForStudy:(id) item
+{
+	return [NSString stringWithFormat:@"%@-%@-%@-%@-%@-%@", [item valueForKey:@"name"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"], [item valueForKey:@"date"], [item valueForKey:@"time"], [item valueForKey:@"uid"]];
+}
+
+- (void) addStudyIfNotAvailable: (id) item toArray:(NSMutableArray*) selectedItems
+{
+	NSArray *studyArray = [self localStudy: item];
+	
+	int localFiles = 0;
+	int totalFiles = [[item valueForKey:@"numberImages"] intValue];
+	
+	if( [studyArray count])
+		localFiles = [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue];
+	
+	if( localFiles < totalFiles)
+	{
+		NSString *stringID = [self stringIDForStudy: item];
+		
+		NSNumber *previousNumberOfFiles = [previousAutoRetrieve objectForKey: stringID];
+		
+		// We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
+		
+		if( [previousNumberOfFiles intValue] != totalFiles)
+		{
+			[selectedItems addObject: item];
+			[previousAutoRetrieve setValue: [NSNumber numberWithInt: totalFiles] forKey: stringID];
+		}
+	}
+}
+
 - (void) displayAndRetrieveQueryResults
 {
 	[self displayQueryResults];
@@ -988,43 +1042,83 @@ static char *GetPrivateIP()
 		
 		for( id item in resultArray)
 		{
-			NSArray *studyArray = [self localStudy: item];
-			
-			int localFiles = 0;
-			int totalFiles = [[item valueForKey:@"numberImages"] intValue];
-			
-			if( [studyArray count])
-				localFiles = [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue];
-			
-			if( localFiles < totalFiles)
-			{
-				NSString *stringID = [NSString stringWithFormat:@"%@-%@-%@", [item valueForKey:@"name"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"]];
-				NSNumber *previousNumberOfFiles = [previousAutoRetrieve objectForKey: stringID];
-				
-				// We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
-				
-				if( [previousNumberOfFiles intValue] != totalFiles)
-				{
-					[selectedItems addObject: item];
-					[previousAutoRetrieve setValue: [NSNumber numberWithInt: totalFiles] forKey: stringID];
-				}
-			}
-			
+			[self addStudyIfNotAvailable: item toArray: selectedItems];
 			if( [selectedItems count] >= 10) break;
 		}
 		
 		if( [selectedItems count])
 		{
+			if( [[NSUserDefaults standardUserDefaults] integerForKey:@"NumberOfPreviousStudyToRetrieve"])
+			{
+				NSMutableArray *copyResultArray = [NSMutableArray arrayWithArray: resultArray];
+				NSMutableArray *previousStudies = [NSMutableArray array];
+				for( id item in selectedItems)
+				{
+					NSArray *studiesOfThisPatient = [self queryPatientID: [item valueForKey:@"patientID"]];
+					
+					// Sort the resut by date & time
+					NSMutableArray *sortArray = [NSMutableArray array];
+					[sortArray addObject: [[[NSSortDescriptor alloc] initWithKey:@"date" ascending: NO] autorelease]];
+					[sortArray addObject: [[[NSSortDescriptor alloc] initWithKey:@"time" ascending: NO] autorelease]];
+					studiesOfThisPatient = [studiesOfThisPatient sortedArrayUsingDescriptors: sortArray];
+					
+					int numberOfStudiesAssociated = [[NSUserDefaults standardUserDefaults] integerForKey:@"NumberOfPreviousStudyToRetrieve"];
+					
+					for( id study in studiesOfThisPatient)
+					{
+						// We dont want current study
+						if( [[study valueForKey:@"uid"] isEqualToString: [item valueForKey:@"uid"]] == NO)
+						{
+							BOOL found = YES;
+							
+							if( numberOfStudiesAssociated > 0)
+							{
+								if( [[NSUserDefaults standardUserDefaults] boolForKey:@"retrieveSameModality"])
+								{
+									if( [item valueForKey:@"modality"] && [study valueForKey:@"modality"])
+									{
+										if( [[study valueForKey:@"modality"] rangeOfString: [item valueForKey:@"modality"]].location == NSNotFound) found = NO;						
+									}
+									else found = NO;
+								}
+								
+								if( [[NSUserDefaults standardUserDefaults] boolForKey:@"retrieveSameDescription"])
+								{
+									if( [item valueForKey:@"theDescription"] && [study valueForKey:@"theDescription"])
+									{
+										if( [[study valueForKey:@"theDescription"] rangeOfString: [item valueForKey:@"theDescription"]].location == NSNotFound) found = NO;
+									}
+									else found = NO;
+								}
+								
+								if( found)
+								{
+									[self addStudyIfNotAvailable: study toArray: previousStudies];
+									numberOfStudiesAssociated--;
+								}
+							}
+						}
+					}
+				}
+				
+				[selectedItems addObjectsFromArray: previousStudies];
+				
+				[self refreshList: copyResultArray];
+			}
+			
 			[NSThread detachNewThreadSelector:@selector( performRetrieve:) toTarget:self withObject: selectedItems];
 			
-			NSLog( @"Will retrieve these items:");
-			
+			NSLog( @"-------");
+			NSLog( @"Will auto-retrieve these items:");
 			for( id item in selectedItems)
 			{
-				NSLog( @"%@ %@ %@", [item valueForKey:@"name"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"]);
-				
-//				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", 0L) description: [item valueForKey:@"name"] name: @"autoretrieve"];
+				NSLog( @"%@ %@ %@ %@", [item valueForKey:@"name"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"], [item valueForKey:@"date"]);
 			}
+			NSLog( @"-------");
+			
+			NSString *desc = [NSString stringWithFormat: NSLocalizedString( @"Will auto-retrieve %d studies", 0L), [selectedItems count]];
+			
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", 0L) description: desc name: @"newfiles"];
 		}
 		else
 		{
@@ -1260,6 +1354,8 @@ static char *GetPrivateIP()
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 			{
 				[object move:dictionary];
+				
+				[previousAutoRetrieve removeObjectForKey: [self stringIDForStudy: object]];
 			}
 		}
 	}

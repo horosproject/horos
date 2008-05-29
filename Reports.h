@@ -26,7 +26,7 @@
 
 - (NSString*) generateReportSourceData:(NSManagedObject*) study;
 - (void) runScript:(NSString *)txt;
-- (NSString *) reportScriptBody:(NSManagedObject*) study;
+- (NSString *) reportScriptBody:(NSManagedObject*) study path:(NSString*) path;
 - (BOOL) createNewReport:(NSManagedObject*) study destination:(NSString*) path type:(int) type;
 
 - (void)searchAndReplaceFieldsFromStudy:(NSManagedObject*)aStudy inString:(NSMutableString*)aString;

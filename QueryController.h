@@ -45,6 +45,9 @@
 	int										autoQueryRemainingSecs;
 	NSRecursiveLock							*autoQueryLock;
 	IBOutlet NSTextField					*autoQueryCounter;
+	
+	IBOutlet NSWindow						*autoRetrieveWindow;
+	
 	NSMutableString							*pressedKeys;
     NSMutableArray							*resultArray;
     NSMutableArray							*queryFilters;
@@ -67,6 +70,8 @@
 + (BOOL) echo: (NSString*) address port:(int) port AET:(NSString*) aet;
 + (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer;
 
+- (IBAction) cancel:(id)sender;
+- (IBAction) ok:sender;
 - (void) refreshList: (NSArray*) l;
 - (BOOL) queryWithDisplayingErrors:(BOOL) showError;
 - (IBAction) selectUniqueSource:(id) sender;
@@ -74,7 +79,7 @@
 - (IBAction) retrieveAndViewClick: (id) sender;
 - (IBAction) retrieveAndView: (id) sender;
 - (IBAction) view:(id) sender;
-- (void) queryPatientID:(NSString*) ID;
+- (NSArray*) queryPatientID:(NSString*) ID;
 - (void) query:(id)sender;
 - (void) retrieve:(id)sender;
 - (void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable;

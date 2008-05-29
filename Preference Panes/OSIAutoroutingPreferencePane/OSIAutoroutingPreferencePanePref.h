@@ -25,6 +25,12 @@
 	IBOutlet NSTextField				*newName, *addressAndPort, *newFilter, *newDescription;
 	IBOutlet NSPopUpButton				*serverPopup;
 	
+	IBOutlet NSPopUpButton				*previousPopup;
+	IBOutlet NSButton					*previousModality;
+	IBOutlet NSButton					*previousDescription;
+	
+	IBOutlet NSPopUpButton				*failurePopup;
+	
 	NSMutableArray						*routesArray;
 }
 
@@ -35,5 +41,6 @@
 - (IBAction) syntaxHelpButtons:(id) sender;
 - (void) deleteSelectedRow:(id)sender;
 - (IBAction) selectServer:(id) sender;
+- (IBAction) selectPrevious:(id) sender;
 
 @end

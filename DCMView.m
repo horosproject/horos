@@ -2967,16 +2967,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( blendingView) tool = tWLBlended;
 		else tool = tWL;
 	}
-//	if( [self roiTool:currentTool] != YES && currentTool!=tROISelector)   // Not a ROI TOOL !
+	if( [self roiTool:currentTool] != YES && currentTool != tROISelector)   // Not a ROI TOOL !
 	{
-		if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))  tool = tRotate;
 		if (([event modifierFlags] & NSShiftKeyMask))  tool = tZoom;
 	}
-//	else
-//	{
+	else
+	{
 //		if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask)) tool = currentTool;
-//		if (([event modifierFlags] & NSCommandKeyMask)) tool = currentTool;
-//	}
+		if (([event modifierFlags] & NSCommandKeyMask)) tool = currentTool;
+	}
 	
 	return tool;
 }

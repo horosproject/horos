@@ -156,7 +156,7 @@ static BOOL newRouteMode = NO;
 	{
 		NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
 		
-		[routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", [NSNumber numberWithBool:YES], @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", nil]];
+		[routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", [NSNumber numberWithBool:YES], @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", [NSNumber numberWithInt: [previousPopup selectedTag]], @"previousStudies", [NSNumber numberWithBool: [previousModality state]], @"previousModality", [NSNumber numberWithBool: [previousDescription state]], @"previousDescription", [NSNumber numberWithInt: [failurePopup selectedTag]], @"failureRetry", nil]];
 	}
 	else
 	{
@@ -169,6 +169,20 @@ static BOOL newRouteMode = NO;
 	[routesTable reloadData];
 	[newRoute orderOut:sender];
 	[NSApp endSheet: newRoute returnCode:[sender tag]];
+}
+
+- (IBAction) selectPrevious:(id) sender
+{
+	if( [sender selectedTag])
+	{
+		[previousModality setEnabled: YES];
+		[previousDescription setEnabled: YES];
+	}
+	else
+	{
+		[previousModality setEnabled: NO];
+		[previousDescription setEnabled: NO];
+	}
 }
 
 - (IBAction) selectServer:(id) sender
@@ -210,6 +224,10 @@ static BOOL newRouteMode = NO;
 				[newName setStringValue: [selectedRoute valueForKey: @"name"]];
 				[newDescription setStringValue: [selectedRoute valueForKey: @"description"]];
 				[newFilter setStringValue: [selectedRoute valueForKey: @"filter"]];
+				[previousPopup selectItemWithTag: [[selectedRoute valueForKey: @"previousStudies"] intValue]];
+				[previousModality setState: [[selectedRoute valueForKey: @"previousModality"] boolValue]];
+				[previousDescription setState: [[selectedRoute valueForKey: @"previousDescription"] boolValue]];
+				[failurePopup selectItemWithTag: [[selectedRoute valueForKey: @"failureRetry"] intValue]];
 				
 				for( i = 0; i < [serversArray count]; i++)
 				{
@@ -233,7 +251,7 @@ static BOOL newRouteMode = NO;
 	{
 		NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
 		
-		[routesArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"new route", @"name", @"", @"description", @"(modality like[c] \"CT\")", @"filter", [[serversArray objectAtIndex: 0] objectForKey:@"Description"], @"server", nil]];
+		[routesArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"new route", @"name", @"", @"description", @"(modality like[c] \"CT\")", @"filter", [[serversArray objectAtIndex: 0] objectForKey:@"Description"], @"server", @"20", @"failureRetry", nil]];
 		
 		[routesTable reloadData];
 		

@@ -213,6 +213,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSMutableArray					*autoroutingQueueArray;
 	NSLock							*autoroutingQueue, *autoroutingInProgress, *matrixLoadIconsLock;
+	NSMutableDictionary				*autoroutingPreviousStudies;
 	
 	NSConditionLock					*processorsLock;
 	NSLock							*decompressArrayLock, *decompressThreadRunning;
@@ -504,7 +505,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute elements:(NSString**) elements;
 
-- (void) executeSend :(NSArray*) samePatientArray server:(NSDictionary*) server;
+- (void) executeSend :(NSArray*) samePatientArray server:(NSDictionary*) server dictionary:(NSDictionary*) dict;
 
 - (void)writeMovie:(NSArray*)imagesArray name:(NSString*)fileName;
 - (void) buildThumbnail:(NSManagedObject*) series;
