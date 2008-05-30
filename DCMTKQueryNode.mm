@@ -426,6 +426,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		_modality = nil;
 		_numberImages = nil;
 		_specificCharacterSet = nil;
+		showErrorMessage = YES;
 		if (debugLevel > 0)
 			_verbose = YES;
 		//if (debugLevel > 0) {	
@@ -680,9 +681,15 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         transferSyntaxes, numTransferSyntaxes);
 }
 
+- (void)setShowErrorMessage:(BOOL) m
+{
+	showErrorMessage = m;
+}
+
 - (void) errorMessage:(NSArray*) msg
 {
-	NSRunCriticalAlertPanel( [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2], nil, nil) ;
+	if( showErrorMessage)
+		NSRunCriticalAlertPanel( [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2], nil, nil) ;
 }
 
 - (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset
@@ -1320,7 +1327,7 @@ NS_ENDHANDLER
         statusDetail->print(COUT);
         delete statusDetail;
     }
-
+	
     if (rspIds != NULL) delete rspIds;
 	
 	[[MoveManager sharedManager] removeMove:self];

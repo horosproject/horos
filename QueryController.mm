@@ -198,7 +198,6 @@ static char *GetPrivateIP()
 			if( [autoQueryLock tryLock])
 			{
 				[self autoQueryThread];
-				[self displayAndRetrieveQueryResults];
 				[autoQueryLock unlock];
 			}
 		}
@@ -1103,6 +1102,9 @@ static char *GetPrivateIP()
 				
 				[selectedItems addObjectsFromArray: previousStudies];
 				
+				for( id item in selectedItems)
+					[item setShowErrorMessage: NO];
+				
 				[self refreshList: copyResultArray];
 			}
 			
@@ -1122,7 +1124,7 @@ static char *GetPrivateIP()
 		}
 		else
 		{
-			NSLog( @"autoRetrieving is up to date! Nothing to retrieve.");
+			NSLog( @"--- autoRetrieving is up to date! Nothing to retrieve ---");
 		}
 	}
 }
@@ -1131,13 +1133,9 @@ static char *GetPrivateIP()
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSLog( @"autoQueryTimerFunction START");
-	
 	if( [self queryWithDisplayingErrors: NO] == 0)
 		[self performSelectorOnMainThread: @selector( displayAndRetrieveQueryResults) withObject:0 waitUntilDone: NO];
-	else NSLog( @"auto query failed");
-	
-	NSLog( @"autoQueryTimerFunction END");
+	else NSLog( @"auto query failed... ");
 	
 	[pool release];
 }
@@ -1169,8 +1167,6 @@ static char *GetPrivateIP()
 {
 	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"])
 	{
-		NSLog( @"autoQueryTimer: %d", [[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"]);
-		
 		[QueryTimer invalidate];
 		[QueryTimer release];
 		
@@ -1359,6 +1355,9 @@ static char *GetPrivateIP()
 			}
 		}
 	}
+	
+	for( id item in array)
+		[item setShowErrorMessage: NO];
 	
 	NSLog(@"Retrieve END");
 	

@@ -44,6 +44,7 @@
 	NSNumber *_numberImages;
 	NSString *_specificCharacterSet;
 	NSManagedObject *_logEntry;
+	BOOL showErrorMessage;
 }
 
 + (id)queryNodeWithDataset:(DcmDataset *)dataset
@@ -82,7 +83,7 @@
 - (void)move:(NSDictionary*) dict;
 - (NSManagedObject *)logEntry;
 - (void)setLogEntry:(NSManagedObject *)logEntry;
-
+- (void)setShowErrorMessage:(BOOL) m;
 //common network code for move and query
 - (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset;
 - (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset destination:(NSString*) destination;
