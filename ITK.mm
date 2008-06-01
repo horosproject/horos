@@ -25,7 +25,6 @@
 #import "DCMPix.h"
 #import "ITK.h"
 
-
 @implementation ITK
 
 - (void) dealloc
@@ -46,7 +45,6 @@
 {
 	return importFilter;
 }
-
 
 - (id) initWith :(NSArray*) pix :(float*) volumeData :(long) slice {
 	return [self initWithPix :(NSArray*) pix volume:(float*) volumeData sliceCount:(long) slice resampleData:NO];

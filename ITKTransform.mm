@@ -24,6 +24,8 @@
 #import "DCMPix.h"
 #import "WaitRendering.h"
 #import "AppController.h"
+#import "ViewerController.h"
+#import "DCMPix.h"
 
 typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 

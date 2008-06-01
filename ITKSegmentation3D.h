@@ -38,6 +38,11 @@
 	
 }
 
+#ifdef id
+#define redefineID
+#undef id
+#endif
+
 + (NSArray*) fastGrowingRegionWithVolume: (float*) volume width:(long) w height:(long) h depth:(long) depth seedPoint:(long*) seed from:(float) from pixList:(NSArray*) pixList;
 - (id) initWith :(NSMutableArray*) pix :(float*) volumeData  :(long) slice;
 - (id) initWithPix :(NSMutableArray*) pix volume:(float*) volumeData  slice:(long) slice resampleData:(BOOL)resampleData;
@@ -47,4 +52,10 @@
 + (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height;
 + (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height numPoints:(long) numPoints;
 + (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height numPoints:(long) numPoints largestRegion:(BOOL) largestRegion;
+
+#ifdef redefineID
+#define id Id
+#undef redefineID
+#endif
+
 @end

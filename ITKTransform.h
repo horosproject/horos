@@ -14,14 +14,21 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class ViewerController;
+@class DCMPix;
+
+
 #ifdef __cplusplus
 #import "ITK.h"
 #else
 @class ITK;
 #endif
 
-#import "ViewerController.h"
-#import "DCMPix.h"
+#ifdef id
+#define redefineID
+#undef id
+#endif
+
 
 /** /brief  ITK based affine transform */
 
@@ -36,5 +43,10 @@
 
 + (float*) resampleWithParameters: (double*)theParameters firstObject: (DCMPix*) firstObject firstObjectOriginal: (DCMPix*)  firstObjectOriginal noOfImages: (int) noOfImages length: (long*) length itkImage: (ITK*) itkImage;
 + (float*) reorient2Dimage: (double*) theParameters firstObject: (DCMPix*) firstObject firstObjectOriginal: (DCMPix*) firstObjectOriginal length: (long*) length;
+
+#ifdef redefineID
+#define id Id
+#undef redefineID
+#endif
 
 @end

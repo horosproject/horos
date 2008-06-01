@@ -23,6 +23,10 @@
 
 enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtraction, BlendingMultiplication, BlendingRed, BlendingGreen, BlendingBlue, Blending2DRegistration, Blending3DRegistration, BlendingLL};
 
+#ifdef id
+#define redefineID
+#undef id
+#endif
 
 @interface OSIWindowController : NSWindowController {
 	int _blendingType;
@@ -46,3 +50,8 @@ enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtr
 - (float)curWW;
 - (float)curWL;
 @end
+
+#ifdef redefineID
+#define id Id
+#undef redefineID
+#endif

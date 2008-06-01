@@ -33,9 +33,19 @@ typedef itk::ImportImageFilter< itkPixelType, 3 > ImportFilterType;
 	ImportFilterType::Pointer importFilter;
 }
 
+#ifdef id
+#define redefineID
+#undef id
+#endif
+
 
 - (id) initWith :(NSArray*) pix :(float*) srcPtr :(long) slice;
 - (id) initWithPix :(NSArray*) pix volume:(float*) volumeData sliceCount:(long) slice resampleData:(BOOL)resampleData;
+
+#ifdef redefineID
+#define id Id
+#undef redefineID
+#endif
 
 - (ImportFilterType::Pointer) itkImporter;
 - (void)setupImportFilterWithSize:(ImportFilterType::SizeType)size  

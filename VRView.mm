@@ -7210,7 +7210,7 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 			uint64_t t = ((uint64_t*) &theTime)[0];
 
 			if(t - state->time > 2*1000*1000)
-			{		
+			{
 				break;
 			}
 
@@ -7364,9 +7364,9 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 			}
 			break;
 
-		default:
-			// other messageTypes can happen and should be ignored
-			break;
+//		default:
+//			// other messageTypes can happen and should be ignored
+//			break;
 	}
 	if(record) [vV recordFlyThru];
 }

@@ -3674,10 +3674,6 @@ void SRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
 				memcpy( &lastState, state, (long)sizeof(ConnexionDeviceState));
 			}
 			break;
-
-		default:
-			// other messageTypes can happen and should be ignored
-			break;
 	}
 	if(record) [sV recordFlyThru];
 }

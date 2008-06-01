@@ -2884,12 +2884,12 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
     }
 }
 
-- (BOOL)drawerDidClose:(NSDrawer *)sender
+- (void)drawerDidClose:(NSDrawer *)sender
 {
 	[[self window] zoom:self];
 }
 
-- (BOOL)drawerDidOpen:(NSDrawer *)sender
+- (void)drawerDidOpen:(NSDrawer *)sender
 {
 	[[self window] zoom:self];
 }

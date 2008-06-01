@@ -17,6 +17,11 @@
 
 @protocol Schedulable;
 
+#ifdef id
+#define redefineID
+#undef id
+#endif
+
 /** \brief Does multithreading scheduling*/
 @interface Scheduler : NSObject {
     @private
@@ -66,3 +71,8 @@
 -(void)schedulerDidFinishSchedule:(Scheduler *)scheduler;
 
 @end
+
+#ifdef redefineID
+#define id Id
+#undef redefineID
+#endif
