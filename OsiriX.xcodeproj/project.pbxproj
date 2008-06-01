@@ -25236,7 +25236,6 @@
 					ppc,
 					x86_64,
 				);
-				BUILD_VARIANTS = normal;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -25252,15 +25251,12 @@
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_MODEL_CPU = "";
 				GCC_MODEL_PPC64 = NO;
-				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
 				GCC_USE_GCC3_PFE_SUPPORT = YES;
+				GCC_VERSION = 4.2;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -25271,7 +25267,6 @@
 					"\"$(SRCROOT)/../../Desktop/trunk\"",
 					"\"$(SRCROOT)/Binaries/openjpeg\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x20000000,
