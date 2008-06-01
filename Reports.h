@@ -23,6 +23,7 @@
 }
 
 + (NSString*) getUniqueFilename:(NSManagedObject*) study;
++ (NSString*) getOldUniqueFilename:(NSManagedObject*) study;
 
 - (NSString*) generateReportSourceData:(NSManagedObject*) study;
 - (void) runScript:(NSString *)txt;

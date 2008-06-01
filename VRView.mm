@@ -47,8 +47,9 @@
 #define id Id
 #include "itkImage.h"
 #include "itkImportImageFilter.h"
-#undef id
+
 #import "ITKSegmentation3D.h"
+#undef id
 #import "ITKBrushROIFilter.h"
 #import "OSIVoxel.h"
 

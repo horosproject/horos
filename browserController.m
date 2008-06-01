@@ -3025,13 +3025,31 @@ static NSArray*	statesArray = nil;
 			}
 			
 			// SCAN THE STUDIES FOR REPORTS
-			NSString	*reportPath;
+			NSString	*reportPath = 0L;
 			
-			reportPath = [basePath stringByAppendingFormat:@"%@.doc",[Reports getUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			if( reportPath == 0L)
+			{
+				reportPath = [basePath stringByAppendingFormat:@"%@.doc",[Reports getUniqueFilename: study]];
+				if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			}
 			
-			reportPath = [basePath stringByAppendingFormat:@"%@.rtf",[Reports getUniqueFilename: study]];
-			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath] ) [study setValue:reportPath forKey:@"reportURL"];
+			if( reportPath == 0L)
+			{
+				reportPath = [basePath stringByAppendingFormat:@"%@.rtf",[Reports getUniqueFilename: study]];
+				if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath] ) [study setValue:reportPath forKey:@"reportURL"];
+			}
+			
+			if( reportPath == 0L)
+			{
+				reportPath = [basePath stringByAppendingFormat:@"%@.doc",[Reports getOldUniqueFilename: study]];
+				if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [study setValue:reportPath forKey:@"reportURL"];
+			}
+			
+			if( reportPath == 0L)
+			{
+				reportPath = [basePath stringByAppendingFormat:@"%@.rtf",[Reports getOldUniqueFilename: study]];
+				if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath] ) [study setValue:reportPath forKey:@"reportURL"];
+			}
 		}
 	}
 	

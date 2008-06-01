@@ -482,6 +482,8 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	
 	#if !__LP64__
 	[NSMailDelivery deliverMessage:emailMessage subject:emailSubject to:emailAddress];
+	#else
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:rossetantoine@osirix-viewer.com"]];
 	#endif
 }
 

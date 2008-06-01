@@ -95,7 +95,7 @@ htt://www.pixelmed.com
 	return self;
 }
 
-- (int)priority{
+- (unsigned short)priority{
 	return priority;
 }
 

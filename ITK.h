@@ -18,8 +18,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-//@class DCMPix;
-
 typedef float itkPixelType;
 //typedef itk::RGBPixel<unsigned char> itkPixelType;
 typedef itk::Image< itkPixelType, 3 > ImageType;

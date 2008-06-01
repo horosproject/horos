@@ -101,6 +101,7 @@
 
 - (void) buildFixedIPList;
 - (void) buildLocalPathsList;
+- (void) buildDICOMDestinationsList;
 - (void) arrangeServices;
 
 - (BOOL) connectToAdress: (NSString*) address port: (int) port;
