@@ -1515,6 +1515,8 @@ static NSDate *lastWarningDate = 0L;
 
 - (void) applicationWillTerminate: (NSNotification*) aNotification
 {
+	[self closeAllViewers: self];
+	
 	[[BrowserController currentBrowser] browserPrepareForClose];
 
 	[ROI saveDefaultSettings];
