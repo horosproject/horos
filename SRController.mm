@@ -121,7 +121,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	return blendingController;
 }
 
--(NSMutableArray*) pixList { return pixList;}
+-(NSArray*) pixList { return pixList;}
 
 - (NSArray*) fileList
 {

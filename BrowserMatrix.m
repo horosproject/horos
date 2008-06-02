@@ -24,7 +24,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 	return YES;
 }
 
-- (void) selectCell:(NSEvent*) theEvent
+- (void) selectCellEvent:(NSEvent*) theEvent
 {
 	NSInteger row, column;
  
@@ -189,7 +189,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 		
 		if( keepOn)
 		{
-			[self selectCell: event];
+			[self selectCellEvent: event];
 			[self startDrag: event];
 		}
 		else
@@ -203,7 +203,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 
 - (void) rightMouseDown:(NSEvent *)theEvent
 {
-	[self selectCell: theEvent];
+	[self selectCellEvent: theEvent];
 	
 	[[BrowserController currentBrowser] matrixPressed: self];
 	
