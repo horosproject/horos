@@ -6522,23 +6522,25 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 						float lwl = curDCM.wl;
 						float lww = curDCM.ww;
-
-					//	if( fullText)
+						
+						int iwl = lwl;
+						int iww = lww;
+						
+						if(lww < 50 && (lwl !=  iwl || lww != iww))
 						{
-							if(lww < 50)
-								[tempString appendFormat: NSLocalizedString( @"WL: %0.4f WW: %0.4f", @"WW: window width, WL: window level"), lwl, lww];
-							else
-								[tempString appendFormat: NSLocalizedString( @"WL: %ld WW: %ld", @"WW: window width, WL: window level"), (long) lwl, (long) lww];
-							
-							if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"]))
+							[tempString appendFormat: NSLocalizedString( @"WL: %0.4f WW: %0.4f", @"WW: window width, WL: window level"), lwl, lww];
+						}
+						else
+							[tempString appendFormat: NSLocalizedString( @"WL: %ld WW: %ld", @"WW: window width, WL: window level"), (int) lwl, (int) lww];
+						
+						if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"]))
+						{
+							if( curDCM.maxValueOfSeries)
 							{
-								if( curDCM.maxValueOfSeries)
-								{
-									float min = lwl - lww/2, max = lwl + lww/2;
-									
-									[tempString2 appendFormat: NSLocalizedString( @"From: %d %% (%0.2f) to: %d %% (%0.2f)", @"No special characters for this string, only ASCII characters."), (long) (min * 100. / curDCM.maxValueOfSeries), lwl - lww/2, (long) (max * 100. / curDCM.maxValueOfSeries), lwl + lww/2];
-								}
-							}	
+								float min = lwl - lww/2, max = lwl + lww/2;
+								
+								[tempString2 appendFormat: NSLocalizedString( @"From: %d %% (%0.2f) to: %d %% (%0.2f)", @"No special characters for this string, only ASCII characters."), (long) (min * 100. / curDCM.maxValueOfSeries), lwl - lww/2, (long) (max * 100. / curDCM.maxValueOfSeries), lwl + lww/2];
+							}
 						}
 					}
 					else if( [[annot objectAtIndex:j] isEqualToString:@"Plugin"] )
