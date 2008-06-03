@@ -1225,13 +1225,14 @@ extern NSString * documentsDirectory();
 			[viewerController setMovieIndex: curMovieIndex];
 			[view movieChangeSource:(float*) [volumeData[ curMovieIndex] bytes]];
 			
-			unsigned char *data = [view getRawPixels:&width :&height :&spp :&bpp :YES :NO];
-			
+			float imOrigin[ 3], imSpacing[ 2];
+			unsigned char *data = [[view finalView] getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:YES force8bits:NO removeGraphical:YES squarePixels:YES allTiles:NO allowSmartCropping:YES origin: imOrigin spacing: imSpacing];
+						
 			if( data)
 			{
 				[dcmSequence setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
-				[dcmSequence setPixelSpacing: [[view finalView] pixelSpacing]/ [[view finalView] scaleValue] :[[view finalView] pixelSpacing]/ [[view finalView] scaleValue]];
-				[exportDCM setSliceThickness: [[view finalView] pixelSpacing]];
+				[dcmSequence setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
+				[exportDCM setSliceThickness: imSpacing[ 0]];
 				
 //				[[view finalView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
 //				[exportDCM setOrientation: o];
@@ -1273,7 +1274,9 @@ extern NSString * documentsDirectory();
 		
 		if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
 		
-		unsigned char *data = [view getRawPixels:&width :&height :&spp :&bpp :YES :NO];
+		float imOrigin[ 3], imSpacing[ 2];
+		unsigned char *data = [[view finalView] getRawPixelsWidth:&width height:&height spp:&spp bpp:&bpp screenCapture:YES force8bits:NO removeGraphical:YES squarePixels:YES allTiles:NO allowSmartCropping:YES origin: imOrigin spacing: imSpacing];
+
 		
 		if( data)
 		{
@@ -1283,8 +1286,8 @@ extern NSString * documentsDirectory();
 			[exportDCM setSeriesDescription:@"MPR-2D"];
 			[exportDCM setSeriesNumber:5400];
 			[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
-			[exportDCM setPixelSpacing: [[view finalView] pixelSpacing] / [[view finalView] scaleValue] :[[view finalView] pixelSpacing] / [[view finalView] scaleValue]];
-			[exportDCM setSliceThickness: [[view finalView] pixelSpacing]];
+			[exportDCM setPixelSpacing: imSpacing[ 0] :imSpacing[ 1]];
+			[exportDCM setSliceThickness: imSpacing[ 0]];
 			
 			//[[view finalView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
 			//[exportDCM setOrientation: o];
