@@ -1200,7 +1200,7 @@ extern NSString * documentsDirectory();
 		long	annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 		long	i, width, height, spp, bpp, err = 0;
 		float	cwl, cww;
-		float	o[ 9], pos[ 3];;
+		float	o[ 9], pos[ 3];
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 		[DCMView setDefaults];

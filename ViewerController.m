@@ -3016,17 +3016,24 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			BOOL found = NO;
 		
-			// is this series already displayed? -> select it !
-			
-			for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+			if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 			{
-				if( [[v imageView] seriesObj] == [[sender selectedCell] representedObject] && v != self)
+			
+			}
+			else
+			{
+				// is this series already displayed? -> select it !
+				
+				for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 				{
-					[[v window] makeKeyAndOrderFront: self];
-					[v setHighLighted: 1.0];
-					lastHighLightedRow = [sender selectedRow];
-					
-					found = YES;
+					if( [[v imageView] seriesObj] == [[sender selectedCell] representedObject] && v != self)
+					{
+						[[v window] makeKeyAndOrderFront: self];
+						[v setHighLighted: 1.0];
+						lastHighLightedRow = [sender selectedRow];
+						
+						found = YES;
+					}
 				}
 			}
 			
