@@ -5250,7 +5250,7 @@ static NSArray*	statesArray = nil;
 	return returnVal;
 }
 
-- (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+- (void) setDatabaseValue:(id) object item:(id) item forKey:(NSString*) key
 {
 	DatabaseIsEdited = NO;
 	
@@ -5259,18 +5259,18 @@ static NSArray*	statesArray = nil;
 	
 	if( isCurrentDatabaseBonjour)
 	{
-		[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:item value:object forKey:[tableColumn identifier]];
+		[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:item value:object forKey:key];
 	}
 	
-	if( [[tableColumn identifier] isEqualToString:@"stateText"])
+	if( [key isEqualToString:@"stateText"])
 	{
-		if( [object intValue] >= 0) [item setValue:object forKey:[tableColumn identifier]];
+		if( [object intValue] >= 0) [item setValue:object forKey:key];
 	}
-	else if( [[tableColumn identifier] isEqualToString:@"lockedStudy"])
+	else if( [key isEqualToString:@"lockedStudy"])
 	{
 		if( [[item valueForKey:@"type"] isEqualToString:@"Study"]) [item setValue:[NSNumber numberWithBool: [object intValue]] forKey: @"lockedStudy"];
 	}
-	else [item setValue:object forKey:[tableColumn identifier]];
+	else [item setValue:object forKey:key];
 	
 	[refreshTimer setFireDate: [NSDate dateWithTimeIntervalSinceNow:0.5]];
 	
@@ -5278,6 +5278,14 @@ static NSArray*	statesArray = nil;
 	[managedObjectContext release];
 	
 	[self saveDatabase: currentDatabasePath];
+	
+	[[QueryController currentQueryController] refresh: self];
+	[databaseOutline reloadData];
+}
+
+- (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+{
+	[self setDatabaseValue: object item: item forKey: [tableColumn identifier]];
 }
 
 - (void)outlineView:(NSOutlineView *)outlineView sortDescriptorsDidChange:(NSArray *)oldDescriptors {
@@ -14051,7 +14059,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		// DICOM DESTINATION
 		if( [[object valueForKey: @"type"] isEqualToString:@"dicomDestination"])
 		{
-			NSRunAlertPanel( NSLocalizedString(@"DICOM Destination", nil), NSLocalizedString(@"It is a DICOM destination node: you cannot browse its content.", nil), nil, nil, nil);
+			NSRunAlertPanel( NSLocalizedString(@"DICOM Destination", nil), NSLocalizedString(@"It is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them.", nil), nil, nil, nil);
 			
 			[bonjourServicesList selectRow: previousBonjourIndex+1 byExtendingSelection:NO];
 		}

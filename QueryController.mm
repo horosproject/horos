@@ -52,7 +52,7 @@ static char *GetPrivateIP()
 	if ((h=gethostbyname(hostname)) == NULL)
 	{
         perror("Error: ");
-        return "(Error locating Private IP Address)";
+        return "(Error locating Private IP Address)"; 
     }
 	
     return (char*) inet_ntoa(*((struct in_addr *)h->h_addr));
@@ -419,7 +419,8 @@ static char *GetPrivateIP()
 
 - (void) refresh: (id) sender
 {	
-	[outlineView reloadData];
+	if( DatabaseIsEdited == NO)
+		[outlineView reloadData];
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item{
@@ -453,6 +454,39 @@ static char *GetPrivateIP()
 		}
 	}
 	return  (item == nil) ? [resultArray count] : [[(DCMTKQueryNode *) item children] count];
+}
+
+- (NSArray*) localSeries:(id) item
+{
+	NSArray						*seriesArray = 0L;
+	
+	if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
+	{
+		NSError						*error = 0L;
+		NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
+		NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
+		NSPredicate					*predicate = [NSPredicate predicateWithFormat: @"(seriesDICOMUID == %@)", [item valueForKey:@"uid"]];
+		
+		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
+		[request setPredicate: predicate];
+		
+		[context retain];
+		[context lock];
+		
+		@try
+		{
+			seriesArray = [context executeFetchRequest:request error:&error];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"**** localSeries exception: %@", [e description]);
+		}
+		
+		[context unlock];
+		[context release];
+	}
+	
+	return seriesArray;
 }
 
 - (NSArray*) localStudy:(id) item
@@ -516,7 +550,7 @@ static char *GetPrivateIP()
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
 //	[displayLock lock];
-	
+
 	if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
 	{
 		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
@@ -582,9 +616,51 @@ static char *GetPrivateIP()
 //	[displayLock unlock];
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
-
-	if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != 0L)
+- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+{
+	if( [[tableColumn identifier] isEqualToString: @"stateText"])
+	{
+		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+		{
+			NSArray *studyArray = [self localStudy: item];
+			
+			if( [studyArray count] > 0)
+			{
+				if( [[[studyArray objectAtIndex: 0] valueForKey:@"stateText"] intValue] == 0)
+					return 0L;
+				else
+					return [[studyArray objectAtIndex: 0] valueForKey: @"stateText"];
+			}
+		}
+		else
+		{
+			NSArray *seriesArray = [self localSeries: item];
+			if( [seriesArray count])
+			{
+				if( [[[seriesArray objectAtIndex: 0] valueForKey:@"stateText"] intValue] == 0)
+					return 0L;
+				else
+					return [[seriesArray objectAtIndex: 0] valueForKey: @"stateText"];
+			}
+		}
+	}
+	else if( [[tableColumn identifier] isEqualToString: @"comment"])
+	{
+		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+		{
+			NSArray *studyArray = [self localStudy: item];
+			
+			if( [studyArray count] > 0)
+				return [[studyArray objectAtIndex: 0] valueForKey: @"comment"];
+		}
+		else
+		{
+			NSArray *seriesArray = [self localSeries: item];
+			if( [seriesArray count])
+				return [[seriesArray objectAtIndex: 0] valueForKey: @"comment"];
+		}
+	}
+	else if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != 0L)
 	{
 		if( [[tableColumn identifier] isEqualToString: @"numberImages"])
 		{
@@ -593,6 +669,41 @@ static char *GetPrivateIP()
 		else return [item valueForKey: [tableColumn identifier]];		
 	}
 	return nil;
+}
+
+- (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+{
+	NSArray *array;
+	
+	if( [[tableColumn identifier] isEqualToString: @"comment"] || [[tableColumn identifier] isEqualToString: @"stateText"])
+	{
+		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+			array = [self localStudy: item];
+		else
+			array = [self localSeries: item];
+		
+		if( [array count] > 0)
+		{
+			[[BrowserController currentBrowser] setDatabaseValue: object item: [array objectAtIndex: 0] forKey: [tableColumn identifier]];
+		}
+		else NSRunCriticalAlertPanel( NSLocalizedString(@"Study not available", nil), NSLocalizedString(@"The study is not available in the local Database, you cannot modify or set the comments/status fields.", nil), NSLocalizedString(@"OK", nil), nil, nil) ;
+	}
+	
+	DatabaseIsEdited = NO;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+	if( [[tableColumn identifier] isEqualToString:@"comment"])
+	{
+		DatabaseIsEdited = YES;
+		return YES;
+	}
+	else
+	{
+		DatabaseIsEdited = NO;
+		return NO;
+	}
 }
 
 - (NSArray*) sortArray
@@ -1144,19 +1255,22 @@ static char *GetPrivateIP()
 {
 	if( queryPerformed)
 	{
-		if( --autoQueryRemainingSecs <= 0)
+		if( DatabaseIsEdited == NO)
 		{
-			if( [autoQueryLock tryLock])
+			if( --autoQueryRemainingSecs <= 0)
 			{
-				[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", 0L) description: NSLocalizedString( @"Refreshing...", 0L) name: @"newfiles"];
-				
-				[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: 0L];
-				
-				autoQueryRemainingSecs = 60*[[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"]; 
-				
-				[autoQueryLock unlock];
+				if( [autoQueryLock tryLock])
+				{
+					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", 0L) description: NSLocalizedString( @"Refreshing...", 0L) name: @"newfiles"];
+					
+					[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: 0L];
+					
+					autoQueryRemainingSecs = 60*[[NSUserDefaults standardUserDefaults] integerForKey: @"autoRefreshQueryResults"]; 
+					
+					[autoQueryLock unlock];
+				}
+				else autoQueryRemainingSecs = 0;
 			}
-			else autoQueryRemainingSecs = 0;
 		}
 		
 		[autoQueryCounter setStringValue: [NSString stringWithFormat: @"%2.2d:%2.2d", (int) (autoQueryRemainingSecs/60), (int) (autoQueryRemainingSecs%60)]];
@@ -1541,6 +1655,13 @@ static char *GetPrivateIP()
 	[numberOfStudies setStringValue: @""];
 	
 	[[self window] setFrameAutosaveName:@"QueryRetrieveWindow"];
+	
+	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier: @"stateText"];
+	NSPopUpButtonCell *buttonCell = [[[NSPopUpButtonCell alloc] initTextCell: @"" pullsDown:NO] autorelease];
+	[buttonCell setEditable: YES];
+	[buttonCell setBordered: NO];
+	[buttonCell addItemsWithTitles: [BrowserController statesArray]];
+	[tableColumn setDataCell:buttonCell];
 	
 	{
 		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];

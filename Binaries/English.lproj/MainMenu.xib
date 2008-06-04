@@ -2,12 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9C7010</string>
-		<string key="IBDocument.InterfaceBuilderVersion">652</string>
-		<string key="IBDocument.AppKitVersion">949.26</string>
+		<string key="IBDocument.SystemVersion">9D34</string>
+		<string key="IBDocument.InterfaceBuilderVersion">667</string>
+		<string key="IBDocument.AppKitVersion">949.33</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="966"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3300,7 +3301,7 @@
 				<string key="NSWindowContentMaxSize">{9000, 9000}</string>
 				<string key="NSWindowContentMinSize">{600, 600}</string>
 				<object class="NSView" key="NSWindowView" id="1039447468">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -4062,7 +4063,9 @@
 												</object>
 											</object>
 											<string key="NSFrame">{{1, 17}, {1102, 299}}</string>
+											<string key="NSBounds">{{362, 0}, {1102, 299}}</string>
 											<reference key="NSSuperview" ref="832526649"/>
+											<reference key="NSNextKeyView" ref="300364488"/>
 											<reference key="NSDocView" ref="300364488"/>
 											<reference key="NSBGColor" ref="629680496"/>
 											<int key="NScvFlags">4</int>
@@ -4085,6 +4088,7 @@
 											<int key="NSsFlags">1</int>
 											<reference key="NSTarget" ref="832526649"/>
 											<string key="NSAction">_doScroller:</string>
+											<double key="NSCurValue">3.620361e-01</double>
 											<double key="NSPercent">5.242626e-01</double>
 										</object>
 										<object class="NSClipView" id="903567248">
@@ -4095,7 +4099,9 @@
 												<reference ref="658526862"/>
 											</object>
 											<string key="NSFrame">{{1, 0}, {1102, 17}}</string>
+											<string key="NSBounds">{{362, 0}, {1102, 17}}</string>
 											<reference key="NSSuperview" ref="832526649"/>
+											<reference key="NSNextKeyView" ref="658526862"/>
 											<reference key="NSDocView" ref="658526862"/>
 											<reference key="NSBGColor" ref="629680496"/>
 											<int key="NScvFlags">4</int>
@@ -4104,6 +4110,7 @@
 									</object>
 									<string key="NSFrameSize">{1119, 332}</string>
 									<reference key="NSSuperview" ref="948665668"/>
+									<reference key="NSNextKeyView" ref="613998968"/>
 									<int key="NSsFlags">178</int>
 									<reference key="NSVScroller" ref="8580273"/>
 									<reference key="NSHScroller" ref="435897027"/>
@@ -4406,6 +4413,7 @@
 													</object>
 													<string key="NSFrame">{{1, 1}, {420, 432}}</string>
 													<reference key="NSSuperview" ref="84064525"/>
+													<reference key="NSNextKeyView" ref="691984007"/>
 													<reference key="NSDocView" ref="691984007"/>
 													<reference key="NSBGColor" ref="999148946"/>
 													<int key="NScvFlags">4</int>
@@ -4434,6 +4442,7 @@
 											</object>
 											<string key="NSFrameSize">{437, 434}</string>
 											<reference key="NSSuperview" ref="766578884"/>
+											<reference key="NSNextKeyView" ref="150457028"/>
 											<int key="NSsFlags">210</int>
 											<reference key="NSVScroller" ref="361142642"/>
 											<reference key="NSHScroller" ref="828164548"/>
@@ -4747,6 +4756,7 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{1132, 808}</string>
+					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{600, 622}</string>
@@ -20416,9 +20426,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>{{706, 407}, {337, 613}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{339, 191}, {1132, 808}}</string>
+					<string>{{117, 191}, {1132, 808}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{339, 191}, {1132, 808}}</string>
+					<string>{{117, 191}, {1132, 808}}</string>
 					<reference ref="9"/>
 					<string>{{1, 48}, {1132, 808}}</string>
 					<reference ref="9"/>
@@ -20882,6 +20892,145 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">CLUTOpacityView</string>
+					<string key="superclassName">NSView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>chooseNameAndSave:</string>
+							<string>computeHistogram:</string>
+							<string>copy:</string>
+							<string>cut:</string>
+							<string>delete:</string>
+							<string>newCurve:</string>
+							<string>niceDisplay:</string>
+							<string>paste:</string>
+							<string>redo:</string>
+							<string>removeAllCurves:</string>
+							<string>save:</string>
+							<string>scroll:</string>
+							<string>sendToBack:</string>
+							<string>setHistogramOpacity:</string>
+							<string>setLineWidth:</string>
+							<string>setPointDiameter:</string>
+							<string>setZoomFator:</string>
+							<string>undo:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>chooseNameAndSaveWindow</string>
+							<string>clutSavedName</string>
+							<string>vrView</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSWindow</string>
+							<string>NSTextField</string>
+							<string>VRView</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">CLUTOpacityView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">CalciumScoringWindowController</string>
+					<string key="superclassName">NSWindowController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>compute:</string>
+							<string>preview:</string>
+							<string>print:</string>
+							<string>saveDocument:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">_printView</string>
+						<string key="NS.object.0">NSView</string>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">CalciumScoringWindowController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">ColorTransferView</string>
+					<string key="superclassName">NSView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>renderButton:</string>
+							<string>selectPicker:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>pick</string>
+							<string>position</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSColorWell</string>
+							<string>NSTextField</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">ColorTransferView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">ColorView</string>
+					<string key="superclassName">NSView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">ColorView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">DCMView</string>
 					<string key="superclassName">NSOpenGLView</string>
 					<object class="NSMutableDictionary" key="actions">
@@ -20938,7 +21087,94 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">EndoscopyVRController</string>
+					<string key="superclassName">VRController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">EndoscopyVRController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">EndoscopyViewer</string>
+					<string key="superclassName">OSIWindowController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>Apply2DCLUT:</string>
+							<string>ApplyWLWW:</string>
+							<string>centerline:</string>
+							<string>change2DTool:</string>
+							<string>change3DTool:</string>
+							<string>endDCMExportSettings:</string>
+							<string>exportDICOMFile:</string>
+							<string>setExportAllViews:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>LODView</string>
+							<string>WLWW2DView</string>
+							<string>WLWW3DView</string>
+							<string>bottomSplitView</string>
+							<string>clut2DPopup</string>
+							<string>engineView</string>
+							<string>exportDCMSeriesName</string>
+							<string>exportDCMViewsChoice</string>
+							<string>exportDCMWindow</string>
+							<string>mprController</string>
+							<string>shadingView</string>
+							<string>tools2DMatrix</string>
+							<string>tools2DView</string>
+							<string>tools3DMatrix</string>
+							<string>tools3DView</string>
+							<string>topSplitView</string>
+							<string>vrController</string>
+							<string>wlww2DPopup</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSView</string>
+							<string>NSView</string>
+							<string>NSView</string>
+							<string>NSSplitView</string>
+							<string>NSPopUpButton</string>
+							<string>NSView</string>
+							<string>NSTextField</string>
+							<string>NSMatrix</string>
+							<string>NSWindow</string>
+							<string>OrthogonalMPRController</string>
+							<string>NSView</string>
+							<string>NSMatrix</string>
+							<string>NSView</string>
+							<string>NSMatrix</string>
+							<string>NSView</string>
+							<string>NSSplitView</string>
+							<string>EndoscopyVRController</string>
+							<string>NSPopUpButton</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">EndoscopyViewer.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">FirstResponder</string>
+					<string key="superclassName">NSObject</string>
 					<object class="NSMutableDictionary" key="actions">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSMutableArray" key="dict.sortedKeys">
@@ -21176,6 +21412,18 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">KFSplitView</string>
+					<string key="superclassName">NSSplitView</string>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">kfDelegate</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="717738730">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">KFSplitView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">LogArrayController</string>
 					<string key="superclassName">NSArrayController</string>
 					<object class="NSMutableDictionary" key="actions">
@@ -21200,6 +21448,150 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">MPR2DController</string>
+					<string key="superclassName">Window3DController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>MoviePlayStop:</string>
+							<string>blendingSlider:</string>
+							<string>endQuicktime:</string>
+							<string>export2iPhoto:</string>
+							<string>moviePosSliderAction:</string>
+							<string>movieRateSliderAction:</string>
+							<string>setDefaultTool:</string>
+							<string>setOrientationTool:</string>
+							<string>updateImage:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>BlendingView</string>
+							<string>ThickSlabView</string>
+							<string>WLWWView</string>
+							<string>axesView</string>
+							<string>blendingPercentage</string>
+							<string>blendingSlider</string>
+							<string>iPhotoView</string>
+							<string>moviePlayStop</string>
+							<string>moviePosSlider</string>
+							<string>movieRateSlider</string>
+							<string>movieTextSlide</string>
+							<string>movieView</string>
+							<string>orientationMatrix</string>
+							<string>orientationView</string>
+							<string>originalView</string>
+							<string>quicktimeFrames</string>
+							<string>quicktimeMode</string>
+							<string>quicktimeRotation</string>
+							<string>quicktimeRotationView</string>
+							<string>quicktimeWindow</string>
+							<string>slider</string>
+							<string>toolMatrix</string>
+							<string>toolsView</string>
+							<string>view</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSView</string>
+							<string>NSView</string>
+							<string>NSView</string>
+							<string>NSView</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSView</string>
+							<string>NSButton</string>
+							<string>NSSlider</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSView</string>
+							<string>NSMatrix</string>
+							<string>NSView</string>
+							<string>PreviewView</string>
+							<string>NSTextField</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSWindow</string>
+							<string>NSSlider</string>
+							<string>NSMatrix</string>
+							<string>NSView</string>
+							<string>MPR2DView</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">MPR2DController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">MPR2DView</string>
+					<string key="superclassName">NSOpenGLView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>axView:</string>
+							<string>setThickSlab:</string>
+							<string>setThickSlabActivated:</string>
+							<string>setThickSlabGap:</string>
+							<string>setThickSlabMode:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>OpacityPopup</string>
+							<string>activatedThickSlab</string>
+							<string>finalView</string>
+							<string>finalViewBlending</string>
+							<string>perpendicularView</string>
+							<string>sliderThickSlab</string>
+							<string>textThickSlab</string>
+							<string>thickSlabPopUp</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSPopUpButton</string>
+							<string>NSButton</string>
+							<string>PreviewView</string>
+							<string>PreviewView</string>
+							<string>PreviewView</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSPopUpButton</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">MPR2DView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">MyOutlineView</string>
 					<string key="superclassName">NSOutlineView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -21217,6 +21609,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSDatePicker</string>
+					<string key="superclassName">NSControl</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
@@ -21231,13 +21624,11 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">KFSplitView.h</string>
-					</object>
+					<reference key="sourceIdentifier" ref="717738730"/>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSSegmentedControl</string>
+					<string key="superclassName">NSControl</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
@@ -21248,6 +21639,428 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">NSSplitViewSave.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSString</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">DICOMToNSString.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSString</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">stringAdditions.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSString</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">stringNumericCompare.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">OSIWindowController</string>
+					<string key="superclassName">NSWindowController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>applyShading:</string>
+							<string>redo:</string>
+							<string>undo:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">OSIWindowController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">OpacityTransferView</string>
+					<string key="superclassName">NSView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">renderButton:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">position</string>
+						<string key="NS.object.0">NSTextField</string>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">OpacityTransferView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">OrthogonalMPRController</string>
+					<string key="superclassName">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>blendingPropagate:</string>
+							<string>blendingPropagateOriginal:</string>
+							<string>blendingPropagateX:</string>
+							<string>blendingPropagateY:</string>
+							<string>flipHorizontal:</string>
+							<string>flipVertical:</string>
+							<string>fullWindowView:</string>
+							<string>showViews:</string>
+							<string>toggleDisplayResliceAxes:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>OrthogonalMPRView</string>
+							<string>OrthogonalMPRView</string>
+							<string>OrthogonalMPRView</string>
+							<string>OrthogonalMPRView</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>originalView</string>
+							<string>viewer</string>
+							<string>xReslicedView</string>
+							<string>yReslicedView</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>OrthogonalMPRView</string>
+							<string>id</string>
+							<string>OrthogonalMPRView</string>
+							<string>OrthogonalMPRView</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">OrthogonalMPRController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">OrthogonalMPRPETCTController</string>
+					<string key="superclassName">OrthogonalMPRController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>fullWindowModality:</string>
+							<string>fullWindowPlan:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">OrthogonalMPRPETCTController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">OrthogonalMPRPETCTView</string>
+					<string key="superclassName">OrthogonalMPRView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>superFlipHorizontal:</string>
+							<string>superFlipVertical:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">OrthogonalMPRPETCTView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">OrthogonalMPRPETCTViewer</string>
+					<string key="superclassName">OSIWindowController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>MoviePlayStop:</string>
+							<string>blendingMode:</string>
+							<string>blendingPropagateOriginal:</string>
+							<string>blendingPropagateX:</string>
+							<string>blendingPropagateY:</string>
+							<string>changeBlendingFactor:</string>
+							<string>changeFromAndToBounds:</string>
+							<string>changeTool:</string>
+							<string>customizeViewerToolBar:</string>
+							<string>endExportDICOMFileSettings:</string>
+							<string>flipHorizontalOriginal:</string>
+							<string>flipHorizontalX:</string>
+							<string>flipHorizontalY:</string>
+							<string>flipVerticalOriginal:</string>
+							<string>flipVerticalX:</string>
+							<string>flipVerticalY:</string>
+							<string>moviePosSliderAction:</string>
+							<string>movieRateSliderAction:</string>
+							<string>realignDataSet:</string>
+							<string>setCurrentPosition:</string>
+							<string>setCurrentdcmExport:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>OrthogonalMPRPETCTView</string>
+							<string>OrthogonalMPRPETCTView</string>
+							<string>OrthogonalMPRPETCTView</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>CTController</string>
+							<string>OpacityPopup</string>
+							<string>PETCTController</string>
+							<string>PETController</string>
+							<string>WLWWView</string>
+							<string>blendingModePopup</string>
+							<string>blendingPercentage</string>
+							<string>blendingSlider</string>
+							<string>blendingToolView</string>
+							<string>clutPopup</string>
+							<string>dcmBox</string>
+							<string>dcmCountTextField</string>
+							<string>dcmExport3Modalities</string>
+							<string>dcmExportWindow</string>
+							<string>dcmFormat</string>
+							<string>dcmFrom</string>
+							<string>dcmFromTextField</string>
+							<string>dcmInterval</string>
+							<string>dcmIntervalTextField</string>
+							<string>dcmSelection</string>
+							<string>dcmSeriesName</string>
+							<string>dcmTo</string>
+							<string>dcmToTextField</string>
+							<string>modalitySplitView</string>
+							<string>moviePlayStop</string>
+							<string>moviePosSlider</string>
+							<string>movieRateSlider</string>
+							<string>movieTextSlide</string>
+							<string>movieView</string>
+							<string>originalSplitView</string>
+							<string>toolsMatrix</string>
+							<string>toolsView</string>
+							<string>wlwwPopup</string>
+							<string>xReslicedSplitView</string>
+							<string>yReslicedSplitView</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>OrthogonalMPRPETCTController</string>
+							<string>NSPopUpButton</string>
+							<string>OrthogonalMPRPETCTController</string>
+							<string>OrthogonalMPRPETCTController</string>
+							<string>NSView</string>
+							<string>NSPopUpButton</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSView</string>
+							<string>NSPopUpButton</string>
+							<string>NSBox</string>
+							<string>NSTextField</string>
+							<string>NSButton</string>
+							<string>NSWindow</string>
+							<string>NSMatrix</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSMatrix</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>KFSplitView</string>
+							<string>NSButton</string>
+							<string>NSSlider</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSView</string>
+							<string>KFSplitView</string>
+							<string>NSMatrix</string>
+							<string>NSView</string>
+							<string>NSPopUpButton</string>
+							<string>KFSplitView</string>
+							<string>KFSplitView</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">OrthogonalMPRPETCTViewer.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">OrthogonalMPRView</string>
+					<string key="superclassName">DCMView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">OrthogonalMPRView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">OrthogonalMPRViewer</string>
+					<string key="superclassName">OSIWindowController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>MoviePlayStop:</string>
+							<string>activateThickSlab:</string>
+							<string>blendingPropagateOriginal:</string>
+							<string>blendingPropagateX:</string>
+							<string>blendingPropagateY:</string>
+							<string>changeFromAndToBounds:</string>
+							<string>changeTool:</string>
+							<string>customizeViewerToolBar:</string>
+							<string>endExportDICOMFileSettings:</string>
+							<string>exportDICOMFile:</string>
+							<string>moviePosSliderAction:</string>
+							<string>movieRateSliderAction:</string>
+							<string>resetImage:</string>
+							<string>roiDeleteAll:</string>
+							<string>setCurrentPosition:</string>
+							<string>setCurrentdcmExport:</string>
+							<string>setThickSlab:</string>
+							<string>setThickSlabMode:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>OrthogonalMPRView</string>
+							<string>OrthogonalMPRView</string>
+							<string>OrthogonalMPRView</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>OpacityPopup</string>
+							<string>ThickSlabView</string>
+							<string>WLWWView</string>
+							<string>clutPopup</string>
+							<string>controller</string>
+							<string>dcmBox</string>
+							<string>dcmCountTextField</string>
+							<string>dcmExportWindow</string>
+							<string>dcmFormat</string>
+							<string>dcmFrom</string>
+							<string>dcmFromTextField</string>
+							<string>dcmInterval</string>
+							<string>dcmIntervalTextField</string>
+							<string>dcmSelection</string>
+							<string>dcmSeriesName</string>
+							<string>dcmTo</string>
+							<string>dcmToTextField</string>
+							<string>moviePlayStop</string>
+							<string>moviePosSlider</string>
+							<string>movieRateSlider</string>
+							<string>movieTextSlide</string>
+							<string>movieView</string>
+							<string>splitView</string>
+							<string>thickSlabActivated</string>
+							<string>thickSlabPopup</string>
+							<string>thickSlabSlider</string>
+							<string>thickSlabTextField</string>
+							<string>toolsMatrix</string>
+							<string>toolsView</string>
+							<string>wlwwPopup</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSPopUpButton</string>
+							<string>NSView</string>
+							<string>NSView</string>
+							<string>NSPopUpButton</string>
+							<string>OrthogonalMPRController</string>
+							<string>NSBox</string>
+							<string>NSTextField</string>
+							<string>NSWindow</string>
+							<string>NSMatrix</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSMatrix</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSButton</string>
+							<string>NSSlider</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSView</string>
+							<string>NSSplitView</string>
+							<string>NSButton</string>
+							<string>NSPopUpButton</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSMatrix</string>
+							<string>NSView</string>
+							<string>NSPopUpButton</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">OrthogonalMPRViewer.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -21342,6 +22155,1525 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SRController</string>
+					<string key="superclassName">Window3DController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>ApplySettings:</string>
+							<string>BApplySettings:</string>
+							<string>BChangeSettings:</string>
+							<string>BSettingsPopup:</string>
+							<string>ChangeSettings:</string>
+							<string>SettingsPopup:</string>
+							<string>flyThruButtonMenu:</string>
+							<string>flyThruControllerInit:</string>
+							<string>roiGetManager:</string>
+							<string>setDefaultTool:</string>
+							<string>setOrientation:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>BSRSettingsWindow</string>
+							<string>BackgroundColorView</string>
+							<string>BcheckFirst</string>
+							<string>BcheckSecond</string>
+							<string>Bdecimate</string>
+							<string>BfirstColor</string>
+							<string>BfirstPopup</string>
+							<string>BfirstTrans</string>
+							<string>BfirstValue</string>
+							<string>BlendingView</string>
+							<string>BpreprocessMatrix</string>
+							<string>BresolSlide</string>
+							<string>BsecondColor</string>
+							<string>BsecondPopup</string>
+							<string>BsecondTrans</string>
+							<string>BsecondValue</string>
+							<string>Bsmooth</string>
+							<string>LODSlider</string>
+							<string>LODView</string>
+							<string>OrientationsView</string>
+							<string>SRSettingsWindow</string>
+							<string>blendingPercentage</string>
+							<string>blendingSlider</string>
+							<string>checkFirst</string>
+							<string>checkSecond</string>
+							<string>decimate</string>
+							<string>export3DView</string>
+							<string>firstPopup</string>
+							<string>firstTrans</string>
+							<string>firstValue</string>
+							<string>perspectiveView</string>
+							<string>preprocessMatrix</string>
+							<string>resolSlide</string>
+							<string>secondPopup</string>
+							<string>secondTrans</string>
+							<string>secondValue</string>
+							<string>smooth</string>
+							<string>toolsView</string>
+							<string>view</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSWindow</string>
+							<string>NSView</string>
+							<string>NSButton</string>
+							<string>NSButton</string>
+							<string>NSTextField</string>
+							<string>NSColorWell</string>
+							<string>NSPopUpButton</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSView</string>
+							<string>NSMatrix</string>
+							<string>NSSlider</string>
+							<string>NSColorWell</string>
+							<string>NSPopUpButton</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSView</string>
+							<string>NSView</string>
+							<string>NSWindow</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSButton</string>
+							<string>NSButton</string>
+							<string>NSTextField</string>
+							<string>NSView</string>
+							<string>NSPopUpButton</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSView</string>
+							<string>NSMatrix</string>
+							<string>NSSlider</string>
+							<string>NSPopUpButton</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSView</string>
+							<string>SRView</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SRController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SRView</string>
+					<string key="superclassName">VTKView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>IBPropagate3DPointsSettings:</string>
+							<string>IBSetSelected3DPointAnnotation:</string>
+							<string>IBSetSelected3DPointAnnotationColor:</string>
+							<string>IBSetSelected3DPointAnnotationSize:</string>
+							<string>IBSetSelected3DPointColor:</string>
+							<string>IBSetSelected3DPointRadius:</string>
+							<string>SwitchStereoMode:</string>
+							<string>axView:</string>
+							<string>changeColor:</string>
+							<string>coView:</string>
+							<string>endDCMExportSettings:</string>
+							<string>endQuicktimeSettings:</string>
+							<string>endQuicktimeVRSettings:</string>
+							<string>export3DFileFormat:</string>
+							<string>exportDICOMFile:</string>
+							<string>exportQuicktime:</string>
+							<string>saView:</string>
+							<string>saViewOpposite:</string>
+							<string>save3DPointsDefaultProperties:</string>
+							<string>setCurrentdcmExport:</string>
+							<string>squareView:</string>
+							<string>switchOrientationWidget:</string>
+							<string>switchProjection:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>VRFrames</string>
+							<string>backgroundColor</string>
+							<string>controller</string>
+							<string>dcmBox</string>
+							<string>dcmExportMode</string>
+							<string>dcmSeriesName</string>
+							<string>dcmframesSlider</string>
+							<string>dcmorientation</string>
+							<string>dcmrotation</string>
+							<string>export3DVRWindow</string>
+							<string>export3DWindow</string>
+							<string>exportDCMWindow</string>
+							<string>framesSlider</string>
+							<string>point3DColorWell</string>
+							<string>point3DDisplayPositionButton</string>
+							<string>point3DInfoPanel</string>
+							<string>point3DPositionTextField</string>
+							<string>point3DPropagateToAll</string>
+							<string>point3DRadiusSlider</string>
+							<string>point3DSetDefault</string>
+							<string>point3DTextColorWell</string>
+							<string>point3DTextSizeSlider</string>
+							<string>rotation</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSMatrix</string>
+							<string>NSColorWell</string>
+							<string>SRController</string>
+							<string>NSBox</string>
+							<string>NSMatrix</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSWindow</string>
+							<string>NSWindow</string>
+							<string>NSWindow</string>
+							<string>NSSlider</string>
+							<string>NSColorWell</string>
+							<string>NSButton</string>
+							<string>NSPanel</string>
+							<string>NSTextField</string>
+							<string>NSButton</string>
+							<string>NSSlider</string>
+							<string>NSButton</string>
+							<string>NSColorWell</string>
+							<string>NSSlider</string>
+							<string>NSMatrix</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SRView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SelectionView</string>
+					<string key="superclassName">NSView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">SelectionView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">ShadingArrayController</string>
+					<string key="superclassName">NSArrayController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">ShadingArrayController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">StudyView</string>
+					<string key="superclassName">NSView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">StudyView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">VRController</string>
+					<string key="superclassName">Window3DController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>ApplyWLWW:</string>
+							<string>LODsliderAction:</string>
+							<string>MoviePlayStop:</string>
+							<string>applyConvolution:</string>
+							<string>applyShading:</string>
+							<string>blendingSlider:</string>
+							<string>close3DSettingsSavePanel:</string>
+							<string>displayPresetsForSelectedGroup:</string>
+							<string>editShadingValues:</string>
+							<string>enable3DSettingsSaveButton:</string>
+							<string>export2iPhoto:</string>
+							<string>exportJPEG:</string>
+							<string>exportTIFF:</string>
+							<string>findShadingPreset:</string>
+							<string>flyThruControllerInit:</string>
+							<string>load3DSettings:</string>
+							<string>loadAdvancedCLUTOpacity:</string>
+							<string>moviePosSliderAction:</string>
+							<string>movieRateSliderAction:</string>
+							<string>nextPresetPage:</string>
+							<string>previousPresetPage:</string>
+							<string>roiGetManager:</string>
+							<string>save3DSettings:</string>
+							<string>sendMail:</string>
+							<string>setDefaultTool:</string>
+							<string>setEngine:</string>
+							<string>setMode:</string>
+							<string>setOrientation:</string>
+							<string>show3DSettingsNewGroupTextField:</string>
+							<string>showCLUTOpacityPanel:</string>
+							<string>showPresetInfoPanel:</string>
+							<string>undo:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>BackgroundColorView</string>
+							<string>BlendingView</string>
+							<string>LODSlider</string>
+							<string>LODView</string>
+							<string>OrientationsView</string>
+							<string>WLWWView</string>
+							<string>blendingPercentage</string>
+							<string>blendingSlider</string>
+							<string>clutOpacityDrawer</string>
+							<string>clutOpacityView</string>
+							<string>convolutionMenu</string>
+							<string>convolutionView</string>
+							<string>enginePopup</string>
+							<string>engineView</string>
+							<string>infoBackgroundColorTextField</string>
+							<string>infoBackgroundColorView</string>
+							<string>infoCLUTTextField</string>
+							<string>infoConvolutionFilterTextField</string>
+							<string>infoNameTextField</string>
+							<string>infoOpacityTextField</string>
+							<string>infoProjectionTextField</string>
+							<string>infoShadingsTextField</string>
+							<string>infoWLWWTextField</string>
+							<string>modeMatrix</string>
+							<string>modeView</string>
+							<string>moviePlayStop</string>
+							<string>moviePosSlider</string>
+							<string>movieRateSlider</string>
+							<string>movieTextSlide</string>
+							<string>movieView</string>
+							<string>nextPresetPageButton</string>
+							<string>numberOfPresetInGroupTextField</string>
+							<string>perspectiveMatrix</string>
+							<string>perspectiveView</string>
+							<string>presetName1</string>
+							<string>presetName2</string>
+							<string>presetName3</string>
+							<string>presetName4</string>
+							<string>presetName5</string>
+							<string>presetName6</string>
+							<string>presetName7</string>
+							<string>presetName8</string>
+							<string>presetName9</string>
+							<string>presetPreview1</string>
+							<string>presetPreview2</string>
+							<string>presetPreview3</string>
+							<string>presetPreview4</string>
+							<string>presetPreview5</string>
+							<string>presetPreview6</string>
+							<string>presetPreview7</string>
+							<string>presetPreview8</string>
+							<string>presetPreview9</string>
+							<string>presetsApplyButton</string>
+							<string>presetsGroupPopUpButton</string>
+							<string>presetsInfoPanel</string>
+							<string>presetsPanel</string>
+							<string>previousPresetPageButton</string>
+							<string>save3DSettingsWindow</string>
+							<string>scissorStateView</string>
+							<string>settingsBackgroundColorTextField</string>
+							<string>settingsCLUTTextField</string>
+							<string>settingsConvolutionFilterTextField</string>
+							<string>settingsGroupPopUpButton</string>
+							<string>settingsNameTextField</string>
+							<string>settingsNewGroupNameLabelTextField</string>
+							<string>settingsNewGroupNameTextField</string>
+							<string>settingsOpacityTextField</string>
+							<string>settingsProjectionTextField</string>
+							<string>settingsSaveButton</string>
+							<string>settingsShadingsTextField</string>
+							<string>settingsWLWWTextField</string>
+							<string>shadingCheck</string>
+							<string>shadingEditWindow</string>
+							<string>shadingPanel</string>
+							<string>shadingValues</string>
+							<string>shadingView</string>
+							<string>shadingsPresetsController</string>
+							<string>toolsMatrix</string>
+							<string>toolsView</string>
+							<string>view</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSView</string>
+							<string>NSView</string>
+							<string>NSSlider</string>
+							<string>NSView</string>
+							<string>NSView</string>
+							<string>NSView</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSDrawer</string>
+							<string>CLUTOpacityView</string>
+							<string>NSPopUpButton</string>
+							<string>NSView</string>
+							<string>NSPopUpButton</string>
+							<string>NSView</string>
+							<string>NSTextField</string>
+							<string>ColorView</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSMatrix</string>
+							<string>NSView</string>
+							<string>NSButton</string>
+							<string>NSSlider</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSView</string>
+							<string>NSButton</string>
+							<string>NSTextField</string>
+							<string>NSMatrix</string>
+							<string>NSView</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>VRPresetPreview</string>
+							<string>VRPresetPreview</string>
+							<string>VRPresetPreview</string>
+							<string>VRPresetPreview</string>
+							<string>VRPresetPreview</string>
+							<string>VRPresetPreview</string>
+							<string>VRPresetPreview</string>
+							<string>VRPresetPreview</string>
+							<string>VRPresetPreview</string>
+							<string>NSButton</string>
+							<string>NSPopUpButton</string>
+							<string>NSWindow</string>
+							<string>NSWindow</string>
+							<string>NSButton</string>
+							<string>NSWindow</string>
+							<string>NSView</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSPopUpButton</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSButton</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSButton</string>
+							<string>NSWindow</string>
+							<string>NSPanel</string>
+							<string>NSTextField</string>
+							<string>NSView</string>
+							<string>ShadingArrayController</string>
+							<string>NSMatrix</string>
+							<string>NSView</string>
+							<string>VRView</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">VRController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">VRPROView</string>
+					<string key="superclassName">VTKView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>endDCMExportSettings:</string>
+							<string>endQuicktimeSettings:</string>
+							<string>endQuicktimeVRSettings:</string>
+							<string>exportQuicktime:</string>
+							<string>scissorStateButtons:</string>
+							<string>setCurrentdcmExport:</string>
+							<string>switchOrientationWidget:</string>
+							<string>switchProjection:</string>
+							<string>switchShading:</string>
+							<string>switchToSeriesRadio:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>VRFrames</string>
+							<string>dcmBox</string>
+							<string>dcmExportMode</string>
+							<string>dcmSeriesName</string>
+							<string>dcmframesSlider</string>
+							<string>dcmorientation</string>
+							<string>dcmrotation</string>
+							<string>export3DVRWindow</string>
+							<string>export3DWindow</string>
+							<string>exportDCMWindow</string>
+							<string>framesSlider</string>
+							<string>orientation</string>
+							<string>projection</string>
+							<string>rotation</string>
+							<string>scissorStateMatrix</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSMatrix</string>
+							<string>NSBox</string>
+							<string>NSMatrix</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSWindow</string>
+							<string>NSWindow</string>
+							<string>NSWindow</string>
+							<string>NSSlider</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">VRViewVPRO.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">VRPresetPreview</string>
+					<string key="superclassName">VRView</string>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>presetController</string>
+							<string>selectionView</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>VRController</string>
+							<string>SelectionView</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">VRPresetPreview.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">VRView</string>
+					<string key="superclassName">VTKView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>IBPropagate3DPointsSettings:</string>
+							<string>IBSetSelected3DPointColor:</string>
+							<string>IBSetSelected3DPointRadius:</string>
+							<string>axView:</string>
+							<string>bestRendering:</string>
+							<string>changeColor:</string>
+							<string>changeColorWith:</string>
+							<string>coView:</string>
+							<string>endDCMExportSettings:</string>
+							<string>endQuicktimeSettings:</string>
+							<string>endQuicktimeVRSettings:</string>
+							<string>export2iPhoto:</string>
+							<string>exportDICOMFile:</string>
+							<string>exportJPEG:</string>
+							<string>exportQuicktime:</string>
+							<string>exportTIFF:</string>
+							<string>resetAutorotate:</string>
+							<string>resetImage:</string>
+							<string>saView:</string>
+							<string>saViewOpposite:</string>
+							<string>save3DPointsDefaultProperties:</string>
+							<string>scissorStateButtons:</string>
+							<string>sendMail:</string>
+							<string>setCurrentdcmExport:</string>
+							<string>setRenderMode:</string>
+							<string>squareView:</string>
+							<string>switchOrientationWidget:</string>
+							<string>switchProjection:</string>
+							<string>switchShading:</string>
+							<string>switchToSeriesRadio:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>NSColor</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>VRFrames</string>
+							<string>VRquality</string>
+							<string>backgroundColor</string>
+							<string>clutOpacityView</string>
+							<string>controller</string>
+							<string>dcmBox</string>
+							<string>dcmExportMode</string>
+							<string>dcmSeriesName</string>
+							<string>dcmframesSlider</string>
+							<string>dcmorientation</string>
+							<string>dcmquality</string>
+							<string>dcmrotation</string>
+							<string>export3DVRWindow</string>
+							<string>export3DWindow</string>
+							<string>exportDCMWindow</string>
+							<string>framesSlider</string>
+							<string>orientation</string>
+							<string>pixelInformation</string>
+							<string>point3DColorWell</string>
+							<string>point3DInfoPanel</string>
+							<string>point3DPropagateToAll</string>
+							<string>point3DRadiusSlider</string>
+							<string>point3DSetDefault</string>
+							<string>projection</string>
+							<string>quality</string>
+							<string>rotation</string>
+							<string>scissorStateMatrix</string>
+							<string>shadingController</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSColorWell</string>
+							<string>CLUTOpacityView</string>
+							<string>VRController</string>
+							<string>NSBox</string>
+							<string>NSMatrix</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSWindow</string>
+							<string>NSWindow</string>
+							<string>NSWindow</string>
+							<string>NSSlider</string>
+							<string>NSMatrix</string>
+							<string>NSTextField</string>
+							<string>NSColorWell</string>
+							<string>NSPanel</string>
+							<string>NSButton</string>
+							<string>NSSlider</string>
+							<string>NSButton</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSObjectController</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">VRView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">VTKView</string>
+					<string key="superclassName">vtkCocoaGLView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">VTKView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">ViewerController</string>
+					<string key="superclassName">OSIWindowController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>AddOpacity:</string>
+							<string>ConvertToBWMenu:</string>
+							<string>ConvertToRGBMenu:</string>
+							<string>CurvedMPR:</string>
+							<string>MPR2DViewer:</string>
+							<string>MoviePlayStop:</string>
+							<string>MovieStop:</string>
+							<string>PagePadCreate:</string>
+							<string>Panel3D:</string>
+							<string>PlayStop:</string>
+							<string>SRViewer:</string>
+							<string>SetSyncButtonBehavior:</string>
+							<string>SyncSeries:</string>
+							<string>VRVPROViewer:</string>
+							<string>VRViewer:</string>
+							<string>activateFusion:</string>
+							<string>applyConvolutionOnSource:</string>
+							<string>blendWindows:</string>
+							<string>blendingMode:</string>
+							<string>blendingSlider:</string>
+							<string>brushTool:</string>
+							<string>calciumScoring:</string>
+							<string>centerline:</string>
+							<string>changeMatrixSize:</string>
+							<string>closeModal:</string>
+							<string>clutAction:</string>
+							<string>computeSum:</string>
+							<string>contextualMenuEvent:</string>
+							<string>convMatrixAction:</string>
+							<string>copySettingsToOthers:</string>
+							<string>createKeyObjectNote:</string>
+							<string>createLayerROIFromSelectedROI:</string>
+							<string>displayDICOMOverlays:</string>
+							<string>enable12Bit:</string>
+							<string>endBlendingType:</string>
+							<string>endCLUT:</string>
+							<string>endConv:</string>
+							<string>endCurvedMPR:</string>
+							<string>endDisplaySUV:</string>
+							<string>endExportDICOMFileSettings:</string>
+							<string>endExportImage:</string>
+							<string>endNameWLWW:</string>
+							<string>endOpacity:</string>
+							<string>endPrint:</string>
+							<string>endQuicktime:</string>
+							<string>endRoiRename:</string>
+							<string>endSetComments:</string>
+							<string>endSetWLWW:</string>
+							<string>endThicknessInterval:</string>
+							<string>endoscopyViewer:</string>
+							<string>export2PACS:</string>
+							<string>export2iPhoto:</string>
+							<string>exportDICOMAllViewers:</string>
+							<string>exportDICOMSlider:</string>
+							<string>exportJPEG:</string>
+							<string>exportQuicktime:</string>
+							<string>exportQuicktimeSlider:</string>
+							<string>flipDataSeries:</string>
+							<string>fullScreenMenu:</string>
+							<string>groupSelectedROIs:</string>
+							<string>horzFlipDataSet:</string>
+							<string>keyImageCheckBox:</string>
+							<string>keyImageDisplayButton:</string>
+							<string>loadPatient:</string>
+							<string>loadSerie:</string>
+							<string>loadWindowsState:</string>
+							<string>mergeBrushROI:</string>
+							<string>morphoSelectedBrushROI:</string>
+							<string>morphoSelectedBrushROIWithRadius:</string>
+							<string>moviePosSliderAction:</string>
+							<string>movieRateSliderAction:</string>
+							<string>navigator:</string>
+							<string>orthogonalMPRViewer:</string>
+							<string>popFusionAction:</string>
+							<string>print:</string>
+							<string>printSlider:</string>
+							<string>reSyncOrigin:</string>
+							<string>redo:</string>
+							<string>resampleDataBy2:</string>
+							<string>resetImage:</string>
+							<string>resetWindowsState:</string>
+							<string>revertSeries:</string>
+							<string>roiDeleteAll:</string>
+							<string>roiDeleteAllROIsWithSameName:</string>
+							<string>roiDeleteGeneratedROIs:</string>
+							<string>roiDeleteGeneratedROIsForName:</string>
+							<string>roiDeleteWithName:</string>
+							<string>roiIntDeleteAllROIsWithSameName:</string>
+							<string>roiPropagate:</string>
+							<string>roiPropagateSetup:</string>
+							<string>roiRename:</string>
+							<string>roiSetPixels:</string>
+							<string>roiSetPixelsCheckButton:</string>
+							<string>roiSetPixelsSetup:</string>
+							<string>saveWindowsState:</string>
+							<string>setAxialOrientation:</string>
+							<string>setButtonTool:</string>
+							<string>setComments:</string>
+							<string>setCurrentPosition:</string>
+							<string>setCurrentdcmExport:</string>
+							<string>setCurvedMPRslider:</string>
+							<string>setDefaultTool:</string>
+							<string>setImageTiling:</string>
+							<string>setKeyImage:</string>
+							<string>setOrientationTool:</string>
+							<string>setOrientationToolFrom2DMPR:</string>
+							<string>setPagesToPrint:</string>
+							<string>setROITool:</string>
+							<string>setStatus:</string>
+							<string>setStructuringElementRadius:</string>
+							<string>setWindowTitle:</string>
+							<string>showCurrentThumbnail:</string>
+							<string>shutterOnOff:</string>
+							<string>sliderFusionAction:</string>
+							<string>speedSliderAction:</string>
+							<string>startMSRG:</string>
+							<string>startMSRGWithAutomaticBounding:</string>
+							<string>subCtrlNewMask:</string>
+							<string>subCtrlOffset:</string>
+							<string>subCtrlOnOff:</string>
+							<string>subCtrlSliders:</string>
+							<string>subSharpen:</string>
+							<string>subSumSlider:</string>
+							<string>threeDPanel:</string>
+							<string>turnOffSyncSeriesBetweenStudies:</string>
+							<string>undo:</string>
+							<string>ungroupSelectedROIs:</string>
+							<string>updateImage:</string>
+							<string>updateSUVValues:</string>
+							<string>updateSetWLWW:</string>
+							<string>updateZVector:</string>
+							<string>vertFlipDataSet:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>NSString</string>
+							<string>NSString</string>
+							<string>NSString</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>AllROIsRadio</string>
+							<string>BlendingView</string>
+							<string>CommentsEditField</string>
+							<string>CommentsField</string>
+							<string>CommentsWindow</string>
+							<string>ConvView</string>
+							<string>FusionView</string>
+							<string>InOutROI</string>
+							<string>OpacityName</string>
+							<string>OpacityPopup</string>
+							<string>OpacityView</string>
+							<string>PagePad</string>
+							<string>RGBFactorsView</string>
+							<string>ReconstructionRoi</string>
+							<string>ReconstructionView</string>
+							<string>StatusPopup</string>
+							<string>StatusView</string>
+							<string>ThickIntervalWindow</string>
+							<string>WLWWView</string>
+							<string>activatedFusion</string>
+							<string>addCLUTWindow</string>
+							<string>addConvWindow</string>
+							<string>addOpacityWindow</string>
+							<string>addWLWWWindow</string>
+							<string>blendingPercentage</string>
+							<string>blendingPlugins</string>
+							<string>blendingPopupMenu</string>
+							<string>blendingResample</string>
+							<string>blendingSlider</string>
+							<string>blendingTypeMultiply</string>
+							<string>blendingTypeRGB</string>
+							<string>blendingTypeSubtract</string>
+							<string>blendingTypeWindow</string>
+							<string>brushROIFilterOptionsAllWithSameName</string>
+							<string>brushROIFilterOptionsOKButton</string>
+							<string>brushROIFilterOptionsWindow</string>
+							<string>buttonToolMatrix</string>
+							<string>checkMaxValue</string>
+							<string>checkMinValue</string>
+							<string>clutName</string>
+							<string>clutPopup</string>
+							<string>clutView</string>
+							<string>convMatrix</string>
+							<string>convPopup</string>
+							<string>curvedMPRWindow</string>
+							<string>curvedMPRaxis</string>
+							<string>curvedMPRinterval</string>
+							<string>curvedMPRintervalText</string>
+							<string>curvedMPRper</string>
+							<string>curvedMPRsize</string>
+							<string>curvedMPRsizeText</string>
+							<string>curvedMPRslid</string>
+							<string>curvedMPRtext</string>
+							<string>customInterval</string>
+							<string>customOrigin</string>
+							<string>customVectors</string>
+							<string>customXSpacing</string>
+							<string>customYSpacing</string>
+							<string>dcmAllViewers</string>
+							<string>dcmBox</string>
+							<string>dcmExportWindow</string>
+							<string>dcmFormat</string>
+							<string>dcmFrom</string>
+							<string>dcmFromText</string>
+							<string>dcmInterval</string>
+							<string>dcmIntervalText</string>
+							<string>dcmNumber</string>
+							<string>dcmSelection</string>
+							<string>dcmSeriesName</string>
+							<string>dcmTo</string>
+							<string>dcmToText</string>
+							<string>display12bitToolbarItemMatrix</string>
+							<string>display12bitToolbarItemView</string>
+							<string>displaySUVWindow</string>
+							<string>fromset</string>
+							<string>iPhotoView</string>
+							<string>imageAllViewers</string>
+							<string>imageExportWindow</string>
+							<string>imageFormat</string>
+							<string>imageSelection</string>
+							<string>keyImageCheck</string>
+							<string>keyImagePopUpButton</string>
+							<string>keyImages</string>
+							<string>loopButton</string>
+							<string>matrixName</string>
+							<string>matrixNorm</string>
+							<string>maxValueText</string>
+							<string>minValueText</string>
+							<string>moviePlayStop</string>
+							<string>moviePosSlider</string>
+							<string>movieRateSlider</string>
+							<string>movieTextSlide</string>
+							<string>movieView</string>
+							<string>newName</string>
+							<string>newValueMatrix</string>
+							<string>newValueText</string>
+							<string>orientationMatrix</string>
+							<string>orientationView</string>
+							<string>patientView</string>
+							<string>popFusion</string>
+							<string>popupRoi</string>
+							<string>previewMatrix</string>
+							<string>previewMatrixScrollView</string>
+							<string>printBox</string>
+							<string>printColor</string>
+							<string>printFormat</string>
+							<string>printFrom</string>
+							<string>printFromText</string>
+							<string>printInterval</string>
+							<string>printIntervalText</string>
+							<string>printLayout</string>
+							<string>printPagesToPrint</string>
+							<string>printSelection</string>
+							<string>printSettings</string>
+							<string>printText</string>
+							<string>printTo</string>
+							<string>printToText</string>
+							<string>printWindow</string>
+							<string>propagateSettingsView</string>
+							<string>quicktimeAllViewers</string>
+							<string>quicktimeBox</string>
+							<string>quicktimeFrom</string>
+							<string>quicktimeFromText</string>
+							<string>quicktimeInterval</string>
+							<string>quicktimeIntervalText</string>
+							<string>quicktimeMode</string>
+							<string>quicktimeNumber</string>
+							<string>quicktimeTo</string>
+							<string>quicktimeToText</string>
+							<string>quicktimeWindow</string>
+							<string>reportTemplatesImageView</string>
+							<string>reportTemplatesListPopUpButton</string>
+							<string>reportTemplatesView</string>
+							<string>roiApplyMatrix</string>
+							<string>roiApplyWindow</string>
+							<string>roiPropaCopy</string>
+							<string>roiPropaDest</string>
+							<string>roiPropaDim</string>
+							<string>roiPropaMode</string>
+							<string>roiPropaWindow</string>
+							<string>roiRenameMatrix</string>
+							<string>roiRenameName</string>
+							<string>roiRenameWindow</string>
+							<string>roiSetPixWindow</string>
+							<string>sc1</string>
+							<string>sc2</string>
+							<string>sc3</string>
+							<string>sc4</string>
+							<string>sc5</string>
+							<string>sc6</string>
+							<string>sc7</string>
+							<string>sc8</string>
+							<string>sc9</string>
+							<string>serieView</string>
+							<string>setROI4DSeries</string>
+							<string>setWLWWWindow</string>
+							<string>shutterOnOff</string>
+							<string>shutterView</string>
+							<string>sizeMatrix</string>
+							<string>slider</string>
+							<string>sliderFusion</string>
+							<string>speedSlider</string>
+							<string>speedText</string>
+							<string>speedView</string>
+							<string>splitView</string>
+							<string>stacksFusion</string>
+							<string>structuringElementRadiusSlider</string>
+							<string>structuringElementRadiusTextField</string>
+							<string>studyView</string>
+							<string>subCtrlMaskText</string>
+							<string>subCtrlOnOff</string>
+							<string>subCtrlPercent</string>
+							<string>subCtrlSharpenButton</string>
+							<string>subCtrlSum</string>
+							<string>subCtrlView</string>
+							<string>suvConversion</string>
+							<string>suvForm</string>
+							<string>toolsMatrix</string>
+							<string>toolsView</string>
+							<string>toset</string>
+							<string>wl</string>
+							<string>wlset</string>
+							<string>wlwwPopup</string>
+							<string>ww</string>
+							<string>wwset</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSMatrix</string>
+							<string>NSView</string>
+							<string>NSTextField</string>
+							<string>NSButton</string>
+							<string>NSWindow</string>
+							<string>NSView</string>
+							<string>NSView</string>
+							<string>NSMatrix</string>
+							<string>NSTextField</string>
+							<string>NSPopUpButton</string>
+							<string>OpacityTransferView</string>
+							<string>NSView</string>
+							<string>NSView</string>
+							<string>NSPopUpButton</string>
+							<string>NSView</string>
+							<string>NSPopUpButton</string>
+							<string>NSView</string>
+							<string>NSWindow</string>
+							<string>NSView</string>
+							<string>NSButton</string>
+							<string>NSWindow</string>
+							<string>NSWindow</string>
+							<string>NSWindow</string>
+							<string>NSWindow</string>
+							<string>NSTextField</string>
+							<string>NSPopUpButton</string>
+							<string>NSPopUpButton</string>
+							<string>NSButton</string>
+							<string>NSSlider</string>
+							<string>NSButton</string>
+							<string>NSSegmentedControl</string>
+							<string>NSButton</string>
+							<string>NSWindow</string>
+							<string>NSButton</string>
+							<string>NSButton</string>
+							<string>NSWindow</string>
+							<string>NSMatrix</string>
+							<string>NSButton</string>
+							<string>NSButton</string>
+							<string>NSTextField</string>
+							<string>NSPopUpButton</string>
+							<string>ColorTransferView</string>
+							<string>NSMatrix</string>
+							<string>NSPopUpButton</string>
+							<string>NSWindow</string>
+							<string>NSMatrix</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSButton</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSButton</string>
+							<string>NSBox</string>
+							<string>NSWindow</string>
+							<string>NSMatrix</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSMatrix</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSMatrix</string>
+							<string>NSView</string>
+							<string>NSWindow</string>
+							<string>NSTextField</string>
+							<string>NSView</string>
+							<string>NSButton</string>
+							<string>NSWindow</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSButton</string>
+							<string>NSPopUpButton</string>
+							<string>NSView</string>
+							<string>NSButton</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSButton</string>
+							<string>NSSlider</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSView</string>
+							<string>NSTextField</string>
+							<string>NSMatrix</string>
+							<string>NSTextField</string>
+							<string>NSMatrix</string>
+							<string>NSView</string>
+							<string>NSView</string>
+							<string>NSPopUpButton</string>
+							<string>NSPopUpButton</string>
+							<string>NSMatrix</string>
+							<string>NSScrollView</string>
+							<string>NSBox</string>
+							<string>NSColorWell</string>
+							<string>NSMatrix</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSPopUpButton</string>
+							<string>NSTextField</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSWindow</string>
+							<string>NSView</string>
+							<string>NSButton</string>
+							<string>NSBox</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSMatrix</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSWindow</string>
+							<string>NSImageView</string>
+							<string>NSPopUpButton</string>
+							<string>NSView</string>
+							<string>NSMatrix</string>
+							<string>NSWindow</string>
+							<string>NSMatrix</string>
+							<string>NSTextField</string>
+							<string>NSMatrix</string>
+							<string>NSMatrix</string>
+							<string>NSWindow</string>
+							<string>NSMatrix</string>
+							<string>NSTextField</string>
+							<string>NSWindow</string>
+							<string>NSWindow</string>
+							<string>NSButton</string>
+							<string>NSButton</string>
+							<string>NSButton</string>
+							<string>NSButton</string>
+							<string>NSButton</string>
+							<string>NSButton</string>
+							<string>NSButton</string>
+							<string>NSButton</string>
+							<string>NSButton</string>
+							<string>NSView</string>
+							<string>NSButton</string>
+							<string>NSWindow</string>
+							<string>NSButton</string>
+							<string>NSView</string>
+							<string>NSMatrix</string>
+							<string>NSSlider</string>
+							<string>NSSlider</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSView</string>
+							<string>NSSplitView</string>
+							<string>NSTextField</string>
+							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>StudyView</string>
+							<string>NSTextField</string>
+							<string>NSButton</string>
+							<string>NSSlider</string>
+							<string>NSButton</string>
+							<string>NSSlider</string>
+							<string>NSView</string>
+							<string>NSMatrix</string>
+							<string>NSForm</string>
+							<string>NSMatrix</string>
+							<string>NSView</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSPopUpButton</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">ViewerController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">Window3DController</string>
+					<string key="superclassName">OSIWindowController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>AddCLUT:</string>
+							<string>ApplyCLUT:</string>
+							<string>ApplyOpacity:</string>
+							<string>SetWLWW:</string>
+							<string>clutAction:</string>
+							<string>endCLUT:</string>
+							<string>endNameWLWW:</string>
+							<string>endOpacity:</string>
+							<string>endSetWLWW:</string>
+							<string>fullScreenMenu:</string>
+							<string>print:</string>
+							<string>updateSetWLWW:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>OpacityName</string>
+							<string>OpacityPopup</string>
+							<string>OpacityView</string>
+							<string>addCLUTWindow</string>
+							<string>addOpacityWindow</string>
+							<string>addWLWWWindow</string>
+							<string>clutName</string>
+							<string>clutPopup</string>
+							<string>clutView</string>
+							<string>fromset</string>
+							<string>newName</string>
+							<string>setWLWWWindow</string>
+							<string>toset</string>
+							<string>wl</string>
+							<string>wlset</string>
+							<string>wlwwPopup</string>
+							<string>ww</string>
+							<string>wwset</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSTextField</string>
+							<string>NSPopUpButton</string>
+							<string>OpacityTransferView</string>
+							<string>NSWindow</string>
+							<string>NSWindow</string>
+							<string>NSWindow</string>
+							<string>NSTextField</string>
+							<string>NSPopUpButton</string>
+							<string>ColorTransferView</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSWindow</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSPopUpButton</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">Window3DController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">vtkCocoaGLView</string>
+					<string key="superclassName">NSView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">VTKHeaders/vtkCocoaGLView.h</string>
 					</object>
 				</object>
 			</object>

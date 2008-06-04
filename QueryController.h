@@ -46,6 +46,8 @@
 	NSRecursiveLock							*autoQueryLock;
 	IBOutlet NSTextField					*autoQueryCounter;
 	
+	
+	BOOL									DatabaseIsEdited;
 	IBOutlet NSWindow						*autoRetrieveWindow;
 	
 	NSMutableString							*pressedKeys;
@@ -94,6 +96,7 @@
 - (IBAction)controlAction:(id)sender;
 - (void) refresh: (id) sender;
 - (IBAction) pressButtons:(id) sender;
+- (NSArray*) localSeries:(id) item;
 - (NSArray*) localStudy:(id) item;
 - (IBAction) endAddPreset:(id) sender;
 - (void) buildPresetsMenu;
