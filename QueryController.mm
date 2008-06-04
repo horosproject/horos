@@ -708,22 +708,28 @@ static char *GetPrivateIP()
 
 - (NSArray*) sortArray
 {
-	if( [[[[outlineView sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"date"])
+	NSArray *s = [outlineView sortDescriptors];
+	
+	if( [s count])
 	{
-		NSMutableArray *sortArray = [NSMutableArray arrayWithObject: [[outlineView sortDescriptors] objectAtIndex: 0]];
-		
-		[sortArray addObject: [[[NSSortDescriptor alloc] initWithKey:@"time" ascending: [[[outlineView sortDescriptors] objectAtIndex: 0] ascending]] autorelease]];
-		
-		if( [[outlineView sortDescriptors] count] > 1)
+		if( [[[s objectAtIndex: 0] key] isEqualToString:@"date"])
 		{
-			NSMutableArray *lastObjects = [NSMutableArray arrayWithArray: [outlineView sortDescriptors]];
-			[lastObjects removeObjectAtIndex: 0];
-			[sortArray addObjectsFromArray: lastObjects];
+			NSMutableArray *sortArray = [NSMutableArray arrayWithObject: [s objectAtIndex: 0]];
+			
+			[sortArray addObject: [[[NSSortDescriptor alloc] initWithKey:@"time" ascending: [[s objectAtIndex: 0] ascending]] autorelease]];
+			
+			if( [s count] > 1)
+			{
+				NSMutableArray *lastObjects = [NSMutableArray arrayWithArray: s];
+				[lastObjects removeObjectAtIndex: 0];
+				[sortArray addObjectsFromArray: lastObjects];
+			}
+			
+			return sortArray;
 		}
-		
-		return sortArray;
 	}
-	else return [outlineView sortDescriptors];
+	
+	return s;
 }
 
 - (void)outlineView:(NSOutlineView *)aOutlineView sortDescriptorsDidChange:(NSArray *)oldDescs
@@ -733,9 +739,15 @@ static char *GetPrivateIP()
 	[resultArray sortUsingDescriptors: [self sortArray]];
 	[outlineView reloadData];
 	
-	if( [[[[outlineView sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"name"] == NO)
+	NSArray *s = [outlineView sortDescriptors];
+	
+	if( [s count])
 	{
-		[outlineView selectRow: 0 byExtendingSelection: NO];
+		if( [[[s objectAtIndex: 0] key] isEqualToString:@"name"] == NO)
+		{
+			[outlineView selectRow: 0 byExtendingSelection: NO];
+		}
+		else [outlineView selectRowIndexes: [NSIndexSet indexSetWithIndex: [outlineView rowForItem: item]] byExtendingSelection: NO];
 	}
 	else [outlineView selectRowIndexes: [NSIndexSet indexSetWithIndex: [outlineView rowForItem: item]] byExtendingSelection: NO];
 	
