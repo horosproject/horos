@@ -8248,6 +8248,66 @@ static BOOL needToRezoom;
 	[pool release];
 }
 
+- (NSManagedObject*) findStudyUID: (NSString*) uid
+{
+	NSArray						*studyArray = 0L;
+	NSError						*error = 0L;
+	NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
+	NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
+	NSPredicate					*predicate = [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", uid];
+	
+	[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+	[request setPredicate: predicate];
+	
+	[context retain];
+	[context lock];
+	
+	@try
+	{
+		studyArray = [context executeFetchRequest:request error:&error];
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"**** findStudyUID exception: %@", [e description]);
+	}
+	
+	[context unlock];
+	[context release];
+	
+	if( [studyArray count]) return [studyArray objectAtIndex: 0];
+	else return 0L;
+}
+
+- (NSManagedObject*) findSeriesUID: (NSString*) uid
+{
+	NSArray						*seriesArray = 0L;
+	NSError						*error = 0L;
+	NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
+	NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
+	NSPredicate					*predicate = [NSPredicate predicateWithFormat: @"(seriesDICOMUID == %@)", uid];
+	
+	[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
+	[request setPredicate: predicate];
+	
+	[context retain];
+	[context lock];
+	
+	@try
+	{
+		seriesArray = [context executeFetchRequest:request error:&error];
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"**** findSeriesUID exception: %@", [e description]);
+	}
+	
+	[context unlock];
+	[context release];
+	
+	if( [seriesArray count]) return [seriesArray objectAtIndex: 0];
+	else return 0L;
+}
+
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
 {
 	
@@ -8414,13 +8474,14 @@ static BOOL needToRezoom;
 						[[sqlContext undoManager] disableUndoRegistration];
 					}
 					NSError	*error = nil;
+					NSArray *copiedObjects = 0L;
 					[sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options:nil error:&error];
 					
 					if( [dbFolder isEqualToString: [self.documentsDirectory stringByDeletingLastPathComponent]] && isCurrentDatabaseBonjour == NO)	// same database folder - we don't need to copy the files
 					{
 						NSLog( @"Destination DB Folder is identical to Current DB Folder");
 						
-						[self addFilesToDatabase: packArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+						copiedObjects = [self addFilesToDatabase: packArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
 					}
 					else {
 						NSMutableArray	*dstFiles = [NSMutableArray array];
@@ -8452,7 +8513,77 @@ static BOOL needToRezoom;
 						[splash release];
 						
 						// Then we add the files to the sql file
-						[self addFilesToDatabase: dstFiles onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+						copiedObjects = [self addFilesToDatabase: dstFiles onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+					}
+					
+					// We will now copy the comments / status
+					
+					NSMutableArray *seriesArray = [NSMutableArray array];
+					NSMutableArray *studiesArray = [NSMutableArray array];
+					NSManagedObject	*study = nil, *series = nil;
+					
+					for (NSManagedObject *obj in copiedObjects)
+					{
+						if( [obj valueForKey:@"series"] != series)
+						{
+							// ********* SERIES
+							series = [obj valueForKey:@"series"];
+									
+							if([seriesArray containsObject: series] == NO)
+							{
+								if( series) [seriesArray addObject: series];
+								
+								if( [series valueForKey:@"study"] != study)
+								{
+									study = [series valueForKeyPath:@"study"];
+										
+									if([studiesArray containsObject: study] == NO)
+									{
+										if( study) [studiesArray addObject: study];
+									}
+								}
+							}
+						}
+					}
+					
+					// Copy the comments/status at study level
+					for (NSManagedObject *obj in studiesArray)
+					{
+						NSManagedObject *s = 0L;
+						
+						if( [obj valueForKey: @"comment"])
+						{
+							if( s == 0L) s = [self findStudyUID: [obj valueForKey: @"studyInstanceUID"]];
+							if( [s valueForKey: @"comment"])
+								[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
+						}
+						
+						if( [obj valueForKey: @"stateText"])
+						{
+							if( s == 0L) s = [self findStudyUID: [obj valueForKey: @"studyInstanceUID"]];
+							if( [s valueForKey: @"stateText"])
+								[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
+						}
+					}
+					
+					// Copy the comments/status at series level
+					for (NSManagedObject *obj in seriesArray)
+					{
+						NSManagedObject *s = 0L;
+						
+						if( [obj valueForKey: @"comment"])
+						{
+							if( s == 0L) s = [self findSeriesUID: [obj valueForKey: @"seriesDICOMUID"]];
+							if( [s valueForKey: @"comment"])
+								[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
+						}
+						
+						if( [obj valueForKey: @"stateText"])
+						{
+							if( s == 0L) s = [self findSeriesUID: [obj valueForKey: @"seriesDICOMUID"]];
+							if( [s valueForKey: @"stateText"])
+								[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
+						}
 					}
 					
 					error = nil;
