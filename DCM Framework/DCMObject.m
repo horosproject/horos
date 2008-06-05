@@ -372,6 +372,11 @@ PixelRepresentation
  + (id)objectWithObject:(DCMObject *)object{
 	return [[[DCMObject alloc] initWithObject:object] autorelease];
 }
+
++ (NSString*) globallyUniqueString
+{
+	return [NSString stringWithFormat: @"%ld", (long long) ([NSDate timeIntervalSinceReferenceDate] * 100.)];
+}
 		
 - (id)initWithData:(NSData *)data decodingPixelData:(BOOL)decodePixelData{
 	DCMDataContainer *container = [DCMDataContainer dataContainerWithData:data];
@@ -1288,23 +1293,10 @@ PixelRepresentation
 	return [[[NSString alloc] initWithData:data encoding:[specificCharacterSet encoding]] autorelease];
 }
 
-- (void)newStudyInstanceUID{
-	//NSString *ipAddress = [[NSHost currentHost] address];
-	//NSString *curentTime = [[NSDate date] descriptionWithCalendarFormat:@"%Y%m%d%H%M%S%F" timeZone:nil  locale:nil];
-	NSString *globallyUniqueString = [[NSProcessInfo processInfo] globallyUniqueString];
-	NSArray *values = [globallyUniqueString componentsSeparatedByString:@"-"];
-	NSMutableArray *newUIDValues = [NSMutableArray array];
-	for ( NSString *string in values ) {
-		unsigned int hexValue;
-		NSScanner *scanner = [NSScanner scannerWithString:string];
-		[scanner scanHexInt:&hexValue];
-		NSString *newValue = [NSString stringWithFormat:@"%u", hexValue];
+- (void)newStudyInstanceUID
+{
+	NSString *uidSuffix = [DCMObject globallyUniqueString];
 		
-		[newUIDValues addObject:newValue];
-	}
-	NSString *uidSuffix = [newUIDValues componentsJoinedByString:@""];
-	
-	
 	NSArray *uidValues = [NSArray arrayWithObjects:rootUID, @"1", uidSuffix, nil];
 	NSString *uid = [uidValues componentsJoinedByString:@"."];
 	uid = [uid substringToIndex:64];
@@ -1315,19 +1307,10 @@ PixelRepresentation
 	//DCMAttribute *attr = [attributes objectForKey:[tag stringValue]];
 	
 }
-- (void)newSeriesInstanceUID {
-	NSString *globallyUniqueString = [[NSProcessInfo processInfo] globallyUniqueString];
-	NSArray *values = [globallyUniqueString componentsSeparatedByString:@"-"];
-	NSMutableArray *newUIDValues = [NSMutableArray array];
-	for  ( NSString *string in values ) {
-		unsigned int hexValue;
-		NSScanner *scanner = [NSScanner scannerWithString:string];
-		[scanner scanHexInt:&hexValue];
-		NSString *newValue = [NSString stringWithFormat:@"%u", hexValue];
-		
-		[newUIDValues addObject:newValue];
-	}
-	NSString *uidSuffix = [newUIDValues componentsJoinedByString:@""];
+
+- (void)newSeriesInstanceUID
+{
+	NSString *uidSuffix = [DCMObject globallyUniqueString];
 	NSArray *uidValues = [NSArray arrayWithObjects:rootUID, @"2", uidSuffix, nil];
 	NSString *uid = [uidValues componentsJoinedByString:@"."];
 	uid = [uid substringToIndex:64];
@@ -1337,20 +1320,9 @@ PixelRepresentation
 	[attributes setObject:attr forKey: tag.stringValue];
 }
 
-- (void)newSOPInstanceUID{
-	NSString *globallyUniqueString = [[NSProcessInfo processInfo] globallyUniqueString];
-	NSArray *values = [globallyUniqueString componentsSeparatedByString:@"-"];
-	NSMutableArray *newUIDValues = [NSMutableArray array];
-	for ( NSString *string in values ) {
-		unsigned int hexValue;
-		NSScanner *scanner = [NSScanner scannerWithString:string];
-		[scanner scanHexInt:&hexValue];
-		NSString *newValue = [NSString stringWithFormat:@"%u", hexValue];
-		
-		[newUIDValues addObject:newValue];
-	}
-	NSString *uidSuffix = [newUIDValues componentsJoinedByString:@""];
-	
+- (void)newSOPInstanceUID
+{
+	NSString *uidSuffix = [DCMObject globallyUniqueString];	
 	
 	NSArray *uidValues = [NSArray arrayWithObjects:rootUID, @"3", uidSuffix, nil];
 	NSString *uid = [uidValues componentsJoinedByString:@"."];
