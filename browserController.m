@@ -8481,7 +8481,7 @@ static BOOL needToRezoom;
 					{
 						NSLog( @"Destination DB Folder is identical to Current DB Folder");
 						
-						copiedObjects = [self addFilesToDatabase: packArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+						copiedObjects = [self addFilesToDatabase: packArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
 					}
 					else {
 						NSMutableArray	*dstFiles = [NSMutableArray array];
@@ -8513,7 +8513,7 @@ static BOOL needToRezoom;
 						[splash release];
 						
 						// Then we add the files to the sql file
-						copiedObjects = [self addFilesToDatabase: dstFiles onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+						copiedObjects = [self addFilesToDatabase: dstFiles onlyDICOM:NO safeRebuild:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
 					}
 					
 					// We will now copy the comments / status
@@ -8549,40 +8549,32 @@ static BOOL needToRezoom;
 					// Copy the comments/status at study level
 					for (NSManagedObject *obj in studiesArray)
 					{
-						NSManagedObject *s = 0L;
+						NSManagedObject *s = [self findStudyUID: [obj valueForKey: @"studyInstanceUID"]];
 						
-						if( [obj valueForKey: @"comment"])
+						if( [s valueForKey: @"comment"])
 						{
-							if( s == 0L) s = [self findStudyUID: [obj valueForKey: @"studyInstanceUID"]];
-							if( [s valueForKey: @"comment"])
-								[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
+							[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
 						}
 						
-						if( [obj valueForKey: @"stateText"])
+						if( [s valueForKey: @"stateText"])
 						{
-							if( s == 0L) s = [self findStudyUID: [obj valueForKey: @"studyInstanceUID"]];
-							if( [s valueForKey: @"stateText"])
-								[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
+							[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
 						}
 					}
 					
 					// Copy the comments/status at series level
 					for (NSManagedObject *obj in seriesArray)
 					{
-						NSManagedObject *s = 0L;
+						NSManagedObject *s = [self findSeriesUID: [obj valueForKey: @"seriesDICOMUID"]];
 						
-						if( [obj valueForKey: @"comment"])
+						if( [s valueForKey: @"comment"])
 						{
-							if( s == 0L) s = [self findSeriesUID: [obj valueForKey: @"seriesDICOMUID"]];
-							if( [s valueForKey: @"comment"])
-								[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
+							[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
 						}
 						
-						if( [obj valueForKey: @"stateText"])
+						if( [s valueForKey: @"stateText"])
 						{
-							if( s == 0L) s = [self findSeriesUID: [obj valueForKey: @"seriesDICOMUID"]];
-							if( [s valueForKey: @"stateText"])
-								[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
+							[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
 						}
 					}
 					
