@@ -2036,7 +2036,7 @@ static BOOL initialized = NO;
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
-	long i;
+	BOOL dialog = NO;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"] == NO)
 	{
@@ -2047,6 +2047,8 @@ static BOOL initialized = NO;
 			NSString *alertSuppress = @"growl info";
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
 			{
+				dialog = YES;
+				
 				NSAlert* alert = [NSAlert new];
 				[alert setMessageText: NSLocalizedString(@"Growl !", 0L)];
 				[alert setInformativeText: NSLocalizedString(@"Did you know that OsiriX supports Growl? An amazing notification system for MacOS. You can download it for free on Internet.", nil)];
@@ -2060,6 +2062,33 @@ static BOOL initialized = NO;
 				}
 				else
 					[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://growl.info"]];
+				
+				if ([[alert suppressionButton] state] == NSOnState)
+					[[NSUserDefaults standardUserDefaults] setBool:YES forKey:alertSuppress];
+			}
+		}
+	}
+
+	if( dialog == NO)
+	{
+		if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2008 month:8 day:30 hour:1 minute:1 second:1 timeZone:0L]] < 0 && [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2008 month:6 day:15 hour:1 minute:1 second:1 timeZone:0L]] > 0)
+		{
+			NSString *alertSuppress = @"osirix course";
+			if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
+			{
+				NSAlert* alert = [NSAlert new];
+				[alert setMessageText: NSLocalizedString(@"OsiriX Course - 12/13 Sept 2008", 0L)];
+				[alert setInformativeText: NSLocalizedString(@"Don't miss a unique opportunity to become an expert in OsiriX : The OsiriX Course\r\rCupertino, California, USA\r12-13 September 2008\r", nil)];
+				[alert setShowsSuppressionButton:YES ];
+				[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
+				[alert addButtonWithTitle: NSLocalizedString(@"More Informations", nil)];
+				
+				if( [alert runModal] == NSAlertFirstButtonReturn)
+				{
+					
+				}
+				else
+					[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Cupertino-Course.html"]];
 				
 				if ([[alert suppressionButton] state] == NSOnState)
 					[[NSUserDefaults standardUserDefaults] setBool:YES forKey:alertSuppress];
@@ -2104,10 +2133,10 @@ static BOOL initialized = NO;
 	
 	NSLog(@"No of screens: %d", [[NSScreen screens] count]);
 	
-	for( i = 0; i < [[NSScreen screens] count]; i++)
+	for( int i = 0; i < [[NSScreen screens] count]; i++)
 		toolbarPanel[ i] = [[ToolbarPanelController alloc] initForScreen: i];
 	
-	for( i = 0; i < [[NSScreen screens] count]; i++)
+	for( int i = 0; i < [[NSScreen screens] count]; i++)
 		[toolbarPanel[ i] fixSize];
 		
 //	if( USETOOLBARPANEL) [[toolbarPanel window] makeKeyAndOrderFront:self];

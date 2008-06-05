@@ -36,7 +36,8 @@
 	NSString *rootUID = [DCMObject rootUID];
 	NSArray *uidValues = [NSArray arrayWithObjects:rootUID, @"3", uidSuffix, nil];
 	NSString *uid = [uidValues componentsJoinedByString:@"."];
-	uid = [uid substringToIndex:64];
+	if( [uid length] >= 64)
+		uid = [uid substringToIndex:64];
 	return uid;
 }
 
