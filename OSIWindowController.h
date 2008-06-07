@@ -28,9 +28,17 @@ enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtr
 #undef id
 #endif
 
-@interface OSIWindowController : NSWindowController {
+@interface OSIWindowController : NSWindowController
+{
 	int _blendingType;
+	
+	BOOL magneticWindowActivated;
+	BOOL windowIsMovedByTheUserO;
+	NSRect savedWindowsFrameO;
 }
+
++ (void) setDontEnterMagneticFunctions:(BOOL) a;
+- (void) setMagnetic:(BOOL) a;
 
 - (NSMutableArray*) pixList;
 - (void) addToUndoQueue:(NSString*) what;

@@ -1299,7 +1299,8 @@ PixelRepresentation
 		
 	NSArray *uidValues = [NSArray arrayWithObjects:rootUID, @"1", uidSuffix, nil];
 	NSString *uid = [uidValues componentsJoinedByString:@"."];
-	uid = [uid substringToIndex:64];
+	if( [uid length] > 64)
+		uid = [uid substringToIndex:64];
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"StudyInstanceUID"];
 	NSMutableArray *attrValues = [NSMutableArray arrayWithObject:uid];
 	DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag vr: tag.vr values:attrValues];
@@ -1313,7 +1314,8 @@ PixelRepresentation
 	NSString *uidSuffix = [DCMObject globallyUniqueString];
 	NSArray *uidValues = [NSArray arrayWithObjects:rootUID, @"2", uidSuffix, nil];
 	NSString *uid = [uidValues componentsJoinedByString:@"."];
-	uid = [uid substringToIndex:64];
+	if( [uid length] > 64)
+		uid = [uid substringToIndex:64];
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"SeriesInstanceUID"];
 	NSMutableArray *attrValues = [NSMutableArray arrayWithObject:uid];
 	DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag vr: tag.vr values:attrValues];
@@ -1326,7 +1328,8 @@ PixelRepresentation
 	
 	NSArray *uidValues = [NSArray arrayWithObjects:rootUID, @"3", uidSuffix, nil];
 	NSString *uid = [uidValues componentsJoinedByString:@"."];
-	uid = [uid substringToIndex:64];
+	if( [uid length] > 64)
+		uid = [uid substringToIndex:64];
 	//NSLog(@"SOPInstanceUID: %@  length: %d", uid, [uid length]);
 	DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"SOPInstanceUID"];
 	NSMutableArray *attrValues = [NSMutableArray arrayWithObject:uid];

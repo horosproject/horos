@@ -310,8 +310,8 @@ enum
 	
 	float					resampleRatio;
 	
-	NSRect					savedWindowsFrame;
-	BOOL					windowIsMovedByTheUser;
+//	NSRect					savedWindowsFrame;
+//	BOOL					windowIsMovedByTheUser;
 	
 	ViewerController		*registeredViewer;
 	

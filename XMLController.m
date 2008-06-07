@@ -476,6 +476,8 @@ static BOOL showWarning = YES;
 {
 	if (self = [super initWithWindowNibName:@"XMLViewer"])
 	{
+		[self setMagnetic: YES];
+		
 		allowSelectionChange = YES;
 		editingLevel = 1;
 		

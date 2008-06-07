@@ -15,12 +15,13 @@
 
 
 #import <Cocoa/Cocoa.h>
+#import "OSIWindowController.h"
 
 @class ViewerController;
 
 /** \brief Window Controller for XML parsing */
 
-@interface XMLController : NSWindowController
+@interface XMLController : OSIWindowController
 {
     IBOutlet NSOutlineView		*table;
 	IBOutlet NSScrollView		*tableScrollView;

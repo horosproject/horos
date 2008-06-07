@@ -231,8 +231,20 @@ static char *GetPrivateIP()
 		[presets setValue: [searchFieldAN stringValue] forKey: @"searchFieldAN"];
 		
 		[presets setValue: [NSNumber numberWithInt: [dateFilterMatrix selectedTag]] forKey: @"dateFilterMatrix"];
-		[presets setValue: [NSNumber numberWithInt: [modalityFilterMatrix selectedRow]] forKey: @"modalityFilterMatrixRow"];
-		[presets setValue: [NSNumber numberWithInt: [modalityFilterMatrix selectedColumn]] forKey: @"modalityFilterMatrixColumn"];
+		
+		NSMutableString *cellsString = [NSMutableString string];
+		for( NSCell *cell in [modalityFilterMatrix cells])
+		{
+			if( [cell state] == NSOnState)
+			{
+				NSInteger row, col;
+				
+				[modalityFilterMatrix getRow: &row column: &col ofCell:cell];
+				[cellsString appendString: [NSString stringWithFormat:@"%d %d ", row, col]];
+			}
+		}
+		[presets setValue: cellsString forKey: @"modalityFilterMatrixString"];
+		
 		[presets setValue: [NSNumber numberWithInt: [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]]] forKey: @"PatientModeMatrix"];
 		
 		[presets setValue: [NSNumber numberWithDouble: [[fromDate dateValue] timeIntervalSinceReferenceDate]] forKey: @"fromDate"];
@@ -286,7 +298,31 @@ static char *GetPrivateIP()
 			[searchFieldAN setStringValue: [presets valueForKey: @"searchFieldAN"]];
 			
 			[dateFilterMatrix selectCellWithTag: [[presets valueForKey: @"dateFilterMatrix"] intValue]];
-			[modalityFilterMatrix selectCellAtRow: [[presets valueForKey: @"modalityFilterMatrixRow"] intValue]  column:[[presets valueForKey: @"modalityFilterMatrixColumn"] intValue]];
+			
+			[modalityFilterMatrix deselectAllCells];
+			
+			if( [presets valueForKey: @"modalityFilterMatrixRow"] && [presets valueForKey: @"modalityFilterMatrixColumn"])
+				[modalityFilterMatrix selectCellAtRow: [[presets valueForKey: @"modalityFilterMatrixRow"] intValue]  column:[[presets valueForKey: @"modalityFilterMatrixColumn"] intValue]];
+			else
+			{
+				NSString *s = [presets valueForKey: @"modalityFilterMatrixString"];
+				
+				NSScanner *scan = [NSScanner scannerWithString: s];
+				
+				BOOL more;
+				do
+				{
+					NSInteger row, col;
+					
+					more = [scan scanInteger: &row];
+					more = [scan scanInteger: &col];
+					
+					if( more)
+						[modalityFilterMatrix selectCellAtRow: row column: col];
+					
+				}while( more);
+			}
+			
 			[PatientModeMatrix selectTabViewItemAtIndex: [[presets valueForKey: @"PatientModeMatrix"] intValue]];
 			
 			[fromDate setDateValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[presets valueForKey: @"fromDate"] doubleValue]]];
@@ -770,15 +806,14 @@ static char *GetPrivateIP()
 {
 	NSInteger PatientModeMatrixSelected = [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]];
 	NSInteger dateFilterMatrixSelected = [dateFilterMatrix selectedTag];
-	NSInteger mRow = [modalityFilterMatrix selectedRow];
-	NSInteger mCol = [modalityFilterMatrix selectedColumn];
+	NSArray *cells = [modalityFilterMatrix selectedCells];
 	NSString *copySearchField = [NSString stringWithString: [searchFieldID stringValue]];
 	
 	[PatientModeMatrix selectTabViewItemAtIndex: 1];	// PatientID search
 	
 	[dateFilterMatrix selectCellWithTag: 0];
 	[self setDateQuery: dateFilterMatrix];
-	[modalityFilterMatrix selectCellWithTag: 3];
+	[modalityFilterMatrix deselectAllCells];
 	[self setModalityQuery: modalityFilterMatrix];
 	[searchFieldID setStringValue: ID];
 	
@@ -788,7 +823,8 @@ static char *GetPrivateIP()
 	
 	[PatientModeMatrix selectTabViewItemAtIndex: PatientModeMatrixSelected];
 	[dateFilterMatrix selectCellWithTag: dateFilterMatrixSelected];
-	[modalityFilterMatrix selectCellAtRow: mRow column: mCol];
+	for( id cell in cells)
+		[modalityFilterMatrix selectCell: cell];
 	[searchFieldID setStringValue: copySearchField];
 	
 	return result;
@@ -1600,11 +1636,20 @@ static char *GetPrivateIP()
 {
 	[modalityQueryFilter release];
 	
-	if ( [[sender selectedCell] tag] != 3)
+	NSMutableString *m = [NSMutableString string];
+	for( NSCell *cell in [sender cells])
 	{
-		modalityQueryFilter = [[QueryFilter queryFilterWithObject:[[sender selectedCell] title] ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
+		if( [cell state] == NSOnState)
+		{
+			if( [m length]) [m appendString:@"\\"];
+			[m appendString: [cell title]];
+		}
 	}
-	else modalityQueryFilter = [[QueryFilter queryFilterWithObject: 0L ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
+	
+	if ( [m length])
+		modalityQueryFilter = [[QueryFilter queryFilterWithObject:m ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
+	else
+		modalityQueryFilter = [[QueryFilter queryFilterWithObject: 0L ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
 }
 
 

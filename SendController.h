@@ -55,7 +55,7 @@ enum SendServerType { osirixServer, offisServer };
 	NSLock				*_lock;
 	DCMTKStoreSCU		*storeSCU;
 	
-	IBOutlet NSComboBox		*serverList;
+	IBOutlet NSPopUpButton	*newServerList;
 	IBOutlet NSMatrix		*keyImageMatrix;
 	IBOutlet NSTextField	*numberImagesTextField, *addressAndPort;
 	IBOutlet NSPopUpButton	*syntaxListOffis;
@@ -77,4 +77,5 @@ enum SendServerType { osirixServer, offisServer };
 - (void)abort;
 - (void)closeSendPanel:(id)sender;
 - (IBAction)selectServer: (id)sender;
+- (void) updateDestinationPopup;
 @end

@@ -78,7 +78,8 @@ static volatile int sendControllerObjects = 0;
 	else NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"No files are selected...",nil),NSLocalizedString( @"OK",nil), nil, nil);
 }
 
-- (id)initWithFiles:(NSArray *)files{
+- (id)initWithFiles:(NSArray *)files
+{
 	if (self = [super initWithWindowNibName:@"Send"])
 	{
 		NSLog( @"SendController initWithFiles");
@@ -106,22 +107,29 @@ static volatile int sendControllerObjects = 0;
 		sendControllerObjects++;
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setSendMessage:) name:@"DCMSendStatus" object:nil];
-
+		
+		[[NSNotificationCenter defaultCenter] addObserver: self
+												selector: @selector( updateDestinationPopup:)
+												name: @"OsiriXServerArray has changed"
+												object: nil];
+		
+		[[NSNotificationCenter defaultCenter] addObserver: self
+												selector: @selector( updateDestinationPopup:)
+												name: @"DCMNetServicesDidChange"
+												object: nil];
 	}
 	return self;
 }
-
-
 
 - (void) windowDidLoad
 {
 	if 	([_files  count])
 	{
-		[serverList reloadData];
-	
+		[self updateDestinationPopup];
+		
 		int count = [[DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO] count];
 		if (_serverIndex < count)
-			[serverList selectItemAtIndex: _serverIndex];
+			[newServerList selectItemAtIndex: _serverIndex];
 			
 //		[DICOMSendTool selectCellWithTag: _serverToolIndex];
 		[keyImageMatrix selectCellWithTag: _keyImageIndex];
@@ -129,12 +137,13 @@ static volatile int sendControllerObjects = 0;
 //		[syntaxListOsiriX selectItemWithTag: _osirixTS];
 		[syntaxListOffis selectItemWithTag: _offisTS];
 		
-		[self selectServer: serverList];
+		[self selectServer: newServerList];
 	}
 
 }
 
-- (void)dealloc{
+- (void)dealloc
+{
 	NSLog(@"SendController Released");
 	[_files release];
 	[_server release];
@@ -159,12 +168,14 @@ static volatile int sendControllerObjects = 0;
 	return _numberFiles;
 }
 
-- (void)setNumberFiles:(NSString *)numberFiles{
+- (void)setNumberFiles:(NSString *)numberFiles
+{
 	[_numberFiles release];
 	_numberFiles = [numberFiles retain];
 }
 
-- (id)server{
+- (id)server
+{
 	return [self serverAtIndex:_serverIndex];
 }
 
@@ -180,7 +191,8 @@ static volatile int sendControllerObjects = 0;
 	return nil;
 }
 
-- (id)setServer:(id)server{
+- (id)setServer:(id)server
+{
 	[_server release];
 	_server = [server retain];
 
@@ -428,34 +440,27 @@ static volatile int sendControllerObjects = 0;
 
 #pragma mark serversArray functions
 
-- (NSInteger) numberOfItemsInComboBox:(NSComboBox *)aComboBox
+- (void) updateDestinationPopup
 {
-	NSArray			*serversArray		= [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
+	NSString *currentTitle = [[[newServerList selectedItem] title] retain];
 	
-	if ([aComboBox isEqual:serverList])
-	{	
-		return [serversArray count];
-	}
-}
-
-- (id) comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(NSInteger)index
-{
-	NSArray			*serversArray		= [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
-	
-	if ([aComboBox isEqual:serverList])
+	[newServerList removeAllItems];
+	for( NSDictionary *d in [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO])
 	{
-		if( index > -1 && index < [serversArray count])
-		{
-			id theRecord = [serversArray objectAtIndex: index];			
-			return [NSString stringWithFormat:@"%@ - %@",[theRecord objectForKey:@"AETitle"],[theRecord objectForKey:@"Description"]];
-		}
+		[newServerList addItemWithTitle: [NSString stringWithFormat:@"%@ - %@",[d objectForKey:@"AETitle"],[d objectForKey:@"Description"]]];
 	}
-	return nil;
+	
+	for( NSMenuItem *d in [newServerList itemArray])
+	{
+		if( [[d title] isEqualToString: currentTitle])
+			[newServerList selectItem: d];
+	}
+	
+	[currentTitle release];
 }
 
-
-
-- (void)listenForAbort:(id)handler{
+- (void)listenForAbort:(id)handler
+{
 	[[_waitSendWindow window] orderOut:self];
 	[storeSCU abort];
 }

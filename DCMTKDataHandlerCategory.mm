@@ -108,9 +108,25 @@
 			else if (key ==  DCM_ModalitiesInStudy) {
 				char *mis;
 				if (dcelem->getString(mis).good() && mis != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"modality LIKE[cd] %@", [NSString stringWithCString:mis  DICOMEncoding:nil]];
+				{
+					NSArray *predicateArray = [NSArray array];
+					for( NSString *s in [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"])
+						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"modality LIKE[cd] %@", s]];
+					
+					predicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
+				}
 			}
-			
+			else if (key ==  DCM_Modality) {
+				char *mis;
+				if (dcelem->getString(mis).good() && mis != NULL)
+				{
+					NSArray *predicateArray = [NSArray array];
+					for( NSString *s in [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"])
+						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"modality LIKE[cd] %@", s]];
+					
+					predicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
+				}
+			}
 			else if (key == DCM_PatientsBirthDate) {
 				//NSLog(@"BirthDate");
 				char *aDate;

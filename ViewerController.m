@@ -149,7 +149,7 @@ static NSArray*		DefaultROINames;
 static  BOOL AUTOHIDEMATRIX								= NO;
 static	ViewerController *blendedwin					= 0L;
 static	float deg2rad									= 3.14159265358979/180.0; 
-static	BOOL dontEnterMagneticFunctions = NO;
+//static	BOOL dontEnterMagneticFunctions = NO;
 
 static NSMenu *wlwwPresetsMenu = 0L;
 static NSMenu *contextualMenu = 0L;
@@ -235,10 +235,10 @@ static int hotKeyToolCrossTable[] =
 	return -1;
 }
 
-+ (void) setDontEnterMagneticFunctions:(BOOL) a
-{
-	dontEnterMagneticFunctions = a;
-}
+//+ (void) setDontEnterMagneticFunctions:(BOOL) a
+//{
+//	dontEnterMagneticFunctions = a;
+//}
 
 + (NSMutableArray*) getDisplayed2DViewers
 {
@@ -2024,7 +2024,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	BOOL wasAlreadyVisible = [[self window] isVisible];
 	
 	//To avoid the use of WindowDidMove function - Magnetic windows
-	dontEnterMagneticFunctions = YES;
+	[OSIWindowController setDontEnterMagneticFunctions: YES];
 	
 	[self setStandardRect:rect];
 	
@@ -2066,7 +2066,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if( showWindow) [[self window] orderFront:self];
 	}
 	
-	dontEnterMagneticFunctions = NO;
+	[OSIWindowController setDontEnterMagneticFunctions: NO];
 }
 
 - (void)setWindowFrame:(NSRect)rect showWindow:(BOOL) showWindow
@@ -2182,147 +2182,147 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[self release];
 }
 
-- (void)windowDidResize:(NSNotification *)aNotification
-{
-	if( dontEnterMagneticFunctions == NO && Button() != 0)
-	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"])
-		{
-			NSEnumerator	*e;
-			NSWindow		*theWindow, *window;
-			NSScreen		*screen;
-			NSValue			*value;
-			NSRect			frame, myFrame;
-			BOOL			hDidChange = NO, vDidChange = NO;
-			
-			theWindow = [aNotification object];
-			myFrame = [theWindow frame];
-			
-			float gravityX = 30;
-			float gravityY = 30;
-			
-			if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) return;
-			
-			NSMutableArray	*rects = [NSMutableArray array];
-			
-			// Add the viewers
-			e = [[NSApp windows] objectEnumerator];
-			while (window = [e nextObject])
-			{
-				if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [ViewerController class]])
-				{
-					[rects addObject: [NSValue valueWithRect: [window frame]]];
-				}
-			}
-			
-			// Add the current screen ONLY
-//			e = [[NSScreen screens] objectEnumerator];
-//			while (screen = [e nextObject])
-			{
-				NSRect frame = [[[self window] screen] visibleFrame];
-				if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
-				frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
-				[rects addObject: [NSValue valueWithRect: frame]];
-			}
-			
-			NSRect	dstFrame = myFrame;
-			
-			for (value in rects)
-			{
-				frame = [value rectValue];
-				
-				/* horizontal magnet */
-				if (fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)	// LEFT
-				{
-					gravityX = fabs(NSMinX(frame) - NSMaxX(myFrame));
-					dstFrame.size.width = frame.origin.x - myFrame.origin.x;
-				}
-				
-				/* vertical magnet */
-				if (fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)	//TOP
-				{
-					gravityY = fabs(NSMinY(frame) - NSMinY(myFrame));
-					
-					NSRect	previous = dstFrame;
-					dstFrame.origin.y = frame.origin.y;
-					dstFrame.size.height = dstFrame.size.height - (dstFrame.origin.y - previous.origin.y);
-				}
-			}
-			
-			for (value in rects)
-			{
-				if (fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)	//RIGHT
-				{
-					gravityX = fabs(NSMaxX(frame) - NSMaxX(myFrame));
-					dstFrame.size.width = frame.origin.x + frame.size.width - myFrame.origin.x;
-				}
-			
-				if (fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)	// BOTTOM
-				{
-					gravityY = fabs(NSMaxY(frame) - NSMinY(myFrame));
-					
-					NSRect	previous = dstFrame;
-					dstFrame.origin.y = frame.origin.y + frame.size.height;
-					dstFrame.size.height = dstFrame.size.height - (dstFrame.origin.y - previous.origin.y);
-				}
-			}
-			
-			dontEnterMagneticFunctions = YES;
-			[theWindow setFrame:dstFrame display:YES];
-			dontEnterMagneticFunctions = NO;
-		}
-		
-		if( [aNotification object] == [self window])
-		{
-			[self matrixPreviewSelectCurrentSeries];
-		}
-		
-		if ([[NSApp currentEvent] modifierFlags] & NSShiftKeyMask)
-		{
-			// Apply the same size to all displayed windows
-			
-			NSArray	*viewers = [ViewerController getDisplayed2DViewers];
-			
-			for( id loopItem in viewers)
-			{
-				if( loopItem != self)
-				{
-					NSWindow *theWindow = [loopItem window];
-					
-					NSRect dstFrame = [theWindow frame];
-					
-					dstFrame.size = [[self window] frame].size;
-					
-					dstFrame.origin.y -= dstFrame.size.height - [theWindow frame].size.height;
-					
-					dontEnterMagneticFunctions = YES;
-					[theWindow setFrame: dstFrame display:YES];
-					dontEnterMagneticFunctions = NO;
-				}
-			}
-		}
-	}
-	else
-	{
-		NSRect dstFrame = [[self window] frame];
-		
-		if( USETOOLBARPANEL)
-		{
-			if( dstFrame.size.height >= [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController fixedHeight])
-			{
-				dstFrame.size.height = [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController fixedHeight];
-				
-			}
-		}
-		
-		dstFrame = [NavigatorView adjustIfScreenAreaIf4DNavigator: dstFrame];
-		
-		if( NSEqualRects( dstFrame, [[self window] frame]) == NO)
-			[[self window] setFrame: dstFrame display:YES];
-	}
-	
-	[self showCurrentThumbnail: self];
-}
+//- (void)windowDidResize:(NSNotification *)aNotification
+//{
+//	if( dontEnterMagneticFunctions == NO && Button() != 0)
+//	{
+//		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"])
+//		{
+//			NSEnumerator	*e;
+//			NSWindow		*theWindow, *window;
+//			NSScreen		*screen;
+//			NSValue			*value;
+//			NSRect			frame, myFrame;
+//			BOOL			hDidChange = NO, vDidChange = NO;
+//			
+//			theWindow = [aNotification object];
+//			myFrame = [theWindow frame];
+//			
+//			float gravityX = 30;
+//			float gravityY = 30;
+//			
+//			if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) return;
+//			
+//			NSMutableArray	*rects = [NSMutableArray array];
+//			
+//			// Add the viewers
+//			e = [[NSApp windows] objectEnumerator];
+//			while (window = [e nextObject])
+//			{
+//				if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [ViewerController class]])
+//				{
+//					[rects addObject: [NSValue valueWithRect: [window frame]]];
+//				}
+//			}
+//			
+//			// Add the current screen ONLY
+////			e = [[NSScreen screens] objectEnumerator];
+////			while (screen = [e nextObject])
+//			{
+//				NSRect frame = [[[self window] screen] visibleFrame];
+//				if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+//				frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
+//				[rects addObject: [NSValue valueWithRect: frame]];
+//			}
+//			
+//			NSRect	dstFrame = myFrame;
+//			
+//			for (value in rects)
+//			{
+//				frame = [value rectValue];
+//				
+//				/* horizontal magnet */
+//				if (fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)	// LEFT
+//				{
+//					gravityX = fabs(NSMinX(frame) - NSMaxX(myFrame));
+//					dstFrame.size.width = frame.origin.x - myFrame.origin.x;
+//				}
+//				
+//				/* vertical magnet */
+//				if (fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)	//TOP
+//				{
+//					gravityY = fabs(NSMinY(frame) - NSMinY(myFrame));
+//					
+//					NSRect	previous = dstFrame;
+//					dstFrame.origin.y = frame.origin.y;
+//					dstFrame.size.height = dstFrame.size.height - (dstFrame.origin.y - previous.origin.y);
+//				}
+//			}
+//			
+//			for (value in rects)
+//			{
+//				if (fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)	//RIGHT
+//				{
+//					gravityX = fabs(NSMaxX(frame) - NSMaxX(myFrame));
+//					dstFrame.size.width = frame.origin.x + frame.size.width - myFrame.origin.x;
+//				}
+//			
+//				if (fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)	// BOTTOM
+//				{
+//					gravityY = fabs(NSMaxY(frame) - NSMinY(myFrame));
+//					
+//					NSRect	previous = dstFrame;
+//					dstFrame.origin.y = frame.origin.y + frame.size.height;
+//					dstFrame.size.height = dstFrame.size.height - (dstFrame.origin.y - previous.origin.y);
+//				}
+//			}
+//			
+//			dontEnterMagneticFunctions = YES;
+//			[theWindow setFrame:dstFrame display:YES];
+//			dontEnterMagneticFunctions = NO;
+//		}
+//		
+//		if( [aNotification object] == [self window])
+//		{
+//			[self matrixPreviewSelectCurrentSeries];
+//		}
+//		
+//		if ([[NSApp currentEvent] modifierFlags] & NSShiftKeyMask)
+//		{
+//			// Apply the same size to all displayed windows
+//			
+//			NSArray	*viewers = [ViewerController getDisplayed2DViewers];
+//			
+//			for( id loopItem in viewers)
+//			{
+//				if( loopItem != self)
+//				{
+//					NSWindow *theWindow = [loopItem window];
+//					
+//					NSRect dstFrame = [theWindow frame];
+//					
+//					dstFrame.size = [[self window] frame].size;
+//					
+//					dstFrame.origin.y -= dstFrame.size.height - [theWindow frame].size.height;
+//					
+//					dontEnterMagneticFunctions = YES;
+//					[theWindow setFrame: dstFrame display:YES];
+//					dontEnterMagneticFunctions = NO;
+//				}
+//			}
+//		}
+//	}
+//	else
+//	{
+//		NSRect dstFrame = [[self window] frame];
+//		
+//		if( USETOOLBARPANEL)
+//		{
+//			if( dstFrame.size.height >= [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController fixedHeight])
+//			{
+//				dstFrame.size.height = [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController fixedHeight];
+//				
+//			}
+//		}
+//		
+//		dstFrame = [NavigatorView adjustIfScreenAreaIf4DNavigator: dstFrame];
+//		
+//		if( NSEqualRects( dstFrame, [[self window] frame]) == NO)
+//			[[self window] setFrame: dstFrame display:YES];
+//	}
+//	
+//	[self showCurrentThumbnail: self];
+//}
 
 - (void)windowDidMiniaturize:(NSNotification *)notification
 {
@@ -2468,156 +2468,156 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[self updateNavigator];
 }
 
-- (void)windowWillMove:(NSNotification *)notification
-{
-	windowIsMovedByTheUser = NO;
-	
-	if( dontEnterMagneticFunctions == NO)
-	{
-		savedWindowsFrame = [[self window] frame];
-		
-		if( Button()) windowIsMovedByTheUser = YES;
-	}
-}
+//- (void)windowWillMove:(NSNotification *)notification
+//{
+//	windowIsMovedByTheUser = NO;
+//	
+//	if( dontEnterMagneticFunctions == NO)
+//	{
+//		savedWindowsFrame = [[self window] frame];
+//		
+//		if( Button()) windowIsMovedByTheUser = YES;
+//	}
+//}
 
 //- (void)windowDidUpdate:(NSNotification *)notification
 //{
 //	[[[NavigatorWindowController navigatorWindowController] window] setLevel:[[self window] level]];
 //}
 
-- (void)windowDidMove:(NSNotification *)notification
-{
-	if( windowIsMovedByTheUser == YES && dontEnterMagneticFunctions == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrame) == NO)
-	{
-		if( Button() == 0) windowIsMovedByTheUser = NO;
-		
-		NSEnumerator	*e;
-		NSWindow		*theWindow, *window;
-		NSRect			frame, myFrame, dstFrame;
-		BOOL			hDidChange = NO, vDidChange = NO;
-		NSScreen		*screen;
-		NSValue			*value;
-		
-		theWindow = [self window];
-		myFrame = [theWindow frame];
-		
-		float gravityX = myFrame.size.width/4;
-		float gravityY = myFrame.size.height/4;
-		
-		if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) return;
-		
-		NSMutableArray	*rects = [NSMutableArray array];
-		
-		// Add the viewers
-		e = [[NSApp windows] objectEnumerator];
-		while (window = [e nextObject])
-		{
-			if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [ViewerController class]])
-			{
-				[rects addObject: [NSValue valueWithRect: [window frame]]];
-			}
-		}
-		
-		// Add the current screen ONLY
-//		e = [[NSScreen screens] objectEnumerator];
-//		while (screen = [e nextObject])
-		{
-			NSRect frame = [[[self window] screen] visibleFrame];
-			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
-			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
-			
-			[rects addObject: [NSValue valueWithRect: frame]];
-		}
-		
-		dstFrame = myFrame;
-		
-		for (value in rects)
-		{
-			frame = [value rectValue];
-			
-			/* horizontal magnet */
-			if (fabs(NSMinX(frame) - NSMinX(myFrame)) <= gravityX)
-			{
-				gravityX = fabs(NSMinX(frame) - NSMinX(myFrame));
-				dstFrame.origin.x = frame.origin.x;
-			}
-			if (fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)
-			{
-				gravityX = fabs(NSMinX(frame) - NSMaxX(myFrame));
-				dstFrame.origin.x = myFrame.origin.x + NSMinX(frame) - NSMaxX(myFrame);
-			}
-			if (fabs(NSMaxX(frame) - NSMinX(myFrame)) <= gravityX)
-			{
-				gravityX = fabs(NSMaxX(frame) - NSMinX(myFrame));
-				dstFrame.origin.x = NSMaxX(frame);
-			}
-			if (fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)
-			{
-				gravityX = fabs(NSMaxX(frame) - NSMaxX(myFrame));
-				dstFrame.origin.x = myFrame.origin.x + NSMaxX(frame) - NSMaxX(myFrame);
-			}
-			
-			/* vertical magnet */
-			if (fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)
-			{
-				gravityY = fabs(NSMinY(frame) - NSMinY(myFrame));
-				dstFrame.origin.y = frame.origin.y;
-			}
-			if (fabs(NSMinY(frame) - NSMaxY(myFrame)) <= gravityY)
-			{
-				gravityY = fabs(NSMinY(frame) - NSMaxY(myFrame));
-				dstFrame.origin.y = myFrame.origin.y + NSMinY(frame) - NSMaxY(myFrame);
-			}
-			if (fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)
-			{
-				gravityY = fabs(NSMaxY(frame) - NSMinY(myFrame));
-				dstFrame.origin.y = NSMaxY(frame);
-			}
-			if (fabs(NSMaxY(frame) - NSMaxY(myFrame)) <= gravityY)
-			{
-				gravityY = fabs(NSMaxY(frame) - NSMaxY(myFrame));
-				dstFrame.origin.y = myFrame.origin.y + NSMaxY(frame) - NSMaxY(myFrame);
-			}
-		}
-		myFrame = dstFrame;
-		
-		dontEnterMagneticFunctions = YES;
-		[AppController resizeWindowWithAnimation: theWindow newSize: myFrame];
-		dontEnterMagneticFunctions = NO;
-		
-		[self updateNavigator];
-		
-		// Is the Origin identical? If yes, switch both windows
-		e = [[NSApp windows] objectEnumerator];
-		while (window = [e nextObject])
-		{
-			if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [ViewerController class]])
-			{
-				frame = [window frame];
-				
-				if( fabs( frame.origin.x - myFrame.origin.x) < 3 && fabs( NSMaxY( frame) - NSMaxY( myFrame)) < 3)
-				{
-					dontEnterMagneticFunctions = YES;
-					
-					[window orderWindow: NSWindowBelow relativeTo: [theWindow windowNumber]];
-					[AppController resizeWindowWithAnimation: window newSize: savedWindowsFrame];
-					
-					savedWindowsFrame = frame;
-					
-					[AppController resizeWindowWithAnimation: theWindow newSize: frame];
-					
-					dontEnterMagneticFunctions = NO;
-					
-//					[window makeKeyAndOrderFront: self];
-//					[theWindow makeKeyAndOrderFront: self];
-//					[self refreshToolbar];
-					
-					return;
-				}
-			}
-		}
-	}
-}
+//- (void)windowDidMove:(NSNotification *)notification
+//{
+//	if( windowIsMovedByTheUser == YES && dontEnterMagneticFunctions == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrame) == NO)
+//	{
+//		if( Button() == 0) windowIsMovedByTheUser = NO;
+//		
+//		NSEnumerator	*e;
+//		NSWindow		*theWindow, *window;
+//		NSRect			frame, myFrame, dstFrame;
+//		BOOL			hDidChange = NO, vDidChange = NO;
+//		NSScreen		*screen;
+//		NSValue			*value;
+//		
+//		theWindow = [self window];
+//		myFrame = [theWindow frame];
+//		
+//		float gravityX = myFrame.size.width/4;
+//		float gravityY = myFrame.size.height/4;
+//		
+//		if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) return;
+//		
+//		NSMutableArray	*rects = [NSMutableArray array];
+//		
+//		// Add the viewers
+//		e = [[NSApp windows] objectEnumerator];
+//		while (window = [e nextObject])
+//		{
+//			if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [ViewerController class]])
+//			{
+//				[rects addObject: [NSValue valueWithRect: [window frame]]];
+//			}
+//		}
+//		
+//		// Add the current screen ONLY
+////		e = [[NSScreen screens] objectEnumerator];
+////		while (screen = [e nextObject])
+//		{
+//			NSRect frame = [[[self window] screen] visibleFrame];
+//			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+//			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
+//			
+//			[rects addObject: [NSValue valueWithRect: frame]];
+//		}
+//		
+//		dstFrame = myFrame;
+//		
+//		for (value in rects)
+//		{
+//			frame = [value rectValue];
+//			
+//			/* horizontal magnet */
+//			if (fabs(NSMinX(frame) - NSMinX(myFrame)) <= gravityX)
+//			{
+//				gravityX = fabs(NSMinX(frame) - NSMinX(myFrame));
+//				dstFrame.origin.x = frame.origin.x;
+//			}
+//			if (fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)
+//			{
+//				gravityX = fabs(NSMinX(frame) - NSMaxX(myFrame));
+//				dstFrame.origin.x = myFrame.origin.x + NSMinX(frame) - NSMaxX(myFrame);
+//			}
+//			if (fabs(NSMaxX(frame) - NSMinX(myFrame)) <= gravityX)
+//			{
+//				gravityX = fabs(NSMaxX(frame) - NSMinX(myFrame));
+//				dstFrame.origin.x = NSMaxX(frame);
+//			}
+//			if (fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)
+//			{
+//				gravityX = fabs(NSMaxX(frame) - NSMaxX(myFrame));
+//				dstFrame.origin.x = myFrame.origin.x + NSMaxX(frame) - NSMaxX(myFrame);
+//			}
+//			
+//			/* vertical magnet */
+//			if (fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)
+//			{
+//				gravityY = fabs(NSMinY(frame) - NSMinY(myFrame));
+//				dstFrame.origin.y = frame.origin.y;
+//			}
+//			if (fabs(NSMinY(frame) - NSMaxY(myFrame)) <= gravityY)
+//			{
+//				gravityY = fabs(NSMinY(frame) - NSMaxY(myFrame));
+//				dstFrame.origin.y = myFrame.origin.y + NSMinY(frame) - NSMaxY(myFrame);
+//			}
+//			if (fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)
+//			{
+//				gravityY = fabs(NSMaxY(frame) - NSMinY(myFrame));
+//				dstFrame.origin.y = NSMaxY(frame);
+//			}
+//			if (fabs(NSMaxY(frame) - NSMaxY(myFrame)) <= gravityY)
+//			{
+//				gravityY = fabs(NSMaxY(frame) - NSMaxY(myFrame));
+//				dstFrame.origin.y = myFrame.origin.y + NSMaxY(frame) - NSMaxY(myFrame);
+//			}
+//		}
+//		myFrame = dstFrame;
+//		
+//		dontEnterMagneticFunctions = YES;
+//		[AppController resizeWindowWithAnimation: theWindow newSize: myFrame];
+//		dontEnterMagneticFunctions = NO;
+//		
+//		[self updateNavigator];
+//		
+//		// Is the Origin identical? If yes, switch both windows
+//		e = [[NSApp windows] objectEnumerator];
+//		while (window = [e nextObject])
+//		{
+//			if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [ViewerController class]])
+//			{
+//				frame = [window frame];
+//				
+//				if( fabs( frame.origin.x - myFrame.origin.x) < 3 && fabs( NSMaxY( frame) - NSMaxY( myFrame)) < 3)
+//				{
+//					dontEnterMagneticFunctions = YES;
+//					
+//					[window orderWindow: NSWindowBelow relativeTo: [theWindow windowNumber]];
+//					[AppController resizeWindowWithAnimation: window newSize: savedWindowsFrame];
+//					
+//					savedWindowsFrame = frame;
+//					
+//					[AppController resizeWindowWithAnimation: theWindow newSize: frame];
+//					
+//					dontEnterMagneticFunctions = NO;
+//					
+////					[window makeKeyAndOrderFront: self];
+////					[theWindow makeKeyAndOrderFront: self];
+////					[self refreshToolbar];
+//					
+//					return;
+//				}
+//			}
+//		}
+//	}
+//}
 
 /*
 - (BOOL)windowShouldZoom:(NSWindow *)sender toFrame:(NSRect)newFrame
@@ -5144,6 +5144,8 @@ static ViewerController *draggedController = 0L;
 
 - (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
 {
+	[self setMagnetic: YES];
+	
 	if( [d count] == 0) d = 0L;
 	
 	[AppController displayImportantNotice: self];

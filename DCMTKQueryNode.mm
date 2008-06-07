@@ -457,6 +457,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	[super dealloc];
 }
 
+- (NSString *)comment{
+	return @"";
+}
+- (NSNumber *)stateText{
+	return 0;
+}
 - (NSString *)uid{
 	return _uid;
 }
@@ -591,8 +597,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				string = [(NSString*)value cStringUsingEncoding:encoding];
 				dataset->putAndInsertString(DCM_StudyID, string);
 			}
-			else if ([key isEqualToString:@"ModalitiesinStudy"]) {
+			else if ([key isEqualToString:@"ModalitiesinStudy"])
+			{
 				string = [(NSString*)value cStringUsingEncoding:encoding];
+				
 				dataset->putAndInsertString(DCM_ModalitiesInStudy, string);
 				dataset->putAndInsertString(DCM_Modality, string);
 			}
@@ -604,8 +612,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	else NSLog( @"setupNetworkWithSyntax error");
 	 
-	 if (dataset != NULL) delete dataset;
-	
+	if (dataset != NULL) delete dataset;
 }
 
 - (void) move:(NSDictionary*) dict
