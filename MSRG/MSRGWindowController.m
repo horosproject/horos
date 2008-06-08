@@ -227,7 +227,7 @@ PURPOSE.
 		 
 		 [[[viewer roiList] objectAtIndex: [[viewer imageView] curImage]] addObject:theNewROI];	
 		 [[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];
-		 [theNewROI dealloc];
+		 [theNewROI release];
 		 */
 		
 	}

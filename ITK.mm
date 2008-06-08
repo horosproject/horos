@@ -29,14 +29,14 @@
 
 - (void) dealloc
 {
-	NSLog(@"ITK Image dealloc");
-	
-	if( sizeof( long) == 8 )
+	if( importFilter)
 	{
-		// Why..... mystery of 64-bit support in MacOS......
+		importFilter->UnRegister();
+		
+		NSLog(@"ITK Image dealloc: %d", importFilter->GetReferenceCount());
+		
+//		importFilter->Delete();
 	}
-	else
-		importFilter->Delete();
 	
 	[super dealloc];
 }
@@ -100,7 +100,8 @@
 		if( voxelSpacingZ == 0 || [pixList count] == 1) voxelSpacingZ = 0.1;
 		
 		// get data
-		if( slice == -1) {
+		if( slice == -1)
+		{
 			data = volumeData;
 			// resample data decreases the size by 2 if all dimensions
 			
@@ -136,6 +137,8 @@
 		{
 			data = volumeData;
 			data += slice*width*height;
+			
+			resampleData = NO;
 		}
 		
 		size[0] = width; // size along X
@@ -159,7 +162,10 @@
 - (void)setupImportFilterWithSize:(ImportFilterType::SizeType)size origin:(double[3])origin spacing:(double[3])spacing data:(float *)data filterWillOwnBuffer:(BOOL)filterWillOwnBuffer
 {
 	itk::MultiThreader::SetGlobalDefaultNumberOfThreads( MPProcessors());
+	
 	importFilter = ImportFilterType::New();
+	
+	importFilter->Register();
 	
 	//ImportFilterType::SizeType size;
 	ImportFilterType::IndexType start;

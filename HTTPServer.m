@@ -68,7 +68,7 @@
 @implementation HTTPConnection
 
 - (id)init {
-    [self dealloc];
+    [self release];
     return nil;
 }
 

@@ -463,7 +463,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 
 -(void) dealloc
 {
-	[itkImage dealloc];
+	[itkImage release];
 	
 	[super dealloc];
 }
