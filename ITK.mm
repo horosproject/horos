@@ -25,6 +25,8 @@
 #import "DCMPix.h"
 #import "ITK.h"
 
+//static ImportFilterType::Pointer importFilter;
+
 @implementation ITK
 
 - (void) dealloc
@@ -32,10 +34,7 @@
 	if( importFilter)
 	{
 		importFilter->UnRegister();
-		
 		NSLog(@"ITK Image dealloc: %d", importFilter->GetReferenceCount());
-		
-//		importFilter->Delete();
 	}
 	
 	[super dealloc];
@@ -164,6 +163,7 @@
 	itk::MultiThreader::SetGlobalDefaultNumberOfThreads( MPProcessors());
 	
 	importFilter = ImportFilterType::New();
+//	importFilter->DebugOn();
 	
 	importFilter->Register();
 	
