@@ -369,7 +369,7 @@ extern NSString * documentsDirectory();
 	return NO;
 }
 
--(NSMutableArray*) pixList { return pixList[0];}
+-(NSArray*) pixList { return pixList[0];}
 
 - (void) updateOrientationMatrix
 {

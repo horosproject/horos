@@ -235,11 +235,6 @@ static int hotKeyToolCrossTable[] =
 	return -1;
 }
 
-//+ (void) setDontEnterMagneticFunctions:(BOOL) a
-//{
-//	dontEnterMagneticFunctions = a;
-//}
-
 + (NSMutableArray*) getDisplayed2DViewers
 {
 	NSArray				*winList = [NSApp orderedWindows];

@@ -130,7 +130,7 @@
 
 //---------------------------------------------------------------------------
  
-- (NSRect)rectForPage:(int)page
+- (NSRect)rectForPage:(NSInteger)page
 {
 	//Before printing each page, the pagination machinery sends the view a rectForPage: message. 
 	//Your implementation of rectForPage: should use the supplied page number and the current printing information to 
