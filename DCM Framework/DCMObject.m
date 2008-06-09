@@ -26,7 +26,7 @@ static NSString *rootUID = @"1.3.6.1.4.1.19291.2.1";
 static NSString *uidQualifier = @"99";
 static NSString *implementationName = @"OSIRIX";
 static NSString *softwareVersion = @"001";
-static long long globallyUnique = 0;
+static unsigned int globallyUnique = 100000;
 
 @implementation DCMObject
 
