@@ -411,7 +411,7 @@ extern BrowserController	*browserWindow;
 			float numberBytes;
 			BOOL isSigned;
 			
-			NSLog(@"Current bpp: %d", bpp);
+//			NSLog(@"Current bpp: %d", bpp);
 			
 			switch( bpp)
 			{
@@ -552,7 +552,7 @@ extern BrowserController	*browserWindow;
 			[dcmDst setAttribute:attr];
 
 			[dcmDst writeToFile:dstPath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
-			NSLog( dstPath);
+//			NSLog( dstPath);
 			if( squaredata)
 				free( squaredata);
 			squaredata = 0L;

@@ -26,6 +26,7 @@ static NSString *rootUID = @"1.3.6.1.4.1.19291.2.1";
 static NSString *uidQualifier = @"99";
 static NSString *implementationName = @"OSIRIX";
 static NSString *softwareVersion = @"001";
+static long long globallyUnique = 0;
 
 @implementation DCMObject
 
@@ -375,7 +376,10 @@ PixelRepresentation
 
 + (NSString*) globallyUniqueString
 {
-	return [NSString stringWithFormat: @"%ld", (long long) ([NSDate timeIntervalSinceReferenceDate] * 100.)];
+	globallyUnique++;
+	NSNumber *vd = [NSNumber numberWithUnsignedLongLong: 10000. * [NSDate timeIntervalSinceReferenceDate]];
+	NSString *s = [NSString stringWithFormat: @"%@%d", vd, globallyUnique];
+	return s;
 }
 		
 - (id)initWithData:(NSData *)data decodingPixelData:(BOOL)decodePixelData{

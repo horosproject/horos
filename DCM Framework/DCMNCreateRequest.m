@@ -19,7 +19,8 @@
 
 @implementation DCMNCreateRequest
 
-+ (NSString *)newUID{
++ (NSString *)newUID
+{
 	NSString *globallyUniqueString = [[NSProcessInfo processInfo] globallyUniqueString];
 	NSArray *values = [globallyUniqueString componentsSeparatedByString:@"-"];
 	NSMutableArray *newUIDValues = [NSMutableArray array];
