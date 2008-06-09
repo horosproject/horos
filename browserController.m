@@ -8895,319 +8895,322 @@ static BOOL needToRezoom;
 	ViewerController	*movieController = 0L;
 	ViewerController	*createdViewer = viewer;
 	
-	NS_DURING
-	
-	// NS_DURING (1) keyImages
-	
-	if( keyImages) {
-		NSArray *keyImagesToOpenArray = [NSArray array];
-		
-		for( NSArray *loadList in toOpenArray )	{
-			
-			NSArray *keyImagesArray = [NSArray array];
-			
-			for( NSManagedObject *image in loadList ) {					
-				if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
-					keyImagesArray = [keyImagesArray arrayByAddingObject: image];
-			}
-			
-			if( [keyImagesArray count] > 0)
-				keyImagesToOpenArray = [keyImagesToOpenArray arrayByAddingObject: keyImagesArray];
-		}
-		
-		if( [keyImagesToOpenArray count] > 0) toOpenArray = keyImagesToOpenArray;
-	}
-	
-	if (([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) || ([self computeEnoughMemory: toOpenArray : 0L] == NO))
+	@try
 	{
-		toOpenArray = [self openSubSeries: toOpenArray];
-	}
-	
-	// NS_DURING (2) Compute Required Memory
-	
-	BOOL	enoughMemory = NO;
-	long	subSampling = 1;
-	unsigned long mem = 0L;
-	
-	while( enoughMemory == NO ) {
-		BOOL memTestFailed = NO;
-		unsigned char **testPtr = malloc( [toOpenArray count] * sizeof( unsigned char*) );
+		// NS_DURING (1) keyImages
 		
-		for( unsigned long x = 0; x < [toOpenArray count]; x++ ) {
-			unsigned long memBlock = 0L;
-			NSArray *loadList = [toOpenArray objectAtIndex: x];
-			NSManagedObject*  curFile = [loadList objectAtIndex: 0];
-			[curFile setValue:[NSDate date] forKeyPath:@"series.dateOpened"];
-			[curFile setValue:[NSDate date] forKeyPath:@"series.study.dateOpened"];
+		if( keyImages) {
+			NSArray *keyImagesToOpenArray = [NSArray array];
 			
-			if( [loadList count] == 1 && ( [[curFile valueForKey:@"numberOfFrames"] intValue] > 1 || [[curFile valueForKey:@"numberOfSeries"] intValue] > 1))  //     **We selected a multi-frame image !!!
-			{
-				multiFrame = YES;
+			for( NSArray *loadList in toOpenArray )	{
 				
-				mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
-				memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
-			}
-			else
-			{
-				for( curFile in loadList )
-				{
-					long h = [[curFile valueForKey:@"height"] intValue];
-					long w = [[curFile valueForKey:@"width"] intValue];
-					
-					w += 2;
-					
-					if( w*h < 256*256)
-					{
-						w = 256;
-						h = 256;
-					}
-					
-					mem += w * h;
-					memBlock += w * h;
-				}
-			}
-			
-			if ( memBlock < 256 * 256 ) memBlock = 256 * 256;  // This is the size of array created when when an image doesn't exist, a 256 square graduated gray scale.
-			
-			NSLog(@"Test memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
-			testPtr[ x] = malloc( (memBlock * sizeof(float)) + 4096);
-			if( testPtr[ x] == 0L) memTestFailed = YES;
-			memBlockSize[ x] = memBlock;
-			
-		} //end for
-		
-		for( unsigned long x = 0; x < [toOpenArray count]; x++ ) {
-			if( testPtr[ x]) free( testPtr[ x]);
-		}
-		
-		free( testPtr);
-		
-		// TEST MEMORY : IF NOT ENOUGH -> REDUCE SAMPLING
-		
-		if( memTestFailed ) {
-			NSLog(@"Test memory failed -> sub-sampling");
-			
-			NSArray *newArray = [NSArray array];
-			
-			subSampling *= 2;
-			
-			for( NSArray *loadList in toOpenArray ) {					
-				NSArray *imagesArray = [NSArray array];
+				NSArray *keyImagesArray = [NSArray array];
 				
-				for( unsigned long i = 0; i < [loadList count]; i++) {
-					NSManagedObject	*image = [loadList objectAtIndex: i];
-					
-					if( i % 2 == 0)	imagesArray = [imagesArray arrayByAddingObject: image];
+				for( NSManagedObject *image in loadList ) {					
+					if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
+						keyImagesArray = [keyImagesArray arrayByAddingObject: image];
 				}
 				
-				if( [imagesArray count] > 0)
-					newArray = [newArray arrayByAddingObject: imagesArray];
+				if( [keyImagesArray count] > 0)
+					keyImagesToOpenArray = [keyImagesToOpenArray arrayByAddingObject: keyImagesArray];
 			}
 			
-			toOpenArray = newArray;
-		}
-		else enoughMemory = YES;
-	} //end while
-	
-	int result = NSAlertDefaultReturn;
-	
-	if( subSampling != 1 ) {
-		NSArray	*winList = [NSApp windows];
-		for( NSWindow *win in winList ) {
-			if( [win isMiniaturized] ) {
-				[win deminiaturize:self];
-			}
+			if( [keyImagesToOpenArray count] > 0) toOpenArray = keyImagesToOpenArray;
 		}
 		
-		result = NSRunInformationalAlertPanel( NSLocalizedString(@"Not enough memory", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Your computer doesn't have enough RAM to load this series, but I can load a subset of the series: 1 on %d images.", 0L), subSampling], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
-	}
-	
-	// NS_DURING (3) Load Images (memory allocation)
-	
-	BOOL notEnoughMemory = NO;
-	
-	if( result == NSAlertDefaultReturn && toOpenArray != nil ) {
-		if( movieViewer == NO) {
-			//				NSLog(@"I will try to allocate: %d Mb", (mem * sizeof(float)) / (1024 * 1024));
-			//				
-			//				fVolumePtr = malloc(mem * sizeof(float));
-			//				if( fVolumePtr == 0L)
-			//				{
-			//					NSArray	*winList = [NSApp windows];
-			//					for( i = 0; i < [winList count]; i++)
-			//					{
-			//						if([[winList objectAtIndex:i] isMiniaturized])
-			//						{
-			//							[[winList objectAtIndex:i] deminiaturize:self];
-			//						}
-			//					}
-			//					
-			//					NSRunCriticalAlertPanel( NSLocalizedString(@"Not enough memory",@"Not enough memory"),  NSLocalizedString(@"Your computer doesn't have enough RAM to load this series",@"Your computer doesn't have enough RAM to load this series"), NSLocalizedString(@"OK",nil), nil, nil);
-			//					notEnoughMemory = YES;
-			//				}
-			//
-			//				free( fVolumePtr);	// We will allocate each block independently !
-			//				fVolumePtr = 0L;	
+		if (([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) || ([self computeEnoughMemory: toOpenArray : 0L] == NO))
+		{
+			toOpenArray = [self openSubSeries: toOpenArray];
 		}
-		else {
-			char **memBlockTestPtr = malloc( [toOpenArray count] * sizeof( char*) );
-			
-			NSLog(@"4D Viewer TOTAL: %d Mb", (mem * sizeof(float)) / (1024 * 1024));
-			for( unsigned long x = 0; x < [toOpenArray count]; x++ ) {
-				memBlockTestPtr[ x] = malloc(memBlockSize[ x] * sizeof(float));
-				NSLog(@"4D Viewer: I will try to allocate: %d Mb", (memBlockSize[ x]* sizeof(float)) / (1024 * 1024));
-				
-				if( memBlockTestPtr[ x] == 0L) notEnoughMemory = YES;
-			}
+		
+		// NS_DURING (2) Compute Required Memory
+		
+		BOOL	enoughMemory = NO;
+		long	subSampling = 1;
+		unsigned long mem = 0L;
+		
+		while( enoughMemory == NO ) {
+			BOOL memTestFailed = NO;
+			unsigned char **testPtr = malloc( [toOpenArray count] * sizeof( unsigned char*) );
 			
 			for( unsigned long x = 0; x < [toOpenArray count]; x++ ) {
-				if( memBlockTestPtr[ x] != 0L) free( memBlockTestPtr[ x]);
-			}
-			
-			if( notEnoughMemory )
-			{
-				if( NSRunCriticalAlertPanel( NSLocalizedString(@"Not enough memory",@"Not enough memory"),  NSLocalizedString(@"Your computer doesn't have enough RAM to load this series.\r\rUpgrade to OsiriX 64-bit to solve this issue.", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
-				[[AppController sharedAppController] osirix64bit: self];
-			}
-			
-			free( memBlockTestPtr);
-			fVolumePtr = 0L;
-		}
-	}
-	else notEnoughMemory = YES;
-	
-	// NS_DURING (4) Load Images loop
-	
-	if( notEnoughMemory == NO )	{
-		for( unsigned long x = 0; x < [toOpenArray count]; x++ ) {
-			NSLog(@"Current block to malloc: %d Mb", (memBlockSize[ x] * sizeof( float)) / (1024*1024));
-			fVolumePtr = malloc( memBlockSize[ x] * sizeof(float));
-			unsigned long mem = 0;
-			
-			if( fVolumePtr ) {
-				volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr length:memBlockSize[ x]*sizeof( float) freeWhenDone:YES];
+				unsigned long memBlock = 0L;
 				NSArray *loadList = [toOpenArray objectAtIndex: x];
+				NSManagedObject*  curFile = [loadList objectAtIndex: 0];
+				[curFile setValue:[NSDate date] forKeyPath:@"series.dateOpened"];
+				[curFile setValue:[NSDate date] forKeyPath:@"series.study.dateOpened"];
 				
-				if( [loadList count] )
-					[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: [[loadList objectAtIndex: 0] valueForKeyPath:@"series.study.modality"] description:[[loadList objectAtIndex: 0] valueForKeyPath:@"series.study.studyName"]];
-				
-				// Why viewerPix[0] (fixed value) within the loop? Because it's not a 4D volume !
-				viewerPix[0] = [[NSMutableArray alloc] initWithCapacity:0];
-				NSMutableArray *correspondingObjects = [[NSMutableArray alloc] initWithCapacity:0];
-				
-				if( [loadList count] == 1 && [[[loadList objectAtIndex: 0] valueForKey:@"numberOfFrames"] intValue] > 1 ) {
-					multiFrame = YES;							
-					NSManagedObject*  curFile = [loadList objectAtIndex: 0];
+				if( [loadList count] == 1 && ( [[curFile valueForKey:@"numberOfFrames"] intValue] > 1 || [[curFile valueForKey:@"numberOfSeries"] intValue] > 1))  //     **We selected a multi-frame image !!!
+				{
+					multiFrame = YES;
 					
-					for( unsigned long i = 0; i < [[curFile valueForKey:@"numberOfFrames"] intValue]; i++ )	{
-						NSManagedObject*  curFile = [loadList objectAtIndex: 0];								
-						DCMPix*	dcmPix = [[DCMPix alloc] myinit: [curFile valueForKey:@"completePath"] :i :[[curFile valueForKey:@"numberOfFrames"] intValue] :fVolumePtr+mem :i :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
-						
-						if( dcmPix ) {
-							mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
-							
-							[viewerPix[0] addObject: dcmPix];
-							[correspondingObjects addObject: curFile];
-							[dcmPix release];
-						}
-					} //end for
+					mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
+					memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
 				}
-				else {
-					//multiframe==NO
-					for( unsigned long i = 0; i < [loadList count]; i++ )	{
-						NSManagedObject*  curFile = [loadList objectAtIndex: i];
-						DCMPix* dcmPix = [[DCMPix alloc] myinit: [curFile valueForKey:@"completePath"] :i :[loadList count] :fVolumePtr+mem :0 :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
+				else
+				{
+					for( curFile in loadList )
+					{
+						long h = [[curFile valueForKey:@"height"] intValue];
+						long w = [[curFile valueForKey:@"width"] intValue];
 						
-						if( dcmPix ) {
-							mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
-							
-							[viewerPix[0] addObject: dcmPix];
-							[correspondingObjects addObject: curFile];
-							[dcmPix release];
+						w += 2;
+						
+						if( w*h < 256*256)
+						{
+							w = 256;
+							h = 256;
 						}
-						else {
-							NSLog( @"not readable: %@", [curFile valueForKey:@"completePath"] );
-						}
+						
+						mem += w * h;
+						memBlock += w * h;
 					}
 				}
 				
-				if( [viewerPix[0] count] != [loadList count] && multiFrame == NO ) {
-					for( unsigned int i = 0; i < [viewerPix[0] count]; i++ ) {
-						[[viewerPix[0] objectAtIndex: i] setID: i];
-						[[viewerPix[0] objectAtIndex: i] setTot: [viewerPix[0] count]];
-					}
-					if( [viewerPix[0] count] == 0)
-						NSRunCriticalAlertPanel( NSLocalizedString(@"Files not available (readable)", 0L), NSLocalizedString(@"No files available (readable) in this series.", 0L), NSLocalizedString(@"Continue",nil), nil, nil);
-					else
-						NSRunCriticalAlertPanel( NSLocalizedString(@"Not all files available (readable)", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Not all files are available (readable) in this series.\r%d files are missing.", 0L), [loadList count] - [viewerPix[0] count]], NSLocalizedString(@"Continue",nil), nil, nil);
-				}
-				//opening images refered to in viewerPix[0] in the adequate viewer
+				if ( memBlock < 256 * 256 ) memBlock = 256 * 256;  // This is the size of array created when when an image doesn't exist, a 256 square graduated gray scale.
 				
-				if( [viewerPix[0] count] > 0 ) {
-					if( movieViewer == NO ) {
-						if( multiFrame == YES) {
-							NSMutableArray  *filesAr = [[NSMutableArray alloc] initWithCapacity: [viewerPix[0] count]];
+				NSLog(@"Test memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
+				testPtr[ x] = malloc( (memBlock * sizeof(float)) + 4096);
+				if( testPtr[ x] == 0L) memTestFailed = YES;
+				memBlockSize[ x] = memBlock;
+				
+			} //end for
+			
+			for( unsigned long x = 0; x < [toOpenArray count]; x++ ) {
+				if( testPtr[ x]) free( testPtr[ x]);
+			}
+			
+			free( testPtr);
+			
+			// TEST MEMORY : IF NOT ENOUGH -> REDUCE SAMPLING
+			
+			if( memTestFailed ) {
+				NSLog(@"Test memory failed -> sub-sampling");
+				
+				NSArray *newArray = [NSArray array];
+				
+				subSampling *= 2;
+				
+				for( NSArray *loadList in toOpenArray ) {					
+					NSArray *imagesArray = [NSArray array];
+					
+					for( unsigned long i = 0; i < [loadList count]; i++) {
+						NSManagedObject	*image = [loadList objectAtIndex: i];
+						
+						if( i % 2 == 0)	imagesArray = [imagesArray arrayByAddingObject: image];
+					}
+					
+					if( [imagesArray count] > 0)
+						newArray = [newArray arrayByAddingObject: imagesArray];
+				}
+				
+				toOpenArray = newArray;
+			}
+			else enoughMemory = YES;
+		} //end while
+		
+		int result = NSAlertDefaultReturn;
+		
+		if( subSampling != 1 ) {
+			NSArray	*winList = [NSApp windows];
+			for( NSWindow *win in winList ) {
+				if( [win isMiniaturized] ) {
+					[win deminiaturize:self];
+				}
+			}
+			
+			result = NSRunInformationalAlertPanel( NSLocalizedString(@"Not enough memory", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Your computer doesn't have enough RAM to load this series, but I can load a subset of the series: 1 on %d images.", 0L), subSampling], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+		}
+		
+		// NS_DURING (3) Load Images (memory allocation)
+		
+		BOOL notEnoughMemory = NO;
+		
+		if( result == NSAlertDefaultReturn && toOpenArray != nil ) {
+			if( movieViewer == NO) {
+				//				NSLog(@"I will try to allocate: %d Mb", (mem * sizeof(float)) / (1024 * 1024));
+				//				
+				//				fVolumePtr = malloc(mem * sizeof(float));
+				//				if( fVolumePtr == 0L)
+				//				{
+				//					NSArray	*winList = [NSApp windows];
+				//					for( i = 0; i < [winList count]; i++)
+				//					{
+				//						if([[winList objectAtIndex:i] isMiniaturized])
+				//						{
+				//							[[winList objectAtIndex:i] deminiaturize:self];
+				//						}
+				//					}
+				//					
+				//					NSRunCriticalAlertPanel( NSLocalizedString(@"Not enough memory",@"Not enough memory"),  NSLocalizedString(@"Your computer doesn't have enough RAM to load this series",@"Your computer doesn't have enough RAM to load this series"), NSLocalizedString(@"OK",nil), nil, nil);
+				//					notEnoughMemory = YES;
+				//				}
+				//
+				//				free( fVolumePtr);	// We will allocate each block independently !
+				//				fVolumePtr = 0L;	
+			}
+			else {
+				char **memBlockTestPtr = malloc( [toOpenArray count] * sizeof( char*) );
+				
+				NSLog(@"4D Viewer TOTAL: %d Mb", (mem * sizeof(float)) / (1024 * 1024));
+				for( unsigned long x = 0; x < [toOpenArray count]; x++ ) {
+					memBlockTestPtr[ x] = malloc(memBlockSize[ x] * sizeof(float));
+					NSLog(@"4D Viewer: I will try to allocate: %d Mb", (memBlockSize[ x]* sizeof(float)) / (1024 * 1024));
+					
+					if( memBlockTestPtr[ x] == 0L) notEnoughMemory = YES;
+				}
+				
+				for( unsigned long x = 0; x < [toOpenArray count]; x++ ) {
+					if( memBlockTestPtr[ x] != 0L) free( memBlockTestPtr[ x]);
+				}
+				
+				if( notEnoughMemory )
+				{
+					if( NSRunCriticalAlertPanel( NSLocalizedString(@"Not enough memory",@"Not enough memory"),  NSLocalizedString(@"Your computer doesn't have enough RAM to load this series.\r\rUpgrade to OsiriX 64-bit to solve this issue.", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+					[[AppController sharedAppController] osirix64bit: self];
+				}
+				
+				free( memBlockTestPtr);
+				fVolumePtr = 0L;
+			}
+		}
+		else notEnoughMemory = YES;
+		
+		// NS_DURING (4) Load Images loop
+		
+		if( notEnoughMemory == NO )	{
+			for( unsigned long x = 0; x < [toOpenArray count]; x++ ) {
+				NSLog(@"Current block to malloc: %d Mb", (memBlockSize[ x] * sizeof( float)) / (1024*1024));
+				fVolumePtr = malloc( memBlockSize[ x] * sizeof(float));
+				unsigned long mem = 0;
+				
+				if( fVolumePtr ) {
+					volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr length:memBlockSize[ x]*sizeof( float) freeWhenDone:YES];
+					NSArray *loadList = [toOpenArray objectAtIndex: x];
+					
+					if( [loadList count] )
+						[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: [[loadList objectAtIndex: 0] valueForKeyPath:@"series.study.modality"] description:[[loadList objectAtIndex: 0] valueForKeyPath:@"series.study.studyName"]];
+					
+					// Why viewerPix[0] (fixed value) within the loop? Because it's not a 4D volume !
+					viewerPix[0] = [[NSMutableArray alloc] initWithCapacity:0];
+					NSMutableArray *correspondingObjects = [[NSMutableArray alloc] initWithCapacity:0];
+					
+					if( [loadList count] == 1 && [[[loadList objectAtIndex: 0] valueForKey:@"numberOfFrames"] intValue] > 1 ) {
+						multiFrame = YES;							
+						NSManagedObject*  curFile = [loadList objectAtIndex: 0];
+						
+						for( unsigned long i = 0; i < [[curFile valueForKey:@"numberOfFrames"] intValue]; i++ )	{
+							NSManagedObject*  curFile = [loadList objectAtIndex: 0];								
+							DCMPix*	dcmPix = [[DCMPix alloc] myinit: [curFile valueForKey:@"completePath"] :i :[[curFile valueForKey:@"numberOfFrames"] intValue] :fVolumePtr+mem :i :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
 							
-							for( unsigned int i = 0; i < [viewerPix[0] count]; i++) [filesAr addObject:[correspondingObjects objectAtIndex:0]];
-							
-							if( viewer ) {
-								//reuse of existing viewer
-								[viewer changeImageData:viewerPix[0] :filesAr :volumeData :YES];
-								[viewer startLoadImageThread];
+							if( dcmPix ) {
+								mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
+								
+								[viewerPix[0] addObject: dcmPix];
+								[correspondingObjects addObject: curFile];
+								[dcmPix release];
 							}
-							else {
-								//creation of new viewer
-								createdViewer = [[ViewerController alloc] viewCinit:viewerPix[0] :filesAr :volumeData];
-								[createdViewer showWindowTransition];
-								[createdViewer startLoadImageThread];
-							}		
-							
-							[filesAr release];
-						}
-						else {
-							//multiframe == NO
-							if( viewer)	{
-								//reuse of existing viewer
-								[viewer changeImageData:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData :YES];
-								[viewer startLoadImageThread];
-							}
-							else {
-								//creation of new viewer
-								createdViewer = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
-								[createdViewer showWindowTransition];
- 								[createdViewer startLoadImageThread];
-							}
-						}
+						} //end for
 					}
 					else {
-						//movieViewer==YES
-						if( movieController == nil ) {
-							movieController = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
-						}
-						else {
-							[movieController addMovieSerie:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
+						//multiframe==NO
+						for( unsigned long i = 0; i < [loadList count]; i++ )	{
+							NSManagedObject*  curFile = [loadList objectAtIndex: i];
+							DCMPix* dcmPix = [[DCMPix alloc] myinit: [curFile valueForKey:@"completePath"] :i :[loadList count] :fVolumePtr+mem :0 :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
+							
+							if( dcmPix ) {
+								mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
+								
+								[viewerPix[0] addObject: dcmPix];
+								[correspondingObjects addObject: curFile];
+								[dcmPix release];
+							}
+							else {
+								NSLog( @"not readable: %@", [curFile valueForKey:@"completePath"] );
+							}
 						}
 					}
-					[volumeData release];
+					
+					if( [viewerPix[0] count] != [loadList count] && multiFrame == NO ) {
+						for( unsigned int i = 0; i < [viewerPix[0] count]; i++ ) {
+							[[viewerPix[0] objectAtIndex: i] setID: i];
+							[[viewerPix[0] objectAtIndex: i] setTot: [viewerPix[0] count]];
+						}
+						if( [viewerPix[0] count] == 0)
+							NSRunCriticalAlertPanel( NSLocalizedString(@"Files not available (readable)", 0L), NSLocalizedString(@"No files available (readable) in this series.", 0L), NSLocalizedString(@"Continue",nil), nil, nil);
+						else
+							NSRunCriticalAlertPanel( NSLocalizedString(@"Not all files available (readable)", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Not all files are available (readable) in this series.\r%d files are missing.", 0L), [loadList count] - [viewerPix[0] count]], NSLocalizedString(@"Continue",nil), nil, nil);
+					}
+					//opening images refered to in viewerPix[0] in the adequate viewer
+					
+					if( [viewerPix[0] count] > 0 ) {
+						if( movieViewer == NO ) {
+							if( multiFrame == YES) {
+								NSMutableArray  *filesAr = [[NSMutableArray alloc] initWithCapacity: [viewerPix[0] count]];
+								
+								for( unsigned int i = 0; i < [viewerPix[0] count]; i++) [filesAr addObject:[correspondingObjects objectAtIndex:0]];
+								
+								if( viewer ) {
+									//reuse of existing viewer
+									[viewer changeImageData:viewerPix[0] :filesAr :volumeData :YES];
+									[viewer startLoadImageThread];
+								}
+								else {
+									//creation of new viewer
+									createdViewer = [[ViewerController alloc] viewCinit:viewerPix[0] :filesAr :volumeData];
+									[createdViewer showWindowTransition];
+									[createdViewer startLoadImageThread];
+								}		
+								
+								[filesAr release];
+							}
+							else {
+								//multiframe == NO
+								if( viewer)	{
+									//reuse of existing viewer
+									[viewer changeImageData:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData :YES];
+									[viewer startLoadImageThread];
+								}
+								else {
+									//creation of new viewer
+									createdViewer = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
+									[createdViewer showWindowTransition];
+									[createdViewer startLoadImageThread];
+								}
+							}
+						}
+						else {
+							//movieViewer==YES
+							if( movieController == nil ) {
+								movieController = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
+							}
+							else {
+								[movieController addMovieSerie:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
+							}
+						}
+						[volumeData release];
+					}
+					
+					[viewerPix[0] release];
+					[correspondingObjects release];
 				}
-				
-				[viewerPix[0] release];
-				[correspondingObjects release];
-			}
-		} //end for
+			} //end for
+		}
+		
+		// NS_DURING (5) movieController activation
+		
+		if( movieController) {
+			NSLog(@"openViewerFromImages-movieController activation");
+			[movieController showWindowTransition];
+			[movieController startLoadImageThread];
+		}
+		
 	}
-	
-	// NS_DURING (5) movieController activation
-	
-	if( movieController) {
-		NSLog(@"openViewerFromImages-movieController activation");
-		[movieController showWindowTransition];
-		[movieController startLoadImageThread];
+	@catch( NSException *e)
+	{
+		NSLog(@"Exception opening Viewer: %@", e);
+		NSRunAlertPanel( NSLocalizedString(@"Opening Error", nil), [NSString stringWithFormat: NSLocalizedString(@"Opening Error : %@", nil), e] , nil, nil, nil);
 	}
-	
-	NS_HANDLER
-	NSLog(@"Exception opening Viewer: %@", [localException description]);
-	NS_ENDHANDLER
 	
 	free( memBlockSize );
 	
@@ -9646,129 +9649,138 @@ static BOOL needToRezoom;
 
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer tileWindows: (BOOL) tileWindows
 {
-	NSManagedObject		*selectedLine = [selectedLines objectAtIndex: 0];
-	NSInteger			row, column;
-	NSMutableArray		*selectedFilesList;
-	NSArray				*loadList;
-	long				numberImages, multiSeries = 1;
-	BOOL				movieError = NO, multiFrame = NO;
-		
-    NSArray				*cells = [oMatrix selectedCells];
-	
-	if( [cells count] == 0 && [[oMatrix cells] count] > 0 )
+	@try
 	{
-		cells = [NSArray arrayWithObject: [[oMatrix cells] objectAtIndex: 0]];
-	}
-	
-	//////////////////////////////////////
-	// Open selected images only !!!
-	//////////////////////////////////////
-	
-    if( [cells count] > 1 && [[selectedLine valueForKey:@"type"] isEqualToString: @"Series"])
-	{
-		NSArray  *curList = [self childrenArray: selectedLine];
+		NSManagedObject		*selectedLine = [selectedLines objectAtIndex: 0];
+		NSInteger			row, column;
+		NSMutableArray		*selectedFilesList;
+		NSArray				*loadList;
+		long				numberImages, multiSeries = 1;
+		BOOL				movieError = NO, multiFrame = NO;
+			
+		NSArray				*cells = [oMatrix selectedCells];
 		
-		selectedFilesList = [[NSMutableArray alloc] initWithCapacity:0];
-		
-		for( NSCell* c in cells )
+		if( [cells count] == 0 && [[oMatrix cells] count] > 0 )
 		{
-			NSManagedObject*  curImage = [curList objectAtIndex: [c tag]];
-			[selectedFilesList addObject: curImage];
+			cells = [NSArray arrayWithObject: [[oMatrix cells] objectAtIndex: 0]];
 		}
 		
-		[self openViewerFromImages :[NSArray arrayWithObject: selectedFilesList] movie: movieViewer viewer :viewer keyImagesOnly:NO];
-		
-		[selectedFilesList release];
-    }
-    else
-	{
-		BOOL			multipleLines = NO;
 		//////////////////////////////////////
-		// Open series !!!
+		// Open selected images only !!!
 		//////////////////////////////////////
 		
-		//////////////////////////////////////
-		// Prepare an array that contains arrays of series
-		//////////////////////////////////////
-		
-		NSMutableArray	*toOpenArray = [NSMutableArray arrayWithCapacity: 0];
-		
-		int x = 0;
-		if( [cells count] == 1 && [selectedLines count] > 1 )	// Just one thumbnail is selected, but multiples lines are selected
+		if( [cells count] > 1 && [[selectedLine valueForKey:@"type"] isEqualToString: @"Series"])
 		{
-			for( NSManagedObject* curFile in selectedLines )
+			NSArray  *curList = [self childrenArray: selectedLine];
+			
+			selectedFilesList = [[NSMutableArray alloc] initWithCapacity:0];
+			
+			for( NSCell* c in cells )
 			{
-				x++;
-				loadList = nil;
-				
-				if( [[curFile valueForKey:@"type"] isEqualToString: @"Study"] )
+				NSManagedObject*  curImage = [curList objectAtIndex: [c tag]];
+				[selectedFilesList addObject: curImage];
+			}
+			
+			[self openViewerFromImages :[NSArray arrayWithObject: selectedFilesList] movie: movieViewer viewer :viewer keyImagesOnly:NO];
+			
+			[selectedFilesList release];
+		}
+		else
+		{
+			BOOL			multipleLines = NO;
+			//////////////////////////////////////
+			// Open series !!!
+			//////////////////////////////////////
+			
+			//////////////////////////////////////
+			// Prepare an array that contains arrays of series
+			//////////////////////////////////////
+			
+			NSMutableArray	*toOpenArray = [NSMutableArray arrayWithCapacity: 0];
+			
+			int x = 0;
+			if( [cells count] == 1 && [selectedLines count] > 1 )	// Just one thumbnail is selected, but multiples lines are selected
+			{
+				for( NSManagedObject* curFile in selectedLines )
 				{
-					// Find the first series of images! DONT TAKE A ROI SERIES !
-					if( [[curFile valueForKey:@"imageSeries"] count])
+					x++;
+					loadList = nil;
+					
+					if( [[curFile valueForKey:@"type"] isEqualToString: @"Study"] )
 					{
-						curFile = [[curFile valueForKey:@"imageSeries"] objectAtIndex: 0];
+						// Find the first series of images! DONT TAKE A ROI SERIES !
+						if( [[curFile valueForKey:@"imageSeries"] count])
+						{
+							curFile = [[curFile valueForKey:@"imageSeries"] objectAtIndex: 0];
+							loadList = [self childrenArray: curFile];
+						}
+					}
+					
+					if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"] )
+					{
 						loadList = [self childrenArray: curFile];
 					}
+					
+					if( loadList) [toOpenArray addObject: loadList];
 				}
-				
-				if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"] )
-				{
-					loadList = [self childrenArray: curFile];
-				}
-				
-				if( loadList) [toOpenArray addObject: loadList];
 			}
-		}
-		else
-		{
-			for( NSButtonCell *cell in cells )
+			else
 			{
-				x++;
-				if( [oMatrix getRow: &row column: &column ofCell: cell] == NO )
+				for( NSButtonCell *cell in cells )
 				{
-					row = 0;
-					column = 0;
+					x++;
+					if( [oMatrix getRow: &row column: &column ofCell: cell] == NO )
+					{
+						row = 0;
+						column = 0;
+					}
+					
+					loadList = nil;
+					
+					NSManagedObject*  curFile = [matrixViewArray objectAtIndex: [cell tag]];
+					
+					if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"]) loadList = [self childrenArray: selectedLine];
+					if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"]) loadList = [self childrenArray: curFile];
+					
+					if( loadList) [toOpenArray addObject: loadList];
 				}
-				
-				loadList = nil;
-				
-				NSManagedObject*  curFile = [matrixViewArray objectAtIndex: [cell tag]];
-				
-				if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"]) loadList = [self childrenArray: selectedLine];
-				if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"]) loadList = [self childrenArray: curFile];
-				
-				if( loadList) [toOpenArray addObject: loadList];
 			}
+			
+			[self processOpenViewerDICOMFromArray: toOpenArray movie: movieViewer viewer: viewer];
 		}
 		
-		[self processOpenViewerDICOMFromArray: toOpenArray movie: movieViewer viewer: viewer];
-    }
-	
-	if( tileWindows )
-	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+		if( tileWindows )
 		{
-			[[AppController sharedAppController] tileWindows: self];
-			
-			NSArray *array = [ViewerController getDisplayed2DViewers];
-			
-			if( [array count] > 1)
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 			{
-				ViewerController *kV = 0L;
+				[[AppController sharedAppController] tileWindows: self];
 				
-				for( ViewerController *v in array)
+				NSArray *array = [ViewerController getDisplayed2DViewers];
+				
+				if( [array count] > 1)
 				{
-					[[v imageView] scaleToFit];
-					[[v imageView] setOriginX:0 Y:0];
+					ViewerController *kV = 0L;
 					
-					if( [[v window] isKeyWindow]) kV = v;
+					for( ViewerController *v in array)
+					{
+						[[v imageView] scaleToFit];
+						[[v imageView] setOriginX:0 Y:0];
+						
+						if( [[v window] isKeyWindow]) kV = v;
+					}
+					
+					[kV propagateSettings];
 				}
-				
-				[kV propagateSettings];
 			}
+			else
+				[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
 		}
-		else
-			[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
+	}
+	@catch (NSException *e)
+	{
+		NSLog( @"viewerDICOMInt exception: %@", e);
+		
+		NSRunAlertPanel( NSLocalizedString(@"Opening Error", nil), [NSString stringWithFormat: NSLocalizedString(@"Opening Error : %@", nil), e] , nil, nil, nil);
 	}
 }
 

@@ -25,7 +25,7 @@
 
     IBOutlet    QueryOutlineView			*outlineView;
 	IBOutlet	NSProgressIndicator			*progressIndicator;
-	IBOutlet	NSSearchField				*searchFieldName, *searchFieldID, *searchFieldAN;
+	IBOutlet	NSSearchField				*searchFieldName, *searchFieldID, *searchFieldAN, *searchFieldStudyDescription;
 	
 				NSMutableArray				*sourcesArray;
 	IBOutlet	sourcesTableView			*sourcesTable;
