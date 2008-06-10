@@ -41,6 +41,10 @@
 	IBOutlet NSTextField	*recalibrateValue;
 	
 	NSMutableArray			*roiNames;
+	
+	NSTimer					*getName;
+	
+	NSString				*previousName;
 }
 - (IBAction)acceptSheet:(id)sender;
 - (IBAction) recalibrate:(id) sender;

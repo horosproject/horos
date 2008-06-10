@@ -84,6 +84,8 @@
 - (void) dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
+	[previousName release];
+	previousName = 0L;
 	
 	[super dealloc];
 }
@@ -185,6 +187,16 @@
 //	[name setStringValue:[roi name]];
 }
 
+- (void) getName:(NSTimer*)theTimer
+{
+	if( [[name stringValue] isEqualToString: previousName] == NO)
+	{
+		[self setTextData: name];
+		[previousName release];
+		previousName = [[name stringValue] retain];
+	}
+}
+
 - (id) initWithROI: (ROI*) iroi :(ViewerController*) c
 {
 	self = [super initWithWindowNibName:@"ROI"];
@@ -192,6 +204,8 @@
 	[[self window] setFrameAutosaveName:@"ROIInfoWindow"];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(roiChange:) name:@"roiChange" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(removeROI:) name: @"removeROI" object: nil];
+	
+	getName = [[NSTimer scheduledTimerWithTimeInterval: 0.1 target:self selector:@selector( getName:) userInfo:0 repeats: YES] retain];
 	
 	roiNames = 0L;
 	
@@ -202,6 +216,10 @@
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	[getName invalidate];
+	[getName release];
+	getName = 0L;
+	
 	[ROI saveDefaultSettings];
 	
 	[curROI setComments: [NSString stringWithString: [comments string]]]; 	// stringWithString is very important - see NSText string !
