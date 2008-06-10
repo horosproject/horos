@@ -3001,6 +3001,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( blendingView) tool = tWLBlended;
 		else tool = tWL;
 	}
+	
 	if( [self roiTool:currentTool] != YES && currentTool != tROISelector)   // Not a ROI TOOL !
 	{
 		if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))  tool = tRotate;
@@ -3010,7 +3011,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))  tool = tRotate;
 // 		if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask)) tool = currentTool;
-		if (([event modifierFlags] & NSCommandKeyMask)) tool = currentTool;
+//		if (([event modifierFlags] & NSCommandKeyMask)) tool = currentTool;
 	}
 	
 	return tool;
@@ -3423,7 +3424,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						{
 							found = YES;
 							if( [self is2DViewer])
+							{
 								[[[winList objectAtIndex:i] windowController] setROI: [curRoiList objectAtIndex: selected] :[self windowController]];
+								[[winList objectAtIndex:i] makeKeyAndOrderFront: self];
+							}
 						}
 					}
 					

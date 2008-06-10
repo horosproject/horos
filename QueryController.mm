@@ -295,10 +295,17 @@ static char *GetPrivateIP()
 		{
 			NSDictionary *presets = [savedPresets objectForKey: [sender title]];
 			
-			[searchFieldName setStringValue: [presets valueForKey: @"searchFieldName"]];
-			[searchFieldID setStringValue: [presets valueForKey: @"searchFieldID"]];
-			[searchFieldAN setStringValue: [presets valueForKey: @"searchFieldAN"]];
-			[searchFieldStudyDescription setStringValue: [presets valueForKey: @"searchFieldStudyDescription"]];
+			if( [presets valueForKey: @"searchFieldName"])
+				[searchFieldName setStringValue: [presets valueForKey: @"searchFieldName"]];
+			
+			if( [presets valueForKey: @"searchFieldID"])
+				[searchFieldID setStringValue: [presets valueForKey: @"searchFieldID"]];
+			
+			if( [presets valueForKey: @"searchFieldAN"])
+				[searchFieldAN setStringValue: [presets valueForKey: @"searchFieldAN"]];
+			
+			if( [presets valueForKey: @"searchFieldStudyDescription"])
+				[searchFieldStudyDescription setStringValue: [presets valueForKey: @"searchFieldStudyDescription"]];
 			
 			[dateFilterMatrix selectCellWithTag: [[presets valueForKey: @"dateFilterMatrix"] intValue]];
 			
@@ -816,7 +823,8 @@ static char *GetPrivateIP()
 {
 	NSInteger PatientModeMatrixSelected = [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]];
 	NSInteger dateFilterMatrixSelected = [dateFilterMatrix selectedTag];
-	NSArray *cells = [modalityFilterMatrix selectedCells];
+	NSMutableArray *selectedModalities = [NSMutableArray array];
+	for( NSCell *c in [modalityFilterMatrix cells]) if( [c state] == NSOnState) [selectedModalities addObject: c];
 	NSString *copySearchField = [NSString stringWithString: [searchFieldID stringValue]];
 	
 	[PatientModeMatrix selectTabViewItemAtIndex: 1];	// PatientID search
@@ -833,8 +841,7 @@ static char *GetPrivateIP()
 	
 	[PatientModeMatrix selectTabViewItemAtIndex: PatientModeMatrixSelected];
 	[dateFilterMatrix selectCellWithTag: dateFilterMatrixSelected];
-	for( id cell in cells)
-		[modalityFilterMatrix selectCell: cell];
+	for( NSCell *c in selectedModalities) [modalityFilterMatrix selectCell: c];
 	[searchFieldID setStringValue: copySearchField];
 	
 	return result;

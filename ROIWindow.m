@@ -165,6 +165,7 @@
 	[opacitySlider setFloatValue: [curROI opacity]];
 	
 	[name setStringValue:[curROI name]];
+	[name selectText: self];
 	[comments setString:[curROI comments]];
 		
 	if( [curROI type] == tMesure) [recalibrate setEnabled: YES];
