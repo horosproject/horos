@@ -7276,7 +7276,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			glEnable(GL_LINE_SMOOTH);
 			glEnable(GL_POLYGON_SMOOTH);
 			
-			if(( mprVector[ 0] != 0 || mprVector[ 1] != 0) ) {
+			if(( mprVector[ 0] != 0 || mprVector[ 1] != 0))
+			{
 				float tvec[ 2];
 					
 				tvec[ 0] = cos((angle+90)*deg2rad);
@@ -7284,39 +7285,41 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 				glColor3f (0.0f, 0.0f, 1.0f);
 				
-					// Thick Slab
-					if( slab > 1 ) {
-						float crossx, crossy;
-						float slabx, slaby;
+				// Thick Slab
+				if( slab > 1)
+				{
+					float crossx, crossy;
+					float slabx, slaby;
 
-						glLineWidth(1.0);
-						glBegin(GL_LINES);
-						
-						crossx = cross.x-curDCM.pwidth/2.;
-						crossy = cross.y-curDCM.pheight/2.;
-						
-						slabx = (slab/2.)/ curDCM.pixelSpacingX * tvec[ 0];
-						slaby = (slab/2.)/ curDCM.pixelSpacingY * tvec[ 1];
-						
-						glVertex2f( scaleValue * (crossx - 1000*mprVector[ 0] - slabx), scaleValue*(crossy - 1000*mprVector[ 1] - slaby));
-						glVertex2f( scaleValue * (crossx + 1000*mprVector[ 0] - slabx), scaleValue*(crossy + 1000*mprVector[ 1] - slaby));
+					glLineWidth(1.0);
+					glBegin(GL_LINES);
+					
+					crossx = cross.x-curDCM.pwidth/2.;
+					crossy = cross.y-curDCM.pheight/2.;
+					
+					slabx = (slab/2.)/ curDCM.pixelSpacingX * tvec[ 0];
+					slaby = (slab/2.)/ curDCM.pixelSpacingY * tvec[ 1];
+					
+					glVertex2f( scaleValue * (crossx - 1000*mprVector[ 0] - slabx), scaleValue*(crossy - 1000*mprVector[ 1] - slaby));
+					glVertex2f( scaleValue * (crossx + 1000*mprVector[ 0] - slabx), scaleValue*(crossy + 1000*mprVector[ 1] - slaby));
 
-						glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0]), scaleValue*(crossy - 1000*mprVector[ 1]));
-						glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0]), scaleValue*(crossy + 1000*mprVector[ 1]));
+					glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0]), scaleValue*(crossy - 1000*mprVector[ 1]));
+					glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0]), scaleValue*(crossy + 1000*mprVector[ 1]));
 
-						glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0] + slabx), scaleValue*(crossy - 1000*mprVector[ 1] + slaby));
-						glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0] + slabx), scaleValue*(crossy + 1000*mprVector[ 1] + slaby));
-					}
-					else {
-						glLineWidth(2.0);
-						glBegin(GL_LINES);
+					glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0] + slabx), scaleValue*(crossy - 1000*mprVector[ 1] + slaby));
+					glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0] + slabx), scaleValue*(crossy + 1000*mprVector[ 1] + slaby));
+				}
+				else
+				{
+					glLineWidth(2.0);
+					glBegin(GL_LINES);
 
-						float crossx = cross.x-curDCM.pwidth/2.;
-						float crossy = cross.y-curDCM.pheight/2.;
-						
-						glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0]), scaleValue*(crossy - 1000*mprVector[ 1]));
-						glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0]), scaleValue*(crossy + 1000*mprVector[ 1]));
-					}
+					float crossx = cross.x-curDCM.pwidth/2.;
+					float crossy = cross.y-curDCM.pheight/2.;
+					
+					glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0]), scaleValue*(crossy - 1000*mprVector[ 1]));
+					glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0]), scaleValue*(crossy + 1000*mprVector[ 1]));
+				}
 				glEnd();
 				
 				if( [stringID isEqualToString:@"Original"])
@@ -7739,7 +7742,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			//** SLICE CUT BETWEEN SERIES - CROSS REFERENCES LINES
 			
-			if( stringID == 0L && [[self window] isMainWindow] == NO)
+			if( (stringID == 0L || [stringID isEqualToString:@"export"]) && [[self window] isMainWindow] == NO)
 			{
 				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 				glEnable(GL_BLEND);
@@ -8598,8 +8601,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return [self nsimage: NO allViewers: NO];
 }
 
--(NSImage*) nsimage:(BOOL) originalSize allViewers:(BOOL) allViewers {
-	
+-(NSImage*) nsimage:(BOOL) originalSize allViewers:(BOOL) allViewers
+{
 	NSBitmapImageRep	*rep;
 	long				width, height, spp, bpp;
 	NSString			*colorSpace;
@@ -8626,7 +8629,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( [self is2DViewer] == NO) allViewers = NO;
 	
-	if( allViewers) {
+	if( allViewers)
+	{
 		unsigned char	*tempData = 0L;
 		NSRect			unionRect;
 		NSArray			*viewers = [ViewerController getDisplayed2DViewers];
@@ -8636,12 +8640,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSMutableArray	*cResult = [NSMutableArray array];
 		int wCount = [cWindows count];
 		
-		for( int i = 0; i < wCount; i++) {
+		for( int i = 0; i < wCount; i++)
+		{
 			int index = 0;
 			float minY = [[[cWindows objectAtIndex: 0] window] frame].origin.y;
 			
-			for( int x = 0; x < [cWindows count]; x++) {
-				if( [[[cWindows objectAtIndex: x] window] frame].origin.y > minY) {
+			for( int x = 0; x < [cWindows count]; x++)
+			{
+				if( [[[cWindows objectAtIndex: x] window] frame].origin.y > minY)
+				{
 					minY  = [[[cWindows objectAtIndex: x] window] frame].origin.y;
 					index = x;
 				}
@@ -8649,7 +8656,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			float minX = [[[cWindows objectAtIndex: index] window] frame].origin.x;
 			
-			for( int x = 0; x < [cWindows count]; x++) {
+			for( int x = 0; x < [cWindows count]; x++)
+			{
 				if( [[[cWindows objectAtIndex: x] window] frame].origin.x < minX && [[[cWindows objectAtIndex: x] window] frame].origin.y >= minY)
 				{
 					minX = [[[cWindows objectAtIndex: x] window] frame].origin.x;
@@ -8666,12 +8674,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSMutableArray	*viewsRect = [NSMutableArray array];
 		
 		// Compute the enclosing rect
-		for( int i = 0; i < [viewers count]; i++) {
+		for( int i = 0; i < [viewers count]; i++)
+		{
 			[[[viewers objectAtIndex: i] seriesView] selectFirstTilingView];
 			
 			NSRect	bounds = [[[viewers objectAtIndex: i] imageView] bounds];
 			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"]) {
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"])
+			{
 				bounds.size.width *= [[[viewers objectAtIndex: i] seriesView] imageColumns];
 				bounds.size.height *= [[[viewers objectAtIndex: i] seriesView] imageRows];
 			}
@@ -8687,25 +8697,30 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			else unionRect = NSUnionRect( bounds, unionRect);
 		}
 		
-		for( int i = 0; i < [viewers count]; i++ ) {
+		for( int i = 0; i < [viewers count]; i++ )
+		{
 			NSRect curRect = [[viewsRect objectAtIndex: i] rectValue];
 			BOOL intersect;
 			
 			// X move
-			do {
+			do
+			{
 				intersect = NO;
 				
-				for( int x = 0 ; x < [viewers count]; x++) {
+				for( int x = 0 ; x < [viewers count]; x++)
+				{
 					if( x != i) {
 						NSRect	rect = [[viewsRect objectAtIndex: x] rectValue];
-						if( NSIntersectsRect( curRect, rect) ) {
+						if( NSIntersectsRect( curRect, rect))
+						{
 							curRect.origin.x += 2;
 							intersect = YES;
 						}
 					}
 				}
 				
-				if( intersect == NO) {
+				if( intersect == NO)
+				{
 					curRect.origin.x --;
 					if( curRect.origin.x <= unionRect.origin.x) intersect = YES;
 				}
@@ -8715,7 +8730,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[viewsRect replaceObjectAtIndex: i withObject: [NSValue valueWithRect: curRect]];
 		}
 		
-		for( int i = 0; i < [viewers count]; i++) {
+		for( int i = 0; i < [viewers count]; i++)
+		{
 			NSRect curRect = [[viewsRect objectAtIndex: i] rectValue];
 			BOOL intersect;
 			
@@ -8723,17 +8739,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			do {
 				intersect = NO;
 				
-				for( int x = 0 ; x < [viewers count]; x++) {
-					if( x != i) {
+				for( int x = 0 ; x < [viewers count]; x++)
+				{
+					if( x != i)
+					{
 						NSRect	rect = [[viewsRect objectAtIndex: x] rectValue];
-						if( NSIntersectsRect( curRect, rect) ) {
+						if( NSIntersectsRect( curRect, rect))
+						{
 							curRect.origin.y-= 2;
 							intersect = YES;
 						}
 					}
 				}
 				
-				if( intersect == NO) {
+				if( intersect == NO)
+				{
 					curRect.origin.y ++;
 					if( curRect.origin.y + curRect.size.height > unionRect.origin.y + unionRect.size.height) intersect = YES;
 				}
@@ -8745,7 +8765,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		// Re-Compute the enclosing rect
 		unionRect = [[viewsRect objectAtIndex: 0] rectValue];
-		for( int i = 0; i < [viewers count]; i++) {
+		for( int i = 0; i < [viewers count]; i++)
+		{
 			unionRect = NSUnionRect( [[viewsRect objectAtIndex: i] rectValue], unionRect);
 		}
 		
@@ -8758,7 +8779,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		bpp = 8;
 		
 		data = calloc( 1, width * height * spp * bpp/8);
-		for( long i = 0; i < [viewers count]; i++) {
+		for( long i = 0; i < [viewers count]; i++)
+		{
 			long	iwidth, iheight, ispp, ibpp;
 			
 			tempData = [[[viewers objectAtIndex: i] imageView] getRawPixelsWidth:&iwidth height:&iheight spp:&ispp bpp:&ibpp screenCapture:YES force8bits:YES removeGraphical: NO squarePixels: YES allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping: NO origin: 0L spacing: 0L];
@@ -8770,7 +8792,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			unsigned char	*o = data + spp*width* (int) (height - bounds.origin.y - iheight) + (int) bounds.origin.x*spp;
 			
-			for( int y = 0 ; y < iheight; y++) {
+			for( int y = 0 ; y < iheight; y++)
+			{
 				memcpy( o + y*spp*width, tempData + y*ispp*iwidth, ispp*iwidth);
 			}
 			

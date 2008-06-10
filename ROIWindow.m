@@ -90,11 +90,19 @@
 	[super dealloc];
 }
 
+- (void) CloseViewerNotification :(NSNotification*) note
+{
+	if( [note object] == curController)
+	{
+		[self windowWillClose: 0L];
+	}
+}
+
 - (void) removeROI :(NSNotification*) note
 {
-	if( [note object] == curROI )
+	if( [note object] == curROI)
 	{
-		[self release];
+		[self windowWillClose: 0L];
 	}
 }
 
@@ -204,6 +212,7 @@
 	[[self window] setFrameAutosaveName:@"ROIInfoWindow"];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(roiChange:) name:@"roiChange" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(removeROI:) name: @"removeROI" object: nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(CloseViewerNotification:) name: @"CloseViewerNotification" object: nil];
 	
 	getName = [[NSTimer scheduledTimerWithTimeInterval: 0.1 target:self selector:@selector( getName:) userInfo:0 repeats: YES] retain];
 	
@@ -214,7 +223,7 @@
 	return self;
 }
 
-- (void)windowWillClose:(NSNotification *)notification
+- (void) windowWillClose:(NSNotification *)notification
 {
 	[getName invalidate];
 	[getName release];
@@ -224,7 +233,6 @@
 	
 	[curROI setComments: [NSString stringWithString: [comments string]]]; 	// stringWithString is very important - see NSText string !
 	[curROI setName: [name stringValue]];
-	
 	curROI = 0L;
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:curROI userInfo: 0L];
@@ -272,25 +280,9 @@
 		}
 	}
 	[[curController imageView] setNeedsDisplay: YES];
-	[self release];
+	
+	[self windowWillClose: 0L];
 }
-
-//- (IBAction) deleteROI:(id) sender {
-//	
-//	[[NSNotificationCenter defaultCenter] removeObserver: self name: @"removeROI" object: nil];
-//	
-//	if ( allWithSameName ) {
-//		[self removeAllROIsWithName: [curROI name]];
-//		return;
-//	}
-//	
-//	NSMutableArray *roiImageList = [[curController roiList] objectAtIndex: [[curROI curView] curImage]];
-//	[roiImageList removeObject: curROI];
-//
-//	[[curController imageView] setNeedsDisplay: YES];
-//	[self release];
-//				
-//}
 
 - (IBAction) setTextData:(id) sender
 {
