@@ -102,6 +102,7 @@
 - (void) buildPresetsMenu;
 - (IBAction) autoQueryTimer:(id) sender;
 - (IBAction) switchAutoRetrieving: (id) sender;
+- (IBAction) selectModality: (id) sender;
 - (void) displayAndRetrieveQueryResults;
 - (void) autoQueryThread;
 @end

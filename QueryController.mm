@@ -481,6 +481,19 @@ static char *GetPrivateIP()
 	return (item == nil) ? [resultArray objectAtIndex:index] : [[(DCMTKQueryNode *)item children] objectAtIndex:index];
 }
 
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+	if( [[tableColumn identifier] isEqualToString:@"comment"])
+	{
+		DatabaseIsEdited = YES;
+		return YES;
+	}
+	else
+	{
+		DatabaseIsEdited = NO;
+		return NO;
+	}
+}
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
 {
@@ -592,7 +605,24 @@ static char *GetPrivateIP()
 				float totalFiles = [[item valueForKey:@"numberImages"] floatValue];
 				float percentage = localFiles / totalFiles;
 				if(percentage>1.0) percentage = 1.0;
-
+				
+				return [NSString stringWithFormat:@"%@\n%d%% (%d/%d)", [cell title], (int)(percentage*100), (int)localFiles, (int)totalFiles];
+			}
+		}
+		
+		if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
+		{
+			NSArray *seriesArray;
+			
+			seriesArray = [self localSeries: item];
+			
+			if( [seriesArray count] > 0)
+			{
+				float localFiles = [[[seriesArray objectAtIndex: 0] valueForKey: @"noFiles"] floatValue];
+				float totalFiles = [[item valueForKey:@"numberImages"] floatValue];
+				float percentage = localFiles / totalFiles;
+				if(percentage>1.0) percentage = 1.0;
+				
 				return [NSString stringWithFormat:@"%@\n%d%% (%d/%d)", [cell title], (int)(percentage*100), (int)localFiles, (int)totalFiles];
 			}
 		}
@@ -602,13 +632,11 @@ static char *GetPrivateIP()
 
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
-//	[displayLock lock];
-
 	if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
 	{
 		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 		{
-			NSArray						*studyArray;
+			NSArray	*studyArray;
 			
 			studyArray = [self localStudy: item];
 			
@@ -618,43 +646,24 @@ static char *GetPrivateIP()
 				if(percentage>1.0) percentage = 1.0;
 
 				[(ImageAndTextCell *)cell setImage:[NSImage pieChartImageWithPercentage:percentage]];
-			
-//				if( [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
-//					[(ImageAndTextCell *)cell setImage: alreadyInDatabase];
-//				else
-//					[(ImageAndTextCell *)cell setImage: partiallyInDatabase];
 			}
 			else [(ImageAndTextCell *)cell setImage: 0L];
 		}
-//		else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)	Series parsing is not identical on OsiriX......... not limited to uid
-//		{
-//			NSError						*error = 0L;
-//			NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
-//			NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
-//			NSPredicate					*predicate = [NSPredicate predicateWithFormat: @"(seriesDICOMUID == %@)", [item valueForKey:@"uid"]];
-//			NSArray						*seriesArray;
-//			
-//			[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
-//			[request setPredicate: predicate];
-//			[context retain];
-//			[context lock];
-//			seriesArray = [context executeFetchRequest:request error:&error];
-//			
-//			if( [seriesArray count] > 1) NSLog(@"[seriesArray count] > 2 !!");
-//			
-//			if( [seriesArray count] > 0) NSLog( @"%d / %d", [[[seriesArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue], [[item valueForKey:@"numberImages"] intValue]);
-//			if( [seriesArray count] > 0)
-//			{
-//				if( [[[seriesArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
-//					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"QRalreadyInDatabase.tif"]];
-//				else
-//					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"QRpartiallyInDatabase.tif"]];
-//			}
-//			else [(ImageAndTextCell *)cell setImage: 0L];
-//			
-//			[context unlock];
-//			[context release];
-//		}
+		else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
+		{
+			NSArray	*seriesArray;
+			
+			seriesArray = [self localSeries: item];
+			
+			if( [seriesArray count] > 0)
+			{
+				float percentage = [[[seriesArray objectAtIndex: 0] valueForKey: @"noFiles"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
+				if(percentage>1.0) percentage = 1.0;
+				
+				[(ImageAndTextCell *)cell setImage:[NSImage pieChartImageWithPercentage:percentage]];
+			}
+			else [(ImageAndTextCell *)cell setImage: 0L];
+		}
 		else [(ImageAndTextCell *)cell setImage: 0L];
 		
 		[cell setFont: [NSFont boldSystemFontOfSize:13]];
@@ -665,8 +674,6 @@ static char *GetPrivateIP()
 		if( [item valueForKey:@"numberImages"]) [cell setIntegerValue: [[item valueForKey:@"numberImages"] intValue]];
 		else [cell setStringValue:@"n/a"];
 	}
-	
-//	[displayLock unlock];
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
@@ -745,20 +752,6 @@ static char *GetPrivateIP()
 	DatabaseIsEdited = NO;
 }
 
-- (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
-{
-	if( [[tableColumn identifier] isEqualToString:@"comment"])
-	{
-		DatabaseIsEdited = YES;
-		return YES;
-	}
-	else
-	{
-		DatabaseIsEdited = NO;
-		return NO;
-	}
-}
-
 - (NSArray*) sortArray
 {
 	NSArray *s = [outlineView sortDescriptors];
@@ -817,6 +810,20 @@ static char *GetPrivateIP()
 		[selectedResultSource setStringValue: [NSString stringWithFormat:@"%@  /  %@:%d", [item valueForKey:@"calledAET"], [item valueForKey:@"hostname"], [[item valueForKey:@"port"] intValue]]];
 	}
 	else [selectedResultSource setStringValue:@""];
+}
+
+- (IBAction) selectModality: (id) sender;
+{
+	NSEvent *event = [[NSApplication sharedApplication] currentEvent];
+	
+	if( [event modifierFlags] & NSCommandKeyMask)
+	{
+		for( NSCell *c in [modalityFilterMatrix cells])
+		{
+			if( [sender selectedCell] != c)
+				[c setState: NSOffState];
+		}
+	}
 }
 
 - (NSArray*) queryPatientID:(NSString*) ID
@@ -1198,7 +1205,6 @@ static char *GetPrivateIP()
 	if( localFiles < totalFiles)
 	{
 		NSString *stringID = [self stringIDForStudy: item];
-		
 		NSNumber *previousNumberOfFiles = [previousAutoRetrieve objectForKey: stringID];
 		
 		// We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
