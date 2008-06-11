@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="549"/>
+			<integer value="319"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -617,7 +617,7 @@
 													<bool key="NSIsResizeable">YES</bool>
 													<bool key="NSIsEditable">YES</bool>
 													<reference key="NSTableView" ref="289314417"/>
-													<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<object class="NSSortDescriptor" key="NSSortDescriptorPrototype" id="995577286">
 														<string key="NSKey">comment</string>
 														<bool key="NSAscending">YES</bool>
 														<string key="NSSelector">compare:</string>
@@ -672,6 +672,10 @@
 											<int key="NSTvFlags">-874512384</int>
 											<string key="NSAutosaveName">QueryTable2.0</string>
 											<int key="NSGridStyleMask">1</int>
+											<object class="NSArray" key="NSSortDescriptors">
+												<bool key="EncodedWithXMLCoder">YES</bool>
+												<reference ref="995577286"/>
+											</object>
 											<int key="NSColumnAutoresizingStyle">0</int>
 											<int key="NSDraggingSourceMaskForLocal">15</int>
 											<int key="NSDraggingSourceMaskForNonLocal">0</int>
@@ -679,6 +683,7 @@
 										</object>
 									</object>
 									<string key="NSFrame">{{1, 17}, {893, 468}}</string>
+									<string key="NSBounds">{{281, 0}, {893, 468}}</string>
 									<reference key="NSSuperview" ref="225972883"/>
 									<reference key="NSNextKeyView" ref="289314417"/>
 									<reference key="NSDocView" ref="289314417"/>
@@ -704,6 +709,7 @@
 									<int key="NSsFlags">257</int>
 									<reference key="NSTarget" ref="225972883"/>
 									<string key="NSAction">_doScroller:</string>
+									<double key="NSCurValue">1.000000e+00</double>
 									<double key="NSPercent">7.606474e-01</double>
 								</object>
 								<object class="NSClipView" id="241117316">
@@ -714,6 +720,7 @@
 										<reference ref="209721991"/>
 									</object>
 									<string key="NSFrame">{{1, 0}, {893, 17}}</string>
+									<string key="NSBounds">{{281, 0}, {893, 17}}</string>
 									<reference key="NSSuperview" ref="225972883"/>
 									<reference key="NSNextKeyView" ref="209721991"/>
 									<reference key="NSDocView" ref="209721991"/>

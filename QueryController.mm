@@ -1490,6 +1490,12 @@ static char *GetPrivateIP()
 
 - (IBAction) retrieveAndViewClick: (id) sender
 {
+	if( [[outlineView tableColumns] count] > [outlineView clickedColumn] && [outlineView clickedColumn] >= 0)
+	{
+		if( [[[[outlineView tableColumns] objectAtIndex: [outlineView clickedColumn]] identifier] isEqualToString: @"comment"])
+			return;
+	}
+	   
 	if( [outlineView clickedRow] >= 0)
 	{
 		[self retrieveAndView: sender];
