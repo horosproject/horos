@@ -547,7 +547,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	}
 	else if([[sender menu] isEqualTo: [wlww2DPopup menu]])
 	{
-		[mprController ApplyWLWW:sender];
+//		[mprController ApplyWLWW:sender];
 	}
 }
 

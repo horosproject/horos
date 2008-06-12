@@ -173,7 +173,7 @@
     _delegate = delegate;
 }
 
--(void)_setSchedulableObject:(id <Schedulable>)schedObj {
+-(void)_setSchedulableObject:(NSObject <Schedulable> *)schedObj {
     [schedObj retain];
     [_schedulableObject release];
     _schedulableObject = schedObj;

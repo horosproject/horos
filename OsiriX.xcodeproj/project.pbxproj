@@ -1359,7 +1359,6 @@
 		ABBB64DE063587B200D9531F /* ZoomToFit.tiff in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AC063587B200D9531F /* ZoomToFit.tiff */; };
 		ABBDAEBB06407CF90016210A /* VRMakeObject.m in Sources */ = {isa = PBXBuildFile; fileRef = ABBDAEB906407CF90016210A /* VRMakeObject.m */; };
 		ABBDAEBE06407D080016210A /* VRMakeObject.h in Headers */ = {isa = PBXBuildFile; fileRef = ABBDAEBC06407D080016210A /* VRMakeObject.h */; };
-		ABBFDA40063480490011BD0A /* Deployment-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBFDA3F063480490011BD0A /* Deployment-Info.plist */; };
 		ABC3939F09F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABC3938C09F51D6B000A6508 /* OSI3DPreferencePane.prefPane */; };
 		ABC393A109F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABC3938C09F51D6B000A6508 /* OSI3DPreferencePane.prefPane */; };
 		ABC3994509F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABC3993109F52842000A6508 /* OSIPETPreferencePane.prefPane */; };
@@ -21091,7 +21090,6 @@
 			files = (
 				CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */,
 				ABB7A43406343BCA00AD1777 /* dicomDictionary.plist in Resources */,
-				ABBFDA40063480490011BD0A /* Deployment-Info.plist in Resources */,
 				ABBB63A70635874E00D9531F /* dcmdump in Resources */,
 				ABBB63A80635874E00D9531F /* dicom.dic in Resources */,
 				ABBB64AD063587B200D9531F /* 2DBlending.tif in Resources */,

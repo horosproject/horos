@@ -26,7 +26,7 @@
 @interface Scheduler : NSObject {
     @private
     id _delegate;                               // Delegate
-    id <Schedulable> _schedulableObject;        // Object which has work units to be scheduled
+    NSObject <Schedulable> *_schedulableObject;        // Object which has work units to be scheduled
     NSMutableSet *_workUnitsRemaining;          // Work units not yet performed in schedule
     NSLock *_remainingUnitsLock;                // Lock to keep the remaining work units set consistent
     BOOL _scheduleWasCancelled;                 // Flag set when schedule is cancelled
