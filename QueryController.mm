@@ -603,8 +603,11 @@ static const char *GetPrivateIP()
 			{
 				float localFiles = [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] floatValue];
 				float totalFiles = [[item valueForKey:@"numberImages"] floatValue];
-				float percentage = localFiles / totalFiles;
-				if(percentage>1.0) percentage = 1.0;
+				float percentage = 0;
+				
+				if( totalFiles != 0.0)
+					percentage = localFiles / totalFiles;
+				if( percentage > 1.0) percentage = 1.0;
 				
 				return [NSString stringWithFormat:@"%@\n%d%% (%d/%d)", [cell title], (int)(percentage*100), (int)localFiles, (int)totalFiles];
 			}
@@ -620,8 +623,12 @@ static const char *GetPrivateIP()
 			{
 				float localFiles = [[[seriesArray objectAtIndex: 0] valueForKey: @"noFiles"] floatValue];
 				float totalFiles = [[item valueForKey:@"numberImages"] floatValue];
-				float percentage = localFiles / totalFiles;
-				if(percentage>1.0) percentage = 1.0;
+				float percentage = 0;
+				
+				if( totalFiles != 0.0)
+					percentage = localFiles / totalFiles;
+					
+				if(percentage > 1.0) percentage = 1.0;
 				
 				return [NSString stringWithFormat:@"%@\n%d%% (%d/%d)", [cell title], (int)(percentage*100), (int)localFiles, (int)totalFiles];
 			}
@@ -642,8 +649,12 @@ static const char *GetPrivateIP()
 			
 			if( [studyArray count] > 0)
 			{
-				float percentage = [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
-				if(percentage>1.0) percentage = 1.0;
+				float percentage = 0;
+				
+				if( [[item valueForKey:@"numberImages"] floatValue] != 0.0)
+					percentage = [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
+					
+				if(percentage > 1.0) percentage = 1.0;
 
 				[(ImageAndTextCell *)cell setImage:[NSImage pieChartImageWithPercentage:percentage]];
 			}
@@ -657,8 +668,12 @@ static const char *GetPrivateIP()
 			
 			if( [seriesArray count] > 0)
 			{
-				float percentage = [[[seriesArray objectAtIndex: 0] valueForKey: @"noFiles"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
-				if(percentage>1.0) percentage = 1.0;
+				float percentage = 0;
+				
+				if( [[item valueForKey:@"numberImages"] floatValue] != 0.0)
+					percentage = [[[seriesArray objectAtIndex: 0] valueForKey: @"noFiles"] floatValue] / [[item valueForKey:@"numberImages"] floatValue];
+					
+				if(percentage > 1.0) percentage = 1.0;
 				
 				[(ImageAndTextCell *)cell setImage:[NSImage pieChartImageWithPercentage:percentage]];
 			}
