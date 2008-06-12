@@ -510,8 +510,6 @@
 			dataset ->putAndInsertString(DCM_StudyTime, NULL);
 		}
 		
-		
-				
 		if ([fetchedObject valueForKey:@"studyInstanceUID"])
 			dataset ->putAndInsertString(DCM_StudyInstanceUID,  [[fetchedObject valueForKey:@"studyInstanceUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 		else

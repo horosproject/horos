@@ -30,8 +30,9 @@
 			compression: (float)compression
 			extraParameters:(NSDictionary *)extraParameters{
 	
-	if (self = [super init]) {
-	_callingAET = [myAET retain];
+	if (self = [super init])
+	{
+		_callingAET = [myAET retain];
 		_calledAET = [theirAET retain];
 		_port = port;
 		_hostname = [hostname retain];
@@ -47,7 +48,7 @@
 		_repeatCount = -1;
 		_cancelAfterNResponses = -1;
 		_networkTransferSyntax = EXS_Unknown;
-		_blockMode = DIMSE_NONBLOCKING;
+		_blockMode = DIMSE_BLOCKING;
 		_acse_timeout = _dimse_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
 
 		//SSL
