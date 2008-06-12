@@ -19,7 +19,7 @@
 #import "OrthogonalMPRViewer.h"
 #import "ROI.h"
 #import "DefaultsOsiriX.h"
-//#import "ThickSlabVR.h"
+#import "ThickSlabController.h"
 
 @implementation OrthogonalMPRView
 

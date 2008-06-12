@@ -1705,7 +1705,7 @@ NSString * documentsDirectory();
 	return YES;
 }
 
-- (float)splitView:(NSSplitView *)sender constrainMinCoordinate:(float)proposedMin ofSubviewAt:(int)offset
+- (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(NSInteger)offset
 {
 	NSRect rect0, rect1, rectTot;
 	rect0 = [[[sender subviews] objectAtIndex:0] frame];
@@ -1744,7 +1744,7 @@ NSString * documentsDirectory();
 	}
 }
 
-- (float)splitView:(NSSplitView *)sender constrainMaxCoordinate:(float)proposedMax ofSubviewAt:(int)offset
+- (CGFloat)splitView:(NSSplitView *)sender constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(NSInteger)offset
 {
 	NSRect rectTot,rect1;
 	rectTot = [sender frame];
