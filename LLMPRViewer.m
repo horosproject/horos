@@ -22,6 +22,7 @@
 #import "VRController.h"
 #import "VRControllerVPRO.h"
 #import "WaitRendering.h"
+#import "VRView.h"
 
 #define BONEVALUE 250
 #define MORPH_RESAMPLE 3

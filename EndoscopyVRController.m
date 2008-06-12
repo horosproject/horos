@@ -27,7 +27,7 @@ MODIFICATION HISTORY
 #import "EndoscopyFlyThruController.h"
 #import "DCMView.h"
 #import "ROI.h"
-
+#import "VRView.h"
 
 extern NSString * documentsDirectory();
 

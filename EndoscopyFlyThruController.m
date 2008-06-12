@@ -18,6 +18,7 @@
 #import "EndoscopyVRController.h"
 #import "EndoscopyViewer.h"
 #import "OSIVoxel.h"
+#import "VRView.h"
 
 @implementation EndoscopyFlyThruController
 

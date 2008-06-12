@@ -14,6 +14,7 @@
 
 
 #import "Wait.h"
+#import "SendController.h"
 
 @implementation Wait
 

@@ -16,6 +16,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class SendController;
 
 /** \brief Window Controller for the Wait Panel */
 @interface Wait : NSWindowController
@@ -24,7 +25,7 @@
 	IBOutlet NSTextField		 *text, *elapsed;
 	IBOutlet NSButton			 *abort;
 	
-	id _target;
+	SendController * _target;
 	NSDate  *startTime;
 	BOOL	cancel, aborted, openSession;
 	NSModalSession session;

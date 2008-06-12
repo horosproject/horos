@@ -47,6 +47,7 @@ Version 2.3
 #import "DCMPix.h"
 #import "VRController.h"
 #import "printView.h"
+#import "VRView.h"
 
 extern NSString* convertDICOM( NSString *inputfile);
 extern NSString * documentsDirectory();
@@ -155,7 +156,7 @@ extern NSString * documentsDirectory();
 	[[NSFileManager defaultManager] createDirectoryAtPath:tmpFolder attributes:nil];
 
 	NSImage *im = ( [[self view] respondsToSelector: @selector(nsimageQuicktime:)] ) ?
-		[[self view] nsimageQuicktime] : nil;
+		[(VRView*) [self view] nsimageQuicktime] : nil;
 	
 	NSData *imageData = [im  TIFFRepresentation];
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];

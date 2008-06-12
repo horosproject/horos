@@ -55,7 +55,7 @@
 
 - (BOOL)setSelectionIndexes:(NSIndexSet *)indexes{
 	BOOL result = [super setSelectionIndexes:(NSIndexSet *)indexes];
-	int index = [indexes firstIndex];
+	NSUInteger index = [indexes firstIndex];
 	if( index == NSNotFound) return NO;
 	[flyThruController.FTAdapter setCurrentViewToCamera:[[self selectedObjects] objectAtIndex:0]];
 	return result;
@@ -160,7 +160,7 @@
     return YES;
 }
 
-- (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op
+- (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)op
 {
   
 	// only allow drops within the table
@@ -172,8 +172,7 @@
 	
 }
 
-- (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id <NSDraggingInfo>)info
-            row:(int)row dropOperation:(NSTableViewDropOperation)operation
+- (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
 {
 
     NSPasteboard* pboard = [info draggingPasteboard];
@@ -196,7 +195,7 @@
 }
 
 - (IBAction)updateCamera:(id)sender{
-	int index = [self selectionIndex];
+	NSUInteger index = [self selectionIndex];
 	if(index==NSNotFound) return;
 	[self remove:sender];
 	[self insertObject:flyThruController.currentCamera atArrangedObjectIndex:index];

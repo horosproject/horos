@@ -21,8 +21,9 @@
 #import "EndoscopyViewer.h"
 #import "PreviewView.h"
 #import "IChatTheatreHelpWindowController.h"
-@class VRPresetPreview;
-@class VRView;
+
+#import "VRPresetPreview.h"
+#import "VRView.h"
 
 static IChatTheatreDelegate	*iChatDelegate = 0L;
 

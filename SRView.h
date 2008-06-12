@@ -16,11 +16,12 @@
 
 
 #import <AppKit/AppKit.h>
-#import "VTKView.h"
+
 #import "DCMPix.h"
 #import "Camera.h"
 
 #ifdef __cplusplus
+#import "VTKView.h"
 #define id Id
 #include "vtkCommand.h"
 #include "vtkProperty.h"
@@ -128,6 +129,9 @@ typedef char* vtkDecimatePro;
 typedef char* vtkSmoothPolyDataFilter;
 typedef char* vtkContourFilter;
 typedef char* vtkPolyDataNormals;
+typedef char* vtkRenderer;
+typedef char* vtkOrientationMarkerWidget;
+
 #endif
 
 #include <Accelerate/Accelerate.h>
@@ -140,7 +144,11 @@ typedef char* vtkPolyDataNormals;
 
 
 /** \brief Surface Rendering View */
+#ifdef __cplusplus
 @interface SRView : VTKView
+#else
+@interface SRView : NSObject
+#endif
 {
 	int							projectionMode;
     NSMutableArray				*blendingPixList;
@@ -266,6 +274,7 @@ typedef char* vtkPolyDataNormals;
 -(void) runRendering;
 -(void) startRendering;
 -(void) stopRendering;
+-(void) setViewSizeToMatrix3DExport;
 -(void) setCurrentTool:(short) i;
 -(id) initWithFrame:(NSRect)frame;
 -(short) setPixSource:(NSMutableArray*)pix :(float*) volumeData;
@@ -300,6 +309,7 @@ typedef char* vtkPolyDataNormals;
 -(void) saViewOpposite:(id) sender;
 - (IBAction)changeColor:(id)sender;
 -(IBAction) switchProjection:(id) sender;
+-(void) restoreViewSizeAfterMatrix3DExport;
 
 // 3D Points
 - (void) add3DPoint: (double) x : (double) y : (double) z : (float) radius : (float) r : (float) g : (float) b;
@@ -330,7 +340,7 @@ typedef char* vtkPolyDataNormals;
 // 3D Points annotations
 - (IBAction) IBSetSelected3DPointAnnotation: (id) sender;
 - (void) setAnnotationWithPosition:(int)displayPosition for3DPointAtIndex:(unsigned int) index;
-- (void) setAnnotation:(char*) annotation for3DPointAtIndex:(unsigned int) index;
+- (void) setAnnotation:(const char*) annotation for3DPointAtIndex:(unsigned int) index;
 - (void) displayAnnotationFor3DPointAtIndex:(unsigned int) index;
 - (void) hideAnnotationFor3DPointAtIndex:(unsigned int) index;
 - (IBAction) IBSetSelected3DPointAnnotationColor: (id) sender;

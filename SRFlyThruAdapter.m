@@ -17,7 +17,7 @@
 
 #import "SRFlyThruAdapter.h"
 #import "SRController.h"
-//#import "SRView.h"
+#import "SRView.h"
 
 @implementation SRFlyThruAdapter
 - (id) initWithSRController: (SRController*) aSRController

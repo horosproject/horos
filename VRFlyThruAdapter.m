@@ -22,12 +22,9 @@ MODIFICATION HISTORY
   
 */
 
-
-
-
 #import "VRFlyThruAdapter.h"
 #import "VRController.h"
-//#import "VRView.h"
+#import "VRView.h"
 
 @implementation VRFlyThruAdapter
 

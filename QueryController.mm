@@ -45,7 +45,7 @@ static NSString *Modality = @"Modality";
 
 static QueryController	*currentQueryController = 0L;
 
-static char *GetPrivateIP()
+static const char *GetPrivateIP()
 {
 	struct			hostent *h;
 	char			hostname[100];

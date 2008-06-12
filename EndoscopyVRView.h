@@ -25,5 +25,5 @@
 }
 
 - (void) setShadingValues:(float) ambient :(float) diffuse :(float) specular :(float) specularpower;
-
+-(unsigned char*) superGetRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
 @end

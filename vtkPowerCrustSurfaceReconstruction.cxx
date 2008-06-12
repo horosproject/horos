@@ -749,7 +749,7 @@ void buildhull(simplex *);
 
 /* from io.c */
 
-void panic(char *fmt, ...);
+void panic(const char *fmt, ...);
 
 typedef void print_neighbor_f(FILE*, neighbor*);
 extern print_neighbor_f
@@ -1338,7 +1338,7 @@ void echo_command_line(FILE *F, int argc, char **argv) {
     fprintf(F,"\n");
 }
 
-char *output_forms[] = {"vn", "ps", "mp", "cpr", "off"};
+const char *output_forms[] = {"vn", "ps", "mp", "cpr", "off"};
 
 out_func *out_funcs[] = {&vlist_out, &ps_out, &mp_out, &cpr_out, &off_out};
 
@@ -5593,7 +5593,7 @@ Coord mins[MAXDIM]
     maxs[MAXDIM]
     = {-DBL_MAX,-DBL_MAX,-DBL_MAX,-DBL_MAX,-DBL_MAX,-DBL_MAX,-DBL_MAX,-DBL_MAX};
 
-void panic(char *fmt, ...) {
+void panic(const char *fmt, ...) {
     va_list args;
 
     va_start(args, fmt);

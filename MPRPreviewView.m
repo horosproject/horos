@@ -15,7 +15,7 @@
 #import "MPRPreviewView.h"
 #import "DefaultsOsiriX.h"
 #import "MPR2DController.h"
-
+#import "MPR2DView.h"
 
 @implementation MPRPreviewView
 
@@ -141,6 +141,6 @@
 - (void)mouseDraggedBlending:(NSEvent *)event{
 	[super mouseDraggedBlending:event];
 	[[[[self windowController] blendingController] imageView] setWLWW :[[blendingView curDCM] wl] :[[blendingView curDCM] ww]];
-	[[[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"dragged"];
+	[(MPR2DView*) [[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"dragged"];
 }
 @end

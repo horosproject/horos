@@ -15,10 +15,11 @@
 
 
 #import <AppKit/AppKit.h>
-#import "VTKView.h"
 #import "DCMPix.h"
 
 #ifdef __cplusplus
+#import "VTKView.h"
+
 #define id Id
 #include "vtkCommand.h"
 #include "vtkProperty.h"
@@ -94,6 +95,7 @@
 class vtkMyCallbackVR;
 
 #else
+
 typedef char* vtkTransform;
 typedef char* vtkImageActor;
 typedef char* vtkImageMapToColors;
@@ -126,6 +128,10 @@ typedef char* vtkPlaneWidget;
 typedef char* vtkBoxWidget;
 typedef char* vtkVolumeRayCastCompositeFunction;
 
+typedef char* vtkRenderer;
+typedef char* vtkVolumeTextureMapper3D;
+typedef char* vtkOrientationMarkerWidget;
+
 typedef char* vtkMyCallbackVR;
 #endif
 
@@ -149,7 +155,11 @@ typedef char* vtkMyCallbackVR;
 *   View for volume rendering and MIP
 */
 
+#ifdef __cplusplus
 @interface VRView : VTKView <Schedulable>
+#else
+@interface VRView : NSView
+#endif
 {
 	NSTimer						*autoRotate, *startAutoRotate;
 	BOOL						rotate, flyto;
@@ -336,6 +346,7 @@ typedef char* vtkMyCallbackVR;
 - (void) setCroppingBox:(double*) a;
 - (BOOL) croppingBox:(double*) a;
 
+- (void) exportDCMCurrentImage;
 - (void) renderImageWithBestQuality: (BOOL) best waitDialog: (BOOL) wait;
 - (void) endRenderImageWithBestQuality;
 - (void) resetAutorotate:(id) sender;
@@ -360,6 +371,7 @@ typedef char* vtkMyCallbackVR;
 //-(void) newStartRenderingTime;
 //-(void) deleteStartRenderingTime;
 -(void) setOpacity:(NSArray*) array;
+- (void) setLowResolutionCamera: (Camera*) cam;
 //-(void) runRendering;
 //-(void) startRendering;
 //-(void) stopRendering;

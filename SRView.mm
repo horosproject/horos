@@ -2708,7 +2708,7 @@ typedef struct _xyzArray
 //	strcat(bufferAnnotation, bufferName);
 //	strcat(bufferAnnotation, bufferPosition);
 //	
-	[self setAnnotation:"" for3DPointAtIndex:[point3DPositionsArray count]-1];
+	[self setAnnotation: "" for3DPointAtIndex:[point3DPositionsArray count]-1];
 	
 //	aText->SetText(bufferAnnotation);
 //	
@@ -3108,7 +3108,7 @@ typedef struct _xyzArray
 	[point3DDisplayPositionArray replaceObjectAtIndex:index withObject:[NSNumber numberWithInt:displayPosition]];
 }
 
-- (void) setAnnotation:(char*) annotation for3DPointAtIndex:(unsigned int) index
+- (void) setAnnotation:(const char*) annotation for3DPointAtIndex:(unsigned int) index
 {
 	vtkVectorText *aText = vtkVectorText::New();
 	aText->SetText(annotation);

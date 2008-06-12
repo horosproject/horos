@@ -768,7 +768,7 @@ static NSHost *currentHost = 0L;
 	if( defaultAnnotations)
 		[defaultValues setObject: defaultAnnotations forKey:@"CUSTOM_IMAGE_ANNOTATIONS"];
 	[defaultValues setObject:@"0" forKey:@"SERIESORDER"];
-	[defaultValues setObject:@"5" forKey:@"DICOMTimeout"];
+	[defaultValues setObject:@"10" forKey:@"DICOMTimeout"];
 	[defaultValues setObject:@"1" forKey:@"NSWindowsSetFrameAnimate"];
 	[defaultValues setObject: @"0" forKey: @"TRANSITIONTYPE"];
 	[defaultValues setObject: @"0" forKey: @"COPYDATABASE"];

@@ -12,25 +12,15 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-/*
-
-MODIFICATION HISTORY
-
-	20051212	JH	Created.
-	20060110	DDP	Reducing the variable duplication of userDefault objects (work in progress).
-
-  
-*/
-
-
-
 #import "OrthogonalMPRViewer.h"
 #import "EndoscopyViewer.h"
 #import "EndoscopyMPRView.h"
 #import "DICOMExport.h"
 #import "OSIVoxel.h"
+#import "VRView.h"
+#import "EndoscopyVRView.h"
+#import "EndoscopyFlyThruController.h"
+#import "OrthogonalMPRController.h"
 
 static NSString* 	EndoscopyToolbarIdentifier				= @"Endoscopy Viewer Toolbar Identifier";
 static NSString*	endo3DToolsToolbarItemIdentifier		= @"3DTools";
@@ -541,7 +531,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	// Display the Fly Thru Controller
 	
 	[self flyThruControllerInit: sender];
-	[[vrController flyThruController] calculate: sender];
+	[(EndoscopyFlyThruController*) [vrController flyThruController] calculate: sender];
 }
 
 - (void) applyWLWWForString:(NSString*) str
@@ -1113,7 +1103,7 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	[[mprController xReslicedView] setNeedsDisplay: YES];
 	[[mprController yReslicedView] setNeedsDisplay: YES];
 
-	view3DDataPtr = [[vrController view] superGetRawPixels:&width3D :&height3D :&spp3D :&bpp3D :YES :YES];
+	view3DDataPtr = [(EndoscopyVRView*) [vrController view] superGetRawPixels:&width3D :&height3D :&spp3D :&bpp3D :YES :YES];
 	
 	// append the 4 views into one memory block
 	//long	width, height, spp, bpp;
