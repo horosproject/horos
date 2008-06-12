@@ -1095,8 +1095,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 	//dimse-timeout
 	//OFCmdSignedInt opt_timeout = 0;
-	//opt_dimse_timeout = OFstatic_cast(int, opt_timeout);
 	
+	opt_dimse_timeout = OFstatic_cast(int, opt_timeout);
 	opt_blockMode = DIMSE_NONBLOCKING;
 	
 	//max PUD

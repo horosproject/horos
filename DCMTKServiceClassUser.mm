@@ -48,7 +48,6 @@
 		_cancelAfterNResponses = -1;
 		_networkTransferSyntax = EXS_Unknown;
 		_blockMode = DIMSE_NONBLOCKING;
-		_dimse_timeout = 0;
 		_acse_timeout = _dimse_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
 
 		//SSL
