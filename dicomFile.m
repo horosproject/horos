@@ -2066,6 +2066,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				Modality = [[NSString alloc] initWithString:@"OT"];
 				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
 				serie = [[NSString alloc] initWithString:@"unnamed"];
+				
+				[dicomElements setObject:date forKey:@"studyDate"];
+				[dicomElements setObject:Modality forKey:@"modality"];
+				[dicomElements setObject:serie forKey:@"seriesDescription"];
+				[dicomElements setObject:study forKey:@"studyDescription"];
 			}
 			
 			//if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);

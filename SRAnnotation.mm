@@ -22,6 +22,37 @@
 
 @implementation SRAnnotation
 
++ (NSString*) getImageRefSOPInstanceUID:(NSString*) path;
+{
+	NSString	*result = 0L;
+	DSRDocument	*document = new DSRDocument();
+	
+	OFCondition status;
+	
+	if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+	{			
+		DcmFileFormat fileformat;
+		status  = fileformat.loadFile([path UTF8String]);
+		if (status.good())
+		{
+			status = document->read(*fileformat.getDataset());
+			
+			int instanceNumber = [[NSString stringWithFormat:@"%s", document->getInstanceNumber()] intValue];
+			
+			DSRCodedEntryValue codedEntryValue = DSRCodedEntryValue("IHE.10", "99HUG", "Image Reference");
+			if (document->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0 )
+			{
+				DSRImageReferenceValue imageRef = document->getTree().getCurrentContentItem().getImageReference();
+				result = [NSString stringWithFormat:@"%s", imageRef.getSOPInstanceUID().c_str()];
+			}
+		}
+	}
+	
+	delete document;
+	
+	return result;
+}
+
 + (NSString*) getFilenameFromSR:(NSString*) path;
 {
 	NSString	*result = 0L;

@@ -31,6 +31,7 @@ typedef char DSRDocument;
 	NSString			*_seriesInstanceUID;
 }
 
++ (NSString*) getImageRefSOPInstanceUID:(NSString*) path;
 + (NSString*) getFilenameFromSR:(NSString*) path;
 - (id)initWithROIs:(NSArray *)ROIs  path:(NSString *)path forImage:(NSManagedObject*) im;
 - (id)initWithContentsOfFile:(NSString *)path;

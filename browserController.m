@@ -7481,6 +7481,10 @@ static BOOL withReset = NO;
 	[contextual addItem:item];
 	[item release];
 	
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open ROIs Images", nil)  action:@selector(viewerDICOMROIsImages:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
+	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Merged Selection", nil)  action:@selector(viewerDICOMMergeSelection:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
@@ -7579,19 +7583,17 @@ static BOOL withReset = NO;
 	
 	// Now remove non-applicable items - usually related to images (most RT objects don't have embedded images)
 	
-	NSInteger indx = [contextualRT indexOfItemWithTitle: @"Open images in 4D"];
+	NSInteger indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open images in 4D", 0L)];
 	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
-	indx = [contextualRT indexOfItemWithTitle: @"Open Key Images"];
+	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open Key Images", 0L)];
 	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
-	indx = [contextualRT indexOfItemWithTitle: @"Export to Quicktime"];
+	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open ROIs Images", 0L)];
 	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
-	indx = [contextualRT indexOfItemWithTitle: @"Export to JPEG"];
+	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Export to Quicktime", 0L)];
 	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
-	indx = [contextualRT indexOfItemWithTitle: @"Export to TIFF"];
+	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Export to JPEG", 0L)];
 	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
-	//	indx = [contextualRT indexOfItemWithTitle: @"Toggle images/series displaying"];
-	//	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
-	indx = [contextualRT indexOfItemWithTitle: @"Open Key Images"];
+	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Export to TIFF", 0L)];
 	if ( indx >= 0 ) [contextualRT removeItemAtIndex: indx];
 }
 
@@ -9841,6 +9843,46 @@ static BOOL needToRezoom;
 		[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];;
 }
 
+- (void) viewerDICOMROIsImages:(id) sender
+{
+	NSInteger index;
+	NSMutableArray	*selectedItems = [NSMutableArray arrayWithCapacity:0];
+	
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
+	else [self filesForDatabaseOutlineSelection: selectedItems];
+	
+	NSArray *roisImagesArray = [NSArray array];
+	
+//	if( [selectedItems count] > 0)
+//	{
+//		for( NSManagedObject *image in selectedItems)
+//		{
+//			NSManagedObject *roiSRSeries = [[image valueForKeyPath:@"series.study"] roiSRSeries];
+//			
+//			NSArray *srs = [[roiSRSeries valueForKey:@"images"] allObjects];
+//			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID == %@", [DicomImage sopInstanceUIDEncodeString: sopInstanceUID]];
+//			NSArray *found = [srs filteredArrayUsingPredicate: predicate];
+//			
+//			if( [found count])
+//				roisImagesArray = [roisImagesArray arrayByAddingObject: image];
+//		}
+//	}
+	
+	if( [roisImagesArray count])
+	{
+		[self openViewerFromImages :[NSArray arrayWithObject: roisImagesArray] movie: 0 viewer :nil keyImagesOnly:NO];
+	
+		if(	[[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+			[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+		else
+			[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
+	}
+	else
+	{
+		NSRunInformationalAlertPanel(NSLocalizedString(@"ROIs Images", 0L), NSLocalizedString(@"No images containing ROIs are found in this selection.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+	}
+}
+
 - (void) viewerDICOMKeyImages:(id) sender
 {
 	NSInteger index;
@@ -10401,6 +10443,10 @@ static NSArray*	openSubSeriesArray = 0L;
 		[exportItem release];
 		//keyImages
 		keyImageItem= [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Key Images", nil) action: @selector(viewerDICOMKeyImages:) keyEquivalent:@""];
+		[keyImageItem setTarget:self];
+		[menu addItem:keyImageItem];
+		[keyImageItem release];
+		keyImageItem= [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open ROIs Images", nil) action: @selector(viewerDICOMROIsImages:) keyEquivalent:@""];
 		[keyImageItem setTarget:self];
 		[menu addItem:keyImageItem];
 		[keyImageItem release];
