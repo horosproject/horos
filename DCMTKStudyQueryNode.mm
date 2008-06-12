@@ -72,8 +72,8 @@
 		if (dataset ->findAndGetString(DCM_StudyDescription, string).good() && string != nil) 
 			_theDescription = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
 			
-		if (dataset ->findAndGetString(DCM_PatientsName, string).good() && string != nil)	
-			_name =  [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
+		if (dataset ->findAndGetString(DCM_PatientsName, string).good() && string != nil)
+			_name = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
 		
 		if (dataset ->findAndGetString(DCM_PatientID, string).good() && string != nil)		
 			_patientID = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
