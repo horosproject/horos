@@ -2512,21 +2512,25 @@ static NSArray*	statesArray = nil;
 	[autoroutingInProgress lock];
 	
 	BOOL first = YES;
-	for( NSString *srcPath in filesInput ) {
+	for( NSString *srcPath in filesInput )
+	{
 		NSString	*dstPath;
 		NSString	*extension = [srcPath pathExtension];
 		
 		@try
 		{
-			if( [[srcPath stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)	{
+			if( [[srcPath stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)
+			{
 				DicomFile	*curFile = [[DicomFile alloc] init: srcPath];
 				
-				if( curFile ) {
+				if( curFile )
+				{
 					if([extension isEqualToString:@""])
 						extension = [NSString stringWithString:@"dcm"]; 
 					
 					int x = 0;
-					do {
+					do
+					{
 						dstPath = [incomingPath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d-%@", x, [srcPath lastPathComponent]]];
 						x++;
 					}
@@ -2539,11 +2543,13 @@ static NSArray*	statesArray = nil;
 						[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
 					}
 					
-					if( first ) {
+					if( first )
+					{
 						[self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: YES];
 						first = NO;
 					}
-					else if( studySelected == NO) {
+					else if( studySelected == NO)
+					{
 						NSManagedObject			*study;
 						NSManagedObjectContext	*context = self. managedObjectContext;
 						
@@ -8230,11 +8236,13 @@ static BOOL needToRezoom;
 															compression: 1.0
 														extraParameters: nil];
 	
-	@try {
+	@try
+	{
 		[storeSCU run:self];
 	}
 	
-	@catch (NSException *ne) {
+	@catch (NSException *ne)
+	{
 		NSLog( @"Bonjour DICOM Send FAILED");
 		NSLog( ne.name );
 		NSLog( ne.reason );
@@ -9851,22 +9859,36 @@ static BOOL needToRezoom;
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
 	
+	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+	{
+		NSMutableArray	*filesArray = [NSMutableArray array];
+		
+		for( DicomImage *o in selectedItems)
+		{
+			NSString	*str = [o SRPathForFrame: 0];
+			[filesArray addObject: [str lastPathComponent]];
+		}
+		[[BrowserController currentBrowser] getDICOMROIFiles: filesArray];
+	}
+	
 	NSArray *roisImagesArray = [NSArray array];
 	
-//	if( [selectedItems count] > 0)
-//	{
-//		for( NSManagedObject *image in selectedItems)
-//		{
-//			NSManagedObject *roiSRSeries = [[image valueForKeyPath:@"series.study"] roiSRSeries];
-//			
-//			NSArray *srs = [[roiSRSeries valueForKey:@"images"] allObjects];
-//			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID == %@", [DicomImage sopInstanceUIDEncodeString: sopInstanceUID]];
-//			NSArray *found = [srs filteredArrayUsingPredicate: predicate];
-//			
-//			if( [found count])
-//				roisImagesArray = [roisImagesArray arrayByAddingObject: image];
-//		}
-//	}
+	if( [selectedItems count] > 0)
+	{
+		for( DicomImage *image in selectedItems)
+		{
+			NSString	*str = [image SRPathForFrame: 0];
+			
+			if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+			{
+				NSString	*imagePath = [BonjourBrowser uniqueLocalPath: image];
+				str = [[imagePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [str lastPathComponent]];
+			}
+			
+			if( [[NSFileManager defaultManager] fileExistsAtPath: str])
+				roisImagesArray = [roisImagesArray arrayByAddingObject: image];
+		}
+	}
 	
 	if( [roisImagesArray count])
 	{

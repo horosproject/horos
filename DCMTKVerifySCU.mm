@@ -458,7 +458,7 @@ static const char* transferSyntaxes[] = {
     }
 	
 	NS_HANDLER
-	NSLog(@"Exception: %@", [verifyException description]);
+	NSLog(@"Verify SCU Exception: %@", [verifyException description]);
 	NS_ENDHANDLER
 	
 

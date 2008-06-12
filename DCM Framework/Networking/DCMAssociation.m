@@ -446,7 +446,7 @@ static int defaultTimeout = 5000; // in milliseconds
 		
 	NS_HANDLER
 		if (debugLevel)
-			NSLog(@"Exception: %@ reason%@", [localException name], [localException reason]);
+			NSLog(@"readData Exception: %@ reason%@", [localException name], [localException reason]);
 		//[self terminate:nil];
 		socketData = nil;
 		
@@ -590,9 +590,9 @@ static int defaultTimeout = 5000; // in milliseconds
 		//NSLog(@"exited waitForPData");
 	NS_HANDLER
 		if (exception)
-			NSLog(@"Exception while waiting for PDUs: %@", [exception reason]);
+			NSLog(@"waitForPDataPDUs Exception while waiting for PDUs: %@", [exception reason]);
 		else
-			NSLog(@"Exception: %@ reason%@", [localException name], [localException reason]);
+			NSLog(@"waitForPDataPDUs Exception: %@ reason%@", [localException name], [localException reason]);
 		//if (pool)
 		//	[pool release];
 		[self associationReleased];
@@ -968,9 +968,9 @@ static int defaultTimeout = 5000; // in milliseconds
 		//NSLog(@"exited waitForPData");
 	NS_HANDLER
 		if (exception)
-			NSLog(@"Exception while waiting for PDUs: %@", [exception reason]);
+			NSLog(@"availableData Exception while waiting for PDUs: %@", [exception reason]);
 		else
-			NSLog(@"Exception: %@ reason%@", [localException name], [localException reason]);
+			NSLog(@"availableData Exception: %@ reason%@", [localException name], [localException reason]);
 
 		[self associationReleased];
 	NS_ENDHANDLER

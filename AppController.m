@@ -1909,7 +1909,7 @@ static BOOL initialized = NO;
 	}
 	@catch( NSException *ne)
 	{
-		NSLog(@"exception: %@", [ne description]);
+		NSLog(@"+initialize exception: %@", [ne description]);
 	}
 	
 }

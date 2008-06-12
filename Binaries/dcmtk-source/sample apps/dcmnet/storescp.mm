@@ -181,7 +181,7 @@ static long        opt_endOfStudyTimeout = -1;        // default: no end of stud
 static OFBool      endOfStudyThroughTimeoutEvent = OFFalse;
 static const char *opt_configFile = NULL;
 static const char *opt_profileName = NULL;
-T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
+T_DIMSE_BlockingMode opt_blockMode = DIMSE_NONBLOCKING;
 int                opt_dimse_timeout = 0;
 int                opt_acse_timeout = 30;
 

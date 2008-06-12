@@ -69,8 +69,8 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 	}
 	@catch( NSException *ne)
 	{
-		NSLog(@"exception: %@", [ne description]);
-		NSLog(@"executeFetchRequest failed for studiesArray.");
+		NSLog(@"addFilesToDatabaseSafe exception: %@", [ne description]);
+		NSLog(@"addFilesToDatabaseSafe executeFetchRequest failed for studiesArray.");
 		error = [NSError errorWithDomain:@"OsiriXDomain" code:1 userInfo: 0L];
 	}
 	if (error)
@@ -396,8 +396,8 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 			
 			@catch( NSException *ne)
 			{
-				NSLog(@"exception: %@", [ne description]);
-				NSLog(@"Parser failed for this file: %@", newFile);
+				NSLog(@"addFilesToDatabaseSafe exception: %@", [ne description]);
+				NSLog(@"addFilesToDatabaseSafe Parser failed for this file: %@", newFile);
 			}
 		}
 	

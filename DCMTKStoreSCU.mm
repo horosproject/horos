@@ -126,7 +126,7 @@ static OFString accessionNumberPrefix;  // AccessionNumber is SH (maximum 16 cha
 static OFBool opt_secureConnection = OFFalse; /* default: no secure connection */
 static const char *opt_configFile = NULL;
 static const char *opt_profileName = NULL;
-T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
+T_DIMSE_BlockingMode opt_blockMode = DIMSE_NONBLOCKING;
 int opt_dimse_timeout = 0;
 int opt_acse_timeout = 30;
 int opt_Quality = 90;
@@ -1096,7 +1096,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	//dimse-timeout
 	//OFCmdSignedInt opt_timeout = 0;
 	//opt_dimse_timeout = OFstatic_cast(int, opt_timeout);
-	//opt_blockMode = DIMSE_NONBLOCKING;
+	
+	opt_blockMode = DIMSE_NONBLOCKING;
 	
 	//max PUD
 	//opt_maxReceivePDULength = 
@@ -1502,7 +1503,7 @@ NS_DURING
 	
 
 NS_HANDLER
-	NSLog(@"Exception: %@", [localException description]);
+	NSLog(@"Store Exception: %@", [localException description]);
 NS_ENDHANDLER
 	
 

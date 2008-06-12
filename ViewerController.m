@@ -17326,6 +17326,84 @@ long i;
 	}
 }
 
+- (IBAction) setROIsImagesKeyImages:(id)sender
+{
+	NSNumber *yes = [NSNumber numberWithBool: YES];
+	
+	for( int x = 0 ; x < maxMovieIndex ; x++)
+	{
+		for( int i = 0 ; i < [fileList[ x] count] ; i++)
+		{
+			NSManagedObject *o = [fileList[ x] objectAtIndex: i];
+			if( [[roiList[ x] objectAtIndex: i] count])
+				[o setValue: yes forKey:@"isKeyImage"];
+		}
+	}
+		
+	if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+	{
+		for( int x = 0 ; x < maxMovieIndex ; x++)
+		{
+			for( int i = 0 ; i < [fileList[ x] count] ; i++)
+			{
+				NSManagedObject *o = [fileList[ x] objectAtIndex: i];
+				if( [[roiList[ x] objectAtIndex: i] count])
+					[[BrowserController currentBrowser] setBonjourDatabaseValue: o value: yes forKey:@"isKeyImage"];
+			}
+		}
+	}
+	
+	[self buildMatrixPreview: NO];
+	[imageView setNeedsDisplay:YES];
+	[[BrowserController currentBrowser] saveDatabase: 0L];
+	
+	[self adjustKeyImage];
+}
+
+- (IBAction) setAllNonKeyImages:(id)sender
+{
+	NSNumber *yes = [NSNumber numberWithBool: NO];
+	
+	for( int x = 0 ; x < maxMovieIndex ; x++)
+		for( NSManagedObject *o in fileList[ x])
+			[o setValue: yes forKey:@"isKeyImage"];
+	
+	if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+	{
+		for( int x = 0 ; x < maxMovieIndex ; x++)
+			for( NSManagedObject *o in fileList[ x])
+				[[BrowserController currentBrowser] setBonjourDatabaseValue: o value: yes forKey:@"isKeyImage"];
+	}
+	
+	[self buildMatrixPreview: NO];
+	[imageView setNeedsDisplay:YES];
+	[[BrowserController currentBrowser] saveDatabase: 0L];
+	
+	[self adjustKeyImage];
+}
+
+- (IBAction) setAllKeyImages:(id)sender
+{
+	NSNumber *yes = [NSNumber numberWithBool: YES];
+	
+	for( int x = 0 ; x < maxMovieIndex ; x++)
+		for( NSManagedObject *o in fileList[ x])
+			[o setValue: yes forKey:@"isKeyImage"];
+	
+	if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+	{
+		for( int x = 0 ; x < maxMovieIndex ; x++)
+			for( NSManagedObject *o in fileList[ x])
+				[[BrowserController currentBrowser] setBonjourDatabaseValue: o value: yes forKey:@"isKeyImage"];
+	}
+	
+	[self buildMatrixPreview: NO];
+	[imageView setNeedsDisplay:YES];
+	[[BrowserController currentBrowser] saveDatabase: 0L];
+	
+	[self adjustKeyImage];
+}
+
 - (IBAction) setKeyImage:(id)sender
 {
 	[keyImageCheck setState: ![keyImageCheck state]];

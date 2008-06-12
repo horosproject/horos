@@ -181,7 +181,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
         while (cond.good() && (firstLoop || options_.keepDBHandleDuringAssociation_) )
         {
             firstLoop = OFFalse;
-            cond = DIMSE_receiveCommand(assoc, DIMSE_BLOCKING, 0, &presID, &msg, NULL);
+            cond = DIMSE_receiveCommand(assoc, DIMSE_NONBLOCKING, 0, &presID, &msg, NULL);
             /* did peer release, abort, or do we have a valid message ? */
             if (cond.good())
             {
