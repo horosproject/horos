@@ -2071,7 +2071,7 @@ static BOOL initialized = NO;
 
 	if( dialog == NO)
 	{
-		if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2008 month:8 day:30 hour:1 minute:1 second:1 timeZone:0L]] < 0 && [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2008 month:6 day:15 hour:1 minute:1 second:1 timeZone:0L]] > 0)
+		if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2008 month:8 day:30 hour:1 minute:1 second:1 timeZone:0L]] < 0 && [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2008 month:6 day:20 hour:1 minute:1 second:1 timeZone:0L]] > 0)
 		{
 			NSString *alertSuppress = @"osirix course";
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
