@@ -17530,17 +17530,24 @@ sourceRef);
 	[NSApp beginSheet: CommentsWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
-- (IBAction) setStatus:(id) sender
+- (void) setStatusValue:(int) v
 {
-	[[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:[NSNumber numberWithInt:[[sender selectedItem] tag]] forKeyPath:@"series.study.stateText"];
+	[[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:[NSNumber numberWithInt: v] forKeyPath:@"series.study.stateText"];
 	
 	if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
 	{
-		[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithInt:[[sender selectedItem] tag]] forKey:@"series.study.stateText"];
+		[[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithInt: v] forKey:@"series.study.stateText"];
 	}
 	
+	[StatusPopup selectItemWithTag: v];
+	
 	[[[BrowserController currentBrowser] databaseOutline] reloadData];
-	[self buildMatrixPreview: NO];
+	[self buildMatrixPreview: NO];	
+}
+
+- (IBAction) setStatus:(id) sender
+{
+	[self setStatusValue: [[sender selectedItem] tag]];
 }
 
 - (IBAction) databaseWindow : (id) sender

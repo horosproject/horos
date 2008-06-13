@@ -1581,7 +1581,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self DrawNSStringGL:[NSString stringWithCString:cstrOut] :fontL :x :y align:align useStringTexture:stringTex];
 }
 
-
 - (void) DrawCStringGL: (char *) cstrOut :(GLuint) fontL :(long) x :(long) y
 {
 	[self DrawCStringGL: (char *) cstrOut :(GLuint) fontL :(long) x :(long) y rightAlignment: NO useStringTexture: NO];
@@ -1592,7 +1591,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self DrawNSStringGL: (NSString*) cstrOut :(GLuint) fontL :(long) x :(long) y rightAlignment: NO useStringTexture: NO];
 }
 
-- (short) currentToolRight  {return currentToolRight;}
+- (short) currentToolRight
+{
+	return currentToolRight;
+}
 
 -(void) setRightTool:(short) i
 {
@@ -10550,7 +10552,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			key = [[[DCMView hotKeyDictionary] objectForKey:hotKey] intValue];
 			
 			int index = 1;
-			switch (key){
+			switch (key)
+			{
 				case DefaultWWWLHotKeyAction: [self setWLWW:[[self curDCM] savedWL] :[[self curDCM] savedWW]];	// default WW/WL
 							break;
 				case FullDynamicWWWLHotKeyAction: [self setWLWW:0 :0];											// full dynamic WW/WL
@@ -10605,6 +10608,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:[ViewerController getToolEquivalentToHotKey: key]], @"toolIndex", nil];
 						[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+					}
+				break;
+				case EmptyHotKeyAction:
+				case UnreadHotKeyAction:
+				case ReviewedHotKeyAction:
+				case DictatedHotKeyAction:
+					if( [self is2DViewer] == YES)
+					{
+						[[self windowController] setStatusValue: key - EmptyHotKeyAction];
 					}
 				break;
 				default:

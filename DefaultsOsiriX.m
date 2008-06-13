@@ -916,6 +916,10 @@ static NSHost *currentHost = 0L;
 						@"\\",	//scissors3DHotKeyAction
 						@"r",	//RepulsorHotKeyAction
 						@"s",	//SelectorHotKeyAction
+						@",",	//EmptyHotKeyAction
+						@".",	//UnreadHotKeyAction
+						@"/",	//ReviewedHotKeyAction
+						@"\\",	//DictatedHotKeyAction
 						nil];						
 	
 	for( int x = 0; x < [array count]; x++)

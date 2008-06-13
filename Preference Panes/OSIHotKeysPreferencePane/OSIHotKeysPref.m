@@ -97,6 +97,10 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Scissors Tool", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Repulsor Tool", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Selector Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Mark Status as Empty", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Mark Status as Unread", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Mark Status as Reviewed", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Mark Status as Dictated", nil), @"action", nil],
 											nil];
 	
 	NSDictionary *keys = [[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"];
