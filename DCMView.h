@@ -262,6 +262,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	NSMutableDictionary	*iChatStringTextureCache;
 	NSSize			iChatStringSize;
 	NSRect			drawingFrameRect;
+	
+	BOOL			exceptionDisplayed;
 }
 
 @property(readonly) NSRect drawingFrameRect;

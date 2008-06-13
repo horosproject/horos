@@ -6683,7 +6683,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				@catch (NSException *e)
 				{
-					NSLog( @"draw custom annotation exception: %@\r\r%@", e, annot);
+					if( exceptionDisplayed == NO)
+					{
+						NSRunCriticalAlertPanel(NSLocalizedString(@"Annotations Error",nil), [NSString stringWithFormat:@"%@\r\r%@", e, annot] , NSLocalizedString(@"OK",nil), nil, nil);
+					
+						NSLog( @"draw custom annotation exception: %@\r\r%@", e, annot);
+						
+						exceptionDisplayed = YES;
+					}
 				}
 			}// while
 		} // for k
