@@ -73,7 +73,7 @@
 	_enableEditing = enable;
 }
 
-- (BOOL)setSelectionIndex:(unsigned int)index
+- (BOOL)setSelectionIndex:(NSUInteger)index
 {	
 	BOOL v = [super setSelectionIndex:(unsigned int)index];
 	[winController applyShading: self];
