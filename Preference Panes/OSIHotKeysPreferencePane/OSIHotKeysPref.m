@@ -114,11 +114,10 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 		NSArray *allKeys = [keys allKeysForObject:index];
 		if ([allKeys count] > 0)
 		{
-			NSString *key = [allKeys objectAtIndex:0];
+			NSString *key = [allKeys objectAtIndex: 0];
 			
-			[[actions objectAtIndex:[index intValue]] setObject: key forKey:@"key"];
-			
-//			[[actions objectAtIndex:[index intValue]] setObject: [keysModifiers objectForKey: key] forKey:@"modifiers"];
+			if( [index intValue] < [actions count])
+				[[actions objectAtIndex:[index intValue]] setObject: key forKey:@"key"];
 		}
 	}
 	[self setActions:actions];
