@@ -7702,7 +7702,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						ROI *r = [[sortedROIs objectAtIndex:i] retain];
 						
-						[r drawTextualData];
+						@try
+						{
+							[r drawTextualData];
+						}
+						@catch (NSException * e)
+						{
+							NSLog( @"drawTextualData ROI Exception : %@", e);
+						}
 						
 						[r release];
 					}
@@ -7873,7 +7880,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				glEnd();
 				
-				[self drawTextualData: drawingFrameRect :annotations];
+				@try
+				{
+					[self drawTextualData: drawingFrameRect :annotations];
+				}
+				
+				@catch (NSException * e)
+				{
+					NSLog( @"drawTextualData Annotations Exception : %@", e);
+				}
 				
 			} //annotations >= annotBase
 		} //Annotation  != None
