@@ -4934,8 +4934,8 @@ END_CREATE_ROIS:
 						
 						if( xxx && yyy)
 						{
-							pixelSpacingX = xxx * 10.;	// These are in cm !
-							pixelSpacingY = yyy * 10.;
+							pixelSpacingX = fabs( xxx) * 10.;	// These are in cm !
+							pixelSpacingY = fabs( yyy) * 10.;
 							spacingFound = YES;
 						}
 					}
@@ -4955,7 +4955,8 @@ END_CREATE_ROIS:
 			pixelRatio = ratiox / ratioy;
 		}
 	}
-	else if( pixelSpacingX != pixelSpacingY ) {
+	else if( pixelSpacingX != pixelSpacingY )
+	{
 		if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
 	}
 	
@@ -5666,7 +5667,8 @@ END_CREATE_ROIS:
 	
 	[PapyrusLock unlock];
 	
-	if (fileNb >= 0) {
+	if (fileNb >= 0)
+	{
 		UValue_T		*val3, *tmpVal3;
 		unsigned short	*shortRed, *shortGreen, *shortBlue;
 		NSString		*modalityString = 0L;
@@ -5799,8 +5801,8 @@ END_CREATE_ROIS:
 										
 										if( xxx && yyy)
 										{
-											pixelSpacingX = xxx * 10.;	// These are in cm !
-											pixelSpacingY = yyy * 10.;
+											pixelSpacingX = fabs( xxx) * 10.;	// These are in cm !
+											pixelSpacingY = fabs( yyy) * 10.;
 											spacingFound = YES;
 										}
 									}
@@ -7526,6 +7528,9 @@ END_CREATE_ROIS:
 		
 		[PapyrusLock unlock];
 		
+		if( pixelSpacingX < 0) pixelSpacingX = -pixelSpacingX;
+		if( pixelSpacingY < 0) pixelSpacingY = -pixelSpacingY;
+		if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
 		
 		return YES;
 	}
