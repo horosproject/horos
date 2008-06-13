@@ -6444,241 +6444,247 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 			while ((annot = [enumerator nextObject]))
 			{
-				tempString = [NSMutableString stringWithString:@""];
-				tempString2 = [NSMutableString stringWithString:@""];
-				tempString3 = [NSMutableString stringWithString:@""];
-				tempString4 = [NSMutableString stringWithString:@""];
-				for (j=0; j<[annot count]; j++)
+				@try
 				{
-					if([[annot objectAtIndex:j] isEqualToString:@"Image Size"])
+					tempString = [NSMutableString stringWithString:@""];
+					tempString2 = [NSMutableString stringWithString:@""];
+					tempString3 = [NSMutableString stringWithString:@""];
+					tempString4 = [NSMutableString stringWithString:@""];
+					for (j=0; j<[annot count]; j++)
 					{
-						[tempString appendFormat: NSLocalizedString( @"Image size: %ld x %ld", 0L), (long) curDCM.pwidth, (long) curDCM.pheight];
-						useStringTexture = YES;
-					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"View Size"])
-					{
-						[tempString appendFormat: NSLocalizedString( @"View size: %ld x %ld", 0L), (long) size.size.width, (long) size.size.height];
-						useStringTexture = YES;
-					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Mouse Position (px)"])
-					{
-						useStringTexture = NO;
-						
-						if(mouseXPos!=0 && mouseYPos!=0)
+						if([[annot objectAtIndex:j] isEqualToString:@"Image Size"])
 						{
-							if( curDCM.isRGB ) [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
-							else [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: %2.2f", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValue];
+							[tempString appendFormat: NSLocalizedString( @"Image size: %ld x %ld", 0L), (long) curDCM.pwidth, (long) curDCM.pheight];
+							useStringTexture = YES;
+						}
+						else if([[annot objectAtIndex:j] isEqualToString:@"View Size"])
+						{
+							[tempString appendFormat: NSLocalizedString( @"View size: %ld x %ld", 0L), (long) size.size.width, (long) size.size.height];
+							useStringTexture = YES;
+						}
+						else if([[annot objectAtIndex:j] isEqualToString:@"Mouse Position (px)"])
+						{
+							useStringTexture = NO;
 							
-							if( blendingView)
+							if(mouseXPos!=0 && mouseYPos!=0)
 							{
-								if( [blendingView curDCM].isRGB )
-									[tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", @"No special characters for this string, only ASCII characters."), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB];
-								else [tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: %2.2f", @"No special characters for this string, only ASCII characters."), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue];
-							}
-							
-							if( curDCM.displaySUVValue ) {
-								if( [curDCM hasSUV] == YES && curDCM.SUVConverted == NO) {
-									[tempString3 appendFormat: NSLocalizedString( @"SUV: %.2f", @"SUV: Standard Uptake Value - No special characters for this string, only ASCII characters."), [self getSUV]];
-								}
-							}
-							
-							if( blendingView ) {
-								if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
+								if( curDCM.isRGB ) [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
+								else [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: %2.2f", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValue];
+								
+								if( blendingView)
 								{
-									[tempString4 appendFormat: NSLocalizedString( @"SUV (fused image): %.2f", @"SUV: Standard Uptake Value - No special characters for this string, only ASCII characters."), [self getBlendedSUV]];
+									if( [blendingView curDCM].isRGB )
+										[tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", @"No special characters for this string, only ASCII characters."), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB];
+									else [tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: %2.2f", @"No special characters for this string, only ASCII characters."), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue];
+								}
+								
+								if( curDCM.displaySUVValue ) {
+									if( [curDCM hasSUV] == YES && curDCM.SUVConverted == NO) {
+										[tempString3 appendFormat: NSLocalizedString( @"SUV: %.2f", @"SUV: Standard Uptake Value - No special characters for this string, only ASCII characters."), [self getSUV]];
+									}
+								}
+								
+								if( blendingView ) {
+									if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
+									{
+										[tempString4 appendFormat: NSLocalizedString( @"SUV (fused image): %.2f", @"SUV: Standard Uptake Value - No special characters for this string, only ASCII characters."), [self getBlendedSUV]];
+									}
 								}
 							}
 						}
-					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Zoom"] && fullText)
-					{
-						[tempString appendFormat: NSLocalizedString( @"Zoom: %0.0f%%", @"No special characters for this string, only ASCII characters."), (float) scaleValue*100.0];
-						useStringTexture = NO;
-					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Rotation Angle"] && fullText)
-					{
-						[tempString appendFormat: NSLocalizedString( @" Angle: %0.0f", @"No special characters for this string, only ASCII characters."), (float) ((long) rotation % 360)];
-						useStringTexture = NO;
-					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText)
-					{
-						if( curDCM.stack > 1) {
-							long maxVal;
-							
-							if(flippedData) maxVal = curImage-curDCM.stack+1;
-							else maxVal = curImage+curDCM.stack;
-							
-							if(maxVal < 0) maxVal = 0;
-							if(maxVal > [dcmPixList count]) maxVal = [dcmPixList count];
-							
-							if( flippedData) [tempString appendFormat: NSLocalizedString( @"Im: %ld-%ld/%ld", @"No special characters for this string, only ASCII characters."), (long) [dcmPixList count] - curImage, [dcmPixList count] - maxVal, (long) [dcmPixList count]];
-							else [tempString appendFormat: NSLocalizedString( @"Im: %ld-%ld/%ld", @"No special characters for this string, only ASCII characters."), (long) curImage+1, maxVal, (long) [dcmPixList count]];
-						} 
-						else if( fullText)
+						else if([[annot objectAtIndex:j] isEqualToString:@"Zoom"] && fullText)
 						{
-							if( flippedData) [tempString appendFormat: NSLocalizedString( @"Im: %ld/%ld", @"No special characters for this string, only ASCII characters."), (long) [dcmPixList count] - curImage, (long) [dcmPixList count]];
-							else [tempString appendFormat: NSLocalizedString( @"Im: %ld/%ld", @"No special characters for this string, only ASCII characters."), (long) curImage+1, (long) [dcmPixList count]];
+							[tempString appendFormat: NSLocalizedString( @"Zoom: %0.0f%%", @"No special characters for this string, only ASCII characters."), (float) scaleValue*100.0];
+							useStringTexture = NO;
 						}
-
-						useStringTexture = NO;
-					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Mouse Position (mm)"])
-					{
-						useStringTexture = NO;
-						
-						if( stringID == 0L || [stringID isEqualToString:@"OrthogonalMPRVIEW"] || [stringID isEqualToString:@"FinalView"])
+						else if([[annot objectAtIndex:j] isEqualToString:@"Rotation Angle"] && fullText)
 						{
-							if( mouseXPos != 0 && mouseYPos != 0)
-							{
-								float location[ 3 ];
-								
-								if( curDCM.stack > 1) {
-									long maxVal;
-								
-									if( flippedData) maxVal = curImage-(curDCM.stack-1)/2;
-									else maxVal = curImage+(curDCM.stack-1)/2;
-									
-									if( maxVal < 0) maxVal = 0;
-									if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
-									
-									[[dcmPixList objectAtIndex: maxVal] convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location pixelCenter: YES];
-								}
-								else {
-									[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location pixelCenter: YES];
-								}
-								
-								if(fabs(location[0]) < 1.0 && location[0] != 0.0 && curDCM.pixelSpacingX < 0.2)
-									[tempString appendFormat: @"X: %2.2f %cm Y: %2.2f %cm Z: %2.2f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5];
-								else
-									[tempString appendFormat: @"X: %2.2f mm Y: %2.2f mm Z: %2.2f mm", location[0], location[1], location[2]];
-							}
+							[tempString appendFormat: NSLocalizedString( @" Angle: %0.0f", @"No special characters for this string, only ASCII characters."), (float) ((long) rotation % 360)];
+							useStringTexture = NO;
 						}
-					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Window Level / Window Width"])
-					{
-						useStringTexture = NO;
-						
-						float lwl = curDCM.wl;
-						float lww = curDCM.ww;
-						
-						int iwl = lwl;
-						int iww = lww;
-						
-						if(lww < 50 && (lwl !=  iwl || lww != iww))
-						{
-							[tempString appendFormat: NSLocalizedString( @"WL: %0.4f WW: %0.4f", @"WW: window width, WL: window level"), lwl, lww];
-						}
-						else
-							[tempString appendFormat: NSLocalizedString( @"WL: %ld WW: %ld", @"WW: window width, WL: window level"), (int) lwl, (int) lww];
-						
-						if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"]))
-						{
-							if( curDCM.maxValueOfSeries)
-							{
-								float min = lwl - lww/2, max = lwl + lww/2;
-								
-								[tempString2 appendFormat: NSLocalizedString( @"From: %d %% (%0.2f) to: %d %% (%0.2f)", @"No special characters for this string, only ASCII characters."), (long) (min * 100. / curDCM.maxValueOfSeries), lwl - lww/2, (long) (max * 100. / curDCM.maxValueOfSeries), lwl + lww/2];
-							}
-						}
-					}
-					else if( [[annot objectAtIndex:j] isEqualToString:@"Plugin"] )
-					{
-						
-						NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-							[NSNumber numberWithFloat: yRaster], @"yRaster",
-							[NSNumber numberWithFloat: xRaster], @"xRaster",
-							[NSNumber numberWithInt: [[align objectForKey:[keys objectAtIndex:k]] intValue]], @"alignment",
-												  nil];
-						
-						
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo"
-																			object: self
-																		  userInfo: userInfo];
-						yRaster += increment;
-					}
-					
-					else if([[annot objectAtIndex:j] isEqualToString:@"Orientation"])
-					{
-						if(!orientationDrawn) [self drawOrientation: size];
-						orientationDrawn = YES;
-						useStringTexture = YES;
-					}
-					else if([[annot objectAtIndex:j] isEqualToString:@"Thickness / Location / Position"])
-					{
-						useStringTexture = YES;
-						
-						if( curDCM.sliceThickness != 0 && curDCM.sliceLocation != 0)
+						else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText)
 						{
 							if( curDCM.stack > 1) {
-								float vv, pp;
+								long maxVal;
 								
-								[self getThickSlabThickness: &vv location: &pp];
+								if(flippedData) maxVal = curImage-curDCM.stack+1;
+								else maxVal = curImage+curDCM.stack;
 								
-								if( vv < 1.0 && vv != 0.0)
-								{
-									if( fabs( pp) < 1.0 && pp != 0.0)
-										[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f %cm Location: %0.2f %cm", 0L), fabs( vv * 1000.0), 0xB5, pp * 1000.0, 0xB5];
-									else
-										[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f %cm Location: %0.2f mm", 0L), fabs( vv * 1000.0), 0xB5, pp];
-								}
-								else
-									[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f mm Location: %0.2f mm", 0L), fabs( vv), pp];								
+								if(maxVal < 0) maxVal = 0;
+								if(maxVal > [dcmPixList count]) maxVal = [dcmPixList count];
+								
+								if( flippedData) [tempString appendFormat: NSLocalizedString( @"Im: %ld-%ld/%ld", @"No special characters for this string, only ASCII characters."), (long) [dcmPixList count] - curImage, [dcmPixList count] - maxVal, (long) [dcmPixList count]];
+								else [tempString appendFormat: NSLocalizedString( @"Im: %ld-%ld/%ld", @"No special characters for this string, only ASCII characters."), (long) curImage+1, maxVal, (long) [dcmPixList count]];
+							} 
+							else if( fullText)
+							{
+								if( flippedData) [tempString appendFormat: NSLocalizedString( @"Im: %ld/%ld", @"No special characters for this string, only ASCII characters."), (long) [dcmPixList count] - curImage, (long) [dcmPixList count]];
+								else [tempString appendFormat: NSLocalizedString( @"Im: %ld/%ld", @"No special characters for this string, only ASCII characters."), (long) curImage+1, (long) [dcmPixList count]];
 							}
-							else if( fullText) {
-								if (curDCM.sliceThickness < 1.0 && curDCM.sliceThickness != 0.0) {
-									if( fabs( curDCM.sliceLocation) < 1.0 && curDCM.sliceLocation != 0.0)
-										[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f %cm Location: %0.2f %cm", 0L), curDCM.sliceThickness * 1000.0, 0xB5, curDCM.sliceLocation * 1000.0, 0xB5];
-									else
-										[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f %cm Location: %0.2f mm", 0L), curDCM.sliceThickness * 1000.0, 0xB5, curDCM.sliceLocation];
-								}
-								else
-									[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f mm Location: %0.2f mm", 0L), curDCM.sliceThickness, curDCM.sliceLocation];
-							}
-						} 
-						else if( curDCM.viewPosition || curDCM.patientPosition )
-						{
-							 NSString        *nsstring = 0L;	 
 
-							 if ( curDCM.viewPosition ) [tempString appendFormat: NSLocalizedString( @"Position: %@ ", 0L), curDCM.viewPosition];	 
-							 if ( curDCM.patientPosition ) {	 
-								if(curDCM.viewPosition) [tempString appendString: curDCM.patientPosition];	 
-								else [tempString appendFormat: NSLocalizedString( @"Position: %@ ", 0L), curDCM.patientPosition];	 
-							 }	 
+							useStringTexture = NO;
 						}
-					}
-					else if(fullText)
-					{
-						[tempString appendFormat:@" %@", [annot objectAtIndex:j]];
-						useStringTexture = YES;
-					}					
-				}
-				
-				[tempString setString:[tempString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
-				[tempString2 setString:[tempString2 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
-				[tempString3 setString:[tempString3 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
-				[tempString4 setString:[tempString4 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+						else if([[annot objectAtIndex:j] isEqualToString:@"Mouse Position (mm)"])
+						{
+							useStringTexture = NO;
+							
+							if( stringID == 0L || [stringID isEqualToString:@"OrthogonalMPRVIEW"] || [stringID isEqualToString:@"FinalView"])
+							{
+								if( mouseXPos != 0 && mouseYPos != 0)
+								{
+									float location[ 3 ];
+									
+									if( curDCM.stack > 1) {
+										long maxVal;
+									
+										if( flippedData) maxVal = curImage-(curDCM.stack-1)/2;
+										else maxVal = curImage+(curDCM.stack-1)/2;
+										
+										if( maxVal < 0) maxVal = 0;
+										if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
+										
+										[[dcmPixList objectAtIndex: maxVal] convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location pixelCenter: YES];
+									}
+									else {
+										[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location pixelCenter: YES];
+									}
+									
+									if(fabs(location[0]) < 1.0 && location[0] != 0.0 && curDCM.pixelSpacingX < 0.2)
+										[tempString appendFormat: @"X: %2.2f %cm Y: %2.2f %cm Z: %2.2f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5];
+									else
+										[tempString appendFormat: @"X: %2.2f mm Y: %2.2f mm Z: %2.2f mm", location[0], location[1], location[2]];
+								}
+							}
+						}
+						else if([[annot objectAtIndex:j] isEqualToString:@"Window Level / Window Width"])
+						{
+							useStringTexture = NO;
+							
+							float lwl = curDCM.wl;
+							float lww = curDCM.ww;
+							
+							int iwl = lwl;
+							int iww = lww;
+							
+							if(lww < 50 && (lwl !=  iwl || lww != iww))
+							{
+								[tempString appendFormat: NSLocalizedString( @"WL: %0.4f WW: %0.4f", @"WW: window width, WL: window level"), lwl, lww];
+							}
+							else
+								[tempString appendFormat: NSLocalizedString( @"WL: %ld WW: %ld", @"WW: window width, WL: window level"), (int) lwl, (int) lww];
+							
+							if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"]))
+							{
+								if( curDCM.maxValueOfSeries)
+								{
+									float min = lwl - lww/2, max = lwl + lww/2;
+									
+									[tempString2 appendFormat: NSLocalizedString( @"From: %d %% (%0.2f) to: %d %% (%0.2f)", @"No special characters for this string, only ASCII characters."), (long) (min * 100. / curDCM.maxValueOfSeries), lwl - lww/2, (long) (max * 100. / curDCM.maxValueOfSeries), lwl + lww/2];
+								}
+							}
+						}
+						else if( [[annot objectAtIndex:j] isEqualToString:@"Plugin"] )
+						{
+							
+							NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+								[NSNumber numberWithFloat: yRaster], @"yRaster",
+								[NSNumber numberWithFloat: xRaster], @"xRaster",
+								[NSNumber numberWithInt: [[align objectForKey:[keys objectAtIndex:k]] intValue]], @"alignment",
+													  nil];
+							
+							
+							[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo"
+																				object: self
+																			  userInfo: userInfo];
+							yRaster += increment;
+						}
+						
+						else if([[annot objectAtIndex:j] isEqualToString:@"Orientation"])
+						{
+							if(!orientationDrawn) [self drawOrientation: size];
+							orientationDrawn = YES;
+							useStringTexture = YES;
+						}
+						else if([[annot objectAtIndex:j] isEqualToString:@"Thickness / Location / Position"])
+						{
+							useStringTexture = YES;
+							
+							if( curDCM.sliceThickness != 0 && curDCM.sliceLocation != 0)
+							{
+								if( curDCM.stack > 1) {
+									float vv, pp;
+									
+									[self getThickSlabThickness: &vv location: &pp];
+									
+									if( vv < 1.0 && vv != 0.0)
+									{
+										if( fabs( pp) < 1.0 && pp != 0.0)
+											[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f %cm Location: %0.2f %cm", 0L), fabs( vv * 1000.0), 0xB5, pp * 1000.0, 0xB5];
+										else
+											[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f %cm Location: %0.2f mm", 0L), fabs( vv * 1000.0), 0xB5, pp];
+									}
+									else
+										[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f mm Location: %0.2f mm", 0L), fabs( vv), pp];								
+								}
+								else if( fullText) {
+									if (curDCM.sliceThickness < 1.0 && curDCM.sliceThickness != 0.0) {
+										if( fabs( curDCM.sliceLocation) < 1.0 && curDCM.sliceLocation != 0.0)
+											[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f %cm Location: %0.2f %cm", 0L), curDCM.sliceThickness * 1000.0, 0xB5, curDCM.sliceLocation * 1000.0, 0xB5];
+										else
+											[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f %cm Location: %0.2f mm", 0L), curDCM.sliceThickness * 1000.0, 0xB5, curDCM.sliceLocation];
+									}
+									else
+										[tempString appendFormat: NSLocalizedString( @"Thickness: %0.2f mm Location: %0.2f mm", 0L), curDCM.sliceThickness, curDCM.sliceLocation];
+								}
+							} 
+							else if( curDCM.viewPosition || curDCM.patientPosition )
+							{
+								 NSString        *nsstring = 0L;	 
 
-				if(![tempString isEqualToString:@""])
-				{	
-					[self DrawNSStringGL:tempString :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
-					yRaster += increment;
+								 if ( curDCM.viewPosition ) [tempString appendFormat: NSLocalizedString( @"Position: %@ ", 0L), curDCM.viewPosition];	 
+								 if ( curDCM.patientPosition ) {	 
+									if(curDCM.viewPosition) [tempString appendString: curDCM.patientPosition];	 
+									else [tempString appendFormat: NSLocalizedString( @"Position: %@ ", 0L), curDCM.patientPosition];	 
+								 }	 
+							}
+						}
+						else if(fullText)
+						{
+							[tempString appendFormat:@" %@", [annot objectAtIndex:j]];
+							useStringTexture = YES;
+						}					
+					}
+					
+					[tempString setString:[tempString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+					[tempString2 setString:[tempString2 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+					[tempString3 setString:[tempString3 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+					[tempString4 setString:[tempString4 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]];
+
+					if(![tempString isEqualToString:@""])
+					{	
+						[self DrawNSStringGL:tempString :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
+						yRaster += increment;
+					}
+					if(![tempString2 isEqualToString:@""])
+					{
+						[self DrawNSStringGL:tempString2 :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
+						yRaster += increment;
+					}
+					if(![tempString3 isEqualToString:@""])
+					{
+						[self DrawNSStringGL:tempString3 :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
+						yRaster += increment;
+					}
+					if(![tempString4 isEqualToString:@""])
+					{
+						[self DrawNSStringGL:tempString4 :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
+						yRaster += increment;
+					}
 				}
-				if(![tempString2 isEqualToString:@""])
+				@catch (NSException *e)
 				{
-					[self DrawNSStringGL:tempString2 :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
-					yRaster += increment;
+					NSLog( @"draw custom annotation exception: %@\r\r%@", e, annot);
 				}
-				if(![tempString3 isEqualToString:@""])
-				{
-					[self DrawNSStringGL:tempString3 :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
-					yRaster += increment;
-				}
-				if(![tempString4 isEqualToString:@""])
-				{
-					[self DrawNSStringGL:tempString4 :fontList :xRaster :yRaster align:[[align objectForKey:[keys objectAtIndex:k]] intValue] useStringTexture:useStringTexture];
-					yRaster += increment;
-				}
-				
 			}// while
 		} // for k
 																																			  
