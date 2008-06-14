@@ -80,23 +80,35 @@ static WindowLayoutManager *sharedLayoutManager = 0L;
 			[_currentHangingProtocol release];
 			_currentHangingProtocol = nil;
 			_currentHangingProtocol = [hangingProtocolArray objectAtIndex:0];
-
-			IMAGEROWS = [[_currentHangingProtocol objectForKey: @"Image Rows"] intValue];
-			IMAGECOLUMNS =  [[_currentHangingProtocol objectForKey: @"Image Columns"] intValue];
 			
-			NSMutableDictionary *protocol;
-			for (protocol in hangingProtocolArray)
+			@try
 			{
-				NSRange searchRange = [description rangeOfString:[protocol objectForKey: @"Study Description"] options: NSCaseInsensitiveSearch | NSLiteralSearch];
-				if (searchRange.location != NSNotFound)
+				IMAGEROWS = [[_currentHangingProtocol objectForKey: @"Image Rows"] intValue];
+				IMAGECOLUMNS =  [[_currentHangingProtocol objectForKey: @"Image Columns"] intValue];
+				
+				NSMutableDictionary *protocol;
+				for (protocol in hangingProtocolArray)
 				{
-					_currentHangingProtocol = protocol;
-					
-					IMAGEROWS = [[_currentHangingProtocol objectForKey: @"Image Rows"] intValue];
-					IMAGECOLUMNS =  [[_currentHangingProtocol objectForKey: @"Image Columns"] intValue];
-					
-					break;
+					if( [[protocol objectForKey: @"Study Description"] isKindOfClass: [NSString class]])
+					{
+						NSRange searchRange = [description rangeOfString:[protocol objectForKey: @"Study Description"] options: NSCaseInsensitiveSearch | NSLiteralSearch];
+						if (searchRange.location != NSNotFound)
+						{
+							_currentHangingProtocol = protocol;
+							
+							IMAGEROWS = [[_currentHangingProtocol objectForKey: @"Image Rows"] intValue];
+							IMAGECOLUMNS =  [[_currentHangingProtocol objectForKey: @"Image Columns"] intValue];
+							
+							break;
+						}
+					}
 				}
+			}
+			@catch (NSException *e)
+			{
+				NSLog( @"setCurrentHangingProtocolForModality exception : %@", e);
+				IMAGEROWS = 1;
+				IMAGECOLUMNS = 1;
 			}
 			
 			if( IMAGEROWS < 1) IMAGEROWS = 1;

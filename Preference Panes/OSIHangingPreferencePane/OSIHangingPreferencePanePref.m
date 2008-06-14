@@ -77,6 +77,8 @@
 
 
 	hangingProtocols = [[defaults objectForKey:@"HANGINGPROTOCOLS"] mutableCopy];
+	
+	
 	//setup GUI
 	
 	modalityForHangingProtocols = [[NSString stringWithString:@"CR"] retain];
@@ -110,10 +112,14 @@
 {
 
 	NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
+	
 	NSParameterAssert(rowIndex >= 0 && rowIndex < [hangingProtocolArray count]);
 	id theRecord = [[[hangingProtocolArray objectAtIndex:rowIndex] mutableCopy] autorelease];
 	
-	if( [anObject intValue] < 1 || [anObject intValue] > 4) anObject = [NSNumber numberWithInt: 1];
+	if( [[aTableColumn identifier] isEqualToString: @"Study Description"] == NO)
+	{
+		if( [anObject intValue] < 1 || [anObject intValue] > 4) anObject = [NSNumber numberWithInt: 1];
+	}
 	[theRecord setObject:anObject forKey:[aTableColumn identifier]];
 	
 	[hangingProtocolArray replaceObjectAtIndex:rowIndex withObject: theRecord];
