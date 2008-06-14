@@ -252,7 +252,6 @@
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
 				LIBRARY_SEARCH_PATHS = "";
 				LIBRARY_STYLE = Bundle;
-				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-bundle",
