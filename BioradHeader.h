@@ -17,8 +17,6 @@
 #define BIORAD_NOTE_LENGTH 96
 #define BIORAD_NOTE_TEXT_LENGTH 80
 
-#pragma options align=mac68k
-
 struct BioradHeader{
 	short int nx,ny,npic;
 	 int unused0;
@@ -27,7 +25,7 @@ struct BioradHeader{
 	char unused1[38];
 	short int magicNumber;
 	char unused2[20];
-};
+} __attribute__((__packed__));
 
 struct BioradNote
 {
@@ -41,9 +39,8 @@ struct BioradNote
   := 3 if note for multiplier file,
   := 4, 5, etc.,; additional descriptive notes */
 	char noteText[BIORAD_NOTE_TEXT_LENGTH];
-};
+} __attribute__((__packed__));
 
-#pragma options align=reset
 
 /*
   Bio-Rad(TM) .PIC Image File Information

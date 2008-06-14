@@ -15,8 +15,6 @@
 
 /*    ANALYZE  Header File Format  *  *  (c) Copyright, 1986-1995  *  Biomedical Imaging Resource  *  Mayo Foundation  *  *  dbh.h  *  *  databse sub-definitions  */
 
-#pragma options align=mac68k
-
 struct header_key    /* header key     */         
 {                                  /* off + size  */        
 int sizeof_hdr;    /* 0 + 4             */        
@@ -25,7 +23,7 @@ char db_name[18];   /* 14 + 18           */
 int extents;     /* 32 + 4            */        
 short int session_error;  /* 36 + 2            */       
  char regular;     /* 38 + 1            */        
- char hkey_un0;                   /* 39 + 1    */    };                               
+ char hkey_un0;                   /* 39 + 1    */    } __attribute__((__packed__));                               
  /* total=40 bytes  */ 
  
  struct image_dimension         {
@@ -54,7 +52,7 @@ float cal_min;                     /* 88 + 4              */
 float compressed;                  /* 92 + 4              */        
 float verified;                    /* 96 + 4              */        
 int glmax,glmin;                   /* 100 + 8             */        
-};                                   /* total=108 bytes   */    
+} __attribute__((__packed__));                                   /* total=108 bytes   */    
 struct data_history               {                                    
 /* off + size        */        
 char descrip[80];                  /* 0 + 80            */        
@@ -73,12 +71,12 @@ int start_field;                   /* 176 + 4           */
 int field_skip;                    /* 180 + 4          */        
 int omax, omin;                    /* 184 + 8          */        
 int smax, smin;                    /* 192 + 8          */        
-}; 
+} __attribute__((__packed__)); 
 
 struct dsr        {         
 struct header_key hk;                /* 0 + 40              */        
 struct image_dimension dime;       /* 40 + 108            */        
-struct data_history hist;            /* 148 + 200          */        };                                     
+struct data_history hist;            /* 148 + 200          */        } __attribute__((__packed__));                                     
 /* total= 348 bytes  */    /* Acceptable values for datatype */    
 
 #define DT_NONE                      0  
@@ -92,6 +90,3 @@ struct data_history hist;            /* 148 + 200          */        };
 #define DT_DOUBLE                    64  
 #define DT_RGB                       128  
 #define DT_ALL                       255    
-
-
-#pragma options align=reset
