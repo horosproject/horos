@@ -10865,10 +10865,14 @@ END_CREATE_ROIS:
 		NSCalendarDate *calendarDate;
 		NSArray *codes = [NSArray arrayWithObjects:@"AE", @"AS", @"AT", @"CS", @"DA", @"DS", @"DT", @"FL", @"FD", @"IS", @"LO", @"LT", @"OB", @"OW", @"PN", @"SH", @"SL", @"SQ", @"SS", @"ST", @"TM", @"UI", @"UL", @"UN", @"USS", @"UT", @"RET", nil];
 		
+		BOOL elementDefinitionFound = NO;
+		
 		for ( int j = 0; j < theMaxElem; j++, inGrOrModP++)
 		{
 			if( inGrOrModP->element == element)
 			{
+				elementDefinitionFound = YES;
+				
 				if( inGrOrModP->nb_val > 0)
 				{
 					UValue_T *theValueP = inGrOrModP->value;
@@ -10969,6 +10973,12 @@ END_CREATE_ROIS:
 					}
 				}
 			}
+		}
+		
+		if( elementDefinitionFound == NO)	// Papyrus doesn't have the definition of all dicom tags.... 2004?
+		{
+			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+			return [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
 		}
 	}
 	return field;
