@@ -6565,7 +6565,66 @@ init_group18 (SElement ioElem [])
  theWrkP->type_t = T3;
  theWrkP->nb_val = 0;
  theWrkP->value = NULL;
+
+  theWrkP = &ioElem [papRevolutionTime];
+  theWrkP->group = 0x0018;
+  theWrkP->element = 0x9305;
+  theWrkP->length = 0L;
+  theWrkP->vr = FD;
+  theWrkP->vm = "1";
+  theWrkP->type_t = T3;
+  theWrkP->nb_val = 0;
+  theWrkP->value = NULL;
+
+  theWrkP = &ioElem [papSingleCollimationWidth];
+  theWrkP->group = 0x0018;
+  theWrkP->element = 0x9306;
+  theWrkP->length = 0L;
+  theWrkP->vr = FD;
+  theWrkP->vm = "1";
+  theWrkP->type_t = T3;
+  theWrkP->nb_val = 0;
+  theWrkP->value = NULL;
+
+  theWrkP = &ioElem [papTotalCollimationWidth];
+  theWrkP->group = 0x0018;
+  theWrkP->element = 0x9307;
+  theWrkP->length = 0L;
+  theWrkP->vr = FD;
+  theWrkP->vm = "1";
+  theWrkP->type_t = T3;
+  theWrkP->nb_val = 0;
+  theWrkP->value = NULL;
   
+  theWrkP = &ioElem [papTableSpeed];
+  theWrkP->group = 0x0018;
+  theWrkP->element = 0x9309;
+  theWrkP->length = 0L;
+  theWrkP->vr = FD;
+  theWrkP->vm = "1";
+  theWrkP->type_t = T3;
+  theWrkP->nb_val = 0;
+  theWrkP->value = NULL;
+  
+  theWrkP = &ioElem [papTableFeedPerRotation];
+  theWrkP->group = 0x0018;
+  theWrkP->element = 0x9310;
+  theWrkP->length = 0L;
+  theWrkP->vr = FD;
+  theWrkP->vm = "1";
+  theWrkP->type_t = T3;
+  theWrkP->nb_val = 0;
+  theWrkP->value = NULL;
+  
+  theWrkP = &ioElem [papSpiralPitchFactor];
+  theWrkP->group = 0x0018;
+  theWrkP->element = 0x9311;
+  theWrkP->length = 0L;
+  theWrkP->vr = FD;
+  theWrkP->vm = "1";
+  theWrkP->type_t = T3;
+  theWrkP->nb_val = 0;
+  theWrkP->value = NULL;
 } /* endof init_group18 */
 
 

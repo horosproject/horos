@@ -693,6 +693,12 @@ papMRAcquisitionPhaseEncodingStepsOutOfPlane,
 papSpectroscopyAcquisitionPhaseColumns,
 papCardiacMotionStatus,
 papSpecificAbsorptionRateSequence,
+papRevolutionTime,
+papSingleCollimationWidth,
+papTotalCollimationWidth,
+papTableSpeed,
+papTableFeedPerRotation,
+papSpiralPitchFactor,
 papEndGroup18
 };
 

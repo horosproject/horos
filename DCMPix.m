@@ -99,14 +99,14 @@ void SwitchFloat (float *theFloat)
 //	*myLongPtr = EndianU64_LtoN(*myLongPtr);
 //}
 
-uint64_t	MyGetTime( void )
+uint64_t	MyGetTime( void)
 {
 	AbsoluteTime theTime = UpTime();
 	
-	return ((uint64_t*) &theTime )[0];
+	return ((uint64_t*) &theTime)[0];
 }
 
-double MySubtractTime( uint64_t endTime, uint64_t startTime )
+double MySubtractTime( uint64_t endTime, uint64_t startTime)
 {
 	union
 {
@@ -114,7 +114,7 @@ double MySubtractTime( uint64_t endTime, uint64_t startTime )
 	u_int64_t	i;
 }time;
 	
-	time.ns = AbsoluteToNanoseconds( SubAbsoluteFromAbsolute( ((AbsoluteTime*) &endTime)[0], ((AbsoluteTime*) &startTime)[0] ) );
+	time.ns = AbsoluteToNanoseconds( SubAbsoluteFromAbsolute( ((AbsoluteTime*) &endTime)[0], ((AbsoluteTime*) &startTime)[0]));
 	return time.i * 1e-9;
 }
 
@@ -128,7 +128,7 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 	long				value;
 	long				min, max, diff;
 	
-	min = wl - ww / 2; //if (min < 0 ) min = 0;
+	min = wl - ww / 2; //if (min < 0) min = 0;
 	max = wl + ww / 2;
 	diff = max - min;
 	
@@ -202,15 +202,17 @@ static inline void CLIP_Left(NSPointInt *Polygon, long *count, NSPointInt V1, NS
 	INIT_CLIP
 	
 	// ************OK************
-	if ( (V1.x>=0) && (V2.x>=0) )
+	if ( (V1.x>=0) && (V2.x>=0))
 		Polygon[(*count)++]=V2;
 	// *********LEAVING**********
-	if ( (V1.x>=0) && (V2.x<0) ) {
+	if ( (V1.x>=0) && (V2.x<0))
+	{
 		Polygon[(*count)].x=0;
 		Polygon[(*count)++].y=V1.y+m*(0-V1.x);
 	}
 	// ********ENTERING*********
-	if ( (V1.x<0) && (V2.x>=0) ) {
+	if ( (V1.x<0) && (V2.x>=0))
+	{
 		Polygon[(*count)].x=0;
 		Polygon[(*count)++].y=V1.y+m*(0-V1.x);
 		Polygon[(*count)++]=V2;
@@ -221,15 +223,17 @@ static inline void CLIP_Right(NSPointInt *Polygon, long *count, NSPointInt V1, N
 	float dx,dy, m=1;
 	INIT_CLIP
 	// ************OK************
-	if ( (V1.x<=DownRight.x) && (V2.x<=DownRight.x) )
+	if ( (V1.x<=DownRight.x) && (V2.x<=DownRight.x))
 		Polygon[(*count)++]=V2;
 	// *********LEAVING**********
-	if ( (V1.x<=DownRight.x) && (V2.x>DownRight.x) ) {
+	if ( (V1.x<=DownRight.x) && (V2.x>DownRight.x))
+	{
 		Polygon[(*count)].x=DownRight.x;
 		Polygon[(*count)++].y=V1.y+m*(DownRight.x-V1.x);
 	}
 	// ********ENTERING*********
-	if ( (V1.x>DownRight.x) && (V2.x<=DownRight.x) ) {
+	if ( (V1.x>DownRight.x) && (V2.x<=DownRight.x))
+	{
 		Polygon[(*count)].x=DownRight.x;
 		Polygon[(*count)++].y=V1.y+m*(DownRight.x-V1.x);
 		Polygon[(*count)++]=V2;
@@ -244,10 +248,11 @@ static inline void CLIP_Top(NSPointInt *Polygon,long *count, NSPointInt V1,NSPoi
 	float   dx,dy, m=1;
 	INIT_CLIP
 	// ************OK************
-	if ( (V1.y>=0) && (V2.y>=0) )
+	if ( (V1.y>=0) && (V2.y>=0))
 		Polygon[(*count)++]=V2;
 	// *********LEAVING**********
-	if ( (V1.y>=0) && (V2.y<0) ) {
+	if ( (V1.y>=0) && (V2.y<0))
+	{
 		if(dx)
 			Polygon[(*count)].x=V1.x+(0-V1.y)/m;
 		else
@@ -255,7 +260,8 @@ static inline void CLIP_Top(NSPointInt *Polygon,long *count, NSPointInt V1,NSPoi
 		Polygon[(*count)++].y=0;
 	}
 	// ********ENTERING*********
-	if ( (V1.y<0) && (V2.y>=0) ) {
+	if ( (V1.y<0) && (V2.y>=0))
+	{
 		if(dx)
 			Polygon[(*count)].x=V1.x+(0-V1.y)/m;
 		else
@@ -268,10 +274,11 @@ static inline void CLIP_Bottom(NSPointInt *Polygon,long *count, NSPointInt V1,NS
 	float dx,dy, m=1;
 	INIT_CLIP
 	// ************OK************
-	if ( (V1.y<=DownRight.y) && (V2.y<=DownRight.y) )
+	if ( (V1.y<=DownRight.y) && (V2.y<=DownRight.y))
 		Polygon[(*count)++]=V2;
 	// *********LEAVING**********
-	if ( (V1.y<=DownRight.y) && (V2.y>DownRight.y) ) {
+	if ( (V1.y<=DownRight.y) && (V2.y>DownRight.y))
+	{
 		if(dx)
 			Polygon[(*count)].x=V1.x+(DownRight.y-V1.y)/m;
 		else
@@ -279,7 +286,8 @@ static inline void CLIP_Bottom(NSPointInt *Polygon,long *count, NSPointInt V1,NS
 		Polygon[(*count)++].y=DownRight.y;
 	}
 	// ********ENTERING*********
-	if ( (V1.y>DownRight.y) && (V2.y<=DownRight.y) ) {
+	if ( (V1.y>DownRight.y) && (V2.y<=DownRight.y))
+	{
 		if(dx)
 			Polygon[(*count)].x=V1.x+(DownRight.y-V1.y)/m;
 		else
@@ -301,24 +309,28 @@ void CLIP_Polygon(NSPointInt *inPoly, long inCount, NSPointInt *outPoly, long *o
 	*outCount = 0;
 	TmpCount=0;
 	
-	for ( int v=0; v<inCount; v++ ) {
+	for ( int v=0; v<inCount; v++)
+	{
 		d=v+1;
 		if(d==inCount)d=0;
 		CLIP_Left( TmpPoly, &TmpCount, inPoly[v],inPoly[d]);
 	}
-	for ( int v=0; v<TmpCount; v++ ) {
+	for ( int v=0; v<TmpCount; v++)
+	{
 		d=v+1;
 		if(d==TmpCount)d=0;
 		CLIP_Right(outPoly, outCount, TmpPoly[v],TmpPoly[d], DownRight);
 	}
 	TmpCount=0;
-	for ( int v=0; v<*outCount; v++ )	{
+	for ( int v=0; v<*outCount; v++)
+	{
 		d=v+1;
 		if(d==*outCount)d=0;
 		CLIP_Top( TmpPoly, &TmpCount, outPoly[v],outPoly[d]);
 	}
 	*outCount=0;
-	for ( int v=0; v<TmpCount; v++ ) {
+	for ( int v=0; v<TmpCount; v++)
+	{
 		d=v+1;
 		if(d==TmpCount)d=0;
 		CLIP_Bottom(outPoly, outCount, TmpPoly[v],TmpPoly[d], DownRight);
@@ -336,14 +348,16 @@ struct edge {
     long xNowNumStep;
 };
 
-static inline long sgn( long x ) {
+static inline long sgn( long x)
+{
 	if( x > 0) return 1;
 	else if( x < 0) return -1;
 	
 	return 0;
 }
 
-static inline void FillEdges( NSPointInt *p, long no, struct edge *edgeTable[] ) {
+static inline void FillEdges( NSPointInt *p, long no, struct edge *edgeTable[])
+{
     int n = no;
 	
 	memset( edgeTable, 0, sizeof(char*) * MAXVERTICAL);
@@ -356,7 +370,8 @@ static inline void FillEdges( NSPointInt *p, long no, struct edge *edgeTable[] )
         if (p1->y == p2->y)
             continue;   /* Skip horiz. edges */
         /* Find next vertex not level with p2 */
-        for ( int j = (i + 2) % n; ; j = (j + 1) % n ) {
+        for ( int j = (i + 2) % n; ; j = (j + 1) % n)
+		{
             p3 = &p[ j];
             if (p2->y != p3->y)
                 break;
@@ -469,10 +484,10 @@ static inline void DrawRuns(	struct edge *active,
     if (numCoords % 2)  /* Protect from degenerate polygons */
         xCoords[numCoords] = xCoords[numCoords - 1], numCoords++;
 	
-    for ( long i = 0; i < numCoords; i += 2 )
+    for ( long i = 0; i < numCoords; i += 2)
 	{
 		// ** COMPUTE
-		if( compute )
+		if( compute)
 		{
 			start = xCoords[i];		if( start < 0) start = 0;		if( start >= w) start = w;
 			end = xCoords[i + 1];	if( end < 0) end = 0;			if( end >= w) end = w;
@@ -486,12 +501,14 @@ static inline void DrawRuns(	struct edge *active,
 			
 			long x = end - start;
 			
-			if( RGB == NO )
+			if( RGB == NO)
 			{
-				while( x-- >= 0 ) {
+				while( x-- >= 0)
+				{
 					val = *curPix;
 					
-					if( imax ) {
+					if( imax)
+					{
 						if( val > *imax) *imax = val;
 						if( val < *imin) *imin = val;
 						
@@ -500,7 +517,8 @@ static inline void DrawRuns(	struct edge *active,
 						(*count)++;
 					}
 					
-					if( idev ) {
+					if( idev)
+					{
 						temp = imean - val;
 						temp *= temp;
 						*idev += temp;
@@ -516,7 +534,8 @@ static inline void DrawRuns(	struct edge *active,
 		else {
 			if( outside)	// OUTSIDE
 			{
-				if( i == 0 ) {
+				if( i == 0)
+				{
 					start = 0;			if( start < 0) start = 0;		if( start >= w) start = w;
 					end = xCoords[i];	if( end < 0) end = 0;			if( end >= w) end = w;
 					i--;
@@ -524,7 +543,8 @@ static inline void DrawRuns(	struct edge *active,
 				else {
 					start = xCoords[i]+1;		if( start < 0) start = 0;		if( start >= w) start = w;
 					
-					if( i == numCoords-1 ) {
+					if( i == numCoords-1)
+					{
 						end = w;
 					}
 					else end = xCoords[i+1];
@@ -532,25 +552,31 @@ static inline void DrawRuns(	struct edge *active,
 					if( end < 0) end = 0;			if( end >= w) end = w;
 				}
 				
-				if( RGB == NO ) {
-					switch( orientation ) {
-					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];		break;
-					case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		break;
-					case 2:		curPix = &pix[ (curY * w) + start];							break;
-				}
+				if( RGB == NO)
+				{
+					switch( orientation)
+					{
+						case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];		break;
+						case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		break;
+						case 2:		curPix = &pix[ (curY * w) + start];							break;
+					}
 					
 					long x = end - start;
 					
-					if( addition) {
-						while( x-- > 0)	{
+					if( addition)
+					{
+						while( x-- > 0)
+						{
 							if( *curPix >= min && *curPix <= max) *curPix += newVal;
 							
 							if( orientation) curPix ++;
 							else curPix += w;
 						}
 					}
-					else {
-						while( x-- > 0 )	{
+					else
+					{
+						while( x-- > 0)
+						{
 							if( *curPix >= min && *curPix <= max) *curPix = newVal;
 							
 							if( orientation) curPix ++;
@@ -559,7 +585,8 @@ static inline void DrawRuns(	struct edge *active,
 					}
 				}
 				else {
-					switch( orientation ) {
+					switch( orientation)
+					{
 					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];		break;
 					case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		break;
 					case 2:		curPix = &pix[ (curY * w) + start];							break;
@@ -567,15 +594,18 @@ static inline void DrawRuns(	struct edge *active,
 					
 					long x = end - start;
 					
-					while( x-- > 0 ) {
+					while( x-- > 0)
+					{
 						unsigned char*  rgbPtr = (unsigned char*) curPix;
 						
-						if( addition) {
+						if( addition)
+						{
 							if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] += newVal;
 							if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] += newVal;
 							if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] += newVal;
 						}
-						else {
+						else
+						{
 							if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] = newVal;
 							if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] = newVal;
 							if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] = newVal;
@@ -593,19 +623,25 @@ static inline void DrawRuns(	struct edge *active,
 				start = xCoords[i];		if( start < 0) start = 0;		if( start >= w) start = w;
 				end = xCoords[i + 1];	if( end < 0) end = 0;			if( end >= w) end = w;
 				
-				switch( orientation ) {
+				switch( orientation)
+				{
 					case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		if( restore && restoreImageCache) restorePtr = &[restoreImageCache[ curY] fImage][(start * w) + stackNo];			break;
 					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];			if( restore && restoreImageCache) restorePtr = &[restoreImageCache[ curY] fImage][start + stackNo *w];				break;
 					case 2:		curPix = &pix[ (curY * w) + start];							if( restore && restoreImageCache) restorePtr = &[restoreImageCache[ stackNo] fImage][(curY * w) + start];			break;
-			}
+				}
 				
 				long x = end - start;
 				
-				if( x >= 0 ) {
-					if( restore && restoreImageCache) {
-						if( RGB == NO )	{
-							if( orientation ) {
-								while( x-- >= 0 ) {
+				if( x >= 0)
+				{
+					if( restore && restoreImageCache)
+					{
+						if( RGB == NO )
+						{
+							if( orientation)
+							{
+								while( x-- >= 0)
+								{
 									*curPix = *restorePtr;
 									
 									curPix ++;
@@ -10821,7 +10857,7 @@ END_CREATE_ROIS:
 		
 		return [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
 	}
-	else if( inGrOrModP )
+	else if( inGrOrModP)
 	{
 		int theEnumGrNb = Papy3ToEnumGroup(group);
 		int theMaxElem = gArrGroup [theEnumGrNb].size;
@@ -10829,11 +10865,14 @@ END_CREATE_ROIS:
 		NSCalendarDate *calendarDate;
 		NSArray *codes = [NSArray arrayWithObjects:@"AE", @"AS", @"AT", @"CS", @"DA", @"DS", @"DT", @"FL", @"FD", @"IS", @"LO", @"LT", @"OB", @"OW", @"PN", @"SH", @"SL", @"SQ", @"SS", @"ST", @"TM", @"UI", @"UL", @"UN", @"USS", @"UT", @"RET", nil];
 		
-		for ( int j = 0; j < theMaxElem; j++, inGrOrModP++ ) {
-			if( inGrOrModP->element == element ) {
-				if( inGrOrModP->nb_val > 0 )	{
+		for ( int j = 0; j < theMaxElem; j++, inGrOrModP++)
+		{
+			if( inGrOrModP->element == element)
+			{
+				if( inGrOrModP->nb_val > 0)
+				{
 					UValue_T *theValueP = inGrOrModP->value;
-					for ( int k = 0; k < inGrOrModP->nb_val; k++, theValueP++ )
+					for ( int k = 0; k < inGrOrModP->nb_val; k++, theValueP++)
 					{
 						{
 #undef UL
@@ -10935,14 +10974,18 @@ END_CREATE_ROIS:
 	return field;
 }
 
-- (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element DCMLink:(DCMObject*)dcmObject {
+- (NSString*)getDICOMFieldValueForGroup:(int)group element:(int)element DCMLink:(DCMObject*)dcmObject
+{
 	DCMAttribute *attr = [dcmObject attributeForTag: [DCMAttributeTag tagWithGroup: group element: element]];
 	
-	if( attr ) {
+	if( attr)
+	{
 		NSMutableString *result = nil;
 		
-		for( id field in [attr values]) {	
-			if([field isKindOfClass:[NSString class]]) {
+		for( id field in [attr values])
+		{	
+			if([field isKindOfClass:[NSString class]])
+			{
 				NSString *vr = [attr vr];
 				
 				if([vr isEqualToString:@"DS"]) field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
@@ -10950,21 +10993,39 @@ END_CREATE_ROIS:
 				if( result == nil) result = [NSMutableString stringWithString: field];
 				else [result appendFormat: @" / %@", field];
 			}
-			else if([field isKindOfClass:[NSNumber class]])	{
-				if( result == nil) result = [NSMutableString stringWithString: [field stringValue]];
-				else [result appendFormat: @" / %@", [field stringValue]];
-			}
-			else if([field isKindOfClass:[NSCalendarDate class]]) {
+			else if([field isKindOfClass:[NSNumber class]])
+			{
 				NSString *vr = [attr vr];
-				if([vr isEqualToString:@"DA"]) {
+				
+				if([vr isEqualToString:@"FD"]) field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
+				if([vr isEqualToString:@"FL"]) field = [NSString stringWithFormat:@"%.6g", [field floatValue]];
+				
+				if([field isKindOfClass:[NSString class]])
+				{
+					if( result == nil) result = [NSMutableString stringWithString: field];
+					else [result appendFormat: @" / %@", field];
+				}
+				else
+				{
+					if( result == nil) result = [NSMutableString stringWithString: [field stringValue]];
+					else [result appendFormat: @" / %@", [field stringValue]];
+				}
+			}
+			else if([field isKindOfClass:[NSCalendarDate class]])
+			{
+				NSString *vr = [attr vr];
+				if([vr isEqualToString:@"DA"])
+				{
 					if( result == nil) result = [NSMutableString stringWithString: [BrowserController DateOfBirthFormat: field]];
 					else [result appendFormat: @" / %@", [BrowserController DateOfBirthFormat: field]];
 				}
-				else if([vr isEqualToString:@"TM"]) {
+				else if([vr isEqualToString:@"TM"])
+				{
 					if( result == nil) result = [NSMutableString stringWithString: [BrowserController TimeWithSecondsFormat: field]];
 					else [result appendFormat: @" / %@", [BrowserController TimeWithSecondsFormat: field]];
 				}
-				else {
+				else
+				{
 					if( result == nil) result = [NSMutableString stringWithString: [BrowserController DateTimeWithSecondsFormat: field]];
 					else [result appendFormat: @" / %@", [BrowserController DateTimeWithSecondsFormat: field]];
 				}
@@ -10989,20 +11050,20 @@ END_CREATE_ROIS:
 	// image sides (LowerLeft, LowerMiddle, LowerRight, MiddleLeft, MiddleRight, TopLeft, TopMiddle, TopRight) & sameAsDefault
 	NSArray *keys = [annotationsForModality allKeys];
 	
-	for ( NSString *key in keys )
+	for ( NSString *key in keys)
 	{
 		if(![key isEqualToString:@"sameAsDefault"])
 		{
 			NSArray *annotations = [annotationsForModality objectForKey: key];
 			NSMutableArray *annotationsOUT = [NSMutableArray array];
 			
-			for ( NSDictionary *annot in annotations )
+			for ( NSDictionary *annot in annotations)
 			{
 				NSArray *content = [annot objectForKey:@"fullContent"];
 				NSMutableArray *contentOUT = [NSMutableArray array];
 				
 				BOOL contentForLine = NO;
-				for ( int f=0; f<[content count]; f++ )
+				for ( int f=0; f<[content count]; f++)
 				{
 					@try
 					{
@@ -11010,7 +11071,7 @@ END_CREATE_ROIS:
 						NSString *type = [field objectForKey:@"type"];
 						NSString *value = 0L;
 						
-						if( [type isEqualToString:@"DICOM"] )
+						if( [type isEqualToString:@"DICOM"])
 						{
 							if(fileNb>=0)
 								value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] papyLink:fileNb];
