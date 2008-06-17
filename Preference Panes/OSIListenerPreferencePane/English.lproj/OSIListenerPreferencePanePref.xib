@@ -2825,9 +2825,9 @@
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{0, 862}, {725, 672}}</string>
+					<string>{{0, 184}, {725, 672}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{0, 862}, {725, 672}}</string>
+					<string>{{0, 184}, {725, 672}}</string>
 					<reference ref="9"/>
 					<string>{{770, 336}, {725, 672}}</string>
 					<reference ref="9"/>
@@ -3003,7 +3003,7 @@ YWNPU1guIEkgd291bGQgcmVjb21tZW5kIG5vdCB1c2luZyAxMDQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{182, 1152}, {313, 173}}</string>
+					<string>{{182, 474}, {313, 173}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
