@@ -602,7 +602,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				string = [(NSString*)value cStringUsingEncoding:encoding];
 				
 				dataset->putAndInsertString(DCM_ModalitiesInStudy, string);
-				dataset->putAndInsertString(DCM_Modality, string);
+//				dataset->putAndInsertString(DCM_Modality, string);	// BUG SECTRA ?
 			}
 		}
 	}
