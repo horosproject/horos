@@ -338,6 +338,9 @@ static NSArray*	statesArray = nil;
 	NSMutableArray			*vlToReload = [NSMutableArray arrayWithCapacity: 0];
 	BOOL					isCDMedia = NO;
 	
+	NSString *reportsDirectory = [INpath stringByAppendingPathComponent:@"/REPORTS/"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath: reportsDirectory] == NO)
+		[[NSFileManager defaultManager] createDirectoryAtPath: reportsDirectory attributes:nil];
 	
 	if( [newFilesArray count] == 0) return [NSMutableArray arrayWithCapacity: 0];
 	
@@ -1666,7 +1669,8 @@ static NSArray*	statesArray = nil;
 	}
 }
 
--(void)openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour {
+-(void)openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour
+{
 	[self waitForRunningProcesses];
 	
 	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening OsiriX database...", nil)];
@@ -1678,6 +1682,7 @@ static NSArray*	statesArray = nil;
 	[currentDatabasePath release];
 	currentDatabasePath = [a retain];
 	isCurrentDatabaseBonjour = isBonjour;
+	
 	[self loadDatabase: currentDatabasePath];
 	
 	[wait close];
@@ -8436,168 +8441,191 @@ static BOOL needToRezoom;
 					sqlFile = [self getDatabaseIndexFileFor: [object valueForKey: @"Path"]];				
 				}
 				
-				if( sqlFile && dbFolder ) {
+				if( sqlFile && dbFolder)
+				{
 					// LOCAL PATH - DATABASE
 					@try
-				{
-					NSLog( @"-----------------------------");
-					NSLog( @"Destination is a 'local' path");
-					
-					
-					Wait *splash = 0L;
-					
-					if( isCurrentDatabaseBonjour)
-						splash = [[Wait alloc] initWithString:NSLocalizedString(@"Downloading files...", nil)];
-					
-					[splash showWindow:self];
-					[[splash progress] setMaxValue:[imagesArray count]];
-					
-					NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: [imagesArray count]];
-					for( NSManagedObject *img in imagesArray ) {
-						NSString	*sendPath = [self getLocalDCMPath: img :10];
-						[packArray addObject: sendPath];
-						
-						[splash incrementBy:1];
-					}
-					
-					// Add the ROIs
-					for( DicomImage *img in imagesArray ) {
-						[packArray addObjectsFromArray: [img SRPaths]];
-					}
-					
-					[splash close];
-					[splash release];
-					
-					
-					NSLog( @"DB Folder: %@", dbFolder);
-					NSLog( @"SQL File: %@", sqlFile);
-					NSLog( @"Current documentsDirectory: %@", self.documentsDirectory );
-					
-					NSPersistentStoreCoordinator *sc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel];
-					NSManagedObjectContext *sqlContext = [[NSManagedObjectContext alloc] init];
-					
-					[sqlContext setPersistentStoreCoordinator: sc];
-					
-					if( [[sqlContext undoManager] isUndoRegistrationEnabled])
 					{
-						[[sqlContext undoManager] setLevelsOfUndo: 1];
-						[[sqlContext undoManager] disableUndoRegistration];
-					}
-					NSError	*error = nil;
-					NSArray *copiedObjects = 0L;
-					[sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options:nil error:&error];
-					
-					if( [dbFolder isEqualToString: [self.documentsDirectory stringByDeletingLastPathComponent]] && isCurrentDatabaseBonjour == NO)	// same database folder - we don't need to copy the files
-					{
-						NSLog( @"Destination DB Folder is identical to Current DB Folder");
+						NSLog( @"-----------------------------");
+						NSLog( @"Destination is a 'local' path");
 						
-						copiedObjects = [self addFilesToDatabase: packArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
-					}
-					else {
-						NSMutableArray	*dstFiles = [NSMutableArray array];
-						NSLog( @"Destination DB Folder is NOT identical to Current DB Folder");
 						
-						// First we copy the files to the DATABASE folder
-						splash = [[Wait alloc] initWithString:NSLocalizedString(@"Copying to OsiriX database...", nil)];
+						Wait *splash = 0L;
 						
-						[splash setCancel:YES];
+						if( isCurrentDatabaseBonjour)
+							splash = [[Wait alloc] initWithString:NSLocalizedString(@"Downloading files...", nil)];
+						
 						[splash showWindow:self];
-						[[splash progress] setMaxValue:[packArray count]];
+						[[splash progress] setMaxValue:[imagesArray count]];
 						
-						for( long i=0; i < [packArray count]; i++ ) {
+						NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: [imagesArray count]];
+						for( NSManagedObject *img in imagesArray ) {
+							NSString	*sendPath = [self getLocalDCMPath: img :10];
+							[packArray addObject: sendPath];
+							
 							[splash incrementBy:1];
-							
-							NSString *dstPath, *srcPath = [packArray objectAtIndex: i];
-							BOOL isDicomFile = [DicomFile isDICOMFile:srcPath];
-							
-							if( isDicomFile) dstPath = [self getNewFileDatabasePath:@"dcm" dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
-							else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString] dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
-							
-							if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
-								[dstFiles addObject: dstPath];
-							
-							if( [splash aborted]) 
-								i = [packArray count];
 						}
+						
+						// Add the ROIs
+						for( DicomImage *img in imagesArray ) {
+							[packArray addObjectsFromArray: [img SRPaths]];
+						}
+						
 						[splash close];
 						[splash release];
 						
-						// Then we add the files to the sql file
-						copiedObjects = [self addFilesToDatabase: dstFiles onlyDICOM:NO safeRebuild:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
-					}
-					
-					// We will now copy the comments / status
-					
-					NSMutableArray *seriesArray = [NSMutableArray array];
-					NSMutableArray *studiesArray = [NSMutableArray array];
-					NSManagedObject	*study = nil, *series = nil;
-					
-					for (NSManagedObject *obj in copiedObjects)
-					{
-						if( [obj valueForKey:@"series"] != series)
+						
+						NSLog( @"DB Folder: %@", dbFolder);
+						NSLog( @"SQL File: %@", sqlFile);
+						NSLog( @"Current documentsDirectory: %@", self.documentsDirectory );
+						
+						NSPersistentStoreCoordinator *sc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel];
+						NSManagedObjectContext *sqlContext = [[NSManagedObjectContext alloc] init];
+						
+						[sqlContext setPersistentStoreCoordinator: sc];
+						
+						if( [[sqlContext undoManager] isUndoRegistrationEnabled])
 						{
-							// ********* SERIES
-							series = [obj valueForKey:@"series"];
-									
-							if([seriesArray containsObject: series] == NO)
-							{
-								if( series) [seriesArray addObject: series];
+							[[sqlContext undoManager] setLevelsOfUndo: 1];
+							[[sqlContext undoManager] disableUndoRegistration];
+						}
+						NSError	*error = nil;
+						NSArray *copiedObjects = 0L;
+						[sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options:nil error:&error];
+						
+						if( [dbFolder isEqualToString: [self.documentsDirectory stringByDeletingLastPathComponent]] && isCurrentDatabaseBonjour == NO)	// same database folder - we don't need to copy the files
+						{
+							NSLog( @"Destination DB Folder is identical to Current DB Folder");
+							
+							copiedObjects = [self addFilesToDatabase: packArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+						}
+						else
+						{
+							NSMutableArray	*dstFiles = [NSMutableArray array];
+							NSLog( @"Destination DB Folder is NOT identical to Current DB Folder");
+							
+							// First we copy the files to the DATABASE folder
+							splash = [[Wait alloc] initWithString:NSLocalizedString(@"Copying to OsiriX database...", nil)];
+							
+							[splash setCancel:YES];
+							[splash showWindow:self];
+							[[splash progress] setMaxValue:[packArray count]];
+							
+							for( long i=0; i < [packArray count]; i++ ) {
+								[splash incrementBy:1];
 								
-								if( [series valueForKey:@"study"] != study)
-								{
-									study = [series valueForKeyPath:@"study"];
+								NSString *dstPath, *srcPath = [packArray objectAtIndex: i];
+								BOOL isDicomFile = [DicomFile isDICOMFile:srcPath];
+								
+								if( isDicomFile) dstPath = [self getNewFileDatabasePath:@"dcm" dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
+								else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString] dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
+								
+								if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
+									[dstFiles addObject: dstPath];
+								
+								if( [splash aborted]) 
+									i = [packArray count];
+							}
+							[splash close];
+							[splash release];
+							
+							// Then we add the files to the sql file
+							copiedObjects = [self addFilesToDatabase: dstFiles onlyDICOM:NO safeRebuild:NO produceAddedFiles:YES parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+						}
+						
+						// We will now copy the comments / status
+						
+						NSMutableArray *seriesArray = [NSMutableArray array];
+						NSMutableArray *studiesArray = [NSMutableArray array];
+						NSManagedObject	*study = nil, *series = nil;
+						
+						for (NSManagedObject *obj in copiedObjects)
+						{
+							if( [obj valueForKey:@"series"] != series)
+							{
+								// ********* SERIES
+								series = [obj valueForKey:@"series"];
 										
-									if([studiesArray containsObject: study] == NO)
+								if([seriesArray containsObject: series] == NO)
+								{
+									if( series) [seriesArray addObject: series];
+									
+									if( [series valueForKey:@"study"] != study)
 									{
-										if( study) [studiesArray addObject: study];
+										study = [series valueForKeyPath:@"study"];
+											
+										if([studiesArray containsObject: study] == NO)
+										{
+											if( study) [studiesArray addObject: study];
+										}
 									}
 								}
 							}
 						}
+						
+						// Copy the comments/status/report at study level
+						for (NSManagedObject *obj in studiesArray)
+						{
+							NSManagedObject *s = [self findStudyUID: [obj valueForKey: @"studyInstanceUID"]];
+							
+							if( [s valueForKey: @"comment"])
+							{
+								[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
+							}
+							
+							if( [s valueForKey: @"stateText"])
+							{
+								[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
+							}
+							
+							if( [s valueForKey: @"reportURL"])
+							{
+								if( [dbFolder isEqualToString: [self.documentsDirectory stringByDeletingLastPathComponent]] && isCurrentDatabaseBonjour == NO)	// same database folder - we don't need to copy the files
+								{
+									[obj setValue: [s valueForKey: @"reportURL"] forKey: @"reportURL"];
+								}
+								else
+								{
+									if( [[NSFileManager defaultManager] fileExistsAtPath: [s valueForKey: @"reportURL"]])
+									{
+										NSString *path = [s valueForKey: @"reportURL"];
+										NSString *newPath = [NSString stringWithFormat: @"%@/REPORTS/%@", [dbFolder stringByAppendingPathComponent:@"OsiriX Data"], [path lastPathComponent]];
+										
+										[[NSFileManager defaultManager] copyPath: path toPath:newPath handler: 0L];
+										
+										[obj setValue: newPath forKey: @"reportURL"];
+									}
+								}
+							}
+						}
+						
+						// Copy the comments/status at series level
+						for (NSManagedObject *obj in seriesArray)
+						{
+							NSManagedObject *s = [self findSeriesUID: [obj valueForKey: @"seriesDICOMUID"]];
+							
+							if( [s valueForKey: @"comment"])
+							{
+								[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
+							}
+							
+							if( [s valueForKey: @"stateText"])
+							{
+								[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
+							}
+						}
+						
+						error = nil;
+						[sqlContext save: &error];
+						
+						[sc release];
+						[sqlContext release];
 					}
 					
-					// Copy the comments/status at study level
-					for (NSManagedObject *obj in studiesArray)
+					@catch (NSException * e)
 					{
-						NSManagedObject *s = [self findStudyUID: [obj valueForKey: @"studyInstanceUID"]];
-						
-						if( [s valueForKey: @"comment"])
-						{
-							[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
-						}
-						
-						if( [s valueForKey: @"stateText"])
-						{
-							[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
-						}
-					}
-					
-					// Copy the comments/status at series level
-					for (NSManagedObject *obj in seriesArray)
-					{
-						NSManagedObject *s = [self findSeriesUID: [obj valueForKey: @"seriesDICOMUID"]];
-						
-						if( [s valueForKey: @"comment"])
-						{
-							[obj setValue: [s valueForKey: @"comment"] forKey: @"comment"];
-						}
-						
-						if( [s valueForKey: @"stateText"])
-						{
-							[obj setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
-						}
-					}
-					
-					error = nil;
-					[sqlContext save: &error];
-					
-					[sc release];
-					[sqlContext release];
-				}
-					
-					@catch (NSException * e) {
 						NSLog( [e description]);
-						NSLog( @"Exception !! *******");
+						NSLog( @"Exception LOCAL PATH - DATABASE - tableView *******");
 					}
 				}
 				else NSRunCriticalAlertPanel( NSLocalizedString(@"Error",0L),  NSLocalizedString(@"Destination Database / Index file is not available.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
@@ -13510,11 +13538,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		long result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete report", 0L), NSLocalizedString(@"Are you sure you want to delete the selected report?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 		
-		if( result == NSAlertDefaultReturn ) {
+		if( result == NSAlertDefaultReturn)
+		{
 			if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 3 ) {
 				NSBundle *plugin = [[PluginManager reportPlugins] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
 				
-				if( plugin ) {
+				if( plugin)
+				{
 					PluginFilter* filter = [[plugin principalClass] filter];
 					[filter deleteReportForStudy: studySelected];
 					//[filter report: studySelected action: @"deleteReport"];
@@ -13524,8 +13554,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 					return;
 				}
 			}
-			else if( [studySelected valueForKey:@"reportURL"] != nil ) {
-				if( isCurrentDatabaseBonjour ) {
+			else if( [studySelected valueForKey:@"reportURL"] != nil )
+			{
+				if( isCurrentDatabaseBonjour )
+				{
 					[[NSFileManager defaultManager] removeFileAtPath:[BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]] handler:0L];
 					[bonjourReportFilesToCheck removeObjectForKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
 					
@@ -13534,7 +13566,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					[studySelected setValue: nil forKey:@"reportURL"];
 				}
-				else {
+				else
+				{
 					[[NSFileManager defaultManager] removeFileAtPath:[studySelected valueForKey:@"reportURL"] handler:0L];
 					[studySelected setValue: 0L forKey:@"reportURL"];
 				}
@@ -13650,14 +13683,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 				
 				NSString	*localReportFile = [BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]];
-				if( [[NSFileManager defaultManager] fileExistsAtPath: localReportFile] ) {
+				if( [[NSFileManager defaultManager] fileExistsAtPath: localReportFile])
+				{
 					NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:localReportFile traverseLink:YES];
 					[bonjourReportFilesToCheck setObject:[fattrs objectForKey:NSFileModificationDate] forKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
 				}
 				else NSLog(@"Uh?");
 			}
-			else {
-				
+			else
+			{
 				// *********************************************
 				//	LOCAL FILE
 				// *********************************************
@@ -13676,8 +13710,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 					
 				}
-				else {
-					if (reportsMode < 3) {
+				else
+				{
+					if (reportsMode < 3)
+					{
 						Reports	*report = [[Reports alloc] init];
 						if([[sender class] isEqualTo:[reportTemplatesListPopUpButton class]])[report setTemplateName:[[sender selectedItem] title]];
 						[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", documentsDirectory()] type:reportsMode];					
@@ -14221,23 +14257,29 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self bonjourServiceClicked: bonjourServicesList];
 }
 
-- (void)openDatabasePath: (NSString*)path {
+- (void)openDatabasePath: (NSString*)path
+{
 	BOOL isDirectory;
 	
-	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] ) 	{
-		if( isDirectory ) {
+	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
+	{
+		if( isDirectory)
+		{
 			[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey:@"DATABASELOCATION"];
 			[[NSUserDefaults standardUserDefaults] setObject: path forKey:@"DATABASELOCATIONURL"];
 			
 			[self openDatabaseIn: [documentsDirectory() stringByAppendingPathComponent:@"/Database.sql"] Bonjour: NO];
 		}
-		else {
-			if( [currentDatabasePath isEqualToString: path] == NO )	{
+		else
+		{
+			if( [currentDatabasePath isEqualToString: path] == NO)
+			{
 				[self openDatabaseIn: path Bonjour:NO];
 			}
 		}
 	}
-	else {
+	else
+	{
 		NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot read this file/folder.", nil), nil, nil, nil);
 		[self resetToLocalDatabase];
 	}

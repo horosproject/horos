@@ -346,16 +346,16 @@ int GetAllPIDsForProcessName(const char* ProcessName,
 
 NSString * documentsDirectoryFor( int mode, NSString *url)
 {
-	char	s[1024];
-	FSSpec	spec;
-	FSRef	ref;
+	char s[1024];
+	FSSpec spec;
+	FSRef ref;
+	NSString *path = 0L;
 	
 	switch( mode)
 	{
 		case 0:
 			if( FSFindFolder (kOnAppropriateDisk, kDocumentsFolderType, kCreateFolder, &ref) == noErr )
 			{
-				NSString	*path;
 				BOOL		isDir = YES;
 				
 				FSRefMakePath(&ref, (UInt8 *)s, sizeof(s));
@@ -363,26 +363,25 @@ NSString * documentsDirectoryFor( int mode, NSString *url)
 				path = [[NSString stringWithUTF8String:s] stringByAppendingPathComponent:@"/OsiriX Data"];
 				
 				if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-				
-				return path;
 			}
-			break;
+		break;
 			
 		case 1:
 		{
-			NSString	*path;
 			BOOL		isDir = YES;
 			
 			path = [url stringByAppendingPathComponent:@"/OsiriX Data"];
 			
 			if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir]) [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-						
-			return path;
 		}
 		break;
 	}
 	
-	return nil;
+	NSString *reportsDirectory = [path stringByAppendingPathComponent:@"/REPORTS/"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath: reportsDirectory] == NO)
+		[[NSFileManager defaultManager] createDirectoryAtPath: reportsDirectory attributes:nil];
+	
+	return path;
 }
 
 NSString * documentsDirectory()

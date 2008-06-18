@@ -52,7 +52,7 @@
 	dataset-> insertEmptyElement(DCM_StudyID, OFTrue);
 	dataset-> insertEmptyElement(DCM_NumberOfStudyRelatedInstances, OFTrue);
 	dataset-> insertEmptyElement(DCM_ModalitiesInStudy, OFTrue);
-	dataset-> insertEmptyElement(DCM_Modality, OFTrue);
+//	dataset-> insertEmptyElement(DCM_Modality, OFTrue);
 	dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "STUDY", OFTrue);
 	
 	return dataset;

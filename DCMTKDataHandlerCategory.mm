@@ -19,6 +19,7 @@
 
 #import "browserController.h"
 #import "DicomImage.h"
+#import "MutableArrayCategory.h"
 
 @implementation OsiriXSCPDataHandler (DCMTKDataHandlerCategory)
 
@@ -612,7 +613,26 @@
 			dataset ->putAndInsertString(DCM_StudyID, NULL);
 			
 		if ([fetchedObject valueForKey:@"modality"])
-			dataset ->putAndInsertString(DCM_ModalitiesInStudy , [[fetchedObject valueForKey:@"modality"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+		{
+			NSMutableArray *modalities = [NSMutableArray array];
+			
+			BOOL SC = NO, SR = NO;
+			
+			for( NSString *m in [[fetchedObject valueForKeyPath:@"series.modality"] allObjects])
+			{
+				if( [modalities containsString: m] == NO)
+				{
+					if( [m isEqualToString:@"SR"]) SR = YES;
+					else if( [m isEqualToString:@"SC"]) SC = YES;
+					else [modalities addObject: m];
+				}
+			}
+			
+			if( SC) [modalities addObject: @"SC"];
+			if( SR) [modalities addObject: @"SR"];
+			
+			dataset ->putAndInsertString(DCM_ModalitiesInStudy , [[modalities componentsJoinedByString:@"\\"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+		}
 		else
 			dataset ->putAndInsertString(DCM_ModalitiesInStudy , NULL);
 		

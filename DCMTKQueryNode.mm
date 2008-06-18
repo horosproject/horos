@@ -602,7 +602,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				string = [(NSString*)value cStringUsingEncoding:encoding];
 				
 				dataset->putAndInsertString(DCM_ModalitiesInStudy, string);
-//				dataset->putAndInsertString(DCM_Modality, string);	// BUG SECTRA ?
+//				dataset->putAndInsertString(DCM_Modality, string);				// BUG SECTRA, IMPAX, ...
 			}
 		}
 	}
@@ -733,7 +733,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	opt_port = _port;
 	
 //	//verbose option set to true for now
-	_verbose = OFFalse;
+	_verbose = OFTrue;
 //
 //	
 //	//debug code activated for now
@@ -850,7 +850,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
     cond = ASC_createAssociationParameters(&params, _maxReceivePDULength);
-//	DimseCondition::dump(cond);
+	DimseCondition::dump(cond);
     if (cond.bad()) {
         DimseCondition::dump(cond);
 		queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"Could create association parameters" userInfo:nil];
