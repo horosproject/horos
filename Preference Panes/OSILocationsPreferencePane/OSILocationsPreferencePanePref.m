@@ -168,7 +168,8 @@
 		[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 100" forKey:@"STRINGENCODING"];
 		tag = 1;
 	}
-			
+	
+	[characterSetPopup selectItemAtIndex:-1];
 	[characterSetPopup selectItemAtIndex:tag];
 	
 	[self checkUniqueAETitle];
