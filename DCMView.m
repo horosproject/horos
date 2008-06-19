@@ -9204,8 +9204,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (BOOL) softwareInterpolation
 {
 	if(	scaleValue > 4 && NOINTERPOLATION == NO && 
-		SOFTWAREINTERPOLATION == YES && curDCM.pwidth <= SOFTWAREINTERPOLATION_MAX &&
-		curDCM.isRGB == NO && [curDCM thickSlabVRActivated] == NO)
+		SOFTWAREINTERPOLATION == YES && curDCM.pwidth <= SOFTWAREINTERPOLATION_MAX)
+//		 &&
+//		curDCM.isRGB == NO && [curDCM thickSlabVRActivated] == NO)
 	{
 		return YES;
 	}
@@ -9369,107 +9370,69 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	*tH = curDCM.pheight;
 	
-	if( isRGB == YES || [curDCM thickSlabVRActivated] == YES )
+	zoomIsSoftwareInterpolated = NO;
+	
+	if( [self softwareInterpolation])
 	{
-		*tW = curDCM.pwidth;
-		rowBytes = curDCM.pwidth*4;
-		baseAddr = curDCM.baseAddr;
+		zoomIsSoftwareInterpolated = YES;
 		
-		if( curDCM.isLUT12Bit)
+		float resampledScale;
+		if( curDCM.pwidth <= 256) resampledScale = 3;
+		else resampledScale = 2;
+		
+		*tW = curDCM.pwidth * resampledScale;
+		*tH = curDCM.pheight * resampledScale;
+		
+		vImage_Buffer src, dst;
+		
+		src.width = curDCM.pwidth;
+		src.height = curDCM.pheight;
+		
+		if( (colorTransfer == YES) || (blending == YES) || (isRGB == YES) || ([curDCM thickSlabVRActivated] == YES))
 		{
-			baseAddr = (char*) curDCM.LUT12baseAddr;
-			rowBytes = curDCM.pwidth*4;
-			*tW = curDCM.pwidth;
+			rowBytes = *tW * 4;
+			
+			src.data = *colorBufPtr;
+			src.rowBytes = curDCM.pwidth*4;
+			dst.rowBytes = rowBytes;
+			
+			if( curDCM.isLUT12Bit)
+				src.data = (char*) curDCM.LUT12baseAddr;
 		}
-	}
-    else {
-		zoomIsSoftwareInterpolated = NO;
+		else
+		{
+			rowBytes = *tW;
+			
+			src.data = curDCM.baseAddr;
+			src.rowBytes = curDCM.pwidth;
+			dst.rowBytes = rowBytes;
+		}
 		
- 		if( [self softwareInterpolation]) {
-			zoomIsSoftwareInterpolated = YES;
-			
-			float resampledScale;
-			if( curDCM.pwidth <= 256) resampledScale = 3;
-			else resampledScale = 2;
-			
-			*tW = curDCM.pwidth * resampledScale;
-			*tH = curDCM.pheight * resampledScale;
-			
-			vImage_Buffer src, dst;
-			
-			src.width = curDCM.pwidth;
-			src.height = curDCM.pheight;
-			
-			
-			if( (colorTransfer == YES) || (blending == YES)) {
-				rowBytes = *tW * 4;
-				
-				src.data = *colorBufPtr;
-				src.rowBytes = curDCM.pwidth*4;
-				dst.rowBytes = rowBytes;
-			}
-			else {
-				rowBytes = *tW;
-				
-				src.data = curDCM.baseAddr;
-				src.rowBytes = curDCM.pwidth;
-				dst.rowBytes = rowBytes;
-			}
-			
-			dst.width = *tW;
-			dst.height = *tH;
-			
+		dst.width = *tW;
+		dst.height = *tH;
+		
 
-			if( *rBAddrSize < rowBytes * *tH )
-			{
-				if( *rAddr) free( *rAddr);
-				*rAddr = malloc( rowBytes * *tH);
-				*rBAddrSize = rowBytes * *tH;
-				
-//				if( resampledTempAddr) free( resampledTempAddr);
-//				
-//				int requiredSize;
-//				
-//				if( (colorTransfer == YES) || (blending == YES))
-//					requiredSize = vImageScale_ARGB8888( &src, &dst, 0L, kvImageGetTempBufferSize);
-//				else
-//					requiredSize = vImageScale_Planar8( &src, &dst, 0L, kvImageGetTempBufferSize);
-//				
-//				if( requiredSize < *rBAddrSize)
-//					resampledTempAddr = malloc(  *rBAddrSize);
-//				else resampledTempAddr = 0L;
-			}
+		if( *rBAddrSize < rowBytes * *tH )
+		{
+			if( *rAddr) free( *rAddr);
+			*rAddr = malloc( rowBytes * *tH);
+			*rBAddrSize = rowBytes * *tH;
+		}
+		
+		if( *rAddr) 
+		{
+			baseAddr = *rAddr;
+			dst.data = baseAddr;
 			
-			if( *rAddr ) 
+			if( (colorTransfer == YES) || (blending == YES) || (isRGB == YES) || ([curDCM thickSlabVRActivated] == YES))
+				vImageScale_ARGB8888( &src, &dst, 0L, QUALITY);						//resampledTempAddr - RANDOM CRASHES WITH the temp ptr during image blending.....
+			else
+				vImageScale_Planar8( &src, &dst, 0L, QUALITY);						//resampledTempAddr - RANDOM CRASHES WITH the temp ptr during image blending.....
+		}
+		else
+		{
+			if( (colorTransfer == YES) || (blending == YES))
 			{
-				baseAddr = *rAddr;
-				dst.data = baseAddr;
-				
-				if( (colorTransfer == YES) || (blending == YES))
-					vImageScale_ARGB8888( &src, &dst, 0L, QUALITY);						//resampledTempAddr - RANDOM CRASHES WITH the temp ptr during image blending.....
-				else
-					vImageScale_Planar8( &src, &dst, 0L, QUALITY);						//resampledTempAddr - RANDOM CRASHES WITH the temp ptr during image blending.....
-			}
-			else {
-				if( (colorTransfer == YES) || (blending == YES)) {
-					*tW = curDCM.pwidth;
-					rowBytes = curDCM.pwidth;
-					baseAddr = (char*) *colorBufPtr;
-				}
-				else {
-					*tW = curDCM.pwidth;
-					rowBytes = curDCM.pwidth;
-					baseAddr = curDCM.baseAddr;
-				}
-			}
-		}
-		else if( FULL32BITPIPELINE) {
-			*tW = curDCM.pwidth;
-			rowBytes = curDCM.pwidth*4;
-			baseAddr = (char*) curDCM.fImage;
-		}
-		else {
-			if( (colorTransfer == YES) || (blending == YES)) {
 				*tW = curDCM.pwidth;
 				rowBytes = curDCM.pwidth;
 				baseAddr = (char*) *colorBufPtr;
@@ -9479,6 +9442,40 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				rowBytes = curDCM.pwidth;
 				baseAddr = curDCM.baseAddr;
 			}
+		}
+	}
+	else if( FULL32BITPIPELINE)
+	{
+		*tW = curDCM.pwidth;
+		rowBytes = curDCM.pwidth*4;
+		baseAddr = (char*) curDCM.fImage;
+	}
+	else
+	{
+		if( isRGB == YES || [curDCM thickSlabVRActivated] == YES)
+		{
+			*tW = curDCM.pwidth;
+			rowBytes = curDCM.pwidth*4;
+			baseAddr = curDCM.baseAddr;
+			
+			if( curDCM.isLUT12Bit)
+			{
+				baseAddr = (char*) curDCM.LUT12baseAddr;
+				rowBytes = curDCM.pwidth*4;
+				*tW = curDCM.pwidth;
+			}
+		}
+		else if( (colorTransfer == YES) || (blending == YES))
+		{
+			*tW = curDCM.pwidth;
+			rowBytes = curDCM.pwidth;
+			baseAddr = (char*) *colorBufPtr;
+		}
+		else
+		{
+			*tW = curDCM.pwidth;
+			rowBytes = curDCM.pwidth;
+			baseAddr = curDCM.baseAddr;
 		}
 	}
 	
