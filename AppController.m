@@ -1708,10 +1708,10 @@ static BOOL initialized = NO;
 				[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
 				
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"is12bitPluginAvailable"];
-				
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"COPYSETTINGSINSERIES"];
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"DONTCOPYWLWWSETTINGS"];
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
+				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"ROITEXTNAMEONLY"];
 				
 				[[PluginManager alloc] init];
 				
@@ -1932,7 +1932,6 @@ static BOOL initialized = NO;
 //#endif
 }
 
-
 - (NSDictionary *) registrationDictionaryForGrowl
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"]) return 0L;
@@ -1950,7 +1949,6 @@ static BOOL initialized = NO;
 	
     return (dict);
 }
-
 
 #pragma mark-
 
