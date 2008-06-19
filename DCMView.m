@@ -9388,16 +9388,24 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		src.width = curDCM.pwidth;
 		src.height = curDCM.pheight;
 		
-		if( (colorTransfer == YES) || (blending == YES) || (isRGB == YES) || ([curDCM thickSlabVRActivated] == YES))
+		if( (isRGB == YES) || ([curDCM thickSlabVRActivated] == YES))
+		{
+			src.rowBytes = curDCM.pwidth*4;
+			src.data = curDCM.baseAddr;
+			
+			rowBytes = *tW * 4;
+			dst.rowBytes = rowBytes;
+			
+			if( curDCM.isLUT12Bit)
+				src.data = (char*) curDCM.LUT12baseAddr;
+		}
+		else if( (colorTransfer == YES) || (blending == YES))
 		{
 			rowBytes = *tW * 4;
 			
 			src.data = *colorBufPtr;
 			src.rowBytes = curDCM.pwidth*4;
 			dst.rowBytes = rowBytes;
-			
-			if( curDCM.isLUT12Bit)
-				src.data = (char*) curDCM.LUT12baseAddr;
 		}
 		else
 		{
