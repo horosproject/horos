@@ -157,7 +157,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	[mutable replaceOccurrencesOfString:@"/" withString:@"-" options:0 range:NSMakeRange(0, [mutable length])]; 
 	[mutable replaceOccurrencesOfString:@"\r" withString:@"" options:0 range:NSMakeRange(0, [mutable length])]; 
 	[mutable replaceOccurrencesOfString:@"\n" withString:@"" options:0 range:NSMakeRange(0, [mutable length])]; 
-	[mutable replaceOccurrencesOfString:@":" withString:@"-" options:0 range:NSMakeRange(0, [mutable length])];
+	[mutable replaceOccurrencesOfString:@"\"" withString:@"'" options:0 range:NSMakeRange(0, [mutable length])];
+	
 	
 	long i = [mutable length];
 	while( --i > 0)

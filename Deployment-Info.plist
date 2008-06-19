@@ -131,11 +131,11 @@
 	<key>SVNRevision</key>
 	<string>$Rev$ $Date$</string>
 	<key>CFBundleGetInfoString</key>
-	<string>OsiriX v.3.2</string>
+	<string>OsiriX v.3.2.1</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.2</string>
+	<string>3.2.1</string>
 	<key>CFBundleVersion</key>
-	<string>4331M</string>
+	<string>4354M</string>
 	<key>CFBundleIconFile</key>
 	<string>Osirix.icns</string>
 	<key>CFBundleIdentifier</key>

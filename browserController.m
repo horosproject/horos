@@ -2506,7 +2506,8 @@ static NSArray*	statesArray = nil;
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
 
-- (void)copyFilesThread : (NSArray*)filesInput {
+- (void)copyFilesThread : (NSArray*)filesInput
+{
 	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
 	NSString				*INpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEFPATH];
 	NSString				*incomingPath = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
@@ -2517,7 +2518,7 @@ static NSArray*	statesArray = nil;
 	[autoroutingInProgress lock];
 	
 	BOOL first = YES;
-	for( NSString *srcPath in filesInput )
+	for( NSString *srcPath in filesInput)
 	{
 		NSString	*dstPath;
 		NSString	*extension = [srcPath pathExtension];
@@ -2536,19 +2537,25 @@ static NSArray*	statesArray = nil;
 					int x = 0;
 					do
 					{
-						dstPath = [incomingPath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d-%@", x, [srcPath lastPathComponent]]];
+						dstPath = [incomingPath stringByAppendingPathComponent: [NSString stringWithFormat:@".%d-%@", x, [srcPath lastPathComponent]]];	//We add a '.' at the beginning of the file, to avoid the checkincoming until it is fully copied
 						x++;
 					}
 					while( [[NSFileManager defaultManager] fileExistsAtPath: dstPath]);
 					
-					[[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath handler:nil];
+					[[NSFileManager defaultManager] copyPath: srcPath toPath: dstPath handler:nil];
+					
+					// Remove the '.'
+					
+					NSString *newDstPath = [[dstPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [[dstPath lastPathComponent] substringFromIndex: 1]];
+					[[NSFileManager defaultManager] movePath: dstPath toPath: newDstPath handler:nil];
+					dstPath = newDstPath;
 					
 					if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
 					{
 						[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
 					}
 					
-					if( first )
+					if( first)
 					{
 						[self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: YES];
 						first = NO;
@@ -2567,19 +2574,22 @@ static NSArray*	statesArray = nil;
 						
 						NSError *error = nil;
 						NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-						if( [studiesArray count]) {
+						if( [studiesArray count])
+						{
 							[context unlock];
 							[context release];
 							
 							[self performSelectorOnMainThread:@selector(selectThisStudy:) withObject:[studiesArray objectAtIndex: 0] waitUntilDone: YES];
 							studySelected = YES;
 						}
-						else {
+						else
+						{
 							[context unlock];
 							[context release];
 						}
 					}
-					else if( listenerInterval > 5 && ([NSDate timeIntervalSinceReferenceDate] - lastCheck) > 5) {
+					else if( listenerInterval > 5 && ([NSDate timeIntervalSinceReferenceDate] - lastCheck) > 5)
+					{
 						lastCheck = [NSDate timeIntervalSinceReferenceDate];
 						[self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: YES];
 					}
@@ -2691,19 +2701,23 @@ static NSArray*	statesArray = nil;
 	NSMutableArray			*newList = [NSMutableArray arrayWithCapacity: [filesInput count]];
 	NSString				*INpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEFPATH];
 	
-	for( NSString *file in filesInput ) {
-		if( [[file stringByDeletingLastPathComponent] isEqualToString:INpath] == NO) {
+	for( NSString *file in filesInput )
+	{
+		if( [[file stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)
+		{
 			[newList addObject: file];
 		}
 	}
 	
 	if( [newList count] == 0) return filesInput;
 	
-	switch (COPYDATABASEMODE)	{
+	switch (COPYDATABASEMODE)
+	{
 		case always:
 			break;
 			
-		case notMainDrive:	{
+		case notMainDrive:
+		{
 			NSArray			*pathFilesComponent = [[filesInput objectAtIndex:0] pathComponents];
 			
 			if( [[[pathFilesComponent objectAtIndex: 1] uppercaseString] isEqualToString:@"VOLUMES"]) //
@@ -2714,16 +2728,17 @@ static NSArray*	statesArray = nil;
 				return filesInput;
 			}
 		}
-			break;
+		break;
 			
-		case cdOnly: {
+		case cdOnly:
+		{
 			BOOL			isACDDVD = NO;
 			
 			NSLog( [filesInput objectAtIndex:0]);
 			
 			if( [BrowserController isItCD: [filesInput objectAtIndex:0]] == NO) return filesInput;
 		}
-			break;
+		break;
 			
 		case ask:			
 			switch (NSRunInformationalAlertPanel(
@@ -2745,35 +2760,39 @@ static NSArray*	statesArray = nil;
 			break;
 	}
 	
-    NSString        *OUTpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
-	BOOL			isDir = YES;
+    NSString *OUTpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
+	BOOL isDir = YES;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:OUTpath isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:OUTpath attributes:nil];
 	
 	NSString        *pathname;
     NSMutableArray  *filesOutput = [NSMutableArray array];
 	
-	if( async ) {
+	if( async )
+	{
 		[NSThread detachNewThreadSelector:@selector(copyFilesThread:) toTarget:self withObject: filesInput];
 	}
-	else {
+	else
+	{
 		Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying into Database...", 0L)];
 		
 		[splash showWindow:self];
 		[[splash progress] setMaxValue:[filesInput count]];
 		[splash setCancel: YES];
 		
-		for( NSString *srcPath in filesInput ) {
+		for( NSString *srcPath in filesInput)
+		{
 			NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 			
 			NSString	*extension = [srcPath pathExtension];
 			
 			@try
 			{
-				if( [[[srcPath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)	{
+				if( [[[srcPath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)
+				{
 					DicomFile	*curFile = [[DicomFile alloc] init: srcPath];
 					
-					if( curFile )
+					if( curFile)
 					{
 						[curFile release];
 						
@@ -2782,7 +2801,8 @@ static NSArray*	statesArray = nil;
 						
 						NSString *dstPath = [self getNewFileDatabasePath:extension];
 						
-						if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil] == YES) {
+						if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil] == YES)
+						{
 							[filesOutput addObject:dstPath];
 						}
 						
@@ -2793,7 +2813,8 @@ static NSArray*	statesArray = nil;
 					}
 				}
 			}
-			@catch (NSException * e) {
+			@catch (NSException * e)
+			{
 				NSLog( @"copyFilesIntoDatabaseIfNeeded exception: %@", e);
 			}
 			[splash incrementBy:1];
@@ -3177,8 +3198,8 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (void)autoCleanDatabaseDate: (id)sender {
-	
+- (void)autoCleanDatabaseDate: (id)sender
+{
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
 	
 	if( isCurrentDatabaseBonjour ) return;
@@ -10430,7 +10451,6 @@ static NSArray*	openSubSeriesArray = 0L;
 		NSPopUpButtonCell	*buttonCell = nil;
 		
 		[albumDrawer setPreferredEdge: NSMinXEdge];
-		[albumDrawer openOnEdge: NSMinXEdge]; 
 		
 		// thumbnails : no background color
 		[thumbnailsScrollView setDrawsBackground:NO];
@@ -10741,6 +10761,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	[self setDBWindowTitle];
 	
+	[self.window makeKeyAndOrderFront: self];
+	
 	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] )
 	{
 		if( [[[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] intValue] == NSDrawerOpenState)
@@ -10748,8 +10770,6 @@ static NSArray*	openSubSeriesArray = 0L;
 		else
 			[albumDrawer close];
 	}
-	
-	[self.window makeKeyAndOrderFront: self];
 	
 	[self refreshMatrix: self];
 }
@@ -11131,7 +11151,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	int i;
 	BOOL found = NO;
 	
-	for( NSString *mediaPath in removeableMedia ) {
+	for( NSString *mediaPath in removeableMedia )
+	{
 		BOOL		isWritable, isUnmountable, isRemovable;
 		NSString	*description, *type;
 		
@@ -11677,10 +11698,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 				if( isAlias) srcPath = [self pathResolved: srcPath];
 				
 				// Is it a real file? Is it writable (transfer done)?
-				if ([[NSFileManager defaultManager] isWritableFileAtPath:srcPath] == YES) {
+				if ([[NSFileManager defaultManager] isWritableFileAtPath:srcPath] == YES)
+				{
 					NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:srcPath traverseLink: YES];
 					
-					if( [[fattrs objectForKey:NSFileType] isEqualToString: NSFileTypeDirectory] == YES)	{
+					if( [[fattrs objectForKey:NSFileType] isEqualToString: NSFileTypeDirectory] == YES)
+					{
 						NSArray		*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath: srcPath];
 						
 						//Is this directory empty?? If yes, delete it!
@@ -11707,8 +11730,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 							&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO)) {
 							newFilesInIncoming = YES;
 							
-							if (isDicomFile) {
-								if( isJPEGCompressed && DECOMPRESSDICOMLISTENER) {
+							if (isDicomFile)
+							{
+								if( isJPEGCompressed && DECOMPRESSDICOMLISTENER)
+								{
 									NSString	*compressedPath = [DECOMPRESSIONpath stringByAppendingPathComponent:[srcPath lastPathComponent]];
 									
 									[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
@@ -11723,20 +11748,23 @@ static volatile int numberOfThreadsForJPEG = 0;
 							else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString]];
 							//else dstPath = [self getNewFileDatabasePath:[[srcPath stringByDeletingPathExtension] lastPathComponent]: [[srcPath pathExtension] lowercaseString]];
 							
-							if( isAlias ) {
+							if( isAlias)
+							{
 								result = [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil];
 								[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
 							}
 							else {
-								if ([DicomFile isXMLDescriptorFile:srcPath]) { // XML comes before ZIP in alphabetic order...
+								if ([DicomFile isXMLDescriptorFile:srcPath])
+								{ // XML comes before ZIP in alphabetic order...
 									[[NSFileManager defaultManager] movePath:srcPath toPath:dstPath handler:nil]; // move the XML first
 									srcPath = [[srcPath stringByDeletingPathExtension] stringByAppendingString:@".zip"];
 									dstPath = [[dstPath stringByDeletingPathExtension] stringByAppendingString:@".zip"];
 								}
 								
-								if ([DicomFile isXMLDescriptedFile:srcPath]) {
-									if ([[NSFileManager defaultManager]
-										 fileExistsAtPath:[[srcPath stringByDeletingPathExtension] stringByAppendingString:@".xml"]]) {
+								if ([DicomFile isXMLDescriptedFile:srcPath])
+								{
+									if ([[NSFileManager defaultManager] fileExistsAtPath:[[srcPath stringByDeletingPathExtension] stringByAppendingString:@".xml"]])
+									{
 										
 										// move the XML first
 										[[NSFileManager defaultManager]
