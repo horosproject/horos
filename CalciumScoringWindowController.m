@@ -385,7 +385,6 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 
 - (void)computeROIsWithName:(NSString *)name addROIs:(BOOL)addROIs;
 {
-
 	int p;	
 	[_viewer roiDeleteWithName: NSLocalizedString( @"Segmentation Preview", 0L)];
 	
@@ -496,6 +495,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 			segmentMass += [roi calciumMass];
 			segmentVolume += [roi calciumVolume];
 		}
+		
 		[vessel setValue:[NSNumber numberWithFloat:segmentScore] forKey:@"score"];
 		[vessel setValue:[NSNumber numberWithFloat:segmentMass] forKey:@"mass"];
 		[vessel setValue:[NSNumber numberWithFloat:segmentVolume] forKey:@"volume"];

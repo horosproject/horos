@@ -4716,11 +4716,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	switch(type)
 	{
 		case tMesure:
-			data = [[curView curDCM] getLineROIValue:no :self];
+			data = [[self pix] getLineROIValue:no :self];
 		break;
 		
 		default:
-			data = [[curView curDCM] getROIValue:no :self :0L];
+			data = [[self pix] getROIValue:no :self :0L];
 		break;
 	}
 	
@@ -4767,7 +4767,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		case tPlain:
 			array = [NSMutableDictionary dictionaryWithCapacity:0];
 		
-			if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+			if( rtotal == -1) [[self pix] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 			
 			if( type == tOval)
 			{
@@ -4945,9 +4945,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	We could have a flag for Electron beam rather than multichannel CT
 	and use 130 as a cutoff
 	*/	
-	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+	if( rtotal == -1) [[self pix] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 	if (_calciumCofactor == 0)
-		_calciumCofactor =  [[curView curDCM] calciumCofactorForROI:self threshold:_calciumThreshold];
+		_calciumCofactor =  [[self pix] calciumCofactorForROI:self threshold:_calciumThreshold];
 	//NSLog(@"cofactor: %d", _calciumCofactor);
 	return _calciumCofactor;
 }
@@ -4957,13 +4957,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	//plainArea is number of pixels 
 	// still to compensate for overlapping slices interval/sliceThickness
 	
-	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+	if( rtotal == -1) [[self pix] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 	//area needs to be > 1 mm
 	
 	float intervalRatio = 1;
 	
 	if( curView)
-		intervalRatio = fabs([[curView curDCM] sliceInterval] / [[curView curDCM] sliceThickness]);
+		intervalRatio = fabs([[self pix] sliceInterval] / [[self pix] sliceThickness]);
 	else
 		NSLog( @"curView == 0L");
 	
@@ -4976,20 +4976,25 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	return area * [self calciumScoreCofactor] * intervalRatio ;   
 }
 
-- (float)calciumVolume{
+- (float)calciumVolume
+{
 	// area * thickness
-	//
-	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+	
+	if( rtotal == -1) [[self pix] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 	float area = [self plainArea] * pixelSpacingX * pixelSpacingY;
 	//if (area < 1)
 	//	return 0;
-	return area * [[curView curDCM] sliceThickness];
+	
+	return area * [[self pix] sliceThickness];
 	//return [self roiArea] * [self thickness] * 100;
 }
-- (float)calciumMass{
+- (float)calciumMass
+{
 	//Volume * mean CT Density / 250 
-	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
-	return fabs([self calciumVolume] * rmean)/ 250;
+	if( rtotal == -1)
+		[[self pix] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+	
+	return fabs( [self calciumVolume] * rmean)/ 250;
 }
 
 - (void)setLayerImage:(NSImage*)image;

@@ -2430,8 +2430,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (void) computeROIInt:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max
 {
-	long			count, no;
-	float			imax, imin, itotal, idev, imean;
+	long count, no;
+	float imax, imin, itotal, idev, imean;
 	
 	count = 0;
 	itotal = 0;
@@ -2442,24 +2442,30 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	[self CheckLoad];
 	
-	if( roi.type == tPlain ) {
-		long			textWidth = roi.textureWidth;
-		long			textHeight = roi.textureHeight;
-		long			textureUpLeftCornerX = roi.textureUpLeftCornerX;
-		long			textureUpLeftCornerY = roi.textureUpLeftCornerY;
-		unsigned char	*buf = roi.textureBuffer;
-		float			*fImageTemp;
+	if( roi.type == tPlain)
+	{
+		int	textWidth = roi.textureWidth;
+		int	textHeight = roi.textureHeight;
+		int	textureUpLeftCornerX = roi.textureUpLeftCornerX;
+		int	textureUpLeftCornerY = roi.textureUpLeftCornerY;
+		unsigned char *buf = roi.textureBuffer;
+		float *fImageTemp;
 		
-		for( long y = 0; y < textHeight; y++ ) {
+		for( int y = 0; y < textHeight; y++ )
+		{
 			fImageTemp = fImage + ((y + textureUpLeftCornerY) * width) + textureUpLeftCornerX;
 			
-			for( long x = 0; x < textWidth; x++, fImageTemp++ ) {
-				if( *buf++ != 0 ) {
-					long	xx = (x + textureUpLeftCornerX);
-					long	yy = (y + textureUpLeftCornerY);
+			for( int x = 0; x < textWidth; x++, fImageTemp++)
+			{
+				if( *buf++ != 0 )
+				{
+					int	xx = (x + textureUpLeftCornerX);
+					int	yy = (y + textureUpLeftCornerY);
 					
-					if( xx >= 0 && xx < width && yy >= 0 && yy < height) {
-						if( isRGB ) {
+					if( xx >= 0 && xx < width && yy >= 0 && yy < height)
+					{
+						if( isRGB )
+						{
 							unsigned char*  rgbPtr = (unsigned char*) &fImage[ (yy * width) + xx];
 							float val = rgbPtr[ 0] + rgbPtr[ 1] + rgbPtr[2] / 3;
 							
@@ -2469,7 +2475,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 							if( imin > val) imin = val;
 							if( imax < val) imax = val;
 						}
-						else {
+						else
+						{
 							float	val = *fImageTemp;
 							
 							count++;
@@ -2483,23 +2490,28 @@ BOOL gUSEPAPYRUSDCMPIX;
 			}
 		}
 		
-		if( count!= 0) imean = itotal / count;
+		if( count != 0) imean = itotal / count;
 		
-		if( dev != 0L && count > 0 ) {
+		if( dev != 0L && count > 0 )
+		{
 			idev = 0;
 			
 			buf = [roi textureBuffer];
 			
-			for( int y = 0; y < textHeight; y++ ) {
+			for( int y = 0; y < textHeight; y++ )
+			{
 				fImageTemp = fImage + ((y + textureUpLeftCornerY) * width) + textureUpLeftCornerX;
 				
-				for( int x = 0; x < textWidth; x++, fImageTemp++) {
+				for( int x = 0; x < textWidth; x++, fImageTemp++)
+				{
 					if( *buf++ != 0) {
-						long	xx = (x + textureUpLeftCornerX);
-						long	yy = (y + textureUpLeftCornerY);
+						int	xx = (x + textureUpLeftCornerX);
+						int	yy = (y + textureUpLeftCornerY);
 						
-						if( xx >= 0 && xx < width && yy >= 0 && yy < height) {
-							if( isRGB) {
+						if( xx >= 0 && xx < width && yy >= 0 && yy < height)
+						{
+							if( isRGB)
+							{
 								unsigned char*  rgbPtr = (unsigned char*) &fImage[ (yy * width) + xx];
 								float val = rgbPtr[ 0] + rgbPtr[ 1] + rgbPtr[2] / 3;
 								
@@ -2507,9 +2519,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 								temp *= temp;
 								idev += temp;
 							}
-							else {
-								float	val = *fImageTemp;
-								
+							else
+							{
+								float val = *fImageTemp;
 								float temp = imean - val;
 								temp *= temp;
 								idev += temp;
