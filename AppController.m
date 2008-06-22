@@ -377,9 +377,14 @@ NSString * documentsDirectoryFor( int mode, NSString *url)
 		break;
 	}
 	
-	NSString *reportsDirectory = [path stringByAppendingPathComponent:@"/REPORTS/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath: reportsDirectory] == NO)
-		[[NSFileManager defaultManager] createDirectoryAtPath: reportsDirectory attributes:nil];
+	NSString*dir = 0L;
+	dir = [path stringByAppendingPathComponent:@"/REPORTS/"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
+		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
+		
+	dir = [path stringByAppendingPathComponent:@"/ROIs/"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
+		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
 	
 	return path;
 }
