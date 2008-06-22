@@ -45,10 +45,6 @@ Manages the Window for creating Calcium Scoring ROIs
 	NSArray					*_vesselNames;
 	
 	IBOutlet	NSView		*_printView;
-	
-
-	
-	
 }
 
 - (int)ctType;
