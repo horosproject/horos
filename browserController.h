@@ -482,6 +482,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (void) importCommentsAndStatusFromDictionary:(NSDictionary*) d;
 - (NSDictionary*) dictionaryWithCommentsAndStatus:(NSManagedObject *)s;
+- (void) importReport:(NSString*) path UID: (NSString*) uid;
 
 - (void) newFilesGUIUpdateRun:(int) state;
 - (void) newFilesGUIUpdateRun: (int) state viewersListToReload: (NSMutableArray*) cReload viewersListToRebuild: (NSMutableArray*) cRebuild;

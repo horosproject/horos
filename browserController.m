@@ -1049,6 +1049,7 @@ static NSArray*	statesArray = nil;
 	NSMutableArray		*filesArray;
 	BOOL				isDirectory = NO;
 	NSMutableArray		*commentsAndStatus = [NSMutableArray array];
+	NSMutableArray		*reports = [NSMutableArray array];
 	
 	filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	
@@ -1082,6 +1083,14 @@ static NSArray*	statesArray = nil;
 									{
 										[commentsAndStatus addObject: itemPath];
 									}
+									else if( [[[itemPath lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
+									{
+										[reports addObject: itemPath];
+									}
+									else if( [[itemPath lastPathComponent] isEqualToString: @"reportStudyUID.xml"])
+									{
+									
+									}
 									else [filesArray addObject:itemPath];
 								}
 							}
@@ -1093,6 +1102,14 @@ static NSArray*	statesArray = nil;
 					if( [[filename lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
 					{
 						[commentsAndStatus addObject: filename];
+					}
+					else if( [[[filename lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
+					{
+						[reports addObject: filename];
+					}
+					else if( [[filename lastPathComponent] isEqualToString: @"reportStudyUID.xml"])
+					{
+						
 					}
 					else if( [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES)
 					{
@@ -1119,13 +1136,16 @@ static NSArray*	statesArray = nil;
 	
 	NSArray	*newImages = [self addFilesToDatabase:filesArray];
 	
-	
-	if( [commentsAndStatus count])
+	for( NSString *path in commentsAndStatus)
 	{
-		for( NSString *path in commentsAndStatus)
-		{
-			[self importCommentsAndStatusFromDictionary: [NSDictionary dictionaryWithContentsOfFile: path]];
-		}
+		[self importCommentsAndStatusFromDictionary: [NSDictionary dictionaryWithContentsOfFile: path]];
+	}
+	
+	for( NSString *path in reports)
+	{
+		NSString *pathXML = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"reportStudyUID.xml"];
+	
+		[self importReport: path UID: [NSString stringWithContentsOfFile: pathXML]];
 	}
 	
 	[self outlineViewRefresh];
@@ -3041,7 +3061,8 @@ static NSArray*	statesArray = nil;
 	NSFetchRequest	*dbRequest;
 	NSError			*error = nil;
 	
-	if( COMPLETEREBUILD == NO) {
+	if( COMPLETEREBUILD == NO)
+	{
 		// FIND ALL images, and REMOVE non-available images
 		
 		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
@@ -3054,7 +3075,8 @@ static NSArray*	statesArray = nil;
 		
 		// Find unavailable files
 		int counter = 0;
-		for( NSManagedObject *aFile in imagesArray ) {
+		for( NSManagedObject *aFile in imagesArray )
+		{
 			
 			FILE *fp = fopen( [[aFile valueForKey:@"completePath"] UTF8String], "r");
 			if( fp ) {
@@ -3074,16 +3096,20 @@ static NSArray*	statesArray = nil;
 	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
 	NSString	*basePath = [NSString stringWithFormat: @"%@/REPORTS/", documentsDirectory()];
 	
-	if ([studiesArray count] > 0 ) {
-		for( NSManagedObject *study in studiesArray ) {
+	if ([studiesArray count] > 0 )
+	{
+		for( NSManagedObject *study in studiesArray )
+		{
 			BOOL deleted = NO;
 			
-			if( [[study valueForKey:@"series"] count] == 0)	{
+			if( [[study valueForKey:@"series"] count] == 0)
+			{
 				deleted = YES;
 				[context deleteObject: study];
 			}
 			
-			if( [[study valueForKey:@"noFiles"] intValue] == 0) {
+			if( [[study valueForKey:@"noFiles"] intValue] == 0)
+			{
 				if( deleted == NO) [context deleteObject: study];
 			}
 			
@@ -12483,6 +12509,43 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[context unlock];
 }
 
+- (void) importReport:(NSString*) path UID: (NSString*) uid
+{
+	if( [[NSFileManager defaultManager] fileExistsAtPath: path])
+	{
+		NSManagedObjectContext *context = self.managedObjectContext;
+		
+		[context lock];
+		
+		@try
+		{
+			NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+			[dbRequest setPredicate: [NSPredicate predicateWithFormat:  @"studyInstanceUID == %@", uid]];
+			
+			NSError *error = nil;
+			NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+			
+			if( [studiesArray count])
+			{
+				DicomStudy *s = [studiesArray lastObject];
+				NSString *reportURL = [NSString stringWithFormat: @"%@/REPORTS/", documentsDirectory(), [Reports getUniqueFilename: s]];
+				
+				[[NSFileManager defaultManager] removeFileAtPath: reportURL handler: 0L];
+				[[NSFileManager defaultManager] copyPath: path toPath: reportURL handler: 0L];
+				[s setValue: reportURL forKey: @"reportURL"];
+			}
+		}
+		
+		@catch (NSException * e)
+		{
+			NSLog( @"importCommentsAndStatusFromDictionary exception: %@", e);
+		}
+		
+		[context unlock];
+	}
+}
+
 - (NSDictionary*) dictionaryWithCommentsAndStatus:(NSManagedObject *)s
 {
 	BOOL data = NO;
@@ -12683,6 +12746,23 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				[[NSFileManager defaultManager] removeFileAtPath: [NSString stringWithFormat:@"%@/CommentAndStatus.xml", studyPath]  handler: 0L];
 				[commentsAndStatus writeToFile: [NSString stringWithFormat:@"%@/CommentAndStatus.xml", studyPath] atomically: YES];
+			}
+			
+			if( [previousStudy valueForKey:@"reportURL"])
+			{
+				NSString *extension = [[previousStudy valueForKey:@"reportURL"] pathExtension];
+				
+				NSString *filename;
+				
+				if( [extension length]) filename = [NSString stringWithFormat: @"report.%@", extension];
+				else filename = @"report";
+				
+				if( [[NSFileManager defaultManager] fileExistsAtPath: [previousStudy valueForKey:@"reportURL"]])
+				{
+					[[NSFileManager defaultManager] removeFileAtPath: [NSString stringWithFormat:@"%@/%@", studyPath, filename]  handler: 0L];
+					[[NSFileManager defaultManager] copyPath: [previousStudy valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/%@", studyPath, filename] handler: 0L];
+					[[previousStudy valueForKey:@"studyInstanceUID"] writeToFile: [NSString stringWithFormat:@"%@/reportStudyUID.xml", studyPath] atomically: YES];
+				}
 			}
 		}
 		
