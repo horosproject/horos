@@ -1059,9 +1059,10 @@ static NSArray*	statesArray = nil;
 		{
 			if([defaultManager fileExistsAtPath: filename isDirectory:&isDirectory])     // A directory
 			{
-				if( isDirectory == YES)
+				if( isDirectory == YES && [[filename pathExtension] isEqualToString:@"pages"] == NO)
 				{
 					NSString    *pathname;
+					NSString	*folderSkip = 0L;
 					NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath: filename];
 					
 					while (pathname = [enumer nextObject])
@@ -1071,29 +1072,47 @@ static NSArray*	statesArray = nil;
 						
 						if ([fileType isEqual:NSFileTypeRegular])
 						{
-							if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES)
+							BOOL skip = NO;
+							
+							if( folderSkip && [pathname length] >= [folderSkip length])
+								if( [[pathname substringToIndex: [folderSkip length]] isEqualToString: folderSkip])
+									skip = YES;
+							
+							if( skip == NO)
 							{
-								[self addDICOMDIR: filename : filesArray];
-							}
-							else
-							{
-								if( [[itemPath lastPathComponent] characterAtIndex: 0] != '.')
+								folderSkip = 0L;
+								
+								if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES)
 								{
-									if( [[itemPath lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
+									[self addDICOMDIR: filename : filesArray];
+								}
+								else
+								{
+									if( [[itemPath lastPathComponent] characterAtIndex: 0] != '.')
 									{
-										[commentsAndStatus addObject: itemPath];
+										if( [[itemPath lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
+										{
+											[commentsAndStatus addObject: itemPath];
+										}
+										else if( [[[itemPath lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
+										{
+											[reports addObject: itemPath];
+										}
+										else if( [[itemPath lastPathComponent] isEqualToString: @"reportStudyUID.xml"])
+										{
+										
+										}
+										else [filesArray addObject:itemPath];
 									}
-									else if( [[[itemPath lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
-									{
-										[reports addObject: itemPath];
-									}
-									else if( [[itemPath lastPathComponent] isEqualToString: @"reportStudyUID.xml"])
-									{
-									
-									}
-									else [filesArray addObject:itemPath];
 								}
 							}
+						}
+						else if( [[pathname pathExtension] isEqualToString:@"pages"])
+						{
+							folderSkip = pathname;
+							
+							if( [[[pathname lastPathComponent] stringByDeletingPathExtension] isEqualToString: @"report"])
+								[reports addObject: itemPath];
 						}
 					}
 				}
@@ -12529,8 +12548,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if( [studiesArray count])
 			{
 				DicomStudy *s = [studiesArray lastObject];
-				NSString *reportURL = [NSString stringWithFormat: @"%@/REPORTS/", documentsDirectory(), [Reports getUniqueFilename: s]];
 				
+				NSString *reportURL = 0L;
+				
+				if( [[path pathExtension] length])
+					reportURL = [NSString stringWithFormat: @"%@/REPORTS/%@.%@", documentsDirectory(), [Reports getUniqueFilename: s], [path pathExtension]];
+				else
+					reportURL = [NSString stringWithFormat: @"%@/REPORTS/%@", documentsDirectory(), [Reports getUniqueFilename: s]];
+					
 				[[NSFileManager defaultManager] removeFileAtPath: reportURL handler: 0L];
 				[[NSFileManager defaultManager] copyPath: path toPath: reportURL handler: 0L];
 				[s setValue: reportURL forKey: @"reportURL"];
