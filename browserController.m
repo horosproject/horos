@@ -1048,20 +1048,23 @@ static NSArray*	statesArray = nil;
     NSFileManager       *defaultManager = [NSFileManager defaultManager];
 	NSMutableArray		*filesArray;
 	BOOL				isDirectory = NO;
+	NSMutableArray		*commentsAndStatus = [NSMutableArray array];
 	
 	filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	
-	for( NSString *filename in filenames )
+	for( NSString *filename in filenames)
 	{
 		if( [[filename lastPathComponent] characterAtIndex: 0] != '.')
 		{
 			if([defaultManager fileExistsAtPath: filename isDirectory:&isDirectory])     // A directory
 			{
-				if( isDirectory == YES)	{
+				if( isDirectory == YES)
+				{
 					NSString    *pathname;
 					NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath: filename];
 					
-					while (pathname = [enumer nextObject] ) {
+					while (pathname = [enumer nextObject])
+					{
 						NSString * itemPath = [filename stringByAppendingPathComponent:pathname];
 						id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
 						
@@ -1074,14 +1077,25 @@ static NSArray*	statesArray = nil;
 							else
 							{
 								if( [[itemPath lastPathComponent] characterAtIndex: 0] != '.')
-									[filesArray addObject:itemPath];
+								{
+									if( [[itemPath lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
+									{
+										[commentsAndStatus addObject: itemPath];
+									}
+									else [filesArray addObject:itemPath];
+								}
 							}
 						}
 					}
 				}
 				else    // A file
 				{
-					if( [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES)	{
+					if( [[filename lastPathComponent] isEqualToString: @"CommentAndStatus.xml"])
+					{
+						[commentsAndStatus addObject: filename];
+					}
+					else if( [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] == YES)
+					{
 						[self addDICOMDIR: filename :filesArray];
 					}
 					else [filesArray addObject: filename];
@@ -1092,24 +1106,36 @@ static NSArray*	statesArray = nil;
 	
 	NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray];
 	
-	if( newfilesArray == filesArray ) {
-		if( copied ) *copied = NO;
+	if( newfilesArray == filesArray)
+	{
+		if( copied) *copied = NO;
 	}
-	else {
-		if( copied ) *copied = YES;
+	else
+	{
+		if( copied) *copied = YES;
 		filesArray = newfilesArray;
 		mountedVolume = NO;
 	}
 	
 	NSArray	*newImages = [self addFilesToDatabase:filesArray];
 	
+	
+	if( [commentsAndStatus count])
+	{
+		for( NSString *path in commentsAndStatus)
+		{
+			[self importCommentsAndStatusFromDictionary: [NSDictionary dictionaryWithContentsOfFile: path]];
+		}
+	}
+	
 	[self outlineViewRefresh];
 	
 	return newImages;
 }
 
-- (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames {
-	return [self addFilesAndFolderToDatabase:(NSArray*) filenames copied: nil];
+- (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames
+{
+	return [self addFilesAndFolderToDatabase: filenames copied: nil];
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -1577,7 +1603,8 @@ static NSArray*	statesArray = nil;
 	[parsed release];
 }
 
--(NSArray*) addURLToDatabaseFiles:(NSArray*) URLs {
+-(NSArray*) addURLToDatabaseFiles:(NSArray*) URLs
+{
 	NSMutableArray	*localFiles = [NSMutableArray arrayWithCapacity:0];
 	
 	// FIRST DOWNLOAD FILES TO LOCAL DATABASE
@@ -1615,12 +1642,14 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (void)addURLToDatabase: (id)sender {
+- (void)addURLToDatabase: (id)sender
+{
 	[urlString setStringValue: [[NSUserDefaults standardUserDefaults] stringForKey: @"LASTURL"]];
 	[NSApp beginSheet: urlWindow modalForWindow:self.window modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
-- (IBAction)selectFilesAndFoldersToAdd: (id)sender {
+- (IBAction)selectFilesAndFoldersToAdd: (id)sender
+{
  
     NSOpenPanel         *oPanel = [NSOpenPanel openPanel];
 	
@@ -1633,12 +1662,14 @@ static NSArray*	statesArray = nil;
     
     int result = [oPanel runModalForDirectory:0L file:nil types:nil];
     
-    if (result == NSOKButton ) {
+    if (result == NSOKButton )
+	{
 		if( [[oPanel filenames] count] == 1 && [[[[oPanel filenames] objectAtIndex: 0] pathExtension] isEqualToString: @"sql"])  // It's a database file!
 		{
 			[self openDatabaseIn: [[oPanel filenames] objectAtIndex: 0] Bonjour:NO];
 		}
-		else {	
+		else
+		{	
 			NSArray	*newImages = [self addFilesAndFolderToDatabase: [oPanel filenames]];
 			
 			// Are we adding new files in a album?
@@ -12401,7 +12432,58 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[name replaceOccurrencesOfString:@"?" withString:@"" options:0 range:NSMakeRange(0, [name length])];
 }
 
-- (NSDictionary*) dictionaryWithCommentsAndStatus:(DicomStudy *)s
+- (void) importCommentsAndStatusFromDictionary:(NSDictionary*) d
+{
+	NSManagedObjectContext *context = self.managedObjectContext;
+	
+	[context lock];
+	
+	@try
+	{
+		NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithFormat:  @"studyInstanceUID == %@", [d valueForKey: @"studyInstanceUID"]]];
+		
+		NSError *error = nil;
+		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+		
+		if( [studiesArray count])
+		{
+			DicomStudy *s = [studiesArray lastObject];
+			
+			if( [(NSString*) [d valueForKey: @"comment"] length])
+				[s setValue: [d valueForKey: @"comment"] forKey: @"comment"];
+			
+			if( [[d valueForKey: @"stateText"] intValue])
+				[s setValue: [d valueForKey: @"stateText"] forKey: @"stateText"];
+			
+			NSArray *series = [[s valueForKey:@"series"] allObjects];
+			
+			for( NSDictionary *ds in [d valueForKey: @"series"])
+			{
+				NSArray *ss = [series filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:  @"seriesInstanceUID == %@", [ds valueForKey: @"seriesInstanceUID"]]];
+				
+				if( [ss count])
+				{
+					if( [[ds valueForKey: @"stateText"] intValue])
+						[[ss lastObject] setValue: [ds valueForKey: @"stateText"] forKey: @"stateText"];
+					
+					if( [(NSString*) [ds valueForKey: @"comment"] length])
+						[[ss lastObject] setValue: [ds valueForKey: @"comment"] forKey: @"comment"];
+				}
+			}
+		}
+	}
+	
+	@catch (NSException * e)
+	{
+		NSLog( @"importCommentsAndStatusFromDictionary exception: %@", e);
+	}
+	
+	[context unlock];
+}
+
+- (NSDictionary*) dictionaryWithCommentsAndStatus:(NSManagedObject *)s
 {
 	BOOL data = NO;
 	NSMutableDictionary *studyDict = [NSMutableDictionary dictionary];
@@ -12425,7 +12507,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			if( [[series valueForKey: @"stateText"] intValue]) data = YES;
 			[dict setValue: [series valueForKey: @"stateText"] forKey: @"stateText"];
-		
+			
+			[dict setValue: [series valueForKey: @"seriesInstanceUID"] forKey: @"seriesInstanceUID"];
+			
 			[seriesArray addObject: dict];
 		}
 		
@@ -12522,6 +12606,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 		}
 		
+		NSString *studyPath = 0L;
+		
 		if( [folderTree selectedTag] == 0 )
 		{
 			if (!addDICOMDIR)		
@@ -12542,7 +12628,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			
 			// Find the DICOM-STUDY folder
-			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath])
+				[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+			
+			studyPath = tempPath;
 			
 			// Find the ROIs folder
 			if( [roiFiles count] )
@@ -12582,6 +12671,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath])
 				[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 		}
+		else studyPath = tempPath;
 		
 		if( previousStudy != [curImage valueForKeyPath: @"series.study"])
 		{
@@ -12589,7 +12679,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			NSDictionary *commentsAndStatus = [self dictionaryWithCommentsAndStatus: previousStudy];
 			
-			NSLog( @"%@", commentsAndStatus);
+			if( commentsAndStatus)
+			{
+				[[NSFileManager defaultManager] removeFileAtPath: [NSString stringWithFormat:@"%@/CommentAndStatus.xml", studyPath]  handler: 0L];
+				[commentsAndStatus writeToFile: [NSString stringWithFormat:@"%@/CommentAndStatus.xml", studyPath] atomically: YES];
+			}
 		}
 		
 		long imageNo = [[curImage valueForKey:@"instanceNumber"] intValue];
