@@ -12374,15 +12374,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void)exportJPEG: (id)sender {
+- (void)exportJPEG: (id)sender
+{
 	[self exportImageAs: @"jpg" sender: sender];
 }
 
-- (void)exportTIFF: (id)sender {
+- (void)exportTIFF: (id)sender
+{
 	[self exportImageAs: @"tif" sender: sender];
 }
 
-+ (void)replaceNotAdmitted: (NSMutableString*)name {
++ (void)replaceNotAdmitted: (NSMutableString*)name
+{
 	[name replaceOccurrencesOfString:@" " withString:@"" options:0 range:NSMakeRange(0, [name length])];
 	[name replaceOccurrencesOfString:@"." withString:@"" options:0 range:NSMakeRange(0, [name length])];
 	[name replaceOccurrencesOfString:@"," withString:@"" options:0 range:NSMakeRange(0, [name length])]; 
@@ -12398,7 +12401,50 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[name replaceOccurrencesOfString:@"?" withString:@"" options:0 range:NSMakeRange(0, [name length])];
 }
 
-- (NSArray*)exportDICOMFileInt: (NSString*) location files: (NSArray*)filesToExport objects: (NSArray*)dicomFiles2Export {
+- (NSDictionary*) dictionaryWithCommentsAndStatus:(DicomStudy *)s
+{
+	BOOL data = NO;
+	NSMutableDictionary *studyDict = [NSMutableDictionary dictionary];
+	@try
+	{
+		[studyDict setValue: [s valueForKey: @"studyInstanceUID"] forKey: @"studyInstanceUID"];
+		
+		if( [(NSString*) [s valueForKey: @"comment"] length]) data = YES;
+		[studyDict setValue: [s valueForKey: @"comment"] forKey: @"comment"];
+		
+		if( [[s valueForKey: @"stateText"] intValue] ) data = YES;
+		[studyDict setValue: [s valueForKey: @"stateText"] forKey: @"stateText"];
+		
+		NSMutableArray *seriesArray = [NSMutableArray array];
+		for( DicomSeries *series in [[s valueForKey: @"series"] allObjects])
+		{
+			NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+			
+			if( [(NSString*) [series valueForKey: @"comment"] length]) data = YES;
+			[dict setValue: [series valueForKey: @"comment"] forKey: @"comment"];
+			
+			if( [[series valueForKey: @"stateText"] intValue]) data = YES;
+			[dict setValue: [series valueForKey: @"stateText"] forKey: @"stateText"];
+		
+			[seriesArray addObject: dict];
+		}
+		
+		[studyDict setObject: seriesArray forKey: @"series"];
+	}
+	
+	@catch (NSException * e)
+	{
+		NSLog( @"dictionaryWithCommentsAndStatus exception: %@", e);
+	}
+	
+	if( data)
+		return studyDict;
+	else
+		return 0L;
+}
+
+- (NSArray*)exportDICOMFileInt: (NSString*) location files: (NSArray*)filesToExport objects: (NSArray*)dicomFiles2Export
+{
 	NSString			*dest, *path = location;
 	Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", 0L)];
 	BOOL				addDICOMDIR = [addDICOMDIRButton state];
@@ -12407,18 +12453,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray		*result = [NSMutableArray array];
 	NSMutableArray		*files2Compress = [NSMutableArray array];
 	BOOL				exportROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"AddROIsForExport"];
+	DicomStudy			*previousStudy = 0L;
 	
 	[splash setCancel:YES];
 	[splash showWindow:self];
 	[[splash progress] setMaxValue:[filesToExport count]];
 	
-	for( int i = 0; i < [filesToExport count]; i++ ) {
+	for( int i = 0; i < [filesToExport count]; i++ )
+	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
 		NSString		*extension = [[filesToExport objectAtIndex:i] pathExtension];
 		NSString		*roiFolder = 0L;
 		
-		if( [curImage valueForKey: @"fileType"] ) {
+		if( [curImage valueForKey: @"fileType"] )
+		{
 			if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"]) extension = [NSString stringWithString:@"dcm"];
 		}
 		
@@ -12432,7 +12481,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		// if creating DICOMDIR. Limit length to 8 char
 		if (!addDICOMDIR)  
 			tempPath = [path stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.name"]];
-		else {
+		else
+		{
 			NSMutableString *name;
 			if ([(NSString*) [curImage valueForKeyPath: @"series.study.name"] length] > 8)
 				name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
@@ -12448,12 +12498,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		
 		// Find the DICOM-PATIENT folder
-		if ( ![[NSFileManager defaultManager] fileExistsAtPath:tempPath] ) {
+		if ( ![[NSFileManager defaultManager] fileExistsAtPath:tempPath] )
+		{
 			[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 			[result addObject: [tempPath lastPathComponent]];
 		}
-		else {
-			if( i == 0 ) {
+		else
+		{
+			if( i == 0 )
+			{
 				int a = NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@), or merge the existing content with the new files?", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Merge", nil));
 				
 				if( a == NSAlertDefaultReturn)
@@ -12469,10 +12522,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 		}
 		
-		if( [folderTree selectedTag] == 0 ) {
+		if( [folderTree selectedTag] == 0 )
+		{
 			if (!addDICOMDIR)		
 				tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", [curImage valueForKeyPath: @"series.study.studyName"], [curImage valueForKeyPath: @"series.study.id"]]];
-			else {				
+			else
+			{				
 				NSMutableString *name;
 				if ([(NSString*)[curImage valueForKeyPath: @"series.study.id"] length] > 8 )
 					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath:@"series.study.id"] substringToIndex:7] uppercaseString]];
@@ -12490,13 +12545,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 			
 			// Find the ROIs folder
-			if( [roiFiles count] ) {
+			if( [roiFiles count] )
+			{
 				roiFolder = [tempPath stringByAppendingPathComponent:@"ROI"];
 				
 				if (![[NSFileManager defaultManager] fileExistsAtPath: roiFolder]) [[NSFileManager defaultManager] createDirectoryAtPath: roiFolder attributes:nil];
 			}
 			
-			if ( !addDICOMDIR )	{
+			if ( !addDICOMDIR )
+			{
 				NSMutableString *seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
 				
 				[BrowserController replaceNotAdmitted:seriesStr];
@@ -12504,7 +12561,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 				tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
 				tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
 			}
-			else {
+			else
+			{
 				NSMutableString *name;
 				//				if ([[curImage valueForKeyPath: @"series.name"] length] > 8)
 				//					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.name"] substringToIndex:7] uppercaseString]];
@@ -12521,12 +12579,23 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			
 			// Find the DICOM-SERIE folder
-			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath])
+				[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+		}
+		
+		if( previousStudy != [curImage valueForKeyPath: @"series.study"])
+		{
+			previousStudy = [curImage valueForKeyPath: @"series.study"];
+			
+			NSDictionary *commentsAndStatus = [self dictionaryWithCommentsAndStatus: previousStudy];
+			
+			NSLog( @"%@", commentsAndStatus);
 		}
 		
 		long imageNo = [[curImage valueForKey:@"instanceNumber"] intValue];
 		
-		if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue] ) {
+		if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue] )
+		{
 			previousSeries = [[curImage valueForKeyPath: @"series.id"] intValue];
 			serieCount++;
 		}
@@ -12536,7 +12605,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			dest = [NSString stringWithFormat:@"%@/%4.4d%4.4d", tempPath, serieCount, imageNo];
 		
 		int t = 2;
-		while( [[NSFileManager defaultManager] fileExistsAtPath: dest] ) {
+		while( [[NSFileManager defaultManager] fileExistsAtPath: dest] )
+		{
 			if (!addDICOMDIR)
 				dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d #%d.%@", tempPath, serieCount, imageNo, t, extension];
 			else
@@ -12546,8 +12616,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[[NSFileManager defaultManager] copyPath:[filesToExport objectAtIndex:i] toPath:dest handler:0L];
 		
-		if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"] ) {
-			switch( [compressionMatrix selectedTag] ) {
+		if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"] )
+		{
+			switch( [compressionMatrix selectedTag] )
+			{
 				case 1:
 					[files2Compress addObject: dest];
 					break;
@@ -12563,8 +12635,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[[NSFileManager defaultManager] copyPath:[[[filesToExport objectAtIndex:i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dest stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
 		}
 		
-		if( [roiFiles count] ) {
-			for( NSString *roiFile in roiFiles ) {
+		if( [roiFiles count] )
+		{
+			for( NSString *roiFile in roiFiles )
+			{
 				NSString	*destROIPath = [roiFolder stringByAppendingPathComponent: [roiFile lastPathComponent]];
 				
 				if( addDICOMDIR)
@@ -12591,8 +12665,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[pool release];
 	}
 	
-	if( [files2Compress count] > 0 ) {
-		switch( [compressionMatrix selectedTag] ) {
+	if( [files2Compress count] > 0 )
+	{
+		switch( [compressionMatrix selectedTag] )
+		{
 			case 1:
 				[self decompressArrayOfFiles: files2Compress work: [NSNumber numberWithChar: 'C']];
 				break;
@@ -12608,8 +12684,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	// ANR - I had to create this loop, otherwise, if I export a folder on the desktop, the dcmkdir will scan all files and folders available on the desktop.... not only the exported folder.
 	
-	if (addDICOMDIR) {
-		for( int i = 0; i < [filesToExport count]; i++)	{
+	if (addDICOMDIR)
+	{
+		for( int i = 0; i < [filesToExport count]; i++)
+		{
 			NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
 			NSMutableString *name;
 			
@@ -12625,7 +12703,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			NSString *tempPath = [path stringByAppendingPathComponent:name];
 			
-			if( [[NSFileManager defaultManager] fileExistsAtPath:[tempPath stringByAppendingPathComponent:@"DICOMDIR"]] == NO )	{
+			if( [[NSFileManager defaultManager] fileExistsAtPath:[tempPath stringByAppendingPathComponent:@"DICOMDIR"]] == NO )
+			{
 				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 				
 				NSLog(@" ADD dicomdir");

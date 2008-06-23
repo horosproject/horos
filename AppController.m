@@ -1729,10 +1729,12 @@ static BOOL initialized = NO;
 				BOOL exists = NO;
 				
 				exists = NO;
-				for (shading in shadingArray) {
+				for (shading in shadingArray)
+				{
 					if ([[shading objectForKey:@"name"] isEqualToString:@"Endoscopy"])
 						exists = YES;					
 				}
+				
 				if (exists == NO)
 				{
 					shading = [NSMutableDictionary dictionary];
@@ -1745,10 +1747,12 @@ static BOOL initialized = NO;
 				}
 				
 				exists = NO;
-				for (shading in shadingArray) {
+				for (shading in shadingArray)
+				{
 					if ([[shading objectForKey:@"name"] isEqualToString:@"Glossy Bone"])
 						exists = YES;					
 				}
+				
 				if (exists == NO)
 				{
 					shading = [NSMutableDictionary dictionary];
@@ -1761,10 +1765,12 @@ static BOOL initialized = NO;
 				}
 				
 				exists = NO;
-				for (shading in shadingArray) {
+				for (shading in shadingArray)
+				{
 					if ([[shading objectForKey:@"name"] isEqualToString:@"Glossy Vascular"])
 						exists = YES;					
 				}
+				
 				if (exists == NO)
 				{
 					shading = [NSMutableDictionary dictionary];

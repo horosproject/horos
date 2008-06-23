@@ -132,6 +132,11 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 	max = wl + ww / 2;
 	diff = max - min;
 	
+	if( diff <= 0)
+	{
+		diff = 1;
+		max = min + 1;
+	}
 	if( (float) width / PREVIEWSIZE > (float) height / PREVIEWSIZE) ratio = (float) width / PREVIEWSIZE;
 	else ratio = (float) height / PREVIEWSIZE;
 	
