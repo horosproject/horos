@@ -5301,30 +5301,7 @@ static ViewerController *draggedController = 0L;
 			[[toolbarPanel[ i] window] orderOut:self];
 	}
 	
-//	for( int i = 0; i < maxMovieIndex; i++)
-//	{
-//		[self saveROI: i];
-//	}
-//	
-//	for( int i = 0; i < maxMovieIndex; i++)
-//	{
-//		for( int x = 0; x < [roiList[ i] count] ; x++)
-//		{
-//			for( int z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
-//				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: 0L];
-//		}
-//		[roiList[ i] release];
-//		[pixList[ i] release];
-//		[fileList[ i] release];
-//		[volumeData[ i] release];
-//	}
-	
-//	[toolbar setDelegate: 0L];
-	
-	
 	[ROINamesArray release];
-	
-//	[thickSlab release];
 	
 	[curvedController release];
 	
