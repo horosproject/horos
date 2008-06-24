@@ -5403,6 +5403,8 @@ static ViewerController *draggedController = 0L;
 		return;
 	}
 	
+	[self clear8bitRepresentations];
+	
 	[self setFusionMode: 0];
 	[imageView setIndex: 0];
 

@@ -9013,33 +9013,42 @@ static BOOL needToRezoom;
 	unsigned long long mem = 0, memBlock = 0;
 	unsigned char* testPtr[ 800];
 	
-	for( unsigned long long x = 0; x < [toOpenArray count]; x++ )
+	for( int x = 0; x < [toOpenArray count]; x++ )
+	{
+		testPtr[ x] = 0L;
+	}
+	
+	for( int x = 0; x < [toOpenArray count]; x++ )
 	{
 		memBlock = 0;				
 		NSArray* loadList = [toOpenArray objectAtIndex: x];
-		NSManagedObject*  curFile = [loadList objectAtIndex: 0];
 		
-		if( [loadList count] == 1 && ( [[curFile valueForKey:@"numberOfFrames"] intValue] > 1 || [[curFile valueForKey:@"numberOfSeries"] intValue] > 1))  //     **We selected a multi-frame image !!!
+		if( [loadList count])
 		{
-			mem += [[curFile valueForKey:@"width"] intValue]* [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
-			memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
-		}
-		else
-		{
-			for( curFile in loadList )
-			{				
-				mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
-				memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
+			NSManagedObject*  curFile = [loadList objectAtIndex: 0];
+			
+			if( [loadList count] == 1 && ( [[curFile valueForKey:@"numberOfFrames"] intValue] > 1 || [[curFile valueForKey:@"numberOfSeries"] intValue] > 1))  //     **We selected a multi-frame image !!!
+			{
+				mem += [[curFile valueForKey:@"width"] intValue]* [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
+				memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
 			}
+			else
+			{
+				for( curFile in loadList )
+				{				
+					mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
+					memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
+				}
+			}
+			
+			NSLog(@"Test memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
+			testPtr[ x] = malloc( (memBlock * sizeof(float)) + 4096);
+			if( testPtr[ x] == 0L) enoughMemory = NO;
 		}
-		
-		NSLog(@"Test memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
-		testPtr[ x] = malloc( (memBlock * sizeof(float)) + 4096);
-		if( testPtr[ x] == 0L) enoughMemory = NO;
 		
 	} //end for
 	
-	for( unsigned long long x = 0; x < [toOpenArray count]; x++ )
+	for( int x = 0; x < [toOpenArray count]; x++ )
 	{
 		if( testPtr[ x]) free( testPtr[ x]);
 	}
@@ -9054,7 +9063,7 @@ static BOOL needToRezoom;
 
 - (ViewerController*) openViewerFromImages:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer:(ViewerController*) viewer keyImagesOnly:(BOOL) keyImages
 {
-	unsigned long		*memBlockSize = malloc( [toOpenArray count] * sizeof (unsigned long));
+	unsigned long		*memBlockSize = calloc( [toOpenArray count], sizeof (unsigned long));
 	
 	BOOL				multiFrame = NO;
 	float				*fVolumePtr = 0L;
@@ -9073,7 +9082,6 @@ static BOOL needToRezoom;
 			
 			for( NSArray *loadList in toOpenArray )
 			{
-				
 				NSArray *keyImagesArray = [NSArray array];
 				
 				for( NSManagedObject *image in loadList )
@@ -9100,51 +9108,56 @@ static BOOL needToRezoom;
 		long	subSampling = 1;
 		unsigned long mem = 0L;
 		
-		while( enoughMemory == NO ) {
+		while( enoughMemory == NO )
+		{
 			BOOL memTestFailed = NO;
-			unsigned char **testPtr = malloc( [toOpenArray count] * sizeof( unsigned char*) );
+			unsigned char **testPtr = calloc( [toOpenArray count], sizeof( unsigned char*));
 			
 			for( unsigned long x = 0; x < [toOpenArray count]; x++ )
 			{
 				unsigned long memBlock = 0L;
 				NSArray *loadList = [toOpenArray objectAtIndex: x];
-				NSManagedObject*  curFile = [loadList objectAtIndex: 0];
-				[curFile setValue:[NSDate date] forKeyPath:@"series.dateOpened"];
-				[curFile setValue:[NSDate date] forKeyPath:@"series.study.dateOpened"];
 				
-				if( [loadList count] == 1 && ( [[curFile valueForKey:@"numberOfFrames"] intValue] > 1 || [[curFile valueForKey:@"numberOfSeries"] intValue] > 1))  //     **We selected a multi-frame image !!!
+				if( [loadList count])
 				{
-					multiFrame = YES;
+					NSManagedObject*  curFile = [loadList objectAtIndex: 0];
+					[curFile setValue:[NSDate date] forKeyPath:@"series.dateOpened"];
+					[curFile setValue:[NSDate date] forKeyPath:@"series.study.dateOpened"];
 					
-					mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
-					memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
-				}
-				else
-				{
-					for( curFile in loadList )
+					if( [loadList count] == 1 && ( [[curFile valueForKey:@"numberOfFrames"] intValue] > 1 || [[curFile valueForKey:@"numberOfSeries"] intValue] > 1))  //     **We selected a multi-frame image !!!
 					{
-						long h = [[curFile valueForKey:@"height"] intValue];
-						long w = [[curFile valueForKey:@"width"] intValue];
+						multiFrame = YES;
 						
-						w += 2;
-						
-						if( w*h < 256*256)
-						{
-							w = 256;
-							h = 256;
-						}
-						
-						mem += w * h;
-						memBlock += w * h;
+						mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
+						memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
 					}
+					else
+					{
+						for( curFile in loadList )
+						{
+							long h = [[curFile valueForKey:@"height"] intValue];
+							long w = [[curFile valueForKey:@"width"] intValue];
+							
+							w += 2;
+							
+							if( w*h < 256*256)
+							{
+								w = 256;
+								h = 256;
+							}
+							
+							mem += w * h;
+							memBlock += w * h;
+						}
+					}
+					
+					if ( memBlock < 256 * 256 ) memBlock = 256 * 256;  // This is the size of array created when when an image doesn't exist, a 256 square graduated gray scale.
+					
+					NSLog(@"Test memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
+					testPtr[ x] = malloc( (memBlock * sizeof(float)) + 4096);
+					if( testPtr[ x] == 0L) memTestFailed = YES;
+					memBlockSize[ x] = memBlock;
 				}
-				
-				if ( memBlock < 256 * 256 ) memBlock = 256 * 256;  // This is the size of array created when when an image doesn't exist, a 256 square graduated gray scale.
-				
-				NSLog(@"Test memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
-				testPtr[ x] = malloc( (memBlock * sizeof(float)) + 4096);
-				if( testPtr[ x] == 0L) memTestFailed = YES;
-				memBlockSize[ x] = memBlock;
 				
 			} //end for
 			
@@ -9157,7 +9170,8 @@ static BOOL needToRezoom;
 			
 			// TEST MEMORY : IF NOT ENOUGH -> REDUCE SAMPLING
 			
-			if( memTestFailed ) {
+			if( memTestFailed )
+			{
 				NSLog(@"Test memory failed -> sub-sampling");
 				
 				NSArray *newArray = [NSArray array];
@@ -9186,7 +9200,8 @@ static BOOL needToRezoom;
 		
 		int result = NSAlertDefaultReturn;
 		
-		if( subSampling != 1 ) {
+		if( subSampling != 1 )
+		{
 			NSArray	*winList = [NSApp windows];
 			for( NSWindow *win in winList )
 			{
@@ -9227,8 +9242,9 @@ static BOOL needToRezoom;
 				//				free( fVolumePtr);	// We will allocate each block independently !
 				//				fVolumePtr = 0L;	
 			}
-			else {
-				char **memBlockTestPtr = malloc( [toOpenArray count] * sizeof( char*) );
+			else
+			{
+				char **memBlockTestPtr = calloc( [toOpenArray count], sizeof( char*) );
 				
 				NSLog(@"4D Viewer TOTAL: %d Mb", (mem * sizeof(float)) / (1024 * 1024));
 				for( unsigned long x = 0; x < [toOpenArray count]; x++ )
@@ -9258,7 +9274,8 @@ static BOOL needToRezoom;
 		
 		// NS_DURING (4) Load Images loop
 		
-		if( notEnoughMemory == NO )	{
+		if( notEnoughMemory == NO )
+		{
 			for( unsigned long x = 0; x < [toOpenArray count]; x++ )
 			{
 				NSLog(@"Current block to malloc: %d Mb", (memBlockSize[ x] * sizeof( float)) / (1024*1024));
@@ -9297,21 +9314,24 @@ static BOOL needToRezoom;
 							}
 						} //end for
 					}
-					else {
+					else
+					{
 						//multiframe==NO
 						for( unsigned long i = 0; i < [loadList count]; i++ )
 						{
 							NSManagedObject*  curFile = [loadList objectAtIndex: i];
 							DCMPix* dcmPix = [[DCMPix alloc] myinit: [curFile valueForKey:@"completePath"] :i :[loadList count] :fVolumePtr+mem :0 :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
 							
-							if( dcmPix ) {
+							if( dcmPix )
+							{
 								mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
 								
 								[viewerPix[0] addObject: dcmPix];
 								[correspondingObjects addObject: curFile];
 								[dcmPix release];
 							}
-							else {
+							else
+							{
 								NSLog( @"not readable: %@", [curFile valueForKey:@"completePath"] );
 							}
 						}
@@ -9357,7 +9377,8 @@ static BOOL needToRezoom;
 								
 								[filesAr release];
 							}
-							else {
+							else
+							{
 								//multiframe == NO
 								if( viewer)
 								{
@@ -9374,7 +9395,8 @@ static BOOL needToRezoom;
 								}
 							}
 						}
-						else {
+						else
+						{
 							//movieViewer==YES
 							if( movieController == nil )
 							{
