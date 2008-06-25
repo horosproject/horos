@@ -257,6 +257,8 @@ static NSArray*	statesArray = nil;
 					
 - (void) callAddFilesToDatabaseSafe: (NSArray*) newFilesArray
 {
+	NSLog( @"ERROR callAddFilesToDatabaseSafe is not AVAILABLE ANYMORE !");
+
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	NSFileManager		*fm = [NSFileManager defaultManager];
 	NSString			*tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
@@ -2934,15 +2936,15 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (IBAction) ReBuildDatabase:(id) sender {
-	
+- (IBAction) ReBuildDatabase:(id) sender
+{	
 	if( isCurrentDatabaseBonjour) return;
 	
 	[self waitForRunningProcesses];
 	
 	[[AppController sharedAppController] closeAllViewers: self];
 	
-	BOOL REBUILDEXTERNALPROCESS = YES;
+	BOOL REBUILDEXTERNALPROCESS = NO;
 	
 	if( COMPLETEREBUILD)	// Delete the database file
 	{
@@ -2952,7 +2954,8 @@ static NSArray*	statesArray = nil;
 			[[NSFileManager defaultManager] movePath: currentDatabasePath toPath: [currentDatabasePath stringByAppendingString:@" - old"] handler: 0L];
 		}
 	}
-	else {
+	else
+	{
 		[self saveDatabase:currentDatabasePath];
 	}
 	
@@ -3001,9 +3004,10 @@ static NSArray*	statesArray = nil;
 	
 	dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
 	
-	Wait	*REBUILDEXTERNALPROCESSProgress = nil;
+	Wait *REBUILDEXTERNALPROCESSProgress = nil;
 	
-	if( REBUILDEXTERNALPROCESS)	{
+	if( REBUILDEXTERNALPROCESS)
+	{
 		[managedObjectContext release];
 		managedObjectContext = nil;
 		
@@ -3014,18 +3018,21 @@ static NSArray*	statesArray = nil;
 	
 	NSLog( @"Start Rebuild");
 	
-	for( NSString *name in dirContent ) {
+	for( NSString *name in dirContent )
+	{
 		NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
 		
 		NSString	*curDir = [aPath stringByAppendingPathComponent: name];
 		NSArray		*subDir = [[NSFileManager defaultManager] directoryContentsAtPath: [aPath stringByAppendingPathComponent: name]];
 		
-		for( NSString *subName in subDir ) {
+		for( NSString *subName in subDir )
+		{
 			if( [subName characterAtIndex: 0] != '.')
 				[filesArray addObject: [curDir stringByAppendingPathComponent: subName]];
 		}
 		
-		if( REBUILDEXTERNALPROCESS )	{
+		if( REBUILDEXTERNALPROCESS)
+		{
 			[self callAddFilesToDatabaseSafe: filesArray];
 			
 			[filesArray release];
@@ -3039,14 +3046,16 @@ static NSArray*	statesArray = nil;
 	
 	// ** DICOM ROI SR FOLDER
 	dirContent = [[NSFileManager defaultManager] directoryContentsAtPath: [documentsDirectory() stringByAppendingPathComponent:@"ROIs"]];
-	for( NSString *name in dirContent ) {
-		if( [name characterAtIndex: 0] != '.') {
+	for( NSString *name in dirContent )
+	{
+		if( [name characterAtIndex: 0] != '.')
+		{
 			[filesArray addObject: [[documentsDirectory() stringByAppendingPathComponent:@"ROIs"] stringByAppendingPathComponent: name]];
-//			NSLog( [[documentsDirectory() stringByAppendingPathComponent:@"ROIs"] stringByAppendingPathComponent: name]);
 		}
 	}
 	
-	if( REBUILDEXTERNALPROCESS) {
+	if( REBUILDEXTERNALPROCESS)
+	{
 		[self callAddFilesToDatabaseSafe: filesArray];
 		
 		[filesArray release];
@@ -3054,10 +3063,12 @@ static NSArray*	statesArray = nil;
 	}
 	
 	// ** Finish the rebuild
-	if( REBUILDEXTERNALPROCESS == NO) {
+	if( REBUILDEXTERNALPROCESS == NO)
+	{
 		[[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO] valueForKey:@"completePath"];
 	}
-	else {
+	else
+	{
 		[REBUILDEXTERNALPROCESSProgress close];
 		[REBUILDEXTERNALPROCESSProgress release];
 		REBUILDEXTERNALPROCESSProgress = 0L;
@@ -4190,7 +4201,8 @@ static NSArray*	statesArray = nil;
 
 - (NSArray*)childrenArray: (NSManagedObject*)item onlyImages: (BOOL)onlyImages
 {
-	if ([[item valueForKey:@"type"] isEqualToString:@"Series"] ) {
+	if ([[item valueForKey:@"type"] isEqualToString:@"Series"] )
+	{
 		[managedObjectContext lock];
 		
 		NSArray *sortedArray = 0L;
@@ -4201,40 +4213,41 @@ static NSArray*	statesArray = nil;
 			NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
 			NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
 			[sort release];
+			
 			sortedArray = [[[item valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
 		}
+		
 		@catch (NSException * e)
 		{
 			NSLog( [e description]);
 		}
 
 		[managedObjectContext unlock];
-		
+
 		return sortedArray;
 	}
 	
-	if ([[item valueForKey:@"type"] isEqualToString:@"Study"] )	{
+	if ([[item valueForKey:@"type"] isEqualToString:@"Study"])
+	{
 		[managedObjectContext lock];
 		
 		NSArray *sortedArray = 0L;
 		@try
 		{
-		// Sort series with "id" & date
-		NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
-		NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
-		NSArray * sortDescriptors;
-		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, 0L];
-		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, 0L];
-		[sortid release];
-		[sortdate release];
-		
-		
-		
-		if( onlyImages) sortedArray = [[item valueForKey:@"imageSeries"] sortedArrayUsingDescriptors: sortDescriptors];
-		else sortedArray = [[[item valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
-		
+			// Sort series with "id" & date
+			NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
+			NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
+			NSArray * sortDescriptors;
+			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, 0L];
+			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, 0L];
+			[sortid release];
+			[sortdate release];
+			
+			if( onlyImages) sortedArray = [[item valueForKey:@"imageSeries"] sortedArrayUsingDescriptors: sortDescriptors];
+			else sortedArray = [[[item valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
 		}
-		@catch (NSException * e) {
+		@catch (NSException * e)
+		{
 			NSLog( [e description]);
 		}
 		
@@ -4251,60 +4264,73 @@ static NSArray*	statesArray = nil;
 	return [self childrenArray: item onlyImages: YES];
 }
 
-- (NSArray*) imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject onlyImages:(BOOL) onlyImages {
+- (NSArray*) imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject onlyImages:(BOOL) onlyImages
+{
 	NSArray			*childrenArray = [self childrenArray: item onlyImages:onlyImages];
 	NSMutableArray	*imagesPathArray = 0L;
 	
-	if ([[item valueForKey:@"type"] isEqualToString:@"Series"] )	{
+	if ([[item valueForKey:@"type"] isEqualToString:@"Series"] )
+	{
 		return childrenArray;
 	}
 	
-	if ([[item valueForKey:@"type"] isEqualToString:@"Study"]) {
+	if ([[item valueForKey:@"type"] isEqualToString:@"Study"])
+	{
 		imagesPathArray = [NSMutableArray arrayWithCapacity: [childrenArray count]];
 		
-		for( long i = 0; i < [childrenArray count]; i++ ) {
+		BOOL first = YES;
+		
+		for( id i in childrenArray)
+		{
 			int whichObject = preferredObject;
 			
-			if( preferredObject == oFirstForFirst) {
-				if( i != 0) preferredObject = oAny;
+			if( preferredObject == oFirstForFirst)
+			{
+				if( first == NO) preferredObject = oAny;
 			}
 			
-			if( preferredObject != oMiddle )	{
-				if( [[childrenArray objectAtIndex: i] valueForKey:@"thumbnail"] == 0L) whichObject = oMiddle;
+			first = NO;
+			
+			if( preferredObject != oMiddle )
+			{
+				if( [i valueForKey:@"thumbnail"] == 0L) whichObject = oMiddle;
 			}
 			
 			switch( whichObject)
-		{
-			case oAny:
-		{
-			NSManagedObject	*obj = [[[childrenArray objectAtIndex: i] valueForKey:@"images"] anyObject];
-			if( obj) [imagesPathArray addObject: obj];
-		}
+			{			
+				case oAny:
+				{
+					NSManagedObject	*obj = [[i valueForKey:@"images"] anyObject];
+					if( obj) [imagesPathArray addObject: obj];
+				}
 				break;
-			case oMiddle:
-		{
-			NSArray			*seriesArray = [self childrenArray: [childrenArray objectAtIndex: i] onlyImages:onlyImages];
-			
-			// Get the middle image of the series
-			if( [seriesArray count] > 0)
-			{
-				if( [seriesArray count] > 1)
-					[imagesPathArray addObject: [seriesArray objectAtIndex: -1 + [seriesArray count]/2]];
-				else
-					[imagesPathArray addObject: [seriesArray objectAtIndex: [seriesArray count]/2]];
+				
+				case oMiddle:
+				{
+					NSArray	*seriesArray = [self childrenArray: i onlyImages:onlyImages];
+					
+					// Get the middle image of the series
+					if( [seriesArray count] > 0)
+					{
+						if( [seriesArray count] > 1)
+							[imagesPathArray addObject: [seriesArray objectAtIndex: -1 + [seriesArray count]/2]];
+						else
+							[imagesPathArray addObject: [seriesArray objectAtIndex: [seriesArray count]/2]];
+					}
+				}
+				
+				break;
+				
+				case oFirstForFirst:
+				{
+					NSArray	*seriesArray = [self childrenArray: i onlyImages:onlyImages];
+				
+					// Get the middle image of the series
+					if( [seriesArray count] > 0)
+						[imagesPathArray addObject: [seriesArray objectAtIndex: 0]];
+				}
+				break;
 			}
-		}
-				break;
-			case oFirstForFirst:
-		{
-			NSArray			*seriesArray = [self childrenArray: [childrenArray objectAtIndex: i] onlyImages:onlyImages];
-			
-			// Get the middle image of the series
-			if( [seriesArray count] > 0)
-				[imagesPathArray addObject: [seriesArray objectAtIndex: 0]];
-		}
-				break;
-		}
 		}
 	}
 	
@@ -4369,7 +4395,8 @@ static NSArray*	statesArray = nil;
 
 #define BONJOURPACKETS 50
 
-- (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages {
+- (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages
+{
 	NSMutableArray		*selectedFiles = [NSMutableArray array];
 	NSEnumerator		*rowEnumerator = [databaseOutline selectedRowEnumerator];
 	NSNumber			*row;
@@ -4467,12 +4494,13 @@ static NSArray*	statesArray = nil;
 	
 }
 
-- (NSMutableArray *)filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects {
+- (NSMutableArray *)filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects
+{
 	return [self filesForDatabaseOutlineSelection:correspondingManagedObjects onlyImages: YES];
 }
 
-- (void)outlineViewSelectionDidChange: (NSNotification *)aNotification {
-	
+- (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
+{	
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
 	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
 	
@@ -5505,11 +5533,13 @@ static NSArray*	statesArray = nil;
 
 - (NSArray *)outlineView:(NSOutlineView *)outlineView namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedItems:(NSArray *)items
 {
-	if( [[[dropDestination path] lastPathComponent] isEqualToString:@".Trash"] ) {
+	if( [[[dropDestination path] lastPathComponent] isEqualToString:@".Trash"] )
+	{
 		[self delItem:  nil];
 		return nil;
 	}
-	else {
+	else
+	{
 		NSMutableArray	*dicomFiles2Export = [NSMutableArray array];
 		NSArray			*filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
 		
@@ -5517,11 +5547,13 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (BOOL)outlineView:(NSOutlineView *)olv writeItems:(NSArray*)pbItems toPasteboard:(NSPasteboard*)pboard {
+- (BOOL)outlineView:(NSOutlineView *)olv writeItems:(NSArray*)pbItems toPasteboard:(NSPasteboard*)pboard
+{
 	NSMutableArray *xmlArray = [NSMutableArray array];
 	
 	BOOL extend = NO;
-	for( id pbItem in pbItems )	{
+	for( id pbItem in pbItems )
+	{
 		[olv selectRow:	[olv rowForItem: pbItem] byExtendingSelection: extend];
 		extend = YES;
 		[xmlArray addObject: [pbItem dictionary]];
@@ -11102,7 +11134,8 @@ static NSArray*	openSubSeriesArray = 0L;
 
 - (BOOL)validateMenuItem: (NSMenuItem*) menuItem
 {
-	if ( menuItem.menu == imageTileMenu ) {
+	if ( menuItem.menu == imageTileMenu )
+	{
 		return [mainWindow.windowController isKindOfClass:[ViewerController class]];
 	}
 	else if( [menuItem action] == @selector( createROIsFromRTSTRUCT:))
@@ -11119,32 +11152,34 @@ static NSArray*	openSubSeriesArray = 0L;
 	}
 	else if( [menuItem action] == @selector( copyToDBFolder:))
 	{
-		if( isCurrentDatabaseBonjour) return NO;
+		return YES;
 		
-		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
-		
-		if( [selectedRows count] < 5)
-		{		
-			BOOL matrixThumbnails;
-			
-			if( menuItem.menu == contextual) matrixThumbnails = YES;
-			else matrixThumbnails = NO;
-			
-			NSMutableArray *files, *objects = [NSMutableArray array];
-			
-			if( matrixThumbnails)
-				files = [self filesForDatabaseMatrixSelection: objects onlyImages: NO];
-			else
-				files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
-			
-			for( NSManagedObject *im in objects)
-			{
-				if( [[im valueForKey: @"inDatabaseFolder"] boolValue] == NO) return YES;
-			}
-		}
-		else return YES;
-		
-		return NO;
+//		if( isCurrentDatabaseBonjour) return NO;
+//		
+//		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
+//		
+//		if( [selectedRows count] == 1)
+//		{		
+//			BOOL matrixThumbnails;
+//			
+//			if( menuItem.menu == contextual) matrixThumbnails = YES;
+//			else matrixThumbnails = NO;
+//			
+//			NSMutableArray *files, *objects = [NSMutableArray array];
+//			
+//			if( matrixThumbnails)
+//				files = [self filesForDatabaseMatrixSelection: objects onlyImages: NO];
+//			else
+//				files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
+//			
+//			for( NSManagedObject *im in objects)
+//			{
+//				if( [[im valueForKey: @"inDatabaseFolder"] boolValue] == NO) return YES;
+//			}
+//		}
+//		else return YES;
+//		
+//		return NO;
 	}
 	else if( [menuItem action] == @selector( delItem:))
 	{

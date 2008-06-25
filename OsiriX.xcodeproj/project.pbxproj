@@ -15,7 +15,6 @@
 			dependencies = (
 				4A2F590D078D124B00C514A2 /* PBXTargetDependency */,
 				CEA048B60C76E46F00B4CA0A /* PBXTargetDependency */,
-				ABCB1B3C0A21FC04008EB2E8 /* PBXTargetDependency */,
 				AB72503C0ADE6F7000A212A0 /* PBXTargetDependency */,
 				CEACC7AD0878781000CF466E /* PBXTargetDependency */,
 				CEACC7AF0878781000CF466E /* PBXTargetDependency */,
@@ -1377,8 +1376,6 @@
 		ABC47B5E0C031397001CEA21 /* BrowserMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC47B580C031397001CEA21 /* BrowserMatrix.m */; };
 		ABCA5BA40625FC1100637E73 /* OpacityTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */; };
 		ABCA5BA50625FC1100637E73 /* OpacityTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */; };
-		ABCB1B2D0A21FB72008EB2E8 /* SafeDBRebuild in Resources */ = {isa = PBXBuildFile; fileRef = ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */; };
-		ABCB1B2E0A21FB72008EB2E8 /* SafeDBRebuild in Resources */ = {isa = PBXBuildFile; fileRef = ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */; };
 		ABCB20C60A220349008EB2E8 /* DICOMToNSString.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */; };
 		ABCB2D520655B19A006C5630 /* SearchWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCB2D4E0655B19A006C5630 /* SearchWindowController.m */; };
 		ABCB2D530655B19A006C5630 /* SearchWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCB2D4F0655B19A006C5630 /* SearchWindowController.h */; };
@@ -7985,13 +7982,6 @@
 			remoteGlobalIDString = 8D202CE80486D31800D8A456;
 			remoteInfo = OSIPETPreferencePane;
 		};
-		ABCB1B3B0A21FC04008EB2E8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = ABEA7F070A21BCC90094CAEF;
-			remoteInfo = SafeDBRebuild;
-		};
 		ABD908E20AF211BB00E47345 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ABD908DB0AF211BB00E47345 /* AYDicomPrint.xcodeproj */;
@@ -8918,7 +8908,6 @@
 		ABC47B580C031397001CEA21 /* BrowserMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserMatrix.m; sourceTree = "<group>"; };
 		ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OpacityTransferView.h; sourceTree = "<group>"; };
 		ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OpacityTransferView.m; sourceTree = "<group>"; };
-		ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = SafeDBRebuild; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABCB2D4E0655B19A006C5630 /* SearchWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SearchWindowController.m; sourceTree = "<group>"; };
 		ABCB2D4F0655B19A006C5630 /* SearchWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SearchWindowController.h; sourceTree = "<group>"; };
 		ABD1A86E0619E68B00C5B670 /* ROIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROIWindow.h; sourceTree = "<group>"; };
@@ -12251,7 +12240,6 @@
 				B78675430AD9C56400731977 /* diameter570frame512.pbm */,
 				B78675440AD9C56400731977 /* diameter1140frame1024.pbm */,
 				CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */,
-				ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */,
 				AB7250370ADE6F5D00A212A0 /* Decompress */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
 				ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */,
@@ -21298,7 +21286,6 @@
 				ABC3939F09F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */,
 				ABC3994609F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */,
 				ABDF5A1D0A1B641F002A353A /* small_sharedSmartAlbum.tiff in Resources */,
-				ABCB1B2D0A21FB72008EB2E8 /* SafeDBRebuild in Resources */,
 				AB95C0390A2B08ED00380C65 /* FileNotFound.tif in Resources */,
 				BF47CBD60A2E31B100700AA9 /* viewHTML.tif in Resources */,
 				BF47CBD70A2E31B100700AA9 /* viewSR.tif in Resources */,
@@ -21690,7 +21677,6 @@
 				ABC393A109F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */,
 				ABC3994509F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */,
 				ABDF5A1C0A1B6406002A353A /* BonesRemovalCursor.tif in Resources */,
-				ABCB1B2E0A21FB72008EB2E8 /* SafeDBRebuild in Resources */,
 				AB95C03A0A2B08ED00380C65 /* FileNotFound.tif in Resources */,
 				BF47CBD00A2E31B100700AA9 /* viewHTML.tif in Resources */,
 				BF47CBD10A2E31B100700AA9 /* viewSR.tif in Resources */,
@@ -24750,11 +24736,6 @@
 			isa = PBXTargetDependency;
 			name = OSIPETPreferencePane;
 			targetProxy = ABC3990309F527EA000A6508 /* PBXContainerItemProxy */;
-		};
-		ABCB1B3C0A21FC04008EB2E8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = ABEA7F070A21BCC90094CAEF /* SafeDBRebuild */;
-			targetProxy = ABCB1B3B0A21FC04008EB2E8 /* PBXContainerItemProxy */;
 		};
 		ABD908E50AF211C500E47345 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

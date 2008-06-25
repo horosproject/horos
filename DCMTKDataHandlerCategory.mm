@@ -33,7 +33,8 @@
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	
 	//NSLog(@"get Specific Character set");
-	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL) {
+	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL)
+	{
 		[specificCharacterSet release];
 		specificCharacterSet = [[NSString stringWithCString:scs] retain];
 		encoding = [NSString encodingForDICOMCharacterSet:specificCharacterSet];
@@ -204,7 +205,6 @@
 					predicate = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\") AND date < CAST(%lf, \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
 				}
 			}
-			
 			else if (key == DCM_StudyTime)
 			{
 				char *aDate;
@@ -249,7 +249,6 @@
 					predicate = [NSPredicate predicateWithFormat:@"dicomTime == %@", [value dateAsNumber]];
 				}
 			}
-			
 			else
 				predicate = nil;
 		}
@@ -582,11 +581,13 @@
 		else
 			dataset ->putAndInsertString( DCM_StudyDescription, NULL);
 			
-		if ([fetchedObject valueForKey:@"dateOfBirth"]){
+		if ([fetchedObject valueForKey:@"dateOfBirth"])
+		{
 			DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"dateOfBirth"]];
 			dataset ->putAndInsertString(DCM_PatientsBirthDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 		}
-		else {
+		else
+		{
 			dataset ->putAndInsertString(DCM_PatientsBirthDate, NULL);
 		}
 		
@@ -763,7 +764,8 @@
 	[pool release];
 }
 
-- (OFCondition)prepareFindForDataSet:( DcmDataset *)dataset{
+- (OFCondition)prepareFindForDataSet:( DcmDataset *)dataset
+{
 	NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
 	NSError *error = 0L;
 	NSEntityDescription *entity;
@@ -789,7 +791,7 @@
 					
 		error = 0L;
 		
-		NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
+		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 		
 		[context retain];
 		[context lock];
@@ -1001,31 +1003,56 @@
 	return cond;
 }
 
-- (BOOL)findMatchFound{
+- (BOOL)findMatchFound
+{
 	if (findArray) return YES;
 	return NO;
 }
 	
-- (int)moveMatchFound{
+- (int)moveMatchFound
+{
 	return moveArraySize;
 }
 
-- (OFCondition)nextFindObject:(DcmDataset *)dataset  isComplete:(BOOL *)isComplete{
+- (OFCondition) nextFindObject:(DcmDataset *)dataset  isComplete:(BOOL *)isComplete
+{
 	id item;
-	if (item = [findEnumerator nextObject]) {
-		if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) {
-			 [self seriesDatasetForFetchedObject:item dataset:(DcmDataset *)dataset];
-			
+	
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+	
+	[context retain];
+	[context lock];
+	
+	@try
+	{	
+		if (item = [findEnumerator nextObject])
+		{
+			if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
+			{
+				 [self seriesDatasetForFetchedObject:item dataset:(DcmDataset *)dataset];
+			}
+			else if ([[item valueForKey:@"type"] isEqualToString:@"Study"])
+			{
+				[self studyDatasetForFetchedObject:item dataset:(DcmDataset *)dataset];
+			}
+			else if ([[item valueForKey:@"type"] isEqualToString:@"Image"])
+			{
+				[self imageDatasetForFetchedObject:item dataset:(DcmDataset *)dataset];
+			}
+			*isComplete = NO;
 		}
-		else if ([[item valueForKey:@"type"] isEqualToString:@"Study"]){
-			[self studyDatasetForFetchedObject:item dataset:(DcmDataset *)dataset];
-		}
-		else if ([[item valueForKey:@"type"] isEqualToString:@"Image"]){
-			[self imageDatasetForFetchedObject:item dataset:(DcmDataset *)dataset];
-		}
-		*isComplete = NO;
-	}else
-		*isComplete = YES;
+		else
+			*isComplete = YES;
+	}
+		
+	@catch (NSException * e)
+	{
+		NSLog( @"******* nextFindObject exception : %@", e);
+	}
+	
+	[context unlock];
+	[context release];
+	
 	return EC_Normal;
 }
 
