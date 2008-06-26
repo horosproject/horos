@@ -1008,7 +1008,7 @@
 	if (findArray) return YES;
 	return NO;
 }
-	
+
 - (int)moveMatchFound
 {
 	return moveArraySize;

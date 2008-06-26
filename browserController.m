@@ -570,6 +570,8 @@ static NSArray*	statesArray = nil;
 						{
 							study = [studiesArray objectAtIndex: index];
 							
+							[study setValue:today forKey:@"dateAdded"];
+							
 							newObject = NO;
 						}
 						
