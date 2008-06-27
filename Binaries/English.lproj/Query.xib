@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">9D34</string>
-		<string key="IBDocument.InterfaceBuilderVersion">670</string>
+		<string key="IBDocument.InterfaceBuilderVersion">667</string>
 		<string key="IBDocument.AppKitVersion">949.33</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="144"/>
+			<integer value="528"/>
 			<integer value="795"/>
 			<integer value="844"/>
 		</object>
@@ -950,7 +950,7 @@
 												<object class="NSButtonCell" id="330860046">
 													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">131072</int>
-													<string key="NSContents">US</string>
+													<string key="NSContents">DR</string>
 													<reference key="NSSupport" ref="26"/>
 													<int key="NSTag">8</int>
 													<reference key="NSControlView" ref="557816121"/>
@@ -980,10 +980,11 @@
 												<object class="NSButtonCell" id="1061614699">
 													<int key="NSCellFlags">67239424</int>
 													<int key="NSCellFlags2">131072</int>
-													<string key="NSContents">DX</string>
+													<string key="NSContents">RG</string>
 													<reference key="NSSupport" ref="26"/>
+													<int key="NSTag">5</int>
 													<reference key="NSControlView" ref="557816121"/>
-													<int key="NSButtonFlags">1211945471</int>
+													<int key="NSButtonFlags">1211912703</int>
 													<int key="NSButtonFlags2">2</int>
 													<reference key="NSNormalImage" ref="954808096"/>
 													<reference key="NSAlternateImage" ref="820230698"/>
@@ -5626,9 +5627,9 @@ IGJlIHJldHJpZXZlZCBkdXJpbmcgbmV4dCAncmVmcmVzaCcuA</string>
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{744, 810}, {911, 746}}</string>
+					<string>{{86, 410}, {911, 746}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{744, 810}, {911, 746}}</string>
+					<string>{{86, 410}, {911, 746}}</string>
 					<reference ref="9"/>
 					<string>{{154, 110}, {911, 746}}</string>
 					<reference ref="8"/>
@@ -5847,9 +5848,9 @@ IGJlIHJldHJpZXZlZCBkdXJpbmcgbmV4dCAncmVmcmVzaCcuA</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{149, 1310}, {318, 132}}</string>
+					<string>{{149, 1024}, {318, 132}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{149, 1310}, {318, 132}}</string>
+					<string>{{149, 1024}, {318, 132}}</string>
 					<reference ref="8"/>
 					<string>{{755, 724}, {318, 132}}</string>
 					<reference ref="8"/>
@@ -5881,9 +5882,9 @@ IGJlIHJldHJpZXZlZCBkdXJpbmcgbmV4dCAncmVmcmVzaCcuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{270, 1070}, {474, 306}}</string>
+					<string>{{270, 850}, {474, 306}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{270, 1070}, {474, 306}}</string>
+					<string>{{270, 850}, {474, 306}}</string>
 					<reference ref="8"/>
 					<string>{{755, 724}, {318, 132}}</string>
 					<reference ref="8"/>
