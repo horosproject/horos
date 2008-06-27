@@ -3776,8 +3776,17 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glEnd();
 				
 				// ARROW
-				glBegin(GL_TRIANGLES);
-								
+				
+//				glBegin(GL_TRIANGLES);
+				
+				glEnable(GL_BLEND);
+//				glDisable(GL_POLYGON_SMOOTH);
+//				glDisable(GL_POINT_SMOOTH);
+//				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				
+				glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., 0.25);
+				glBegin(GL_POLYGON);
+				
 				if(b.y-a.y > 0) 
 				{
 					angle = atan( slide)/deg2rad;
@@ -3830,16 +3839,18 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			else
 			{
 				glBegin(GL_LINE_STRIP);
-				for( long i = 0; i < [points count]; i++ ) {
-					glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
+				for( id pt in points)
+				{
+					glVertex2f( ([pt x]- offsetx) * scaleValue , ([pt y]- offsety) * scaleValue );
 				}
 				glEnd();
 				
 				glPointSize( thickness);
 			
 				glBegin( GL_POINTS);
-				for( long i = 0; i < [points count]; i++ ) {
-					glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
+				for( id pt in points)
+				{
+					glVertex2f( ([pt x]- offsetx) * scaleValue , ([pt y]- offsety) * scaleValue );
 				}
 				glEnd();
 			}
@@ -3847,10 +3858,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if((mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing) && highlightIfSelected)
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
-				glPointSize( (1 + sqrt( thickness))*3.5);
+				
+				glPointSize( thickness);
+//				glPointSize( sqrt( thickness)*3.);
+				
 				glBegin( GL_POINTS);
-				for( long i = 0; i < [points count]; i++) {
-					
+				for( long i = 0; i < [points count]; i++)
+				{
 					if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
 					
 					glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
@@ -3894,12 +3908,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			// TEXT
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0; line6[0] = 0;
-			if( self.isTextualDataDisplayed && prepareTextualData) {
+			if( self.isTextualDataDisplayed && prepareTextualData)
+			{
 				NSPoint tPt = self.lowerRightPoint;
 				long	line = 0;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
-				if( type == tMesure && ROITEXTNAMEONLY == NO) {
+				if( type == tMesure && ROITEXTNAMEONLY == NO)
+				{
 					if( pixelSpacingX != 0 && pixelSpacingY != 0)
 					{
 						float lPix, lMm = [self MesureLength: &lPix];

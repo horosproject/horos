@@ -18,6 +18,7 @@
 #import "NavigatorWindowController.h"
 #import "AppController.h"
 #import "ViewerController.h"
+#import "BrowserController.h"
 
 static	BOOL dontEnterMagneticFunctions = NO;
 extern  BOOL USETOOLBARPANEL;
@@ -355,6 +356,10 @@ extern  ToolbarPanelController  *toolbarPanel[ 10];
 #pragma mark-
 #pragma mark Misc
 
+- (IBAction)querySelectedStudy: (id)sender
+{
+	[[BrowserController currentBrowser] querySelectedStudy: self];
+}
 
 - (id)initWithWindowNibName:(NSString *)windowNibName
 {

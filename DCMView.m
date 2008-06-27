@@ -457,8 +457,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context)
 {
-    NSDate *d1 = [[v1 currentStudy] valueForKey:@"dateOpened"];
-    NSDate *d2 = [[v2 currentStudy] valueForKey:@"dateOpened"];
+    NSDate *d1 = [[v1 currentStudy] valueForKey:@"date"];
+    NSDate *d2 = [[v2 currentStudy] valueForKey:@"date"];
 	
 	if( d1 == 0L || d2 == 0L)
 	{
@@ -467,7 +467,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		return NSOrderedSame;
 	}
 	
-    return [d1 compare: d2];
+    return [d2 compare: d1];
 }
 
 @implementation DCMView

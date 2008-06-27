@@ -48,7 +48,8 @@
 			port:(int)port 
 			transferSyntax:(int)transferSyntax
 			compression: (float)compression
-			extraParameters:(NSDictionary *)extraParameters{
+			extraParameters:(NSDictionary *)extraParameters
+{
 	if (self = [super initWithDataset:(DcmDataset *)dataset
 			callingAET:(NSString *)myAET  
 			calledAET:(NSString *)theirAET  
@@ -56,7 +57,8 @@
 			port:(int)port 
 			transferSyntax:(int)transferSyntax
 			compression: (float)compression
-			extraParameters:(NSDictionary *)extraParameters]) {
+			extraParameters:(NSDictionary *)extraParameters])
+	{
 		_studyInstanceUID = nil;
 		const char *string = nil;
 		
@@ -78,13 +80,15 @@
 			_name = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
 			
 			
-		if (dataset ->findAndGetString(DCM_SeriesDate, string).good() && string != nil) {
+		if (dataset ->findAndGetString(DCM_SeriesDate, string).good() && string != nil)
+		{
 			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			_date = [[DCMCalendarDate dicomDate:dateString] retain];
 			[dateString release];
 		}
 		
-		if (dataset ->findAndGetString(DCM_SeriesTime, string).good() && string != nil) {
+		if (dataset ->findAndGetString(DCM_SeriesTime, string).good() && string != nil)
+		{
 			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			_time = [[DCMCalendarDate dicomTime:dateString] retain];
 			[dateString release];

@@ -61,7 +61,42 @@ static const char *GetPrivateIP()
 
 @implementation QueryController
 
-//******	OUTLINEVIEW
++ (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer
+{
+	QueryArrayController *qm = 0L;
+	NSArray *array = 0L;
+	
+	@try
+	{
+		NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
+		NSString *theirAET = [aServer objectForKey:@"AETitle"];
+		NSString *hostname = [aServer objectForKey:@"Address"];
+		NSString *port = [aServer objectForKey:@"Port"];
+		
+		qm = [[[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:0L] autorelease];
+		
+		NSString *filterValue = [an stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		
+		if ([filterValue length] > 0)
+		{
+			[qm addFilter:filterValue forDescription:@"studyInstanceUID"];
+			[qm performQuery];
+			array = [qm queries];
+		}
+		
+		for( id a in array)
+		{
+			if( [a isMemberOfClass:[DCMTKStudyQueryNode class]] == NO)
+				NSLog( @"warning : [item isMemberOfClass:[DCMTKStudyQueryNode class]] == NO");
+		}
+	}
+	@catch (NSException * e)
+	{
+		NSLog( [e description]);
+	}
+	
+	return array;
+}
 
 + (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer
 {

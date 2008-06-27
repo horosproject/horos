@@ -71,6 +71,7 @@
 + (QueryController*) currentQueryController;
 + (BOOL) echo: (NSString*) address port:(int) port AET:(NSString*) aet;
 + (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer;
++ (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer;
 
 - (IBAction) cancel:(id)sender;
 - (IBAction) ok:sender;

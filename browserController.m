@@ -64,7 +64,6 @@
 #import "BonjourBrowser.h"
 #import "WindowLayoutManager.h"
 #import "StructuredReportController.h"
-//#import "StructuredReport.h"
 #import "QTExportHTMLSummary.h"
 #import "BrowserControllerDCMTKCategory.h"
 #import "BrowserMatrix.h"
@@ -147,6 +146,8 @@ static BOOL DICOMDIRCDMODE = NO;
 static BOOL autotestdone = NO;
 
 static NSArray*	statesArray = nil;
+
+@class DCMTKStudyQueryNode;
 
 @synthesize DateTimeFormat;
 @synthesize DateOfBirthFormat;
@@ -1186,7 +1187,8 @@ static NSArray*	statesArray = nil;
 #pragma mark-
 #pragma mark Autorouting functions
 
-- (void) testAutorouting {
+- (void) testAutorouting
+{
 	// Test the routing filters
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
 	{
@@ -1315,6 +1317,52 @@ static NSArray*	statesArray = nil;
 													result = [result arrayByAddingObjectsFromArray: [[series valueForKey:@"images"] allObjects]];
 											}
 										}
+									}
+								}
+							}
+						}
+						
+						if( [[routingRule valueForKey:@"testWithCFINDBeforeSending"] boolValue])
+						{
+							NSMutableDictionary *studies = [NSMutableDictionary dictionary];
+							
+							for( id im in result)
+							{
+								if( [studies objectForKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]] == 0L)
+									[studies setObject: [im valueForKeyPath:@"series.study"] forKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]];
+							}
+							
+							for( NSString *studyUID in [studies allKeys])
+							{
+								NSLog( studyUID);
+								
+								NSArray *s = [QueryController queryStudyInstanceUID: studyUID server: [routingRule objectForKey:@"server"]];
+								
+								if( [s count])
+								{
+									if( [s count] > 1)
+										NSLog( @"Uh? multiple studies with same StudyInstanceUID on the distal node....");
+									
+									DCMTKStudyQueryNode* studyNode = [s lastObject];
+									
+									if( [[studyNode valueForKey:@"numberImages"] intValue] == [[[studies objectForKey: studyUID] valueForKey: @"noFiles"] intValue])
+									{
+										// remove them, there are already there !
+										
+										NSLog( @"Already available on the distant node : we will not send it.");
+										
+										NSMutableArray *r = [NSMutableArray arrayWithArray: result];
+										
+										for( int i = 0 ; i < [r count] ; i++)
+										{
+											if( [[[r objectAtIndex: i] valueForKeyPath: @"series.study.studyInstanceUID"] isEqualToString: studyUID])
+											{
+												[r removeObjectAtIndex: i];
+												i--;
+											}
+										}
+										
+										result = r;
 									}
 								}
 							}
@@ -1491,7 +1539,8 @@ static NSArray*	statesArray = nil;
 							}
 						}
 						
-						if( [samePatientArray count]) [self executeSend: samePatientArray server: server dictionary: copy];
+						if( [samePatientArray count])
+							[self executeSend: samePatientArray server: server dictionary: copy];
 					}
 						
 					@catch( NSException *ne)
@@ -8371,7 +8420,8 @@ static BOOL needToRezoom;
 	}
 }
 
-- (void)sendDICOMFilesToOsiriXNode: (NSDictionary*)todo {
+- (void)sendDICOMFilesToOsiriXNode: (NSDictionary*)todo
+{
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
 	NSLog( @"sendDICOMFilesToOsiriXNode started");
