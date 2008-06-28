@@ -234,7 +234,7 @@
 - (NSString*) generateUniqueFileName:(NSString*) destinationPath
 {
 	NSTimeInterval secs = [NSDate timeIntervalSinceReferenceDate];
-	NSString *filePath = [NSString stringWithFormat: @"%@/%ld", destinationPath, secs];
+	NSString *filePath = [NSString stringWithFormat: @"%@/%ld", destinationPath, (long) secs];
 	int index = 0;
 	BOOL isDir = YES;
 	

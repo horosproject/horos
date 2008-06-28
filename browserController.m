@@ -11132,7 +11132,8 @@ static NSArray*	openSubSeriesArray = 0L;
 		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Listener - STORE", nil), NSLocalizedString(@"New files are arriving in the DICOM Database. Are you sure you want to quit now? The DICOM Listener will be stopped.", nil), NSLocalizedString(@"No", nil), NSLocalizedString(@"Quit", nil), 0L) == NSAlertDefaultReturn) return NO;
 	}
 	
-	if( [SendController sendControllerObjects] > 0 ) {
+	if( [SendController sendControllerObjects] > 0 )
+	{
 		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Sending - STORE", nil), NSLocalizedString(@"Files are currently being sent to a DICOM node. Are you sure you want to quit now? The sending will be stopped.", nil), NSLocalizedString(@"No", nil), NSLocalizedString(@"Quit", nil), 0L) == NSAlertDefaultReturn) return NO;
 	}
 	
@@ -11181,7 +11182,8 @@ static NSArray*	openSubSeriesArray = 0L;
     }
 }
 
-- (void)mainWindowHasChanged:(NSNotification *)note{
+- (void)mainWindowHasChanged:(NSNotification *)note
+{
 	[mainWindow release];
 	mainWindow = [[note object] retain];
 }
@@ -11278,11 +11280,13 @@ static NSArray*	openSubSeriesArray = 0L;
 
 - (BOOL)is2DViewer { return NO; }
 
-- (IBAction)customizeViewerToolBar:(id)sender {
+- (IBAction)customizeViewerToolBar:(id)sender
+{
     [toolbar runCustomizationPalette:sender];
 }
 
-- (void)addHelpMenu {
+- (void)addHelpMenu
+{
 	NSMenu *mainMenu = [[NSApplication sharedApplication] mainMenu];
 	NSMenuItem *helpItem = [mainMenu addItemWithTitle:NSLocalizedString(@"Help", nil) action:nil keyEquivalent:@""];
 	NSMenu *helpMenu = [[NSMenu allocWithZone: [NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Help", nil)];
@@ -11300,7 +11304,8 @@ static NSArray*	openSubSeriesArray = 0L;
 #pragma mark-
 #pragma mark DICOM Network & Files functions
 
-- (void) resetListenerTimer {
+- (void) resetListenerTimer
+{
 	[IncomingTimer invalidate];
 	[IncomingTimer release];
 	
@@ -11309,7 +11314,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
 }
 
-- (void) emptyDeleteQueueThread {
+- (void) emptyDeleteQueueThread
+{
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 		
 	[deleteInProgress lock];
@@ -11318,7 +11324,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	[deleteQueueArray removeAllObjects];
 	[deleteQueue unlock];
 	
-	if( copyArray.count )	{
+	if( copyArray.count )
+	{
 		[appController growlTitle: NSLocalizedString( @"Files removing", nil) description: [NSString stringWithFormat: NSLocalizedString( @"%d files to delete", 0L), [copyArray count]]  name:@"delete"];
 		
 		NSLog(@"delete Queue start: %d objects", [copyArray count]);
@@ -11368,7 +11375,8 @@ static NSArray*	openSubSeriesArray = 0L;
 
 }
 
-- (void)addFileToDeleteQueue: (NSString*)file {
+- (void)addFileToDeleteQueue: (NSString*)file
+{
 	if( deleteQueueArray == nil ) deleteQueueArray = [[NSMutableArray array] retain];
 	if( deleteQueue == nil ) deleteQueue = [[NSLock alloc] init];
 	if( deleteInProgress == nil ) deleteInProgress = [[NSLock alloc] init];
@@ -11378,7 +11386,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	[deleteQueue unlock];
 }
 
-- (NSString*)_findFirstDicomdirOnCDMedia: (NSString*)startDirectory found: (BOOL)found {
+- (NSString*)_findFirstDicomdirOnCDMedia: (NSString*)startDirectory found: (BOOL)found
+{
 	DicomDirScanDepth++;
 	
 	NSArray *fileNames = nil;
@@ -11387,15 +11396,19 @@ static NSArray*	openSubSeriesArray = 0L;
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 
 	fileNames = [[NSFileManager defaultManager] directoryContentsAtPath: startDirectory];
-	for( int i = 0; i < [fileNames count] && !found; i++ ) {
+	for( int i = 0; i < [fileNames count] && !found; i++ )
+	{
 		filePath = [startDirectory stringByAppendingPathComponent: [fileNames objectAtIndex: i]];
 		NSString *upperString = [[fileNames objectAtIndex: i] uppercaseString];
-		if([upperString isEqualToString: @"DICOMDIR"] || [upperString isEqualToString: @"DICOMDIR."] ) {
+		if([upperString isEqualToString: @"DICOMDIR"] || [upperString isEqualToString: @"DICOMDIR."] )
+		{
 			return filePath;
 		}
-		else if( [[fileNames objectAtIndex: i] characterAtIndex: 0] != '.' ) {
+		else if( [[fileNames objectAtIndex: i] characterAtIndex: 0] != '.' )
+		{
 			isDirectory = FALSE;
-			if ([fileManager fileExistsAtPath:filePath isDirectory:&isDirectory] ) {
+			if ([fileManager fileExistsAtPath:filePath isDirectory:&isDirectory] )
+			{
 				if(isDirectory == YES && DicomDirScanDepth < 3)	{
 					if((filePath = [self _findFirstDicomdirOnCDMedia: filePath found:found]) != nil)
 						return filePath;
@@ -11422,13 +11435,15 @@ static NSArray*	openSubSeriesArray = 0L;
 		
 		[[NSWorkspace sharedWorkspace] getFileSystemInfoForPath: mediaPath isRemovable:&isRemovable isWritable:&isWritable isUnmountable:&isUnmountable description:&description type:&type];
 		
-		if( isRemovable == YES && isWritable == NO ) {
+		if( isRemovable == YES && isWritable == NO )
+		{
 			// ADD ALL FILES OF THIS VOLUME TO THE DATABASE!
 			NSMutableArray  *filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 			
 			found = YES;
 			
-			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USEDICOMDIR"])	{
+			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USEDICOMDIR"])
+			{
 				NSString    *aPath = mediaPath;
 				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 				
@@ -11446,26 +11461,32 @@ static NSArray*	openSubSeriesArray = 0L;
 				DicomDirScanDepth = 0;
 				aPath = [self _findFirstDicomdirOnCDMedia: aPath found: FALSE];
 				
-				if( [[NSFileManager defaultManager] fileExistsAtPath:aPath] ) {
+				if( [[NSFileManager defaultManager] fileExistsAtPath:aPath] )
+				{
 					int mode = [[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"];
 					
-					@try {
+					@try
+					{
 						[self addDICOMDIR: aPath :filesArray];
 					}
 					
-					@catch (NSException *e)	{
+					@catch (NSException *e)
+					{
 						NSLog( e.description );
 					}
 					
 					
-					switch ( mode ) {
+					switch ( mode )
+					{
 						case 0: // ALL FILES
 							
 							break;
 							
 						case 1: //EXCEPT STILL
-							for( int i = 0; i < [filesArray count]; i++ ) {
-								if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"STILL"] == YES ) {
+							for( int i = 0; i < [filesArray count]; i++ )
+							{
+								if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"STILL"] == YES )
+								{
 									[filesArray removeObjectAtIndex:i];
 									i--;
 								}
@@ -11473,8 +11494,10 @@ static NSArray*	openSubSeriesArray = 0L;
 							break;
 							
 							case 2: //EXCEPT MOVIE
-							for( int i = 0; i < [filesArray count]; i++ ) {
-								if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"MOVIE"] == YES ) {
+							for( int i = 0; i < [filesArray count]; i++ )
+							{
+								if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"MOVIE"] == YES )
+								{
 									[filesArray removeObjectAtIndex:i];
 									i--;
 								}
@@ -11489,12 +11512,14 @@ static NSArray*	openSubSeriesArray = 0L;
 				NSString    *aPath = mediaPath;
 				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 				
-				if( enumer == nil )	{
+				if( enumer == nil )
+				{
 					aPath = [NSString stringWithFormat:@"/Volumes/Untitled"];
 					enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
 				}
 				
-				while (pathname = [enumer nextObject]) {
+				while (pathname = [enumer nextObject])
+				{
 					NSString * itemPath = [aPath stringByAppendingPathComponent:pathname];
 					id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
 					
@@ -11502,7 +11527,8 @@ static NSArray*	openSubSeriesArray = 0L;
 					{
 						BOOL	addFile = YES;
 						
-						switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"]) {
+						switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"STILLMOVIEMODE"])
+						{
 						case 0: // ALL FILES
 							
 							break;
@@ -11549,14 +11575,16 @@ static NSArray*	openSubSeriesArray = 0L;
 			
 			NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray async: YES];
 			
-			if( newfilesArray == filesArray) {
+			if( newfilesArray == filesArray)
+			{
 				mountedVolume = YES;
 				NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
 				mountedVolume = NO;
 				
 				[self outlineViewRefresh];
 				
-				if( [newImages count] > 0) {
+				if( [newImages count] > 0)
+				{
 					NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
 					
 					[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
@@ -11569,19 +11597,23 @@ static NSArray*	openSubSeriesArray = 0L;
 	}
 	
 	if( found == NO ) {
-		if( [[DRDevice devices] count] ) {
+		if( [[DRDevice devices] count] )
+		{
 			DRDevice	*device = [[DRDevice devices] objectAtIndex: 0];
 			
 			// Is the bay close? open it for the user
-			if( [[[device status] valueForKey: DRDeviceIsTrayOpenKey] boolValue] == YES) {
+			if( [[[device status] valueForKey: DRDeviceIsTrayOpenKey] boolValue] == YES)
+			{
 				[device closeTray];
 				[appController growlTitle: NSLocalizedString( @"CD/DVD", 0L) description: NSLocalizedString(@"Please wait. CD/DVD is loading...", 0L) name:@"newfiles"];
 				return;
 			}
-			else {
+			else
+			{
 				if( [[[device status] valueForKey: DRDeviceIsBusyKey] boolValue] == NO &&[[[device status] valueForKey: DRDeviceMediaStateKey] isEqualToString:DRDeviceMediaStateNone])
 					[device openTray];
-				else {
+				else
+				{
 					[appController growlTitle: NSLocalizedString( @"CD/DVD", 0L) description: NSLocalizedString(@"Please wait. CD/DVD is loading...", 0L) name:@"newfiles"];
 					return;
 				}
@@ -11601,10 +11633,12 @@ static NSArray*	openSubSeriesArray = 0L;
 		NSArray	*removeableMedia = [[NSWorkspace sharedWorkspace] mountedRemovableMedia];
 		NSLog( @"****");
 		
-		for( NSString *mediaPath in removeableMedia ) {
+		for( NSString *mediaPath in removeableMedia )
+		{
 			NSLog( path );
 			NSLog( mediaPath );
-			if( [[mediaPath commonPrefixWithString: path options: NSCaseInsensitiveSearch] isEqualToString: mediaPath] ) {
+			if( [[mediaPath commonPrefixWithString: path options: NSCaseInsensitiveSearch] isEqualToString: mediaPath] )
+			{
 				BOOL		isWritable, isUnmountable, isRemovable;
 				NSString	*description, *type;
 				
@@ -11612,7 +11646,8 @@ static NSArray*	openSubSeriesArray = 0L;
 				
 				NSLog( path );
 				
-				if( isRemovable == YES && isWritable == NO ) {
+				if( isRemovable == YES && isWritable == NO )
+				{
 					return YES;
 				}
 			}
@@ -11628,7 +11663,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	[tags addObject:array];
 	
-	for( NSString *file in files ) {
+	for( NSString *file in files )
+	{
 		NSString			*destPath = [file stringByAppendingString:@"temp"];
 		
 		[DCMObject anonymizeContentsOfFile: file  tags:tags  writingToFile:destPath];
@@ -11643,11 +11679,14 @@ static NSArray*	openSubSeriesArray = 0L;
 	CFURLRef	url = CFURLCreateWithFileSystemPath(NULL /*allocator*/, (CFStringRef)inPath, kCFURLPOSIXPathStyle, NO /*isDirectory*/);
 	if (url != NULL) {
 		FSRef fsRef;
-		if (CFURLGetFSRef(url, &fsRef)) {
+		if (CFURLGetFSRef(url, &fsRef))
+		{
 			Boolean targetIsFolder, wasAliased;
-			if (FSResolveAliasFile (&fsRef, true /*resolveAliasChains*/, &targetIsFolder, &wasAliased) == noErr && wasAliased) {
+			if (FSResolveAliasFile (&fsRef, true /*resolveAliasChains*/, &targetIsFolder, &wasAliased) == noErr && wasAliased)
+			{
 				CFURLRef resolvedurl = CFURLCreateFromFSRef(NULL /*allocator*/, &fsRef);
-				if (resolvedurl != NULL) {
+				if (resolvedurl != NULL)
+				{
 					resolvedPath = CFURLCopyFileSystemPath(resolvedurl, kCFURLPOSIXPathStyle);
 					CFRelease(resolvedurl);
 				}
@@ -11658,22 +11697,27 @@ static NSArray*	openSubSeriesArray = 0L;
 	return (NSString *)resolvedPath;
 }
 
-- (BOOL) isAliasPath:(NSString *)inPath {
+- (BOOL) isAliasPath:(NSString *)inPath
+{
 	return [self pathResolved:inPath] != nil;
 }
 
-- (NSString*) resolveAliasPath:(NSString*) inPath {
+- (NSString*) resolveAliasPath:(NSString*) inPath
+{
 	NSString *resolved = [self pathResolved:inPath];
 	return resolved ? resolved : inPath;
 }
 
-- (NSString *)folderPathResolvingAliasAndSymLink:(NSString *)path {
+- (NSString *)folderPathResolvingAliasAndSymLink:(NSString *)path
+{
 	NSString *folder = path;
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+	if (![[NSFileManager defaultManager] fileExistsAtPath:path])
+	{
 		if (![self isAliasPath:path])
 			[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 		//we have an alias
-		else { 
+		else
+		{ 
 			//NSLog(@"INCOMING alias");
 			folder = [self pathResolved: path];
 		}
@@ -11694,37 +11738,45 @@ static NSArray*	openSubSeriesArray = 0L;
 	return folder;
 }
 
-- (IBAction)revealInFinder: (id)sender {
+- (IBAction)revealInFinder: (id)sender
+{
 	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 	NSMutableArray *filesToExport;
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] ) {
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] )
+	{
 		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
 	}
 	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
 	
-	if( [filesToExport count] ) {
+	if( [filesToExport count] )
+	{
 		[[NSWorkspace sharedWorkspace] selectFile:[filesToExport objectAtIndex: 0] inFileViewerRootedAtPath:0L];
 	}
 }
 
 static volatile int numberOfThreadsForJPEG = 0;
 
-- (BOOL) waitForAProcessor {
+- (BOOL) waitForAProcessor
+{
 	int processors =  MPProcessors();
 	
 	[processorsLock lockWhenCondition: 1];
 	BOOL result = numberOfThreadsForJPEG >= processors;
-	if( result == NO ) {
+	if( result == NO )
+	{
 		numberOfThreadsForJPEG++;
-		if( numberOfThreadsForJPEG >= processors ) {
+		if( numberOfThreadsForJPEG >= processors )
+		{
 			[processorsLock unlockWithCondition: 0];
 		}
-		else {
+		else
+		{
 			[processorsLock unlockWithCondition: 1];
 		}
 	}
-	else {
+	else
+	{
 		NSLog( @"waitForAProcessor ?? We should not be here...");
 		[processorsLock unlockWithCondition: 0];
 	}
@@ -11732,7 +11784,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return result;
 }
 
-- (void)decompressDICOMJPEGinINCOMING: (NSString*)compressedPath {
+- (void)decompressDICOMJPEGinINCOMING: (NSString*)compressedPath
+{
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
 	NSString			*INpath = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
@@ -11746,7 +11799,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[pool release];
 }
 
-- (void)decompressDICOMJPEG: (NSString*)compressedPath {
+- (void)decompressDICOMJPEG: (NSString*)compressedPath
+{
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
 	[self decompressDICOM:compressedPath to: 0L];
@@ -11758,7 +11812,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[pool release];
 }
 
-- (void)compressDICOMJPEG: (NSString*)compressedPath {
+- (void)compressDICOMJPEG: (NSString*)compressedPath
+{
 	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
 	
 	[self compressDICOMWithJPEG:compressedPath];
@@ -11770,7 +11825,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[pool release];
 }
 
-- (void)decompressArrayOfFiles: (NSArray*)array work: (NSNumber*)work {
+- (void)decompressArrayOfFiles: (NSArray*)array work: (NSNumber*)work
+{
 	[decompressThreadRunning lock];
 	[decompressArrayLock lock];
 	[decompressArray addObjectsFromArray: array];
@@ -11780,19 +11836,23 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self decompressThread: work];
 }
 
-- (IBAction) compressSelectedFiles: (id)sender {
-	if( bonjourDownloading == NO && isCurrentDatabaseBonjour == NO ) {
+- (IBAction) compressSelectedFiles: (id)sender
+{
+	if( bonjourDownloading == NO && isCurrentDatabaseBonjour == NO )
+	{
 		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 		NSMutableArray *filesToExport;
 		
-		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] ) {
+		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] )
+		{
 			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
 		}
 		else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
 		
 		NSMutableArray *result = [NSMutableArray array];
 		
-		for( int i = 0 ; i < [filesToExport count] ; i++ ) {
+		for( int i = 0 ; i < [filesToExport count] ; i++ )
+		{
 			if( [[[dicomFiles2Export objectAtIndex:i] valueForKey:@"fileType"] hasPrefix:@"DICOM"])
 				[result addObject: [filesToExport objectAtIndex: i]];
 		}
@@ -11809,20 +11869,24 @@ static volatile int numberOfThreadsForJPEG = 0;
 	else NSRunInformationalAlertPanel(NSLocalizedString(@"Non-Local Database", 0L), NSLocalizedString(@"Cannot compress images in a distant database.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
 }
 
-- (IBAction)decompressSelectedFiles: (id)sender {
+- (IBAction)decompressSelectedFiles: (id)sender
+{
 
-	if( bonjourDownloading == NO && isCurrentDatabaseBonjour == NO ) {
+	if( bonjourDownloading == NO && isCurrentDatabaseBonjour == NO )
+	{
 		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
 		NSMutableArray *filesToExport;
 		
-		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] ) {
+		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu] )
+		{
 			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
 		}
 		else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
 		
 		NSMutableArray *result = [NSMutableArray array];
 		
-		for( int i = 0 ; i < [filesToExport count] ; i++ ) {
+		for( int i = 0 ; i < [filesToExport count] ; i++ )
+		{
 			if( [[[dicomFiles2Export objectAtIndex:i] valueForKey:@"fileType"] hasPrefix:@"DICOM"])
 				[result addObject: [filesToExport objectAtIndex: i]];
 		}
@@ -11849,7 +11913,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	finished = NO;
 	do {
 		[processorsLock lockWhenCondition: 1];
-		if( numberOfThreadsForJPEG <= 0) {
+		if( numberOfThreadsForJPEG <= 0)
+		{
 			finished = YES;
 			[processorsLock unlockWithCondition: 1];
 		}
@@ -11864,7 +11929,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	numberOfThreadsForJPEG = 0;
 	
-	switch( tow) {
+	switch( tow)
+	{
 		case 'C':
 			[appController growlTitle: NSLocalizedString( @"Files Compression", 0L) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to compress %d files", 0L), [array count]] name:@"newfiles"];
 			break;
@@ -11874,7 +11940,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			break;
 	}
 	
-	for( id obj in array ) {
+	for( id obj in array )
+	{
 		[self waitForAProcessor];
 		
 		switch( tow) {
@@ -11893,9 +11960,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	finished = NO;
-	do {
+	do
+	{
 		[processorsLock lockWhenCondition: 1];
-		if( numberOfThreadsForJPEG <= 0 ) {
+		if( numberOfThreadsForJPEG <= 0 )
+		{
 			finished = YES;
 			[processorsLock unlockWithCondition: 1];
 		}
@@ -11903,7 +11972,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	while( finished == NO);
 	
-	switch( tow) {
+	switch( tow)
+	{
 		case 'C':
 			[appController growlTitle: NSLocalizedString( @"Files Compression", nil) description: NSLocalizedString(@"Done !", nil) name:@"newfiles"];
 			break;
@@ -11918,7 +11988,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[decompressThreadRunning unlock];
 }
 
-- (void)checkIncomingThread: (id)sender {
+- (void)checkIncomingThread: (id)sender
+{
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
 	[checkIncomingLock lock];
@@ -11935,7 +12006,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		//NSLog(@"Scan folder START");
 		
-		if( bonjourDownloading == NO && isCurrentDatabaseBonjour == NO ) {	
+		if( bonjourDownloading == NO && isCurrentDatabaseBonjour == NO )
+		{	
 			//need to resolve aliases and symbolic links
 			INpath = [self folderPathResolvingAliasAndSymLink:INpath];
 			OUTpath = [self folderPathResolvingAliasAndSymLink:OUTpath];
@@ -11948,7 +12020,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:INpath];
 			
-			while (pathname = [enumer nextObject]) {
+			while (pathname = [enumer nextObject])
+			{
 				NSString *srcPath = [INpath stringByAppendingPathComponent:pathname];
 				NSString *originalPath = srcPath;
 				//NSLog(@"Incoming path: %@", srcPath);
@@ -11973,7 +12046,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 						//Is this directory empty?? If yes, delete it!
 						//if alias assume nested folders should stay
 						if( [dirContent count] == 0 && !isAlias) [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
-						if( [dirContent count] == 1) {
+						if( [dirContent count] == 1)
+						{
 							if( [[[dirContent objectAtIndex: 0] uppercaseString] isEqualToString:@".DS_STORE"]) [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
 						}
 					}
@@ -11991,7 +12065,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 							 [DicomFile isNRRDFile:srcPath]			||
 							 [DicomFile isXMLDescriptedFile:srcPath]	||
 							 [DicomFile isXMLDescriptorFile:srcPath]) 
-							&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO)) {
+							&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO))
+							{
 							newFilesInIncoming = YES;
 							
 							if (isDicomFile)
@@ -12017,7 +12092,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 								result = [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil];
 								[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
 							}
-							else {
+							else
+							{
 								if ([DicomFile isXMLDescriptorFile:srcPath])
 								{ // XML comes before ZIP in alphabetic order...
 									[[NSFileManager defaultManager] movePath:srcPath toPath:dstPath handler:nil]; // move the XML first
@@ -12042,7 +12118,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 								result = [[NSFileManager defaultManager] movePath:srcPath toPath:dstPath handler:nil];
 							}
 							
-							if ( result == YES ) {
+							if ( result == YES )
+							{
 								[filesArray addObject:dstPath];
 							}
 						}
@@ -12052,7 +12129,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 							{
 								[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
 							}
-							else {
+							else
+							{
 								//	NSLog( [ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]);
 								
 								if( [[NSFileManager defaultManager] movePath:srcPath toPath:[ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]  handler:nil] == NO)
@@ -12065,14 +12143,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 			}
 			
-			if ( [filesArray count] > 0 ) {
+			if ( [filesArray count] > 0 )
+			{
 				newFilesInIncoming = YES;
 				
-				if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"ANONYMIZELISTENER"] == YES ) {
+				if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"ANONYMIZELISTENER"] == YES )
+				{
 					[self listenerAnonymizeFiles: filesArray];
 				}
 				
-				for( id filter in [PluginManager preProcessPlugins] ) {
+				for( id filter in [PluginManager preProcessPlugins] )
+				{
 					[filter processFiles: filesArray];
 				}
 				
@@ -12088,8 +12169,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					NSLog(@"Move the files back to the incoming folder...");
 					
-					for( NSString *file in filesArray )	{
-						do {
+					for( NSString *file in filesArray )
+					{
+						do
+						{
 							dstPath = [INpath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", x]];
 							x++;
 						}
@@ -12099,7 +12182,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 				}
 				
-				if( COMPRESSDICOMLISTENER )	{
+				if( COMPRESSDICOMLISTENER )
+				{
 					if( [filesArray count] > 0 ) {
 						[decompressThreadRunning lock];
 						[decompressArrayLock lock];
@@ -12111,14 +12195,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 				}
 			}
-			else {
+			else
+			{
 				if( [compressedPathArray count] == 0) newFilesInIncoming = NO;
 				else newFilesInIncoming = YES;
 			}
 			
 			[filesArray release];
 			
-			if( [compressedPathArray count] > 0 ) {
+			if( [compressedPathArray count] > 0 )
+			{
 				[decompressArrayLock lock];
 				[decompressArray addObjectsFromArray: compressedPathArray];
 				[decompressArrayLock unlock];
@@ -12139,7 +12225,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[pool release];
 }
 
-- (void)setDockIcon {
+- (void)setDockIcon
+{
 	NSImage	*image = nil;
 	
 	if( newFilesInIncoming) image = downloadingOsiriXIcon;
@@ -12149,18 +12236,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[[[NSApplication sharedApplication] dockTile] setBadgeLabel:@""];
 	}
 	
-	if( currentIcon != image) {
+	if( currentIcon != image)
+	{
 		currentIcon = image;
 		[[NSApplication sharedApplication] setApplicationIconImage: image];
 		NSLog( @"dock icon set");
 	}
 }
 
-- (void)checkIncoming: (id)sender {
+- (void)checkIncoming: (id)sender
+{
 	if( isCurrentDatabaseBonjour) return;
 	if( managedObjectContext == nil) return;
 	
-	if( [checkIncomingLock tryLock] ) {
+	if( [checkIncomingLock tryLock] )
+	{
 		[NSThread detachNewThreadSelector: @selector(checkIncomingThread:) toTarget:self withObject: self];
 		[checkIncomingLock unlock];
 	}

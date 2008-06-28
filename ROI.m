@@ -3777,15 +3777,63 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				// ARROW
 				
-//				glBegin(GL_TRIANGLES);
+				glLineWidth( 1.0);
+				glBegin(GL_LINE_LOOP);
 				
-				glEnable(GL_BLEND);
-//				glDisable(GL_POLYGON_SMOOTH);
-//				glDisable(GL_POINT_SMOOTH);
-//				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 				
-				glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., 0.25);
-				glBegin(GL_POLYGON);
+				if(b.y-a.y > 0) 
+				{
+					angle = atan( slide)/deg2rad;
+					
+					angle = 80 - angle - thickness;
+					adj = (ARROWSIZE + thickness * 15)  * cos( angle*deg2rad);
+					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
+					
+					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+					else
+						glVertex2f( a.x + adj, a.y + (op));
+						
+					angle = atan( slide)/deg2rad;
+					angle = 100 - angle + thickness;
+					adj = (ARROWSIZE + thickness * 15) * cos( angle*deg2rad);
+					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
+					
+					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+					else
+						glVertex2f( a.x + adj, a.y + (op));
+				}
+				else
+				{
+					angle = atan( slide)/deg2rad;
+					
+					angle = 180 + 80 - angle - thickness;
+					adj = (ARROWSIZE + thickness * 15) * cos( angle*deg2rad);
+					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
+					
+					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+					else
+						glVertex2f( a.x + adj, a.y + (op));
+						
+					angle = atan( slide)/deg2rad;
+					angle = 180 + 100 - angle + thickness;
+					adj = (ARROWSIZE + thickness * 15) * cos( angle*deg2rad);
+					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
+					
+					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+					else
+						glVertex2f( a.x + adj, a.y + (op));
+				}
+				glVertex2f( a.x , a.y );
+				glEnd();
+				
+				glBegin(GL_TRIANGLES);
+				
+				glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 				
 				if(b.y-a.y > 0) 
 				{
