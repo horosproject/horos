@@ -3757,6 +3757,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glEnd();
 				
 				glPointSize( thickness*2);
+					
 				glBegin( GL_POINTS);
 				if(b.y-a.y > 0)
 				{	
@@ -3907,8 +3908,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
 				
-				glPointSize( thickness);
-//				glPointSize( sqrt( thickness)*3.);
+				if( tArrow)
+					glPointSize( sqrt( thickness)*3.);
+				else
+					glPointSize( thickness*2);
 				
 				glBegin( GL_POINTS);
 				for( long i = 0; i < [points count]; i++)

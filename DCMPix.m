@@ -5986,22 +5986,24 @@ END_CREATE_ROIS:
 			orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
 			
 			val = Papy3GetElement (theGroupP, papImageOrientationPatientGr, &nbVal, &elemType);
-			if ( val ) {
+			if ( val )
+			{
 				tmpVal3 = val;
-				if( nbVal != 6) { nbVal = 6;		NSLog(@"Orientation is NOT 6 !!!");}
-				for ( int j = 0; j < nbVal; j++ ) {
+				if( nbVal != 6)
+				{
+					NSLog(@"Orientation is NOT 6 !!!");
+					if( nbVal > 6 ) nbVal = 6;
+				}
+				
+				for ( int j = 0; j < nbVal; j++ )
+				{
 					orientation[ j]  = [[NSString stringWithCString:tmpVal3->a] floatValue];
 					tmpVal3++;
 				}
+				
+				for ( int j = nbVal; j < 6; j++ )
+					orientation[ j] = 0;
 			}
-			
-			//				val = Papy3GetElement (theGroupP, papSliceLocationGr, &nbVal, &elemType);
-			//				if ( val )
-			//				{
-			//					sliceLocation = [[NSString stringWithCString:val->a] floatValue];
-			//				}
-			//				else sliceLocation = -1;
-			
 			
 			val = Papy3GetElement (theGroupP, papImageLateralityGr, &nbVal, &elemType);
 			if ( val ) laterality = [[NSString stringWithCString:val->a] retain];
@@ -6612,13 +6614,23 @@ END_CREATE_ROIS:
 								orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
 								
 								val = Papy3GetElement (gr, papImageOrientationPatientGr, &nbVal, &elemType);
-								if ( val ) {
+								if ( val )
+								{
 									tmpVal3 = val;
-									if( nbVal != 6) { nbVal = 6;		NSLog(@"Orientation is NOT 6 !!!");}
-									for ( int j = 0; j < nbVal; j++ ) {
+									if( nbVal != 6)
+									{
+										NSLog(@"Orientation is NOT 6 !!!");
+										if( nbVal > 6 ) nbVal = 6;
+									}
+									
+									for ( int j = 0; j < nbVal; j++ )
+									{
 										orientation[ j]  = [[NSString stringWithCString:tmpVal3->a] floatValue];
 										tmpVal3++;
 									}
+									
+									for (int j = nbVal; j < 6; j++)
+										orientation[ j] = 0;
 								}
 								break;
 							}
@@ -6638,13 +6650,15 @@ END_CREATE_ROIS:
 		
 #pragma mark MR/CT multiframe		
 		// Is it a new MR/CT multi-frame exam?
-		if ((err = Papy3GotoGroupNb (fileNb, 0x5200)) == 0) {
+		if ((err = Papy3GotoGroupNb (fileNb, 0x5200)) == 0)
+		{
 			SElement	  *groupOverlay;
 			
 			NSLog(@"Group 5200 available - Start");
 			
 			// read group 0x6001 from the file
-			if ((err = Papy3GroupRead (fileNb, &groupOverlay)) > 0) {
+			if ((err = Papy3GroupRead (fileNb, &groupOverlay)) > 0)
+			{
 				NSLog(@"Group 5200 available - Papy3GroupRead done");
 				
 				// ****** ****** ****** ************************************************************************
@@ -6654,15 +6668,18 @@ END_CREATE_ROIS:
 				val = Papy3GetElement (groupOverlay, papSharedFunctionalGroupsSequence, &nbVal, &elemType);
 				
 				// there is an element
-				if ( val ) {
+				if ( val )
+				{
 					// there is a sequence
-					if (val->sq ) {
+					if (val->sq )
+					{
 						
 						// get a pointer to the first element of the list
 						Papy_List *dcmList = val->sq->object->item;
 						
 						// loop through the elements of the sequence
-						while (dcmList != NULL)	{
+						while (dcmList != NULL)
+						{
 							SElement * gr = (SElement *) dcmList->object->group;
 							
 							//NSLog( @"group:%x, element:%x", gr->group, gr->element);
@@ -6670,9 +6687,11 @@ END_CREATE_ROIS:
 							switch( gr->group) {
 								case 0x0020:
 									val3 = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &elemType);
-									if (val3 != NULL && nbVal >= 1)	{
+									if (val3 != NULL && nbVal >= 1)
+									{
 										// there is a sequence
-										if (val3->sq ) {
+										if (val3->sq )
+										{
 											Papy_List	  *PixelMatrixSeq;
 											
 											// get a pointer to the first element of the list
@@ -6684,16 +6703,26 @@ END_CREATE_ROIS:
 												
 												//NSLog( @"group:%x, element:%x", gr28->group, gr28->element);
 												
-												switch( gr28->group) {
+												switch( gr28->group)
+												{
 													case 0x0020:
 														val3 = Papy3GetElement (gr28, papImageOrientationPatientGr, &nbVal, &elemType);
-														if (val3 != NULL && nbVal >= 1) {
+														if (val3 != NULL && nbVal >= 1)
+														{
 															tmpVal3 = val3;
-															if( nbVal != 6) { nbVal = 6;		NSLog(@"Orientation is NOT 6 !!!");}
-															for ( int j = 0; j < nbVal; j++ )	{
+															if( nbVal != 6)
+															{
+																NSLog(@"Orientation is NOT 6 !!!");
+																if( nbVal > 6 ) nbVal = 6;
+															}
+															for ( int j = 0; j < nbVal; j++ )
+															{
 																orientation[ j]  = [[NSString stringWithCString:tmpVal3->a] floatValue];
 																tmpVal3++;
 															}
+															
+															for ( int j = nbVal; j < 6; j++)
+																orientation[ j] = 0;
 														}
 														break;
 												}
@@ -6724,22 +6753,26 @@ END_CREATE_ROIS:
 												
 												//NSLog( @"group:%x, element:%x", gr28->group, gr28->element);
 												
-												switch( gr28->group) {
+												switch( gr28->group)
+												{
 													case 0x0018:
 														val3 = Papy3GetElement (gr28, papSliceThicknessGr, &nbVal, &elemType);
-														if (val3 != NULL && nbVal >= 1) {
+														if (val3 != NULL && nbVal >= 1)
+														{
 															sliceThickness = [[NSString stringWithCString:val3->a] floatValue];
 														}
 														break;
 														
 														case 0x0028:
 														val3 = Papy3GetElement (gr28, papPixelSpacingGr, &nbVal, &elemType);
-														if (val3 != NULL && nbVal >= 1) {
+														if (val3 != NULL && nbVal >= 1)
+														{
 															tmp = val3;
 															
 															pixelSpacingY = [[NSString stringWithCString:tmp->a] floatValue];
 															
-															if( nbVal > 1) {
+															if( nbVal > 1)
+															{
 																tmp++;
 																pixelSpacingX = [[NSString stringWithCString:tmp->a] floatValue];
 															}
@@ -6754,22 +6787,27 @@ END_CREATE_ROIS:
 									}
 									
 									val3 = Papy3GetElement (gr, papPixelValueTransformationSequence, &nbVal, &elemType);
-									if (val3 != NULL && nbVal >= 1)	{
+									if (val3 != NULL && nbVal >= 1)
+									{
 										// there is a sequence
-										if (val3->sq) {
+										if (val3->sq)
+										{
 											// get a pointer to the first element of the list
 											Papy_List *PixelMatrixSeq = val3->sq->object->item;
 											
 											// loop through the elements of the sequence
-											while (PixelMatrixSeq) {
+											while (PixelMatrixSeq)
+											{
 												SElement * gr28 = (SElement *) PixelMatrixSeq->object->group;
 												
 												//NSLog( @"group:%x, element:%x", gr28->group, gr28->element);
 												
-												switch( gr28->group) {
+												switch( gr28->group)
+												{
 													case 0x0028:
 														val3 = Papy3GetElement (gr28, papRescaleInterceptGr, &nbVal, &elemType);
-														if (val3 != NULL && nbVal >= 1) {
+														if (val3 != NULL && nbVal >= 1)
+														{
 															tmpVal3 = val3;
 															// get the last offset
 															for ( int j = 1; j < nbVal; j++ ) tmpVal3++;
@@ -6777,7 +6815,8 @@ END_CREATE_ROIS:
 														}
 														
 														val3 = Papy3GetElement (gr28, papRescaleSlopeGr, &nbVal, &elemType);
-														if (val3 != NULL && nbVal >= 1)	{
+														if (val3 != NULL && nbVal >= 1)
+														{
 															tmpVal3 = val3;
 															// get the last slope
 															for ( int j = 1; j < nbVal; j++ ) tmpVal3++;

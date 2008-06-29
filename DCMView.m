@@ -3420,24 +3420,27 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					NSArray *winList = [[NSApplication sharedApplication] windows];
 					BOOL	found = NO;
 					
-					for( int i = 0; i < [winList count]; i++)
+					if( [self is2DViewer])
 					{
-						if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROI"])
+						for( int i = 0; i < [winList count]; i++)
 						{
-							found = YES;
-							if( [self is2DViewer])
+							if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROI"])
 							{
+								found = YES;
+								
 								[[[winList objectAtIndex:i] windowController] setROI: [curRoiList objectAtIndex: selected] :[self windowController]];
-								[[winList objectAtIndex:i] makeKeyAndOrderFront: self];
+								if( [event clickCount] > 1)
+									[[winList objectAtIndex:i] makeKeyAndOrderFront: self];
 							}
 						}
-					}
-					
-					if( [event clickCount] > 1 && [self is2DViewer] == YES)
-					{
-						if( found == NO) {
-							ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: [curRoiList objectAtIndex: selected] :[self windowController]];
-							[roiWin showWindow:self];
+						
+						if( [event clickCount] > 1)
+						{
+							if( found == NO)
+							{
+								ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: [curRoiList objectAtIndex: selected] :[self windowController]];
+								[roiWin showWindow:self];
+							}
 						}
 					}
 				}

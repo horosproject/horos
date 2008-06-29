@@ -2224,12 +2224,19 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				{
 					long j;
 					tmp = val;
-					if( nbVal != 6) { nbVal = 6;		NSLog(@"Orientation is NOT 6 !!!");}
+					if( nbVal != 6)
+					{
+						NSLog(@"Orientation is NOT 6 !!!");
+						if( nbVal > 6 ) nbVal = 6;
+					}
 					for (j = 0; j < nbVal; j++)
 					{
 						orientation[ j]  = [[NSString stringWithCString:tmp->a] floatValue];
 						tmp++;
 					}
+					
+					for (j = nbVal; j < 6; j++)
+						orientation[ j] = 0;
 				}
 				
 				// Compute normal vector
