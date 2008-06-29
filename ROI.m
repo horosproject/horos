@@ -3777,11 +3777,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glEnd();
 				
 				// ARROW
-				
-				glLineWidth( 1.0);
-				glBegin(GL_LINE_LOOP);
-				
-				glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+				NSPoint aa1, aa2, aa3;
 				
 				if(b.y-a.y > 0) 
 				{
@@ -3792,9 +3788,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
 					
 					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
-						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+						aa1 = NSMakePoint( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
 					else
-						glVertex2f( a.x + adj, a.y + (op));
+						aa1 = NSMakePoint( a.x + adj, a.y + (op));
 						
 					angle = atan( slide)/deg2rad;
 					angle = 100 - angle + thickness;
@@ -3802,9 +3798,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
 					
 					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
-						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+						aa2 = NSMakePoint( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
 					else
-						glVertex2f( a.x + adj, a.y + (op));
+						aa2 = NSMakePoint( a.x + adj, a.y + (op));
 				}
 				else
 				{
@@ -3815,9 +3811,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
 					
 					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
-						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+						aa1 = NSMakePoint( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
 					else
-						glVertex2f( a.x + adj, a.y + (op));
+						aa1 = NSMakePoint( a.x + adj, a.y + (op));
 						
 					angle = atan( slide)/deg2rad;
 					angle = 180 + 100 - angle + thickness;
@@ -3825,64 +3821,31 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
 					
 					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
-						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
+						aa2 = NSMakePoint( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
 					else
-						glVertex2f( a.x + adj, a.y + (op));
+						aa2 = NSMakePoint( a.x + adj, a.y + (op));
 				}
-				glVertex2f( a.x , a.y );
-				glEnd();
+				aa3 = NSMakePoint( a.x , a.y );
 				
+				glLineWidth( 1.0);
 				glBegin(GL_TRIANGLES);
 				
 				glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 				
-				if(b.y-a.y > 0) 
-				{
-					angle = atan( slide)/deg2rad;
-					
-					angle = 80 - angle - thickness;
-					adj = (ARROWSIZE + thickness * 15)  * cos( angle*deg2rad);
-					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
-					
-					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
-						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
-					else
-						glVertex2f( a.x + adj, a.y + (op));
-						
-					angle = atan( slide)/deg2rad;
-					angle = 100 - angle + thickness;
-					adj = (ARROWSIZE + thickness * 15) * cos( angle*deg2rad);
-					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
-					
-					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
-						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
-					else
-						glVertex2f( a.x + adj, a.y + (op));
-				}
-				else
-				{
-					angle = atan( slide)/deg2rad;
-					
-					angle = 180 + 80 - angle - thickness;
-					adj = (ARROWSIZE + thickness * 15) * cos( angle*deg2rad);
-					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
-					
-					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
-						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
-					else
-						glVertex2f( a.x + adj, a.y + (op));
-						
-					angle = atan( slide)/deg2rad;
-					angle = 180 + 100 - angle + thickness;
-					adj = (ARROWSIZE + thickness * 15) * cos( angle*deg2rad);
-					op = (ARROWSIZE + thickness * 15) * sin( angle*deg2rad);
-					
-					if( pixelSpacingX != 0 && pixelSpacingY != 0 )
-						glVertex2f( a.x + adj, a.y + (op*pixelSpacingX / pixelSpacingY));
-					else
-						glVertex2f( a.x + adj, a.y + (op));
-				}
-				glVertex2f( a.x , a.y );
+				glVertex2f( aa1.x, aa1.y);
+				glVertex2f( aa2.x, aa2.y);
+				glVertex2f( aa3.x, aa3.y);
+				
+				glEnd();
+				
+				glBegin(GL_LINE_LOOP);
+				glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+				
+				glVertex2f( aa1.x, aa1.y);
+				glVertex2f( aa2.x, aa2.y);
+				glVertex2f( aa3.x, aa3.y);
+				
 				glEnd();
 			}
 			else
