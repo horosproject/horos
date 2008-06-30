@@ -4322,70 +4322,81 @@ static NSArray*	statesArray = nil;
 	NSArray			*childrenArray = [self childrenArray: item onlyImages:onlyImages];
 	NSMutableArray	*imagesPathArray = 0L;
 	
-	if ([[item valueForKey:@"type"] isEqualToString:@"Series"] )
-	{
-		return childrenArray;
-	}
+	[managedObjectContext lock];
 	
-	if ([[item valueForKey:@"type"] isEqualToString:@"Study"])
+	@try
 	{
-		imagesPathArray = [NSMutableArray arrayWithCapacity: [childrenArray count]];
-		
-		BOOL first = YES;
-		
-		for( id i in childrenArray)
+		if ([[item valueForKey:@"type"] isEqualToString:@"Series"] )
 		{
-			int whichObject = preferredObject;
+			imagesPathArray = [NSMutableArray arrayWithArray: childrenArray];
+		}
+		else if ([[item valueForKey:@"type"] isEqualToString:@"Study"])
+		{
+			imagesPathArray = [NSMutableArray arrayWithCapacity: [childrenArray count]];
 			
-			if( preferredObject == oFirstForFirst)
+			BOOL first = YES;
+			
+			for( id i in childrenArray)
 			{
-				if( first == NO) preferredObject = oAny;
-			}
-			
-			first = NO;
-			
-			if( preferredObject != oMiddle )
-			{
-				if( [i valueForKey:@"thumbnail"] == 0L) whichObject = oMiddle;
-			}
-			
-			switch( whichObject)
-			{			
-				case oAny:
-				{
-					NSManagedObject	*obj = [[i valueForKey:@"images"] anyObject];
-					if( obj) [imagesPathArray addObject: obj];
-				}
-				break;
+				int whichObject = preferredObject;
 				
-				case oMiddle:
+				if( preferredObject == oFirstForFirst)
 				{
-					NSArray	*seriesArray = [self childrenArray: i onlyImages:onlyImages];
-					
-					// Get the middle image of the series
-					if( [seriesArray count] > 0)
+					if( first == NO) preferredObject = oAny;
+				}
+				
+				first = NO;
+				
+				if( preferredObject != oMiddle )
+				{
+					if( [i valueForKey:@"thumbnail"] == 0L) whichObject = oMiddle;
+				}
+				
+				switch( whichObject)
+				{			
+					case oAny:
 					{
-						if( [seriesArray count] > 1)
-							[imagesPathArray addObject: [seriesArray objectAtIndex: -1 + [seriesArray count]/2]];
-						else
-							[imagesPathArray addObject: [seriesArray objectAtIndex: [seriesArray count]/2]];
+						NSManagedObject	*obj = [[i valueForKey:@"images"] anyObject];
+						if( obj) [imagesPathArray addObject: obj];
 					}
+					break;
+					
+					case oMiddle:
+					{
+						NSArray	*seriesArray = [self childrenArray: i onlyImages:onlyImages];
+						
+						// Get the middle image of the series
+						if( [seriesArray count] > 0)
+						{
+							if( [seriesArray count] > 1)
+								[imagesPathArray addObject: [seriesArray objectAtIndex: -1 + [seriesArray count]/2]];
+							else
+								[imagesPathArray addObject: [seriesArray objectAtIndex: [seriesArray count]/2]];
+						}
+					}
+					
+					break;
+					
+					case oFirstForFirst:
+					{
+						NSArray	*seriesArray = [self childrenArray: i onlyImages:onlyImages];
+					
+						// Get the middle image of the series
+						if( [seriesArray count] > 0)
+							[imagesPathArray addObject: [seriesArray objectAtIndex: 0]];
+					}
+					break;
 				}
-				
-				break;
-				
-				case oFirstForFirst:
-				{
-					NSArray	*seriesArray = [self childrenArray: i onlyImages:onlyImages];
-				
-					// Get the middle image of the series
-					if( [seriesArray count] > 0)
-						[imagesPathArray addObject: [seriesArray objectAtIndex: 0]];
-				}
-				break;
 			}
 		}
 	}
+	
+	@catch (NSException *e)
+	{
+		NSLog(@"imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject onlyImages:(BOOL) onlyImages: %@", e);
+	}
+	
+	[managedObjectContext unlock];
 	
 	return imagesPathArray;
 }
