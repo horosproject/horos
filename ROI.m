@@ -3360,7 +3360,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 																
 				glDisable(GL_POLYGON_SMOOTH);
 				glEnable(GL_TEXTURE_RECTANGLE_EXT);
-
+				
 //				if(needsLoadTexture)
 //				{
 //					[self loadLayerImageTexture];

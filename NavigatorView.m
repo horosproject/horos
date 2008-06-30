@@ -59,6 +59,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		rect.size.height = [v maxMovieIndex]*n.thumbnailHeight;
 		
 		if( rect.size.width > [[[v window] screen] visibleFrame].size.width) rect.size.width = [[[v window] screen] visibleFrame].size.width;
+		if( rect.size.height > [[[v window] screen] visibleFrame].size.height/2) rect.size.height = [[[v window] screen] visibleFrame].size.height/2;
 		
 		rect.origin.x = [[[v window] screen] visibleFrame].origin.x;
 		rect.origin.y = [[[v window] screen] visibleFrame].origin.y;
@@ -137,8 +138,13 @@ static float deg2rad = 3.14159265358979/180.0;
 
 		[[self window] setDelegate:self];
 		
+		[[self openGLContext] makeCurrentContext];
+		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+		
 		GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 		[[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
+		
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     }
     return self;
 }

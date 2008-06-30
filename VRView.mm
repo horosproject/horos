@@ -988,7 +988,7 @@ public:
 			[[progress progress] setMaxValue: [[[self window] windowController] movieFrames]];
 			
 			[dcmSequence setSeriesNumber:5250 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
-			[dcmSequence setSeriesDescription:@"4D VR"];
+			[dcmSequence setSeriesDescription: [dcmSeriesName stringValue]];
 			[dcmSequence setSourceFile: [firstObject sourceFile]];
 			
 			for( i = 0; i < [[[self window] windowController] movieFrames]; i++)
@@ -1671,8 +1671,11 @@ public:
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
 		advancedCLUT = NO;
 		
-		lowResLODFactor = 3.0;
-		
+		if( MPProcessors() > 4)
+			lowResLODFactor = 2.0;
+		else
+			lowResLODFactor = 3.0;
+			
 		[[IMService notificationCenter] addObserver:self selector:@selector(_iChatStateChanged:) name:IMAVManagerStateChangedNotification object:nil];
 	}
     
@@ -4347,13 +4350,7 @@ public:
 	{
 		LOD = f;
 		
-		#if __ppc__
-		LOD += 0.5;
-		#else
-		LOD += 0.2;
-		#endif
-		
-		if( LOD < 1.5) LOD = 1.5;
+		if( LOD < 1.3) LOD = 1.3;
 		
 		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 		if( volumeMapper) volumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);

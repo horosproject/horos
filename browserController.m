@@ -10430,6 +10430,8 @@ static NSArray*	openSubSeriesArray = 0L;
 
 - (id)initWithWindow: (NSWindow *)window
 {
+	displayEmptyDatabase = YES;
+	
 	[AppController initialize];
 	
 	for( int i = 0 ; i < [[NSScreen screens] count] ; i++)
@@ -10445,8 +10447,6 @@ static NSArray*	openSubSeriesArray = 0L;
 	self = [super initWithWindow: window];
 	if( self )
 	{
-		displayEmptyDatabase = YES;
-		
 		// Remove identical local sources
 		
 		NSArray *dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
