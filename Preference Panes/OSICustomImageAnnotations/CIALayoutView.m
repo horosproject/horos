@@ -25,6 +25,9 @@
     self = [super initWithFrame:frame];
     if(self)
 	{	
+		[self setDefaultDisabledText];
+		[self setDefaultEnabledText];
+		
 		// The layout view contains 8 place holders for Annotations. They are labeled as follow:
 		//  +-------+
 		//	| 5 6 7 |
@@ -71,8 +74,6 @@
 		}
 		placeHolderArray = [[NSArray arrayWithArray:placeHolderMutableArray] retain];
 		isEnabled = YES;
-		[self setDefaultDisabledText];
-		[self setDefaultEnabledText];
     }
     return self;
 }
