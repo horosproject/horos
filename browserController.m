@@ -6800,11 +6800,14 @@ static BOOL withReset = NO;
 	[self matrixDisplayIcons: self];
 }
 
-- (void)matrixNewIcon:(long) index: (NSManagedObject*)curFile {	
-	if( shouldDie == NO ) {
+- (void)matrixNewIcon:(long) index: (NSManagedObject*)curFile
+{	
+	if( shouldDie == NO )
+	{
 		long		i = index;
 		
-		if( curFile == nil ) {
+		if( curFile == nil )
+		{
 			[oMatrix setNeedsDisplay:YES];
 			return;
 		}
@@ -6822,132 +6825,140 @@ static BOOL withReset = NO;
 		[managedObjectContext lock];
 		
 		@try
-	{
-		NSString	*modality, *seriesSOPClassUID, *fileType;
-		
-		if( [[curFile valueForKey:@"type"] isEqualToString:@"Image"])
 		{
-			modality = [curFile valueForKey: @"modality"];
-			seriesSOPClassUID = [curFile valueForKeyPath: @"series.seriesSOPClassUID"];
-			fileType = [curFile valueForKey: @"fileType"];
-		}
-		else	// Series
-		{
-			seriesSOPClassUID = [curFile valueForKey: @"seriesSOPClassUID"];
+			NSString	*modality, *seriesSOPClassUID, *fileType;
 			
-			DicomImage *im = [[curFile valueForKey:@"images"] anyObject];
-			modality = [im valueForKey: @"modality"];
-			fileType = [im valueForKey: @"fileType"];
-			
-			if( img != notFoundImage)
+			if( [[curFile valueForKey:@"type"] isEqualToString:@"Image"])
 			{
-				if( [curFile valueForKey:@"thumbnail"] == 0L)
+				modality = [curFile valueForKey: @"modality"];
+				seriesSOPClassUID = [curFile valueForKeyPath: @"series.seriesSOPClassUID"];
+				fileType = [curFile valueForKey: @"fileType"];
+			}
+			else	// Series
+			{
+				seriesSOPClassUID = [curFile valueForKey: @"seriesSOPClassUID"];
+				
+				DicomImage *im = [[curFile valueForKey:@"images"] anyObject];
+				modality = [im valueForKey: @"modality"];
+				fileType = [im valueForKey: @"fileType"];
+				
+				if( img != notFoundImage)
 				{
-					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
+					if( [curFile valueForKey:@"thumbnail"] == 0L)
 					{
-						NSData *data = [BrowserController produceJPEGThumbnail: img];
-						[curFile setValue: data forKey:@"thumbnail"];
+						if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
+						{
+							NSData *data = [BrowserController produceJPEGThumbnail: img];
+							[curFile setValue: data forKey:@"thumbnail"];
+						}
 					}
 				}
 			}
-		}
-		
-		if ( img || [modality  hasPrefix: @"RT"] ) {
-			NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
-			[cell setTransparent:NO];
-			[cell setEnabled:YES];
 			
-			[cell setFont:[NSFont systemFontOfSize:9]];
-			[cell setImagePosition: NSImageBelow];
-			[cell setAction: @selector(matrixPressed:)];
-			
-			if ( [modality isEqualToString: @"RTSTRUCT"] ) {
-				[[contextualRT itemAtIndex: 0] setAction:@selector(createROIsFromRTSTRUCT:)];
-				[cell setMenu: contextualRT];
-			}
-			else {
-				[cell setMenu: contextual];
-			}
-			
-			NSString	*name = [curFile valueForKey:@"name"];
-			
-			if( name.length > 15) name = [name substringToIndex: 15];
-			
-			if ( [modality hasPrefix: @"RT"] ) {
-				[cell setTitle: [NSString stringWithFormat: @"%@\r%@", name, modality]];
-			}
-			else if ([seriesSOPClassUID isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]])
+			if ( img || [modality  hasPrefix: @"RT"] )
 			{
-				[cell setTitle: @"PDF"];
-				img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"pdf"]];
-			}
-			else if ([fileType isEqualToString: @"DICOMMPEG2"])
-			{
-				long count = [[curFile valueForKey:@"noFiles"] intValue];
+				NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
+				[cell setTransparent:NO];
+				[cell setEnabled:YES];
 				
-				if( count == 1) {
-					long frames = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
-					
-					if( frames > 1) [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"MPEG-2 Series\r%@\r%d Frames", 0L), name, frames]];
-					else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"MPEG-2 Series\r%@\r%d Image", 0L), name, count]];
-				}
+				[cell setFont:[NSFont systemFontOfSize:9]];
+				[cell setImagePosition: NSImageBelow];
+				[cell setAction: @selector(matrixPressed:)];
 				
-				img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"mpeg2"]];
-			}
-			else if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"]) {
-				long count = [[curFile valueForKey:@"noFiles"] intValue];
-				
-				if( count == 1) {
-					long frames = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
-					
-					if( frames > 1) [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Frames", 0L), name, frames]];
-					else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Image", 0L), name, count]];
-				}
-				else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Images", 0L), name, count]];
-			}
-			else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"])
-			{
-				if( [[curFile valueForKey: @"sliceLocation"] floatValue])
-					[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d\r%.2f", nil), i+1, [[curFile valueForKey: @"sliceLocation"] floatValue]]];
-				else
-					[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d", nil), i+1]];
-			}
-			
-			[cell setButtonType:NSPushOnPushOffButton];
-			
-			[cell setImage: img];
-			
-			if( setDCMDone == NO)
-			{
-				NSIndexSet  *index = [databaseOutline selectedRowIndexes];
-				if( [index count] >= 1)
+				if ( [modality isEqualToString: @"RTSTRUCT"] )
 				{
-					NSManagedObject* aFile = [databaseOutline itemAtRow:[index firstIndex]];
-					
-					[imageView setDCM:previewPix :[self imagesArray: aFile preferredObject: oAny] :0L :[[oMatrix selectedCell] tag] :'i' :YES];
-					[imageView setStringID:@"previewDatabase"];
-					setDCMDone = YES;
+					[[contextualRT itemAtIndex: 0] setAction:@selector(createROIsFromRTSTRUCT:)];
+					[cell setMenu: contextualRT];
 				}
+				else
+				{
+					[cell setMenu: contextual];
+				}
+				
+				NSString	*name = [curFile valueForKey:@"name"];
+				
+				if( name.length > 15) name = [name substringToIndex: 15];
+				
+				if ( [modality hasPrefix: @"RT"] )
+				{
+					[cell setTitle: [NSString stringWithFormat: @"%@\r%@", name, modality]];
+				}
+				else if ([seriesSOPClassUID isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]])
+				{
+					[cell setTitle: @"PDF"];
+					img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"pdf"]];
+				}
+				else if ([fileType isEqualToString: @"DICOMMPEG2"])
+				{
+					long count = [[curFile valueForKey:@"noFiles"] intValue];
+					
+					if( count == 1)
+					{
+						long frames = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+						
+						if( frames > 1) [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"MPEG-2 Series\r%@\r%d Frames", 0L), name, frames]];
+						else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"MPEG-2 Series\r%@\r%d Image", 0L), name, count]];
+					}
+					
+					img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"mpeg2"]];
+				}
+				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"])
+				{
+					long count = [[curFile valueForKey:@"noFiles"] intValue];
+					
+					if( count == 1)
+					{
+						long frames = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+						
+						if( frames > 1) [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Frames", 0L), name, frames]];
+						else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Image", 0L), name, count]];
+					}
+					else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Images", 0L), name, count]];
+				}
+				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"])
+				{
+					if( [[curFile valueForKey: @"sliceLocation"] floatValue])
+						[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d\r%.2f", nil), i+1, [[curFile valueForKey: @"sliceLocation"] floatValue]]];
+					else
+						[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d", nil), i+1]];
+				}
+				
+				[cell setButtonType:NSPushOnPushOffButton];
+				
+				[cell setImage: img];
+				
+				if( setDCMDone == NO)
+				{
+					NSIndexSet  *index = [databaseOutline selectedRowIndexes];
+					if( [index count] >= 1)
+					{
+						NSManagedObject* aFile = [databaseOutline itemAtRow:[index firstIndex]];
+						
+						[imageView setDCM:previewPix :[self imagesArray: aFile preferredObject: oAny] :0L :[[oMatrix selectedCell] tag] :'i' :YES];
+						[imageView setStringID:@"previewDatabase"];
+						setDCMDone = YES;
+					}
+				}
+			}		
+			else
+			{  // Show Error Button
+				NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
+				[cell setImage: nil];
+				[oMatrix setToolTip: NSLocalizedString(@"File not readable", nil) forCell:cell];
+				[cell setTitle: NSLocalizedString(@"File not readable", nil)];			
+				[cell setFont:[NSFont systemFontOfSize:9]];
+				[cell setTransparent:NO];
+				[cell setEnabled:NO];
+				[cell setButtonType:NSPushOnPushOffButton];
+				[cell setBezelStyle:NSShadowlessSquareBezelStyle];
+				[cell setTag:i];
 			}
-		}		
-		else {  // Show Error Button
-			NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
-			[cell setImage: nil];
-			[oMatrix setToolTip: NSLocalizedString(@"File not readable", nil) forCell:cell];
-			[cell setTitle: NSLocalizedString(@"File not readable", nil)];			
-			[cell setFont:[NSFont systemFontOfSize:9]];
-			[cell setTransparent:NO];
-			[cell setEnabled:NO];
-			[cell setButtonType:NSPushOnPushOffButton];
-			[cell setBezelStyle:NSShadowlessSquareBezelStyle];
-			[cell setTag:i];
 		}
-	}
 		
 		@catch( NSException *ne)
-	{
-		NSLog(@"matrixNewIcon exception: %@", [ne description]);
-	}
+		{
+			NSLog(@"matrixNewIcon exception: %@", [ne description]);
+		}
 		
 		[managedObjectContext unlock];
 		[managedObjectContext release];
@@ -8313,7 +8324,8 @@ static BOOL needToRezoom;
 
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-	if( [aCell isKindOfClass: [ImageAndTextCell class]] ) {
+	if( [aCell isKindOfClass: [ImageAndTextCell class]] )
+	{
 		[(ImageAndTextCell*) aCell setLastImage: 0L];
 		[(ImageAndTextCell*) aCell setLastImageAlternate: 0L];
 	}
@@ -8330,8 +8342,10 @@ static BOOL needToRezoom;
 		[aCell setFont:txtFont];
 		[aCell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 		
-		if( [[aTableColumn identifier] isEqualToString:@"Source"] )	{ 
-			if ([[[self.albumArray objectAtIndex:rowIndex] valueForKey:@"smartAlbum"] boolValue] ) {
+		if( [[aTableColumn identifier] isEqualToString:@"Source"] )
+		{ 
+			if ([[[self.albumArray objectAtIndex:rowIndex] valueForKey:@"smartAlbum"] boolValue] )
+			{
 				if (isCurrentDatabaseBonjour) {
 					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_sharedSmartAlbum.tiff"]];
 				}
@@ -8351,7 +8365,8 @@ static BOOL needToRezoom;
 		}
 	}
 	
-	if ([aTableView isEqual:bonjourServicesList] ) {
+	if ([aTableView isEqual:bonjourServicesList] )
+	{
 		NSFont *txtFont;
 		
 		if( rowIndex == 0) txtFont = [NSFont boldSystemFontOfSize: 11];
@@ -8367,7 +8382,8 @@ static BOOL needToRezoom;
 		if (rowIndex == 0) {
 			[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"osirix16x16.tiff"]];
 		}
-		else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"] ) {
+		else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"] )
+		{
 			[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"bonjour.tiff"]];
 		}
 		else {
@@ -8384,8 +8400,10 @@ static BOOL needToRezoom;
 			{
 				BOOL isDirectory;
 				
-				if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] )	{
-					if( isDirectory ) {
+				if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] )
+				{
+					if( isDirectory )
+					{
 						NSString *iPodControlPath = [path stringByAppendingPathComponent:@"iPod_Control"];
 						BOOL isItAnIpod = [[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath];
 						
@@ -8393,23 +8411,27 @@ static BOOL needToRezoom;
 						BOOL isThereAnOsiriXDataAtTheRoot = NO;
 						
 						NSArray* mountedVolumes = [[NSWorkspace sharedWorkspace] mountedLocalVolumePaths];
-						for( NSString *vol in mountedVolumes ) {
+						for( NSString *vol in mountedVolumes )
+						{
 							if( [vol isEqualToString: path]) isThereAnOsiriXDataAtTheRoot = YES;
 						}
 						
 						BOOL removableMedia = NO;
 						NSArray* removableVolumes = [[NSWorkspace sharedWorkspace] mountedRemovableMedia];
-						for( NSString *vol in removableVolumes ) {
+						for( NSString *vol in removableVolumes )
+						{
 							if( [vol isEqualToString: path]) removableMedia = YES;
 						}
 						
 						// iPod? or root?
 						
-						if (isItAnIpod || isThereAnOsiriXDataAtTheRoot)	{
+						if (isItAnIpod || isThereAnOsiriXDataAtTheRoot)
+						{
 							NSImage	*im = [[NSWorkspace sharedWorkspace] iconForFile: path];
 							[im setSize: NSMakeSize( 16, 16)];
 							[(ImageAndTextCell*) aCell setImage: im];
-							if( isItAnIpod || removableMedia ) {
+							if( isItAnIpod || removableMedia )
+							{
 								[(ImageAndTextCell*) aCell setLastImage: [NSImage imageNamed:@"iPodEjectOff.tif"]];
 								[(ImageAndTextCell*) aCell setLastImageAlternate: [NSImage imageNamed:@"iPodEjectOn.tif"]]; 
 							}
