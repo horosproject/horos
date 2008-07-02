@@ -11765,19 +11765,22 @@ int i,j,l;
 {
 	NSMutableArray *rois = [self selectedROIs];
 	
-	ROI *f = [rois lastObject];
-	
-	[rois removeLastObject];
-	
-	for( ROI *r in rois)
+	if( [rois count])
 	{
-		[f mergeWithTexture: r];
-	}
-	
-	for( ROI *r in rois)
-	{
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: r userInfo: 0L];
-		[[roiList[ curMovieIndex] objectAtIndex: [imageView curImage]] removeObject: r];
+		ROI *f = [rois lastObject];
+		
+		[rois removeLastObject];
+		
+		for( ROI *r in rois)
+		{
+			[f mergeWithTexture: r];
+		}
+		
+		for( ROI *r in rois)
+		{
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: r userInfo: 0L];
+			[[roiList[ curMovieIndex] objectAtIndex: [imageView curImage]] removeObject: r];
+		}
 	}
 }
 

@@ -672,8 +672,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			
 		//	[srcViewer addRoiFromFullStackBuffer:buff withName:newname];
 			
-			long		i;
-			for( i = 0; i < [[srcViewer pixList] count]; i++)
+			for( int i = 0; i < [[srcViewer pixList] count]; i++)
 			{
 				int buffHeight = [[[srcViewer pixList] objectAtIndex: i] pheight];
 				int buffWidth = [[[srcViewer pixList] objectAtIndex: i] pwidth];
@@ -711,6 +710,22 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 				[theNewROI release];
 				
 				buff+= buffHeight*buffWidth;
+			}
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"mergeWithExistingROIs"])
+			{
+				int currentImageIndex = [[srcViewer imageView] curImage];
+				
+				for( int i = 0; i < [[srcViewer pixList] count]; i++)
+				{
+					[srcViewer setImageIndex: i];
+					[[srcViewer imageView] selectAll: self];
+					[srcViewer mergeBrushROI: self];
+				}
+				
+				[[srcViewer imageView] setIndex: currentImageIndex];
+				[[srcViewer imageView] sendSyncMessage:0];
+				[srcViewer adjustSlider];
 			}
 		}
 		else

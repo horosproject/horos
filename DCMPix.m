@@ -10530,6 +10530,12 @@ END_CREATE_ROIS:
 		
 		[self applyShutter];		
     }
+	
+//	for( int i = 0 ; i < height; i++)
+//	{
+//		for( int x = 0 ; x < width ; x++)
+//			fImage[ i*width + x] = i;
+//	}
 }
 
 #pragma mark-

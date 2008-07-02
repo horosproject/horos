@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9C31</string>
-		<string key="IBDocument.InterfaceBuilderVersion">644</string>
-		<string key="IBDocument.AppKitVersion">949.26</string>
+		<string key="IBDocument.SystemVersion">9D34</string>
+		<string key="IBDocument.InterfaceBuilderVersion">667</string>
+		<string key="IBDocument.AppKitVersion">949.33</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1243,46 +1243,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.growingRegionType</string>
-						<reference key="source" ref="557522330"/>
-						<reference key="destination" ref="689605235"/>
-						<object class="NSNibBindingConnector" key="connector" id="606665845">
-							<reference key="NSSource" ref="557522330"/>
-							<reference key="NSDestination" ref="689605235"/>
-							<string key="NSLabel">enabled: values.growingRegionType</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.growingRegionType</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSValueTransformerName</string>
-								<string key="NS.object.0">NSNegateBoolean</string>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">218</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.growingRegionType</string>
-						<reference key="source" ref="1031480820"/>
-						<reference key="destination" ref="689605235"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="1031480820"/>
-							<reference key="NSDestination" ref="689605235"/>
-							<string key="NSLabel">enabled: values.growingRegionType</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.growingRegionType</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSValueTransformerName</string>
-								<string key="NS.object.0">NSNegateBoolean</string>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">219</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: values.segmentationDirectlyGenerate</string>
 						<reference key="source" ref="1031480820"/>
 						<reference key="destination" ref="689605235"/>
@@ -1335,42 +1295,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled2: values.growingRegionROIType</string>
-						<reference key="source" ref="557522330"/>
-						<reference key="destination" ref="689605235"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="557522330"/>
-							<reference key="NSDestination" ref="689605235"/>
-							<string key="NSLabel">enabled2: values.growingRegionROIType</string>
-							<string key="NSBinding">enabled2</string>
-							<string key="NSKeyPath">values.growingRegionROIType</string>
-							<object class="NSDictionary" key="NSOptions">
-								<bool key="EncodedWithXMLCoder">YES</bool>
-								<object class="NSMutableArray" key="dict.sortedKeys">
-									<bool key="EncodedWithXMLCoder">YES</bool>
-									<string>NSMultipleValuesPlaceholder</string>
-									<string>NSNoSelectionPlaceholder</string>
-									<string>NSNotApplicablePlaceholder</string>
-									<string>NSNullPlaceholder</string>
-									<string>NSValueTransformerName</string>
-								</object>
-								<object class="NSMutableArray" key="dict.values">
-									<bool key="EncodedWithXMLCoder">YES</bool>
-									<integer value="-1" id="7"/>
-									<reference ref="7"/>
-									<reference ref="7"/>
-									<reference ref="7"/>
-									<string>NSNegateBoolean</string>
-								</object>
-							</object>
-							<reference key="NSPreviousConnector" ref="606665845"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">226</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: values.growingRegionROIType</string>
 						<reference key="source" ref="975915301"/>
 						<reference key="destination" ref="689605235"/>
@@ -1400,6 +1324,82 @@
 						</object>
 					</object>
 					<int key="connectionID">231</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.growingRegionROIType</string>
+						<reference key="source" ref="1031480820"/>
+						<reference key="destination" ref="689605235"/>
+						<object class="NSNibBindingConnector" key="connector" id="814006655">
+							<reference key="NSSource" ref="1031480820"/>
+							<reference key="NSDestination" ref="689605235"/>
+							<string key="NSLabel">enabled: values.growingRegionROIType</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.growingRegionROIType</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">233</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.growingRegionROIType</string>
+						<reference key="source" ref="557522330"/>
+						<reference key="destination" ref="689605235"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="557522330"/>
+							<reference key="NSDestination" ref="689605235"/>
+							<string key="NSLabel">enabled: values.growingRegionROIType</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.growingRegionROIType</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">234</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled2: values.growingRegionType</string>
+						<reference key="source" ref="1031480820"/>
+						<reference key="destination" ref="689605235"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1031480820"/>
+							<reference key="NSDestination" ref="689605235"/>
+							<string key="NSLabel">enabled2: values.growingRegionType</string>
+							<string key="NSBinding">enabled2</string>
+							<string key="NSKeyPath">values.growingRegionType</string>
+							<object class="NSDictionary" key="NSOptions">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+								<object class="NSMutableArray" key="dict.sortedKeys">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<string>NSMultipleValuesPlaceholder</string>
+									<string>NSNoSelectionPlaceholder</string>
+									<string>NSNotApplicablePlaceholder</string>
+									<string>NSNullPlaceholder</string>
+									<string>NSValueTransformerName</string>
+								</object>
+								<object class="NSMutableArray" key="dict.values">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<integer value="-1" id="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<reference ref="7"/>
+									<string>NSNegateBoolean</string>
+								</object>
+							</object>
+							<reference key="NSPreviousConnector" ref="814006655"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">237</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1859,24 +1859,6 @@
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="256573403"/>
-							<object class="NSFormCell" id="195776659">
-								<int key="NSCellFlags">343014977</int>
-								<int key="NSCellFlags2">205521920</int>
-								<object class="NSMutableString" key="NSContents">
-									<characters key="NS.bytes"/>
-								</object>
-								<reference key="NSSupport" ref="26"/>
-								<int key="NSTag">1</int>
-								<double key="NSTitleWidth">4.800000e+01</double>
-								<object class="NSCell" key="NSTitleCell">
-									<int key="NSCellFlags">67239424</int>
-									<int key="NSCellFlags2">67108864</int>
-									<object class="NSMutableString" key="NSContents">
-										<characters key="NS.bytes">Field2:</characters>
-									</object>
-									<reference key="NSSupport" ref="26"/>
-								</object>
-							</object>
 							<reference ref="307810819"/>
 						</object>
 						<reference key="parent" ref="119262069"/>
@@ -1884,11 +1866,6 @@
 					<object class="IBObjectRecord">
 						<int key="objectID">194</int>
 						<reference key="object" ref="256573403"/>
-						<reference key="parent" ref="320543483"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">132</int>
-						<reference key="object" ref="195776659"/>
 						<reference key="parent" ref="320543483"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -2008,8 +1985,6 @@
 					<string>130.ImportedFromIB2</string>
 					<string>131.IBPluginDependency</string>
 					<string>131.ImportedFromIB2</string>
-					<string>132.IBPluginDependency</string>
-					<string>132.ImportedFromIB2</string>
 					<string>14.IBPluginDependency</string>
 					<string>14.ImportedFromIB2</string>
 					<string>15.IBPluginDependency</string>
@@ -2045,7 +2020,6 @@
 					<string>6.IBWindowTemplateEditedContentRect</string>
 					<string>6.ImportedFromIB2</string>
 					<string>6.editorWindowContentRectSynchronizationRect</string>
-					<string>6.lastResizeAction</string>
 					<string>6.windowTemplate.hasMaxSize</string>
 					<string>6.windowTemplate.hasMinSize</string>
 					<string>6.windowTemplate.maxSize</string>
@@ -2132,8 +2106,6 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2145,24 +2117,11 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{973, 1001}, {280, 535}}</string>
+					<string>{{973, 627}, {280, 535}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{973, 1001}, {280, 535}}</string>
+					<string>{{973, 627}, {280, 535}}</string>
 					<reference ref="9"/>
 					<string>{{510, 373}, {281, 489}}</string>
-					<object class="NSDictionary">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSMutableArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>IBResizeActionFinalFrame</string>
-							<string>IBResizeActionInitialFrame</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>{{973, 1001}, {280, 535}}</string>
-							<string>{{973, 1010}, {279, 526}}</string>
-						</object>
-					</object>
 					<reference ref="9"/>
 					<reference ref="9"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
@@ -2213,13 +2172,14 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">231</int>
+			<int key="maxID">237</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<object class="IBPartialClassDescription">
 					<string key="className">FirstResponder</string>
+					<string key="superclassName">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
