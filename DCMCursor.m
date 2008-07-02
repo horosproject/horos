@@ -17,14 +17,14 @@
 
 #import "DCMCursor.h"
 
-NSCursor *zoomCursor;
-NSCursor *rotateCursor;
-NSCursor *rotate3DCursor;
-NSCursor *rotate3DCameraCursor;
-NSCursor *stackCursor;
-NSCursor *contrastCursor;
-NSCursor *bonesRemovalCursor;
-NSCursor *crossCursor;
+static NSCursor *zoomCursor;
+static NSCursor *rotateCursor;
+static NSCursor *rotate3DCursor;
+static NSCursor *rotate3DCameraCursor;
+static NSCursor *stackCursor;
+static NSCursor *contrastCursor;
+static NSCursor *bonesRemovalCursor;
+static NSCursor *crossROICursor;
 
 @implementation NSCursor (DCMCursor)
 
@@ -41,10 +41,10 @@ NSCursor *crossCursor;
 	return rotateCursor;
 }
 +(id)crossCursor{
-	if (!crossCursor)
-		crossCursor = [[NSCursor alloc] initWithImage:[NSImage imageNamed:@"crossCursor.tif"] hotSpot:NSMakePoint(7,7)];
+	if (!crossROICursor)
+		crossROICursor = [[NSCursor alloc] initWithImage:[NSImage imageNamed:@"crossCursor.tif"] hotSpot:NSMakePoint(7,7)];
 	
-	return crossCursor;
+	return crossROICursor;
 }
 +(id)rotate3DCursor{
 		if (!rotate3DCursor)
