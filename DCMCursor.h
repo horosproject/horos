@@ -26,5 +26,6 @@
 +(id)contrastCursor;
 +(id)rotate3DCursor;
 +(id)rotate3DCameraCursor;
-+ (id) bonesRemovalCursor;
++(id)bonesRemovalCursor;
++(id)crossCursor;
 @end

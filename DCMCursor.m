@@ -24,6 +24,7 @@ NSCursor *rotate3DCameraCursor;
 NSCursor *stackCursor;
 NSCursor *contrastCursor;
 NSCursor *bonesRemovalCursor;
+NSCursor *crossCursor;
 
 @implementation NSCursor (DCMCursor)
 
@@ -38,6 +39,12 @@ NSCursor *bonesRemovalCursor;
 		rotateCursor = [[NSCursor alloc] initWithImage:[NSImage imageNamed:@"RotateCursor.tif"] hotSpot:NSMakePoint(7,7)];
 	
 	return rotateCursor;
+}
++(id)crossCursor{
+	if (!crossCursor)
+		crossCursor = [[NSCursor alloc] initWithImage:[NSImage imageNamed:@"crossCursor.tif"] hotSpot:NSMakePoint(7,7)];
+	
+	return crossCursor;
 }
 +(id)rotate3DCursor{
 		if (!rotate3DCursor)

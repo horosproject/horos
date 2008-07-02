@@ -345,6 +345,8 @@
 		7EF9708808C8FB74002B5087 /* DCMNDeleteRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9708608C8FB74002B5087 /* DCMNDeleteRequest.m */; };
 		7EF9708D08C8FB86002B5087 /* DCMNDeleteResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EF9708B08C8FB86002B5087 /* DCMNDeleteResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7EF9708E08C8FB86002B5087 /* DCMNDeleteResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF9708C08C8FB86002B5087 /* DCMNDeleteResponse.m */; };
+		8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
+		8483ABA70E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
 		A90202BF0B980CD60001A00B /* PluginManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90202BB0B980CD60001A00B /* PluginManagerController.m */; };
 		A90202C00B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
@@ -8502,6 +8504,7 @@
 		7EF9708608C8FB74002B5087 /* DCMNDeleteRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNDeleteRequest.m; sourceTree = "<group>"; };
 		7EF9708B08C8FB86002B5087 /* DCMNDeleteResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNDeleteResponse.h; sourceTree = "<group>"; };
 		7EF9708C08C8FB86002B5087 /* DCMNDeleteResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMNDeleteResponse.m; sourceTree = "<group>"; };
+		8483ABA50E1BE33900C21B31 /* crossCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = crossCursor.tif; path = Cursors/crossCursor.tif; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
 		A90202BB0B980CD60001A00B /* PluginManagerController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginManagerController.m; sourceTree = "<group>"; };
 		A9044D370BBAA29200F36689 /* ROISelector.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROISelector.tiff; sourceTree = "<group>"; };
@@ -13174,6 +13177,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				8483ABA50E1BE33900C21B31 /* crossCursor.tif */,
 				CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */,
 				A98875BA0D5B694100E0118E /* Navigator.tif */,
 				A9897D970D4A142200BAC447 /* displayRGB.tif */,
@@ -21459,6 +21463,7 @@
 				A98875BC0D5B694100E0118E /* Navigator.tif in Resources */,
 				CE40ED590D86D634007C6D49 /* 3DPosition.xib in Resources */,
 				CEAE02E00DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */,
+				8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21850,6 +21855,7 @@
 				A98875BB0D5B694100E0118E /* Navigator.tif in Resources */,
 				CE40ED5A0D86D634007C6D49 /* 3DPosition.xib in Resources */,
 				CEAE02E10DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */,
+				8483ABA70E1BE33900C21B31 /* crossCursor.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
