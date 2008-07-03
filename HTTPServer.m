@@ -124,9 +124,11 @@
     return isValid;
 }
 
-- (void)invalidate {
-NSLog(@"HTTPConnection invalidate");
-    if (isValid) {
+- (void)invalidate
+{
+	NSLog(@"HTTPConnection invalidate");
+    
+	if (isValid) {
         isValid = NO;
         [istream close];
         [ostream close];
@@ -283,8 +285,10 @@ NSLog(@"HTTPConnection invalidate");
     }
 }
 
-- (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)streamEvent {
-    switch(streamEvent) {
+- (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)streamEvent
+{
+    switch(streamEvent)
+	{
     case NSStreamEventHasBytesAvailable:;
         uint8_t buf[16 * 1024];
         uint8_t *buffer = NULL;

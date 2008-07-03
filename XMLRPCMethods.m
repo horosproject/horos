@@ -66,9 +66,24 @@
 #pragma mark-
 #pragma mark Methods
 
-- (void)HTTPConnection:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess {
-    CFHTTPMessageRef request = [mess request];
+- (void)HTTPConnection:(HTTPConnection *)conn didSendResponse:(HTTPServerRequest *)mess
+{
+//	CFHTTPMessageRef request = [mess request];
+//	
+//	NSString *connection = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Connection") autorelease];
+//	
+//	if( [connection isEqualToString: @"close"])
+//	{
+//	}
+}
 
+- (void)HTTPConnection:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
+{
+    CFHTTPMessageRef request = [mess request];
+	
+//	NSDictionary *allHeaderFields = [(id)CFHTTPMessageCopyAllHeaderFields(request) autorelease];
+//	NSLog( @"%@", allHeaderFields);
+	
     NSString *vers = [(id)CFHTTPMessageCopyVersion(request) autorelease];
     if (!vers || ![vers isEqual:(id)kCFHTTPVersion1_1]) {
         CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 505, NULL, vers ? (CFStringRef)vers : kCFHTTPVersion1_0); // Version Not Supported
@@ -606,6 +621,7 @@
 				CFHTTPMessageSetBody(response, (CFDataRef)data);
 				[mess setResponse:response];
 				CFRelease(response);
+				
 				return;
 			}
 			else
@@ -613,6 +629,7 @@
 				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 404, NULL, kCFHTTPVersion1_1); // Not found
 				[mess setResponse:response];
 				CFRelease(response);
+				
 				return;
 			}
 		}
