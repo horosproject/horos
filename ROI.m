@@ -588,6 +588,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
 		groupID = 0.0;
 		PointUnderMouse = -1;
+		selectedModifyPoint = -1;
 		
 		fileVersion = [coder versionForClassName: @"ROI"];
 		
@@ -967,6 +968,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
 		groupID = 0.0;
 		PointUnderMouse = -1;
+		selectedModifyPoint = -1;
 		
 		ctxArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 		textArray = [[NSMutableArray arrayWithCapacity: 10] retain];
@@ -1024,6 +1026,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
 		groupID = 0.0;
 		PointUnderMouse = -1;
+		selectedModifyPoint = -1;
 		
 		ctxArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 		textArray = [[NSMutableArray arrayWithCapacity: 10] retain];
@@ -3876,7 +3879,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glEnd();
 			}
 			
-			if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
+			if( highlightIfSelected)
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
 				
@@ -3888,11 +3891,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glBegin( GL_POINTS);
 				for( long i = 0; i < [points count]; i++)
 				{
-					if( mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse)) glColor3f (1.0f, 0.2f, 0.2f);
-					
-					glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
-					
-					if( mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse)) glColor3f (0.5f, 0.5f, 1.0f);
+					if(i == selectedModifyPoint || i == PointUnderMouse)
+					{
+						glColor3f (1.0f, 0.2f, 0.2f);
+						glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
+					}
+					else if( mode >= ROI_selected)
+					{
+						glColor3f (0.5f, 0.5f, 1.0f);
+						glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
+					}
 				}
 				glEnd();
 			}

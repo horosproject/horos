@@ -9628,9 +9628,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( [self roiTool:tool])
 	{
-		if( tool == tMesure)
-			c = [NSCursor crossCursor];
-		else c = [NSCursor crosshairCursor];		//crossCursor
+		c = [NSCursor crossCursor];
+//		else c = [NSCursor crosshairCursor];		//crossCursor
 	}
 	else if (tool == tTranslate)
 		c = [NSCursor openHandCursor];
