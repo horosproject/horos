@@ -1819,7 +1819,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			case tOPolygon:
 			case tPencil:
 			{
-				selectedModifyPoint = 0;
+				selectedModifyPoint = -1;
 				for( int i = 0 ; i < [points count]; i++ )
 				{
 					if( [[points objectAtIndex: i] isNearToPoint: pt :scale :[[curView curDCM] pixelRatio]])
@@ -1843,6 +1843,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 - (void) displayPointUnderMouse:(NSPoint) pt :(float) offsetx :(float) offsety :(float) scale
 {
 	MyPoint		*tempPoint = [[[MyPoint alloc] initWithPoint: pt] autorelease];
+	
+	int previousPointUnderMouse = PointUnderMouse;
+	
 	PointUnderMouse = -1;
 	NSPoint aPt;
 	
@@ -1898,7 +1901,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		break;
 	}
 	
-	if( PointUnderMouse != -1)
+	if( PointUnderMouse != previousPointUnderMouse)
 	{
 		[curView setNeedsDisplay: YES];
 	}
@@ -2751,7 +2754,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			break;
 			
 			case ROI_selectedModify:
-				[[points objectAtIndex: selectedModifyPoint] setPoint: pt];
+				if( selectedModifyPoint >= 0)
+					[[points objectAtIndex: selectedModifyPoint] setPoint: pt];
 				rtotal = -1;
 				Brtotal = -1;
 				action = YES;
@@ -2776,7 +2780,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 			break;
 			
 			case ROI_selectedModify:
-				[[points objectAtIndex: selectedModifyPoint] setPoint: pt];
+				if( selectedModifyPoint >= 0)
+					[[points objectAtIndex: selectedModifyPoint] setPoint: pt];
 				rtotal = -1;
 				Brtotal = -1;
 				action = YES;
@@ -2911,7 +2916,11 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		case tCPolygon:
 		case tOPolygon:
 		case tPencil:
-			if( mode == ROI_selectedModify) [points removeObjectAtIndex: selectedModifyPoint];
+			if( mode == ROI_selectedModify)
+			{
+				if( selectedModifyPoint >= 0)
+					[points removeObjectAtIndex: selectedModifyPoint];
+			}
 			else [points removeLastObject];
 			
 			if( selectedModifyPoint >= [points count]) selectedModifyPoint = [points count]-1;
@@ -2920,7 +2929,7 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		case tDynAngle:
 		//JJCP
 		case tAxis:
-			if(selectedModifyPoint>3)
+			if(selectedModifyPoint>3 && selectedModifyPoint >= 0)
 			{
 				if( mode == ROI_selectedModify)
 					[points removeObjectAtIndex: selectedModifyPoint];
@@ -3867,7 +3876,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glEnd();
 			}
 			
-			if((mode == ROI_selected | mode == ROI_selectedModify | mode == ROI_drawing) && highlightIfSelected)
+			if((mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing) && highlightIfSelected)
 			{
 				glColor3f (0.5f, 0.5f, 1.0f);
 				
@@ -3879,11 +3888,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glBegin( GL_POINTS);
 				for( long i = 0; i < [points count]; i++)
 				{
-					if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
+					if( mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse)) glColor3f (1.0f, 0.2f, 0.2f);
 					
 					glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
 					
-					if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (0.5f, 0.5f, 1.0f);
+					if( mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse)) glColor3f (0.5f, 0.5f, 1.0f);
 				}
 				glEnd();
 			}
@@ -4213,7 +4222,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glPointSize( (1 + sqrt( thickness))*3.5);
 					glBegin( GL_POINTS);
 					for( long i = 0; i < [points count]; i++) {
-						if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
+						if( mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse)) glColor3f (1.0f, 0.2f, 0.2f);
 						else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/thickness :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
 						else glColor3f (0.5f, 0.5f, 1.0f);
 						
@@ -4493,7 +4502,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glPointSize( (1 + sqrt( thickness))*3.5);
 				glBegin( GL_POINTS);
 				for( long i = 0; i < [points count]; i++) {
-					if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
+					if( mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse)) glColor3f (1.0f, 0.2f, 0.2f);
 					else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/thickness :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
 					else glColor3f (0.5f, 0.5f, 1.0f);
 					
@@ -4696,7 +4705,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glBegin( GL_POINTS);
 				for( long i = 0; i < [points count]; i++)
 				{
-					if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
+					if( mode >= ROI_selected && (i == selectedModifyPoint || i == PointUnderMouse)) glColor3f (1.0f, 0.2f, 0.2f);
 					else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/thickness :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
 					else glColor3f (0.5f, 0.5f, 1.0f);
 					

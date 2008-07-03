@@ -42,7 +42,7 @@ static NSCursor *crossROICursor;
 }
 +(id)crossCursor{
 	if (!crossROICursor)
-		crossROICursor = [[NSCursor alloc] initWithImage:[NSImage imageNamed:@"crossCursor.tif"] hotSpot:NSMakePoint(8,8)];
+		crossROICursor = [[NSCursor alloc] initWithImage:[NSImage imageNamed:@"crossCursor.tif"] hotSpot:NSMakePoint(10,10)];
 	
 	if( crossROICursor == 0L) crossROICursor = [[NSCursor crosshairCursor] retain];
 	
