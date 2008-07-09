@@ -3520,8 +3520,16 @@ static volatile int numberOfThreadsForRelisce = 0;
     else
 	{
 		XMLController * xmlController = [[XMLController alloc] initWithImage: im windowName:[NSString stringWithFormat:@"Meta-Data: %@", [[self window] title]] viewer: self];
-		[xmlController showWindow:self];
+		
 		[[AppController sharedAppController] tileWindows: self];
+		
+		for( int i = 0; i < 15 ; i++)
+		{
+			unsigned long finalTick;
+			[[xmlController window] setAlphaValue: (i+1.0) / 15.];
+			if( i == 0) [xmlController showWindow:self];
+			Delay( 1, &finalTick);
+		}
 	}
 }
 
