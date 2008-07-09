@@ -100,23 +100,27 @@ static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which oft
 extern void compressJPEG (int inQuality, char* filename, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome);
 extern BOOL hasMacOSXTiger();
 extern BOOL hasMacOSXLeopard();
-extern NSString					*documentsDirectory();
+extern NSString	*documentsDirectory();
 
-extern AppController			*appController;
-extern NSThread					*mainThread;
-extern BOOL						NEEDTOREBUILD, COMPLETEREBUILD;
-extern NSMutableDictionary		*DATABASECOLUMNS;
-extern NSLock					*PapyrusLock;
+extern AppController *appController;
+extern NSThread *mainThread;
+extern BOOL NEEDTOREBUILD, COMPLETEREBUILD;
+extern NSMutableDictionary *DATABASECOLUMNS;
+extern NSLock *PapyrusLock;
 
-long		DATABASEINDEX;
+long DATABASEINDEX;
 
-NSString *asciiString( NSString* name ) {
+NSString *asciiString( NSString* name )
+{
 	NSMutableString	*outString;
 	
-	NSData		*asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+	NSData *asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 	
 	outString = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];
 	[BrowserController replaceNotAdmitted:outString];
+	
+	if( [outString length] == 0)
+		outString = @"AAA";
 	
 	return outString;
 }
@@ -12396,7 +12400,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 		NSString *extension = nil;
 		
-		tempPath = [path stringByAppendingPathComponent: asciiString( [curImage valueForKeyPath: @"series.study.name"])];
+		NSString *conv = asciiString( [curImage valueForKeyPath: @"series.study.name"]);
+		
+		tempPath = [path stringByAppendingPathComponent: conv];
 		
 		NSMutableArray *htmlExportSeriesArray;
 		if(![htmlExportDictionary objectForKey:[curImage valueForKeyPath: @"series.study.name"]])
@@ -12437,6 +12443,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		NSMutableString *seriesStr = [NSMutableString stringWithString: asciiString( [curImage valueForKeyPath: @"series.name"])];
 		[BrowserController replaceNotAdmitted:seriesStr];
+		
 		tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
 		tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
 		
