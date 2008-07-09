@@ -517,6 +517,7 @@ enum
 - (void) setLoadingPause:(BOOL) lp;
 - (void) setImageIndex:(long) i;
 - (long) imageIndex;
+- (void) viewerControllerInit;
 - (IBAction) ConvertToRGBMenu:(id) sender;
 - (BOOL) updateTilingViewsValue;
 - (void) setUpdateTilingViewsValue:(BOOL) v;
@@ -581,7 +582,7 @@ enum
 - (void) setDefaultTool:(id) sender;
 - (OSErr)getFSRefAtPath:(NSString*)sourceItem ref:(FSRef*)sourceRef;
 - (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*) d :(NSData*) v;
-- (void) setPixelList:(NSMutableArray*)f fileList:(NSMutableArray *)d volumeData:(NSData *) v;
+- (id) initWithPix:(NSMutableArray*)f withFiles:(NSMutableArray*) d withVolume:(NSData*) v;
 - (void) speedSliderAction:(id) sender;
 - (void) setupToolbar;
 - (NSToolbar*) toolbar;

@@ -278,7 +278,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 //			firstTime = NO;
 //			
 //			// CREATE A SERIES
-//			viewerController = [[ViewerController alloc] viewCinit:newPixList :newDcmList :newData];
+//			viewerController = [[ViewerController alloc] initWithPix:newPixList withFiles:newDcmList withVolume:newData];
 //			
 //			[viewerController showWindowTransition];
 //			[viewerController startLoadImageThread]; // Start async reading of all images
@@ -576,7 +576,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			firstTime = NO;
 			
 			// CREATE A SERIES
-			viewerController = [[ViewerController alloc] viewCinit:newPixListPer :newDcmListPer :newData];
+			viewerController = [[ViewerController alloc] initWithPix:newPixListPer withFiles:newDcmListPer withVolume:newData];
 			
 			[viewerController showWindowTransition];
 			[viewerController startLoadImageThread];			// Start async reading of all images
@@ -959,7 +959,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			firstTime = NO;
 			
 			// CREATE A SERIES
-			viewerController = [[ViewerController alloc] viewCinit:newPixList :newDcmList :newData];
+			viewerController = [[ViewerController alloc] initWithPix:newPixList withFiles:newDcmList withVolume:newData];
 			
 			[viewerController showWindowTransition];
 			[viewerController startLoadImageThread]; // Start async reading of all images

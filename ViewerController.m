@@ -1967,7 +1967,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 + (ViewerController *) newWindow:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v frame: (NSRect) frame
 {
-    ViewerController *win = [[ViewerController alloc] viewCinit:f :d :v];
+    ViewerController *win = [[ViewerController alloc] initWithPix:f withFiles:d withVolume:v];
 		
 	[win showWindowTransition];
 	[win startLoadImageThread]; // Start async reading of all images
@@ -5137,7 +5137,8 @@ static ViewerController *draggedController = 0L;
 	return [self isDataVolumicIn4D: check4D checkEverythingLoaded: YES];
 }
 
-- (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
+
+- (id) initWithPix:(NSMutableArray*)f withFiles:(NSMutableArray*)d withVolume:(NSData*) v
 {
 	[self setMagnetic: YES];
 	
@@ -5161,10 +5162,10 @@ static ViewerController *draggedController = 0L;
 	undoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
 	redoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
 	
-	[self setPixelList:f fileList:d volumeData:v];
+	[self viewerControllerInit];
+	[self changeImageData:f :d :v :NO];
 	
-	NSNotificationCenter *nc;
-	nc = [NSNotificationCenter defaultCenter];
+	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver: self
 	   selector: @selector(updateImageView:)
 		   name: @"DCMUpdateCurrentImage"
@@ -5200,6 +5201,11 @@ static ViewerController *draggedController = 0L;
 		[v buildMatrixPreview: NO];
 	
 	return self;
+}
+
+- (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
+{
+	return [self initWithPix: f withFiles: d withVolume: v]; 
 }
 
 - (BOOL) updateTilingViewsValue
@@ -5476,7 +5482,6 @@ static ViewerController *draggedController = 0L;
 	else [imageView setIndexWithReset: imageIndex :YES];
 	
 	DCMPix *curDCM = [pixList[0] objectAtIndex: imageIndex];
-	NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
 	
 	loadingPercentage = 0;
 	[self setWindowTitle:self];
@@ -5492,6 +5497,10 @@ static ViewerController *draggedController = 0L;
     }
 	else
 	{
+		if( [curDCM cineRate])
+		{
+			[speedSlider setFloatValue:[curDCM cineRate]];
+		}
 		[speedSlider setEnabled:YES];
         [slider setEnabled:YES];
 	}
@@ -5506,7 +5515,8 @@ static ViewerController *draggedController = 0L;
 	[movieRateSlider setEnabled: NO];
 	[moviePosSlider setEnabled: NO];
 	[moviePlayStop setEnabled:NO];
-	
+	[speedText setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%0.1f im/s", nil), (float) [self frameRate]*direction]];
+
 	[seriesView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
 	
 	if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
@@ -11763,23 +11773,33 @@ int i,j,l;
 
 - (IBAction) mergeBrushROI: (id) sender
 {
-	NSMutableArray *rois = [self selectedROIs];
+	NSMutableArray *selectedROIs = [self selectedROIs];
 	
-	if( [rois count])
+	if( [selectedROIs count])
 	{
-		ROI *f = [rois lastObject];
+		NSMutableArray *rois = [NSMutableArray array];
 		
-		[rois removeLastObject];
-		
-		for( ROI *r in rois)
+		for( ROI *r in selectedROIs)
 		{
-			[f mergeWithTexture: r];
+			if( [r type] == tPlain) [rois addObject: r];
 		}
 		
-		for( ROI *r in rois)
+		if( [rois count])
 		{
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: r userInfo: 0L];
-			[[roiList[ curMovieIndex] objectAtIndex: [imageView curImage]] removeObject: r];
+			ROI *f = [rois lastObject];
+			
+			[rois removeLastObject];
+			
+			for( ROI *r in rois)
+			{
+				[f mergeWithTexture: r];
+			}
+			
+			for( ROI *r in rois)
+			{
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object: r userInfo: 0L];
+				[[roiList[ curMovieIndex] objectAtIndex: [imageView curImage]] removeObject: r];
+			}
 		}
 	}
 }
@@ -15729,11 +15749,8 @@ int i,j,l;
 	}
 }
 
-- (void) setPixelList:(NSMutableArray*)f fileList:(NSMutableArray*)d volumeData:(NSData*) v
+- (void) viewerControllerInit
 {
-	int i;
-	
-//	[[self window] setFrame: [[[[AppController sharedAppController] viewerScreens] objectAtIndex:0] visibleFrame] display: NO];
 	[[self window] zoom: self];
 	
 	numberOf2DViewer++;
@@ -15745,41 +15762,25 @@ int i,j,l;
 			
 			NSArray				*winList = [NSApp windows];
 			
-			for( i = 0; i < [winList count]; i++)
+			for( int i = 0; i < [winList count]; i++)
 			{
 				if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
 				{
-//					if( [[winList objectAtIndex:i] toolbar])
-//						[[winList objectAtIndex:i] toggleToolbarShown: self];
 					if( [[winList objectAtIndex:i] toolbar])
 						[[winList objectAtIndex:i] setToolbar: 0L];
 				}
 			}
 		}
 	}
-		
-	speedometer = 0;
-	matrixPreviewBuilt = NO;
 	
 	ThreadLoadImageLock = [[NSLock alloc] init];
 	roiLock = [[NSLock alloc] init];
 	
 	factorPET2SUV = 1.0;
-	windowWillClose = NO;
-	loadingPercentage = 0;
-	exportDCM = 0L;
-	curvedController = 0L;
-	thickSlab = 0L;
-	ROINamesArray = 0L;
-	ThreadLoadImage = NO;
 	AUTOHIDEMATRIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"];
 	
-	subCtrlOffset.y = subCtrlOffset.x = 0;
-	
 	subCtrlMaskID = -2;
-	curMovieIndex = 0;
 	maxMovieIndex = 1;
-	blendingController = 0L;
 	
 	[curCLUTMenu release];
 	[curConvMenu release];
@@ -15789,108 +15790,18 @@ int i,j,l;
 	curConvMenu = [NSLocalizedString(@"No Filter", nil) retain];
 	curWLWWMenu = [NSLocalizedString(@"Default WL & WW", nil) retain];
 	
-	volumeData[ 0] = v;
-	[volumeData[ 0] retain];
-	
 	direction = 1;
-	
-    [f retain];
-    pixList[ 0] = f;
-    
-	// Prepare pixList for image thick slab
-	for( i = 0; i < [pixList[0] count]; i++)
-	{
-		[[pixList[0] objectAtIndex: i] setArrayPix: pixList[0] :i];
-	}
-	
-    [d retain];
-    fileList[ 0] = d;
-	
-	// Create empty ROI Lists
-	roiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
-	for( i = 0; i < [pixList[0] count]; i++)
-	{
-		[roiList[0] addObject:[NSMutableArray arrayWithCapacity:0]];
-	}
-	
-	
-	//
-	[self loadROI: 0];
-	
-	[stacksFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
-	[sliderFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
-	[sliderFusion setEnabled:NO];
-	[activatedFusion setState: NSOffState];
-
-	[imageView setDCM:pixList[0] :fileList[0] :roiList[0] :0 :'i' :YES];	//[pixList[0] count]/2
-	[imageView setIndexWithReset: 0 :YES];	//[pixList[0] count]/2
-	
-	NSRect  rect;
-	NSRect  visibleRect;
-	DCMPix *curDCM = [pixList[0] objectAtIndex: 0];	//[pixList[0] count]/2
-
-	rect.origin.x = 0;
-	rect.origin.y = 0;
-	rect.size.width = [curDCM pwidth] + 50;
-	rect.size.height = [curDCM pheight] + 110;
-
-	if( rect.size.width < 600) rect.size.width = 600;
-	if( rect.size.height < 400) rect.size.height = 400;
-
-	visibleRect = [[[self window] screen] visibleFrame];
-
-	if( rect.size.width > visibleRect.size.width) rect.size.width = visibleRect.size.width;
-	if( rect.size.height > visibleRect.size.height) rect.size.height = visibleRect.size.height;
 	
 	[[self window] center];
 	
-	timer = 0L;
-	timeriChat = 0L;
-	movieTimer = 0L;
-	
-	NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
-	
-	[self setWindowTitle: self];
-	
-    [slider setMaxValue:[pixList[0] count]-1];
-	[slider setNumberOfTickMarks:[pixList[0] count]];
-	[self adjustSlider];
-	[movieRateSlider setEnabled: NO];
-	[moviePosSlider setEnabled: NO];
-	[moviePlayStop setEnabled:NO];
-    
-    
-    if([fileList[0] count] == 1 && [[curImage valueForKey:@"numberOfFrames"] intValue] <=  1)
-    {
-        [speedSlider setEnabled:NO];
-        [slider setEnabled:NO];
-    }
-	else
-	{
-		if( [curDCM cineRate])
-		{
-			[speedSlider setFloatValue:[curDCM cineRate]];
-		}
-	}
-    
-	[speedText setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%0.1f im/s", nil), (float) [self frameRate]*direction]];
-
-//    [[fileList[0] objectAtIndex:0] setViewer: self forSerie:[[pixList[ 0] objectAtIndex:0] serieNo]];
-    
     [[self window] setDelegate:self];
 	
 	[wlwwPopup setTitle:NSLocalizedString(@"Default WL & WW", nil)];
-	
 	[convPopup setTitle:NSLocalizedString(@"No Filter", nil)];
-	
-	NSNotificationCenter *nc;
-    nc = [NSNotificationCenter defaultCenter];
-	
-	
 	curOpacityMenu = [@"Linear Table" retain];
 	
-	[self refreshMenus];
-
+	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+	
 	[nc addObserver:self selector:@selector(applicationDidResignActive:) name:NSApplicationDidResignActiveNotification object:0L];
     [nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
 	[nc	addObserver:self selector:@selector(Display3DPoint:) name:@"Display3DPoint" object:nil];
@@ -15945,7 +15856,7 @@ int i,j,l;
 	}
 		
 	//
-	for( i = 0; i < [popupRoi numberOfItems]; i++)
+	for( int i = 0; i < [popupRoi numberOfItems]; i++)
 	{
 		if( [[popupRoi itemAtIndex: i] image] == 0L)
 		{
@@ -15955,7 +15866,7 @@ int i,j,l;
 		}
 	}
 	
-	for( i = 0; i < [ReconstructionRoi numberOfItems]; i++)
+	for( int i = 0; i < [ReconstructionRoi numberOfItems]; i++)
 	{
 		if( [[ReconstructionRoi itemAtIndex: i] image] == 0L)
 		{
@@ -15982,25 +15893,6 @@ int i,j,l;
 		}
 	}
 	
-//	if( numberOf2DViewer > 1 || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
-//	{
-//		if( USETOOLBARPANEL == NO)
-//		{
-//			USETOOLBARPANEL = YES;
-//			
-//			NSArray				*winList = [NSApp windows];
-//			
-//			for( i = 0; i < [winList count]; i++)
-//			{
-//				if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
-//				{
-//					if( [[winList objectAtIndex:i] toolbar])
-//						[[winList objectAtIndex:i] toggleToolbarShown: self];
-//				}
-//			}
-//		}
-//	}
-
 	[[self window] setInitialFirstResponder: imageView];
 	
 	NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.stateText"];
@@ -16008,12 +15900,10 @@ int i,j,l;
 	if( status == 0L) [StatusPopup selectItemWithTitle: @"empty"];
 	else [StatusPopup selectItemWithTag: [status intValue]];
 	
-	NSString	*com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.comment"];//JF20070103
+	NSString *com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.comment"];//JF20070103
 	
 	if( com == 0L || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
 	else [CommentsField setTitle: com];
-	
-	
 	
 	// SplitView
 	[[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications:YES]; 

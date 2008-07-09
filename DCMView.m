@@ -1068,6 +1068,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			curROI = nil;
 		}
 	}
+	
+	if( showDescriptionInLarge)
+	{
+		showDescriptionInLarge = NO;
+		[self switchShowDescriptionInLarge];
+	}
 }
 
 - (void) stopROIEditing {
@@ -2532,6 +2538,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[drawLock lock];
 }
 
+- (void) switchShowDescriptionInLarge
+{
+	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+	{
+		for( DCMView *m in [v imageViews])
+		{
+			m.showDescriptionInLarge = showDescriptionInLarge;
+			
+			if( showDescriptionInLarge)
+				[m computeDescriptionInLarge];
+			[m setNeedsDisplay: YES];
+		}
+	}
+}
+
 - (void) flagsChanged:(NSEvent *)event
 {
 	if( [self is2DViewer] == YES)
@@ -2547,7 +2568,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if (suppress_labels == YES) update = YES;
 			suppress_labels = NO;
 		}		
-			
+		
 		if (update == YES) [self setNeedsDisplay:YES];
 		
 		BOOL cLarge = showDescriptionInLarge;
@@ -2565,27 +2586,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( showDescriptionInLarge != cLarge)
 		{
-			for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-			{
-				for( DCMView *m in [v imageViews])
-				{
-					m.showDescriptionInLarge = showDescriptionInLarge;
-					
-					if( showDescriptionInLarge)
-						[m computeDescriptionInLarge];
-					[m setNeedsDisplay: YES];
-				}
-			}
+			[self switchShowDescriptionInLarge];
 		}
-		
-//		if( showDescriptionInLarge)
-//		{
-//			[DCMView showOverlayWindows];
-//		}
-//		else
-//		{
-//			[DCMView hideOverlayWindows];
-//		}
 	}
 	
 	BOOL roiHit = NO;

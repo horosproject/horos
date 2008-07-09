@@ -9489,7 +9489,7 @@ static BOOL needToRezoom;
 								else
 								{
 									//creation of new viewer
-									createdViewer = [[ViewerController alloc] viewCinit:viewerPix[0] :filesAr :volumeData];
+									createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:filesAr withVolume:volumeData];
 									[createdViewer showWindowTransition];
 									[createdViewer startLoadImageThread];
 								}		
@@ -9508,7 +9508,7 @@ static BOOL needToRezoom;
 								else
 								{
 									//creation of new viewer
-									createdViewer = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
+									createdViewer = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:[NSMutableArray arrayWithArray:correspondingObjects] withVolume:volumeData];
 									[createdViewer showWindowTransition];
 									[createdViewer startLoadImageThread];
 								}
@@ -9519,7 +9519,7 @@ static BOOL needToRezoom;
 							//movieViewer==YES
 							if( movieController == nil )
 							{
-								movieController = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
+								movieController = [[ViewerController alloc] initWithPix:viewerPix[0] withFiles:[NSMutableArray arrayWithArray:correspondingObjects] withVolume:volumeData];
 							}
 							else
 							{
