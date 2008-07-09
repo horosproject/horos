@@ -1186,6 +1186,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	else valid = YES;
 	
+	if( showDescriptionInLarge)
+	{
+		showDescriptionInLarge = NO;
+		[self switchShowDescriptionInLarge];
+	}
+	
     return valid;
 }
 
