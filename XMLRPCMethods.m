@@ -166,8 +166,12 @@
 																									elements: &listOfElements]];
 					
 					// *****
-					NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member><member><name>elements</name>%@</member></struct></value></param></params></methodResponse>", [ret stringValue], listOfElements];
-					
+					NSString *xml;
+					if( listOfElements)
+						xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member><member><name>elements</name>%@</member></struct></value></param></params></methodResponse>", [ret stringValue], listOfElements];
+					else
+						xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
+						
 					NSError *error = nil;
 					NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
 					[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];

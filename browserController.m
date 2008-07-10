@@ -6113,7 +6113,7 @@ static NSArray*	statesArray = nil;
 - (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute elements:(NSString**) elements
 {
 	if( elements)
-		*elements = @"<value>0</value>";
+		*elements = 0L;
 			
 	if( !request) return -32;
 	if( !table) return -33;

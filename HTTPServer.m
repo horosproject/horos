@@ -87,7 +87,8 @@
     return self;
 }
 
-- (void)dealloc {
+- (void)dealloc
+{
     [self invalidate];
     [peerAddress release];
     [super dealloc];
@@ -128,6 +129,8 @@
 {
 	if (isValid)
 	{
+		NSLog( @"http connection closed");
+		
         isValid = NO;
         [istream close];
         [ostream close];
@@ -212,7 +215,7 @@
 		
 	if( [[(id)CFHTTPMessageCopyHeaderFieldValue( [request request], (CFStringRef)@"Connection") autorelease] isEqualToString: @"close"])
 	{
-		NSLog( @"Connection:close in http header -> close now");
+//		NSLog( @"Connection: close in http header -> close now");
 		[self invalidate];
 		return NO;
 	}
