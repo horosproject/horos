@@ -272,6 +272,11 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	BOOL parametersProvided = YES;
 	int p;
 	
+	float f = [[NSUserDefaults standardUserDefaults] floatForKey: @"growingRegionInterval"];
+	int fd = f * 1000.;
+	f = fd / 1000.;
+	[[NSUserDefaults standardUserDefaults] setFloat: f forKey: @"growingRegionInterval"];
+	
 	NSString *name = NSLocalizedString( @"Segmentation Preview", 0L);
 	
 	[viewer roiDeleteWithName: name];
