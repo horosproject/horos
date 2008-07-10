@@ -2828,12 +2828,10 @@ static NSArray*	statesArray = nil;
 	NSMutableArray *newList = [NSMutableArray arrayWithCapacity: [filesInput count]];
 	NSString *INpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEFPATH];
 	
-	for( NSString *file in filesInput )
+	for( NSString *file in filesInput)
 	{
-		if( [[file commonPrefixWithString: INpath options: NSCaseInsensitiveSearch] isEqualToString:INpath] == NO)
-		{
+		if( [[file commonPrefixWithString: INpath options: NSLiteralSearch] isEqualToString:INpath] == NO)
 			[newList addObject: file];
-		}
 	}
 	
 	if( [newList count] == 0) return filesInput;
@@ -6114,6 +6112,9 @@ static NSArray*	statesArray = nil;
 
 - (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute elements:(NSString**) elements
 {
+	if( elements)
+		*elements = @"<value>0</value>";
+			
 	if( !request) return -32;
 	if( !table) return -33;
 	if( !execute) return -34;
@@ -6127,37 +6128,37 @@ static NSArray*	statesArray = nil;
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	
 	@try
-{
-	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey: table]];
-	[dbRequest setPredicate: [NSPredicate predicateWithFormat: request]];
-	
-	[context retain];
-	[context lock];
-	error = 0L;
-	array = [context executeFetchRequest:dbRequest error:&error];
-	
-	if( error)
 	{
+		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey: table]];
+		[dbRequest setPredicate: [NSPredicate predicateWithFormat: request]];
+		
+		[context retain];
+		[context lock];
+		error = 0L;
+		array = [context executeFetchRequest:dbRequest error:&error];
+		
+		if( error)
+		{
+			[context unlock];
+			[context release];
+			
+			return [error code];
+		}
+		
+		if( [array count])
+		{
+			element = [array objectAtIndex: 0];	// We select the first object 
+		}
 		[context unlock];
 		[context release];
-		
-		return [error code];
 	}
-	
-	if( [array count])
-	{
-		element = [array objectAtIndex: 0];	// We select the first object 
-	}
-	[context unlock];
-	[context release];
-}
 	
 	@catch (NSException * e)
-{
-	NSLog( @"******* BrowserController findObject Exception");
-	NSLog( [e description]);
-}
+	{
+		NSLog( @"******* BrowserController findObject Exception");
+		NSLog( [e description]);
+	}
 	
 	if( element)
 	{		
@@ -6209,7 +6210,8 @@ static NSArray*	statesArray = nil;
 		// Generate an answer containing the elements
 		NSMutableString *a = [NSMutableString stringWithString: @"<array><data>"];
 		
-		for( NSManagedObject *obj in array ) {
+		for( NSManagedObject *obj in array )
+		{
 			NSMutableString *c = [NSMutableString stringWithString: @"<struct>"];
 			
 			NSDictionary *allCommittedValues = [obj committedValuesForKeys:nil];
@@ -6224,7 +6226,7 @@ static NSArray*	statesArray = nil;
 					[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, [[allCommittedValues valueForKey: keyname] description]];
 			}
 				
-				@catch (NSException * e)
+			@catch (NSException * e)
 			{
 			}
 			}

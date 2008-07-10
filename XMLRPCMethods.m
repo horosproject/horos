@@ -68,13 +68,7 @@
 
 - (void)HTTPConnection:(HTTPConnection *)conn didSendResponse:(HTTPServerRequest *)mess
 {
-//	CFHTTPMessageRef request = [mess request];
-//	
-//	NSString *connection = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Connection") autorelease];
-//	
-//	if( [connection isEqualToString: @"close"])
-//	{
-//	}
+
 }
 
 - (void)HTTPConnection:(HTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess

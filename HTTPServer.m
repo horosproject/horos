@@ -126,9 +126,8 @@
 
 - (void)invalidate
 {
-	NSLog(@"HTTPConnection invalidate");
-    
-	if (isValid) {
+	if (isValid)
+	{
         isValid = NO;
         [istream close];
         [ostream close];
@@ -152,7 +151,8 @@
 // YES return means that a complete request was parsed, and the caller
 // should call again as the buffered bytes may have another complete
 // request available.
-- (BOOL)processIncomingBytes {
+- (BOOL)processIncomingBytes
+{
     CFHTTPMessageRef working = CFHTTPMessageCreateEmpty(kCFAllocatorDefault, TRUE);
     CFHTTPMessageAppendBytes(working, [ibuffer bytes], [ibuffer length]);
     
@@ -184,17 +184,39 @@
     }
     
     HTTPServerRequest *request = [[HTTPServerRequest alloc] initWithRequest:working connection:self];
-    if (!requests) {
+    if (!requests)
+	{
         requests = [[NSMutableArray alloc] init];
     }
     [requests addObject:request];
-    if (delegate && [delegate respondsToSelector:@selector(HTTPConnection:didReceiveRequest:)]) { 
-        [delegate HTTPConnection:self didReceiveRequest:request];
-    } else {
-        [self performDefaultRequestHandling:request];
-    }
+	
+	@try
+	{
+		if (delegate && [delegate respondsToSelector:@selector(HTTPConnection:didReceiveRequest:)])
+		{ 
+			[delegate HTTPConnection:self didReceiveRequest:request];
+		}
+		else
+		{
+			[self performDefaultRequestHandling:request];
+		}
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"HTTPConnection didReceiveRequest exception: %@", e);
+	}
     
     CFRelease(working);
+	
+	BOOL close = NO;
+		
+	if( [[(id)CFHTTPMessageCopyHeaderFieldValue( [request request], (CFStringRef)@"Connection") autorelease] isEqualToString: @"close"])
+	{
+		NSLog( @"Connection:close in http header -> close now");
+		[self invalidate];
+		return NO;
+	}
+		
     return YES;
 }
 
@@ -263,12 +285,15 @@
         // When we get to this point with an empty buffer, then the 
         // processing of the response is done. If the input stream
         // is closed or at EOF, then no more requests are coming in.
-        if (delegate && [delegate respondsToSelector:@selector(HTTPConnection:didSendResponse:)]) { 
+        if (delegate && [delegate respondsToSelector:@selector(HTTPConnection:didSendResponse:)])
+		{ 
             [delegate HTTPConnection:self didSendResponse:req];
         }
         [requests removeObjectAtIndex:0];
         firstResponseDone = NO;
-        if ([istream streamStatus] == NSStreamStatusAtEnd && [requests count] == 0) {
+		
+        if( ([istream streamStatus] == NSStreamStatusAtEnd && [requests count] == 0))
+		{
             [self invalidate];
         }
         return;
