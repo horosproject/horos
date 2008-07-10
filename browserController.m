@@ -2821,16 +2821,16 @@ static NSArray*	statesArray = nil;
 
 - (NSMutableArray*)copyFilesIntoDatabaseIfNeeded: (NSMutableArray*)filesInput async: (BOOL)async COPYDATABASE: (BOOL) COPYDATABASE COPYDATABASEMODE:(int) COPYDATABASEMODE;
 {
-	if ( isCurrentDatabaseBonjour) return 0L;
-	if ([ filesInput count] == 0) return filesInput;
-	if (COPYDATABASE == NO) return filesInput;
+	if( isCurrentDatabaseBonjour) return 0L;
+	if( [filesInput count] == 0) return filesInput;
+	if( COPYDATABASE == NO) return filesInput;
 	
-	NSMutableArray			*newList = [NSMutableArray arrayWithCapacity: [filesInput count]];
-	NSString				*INpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEFPATH];
+	NSMutableArray *newList = [NSMutableArray arrayWithCapacity: [filesInput count]];
+	NSString *INpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEFPATH];
 	
 	for( NSString *file in filesInput )
 	{
-		if( [[file stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)
+		if( [[file commonPrefixWithString: INpath options: NSCaseInsensitiveSearch] isEqualToString:INpath] == NO)
 		{
 			[newList addObject: file];
 		}
@@ -9992,6 +9992,8 @@ static BOOL needToRezoom;
 
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer tileWindows: (BOOL) tileWindows
 {
+	if( [selectedLines count] == 0) return;
+	
 	@try
 	{
 		NSManagedObject		*selectedLine = [selectedLines objectAtIndex: 0];
