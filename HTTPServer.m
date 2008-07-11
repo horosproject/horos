@@ -84,6 +84,9 @@
     [istream open];
     [ostream open];
     isValid = YES;
+	
+	NSLog( @"httpconnection allocated");
+	
     return self;
 }
 
@@ -142,6 +145,7 @@
         [obuffer release];
         ibuffer = nil;
         obuffer = nil;
+		[requests removeAllObjects];
         [requests release];
         requests = nil;
         [self release];
@@ -188,10 +192,9 @@
     
     HTTPServerRequest *request = [[HTTPServerRequest alloc] initWithRequest:working connection:self];
     if (!requests)
-	{
         requests = [[NSMutableArray alloc] init];
-    }
-    [requests addObject:request];
+	
+    [requests addObject: request];
 	
 	@try
 	{
@@ -209,18 +212,19 @@
 		NSLog( @"HTTPConnection didReceiveRequest exception: %@", e);
 	}
     
-    CFRelease(working);
-	
+	BOOL returnValue = YES;
 	BOOL close = NO;
 		
 	if( [[(id)CFHTTPMessageCopyHeaderFieldValue( [request request], (CFStringRef)@"Connection") autorelease] isEqualToString: @"close"])
 	{
-//		NSLog( @"Connection: close in http header -> close now");
 		[self invalidate];
-		return NO;
+		returnValue = NO;
 	}
-		
-    return YES;
+	
+	CFRelease(working);
+	[request release];
+	
+    return returnValue;
 }
 
 - (void)processOutgoingBytes {
