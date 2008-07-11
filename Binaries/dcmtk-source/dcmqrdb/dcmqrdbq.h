@@ -329,8 +329,6 @@ OFCondition nextMoveResponse(
 //creates logEntry
 OFCondition updateLogEntry(DcmDataset *dataset);
 
-
-
       
 private:
 

@@ -83,6 +83,8 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+extern char currentDestinationMoveAET[ 60];
+
 static OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
 {
 	OFBool status = YES;
@@ -345,6 +347,10 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
 	    printf("Move SCP Request Identifiers:\n");
 	    requestIdentifiers->print(COUT);
         }
+		
+		if( request->MoveDestination)
+			strcpy( currentDestinationMoveAET, request->MoveDestination);
+		
         dbcond = dbHandle.startMoveRequest(
 	    request->AffectedSOPClassUID, requestIdentifiers, &dbStatus);
         if (dbcond.bad()) {

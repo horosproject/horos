@@ -21,6 +21,8 @@
 #import "DicomImage.h"
 #import "MutableArrayCategory.h"
 
+char currentDestinationMoveAET[ 60] = "";
+
 @implementation OsiriXSCPDataHandler (DCMTKDataHandlerCategory)
 
 - (NSPredicate *)predicateForDataset:( DcmDataset *)dataset
@@ -837,6 +839,19 @@
 {
 	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
 	
+	char fromTo[ 200] = "";
+	
+	if (strcmp( currentDestinationMoveAET, [[self callingAET] UTF8String]) == 0)
+	{
+		strcpy( fromTo, [[self callingAET] UTF8String]);
+	}
+	else
+	{
+		strcpy( fromTo, [[self callingAET] UTF8String]);
+		strcat( fromTo, " / ");
+		strcat( fromTo, currentDestinationMoveAET);
+	}
+	
 	for( NSManagedObject *object in mArray)
 	{
 		if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
@@ -848,7 +863,7 @@
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
-				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r", [[object valueForKeyPath:@"study.name"] UTF8String], [[object valueForKeyPath:@"study.studyName"] UTF8String], [[self callingAET] UTF8String], time (NULL), "Complete", "unused", [[object valueForKey:@"noFiles"] intValue], time (NULL), "Move", "UTF-8");
+				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r", [[object valueForKeyPath:@"study.name"] UTF8String], [[object valueForKeyPath:@"study.studyName"] UTF8String], fromTo, time (NULL), "Complete", "unused", [[object valueForKey:@"noFiles"] intValue], time (NULL), "Move", "UTF-8");
 				fclose (pFile);
 				strcpy( newdir, dir);
 				strcat( newdir, ".log");
@@ -865,7 +880,7 @@
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
-				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r", [[object valueForKey:@"name"] UTF8String], [[object valueForKey:@"studyName"] UTF8String], [[self callingAET] UTF8String], time (NULL), "Complete", "unused", [[object valueForKey:@"noFiles"] intValue], time (NULL), "Move", "UTF-8");
+				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r", [[object valueForKey:@"name"] UTF8String], [[object valueForKey:@"studyName"] UTF8String], fromTo, time (NULL), "Complete", "unused", [[object valueForKey:@"noFiles"] intValue], time (NULL), "Move", "UTF-8");
 				fclose (pFile);
 				strcpy( newdir, dir);
 				strcat( newdir, ".log");
