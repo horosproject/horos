@@ -2,12 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9D34</string>
+		<string key="IBDocument.SystemVersion">9E17</string>
 		<string key="IBDocument.InterfaceBuilderVersion">670</string>
 		<string key="IBDocument.AppKitVersion">949.33</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="1220"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -37,7 +38,7 @@
 				<string key="NSWindowContentMaxSize">{10000, 10000}</string>
 				<string key="NSWindowContentMinSize">{200, 200}</string>
 				<object class="NSView" key="NSWindowView" id="484109505">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -210,6 +211,7 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{543, 503}</string>
+					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{200, 222}</string>
@@ -9620,7 +9622,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference key="NSControlView" ref="1051111157"/>
 							<int key="NSButtonFlags">104874239</int>
 							<int key="NSButtonFlags2">6</int>
-							<object class="NSCustomResource" key="NSNormalImage" id="180739046">
+							<object class="NSCustomResource" key="NSNormalImage" id="287404953">
 								<string key="NSClassName">NSImage</string>
 								<string key="NSResourceName">page.tif</string>
 							</object>
@@ -9637,7 +9639,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<string key="NSKeyEquiv"/>
 								<int key="NSKeyEquivModMask">1048576</int>
 								<int key="NSMnemonicLoc">2147483647</int>
-								<reference key="NSImage" ref="180739046"/>
+								<reference key="NSImage" ref="287404953"/>
 								<reference key="NSOnImage" ref="888121851"/>
 								<reference key="NSMixedImage" ref="844388719"/>
 								<string key="NSAction">_popUpItemAction:</string>
@@ -21450,6 +21452,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>1215.ImportedFromIB2</string>
 					<string>1220.IBPluginDependency</string>
 					<string>1220.ImportedFromIB2</string>
+					<string>1222.CustomClassName</string>
 					<string>1222.IBPluginDependency</string>
 					<string>1222.ImportedFromIB2</string>
 					<string>1223.IBPluginDependency</string>
@@ -22051,6 +22054,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>21.editorWindowContentRectSynchronizationRect</string>
 					<string>2103.IBPluginDependency</string>
 					<string>2103.ImportedFromIB2</string>
+					<string>2366.CustomClassName</string>
 					<string>2394.IBShouldRemoveOnLegacySave</string>
 					<string>2395.IBShouldRemoveOnLegacySave</string>
 					<string>2396.IBPluginDependency</string>
@@ -22228,6 +22232,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>497.ImportedFromIB2</string>
 					<string>498.IBPluginDependency</string>
 					<string>498.ImportedFromIB2</string>
+					<string>5.IBEditorWindowLastContentRect</string>
 					<string>5.IBPluginDependency</string>
 					<string>5.IBWindowTemplateEditedContentRect</string>
 					<string>5.ImportedFromIB2</string>
@@ -22630,7 +22635,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{473, 629}, {333, 227}}</string>
 					<reference ref="9"/>
 					<string>{{473, 629}, {333, 227}}</string>
-					<integer value="0" id="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{333, 227}</string>
 					<string>{333, 227}</string>
@@ -22667,7 +22672,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{168, 1254}, {337, 107}}</string>
 					<reference ref="9"/>
 					<string>{{167, 584}, {337, 107}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{337, 107}</string>
 					<string>{337, 107}</string>
@@ -22750,7 +22755,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{473, 470}, {564, 285}}</string>
 					<reference ref="9"/>
 					<string>{{473, 470}, {564, 285}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{564, 285}</string>
 					<string>{564, 285}</string>
@@ -22804,6 +22809,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>ThumbnailCell</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -22840,7 +22846,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{493, 716}, {531, 140}}</string>
 					<reference ref="9"/>
 					<string>{{493, 716}, {531, 140}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{531, 140}</string>
 					<string>{531, 140}</string>
@@ -22930,7 +22936,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{514, 336}, {502, 520}}</string>
 					<reference ref="9"/>
 					<string>{{514, 336}, {502, 520}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{502, 520}</string>
 					<string>{502, 520}</string>
@@ -22974,7 +22980,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{451, 656}, {306, 142}}</string>
 					<reference ref="9"/>
 					<string>{{451, 656}, {306, 142}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{306, 142}</string>
 					<string>{306, 142}</string>
@@ -23008,7 +23014,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{323, 338}, {383, 518}}</string>
 					<reference ref="9"/>
 					<string>{{323, 338}, {383, 518}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{383, 518}</string>
 					<string>{383, 518}</string>
@@ -23016,7 +23022,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{374, 109}, {298, 173}}</string>
 					<reference ref="9"/>
 					<string>{{374, 109}, {298, 173}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{298, 173}</string>
 					<string>{298, 173}</string>
@@ -23260,7 +23266,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{362, 363}, {675, 274}}</string>
 					<reference ref="9"/>
 					<string>{{362, 363}, {675, 274}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{675, 274}</string>
 					<string>{675, 274}</string>
@@ -23416,7 +23422,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{723, 664}, {314, 163}}</string>
 					<reference ref="9"/>
 					<string>{{723, 664}, {314, 163}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{314, 163}</string>
 					<string>{314, 163}</string>
@@ -23517,6 +23523,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{0, 1494}, {194, 51}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>ThumbnailCell</string>
 					<reference ref="9"/>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -23656,7 +23663,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{485, 405}, {552, 306}}</string>
 					<reference ref="9"/>
 					<string>{{485, 405}, {552, 306}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{552, 306}</string>
 					<string>{552, 306}</string>
@@ -23694,11 +23701,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
+					<string>{{0, 1042}, {543, 503}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{312, 231}, {543, 503}}</string>
+					<string>{{0, 1042}, {543, 503}}</string>
 					<reference ref="9"/>
 					<string>{{312, 231}, {543, 503}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>{200, 200}</string>
@@ -23726,7 +23734,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{391, 618}, {475, 238}}</string>
 					<reference ref="9"/>
 					<string>{{391, 618}, {475, 238}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{475, 238}</string>
 					<string>{475, 238}</string>
@@ -23856,7 +23864,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{449, 505}, {386, 351}}</string>
 					<reference ref="9"/>
 					<string>{{449, 505}, {386, 351}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{386, 351}</string>
 					<string>{386, 351}</string>
@@ -23890,7 +23898,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{356, 585}, {334, 271}}</string>
 					<reference ref="9"/>
 					<string>{{356, 585}, {334, 271}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{334, 271}</string>
 					<string>{334, 271}</string>
@@ -23925,7 +23933,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{635, 544}, {402, 312}}</string>
 					<reference ref="9"/>
 					<string>{{635, 544}, {402, 312}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{402, 312}</string>
 					<string>{402, 312}</string>
@@ -23991,7 +23999,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{536, 622}, {382, 234}}</string>
 					<reference ref="9"/>
 					<string>{{536, 622}, {382, 234}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{382, 234}</string>
 					<string>{382, 234}</string>
@@ -24067,7 +24075,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{47, 143}, {552, 234}}</string>
 					<reference ref="9"/>
 					<string>{{47, 143}, {552, 234}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{552, 234}</string>
 					<string>{552, 234}</string>
@@ -24109,7 +24117,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string>{{269, 485}, {333, 191}}</string>
 					<reference ref="9"/>
 					<string>{{269, 485}, {333, 191}}</string>
-					<reference ref="6"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{333, 191}</string>
 					<string>{333, 191}</string>
@@ -24289,6 +24297,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">NSButtonCell</string>
+					<string key="superclassName">NSActionCell</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBUserSource</string>
+						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">NSMenu</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
@@ -24438,6 +24454,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">ThumbnailCell</string>
+					<string key="superclassName">NSButtonCell</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">ThumbnailCell.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

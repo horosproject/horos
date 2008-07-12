@@ -6449,6 +6449,10 @@
 		CE5487430989346800CF4C60 /* BrushPalette.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5487400989346800CF4C60 /* BrushPalette.tif */; };
 		CE54877A0989363200CF4C60 /* Brush.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5487790989363200CF4C60 /* Brush.tiff */; };
 		CE54877C0989363200CF4C60 /* Brush.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5487790989363200CF4C60 /* Brush.tiff */; };
+		CE569B740E29612100F4A234 /* ThumbnailCell.h in Headers */ = {isa = PBXBuildFile; fileRef = CE569B720E29612100F4A234 /* ThumbnailCell.h */; };
+		CE569B750E29612100F4A234 /* ThumbnailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE569B730E29612100F4A234 /* ThumbnailCell.m */; };
+		CE569B760E29612100F4A234 /* ThumbnailCell.h in Headers */ = {isa = PBXBuildFile; fileRef = CE569B720E29612100F4A234 /* ThumbnailCell.h */; };
+		CE569B770E29612100F4A234 /* ThumbnailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE569B730E29612100F4A234 /* ThumbnailCell.m */; };
 		CE586CC40C74B75D00DB7D5A /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
 		CE586CC50C74B75D00DB7D5A /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
 		CE586CCA0C74B7DB00DB7D5A /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
@@ -11560,6 +11564,8 @@
 		CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NrrdIO.h; path = ITK180/Utilities/NrrdIO/NrrdIO.h; sourceTree = "<group>"; };
 		CE5487400989346800CF4C60 /* BrushPalette.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BrushPalette.tif; sourceTree = "<group>"; };
 		CE5487790989363200CF4C60 /* Brush.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Brush.tiff; sourceTree = "<group>"; };
+		CE569B720E29612100F4A234 /* ThumbnailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailCell.h; sourceTree = "<group>"; };
+		CE569B730E29612100F4A234 /* ThumbnailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailCell.m; sourceTree = "<group>"; };
 		CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdcmprintscu.dylib; path = AYDicomPrint/libdcmprintscu.dylib; sourceTree = "<group>"; };
 		CE5A7F8B0CB9430D009C80B4 /* 32-bit shell.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = "32-bit shell.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE5D33B309E1C26400CC6884 /* add-large.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "add-large.tif"; sourceTree = "<group>"; };
@@ -13019,6 +13025,8 @@
 		ABAA285A058A675600F0601D /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				CE569B720E29612100F4A234 /* ThumbnailCell.h */,
+				CE569B730E29612100F4A234 /* ThumbnailCell.m */,
 				CE087B0A0DE9BD6E000E5593 /* GLString.m */,
 				CE087B0B0DE9BD6E000E5593 /* GLString.h */,
 				CEE8CECE0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m */,
@@ -18634,6 +18642,7 @@
 				CE0E3A550D87C56D008135A8 /* ThreeDPanView.h in Headers */,
 				CE3DDDAF0D8AC94C00AE9588 /* QueryOutlineView.h in Headers */,
 				CE087B0D0DE9BD6E000E5593 /* GLString.h in Headers */,
+				CE569B740E29612100F4A234 /* ThumbnailCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20708,6 +20717,7 @@
 				CE0E3A570D87C56D008135A8 /* ThreeDPanView.h in Headers */,
 				CE3DDDB10D8AC94C00AE9588 /* QueryOutlineView.h in Headers */,
 				CE087B0F0DE9BD6E000E5593 /* GLString.h in Headers */,
+				CE569B760E29612100F4A234 /* ThumbnailCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23001,6 +23011,7 @@
 				CE0E3A560D87C56D008135A8 /* ThreeDPanView.m in Sources */,
 				CE3DDDB00D8AC94C00AE9588 /* QueryOutlineView.m in Sources */,
 				CE087B0C0DE9BD6E000E5593 /* GLString.m in Sources */,
+				CE569B750E29612100F4A234 /* ThumbnailCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24681,6 +24692,7 @@
 				CE0E3A580D87C56D008135A8 /* ThreeDPanView.m in Sources */,
 				CE3DDDB20D8AC94C00AE9588 /* QueryOutlineView.m in Sources */,
 				CE087B0E0DE9BD6E000E5593 /* GLString.m in Sources */,
+				CE569B770E29612100F4A234 /* ThumbnailCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

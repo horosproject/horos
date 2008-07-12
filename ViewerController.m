@@ -85,7 +85,7 @@
 #import "DCMAttributeTag.h"
 #import "NavigatorWindowController.h"
 #import "ThreeDPositionController.h"
-
+#import "ThumbnailCell.h"
 
 #import "DefaultsOsiriX.h"
 
@@ -2985,7 +2985,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) matrixPreviewPressed:(id) sender
 {
-	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask && FullScreenOn == NO) 
+	ThumbnailCell *c = [sender selectedCell];
+
+	if( ([c rightClick] || ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask)) && FullScreenOn == NO) 
 	{
 		ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :0L :YES keyImagesOnly: displayOnlyKeyImages];
 		[newViewer setHighLighted: 1.0];
