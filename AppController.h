@@ -25,12 +25,9 @@
 *  The OsiriX team.
 */
 
-
-
-
-//#if !__LP64__
+#ifdef OSIRIX_VIEWER
 #import <Growl/Growl.h>
-//#endif
+#endif
 
 #import <AppKit/AppKit.h>
 #import "XMLRPCMethods.h"
@@ -77,11 +74,12 @@ extern "C"
 *
 *
 */
-//#if !__LP64__
+
+#ifdef OSIRIX_VIEWER
 @interface AppController : NSObject	<GrowlApplicationBridgeDelegate>
-//#else
-//@interface AppController : NSObject
-//#endif
+#else
+@interface AppController : NSObject
+#endif
 {
 	IBOutlet BrowserController		*browserController;
 

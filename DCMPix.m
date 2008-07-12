@@ -8984,6 +8984,7 @@ END_CREATE_ROIS:
 
 - (void) orientationCorrected:(float*) correctedOrientation rotation:(float) rotation xFlipped: (BOOL) xFlipped yFlipped: (BOOL) yFlipped
 {
+	#ifdef OSIRIX_VIEWER
 	float	o[ 9];
 	float   yRot = -1, xRot = -1;
 	float	rot = rotation;
@@ -9039,6 +9040,7 @@ END_CREATE_ROIS:
 	o[8] = o[0]*o[4] - o[1]*o[3];
 
 	memcpy( correctedOrientation, o, sizeof o );
+	#endif
 }
 
 - (NSRect) usefulRectWithRotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF
@@ -10457,6 +10459,7 @@ END_CREATE_ROIS:
 						[processorsLock unlock];
 					}
 					
+					#ifdef OSIRIX_VIEWER
 					if(isLUT12Bit && [AppController canDisplay12Bit])
 					{
 						NSInvocation *fill12BitBufferInvocation = [AppController fill12BitBufferInvocation];
@@ -10466,6 +10469,7 @@ END_CREATE_ROIS:
 						[fill12BitBufferInvocation setArgument:&transferFunctionPtr atIndex:4];
 						[fill12BitBufferInvocation invoke];
 					}
+					#endif
 				}
 				
 				if( srcf.data != fImage) free( srcf.data);
