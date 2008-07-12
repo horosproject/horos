@@ -11223,27 +11223,24 @@ static NSArray*	openSubSeriesArray = 0L;
 		if( isCurrentDatabaseBonjour) return NO;
 		
 		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
+			
+		BOOL matrixThumbnails;
 		
-		if( [selectedRows count] == 1)
-		{		
-			BOOL matrixThumbnails;
-			
-			if( menuItem.menu == contextual) matrixThumbnails = YES;
-			else matrixThumbnails = NO;
-			
-			NSMutableArray *files, *objects = [NSMutableArray array];
-			
-			if( matrixThumbnails)
-				files = [self filesForDatabaseMatrixSelection: objects onlyImages: NO];
-			else
-				files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
-			
-			for( NSManagedObject *im in objects)
-			{
-				if( [[im valueForKey: @"inDatabaseFolder"] boolValue] == NO) return YES;
-			}
+		if( menuItem.menu == contextual) matrixThumbnails = YES;
+		else matrixThumbnails = NO;
+		
+		NSMutableArray *files, *objects = [NSMutableArray array];
+		
+		if( matrixThumbnails)
+			files = [self filesForDatabaseMatrixSelection: objects onlyImages: NO];
+		else
+			files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
+		
+		for( NSManagedObject *im in objects)
+		{
+			if( [[im valueForKey: @"inDatabaseFolder"] boolValue] == NO)
+				return YES;
 		}
-		else return YES;
 		
 		return NO;
 	}
