@@ -358,6 +358,8 @@
 
 - (IBAction) flyThruQuicktimeExport :(id) sender
 {
+	[numberOfFramesTextField selectText: self];
+	
 	[FTAdapter prepareMovieGenerating];
 
 	if( exportFormat == 0)
