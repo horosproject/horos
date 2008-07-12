@@ -4467,94 +4467,74 @@ static NSArray*	statesArray = nil;
 	NSEnumerator		*rowEnumerator = [databaseOutline selectedRowEnumerator];
 	NSNumber			*row;
 	
-	while (row = [rowEnumerator nextObject])
-	{
-		NSManagedObject *curObj = [databaseOutline itemAtRow:[row intValue]];
-		
-		if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"] )
-		{
-			NSArray		*imagesArray = [self imagesArray: curObj onlyImages: onlyImages];
-			
-			if( isCurrentDatabaseBonjour)
-			{
-				for( NSManagedObject *obj in imagesArray )
-				{
-					NSString *p = [self getLocalDCMPath: obj :BONJOURPACKETS];
-					
-					if( [selectedFiles containsString: p] == NO)
-						[selectedFiles addObject: p];
-				}
-			}
-			else
-			{
-				for( NSString *o in [imagesArray valueForKey: @"completePath"])
-				{
-					if( [selectedFiles containsString: o] == NO)
-						[selectedFiles addObject: o];
-				}
-			}
-			
-			if( correspondingManagedObjects)
-			{
-				for( NSManagedObject *o in imagesArray)
-				{
-					if( [correspondingManagedObjects containsObject: o] == NO)
-						[correspondingManagedObjects addObject: o];
-				}
-			}
-		}
-		
-		if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"] )
-		{
-			NSArray	*seriesArray = [self childrenArray: curObj onlyImages: onlyImages];
-			
-			int totImage = 0;
-			
-			for( NSManagedObject *obj in seriesArray )
-			{
-				NSArray		*imagesArray = [self imagesArray: obj onlyImages: onlyImages];
-				
-				totImage += [imagesArray count];
-				
-				if( isCurrentDatabaseBonjour )
-				{
-					for( NSManagedObject *o in imagesArray )
-					{
-						NSString *p = [self getLocalDCMPath: o :BONJOURPACKETS];
-					
-						if( [selectedFiles containsString: p] == NO)
-							[selectedFiles addObject: p];
-					}
-				}
-				else
-				{
-					for( NSString *o in [imagesArray valueForKey: @"completePath"])
-					{
-						if( [selectedFiles containsString: o] == NO)
-							[selectedFiles addObject: o];
-					}
-				}
-				
-				if( correspondingManagedObjects)
-				{
-					for( NSManagedObject *o in imagesArray)
-					{
-						if( [correspondingManagedObjects containsObject: o] == NO)
-							[correspondingManagedObjects addObject: o];
-					}
-				}
-			}
-			
-			if( onlyImages == NO && totImage == 0)							// We don't want empty studies
-				[self.managedObjectContext deleteObject: curObj];
-		}
-	}
+	NSManagedObjectContext	*context = self.managedObjectContext;
+	NSManagedObjectModel    *model = self.managedObjectModel;
 	
-	if( correspondingManagedObjects)
+	if( correspondingManagedObjects == 0L) correspondingManagedObjects = [NSMutableArray array];
+	
+	[context retain];
+	[context lock];
+	
+	@try
 	{
+		while (row = [rowEnumerator nextObject])
+		{
+			NSManagedObject *curObj = [databaseOutline itemAtRow:[row intValue]];
+			
+			if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"] )
+			{
+				NSArray		*imagesArray = [self imagesArray: curObj onlyImages: onlyImages];
+				
+				[correspondingManagedObjects addObjectsFromArray: imagesArray];
+			}
+			
+			if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"] )
+			{
+				NSArray	*seriesArray = [self childrenArray: curObj onlyImages: onlyImages];
+				
+				int totImage = 0;
+				
+				for( NSManagedObject *obj in seriesArray )
+				{
+					NSArray		*imagesArray = [self imagesArray: obj onlyImages: onlyImages];
+					
+					totImage += [imagesArray count];
+					
+					[correspondingManagedObjects addObjectsFromArray: imagesArray];
+				}
+				
+				if( onlyImages == NO && totImage == 0)							// We don't want empty studies
+					[context deleteObject: curObj];
+			}
+		}
+		
+		[correspondingManagedObjects removeDuplicatedObjects];
+		
+		if( isCurrentDatabaseBonjour)
+		{
+			for( NSManagedObject *obj in correspondingManagedObjects )
+			{
+				NSString *p = [self getLocalDCMPath: obj :BONJOURPACKETS];
+				
+				[selectedFiles addObject: p];
+			}
+		}
+		else
+		{
+			[selectedFiles addObjectsFromArray: [correspondingManagedObjects valueForKey: @"completePath"]];
+		}
+		
 		if( [correspondingManagedObjects count] != [selectedFiles count])
 			NSLog(@"****** WARNING [correspondingManagedObjects count] != [selectedFiles count]");
 	}
+	@catch (NSException * e)
+	{
+		NSLog( @"Exception in filesForDatabaseMatrixSelection: %@", e);
+	}
+	
+	[context release];
+	[context unlock];
+	
 	
 	return selectedFiles;
 	
@@ -7621,74 +7601,65 @@ static BOOL withReset = NO;
 	NSArray				*cells = [oMatrix selectedCells];
 	NSManagedObject		*aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 	
-    if( cells != nil && aFile != nil )
-	{
-		for( NSCell *cell in cells )
+	if( correspondingManagedObjects == 0L) correspondingManagedObjects = [NSMutableArray array];
+	
+	NSManagedObjectContext	*context = self.managedObjectContext;
+	NSManagedObjectModel    *model = self.managedObjectModel;
+	
+	[context retain];
+	[context lock];
+	
+	@try
+	{	
+		if( cells != nil && aFile != nil )
 		{
-			if( [cell isEnabled] == YES )
+			for( NSCell *cell in cells )
 			{
-				NSManagedObject	*curObj = [matrixViewArray objectAtIndex: [cell tag]];
-				
-				if( [[curObj valueForKey:@"type"] isEqualToString:@"Image"])
+				if( [cell isEnabled] == YES )
 				{
-					if( isCurrentDatabaseBonjour )
-					{
-						NSString *p = [self getLocalDCMPath: curObj :50];
+					NSManagedObject	*curObj = [matrixViewArray objectAtIndex: [cell tag]];
 					
-						if( [selectedFiles containsString: p] == NO)
-							[selectedFiles addObject: p];
-					}
-					else
+					if( [[curObj valueForKey:@"type"] isEqualToString:@"Image"])
 					{
-						if( [selectedFiles containsString: [curObj valueForKey: @"completePath"]] == NO)
-							[selectedFiles addObject: [curObj valueForKey: @"completePath"]];
+						[correspondingManagedObjects addObject: curObj];
 					}
 					
-					if( correspondingManagedObjects)
+					if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"] )
 					{
-						if( [correspondingManagedObjects containsObject: curObj] == NO)
-							[correspondingManagedObjects addObject: curObj];
-					}
-				}
-				
-				if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"] )
-				{
-					NSArray *imagesArray = [self imagesArray: curObj onlyImages: onlyImages];
-					
-					if( isCurrentDatabaseBonjour )
-					{
-						for( NSManagedObject *img in imagesArray )
-						{
-							NSString *p = [self getLocalDCMPath: img :50];
-					
-							if( [selectedFiles containsString: p] == NO)	
-								[selectedFiles addObject: [self getLocalDCMPath: img :50]];
-						}
-					}
-					else
-					{
-						for( NSString *o in [imagesArray valueForKey: @"completePath"])
-						{
-							if( [selectedFiles containsString: o] == NO)
-								[selectedFiles addObject: o];
-						}
-					}
-					
-					for( NSManagedObject *o in imagesArray)
-					{
-						if( [correspondingManagedObjects containsObject: o] == NO)
-							[correspondingManagedObjects addObject: o];
+						NSArray *imagesArray = [self imagesArray: curObj onlyImages: onlyImages];
+						
+						[correspondingManagedObjects addObjectsFromArray: imagesArray];
 					}
 				}
 			}
 		}
-	}
-	
-	if( correspondingManagedObjects)
-	{
+		
+		[correspondingManagedObjects removeDuplicatedObjects];
+		
+		if( isCurrentDatabaseBonjour )
+		{
+			for( NSManagedObject *img in correspondingManagedObjects)
+			{
+				NSString *p = [self getLocalDCMPath: img :50];
+		
+				[selectedFiles addObject: [self getLocalDCMPath: img :50]];
+			}
+		}
+		else
+		{
+			[selectedFiles addObjectsFromArray: [correspondingManagedObjects valueForKey: @"completePath"]];
+		}
+		
 		if( [correspondingManagedObjects count] != [selectedFiles count])
 			NSLog(@"****** WARNING [correspondingManagedObjects count] != [selectedFiles count]");
 	}
+	@catch (NSException * e)
+	{
+		NSLog( @"Exception in filesForDatabaseMatrixSelection: %@", e);
+	}
+	
+	[context release];
+	[context unlock];
 	
 	return selectedFiles;
 }

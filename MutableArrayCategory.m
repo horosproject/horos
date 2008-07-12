@@ -15,7 +15,14 @@
 
 
 #import "MutableArrayCategory.h"
-//#import "iRad.h"
+
+NSInteger sortByAddress(id roi1, id roi2, void *context)
+{
+   if( roi1 > roi2) return NSOrderedDescending;
+   else if( roi1 < roi2) return NSOrderedAscending;
+   else return NSOrderedSame;
+}
+
 @implementation NSArray (ArrayCategory)
 
 #define ExperimentalShuffle
@@ -70,16 +77,55 @@
     }
 }
 
-- (BOOL)containsString:(NSString *)string{
-
-	NSEnumerator *enumerator = [self objectEnumerator];
-	id object;
-	while (object = [enumerator nextObject]) {
-		if ([object isKindOfClass:[NSString class]]) {
-			if ([object isEqualToString:string])
-				return YES;
+- (void) removeDuplicatedObjects
+{
+	[self sortUsingFunction: sortByAddress context: 0];
+	
+	NSArray *a = [NSArray arrayWithArray: self];
+	
+	id lastObject = 0L;
+	
+	[self removeAllObjects];
+	
+	for( NSString *s in a)
+	{
+		if( s != lastObject)
+		{
+			[self addObject: s];
+			lastObject = s;
 		}
 	}
+}
+
+- (void) removeDuplicatedStrings
+{
+	[self sortUsingSelector: @selector(caseInsensitiveCompare:)];
+	
+	NSArray *a = [NSArray arrayWithArray: self];
+	
+	NSString *lastString = 0L;
+	
+	[self removeAllObjects];
+	
+	for( NSString *s in a)
+	{
+		if( [s isEqualToString: lastString] == NO)
+		{
+			[self addObject: s];
+			lastString = s;
+		}
+	}
+}
+
+- (BOOL)containsString:(NSString *)string
+{
+	for( id object in self)
+	{
+		if ([object isKindOfClass:[NSString class]])
+			if ([object isEqualToString:string])
+				return YES;
+	}
+
 	return NO;
 }
 
