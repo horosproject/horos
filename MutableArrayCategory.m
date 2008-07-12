@@ -79,41 +79,29 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 
 - (void) removeDuplicatedObjects
 {
-	[self sortUsingFunction: sortByAddress context: 0];
-	
-	NSArray *a = [NSArray arrayWithArray: self];
+	NSArray *a = [self sortedArrayUsingFunction: sortByAddress context: 0];
 	
 	id lastObject = 0L;
 	
-	[self removeAllObjects];
-	
-	for( NSString *s in a)
+	for( id s in a)
 	{
-		if( s != lastObject)
-		{
-			[self addObject: s];
-			lastObject = s;
-		}
+		if( s == lastObject)
+			[self removeObjectAtIndex: [self indexOfObject: s]];
+		else lastObject = s;
 	}
 }
 
 - (void) removeDuplicatedStrings
 {
-	[self sortUsingSelector: @selector(caseInsensitiveCompare:)];
-	
-	NSArray *a = [NSArray arrayWithArray: self];
+	NSArray *a = [self sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
 	
 	NSString *lastString = 0L;
 	
-	[self removeAllObjects];
-	
 	for( NSString *s in a)
 	{
-		if( [s isEqualToString: lastString] == NO)
-		{
-			[self addObject: s];
-			lastString = s;
-		}
+		if( [s isEqualToString: lastString])
+			[self removeObjectAtIndex: [self indexOfObject: s]];
+		else lastString = s;
 	}
 }
 
