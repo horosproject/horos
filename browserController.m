@@ -10072,17 +10072,17 @@ static BOOL needToRezoom;
 		
 		if( tileWindows )
 		{
+			NSArray *viewers = [ViewerController getDisplayed2DViewers];
+			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 			{
 				[[AppController sharedAppController] tileWindows: self];
 				
-				NSArray *array = [ViewerController getDisplayed2DViewers];
-				
-				if( [array count] > 1)
+				if( [viewers count] > 1)
 				{
 					ViewerController *kV = 0L;
 					
-					for( ViewerController *v in array)
+					for( ViewerController *v in viewers)
 					{
 						[[v imageView] scaleToFit];
 						[[v imageView] setOriginX:0 Y:0];

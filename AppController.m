@@ -2650,11 +2650,18 @@ static BOOL initialized = NO;
 			{
 				last = loopItem;
 				[loopItem orderFront: self];
+				[[loopItem windowController] checkBuiltMatrixPreview];
 			}
 		}
 	}
 	
-	if( last && makeKey) [last makeKeyAndOrderFront: self];
+	if( makeKey)
+	{
+		[last makeKeyAndOrderFront: self];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncPreviewList"])
+			[[last windowController] syncThumbnails];
+	}
 }
 
 - (void) checkAllWindowsAreVisible:(id) sender
@@ -3040,10 +3047,14 @@ static BOOL initialized = NO;
 	
 	[[NSUserDefaults standardUserDefaults] setBool: origCopySettings forKey: @"COPYSETTINGS"];
 	
+	
 	if( [viewersList count] > 0)
 	{
 		[[[viewersList objectAtIndex: keyWindow] window] makeKeyAndOrderFront:self];
 		[[viewersList objectAtIndex: keyWindow] propagateSettings];
+		
+		for( ViewerController *v in viewersList)
+			[v checkBuiltMatrixPreview];
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"])
 		{
@@ -3055,6 +3066,9 @@ static BOOL initialized = NO;
 		
 		[[[viewersList objectAtIndex: keyWindow] imageView] becomeMainWindow];
 		[[viewersList objectAtIndex: keyWindow] refreshToolbar];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncPreviewList"])
+			[[viewersList objectAtIndex: keyWindow] syncThumbnails];
 	}
 }
 

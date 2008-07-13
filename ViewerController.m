@@ -240,12 +240,12 @@ static int hotKeyToolCrossTable[] =
 	NSArray *winList = [NSApp orderedWindows];
 	NSMutableArray *viewersList = [NSMutableArray arrayWithCapacity: numberOf2DViewer];
 	
-	for( id loopItem in winList)
+	for( NSWindow *win in winList)
 	{
-		if( [[loopItem windowController] isKindOfClass:[ViewerController class]])
+		if( [[win windowController] isKindOfClass:[ViewerController class]])
 		{
-			if( [[loopItem windowController] windowWillClose] == NO)
-				[viewersList addObject: [loopItem windowController]];
+			if( [[win windowController] windowWillClose] == NO)
+				[viewersList addObject: [win windowController]];
 		}
 	}
 
@@ -3022,7 +3022,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 			if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 			{
-			
+				
 			}
 			else
 			{
@@ -3147,6 +3147,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return previewMatrixScrollView;
 }
 
+- (void) syncThumbnails
+{
+	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+	{
+		if( v != self && [[v studyInstanceUID] isEqualToString: [self studyInstanceUID]])
+		{
+			[[v.previewMatrixScrollView contentView] scrollToPoint: [[v.previewMatrixScrollView contentView] constrainScrollPoint: [[previewMatrix superview] bounds].origin]];
+			[v.previewMatrixScrollView reflectScrolledClipView: [v.previewMatrixScrollView contentView]];
+		}
+	}
+}
+
 - (void) ViewBoundsDidChange: (NSNotification*) note
 {
 	if( ViewBoundsDidChangeProtect == NO)
@@ -3160,14 +3172,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask)
 				syncThumbnails = !syncThumbnails;
 			
-			for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-			{
-				if( v != self && [[v studyInstanceUID] isEqualToString: [self studyInstanceUID]] && syncThumbnails)
-				{
-					[[v.previewMatrixScrollView contentView] scrollToPoint: [[v.previewMatrixScrollView contentView] constrainScrollPoint: [[previewMatrix superview] bounds].origin]];
-					[v.previewMatrixScrollView reflectScrolledClipView: [v.previewMatrixScrollView contentView]];
-				}
-			}
+			if( syncThumbnails)
+				[self syncThumbnails];
 		}
 		
 		ViewBoundsDidChangeProtect = NO;
@@ -3233,16 +3239,27 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[curStudy setHidden: ![curStudy isHidden]];
 	
-	NSArray	*viewers = [ViewerController getDisplayed2DViewers];
-	
-	for( id loopItem in viewers)
+	for( id loopItem in [ViewerController getDisplayed2DViewers])
 	{
 		[loopItem buildMatrixPreview: YES];
 	}
 }
 
+- (void) checkBuiltMatrixPreview
+{
+	if( [self checkFrameSize] == YES && matrixPreviewBuilt == NO)
+	{
+		if( [[self window] isKeyWindow])
+			[self buildMatrixPreview: YES];
+		else
+			[self buildMatrixPreview: NO];
+	}
+}
+
 - (void) buildMatrixPreview: (BOOL) showSelected
 {
+	if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
+
 	NSManagedObjectModel	*model = [[BrowserController currentBrowser] managedObjectModel];
 	NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
 	NSPredicate				*predicate;
@@ -3250,7 +3267,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSError					*error = 0L;
 	long					i, x, index = 0;
 	NSManagedObject			*curImage = [fileList[0] objectAtIndex:0];
-	BOOL					StoreThumbnailsInDB = YES;	//[[NSUserDefaults standardUserDefaults] boolForKey: @"StoreThumbnailsInDB"];
+	BOOL					StoreThumbnailsInDB = YES;
 	NSPoint					origin = [[previewMatrix superview] bounds].origin;
 	
 	BOOL visible = [self checkFrameSize];
@@ -3260,7 +3277,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[previewMatrixScrollView setPostsBoundsChangedNotifications:YES];
 	
-	NSManagedObject			*study = [curImage valueForKeyPath:@"series.study"];
+	NSManagedObject	*study = [curImage valueForKeyPath:@"series.study"];
 	if( study == 0L)
 	{
 		[previewMatrix renewRows: 0 columns: 0];
@@ -3327,7 +3344,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			}
 			
 			NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
-				
+			
+			[cell setTransparent: NO];
 			[cell setBezelStyle: NSShadowlessSquareBezelStyle];
 			[cell setFont:[NSFont boldSystemFontOfSize:8.5]];
 			[cell setButtonType:NSMomentaryPushInButton];
@@ -3388,6 +3406,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
 					NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
 					
+					[cell setTransparent: NO];
 					[cell setBezelStyle: NSShadowlessSquareBezelStyle];
 					[cell setRepresentedObject: curSeries];
 					if( keyImagesNumber) [cell setFont:[NSFont boldSystemFontOfSize:8.5]];
@@ -5219,11 +5238,6 @@ static ViewerController *draggedController = 0L;
 	if([AppController canDisplay12Bit]) t12BitTimer = [[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(verify12Bit:) userInfo:nil repeats:YES] retain];
 	else t12BitTimer = nil;
 	
-	[self refreshToolbar];
-	
-	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-		[v buildMatrixPreview: NO];
-	
 	return self;
 }
 
@@ -5503,6 +5517,7 @@ static ViewerController *draggedController = 0L;
 	}
 	[self loadROI:0];
 	
+	
 	[imageView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
 	
 	if( sameSeries)
@@ -5664,10 +5679,9 @@ static ViewerController *draggedController = 0L;
 			if( [[self modality] isEqualToString:@"CT"] == NO) keepFusion = NO;
 		
 		if( keepFusion == NO)
+		{
 			if( blendingController) [self ActivateBlending: 0L];
-			
-//		[imageView setScaleValue: previousScale];
-//		[imageView setWLWW: previousWL : previousWW];
+		}
 	}
 	//If study ID changed, cancel the fusion, if existing
 	else
@@ -5682,28 +5696,16 @@ static ViewerController *draggedController = 0L;
 	NSArray	*images = fileList[ 0];
 	BOOL onlyKeyImages = YES;	
 	
-	for( i = 0; i < [images count]; i++)
+	for( NSManagedObject *image in images)
 	{
-		NSManagedObject	*image = [images objectAtIndex: i];
 		if( [[image valueForKey:@"isKeyImage"] boolValue] == NO) onlyKeyImages = NO;
 	}
 	
 	displayOnlyKeyImages = onlyKeyImages; 
 	[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
 	
-	/*
-	if( onlyKeyImages)
-	{
-		[keyImageDisplay setTag: 1];
-		[keyImageDisplay setTitle: NSLocalizedString(@"All Images", nil)];
-	}
-	else
-	{
-		[keyImageDisplay setTag: 0];
-		[keyImageDisplay setTitle: NSLocalizedString(@"Key Images", nil)];
-	}
-	*/
-	[imageView becomeMainWindow];	// This will send the image sync order !
+	if( [[self window] isVisible])
+		[imageView becomeMainWindow];	// This will send the image sync order !
 	
 	windowWillClose = NO;
 	
@@ -15985,7 +15987,8 @@ int i,j,l;
 	[[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications:YES]; 
 	[splitView restoreDefault:@"SPLITVIEWER"];
 	
-	if( matrixPreviewBuilt == NO) [self buildMatrixPreview];
+	if( matrixPreviewBuilt == NO)
+		[self buildMatrixPreview];
 	
 	[self matrixPreviewSelectCurrentSeries];
 	

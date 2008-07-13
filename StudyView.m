@@ -30,7 +30,6 @@
 - (id)initWithFrame:(NSRect)frame seriesRows:(int)rows  seriesColumns:(int)columns{
 	 self = [super initWithFrame:frame];
 	 if (self) {
-		NSLog(@"studyView alloc");
 		seriesRows = rows;
 		seriesColumns = columns;
 		//tag = theTag;

@@ -596,6 +596,8 @@ enum
 - (void) setCurWLWWMenu:(NSString*)s ;
 - (float) highLighted;
 - (void) setHighLighted: (float) b;
+- (void) syncThumbnails;
+- (void) checkBuiltMatrixPreview;
 
 /** Used to determine in the Window Controller is a 2D Viewer.
 * Always return YES
