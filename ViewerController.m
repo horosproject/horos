@@ -698,6 +698,8 @@ static int hotKeyToolCrossTable[] =
 
 - (void) refreshMenus
 {
+	lastMenuNotification = 0L;
+	
 	if( wlwwPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	else [wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
 	
@@ -2843,6 +2845,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		lastMenuNotification = note;
 	}
+	else NSLog( @"update");
 	
 	[wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
 	[imageView setMenu: [[contextualMenu copy] autorelease]];
@@ -2887,6 +2890,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[curWLWWMenu release];
 			curWLWWMenu = [[newName stringValue] retain];
         }
+		
+		lastMenuNotification = 0L;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 		
 		[imageView setWLWW: iwl: iww];
@@ -7573,6 +7578,7 @@ static ViewerController *draggedController = 0L;
 		[presetsDict removeObjectForKey: name];
 		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];
 		
+		lastMenuNotification = 0L;
         [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
     }
 	
@@ -7622,6 +7628,7 @@ static ViewerController *draggedController = 0L;
 	
 	[wlwwPopup setTitle: curWLWWMenu];
 	
+	lastMenuNotification = 0L;
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
