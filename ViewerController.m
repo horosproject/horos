@@ -96,7 +96,7 @@ extern  ToolbarPanelController  *toolbarPanel[ 10];
 extern  AppController			*appController;
 extern  BOOL					USETOOLBARPANEL;
 
-static	BOOL					SYNCSERIES = NO;
+static	BOOL					SYNCSERIES = NO, ViewBoundsDidChangeProtect = NO;
 static	NSLock					*globalLoadImageLock = 0L;
 
 static NSString* 	ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
@@ -237,8 +237,8 @@ static int hotKeyToolCrossTable[] =
 
 + (NSMutableArray*) getDisplayed2DViewers
 {
-	NSArray				*winList = [NSApp orderedWindows];
-	NSMutableArray		*viewersList = [NSMutableArray array];
+	NSArray *winList = [NSApp orderedWindows];
+	NSMutableArray *viewersList = [NSMutableArray arrayWithCapacity: numberOf2DViewer];
 	
 	for( id loopItem in winList)
 	{
@@ -699,16 +699,18 @@ static int hotKeyToolCrossTable[] =
 - (void) refreshMenus
 {
 	lastMenuNotification = 0L;
-	
 	if( wlwwPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	else [wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
 	
+	lastMenuNotification = 0L;
 	if( clutPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 	else [clutPopup setMenu: [[clutPresetsMenu copy] autorelease]];
 	
+	lastMenuNotification = 0L;
 	if( convolutionPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
 	else [convPopup setMenu: [[convolutionPresetsMenu copy] autorelease]];
 	
+	lastMenuNotification = 0L;
 	if( opacityPresetsMenu == 0L) [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 	else [OpacityPopup setMenu: [[opacityPresetsMenu copy] autorelease]];
 
@@ -3147,21 +3149,28 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) ViewBoundsDidChange: (NSNotification*) note
 {
-	if( [note object] == [previewMatrixScrollView contentView])
+	if( ViewBoundsDidChangeProtect == NO)
 	{
-		BOOL syncThumbnails = [[NSUserDefaults standardUserDefaults] boolForKey:@"syncPreviewList"];
+		ViewBoundsDidChangeProtect = YES;
 		
-		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask)
-			syncThumbnails = !syncThumbnails;
-		
-		for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+		if( [note object] == [previewMatrixScrollView contentView])
 		{
-			if( v != self && [[v studyInstanceUID] isEqualToString: [self studyInstanceUID]] && syncThumbnails)
+			BOOL syncThumbnails = [[NSUserDefaults standardUserDefaults] boolForKey:@"syncPreviewList"];
+			
+			if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask)
+				syncThumbnails = !syncThumbnails;
+			
+			for( ViewerController *v in [ViewerController getDisplayed2DViewers])
 			{
-				[[v.previewMatrixScrollView contentView] scrollToPoint: [[v.previewMatrixScrollView contentView] constrainScrollPoint: [[previewMatrix superview] bounds].origin]];
-				[v.previewMatrixScrollView reflectScrolledClipView: [v.previewMatrixScrollView contentView]];
+				if( v != self && [[v studyInstanceUID] isEqualToString: [self studyInstanceUID]] && syncThumbnails)
+				{
+					[[v.previewMatrixScrollView contentView] scrollToPoint: [[v.previewMatrixScrollView contentView] constrainScrollPoint: [[previewMatrix superview] bounds].origin]];
+					[v.previewMatrixScrollView reflectScrolledClipView: [v.previewMatrixScrollView contentView]];
+				}
 			}
 		}
+		
+		ViewBoundsDidChangeProtect = NO;
 	}
 }
 
@@ -5313,7 +5322,7 @@ static ViewerController *draggedController = 0L;
     {
         [[BrowserController currentBrowser] showDatabase:self];
     }
-		
+	
 	numberOf2DViewer--;
 	if( numberOf2DViewer == 0)
 	{
@@ -5385,11 +5394,18 @@ static ViewerController *draggedController = 0L;
 	
 	[imageView mouseUp: [[NSApplication sharedApplication] currentEvent]];
 	
-	[self selectFirstTilingView];
+	if( pixList)
+	{
+		[self selectFirstTilingView];
 	
-	[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
-	previousLocation = [[imageView curDCM] sliceLocation];
-	
+		[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
+		previousLocation = [[imageView curDCM] sliceLocation];
+	}
+	else
+	{
+		for( int i = 0; i < 9 ; i++) previousOrientation[ i] = 0;
+		previousLocation = 0;
+	}
 	// Check if another post-processing viewer is open : we CANNOT release the fVolumePtr -> OsiriX WILL crash
 	
 	long minWindows = 1;
@@ -7894,6 +7910,8 @@ static float oldsetww, oldsetwl;
 
 		[convDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: convDict forKey: @"Convolution"];
+		
+		lastMenuNotification = 0L;
         [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
     }
 }
@@ -7964,6 +7982,8 @@ static float oldsetww, oldsetwl;
 			[curConvMenu release];
 			curConvMenu = [str retain];
 		}
+		
+		lastMenuNotification = 0L;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
 	}
 	
@@ -7975,6 +7995,8 @@ static float oldsetww, oldsetwl;
     if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
     {
         NSBeginAlertSheet( NSLocalizedString(@"Remove a Convolution Filter", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteConv:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this convolution filter : '%@'", 0L), [sender title]]);
+		
+		lastMenuNotification = 0L;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
 	}
     else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
@@ -8123,6 +8145,8 @@ long				x, y;
 			[curConvMenu release];
 			curConvMenu = [[matrixName stringValue] retain];
         }
+		
+		lastMenuNotification = 0L;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
     }
 
@@ -8186,6 +8210,8 @@ short				matrix[25];
 		NSMutableDictionary *clutDict	= [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] mutableCopy] autorelease];
 		[clutDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: clutDict forKey: @"CLUT"];
+		
+		lastMenuNotification = 0L;
         [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
     }
 }
@@ -8213,6 +8239,8 @@ short				matrix[25];
 			[curCLUTMenu release];
 			curCLUTMenu = [str retain];
 		}
+		
+		lastMenuNotification = 0L;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 		
 		[[[clutPopup menu] itemAtIndex:0] setTitle:str];
@@ -8281,6 +8309,8 @@ short				matrix[25];
 				[curCLUTMenu release];
 				curCLUTMenu = [str retain];
 			}
+			
+			lastMenuNotification = 0L;
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 			
 			[self propagateSettings];
@@ -8311,6 +8341,8 @@ short				matrix[25];
     if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
     {
         NSBeginAlertSheet( NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteCLUT:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this CLUT : '%@'", 0L), [sender title]]);
+		
+		lastMenuNotification = 0L;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 	}
     else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
@@ -8395,6 +8427,8 @@ short				matrix[25];
 			[curCLUTMenu release];
 			curCLUTMenu = [[clutName stringValue] retain];
         }
+		
+		lastMenuNotification = 0L;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 		
 		[self ApplyCLUTString:curCLUTMenu];
@@ -8437,6 +8471,8 @@ NSMutableArray		*array;
 			[curOpacityMenu release];
 			curOpacityMenu = [str retain];
 		}
+		
+		lastMenuNotification = 0L;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
@@ -8461,6 +8497,8 @@ NSMutableArray		*array;
 				[curOpacityMenu release];
 				curOpacityMenu = [str retain];
 			}
+			
+			lastMenuNotification = 0L;
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
@@ -8489,6 +8527,8 @@ NSMutableArray		*array;
     if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
     {
         NSBeginAlertSheet( NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteOpacity:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this Opacity Table : '%@'", 0L), [sender title]]);
+		
+		lastMenuNotification = 0L;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 	}
 	else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
@@ -8573,6 +8613,8 @@ NSMutableArray		*array;
 			[curOpacityMenu release];
 			curOpacityMenu = [[OpacityName stringValue] retain];
         }
+		
+		lastMenuNotification = 0L;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 		
 		[self ApplyOpacityString:curOpacityMenu];
@@ -9242,7 +9284,7 @@ extern NSString * documentsDirectory();
 - (void) saveROI:(long) mIndex
 {
 	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:ROIDATABASE];
-	BOOL			isDir = YES;
+	BOOL			isDir = YES, toBeSaved = NO;
 	int				i, x;
 	
 	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour] || [[NSUserDefaults standardUserDefaults] boolForKey: @"SAVEROIS"] == NO ) return;
@@ -9275,7 +9317,10 @@ extern NSString * documentsDirectory();
 						NSString	*path = [ROISRConverter archiveROIsAsDICOM: roisArray  toPath: str forImage:image];
 						
 						if( path)
+						{
 							[newDICOMSR addObject: path];
+							toBeSaved = YES;
+						}
 					}
 					else
 					{
@@ -9298,8 +9343,22 @@ extern NSString * documentsDirectory();
 								{
 									if( [[loopItem1 valueForKey:@"completePath"] isEqualToString: str])
 									{
-										[[[BrowserController currentBrowser] managedObjectContext] deleteObject: loopItem1]; 
+										NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
+										
+										[context lock];
+										
+										@try
+										{
+											[context deleteObject: loopItem1];
+										}
+										@catch (NSException * e)
+										{
+										}
+										
+										[context unlock];
+										
 										found = YES;
+										toBeSaved = YES;
 										break;
 									}
 								}
@@ -9321,11 +9380,11 @@ extern NSString * documentsDirectory();
 		}
 	}
 	
-	if( [newDICOMSR count])
+	if( toBeSaved)
+	{
 		[[BrowserController currentBrowser] addFilesToDatabase: newDICOMSR];
-	
-	[[BrowserController currentBrowser] saveDatabase: 0L];
-	
+		[[BrowserController currentBrowser] saveDatabase: 0L];
+	}
 }
 
 - (ROI*) newROI: (long) type

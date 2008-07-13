@@ -5203,6 +5203,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) sendSyncMessage:(short) inc
 {
+	if( dcmPixList == 0L) return;
+	
 	if( numberOf2DViewer > 1   && isKeyView)	//&&  [[self window] isMainWindow] == YES
     {
 		DCMPix	*thickDCM;
@@ -5411,7 +5413,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[otherView setSyncOnLocationImpossible: NO];
 			}
 			
-			if( [instructions valueForKey: @"offsetsync"] == 0L) { NSLog(@"err offsetsync");	return;}
+			if( [instructions valueForKey: @"offsetsync"] == 0L)
+			{
+				NSLog(@"err offsetsync");
+				return;
+			}
 			
 			if( [instructions valueForKey: @"view"] == 0L) { NSLog(@"err view");	return;}
 			

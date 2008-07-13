@@ -2580,11 +2580,14 @@ static NSArray*	statesArray = nil;
 	[self refreshMatrix: self];
 }
 
--(long)saveDatabase: (NSString*)path {
+-(long)saveDatabase: (NSString*)path
+{
 	long retError = 0;
 	
-	if( DICOMDIRCDMODE == NO && isCurrentDatabaseBonjour == NO && currentDatabasePath != nil ) {
-		@try {
+	if( DICOMDIRCDMODE == NO && isCurrentDatabaseBonjour == NO && currentDatabasePath != nil )
+	{
+		@try
+		{
 			NSManagedObjectModel *model = self.managedObjectModel;
 			NSManagedObjectContext *context = self.managedObjectContext;
 			NSError *error = nil;
@@ -9174,20 +9177,20 @@ static BOOL needToRezoom;
 		
 		if( keyImages)
 		{
-			NSArray *keyImagesToOpenArray = [NSArray array];
+			NSMutableArray *keyImagesToOpenArray = [NSMutableArray array];
 			
 			for( NSArray *loadList in toOpenArray )
 			{
-				NSArray *keyImagesArray = [NSArray array];
+				NSMutableArray *keyImagesArray = [NSMutableArray array];
 				
 				for( NSManagedObject *image in loadList )
 				{					
 					if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
-						keyImagesArray = [keyImagesArray arrayByAddingObject: image];
+						[keyImagesArray addObject: image];
 				}
 				
 				if( [keyImagesArray count] > 0)
-					keyImagesToOpenArray = [keyImagesToOpenArray arrayByAddingObject: keyImagesArray];
+					[keyImagesToOpenArray addObject: keyImagesArray];
 			}
 			
 			if( [keyImagesToOpenArray count] > 0) toOpenArray = keyImagesToOpenArray;
@@ -9270,23 +9273,23 @@ static BOOL needToRezoom;
 			{
 				NSLog(@"Test memory failed -> sub-sampling");
 				
-				NSArray *newArray = [NSArray array];
+				NSMutableArray *newArray = [NSMutableArray array];
 				
 				subSampling *= 2;
 				
 				for( NSArray *loadList in toOpenArray )
 				{					
-					NSArray *imagesArray = [NSArray array];
+					NSMutableArray *imagesArray = [NSMutableArray array];
 					
-					for( unsigned long i = 0; i < [loadList count]; i++)
+					for( int i = 0; i < [loadList count]; i++)
 					{
 						NSManagedObject	*image = [loadList objectAtIndex: i];
 						
-						if( i % 2 == 0)	imagesArray = [imagesArray arrayByAddingObject: image];
+						if( i % 2 == 0)	[imagesArray addObject: image];
 					}
 					
 					if( [imagesArray count] > 0)
-						newArray = [newArray arrayByAddingObject: imagesArray];
+						[newArray addObject: imagesArray];
 				}
 				
 				toOpenArray = newArray;
@@ -10245,8 +10248,9 @@ static BOOL needToRezoom;
 
 static NSArray*	openSubSeriesArray = 0L;
 
-- (NSArray*)produceNewArray: (NSArray*)toOpenArray {
-	NSArray *newArray = [NSArray array];
+- (NSArray*)produceNewArray: (NSArray*)toOpenArray
+{
+	NSMutableArray *newArray = [NSMutableArray array];
 	
 	int from = subFrom-1, to = subTo, interval = subInterval;
 	
@@ -10260,7 +10264,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	//	to = [subSeriesTo intValue];
 	
 	int max = 0;
-	for( NSArray *loadList in toOpenArray )	{		
+	for( NSArray *loadList in toOpenArray )
+	{		
 		if( max < [loadList count]) max = [loadList count];
 		
 		if( from >= to) from = to-1;
@@ -10271,27 +10276,25 @@ static NSArray*	openSubSeriesArray = 0L;
 	if( from > max) from = max;
 	if( to > max) to = max;
 	
-	//	[subSeriesFrom setIntValue: from+1];
-	//	[subSeriesTo setIntValue: to];
-	
-	for( NSArray *loadList in toOpenArray )	{
-		
+	for( NSArray *loadList in toOpenArray )
+	{
 		from = subFrom-1;
 		to = subTo;
 		
 		if( from >= [loadList count]) from = [loadList count];
 		if( to >= [loadList count]) to = [loadList count];
 		
-		NSArray *imagesArray = [NSArray array];
+		NSMutableArray *imagesArray = [NSMutableArray array];
 		
-		for( int i = from; i < to; i++)	{
+		for( int i = from; i < to; i++)
+		{
 			NSManagedObject	*image = [loadList objectAtIndex: i];
 			
-			if( i % interval == 0)	imagesArray = [imagesArray arrayByAddingObject: image];
+			if( i % interval == 0) [imagesArray addObject: image];
 		}
 		
 		if( [imagesArray count] > 0)
-			newArray = [newArray arrayByAddingObject: imagesArray];
+			[newArray addObject: imagesArray];
 	}
 	
 	return newArray;

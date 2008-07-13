@@ -79,6 +79,8 @@ MODIFICATION HISTORY
 ToolbarPanelController *toolbarPanel[10] = {0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L};
 
 static NSString *currentHostName = 0L;
+static NSMenu *mainMenuCLUTMenu = 0L, *mainMenuWLWWMenu = 0L, *mainMenuConvMenu = 0L;
+static NSDictionary *previousWLWWKeys = 0L, *previousCLUTKeys = 0L, *previousConvKeys = 0L;
 
 NSThread				*mainThread;
 BOOL					NEEDTOREBUILD = NO;
@@ -921,105 +923,125 @@ static NSDate *lastWarningDate = 0L;
 {
     //*** Build the menu
     NSMenu      *mainMenu;
-    NSMenu      *viewerMenu, *presetsMenu;
+    NSMenu      *viewerMenu;
     short       i;
     NSArray     *keys;
     NSArray     *sortedKeys;
     
-    mainMenu = [NSApp mainMenu];
-    viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
-    presetsMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
-    
-    keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] allKeys];
-    sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-    
-    i = [presetsMenu numberOfItems];
-    while(i-- > 0) [presetsMenu removeItemAtIndex:0];   
+	if( mainMenuWLWWMenu == 0L)
+	{
+		mainMenu = [NSApp mainMenu];
+		viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
+		mainMenuWLWWMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
+	}
 	
-	[presetsMenu addItemWithTitle:NSLocalizedString(@"Default WL & WW", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@"l"];
+	if( [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] != previousWLWWKeys)
+	{
+		previousWLWWKeys = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"];
+		keys = [previousWLWWKeys allKeys];
+		
+		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+		
+		i = [mainMenuWLWWMenu numberOfItems];
+		while(i-- > 0) [mainMenuWLWWMenu removeItemAtIndex:0];   
+		
+		[mainMenuWLWWMenu addItemWithTitle:NSLocalizedString(@"Default WL & WW", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@"l"];
+		
+		[mainMenuWLWWMenu addItemWithTitle:NSLocalizedString(@"Other", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@""];
+		[mainMenuWLWWMenu addItemWithTitle:NSLocalizedString(@"Full dynamic", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@"y"];
+		
+		[mainMenuWLWWMenu addItem: [NSMenuItem separatorItem]];
+		
+		for( i = 0; i < [sortedKeys count]; i++)
+		{
+			[mainMenuWLWWMenu addItemWithTitle:[NSString stringWithFormat:@"%d - %@", i+1, [sortedKeys objectAtIndex:i]] action:@selector (ApplyWLWW:) keyEquivalent:@""];
+		}
+		[mainMenuWLWWMenu addItem: [NSMenuItem separatorItem]];
+		[mainMenuWLWWMenu addItemWithTitle:NSLocalizedString(@"Add Current WL/WW", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
+		[mainMenuWLWWMenu addItemWithTitle:NSLocalizedString(@"Set WL/WW manually", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
+	}
 	
-	[presetsMenu addItemWithTitle:NSLocalizedString(@"Other", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@""];
-	[presetsMenu addItemWithTitle:NSLocalizedString(@"Full dynamic", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@"y"];
-	
-	[presetsMenu addItem: [NSMenuItem separatorItem]];
-	
-    for( i = 0; i < [sortedKeys count]; i++)
-    {
-        [presetsMenu addItemWithTitle:[NSString stringWithFormat:@"%d - %@", i+1, [sortedKeys objectAtIndex:i]] action:@selector (ApplyWLWW:) keyEquivalent:@""];
-    }
-    [presetsMenu addItem: [NSMenuItem separatorItem]];
-    [presetsMenu addItemWithTitle:NSLocalizedString(@"Add Current WL/WW", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
-	[presetsMenu addItemWithTitle:NSLocalizedString(@"Set WL/WW manually", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
+	[[mainMenuWLWWMenu itemWithTitle:[note object]] setState:NSOnState];
 }
-
 
 -(void) UpdateConvolutionMenu: (NSNotification*) note
 {
 	//*** Build the menu
 	NSMenu      *mainMenu;
-	NSMenu      *viewerMenu, *convMenu;
+	NSMenu      *viewerMenu;
 	short       i;
 	NSArray     *keys;
 	NSArray     *sortedKeys;
 	
-//	NSLog( NSLocalizedString(@"Convolution Filters", nil));
-	
-	mainMenu = [NSApp mainMenu];
-	viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
-//	if( viewerMenu == 0L) NSLog( @"not found");
-	
-	convMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Convolution Filters", nil)] submenu];
-//	if( convMenu == 0L) NSLog( @"not found");
-	
-	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] allKeys];
-	sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-	
-	i = [convMenu numberOfItems];
-	while(i-- > 0) [convMenu removeItemAtIndex:0];    
-	
-	[convMenu addItemWithTitle:NSLocalizedString(@"No Filter", 0L) action:@selector (ApplyConv:) keyEquivalent:@""];
-	
-	[convMenu addItem: [NSMenuItem separatorItem]];
-	
-	for( i = 0; i < [sortedKeys count]; i++)
+	if( mainMenuConvMenu == 0L)
 	{
-		[convMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyConv:) keyEquivalent:@""];
+		mainMenu = [NSApp mainMenu];
+		viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
+		mainMenuConvMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Convolution Filters", nil)] submenu];
 	}
-	[convMenu addItem: [NSMenuItem separatorItem]];
-	[convMenu addItemWithTitle:NSLocalizedString(@"Add a Filter", 0L) action:@selector (AddConv:) keyEquivalent:@""];
+	
+	if( [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] != previousConvKeys)
+	{
+		previousConvKeys = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"];
+		keys = [previousConvKeys allKeys];
+		
+		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+		
+		i = [mainMenuConvMenu numberOfItems];
+		while(i-- > 0) [mainMenuConvMenu removeItemAtIndex:0];    
+		
+		[mainMenuConvMenu addItemWithTitle:NSLocalizedString(@"No Filter", 0L) action:@selector (ApplyConv:) keyEquivalent:@""];
+		
+		[mainMenuConvMenu addItem: [NSMenuItem separatorItem]];
+		
+		for( i = 0; i < [sortedKeys count]; i++)
+		{
+			[mainMenuConvMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyConv:) keyEquivalent:@""];
+		}
+		[mainMenuConvMenu addItem: [NSMenuItem separatorItem]];
+		[mainMenuConvMenu addItemWithTitle:NSLocalizedString(@"Add a Filter", 0L) action:@selector (AddConv:) keyEquivalent:@""];
+	}
 }
 
 -(void) UpdateCLUTMenu: (NSNotification*) note
 {
     //*** Build the menu
     NSMenu      *mainMenu;
-    NSMenu      *viewerMenu, *clutMenu;
+    NSMenu      *viewerMenu;
     short       i;
     NSArray     *keys;
     NSArray     *sortedKeys;
     
-    mainMenu = [NSApp mainMenu];
-    viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
-    clutMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Color Look Up Table", nil)] submenu];
-    
-    keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] allKeys];
-    sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-    
-    i = [clutMenu numberOfItems];
-    while(i-- > 0) [clutMenu removeItemAtIndex:0];    
-	
-	[clutMenu addItemWithTitle:NSLocalizedString(@"No CLUT", nil) action:@selector (ApplyCLUT:) keyEquivalent:@""];
-	
-	[clutMenu addItem: [NSMenuItem separatorItem]];
-	
-    for( i = 0; i < [sortedKeys count]; i++)
-    {
-        [clutMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyCLUT:) keyEquivalent:@""];
+	if( mainMenuCLUTMenu == 0L)
+	{
+		mainMenu = [NSApp mainMenu];
+		viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
+		mainMenuCLUTMenu = [[[viewerMenu itemWithTitle:NSLocalizedString(@"Color Look Up Table", nil)] submenu] retain];
     }
-    [clutMenu addItem: [NSMenuItem separatorItem]];
-    [clutMenu addItemWithTitle:NSLocalizedString(@"Add a CLUT", nil) action:@selector (AddCLUT:) keyEquivalent:@""];
+
+	if( [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] != previousCLUTKeys)
+	{
+		previousCLUTKeys = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"];
+		keys = [previousCLUTKeys allKeys];
+		
+		sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+		
+		i = [mainMenuCLUTMenu numberOfItems];
+		while(i-- > 0) [mainMenuCLUTMenu removeItemAtIndex:0];   
+		
+		[mainMenuCLUTMenu addItemWithTitle:NSLocalizedString(@"No CLUT", nil) action:@selector (ApplyCLUT:) keyEquivalent:@""];
+		
+		[mainMenuCLUTMenu addItem: [NSMenuItem separatorItem]];
+		
+		for( i = 0; i < [sortedKeys count]; i++)
+		{
+			[mainMenuCLUTMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyCLUT:) keyEquivalent:@""];
+		}
+		[mainMenuCLUTMenu addItem: [NSMenuItem separatorItem]];
+		[mainMenuCLUTMenu addItemWithTitle:NSLocalizedString(@"Add a CLUT", nil) action:@selector (AddCLUT:) keyEquivalent:@""];
+	}
 	
-	[[clutMenu itemWithTitle:[note object]] setState:NSOnState];
+	[[mainMenuCLUTMenu itemWithTitle:[note object]] setState:NSOnState];
 }
 
 #define INCOMINGPATH @"/INCOMING/"
