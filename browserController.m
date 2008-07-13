@@ -9562,7 +9562,10 @@ static BOOL needToRezoom;
 	long				numberImages, multiSeries = 1;
 	BOOL				movieError = NO, multiFrame = NO;
 
-	WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+	WaitRendering		*wait = 0L;
+	
+	if( [toOpenArray count] > 1)
+		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
 	[wait showWindow:self];
 
 	numberImages = 0;
