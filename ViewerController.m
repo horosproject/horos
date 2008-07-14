@@ -2002,17 +2002,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[appController tileWindows: self];
 }
 
-- (NSRect)windowWillUseStandardFrame:(NSWindow *)sender defaultFrame:(NSRect)defaultFrame{
-	
+- (NSRect)windowWillUseStandardFrame:(NSWindow *)sender defaultFrame:(NSRect)defaultFrame
+{
 	NSRect currentFrame = [sender frame];
-	NSRect	screenRect    = [[sender screen] visibleFrame];
+	NSRect screenRect = [[sender screen] visibleFrame];
+	
+	if( NSIsEmptyRect( standardRect)) standardRect = currentFrame;
 	
 	if( USETOOLBARPANEL )
 		screenRect.size.height -= [ToolbarPanelController fixedHeight];	
 
-	if (currentFrame.size.height >= screenRect.size.height - 20 && currentFrame.size.width >= screenRect.size.width - 20) {
+	if (currentFrame.size.height >= screenRect.size.height - 20 && currentFrame.size.width >= screenRect.size.width - 20)
 		return standardRect;
-	}
 	else
 		return screenRect;
 }
@@ -2618,59 +2619,59 @@ static volatile int numberOfThreadsForRelisce = 0;
 //	}
 //}
 
-/*
-- (BOOL)windowShouldZoom:(NSWindow *)sender toFrame:(NSRect)newFrame
-{
-	NSRect	screenRect    = [[sender screen] visibleFrame];
-	if ([sender isZoomed])
-		screenRect = newFrame;
-		//screenRect = standardRect;
-		
-	else if( USETOOLBARPANEL ) {
-		NSLog(@"toolbar height: %d", [ToolbarPanelController fixedHeight]);
-		screenRect.size.height -= [ToolbarPanelController fixedHeight];	
-	}
-	
-	[[self window] setFrame:screenRect display:YES];
-	return YES;
 
-	if( USETOOLBARPANEL)
-	{
-	
-		long	i;
-		NSRect	screenRect    = [[sender screen] visibleFrame];
-		
-		screenRect.size.height -= [ToolbarPanelController fixedHeight];
-		
-		for( i = 0; i < [[NSScreen screens] count]; i++)
-		{
-			if ( NSPointInRect( newFrame.origin, [[[NSScreen screens] objectAtIndex: i] frame]))
-			{
-				screenRect = [[[NSScreen screens] objectAtIndex: i] visibleFrame];
-				screenRect.size.height -= [[toolbarPanel[ i] window] frame].size.height;
-			}
-		}
-		
-		NSLog(@"Wanted: Y: %2.2f Height: %2.2f", newFrame.origin.y, newFrame.size.height);
-		
-		
-		newFrame.origin.y = screenRect.origin.y;
-		
-		if( newFrame.size.height > screenRect.size.height) newFrame.size.height = screenRect.size.height;
-		
-		[[self window] setMaxSize: screenRect.size];
-		
-		[[self window] setFrame:newFrame display:YES];
-		
-		return NO;
-	}
-	else
-	{
-		return YES;	//[[self window] setMaxSize: screenRect.size];
-	}
-	
-}
-*/
+//- (BOOL)windowShouldZoom:(NSWindow *)sender toFrame:(NSRect)newFrame
+//{
+//	NSRect	screenRect    = [[sender screen] visibleFrame];
+//	if ([sender isZoomed])
+//		screenRect = newFrame;
+//		//screenRect = standardRect;
+//		
+//	else if( USETOOLBARPANEL ) {
+//		NSLog(@"toolbar height: %d", [ToolbarPanelController fixedHeight]);
+//		screenRect.size.height -= [ToolbarPanelController fixedHeight];	
+//	}
+//	
+//	[[self window] setFrame:screenRect display:YES];
+//	return YES;
+//
+//	if( USETOOLBARPANEL)
+//	{
+//	
+//		long	i;
+//		NSRect	screenRect    = [[sender screen] visibleFrame];
+//		
+//		screenRect.size.height -= [ToolbarPanelController fixedHeight];
+//		
+//		for( i = 0; i < [[NSScreen screens] count]; i++)
+//		{
+//			if ( NSPointInRect( newFrame.origin, [[[NSScreen screens] objectAtIndex: i] frame]))
+//			{
+//				screenRect = [[[NSScreen screens] objectAtIndex: i] visibleFrame];
+//				screenRect.size.height -= [[toolbarPanel[ i] window] frame].size.height;
+//			}
+//		}
+//		
+//		NSLog(@"Wanted: Y: %2.2f Height: %2.2f", newFrame.origin.y, newFrame.size.height);
+//		
+//		
+//		newFrame.origin.y = screenRect.origin.y;
+//		
+//		if( newFrame.size.height > screenRect.size.height) newFrame.size.height = screenRect.size.height;
+//		
+//		[[self window] setMaxSize: screenRect.size];
+//		
+//		[[self window] setFrame:newFrame display:YES];
+//		
+//		return NO;
+//	}
+//	else
+//	{
+//		return YES;	//[[self window] setMaxSize: screenRect.size];
+//	}
+//	
+//}
+
 
 - (BOOL) is2DViewer
 {
@@ -5787,10 +5788,10 @@ static ViewerController *draggedController = 0L;
 	
 	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"WINDOWSIZEVIEWER"])
 	{
-		case 0:	[[self window] setFrame:screenRect display:YES];	break;
-		case 1:	[imageView resizeWindowToScale: 1.0];				break;
-		case 2:	[imageView resizeWindowToScale: 1.5];				break;
-		case 3:	[imageView resizeWindowToScale: 2.0];				break;
+		case 0:	[self setWindowFrame:screenRect]; break;
+		case 1:	[imageView resizeWindowToScale: 1.0]; break;
+		case 2:	[imageView resizeWindowToScale: 1.5]; break;
+		case 3:	[imageView resizeWindowToScale: 2.0]; break;
 	}
 }
 

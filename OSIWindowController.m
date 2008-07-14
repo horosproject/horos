@@ -179,9 +179,12 @@ extern  ToolbarPanelController  *toolbarPanel[ 10];
 				if( dstFrame.size.height >= [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController fixedHeight])
 				{
 					dstFrame.size.height = [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController fixedHeight];
-					
 				}
 			}
+			
+			if( dstFrame.size.height < [[self window] contentMinSize].height) dstFrame.size.height = [[self window] contentMinSize].height;
+			if( dstFrame.size.width < [[self window] contentMinSize].width) dstFrame.size.width = [[self window] contentMinSize].width;
+			
 			
 			dstFrame = [NavigatorView adjustIfScreenAreaIf4DNavigator: dstFrame];
 			

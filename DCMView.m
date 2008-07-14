@@ -9979,8 +9979,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	windowFrame.origin.y = center.y - newHeight/2.0;
 	windowFrame.origin.x = center.x - newWidth/2.0;
 	
-	[window setFrame:windowFrame display:YES];
-//	[self setScaleValue: resizeScale];
+	if( [self is2DViewer])
+		[[self windowController] setWindowFrame: windowFrame];
+	else
+		[window setFrame:windowFrame display:YES];
 	[self setNeedsDisplay:YES];
 }
 
