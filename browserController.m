@@ -9564,7 +9564,7 @@ static BOOL needToRezoom;
 
 	WaitRendering		*wait = 0L;
 	
-	if( [toOpenArray count] > 1)
+	if( [toOpenArray count] > 2)
 		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
 	[wait showWindow:self];
 
