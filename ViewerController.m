@@ -3563,7 +3563,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			unsigned long finalTick;
 			[[xmlController window] setAlphaValue: (i+1.0) / 15.];
-			if( i == 0) [xmlController showWindow:self];
+			if( i == 0)
+			{
+				[[xmlController window] makeKeyAndOrderFront: self];
+			}
 			Delay( 1, &finalTick);
 		}
 	}

@@ -3053,8 +3053,11 @@ static BOOL initialized = NO;
 		[[[viewersList objectAtIndex: keyWindow] window] makeKeyAndOrderFront:self];
 		[[viewersList objectAtIndex: keyWindow] propagateSettings];
 		
-		for( ViewerController *v in viewersList)
-			[v checkBuiltMatrixPreview];
+		for( id v in viewersList)
+		{
+			if( [v isKindOfClass:[ViewerController class]])
+				[v checkBuiltMatrixPreview];
+		}
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"])
 		{
