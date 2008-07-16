@@ -12,14 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-/***************************************** Modifications *********************************************
-
-Version 2.3
-	20060123	LP	Added more editable anonymize options
-	20060123	LP	Added option to create directories
-	
-**************/
-
 #import "AnonymizerWindowController.h"
 #import <OsiriX/DCM.h>
 #import "Wait.h"
@@ -164,7 +156,8 @@ Version 2.3
 	[super dealloc];
 }
 
-- (void)windowDidLoad{
+- (void)windowDidLoad
+{
 	[(NSButtonCell *)[tagMatrixfirstColumn prototype] setAllowsMixedState:YES];
 	[(NSButtonCell *)[tagMatrixsecondColumn prototype] setAllowsMixedState:YES];
 	
@@ -182,28 +175,6 @@ Version 2.3
 		else
 			[[secondColumnValues cellWithTag:tag] setEnabled:[cell state]];
 	}
-	
-	NSDateFormatter	*dateFormat;
-	
-	dateFormat = [[[NSDateFormatter alloc] init] autorelease];
-	[dateFormat setDateStyle: NSDateFormatterShortStyle];
-	
-	[[firstColumnValues cellWithTag: 12] setFormatter: dateFormat];
-	[[firstColumnValues cellWithTag: 20] setFormatter: dateFormat];
-	[[firstColumnValues cellWithTag: 32] setFormatter: dateFormat];
-	[[firstColumnValues cellWithTag: 40] setFormatter: dateFormat];
-	
-	dateFormat = [[[NSDateFormatter alloc] init] autorelease];
-	[dateFormat setTimeStyle: NSDateFormatterShortStyle];
-	
-	[[firstColumnValues cellWithTag: 28] setFormatter: dateFormat];
-	
-	dateFormat = [[[NSDateFormatter alloc] init] autorelease];
-	[dateFormat setTimeStyle: NSDateFormatterLongStyle];
-	
-	[[firstColumnValues cellWithTag: 24] setFormatter: dateFormat];
-	[[firstColumnValues cellWithTag: 36] setFormatter: dateFormat];
-	[[firstColumnValues cellWithTag: 44] setFormatter: dateFormat];
 }
 
 - (void) anonymizeProcess:(NSString*) path
@@ -404,10 +375,12 @@ Version 2.3
 	NSCell *cell;
 	[tags removeAllObjects];
 	DCMAttributeTag *attrTag;
-	while (cell = [enumerator nextObject]) {
+	while (cell = [enumerator nextObject])
+	{
 		if (DEBUG)
 			NSLog(@"Matrix cell: %@", [cell title]);
-			if ([cell state] == NSOnState) { 
+			if ([cell state] == NSOnState)
+			{
 				switch([cell tag])
 				{
 					case 0:
@@ -525,9 +498,6 @@ Version 2.3
 				
 				NSArray *array = [NSArray arrayWithObjects: attrTag, replacement, nil];
 				
-				//NSLog(@"object: %@ Value: %@", [replacement description], NSStringFromClass([replacement class]));
-				//NSLog(@"Replacement tags: %@", [array description]);
-				
 				[tags addObject:array];
 			}
 		}
@@ -535,13 +505,30 @@ Version 2.3
 	return tags;
 }
 
-- (IBAction)matrixAction:(id)sender{
+- (IBAction)matrixAction:(id)sender
+{
 	int tag = [(NSCell *)[(NSMatrix *)sender selectedCell] tag];
 	
 	if (tag % 4 == 0)
 	{
 		[[firstColumnValues cellWithTag:tag] setEnabled:[[sender selectedCell] state]];
 		if( [[sender selectedCell] state] == NSOffState) [[firstColumnValues cellWithTag:tag] setStringValue:@""];
+		else
+		{
+			switch( tag)
+			{
+				case 12:
+				case 20:
+				case 24:
+				case 28:
+				case 32:
+				case 36:
+				case 40:
+				case 44:
+					[[firstColumnValues cellWithTag:tag] setStringValue: [[[firstColumnValues cellWithTag:tag] formatter] stringForObjectValue: [NSDate date]]];
+				break;
+			}
+		}
 	}
 	else
 	{
