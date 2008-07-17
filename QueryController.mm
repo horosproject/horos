@@ -79,7 +79,7 @@ static const char *GetPrivateIP()
 		
 		if ([filterValue length] > 0)
 		{
-			[qm addFilter:filterValue forDescription:@"studyInstanceUID"];
+			[qm addFilter:filterValue forDescription:@"StudyInstanceUID"];
 			[qm performQuery];
 			array = [qm queries];
 		}

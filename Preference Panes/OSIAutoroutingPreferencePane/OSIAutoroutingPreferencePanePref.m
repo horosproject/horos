@@ -156,7 +156,7 @@ static BOOL newRouteMode = NO;
 	{
 		NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
 		
-		[routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", [NSNumber numberWithBool:YES], @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", [NSNumber numberWithInt: [previousPopup selectedTag]], @"previousStudies", [NSNumber numberWithBool: [previousModality state]], @"previousModality", [NSNumber numberWithBool: [previousDescription state]], @"previousDescription", [NSNumber numberWithInt: [failurePopup selectedTag]], @"failureRetry", nil]];
+		[routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", [NSNumber numberWithBool:YES], @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", [NSNumber numberWithInt: [previousPopup selectedTag]], @"previousStudies", [NSNumber numberWithBool: [previousModality state]], @"previousModality", [NSNumber numberWithBool: [previousDescription state]], @"previousDescription", [NSNumber numberWithInt: [failurePopup selectedTag]], @"failureRetry",  [NSNumber numberWithBool: [cfindTest state]], @"cfindTest", nil]];
 	}
 	else
 	{
@@ -227,6 +227,7 @@ static BOOL newRouteMode = NO;
 				[previousPopup selectItemWithTag: [[selectedRoute valueForKey: @"previousStudies"] intValue]];
 				[previousModality setState: [[selectedRoute valueForKey: @"previousModality"] boolValue]];
 				[previousDescription setState: [[selectedRoute valueForKey: @"previousDescription"] boolValue]];
+				[cfindTest setState: [[selectedRoute valueForKey: @"cfindTest"] boolValue]];
 				[failurePopup selectItemWithTag: [[selectedRoute valueForKey: @"failureRetry"] intValue]];
 				
 				for( i = 0; i < [serversArray count]; i++)

@@ -1326,7 +1326,7 @@ static NSArray*	statesArray = nil;
 							}
 						}
 						
-						if( [[routingRule valueForKey:@"testWithCFINDBeforeSending"] boolValue])
+						if( [[routingRule valueForKey:@"cfindTest"] boolValue])
 						{
 							NSMutableDictionary *studies = [NSMutableDictionary dictionary];
 							
@@ -1338,35 +1338,50 @@ static NSArray*	statesArray = nil;
 							
 							for( NSString *studyUID in [studies allKeys])
 							{
-								NSLog( studyUID);
+								NSArray *serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
 								
-								NSArray *s = [QueryController queryStudyInstanceUID: studyUID server: [routingRule objectForKey:@"server"]];
+								NSString		*serverName = [routingRule objectForKey:@"server"];
+								NSDictionary	*server = nil;
 								
-								if( [s count])
+								for ( NSDictionary *aServer in serversArray)
 								{
-									if( [s count] > 1)
-										NSLog( @"Uh? multiple studies with same StudyInstanceUID on the distal node....");
-									
-									DCMTKStudyQueryNode* studyNode = [s lastObject];
-									
-									if( [[studyNode valueForKey:@"numberImages"] intValue] == [[[studies objectForKey: studyUID] valueForKey: @"noFiles"] intValue])
+									if ([[aServer objectForKey:@"Description"] isEqualToString: serverName]) 
 									{
-										// remove them, there are already there !
+										server = aServer;
+										break;
+									}
+								}
+								
+								if( server)
+								{
+									NSArray *s = [QueryController queryStudyInstanceUID: studyUID server: server];
+									
+									if( [s count])
+									{
+										if( [s count] > 1)
+											NSLog( @"Uh? multiple studies with same StudyInstanceUID on the distal node....");
 										
-										NSLog( @"Already available on the distant node : we will not send it.");
+										DCMTKStudyQueryNode* studyNode = [s lastObject];
 										
-										NSMutableArray *r = [NSMutableArray arrayWithArray: result];
-										
-										for( int i = 0 ; i < [r count] ; i++)
+										if( [[studyNode valueForKey:@"numberImages"] intValue] == [[[studies objectForKey: studyUID] valueForKey: @"noFiles"] intValue])
 										{
-											if( [[[r objectAtIndex: i] valueForKeyPath: @"series.study.studyInstanceUID"] isEqualToString: studyUID])
+											// remove them, there are already there !
+											
+											NSLog( @"Already available on the distant node : we will not send it.");
+											
+											NSMutableArray *r = [NSMutableArray arrayWithArray: result];
+											
+											for( int i = 0 ; i < [r count] ; i++)
 											{
-												[r removeObjectAtIndex: i];
-												i--;
+												if( [[[r objectAtIndex: i] valueForKeyPath: @"series.study.studyInstanceUID"] isEqualToString: studyUID])
+												{
+													[r removeObjectAtIndex: i];
+													i--;
+												}
 											}
+											
+											result = r;
 										}
-										
-										result = r;
 									}
 								}
 							}

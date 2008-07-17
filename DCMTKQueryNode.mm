@@ -593,6 +593,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				string = [(NSString*)date cStringUsingEncoding:NSISOLatin1StringEncoding];
 				dataset->putAndInsertString(DCM_StudyTime, string);
 			}
+			else if ([key isEqualToString:@"StudyInstanceUID"]) {
+				string = [(NSString*)value cStringUsingEncoding:encoding];
+				dataset->putAndInsertString(DCM_StudyInstanceUID, string);
+			}
 			else if ([key isEqualToString:@"StudyID"]) {
 				string = [(NSString*)value cStringUsingEncoding:encoding];
 				dataset->putAndInsertString(DCM_StudyID, string);

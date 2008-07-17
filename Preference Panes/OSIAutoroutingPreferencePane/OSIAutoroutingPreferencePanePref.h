@@ -28,6 +28,7 @@
 	IBOutlet NSPopUpButton				*previousPopup;
 	IBOutlet NSButton					*previousModality;
 	IBOutlet NSButton					*previousDescription;
+	IBOutlet NSButton					*cfindTest;
 	
 	IBOutlet NSPopUpButton				*failurePopup;
 	
