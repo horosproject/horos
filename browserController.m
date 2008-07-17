@@ -9226,6 +9226,7 @@ static BOOL needToRezoom;
 			}
 			
 			if( [keyImagesToOpenArray count] > 0) toOpenArray = keyImagesToOpenArray;
+			else NSRunInformationalAlertPanel( NSLocalizedString( @"Key Images", 0L), NSLocalizedString(@"No key images in these images.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
 		}
 		
 		if (([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) || ([self computeEnoughMemory: toOpenArray : 0L] == NO))

@@ -5895,6 +5895,7 @@ static ViewerController *draggedController = 0L;
 	}
 		
 	[ThreadLoadImageLock lock];
+	
 	ThreadLoadImage = YES;
 	
 	loadingPercentage = 0;
