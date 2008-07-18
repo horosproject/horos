@@ -1028,9 +1028,11 @@ if (_verbose)
 
 NS_HANDLER
 	{
-	NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [queryException name], [queryException description]];
-	[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), 0L] waitUntilDone:YES];
-	NSLog(@"Exception: %@", [queryException description]);
+		NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [queryException name], [queryException description]];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"])
+			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), 0L] waitUntilDone:YES];
+		NSLog(@"Exception: %@", [queryException description]);
 	}
 NS_ENDHANDLER
 	
@@ -1166,7 +1168,8 @@ NS_ENDHANDLER
 				OFSTRINGSTREAM_FREESTR(tmpString)
 			  }
 			
-			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (2)", nil), response, NSLocalizedString(@"Continue", nil), 0L] waitUntilDone:YES];
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"])
+				[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (2)", nil), response, NSLocalizedString(@"Continue", nil), 0L] waitUntilDone:YES];
 		}
 				
         if (_verbose) {

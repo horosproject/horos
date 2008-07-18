@@ -103,6 +103,9 @@
 
 	[queryLock lock];
 	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"] != showError)
+		[[NSUserDefaults standardUserDefaults] setBool: showError forKey: @"showErrorsIfQueryFailed"];
+	
 	NS_DURING
 	
 	NSMutableDictionary *params = [NSMutableDictionary dictionary];
@@ -124,8 +127,10 @@
 	NSMutableArray *filterArray = [NSMutableArray array];
 	NSEnumerator *enumerator = [filters keyEnumerator];
 	NSString *key;
-	while (key = [enumerator nextObject]) {
-		if ([filters objectForKey:key]) {
+	while (key = [enumerator nextObject])
+	{
+		if ([filters objectForKey:key])
+		{
 			NSDictionary *filter = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[filters objectForKey:key], key, nil] forKeys:[NSArray arrayWithObjects:@"value",  @"name", nil]];
 			[filterArray addObject:filter];
 		}
@@ -137,20 +142,22 @@
 	queries = [[rootNode children] retain];
 	
 	NS_HANDLER
-		if( showError)
-		{
-			NSAlert *alert = [NSAlert alertWithMessageText:@"Query Error" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", @"Query Failed"];
-			NSLog(@"performQuery exception: %@", [localException name]);
-			[alert runModal];
-		}
+	if( showError)
+	{
+		NSAlert *alert = [NSAlert alertWithMessageText:@"Query Error" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", @"Query Failed"];
+		NSLog(@"performQuery exception: %@", [localException name]);
+		[alert runModal];
+	}
 	NS_ENDHANDLER
+	
+	[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"showErrorsIfQueryFailed"];
 	
 	[queryLock unlock];
 }
 
 - (void)performQuery
 {
-	return [self performQuery: YES];
+	return [self performQuery: [[NSUserDefaults standardUserDefaults] boolForKey:@"showErrorsIfQueryFailed"]];
 }
 
 - (NSDictionary *)parameters{	

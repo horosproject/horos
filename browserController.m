@@ -1354,7 +1354,9 @@ static NSArray*	statesArray = nil;
 								
 								if( server)
 								{
+									[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"showErrorsIfQueryFailed"];
 									NSArray *s = [QueryController queryStudyInstanceUID: studyUID server: server];
+									[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"showErrorsIfQueryFailed"];
 									
 									if( [s count])
 									{
