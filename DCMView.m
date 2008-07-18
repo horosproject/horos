@@ -7827,7 +7827,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		for( long i = 0; i < [curRoiList count]; i++)	[[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
 		
-		if( force8bits == YES || curDCM.isRGB == YES || blendingView != 0L || [curDCM SUVConverted])		// Screen Capture in RGB - 8 bit
+		if( force8bits == YES || colorTransfer == YES || curDCM.isRGB == YES || blendingView != 0L || [curDCM SUVConverted] || [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] )		// Screen Capture in RGB - 8 bit
 		{
 			NSPoint shiftOrigin;
 			BOOL smartCropped = NO;
@@ -9174,7 +9174,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						#else
 						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 						#endif
-						else if( (colorTransfer == YES) | (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+						else if( (colorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 						else {
 							NSLog( @"FLOAT");
 							float min = curWL - curWW / 2;
