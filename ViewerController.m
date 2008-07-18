@@ -299,6 +299,47 @@ static int hotKeyToolCrossTable[] =
 			if( [loopItem valueForKey:@"windowsState"]) valid = YES;
 		}
 	}
+	else if( [item action] == @selector( setAllKeyImages:))
+	{
+		for( int x = 0 ; x < maxMovieIndex ; x++)
+		{
+			for( NSManagedObject *o in fileList[ x])
+			{
+				if( [[o valueForKey: @"isKeyImage"] boolValue] == NO)
+				{
+					valid = YES;
+					break;
+				}
+			}
+		}
+	}
+	else if( [item action] == @selector( setAllNonKeyImages:))
+	{
+		for( int x = 0 ; x < maxMovieIndex ; x++)
+		{
+			for( NSManagedObject *o in fileList[ x])
+			{
+				if( [[o valueForKey: @"isKeyImage"] boolValue] == YES)
+				{
+					valid = YES;
+					break;
+				}
+			}
+		}
+	}
+	else if( [item action] == @selector( findNextPreviousKeyImage:))
+	{
+		for( int x = 0 ; x < [fileList[ curMovieIndex] count]; x++)
+		{
+			NSManagedObject *o = [fileList[ curMovieIndex] objectAtIndex: x];
+			
+			if( [[o valueForKey: @"isKeyImage"] boolValue] == YES)
+			{
+				valid = YES;
+				break;
+			}
+		}
+	}
 	else if( [item action] == @selector( loadWindowsState:))
 	{
 		if( [[[imageView seriesObj] valueForKey:@"study"] valueForKey:@"windowsState"]) valid = YES;
@@ -363,6 +404,39 @@ static int hotKeyToolCrossTable[] =
 	else if( [item action] == @selector( roiPropagateSetup:))
 	{
 		if( [self selectedROI]) valid = YES;
+	}
+	else if( [item action] == @selector( roiDeleteGeneratedROIs:))
+	{
+		for( int y = 0; y < maxMovieIndex; y++)
+		{
+			for( int x = 0; x < [pixList[ y] count]; x++)
+			{
+				for( int i = 0; i < [[roiList[ y] objectAtIndex: x] count]; i++)
+				{
+					ROI *r = [[roiList[ y] objectAtIndex: x] objectAtIndex: i];
+					
+					if( [[r comments] isEqualToString: @"morphing generated"])
+					{
+						valid = YES;
+						break;
+					}
+				}
+			}
+		}
+	}
+	else if( [item action] == @selector( roiSaveSeries:) || [item action] == @selector( roiSelectDeselectAll:) || [item action] == @selector( roiDeleteAll:) || [item action] == @selector( roiRename:) || [item action] == @selector( setROIsImagesKeyImages:))
+	{
+		for( int y = 0; y < maxMovieIndex; y++)
+		{
+			for( int x = 0; x < [pixList[ y] count]; x++)
+			{
+				for( int i = 0; i < [[roiList[ y] objectAtIndex: x] count]; i++)
+				{
+					valid = YES;
+					break;
+				}
+			}
+		}
 	}
 	else if( [item action] == @selector( roiPropagateSlab:))
 	{
@@ -3731,6 +3805,10 @@ static ViewerController *draggedController = 0L;
 						if( [[file pathExtension] isEqualToString:@"roi"])
 						{
 							[imageView roiLoadFromFilesArray: [NSArray arrayWithObject: file]];
+						}
+						else if( [[file pathExtension] isEqualToString:@"rois_series"])
+						{
+							[self roiLoadFromSeries: file];
 						}
 						else
 						{
@@ -10051,6 +10129,110 @@ int i,j,l;
 	}
 	
 	[name release];
+}
+
+- (void) roiLoadFromSeries: (NSString*) filename
+{
+	// Unselect all ROIs
+	[self roiSelectDeselectAll: self];
+	
+	NSArray *roisMovies = [NSUnarchiver unarchiveObjectWithFile: filename];
+	
+	for( int y = 0; y < maxMovieIndex; y++)
+	{
+		if( [roisMovies count] > y)
+		{
+			NSArray *roisSeries = [roisMovies objectAtIndex: y];
+			
+			for( int x = 0; x < [pixList[y] count]; x++)
+			{
+				DCMPix	*curDCM = [pixList[ y] objectAtIndex: x];
+				
+				if( [roisSeries count] > x)
+				{
+					NSArray *roisImages = [roisSeries objectAtIndex: x];
+					
+					for( ROI *r in roisImages)
+					{
+						[r setOriginAndSpacing: curDCM.pixelSpacingX :curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY)];
+						
+						[[roiList[ y] objectAtIndex: x] addObject: r];
+						[imageView roiSet: r];
+					}
+				}
+			}
+		}
+	}
+	
+	[imageView setIndex: [imageView curImage]];
+}
+
+- (IBAction) roiLoadFromFiles: (id) sender
+{
+    long    i, j, x, result;
+    
+    NSOpenPanel *oPanel = [NSOpenPanel openPanel];
+    [oPanel setAllowsMultipleSelection:YES];
+    [oPanel setCanChooseDirectories:NO];
+    
+    result = [oPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObjects:@"roi", @"rois_series", @"xml", nil]];
+    
+    if (result == NSOKButton) 
+    {
+		if( [[[[oPanel filenames] lastObject] pathExtension] isEqualToString:@"xml"])
+			[imageView roiLoadFromXMLFiles: [oPanel filenames]];
+		else if( [[[[oPanel filenames] lastObject] pathExtension] isEqualToString:@"rois_series"])
+			[self roiLoadFromSeries: [[oPanel filenames] lastObject]];
+		else
+			[imageView roiLoadFromFilesArray: [oPanel filenames]];
+    }
+}
+
+- (IBAction) roiSaveSeries: (id) sender
+{
+	NSSavePanel *panel = [NSSavePanel savePanel];
+	NSMutableArray *roisPerMovies = [NSMutableArray  arrayWithCapacity:0];
+	BOOL rois = NO;
+	
+	for( int y = 0; y < maxMovieIndex; y++)
+	{
+		NSMutableArray  *roisPerSeries = [NSMutableArray  arrayWithCapacity:0];
+		
+		for( int x = 0; x < [pixList[ y] count]; x++)
+		{
+			NSMutableArray  *roisPerImages = [NSMutableArray  arrayWithCapacity:0];
+			
+			DCMPix	*curDCM = [pixList[ y] objectAtIndex: x];
+			
+			for( int i = 0; i < [[roiList[ y] objectAtIndex: x] count]; i++)
+			{
+				ROI	*curROI = [[roiList[ y] objectAtIndex: x] objectAtIndex: i];
+				
+				[roisPerImages addObject: curROI];
+				
+				rois = YES;
+			}
+			
+			[roisPerSeries addObject: roisPerImages];
+		}
+		
+		[roisPerMovies addObject: roisPerSeries];
+	}
+	
+	if( rois > 0)
+	{
+		[panel setCanSelectHiddenExtension:NO];
+		[panel setRequiredFileType:@"rois_series"];
+		
+		if( [panel runModalForDirectory:0L file: [[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.name"]] == NSFileHandlingPanelOKButton)
+		{
+			[NSArchiver archiveRootObject: roisPerMovies toFile :[panel filename]];
+		}
+	}
+	else
+	{
+		NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Save Error",nil), NSLocalizedString(@"No ROIs in this series!",nil) , NSLocalizedString(@"OK",nil), nil, nil);
+	}
 }
 
 - (IBAction) roiSelectDeselectAll:(id) sender

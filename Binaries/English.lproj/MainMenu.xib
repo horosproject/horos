@@ -2,14 +2,14 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9D34</string>
+		<string key="IBDocument.SystemVersion">9E17</string>
 		<string key="IBDocument.InterfaceBuilderVersion">667</string>
 		<string key="IBDocument.AppKitVersion">949.33</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="1400"/>
 			<integer value="966"/>
-			<integer value="13065"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2570,16 +2570,7 @@
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSMenuItem" id="797679996">
 									<reference key="NSMenu" ref="1010933659"/>
-									<string key="NSTitle">Import ROI...</string>
-									<string key="NSKeyEquiv"/>
-									<int key="NSKeyEquivModMask">1048576</int>
-									<int key="NSMnemonicLoc">2147483647</int>
-									<reference key="NSOnImage" ref="125626618"/>
-									<reference key="NSMixedImage" ref="973943092"/>
-								</object>
-								<object class="NSMenuItem" id="152317039">
-									<reference key="NSMenu" ref="1010933659"/>
-									<string key="NSTitle">Import ROI from XML...</string>
+									<string key="NSTitle">Import ROI(s)...</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -2600,6 +2591,15 @@
 								<object class="NSMenuItem" id="576153382">
 									<reference key="NSMenu" ref="1010933659"/>
 									<string key="NSTitle">Save Selected ROI(s)...</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+								</object>
+								<object class="NSMenuItem" id="421201842">
+									<reference key="NSMenu" ref="1010933659"/>
+									<string key="NSTitle">Save All ROIs of this series...</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -9881,14 +9881,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">roiLoadFromXMLFiles:</string>
-						<reference key="source" ref="298258082"/>
-						<reference key="destination" ref="152317039"/>
-					</object>
-					<int key="connectionID">11481</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
 						<string key="label">redo:</string>
 						<reference key="source" ref="298258082"/>
 						<reference key="destination" ref="1053978384"/>
@@ -12433,6 +12425,14 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 					<int key="connectionID">13657</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">roiSaveSeries:</string>
+						<reference key="source" ref="298258082"/>
+						<reference key="destination" ref="421201842"/>
+					</object>
+					<int key="connectionID">13659</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -13238,7 +13238,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<reference ref="228772413"/>
 							<reference ref="606559131"/>
 							<reference ref="570244689"/>
-							<reference ref="152317039"/>
 							<reference ref="812559951"/>
 							<reference ref="967662590"/>
 							<reference ref="450029992"/>
@@ -13259,6 +13258,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<reference ref="62921609"/>
 							<reference ref="239293260"/>
 							<reference ref="735900879"/>
+							<reference ref="421201842"/>
 						</object>
 						<reference key="parent" ref="63428212"/>
 					</object>
@@ -13325,11 +13325,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<object class="IBObjectRecord">
 						<int key="objectID">11478</int>
 						<reference key="object" ref="570244689"/>
-						<reference key="parent" ref="1010933659"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">11480</int>
-						<reference key="object" ref="152317039"/>
 						<reference key="parent" ref="1010933659"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -17787,6 +17782,11 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<reference key="object" ref="349084446"/>
 						<reference key="parent" ref="986057026"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">13658</int>
+						<reference key="object" ref="421201842"/>
+						<reference key="parent" ref="1010933659"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -17903,8 +17903,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>11477.ImportedFromIB2</string>
 					<string>11478.IBPluginDependency</string>
 					<string>11478.ImportedFromIB2</string>
-					<string>11480.IBPluginDependency</string>
-					<string>11480.ImportedFromIB2</string>
 					<string>11528.IBPluginDependency</string>
 					<string>11528.ImportedFromIB2</string>
 					<string>11529.IBPluginDependency</string>
@@ -18921,6 +18919,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>13654.ImportedFromIB2</string>
 					<string>13656.IBPluginDependency</string>
 					<string>13656.ImportedFromIB2</string>
+					<string>13658.IBPluginDependency</string>
+					<string>13658.ImportedFromIB2</string>
 					<string>1400.IBEditorWindowLastContentRect</string>
 					<string>1400.IBPluginDependency</string>
 					<string>1400.ImportedFromIB2</string>
@@ -19182,8 +19182,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>{213, 20}</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -19959,7 +19957,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{994, 142}, {428, 833}}</string>
+					<string>{{477, 235}, {428, 833}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{390, 35}, {428, 753}}</string>
@@ -20290,7 +20288,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{403, 931}, {423, 583}}</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="9"/>
+					<string>{{653, 485}, {423, 583}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{1034, 437}, {423, 583}}</string>
@@ -20474,7 +20474,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{767, 975}, {596, 20}}</string>
+					<string>{{250, 1068}, {596, 20}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{163, 788}, {596, 20}}</string>
@@ -20502,9 +20502,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string>{{706, 407}, {337, 613}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{744, 191}, {1132, 808}}</string>
+					<string>{{58, 191}, {1132, 808}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{744, 191}, {1132, 808}}</string>
+					<string>{{58, 191}, {1132, 808}}</string>
 					<reference ref="9"/>
 					<string>{{1, 48}, {1132, 808}}</string>
 					<reference ref="9"/>
@@ -20550,7 +20550,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">13657</int>
+			<int key="maxID">13659</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -21331,6 +21331,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string>roiPropagateSlab:</string>
 							<string>roiRename:</string>
 							<string>roiSaveSelected:</string>
+							<string>roiSaveSeries:</string>
 							<string>roiSelectDeselectAll:</string>
 							<string>roiSetPixels:</string>
 							<string>roiSetPixelsSetup:</string>
@@ -21372,6 +21373,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>

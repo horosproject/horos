@@ -74,6 +74,26 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>rois_series</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>roi.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>text/roi</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>OsiriX Regions Of Interest</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>rois_series</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
 				<string>lsm</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>

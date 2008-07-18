@@ -1122,23 +1122,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	[self setNeedsDisplay:YES];
-
-}
-
-- (IBAction) roiLoadFromFiles: (id) sender
-{
-    long    i, j, x, result;
-    
-    NSOpenPanel         *oPanel = [NSOpenPanel openPanel];
-    [oPanel setAllowsMultipleSelection:YES];
-    [oPanel setCanChooseDirectories:NO];
-    
-    result = [oPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"roi"]];
-    
-    if (result == NSOKButton) 
-    {
-		[self roiLoadFromFilesArray: [oPanel filenames]];
-    }
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
@@ -1224,25 +1207,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-- (IBAction) roiLoadFromXMLFiles: (id) sender
+- (IBAction) roiLoadFromXMLFiles: (NSArray*) filenames
 {
-	long	i, x, result;
-	
-	NSOpenPanel         *oPanel = [NSOpenPanel openPanel];
-	
-    [oPanel setAllowsMultipleSelection:YES];
-    [oPanel setCanChooseDirectories:NO];
-	
-	result = [oPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"xml"]];
-    
-    if (result != NSOKButton) return;
+	int	i, x, result;
 	
 	// Unselect all ROIs
 	for( i = 0 ; i < [curRoiList count] ; i++) [[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
 	
-	for( i = 0; i < [[oPanel filenames] count]; i++)
+	for( i = 0; i < [filenames count]; i++)
 	{
-		NSDictionary*	xml = [NSDictionary dictionaryWithContentsOfFile: [[oPanel filenames] objectAtIndex:i]];
+		NSDictionary*	xml = [NSDictionary dictionaryWithContentsOfFile: [filenames objectAtIndex:i]];
 		NSArray*		roiArray = [xml objectForKey: @"ROI array"];
 		
 		if ( roiArray ) {

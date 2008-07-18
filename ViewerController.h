@@ -544,6 +544,7 @@ enum
 - (IBAction) subCtrlOffset:(id) sender;
 - (IBAction) subCtrlSliders:(id) sender;
 - (int) threeTestsFivePosibilities: (int) f;
+- (void) roiLoadFromSeries: (NSString*) filename;
 - (void) offsetMatrixSetting: (int) twentyFiveCodes;
 - (IBAction) mergeBrushROI: (id) sender;
 - (IBAction) subSumSlider:(id) sender;
@@ -558,6 +559,7 @@ enum
 - (void) saveROI:(long) mIndex;
 - (id) findPlayStopButton;
 - (IBAction)setKeyImage:(id)sender;
+- (IBAction) roiSelectDeselectAll:(id) sender;
 - (BOOL) FullScreenON;
 - (void) setROITool:(id) sender;
 - (void) setROIToolTag:(int) roitype;

@@ -1149,7 +1149,7 @@ static NSArray*	statesArray = nil;
 		}
 	}
 	
-	NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray];
+	NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded: filesArray];
 	
 	if( newfilesArray == filesArray)
 	{
@@ -1761,7 +1761,6 @@ static NSArray*	statesArray = nil;
 
 - (IBAction)selectFilesAndFoldersToAdd: (id)sender
 {
- 
     NSOpenPanel         *oPanel = [NSOpenPanel openPanel];
 	
     BOOL                isDirectory;
@@ -1786,13 +1785,16 @@ static NSArray*	statesArray = nil;
 			// Are we adding new files in a album?
 			
 			//can't add to smart Album
-			if( albumTable.selectedRow > 0 ) {
+			if( albumTable.selectedRow > 0 )
+			{
 				NSManagedObject *album = [self.albumArray objectAtIndex: albumTable.selectedRow];
 				
-				if ([[album valueForKey:@"smartAlbum"] boolValue] == NO ) {
+				if ([[album valueForKey:@"smartAlbum"] boolValue] == NO )
+				{
 					NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
 					
-					for( NSManagedObject *object in newImages )	{
+					for( NSManagedObject *object in newImages )
+					{
 						[studies addObject: [object valueForKeyPath:@"series.study"]];
 					}
 					
@@ -1801,7 +1803,8 @@ static NSArray*	statesArray = nil;
 				}
 			}
 			
-			if( [newImages count] > 0 ) {
+			if( [newImages count] > 0 )
+			{
 				NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
 				
 				[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
@@ -13259,7 +13262,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (IBAction)anonymizeDICOM: (id)sender {
+- (IBAction)anonymizeDICOM: (id)sender
+{
 	NSMutableArray *paths = [NSMutableArray array];
 	NSMutableArray *dicomFiles2Anonymize = [NSMutableArray array];
 	NSMutableArray *filesToAnonymize;
@@ -13270,7 +13274,8 @@ static volatile int numberOfThreadsForJPEG = 0;
     [anonymizerController showWindow:self];
 	
 	NSString *file;
-	for (file in filesToAnonymize) {
+	for (file in filesToAnonymize)
+	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		NSString	*extension = [file pathExtension];
 		if([extension isEqualToString:@"" ]) extension = [NSString stringWithString:@"dcm"];
@@ -13303,13 +13308,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		// Are we adding new files in a album?
 		// can't add to smart Album
-		if( self.albumTable.selectedRow > 0 ) {
+		if( self.albumTable.selectedRow > 0)
+		{
 			NSManagedObject *album = [self.albumArray objectAtIndex: [[self albumTable] selectedRow]];
 			
-			if ([[album valueForKey:@"smartAlbum"] boolValue] == NO ) {
-				NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
+			if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
+			{
+				NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
 				
-				for( NSManagedObject		*object in newImages ) {
+				for( NSManagedObject *object in newImages)
+				{
 					[studies addObject: [object valueForKeyPath:@"series.study"]];
 				}
 				
@@ -13317,8 +13325,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 		}
 		
-		if( [newImages count] > 0 ) {
-			NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
+		if( [newImages count] > 0 )
+		{
+			NSManagedObject *object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
 			
 			[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
 			[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
