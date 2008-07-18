@@ -1701,16 +1701,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self setNeedsDisplay:YES];
 }
 
-- (void) scaleBy2AndCenterShutter {
-	
+- (void) scaleBy2AndCenterShutter
+{	
 	[self setOriginX:  ((curDCM.pwidth  * 0.5f ) - ( curDCM.DCMPixShutterRectOriginX + ( curDCM.DCMPixShutterRectWidth  * 0.5f ))) * scaleValue
 				   Y: -((curDCM.pheight * 0.5f ) - ( curDCM.DCMPixShutterRectOriginY + ( curDCM.DCMPixShutterRectHeight * 0.5f ))) * scaleValue];
 	[self setNeedsDisplay:YES];
 }
 
-- (void) setIndexWithReset:(short) index :(BOOL) sizeToFit {
-
-	if( dcmPixList && index != -1) {
+- (void) setIndexWithReset:(short) index :(BOOL) sizeToFit
+{
+	if( dcmPixList && index != -1)
+	{
 		[[self window] setAcceptsMouseMovedEvents: YES];
 
 		curROI = nil;
@@ -1726,7 +1727,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( dcmRoiList) curRoiList = [[dcmRoiList objectAtIndex: curImage] retain];
 		else 			curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
 		
-		for( long i = 0; i < [curRoiList count]; i++ ) {
+		for( int i = 0; i < [curRoiList count]; i++ ) {
 			[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :labelFontListGLSize :self];
 			[[curRoiList objectAtIndex:i ] recompute];
 			// Unselect previous ROIs
@@ -2779,6 +2780,38 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self setNeedsDisplay:YES];
 }
 
+-(void) computeMagnifyLens:(NSPoint) p
+{
+	#define LENSSIZE 50
+	
+	if( lensTexture) free( lensTexture);
+	
+	lensTexture = calloc( LENSSIZE * LENSSIZE, 4);
+	if( lensTexture)
+	{
+		NSRect l = NSMakeRect( p.x - (LENSSIZE/2), p.y - (LENSSIZE/2), LENSSIZE, LENSSIZE);
+		NSRect d = NSMakeRect( 0, 0, [curDCM pwidth], [curDCM pheight]);
+		
+		NSRect s = NSIntersectionRect(l, d);
+		
+		char *src = [curDCM baseAddr];
+		int dcmWidth = [curDCM pwidth];
+		
+		int sx = s.origin.x;
+		int sy = s.origin.y;
+		int ex = s.size.width;
+		int ey = s.size.height;
+		
+		for( int y = sy ; y < sy+ey ; y++)
+		{
+			for( int x = sx ; x < sx+ex ; x++)
+			{
+				lensTexture[ x-sx + (y-sy)*LENSSIZE] = src[x + y * dcmWidth];
+			}
+		}
+	}
+}
+
 -(void) mouseMoved: (NSEvent*) theEvent
 {
 	if( !drawing) return;
@@ -2832,6 +2865,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				mouseXPos = imageLocation.x;
 				mouseYPos = imageLocation.y;
+				
+				if( 0)
+				{
+					[self computeMagnifyLens: imageLocation];
+				}
 				
 				int
 					xPos = (int)mouseXPos,
@@ -6023,8 +6061,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity ();
 	
-//	glDepthMask (GL_TRUE);
-	
 	glScalef (2.0f /(xFlipped ? -(size.size.width) : size.size.width), -2.0f / (yFlipped ? -(size.size.height) : size.size.height), 1.0f); // scale to port per pixel scale
 	glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 	glTranslatef( origin.x - offset.x + originOffset.x, -origin.y - offset.y - originOffset.y, 0.0f);
@@ -7629,7 +7665,43 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		glClear (GL_COLOR_BUFFER_BIT);
 	}
 
+	if( lensTexture)
+	{
+		GLuint textID;
+
+		glMatrixMode (GL_MODELVIEW);
+		glLoadIdentity ();
 		
+		glScalef (2.0f /(xFlipped ? -([self frame].size.width) : [self frame].size.width), -2.0f / (yFlipped ? -([self frame].size.height) : [self frame].size.height), 1.0f); // scale to port per pixel scale
+		glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+		glTranslatef( origin.x - offset.x + originOffset.x, -origin.y - offset.y - originOffset.y, 0.0f);
+		
+		if( curDCM.pixelRatio != 1.0) glScalef( 1.f, curDCM.pixelRatio, 1.f);
+		
+		glEnable(TEXTRECTMODE);
+		glPixelStorei (GL_UNPACK_ROW_LENGTH, LENSSIZE); 
+		glGenTextures ( 1, &textID);
+		glBindTexture (TEXTRECTMODE, textID);
+		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, LENSSIZE, LENSSIZE, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, lensTexture);
+		glDisable (TEXTRECTMODE);
+		
+		glBegin (GL_TRIANGLE_STRIP); // draw either tri strips of line strips (so this will drw either two tris or 3 lines)
+		glTexCoord2f (0, LENSSIZE); // draw upper left in world coordinates
+		glVertex3d (mouseXPos, mouseYPos, 0.0);
+		
+		glTexCoord2f (LENSSIZE, 0); // draw lower left in world coordinates
+		glVertex3d (mouseXPos + LENSSIZE*4, mouseYPos, 0.0);
+		
+		glTexCoord2f (0, LENSSIZE); // draw upper right in world coordinates
+		glVertex3d (mouseXPos, mouseYPos + LENSSIZE*4, 0.0);
+		
+		glTexCoord2f (LENSSIZE, LENSSIZE); // draw lower right in world coordinates
+		glVertex3d (mouseXPos + LENSSIZE*4, mouseYPos + LENSSIZE*4, 0.0);
+		glEnd();
+	}
+	
 	// Swap buffer to screen
 	//	[[self openGLContext] flushBuffer];
 	[ctx  flushBuffer];

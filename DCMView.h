@@ -264,6 +264,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	NSRect			drawingFrameRect;
 	
 	BOOL			exceptionDisplayed;
+	
+	 char*	lensTexture;
 }
 
 @property(readonly) NSRect drawingFrameRect;
