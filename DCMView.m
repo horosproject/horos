@@ -2782,7 +2782,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) computeMagnifyLens:(NSPoint) p
 {
-	#define LENSSIZE 50
+	LENSSIZE = 50 / scaleValue;
 	
 	if( lensTexture) free( lensTexture);
 	
@@ -6881,10 +6881,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	drawingFrameRect = aRect;
 	
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-
-
-
-			
+	
 	glViewport (0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height); // set the viewport to cover entire window
 	
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -7659,7 +7656,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 	}  
 	else
-	{    //no valid image  ie curImage = -1
+	{
+		//no valid image  ie curImage = -1
 		//NSLog(@"no IMage");
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear (GL_COLOR_BUFFER_BIT);
@@ -7672,7 +7670,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		glMatrixMode (GL_MODELVIEW);
 		glLoadIdentity ();
 		
-		glScalef (2.0f /(xFlipped ? -([self frame].size.width) : [self frame].size.width), -2.0f / (yFlipped ? -([self frame].size.height) : [self frame].size.height), 1.0f); // scale to port per pixel scale
+		glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
 		glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 		glTranslatef( origin.x - offset.x + originOffset.x, -origin.y - offset.y - originOffset.y, 0.0f);
 		
@@ -7685,21 +7683,29 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, LENSSIZE, LENSSIZE, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, lensTexture);
-		glDisable (TEXTRECTMODE);
 		
-		glBegin (GL_TRIANGLE_STRIP); // draw either tri strips of line strips (so this will drw either two tris or 3 lines)
-		glTexCoord2f (0, LENSSIZE); // draw upper left in world coordinates
-		glVertex3d (mouseXPos, mouseYPos, 0.0);
+		NSPoint eventLocation = NSMakePoint( mouseXPos, mouseYPos);
+		
+		eventLocation.x *= scaleValue;
+		eventLocation.y *= scaleValue;
+		
+		glBindTexture(TEXTRECTMODE, textID);
+		glBegin (GL_QUAD_STRIP);
+		glTexCoord2f (0, 0); // draw upper left in world coordinates
+		glVertex3d (eventLocation.x, eventLocation.y, 0.0);
 		
 		glTexCoord2f (LENSSIZE, 0); // draw lower left in world coordinates
-		glVertex3d (mouseXPos + LENSSIZE*4, mouseYPos, 0.0);
+		glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue, eventLocation.y, 0.0);
 		
 		glTexCoord2f (0, LENSSIZE); // draw upper right in world coordinates
-		glVertex3d (mouseXPos, mouseYPos + LENSSIZE*4, 0.0);
+		glVertex3d (eventLocation.x, eventLocation.y+LENSSIZE*4*scaleValue, 0.0);
 		
 		glTexCoord2f (LENSSIZE, LENSSIZE); // draw lower right in world coordinates
-		glVertex3d (mouseXPos + LENSSIZE*4, mouseYPos + LENSSIZE*4, 0.0);
+		glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue, eventLocation.y+LENSSIZE*4*scaleValue, 0.0);
 		glEnd();
+		
+		glDeleteTextures( 1, &textID);
+		glDisable (TEXTRECTMODE);
 	}
 	
 	// Swap buffer to screen
