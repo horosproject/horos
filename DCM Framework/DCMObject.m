@@ -411,8 +411,8 @@ PixelRepresentation
 }
 
 - (id)initWithDataContainer:(DCMDataContainer *)data lengthToRead:(long)lengthToRead byteOffset:(long  *)byteOffset characterSet:(DCMCharacterSet *)characterSet decodingPixelData:(BOOL)decodePixelData{
-	if (self = [super init]) {
-		//NSDate *timestamp =[NSDate date];
+	if (self = [super init])
+	{
 		_decodePixelData = decodePixelData;
 		sharedTagDictionary = [DCMTagDictionary sharedTagDictionary];
 		sharedTagForNameDictionary = [DCMTagForNameDictionary sharedTagForNameDictionary];
@@ -665,7 +665,8 @@ PixelRepresentation
 			//0008,0005 == SpecificCharacterSet
 			else if (strcmp(tagUTF8, "0008,0005") == 0) {
 				[specificCharacterSet release];
-				specificCharacterSet = [[DCMCharacterSet alloc] initWithCode:[attr value]];
+				
+				specificCharacterSet = [[DCMCharacterSet alloc] initWithCode: [[attr values] componentsJoinedByString:@"//"]];
 			}
 
 				
@@ -797,8 +798,8 @@ PixelRepresentation
 	return values;
 }
 
-- (NSString *)description {
-
+- (NSString *)description
+{
 	NSString *description = @"";
 	NSArray *keys = [[attributes allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	for ( NSString *key in keys ) {

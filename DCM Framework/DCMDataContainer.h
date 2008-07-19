@@ -75,6 +75,7 @@
 
 - (NSString *)nextStringWithLength:(int)length;
 - (NSString *)nextStringWithLength:(int)length encoding:(NSStringEncoding)encoding;
+- (NSString *)nextStringWithLength:(int)length encodings:(NSStringEncoding*)encodings;
 - (NSCalendarDate *)nextDate;
 - (NSMutableArray *)nextDatesWithLength:(int)length;
 - (NSCalendarDate *)nextTimeWithLength:(int)length;

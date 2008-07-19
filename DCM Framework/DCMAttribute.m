@@ -317,7 +317,8 @@
 
 }
 
-- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts{
+- (BOOL)writeToDataContainer:(DCMDataContainer *)container withTransferSyntax:(DCMTransferSyntax *)ts
+{
 	int i;
 	const char *chars = [_vr UTF8String];
 	int vr = chars[0]<<8 | chars[1];
@@ -471,8 +472,9 @@
 	int vr = chars[0]<<8 | chars[1];
 	if (length == 0)
 		values = [NSMutableArray array];
-	else if ([DCMValueRepresentation isAffectedBySpecificCharacterSet:vrString]) {
-		string = [dicomData nextStringWithLength:length encoding:[characterSet encoding]];
+	else if ([DCMValueRepresentation isAffectedBySpecificCharacterSet:vrString])
+	{
+		string = [dicomData nextStringWithLength:length encodings:[characterSet encodings]];
 		values = (NSMutableArray *)[string componentsSeparatedByString:@"\\"];
 	}
 	else  {
@@ -584,7 +586,6 @@
             case QQ: 
 				string = [dicomData nextStringWithLength:length];
 				values = (NSMutableArray *)[string componentsSeparatedByString:@"\\"];
-				
                 break;
             default: 
 				values = [NSArray arrayWithObject:[dicomData nextDataWithLength:length]];

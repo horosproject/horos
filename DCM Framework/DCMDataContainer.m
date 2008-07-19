@@ -353,17 +353,36 @@
 }
 
 
-- (NSString *)nextStringWithLength:(int)length{
+- (NSString *)nextStringWithLength:(int)length
+{
 	NSException *exception = [self testForLength:length];
-	if (!exception) {
+	if (!exception)
+	{
 		if (stringEncoding == 0)
 			stringEncoding = NSISOLatin1StringEncoding;
+			
 		NSString *string;
 		string = [[[NSString alloc] initWithBytes:(_ptr + position) length:(unsigned)length encoding:stringEncoding] autorelease];
 		NSString *trimmedString = [string stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];
 		position += length;
 		return [trimmedString  stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];;
 		
+	}
+	else 
+		[exception raise];
+	return nil;
+}
+
+- (NSString *)nextStringWithLength:(int)length encodings:(NSStringEncoding*)encodings
+{
+	NSException *exception = [self testForLength:length];
+	if (!exception)
+	{
+		NSString *string;
+		string = [DCMCharacterSet stringWithBytes: (char*) (_ptr + position) length:(unsigned)length encodings:encodings];
+		NSString *trimmedString = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		position += length;
+		return [trimmedString stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];
 	}
 	else 
 		[exception raise];
@@ -382,7 +401,6 @@
 	else 
 		[exception raise];
 	return nil;
-
 }
 
 - (NSCalendarDate *)nextDate{	

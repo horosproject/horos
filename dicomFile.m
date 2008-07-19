@@ -160,7 +160,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	[mutable replaceOccurrencesOfString:@"\"" withString:@"'" options:0 range:NSMakeRange(0, [mutable length])];
 	
 	
-	long i = [mutable length];
+	int i = [mutable length];
 	while( --i > 0)
 	{
 		if( [mutable characterAtIndex: i]==' ') [mutable deleteCharactersInRange: NSMakeRange( i, 1)];
@@ -1685,7 +1685,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	UValue_T            *val;
 	SElement			*theGroupP;
 	NSString			*converted = 0L;
-	NSStringEncoding	encoding;//NSStringEncoding
+	NSStringEncoding	encoding[ 10];
 	NSString *echoTime = nil;
 	NSString *sopClassUID = nil;
 	NSMutableArray *imageTypeArray = 0L;
@@ -1707,8 +1707,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	{
 		if( gIsPapyFile [fileNb] == DICOM10 || gIsPapyFile [fileNb] == DICOM_NOT10)	// Actual version of OsiriX supports only DICOM... should we support PAPYRUS?... NO: too much work!
 		{
-			NSString *characterSet = 0L;
-			
 			if( gArrCompression  [fileNb] == MPEG2MPML)
 			{
 				fileType = [[NSString stringWithString:@"DICOMMPEG2"] retain];
@@ -1724,7 +1722,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
 			
-			encoding = NSISOLatin1StringEncoding;
+			NSString *characterSet = 0L;
+			for( int i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
 			
 			if (COMMENTSAUTOFILL == YES || CHECKFORLAVIM == YES)
 			{
@@ -1879,11 +1878,16 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				val = Papy3GetElement (theGroupP, papSpecificCharacterSetGr, &nbVal, &itemType);
 				if (val != NULL)
 				{
-					val += nbVal-1;
-					
-					characterSet = [NSString stringWithCString:val->a];
-					
-					encoding = [NSString encodingForDICOMCharacterSet:characterSet];
+					for( int z = 0; z < nbVal ; z++)
+					{
+						if( z < 10)
+						{
+							characterSet = [NSString stringWithCString:val->a];
+							encoding[ z] = [NSString encodingForDICOMCharacterSet:characterSet];
+						}
+						else NSLog( @"Encoding number >= 10 ???");
+						val++;
+					}
 				}
 				
 				val = Papy3GetElement (theGroupP, papImageTypeGr, &nbVal, &itemType);
@@ -1922,12 +1926,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 //				free( t);
 				
 				val = Papy3GetElement (theGroupP, papStudyDescriptionGr, &nbVal, &itemType); //
-				if (val != NULL) study = [[NSString alloc] initWithBytes: replaceBadCharacter(val->a, encoding) length: strlen(val->a) encoding:encoding];
+				if (val != NULL) study = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 				else study = [[NSString alloc] initWithString:@"unnamed"];
 				[dicomElements setObject:study forKey:@"studyDescription"];
 				
 				val = Papy3GetElement (theGroupP, papModalityGr, &nbVal, &itemType);
-				if (val != NULL) Modality = [[NSString alloc] initWithCString:val->a encoding: encoding];
+				if (val != NULL) Modality = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 				else Modality = [[NSString alloc] initWithString:@"OT"];
 				[dicomElements setObject:Modality forKey:@"modality"];
 				
@@ -2029,27 +2033,27 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if( date) [dicomElements setObject:date forKey:@"studyDate"];
 				
 				 val = Papy3GetElement (theGroupP, papSeriesDescriptionGr, &nbVal, &itemType);
-				if (val != NULL) serie = [[NSString alloc] initWithBytes: replaceBadCharacter(val->a, encoding) length: strlen(val->a) encoding:encoding];
+				if (val != NULL) serie = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 				else serie = [[NSString alloc] initWithString:@"unnamed"];
 				[dicomElements setObject:serie forKey:@"seriesDescription"];
 				
 				 val = Papy3GetElement (theGroupP, papInstitutionNameGr, &nbVal, &itemType);
 				if (val != NULL) {
-					NSString *institution = [[NSString alloc] initWithBytes: replaceBadCharacter(val->a, encoding) length: strlen(val->a) encoding:encoding];
+					NSString *institution = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 					[dicomElements setObject:institution forKey:@"institutionName"];
 					[institution release];
 				}
 				
 				val = Papy3GetElement (theGroupP, papReferringPhysiciansNameGr, &nbVal, &itemType);
 				if (val != NULL) {
-					NSString *physician = [[NSString alloc] initWithBytes: replaceBadCharacter(val->a, encoding) length: strlen(val->a) encoding:encoding];
+					NSString *physician = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 					[dicomElements setObject:physician forKey:@"referringPhysiciansName"];
 					[physician release];
 				}
 				
 				val = Papy3GetElement (theGroupP, papPerformingPhysiciansNameGr, &nbVal, &itemType);
 				if (val != NULL) {
-					NSString *physician = [[NSString alloc] initWithBytes: replaceBadCharacter(val->a, encoding) length: strlen(val->a) encoding:encoding];
+					NSString *physician = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 					[dicomElements setObject:physician forKey:@"performingPhysiciansName"];
 					[physician release];
 				}
@@ -2083,8 +2087,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				val = Papy3GetElement (theGroupP, papPatientsNameGr, &nbVal, &itemType);
 				if (val != NULL)
 				{
-					name = [[NSString alloc] initWithBytes: replaceBadCharacter(val->a, encoding)  length: strlen(val->a) encoding:encoding];
-					if(name == 0L) name = [[NSString alloc] initWithCString: val->a encoding: encoding];
+					name = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
+					if(name == 0L) name = [[NSString alloc] initWithCString: val->a encoding: encoding[ 0]];
 				}
 				else name = [[NSString alloc] initWithString:@"No name"];
 				[dicomElements setObject:name forKey:@"patientName"];
@@ -2161,7 +2165,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				[dicomElements setObject:[NSNumber numberWithLong: cardiacTime] forKey:@"cardiacTime"];
 				
 				val = Papy3GetElement (theGroupP, papProtocolNameGr, &nbVal, &itemType);
-				if (val != NULL) [dicomElements setObject:[[[NSString alloc] initWithCString:val->a encoding: encoding] autorelease] forKey:@"protocolName"];
+				if (val != NULL) [dicomElements setObject: [DicomFile stringWithBytes: (char*) val->a encodings:encoding] forKey:@"protocolName"];
 				
 				//Get TE for Dual Echo and multiecho MRI sequences
 				
@@ -2529,8 +2533,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	else
 		dcmObject = [DCMObjectDBImport objectWithContentsOfFile:filePath decodingPixelData:NO];
 	   
-	if (dcmObject) {
-
+	if (dcmObject)
+	{
 		if (COMMENTSAUTOFILL == YES || CHECKFORLAVIM == YES)
 		{
 			if( COMMENTSAUTOFILL)
