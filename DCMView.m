@@ -2802,20 +2802,30 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	LENSSIZE = 100 / scaleValue;
 	
 	if( lensTexture) free( lensTexture);
+
+	char *src = [curDCM baseAddr];
+	int dcmWidth = [curDCM pwidth];
+	
+	if( zoomIsSoftwareInterpolated)
+	{
+		src = resampledBaseAddr;
+		dcmWidth = textureWidth;
+		
+		LENSRATIO = (float) textureWidth / (float) [curDCM pwidth];
+		LENSSIZE *= LENSRATIO;
+	}
+	else LENSRATIO = 1;
 	
 	lensTexture = calloc( LENSSIZE * LENSSIZE, 4);
 	if( lensTexture)
 	{
-		NSRect l = NSMakeRect( p.x - (LENSSIZE/2), p.y - (LENSSIZE/2), LENSSIZE, LENSSIZE);
-		
-		char *src = [curDCM baseAddr];
-		int dcmWidth = [curDCM pwidth];
+		NSRect l = NSMakeRect( p.x*LENSRATIO - (LENSSIZE/2), p.y*LENSRATIO - (LENSSIZE/2), LENSSIZE, LENSSIZE);
 		
 		int sx = l.origin.x, sy = l.origin.y;
 		int ex = l.size.width, ey = l.size.height;
 		
-		if( ex+sx> [curDCM pwidth]) ex = [curDCM pwidth]-sx;
-		if( ey+sy> [curDCM pheight]) ey = [curDCM pheight]-sy;
+		if( ex+sx> textureWidth) ex = textureWidth-sx;
+		if( ey+sy> textureHeight) ey = textureHeight-sy;
 		
 		int sxx = 0, syy = 0;
 		
@@ -2855,17 +2865,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			int		radsqr = (inw*inw)/4;
 			int		rad = LENSSIZE/2;
 			
-			for(x = 0; x < rad; x++)
+			x = rad;
+			while( x-- > 0)
 			{
 				xsqr = x*x;
-				for( y = 0 ; y < rad; y++)
+				y = rad;
+				while( y-- > 0)
 				{
 					if( (xsqr + y*y) < radsqr)
 					{
-						lensTexture[ 0 + (rad+x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
-						lensTexture[ 0 + (rad-x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
-						lensTexture[ 0 + (rad+x)*4 + (rad-y)*LENSSIZE*4] = 0xff;
-						lensTexture[ 0 + (rad-x)*4 + (rad-y)*LENSSIZE*4] = 0xff;
+						lensTexture[ (rad+x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
+						lensTexture[ (rad-x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
+						lensTexture[ (rad+x)*4 + (rad-y)*LENSSIZE*4] = 0xff;
+						lensTexture[ (rad-x)*4 + (rad-y)*LENSSIZE*4] = 0xff;
 					}
 				}
 			}
@@ -7766,8 +7778,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		eventLocation.x = xx;
 		eventLocation.y = yy;
 		
-		eventLocation.x -= LENSSIZE*2*scaleValue;
-		eventLocation.y -= LENSSIZE*2*scaleValue;
+		eventLocation.x -= LENSSIZE*2*scaleValue/LENSRATIO;
+		eventLocation.y -= LENSSIZE*2*scaleValue/LENSRATIO;
 		
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -7778,23 +7790,58 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		glVertex3d (eventLocation.x, eventLocation.y, 0.0);
 		
 		glTexCoord2f (LENSSIZE, 0); // draw lower left in world coordinates
-		glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue, eventLocation.y, 0.0);
+		glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y, 0.0);
 		
 		glTexCoord2f (0, LENSSIZE); // draw upper right in world coordinates
-		glVertex3d (eventLocation.x, eventLocation.y+LENSSIZE*4*scaleValue, 0.0);
+		glVertex3d (eventLocation.x, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
 		
 		glTexCoord2f (LENSSIZE, LENSSIZE); // draw lower right in world coordinates
-		glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue, eventLocation.y+LENSSIZE*4*scaleValue, 0.0);
+		glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
 		glEnd();
 		
 		glDeleteTextures( 1, &textID);
 		glDisable (TEXTRECTMODE);
 		
+		glColor4f ( 0.5, 0.3, 0, 1);
+		glLineWidth( 10);
+		
+		int resol = LENSSIZE*4*scaleValue;
+		
+		eventLocation.x += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
+		eventLocation.y += (0.5+LENSSIZE)*2*scaleValue/LENSRATIO;
+		
+		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+		glEnable(GL_POINT_SMOOTH);
+		glEnable(GL_LINE_SMOOTH);
+		glEnable(GL_POLYGON_SMOOTH);
+		
+		float f = ((LENSSIZE-1)*scaleValue*2/LENSRATIO);
+		
+		glBegin(GL_LINE_LOOP);
+		for( int i = 0; i < resol ; i++ )
+		{
+			angle = i * 2 * M_PI /resol;
+			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
+		}
+		glEnd();
+		glPointSize( 10);
+		glBegin( GL_POINTS);
+		for( int i = 0; i < resol ; i++ )
+		{
+			angle = i * 2 * M_PI /resol;
+			
+			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
+		}
+		glEnd();
+		glDisable(GL_LINE_SMOOTH);
+		glDisable(GL_POLYGON_SMOOTH);
+		glDisable(GL_POINT_SMOOTH);
+		
 		glDisable(GL_BLEND);
 	}
 	
 	// Swap buffer to screen
-	//	[[self openGLContext] flushBuffer];
 	[ctx  flushBuffer];
 	
 	if(iChatRunning) [drawLock unlock];
@@ -8972,10 +9019,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (BOOL) softwareInterpolation
 {
-	if(	scaleValue > 4 && NOINTERPOLATION == NO && 
+	if(	scaleValue > 2 && NOINTERPOLATION == NO && 
 		SOFTWAREINTERPOLATION == YES && curDCM.pwidth <= SOFTWAREINTERPOLATION_MAX)
-//		 &&
-//		curDCM.isRGB == NO && [curDCM thickSlabVRActivated] == NO)
 	{
 		return YES;
 	}

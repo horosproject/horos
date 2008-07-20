@@ -267,6 +267,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	
 	char*	lensTexture;
 	int LENSSIZE;
+	float LENSRATIO;
 }
 
 @property(readonly) NSRect drawingFrameRect;
