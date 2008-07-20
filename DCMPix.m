@@ -9443,16 +9443,19 @@ END_CREATE_ROIS:
 }
 
 
-- (void)computePixMinPixMax {
+- (void)computePixMinPixMax
+{
 	float pixmin, pixmax;
 	
 	if( fImage == nil ) return;
 	
-	if( isRGB ) {
+	if( isRGB )
+	{
 		pixmax = 255;
 		pixmin = 0;
 	}
-	else {
+	else
+	{
 		float fmin, fmax;
 		
 		vDSP_minv ( fImage,  1, &fmin, width * height);
@@ -9461,7 +9464,8 @@ END_CREATE_ROIS:
 		pixmax = fmax;
 		pixmin = fmin;
 		
-		if( pixmin == pixmax) {
+		if( pixmin == pixmax)
+		{
 			pixmax = pixmin + 20;
 		}
 	}
@@ -10038,7 +10042,8 @@ END_CREATE_ROIS:
 	free( result);
 }
 
-- (float*) computeThickSlabRGB {
+- (float*) computeThickSlabRGB
+{
 	long			diff;
 	float			*fNext = NULL;
 	float			*fResult = malloc( height * width * sizeof(float) );
@@ -10127,7 +10132,8 @@ END_CREATE_ROIS:
 	return fResult;
 }
 
-- (float*) computeThickSlab {
+- (float*) computeThickSlab
+{
 	BOOL			flip = NO; // case 5
 	long			stacksize;
 	unsigned char   *rgbaImage;
@@ -10146,11 +10152,13 @@ END_CREATE_ROIS:
 	min = iwl - iww / 2; 
 	max = iwl + iww / 2;
 	
-	switch( stackMode ) {
+	switch( stackMode )
+	{
 		case 4:		// Volume Rendering
 			flip = YES;
 		case 5:		// Volume Rendering
-			if( thickSlab ) 	{											
+			if( thickSlab )
+			{											
 				if( stackDirection ) {
 					if( pixPos-stack < 0) stacksize = pixPos+1; 
 					else stacksize = stack+1;
@@ -10238,7 +10246,8 @@ END_CREATE_ROIS:
 //	[self setRowBytes: width*4];
 	
 	// = STACK IMAGES thickslab
-	if( stackMode > 0 && stack >= 1 ) {
+	if( stackMode > 0 && stack >= 1 && [pixArray count] > 1)
+	{
 		result = [self computeThickSlab];
 	}
 	else result = fImage;
@@ -10486,7 +10495,8 @@ END_CREATE_ROIS:
 			Pixel_8			convTable[256];
 			long			diff = max - min, val;
 			
-			if( stackMode > 0 && stack >= 1 ) {
+			if( stackMode > 0 && stack >= 1 && [pixArray count] > 1)
+			{
 				src.data = [self computeThickSlabRGB];
 			}
 			else src.data = fImage;

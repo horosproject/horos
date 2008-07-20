@@ -2922,7 +2922,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		lastMenuNotification = note;
 	}
-	else NSLog( @"update");
 	
 	[wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
 	[imageView setMenu: [[contextualMenu copy] autorelease]];

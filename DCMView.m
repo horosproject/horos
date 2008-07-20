@@ -2478,26 +2478,30 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( [curStudy valueForKey: @"name"])
 		{
 			if( [description length]) [description appendString:@"\r"];
-			[description appendString: [curStudy valueForKey: @"name"]];
+			if( [curStudy valueForKey: @"name"]) [description appendString: [curStudy valueForKey: @"name"]];
 		}
 	}
 	
 	if( [description length]) [description appendString:@"\r"];
-	[description appendString: [BrowserController DateTimeFormat: [curSeries valueForKey:@"date"]]];
+	
+	if( [BrowserController DateTimeFormat: [curSeries valueForKey:@"date"]])
+		[description appendString: [BrowserController DateTimeFormat: [curSeries valueForKey:@"date"]]];
 	
 	if( [self allIdenticalValues: @"studyName" inArray: studiesArray] == NO)
 	{
 		if( [curStudy valueForKey: @"studyName"])
 		{
 			if( [description length]) [description appendString:@"\r"];
-			[description appendString: [curStudy valueForKey: @"studyName"]];
+			if( [curStudy valueForKey: @"studyName"])
+				[description appendString: [curStudy valueForKey: @"studyName"]];
 		}
 	}
 
 	if( [curSeries valueForKey:@"name"])
 	{
 		if( [description length]) [description appendString:@"\r"];
-		[description appendString: [curSeries valueForKey:@"name"]];
+		if( [curSeries valueForKey:@"name"])
+			[description appendString: [curSeries valueForKey:@"name"]];
 	}
 	
 	NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
@@ -2536,8 +2540,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) flagsChanged:(NSEvent *)event
 {
+	if( lensTexture)
+	{
+		free( lensTexture);
+		lensTexture = 0L;
+		[self setNeedsDisplay: YES];
+	}
+	
 	if( [self is2DViewer] == YES)
 	{
+
 		BOOL update = NO;
 		if (([event modifierFlags] & (NSCommandKeyMask | NSShiftKeyMask)) == (NSCommandKeyMask | NSShiftKeyMask))
 		{
@@ -2579,6 +2591,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		tempPt = [self ConvertFromNSView2GL:tempPt];
 		if( [self clickInROI: tempPt]) roiHit = YES;
 	}
+	else if( [event modifierFlags] & NSShiftKeyMask)
+	{
+		[self computeMagnifyLens: NSMakePoint( mouseXPos, mouseYPos)];
+	}
+	
 	if( roiHit == NO)
 		[self setCursorForView: [self getTool: event]];
 	else
@@ -2782,7 +2799,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) computeMagnifyLens:(NSPoint) p
 {
-	LENSSIZE = 50 / scaleValue;
+	LENSSIZE = 100 / scaleValue;
 	
 	if( lensTexture) free( lensTexture);
 	
@@ -2790,26 +2807,73 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( lensTexture)
 	{
 		NSRect l = NSMakeRect( p.x - (LENSSIZE/2), p.y - (LENSSIZE/2), LENSSIZE, LENSSIZE);
-		NSRect d = NSMakeRect( 0, 0, [curDCM pwidth], [curDCM pheight]);
-		
-		NSRect s = NSIntersectionRect(l, d);
 		
 		char *src = [curDCM baseAddr];
 		int dcmWidth = [curDCM pwidth];
 		
-		int sx = s.origin.x;
-		int sy = s.origin.y;
-		int ex = s.size.width;
-		int ey = s.size.height;
+		int sx = l.origin.x, sy = l.origin.y;
+		int ex = l.size.width, ey = l.size.height;
+		
+		if( ex+sx> [curDCM pwidth]) ex = [curDCM pwidth]-sx;
+		if( ey+sy> [curDCM pheight]) ey = [curDCM pheight]-sy;
+		
+		int sxx = 0, syy = 0;
+		
+		if( sx < 0)
+		{
+			sxx = -sx;
+			ex -= sxx;
+			sx = 0;
+		}
+		
+		if( sy < 0)
+		{
+			syy = -sy;
+			ey -= syy;
+			sy = 0;
+		}
 		
 		for( int y = sy ; y < sy+ey ; y++)
 		{
-			for( int x = sx ; x < sx+ex ; x++)
+			char *sr = &src[ sx +y*dcmWidth];
+			char *dr = &lensTexture[ sxx*4 + (y-sy+syy)*LENSSIZE*4];
+			
+			int x = ex;
+			while( x-- > 0)
 			{
-				lensTexture[ x-sx + (y-sy)*LENSSIZE] = src[x + y * dcmWidth];
+				*dr++ = 0;
+				*dr++ = *sr;
+				*dr++ = *sr;
+				*dr++ = *sr++;
 			}
 		}
+		
+		{
+			int		x,y;
+			int		xsqr;
+			int		inw = LENSSIZE-1;
+			int		radsqr = (inw*inw)/4;
+			int		rad = LENSSIZE/2;
+			
+			for(x = 0; x < rad; x++)
+			{
+				xsqr = x*x;
+				for( y = 0 ; y < rad; y++)
+				{
+					if( (xsqr + y*y) < radsqr)
+					{
+						lensTexture[ 0 + (rad+x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
+						lensTexture[ 0 + (rad-x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
+						lensTexture[ 0 + (rad+x)*4 + (rad-y)*LENSSIZE*4] = 0xff;
+						lensTexture[ 0 + (rad-x)*4 + (rad-y)*LENSSIZE*4] = 0xff;
+					}
+				}
+			}
+		}
+
 	}
+	
+	[self setNeedsDisplay: YES];
 }
 
 -(void) mouseMoved: (NSEvent*) theEvent
@@ -2824,6 +2888,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	if( curDCM == 0L) return;
+	
+	if( lensTexture)
+	{
+		free( lensTexture);
+		lensTexture = 0L;
+		[self setNeedsDisplay: YES];
+	}
 	
 	[BrowserController updateActivity];
 	
@@ -2866,7 +2937,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				mouseXPos = imageLocation.x;
 				mouseYPos = imageLocation.y;
 				
-				if( 0)
+				if( [theEvent modifierFlags] & NSShiftKeyMask)
 				{
 					[self computeMagnifyLens: imageLocation];
 				}
@@ -7672,7 +7743,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
 		glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
-		glTranslatef( origin.x - offset.x + originOffset.x, -origin.y - offset.y - originOffset.y, 0.0f);
 		
 		if( curDCM.pixelRatio != 1.0) glScalef( 1.f, curDCM.pixelRatio, 1.f);
 		
@@ -7682,12 +7752,25 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		glBindTexture (TEXTRECTMODE, textID);
 		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, LENSSIZE, LENSSIZE, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, lensTexture);
+		glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, lensTexture);
 		
-		NSPoint eventLocation = NSMakePoint( mouseXPos, mouseYPos);
+		NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
+		eventLocation = [self convertPoint:eventLocation fromView:nil];
+		eventLocation.y = drawingFrameRect.size.height - eventLocation.y;
+		eventLocation.y -= drawingFrameRect.size.height/2;
+		eventLocation.x -= drawingFrameRect.size.width/2;
 		
-		eventLocation.x *= scaleValue;
-		eventLocation.y *= scaleValue;
+		float xx = eventLocation.x*cos(rotation*deg2rad) + eventLocation.y*sin(rotation*deg2rad);
+		float yy = -eventLocation.x*sin(rotation*deg2rad) + eventLocation.y*cos(rotation*deg2rad);
+		
+		eventLocation.x = xx;
+		eventLocation.y = yy;
+		
+		eventLocation.x -= LENSSIZE*2*scaleValue;
+		eventLocation.y -= LENSSIZE*2*scaleValue;
+		
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 		glBindTexture(TEXTRECTMODE, textID);
 		glBegin (GL_QUAD_STRIP);
@@ -7706,6 +7789,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		glDeleteTextures( 1, &textID);
 		glDisable (TEXTRECTMODE);
+		
+		glDisable(GL_BLEND);
 	}
 	
 	// Swap buffer to screen
