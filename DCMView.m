@@ -2545,11 +2545,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		free( lensTexture);
 		lensTexture = 0L;
 		[self setNeedsDisplay: YES];
+		
+		if( cursorhidden)
+		{
+			cursorhidden = NO;
+			[NSCursor unhide];
+		}
 	}
 	
 	if( [self is2DViewer] == YES)
 	{
-
 		BOOL update = NO;
 		if (([event modifierFlags] & (NSCommandKeyMask | NSShiftKeyMask)) == (NSCommandKeyMask | NSShiftKeyMask))
 		{
@@ -2572,9 +2577,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			else if([event modifierFlags] & NSShiftKeyMask) {}
 			else if([event modifierFlags] & NSAlternateKeyMask) {}
 			else
-			{
 				showDescriptionInLarge = YES;
-			}
 		}
 		
 		if( showDescriptionInLarge != cLarge)
@@ -2587,8 +2590,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( [self roiTool: currentTool])
 	{
-		[NSCursor unhide];
-		
 		NSPoint tempPt = [self convertPoint: [event locationInWindow] fromView: 0L];
 		tempPt = [self ConvertFromNSView2GL:tempPt];
 		if( [self clickInROI: tempPt]) roiHit = YES;
@@ -2596,10 +2597,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	else if( [event modifierFlags] & NSShiftKeyMask)
 	{
 		[self computeMagnifyLens: NSMakePoint( mouseXPos, mouseYPos)];
-		
-		[NSCursor hide];
 	}
-	else [NSCursor unhide];
 	
 	if( roiHit == NO)
 		[self setCursorForView: [self getTool: event]];
@@ -2804,6 +2802,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) computeMagnifyLens:(NSPoint) p
 {
+	if( needToLoadTexture)
+		[self loadTexturesCompute];
+	
 	LENSSIZE = 100 / scaleValue;
 	
 	if( lensTexture) free( lensTexture);
@@ -2811,6 +2812,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	char *src = [curDCM baseAddr];
 	int dcmWidth = [curDCM pwidth];
 	
+	if( curDCM.isLUT12Bit)
+		src = (char*) curDCM.LUT12baseAddr;
+		
 	if( zoomIsSoftwareInterpolated)
 	{
 		src = resampledBaseAddr;
@@ -2848,18 +2852,41 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			sy = 0;
 		}
 		
-		for( int y = sy ; y < sy+ey ; y++)
+		if( (colorTransfer == YES) || curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES || curDCM.isLUT12Bit == YES)
 		{
-			char *sr = &src[ sx +y*dcmWidth];
-			char *dr = &lensTexture[ sxx*4 + (y-sy+syy)*LENSSIZE*4];
-			
-			int x = ex;
-			while( x-- > 0)
+				
+			for( int y = sy ; y < sy+ey ; y++)
 			{
-				*dr++ = 0;
-				*dr++ = *sr;
-				*dr++ = *sr;
-				*dr++ = *sr++;
+				char *sr = &src[ sx*4 +y*dcmWidth*4];
+				char *dr = &lensTexture[ sxx*4 + (y-sy+syy)*LENSSIZE*4];
+				
+				int x = ex;
+				while( x-- > 0)
+				{
+					sr++;
+					*dr++ = 0;
+					*dr++ = *sr++;
+					*dr++ = *sr++;
+					*dr++ = *sr++;
+					
+				}
+			}
+		}
+		else
+		{
+			for( int y = sy ; y < sy+ey ; y++)
+			{
+				char *sr = &src[ sx +y*dcmWidth];
+				char *dr = &lensTexture[ sxx*4 + (y-sy+syy)*LENSSIZE*4];
+				
+				int x = ex;
+				while( x-- > 0)
+				{
+					*dr++ = 0;
+					*dr++ = *sr;
+					*dr++ = *sr;
+					*dr++ = *sr++;
+				}
 			}
 		}
 		
@@ -2887,7 +2914,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 			}
 		}
-
+		
+		if( cursorhidden == NO)
+		{
+			cursorhidden = YES;
+			[NSCursor hide];
+		}
 	}
 	
 	[self setNeedsDisplay: YES];
@@ -2911,6 +2943,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		free( lensTexture);
 		lensTexture = 0L;
 		[self setNeedsDisplay: YES];
+		
+		if( cursorhidden)
+		{
+			[NSCursor unhide];
+			cursorhidden = NO;
+		}
 	}
 	
 	[BrowserController updateActivity];
@@ -2957,10 +2995,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if( [theEvent modifierFlags] & NSShiftKeyMask)
 				{
 					[self computeMagnifyLens: imageLocation];
-					
-					[NSCursor hide];
 				}
-				else [NSCursor unhide];
 				
 				int
 					xPos = (int)mouseXPos,
@@ -2973,9 +3008,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				else pixelMouseValue = [curDCM getPixelValueX: xPos Y:yPos];
 			}
-			else [NSCursor unhide];
 		}
-		else [NSCursor unhide];
 		
 		if(	cpixelMouseValueR != pixelMouseValueR)	needUpdate = YES;
 		if(	cpixelMouseValueG != pixelMouseValueG)	needUpdate = YES;
@@ -3096,7 +3129,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		[drawLock unlock];
 	}
-	else [NSCursor unhide];
 	
 	if ([self is2DViewer] == YES)
 		[super mouseMoved: theEvent];
