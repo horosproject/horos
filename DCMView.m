@@ -2587,6 +2587,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( [self roiTool: currentTool])
 	{
+		[NSCursor unhide];
+		
 		NSPoint tempPt = [self convertPoint: [event locationInWindow] fromView: 0L];
 		tempPt = [self ConvertFromNSView2GL:tempPt];
 		if( [self clickInROI: tempPt]) roiHit = YES;
@@ -2594,7 +2596,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	else if( [event modifierFlags] & NSShiftKeyMask)
 	{
 		[self computeMagnifyLens: NSMakePoint( mouseXPos, mouseYPos)];
+		
+		[NSCursor hide];
 	}
+	else [NSCursor unhide];
 	
 	if( roiHit == NO)
 		[self setCursorForView: [self getTool: event]];
@@ -2952,7 +2957,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if( [theEvent modifierFlags] & NSShiftKeyMask)
 				{
 					[self computeMagnifyLens: imageLocation];
+					
+					[NSCursor hide];
 				}
+				else [NSCursor unhide];
 				
 				int
 					xPos = (int)mouseXPos,
@@ -2965,8 +2973,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				}
 				else pixelMouseValue = [curDCM getPixelValueX: xPos Y:yPos];
 			}
+			else [NSCursor unhide];
 		}
-
+		else [NSCursor unhide];
+		
 		if(	cpixelMouseValueR != pixelMouseValueR)	needUpdate = YES;
 		if(	cpixelMouseValueG != pixelMouseValueG)	needUpdate = YES;
 		if(	cpixelMouseValueB != pixelMouseValueB)	needUpdate = YES;
@@ -3086,6 +3096,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		[drawLock unlock];
 	}
+	else [NSCursor unhide];
 	
 	if ([self is2DViewer] == YES)
 		[super mouseMoved: theEvent];
@@ -7802,7 +7813,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		glDeleteTextures( 1, &textID);
 		glDisable (TEXTRECTMODE);
 		
-		glColor4f ( 0.5, 0.3, 0, 1);
+		glColor4f ( 0.7, 0.7, 0, 1);
 		glLineWidth( 10);
 		
 		int resol = LENSSIZE*4*scaleValue;
