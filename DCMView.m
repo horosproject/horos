@@ -2802,6 +2802,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) computeMagnifyLens:(NSPoint) p
 {
+	if( curDCM.pixelRatio != 1.0) return;
+
 	if( needToLoadTexture)
 		[self loadTexturesCompute];
 	
@@ -7789,7 +7791,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		glClear (GL_COLOR_BUFFER_BIT);
 	}
 
-	if( lensTexture)
+	if( lensTexture && curDCM.pixelRatio == 1.0)
 	{
 		GLuint textID;
 
@@ -7799,15 +7801,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
 		glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 		
-		if( curDCM.pixelRatio != 1.0) glScalef( 1.f, curDCM.pixelRatio, 1.f);
-		
 		glEnable(TEXTRECTMODE);
 		glPixelStorei (GL_UNPACK_ROW_LENGTH, LENSSIZE); 
 		glGenTextures ( 1, &textID);
 		glBindTexture (TEXTRECTMODE, textID);
 		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		
+		#if __BIG_ENDIAN__
+		glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, lensTexture);
+		#else
 		glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, lensTexture);
+		#endif
 		
 		NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
 		eventLocation = [self convertPoint:eventLocation fromView:nil];
