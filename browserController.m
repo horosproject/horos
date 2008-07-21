@@ -1365,9 +1365,9 @@ static NSArray*	statesArray = nil;
 										
 										DCMTKStudyQueryNode* studyNode = [s lastObject];
 										
-										if( [[studyNode valueForKey:@"numberImages"] intValue] == [[[studies objectForKey: studyUID] valueForKey: @"noFiles"] intValue])
+										if( [[studyNode valueForKey:@"numberImages"] intValue] >= [[[studies objectForKey: studyUID] valueForKey: @"noFiles"] intValue])
 										{
-											// remove them, there are already there !
+											// remove them, there are already there ! *probably*
 											
 											NSLog( @"Already available on the distant node : we will not send it.");
 											

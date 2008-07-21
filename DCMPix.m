@@ -5200,10 +5200,12 @@ END_CREATE_ROIS:
 			char			valBit [ 16];
 			char			mask = 1;
 			
-			for ( int i = 0; i < oColumns*oRows/16; i++ ) {
+			for ( int i = 0; i < oColumns*oRows/16; i++ )
+			{
 				unsigned short	octet = pixels[ i];
 				
-				for ( int x = 0; x < 16; x++ ) {
+				for ( int x = 0; x < 16; x++ )
+				{
 					valBit[ x ] = octet & mask ? 1 : 0;
 					octet = octet >> 1;
 					
@@ -5499,8 +5501,10 @@ END_CREATE_ROIS:
 		
 		//***********
 		
-		if( isRGB )	{
-			if( imPix->fExternalOwnedImage) {
+		if( isRGB )
+		{
+			if( imPix->fExternalOwnedImage)
+			{
 				imPix->fImage = imPix->fExternalOwnedImage;
 				memcpy( imPix->fImage, oImage, width*height*sizeof(float));
 				free(oImage);
@@ -5508,12 +5512,16 @@ END_CREATE_ROIS:
 			else imPix->fImage = (float*) oImage;
 			oImage = nil;
 			
-			if( oData && gDisplayDICOMOverlays ) {
+			if( oData && gDisplayDICOMOverlays )
+			{
 				unsigned char	*rgbData = (unsigned char*) imPix->fImage;
 				
-				for( int y = 0; y < oRows; y++ ) {
-					for( int x = 0; x < oColumns; x++ ) {
-						if( oData[ y * oColumns + x] ) {
+				for( int y = 0; y < oRows; y++ )
+				{
+					for( int x = 0; x < oColumns; x++ )
+					{
+						if( oData[ y * oColumns + x] )
+						{
 							rgbData[ y * width*4 + x*4 + 1] = 0xFF;
 							rgbData[ y * width*4 + x*4 + 2] = 0xFF;
 							rgbData[ y * width*4 + x*4 + 3] = 0xFF;
@@ -5522,9 +5530,11 @@ END_CREATE_ROIS:
 				}
 			}
 		}
-		else {
+		else
+		{
 			//NSLog(@"not RGB");
-			if( bitsAllocated == 32 ) {
+			if( bitsAllocated == 32 )
+			{
 				unsigned int	*usint = (unsigned int*) oImage;
 				int				*sint = (int*) oImage;
 				float			*tDestF;
