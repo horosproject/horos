@@ -2767,8 +2767,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 // checks to see if tool is a valid ID for ROIs
 // A better name might be  - (BOOL)isToolforROIs:(long)tool;
 
--(BOOL) roiTool:(long) tool {
-	switch( tool) {
+-(BOOL) roiTool:(long) tool
+{
+	switch( tool)
+	{
 		case tMesure:
 		case tROI:
 		case tOval:
@@ -2803,6 +2805,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 -(void) computeMagnifyLens:(NSPoint) p
 {
 	if( curDCM.pixelRatio != 1.0) return;
+
+	if( p.x == 0 && p.y == 0) return;
 
 	if( needToLoadTexture)
 		[self loadTexturesCompute];
