@@ -679,6 +679,7 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject:@"0" forKey:@"CheckForMultipleVolumesInSeries"];
 	[defaultValues setObject:@"1" forKey:@"ScreenCaptureSmartCropping"];
 	[defaultValues setObject:@"1" forKey:@"checkForUpdatesPlugins"];
+	[defaultValues setObject:@"1" forKey:@"magnifyingLens"];
 	
 	// ** DELETEFILELISTENER
 	[defaultValues setObject:@"1" forKey:@"DELETEFILELISTENER"];

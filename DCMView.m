@@ -1850,7 +1850,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[drawLock unlock];
 }
 
-- (void) dealloc {
+- (void) dealloc
+{
 	NSLog(@"DCMView released");
 	[self deleteMouseDownTimer];
 	
@@ -1941,6 +1942,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if(iChatCursorTextureName) glDeleteTextures(1, &iChatCursorTextureName);
 	
 	[showDescriptionInLargeText release];
+	
+	if( lensTexture) free( lensTexture);
 	
     [super dealloc];
 }
@@ -2804,10 +2807,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) computeMagnifyLens:(NSPoint) p
 {
-	if( curDCM.pixelRatio != 1.0) return;
-
 	if( p.x == 0 && p.y == 0) return;
-
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"magnifyingLens"] == NO) return;
+	
 	if( needToLoadTexture)
 		[self loadTexturesCompute];
 	
@@ -2831,100 +2834,128 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	else LENSRATIO = 1;
 	
-	lensTexture = calloc( LENSSIZE * LENSSIZE, 4);
-	if( lensTexture)
+	if( LENSSIZE < textureWidth)
 	{
-		NSRect l = NSMakeRect( p.x*LENSRATIO - (LENSSIZE/2), p.y*LENSRATIO - (LENSSIZE/2), LENSSIZE, LENSSIZE);
+		lensTexture = calloc( LENSSIZE * LENSSIZE, 4);
 		
-		int sx = l.origin.x, sy = l.origin.y;
-		int ex = l.size.width, ey = l.size.height;
-		
-		if( ex+sx> textureWidth) ex = textureWidth-sx;
-		if( ey+sy> textureHeight) ey = textureHeight-sy;
-		
-		int sxx = 0, syy = 0;
-		
-		if( sx < 0)
+		if( lensTexture)
 		{
-			sxx = -sx;
-			ex -= sxx;
-			sx = 0;
-		}
-		
-		if( sy < 0)
-		{
-			syy = -sy;
-			ey -= syy;
-			sy = 0;
-		}
-		
-		if( (colorTransfer == YES) || curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES || curDCM.isLUT12Bit == YES)
-		{
-				
-			for( int y = sy ; y < sy+ey ; y++)
-			{
-				char *sr = &src[ sx*4 +y*dcmWidth*4];
-				char *dr = &lensTexture[ sxx*4 + (y-sy+syy)*LENSSIZE*4];
-				
-				int x = ex;
-				while( x-- > 0)
-				{
-					sr++;
-					*dr++ = 0;
-					*dr++ = *sr++;
-					*dr++ = *sr++;
-					*dr++ = *sr++;
-					
-				}
-			}
-		}
-		else
-		{
-			for( int y = sy ; y < sy+ey ; y++)
-			{
-				char *sr = &src[ sx +y*dcmWidth];
-				char *dr = &lensTexture[ sxx*4 + (y-sy+syy)*LENSSIZE*4];
-				
-				int x = ex;
-				while( x-- > 0)
-				{
-					*dr++ = 0;
-					*dr++ = *sr;
-					*dr++ = *sr;
-					*dr++ = *sr++;
-				}
-			}
-		}
-		
-		{
-			int		x,y;
-			int		xsqr;
-			int		inw = LENSSIZE-1;
-			int		radsqr = (inw*inw)/4;
-			int		rad = LENSSIZE/2;
+			NSRect l = NSMakeRect( p.x*LENSRATIO - (LENSSIZE/2), p.y*LENSRATIO - (LENSSIZE/2), LENSSIZE, LENSSIZE);
 			
-			x = rad;
-			while( x-- > 0)
+			int sx = l.origin.x, sy = l.origin.y;
+			int ex = l.size.width, ey = l.size.height;
+			
+			if( ex+sx> textureWidth) ex = textureWidth-sx;
+			if( ey+sy> textureHeight) ey = textureHeight-sy;
+			
+			int sxx = 0, syy = 0;
+			
+			if( sx < 0)
 			{
-				xsqr = x*x;
-				y = rad;
-				while( y-- > 0)
+				sxx = -sx;
+				ex -= sxx;
+				sx = 0;
+			}
+			
+			if( sy < 0)
+			{
+				syy = -sy;
+				ey -= syy;
+				sy = 0;
+			}
+			
+			if( (colorTransfer == YES) || curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES || curDCM.isLUT12Bit == YES)
+			{
+					
+				for( int y = sy ; y < sy+ey ; y++)
 				{
-					if( (xsqr + y*y) < radsqr)
+					char *sr = &src[ sx*4 +y*dcmWidth*4];
+					char *dr = &lensTexture[ sxx*4 + (y-sy+syy)*LENSSIZE*4];
+					
+					int x = ex;
+					while( x-- > 0)
 					{
-						lensTexture[ (rad+x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
-						lensTexture[ (rad-x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
-						lensTexture[ (rad+x)*4 + (rad-y)*LENSSIZE*4] = 0xff;
-						lensTexture[ (rad-x)*4 + (rad-y)*LENSSIZE*4] = 0xff;
+						sr++;
+						*dr++ = 0;
+						*dr++ = *sr++;
+						*dr++ = *sr++;
+						*dr++ = *sr++;
+						
 					}
 				}
 			}
-		}
-		
-		if( cursorhidden == NO)
-		{
-			cursorhidden = YES;
-			[NSCursor hide];
+			else
+			{
+				for( int y = sy ; y < sy+ey ; y++)
+				{
+					char *sr = &src[ sx +y*dcmWidth];
+					char *dr = &lensTexture[ sxx*4 + (y-sy+syy)*LENSSIZE*4];
+					
+					int x = ex;
+					while( x-- > 0)
+					{
+						*dr++ = 0;
+						*dr++ = *sr;
+						*dr++ = *sr;
+						*dr++ = *sr++;
+					}
+				}
+			}
+			
+			if( curDCM.pixelRatio != 1.0)
+			{
+				vImage_Buffer src;
+				vImage_Buffer dst;
+				
+				src.height = LENSSIZE;
+				src.width = LENSSIZE;
+				src.rowBytes = src.width * 4;
+				src.data = lensTexture;
+				
+				dst.height = LENSSIZE * curDCM.pixelRatio;
+				dst.width = LENSSIZE;
+				dst.rowBytes = dst.width * 4;
+				dst.data = malloc( dst.height * dst.rowBytes);
+				if( dst.data)
+				{
+					vImageScale_ARGB8888( &src, &dst, 0L, kvImageHighQualityResampling);
+					
+					memcpy( lensTexture, dst.data + dst.rowBytes*((dst.height-src.height)/2), LENSSIZE*LENSSIZE*4);
+					free( dst.data);
+				}
+			}
+			
+			// Apply the circle
+			{
+				int		x,y;
+				int		xsqr;
+				int		inw = LENSSIZE-1;
+				int		radsqr = (inw*inw)/4;
+				int		rad = LENSSIZE/2;
+				
+				x = rad;
+				while( x-- > 0)
+				{
+					xsqr = x*x;
+					y = rad;
+					while( y-- > 0)
+					{
+						if( (xsqr + y*y) < radsqr)
+						{
+							lensTexture[ (rad+x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
+							lensTexture[ (rad-x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
+							lensTexture[ (rad+x)*4 + (rad-y)*LENSSIZE*4] = 0xff;
+							lensTexture[ (rad-x)*4 + (rad-y)*LENSSIZE*4] = 0xff;
+						}
+					}
+				}
+			}
+			
+			if( cursorhidden == NO)
+			{
+				cursorhidden = YES;
+				[NSCursor hide];
+			}
 		}
 	}
 	
@@ -3471,21 +3502,27 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			tempPt = [self ConvertFromNSView2GL:tempPt];
 
 			BOOL clickInROI = NO;
-			for( int i = 0; i < [curRoiList count]; i++ ) {
-				if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES] ) {
+			for( int i = 0; i < [curRoiList count]; i++ )
+			{
+				if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :YES])
+				{
 					clickInROI = YES;
 				}
 			}
 
-			if(!clickInROI) {
-				for( int i = 0; i < [curRoiList count]; i++) {
-					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO] ) {
+			if(!clickInROI)
+			{
+				for( int i = 0; i < [curRoiList count]; i++)
+				{
+					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :curDCM.pwidth/2. :curDCM.pheight/2. :scaleValue :NO])
+					{
 						clickInROI = YES;
 					}
 				}
 			}
 			
-			if(clickInROI) {
+			if( clickInROI)
+			{
 				currentTool = tPencil;
 				tool = tPencil;
 				selectorROIEdition = YES;
@@ -4389,12 +4426,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 //Scrolling through images with Mouse
 // could be cleaned up by subclassing DCMView
-- (void)mouseDraggedImageScroll:(NSEvent *)event {
+- (void)mouseDraggedImageScroll:(NSEvent *)event
+{
 	short   inc, now, prev, previmage;
 	BOOL	movie4Dmove = NO;
 	NSPoint current = [self currentPointInView:event];
-	if( scrollMode == 0) {
-		if( fabs( start.x - current.x) < fabs( start.y - current.y)) {
+	if( scrollMode == 0)
+	{
+		if( fabs( start.x - current.x) < fabs( start.y - current.y))
+		{
 			prev = start.y/2;
 			now = current.y/2;
 			if( fabs( start.y - current.y) > 3) scrollMode = 1;
@@ -4405,8 +4445,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			now = current.x/2;
 			if( fabs( start.x - current.x) > 3) scrollMode = 2;
 		}
-		
-	//	NSLog(@"scrollMode : %d", scrollMode);
 	}
 	
 	if( movie4Dmove == NO)
@@ -7795,7 +7833,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		glClear (GL_COLOR_BUFFER_BIT);
 	}
 
-	if( lensTexture && curDCM.pixelRatio == 1.0)
+	if( lensTexture)
 	{
 		GLuint textID;
 
@@ -9479,7 +9517,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return texture;
 }
 
-- (void) sliderAction2DMPR:(id) sender {
+- (void) sliderAction2DMPR:(id) sender
+{
 	long	x = curImage;
     BOOL	lowRes = NO;
 
@@ -9516,7 +9555,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) sliderAction:(id) sender
 {
-//NSLog(@"DCMView sliderAction");
 	long	x = curImage;//x = curImage before sliderAction
 
 	if( flippedData) curImage = [dcmPixList count] -1 -[sender intValue];
@@ -9604,7 +9642,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	sliceFromToE[ 0][ 0] = HUGE_VALF;
 	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
 	slicePoint3D[ 0] = HUGE_VALF;
-	
 	
 	[self sendSyncMessage: 0];
 	
