@@ -2866,7 +2866,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( (colorTransfer == YES) || curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES || curDCM.isLUT12Bit == YES)
 			{
-					
 				for( int y = sy ; y < sy+ey ; y++)
 				{
 					char *sr = &src[ sx*4 +y*dcmWidth*4];
@@ -2897,7 +2896,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						*dr++ = 0;
 						*dr++ = *sr;
 						*dr++ = *sr;
-						*dr++ = *sr++;
+						*dr++ = *sr;
+						sr++;
 					}
 				}
 			}
@@ -7845,15 +7845,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		glEnable(TEXTRECTMODE);
 		glPixelStorei (GL_UNPACK_ROW_LENGTH, LENSSIZE); 
+		glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
 		glGenTextures ( 1, &textID);
 		glBindTexture (TEXTRECTMODE, textID);
 		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
+		glColor4f( 1, 1, 1, 1);
 		#if __BIG_ENDIAN__
-		glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, lensTexture);
+		glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, lensTexture);
 		#else
-		glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, lensTexture);
+		glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, lensTexture);
 		#endif
 		
 		NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
@@ -7881,9 +7887,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		eventLocation.x -= LENSSIZE*2*scaleValue/LENSRATIO;
 		eventLocation.y -= LENSSIZE*2*scaleValue/LENSRATIO;
-		
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 		glBindTexture(TEXTRECTMODE, textID);
 		glBegin (GL_QUAD_STRIP);
