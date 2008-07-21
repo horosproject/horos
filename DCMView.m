@@ -7858,6 +7858,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
 		eventLocation = [self convertPoint:eventLocation fromView:nil];
+		
+		if( xFlipped)
+		{
+			eventLocation.x = drawingFrameRect.size.width - eventLocation.x;
+		}
+		
+		if( yFlipped)
+		{
+			eventLocation.y = drawingFrameRect.size.height - eventLocation.y;
+		}
+		
 		eventLocation.y = drawingFrameRect.size.height - eventLocation.y;
 		eventLocation.y -= drawingFrameRect.size.height/2;
 		eventLocation.x -= drawingFrameRect.size.width/2;

@@ -5570,7 +5570,8 @@ END_CREATE_ROIS:
 				
 				dstf.data = imPix->fImage;
 				
-				if( fIsSigned > 0 ) {
+				if( fIsSigned > 0 )
+				{
 					vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
 				}
 				else {
@@ -5578,7 +5579,8 @@ END_CREATE_ROIS:
 					vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
 				}
 				
-				if( inverseVal ) {
+				if( inverseVal )
+				{
 					float neg = -1;
 					vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
 				}
@@ -5587,28 +5589,31 @@ END_CREATE_ROIS:
 				oImage = nil;
 			}
 			
-			if( oData && gDisplayDICOMOverlays ) {
-				
-				for( int y = 0; y < oRows; y++ ) {
-					for( int x = 0; x < oColumns; x++ )	{
+			if( oData && gDisplayDICOMOverlays )
+			{
+				for( int y = 0; y < oRows; y++ )
+				{
+					for( int x = 0; x < oColumns; x++ )
+					{
 						if( oData[ y * oColumns + x]) imPix->fImage[ y * width + x] = 0xFF;
 					}
 				}
 			}
 		}
 		
-		if( pixmin == 0 && pixmax == 0 ) {
-			
+		if( pixmin == 0 && pixmax == 0 )
+		{
 			wl = 0;
 			ww = 0; //Computed later, only if needed
 		}
-		else {
+		else
+		{
 			wl = pixmin + (pixmax - pixmin)/2;
 			ww = (pixmax - pixmin);
 		}
 		
-		if( savedWW != 0 ) {
-			
+		if( savedWW != 0 )
+		{
 			wl = savedWL;
 			ww = savedWW;
 		}
@@ -5617,14 +5622,22 @@ END_CREATE_ROIS:
 		
 #pragma mark *after loading a frame
 		
-		
-	}
+		}
 	}//end of 		if ([dcmObject attributeValueWithName:@"PixelData"])
+
+	if( fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 || fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
+	{
+		pixelSpacingX = 1;
+		pixelSpacingY = 1;
+	}
 	
+	if( pixelSpacingX < 0) pixelSpacingX = -pixelSpacingX;
+	if( pixelSpacingY < 0) pixelSpacingY = -pixelSpacingY;
+	if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
+		
 	[pool release];
-	return YES;
 	
-	//	#endif
+	return YES;
 }
 
 - (void*) getPapyGroup: (int) group fileNb: (int) fileNb {
@@ -7619,6 +7632,12 @@ END_CREATE_ROIS:
 		Papy3FileClose (fileNb, TRUE);
 		
 		[PapyrusLock unlock];
+		
+		if( fabs(pixelSpacingX) / fabs(pixelSpacingY) > 10000 || fabs(pixelSpacingX) / fabs(pixelSpacingY) < 0.0001)
+		{
+			pixelSpacingX = 1;
+			pixelSpacingY = 1;
+		}
 		
 		if( pixelSpacingX < 0) pixelSpacingX = -pixelSpacingX;
 		if( pixelSpacingY < 0) pixelSpacingY = -pixelSpacingY;
