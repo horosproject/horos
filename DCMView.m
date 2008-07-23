@@ -2597,7 +2597,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		tempPt = [self ConvertFromNSView2GL:tempPt];
 		if( [self clickInROI: tempPt]) roiHit = YES;
 	}
-	else if( [event modifierFlags] & NSShiftKeyMask)
+	else if( ( [event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask)  && !([event modifierFlags] & NSControlKeyMask))
 	{
 		[self computeMagnifyLens: NSMakePoint( mouseXPos, mouseYPos)];
 	}
@@ -3029,9 +3029,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				mouseXPos = imageLocation.x;
 				mouseYPos = imageLocation.y;
 				
-				if( [theEvent modifierFlags] & NSShiftKeyMask)
+				if( ([theEvent modifierFlags] & NSShiftKeyMask) && !([theEvent modifierFlags] & NSCommandKeyMask) && !([theEvent modifierFlags] & NSControlKeyMask))
 				{
-					[self computeMagnifyLens: imageLocation];
+					if( [self roiTool: currentTool] == NO)
+						[self computeMagnifyLens: imageLocation];
 				}
 				
 				int
