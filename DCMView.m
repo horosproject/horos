@@ -2822,12 +2822,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	LENSSIZE = 100 / scaleValue;
 	
 	[self deleteLens];
-
+	
 	char *src = [curDCM baseAddr];
 	int dcmWidth = [curDCM pwidth];
 	
 	if( curDCM.isLUT12Bit)
 		src = (char*) curDCM.LUT12baseAddr;
+		
+	if( colorTransfer)
+		src = (char*) colorBuf;
 		
 	if( zoomIsSoftwareInterpolated)
 	{
@@ -2869,7 +2872,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				sy = 0;
 			}
 			
-			if( (colorTransfer == YES) || curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES || curDCM.isLUT12Bit == YES)
+			if( curDCM.isRGB == YES || [curDCM thickSlabVRActivated] == YES || curDCM.isLUT12Bit == YES || (colorTransfer == YES))
 			{
 				for( int y = sy ; y < sy+ey ; y++)
 				{
