@@ -1943,7 +1943,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[showDescriptionInLargeText release];
 	
-	if( lensTexture) free( lensTexture);
+	[self deleteLens];
 	
     [super dealloc];
 }
@@ -2543,18 +2543,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) flagsChanged:(NSEvent *)event
 {
-	if( lensTexture)
-	{
-		free( lensTexture);
-		lensTexture = 0L;
-		[self setNeedsDisplay: YES];
-		
-		if( cursorhidden)
-		{
-			cursorhidden = NO;
-			[NSCursor unhide];
-		}
-	}
+	[self deleteLens];
 	
 	if( [self is2DViewer] == YES)
 	{
@@ -2805,6 +2794,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self setNeedsDisplay:YES];
 }
 
+-(void) deleteLens
+{
+	if( lensTexture)
+	{
+		free( lensTexture);
+		lensTexture = 0L;
+		[self setNeedsDisplay: YES];
+		
+		if( cursorhidden)
+		{
+			[NSCursor unhide];
+			cursorhidden = NO;
+		}
+	}
+}
+
 -(void) computeMagnifyLens:(NSPoint) p
 {
 	if( p.x == 0 && p.y == 0) return;
@@ -2816,7 +2821,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	LENSSIZE = 100 / scaleValue;
 	
-	if( lensTexture) free( lensTexture);
+	[self deleteLens];
 
 	char *src = [curDCM baseAddr];
 	int dcmWidth = [curDCM pwidth];
@@ -2915,7 +2920,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				dst.height = LENSSIZE * curDCM.pixelRatio;
 				dst.width = LENSSIZE;
 				dst.rowBytes = dst.width * 4;
-				dst.data = malloc( dst.height * dst.rowBytes);
+				dst.data = calloc( dst.height * dst.rowBytes, 1);
 				if( dst.data)
 				{
 					vImageScale_ARGB8888( &src, &dst, 0L, kvImageHighQualityResampling);
@@ -2975,18 +2980,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( curDCM == 0L) return;
 	
-	if( lensTexture)
-	{
-		free( lensTexture);
-		lensTexture = 0L;
-		[self setNeedsDisplay: YES];
-		
-		if( cursorhidden)
-		{
-			[NSCursor unhide];
-			cursorhidden = NO;
-		}
-	}
+	[self deleteLens];
 	
 	[BrowserController updateActivity];
 	
@@ -7833,11 +7827,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear (GL_COLOR_BUFFER_BIT);
 	}
-
+	
 	if( lensTexture)
 	{
 		GLuint textID;
-
+		
 		glMatrixMode (GL_MODELVIEW);
 		glLoadIdentity ();
 		
@@ -9909,6 +9903,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void)mouseExited:(NSEvent *)theEvent
 {
+	[self deleteLens];
+	
 	cursorSet = NO;
 }
 
