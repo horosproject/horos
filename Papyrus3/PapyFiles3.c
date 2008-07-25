@@ -238,24 +238,31 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                     /* it could still be a non-part 10 DICOM file */
                     /* so try to get the modality element, if everything works fine */
                     /* assume it is the case */
-
+					
                     /* reset the file pointer at the begining of the file */
                     theErr = Papy3FSeek (theFp, (int) SEEK_SET, (PapyLong) 0L);
-      
+					
                     /* set the transfert syntax to the most banal one */
                     gArrTransfSyntax [theFileNb] = LITTLE_ENDIAN_IMPL;
                     gArrCompression  [theFileNb] = NONE;
-
+					
+					// Antoine - 25 July 2008
+					if ((theErr = ExtractFileMetaInformation3 (theFileNb)) < 0)
+					{
+						theErr = Papy3FSeek (theFp, (int) SEEK_SET, (PapyLong) 0L);
+					}
+					
                     /* goto group number 8 and if found read it */
                     if ((theErr = Papy3GotoGroupNb (theFileNb, 0x0008)) < 0)
                     {
-                      iResult = papNotPapyrusFile;
+						iResult = papNotPapyrusFile;
                     }
-                    else
+                    
+					if( iResult == papNoError)
                     {
                       if ((theErr = Papy3GroupRead (theFileNb, &theGroupP)) < 0)
                       {
-                        iResult = papNotPapyrusFile;
+						iResult = papNotPapyrusFile;
                       }
                     } /* else ...group 0x0008 found */
       
@@ -960,7 +967,6 @@ ReadGroup3 (PapyShort inFileNb, PapyUShort *outGroupNbP, unsigned char **outBuff
   theTempL = theFirstElemLength;
   if ((theErr = (PapyShort) Papy3FRead (theFp, &theTempL, 1L, *outBuffP)) < 0)
   {
-    theErr = Papy3FClose (&theFp);
     efree3 ((void **) outBuffP);
     RETURN (papReadFile)
   } /* if */
@@ -1154,9 +1160,8 @@ ReadGroup3 (PapyShort inFileNb, PapyUShort *outGroupNbP, unsigned char **outBuff
       /* reads the group from the file */
       if ((theErr = (PapyShort) Papy3FRead (theFp, &theGrLength, 1L, ((*outBuffP) + theFirstElemLength))) < 0)
       {
-        theErr = Papy3FClose (&theFp);
-	efree3 ((void **) outBuffP);
-	RETURN (papReadFile)
+		efree3 ((void **) outBuffP);
+		RETURN (papReadFile)
       } /* if */
       break;
         

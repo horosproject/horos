@@ -18,6 +18,7 @@
 #import "DICOMToNSString.h"
 #import "MoveManager.h"
 #import "browserController.h"
+#import "AppController.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -1032,6 +1033,9 @@ NS_HANDLER
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"])
 			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), 0L] waitUntilDone:YES];
+		else
+			[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"newfiles"];
+			
 		NSLog(@"Exception: %@", [queryException description]);
 	}
 NS_ENDHANDLER
@@ -1170,6 +1174,9 @@ NS_ENDHANDLER
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"])
 				[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (2)", nil), response, NSLocalizedString(@"Continue", nil), 0L] waitUntilDone:YES];
+			else
+				[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (2)", nil) description: response name: @"newfiles"];
+				
 		}
 				
         if (_verbose) {

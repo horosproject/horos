@@ -796,7 +796,9 @@
 	int element;
 	NSString *vr;
 	NSString *dicm = [self nextStringWithLength:4];
-	if ([dicm isEqualToString:@"DICM"]) { //DICOM.10 file
+	
+	if ([dicm isEqualToString:@"DICM"])
+	{ //DICOM.10 file
 		if (DEBUG)
 			NSLog(@"Dicom part 10 file");
 		
@@ -827,18 +829,21 @@
 		return YES;
 	}
 	// maybe non part 10 DICOM file.
-	else {
+	else
+	{
 		int vl;
 		position = 0;
 		offset = 0;
 		group = [self nextUnsignedShort];
 		element = [self nextUnsignedShort];
 		vr = [self nextStringWithLength:2];
-		if ([DCMValueRepresentation isValidVR:vr]) {  //have valid VR assume explicit Little Endian
+		if ([DCMValueRepresentation isValidVR:vr])
+		{  //have valid VR assume explicit Little Endian
 			[transferSyntaxForDataset release];
 			transferSyntaxForDataset =  [[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] retain];
 			[transferSyntaxInUse release];
 			transferSyntaxInUse = [transferSyntaxForDataset retain];
+			
 			return YES;
 		}
 		// implicit is the default. Could still be Big Endian

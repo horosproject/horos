@@ -165,9 +165,7 @@ ExtractFileMetaInformation3 (PapyShort inFileNb)
   SElement	*theGroup2P, *theGroupTmpP;
   UValue_T	*theValP;
   
-  
   if ((theErr = Papy3GroupRead (inFileNb, &theGroup2P)) < 0) RETURN (papReadGroup);
-    
   
   /* extract the transfert syntax used for the rest of the file */
   theValP = Papy3GetElement (theGroup2P, papTransferSyntaxUIDGr, &theNbVal, &theElemType);
