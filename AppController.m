@@ -1583,14 +1583,13 @@ static NSDate *lastWarningDate = 0L;
 
 - (void) terminate :(id) sender
 {
-	NSArray				*winList = [NSApp windows];
+	[dcmtkQRSCP abort];
+	[NSThread sleepForTimeInterval: 1];
 	
 	if( [[BrowserController currentBrowser] shouldTerminate: sender] == NO) return;
 	
-	for( id loopItem in winList)
-	{
-		[loopItem orderOut:sender];
-	}
+	for( NSWindow *w in [NSApp windows])
+		[w orderOut:sender];
 	
 	[[QueryController currentQueryController] release];
 

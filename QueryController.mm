@@ -942,6 +942,9 @@ static const char *GetPrivateIP()
 	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
 	
+	BOOL showErrorCopy = [[NSUserDefaults standardUserDefaults] boolForKey: @"showErrorsIfQueryFailed"];
+	[[NSUserDefaults standardUserDefaults] setBool: showError forKey: @"showErrorsIfQueryFailed"];
+	
 	noChecked = YES;
 	for( i = 0; i < [sourcesArray count]; i++)
 	{
@@ -1181,6 +1184,8 @@ static const char *GetPrivateIP()
 	
 	[autoQueryLock unlock];
 	
+	[[NSUserDefaults standardUserDefaults] setBool: showErrorCopy forKey: @"showErrorsIfQueryFailed"];
+	
 	return error;
 }
 
@@ -1378,7 +1383,10 @@ static const char *GetPrivateIP()
 	
 	if( [self queryWithDisplayingErrors: NO] == 0)
 		[self performSelectorOnMainThread: @selector( displayAndRetrieveQueryResults) withObject:0 waitUntilDone: NO];
-	else NSLog( @"auto query failed... ");
+	else
+	{
+		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", 0L) description: @"Failed..." name: @"newfiles"];
+	}
 	
 	[pool release];
 }

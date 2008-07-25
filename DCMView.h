@@ -436,6 +436,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (float) MPRAngle;
 - (ROI*) clickInROI: (NSPoint) tempPt;
 - (void) switchShowDescriptionInLarge;
+- (void) deleteLens;
 
 // methods to access global variables (for plugins)
 + (BOOL) display2DMPRLines;
