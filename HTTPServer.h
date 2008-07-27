@@ -21,6 +21,7 @@
 @private
     Class connClass;
     NSURL *docRoot;
+	
 }
 
 - (Class)connectionClass;
@@ -57,6 +58,7 @@
     NSMutableData *obuffer;
     BOOL isValid;
     BOOL firstResponseDone;
+	NSTimer *closeTimer;
 }
 
 - (id)initWithPeerAddress:(NSData *)addr inputStream:(NSInputStream *)istr outputStream:(NSOutputStream *)ostr forServer:(HTTPServer *)serv;

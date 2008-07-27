@@ -69,7 +69,7 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 	{
 		toolbar = 0L;
 		
-//		[[self window] setCollectionBehavior: NSWindowCollectionBehaviorCanJoinAllSpaces];
+//		[[self window] setCollectionBehavior: NSWindowCollectionBehaviorMoveToActiveSpace];
 	}
 	
 	return self;
@@ -215,7 +215,7 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 - (void) setToolbar :(NSToolbar*) tb viewer:(ViewerController*) v
 {
 	if( associatedScreen == 0L) associatedScreen = [[NSMutableDictionary alloc] init];
-
+	
 	if( tb == toolbar)
 	{
 		if( viewer != 0L)
@@ -259,7 +259,10 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 		if( [[viewer window] isKeyWindow])
 			[[self window] orderBack: self];
 	}
-	else [[self window] orderOut: self];
+	else
+	{
+		[[self window] orderOut: self];
+	}
 	
 	if( toolbar)
 	{

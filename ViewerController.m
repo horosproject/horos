@@ -2434,8 +2434,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowDidChangeScreen:(NSNotification *)aNotification
 {
-	NSLog(@"windowDidChangeScreen");
-	
 	int i;
 	
 	if( USETOOLBARPANEL)

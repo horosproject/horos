@@ -94,7 +94,9 @@
 {
     [self invalidate];
     [peerAddress release];
-    [super dealloc];
+	[closeTimer invalidate];
+	[closeTimer release];
+	[super dealloc];
 }
 
 - (id)delegate {
@@ -160,6 +162,9 @@
 // request available.
 - (BOOL)processIncomingBytes
 {
+	if( closeTimer)
+		[closeTimer setFireDate: [[closeTimer fireDate] addTimeInterval: 1]];
+	
     CFHTTPMessageRef working = CFHTTPMessageCreateEmpty(kCFAllocatorDefault, TRUE);
     CFHTTPMessageAppendBytes(working, [ibuffer bytes], [ibuffer length]);
     
@@ -211,20 +216,11 @@
 	{
 		NSLog( @"HTTPConnection didReceiveRequest exception: %@", e);
 	}
-    
-	BOOL returnValue = YES;
-	BOOL close = NO;
-		
-	if( [[(id)CFHTTPMessageCopyHeaderFieldValue( [request request], (CFStringRef)@"Connection") autorelease] isEqualToString: @"close"])
-	{
-		[self invalidate];
-		returnValue = NO;
-	}
 	
 	CFRelease(working);
 	[request release];
 	
-    return returnValue;
+    return YES;
 }
 
 - (void)processOutgoingBytes {
@@ -296,6 +292,9 @@
 		{ 
             [delegate HTTPConnection:self didSendResponse:req];
         }
+		
+		[req retain];
+		
         [requests removeObjectAtIndex:0];
         firstResponseDone = NO;
 		
@@ -303,6 +302,22 @@
 		{
             [self invalidate];
         }
+		else if( [[(id)CFHTTPMessageCopyHeaderFieldValue( [req request], (CFStringRef)@"Connection") autorelease] isEqualToString: @"close"] && [requests count] == 0)
+		{
+			[self invalidate];
+		}
+		else if( [requests count] == 0)
+		{
+			if( closeTimer == 0L)
+			{
+				[closeTimer invalidate];
+				[closeTimer release];
+				closeTimer = [[NSTimer scheduledTimerWithTimeInterval: 60 target: self selector: @selector( closeTimerFunction:)  userInfo:0 repeats: NO] retain];
+			}
+		}
+		
+		[req release];
+		
         return;
     }
     
@@ -315,6 +330,11 @@
         }
         [obuffer setLength:olen - writ];
     }
+}
+
+- (void)closeTimerFunction:(NSTimer*)theTimer
+{
+	[self invalidate];
 }
 
 - (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)streamEvent
