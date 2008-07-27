@@ -13,34 +13,6 @@
 =========================================================================*/
 
 
-/*****************************************************************
-
-MODIFICATION HISTORY
-
-2.3
-	20050714	LP	Added support for Bonjour DICOM connections.
-					Method - (void)startDICOMBonjourSearch
-	20060110	DDP	Reducing the variable duplication of userDefault objects (work in progress).
-				DDP	Removed FIRSTTIME and instead uses STARTCOUNT==0.
-	20060116	LP	Added CombineProjectionSeries and splitMultiechoMR preference defaults
-	20060124	LP	Added syncSeriesMenuItem
-	20060125	LP	Added Set WL/WW Manually menu item
-	
-2.3.1
-	20060206	LP	Working on improving multi monitor support. In Progress. works with hanging protocols
-	20060217	LP	Finishing tiling work
-	20060221	LP	Added more option to the WW/WL menu
-
-2.3.2
-	20060301	LP	Fixed bug with multiple screens. Screens now arranged left to right, rather than random
-	20060310	JF  Eliminated KillPreviousProcess method and reorganized and commented RestartStoreSCP and StartStoreSCP.
-					After changes in the Listener Preference Panel, the User is always asked to restart to make her changes effective
-					At restart, RestartStoreSCP kills any storescp process eventually still alive, do some more init stuff and
-					depending on @"USESTORESCP" key :
-					- either creates a NetworkListener object for DCM framework storeSCP option
-					- or detaches a new thread with StartSTORESCP method
-  
-****************************************************************/
 #include <CoreFoundation/CoreFoundation.h>
 #include <ApplicationServices/ApplicationServices.h>
 #import "DOClient.h"
@@ -1046,6 +1018,17 @@ static NSDate *lastWarningDate = 0L;
 
 #define INCOMINGPATH @"/INCOMING/"
 
+- (void) startDICOMBonjour:(NSTimer*) t
+{
+	NSLog( @"startDICOMBonjour");
+
+	BonjourDICOMService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
+	[BonjourDICOMService setDelegate: self];
+	[BonjourDICOMService publish];
+	
+	[[DCMNetServiceDelegate sharedNetServiceDelegate] setPublisher: BonjourDICOMService];
+}
+
 -(void) restartSTORESCP
 {
 	NSLog(@"restartSTORESCP");
@@ -1110,11 +1093,7 @@ static NSDate *lastWarningDate = 0L;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"publishDICOMBonjour"])
 	{
 		//Start DICOM Bonjour 
-		BonjourDICOMService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
-		[BonjourDICOMService setDelegate: self];
-		[BonjourDICOMService publish];
-		
-		[[DCMNetServiceDelegate sharedNetServiceDelegate] setPublisher: BonjourDICOMService];
+		[NSTimer scheduledTimerWithTimeInterval: 90 target: self selector: @selector( startDICOMBonjour:) userInfo: 0L repeats: NO];
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"])
@@ -1629,6 +1608,22 @@ static NSDate *lastWarningDate = 0L;
 //	  | (((unsigned int)(A)[0]) << 24);		\
 //	}
 
++ (void) DNSResolve:(id) o
+{
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	
+	NSLog( @"start DNSResolve");
+	
+	for( NSString *s in [[DefaultsOsiriX currentHost] names])
+	{
+		NSLog( s);
+	}
+	
+	NSLog( @"end DNSResolve");
+	
+	[p release];
+}
+
 static BOOL initialized = NO;
 + (void) initialize
 {
@@ -1677,6 +1672,8 @@ static BOOL initialized = NO;
 						
 			if( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundlePackageType"] isEqualToString: @"APPL"])
 			{
+				[NSThread detachNewThreadSelector: @selector( DNSResolve:) toTarget: self withObject: 0L];
+				
 				[AppController cleanOsiriXSubProcesses];
 								
 				initialized = YES;
@@ -2229,18 +2226,11 @@ static BOOL initialized = NO;
 	/// *****************************
 	/// *****************************
 	// HUG SPECIFIC CODE - DO NOT REMOVE - Thanks! Antoine Rosset
-	if([DefaultsOsiriX isHUG])
-	{
-		if(	![[DefaultsOsiriX hostName] isEqualToString: @"lavimarch.hcuge.ch"] &&
-			![[DefaultsOsiriX hostName] isEqualToString: @"drdd-mc19.hcuge.ch"] &&
-			![[DefaultsOsiriX hostName] isEqualToString: @"uin-mc07.hcuge.ch"] && // quad G5 (joris)
-			![[DefaultsOsiriX hostName] isEqualToString: @"uin-mc04.hcuge.ch"] && // raid
-			![[DefaultsOsiriX hostName] isEqualToString: @"cih-1096.hcuge.ch"]) // quad Xeon (joris)
-		{
-			[self HUGDisableBonjourFeature];
-			[self HUGVerifyComPACSPlugin];
-		}
-	}
+//	if([DefaultsOsiriX isHUG])
+//	{
+//		[self HUGDisableBonjourFeature];
+//		[self HUGVerifyComPACSPlugin];
+//	}
 	/// *****************************
 	/// *****************************
 		

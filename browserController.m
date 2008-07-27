@@ -10750,10 +10750,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	[wait showWindow:self];
 	
 	@try
-	{	
-		
-		[DCMNetServiceDelegate currentHost];	// This host detection (DNS) can take long... do it now...
-		
+	{
 		NSTableColumn		*tableColumn = nil;
 		NSPopUpButtonCell	*buttonCell = nil;
 		

@@ -23,10 +23,12 @@ static DCMNetServiceDelegate *_netServiceDelegate = 0L;
 static NSHost *currentHost = 0L;
 static BOOL bugFixedForDNSResolve = NO;
 static NSMutableArray *cachedServersArray = 0L;
+static NSLock *currentHostLock = 0L;
 
 @implementation DCMNetServiceDelegate
 
-+ (id)sharedNetServiceDelegate{
++ (id)sharedNetServiceDelegate
+{
 	if (! _netServiceDelegate)
 		_netServiceDelegate = [[DCMNetServiceDelegate alloc] init];
 	return _netServiceDelegate;
@@ -36,7 +38,11 @@ static NSMutableArray *cachedServersArray = 0L;
 {
 	if( currentHost == 0L)
 	{
+		if( currentHostLock == 0L) currentHostLock = [[NSLock alloc] init];
+		
+		[currentHostLock lock];
 		currentHost = [[NSHost currentHost] retain];
+		[currentHostLock unlock];
 	}
 	
 	return currentHost;
