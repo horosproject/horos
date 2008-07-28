@@ -301,10 +301,6 @@ static NSLock *currentHostLock = 0L;
 - (void)netServiceDidResolveAddress:(NSNetService *)sender
 {
 	NSLog( @"DCMNetServiceDelegate netServiceDidResolveAddress: %@", [sender description]);
-	
-//	if( [[sender name] isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]] == NO || [[[DCMNetServiceDelegate currentHost] name] isEqualToString: [sender hostName]] == NO)
-	{
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMNetServicesDidChange" object:nil];
-	}
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMNetServicesDidChange" object:nil];
 }
 @end
