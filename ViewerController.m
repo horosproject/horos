@@ -12785,24 +12785,27 @@ int i,j,l;
 						fabs( vectorsA[ 3] - vectorsB[ 3]) < SENSIBILITY && fabs( vectorsA[ 4] - vectorsB[ 4]) < SENSIBILITY && fabs( vectorsA[ 5] - vectorsB[ 5]) < SENSIBILITY &&
 						curvedController == 0L)
 				{
-				//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
+					if( [self isEverythingLoaded])
 					{
-						if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[vC fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewers == YES)
+					//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
 						{
-							NSPoint pan, delta;
+							if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[vC fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]] || registeredViewers == YES)
+							{
+								NSPoint pan, delta;
+								
+								pan = [imageView origin];
+								
+								delta = [DCMPix originDeltaBetween:[[vC imageView] curDCM] And:[imageView curDCM]];
+								
+								delta.x *= [imageView scaleValue];
+								delta.y *= [imageView scaleValue];
+								
+								[[vC imageView] setOrigin: NSMakePoint( pan.x + delta.x, pan.y - delta.y)];
+							}
 							
-							pan = [imageView origin];
-							
-							delta = [DCMPix originDeltaBetween:[[vC imageView] curDCM] And:[imageView curDCM]];
-							
-							delta.x *= [imageView scaleValue];
-							delta.y *= [imageView scaleValue];
-							
-							[[vC imageView] setOrigin: NSMakePoint( pan.x + delta.x, pan.y - delta.y)];
+							fValue = [imageView rotation];
+							[[vC imageView] setRotation: fValue];
 						}
-						
-						fValue = [imageView rotation];
-						[[vC imageView] setRotation: fValue];
 					}
 				}
 			}

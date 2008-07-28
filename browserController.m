@@ -4535,12 +4535,32 @@ static NSArray*	statesArray = nil;
 		
 		if( isCurrentDatabaseBonjour)
 		{
+			Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Downloading files...", 0L)];
+			[splash showWindow:self];
+			[splash setCancel: YES];
+			
+			[[splash progress] setMaxValue: [correspondingManagedObjects count]];
+			
 			for( NSManagedObject *obj in correspondingManagedObjects )
 			{
-				NSString *p = [self getLocalDCMPath: obj :BONJOURPACKETS];
-				
-				[selectedFiles addObject: p];
+				if( [splash aborted] == NO)
+				{
+					NSString *p = [self getLocalDCMPath: obj :BONJOURPACKETS];
+					
+					[selectedFiles addObject: p];
+					
+					[splash incrementBy: 1];
+				}
 			}
+						
+			if( [splash aborted])
+			{
+				[selectedFiles removeAllObjects];
+				[correspondingManagedObjects removeAllObjects];
+			}
+			
+			[splash close];
+			[splash release];
 		}
 		else
 		{
@@ -7661,12 +7681,32 @@ static BOOL withReset = NO;
 		
 		if( isCurrentDatabaseBonjour )
 		{
+			Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Downloading files...", 0L)];
+			[splash showWindow:self];
+			[splash setCancel: YES];
+		
+			[[splash progress] setMaxValue: [correspondingManagedObjects count]];
+			
 			for( NSManagedObject *img in correspondingManagedObjects)
 			{
-				NSString *p = [self getLocalDCMPath: img :50];
-		
-				[selectedFiles addObject: [self getLocalDCMPath: img :50]];
+				if( [splash aborted] == NO)
+				{
+					NSString *p = [self getLocalDCMPath: img :50];
+					
+					[selectedFiles addObject: [self getLocalDCMPath: img :50]];
+					
+					[splash incrementBy: 1];
+				}
 			}
+			
+			if( [splash aborted])
+			{
+				[selectedFiles removeAllObjects];
+				[correspondingManagedObjects removeAllObjects];
+			}
+			
+			[splash close];
+			[splash release];
 		}
 		else
 		{
