@@ -302,9 +302,9 @@ static NSLock *currentHostLock = 0L;
 {
 	NSLog( @"DCMNetServiceDelegate netServiceDidResolveAddress: %@", [sender description]);
 	
-	if( [[sender name] isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]] == NO || [[[DCMNetServiceDelegate currentHost] name] isEqualToString: [sender hostName]] == NO)
+//	if( [[sender name] isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]] == NO || [[[DCMNetServiceDelegate currentHost] name] isEqualToString: [sender hostName]] == NO)
 	{
-		[[NSNotificationCenter defaultCenter] 	postNotificationName:@"DCMNetServicesDidChange" object:nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMNetServicesDidChange" object:nil];
 	}
 }
 @end
