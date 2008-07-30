@@ -2928,7 +2928,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					vImageScale_ARGB8888( &src, &dst, 0L, kvImageHighQualityResampling);
 					
-					memcpy( lensTexture, dst.data + dst.rowBytes*((dst.height-src.height)/2), LENSSIZE*LENSSIZE*4);
+					if( curDCM.pixelRatio > 1.0)
+						memcpy( lensTexture, dst.data + dst.rowBytes*((dst.height-src.height)/2), LENSSIZE*LENSSIZE*4);
+					else
+					{
+						memset( lensTexture, 0, LENSSIZE*LENSSIZE*4);
+						memcpy( lensTexture + src.rowBytes*((src.height-dst.height)/2), dst.data, LENSSIZE*dst.height*4);
+					}
 					free( dst.data);
 				}
 			}

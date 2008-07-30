@@ -415,7 +415,7 @@ static NSMenu					*fusionPluginsMenu = 0L;
 						[reportPlugins setObject: plugin forKey:[[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
 					}
 				}
-				else NSLog( @"********* principal class not found for: %@", name);
+				else NSLog( @"********* principal class not found for: %@ - %@", name, [plugin principalClass]);
 			}
 		}
     }
