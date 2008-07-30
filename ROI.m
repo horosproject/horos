@@ -3741,7 +3741,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					else
 						slide = (b.x-a.x)/((b.y-a.y));
 				}
-				#define ARROWSIZE 25.0
+				#define ARROWSIZEConstant 25.0
+				
+				float ARROWSIZE = ARROWSIZEConstant * (thickness / 3.0);
 				
 				// LINE
 				glLineWidth(thickness*2);
