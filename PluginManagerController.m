@@ -14,6 +14,8 @@
 
 #import "PluginManagerController.h"
 #import <Message/NSMailDelivery.h>
+#import "WaitRendering.h"
+
 
 // this is the address of the plist containing the list of the available plugins.
 // the alternative link will be used if the first one doesn't reply...
@@ -23,6 +25,9 @@
 
 #define PLUGIN_SUBMISSION_URL @"http://www.osirix-viewer.com/osirix_plugins/submit_plugin/index.html"
 #define PLUGIN_SUBMISSION_NO_MAIL_APP_URL @"http://www.osirix-viewer.com/osirix_plugins/submit_plugin/index_no_mail_app.html"
+
+static NSArray *CachedPluginsList = 0L;
+static NSDate *CachedPluginsListDate = 0L;
 
 @implementation PluginManagerController
 
@@ -232,16 +237,36 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	NSString *pluginsListURL = @"";
 	NSArray *pluginsList = nil;
 	
+	if( CachedPluginsListDate == 0L || [CachedPluginsListDate timeIntervalSinceNow] < -10*60)
+	{
+	}
+	else if( CachedPluginsList)
+	{
+		return CachedPluginsList;
+	}
+
+	WaitRendering *splash = [[[WaitRendering alloc] init:@"Check Plugins..."] autorelease];
+	[splash showWindow:self];
+
 	int i;
 	for (i=0; i<[pluginsListURLs count] && !pluginsList; i++)
 	{
 		pluginsListURL = [pluginsListURLs objectAtIndex:i];
 		pluginsList = [NSArray arrayWithContentsOfURL:[NSURL URLWithString:pluginsListURL]];
 	}
-
-	if(!pluginsList) return nil;
+	
+	[splash close];
+	
+	if( !pluginsList) return nil;
 	
 	NSArray *sortedPlugins = [pluginsList sortedArrayUsingFunction:sortPluginArrayByName context:NULL];
+	
+	[CachedPluginsListDate release];
+	CachedPluginsListDate = [[NSDate date] retain];
+	
+	[CachedPluginsList release];
+	CachedPluginsList = [sortedPlugins retain];
+	
 	return sortedPlugins;
 }
 
@@ -263,7 +288,18 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 - (void)setURL:(NSString*)url;
 {
+	WaitRendering *splash = [[[WaitRendering alloc] init:@"Loading..."] autorelease];
+	[splash showWindow:self];
+	
 	[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
+	
+	while( [[webView mainFrame] dataSource] == 0L || [[[webView mainFrame] dataSource] isLoading] == YES || [[[webView mainFrame] provisionalDataSource] isLoading] == YES)
+	{
+		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
+	}
+	
+	[splash close];
+	
 	[statusTextField setHidden:YES];
 	[statusProgressIndicator setHidden:YES];
 }
