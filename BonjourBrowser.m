@@ -273,40 +273,15 @@ static char *GetPrivateIP()
 			}
 			else if ( strcmp( messageToRemoteService, "RFILE") == 0)
 			{
-				NSLog(@"readAllTheData filePathToLoad : %@", filePathToLoad);
 				BOOL isPages = [[filePathToLoad pathExtension] isEqualToString:@"pages"];
-				NSString *zipFilePathToLoad;
+				NSString *zipFilePathToLoad = 0L;
 				if(isPages)
 				{
-					NSLog(@"readAllTheData isPages");
 					zipFilePathToLoad = [filePathToLoad stringByAppendingString:@".zip"];
-					//[filePathToLoad release];
-					//filePathToLoad = [zipFilePathToLoad retain];
 				}
-				NSLog(@"readAllTheData filePathToLoad : %@", filePathToLoad);
-				NSLog(@"readAllTheData zipFilePathToLoad : %@", zipFilePathToLoad);
-
-//					NSString *reportFileName = [filePathToLoad stringByDeletingPathExtension];
-//					NSLog(@"reportFileName : %@", reportFileName);
-//					// unzip the file
-//					NSTask *unzipTask   = [[NSTask alloc] init];
-//					[unzipTask setLaunchPath:@"/usr/bin/unzip"];
-//					[unzipTask setCurrentDirectoryPath:[[filePathToLoad stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
-//					[unzipTask setArguments:[NSArray arrayWithObjects:@"-o", filePathToLoad, nil]]; // -o to override existing report w/ same name
-//					[unzipTask launch];
-//					if ([unzipTask isRunning]) [unzipTask waitUntilExit];
-//					int result = [unzipTask terminationStatus];
-//					[unzipTask release];
-//					
-//					NSLog(@"unzip result : %d", result);
-//					if(result==0)
-//					{
-//						// remove the zip file!
-//						filePathToLoad = reportFileName;
-//					}
-
+				else zipFilePathToLoad = filePathToLoad;
+				
 			
-				//NSString *destPath = [BonjourBrowser bonjour2local: filePathToLoad];
 				NSString *destPath = [BonjourBrowser bonjour2local: zipFilePathToLoad];
 				[[NSFileManager defaultManager] removeFileAtPath: destPath handler:0L];
 				
@@ -324,9 +299,7 @@ static char *GetPrivateIP()
 				
 				if(isPages)
 				{
-					NSLog(@"readAllTheData isPages 2");
 					NSString *reportFileName = [destPath stringByDeletingPathExtension];
-					NSLog(@"readAllTheData  reportFileName : %@", reportFileName);
 					// unzip the file
 					NSTask *unzipTask   = [[NSTask alloc] init];
 					[unzipTask setLaunchPath:@"/usr/bin/unzip"];
@@ -336,15 +309,9 @@ static char *GetPrivateIP()
 					while( [unzipTask isRunning]) [NSThread sleepForTimeInterval: 0.002];
 					int result = [unzipTask terminationStatus];
 					[unzipTask release];
-					
-					NSLog(@"unzip result : %d", result);
 					if(result==0)
 					{
-						//destPath = reportFileName;
 						destPath = [BonjourBrowser bonjour2local:filePathToLoad];
-						NSLog(@"destPath : %@", destPath);
-						// remove the zip file!
-						//filePathToLoad = reportFileName;
 					}
 				}
 				
@@ -703,7 +670,11 @@ static char *GetPrivateIP()
 					if(isPages)
 					{
 						NSLog(@"connectToService isPages");
+						
 						NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [filePathToLoad lastPathComponent]];
+						
+						[[NSFileManager defaultManager] removeFileAtPath: [[filePathToLoad stringByDeletingLastPathComponent] stringByAppendingPathComponent: zipFileName] handler: 0L];
+						
 						// zip the directory into a single archive file
 						NSTask *zipTask   = [[NSTask alloc] init];
 						[zipTask setLaunchPath:@"/usr/bin/zip"];
@@ -713,10 +684,10 @@ static char *GetPrivateIP()
 						while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.002];
 						int result = [zipTask terminationStatus];
 						[zipTask release];
-
+						
 						if(result==0)
 						{
-							NSMutableString *path2 = (NSMutableString*)[[filePathToLoad stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
+							NSMutableString *path2 = (NSMutableString*)[[filePathToLoad stringByDeletingLastPathComponent] stringByAppendingPathComponent: zipFileName];
 							[filePathToLoad release];
 							filePathToLoad = [path2 retain];
 							NSLog(@"filePathToLoad : %@", filePathToLoad);
@@ -733,6 +704,9 @@ static char *GetPrivateIP()
 					int dataSize = NSSwapHostIntToBig( [fileData length]);
 					[toTransfer appendBytes:&dataSize length: 4];
 					[toTransfer appendData: fileData];
+					
+					if( isPages)
+						[[NSFileManager defaultManager] removeFileAtPath: filePathToLoad handler: 0L];
 				}
 				
 				if (strcmp( messageToRemoteService, "DICOM") == 0)

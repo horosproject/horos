@@ -1093,7 +1093,7 @@ static NSDate *lastWarningDate = 0L;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"publishDICOMBonjour"])
 	{
 		//Start DICOM Bonjour 
-		[NSTimer scheduledTimerWithTimeInterval: 90 target: self selector: @selector( startDICOMBonjour:) userInfo: 0L repeats: NO];
+		[NSTimer scheduledTimerWithTimeInterval: 10 target: self selector: @selector( startDICOMBonjour:) userInfo: 0L repeats: NO];
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"])
@@ -1511,6 +1511,8 @@ static NSDate *lastWarningDate = 0L;
 		
 		[[[BrowserController currentBrowser] window] makeKeyAndOrderFront: self];
 	}
+	
+	[[BrowserController currentBrowser] syncReportsIfNecessary];
 }
 
 - (NSApplicationTerminateReply) applicationShouldTerminate:(NSApplication *)sender

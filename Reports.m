@@ -339,13 +339,20 @@ static id aedesc_to_id(AEDesc *desc)
 
 // initialize it in your init method:
 
+- (void) dealloc
+{
+	[templateName release];
+	
+	[super dealloc];
+}
+
 - (id)init
 {
 	self = [super init];
 	if (self)
 	{
 		myComponent = OpenDefaultComponent(kOSAComponentType, kOSAGenericScriptingComponentSubtype);
-		templateName = [NSMutableString stringWithString:@"OsiriX Basic Report"];
+		templateName = [[NSMutableString stringWithString:@"OsiriX Basic Report"] retain];
 	}
 	return self;
 }

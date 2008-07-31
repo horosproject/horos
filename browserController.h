@@ -431,6 +431,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) autoCleanDatabaseDate:(id) sender;
 
 - (void) refreshDatabase:(id) sender;
+- (void) syncReportsIfNecessary;
 - (void) syncReportsIfNecessary: (int) index;
 - (void) removeAllMounted;
 

@@ -1,7 +1,6 @@
 // !$*UTF8*$!
 {
 	089C1669FE841209C02AAC07 /* Project object */ = {
-		activeArchitecture = i386;
 		activeBuildConfigurationName = Development;
 		activeExecutable = AB8EE86509AB159D00F4090C /* Executable */;
 		activeTarget = 8D202CE80486D31800D8A456 /* OSIDatabasePreferencePane */;
@@ -34,7 +33,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					1120,
+					1024,
 					20,
 					48,
 					43,
@@ -56,10 +55,10 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					1080,
+					984,
 					60,
 					20,
-					48.16259765625,
+					48,
 					43,
 					43,
 				);
@@ -73,17 +72,16 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 233492211;
-			PBXWorkspaceStateSaveDate = 233492211;
+			PBXPerProjectTemplateStateSaveDate = 239184930;
+			PBXWorkspaceStateSaveDate = 239184930;
 		};
 		perUserProjectItems = {
+			AB58E3860E41B0E7001D3885 /* PBXTextBookmark */ = AB58E3860E41B0E7001D3885 /* PBXTextBookmark */;
+			AB58E3A50E41ED3D001D3885 /* PBXTextBookmark */ = AB58E3A50E41ED3D001D3885 /* PBXTextBookmark */;
 			AB80A1D00A19C50900FED357 /* PBXTextBookmark */ = AB80A1D00A19C50900FED357 /* PBXTextBookmark */;
-			AB80A5DE0A19C5B600FED357 /* PBXTextBookmark */ = AB80A5DE0A19C5B600FED357 /* PBXTextBookmark */;
 			AB80AB580A19CF2500FED357 /* PBXTextBookmark */ = AB80AB580A19CF2500FED357 /* PBXTextBookmark */;
 			AB80AB5F0A19CF2500FED357 /* PBXTextBookmark */ = AB80AB5F0A19CF2500FED357 /* PBXTextBookmark */;
 			AB8B034E0B4022530019CA7D /* PBXTextBookmark */ = AB8B034E0B4022530019CA7D /* PBXTextBookmark */;
-			ABAB6FB50D7D64B800442FB7 /* PBXTextBookmark */ = ABAB6FB50D7D64B800442FB7 /* PBXTextBookmark */;
-			ABBBD7100DEAFA5C008A1F06 /* PBXTextBookmark */ = ABBBD7100DEAFA5C008A1F06 /* PBXTextBookmark */;
 		};
 		sourceControlManager = AB465F4B09A32E06005A2766 /* Source Control */;
 		userBuildSettings = {
@@ -104,6 +102,34 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
+	AB58E3490E41AC80001D3885 /* PluginManager.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1202, 1014}}";
+			sepNavSelRange = "{793, 11}";
+			sepNavVisRange = "{0, 2136}";
+			sepNavWindowFrame = "{{15, 561}, {1313, 1012}}";
+		};
+	};
+	AB58E3860E41B0E7001D3885 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
+		name = "OSIDatabasePreferencePanePref.m: 79";
+		rLen = 11;
+		rLoc = 2079;
+		rType = 0;
+		vrLen = 2008;
+		vrLoc = 1857;
+	};
+	AB58E3A50E41ED3D001D3885 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
+		name = "OSIDatabasePreferencePanePref.m: 79";
+		rLen = 0;
+		rLoc = 2090;
+		rType = 0;
+		vrLen = 2353;
+		vrLoc = 1857;
+	};
 	AB80A1D00A19C50900FED357 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F506C03C013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.h */;
@@ -113,16 +139,6 @@
 		rType = 0;
 		vrLen = 1217;
 		vrLoc = 403;
-	};
-	AB80A5DE0A19C5B600FED357 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
-		name = "[self checkView: [self mainView] :val];";
-		rLen = 39;
-		rLoc = 1364;
-		rType = 0;
-		vrLen = 1046;
-		vrLoc = 830;
 	};
 	AB80AB580A19CF2500FED357 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -202,32 +218,19 @@
 		path = /Users/rossetantoine/osirix/build/Development/OsiriX.app;
 		sourceTree = "<absolute>";
 	};
-	ABAB6FB50D7D64B800442FB7 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
-		name = "OSIDatabasePreferencePanePref.m: 326";
-		rLen = 9;
-		rLoc = 11084;
-		rType = 0;
-		vrLen = 4218;
-		vrLoc = 9775;
-	};
-	ABBBD7100DEAFA5C008A1F06 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
-		name = "OSIDatabasePreferencePanePref.m: 381";
-		rLen = 0;
-		rLoc = 13669;
-		rType = 0;
-		vrLen = 4218;
-		vrLoc = 9775;
-	};
 	CE75CA4A0A23AAFA00D22E9E /* PreferencePaneController.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1829, 1157}}";
 			sepNavSelRange = "{911, 14}";
 			sepNavVisRect = "{{0, 0}, {1829, 1157}}";
 			sepNavWindowFrame = "{{15, 302}, {1874, 1271}}";
+		};
+	};
+	CECD02AD0D035A7D00A661C5 /* PreferencePaneControllerDCMTK.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1202, 1014}}";
+			sepNavSelRange = "{690, 24}";
+			sepNavVisRange = "{0, 722}";
 		};
 	};
 	F506C03C013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.h */ = {
@@ -240,9 +243,9 @@
 	};
 	F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1298, 6650}}";
-			sepNavSelRange = "{13669, 0}";
-			sepNavVisRange = "{9775, 4218}";
+			sepNavIntBoundsRect = "{{0, 0}, {1202, 6790}}";
+			sepNavSelRange = "{2090, 0}";
+			sepNavVisRange = "{1857, 2353}";
 			sepNavVisRect = "{{0, 4053}, {1312, 1456}}";
 			sepNavWindowFrame = "{{1079, 543}, {1245, 698}}";
 		};

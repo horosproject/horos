@@ -4203,11 +4203,14 @@ static NSArray*	statesArray = nil;
 		
 		if( [[ViewerController getDisplayed2DViewers] count]) doit = NO;
 		
-		if( doit ) {
-			if( [bonjourBrowser isBonjourDatabaseUpToDate: [bonjourServicesList selectedRow]-1] == NO )	{
+		if( doit)
+		{
+			if( [bonjourBrowser isBonjourDatabaseUpToDate: [bonjourServicesList selectedRow]-1] == NO)
+			{
 				[self syncReportsIfNecessary: [bonjourServicesList selectedRow]-1];
 				
-				if( [checkIncomingLock tryLock] ) {
+				if( [checkIncomingLock tryLock])
+				{
 					[NSThread detachNewThreadSelector: @selector(checkBonjourUpToDateThread:) toTarget:self withObject: self];
 					[checkIncomingLock unlock];
 				}
@@ -5513,17 +5516,20 @@ static NSArray*	statesArray = nil;
 	[self setDatabaseValue: object item: item forKey: [tableColumn identifier]];
 }
 
-- (void)outlineView:(NSOutlineView *)outlineView sortDescriptorsDidChange:(NSArray *)oldDescriptors {
+- (void)outlineView:(NSOutlineView *)outlineView sortDescriptorsDidChange:(NSArray *)oldDescriptors
+{
 	[self outlineViewRefresh];
 	
-	if( [[[[databaseOutline sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"name"] == NO ) {
+	if( [[[[databaseOutline sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"name"] == NO )
+	{
 		[databaseOutline selectRow: 0 byExtendingSelection: NO];
 	}
 	
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
 
-- (void)outlineView: (NSOutlineView *)outlineView willDisplayCell: (id)cell forTableColumn: (NSTableColumn *)tableColumn item: (id)item {
+- (void)outlineView: (NSOutlineView *)outlineView willDisplayCell: (id)cell forTableColumn: (NSTableColumn *)tableColumn item: (id)item
+{
 	[cell setHighlighted: NO];
 	
 	if( [cell isKindOfClass: [ImageAndTextCell class]])
@@ -5571,7 +5577,7 @@ static NSArray*	statesArray = nil;
 		
 		if( [[tableColumn identifier] isEqualToString:@"reportURL"])
 		{
-			if( isCurrentDatabaseBonjour || [[NSFileManager defaultManager] fileExistsAtPath: [item valueForKey:@"reportURL"]] == YES || [[item valueForKey:@"reportSeries"] count] > 0)
+			if( (isCurrentDatabaseBonjour && [item valueForKey:@"reportURL"] != 0L) || [[NSFileManager defaultManager] fileExistsAtPath: [item valueForKey:@"reportURL"]] == YES || [[item valueForKey:@"reportSeries"] count] > 0)
 			{
 				NSImage	*reportIcon = [NSImage imageNamed:@"Report.icns"];
 				[reportIcon setSize: NSMakeSize(16, 16)];
@@ -14171,30 +14177,46 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void)syncReportsIfNecessary: (int)index {
-	NSLog(@"Sync reports");
-	
-	if( isCurrentDatabaseBonjour ) {
+- (void) syncReportsIfNecessary
+{
+	[self syncReportsIfNecessary: [bonjourServicesList selectedRow]-1];
+}
+
+- (void) syncReportsIfNecessary: (int)index
+{
+	if( isCurrentDatabaseBonjour)
+	{
 		NSEnumerator *enumerator = [bonjourReportFilesToCheck keyEnumerator];
 		NSString *key;
 		
-		while ( (key = [enumerator nextObject]) ) {
+		while ( (key = [enumerator nextObject]))
+		{
 			NSString	*file = [BonjourBrowser bonjour2local: key];
 			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: file] ) {
+			BOOL isDirectory;
+			
+			if( [[NSFileManager defaultManager] fileExistsAtPath: file isDirectory: &isDirectory])
+			{
 				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: file traverseLink:YES];
 				
 				NSDate *previousDate = [bonjourReportFilesToCheck objectForKey: key];
+				
 				NSLog(@"file : %@", file);
 				NSLog(@"Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
-				if( [previousDate isEqualToDate: [fattrs objectForKey:NSFileModificationDate]] == NO ) {
+				
+				if( [previousDate isEqualToDate: [fattrs objectForKey:NSFileModificationDate]] == NO )
+				{
 					NSLog(@"Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
 					
 					// The file has changed... send back a copy to the bonjour server
 					
-					[bonjourBrowser sendFile:file index: index];
-					
-					[bonjourReportFilesToCheck setObject: [fattrs objectForKey:NSFileModificationDate] forKey: key];
+					if( [bonjourBrowser sendFile:file index: index])
+					{
+						[bonjourReportFilesToCheck setObject: [fattrs objectForKey:NSFileModificationDate] forKey: key];
+						
+						if( [[file pathExtension] isEqualToString: @"zip"])
+							[[NSFileManager defaultManager] removeItemAtPath: file error: 0L];
+					}
 				}
 			}
 			else NSLog( @"file?");
@@ -14277,12 +14299,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (IBAction)generateReport: (id)sender {
+- (IBAction) generateReport: (id)sender
+{
 	[self updateReportToolbarIcon:nil];
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
 	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
 	int reportsMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue];
-	if( item ) {
+	if( item)
+	{
 		if( reportsMode == 0 && [[NSWorkspace sharedWorkspace] fullPathForApplication:@"Microsoft Word"] == 0L) // Would absolutePathForAppBundleWithIdentifier be better here? (DDP)
 		{
 			NSRunAlertPanel( NSLocalizedString(@"Report Error", nil), NSLocalizedString(@"Microsoft Word is required to open/generate '.doc' reports. You can change it to TextEdit in the Preferences.", nil), nil, nil, nil);
@@ -14300,7 +14324,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		//	PLUGINS
 		// *********************************************
 		
-		if( reportsMode == 3 )
+		if( reportsMode == 3)
 		{
 			NSBundle *plugin = [[PluginManager reportPlugins] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
 			
@@ -14339,10 +14363,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 				{
 					NSString	*localFile = nil;
 					
+					if( isCurrentDatabaseBonjour)
+					{
+						if( [item valueForKey:@"reportURL"])
+							[[NSFileManager defaultManager] removeItemAtPath: [BonjourBrowser bonjour2local: [item valueForKey:@"reportURL"]]	error: 0L];
+					}
+					
 					if( [item valueForKey:@"reportURL"])
 						localFile = [bonjourBrowser getFile:[item valueForKey:@"reportURL"] index:[bonjourServicesList selectedRow]-1];
 					
-					if( localFile != nil && [[NSFileManager defaultManager] fileExistsAtPath:localFile] == YES)
+					if( localFile != nil && [[NSFileManager defaultManager] fileExistsAtPath: localFile] == YES)
 					{
 						if (reportsMode < 3)
 							[[NSWorkspace sharedWorkspace] openFile: localFile];

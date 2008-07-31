@@ -40,6 +40,8 @@ static NSLock *currentHostLock = 0L;
 	{
 		if( currentHostLock == 0L) currentHostLock = [[NSLock alloc] init];
 		
+		NSLog( @"*** currentHost");
+		
 		[currentHostLock lock];
 		currentHost = [[NSHost currentHost] retain];
 		[currentHostLock unlock];
@@ -53,8 +55,8 @@ static NSLock *currentHostLock = 0L;
 	publisher = p;
 }
 
-- (id)init{
-
+- (id)init
+{
 	if (self = [super init])
 	{
 		OSErr err;
@@ -95,7 +97,8 @@ static NSLock *currentHostLock = 0L;
 	
 }
 
-- (NSArray *)dicomServices{
+- (NSArray *)dicomServices
+{
 	return _dicomServices;
 }
 

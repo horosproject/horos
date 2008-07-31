@@ -24,6 +24,7 @@ Version 2.4
 #import "OSIDatabasePreferencePanePref.h"
 #import "PreferencePaneController.h"
 #import "PreferencePaneControllerDCMTK.h"
+#import "PluginManager.h"
 
 @implementation OSIDatabasePreferencePanePref
 
@@ -72,66 +73,14 @@ Version 2.4
 	[super dealloc];
 }
 
-- (NSString*) pathResolved:(NSString*) inPath
-{
-	CFStringRef resolvedPath = nil;
-	CFURLRef	url = CFURLCreateWithFileSystemPath(NULL /*allocator*/, (CFStringRef)inPath, kCFURLPOSIXPathStyle, NO /*isDirectory*/);
-	if (url != NULL) {
-		FSRef fsRef;
-		if (CFURLGetFSRef(url, &fsRef)) {
-			Boolean targetIsFolder, wasAliased;
-			if (FSResolveAliasFile (&fsRef, true /*resolveAliasChains*/, &targetIsFolder, &wasAliased) == noErr && wasAliased) {
-				CFURLRef resolvedurl = CFURLCreateFromFSRef(NULL /*allocator*/, &fsRef);
-				if (resolvedurl != NULL) {
-					resolvedPath = CFURLCopyFileSystemPath(resolvedurl, kCFURLPOSIXPathStyle);
-					CFRelease(resolvedurl);
-				}
-			}
-		}
-		CFRelease(url);
-	}
-	
-	if( resolvedPath == 0L) return inPath;
-	else return (NSString *)resolvedPath;
-}
-
 - (void) buildPluginsMenu
 {
-	NSString	*appSupport = @"Library/Application Support/OsiriX/Plugins";
-	NSString	*appPath = [[NSBundle mainBundle] builtInPlugInsPath];
-    NSString	*userPath = [NSHomeDirectory() stringByAppendingPathComponent:appSupport];
-    NSString	*sysPath = [@"/" stringByAppendingPathComponent:appSupport];
-	Class		filterClass;
-	
-	NSArray *paths = [NSArray arrayWithObjects:appPath, userPath, sysPath, nil];
-	
-	NSEnumerator *pathEnum = [paths objectEnumerator];
-    NSString *path;
-	
 	int numberOfReportPlugins = 0;
-	while ( path = [pathEnum nextObject] )
+	for( NSString *k in [[PluginManager pluginsDict] allKeys])
 	{
-		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
-		NSString *name;
-		
-		while ( name = [e nextObject] )
-		{
-			
-			if ( [[name pathExtension] isEqualToString:@"plugin"] )
-			{
-				NSBundle *plugin = [NSBundle bundleWithPath:[self pathResolved:[path stringByAppendingPathComponent:name]]];
-				
-				if ( filterClass = [plugin principalClass])
-				{
-					if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Report"])
-					{
-						[reportsMode addItemWithTitle: [[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
-						[[reportsMode lastItem] setIndentationLevel:1];
-						numberOfReportPlugins++;
-					}
-				}
-			}
-		}
+		[reportsMode addItemWithTitle: k];
+		[[reportsMode lastItem] setIndentationLevel:1];
+		numberOfReportPlugins++;
 	}
 	
 	if( numberOfReportPlugins <= 0)

@@ -14,6 +14,7 @@
 		8D202CF10486D31800D8A456 /* OSIDatabasePreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
+		AB58E34A0E41AC80001D3885 /* PluginManager.h in Headers */ = {isa = PBXBuildFile; fileRef = AB58E3490E41AC80001D3885 /* PluginManager.h */; };
 		AB80A1860A19C39700FED357 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80A1850A19C39700FED357 /* Security.framework */; };
 		CE75CA4B0A23AAFA00D22E9E /* PreferencePaneController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE75CA4A0A23AAFA00D22E9E /* PreferencePaneController.h */; };
 		CECD02AE0D035A7D00A661C5 /* PreferencePaneControllerDCMTK.h in Headers */ = {isa = PBXBuildFile; fileRef = CECD02AD0D035A7D00A661C5 /* PreferencePaneControllerDCMTK.h */; };
@@ -28,6 +29,7 @@
 		32DBCFA20370C41700C91783 /* OSIDatabasePreferencePane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIDatabasePreferencePane_Prefix.pch; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSIDatabasePreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSIDatabasePreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB58E3490E41AC80001D3885 /* PluginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PluginManager.h; path = ../../PluginManager.h; sourceTree = SOURCE_ROOT; };
 		AB80A1850A19C39700FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		CE75CA4A0A23AAFA00D22E9E /* PreferencePaneController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PreferencePaneController.h; path = ../../PreferencePaneController.h; sourceTree = SOURCE_ROOT; };
 		CECD02AD0D035A7D00A661C5 /* PreferencePaneControllerDCMTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreferencePaneControllerDCMTK.h; path = ../../PreferencePaneControllerDCMTK.h; sourceTree = SOURCE_ROOT; };
@@ -87,6 +89,7 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				AB58E3490E41AC80001D3885 /* PluginManager.h */,
 				CE75CA4A0A23AAFA00D22E9E /* PreferencePaneController.h */,
 				CECD02AD0D035A7D00A661C5 /* PreferencePaneControllerDCMTK.h */,
 				F506C03C013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.h */,
@@ -141,6 +144,7 @@
 				8D202CEB0486D31800D8A456 /* OSIDatabasePreferencePanePref.h in Headers */,
 				CE75CA4B0A23AAFA00D22E9E /* PreferencePaneController.h in Headers */,
 				CECD02AE0D035A7D00A661C5 /* PreferencePaneControllerDCMTK.h in Headers */,
+				AB58E34A0E41AC80001D3885 /* PluginManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,11 +265,12 @@
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
 				LIBRARY_SEARCH_PATHS = "";
 				LIBRARY_STYLE = Bundle;
-				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-bundle",
 					"-twolevel_namespace",
+					"-undefined",
+					dynamic_lookup,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = OSIDatabasePreferencePane;

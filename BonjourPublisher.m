@@ -692,6 +692,8 @@ static char *GetPrivateIP()
 
 					if(result==0)
 					{
+						[[NSFileManager defaultManager] removeFileAtPath: path handler: 0L];
+						
 						path = [[path stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
 						NSLog(@"path : %@", path);
 					}
@@ -748,7 +750,11 @@ static char *GetPrivateIP()
 				BOOL isPages = [[localpath pathExtension] isEqualToString:@"zip"];
 				if(isPages)
 				{
+					
 					NSString *reportFileName = [localpath stringByDeletingPathExtension];
+					
+					[[NSFileManager defaultManager] removeFileAtPath: reportFileName handler: 0L];
+					
 					NSLog(@"subConnectionReceived  reportFileName : %@", reportFileName);
 					// unzip the file
 					NSTask *unzipTask   = [[NSTask alloc] init];
