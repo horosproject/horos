@@ -40,7 +40,6 @@ Version 2.3
 #import <OsiriX/DCMNetServiceDelegate.h>
 #import <OsiriX/DCM.h>
 #import <OsiriX/DCMNetworking.h>
-#import "NetworkSendDataHandler.h"
 #import "PluginFilter.h"
 #import "PluginManager.h"
 #import "DCMTKStoreSCU.h"

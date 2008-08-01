@@ -52,7 +52,6 @@
 #import <OsiriX/DCMObject.h>
 #import <OsiriX/DCMDirectory.h>
 #import <OsiriX/DCMNetServiceDelegate.h>
-#import "NetworkSendDataHandler.h"
 #import "LogWindowController.h"
 #import "stringAdditions.h"
 #import "SendController.h"
