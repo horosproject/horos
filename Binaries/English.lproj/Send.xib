@@ -2,13 +2,12 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9D34</string>
-		<string key="IBDocument.InterfaceBuilderVersion">667</string>
+		<string key="IBDocument.SystemVersion">9E17</string>
+		<string key="IBDocument.InterfaceBuilderVersion">670</string>
 		<string key="IBDocument.AppKitVersion">949.33</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="6"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -38,14 +37,14 @@
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="866985817">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSButton" id="240316940">
 							<reference key="NSNextResponder" ref="866985817"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{439, 12}, {78, 32}}</string>
+							<string key="NSFrame">{{420, 12}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="866985817"/>
 							<int key="NSTag">1</int>
 							<bool key="NSEnabled">YES</bool>
@@ -72,7 +71,7 @@
 						<object class="NSButton" id="430532717">
 							<reference key="NSNextResponder" ref="866985817"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{359, 12}, {82, 32}}</string>
+							<string key="NSFrame">{{323, 12}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="866985817"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="100776659">
@@ -613,7 +612,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<string key="NSFrameSize">{531, 214}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{213, 129}</string>
@@ -813,19 +811,19 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="object" ref="866985817"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="430532717"/>
 							<reference ref="531353558"/>
 							<reference ref="1057004229"/>
 							<reference ref="995218247"/>
 							<reference ref="203583737"/>
 							<reference ref="1021516115"/>
 							<reference ref="1025931440"/>
-							<reference ref="240316940"/>
 							<reference ref="487707830"/>
 							<reference ref="893932893"/>
 							<reference ref="475640896"/>
 							<reference ref="5729003"/>
 							<reference ref="678662655"/>
+							<reference ref="240316940"/>
+							<reference ref="430532717"/>
 						</object>
 						<reference key="parent" ref="806021229"/>
 					</object>
@@ -1387,7 +1385,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string>keyImageMatrix</string>
 							<string>newServerList</string>
 							<string>numberImagesTextField</string>
-							<string>serverList</string>
 							<string>syntaxListOffis</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1396,7 +1393,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string>NSMatrix</string>
 							<string>NSPopUpButton</string>
 							<string>NSTextField</string>
-							<string>NSComboBox</string>
 							<string>NSPopUpButton</string>
 						</object>
 					</object>

@@ -66,12 +66,6 @@
 	[super dealloc];
 }
 
-- (void)finalize {
-	[queryLock lock];
-	[queryLock unlock];
-	[super finalize];
-}
-
 - (void)addFilter:(id)filter forDescription:(NSString *)description
 {
 //	NSLog(@"Filter: %@", [filter description]);

@@ -125,12 +125,6 @@ static NSString*	CenterlineToolbarItemIdentifier			= @"Centerline";
 	[toolbar release];
 	[super dealloc];
 }
-
-/* nothing to do
-- (void)finalize {
-}
-*/
-
 #pragma mark-
 #pragma mark Endoscopy Viewer methods
 

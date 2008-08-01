@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9D34</string>
+		<string key="IBDocument.SystemVersion">9E17</string>
 		<string key="IBDocument.InterfaceBuilderVersion">670</string>
 		<string key="IBDocument.AppKitVersion">949.33</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="247"/>
+			<integer value="162"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -538,7 +538,7 @@
 						<object class="NSButton" id="1864318">
 							<reference key="NSNextResponder" ref="730557210"/>
 							<int key="NSvFlags">257</int>
-							<string key="NSFrame">{{432, 5}, {82, 32}}</string>
+							<string key="NSFrame">{{417, 4}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="730557210"/>
 							<int key="NSTag">1</int>
 							<bool key="NSEnabled">YES</bool>
@@ -565,7 +565,7 @@
 						<object class="NSButton" id="675406894">
 							<reference key="NSNextResponder" ref="730557210"/>
 							<int key="NSvFlags">257</int>
-							<string key="NSFrame">{{350, 5}, {82, 32}}</string>
+							<string key="NSFrame">{{320, 4}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="730557210"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="318621394">
@@ -832,7 +832,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSTextField" id="802517423">
 							<reference key="NSNextResponder" ref="730557210"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{102, 13}, {228, 22}}</string>
+							<string key="NSFrame">{{102, 13}, {187, 22}}</string>
 							<reference key="NSSuperview" ref="730557210"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="294779220">
@@ -2240,15 +2240,15 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="object" ref="730557210"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="675406894"/>
 							<reference ref="59942528"/>
-							<reference ref="1864318"/>
 							<reference ref="910270199"/>
 							<reference ref="142339607"/>
 							<reference ref="703612455"/>
 							<reference ref="802517423"/>
 							<reference ref="569365285"/>
 							<reference ref="729737164"/>
+							<reference ref="1864318"/>
+							<reference ref="675406894"/>
 						</object>
 						<reference key="parent" ref="869412999"/>
 					</object>
@@ -3352,7 +3352,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<integer value="0"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>{513, 790}</string>

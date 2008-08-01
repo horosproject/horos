@@ -110,14 +110,4 @@
 }
 
 
-- (void) finalize {
-		if( logEntry)
-	{
-		[logEntry setValue:[NSDate date] forKey:@"endTime"];
-		[logEntry setValue:@"Complete" forKey:@"message"];
-	}
-	[super finalize];
-}
-
-
 @end

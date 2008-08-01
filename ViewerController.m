@@ -70,7 +70,7 @@
 #import "KeyObjectController.h"
 #import "KeyObjectPopupController.h"
 #import "JPEGExif.h"
-#import "SRAnnotationController.h"
+//#import "SRAnnotationController.h"
 #import "Reports.h"
 #import "ROISRConverter.h"
 #import "MenuDictionary.h"
@@ -11607,11 +11607,11 @@ int i,j,l;
 //	}
 }
 
-- (IBAction)exportAsDICOMSR:(id)sender;
-{
-	SRAnnotationController *srController = [[SRAnnotationController alloc] initWithViewerController:self];
-	[srController beginSheet];
-}
+//- (IBAction)exportAsDICOMSR:(id)sender;
+//{
+//	SRAnnotationController *srController = [[SRAnnotationController alloc] initWithViewerController:self];
+//	[srController beginSheet];
+//}
 
 - (ROI*) selectedROI
 {

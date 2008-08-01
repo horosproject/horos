@@ -67,12 +67,6 @@
 	[super dealloc];	
 }
 
- /*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
 - (NSNumber *)height{
 	return _height;
 }

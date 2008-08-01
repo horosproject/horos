@@ -945,12 +945,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 	[super dealloc];
 }
-
-/* does nothing . Don't call
-- (void)finalize {
-}
-*/
-			
+	
 - (void)run:(id)sender
 {
 	NSException* localException = 0L;

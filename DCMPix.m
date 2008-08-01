@@ -10850,23 +10850,6 @@ END_CREATE_ROIS:
     [super dealloc];
 }
 
-
-- (void)finalize {
-	if( shutterPolygonal) free( shutterPolygonal);
-	
-	if( fExternalOwnedImage == 0L )
-	{
-		if( fImage ) free(fImage);
-	}
-	
-	if( oData) free( oData);
-	if( VOILUT_table) free( VOILUT_table);
-	
-	if( subGammaFunction) vImageDestroyGammaFunction( subGammaFunction);
-	
-	[super finalize];
-}
-
 // SUV stuff
 #pragma mark-
 #pragma mark SUV

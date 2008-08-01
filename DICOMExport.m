@@ -107,13 +107,6 @@ extern BrowserController	*browserWindow;
 }
 
 
-- (void)finalize {
-	// free malloc data
-	if( freeImageData) free( imageData);
-	[super finalize];
-}
-
-
 - (void) setSourceFile:(NSString*) isource
 {
 	[dcmSourcePath release];

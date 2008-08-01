@@ -229,12 +229,6 @@
 }
 
 
-- (void)finalize {
-	delete _doc;
-	[super finalize];
-}
-
-
 - (NSArray *)findings{	
 	if (!_findings)
 		_findings = [[NSArray alloc] init];

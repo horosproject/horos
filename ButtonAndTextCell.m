@@ -63,11 +63,6 @@
 }
 
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView{
 //	NSRect buttonFrame = NSMakeRect(cellFrame.origin.x, cellFrame.origin.y, cellFrame.size.width/2- 10 , cellFrame.size.height);
 //	NSRect textFrame = NSMakeRect(cellFrame.size.width/2 + 10, cellFrame.origin.y, cellFrame.size.width/2 - 10, cellFrame.size.height);

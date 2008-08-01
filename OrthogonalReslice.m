@@ -80,16 +80,6 @@
 }
 
 
-- (void)finalize
-{
-	[yCacheComputation lock];
-	[yCacheComputation unlock];
-	
-	if( Ycache) free( Ycache);
-	[super finalize];
-}
-
-
 - (void) xReslice: (long) x
 {
  	[self axeReslice:0: x];

@@ -91,13 +91,6 @@
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	// nothing to do
-}
-*/
-
-
 
 
 -(void) setClippingRangeFrom: (float)near To: (float)far

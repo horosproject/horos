@@ -33,11 +33,6 @@
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
 
 - (void)windowDidLoad{
 	firstTime = YES;

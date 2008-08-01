@@ -28,13 +28,6 @@ NSString * documentsDirectory();
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
-
 //————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 - (void) _testForValidFilePath: (NSMutableArray*) dicomdirFileList path: (NSString*) startDirectory files: (NSMutableArray*) files
