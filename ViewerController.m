@@ -5680,7 +5680,10 @@ static ViewerController *draggedController = 0L;
 	if( status == 0L) [StatusPopup selectItemWithTitle: NSLocalizedString(@"empty", nil)];
 	else [StatusPopup selectItemWithTag: [status intValue]];
 	
-	NSString	*com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.comment"];//JF20070103
+	NSString	*com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.comment"];
+	
+	if( com == 0L || [com isEqualToString:@""])
+		com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.comment"];
 	
 	if( com == 0L || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"Add a comment", nil)];
 	else [CommentsField setTitle: com];
