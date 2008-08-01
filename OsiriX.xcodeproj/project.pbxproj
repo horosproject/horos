@@ -621,8 +621,6 @@
 		AB0F20AD06460F7F0075465D /* Burner.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB0F20AB06460F7F0075465D /* Burner.tif */; };
 		AB10FA680B96C95500D74684 /* OsirixDownload.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB10FA670B96C95500D74684 /* OsirixDownload.icns */; };
 		AB10FA6A0B96C95500D74684 /* OsirixDownload.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB10FA670B96C95500D74684 /* OsirixDownload.icns */; };
-		AB10FA9D0B96CCF000D74684 /* Osirix.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB10FA9C0B96CCF000D74684 /* Osirix.icns */; };
-		AB10FA9F0B96CCF000D74684 /* Osirix.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB10FA9C0B96CCF000D74684 /* Osirix.icns */; };
 		AB154F820627413600BD57AF /* SRView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB154F7E0627413600BD57AF /* SRView.mm */; };
 		AB154F830627413600BD57AF /* SRView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB154F7F0627413600BD57AF /* SRView.h */; };
 		AB154F840627413600BD57AF /* SRController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB154F800627413600BD57AF /* SRController.mm */; };
@@ -8681,7 +8679,6 @@
 		AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		AB0F20AB06460F7F0075465D /* Burner.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Burner.tif; sourceTree = "<group>"; };
 		AB10FA670B96C95500D74684 /* OsirixDownload.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = OsirixDownload.icns; sourceTree = "<group>"; };
-		AB10FA9C0B96CCF000D74684 /* Osirix.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Osirix.icns; sourceTree = "<group>"; };
 		AB142DFC05600D76008461A0 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
 		AB142DFD05600D76008461A0 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppController.m; sourceTree = "<group>"; };
 		AB154F7E0627413600BD57AF /* SRView.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = SRView.mm; sourceTree = "<group>"; };
@@ -21338,7 +21335,6 @@
 				CEBD8E5F0B675A75008FD772 /* Propagate.tiff in Resources */,
 				CEBD8EF80B6761CC008FD772 /* PropagateOn.tiff in Resources */,
 				AB10FA680B96C95500D74684 /* OsirixDownload.icns in Resources */,
-				AB10FA9D0B96CCF000D74684 /* Osirix.icns in Resources */,
 				A9044D390BBAA29200F36689 /* ROISelector.tiff in Resources */,
 				AB3674A90BE0CEB1003634E6 /* HUDButtonFillN.tiff in Resources */,
 				AB3674AA0BE0CEB1003634E6 /* HUDButtonFillP.tiff in Resources */,
@@ -21728,7 +21724,6 @@
 				CEBD8E5E0B675A75008FD772 /* Propagate.tiff in Resources */,
 				CEBD8EF70B6761CC008FD772 /* PropagateOn.tiff in Resources */,
 				AB10FA6A0B96C95500D74684 /* OsirixDownload.icns in Resources */,
-				AB10FA9F0B96CCF000D74684 /* Osirix.icns in Resources */,
 				A9044D3A0BBAA29200F36689 /* ROISelector.tiff in Resources */,
 				AB36756B0BE0CEB2003634E6 /* HUDButtonFillN.tiff in Resources */,
 				AB36756C0BE0CEB2003634E6 /* HUDButtonFillP.tiff in Resources */,
