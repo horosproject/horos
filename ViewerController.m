@@ -12788,7 +12788,7 @@ int i,j,l;
 						fabs( vectorsA[ 3] - vectorsB[ 3]) < SENSIBILITY && fabs( vectorsA[ 4] - vectorsB[ 4]) < SENSIBILITY && fabs( vectorsA[ 5] - vectorsB[ 5]) < SENSIBILITY &&
 						curvedController == 0L)
 				{
-					if( [self isEverythingLoaded])
+					//if( [self isEverythingLoaded])
 					{
 					//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
 						{

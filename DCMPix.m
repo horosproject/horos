@@ -2748,10 +2748,10 @@ BOOL gUSEPAPYRUSDCMPIX;
 - (double)originY { [self CheckLoad]; return originY;}
 - (double)originZ { [self CheckLoad]; return originZ;}
 
-- (void)origin: (float*)o { o[ 0] = originX; o[ 1] = originY; o[ 2] = originZ; }
-- (void)originDouble: (double*)o { o[ 0] = originX; o[ 1] = originY; o[ 2] = originZ; }
-- (void)setOrigin: (float*)o { originX = o[ 0]; originY = o[ 1]; originZ = o[ 2]; }
-- (void)setOriginDouble: (double*)o { originX = o[ 0]; originY = o[ 1]; originZ = o[ 2]; };
+- (void)origin: (float*)o { [self CheckLoad];	o[ 0] = originX; o[ 1] = originY; o[ 2] = originZ; }
+- (void)originDouble: (double*)o { [self CheckLoad];	o[ 0] = originX; o[ 1] = originY; o[ 2] = originZ; }
+- (void)setOrigin: (float*)o { [self CheckLoad];	originX = o[ 0]; originY = o[ 1]; originZ = o[ 2]; }
+- (void)setOriginDouble: (double*)o { [self CheckLoad];	originX = o[ 0]; originY = o[ 1]; originZ = o[ 2]; };
 
 - (double)sliceLocation{ [self CheckLoad]; return sliceLocation;}
 - (void)setSliceLocation: (double)l { [self CheckLoad]; sliceLocation = l;}

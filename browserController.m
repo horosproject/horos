@@ -3461,7 +3461,8 @@ static NSArray*	statesArray = nil;
 							dateOpened = [openedDate compare: openedStudyDate] == NSOrderedDescending;
 						}
 						
-						if(  dateProduced == YES && dateOpened == YES) {
+						if(  dateProduced == YES && dateOpened == YES)
+						{
 							for( long x = from; x <= to; x++ ) if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO && [[[studiesArray objectAtIndex: x] valueForKey:@"lockedStudy"] boolValue] == NO) [toBeRemoved addObject: [studiesArray objectAtIndex: x]];
 						}
 					}
@@ -5106,10 +5107,12 @@ static NSArray*	statesArray = nil;
 									
 									// ********* STUDY
 									
-									if( [series valueForKey:@"study"] != study ) {
+									if( [series valueForKey:@"study"] != study )
+									{
 										study = [series valueForKeyPath:@"study"];
 										
-										if([studiesArray containsObject: study] == NO ) {
+										if([studiesArray containsObject: study] == NO )
+										{
 											if( study) [studiesArray addObject: study];
 											[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 										}
@@ -5542,10 +5545,12 @@ static NSArray*	statesArray = nil;
 	[context retain];
 	[context lock];
 	
-	if ([[item valueForKey:@"type"] isEqualToString: @"Study"] ) {
+	if ([[item valueForKey:@"type"] isEqualToString: @"Study"] )
+	{
 		if( [[tableColumn identifier] isEqualToString:@"lockedStudy"]) [cell setTransparent: NO];
 		
-		if( originalOutlineViewArray ) {
+		if( originalOutlineViewArray )
+		{
 			if( [originalOutlineViewArray containsObject: item]) [cell setFont: [NSFont boldSystemFontOfSize:12]];
 			else [cell setFont: [NSFont systemFontOfSize:12]];
 		}

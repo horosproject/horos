@@ -36,7 +36,6 @@ Version 2.3
 
 #import "SeriesView.h"
 #import "ViewerController.h"
-#import "MPRController.h"
 #import "ThickSlabController.h"
 #import "browserController.h"
 #import "AppController.h"
@@ -1047,18 +1046,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 	}
 	
-	if( curROI ) {
+	if( curROI )
+	{
 		if( [curROI ROImode] == ROI_selectedModify || [curROI ROImode] == ROI_drawing)
 		{
 			no = 0;
 			
 			// Does this ROI have alias in other views?
-			for( long x = 0; x < [dcmRoiList count]; x++ )
+			for( NSArray *r in dcmRoiList)
 			{
-				if( [[dcmRoiList objectAtIndex: x] containsObject: curROI]) no++;
+				if( [r containsObject: curROI]) no++;
 			}
 		
-			if( no <= 1 || force == YES) {
+			if( no <= 1 || force == YES)
+			{
 				curROI.ROImode = ROI_selected;
 				curROI = nil;
 			}
@@ -4763,7 +4764,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	NSMutableArray *points;
 	
 	// deselect all ROIs
-	for( int i=0; i<[curRoiList count]; i++ ) {
+	for( int i=0; i<[curRoiList count]; i++ )
+	{
 		// ROISelectorSelectedROIList contains ROIs that were selected _before_ the click
 		if([ROISelectorSelectedROIList containsObject:[curRoiList objectAtIndex:i]])// this will be possible only if shift key is pressed
 			[[curRoiList objectAtIndex:i] setROIMode:ROI_selected];
@@ -4931,7 +4933,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO) return;
 	
-	if( [dcmPixList containsObject: otherPix] ) {
+	if( [dcmPixList containsObject: otherPix] )
+	{
 		float iwl, iww;
 		
 		iww = otherPix.ww;
@@ -4941,8 +4944,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[self setWLWW: iwl :iww];
 	}
 	
-	if( blendingView) {
-		if( [[blendingView dcmPixList] containsObject: otherPix]) {
+	if( blendingView)
+	{
+		if( [[blendingView dcmPixList] containsObject: otherPix])
+		{
 			float iwl, iww;
 			
 			iww = otherPix.ww;
