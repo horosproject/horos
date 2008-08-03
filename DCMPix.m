@@ -9311,8 +9311,9 @@ END_CREATE_ROIS:
 
 -(void) orientationDouble:(double*) c
 {
-	int i;
-	for( i = 0 ; i < 9; i ++) c[ i] = orientation[ i];
+	[self CheckLoad]; 
+	
+	for( int i = 0 ; i < 9; i ++) c[ i] = orientation[ i];
 }
 
 -(BOOL) identicalOrientationTo:(DCMPix*) c
@@ -9328,15 +9329,16 @@ END_CREATE_ROIS:
 
 -(void) orientation:(float*) c
 {
-	int i;
-	for( i = 0 ; i < 9; i ++) c[ i] = orientation[ i];
+	[self CheckLoad]; 
+	
+	for( int i = 0 ; i < 9; i ++) c[ i] = orientation[ i];
 }
 
 -(void) setOrientationDouble:(double*) c
 {
-	long i;
+	[self CheckLoad]; 
 	
-	for( i = 0 ; i < 6; i ++) orientation[ i] = c[ i];
+	for( int i = 0 ; i < 6; i ++) orientation[ i] = c[ i];
 	
 	double length = sqrt(orientation[0]*orientation[0] + orientation[1]*orientation[1] + orientation[2]*orientation[2]);
 	
@@ -9359,9 +9361,8 @@ END_CREATE_ROIS:
 -(void) setOrientation:(float*) c
 {
 	double d[ 6];
-	int i;
 	
-	for( i = 0 ; i < 6; i ++) d[ i] = c[ i];
+	for( int i = 0 ; i < 6; i ++) d[ i] = c[ i];
 	
 	[self setOrientationDouble: d];
 }

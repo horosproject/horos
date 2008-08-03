@@ -12,17 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-/***************************************** Modifications *********************************************
-
-Version 2.3
-
-	20051217	DDP	Added support for page up and page down to decrement or increment the image.
-	20060110	DDP	Reducing the variable duplication of userDefault objects (work in progress).
-	20060114	Changed off Fullscren to offFullScreen.
-	20060119	SUV
-*/
-
 #import "DCMAbstractSyntaxUID.h"
 #import "MPRPreviewView.h"
 #import <DCMView.h>
@@ -80,7 +69,7 @@ extern		ToolbarPanelController		*toolbarPanel[10];
 extern		AppController				*appController;
 			short						syncro = syncroLOC;
 static		float						deg2rad = 3.14159265358979/180.0; 
-extern		long						numberOf2DViewer;
+extern		int							numberOf2DViewer;
 			BOOL						display2DMPRLines = YES;
 extern		NSMutableDictionary			*plugins;
 static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable = 0L;
