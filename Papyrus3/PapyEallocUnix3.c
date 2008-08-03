@@ -43,7 +43,7 @@
 /*									 	*/
 /********************************************************************************/
 
-static void *
+static inline void *
 checkvp3 (void *pointer)
 {
 	if (pointer == NULL)

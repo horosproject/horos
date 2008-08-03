@@ -5766,7 +5766,7 @@ END_CREATE_ROIS:
 		theGroupP = (SElement*) [self getPapyGroup: 0x0008 fileNb: fileNb];
 		if( theGroupP )	{
 			val = Papy3GetElement (theGroupP, papRecommendedDisplayFrameRateGr, &nbVal, &elemType );
-			if ( val ) cineRate = [[NSString stringWithCString:val->a] floatValue];	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
+			if ( val ) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
 			
 			val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &elemType );
 			if( val ) {
@@ -5789,7 +5789,7 @@ END_CREATE_ROIS:
 		theGroupP = (SElement*) [self getPapyGroup: 0x0010 fileNb: fileNb];
 		if( theGroupP )	{
 			val = Papy3GetElement (theGroupP, papPatientsWeightGr, &nbVal, &elemType);
-			if ( val ) patientsWeight = [[NSString stringWithCString:val->a] floatValue];
+			if ( val ) patientsWeight = atof( val->a);
 			else patientsWeight = 0;
 		}
 		
@@ -5800,23 +5800,23 @@ END_CREATE_ROIS:
 			else frameOfReferenceUID = 0;
 
 			val = Papy3GetElement (theGroupP, papSliceThicknessGr, &nbVal, &elemType);
-			if ( val ) sliceThickness = [[NSString stringWithCString:val->a] floatValue];
+			if ( val ) sliceThickness = atof( val->a);
 			else sliceThickness = 0;
 			
 			val = Papy3GetElement (theGroupP, papSpacingBetweenSlicesGr, &nbVal, &elemType);
-			if ( val ) spacingBetweenSlices = [[NSString stringWithCString:val->a] floatValue];
+			if ( val ) spacingBetweenSlices = atof( val->a);
 			else spacingBetweenSlices = 0;
 			
 			val = Papy3GetElement (theGroupP, papRepetitionTimeGr, &nbVal, &elemType);
-			if ( val ) repetitiontime = [[NSString stringWithFormat:@"%0.1f", [[NSString stringWithCString:val->a] floatValue]] retain];
+			if ( val ) repetitiontime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
 			else repetitiontime = 0;
 			
 			val = Papy3GetElement (theGroupP, papEchoTimeGr, &nbVal, &elemType);
-			if ( val ) echotime = [[NSString stringWithFormat:@"%0.1f", [[NSString stringWithCString:val->a] floatValue]] retain];
+			if ( val ) echotime = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
 			else echotime = 0;
 			
 			val = Papy3GetElement (theGroupP, papFlipAngleGr, &nbVal, &elemType);
-			if ( val ) flipAngle = [[NSString stringWithFormat:@"%0.1f", [[NSString stringWithCString:val->a] floatValue]] retain];
+			if ( val ) flipAngle = [[NSString stringWithFormat:@"%0.1f", atof( val->a)] retain];
 			else flipAngle = 0;
 			
 			val = Papy3GetElement (theGroupP, papProtocolNameGr, &nbVal, &elemType);
@@ -5828,17 +5828,17 @@ END_CREATE_ROIS:
 			else viewPosition = 0;
 			
 			val = Papy3GetElement (theGroupP, papPositionerPrimaryAngleGr, &nbVal, &elemType);
-			if ( val ) positionerPrimaryAngle = [[NSNumber numberWithFloat: [[NSString stringWithCString:val->a] floatValue]] retain];
+			if ( val ) positionerPrimaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
 			
 			val = Papy3GetElement (theGroupP, papPositionerSecondaryAngleGr, &nbVal, &elemType);
-			if ( val ) positionerSecondaryAngle = [[NSNumber numberWithFloat: [[NSString stringWithCString:val->a] floatValue]] retain];
+			if ( val ) positionerSecondaryAngle = [[NSNumber numberWithDouble: atof( val->a)] retain];
 			
 			val = Papy3GetElement (theGroupP, papPatientPositionGr, &nbVal, &elemType);
 			if ( val ) patientPosition = [[NSString stringWithCString:val->a] retain];
 			else patientPosition = 0;
 			
 			val = Papy3GetElement (theGroupP, papCineRateGr, &nbVal, &elemType);
-			if (!cineRate && val != NULL) cineRate = [[NSString stringWithCString:val->a] floatValue];	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
+			if (!cineRate && val != NULL) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
 			
 			// Ultrasounds pixel spacing
 			if( [modalityString isEqualToString:@"US"])
@@ -5893,12 +5893,12 @@ END_CREATE_ROIS:
 			val = Papy3GetElement (theGroupP, papImagerPixelSpacingGr, &nbVal, &elemType);
 			if ( val ) {
 				tmp = val;
-				pixelSpacingY = [[NSString stringWithCString:tmp->a] floatValue];
+				pixelSpacingY = atof( tmp->a);
 				
 				if( nbVal > 1)
 				{
 					tmp++;
-					pixelSpacingX = [[NSString stringWithCString:tmp->a] floatValue];
+					pixelSpacingX = atof( tmp->a);
 				}
 			}
 			
@@ -5907,7 +5907,7 @@ END_CREATE_ROIS:
 				val = Papy3GetElement (theGroupP, papFrameTimeVectorGr, &nbVal, &elemType);
 				if ( val )
 				{
-					cineRate = 1000./[[NSString stringWithCString:val->a] floatValue];
+					cineRate = 1000./atof( val->a);
 				}
 			}
 			
@@ -5925,16 +5925,16 @@ END_CREATE_ROIS:
 							DCMPixShutterOnOff = YES;
 							
 							tmp = Papy3GetElement (theGroupP, papShutterLeftVerticalEdgeGr, &nbtmp, &elemType);
-							if (tmp != NULL) shutterRect_x = [[NSString stringWithCString:tmp->a] intValue];
+							if (tmp != NULL) shutterRect_x = atoi( tmp->a);
 							
 							tmp = Papy3GetElement (theGroupP, papShutterRightVerticalEdgeGr, &nbtmp, &elemType);
-							if (tmp != NULL) shutterRect_w = [[NSString stringWithCString:tmp->a] intValue] - shutterRect_x;
+							if (tmp != NULL) shutterRect_w = atoi( tmp->a) - shutterRect_x;
 							
 							tmp = Papy3GetElement (theGroupP, papShutterUpperHorizontalEdgeGr, &nbtmp, &elemType);
-							if (tmp != NULL) shutterRect_y = [[NSString stringWithCString:tmp->a] intValue];
+							if (tmp != NULL) shutterRect_y = atoi( tmp->a);
 							
 							tmp = Papy3GetElement (theGroupP, papShutterLowerHorizontalEdgeGr, &nbtmp, &elemType);
-							if (tmp != NULL) shutterRect_h = [[NSString stringWithCString:tmp->a] intValue] - shutterRect_y;
+							if (tmp != NULL) shutterRect_h = atoi( tmp->a) - shutterRect_y;
 						}
 						else if( [[NSString stringWithCString:val->a] isEqualToString:@"CIRCULAR"])
 						{
@@ -5943,13 +5943,13 @@ END_CREATE_ROIS:
 							tmp = Papy3GetElement (theGroupP, papCenterofCircularShutterGr, &nbtmp, &elemType);
 							if (tmp != NULL && nbtmp == 2)
 							{
-								shutterCircular_x = [[NSString stringWithCString:tmp->a] intValue];
+								shutterCircular_x = atoi( tmp->a);
 								tmp++;
-								shutterCircular_y = [[NSString stringWithCString:tmp->a] intValue];
+								shutterCircular_y = atoi( tmp->a);
 							}
 							
 							tmp = Papy3GetElement (theGroupP, papRadiusofCircularShutterGr, &nbtmp, &elemType);
-							if (tmp != NULL) shutterCircular_radius = [[NSString stringWithCString:tmp->a] intValue];
+							if (tmp != NULL) shutterCircular_radius = atoi( tmp->a);
 						}
 						else if( [[NSString stringWithCString:val->a] isEqualToString:@"POLYGONAL"])
 						{
@@ -5965,8 +5965,8 @@ END_CREATE_ROIS:
 							int y, x;
 							for( y = 0, x = 0 ; y < nbtmp; y+=2, x++)
 							{
-								shutterPolygonal[ x].x = [[NSString stringWithCString:tmp->a] intValue];		tmp++;
-								shutterPolygonal[ x].y = [[NSString stringWithCString:tmp->a] intValue];		tmp++;
+								shutterPolygonal[ x].x = atoi( tmp->a);		tmp++;
+								shutterPolygonal[ x].y = atoi( tmp->a);		tmp++;
 								shutterPolygonalSize++;
 							}
 						}
@@ -5990,18 +5990,18 @@ END_CREATE_ROIS:
 			{
 				tmp = val;
 				
-				originX = [[NSString stringWithCString:tmp->a] floatValue];
+				originX = atof( tmp->a);
 				
 				if( nbVal > 1)
 				{
 					tmp++;
-					originY = [[NSString stringWithCString:tmp->a] floatValue];
+					originY = atof( tmp->a);
 				}
 				
 				if( nbVal > 2)
 				{
 					tmp++;
-					originZ = [[NSString stringWithCString:tmp->a] floatValue];
+					originZ = atof( tmp->a);
 				}
 			}
 			
@@ -6020,7 +6020,7 @@ END_CREATE_ROIS:
 				
 				for ( int j = 0; j < nbVal; j++ )
 				{
-					orientation[ j]  = [[NSString stringWithCString:tmpVal3->a] floatValue];
+					orientation[ j]  = atof( tmpVal3->a);
 					tmpVal3++;
 				}
 				
@@ -6046,14 +6046,14 @@ END_CREATE_ROIS:
 				tmpVal3 = val3;
 				// get the last offset
 				for ( int j = 1; j < pos; j++ ) tmpVal3++;
-				offset =  [[NSString stringWithCString:tmpVal3->a] floatValue];
+				offset =  atof( tmpVal3->a);
 			}
 			val3 = Papy3GetElement (theGroupP, papRescaleSlopeGr, &pos, &elemType);
 			if ( val3 ) {
 				tmpVal3 = val3;
 				// get the last slope
 				for ( int j = 1; j < pos; j++ ) tmpVal3++;
-				slope = [[NSString stringWithCString:tmpVal3->a] floatValue];
+				slope = atof( tmpVal3->a);
 				
 				//	NSLog(@"slope:%f", slope);
 				
@@ -6110,12 +6110,12 @@ END_CREATE_ROIS:
 			
 			val = Papy3GetElement (theGroupP, papWindowCenterGr, &nbVal, &elemType);
 			if ( val ) {
-				savedWL = [[NSString stringWithCString:val->a] floatValue];
+				savedWL = atof( val->a);
 			}
 			
 			val = Papy3GetElement (theGroupP, papWindowWidthGr, &nbVal, &elemType);
 			if ( val ) {
-				savedWW = [[NSString stringWithCString:val->a] floatValue];
+				savedWW = atof( val->a);
 				if(  savedWW < 0) savedWW =-savedWW;
 			}
 			
@@ -6146,13 +6146,13 @@ END_CREATE_ROIS:
 			{
 				tmp = val;
 				
-				pixelSpacingY = [[NSString stringWithCString:tmp->a] floatValue];
+				pixelSpacingY = atof( tmp->a);
 				
 				if( nbVal > 1)
 				{
 					tmp++;
 					
-					pixelSpacingX = [[NSString stringWithCString:tmp->a] floatValue];
+					pixelSpacingX = atof( tmp->a);
 				}
 			}
 			
@@ -6163,13 +6163,13 @@ END_CREATE_ROIS:
 				
 				tmp = val;
 				
-				ratiox = [[NSString stringWithCString:tmp->a] floatValue];
+				ratiox = atof( tmp->a);
 				
 				if( nbVal > 1)
 				{
 					tmp++;
 					
-					ratioy = [[NSString stringWithCString:tmp->a] floatValue];
+					ratioy = atof( tmp->a);
 				}
 				
 				if( ratioy != 0)
@@ -6553,7 +6553,7 @@ END_CREATE_ROIS:
 			else decayCorrection = 0L;
 			
 			val = Papy3GetElement (theGroupP, papDecayFactorGr, &pos, &elemType );
-			if( val ) decayFactor = val? [[NSString stringWithCString:val->a] floatValue] : 0;
+			if( val ) decayFactor = val? atof( val->a) : 0;
 			else decayFactor = 1.0;
 			
 			val = Papy3GetElement (theGroupP, papRadiopharmaceuticalInformationSequenceGr, &pos, &elemType );
@@ -6570,7 +6570,7 @@ END_CREATE_ROIS:
 							SElement *gr = (SElement *)dcmList->object->item->object->group;
 							if ( gr->group == 0x0018 ) {
 								val = Papy3GetElement (gr, papRadionuclideTotalDoseGr, &pos, &elemType );
-								radionuclideTotalDose = val? [[NSString stringWithCString:val->a] floatValue] : 0.0;
+								radionuclideTotalDose = val? atof( val->a) : 0.0;
 								
 								val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType );
 								if( val ) {
@@ -6585,7 +6585,7 @@ END_CREATE_ROIS:
 								}
 								
 								val = Papy3GetElement (gr, papRadionuclideHalfLifeGr, &pos, &elemType );
-								halflife = val? [[NSString stringWithCString:val->a] floatValue] : 0.0;
+								halflife = val? atof( val->a) : 0.0;
 								break;
 							}
 						}
@@ -6616,18 +6616,18 @@ END_CREATE_ROIS:
 								{
 									tmp = val;
 									
-									originX = [[NSString stringWithCString:tmp->a] floatValue];
+									originX = atof( tmp->a);
 									
 									if( nbVal > 1)
 									{
 										tmp++;
-										originY = [[NSString stringWithCString:tmp->a] floatValue];
+										originY = atof( tmp->a);
 									}
 									
 									if( nbVal > 2)
 									{
 										tmp++;
-										originZ = [[NSString stringWithCString:tmp->a] floatValue];
+										originZ = atof( tmp->a);
 									}
 								}
 								
@@ -6648,7 +6648,7 @@ END_CREATE_ROIS:
 									
 									for ( int j = 0; j < nbVal; j++ )
 									{
-										orientation[ j]  = [[NSString stringWithCString:tmpVal3->a] floatValue];
+										orientation[ j]  = atof( tmpVal3->a);
 										tmpVal3++;
 									}
 									
@@ -6740,7 +6740,7 @@ END_CREATE_ROIS:
 															}
 															for ( int j = 0; j < nbVal; j++ )
 															{
-																orientation[ j]  = [[NSString stringWithCString:tmpVal3->a] floatValue];
+																orientation[ j]  = atof( tmpVal3->a);
 																tmpVal3++;
 															}
 															
@@ -6782,7 +6782,7 @@ END_CREATE_ROIS:
 														val3 = Papy3GetElement (gr28, papSliceThicknessGr, &nbVal, &elemType);
 														if (val3 != NULL && nbVal >= 1)
 														{
-															sliceThickness = [[NSString stringWithCString:val3->a] floatValue];
+															sliceThickness = atof( val3->a);
 														}
 														break;
 														
@@ -6792,12 +6792,12 @@ END_CREATE_ROIS:
 														{
 															tmp = val3;
 															
-															pixelSpacingY = [[NSString stringWithCString:tmp->a] floatValue];
+															pixelSpacingY = atof( tmp->a);
 															
 															if( nbVal > 1)
 															{
 																tmp++;
-																pixelSpacingX = [[NSString stringWithCString:tmp->a] floatValue];
+																pixelSpacingX = atof( tmp->a);
 															}
 														}
 														break;
@@ -6834,7 +6834,7 @@ END_CREATE_ROIS:
 															tmpVal3 = val3;
 															// get the last offset
 															for ( int j = 1; j < nbVal; j++ ) tmpVal3++;
-															offset =  [[NSString stringWithCString:tmpVal3->a] floatValue];
+															offset =  atof( tmpVal3->a);
 														}
 														
 														val3 = Papy3GetElement (gr28, papRescaleSlopeGr, &nbVal, &elemType);
@@ -6844,8 +6844,8 @@ END_CREATE_ROIS:
 															// get the last slope
 															for ( int j = 1; j < nbVal; j++ ) tmpVal3++;
 															
-															if( [[NSString stringWithCString:tmpVal3->a] floatValue])
-																slope  = [[NSString stringWithCString:tmpVal3->a] floatValue];
+															if( atof( tmpVal3->a))
+																slope  = atof( tmpVal3->a);
 														}
 														break;
 												}
@@ -6916,16 +6916,16 @@ END_CREATE_ROIS:
 																if (val3 != NULL && nbVal >= 1) {
 																	tmp = val3;
 																	
-																	originX = [[NSString stringWithCString:tmp->a] floatValue];
+																	originX = atof( tmp->a);
 																	
 																	if( nbVal > 1) {
 																		tmp++;
-																		originY = [[NSString stringWithCString:tmp->a] floatValue];
+																		originY = atof( tmp->a);
 																	}
 																	
 																	if( nbVal > 2) {
 																		tmp++;
-																		originZ = [[NSString stringWithCString:tmp->a] floatValue];
+																		originZ = atof( tmp->a);
 																	}
 																	
 																	NSLog(@"X:%f Y:%f Z:%f", originX, originY, originZ);
@@ -6937,11 +6937,11 @@ END_CREATE_ROIS:
 																if (val3 != NULL && nbVal >= 1) {
 																	tmp = val3;
 																	
-																	pixelSpacingY = [[NSString stringWithCString:tmp->a] floatValue];
+																	pixelSpacingY = atof( tmp->a);
 																	
 																	if( nbVal > 1) {
 																		tmp++;
-																		pixelSpacingX = [[NSString stringWithCString:tmp->a] floatValue];
+																		pixelSpacingX = atof( tmp->a);
 																	}
 																}
 																break;
@@ -7047,7 +7047,7 @@ END_CREATE_ROIS:
 			{
 				if( val->a)
 				{
-					philipsFactor = [[NSString stringWithCString: val->a] floatValue];
+					philipsFactor = atof( val->a);
 					NSLog( @"philipsFactor = %f", philipsFactor);
 				}
 			}
@@ -10978,7 +10978,7 @@ END_CREATE_ROIS:
 #undef DS
 							if(inGrOrModP->vr==DS)	// floating point string
 							{
-								if( theValueP->a) [field appendString:[NSString stringWithFormat:@"%.6g", [[NSString stringWithCString:theValueP->a] floatValue]]];
+								if( theValueP->a) [field appendString:[NSString stringWithFormat:@"%.6g", atof( theValueP->a)]];
 							}
 							else if(inGrOrModP->vr==FL)	// floating point string
 							{
