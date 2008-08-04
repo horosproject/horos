@@ -2991,6 +2991,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		[dicomElements setObject:[NSNumber numberWithInt: width] forKey:@"width"];
 		[dicomElements setObject:[NSNumber numberWithInt: NoOfFrames] forKey:@"numberOfFrames"];
 		[dicomElements setObject:[NSNumber numberWithInt: NoOfSeries] forKey:@"numberOfSeries"];
+		[dicomElements setObject:filePath forKey:@"filePath"];
 	}
 	
 	return returnVal;
@@ -3096,6 +3097,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		[dicomElements setObject:[NSNumber numberWithInt: width] forKey:@"width"];
 		[dicomElements setObject:[NSNumber numberWithInt: NoOfFrames] forKey:@"numberOfFrames"];
 		[dicomElements setObject:[NSNumber numberWithInt: NoOfSeries] forKey:@"numberOfSeries"];
+		[dicomElements setObject:f forKey:@"filePath"];
 	}
 	
 	return returnVal;
@@ -3412,7 +3414,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:imageID forKey:@"SOPUID"];
 			[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
 			[dicomElements setObject:fileType forKey:@"fileType"];
-
+			[dicomElements setObject:f forKey:@"filePath"];
 			
 			NSLog(@"dicomElements : %@", dicomElements);
 		}
