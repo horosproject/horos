@@ -458,9 +458,7 @@ static NSArray*	statesArray = nil;
 				else
 				{
 					if( (ii++) % 30 == 0)
-					{
 						[splash incrementBy:1];
-					}
 				}
 			}
 		}
@@ -474,8 +472,6 @@ static NSArray*	statesArray = nil;
 		
 		if( [splash aborted]) break;
 	}
-	
-	NSLog( @"A");
 	
 	[context retain];
 	[context lock];
