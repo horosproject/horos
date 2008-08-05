@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import "OSIListenerPreferencePanePref.h"
-
+#import "DefaultsOsiriX.h"
 
 #include <netdb.h>
 #include <unistd.h>
@@ -38,7 +38,7 @@ char *GetPrivateIP()
 
 -(NSArray*)IPv4Address;
 {
-	NSEnumerator* e = [[[NSHost currentHost] addresses] objectEnumerator];
+	NSEnumerator* e = [[[DefaultsOsiriX currentHost] addresses] objectEnumerator];
 	NSString* addr;
 	NSMutableArray* r = [NSMutableArray array];
 
