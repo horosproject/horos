@@ -2987,6 +2987,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	NSRect      size = [self frame];
 	
 	if( dcmPixList == 0L) return;
+
+	float	cpixelMouseValueR = pixelMouseValueR;
+	float	cpixelMouseValueG = pixelMouseValueG;
+	float	cpixelMouseValueB = pixelMouseValueB;
+	float	cmouseXPos = mouseXPos;
+	float	cmouseYPos = mouseYPos;
+	float	cpixelMouseValue = pixelMouseValue;
+	
+	pixelMouseValueR = 0;
+	pixelMouseValueG = 0;
+	pixelMouseValueB = 0;
+	mouseXPos = 0;							// DDP (041214): if outside view bounds show zeros
+	mouseYPos = 0;							// otherwise update mouseXPos, mouseYPos, pixelMouseValue
+	pixelMouseValue = 0;
 	
 	if( [[self window] isVisible] && [[self window] isKeyWindow])
 	{
@@ -2998,22 +3012,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		BOOL	needUpdate = NO;
 		
-		float	cpixelMouseValueR = pixelMouseValueR;
-		float	cpixelMouseValueG = pixelMouseValueG;
-		float	cpixelMouseValueB = pixelMouseValueB;
-		float	cmouseXPos = mouseXPos;
-		float	cmouseYPos = mouseYPos;
-		float	cpixelMouseValue = pixelMouseValue;
-		
 		eventLocation = [self convertPoint:eventLocation fromView:nil];
 		NSPoint imageLocation = [self ConvertFromNSView2GL:eventLocation];
-		
-		pixelMouseValueR = 0;
-		pixelMouseValueG = 0;
-		pixelMouseValueB = 0;
-		mouseXPos = 0;							// DDP (041214): if outside view bounds show zeros
-		mouseYPos = 0;							// otherwise update mouseXPos, mouseYPos, pixelMouseValue
-		pixelMouseValue = 0;
 		
 		if( imageLocation.x >= 0 && imageLocation.x < curDCM.pwidth)	//&& NSPointInRect( eventLocation, size)) <- this doesn't work in MPR Ortho
 		{
@@ -9907,7 +9907,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void)mouseExited:(NSEvent *)theEvent
 {
 	[self deleteLens];
-	
+
+	mouseXPos = 0;
+	mouseYPos = 0;
+
 	cursorSet = NO;
 }
 
