@@ -70,7 +70,7 @@
 #import "KeyObjectController.h"
 #import "KeyObjectPopupController.h"
 #import "JPEGExif.h"
-//#import "SRAnnotationController.h"
+#import "NSFont_OpenGL.h"
 #import "Reports.h"
 #import "ROISRConverter.h"
 #import "MenuDictionary.h"
@@ -13913,6 +13913,18 @@ int i,j,l;
 		
 		int currentImageIndex = [imageView curImage];
 		
+		float fontSizeCopy = [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"];
+		
+		if( columns != 1)
+		{
+			float inc = (1 + ((columns - 1) * 0.35));
+			if( inc > 2.5) inc = 2.5;
+			
+			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc forKey: @"FONTSIZE"];
+			[NSFont resetFont: NO];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: self];
+		}
+		
 		int i;
 		for( i = from; i < to; i += interval)
 		{
@@ -13937,10 +13949,12 @@ int i,j,l;
 				im = [DCMPix resizeIfNecessary: im dcmPix: [imageView curDCM]];
 				
 				NSData *bitmapData = [im  TIFFRepresentation];
+				
 				// since a zoom will be applied, conversion to jpeg here is inadequate
 				//NSData *imageData = [im  TIFFRepresentation];
 				//NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
 				//NSData *bitmapData = [imageRep representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+				
 				[files addObject: [tmpFolder stringByAppendingFormat:@"/%d", i]];
 				[bitmapData writeToFile: [files lastObject] atomically:YES];
 			}
@@ -13948,6 +13962,13 @@ int i,j,l;
 			[splash incrementBy: 1];
 			
 			[pool release];
+		}
+		
+		if( fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
+		{
+			[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy forKey: @"FONTSIZE"];
+			[NSFont resetFont: NO];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: self];
 		}
 		
 		// Go back to initial frame

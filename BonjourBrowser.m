@@ -31,6 +31,7 @@
 
 static BOOL bugFixedForDNSResolve = NO;
 static int TIMEOUT	= 10;
+static NSLock *resolveServiceThreadLock = 0L;
 #define USEZIP NO
 
 #define OSIRIXRUNMODE @"OsiriXLoopMode"
@@ -1282,6 +1283,9 @@ static char *GetPrivateIP()
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
+	if( !resolveServiceThreadLock) resolveServiceThreadLock = [[NSLock alloc] init];
+	[resolveServiceThreadLock lock];
+	
 	resolved = NO;
 	
 	@try
@@ -1293,7 +1297,9 @@ static char *GetPrivateIP()
 	{
 		NSLog(@"resolveServiceThread exception: %@", e);
 	}
-
+	
+	[resolveServiceThreadLock unlock];
+	
 	[pool release];
 	
 	threadIsRunning = NO;
