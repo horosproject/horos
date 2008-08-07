@@ -12,7 +12,6 @@
  PURPOSE.
  =========================================================================*/
 
-#import "NSImage+QuickLook.h"
 #import <DiscRecording/DRDevice.h>
 #import "DCMView.h"
 #import "MyOutlineView.h"
