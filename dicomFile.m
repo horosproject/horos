@@ -1760,7 +1760,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					}
 				}
 				
-				if( CHECKFORLAVIM)
+				if( CHECKFORLAVIM == YES)
 				{
 					NSString	*album = 0L;
 					
@@ -2556,7 +2556,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			////////// **** HUG SPECIFIC CODE - DO NOT REMOVE THANKS ! Antoine Rosset
 			
-			if( CHECKFORLAVIM)
+			if( CHECKFORLAVIM == YES)
 			{
 				//Le nom de l'étude peut se trouver dans plusieurs champs DICOM, suivant la modalité de l'examen.
 				//IRM :	0x0040:0x0280
@@ -3455,7 +3455,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 }
 
 - (BOOL)checkForLAVIM{
-	return CHECKFORLAVIM;
+	if( CHECKFORLAVIM == YES) return YES;
+	
+	return NO;
 }
 
 - (int)commentsGroup {

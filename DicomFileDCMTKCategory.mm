@@ -259,7 +259,7 @@ extern NSLock	*PapyrusLock;
 				}
 			}
 			
-			if([self checkForLAVIM] )
+			if([self checkForLAVIM] == YES)
 			{
 				NSString	*album = 0L;
 				if (dataset->findAndGetString(DCM_ImageComments, string, OFFalse).good() && string != NULL){
