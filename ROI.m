@@ -4912,41 +4912,39 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			return ([self EllipseArea]*pixelSpacingX*pixelSpacingY)/100.;
 		break;
 		case tPlain:
-			{
-				float area=0.0;;
-				for( long i = 0; i < textureWidth*textureHeight;i++)
-					if (textureBuffer[i]!=0) area++;
-				return (area*pixelSpacingX*pixelSpacingY)/100.;
-			}
-			break;
+		{
+			float area=0.0;;
+			for( long i = 0; i < textureWidth*textureHeight;i++)
+				if (textureBuffer[i]!=0) area++;
+			return (area*pixelSpacingX*pixelSpacingY)/100.;
+		}
+		break;
 	}
 	
 	return 0.0f;
 }
 
-- (NSPoint) centroid {
-	
-	if ( type == tROI || type == tOval ) {
+- (NSPoint) centroid
+{
+	if ( type == tROI || type == tOval )
+	{
 		return rect.origin;
 	}
 	
-	NSArray	*pts = self.points;
-	
-	int num_points = [pts count];
-	
 	NSPoint centroid;
 	
-	centroid.x = 0;
-	centroid.y = 0;
+	centroid.x = centroid.y = 0;
 	
-	for ( int i = 0; i < num_points; i++ ) {
-		centroid.x += [[pts objectAtIndex:i] x] / num_points;
-		centroid.y += [[pts objectAtIndex:i] y] / num_points;
+	float num_points = [self.points count];
+	
+	for ( MyPoint *p in self.points)
+	{
+		centroid.x += [p x] / num_points;
+		centroid.y += [p y] / num_points;
 	}
 	
 	return centroid;
 }
-
 
 - (void) addMarginToBuffer: (int) margin
 {
@@ -4954,15 +4952,18 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	int newHeight = textureHeight + 2*margin;
 	unsigned char* newBuffer = (unsigned char*)calloc(newWidth*newHeight, sizeof(unsigned char));
 	
-	if(newBuffer) {
-		for( int i=0; i<margin; i++) {
+	if(newBuffer)
+	{
+		for( int i=0; i<margin; i++)
+		{
 			// skip the 'margin' first lines
 			newBuffer += newWidth; 
 		}
 		
 		unsigned char	*temptextureBuffer = textureBuffer;
 		
-		for( int i=0; i<textureHeight; i++ ) {
+		for( int i=0; i<textureHeight; i++)
+		{
 			newBuffer += margin; // skip the left margin pixels
 			memcpy( newBuffer,temptextureBuffer,textureWidth*sizeof(unsigned char));
 			newBuffer += textureWidth+margin; // move to the next line, skipping the right margin pixels
@@ -4985,8 +4986,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 // Calcium Scoring
 // Should we check to see if we using a brush ROI and other appropriate checks before return a calcium measurement?
 
-
-- (int)calciumScoreCofactor{
+- (int)calciumScoreCofactor
+{
 	/* 
 	Cofactor values used by Agaston.  
 	Using a threshold of 90 rather than 130. Assuming
@@ -5001,7 +5002,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	return _calciumCofactor;
 }
 
-- (float)calciumScore{
+- (float)calciumScore
+{
 	// roi Area * cofactor;  area is is mm2.
 	//plainArea is number of pixels 
 	// still to compensate for overlapping slices interval/sliceThickness
@@ -5037,7 +5039,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	return area * [[self pix] sliceThickness];
 	//return [self roiArea] * [self thickness] * 100;
 }
-- (float)calciumMass
+- (float) calciumMass
 {
 	//Volume * mean CT Density / 250 
 	if( rtotal == -1)
@@ -5046,7 +5048,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	return fabs( [self calciumVolume] * rmean)/ 250;
 }
 
-- (void)setLayerImage:(NSImage*)image;
+- (void) setLayerImage:(NSImage*)image;
 {
 	if(layerImage) [layerImage release];
 	layerImage = image;
@@ -5087,8 +5089,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	[self loadLayerImageTexture];
 }
 
-
-- (GLuint )loadLayerImageTexture;
+- (GLuint) loadLayerImageTexture;
 {
 	NSBitmapImageRep *bitmap;
 	bitmap = [[NSBitmapImageRep alloc] initWithData: [layerImage TIFFRepresentation]];

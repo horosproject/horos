@@ -1566,9 +1566,9 @@ static NSArray*	statesArray = nil;
 
 - (void) processAutorouting
 {
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSArray				*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+	NSArray *serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
 	
 	[autoroutingInProgress lock];
 	

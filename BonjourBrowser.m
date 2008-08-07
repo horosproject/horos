@@ -123,6 +123,7 @@ static char *GetPrivateIP()
 			bugFixedForDNSResolve = YES;
 		#endif
 		
+		resolveServiceThreadLock = [[NSLock alloc] init];
 		async = [[NSLock alloc] init];
 		asyncWrite = [[NSLock alloc] init];
 		lock = [[NSLock alloc] init];
@@ -196,6 +197,7 @@ static char *GetPrivateIP()
 	[async release];
 	[browser release];
 	[services release];
+	[resolveServiceThreadLock release];
 	
 	[super dealloc];
 }
@@ -445,7 +447,7 @@ static char *GetPrivateIP()
 
 - (void) asyncWrite: (NSString*) p
 {
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	if( currentDataPtr == 0L) return;
 	
@@ -455,8 +457,7 @@ static char *GetPrivateIP()
 		lastAsyncPos = currentDataPos;
 	[async unlock];
 	
-	if( size <= 0)
-		return;
+	if( size <= 0) return;
 	
 	[asyncWrite lock];
 	FILE *f = fopen ([p UTF8String], "ab");
@@ -1283,7 +1284,6 @@ static char *GetPrivateIP()
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
-	if( !resolveServiceThreadLock) resolveServiceThreadLock = [[NSLock alloc] init];
 	[resolveServiceThreadLock lock];
 	
 	resolved = NO;

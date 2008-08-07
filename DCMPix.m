@@ -1271,33 +1271,28 @@ BOOL gUSEPAPYRUSDCMPIX;
 	{
 		// Rescale image if resolution is too high, compared to the original resolution
 		
-		float MAXSIZE = 1.3;
+		float MAXSIZE = 1.5;
 		
 		int minWidth = [dcmPix pwidth]*MAXSIZE;
 		int minHeight = [dcmPix pheight]*MAXSIZE;
 		
-		if( minWidth < 512) MAXSIZE = 512 / [dcmPix pwidth];
-		if( minHeight < 512) MAXSIZE = 512 / [dcmPix pheight];
+		if( minWidth < 768) MAXSIZE = 768 / [dcmPix pwidth];
+		if( minHeight < 768) MAXSIZE = 768 / [dcmPix pheight];
 		
 		minWidth = [dcmPix pwidth]*MAXSIZE;
 		minHeight = [dcmPix pheight]*MAXSIZE;
 		
-		if(		[currentImage size].width > minWidth &&
-		   [currentImage size].height > minHeight)
+		if( [currentImage size].width > minWidth && [currentImage size].height > minHeight)
 		{
 			if( [currentImage size].width/[dcmPix pwidth] < [currentImage size].height / [dcmPix pheight])
 			{
 				float ratio = [currentImage size].width / (minWidth);
 				imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
-				
-				NSLog( @"ratio: %f", ratio);
 			}
 			else
 			{
 				float ratio = [currentImage size].height / (minHeight);
 				imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
-				
-				NSLog( @"ratio: %f", ratio);
 			}
 			[currentImage setScalesWhenResized:YES];
 			

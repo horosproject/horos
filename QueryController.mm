@@ -480,6 +480,10 @@ static const char *GetPrivateIP()
 		{
 			[self deleteSelection: self];
 		}
+		else if( c == ' ')
+		{
+			[self retrieve: self onlyIfNotAvailable: YES];
+		}
 		else if( c == NSNewlineCharacter || c == NSEnterCharacter || c == NSCarriageReturnCharacter)
 		{
 			[self retrieveAndView: self];
@@ -1532,7 +1536,7 @@ static const char *GetPrivateIP()
 
 -(void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable
 {
-	return [self retrieve: sender onlyIfNotAvailable: NO forViewing: NO];
+	return [self retrieve: sender onlyIfNotAvailable: onlyIfNotAvailable forViewing: NO];
 }
 
 -(void) retrieve:(id)sender

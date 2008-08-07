@@ -14,10 +14,9 @@
 
 
 #import "QueryController.h"
-#include "AYDicomPrintWindowController.h"
-//#include "AYDcmPrintSCU.h"
-#include "AYNSImageToDicom.h"
-
+#import "AYDicomPrintWindowController.h"
+#import "NSFont_OpenGL.h"
+#import "AYNSImageToDicom.h"
 
 #define VERSIONNUMBERSTRING	@"v1.00.000"
 #define ECHOTIMEOUT 5
@@ -363,10 +362,30 @@
 	
 	NSLog( [options description]);
 	
+	float fontSizeCopy = [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"];
+		
+	if( columns != 1)
+	{
+		float inc = (1 + ((columns - 1) * 0.35));
+		if( inc > 2.5) inc = 2.5;
+		
+		[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy * inc forKey: @"FONTSIZE"];
+		[NSFont resetFont: NO];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: self];
+	}
+	
 	// collect images for printing
 	AYNSImageToDicom *dicomConverter = [[AYNSImageToDicom alloc] init];
 	NSArray *images = [dicomConverter dicomFileListForViewer: m_CurrentViewer destinationPath: destPath options: options asColorPrint: [[dict valueForKey: @"colorPrint"] intValue] withAnnotations: NO];
 	[images retain];
+	
+	if( fontSizeCopy != [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])
+	{
+		[[NSUserDefaults standardUserDefaults] setFloat: fontSizeCopy forKey: @"FONTSIZE"];
+		[NSFont resetFont: NO];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: self];
+	}
+	
 	// check, if images were collected
 	if ([images count] == 0)
 	{
