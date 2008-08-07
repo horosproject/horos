@@ -743,9 +743,14 @@ static NSDate *lastWarningDate = 0L;
 	BOOL				recomputePETBlending = NO;
 	BOOL				refreshViewer = NO;
 	BOOL				revertViewer = NO;
+	
 	NSUserDefaults		*defaults = [NSUserDefaults standardUserDefaults];
 	
 	if( mainThread != [NSThread currentThread]) return;
+	
+	NSDictionary *dictionaryRepresentation = [defaults dictionaryRepresentation];
+	
+	if( [dictionaryRepresentation isEqualToDictionary: previousDefaults]) return;
 	
 	NS_DURING
 	
@@ -807,7 +812,7 @@ static NSDate *lastWarningDate = 0L;
 		refreshViewer = YES;
 	
 	[previousDefaults release];
-	previousDefaults = [[defaults dictionaryRepresentation] retain];
+	previousDefaults = [dictionaryRepresentation retain];
 	
 	if (refreshDatabase)
 	{
