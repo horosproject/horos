@@ -62,22 +62,9 @@ static char *GetPrivateIP()
 
 @implementation BonjourBrowser
 
-+ (void) waitForLock:(NSLock*) l
-{
-	[l lock];
-	
-//	while( [l tryLock] == NO)
-//	{
-//		if( [NSThread currentThread] == mainThread)
-//		{
-//			[[NSRunLoop currentRunLoop] runMode: OSIRIXRUNMODE beforeDate:[NSDate dateWithTimeIntervalSinceNow: 0.002]];
-//		}
-//	}
-}
-
 - (void) waitTheLock
 {
-	[BonjourBrowser waitForLock: lock];
+	[lock lock];
 	[lock unlock];
 }
 
@@ -125,7 +112,6 @@ static char *GetPrivateIP()
 		
 		resolveServiceThreadLock = [[NSLock alloc] init];
 		async = [[NSLock alloc] init];
-		asyncWrite = [[NSLock alloc] init];
 		lock = [[NSLock alloc] init];
 		browser = [[NSNetServiceBrowser alloc] init];
 		services = [[NSMutableArray array] retain];
@@ -193,7 +179,6 @@ static char *GetPrivateIP()
 	[filePathToLoad release];
 	[tempDatabaseFile release];
 	[lock release];
-	[asyncWrite release];
 	[async release];
 	[browser release];
 	[services release];
@@ -449,22 +434,21 @@ static char *GetPrivateIP()
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	if( currentDataPtr == 0L) return;
-	
-	[async lock];
-		int size = currentDataPos - lastAsyncPos;
-		int pos = lastAsyncPos;
-		lastAsyncPos = currentDataPos;
-	[async unlock];
-	
-	if( size <= 0) return;
-	
-	[asyncWrite lock];
-	FILE *f = fopen ([p UTF8String], "ab");
-	fwrite( currentDataPtr + pos, size, 1, f);
-	fclose( f);
-	
-	[asyncWrite unlock];
+	if( currentDataPtr != 0L)
+	{
+		[async lock];
+			int size = currentDataPos - lastAsyncPos;
+			int pos = lastAsyncPos;
+			lastAsyncPos = currentDataPos;
+			
+			if( size > 0)
+			{
+				FILE *f = fopen ([p UTF8String], "ab");
+				fwrite( currentDataPtr + pos, size, 1, f);
+				fclose( f);
+			}
+		[async unlock];
+	}
 	
 	[pool release];
 }
@@ -498,11 +482,8 @@ static char *GetPrivateIP()
 		
 		[async unlock];
 		
-		if ( strcmp( messageToRemoteService, "DATAB") == 0)
-		{
-			if( currentDataPos - lastAsyncPos > 1024L * 1024L * 10L)
-				[NSThread detachNewThreadSelector: @selector( asyncWrite:) toTarget: self withObject: tempDatabaseFile];
-		}
+		if( currentDataPos - lastAsyncPos > 1024L * 1024L * 10L)
+			[NSThread detachNewThreadSelector: @selector( asyncWrite:) toTarget: self withObject: tempDatabaseFile];
 		
 		NSDate *oldCurrentTimeOut = currentTimeOut;
 		currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
@@ -510,8 +491,9 @@ static char *GetPrivateIP()
 	}
 	else
 	{
-		if ( strcmp( messageToRemoteService, "DATAB") == 0)
-			[self asyncWrite: tempDatabaseFile];
+		[self asyncWrite: tempDatabaseFile];
+		
+		[async lock];
 		
 		BOOL success = [self processTheData: [NSData dataWithBytesNoCopy: currentDataPtr  length: currentDataPos freeWhenDone: NO]];
 		
@@ -527,6 +509,8 @@ static char *GetPrivateIP()
 		[currentConnection closeFile];
 		[currentConnection release];
 		currentConnection = 0L;
+		
+		[async unlock];
 	}
 }
 
@@ -1390,7 +1374,7 @@ static char *GetPrivateIP()
 
 - (NSDictionary*) getDICOMDestinationInfo:(int) index
 {
-	[BonjourBrowser waitForLock: lock];
+	[lock lock];
 	
 	[dicomListener release];
 	dicomListener = 0L;
@@ -1415,7 +1399,7 @@ static char *GetPrivateIP()
 	
 	BOOL result;
 	
-	[BonjourBrowser waitForLock: lock];
+	[lock lock];
 	
 	[self connectToServer: index message:@"VERSI"];
 	
@@ -1435,7 +1419,7 @@ static char *GetPrivateIP()
 
 - (void) removeStudies: (NSArray*) studies fromAlbum: (NSManagedObject*) album bonjourIndex:(int) index
 {
-	[BonjourBrowser waitForLock: lock];
+	[lock lock];
 	
 	[albumStudies release];
 	[albumUID release];
@@ -1458,7 +1442,7 @@ static char *GetPrivateIP()
 
 - (void) addStudies: (NSArray*) studies toAlbum: (NSManagedObject*) album bonjourIndex:(int) index
 {
-	[BonjourBrowser waitForLock: lock];
+	[lock lock];
 	
 	[albumStudies release];
 	[albumUID release];
@@ -1481,7 +1465,7 @@ static char *GetPrivateIP()
 
 - (void) setBonjourDatabaseValue:(int) index item:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key
 {
-	[BonjourBrowser waitForLock: lock];
+	[lock lock];
 	
 	[setValueObject release];
 	[setValueValue release];
@@ -1512,7 +1496,7 @@ static char *GetPrivateIP()
 		return [fattrs objectForKey:NSFileModificationDate];
 	}
 	
-	[BonjourBrowser waitForLock: lock];
+	[lock lock];
 	
 	[filePathToLoad release];
 	
@@ -1540,7 +1524,7 @@ static char *GetPrivateIP()
 	if( [[NSFileManager defaultManager] fileExistsAtPath:returnedFile]) return returnedFile;
 	else returnedFile = 0L;
 	
-	[BonjourBrowser waitForLock: lock];
+	[lock lock];
 	
 	[filePathToLoad release];
 	filePathToLoad = [pathFile retain];
@@ -1561,7 +1545,7 @@ static char *GetPrivateIP()
 {
 	BOOL succeed = NO;
 	
-	[BonjourBrowser waitForLock: lock];
+	[lock lock];
 	
 	[filePathToLoad release];
 	
@@ -1591,7 +1575,7 @@ static char *GetPrivateIP()
 	if( serviceBeingResolvedIndex != index)
 		newConnection = YES;
 	
-	[BonjourBrowser waitForLock: lock];
+	[lock lock];
 	
 	[dbFileName release];
 	dbFileName = 0L;
@@ -1675,18 +1659,16 @@ static char *GetPrivateIP()
 					
 					if( currentDataPtr)
 					{
-						[asyncWrite lock];
+						[async lock];
 						free( currentDataPtr);
 						currentDataPtr = 0L;
-						[asyncWrite unlock];
+						[async unlock];
 					}
 					
 					// For async writing
 					[[NSFileManager defaultManager] removeFileAtPath: tempDatabaseFile handler: 0L];
 					[[NSFileManager defaultManager] createFileAtPath: tempDatabaseFile contents:0L attributes:0L];
 					lastAsyncPos = 0L;
-					[asyncWrite lock];
-					[asyncWrite unlock];
 					[async lock];
 					[async unlock];
 					
@@ -1706,10 +1688,10 @@ static char *GetPrivateIP()
 					
 					if( currentDataPtr)
 					{
-						[asyncWrite lock];
+						[async lock];
 						free( currentDataPtr);
 						currentDataPtr = 0L;
-						[asyncWrite unlock];
+						[async unlock];
 					}
 				}
 				else
@@ -1775,7 +1757,7 @@ static char *GetPrivateIP()
 		if( [dict valueForKey: @"Port"] == 0L) return NO;
 	}
 	
-	[BonjourBrowser waitForLock: lock];
+	[lock lock];
 	
 	[paths release];
 	paths = [ip retain];
@@ -1809,7 +1791,7 @@ static char *GetPrivateIP()
 		if( [[NSFileManager defaultManager] fileExistsAtPath: loopItem] == NO) return NO;
 	}
 	
-	[BonjourBrowser waitForLock: lock];
+	[lock lock];
 	
 	[paths release];
 	paths = [ip retain];
@@ -1823,7 +1805,7 @@ static char *GetPrivateIP()
 
 - (void) getDICOMROIFiles:(int) index roisPaths:(NSArray*) roisPaths
 {
-	[BonjourBrowser waitForLock: lock];
+	[lock lock];
 	
 	[dicomFileNames release];
 	dicomFileNames = [[NSMutableArray alloc] initWithCapacity: 0];
@@ -1854,7 +1836,7 @@ static char *GetPrivateIP()
 
 - (NSString*) getDICOMFile:(int) index forObject:(NSManagedObject*) image noOfImages: (int) noOfImages
 {
-	[BonjourBrowser waitForLock: lock];
+	[lock lock];
 	
 	// Does this file already exist?
 	NSString	*dicomFileName = [BonjourBrowser uniqueLocalPath: image];

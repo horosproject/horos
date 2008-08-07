@@ -21,7 +21,7 @@
 
 @interface BonjourBrowser : NSObject
 {
-	NSLock				*lock, *async, *asyncWrite;
+	NSLock				*lock, *async;
 	
 	int					lastAsyncPos;
 	NSString			*tempDatabaseFile;
