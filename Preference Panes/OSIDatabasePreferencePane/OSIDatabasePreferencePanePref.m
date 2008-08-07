@@ -76,7 +76,7 @@ Version 2.4
 - (void) buildPluginsMenu
 {
 	int numberOfReportPlugins = 0;
-	for( NSString *k in [[PluginManager pluginsDict] allKeys])
+	for( NSString *k in [[PluginManager reportPlugins] allKeys])
 	{
 		[reportsMode addItemWithTitle: k];
 		[[reportsMode lastItem] setIndentationLevel:1];
