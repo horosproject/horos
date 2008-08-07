@@ -224,6 +224,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSView					*reportTemplatesView;
 	IBOutlet NSImageView			*reportTemplatesImageView;
 	IBOutlet NSPopUpButton			*reportTemplatesListPopUpButton;
+	int								reportToolbarItemType;
 	
 	NSConditionLock					*newFilesConditionLock;
 	NSMutableArray					*viewersListToReload, *viewersListToRebuild;
@@ -393,6 +394,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages;
 - (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects;
 - (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages;
+- (void)setToolbarReportIconForItem: (NSToolbarItem *)item;
 
 - (void) resetListenerTimer;
 - (IBAction) smartAlbumHelpButton:(id) sender;

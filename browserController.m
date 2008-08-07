@@ -12,6 +12,7 @@
  PURPOSE.
  =========================================================================*/
 
+#import "NSImage+QuickLook.h"
 #import <DiscRecording/DRDevice.h>
 #import "DCMView.h"
 #import "MyOutlineView.h"
@@ -476,8 +477,6 @@ static NSArray*	statesArray = nil;
 	[context retain];
 	[context lock];
 	
-	[context setStalenessInterval: 1200];
-	
 	// Find all current studies
 	
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
@@ -501,7 +500,6 @@ static NSArray*	statesArray = nil;
 	{
 		NSLog( @"addFilesToDatabase ERROR: %@", [error localizedDescription]);
 		//managedObjectContext = 0L;
-		[context setStalenessInterval: 1200];
 		[context unlock];
 		[context release];
 		
@@ -966,7 +964,6 @@ static NSArray*	statesArray = nil;
 			NSLog(@"vlToReload vlToRebuild: %@", [ne description]);
 		}
 		
-		[context setStalenessInterval: 1200];
 		[context unlock];
 		[context release];
 		
@@ -1728,8 +1725,6 @@ static NSArray*	statesArray = nil;
 		localizedDescription = [error localizedDescription];
 		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Store Configuration Failure: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
     }
-	
-	[managedObjectContext setStalenessInterval: 1200];
 
 	[[managedObjectContext undoManager] setLevelsOfUndo: 1];
 	[[managedObjectContext undoManager] disableUndoRegistration];
@@ -1762,7 +1757,6 @@ static NSArray*	statesArray = nil;
 			NSLog(@"********** defaultManagerObjectContext FAILED");
 		}
 		
-		[mOC setStalenessInterval: 1200];
 		[[mOC undoManager] setLevelsOfUndo: 1];
 		[[mOC undoManager] disableUndoRegistration];
 		
@@ -10719,7 +10713,8 @@ static NSArray*	openSubSeriesArray = 0L;
 		isCurrentDatabaseBonjour = NO;
 		currentDatabasePath = nil;
 		currentDatabasePath = [[documentsDirectory() stringByAppendingPathComponent:DATAFILEPATH] retain];
-		if( [[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath] == NO ) {
+		if( [[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath] == NO )
+		{
 			// Switch back to default location
 			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
 			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
@@ -10727,7 +10722,8 @@ static NSArray*	openSubSeriesArray = 0L;
 			[currentDatabasePath release];
 			currentDatabasePath = [[documentsDirectory() stringByAppendingPathComponent:DATAFILEPATH] retain];
 			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath] == NO ) {
+			if( [[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath] == NO )
+			{
 				NEEDTOREBUILD = YES;
 				COMPLETEREBUILD = YES;
 			}
@@ -14497,7 +14493,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 							//Release Old Controller
 							[self srReports:sender];
 						}
-						
 					}
 					else
 					{
@@ -14528,28 +14523,30 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self updateReportToolbarIcon:nil];
 }
 
-- (NSImage*)reportIcon
+- (NSImage*) reportIcon
 {
 	NSString *iconName = @"Report.icns";
-	switch([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue])
+	switch( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue])
 	{
 		case 0: 
-		{ // M$ Word
-			
+		 // M$ Word
 			iconName = @"ReportWord.icns";
-		}
+			reportToolbarItemType = 0;
 		break;
 		case 1: 
-		{ // TextEdit (RTF)
+		 // TextEdit (RTF)
 			
 			iconName = @"ReportRTF.icns";
-		}
+			reportToolbarItemType = 1;
 		break;
 		case 2:
-		{ // Pages.app
+		 // Pages.app
 			
 			iconName = @"ReportPages.icns";
-		}
+			reportToolbarItemType = 2;
+		break;
+		default:
+			reportToolbarItemType = 3;
 		break;
 	}
 	return [NSImage imageNamed:iconName];
@@ -14557,16 +14554,28 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)updateReportToolbarIcon: (NSNotification *)note
 {
-	NSToolbarItem *item;
-	NSArray *toolbarItems = [toolbar items];
-	for( long i=0; i<[toolbarItems count]; i++ )
+	int previousReportType = reportToolbarItemType;
+	
+	[self setToolbarReportIconForItem: 0L];
+	
+	if( reportToolbarItemType != previousReportType)
 	{
-		item = [toolbarItems objectAtIndex:i];
-		if ([[item itemIdentifier] isEqualToString:ReportToolbarItemIdentifier] )
+		NSToolbarItem *item;
+		NSArray *toolbarItems = [toolbar items];
+		
+		[AppController checkForPreferencesUpdate: NO];
+		
+		for( int i=0; i<[toolbarItems count]; i++ )
 		{
-			[toolbar removeItemAtIndex:i];
-			[toolbar insertItemWithItemIdentifier:ReportToolbarItemIdentifier atIndex:i];
+			item = [toolbarItems objectAtIndex:i];
+			if ([[item itemIdentifier] isEqualToString:ReportToolbarItemIdentifier] )
+			{
+				[toolbar removeItemAtIndex:i];
+				[toolbar insertItemWithItemIdentifier:ReportToolbarItemIdentifier atIndex:i];
+			}
 		}
+		
+		[AppController checkForPreferencesUpdate: YES];
 	}
 }
 
@@ -14582,15 +14591,33 @@ static volatile int numberOfThreadsForJPEG = 0;
 	else
 		studySelected = [selectedItem valueForKey:@"study"];
 	
-	if([pagesTemplatesArray count]>1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]==2 && [studySelected valueForKey:@"reportURL"] == 0L)
+	if([pagesTemplatesArray count] > 1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 2 && [studySelected valueForKey:@"reportURL"] == 0L)
 	{
-		[item setView:reportTemplatesView];
-		[item setMinSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
-		[item setMaxSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
+		[item setView: reportTemplatesView];
+		[item setMinSize: NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
+		[item setMaxSize: NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
+		
+		reportToolbarItemType = -1;
 	}
 	else
 	{
-		[item setImage:[self reportIcon]];
+		NSImage *icon = 0L;
+		
+		if( [studySelected valueForKey: @"reportURL"])
+		{
+			if( [[NSFileManager defaultManager] fileExistsAtPath: [studySelected valueForKey: @"reportURL"]])
+			{
+				icon = [[NSWorkspace sharedWorkspace] iconForFile: [studySelected valueForKey: @"reportURL"]];
+				
+				if( icon)
+					reportToolbarItemType = [NSDate timeIntervalSinceReferenceDate];	// To force the update
+			}
+		}
+		
+		if( icon == 0L)
+			icon = [self reportIcon];	// Keep this line! Because item can be 0L! see updateReportToolbarIcon function
+		
+		[item setImage: icon];
 	}
 }
 
@@ -14763,12 +14790,10 @@ static volatile int numberOfThreadsForJPEG = 0;
     }
 	else if ([itemIdent isEqualToString: ReportToolbarItemIdentifier])
 	{
-        
 		[toolbarItem setLabel: NSLocalizedString(@"Report",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Report",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Create/Open a report for selected study",nil)];
-		//[toolbarItem setImage: [NSImage imageNamed: ReportToolbarItemIdentifier]];
-		[self setToolbarReportIconForItem:toolbarItem];
+		[self setToolbarReportIconForItem: toolbarItem];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(generateReport:)];
     }

@@ -53,6 +53,7 @@ ToolbarPanelController *toolbarPanel[10] = {0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 
 static NSString *currentHostName = 0L;
 static NSMenu *mainMenuCLUTMenu = 0L, *mainMenuWLWWMenu = 0L, *mainMenuConvMenu = 0L;
 static NSDictionary *previousWLWWKeys = 0L, *previousCLUTKeys = 0L, *previousConvKeys = 0L;
+static BOOL checkForPreferencesUpdate = YES;
 
 NSThread				*mainThread;
 BOOL					NEEDTOREBUILD = NO;
@@ -872,14 +873,22 @@ static NSDate *lastWarningDate = 0L;
 	[DCMView setDefaults];
 	[ROI loadDefaultSettings];
 	
+	NSLog( @"***** runPreferencesUpdateCheck");
+	
 	NS_HANDLER
 		NSLog(@"Exception updating prefs: %@", [localException description]);
 	NS_ENDHANDLER
 }
 
++ (void) checkForPreferencesUpdate: (BOOL) b
+{
+	checkForPreferencesUpdate = b;
+}
+
 - (void) preferencesUpdated: (NSNotification*) note
 {
 	if( mainThread != [NSThread currentThread]) return;
+	if( checkForPreferencesUpdate == NO) return;
 	
 	if( updateTimer)
 	{
@@ -888,7 +897,7 @@ static NSDate *lastWarningDate = 0L;
 		updateTimer = 0L;
 	}
 	
-	updateTimer = [[NSTimer scheduledTimerWithTimeInterval: 0.5 target: self selector:@selector(runPreferencesUpdateCheck:) userInfo:0L repeats: NO] retain];
+	updateTimer = [[NSTimer scheduledTimerWithTimeInterval: 1 target: self selector:@selector(runPreferencesUpdateCheck:) userInfo:0L repeats: NO] retain];
 }
 
 -(void) UpdateWLWWMenu: (NSNotification*) note

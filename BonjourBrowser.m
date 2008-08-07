@@ -112,6 +112,7 @@ static char *GetPrivateIP()
 		
 		resolveServiceThreadLock = [[NSLock alloc] init];
 		async = [[NSLock alloc] init];
+		asyncWrite = [[NSLock alloc] init];
 		lock = [[NSLock alloc] init];
 		browser = [[NSNetServiceBrowser alloc] init];
 		services = [[NSMutableArray array] retain];
@@ -180,6 +181,7 @@ static char *GetPrivateIP()
 	[tempDatabaseFile release];
 	[lock release];
 	[async release];
+	[asyncWrite release];
 	[browser release];
 	[services release];
 	[resolveServiceThreadLock release];
@@ -223,11 +225,7 @@ static char *GetPrivateIP()
 {
 	BOOL				success = YES;
 	
-	if( data)
-	{
-		if( [data bytes])
-		{
-			if ( strcmp( messageToRemoteService, "DATAB") == 0)
+	if ( strcmp( messageToRemoteService, "DATAB") == 0)
 			{
 				// we asked for a SQL file, let's write it on disc
 				[dbFileName release];
@@ -242,7 +240,12 @@ static char *GetPrivateIP()
 				
 //				success = [data writeToFile: dbFileName atomically:YES];
 			}
-			else if ( strcmp( messageToRemoteService, "GETDI") == 0)
+			
+	if( data)
+	{
+		if( [data bytes])
+		{
+			if ( strcmp( messageToRemoteService, "GETDI") == 0)
 			{
 				[dicomListener release];
 				dicomListener = 0L;
@@ -436,18 +439,22 @@ static char *GetPrivateIP()
 	
 	if( currentDataPtr != 0L)
 	{
+		[asyncWrite lock];
+		
 		[async lock];
 			int size = currentDataPos - lastAsyncPos;
 			int pos = lastAsyncPos;
 			lastAsyncPos = currentDataPos;
-			
-			if( size > 0)
-			{
-				FILE *f = fopen ([p UTF8String], "ab");
-				fwrite( currentDataPtr + pos, size, 1, f);
-				fclose( f);
-			}
 		[async unlock];
+		
+		if( size > 0)
+		{
+			
+			FILE *f = fopen ([p UTF8String], "ab");
+			fwrite( currentDataPtr + pos, size, 1, f);
+			fclose( f);
+		}
+		[asyncWrite unlock];
 	}
 	
 	[pool release];
@@ -480,10 +487,10 @@ static char *GetPrivateIP()
 			currentDataPos += length;
 		}
 		
-		[async unlock];
-		
 		if( currentDataPos - lastAsyncPos > 1024L * 1024L * 10L)
 			[NSThread detachNewThreadSelector: @selector( asyncWrite:) toTarget: self withObject: tempDatabaseFile];
+		
+		[async unlock];
 		
 		NSDate *oldCurrentTimeOut = currentTimeOut;
 		currentTimeOut = [[NSDate dateWithTimeIntervalSinceNow: TIMEOUT] retain];
@@ -494,8 +501,9 @@ static char *GetPrivateIP()
 		[self asyncWrite: tempDatabaseFile];
 		
 		[async lock];
+		[asyncWrite lock];
 		
-		BOOL success = [self processTheData: [NSData dataWithBytesNoCopy: currentDataPtr  length: currentDataPos freeWhenDone: NO]];
+		BOOL success = [self processTheData: 0L];
 		
 		if( currentDataPtr)
 		{
@@ -510,6 +518,7 @@ static char *GetPrivateIP()
 		[currentConnection release];
 		currentConnection = 0L;
 		
+		[asyncWrite unlock];
 		[async unlock];
 	}
 }

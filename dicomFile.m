@@ -224,6 +224,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	{
 		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"TOOLKITPARSER"])
 		{
+			NSLog( @"DICOMFILE SETDEFAULTS");
+			
 			NSUserDefaults *sd = [NSUserDefaults standardUserDefaults];
 			
 			DEFAULTSSET = YES;
@@ -272,8 +274,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			CHECKFORLAVIM = NO;
 		}
-		
-//		NSLog( @"Toolkit:%d", TOOLKITPARSER);
 	}
 }
 
@@ -2951,7 +2951,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 - (id) initRandom
 {
 	id returnVal = 0L;
-//	NSLog(@"Init dicomFile: %d", DICOMOnly);
+	
 	if( self = [super init])
 	{
 		[DicomFile setDefaults];
