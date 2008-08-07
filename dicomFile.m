@@ -56,7 +56,7 @@ static BOOL useSeriesDescription = NO;
 static BOOL NOLOCALIZER = NO;
 static BOOL combineProjectionSeries = NO, oneFileOnSeriesForUS = NO;
 static int combineProjectionSeriesMode = NO;
-static BOOL	CHECKFORLAVIM = NO;
+static int CHECKFORLAVIM = -1;
 static int COMMENTSGROUP = NO;
 static int COMMENTSELEMENT = NO;
 static BOOL SEPARATECARDIAC4D = NO;
@@ -224,8 +224,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	{
 		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"TOOLKITPARSER"])
 		{
-			NSLog( @"DICOMFILE SETDEFAULTS");
-			
 			NSUserDefaults *sd = [NSUserDefaults standardUserDefaults];
 			
 			DEFAULTSSET = YES;
@@ -245,9 +243,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			combineProjectionSeries = [sd boolForKey: @"combineProjectionSeries"];
 			combineProjectionSeriesMode = [sd boolForKey: @"combineProjectionSeriesMode"];
 			
-			if( [DefaultsOsiriX isLAVIM])
+			if( CHECKFORLAVIM == -1)
 			{
-				CHECKFORLAVIM = YES;	// HUG SPECIFIC, Thanks... Antoine Rosset
+				if( [DefaultsOsiriX isLAVIM]) CHECKFORLAVIM = YES;	// HUG SPECIFIC, Thanks... Antoine Rosset
+				else CHECKFORLAVIM = NO;
 			}
 		}
 		else	// FOR THE SAFEDBREBUILD ! Shell tool
