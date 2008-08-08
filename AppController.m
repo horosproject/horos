@@ -2760,7 +2760,9 @@ static BOOL initialized = NO;
 	
 	numberOfMonitors = [screens count];
 	
+	[AppController checkForPreferencesUpdate: NO];
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"COPYSETTINGS"];
+	[AppController checkForPreferencesUpdate: YES];
 	
 	//get 2D viewer windows
 	for( i = 0; i < [winList count]; i++)
@@ -3050,8 +3052,9 @@ static BOOL initialized = NO;
 		NSLog(@"NO tiling");
 	}
 	
+	[AppController checkForPreferencesUpdate: NO];
 	[[NSUserDefaults standardUserDefaults] setBool: origCopySettings forKey: @"COPYSETTINGS"];
-	
+	[AppController checkForPreferencesUpdate: YES];
 	
 	if( [viewersList count] > 0)
 	{

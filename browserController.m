@@ -357,8 +357,7 @@ static NSArray*	statesArray = nil;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]) onlyDICOM = YES;
 	
-	//	#define RANDOMFILES
-	
+//#define RANDOMFILES
 #ifdef RANDOMFILES
 	NSMutableArray	*randomArray = [NSMutableArray array];
 	for( int i = 0; i < 5000; i++)
@@ -366,7 +365,6 @@ static NSArray*	statesArray = nil;
 		[randomArray addObject:@"yahoo/google/osirix/microsoft"];
 	}
 	newFilesArray = randomArray;
-	enumerator = [newFilesArray objectEnumerator];
 #endif
 	
 	if( safeProcess) NSLog( @"safe Process DB process");
@@ -399,7 +397,12 @@ static NSArray*	statesArray = nil;
 			DicomFile		*curFile = nil;
 			NSDictionary	*curDict = nil;
 			
-			curFile = [[DicomFile alloc] init: newFile];
+			
+			#ifdef RANDOMFILES
+				curFile = [[DicomFile alloc] initRandom];
+			#else
+				curFile = [[DicomFile alloc] init: newFile];
+			#endif
 			
 			if(curFile == 0L && [[newFile pathExtension] isEqualToString:@"zip"] == YES)
 			{

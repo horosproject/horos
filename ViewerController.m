@@ -2191,7 +2191,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
 	NSLog(@"windowWillClose");
-
+	
 	[splitView saveDefault:@"SPLITVIEWER"];
 	
 	[highLightedTimer invalidate];
@@ -3278,8 +3278,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		if( pos <  size.width/2) pos = 0;
 		else pos = size.width+13;
-		
-		[splitView saveDefault:@"SPLITVIEWER"];
 		
 		if (AUTOHIDEMATRIX == NO)
 		{
