@@ -360,7 +360,7 @@ static NSArray*	statesArray = nil;
 //#define RANDOMFILES
 #ifdef RANDOMFILES
 	NSMutableArray	*randomArray = [NSMutableArray array];
-	for( int i = 0; i < 5000; i++)
+	for( int i = 0; i < 50000; i++)
 	{
 		[randomArray addObject:@"yahoo/google/osirix/microsoft"];
 	}
@@ -485,11 +485,11 @@ static NSArray*	statesArray = nil;
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 	error = nil;
-	NSArray *studiesArray;
+	NSMutableArray *studiesArray;
 	
 	@try
 	{
-		studiesArray = [[context executeFetchRequest:dbRequest error:&error] retain];
+		studiesArray = [[context executeFetchRequest:dbRequest error:&error] mutableCopy];
 	}
 	@catch( NSException *ne)
 	{
@@ -516,13 +516,13 @@ static NSArray*	statesArray = nil;
 			modifiedStudiesArray = [NSMutableArray arrayWithCapacity: 0];
 		}
 		
+		NSMutableArray *studiesArrayStudyInstanceUID = [[[studiesArray valueForKey:@"studyInstanceUID"] mutableCopy] autorelease];
+		
 		// Add the new files
 		for (NSDictionary *curDict in dicomFilesArray)
 		{
 			@try
 			{
-				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-				
 				newFile = [curDict objectForKey:@"filePath"];
 				
 				BOOL DICOMROI = NO;
@@ -581,7 +581,7 @@ static NSArray*	statesArray = nil;
 					{
 						/*******************************************/
 						/*********** Find study object *************/
-						index = [[studiesArray  valueForKey:@"studyInstanceUID"] indexOfObject:[curDict objectForKey: @"studyID"]];
+						index = [studiesArrayStudyInstanceUID indexOfObject:[curDict objectForKey: @"studyID"]];
 						if( index == NSNotFound)
 						{
 							// Fields
@@ -592,11 +592,10 @@ static NSArray*	statesArray = nil;
 							
 							[study setValue:today forKey:@"dateAdded"];
 							
-							NSArray	*newStudiesArray = [studiesArray arrayByAddingObject: study];
-							[studiesArray release];
-							studiesArray = [newStudiesArray retain];
+							[studiesArray addObject: study];
+							[studiesArrayStudyInstanceUID addObject: [curDict objectForKey: @"studyID"]];
 							
-							[curSerieID release];	curSerieID = 0L;
+							curSerieID = 0L;
 						}
 						else
 						{
@@ -632,8 +631,8 @@ static NSArray*	statesArray = nil;
 								[study setValue:[curDict objectForKey: @"hasDICOM"] forKey:@"hasDICOM"];
 						}
 						
-						[curStudyID release];			curStudyID = [[curDict objectForKey: @"studyID"] retain];
-						[curPatientUID release];		curPatientUID = [[curDict objectForKey: @"patientUID"] retain];
+						curStudyID = [curDict objectForKey: @"studyID"];
+						curPatientUID = [curDict objectForKey: @"patientUID"];
 						
 						if( produceAddedFiles)
 							[modifiedStudiesArray addObject: study];
@@ -690,8 +689,7 @@ static NSArray*	statesArray = nil;
 									[study setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
 							}
 							
-							[curSerieID release];
-							curSerieID = [[curDict objectForKey: @"seriesID"] retain];
+							curSerieID = [curDict objectForKey: @"seriesID"];
 						}
 						
 						/*******************************************/
@@ -865,7 +863,6 @@ static NSArray*	statesArray = nil;
 						}
 					}
 				}
-				[pool release];
 			}
 				
 			@catch( NSException *ne)
@@ -902,10 +899,6 @@ static NSArray*	statesArray = nil;
 		{
 			NSLog(@"Compute no of images in studies/series: %@", [ne description]);
 		}
-		
-		[curPatientUID release];
-		[curStudyID release];
-		[curSerieID release];
 		
 		if( splash)
 		{
