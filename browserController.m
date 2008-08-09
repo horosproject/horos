@@ -4051,7 +4051,8 @@ static NSArray*	statesArray = nil;
 	needDBRefresh = NO;
 	
 	NSInteger index = [selectedRowIndexes firstIndex];
-	while (index != NSNotFound ) {
+	while (index != NSNotFound )
+	{
 		[previousObjects addObject: [databaseOutline itemAtRow: index]];
 		index = [selectedRowIndexes indexGreaterThanIndex:index];
 	}
@@ -4062,7 +4063,8 @@ static NSArray*	statesArray = nil;
 	
 	if( displayEmptyDatabase) predicate = [NSPredicate predicateWithValue:NO];
 	
-	if( isCurrentDatabaseBonjour && [bonjourServicesList selectedRow] > 0) {
+	if( isCurrentDatabaseBonjour && [bonjourServicesList selectedRow] > 0)
+	{
 		int rowIndex = [bonjourServicesList selectedRow];
 		
 		NSDictionary *dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
@@ -4077,11 +4079,13 @@ static NSArray*	statesArray = nil;
 	// ALBUMS
 	// ********************
 	
-	if( albumTable.selectedRow > 0 ) {
+	if( albumTable.selectedRow > 0 )
+	{
 		NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
 		NSString		*albumName = [album valueForKey:@"name"];
 		
-		if( [[album valueForKey:@"smartAlbum"] boolValue] == YES ) {
+		if( [[album valueForKey:@"smartAlbum"] boolValue] == YES )
+		{
 			subPredicate = [self smartAlbumPredicate: album];
 			description = [description stringByAppendingFormat:NSLocalizedString(@"Smart Album selected: %@", nil), albumName];
 			predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, 0L]];
@@ -4099,13 +4103,16 @@ static NSArray*	statesArray = nil;
 	
 	[self computeTimeInterval];
 	
-	if( timeIntervalStart != 0L || timeIntervalEnd != 0L) {
-		if( timeIntervalStart != 0L && timeIntervalEnd != 0L) {
+	if( timeIntervalStart != 0L || timeIntervalEnd != 0L)
+	{
+		if( timeIntervalStart != 0L && timeIntervalEnd != 0L)
+		{
 			subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\") AND date <= CAST(%lf, \"NSDate\")", [timeIntervalStart timeIntervalSinceReferenceDate], [timeIntervalEnd timeIntervalSinceReferenceDate]];
 			
 			description = [description stringByAppendingFormat: NSLocalizedString(@" / Time Interval: from: %@ to: %@", nil),[DateTimeFormat stringFromDate: timeIntervalStart],  [DateTimeFormat stringFromDate: timeIntervalEnd] ];
 		}
-		else {
+		else
+		{
 			subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [timeIntervalStart timeIntervalSinceReferenceDate]];
 			
 			description = [description stringByAppendingFormat:NSLocalizedString(@" / Time Interval: since: %@", nil), [DateTimeFormat stringFromDate: timeIntervalStart]];
@@ -4118,7 +4125,8 @@ static NSArray*	statesArray = nil;
 	// SEARCH FIELD
 	// ********************
 	
-	if ( self.filterPredicate ) {
+	if ( self.filterPredicate )
+	{
 		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, self.filterPredicate, nil]];
 		description = [description stringByAppendingString: self.filterPredicateDescription];
 		filtered = YES;
@@ -4133,16 +4141,19 @@ static NSArray*	statesArray = nil;
 	error = nil;
 	[outlineViewArray release];
 	
-	@try {
+	@try
+	{
 		if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
 		else outlineViewArray = [context executeFetchRequest:request error:&error];
 		
-		if( [albumNoOfStudiesCache count] > albumTable.selectedRow && filtered == NO)	{
+		if( [albumNoOfStudiesCache count] > albumTable.selectedRow && filtered == NO)
+		{
 			[albumNoOfStudiesCache replaceObjectAtIndex:albumTable.selectedRow withObject:[NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[outlineViewArray count]]]]];
 		}
 	}
 	
-	@catch( NSException *ne) {
+	@catch( NSException *ne)
+	{
 		NSLog(@"OutlineRefresh exception: %@", [ne description]);
 		[request setPredicate: [NSPredicate predicateWithValue:YES]];
 		outlineViewArray = [context executeFetchRequest:request error:&error];
@@ -4154,7 +4165,8 @@ static NSArray*	statesArray = nil;
 	{
 		NSMutableArray	*patientPredicateArray = [NSMutableArray array];
 		
-		for( id obj in outlineViewArray ) {
+		for( id obj in outlineViewArray )
+		{
 			[patientPredicateArray addObject: [NSPredicate predicateWithFormat:  @"(patientID == %@)", [obj valueForKey:@"patientID"]]];
 		}
 		
@@ -4164,13 +4176,15 @@ static NSArray*	statesArray = nil;
 		originalOutlineViewArray = [outlineViewArray retain];
 		outlineViewArray = [context executeFetchRequest:request error:&error];
 	}
-	else {
+	else
+	{
 		[originalOutlineViewArray release];
 		originalOutlineViewArray = 0L;
 	}
 	
 	long images = 0;
-	for( id obj in outlineViewArray ) {
+	for( id obj in outlineViewArray )
+	{
 		images += [[obj valueForKey:@"noFiles"] intValue];
 	}
 	
@@ -4178,12 +4192,14 @@ static NSArray*	statesArray = nil;
 	
 	NSSortDescriptor * sortdate = [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO] autorelease];
 	NSArray * sortDescriptors;
-	if( [databaseOutline sortDescriptors] == nil || [[databaseOutline sortDescriptors] count] == 0 ) {
+	if( [databaseOutline sortDescriptors] == nil || [[databaseOutline sortDescriptors] count] == 0 )
+	{
 		// By default sort by name
 		NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
 		sortDescriptors = [NSArray arrayWithObjects: sort, sortdate, 0L];
 	}
-	else if( [[[[databaseOutline sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"name"] )	{
+	else if( [[[[databaseOutline sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"name"] )
+	{
 		sortDescriptors = [NSArray arrayWithObjects: [[databaseOutline sortDescriptors] objectAtIndex: 0], sortdate, 0L];
 	}
 	else sortDescriptors = [databaseOutline sortDescriptors];
@@ -4195,11 +4211,13 @@ static NSArray*	statesArray = nil;
 	
 	[databaseOutline reloadData];
 	
-	for( id obj in outlineViewArray ) {
+	for( id obj in outlineViewArray )
+	{
 		if( [[obj valueForKey:@"expanded"] boolValue]) [databaseOutline expandItem: obj];
 	}
 	
-	if( [previousObjects count] > 0 ) {
+	if( [previousObjects count] > 0 )
+	{
 		BOOL extend = NO;
 		for( id obj in previousObjects ) {
 			[databaseOutline selectRow: [databaseOutline rowForItem: obj] byExtendingSelection: extend];
