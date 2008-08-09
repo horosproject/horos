@@ -259,7 +259,7 @@ static volatile int sendControllerObjects = 0;
 		
 		if (_keyImageIndex == 2)
 		{
-			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"modality LIKE[c] %@", [NSString stringWithFormat:@"*%@*", @"SC"]];
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"modality CONTAINS[c] %@", @"SC"];
 			objectsToSend = [objectsToSend filteredArrayUsingPredicate:predicate];
 		}
 

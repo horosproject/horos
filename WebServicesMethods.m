@@ -541,7 +541,7 @@ extern NSThread					*mainThread;
 				
 				searchString = [newComponents componentsJoinedByString:@" "];
 				
-				[search appendFormat:@"name like[cd] '*%@*'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
+				[search appendFormat:@"name CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
 				browsePredicate = [NSPredicate predicateWithFormat:search];
 				pageTitle = NSLocalizedString(@"Search Result", @"");
 			}

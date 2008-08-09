@@ -4081,18 +4081,23 @@ static NSArray*	statesArray = nil;
 	
 	if( albumTable.selectedRow > 0 )
 	{
-		NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
-		NSString		*albumName = [album valueForKey:@"name"];
+		NSArray	*albumArray = self.albumArray;
 		
-		if( [[album valueForKey:@"smartAlbum"] boolValue] == YES )
+		if( [albumArray count] > albumTable.selectedRow)
 		{
-			subPredicate = [self smartAlbumPredicate: album];
-			description = [description stringByAppendingFormat:NSLocalizedString(@"Smart Album selected: %@", nil), albumName];
-			predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, 0L]];
-		}
-		else {
-			albumArrayContent = [[album valueForKey:@"studies"] allObjects];
-			description = [description stringByAppendingFormat:NSLocalizedString(@"Album selected: %@", nil), albumName];
+			NSManagedObject	*album = [self.albumArray objectAtIndex: albumTable.selectedRow];
+			NSString		*albumName = [album valueForKey:@"name"];
+			
+			if( [[album valueForKey:@"smartAlbum"] boolValue] == YES )
+			{
+				subPredicate = [self smartAlbumPredicate: album];
+				description = [description stringByAppendingFormat:NSLocalizedString(@"Smart Album selected: %@", nil), albumName];
+				predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, 0L]];
+			}
+			else {
+				albumArrayContent = [[album valueForKey:@"studies"] allObjects];
+				description = [description stringByAppendingFormat:NSLocalizedString(@"Album selected: %@", nil), albumName];
+			}
 		}
 	}
 	else description = [description stringByAppendingFormat:NSLocalizedString(@"No album selected", nil)];
@@ -8120,9 +8125,10 @@ static BOOL withReset = NO;
 						[context deleteObject: [self.albumArray  objectAtIndex: albumTable.selectedRow]];
 					}
 					
+					[albumNoOfStudiesCache removeAllObjects];
+
 					[self saveDatabase: currentDatabasePath];
 					
-					[albumNoOfStudiesCache removeAllObjects];
 					[albumTable reloadData];
 					
 					[context unlock];
@@ -11350,7 +11356,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		
 		NSLog(@"%@", pressedKeys);
 		
-		NSArray		*result = [outlineViewArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", [NSString stringWithFormat:@"%@*", pressedKeys]]];
+		NSArray		*result = [outlineViewArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name BEGINSWITH[cd] %@", [NSString stringWithFormat:@"%@", pressedKeys]]];
 		
 		[NSObject cancelPreviousPerformRequestsWithTarget: pressedKeys selector:@selector(setString:) object:@""];
 		[pressedKeys performSelector:@selector(setString:) withObject:@"" afterDelay:0.5];
@@ -15435,37 +15441,37 @@ static volatile int numberOfThreadsForJPEG = 0;
 		switch (searchType)
 		{
 			case 7:			// All Fields
-				s = [NSString stringWithFormat:@"*%@*", _searchString];
+				s = [NSString stringWithFormat:@"%@", _searchString];
 				
-				predicate = [NSPredicate predicateWithFormat: @"(name LIKE[cd] %@) OR (patientID LIKE[cd] %@) OR (id LIKE[cd] %@) OR (comment LIKE[cd] %@) OR (studyName LIKE[cd] %@) OR (modality LIKE[cd] %@) OR (accessionNumber LIKE[cd] %@)", s, s, s, s, s, s, s];
+				predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", s, s, s, s, s, s, s];
 				break;
 				
 			case 0:			// Patient Name
-				predicate = [NSPredicate predicateWithFormat: @"name LIKE[cd] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
+				predicate = [NSPredicate predicateWithFormat: @"name CONTAINS[cd] %@", [NSString stringWithFormat:@"%@", _searchString]];
 				break;
 				
 			case 1:			// Patient ID
-				predicate = [NSPredicate predicateWithFormat: @"patientID LIKE[cd] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
+				predicate = [NSPredicate predicateWithFormat: @"patientID CONTAINS[cd] %@", [NSString stringWithFormat:@"%@", _searchString]];
 				break;
 				
 			case 2:			// Study/Series ID
-				predicate = [NSPredicate predicateWithFormat: @"id LIKE[cd] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
+				predicate = [NSPredicate predicateWithFormat: @"id CONTAINS[cd] %@", [NSString stringWithFormat:@"%@", _searchString]];
 				break;
 				
 			case 3:			// Comments
-				predicate = [NSPredicate predicateWithFormat: @"comment LIKE[cd] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
+				predicate = [NSPredicate predicateWithFormat: @"comment CONTAINS[cd] %@", [NSString stringWithFormat:@"%@", _searchString]];
 				break;
 				
 			case 4:			// Study Description
-				predicate = [NSPredicate predicateWithFormat: @"studyName LIKE[cd] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
+				predicate = [NSPredicate predicateWithFormat: @"studyName CONTAINS[cd] %@", [NSString stringWithFormat:@"%@", _searchString]];
 				break;
 				
 			case 5:			// Modality
-				predicate = [NSPredicate predicateWithFormat:  @"modality LIKE[cd] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
+				predicate = [NSPredicate predicateWithFormat:  @"modality CONTAINS[cd] %@", [NSString stringWithFormat:@"%@", _searchString]];
 				break;
 				
 			case 6:			// Accession Number 
-				predicate = [NSPredicate predicateWithFormat:  @"accessionNumber LIKE[cd] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
+				predicate = [NSPredicate predicateWithFormat:  @"accessionNumber CONTAINS[cd] %@", [NSString stringWithFormat:@"%@", _searchString]];
 				break;
 				
 			case 100:			// Advanced

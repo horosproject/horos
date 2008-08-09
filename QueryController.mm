@@ -494,7 +494,7 @@ static const char *GetPrivateIP()
 			
 			NSLog(@"%@", pressedKeys);
 			
-			NSArray		*resultFilter = [resultArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", [NSString stringWithFormat:@"%@*", pressedKeys]]];
+			NSArray		*resultFilter = [resultArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name BEGINSWITH[cd] %@", pressedKeys]];
 			
 			[NSObject cancelPreviousPerformRequestsWithTarget: pressedKeys selector:@selector(setString:) object:@""];
 			[pressedKeys performSelector:@selector(setString:) withObject:@"" afterDelay:0.5];
@@ -512,7 +512,10 @@ static const char *GetPrivateIP()
 - (void) refresh: (id) sender
 {	
 	if( DatabaseIsEdited == NO)
+	{
+		[self computeStudyArrayInstanceUID];
 		[outlineView reloadData];
+	}
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item{
@@ -594,17 +597,14 @@ static const char *GetPrivateIP()
 	return seriesArray;
 }
 
-- (NSArray*) localStudy:(id) item
+- (void) computeStudyArrayInstanceUID
 {
-	NSArray						*studyArray = 0L;
-	
-	if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+	if( lastComputeStudyArrayInstanceUID == 0L || [NSDate timeIntervalSinceReferenceDate] - lastComputeStudyArrayInstanceUID > 1)
 	{
 		NSError						*error = 0L;
 		NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
 		NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
-		NSPredicate					*predicate = [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [item valueForKey:@"uid"]];
-		
+		NSPredicate					*predicate = [NSPredicate predicateWithValue: YES];
 		
 		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
 		[request setPredicate: predicate];
@@ -614,18 +614,39 @@ static const char *GetPrivateIP()
 		
 		@try
 		{
-			studyArray = [context executeFetchRequest:request error:&error];
+			[studyArrayInstanceUID release];
+			[studyArrayCache release];
+			
+			studyArrayCache = [[context executeFetchRequest:request error:&error] retain];
+			studyArrayInstanceUID = [[studyArrayCache valueForKey:@"studyInstanceUID"] retain];
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"**** localStudy exception: %@", [e description]);
+			NSLog( @"**** computeStudyArrayInstanceUID exception: %@", [e description]);
 		}
 		
 		[context unlock];
 		[context release];
+		
+		NSLog( @"computeStudyArrayInstanceUID");
+		
+		lastComputeStudyArrayInstanceUID = [NSDate timeIntervalSinceReferenceDate];
+	}
+}
+
+- (NSArray*) localStudy:(id) item
+{
+	if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+	{
+		if( studyArrayInstanceUID == 0L) [self computeStudyArrayInstanceUID];
+		
+		NSUInteger index = [studyArrayInstanceUID indexOfObject:[item valueForKey: @"uid"]];
+		
+		if( index == NSNotFound) return [NSArray array];
+		else return [NSArray arrayWithObject: [studyArrayCache objectAtIndex: index]];
 	}
 	
-	return studyArray;
+	return 0L;
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation;
@@ -837,6 +858,7 @@ static const char *GetPrivateIP()
 	id item = [outlineView itemAtRow: [outlineView selectedRow]];
 	
 	[resultArray sortUsingDescriptors: [self sortArray]];
+	[self computeStudyArrayInstanceUID];
 	[outlineView reloadData];
 	
 	NSArray *s = [outlineView sortDescriptors];
@@ -1197,6 +1219,7 @@ static const char *GetPrivateIP()
 {
 	[resultArray removeAllObjects];
 	[resultArray addObjectsFromArray: l];
+	[self computeStudyArrayInstanceUID];
 	[outlineView reloadData];
 }
 
@@ -1240,6 +1263,7 @@ static const char *GetPrivateIP()
 	[queryManager performQuery];
 	[progressIndicator stopAnimation:nil];
 	[resultArray sortUsingDescriptors: [self sortArray]];
+	[self computeStudyArrayInstanceUID];
 	[outlineView reloadData];
 	[pool release];
 	
@@ -1451,6 +1475,7 @@ static const char *GetPrivateIP()
 	[searchFieldID setStringValue:@""];
 	[searchFieldAN setStringValue:@""];
 	[searchFieldStudyDescription setStringValue:@""];
+	[self computeStudyArrayInstanceUID];
 	[outlineView reloadData];
 }
 
@@ -2123,6 +2148,11 @@ static const char *GetPrivateIP()
 	[QueryTimer release];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[studyArrayCache release];
+	studyArrayCache = 0L;
+	[studyArrayInstanceUID release];
+	studyArrayInstanceUID = 0L;
+	
 	[super dealloc];
 	
 	currentQueryController = 0L;

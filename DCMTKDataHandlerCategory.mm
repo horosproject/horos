@@ -25,6 +25,23 @@ char currentDestinationMoveAET[ 60] = "";
 
 @implementation OsiriXSCPDataHandler (DCMTKDataHandlerCategory)
 
+- (NSPredicate*) predicateWithString: (NSString*) s forField: (NSString*) f
+{
+	NSString *v = [s stringByReplacingOccurrencesOfString:@"*" withString:@""];
+	NSPredicate *predicate = 0L;
+	
+	if( [s characterAtIndex: 0] == '*' && [s characterAtIndex: [s length]-1] == '*')
+		predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS[cd] %@", f, v];
+	else if( [s characterAtIndex: 0] == '*')
+		predicate = [NSPredicate predicateWithFormat:@"%K ENDSWITH[cd] %@", f, v];
+	else if( [s characterAtIndex: [s length]-1] == '*')
+		predicate = [NSPredicate predicateWithFormat:@"%K BEGINSWITH[cd] %@", f, v];
+	else
+		predicate = [NSPredicate predicateWithFormat:@"%K LIKE[cd] %@", f, v];
+
+	return predicate;
+}
+
 - (NSPredicate *)predicateForDataset:( DcmDataset *)dataset
 {
 	NSPredicate *compoundPredicate = nil;
@@ -72,19 +89,19 @@ char currentDestinationMoveAET[ 60] = "";
 			{
 				char *pn;
 				if (dcelem->getString(pn).good() && pn != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet]];
+					predicate = [self predicateWithString: [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet] forField: @"name"];
 			}
 			else if (key == DCM_PatientID)
 			{
 				char *pid;
 				if (dcelem->getString(pid).good() && pid != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"patientID LIKE[cd] %@", [NSString stringWithCString:pid  DICOMEncoding:nil]];
+					predicate = [self predicateWithString: [NSString stringWithCString:pid  DICOMEncoding:nil] forField: @"patientID"];
 			}
 			else if (key == DCM_AccessionNumber)
 			{
 				char *pid;
 				if (dcelem->getString(pid).good() && pid != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"accessionNumber LIKE[cd] %@", [NSString stringWithCString:pid  DICOMEncoding:nil]];
+					predicate = [self predicateWithString: [NSString stringWithCString:pid  DICOMEncoding:nil] forField: @"accessionNumber"];
 			}
 			else if (key == DCM_StudyInstanceUID)
 			{
@@ -102,25 +119,25 @@ char currentDestinationMoveAET[ 60] = "";
 			{
 				char *sd;
 				if (dcelem->getString(sd).good() && sd != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"studyName LIKE[cd] %@", [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet]];
+					predicate = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"studyName"];
 			}
 			else if (key == DCM_InstitutionName)
 			{
 				char *inn;
 				if (dcelem->getString(inn).good() && inn != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"institutionName LIKE[cd] %@", [NSString stringWithCString:inn  DICOMEncoding:specificCharacterSet]];
+					predicate = [self predicateWithString: [NSString stringWithCString:inn  DICOMEncoding:specificCharacterSet] forField: @"institutionName"];
 			}
 			else if (key == DCM_ReferringPhysiciansName)
 			{
 				char *rpn;
 				if (dcelem->getString(rpn).good() && rpn != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"referringPhysician LIKE[cd] %@", [NSString stringWithCString:rpn  DICOMEncoding:specificCharacterSet]];
+					predicate = [self predicateWithString: [NSString stringWithCString:rpn  DICOMEncoding:specificCharacterSet] forField: @"referringPhysician"];
 			}
 			else if (key ==  DCM_PerformingPhysiciansName)
 			{
 				char *ppn;
 				if (dcelem->getString(ppn).good() && ppn != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"performingPhysician LIKE[cd] %@", [NSString stringWithCString:ppn  DICOMEncoding:specificCharacterSet]];
+					predicate = [self predicateWithString: [NSString stringWithCString:ppn  DICOMEncoding:specificCharacterSet] forField: @"performingPhysician"];
 			}
 			else if (key ==  DCM_ModalitiesInStudy)
 			{
@@ -129,7 +146,7 @@ char currentDestinationMoveAET[ 60] = "";
 				{
 					NSArray *predicateArray = [NSArray array];
 					for( NSString *s in [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"])
-						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"ANY series.modality LIKE[cd] %@", s]];
+						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"ANY series.modality == %@", s]];
 					
 					predicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
 				}
@@ -141,7 +158,7 @@ char currentDestinationMoveAET[ 60] = "";
 				{
 					NSArray *predicateArray = [NSArray array];
 					for( NSString *s in [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"])
-						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"ANY series.modality LIKE[cd] %@", s]];
+						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"ANY series.modality == %@", s]];
 					
 					predicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
 				}
@@ -298,7 +315,7 @@ char currentDestinationMoveAET[ 60] = "";
 			{
 				char *string;
 				if (dcelem->getString(string).good() && string != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", [NSString stringWithCString:string  DICOMEncoding:specificCharacterSet]];
+					predicate = [self predicateWithString:[NSString stringWithCString:string  DICOMEncoding:specificCharacterSet] forField:@"name"];
 			}
 			else if (key == DCM_SeriesNumber)
 			{
@@ -310,7 +327,7 @@ char currentDestinationMoveAET[ 60] = "";
 			{
 				char *mis;
 				if (dcelem->getString(mis).good() && mis != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"study.modality LIKE[cd] %@", [NSString stringWithCString:mis  DICOMEncoding:nil]];
+					predicate = [NSPredicate predicateWithFormat:@"study.modality == %@", [NSString stringWithCString:mis  DICOMEncoding:nil]];
 			}
 			
 			else if (key == DCM_SeriesDate)

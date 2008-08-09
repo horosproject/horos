@@ -66,6 +66,9 @@
 	IBOutlet NSImageView					*alreadyInDatabase, *partiallyInDatabase;
 	
 	QueryArrayController					*queryManager;
+	
+	NSArray									*studyArrayInstanceUID, *studyArrayCache;
+	NSTimeInterval							lastComputeStudyArrayInstanceUID;
 }
 
 + (QueryController*) currentQueryController;
