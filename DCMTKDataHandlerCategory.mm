@@ -37,7 +37,7 @@ char currentDestinationMoveAET[ 60] = "";
 	else if( [s characterAtIndex: [s length]-1] == '*')
 		predicate = [NSPredicate predicateWithFormat:@"%K BEGINSWITH[cd] %@", f, v];
 	else
-		predicate = [NSPredicate predicateWithFormat:@"%K LIKE[cd] %@", f, v];
+		predicate = [NSPredicate predicateWithFormat:@"(%K BEGINSWITH[cd] %@) AND (%K ENDSWITH[cd] %@)", f, v, f, v];
 
 	return predicate;
 }

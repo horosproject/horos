@@ -4096,7 +4096,8 @@ static NSArray*	statesArray = nil;
 				description = [description stringByAppendingFormat:NSLocalizedString(@"Smart Album selected: %@", nil), albumName];
 				predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, 0L]];
 			}
-			else {
+			else
+			{
 				albumArrayContent = [[album valueForKey:@"studies"] allObjects];
 				description = [description stringByAppendingFormat:NSLocalizedString(@"Album selected: %@", nil), albumName];
 			}
@@ -4150,8 +4151,10 @@ static NSArray*	statesArray = nil;
 	
 	@try
 	{
+		NSLog( @"A");
 		if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
 		else outlineViewArray = [context executeFetchRequest:request error:&error];
+		NSLog( @"A");
 		
 		if( [albumNoOfStudiesCache count] > albumTable.selectedRow && filtered == NO)
 		{
@@ -15486,31 +15489,31 @@ static volatile int numberOfThreadsForJPEG = 0;
 				break;
 				
 			case 0:			// Patient Name
-				predicate = [NSPredicate predicateWithFormat: @"name CONTAINS[cd] %@", [NSString stringWithFormat:@"%@", _searchString]];
+				predicate = [NSPredicate predicateWithFormat: @"name CONTAINS[cd] %@", _searchString];
 				break;
 				
 			case 1:			// Patient ID
-				predicate = [NSPredicate predicateWithFormat: @"patientID CONTAINS[cd] %@", [NSString stringWithFormat:@"%@", _searchString]];
+				predicate = [NSPredicate predicateWithFormat: @"patientID CONTAINS[cd] %@", _searchString];
 				break;
 				
 			case 2:			// Study/Series ID
-				predicate = [NSPredicate predicateWithFormat: @"id CONTAINS[cd] %@", [NSString stringWithFormat:@"%@", _searchString]];
+				predicate = [NSPredicate predicateWithFormat: @"id CONTAINS[cd] %@", _searchString];
 				break;
 				
 			case 3:			// Comments
-				predicate = [NSPredicate predicateWithFormat: @"comment CONTAINS[cd] %@", [NSString stringWithFormat:@"%@", _searchString]];
+				predicate = [NSPredicate predicateWithFormat: @"comment CONTAINS[cd] %@", _searchString];
 				break;
 				
 			case 4:			// Study Description
-				predicate = [NSPredicate predicateWithFormat: @"studyName CONTAINS[cd] %@", [NSString stringWithFormat:@"%@", _searchString]];
+				predicate = [NSPredicate predicateWithFormat: @"studyName CONTAINS[cd] %@", _searchString];
 				break;
 				
 			case 5:			// Modality
-				predicate = [NSPredicate predicateWithFormat:  @"modality CONTAINS[cd] %@", [NSString stringWithFormat:@"%@", _searchString]];
+				predicate = [NSPredicate predicateWithFormat:  @"modality CONTAINS[cd] %@", _searchString];
 				break;
 				
 			case 6:			// Accession Number 
-				predicate = [NSPredicate predicateWithFormat:  @"accessionNumber CONTAINS[cd] %@", [NSString stringWithFormat:@"%@", _searchString]];
+				predicate = [NSPredicate predicateWithFormat:  @"accessionNumber CONTAINS[cd] %@", _searchString];
 				break;
 				
 			case 100:			// Advanced

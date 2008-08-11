@@ -278,7 +278,7 @@
 				case searchExactMatch:
 									{
 										if([[[view valueField] stringValue] isEqualToString:@""]) value = [NSString stringWithString: @"<empty>"];
-										predicateString = [NSString stringWithFormat:@"%@ LIKE[cd] '%@'", key, value];	break;
+										predicateString = [NSString stringWithFormat:@"(%@ BEGINSWITH[cd] '%@') AND (%@ ENDSWITH[cd] '%@')", key, value, key, value];	break;
 									}
 			}
 		}

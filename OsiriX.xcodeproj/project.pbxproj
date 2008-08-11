@@ -6550,8 +6550,6 @@
 		CE88576308AF938800B72DA7 /* ROIVolumeController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE88575B08AF938800B72DA7 /* ROIVolumeController.h */; };
 		CE88576408AF938800B72DA7 /* ROIVolumeController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE88575C08AF938800B72DA7 /* ROIVolumeController.mm */; };
 		CE88576508AF938800B72DA7 /* ROIVolumeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE88575D08AF938800B72DA7 /* ROIVolumeView.mm */; };
-		CE8919EF0CA181700044EEDD /* OsiriXSCPDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */; };
-		CE8919F00CA181710044EEDD /* OsiriXSCPDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */; };
 		CE897DD50C21D951005C669E /* texture.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE897DD30C21D951005C669E /* texture.tif */; };
 		CE897DD60C21D951005C669E /* texture.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE897DD30C21D951005C669E /* texture.tif */; };
 		CE898D8B0CBA1B470029E907 /* Osirix32bitShell.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898D8A0CBA1B470029E907 /* Osirix32bitShell.icns */; };
@@ -7045,6 +7043,8 @@
 		CEA337BD06AD9BF6006D2357 /* iDiskSend.icns in Resources */ = {isa = PBXBuildFile; fileRef = CEA337BB06AD9BF6006D2357 /* iDiskSend.icns */; };
 		CEA6566F094EF62400D4E5E5 /* vtkVolumeProVP1000Mapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CEA0C72607A6B186004E5D9D /* vtkVolumeProVP1000Mapper.cxx */; };
 		CEA656CC094EF64300D4E5E5 /* vli3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA656CB094EF64300D4E5E5 /* vli3.framework */; };
+		CEAA6F420E50C084008802D2 /* OsiriXSCPDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */; };
+		CEAA6F430E50C085008802D2 /* OsiriXSCPDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */; };
 		CEAE02E00DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */; };
 		CEAE02E10DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */; };
 		CEAEAC530C966FEF001CEA25 /* VRControllerVPRO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE677D1207A6BDDD003B3650 /* VRControllerVPRO.h */; };
@@ -18598,7 +18598,6 @@
 				CED2CF8F0C9B28580047F123 /* PreferencePaneControllerDCMTK.h in Headers */,
 				CED2CF980C9B288C0047F123 /* CIADICOMField.h in Headers */,
 				BF79F3C80C9F7EDD007ADFE0 /* Centerline.h in Headers */,
-				CE8919F00CA181710044EEDD /* OsiriXSCPDataHandler.h in Headers */,
 				A98FFBE70CA92B58000291C8 /* altivecFunctions.h in Headers */,
 				A975206B0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */,
 				DB5961380CAB447B00809190 /* OSIVoxel.h in Headers */,
@@ -18626,6 +18625,7 @@
 				CE3DDDAF0D8AC94C00AE9588 /* QueryOutlineView.h in Headers */,
 				CE087B0D0DE9BD6E000E5593 /* GLString.h in Headers */,
 				CE569B740E29612100F4A234 /* ThumbnailCell.h in Headers */,
+				CEAA6F430E50C085008802D2 /* OsiriXSCPDataHandler.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22962,7 +22962,6 @@
 				CED2CF900C9B28580047F123 /* PreferencePaneControllerDCMTK.mm in Sources */,
 				CED2CF970C9B288C0047F123 /* CIADICOMField.m in Sources */,
 				BF79F3C90C9F7EDD007ADFE0 /* Centerline.mm in Sources */,
-				CE8919EF0CA181700044EEDD /* OsiriXSCPDataHandler.m in Sources */,
 				A98FFBE60CA92B58000291C8 /* altivecFunctions.c in Sources */,
 				A975206C0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */,
 				DB5961390CAB447B00809190 /* OSIVoxel.m in Sources */,
@@ -22988,6 +22987,7 @@
 				CE3DDDB00D8AC94C00AE9588 /* QueryOutlineView.m in Sources */,
 				CE087B0C0DE9BD6E000E5593 /* GLString.m in Sources */,
 				CE569B750E29612100F4A234 /* ThumbnailCell.m in Sources */,
+				CEAA6F420E50C084008802D2 /* OsiriXSCPDataHandler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
