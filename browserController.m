@@ -397,7 +397,6 @@ static NSArray*	statesArray = nil;
 			DicomFile		*curFile = nil;
 			NSDictionary	*curDict = nil;
 			
-			
 			#ifdef RANDOMFILES
 				curFile = [[DicomFile alloc] initRandom];
 			#else
@@ -416,41 +415,41 @@ static NSArray*	statesArray = nil;
 			if( curFile)
 			{
 				curDict = [curFile dicomElements];
-				[curFile release];
-				curFile = 0L;
-			}
 			
-			if( onlyDICOM)
-			{
-				if( [[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == NO)
+				if( onlyDICOM)
 				{
-					[curDict release];
-					curDict = 0L;
+					if( [[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == NO)
+						curDict = 0L;
 				}
-			}
-			
-			if( curDict)
-				[dicomFilesArray addObject: curDict];
-			else
-			{
-				// This file was not readable -> If it is located in the DATABASE folder, we have to delete it or to move it to the 'NOT READABLE' folder
-				if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
-				{
-					NSLog(@"**** Unreadable file: %@", newFile);
-					NSLog(@"**** This file in the DATABASE folder: move it to the unreadable folder");
-					
-					if ( DELETEFILELISTENER)
-					{
-						[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
-					}
-					else
-					{
-						if( [[NSFileManager defaultManager] movePath: newFile toPath:[ERRpath stringByAppendingPathComponent: [newFile lastPathComponent]]  handler:nil] == NO)
-							[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
-					}
-				}
-			}
 				
+				if( curDict)
+				{
+					[dicomFilesArray addObject: curDict];
+				}
+				else
+				{
+					// This file was not readable -> If it is located in the DATABASE folder, we have to delete it or to move it to the 'NOT READABLE' folder
+					if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
+					{
+						NSLog(@"**** Unreadable file: %@", newFile);
+						
+						if ( DELETEFILELISTENER)
+						{
+							[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+						}
+						else
+						{
+							NSLog(@"**** This file in the DATABASE folder: move it to the unreadable folder");
+							
+							if( [[NSFileManager defaultManager] movePath: newFile toPath:[ERRpath stringByAppendingPathComponent: [newFile lastPathComponent]]  handler:nil] == NO)
+								[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+						}
+					}
+				}
+			
+				[curFile release];
+			}
+			
 			if( splash)
 			{
 				if( isCDMedia)
@@ -485,7 +484,7 @@ static NSArray*	statesArray = nil;
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 	error = nil;
-	NSMutableArray *studiesArray;
+	NSMutableArray *studiesArray = 0L;
 	
 	@try
 	{
@@ -516,7 +515,7 @@ static NSArray*	statesArray = nil;
 			modifiedStudiesArray = [NSMutableArray arrayWithCapacity: 0];
 		}
 		
-		NSMutableArray *studiesArrayStudyInstanceUID = [[[studiesArray valueForKey:@"studyInstanceUID"] mutableCopy] autorelease];
+		NSMutableArray *studiesArrayStudyInstanceUID = [[studiesArray valueForKey:@"studyInstanceUID"] mutableCopy];
 		
 		// Add the new files
 		for (NSDictionary *curDict in dicomFilesArray)
@@ -567,7 +566,6 @@ static NSArray*	statesArray = nil;
 				   && [DCMAbstractSyntaxUID isKeyObjectDocument: [curDict objectForKey: @"SOPClassUID"]] == NO)
 				{
 					NSLog(@"unsupported DICOM SOP CLASS");
-					[curDict release];
 					curDict = 0L;
 				}
 				
@@ -872,6 +870,7 @@ static NSArray*	statesArray = nil;
 			}
 		}
 		
+		[studiesArrayStudyInstanceUID release];
 		[studiesArray release];
 		
 		NSString *dockLabel = 0L;

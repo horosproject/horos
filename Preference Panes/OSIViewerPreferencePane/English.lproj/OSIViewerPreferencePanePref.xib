@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="100"/>
+			<integer value="6"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -307,7 +307,7 @@
 											<object class="NSButtonCell" key="NSCell" id="465247048">
 												<int key="NSCellFlags">67239424</int>
 												<int key="NSCellFlags2">0</int>
-												<string type="base64-UTF8" key="NSContents">U2hvdyBNYWduaWZ5aW5nIExlbnMgd2l0aCAnc2hpZnQga2V5A</string>
+												<string type="base64-UTF8" key="NSContents">U2hvdyBNYWduaWZ5aW5nIExlbnMgd2l0aCAnc2hpZnQnIGtleQ</string>
 												<reference key="NSSupport" ref="835218876"/>
 												<reference key="NSControlView" ref="502190874"/>
 												<int key="NSButtonFlags">1211912703</int>
@@ -1437,10 +1437,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
 			</object>
 			<object class="NSUserDefaultsController" id="749501989">
-				<object class="NSMutableArray" key="NSDeclaredKeys">
-					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>magnifyingLens</string>
-				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 		</object>
@@ -2795,9 +2791,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{954, 598}, {715, 680}}</string>
+					<string>{{836, 598}, {715, 680}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{954, 598}, {715, 680}}</string>
+					<string>{{836, 598}, {715, 680}}</string>
 					<reference ref="9"/>
 					<string>{{1702, 544}, {715, 659}}</string>
 					<reference ref="9"/>
