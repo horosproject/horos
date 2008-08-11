@@ -513,7 +513,8 @@ static const char *GetPrivateIP()
 {	
 	if( DatabaseIsEdited == NO)
 	{
-		[self computeStudyArrayInstanceUID];
+		[studyArrayInstanceUID release];
+		studyArrayInstanceUID = 0L;
 		[outlineView reloadData];
 	}
 }
@@ -566,24 +567,19 @@ static const char *GetPrivateIP()
 
 - (NSArray*) localSeries:(id) item
 {
-	NSArray						*seriesArray = 0L;
+	NSArray *seriesArray = 0L;
+	NSManagedObject *study = [[self localStudy: [outlineView parentForItem: item]] lastObject];
 	
-	if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
+	if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES && study != 0L)
 	{
-		NSError						*error = 0L;
-		NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
 		NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
-		NSPredicate					*predicate = [NSPredicate predicateWithFormat: @"(seriesDICOMUID == %@)", [item valueForKey:@"uid"]];
-		
-		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
-		[request setPredicate: predicate];
 		
 		[context retain];
 		[context lock];
 		
 		@try
 		{
-			seriesArray = [context executeFetchRequest:request error:&error];
+			seriesArray = [[[study valueForKey:@"series"] allObjects] filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"(seriesDICOMUID == %@)", [item valueForKey:@"uid"]]];
 		}
 		@catch (NSException * e)
 		{
@@ -599,7 +595,7 @@ static const char *GetPrivateIP()
 
 - (void) computeStudyArrayInstanceUID
 {
-	if( lastComputeStudyArrayInstanceUID == 0L || [NSDate timeIntervalSinceReferenceDate] - lastComputeStudyArrayInstanceUID > 1)
+	if( lastComputeStudyArrayInstanceUID == 0L || studyArrayInstanceUID == 0L || [NSDate timeIntervalSinceReferenceDate] - lastComputeStudyArrayInstanceUID > 1)
 	{
 		NSError						*error = 0L;
 		NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
@@ -638,12 +634,21 @@ static const char *GetPrivateIP()
 {
 	if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 	{
-		if( studyArrayInstanceUID == 0L) [self computeStudyArrayInstanceUID];
-		
-		NSUInteger index = [studyArrayInstanceUID indexOfObject:[item valueForKey: @"uid"]];
-		
-		if( index == NSNotFound) return [NSArray array];
-		else return [NSArray arrayWithObject: [studyArrayCache objectAtIndex: index]];
+		@try
+		{
+			if( studyArrayInstanceUID == 0L) [self computeStudyArrayInstanceUID];
+			
+			NSUInteger index = [studyArrayInstanceUID indexOfObject:[item valueForKey: @"uid"]];
+			
+			if( index == NSNotFound) return [NSArray array];
+			else return [NSArray arrayWithObject: [studyArrayCache objectAtIndex: index]];
+		}
+		@catch (NSException * e)
+		{
+			[studyArrayInstanceUID release];
+			studyArrayInstanceUID = 0L;
+			return 0L;
+		}
 	}
 	
 	return 0L;
@@ -858,8 +863,7 @@ static const char *GetPrivateIP()
 	id item = [outlineView itemAtRow: [outlineView selectedRow]];
 	
 	[resultArray sortUsingDescriptors: [self sortArray]];
-	[self computeStudyArrayInstanceUID];
-	[outlineView reloadData];
+	[self refresh: self];
 	
 	NSArray *s = [outlineView sortDescriptors];
 	
@@ -1219,8 +1223,7 @@ static const char *GetPrivateIP()
 {
 	[resultArray removeAllObjects];
 	[resultArray addObjectsFromArray: l];
-	[self computeStudyArrayInstanceUID];
-	[outlineView reloadData];
+	[self refresh: self];
 }
 
 - (void) displayQueryResults
@@ -1263,8 +1266,7 @@ static const char *GetPrivateIP()
 	[queryManager performQuery];
 	[progressIndicator stopAnimation:nil];
 	[resultArray sortUsingDescriptors: [self sortArray]];
-	[self computeStudyArrayInstanceUID];
-	[outlineView reloadData];
+	[self refresh: self];
 	[pool release];
 	
 	queryPerformed = YES;
@@ -1467,7 +1469,8 @@ static const char *GetPrivateIP()
 	}
 }
 
-- (void)clearQuery:(id)sender{
+- (void)clearQuery:(id)sender
+{
 	[queryManager release];
 	queryManager = nil;
 	[progressIndicator stopAnimation:nil];
@@ -1475,8 +1478,7 @@ static const char *GetPrivateIP()
 	[searchFieldID setStringValue:@""];
 	[searchFieldAN setStringValue:@""];
 	[searchFieldStudyDescription setStringValue:@""];
-	[self computeStudyArrayInstanceUID];
-	[outlineView reloadData];
+	[self refresh: self];
 }
 
 -(IBAction) copy:(id) sender

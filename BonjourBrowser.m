@@ -120,7 +120,7 @@ static char *GetPrivateIP()
 		[self buildFixedIPList];
 		[self buildLocalPathsList];
 		[self buildDICOMDestinationsList];
-		[[BrowserController currentBrowser] loadDICOMFromiPod];
+//		[[BrowserController currentBrowser] loadDICOMFromiPod];
 		[self arrangeServices];
 		
 		interfaceOsiriX = bC;

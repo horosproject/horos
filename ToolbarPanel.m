@@ -247,7 +247,8 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 	{
 		if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
 		{
-			if( [[NSScreen screens] count] > 1) [[self window] setToolbar: 0L];
+			//if( [[NSScreen screens] count] > 1)
+			[[self window] setToolbar: 0L];	//To avoid the stupid add an item in customize toolbar.....
 			[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
 		}
 		

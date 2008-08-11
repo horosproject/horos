@@ -222,8 +222,8 @@ static NSArray*	statesArray = nil;
 	return dstPath;
 }
 
-- (void) reloadViewers: (NSMutableArray*) vl {
-	
+- (void) reloadViewers: (NSMutableArray*) vl
+{
 	// Reload series if needed
 	for( ViewerController *vc in vl )
 	{
@@ -749,7 +749,7 @@ static NSArray*	statesArray = nil;
 							[seriesTable setValue:today forKey:@"dateAdded"];
 							
 							[image setValue:[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] forKey:@"instanceNumber"];
-							//								[image setValue:[[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] stringValue] forKey:@"name"];
+							//[image setValue:[[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] stringValue] forKey:@"name"];
 							[image setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
 							
 							if( local) [image setValue: [newFile lastPathComponent] forKey:@"path"];
@@ -815,9 +815,9 @@ static NSArray*	statesArray = nil;
 								
 								if ( album == nil )
 								{
-									//										NSString *name = [curDict valueForKey:@"album"];
-									//										album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
-									//										[album setValue:name forKey:@"name"];
+									//NSString *name = [curDict valueForKey:@"album"];
+									//album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
+									//[album setValue:name forKey:@"name"];
 									
 									for ( album in albumArray )
 									{
@@ -2645,7 +2645,8 @@ static NSArray*	statesArray = nil;
 	
 	NSString *pathTemp = [documentsDirectory() stringByAppendingString:@"/Loading"];
 	
-	if ([[NSFileManager defaultManager] fileExistsAtPath:pathTemp] ) {
+	if ([[NSFileManager defaultManager] fileExistsAtPath:pathTemp] )
+	{
 		[[NSFileManager defaultManager] removeFileAtPath:pathTemp handler: nil];
 	}
 	
@@ -2656,6 +2657,8 @@ static NSArray*	statesArray = nil;
 	displayEmptyDatabase = NO;
 	[self outlineViewRefresh];
 	[self refreshMatrix: self];
+	
+	[[QueryController currentQueryController] refresh: self];
 }
 
 -(long)saveDatabase: (NSString*)path
@@ -4224,7 +4227,8 @@ static NSArray*	statesArray = nil;
 	if( [previousObjects count] > 0 )
 	{
 		BOOL extend = NO;
-		for( id obj in previousObjects ) {
+		for( id obj in previousObjects )
+		{
 			[databaseOutline selectRow: [databaseOutline rowForItem: obj] byExtendingSelection: extend];
 			extend = YES;
 		}
@@ -5088,7 +5092,8 @@ static NSArray*	statesArray = nil;
 			
 			NSArray	*lockedImages = [objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"series.study.lockedStudy == YES"]];
 			
-			if( [lockedImages count] == [objectsToDelete count] && [lockedImages count] > 0 ) {
+			if( [lockedImages count] == [objectsToDelete count] && [lockedImages count] > 0 )
+			{
 				NSRunAlertPanel( NSLocalizedString(@"Locked Studies", nil),  NSLocalizedString(@"These images are stored in locked studies. First, unlock these studies to delete them.", nil), nil, nil, nil);
 			}
 			else
@@ -5141,10 +5146,12 @@ static NSArray*	statesArray = nil;
 					WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Preparing Delete...", nil)];
 					[wait showWindow:self];
 					
-					if( matrixThumbnails ) {
+					if( matrixThumbnails )
+					{
 						nonLocalImagesPath = [[objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
 					}
-					else {
+					else
+					{
 						nonLocalImagesPath = [[objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
 					}
 					
@@ -5153,7 +5160,8 @@ static NSArray*	statesArray = nil;
 					
 					NSLog(@"non-local images : %d", [nonLocalImagesPath count]);
 					
-					if( [nonLocalImagesPath  count] > 0 ) {
+					if( [nonLocalImagesPath  count] > 0 )
+					{
 						result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove images", 0L), NSLocalizedString(@"Some of the selected images are not stored in the Database folder. Do you want to only remove the links of these images from the database or also delete the original files?", 0L), NSLocalizedString(@"Remove the links",nil),  NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Delete the files",nil));
 					}
 					else result = NSAlertDefaultReturn;
@@ -5165,7 +5173,8 @@ static NSArray*	statesArray = nil;
 					{
 						NSLog( @"Cancel");
 					}
-					else {			
+					else
+					{			
 						if( result == NSAlertDefaultReturn || result == NSAlertOtherReturn)
 						{
 							NSManagedObject	*study = nil, *series = nil;
@@ -5200,7 +5209,8 @@ static NSArray*	statesArray = nil;
 										}
 										
 										// Is a viewer containing this study opened? -> close it
-										for( ViewerController *vc in viewersList ) {
+										for( ViewerController *vc in viewersList )
+										{
 											if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"]) [[vc window] close];
 										}
 									}
@@ -5212,8 +5222,10 @@ static NSArray*	statesArray = nil;
 							[databaseOutline selectRow:[selectedRows firstIndex] byExtendingSelection:NO];
 						}
 						
-						if( result == NSAlertOtherReturn) {
-							for( NSString *path in nonLocalImagesPath ) {
+						if( result == NSAlertOtherReturn)
+						{
+							for( NSString *path in nonLocalImagesPath )
+							{
 								[[NSFileManager defaultManager] removeFileAtPath: path handler:nil];
 								
 								if( [[path pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
@@ -5232,7 +5244,8 @@ static NSArray*	statesArray = nil;
 								//Is this directory empty?? If yes, delete it!
 								
 								if( [dirContent count] == 0) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
-								if( [dirContent count] == 1) {
+								if( [dirContent count] == 1)
+								{
 									if( [[[dirContent objectAtIndex: 0] uppercaseString] isEqualToString:@".DS_STORE"]) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
 								}
 							}
@@ -5252,8 +5265,10 @@ static NSArray*	statesArray = nil;
 			@try
 			{
 				// Remove series without images !
-				for( NSManagedObject *series in seriesArray ) {
-					if( [[series valueForKey:@"images"] count] == 0 ) {
+				for( NSManagedObject *series in seriesArray )
+				{
+					if( [[series valueForKey:@"images"] count] == 0 )
+					{
 						[context deleteObject: series];
 					}
 				}
@@ -5261,10 +5276,12 @@ static NSArray*	statesArray = nil;
 				[context save: nil];
 				
 				// Remove studies without series !
-				for( NSManagedObject *study in studiesArray ) {
+				for( NSManagedObject *study in studiesArray )
+				{
 					NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
 					
-					if( [[study valueForKey:@"imageSeries"] count] == 0 ) {
+					if( [[study valueForKey:@"imageSeries"] count] == 0 )
+					{
 						[context deleteObject: study];
 					}
 				}
@@ -5297,26 +5314,30 @@ static NSArray*	statesArray = nil;
 	[self refreshMatrix: self];
 }
 
-- (void)buildColumnsMenu {
+- (void)buildColumnsMenu
+{
 	[columnsMenu release];
 	columnsMenu = [[NSMenu alloc] initWithTitle:@"columns"];
 	
 	
 	NSArray	*columnIdentifiers = [[databaseOutline tableColumns] valueForKey:@"identifier"];
 	
-	for( NSTableColumn *col in [databaseOutline allColumns] ) {
+	for( NSTableColumn *col in [databaseOutline allColumns] )
+	{
 		NSMenuItem	*item = [columnsMenu insertItemWithTitle:[[col headerCell] stringValue] action:@selector(columnsMenuAction:) keyEquivalent:@"" atIndex: [columnsMenu numberOfItems]];
 		[item setRepresentedObject: [col identifier]];
 		
 		NSInteger index = [columnIdentifiers indexOfObject: [col identifier]];
 		
-		if( [[col identifier] isEqualToString:@"name"] ) {
+		if( [[col identifier] isEqualToString:@"name"] )
+		{
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
 				[item setState: NSOffState];
 			else
 				[item setState: NSOnState];
 		}
-		else {
+		else
+		{
 			if( index != NSNotFound) [item setState: NSOnState];
 			else [item setState: NSOffState];
 		}
@@ -5325,11 +5346,13 @@ static NSArray*	statesArray = nil;
 	[[databaseOutline headerView] setMenu: columnsMenu];
 }
 
-- (void) columnsMenuAction: (id)sender {
+- (void) columnsMenuAction: (id)sender
+{
 	[sender setState: ![sender state]];
 	
 	if( [[sender representedObject] isEqualToString:@"name"]) [[NSUserDefaults standardUserDefaults] setBool:![sender state] forKey:@"HIDEPATIENTNAME"];
-	else {
+	else
+	{
 		NSArray				*titleArray = [[columnsMenu itemArray] valueForKey:@"title"];
 		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithCapacity: 0];
 		
@@ -5353,16 +5376,19 @@ static NSArray*	statesArray = nil;
 	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
-	while( key = [enumerator nextObject] ) {
+	while( key = [enumerator nextObject] )
+	{
 		NSInteger index = [[[[databaseOutline allColumns] valueForKey:@"headerCell"] valueForKey:@"title"] indexOfObject: key];
 		
 		if( index != NSNotFound) {
 			NSString	*identifier = [[[databaseOutline allColumns] objectAtIndex: index] identifier];
 			
-			if( [databaseOutline isColumnWithIdentifierVisible: identifier] != [[columnsDatabase valueForKey: key] intValue] ) {
+			if( [databaseOutline isColumnWithIdentifierVisible: identifier] != [[columnsDatabase valueForKey: key] intValue] )
+			{
 				[databaseOutline setColumnWithIdentifier:identifier visible: [[columnsDatabase valueForKey: key] intValue]];
 				
-				if( [[columnsDatabase valueForKey: key] intValue] == NSOnState)	{
+				if( [[columnsDatabase valueForKey: key] intValue] == NSOnState)
+				{
 					[databaseOutline scrollColumnToVisible: [databaseOutline columnWithIdentifier: identifier]];
 				}
 			}
@@ -5387,14 +5413,17 @@ static NSArray*	statesArray = nil;
 	
 	@try
 	{
-	if( item == nil ) {
-		returnVal = [outlineViewArray objectAtIndex: index];
+		if( item == nil )
+		{
+			returnVal = [outlineViewArray objectAtIndex: index];
+		}
+		else
+		{
+			returnVal = [[self childrenArray: item] objectAtIndex: index];
+		}
 	}
-	else {
-		returnVal = [[self childrenArray: item] objectAtIndex: index];
-	}
-	}
-	@catch (NSException * e) {
+	@catch (NSException * e)
+	{
 		NSLog( [e description]);
 	}
 
@@ -5404,7 +5433,8 @@ static NSArray*	statesArray = nil;
 	return returnVal;
 }
 
-- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item {
+- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
+{
 	BOOL returnVal = NO;
 	
 	[managedObjectContext retain];
@@ -5419,7 +5449,8 @@ static NSArray*	statesArray = nil;
 	return returnVal;
 }
 
-- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item {
+- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
+{
 	if( managedObjectContext == 0L) return 0L;
 	if( displayEmptyDatabase) return 0L;
 	
@@ -5428,10 +5459,12 @@ static NSArray*	statesArray = nil;
 	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
-	if (!item) {
+	if (!item)
+	{
 		returnVal = [outlineViewArray count];
 	}
-	else {
+	else
+	{
 		if ([[item valueForKey:@"type"] isEqualToString:@"Image"]) returnVal = 0;
 		if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) returnVal = [[item valueForKey:@"noFiles"] intValue];
 		//if ([[item valueForKey:@"type"] isEqualToString:@"Study"]) returnVal = [[item valueForKey:@"series"] count];
@@ -5444,7 +5477,8 @@ static NSArray*	statesArray = nil;
 	return returnVal;
 }
 
-- (id)intOutlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
+- (id)intOutlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+{
 	// *********************************************
 	//	PLUGINS
 	// *********************************************
@@ -5638,7 +5672,8 @@ static NSArray*	statesArray = nil;
 		}
 		else [cell setFont: [NSFont boldSystemFontOfSize:12]];
 		
-		if( [[tableColumn identifier] isEqualToString:@"name"] ) {
+		if( [[tableColumn identifier] isEqualToString:@"name"] )
+		{
 			BOOL	icon = NO;
 			
 			if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -24*60*60)	// 24 hours
@@ -5674,7 +5709,8 @@ static NSArray*	statesArray = nil;
 		}
 		
 	}
-	else {
+	else
+	{
 		if( [[tableColumn identifier] isEqualToString:@"lockedStudy"]) [cell setTransparent: YES];
 		
 		[cell setFont: [NSFont boldSystemFontOfSize:10]];
@@ -13503,12 +13539,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[wait close];
 	[wait release];
 	
-	if( attempts == 5 )	{
+	if( attempts == 5 )
+	{
 		NSRunCriticalAlertPanel(NSLocalizedString(@"Failed", nil), NSLocalizedString(@"Unable to unmount this disk. This disk is probably in used by another application.", 0L), NSLocalizedString(@"OK",nil),nil, nil);
 	}
 }
 
-- (void)AlternateButtonPressed: (NSNotification*)n {
+- (void)AlternateButtonPressed: (NSNotification*)n
+{
 	int i = [bonjourServicesList selectedRow];
 	if( i > 0 )
 	{
@@ -13575,7 +13613,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					[bonjourBrowser arrangeServices];
 					[self displayBonjourServices];
 					
-					if( selectedDict ) {
+					if( selectedDict )
+					{
 						NSInteger index = [[bonjourBrowser services] indexOfObject: selectedDict];
 						
 						if( index == NSNotFound)
@@ -13602,7 +13641,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		delete = 1;
 	}
-	else {
+	else
+	{
 		delete = 0;
 	}
 	
