@@ -249,6 +249,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property(readonly) NSDateFormatter *TimeFormat;
 @property(readonly) NSDateFormatter *TimeWithSecondsFormat;
 @property(readonly) NSDateFormatter *DateTimeWithSecondsFormat;
+@property(readonly) NSRecursiveLock *checkIncomingLock;
 
 @property(readonly) NSArray *matrixViewArray;
 @property(readonly) NSMatrix *oMatrix;

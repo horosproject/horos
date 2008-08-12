@@ -612,6 +612,18 @@ static NSDate *lastWarningDate = 0L;
 
 @implementation AppController
 
+- (void) pause
+{
+	[[[BrowserController currentBrowser] checkIncomingLock] lock];
+	sleep( 2);
+	[[[BrowserController currentBrowser] checkIncomingLock] unlock];
+}
+
++ (void) pause
+{
+	[[AppController sharedAppController] performSelectorOnMainThread: @selector( pause) withObject: 0L waitUntilDone: NO];
+}
+
 + (NSThread*) mainThread
 {
 	return mainThread;

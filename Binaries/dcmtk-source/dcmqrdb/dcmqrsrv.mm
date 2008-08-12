@@ -32,6 +32,7 @@
  */
 
 #import "browserController.h"
+#import "AppController.h"
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmqrsrv.h"
@@ -1165,8 +1166,15 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			ASC_getPresentationContext(assoc->params, i, &pc);
 			const char* l_as = dcmFindNameOfUID(pc.abstractSyntax);
 			
-			if( strcmp( pc.abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0)
-				singleProcess = true;	// switch to singleprocess for find - fork() deadlock problem
+//			NSLog( @"%s", l_as);
+			
+			if( strcmp( pc.abstractSyntax, UID_FINDPatientRootQueryRetrieveInformationModel) == 0 ||
+				strcmp( pc.abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0 ||
+				strcmp( pc.abstractSyntax, UID_FINDPatientStudyOnlyQueryRetrieveInformationModel) == 0 ||
+				strcmp( pc.abstractSyntax, UID_FINDModalityWorklistInformationModel) == 0 ||
+				strcmp( pc.abstractSyntax, UID_FINDGeneralPurposeWorklistInformationModel) == 0
+				)
+					singleProcess = true;	// switch to singleprocess for find - fork() deadlock problem
 		}
 		
 		if (singleProcess)
@@ -1179,11 +1187,13 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         else
         {
 			NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+			
 			[context lock]; //Try to avoid deadlock
-			[context unlock];
 			
 			[DCMNetServiceDelegate DICOMServersList];
-				
+			
+			[[[BrowserController currentBrowser] checkIncomingLock] lock];
+			
             /* spawn a sub-process to handle the association */
             pid = (int)(fork());
             if (pid < 0)
@@ -1196,14 +1206,11 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             }
             else if (pid > 0)
             {
-				 
                 /* parent process, note process in table */
 //				printf("parent process: %d\n", pid);
                 processtable_.addProcessToTable(pid, assoc);
 				
-				[context lock];
-				sleep( 1);	//Try to avoid deadlock
-				[context unlock];
+				sleep( 2);		//Try to avoid deadlock
             }
             else
             {
@@ -1219,6 +1226,9 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 //				pthread_attr_init(&stack_size);
 //				pthread_create(&threadId, &stack_size, threadFunc, assoc);
             }
+			
+			[[[BrowserController currentBrowser] checkIncomingLock] unlock];
+			[context unlock];
         }
 #endif
     }

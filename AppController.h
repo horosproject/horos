@@ -117,6 +117,7 @@ extern "C"
 + (NSString*) currentHostName; /**< Return Network hostname */
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame;
 + (NSThread*) mainThread;
++ (void) pause;
 
 #pragma mark-
 #pragma mark HTML Templates

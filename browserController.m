@@ -109,6 +109,12 @@ extern NSLock *PapyrusLock;
 
 long DATABASEINDEX;
 
+static void
+sig_alrm(int signo)
+{
+    /* nothing to do, just return to wake up the pause */
+}
+
 NSString *asciiString( NSString* name )
 {
 	NSMutableString	*outString;
@@ -152,6 +158,7 @@ static NSArray*	statesArray = nil;
 
 @class DCMTKStudyQueryNode;
 
+@synthesize checkIncomingLock;
 @synthesize DateTimeFormat;
 @synthesize DateOfBirthFormat;
 @synthesize TimeFormat;
@@ -4151,10 +4158,8 @@ static NSArray*	statesArray = nil;
 	
 	@try
 	{
-		NSLog( @"A");
 		if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
 		else outlineViewArray = [context executeFetchRequest:request error:&error];
-		NSLog( @"A");
 		
 		if( [albumNoOfStudiesCache count] > albumTable.selectedRow && filtered == NO)
 		{
@@ -6042,8 +6047,7 @@ static NSArray*	statesArray = nil;
 					}
 				}
 				
-				for( ViewerController *v in displayedViewers)
-					[[v window] orderFront: self];
+				[[AppController sharedAppController] checkAllWindowsAreVisible: self];
 				
 				if( [displayedViewers count] > 0)
 					[[[displayedViewers objectAtIndex: 0] window] makeKeyAndOrderFront: self];
@@ -6062,7 +6066,8 @@ static NSArray*	statesArray = nil;
 			{
 				[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:0L];
 			}
-			else {
+			else
+			{
 				unsigned count = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
 				if( count < 1) count = 1;
 				

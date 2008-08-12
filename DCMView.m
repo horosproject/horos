@@ -970,7 +970,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	glDisable(GL_POLYGON_SMOOTH);
 	glDisable(GL_POINT_SMOOTH);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+	
+	glLineWidth( 1);
+	
 	#define ROISELECTORREGION_R 0.8
 	#define ROISELECTORREGION_G 0.8
 	#define ROISELECTORREGION_B 1.0
