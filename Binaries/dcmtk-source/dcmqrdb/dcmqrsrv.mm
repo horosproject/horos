@@ -1181,7 +1181,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         {
             /* don't spawn a sub-process to handle the association */
             cond = handleAssociation(assoc, options_.correctUIDPadding_);
-//			printf("handleAssociation single process\n");
         }
 #ifdef HAVE_FORK
         else
@@ -1207,24 +1206,16 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             else if (pid > 0)
             {
                 /* parent process, note process in table */
-//				printf("parent process: %d\n", pid);
                 processtable_.addProcessToTable(pid, assoc);
 				
-				sleep( 2);		//Try to avoid deadlock
+				sleep( 2);		//Try to avoid deadlock - 2[s] wait
             }
             else
             {
                 /* child process, handle the association */
-//				printf("child process handle association\n");
                 cond = handleAssociation(assoc, options_.correctUIDPadding_);
                 /* the child process is done so exit */
                 _Exit(3);	//to avoid spin_lock
-				//exit(0);
-//
-//				pthread_t threadId;
-//				pthread_attr_t stack_size;
-//				pthread_attr_init(&stack_size);
-//				pthread_create(&threadId, &stack_size, threadFunc, assoc);
             }
 			
 			[[[BrowserController currentBrowser] checkIncomingLock] unlock];
