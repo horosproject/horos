@@ -1193,9 +1193,11 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         {
 			NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 			
-			[[[BrowserController currentBrowser] checkIncomingLock] lock];
-			
-			[context lock]; //Try to avoid deadlock
+			if (singleProcess == NO)
+			{
+				[[[BrowserController currentBrowser] checkIncomingLock] lock];
+				[context lock]; //Try to avoid deadlock
+			}
 			
 			[DCMNetServiceDelegate DICOMServersList];
 			
@@ -1269,10 +1271,12 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 _Exit(3);	//to avoid spin_lock
             }
 			
-			[context unlock];
-			
-			[[[BrowserController currentBrowser] checkIncomingLock] unlock];
-        }
+			if (singleProcess == NO)
+			{
+				[context unlock];
+				[[[BrowserController currentBrowser] checkIncomingLock] unlock];
+			}
+		}
 #endif
     }
 
