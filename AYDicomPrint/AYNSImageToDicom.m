@@ -255,7 +255,10 @@
 - (struct rawData) _convertImageToBitmap: (NSImage *) image
 {
 	NSBitmapImageRep *imageRepresentation = [NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]];
-
+	
+	if( [imageRepresentation samplesPerPixel] != 3)
+		NSLog( @"******* WARNING [imageRepresentation samplesPerPixel] != 3");
+	
 	//unsigned char *imageData = [imageRepresentation bitmapData];
 	long bytesWritten = [imageRepresentation bytesPerRow] * [imageRepresentation size].height;
 	if(m_ImageDataBytes)
@@ -284,7 +287,10 @@
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	NSBitmapImageRep *imageRepresentation = [NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]];
-
+	
+	if( [imageRepresentation samplesPerPixel] != 3)
+		NSLog( @"******* WARNING [imageRepresentation samplesPerPixel] != 3");
+	
 	long bytesWritten = 0;
 	if(m_ImageDataBytes)
 	{
@@ -292,11 +298,8 @@
 		m_ImageDataBytes = nil;
 	}
 	
-	m_ImageDataBytes = [[NSMutableData alloc] initWithCapacity: ([imageRepresentation size].width * [imageRepresentation size].height) + 1];
+	m_ImageDataBytes = [[NSMutableData alloc] initWithCapacity: ([imageRepresentation bytesPerRow] * [imageRepresentation size].height) + 1];
 	
-	//unsigned char *imageBuffer = malloc([imageRepresentation size].width * [imageRepresentation size].height) + 1;
-	//unsigned char *destBuffer = imageBuffer;
-
 	float monoR, monoG, monoB;
 	unsigned char grayValue = 0;
 	Ptr bitMapDataPtr = (char *) [imageRepresentation bitmapData];

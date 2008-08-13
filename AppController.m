@@ -2668,6 +2668,7 @@ static BOOL initialized = NO;
 				last = loopItem;
 				[loopItem orderFront: self];
 				[[loopItem windowController] checkBuiltMatrixPreview];
+				[[loopItem windowController] refreshToolbar];
 			}
 		}
 	}
@@ -3076,14 +3077,18 @@ static BOOL initialized = NO;
 		for( id v in viewersList)
 		{
 			if( [v isKindOfClass:[ViewerController class]])
+			{
 				[v checkBuiltMatrixPreview];
+				[v refreshToolbar];
+			}
 		}
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"])
 		{
-			for( i = 0; i < [viewersList count]; i++)
+			for( id v in viewersList)
 			{
-				[[viewersList objectAtIndex: i] autoHideMatrix];
+				[v autoHideMatrix];
+				
 			}
 		}
 		
