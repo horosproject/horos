@@ -1171,8 +1171,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 				strcmp( pc.abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0 ||
 				strcmp( pc.abstractSyntax, UID_FINDPatientStudyOnlyQueryRetrieveInformationModel) == 0 ||
 				strcmp( pc.abstractSyntax, UID_FINDModalityWorklistInformationModel) == 0 ||
-				strcmp( pc.abstractSyntax, UID_FINDGeneralPurposeWorklistInformationModel) == 0
-				)
+				strcmp( pc.abstractSyntax, UID_FINDGeneralPurposeWorklistInformationModel) == 0)
 					singleProcess = true;	// switch to singleprocess for find - fork() deadlock problem
 			
 			if( strcmp( pc.abstractSyntax, UID_MOVEPatientRootQueryRetrieveInformationModel) == 0 ||
@@ -1180,9 +1179,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 				strcmp( pc.abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0 ||
 				strcmp( pc.abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
 				strcmp( pc.abstractSyntax, UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel ) == 0 ||
-				strcmp( pc.abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0
-				)
-					moveProcess = true;
+				strcmp( pc.abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
+					moveProcess = true;		// fork() deadlock problem
 		}
 		
 		if (singleProcess)
@@ -1220,8 +1218,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             if (pid < 0)
             {
 				printf("pid < 0. Cannot spawn new process\n");
-                DcmQueryRetrieveOptions::errmsg("Cannot create association sub-process: %s",
-                   strerror(errno));
+                DcmQueryRetrieveOptions::errmsg("Cannot create association sub-process: %s", strerror(errno));
                 cond = refuseAssociation(&assoc, CTN_CannotFork);
                 go_cleanup = OFTrue;
             }
@@ -1246,8 +1243,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						inc++;
 					}
 					while( fileExist == YES && inc < 200);	// 200 = 20 secs
-					if( inc > 200)
-						NSLog( @"******* move process > 200");
+					if( inc > 200) NSLog( @"******* move process > 200");
 				}
             }
             else
@@ -1258,13 +1254,16 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 				// TO AVOID DEADLOCK
 				
 				BOOL fileExist = YES;
-				
+				int inc = 0;
 				do
 				{
 					int err = unlink( dir);
 					if( err  == 0 || errno == ENOENT) fileExist = NO;
+					
+					usleep( 1000);
+					inc++;
 				}
-				while( fileExist == YES);
+				while( fileExist == YES && inc < 100000);
 				
                 /* the child process is done so exit */
                 _Exit(3);	//to avoid spin_lock

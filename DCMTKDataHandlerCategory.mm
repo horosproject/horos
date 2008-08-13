@@ -1036,12 +1036,16 @@ char currentDestinationMoveAET[ 60] = "";
 	char dir[ 1024];
 	sprintf( dir, "%s", "/tmp/move_process");
 	
+	int inc = 0;
 	do
 	{
 		int err = unlink( dir);
 		if( err  == 0 || errno == ENOENT) fileExist = NO;
+		
+		usleep( 1000);
+		inc++;
 	}
-	while( fileExist == YES);
+	while( fileExist == YES && inc < 100000);
 	
 	[pool release];
 	
