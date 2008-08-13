@@ -418,7 +418,9 @@ float distanceNSPoint(NSPoint p1, NSPoint p2)
 BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	if(NSPointInRect(lineStarts, rect) || NSPointInRect(lineEnds, rect)) return YES;
-
+	
+	if( rect.size.width == 0 || rect.size.height == 0) return NO;
+	
 	float width = fabsf(lineStarts.x - lineEnds.x);
 	float height = fabsf(lineStarts.y - lineEnds.y);
 	NSRect lineBoundingBox = NSMakeRect(min(lineStarts.x, lineEnds.x), min(lineStarts.y, lineEnds.y), width, height);
