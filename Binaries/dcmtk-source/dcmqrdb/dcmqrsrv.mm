@@ -1016,6 +1016,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
     OFBool go_cleanup = OFFalse;
 	
 	Boolean singleProcess = options_.singleProcess_;
+	Boolean moveProcess = false;
 	
     if (singleProcess) timeout = 30000;
     else
@@ -1166,8 +1167,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			ASC_getPresentationContext(assoc->params, i, &pc);
 			const char* l_as = dcmFindNameOfUID(pc.abstractSyntax);
 			
-//			NSLog( @"%s", l_as);
-			
 			if( strcmp( pc.abstractSyntax, UID_FINDPatientRootQueryRetrieveInformationModel) == 0 ||
 				strcmp( pc.abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0 ||
 				strcmp( pc.abstractSyntax, UID_FINDPatientStudyOnlyQueryRetrieveInformationModel) == 0 ||
@@ -1175,6 +1174,15 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 				strcmp( pc.abstractSyntax, UID_FINDGeneralPurposeWorklistInformationModel) == 0
 				)
 					singleProcess = true;	// switch to singleprocess for find - fork() deadlock problem
+			
+			if( strcmp( pc.abstractSyntax, UID_MOVEPatientRootQueryRetrieveInformationModel) == 0 ||
+				strcmp( pc.abstractSyntax, UID_GETPatientRootQueryRetrieveInformationModel) == 0 ||
+				strcmp( pc.abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0 ||
+				strcmp( pc.abstractSyntax, UID_GETStudyRootQueryRetrieveInformationModel) == 0 ||
+				strcmp( pc.abstractSyntax, UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel ) == 0 ||
+				strcmp( pc.abstractSyntax, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0
+				)
+					moveProcess = true;
 		}
 		
 		if (singleProcess)
@@ -1193,6 +1201,20 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			
 			[[[BrowserController currentBrowser] checkIncomingLock] lock];
 			
+			char dir[ 1024];
+			
+			if( moveProcess)
+			{
+				sprintf( dir, "%s", "/tmp/move_process");
+				unlink( dir);
+				FILE * pFile = fopen (dir,"w+");
+				if( pFile)
+				{
+					fprintf (pFile, "move_process");
+					fclose (pFile);
+				}
+			}
+			
             /* spawn a sub-process to handle the association */
             pid = (int)(fork());
             if (pid < 0)
@@ -1208,7 +1230,22 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 /* parent process, note process in table */
                 processtable_.addProcessToTable(pid, assoc);
 				
-				sleep( 2);		//Try to avoid deadlock - 2[s] wait
+				if( moveProcess)	//Try to avoid deadlock
+				{
+					BOOL fileExist = YES;
+					
+					do
+					{
+						FILE * pFile = fopen (dir,"r");
+						if( pFile)
+							fclose (pFile);
+						else
+							fileExist = NO;
+						NSLog( @"wait");
+						usleep( 100000);
+					}
+					while( fileExist == YES);
+				}
             }
             else
             {

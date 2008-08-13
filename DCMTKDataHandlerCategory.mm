@@ -966,12 +966,11 @@ char currentDestinationMoveAET[ 60] = "";
 		{
 			NSEnumerator *enumerator = [array objectEnumerator];
 			id moveEntity;
-			//create set
+			
 			NSMutableSet *moveSet = [NSMutableSet set];
 			while (moveEntity = [enumerator nextObject])
 				[moveSet unionSet:[moveEntity valueForKey:@"paths"]];
 			
-			//array from set
 			NSArray *tempMoveArray = [moveSet allObjects];
 			
 			/*
@@ -1031,7 +1030,20 @@ char currentDestinationMoveAET[ 60] = "";
 	[context unlock];
 	[context release];
 	
+	// TO AVOID DEADLOCK
+	
+	BOOL fileExist = YES;
+	char dir[ 1024];
+	sprintf( dir, "%s", "/tmp/move_process");
+	
+	do
+	{
+		if( unlink( dir) == 0) fileExist = NO;
+	}
+	while( fileExist == YES);
+	
 	[pool release];
+	
 	return cond;
 }
 
