@@ -1241,7 +1241,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 							fclose (pFile);
 						else
 							fileExist = NO;
-						NSLog( @"wait");
+//						NSLog( @"wait");
 						usleep( 100000);
 					}
 					while( fileExist == YES);
