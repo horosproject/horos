@@ -1247,9 +1247,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					}
 					while( fileExist == YES && inc < 200);	// 200 = 20 secs
 					if( inc > 200)
-					{
 						NSLog( @"******* move process > 200");
-					}
 				}
             }
             else
