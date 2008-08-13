@@ -1038,7 +1038,8 @@ char currentDestinationMoveAET[ 60] = "";
 	
 	do
 	{
-		if( unlink( dir) == 0) fileExist = NO;
+		int err = unlink( dir);
+		if( err  == 0 || errno == ENOENT) fileExist = NO;
 	}
 	while( fileExist == YES);
 	

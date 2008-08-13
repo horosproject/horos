@@ -1233,6 +1233,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 				if( moveProcess)	//Try to avoid deadlock
 				{
 					BOOL fileExist = YES;
+					int inc = 0;
 					
 					do
 					{
@@ -1241,16 +1242,32 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 							fclose (pFile);
 						else
 							fileExist = NO;
-//						NSLog( @"wait");
 						usleep( 100000);
+						inc++;
 					}
-					while( fileExist == YES);
+					while( fileExist == YES && inc < 200);	// 200 = 20 secs
+					if( inc > 200)
+					{
+						NSLog( @"******* move process > 200");
+					}
 				}
             }
             else
             {
                 /* child process, handle the association */
                 cond = handleAssociation(assoc, options_.correctUIDPadding_);
+				
+				// TO AVOID DEADLOCK
+				
+				BOOL fileExist = YES;
+				
+				do
+				{
+					int err = unlink( dir);
+					if( err  == 0 || errno == ENOENT) fileExist = NO;
+				}
+				while( fileExist == YES);
+				
                 /* the child process is done so exit */
                 _Exit(3);	//to avoid spin_lock
             }
