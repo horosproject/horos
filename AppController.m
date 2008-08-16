@@ -50,7 +50,6 @@
 
 ToolbarPanelController *toolbarPanel[10] = {0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L};
 
-static NSString *currentHostName = 0L;
 static NSMenu *mainMenuCLUTMenu = 0L, *mainMenuWLWWMenu = 0L, *mainMenuConvMenu = 0L;
 static NSDictionary *previousWLWWKeys = 0L, *previousCLUTKeys = 0L, *previousConvKeys = 0L;
 static BOOL checkForPreferencesUpdate = YES;
@@ -716,13 +715,6 @@ static NSDate *lastWarningDate = 0L;
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 #pragma mark-
 
-+ (NSString*) currentHostName
-{
-	if( currentHostName) return currentHostName;
-	
-	currentHostName = [[[DefaultsOsiriX currentHost] name] retain];
-}
-
 +(void) cleanOsiriXSubProcesses
 {
 	const int kPIDArrayLength = 100;
@@ -745,6 +737,20 @@ static NSDate *lastWarningDate = 0L;
 			}
         } 
     }
+}
+
+- (void) setAETitleToHostname
+{
+	char s[_POSIX_HOST_NAME_MAX+1];
+	gethostname(s,_POSIX_HOST_NAME_MAX);
+	NSString *c = [NSString stringWithCString:s encoding:NSUTF8StringEncoding];
+	NSRange range = [c rangeOfString: @"."];
+	if( range.location != NSNotFound) c = [c substringToIndex: range.location];
+	
+	if( [c length] > 16)
+		c = [c substringToIndex: 16];
+	
+	[[NSUserDefaults standardUserDefaults] setObject: c forKey:@"AETITLE"];
 }
 
 - (void) runPreferencesUpdateCheck:(NSTimer*) timer
@@ -782,6 +788,8 @@ static NSDate *lastWarningDate = 0L;
 		refreshDatabase = YES;
 	if ([[previousDefaults valueForKey: @"DICOMTimeout"]intValue]		!=		[defaults integerForKey: @"DICOMTimeout"])
 		restartListener = YES;
+	if ([[previousDefaults valueForKey: @"UseHostNameForAETitle"] intValue]		!=		[defaults integerForKey: @"UseHostNameForAETitle"])
+		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"preferredSyntaxForIncoming"]intValue]		!=		[defaults integerForKey: @"preferredSyntaxForIncoming"])
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"httpXMLRPCServer"]intValue]		!=		[defaults integerForKey: @"httpXMLRPCServer"])
@@ -800,7 +808,7 @@ static NSDate *lastWarningDate = 0L;
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"STORESCPEXTRA"]			isEqualToString:	[defaults stringForKey: @"STORESCPEXTRA"]] == NO)
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"AEPORT"]					isEqualToString:	[defaults stringForKey: @"AEPORT"]] == NO)
+	if ([[previousDefaults valueForKey: @"AEPORT"] intValue]		!= [defaults integerForKey: @"AEPORT"])
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"AETransferSyntax"]		isEqualToString:	[defaults stringForKey: @"AETransferSyntax"]] == NO)
 		restartListener = YES;
@@ -834,6 +842,13 @@ static NSDate *lastWarningDate = 0L;
 	
 	if (restartListener)
 	{
+		NSString *c = [[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"];
+		if( [c length] > 16)
+		{
+			c = [c substringToIndex: 16];
+			[[NSUserDefaults standardUserDefaults] setObject: c forKey:@"AETITLE"];
+		}
+		
 		if( showRestartNeeded == YES)
 		{
 			showRestartNeeded = NO;
@@ -891,6 +906,14 @@ static NSDate *lastWarningDate = 0L;
 	[ROI loadDefaultSettings];
 	
 	NSLog( @"***** runPreferencesUpdateCheck");
+	
+	if( restartListener)
+	{
+		if( [defaults boolForKey: @"UseHostNameForAETitle"])
+		{
+			[self setAETitleToHostname];
+		}
+	}
 	
 	NS_HANDLER
 		NSLog(@"Exception updating prefs: %@", [localException description]);
@@ -1048,7 +1071,7 @@ static NSDate *lastWarningDate = 0L;
 {
 	NSLog( @"startDICOMBonjour");
 
-	BonjourDICOMService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
+	BonjourDICOMService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
 	[BonjourDICOMService setDelegate: self];
 	[BonjourDICOMService publish];
 	
@@ -1184,6 +1207,16 @@ static NSDate *lastWarningDate = 0L;
 	if (BUILTIN_DCMTK)
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseHostNameForAETitle"])
+			[self setAETitleToHostname];
+		
+		NSString *c = [[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"];
+		if( [c length] > 16)
+		{
+			c = [c substringToIndex: 16];
+			[[NSUserDefaults standardUserDefaults] setObject: c forKey:@"AETITLE"];
+		}
 		
 		NSString *aeTitle = [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"];
 		int port = [[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue];
@@ -2076,7 +2109,7 @@ static BOOL initialized = NO;
 			
 	
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"UseDelaunayFor3DRoi"];	// By default, we always start with VTKDelaunay, PowerCrush has memory leaks and can crash with some 3D objects....
-	
+
 //	#if !__LP64__
 //	[[[NSApplication sharedApplication] dockTile] setBadgeLabel: @"32-bit"];
 //	[[[NSApplication sharedApplication] dockTile] display];

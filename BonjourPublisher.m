@@ -165,7 +165,8 @@ static char *GetPrivateIP()
 		}
     }
 
-    if(!netService) {
+    if(!netService)
+	{
         // lazily instantiate the NSNetService object that will advertise on our behalf.  Passing in "" for the domain causes the service
         // to be registered in the default registration domain, which will currently always be "local"
         netService = [[NSNetService alloc] initWithDomain:@"" type:@"_osirixdbsharing._tcp." name:serviceName port:chosenPort];
@@ -181,14 +182,17 @@ static char *GetPrivateIP()
 		}
     }
 
-    if(netService && listeningSocket) {
-        if(boo) {
+    if(netService && listeningSocket)
+	{
+        if(boo)
+		{
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionReceived:) name:NSFileHandleConnectionAcceptedNotification object:listeningSocket];
             [listeningSocket acceptConnectionInBackgroundAndNotify];
             [netService publish];
 			
-        } else {
-			
+        }
+		else
+		{
 			OsiriXDBCurrentPort = 0;
             [netService stop];
             [[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleConnectionAcceptedNotification object:listeningSocket];

@@ -20,8 +20,6 @@
 	IBOutlet NSForm *aeForm;
 	IBOutlet NSMatrix *deleteFileModeMatrix;
 	IBOutlet NSButton *listenerOnOffButton;
-	IBOutlet NSFormCell *aeTitleField;
-	IBOutlet NSFormCell *portField;
 	IBOutlet NSFormCell *ipField;
 	IBOutlet NSFormCell *nameField;
 	IBOutlet NSButton *listenerOnOffAnonymize;
@@ -35,7 +33,6 @@
 }
 
 - (void) mainViewDidLoad;
-- (IBAction)setAE:(id)sender;
 - (IBAction)setDeleteFileMode:(id)sender;
 - (IBAction)setListenerOnOff:(id)sender;
 - (IBAction)setAnonymizeListenerOnOff:(id)sender;

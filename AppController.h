@@ -114,7 +114,6 @@ extern "C"
 + (void) displayImportantNotice:(id) sender;
 + (id) sharedAppController; /**< Return the shared AppController instance */
 + (void)checkForPagesTemplate; /**< Check for Pages report template */
-+ (NSString*) currentHostName; /**< Return Network hostname */
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame;
 + (NSThread*) mainThread;
 + (void) pause;

@@ -562,19 +562,19 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject:[NSMutableArray arrayWithObject:@"Osirix"] forKey:@"ROUTING CALENDARS"];
 	
 	// ** AETITLE
-	if( [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"] == 0L)
+	if( [defaultValues objectForKey:@"AETITLE"] == 0L)
 	{
 		#ifdef OSIRIX_VIEWER
-		NSString *userName = [NSUserName() uppercaseString];
-		if ([userName length] > 4)
-			userName = [userName substringToIndex:4];
-		NSString *computerName = [[[DefaultsOsiriX currentHost] name] uppercaseString];
-		if ([computerName length] > 4)
-			computerName = [computerName substringToIndex:4];
-		NSString *suggestedAE = [NSString stringWithFormat:@"OSIRIX_%@_%@", computerName, userName];
-		[defaultValues setObject: suggestedAE forKey: @"AETITLE"];
-		
-		[[NSUserDefaults standardUserDefaults] setObject: suggestedAE forKey: @"AETITLE"];
+		char s[_POSIX_HOST_NAME_MAX+1];
+		gethostname(s,_POSIX_HOST_NAME_MAX);
+		NSString *c = [NSString stringWithCString:s encoding:NSUTF8StringEncoding];
+		NSRange range = [c rangeOfString: @"."];
+		if( range.location != NSNotFound) c = [c substringToIndex: range.location];
+	
+		if( [c length] > 16)
+			c = [c substringToIndex: 16];
+			
+		[defaultValues setObject: c forKey:@"AETITLE"];
 		#endif
 	}
 	//[defaultValues setObject:@"OSIRIX" forKey:@"AETITLE"];

@@ -145,17 +145,12 @@ char *GetPrivateIP()
 	
 //	NSString *ip = [NSString stringWithCString:GetPrivateIP()];
 	NSString *ip = [[self IPv4Address] componentsJoinedByString:@", "];
-	char			hostname[100];
-	gethostname(hostname, 99);
-	NSString *name = [NSString stringWithCString:hostname];
-
+	char hostname[ _POSIX_HOST_NAME_MAX+1];
+	gethostname(hostname, _POSIX_HOST_NAME_MAX);
+	NSString *name = [NSString stringWithCString: hostname];
+	
 	[ipField setStringValue: ip];
 	[nameField setStringValue: name];
-	
-//	if( [defaults stringForKey:@"STORESCPEXTRA"])
-//		[extrastorescp setStringValue:[defaults stringForKey:@"STORESCPEXTRA"]];
-	[aeTitleField setStringValue:[defaults stringForKey:@"AETITLE"]];
-	[portField setStringValue:[defaults stringForKey:@"AEPORT"]];
 	
 	[generateLogsButton setState:[defaults boolForKey:@"NETWORKLOGS"]];
 	[listenerOnOffButton setState:[defaults boolForKey:@"STORESCP"]];
@@ -206,20 +201,6 @@ char *GetPrivateIP()
 - (IBAction)setLogDuration:(id)sender
 {
 	[[NSUserDefaults standardUserDefaults] setInteger:[[logDurationPopup selectedItem] tag]  forKey:@"LOGCLEANINGDAYS"];
-}
-
-- (IBAction)setAE:(id)sender
-{
-	NSString	*aet;
-	
-	if( [[aeTitleField stringValue] length] >= 16) aet = [[aeTitleField stringValue] substringToIndex: 16];
-	else aet = [aeTitleField stringValue];
-	
-	[[NSUserDefaults standardUserDefaults] setObject:aet forKey:@"AETITLE"];
-	
-	[aeTitleField setStringValue: aet];
-	
-	[[NSUserDefaults standardUserDefaults] setObject:[portField stringValue] forKey:@"AEPORT"];
 }
 
 - (IBAction)setCompress:(id)sender{
