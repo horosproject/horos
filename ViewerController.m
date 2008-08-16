@@ -2482,15 +2482,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[[self window] setFrame: window display: YES];
 }
 
-- (void) refreshToolbar
+- (void) redrawToolbar
 {
-	int i;
-	
-	if (AUTOHIDEMATRIX) [self autoHideMatrix];
-	
 	if( USETOOLBARPANEL)
 	{
-		for( i = 0; i < [[NSScreen screens] count]; i++)
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
 		{
 			if( [toolbarPanel[ i] toolbar] == toolbar && [[self window] screen] != [[NSScreen screens] objectAtIndex: i])
 			{
@@ -2499,7 +2495,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 		
 		BOOL found = NO;
-		for( i = 0; i < [[NSScreen screens] count]; i++)
+		for( int i = 0; i < [[NSScreen screens] count]; i++)
 		{
 			if( [[self window] screen] == [[NSScreen screens] objectAtIndex: i])
 			{
@@ -2512,9 +2508,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	else
 	{
-		for( i = 0; i < [[NSScreen screens] count]; i++)
-			[[toolbarPanel[ i] window] orderOut:self];
+		for( int i = 0; i < [[NSScreen screens] count]; i++) [[toolbarPanel[ i] window] orderOut:self];
 	}
+}
+
+- (void) refreshToolbar
+{
+	int i;
+	
+	if (AUTOHIDEMATRIX) [self autoHideMatrix];
+	
+	[self redrawToolbar];
 	
 	if( [[self window] isVisible])
 	{

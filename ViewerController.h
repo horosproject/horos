@@ -789,6 +789,7 @@ enum
 - (void)selectROI:(ROI*)roi deselectingOther:(BOOL)deselectOther;
 - (void)deselectAllROIs;
 - (void) refreshToolbar;
+- (void) redrawToolbar;
 - (void) reloadAnnotations;
 - (NSScrollView*) previewMatrixScrollView;
 
