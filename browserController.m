@@ -13873,8 +13873,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self displayBonjourServices];
 }
 
-- (void)removeAllMounted {
-	
+- (void)removeAllMounted
+{
 	if( isCurrentDatabaseBonjour) return;
 	
 	// FIND ALL images that ARENT local, and REMOVE non-available images
@@ -13890,17 +13890,22 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSError	*error = nil;
 	NSArray *seriesArray = [[context executeFetchRequest:dbRequest error:&error] filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"mountedVolume == YES"]];
 	
-	@try {
-		if( [seriesArray count] > 0 ) {
+	@try
+	{
+		if( [seriesArray count] > 0 )
+		{
 			NSMutableArray			*studiesArray = [NSMutableArray arrayWithCapacity:0];
 			NSMutableArray			*viewersList = [ViewerController getDisplayed2DViewers];
 			
 			// Find unavailable files
-			for( NSManagedObject *study in seriesArray ) {
+			for( NSManagedObject *study in seriesArray )
+			{
 				
 				// Is a viewer containing this study opened? -> close it
-				for( ViewerController *vc in viewersList ) {
-					if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"] ) {
+				for( ViewerController *vc in viewersList )
+				{
+					if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"] )
+					{
 						[vc.window close];
 					}
 				}
@@ -13911,7 +13916,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[self saveDatabase: currentDatabasePath];
 		}
 	}
-	@catch( NSException *ne) {
+	@catch( NSException *ne)
+	{
 		NSLog( @"RemoveAllMounted Exception");
 		NSLog( ne.description );
 	}

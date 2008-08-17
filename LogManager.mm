@@ -105,7 +105,8 @@ LogManager *currentLogManager;
 			NSString *path;
 			
 			NS_DURING
-			while (path = [enumerator nextObject]){
+			while (path = [enumerator nextObject])
+			{
 				if ([[path pathExtension] isEqualToString: @"log"])
 				{
 					NSString *file = [[self logFolder] stringByAppendingPathComponent:path];
@@ -219,6 +220,19 @@ LogManager *currentLogManager;
 		
 		[context release];
 	}
+	
+//	NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
+//	NSManagedObjectModel		*model = [[BrowserController currentBrowser] managedObjectModel];
+//	
+//	[context lock];
+//	
+//	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+//	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"LogEntry"]];
+//	[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+//	NSError	*error = nil;
+//	NSLog( @"%@", [context executeFetchRequest:dbRequest error:&error]);
+//
+//	[context unlock];
 }
 
 @end

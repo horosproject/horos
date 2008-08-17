@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">9E17</string>
-		<string key="IBDocument.InterfaceBuilderVersion">667</string>
+		<string key="IBDocument.InterfaceBuilderVersion">670</string>
 		<string key="IBDocument.AppKitVersion">949.33</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="186"/>
+			<integer value="84"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1313,10 +1313,10 @@
 							<int key="NSExpressionType">0</int>
 							<string key="NSConstantValue">Receive</string>
 						</object>
-						<object class="NSEqualityPredicateOperator" key="NSPredicateOperator">
-							<int key="NSOperatorType">4</int>
+						<object class="NSLikePredicateOperator" key="NSPredicateOperator">
+							<int key="NSOperatorType">7</int>
 							<int key="NSModifier">0</int>
-							<bool key="NSNegate">NO</bool>
+							<int key="NSFlags">3</int>
 						</object>
 					</object>
 				</object>
@@ -1342,7 +1342,7 @@
 					<object class="NSComparisonPredicate" key="NSFetchPredicate">
 						<object class="NSKeyPathExpression" key="NSLeftExpression">
 							<int key="NSExpressionType">3</int>
-							<string key="NSSelectorName">valueForKeyPath:</string>
+							<string key="NSSelectorName">valueForKey:</string>
 							<object class="NSSelfExpression" key="NSOperand">
 								<int key="NSExpressionType">1</int>
 							</object>
@@ -1358,10 +1358,10 @@
 							<int key="NSExpressionType">0</int>
 							<string key="NSConstantValue">Send</string>
 						</object>
-						<object class="NSEqualityPredicateOperator" key="NSPredicateOperator">
-							<int key="NSOperatorType">4</int>
+						<object class="NSLikePredicateOperator" key="NSPredicateOperator">
+							<int key="NSOperatorType">7</int>
 							<int key="NSModifier">0</int>
-							<bool key="NSNegate">NO</bool>
+							<int key="NSFlags">3</int>
 						</object>
 					</object>
 				</object>
@@ -1392,7 +1392,7 @@
 					<object class="NSComparisonPredicate" key="NSFetchPredicate">
 						<object class="NSKeyPathExpression" key="NSLeftExpression">
 							<int key="NSExpressionType">3</int>
-							<string key="NSSelectorName">valueForKeyPath:</string>
+							<string key="NSSelectorName">valueForKey:</string>
 							<object class="NSSelfExpression" key="NSOperand">
 								<int key="NSExpressionType">1</int>
 							</object>
@@ -1408,10 +1408,10 @@
 							<int key="NSExpressionType">0</int>
 							<string key="NSConstantValue">Move</string>
 						</object>
-						<object class="NSEqualityPredicateOperator" key="NSPredicateOperator">
-							<int key="NSOperatorType">4</int>
+						<object class="NSLikePredicateOperator" key="NSPredicateOperator">
+							<int key="NSOperatorType">7</int>
 							<int key="NSModifier">0</int>
-							<bool key="NSNegate">NO</bool>
+							<int key="NSFlags">3</int>
 						</object>
 					</object>
 				</object>
