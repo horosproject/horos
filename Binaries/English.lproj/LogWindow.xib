@@ -1313,10 +1313,11 @@
 							<int key="NSExpressionType">0</int>
 							<string key="NSConstantValue">Receive</string>
 						</object>
-						<object class="NSLikePredicateOperator" key="NSPredicateOperator">
-							<int key="NSOperatorType">7</int>
+						<object class="NSSubstringPredicateOperator" key="NSPredicateOperator">
+							<int key="NSOperatorType">8</int>
 							<int key="NSModifier">0</int>
 							<int key="NSFlags">3</int>
+							<int key="NSPosition">0</int>
 						</object>
 					</object>
 				</object>
@@ -1358,10 +1359,11 @@
 							<int key="NSExpressionType">0</int>
 							<string key="NSConstantValue">Send</string>
 						</object>
-						<object class="NSLikePredicateOperator" key="NSPredicateOperator">
-							<int key="NSOperatorType">7</int>
+						<object class="NSSubstringPredicateOperator" key="NSPredicateOperator">
+							<int key="NSOperatorType">8</int>
 							<int key="NSModifier">0</int>
 							<int key="NSFlags">3</int>
+							<int key="NSPosition">0</int>
 						</object>
 					</object>
 				</object>
@@ -1408,10 +1410,11 @@
 							<int key="NSExpressionType">0</int>
 							<string key="NSConstantValue">Move</string>
 						</object>
-						<object class="NSLikePredicateOperator" key="NSPredicateOperator">
-							<int key="NSOperatorType">7</int>
+						<object class="NSSubstringPredicateOperator" key="NSPredicateOperator">
+							<int key="NSOperatorType">8</int>
 							<int key="NSModifier">0</int>
 							<int key="NSFlags">3</int>
+							<int key="NSPosition">0</int>
 						</object>
 					</object>
 				</object>
