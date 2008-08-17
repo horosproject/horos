@@ -967,6 +967,8 @@ char currentDestinationMoveAET[ 60] = "";
 			NSEnumerator *enumerator = [array objectEnumerator];
 			id moveEntity;
 			
+			[self updateLog: array];
+			
 			NSMutableSet *moveSet = [NSMutableSet set];
 			while (moveEntity = [enumerator nextObject])
 				[moveSet unionSet:[moveEntity valueForKey:@"paths"]];
@@ -1013,8 +1015,6 @@ char currentDestinationMoveAET[ 60] = "";
 				moveArray[ i] = (char*) malloc( strlen( str) + 1);
 				strcpy( moveArray[ i], str);
 			}
-			
-			[self updateLog: array];
 			
 			cond = EC_Normal;
 		}
