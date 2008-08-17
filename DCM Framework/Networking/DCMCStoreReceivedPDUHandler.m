@@ -41,10 +41,13 @@ htt://www.pixelmed.com
 @synthesize commandType;
 
 
-+ (id)cStoreDataHanderWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug{
++ (id)cStoreDataHanderWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug
+{
 	return [[[DCMCStoreReceivedPDUHandler alloc] initWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug] autorelease];
 }
-- (id)initWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug{
+
+- (id)initWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug
+{
 	if (debug)
 		NSLog(@"init DCMCStoreReceivedPDUHandler");
 	if (self = [super initWithDebugLevel:debug]){
@@ -60,31 +63,33 @@ htt://www.pixelmed.com
 	return self;
 }
 
-- (void)dealloc{
+- (void)dealloc
+{
 	//NSLog(@"Release receive dataHandler");
-	NSMutableDictionary  *userInfo = [NSMutableDictionary dictionary];
-	[userInfo setObject:@"Complete" forKey:@"Message"];
-	[userInfo setObject:[NSNumber numberWithInt:numberReceived] forKey:@"NumberReceived"];
-	[userInfo setObject:[NSNumber numberWithInt:errorCount] forKey:@"ErrorCount"];
-	if (date)
-		[userInfo setObject:date forKey:@"Time"];
-	if (callingAET)
-		[userInfo setObject:callingAET forKey:@"CallingAET"];		
-	if (patientName)
-		[userInfo setObject:patientName forKey:@"PatientName"];		
-	if (studyDescription)
-		[userInfo setObject:studyDescription forKey:@"StudyDescription"];	
-	else if (studyID)
-		[userInfo setObject:studyID forKey:@"StudyDescription"];
-	else
-		[userInfo setObject:@"unknown" forKey:@"StudyDescription"];
-	if (studyID)
-		[userInfo setObject:studyID forKey:@"StudyID"];
-	if (date)
-		[userInfo setObject:date forKey:@"Time"];
-
-				
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMReceiveStatus" object:self userInfo:userInfo];
+	
+//	NSMutableDictionary  *userInfo = [NSMutableDictionary dictionary];
+//	[userInfo setObject:@"Complete" forKey:@"Message"];
+//	[userInfo setObject:[NSNumber numberWithInt:numberReceived] forKey:@"NumberReceived"];
+//	[userInfo setObject:[NSNumber numberWithInt:errorCount] forKey:@"ErrorCount"];
+//	
+//	if (date)
+//		[userInfo setObject:date forKey:@"Time"];
+//	if (callingAET)
+//		[userInfo setObject:callingAET forKey:@"CallingAET"];		
+//	if (patientName)
+//		[userInfo setObject:patientName forKey:@"PatientName"];		
+//	if (studyDescription)
+//		[userInfo setObject:studyDescription forKey:@"StudyDescription"];	
+//	else if (studyID)
+//		[userInfo setObject:studyID forKey:@"StudyDescription"];
+//	else
+//		[userInfo setObject:@"unknown" forKey:@"StudyDescription"];
+//	if (studyID)
+//		[userInfo setObject:studyID forKey:@"StudyID"];
+//	if (date)
+//		[userInfo setObject:date forKey:@"Time"];
+//	
+//	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMReceiveStatus" object:self userInfo:userInfo];
 
 	[folder release];
 	[dcmObject release];
@@ -246,39 +251,39 @@ htt://www.pixelmed.com
 				dataReceived = [[NSMutableData data] retain];
 				isDone = YES;
 				
-				[patientName release];
-				[studyDescription release];
-				[studyID release];
-				patientName = nil;
-				studyDescription = nil;
-				studyID= nil;
-				patientName = [[dcmObject attributeValueWithName:@"PatientsName"] retain];
-				studyDescription = [[dcmObject attributeValueWithName:@"StudyDescription"] retain];
-				studyID = [[dcmObject attributeValueWithName:@"studyID"] retain];
+//				[patientName release];
+//				[studyDescription release];
+//				[studyID release];
+//				patientName = nil;
+//				studyDescription = nil;
+//				studyID= nil;
+//				patientName = [[dcmObject attributeValueWithName:@"PatientsName"] retain];
+//				studyDescription = [[dcmObject attributeValueWithName:@"StudyDescription"] retain];
+//				studyID = [[dcmObject attributeValueWithName:@"studyID"] retain];
 					
-				NSMutableDictionary  *userInfo = [NSMutableDictionary dictionary];
-				//[userInfo setObject:[NSNumber numberWithInt:numberOfFiles] forKey:@"SendTotal"];
-				[userInfo setObject:[NSNumber numberWithInt:++numberReceived] forKey:@"NumberReceived"];
-				[userInfo setObject:[NSNumber numberWithInt:errorCount] forKey:@"ErrorCount"];
-				[userInfo setObject:@"In Progress" forKey:@"Message"];
-					
-				if (callingAET)
-					[userInfo setObject:callingAET forKey:@"CallingAET"];		
-				if (patientName)
-					[userInfo setObject:patientName forKey:@"PatientName"];		
-				if (studyDescription)
-					[userInfo setObject:studyDescription forKey:@"StudyDescription"];	
-				else if (studyID)
-					[userInfo setObject:studyID forKey:@"StudyDescription"];
-				else
-					[userInfo setObject:@"unknown" forKey:@"StudyDescription"];
-				if (studyID)
-					[userInfo setObject:studyID forKey:@"StudyID"];
-				if (date)
-					[userInfo setObject:date forKey:@"Time"];
-
-				[self 	updateReceiveStatus:userInfo];		
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMReceiveStatus" object:self userInfo:userInfo];
+//				NSMutableDictionary  *userInfo = [NSMutableDictionary dictionary];
+//				//[userInfo setObject:[NSNumber numberWithInt:numberOfFiles] forKey:@"SendTotal"];
+//				[userInfo setObject:[NSNumber numberWithInt:++numberReceived] forKey:@"NumberReceived"];
+//				[userInfo setObject:[NSNumber numberWithInt:errorCount] forKey:@"ErrorCount"];
+//				[userInfo setObject:@"In Progress" forKey:@"Message"];
+//					
+//				if (callingAET)
+//					[userInfo setObject:callingAET forKey:@"CallingAET"];		
+//				if (patientName)
+//					[userInfo setObject:patientName forKey:@"PatientName"];		
+//				if (studyDescription)
+//					[userInfo setObject:studyDescription forKey:@"StudyDescription"];	
+//				else if (studyID)
+//					[userInfo setObject:studyID forKey:@"StudyDescription"];
+//				else
+//					[userInfo setObject:@"unknown" forKey:@"StudyDescription"];
+//				if (studyID)
+//					[userInfo setObject:studyID forKey:@"StudyID"];
+//				if (date)
+//					[userInfo setObject:date forKey:@"Time"];
+//
+//				[self updateReceiveStatus:userInfo];		
+//				[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMReceiveStatus" object:self userInfo:userInfo];
 				
 			}
 		}

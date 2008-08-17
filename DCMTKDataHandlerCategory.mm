@@ -831,16 +831,19 @@ char currentDestinationMoveAET[ 60] = "";
 		[context unlock];
 		[context release];
 		
-		if (error) {
+		if (error)
+		{
 			findArray = nil;
 			cond = EC_IllegalParameter;
 		}
-		else {
+		else
+		{
 			[findArray retain];
 			cond = EC_Normal;
 		}
 	}
-	else{
+	else
+	{
 		findArray = nil;
 		cond = EC_IllegalParameter;
 	}
@@ -855,8 +858,13 @@ char currentDestinationMoveAET[ 60] = "";
 - (void) updateLog:(NSArray*) mArray
 {
 	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
+	if( [mArray count] == 0) return;
 	
 	char fromTo[ 200] = "";
+	
+	if( logFiles) free( logFiles);
+	
+	logFiles = (logStruct*) malloc( sizeof( logStruct));
 	
 	if (strcmp( currentDestinationMoveAET, [[self callingAET] UTF8String]) == 0)
 	{
@@ -869,6 +877,8 @@ char currentDestinationMoveAET[ 60] = "";
 		strcat( fromTo, currentDestinationMoveAET);
 	}
 	
+	int i = 0;
+	
 	for( NSManagedObject *object in mArray)
 	{
 		if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
@@ -880,15 +890,29 @@ char currentDestinationMoveAET[ 60] = "";
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
-				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r", [[object valueForKeyPath:@"study.name"] UTF8String], [[object valueForKeyPath:@"study.studyName"] UTF8String], fromTo, time (NULL), "Complete", "unused", [[object valueForKey:@"noFiles"] intValue], time (NULL), "Move", "UTF-8");
+				strcpy( logFiles->logPatientName, [[object valueForKeyPath:@"study.name"] UTF8String]);
+				strcpy( logFiles->logStudyDescription, [[object valueForKeyPath:@"study.studyName"] UTF8String]);
+				strcpy( logFiles->logCallingAET, fromTo);
+				logFiles->logStartTime = time (NULL);
+				strcpy( logFiles->logMessage, "In Progress");
+				logFiles->logNumberReceived = 0;
+				logFiles->logNumberTotal = [[object valueForKey:@"noFiles"] intValue];
+				logFiles->logEndTime = time (NULL);
+				strcpy( logFiles->logType, "Move");
+				strcpy( logFiles->logEncoding, "UTF-8");
+				
+				unsigned int random = (unsigned int)time(NULL);
+				sprintf( logFiles->logUID, "%d%s", random, logFiles->logPatientName);
+
+				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r\%d\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
+				
 				fclose (pFile);
 				strcpy( newdir, dir);
 				strcat( newdir, ".log");
 				rename( dir, newdir);
 			}
 		}
-		
-		if( [[object valueForKey:@"type"] isEqualToString: @"Study"])
+		else if( [[object valueForKey:@"type"] isEqualToString: @"Study"])
 		{
 			FILE * pFile;
 			char dir[ 1024], newdir[1024];
@@ -897,7 +921,22 @@ char currentDestinationMoveAET[ 60] = "";
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
-				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r", [[object valueForKey:@"name"] UTF8String], [[object valueForKey:@"studyName"] UTF8String], fromTo, time (NULL), "Complete", "unused", [[object valueForKey:@"noFiles"] intValue], time (NULL), "Move", "UTF-8");
+				strcpy( logFiles->logPatientName, [[object valueForKeyPath:@"name"] UTF8String]);
+				strcpy( logFiles->logStudyDescription, [[object valueForKeyPath:@"studyName"] UTF8String]);
+				strcpy( logFiles->logCallingAET, fromTo);
+				logFiles->logStartTime = time (NULL);
+				strcpy( logFiles->logMessage, "In Progress");
+				logFiles->logNumberReceived = 0;
+				logFiles->logNumberTotal = [[object valueForKey:@"noFiles"] intValue];
+				logFiles->logEndTime = time (NULL);
+				strcpy( logFiles->logType, "Move");
+				strcpy( logFiles->logEncoding, "UTF-8");
+				
+				unsigned int random = (unsigned int)time(NULL);
+				sprintf( logFiles->logUID, "%d%s", random, logFiles->logPatientName);
+				
+				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r\%d\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
+				
 				fclose (pFile);
 				strcpy( newdir, dir);
 				strcat( newdir, ".log");
@@ -935,7 +974,7 @@ char currentDestinationMoveAET[ 60] = "";
 	
 	error = 0L;
 	
-	NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	
 	[context retain];
 	[context lock];
@@ -1123,6 +1162,38 @@ char currentDestinationMoveAET[ 60] = "";
 	}
 	
 	moveArrayEnumerator++;
+	
+	if( logFiles)
+	{
+		FILE * pFile;
+		char dir[ 1024], newdir[1024];
+		unsigned int random = (unsigned int)time(NULL);
+		sprintf( dir, "%s/%s%d", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/move_log_", random);
+		pFile = fopen (dir,"w+");
+		if( pFile)
+		{
+			if( moveArrayEnumerator >= moveArraySize)
+				strcpy( logFiles->logMessage, "Complete");
+			
+			logFiles->logNumberReceived++;
+			logFiles->logEndTime = time (NULL);
+			
+			fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r%s\r%s\r\%d\r", logFiles->logPatientName, logFiles->logStudyDescription, logFiles->logCallingAET, logFiles->logStartTime, logFiles->logMessage, logFiles->logUID, logFiles->logNumberReceived, logFiles->logEndTime, logFiles->logType, logFiles->logEncoding, logFiles->logNumberTotal);
+			
+			fclose (pFile);
+			strcpy( newdir, dir);
+			strcat( newdir, ".log");
+			rename( dir, newdir);
+		}
+	}
+	
+	if( moveArrayEnumerator >= moveArraySize)
+	{
+		if( logFiles)
+			free( logFiles);
+		
+		logFiles = 0L;
+	}
 	
 	return ret;
 }

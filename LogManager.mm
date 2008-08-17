@@ -82,6 +82,7 @@ LogManager *currentLogManager;
 		char logMessage[ 1024];
 		char logUID[ 1024];
 		char logNumberReceived[ 1024];
+		char logNumberTotal[ 1024];
 		char logEndTime[ 1024];
 		char logType[ 1024];
 		char logEncoding[ 1024];
@@ -93,6 +94,7 @@ LogManager *currentLogManager;
 		logMessage[ 0] = 0;
 		logUID[ 0] = 0;
 		logNumberReceived[ 0] = 0;
+		logNumberTotal[ 0] = 0;
 		logEndTime[ 0] = 0;
 		logType[ 0] = 0;
 		logEncoding[ 0] = 0;
@@ -135,6 +137,7 @@ LogManager *currentLogManager;
 						if(curData) strcpy( logEndTime, strsep( &curData, "\r"));
 						if(curData) strcpy( logType, strsep( &curData, "\r"));
 						if(curData) strcpy( logEncoding, strsep( &curData, "\r"));
+						if(curData) strcpy( logNumberTotal, strsep( &curData, "\r"));
 						
 						fclose (pFile);
 						remove( [newfile UTF8String]);
@@ -153,57 +156,39 @@ LogManager *currentLogManager;
 						//
 						
 						if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"In Progress"] || [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
-						{
-							if( [[NSString stringWithUTF8String: logType] isEqualToString:@"Move"])
+						{				
+							NSString *uid = [NSString stringWithUTF8String: logUID];
+							id logEntry = [_currentLogs objectForKey:uid];
+							if (logEntry == nil)
 							{
-								id logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
-									
+								logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
+								
 								[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logStartTime] intValue]]  forKey:@"startTime"];
 								[logEntry setValue:[NSString stringWithUTF8String: logType] forKey:@"type"];
 								[logEntry setValue:[NSString stringWithUTF8String: logCallingAET] forKey:@"originName"];
 								[logEntry setValue:[DicomFile stringWithBytes: (char*) logPatientName encodings: encoding] forKey:@"patientName"];
 								[logEntry setValue:[DicomFile stringWithBytes: (char*) logStudyDescription encodings: encoding] forKey:@"studyName"];
-								[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberImages"];
-								[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberSent"];
-								[logEntry setValue:[NSNumber numberWithInt: 0] forKey:@"numberError"];
-								[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logEndTime] intValue]] forKey:@"endTime"];
-								[logEntry setValue:[NSString stringWithUTF8String: logMessage] forKey:@"message"];
+								
+								[_currentLogs setObject:logEntry forKey:uid];
 							}
-							else
-							{					
-								NSString *uid = [NSString stringWithUTF8String: logUID];
-								id logEntry = [_currentLogs objectForKey:uid];
-								if (logEntry == nil)
+							
+							if( logEntry != 0L && [logEntry isDeleted] == NO)
+							{
+								[logEntry setValue:[NSString stringWithUTF8String: logMessage] forKey:@"message"];
+								[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberTotal] intValue]] forKey:@"numberImages"];
+								[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberSent"];
+								
+								if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
 								{
-									logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
+									if( [[NSString stringWithUTF8String: logEndTime] intValue] == 0)
+										strcpy( logEndTime, [[NSString stringWithFormat:@"%d", time (NULL)] UTF8String]);
 									
-									[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logStartTime] intValue]]  forKey:@"startTime"];
-									[logEntry setValue:[NSString stringWithUTF8String: logType] forKey:@"type"];
-									[logEntry setValue:[NSString stringWithUTF8String: logCallingAET] forKey:@"originName"];
-									[logEntry setValue:[DicomFile stringWithBytes: (char*) logPatientName encodings: encoding] forKey:@"patientName"];
-									[logEntry setValue:[DicomFile stringWithBytes: (char*) logStudyDescription encodings: encoding] forKey:@"studyName"];
-									
-									[_currentLogs setObject:logEntry forKey:uid];
+									NSLog(@"LogManager transfer Complete");
+									[_currentLogs removeObjectForKey: uid];
 								}
 								
-								if( logEntry != 0L && [logEntry isDeleted] == NO)
-								{
-									[logEntry setValue:[NSString stringWithUTF8String: logMessage] forKey:@"message"];
-									[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberImages"];
-									[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberSent"];
-									
-									if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
-									{
-										if( [[NSString stringWithUTF8String: logEndTime] intValue] == 0)
-											strcpy( logEndTime, [[NSString stringWithFormat:@"%d", time (NULL)] UTF8String]);
-										
-										NSLog(@"LogManager transfer Complete");
-										[_currentLogs removeObjectForKey: uid];
-									}
-									
-									if( [[NSString stringWithUTF8String: logEndTime] intValue] != 0)
-										[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logEndTime] intValue]] forKey:@"endTime"];
-								}
+								if( [[NSString stringWithUTF8String: logEndTime] intValue] != 0)
+									[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logEndTime] intValue]] forKey:@"endTime"];
 							}
 						}
 						else NSLog(@"Unknown log message type");

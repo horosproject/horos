@@ -14,6 +14,20 @@
 
 
 
+typedef struct
+{
+	char logPatientName[ 1024];
+	char logStudyDescription[ 1024];
+	char logCallingAET[ 1024];
+	time_t logStartTime;
+	char logMessage[ 1024];
+	char logUID[ 1024];
+	int logNumberReceived;
+	int logNumberTotal;
+	time_t logEndTime;
+	char logType[ 1024];
+	char logEncoding[ 1024];
+} logStruct;
 
 
 #import <Cocoa/Cocoa.h>
@@ -28,18 +42,19 @@
 * Interface between server and database 
 */
 
-@interface OsiriXSCPDataHandler : DCMCStoreReceivedPDUHandler {
-	int numberMoving;
-	id logEntry;
-	NSString *specificCharacterSet;
-	NSStringEncoding encoding;
+@interface OsiriXSCPDataHandler : DCMCStoreReceivedPDUHandler
+{
 	NSArray *findArray;
+	NSString *specificCharacterSet;
 	NSEnumerator *findEnumerator;
-	NSString *tempMoveFolder;
-
+	
+	int numberMoving;
+	
+	NSStringEncoding encoding;
 	int moveArrayEnumerator;
 	int moveArraySize;
 	char **moveArray;
+	logStruct *logFiles;
 }
 
 + (id)requestDataHandlerWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug;

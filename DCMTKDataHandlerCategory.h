@@ -22,7 +22,6 @@
 #include "dcdatset.h"
 #include "ofcond.h"
 
-
 /** \brief  DCMTK calls for OsiriXSCPDataHandler */
 	
 @interface OsiriXSCPDataHandler (DCMTKDataHandlerCategory)

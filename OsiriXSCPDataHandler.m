@@ -27,21 +27,21 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 
 - (void)dealloc
 {
-	[specificCharacterSet release];
-	[findArray release];
-	
 	for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
 	free( moveArray);
 	moveArray = 0L;
 	moveArraySize = 0;
 	
-	[logEntry setValue:@"Complete" forKey:@"message"];
-	if (tempMoveFolder && [[NSFileManager defaultManager] fileExistsAtPath:tempMoveFolder])
-		[[NSFileManager defaultManager] removeFileAtPath:tempMoveFolder handler:nil];
-		
-	[tempMoveFolder release];
-	[findEnumerator release];
-	[logEntry release];
+	if( logFiles) free( logFiles);
+	logFiles = 0L;
+	
+	
+	if( specificCharacterSet)
+		[specificCharacterSet release];
+	
+	if( findEnumerator)
+		[findEnumerator release];
+	
 	[super dealloc];
 }
 
@@ -56,7 +56,6 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 	if (self = [super initWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug])
 	{
 		commandType = 0x0001;
-		logEntry = 0L;
 	}
 	return self;
 }
