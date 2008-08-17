@@ -36,16 +36,14 @@ static NSLock *currentHostLock = 0L;
 
 +(NSHost*) currentHost
 {
+	if( currentHostLock == 0L) currentHostLock = [[NSLock alloc] init];
+	[currentHostLock lock];
 	if( currentHost == 0L)
 	{
-		if( currentHostLock == 0L) currentHostLock = [[NSLock alloc] init];
-		
 		NSLog( @"*** currentHost");
-		
-		[currentHostLock lock];
 		currentHost = [[NSHost currentHost] retain];
-		[currentHostLock unlock];
 	}
+	[currentHostLock unlock];
 	
 	return currentHost;
 }
