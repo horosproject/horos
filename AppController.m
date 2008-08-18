@@ -905,7 +905,7 @@ static NSDate *lastWarningDate = 0L;
 	[DCMView setDefaults];
 	[ROI loadDefaultSettings];
 	
-	NSLog( @"***** runPreferencesUpdateCheck");
+	NSLog( @"runPreferencesUpdateCheck");
 	
 	if( restartListener)
 	{
@@ -2771,13 +2771,9 @@ static BOOL initialized = NO;
 	if( i == NSNotFound) i = 0;
 	i++;
 	
-	i *= -1000;
+	i *= 3000;
 	
-	int rows = ([[[v window] screen] visibleFrame].size.height / [[v window] frame].size.height);
-	
-	int currentrow = rows * ([[v window] frame].origin.y + (3*[[v window] frame].size.height)/4 - [[[v window] screen] visibleFrame].origin.y) / [[[v window] screen] visibleFrame].size.height;
-	
-	return i + rows - currentrow;
+	return i - ([[v window] frame].origin.y + (3*[[v window] frame].size.height)/4 - [[[v window] screen] visibleFrame].origin.y);
 }
 
 - (void) scaleToFit:(id)sender
@@ -2794,7 +2790,7 @@ static BOOL initialized = NO;
 	if( i == NSNotFound) i = 0;
 	i++;
 	
-	i *= 1000;
+	i *= 3000;
 	
 	return NSMakePoint( i + [w frame].origin.x + [w frame].size.width/2, i + [w frame].origin.y + [w frame].size.height/2);
 }
