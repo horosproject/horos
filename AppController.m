@@ -3073,6 +3073,8 @@ static BOOL initialized = NO;
 		{
 			int monitorIndex =  i / (columnsPerScreen*rows);
 			
+			if( monitorIndex == numberOfMonitors) monitorIndex = numberOfMonitors-1;
+			
 			if( monitorIndex == numberOfMonitors-1 && strechWindows == YES && lastScreen == NO)
 			{
 				int remaining = viewerCount - i;
@@ -3100,7 +3102,7 @@ static BOOL initialized = NO;
 //			NSLog( @"column %d", column);
 //			NSLog( @"------");
 			
-			NSScreen *screen = [screens objectAtIndex:monitorIndex];
+			NSScreen *screen = [screens objectAtIndex: monitorIndex];
 			NSRect frame = [screen visibleFrame];
 			
 			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
