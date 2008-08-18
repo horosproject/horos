@@ -2767,11 +2767,17 @@ static BOOL initialized = NO;
 
 - (int) currentRowForViewer: (ViewerController*) v
 {
+	NSUInteger i = [[NSScreen screens] indexOfObject: [[v window] screen]];
+	if( i == NSNotFound) i = 0;
+	i++;
+	
+	i *= -1000;
+	
 	int rows = ([[[v window] screen] visibleFrame].size.height / [[v window] frame].size.height);
 	
 	int currentrow = rows * ([[v window] frame].origin.y + (3*[[v window] frame].size.height)/4 - [[[v window] screen] visibleFrame].origin.y) / [[[v window] screen] visibleFrame].size.height;
 	
-	return rows - currentrow;
+	return i + rows - currentrow;
 }
 
 - (void) scaleToFit:(id)sender
@@ -2784,7 +2790,13 @@ static BOOL initialized = NO;
 
 - (NSPoint) windowCenter: (NSWindow*) w
 {
-	return NSMakePoint( [w frame].origin.x + [w frame].size.width/2, [w frame].origin.y + [w frame].size.height/2);
+	NSUInteger i = [[NSScreen screens] indexOfObject: [w screen]];
+	if( i == NSNotFound) i = 0;
+	i++;
+	
+	i *= 1000;
+	
+	return NSMakePoint( i + [w frame].origin.x + [w frame].size.width/2, i + [w frame].origin.y + [w frame].size.height/2);
 }
 
 - (void) tileWindows:(id)sender
@@ -2863,8 +2875,6 @@ static BOOL initialized = NO;
 		count--;
 	}
 	
-//	NSLog( [cResult description]);
-	
 	// Add the hidden windows
 	for( i = 0; i < [viewersList count]; i++)
 	{
@@ -2932,11 +2942,13 @@ static BOOL initialized = NO;
 
 	if (![[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol] || viewerCount < rows * columns)
 	{
-		if (landscape) {
+		if (landscape)
+		{
 			columns = 2 * numberOfMonitors;
 			rows = 1;
 		}
-		else {
+		else
+		{
 			columns = numberOfMonitors;
 			rows = 2;
 		}
@@ -2945,9 +2957,12 @@ static BOOL initialized = NO;
 	//excess viewers. Need to add spaces to accept
 	if( viewerCount > (rows * columns))
 	{
-		while (viewerCount > (rows * columns)){
+		while (viewerCount > (rows * columns))
+		{
 			float ratio = ((float)columns/(float)rows)/numberOfMonitors;
+			
 			//NSLog(@"ratio: %f", ratio);
+			
 			if (ratio > 1.5 && landscape)
 				rows ++;
 			else 
@@ -2995,11 +3010,9 @@ static BOOL initialized = NO;
 		}
 	}
 	
-	/* 
-	Will have columns but no rows. 
-	There are more columns than monitors. 
-	 Need to separate columns among the window evenly
-	 */
+	/* Will have columns but no rows. 
+	 There are more columns than monitors. 
+	  Need to separate columns among the window evenly  */
 	
 	else if((viewerCount <= columns) &&  (viewerCount % numberOfMonitors == 0))
 	{
@@ -3026,7 +3039,8 @@ static BOOL initialized = NO;
 		int columnsPerScreen = ceil(((float) columns / numberOfMonitors));
 
 		int extraViewers = viewerCount % numberOfMonitors;
-		for( i = 0; i < viewerCount; i++) {
+		for( i = 0; i < viewerCount; i++)
+		{
 			int monitorIndex = (int) i /columnsPerScreen;
 			int viewerPosition = i % columnsPerScreen;
 			NSScreen *screen = [screens objectAtIndex:monitorIndex];
@@ -3048,15 +3062,43 @@ static BOOL initialized = NO;
 	//adjust for actual number of rows needed
 	else if (viewerCount <=  columns * rows)  
 	{
-		int columnsPerScreen = ceil(((float) columns / numberOfMonitors));
-		int extraViewers = columns % numberOfMonitors;
+		int columnsPerScreen = ceil(((float) columns / (float) numberOfMonitors));
+//		NSLog( @"rows: %d", rows);
+//		NSLog( @"columns: %d", columns);
+//		NSLog( @"------");
+		
+		BOOL lastScreen = NO;
 		
 		for( i = 0; i < viewerCount; i++)
 		{
-			int row = i/columns;
-			int columnIndex = (i - (row * columns));
-			int monitorIndex =  columnIndex / columnsPerScreen;
-			int viewerPosition = columnIndex % columnsPerScreen;
+			int monitorIndex =  i / (columnsPerScreen*rows);
+			
+			if( monitorIndex == numberOfMonitors-1 && strechWindows == YES && lastScreen == NO)
+			{
+				int remaining = viewerCount - i;
+				
+				lastScreen = YES;
+				
+				while( rows*columnsPerScreen > remaining)
+				{
+					rows--;
+					
+					if( rows*columnsPerScreen > remaining)
+						columnsPerScreen--;
+				}
+				
+				while( rows*columnsPerScreen < remaining)
+					rows++;
+			}
+			
+			int posInScreen = i % (columnsPerScreen*rows);
+			int row = posInScreen / columnsPerScreen;
+			int column = posInScreen % columnsPerScreen;
+			
+//			NSLog( @"posInScreen %d", posInScreen);
+//			NSLog( @"row %d", row);
+//			NSLog( @"column %d", column);
+//			NSLog( @"------");
 			
 			NSScreen *screen = [screens objectAtIndex:monitorIndex];
 			NSRect frame = [screen visibleFrame];
@@ -3065,25 +3107,15 @@ static BOOL initialized = NO;
 			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			NSRect visibleFrame = frame;
-			
-			if (monitorIndex < extraViewers || extraViewers == 0) 
-				frame.size.width /= columnsPerScreen;
-			else
-				frame.size.width /= (columnsPerScreen - 1);
-			
-			frame.origin.x += (frame.size.width * viewerPosition);
-			if( i == viewerCount-1 && monitorIndex != numberOfMonitors-1)
-			{
-				if( strechWindows)
-					frame.size.width = visibleFrame.size.width - (frame.origin.x - visibleFrame.origin.x);
-			}
+			frame.size.width /= columnsPerScreen;
+			frame.origin.x += (frame.size.width * column);
 			
 			frame.size.height /= rows;
 			frame.origin.y += frame.size.height * ((rows - 1) - row);
 
-			if( monitorIndex == numberOfMonitors-1)
+			if( lastScreen)
 			{
-				if( i + columns >= viewerCount && strechWindows == YES)
+				if( i + columnsPerScreen >= viewerCount && strechWindows == YES)
 				{
 					frame.size.height += frame.origin.y - visibleFrame.origin.y;
 					frame.origin.y = visibleFrame.origin.y;
