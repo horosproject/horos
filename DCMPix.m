@@ -1080,7 +1080,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize frameNo;
 @synthesize minValueOfSeries, maxValueOfSeries;
 @synthesize isRGB, pwidth = width, pheight = height;
-@synthesize pixelRatio, transferFunction, subPixOffset;
+@synthesize pixelRatio, transferFunction, subPixOffset, isOriginDefined;
 
 @synthesize DCMPixShutterRectWidth = shutterRect_w;
 @synthesize DCMPixShutterRectHeight = shutterRect_h;
@@ -2933,6 +2933,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 		originY = oY;
 		originZ = oZ;
 		
+		isOriginDefined = YES;
+		
 		ww = 0;
 		wl = 0;
 		
@@ -3130,6 +3132,12 @@ BOOL gUSEPAPYRUSDCMPIX;
 	copy->decayFactor = self->decayFactor;
 	copy->halflife = self->halflife;
 	copy->philipsFactor = self->philipsFactor;
+
+	copy->shutterRect_w = self->shutterRect_w;
+	copy->shutterRect_h = self->shutterRect_h;
+	copy->shutterRect_x = self->shutterRect_x;
+	copy->shutterRect_y = self->shutterRect_y;
+	copy->DCMPixShutterOnOff = self->DCMPixShutterOnOff;
 	
 	copy->generated = YES;
 	
@@ -3768,16 +3776,22 @@ BOOL gUSEPAPYRUSDCMPIX;
 			{
 				originX = mm_head.DimInfo[i].Origin / 1000.0;
 				pixelSpacingX = mm_head.DimInfo[i].Resolution / 1000.0;
+				
+				isOriginDefined = YES;
 			}
 			else if (*(mm_head.DimInfo[i].Name) == 'Y')
 			{
 				originY = mm_head.DimInfo[i].Origin / 1000.0;
 				pixelSpacingY = mm_head.DimInfo[i].Resolution / 1000.0;
+				
+				isOriginDefined = YES;
 			}
 			else if (*(mm_head.DimInfo[i].Name) == 'Z')
 			{
 				originZ = (mm_head.DimInfo[i].Origin + (mm_head.DimInfo[i].Resolution * frameNo)) / 1000.0;
 				sliceThickness = sliceInterval = mm_head.DimInfo[i].Resolution / 1000.0;
+				
+				isOriginDefined = YES;
 			}
 		}
 		sliceLocation = originZ;
@@ -4865,10 +4879,12 @@ END_CREATE_ROIS:
 	//orientation
 	originX = 0;	originY = 0;	originZ = 0;
 	NSArray *ipp = [dcmObject attributeArrayWithName:@"ImagePositionPatient"];
-	if( ipp ) {
+	if( ipp )
+	{
 		originX = [[ipp objectAtIndex:0] floatValue];
 		originY = [[ipp objectAtIndex:1] floatValue];
 		originZ = [[ipp objectAtIndex:2] floatValue];
+		isOriginDefined = YES;
 	}
 	
 	orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
@@ -5143,6 +5159,7 @@ END_CREATE_ROIS:
 						originX = [[ipp objectAtIndex:0] floatValue];
 						originY = [[ipp objectAtIndex:1] floatValue];
 						originZ = [[ipp objectAtIndex:2] floatValue];
+						isOriginDefined = YES;
 					}
 				}	
 				if ([sequenceItem attributeArrayWithName:@"PixelSpacing"]) {
@@ -5998,6 +6015,8 @@ END_CREATE_ROIS:
 					tmp++;
 					originZ = atof( tmp->a);
 				}
+				
+				isOriginDefined = YES;
 			}
 			
 			orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
@@ -6624,6 +6643,8 @@ END_CREATE_ROIS:
 										tmp++;
 										originZ = atof( tmp->a);
 									}
+									
+									isOriginDefined = YES;
 								}
 								
 								originZ += frameNo * sliceThickness;
@@ -6908,7 +6929,8 @@ END_CREATE_ROIS:
 														switch( gr20->group) {
 															case 0x0020:
 																val3 = Papy3GetElement (gr20, papImagePositionPatientGr, &nbVal, &elemType);
-																if (val3 != NULL && nbVal >= 1) {
+																if (val3 != NULL && nbVal >= 1)
+																{
 																	tmp = val3;
 																	
 																	originX = atof( tmp->a);
@@ -6924,6 +6946,8 @@ END_CREATE_ROIS:
 																	}
 																	
 																	NSLog(@"X:%f Y:%f Z:%f", originX, originY, originZ);
+																	
+																	isOriginDefined = YES;
 																}
 																break;
 																
@@ -8256,6 +8280,8 @@ END_CREATE_ROIS:
 							originX = 0;
 							originY = 0;
 							originZ = frameNo * pixelSpacingX;
+							
+							isOriginDefined = YES;
 						}
 						else if(jcod == NIFTI_S2I || jcod == NIFTI_I2S)
 						{
@@ -8265,6 +8291,8 @@ END_CREATE_ROIS:
 								originX = frameNo * pixelSpacingX;
 								originY = 0;
 								originZ = 0;
+								
+								isOriginDefined = YES;
 							}
 							else if(icod == NIFTI_R2L || icod == NIFTI_L2R)
 							{
@@ -8272,6 +8300,8 @@ END_CREATE_ROIS:
 								originX = 0;
 								originY = frameNo * pixelSpacingX;
 								originZ = 0;
+								
+								isOriginDefined = YES;
 							}						
 						}
 						
@@ -8977,10 +9007,25 @@ END_CREATE_ROIS:
 	src.width = [self pwidth];
 	src.rowBytes = [self pwidth]*4;
 	src.data = [self fImage];
-	
+		
 	[self drawImage:&src inImage:&dst offset:NSMakePoint( -unionRect.origin.x, -unionRect.origin.y) background: [self minValueOfSeries]-1024 transparency: NO];
 	
-	// Draw second image
+	// Adapt the window level
+	
+	if( [self wl] != [o wl])
+	{
+		long i = dst.height * dst.width;
+		float *ptr = dst.data;
+		float diffwl = [o wl] - [self wl];
+		float diffww = [o ww]/[self ww];
+		
+		while (i-- > 0)
+		{
+			*ptr += diffwl;
+			*ptr++ *= diffww;
+		}
+	}
+
 	src.height = [o pheight];
 	src.width = [o pwidth];
 	src.rowBytes = [o pwidth]*4;
@@ -9133,7 +9178,44 @@ END_CREATE_ROIS:
 		src.width = [self pwidth];
 		src.rowBytes = [self pwidth]*4;
 		src.data = [self computefImage];
-		
+
+		if( [self DCMPixShutterOnOff] && [self DCMPixShutterRectWidth] > 0 && [self DCMPixShutterRectHeight] > 0)
+		{
+			if( [self DCMPixShutterRectOriginY] < 0) self.DCMPixShutterRectOriginY = 0;
+			if( [self DCMPixShutterRectOriginX] < 0) self.DCMPixShutterRectOriginX = 0;
+			
+			if( [self DCMPixShutterRectWidth] + [self DCMPixShutterRectOriginX] > [self pwidth]) self.DCMPixShutterRectWidth = [self pwidth] - [self DCMPixShutterRectOriginX];
+			if( [self DCMPixShutterRectHeight] + [self DCMPixShutterRectOriginY] > [self pheight]) self.DCMPixShutterRectHeight = [self pheight] - [self DCMPixShutterRectOriginY];
+			
+			float *tempMem = malloc( [self pwidth] * [self pheight] * sizeof(float));
+			
+			if( tempMem)
+			{
+				float *s = tempMem, m = [self minValueOfSeries]-1024;
+				
+				long i = [self pwidth] * [self pheight];
+				
+				while (i-- > 0)
+					*s++ = m;
+				
+				s = src.data;
+				s += (([self DCMPixShutterRectOriginY] * [self pwidth]) + [self DCMPixShutterRectOriginX]);
+				float *d = tempMem + (([self DCMPixShutterRectOriginY] * [self pwidth]) + [self DCMPixShutterRectOriginX]);
+				
+				i = self.DCMPixShutterRectHeight;
+				while( i-- > 0)
+				{
+					memcpy( d, s, self.DCMPixShutterRectWidth*4);
+					
+					d += [self pwidth];
+					s += [self pwidth];
+				}
+				
+				if( src.data != [self fImage]) free( src.data);
+				src.data = tempMem;
+			}
+		}
+
 		// Flipping X-Y
 		if( xF)
 		{
@@ -9337,15 +9419,21 @@ END_CREATE_ROIS:
 	
 	double length = sqrt(orientation[0]*orientation[0] + orientation[1]*orientation[1] + orientation[2]*orientation[2]);
 	
-	orientation[0] = orientation[ 0] / length;
-	orientation[1] = orientation[ 1] / length;
-	orientation[2] = orientation[ 2] / length;
+	if( length)
+	{
+		orientation[0] = orientation[ 0] / length;
+		orientation[1] = orientation[ 1] / length;
+		orientation[2] = orientation[ 2] / length;
+	}
 	
 	length = sqrt(orientation[3]*orientation[3] + orientation[4]*orientation[4] + orientation[5]*orientation[5]);
 	
-	orientation[3] = orientation[ 3] / length;
-	orientation[4] = orientation[ 4] / length;
-	orientation[5] = orientation[ 5] / length;
+	if( length)
+	{
+		orientation[3] = orientation[ 3] / length;
+		orientation[4] = orientation[ 4] / length;
+		orientation[5] = orientation[ 5] / length;
+	}
 	
 	// Compute normal vector
 	orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
@@ -9966,10 +10054,11 @@ END_CREATE_ROIS:
 		{
 			char*	tempMem = malloc( height * width * sizeof(char));
 			
-			memset( tempMem, blackIndex, height * width * sizeof(char));
 			
 			if( tempMem)
 			{
+				memset( tempMem, blackIndex, height * width * sizeof(char));
+			
 				int i = shutterRect_h;
 				
 				char*	src = baseAddr + ((shutterRect_y * width) + shutterRect_x);
@@ -10282,7 +10371,8 @@ END_CREATE_ROIS:
 
 - (void)setTransferFunction:(NSData*) tf
 {
-	if( transferFunction != tf) {
+	if( transferFunction != tf)
+	{
 		[transferFunction release];
 		transferFunction = [tf retain];
 		

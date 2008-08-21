@@ -45,7 +45,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 //DICOM TAGS
 
 //	orientation
-	Point3D				*origin;
+//	Point3D				*origin;
+	BOOL				isOriginDefined;
 	double				originX /**< x position of image origin */ , originY /**< y Position of image origin */ , originZ /**< Z position of image origin*/;
 	double				orientation[ 9];  /**< pointer to orientation vectors  */
 	NSString			*frameOfReferenceUID;
@@ -217,6 +218,7 @@ Note setter is different to not break existing usage. :-( */
 
 /** Slice location */
 @property(readonly) double originX, originY, originZ;
+@property(readonly) BOOL isOriginDefined;
 
 /** Frame Of Reference UID */
 @property(copy) NSString *frameOfReferenceUID;

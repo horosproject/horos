@@ -12814,12 +12814,15 @@ int i,j,l;
 								
 								pan = [imageView origin];
 								
-								delta = [DCMPix originDeltaBetween:[[vC imageView] curDCM] And:[imageView curDCM]];
-								
-								delta.x *= [imageView scaleValue];
-								delta.y *= [imageView scaleValue];
-								
-								[[vC imageView] setOrigin: NSMakePoint( pan.x + delta.x, pan.y - delta.y)];
+								if( [[vC imageView] curDCM].isOriginDefined && [imageView curDCM].isOriginDefined)
+								{								
+									delta = [DCMPix originDeltaBetween:[[vC imageView] curDCM] And:[imageView curDCM]];
+									
+									delta.x *= [imageView scaleValue];
+									delta.y *= [imageView scaleValue];
+									
+									[[vC imageView] setOrigin: NSMakePoint( pan.x + delta.x, pan.y - delta.y)];
+								}
 							}
 							
 							fValue = [imageView rotation];

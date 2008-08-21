@@ -789,7 +789,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	float scaleRatio = 1.0 / [self scaleValue];
 	
 	float blendingScale = [blendingView scaleValue] * scaleRatio;
-
+	
 	DCMPix *fusedPix = [[blendingView curDCM] renderWithRotation: [blendingView rotation] scale: blendingScale xFlipped: [blendingView xFlipped] yFlipped: [blendingView yFlipped]];
 	DCMPix *originalPix = [curDCM renderWithRotation: [self rotation] scale: oScale xFlipped: [self xFlipped] yFlipped: [self yFlipped]];
 	
