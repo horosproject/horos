@@ -2750,6 +2750,14 @@ static BOOL initialized = NO;
 		if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
 		frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 		
+		int temp;
+			
+//		temp = frame.size.width / columnsPerScreen;
+//		frame.size.width = temp * columnsPerScreen;
+//		
+//		temp = frame.size.height / rows;
+//		frame.size.height = temp * rows;
+		
 		frame.size.width /= columns;
 		frame.origin.x += (frame.size.width * columnIndex);
 		
@@ -3101,6 +3109,9 @@ static BOOL initialized = NO;
 			NSScreen *screen = [screens objectAtIndex: monitorIndex];
 			NSRect frame = [screen visibleFrame];
 			
+			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
+			
 			int temp;
 			
 			temp = frame.size.width / columnsPerScreen;
@@ -3108,9 +3119,6 @@ static BOOL initialized = NO;
 			
 			temp = frame.size.height / rows;
 			frame.size.height = temp * rows;
-			
-			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
-			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			NSRect visibleFrame = frame;
 			frame.size.width /= columnsPerScreen;
