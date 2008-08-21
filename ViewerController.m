@@ -2100,14 +2100,28 @@ static volatile int numberOfThreadsForRelisce = 0;
 	//To avoid the use of WindowDidMove function - Magnetic windows
 	[OSIWindowController setDontEnterMagneticFunctions: YES];
 	
+	rect.origin.x =  roundf( rect.origin.x);
+	rect.origin.y =  roundf(rect.origin.y);
+	rect.size.width =  roundf(rect.size.width);
+	rect.size.height =  roundf(rect.size.height);
+	
 	[self setStandardRect:rect];
 	
 	BOOL rectIdentical = YES;
+
+	float maxdiff = 0, d;
 	
+	d = fabs( curRect.origin.y - rect.origin.y);	if( d > maxdiff) maxdiff = d;
+	d = fabs( curRect.origin.x - rect.origin.x);	if( d > maxdiff) maxdiff = d;
+	d = fabs( curRect.size.height - rect.size.height);	if( d > maxdiff) maxdiff = d;
+	d = fabs( curRect.size.width - rect.size.width);	if( d > maxdiff) maxdiff = d;
+
 	if( fabs( curRect.origin.y - rect.origin.y) >= 1.0) rectIdentical = NO;
 	if( fabs( curRect.origin.x - rect.origin.x) >= 1.0) rectIdentical = NO;
 	if( fabs( curRect.size.height - rect.size.height) >= 1.0) rectIdentical = NO;
 	if( fabs( curRect.size.width - rect.size.width) >= 1.0) rectIdentical = NO;
+	
+	if( maxdiff < 5) animate = NO;
 	
 	if( rectIdentical == NO)
 	{
