@@ -3101,6 +3101,14 @@ static BOOL initialized = NO;
 			NSScreen *screen = [screens objectAtIndex: monitorIndex];
 			NSRect frame = [screen visibleFrame];
 			
+			int temp;
+			
+			temp = frame.size.width / columnsPerScreen;
+			frame.size.width = temp * columnsPerScreen;
+			
+			temp = frame.size.height / rows;
+			frame.size.height = temp * rows;
+			
 			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
 			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
