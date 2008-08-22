@@ -783,13 +783,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-- (IBAction) mergeFusedImages:(id)sender
+- (DCMPix*) mergeFused
 {
 	float oScale = 1.0; // The back image is at full resolution
 	float scaleRatio = 1.0 / [self scaleValue];
-	
 	float blendingScale = [blendingView scaleValue] * scaleRatio;
-	
+
 	DCMPix *fusedPix = [[blendingView curDCM] renderWithRotation: [blendingView rotation] scale: blendingScale xFlipped: [blendingView xFlipped] yFlipped: [blendingView yFlipped]];
 	DCMPix *originalPix = [curDCM renderWithRotation: [self rotation] scale: oScale xFlipped: [self xFlipped] yFlipped: [self yFlipped]];
 	
@@ -815,15 +814,58 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	DCMPix *newPix = [originalPix mergeWithDCMPix: fusedPix offset: oo];
 	
-	[newPix freefImageWhenDone: NO];
+	return newPix;
+}
+
+- (IBAction) mergeFusedImages:(id)sender
+{
+	BOOL applyToEntireSeries = NO;
 	
-	NSData	*newData = [NSData dataWithBytesNoCopy: [newPix fImage] length: [newPix pheight]*[newPix pwidth]*sizeof(float) freeWhenDone:YES];
+	if( [blendingView volumicSeries] && [self volumicSeries]) applyToEntireSeries = YES;
+	
+	NSMutableArray *pixA = [NSMutableArray array];
+	NSMutableArray *objA = [NSMutableArray array];
+	
+	NSMutableData	*newData = 0L;
+	
+	if( applyToEntireSeries)
+	{
+		newData = [NSMutableData data];
+		
+		for( int i = 0 ; i < [dcmPixList count]; i++)
+		{
+			[self setIndex: i];
+			[self sendSyncMessage: 1];
+			[[self windowController] propagateSettings];
+			
+			[pixA addObject:  [self mergeFused]];
+			[objA addObject: [[pixA lastObject] imageObj]];
+			
+			[newData appendBytes: [[pixA lastObject] fImage] length: [[pixA lastObject] pheight] * [[pixA lastObject] pwidth]*sizeof(float)];
+		}
+		
+		for( int i = 0 ; i < [dcmPixList count]; i++)
+		{
+			[[pixA objectAtIndex: i] setfImage: (float*) ([newData bytes] + [[pixA lastObject] pheight] * [[pixA lastObject] pwidth]*sizeof(float) * i)];
+			[[pixA objectAtIndex: i] freefImageWhenDone: NO];
+		}
+	}
+	else
+	{
+		[pixA addObject:  [self mergeFused]];
+		[objA addObject: [[pixA lastObject] imageObj]];
+		
+		newData = [NSMutableData dataWithBytes: [[pixA lastObject] fImage] length: [[pixA lastObject] pheight] * [[pixA lastObject] pwidth]*sizeof(float)];
+		
+		[[pixA lastObject] setfImage: (float*) [newData bytes]];
+		[[pixA lastObject] freefImageWhenDone: NO];
+	}
 	
 	[[self windowController] close];
 	
 	[ViewerController newWindow
-		: [NSMutableArray arrayWithObject: newPix]
-		: [NSMutableArray arrayWithObject: [newPix imageObj]]
+		: pixA
+		: objA
 		: newData];
 }
 

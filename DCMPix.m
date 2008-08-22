@@ -3143,6 +3143,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	copy->maxValueOfSeries = self->maxValueOfSeries;
 	copy->minValueOfSeries = self->minValueOfSeries;
+	copy->isOriginDefined = self->isOriginDefined;
 	
     return copy;
 }
