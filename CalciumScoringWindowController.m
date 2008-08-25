@@ -412,7 +412,8 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 								: 0
 								: 0 // Brush ROI
 								: 1
-								: name];
+								: name
+								: NO];
 		
 		[itk release];
 	}

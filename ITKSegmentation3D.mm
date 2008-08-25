@@ -485,7 +485,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
     return self;
 }
 
-- (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(int) algorithmNumber :(NSArray*) parameters :(BOOL) setIn :(float) inValue :(BOOL) setOut :(float) outValue :(int) roiType :(long) roiResolution :(NSString*) newname;
+- (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(int) algorithmNumber :(NSArray*) parameters :(BOOL) setIn :(float) inValue :(BOOL) setOut :(float) outValue :(int) roiType :(long) roiResolution :(NSString*) newname :(BOOL) mergeWithExistingROIs;
 {
 	NSLog(@"ITK max number of threads: %d", itk::MultiThreader::GetGlobalDefaultNumberOfThreads());
 	
@@ -677,17 +677,18 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 				int buffHeight = [[[srcViewer pixList] objectAtIndex: i] pheight];
 				int buffWidth = [[[srcViewer pixList] objectAtIndex: i] pwidth];
 				
-				ROI *theNewROI = [[ROI alloc]	initWithTexture:buff
-												textWidth:buffWidth
-												textHeight:buffHeight
-												textName:newname
-												positionX:0
-												positionY:0
-												spacingX:[[[srcViewer imageView] curDCM] pixelSpacingX]
-												spacingY:[[[srcViewer imageView] curDCM] pixelSpacingY]
-												imageOrigin:NSMakePoint([[[srcViewer imageView] curDCM] originX], [[[srcViewer imageView] curDCM] originY])];
-				if( [theNewROI reduceTextureIfPossible] == NO)	// NO means that the ROI is NOT empty
+				if( memchr( buff, 255, buffWidth * buffHeight))
 				{
+					ROI *theNewROI = [[ROI alloc]	initWithTexture:buff
+													textWidth:buffWidth
+													textHeight:buffHeight
+													textName:newname
+													positionX:0
+													positionY:0
+													spacingX:[[[srcViewer imageView] curDCM] pixelSpacingX]
+													spacingY:[[[srcViewer imageView] curDCM] pixelSpacingY]
+													imageOrigin:NSMakePoint([[[srcViewer imageView] curDCM] originX], [[[srcViewer imageView] curDCM] originY])];
+					
 					[[[srcViewer roiList] objectAtIndex:i] addObject:theNewROI];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];	
 					
@@ -702,17 +703,17 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 						[theNewROI setColor: color];
 					}
 					
-
 					[theNewROI setROIMode: ROI_selected];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object:theNewROI userInfo: nil];
+					
+					[theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
+					[theNewROI release];
 				}
-				[theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
-				[theNewROI release];
 				
 				buff+= buffHeight*buffWidth;
 			}
 			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"mergeWithExistingROIs"])
+			if( mergeWithExistingROIs)
 			{
 				int currentImageIndex = [[srcViewer imageView] curImage];
 				
@@ -761,7 +762,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 				
 				[theNewROI setColor: color];
 			}
-			else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"mergeWithExistingROIs"])
+			else if( mergeWithExistingROIs)
 			{
 				[[srcViewer imageView] selectAll: self];
 				[srcViewer mergeBrushROI: self];

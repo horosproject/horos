@@ -964,6 +964,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 	self = [super init];
     if (self)
 	{
+		textureBuffer=(unsigned char*)malloc(tWidth*tHeight*sizeof(unsigned char));
+		if( textureBuffer == 0L) return 0L;
+		
 		// basic init from other rois ...
 		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
 		groupID = 0.0;
@@ -1001,7 +1004,6 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		textureWidth=tWidth;
 		textureHeight=tHeight;
 		
-		textureBuffer=(unsigned char*)malloc(tWidth*tHeight*sizeof(unsigned char));
 		memcpy( textureBuffer, tBuff, tHeight*tWidth);
 		[self reduceTextureIfPossible];
 		

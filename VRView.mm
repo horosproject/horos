@@ -3122,7 +3122,8 @@ public:
 														:0.0					// outValue
 														:0						// roiType
 														:0						// roiResolution
-														:@"BoneRemovalAlgorithmROIUniqueName"];		// newname (I tried to make it unique ;o)
+														:@"BoneRemovalAlgorithmROIUniqueName" // newname (I tried to make it unique ;o)
+														:NO];					// merge with existing ROIs?
 					
 					// find all ROIs with name = BoneRemoval
 					NSArray *rois = [[controller viewer2D] roisWithName:@"BoneRemovalAlgorithmROIUniqueName"];

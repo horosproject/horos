@@ -344,7 +344,9 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 										: [[pixelsValue cellWithTag:1] floatValue]
 										: [[NSUserDefaults standardUserDefaults] integerForKey: @"growingRegionROIType"]
 										: ((long)[roiResolution maxValue] + 1) - [roiResolution intValue]
-										: name];
+										: name
+										: [[NSUserDefaults standardUserDefaults] boolForKey: @"mergeWithExistingROIs"]
+										];
 				
 				[itk release];
 			}
@@ -452,7 +454,9 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 										: [[pixelsValue cellWithTag:1] floatValue]
 										: [[NSUserDefaults standardUserDefaults] integerForKey: @"growingRegionROIType"]
 										: ((long)[roiResolution maxValue] + 1) - [roiResolution intValue]
-										: [newName stringValue]];
+										: [newName stringValue]
+										: [[NSUserDefaults standardUserDefaults] boolForKey: @"mergeWithExistingROIs"]
+										];
 						
 				if( v)
 				{
