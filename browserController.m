@@ -5091,7 +5091,8 @@ static NSArray*	statesArray = nil;
 
 		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
 		
-		if( [databaseOutline selectedRow] >= 0 ) {
+		if( [databaseOutline selectedRow] >= 0 )
+		{
 			shouldDie = YES;
 			[matrixLoadIconsLock lock];
 			[matrixLoadIconsLock unlock];
