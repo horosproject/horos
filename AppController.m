@@ -2961,13 +2961,16 @@ static BOOL initialized = NO;
 	//excess viewers. Need to add spaces to accept
 	if( viewerCount > (rows * columns))
 	{
+		float ratioValue;
+		
+		if( landscape) ratioValue = 1.5;
+		else ratioValue = 1.0;
+	
 		while (viewerCount > (rows * columns))
 		{
 			float ratio = ((float)columns/(float)rows)/numberOfMonitors;
 			
-			//NSLog(@"ratio: %f", ratio);
-			
-			if (ratio > 1.5 && landscape)
+			if (ratio >= ratioValue)
 				rows ++;
 			else 
 				columns ++;
