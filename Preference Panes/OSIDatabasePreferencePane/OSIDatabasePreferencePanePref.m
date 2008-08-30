@@ -175,24 +175,6 @@ Version 2.4
 	[[freeSpaceType cellWithTag:1] setState:[defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"]];
 	[freeSpaceSize selectItemWithTag:[[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue]];
 	
-	NSDictionary *dict = [defaults objectForKey:@"COLUMNSDATABASE"];
-	NSArray *titleArray = [[columnsDisplay cells] valueForKey:@"title"];
-	
-	NSEnumerator	*enumerator = [dict keyEnumerator];
-	NSString		*key;
-	
-	while( key = [enumerator nextObject])
-	{
-		long index = [titleArray indexOfObject:key];
-		
-		if( index != NSNotFound)
-		{
-			long val = [[dict valueForKey: key] intValue];
-			[[[columnsDisplay cells] objectAtIndex: index] setState: val];
-		}
-	}
-	
-	[[columnsDisplay cellWithTag:0] setState: ![defaults boolForKey:@"HIDEPATIENTNAME"]];
 }
 
 - (void)didSelect
@@ -321,26 +303,6 @@ Version 2.4
 	[[NSUserDefaults standardUserDefaults] setInteger:[(NSMatrix *)[sender selectedCell] tag] forKey:@"SERIESORDER"];
 }
 
--(IBAction)setDisplayPatientName:(id)sender
-{
-	if( [[sender selectedCell] tag] == 0) [[NSUserDefaults standardUserDefaults] setBool:![[sender selectedCell] state] forKey:@"HIDEPATIENTNAME"];
-	else
-	{
-		NSArray				*titleArray = [[columnsDisplay cells] valueForKey:@"title"];
-		long				i;
-		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithCapacity: 0];
-		
-		for( i = 0; i < [titleArray count]; i++)
-		{
-			NSString*	key = [titleArray objectAtIndex: i];
-			
-			if( [key length] > 0)
-				[dict setValue:[NSNumber numberWithInt:[[[columnsDisplay cells] objectAtIndex: i] state]] forKey: key];
-		}
-		
-		[[NSUserDefaults standardUserDefaults] setObject:dict forKey:@"COLUMNSDATABASE"];
-	}
-}
 
 - (IBAction)setLocation:(id)sender{
 	

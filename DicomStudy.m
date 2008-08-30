@@ -419,4 +419,9 @@ Version 2.3
 	return [[self valueForKey:@"name"] caseInsensitiveCompare:[study valueForKey:@"name"]];
 }
 
+- (NSString*) albumsNames
+{
+	return [[[[self valueForKey: @"albums"] allObjects] valueForKey:@"name"] componentsJoinedByString:@"/"];
+}
+
 @end

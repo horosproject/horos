@@ -357,4 +357,9 @@
 	return [[self valueForKey:@"name"] caseInsensitiveCompare:[series valueForKey:@"name"]];
 }
 
+- (NSString*) albumsNames
+{
+	return [[self valueForKey: @"study"] valueForKey: @"albumsNames"];
+}
+
 @end

@@ -23,7 +23,6 @@
 	IBOutlet NSMatrix		*copyDatabaseModeMatrix;
 	IBOutlet NSButton		*copyDatabaseOnOffButton;
 	IBOutlet NSButton		*localizerOnOffButton;
-	IBOutlet NSMatrix		*columnsDisplay;
 	IBOutlet NSMatrix		*seriesOrderMatrix;
 	IBOutlet NSPopUpButton	*reportsMode;
 	
@@ -56,7 +55,6 @@
 - (IBAction)setCopyDatabaseMode:(id)sender;
 - (IBAction)setCopyDatabaseOnOff:(id)sender;
 - (IBAction)setLocalizerOnOff:(id)sender;
-- (IBAction)setDisplayPatientName:(id)sender;
 - (IBAction)databaseCleaning:(id)sender;
 - (IBAction)setSeriesOrder:(id)sender;
 - (IBAction)setAutoComments:(id) sender;
