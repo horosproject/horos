@@ -27,41 +27,45 @@
 
 @implementation DicomImage(DicomImageDCMTKCategory)
 
-- (NSString *)keyObjectType{
+- (NSString*) keyObjectType
+{
 	NSString *type = nil;
 	DcmFileFormat fileformat;
 	DSRDocument *doc = new DSRDocument();
 	OFCondition status = fileformat.loadFile([[self completePath] UTF8String]);
 	if (status.good())
 		status = doc->read(*fileformat.getDataset());
-	if (status.good()){
+	if (status.good())
+	{
 		OFString codeMeaning = doc->getTree().getCurrentContentItem().getConceptName().getCodeMeaning();
 		type = [NSString stringWithUTF8String:codeMeaning.c_str()];
 	}
 	delete doc;
 	return type;
 }
-- (NSArray *)referencedObjects{
+- (NSArray*) referencedObjects
+{
 	NSMutableArray *references = [NSMutableArray array];
 	DcmFileFormat fileformat;
 	DSRDocument *doc = new DSRDocument();
 	OFCondition status = fileformat.loadFile([[self completePath] UTF8String]);
 	if (status.good())
 		status = doc->read(*fileformat.getDataset());
-	if (status.good()){
+	if (status.good())
+	{
 		DSRDocumentTreeNode *node = NULL; 
 		//DSRDocumentTree  *tree = doc->getTree();
 		/* iterate over all nodes */ 
         do { 
             node = OFstatic_cast(DSRDocumentTreeNode *, doc->getTree().getNode()); 
-            if (node->getValueType() == DSRTypes::VT_Image) {
-			//image node get SOPCInstance
-			DSRImageTreeNode *imageNode = OFstatic_cast(DSRImageTreeNode *, node);
-			OFString sopInstance = imageNode->getSOPInstanceUID();
-			NSString *uid = [NSString stringWithUTF8String:sopInstance.c_str()];
-			if (uid)
-				[references addObject:uid];
-			
+            if (node->getValueType() == DSRTypes::VT_Image)
+			{
+				//image node get SOPCInstance
+				DSRImageTreeNode *imageNode = OFstatic_cast(DSRImageTreeNode *, node);
+				OFString sopInstance = imageNode->getSOPInstanceUID();
+				NSString *uid = [NSString stringWithUTF8String:sopInstance.c_str()];
+				if (uid)
+					[references addObject:uid];
 			}
         } while (doc->getTree().iterate()); 
 	}
