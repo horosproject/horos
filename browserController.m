@@ -5378,7 +5378,8 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (void)refreshColumns {
+- (void)refreshColumns
+{
 	NSDictionary	*columnsDatabase	= [[NSUserDefaults standardUserDefaults] objectForKey: @"COLUMNSDATABASE"];
 	NSEnumerator	*enumerator			= [columnsDatabase keyEnumerator];
 	NSString		*key;
@@ -5390,11 +5391,15 @@ static NSArray*	statesArray = nil;
 	{
 		NSInteger index = [[[[databaseOutline allColumns] valueForKey:@"headerCell"] valueForKey:@"title"] indexOfObject: key];
 		
-		if( index != NSNotFound) {
+		if( index != NSNotFound)
+		{
 			NSString	*identifier = [[[databaseOutline allColumns] objectAtIndex: index] identifier];
 			
-			if( [databaseOutline isColumnWithIdentifierVisible: identifier] != [[columnsDatabase valueForKey: key] intValue] )
+			if( [databaseOutline isColumnWithIdentifierVisible: identifier] != [[columnsDatabase valueForKey: key] intValue])
 			{
+				if( [[columnsDatabase valueForKey: key] intValue] == NO && [databaseOutline columnWithIdentifier: identifier] == [databaseOutline selectedColumn])
+					[databaseOutline selectColumn: 0 byExtendingSelection: NO];
+			
 				[databaseOutline setColumnWithIdentifier:identifier visible: [[columnsDatabase valueForKey: key] intValue]];
 				
 				if( [[columnsDatabase valueForKey: key] intValue] == NSOnState)
