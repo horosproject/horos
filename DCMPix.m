@@ -9017,12 +9017,12 @@ END_CREATE_ROIS:
 	{
 		long i = dst.height * dst.width;
 		float *ptr = dst.data;
-		float diffwl = [o wl] - [self wl];
 		float diffww = [o ww]/[self ww];
+		float diffwl = ([o wl] - [self wl])*diffww;
 		
 		while (i-- > 0)
 		{
-			*ptr += diffwl;
+			*ptr  += diffwl;
 			*ptr++ *= diffww;
 		}
 	}
