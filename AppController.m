@@ -653,6 +653,8 @@ static NSDate *lastWarningDate = 0L;
 
 + (void) displayImportantNotice:(id) sender
 {
+	return;
+	
 	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"lastWarningDay"] != [[NSCalendarDate date] dayOfYear])
 	{
 		if( lastWarningDate == 0L || [lastWarningDate timeIntervalSinceNow] < -60*60*12)

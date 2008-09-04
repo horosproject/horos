@@ -928,7 +928,8 @@ static NSArray*	statesArray = nil;
 				lastSaved = [NSDate timeIntervalSinceReferenceDate];
 			}
 		
-			if( addFailed == NO) {
+			if( addFailed == NO)
+			{
 				NSMutableArray		*viewersList = [ViewerController getDisplayed2DViewers];
 				NSArray				*winList = [NSApp windows];
 				
