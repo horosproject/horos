@@ -153,6 +153,7 @@ static NSString*	XMLToolbarItemIdentifier			= @"XML.icns";
 static NSTimeInterval	gLastActivity = 0;
 static BOOL DICOMDIRCDMODE = NO;
 static BOOL autotestdone = NO;
+static BOOL copyThread = YES;
 
 static NSArray*	statesArray = nil;
 
@@ -2738,6 +2739,9 @@ static NSArray*	statesArray = nil;
 	[autoroutingInProgress lock];
 	
 	BOOL first = YES;
+	
+	copyThread = YES;
+	
 	for( NSString *srcPath in filesInput)
 	{
 		NSString	*dstPath;
@@ -2745,7 +2749,7 @@ static NSArray*	statesArray = nil;
 		
 		@try
 		{
-			if( [[srcPath stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)
+			if( copyThread == YES && [[srcPath stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)
 			{
 				DicomFile	*curFile = [[DicomFile alloc] init: srcPath];
 				
@@ -2828,7 +2832,8 @@ static NSArray*	statesArray = nil;
 	
 	[autoroutingInProgress unlock];
 	
-	if( [filesInput count] ) {
+	if( [filesInput count] )
+	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"EJECTCDDVD"])
 		{
 			[[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath:  [filesInput objectAtIndex:0]];
@@ -11283,7 +11288,8 @@ static NSArray*	openSubSeriesArray = 0L;
     [toolbar setVisible:![toolbar isVisible]];
 }
 
-- (void)waitForRunningProcesses {
+- (void)waitForRunningProcesses
+{
 	[bonjourBrowser waitTheLock];
 	
 	[checkIncomingLock lock];
@@ -11323,6 +11329,8 @@ static NSArray*	openSubSeriesArray = 0L;
 - (void) browserPrepareForClose
 {
 	NSLog( @"browserPrepareForClose");
+	
+	copyThread = NO;
 	
 	[self saveDatabase: currentDatabasePath];
 	
@@ -11742,7 +11750,8 @@ static NSArray*	openSubSeriesArray = 0L;
 				}
 				else NSRunCriticalAlertPanel(NSLocalizedString(@"DICOMDIR",nil), NSLocalizedString(@"No DICOMDIR file has been found on this CD/DVD. Unable to load images.",nil),NSLocalizedString( @"OK",nil), nil, nil);
 			}
-			else {
+			else
+			{
 				NSString    *pathname;
 				NSString    *aPath = mediaPath;
 				NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
@@ -11831,7 +11840,8 @@ static NSArray*	openSubSeriesArray = 0L;
 		}
 	}
 	
-	if( found == NO ) {
+	if( found == NO )
+	{
 		if( [[DRDevice devices] count] )
 		{
 			DRDevice	*device = [[DRDevice devices] objectAtIndex: 0];
@@ -13848,7 +13858,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void)queryDICOM: (id)sender {
+- (void)queryDICOM: (id)sender
+{
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)	// Query selected patient
 		[self querySelectedStudy: self];
 	else {
@@ -13861,7 +13872,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
--(void)volumeMount: (NSNotification *)notification {
+-(void)volumeMount: (NSNotification *)notification
+{
 	NSLog(@"volume mounted");
 	
 	[self loadDICOMFromiPod];
@@ -13873,7 +13885,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];
 	NSLog(sNewDrive);
 	
-	if( [BrowserController isItCD: sNewDrive] == YES ) {
+	if( [BrowserController isItCD: sNewDrive] == YES )
+	{
 		[self ReadDicomCDRom:self];
 	}
 	
@@ -13933,11 +13946,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[context release];
 }
 
-- (void)willVolumeUnmount: (NSNotification *)notification {
+- (void)willVolumeUnmount: (NSNotification *)notification
+{
 	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];
 	
 	// Is it an iPod?
-	if ([[NSFileManager defaultManager] fileExistsAtPath: [sNewDrive stringByAppendingPathComponent:@"iPod_Control"]] )	{
+	if ([[NSFileManager defaultManager] fileExistsAtPath: [sNewDrive stringByAppendingPathComponent:@"iPod_Control"]] )
+	{
 		// Is it currently selected? -> switch back to default DB path
 		int row = [bonjourServicesList selectedRow];
 		if( row > 0 ) {
@@ -13951,18 +13966,22 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSDictionary	*selectedDict = nil;
 		if( z >= 0 ) selectedDict = [[[bonjourBrowser services] objectAtIndex: z] retain];
 		
-		for( int x = 0; x < [[bonjourBrowser services] count]; x++ ) {
+		for( int x = 0; x < [[bonjourBrowser services] count]; x++ )
+		{
 			NSDictionary	*c = [[bonjourBrowser services] objectAtIndex: x];
 			
-			if( [[c valueForKey:@"type"] isEqualToString:@"localPath"] ) {
-				if( [[c valueForKey:@"Path"] isEqualToString: sNewDrive] ) {
+			if( [[c valueForKey:@"type"] isEqualToString:@"localPath"] )
+			{
+				if( [[c valueForKey:@"Path"] isEqualToString: sNewDrive] )
+				{
 					[[bonjourBrowser services] removeObjectAtIndex: x];
 					x--;
 				}
 			}
 		}
 		
-		if( selectedDict ) {
+		if( selectedDict )
+		{
 			NSInteger index = [[bonjourBrowser services] indexOfObject: selectedDict];
 			
 			if( index == NSNotFound)
@@ -13974,9 +13993,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		[self displayBonjourServices];
 	}
+	
+	//Are we currently copying files from a CD (separate thread?) -> stop it !
+	copyThread = NO;
 }
 
-- (void)volumeUnmount: (NSNotification *)notification {
+- (void)volumeUnmount: (NSNotification *)notification
+{
 	BOOL		needsUpdate = NO;
 	NSRange		range;
 	
