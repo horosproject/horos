@@ -578,7 +578,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 	{
 		NSString	*extension = [path pathExtension];
 		long		val = [[path stringByDeletingPathExtension] intValue];
-		NSString	*dbLocation = [directory stringByAppendingPathComponent: @"DATABASE"];
+		NSString	*dbLocation = [directory stringByAppendingPathComponent: @"DATABASE.noindex"];
 		
 		val /= 10000;
 		val++;

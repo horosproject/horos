@@ -422,7 +422,7 @@ static char *GetPrivateIP()
 					
 					while ( [data length] < pos + fileSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 					
-					NSString	*incomingFolder = [documentsDirectory() stringByAppendingPathComponent:@"/INCOMING"];
+					NSString	*incomingFolder = [documentsDirectory() stringByAppendingPathComponent:@"/INCOMING.noindex"];
 					NSString	*dstPath;
 					
 					int index = [NSDate timeIntervalSinceReferenceDate];
@@ -858,7 +858,7 @@ static char *GetPrivateIP()
 						val++;
 						val *= 10000;
 						
-						path = [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/DATABASE/%d/%@", val, path];
+						path = [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/DATABASE.noindex/%d/%@", val, path];
 					}
 					
 					[localPaths addObject: path];
@@ -916,7 +916,7 @@ static char *GetPrivateIP()
 							
 							NSString	*local = [[interfaceOsiriX localDatabasePath] stringByDeletingLastPathComponent];
 							
-							path = [[[local stringByAppendingPathComponent:@"/DATABASE/"] stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", val]] stringByAppendingPathComponent: path];
+							path = [[[local stringByAppendingPathComponent:@"/DATABASE.noindex/"] stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", val]] stringByAppendingPathComponent: path];
 						}
 					}
 					

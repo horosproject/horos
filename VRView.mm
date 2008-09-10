@@ -952,7 +952,7 @@ public:
 	}
 }
 
-#define DATABASEPATH @"/DATABASE/"
+#define DATABASEPATH @"/DATABASE.noindex/"
 -(IBAction) endDCMExportSettings:(id) sender
 {
 	[exportDCMWindow orderOut:sender];

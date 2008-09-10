@@ -71,11 +71,11 @@
 #import "XMLController.h"
 
 #define DATABASEVERSION @"2.4"
-#define DATABASEPATH @"/DATABASE/"
+#define DATABASEPATH @"/DATABASE.noindex/"
 #define DECOMPRESSIONPATH @"/DECOMPRESSION/"
-#define INCOMINGPATH @"/INCOMING/"
+#define INCOMINGPATH @"/INCOMING.noindex/"
 #define ERRPATH @"/NOT READABLE/"
-#define DATABASEFPATH @"/DATABASE"
+#define DATABASEFPATH @"/DATABASE.noindex"
 #define DATAFILEPATH @"/Database.sql"
 
 //enum DCM_CompressionQuality {DCMLosslessQuality, DCMHighQuality, DCMMediumQuality, DCMLowQuality};
@@ -201,20 +201,22 @@ static NSArray*	statesArray = nil;
 #pragma mark-
 #pragma mark Add DICOM Database functions
 
-- (NSString*)getNewFileDatabasePath: (NSString*)extension {
+- (NSString*)getNewFileDatabasePath: (NSString*)extension
+{
 	return [self getNewFileDatabasePath: extension dbFolder: self.documentsDirectory];
 }
 
-- (NSString*)getNewFileDatabasePath: (NSString*)extension dbFolder: (NSString*)dbFolder {
+- (NSString*)getNewFileDatabasePath: (NSString*)extension dbFolder: (NSString*)dbFolder
+{
 	NSString        *OUTpath = [dbFolder stringByAppendingPathComponent:DATABASEPATH];
 	NSString		*dstPath;
 	NSString		*subFolder;
 	long			subFolderInt;
 	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:OUTpath])
-		[[NSFileManager defaultManager] createDirectoryAtPath:OUTpath attributes:nil];
+	[AppController createNoIndexDirectoryIfNecessary: OUTpath];
 	
-	do	{
+	do
+	{
 		subFolderInt = 10000L * ((DATABASEINDEX / 10000L) +1);
 		subFolder = [OUTpath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", subFolderInt]];
 		
@@ -1970,7 +1972,7 @@ static NSArray*	statesArray = nil;
 		if( [[location lastPathComponent] isEqualToString:@"OsiriX Data"])
 			location = [location stringByDeletingLastPathComponent];
 		
-		if( [[location lastPathComponent] isEqualToString:@"DATABASE"] && [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:@"OsiriX Data"])
+		if( [[location lastPathComponent] isEqualToString:@"DATABASE.noindex"] && [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:@"OsiriX Data"])
 			location = [[location stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
 		
 		[self openDatabasePath: location];
@@ -2364,7 +2366,8 @@ static NSArray*	statesArray = nil;
 	[context release];
 }
 
-- (void)showEntireDatabase {
+- (void)showEntireDatabase
+{
 	timeIntervalType = 0;
 	[timeIntervalPopup selectItemWithTag: 0];
 	
@@ -2372,17 +2375,21 @@ static NSArray*	statesArray = nil;
 	self.searchString = @"";
 }
 
-- (void)setDBWindowTitle {
+- (void)setDBWindowTitle
+{
 	if( isCurrentDatabaseBonjour) [self.window setTitle: [NSString stringWithFormat: NSLocalizedString(@"Bonjour Database (%@)", nil), [currentDatabasePath lastPathComponent]]];
 	else [self.window setTitle: [NSString stringWithFormat:NSLocalizedString(@"Local Database (%@)", nil), currentDatabasePath]];
 	[self.window setRepresentedFilename: currentDatabasePath];
 }
 
-- (NSString*)getDatabaseFolderFor: (NSString*)path {
+- (NSString*)getDatabaseFolderFor: (NSString*)path
+{
 	BOOL isDirectory;
 	
-	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] )	{
-		if( isDirectory == NO) {
+	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] )
+	{
+		if( isDirectory == NO)
+		{
 			// It is a SQL file
 			
 			if( [[path pathExtension] isEqualToString:@"sql"] == NO) NSLog( @"**** No SQL extension ???");
@@ -2390,7 +2397,7 @@ static NSArray*	statesArray = nil;
 			NSString	*db = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"]];
 			
 			if( db == nil ) {
-				NSString	*p = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DATABASE"];
+				NSString	*p = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DATABASE.noindex"];
 				
 				if( [[NSFileManager defaultManager] fileExistsAtPath: p] ) {
 					db = [[path stringByDeletingLastPathComponent] stringByDeletingLastPathComponent]; 
@@ -2410,10 +2417,12 @@ static NSArray*	statesArray = nil;
 	return nil;
 }
 
-- (NSString*)getDatabaseIndexFileFor: (NSString*)path {
+- (NSString*)getDatabaseIndexFileFor: (NSString*)path
+{
 	BOOL isDirectory;
 	
-	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] )	{
+	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] )
+	{
 		if( isDirectory )
 		{
 			// Default SQL file
@@ -2615,13 +2624,15 @@ static NSArray*	statesArray = nil;
 	[self setFixedDocumentsDirectory];
 	self.managedObjectContext;
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"recomputePatientUID"] ) {
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"recomputePatientUID"] )
+	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"recomputePatientUID"];
 		
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Recompute Patient UIDs", nil)];
 		[wait showWindow:self];
 		
-		@try {
+		@try
+		{
 			[self recomputePatientUIDs];
 		}
 		@catch (NSException *ne) {
@@ -2634,7 +2645,8 @@ static NSArray*	statesArray = nil;
 	
 	// CHECK IF A DICOMDIR FILE IS AVAILABLE AT SAME LEVEL AS OSIRIX!?
 	NSString	*dicomdir = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"/DICOMDIR"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:dicomdir] ) {
+	if ([[NSFileManager defaultManager] fileExistsAtPath:dicomdir] )
+	{
 		DICOMDIRCDMODE = YES;
 		
 		NSMutableArray		*filesArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -2642,13 +2654,16 @@ static NSArray*	statesArray = nil;
 		[self addFilesAndFolderToDatabase:filesArray];
         [filesArray release];
 	}
-	else {
+	else
+	{
 		DICOMDIRCDMODE = NO;
 		
-		if( NEEDTOREBUILD )	{
+		if( NEEDTOREBUILD )
+		{
 			[self ReBuildDatabase:self];
 		}
-		else {
+		else
+		{
 			[self outlineViewRefresh];
 		}
 	}
@@ -2659,6 +2674,9 @@ static NSArray*	statesArray = nil;
 	{
 		[[NSFileManager defaultManager] removeFileAtPath:pathTemp handler: nil];
 	}
+	
+	[AppController createNoIndexDirectoryIfNecessary: [documentsDirectory() stringByAppendingPathComponent: DATABASEPATH]];
+	[AppController createNoIndexDirectoryIfNecessary: [documentsDirectory() stringByAppendingPathComponent: INCOMINGPATH]];
 	
 	[self setDBWindowTitle];
 	
@@ -2986,7 +3004,7 @@ static NSArray*	statesArray = nil;
     NSString *OUTpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
 	BOOL isDir = YES;
 	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:OUTpath isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:OUTpath attributes:nil];
+	[AppController createNoIndexDirectoryIfNecessary: OUTpath];
 	
 	NSString        *pathname;
     NSMutableArray  *filesOutput = [NSMutableArray array];
@@ -3136,7 +3154,8 @@ static NSArray*	statesArray = nil;
 	NSString	*incomingPath = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
 	BOOL		isDir = YES;
 	long		totalFiles = 0;
-	if (![[NSFileManager defaultManager] fileExistsAtPath:aPath isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:aPath attributes:nil];
+	
+	[AppController createNoIndexDirectoryIfNecessary: aPath];
 	
 	// In the DATABASE FOLDER, we have only folders! Move all files that are wrongly there to the INCOMING folder.... and then scan these folders containing the DICOM files
 	
@@ -12189,7 +12208,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		[self waitForAProcessor];
 		
-		switch( tow) {
+		switch( tow)
+		{
 			case 'C':
 				[NSThread detachNewThreadSelector: @selector( compressDICOMJPEG:) toTarget:self withObject: obj];
 				break;
@@ -12261,6 +12281,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 				OUTpath = [self folderPathResolvingAliasAndSymLink:OUTpath];
 				ERRpath = [self folderPathResolvingAliasAndSymLink:ERRpath];
 				DECOMPRESSIONpath = [self folderPathResolvingAliasAndSymLink:DECOMPRESSIONpath];
+				
+				[AppController createNoIndexDirectoryIfNecessary: OUTpath];
 				
 				NSString        *pathname;
 				NSMutableArray  *filesArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -14291,7 +14313,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					[attr addFrame:subdata];
 					[dcmObject setAttribute:attr];
 					
-					NSString	*tempFilename = [documentsDirectory() stringByAppendingFormat:@"/INCOMING/%d.dcm", i];
+					NSString	*tempFilename = [documentsDirectory() stringByAppendingFormat:@"/INCOMING.noindex/%d.dcm", i];
 					[dcmObject writeToFile:tempFilename withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
 				} 
 			}

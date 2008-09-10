@@ -370,7 +370,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 			
 		//NSLog(@"pdf: %@", [dcmObject description]);
 		//get Incoming Folder Path;
-		NSString *destination = [NSString stringWithFormat: @"%@/INCOMING/CalciumScore%d%d.dcm", [[BrowserController currentBrowser] documentsDirectory], 1, 1]; 
+		NSString *destination = [NSString stringWithFormat: @"%@/INCOMING.noindex/CalciumScore%d%d.dcm", [[BrowserController currentBrowser] documentsDirectory], 1, 1]; 
 	
 		if ([dcmObject writeToFile:destination withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES])
 			NSLog(@"Wrote Calcium Score to %@", destination);

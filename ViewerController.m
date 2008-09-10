@@ -13634,7 +13634,7 @@ int i,j,l;
 #pragma mark 4.5.1.1 Exportation of image produced
 
 
-#define DATABASEPATH @"/DATABASE/"
+#define DATABASEPATH @"/DATABASE.noindex/"
 
 
 - (BOOL) sortSeriesByDICOMGroup: (int) gr element: (int) el

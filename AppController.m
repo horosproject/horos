@@ -618,6 +618,30 @@ static NSDate *lastWarningDate = 0L;
 	[[[BrowserController currentBrowser] checkIncomingLock] unlock];
 }
 
++ (void) createNoIndexDirectoryIfNecessary:(NSString*) path
+{
+	BOOL isDir;
+	
+	if( ![[NSFileManager defaultManager] fileExistsAtPath: path] && [[NSFileManager defaultManager] fileExistsAtPath: [path stringByDeletingPathExtension]])
+		[[NSFileManager defaultManager] movePath:[path stringByDeletingPathExtension] toPath:path handler: 0L];
+	
+	if( ![[NSFileManager defaultManager] fileExistsAtPath: path])
+		[[NSFileManager defaultManager] createDirectoryAtPath: path attributes: 0L];
+	
+	if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByDeletingPathExtension]])
+		[[NSFileManager defaultManager] removeFileAtPath: [path stringByDeletingPathExtension] handler: 0L];
+	
+	NSDictionary *d = [[NSFileManager defaultManager] attributesOfItemAtPath:path error: 0L];
+	
+	if( d && [[d objectForKey: NSFileExtensionHidden] boolValue] == NO)
+	{
+		NSMutableDictionary *m = [NSMutableDictionary dictionaryWithDictionary: d];
+		
+		[m setObject: [NSNumber numberWithBool: YES] forKey:NSFileExtensionHidden];
+		[[NSFileManager defaultManager] changeFileAttributes: m atPath: path];
+	}
+}
+
 + (void) pause
 {
 	[[AppController sharedAppController] performSelectorOnMainThread: @selector( pause) withObject: 0L waitUntilDone: NO];
@@ -1067,7 +1091,7 @@ static NSDate *lastWarningDate = 0L;
 	[[mainMenuCLUTMenu itemWithTitle:[note object]] setState:NSOnState];
 }
 
-#define INCOMINGPATH @"/INCOMING/"
+#define INCOMINGPATH @"/INCOMING.noindex/"
 
 - (void) startDICOMBonjour:(NSTimer*) t
 {
@@ -1122,10 +1146,8 @@ static NSDate *lastWarningDate = 0L;
 		
 		//make sure that there exist a receiver folder at @"folder" path
 		NSString            *path = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
-		BOOL				isDir = YES;
 		
-		if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir) 
-			[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+		[AppController createNoIndexDirectoryIfNecessary: path];
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USESTORESCP"])
 		{

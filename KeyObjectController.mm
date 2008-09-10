@@ -67,7 +67,7 @@
 		//Save to INCOMING		
 		NSString *rootFolder = [[BrowserController currentBrowser] documentsDirectory];
 		//path = [[rootFolder stringByAppendingPathComponent:@"REPORTS"] stringByAppendingPathComponent:studyInstanceUID];
-		path = [rootFolder stringByAppendingPathComponent:@"INCOMING"];
+		path = [rootFolder stringByAppendingPathComponent:@"INCOMING.noindex"];
 
 		KeyObjectReport *ko = [[KeyObjectReport alloc] initWithStudy:_study title:_title description:_keyDescription seriesUID:_seriesUID];
 		NSString *sopInstanceUID = [ko sopInstanceUID];

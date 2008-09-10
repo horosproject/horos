@@ -495,7 +495,7 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 		if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
 		{
 			char dir[ 1024];
-			sprintf( dir, "%s/%s/%s", [[BrowserController currentBrowser] cfixedIncomingDirectory], "INCOMING", last( imageFileName, '/'));
+			sprintf( dir, "%s/%s/%s", [[BrowserController currentBrowser] cfixedIncomingDirectory], "INCOMING.noindex", last( imageFileName, '/'));
 			rename( imageFileName, dir);
 		}
 	}

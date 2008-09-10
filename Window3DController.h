@@ -23,7 +23,7 @@
 #import "OSIWindowController.h"
 
 
-#define DATABASEPATH				@"/DATABASE/"
+#define DATABASEPATH				@"/DATABASE.noindex/"
 #define STATEDATABASE				@"/3DSTATE/"
 
 
