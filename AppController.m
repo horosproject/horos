@@ -621,24 +621,36 @@ static NSDate *lastWarningDate = 0L;
 + (void) createNoIndexDirectoryIfNecessary:(NSString*) path
 {
 	BOOL isDir;
+	BOOL newFolder = NO;
 	
 	if( ![[NSFileManager defaultManager] fileExistsAtPath: path] && [[NSFileManager defaultManager] fileExistsAtPath: [path stringByDeletingPathExtension]])
+	{
 		[[NSFileManager defaultManager] movePath:[path stringByDeletingPathExtension] toPath:path handler: 0L];
+		newFolder = YES;
+	}
 	
 	if( ![[NSFileManager defaultManager] fileExistsAtPath: path])
+	{
 		[[NSFileManager defaultManager] createDirectoryAtPath: path attributes: 0L];
+		newFolder = YES;
+	}
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByDeletingPathExtension]])
 		[[NSFileManager defaultManager] removeFileAtPath: [path stringByDeletingPathExtension] handler: 0L];
 	
-	NSDictionary *d = [[NSFileManager defaultManager] attributesOfItemAtPath:path error: 0L];
-	
-	if( d && [[d objectForKey: NSFileExtensionHidden] boolValue] == NO)
+	if( newFolder)
 	{
-		NSMutableDictionary *m = [NSMutableDictionary dictionaryWithDictionary: d];
+		NSLog( @"check noindex folder attributes");
 		
-		[m setObject: [NSNumber numberWithBool: YES] forKey:NSFileExtensionHidden];
-		[[NSFileManager defaultManager] changeFileAttributes: m atPath: path];
+		NSDictionary *d = [[NSFileManager defaultManager] attributesOfItemAtPath:path error: 0L];
+	
+		if( d && [[d objectForKey: NSFileExtensionHidden] boolValue] == NO)
+		{
+			NSMutableDictionary *m = [NSMutableDictionary dictionaryWithDictionary: d];
+		
+			[m setObject: [NSNumber numberWithBool: YES] forKey:NSFileExtensionHidden];
+			[[NSFileManager defaultManager] changeFileAttributes: m atPath: path];
+		}
 	}
 }
 
