@@ -293,7 +293,7 @@
 		
 		if( r)
 		{
-			if( NSRunInformationalAlertPanel(NSLocalizedString(@"Load locations", 0L), NSLocalizedString(@"Should I add or replace this locations list to the current list?", 0L), NSLocalizedString(@"Add",nil), NSLocalizedString(@"Replace",nil), nil) == NSAlertDefaultReturn)
+			if( NSRunInformationalAlertPanel(NSLocalizedString(@"Load locations", 0L), NSLocalizedString(@"Should I add or replace this locations list? If you choose 'replace', the current list will be deleted.", 0L), NSLocalizedString(@"Add",nil), NSLocalizedString(@"Replace",nil), nil) == NSAlertDefaultReturn)
 			{
 				
 			}
@@ -381,7 +381,7 @@
 		
 		if( r)
 		{
-			if( NSRunInformationalAlertPanel(NSLocalizedString(@"Load locations", 0L), NSLocalizedString(@"Should I add or replace this locations list to the current list?", 0L), NSLocalizedString(@"Add",nil), NSLocalizedString(@"Replace",nil), nil) == NSAlertDefaultReturn)
+			if( NSRunInformationalAlertPanel(NSLocalizedString(@"Load locations", 0L), NSLocalizedString(@"Should I add or replace this locations list? If you choose 'replace', the current list will be deleted.", 0L), NSLocalizedString(@"Add",nil), NSLocalizedString(@"Replace",nil), nil) == NSAlertDefaultReturn)
 			{
 				
 			}

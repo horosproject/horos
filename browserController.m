@@ -15184,19 +15184,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 	else return [obj valueForKey:@"completePath"];
 }
 
-- (NSString*)defaultSharingName {
-	NSString *userName = (NSString*)CSCopyUserName(NO);
-	NSMutableString *myServiceName = [[NSMutableString alloc] initWithString:userName];
-	if([[[myServiceName substringFromIndex:[myServiceName length]-1] uppercaseString] isEqualToString:@"S"])
-	{
-		[myServiceName appendString:@"' OsiriX"];
-	}
-	else
-	{
-		[myServiceName appendString:@"'s OsiriX"];
-	}
+- (NSString*)defaultSharingName
+{
+	char s[_POSIX_HOST_NAME_MAX+1];
+	gethostname(s,_POSIX_HOST_NAME_MAX);
+	NSString *c = [NSString stringWithCString:s encoding:NSUTF8StringEncoding];
+	NSRange range = [c rangeOfString: @"."];
+	if( range.location != NSNotFound) c = [c substringToIndex: range.location];
 	
-	return myServiceName;
+	return c;
 }
 
 - (void)setServiceName: (NSString*)title
