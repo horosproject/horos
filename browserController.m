@@ -3457,7 +3457,7 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (void)autoCleanDatabaseDate: (id)sender
+- (void) autoCleanDatabaseDate: (id)sender
 {
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
 	
@@ -3500,11 +3500,12 @@ static NSArray*	statesArray = nil;
 	
 	[self buildAllThumbnails: self];
 	
-	if( [defaults boolForKey:@"AUTOCLEANINGDATE"] ) {
-		if( [defaults boolForKey: @"AUTOCLEANINGDATEPRODUCED"] == YES || [defaults boolForKey: @"AUTOCLEANINGDATEOPENED"] == YES) {
-			if( [checkIncomingLock tryLock]) {
-				//	NSLog(@"lock autoCleanDatabaseDate");
-				
+	if( [defaults boolForKey:@"AUTOCLEANINGDATE"] )
+	{
+		if( [defaults boolForKey: @"AUTOCLEANINGDATEPRODUCED"] == YES || [defaults boolForKey: @"AUTOCLEANINGDATEOPENED"] == YES)
+		{
+			if( [checkIncomingLock tryLock])
+			{
 				NSError				*error = nil;
 				NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
 				NSPredicate			*predicate = [NSPredicate predicateWithValue:YES];
@@ -3528,13 +3529,15 @@ static NSArray*	statesArray = nil;
 					NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease];
 					studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
 					
-					for( long i = 0; i < [studiesArray count]; i++ ) {
+					for( int i = 0; i < [studiesArray count]; i++ )
+					{
 						NSString	*patientID = [[studiesArray objectAtIndex: i] valueForKey:@"patientID"];
 						NSDate		*studyDate = [[studiesArray objectAtIndex: i] valueForKey:@"date"];
 						NSDate		*openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"];
 						
 						if( openedStudyDate == nil ) openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
-						long		to, from = i;
+						
+						int to, from = i;
 						
 						while( i < [studiesArray count]-1 && [patientID isEqualToString:[[studiesArray objectAtIndex: i+1] valueForKey:@"patientID"]] == YES)
 						{
@@ -3550,7 +3553,8 @@ static NSArray*	statesArray = nil;
 						if( [defaults boolForKey: @"AUTOCLEANINGDATEPRODUCED"] )
 							dateProduced = [producedDate compare: studyDate] == NSOrderedDescending;
 						
-						if( [defaults boolForKey: @"AUTOCLEANINGDATEOPENED"] ) {
+						if( [defaults boolForKey: @"AUTOCLEANINGDATEOPENED"] )
+						{
 							if( openedStudyDate == 0L) openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
 							
 							dateOpened = [openedDate compare: openedStudyDate] == NSOrderedDescending;
@@ -3558,11 +3562,11 @@ static NSArray*	statesArray = nil;
 						
 						if(  dateProduced == YES && dateOpened == YES)
 						{
-							for( long x = from; x <= to; x++ ) if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO && [[[studiesArray objectAtIndex: x] valueForKey:@"lockedStudy"] boolValue] == NO) [toBeRemoved addObject: [studiesArray objectAtIndex: x]];
+							for( int x = from; x <= to; x++ ) if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO && [[[studiesArray objectAtIndex: x] valueForKey:@"lockedStudy"] boolValue] == NO) [toBeRemoved addObject: [studiesArray objectAtIndex: x]];
 						}
 					}
 					
-					for ( long i = 0; i<[toBeRemoved count]; i++ )					// Check if studies are in an album or added this week.  If so don't autoclean that study from the database (DDP: 051108).
+					for ( int i = 0; i < [toBeRemoved count]; i++ )					// Check if studies are in an album or added this week.  If so don't autoclean that study from the database (DDP: 051108).
 					{
 						if ( [[[toBeRemoved objectAtIndex: i] valueForKey: @"albums"] count] > 0 ||
 							[[[toBeRemoved objectAtIndex: i] valueForKey: @"dateAdded"] timeIntervalSinceNow] > -60*60*7*24.0 )  // within 7 days
@@ -3572,21 +3576,26 @@ static NSArray*	statesArray = nil;
 						}
 					}
 					
-					if( [defaults boolForKey: @"AUTOCLEANINGCOMMENTS"])	{
-						for ( long i = 0; i<[toBeRemoved count]; i++ ) {
+					if( [defaults boolForKey: @"AUTOCLEANINGCOMMENTS"])
+					{
+						for ( int i = 0; i < [toBeRemoved count]; i++ )
+						{
 							NSString	*comment = [[toBeRemoved objectAtIndex: i] valueForKey: @"comment"];
 							
 							if( comment == 0L) comment = @"";
 							
 							if ([comment rangeOfString:[defaults stringForKey: @"AUTOCLEANINGCOMMENTSTEXT"] options:NSCaseInsensitiveSearch].location == NSNotFound)
 							{
-								if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 0 ) {
+								if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 0 )
+								{
 									[toBeRemoved removeObjectAtIndex: i];
 									i--;
 								}
 							}
-							else {
-								if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 1) {
+							else
+							{
+								if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 1)
+								{
 									[toBeRemoved removeObjectAtIndex: i];
 									i--;
 								}
@@ -3594,7 +3603,8 @@ static NSArray*	statesArray = nil;
 						}
 					}
 				}
-				@catch (NSException * e) {
+				@catch (NSException * e)
+				{
 					NSLog( @"autoCleanDatabaseDate");
 					NSLog( [e description]);
 				}
@@ -3615,16 +3625,19 @@ static NSArray*	statesArray = nil;
 					
 					@try
 					{
-						if( [defaults boolForKey: @"AUTOCLEANINGDELETEORIGINAL"] ) {
+						if( [defaults boolForKey: @"AUTOCLEANINGDELETEORIGINAL"] )
+						{
 							NSMutableArray	*nonLocalImagesPath = [NSMutableArray array];
 							
-							for ( NSManagedObject *curObj in toBeRemoved ) {
+							for ( NSManagedObject *curObj in toBeRemoved )
+							{
 								
 								if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
 								{
 									NSArray	*seriesArray = [self childrenArray: curObj];
 									
-									for( NSManagedObject *series in seriesArray ) {
+									for( NSManagedObject *series in seriesArray )
+									{
 										NSArray		*imagesArray = [self imagesArray: series];
 										
 										[nonLocalImagesPath addObjectsFromArray: [[imagesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"]];
@@ -3633,7 +3646,8 @@ static NSArray*	statesArray = nil;
 								else NSLog( @"Uh? Autocleaning, object strange...");
 							}
 							
-							for ( NSString *path in nonLocalImagesPath ) {
+							for ( NSString *path in nonLocalImagesPath )
+							{
 								[[NSFileManager defaultManager] removeFileAtPath: path handler:nil];
 								
 								if( [[path pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
@@ -3648,7 +3662,8 @@ static NSArray*	statesArray = nil;
 							}
 						}
 						
-						for( id obj in toBeRemoved ) {
+						for( id obj in toBeRemoved )
+						{
 							[context deleteObject: obj];
 							
 							[wait incrementBy:1];
@@ -3659,7 +3674,8 @@ static NSArray*	statesArray = nil;
 						
 						[self outlineViewRefresh];
 					}
-					@catch (NSException * e) {
+					@catch (NSException * e)
+					{
 						NSLog( @"autoCleanDatabaseDate");
 						NSLog( [e description]);
 					}
@@ -3676,13 +3692,12 @@ static NSArray*	statesArray = nil;
 	}
 }
 
-- (void)autoCleanDatabaseFreeSpace: (id)sender
+- (void) autoCleanDatabaseFreeSpace: (id)sender
 {
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
 	
 	if( isCurrentDatabaseBonjour) return;
 	
-			
 	if( [defaults boolForKey:@"AUTOCLEANINGSPACE"])
 	{
 		if( [defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"] == NO && [defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"] == NO)
