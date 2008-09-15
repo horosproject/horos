@@ -922,6 +922,7 @@ static NSHost *currentHost = 0L;
 						@".",	//UnreadHotKeyAction
 						@"/",	//ReviewedHotKeyAction
 						@"\\",	//DictatedHotKeyAction
+						@"y",	//OrthoMPRCrossTool
 						nil];						
 	
 	for( int x = 0; x < [array count]; x++)

@@ -744,9 +744,9 @@
 				case Preset9WWWLHotKeyAction:
 					if([wwwlValues count] > key-Preset1WWWLHotKeyAction)
 					{
-								wwwlMenuString = [wwwlValues objectAtIndex:key-Preset1WWWLHotKeyAction];
-								[windowController applyWLWWForString:wwwlMenuString];
-								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+						wwwlMenuString = [wwwlValues objectAtIndex:key-Preset1WWWLHotKeyAction];
+						[windowController applyWLWWForString:wwwlMenuString];
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
 					}	
 					break;
 				
@@ -765,7 +765,8 @@
 				case OvalHotKeyAction:
 				case AngleHotKeyAction:
 				case ThreeDPointHotKeyAction:
-				if( [ViewerController getToolEquivalentToHotKey: key] >= 0)
+				case OrthoMPRCrossHotKeyAction:
+					if( [ViewerController getToolEquivalentToHotKey: key] >= 0)
 					{
 						[windowController setCurrentTool: [ViewerController getToolEquivalentToHotKey: key]];
 					}

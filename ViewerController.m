@@ -193,7 +193,7 @@ static int hotKeyToolCrossTable[] =
 	LengthHotKeyAction,			//tMesure			5
 	RectangleHotKeyAction,		//tROI				6
 	Rotate3DHotKeyAction,		//t3DRotate			7
-	-1,							//tCross			8
+	OrthoMPRCrossHotKeyAction,	//tCross			8
 	OvalHotKeyAction,			//tOval				9
 	OpenPolygonHotKeyAction,	//tOPolygon			10
 	ClosedPolygonHotKeyAction, //tCPolygon			11
