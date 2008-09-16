@@ -519,6 +519,12 @@ static const char *GetPrivateIP()
 	}
 }
 
+- (void) refreshAutoQR: (id) sender
+{
+	autoQueryRemainingSecs = 1;
+	[self autoQueryTimerFunction: QueryTimer]; 
+}
+
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item{
 
 	return (item == nil) ? [resultArray objectAtIndex:index] : [[(DCMTKQueryNode *)item children] objectAtIndex:index];

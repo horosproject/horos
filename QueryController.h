@@ -78,6 +78,7 @@
 
 - (IBAction) cancel:(id)sender;
 - (IBAction) ok:sender;
+- (void) refreshAutoQR: (id) sender;
 - (void) refreshList: (NSArray*) l;
 - (BOOL) queryWithDisplayingErrors:(BOOL) showError;
 - (IBAction) selectUniqueSource:(id) sender;
@@ -109,4 +110,5 @@
 - (IBAction) selectModality: (id) sender;
 - (void) displayAndRetrieveQueryResults;
 - (void) autoQueryThread;
+- (void) autoQueryTimerFunction:(NSTimer*) t;
 @end
