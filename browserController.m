@@ -609,7 +609,8 @@ static NSArray*	statesArray = nil;
 						{
 							study = [studiesArray objectAtIndex: index];
 							
-							[study setValue:today forKey:@"dateAdded"];
+							if( DICOMROI == NO)
+								[study setValue:today forKey:@"dateAdded"];
 							
 							newObject = NO;
 						}
@@ -753,8 +754,11 @@ static NSArray*	statesArray = nil;
 						{
 							needDBRefresh = YES;
 							
-							[study setValue:today forKey:@"dateAdded"];
-							[seriesTable setValue:today forKey:@"dateAdded"];
+							if( DICOMROI == NO)
+							{
+								[study setValue:today forKey:@"dateAdded"];
+								[seriesTable setValue:today forKey:@"dateAdded"];
+							}
 							
 							[image setValue:[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] forKey:@"instanceNumber"];
 							//[image setValue:[[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] stringValue] forKey:@"name"];

@@ -1678,7 +1678,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 {
 	int curveIndex = [self selectedCurveIndex];
 	
-	if(curveIndex >= 0)
+	if(curveIndex >= 0 && [curves count] > 0)
 	{
 		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:2];
 		[dict setObject:[curves objectAtIndex:curveIndex] forKey:@"curve"];
@@ -1778,7 +1778,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 {
 	int curveIndex = [self selectedCurveIndex];
 	
-	if(curveIndex >= 0)
+	if(curveIndex >= 0 && [curves count] > 0)
 	{
 		[self deleteCurveAtIndex:curveIndex];
 		vrViewLowResolution = NO;

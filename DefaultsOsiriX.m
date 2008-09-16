@@ -629,7 +629,7 @@ static NSHost *currentHost = 0L;
 	[defaultValues setObject:@"1" forKey:@"COPYSETTINGSINSERIES"];
 	[defaultValues setObject:@"1" forKey:@"EJECTCDDVD"];
 	[defaultValues setObject:@"1" forKey:@"automaticWorkspaceLoad"];
-	[defaultValues setObject:@"0" forKey:@"automaticWorkspaceSave"];
+	[defaultValues setObject:@"1" forKey:@"automaticWorkspaceSave"];
 	[defaultValues setObject:@"1" forKey:@"includeAllTiledViews"];
 	[defaultValues setObject:@"0" forKey:@"AUTOCLEANINGDATE"];
 	[defaultValues setObject:@"0" forKey:@"AUTOCLEANINGDATEPRODUCED"];
