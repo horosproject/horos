@@ -12546,6 +12546,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void)checkIncoming: (id)sender
 {
 	if( isCurrentDatabaseBonjour) return;
+	if( DatabaseIsEdited) return;
 	if( managedObjectContext == nil) return;
 	
 	if( [checkIncomingLock tryLock] )
