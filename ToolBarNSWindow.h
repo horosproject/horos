@@ -18,7 +18,11 @@
 #import <Foundation/Foundation.h>
 
 /** \brief Window with only a toolbar */
-@interface ToolBarNSWindow : NSPanel {
-
+@interface ToolBarNSWindow : NSPanel
+{
+	BOOL willClose;
 }
+
+@property BOOL willClose;
+
 @end

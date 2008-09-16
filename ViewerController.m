@@ -5398,6 +5398,7 @@ static ViewerController *draggedController = 0L;
 
 - (void) dealloc
 {
+	
 	[self ActivateBlending: 0L];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];

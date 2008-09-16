@@ -12,10 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import "ToolbarPanel.h"
+#import "ToolBarNSWindow.h"
 #import "ViewerController.h"
 
 extern BOOL USETOOLBARPANEL;
@@ -198,10 +196,14 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 {
 	if( toolbar == tb)
 	{
+		((ToolBarNSWindow*) [self window]).willClose = YES;
+		
+		[[self window] orderOut: self];
+		
 		[associatedScreen setObject: [[self window] screen] forKey: [NSValue valueWithPointer: toolbar]];
 		
 		[[self window] setToolbar: 0L];
-		[[self window] orderOut: self];
+//		[[self window] orderOut: self];
 		
 		[associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
 		
@@ -209,6 +211,8 @@ static 	NSMutableDictionary *associatedScreen = 0L;
 		toolbar = 0;
 		
 		viewer = 0;
+		
+		((ToolBarNSWindow*) [self window]).willClose = NO;
 	}
 }
 
