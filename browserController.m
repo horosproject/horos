@@ -356,7 +356,7 @@ static NSArray*	statesArray = nil;
 	BOOL					newStudy = NO, newObject = NO;
 	NSMutableArray			*vlToRebuild = [NSMutableArray arrayWithCapacity: 0];
 	NSMutableArray			*vlToReload = [NSMutableArray arrayWithCapacity: 0];
-	BOOL					isCDMedia = NO;
+	BOOL					isCDMedia = NO, onlyDICOMROI = YES;
 	NSMutableArray			*dicomFilesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
 	
 	NSString *reportsDirectory = [INpath stringByAppendingPathComponent:@"/REPORTS/"];
@@ -567,6 +567,9 @@ static NSArray*	statesArray = nil;
 						DICOMROI = YES;
 					}
 				}
+				
+				if( DICOMROI == NO)
+					onlyDICOMROI = NO;
 				
 				// For now, we cannot add non-image DICOM files
 				if( [curDict objectForKey:@"SOPClassUID"] != nil 
@@ -901,7 +904,7 @@ static NSArray*	statesArray = nil;
 				NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:@"OsiriXAddToDBArray"];
 				[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixAddToDBNotification" object: nil userInfo:userInfo];
 				
-				if( [addedImagesArray count])
+				if( [addedImagesArray count] && onlyDICOMROI == NO)
 				{
 					dockLabel = [NSString stringWithFormat:@"%d", [addedImagesArray count]];
 					growlString = [NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", 0L), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]];
@@ -980,6 +983,7 @@ static NSArray*	statesArray = nil;
 		{
 			if( dockLabel)
 				[self performSelectorOnMainThread:@selector( setDockLabel:) withObject: dockLabel waitUntilDone:NO];
+			
 			if( growlString)
 				[self performSelectorOnMainThread:@selector( setGrowlMessage:) withObject: growlString waitUntilDone:NO];
 			
