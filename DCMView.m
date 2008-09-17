@@ -1164,7 +1164,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	BOOL valid = NO;
 	
-    if ([item action] == @selector( roiSaveSelected:))
+    if ([item action] == @selector( roiSaveSelected:) || [item action] == @selector( increaseThickness:) || [item action] == @selector( decreaseThickness:) || [item action] == @selector( increaseFontSize:) || [item action] == @selector( decreaseFontSize:))
 	{
 		for( id loopItem in curRoiList)
 		{
@@ -4137,13 +4137,34 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self mouseDragged:(NSEvent *)event];
 }
 
--(NSMenu*) menuForEvent:(NSEvent *)theEvent {
+-(NSMenu*) menuForEvent:(NSEvent *)theEvent
+{
 	if ( pluginOverridesMouse ) return nil;
 	NSPoint contextualMenuWhere = [theEvent locationInWindow]; 	//JF20070103 WindowAnchored ctrl-clickPoint registered 
 	contextualMenuInWindowPosX = contextualMenuWhere.x;
 	contextualMenuInWindowPosY = contextualMenuWhere.y;	
 	if (([theEvent modifierFlags] & NSControlKeyMask) && ([theEvent modifierFlags] & NSAlternateKeyMask)) return 0L;
 	return [self menu]; 
+}
+
+- (IBAction) decreaseFontSize: (id) sender
+{
+	
+}
+
+- (IBAction) increaseFontSize: (id) sender
+{
+	
+}
+
+- (IBAction) decreaseThickness: (id) sender
+{
+	
+}
+
+- (IBAction) increaseThickness: (id) sender
+{
+	
 }
 
 #pragma mark-
