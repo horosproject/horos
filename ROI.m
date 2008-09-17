@@ -2872,6 +2872,9 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 {
 	int v = a ;	// To reduce the Opengl memory leak - PointSize LineWidth
 	
+	if( v < 1) v = 1;
+	if( v > 20) v = 20;
+	
 	thickness = (float) v;
 	
 	if( type == tPlain)
@@ -2896,7 +2899,8 @@ int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale)
 		
 		self.name = name;
 	}
-	else {
+	else
+	{
 		ROIThickness = thickness;
 	}
 }

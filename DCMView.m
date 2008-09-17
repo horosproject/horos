@@ -1672,8 +1672,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		break;
 		
 		case tRotate:
-			if( [event type] != NSKeyDown) {
-				if( [event clickCount] == 2 && gClickCountSet == NO && isKeyView == YES) {
+			if( [event type] != NSKeyDown)
+			{
+				if( [event clickCount] == 2 && gClickCountSet == NO && isKeyView == YES)
+				{
 					gClickCountSet = YES;
 					
 					float rot = [self rotation];
@@ -2622,7 +2624,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		tempPt = [self ConvertFromNSView2GL:tempPt];
 		if( [self clickInROI: tempPt]) roiHit = YES;
 	}
-	else if( ( [event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask)  && !([event modifierFlags] & NSControlKeyMask) && mouseDragging == NO)
+	else if( ( [event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSAlternateKeyMask)  && !([event modifierFlags] & NSCommandKeyMask)  && !([event modifierFlags] & NSControlKeyMask) && mouseDragging == NO)
 	{
 		[self computeMagnifyLens: NSMakePoint( mouseXPos, mouseYPos)];
 	}
@@ -4159,12 +4161,28 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (IBAction) decreaseThickness: (id) sender
 {
+	for( ROI *r in curRoiList)
+	{
+		if( [r ROImode] == ROI_selected)
+		{
+			[r setThickness: [r thickness]-1];
+		}
+	}
 	
+	[self display];
 }
 
 - (IBAction) increaseThickness: (id) sender
 {
+	for( ROI *r in curRoiList)
+	{
+		if( [r ROImode] == ROI_selected)
+		{
+			[r setThickness: [r thickness]+1];
+		}
+	}
 	
+	[self display];
 }
 
 #pragma mark-
@@ -4270,17 +4288,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 
 // get current Point for Event in the local view Coordinates
-- (NSPoint)currentPointInView:(NSEvent *)event{
+- (NSPoint)currentPointInView:(NSEvent *)event
+{
 	NSPoint     eventLocation = [event locationInWindow];
 	return [self convertPoint:eventLocation fromView:self];
 }
 
 // Check to see if an roi is selected at the Open GL point
-- (BOOL)checkROIsForHitAtPoint:(NSPoint)point  forEvent:(NSEvent *)event{
+- (BOOL)checkROIsForHitAtPoint:(NSPoint)point  forEvent:(NSEvent *)event
+{
 	BOOL haveHit = NO;
 
-	for( int i = 0; i < [curRoiList count]; i++) {
-		if( [[curRoiList objectAtIndex:i] mouseRoiDragged: point :[event modifierFlags] :scaleValue] != NO) {
+	for( int i = 0; i < [curRoiList count]; i++)
+	{
+		if( [[curRoiList objectAtIndex:i] mouseRoiDragged: point :[event modifierFlags] :scaleValue] != NO)
+		{
 			haveHit = YES;
 		}
 	}
@@ -4288,13 +4310,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 // Modifies the Selected ROIs for the drag. Can rotate, scalem move the ROI or the Text Box.
-- (void)mouseDraggedForROIs:(NSEvent *)event {
-	
+- (void)mouseDraggedForROIs:(NSEvent *)event
+{
 	NSRect  frame = [self frame];
 	NSPoint current = [self currentPointInView:event];
 
 	// Command and Alternate rotate ROI
-	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask)) {
+	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))
+	{
 		NSPoint rotatePoint = [[[event window] contentView] convertPoint:start toView:self];
 		rotatePoint.y = start.y ;
 		rotatePoint = [self ConvertFromNSView2GL: rotatePoint];
@@ -4305,12 +4328,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		offset.x = - (previous.x - current.x) / scaleValue;
 		offset.y =  (previous.y - current.y) / scaleValue;
 		
-		for( int i = 0; i < [curRoiList count]; i++ ) {
+		for( int i = 0; i < [curRoiList count]; i++ )
+		{
 			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) [[curRoiList objectAtIndex:i] rotate: offset.x :rotatePoint];
 		}
 	}
 	// Command and Shift scale
-	else if (([event modifierFlags] & NSCommandKeyMask) && !([event modifierFlags] & NSShiftKeyMask)) {
+	else if (([event modifierFlags] & NSCommandKeyMask) && !([event modifierFlags] & NSShiftKeyMask))
+	{
 		NSPoint rotatePoint = [[[event window] contentView] convertPoint:start toView:self];
 		rotatePoint.y = start.y ;
 		rotatePoint = [self ConvertFromNSView2GL: rotatePoint];
@@ -4322,12 +4347,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		resizeTotal *= ss;
 		
-		for( int i = 0; i < [curRoiList count]; i++) {
+		for( int i = 0; i < [curRoiList count]; i++)
+		{
 			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) [[curRoiList objectAtIndex:i] resize: ss :rotatePoint];
 		}
 	}
 	// Move ROI
-	else {
+	else
+	{
 		BOOL textBoxMove = NO;
 		NSPoint offset;
 		float   xx, yy;
@@ -4345,15 +4372,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		offset.y /=  curDCM.pixelRatio;
 		// hit test for text box
-		for( int i = 0; i < [curRoiList count]; i++ ) {
-			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) {
+		for( int i = 0; i < [curRoiList count]; i++ )
+		{
+			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+			{
 				if( [[curRoiList objectAtIndex: i] clickInTextBox]) textBoxMove = YES;
 			}
 		}
 		// Move text Box
-		if( textBoxMove) {
-			for( int i = 0; i < [curRoiList count]; i++) {
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)	{
+		if( textBoxMove)
+		{
+			for( int i = 0; i < [curRoiList count]; i++)
+			{
+				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+				{
 					[[curRoiList objectAtIndex: i] setTextBoxOffset: offset];
 				}
 			}
