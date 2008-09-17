@@ -5824,8 +5824,8 @@ static NSArray*	statesArray = nil;
 	}
 	else
 	{
-		NSMutableArray	*dicomFiles2Export = [NSMutableArray array];
-		NSArray			*filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+		NSArray *filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
 		
 		return [self exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
 	}
@@ -8790,7 +8790,6 @@ static BOOL needToRezoom;
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
 {
-	
 	if ([tableView isEqual:albumTable])
 	{
 		NSArray	*albumArray = self.albumArray;

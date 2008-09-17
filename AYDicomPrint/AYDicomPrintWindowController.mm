@@ -102,9 +102,17 @@
 	[entireSeriesFrom setNumberOfTickMarks: [[m_CurrentViewer pixList] count]];
 	[entireSeriesTo setNumberOfTickMarks: [[m_CurrentViewer pixList] count]];
 	
-	if( [[m_CurrentViewer imageView] flippedData]) [entireSeriesFrom setIntValue: [[m_CurrentViewer pixList] count] - [[m_CurrentViewer imageView] curImage]];
-	else [entireSeriesFrom setIntValue: 1+ [[m_CurrentViewer imageView] curImage]];
-	[entireSeriesTo setIntValue: [[m_CurrentViewer pixList] count]];
+	if( [[m_CurrentViewer pixList] count] < 20)
+	{
+		[entireSeriesFrom setIntValue: 1];
+		[entireSeriesTo setIntValue: [[m_CurrentViewer pixList] count]];
+	}
+	else
+	{
+		if( [[m_CurrentViewer imageView] flippedData]) [entireSeriesFrom setIntValue: [[m_CurrentViewer pixList] count] - [[m_CurrentViewer imageView] curImage]];
+		else [entireSeriesFrom setIntValue: 1+ [[m_CurrentViewer imageView] curImage]];
+		[entireSeriesTo setIntValue: [[m_CurrentViewer pixList] count]];
+	}
 	
 	[entireSeriesToText setIntValue: [entireSeriesTo intValue]];
 	[entireSeriesFromText setIntValue: [entireSeriesFrom intValue]];
