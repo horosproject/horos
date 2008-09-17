@@ -150,6 +150,10 @@ static NSString*	ToggleDrawerToolbarItemIdentifier   = @"StartupDisk.tiff";
 static NSString*	SearchToolbarItemIdentifier			= @"Search";
 static NSString*	TimeIntervalToolbarItemIdentifier	= @"TimeInterval";
 static NSString*	XMLToolbarItemIdentifier			= @"XML.icns";
+
+static NSString*	OpenROIsToolbarItemIdentifier		= @"roi.icns";
+static NSString*	OpenKeyImagesToolbarItemIdentifier	= @"Repulsor.tif";
+
 static NSTimeInterval	gLastActivity = 0;
 static BOOL DICOMDIRCDMODE = NO;
 static BOOL autotestdone = NO;
@@ -9463,7 +9467,11 @@ static BOOL needToRezoom;
 			}
 			
 			if( [keyImagesToOpenArray count] > 0) toOpenArray = keyImagesToOpenArray;
-			else NSRunInformationalAlertPanel( NSLocalizedString( @"Key Images", 0L), NSLocalizedString(@"No key images in these images.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+			else
+			{
+				if( NSRunInformationalAlertPanel( NSLocalizedString( @"Key Images", 0L), NSLocalizedString(@"No key images in these images.", 0L), NSLocalizedString(@"All Images",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertAlternateReturn)
+					return 0L;
+			}
 		}
 		
 		if (([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) || ([self computeEnoughMemory: toOpenArray : 0L] == NO))
@@ -10420,7 +10428,8 @@ static BOOL needToRezoom;
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
-- (void)viewerDICOMMergeSelection: (id)sender {
+- (void)viewerDICOMMergeSelection: (id)sender
+{
 	NSInteger		index;
 	NSMutableArray	*images = [NSMutableArray arrayWithCapacity:0];
 	
@@ -11483,6 +11492,14 @@ static NSArray*	openSubSeriesArray = 0L;
 	if ( menuItem.menu == imageTileMenu )
 	{
 		return [mainWindow.windowController isKindOfClass:[ViewerController class]];
+	}
+	else if( [menuItem action] == @selector( viewerDICOMROIsImages:))
+	{
+		if( [[self ROIImages: menuItem] count] == 0) return NO;
+	}
+	else if( [menuItem action] == @selector( viewerDICOMKeyImages:))
+	{
+		if( [[self KeyImages: menuItem] count] == 0) return NO;
 	}
 	else if( [menuItem action] == @selector( createROIsFromRTSTRUCT:))
 	{
@@ -12554,7 +12571,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[NSThread detachNewThreadSelector: @selector(checkIncomingThread:) toTarget:self withObject: self];
 		[checkIncomingLock unlock];
 	}
-	else {
+	else
+	{
 		NSLog(@"checkIncoming locked...");
 		newFilesInIncoming = YES;
 	}
@@ -14838,7 +14856,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if ([itemIdent isEqualToString: ImportToolbarItemIdentifier])
 	{
-        
 		[toolbarItem setLabel: NSLocalizedString(@"Import",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Import",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Import a DICOM file or folder",@"Import a DICOM file or folder")];
@@ -14955,6 +14972,25 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(generateReport:)];
     }
+	else if ([itemIdent isEqualToString: OpenROIsToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"ROIs", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"ROIs", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"View all images with ROIs", nil)];
+		[toolbarItem setImage: [NSImage imageNamed: OpenROIsToolbarItemIdentifier]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector(viewerDICOMROIsImages:)];
+    } 
+	else if ([itemIdent isEqualToString: OpenKeyImagesToolbarItemIdentifier])
+	{
+        
+		[toolbarItem setLabel: NSLocalizedString(@"Key Images", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Key Images", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"View all Key Images", nil)];
+		[toolbarItem setImage: [NSImage imageNamed: OpenKeyImagesToolbarItemIdentifier]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector(viewerDICOMKeyImages:)];
+    } 
 	else if ([itemIdent isEqualToString: XMLToolbarItemIdentifier])
 	{
         
@@ -15050,6 +15086,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			TrashToolbarItemIdentifier,
 			NSToolbarFlexibleSpaceItemIdentifier,
 			ViewerToolbarItemIdentifier,
+			OpenROIsToolbarItemIdentifier,
+			OpenKeyImagesToolbarItemIdentifier,
 			MovieToolbarItemIdentifier,
 			NSToolbarFlexibleSpaceItemIdentifier,
 			ToggleDrawerToolbarItemIdentifier,
@@ -15080,6 +15118,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			 iDiskSendToolbarItemIdentifier,
 			 iDiskGetToolbarItemIdentifier,
 			 ViewerToolbarItemIdentifier,
+			 OpenROIsToolbarItemIdentifier,
+			 OpenKeyImagesToolbarItemIdentifier,
 			 MovieToolbarItemIdentifier,
 			 BurnerToolbarItemIdentifier,
 			 XMLToolbarItemIdentifier,
@@ -15136,6 +15176,72 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
+- (NSArray*) ROIImages: (id) sender
+{
+	NSInteger index;
+	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
+	
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
+	else [self filesForDatabaseOutlineSelection: selectedItems];
+
+	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+	{
+		NSMutableArray	*filesArray = [NSMutableArray array];
+		
+		for( DicomImage *o in selectedItems)
+		{
+			NSString	*str = [o SRPathForFrame: 0];
+			[filesArray addObject: [str lastPathComponent]];
+		}
+		[[BrowserController currentBrowser] getDICOMROIFiles: filesArray];
+	}
+
+	NSArray *roisImagesArray = [NSArray array];
+
+	if( [selectedItems count] > 0)
+	{
+		for( DicomImage *image in selectedItems)
+		{
+			NSString	*str = [image SRPathForFrame: 0];
+			
+			if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour])
+			{
+				NSString	*imagePath = [BonjourBrowser uniqueLocalPath: image];
+				str = [[imagePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: [str lastPathComponent]];
+			}
+			
+			if( [[NSFileManager defaultManager] fileExistsAtPath: str])
+				roisImagesArray = [roisImagesArray arrayByAddingObject: image];
+		}
+	}
+	
+	return roisImagesArray;
+}
+
+- (NSArray*) KeyImages: (id) sender
+{
+	NSInteger index;
+	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
+	
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
+	else [self filesForDatabaseOutlineSelection: selectedItems];
+	
+	NSMutableArray *keyImagesToOpenArray = [NSMutableArray array];
+	
+	NSMutableArray *keyImagesArray = [NSMutableArray array];
+	
+	for( NSManagedObject *image in selectedItems )
+	{					
+		if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
+			[keyImagesArray addObject: image];
+	}
+	
+	if( [keyImagesArray count] > 0)
+		[keyImagesToOpenArray addObject: keyImagesArray];
+	
+	return keyImagesToOpenArray;
+}
+
 - (BOOL)validateToolbarItem: (NSToolbarItem *)toolbarItem
 {
 	if( isCurrentDatabaseBonjour )
@@ -15146,6 +15252,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if ([[toolbarItem itemIdentifier] isEqualToString: CDRomToolbarItemIdentifier]) return NO;
 		if ([[toolbarItem itemIdentifier] isEqualToString: TrashToolbarItemIdentifier]) return NO;
 		if ([[toolbarItem itemIdentifier] isEqualToString: QueryToolbarItemIdentifier]) return NO;
+	}
+	
+	if ([[toolbarItem itemIdentifier] isEqualToString: OpenKeyImagesToolbarItemIdentifier])
+	{
+		if( [[self KeyImages: 0L] count] == 0) return 0;
+	}
+	
+	if ([[toolbarItem itemIdentifier] isEqualToString: OpenROIsToolbarItemIdentifier])
+	{
+		if( [[self ROIImages: 0L] count] == 0) return 0;
 	}
 	
     return YES;

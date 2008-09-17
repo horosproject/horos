@@ -419,6 +419,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) setBurnerWindowControllerToNIL;
 - (BOOL) checkBurner;
 
+- (NSArray*) KeyImages: (id) sender;
+- (NSArray*) ROIImages: (id) sender;
+
 - (void) refreshColumns;
 - (void) outlineViewRefresh;
 - (void) matrixInit:(long) noOfImages;
