@@ -7922,13 +7922,46 @@ static BOOL withReset = NO;
 	return selectedFiles;
 }
 
-- (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects {
+- (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects
+{
 	return [self filesForDatabaseMatrixSelection: correspondingManagedObjects onlyImages: YES];
+}
+
+- (void) saveAlbums:(id) sender
+{
+	
+}
+
+- (void) replaceAlbums:(id) sender
+{
+	
+}
+
+- (void) addAlbums:(id) sender
+{
+	
 }
 
 - (void)createContextualMenu
 {
 	NSMenuItem		*item, *subItem;
+	
+	NSMenu *albumContextual	= [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Albums", nil)] autorelease];
+	
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Save Albums", nil)  action:@selector( saveAlbums:) keyEquivalent:@""] autorelease];
+	[albumContextual addItem:item];
+	
+	[albumContextual addItem: [NSMenuItem separatorItem]];
+	
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Replace Albums", nil)  action:@selector( replaceAlbums:) keyEquivalent:@""] autorelease];
+	[albumContextual addItem:item];
+	
+	item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Add Albums", nil)  action:@selector( addAlbums:) keyEquivalent:@""] autorelease];
+	[albumContextual addItem:item];
+	
+	[albumTable setMenu: albumContextual];
+	
+	// ****************
 	
 	if ( contextual == nil ) contextual	= [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
 	
