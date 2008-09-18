@@ -69,6 +69,7 @@
 #import "DicomStudy.h"
 #import "PluginManager.h"
 #import "XMLController.h"
+#import "MutableArrayCategory.h"
 
 #define DATABASEVERSION @"2.4"
 #define DATABASEPATH @"/DATABASE.noindex/"
@@ -4827,8 +4828,12 @@ static NSArray*	statesArray = nil;
 			previousItem = [item retain];
 		}
 		
-		if( [[self ROIsAndKeyImages: 0L] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
-		else ROIsAndKeyImagesButtonAvailable = YES;
+		NSMutableArray *i = [NSMutableArray arrayWithArray: [[toolbar items] valueForKey: @"itemIdentifier"]];
+		if( [i containsString: OpenKeyImagesAndROIsToolbarItemIdentifier])
+		{
+			if( [[self ROIsAndKeyImages: 0L] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+			else ROIsAndKeyImagesButtonAvailable = YES;
+		}
 	}
 	else
 	{
