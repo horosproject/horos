@@ -236,6 +236,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSImage							*downloadingOsiriXIcon;
 	NSImage							*currentIcon;
 	
+	BOOL							ROIsAndKeyImagesButtonAvailable;
+	
 	BOOL							rtstructProgressBar;  // make visible
 	float							rtstructProgressPercent;
 	
@@ -422,6 +424,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSArray*) KeyImages: (id) sender;
 - (NSArray*) ROIImages: (id) sender;
 - (NSArray*) ROIsAndKeyImages: (id) sender;
+- (NSArray*) ROIsAndKeyImages: (id) sender sameSeries: (BOOL*) sameSeries;
 
 - (void) refreshColumns;
 - (void) outlineViewRefresh;

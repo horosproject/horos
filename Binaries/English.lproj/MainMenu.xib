@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9F33</string>
-		<string key="IBDocument.InterfaceBuilderVersion">667</string>
-		<string key="IBDocument.AppKitVersion">949.34</string>
+		<string key="IBDocument.SystemVersion">9E17</string>
+		<string key="IBDocument.InterfaceBuilderVersion">670</string>
+		<string key="IBDocument.AppKitVersion">949.33</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="1400"/>
+			<integer value="13065"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1462,7 +1462,6 @@
 									<string key="NSKeyEquiv">G</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
-									<int key="NSState">1</int>
 									<reference key="NSOnImage" ref="125626618"/>
 									<reference key="NSMixedImage" ref="973943092"/>
 								</object>
@@ -11792,22 +11791,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<int key="connectionID">13244</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.COPYSETTINGSINSERIES</string>
-						<reference key="source" ref="161899617"/>
-						<reference key="destination" ref="149985806"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="161899617"/>
-							<reference key="NSDestination" ref="149985806"/>
-							<string key="NSLabel">value: values.COPYSETTINGSINSERIES</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.COPYSETTINGSINSERIES</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">13245</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">syncronize:</string>
 						<reference key="source" ref="298258082"/>
@@ -12078,14 +12061,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<reference key="destination" ref="144660445"/>
 					</object>
 					<int key="connectionID">13297</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">switchCopySettingsInSeries:</string>
-						<reference key="source" ref="298258082"/>
-						<reference key="destination" ref="161899617"/>
-					</object>
-					<int key="connectionID">13299</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
@@ -12449,22 +12424,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.DONTCOPYWLWWSETTINGS</string>
-						<reference key="source" ref="974818372"/>
-						<reference key="destination" ref="149985806"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="974818372"/>
-							<reference key="NSDestination" ref="149985806"/>
-							<string key="NSLabel">value: values.DONTCOPYWLWWSETTINGS</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.DONTCOPYWLWWSETTINGS</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">13578</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: values.COPYSETTINGS</string>
 						<reference key="source" ref="974818372"/>
 						<reference key="destination" ref="149985806"/>
@@ -12542,6 +12501,62 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<reference key="destination" ref="209270666"/>
 					</object>
 					<int key="connectionID">13672</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: viewer</string>
+						<reference key="source" ref="161899617"/>
+						<reference key="destination" ref="61136146"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="161899617"/>
+							<reference key="NSDestination" ref="61136146"/>
+							<string key="NSLabel">enabled: viewer</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">viewer</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSIsNotNil</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">13710</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.DONTCOPYWLWWSETTINGS</string>
+						<reference key="source" ref="974818372"/>
+						<reference key="destination" ref="149985806"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="974818372"/>
+							<reference key="NSDestination" ref="149985806"/>
+							<string key="NSLabel">value: values.DONTCOPYWLWWSETTINGS</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.DONTCOPYWLWWSETTINGS</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">13720</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: COPYSETTINGSINSERIES</string>
+						<reference key="source" ref="161899617"/>
+						<reference key="destination" ref="61136146"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="161899617"/>
+							<reference key="NSDestination" ref="61136146"/>
+							<string key="NSLabel">value: COPYSETTINGSINSERIES</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">COPYSETTINGSINSERIES</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSConditionallySetsEnabled</string>
+								<integer value="0" key="NS.object.0"/>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">13732</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -20143,7 +20158,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{477, 235}, {428, 833}}</string>
+					<string>{{763, 561}, {428, 833}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{390, 35}, {428, 753}}</string>
@@ -20675,7 +20690,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{371, 1004}, {596, 20}}</string>
+					<string>{{536, 1394}, {596, 20}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{163, 788}, {596, 20}}</string>
@@ -20751,7 +20766,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">13672</int>
+			<int key="maxID">13732</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

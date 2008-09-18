@@ -1828,7 +1828,6 @@ static BOOL initialized = NO;
 				[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
 				
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"is12bitPluginAvailable"];
-				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"COPYSETTINGSINSERIES"];
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"DONTCOPYWLWWSETTINGS"];
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"ROITEXTNAMEONLY"];
@@ -2635,7 +2634,8 @@ static BOOL initialized = NO;
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-- (NSScreen *)dbScreen{
+- (NSScreen *)dbScreen
+{
 	//return screen if there is a reserved DB Screen otherwise return nil;
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ReserveScreenForDB"] == 1)
 		return [dbWindow screen];
@@ -3229,21 +3229,44 @@ static BOOL initialized = NO;
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"Close All Viewers" object: self userInfo: Nil];
 }
 
-
-//———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-
-//- (IBAction) saveLayout:(id) sender{
-//	[[WindowLayoutManager sharedWindowLayoutManager] openLayoutWindow:sender];
-//}
-
-//———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-
 - (void) startDICOMBonjourSearch
 {
 	if (!dicomNetServiceDelegate)
 		dicomNetServiceDelegate = [DCMNetServiceDelegate sharedNetServiceDelegate];
 }
 
+- (ViewerController*) viewer
+{
+	NSArray *windows = [ViewerController getDisplayed2DViewers];
+	
+	if( [windows count])
+	{
+		[self willChangeValueForKey:@"COPYSETTINGSINSERIES"];
+		[self didChangeValueForKey:@"COPYSETTINGSINSERIES"];
+		
+		return [windows objectAtIndex: 0];
+	}
+	
+	return 0L;
+}
+
+- (void) setCOPYSETTINGSINSERIES: (BOOL) v
+{
+	NSArray *windows = [ViewerController getDisplayed2DViewers];
+	
+	if( [windows count])
+		[[windows objectAtIndex: 0] imageView].COPYSETTINGSINSERIES = v;
+}
+
+- (BOOL) COPYSETTINGSINSERIES
+{	
+	NSArray *windows = [ViewerController getDisplayed2DViewers];
+	
+	if( [windows count])
+		return [[windows objectAtIndex: 0] imageView].COPYSETTINGSINSERIES;
+	
+	return NO;
+}
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 

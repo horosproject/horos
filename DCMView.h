@@ -264,6 +264,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	NSRect			drawingFrameRect;
 	
 	BOOL			exceptionDisplayed;
+	BOOL			COPYSETTINGSINSERIES;
 	
 	char*	lensTexture;
 	int LENSSIZE;
@@ -273,7 +274,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 
 @property(readonly) NSRect drawingFrameRect;
 @property(readonly) NSMutableArray *rectArray;
-@property BOOL flippedData, dontEnterReshape, showDescriptionInLarge;
+@property BOOL COPYSETTINGSINSERIES, flippedData, dontEnterReshape, showDescriptionInLarge;
 @property(readonly) NSMutableArray *dcmPixList,  *dcmRoiList;
 @property(readonly) NSArray *dcmFilesList;
 @property long syncSeriesIndex;

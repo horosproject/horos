@@ -4741,7 +4741,8 @@ static NSArray*	statesArray = nil;
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
 	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
 	
-	if( item) {
+	if( item)
+	{
 		/**********
 		 post notification of new selected item. Can be used by plugins to update RIS connection
 		 **********/
@@ -4791,50 +4792,63 @@ static NSArray*	statesArray = nil;
 			
 			BOOL imageLevel = NO;
 			NSArray	*files = [self imagesArray: item preferredObject:oFirstForFirst];
-			if( [files count] > 1 )	{
+			if( [files count] > 1 )
+			{
 				if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"]) imageLevel = YES;
 			}
 			
-			if( imageLevel == NO) {
-				for( NSManagedObject *obj in files ) {
+			if( imageLevel == NO)
+			{
+				for( NSManagedObject *obj in files )
+				{
 					NSImage *thumbnail = [[[NSImage alloc] initWithData: [obj valueForKeyPath:@"series.thumbnail"]] autorelease];
 					if( thumbnail == 0L) thumbnail = notFoundImage;
 					
 					[previewPixThumbnails addObject: thumbnail];
 				}
 			}
-			else {
+			else
+			{
 				for( unsigned int i = 0; i < [files count];i++ ) [previewPixThumbnails addObject: notFoundImage];
 			}
 			
 			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: files, @"files", [files valueForKey:@"completePath"], @"filesPaths",[NSNumber numberWithBool: imageLevel], @"imageLevel", 0L];
 			[NSThread detachNewThreadSelector: @selector(matrixLoadIcons:) toTarget: self withObject: dict];
 			
-			if( previousItem == item) {
+			if( previousItem == item)
+			{
 				[oMatrix selectCellWithTag: cellId];
 			}
 		}
 		
-		if( previousItem != item) {
+		if( previousItem != item)
+		{
 			[previousItem release];
 			previousItem = [item retain];
+			
+			if( [[self ROIsAndKeyImages: 0L] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+			else ROIsAndKeyImagesButtonAvailable = YES;
 		}
 	}
-	else {
+	else
+	{
 		[oMatrix selectCellWithTag: 0];
 		[self matrixInit: 0];
 		
 		[previousItem release];
 		previousItem = nil;
+		
+		ROIsAndKeyImagesButtonAvailable = NO;
 	}
 }
 
-- (void)delItemMatrix: (NSManagedObject*)obj {
-	
+- (void)delItemMatrix: (NSManagedObject*)obj
+{	
 	NSManagedObject		*study = [obj valueForKeyPath:@"series.study"];
 	BOOL				wasExpanded = [databaseOutline isItemExpanded: study];
 	
-	if( [self findAndSelectFile:0L image:obj shouldExpand:YES] ) {
+	if( [self findAndSelectFile:0L image:obj shouldExpand:YES] )
+	{
 		[self delItem: self];
 		
 		[databaseOutline selectRow:[databaseOutline rowForItem: study] byExtendingSelection: NO];
@@ -6655,7 +6669,8 @@ static NSArray*	statesArray = nil;
 	[viewersList release];
 }
 
-- (ViewerController*) loadSeries:(NSManagedObject *) series :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages {
+- (ViewerController*) loadSeries:(NSManagedObject *) series :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
+{
 	return [self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages];
 }
 
@@ -10422,7 +10437,8 @@ static BOOL needToRezoom;
 	}
 }
 
-- (void)viewerDICOM: (id)sender {
+- (void)viewerDICOM: (id)sender
+{
 	//// key Images if Commmand
 	//if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask)  
 	//	[self viewerDICOMKeyImages:sender];		
@@ -15182,7 +15198,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (NSArray*) ROIsAndKeyImages: (id) sender
+- (NSArray*) ROIsAndKeyImages: (id) sender sameSeries: (BOOL*) sameSeries
 {
 	NSInteger index;
 	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
@@ -15221,19 +15237,45 @@ static volatile int numberOfThreadsForJPEG = 0;
 			else if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
 				[roisImagesArray addObject: image];
 		}
+		
+		if( sameSeries)
+		{
+			NSManagedObject *series = [[roisImagesArray lastObject] valueForKey: @"series"];
+			
+			*sameSeries = YES;
+			for( DicomImage *image in roisImagesArray)
+			{
+				if( [image valueForKey: @"series"] != series)
+				{
+					*sameSeries = NO;
+					break;
+				}
+			}
+		}
 	}
 	
 	return roisImagesArray;
 }
 
+- (NSArray*) ROIsAndKeyImages: (id) sender
+{
+	return [self ROIsAndKeyImages: sender sameSeries: 0L];
+}
+
 - (IBAction) viewerKeyImagesAndROIsImages:(id) sender
 {
-	NSArray *roisImagesArray = [self ROIsAndKeyImages: sender];
+	BOOL sameSeries;
+	NSArray *roisImagesArray = [self ROIsAndKeyImages: sender sameSeries: &sameSeries];
 	
 	if( [roisImagesArray count])
 	{
-		[self openViewerFromImages :[NSArray arrayWithObject: roisImagesArray] movie: 0 viewer :nil keyImagesOnly:NO];
+		BOOL propagateSettingsInSeries = YES;
 		
+		ViewerController *v = [self openViewerFromImages: [NSArray arrayWithObject: roisImagesArray] movie: 0 viewer :nil keyImagesOnly:NO];
+		
+		if( sameSeries == NO)
+			[[v imageView] setCOPYSETTINGSINSERIES: NO];
+			
 		if(	[[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 			[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
 		else
@@ -15245,7 +15287,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (NSArray*) ROIImages: (id) sender
+- (NSArray*) ROIImages: (id) sender sameSeries:(BOOL*) sameSeries
 {
 	NSInteger index;
 	NSMutableArray *selectedItems = [NSMutableArray arrayWithCapacity:0];
@@ -15282,9 +15324,29 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if( [[NSFileManager defaultManager] fileExistsAtPath: str])
 				[roisImagesArray addObject: image];
 		}
+		
+		if( sameSeries)
+		{
+			NSManagedObject *series = [[roisImagesArray lastObject] valueForKey: @"series"];
+			
+			*sameSeries = YES;
+			for( DicomImage *image in roisImagesArray)
+			{
+				if( [image valueForKey: @"series"] != series)
+				{
+					*sameSeries = NO;
+					break;
+				}
+			}
+		}
 	}
 	
 	return roisImagesArray;
+}
+
+- (NSArray*) ROIImages: (id) sender
+{
+	return [self ROIImages: sender sameSeries: 0L];
 }
 
 - (NSArray*) KeyImages: (id) sender
@@ -15295,8 +15357,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
 	
-	NSMutableArray *keyImagesToOpenArray = [NSMutableArray array];
-	
 	NSMutableArray *keyImagesArray = [NSMutableArray array];
 	
 	for( NSManagedObject *image in selectedItems )
@@ -15305,10 +15365,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[keyImagesArray addObject: image];
 	}
 	
-	if( [keyImagesArray count] > 0)
-		[keyImagesToOpenArray addObject: keyImagesArray];
-	
-	return keyImagesToOpenArray;
+	return keyImagesArray;
 }
 
 - (BOOL)validateToolbarItem: (NSToolbarItem *)toolbarItem
@@ -15325,8 +15382,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if ([[toolbarItem itemIdentifier] isEqualToString: OpenKeyImagesAndROIsToolbarItemIdentifier])
 	{
-		NSLog( @"validateToolbarItem");
-		if( [[self ROIsAndKeyImages: 0L] count] == 0) return 0;
+		return ROIsAndKeyImagesButtonAvailable;
 	}
 	
     return YES;

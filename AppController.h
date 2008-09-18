@@ -181,6 +181,9 @@ extern "C"
 - (void) growlTitle:(NSString*) title description:(NSString*) description name:(NSString*) name;
 - (NSDictionary *) registrationDictionaryForGrowl;
 
+- (void) setCOPYSETTINGSINSERIES: (BOOL) v;
+- (BOOL) COPYSETTINGSINSERIES;
+
 //#pragma mark-
 //#pragma mark display setters and getters
 //- (IBAction) saveLayout: (id)sender;

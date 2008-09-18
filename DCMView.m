@@ -73,7 +73,7 @@ extern		int							numberOf2DViewer;
 			BOOL						display2DMPRLines = YES;
 extern		NSMutableDictionary			*plugins;
 static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable = 0L;
-static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, COPYSETTINGSINSERIES, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
+static		BOOL						NOINTERPOLATION = NO, FULL32BITPIPELINE = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
 static		int							CLUTBARS, ANNOTATIONS = -999, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES = YES;
 static		BOOL						gClickCountSet = NO;
 static		float						margin = 2;
@@ -626,7 +626,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	DISPLAYCROSSREFERENCELINES = [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayCrossReferenceLines"];
 	
 	IndependentCRWLWW = [[NSUserDefaults standardUserDefaults] boolForKey:@"IndependentCRWLWW"];
-	COPYSETTINGSINSERIES = [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGSINSERIES"];
 	CLUTBARS = [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	
 	int previousANNOTATIONS = ANNOTATIONS;
@@ -1986,15 +1985,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     [super dealloc];
 }
 
-- (void) switchCopySettingsInSeries:(id) sender
+- (BOOL) COPYSETTINGSINSERIES
 {
-	COPYSETTINGSINSERIES = !COPYSETTINGSINSERIES;
+	return COPYSETTINGSINSERIES;
+}
+
+- (void) setCOPYSETTINGSINSERIES: (BOOL) b
+{
+	ViewerController *v = [self windowController];
 	
-	NSLog( @"COPYSETTINGSINSERIES: %d", COPYSETTINGSINSERIES);
-	
-	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+	if( COPYSETTINGSINSERIES != b)
 	{
-		for( int i = 0 ; i < [v maxMovieIndex]; i++)
+		[self willChangeValueForKey: @"COPYSETTINGSINSERIES"];
+		COPYSETTINGSINSERIES = b;
+		[self didChangeValueForKey: @"COPYSETTINGSINSERIES"];
+		
+		for( int i = 0 ; i < [v  maxMovieIndex]; i++)
 		{
 			for( DCMPix *pix in [v pixList: i])
 			{
@@ -2025,6 +2031,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 	}
+}
+
+- (void) switchCopySettingsInSeries:(id) sender
+{
+	[self setCOPYSETTINGSINSERIES: !COPYSETTINGSINSERIES];
 }
 
 - (void) resetLoadingPause:(id) sender
@@ -2439,8 +2450,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     }
 }
 
-- (BOOL) shouldPropagate {
-	
+- (BOOL) shouldPropagate
+{	
 	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && IndependentCRWLWW) || COPYSETTINGSINSERIES == NO) return NO;
 	else return YES;
 }
@@ -5000,7 +5011,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 #pragma mark-
 #pragma mark ww/wl
 
-- (void) getWLWW:(float*) wl :(float*) ww {
+- (void) getWLWW:(float*) wl :(float*) ww
+{
 	if( curDCM == 0L)
 	{
 		if(wl) *wl = 0;
@@ -5013,7 +5025,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-- (void) changeWLWW: (NSNotification*) note {
+- (void) changeWLWW: (NSNotification*) note
+{
 	DCMPix	*otherPix = [note object];
 	
 	if( [self is2DViewer])
@@ -5074,7 +5087,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: curDCM userInfo:0L];
 	
-	if( [self is2DViewer] ) {
+	if( [self is2DViewer] )
+	{
 		//set value for Series Object Presentation State
 		if( curDCM.SUVConverted == NO) {
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
@@ -5111,7 +5125,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-- (void)discretelySetWLWW:(float)wl :(float)ww {
+- (void)discretelySetWLWW:(float)wl :(float)ww
+{
     [curDCM changeWLWW :wl : ww];
     
     curWW = curDCM.ww;
@@ -5125,7 +5140,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     [self setNeedsDisplay:YES];
 	
 	//set value for Series Object Presentation State
-	if( curDCM.SUVConverted == NO) {
+	if( curDCM.SUVConverted == NO)
+	{
 		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
 		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
 		
@@ -5135,13 +5151,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
 			[[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
 		}
-		else {
+		else
+		{
 			[[self imageObj] setValue: 0L forKey:@"windowWidth"];
 			[[self imageObj] setValue: 0L forKey:@"windowLevel"];
 		}
 	}
-	else {
-		if( [self is2DViewer] == YES) {
+	else
+	{
+		if( [self is2DViewer] == YES)
+		{
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
 			
@@ -5333,6 +5352,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	currentToolRight = [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTRIGHTTOOL"];
 	thickSlabMode = 0;
 	thickSlabStacks = 0;
+	[self willChangeValueForKey: @"COPYSETTINGSINSERIES"];
+	COPYSETTINGSINSERIES = YES;
+	[self didChangeValueForKey: @"COPYSETTINGSINSERIES"];
 	
 	suppress_labels = NO;
 	
@@ -8918,7 +8940,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		else if( zoomIsSoftwareInterpolated || [blendingView zoomIsSoftwareInterpolated])
 			[self loadTextures];
 		
-		if( [self is2DViewer]) {
+		if( [self is2DViewer])
+		{
 			// Series Level
 			[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / [self frame].size.width] forKey:@"scale"];
 			[[self seriesObj] setValue:[NSNumber numberWithInt: 2] forKey: @"displayStyle"];	//displayStyle = 2  -> scaleValue is proportional to view width
@@ -9062,7 +9085,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
--(void) setBlendingMode:(long) f {
+-(void) setBlendingMode:(long) f
+{
 	blendingMode = f;
 	
 	[blendingView setBlendingMode: blendingMode];
@@ -9774,14 +9798,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
 	slicePoint3D[ 0] = HUGE_VALF;
 	
-	
 	[self sendSyncMessage: 0];
-	
+		
 	[self setNeedsDisplay:YES];
 }
 
 - (BOOL)becomeFirstResponder
-{	
+{
+
 	isKeyView = YES;
 	
 	[self updateTilingViews];
@@ -9820,8 +9844,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 // ** TILING SUPPORT
 
-- (id)initWithFrame:(NSRect)frame {
-
+- (id)initWithFrame:(NSRect)frame
+{
 	[AppController initialize];
 	
 	[DCMView setDefaults];
@@ -9830,7 +9854,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 }
 
-- (id)initWithFrame:(NSRect)frame imageRows:(int)rows  imageColumns:(int)columns{
+- (id)initWithFrame:(NSRect)frame imageRows:(int)rows  imageColumns:(int)columns
+{
 	self = [self initWithFrameInt:frame];
     if (self)
 	{
