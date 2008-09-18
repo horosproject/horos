@@ -15274,7 +15274,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 		ViewerController *v = [self openViewerFromImages: [NSArray arrayWithObject: roisImagesArray] movie: 0 viewer :nil keyImagesOnly:NO];
 		
 		if( sameSeries == NO)
+		{
 			[[v imageView] setCOPYSETTINGSINSERIES: NO];
+			
+			
+		}
 			
 		if(	[[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 			[NSApp sendAction: @selector(tileWindows:) to:0L from: self];

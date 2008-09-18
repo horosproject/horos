@@ -1170,6 +1170,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( [loopItem ROImode] == ROI_selected) valid = YES;
 		}
     }
+	else if( [item action] == @selector( switchCopySettingsInSeries:))
+	{
+		valid = YES;
+		[item setState: COPYSETTINGSINSERIES];
+	}
 	else if( [item action] == @selector( flipHorizontal:))
 	{
 		valid = YES;
@@ -1996,9 +2001,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( COPYSETTINGSINSERIES != b)
 	{
-		[self willChangeValueForKey: @"COPYSETTINGSINSERIES"];
 		COPYSETTINGSINSERIES = b;
-		[self didChangeValueForKey: @"COPYSETTINGSINSERIES"];
 		
 		for( int i = 0 ; i < [v  maxMovieIndex]; i++)
 		{
@@ -5352,9 +5355,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	currentToolRight = [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTRIGHTTOOL"];
 	thickSlabMode = 0;
 	thickSlabStacks = 0;
-	[self willChangeValueForKey: @"COPYSETTINGSINSERIES"];
 	COPYSETTINGSINSERIES = YES;
-	[self didChangeValueForKey: @"COPYSETTINGSINSERIES"];
 	
 	suppress_labels = NO;
 	

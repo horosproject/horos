@@ -3235,39 +3235,6 @@ static BOOL initialized = NO;
 		dicomNetServiceDelegate = [DCMNetServiceDelegate sharedNetServiceDelegate];
 }
 
-- (ViewerController*) viewer
-{
-	NSArray *windows = [ViewerController getDisplayed2DViewers];
-	
-	if( [windows count])
-	{
-		[self willChangeValueForKey:@"COPYSETTINGSINSERIES"];
-		[self didChangeValueForKey:@"COPYSETTINGSINSERIES"];
-		
-		return [windows objectAtIndex: 0];
-	}
-	
-	return 0L;
-}
-
-- (void) setCOPYSETTINGSINSERIES: (BOOL) v
-{
-	NSArray *windows = [ViewerController getDisplayed2DViewers];
-	
-	if( [windows count])
-		[[windows objectAtIndex: 0] imageView].COPYSETTINGSINSERIES = v;
-}
-
-- (BOOL) COPYSETTINGSINSERIES
-{	
-	NSArray *windows = [ViewerController getDisplayed2DViewers];
-	
-	if( [windows count])
-		return [[windows objectAtIndex: 0] imageView].COPYSETTINGSINSERIES;
-	
-	return NO;
-}
-
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 #pragma mark-
