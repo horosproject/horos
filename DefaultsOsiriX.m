@@ -48,20 +48,36 @@ static NSHost *currentHost = 0L;
 {
 	if( testIsHugDone == NO)
 	{
-		NSArray	*names = [[DefaultsOsiriX currentHost] names];
-		int i;
-		for( i = 0; i < [names count] && !isHcugeCh; i++)
+//		NSArray	*names = [[DefaultsOsiriX currentHost] names];
+//		int i;
+//		for( i = 0; i < [names count] && !isHcugeCh; i++)
+//		{
+//			int len = [[names objectAtIndex: i] length];
+//			if ( len < 8 ) continue;  // Fixed out of bounds error in following line when domainname is short.
+//			NSString *domainName = [[names objectAtIndex: i] substringFromIndex: len - 8];
+//
+//			if([domainName isEqualToString: @"hcuge.ch"])
+//			{
+//				isHcugeCh = YES;
+//				hostName = [[names objectAtIndex: i] retain];
+//			}
+//		}
+		
+		char s[_POSIX_HOST_NAME_MAX+1];
+		gethostname(s,_POSIX_HOST_NAME_MAX);
+		NSString *c = [NSString stringWithCString:s encoding:NSUTF8StringEncoding];
+		
+		if( [c length] > 8 )
 		{
-			int len = [[names objectAtIndex: i] length];
-			if ( len < 8 ) continue;  // Fixed out of bounds error in following line when domainname is short.
-			NSString *domainName = [[names objectAtIndex: i] substringFromIndex: len - 8];
+			NSString *domainName = [c substringFromIndex: len - 8];
 
 			if([domainName isEqualToString: @"hcuge.ch"])
 			{
 				isHcugeCh = YES;
-				hostName = [[names objectAtIndex: i] retain];
+				hostName = [c retain];
 			}
 		}
+		
 		testIsHugDone = YES;
 	}
 	return isHcugeCh;
@@ -71,20 +87,36 @@ static NSHost *currentHost = 0L;
 {
 	if( testIsUniDone == NO)
 	{
-		NSArray	*names = [[DefaultsOsiriX currentHost] names];
-		int i;
-		for( i = 0; i < [names count] && !isUnigeCh; i++)
+//		NSArray	*names = [[DefaultsOsiriX currentHost] names];
+//		int i;
+//		for( i = 0; i < [names count] && !isUnigeCh; i++)
+//		{
+//			int len = [[names objectAtIndex: i] length];
+//			if ( len < 8 ) continue;  // Fixed out of bounds error in following line when domainname is short.
+//			NSString *domainName = [[names objectAtIndex: i] substringFromIndex: len - 8];
+//
+//			if([domainName isEqualToString: @"unige.ch"])
+//			{
+//				isUnigeCh = YES;
+//				hostName = [[names objectAtIndex: i] retain];
+//			}
+//		}
+		
+		char s[_POSIX_HOST_NAME_MAX+1];
+		gethostname(s,_POSIX_HOST_NAME_MAX);
+		NSString *c = [NSString stringWithCString:s encoding:NSUTF8StringEncoding];
+		
+		if( [c length] > 8 )
 		{
-			int len = [[names objectAtIndex: i] length];
-			if ( len < 8 ) continue;  // Fixed out of bounds error in following line when domainname is short.
-			NSString *domainName = [[names objectAtIndex: i] substringFromIndex: len - 8];
+			NSString *domainName = [c substringFromIndex: len - 8];
 
 			if([domainName isEqualToString: @"unige.ch"])
 			{
 				isUnigeCh = YES;
-				hostName = [[names objectAtIndex: i] retain];
+				hostName = [c retain];
 			}
 		}
+		
 		testIsUniDone = YES;
 	}
 	return isUnigeCh;
