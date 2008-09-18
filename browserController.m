@@ -4825,10 +4825,10 @@ static NSArray*	statesArray = nil;
 		{
 			[previousItem release];
 			previousItem = [item retain];
-			
-			if( [[self ROIsAndKeyImages: 0L] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
-			else ROIsAndKeyImagesButtonAvailable = YES;
 		}
+		
+		if( [[self ROIsAndKeyImages: 0L] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+		else ROIsAndKeyImagesButtonAvailable = YES;
 	}
 	else
 	{
@@ -6295,24 +6295,30 @@ static NSArray*	statesArray = nil;
 	
 	NSInteger index = [outlineViewArray indexOfObject: study];
 	
-	if( index != NSNotFound ) {
-		if( expand || [databaseOutline isItemExpanded: study] ) {
+	if( index != NSNotFound )
+	{
+		if( expand || [databaseOutline isItemExpanded: study] )
+		{
 			[databaseOutline expandItem: study];
 			
-			if( [databaseOutline rowForItem: [curImage valueForKey:@"series"]] != [databaseOutline selectedRow] ) {
+			if( [databaseOutline rowForItem: [curImage valueForKey:@"series"]] != [databaseOutline selectedRow] )
+			{
 				[databaseOutline selectRow:[databaseOutline rowForItem: [curImage valueForKey:@"series"]] byExtendingSelection: extendingSelection];
 				[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 			}
 		}
-		else {
-			if( [databaseOutline rowForItem: study] != [databaseOutline selectedRow] ) {
+		else
+		{
+			if( [databaseOutline rowForItem: study] != [databaseOutline selectedRow] )
+			{
 				[databaseOutline selectRow:[databaseOutline rowForItem: study] byExtendingSelection: extendingSelection];
 				[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 			}
 		}
 		
 		// Now... try to find the series in the matrix
-		if( [databaseOutline isItemExpanded: study] == NO )	{
+		if( [databaseOutline isItemExpanded: study] == NO )
+		{
 			NSArray	*seriesArray = [self childrenArray: study];
 			
 			[self outlineViewSelectionDidChange: 0L];
@@ -6324,8 +6330,10 @@ static NSArray*	statesArray = nil;
 			
 			NSInteger seriesPosition = [seriesArray indexOfObject: [curImage valueForKey:@"series"]];
 			
-			if( seriesPosition != NSNotFound ) {
-				if( [[oMatrix selectedCell] tag] != seriesPosition)	{
+			if( seriesPosition != NSNotFound )
+			{
+				if( [[oMatrix selectedCell] tag] != seriesPosition)
+				{
 					// Select the right thumbnail matrix
 					[oMatrix selectCellAtRow: seriesPosition/COLUMN column: seriesPosition%COLUMN];
 					[self matrixPressed: oMatrix];
@@ -15271,13 +15279,53 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		BOOL propagateSettingsInSeries = YES;
 		
+		NSMutableArray *copySettings = [NSMutableArray array];
+		
+		if( sameSeries == NO)
+		{
+			for( DicomImage *im in roisImagesArray)
+			{
+				NSMutableDictionary *d = [NSMutableDictionary dictionary];
+				
+				[d setObject: im forKey:@"im"];
+				
+				[d setObject: [im valueForKeyPath: @"series.windowWidth"] forKey:@"windowWidth"];
+				[d setObject: [im valueForKeyPath: @"series.windowLevel"] forKey:@"windowLevel"];
+				[d setObject: [im valueForKeyPath: @"series.rotationAngle"] forKey:@"rotationAngle"];
+				[d setObject: [im valueForKeyPath: @"series.yFlipped"] forKey:@"yFlipped"];
+				[d setObject: [im valueForKeyPath: @"series.xFlipped"] forKey:@"xFlipped"];
+				[d setObject: [im valueForKeyPath: @"series.xOffset"] forKey:@"xOffset"];
+				[d setObject: [im valueForKeyPath: @"series.yOffset"] forKey:@"yOffset"];
+				[d setObject: [im valueForKeyPath: @"series.displayStyle"] forKey:@"displayStyle"];
+				[d setObject: [im valueForKeyPath: @"series.scale"] forKey:@"scale"];
+				
+				[copySettings addObject: d];
+			}
+		}
+		
 		ViewerController *v = [self openViewerFromImages: [NSArray arrayWithObject: roisImagesArray] movie: 0 viewer :nil keyImagesOnly:NO];
 		
 		if( sameSeries == NO)
 		{
 			[[v imageView] setCOPYSETTINGSINSERIES: NO];
 			
-			
+			for( NSDictionary *d in copySettings)
+			{
+				NSManagedObject *im = [d objectForKey: @"im"];
+				
+				[im setValue: [d valueForKey: @"windowWidth"] forKey:@"windowWidth"];
+				[im setValue: [d valueForKey: @"windowLevel"] forKey:@"windowLevel"];
+				[im setValue: [d valueForKey: @"rotationAngle"] forKey:@"rotationAngle"];
+				[im setValue: [d valueForKey: @"yFlipped"] forKey:@"yFlipped"];
+				[im setValue: [d valueForKey: @"xFlipped"] forKey:@"xFlipped"];
+				[im setValue: [d valueForKey: @"xOffset"] forKey:@"xOffset"];
+				[im setValue: [d valueForKey: @"yOffset"] forKey:@"yOffset"];
+				
+				if( [[d valueForKeyPath: @"displayStyle"] intValue] == 2)
+					[im setValue: [NSNumber numberWithFloat: [[im valueForKeyPath: @"series.scale"] floatValue] * [[v imageView] frame].size.width] forKey:@"scale"];
+				else
+					[im setValue: [d valueForKey: @"scale"] forKey:@"scale"];
+			}
 		}
 			
 		if(	[[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])

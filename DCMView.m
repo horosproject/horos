@@ -1999,38 +1999,35 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	ViewerController *v = [self windowController];
 	
-	if( COPYSETTINGSINSERIES != b)
+	COPYSETTINGSINSERIES = b;
+
+	for( int i = 0 ; i < [v  maxMovieIndex]; i++)
 	{
-		COPYSETTINGSINSERIES = b;
-		
-		for( int i = 0 ; i < [v  maxMovieIndex]; i++)
+		for( DCMPix *pix in [v pixList: i])
 		{
-			for( DCMPix *pix in [v pixList: i])
+			[pix changeWLWW :curWL :curWW];
+			
+			if( COPYSETTINGSINSERIES)
 			{
-				[pix changeWLWW :curWL :curWW];
-				
-				if( COPYSETTINGSINSERIES)
-				{
-					[pix.imageObj setValue: 0L forKey:@"windowWidth"];
-					[pix.imageObj setValue: 0L forKey:@"windowLevel"];
-					[pix.imageObj setValue: 0L forKey:@"scale"];
-					[pix.imageObj setValue: 0L forKey:@"rotationAngle"];
-					[pix.imageObj setValue: 0L forKey:@"yFlipped"];
-					[pix.imageObj setValue: 0L forKey:@"xFlipped"];
-					[pix.imageObj setValue: 0L forKey:@"xOffset"];
-					[pix.imageObj setValue: 0L forKey:@"yOffset"];
-				}
-				else
-				{
-					[pix.imageObj setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-					[pix.imageObj setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-					[pix.imageObj setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-					[pix.imageObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
-					[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
-					[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
-					[pix.imageObj setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
-					[pix.imageObj setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
-				}
+				[pix.imageObj setValue: 0L forKey:@"windowWidth"];
+				[pix.imageObj setValue: 0L forKey:@"windowLevel"];
+				[pix.imageObj setValue: 0L forKey:@"scale"];
+				[pix.imageObj setValue: 0L forKey:@"rotationAngle"];
+				[pix.imageObj setValue: 0L forKey:@"yFlipped"];
+				[pix.imageObj setValue: 0L forKey:@"xFlipped"];
+				[pix.imageObj setValue: 0L forKey:@"xOffset"];
+				[pix.imageObj setValue: 0L forKey:@"yOffset"];
+			}
+			else
+			{
+				[pix.imageObj setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+				[pix.imageObj setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+				[pix.imageObj setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+				[pix.imageObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+				[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
+				[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
+				[pix.imageObj setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
+				[pix.imageObj setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
 			}
 		}
 	}
@@ -2038,7 +2035,40 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) switchCopySettingsInSeries:(id) sender
 {
-	[self setCOPYSETTINGSINSERIES: !COPYSETTINGSINSERIES];
+	ViewerController *v = [self windowController];
+	
+	COPYSETTINGSINSERIES = !COPYSETTINGSINSERIES;
+	
+	for( int i = 0 ; i < [v  maxMovieIndex]; i++)
+	{
+		for( DCMPix *pix in [v pixList: i])
+		{
+			[pix changeWLWW :curWL :curWW];
+			
+			if( COPYSETTINGSINSERIES)
+			{
+				[pix.imageObj setValue: 0L forKey:@"windowWidth"];
+				[pix.imageObj setValue: 0L forKey:@"windowLevel"];
+				[pix.imageObj setValue: 0L forKey:@"scale"];
+				[pix.imageObj setValue: 0L forKey:@"rotationAngle"];
+				[pix.imageObj setValue: 0L forKey:@"yFlipped"];
+				[pix.imageObj setValue: 0L forKey:@"xFlipped"];
+				[pix.imageObj setValue: 0L forKey:@"xOffset"];
+				[pix.imageObj setValue: 0L forKey:@"yOffset"];
+			}
+			else
+			{
+				[pix.imageObj setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+				[pix.imageObj setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+				[pix.imageObj setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+				[pix.imageObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+				[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
+				[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
+				[pix.imageObj setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
+				[pix.imageObj setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
+			}
+		}
+	}
 }
 
 - (void) resetLoadingPause:(id) sender
@@ -9101,8 +9131,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self setNeedsDisplay: YES];
 }
 
--(void) setRotation:(float) x {
-	if( rotation != x )	{
+-(void) setRotation:(float) x
+{
+	if( rotation != x )
+	{
 		rotation = x;
 		
 		if( rotation < 0) rotation += 360;
