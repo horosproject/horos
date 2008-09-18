@@ -4405,9 +4405,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 		// move ROI
-		else {
-			for( int i = 0; i < [curRoiList count]; i++) {
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) {
+		else
+		{
+			for( int i = 0; i < [curRoiList count]; i++)
+			{
+				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+				{
 					[[curRoiList objectAtIndex:i] roiMove: offset];
 				}
 			}
